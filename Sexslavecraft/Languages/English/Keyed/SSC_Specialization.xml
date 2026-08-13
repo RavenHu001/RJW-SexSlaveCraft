@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <SSC_ITab_SpecializationPetCat>Pet Cat</SSC_ITab_SpecializationPetCat>
+  <SSC_ITab_SpecializationPetDog>Pet Dog</SSC_ITab_SpecializationPetDog>
+  <SSC_ITab_SpecializationPetRabbit>Pet Rabbit</SSC_ITab_SpecializationPetRabbit>
+
+  <SSC_ITab_SelectSpecializationPetCat>Select Pet Cat specialization</SSC_ITab_SelectSpecializationPetCat>
+  <SSC_ITab_SelectSpecializationPetDog>Select Pet Dog specialization</SSC_ITab_SelectSpecializationPetDog>
+  <SSC_ITab_SelectSpecializationPetRabbit>Select Pet Rabbit specialization</SSC_ITab_SelectSpecializationPetRabbit>
+
+  <SSC_ITab_SpecializationPetDisabledResearch>Requires the matching pet research</SSC_ITab_SpecializationPetDisabledResearch>
+  <SSC_ITab_SpecializationPetDisabledMissingRequirements>Pet specialization requirements are not met</SSC_ITab_SpecializationPetDisabledMissingRequirements>
+  <SSC_ITab_RabbitReproductionMode>Rabbit birth mode: {0}</SSC_ITab_RabbitReproductionMode>
+  <SSC_ITab_RabbitReproductionOffspring>Offspring mode</SSC_ITab_RabbitReproductionOffspring>
+  <SSC_ITab_RabbitReproductionClone>Clone mode</SSC_ITab_RabbitReproductionClone>
+  <SSC_ITab_SelectRabbitReproductionOffspring>Offspring mode: use normal birth results</SSC_ITab_SelectRabbitReproductionOffspring>
+  <SSC_ITab_SelectRabbitReproductionClone>Clone mode: births prefer rabbit clones</SSC_ITab_SelectRabbitReproductionClone>
+
+  <SSC_Message_PetSpecializationUnlocked>{0}'s {1} specialization has started to stabilize.</SSC_Message_PetSpecializationUnlocked>
+
+  <SSC_PetAffectionGizmoLabel>Show affection to master</SSC_PetAffectionGizmoLabel>
+  <SSC_PetAffectionGizmoDesc>Show affection to master {0}, giving the master a short mood boost.</SSC_PetAffectionGizmoDesc>
+  <SSC_PetAffectionNoMaster>No valid master to receive affection</SSC_PetAffectionNoMaster>
+  <SSC_PetAffectionNotPet>Only pet-specialized pawns can show pet affection</SSC_PetAffectionNotPet>
+  <SSC_PetAffectionCooldown>Pet affection is on cooldown: {0}</SSC_PetAffectionCooldown>
+  <SSC_Message_PetAffection>{0} showed affection to master {1}.</SSC_Message_PetAffection>
+  <SSC_Message_RabbitCloneBirth>{0} gave birth to rabbit clone {1}.</SSC_Message_RabbitCloneBirth>
+  <SSC_Message_DogAnimalInteractionTriggered>{0}'s animal interaction with {1} has started.</SSC_Message_DogAnimalInteractionTriggered>
+</LanguageData>

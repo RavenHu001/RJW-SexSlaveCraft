@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+  <RecipeDef>
+    <defName>SSC_Make_SuperDrug</defName>
+    
+    <label>制作浓缩纳米机械液体</label>
+    
+    <description>浓缩PNA。</description>
+    
+    <jobString>正在合成浓缩纳米机械液体。</jobString>
+    
+    <workAmount>450</workAmount>
+    
+    <workSpeedStat>DrugSynthesisSpeed</workSpeedStat>
+
+    <soundWorking>Recipe_Drug</soundWorking>
+    
+    <recipeUsers>
+      <li>DrugLab</li> 
+    </recipeUsers>
+    
+    <ingredients>
+      <li>
+        <filter>
+          <thingDefs>
+            <li>Purple_Aphrodisiac_Nanofluid</li> 
+        </thingDefs>
+        </filter>
+        <count>5</count> 
+      </li>
+      </ingredients>
+    
+    <fixedIngredientFilter>
+      <thingDefs>
+        <li>Purple_Aphrodisiac_Nanofluid</li>
+      </thingDefs>
+    </fixedIngredientFilter>
+    
+    <products>
+      <Purple_Aphrodisiac_Nanofluid_Plus>1</Purple_Aphrodisiac_Nanofluid_Plus>
+    </products>
+    
+    <workSkill>Intellectual</workSkill> 
+    <researchPrerequisite>SSC_RES_PNAConcentration</researchPrerequisite> 
+    
+  </RecipeDef>
+    <RecipeDef>
+    <defName>SSC_Make_SuperDrug_forth</defName>
+    
+    <label>制作4份浓缩纳米机械液体</label>
+    
+    <description>浓缩PNA。</description>
+    
+    <jobString>正在合成浓缩纳米机械液体x4。</jobString>
+    
+    <workAmount>1350</workAmount>
+    <workSpeedStat>DrugSynthesisSpeed</workSpeedStat>
+    
+
+    <soundWorking>Recipe_Drug</soundWorking>
+    
+    <recipeUsers>
+      <li>DrugLab</li> 
+    </recipeUsers>
+    
+    <ingredients>
+      <li>
+        <filter>
+          <thingDefs>
+            <li>Purple_Aphrodisiac_Nanofluid</li> 
+        </thingDefs>
+        </filter>
+        <count>20</count> 
+      </li>
+      </ingredients>
+    
+    <fixedIngredientFilter>
+      <thingDefs>
+        <li>Purple_Aphrodisiac_Nanofluid</li>
+      </thingDefs>
+    </fixedIngredientFilter>
+    
+    <products>
+      <Purple_Aphrodisiac_Nanofluid_Plus>4</Purple_Aphrodisiac_Nanofluid_Plus>
+    </products>
+    
+    <workSkill>Intellectual</workSkill> 
+    <researchPrerequisite>SSC_RES_PNAConcentration</researchPrerequisite> 
+    
+  </RecipeDef>
+
+
+</Defs>

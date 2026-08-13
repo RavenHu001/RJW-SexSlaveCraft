@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+  <JobDef>
+    <defName>SSC_TrainingReceiver</defName>
+    <driverClass>SexSlaveCraft.JobDriver_TrainingReceiver</driverClass>
+    <reportString>被调教</reportString>
+    <casualInterruptible>false</casualInterruptible>
+    <suspendable>false</suspendable> 
+    <alwaysShowWeapon>true</alwaysShowWeapon>
+  </JobDef>
+
+</Defs>

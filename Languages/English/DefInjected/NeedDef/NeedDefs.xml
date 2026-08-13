@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <Corruption.label>Corruption</Corruption.label>
+  <Corruption.description>The pawn's corruption level.</Corruption.description>
+  <Need_PNA.label>Nanofluid Craving</Need_PNA.label>
+  <Need_PNA.description>Because the body has been modified by purple nanomachines, it constantly craves new nanofluid supplementation; otherwise severe psychological emptiness emerges.</Need_PNA.description>
+</LanguageData>

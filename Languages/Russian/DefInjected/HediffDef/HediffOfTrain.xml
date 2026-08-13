@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <SSC_Exp_Hand.label>Метка развращения (руки)</SSC_Exp_Hand.label>
+  <SSC_Exp_Hand.description>Благодаря наномашинам ИИ «Жареный рис» и повторной сексуальной дрессировке на руках появляются фиолетовые метки. Эти усиленные руки становятся чрезвычайно ловкими и обеспечивают нечеловеческую стабильность и скорость приращивания при работе с оружием.</SSC_Exp_Hand.description>
+  <SSC_Exp_Hand.stages.0.label>В разработке</SSC_Exp_Hand.stages.0.label>
+  <SSC_Exp_Hand.stages.1.label>Опытная</SSC_Exp_Hand.stages.1.label>
+  <SSC_Exp_Hand.stages.2.label>Чувствительная</SSC_Exp_Hand.stages.2.label>
+  <SSC_Exp_Hand.stages.3.label>Метка развращения</SSC_Exp_Hand.stages.3.label>
+  <SSC_Exp_Oral.label>Метка развращения (рот)</SSC_Exp_Oral.label>
+  <SSC_Exp_Oral.description>Наномашины ИИ «Жареный рис» оставляют фиолетовые метки вокруг рта. Язык становится очень гибким, а следовые феромоны сильно влияют на подсознание других, превращая речь в мощное дипломатическое оружие.</SSC_Exp_Oral.description>
+  <SSC_Exp_Oral.stages.0.label>Начальная разработка</SSC_Exp_Oral.stages.0.label>
+  <SSC_Exp_Oral.stages.1.label>Опытная</SSC_Exp_Oral.stages.1.label>
+  <SSC_Exp_Oral.stages.2.label>Чувствительная</SSC_Exp_Oral.stages.2.label>
+  <SSC_Exp_Oral.stages.3.label>Метка развращения</SSC_Exp_Oral.stages.3.label>
+  <SSC_Exp_Foot.label>Метка развращения (ноги)</SSC_Exp_Foot.label>
+  <SSC_Exp_Foot.description>Наномашины ИИ «Жареный рис» оставляют метки на ногах. Шаги становятся лёгкими и соблазнительными, даруя экстремальный инстинкт уклонения и укрепляя торс для значительного увеличения грузоподъёмности.</SSC_Exp_Foot.description>
+  <SSC_Exp_Foot.stages.0.label>В разработке</SSC_Exp_Foot.stages.0.label>
+  <SSC_Exp_Foot.stages.1.label>Опытная</SSC_Exp_Foot.stages.1.label>
+  <SSC_Exp_Foot.stages.2.label>Чувствительная</SSC_Exp_Foot.stages.2.label>
+  <SSC_Exp_Foot.stages.3.label>Метка развращения</SSC_Exp_Foot.stages.3.label>
+  <SSC_Exp_Genitals.label>Метка развращения (вагина)</SSC_Exp_Genitals.label>
+  <SSC_Exp_Genitals.description>После экстремальной разработки внутренности полностью перестроены наномашинами. Становятся исключительно красивыми и чувствительными, выделяют фиолетовую наножидкость и даруют замечательную переносимость боли и скорость восстановления.</SSC_Exp_Genitals.description>
+  <SSC_Exp_Genitals.stages.0.label>В разработке</SSC_Exp_Genitals.stages.0.label>
+  <SSC_Exp_Genitals.stages.1.label>Опытная</SSC_Exp_Genitals.stages.1.label>
+  <SSC_Exp_Genitals.stages.2.label>Чувствительная</SSC_Exp_Genitals.stages.2.label>
+  <SSC_Exp_Genitals.stages.3.label>Мясной унитаз</SSC_Exp_Genitals.stages.3.label>
+  <SSC_Exp_Breast.label>Метка развращения (грудь)</SSC_Exp_Breast.label>
+  <SSC_Exp_Breast.description>Под усилением наномашин грудь полностью перестроена, становясь крайне соблазнительной и непрерывно производящей молоко. Излучаемое тепло сильно успокаивает тех, кто соприкасается.</SSC_Exp_Breast.description>
+  <SSC_Exp_Breast.stages.0.label>Ранняя модификация</SSC_Exp_Breast.stages.0.label>
+  <SSC_Exp_Breast.stages.1.label>Опытная</SSC_Exp_Breast.stages.1.label>
+  <SSC_Exp_Breast.stages.2.label>Полностью модифицирована</SSC_Exp_Breast.stages.2.label>
+  <SSC_Exp_Breast.stages.3.label>Метка развращения</SSC_Exp_Breast.stages.3.label>
+  <SSC_Exp_Anus.label>Метка развращения (анус)</SSC_Exp_Anus.label>
+  <SSC_Exp_Anus.description>Через повторную сексуальную дрессировку задняя часть полностью разработана наномашинами. Активность здесь высока, даруя ужасающее заживление ран и иммунитет, а также адаптивный размер под вставляемые объекты.</SSC_Exp_Anus.description>
+  <SSC_Exp_Anus.stages.0.label>Начальная разработка</SSC_Exp_Anus.stages.0.label>
+  <SSC_Exp_Anus.stages.1.label>Опытная</SSC_Exp_Anus.stages.1.label>
+  <SSC_Exp_Anus.stages.2.label>Чувствительная</SSC_Exp_Anus.stages.2.label>
+  <SSC_Exp_Anus.stages.3.label>Метка развращения</SSC_Exp_Anus.stages.3.label>
+  <SSC_Lactating_SubState.label>Фаза постоянной лактации</SSC_Lactating_SubState.label>
+  <SSC_Lactating_SubState.description>Под глубоким вмешательством наномашин лактация зафиксирована в постоянно активном состоянии. Как паразит, она непрерывно забирает пищу из желудка носителя для синтеза молока.</SSC_Lactating_SubState.description>
+  <SSC_Lactating_SubState.comps.0.labelInBrackets>Наполненность молоком {CHARGEFACTOR_percentage}</SSC_Lactating_SubState.comps.0.labelInBrackets>
+  <SSC_Purple_HyperLactation.label>Выделение афродизиачной наножидкости (вагина)</SSC_Purple_HyperLactation.label>
+  <SSC_Purple_HyperLactation.description>Железы тела активно выделяют особую фиолетовую наножидкость, которая через кровоток транспортируется во влагалище.</SSC_Purple_HyperLactation.description>
+</LanguageData>

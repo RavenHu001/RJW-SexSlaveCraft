@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 18
+VisualStudioVersion = 18.1.11312.151 d18.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SexSlaveCraft_Alpha", "Sexslavecraft\SexSlaveCraft_Alpha.csproj", "{A976764E-5D38-4008-9E0C-591491B4B33B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A976764E-5D38-4008-9E0C-591491B4B33B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A976764E-5D38-4008-9E0C-591491B4B33B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A976764E-5D38-4008-9E0C-591491B4B33B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A976764E-5D38-4008-9E0C-591491B4B33B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {67B9B057-A95D-466F-BDD2-5C2FEF8657DF}
+	EndGlobalSection
+EndGlobal

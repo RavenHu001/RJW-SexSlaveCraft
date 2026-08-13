@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <SSC_DailyTrainingOutcome>[Daily Training] Score: {0} (Level {1}) | Corruption: +{2}</SSC_DailyTrainingOutcome>
+  <SSC_Ritual_MasterSlaveHeader>Master {0} | Sex Slave: {1}</SSC_Ritual_MasterSlaveHeader>
+  <SSC_Ritual_ScoreLevel>Score: {0} (Level {1})</SSC_Ritual_ScoreLevel>
+  <SSC_Ritual_CorruptionGain>Corruption: +{0}</SSC_Ritual_CorruptionGain>
+  <SSC_Ritual_OutcomeHeader> Ritual Outcome </SSC_Ritual_OutcomeHeader>
+  <SSC_Ritual_NoNewStage>(The ritual deepened enslavement, but no new stage was triggered)</SSC_Ritual_NoNewStage>
+  <SSC_Bond_BridleAdded>{0} used invisible chains with the help of Fried Rice Intelligence to bind {1}</SSC_Bond_BridleAdded>
+  <SSC_Bond_ChainAdded>{0} had some abilities restricted and now must obey {1}</SSC_Bond_ChainAdded>
+  <SSC_Ritual_Enslaved>{0} acknowledged slave identity while detached from reason.</SSC_Ritual_Enslaved>
+  <SSC_Ritual_EnslaveFailed>{0} was not enslaved. Looks like you need some luck.</SSC_Ritual_EnslaveFailed>
+  <SSC_Trait_SexSlaveLevelUp>Trait promoted: Sex Slave level {0} -&gt; {1}</SSC_Trait_SexSlaveLevelUp>
+  <SSC_Ritual_FlawedLoversCreated>\nDue to loss of reason, {0} has fully become {1}'s sex slave.</SSC_Ritual_FlawedLoversCreated>
+  <SSC_RitualRole_MustBeColonistSlavePrisoner>Must be a colonist, slave, or prisoner</SSC_RitualRole_MustBeColonistSlavePrisoner>
+  <SSC_RitualRole_SlaveBoundToOther>This slave is already bound to {0} and cannot perform this ritual with current master</SSC_RitualRole_SlaveBoundToOther>
+  <SSC_RitualRole_SlaveBoundToOther_Unknown>someone else</SSC_RitualRole_SlaveBoundToOther_Unknown>
+  <SSC_Stage_Extreme>Extremely Corrupted</SSC_Stage_Extreme>
+  <SSC_Stage_Severe>Severely Corrupted</SSC_Stage_Severe>
+  <SSC_Stage_Moderate>Moderately Corrupted</SSC_Stage_Moderate>
+  <SSC_Stage_Minor>Mildly Corrupted</SSC_Stage_Minor>
+  <SSC_Stage_Slight>Slightly Corrupted</SSC_Stage_Slight>
+  <SSC_Stage_Stable>Stable</SSC_Stage_Stable>
+  <SSC_Need_TipFormat>{0}: {1} ({2})\n{3}</SSC_Need_TipFormat>
+  <SSC_Bridle_LabelWithNames>{0} ({1})</SSC_Bridle_LabelWithNames>
+  <SSC_Bridle_DescSlaves>\nThis colonist's sex slaves: {0}</SSC_Bridle_DescSlaves>
+  <SSC_Chain_LabelWithPawn>{0} ({1})</SSC_Chain_LabelWithPawn>
+  <SSC_TrainingMode_GizmoLabel>Training Pose: {0}</SSC_TrainingMode_GizmoLabel>
+  <SSC_TrainingMode_GizmoDesc>Click to select specific behavior for training this pawn.</SSC_TrainingMode_GizmoDesc>
+  <SSC_Mode_Auto>Auto</SSC_Mode_Auto>
+  <SSC_Mode_Vaginal>Vaginal</SSC_Mode_Vaginal>
+  <SSC_Mode_Anal>Anal</SSC_Mode_Anal>
+  <SSC_Mode_Oral>Oral</SSC_Mode_Oral>
+  <SSC_Mode_Boobjob>Boobjob</SSC_Mode_Boobjob>
+  <SSC_Mode_Handjob>Handjob</SSC_Mode_Handjob>
+  <SSC_Mode_Footjob>Footjob</SSC_Mode_Footjob>
+  <SSC_Mode_Fingering>Fingering</SSC_Mode_Fingering>
+  <SSC_Mode_MutualMasturbation>Mutual Masturbation</SSC_Mode_MutualMasturbation>
+  <SSC_Mode_Fisting>Fisting</SSC_Mode_Fisting>
+  <SSC_Mode_Rimming>Rimming</SSC_Mode_Rimming>
+  <SSC_Mode_Sixtynine>69</SSC_Mode_Sixtynine>
+  <SSC_Toggle_GizmoDesc>Cycle mode: Disabled / Enabled / Protect.</SSC_Toggle_GizmoDesc>
+  <SSC_Toggle_Label_Disabled>Training Mode: Disabled</SSC_Toggle_Label_Disabled>
+  <SSC_Toggle_Label_Enabled>Training Mode: Enabled</SSC_Toggle_Label_Enabled>
+  <SSC_Toggle_Label_Protect>Training Mode: Protect</SSC_Toggle_Label_Protect>
+  <SSC_Toggle_Label_Unknown>Training Mode: Unknown</SSC_Toggle_Label_Unknown>
+  <SSC_Toggle_Desc_Disabled>Disabled: nobody can train this pawn.</SSC_Toggle_Desc_Disabled>
+  <SSC_Toggle_Desc_Enabled>Enabled: currently only the master can train (ritual binding required).</SSC_Toggle_Desc_Enabled>
+  <SSC_Toggle_Desc_Protect>Protected: no one except the master can force this pawn.</SSC_Toggle_Desc_Protect>
+  <SSC_Message_BerserkSuppressed>{0}'s berserk state was suppressed by the chain</SSC_Message_BerserkSuppressed>
+  <SSC_EquipRestriction_NotCorruptedEnough>{0} clearly does not want to wear this outfit (try increasing corruption?)</SSC_EquipRestriction_NotCorruptedEnough>
+  <SSC_Setting_Category>SexSlaveCraft Settings</SSC_Setting_Category>
+  <SSC_Setting_EnableSexSlaveProtectionRules>Enable sex-slave protection rules</SSC_Setting_EnableSexSlaveProtectionRules>
+  <SSC_Setting_EnableSexSlaveProtectionRules_Desc>When disabled, this Harmony patch's entire sex-slave protection and restriction logic is turned off, and related behaviors will no longer be blocked.</SSC_Setting_EnableSexSlaveProtectionRules_Desc>
+  <SSC_Setting_AllowSexSlaveRape>Allow sex slaves to be raped</SSC_Setting_AllowSexSlaveRape>
+  <SSC_Setting_AllowSexSlaveRape_Desc>If [Yes]: anyone can rape sex slaves, but sex slaves wearing the Evilfall Outfit are immune.\n\nIf [No]: strict protection mode. Nobody except the master can rape sex slaves.</SSC_Setting_AllowSexSlaveRape_Desc>
+  <SSC_Setting_ProtectBusAggressorRape>Bus slaves cannot initiate rape</SSC_Setting_ProtectBusAggressorRape>
+  <SSC_Setting_ProtectBusAggressorRape_Desc>When enabled, slaves in bus state cannot initiate rape, but may still initiate non-rape sex.</SSC_Setting_ProtectBusAggressorRape_Desc>
+  <SSC_Setting_ProtectChainedAggressorRape>Chained sex slaves cannot initiate rape</SSC_Setting_ProtectChainedAggressorRape>
+  <SSC_Setting_ProtectChainedAggressorRape_Desc>When enabled, sex slaves with a chain can no longer initiate rape.</SSC_Setting_ProtectChainedAggressorRape_Desc>
+  <SSC_Setting_ProtectNonRapeOwnerOnly>Only the owner may initiate non-rape sex</SSC_Setting_ProtectNonRapeOwnerOnly>
+  <SSC_Setting_ProtectNonRapeOwnerOnly_Desc>When enabled, chained sex slaves may only engage in consensual sex with their owner.</SSC_Setting_ProtectNonRapeOwnerOnly_Desc>
+  <SSC_Setting_EnableLogs>Enable SSC logs</SSC_Setting_EnableLogs>
+  <SSC_Setting_EnableLogs_Desc>When disabled, custom SSC Message/Warning logs are silenced, while Error logs are still kept.</SSC_Setting_EnableLogs_Desc>
+  <SSC_Setting_EnableVerboseLogs>Enable verbose debug logs</SSC_Setting_EnableVerboseLogs>
+  <SSC_Setting_EnableVerboseLogs_Desc>Outputs high-frequency logs such as GuardDbg, animation debug, and training flow diagnostics. Disabled by default to avoid spam.</SSC_Setting_EnableVerboseLogs_Desc>
+  <SSC_Setting_EnableImportantLogs>Enable important logs</SSC_Setting_EnableImportantLogs>
+  <SSC_Setting_EnableImportantLogs_Desc>Outputs low-frequency but useful logs such as onahole compatibility, ritual enslavement flow, and major fallbacks. Enabled by default.</SSC_Setting_EnableImportantLogs_Desc>
+  <SSC_Setting_UseRJWOriginalEligibility>Use RJW original eligibility for training age checks</SSC_Setting_UseRJWOriginalEligibility>
+  <SSC_Setting_UseRJWOriginalEligibility_Desc>On: training/ritual target eligibility follows RJW original can_be_fucked rules (recommended).\nOff: use SSC legacy compatibility checks (also requires rape_enabled and extra age gate).</SSC_Setting_UseRJWOriginalEligibility_Desc>
+  <SSC_Setting_EnableFullGelTint>Enable Full Gelatinization Body Tint</SSC_Setting_EnableFullGelTint>
+  <SSC_Setting_EnableFullGelTint_Desc>When enabled, fully gelatinized pawns keep their original head color while their body is tinted a faint translucent purple.</SSC_Setting_EnableFullGelTint_Desc>
+  <SSC_Setting_EnableRitualEnslavement>Allow ritual enslavement</SSC_Setting_EnableRitualEnslavement>
+  <SSC_Setting_EnableRitualEnslavement_Desc>When enabled, the binding ritual may convert the target into a vanilla slave when conditions are met. When disabled, the ritual still completes normally, but the enslavement step is skipped.</SSC_Setting_EnableRitualEnslavement_Desc>
+  <Tab_SexSlaveTraining>Training</Tab_SexSlaveTraining>
+  <SSC_Ritual_GenitalDifference_Label>Genital Size Compatibility</SSC_Ritual_GenitalDifference_Label>
+  <SSC_Ritual_Genital_Huge>Huge (completely filled)</SSC_Ritual_Genital_Huge>
+  <SSC_Ritual_Genital_Satisfying>Satisfying size</SSC_Ritual_Genital_Satisfying>
+  <SSC_Ritual_Genital_Appropriate>Appropriate size</SSC_Ritual_Genital_Appropriate>
+  <SSC_Ritual_Genital_SlightlySmall>Slightly small</SSC_Ritual_Genital_SlightlySmall>
+  <SSC_Ritual_Genital_TooSmall>Too small</SSC_Ritual_Genital_TooSmall>
+  <SSC_Ritual_Genital_Pathetic>Pathetically small</SSC_Ritual_Genital_Pathetic>
+  <SSC_Ritual_Social_Incompetent>Completely inexperienced in sex</SSC_Ritual_Social_Incompetent>
+  <SSC_Ritual_Social_Average>Rough rubbing</SSC_Ritual_Social_Average>
+  <SSC_Ritual_Social_Skilled>Skilled technique</SSC_Ritual_Social_Skilled>
+  <SSC_Ritual_Social_Masterful>Master of romance</SSC_Ritual_Social_Masterful>
+  <SSC_Message_PersonalityExcretedComplete>{0}'s personality has been fully excreted.</SSC_Message_PersonalityExcretedComplete>
+  <SSC_Message_PersonalityFusionComplete>{0} fully fused with {1}'s personality and absorbed traits from the Personality Gel statue</SSC_Message_PersonalityFusionComplete>
+  <SSC_Message_SameIdeologyNoEffect>No effect: target already has the same ideology.</SSC_Message_SameIdeologyNoEffect>
+  <SSC_Message_EroticConversionComplete>{0} was fully conquered by erotic words and converted ideology.</SSC_Message_EroticConversionComplete>
+  <SSC_Message_PersonalityExcretionComplete>{0}'s personality excretion is complete.</SSC_Message_PersonalityExcretionComplete>
+  <SSC_Message_TradeRejectedForgiven>Trade ended. The sex slave refused, but {0} saw trembling {1} and spared {2}.</SSC_Message_TradeRejectedForgiven>
+  <SSC_Message_TradeConsensualSex>A pleasant trade: corrupted {0} voluntarily offered their body to {1}.</SSC_Message_TradeConsensualSex>
+  <SSC_Message_TradeRapeOccurred>Trade collapsed! {0} tried to refuse, but {1} forced them down!</SSC_Message_TradeRapeOccurred>
+  <SSC_Message_TradeFactionHappy>{0} brought joy to people at the site.</SSC_Message_TradeFactionHappy>
+  <SSC_Message_SlaveAlreadyLinked>This sex slave is already linked to someone else and cannot proceed with selected pawn</SSC_Message_SlaveAlreadyLinked>
+  <SSC_Message_CannotUseNotHollow>Cannot use: body is not a hollow shell (personality excretion required first)</SSC_Message_CannotUseNotHollow>
+  <SSC_Message_BusSpecializationUnlocked>{0}'s bus specialization reached 20% and now grants the base bus bonus.</SSC_Message_BusSpecializationUnlocked>
+  <SSC_Message_CowSpecializationUnlocked>{0}'s cow specialization reached 20% and now grants the base cow bonus.</SSC_Message_CowSpecializationUnlocked>
+  <SSC_Label_SlaveTrainingIdentityMaster>sex slave Training: [Identity: Master]</SSC_Label_SlaveTrainingIdentityMaster>
+  <SSC_Label_TrainingCooldown>Training on cooldown ({0})</SSC_Label_TrainingCooldown>
+  <SSC_Label_WaitingForTraining>Waiting for training</SSC_Label_WaitingForTraining>
+  <SSC_Label_SlaveTrainingStatus>sex slave Training: {0}</SSC_Label_SlaveTrainingStatus>
+  <SSC_Label_IdeologyCertaintyReduction>-{0} Certainty</SSC_Label_IdeologyCertaintyReduction>
+  <SSC_Label_SexSlavePrefix>[sex slave] </SSC_Label_SexSlavePrefix>
+  <SSC_Label_RelationsCount>[Relations: {0}]</SSC_Label_RelationsCount>
+  <SSC_Label_SkillsHeader>&lt;b&gt;Skills&lt;/b&gt;</SSC_Label_SkillsHeader>
+  <SSC_Label_TraitsHeader>&lt;b&gt;Traits&lt;/b&gt;</SSC_Label_TraitsHeader>
+  <SSC_Label_FullName>Full Name: {0} </SSC_Label_FullName>
+  <SSC_Label_SkillLevel>{0} Level: {1}</SSC_Label_SkillLevel>
+  <SSC_Label_SkillPassion>Passion: {0}</SSC_Label_SkillPassion>
+  <SSC_Label_SkillXP>Current XP Progress: {0}</SSC_Label_SkillXP>
+  <SSC_Label_Bloodlust>Bloodlust</SSC_Label_Bloodlust>
+  <SSC_RitualPhase>Phase {0}/{1}</SSC_RitualPhase>
+  <SSC_RitualExpectedDuration>Depends on ritual progress (5 phases total)</SSC_RitualExpectedDuration>
+  <SSC_ITab_IdentityHeader>&lt;b&gt;Pawn Identity&lt;/b&gt;</SSC_ITab_IdentityHeader>
+  <SSC_ITab_IdentityUnset>Current Identity: [Unset]</SSC_ITab_IdentityUnset>
+  <SSC_ITab_IdentityMaster>Current Identity: [Master]</SSC_ITab_IdentityMaster>
+  <SSC_ITab_IdentitySlave>Current Identity: [sex slave]</SSC_ITab_IdentitySlave>
+  <SSC_ITab_SetIdentityUnset>Set as: Unset</SSC_ITab_SetIdentityUnset>
+  <SSC_ITab_SetAsSlave>Set as: sex slave</SSC_ITab_SetAsSlave>
+  <SSC_ITab_SetAsMaster>Set as: Master</SSC_ITab_SetAsMaster>
+  <SSC_ITab_AlreadyMaster>This pawn is already set as [Master].</SSC_ITab_AlreadyMaster>
+  <SSC_ITab_TrainingLocked>&lt;color=yellow&gt;! Training feature not unlocked&lt;/color&gt;</SSC_ITab_TrainingLocked>
+  <SSC_ITab_TrainingLockedDesc>Research "Training" is required to use training settings.</SSC_ITab_TrainingLockedDesc>
+  <SSC_ITab_TrainingSettingsHeader>&lt;b&gt;Training Settings&lt;/b&gt;</SSC_ITab_TrainingSettingsHeader>
+  <SSC_ITab_AllowTraining>Allow Training</SSC_ITab_AllowTraining>
+  <SSC_ITab_AllowOthers>Allow others to train or have sex</SSC_ITab_AllowOthers>
+  <SSC_ITab_AllowOthersWarning>Bus specialization needs sex with someone other than the owner to gain experience.</SSC_ITab_AllowOthersWarning>
+  <SSC_ITab_CooldownStatus>&lt;color=orange&gt;Cooldown: {0}&lt;/color&gt;</SSC_ITab_CooldownStatus>
+  <SSC_ITab_StatusReady>Status: &lt;color=green&gt;Ready&lt;/color&gt;</SSC_ITab_StatusReady>
+  <SSC_ITab_StatusDisabled>Status: &lt;color=grey&gt;Disabled&lt;/color&gt;</SSC_ITab_StatusDisabled>
+  <SSC_ITab_PoseHeader>&lt;b&gt;Assigned Pose&lt;/b&gt;</SSC_ITab_PoseHeader>
+  <SSC_ITab_TrainerHeader>&lt;b&gt;Assigned Trainer&lt;/b&gt;</SSC_ITab_TrainerHeader>
+  <SSC_ITab_TrainerNone>None (Any)</SSC_ITab_TrainerNone>
+  <SSC_ITab_NoTrainerAvailable>No trainer available</SSC_ITab_NoTrainerAvailable>
+  <SSC_ITab_TrainerMasterSuffix> (Master)</SSC_ITab_TrainerMasterSuffix>
+  <SSC_ITab_TrainerLockedSuffix> (Unavailable)</SSC_ITab_TrainerLockedSuffix>
+  <SSC_ITab_ClearTrainer>Clear Assignment</SSC_ITab_ClearTrainer>
+  <SSC_ITab_SpecializationHeader>&lt;b&gt;Sex Slave Specialization&lt;/b&gt;</SSC_ITab_SpecializationHeader>
+  <SSC_ITab_SpecializationNone>Unset</SSC_ITab_SpecializationNone>
+  <SSC_ITab_SpecializationBus>Bus</SSC_ITab_SpecializationBus>
+  <SSC_ITab_SpecializationCow>Cow</SSC_ITab_SpecializationCow>
+  <SSC_ITab_SpecializationProgress>Specialization Progress: {0}</SSC_ITab_SpecializationProgress>
+  <SSC_ITab_SelectSpecializationNone>Set as: Unset</SSC_ITab_SelectSpecializationNone>
+  <SSC_ITab_SelectSpecializationBus>Set as: Bus</SSC_ITab_SelectSpecializationBus>
+  <SSC_ITab_SelectSpecializationCow>Set as: Cow</SSC_ITab_SelectSpecializationCow>
+  <SSC_ITab_SpecializationBusDisabledResearch>Public-use research not finished</SSC_ITab_SpecializationBusDisabledResearch>
+  <SSC_ITab_SpecializationCowDisabledResearch>Cow research not finished</SSC_ITab_SpecializationCowDisabledResearch>
+  <SSC_ITab_SpecializationCowDisabledDegree>Sex slave degree is below 2</SSC_ITab_SpecializationCowDisabledDegree>
+  <SSC_ITab_SpecializationCowDisabledLactation>Missing permanent lactation</SSC_ITab_SpecializationCowDisabledLactation>
+  <SSC_ITab_SpecializationCowDisabledMissingRequirements>Missing requirements</SSC_ITab_SpecializationCowDisabledMissingRequirements>
+  <SSC_ITab_MilkProductionToggle>Enable lactation</SSC_ITab_MilkProductionToggle>
+  <SSC_MasterShareDamage_Label>Damage Sharing</SSC_MasterShareDamage_Label>
+  <SSC_MasterShareDamage_Desc>When enabled, bound sex slaves absorb {0} of damage for their master. Slaves with half-gelatinized parts are prioritized first, and damage is aimed at those half-gelatinized parts whenever possible.</SSC_MasterShareDamage_Desc>
+  <SSC_MasterShareDamage_Message>{0}'s bond shivers and shifts {1} damage onto {2}.</SSC_MasterShareDamage_Message>
+  <SSC_MasterShareDamage_LogStart>[SSC Damage Share] {0} took {1}. Original damage: {2}, redirecting: {3}. Eligible slaves: {4}, half-gelatinized priority slaves: {5}.</SSC_MasterShareDamage_LogStart>
+  <SSC_MasterShareDamage_Log>[SSC Damage Share] {0} redirected {2} damage to {1}, hitting: {3}</SSC_MasterShareDamage_Log>
+  <SSC_MasterShareDamage_LogRemain>[SSC Damage Share] {0} keeps remaining damage: {1}</SSC_MasterShareDamage_LogRemain>
+  <SSC_MasterShareDamage_LogNoCandidate>[SSC Damage Share] {0} took {1} for {2} damage, but no same-map, non-downed slave could share it.</SSC_MasterShareDamage_LogNoCandidate>
+  <SSC_MasterShareDamage_LogBlocked>[SSC Damage Share] {0} took {1}, but this damage type is blocked from being redirected.</SSC_MasterShareDamage_LogBlocked>
+  <SSC_MasterShareDamage_Float>Shared {0}</SSC_MasterShareDamage_Float>
+  <SSC_MasterShareDamage_PartFallback>unknown part</SSC_MasterShareDamage_PartFallback>
+  <SSC_MasterEmpowerment_None>No active master-bond empowerment is currently being generated.</SSC_MasterEmpowerment_None>
+  <SSC_MasterEmpowerment_Summary>Master Bond Empowerment
+Bound slaves: {0}
+Current stage: {1}
+Average corruption: {2}
+Empowerment strength: {3}
+Manipulation: +{4}
+Melee hit chance: +{5}
+Melee dodge chance: +{6}
+Move speed: +{7}
+Pain shock threshold: +{8}</SSC_MasterEmpowerment_Summary>
+  <SSC_FullGel_MissingPE>{0} has not completed personality excretion and cannot undergo full gelatinization.</SSC_FullGel_MissingPE>
+  <SSC_FullGel_AlreadyRunning>{0} is already undergoing full gelatinization.</SSC_FullGel_AlreadyRunning>
+  <SSC_FullGel_Guaranteed>{0} meets every full gelatinization requirement. Adaptation will be accelerated enough to finish before severity can catch up.</SSC_FullGel_Guaranteed>
+  <SSC_FullGel_RiskWarning>{0} will enter a high-risk full gelatinization race.\n{1}</SSC_FullGel_RiskWarning>
+  <SSC_FullGel_RiskReport>Current corruption: {0}\nBody-part completion: {1}\nSmoothed success weight: {2}\nMissing conditions: {3}</SSC_FullGel_RiskReport>
+  <SSC_FullGel_Requirement_Corruption>Corruption is not yet 100% (current {0})</SSC_FullGel_Requirement_Corruption>
+  <SSC_FullGel_Requirement_Hand>Hands</SSC_FullGel_Requirement_Hand>
+  <SSC_FullGel_Requirement_Foot>Feet</SSC_FullGel_Requirement_Foot>
+  <SSC_FullGel_Requirement_Oral>Oral</SSC_FullGel_Requirement_Oral>
+  <SSC_FullGel_Requirement_Breast>Breasts</SSC_FullGel_Requirement_Breast>
+  <SSC_FullGel_Requirement_Genitals>Genitals</SSC_FullGel_Requirement_Genitals>
+  <SSC_FullGel_Requirement_Anus>Anus</SSC_FullGel_Requirement_Anus>
+  <SSC_FullGel_AdaptationTip>Adaptation: {0}</SSC_FullGel_AdaptationTip>
+  <SSC_FullGel_SeverityTip>Severity: {0}</SSC_FullGel_SeverityTip>
+  <SSC_FullGel_Success>{0} completed full gelatinization and stabilized into a gel body.</SSC_FullGel_Success>
+  <SSC_FullGel_Failure>{0} collapsed completely during full gelatinization and was erased from existence.</SSC_FullGel_Failure>
+  <SSC_FullGel_BlockSemiGel>{0} has already completed full gelatinization and can no longer undergo semi-gelatinization.</SSC_FullGel_BlockSemiGel>
+  <SSC_LifeForce_Removed>For some reason, the Gate of Life cannot coexist with that sublime Slaaneshi superintelligence technology. {0}'s Lifeforce gene has been removed, leaving a gene embryo at their feet.</SSC_LifeForce_Removed>
+  <SSC_PES_Underage> | (Underage)</SSC_PES_Underage>
+  <SSC_PES_FullName>Full Name: {0} </SSC_PES_FullName>
+  <SSC_PES_SexSlaveTag>[sex slave] </SSC_PES_SexSlaveTag>
+  <SSC_PES_RelationsCount>[Relations: {0}]</SSC_PES_RelationsCount>
+  <SSC_PES_SkillsHeader>&lt;b&gt;Skills&lt;/b&gt;</SSC_PES_SkillsHeader>
+  <SSC_PES_SkillLevel>{0}\nLevel: {1}</SSC_PES_SkillLevel>
+  <SSC_PES_SkillPassion>\nPassion: {0}</SSC_PES_SkillPassion>
+  <SSC_PES_SkillXP>\nCurrent XP Progress: {0}</SSC_PES_SkillXP>
+  <SSC_PES_TraitsHeader>&lt;b&gt;Traits&lt;/b&gt;</SSC_PES_TraitsHeader>
+  <SSC_PES_NoTraits> (No Traits)</SSC_PES_NoTraits>
+  <SSC_PES_BondHeader>&lt;b&gt;Bond Status&lt;/b&gt;</SSC_PES_BondHeader>
+  <SSC_PES_MasterLabel> Master: {0}</SSC_PES_MasterLabel>
+  <SSC_PES_MemoriesHeader>&lt;b&gt;Memory Fragments:&lt;/b&gt; {0}</SSC_PES_MemoriesHeader>
+  <SSC_PES_MemoriesHint> (Will be restored after fusion)</SSC_PES_MemoriesHint>
+  <SSC_PES_AssignTarget>Assign Target Hollow</SSC_PES_AssignTarget>
+  <SSC_PES_AssignedTo>Assigned: {0}</SSC_PES_AssignedTo>
+  <SSC_PES_Unassign>Unassign</SSC_PES_Unassign>
+  <SSC_PES_NoHollowTargets>No available hollow targets</SSC_PES_NoHollowTargets>
+  <SSC_PES_AlreadyAssigned> (Already assigned: {0})</SSC_PES_AlreadyAssigned>
+  <SSC_PES_WaitingForInsert>Waiting for a colonist to insert...</SSC_PES_WaitingForInsert>
+  <SSC_Message_PersonalityInserted>{0} was inserted with Personality Gel. Personality inheritance complete.</SSC_Message_PersonalityInserted>
+  <SSC_Inspect_Personality>Personality: {0}</SSC_Inspect_Personality>
+  <SSC_Inspect_PersonalityNone>None</SSC_Inspect_PersonalityNone>
+  <SSC_Inspect_SexSlaveTag> (sex slave)</SSC_Inspect_SexSlaveTag>
+  <SSC_Inspect_RelationsCount>\nContains {0} social relations</SSC_Inspect_RelationsCount>
+  <SSC_Inspect_BelongsTo>\nBelongs to: {0}</SSC_Inspect_BelongsTo>
+  <SSC_Inspect_ExtraStatus>\nExtra Status:</SSC_Inspect_ExtraStatus>
+  <SSC_Produce_ProgressStalled>Progress: {0} (stalled due to malnutrition)</SSC_Produce_ProgressStalled>
+  <SSC_Produce_Progress>Progress: {0}</SSC_Produce_Progress>
+  <SSC_Inspect_ProductionProgress>{0} production progress: {1}</SSC_Inspect_ProductionProgress>
+  <SSC_Ritual_FullBodyTraining>{0}'s whole body was deeply developed and trained in this ritual.</SSC_Ritual_FullBodyTraining>
+  <SSC_Ritual_RepeatPenalty>Repeated too soon (within 3 days): </SSC_Ritual_RepeatPenalty>
+  <SSC_Float_CertaintyReduction>-{0} Certainty</SSC_Float_CertaintyReduction>
+  <SSC_Train_IdentityMaster>sex slave Training: [Identity: Master]</SSC_Train_IdentityMaster>
+  <SSC_Train_IdentityUnset>sex slave Training: [Identity: Unset]</SSC_Train_IdentityUnset>
+  <SSC_Train_Cooldown>Training on cooldown ({0})</SSC_Train_Cooldown>
+  <SSC_Train_Waiting>Waiting for training</SSC_Train_Waiting>
+  <SSC_Train_Status>sex slave Training: {0}</SSC_Train_Status>
+  <SSC_Lactating_Stalled>Fullness: {0} (stalled due to malnutrition)</SSC_Lactating_Stalled>
+  <SSC_Lactating_Disabled>Fullness: {0} (lactation disabled)</SSC_Lactating_Disabled>
+  <SSC_Ritual_Unassigned>Unassigned</SSC_Ritual_Unassigned>
+  <SSC_Ritual_UnassignedDesc>{0} (Unassigned): {1}</SSC_Ritual_UnassignedDesc>
+  <SSC_Ritual_UIError>{0} (UI Error)</SSC_Ritual_UIError>
+  <SSC_Ritual_MustBeColonist>Must be a member of this colony.</SSC_Ritual_MustBeColonist>
+  <SSC_Ritual_NoCompData>This pawn cannot retrieve identity data (missing related component).</SSC_Ritual_NoCompData>
+  <SSC_Ritual_NotDesignatedMaster>This pawn is not designated as [Master] in the [Training Tab].</SSC_Ritual_NotDesignatedMaster>
+  <SSC_Ritual_MustBeColonistOrSlave>Must be a colonist, prisoner, or slave</SSC_Ritual_MustBeColonistOrSlave>
+  <SSC_Ritual_MissingTrainingComp>Missing required training component.</SSC_Ritual_MissingTrainingComp>
+  <SSC_Ritual_CannotBeSlaveAsMaster>This pawn is already set as [Master] and cannot participate as a sex slave.</SSC_Ritual_CannotBeSlaveAsMaster>
+  <SSC_Ritual_NoMasterAssigned>No master assigned: assign one first in [Training Tab].</SSC_Ritual_NoMasterAssigned>
+  <SSC_Ritual_ChainConflict>Chain ownership conflict: she belongs to {0}, but the tab assigned someone else.</SSC_Ritual_ChainConflict>
+  <SSC_Trainer_None>Assigned Trainer</SSC_Trainer_None>
+  <SSC_Trainer_Selected>Current Trainer: {0}</SSC_Trainer_Selected>
+  <SSC_Trainer_Desc>Assign a specific male colonist for this pawn's training.\n\nOnly males assigned to "Training" work can be selected.</SSC_Trainer_Desc>
+  <SSC_Trainer_NoCandidates>No valid male trainer found</SSC_Trainer_NoCandidates>
+  <SSC_Trainer_MasterForced> (Master)</SSC_Trainer_MasterForced>
+  <SSC_Trainer_Locked> (Unavailable)</SSC_Trainer_Locked>
+  <SSC_Trainer_Clear>Clear Selection</SSC_Trainer_Clear>
+  <SSC_Message_TrainingEnabledEligible>[SSC] Training enabled: target currently meets RJW recipient conditions.</SSC_Message_TrainingEnabledEligible>
+  <SSC_Message_PersonalityInsertFailed>Personality insertion failed: incomplete data or abnormal target state.</SSC_Message_PersonalityInsertFailed>
+  <SSC_EnslaveChanceDetail>[SSC] Enslave chance {0} (Score: {1} / Will pressure: {2} / Corruption need: {3})</SSC_EnslaveChanceDetail>
+  <SSC_RJW_TargetNull>[SSC/RJW] Target is null and cannot be evaluated.</SSC_RJW_TargetNull>
+  <SSC_RJW_ReportHeader>[SSC] RJW recipient eligibility failure details</SSC_RJW_ReportHeader>
+  <SSC_RJW_Short_TargetNull>Target is null and cannot be used.</SSC_RJW_Short_TargetNull>
+  <SSC_RJW_Short_Pass>Target meets RJW recipient eligibility.</SSC_RJW_Short_Pass>
+  <SSC_RJW_Short_Fail_Mechanoid>Target fails RJW check: mechanoid cannot be used.</SSC_RJW_Short_Fail_Mechanoid>
+  <SSC_RJW_Short_Fail_Age>Target fails RJW check: age stage is not allowed.</SSC_RJW_Short_Fail_Age>
+  <SSC_RJW_Short_Fail_Warcasket>Target fails RJW check: wearing warcasket apparel.</SSC_RJW_Short_Fail_Warcasket>
+  <SSC_RJW_Short_Fail_CanDoLoving>Target fails RJW check: can_do_loving is false.</SSC_RJW_Short_Fail_CanDoLoving>
+  <SSC_RJW_Short_Fail_NoUsableOrifice>Target fails RJW check: no usable orifice.</SSC_RJW_Short_Fail_NoUsableOrifice>
+  <SSC_RJW_Short_Fail_CanBeFucked>Target fails RJW check: can_be_fucked is false.</SSC_RJW_Short_Fail_CanBeFucked>
+  <SSC_Legacy_Short_RequireRapeEnabled>SSC legacy mode: RJW rape_enabled must be enabled.</SSC_Legacy_Short_RequireRapeEnabled>
+  <SSC_Legacy_Short_FailCanBeFucked>SSC legacy mode: RJW can_be_fucked is false.</SSC_Legacy_Short_FailCanBeFucked>
+  <SSC_Legacy_Short_MissingAgeTracker>SSC legacy mode: target has no age tracker.</SSC_Legacy_Short_MissingAgeTracker>
+  <SSC_Legacy_Short_AgeGateFail>SSC legacy mode: extra age gate failed.</SSC_Legacy_Short_AgeGateFail>
+  <SSC_Legacy_Short_Pass>SSC legacy mode: eligibility passed.</SSC_Legacy_Short_Pass>
+</LanguageData>

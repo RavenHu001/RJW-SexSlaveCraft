@@ -1,0 +1,34 @@
+<Defs>
+  <TraitDef>
+    <defName>SexSlaveCraft_SexSlave</defName>
+    <label>性奴</label>
+    <description>性奴的专属特性</description>
+    <commonality>0</commonality>
+
+    <degreeDatas>
+      <li>
+        <degree>1</degree>
+        <label>初被调教</label>
+        <description>这个性奴最近才接受了调教。</description>
+      </li>
+
+      <li>
+        <degree>2</degree>
+        <label>中度调教</label>
+        <description>这个性奴已经被调教过一阵子了。</description>
+      </li>
+
+      <li>
+        <degree>3</degree>
+        <label>深度调教</label>
+        <description>这个性奴被深度调教过了。</description>
+      </li>
+
+      <li>
+        <degree>4</degree>
+        <label>完美性奴</label>
+        <description>这个性奴已经被调教地完美了。</description>
+      </li>
+    </degreeDatas>
+  </TraitDef>
+</Defs>

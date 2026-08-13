@@ -1,0 +1,188 @@
+<Defs>
+  <HediffDef>
+    <defName>SSC_Hediff_Bus</defName> 
+    <label>性奴特化（公交车）</label>
+    <description>该性奴正处于公交车特化阶段，你可以通过让该性奴与其他人做爱，与商人交易后的自动“交易”来获得经验值。</description>
+    <defaultLabelColor>(0.5, 0.8, 1.0)</defaultLabelColor> 
+    <isBad>false</isBad> 
+    <tendable>false</tendable>
+    <everCurableByItem>false</everCurableByItem>
+    <makesSickThought>false</makesSickThought>
+    
+    <stages>
+      <!-- 阶段1: 特化进行中，无属性 -->
+      <li>
+        <minSeverity>0.00</minSeverity>
+        <label>性奴特化进行中</label>
+      </li>
+
+      <!-- 阶段2: 基础加成 -->
+      <li>
+        <minSeverity>0.20</minSeverity>
+        <label>性奴特化（生疏）</label>
+        <statOffsets>
+          <TradePriceImprovement>0.10</TradePriceImprovement>
+          <NegotiationAbility>0.13</NegotiationAbility>
+          <SocialImpact>0.17</SocialImpact>
+        </statOffsets>
+        <capMods>
+          <li>
+            <capacity>Talking</capacity>
+            <offset>0.03</offset>
+          </li>
+        </capMods>
+      </li>
+      
+      <!-- 阶段2: 熟练 -->
+      <li>
+        <minSeverity>0.50</minSeverity>
+
+        <label>性奴特化（熟练）</label>
+        <statOffsets>
+          <TradePriceImprovement>0.20</TradePriceImprovement>
+          <NegotiationAbility>0.26</NegotiationAbility>
+          <SocialImpact>0.33</SocialImpact>
+        </statOffsets>
+        <capMods>
+          <li>
+            <capacity>Talking</capacity>
+            <offset>0.07</offset>
+          </li>
+        </capMods>
+      </li>
+      
+    </stages>
+  </HediffDef>
+
+  <HediffDef>
+    <defName>SSC_Hediff_Bus_Final</defName>
+    <label>性奴特化（终极公交车）</label>
+    <description>公交车特化已完成。</description>
+    <defaultLabelColor>(1.0, 0.65, 0.65)</defaultLabelColor>
+    <isBad>false</isBad>
+    <tendable>false</tendable>
+    <everCurableByItem>false</everCurableByItem>
+    <makesSickThought>false</makesSickThought>
+
+    <stages>
+      <li>
+        <minSeverity>0.00</minSeverity>
+
+        <label>性奴特化（终极公交车）</label>
+        <statOffsets>
+          <TradePriceImprovement>0.30</TradePriceImprovement>
+          <NegotiationAbility>0.40</NegotiationAbility>
+          <SocialImpact>0.50</SocialImpact>
+        </statOffsets>
+        <capMods>
+          <li>
+            <capacity>Talking</capacity>
+            <offset>0.10</offset>
+          </li>
+        </capMods>
+      </li>
+    </stages>
+  </HediffDef>
+
+  <HediffDef>
+    <defName>SSC_Hediff_Cow</defName>
+    <label>性奴特化（奶牛）</label>
+    <description>该性奴正处于奶牛特化阶段，可通过不断高潮加速该阶段。</description>
+    <hediffClass>HediffWithComps</hediffClass>
+    <defaultLabelColor>(1.0, 0.90, 0.55)</defaultLabelColor>
+    <isBad>false</isBad>
+    <tendable>false</tendable>
+    <everCurableByItem>false</everCurableByItem>
+    <makesSickThought>false</makesSickThought>
+
+    <comps>
+      <li Class="SexSlaveCraft.HediffCompProperties_CowMilkReservoir">
+        <ticksToFullCharge>12000</ticksToFullCharge>
+        <initialCharge>0.08</initialCharge>
+        <fullChargeAmount>0.28</fullChargeAmount>
+        <nutritionPerDay>0.40</nutritionPerDay>
+      </li>
+    </comps>
+
+    <stages>
+      <li>
+        <minSeverity>0.00</minSeverity>
+        <label>性奴特化进行中</label>
+      </li>
+      <li>
+        <minSeverity>0.20</minSeverity>
+        <label>性奴特化（奶牛）</label>
+        <statOffsets>
+          <Vulnerability>3.00</Vulnerability>
+        </statOffsets>
+        <statFactors>
+          <MoveSpeed>0.60</MoveSpeed>
+        </statFactors>
+        <capMods>
+          <li>
+            <capacity>Manipulation</capacity>
+            <offset>-0.30</offset>
+          </li>
+        </capMods>
+      </li>
+      <li>
+        <minSeverity>0.50</minSeverity>
+        <label>性奴特化（熟练奶牛）</label>
+        <statOffsets>
+          <Vulnerability>3.00</Vulnerability>
+          <PawnBeauty>1</PawnBeauty>
+        </statOffsets>
+        <statFactors>
+          <MoveSpeed>0.60</MoveSpeed>
+        </statFactors>
+        <capMods>
+          <li>
+            <capacity>Manipulation</capacity>
+            <offset>-0.30</offset>
+          </li>
+        </capMods>
+      </li>
+    </stages>
+  </HediffDef>
+
+  <HediffDef>
+    <defName>SSC_Hediff_Cow_Final</defName>
+    <label>性奴特化（终极奶牛）</label>
+    <description>在经历过特化之后，奶牛的全身上下布满分泌腺，其汗液也成了奶。</description>
+    <hediffClass>HediffWithComps</hediffClass>
+    <defaultLabelColor>(1.0, 0.78, 0.40)</defaultLabelColor>
+    <isBad>false</isBad>
+    <tendable>false</tendable>
+    <everCurableByItem>false</everCurableByItem>
+    <makesSickThought>false</makesSickThought>
+
+    <comps>
+      <li Class="SexSlaveCraft.HediffCompProperties_CowMilkReservoir">
+        <ticksToFullCharge>9000</ticksToFullCharge>
+        <initialCharge>0.12</initialCharge>
+        <fullChargeAmount>0.40</fullChargeAmount>
+        <nutritionPerDay>0.55</nutritionPerDay>
+      </li>
+    </comps>
+
+    <stages>
+      <li>
+        <minSeverity>0.00</minSeverity>
+        <label>性奴特化（终极奶牛）</label>
+        <statOffsets>
+          <Vulnerability>3.00</Vulnerability>
+          <PawnBeauty>2</PawnBeauty>
+        </statOffsets>
+        <statFactors>
+          <MoveSpeed>0.60</MoveSpeed>
+        </statFactors>
+        <capMods>
+          <li>
+            <capacity>Manipulation</capacity>
+            <offset>-0.30</offset>
+          </li>
+        </capMods>
+      </li>
+    </stages>
+  </HediffDef>
+</Defs>

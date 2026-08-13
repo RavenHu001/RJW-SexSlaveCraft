@@ -1,0 +1,9 @@
+# Keep codebase-memory focused on this mod source, not generated or vendored artifacts.
+/Sexslavecraft/_decompiled/
+/Sexslavecraft/obj/
+/Sexslavecraft/.vs/
+/Sexslavecraft/.tools/
+/Sexslavecraft/.codebase-memory/
+/Source/
+/.codebase-memory/
+/.vs/

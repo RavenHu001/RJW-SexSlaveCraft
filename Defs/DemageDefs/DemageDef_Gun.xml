@@ -1,0 +1,41 @@
+<Defs>
+  <DamageDef>
+    <defName>Damage_PNA_HighTier</defName>
+    <label>浓缩纳米机械子弹</label>
+    <workerClass>SexSlaveCraft.DamageWorker_HighTier</workerClass>
+    <externalViolence>true</externalViolence>
+    <defaultDamage>10</defaultDamage> <hediff>Cut</hediff>
+
+    <modExtensions>
+      <li Class="SexSlaveCraft.PNA_DWExtension">
+        <adapterHediff>Hediff_ChainOfSexSlave</adapterHediff>
+        <combatBuff>Hediff_PNA_Combat_Buff</combatBuff>
+        <debuff>Hediff_PNA_Debuff</debuff>
+        <healAmount>15</healAmount>           
+        <trueDamageAmount>10</trueDamageAmount>   
+        <fixedSeverity>0.5</fixedSeverity>    
+    </li>
+    </modExtensions>
+  </DamageDef>
+
+  <DamageDef>
+    <defName>Damage_PNA_Damage_LowTier</defName>
+    <label>普通纳米机械子弹</label>
+    <workerClass>SexSlaveCraft.DamageWorker_LowTier</workerClass>
+    <externalViolence>true</externalViolence>
+    <defaultDamage>1</defaultDamage>
+    <hediff>Stab</hediff>
+    <modExtensions>
+      <li Class="SexSlaveCraft.PNA_DWExtension">
+        <adapterHediff>Hediff_ChainOfSexSlave</adapterHediff>
+        <combatBuff>Hediff_PNA_Combat_Buff_Plus</combatBuff>
+        <debuff>Hediff_PNA_Debuff</debuff>
+        
+        <healAmount>5</healAmount>            
+        <trueDamageAmount>1</trueDamageAmount>    
+        <recordHediff>Hediff_PNA_Consciousness_Record</recordHediff>
+        <baseSeverity>0.125</baseSeverity>    
+      </li>
+    </modExtensions>
+  </DamageDef>
+</Defs>

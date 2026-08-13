@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <RecipeDef Class="SexSlaveCraft.RecipeDef_PSTag">
+    <defName>SSC_PSEdit_Bus_Final</defName>
+    <label>性奴特化（终极公交车）</label>
+    <description>将已经完成公交车特化的人格凝胶进一步塑形为终极公交车状态。该配方只接受公交车特化达到 100% 的材料，并与普通公交车状态互斥。</description>
+    <jobString>正在塑造终极公交车人格...</jobString>
+    <workAmount>3500</workAmount>
+    <workSpeedStat>GeneralLaborSpeed</workSpeedStat>
+    <effectWorking>Sculpt</effectWorking>
+    <soundWorking>Recipe_Sculpt</soundWorking>
+
+    <hediffToAdd>SSC_Hediff_Bus_Final</hediffToAdd>
+    <severity>1.00</severity>
+    <filterIfTagExists>true</filterIfTagExists>
+    <requireBusSpecializationComplete>true</requireBusSpecializationComplete>
+    <exclusiveTags>
+      <li>SSC_Hediff_Bus_Final</li>
+    </exclusiveTags>
+
+    <recipeUsers>
+      <li>TableSculpting</li>
+    </recipeUsers>
+
+    <researchPrerequisite>SSC_RES_PublicUse</researchPrerequisite>
+
+    <ingredients>
+      <li>
+        <filter>
+          <thingDefs>
+            <li>SSC_PersonalitySlime</li>
+            <li>SSC_PersonalitySlime_PLUS</li>
+            <li>SSC_PersonalitySlime_ULTRA</li>
+            <li>SSC_PersonalitySlime_PLUS_ULTRA</li>
+            <li>SSC_PersonalitySlime_Edited</li>
+            <li>SSC_PersonalitySlime_PLUS_Edited</li>
+            <li>SSC_PersonalitySlime_ULTRA_Edited</li>
+            <li>SSC_PersonalitySlime_PLUS_ULTRA_Edited</li>
+          </thingDefs>
+        </filter>
+        <count>1</count>
+      </li>
+    </ingredients>
+
+    <fixedIngredientFilter>
+      <thingDefs>
+        <li>SSC_PersonalitySlime</li>
+        <li>SSC_PersonalitySlime_PLUS</li>
+        <li>SSC_PersonalitySlime_ULTRA</li>
+        <li>SSC_PersonalitySlime_PLUS_ULTRA</li>
+        <li>SSC_PersonalitySlime_Edited</li>
+        <li>SSC_PersonalitySlime_PLUS_Edited</li>
+        <li>SSC_PersonalitySlime_ULTRA_Edited</li>
+        <li>SSC_PersonalitySlime_PLUS_ULTRA_Edited</li>
+      </thingDefs>
+    </fixedIngredientFilter>
+
+    <workerClass>SexSlaveCraft.Recipe_PSTagWorker</workerClass>
+  </RecipeDef>
+
+  <RecipeDef Class="SexSlaveCraft.RecipeDef_PSTag">
+    <defName>SSC_PSEdit_Cow_Final</defName>
+    <label>性奴特化（终极奶牛）</label>
+    <description>将已经完成奶牛特化的人格凝胶进一步塑形为终极奶牛状态。该配方只接受奶牛特化达到 100% 的材料，并与普通奶牛状态互斥。</description>
+    <jobString>正在塑造终极奶牛人格...</jobString>
+    <workAmount>3500</workAmount>
+    <workSpeedStat>GeneralLaborSpeed</workSpeedStat>
+    <effectWorking>Sculpt</effectWorking>
+    <soundWorking>Recipe_Sculpt</soundWorking>
+
+    <hediffToAdd>SSC_Hediff_Cow_Final</hediffToAdd>
+    <severity>1.00</severity>
+    <filterIfTagExists>true</filterIfTagExists>
+    <requireSpecializationType>Cow</requireSpecializationType>
+    <requireSpecializationComplete>true</requireSpecializationComplete>
+    <exclusiveTags>
+      <li>SSC_Hediff_Cow_Final</li>
+    </exclusiveTags>
+
+    <recipeUsers>
+      <li>TableSculpting</li>
+    </recipeUsers>
+
+    <researchPrerequisite>SSC_RES_CowTraining</researchPrerequisite>
+
+    <ingredients>
+      <li>
+        <filter>
+          <thingDefs>
+            <li>SSC_PersonalitySlime</li>
+            <li>SSC_PersonalitySlime_PLUS</li>
+            <li>SSC_PersonalitySlime_ULTRA</li>
+            <li>SSC_PersonalitySlime_PLUS_ULTRA</li>
+            <li>SSC_PersonalitySlime_Edited</li>
+            <li>SSC_PersonalitySlime_PLUS_Edited</li>
+            <li>SSC_PersonalitySlime_ULTRA_Edited</li>
+            <li>SSC_PersonalitySlime_PLUS_ULTRA_Edited</li>
+          </thingDefs>
+        </filter>
+        <count>1</count>
+      </li>
+    </ingredients>
+
+    <fixedIngredientFilter>
+      <thingDefs>
+        <li>SSC_PersonalitySlime</li>
+        <li>SSC_PersonalitySlime_PLUS</li>
+        <li>SSC_PersonalitySlime_ULTRA</li>
+        <li>SSC_PersonalitySlime_PLUS_ULTRA</li>
+        <li>SSC_PersonalitySlime_Edited</li>
+        <li>SSC_PersonalitySlime_PLUS_Edited</li>
+        <li>SSC_PersonalitySlime_ULTRA_Edited</li>
+        <li>SSC_PersonalitySlime_PLUS_ULTRA_Edited</li>
+      </thingDefs>
+    </fixedIngredientFilter>
+
+    <workerClass>SexSlaveCraft.Recipe_PSTagWorker</workerClass>
+  </RecipeDef>
+
+  <RecipeDef Class="SexSlaveCraft.RecipeDef_PSTag">
+    <defName>SSC_PSEdit_PetCat_Final</defName>
+    <label>性奴特化（终极宠物猫）</label>
+    <description>将已经完成宠物猫特化的人格凝胶进一步塑形为终极宠物猫状态。该配方只接受宠物猫特化达到 100% 且带有宠物猫基础状态的材料。</description>
+    <jobString>正在塑造终极宠物猫人格...</jobString>
+    <workAmount>3500</workAmount>
+    <workSpeedStat>GeneralLaborSpeed</workSpeedStat>
+    <effectWorking>Sculpt</effectWorking>
+    <soundWorking>Recipe_Sculpt</soundWorking>
+
+    <hediffToAdd>SSC_Hediff_PetCat_Final</hediffToAdd>
+    <severity>1.00</severity>
+    <filterIfTagExists>true</filterIfTagExists>
+    <requireSpecializationType>PetCat</requireSpecializationType>
+    <requireSpecializationComplete>true</requireSpecializationComplete>
+    <exclusiveTags>
+      <li>SSC_Hediff_PetCat_Final</li>
+    </exclusiveTags>
+
+    <recipeUsers>
+      <li>TableSculpting</li>
+    </recipeUsers>
+
+    <researchPrerequisite>SSC_RES_PetCat</researchPrerequisite>
+
+    <ingredients>
+      <li>
+        <filter>
+          <thingDefs>
+            <li>SSC_PersonalitySlime</li>
+            <li>SSC_PersonalitySlime_PLUS</li>
+            <li>SSC_PersonalitySlime_ULTRA</li>
+            <li>SSC_PersonalitySlime_PLUS_ULTRA</li>
+            <li>SSC_PersonalitySlime_Edited</li>
+            <li>SSC_PersonalitySlime_PLUS_Edited</li>
+            <li>SSC_PersonalitySlime_ULTRA_Edited</li>
+            <li>SSC_PersonalitySlime_PLUS_ULTRA_Edited</li>
+          </thingDefs>
+        </filter>
+        <count>1</count>
+      </li>
+    </ingredients>
+
+    <fixedIngredientFilter>
+      <thingDefs>
+        <li>SSC_PersonalitySlime</li>
+        <li>SSC_PersonalitySlime_PLUS</li>
+        <li>SSC_PersonalitySlime_ULTRA</li>
+        <li>SSC_PersonalitySlime_PLUS_ULTRA</li>
+        <li>SSC_PersonalitySlime_Edited</li>
+        <li>SSC_PersonalitySlime_PLUS_Edited</li>
+        <li>SSC_PersonalitySlime_ULTRA_Edited</li>
+        <li>SSC_PersonalitySlime_PLUS_ULTRA_Edited</li>
+      </thingDefs>
+    </fixedIngredientFilter>
+
+    <workerClass>SexSlaveCraft.Recipe_PSTagWorker</workerClass>
+  </RecipeDef>
+
+  <RecipeDef Class="SexSlaveCraft.RecipeDef_PSTag">
+    <defName>SSC_PSEdit_PetDog_Final</defName>
+    <label>性奴特化（终极宠物狗）</label>
+    <description>将已经完成宠物狗特化的人格凝胶进一步塑形为终极宠物狗状态。该配方只接受宠物狗特化达到 100% 且带有宠物狗基础状态的材料。</description>
+    <jobString>正在塑造终极宠物狗人格...</jobString>
+    <workAmount>3500</workAmount>
+    <workSpeedStat>GeneralLaborSpeed</workSpeedStat>
+    <effectWorking>Sculpt</effectWorking>
+    <soundWorking>Recipe_Sculpt</soundWorking>
+
+    <hediffToAdd>SSC_Hediff_PetDog_Final</hediffToAdd>
+    <severity>1.00</severity>
+    <filterIfTagExists>true</filterIfTagExists>
+    <requireSpecializationType>PetDog</requireSpecializationType>
+    <requireSpecializationComplete>true</requireSpecializationComplete>
+    <exclusiveTags>
+      <li>SSC_Hediff_PetDog_Final</li>
+    </exclusiveTags>
+
+    <recipeUsers>
+      <li>TableSculpting</li>
+    </recipeUsers>
+
+    <researchPrerequisite>SSC_RES_PetDog</researchPrerequisite>
+
+    <ingredients>
+      <li>
+        <filter>
+          <thingDefs>
+            <li>SSC_PersonalitySlime</li>
+            <li>SSC_PersonalitySlime_PLUS</li>
+            <li>SSC_PersonalitySlime_ULTRA</li>
+            <li>SSC_PersonalitySlime_PLUS_ULTRA</li>
+            <li>SSC_PersonalitySlime_Edited</li>
+            <li>SSC_PersonalitySlime_PLUS_Edited</li>
+            <li>SSC_PersonalitySlime_ULTRA_Edited</li>
+            <li>SSC_PersonalitySlime_PLUS_ULTRA_Edited</li>
+          </thingDefs>
+        </filter>
+        <count>1</count>
+      </li>
+    </ingredients>
+
+    <fixedIngredientFilter>
+      <thingDefs>
+        <li>SSC_PersonalitySlime</li>
+        <li>SSC_PersonalitySlime_PLUS</li>
+        <li>SSC_PersonalitySlime_ULTRA</li>
+        <li>SSC_PersonalitySlime_PLUS_ULTRA</li>
+        <li>SSC_PersonalitySlime_Edited</li>
+        <li>SSC_PersonalitySlime_PLUS_Edited</li>
+        <li>SSC_PersonalitySlime_ULTRA_Edited</li>
+        <li>SSC_PersonalitySlime_PLUS_ULTRA_Edited</li>
+      </thingDefs>
+    </fixedIngredientFilter>
+
+    <workerClass>SexSlaveCraft.Recipe_PSTagWorker</workerClass>
+  </RecipeDef>
+
+  <RecipeDef Class="SexSlaveCraft.RecipeDef_PSTag">
+    <defName>SSC_PSEdit_PetRabbit_Final</defName>
+    <label>性奴特化（终极宠物兔）</label>
+    <description>将已经完成宠物兔特化的人格凝胶进一步塑形为终极宠物兔状态。该配方只接受宠物兔特化达到 100% 且带有宠物兔基础状态的材料。</description>
+    <jobString>正在塑造终极宠物兔人格...</jobString>
+    <workAmount>3500</workAmount>
+    <workSpeedStat>GeneralLaborSpeed</workSpeedStat>
+    <effectWorking>Sculpt</effectWorking>
+    <soundWorking>Recipe_Sculpt</soundWorking>
+
+    <hediffToAdd>SSC_Hediff_PetRabbit_Final</hediffToAdd>
+    <severity>1.00</severity>
+    <filterIfTagExists>true</filterIfTagExists>
+    <requireSpecializationType>PetRabbit</requireSpecializationType>
+    <requireSpecializationComplete>true</requireSpecializationComplete>
+    <exclusiveTags>
+      <li>SSC_Hediff_PetRabbit_Final</li>
+    </exclusiveTags>
+
+    <recipeUsers>
+      <li>TableSculpting</li>
+    </recipeUsers>
+
+    <researchPrerequisite>SSC_RES_PetRabbit</researchPrerequisite>
+
+    <ingredients>
+      <li>
+        <filter>
+          <thingDefs>
+            <li>SSC_PersonalitySlime</li>
+            <li>SSC_PersonalitySlime_PLUS</li>
+            <li>SSC_PersonalitySlime_ULTRA</li>
+            <li>SSC_PersonalitySlime_PLUS_ULTRA</li>
+            <li>SSC_PersonalitySlime_Edited</li>
+            <li>SSC_PersonalitySlime_PLUS_Edited</li>
+            <li>SSC_PersonalitySlime_ULTRA_Edited</li>
+            <li>SSC_PersonalitySlime_PLUS_ULTRA_Edited</li>
+          </thingDefs>
+        </filter>
+        <count>1</count>
+      </li>
+    </ingredients>
+
+    <fixedIngredientFilter>
+      <thingDefs>
+        <li>SSC_PersonalitySlime</li>
+        <li>SSC_PersonalitySlime_PLUS</li>
+        <li>SSC_PersonalitySlime_ULTRA</li>
+        <li>SSC_PersonalitySlime_PLUS_ULTRA</li>
+        <li>SSC_PersonalitySlime_Edited</li>
+        <li>SSC_PersonalitySlime_PLUS_Edited</li>
+        <li>SSC_PersonalitySlime_ULTRA_Edited</li>
+        <li>SSC_PersonalitySlime_PLUS_ULTRA_Edited</li>
+      </thingDefs>
+    </fixedIngredientFilter>
+
+    <workerClass>SexSlaveCraft.Recipe_PSTagWorker</workerClass>
+  </RecipeDef>
+
+</Defs>

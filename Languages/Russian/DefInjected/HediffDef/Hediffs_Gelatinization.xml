@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <Hediff_GelatinizationTemporary.label>Полуgelatinизация в процессе</Hediff_GelatinizationTemporary.label>
+  <Hediff_GelatinizationTemporary.labelNoun>Лечение полуgelatinизацией</Hediff_GelatinizationTemporary.labelNoun>
+  <Hediff_GelatinizationTemporary.description>Конечность проходит полуgelatinизацию. Адаптация и тяжесть соревнуются друг с другом: если адаптация достигнет 100% первой, конечность станет gelatinизированным протезом; если тяжесть достигнет 100% первой — конечность будет уничтожена.</Hediff_GelatinizationTemporary.description>
+  <Hediff_GelatinizedArm.label>Gelatinизированная рука</Hediff_GelatinizedArm.label>
+  <Hediff_GelatinizedArm.labelNoun>Gelatinизированная рука</Hediff_GelatinizedArm.labelNoun>
+  <Hediff_GelatinizedArm.description>Рука модифицирована в полуgelatinизированный протез, дающий дополнительную силу и гибкость.</Hediff_GelatinizedArm.description>
+  <Hediff_GelatinizedLeg.label>Gelatinизированная нога</Hediff_GelatinizedLeg.label>
+  <Hediff_GelatinizedLeg.labelNoun>Gelatinизированная нога</Hediff_GelatinizedLeg.labelNoun>
+  <Hediff_GelatinizedLeg.description>Нога модифицирована в полуgelatinизированный протез, дающий дополнительную скорость передвижения и защиту.</Hediff_GelatinizedLeg.description>
+  <SSC_FullGelatinizationTemporary.label>Полная gelatinизация в процессе</SSC_FullGelatinizationTemporary.label>
+  <SSC_FullGelatinizationTemporary.labelNoun>Полная gelatinизация</SSC_FullGelatinizationTemporary.labelNoun>
+  <SSC_FullGelatinizationTemporary.description>Всё тело проходит gelatinизированную перестройку. Адаптация и тяжесть продолжают соревноваться: если адаптация достигнет 100% первой — полное завершение; если тяжесть достигнет 100% первой — тело полностью разрушается.</SSC_FullGelatinizationTemporary.description>
+  <SSC_FullGelatinizedBody.label>Полная gelatinизация завершена</SSC_FullGelatinizedBody.label>
+  <SSC_FullGelatinizedBody.labelNoun>Полностью gelatinизированное тело</SSC_FullGelatinizedBody.labelNoun>
+  <SSC_FullGelatinizedBody.description>Это тело завершило полную gelatinизированную перестройку. За исключением состояния органов RJW, прежние физические повреждения смываются, остаётся лишь стабилизированная gelatinизированная форма.</SSC_FullGelatinizedBody.description>
+  <SSC_FullGelatinizedBody.stages.0.label>Gelatinовая оболочка</SSC_FullGelatinizedBody.stages.0.label>
+</LanguageData>

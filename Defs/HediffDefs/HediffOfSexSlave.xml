@@ -1,0 +1,137 @@
+<Defs>
+
+  <HediffDef>
+    <defName>Hediff_ChainOfSexSlave</defName>
+    <label>性奴之锁链</label>
+    <description>刻印在小腹上的复杂淫纹。虽然外表只是个色情的纹身，但它实际上是一根无形的锁链，能直接将主人的意志传输到奴隶的神经系统中，强制调节奴隶的身体机能。</description>
+    <hediffClass>SexSlaveCraft.Hediff_ChainOfSexSlave</hediffClass>
+    
+    <isBad>false</isBad>
+    <tendable>false</tendable>
+    <everCurableByItem>false</everCurableByItem>
+    <initialSeverity>0.2</initialSeverity>
+    
+    <renderNodeProperties>
+      <li>
+        <workerClass>PawnRenderNodeWorker_AttachmentBody</workerClass>
+        <texPath>Things/Pawn/Hediff/yinwen</texPath> 
+        <overrideMeshSize>(1.5, 1.5)</overrideMeshSize> 
+        <baseLayer>1</baseLayer>
+        <parentTagDef>Body</parentTagDef>
+        <rotDrawMode>Fresh</rotDrawMode>
+      </li>
+    </renderNodeProperties>
+    
+
+    <stages>
+      <li>
+        <label>见习性奴</label>
+        <minSeverity>0.1</minSeverity>
+        <capMods>
+          <li><capacity>Consciousness</capacity><offset>-0.3</offset></li>
+          <li><capacity>Talking</capacity><offset>-0.3</offset></li>
+          <li><capacity>Manipulation</capacity><offset>-0.3</offset></li>
+        </capMods>
+        <statFactors>
+            <MarketValue>0.9</MarketValue>
+        </statFactors>
+        <makeImmuneTo>
+           <li>PNA_Addiction</li>
+        </makeImmuneTo>
+      </li>
+
+      <li>
+        <label>性奴</label>
+        <minSeverity>0.3</minSeverity>
+        <capMods>
+          <li><capacity>Consciousness</capacity><offset>-0.2</offset></li>
+          <li><capacity>Talking</capacity><offset>-0.2</offset></li>
+          <li><capacity>Manipulation</capacity><offset>-0.1</offset></li>
+        </capMods>
+        <statFactors>
+            <MarketValue>0.8</MarketValue>
+        </statFactors>
+        <makeImmuneTo>
+           <li>PNA_Addiction</li>
+        </makeImmuneTo>
+      </li>
+
+      <li>
+        <label>屈服性奴</label>
+        <minSeverity>0.5</minSeverity>
+        <capMods>
+          <li><capacity>Consciousness</capacity><offset>0.1</offset></li>
+          <li><capacity>Talking</capacity><offset>0.1</offset></li>
+        </capMods>
+        <statFactors>
+            <MarketValue>0.7</MarketValue>
+        </statFactors>
+        <makeImmuneTo>
+           <li>PNA_Addiction</li>
+        </makeImmuneTo>
+      </li>
+
+      <li>
+        <label>肉便器化</label>
+        <minSeverity>0.9</minSeverity>
+        <capMods>
+          <li><capacity>Consciousness</capacity><offset>0.3</offset></li>
+          <li><capacity>Talking</capacity><offset>0.3</offset></li>
+          <li><capacity>Manipulation</capacity><offset>0.2</offset></li>
+        </capMods>
+        <statFactors>
+            <MarketValue>0.5</MarketValue>
+        </statFactors>
+        <makeImmuneTo>
+           <li>PNA_Addiction</li>
+        </makeImmuneTo>
+      </li>
+    </stages>
+  </HediffDef>
+
+  <ThoughtDef>
+    <defName>Hediff_ChainOfSexSlave_Thought</defName>
+    <workerClass>ThoughtWorker_Hediff</workerClass>
+    <hediff>Hediff_ChainOfSexSlave</hediff>
+    <validWhileDespawned>true</validWhileDespawned>
+    <stages>
+      
+      <li>
+        <label>烙印（疼痛）</label>
+        <description>小腹上的纹身烫得吓人...明明那里什么都没有，却感觉像是有千斤重的铁链死死拴在我的子宫上。每当我想反抗，小腹就会传来一阵沉重的坠胀感，把整个人往下拉，重得我根本迈不开腿...</description>
+        <baseMoodEffect>-10</baseMoodEffect>
+      </li>
+
+      <li>
+        <label>烙印（适应）</label>
+        <description>那股热度一直盘踞在小腹上，时刻提醒着我它的存在。只要一动脑子，那个淫纹就会收紧，像是一只无形的手狠狠攥住了我的内脏。我已经...没力气去思考多余的事情了...</description>
+        <baseMoodEffect>-5</baseMoodEffect>
+      </li>
+
+      <li>
+        <label>烙印（熟悉）</label>
+        <description>好奇怪...现在只要顺着小腹上那个纹身指示的方向走，身体就会变得很轻盈。就像有人牵着那根看不见的锁链在给我带路一样，那种被人掌控着子宫往前走的感觉...竟然让我很安心。</description>
+        <baseMoodEffect>3</baseMoodEffect>
+      </li>
+
+      <li>
+        <label>对主人完全臣服</label>
+        <description>啊❤...纹章亮起来了...主人的命令直接变成了酥麻的电流窜过了小腹！我是被拴住的玩偶，只要那个淫纹一烫，我就知道该摆什么姿势了...脑子融化了，只剩下好舒服的感觉❤！</description>
+        <baseMoodEffect>12</baseMoodEffect>
+      </li>
+
+    </stages>
+  </ThoughtDef>
+
+
+  <HediffDef>
+    <defName>Hediff_BridleOfSexSlave</defName>
+    <label>锁链之握柄</label>
+    <description>作为Master的象征</description>
+    <hediffClass>SexSlaveCraft.Hediff_BridleOfSexSlave</hediffClass>
+    <isBad>false</isBad>
+    <tendable>false</tendable>
+    <everCurableByItem>false</everCurableByItem>
+    <initialSeverity>1.0</initialSeverity>
+  </HediffDef>
+</Defs>

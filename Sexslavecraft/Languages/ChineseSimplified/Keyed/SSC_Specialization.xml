@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <SSC_ITab_SpecializationPetCat>宠物猫</SSC_ITab_SpecializationPetCat>
+  <SSC_ITab_SpecializationPetDog>宠物狗</SSC_ITab_SpecializationPetDog>
+  <SSC_ITab_SpecializationPetRabbit>宠物兔</SSC_ITab_SpecializationPetRabbit>
+
+  <SSC_ITab_SelectSpecializationPetCat>选择宠物猫专精</SSC_ITab_SelectSpecializationPetCat>
+  <SSC_ITab_SelectSpecializationPetDog>选择宠物狗专精</SSC_ITab_SelectSpecializationPetDog>
+  <SSC_ITab_SelectSpecializationPetRabbit>选择宠物兔专精</SSC_ITab_SelectSpecializationPetRabbit>
+
+  <SSC_ITab_SpecializationPetDisabledResearch>需要完成对应宠物研究</SSC_ITab_SpecializationPetDisabledResearch>
+  <SSC_ITab_SpecializationPetDisabledMissingRequirements>不满足宠物专精条件</SSC_ITab_SpecializationPetDisabledMissingRequirements>
+  <SSC_ITab_RabbitReproductionMode>兔生育模式：{0}</SSC_ITab_RabbitReproductionMode>
+  <SSC_ITab_RabbitReproductionOffspring>后代模式</SSC_ITab_RabbitReproductionOffspring>
+  <SSC_ITab_RabbitReproductionClone>分身模式</SSC_ITab_RabbitReproductionClone>
+  <SSC_ITab_SelectRabbitReproductionOffspring>后代模式：按普通生育产生后代</SSC_ITab_SelectRabbitReproductionOffspring>
+  <SSC_ITab_SelectRabbitReproductionClone>分身模式：生产时优先生成兔分身</SSC_ITab_SelectRabbitReproductionClone>
+
+  <SSC_Message_PetSpecializationUnlocked>{0} 的 {1} 专精开始稳定成型。</SSC_Message_PetSpecializationUnlocked>
+
+  <SSC_PetAffectionGizmoLabel>亲昵主人</SSC_PetAffectionGizmoLabel>
+  <SSC_PetAffectionGizmoDesc>向主人 {0} 做出亲昵动作，使主人获得短暂心情加成。</SSC_PetAffectionGizmoDesc>
+  <SSC_PetAffectionNoMaster>没有可亲昵的主人</SSC_PetAffectionNoMaster>
+  <SSC_PetAffectionNotPet>只有宠物专精角色可以亲昵主人</SSC_PetAffectionNotPet>
+  <SSC_PetAffectionCooldown>亲昵动作冷却中：{0}</SSC_PetAffectionCooldown>
+  <SSC_Message_PetAffection>{0} 向主人 {1} 做出了亲昵动作。</SSC_Message_PetAffection>
+  <SSC_Message_RabbitCloneBirth>{0} 产出了兔分身 {1}。</SSC_Message_RabbitCloneBirth>
+  <SSC_Message_DogAnimalInteractionTriggered>{0} 与 {1} 的动物互动被触发。</SSC_Message_DogAnimalInteractionTriggered>
+</LanguageData>

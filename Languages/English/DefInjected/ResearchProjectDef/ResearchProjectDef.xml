@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <SSC_RES_BasicTraining.label>Training</SSC_RES_BasicTraining.label>
+  <SSC_RES_BasicTraining.description>Study surviving training manuals to learn practical training methods.</SSC_RES_BasicTraining.description>
+  <SSC_RES_BodyPartTraining.label>Body-part Training</SSC_RES_BodyPartTraining.label>
+  <SSC_RES_BodyPartTraining.description>Study targeted training methods for specific body parts, granting bonuses through training.</SSC_RES_BodyPartTraining.description>
+  <SSC_RES_PNASimpleApp.label>Basic PNA Application</SSC_RES_PNASimpleApp.label>
+  <SSC_RES_PNASimpleApp.description>Unlocks injection surgeries.</SSC_RES_PNASimpleApp.description>
+  <SSC_RES_SexChange.label>Sex Reassignment Surgery (Male to Female)</SSC_RES_SexChange.label>
+  <SSC_RES_SexChange.description>Turns men into women (not implemented, and planned to include cosmetic surgery).</SSC_RES_SexChange.description>
+  <SSC_RES_Femboy.label>Femboy Conversion</SSC_RES_Femboy.label>
+  <SSC_RES_Femboy.description>Turns men into femboys (not implemented).</SSC_RES_Femboy.description>
+  <SSC_RES_PNASimpleLauncher.label>Basic PNA Launcher</SSC_RES_PNASimpleLauncher.label>
+  <SSC_RES_PNAConcentration.label>PNA Concentration Technology</SSC_RES_PNAConcentration.label>
+  <SSC_RES_PE.label>Personality Excretion</SSC_RES_PE.label>
+  <SSC_RES_SlaveSpecialization.label>Personality Editing (currently Public Use only)</SSC_RES_SlaveSpecialization.label>
+  <SSC_RES_SlaveSpecialization.description>Research specialization paths for sex slaves.</SSC_RES_SlaveSpecialization.description>
+  <SSC_RES_CowTraining.label>Milking Specialization</SSC_RES_CowTraining.label>
+  <SSC_RES_CowTraining.description>Gives sex slaves higher milk output and makes them more suitable for sex work.</SSC_RES_CowTraining.description>
+  <SSC_RES_PublicUse.label>Public Use</SSC_RES_PublicUse.label>
+  <SSC_RES_PublicUse.description>Makes sex slaves more suitable for sex work and social work.</SSC_RES_PublicUse.description>
+  <SSC_RES_PetCat.label>Pet: Cat</SSC_RES_PetCat.label>
+  <SSC_RES_PetCat.description>Turns a sex slave into a catgirl.</SSC_RES_PetCat.description>
+  <SSC_RES_Combatant.label>Combat Unit</SSC_RES_Combatant.label>
+  <SSC_RES_Combatant.description>Special training creates combat slaves who obey orders absolutely on the battlefield.</SSC_RES_Combatant.description>
+  <SSC_RES_PetDog.label>Pet: Dog</SSC_RES_PetDog.label>
+  <SSC_RES_PetDog.description>Turns a sex slave into a doggirl.</SSC_RES_PetDog.description>
+  <SSC_RES_PetRabbit.label>Pet: Rabbit</SSC_RES_PetRabbit.label>
+  <SSC_RES_PetRabbit.description>Turns a sex slave into a bunnygirl.</SSC_RES_PetRabbit.description>
+  <SSC_RES_GelatinizationPartial.label>Partial Gelatinization</SSC_RES_GelatinizationPartial.label>
+  <SSC_RES_GelatinizationPartial.description>Preliminary gelatinization modification.</SSC_RES_GelatinizationPartial.description>
+  <SSC_RES_GelatinizationFull.label>Full-body Gelatinization</SSC_RES_GelatinizationFull.label>
+  <SSC_RES_GelatinizationFull.description>A complete morphological transformation.</SSC_RES_GelatinizationFull.description>
+</LanguageData>

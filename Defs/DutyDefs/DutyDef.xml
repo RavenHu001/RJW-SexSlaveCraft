@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <DutyDef>
+    <defName>SSC_BindingRitualDuty</defName>
+    <thinkNode Class="ThinkNode_Priority">
+      <subNodes>
+        <li Class="SexSlaveCraft.JobGiver_RitualBinding" />
+      </subNodes>
+    </thinkNode>
+  </DutyDef>
+
+  <DutyDef>
+    <defName>SSC_SlaveWaitDuty</defName>
+    <thinkNode Class="ThinkNode_Priority">
+      <subNodes>
+        <li Class="SexSlaveCraft.JobGiver_SlaveKeepJob" />
+      </subNodes>
+    </thinkNode>
+  </DutyDef>
+</Defs>

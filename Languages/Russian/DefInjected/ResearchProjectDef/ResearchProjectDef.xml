@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <SSC_RES_BasicTraining.label>Дрессировка</SSC_RES_BasicTraining.label>
+  <SSC_RES_BasicTraining.description>Изучение выживших руководств по дрессировке для освоения практических методов.</SSC_RES_BasicTraining.description>
+  <SSC_RES_BodyPartTraining.label>Дрессировка частей тела</SSC_RES_BodyPartTraining.label>
+  <SSC_RES_BodyPartTraining.description>Изучение целенаправленных методов дрессировки отдельных частей тела, дающих бонусы через тренировку.</SSC_RES_BodyPartTraining.description>
+  <SSC_RES_PNASimpleApp.label>Базовое применение PNA</SSC_RES_PNASimpleApp.label>
+  <SSC_RES_PNASimpleApp.description>Открывает инъекционные операции.</SSC_RES_PNASimpleApp.description>
+  <SSC_RES_SexChange.label>Операция смены пола (мужчина → женщина)</SSC_RES_SexChange.label>
+  <SSC_RES_SexChange.description>Превращает мужчин в женщин (не реализовано; планируется включить косметическую хирургию).</SSC_RES_SexChange.description>
+  <SSC_RES_Femboy.label>Превращение в femboy</SSC_RES_Femboy.label>
+  <SSC_RES_Femboy.description>Превращает мужчин в femboy (не реализовано).</SSC_RES_Femboy.description>
+  <SSC_RES_PNASimpleLauncher.label>Базовый PNA-лаунчер</SSC_RES_PNASimpleLauncher.label>
+  <SSC_RES_PNAConcentration.label>Технология концентрации PNA</SSC_RES_PNAConcentration.label>
+  <SSC_RES_PE.label>Экскреция личности</SSC_RES_PE.label>
+  <SSC_RES_SlaveSpecialization.label>Редактирование личности (пока только «Общественное пользование»)</SSC_RES_SlaveSpecialization.label>
+  <SSC_RES_SlaveSpecialization.description>Исследование путей специализации секс-рабов.</SSC_RES_SlaveSpecialization.description>
+  <SSC_RES_CowTraining.label>Специализация «Дойная корова»</SSC_RES_CowTraining.label>
+  <SSC_RES_CowTraining.description>Даёт секс-рабам повышенный выход молока и делает их более подходящими для секс-работы.</SSC_RES_CowTraining.description>
+  <SSC_RES_PublicUse.label>Общественное пользование</SSC_RES_PublicUse.label>
+  <SSC_RES_PublicUse.description>Делает секс-рабов более подходящими для секс-работы и социальной деятельности.</SSC_RES_PublicUse.description>
+  <SSC_RES_PetCat.label>Питомец: кошка</SSC_RES_PetCat.label>
+  <SSC_RES_PetCat.description>Превращает секс-раба в catgirl.</SSC_RES_PetCat.description>
+  <SSC_RES_Combatant.label>Боевая единица</SSC_RES_Combatant.label>
+  <SSC_RES_Combatant.description>Специальная дрессировка создаёт боевых рабов, которые на поле боя абсолютно подчиняются приказам.</SSC_RES_Combatant.description>
+  <SSC_RES_PetDog.label>Питомец: собака</SSC_RES_PetDog.label>
+  <SSC_RES_PetDog.description>Превращает секс-раба в doggirl.</SSC_RES_PetDog.description>
+  <SSC_RES_PetRabbit.label>Питомец: кролик</SSC_RES_PetRabbit.label>
+  <SSC_RES_PetRabbit.description>Превращает секс-раба в bunnygirl.</SSC_RES_PetRabbit.description>
+  <SSC_RES_GelatinizationPartial.label>Частичная gelatinизация</SSC_RES_GelatinizationPartial.label>
+  <SSC_RES_GelatinizationPartial.description>Предварительная gelatinизационная модификация.</SSC_RES_GelatinizationPartial.description>
+  <SSC_RES_GelatinizationFull.label>Полная gelatinизация тела</SSC_RES_GelatinizationFull.label>
+  <SSC_RES_GelatinizationFull.description>Полная морфологическая трансформация.</SSC_RES_GelatinizationFull.description>
+</LanguageData>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <ThoughtDef>
+    <defName>SSC_Training_MoodDynamic</defName>
+    <durationDays>1</durationDays>
+    <stackLimit>3</stackLimit>
+    <stages>
+      <li>
+        <label>training aftereffect (resentment)</label>
+        <description>What happened just now made me feel sick. Whenever I think of that person, the lingering discomfort rises again.</description>
+        <baseMoodEffect>-10</baseMoodEffect>
+      </li>
+      <li>
+        <label>training aftereffect (wavering)</label>
+        <description>I should be disgusted, yet what just happened did not seem quite as awful as I had imagined.</description>
+        <baseMoodEffect>2</baseMoodEffect>
+      </li>
+      <li>
+        <label>training aftereffect (adaptation)</label>
+        <description>My body seems to be growing accustomed to that feeling. Looking back, I can no longer deny the faint pleasure it left behind.</description>
+        <baseMoodEffect>8</baseMoodEffect>
+      </li>
+      <li>
+        <label>training aftereffect (submission)</label>
+        <description>Ohhh... Just remembering it is enough to make my mind go completely blank...</description>
+        <baseMoodEffect>15</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+  <ThoughtDef>
+    <defName>SSC_Training_OpinionDynamic</defName>
+    <thoughtClass>SexSlaveCraft.Thought_MemoryDynamicTraining</thoughtClass>
+    <durationDays>15</durationDays>
+    <stackLimit>40</stackLimit>
+    <stackLimitForSameOtherPawn>40</stackLimitForSameOtherPawn>
+    <showBubble>true</showBubble>
+    <stages>
+      <li>
+        <label>training memory</label>
+        <description>This training changed how I feel about {0}.</description>
+        <baseOpinionOffset>1</baseOpinionOffset>
+      </li>
+    </stages>
+  </ThoughtDef>
+</Defs>

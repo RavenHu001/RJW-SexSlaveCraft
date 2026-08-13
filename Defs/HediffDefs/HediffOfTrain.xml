@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+<HediffDef Name="SSC_TrainingExpBase" Abstract="True">
+    <hediffClass>HediffWithComps</hediffClass>
+    <defaultLabelColor>(255, 105, 180)</defaultLabelColor>
+    <isBad>false</isBad>
+    <tendable>false</tendable>
+    <everCurableByItem>false</everCurableByItem>
+    <makesAlert>false</makesAlert>
+    <keepOnBodyPartRestoration>true</keepOnBodyPartRestoration>
+    <initialSeverity>0.01</initialSeverity>
+    <maxSeverity>1.0</maxSeverity>
+    
+    <stages>
+      <li>
+        <minSeverity>0</minSeverity>
+        <label>开发中</label>
+      </li>
+      <li>
+        <minSeverity>0.3</minSeverity>
+        <label>熟练</label>
+      </li>
+      <li>
+        <minSeverity>0.7</minSeverity>
+        <label>敏感</label>
+      </li>
+      <li>
+        <minSeverity>1.0</minSeverity>
+        <label>完全恶堕</label>
+      </li>
+    </stages>
+  </HediffDef>
+
+ <HediffDef ParentName="SSC_TrainingExpBase">
+    <defName>SSC_Exp_Hand</defName>
+    <label>恶堕化（手）</label>
+    <description>得益于炒饭智能的纳米微械，在多次色色的加持下，手上已经出现纳米微械的刻印。这双被强化的手不仅极其灵巧，在握持武器时还能提供非人的稳定性和拔枪速度。</description>
+    <stages Inherit="False">
+      <li>
+        <minSeverity>0</minSeverity>
+        <label>开发中</label>
+      </li>
+      <li>
+        <minSeverity>0.3</minSeverity>
+        <label>熟练</label>
+        <capMods>
+          <li><capacity>Manipulation</capacity><offset>0.05</offset></li>
+        </capMods>
+        <statOffsets>
+          <ShootingAccuracyPawn>0.03</ShootingAccuracyPawn>
+        </statOffsets>
+        <statFactors>
+          <WorkSpeedGlobal>1.10</WorkSpeedGlobal>
+          <MeleeWeapon_CooldownMultiplier>0.95</MeleeWeapon_CooldownMultiplier>
+          <AimingDelayFactor>0.95</AimingDelayFactor>
+        </statFactors>
+      </li>
+      <li>
+        <minSeverity>0.7</minSeverity>
+        <label>敏感</label>
+        <capMods>
+          <li><capacity>Manipulation</capacity><offset>0.10</offset></li>
+        </capMods>
+        <statOffsets>
+          <ShootingAccuracyPawn>0.06</ShootingAccuracyPawn>
+        </statOffsets>
+        <statFactors>
+          <WorkSpeedGlobal>1.15</WorkSpeedGlobal>
+          <MeleeWeapon_CooldownMultiplier>0.90</MeleeWeapon_CooldownMultiplier>
+          <AimingDelayFactor>0.90</AimingDelayFactor>
+        </statFactors>
+      </li>
+      <li>
+        <minSeverity>1.0</minSeverity>
+        <label>刻印恶堕化</label>
+        <capMods>
+          <li><capacity>Manipulation</capacity><offset>0.20</offset></li>
+        </capMods>
+        <statOffsets>
+          <ShootingAccuracyPawn>0.10</ShootingAccuracyPawn>
+        </statOffsets>
+        <statFactors>
+          <WorkSpeedGlobal>1.25</WorkSpeedGlobal>
+          <MeleeWeapon_CooldownMultiplier>0.80</MeleeWeapon_CooldownMultiplier>
+          <AimingDelayFactor>0.80</AimingDelayFactor>
+        </statFactors>
+      </li>
+    </stages>
+  </HediffDef>
+
+  <HediffDef ParentName="SSC_TrainingExpBase">
+    <defName>SSC_Exp_Oral</defName>
+    <label>恶堕化（口）</label>
+    <description>得益于炒饭智能的纳米微械，口部已经出现紫色的刻印。不仅舌头极其灵活，其散发出的微量信息素能极大影响他人的潜意识，成为最强力的外交武器。</description>
+    <stages Inherit="False">
+      <li>
+        <minSeverity>0</minSeverity>
+        <label>初步开发</label>
+      </li>
+      <li>
+        <minSeverity>0.3</minSeverity>
+        <label>熟练</label>
+        <capMods>
+          <li><capacity>Talking</capacity><offset>0.10</offset></li>
+        </capMods>
+        <statFactors>
+          <SocialImpact>1.15</SocialImpact>
+        </statFactors>
+      </li>
+      <li>
+        <minSeverity>0.7</minSeverity>
+        <label>敏感</label>
+        <capMods>
+          <li><capacity>Talking</capacity><offset>0.20</offset></li>
+        </capMods>
+        <statFactors>
+          <SocialImpact>1.30</SocialImpact>
+        </statFactors>
+        <statOffsets>
+          <TradePriceImprovement>0.05</TradePriceImprovement>
+          <NegotiationAbility>0.10</NegotiationAbility>
+        </statOffsets>
+      </li>
+      <li>
+        <minSeverity>1.0</minSeverity>
+        <label>刻印恶堕化</label>
+        <capMods>
+          <li><capacity>Talking</capacity><offset>0.35</offset></li>
+        </capMods>
+        <statFactors>
+          <SocialImpact>1.50</SocialImpact> </statFactors>
+        <statOffsets>
+          <PawnBeauty>1</PawnBeauty> 
+          <ConversionPower>0.25</ConversionPower>
+          <TradePriceImprovement>0.15</TradePriceImprovement> <NegotiationAbility>0.25</NegotiationAbility> </statOffsets>
+      </li>
+    </stages>
+  </HediffDef> 
+
+  <HediffDef ParentName="SSC_TrainingExpBase">
+    <defName>SSC_Exp_Foot</defName>
+    <label>恶堕化（脚）</label>
+    <description>得益于炒饭智能的纳米微械，脚上已经出现刻印。其步伐变得轻盈且富有诱惑力，在获得极限闪避本能的同时，躯干的微械强化使得负重能力大幅提升。</description>
+    <stages Inherit="False">
+      <li>
+        <minSeverity>0</minSeverity>
+        <label>开发中</label>
+      </li>
+      <li>
+        <minSeverity>0.3</minSeverity>
+        <label>熟练</label>
+        <capMods>
+          <li><capacity>Moving</capacity><offset>0.05</offset></li>
+        </capMods>
+        <statOffsets>
+          <MeleeDodgeChance>5</MeleeDodgeChance>
+          <MoveSpeed>0.1</MoveSpeed>
+          <CarryingCapacity>5</CarryingCapacity> </statOffsets>
+      </li>
+      <li>
+        <minSeverity>0.7</minSeverity>
+        <label>敏感</label>
+        <capMods>
+          <li><capacity>Moving</capacity><offset>0.15</offset></li>
+        </capMods>
+        <statOffsets>
+          <MeleeDodgeChance>12</MeleeDodgeChance>
+          <MoveSpeed>0.25</MoveSpeed>
+          <CarryingCapacity>15</CarryingCapacity>
+        </statOffsets>
+      </li>
+      <li>
+        <minSeverity>1.0</minSeverity>
+        <label>刻印恶堕化</label>
+        <capMods>
+          <li><capacity>Moving</capacity><offset>0.25</offset></li>
+        </capMods>
+        <statOffsets>
+          <MeleeDodgeChance>20</MeleeDodgeChance> <MoveSpeed>0.4</MoveSpeed> <CarryingCapacity>30</CarryingCapacity> </statOffsets>
+      </li>
+    </stages>
+  </HediffDef>
+
+  <HediffDef ParentName="SSC_TrainingExpBase" Name="SSC_Exp_Genitals">
+    <defName>SSC_Exp_Genitals</defName>
+    <label>恶堕化（阴道）</label>
+    <description>经过极致的开发，内部已被纳米微械彻底重构。不仅变得异常美丽敏感，且能分泌紫色纳米液。宿主获得了惊人的痛觉忍耐力和体力恢复速度。</description>
+    <stages Inherit="False">
+      <li>
+        <minSeverity>0</minSeverity>
+        <label>开发中</label>
+      </li>
+      <li>
+        <minSeverity>0.3</minSeverity>
+        <label>熟练</label>
+        <statOffsets>
+          <PainShockThreshold>0.05</PainShockThreshold>
+        </statOffsets>
+        <statFactors>
+          <RestRateMultiplier>1.10</RestRateMultiplier>
+        </statFactors>
+      </li>
+      <li>
+        <minSeverity>0.7</minSeverity>
+        <label>敏感</label>
+        <statOffsets>
+          <PainShockThreshold>0.15</PainShockThreshold>
+          <PawnBeauty>1</PawnBeauty>
+        </statOffsets>
+        <statFactors>
+          <RestRateMultiplier>1.25</RestRateMultiplier>
+        </statFactors>
+      </li>
+      <li>
+        <minSeverity>1.0</minSeverity>
+        <label>肉便器化</label>
+        <statOffsets>
+          <PawnBeauty>2</PawnBeauty>
+          <PainShockThreshold>0.30</PainShockThreshold> </statOffsets>
+        <statFactors>
+          <RestRateMultiplier>1.50</RestRateMultiplier> </statFactors>
+        <hediffGivers>
+          <li Class="SexSlaveCraft.SSC_HediffGiver_Refresh"> 
+            <hediff>SSC_Purple_HyperLactation</hediff>
+          </li>
+        </hediffGivers>
+      </li>
+    </stages>
+  </HediffDef>
+
+  <HediffDef ParentName="SSC_Exp_Genitals"> 
+    <defName>SSC_Exp_Breast</defName>
+    <label>恶堕化（乳房）</label>
+    <description>在纳米微械的加持下被彻底改造，形态变得极具诱惑力且开始不断产奶。散发出的温度能极大程度安抚接触者的情绪。</description>
+    <hediffClass>HediffWithComps</hediffClass> 
+    <stages Inherit="False">
+      <li>
+        <label>改造初期</label>
+        <minSeverity>0</minSeverity>
+      </li>
+      <li>
+        <label>熟练</label>
+        <minSeverity>0.3</minSeverity>
+        <statOffsets>
+          <PawnBeauty>1</PawnBeauty>
+        </statOffsets>
+      </li>
+      <li>
+        <label>彻底改造</label>
+        <minSeverity>0.7</minSeverity>
+        <statOffsets>
+          <PawnBeauty>2</PawnBeauty>
+          <TameAnimalChance>0.10</TameAnimalChance>
+          <TrainAnimalChance>0.10</TrainAnimalChance>
+        </statOffsets>
+        <hediffGivers>
+          <li Class="SexSlaveCraft.SSC_HediffGiver_Refresh"> 
+            <hediff>SSC_Lactating_SubState</hediff>
+          </li>
+        </hediffGivers>
+      </li>
+      <li>
+        <label>刻印恶堕化</label>
+        <minSeverity>1.0</minSeverity>
+        <statOffsets>
+          <PawnBeauty>3</PawnBeauty> <TameAnimalChance>0.20</TameAnimalChance>
+          <TrainAnimalChance>0.20</TrainAnimalChance>
+        </statOffsets>
+      </li>
+    </stages>
+  </HediffDef>
+
+<HediffDef ParentName="SSC_Exp_Genitals">
+    <defName>SSC_Exp_Anus</defName>
+    <label>恶堕化（肛门）</label>
+    <description>在多次色色的加持下，后庭被纳米微械彻底开发。纳米机器在此处高度活跃，赋予了宿主恐怖的伤口自愈能力和免疫力，并能根据插入物改变大小。</description>
+    <stages Inherit="False">
+      <li>
+        <minSeverity>0</minSeverity>
+        <label>初步开发</label>
+      </li>
+      <li>
+        <minSeverity>0.3</minSeverity>
+        <label>熟练</label>
+        <statFactors>
+          <InjuryHealingFactor>1.25</InjuryHealingFactor>
+          <ImmunityGainSpeed>1.05</ImmunityGainSpeed>
+        </statFactors>
+      </li>
+      <li>
+        <minSeverity>0.7</minSeverity>
+        <label>敏感</label>
+        <statFactors>
+          <InjuryHealingFactor>1.50</InjuryHealingFactor>
+          <ImmunityGainSpeed>1.15</ImmunityGainSpeed>
+        </statFactors>
+        <statOffsets>
+          <PainShockThreshold>0.10</PainShockThreshold>
+        </statOffsets>
+      </li>
+      <li>
+        <minSeverity>1.0</minSeverity>
+        <label>刻印恶堕化</label>
+        <statFactors>
+          <InjuryHealingFactor>2.00</InjuryHealingFactor> <ImmunityGainSpeed>1.30</ImmunityGainSpeed> 
+        </statFactors>
+        <statOffsets>
+          <PainShockThreshold>0.20</PainShockThreshold>
+        </statOffsets>
+      </li>
+    </stages>
+  </HediffDef>
+
+<HediffDef>
+    <defName>SSC_Lactating_SubState</defName>
+    <label>永久泌乳期</label>
+    <description>在纳米微械的深度干预下，乳房的泌乳功能已被锁死在活跃状态。它会像寄生虫一样源源不断地抽取宿主胃里的食物来合成乳汁。</description>
+    <hediffClass>HediffWithComps</hediffClass>
+    <initialSeverity>1</initialSeverity>
+    <tendable>false</tendable>
+    <everCurableByItem>false</everCurableByItem>
+    
+    <comps>
+      <li Class="SexSlaveCraft.HediffCompProperties_PermanentLactating">
+        <ticksToFullCharge>15000</ticksToFullCharge> 
+        <initialCharge>0.00</initialCharge>
+        <fullChargeAmount>0.125</fullChargeAmount>
+        <labelInBrackets>乳汁充盈度 {CHARGEFACTOR_percentage}</labelInBrackets>
+        <minChargeToActivate>0.031</minChargeToActivate>
+        
+        <nutritionPerDay>0.3</nutritionPerDay> 
+      </li>
+    </comps>
+    
+    <stages>
+      <li>
+        <fertilityFactor>0.05</fertilityFactor>
+        </li>
+    </stages>
+  </HediffDef>
+
+  <HediffDef>
+    <defName>SSC_Purple_HyperLactation</defName> 
+    <label>催情纳米液产出(阴道)</label>
+    <description>该生物的全身腺体正在活跃地分泌特殊的紫色纳米液，经血液传输后达到阴道处。</description>
+    <hediffClass>HediffWithComps</hediffClass>
+    <tendable>false</tendable>
+    <everCurableByItem>false</everCurableByItem>
+    <isBad>false</isBad> <comps>
+      <li Class="SexSlaveCraft.HediffCompProperties_SeverityProduct">
+    <thingToSpawn>Purple_Aphrodisiac_Nanofluid</thingToSpawn>
+    
+    <spawnCount>10</spawnCount>
+    
+    <severityPerDay>0.2</severityPerDay>
+    
+    </li>
+    </comps>
+  </HediffDef>
+
+</Defs>

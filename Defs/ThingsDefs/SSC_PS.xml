@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <ThingDef ParentName="ResourceBase" Name="SSC_PersonalitySlime">
+    
+    <defName>SSC_PersonalitySlime</defName>
+    <label>人格凝胶</label>
+    <description>没被调教或者被调教了很短时间的人人格排泄的产物，是包含了人格的青色史莱姆状液体。可以植入在已被人格排泄的目标里。</description>
+    
+    <graphicData>
+      <texPath>Things/Item/PersonalitySlime</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+    </graphicData>
+    <thingClass>SexSlaveCraft.SSC_PS_NoStack</thingClass>
+    
+    <stackLimit>1</stackLimit>
+    <statBases>
+      <MarketValue>1000</MarketValue>
+      <Mass>0.5</Mass>
+    </statBases>
+    <tradeability>None</tradeability>
+    
+    <thingCategories>
+      <li>Manufactured</li>
+    </thingCategories>
+    <inspectorTabs>
+    <li>SexSlaveCraft.ITab_PersonalityCard</li>
+    </inspectorTabs>
+    
+    <tickerType>Normal</tickerType> 
+    
+    <comps>
+      <li Class="SexSlaveCraft.CompProperties_PersonalityStore" />
+      
+      <li Class="CompProperties_Forbiddable"/>
+    </comps>
+  </ThingDef> 
+  <ThingDef ParentName="SSC_PersonalitySlime">
+    <defName>SSC_PersonalitySlime_PLUS</defName>
+    <label>初级人格凝胶</label>
+    <description>被调教到一定程度的性奴人格排泄的产物。是包含了人格的深蓝色史莱姆状液体。可以植入在已被人格排泄的目标里。</description>
+    <graphicData>
+      <texPath>Things/Item/PersonalitySlime_PLUS</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+    </graphicData>
+  </ThingDef>
+  <ThingDef ParentName="SSC_PersonalitySlime">
+    <defName>SSC_PersonalitySlime_ULTRA</defName>
+    <label>高级人格凝胶</label>
+    <description>被调教到一定程度的性奴人格排泄的产物。是包含了人格的紫色史莱姆状液体。可以植入在已被人格排泄的目标里。</description>
+    <graphicData>
+      <texPath>Things/Item/PersonalitySlime_ULTRA</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+    </graphicData>
+  </ThingDef>
+  <ThingDef ParentName="SSC_PersonalitySlime">
+    <defName>SSC_PersonalitySlime_PLUS_ULTRA</defName>
+    <label>完美人格凝胶</label>
+    <description>被调教到一定程度的性奴人格排泄的产物。是包含了人格的粉色史莱姆状液体。可以植入在已被人格排泄的目标里。</description>
+    <graphicData>
+      <texPath>Things/Item/PersonalitySlime_PLUS_ULTRA</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+    </graphicData>
+  </ThingDef>
+
+<ThingDef ParentName="SSC_PersonalitySlime" >
+    <defName>SSC_PersonalitySlime_Edited</defName>
+    <label>人格凝胶（已编辑）</label>
+    <description>被编辑塑形的初级人格凝胶，是一个人形凝胶塑像，让性奴使用（塞入肛门）后将得到性奴特质。</description>
+    <graphicData>
+      <texPath>Things/Item/PersonalitySlime_Edited</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+    </graphicData>
+  </ThingDef>
+<ThingDef ParentName="SSC_PersonalitySlime" >
+    <defName>SSC_PersonalitySlime_PLUS_Edited</defName>
+    <label>初级人格凝胶（已编辑）</label>
+    <description>被编辑塑形的初级人格凝胶，是一个人形凝胶塑像，让性奴使用（塞入肛门）后将得到性奴特质。</description>
+    <graphicData>
+      <texPath>Things/Item/PersonalitySlime_PLUS_Edited</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+    </graphicData>
+  </ThingDef>
+  <ThingDef ParentName="SSC_PersonalitySlime" >
+    <defName>SSC_PersonalitySlime_ULTRA_Edited</defName>
+    <label>高级人格凝胶（已编辑）</label>
+    <description>被编辑塑形的初级人格凝胶，是一个人形凝胶塑像，让性奴使用（塞入肛门）后将得到性奴特质。</description>
+    <graphicData>
+      <texPath>Things/Item/PersonalitySlime_ULTRA_Edited</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+    </graphicData>
+  </ThingDef>
+  <ThingDef ParentName="SSC_PersonalitySlime" >
+    <defName>SSC_PersonalitySlime_PLUS_ULTRA_Edited</defName>
+    <label>完美人格凝胶（已编辑）</label>
+    <description>被编辑塑形的初级人格凝胶，是一个人形凝胶塑像，让性奴使用（塞入肛门）后将得到性奴特质。</description>
+    <graphicData>
+      <texPath>Things/Item/PersonalitySlime_PLUS_ULTRA_Edited</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+    </graphicData>
+  </ThingDef>
+
+</Defs>

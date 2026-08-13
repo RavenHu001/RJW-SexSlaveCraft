@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <SSC_Surgery_GenderChange_MtF.label>Sex Reassignment Surgery (Male to Female)</SSC_Surgery_GenderChange_MtF.label>
+  <SSC_Surgery_GenderChange_MtF.description>Use NPA to erode male organs and reconstruct female organs, converting male to female.</SSC_Surgery_GenderChange_MtF.description>
+  <SSC_Surgery_GenderChange_MtF.jobString>Performing sex reassignment surgery</SSC_Surgery_GenderChange_MtF.jobString>
+</LanguageData>

@@ -1,0 +1,6 @@
+<Defs>
+<RitualObligationTargetFilterDef>
+  <defName>SSC_BindingTargetFilter</defName>
+  <workerClass>RitualObligationTargetWorker_AnyRitualSpotOrAltar</workerClass> 
+</RitualObligationTargetFilterDef>
+</Defs>

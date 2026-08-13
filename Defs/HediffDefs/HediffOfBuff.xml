@@ -1,0 +1,290 @@
+<Defs>
+
+  <HediffDef>
+    <defName>SSC_MasterBondEmpowerment</defName>
+    <label>灵欲共振场</label>
+    <description>由紫色纳米机械立场与灵能耦合形成的欲性能场。随着绑定性奴数量与恶堕程度提升，这片共振场会不断强化主人的肉体、战斗本能与支配力。</description>
+    <hediffClass>HediffWithComps</hediffClass>
+    <isBad>false</isBad>
+    <tendable>false</tendable>
+    <everCurableByItem>false</everCurableByItem>
+    <initialSeverity>0.01</initialSeverity>
+    <maxSeverity>1.0</maxSeverity>
+    <defaultLabelColor>(0.9, 0.45, 0.45)</defaultLabelColor>
+    <stages>
+      <li>
+        <label>微薄</label>
+        <minSeverity>0.01</minSeverity>
+        <capMods>
+          <li>
+            <capacity>Manipulation</capacity>
+            <offset>0.08</offset>
+          </li>
+        </capMods>
+        <statOffsets>
+          <MeleeHitChance>0.04</MeleeHitChance>
+          <MeleeDodgeChance>0.04</MeleeDodgeChance>
+          <MoveSpeed>0.08</MoveSpeed>
+          <PainShockThreshold>0.08</PainShockThreshold>
+        </statOffsets>
+      </li>
+      <li>
+        <label>浅显</label>
+        <minSeverity>0.25</minSeverity>
+        <capMods>
+          <li>
+            <capacity>Manipulation</capacity>
+            <offset>0.15</offset>
+          </li>
+        </capMods>
+        <statOffsets>
+          <MeleeHitChance>0.08</MeleeHitChance>
+          <MeleeDodgeChance>0.08</MeleeDodgeChance>
+          <MoveSpeed>0.15</MoveSpeed>
+          <PainShockThreshold>0.15</PainShockThreshold>
+        </statOffsets>
+      </li>
+      <li>
+        <label>雾状</label>
+        <minSeverity>0.5</minSeverity>
+        <capMods>
+          <li>
+            <capacity>Manipulation</capacity>
+            <offset>0.22</offset>
+          </li>
+        </capMods>
+        <statOffsets>
+          <MeleeHitChance>0.12</MeleeHitChance>
+          <MeleeDodgeChance>0.12</MeleeDodgeChance>
+          <MoveSpeed>0.22</MoveSpeed>
+          <PainShockThreshold>0.25</PainShockThreshold>
+        </statOffsets>
+      </li>
+      <li>
+        <label>无形</label>
+        <minSeverity>0.75</minSeverity>
+        <capMods>
+          <li>
+            <capacity>Manipulation</capacity>
+            <offset>0.30</offset>
+          </li>
+        </capMods>
+        <statOffsets>
+          <MeleeHitChance>0.16</MeleeHitChance>
+          <MeleeDodgeChance>0.16</MeleeDodgeChance>
+          <MoveSpeed>0.30</MoveSpeed>
+          <PainShockThreshold>0.35</PainShockThreshold>
+          <NegotiationAbility>0.10</NegotiationAbility>
+        </statOffsets>
+        <statFactors>
+          <IncomingDamageFactor>0.92</IncomingDamageFactor>
+          <SocialImpact>1.15</SocialImpact>
+        </statFactors>
+      </li>
+    </stages>
+  </HediffDef>
+
+  <HediffDef>
+    <defName>Hediff_PNA_Combat_Buff</defName>
+    <label>战斗催情强化</label>
+    <description>在紫色纳米机械的催情下，性奴体内的细胞开始活跃，躁动，增加其战斗能力。</description>
+    
+    <hediffClass>HediffWithComps</hediffClass>
+    <tendable>false</tendable>
+    <everCurableByItem>false</everCurableByItem>
+
+    <isBad>false</isBad>
+    <maxSeverity>1.0</maxSeverity>
+    <defaultLabelColor>(0.5, 1.0, 0.5)</defaultLabelColor>
+    
+    <comps>
+      <li Class="HediffCompProperties_SeverityPerDay">
+        <severityPerDay>-2.0</severityPerDay> </li>
+    </comps>
+
+    <stages>
+      <li>
+        <capMods>
+          <li>
+            <capacity>Moving</capacity>
+            <offset>0.3</offset>
+          </li>
+          <li>
+            <capacity>Manipulation</capacity>
+            <offset>0.2</offset>
+          </li>
+        </capMods>
+      </li>
+    </stages>
+  </HediffDef>
+
+
+  <HediffDef>
+    <defName>Hediff_PNA_Combat_Buff_Plus</defName>
+    <label>战斗催情强化（浓缩）</label>
+    <description>在浓缩紫色纳米机械的强力催情下，性奴体内的潜能被大幅激发。</description>
+    
+    <hediffClass>HediffWithComps</hediffClass>
+    <tendable>false</tendable>
+    <everCurableByItem>false</everCurableByItem>
+
+    <isBad>false</isBad>
+    <maxSeverity>1.0</maxSeverity>
+    <defaultLabelColor>(0.5, 1.0, 0.5)</defaultLabelColor>
+    
+    <comps>
+      <li Class="HediffCompProperties_SeverityPerDay">
+        <severityPerDay>-2.0</severityPerDay>
+      </li>
+    </comps>
+
+    <stages>
+      <li>
+        <capMods>
+          <li>
+            <capacity>Moving</capacity>
+            <offset>0.5</offset> </li>
+          <li>
+            <capacity>Manipulation</capacity>
+            <offset>0.5</offset> </li>
+        </capMods>
+      </li>
+    </stages>
+  </HediffDef>
+
+
+
+  <HediffDef>
+    <defName>Hediff_PNA_Debuff</defName>
+    <label>紫色纳米机械感染</label>
+    <description>在紫色纳米机械的感染下，人的感度持续上升，直到陷入持续性的高潮瘫痪。</description>
+    <hediffClass>HediffWithComps</hediffClass>
+    <tendable>false</tendable>
+    <everCurableByItem>false</everCurableByItem>
+    <defaultLabelColor>(1.0, 0.4, 0.8)</defaultLabelColor>
+    
+    <maxSeverity>2.0</maxSeverity>
+    <initialSeverity>0.01</initialSeverity>
+    
+    <comps>
+      <li Class="HediffCompProperties_SeverityPerDay">
+        <severityPerDay>-1.0</severityPerDay> 
+      </li>
+    </comps>
+
+    <stages>
+      <li>
+        <label>潮红</label>
+        <minSeverity>0.1</minSeverity>
+        <capMods>
+          <li><capacity>Manipulation</capacity><offset>-0.2</offset></li>
+          <li><capacity>Moving</capacity><offset>-0.2</offset></li>
+        </capMods>
+      </li>
+
+      <li>
+        <label>持续高潮</label>
+        <minSeverity>1.0</minSeverity>
+        <lifeThreatening>false</lifeThreatening>
+        <painFactor>0</painFactor> <capMods>
+          <li>
+            <capacity>Consciousness</capacity>
+            <setMax>0.1</setMax> 
+          </li>
+        </capMods>
+      </li>
+    </stages>
+  </HediffDef>
+
+  <ThoughtDef>
+    <defName>PNA_Debuff_Thought</defName>
+    <workerClass>ThoughtWorker_Hediff</workerClass>
+    <hediff>Hediff_PNA_Debuff</hediff>
+    <validWhileDespawned>true</validWhileDespawned>
+    
+    <stages>
+      <li>
+        <label>有点感觉</label>
+        <description>呼...哈...哈，好热...下面好痒。</description>
+        <baseMoodEffect>5</baseMoodEffect>
+      </li>
+      
+      <li>
+        <label>持续高潮</label>
+        <description>哦齁齁齁！！！为什么...是这个时候...哦齁！哦齁！大脑一片空白了...</description>
+        <baseMoodEffect>8</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+
+  <HediffDef>
+    <defName>Hediff_PNA_Consciousness_Record</defName>
+    <label>抗性快照</label>
+    <description>用于记录目标面对激素时的最高意识水平（你大抵应该不可能一定必须看到这个）。</description>
+    <isBad>false</isBad>
+    <tendable>false</tendable>
+    <everCurableByItem>false</everCurableByItem>
+    <minSeverity>0</minSeverity>
+    <maxSeverity>100.0</maxSeverity> 
+    <stages>
+      <li>
+        <becomeVisible>false</becomeVisible> </li>
+    </stages>
+  </HediffDef>
+
+  <HediffDef>
+    <defName>SSC_PostExcretionComa</defName>
+    <label>人格排泄适应症</label>
+    <description>由于人格被强行抽出，大脑和神经系统正在经历严重的重组与空白期，初始人格正在接手身体控制权。</description>
+    <hediffClass>HediffWithComps</hediffClass>
+    <tendable>false</tendable>
+    <everCurableByItem>false</everCurableByItem>
+    <defaultLabelColor>(0.8, 0.4, 0.4)</defaultLabelColor> <initialSeverity>1.0</initialSeverity> <comps>
+      <li Class="HediffCompProperties_SeverityPerDay">
+        <severityPerDay>-0.5</severityPerDay> </li>
+    </comps>
+
+    <stages>
+      <li>
+        <minSeverity>0.01</minSeverity>
+        <label>深度宕机</label>
+        
+        <capMods>
+          <li>
+            <capacity>Consciousness</capacity>
+            <setMax>0.01</setMax> 
+          </li>
+        </capMods>
+      </li>
+    </stages>
+  </HediffDef>
+
+  <HediffDef>
+    <defName>SSC_PostInsertionComa</defName>
+    <label>人格植入适应症</label>
+    <description>外来人格被强行塞入空壳躯体，大脑和神经系统正在重新适应新的人格，需要时间恢复。</description>
+    <hediffClass>HediffWithComps</hediffClass>
+    <tendable>false</tendable>
+    <everCurableByItem>false</everCurableByItem>
+    <defaultLabelColor>(0.4, 0.4, 0.8)</defaultLabelColor>
+    <initialSeverity>1.0</initialSeverity>
+    <comps>
+      <li Class="HediffCompProperties_SeverityPerDay">
+        <severityPerDay>-0.5</severityPerDay>
+      </li>
+    </comps>
+    <stages>
+      <li>
+        <minSeverity>0.01</minSeverity>
+        <label>深度宕机</label>
+        <capMods>
+          <li>
+            <capacity>Consciousness</capacity>
+            <setMax>0.01</setMax>
+          </li>
+        </capMods>
+      </li>
+    </stages>
+  </HediffDef>
+</Defs>

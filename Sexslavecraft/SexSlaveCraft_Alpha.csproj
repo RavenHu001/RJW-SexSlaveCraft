@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{A976764E-5D38-4008-9E0C-591491B4B33B}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Sexslavecraft</RootNamespace>
+    <AssemblyName>Sexslavecraft</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <OutputPath>..\Assemblies\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="Defs\**\*" />
+    <None Include="About\**\*" />
+    <None Include="Languages\**\*" />
+    <None Include="Textures\**\*" Condition="Exists('Textures')" />
+    <None Include="Sounds\**\*" Condition="Exists('Sounds')" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="0Harmony">
+      <HintPath>..\..\..\..\..\Program Files\steam\steamapps\workshop\content\294100\2009463077\1.5\Assemblies\0Harmony.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>..\..\..\..\..\Program Files\steam\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Rimworld-Animations">
+      <HintPath>..\..\..\..\Program Files\steam\steamapps\common\RimWorld\Mods\RJW_动画_2.0核心框架\1.6\Assemblies\Rimworld-Animations.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="RJW">
+      <HintPath>..\..\..\..\Program Files\steam\steamapps\common\RimWorld\Mods\RJW_核心_本体\1.6\Assemblies\RJW.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="UnityEngine">
+      <HintPath>..\..\..\..\..\Program Files\steam\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\UnityEngine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>..\..\..\..\..\Program Files\steam\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.IMGUIModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Program Files\steam\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.TextRenderingModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Program Files\steam\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="common\AddCorruption.cs" />
+    <Compile Include="common\BusSpecializationUtility.cs" />
+    <Compile Include="common\DogSpecializationUtility.cs" />
+    <Compile Include="common\PetSpecializationUtility.cs" />
+    <Compile Include="common\RabbitCloneUtility.cs" />
+    <Compile Include="common\ConditioningUtility.cs" />
+    <Compile Include="common\CorruptionProgressionUtility.cs" />
+    <Compile Include="common\ExcretionUtility.cs" />
+    <Compile Include="common\FineTrainingUtility.cs" />
+    <Compile Include="common\FullGelatinizationUtility.cs" />
+    <Compile Include="common\GelatinizationHealthSanitizer.cs" />
+    <Compile Include="common\HumanCattleBridgeUtility.cs" />
+    <Compile Include="common\ICorruptionModifierSource.cs" />
+    <Compile Include="common\ITabAddForRace.cs" />
+    <Compile Include="common\LegacyTrainingUtility.cs" />
+    <Compile Include="common\LifeForceConflictUtility.cs" />
+    <Compile Include="common\MapComponent_PersonalityAssignment.cs" />
+    <Compile Include="common\ModLog.cs" />
+    <Compile Include="common\RecipeInjector.cs" />
+    <Compile Include="common\SoftDependencyUtility.cs" />
+    <Compile Include="Comps\CompAbilityEffect_EroticConversion.cs" />
+    <Compile Include="Hediff\HediffCompProperties_GelatinizationAdaptation.cs" />
+    <Compile Include="Hediff\HediffCompProperties_FullGelatinizationAdaptation.cs" />
+    <Compile Include="Hediff\HediffCompProperties_FullGelatinizedRegen.cs" />
+    <Compile Include="Hediff\HediffCompProperties_FullGelatinizationSeverity.cs" />
+    <Compile Include="Hediff\HediffCompProperties_GelatinizationSeverity.cs" />
+    <Compile Include="Hediff\HediffCompProperties_GelatinizedArmRegen.cs" />
+    <Compile Include="Hediff\HediffComp_GelatinizationAdaptation.cs" />
+    <Compile Include="Hediff\HediffComp_FullGelatinizationAdaptation.cs" />
+    <Compile Include="Hediff\HediffComp_FullGelatinizedRegen.cs" />
+    <Compile Include="Hediff\HediffComp_FullGelatinizationSeverity.cs" />
+    <Compile Include="Hediff\HediffComp_GelatinizationSeverity.cs" />
+    <Compile Include="Hediff\HediffComp_GelatinizedArmRegen.cs" />
+    <Compile Include="Hediff\HediffComp_CorruptionModifier.cs" />
+    <Compile Include="Hediff\HediffComp_PermanentLactating.cs" />
+    <Compile Include="Hediff\HediffComp_CowMilkReservoir.cs" />
+    <Compile Include="Hediff\HediffComp_GiveAbility.cs" />
+    <Compile Include="Hediff\HediffComp_RabbitClone.cs" />
+    <Compile Include="Hediff\Hediff_GelatinizationTemporary.cs" />
+    <Compile Include="Hediff\Hediff_FullGelatinizationTemporary.cs" />
+    <Compile Include="Hediff\Hediff_SSC_PersonalityExcreting.cs" />
+    <Compile Include="Hediff\Hediff_GelatinizedArm.cs" />
+    <Compile Include="Hediff\Hediff_GelatinizedLeg.cs" />
+    <Compile Include="JobDriver\JobDriver_InsertPersonality.cs" />
+    <Compile Include="JobDriver\JobDriver_PetAffection.cs" />
+    <Compile Include="JobDriver\JobDriver_Train.cs" />
+    <Compile Include="JobGiver\JobGiver_SlaveKeepJob.cs" />
+    <Compile Include="Recipe\Recipe_ApplyGelatinization.cs" />
+    <Compile Include="Recipe\Recipe_ApplyFullGelatinization.cs" />
+    <Compile Include="Ritual\StageEndTrigger_PawnJobFinished.cs" />
+    <Compile Include="Ritual\RitualRole_BindingMaster.cs" />
+    <Compile Include="Ritual\RitualOutcomeComp_GenitalDifference.cs" />
+    <Compile Include="Ritual\RitualOutcomeComp_SocialSkill.cs" />
+    <Compile Include="ITab\ITab_PES.cs" />
+    <Compile Include="ITab\ITab_SexSlaveTraining.cs" />
+    <Compile Include="JobDriver\JobDriver_PE.cs" />
+    <Compile Include="Recipe\Recipe_PEMake.cs" />
+    <Compile Include="ThePatches\Harmony_CorruptionRapeThoughts.cs" />
+    <Compile Include="ThePatches\Harmony_DogSpecialization.cs" />
+    <Compile Include="ThePatches\Harmony_EqualMilkingCompatibility.cs" />
+    <Compile Include="ThePatches\Harmony_FasterProduce.cs" />
+    <Compile Include="ThePatches\Harmony_FullGelatinizationBodyTint.cs" />
+    <Compile Include="ThePatches\Harmony_HumanCattleCompatibility.cs" />
+    <Compile Include="ThePatches\Harmony_PreventRitualTimeShow.cs" />
+    <Compile Include="ThePatches\Harmony_RitualFix.cs" />
+    <Compile Include="ThePatches\Harmony_ShowPAN.cs" />
+    <Compile Include="ThePatches\Harmony_MasterDamageShare.cs" />
+    <Compile Include="ThePatches\Harmony_SharedBedCompatibility.cs" />
+    <Compile Include="ThePatches\Harmony_BusTrade.cs" />
+    <Compile Include="ThePatches\Harmony_PersonalityExcretion.cs" />
+    <Compile Include="ThePatches\Harmony_RimTalkTrainingReservation.cs" />
+    <Compile Include="ThePatches\Harmony_RabbitCloneBirth.cs" />
+    <Compile Include="Comps\CompUsable_Restricted.cs" />
+    <Compile Include="Comps\Comp_Train.cs" />
+    <Compile Include="Comps\ThingClass_WithComp_NoStack.cs" />
+    <Compile Include="Comps\ThingsComp_PE_PES.cs" />
+    <Compile Include="common\ResearchUtils.cs" />
+    <Compile Include="common\RimTalkCompatibilityUtility.cs" />
+    <Compile Include="common\RitualTrainingUtility.cs" />
+    <Compile Include="common\SSCMasterBondUtility.cs" />
+    <Compile Include="common\SSCLog.cs" />
+    <Compile Include="common\SSCSharedBedUtility.cs" />
+    <Compile Include="common\SSCBondUtility.cs" />
+    <Compile Include="common\SSCIdentityUtility.cs" />
+    <Compile Include="common\SSCSexInteractionPolicy.cs" />
+    <Compile Include="common\SSCThoughtBootstrap.cs" />
+    <Compile Include="common\Settings.cs" />
+    <Compile Include="common\Thought_MemoryDynamicTraining.cs" />
+    <Compile Include="common\TrainingOutcomeUtility.cs" />
+    <Compile Include="common\TrainerAssignmentUtility.cs" />
+    <Compile Include="common\TrainingExpUtility.cs" />
+    <Compile Include="common\WorkGiverTargetUtility.cs" />
+    <Compile Include="common\TraitUtility.cs" />
+    <Compile Include="common\StringAndDefOf.cs" />
+    <Compile Include="common\Need_Corruption.cs" />
+    <Compile Include="common\OnaholeCompatibilityUtility.cs" />
+    <Compile Include="common\PawnSexEligibilityUtility.cs" />
+    <Compile Include="common\PersonalityGelUtility.cs" />
+    <Compile Include="common\RJWSexPropsUtility.cs" />
+    <Compile Include="common\RJWPECompatibility.cs" />
+    <Compile Include="common\SSC_HealthSanitizerGameComponent.cs" />
+    <Compile Include="common\TrainingJobUtility.cs" />
+    <Compile Include="common\WillReductionUtility.cs" />
+    <Compile Include="DamageWorker\DamageWorker_PNA.cs" />
+    <Compile Include="Hediff\HediffComp_ProducePAN.cs" />
+    <Compile Include="Hediff\HediffComp_Refresh_.cs" />
+    <Compile Include="JobDriver\JobDriver_TrainingReciver.cs" />
+    <Compile Include="JobGiver\JobGiver_RitualMaster.cs" />
+    <Compile Include="Recipe\Recipe_GenderChange.cs" />
+    <Compile Include="Ritual\RitualOutcomeEffectWorker_SSCBinding.cs" />
+    <Compile Include="Ritual\RitualRole_BindingSlave.cs" />
+    <Compile Include="Ritual\RitualStage_InteractWithSlave.cs" />
+    <Compile Include="ThePatches\GetGizmos_Toggle.cs" />
+    <Compile Include="ThePatches\GetGizmos_TrainingType.cs" />
+    <Compile Include="ThePatches\HarmonyStartUp.cs" />
+    <Compile Include="ThePatches\Harmony_HediffPreventRebel.cs" />
+    <Compile Include="ThePatches\Harmony_PreventWearEFOutfit.cs" />
+    <Compile Include="ThePatches\Harmony_ProtectSexSlave.cs" />
+    <Compile Include="ThePatches\Harmony_RecipeMaterial.cs" />
+    <Compile Include="ThePatches\Harmony_SexSlaveCorruptionAdd.cs" />
+    <Compile Include="ThePatches\Harmony_SexSlaveNameColor.cs" />
+    <Compile Include="ThePatches\Harmony_SlaveWorkRestrictions.cs" />
+    <Compile Include="Hediff\Hediff_BridleOfSexSlave.cs" />
+    <Compile Include="Hediff\Hediff_ChainOfSexSlave.cs" />
+    <Compile Include="ThePatches\Harmony_SlaveWorkSpeed.cs" />
+    <Compile Include="JobDriver\JobDriver_RitualTraining.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Comps\ThingsComp_Frist.cs" />
+    <Compile Include="Comps\ThingsComp_PreventRapeJustForSexSlave.cs" />
+    <Compile Include="WorkGiver\WorkGiver_InsertPersonality.cs" />
+    <Compile Include="WorkGiver\WorkGiver_PE.cs" />
+    <Compile Include="WorkGiver\WorkGiver_Training.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

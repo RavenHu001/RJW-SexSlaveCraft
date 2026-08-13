@@ -1,0 +1,130 @@
+<Defs>
+
+  <!-- <ThingDef ParentName="BaseBullet">
+    <defName>Bullet_PNA_High</defName>
+    <label>浓缩纳米机械子弹</label>
+    <graphicData>
+      <texPath>Things/Projectile/ChargeLanceShot</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+      <shaderType>TransparentPostLight</shaderType> <color>(160, 40, 255)</color> <drawSize>1.2</drawSize>
+    </graphicData>
+    <projectile>
+      <damageDef>Damage_PNA_HighTier</damageDef> 
+      <damageAmountBase>10</damageAmountBase> <speed>80</speed>
+    </projectile>
+  </ThingDef>
+
+  <ThingDef ParentName="BaseHumanMakeableGun">
+    <defName>Gun_PNA_High</defName>
+    <label>PNA-双子原型枪</label>
+    <description>一把集成了纳米医疗与战斗调教功能的先进原型武器。\n\n【友军】治疗伤口 + 战斗增强（需特殊体质）。\n【敌军】真实伤害 + 强制瘫痪（固定数值）。</description>
+    <graphicData>
+      <texPath>Things/Item/Equipment/WeaponRanged/ChargeRifle</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+      <drawSize>1.1</drawSize>
+    </graphicData>
+    <soundInteract>Interact_ChargeRifle</soundInteract>
+    
+    <statBases>
+      <WorkToMake>45000</WorkToMake>
+      <Mass>4.5</Mass>
+      <AccuracyTouch>0.70</AccuracyTouch>
+      <AccuracyShort>0.80</AccuracyShort>
+      <AccuracyMedium>0.75</AccuracyMedium>
+      <AccuracyLong>0.60</AccuracyLong>
+      <RangedWeapon_Cooldown>1.5</RangedWeapon_Cooldown>
+    </statBases>
+
+    <costList>
+      <Plasteel>50</Plasteel>
+      <ComponentSpacer>2</ComponentSpacer>
+    </costList>
+
+    <recipeMaker>
+      <researchPrerequisite>ChargedShot</researchPrerequisite>
+      <skillRequirements>
+        <Crafting>8</Crafting>
+      </skillRequirements>
+    </recipeMaker>
+
+    <verbs>
+      <li>
+        <verbClass>Verb_Shoot</verbClass>
+        <hasStandardCommand>true</hasStandardCommand>
+        <defaultProjectile>Bullet_PNA_High</defaultProjectile>
+        <warmupTime>1.0</warmupTime>
+        <range>28.9</range>
+        <burstShotCount>3</burstShotCount>
+        <ticksBetweenBurstShots>10</ticksBetweenBurstShots>
+        <soundCast>Shot_ChargeRifle</soundCast>
+        <soundCastTail>GunTail_Medium</soundCastTail>
+        <muzzleFlashScale>9</muzzleFlashScale>
+      </li>
+    </verbs>
+  </ThingDef>-->
+
+
+  <ThingDef ParentName="BaseBullet">
+    <defName>Bullet_PNA_Low</defName>
+    <label>普通纳米机械子弹</label>
+    <graphicData>
+      <texPath>Things/Projectile/ChargeLanceShot</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+      <shaderType>TransparentPostLight</shaderType>
+      <color>(200, 130, 255)</color> <drawSize>1.0</drawSize>
+    </graphicData>
+    <projectile>
+      <damageDef>Damage_PNA_Damage_LowTier</damageDef>
+      <damageAmountBase>2</damageAmountBase> <speed>55</speed>
+    </projectile>
+  </ThingDef>
+
+  <ThingDef ParentName="BaseHumanMakeableGun">
+    <defName>Gun_PNA_Low</defName>
+    <label>简易PNA发射器</label>
+    <description>一把PNA发射器，发射的PNA会侵入敌军的装甲，渗透到敌军体内，命中一定次数使其持续高潮而倒地，如果发射的对象是性奴那么就会有增益的效果。</description>
+    <graphicData>
+      <texPath>Things/Item/Equipment/Gun_PNA_Low</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+    </graphicData>
+    <soundInteract>Interact_Autopistol</soundInteract>
+    
+    <statBases>
+      <WorkToMake>10000</WorkToMake>
+      <Mass>2.5</Mass>
+      <AccuracyTouch>0.80</AccuracyTouch>
+      <AccuracyShort>0.60</AccuracyShort>
+      <AccuracyMedium>0.40</AccuracyMedium>
+      <AccuracyLong>0.20</AccuracyLong>
+      <RangedWeapon_Cooldown>3</RangedWeapon_Cooldown>
+    </statBases>
+
+    <costList>
+      <Steel>60</Steel>
+      <ComponentIndustrial>3</ComponentIndustrial>
+      <Purple_Aphrodisiac_Nanofluid>10</Purple_Aphrodisiac_Nanofluid>
+    </costList>
+
+    <recipeMaker>
+      <researchPrerequisite>Machining</researchPrerequisite>
+      <skillRequirements>
+        <Crafting>4</Crafting>
+      </skillRequirements>
+    </recipeMaker>
+
+    <verbs>
+      <li>
+        <verbClass>Verb_Shoot</verbClass>
+        <hasStandardCommand>true</hasStandardCommand>
+        <defaultProjectile>Bullet_PNA_Low</defaultProjectile>
+        <warmupTime>0.5</warmupTime>
+        <range>22.9</range>
+        <burstShotCount>1</burstShotCount>
+        <soundCast>Shot_Autopistol</soundCast>
+        <soundCastTail>GunTail_Light</soundCastTail>
+        <muzzleFlashScale>9</muzzleFlashScale>
+      </li>
+    </verbs>
+  </ThingDef>
+
+</Defs>

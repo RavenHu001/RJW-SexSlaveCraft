@@ -1,0 +1,113 @@
+<Defs>
+  <HediffDef>
+    <defName>Hediff_SSC_PersonalityExcreting</defName>
+    <label>人格排泄准备中</label>
+    <description>从肛门注射的NPA开始发挥作用，收集个体的人格（灵魂）并准备排泄。</description>
+    <hediffClass>SexSlaveCraft.Hediff_SSC_PersonalityExcreting</hediffClass>
+    <tendable>false</tendable>
+    <everCurableByItem>false</everCurableByItem>
+    <defaultLabelColor>(0.8, 0.4, 0.4)</defaultLabelColor>
+    <initialSeverity>0.01</initialSeverity>
+    <maxSeverity>1.0</maxSeverity>
+    <comps>
+      <li Class="HediffCompProperties_SeverityPerDay">
+        <severityPerDay>0.3</severityPerDay>
+      </li>
+    </comps>
+    <stages>
+      <li>
+        <label>初期</label>
+        <minSeverity>0.0</minSeverity>
+      </li>
+      <li>
+        <label>中期</label>
+        <minSeverity>0.25</minSeverity>
+        <capMods>
+          <li><capacity>Consciousness</capacity><offset>-0.05</offset></li>
+        </capMods>
+      </li>
+      <li>
+        <label>后期</label>
+        <minSeverity>0.50</minSeverity>
+        <capMods>
+          <li><capacity>Consciousness</capacity><offset>-0.10</offset></li>
+        </capMods>
+      </li>
+      <li>
+        <label>排泄临界</label>
+        <minSeverity>0.75</minSeverity>
+        <capMods>
+          <li>
+            <capacity>Consciousness</capacity>
+            <offset>-0.20</offset> </li>
+        </capMods>
+      </li>
+    </stages>
+  </HediffDef>
+
+  <HediffDef>
+    <defName>Hediff_SSC_PersonalityExcreted_Done</defName>
+    <label>人格排泄(完成)</label>
+    <description>人格被排空，有以前的全部记忆（不会影响当前初始人格），由PNA组成的初始人格将代替原主进行一系列的生命活动，且原主人格凝胶仍会和身体共感。</description>
+    <defaultLabelColor>(0.5, 0.5, 0.5)</defaultLabelColor>
+    <isBad>false</isBad>
+    <tendable>false</tendable>
+    <everCurableByItem>false</everCurableByItem>
+    <stages>
+      <li>
+      <pctAllThoughtNullification>1</pctAllThoughtNullification>
+      
+      <overrideMoodBase>0.5</overrideMoodBase> 
+      
+      <blocksMentalBreaks>true</blocksMentalBreaks>
+      
+      <blocksInspirations>true</blocksInspirations>
+        <capMods>
+        <li>
+          <capacity>Consciousness</capacity>
+          <setMax>0.6</setMax> </li>
+        <li>
+          <capacity>Moving</capacity>
+          <setMax>0.8</setMax> </li>
+        </capMods>
+        <statOffsets>
+           <GlobalLearningFactor>-1.0</GlobalLearningFactor>
+           <SocialImpact>-0.5</SocialImpact>
+        </statOffsets>
+      </li>
+    </stages>
+  </HediffDef>
+<ThoughtDef>
+    <defName>Hediff_PersonalityExcreting_Thought</defName>
+    <workerClass>ThoughtWorker_Hediff</workerClass>
+    <hediff>Hediff_SSC_PersonalityExcreting</hediff>
+    <validWhileDespawned>true</validWhileDespawned>
+    <stages>
+      
+      <li>
+        <label>我的肚子好胀</label>
+        <description>我的肛门被注射了某种液体，凉凉的，塞满了我的肚子，好难受。</description>
+        <baseMoodEffect>-5</baseMoodEffect>
+      </li>
+
+      <li>
+        <label>脑袋昏昏</label>
+        <description>我的意识开始变得有些模糊，每次随着呼吸，我都能感觉到那团粘液在直肠里晃动，这种令人羞耻的异物感让我无法集中精神思考。</description>
+        <baseMoodEffect>-8</baseMoodEffect>
+      </li>
+
+      <li>
+        <label>好难受</label>
+        <description>思考变得好困难...好想把身体里的那坨东西拉出来，可我必须憋住。</description>
+        <baseMoodEffect>-10</baseMoodEffect>
+      </li>
+
+      <li>
+        <label>嗝...啊哈哈哈，唔！！</label>
+        <description>不行，大脑已经空了，好想拉出来，好想被艹。</description>
+        <baseMoodEffect>20</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+</Defs>

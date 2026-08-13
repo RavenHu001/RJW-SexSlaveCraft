@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <RitualOutcomeEffectDef>
+    <defName>SSC_BindingRitualOutcome</defName>
+    <workerClass>SexSlaveCraft.RitualOutcomeEffectWorker_SSCBinding</workerClass>
+    
+    <comps>
+      
+      <li Class="RimWorld.RitualOutcomeComp_ParticipantCount">
+        <label>观众助兴</label>
+        <curve>
+          <points>
+            <li>(1,  0.05)</li>
+            <li>(5,  0.15)</li>
+            <li>(10, 0.20)</li> </points>
+        </curve>
+      </li>
+      
+      <li Class="RimWorld.RitualOutcomeComp_RoomStat">
+        <label>房间氛围</label>
+        <statDef>Impressiveness</statDef>
+        <curve>
+          <points>
+            <li>(0,   0.0)</li>
+            <li>(50,  0.05)</li>
+            <li>(120, 0.10)</li> </points>
+        </curve>
+      </li>
+      
+      <li Class="SexSlaveCraft.RitualOutcomeComp_GenitalDifference">
+        <label>性器官契合度</label>
+        <masterRoleId>master</masterRoleId>
+        <slaveRoleId>slave</slaveRoleId>
+        <curve>
+          <points>
+            <li>(0, -0.20)</li> <li>(1, -0.10)</li>
+            <li>(2, -0.05)</li>
+            <li>(3,  0.05)</li>
+            <li>(4,  0.15)</li>
+            <li>(5,  0.30)</li> </points>
+        </curve>
+      </li>
+
+      <li Class="SexSlaveCraft.RitualOutcomeComp_SocialSkill">
+        <label>主人的调教技巧</label>
+        <roleId>master</roleId>
+        <curve>
+          <points>
+            <li>(0,  -0.20)</li> <li>(5,   0.00)</li>
+            <li>(10,  0.20)</li>
+            <li>(15,  0.30)</li>
+            <li>(20,  0.40)</li> </points>
+        </curve>
+      </li>
+
+    </comps>
+
+    <outcomeChances>
+      <li>
+        <label>糟糕</label>
+        <chance>0.1</chance>
+        <memory>SSC_Ritual_Terrible</memory> 
+        <description>我们的主人并没有很好地展示他的雄风，但仪式还是发挥了它应有的作用。</description>
+        <positivityIndex>-1</positivityIndex>
+      </li>
+
+      <li>
+        <label>平庸</label>
+        <chance>0.5</chance>
+        <memory>SSC_Ritual_Boring</memory>
+        <description>仪式完成了，我的老天，性奴被干的半死，但还是缺了些什么，不过仪式还是发挥了它应有的作用。</description>
+        <positivityIndex>1</positivityIndex>
+      </li>
+
+      <li>
+        <label>成功</label>
+        <chance>0.3</chance>
+        <memory>SSC_Ritual_Good</memory>
+        <description>主人顺利地牵起性奴的链子对她进行调教，性奴的露出了满意的阿黑颜，这场仪式应该被拍成视频作为教材。</description>
+        <positivityIndex>2</positivityIndex>
+      </li>
+
+      <li>
+        <label>完美</label>
+        <chance>0.1</chance>
+        <memory>SSC_Ritual_Best</memory>
+        <description>主人牵起性奴的链子，以完美的节奏进行着性爱，似乎他能抓住每个时段性奴的快感点。性奴被干到半死，但还是抱着主人的大腿请求再来一次</description>
+        <positivityIndex>3</positivityIndex>
+      </li>
+    </outcomeChances>
+  </RitualOutcomeEffectDef>
+
+</Defs>

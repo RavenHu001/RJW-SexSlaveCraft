@@ -1,0 +1,33 @@
+<Defs>
+<AbilityDef>
+  <defName>SSC_EroticWord</defName>
+  <label>情色之语</label>
+  <description>调教后的嘴已经有了紫色的刻印，通过PAN雾和适宜的心灵波让对方心甘情愿地转变为你的文化</description>
+  <jobDef>CastAbilityOnThing</jobDef>
+  <targetRequired>True</targetRequired>
+  <canUseAoeToGetTargets>False</canUseAoeToGetTargets>
+  <stunTargetWhileCasting>True</stunTargetWhileCasting>
+  <showPsycastEffects>False</showPsycastEffects> 
+  
+  <displayGizmoWhileUndrafted>True</displayGizmoWhileUndrafted>
+  <disableGizmoWhileUndrafted>False</disableGizmoWhileUndrafted>
+
+  <cooldownTicksRange>180000</cooldownTicksRange>
+
+  <verbProperties>
+    <verbClass>Verb_CastAbility</verbClass>
+    <range>2.9</range>
+    <warmupTime>2.0</warmupTime>
+    <targetParams>
+      <canTargetPawns>True</canTargetPawns>
+      <canTargetBuildings>False</canTargetBuildings>
+      <onlyTargetPrisonersOfColony>True</onlyTargetPrisonersOfColony> </targetParams>
+  </verbProperties>
+
+  <comps>
+    <li Class="SexSlaveCraft.CompProperties_EroticConversion">
+      <hediffDef>SSC_Exp_Oral</hediffDef> 
+    </li>
+  </comps>
+</AbilityDef>
+</Defs>

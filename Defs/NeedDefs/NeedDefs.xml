@@ -1,0 +1,25 @@
+<Defs>
+  <NeedDef>
+    <defName>Corruption</defName>
+    <needClass>SexSlaveCraft.Need_Corruption</needClass>
+    <label>恶堕率</label>
+    <description>角色的堕落程度</description>
+    <baseLevel>0.00</baseLevel>
+    <fallPerDay>0.00</fallPerDay>
+    <showOnNeedList>true</showOnNeedList>
+    <listPriority>50</listPriority>
+    <major>false</major>
+    <freezeWhileSleeping>false</freezeWhileSleeping>
+    <minIntelligence>Humanlike</minIntelligence>
+    <colonistsOnly>false</colonistsOnly>
+    <showForCaravanMembers>false</showForCaravanMembers>
+  </NeedDef>
+  <NeedDef ParentName="DrugAddictionNeedBase">
+    <defName>Need_PNA</defName>
+    <needClass>Need_Chemical</needClass>
+    <label>纳米流体渴望</label>
+    <description>由于体内已经被紫色纳米机械改造，身体持续渴望新的纳米流体补充，否则将产生强烈的心理空虚。</description>
+    <listPriority>50</listPriority> 
+    <fallPerDay>0.333</fallPerDay> 
+  </NeedDef>
+</Defs>

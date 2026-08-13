@@ -1,0 +1,108 @@
+<Defs>
+  <ThingDef ParentName="ResourceBase">
+    <defName>Purple_Aphrodisiac_Nanofluid</defName>
+    <label>紫色纳米催情液</label>
+    <description>充满纳米机械的紫色液体，强效催情剂，可用来制造有强效强化剂的盔甲以及媚药步枪。</description>
+    
+    <graphicData>
+      <texPath>Things/Item/PNA</texPath> <graphicClass>Graphic_StackCount</graphicClass>
+      <drawSize>1.0</drawSize>
+    </graphicData>
+
+    <resourceReadoutPriority>Middle</resourceReadoutPriority>
+    <stackLimit>75</stackLimit>
+    <healthAffectsPrice>false</healthAffectsPrice>
+    
+    <statBases>
+      <MarketValue>6.0</MarketValue> 
+      <Mass>0.005</Mass>
+      <Flammability>0.2</Flammability>
+      <DeteriorationRate>2.0</DeteriorationRate>
+      <Nutrition>0.05</Nutrition>
+    </statBases>
+
+    <thingCategories>
+      <li>Drugs</li>
+    </thingCategories>
+
+    <ingestible>
+      <preferability>NeverForNutrition</preferability>
+      <foodType>Processed, Fluid</foodType>
+      <joyKind>Chemical</joyKind>
+      <joy>0.8</joy>
+      <drugCategory>Medical</drugCategory> <ingestEffect>EatVegetarian</ingestEffect>
+      <ingestSound>Meal_Eat</ingestSound>
+      <optimalityOffsetHumanlikes>10</optimalityOffsetHumanlikes>
+
+      <outcomeDoers>
+        <li Class="IngestionOutcomeDoer_GiveHediff">
+          <hediffDef>Hediff_PNA_Debuff</hediffDef>
+          <severity>0.3</severity> </li>
+      </outcomeDoers>
+    </ingestible>
+
+    <comps>
+      <li Class="CompProperties_Drug">
+        <chemical>PNA_Chemical</chemical>
+        <addictiveness>0.25</addictiveness> <minToleranceToAddict>0.00</minToleranceToAddict>
+        
+        <needLevelOffset>1.0</needLevelOffset> 
+        
+        <listOrder>1000</listOrder>
+      </li>
+    </comps>
+  </ThingDef>
+    <ThingDef ParentName="ResourceBase">
+    <defName>Purple_Aphrodisiac_Nanofluid_Plus</defName>
+    <label>浓缩紫色纳米催情液</label>
+    <description>浓缩的紫色纳米催情液，只需一滴就可让人高潮到死去活来。</description>
+    
+    <graphicData>
+      <texPath>Things/Item/PNA_PLUS</texPath> <graphicClass>Graphic_StackCount</graphicClass>
+      <drawSize>1.0</drawSize>
+    </graphicData>
+
+    <resourceReadoutPriority>Middle</resourceReadoutPriority>
+    <stackLimit>75</stackLimit>
+    <healthAffectsPrice>false</healthAffectsPrice>
+    
+    <statBases>
+      <MarketValue>6.0</MarketValue> 
+      <Mass>0.01</Mass>
+      <Flammability>0.2</Flammability>
+      <DeteriorationRate>2.0</DeteriorationRate>
+      <Nutrition>0.05</Nutrition>
+    </statBases>
+
+    <thingCategories>
+      <li>Drugs</li>
+    </thingCategories>
+
+    <ingestible>
+      <preferability>NeverForNutrition</preferability>
+      <foodType>Processed, Fluid</foodType>
+      <joyKind>Chemical</joyKind>
+      <joy>0.8</joy>
+      <drugCategory>Medical</drugCategory> <ingestEffect>EatVegetarian</ingestEffect>
+      <ingestSound>Meal_Eat</ingestSound>
+      <optimalityOffsetHumanlikes>10</optimalityOffsetHumanlikes>
+
+      <outcomeDoers>
+        <li Class="IngestionOutcomeDoer_GiveHediff">
+          <hediffDef>Hediff_PNA_Debuff</hediffDef>
+          <severity>1</severity> </li>
+      </outcomeDoers>
+    </ingestible>
+
+    <comps>
+      <li Class="CompProperties_Drug">
+        <chemical>PNA_Chemical</chemical>
+        <addictiveness>0.5</addictiveness> <minToleranceToAddict>0.00</minToleranceToAddict>
+        
+        <needLevelOffset>1.0</needLevelOffset> 
+        
+        <listOrder>1000</listOrder>
+      </li>
+    </comps>
+  </ThingDef>
+</Defs>

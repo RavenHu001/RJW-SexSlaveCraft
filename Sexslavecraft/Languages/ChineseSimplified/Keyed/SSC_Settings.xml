@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <SSC_Setting_Category>SexSlaveCraft 设置</SSC_Setting_Category>
+
+  <SSC_Setting_EnableSexSlaveProtectionRules>启用 SSC 性行为保护规则</SSC_Setting_EnableSexSlaveProtectionRules>
+  <SSC_Setting_EnableSexSlaveProtectionRules_Desc>控制 SSC 对性奴、主人和公交车之间性行为的额外限制。关闭后将跳过以下 SSC 保护规则，改由 RJW 自身判定。</SSC_Setting_EnableSexSlaveProtectionRules_Desc>
+  <SSC_Setting_AllowSexSlaveRape>允许性奴被非主人强暴</SSC_Setting_AllowSexSlaveRape>
+  <SSC_Setting_AllowSexSlaveRape_Desc>开启后，非主人也可强暴带有性奴锁链的角色，但保护服装仍可阻止强暴。\n\n关闭后启用严格保护：只有锁链绑定的主人可以强暴该性奴。</SSC_Setting_AllowSexSlaveRape_Desc>
+  <SSC_Setting_ProtectBusAggressorRape>禁止公交车主动强暴</SSC_Setting_ProtectBusAggressorRape>
+  <SSC_Setting_ProtectBusAggressorRape_Desc>开启后，公交车专精角色不能作为强暴发起者；作为受位时仍不受主人限制。</SSC_Setting_ProtectBusAggressorRape_Desc>
+  <SSC_Setting_ProtectChainedAggressorRape>禁止锁链性奴主动强暴</SSC_Setting_ProtectChainedAggressorRape>
+  <SSC_Setting_ProtectChainedAggressorRape_Desc>开启后，带有性奴锁链的角色不能作为强暴发起者。</SSC_Setting_ProtectChainedAggressorRape_Desc>
+  <SSC_Setting_ProtectNonRapeOwnerOnly>自愿性行为仅限主人</SSC_Setting_ProtectNonRapeOwnerOnly>
+  <SSC_Setting_ProtectNonRapeOwnerOnly_Desc>开启后，锁链性奴的非强暴性行为仅允许与绑定主人进行；在调教面板中允许他人使用的角色不受此限制。</SSC_Setting_ProtectNonRapeOwnerOnly_Desc>
+
+  <SSC_Setting_EnableLogs>启用 SSC 日志</SSC_Setting_EnableLogs>
+  <SSC_Setting_EnableLogs_Desc>SSC 普通日志的总开关。错误日志不受此项影响。</SSC_Setting_EnableLogs_Desc>
+  <SSC_Setting_EnableVerboseLogs>启用 SSC 详细日志</SSC_Setting_EnableVerboseLogs>
+  <SSC_Setting_EnableVerboseLogs_Desc>输出调教流程、仪式阶段和保护规则等高频调试信息。排查问题时再开启。</SSC_Setting_EnableVerboseLogs_Desc>
+  <SSC_Setting_EnableImportantLogs>启用 SSC 重要日志</SSC_Setting_EnableImportantLogs>
+  <SSC_Setting_EnableImportantLogs_Desc>输出仪式转奴、兼容回退等低频但重要的状态变化和警告。</SSC_Setting_EnableImportantLogs_Desc>
+
+  <SSC_Setting_UseRJWOriginalEligibility>使用 SSC 宽松调教筛选</SSC_Setting_UseRJWOriginalEligibility>
+  <SSC_Setting_UseRJWOriginalEligibility_Desc>开启后使用 SSC 自己较宽松的调教目标筛选，不受年龄限制，但要求 RJW 已启用强暴；关闭后直接使用 RJW 原始判定。</SSC_Setting_UseRJWOriginalEligibility_Desc>
+  <SSC_Setting_EnableDebugGizmos>启用 SSC 调试指令</SSC_Setting_EnableDebugGizmos>
+  <SSC_Setting_EnableDebugGizmos_Desc>仅在开发者模式下额外显示 SSC 自己的调试 gizmo。默认关闭。</SSC_Setting_EnableDebugGizmos_Desc>
+
+  <SSC_Setting_EnableFullGelTint>启用全凝胶化身体染色</SSC_Setting_EnableFullGelTint>
+  <SSC_Setting_EnableFullGelTint_Desc>开启后，处于“全凝胶化完成”状态的角色身体会显示为紫色半透明；头部保留原色。</SSC_Setting_EnableFullGelTint_Desc>
+  <SSC_Setting_EnableRitualEnslavement>允许绑定仪式转化为奴隶</SSC_Setting_EnableRitualEnslavement>
+  <SSC_Setting_EnableRitualEnslavement_Desc>开启后，满足恶堕、评分与意志条件的绑定仪式可将目标转化为原版奴隶。关闭只会禁用转奴判定，不影响仪式的其他收益。</SSC_Setting_EnableRitualEnslavement_Desc>
+  <SSC_Setting_EnableRimTalkSexDialogue>为 SSC 性行为触发 RimTalk 对话</SSC_Setting_EnableRimTalkSexDialogue>
+  <SSC_Setting_EnableRimTalkSexDialogue_Desc>安装并启用 RimTalk 后，SSC 日常调教、绑定仪式阶段、人格排泄或公交车交易性行为会在场景开始且当前倍速允许时，为参与者加入 AI 对话请求。关闭后可避免这些额外的 AI 调用。</SSC_Setting_EnableRimTalkSexDialogue_Desc>
+  <SSC_Setting_RimTalkMaxSpeed>RimTalk 调教对话最高发送倍速：{0}</SSC_Setting_RimTalkMaxSpeed>
+  <SSC_Setting_RimTalkMaxSpeed_Desc>SSC 始终服从 RimTalk 自己的“高速暂停 AI”设置。“跟随 RimTalk”不增加额外限制；选择倍速后，仅在当前速度不高于该值时发送。排班调教会在 Job 仍有效时等待降速，其他一次性场景超过门槛时会跳过请求。</SSC_Setting_RimTalkMaxSpeed_Desc>
+  <SSC_Setting_RimTalkMaxSpeed_Follow>跟随 RimTalk</SSC_Setting_RimTalkMaxSpeed_Follow>
+  <SSC_Setting_RimTalkMaxSpeed_Value>最高 {0}x</SSC_Setting_RimTalkMaxSpeed_Value>
+  <SSC_Setting_RimTalkInterruptTemplate>定时调教打断句</SSC_Setting_RimTalkInterruptTemplate>
+  <SSC_Setting_RimTalkInterruptTemplate_Desc>调教 Job 被领取时由主人立即说出的本地台词。支持 {MASTER}、{SLAVE}、{ACT} 和 {TARGET} 占位符；这句话会写入随后唯一一次调教 AI 请求的上下文。</SSC_Setting_RimTalkInterruptTemplate_Desc>
+
+  <SSC_Setting_UseOldScoring>使用旧版评分系统</SSC_Setting_UseOldScoring>
+  <SSC_Setting_UseOldScoring_Desc>恢复旧版调教评分、等级制记忆、特质加分、随机波动、尺寸与锁链倍率，并关闭恶堕的自然衰减。默认关闭。</SSC_Setting_UseOldScoring_Desc>
+</LanguageData>

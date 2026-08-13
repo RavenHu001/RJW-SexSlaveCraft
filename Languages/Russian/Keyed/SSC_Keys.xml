@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <SSC_DailyTrainingOutcome>[Ежедневная дрессировка] Оценка: {0} (уровень {1}) | Развращение: +{2}</SSC_DailyTrainingOutcome>
+  <SSC_Ritual_MasterSlaveHeader>Господин {0} | Секс-раб: {1}</SSC_Ritual_MasterSlaveHeader>
+  <SSC_Ritual_ScoreLevel>Оценка: {0} (уровень {1})</SSC_Ritual_ScoreLevel>
+  <SSC_Ritual_CorruptionGain>Развращение: +{0}</SSC_Ritual_CorruptionGain>
+  <SSC_Ritual_OutcomeHeader> Исход ритуала </SSC_Ritual_OutcomeHeader>
+  <SSC_Ritual_NoNewStage>(Ритуал углубил клеймо рабства, но новый этап не активирован)</SSC_Ritual_NoNewStage>
+  <SSC_Bond_BridleAdded>{0} с помощью ИИ «Жареный рис» связал(а) {1} невидимыми цепями</SSC_Bond_BridleAdded>
+  <SSC_Bond_ChainAdded>У {0} ограничены некоторые способности — теперь нужно подчиняться {1}</SSC_Bond_ChainAdded>
+  <SSC_Ritual_Enslaved>{0} признал(а) себя рабом, пока разум был отключён.</SSC_Ritual_Enslaved>
+  <SSC_Ritual_EnslaveFailed>{0} не был(а) порабощён(а). Похоже, нужна удача.</SSC_Ritual_EnslaveFailed>
+  <SSC_Trait_SexSlaveLevelUp>Черта повышена: уровень секс-раба {0} -&gt; {1}</SSC_Trait_SexSlaveLevelUp>
+  <SSC_Ritual_FlawedLoversCreated>\nИз-за отключения разума {0} полностью стал(а) секс-рабом {1}.</SSC_Ritual_FlawedLoversCreated>
+  <SSC_RitualRole_MustBeColonistSlavePrisoner>Должен быть колонистом, рабом или заключённым</SSC_RitualRole_MustBeColonistSlavePrisoner>
+  <SSC_RitualRole_SlaveBoundToOther>Этот раб уже привязан к {0} и не может провести этот ритуал с текущим господином</SSC_RitualRole_SlaveBoundToOther>
+  <SSC_RitualRole_SlaveBoundToOther_Unknown>кому-то другому</SSC_RitualRole_SlaveBoundToOther_Unknown>
+  <SSC_Stage_Extreme>Крайне развращён</SSC_Stage_Extreme>
+  <SSC_Stage_Severe>Сильно развращён</SSC_Stage_Severe>
+  <SSC_Stage_Moderate>Умеренно развращён</SSC_Stage_Moderate>
+  <SSC_Stage_Minor>Слегка развращён</SSC_Stage_Minor>
+  <SSC_Stage_Slight>Немного развращён</SSC_Stage_Slight>
+  <SSC_Stage_Stable>Стабилен</SSC_Stage_Stable>
+  <SSC_Need_TipFormat>{0}: {1} ({2})\n{3}</SSC_Need_TipFormat>
+  <SSC_Bridle_LabelWithNames>{0} ({1})</SSC_Bridle_LabelWithNames>
+  <SSC_Bridle_DescSlaves>\nСекс-рабы этого колониста: {0}</SSC_Bridle_DescSlaves>
+  <SSC_Chain_LabelWithPawn>{0} ({1})</SSC_Chain_LabelWithPawn>
+  <SSC_TrainingMode_GizmoLabel>Поза дрессировки: {0}</SSC_TrainingMode_GizmoLabel>
+  <SSC_TrainingMode_GizmoDesc>Нажмите, чтобы выбрать конкретное действие для дрессировки этого персонажа.</SSC_TrainingMode_GizmoDesc>
+  <SSC_Mode_Auto>Авто</SSC_Mode_Auto>
+  <SSC_Mode_Vaginal>Вагинальный</SSC_Mode_Vaginal>
+  <SSC_Mode_Anal>Анальный</SSC_Mode_Anal>
+  <SSC_Mode_Oral>Оральный</SSC_Mode_Oral>
+  <SSC_Mode_Boobjob>Между грудей</SSC_Mode_Boobjob>
+  <SSC_Mode_Handjob>Ручная стимуляция</SSC_Mode_Handjob>
+  <SSC_Mode_Footjob>Стимуляция ногами</SSC_Mode_Footjob>
+  <SSC_Mode_Fingering>Пальцами</SSC_Mode_Fingering>
+  <SSC_Mode_MutualMasturbation>Взаимная мастурбация</SSC_Mode_MutualMasturbation>
+  <SSC_Mode_Fisting>Фистинг</SSC_Mode_Fisting>
+  <SSC_Mode_Rimming>Анилингус</SSC_Mode_Rimming>
+  <SSC_Mode_Sixtynine>69</SSC_Mode_Sixtynine>
+  <SSC_Toggle_GizmoDesc>Переключение режима: отключено / включено / защита.</SSC_Toggle_GizmoDesc>
+  <SSC_Toggle_Label_Disabled>Режим дрессировки: отключён</SSC_Toggle_Label_Disabled>
+  <SSC_Toggle_Label_Enabled>Режим дрессировки: включён</SSC_Toggle_Label_Enabled>
+  <SSC_Toggle_Label_Protect>Режим дрессировки: защита</SSC_Toggle_Label_Protect>
+  <SSC_Toggle_Label_Unknown>Режим дрессировки: неизвестно</SSC_Toggle_Label_Unknown>
+  <SSC_Toggle_Desc_Disabled>Отключено: никто не может дрессировать этого персонажа.</SSC_Toggle_Desc_Disabled>
+  <SSC_Toggle_Desc_Enabled>Включено: сейчас только господин может дрессировать (требуется ритуальная привязка).</SSC_Toggle_Desc_Enabled>
+  <SSC_Toggle_Desc_Protect>Защита: никто, кроме господина, не может принудить этого персонажа.</SSC_Toggle_Desc_Protect>
+  <SSC_Message_BerserkSuppressed>Состояние ярости {0} подавлено цепью</SSC_Message_BerserkSuppressed>
+  <SSC_EquipRestriction_NotCorruptedEnough>{0} явно не хочет надевать этот наряд (попробуйте повысить развращение?)</SSC_EquipRestriction_NotCorruptedEnough>
+  <SSC_Setting_Category>Настройки SexSlaveCraft</SSC_Setting_Category>
+  <SSC_Setting_EnableSexSlaveProtectionRules>Включить правила защиты секс-рабов</SSC_Setting_EnableSexSlaveProtectionRules>
+  <SSC_Setting_EnableSexSlaveProtectionRules_Desc>Если отключено, вся логика защиты и ограничений секс-рабов этого Harmony-патча отключается, и связанные действия больше не блокируются.</SSC_Setting_EnableSexSlaveProtectionRules_Desc>
+  <SSC_Setting_AllowSexSlaveRape>Разрешить изнасилование секс-рабов</SSC_Setting_AllowSexSlaveRape>
+  <SSC_Setting_AllowSexSlaveRape_Desc>Если [Да]: любой может насиловать секс-рабов, но секс-рабы в костюме Evilfall невосприимчивы.\n\nЕсли [Нет]: строгий режим защиты. Никто, кроме господина, не может насиловать секс-рабов.</SSC_Setting_AllowSexSlaveRape_Desc>
+  <SSC_Setting_ProtectBusAggressorRape>Рабы «автобуса» не могут инициировать изнасилование</SSC_Setting_ProtectBusAggressorRape>
+  <SSC_Setting_ProtectBusAggressorRape_Desc>Если включено, рабы в режиме «автобус» не могут инициировать изнасилование, но могут инициировать секс без насилия.</SSC_Setting_ProtectBusAggressorRape_Desc>
+  <SSC_Setting_ProtectChainedAggressorRape>Секс-рабы с цепью не могут инициировать изнасилование</SSC_Setting_ProtectChainedAggressorRape>
+  <SSC_Setting_ProtectChainedAggressorRape_Desc>Если включено, секс-рабы с цепью больше не могут инициировать изнасилование.</SSC_Setting_ProtectChainedAggressorRape_Desc>
+  <SSC_Setting_ProtectNonRapeOwnerOnly>Только владелец может инициировать секс без насилия</SSC_Setting_ProtectNonRapeOwnerOnly>
+  <SSC_Setting_ProtectNonRapeOwnerOnly_Desc>Если включено, секс-рабы с цепью могут заниматься согласным сексом только с владельцем.</SSC_Setting_ProtectNonRapeOwnerOnly_Desc>
+  <SSC_Setting_EnableLogs>Включить логи SSC</SSC_Setting_EnableLogs>
+  <SSC_Setting_EnableLogs_Desc>Если отключено, пользовательские логи SSC Message/Warning заглушаются, а Error-логи сохраняются.</SSC_Setting_EnableLogs_Desc>
+  <SSC_Setting_EnableVerboseLogs>Включить подробные отладочные логи</SSC_Setting_EnableVerboseLogs>
+  <SSC_Setting_EnableVerboseLogs_Desc>Выводит частые логи: GuardDbg, отладка анимаций, диагностика потока дрессировки. По умолчанию отключено, чтобы не засорять вывод.</SSC_Setting_EnableVerboseLogs_Desc>
+  <SSC_Setting_EnableImportantLogs>Включить важные логи</SSC_Setting_EnableImportantLogs>
+  <SSC_Setting_EnableImportantLogs_Desc>Выводит редкие, но полезные логи: совместимость onahole, поток ритуального порабощения, основные fallback. По умолчанию включено.</SSC_Setting_EnableImportantLogs_Desc>
+  <SSC_Setting_UseRJWOriginalEligibility>Использовать оригинальные проверки RJW для возраста дрессировки</SSC_Setting_UseRJWOriginalEligibility>
+  <SSC_Setting_UseRJWOriginalEligibility_Desc>Вкл.: допустимость цели дрессировки/ритуала следует оригинальным правилам RJW can_be_fucked (рекомендуется).\nВыкл.: используются устаревшие проверки SSC (также требуют rape_enabled и дополнительный возрастной фильтр).</SSC_Setting_UseRJWOriginalEligibility_Desc>
+  <SSC_Setting_EnableFullGelTint>Включить полную окраску gelatin-тела</SSC_Setting_EnableFullGelTint>
+  <SSC_Setting_EnableFullGelTint_Desc>Если включено, полностью gelatinизированные персонажи сохраняют цвет головы, а тело окрашивается в бледно-фиолетовый полупрозрачный оттенок.</SSC_Setting_EnableFullGelTint_Desc>
+  <SSC_Setting_EnableRitualEnslavement>Разрешить ритуальное порабощение</SSC_Setting_EnableRitualEnslavement>
+  <SSC_Setting_EnableRitualEnslavement_Desc>Если включено, ритуал привязки может превратить цель в ванильного раба при выполнении условий. Если отключено, ритуал завершается нормально, но шаг порабощения пропускается.</SSC_Setting_EnableRitualEnslavement_Desc>
+  <Tab_SexSlaveTraining>Дрессировка</Tab_SexSlaveTraining>
+  <SSC_Ritual_GenitalDifference_Label>Совместимость размеров гениталий</SSC_Ritual_GenitalDifference_Label>
+  <SSC_Ritual_Genital_Huge>Огромный (полностью заполнено)</SSC_Ritual_Genital_Huge>
+  <SSC_Ritual_Genital_Satisfying>Удовлетворяющий размер</SSC_Ritual_Genital_Satisfying>
+  <SSC_Ritual_Genital_Appropriate>Подходящий размер</SSC_Ritual_Genital_Appropriate>
+  <SSC_Ritual_Genital_SlightlySmall>Немного мал</SSC_Ritual_Genital_SlightlySmall>
+  <SSC_Ritual_Genital_TooSmall>Слишком мал</SSC_Ritual_Genital_TooSmall>
+  <SSC_Ritual_Genital_Pathetic>Жалко мал</SSC_Ritual_Genital_Pathetic>
+  <SSC_Ritual_Social_Incompetent>Полный неопыт в сексе</SSC_Ritual_Social_Incompetent>
+  <SSC_Ritual_Social_Average>Грубое трение</SSC_Ritual_Social_Average>
+  <SSC_Ritual_Social_Skilled>Умелая техника</SSC_Ritual_Social_Skilled>
+  <SSC_Ritual_Social_Masterful>Мастер романтики</SSC_Ritual_Social_Masterful>
+  <SSC_Message_PersonalityExcretedComplete>Личность {0} полностью экскретирована.</SSC_Message_PersonalityExcretedComplete>
+  <SSC_Message_PersonalityFusionComplete>{0} полностью слился(лась) с личностью {1} и поглотил(а) черты из статуи геля личности</SSC_Message_PersonalityFusionComplete>
+  <SSC_Message_SameIdeologyNoEffect>Нет эффекта: у цели уже та же идеология.</SSC_Message_SameIdeologyNoEffect>
+  <SSC_Message_EroticConversionComplete>{0} полностью покорён(а) эротическими словами и сменил(а) идеологию.</SSC_Message_EroticConversionComplete>
+  <SSC_Message_PersonalityExcretionComplete>Экскреция личности {0} завершена.</SSC_Message_PersonalityExcretionComplete>
+  <SSC_Message_TradeRejectedForgiven>Сделка завершена. Секс-раб отказался(ась), но {0}, увидев дрожащего(ую) {1}, пощадил(а) {2}.</SSC_Message_TradeRejectedForgiven>
+  <SSC_Message_TradeConsensualSex>Приятная сделка: развращённый(ая) {0} добровольно предложил(а) своё тело {1}.</SSC_Message_TradeConsensualSex>
+  <SSC_Message_TradeRapeOccurred>Сделка сорвалась! {0} попытался(ась) отказать, но {1} принудил(а)!</SSC_Message_TradeRapeOccurred>
+  <SSC_Message_TradeFactionHappy>{0} принёс(ла) радость людям на месте.</SSC_Message_TradeFactionHappy>
+  <SSC_Message_SlaveAlreadyLinked>Этот секс-раб уже привязан к кому-то другому и не может продолжить с выбранным персонажем</SSC_Message_SlaveAlreadyLinked>
+  <SSC_Message_CannotUseNotHollow>Нельзя использовать: тело не пустая оболочка (сначала нужна экскреция личности)</SSC_Message_CannotUseNotHollow>
+  <SSC_Message_BusSpecializationUnlocked>Специализация «автобус» {0} достигла 20% и теперь даёт базовый бонус.</SSC_Message_BusSpecializationUnlocked>
+  <SSC_Message_CowSpecializationUnlocked>Специализация «корова» {0} достигла 20% и теперь даёт базовый бонус.</SSC_Message_CowSpecializationUnlocked>
+  <SSC_Label_SlaveTrainingIdentityMaster>Дрессировка секс-раба: [Роль: господин]</SSC_Label_SlaveTrainingIdentityMaster>
+  <SSC_Label_TrainingCooldown>Дрессировка на перезарядке ({0})</SSC_Label_TrainingCooldown>
+  <SSC_Label_WaitingForTraining>Ожидание дрессировки</SSC_Label_WaitingForTraining>
+  <SSC_Label_SlaveTrainingStatus>Дрессировка секс-раба: {0}</SSC_Label_SlaveTrainingStatus>
+  <SSC_Label_IdeologyCertaintyReduction>-{0} уверенности</SSC_Label_IdeologyCertaintyReduction>
+  <SSC_Label_SexSlavePrefix>[секс-раб] </SSC_Label_SexSlavePrefix>
+  <SSC_Label_RelationsCount>[Связи: {0}]</SSC_Label_RelationsCount>
+  <SSC_Label_SkillsHeader>&lt;b&gt;Навыки&lt;/b&gt;</SSC_Label_SkillsHeader>
+  <SSC_Label_TraitsHeader>&lt;b&gt;Черты&lt;/b&gt;</SSC_Label_TraitsHeader>
+  <SSC_Label_FullName>Полное имя: {0} </SSC_Label_FullName>
+  <SSC_Label_SkillLevel>{0} уровень: {1}</SSC_Label_SkillLevel>
+  <SSC_Label_SkillPassion>Страсть: {0}</SSC_Label_SkillPassion>
+  <SSC_Label_SkillXP>Текущий прогресс опыта: {0}</SSC_Label_SkillXP>
+  <SSC_Label_Bloodlust>Кровожадность</SSC_Label_Bloodlust>
+  <SSC_RitualPhase>Фаза {0}/{1}</SSC_RitualPhase>
+  <SSC_RitualExpectedDuration>Зависит от прогресса ритуала (всего 5 фаз)</SSC_RitualExpectedDuration>
+  <SSC_ITab_IdentityHeader>&lt;b&gt;Роль персонажа&lt;/b&gt;</SSC_ITab_IdentityHeader>
+  <SSC_ITab_IdentityUnset>Текущая роль: [Не задана]</SSC_ITab_IdentityUnset>
+  <SSC_ITab_IdentityMaster>Текущая роль: [Господин]</SSC_ITab_IdentityMaster>
+  <SSC_ITab_IdentitySlave>Текущая роль: [Секс-раб]</SSC_ITab_IdentitySlave>
+  <SSC_ITab_SetIdentityUnset>Установить: не задана</SSC_ITab_SetIdentityUnset>
+  <SSC_ITab_SetAsSlave>Установить: секс-раб</SSC_ITab_SetAsSlave>
+  <SSC_ITab_SetAsMaster>Установить: господин</SSC_ITab_SetAsMaster>
+  <SSC_ITab_AlreadyMaster>Этот персонаж уже установлен как [Господин].</SSC_ITab_AlreadyMaster>
+  <SSC_ITab_TrainingLocked>&lt;color=yellow&gt;! Функция дрессировки не разблокирована&lt;/color&gt;</SSC_ITab_TrainingLocked>
+  <SSC_ITab_TrainingLockedDesc>Для настроек дрессировки требуется исследование «Дрессировка».</SSC_ITab_TrainingLockedDesc>
+  <SSC_ITab_TrainingSettingsHeader>&lt;b&gt;Настройки дрессировки&lt;/b&gt;</SSC_ITab_TrainingSettingsHeader>
+  <SSC_ITab_AllowTraining>Разрешить дрессировку</SSC_ITab_AllowTraining>
+  <SSC_ITab_AllowOthers>Разрешить другим дрессировать или заниматься сексом</SSC_ITab_AllowOthers>
+  <SSC_ITab_AllowOthersWarning>Специализация «автобус» требует секса с кем-то кроме владельца для получения опыта.</SSC_ITab_AllowOthersWarning>
+  <SSC_ITab_CooldownStatus>&lt;color=orange&gt;Перезарядка: {0}&lt;/color&gt;</SSC_ITab_CooldownStatus>
+  <SSC_ITab_StatusReady>Статус: &lt;color=green&gt;Готов&lt;/color&gt;</SSC_ITab_StatusReady>
+  <SSC_ITab_StatusDisabled>Статус: &lt;color=grey&gt;Отключено&lt;/color&gt;</SSC_ITab_StatusDisabled>
+  <SSC_ITab_PoseHeader>&lt;b&gt;Назначенная поза&lt;/b&gt;</SSC_ITab_PoseHeader>
+  <SSC_ITab_TrainerHeader>&lt;b&gt;Назначенный дрессировщик&lt;/b&gt;</SSC_ITab_TrainerHeader>
+  <SSC_ITab_TrainerNone>Нет (любой)</SSC_ITab_TrainerNone>
+  <SSC_ITab_NoTrainerAvailable>Нет доступного дрессировщика</SSC_ITab_NoTrainerAvailable>
+  <SSC_ITab_TrainerMasterSuffix> (Господин)</SSC_ITab_TrainerMasterSuffix>
+  <SSC_ITab_TrainerLockedSuffix> (Недоступен)</SSC_ITab_TrainerLockedSuffix>
+  <SSC_ITab_ClearTrainer>Снять назначение</SSC_ITab_ClearTrainer>
+  <SSC_ITab_SpecializationHeader>&lt;b&gt;Специализация секс-раба&lt;/b&gt;</SSC_ITab_SpecializationHeader>
+  <SSC_ITab_SpecializationNone>Не задана</SSC_ITab_SpecializationNone>
+  <SSC_ITab_SpecializationBus>Автобус</SSC_ITab_SpecializationBus>
+  <SSC_ITab_SpecializationCow>Корова</SSC_ITab_SpecializationCow>
+  <SSC_ITab_SpecializationProgress>Прогресс специализации: {0}</SSC_ITab_SpecializationProgress>
+  <SSC_ITab_SelectSpecializationNone>Установить: не задана</SSC_ITab_SelectSpecializationNone>
+  <SSC_ITab_SelectSpecializationBus>Установить: автобус</SSC_ITab_SelectSpecializationBus>
+  <SSC_ITab_SelectSpecializationCow>Установить: корова</SSC_ITab_SelectSpecializationCow>
+  <SSC_ITab_SpecializationBusDisabledResearch>Исследование «Общественное пользование» не завершено</SSC_ITab_SpecializationBusDisabledResearch>
+  <SSC_ITab_SpecializationCowDisabledResearch>Исследование «Корова» не завершено</SSC_ITab_SpecializationCowDisabledResearch>
+  <SSC_ITab_SpecializationCowDisabledDegree>Степень секс-раба ниже 2</SSC_ITab_SpecializationCowDisabledDegree>
+  <SSC_ITab_SpecializationCowDisabledLactation>Отсутствует постоянная лактация</SSC_ITab_SpecializationCowDisabledLactation>
+  <SSC_ITab_SpecializationCowDisabledMissingRequirements>Не выполнены требования</SSC_ITab_SpecializationCowDisabledMissingRequirements>
+  <SSC_ITab_MilkProductionToggle>Включить лактацию</SSC_ITab_MilkProductionToggle>
+  <SSC_MasterShareDamage_Label>Разделение урона</SSC_MasterShareDamage_Label>
+  <SSC_MasterShareDamage_Desc>Если включено, привязанные секс-рабы поглощают {0} урона за своего господина. Сначала приоритет у рабов с частично gelatinизированными частями, и урон по возможности направляется именно в эти части.</SSC_MasterShareDamage_Desc>
+  <SSC_MasterShareDamage_Message>Связь {0} дрожит и переносит {1} урона на {2}.</SSC_MasterShareDamage_Message>
+  <SSC_MasterShareDamage_LogStart>[SSC Разделение урона] {0} получил(а) {1}. Исходный урон: {2}, перенаправление: {3}. Подходящие рабы: {4}, приоритет с частичной gelatinизацией: {5}.</SSC_MasterShareDamage_LogStart>
+  <SSC_MasterShareDamage_Log>[SSC Разделение урона] {0} перенаправил(а) {2} урона на {1}, попадание: {3}</SSC_MasterShareDamage_Log>
+  <SSC_MasterShareDamage_LogRemain>[SSC Разделение урона] {0} сохраняет оставшийся урон: {1}</SSC_MasterShareDamage_LogRemain>
+  <SSC_MasterShareDamage_LogNoCandidate>[SSC Разделение урона] {0} получил(а) {1} за {2} урона, но на той же карте нет непавшего раба для разделения.</SSC_MasterShareDamage_LogNoCandidate>
+  <SSC_MasterShareDamage_LogBlocked>[SSC Разделение урона] {0} получил(а) {1}, но этот тип урона нельзя перенаправить.</SSC_MasterShareDamage_LogBlocked>
+  <SSC_MasterShareDamage_Float>Разделено {0}</SSC_MasterShareDamage_Float>
+  <SSC_MasterShareDamage_PartFallback>неизвестная часть</SSC_MasterShareDamage_PartFallback>
+  <SSC_MasterEmpowerment_None>Сейчас не генерируется активное усиление от связи с господином.</SSC_MasterEmpowerment_None>
+  <SSC_MasterEmpowerment_Summary>Усиление связи с господином
+Привязанные рабы: {0}
+Текущий этап: {1}
+Среднее развращение: {2}
+Сила усиления: {3}
+Манипуляция: +{4}
+Шанс попадания в ближнем бою: +{5}
+Шанс уклонения в ближнем бою: +{6}
+Скорость передвижения: +{7}
+Порог болевого шока: +{8}</SSC_MasterEmpowerment_Summary>
+  <SSC_FullGel_MissingPE>{0} не завершил(а) экскрецию личности и не может пройти полную gelatinизацию.</SSC_FullGel_MissingPE>
+  <SSC_FullGel_AlreadyRunning>{0} уже проходит полную gelatinизацию.</SSC_FullGel_AlreadyRunning>
+  <SSC_FullGel_Guaranteed>{0} выполняет все требования полной gelatinизации. Адаптация будет ускорена настолько, что завершится до того, как тяжесть успеет нарасти.</SSC_FullGel_Guaranteed>
+  <SSC_FullGel_RiskWarning>{0} вступит в рискованную гонку полной gelatinизации.\n{1}</SSC_FullGel_RiskWarning>
+  <SSC_FullGel_RiskReport>Текущее развращение: {0}\nЗавершённость частей тела: {1}\nСглаженный вес успеха: {2}\nНевыполненные условия: {3}</SSC_FullGel_RiskReport>
+  <SSC_FullGel_Requirement_Corruption>Развращение ещё не 100% (сейчас {0})</SSC_FullGel_Requirement_Corruption>
+  <SSC_FullGel_Requirement_Hand>Руки</SSC_FullGel_Requirement_Hand>
+  <SSC_FullGel_Requirement_Foot>Ноги</SSC_FullGel_Requirement_Foot>
+  <SSC_FullGel_Requirement_Oral>Рот</SSC_FullGel_Requirement_Oral>
+  <SSC_FullGel_Requirement_Breast>Грудь</SSC_FullGel_Requirement_Breast>
+  <SSC_FullGel_Requirement_Genitals>Гениталии</SSC_FullGel_Requirement_Genitals>
+  <SSC_FullGel_Requirement_Anus>Анус</SSC_FullGel_Requirement_Anus>
+  <SSC_FullGel_AdaptationTip>Адаптация: {0}</SSC_FullGel_AdaptationTip>
+  <SSC_FullGel_SeverityTip>Тяжесть: {0}</SSC_FullGel_SeverityTip>
+  <SSC_FullGel_Success>{0} завершил(а) полную gelatinизацию и стабилизировался(ась) в gel-тело.</SSC_FullGel_Success>
+  <SSC_FullGel_Failure>{0} полностью разрушился(ась) во время полной gelatinизации и исчез(ла) из существования.</SSC_FullGel_Failure>
+  <SSC_FullGel_BlockSemiGel>{0} уже завершил(а) полную gelatinизацию и больше не может пройти полуgelatinизацию.</SSC_FullGel_BlockSemiGel>
+  <SSC_LifeForce_Removed>По какой-то причине Врата жизни не могут сосуществовать с этой возвышенной технологией сверхразума Slaanesh. Ген Lifeforce у {0} удалён, у ног остался генный эмбрион.</SSC_LifeForce_Removed>
+  <SSC_PES_Underage> | (Несовершеннолетний)</SSC_PES_Underage>
+  <SSC_PES_FullName>Полное имя: {0} </SSC_PES_FullName>
+  <SSC_PES_SexSlaveTag>[секс-раб] </SSC_PES_SexSlaveTag>
+  <SSC_PES_RelationsCount>[Связи: {0}]</SSC_PES_RelationsCount>
+  <SSC_PES_SkillsHeader>&lt;b&gt;Навыки&lt;/b&gt;</SSC_PES_SkillsHeader>
+  <SSC_PES_SkillLevel>{0}\nУровень: {1}</SSC_PES_SkillLevel>
+  <SSC_PES_SkillPassion>\nСтрасть: {0}</SSC_PES_SkillPassion>
+  <SSC_PES_SkillXP>\nТекущий прогресс опыта: {0}</SSC_PES_SkillXP>
+  <SSC_PES_TraitsHeader>&lt;b&gt;Черты&lt;/b&gt;</SSC_PES_TraitsHeader>
+  <SSC_PES_NoTraits> (Нет черт)</SSC_PES_NoTraits>
+  <SSC_PES_BondHeader>&lt;b&gt;Статус связи&lt;/b&gt;</SSC_PES_BondHeader>
+  <SSC_PES_MasterLabel> Господин: {0}</SSC_PES_MasterLabel>
+  <SSC_PES_MemoriesHeader>&lt;b&gt;Фрагменты памяти:&lt;/b&gt; {0}</SSC_PES_MemoriesHeader>
+  <SSC_PES_MemoriesHint> (Будут восстановлены после слияния)</SSC_PES_MemoriesHint>
+  <SSC_PES_AssignTarget>Назначить целевую пустую оболочку</SSC_PES_AssignTarget>
+  <SSC_PES_AssignedTo>Назначено: {0}</SSC_PES_AssignedTo>
+  <SSC_PES_Unassign>Снять назначение</SSC_PES_Unassign>
+  <SSC_PES_NoHollowTargets>Нет доступных пустых оболочек</SSC_PES_NoHollowTargets>
+  <SSC_PES_AlreadyAssigned> (Уже назначено: {0})</SSC_PES_AlreadyAssigned>
+  <SSC_PES_WaitingForInsert>Ожидание вставки колонистом...</SSC_PES_WaitingForInsert>
+  <SSC_Message_PersonalityInserted>В {0} вставлен гель личности. Наследование личности завершено.</SSC_Message_PersonalityInserted>
+  <SSC_Inspect_Personality>Личность: {0}</SSC_Inspect_Personality>
+  <SSC_Inspect_PersonalityNone>Нет</SSC_Inspect_PersonalityNone>
+  <SSC_Inspect_SexSlaveTag> (секс-раб)</SSC_Inspect_SexSlaveTag>
+  <SSC_Inspect_RelationsCount>\nСодержит {0} социальных связей</SSC_Inspect_RelationsCount>
+  <SSC_Inspect_BelongsTo>\nПринадлежит: {0}</SSC_Inspect_BelongsTo>
+  <SSC_Inspect_ExtraStatus>\nДополнительный статус:</SSC_Inspect_ExtraStatus>
+  <SSC_Produce_ProgressStalled>Прогресс: {0} (остановлен из-за недоедания)</SSC_Produce_ProgressStalled>
+  <SSC_Produce_Progress>Прогресс: {0}</SSC_Produce_Progress>
+  <SSC_Inspect_ProductionProgress>Прогресс производства {0}: {1}</SSC_Inspect_ProductionProgress>
+  <SSC_Ritual_FullBodyTraining>В этом ритуале всё тело {0} было глубоко разработано и дрессировано.</SSC_Ritual_FullBodyTraining>
+  <SSC_Ritual_RepeatPenalty>Повтор слишком рано (в течение 3 дней): </SSC_Ritual_RepeatPenalty>
+  <SSC_Float_CertaintyReduction>-{0} уверенности</SSC_Float_CertaintyReduction>
+  <SSC_Train_IdentityMaster>Дрессировка секс-раба: [Роль: господин]</SSC_Train_IdentityMaster>
+  <SSC_Train_IdentityUnset>Дрессировка секс-раба: [Роль: не задана]</SSC_Train_IdentityUnset>
+  <SSC_Train_Cooldown>Дрессировка на перезарядке ({0})</SSC_Train_Cooldown>
+  <SSC_Train_Waiting>Ожидание дрессировки</SSC_Train_Waiting>
+  <SSC_Train_Status>Дрессировка секс-раба: {0}</SSC_Train_Status>
+  <SSC_Lactating_Stalled>Наполненность: {0} (остановлена из-за недоедания)</SSC_Lactating_Stalled>
+  <SSC_Lactating_Disabled>Наполненность: {0} (лактация отключена)</SSC_Lactating_Disabled>
+  <SSC_Ritual_Unassigned>Не назначено</SSC_Ritual_Unassigned>
+  <SSC_Ritual_UnassignedDesc>{0} (Не назначено): {1}</SSC_Ritual_UnassignedDesc>
+  <SSC_Ritual_UIError>{0} (Ошибка UI)</SSC_Ritual_UIError>
+  <SSC_Ritual_MustBeColonist>Должен быть членом этой колонии.</SSC_Ritual_MustBeColonist>
+  <SSC_Ritual_NoCompData>Этот персонаж не может получить данные роли (отсутствует связанный компонент).</SSC_Ritual_NoCompData>
+  <SSC_Ritual_NotDesignatedMaster>Этот персонаж не назначен как [Господин] во [вкладке дрессировки].</SSC_Ritual_NotDesignatedMaster>
+  <SSC_Ritual_MustBeColonistOrSlave>Должен быть колонистом, заключённым или рабом</SSC_Ritual_MustBeColonistOrSlave>
+  <SSC_Ritual_MissingTrainingComp>Отсутствует необходимый компонент дрессировки.</SSC_Ritual_MissingTrainingComp>
+  <SSC_Ritual_CannotBeSlaveAsMaster>Этот персонаж уже установлен как [Господин] и не может участвовать как секс-раб.</SSC_Ritual_CannotBeSlaveAsMaster>
+  <SSC_Ritual_NoMasterAssigned>Господин не назначен: сначала назначьте во [вкладке дрессировки].</SSC_Ritual_NoMasterAssigned>
+  <SSC_Ritual_ChainConflict>Конфликт владения цепью: она принадлежит {0}, но во вкладке назначен другой.</SSC_Ritual_ChainConflict>
+  <SSC_Trainer_None>Назначенный дрессировщик</SSC_Trainer_None>
+  <SSC_Trainer_Selected>Текущий дрессировщик: {0}</SSC_Trainer_Selected>
+  <SSC_Trainer_Desc>Назначить конкретного мужчину-колониста для дрессировки этого персонажа.\n\nМожно выбрать только мужчин, назначенных на работу «Дрессировка».</SSC_Trainer_Desc>
+  <SSC_Trainer_NoCandidates>Не найден подходящий мужчина-дрессировщик</SSC_Trainer_NoCandidates>
+  <SSC_Trainer_MasterForced> (Господин)</SSC_Trainer_MasterForced>
+  <SSC_Trainer_Locked> (Недоступен)</SSC_Trainer_Locked>
+  <SSC_Trainer_Clear>Снять выбор</SSC_Trainer_Clear>
+  <SSC_Message_TrainingEnabledEligible>[SSC] Дрессировка включена: цель сейчас соответствует условиям получателя RJW.</SSC_Message_TrainingEnabledEligible>
+  <SSC_Message_PersonalityInsertFailed>Вставка личности не удалась: неполные данные или аномальное состояние цели.</SSC_Message_PersonalityInsertFailed>
+  <SSC_EnslaveChanceDetail>[SSC] Шанс порабощения {0} (Оценка: {1} / Давление воли: {2} / Потребность развращения: {3})</SSC_EnslaveChanceDetail>
+  <SSC_RJW_TargetNull>[SSC/RJW] Цель равна null и не может быть оценена.</SSC_RJW_TargetNull>
+  <SSC_RJW_ReportHeader>[SSC] Подробности отказа по условиям получателя RJW</SSC_RJW_ReportHeader>
+  <SSC_RJW_Short_TargetNull>Цель равна null и не может быть использована.</SSC_RJW_Short_TargetNull>
+  <SSC_RJW_Short_Pass>Цель соответствует условиям получателя RJW.</SSC_RJW_Short_Pass>
+  <SSC_RJW_Short_Fail_Mechanoid>Цель не проходит проверку RJW: механоида нельзя использовать.</SSC_RJW_Short_Fail_Mechanoid>
+  <SSC_RJW_Short_Fail_Age>Цель не проходит проверку RJW: возрастная стадия не допускается.</SSC_RJW_Short_Fail_Age>
+  <SSC_RJW_Short_Fail_Warcasket>Цель не проходит проверку RJW: надета броня warcasket.</SSC_RJW_Short_Fail_Warcasket>
+  <SSC_RJW_Short_Fail_CanDoLoving>Цель не проходит проверку RJW: can_do_loving = false.</SSC_RJW_Short_Fail_CanDoLoving>
+  <SSC_RJW_Short_Fail_NoUsableOrifice>Цель не проходит проверку RJW: нет пригодной отверстия.</SSC_RJW_Short_Fail_NoUsableOrifice>
+  <SSC_RJW_Short_Fail_CanBeFucked>Цель не проходит проверку RJW: can_be_fucked = false.</SSC_RJW_Short_Fail_CanBeFucked>
+  <SSC_Legacy_Short_RequireRapeEnabled>Устаревший режим SSC: RJW rape_enabled должен быть включён.</SSC_Legacy_Short_RequireRapeEnabled>
+  <SSC_Legacy_Short_FailCanBeFucked>Устаревший режим SSC: RJW can_be_fucked = false.</SSC_Legacy_Short_FailCanBeFucked>
+  <SSC_Legacy_Short_MissingAgeTracker>Устаревший режим SSC: у цели нет age tracker.</SSC_Legacy_Short_MissingAgeTracker>
+  <SSC_Legacy_Short_AgeGateFail>Устаревший режим SSC: дополнительный возрастной фильтр не пройден.</SSC_Legacy_Short_AgeGateFail>
+  <SSC_Legacy_Short_Pass>Устаревший режим SSC: условия выполнены.</SSC_Legacy_Short_Pass>
+</LanguageData>

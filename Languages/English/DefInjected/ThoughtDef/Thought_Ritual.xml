@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <SSC_Ritual_Best.stages.0.label>Sacred Binding Ritual (Perfect)</SSC_Ritual_Best.stages.0.label>
+  <SSC_Ritual_Best.stages.0.description>That ritual was pure art. This absolute sense of domination is intoxicating.</SSC_Ritual_Best.stages.0.description>
+  <SSC_Ritual_Good.stages.0.label>Binding Ritual (Successful)</SSC_Ritual_Good.stages.0.label>
+  <SSC_Ritual_Good.stages.0.description>The ritual proceeded smoothly. This sense of order makes me feel at ease.</SSC_Ritual_Good.stages.0.description>
+  <SSC_Ritual_Boring.stages.0.label>Binding Ritual (Average)</SSC_Ritual_Boring.stages.0.label>
+  <SSC_Ritual_Boring.stages.0.description>A bit dull. Nothing special.</SSC_Ritual_Boring.stages.0.description>
+  <SSC_Ritual_Terrible.stages.0.label>Binding Ritual (Bad)</SSC_Ritual_Terrible.stages.0.label>
+  <SSC_Ritual_Terrible.stages.0.description>This was a farce. I should not have wasted my time watching it.</SSC_Ritual_Terrible.stages.0.description>
+</LanguageData>

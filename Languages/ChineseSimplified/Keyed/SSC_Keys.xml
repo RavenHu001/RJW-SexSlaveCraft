@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <!--仪式结算部分（ritual）-->
+  <SSC_DailyTrainingOutcome>[日常训练] 评分:{0} (等级{1}) | 恶堕率:+{2}</SSC_DailyTrainingOutcome>
+
+  <SSC_Ritual_MasterSlaveHeader>主人 {0} | 性奴: {1}</SSC_Ritual_MasterSlaveHeader>
+  <SSC_Ritual_ScoreLevel>评分: {0} (等级 {1})</SSC_Ritual_ScoreLevel>
+  <SSC_Ritual_CorruptionGain>恶堕率: +{0}</SSC_Ritual_CorruptionGain>
+  <SSC_Ritual_OutcomeHeader> 仪式成果 </SSC_Ritual_OutcomeHeader>
+  <SSC_Ritual_NoNewStage>(仪式加深了奴役的烙印，但未触发新的阶段)</SSC_Ritual_NoNewStage>
+
+  <SSC_Bond_BridleAdded>{0} 在炒饭智能的帮助下用无形的链子拴住了 {1}</SSC_Bond_BridleAdded>
+  <SSC_Bond_ChainAdded>{0} 一部分能力受限，需要听从于 {1}</SSC_Bond_ChainAdded>
+  <SSC_Ritual_Enslaved>{0} 在理智脱离的情况下承认了自己奴隶的身份。</SSC_Ritual_Enslaved>
+  <SSC_Ritual_EnslaveFailed>{0} 没有被奴役，看来你需要一点运气。</SSC_Ritual_EnslaveFailed>
+  <SSC_Trait_SexSlaveLevelUp>特性晋升: 性奴等级 {0} -> {1}</SSC_Trait_SexSlaveLevelUp>
+  <SSC_Ritual_FlawedLoversCreated>\n由于理智脱出，{0} 彻底成为了 {1} 的性奴。</SSC_Ritual_FlawedLoversCreated>
+  
+  <SSC_RitualRole_MustBeColonistSlavePrisoner>必须是殖民者、奴隶或囚犯</SSC_RitualRole_MustBeColonistSlavePrisoner>
+  <SSC_RitualRole_SlaveBoundToOther>该奴隶已被 {0} 绑定，无法与当前主人进行仪式</SSC_RitualRole_SlaveBoundToOther>
+  <SSC_RitualRole_SlaveBoundToOther_Unknown>其他人</SSC_RitualRole_SlaveBoundToOther_Unknown>
+  <!--需求部分（need）-->
+  <SSC_Stage_Extreme>极度堕落</SSC_Stage_Extreme>
+  <SSC_Stage_Severe>重度堕落</SSC_Stage_Severe>
+  <SSC_Stage_Moderate>中度堕落</SSC_Stage_Moderate>
+  <SSC_Stage_Minor>轻度堕落</SSC_Stage_Minor>
+  <SSC_Stage_Slight>微堕落</SSC_Stage_Slight>
+  <SSC_Stage_Stable>稳定</SSC_Stage_Stable>
+  <SSC_Need_TipFormat>{0}: {1} ({2})\n{3}</SSC_Need_TipFormat>
+  <!--健康状态部分（hediff）-->
+  <SSC_Bridle_LabelWithNames>{0} ({1})</SSC_Bridle_LabelWithNames>
+  <SSC_Bridle_DescSlaves>\n该殖民者的性奴为: {0}</SSC_Bridle_DescSlaves>
+  <SSC_Chain_LabelWithPawn>{0} ({1})</SSC_Chain_LabelWithPawn>
+  <!--调教姿势部分（SexPosition GetGizmos）-->
+  <SSC_TrainingMode_GizmoLabel>调教姿势: {0}</SSC_TrainingMode_GizmoLabel>
+  <SSC_TrainingMode_GizmoDesc>点击选择在该角色进行调教/训练时采取的具体行为。</SSC_TrainingMode_GizmoDesc>
+  <SSC_Mode_Auto>自动</SSC_Mode_Auto>
+  <SSC_Mode_Vaginal>本番</SSC_Mode_Vaginal>
+  <SSC_Mode_Anal>后庭</SSC_Mode_Anal>
+  <SSC_Mode_Oral>口交</SSC_Mode_Oral>
+  <SSC_Mode_Boobjob>乳交</SSC_Mode_Boobjob>
+  <SSC_Mode_Handjob>手交</SSC_Mode_Handjob>
+  <SSC_Mode_Footjob>足交</SSC_Mode_Footjob>
+  <SSC_Mode_Fingering>指交</SSC_Mode_Fingering>
+  <SSC_Mode_MutualMasturbation>互相自慰</SSC_Mode_MutualMasturbation>
+  <SSC_Mode_Fisting>拳交</SSC_Mode_Fisting>
+  <SSC_Mode_Rimming>舔肛</SSC_Mode_Rimming>
+  <SSC_Mode_Sixtynine>69</SSC_Mode_Sixtynine>
+  <!--调教开关（Sexmode GetGizmos）-->
+  <SSC_Toggle_GizmoDesc>循环切换模式：禁用 / 启用 / 保护。</SSC_Toggle_GizmoDesc>
+  <SSC_Toggle_Label_Disabled>训练模式: 禁用</SSC_Toggle_Label_Disabled>
+  <SSC_Toggle_Label_Enabled>训练模式: 启用</SSC_Toggle_Label_Enabled>
+  <SSC_Toggle_Label_Protect>训练模式: 保护</SSC_Toggle_Label_Protect>
+  <SSC_Toggle_Label_Unknown>训练模式: 未知</SSC_Toggle_Label_Unknown>
+  <SSC_Toggle_Desc_Disabled>已禁用：禁止任何人对该角色进行调教。</SSC_Toggle_Desc_Disabled>
+  <SSC_Toggle_Desc_Enabled>已启用：目前仅主人可进行调教（需要仪式绑定）。</SSC_Toggle_Desc_Enabled>
+  <SSC_Toggle_Desc_Protect>保护模式：除主人外，任何人都不能强制该角色。</SSC_Toggle_Desc_Protect>
+  <SSC_Message_BerserkSuppressed>{0} 的狂暴被锁链压制了</SSC_Message_BerserkSuppressed>
+  <SSC_EquipRestriction_NotCorruptedEnough>{0} 明显不愿意穿这件衣服（试着提高恶堕值）。</SSC_EquipRestriction_NotCorruptedEnough>
+<!--设置（setting）-->
+  <SSC_Setting_Category>SexSlaveCraft 设置</SSC_Setting_Category>
+  <SSC_Setting_EnableSexSlaveProtectionRules>启用性奴保护规则</SSC_Setting_EnableSexSlaveProtectionRules>
+  <SSC_Setting_EnableSexSlaveProtectionRules_Desc>关闭后，将停用这段 Harmony 的全部性奴保护/限制逻辑，相关行为将不再被拦截。</SSC_Setting_EnableSexSlaveProtectionRules_Desc>
+  <SSC_Setting_AllowSexSlaveRape>性奴是否可以被强暴</SSC_Setting_AllowSexSlaveRape>
+  <SSC_Setting_AllowSexSlaveRape_Desc>如果选【是】：任何人都可强暴性奴，但当性奴穿着“恶堕少女战衣”时，将免疫强暴。\n\n如果选【否】：进入严格保护模式。除主人外，任何人（无论是否穿衣）都无法强暴性奴。</SSC_Setting_AllowSexSlaveRape_Desc>
+  <SSC_Setting_ProtectBusAggressorRape>公交车不能主动强暴</SSC_Setting_ProtectBusAggressorRape>
+  <SSC_Setting_ProtectBusAggressorRape_Desc>开启后，拥有公交车状态的性奴不能主动发起强暴行为，但仍可发起非强暴性行为。</SSC_Setting_ProtectBusAggressorRape_Desc>
+  <SSC_Setting_ProtectChainedAggressorRape>锁链性奴不能主动强暴</SSC_Setting_ProtectChainedAggressorRape>
+  <SSC_Setting_ProtectChainedAggressorRape_Desc>开启后，已戴锁链的性奴不能主动发起强暴行为。</SSC_Setting_ProtectChainedAggressorRape_Desc>
+  <SSC_Setting_ProtectNonRapeOwnerOnly>非强暴行为仅允许主人</SSC_Setting_ProtectNonRapeOwnerOnly>
+  <SSC_Setting_ProtectNonRapeOwnerOnly_Desc>开启后，带锁链的性奴在自愿性行为中仍只能与自己的主人进行。</SSC_Setting_ProtectNonRapeOwnerOnly_Desc>
+  <SSC_Setting_EnableLogs>启用 SSC 日志</SSC_Setting_EnableLogs>
+  <SSC_Setting_EnableLogs_Desc>关闭后，将关闭 SSC 的自定义 Message/Warning 日志输出，但 Error 仍会保留。</SSC_Setting_EnableLogs_Desc>
+  <SSC_Setting_EnableVerboseLogs>启用高频调试日志</SSC_Setting_EnableVerboseLogs>
+  <SSC_Setting_EnableVerboseLogs_Desc>用于输出 GuardDbg、动画调试、训练流程等高频日志，默认关闭以避免刷屏。</SSC_Setting_EnableVerboseLogs_Desc>
+  <SSC_Setting_EnableImportantLogs>启用低频关键日志</SSC_Setting_EnableImportantLogs>
+  <SSC_Setting_EnableImportantLogs_Desc>用于输出 onahole 兼容、仪式转奴、关键回退等低频日志，默认开启。</SSC_Setting_EnableImportantLogs_Desc>
+  <SSC_Setting_UseRJWOriginalEligibility>训练年龄判定使用 RJW 原版机制</SSC_Setting_UseRJWOriginalEligibility>
+  <SSC_Setting_UseRJWOriginalEligibility_Desc>开启：训练/仪式目标判定完全跟随 RJW 原版 can_be_fucked 规则（推荐）。\n关闭：使用 SSC 旧版兼容判定（额外要求 rape_enabled 且有额外年龄门槛）。</SSC_Setting_UseRJWOriginalEligibility_Desc>
+  <SSC_Setting_EnableFullGelTint>启用全凝胶化身体染色</SSC_Setting_EnableFullGelTint>
+  <SSC_Setting_EnableFullGelTint_Desc>开启后，全凝胶化完成的个体会保留头部原色，并将身体染成微透明的紫色。</SSC_Setting_EnableFullGelTint_Desc>
+  <SSC_Setting_EnableRitualEnslavement>允许仪式转化为奴隶</SSC_Setting_EnableRitualEnslavement>
+  <SSC_Setting_EnableRitualEnslavement_Desc>开启后，绑定仪式在满足条件时可以将目标转化为原版奴隶。关闭后，仪式仍会正常完成，但不会执行转奴判定。</SSC_Setting_EnableRitualEnslavement_Desc>
+  <!--Trainer Gizmo-->
+  <SSC_Trainer_None>指定调教员</SSC_Trainer_None>
+  <SSC_Trainer_Selected>当前调教员: {0}</SSC_Trainer_Selected>
+  <SSC_Trainer_Desc>指定一名特定的男性殖民者来负责此人的调教工作。\n\n只有分配了“调教”工作的男性才能被选中。</SSC_Trainer_Desc>
+  <SSC_Trainer_NoCandidates>未找到合法的男性调教员</SSC_Trainer_NoCandidates>
+  <SSC_Trainer_MasterForced> (主人)</SSC_Trainer_MasterForced>
+  <SSC_Trainer_Locked> (不可用)</SSC_Trainer_Locked>
+  <SSC_Trainer_Clear>清除选择</SSC_Trainer_Clear>
+  <!--调教面板 Training Tab Label-->
+<Tab_SexSlaveTraining>调教</Tab_SexSlaveTraining>
+<!-- 仪式 Ritual -->
+  <SSC_Ritual_GenitalDifference_Label>生殖器尺寸匹配度</SSC_Ritual_GenitalDifference_Label>
+  <SSC_Ritual_Genital_Huge>巨物 (被填满了)</SSC_Ritual_Genital_Huge>
+  <SSC_Ritual_Genital_Satisfying>令人满意的阴茎</SSC_Ritual_Genital_Satisfying>
+  <SSC_Ritual_Genital_Appropriate>尺寸合适的阴茎</SSC_Ritual_Genital_Appropriate>
+  <SSC_Ritual_Genital_SlightlySmall>略小的阴茎</SSC_Ritual_Genital_SlightlySmall>
+  <SSC_Ritual_Genital_TooSmall>过小的阴茎</SSC_Ritual_Genital_TooSmall>
+  <SSC_Ritual_Genital_Pathetic>小的可怜的阴茎</SSC_Ritual_Genital_Pathetic>
+  <SSC_Ritual_Social_Incompetent>根本不会做爱</SSC_Ritual_Social_Incompetent>
+  <!-- 或许受虐狂应该例外 -->
+  <SSC_Ritual_Social_Average>粗暴地揉搓</SSC_Ritual_Social_Average>
+  <SSC_Ritual_Social_Skilled>熟练的技巧</SSC_Ritual_Social_Skilled>
+  <SSC_Ritual_Social_Masterful>情场之王</SSC_Ritual_Social_Masterful>
+  
+  <!-- 新增本地化字符串 (扫描项目文件得到) -->
+  <SSC_Message_PersonalityExcretedComplete>{0} 的人格已排泄完毕。</SSC_Message_PersonalityExcretedComplete>
+  <SSC_Message_PersonalityFusionComplete>{0} 已完全融合了 {1} 的人格，并吸收了人格凝胶塑像的特质</SSC_Message_PersonalityFusionComplete>
+  <SSC_Message_SameIdeologyNoEffect>使用也没有效果，对方已是相同信仰。</SSC_Message_SameIdeologyNoEffect>
+  <SSC_Message_EroticConversionComplete>{0} 已被情色之语彻底征服，转变了信仰。</SSC_Message_EroticConversionComplete>
+  <SSC_Message_PersonalityExcretionComplete>{0} 的人格已完全排泄。</SSC_Message_PersonalityExcretionComplete>
+  <SSC_Message_TradeRejectedForgiven>交易结束。性奴拒绝了性交易，但{0} 看着瑟瑟发抖的 {1}，决定放过 {2}。</SSC_Message_TradeRejectedForgiven>
+  <SSC_Message_TradeConsensualSex>一场愉快的交易：恶堕的 {0} 主动向 {1} 献上身体。</SSC_Message_TradeConsensualSex>
+  <SSC_Message_TradeRapeOccurred>交易破裂！{0} 试图拒绝，但被 {1} 强行按倒在地！</SSC_Message_TradeRapeOccurred>
+  <SSC_Message_TradeFactionHappy>{0}为据点的人带来了快乐。</SSC_Message_TradeFactionHappy>
+  <SSC_Message_SlaveAlreadyLinked>该性奴已经和别人链接过，无法和你选定的人进行</SSC_Message_SlaveAlreadyLinked>
+  <SSC_Message_CannotUseNotHollow>无法使用：躯体非空壳状态 (需先进行人格排泄)</SSC_Message_CannotUseNotHollow>
+  <SSC_Message_BusSpecializationUnlocked>{0} 的公交车特化达到 20%，已获得基础公交车加成。</SSC_Message_BusSpecializationUnlocked>
+  <SSC_Message_CowSpecializationUnlocked>{0} 的奶牛特化达到 20%，已获得基础奶牛加成。</SSC_Message_CowSpecializationUnlocked>
+  <SSC_Label_SlaveTrainingIdentityMaster>性奴训练: [身份: 主人]</SSC_Label_SlaveTrainingIdentityMaster>
+  <SSC_Label_TrainingCooldown>训练冷却中 ({0})</SSC_Label_TrainingCooldown>
+  <SSC_Label_WaitingForTraining>等待训练</SSC_Label_WaitingForTraining>
+  <SSC_Label_SlaveTrainingStatus>性奴训练: {0}</SSC_Label_SlaveTrainingStatus>
+  <SSC_Label_IdeologyCertaintyReduction>-{0} 认可度</SSC_Label_IdeologyCertaintyReduction>
+  <SSC_Label_SexSlavePrefix>[性奴] </SSC_Label_SexSlavePrefix>
+  <SSC_Label_RelationsCount>[关系: {0}个]</SSC_Label_RelationsCount>
+  <SSC_Label_SkillsHeader>&lt;b&gt;技能&lt;/b&gt;</SSC_Label_SkillsHeader>
+  <SSC_Label_TraitsHeader>&lt;b&gt;特质&lt;/b&gt;</SSC_Label_TraitsHeader>
+  <SSC_Label_FullName>全名: {0} </SSC_Label_FullName>
+  <SSC_Label_SkillLevel>{0}等级: {1}</SSC_Label_SkillLevel>
+  <SSC_Label_SkillPassion>兴趣: {0}</SSC_Label_SkillPassion>
+  <SSC_Label_SkillXP>当前经验进度: {0}</SSC_Label_SkillXP>
+  <SSC_Label_Bloodlust>嗜血</SSC_Label_Bloodlust>
+  <SSC_RitualPhase>阶段 {0}/{1}</SSC_RitualPhase>
+  <SSC_RitualExpectedDuration>取决于仪式进程（共5阶段）</SSC_RitualExpectedDuration>
+
+  <!--ITab_SexSlaveTraining 调教面板-->
+  <SSC_ITab_IdentityHeader>&lt;b&gt;角色身份&lt;/b&gt;</SSC_ITab_IdentityHeader>
+  <SSC_ITab_IdentityUnset>当前身份: [未选择]</SSC_ITab_IdentityUnset>
+  <SSC_ITab_IdentityMaster>当前身份: [主人]</SSC_ITab_IdentityMaster>
+  <SSC_ITab_IdentitySlave>当前身份: [性奴]</SSC_ITab_IdentitySlave>
+  <SSC_ITab_SetIdentityUnset>设为: 未选择</SSC_ITab_SetIdentityUnset>
+  <SSC_ITab_SetAsSlave>设为: 性奴</SSC_ITab_SetAsSlave>
+  <SSC_ITab_SetAsMaster>设为: 主人</SSC_ITab_SetAsMaster>
+  <SSC_ITab_AlreadyMaster>该角色已被设定为[主人]。</SSC_ITab_AlreadyMaster>
+  <SSC_ITab_TrainingLocked>&lt;color=yellow&gt;⚠ 调教功能未解锁&lt;/color&gt;</SSC_ITab_TrainingLocked>
+  <SSC_ITab_TrainingLockedDesc>需要研究「调教」才能使用调教设置。</SSC_ITab_TrainingLockedDesc>
+  <SSC_ITab_TrainingSettingsHeader>&lt;b&gt;调教设置&lt;/b&gt;</SSC_ITab_TrainingSettingsHeader>
+  <SSC_ITab_AllowTraining>允许调教</SSC_ITab_AllowTraining>
+  <SSC_ITab_AllowOthers>允许其他人调教或进行性交</SSC_ITab_AllowOthers>
+  <SSC_ITab_AllowOthersWarning>公交车特化需要性奴与主人以外的人做爱才能增长经验值。</SSC_ITab_AllowOthersWarning>
+  <SSC_ITab_CooldownStatus>&lt;color=orange&gt;冷却中: {0}&lt;/color&gt;</SSC_ITab_CooldownStatus>
+  <SSC_ITab_StatusReady>状态: &lt;color=green&gt;就绪&lt;/color&gt;</SSC_ITab_StatusReady>
+  <SSC_ITab_StatusDisabled>状态: &lt;color=grey&gt;已禁用&lt;/color&gt;</SSC_ITab_StatusDisabled>
+  <SSC_ITab_PoseHeader>&lt;b&gt;指定姿势&lt;/b&gt;</SSC_ITab_PoseHeader>
+  <SSC_ITab_TrainerHeader>&lt;b&gt;指定调教员&lt;/b&gt;</SSC_ITab_TrainerHeader>
+  <SSC_ITab_TrainerNone>无 (任意)</SSC_ITab_TrainerNone>
+  <SSC_ITab_NoTrainerAvailable>无可用调教员</SSC_ITab_NoTrainerAvailable>
+  <SSC_ITab_TrainerMasterSuffix> (主人)</SSC_ITab_TrainerMasterSuffix>
+  <SSC_ITab_TrainerLockedSuffix> (不可用)</SSC_ITab_TrainerLockedSuffix>
+  <SSC_ITab_ClearTrainer>清除指定</SSC_ITab_ClearTrainer>
+  <SSC_ITab_SpecializationHeader>&lt;b&gt;性奴特化&lt;/b&gt;</SSC_ITab_SpecializationHeader>
+  <SSC_ITab_SpecializationNone>未选择</SSC_ITab_SpecializationNone>
+  <SSC_ITab_SpecializationBus>公交车</SSC_ITab_SpecializationBus>
+  <SSC_ITab_SpecializationCow>奶牛</SSC_ITab_SpecializationCow>
+  <SSC_ITab_SpecializationProgress>特化进度: {0}</SSC_ITab_SpecializationProgress>
+  <SSC_ITab_SelectSpecializationNone>设为: 未选择</SSC_ITab_SelectSpecializationNone>
+  <SSC_ITab_SelectSpecializationBus>设为: 公交车</SSC_ITab_SelectSpecializationBus>
+  <SSC_ITab_SelectSpecializationCow>设为: 奶牛</SSC_ITab_SelectSpecializationCow>
+  <SSC_ITab_SpecializationBusDisabledResearch>未完成公交车特化研究</SSC_ITab_SpecializationBusDisabledResearch>
+  <SSC_ITab_SpecializationCowDisabledResearch>未完成奶牛化研究</SSC_ITab_SpecializationCowDisabledResearch>
+  <SSC_ITab_SpecializationCowDisabledDegree>性奴等级不足 2 级</SSC_ITab_SpecializationCowDisabledDegree>
+  <SSC_ITab_SpecializationCowDisabledLactation>缺少永久泌乳期</SSC_ITab_SpecializationCowDisabledLactation>
+  <SSC_ITab_SpecializationCowDisabledMissingRequirements>缺少前置条件</SSC_ITab_SpecializationCowDisabledMissingRequirements>
+  <SSC_ITab_MilkProductionToggle>开启泌乳</SSC_ITab_MilkProductionToggle>
+  <SSC_MasterShareDamage_Label>伤害分担</SSC_MasterShareDamage_Label>
+  <SSC_MasterShareDamage_Desc>开启后，绑定性奴会替主人分担 {0} 的伤害。会优先把伤害导向拥有半凝胶化部位的性奴，并优先命中这些半凝胶化部位。</SSC_MasterShareDamage_Desc>
+  <SSC_MasterShareDamage_Message>{0} 的锁链震颤，将 {1} 点伤害分担给了 {2}。</SSC_MasterShareDamage_Message>
+  <SSC_MasterShareDamage_LogStart>[SSC 伤害分担] {0} 受到 {1}，原始伤害 {2}，准备转移 {3}。可分担性奴 {4} 名，其中半凝胶化优先目标 {5} 名。</SSC_MasterShareDamage_LogStart>
+  <SSC_MasterShareDamage_Log>[SSC 伤害分担] {0} 将 {2} 点伤害转移给 {1}，命中部位：{3}</SSC_MasterShareDamage_Log>
+  <SSC_MasterShareDamage_LogRemain>[SSC 伤害分担] {0} 最终保留伤害：{1}</SSC_MasterShareDamage_LogRemain>
+  <SSC_MasterShareDamage_LogNoCandidate>[SSC 伤害分担] {0} 受到 {1}，伤害 {2}，但没有同地图且未倒地的可分担性奴。</SSC_MasterShareDamage_LogNoCandidate>
+  <SSC_MasterShareDamage_LogBlocked>[SSC 伤害分担] {0} 受到 {1}，该伤害类型被设定为不可转移。</SSC_MasterShareDamage_LogBlocked>
+  <SSC_MasterShareDamage_Float>分担 {0}</SSC_MasterShareDamage_Float>
+  <SSC_MasterShareDamage_PartFallback>未知部位</SSC_MasterShareDamage_PartFallback>
+  <SSC_MasterEmpowerment_None>当前没有可生效的主奴共鸣强化。</SSC_MasterEmpowerment_None>
+  <SSC_MasterEmpowerment_Summary>主奴共鸣强化
+绑定性奴: {0}
+当前阶段: {1}
+平均恶堕: {2}
+强化强度: {3}
+操控: +{4}
+近战命中: +{5}
+近战闪避: +{6}
+移速: +{7}
+痛觉休克阈值: +{8}</SSC_MasterEmpowerment_Summary>
+  <SSC_FullGel_MissingPE>{0} 还没有完成人格排泄，无法进行全凝胶化。</SSC_FullGel_MissingPE>
+  <SSC_FullGel_AlreadyRunning>{0} 已经在进行全凝胶化了。</SSC_FullGel_AlreadyRunning>
+  <SSC_FullGel_Guaranteed>{0} 已满足全凝胶化的全部条件，适应度会被强制加速，必定赶在严重度之前完成。</SSC_FullGel_Guaranteed>
+  <SSC_FullGel_RiskWarning>{0} 的全凝胶化将进入高风险竞赛。\n{1}</SSC_FullGel_RiskWarning>
+  <SSC_FullGel_RiskReport>当前恶堕: {0}\n部位完成度: {1}\n平滑成功权重: {2}\n未满足条件: {3}</SSC_FullGel_RiskReport>
+  <SSC_FullGel_Requirement_Corruption>恶堕率未满 100%（当前 {0}）</SSC_FullGel_Requirement_Corruption>
+  <SSC_FullGel_Requirement_Hand>手部</SSC_FullGel_Requirement_Hand>
+  <SSC_FullGel_Requirement_Foot>足部</SSC_FullGel_Requirement_Foot>
+  <SSC_FullGel_Requirement_Oral>口部</SSC_FullGel_Requirement_Oral>
+  <SSC_FullGel_Requirement_Breast>胸部</SSC_FullGel_Requirement_Breast>
+  <SSC_FullGel_Requirement_Genitals>生殖器</SSC_FullGel_Requirement_Genitals>
+  <SSC_FullGel_Requirement_Anus>后庭</SSC_FullGel_Requirement_Anus>
+  <SSC_FullGel_AdaptationTip>适应度: {0}</SSC_FullGel_AdaptationTip>
+  <SSC_FullGel_SeverityTip>严重度: {0}</SSC_FullGel_SeverityTip>
+  <SSC_FullGel_Success>{0} 完成了全凝胶化，身体被稳定地重构为凝胶形态。</SSC_FullGel_Success>
+  <SSC_FullGel_Failure>{0} 在全凝胶化过程中彻底崩毁，连存在本身都被抹去了。</SSC_FullGel_Failure>
+  <SSC_FullGel_BlockSemiGel>{0} 已完成全凝胶化，无法再进行半凝胶化改造。</SSC_FullGel_BlockSemiGel>
+  <SSC_LifeForce_Removed>由于某种原因，生命之门并不能和那位色孽超凡智能的技术共同存在。{0} 的生命之门基因已被移除，并在脚下留下了一枚基因胚芽。</SSC_LifeForce_Removed>
+
+  <!--ITab_PES 人格卡片面板-->
+  <SSC_PES_Underage> | (未成年)</SSC_PES_Underage>
+  <SSC_PES_FullName>全名: {0} </SSC_PES_FullName>
+  <SSC_PES_SexSlaveTag>[性奴] </SSC_PES_SexSlaveTag>
+  <SSC_PES_RelationsCount>[关系: {0}个]</SSC_PES_RelationsCount>
+  <SSC_PES_SkillsHeader>&lt;b&gt;技能&lt;/b&gt;</SSC_PES_SkillsHeader>
+  <SSC_PES_SkillLevel>{0}\n等级: {1}</SSC_PES_SkillLevel>
+  <SSC_PES_SkillPassion>\n兴趣: {0}</SSC_PES_SkillPassion>
+  <SSC_PES_SkillXP>\n当前经验进度: {0}</SSC_PES_SkillXP>
+  <SSC_PES_TraitsHeader>&lt;b&gt;特质&lt;/b&gt;</SSC_PES_TraitsHeader>
+  <SSC_PES_NoTraits> (无特质)</SSC_PES_NoTraits>
+  <SSC_PES_BondHeader>&lt;b&gt;隶属状态&lt;/b&gt;</SSC_PES_BondHeader>
+  <SSC_PES_MasterLabel> 主人: {0}</SSC_PES_MasterLabel>
+  <SSC_PES_MemoriesHeader>&lt;b&gt;记忆片段:&lt;/b&gt; {0} 条</SSC_PES_MemoriesHeader>
+  <SSC_PES_MemoriesHint> (将在融合后恢复)</SSC_PES_MemoriesHint>
+
+  <!--ITab_PES 人格凝胶分配相关-->
+  <SSC_PES_AssignTarget>指定目标空壳</SSC_PES_AssignTarget>
+  <SSC_PES_AssignedTo>已指定: {0}</SSC_PES_AssignedTo>
+  <SSC_PES_Unassign>取消分配</SSC_PES_Unassign>
+  <SSC_PES_NoHollowTargets>没有可用的空壳目标</SSC_PES_NoHollowTargets>
+  <SSC_PES_AlreadyAssigned> (已被分配: {0})</SSC_PES_AlreadyAssigned>
+  <SSC_PES_WaitingForInsert>等待殖民者执行塞入...</SSC_PES_WaitingForInsert>
+  <SSC_Message_PersonalityInserted>{0} 已被塞入人格凝胶，人格继承完成。</SSC_Message_PersonalityInserted>
+
+  <!--CompInspectStringExtra 检查面板-->
+  <SSC_Inspect_Personality>人格: {0}</SSC_Inspect_Personality>
+  <SSC_Inspect_PersonalityNone>无</SSC_Inspect_PersonalityNone>
+  <SSC_Inspect_SexSlaveTag> (性奴)</SSC_Inspect_SexSlaveTag>
+  <SSC_Inspect_RelationsCount>\n包含 {0} 条社会关系</SSC_Inspect_RelationsCount>
+  <SSC_Inspect_BelongsTo>\n所属: {0}</SSC_Inspect_BelongsTo>
+  <SSC_Inspect_ExtraStatus>\n附加状态:</SSC_Inspect_ExtraStatus>
+
+  <!--HediffComp_ProducePAN 生产进度-->
+  <SSC_Produce_ProgressStalled>进度: {0} (缺乏营养，停滞)</SSC_Produce_ProgressStalled>
+  <SSC_Produce_Progress>进度: {0}</SSC_Produce_Progress>
+
+  <!--Harmony_ShowPAN 检查栏生产进度-->
+  <SSC_Inspect_ProductionProgress>{0} 生产进度: {1}</SSC_Inspect_ProductionProgress>
+
+  <!--ConditioningUtility 仪式训练-->
+  <SSC_Ritual_FullBodyTraining>{0} 的全身上下都在这场仪式中得到了深度的开发与训练。</SSC_Ritual_FullBodyTraining>
+
+  <!--RitualOutcomeEffectWorker 重复惩罚-->
+  <SSC_Ritual_RepeatPenalty>短期内重复举办 (3天内): </SSC_Ritual_RepeatPenalty>
+
+  <!--CompAbilityEffect_EroticConversion 浮动文字-->
+  <SSC_Float_CertaintyReduction>-{0} 认可度</SSC_Float_CertaintyReduction>
+
+  <!--Comp_Train 左下角状态显示-->
+  <SSC_Train_IdentityMaster>性奴训练: [身份: 主人]</SSC_Train_IdentityMaster>
+  <SSC_Train_IdentityUnset>性奴训练: [身份: 未选择]</SSC_Train_IdentityUnset>
+  <SSC_Train_Cooldown>训练冷却中 ({0})</SSC_Train_Cooldown>
+  <SSC_Train_Waiting>等待训练</SSC_Train_Waiting>
+  <SSC_Train_Status>性奴训练: {0}</SSC_Train_Status>
+
+  <!--HediffComp_PermanentLactating 泌乳进度-->
+  <SSC_Lactating_Stalled>充盈度: {0} (缺乏营养，停滞)</SSC_Lactating_Stalled>
+  <SSC_Lactating_Disabled>充盈度: {0} (已关闭泌乳)</SSC_Lactating_Disabled>
+
+  <!--Ritual 角色检查-->
+  <SSC_Ritual_Unassigned>未分配</SSC_Ritual_Unassigned>
+  <SSC_Ritual_UnassignedDesc>{0} (未分配): {1}</SSC_Ritual_UnassignedDesc>
+  <SSC_Ritual_UIError>{0} (UI错误)</SSC_Ritual_UIError>
+  <SSC_Ritual_MustBeColonist>必须是本殖民地的成员。</SSC_Ritual_MustBeColonist>
+  <SSC_Ritual_NoCompData>该角色无法获取身份数据(无相关组件)。</SSC_Ritual_NoCompData>
+  <SSC_Ritual_NotDesignatedMaster>该角色未在[调教面板]中被指定为[主人]。</SSC_Ritual_NotDesignatedMaster>
+  <SSC_Ritual_MustBeColonistOrSlave>必须是殖民者、囚犯或奴隶</SSC_Ritual_MustBeColonistOrSlave>
+  <SSC_Ritual_MissingTrainingComp>缺少必要的调教组件。</SSC_Ritual_MissingTrainingComp>
+  <SSC_Ritual_CannotBeSlaveAsMaster>该角色已被设定为[主人]，无法作为性奴参与。</SSC_Ritual_CannotBeSlaveAsMaster>
+  <SSC_Ritual_NoMasterAssigned>未指定主人：请先在[调教面板]中为其指定一名主人。</SSC_Ritual_NoMasterAssigned>
+  <SSC_Ritual_ChainConflict>锁链归属冲突：她属于 {0}，但面板指定了其他人。</SSC_Ritual_ChainConflict>
+  <SSC_Message_TrainingEnabledEligible>[SSC] 已允许调教：当前目标满足 RJW 可受位条件。</SSC_Message_TrainingEnabledEligible>
+  <SSC_Message_PersonalityInsertFailed>人格塞入失败：数据不完整或目标状态异常。</SSC_Message_PersonalityInsertFailed>
+  <SSC_EnslaveChanceDetail>[SSC] 奴役概率 {0} (评分:{1} / 意志压制:{2} / 恶堕需求:{3})</SSC_EnslaveChanceDetail>
+  <SSC_RJW_TargetNull>[SSC/RJW] 目标为空，无法判定。</SSC_RJW_TargetNull>
+  <SSC_RJW_ReportHeader>[SSC] RJW 可受位判定失败详情</SSC_RJW_ReportHeader>
+  <SSC_RJW_Short_TargetNull>目标为空，无法执行。</SSC_RJW_Short_TargetNull>
+  <SSC_RJW_Short_Pass>目标满足 RJW 受位条件。</SSC_RJW_Short_Pass>
+  <SSC_RJW_Short_Fail_Mechanoid>目标不满足 RJW 条件：机械体不可作为目标。</SSC_RJW_Short_Fail_Mechanoid>
+  <SSC_RJW_Short_Fail_Age>目标不满足 RJW 条件：年龄阶段不允许。</SSC_RJW_Short_Fail_Age>
+  <SSC_RJW_Short_Fail_Warcasket>目标不满足 RJW 条件：穿着 warcasket 装备。</SSC_RJW_Short_Fail_Warcasket>
+  <SSC_RJW_Short_Fail_CanDoLoving>目标不满足 RJW 条件：can_do_loving 未通过。</SSC_RJW_Short_Fail_CanDoLoving>
+  <SSC_RJW_Short_Fail_NoUsableOrifice>目标不满足 RJW 条件：没有可用受位。</SSC_RJW_Short_Fail_NoUsableOrifice>
+  <SSC_RJW_Short_Fail_CanBeFucked>目标不满足 RJW 条件：can_be_fucked 未通过。</SSC_RJW_Short_Fail_CanBeFucked>
+  <SSC_Legacy_Short_RequireRapeEnabled>SSC 旧版模式：需要开启 RJW 的 rape_enabled。</SSC_Legacy_Short_RequireRapeEnabled>
+  <SSC_Legacy_Short_FailCanBeFucked>SSC 旧版模式：RJW can_be_fucked 未通过。</SSC_Legacy_Short_FailCanBeFucked>
+  <SSC_Legacy_Short_MissingAgeTracker>SSC 旧版模式：目标缺少年龄追踪数据。</SSC_Legacy_Short_MissingAgeTracker>
+  <SSC_Legacy_Short_AgeGateFail>SSC 旧版模式：额外年龄门槛未通过。</SSC_Legacy_Short_AgeGateFail>
+  <SSC_Legacy_Short_Pass>SSC 旧版模式：判定通过。</SSC_Legacy_Short_Pass>
+</LanguageData>

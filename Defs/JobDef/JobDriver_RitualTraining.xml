@@ -1,0 +1,9 @@
+<Defs>
+  <JobDef>
+    <defName>SSC_Training_Ritual</defName>
+    <driverClass>SexSlaveCraft.JobDriver_RitualTraining</driverClass>
+    <reportString>正在调教 TargetA。</reportString>
+    <allowOpportunisticPrefix>true</allowOpportunisticPrefix>
+    <casualInterruptible>false</casualInterruptible> 
+  </JobDef>
+</Defs>

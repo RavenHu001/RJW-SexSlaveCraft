@@ -1,0 +1,9 @@
+<Defs>
+  <JobDef>
+    <defName>SSC_Job_PE</defName>
+    <driverClass>SexSlaveCraft.JobDriver_PE</driverClass>
+    <reportString>正在对TargetA进行人格排泄作业。</reportString>
+    <casualInterruptible>false</casualInterruptible>
+    <allowOpportunisticPrefix>true</allowOpportunisticPrefix>
+  </JobDef>
+</Defs>

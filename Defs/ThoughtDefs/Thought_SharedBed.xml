@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <ThoughtDef>
+    <defName>SSC_SharedBedWithMaster</defName>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSC_SharedBedWithMaster</workerClass>
+    <developmentalStageFilter>Adult</developmentalStageFilter>
+    <stages>
+      <li>
+        <label>与主人同床（厌恶）</label>
+        <description>和主人睡在同一张床上让我感到屈辱与恶心。光是靠近，就让我本能地想逃开。</description>
+        <baseMoodEffect>-6</baseMoodEffect>
+      </li>
+      <li>
+        <label>与主人同床（抗拒）</label>
+        <description>和主人同床还是会让我本能地反感，那股残留的厌恶始终挥之不去。</description>
+        <baseMoodEffect>-3</baseMoodEffect>
+      </li>
+      <li>
+        <label>与主人同床（动摇）</label>
+        <description>我明明应该抗拒这一切，可身体与情绪却开始背叛我。越是靠近主人，那种危险的安定感就越难忽视。</description>
+        <baseMoodEffect>2</baseMoodEffect>
+      </li>
+      <li>
+        <label>与主人同床（驯化）</label>
+        <description>躺在主人身边时，我会不自觉地放松下来。那种被支配、被占有的感觉，开始让我感到安心。</description>
+        <baseMoodEffect>5</baseMoodEffect>
+      </li>
+      <li>
+        <label>与主人同床（沉迷）</label>
+        <description>只有贴近主人时，我才能真正安稳下来。主人的床、主人的气息、主人的体温，都让我越来越沉迷。</description>
+        <baseMoodEffect>9</baseMoodEffect>
+      </li>
+      <li>
+        <label>与主人同床（彻底驯服）</label>
+        <description>只要能依偎在主人身边入睡，我就会感到无比满足。抗拒早已被彻底碾碎，如今我只想更深地沉进主人的支配里。</description>
+        <baseMoodEffect>13</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+</Defs>

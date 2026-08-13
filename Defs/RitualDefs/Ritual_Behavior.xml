@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <RitualBehaviorDef>
+    <defName>SSC_BindingRitualBehavior</defName>
+    <workerClass>RitualBehaviorWorker</workerClass>
+    
+    <durationTicks>99999999</durationTicks> 
+    
+    <roles>
+      <li Class="SexSlaveCraft.RitualRole_BindingMaster">
+        <id>master</id>
+        <label>主人</label>
+        <maxCount>1</maxCount>
+        <required>True</required>
+        <countsAsParticipant>True</countsAsParticipant>
+      </li>
+
+      <li Class="SexSlaveCraft.RitualRole_BindingSlave">
+        <id>slave</id> 
+        <label>性奴</label>
+        <maxCount>1</maxCount>
+        <required>true</required>
+        <substitutable>true</substitutable>
+      </li>
+    </roles>
+
+    <stages>
+      <li Class="SexSlaveCraft.RitualStage_InteractWithSlave">
+        <defaultDuty>Spectate</defaultDuty>
+        <showProgressBar>false</showProgressBar> 
+        <endTriggers>
+          <li Class="StageEndTrigger_PawnDeliveredOrNotValid" />
+        </endTriggers>
+        <roleBehaviors>
+          <li>
+            <roleId>master</roleId>
+            <dutyDef>DeliverPawnToAltar</dutyDef> 
+          </li>
+          <li>
+            <roleId>slave</roleId>
+            <dutyDef>Spectate</dutyDef>
+          </li>
+        </roleBehaviors>
+      </li>
+
+      <li Class="SexSlaveCraft.RitualStage_InteractWithSlave">
+        <defaultDuty>Spectate</defaultDuty> 
+        <essential>True</essential>
+        <showProgressBar>false</showProgressBar> 
+
+        <ignoreDurationToFinishAfterStage>true</ignoreDurationToFinishAfterStage>
+
+        <endTriggers>
+          <li Class="SexSlaveCraft.StageEndTrigger_PawnJobFinished">
+            <roleId>master</roleId>
+            <jobDef>SSC_Training_Ritual</jobDef> 
+          </li>
+        </endTriggers>
+        <roleBehaviors>
+          <li>
+            <roleId>master</roleId>
+            <dutyDef>SSC_BindingRitualDuty</dutyDef>
+          </li>
+          <li>
+            <roleId>slave</roleId>
+            <dutyDef>SSC_SlaveWaitDuty</dutyDef> 
+          </li>
+        </roleBehaviors>
+      </li>
+    </stages>
+  </RitualBehaviorDef>
+
+</Defs>

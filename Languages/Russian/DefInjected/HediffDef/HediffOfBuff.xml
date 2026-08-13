@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <SSC_MasterBondEmpowerment.label>Поле либидинального резонанса</SSC_MasterBondEmpowerment.label>
+  <SSC_MasterBondEmpowerment.description>Либидинальное поле, образованное связкой фиолетового наномашинного резонанса и пси-силы. По мере привязки большего числа рабов и углубления их развращения поле постепенно усиливает тело господина, боевой инстинкт и власть доминирования.</SSC_MasterBondEmpowerment.description>
+  <SSC_MasterBondEmpowerment.stages.0.label>Слабое</SSC_MasterBondEmpowerment.stages.0.label>
+  <SSC_MasterBondEmpowerment.stages.1.label>Заметное</SSC_MasterBondEmpowerment.stages.1.label>
+  <SSC_MasterBondEmpowerment.stages.2.label>Рассеянное</SSC_MasterBondEmpowerment.stages.2.label>
+  <SSC_MasterBondEmpowerment.stages.3.label>Безформенное</SSC_MasterBondEmpowerment.stages.3.label>
+  <Hediff_PNA_Combat_Buff.label>PNA-боевая усиление</Hediff_PNA_Combat_Buff.label>
+  <Hediff_PNA_Combat_Buff.description>Под воздействием фиолетовых наномашинных афродизиаков клетки секс-раба активизируются и возбуждаются, повышая боеспособность.</Hediff_PNA_Combat_Buff.description>
+  <Hediff_PNA_Combat_Buff_Plus.label>PNA-боевая усиление (концентрированное)</Hediff_PNA_Combat_Buff_Plus.label>
+  <Hediff_PNA_Combat_Buff_Plus.description>Под концентрированным воздействием фиолетовых наномашин потенциал секс-раба значительно раскрывается.</Hediff_PNA_Combat_Buff_Plus.description>
+  <Hediff_PNA_Debuff.label>PNA-инфекция</Hediff_PNA_Debuff.label>
+  <Hediff_PNA_Debuff.description>Под воздействием фиолетовых наномашин чувствительность непрерывно растёт, пока не наступает паралич от непрерывного оргазма.</Hediff_PNA_Debuff.description>
+  <Hediff_PNA_Debuff.stages.0.label>Покраснение</Hediff_PNA_Debuff.stages.0.label>
+  <Hediff_PNA_Debuff.stages.1.label>Непрерывный оргазм</Hediff_PNA_Debuff.stages.1.label>
+  <Hediff_PNA_Consciousness_Record.label>Снимок сознания</Hediff_PNA_Consciousness_Record.label>
+  <Hediff_PNA_Consciousness_Record.description>Используется для записи пикового сознания цели под воздействием гормонов (обычно не предназначено для просмотра).</Hediff_PNA_Consciousness_Record.description>
+  <SSC_PostExcretionComa.label>Синдром адаптации после экскреции личности</SSC_PostExcretionComa.label>
+  <SSC_PostExcretionComa.description>После принудительного извлечения личности мозг и нервная система входят в состояние глубокой перестройки и опустошения; первичная личность берёт контроль.</SSC_PostExcretionComa.description>
+  <SSC_PostExcretionComa.stages.0.label>Глубокое отключение</SSC_PostExcretionComa.stages.0.label>
+  <SSC_PostInsertionComa.label>Синдром адаптации после имплантации личности</SSC_PostInsertionComa.label>
+  <SSC_PostInsertionComa.description>После принудительной имплантации внешней личности в пустую оболочку мозгу и нервной системе требуется время на адаптацию и восстановление.</SSC_PostInsertionComa.description>
+  <SSC_PostInsertionComa.stages.0.label>Глубокое отключение</SSC_PostInsertionComa.stages.0.label>
+</LanguageData>

@@ -1,0 +1,98 @@
+<Defs>
+<ThingDef ParentName="ApparelBase">
+    <defName>Apparel_EFOutfit</defName>
+    <label>恶堕少女战衣</label>
+    <description>堕落战斗员的装扮，表面能量附有能量薄膜，能够防御大部分的攻击。全身的战斗媚药注射器能够保证战斗员在战斗中更加亢奋。ps：设计的原型就是yaoki的恶堕战斗员，这里感谢这位佬能带给我灵感（事实上画这衣服的贴图折腾了我一个半月不过还是很感谢）</description>
+    <thingClass>Apparel</thingClass>
+    <category>Item</category>
+    <tradeability>All</tradeability>
+    <relicChance>1</relicChance>
+    <techLevel>Industrial</techLevel>
+
+    <!-- 地面/库存贴图 -->
+    <graphicData>
+      <texPath>Things/Apparel/SexSlaveClothes/EFOutfit</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+    </graphicData>
+
+    <!-- 穿戴参数 -->
+    <apparel>
+      <layers>
+        <li>Middle</li>
+        <li>Shell</li>
+      </layers>
+      <bodyPartGroups>
+        <li>Torso</li>
+        <li>Neck</li>
+        <li>Shoulders</li>
+        <li>Arms</li>
+        <li>Legs</li>
+      </bodyPartGroups>
+      <wornGraphicPath>Things/Apparel/SexSlaveClothes/EFOutfit</wornGraphicPath>
+      <gender>Female</gender>
+      <countsAsClothingForNudity>true</countsAsClothingForNudity>
+      <careIfWornByCorpse>false</careIfWornByCorpse>
+      <careIfDamaged>false</careIfDamaged>
+      <wearPerDay>0</wearPerDay>
+    </apparel>
+
+    <!-- 自定义 Comp -->
+    <comps>
+      <li Class="SexSlaveCraft.CompProperties_CorruptionModifier">
+        <corruptionMultiplier>1.5</corruptionMultiplier>
+        <minCorruptionLevel>1.0</minCorruptionLevel>
+      </li>
+      <li Class = "SexSlaveCraft.CompProperties_SSRapeCheck"></li>
+    </comps>
+
+    <!-- 制作材料 -->
+    <costList>
+      <Uranium>40</Uranium>
+      <Plasteel>150</Plasteel>
+      <ComponentSpacer>3</ComponentSpacer>
+      <DevilstrandCloth>75</DevilstrandCloth>
+      <Luciferium>10</Luciferium>
+    </costList>
+
+    <!-- RecipeMaker：制作半成品 -->
+    <recipeMaker>
+      <unfinishedThingDef>UnfinishedApparel</unfinishedThingDef>
+      <workSpeedStat>GeneralLaborSpeed</workSpeedStat>
+      <workSkill>Crafting</workSkill>
+      <effectWorking>Tailor</effectWorking>
+      <soundWorking>Recipe_Tailor</soundWorking>
+      <skillRequirements>
+        <Crafting>8</Crafting>
+      </skillRequirements>
+      <recipeUsers>
+        <li>ElectricTailoringBench</li>
+      </recipeUsers>
+    </recipeMaker>
+
+    <!-- 基础属性 -->
+    <statBases>
+      <WorkToMake>500</WorkToMake>
+      <MaxHitPoints>1500</MaxHitPoints>
+      <Mass>2</Mass>
+      <Flammability>0</Flammability>
+      <DeteriorationRate>1</DeteriorationRate>
+      <ArmorRating_Sharp>1</ArmorRating_Sharp>
+      <ArmorRating_Blunt>0.8</ArmorRating_Blunt>
+      <ArmorRating_Heat>0.3</ArmorRating_Heat>
+      
+      <EquipDelay>10</EquipDelay>
+    </statBases>
+
+    <!-- 穿戴加成 -->
+
+    <equippedStatOffsets>
+      <ComfyTemperatureMax>30</ComfyTemperatureMax>
+      <ComfyTemperatureMin>-30</ComfyTemperatureMin>
+      <SlaveSuppressionOffset MayRequire="Ludeon.RimWorld.Ideology">1</SlaveSuppressionOffset>
+      <WorkSpeedGlobal>0.1</WorkSpeedGlobal>
+      <MeleeDodgeChance>0.3</MeleeDodgeChance>
+      <MoveSpeed>0.3</MoveSpeed>
+    </equippedStatOffsets>
+
+  </ThingDef>
+</Defs>

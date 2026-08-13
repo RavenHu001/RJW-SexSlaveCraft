@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+  <RecipeDef ParentName="SurgeryFlesh">
+    <defName>SSC_Surgery_GenderChange_MtF</defName>
+    <label>性别重置手术 (男转女)</label>
+    <description>利用NPA侵蚀男性器官并重新塑造女性器官来将男性转化为女性。</description>
+    
+    <workerClass>SexSlaveCraft.Recipe_GenderChange_MtF</workerClass>
+    <jobString>正在施行变性手术</jobString>
+    
+    <workAmount>4000</workAmount>
+    
+    <hideBodyPartNames>true</hideBodyPartNames>
+    <targetsBodyPart>false</targetsBodyPart>
+    
+    <surgerySuccessChanceFactor>0.90</surgerySuccessChanceFactor>
+    <skillRequirements>
+    <Medicine>5</Medicine>
+  </skillRequirements>
+
+
+    <recipeUsers>
+      <li>Human</li>
+    </recipeUsers>
+
+    <ingredients>
+      <li>
+        <filter>
+          <categories>
+            <li>Medicine</li> 
+          </categories>
+        </filter>
+        <count>5</count>
+      </li>
+      <li>
+        <filter>
+          <thingDefs>
+            <li>Purple_Aphrodisiac_Nanofluid</li>
+          </thingDefs>
+        </filter>
+        <count>10</count>
+      </li>
+    </ingredients>
+    
+    <fixedIngredientFilter>
+      <categories>
+        <li>Medicine</li>
+      </categories>
+      <thingDefs>
+        <li>Purple_Aphrodisiac_Nanofluid</li>
+      </thingDefs>
+    </fixedIngredientFilter>
+    
+    <appliedOnFixedBodyParts>
+      <li>Torso</li>
+    </appliedOnFixedBodyParts>
+  </RecipeDef>
+  <ThoughtDef>
+    <defName>SSC_Thought_GenderChangeSuccess</defName> 
+    <defName>SSC_GenderChange_Memory</defName>
+    <durationDays>15</durationDays> 
+    <stackLimit>1</stackLimit> 
+    <stages>
+      <li>
+        <label>不...不...</label>
+        <description>我的Dio呢？那群疯子居然让我变成了女孩？这太羞耻了。</description>
+        <baseMoodEffect>-10</baseMoodEffect> </li>
+    </stages>
+  </ThoughtDef>
+</Defs>

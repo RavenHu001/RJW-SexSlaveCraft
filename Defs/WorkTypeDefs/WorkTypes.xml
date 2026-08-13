@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+<WorkTypeDef>
+  <defName>TrainSexSlave</defName>
+  <labelShort>调教</labelShort>
+  <pawnLabel>主人</pawnLabel>
+  <gerundLabel>调教性奴</gerundLabel>
+  <description>调教性奴使其恶堕</description>
+  <verb>调教</verb>
+  <naturalPriority>700</naturalPriority>
+  <alwaysStartActive>false</alwaysStartActive>
+  <requireCapableColonist>true</requireCapableColonist>
+  <workTags>
+    <li>Social</li>
+  </workTags>
+</WorkTypeDef>
+</Defs>

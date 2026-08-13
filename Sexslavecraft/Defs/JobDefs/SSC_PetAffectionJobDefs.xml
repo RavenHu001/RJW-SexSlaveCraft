@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+  <JobDef>
+    <defName>SSC_Job_PetAffection</defName>
+    <driverClass>SexSlaveCraft.JobDriver_PetAffection</driverClass>
+    <reportString>蹭一下 TargetA。</reportString>
+    <casualInterruptible>true</casualInterruptible>
+  </JobDef>
+</Defs>
