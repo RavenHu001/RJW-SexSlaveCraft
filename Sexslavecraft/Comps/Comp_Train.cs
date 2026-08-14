@@ -196,7 +196,72 @@ namespace SexSlaveCraft
             base.CompTickRare();
 
             if (!(parent is Pawn pawn)) return;
+            ReconcileSpecialization(pawn);
             PetSpecializationUtility.TryStartAutomaticPetAffectionJob(pawn, this);
+        }
+
+        // EN: Reconciles hediff-only states (e.g. gel-injected) with the comp state so
+        // progression gates (comp.specializationType) match the existing hediffs.
+        // CN: 对账特化状态：凝胶注入/旧存档可能只有 hediff 而没有 comp 类型，
+        // 这里自动认领并双向同步，让所有经验来源的门控条件恢复生效。
+        public static void ReconcileSpecialization(Pawn pawn)
+        {
+            if (pawn?.health?.hediffSet == null) return;
+
+            CompSexSlaveTraining comp = pawn.TryGetComp<CompSexSlaveTraining>();
+            if (comp == null || comp.pawnIdentity == PawnIdentity.Master) return;
+
+            if (comp.specializationType == SexSlaveSpecializationType.None)
+            {
+                SexSlaveSpecializationType adopted = DetectAdoptableType(pawn);
+                if (adopted == SexSlaveSpecializationType.None) return;
+
+                comp.SetSpecialization(adopted);
+            }
+
+            switch (comp.specializationType)
+            {
+                case SexSlaveSpecializationType.Bus:
+                    BusSpecializationUtility.EnsureBusHediffFromSpecialization(pawn);
+                    break;
+                case SexSlaveSpecializationType.Cow:
+                    BusSpecializationUtility.EnsureCowHediffFromSpecialization(pawn);
+                    break;
+                case SexSlaveSpecializationType.PetCat:
+                case SexSlaveSpecializationType.PetDog:
+                case SexSlaveSpecializationType.PetRabbit:
+                    PetSpecializationUtility.EnsurePetHediffFromSpecialization(pawn);
+                    break;
+            }
+
+            // EN: Keep mutual exclusivity for in-progress states. Finalized hediffs are never touched.
+            // CN: 保持"进行中"特化的互斥性；终极化 hediff 永不删除。
+            RemoveInactiveSpecializationStates(pawn, comp, comp.specializationType);
+        }
+
+        private static SexSlaveSpecializationType DetectAdoptableType(Pawn pawn)
+        {
+            if (pawn?.health?.hediffSet == null) return SexSlaveSpecializationType.None;
+
+            if (BusSpecializationUtility.HasFinalBusState(pawn)) return SexSlaveSpecializationType.Bus;
+            if (BusSpecializationUtility.HasFinalCowState(pawn)) return SexSlaveSpecializationType.Cow;
+            if (PetSpecializationUtility.HasFinalPetState(pawn, SexSlaveSpecializationType.PetDog)) return SexSlaveSpecializationType.PetDog;
+            if (PetSpecializationUtility.HasFinalPetState(pawn, SexSlaveSpecializationType.PetCat)) return SexSlaveSpecializationType.PetCat;
+            if (PetSpecializationUtility.HasFinalPetState(pawn, SexSlaveSpecializationType.PetRabbit)) return SexSlaveSpecializationType.PetRabbit;
+
+            if (SSCDefOf.SSC_Hediff_Bus != null && pawn.health.hediffSet.HasHediff(SSCDefOf.SSC_Hediff_Bus)) return SexSlaveSpecializationType.Bus;
+            if (SSCDefOf.SSC_Hediff_Cow != null && pawn.health.hediffSet.HasHediff(SSCDefOf.SSC_Hediff_Cow)) return SexSlaveSpecializationType.Cow;
+
+            HediffDef dogBase = PetSpecializationUtility.GetBaseHediffDef(SexSlaveSpecializationType.PetDog);
+            if (dogBase != null && pawn.health.hediffSet.HasHediff(dogBase)) return SexSlaveSpecializationType.PetDog;
+
+            HediffDef catBase = PetSpecializationUtility.GetBaseHediffDef(SexSlaveSpecializationType.PetCat);
+            if (catBase != null && pawn.health.hediffSet.HasHediff(catBase)) return SexSlaveSpecializationType.PetCat;
+
+            HediffDef rabbitBase = PetSpecializationUtility.GetBaseHediffDef(SexSlaveSpecializationType.PetRabbit);
+            if (rabbitBase != null && pawn.health.hediffSet.HasHediff(rabbitBase)) return SexSlaveSpecializationType.PetRabbit;
+
+            return SexSlaveSpecializationType.None;
         }
 
         public override void PostExposeData()

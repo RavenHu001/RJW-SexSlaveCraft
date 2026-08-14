@@ -288,6 +288,11 @@ namespace SexSlaveCraft
                     Log.Warning($"[SSC Tag Debug] ⚠️ 被塞入的这个雕像/凝胶体内，没有任何 Tag 数据！");
                 }
 
+                // EN: Reconcile comp state with the injected hediffs so gel-injected
+                // specializations are immediately adoptable and trainable.
+                // CN: 对账 comp 与刚注入的 hediff，确保凝胶注入的特化立即被认领并可持续训练。
+                CompSexSlaveTraining.ReconcileSpecialization(consumer);
+
                 Messages.Message(Strings.Message_PersonalityFusionComplete(consumer.LabelShort, data.nickName), consumer, MessageTypeDefOf.NeutralEvent);
 
                 if (data.parent != null && !data.parent.Destroyed)
