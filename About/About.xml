@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ModMetaData>
     <name>RJW-SexSlaveCraft</name>
-    <author>Someone,Hajimi</author>
+    <author>Someone,Hajimi, TieJin</author>
     <supportedVersions>
 		<li>1.6</li>
 	</supportedVersions>
-	<packageId>rjw.sexslavecraft</packageId>
+	<packageId>rjw.sexslavecraft.TieJinVer</packageId>
     <description>none</description>
 	<modDependencies>
 		<li>
