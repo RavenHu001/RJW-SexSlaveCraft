@@ -150,6 +150,9 @@
   <SSC_ITab_SpecializationCowDisabledDegree>Sex slave degree is below 2</SSC_ITab_SpecializationCowDisabledDegree>
   <SSC_ITab_SpecializationCowDisabledLactation>Missing permanent lactation</SSC_ITab_SpecializationCowDisabledLactation>
   <SSC_ITab_SpecializationCowDisabledMissingRequirements>Missing requirements</SSC_ITab_SpecializationCowDisabledMissingRequirements>
+  <SSC_ITab_SpecializationFinalizedSuffix> (Finalized)</SSC_ITab_SpecializationFinalizedSuffix>
+  <SSC_ITab_SpecializationUnfinishedSuffix> (Incomplete)</SSC_ITab_SpecializationUnfinishedSuffix>
+  <SSC_ITab_SpecializationComplete>Complete</SSC_ITab_SpecializationComplete>
   <SSC_ITab_MilkProductionToggle>Enable lactation</SSC_ITab_MilkProductionToggle>
   <SSC_MasterShareDamage_Label>Damage Sharing</SSC_MasterShareDamage_Label>
   <SSC_MasterShareDamage_Desc>When enabled, bound sex slaves absorb {0} of damage for their master. Slaves with half-gelatinized parts are prioritized first, and damage is aimed at those half-gelatinized parts whenever possible.</SSC_MasterShareDamage_Desc>

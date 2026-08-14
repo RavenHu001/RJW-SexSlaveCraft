@@ -66,10 +66,26 @@ namespace SexSlaveCraft
             CompSexSlaveTraining comp = pawn.TryGetComp<CompSexSlaveTraining>();
             if (comp == null || !comp.IsBusSpecialized) return;
 
-            Hediff hediff = pawn.health.hediffSet.GetFirstHediffOfDef(SSCDefOf.SSC_Hediff_Bus) ?? pawn.health.AddHediff(SSCDefOf.SSC_Hediff_Bus);
+            Hediff hediff = pawn.health.hediffSet.GetFirstHediffOfDef(SSCDefOf.SSC_Hediff_Bus);
+            bool wasMissing = hediff == null;
+            if (wasMissing)
+            {
+                hediff = pawn.health.AddHediff(SSCDefOf.SSC_Hediff_Bus);
+            }
+
             if (hediff != null)
             {
-                hediff.Severity = Mathf.Max(InitialHediffSeverity, comp.specializationProgress);
+                if (wasMissing)
+                {
+                    hediff.Severity = Mathf.Max(InitialHediffSeverity, comp.specializationProgress);
+                }
+                else
+                {
+                    // EN: Two-way sync so trade/training severity gains fold into progress instead of being wiped.
+                    // CN: 双向同步：交易/调教积累的严重度会并入进度，而不是被进度覆盖洗掉。
+                    hediff.Severity = Mathf.Max(hediff.Severity, InitialHediffSeverity, comp.specializationProgress);
+                    comp.specializationProgress = Mathf.Max(comp.specializationProgress, hediff.Severity);
+                }
             }
         }
 
@@ -96,10 +112,33 @@ namespace SexSlaveCraft
             CompSexSlaveTraining comp = pawn.TryGetComp<CompSexSlaveTraining>();
             if (comp == null || !comp.IsCowSpecialized) return;
 
-            Hediff hediff = pawn.health.hediffSet.GetFirstHediffOfDef(SSCDefOf.SSC_Hediff_Cow) ?? pawn.health.AddHediff(SSCDefOf.SSC_Hediff_Cow);
+            Hediff hediff = pawn.health.hediffSet.GetFirstHediffOfDef(SSCDefOf.SSC_Hediff_Cow);
+            bool wasMissing = hediff == null;
+            if (wasMissing)
+            {
+                hediff = pawn.health.AddHediff(SSCDefOf.SSC_Hediff_Cow);
+
+                if (hediff != null && comp.savedCowReservoirCharge > 0f)
+                {
+                    HediffComp_CowMilkReservoir reservoir = hediff.TryGetComp<HediffComp_CowMilkReservoir>();
+                    if (reservoir != null)
+                    {
+                        reservoir.SetCharge(Mathf.Min(comp.savedCowReservoirCharge, reservoir.CustomProps.fullChargeAmount));
+                    }
+                }
+            }
+
             if (hediff != null)
             {
-                hediff.Severity = Mathf.Max(InitialHediffSeverity, comp.specializationProgress);
+                if (wasMissing)
+                {
+                    hediff.Severity = Mathf.Max(InitialHediffSeverity, comp.specializationProgress);
+                }
+                else
+                {
+                    hediff.Severity = Mathf.Max(hediff.Severity, InitialHediffSeverity, comp.specializationProgress);
+                    comp.specializationProgress = Mathf.Max(comp.specializationProgress, hediff.Severity);
+                }
             }
         }
 

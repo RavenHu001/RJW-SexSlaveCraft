@@ -63,6 +63,11 @@ namespace SexSlaveCraft
             return charge - oldCharge;
         }
 
+        public void SetCharge(float value)
+        {
+            charge = Mathf.Clamp(value, 0f, CustomProps.fullChargeAmount);
+        }
+
         private void TickChargeGrowth()
         {
             if (charge >= CustomProps.fullChargeAmount) return;

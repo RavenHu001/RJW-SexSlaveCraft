@@ -129,10 +129,26 @@ namespace SexSlaveCraft
             HediffDef baseDef = GetBaseHediffDef(comp.specializationType);
             if (baseDef == null) return;
 
-            Hediff hediff = pawn.health.hediffSet.GetFirstHediffOfDef(baseDef) ?? pawn.health.AddHediff(baseDef);
+            Hediff hediff = pawn.health.hediffSet.GetFirstHediffOfDef(baseDef);
+            bool wasMissing = hediff == null;
+            if (wasMissing)
+            {
+                hediff = pawn.health.AddHediff(baseDef);
+            }
+
             if (hediff != null)
             {
-                hediff.Severity = Mathf.Max(InitialHediffSeverity, comp.specializationProgress);
+                if (wasMissing)
+                {
+                    hediff.Severity = Mathf.Max(InitialHediffSeverity, comp.specializationProgress);
+                }
+                else
+                {
+                    // EN: Two-way sync so injected/lost severity is folded into progress instead of being downgraded.
+                    // CN: 双向同步：注入或已存在的更高严重度并入进度，避免被降级。
+                    hediff.Severity = Mathf.Max(hediff.Severity, InitialHediffSeverity, comp.specializationProgress);
+                    comp.specializationProgress = Mathf.Max(comp.specializationProgress, hediff.Severity);
+                }
             }
         }
 

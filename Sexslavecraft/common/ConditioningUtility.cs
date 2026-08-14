@@ -225,13 +225,15 @@ namespace SexSlaveCraft
         {
             if (!BusSpecializationUtility.ShouldProcessBusGrowth(pawn)) return;
             BusSpecializationUtility.SyncBusStates(pawn);
-            HediffDef busDef = SSCDefOf.SSC_Hediff_Bus;
-            if (busDef == null || BusSpecializationUtility.HasFinalBusState(pawn)) return;
+            if (BusSpecializationUtility.HasFinalBusState(pawn)) return;
 
-            Hediff hediff = pawn.health.hediffSet.GetFirstHediffOfDef(busDef);
-            if (hediff == null) return;
+            CompSexSlaveTraining comp = pawn?.TryGetComp<CompSexSlaveTraining>();
+            if (comp == null) return;
 
-            hediff.Severity = Mathf.Clamp(hediff.Severity + amount, 0f, 1f);
+            // EN: All bus growth now lands on the single progress track; the hediff severity is derived from it.
+            // CN: 公交车成长统一走 progress 单轨，hediff 严重度由 progress 派生，避免双轨互相覆盖。
+            comp.AddSpecializationProgress(amount);
+            BusSpecializationUtility.EnsureBusHediffFromSpecialization(pawn);
         }
     }
 }

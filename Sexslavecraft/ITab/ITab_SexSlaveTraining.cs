@@ -460,20 +460,42 @@ namespace SexSlaveCraft
 
         private static void DrawSpecializationSelector(Listing_Standard listing, Pawn pawn, CompSexSlaveTraining comp)
         {
-            string currentLabel = GetSpecializationLabel(comp.specializationType);
+            string currentLabel = GetSpecializationLabel(pawn, comp);
 
             if (listing.ButtonText(currentLabel))
             {
                 string busOptionLabel = Strings.ITab_SelectSpecializationBus;
-                bool busEnabled = BusSpecializationUtility.CanUseBusSpecialization(pawn, out string busDisabledReason);
-                if (!busEnabled)
+                bool busFinalized = BusSpecializationUtility.HasFinalBusState(pawn);
+                bool busEnabled = !busFinalized;
+                string busDisabledReason = null;
+                if (busEnabled)
+                {
+                    busEnabled = BusSpecializationUtility.CanUseBusSpecialization(pawn, out busDisabledReason);
+                }
+
+                if (busFinalized)
+                {
+                    busOptionLabel = busOptionLabel + " " + Strings.ITab_SpecializationFinalizedSuffix;
+                }
+                else if (!busEnabled)
                 {
                     busOptionLabel = busOptionLabel + " (" + busDisabledReason + ")";
                 }
 
                 string cowOptionLabel = Strings.ITab_SelectSpecializationCow;
-                bool cowEnabled = BusSpecializationUtility.CanUseCowSpecialization(pawn, out string cowDisabledReason);
-                if (!cowEnabled)
+                bool cowFinalized = BusSpecializationUtility.HasFinalCowState(pawn);
+                bool cowEnabled = !cowFinalized;
+                string cowDisabledReason = null;
+                if (cowEnabled)
+                {
+                    cowEnabled = BusSpecializationUtility.CanUseCowSpecialization(pawn, out cowDisabledReason);
+                }
+
+                if (cowFinalized)
+                {
+                    cowOptionLabel = cowOptionLabel + " " + Strings.ITab_SpecializationFinalizedSuffix;
+                }
+                else if (!cowEnabled)
                 {
                     cowOptionLabel = cowOptionLabel + " (" + cowDisabledReason + ")";
                 }
@@ -502,34 +524,122 @@ namespace SexSlaveCraft
             }
 
             listing.Gap(6f);
-            listing.Label(Strings.ITab_SpecializationProgress(comp.specializationProgress.ToStringPercent()));
+            string progressText = HasAnyFinalizedState(pawn)
+                ? Strings.ITab_SpecializationComplete
+                : comp.specializationProgress.ToStringPercent();
+            listing.Label(Strings.ITab_SpecializationProgress(progressText));
             DrawRabbitReproductionModeSelector(listing, pawn, comp);
         }
 
-        private static string GetSpecializationLabel(SexSlaveSpecializationType type)
+        private static bool HasAnyFinalizedState(Pawn pawn)
+        {
+            return BusSpecializationUtility.HasFinalBusState(pawn)
+                || BusSpecializationUtility.HasFinalCowState(pawn)
+                || PetSpecializationUtility.HasFinalPetState(pawn, SexSlaveSpecializationType.PetCat)
+                || PetSpecializationUtility.HasFinalPetState(pawn, SexSlaveSpecializationType.PetDog)
+                || PetSpecializationUtility.HasFinalPetState(pawn, SexSlaveSpecializationType.PetRabbit);
+        }
+
+        private static bool IsTypeFinalized(Pawn pawn, SexSlaveSpecializationType type)
         {
             switch (type)
             {
                 case SexSlaveSpecializationType.Bus:
-                    return Strings.ITab_SpecializationBus;
+                    return BusSpecializationUtility.HasFinalBusState(pawn);
                 case SexSlaveSpecializationType.Cow:
-                    return Strings.ITab_SpecializationCow;
+                    return BusSpecializationUtility.HasFinalCowState(pawn);
                 case SexSlaveSpecializationType.PetCat:
                 case SexSlaveSpecializationType.PetDog:
                 case SexSlaveSpecializationType.PetRabbit:
-                    return PetSpecializationUtility.GetSpecializationLabel(type);
+                    return PetSpecializationUtility.HasFinalPetState(pawn, type);
                 default:
-                    return Strings.ITab_SpecializationNone;
+                    return false;
             }
+        }
+
+        private static string GetSpecializationLabel(Pawn pawn, CompSexSlaveTraining comp)
+        {
+            string label;
+            switch (comp.specializationType)
+            {
+                case SexSlaveSpecializationType.Bus:
+                    label = Strings.ITab_SpecializationBus;
+                    break;
+                case SexSlaveSpecializationType.Cow:
+                    label = Strings.ITab_SpecializationCow;
+                    break;
+                case SexSlaveSpecializationType.PetCat:
+                case SexSlaveSpecializationType.PetDog:
+                case SexSlaveSpecializationType.PetRabbit:
+                    label = PetSpecializationUtility.GetSpecializationLabel(comp.specializationType);
+                    break;
+                default:
+                    label = Strings.ITab_SpecializationNone;
+                    break;
+            }
+
+            if (comp.specializationType == SexSlaveSpecializationType.None && HasAnyFinalizedState(pawn))
+            {
+                if (BusSpecializationUtility.HasFinalBusState(pawn))
+                {
+                    return Strings.ITab_SpecializationBus + " " + Strings.ITab_SpecializationFinalizedSuffix;
+                }
+
+                if (BusSpecializationUtility.HasFinalCowState(pawn))
+                {
+                    return Strings.ITab_SpecializationCow + " " + Strings.ITab_SpecializationFinalizedSuffix;
+                }
+
+                foreach (SexSlaveSpecializationType petType in new[]
+                         {
+                             SexSlaveSpecializationType.PetCat,
+                             SexSlaveSpecializationType.PetDog,
+                             SexSlaveSpecializationType.PetRabbit
+                         })
+                {
+                    if (PetSpecializationUtility.HasFinalPetState(pawn, petType))
+                    {
+                        return PetSpecializationUtility.GetSpecializationLabel(petType) + " " + Strings.ITab_SpecializationFinalizedSuffix;
+                    }
+                }
+            }
+
+            if (IsTypeFinalized(pawn, comp.specializationType))
+            {
+                label += " " + Strings.ITab_SpecializationFinalizedSuffix;
+            }
+            else if (comp.specializationType == SexSlaveSpecializationType.PetCat ||
+                     comp.specializationType == SexSlaveSpecializationType.PetRabbit)
+            {
+                label += " " + Strings.ITab_SpecializationUnfinishedSuffix;
+            }
+
+            return label;
         }
 
         private static FloatMenuOption BuildPetSpecializationOption(Pawn pawn, CompSexSlaveTraining comp, SexSlaveSpecializationType type)
         {
             string optionLabel = PetSpecializationUtility.GetSelectLabel(type);
-            bool enabled = PetSpecializationUtility.CanUsePetSpecialization(pawn, type, out string disabledReason);
-            if (!enabled)
+            bool finalized = PetSpecializationUtility.HasFinalPetState(pawn, type);
+            bool enabled = !finalized;
+            string disabledReason = null;
+            if (enabled)
+            {
+                enabled = PetSpecializationUtility.CanUsePetSpecialization(pawn, type, out disabledReason);
+            }
+
+            if (finalized)
+            {
+                optionLabel = optionLabel + " " + Strings.ITab_SpecializationFinalizedSuffix;
+            }
+            else if (!enabled)
             {
                 optionLabel = optionLabel + " (" + disabledReason + ")";
+            }
+
+            if (type == SexSlaveSpecializationType.PetCat || type == SexSlaveSpecializationType.PetRabbit)
+            {
+                optionLabel = optionLabel + " " + Strings.ITab_SpecializationUnfinishedSuffix;
             }
 
             return new FloatMenuOption(optionLabel, enabled ? (Action)delegate

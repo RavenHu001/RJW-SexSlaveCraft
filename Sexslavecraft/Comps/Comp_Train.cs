@@ -65,6 +65,8 @@ namespace SexSlaveCraft
         public int lastTrainingLocalDay = -999999;
         public SexSlaveSpecializationType specializationType = SexSlaveSpecializationType.None;
         public float specializationProgress = 0f;
+        public float savedCowReservoirCharge = 0f;
+        private Dictionary<string, float> perTypeProgress;
         public bool milkProductionEnabled = true;
         public RabbitReproductionMode rabbitReproductionMode = RabbitReproductionMode.Offspring;
 
@@ -214,6 +216,8 @@ namespace SexSlaveCraft
             Scribe_Values.Look(ref lastTrainingLocalDay, "lastTrainingLocalDay", -999999);
             Scribe_Values.Look(ref specializationType, "specializationType", SexSlaveSpecializationType.None);
             Scribe_Values.Look(ref specializationProgress, "specializationProgress", 0f);
+            Scribe_Values.Look(ref savedCowReservoirCharge, "savedCowReservoirCharge", 0f);
+            Scribe_Collections.Look(ref perTypeProgress, "perTypeProgress", LookMode.Value, LookMode.Value);
             Scribe_Values.Look(ref milkProductionEnabled, "milkProductionEnabled", true);
             Scribe_Values.Look(ref rabbitReproductionMode, "rabbitReproductionMode", RabbitReproductionMode.Offspring);
             Scribe_Values.Look(ref lastTrainingTick, "lastTrainingTick", -999999);
@@ -344,11 +348,18 @@ namespace SexSlaveCraft
 
             if (changedType)
             {
-                specializationProgress = 0f;
+                // EN: Progress is tracked per specialization type, so switching never destroys invested progress.
+                // CN: 特化进度按类型独立保存，切换特化不会清空已投入的进度。
+                if (previousType != SexSlaveSpecializationType.None)
+                {
+                    SetSavedProgress(previousType, specializationProgress);
+                }
+
+                specializationProgress = type == SexSlaveSpecializationType.None ? 0f : GetSavedProgress(type);
 
                 if (parent is Pawn pawn)
                 {
-                    RemoveInactiveSpecializationStates(pawn, type);
+                    RemoveInactiveSpecializationStates(pawn, this, type);
                 }
             }
 
@@ -376,20 +387,41 @@ namespace SexSlaveCraft
             }
         }
 
-        private static void RemoveInactiveSpecializationStates(Pawn pawn, SexSlaveSpecializationType typeToKeep)
+        private float GetSavedProgress(SexSlaveSpecializationType type)
+        {
+            if (perTypeProgress == null) return 0f;
+            return perTypeProgress.TryGetValue(type.ToString(), out float value) ? value : 0f;
+        }
+
+        private void SetSavedProgress(SexSlaveSpecializationType type, float value)
+        {
+            perTypeProgress = perTypeProgress ?? new Dictionary<string, float>();
+            perTypeProgress[type.ToString()] = value;
+        }
+
+        private static void RemoveInactiveSpecializationStates(Pawn pawn, CompSexSlaveTraining comp, SexSlaveSpecializationType typeToKeep)
         {
             if (pawn?.health?.hediffSet == null) return;
 
+            // EN: Only in-progress (base) hediffs are removed when switching. Finalized specializations are permanent.
+            // CN: 切换时只移除未完成的“基础”hediff；终极化状态是永久的，绝不被删除。
             if (typeToKeep != SexSlaveSpecializationType.Bus)
             {
                 RemoveSpecializationHediff(pawn, SSCDefOf.SSC_Hediff_Bus);
-                RemoveSpecializationHediff(pawn, SSCDefOf.SSC_Hediff_Bus_Final);
             }
 
             if (typeToKeep != SexSlaveSpecializationType.Cow)
             {
+                if (comp != null)
+                {
+                    Hediff cowHediff = pawn.health.hediffSet.GetFirstHediffOfDef(SSCDefOf.SSC_Hediff_Cow);
+                    if (cowHediff != null)
+                    {
+                        comp.savedCowReservoirCharge = cowHediff.TryGetComp<HediffComp_CowMilkReservoir>()?.CurrentCharge ?? comp.savedCowReservoirCharge;
+                    }
+                }
+
                 RemoveSpecializationHediff(pawn, SSCDefOf.SSC_Hediff_Cow);
-                RemoveSpecializationHediff(pawn, SSCDefOf.SSC_Hediff_Cow_Final);
             }
 
             RemovePetStateIfNotKept(pawn, typeToKeep, SexSlaveSpecializationType.PetCat);
@@ -402,7 +434,6 @@ namespace SexSlaveCraft
             if (typeToKeep == petType) return;
 
             RemoveSpecializationHediff(pawn, PetSpecializationUtility.GetBaseHediffDef(petType));
-            RemoveSpecializationHediff(pawn, PetSpecializationUtility.GetFinalHediffDef(petType));
         }
 
         private static void RemoveSpecializationHediff(Pawn pawn, HediffDef def)
