@@ -188,6 +188,33 @@ namespace SexSlaveCraft
             return GetCurrentChainStageFloor(chain);
         }
 
+        /// <summary>
+        /// 返回当前锁链阶段的前一级起点，供自然衰减退阶使用；本方法只查询，不修改 Pawn。
+        /// 使用当前锁链的 HediffDef 阶段表，而不是用严重度减去固定数值模拟“退一级”。
+        /// 默认阶段表为 0.1、0.3、0.5、0.9，因此 0.9 档的前一级是 0.5，而非 0.8。
+        /// 无锁链、尚未进入第一阶段或处于第一阶段时返回 0，表示没有更低的已定义阶段。
+        /// </summary>
+        public static float GetPreviousChainStageFloor(Pawn pawn)
+        {
+            Hediff chain = GetChainHediff(pawn);
+            if (chain == null) return 0f;
+
+            // 先把连续严重度归入当前阶段：例如 0.8 的阶段底线是 0.5。
+            // 复用已有的阶段识别和浮点容差，保持与恶堕底线、刹车上限的判定一致。
+            float currentFloor = GetCurrentChainStageFloor(chain);
+            float previousFloor = 0f;
+            // GetChainStageThresholds 已将 XML 阈值过滤、去重、升序排列；
+            // XML 未提供可用阶段时，它会使用原有的默认阈值表。
+            // 扫描到当前阶段即停止，previousFloor 留下的就是最后一个严格更低的阈值。
+            foreach (float threshold in GetChainStageThresholds(chain))
+            {
+                if (threshold >= currentFloor) break;
+                previousFloor = threshold;
+            }
+
+            return previousFloor;
+        }
+
         private static Hediff GetChainHediff(Pawn pawn)
         {
             if (pawn?.health?.hediffSet == null) return null;

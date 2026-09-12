@@ -182,23 +182,42 @@ namespace SexSlaveCraft
             float decayPerTick = decayPerDay / 60000f;
             CurLevel -= decayPerTick * 150f;
 
-            float chainSev = 0f;
+            // 此处发生在本轮自然恶堕扣减之后。阶段来自锁链严重度，不来自当前恶堕或 Trait。
+            // 仪式结算和需求刷新是两个入口：即使仪式只增加数值，后续刷新也可能触发退阶。
             Hediff chainHediff = pawn.health?.hediffSet?.GetFirstHediffOfDef(
                 DefDatabase<HediffDef>.GetNamedSilentFail("Hediff_ChainOfSexSlave"));
             if (chainHediff != null)
             {
-                chainSev = chainHediff.Severity;
                 float stageFloor = TrainingOutcomeUtility.GetCorruptionStageFloor(pawn);
-                if (CurLevel < stageFloor && chainSev >= 0.1f)
+                float stageCap = TrainingOutcomeUtility.GetChainCap(pawn);
+                // EN: Apply earned equipment floors before checking decay, otherwise a
+                // protected milestone can regress for one tick before its floor is restored.
+                // CN: 先应用已解锁的装备底线，再判断衰减回退，避免底线恢复前误退阶。
+                // GetMinLevel 仍沿用历史最高恶堕、装备/健康状态条件和当前阶段区间的校验；
+                // 此修复改变的是应用顺序，不会使一个尚未解锁的高恶堕底线自动生效。
+                // 例：已解锁 0.9 维持底线，当前恰好 0.9，衰减后略低于 0.9：
+                // 必须先恢复到装备底线，再决定是否退阶，否则装备会在错误退阶后才生效。
+                // 此时不能直接抬到 stageFloor：无装备保护时低于阶段底线应仍允许正常回退。
+                CurLevel = Mathf.Max(CurLevel, GetMinLevel(stageFloor, stageCap));
+                // 仅在实际每日衰减为正且保护后的恶堕仍不足时回退。
+                // “关闭衰减”和“旧评分”已在前面的分支返回；这里补上“滑杆设为 0”
+                // 或最终衰减倍率为 0 的情况，避免没有自然扣减时仍因已有数值不一致退阶。
+                if (decayPerDay > 0f && CurLevel < stageFloor)
                 {
-                    float newSev = chainSev - 0.1f;
-                    if (newSev >= 0.3f && newSev < 0.5f) newSev = 0.3f;
-                    else if (newSev >= 0.1f && newSev < 0.3f) newSev = 0.1f;
-                    else newSev = 0f;
-                    chainHediff.Severity = newSev;
+                    // EN: Regress one actual stage, including the 90% -> 50% transition.
+                    // CN: 按实际阶段退一级，包含 90% -> 50%，不能把高阶段落入兜底清零分支。
+                    // 旧逻辑先减 0.1，再仅匹配 [0.1, 0.3) 和 [0.3, 0.5)；
+                    // 例如严重度 1.1 得到 1.0（即使严重度为 1.0，也会得到 0.9），
+                    // 两段都不匹配，最终错误赋值 0。
+                    // 新逻辑按阶段表找前一级：0.9 档 -> 0.5，0.5 档 -> 0.3，
+                    // 0.3 档 -> 0.1，0.1 档 -> 0；本轮只有这一次赋值，不循环连续退阶。
+                    chainHediff.Severity = TrainingOutcomeUtility.GetPreviousChainStageFloor(pawn);
                 }
             }
 
+            // 上面可能已经改变锁链阶段，必须重新读取底线和刹车上限。
+            // 若复用退阶前的 stageFloor/stageCap，会用旧阶段的范围钳制恶堕，造成数据不一致。
+            // 这一步沿用原有规则：最终恶堕仍被限制在退阶后的阶段/装备允许范围内。
             float stageMin = TrainingOutcomeUtility.GetCorruptionStageFloor(pawn);
             float brakeCap = TrainingOutcomeUtility.GetChainCap(pawn);
             float equipMin = GetMinLevel(stageMin, brakeCap);

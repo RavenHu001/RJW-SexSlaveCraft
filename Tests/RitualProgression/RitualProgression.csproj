@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- 独立控制台回归测试，不是模组运行时程序集；不需要启动 Unity 或安装游戏。 -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net9.0</TargetFramework>
+    <!-- 默认直接链接工作区源码。命令行可覆盖此目录，用同一测试集比较修复前的源码副本。 -->
+    <SscSourceRoot Condition="'$(SscSourceRoot)' == ''">../../Sexslavecraft</SscSourceRoot>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- 编译实际生产文件，避免把待测算法复制到测试里后出现“测试通过、产品未修复”。
+         其余宿主类型由本目录的 GameStubs.cs 提供；Link 只定义 IDE 中的显示路径。 -->
+    <Compile Include="$(SscSourceRoot)/common/Need_Corruption.cs" Link="Production/Need_Corruption.cs" />
+    <Compile Include="$(SscSourceRoot)/common/TrainingOutcomeUtility.cs" Link="Production/TrainingOutcomeUtility.cs" />
+    <Compile Include="$(SscSourceRoot)/common/CorruptionProgressionUtility.cs" Link="Production/CorruptionProgressionUtility.cs" />
+    <Compile Include="$(SscSourceRoot)/common/AddCorruption.cs" Link="Production/AddCorruption.cs" />
+    <Compile Include="$(SscSourceRoot)/common/ICorruptionModifierSource.cs" Link="Production/ICorruptionModifierSource.cs" />
+    <Compile Include="$(SscSourceRoot)/Hediff/Hediff_ChainOfSexSlave.cs" Link="Production/Hediff_ChainOfSexSlave.cs" />
+  </ItemGroup>
+</Project>

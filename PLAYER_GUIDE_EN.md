@@ -318,7 +318,7 @@ Persistent mood by stage:
 
 ### 6.5 Chain Regression
 
-When Corruption decays below the floor required by the current Chain stage, the Chain may regress:
+When natural decay is enabled and positive, earned equipment/health-effect floors apply before checking regression. If Corruption is still below the current Chain stage's floor, the Chain regresses by one actual stage:
 
 - 90% stage → 50%;
 - 50% stage → 30%;
@@ -479,8 +479,10 @@ A high-quality Binding Ritual is therefore the fastest broad-spectrum developmen
 
 At ritual resolution, Corruption of at least 30% deepens the Chain:
 
-- 30%–49.99% Corruption: Chain `+20%`;
-- at least 50% Corruption: Chain `+30%`.
+- 30%–49.99% Corruption: Chain gains up to `20%`;
+- at least 50% Corruption: Chain gains up to `30%`.
+
+New Chain progress cannot exceed current Corruption at resolution. A Chain already above current Corruption retains its existing progress during ritual resolution. For example, an 80% Chain with 65% Corruption stays at 80% instead of jumping to 100%. Natural decay can still regress the Chain separately, one stage at a time.
 
 The Sex Slave trait is no longer advanced directly by the ritual. It is synchronized automatically from highest-ever Corruption:
 

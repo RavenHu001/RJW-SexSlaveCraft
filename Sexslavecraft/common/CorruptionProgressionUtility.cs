@@ -124,16 +124,40 @@ namespace SexSlaveCraft
             }
         }
 
+        /// <summary>
+        /// 结算仪式专属的锁链成长；日常调教不会调用此方法。
+        /// corruption 是调用方增加本次仪式恶堕收益后读取的当前值，不是历史最高值。
+        /// 此处只负责增加进度，自然衰减和退阶由 Need_Corruption.NeedInterval 单独处理。
+        /// </summary>
         private static void ProcessRitualCorruptionProgression(Pawn sexSlave, List<string> changes, float corruption)
         {
             // EN: Ritual-only change: the slave chain keeps tightening as corruption deepens.
             // CN: 仪式专属变化：恶堕越深，锁链束缚就会越紧。
             if (corruption >= 0.3f)
             {
+                // 共享阶段处理已尝试建立或复用绑定。若仍没有锁链，就没有可增长的目标；
+                // 不在这里绕过绑定校验新建一条，也不修改其他身份或 Trait。
+                Hediff_ChainOfSexSlave chain = SSCBondUtility.GetChain(sexSlave);
+                if (chain == null) return;
+
+                // 保留原来的单次增量预算：恶堕 [30%, 50%) 最多 +20%，>=50% 最多 +30%。
+                // 这是“本次最多能加多少”，还需要检查当前恶堕实际能支持多少新增进度。
                 float increase = corruption < 0.5f ? 0.2f : 0.3f;
-                // EN: Once corruption climbs high enough, the slave chain tightens further and pushes the pawn deeper into the bond.
-                // CN: 当恶堕继续升高时，锁链束缚会进一步加深，把这个 Pawn 往更深的主从关系里推进。
-                Hediff_ChainOfSexSlave.IncreaseChainSeverity(sexSlave, increase);
+                // EN: Only add progress supported by current corruption. A repeat ritual must
+                // never overshoot an unearned stage or lower an already stronger chain.
+                // CN: 只增加当前恶堕能够支持的进度，重复仪式不能越过未达到的阶段，
+                // 也不能因为当前恶堕较低而扣掉已有锁链进度。
+                // 内层 Max：恶堕低于已有严重度时，可新增空间为 0，而不是一个负增量。
+                // 外层 Min：实际增量同时受单次预算和可新增空间限制。
+                // 因而：新严重度 = 旧严重度 + min(单次预算, max(0, 当前恶堕 - 旧严重度))。
+                // 例：锁链 0.8、恶堕 0.65 => 增量 0，保留 0.8；
+                //     锁链 0.4、恶堕 0.5  => 增量 0.1，进入 0.5 阶段。
+                // 不能直接把锁链设置为 min(旧严重度 + 预算, 当前恶堕)，否则第一个例子
+                // 会把已有 0.8 降至 0.65，反而让仪式本身变成扣减进度的来源。
+                increase = UnityEngine.Mathf.Min(increase, UnityEngine.Mathf.Max(0f, corruption - chain.Severity));
+                if (increase > 0f)
+                    // 通过原有入口写入，继续保留严重度上限钳制及变更日志。
+                    Hediff_ChainOfSexSlave.IncreaseChainSeverity(sexSlave, increase);
             }
 
             // The SexSlave trait is a historical mirror maintained by Need_Corruption.
