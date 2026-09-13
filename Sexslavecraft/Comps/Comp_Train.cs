@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Verse;
+using Verse.AI.Group;
 using RimWorld;
 using UnityEngine;
 
@@ -92,6 +93,11 @@ namespace SexSlaveCraft
         // CN: 绑定仪式阶段计数。0-5 是有效阶段，推进到 6 就代表仪式完成。
         public int ritualPhase = 0;
 
+        // 同一场仪式的各阶段共享 Lord；新场次必须重新计数。引用也会随存档保存，
+        // 避免读档把有效仪式当成残留，或把上一次仪式的阶段带到下一场。
+        public Lord bindingRitualLord;
+        public bool bindingRitualOutcomeClaimed;
+
         // EN: Daily training cooldown. Ritual training does not use this cooldown gate.
         // CN: 日常调教冷却时间。绑定仪式不会使用这道冷却门槛。
         public const int CooldownTicks = 22500;
@@ -174,28 +180,25 @@ namespace SexSlaveCraft
             }
         }
 
+        /// <summary>结束日常训练并记录冷却与训练日期；仪式占用存在时交由仪式状态管理器处理。</summary>
         public void Notify_TrainingCompleted()
         {
+            // 这里只处理日常训练；仪式的阶段推进和解锁统一交给仪式状态管理器。
+            if (isRitualTraining || bindingRitualLord != null) return;
             isBeingTrained = false;
-            
-            // EN: Daily training starts cooldown. Binding Ritual only clears its ritual flag here.
-            // CN: 日常调教会开始冷却；绑定仪式这里只需要清掉仪式标记。
-            if (!isRitualTraining)
-            {
-                lastTrainingTick = Find.TickManager.TicksGame;
-                lastTrainingLocalDay = CurrentLocalDay;
-            }
-            else
-                isRitualTraining = false;
+            lastTrainingTick = Find.TickManager.TicksGame;
+            lastTrainingLocalDay = CurrentLocalDay;
         }
 
         public void Notify_TrainingAborted() => isBeingTrained = false;
 
+        /// <summary>在稀疏更新中恢复失效仪式状态、核对特化状态，并尝试安排宠物互动。</summary>
         public override void CompTickRare()
         {
             base.CompTickRare();
 
             if (!(parent is Pawn pawn)) return;
+            BindingRitualStateUtility.RecoverPawnState(pawn);
             ReconcileSpecialization(pawn);
             PetSpecializationUtility.TryStartAutomaticPetAffectionJob(pawn, this);
         }
@@ -264,6 +267,7 @@ namespace SexSlaveCraft
             return SexSlaveSpecializationType.None;
         }
 
+        /// <summary>读写训练配置、成长进度和仪式归属，兼容旧字段；仪式有效性核对延后到运行时。</summary>
         public override void PostExposeData()
         {
             base.PostExposeData();
@@ -292,6 +296,8 @@ namespace SexSlaveCraft
             Scribe_Values.Look(ref isBeingTrained, "isBeingTrained", false);
             Scribe_Values.Look(ref ritualPhase, "ritualPhase", 0);
             Scribe_Values.Look(ref isRitualTraining, "isRitualTraining", false);
+            Scribe_References.Look(ref bindingRitualLord, "bindingRitualLord");
+            Scribe_Values.Look(ref bindingRitualOutcomeClaimed, "bindingRitualOutcomeClaimed", false);
 
             // EN: selectedTrainer is a Pawn reference and must be restored after the base scalar fields.
             // CN: selectedTrainer 是 Pawn 引用，所以要作为引用类型单独保存和恢复。
@@ -335,31 +341,15 @@ namespace SexSlaveCraft
                         loadedPawn.CurJobDef == SSCDefOf.Training_Ritual ||
                         loadedPawn.CurJobDef == SSCDefOf.SSC_TrainingReceiver;
 
-                    if (isBeingTrained && !inActiveTrainingJob)
+                    if (isBeingTrained && !isRitualTraining && bindingRitualLord == null && !inActiveTrainingJob)
                     {
                         isBeingTrained = false;
                     }
                 }
             }
 
-            if (Scribe.mode == LoadSaveMode.PostLoadInit && isRitualTraining)
-            {
-                // EN: Post-load repair: if the pawn is no longer inside the Binding Ritual job chain, clear stale ritual flags.
-                // CN: 读档修复：如果这个 Pawn 已经不在绑定仪式的 Job 链里，就把残留的仪式状态清掉。
-                if (parent is Pawn p)
-                {
-                    bool inRitualJob =
-                        p.CurJobDef == SSCDefOf.Training_Ritual ||
-                        p.CurJobDef == SSCDefOf.SSC_TrainingReceiver;
-
-                    if (!inRitualJob)
-                    {
-                        isRitualTraining = false;
-                        isBeingTrained = false;
-                        ritualPhase = 0;
-                    }
-                }
-            }
+            // 仪式修复延后到 CompTickRare / 工作检查，此时 Lord 和角色引用已恢复。
+            // 接收 Job 也用于日常调教，不能仅凭 JobDef 判断是否仍属于有效仪式。
         }
 
         public override string CompInspectStringExtra()
@@ -519,6 +509,7 @@ namespace SexSlaveCraft
             return specializationProgress;
         }
 
+        /// <summary>生成训练配置与开发调试按钮；开发清理操作也通过统一入口复位仪式临时状态。</summary>
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
         {
             foreach (Gizmo gizmo in base.CompGetGizmosExtra())
@@ -724,9 +715,8 @@ namespace SexSlaveCraft
                 defaultDesc = "Clear active training / ritual runtime flags without touching saved trainer or act.",
                 action = delegate
                 {
+                    BindingRitualStateUtility.ClearRitualState(this);
                     isBeingTrained = false;
-                    isRitualTraining = false;
-                    ritualPhase = 0;
                 }
             };
 

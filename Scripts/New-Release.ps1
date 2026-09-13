@@ -98,13 +98,20 @@ if ($dllVersion.FileVersion -ne $fileVersion -or $dllVersion.ProductVersion -ne 
     throw "DLL version does not match $version. Rebuild before packaging."
 }
 
-# 测试使用仓库生产代码和实际阶段 XML，既有回归用例失败时不生成发布包。
+# 测试直接使用仓库生产代码；阶段测试还读取实际 XML。任一套件失败均停止打包。
 # NuGet.Config 明确禁用外部源；测试没有包依赖，只要求本机安装 .NET SDK 9。
-$testProject = Join-Path $repoRoot 'Tests/RitualProgression/RitualProgression.csproj'
-& dotnet restore $testProject --configfile (Join-Path $repoRoot 'Tests/NuGet.Config') --verbosity quiet
-if ($LASTEXITCODE -ne 0) { throw "Test restore failed ($LASTEXITCODE)." }
-& dotnet run --project $testProject --configuration Release --no-restore -- (Join-Path $repoRoot 'Defs/HediffDefs/HediffOfSexSlave.xml')
-if ($LASTEXITCODE -ne 0) { throw "Regression tests failed ($LASTEXITCODE)." }
+$testSuites = @(
+    @{ Project = 'Tests/RitualProgression/RitualProgression.csproj'; Arguments = @((Join-Path $repoRoot 'Defs/HediffDefs/HediffOfSexSlave.xml')) },
+    @{ Project = 'Tests/RitualLifecycle/RitualLifecycle.csproj'; Arguments = @() }
+)
+foreach ($testSuite in $testSuites) {
+    $testProject = Join-Path $repoRoot $testSuite.Project
+    $testArguments = $testSuite.Arguments
+    & dotnet restore $testProject --configfile (Join-Path $repoRoot 'Tests/NuGet.Config') --verbosity quiet
+    if ($LASTEXITCODE -ne 0) { throw "Test restore failed: $testProject ($LASTEXITCODE)." }
+    & dotnet run --project $testProject --configuration Release --no-restore -- @testArguments
+    if ($LASTEXITCODE -ne 0) { throw "Regression tests failed: $testProject ($LASTEXITCODE)." }
+}
 
 $baseCommit = (& git -C $repoRoot rev-parse HEAD).Trim()
 if ($LASTEXITCODE -ne 0) { throw 'Cannot read the base Git commit.' }

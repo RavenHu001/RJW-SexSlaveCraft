@@ -83,6 +83,8 @@ namespace SexSlaveCraft
             return TryGetTrainingTargetFailureReason(targetPawn, trainer, forced, out _);
         }
 
+        /// <summary>核对目标的日常训练资格，先恢复失效仪式占用，再检查排班、冷却及调教师限制。</summary>
+        /// <returns>目标可接受训练时返回 true；否则返回 false，并通过 reason 提供首个拒绝原因。</returns>
         public static bool TryGetTrainingTargetFailureReason(Pawn targetPawn, Pawn trainer, bool forced, out string reason)
         {
             reason = null;
@@ -110,6 +112,8 @@ namespace SexSlaveCraft
                 return false;
             }
 
+            // 先修复已结束仪式的残留占用，再判断调教资格；自动和强制命令共用此入口。
+            BindingRitualStateUtility.RecoverPawnState(targetPawn);
             CompSexSlaveTraining compToggle = targetPawn.TryGetComp<CompSexSlaveTraining>();
             if (compToggle == null || !compToggle.IsEnabled)
             {

@@ -114,13 +114,16 @@ namespace SexSlaveCraft
             SSCLog.Verbose($"[SSC TrainingState] Started: pawn={pawn.LabelShort}, isRitual={isRitual}, ritualPhase={comp.ritualPhase}");
         }
 
+        /// <summary>释放本次训练启动标记并恢复失效仪式状态；仍有效的仪式保留占用，允许阶段重试。</summary>
         public static void NotifyTrainingAborted(Pawn pawn)
         {
             CompSexSlaveTraining comp = pawn?.TryGetComp<CompSexSlaveTraining>();
             if (comp == null) return;
 
+            // 单次启动失败可能只是当前仪式阶段需要重试。整场仍有效时保留仪式
+            // 占用；整场已结束则交给统一恢复入口解除，避免两套清理规则分叉。
+            BindingRitualStateUtility.RecoverPawnState(pawn);
             comp.isBeingTrained = false;
-            comp.isRitualTraining = false;
             SSCLog.Verbose($"[SSC TrainingState] Aborted: pawn={pawn.LabelShort}");
         }
 
