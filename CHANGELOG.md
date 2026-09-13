@@ -4,7 +4,20 @@
 
 This continuation builds on upstream **2.2.8**, the baseline when upstream development stopped in July, and retains its version numbering. Entries are listed newest first. Technical details are in the [development log (Chinese)](Docs/开发更新记录.md).
 
-## [未发布 / Unreleased] — 人格特质迁移部分修复 / Partial personality trait transfer fix
+## [未发布 / Unreleased] — 人格凝胶界面调整 / Personality gel UI layout
+
+- 人格卡片采用独立头部、双栏内容及固定底部操作区，解决顶部文字重叠；技能和特质分别滚动，多特质不会挤出隶属信息或分配按钮。
+- 特质标题显示数量，长名称自动换行；补全姓名提示并明确锁链严重度，支持中、英、俄翻译。
+- The personality card now has a separate header, independently scrolling skill and trait lists, and a fixed action area. Long trait lists keep bond information and assignment controls visible.
+- Trait names wrap, the heading shows their count, and full-name tooltips and a labeled chain severity improve readability in Chinese, English, and Russian.
+
+**状态：修复完成。维护者已确认当前界面及翻译实际游玩无问题，本轮人格凝胶相关修复结束。版本号保持 `2.2.10`。**
+
+**Status: fixed. The maintainer has confirmed that the current UI and translations work correctly in-game, completing this round of personality gel fixes. The version remains `2.2.10`.**
+
+详细说明 / Details：[人格凝胶界面布局调整](Docs/人格凝胶界面布局调整.md)。
+
+## [未发布 / Unreleased] — 人格特质迁移修复 / Personality trait transfer fix
 
 ### 中文
 
@@ -18,9 +31,9 @@ This continuation builds on upstream **2.2.8**, the baseline when upstream devel
 - New gels save only traits without a gene source, including temporarily gene-suppressed ordinary traits. The receiving body's genes and their traits remain intact; the Sex Slave trait is still rebuilt from highest-ever Corruption.
 - Older gels restore their saved entries as personality traits because the legacy format cannot identify the original gene sources. Missing trait snapshots reject implantation and preserve the gel; valid empty snapshots clear the receiving body's ordinary traits.
 
-**状态：部分修复。维护者已确认本次修复有效；该问题仍有后续事项待处理，暂不标记为完全解决。版本号保持 `2.2.10`。**
+**状态：修复完成。普通特质恢复此前已确认有效；后续凝胶界面与翻译问题现已处理，并经维护者确认无问题，因此将本轮状态由“部分修复”更新为“修复完成”。版本号保持 `2.2.10`。**
 
-**Status: partially fixed. The maintainer has confirmed that this change is effective. Further work on this issue remains, so it is not marked as fully resolved. The version remains `2.2.10`.**
+**Status: fixed. Trait restoration was previously confirmed effective. The follow-up gel UI and translation issues have now been addressed and confirmed by the maintainer, so this round is upgraded from partially fixed to fixed. The version remains `2.2.10`.**
 
 详细说明 / Details：[人格普通特质迁移修复 / Fix details (Chinese)](Docs/人格普通特质迁移修复.md)。
 

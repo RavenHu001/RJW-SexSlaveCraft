@@ -103,7 +103,8 @@ if ($dllVersion.FileVersion -ne $fileVersion -or $dllVersion.ProductVersion -ne 
 $testSuites = @(
     @{ Project = 'Tests/RitualProgression/RitualProgression.csproj'; Arguments = @((Join-Path $repoRoot 'Defs/HediffDefs/HediffOfSexSlave.xml')) },
     @{ Project = 'Tests/RitualLifecycle/RitualLifecycle.csproj'; Arguments = @() },
-    @{ Project = 'Tests/PersonalityTraits/PersonalityTraits.csproj'; Arguments = @() }
+    @{ Project = 'Tests/PersonalityTraits/PersonalityTraits.csproj'; Arguments = @() },
+    @{ Project = 'Tests/PersonalityCardLayout/PersonalityCardLayout.csproj'; Arguments = @($repoRoot) }
 )
 foreach ($testSuite in $testSuites) {
     $testProject = Join-Path $repoRoot $testSuite.Project
