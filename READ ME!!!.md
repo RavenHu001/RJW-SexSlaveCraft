@@ -1,6 +1,7 @@
 # RJW-SexSlaveCraft Quick Start Guide
 
-> For RimWorld 1.6 and SexSlaveCraft 2.2.2.  
+> For RimWorld 1.6 and SexSlaveCraft 2.2.9.\
+> This continuation is based on upstream 2.2.8. See `CHANGELOG.md` for release history.\
 > In-game names follow the mod's official English localization. For exact formulas, thresholds, and implementation notes, see `PLAYER_GUIDE_EN.md`.
 
 ## 1. What the Mod Does
@@ -418,7 +419,7 @@ For a first game, keep defaults and review:
 - `Enable Full Gelatinization Body Tint`;
 - `Use Old Scoring`.
 
-If a valid-looking target cannot be trained, try toggling `Use RJW original eligibility for training age checks`. In 2.2.2, the code branches behind this option are reversed relative to the displayed explanation.
+If a valid-looking target cannot be trained, try toggling `Use RJW original eligibility for training age checks`. The code branches behind this option are reversed relative to the displayed explanation.
 
 ## 19. Compatibility
 

@@ -1,7 +1,8 @@
 # RJW-SexSlaveCraft Complete Player Guide
 
-> For RimWorld 1.6 and SexSlaveCraft 2.2.2, based on the current workspace code and installed Defs.  
+> For RimWorld 1.6 and SexSlaveCraft 2.2.9, based on the current workspace code and installed Defs.\
 > Audited on 2026-06-30.  
+> Based on upstream 2.2.8; release 2.2.9 includes the specialization and ritual progression fixes. See `CHANGELOG.md`.\
 > This guide describes the behavior implemented by the current C# and XML. Where an old changelog or description disagrees with the code, the discrepancy is listed under “Current Limitations and Known Differences.”
 
 ## 1. Scope and Dependencies
@@ -411,7 +412,7 @@ Quality is the sum of the following terms, clamped to 0–100%:
 | Master Social skill | 0/5/10/15/20 → -20%/0%/+20%/+30%/+40% |
 | Repeated within three days | -20% |
 
-In 2.2.2, ritual genital compatibility is not fully connected and stays at its lowest bracket. Ordinary Training size scoring is unaffected.
+Ritual genital compatibility is not fully connected and stays at its lowest bracket. Ordinary Training size scoring is unaffected.
 
 ### 8.4 Outcome Weights
 
@@ -660,7 +661,7 @@ It multiplies the target’s certainty:
 
 At 1% certainty or less, the target converts to the caster’s ideoligion and receives 50% starting certainty.
 
-In 2.2.2, the ability and grant component exist, but the current Mouth Hediff XML does not attach that grant component. It is therefore not normally acquired through gameplay.
+The ability and grant component exist, but the current Mouth Hediff XML does not attach that grant component. It is therefore not normally acquired through gameplay.
 
 ## 11. PNA Items and Basic PNA Launcher
 
@@ -722,7 +723,7 @@ PNA debuff gain = min(0.125 / resistance divisor, 1.0)
 
 The resistance divisor normally uses Consciousness with a floor of 0.2. Consciousness above 2.0 creates a resistance mote. The hit also deals 1 armor-ignoring damage.
 
-The high-tier PNA gun and ammunition XML are commented out in 2.2.2 and do not normally appear.
+The high-tier PNA gun and ammunition XML are commented out and do not normally appear.
 
 ## 12. Public Use Specialization
 
@@ -828,7 +829,7 @@ Extra reservoir:
 - fill time 9,000 ticks, about 3.6 hours;
 - nutrition cost 0.55 per day.
 
-Becoming a Final Cow does not automatically apply `Full Gelatinization Complete` in 2.2.2.
+Becoming a Final Cow does not automatically apply `Full Gelatinization Complete`.
 
 ## 14. Final Specializations and Personality Gel
 
@@ -1427,7 +1428,7 @@ These special events submit one request when their scene starts and do not use t
 <!-- Current limitations checklist temporarily hidden.
 ## 22. Current Limitations and Known Differences
 
-This section records actual 2.2.2 code behavior, not planned design.
+This section records the audited code behavior and known limitations.
 
 1. **Fine Training is not implemented.** The body-part detection, sensitivity, reward, and progress methods in `FineTrainingUtility` still return placeholders. The Training tab fields are reserved only.
 2. **Binding Ritual genital compatibility is fixed at the worst bracket.** The ritual calls a size-difference method that currently returns `0`, producing `-20%`. Ordinary Training size scoring works separately.

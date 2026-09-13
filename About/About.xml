@@ -6,7 +6,10 @@
 		<li>1.6</li>
 	</supportedVersions>
 	<packageId>rjw.sexslavecraft.TieJinVer</packageId>
-    <description>none</description>
+    <description>SexSlaveCraft 2.2.9 (TieJin Modify)
+基于原模组 7 月停更时的 2.2.8 版本继续维护。
+本次更新：修复性奴特化进度保存与同步、仪式后阶段异常清零。
+完整更新记录见模组目录中的 CHANGELOG.md。</description>
 	<modDependencies>
 		<li>
 		  <packageId>brrainz.harmony</packageId>
