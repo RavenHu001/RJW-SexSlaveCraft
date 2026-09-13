@@ -221,6 +221,16 @@
   <!--ITab_PES 人格卡片面板-->
   <SSC_PES_Underage> | (未成年)</SSC_PES_Underage>
   <SSC_PES_FullName>全名: {0} </SSC_PES_FullName>
+  <SSC_PES_Childhood>童年：{0}</SSC_PES_Childhood>
+  <SSC_PES_Adulthood>成年：{0}</SSC_PES_Adulthood>
+  <SSC_PES_NoBackground>无记录</SSC_PES_NoBackground>
+  <SSC_PES_TraitsCount>&lt;b&gt;人格特质 · {0}&lt;/b&gt;</SSC_PES_TraitsCount>
+  <SSC_PES_NoMaster>主人：未绑定</SSC_PES_NoMaster>
+  <SSC_PES_ChainSeverityLabel>锁链严重度</SSC_PES_ChainSeverityLabel>
+  <SSC_PES_RelationshipSummary>社会关系：{0} 个</SSC_PES_RelationshipSummary>
+  <SSC_PES_MemorySummary>记忆片段：{0} 条</SSC_PES_MemorySummary>
+  <SSC_PES_TargetUnassigned>目标空壳：未指定</SSC_PES_TargetUnassigned>
+  <SSC_PES_ChangeTarget>更换目标空壳</SSC_PES_ChangeTarget>
   <SSC_PES_SexSlaveTag>[性奴] </SSC_PES_SexSlaveTag>
   <SSC_PES_RelationsCount>[关系: {0}个]</SSC_PES_RelationsCount>
   <SSC_PES_SkillsHeader>&lt;b&gt;技能&lt;/b&gt;</SSC_PES_SkillsHeader>

@@ -192,6 +192,16 @@
   <SSC_LifeForce_Removed>По какой-то причине Врата жизни не могут сосуществовать с этой возвышенной технологией сверхразума Slaanesh. Ген Lifeforce у {0} удалён, у ног остался генный эмбрион.</SSC_LifeForce_Removed>
   <SSC_PES_Underage> | (Несовершеннолетний)</SSC_PES_Underage>
   <SSC_PES_FullName>Полное имя: {0} </SSC_PES_FullName>
+  <SSC_PES_Childhood>Детство: {0}</SSC_PES_Childhood>
+  <SSC_PES_Adulthood>Зрелость: {0}</SSC_PES_Adulthood>
+  <SSC_PES_NoBackground>Нет записи</SSC_PES_NoBackground>
+  <SSC_PES_TraitsCount>&lt;b&gt;Черты · {0}&lt;/b&gt;</SSC_PES_TraitsCount>
+  <SSC_PES_NoMaster>Хозяин: не назначен</SSC_PES_NoMaster>
+  <SSC_PES_ChainSeverityLabel>Сила цепи</SSC_PES_ChainSeverityLabel>
+  <SSC_PES_RelationshipSummary>Связи: {0}</SSC_PES_RelationshipSummary>
+  <SSC_PES_MemorySummary>Воспоминания: {0}</SSC_PES_MemorySummary>
+  <SSC_PES_TargetUnassigned>Целевая оболочка: не назначена</SSC_PES_TargetUnassigned>
+  <SSC_PES_ChangeTarget>Сменить целевую оболочку</SSC_PES_ChangeTarget>
   <SSC_PES_SexSlaveTag>[секс-раб] </SSC_PES_SexSlaveTag>
   <SSC_PES_RelationsCount>[Связи: {0}]</SSC_PES_RelationsCount>
   <SSC_PES_SkillsHeader>&lt;b&gt;Навыки&lt;/b&gt;</SSC_PES_SkillsHeader>

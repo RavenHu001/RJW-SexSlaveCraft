@@ -495,7 +495,23 @@ namespace SexSlaveCraft
         // ITab_PES 人格卡片面板
         // ==========================================
         public static string PES_Underage => "SSC_PES_Underage".Translate();
-        public static string PES_FullName(string lastName) => "SSC_PES_FullName".Translate(lastName);
+        /// <summary>生成包含完整姓名的人格悬停说明。</summary>
+        public static string PES_FullName(string fullName) => "SSC_PES_FullName".Translate(fullName);
+        /// <summary>生成童年背景的独立显示行。</summary>
+        public static string PES_Childhood(string title) => "SSC_PES_Childhood".Translate(title);
+        /// <summary>生成成年背景的独立显示行。</summary>
+        public static string PES_Adulthood(string title) => "SSC_PES_Adulthood".Translate(title);
+        public static string PES_NoBackground => "SSC_PES_NoBackground".Translate();
+        /// <summary>生成人格特质区域的标题与有效条目数量。</summary>
+        public static string PES_TraitsCount(int count) => "SSC_PES_TraitsCount".Translate(count);
+        public static string PES_NoMaster => "SSC_PES_NoMaster".Translate();
+        public static string PES_ChainSeverityLabel => "SSC_PES_ChainSeverityLabel".Translate();
+        /// <summary>生成固定摘要中的社会关系数量。</summary>
+        public static string PES_RelationshipSummary(int count) => "SSC_PES_RelationshipSummary".Translate(count);
+        /// <summary>生成固定摘要中的记忆数量。</summary>
+        public static string PES_MemorySummary(int count) => "SSC_PES_MemorySummary".Translate(count);
+        public static string PES_TargetUnassigned => "SSC_PES_TargetUnassigned".Translate();
+        public static string PES_ChangeTarget => "SSC_PES_ChangeTarget".Translate();
         public static string PES_SexSlaveTag => "SSC_PES_SexSlaveTag".Translate();
         public static string PES_RelationsCount(int count) => "SSC_PES_RelationsCount".Translate(count);
         public static string PES_SkillsHeader => "SSC_PES_SkillsHeader".Translate();

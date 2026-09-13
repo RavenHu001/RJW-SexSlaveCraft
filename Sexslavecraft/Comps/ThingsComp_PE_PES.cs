@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,6 +16,7 @@ namespace SexSlaveCraft
     {
         public float severity;
         public Pawn masterPawn;
+        /// <summary>保存或读取锁链的严重度与主人引用，供人格植入时重建绑定关系。</summary>
         public void ExposeData()
         {
             Scribe_Values.Look(ref severity, "severity", 0f);
@@ -29,6 +30,7 @@ namespace SexSlaveCraft
         public int age;
         public float moodPowerFactor = 1f;
         public Pawn otherPawn;
+        /// <summary>保存或读取记忆定义、已存在时间、心情倍率及关联角色。</summary>
         public void ExposeData()
         {
             Scribe_Defs.Look(ref def, "def");
@@ -44,6 +46,7 @@ namespace SexSlaveCraft
         public int level;
         public float xp;
         public Passion passion;
+        /// <summary>保存或读取技能定义、等级、经验和热情。</summary>
         public void ExposeData()
         {
             Scribe_Defs.Look(ref def, "def");
@@ -57,6 +60,7 @@ namespace SexSlaveCraft
     {
         public PawnRelationDef def;
         public Pawn otherPawn;
+        /// <summary>保存或读取直接关系的定义与关联角色引用。</summary>
         public void ExposeData()
         {
             Scribe_Defs.Look(ref def, "def");
@@ -69,6 +73,7 @@ namespace SexSlaveCraft
     // =========================================================
     public class CompProperties_PersonalityStore : CompProperties
     {
+        /// <summary>将组件配置关联到人格存储组件的实现类型。</summary>
         public CompProperties_PersonalityStore()
         {
             this.compClass = typeof(CompPersonalityStore);
@@ -76,7 +81,7 @@ namespace SexSlaveCraft
     }
 
     // =========================================================
-    // 3. 主组件逻辑 (Main Component)
+    // 3. 主组件逻辑
     // =========================================================
     public class CompPersonalityStore : ThingComp
     {
@@ -101,6 +106,9 @@ namespace SexSlaveCraft
 
         // --- 列表数据 ---
         public List<Trait> storedTraits = new List<Trait>();
+        // 版本 0：旧快照可能混有原身体基因授予的特质。
+        // 版本 1：仅保存普通人格特质，包括暂时受到抑制的条目。
+        public int traitSnapshotVersion;
         public List<StoredMemoryData> storedMemories = new List<StoredMemoryData>();
         public List<StoredSkillData> storedSkills = new List<StoredSkillData>();
         public List<StoredRelationData> storedRelations = new List<StoredRelationData>();
@@ -109,13 +117,14 @@ namespace SexSlaveCraft
         public BackstoryDef childhood;
         public BackstoryDef adulthood;
 
-        // 🔥【新增】Tag 存储字典 (Key=Hediff, Value=严重度)
+        // 状态标签字典：键为健康状态定义，值为严重度。
         // ---------------------------------------------------------
         public Dictionary<HediffDef, float> hediffTags = new Dictionary<HediffDef, float>();
 
         // ---------------------------------------------------------
         // 数据保存/读取 (Scribe)
         // ---------------------------------------------------------
+        /// <summary>保存或读取完整人格快照及特质格式版本，并在读档后补齐缺失的状态标签字典。</summary>
         public override void PostExposeData()
         {
             base.PostExposeData();
@@ -139,16 +148,17 @@ namespace SexSlaveCraft
 
             // 列表
             Scribe_Collections.Look(ref storedTraits, "storedTraits", LookMode.Deep);
+            Scribe_Values.Look(ref traitSnapshotVersion, "traitSnapshotVersion", 0);
             Scribe_Collections.Look(ref storedMemories, "storedMemories", LookMode.Deep);
             Scribe_Collections.Look(ref storedSkills, "storedSkills", LookMode.Deep);
             Scribe_Collections.Look(ref storedRelations, "storedRelations", LookMode.Deep);
 
-            // Defs
+            // 背景故事定义
             Scribe_Defs.Look(ref childhood, "childhood");
             Scribe_Defs.Look(ref adulthood, "adulthood");
 
-            // 🔥【新增】保存 Tags 字典
-            // LookMode.Def 保存Key, LookMode.Value 保存Value
+            // 保存状态标签字典。
+            // 使用定义引用模式保存键，使用数值模式保存严重度。
             Scribe_Collections.Look(ref hediffTags, "hediffTags", LookMode.Def, LookMode.Value);
 
             // 防止读档后字典为null导致报错
@@ -159,8 +169,9 @@ namespace SexSlaveCraft
         }
 
         // ---------------------------------------------------------
-        // UI 显示信息
+        // 界面显示信息
         // ---------------------------------------------------------
+        /// <summary>生成人格凝胶的检查面板文字，显示姓名、身份、关系和附加状态。</summary>
         public override string CompInspectStringExtra()
         {
             string info = Strings.Inspect_Personality(nickName ?? Strings.Inspect_PersonalityNone);
@@ -176,7 +187,7 @@ namespace SexSlaveCraft
                 info += Strings.Inspect_BelongsTo(chainHediffData.masterPawn.LabelShort);
             }
 
-            // 🔥【新增】显示 Tag 信息
+            // 显示状态标签信息。
             if (hediffTags != null && hediffTags.Count > 0)
             {
                 info += Strings.Inspect_ExtraStatus;
@@ -192,6 +203,7 @@ namespace SexSlaveCraft
         // ---------------------------------------------------------
         // 核心功能：数据深拷贝 (CopyFrom)
         // ---------------------------------------------------------
+        /// <summary>复制另一凝胶的人格数据并为可变条目建立独立实例，保留特质快照的版本及缺失状态。</summary>
         public void CopyFrom(CompPersonalityStore other)
         {
             if (other == null) return;
@@ -226,13 +238,14 @@ namespace SexSlaveCraft
                 this.chainHediffData = null;
             }
 
-            // 3. 列表复制 (先清空，再添加新实例)
-            this.storedTraits.Clear();
-            if (other.storedTraits != null)
-            {
-                foreach (var t in other.storedTraits)
-                    this.storedTraits.Add(new Trait(t.def, t.Degree, t.ScenForced));
-            }
+            // 3. 复制列表，为保存的数据建立独立实例。
+            // 缺失快照必须保留为 null，不能转成合法空列表，
+            // 否则植入时会误清空接收者的普通特质。
+            this.storedTraits = other.storedTraits?
+                .Where(t => t?.def != null)
+                .Select(t => new Trait(t.def, t.Degree, t.ScenForced))
+                .ToList();
+            this.traitSnapshotVersion = other.traitSnapshotVersion;
 
             this.storedSkills.Clear();
             if (other.storedSkills != null)
@@ -255,7 +268,7 @@ namespace SexSlaveCraft
                     this.storedRelations.Add(new StoredRelationData { def = r.def, otherPawn = r.otherPawn });
             }
 
-            // 🔥 4. Tags 字典复制
+            // 4. 复制状态标签字典。
             this.hediffTags.Clear();
             if (other.hediffTags != null)
             {
@@ -267,8 +280,9 @@ namespace SexSlaveCraft
         }
 
         // ---------------------------------------------------------
-        // Tag 操作接口
+        // 状态标签操作接口
         // ---------------------------------------------------------
+        /// <summary>写入或更新指定健康状态标签的严重度。</summary>
         public void SetTag(HediffDef def, float severity)
         {
             if (hediffTags == null) hediffTags = new Dictionary<HediffDef, float>();
@@ -278,25 +292,29 @@ namespace SexSlaveCraft
                 hediffTags.Add(def, severity);
         }
 
+        /// <summary>读取指定标签的严重度，不存在时返回零。</summary>
         public float GetTagSeverity(HediffDef def)
         {
             if (hediffTags != null && hediffTags.TryGetValue(def, out float val)) return val;
             return 0f;
         }
 
+        /// <summary>从人格快照中移除指定健康状态标签。</summary>
         public void RemoveTag(HediffDef def)
         {
             if (hediffTags != null && hediffTags.ContainsKey(def)) hediffTags.Remove(def);
         }
 
+        /// <summary>判断人格快照是否包含指定健康状态标签。</summary>
         public bool HasTag(HediffDef def)
         {
             return hediffTags != null && hediffTags.ContainsKey(def);
         }
 
         // ---------------------------------------------------------
-        // 核心功能：存储 Pawn 数据
+        // 核心功能：存储角色数据
         // ---------------------------------------------------------
+        /// <summary>采集角色的身份、技能、记忆、普通特质、关系及专精状态，生成独立的人格快照。</summary>
         public void StorePawnData(Pawn p)
         {
             if (p == null) return;
@@ -321,7 +339,7 @@ namespace SexSlaveCraft
                 this.sexSlaveDegree = ssTrait.Degree;
             }
 
-            // 3. 存 Corruption
+            // 3. 保存恶堕数据。
             if (p.needs != null)
             {
                 var corNeed = p.needs.TryGetNeed<Need_Corruption>();
@@ -332,7 +350,7 @@ namespace SexSlaveCraft
                 }
             }
 
-            // 4. 存 Hediff 链接
+            // 4. 保存锁链健康状态数据。
             var chainHediff = p.health.hediffSet.hediffs.FirstOrDefault(x => x.def.defName == "Hediff_ChainOfSexSlave");
             if (chainHediff is HediffWithTarget hTarget)
             {
@@ -387,18 +405,10 @@ namespace SexSlaveCraft
             }
             personalityExcretionCompleted = false;
 
-            // 7. 存普通特质
-            storedTraits.Clear();
-            if (p.story?.traits != null)
-            {
-                foreach (var t in p.story.traits.allTraits)
-                {
-                    if (t.def.defName != "SexSlaveCraft_SexSlave" && t.def != SSCDefOf.SSC_Trait_PE)
-                    {
-                        storedTraits.Add(new Trait(t.def, t.Degree, t.ScenForced));
-                    }
-                }
-            }
+            // 基因及其授予特质属于身体。被抑制的普通特质仍属于人格，
+            // 保存定义/等级，在新身体上重新决定是否受抑制。
+            storedTraits = PersonalityTraitUtility.CaptureTraits(p);
+            traitSnapshotVersion = 1;
 
             // 8. 存社会关系
             storedRelations.Clear();
@@ -425,7 +435,7 @@ namespace SexSlaveCraft
             }
 
             // ---------------------------------------------------------
-            // 🔥 10. 【新增核心闭环】智能搜刮特化 Tag，存入新凝胶
+            // 10. 收集角色已有的专精状态标签，存入新凝胶。
             // ---------------------------------------------------------
             if (this.hediffTags == null) this.hediffTags = new Dictionary<HediffDef, float>();
             this.hediffTags.Clear();
@@ -435,7 +445,7 @@ namespace SexSlaveCraft
             {
                 if (recipe.hediffToAdd != null)
                 {
-                    // 在小人身上寻找这些特定的 Hediff
+                    // 在角色身上查找配方对应的健康状态。
                     Hediff existingTag = p.health.hediffSet.GetFirstHediffOfDef(recipe.hediffToAdd);
 
                     if (existingTag != null)

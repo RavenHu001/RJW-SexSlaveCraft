@@ -90,6 +90,7 @@
     <Compile Include="common\ConditioningUtility.cs" />
     <Compile Include="common\CorruptionProgressionUtility.cs" />
     <Compile Include="common\ExcretionUtility.cs" />
+    <Compile Include="common\PersonalityTraitUtility.cs" />
     <Compile Include="common\FineTrainingUtility.cs" />
     <Compile Include="common\FullGelatinizationUtility.cs" />
     <Compile Include="common\GelatinizationHealthSanitizer.cs" />

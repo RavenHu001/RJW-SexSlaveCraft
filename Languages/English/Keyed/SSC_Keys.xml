@@ -195,6 +195,16 @@ Pain shock threshold: +{8}</SSC_MasterEmpowerment_Summary>
   <SSC_LifeForce_Removed>For some reason, the Gate of Life cannot coexist with that sublime Slaaneshi superintelligence technology. {0}'s Lifeforce gene has been removed, leaving a gene embryo at their feet.</SSC_LifeForce_Removed>
   <SSC_PES_Underage> | (Underage)</SSC_PES_Underage>
   <SSC_PES_FullName>Full Name: {0} </SSC_PES_FullName>
+  <SSC_PES_Childhood>Childhood: {0}</SSC_PES_Childhood>
+  <SSC_PES_Adulthood>Adulthood: {0}</SSC_PES_Adulthood>
+  <SSC_PES_NoBackground>No record</SSC_PES_NoBackground>
+  <SSC_PES_TraitsCount>&lt;b&gt;Traits · {0}&lt;/b&gt;</SSC_PES_TraitsCount>
+  <SSC_PES_NoMaster>Master: Unbound</SSC_PES_NoMaster>
+  <SSC_PES_ChainSeverityLabel>Chain severity</SSC_PES_ChainSeverityLabel>
+  <SSC_PES_RelationshipSummary>Relations: {0}</SSC_PES_RelationshipSummary>
+  <SSC_PES_MemorySummary>Memories: {0}</SSC_PES_MemorySummary>
+  <SSC_PES_TargetUnassigned>Target hollow: Unassigned</SSC_PES_TargetUnassigned>
+  <SSC_PES_ChangeTarget>Change target hollow</SSC_PES_ChangeTarget>
   <SSC_PES_SexSlaveTag>[sex slave] </SSC_PES_SexSlaveTag>
   <SSC_PES_RelationsCount>[Relations: {0}]</SSC_PES_RelationsCount>
   <SSC_PES_SkillsHeader>&lt;b&gt;Skills&lt;/b&gt;</SSC_PES_SkillsHeader>

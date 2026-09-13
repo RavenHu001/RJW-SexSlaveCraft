@@ -102,7 +102,9 @@ if ($dllVersion.FileVersion -ne $fileVersion -or $dllVersion.ProductVersion -ne 
 # NuGet.Config 明确禁用外部源；测试没有包依赖，只要求本机安装 .NET SDK 9。
 $testSuites = @(
     @{ Project = 'Tests/RitualProgression/RitualProgression.csproj'; Arguments = @((Join-Path $repoRoot 'Defs/HediffDefs/HediffOfSexSlave.xml')) },
-    @{ Project = 'Tests/RitualLifecycle/RitualLifecycle.csproj'; Arguments = @() }
+    @{ Project = 'Tests/RitualLifecycle/RitualLifecycle.csproj'; Arguments = @() },
+    @{ Project = 'Tests/PersonalityTraits/PersonalityTraits.csproj'; Arguments = @() },
+    @{ Project = 'Tests/PersonalityCardLayout/PersonalityCardLayout.csproj'; Arguments = @($repoRoot) }
 )
 foreach ($testSuite in $testSuites) {
     $testProject = Join-Path $repoRoot $testSuite.Project
