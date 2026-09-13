@@ -22,10 +22,6 @@ namespace SexSlaveCraft
         public override bool SupportsAttachableOutcomeEffect => def.allowAttachableOutcome;
         public virtual bool GivesDevelopmentPoints => def.givesDevelopmentPoints;
 
-        // EN: This flag is the ritual-completion gate. Only the ritual JobDriver may open it right before final outcome resolution.
-        // CN: 这个标记是“仪式完成通行证”，只有 ritual JobDriver 才能在最后结算前把它打开。
-        public static bool IsRitualCompletedSuccessfully = false;
-
         public RitualOutcomeEffectWorker_SSCBinding() { }
         public RitualOutcomeEffectWorker_SSCBinding(RitualOutcomeEffectDef def) : base(def) { }
 
@@ -120,17 +116,16 @@ namespace SexSlaveCraft
         // =========================================================================
         // 🎯 结算执行核心 (Apply)
         // =========================================================================
+        /// <summary>领取本场一次性完成资格后执行绑定仪式结算；中断、未完成或重复调用不派发奖励。</summary>
         public override void Apply(float progress, Dictionary<Pawn, int> totalPresence, LordJob_Ritual jobRitual)
         {
-            // 打断拦截 (依靠 JobDriver 传来的通行证)
-            if (!IsRitualCompletedSuccessfully)
+            // 只有本场确实完成六阶段且尚未结算，才能领取奖励。全局静态标记会让
+            // 同时举办的仪式互相借用完成资格，所以资格随本场 Lord 保存并消费。
+            if (!BindingRitualStateUtility.TryClaimOutcome(jobRitual))
             {
                 SSCLog.Important("[SSC Debug] 仪式未正常完成(中途打断)，拦截结算。");
                 return;
             }
-            // 验证通过后立刻重置，锁死安全门
-            IsRitualCompletedSuccessfully = false;
-
             Pawn master = jobRitual.PawnWithRole("master");
             Pawn slave = jobRitual.PawnWithRole("slave");
 

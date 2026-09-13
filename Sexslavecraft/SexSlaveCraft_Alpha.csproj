@@ -82,6 +82,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="common\AddCorruption.cs" />
+    <Compile Include="common\BindingRitualStateUtility.cs" />
     <Compile Include="common\BusSpecializationUtility.cs" />
     <Compile Include="common\DogSpecializationUtility.cs" />
     <Compile Include="common\PetSpecializationUtility.cs" />
@@ -146,6 +147,7 @@
     <Compile Include="ThePatches\Harmony_HumanCattleCompatibility.cs" />
     <Compile Include="ThePatches\Harmony_PreventRitualTimeShow.cs" />
     <Compile Include="ThePatches\Harmony_RitualFix.cs" />
+    <Compile Include="ThePatches\Harmony_BindingRitualLifecycle.cs" />
     <Compile Include="ThePatches\Harmony_ShowPAN.cs" />
     <Compile Include="ThePatches\Harmony_MasterDamageShare.cs" />
     <Compile Include="ThePatches\Harmony_SharedBedCompatibility.cs" />

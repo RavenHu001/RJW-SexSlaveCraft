@@ -16,19 +16,47 @@ namespace SexSlaveCraft
     {
         private bool phaseSceneStarted;
         private bool phaseRanToCompletion;
+        private bool phaseFinishHandled;
+        private Lord ritualLord;
 
         protected Pawn Slave => (Pawn)job.targetA.Thing;
         protected LocalTargetInfo RitualSpot => job.targetB;
 
-        public override bool TryMakePreToilReservations(bool errorOnFailed) => true;
+        /// <summary>在阶段 Job 开始前记录所属 Lord 并验证主从归属；无有效仪式时返回 false。</summary>
+        public override bool TryMakePreToilReservations(bool errorOnFailed)
+        {
+            ritualLord = pawn.GetLord();
+            return HasActiveRitual();
+        }
 
+        /// <summary>保存或恢复阶段执行标记与所属 Lord，让读档后的回调保留原场次和防重入状态。</summary>
         public override void ExposeData()
         {
             base.ExposeData();
             Scribe_Values.Look(ref phaseSceneStarted, "sscPhaseSceneStarted", false);
             Scribe_Values.Look(ref phaseRanToCompletion, "sscPhaseRanToCompletion", false);
+            Scribe_Values.Look(ref phaseFinishHandled, "sscPhaseFinishHandled", false);
+            Scribe_References.Look(ref ritualLord, "sscRitualLord");
         }
 
+        /// <summary>运行时检查本 Job 是否仍对应目标当前的有效仪式，并在需要时认领旧档引用。</summary>
+        /// <returns>主从角色、目标占用及本 Job 的 Lord 全部匹配时返回 true。</returns>
+        private bool HasActiveRitual()
+        {
+            // 旧档中的 Job 没有 Lord 引用，在第一次运行检查时认领；不在
+            // MakeNewToils 的读档枚举阶段修改状态，避免引用尚未恢复就误清零。
+            if (ritualLord == null) ritualLord = pawn.GetLord();
+            CompSexSlaveTraining training = Slave?.TryGetComp<CompSexSlaveTraining>();
+            if (training?.bindingRitualLord == null && training?.isRitualTraining == true)
+            {
+                BindingRitualStateUtility.RecoverPawnState(Slave);
+            }
+            return training?.bindingRitualLord == ritualLord
+                && training?.isRitualTraining == true
+                && BindingRitualStateUtility.IsActiveRitualFor(pawn, Slave, ritualLord);
+        }
+
+        /// <summary>根据从零开始的阶段索引设置当前场景动作；不推进仪式阶段计数。</summary>
         private void SwitchSexPhase(int phaseIndex)
         {
             // EN: Each ritualPhase maps to one fixed act in the Binding Ritual sequence.
@@ -36,13 +64,19 @@ namespace SexSlaveCraft
             RitualTrainingUtility.ApplyPhaseToSexProps(Sexprops, pawn, Slave, phaseIndex);
         }
 
+        /// <summary>构造移动、准备及执行阶段的 Toil，并注册有效性检查与覆盖整份 Job 的收尾回调。</summary>
+        /// <remarks>枚举可能发生在读档期间，因此仪式状态恢复放在运行时回调中执行。</remarks>
         protected override IEnumerable<Toil> MakeNewToils()
         {
             setup_ticks();
             this.FailOnDespawnedOrNull(TargetIndex.A);
+            this.FailOn(() => !HasActiveRitual());
+            // 全局结束回调覆盖走路和准备阶段。有效仪式中的一次 Job 中断仍可重试；
+            // 若仪式已结束则修复占用，不触发成功结算或日常训练冷却。
+            AddFinishAction(condition => BindingRitualStateUtility.RecoverPawnState(Slave));
 
-            var lord = pawn.GetLord();
-            IntVec3 spotCell = pawn.Position;
+            var lord = ritualLord ?? pawn.GetLord();
+            IntVec3 spotCell = job.targetB.IsValid ? job.targetB.Cell : pawn.Position;
             if (lord?.LordJob is LordJob_Ritual ritual) spotCell = ritual.selectedTarget.Cell;
             job.targetB = new LocalTargetInfo(spotCell);
 
@@ -164,62 +198,60 @@ namespace SexSlaveCraft
             yield return sexToil;
         }
 
+        /// <summary>仅一次地收尾当前场景；完整执行且仍属于有效仪式时推进阶段，末阶段发送完成 memo。</summary>
+        /// <remarks>中断不推进阶段；防止 memo 同步清理引起重入，并隔离旧 Job 对新仪式的迟到回调。</remarks>
         private void OnPhaseComplete()
         {
-            if (phaseSceneStarted &&
-                phaseRanToCompletion &&
-                Sexprops != null &&
-                Sexprops.pawn != null &&
-                Sexprops.partner != null)
-            {
-                try { SexUtility.ProcessSex(Sexprops); }
-                catch (Exception ex) { Log.Error($"[SSC] 结算冲突: {ex.Message}"); }
-            }
-            base.End();
-
+            // 最后阶段的 memo 可同步触发整场结算和 Job.Cleanup，再次进入此方法。
+            // 在任何 RJW 副作用前置位，确保同一个阶段只处理一次。
+            if (phaseFinishHandled) return;
+            phaseFinishHandled = true;
             Pawn slave = Slave;
             if (slave == null) return;
-            OnaholeCompatibilityUtility.TryUnregisterOnaholePartner(slave, pawn);
+            CompSexSlaveTraining training = slave.TryGetComp<CompSexSlaveTraining>();
+            if (training?.bindingRitualLord != null && training.bindingRitualLord != ritualLord) return;
 
-            // EN: Clear the nude render state left by RJW before the next ritual phase or ritual letter fires.
-            // CN: 在下一阶段或仪式结算信件出现前，先清掉 RJW 留下的裸体渲染状态。
-            CompRJW comp = slave.GetCompRJW();
-            if (comp != null && comp.drawNude)
+            bool completedActivePhase = phaseSceneStarted && phaseRanToCompletion && HasActiveRitual();
+            try
             {
-                comp.drawNude = false;
-                slave.Drawer.renderer.SetAllGraphicsDirty();
+                if (completedActivePhase && Sexprops?.pawn != null && Sexprops.partner != null)
+                {
+                    try { SexUtility.ProcessSex(Sexprops); }
+                    catch (Exception ex) { Log.Error($"[SSC] 结算冲突: {ex.Message}"); }
+                }
+
+                if (phaseSceneStarted && Sexprops != null) base.End();
+                OnaholeCompatibilityUtility.TryUnregisterOnaholePartner(slave, pawn);
+
+                CompRJW receiverComp = slave.GetCompRJW();
+                if (receiverComp != null && receiverComp.drawNude)
+                {
+                    receiverComp.drawNude = false;
+                    slave.Drawer.renderer.SetAllGraphicsDirty();
+                }
+
+                if (!completedActivePhase || !BindingRitualStateUtility.TryCompletePhase(pawn, slave, ritualLord))
+                {
+                    SSCLog.Verbose($"[SSC_RITUAL] 阶段中断，不推进: master={pawn.LabelShort}, slave={slave.LabelShort}");
+                    return;
+                }
+
+                int completedPhases = training.ritualPhase;
+                SSCLog.Verbose($"[SSC Ritual] 阶段完成: {completedPhases}/{BindingRitualStateUtility.PhaseCount}");
+                if (completedPhases == BindingRitualStateUtility.PhaseCount)
+                {
+                    // 结果处理器按本场 Lord 领取一次结算资格，随后生命周期补丁收尾。
+                    ritualLord.ReceiveMemo("SSC_Training_Finished");
+                    SSCLog.Important($"[SSC_RITUAL] Binding Ritual finished: master={pawn.LabelShort}, slave={slave.LabelShort}");
+                }
             }
-
-            if (!phaseSceneStarted || !phaseRanToCompletion)
+            finally
             {
-                SSCLog.WarningImportant(
-                    $"[SSC_RITUAL] Phase aborted without progression: master={pawn.LabelShort}, " +
-                    $"slave={slave.LabelShort}, sceneStarted={phaseSceneStarted}, " +
-                    $"ranToCompletion={phaseRanToCompletion}");
-                return;
-            }
-
-            var trainingComp = slave.TryGetComp<CompSexSlaveTraining>();
-            if (trainingComp == null) return;
-
-            // EN: Each finished sex phase advances ritualPhase; phase 6 means the whole Binding Ritual is complete.
-            // CN: 每完成一次性交阶段，ritualPhase 都会推进；推进到 6 就代表整场绑定仪式完成。
-            trainingComp.ritualPhase++;
-            SSCLog.Verbose($"[SSC Ritual] 阶段完成，ritualPhase 推进至 {trainingComp.ritualPhase}");
-
-            if (trainingComp.ritualPhase >= 6)
-            {
-                trainingComp.Notify_TrainingCompleted();
-                RitualOutcomeEffectWorker_SSCBinding.IsRitualCompletedSuccessfully = true;
-                pawn.GetLord()?.ReceiveMemo("SSC_Training_Finished");
-                SSCLog.Important($"[SSC_RITUAL] Binding Ritual finished: master={pawn.LabelShort}, slave={slave.LabelShort}, finalPhase={trainingComp.ritualPhase}");
-            }
-            else
-            {
-                SSCLog.Verbose($"[SSC_RITUAL] Binding Ritual phase advanced: master={pawn.LabelShort}, slave={slave.LabelShort}, nextPhase={trainingComp.ritualPhase}");
+                BindingRitualStateUtility.RecoverPawnState(slave);
             }
         }
 
+        /// <summary>将回退动画的时长同步到本 Job 的 RJW 计时字段，使场景结束时机保持一致。</summary>
         private void ApplyAnimationTicks(int animationTicks)
         {
             ticks_left = animationTicks;

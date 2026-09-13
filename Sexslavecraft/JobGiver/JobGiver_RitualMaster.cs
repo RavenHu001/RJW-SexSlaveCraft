@@ -16,6 +16,8 @@ namespace SexSlaveCraft
 {
     public class JobGiver_RitualBinding : ThinkNode_JobGiver
     {
+        /// <summary>验证仪式目标、可达性和预定条件，认领本场占用后为主人创建当前阶段 Job。</summary>
+        /// <returns>满足执行条件时返回 Job；条件不满足或本场已完成时返回 null。</returns>
         protected override Job TryGiveJob(Pawn pawn)
         {
             SSCLog.Verbose($"[SSC_GIVER] Ritual master evaluation start: pawn={pawn?.LabelShort ?? "null"}, curJob={pawn?.CurJobDef?.defName ?? "null"}");
@@ -47,15 +49,6 @@ namespace SexSlaveCraft
                 return null;
             }
 
-            // EN: If the last Binding Ritual already reached phase 6, reset the ritualPhase before starting a new ritual.
-            // CN: 如果上一轮绑定仪式已经跑到 phase 6，本轮开始前要先把 ritualPhase 重置回 0。
-            var slaveComp = slave.TryGetComp<CompSexSlaveTraining>();
-            if (slaveComp != null && slaveComp.ritualPhase >= 6)
-            {
-                SSCLog.Verbose($"[SSC_GIVER] Ritual phase reset: slave={slave.LabelShort}, oldPhase={slaveComp.ritualPhase}");
-                slaveComp.ritualPhase = 0;
-            }
-
             if (!pawn.CanReach(slave, PathEndMode.Touch, Danger.Deadly))
             {
                 SSCLog.Important($"[SSC_GIVER] {pawn.Name} 无法到达性奴身边");
@@ -70,15 +63,6 @@ namespace SexSlaveCraft
                 return null;
             }
 
-            // EN: Mark ritual state only after reach and reserve succeed, so failed job-giver checks do not leave stale ritual flags behind.
-            // CN: 只有在可达和预定都成功之后才打上仪式标记，避免 JobGiver 失败时留下残余仪式状态。
-            if (slaveComp != null)
-            {
-                slaveComp.isRitualTraining = true;
-                slaveComp.isBeingTrained = true;
-                SSCLog.Verbose($"[SSC_GIVER] Ritual flags armed: slave={slave.LabelShort}, ritualPhase={slaveComp.ritualPhase}");
-            }
-
             // EN: Step 6: create the ritual-side training job. The ritual spot is resolved later from the ritual lord.
             // CN: 步骤 6：创建仪式侧训练 Job。仪式地点稍后会从 ritual lord 那边读取。
             if (SSCDefOf.Training_Ritual == null)
@@ -86,6 +70,10 @@ namespace SexSlaveCraft
                 SSCLog.Error($"[SSC_GIVER] 严重错误: SSCDefOf.Training_Ritual 是 null！");
                 return null;
             }
+
+            // 新 Lord 从阶段 0 开始；同一 Lord 换阶段 Job 保留进度。
+            // 占用归属于整场仪式，途中取消也由生命周期补丁统一解除。
+            if (!BindingRitualStateUtility.TryBeginPhase(pawn, slave, lord)) return null;
 
             // EN: Only TargetA is filled here with the sex slave. The ritual spot is resolved later from the active ritual lord.
             // CN: 这里只给 TargetA 填入性奴。仪式地点稍后会从当前 ritual lord 那边读取。

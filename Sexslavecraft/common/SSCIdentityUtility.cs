@@ -101,6 +101,8 @@ namespace SexSlaveCraft
             return corruption != null && corruption.CurLevel > 0f;
         }
 
+        /// <summary>设置 SSC 身份并解除不再适用的绑定；离开性奴身份时清理仪式占用和训练配置。</summary>
+        /// <returns>存在训练组件且完成身份设置时返回 true，否则返回 false。</returns>
         public static bool TrySetIdentity(Pawn pawn, PawnIdentity identity)
         {
             CompSexSlaveTraining comp = pawn?.TryGetComp<CompSexSlaveTraining>();
@@ -118,11 +120,10 @@ namespace SexSlaveCraft
             comp.pawnIdentity = identity;
             if (identity != PawnIdentity.Slave)
             {
+                BindingRitualStateUtility.ClearRitualState(comp);
                 comp.mode = TrainingMode.Disabled;
                 comp.selectedTrainer = null;
                 comp.isBeingTrained = false;
-                comp.isRitualTraining = false;
-                comp.ritualPhase = 0;
             }
 
             return true;
