@@ -6,10 +6,14 @@
 		<li>1.6</li>
 	</supportedVersions>
 	<packageId>rjw.sexslavecraft.TieJinVer</packageId>
-    <description>SexSlaveCraft 2.2.9 (TieJin Modify)
+    <description>SexSlaveCraft 2.2.10 (TieJin Modify)
 基于原模组 7 月停更时的 2.2.8 版本继续维护。
-本次更新：修复性奴特化进度保存与同步、仪式后阶段异常清零。
-完整更新记录见模组目录中的 CHANGELOG.md。</description>
+本次热修复：修复绑定仪式中断后无法继续日常调教的问题，恢复旧档残留状态，并防止重复结算。
+完整中英双语更新记录见模组目录中的 CHANGELOG.md。
+
+Continues development from the upstream 2.2.8 baseline.
+This hotfix restores daily training after interrupted Binding Rituals, repairs stale ritual state in older saves, and prevents duplicate outcomes.
+See CHANGELOG.md in the mod folder for the full Chinese and English release notes.</description>
 	<modDependencies>
 		<li>
 		  <packageId>brrainz.harmony</packageId>
