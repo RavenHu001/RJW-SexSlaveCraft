@@ -4,6 +4,26 @@
 
 This continuation builds on upstream **2.2.8**, the baseline when upstream development stopped in July, and retains its version numbering. Entries are listed newest first. Technical details are in the [development log (Chinese)](Docs/开发更新记录.md).
 
+## [未发布 / Unreleased] — 人格特质迁移部分修复 / Partial personality trait transfer fix
+
+### 中文
+
+- 人格植入现在以凝胶中的普通特质完整替换接收身体的普通特质；植回原身体也恢复提取时的快照。
+- 新凝胶只保存非基因来源特质，包括暂时受到基因抑制的普通特质。接收身体的基因及其授予特质保留，性奴特质仍由历史最高恶堕重建。
+- 旧凝胶继续按已保存的条目恢复人格特质；旧格式无法辨认原身体的基因来源。缺失特质快照时拒绝植入并保留凝胶，合法空快照则清除接收身体的普通特质。
+
+### English
+
+- Implantation now replaces the receiving body's ordinary traits with the gel's saved snapshot, including when returning a personality to its original body.
+- New gels save only traits without a gene source, including temporarily gene-suppressed ordinary traits. The receiving body's genes and their traits remain intact; the Sex Slave trait is still rebuilt from highest-ever Corruption.
+- Older gels restore their saved entries as personality traits because the legacy format cannot identify the original gene sources. Missing trait snapshots reject implantation and preserve the gel; valid empty snapshots clear the receiving body's ordinary traits.
+
+**状态：部分修复。维护者已确认本次修复有效；该问题仍有后续事项待处理，暂不标记为完全解决。版本号保持 `2.2.10`。**
+
+**Status: partially fixed. The maintainer has confirmed that this change is effective. Further work on this issue remains, so it is not marked as fully resolved. The version remains `2.2.10`.**
+
+详细说明 / Details：[人格普通特质迁移修复 / Fix details (Chinese)](Docs/人格普通特质迁移修复.md)。
+
 ## [2.2.10] — 2026-09-13 — 绑定仪式中断热修复 / Binding Ritual interruption hotfix
 
 **待发布：此日期为准备日期。维护者已于 2026-09-13 确认游戏内验证完成、修复有效，候选安装包尚未正式发布。**

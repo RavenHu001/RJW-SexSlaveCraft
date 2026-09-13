@@ -286,6 +286,7 @@ Personality Gel stores the source pawn's:
 - skills and passions;
 - memories and direct relations;
 - backstories;
+- ordinary personality traits and their degrees, including ordinary traits temporarily suppressed by genes;
 - current Corruption, historical maximum Corruption, and bound Master;
 - highest-ever Corruption and its derived Sex Slave trait milestone;
 - Public Use or Cow data.
@@ -306,7 +307,7 @@ Successful implantation:
 - restores Corruption, bond, skills, memories, and specialization;
 - applies `Personality Implantation Adaptation Syndrome` for about one day.
 
-Current limitation: normal traits are stored and displayed by the gel but are not restored by the implantation code. The Sex Slave trait is rebuilt separately from restored highest-ever Corruption.
+Implantation replaces ordinary personality traits with the gel's snapshot, including when returning to the original body. The receiving body's genes and their traits remain intact; the Sex Slave trait is rebuilt separately from highest-ever Corruption. New gels exclude gene-granted traits, while older gels restore saved entries without knowing their original sources. A missing trait snapshot rejects implantation and preserves the gel. See the full guide for details.
 
 ## 13. Semi-gelatinization
 

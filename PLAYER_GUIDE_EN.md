@@ -908,7 +908,7 @@ The gel stores:
 - Chain severity and master reference;
 - skill levels, experience, and passions;
 - current memories;
-- ordinary traits;
+- ordinary traits and their degrees, including traits temporarily suppressed by genes; new gels exclude gene-granted traits;
 - direct social relations;
 - childhood and adulthood backstories;
 - ordinary and final Public Use/Cow tags.
@@ -949,12 +949,15 @@ Implantation:
 - removes the Hollow and PE markers;
 - clears the receiving body’s previous Corruption, Sex Slave trait, Chain, and Public Use/Cow states;
 - restores name, Corruption, backstories, highest-ever Corruption, and specialization data, then rebuilds the Sex Slave trait from that maximum;
+- replaces the receiving body's ordinary personality traits with the gel's snapshot, preserves that body's genes and their traits, and reapplies suppression according to those genes;
 - reconstructs the Chain master;
 - restores skills, passions, XP, memories, and direct relations;
 - restores saved specialization tags;
 - adds `Personality Implantation Adaptation Syndrome`.
 
-Ordinary traits are stored and displayed on the gel but are not re-added by the current inheritance function.
+Returning a personality to its original body also restores the extraction-time trait snapshot. A valid empty list clears the body's ordinary traits; a missing snapshot rejects implantation and leaves both the receiving pawn and gel unchanged.
+
+Older gels did not record gene sources. Their saved entries are restored as personality traits because traits granted by the original body's genes can no longer be identified; the receiving body's genes are still preserved. See section 19 and the [fix details (Chinese)](Docs/人格普通特质迁移修复.md).
 
 ## 16. Semi-gelatinization Surgery
 
@@ -1444,7 +1447,7 @@ This section records the audited code behavior and known limitations.
 4. **Several research nodes are technology-tree placeholders.** `Basic PNA Application`, `Basic PNA Launcher`, `Femboy Conversion`, pet cat/dog/rabbit, and `Combatant` do not unlock a complete matching system. `Personality Editing (currently Public Use only)` mainly acts as the parent node for Public Use and Cow research.
 5. **Basic PNA Launcher checks vanilla Machining only.** Its recipe does not reference SSC’s launcher research.
 6. **Sex Reassignment Surgery is not research-locked.** Its operation exists without a `researchPrerequisite`. Its companion ThoughtDef XML also contains a duplicate `defName`, which may cause a load issue for the success memory.
-7. **Ordinary traits are not restored after implantation.** They are saved and displayed, but `InheritEverything` does not re-add `storedTraits`. The Sex Slave trait is rebuilt separately from restored highest-ever Corruption.
+7. **Personality trait transfer is partially fixed and remains under review.** The maintainer has confirmed that this restoration change is effective; related issues are not yet fully resolved. Ordinary personality traits are now restored from the gel snapshot while preserving the receiving body's genes and their traits. Legacy entries are restored as personality traits because their source was not recorded; new gels save only traits without a gene source. The Sex Slave trait is still rebuilt separately from restored highest-ever Corruption. See the [fix record (Chinese)](Docs/人格普通特质迁移修复.md) for follow-up status.
 8. **Public Use has two potentially desynchronized progress values.** The tab uses `specializationProgress`, while trade and some Training logic directly change Public Use Hediff severity. Later tab synchronization can overwrite Hediff-only gains. Final recipes check the tab’s saved progress.
 9. **Switching directly between Public Use and Cow preserves progress and the other family’s Hediff.** Only selecting no specialization resets progress. This permits coexistence and may also carry progress across types.
 10. **Final Cow does not cause full gelatinization.** Old notes mention this linkage, but current Defs and C# do not add the completed state.

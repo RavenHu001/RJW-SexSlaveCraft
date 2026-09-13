@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine; // 必须引用，用于 GUI 绘制
@@ -12,6 +12,7 @@ namespace SexSlaveCraft
         // 设置窗口大小（增高以容纳底部分配按钮）
         private static readonly Vector2 WinSize = new Vector2(500f, 530f);
 
+        /// <summary>初始化人格页签的尺寸、标题翻译键和教学标记。</summary>
         public ITab_PersonalityCard()
         {
             this.size = WinSize;
@@ -30,6 +31,7 @@ namespace SexSlaveCraft
         }
 
         // 主绘制逻辑
+        /// <summary>取得人格组件并布局姓名、技能、特质、记忆和目标分配区域。</summary>
         protected override void FillTab()
         {
             // 1. 获取组件
@@ -69,6 +71,7 @@ namespace SexSlaveCraft
             GUI.EndGroup();
         }
 
+        /// <summary>绘制人格姓名、童年与成年背景以及凝胶的概况说明。</summary>
         private void DrawHeader(Rect rect, CompPersonalityStore comp)
         {
             // 名字
@@ -117,6 +120,7 @@ namespace SexSlaveCraft
             GUI.color = Color.white;
         }
 
+        /// <summary>按游戏定义顺序绘制技能等级、热情、经验进度及悬停提示。</summary>
         private void DrawSkills(Rect rect, CompPersonalityStore comp)
         {
             // 使用 Listing_Standard 自动布局
@@ -189,6 +193,7 @@ namespace SexSlaveCraft
             list.End();
         }
 
+        /// <summary>绘制有效的普通特质、附加状态和记忆预览，跳过缺失的特质条目。</summary>
         private void DrawTraitsAndInfo(Rect rect, CompPersonalityStore comp)
         {
             Listing_Standard list = new Listing_Standard();
@@ -200,14 +205,15 @@ namespace SexSlaveCraft
             list.Label(Strings.PES_TraitsHeader);
             list.Gap(5f);
 
-            if (comp.storedTraits.Count > 0)
+            if (!comp.storedTraits.NullOrEmpty())
             {
                 foreach (var t in comp.storedTraits)
                 {
+                    if (t?.def == null) continue;
                     // 格式化特质名字 (例如 "嗜血", "裸体主义")
                     string label = t.LabelCap;
                     // 如果有程度 (比如 "神经质: 严重")，原版 LabelCap 应该已经包含了，或者手动拼接
-                    // TraitDef degreeData = t.def.DataAtDegree(t.Degree); ...
+                    // 如需单独读取等级数据，可使用 t.def.DataAtDegree(t.Degree)。
 
                     Rect traitRect = list.GetRect(24f);
                     Widgets.Label(traitRect, " - " + label);
