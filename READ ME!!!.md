@@ -1,7 +1,8 @@
 # RJW-SexSlaveCraft Quick Start Guide
 
-> For RimWorld 1.6 and SexSlaveCraft 2.2.9.\
+> For RimWorld 1.6 and SexSlaveCraft 2.2.10.\
 > This continuation is based on upstream 2.2.8. See `CHANGELOG.md` for release history.\
+> Version 2.2.10 fixes daily training remaining blocked after an interrupted Binding Ritual.\
 > In-game names follow the mod's official English localization. For exact formulas, thresholds, and implementation notes, see `PLAYER_GUIDE_EN.md`.
 
 ## 1. What the Mod Does
@@ -117,6 +118,10 @@ A complete ritual performs six acts:
 6. Vaginal
 
 All six phases must finish. An interrupted ritual does not receive the final SSC outcome.
+
+Starting with 2.2.10, cancellation or departure of the Master or target releases the ritual lock.
+Daily training can resume subject to its usual eligibility, schedule, and cooldown rules.
+A new ritual starts at phase one; phase changes and save/load within the same active ritual preserve progress.
 
 ### Improving Ritual Quality
 

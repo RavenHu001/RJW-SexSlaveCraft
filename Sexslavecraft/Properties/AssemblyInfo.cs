@@ -28,5 +28,5 @@ using System.Runtime.InteropServices;
 // 发布版本以仓库根目录 VERSION 为准；文件属性使用四段版本，产品属性使用三段版本。
 // 每次发布同步修改这两项、About 描述和更新日志；发布脚本会检查它们及实际 DLL，
 // 防止只改文档版本却把旧 DLL 装入新版本压缩包。
-[assembly: AssemblyFileVersion("2.2.9.0")]
-[assembly: AssemblyInformationalVersion("2.2.9")]
+[assembly: AssemblyFileVersion("2.2.10.0")]
+[assembly: AssemblyInformationalVersion("2.2.10")]

@@ -1,8 +1,8 @@
 # RJW-SexSlaveCraft Complete Player Guide
 
-> For RimWorld 1.6 and SexSlaveCraft 2.2.9, based on the current workspace code and installed Defs.\
+> For RimWorld 1.6 and SexSlaveCraft 2.2.10, based on the current workspace code and installed Defs.\
 > Audited on 2026-06-30.  
-> Based on upstream 2.2.8; release 2.2.9 includes the specialization and ritual progression fixes. See `CHANGELOG.md`.\
+> Based on upstream 2.2.8; version 2.2.9 includes the specialization and ritual progression fixes, and 2.2.10 fixes stale training locks after interrupted rituals. See `CHANGELOG.md`.\
 > This guide describes the behavior implemented by the current C# and XML. Where an old changelog or description disagrees with the code, the discrepancy is listed under “Current Limitations and Known Differences.”
 
 ## 1. Scope and Dependencies
@@ -399,6 +399,14 @@ The ritual runs:
 6. Vaginal
 
 SSC gives the final ritual payout only after all six stages finish. An interrupted ritual does not receive the full SSC resolution.
+
+Version 2.2.10 ties the training lock and outcome eligibility to the whole ritual. Cancellation or departure of the Master
+or target clears its temporary state; an ordinary spectator leaving does not release that lock. An interrupted phase job
+can retry while its ritual remains active. Phase changes and save/load preserve progress in that ritual, while a new ritual
+starts at phase one. Each ritual can claim its final outcome only once.
+
+Runtime recovery also clears stale flags left by ended rituals in older saves. This preserves the assigned trainer,
+long-term progression, and existing daily cooldown. Daily training still requires its usual eligibility and schedule checks.
 
 ### 8.3 Quality
 
