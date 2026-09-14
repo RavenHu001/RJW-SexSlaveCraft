@@ -6,13 +6,15 @@
 		<li>1.6</li>
 	</supportedVersions>
 	<packageId>rjw.sexslavecraft.TieJinVer</packageId>
-    <description>SexSlaveCraft 2.2.10 (TieJin Modify)
+    <description>SexSlaveCraft 2.2.11 (TieJin Modify)
 基于原模组 7 月停更时的 2.2.8 版本继续维护。
-本次热修复：修复绑定仪式中断后无法继续日常调教的问题，恢复旧档残留状态，并防止重复结算。
+本次更新：合并人格特质恢复及凝胶界面与翻译、特化历史与记忆数值迁移、特化完成显示与满级永久泌乳授予三组修复。
+包含 2.2.10 的绑定仪式中断修复。
 完整中英双语更新记录见模组目录中的 CHANGELOG.md。
 
 Continues development from the upstream 2.2.8 baseline.
-This hotfix restores daily training after interrupted Binding Rituals, repairs stale ritual state in older saves, and prevents duplicate outcomes.
+This update combines three groups of fixes: personality traits and gel UI/localization; specialization history and memory values; specialization completion display and permanent lactation at full breast development.
+Includes the Binding Ritual interruption fixes from 2.2.10.
 See CHANGELOG.md in the mod folder for the full Chinese and English release notes.</description>
 	<modDependencies>
 		<li>
