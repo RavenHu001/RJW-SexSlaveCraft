@@ -4,11 +4,11 @@
 
 This continuation builds on upstream **2.2.8**, the baseline when upstream development stopped in July, and retains its version numbering. Entries are listed newest first. Technical details are in the [development log (Chinese)](Docs/开发更新记录.md).
 
-## [2.2.11] — 2026-09-13 — 人格迁移与特化修复合集 / Personality transfer and specialization fixes
+## [2.2.11] — 2026-09-13 — 人格、语言与种族分页修复合集 / Personality, localization, and race inspection tab fixes
 
-**版本归档与候选包准备：将 2.2.10 之后的修复统一归入本版，尚未正式发布。三组修复均已由维护者确认有效。**
+**版本归档与候选包准备：将 2.2.10 之后的修复统一归入本版，尚未正式发布。原三组人格与特化修复已由维护者确认有效；新增语言与种族分页修复的验证单独记录。**
 
-**Release grouping and candidate preparation: this version combines the fixes made after 2.2.10 and has not been formally released. The maintainer has confirmed all three groups of fixes work in-game.**
+**Release grouping and candidate preparation: this version combines the fixes made after 2.2.10 and has not been formally released. The maintainer confirmed the original three personality and specialization fix groups in-game; validation of the added localization and race inspection tab fixes is recorded separately.**
 
 ### 1. 人格普通特质恢复及凝胶界面 / Personality traits and gel UI
 
@@ -37,7 +37,20 @@ This continuation builds on upstream **2.2.8**, the baseline when upstream devel
 
 兼容说明 / Compatibility：旧凝胶继续按已有数据及默认值恢复，无法追溯补回此前未保存的历史或自定义数值；旧特质快照无法辨认基因来源。Older gels retain their saved data and compatible defaults; previously omitted history or custom values cannot be reconstructed, and legacy trait snapshots cannot identify gene sources.
 
-验证 / Validation：六个自动回归套件共 138 项；各修复的游戏内有效性已由维护者确认，未提供逐项场景清单。Six regression suites contain 138 checks; the maintainer confirmed the fixes in-game without providing an individual scenario checklist. 候选包与构建记录 / Candidate and build record：[2.2.11 发布验证](Docs/2.2.11发布验证.md)。
+原三组修复验证 / Validation of the original three fix groups：六个自动回归套件共 138 项；上述三组修复的游戏内有效性已由维护者确认，未提供逐项场景清单。Six regression suites contain 138 checks; the maintainer confirmed the original three fix groups in-game without providing an individual scenario checklist. 原候选包与构建记录 / Original candidate and build record：[2.2.11 发布验证](Docs/2.2.11发布验证.md)。
+
+### 4. 语言与种族检查分页 / Localization and race inspection tabs
+
+- 从第三方 2.2.10 CombinedFix 选择性移植语言与种族分页修复，保留本版已有人格、特化和仪式修复。
+- 修正英文 14 条 DefInjected 路径，并移除已不存在的 `SSC_PSEdit_Bus` 的 3 条翻译。
+- 新增繁中 54 个 XML，补齐本版新增的 10 个凝胶界面键；清理重复设置键，避免同一键存在多份不同文本。
+- 种族分页注入保留既有检查分页，仅补加 SSC 分页；不再清空已解析分页或重跑 `ResolveReferences()`，避免新角色原分页丢失和 HAR 重复解析。
+- Selectively ported the localization and race inspection tab fixes from the third-party 2.2.10 CombinedFix package, preserving this version's personality, specialization, and ritual fixes.
+- Corrected 14 English DefInjected paths and removed three translations for the deleted `SSC_PSEdit_Bus` Def.
+- Added 54 Traditional Chinese XML files and the ten gel UI keys introduced in this version; removed duplicate settings keys to avoid conflicting text definitions.
+- Race tab injection retains existing inspection tabs and adds the SSC tab only when missing. It no longer clears resolved tabs or reruns `ResolveReferences()`, addressing missing tabs on new pawns and repeated HAR resolution.
+
+本次暂缓 RimTalk 及渲染修复。新增修复的构建、静态检查与游戏实测状态见 [语言与种族分页合并记录](Docs/2.2.11语言与种族分页合并.md)；原三组修复的验证结果不代表新增兼容性场景已通过。RimTalk and rendering changes are deferred. Build, static-check, and in-game validation status for this addition is tracked in the [merge record (Chinese)](Docs/2.2.11语言与种族分页合并.md); previous validation does not establish that the new compatibility scenarios pass.
 
 ## [2.2.10] — 2026-09-13 — 绑定仪式中断热修复 / Binding Ritual interruption hotfix
 

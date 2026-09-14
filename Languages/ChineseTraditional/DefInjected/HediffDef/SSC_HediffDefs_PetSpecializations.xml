@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='utf-8'?>
+<LanguageData>
+  <SSC_Hediff_PetCat.label>寵物貓專精</SSC_Hediff_PetCat.label>
+  <SSC_Hediff_PetCat.description>正在形成的寵物貓專精。偏向敏捷、閃避，以及對主人的親暱依附。</SSC_Hediff_PetCat.description>
+  <SSC_Hediff_PetCat.stages.0.label>成型中</SSC_Hediff_PetCat.stages.0.label>
+  <SSC_Hediff_PetCat.stages.1.label>靈巧</SSC_Hediff_PetCat.stages.1.label>
+  <SSC_Hediff_PetCat.stages.2.label>難以捕捉</SSC_Hediff_PetCat.stages.2.label>
+  <SSC_Hediff_PetCat_Final.label>終極寵物貓專精</SSC_Hediff_PetCat_Final.label>
+  <SSC_Hediff_PetCat_Final.description>透過人格凝膠完成的終極寵物貓專精。該個體擁有高度閃避能力，並與主人親暱行為高度適配。</SSC_Hediff_PetCat_Final.description>
+  <SSC_Hediff_PetDog.label>寵物狗專精</SSC_Hediff_PetDog.label>
+  <SSC_Hediff_PetDog.description>正在形成的寵物狗專精。偏向動物處理、服從和動物訓練互動。</SSC_Hediff_PetDog.description>
+  <SSC_Hediff_PetDog.stages.0.label>成型中</SSC_Hediff_PetDog.stages.0.label>
+  <SSC_Hediff_PetDog.stages.1.label>服從</SSC_Hediff_PetDog.stages.1.label>
+  <SSC_Hediff_PetDog.stages.2.label>獸欄調教完成</SSC_Hediff_PetDog.stages.2.label>
+  <SSC_Hediff_PetDog.stages.3.label>領群犬</SSC_Hediff_PetDog.stages.3.label>
+  <SSC_Hediff_PetDog_Final.label>終極寵物狗專精</SSC_Hediff_PetDog_Final.label>
+  <SSC_Hediff_PetDog_Final.description>透過人格凝膠完成的終極寵物狗專精。該個體高度適配動物處理和動物訓練互動。</SSC_Hediff_PetDog_Final.description>
+  <SSC_Hediff_PetRabbit.label>寵物兔專精</SSC_Hediff_PetRabbit.label>
+  <SSC_Hediff_PetRabbit.description>正在形成的寵物兔專精。偏向 PNA 關聯成長、生育模式、親暱依附和輕敏捷。</SSC_Hediff_PetRabbit.description>
+  <SSC_Hediff_PetRabbit.stages.0.label>成型中</SSC_Hediff_PetRabbit.stages.0.label>
+  <SSC_Hediff_PetRabbit.stages.1.label>輕快</SSC_Hediff_PetRabbit.stages.1.label>
+  <SSC_Hediff_PetRabbit.stages.2.label>溫順成型</SSC_Hediff_PetRabbit.stages.2.label>
+  <SSC_Hediff_PetRabbit_Final.label>終極寵物兔專精</SSC_Hediff_PetRabbit_Final.label>
+  <SSC_Hediff_PetRabbit_Final.description>透過人格凝膠完成的終極寵物兔專精。該個體在 PNA 關聯成長、生育模式、恢復和輕敏捷方面趨於穩定。</SSC_Hediff_PetRabbit_Final.description>
+  <SSC_Hediff_RabbitCloneLink.label>兔分身</SSC_Hediff_RabbitCloneLink.label>
+  <SSC_Hediff_RabbitCloneLink.description>從寵物兔專精個體中分離出的分身。分身與本體共享休息和心情，快速成熟，且不能進行人格排洩。</SSC_Hediff_RabbitCloneLink.description>
+  <SSC_Hediff_RabbitCloneLink.stages.0.label>成型中</SSC_Hediff_RabbitCloneLink.stages.0.label>
+  <SSC_Hediff_RabbitCloneLink.stages.1.label>成熟</SSC_Hediff_RabbitCloneLink.stages.1.label>
+  <SSC_Hediff_RabbitCloneLowPNA.label>兔分身 PNA 產出</SSC_Hediff_RabbitCloneLowPNA.label>
+  <SSC_Hediff_RabbitCloneLowPNA.description>兔分身成熟後形成的低效 PNA 產出狀態。</SSC_Hediff_RabbitCloneLowPNA.description>
+</LanguageData>

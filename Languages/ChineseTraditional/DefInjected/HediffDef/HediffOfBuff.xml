@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='utf-8'?>
+<LanguageData>
+  <SSC_MasterBondEmpowerment.label>靈慾共振場</SSC_MasterBondEmpowerment.label>
+  <SSC_MasterBondEmpowerment.description>由紫色奈米機械立場與靈能耦合形成的欲效能場。隨著繫結性奴數量與惡墮程度提升，這片共振場會不斷強化主人的肉體、戰鬥本能與支配力。</SSC_MasterBondEmpowerment.description>
+  <SSC_MasterBondEmpowerment.stages.0.label>微薄</SSC_MasterBondEmpowerment.stages.0.label>
+  <SSC_MasterBondEmpowerment.stages.1.label>淺顯</SSC_MasterBondEmpowerment.stages.1.label>
+  <SSC_MasterBondEmpowerment.stages.2.label>霧狀</SSC_MasterBondEmpowerment.stages.2.label>
+  <SSC_MasterBondEmpowerment.stages.3.label>無形</SSC_MasterBondEmpowerment.stages.3.label>
+  <Hediff_PNA_Combat_Buff.label>戰鬥催情強化</Hediff_PNA_Combat_Buff.label>
+  <Hediff_PNA_Combat_Buff.description>在紫色奈米機械的催情下，性奴體內的細胞開始活躍，躁動，增加其戰鬥能力。</Hediff_PNA_Combat_Buff.description>
+  <Hediff_PNA_Combat_Buff_Plus.label>戰鬥催情強化（濃縮）</Hediff_PNA_Combat_Buff_Plus.label>
+  <Hediff_PNA_Combat_Buff_Plus.description>在濃縮紫色奈米機械的強力催情下，性奴體內的潛能被大幅激發。</Hediff_PNA_Combat_Buff_Plus.description>
+  <Hediff_PNA_Debuff.label>紫色奈米機械感染</Hediff_PNA_Debuff.label>
+  <Hediff_PNA_Debuff.description>在紫色奈米機械的感染下，人的感度持續上升，直到陷入持續性的高潮癱瘓。</Hediff_PNA_Debuff.description>
+  <Hediff_PNA_Debuff.stages.0.label>潮紅</Hediff_PNA_Debuff.stages.0.label>
+  <Hediff_PNA_Debuff.stages.1.label>持續高潮</Hediff_PNA_Debuff.stages.1.label>
+  <Hediff_PNA_Consciousness_Record.label>抗性快照</Hediff_PNA_Consciousness_Record.label>
+  <Hediff_PNA_Consciousness_Record.description>用於記錄目標面對激素時的最高意識水平（你大抵應該不可能一定必須看到這個）。</Hediff_PNA_Consciousness_Record.description>
+  <SSC_PostExcretionComa.label>人格排洩適應症</SSC_PostExcretionComa.label>
+  <SSC_PostExcretionComa.description>由於人格被強行抽出，大腦和神經系統正在經歷嚴重的重組與空白期，初始人格正在接手身體控制權。</SSC_PostExcretionComa.description>
+  <SSC_PostExcretionComa.stages.0.label>深度宕機</SSC_PostExcretionComa.stages.0.label>
+  <SSC_PostInsertionComa.label>人格植入適應症</SSC_PostInsertionComa.label>
+  <SSC_PostInsertionComa.description>外來人格被強行塞入空殼軀體，大腦和神經系統正在重新適應新的人格，需要時間恢復。</SSC_PostInsertionComa.description>
+  <SSC_PostInsertionComa.stages.0.label>深度宕機</SSC_PostInsertionComa.stages.0.label>
+</LanguageData>

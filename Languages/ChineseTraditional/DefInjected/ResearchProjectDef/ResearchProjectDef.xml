@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='utf-8'?>
+<LanguageData>
+  <SSC_RES_BasicTraining.label>調教</SSC_RES_BasicTraining.label>
+  <SSC_RES_BasicTraining.description>研究遺留下的調教典籍，得到調教的方式。</SSC_RES_BasicTraining.description>
+  <SSC_RES_BodyPartTraining.label>部位調教</SSC_RES_BodyPartTraining.label>
+  <SSC_RES_BodyPartTraining.description>研究特定部位的調教方式，透過調教使得這些部位獲得增益</SSC_RES_BodyPartTraining.description>
+  <SSC_RES_PNASimpleApp.label>PNA簡易應用</SSC_RES_PNASimpleApp.label>
+  <SSC_RES_PNASimpleApp.description>解鎖注射手術。</SSC_RES_PNASimpleApp.description>
+  <SSC_RES_SexChange.label>變性手術（男變女）</SSC_RES_SexChange.label>
+  <SSC_RES_SexChange.description>讓男人變女人（未開發，而且會包含整形手術）。</SSC_RES_SexChange.description>
+  <SSC_RES_Femboy.label>小南梁</SSC_RES_Femboy.label>
+  <SSC_RES_Femboy.description>把男人變成小南梁（未開發）</SSC_RES_Femboy.description>
+  <SSC_RES_PNASimpleLauncher.label>PNA簡易發射器</SSC_RES_PNASimpleLauncher.label>
+  <SSC_RES_PNAConcentration.label>PNA濃縮技術</SSC_RES_PNAConcentration.label>
+  <SSC_RES_PE.label>人格排洩</SSC_RES_PE.label>
+  <SSC_RES_SlaveSpecialization.label>人格編輯（目前只有公交車可用）</SSC_RES_SlaveSpecialization.label>
+  <SSC_RES_SlaveSpecialization.description>研究性奴的特化</SSC_RES_SlaveSpecialization.description>
+  <SSC_RES_CowTraining.label>奶牛化</SSC_RES_CowTraining.label>
+  <SSC_RES_CowTraining.description>讓性奴獲得更高的產奶量，且更適合參與性工作</SSC_RES_CowTraining.description>
+  <SSC_RES_PublicUse.label>公共車</SSC_RES_PublicUse.label>
+  <SSC_RES_PublicUse.description>讓性奴更適合參與性工作和社交工作</SSC_RES_PublicUse.description>
+  <SSC_RES_PetCat.label>寵物：貓</SSC_RES_PetCat.label>
+  <SSC_RES_PetCat.description>讓性奴成為貓娘</SSC_RES_PetCat.description>
+  <SSC_RES_Combatant.label>戰鬥員</SSC_RES_Combatant.label>
+  <SSC_RES_Combatant.description>經過特殊調教，能在戰場上絕對服從命令的戰鬥奴隸。</SSC_RES_Combatant.description>
+  <SSC_RES_PetDog.label>寵物：狗</SSC_RES_PetDog.label>
+  <SSC_RES_PetDog.description>讓性奴成為狗娘。</SSC_RES_PetDog.description>
+  <SSC_RES_PetRabbit.label>寵物：兔</SSC_RES_PetRabbit.label>
+  <SSC_RES_PetRabbit.description>讓性奴成為兔娘。</SSC_RES_PetRabbit.description>
+  <SSC_RES_GelatinizationPartial.label>凝膠化（部分）</SSC_RES_GelatinizationPartial.label>
+  <SSC_RES_GelatinizationPartial.description>初步的凝膠化改造。</SSC_RES_GelatinizationPartial.description>
+  <SSC_RES_GelatinizationFull.label>凝膠化（全身）</SSC_RES_GelatinizationFull.label>
+  <SSC_RES_GelatinizationFull.description>徹底的形態轉換。</SSC_RES_GelatinizationFull.description>
+</LanguageData>

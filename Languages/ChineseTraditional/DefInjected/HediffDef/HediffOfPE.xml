@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='utf-8'?>
+<LanguageData>
+  <Hediff_SSC_PersonalityExcreting.label>人格排洩準備中</Hediff_SSC_PersonalityExcreting.label>
+  <Hediff_SSC_PersonalityExcreting.description>從肛門注射的NPA開始發揮作用，收集個體的人格（靈魂）並準備排洩。</Hediff_SSC_PersonalityExcreting.description>
+  <Hediff_SSC_PersonalityExcreting.stages.0.label>初期</Hediff_SSC_PersonalityExcreting.stages.0.label>
+  <Hediff_SSC_PersonalityExcreting.stages.1.label>中期</Hediff_SSC_PersonalityExcreting.stages.1.label>
+  <Hediff_SSC_PersonalityExcreting.stages.2.label>後期</Hediff_SSC_PersonalityExcreting.stages.2.label>
+  <Hediff_SSC_PersonalityExcreting.stages.3.label>排洩臨界</Hediff_SSC_PersonalityExcreting.stages.3.label>
+  <Hediff_SSC_PersonalityExcreted_Done.label>人格排洩(完成)</Hediff_SSC_PersonalityExcreted_Done.label>
+  <Hediff_SSC_PersonalityExcreted_Done.description>人格被排空，有以前的全部記憶（不會影響當前初始人格），由PNA組成的初始人格將代替原主進行一系列的生命活動，且原主人格凝膠仍會和身體共感。</Hediff_SSC_PersonalityExcreted_Done.description>
+</LanguageData>

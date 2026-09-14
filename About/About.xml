@@ -9,11 +9,13 @@
     <description>SexSlaveCraft 2.2.11 (TieJin Modify)
 基于原模组 7 月停更时的 2.2.8 版本继续维护。
 本次更新：合并人格特质恢复及凝胶界面与翻译、特化历史与记忆数值迁移、特化完成显示与满级永久泌乳授予三组修复。
+追加完整繁中语言资源及英文路径修正，保留已有角色检查分页，并避免重复解析 HAR 种族。
 包含 2.2.10 的绑定仪式中断修复。
 完整中英双语更新记录见模组目录中的 CHANGELOG.md。
 
 Continues development from the upstream 2.2.8 baseline.
 This update combines three groups of fixes: personality traits and gel UI/localization; specialization history and memory values; specialization completion display and permanent lactation at full breast development.
+Also adds Traditional Chinese language resources, corrects English translation paths, preserves existing inspection tabs, and avoids re-resolving HAR races.
 Includes the Binding Ritual interruption fixes from 2.2.10.
 See CHANGELOG.md in the mod folder for the full Chinese and English release notes.</description>
 	<modDependencies>

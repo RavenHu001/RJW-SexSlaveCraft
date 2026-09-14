@@ -49,29 +49,6 @@
   <SSC_Toggle_Desc_Protect>Protected: no one except the master can force this pawn.</SSC_Toggle_Desc_Protect>
   <SSC_Message_BerserkSuppressed>{0}'s berserk state was suppressed by the chain</SSC_Message_BerserkSuppressed>
   <SSC_EquipRestriction_NotCorruptedEnough>{0} clearly does not want to wear this outfit (try increasing corruption?)</SSC_EquipRestriction_NotCorruptedEnough>
-  <SSC_Setting_Category>SexSlaveCraft Settings</SSC_Setting_Category>
-  <SSC_Setting_EnableSexSlaveProtectionRules>Enable sex-slave protection rules</SSC_Setting_EnableSexSlaveProtectionRules>
-  <SSC_Setting_EnableSexSlaveProtectionRules_Desc>When disabled, this Harmony patch's entire sex-slave protection and restriction logic is turned off, and related behaviors will no longer be blocked.</SSC_Setting_EnableSexSlaveProtectionRules_Desc>
-  <SSC_Setting_AllowSexSlaveRape>Allow sex slaves to be raped</SSC_Setting_AllowSexSlaveRape>
-  <SSC_Setting_AllowSexSlaveRape_Desc>If [Yes]: anyone can rape sex slaves, but sex slaves wearing the Evilfall Outfit are immune.\n\nIf [No]: strict protection mode. Nobody except the master can rape sex slaves.</SSC_Setting_AllowSexSlaveRape_Desc>
-  <SSC_Setting_ProtectBusAggressorRape>Bus slaves cannot initiate rape</SSC_Setting_ProtectBusAggressorRape>
-  <SSC_Setting_ProtectBusAggressorRape_Desc>When enabled, slaves in bus state cannot initiate rape, but may still initiate non-rape sex.</SSC_Setting_ProtectBusAggressorRape_Desc>
-  <SSC_Setting_ProtectChainedAggressorRape>Chained sex slaves cannot initiate rape</SSC_Setting_ProtectChainedAggressorRape>
-  <SSC_Setting_ProtectChainedAggressorRape_Desc>When enabled, sex slaves with a chain can no longer initiate rape.</SSC_Setting_ProtectChainedAggressorRape_Desc>
-  <SSC_Setting_ProtectNonRapeOwnerOnly>Only the owner may initiate non-rape sex</SSC_Setting_ProtectNonRapeOwnerOnly>
-  <SSC_Setting_ProtectNonRapeOwnerOnly_Desc>When enabled, chained sex slaves may only engage in consensual sex with their owner.</SSC_Setting_ProtectNonRapeOwnerOnly_Desc>
-  <SSC_Setting_EnableLogs>Enable SSC logs</SSC_Setting_EnableLogs>
-  <SSC_Setting_EnableLogs_Desc>When disabled, custom SSC Message/Warning logs are silenced, while Error logs are still kept.</SSC_Setting_EnableLogs_Desc>
-  <SSC_Setting_EnableVerboseLogs>Enable verbose debug logs</SSC_Setting_EnableVerboseLogs>
-  <SSC_Setting_EnableVerboseLogs_Desc>Outputs high-frequency logs such as GuardDbg, animation debug, and training flow diagnostics. Disabled by default to avoid spam.</SSC_Setting_EnableVerboseLogs_Desc>
-  <SSC_Setting_EnableImportantLogs>Enable important logs</SSC_Setting_EnableImportantLogs>
-  <SSC_Setting_EnableImportantLogs_Desc>Outputs low-frequency but useful logs such as onahole compatibility, ritual enslavement flow, and major fallbacks. Enabled by default.</SSC_Setting_EnableImportantLogs_Desc>
-  <SSC_Setting_UseRJWOriginalEligibility>Use RJW original eligibility for training age checks</SSC_Setting_UseRJWOriginalEligibility>
-  <SSC_Setting_UseRJWOriginalEligibility_Desc>On: training/ritual target eligibility follows RJW original can_be_fucked rules (recommended).\nOff: use SSC legacy compatibility checks (also requires rape_enabled and extra age gate).</SSC_Setting_UseRJWOriginalEligibility_Desc>
-  <SSC_Setting_EnableFullGelTint>Enable Full Gelatinization Body Tint</SSC_Setting_EnableFullGelTint>
-  <SSC_Setting_EnableFullGelTint_Desc>When enabled, fully gelatinized pawns keep their original head color while their body is tinted a faint translucent purple.</SSC_Setting_EnableFullGelTint_Desc>
-  <SSC_Setting_EnableRitualEnslavement>Allow ritual enslavement</SSC_Setting_EnableRitualEnslavement>
-  <SSC_Setting_EnableRitualEnslavement_Desc>When enabled, the binding ritual may convert the target into a vanilla slave when conditions are met. When disabled, the ritual still completes normally, but the enslavement step is skipped.</SSC_Setting_EnableRitualEnslavement_Desc>
   <Tab_SexSlaveTraining>Training</Tab_SexSlaveTraining>
   <SSC_Ritual_GenitalDifference_Label>Genital Size Compatibility</SSC_Ritual_GenitalDifference_Label>
   <SSC_Ritual_Genital_Huge>Huge (completely filled)</SSC_Ritual_Genital_Huge>

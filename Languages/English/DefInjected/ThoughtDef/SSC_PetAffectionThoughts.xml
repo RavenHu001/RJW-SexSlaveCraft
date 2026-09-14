@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
-  <SSC_PetAffection_Mood.stages.被宠物蹭了一下.label>brushed by pet</SSC_PetAffection_Mood.stages.被宠物蹭了一下.label>
-  <SSC_PetAffection_Mood.stages.被宠物蹭了一下.description>My pet brushed against me for a moment.</SSC_PetAffection_Mood.stages.被宠物蹭了一下.description>
+  <SSC_PetAffection_Mood.stages.0.label>brushed by pet</SSC_PetAffection_Mood.stages.0.label>
+  <SSC_PetAffection_Mood.stages.0.description>My pet brushed against me for a moment.</SSC_PetAffection_Mood.stages.0.description>
 </LanguageData>

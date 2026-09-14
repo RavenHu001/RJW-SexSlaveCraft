@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='utf-8'?>
+<LanguageData>
+  <SSC_Exp_Hand.label>惡墮化（手）</SSC_Exp_Hand.label>
+  <SSC_Exp_Hand.description>得益於炒飯智能的奈米微械，在多次色色的加持下，手上已經出現奈米微械的刻印。這雙被強化的手不僅極其靈巧，在握持武器時還能提供非人的穩定性和拔槍速度。</SSC_Exp_Hand.description>
+  <SSC_Exp_Hand.stages.0.label>開發中</SSC_Exp_Hand.stages.0.label>
+  <SSC_Exp_Hand.stages.1.label>熟練</SSC_Exp_Hand.stages.1.label>
+  <SSC_Exp_Hand.stages.2.label>敏感</SSC_Exp_Hand.stages.2.label>
+  <SSC_Exp_Hand.stages.3.label>刻印惡墮化</SSC_Exp_Hand.stages.3.label>
+  <SSC_Exp_Oral.label>惡墮化（口）</SSC_Exp_Oral.label>
+  <SSC_Exp_Oral.description>得益於炒飯智能的奈米微械，口部已經出現紫色的刻印。不僅舌頭極其靈活，其散發出的微量資訊素能極大影響他人的潛意識，成為最強力的外交武器。</SSC_Exp_Oral.description>
+  <SSC_Exp_Oral.stages.0.label>初步開發</SSC_Exp_Oral.stages.0.label>
+  <SSC_Exp_Oral.stages.1.label>熟練</SSC_Exp_Oral.stages.1.label>
+  <SSC_Exp_Oral.stages.2.label>敏感</SSC_Exp_Oral.stages.2.label>
+  <SSC_Exp_Oral.stages.3.label>刻印惡墮化</SSC_Exp_Oral.stages.3.label>
+  <SSC_Exp_Foot.label>惡墮化（腳）</SSC_Exp_Foot.label>
+  <SSC_Exp_Foot.description>得益於炒飯智能的奈米微械，腳上已經出現刻印。其步伐變得輕盈且富有誘惑力，在獲得極限閃避本能的同時，軀幹的微械強化使得負重能力大幅提升。</SSC_Exp_Foot.description>
+  <SSC_Exp_Foot.stages.0.label>開發中</SSC_Exp_Foot.stages.0.label>
+  <SSC_Exp_Foot.stages.1.label>熟練</SSC_Exp_Foot.stages.1.label>
+  <SSC_Exp_Foot.stages.2.label>敏感</SSC_Exp_Foot.stages.2.label>
+  <SSC_Exp_Foot.stages.3.label>刻印惡墮化</SSC_Exp_Foot.stages.3.label>
+  <SSC_Exp_Genitals.label>惡墮化（陰道）</SSC_Exp_Genitals.label>
+  <SSC_Exp_Genitals.description>經過極致的開發，內部已被奈米微械徹底重構。不僅變得異常美麗敏感，且能分泌紫色奈米液。宿主獲得了驚人的痛覺忍耐力和體力恢復速度。</SSC_Exp_Genitals.description>
+  <SSC_Exp_Genitals.stages.0.label>開發中</SSC_Exp_Genitals.stages.0.label>
+  <SSC_Exp_Genitals.stages.1.label>熟練</SSC_Exp_Genitals.stages.1.label>
+  <SSC_Exp_Genitals.stages.2.label>敏感</SSC_Exp_Genitals.stages.2.label>
+  <SSC_Exp_Genitals.stages.3.label>肉便器化</SSC_Exp_Genitals.stages.3.label>
+  <SSC_Exp_Breast.label>惡墮化（乳房）</SSC_Exp_Breast.label>
+  <SSC_Exp_Breast.description>在奈米微械的加持下被徹底改造，形態變得極具誘惑力且開始不斷產奶。散發出的溫度能極大程度安撫接觸者的情緒。</SSC_Exp_Breast.description>
+  <SSC_Exp_Breast.stages.0.label>改造初期</SSC_Exp_Breast.stages.0.label>
+  <SSC_Exp_Breast.stages.1.label>熟練</SSC_Exp_Breast.stages.1.label>
+  <SSC_Exp_Breast.stages.2.label>徹底改造</SSC_Exp_Breast.stages.2.label>
+  <SSC_Exp_Breast.stages.3.label>刻印惡墮化</SSC_Exp_Breast.stages.3.label>
+  <SSC_Exp_Anus.label>惡墮化（肛門）</SSC_Exp_Anus.label>
+  <SSC_Exp_Anus.description>在多次色色的加持下，後庭被奈米微械徹底開發。奈米機器在此處高度活躍，賦予了宿主恐怖的傷口自愈能力和免疫力，並能根據插入物改變大小。</SSC_Exp_Anus.description>
+  <SSC_Exp_Anus.stages.0.label>初步開發</SSC_Exp_Anus.stages.0.label>
+  <SSC_Exp_Anus.stages.1.label>熟練</SSC_Exp_Anus.stages.1.label>
+  <SSC_Exp_Anus.stages.2.label>敏感</SSC_Exp_Anus.stages.2.label>
+  <SSC_Exp_Anus.stages.3.label>刻印惡墮化</SSC_Exp_Anus.stages.3.label>
+  <SSC_Lactating_SubState.label>永久泌乳期</SSC_Lactating_SubState.label>
+  <SSC_Lactating_SubState.description>在奈米微械的深度干預下，乳房的泌乳功能已被鎖死在活躍狀態。它會像寄生蟲一樣源源不斷地抽取宿主胃裡的食物來合成乳汁。</SSC_Lactating_SubState.description>
+  <SSC_Lactating_SubState.comps.0.labelInBrackets>乳汁充盈度 {CHARGEFACTOR_percentage}</SSC_Lactating_SubState.comps.0.labelInBrackets>
+  <SSC_Purple_HyperLactation.label>催情奈米液產出(陰道)</SSC_Purple_HyperLactation.label>
+  <SSC_Purple_HyperLactation.description>該生物的全身腺體正在活躍地分泌特殊的紫色奈米液，經血液傳輸後達到陰道處。</SSC_Purple_HyperLactation.description>
+</LanguageData>
