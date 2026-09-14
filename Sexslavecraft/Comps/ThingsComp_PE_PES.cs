@@ -24,22 +24,6 @@ namespace SexSlaveCraft
         }
     }
 
-    public class StoredMemoryData : IExposable
-    {
-        public ThoughtDef def;
-        public int age;
-        public float moodPowerFactor = 1f;
-        public Pawn otherPawn;
-        /// <summary>保存或读取记忆定义、已存在时间、心情倍率及关联角色。</summary>
-        public void ExposeData()
-        {
-            Scribe_Defs.Look(ref def, "def");
-            Scribe_Values.Look(ref age, "age", 0);
-            Scribe_Values.Look(ref moodPowerFactor, "moodPowerFactor", 1f);
-            Scribe_References.Look(ref otherPawn, "otherPawn", saveDestroyedThings: true);
-        }
-    }
-
     public class StoredSkillData : IExposable
     {
         public SkillDef def;
@@ -98,6 +82,8 @@ namespace SexSlaveCraft
         public float highestCorruptionLevel = -1f;
         public SexSlaveSpecializationType specializationType = SexSlaveSpecializationType.None;
         public float specializationProgress = 0f;
+        // 空引用表示旧凝胶没有保存历史；空字典表示新快照确实没有任何方向的进度。
+        public Dictionary<string, float> specializationProgressByType;
         public bool personalityExcretionCompleted = false;
         public bool milkProductionEnabled = true;
 
@@ -124,7 +110,7 @@ namespace SexSlaveCraft
         // ---------------------------------------------------------
         // 数据保存/读取 (Scribe)
         // ---------------------------------------------------------
-        /// <summary>保存或读取完整人格快照及特质格式版本，并在读档后补齐缺失的状态标签字典。</summary>
+        /// <summary>保存或读取人格快照、各方向特化进度及格式版本，保留旧凝胶缺失历史的标记。</summary>
         public override void PostExposeData()
         {
             base.PostExposeData();
@@ -140,6 +126,7 @@ namespace SexSlaveCraft
             Scribe_Values.Look(ref highestCorruptionLevel, "highestCorruptionLevel", -1f);
             Scribe_Values.Look(ref specializationType, "specializationType", SexSlaveSpecializationType.None);
             Scribe_Values.Look(ref specializationProgress, "specializationProgress", 0f);
+            Scribe_Collections.Look(ref specializationProgressByType, "specializationProgressByType", LookMode.Value, LookMode.Value);
             Scribe_Values.Look(ref personalityExcretionCompleted, "personalityExcretionCompleted", false);
             Scribe_Values.Look(ref milkProductionEnabled, "milkProductionEnabled", true);
 
@@ -203,7 +190,7 @@ namespace SexSlaveCraft
         // ---------------------------------------------------------
         // 核心功能：数据深拷贝 (CopyFrom)
         // ---------------------------------------------------------
-        /// <summary>复制另一凝胶的人格数据并为可变条目建立独立实例，保留特质快照的版本及缺失状态。</summary>
+        /// <summary>复制另一凝胶的人格数据，为特化历史和记忆建立独立快照，并保留旧格式的缺失标记。</summary>
         public void CopyFrom(CompPersonalityStore other)
         {
             if (other == null) return;
@@ -219,6 +206,9 @@ namespace SexSlaveCraft
             this.highestCorruptionLevel = other.highestCorruptionLevel;
             this.specializationType = other.specializationType;
             this.specializationProgress = other.specializationProgress;
+            this.specializationProgressByType = other.specializationProgressByType == null
+                ? null
+                : new Dictionary<string, float>(other.specializationProgressByType);
             this.personalityExcretionCompleted = other.personalityExcretionCompleted;
             this.milkProductionEnabled = other.milkProductionEnabled;
             this.childhood = other.childhood;
@@ -258,7 +248,9 @@ namespace SexSlaveCraft
             if (other.storedMemories != null)
             {
                 foreach (var m in other.storedMemories)
-                    this.storedMemories.Add(new StoredMemoryData { def = m.def, age = m.age, moodPowerFactor = m.moodPowerFactor, otherPawn = m.otherPawn });
+                {
+                    if (m != null) this.storedMemories.Add(PersonalityMemoryUtility.Copy(m));
+                }
             }
 
             this.storedRelations.Clear();
@@ -314,7 +306,7 @@ namespace SexSlaveCraft
         // ---------------------------------------------------------
         // 核心功能：存储角色数据
         // ---------------------------------------------------------
-        /// <summary>采集角色的身份、技能、记忆、普通特质、关系及专精状态，生成独立的人格快照。</summary>
+        /// <summary>采集角色的身份、技能、记忆阶段与实例数值、普通特质、关系及各方向特化进度，生成独立人格快照。</summary>
         public void StorePawnData(Pawn p)
         {
             if (p == null) return;
@@ -385,17 +377,13 @@ namespace SexSlaveCraft
                 {
                     if (mem == null || mem.def == null) continue;
 
-                    storedMemories.Add(new StoredMemoryData
-                    {
-                        def = mem.def,
-                        age = mem.age,
-                        moodPowerFactor = mem.moodPowerFactor,
-                        otherPawn = (mem.otherPawn != null && !mem.otherPawn.Destroyed) ? mem.otherPawn : null
-                    });
+                    storedMemories.Add(PersonalityMemoryUtility.Capture(mem));
                 }
             }
 
             CompSexSlaveTraining trainingComp = p.TryGetComp<CompSexSlaveTraining>();
+            specializationProgressByType = trainingComp?.ExportSpecializationProgress()
+                ?? new Dictionary<string, float>();
             if (trainingComp != null)
             {
                 sscIdentity = trainingComp.pawnIdentity;

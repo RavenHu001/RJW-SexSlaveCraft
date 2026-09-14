@@ -8,29 +8,16 @@ using Verse.AI.Group;
 using RimWorld;
 using UnityEngine;
 
-// EN: This comp stores a pawn's daily training / Binding Ritual state.
-// EN: It remembers whether the pawn is acting as master or sex slave, which training mode is locked, who the trainer is, and whether cooldown or ritual state is active.
-// CN: 这个组件负责保存 Pawn 的“日常调教 / 绑定仪式”状态。
-// CN: 它会记录当前是主人还是性奴、锁定的调教姿势、指定 trainer，以及冷却和仪式中的状态。
+// 这个组件负责保存 Pawn 的“日常调教 / 绑定仪式”状态。
+// 它会记录当前是主人还是性奴、锁定的调教姿势、指定 trainer，以及冷却和仪式中的状态。
 namespace SexSlaveCraft
 {
-    // EN: PawnIdentity decides whether this pawn uses the training tab as a master or as a sex slave.
-    // CN: PawnIdentity 用来决定这个 Pawn 在调教面板里以“主人”还是“性奴”身份运作。
+    // PawnIdentity 用来决定这个 Pawn 在调教面板里以“主人”还是“性奴”身份运作。
     public enum PawnIdentity
     {
         Unset,
         Slave,
         Master
-    }
-
-    public enum SexSlaveSpecializationType
-    {
-        None,
-        Bus,
-        Cow,
-        PetCat,
-        PetDog,
-        PetRabbit
     }
 
     public enum RabbitReproductionMode
@@ -46,16 +33,14 @@ namespace SexSlaveCraft
         Auto, Vaginal, Anal, Oral, Boobjob, Handjob, Footjob, Fingering, MutualMasturbation, Fisting, Rimming, Sixtynine
     }
 
-    public class CompSexSlaveTraining : ThingComp
+    public partial class CompSexSlaveTraining : ThingComp
     {
         private static Pawn debugSelectedMaster;
 
-        // EN: Identity state: master pawns do not behave like trainable sex slaves.
-        // CN: 身份状态：主人不会按可被调教的性奴方式运作。
+        // 身份状态：主人不会按可被调教的性奴方式运作。
         public PawnIdentity pawnIdentity = PawnIdentity.Unset;
 
-        // EN: Training configuration chosen by the player from gizmos / ITab.
-        // CN: 玩家通过 gizmo / ITab 选定的调教配置。
+        // 玩家通过 gizmo / ITab 选定的调教配置。
         public TrainingMode mode = TrainingMode.Disabled;
         public TrainingActType selectedMode = TrainingActType.Auto;
         public Pawn selectedTrainer;
@@ -64,24 +49,18 @@ namespace SexSlaveCraft
         public int scheduledTrainingHour = 20;
         public int scheduledTrainingIntervalDays = 1;
         public int lastTrainingLocalDay = -999999;
-        public SexSlaveSpecializationType specializationType = SexSlaveSpecializationType.None;
-        public float specializationProgress = 0f;
         public float savedCowReservoirCharge = 0f;
-        private Dictionary<string, float> perTypeProgress;
         public bool milkProductionEnabled = true;
         public RabbitReproductionMode rabbitReproductionMode = RabbitReproductionMode.Offspring;
 
-        // EN: Fine training fields (reserved)
-        // CN: 精细调教字段（预留）
+        // 精细调教字段（预留）
         public bool fineTrainingEnabled = false;
         public Dictionary<string, FinePartData> finePartDataMap;
 
-        // EN: Last training score for decay calculation
-        // CN: 上次训练评分，用于衰减计算
+        // 上次训练评分，用于衰减计算
         public float lastTrainingScore = 0f;
 
-        // EN: Runtime state used by daily training and the Binding Ritual.
-        // CN: 日常调教和绑定仪式运行时会用到的状态字段。
+        // 日常调教和绑定仪式运行时会用到的状态字段。
         public int lastTrainingTick = -999999;
         public int lastFailedTrainingValidationTick = -999999;
         public int lastPetAffectionTick = -999999;
@@ -89,8 +68,7 @@ namespace SexSlaveCraft
         public bool isBeingTrained = false;
         public bool isRitualTraining = false;
 
-        // EN: Binding Ritual phase counter. Phase 0-5 are active steps, phase 6 means completion.
-        // CN: 绑定仪式阶段计数。0-5 是有效阶段，推进到 6 就代表仪式完成。
+        // 绑定仪式阶段计数。0-5 是有效阶段，推进到 6 就代表仪式完成。
         public int ritualPhase = 0;
 
         // 同一场仪式的各阶段共享 Lord；新场次必须重新计数。引用也会随存档保存，
@@ -98,8 +76,7 @@ namespace SexSlaveCraft
         public Lord bindingRitualLord;
         public bool bindingRitualOutcomeClaimed;
 
-        // EN: Daily training cooldown. Ritual training does not use this cooldown gate.
-        // CN: 日常调教冷却时间。绑定仪式不会使用这道冷却门槛。
+        // 日常调教冷却时间。绑定仪式不会使用这道冷却门槛。
         public const int CooldownTicks = 22500;
         public const int FailedValidationRetryTicks = 300;
         public const int ScheduledTrainingWindowHours = 2;
@@ -173,8 +150,7 @@ namespace SexSlaveCraft
         {
             get
             {
-                // EN: Binding Ritual ignores the daily training cooldown because ritual progression is tracked separately.
-                // CN: 绑定仪式会忽略日常调教冷却，因为仪式推进有自己独立的阶段状态。
+                // 绑定仪式会忽略日常调教冷却，因为仪式推进有自己独立的阶段状态。
                 if (isRitualTraining) return false;
                 return (Find.TickManager.TicksGame - lastTrainingTick) < CooldownTicks;
             }
@@ -190,6 +166,7 @@ namespace SexSlaveCraft
             lastTrainingLocalDay = CurrentLocalDay;
         }
 
+        /// <summary>中止日常训练时清除训练占用标志。</summary>
         public void Notify_TrainingAborted() => isBeingTrained = false;
 
         /// <summary>在稀疏更新中恢复失效仪式状态、核对特化状态，并尝试安排宠物互动。</summary>
@@ -203,10 +180,9 @@ namespace SexSlaveCraft
             PetSpecializationUtility.TryStartAutomaticPetAffectionJob(pawn, this);
         }
 
-        // EN: Reconciles hediff-only states (e.g. gel-injected) with the comp state so
-        // progression gates (comp.specializationType) match the existing hediffs.
-        // CN: 对账特化状态：凝胶注入/旧存档可能只有 hediff 而没有 comp 类型，
+        // 对账特化状态：凝胶注入/旧存档可能只有 hediff 而没有 comp 类型，
         // 这里自动认领并双向同步，让所有经验来源的门控条件恢复生效。
+        /// <summary>根据已有健康状态认领特化方向，并同步当前方向的有效进度与基础状态。</summary>
         public static void ReconcileSpecialization(Pawn pawn)
         {
             if (pawn?.health?.hediffSet == null) return;
@@ -237,11 +213,11 @@ namespace SexSlaveCraft
                     break;
             }
 
-            // EN: Keep mutual exclusivity for in-progress states. Finalized hediffs are never touched.
-            // CN: 保持"进行中"特化的互斥性；终极化 hediff 永不删除。
+            // 保持"进行中"特化的互斥性；终极化 hediff 永不删除。
             RemoveInactiveSpecializationStates(pawn, comp, comp.specializationType);
         }
 
+        /// <summary>按既有优先级从健康状态中找出可恢复的特化方向。</summary>
         private static SexSlaveSpecializationType DetectAdoptableType(Pawn pawn)
         {
             if (pawn?.health?.hediffSet == null) return SexSlaveSpecializationType.None;
@@ -272,8 +248,7 @@ namespace SexSlaveCraft
         {
             base.PostExposeData();
 
-            // EN: Save identity first so loading logic knows whether this pawn should act as master or sex slave.
-            // CN: 先保存身份数据，这样读档逻辑才能知道这个 Pawn 应该按主人还是性奴处理。
+            // 先保存身份数据，这样读档逻辑才能知道这个 Pawn 应该按主人还是性奴处理。
             Scribe_Values.Look(ref pawnIdentity, "pawnIdentity", PawnIdentity.Unset);
 
             Scribe_Values.Look(ref mode, "mode", TrainingMode.Disabled);
@@ -299,8 +274,7 @@ namespace SexSlaveCraft
             Scribe_References.Look(ref bindingRitualLord, "bindingRitualLord");
             Scribe_Values.Look(ref bindingRitualOutcomeClaimed, "bindingRitualOutcomeClaimed", false);
 
-            // EN: selectedTrainer is a Pawn reference and must be restored after the base scalar fields.
-            // CN: selectedTrainer 是 Pawn 引用，所以要作为引用类型单独保存和恢复。
+            // selectedTrainer 是 Pawn 引用，所以要作为引用类型单独保存和恢复。
             Scribe_Values.Look(ref fineTrainingEnabled, "fineTrainingEnabled", false);
             Scribe_Collections.Look(ref finePartDataMap, "finePartDataMap", LookMode.Value, LookMode.Deep);
             Scribe_Values.Look(ref lastTrainingScore, "lastTrainingScore", 0f);
@@ -314,10 +288,7 @@ namespace SexSlaveCraft
 
                 if (parent is Pawn loadedPawn)
                 {
-                    // EN: Identity/bond refactors must repair old saves at the data boundary.
-                    // Keep the slave-side chain, master-side bridle, and exclusive trainer
-                    // assignment consistent before any WorkGiver scan can observe them.
-                    // CN: 身份/绑定重构必须在读档边界修复旧存档。WorkGiver 开始扫描前，
+                    // 身份/绑定重构必须在读档边界修复旧存档。WorkGiver 开始扫描前，
                     // 先统一性奴锁链、主人缰绳与独占调教师，避免三者不一致锁死训练。
                     SSCBondUtility.RepairReciprocalLink(loadedPawn);
                     Pawn boundMaster = SSCBondUtility.GetBoundMaster(loadedPawn);
@@ -352,10 +323,10 @@ namespace SexSlaveCraft
             // 接收 Job 也用于日常调教，不能仅凭 JobDef 判断是否仍属于有效仪式。
         }
 
+        /// <summary>按角色身份、训练开关和冷却时间生成检查面板状态文本。</summary>
         public override string CompInspectStringExtra()
         {
-            // EN: Step 1: only pawns show the training inspect string.
-            // CN: 步骤 1：只有 Pawn 才显示调教状态文本。
+            // 步骤 1：只有 Pawn 才显示调教状态文本。
             if (!(parent is Pawn p)) return null;
 
             if (pawnIdentity == PawnIdentity.Unset)
@@ -363,19 +334,16 @@ namespace SexSlaveCraft
                 return Strings.Train_IdentityUnset;
             }
 
-            // EN: Step 2: masters show the master identity line instead of the sex-slave cooldown/status text.
-            // CN: 步骤 2：主人显示“主人身份”文本，而不是性奴那套冷却 / 状态说明。
+            // 步骤 2：主人显示“主人身份”文本，而不是性奴那套冷却 / 状态说明。
             if (pawnIdentity == PawnIdentity.Master)
             {
                 return Strings.Train_IdentityMaster;
             }
 
-            // EN: Step 3: disabled sex slaves do not show active training status.
-            // CN: 步骤 3：未启用调教的性奴，不显示进行中的调教状态。
+            // 步骤 3：未启用调教的性奴，不显示进行中的调教状态。
             if (!IsEnabled) return null;
 
-            // EN: Step 4: show either the daily training cooldown or the waiting-for-training state.
-            // CN: 步骤 4：显示“日常调教冷却中”或“等待训练”状态。
+            // 步骤 4：显示“日常调教冷却中”或“等待训练”状态。
             string status = IsOnCooldown
                 ? Strings.Train_Cooldown((CooldownTicks - (Find.TickManager.TicksGame - lastTrainingTick)).ToStringTicksToPeriod())
                 : Strings.Train_Waiting;
@@ -396,70 +364,12 @@ namespace SexSlaveCraft
             return Strings.Train_Status(status);
         }
 
-        public void SetSpecialization(SexSlaveSpecializationType type)
-        {
-            SexSlaveSpecializationType previousType = specializationType;
-            bool changedType = previousType != type;
-
-            if (changedType)
-            {
-                // EN: Progress is tracked per specialization type, so switching never destroys invested progress.
-                // CN: 特化进度按类型独立保存，切换特化不会清空已投入的进度。
-                if (previousType != SexSlaveSpecializationType.None)
-                {
-                    SetSavedProgress(previousType, specializationProgress);
-                }
-
-                specializationProgress = type == SexSlaveSpecializationType.None ? 0f : GetSavedProgress(type);
-
-                if (parent is Pawn pawn)
-                {
-                    RemoveInactiveSpecializationStates(pawn, this, type);
-                }
-            }
-
-            specializationType = type;
-            if (type == SexSlaveSpecializationType.None)
-            {
-                allowOthersForTrainingOrSex = false;
-                specializationProgress = 0f;
-                rabbitReproductionMode = RabbitReproductionMode.Offspring;
-                return;
-            }
-
-            if (type == SexSlaveSpecializationType.Bus)
-            {
-                allowOthersForTrainingOrSex = true;
-            }
-            else
-            {
-                allowOthersForTrainingOrSex = false;
-            }
-
-            if (type != SexSlaveSpecializationType.PetRabbit)
-            {
-                rabbitReproductionMode = RabbitReproductionMode.Offspring;
-            }
-        }
-
-        private float GetSavedProgress(SexSlaveSpecializationType type)
-        {
-            if (perTypeProgress == null) return 0f;
-            return perTypeProgress.TryGetValue(type.ToString(), out float value) ? value : 0f;
-        }
-
-        private void SetSavedProgress(SexSlaveSpecializationType type, float value)
-        {
-            perTypeProgress = perTypeProgress ?? new Dictionary<string, float>();
-            perTypeProgress[type.ToString()] = value;
-        }
-
+        /// <summary>移除非当前方向的基础健康状态，保留终极状态与身体已有奶量。</summary>
         private static void RemoveInactiveSpecializationStates(Pawn pawn, CompSexSlaveTraining comp, SexSlaveSpecializationType typeToKeep)
         {
             if (pawn?.health?.hediffSet == null) return;
 
-            // EN: Only in-progress (base) hediffs are removed when switching. Finalized specializations are permanent.
-            // CN: 切换时只移除未完成的“基础”hediff；终极化状态是永久的，绝不被删除。
+            // 切换时只移除未完成的“基础”hediff；终极化状态是永久的，绝不被删除。
             if (typeToKeep != SexSlaveSpecializationType.Bus)
             {
                 RemoveSpecializationHediff(pawn, SSCDefOf.SSC_Hediff_Bus);
@@ -484,6 +394,7 @@ namespace SexSlaveCraft
             RemovePetStateIfNotKept(pawn, typeToKeep, SexSlaveSpecializationType.PetRabbit);
         }
 
+        /// <summary>移除未被保留的宠物方向基础状态。</summary>
         private static void RemovePetStateIfNotKept(Pawn pawn, SexSlaveSpecializationType typeToKeep, SexSlaveSpecializationType petType)
         {
             if (typeToKeep == petType) return;
@@ -491,6 +402,7 @@ namespace SexSlaveCraft
             RemoveSpecializationHediff(pawn, PetSpecializationUtility.GetBaseHediffDef(petType));
         }
 
+        /// <summary>安全移除指定定义的全部基础健康状态。</summary>
         private static void RemoveSpecializationHediff(Pawn pawn, HediffDef def)
         {
             if (pawn?.health?.hediffSet == null || def == null) return;
@@ -502,6 +414,7 @@ namespace SexSlaveCraft
             }
         }
 
+        /// <summary>为当前方向累计正向训练进度，并把结果限制在完成范围内。</summary>
         public float AddSpecializationProgress(float amount)
         {
             if (amount <= 0f || specializationType == SexSlaveSpecializationType.None) return specializationProgress;
@@ -731,6 +644,7 @@ namespace SexSlaveCraft
             };
         }
 
+        /// <summary>通过调试按钮为首个有效操作肢体或移动肢体添加局部凝胶化状态。</summary>
         private static void AddPartialGelatinizationDebug(Pawn pawn, bool manipulationLimb)
         {
             if (pawn?.health?.hediffSet == null) return;
@@ -764,6 +678,7 @@ namespace SexSlaveCraft
             Messages.Message($"[SSC DEV] Added partial gel to {pawn.LabelShort}: {part.LabelCap}", pawn, MessageTypeDefOf.PositiveEvent, false);
         }
 
+        /// <summary>通过调试按钮调整角色所有局部凝胶化状态的适应度。</summary>
         private static void AdjustPartialGelAdaptation(Pawn pawn, float delta)
         {
             if (pawn?.health?.hediffSet == null) return;
@@ -783,6 +698,7 @@ namespace SexSlaveCraft
             Messages.Message($"[SSC DEV] {pawn.LabelShort} partial adaptation +{delta:P0} ({partialGels.Count} hediffs)", pawn, MessageTypeDefOf.NeutralEvent, false);
         }
 
+        /// <summary>通过调试按钮调整角色完全凝胶化状态的适应度。</summary>
         private static void AdjustFullGelAdaptation(Pawn pawn, float delta)
         {
             if (pawn?.health?.hediffSet == null) return;
@@ -799,10 +715,10 @@ namespace SexSlaveCraft
         }
     }
 
-    // EN: Standard properties wrapper so XML comps can instantiate CompSexSlaveTraining.
-    // CN: 标准 CompProperties 包装类，供 XML 里的 compClass 正常实例化 CompSexSlaveTraining。
+    // 标准 CompProperties 包装类，供 XML 里的 compClass 正常实例化 CompSexSlaveTraining。
     public class CompProperties_SexSlaveTraining : CompProperties
     {
+        /// <summary>指定由此配置创建的训练组件类型。</summary>
         public CompProperties_SexSlaveTraining()
         {
             this.compClass = typeof(CompSexSlaveTraining);

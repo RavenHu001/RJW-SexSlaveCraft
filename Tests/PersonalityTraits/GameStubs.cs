@@ -67,17 +67,19 @@ namespace Verse
 
     public static class Scribe_References
     {
-        /// <summary>提供对象引用读写接口的空实现；本测试不验证跨存档引用解析。</summary>
+        /// <summary>在内存中记录或回放对象引用；只验证字段接线，不模拟跨存档引用解析。</summary>
         public static void Look<T>(ref T x, string s, bool saveDestroyedThings = false)
         {
+            Scribe_Values.Look(ref x, s);
         }
     }
 
     public static class Scribe_Defs
     {
-        /// <summary>提供定义引用读写接口的空实现；本测试不加载游戏定义数据库。</summary>
+        /// <summary>在内存中记录或回放定义引用；本测试不加载游戏定义数据库。</summary>
         public static void Look<T>(ref T x, string s)
         {
+            Scribe_Values.Look(ref x, s);
         }
     }
 
@@ -91,14 +93,22 @@ namespace Verse
 
     public static class Scribe_Collections
     {
-        /// <summary>提供列表读写接口的空实现；列表内容由用例直接构造。</summary>
+        /// <summary>记录列表字段并复制列表容器；深层对象字段由单独的存档契约用例验证。</summary>
         public static void Look<T>(ref List<T> x, string s, LookMode m)
         {
+            if (Scribe.mode == LoadSaveMode.Saving)
+                Scribe.Values[s] = x == null ? null : new List<T>(x);
+            if (Scribe.mode == LoadSaveMode.LoadingVars)
+                x = Scribe.Values.TryGetValue(s, out var saved) && saved != null ? new List<T>((List<T>)saved) : null;
         }
 
-        /// <summary>提供字典读写接口的空实现；不模拟真实存档中的键值序列化。</summary>
+        /// <summary>复制字典字段并在缺少键时读取为空；不模拟真实存档的键值节点格式。</summary>
         public static void Look<T, U>(ref Dictionary<T, U> x, string s, LookMode m, LookMode n)
         {
+            if (Scribe.mode == LoadSaveMode.Saving)
+                Scribe.Values[s] = x == null ? null : new Dictionary<T, U>(x);
+            if (Scribe.mode == LoadSaveMode.LoadingVars)
+                x = Scribe.Values.TryGetValue(s, out var saved) && saved != null ? new Dictionary<T, U>((Dictionary<T, U>)saved) : null;
         }
     }
 
@@ -336,6 +346,18 @@ namespace RimWorld
 
     public class ThoughtDef : Def
     {
+        public Type thoughtClass = typeof(Thought_Memory);
+        public List<ThoughtStage> stages = new List<ThoughtStage> { new ThoughtStage() };
+    }
+
+    public class ThoughtStage
+    {
+        public float baseMoodEffect;
+        public int baseOpinionOffset;
+    }
+
+    public class Precept
+    {
     }
 
     public class PawnRelationDef : Def
@@ -571,9 +593,15 @@ namespace RimWorld
     public class MemoryHandler
     {
         public List<Thought_Memory> Memories = new List<Thought_Memory>();
-        /// <summary>将生产代码恢复的记忆加入测试列表，不模拟真实记忆合并规则。</summary>
-        public void TryGainMemory(Thought_Memory thought)
+        /// <summary>按已核对的引擎契约指定记忆人物并拒绝无人物社交记忆；不模拟记忆合并规则。</summary>
+        public void TryGainMemory(Thought_Memory thought, Pawn otherPawn = null)
         {
+            if (thought is Thought_MemorySocial)
+            {
+                otherPawn ??= thought.otherPawn;
+                if (otherPawn == null) return;
+            }
+            thought.otherPawn = otherPawn;
             Memories.Add(thought);
         }
     }
@@ -582,8 +610,25 @@ namespace RimWorld
     {
         public ThoughtDef def;
         public int age;
-        public float moodPowerFactor;
+        public float moodPowerFactor = 1f;
         public Pawn otherPawn;
+        public int moodOffset;
+        public int durationTicksOverride = -1;
+        public bool permanent;
+        public Precept sourcePrecept;
+        public int CurStageIndex { get; private set; }
+        public ThoughtStage CurStage => def.stages[CurStageIndex];
+
+        /// <summary>设置强制阶段，模拟原版创建想法时先写入阶段再初始化的入口。</summary>
+        public void SetForcedStage(int stage)
+        {
+            CurStageIndex = stage;
+        }
+    }
+
+    public class Thought_MemorySocial : Thought_Memory
+    {
+        public float opinionOffset;
     }
 
     public static class ThoughtUtility
@@ -594,11 +639,16 @@ namespace RimWorld
 
     public static class ThoughtMaker
     {
-        /// <summary>根据定义创建最小记忆实例，供生产恢复代码填写保存的记忆数据。</summary>
-        public static object MakeThought(ThoughtDef d) => new Thought_Memory
+        /// <summary>创建定义指定的记忆类型，先指定阶段，再按该阶段初始化社交基础数值。</summary>
+        public static Thought_Memory MakeThought(ThoughtDef d, int stage = 0)
         {
-            def = d
-        };
+            var thought = (Thought_Memory)Activator.CreateInstance(d.thoughtClass);
+            thought.def = d;
+            thought.SetForcedStage(stage);
+            if (thought is Thought_MemorySocial social)
+                social.opinionOffset = thought.CurStage.baseOpinionOffset;
+            return thought;
+        }
     }
 
     public class SkillRecord
@@ -685,9 +735,9 @@ namespace SexSlaveCraft
         Slave
     }
 
-    public enum SexSlaveSpecializationType
+    public enum RabbitReproductionMode
     {
-        None
+        Offspring
     }
 
     public class Need_Corruption
@@ -713,16 +763,15 @@ namespace SexSlaveCraft
         public HediffDef hediffToAdd;
     }
 
-    public class CompSexSlaveTraining
+    public partial class CompSexSlaveTraining : ThingComp
     {
         public PawnIdentity pawnIdentity;
-        public SexSlaveSpecializationType specializationType;
-        public float specializationProgress;
+        public RabbitReproductionMode rabbitReproductionMode;
+        public bool allowOthersForTrainingOrSex;
         public bool milkProductionEnabled;
-        /// <summary>记录测试专精类型，供生产人格恢复流程写入组件状态。</summary>
-        public void SetSpecialization(SexSlaveSpecializationType t)
+        /// <summary>隔离方向切换的健康状态清理边界，实际进度切换和快照算法直接链接生产代码。</summary>
+        private static void RemoveInactiveSpecializationStates(Pawn pawn, CompSexSlaveTraining comp, SexSlaveSpecializationType type)
         {
-            specializationType = t;
         }
 
         /// <summary>提供专精状态同步接口的空实现；本测试不验证专精系统。</summary>

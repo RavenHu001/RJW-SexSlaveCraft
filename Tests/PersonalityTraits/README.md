@@ -1,70 +1,64 @@
-# Personality trait regression tests
+# 人格特质与迁移链路回归测试
 
-Run from the repository root with the installed .NET 9 SDK:
+在仓库根目录使用已安装的 .NET 9 SDK 运行：
 
 ```powershell
 dotnet run --project Tests/PersonalityTraits/PersonalityTraits.csproj --configuration Release
 ```
 
-The project has no package references and requires no game installation. For an
-explicitly offline first restore, use the project directory as the only source:
+项目没有包引用，不需要安装游戏。首次还原时如需显式禁用远程源：
 
 ```powershell
 dotnet restore Tests/PersonalityTraits/PersonalityTraits.csproj --ignore-failed-sources --source Tests/PersonalityTraits
 dotnet run --project Tests/PersonalityTraits/PersonalityTraits.csproj --configuration Release --no-restore
 ```
 
-The project links the complete production `ExcretionUtility.cs`,
-`ThingsComp_PE_PES.cs`, and `PersonalityTraitUtility.cs`. Capture, copying,
-excretion, insertion, validation, and item consumption run through those source
-files. The host does not reimplement the personality-transfer algorithm. To test
-another exported source tree, pass `-p:SscSourceRoot=<absolute source directory>`.
+项目直接链接以下生产源码，不在测试中重写人格迁移或进度快照算法：
 
-The 15 cases cover:
+- `common/ExcretionUtility.cs`：真实提取、植入、校验与凝胶消耗入口。
+- `Comps/ThingsComp_PE_PES.cs`：真实人格采集、加工复制和存档字段入口。
+- `common/PersonalityTraitUtility.cs`：真实普通特质采集与恢复。
+- `common/PersonalityMemoryUtility.cs`：真实记忆快照、复制与恢复。
+- `Comps/Comp_Train.Specialization.cs`：真实方向切换、历史进度读写、完整导出与替换恢复。
 
-- Replacing ordinary traits across bodies and restoring an earlier same-body
-  snapshot, including different degrees of the same TraitDef.
-- Capturing suppressed ordinary traits while excluding gene-granted and
-  SSC-derived traits, and keeping independent trait instances through storage,
-  copying, and insertion.
-- Preserving the receiving body's genes and granted traits, including same-Def
-  and different-Def conflicts, and removing hidden old ordinary traits.
-- Preserving abilities shared by a removed ordinary trait and a retained gene
-  or its granted trait.
-- Restoring legacy version-zero snapshots, distinguishing an empty list from a
-  missing snapshot, and rejecting missing data before modifying the receiving
-  body or consuming the item.
-- Writing and reading the version field, including a missing-key legacy default.
+若要验证其他导出的源码目录，可传入 `-p:SscSourceRoot=<源码绝对目录>`。
 
-## Host contracts and limits
+## 覆盖内容
 
-`GameStubs.cs` models the relevant RimWorld 1.6 `TraitSet` contracts checked
-against the local game assembly during the fix:
+共 23 个用例，其中原有的 15 个普通特质用例继续覆盖：
 
-- Trait queries ignore suppressed traits. `GainTrait` rejects an existing active
-  duplicate; `suppressConflicts: true` enables trait conflict handling.
-- `RemoveTrait` first checks for an active trait of the given Def. Removing a
-  gene-granted trait can remove its source gene. Its conflict reconciliation
-  considers ordinary traits and non-overridden genetic traits.
-- Genetic suppression recalculation does not reset trait-based suppression.
-- Trait removal can remove an ability that another retained source also grants;
-  ability gains are idempotent.
+- 跨身体替换普通特质，以及同身体恢复较早快照，包括同一定义的不同等级。
+- 保存受抑制普通特质，排除基因授予和 SSC 派生特质，并隔离源角色、凝胶与副本的可变特质实例。
+- 保留宿主基因及其授予的特质，处理同定义及不同定义的冲突，并移除隐藏的旧普通特质。
+- 保留被移除普通特质与宿主基因或保留特质共同授予的能力。
+- 兼容旧版零版本快照，区分合法空快照与缺失数据，并在修改身体和消耗凝胶前拒绝缺失快照。
+- 保存、读取格式版本，以及缺少版本字段时的旧格式默认值。
 
-The host assumes the relevant DLC behavior is enabled. Defs, trait conflicts,
-genes, hediffs, and abilities are small in-memory models; they do not load game
-XML or run Harmony patches. The ability tracker uses a set of AbilityDefs rather
-than real Ability instances. Gene addition/removal is sufficient to detect an
-unexpected loss during insertion; it does not model the complete gene lifecycle.
-Cache and renderer notifications are no-ops, while the private trait recache
-entry point exists so the production reflection path is exercised.
+新增的 8 个用例覆盖：
 
-The Scribe value host records and replays the scalar fields requested by
-`PostExposeData`. This checks that the version field participates in the
-production save/load method; it is **not** a real RimWorld save-file round trip.
-Collection and Def serialization remain no-ops. Full game-side caches,
-suppression after later gene changes, work restrictions, needs, health effects,
-Unity rendering, and compatibility with other mods still require game testing.
+- 源公交历史与当前奶牛进度经过实际提取、加工复制和跨体植入后均保留；当前方向尚未归档的最新增长也不会丢失。
+- 原身体继续训练、修改原凝胶、修改加工副本均不会通过共享字典污染其他对象。
+- 接收身体原有公交及宠物历史被整体替换；旧凝胶缺少历史时仅恢复已保存的当前方向，不能借用宿主历史。
+- 第 1、2、3 阶段记忆与自定义正、负、零浮点好感经过完整链路后原样恢复；宿主记忆被替换。
+- 记忆年龄、心情倍率、普通及社交记忆的关联人物、心情偏移、持续时长、永久标记和戒律引用经过采集、复制及植入后保持。
+- 加工复制不共享可变记忆条目；旧记忆缺少实例版本和好感字段时仍使用定义默认值。
+- 完整特化历史字典和新增记忆字段实际参与生产存档入口的读写，缺少新字段时保留明确的旧格式标记。
 
-The missing-snapshot case intentionally verifies one validation error; any
-unexpected error logged by a production catch block fails the case. A successful
-run exits with code zero and prints `RESULT: 15/15 cases passed.`
+## 引擎替身契约与验证边界
+
+`GameStubs.cs` 为生产入口提供无界面环境。特质相关行为依据修复时核对的本机 RimWorld 1.6 程序集：
+
+- 特质查询忽略受抑制条目；授予特质会拒绝活跃重复条目，`suppressConflicts: true` 启用冲突处理。
+- 移除特质前先查询同定义的活跃条目；移除基因特质可能删除来源基因；冲突重新计算考虑普通特质和未被覆盖的基因特质。
+- 重算基因抑制不会清空特质之间的抑制标记。
+- 移除特质可能移除仍被其他来源授予的共享能力，而能力授予本身保持幂等。
+
+记忆替身依据本次核对的真实引擎契约：创建记忆先指定阶段，再按该阶段初始化社交默认好感；添加普通记忆会使用传入人物覆盖原字段，社交记忆允许回退到已保存的人物，且无人物的社交记忆不能加入。用例使用彼此不同的记忆定义，避免把本测试不模拟的合并结果当作通过依据。真实记忆的可获得性、堆叠、合并、过期和后续刷新行为由独立记忆测试与游戏内验证补充，本项目不宣称完整模拟这些机制。
+
+训练组件使用生产分部类中的真实方向与历史算法，只把健康状态清理、训练状态对账等外部边界留为空实现。因此这些用例能验证快照数据和接线是否正确，不能代替实际健康状态联动测试。
+
+Scribe 替身记录和回放标量、定义与对象引用，并复制列表、字典容器。记忆条目的 `ExposeData` 单独验证全部字段；列表中的深层对象、跨存档人物或戒律引用解析以及 XML 节点格式不在模拟范围内。这是**存档字段契约验证，不是真实 RimWorld 存档文件往返测试**。
+
+测试假设相关 DLC 行为启用。定义、冲突、基因、健康状态与能力都是最小内存模型，不加载游戏 XML 或 Harmony 补丁；能力追踪器使用定义集合而不是真实能力实例。图像和缓存通知为空实现，私有特质缓存刷新入口则保留，以执行生产反射路径。后续基因变化、工作限制、需求、健康状态联动、界面与其他模组兼容性仍需游戏验证。
+
+缺失快照用例会主动验证一条预期错误；生产异常捕获中出现任何其他错误都会使当前用例失败。成功运行退出码为零，并输出 `RESULT: 23/23 cases passed.`。

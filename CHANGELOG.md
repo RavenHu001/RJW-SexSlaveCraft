@@ -4,6 +4,21 @@
 
 This continuation builds on upstream **2.2.8**, the baseline when upstream development stopped in July, and retains its version numbering. Entries are listed newest first. Technical details are in the [development log (Chinese)](Docs/开发更新记录.md).
 
+## [未发布 / Unreleased] — 人格特化历史与记忆数值 / Personality specialization history and memory values
+
+- 人格凝胶现在保存所有方向的特化历史，植入时整体替换接收身体的进度，避免丢失源历史或混入宿主训练记录。
+- 保存并恢复记忆的实际好感、阶段和原生实例字段，保留手动设置的数值，包括零和小数。
+- 旧凝胶继续按已保存数据恢复；此前未保存的历史和自定义数值无法追溯补回。
+- Personality gels now carry specialization history for every direction and replace the receiving body's history during implantation.
+- Memory snapshots preserve actual opinion values, stages, and native instance fields, including custom zero and fractional values.
+- Older gels retain compatible defaults; data never stored in an older snapshot cannot be recovered retroactively.
+
+**状态：修复完成。自动验证通过，维护者已确认实际游玩修复有效，并同意提交及上传。版本保持 `2.2.10`。**
+
+**Status: fixed. Automated checks passed, and the maintainer confirmed the fixes work in-game and approved committing and pushing them. Version remains `2.2.10`.**
+
+详细说明 / Details：[人格特化历史与记忆数值迁移修复](Docs/人格特化历史与记忆数值迁移修复.md)。
+
 ## [未发布 / Unreleased] — 人格凝胶界面调整 / Personality gel UI layout
 
 - 人格卡片采用独立头部、双栏内容及固定底部操作区，解决顶部文字重叠；技能和特质分别滚动，多特质不会挤出隶属信息或分配按钮。
