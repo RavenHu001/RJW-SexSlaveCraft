@@ -524,7 +524,10 @@ namespace SexSlaveCraft
             }
 
             listing.Gap(6f);
-            string progressText = HasAnyFinalizedState(pawn)
+            // 当前方向只读取自己的终极状态；未选择方向时，沿用上方标签的已终极化摘要。
+            bool displayedTypeFinalized = IsTypeFinalized(pawn, comp.specializationType)
+                || (comp.specializationType == SexSlaveSpecializationType.None && HasAnyFinalizedState(pawn));
+            string progressText = displayedTypeFinalized
                 ? Strings.ITab_SpecializationComplete
                 : comp.specializationProgress.ToStringPercent();
             listing.Label(Strings.ITab_SpecializationProgress(progressText));

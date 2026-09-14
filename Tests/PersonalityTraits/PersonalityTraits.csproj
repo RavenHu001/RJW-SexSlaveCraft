@@ -7,6 +7,8 @@
   <ItemGroup>
     <Compile Include="$(SscSourceRoot)/common/ExcretionUtility.cs" Link="Production/ExcretionUtility.cs" />
     <Compile Include="$(SscSourceRoot)/common/PersonalityTraitUtility.cs" Link="Production/PersonalityTraitUtility.cs" />
+    <Compile Include="$(SscSourceRoot)/common/PersonalityMemoryUtility.cs" Link="Production/PersonalityMemoryUtility.cs" />
     <Compile Include="$(SscSourceRoot)/Comps/ThingsComp_PE_PES.cs" Link="Production/ThingsComp_PE_PES.cs" />
+    <Compile Include="$(SscSourceRoot)/Comps/Comp_Train.Specialization.cs" Link="Production/Comp_Train.Specialization.cs" />
   </ItemGroup>
 </Project>

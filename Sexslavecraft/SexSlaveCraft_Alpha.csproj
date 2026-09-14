@@ -91,6 +91,7 @@
     <Compile Include="common\CorruptionProgressionUtility.cs" />
     <Compile Include="common\ExcretionUtility.cs" />
     <Compile Include="common\PersonalityTraitUtility.cs" />
+    <Compile Include="common\PersonalityMemoryUtility.cs" />
     <Compile Include="common\FineTrainingUtility.cs" />
     <Compile Include="common\FullGelatinizationUtility.cs" />
     <Compile Include="common\GelatinizationHealthSanitizer.cs" />
@@ -158,6 +159,7 @@
     <Compile Include="ThePatches\Harmony_RabbitCloneBirth.cs" />
     <Compile Include="Comps\CompUsable_Restricted.cs" />
     <Compile Include="Comps\Comp_Train.cs" />
+    <Compile Include="Comps\Comp_Train.Specialization.cs" />
     <Compile Include="Comps\ThingClass_WithComp_NoStack.cs" />
     <Compile Include="Comps\ThingsComp_PE_PES.cs" />
     <Compile Include="common\ResearchUtils.cs" />

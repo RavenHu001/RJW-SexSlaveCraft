@@ -267,6 +267,12 @@
           <PawnBeauty>3</PawnBeauty> <TameAnimalChance>0.20</TameAnimalChance>
           <TrainAnimalChance>0.20</TrainAnimalChance>
         </statOffsets>
+        <!-- 阶段授予器只在当前阶段执行；满级也必须补授予，覆盖直接升满和旧存档缺失状态。 -->
+        <hediffGivers>
+          <li Class="SexSlaveCraft.SSC_HediffGiver_Refresh">
+            <hediff>SSC_Lactating_SubState</hediff>
+          </li>
+        </hediffGivers>
       </li>
     </stages>
   </HediffDef>

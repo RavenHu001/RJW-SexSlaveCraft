@@ -1,8 +1,9 @@
 # RJW-SexSlaveCraft Complete Player Guide
 
-> For RimWorld 1.6 and SexSlaveCraft 2.2.10, based on the current workspace code and installed Defs.\
+> For RimWorld 1.6 and SexSlaveCraft 2.2.11, based on the current workspace code and installed Defs.\
 > Audited on 2026-06-30.  
 > Based on upstream 2.2.8; version 2.2.9 includes the specialization and ritual progression fixes, and 2.2.10 fixes stale training locks after interrupted rituals. See `CHANGELOG.md`.\
+> Version 2.2.11 includes three groups of fixes: ordinary personality trait restoration and the gel UI/localization; specialization history and actual memory values during personality transfer; specialization completion display and permanent lactation at full progress.\
 > This guide describes the behavior implemented by the current C# and XML. Where an old changelog or description disagrees with the code, the discrepancy is listed under “Current Limitations and Known Differences.”
 
 ## 1. Scope and Dependencies

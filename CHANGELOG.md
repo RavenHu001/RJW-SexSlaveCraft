@@ -4,38 +4,40 @@
 
 This continuation builds on upstream **2.2.8**, the baseline when upstream development stopped in July, and retains its version numbering. Entries are listed newest first. Technical details are in the [development log (Chinese)](Docs/开发更新记录.md).
 
-## [未发布 / Unreleased] — 人格凝胶界面调整 / Personality gel UI layout
+## [2.2.11] — 2026-09-13 — 人格迁移与特化修复合集 / Personality transfer and specialization fixes
 
-- 人格卡片采用独立头部、双栏内容及固定底部操作区，解决顶部文字重叠；技能和特质分别滚动，多特质不会挤出隶属信息或分配按钮。
-- 特质标题显示数量，长名称自动换行；补全姓名提示并明确锁链严重度，支持中、英、俄翻译。
-- The personality card now has a separate header, independently scrolling skill and trait lists, and a fixed action area. Long trait lists keep bond information and assignment controls visible.
-- Trait names wrap, the heading shows their count, and full-name tooltips and a labeled chain severity improve readability in Chinese, English, and Russian.
+**版本归档与候选包准备：将 2.2.10 之后的修复统一归入本版，尚未正式发布。三组修复均已由维护者确认有效。**
 
-**状态：修复完成。维护者已确认当前界面及翻译实际游玩无问题，本轮人格凝胶相关修复结束。版本号保持 `2.2.10`。**
+**Release grouping and candidate preparation: this version combines the fixes made after 2.2.10 and has not been formally released. The maintainer has confirmed all three groups of fixes work in-game.**
 
-**Status: fixed. The maintainer has confirmed that the current UI and translations work correctly in-game, completing this round of personality gel fixes. The version remains `2.2.10`.**
+### 1. 人格普通特质恢复及凝胶界面 / Personality traits and gel UI
 
-详细说明 / Details：[人格凝胶界面布局调整](Docs/人格凝胶界面布局调整.md)。
+- 植入以凝胶中的普通特质替换接收身体的普通特质，同体回填也恢复提取时快照；保留宿主基因及其授予特质，性奴特质继续按历史最高恶堕重建。
+- 凝胶卡片拆分头部与固定操作区，技能和特质独立滚动，长特质名称换行；修复多特质排版及中、英、俄翻译同步问题。
+- Implantation replaces ordinary traits from the saved snapshot, including same-body restoration, while retaining the host's genes and gene-granted traits. The Sex Slave trait is still rebuilt from highest-ever Corruption.
+- The gel card separates its header and fixed action area, scrolls skills and traits independently, wraps long trait names, and corrects layout and localization in Chinese, English, and Russian.
 
-## [未发布 / Unreleased] — 人格特质迁移修复 / Personality trait transfer fix
+详细说明 / Details：[人格普通特质迁移修复](Docs/人格普通特质迁移修复.md) · [人格凝胶界面布局调整](Docs/人格凝胶界面布局调整.md)。
 
-### 中文
+### 2. 特化历史与记忆数值迁移 / Specialization history and memory values
 
-- 人格植入现在以凝胶中的普通特质完整替换接收身体的普通特质；植回原身体也恢复提取时的快照。
-- 新凝胶只保存非基因来源特质，包括暂时受到基因抑制的普通特质。接收身体的基因及其授予特质保留，性奴特质仍由历史最高恶堕重建。
-- 旧凝胶继续按已保存的条目恢复人格特质；旧格式无法辨认原身体的基因来源。缺失特质快照时拒绝植入并保留凝胶，合法空快照则清除接收身体的普通特质。
+- 凝胶保存所有方向的特化历史，植入时整体替换接收身体的进度，避免丢失源历史或混入宿主训练记录。
+- 保存并恢复记忆的实际好感、阶段和原生实例字段，保留手动设置的数值，包括零和小数。
+- Gels carry specialization history for every direction and replace the receiving body's history during implantation.
+- Memory snapshots preserve actual opinion values, stages, and native instance fields, including custom zero and fractional values.
 
-### English
+详细说明 / Details：[人格特化历史与记忆数值迁移修复](Docs/人格特化历史与记忆数值迁移修复.md)。
 
-- Implantation now replaces the receiving body's ordinary traits with the gel's saved snapshot, including when returning a personality to its original body.
-- New gels save only traits without a gene source, including temporarily gene-suppressed ordinary traits. The receiving body's genes and their traits remain intact; the Sex Slave trait is still rebuilt from highest-ever Corruption.
-- Older gels restore their saved entries as personality traits because the legacy format cannot identify the original gene sources. Missing trait snapshots reject implantation and preserve the gel; valid empty snapshots clear the receiving body's ordinary traits.
+### 3. 特化完成显示与永久泌乳授予 / Specialization completion display and permanent lactation
 
-**状态：修复完成。普通特质恢复此前已确认有效；后续凝胶界面与翻译问题现已处理，并经维护者确认无问题，因此将本轮状态由“部分修复”更新为“修复完成”。版本号保持 `2.2.10`。**
+- 修正一个方向终极化后，调教面板把其他未完成方向也显示为“已完成”的问题。
+- 胸部改造达到 100% 后也会自动补授予永久泌乳，覆盖直接升满和满级旧档缺失状态的情况。
+- The training tab checks completion for the selected specialization instead of treating every direction as complete when any one is finalized.
+- Breast development at 100% also grants missing permanent lactation, covering direct jumps to the maximum and existing saves missing the state.
 
-**Status: fixed. Trait restoration was previously confirmed effective. The follow-up gel UI and translation issues have now been addressed and confirmed by the maintainer, so this round is upgraded from partially fixed to fixed. The version remains `2.2.10`.**
+兼容说明 / Compatibility：旧凝胶继续按已有数据及默认值恢复，无法追溯补回此前未保存的历史或自定义数值；旧特质快照无法辨认基因来源。Older gels retain their saved data and compatible defaults; previously omitted history or custom values cannot be reconstructed, and legacy trait snapshots cannot identify gene sources.
 
-详细说明 / Details：[人格普通特质迁移修复 / Fix details (Chinese)](Docs/人格普通特质迁移修复.md)。
+验证 / Validation：六个自动回归套件共 138 项；各修复的游戏内有效性已由维护者确认，未提供逐项场景清单。Six regression suites contain 138 checks; the maintainer confirmed the fixes in-game without providing an individual scenario checklist. 候选包与构建记录 / Candidate and build record：[2.2.11 发布验证](Docs/2.2.11发布验证.md)。
 
 ## [2.2.10] — 2026-09-13 — 绑定仪式中断热修复 / Binding Ritual interruption hotfix
 

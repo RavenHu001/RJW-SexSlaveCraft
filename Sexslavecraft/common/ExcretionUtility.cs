@@ -93,7 +93,7 @@ namespace SexSlaveCraft
             PetSpecializationUtility.RemoveAllPetStates(consumer);
         }
 
-        /// <summary>校验凝胶快照并恢复人格数据和普通特质，成功后消耗凝胶；缺失快照或恢复发生异常时返回失败。</summary>
+        /// <summary>校验凝胶快照，替换人格与全部特化历史并恢复记忆实例；成功后消耗凝胶，校验或恢复失败时返回失败。</summary>
         public static bool InheritEverything(Pawn consumer, CompPersonalityStore data)
         {
             if (consumer == null || data == null) return false;
@@ -163,8 +163,9 @@ namespace SexSlaveCraft
                 CompSexSlaveTraining trainingComp = consumer.TryGetComp<CompSexSlaveTraining>();
                 if (trainingComp != null)
                 {
-                    trainingComp.SetSpecialization(data.specializationType);
-                    trainingComp.specializationProgress = data.specializationProgress;
+                    // 整体替换历史，避免普通方向切换将宿主的旧进度混入新人格。
+                    trainingComp.RestoreSpecializationProgress(data.specializationType,
+                        data.specializationProgress, data.specializationProgressByType);
                     trainingComp.milkProductionEnabled = data.milkProductionEnabled;
                     SSCIdentityUtility.TrySetIdentity(consumer, data.sscIdentity);
                 }
@@ -194,7 +195,7 @@ namespace SexSlaveCraft
                 }
                 // 步骤 8：恢复记忆和直接关系，让角色重新拿回原本的社会历史。
                 // 先恢复旧记忆堆，再把直接社交关系重新搭回去。
-                ImplMemories(consumer, data.storedMemories);
+                PersonalityMemoryUtility.Restore(consumer, data.storedMemories);
                 if (consumer.relations != null && data.storedRelations != null && data.storedRelations.Count > 0)
                 {
                     consumer.relations.ClearAllRelations();
@@ -282,39 +283,5 @@ namespace SexSlaveCraft
             }
         }
 
-        /// <summary>将已保存且目标能够获得的记忆恢复到目标的记忆列表。</summary>
-        private static void ImplMemories(Pawn target, System.Collections.Generic.List<StoredMemoryData> memories)
-        {
-            if (target?.needs?.mood?.thoughts?.memories == null) return;
-            if (memories == null) return;
-
-            var memoryHandler = target.needs.mood.thoughts.memories;
-            memoryHandler.Memories.Clear();
-
-            foreach (var data in memories)
-            {
-                if (data == null) continue;
-                if (data.def == null) continue;
-                if (!ThoughtUtility.CanGetThought(target, data.def)) continue;
-
-                Thought_Memory newThought = (Thought_Memory)ThoughtMaker.MakeThought(data.def);
-
-                if (newThought != null)
-                {
-                    try
-                    {
-                        newThought.age = data.age;
-                        newThought.moodPowerFactor = data.moodPowerFactor;
-                        newThought.otherPawn = (data.otherPawn != null && !data.otherPawn.Destroyed) ? data.otherPawn : null;
-
-                        memoryHandler.TryGainMemory(newThought);
-                    }
-                    catch (Exception ex)
-                    {
-                        Log.Warning($"[SSC] Skip invalid memory during inherit: def={data.def?.defName ?? "null"}, pawn={target.LabelShort}, err={ex.Message}");
-                    }
-                }
-            }
-        }
     }
 }

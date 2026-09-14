@@ -5,12 +5,12 @@ using RimWorld;
 using Verse;
 using SexSlaveCraft;
 
-internal static class Program
+internal static partial class Program
 {
     private static int passed;
     private static int failed;
 
-    /// <summary>执行所有人格特质回归用例，汇总通过数量，并以退出码报告是否存在失败。</summary>
+    /// <summary>执行人格特质与完整迁移链路回归用例，汇总通过数量，并以退出码报告是否存在失败。</summary>
     private static int Main()
     {
         Run("Cross-body insertion replaces ordinary traits and consumes gel", CrossBodyInsertion);
@@ -28,6 +28,14 @@ internal static class Program
         Run("Missing snapshot fails before mutating receiver or consuming gel", MissingSnapshot);
         Run("Null pawn and component inputs are safe", NullInputs);
         Run("Version metadata writes, reads, and defaults old data to zero", VersionPersistenceContract);
+        Run("特化历史经过提取、加工复制与跨体植入后完整替换宿主历史", SpecializationTransfer);
+        Run("特化快照、加工副本与植入后的角色不共享可变进度字典", SpecializationIsolation);
+        Run("旧凝胶仅恢复已知当前特化，未指定特化清除宿主历史", LegacySpecializationTransfer);
+        Run("多阶段记忆和自定义正负零好感经过提取与加工植入后保持", MemoryTransfer);
+        Run("加工复制保留记忆全部字段且不共享可变记忆条目", MemoryCopyIsolation);
+        Run("旧记忆快照在加工与植入后使用定义默认数值", LegacyMemoryTransfer);
+        Run("完整特化历史参与凝胶存档字段读写并识别缺失旧字段", SpecializationPersistenceContract);
+        Run("记忆新字段参与存档读写并识别旧数据默认值", MemoryPersistenceContract);
         Console.WriteLine($"RESULT: {passed}/{passed + failed} cases passed.");
         return failed == 0 ? 0 : 1;
     }
