@@ -4,11 +4,11 @@
 
 This continuation builds on upstream **2.2.8**, the baseline when upstream development stopped in July, and retains its version numbering. Entries are listed newest first. Technical details are in the [development log (Chinese)](Docs/开发更新记录.md).
 
-## [2.2.11] — 2026-09-13 — 人格、语言与种族分页修复合集 / Personality, localization, and race inspection tab fixes
+## [2.2.11] — 2026-09-14 — 人格、语言与种族分页修复合集 / Personality, localization, and race inspection tab fixes
 
-**版本归档与候选包准备：将 2.2.10 之后的修复统一归入本版，尚未正式发布。原三组人格与特化修复已由维护者确认有效；新增语言与种族分页修复的验证单独记录。**
+**正式发布：本版汇总人格、特化、语言与种族检查分页修复。维护者确认原三组修复有效，并反馈合并后目前未发现问题，同意按当前范围发布。安装包与校验文件见 [v2.2.11 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft-TieJin-Modify/releases/tag/v2.2.11)。**
 
-**Release grouping and candidate preparation: this version combines the fixes made after 2.2.10 and has not been formally released. The maintainer confirmed the original three personality and specialization fix groups in-game; validation of the added localization and race inspection tab fixes is recorded separately.**
+**Released: this version combines personality, specialization, localization, and race inspection tab fixes. The maintainer confirmed the original three fix groups, reported no issues with the merged version, and approved this release. Download the installation ZIP and checksum from [v2.2.11 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft-TieJin-Modify/releases/tag/v2.2.11).**
 
 ### 1. 人格普通特质恢复及凝胶界面 / Personality traits and gel UI
 
@@ -37,7 +37,7 @@ This continuation builds on upstream **2.2.8**, the baseline when upstream devel
 
 兼容说明 / Compatibility：旧凝胶继续按已有数据及默认值恢复，无法追溯补回此前未保存的历史或自定义数值；旧特质快照无法辨认基因来源。Older gels retain their saved data and compatible defaults; previously omitted history or custom values cannot be reconstructed, and legacy trait snapshots cannot identify gene sources.
 
-原三组修复验证 / Validation of the original three fix groups：六个自动回归套件共 138 项；上述三组修复的游戏内有效性已由维护者确认，未提供逐项场景清单。Six regression suites contain 138 checks; the maintainer confirmed the original three fix groups in-game without providing an individual scenario checklist. 原候选包与构建记录 / Original candidate and build record：[2.2.11 发布验证](Docs/2.2.11发布验证.md)。
+原三组修复验证 / Validation of the original three fix groups：六个自动回归套件共 138 项；上述三组修复的游戏内有效性已由维护者确认，未提供逐项场景清单。Six regression suites contain 138 checks; the maintainer confirmed the original three fix groups in-game without providing an individual scenario checklist. 最终发布的七套件 146 项检查与构建记录 / Final release validation with seven suites and 146 checks：[2.2.11 发布验证](Docs/2.2.11发布验证.md)。
 
 ### 4. 语言与种族检查分页 / Localization and race inspection tabs
 

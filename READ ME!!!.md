@@ -2,7 +2,7 @@
 
 > For RimWorld 1.6 and SexSlaveCraft 2.2.11.\
 > This continuation is based on upstream 2.2.8. See `CHANGELOG.md` for release history.\
-> Version 2.2.11 includes three groups of fixes: ordinary personality trait restoration and the gel UI/localization; specialization history and actual memory values during personality transfer; specialization completion display and permanent lactation at full progress.\
+> Version 2.2.11 includes four groups of fixes: ordinary personality trait restoration and the gel UI/localization; specialization history and actual memory values during personality transfer; specialization completion display and permanent lactation at full progress; Traditional Chinese localization, English translation paths, and race inspection tab preservation.\
 > In-game names follow the mod's official English localization. For exact formulas, thresholds, and implementation notes, see `PLAYER_GUIDE_EN.md`.
 
 ## 1. What the Mod Does
