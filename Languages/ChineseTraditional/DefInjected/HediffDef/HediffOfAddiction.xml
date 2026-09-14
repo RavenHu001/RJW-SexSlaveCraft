@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<LanguageData>
+  <PNA_Addiction.label>紫色奈米液體依賴</PNA_Addiction.label>
+  <PNA_Addiction.description>身體對奈米流體的依賴。停止攝入一段時間後，身體會自我調節並清除這種依賴。</PNA_Addiction.description>
+  <PNA_Addiction.stages.0.label>戒斷中</PNA_Addiction.stages.0.label>
+</LanguageData>

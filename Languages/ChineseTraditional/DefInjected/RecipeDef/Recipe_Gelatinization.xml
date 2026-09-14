@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8'?>
+<LanguageData>
+  <ApplyGelatinization.label>半凝膠化改造手術</ApplyGelatinization.label>
+  <ApplyGelatinization.description>對肢體進行半凝膠化改造手術。手術會注入凝膠物質，隨後身體會產生適應性反應。如果適應度先達到 100%，則成功改造為凝膠義肢；如果嚴重度先達到 100%，則肢體毀壞。</ApplyGelatinization.description>
+  <ApplyGelatinization.jobString>進行半凝膠化改造手術</ApplyGelatinization.jobString>
+  <ApplyFullGelatinization.label>全凝膠化手術</ApplyFullGelatinization.label>
+  <ApplyFullGelatinization.description>對已經完成人格排洩的身體執行全凝膠化手術。手術會讓全身進入適應度與嚴重度的競賽；若適應度先達到 100%，則完成全凝膠化；若嚴重度先達到 100%，目標將被徹底毀滅。</ApplyFullGelatinization.description>
+  <ApplyFullGelatinization.jobString>進行全凝膠化手術</ApplyFullGelatinization.jobString>
+</LanguageData>

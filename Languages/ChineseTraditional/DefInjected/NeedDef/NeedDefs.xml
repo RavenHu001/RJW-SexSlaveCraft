@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<LanguageData>
+  <Corruption.label>惡墮率</Corruption.label>
+  <Corruption.description>角色的墮落程度</Corruption.description>
+  <Need_PNA.label>奈米流體渴望</Need_PNA.label>
+  <Need_PNA.description>由於體內已經被紫色奈米機械改造，身體持續渴望新的奈米流體補充，否則將產生強烈的心理空虛。</Need_PNA.description>
+</LanguageData>

@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- 直接编译生产注入器，只替换 Def 数据库、共享分页及启动队列边界。 -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net9.0</TargetFramework>
+    <SscSourceRoot Condition="'$(SscSourceRoot)' == ''">../../Sexslavecraft</SscSourceRoot>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(SscSourceRoot)/common/ITabAddForRace.cs" Link="Production/ITabAddForRace.cs" />
+  </ItemGroup>
+</Project>

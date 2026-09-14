@@ -106,7 +106,8 @@ $testSuites = @(
     @{ Project = 'Tests/PersonalityTraits/PersonalityTraits.csproj'; Arguments = @() },
     @{ Project = 'Tests/PersonalityMemories/PersonalityMemories.csproj'; Arguments = @() },
     @{ Project = 'Tests/PersonalitySpecializations/PersonalitySpecializations.csproj'; Arguments = @() },
-    @{ Project = 'Tests/PersonalityCardLayout/PersonalityCardLayout.csproj'; Arguments = @($repoRoot) }
+    @{ Project = 'Tests/PersonalityCardLayout/PersonalityCardLayout.csproj'; Arguments = @($repoRoot) },
+    @{ Project = 'Tests/RaceInjection/RaceInjection.csproj'; Arguments = @() }
 )
 foreach ($testSuite in $testSuites) {
     $testProject = Join-Path $repoRoot $testSuite.Project
