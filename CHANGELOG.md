@@ -4,6 +4,15 @@
 
 This continuation builds on upstream **2.2.8**, the baseline when upstream development stopped in July, and retains its version numbering. Entries are listed newest first. Technical details are in the [development log (Chinese)](Docs/开发更新记录.md).
 
+## [未发布 / Unreleased] — 特化显示与永久泌乳授予 / Specialization display and permanent lactation
+
+- 修正一个方向终极化后，调教面板把其他未完成方向也显示为“已完成”的问题。
+- 胸部改造达到 100% 后也会自动补授予永久泌乳，覆盖直接升满和满级旧档缺失状态的情况。
+- The training tab now checks completion for the selected specialization instead of treating every direction as complete when any one is finalized.
+- Breast development at 100% now also grants missing permanent lactation, covering direct jumps to the maximum and existing saves missing the state.
+
+状态 / Status：修复完成，维护者已确认游戏内测试成功 / Fixed; the maintainer confirmed successful in-game testing. 版本 / Version：`2.2.10`。
+
 ## [未发布 / Unreleased] — 人格特化历史与记忆数值 / Personality specialization history and memory values
 
 - 人格凝胶现在保存所有方向的特化历史，植入时整体替换接收身体的进度，避免丢失源历史或混入宿主训练记录。
