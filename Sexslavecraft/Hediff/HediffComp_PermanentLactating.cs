@@ -29,6 +29,9 @@ namespace SexSlaveCraft
     // ==============================================================
     public class HediffComp_PermanentLactating : HediffComp_Lactating
     {
+        private const int ProductionTickInterval = 60;
+        private int pendingProductionTicks;
+
         public HediffCompProperties_PermanentLactating CustomProps
         {
             get
@@ -99,10 +102,23 @@ namespace SexSlaveCraft
             set => Traverse.Create(this).Field<float>("charge").Value = Mathf.Clamp(value, 0f, FullChargeAmount);
         }
 
+        /// <summary>初始化奶量与生产计时，保留永久泌乳状态。</summary>
         public override void CompPostMake()
         {
+            pendingProductionTicks = 0;
             CurrentCharge = Mathf.Min(CustomProps?.initialCharge ?? FullChargeAmount, FullChargeAmount);
             Traverse.Create(this).Field<int>("ticksSinceLastSuckled").Value = 0;
+        }
+
+        /// <summary>保留不足一批的生产时间；旧存档从零累计，不补发历史漏算产量。</summary>
+        public override void CompExposeData()
+        {
+            base.CompExposeData();
+            Scribe_Values.Look(ref pendingProductionTicks, "sscPendingProductionTicks", 0);
+            if (Scribe.mode == LoadSaveMode.PostLoadInit)
+            {
+                pendingProductionTicks = Mathf.Clamp(pendingProductionTicks, 0, ProductionTickInterval - 1);
+            }
         }
 
         // 🔥 我们重写 (Override) 原版的每帧跳动逻辑
@@ -111,10 +127,12 @@ namespace SexSlaveCraft
             Traverse.Create(this).Field<int>("ticksSinceLastSuckled").Value = 0;
         }
 
+        /// <summary>累计有效生产时间后分批结算，产奶与营养消耗使用相同的实际经过时间。</summary>
         public override void CompPostTickInterval(ref float severityAdjustment, int delta)
         {
             if (HumanCattleBridgeUtility.IsLoaded)
             {
+                pendingProductionTicks = 0;
                 HumanCattleBridgeUtility.ApplyDoopMode(this);
                 return;
             }
@@ -122,6 +140,7 @@ namespace SexSlaveCraft
             CompSexSlaveTraining trainingComp = Pawn?.TryGetComp<CompSexSlaveTraining>();
             if (trainingComp != null && !trainingComp.milkProductionEnabled)
             {
+                pendingProductionTicks = 0;
                 Traverse.Create(this).Field<int>("ticksSinceLastSuckled").Value = 0;
                 return;
             }
@@ -129,45 +148,65 @@ namespace SexSlaveCraft
             // ⚠️ 绝不调用 base.CompPostTick / CompPostTickInterval！
             // 原版会在这里计算“如果10天不吸奶，就删除该状态”。我们直接抛弃它，彻底锁死！
 
-            int safeDelta = Mathf.Max(1, delta);
+            if (delta <= 0) return;
 
-            // 采用 TPS 极致优化：每 60 tick 结算一次；更大的 interval 也按真实 delta 结算
-            if (safeDelta >= 60 || Pawn.IsHashIntervalTick(60))
+            // 基类提供直接读取奶量的属性；满容量检查无需在每次调用时反射查找字段。
+            if (Charge >= FullChargeAmount)
             {
-                float currentCharge = CurrentCharge;
-                float fullAmount = FullChargeAmount;
-
-                if (currentCharge < fullAmount)
-                {
-                    float amountToGain = (fullAmount / TicksToFullCharge) * safeDelta;
-
-                    float nutritionCost = (NutritionPerDay / 60000f) * safeDelta;
-
-                    if (Pawn.needs != null && Pawn.needs.food != null)
-                    {
-                        if (Pawn.needs.food.CurLevel >= nutritionCost)
-                        {
-                            Pawn.needs.food.CurLevel -= nutritionCost;
-                            currentCharge = Mathf.Min(currentCharge + amountToGain, fullAmount);
-                        }
-                        else if (nutritionCost > 0f && Pawn.needs.food.CurLevel > 0f)
-                        {
-                            float scale = Pawn.needs.food.CurLevel / nutritionCost;
-                            Pawn.needs.food.CurLevel = 0f;
-                            currentCharge = Mathf.Min(currentCharge + amountToGain * scale, fullAmount);
-                        }
-                    }
-                    else
-                    {
-                        currentCharge = Mathf.Min(currentCharge + amountToGain, fullAmount);
-                    }
-
-                    CurrentCharge = currentCharge;
-                }
-
-                Traverse.Create(this).Field<int>("ticksSinceLastSuckled").Value = 0;
+                pendingProductionTicks = 0;
+                return;
             }
 
+            // delta 仅包含本次调用的时间；必须累积被跳过的调用，不能依赖哈希时点补算。
+            long elapsedTicks = (long)pendingProductionTicks + delta;
+            if (elapsedTicks < ProductionTickInterval)
+            {
+                pendingProductionTicks = (int)elapsedTicks;
+                return;
+            }
+
+            // 本批即使缺粮也已经结算，不能在补食后兑现停产期间的时间。
+            pendingProductionTicks = 0;
+            float currentCharge = CurrentCharge;
+            float fullAmount = FullChargeAmount;
+
+            if (currentCharge < fullAmount)
+            {
+                float amountToGain = (fullAmount / TicksToFullCharge) * elapsedTicks;
+
+                float nutritionCost = (NutritionPerDay / 60000f) * elapsedTicks;
+
+                // 分批生产可能跨过容量上限，只为实际能储存的奶量消耗营养。
+                float remainingCapacity = fullAmount - currentCharge;
+                if (amountToGain > remainingCapacity)
+                {
+                    nutritionCost *= remainingCapacity / amountToGain;
+                    amountToGain = remainingCapacity;
+                }
+
+                if (Pawn.needs != null && Pawn.needs.food != null)
+                {
+                    if (Pawn.needs.food.CurLevel >= nutritionCost)
+                    {
+                        Pawn.needs.food.CurLevel -= nutritionCost;
+                        currentCharge = Mathf.Min(currentCharge + amountToGain, fullAmount);
+                    }
+                    else if (nutritionCost > 0f && Pawn.needs.food.CurLevel > 0f)
+                    {
+                        float scale = Pawn.needs.food.CurLevel / nutritionCost;
+                        Pawn.needs.food.CurLevel = 0f;
+                        currentCharge = Mathf.Min(currentCharge + amountToGain * scale, fullAmount);
+                    }
+                }
+                else
+                {
+                    currentCharge = Mathf.Min(currentCharge + amountToGain, fullAmount);
+                }
+
+                CurrentCharge = currentCharge;
+            }
+
+            Traverse.Create(this).Field<int>("ticksSinceLastSuckled").Value = 0;
         }
 
         public override void CompPostPostRemoved()

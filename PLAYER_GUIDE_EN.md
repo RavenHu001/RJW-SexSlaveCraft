@@ -1,9 +1,9 @@
 # RJW-SexSlaveCraft Complete Player Guide
 
-> For RimWorld 1.6 and SexSlaveCraft 2.2.13, based on the current workspace code and installed Defs.\
+> For RimWorld 1.6 and SexSlaveCraft 2.2.14, based on the current workspace code and installed Defs.\
 > Audited on 2026-06-30.  
 > Based on upstream 2.2.8; version 2.2.9 includes the specialization and ritual progression fixes, and 2.2.10 fixes stale training locks after interrupted rituals. See `CHANGELOG.md`.\
-> Version 2.2.13 includes four confirmed fixes: implantation completing at a distance, the memory after gender reassignment surgery, stale UAP locks stopping ritual animations, and ritual fallback animation lookup. Fixes from 2.2.12 and earlier versions are included.\
+> Version 2.2.14 fixes lost time in permanent lactation by using accumulated ticks for milk production and nutrition costs. The maintainer has confirmed the fix. Includes fixes from 2.2.13 and earlier versions. Legacy RimTalk integration remains suspended pending a complete redesign.\
 > This guide describes the behavior implemented by the current C# and XML. Where an old changelog or description disagrees with the code, the discrepancy is listed under “Current Limitations and Known Differences.”
 
 ## 1. Scope and Dependencies
@@ -610,12 +610,14 @@ Starting from 1%, one natural batch takes about 4.95 days.
 At 70% Breasts:
 
 - milk capacity: 0.125;
-- fill time: 15,000 ticks, about six hours;
-- nutrition cost: 0.3 per day;
+- fill time from empty: 15,000 ticks, about six in-game hours, with sufficient nutrition and no extra production or milking;
+- additional nutrition cost while producing: 0.3 per day, or about 0.075 from empty to full;
 - while hungry, gain is scaled to available nutrition;
 - the state does not expire from lack of nursing;
 - lactation can be disabled in the Training tab;
 - fertility factor is 0.05, or 1 when Human Cattle controls the system.
+
+Version 2.2.14 fixes slow base production caused by counting only the current update interval during batch processing. Production now accumulates at least 60 ticks and uses the entire accumulated interval for both milk and nutrition costs. Pending time is cleared while full, disabled, or controlled by Human Cattle; costs near capacity cover only the milk actually stored. Progress below one batch is saved. Existing saves retain their milk without backfilling past losses. These base rates apply to SSC-controlled production; Human Cattle uses its own production rules when it takes over.
 
 ### 10.3 Sex-driven Maturation
 

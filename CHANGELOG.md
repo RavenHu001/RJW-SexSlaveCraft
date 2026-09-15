@@ -4,10 +4,27 @@
 
 This continuation builds on upstream **2.2.8**, the baseline when upstream development stopped in July, and retains its version numbering. Entries are listed newest first. Technical details are in the [development log (Chinese)](Docs/开发更新记录.md).
 
-## [未发布 / Unreleased]
+## [2.2.14] — 2026-09-15 — 永久泌乳计时修复 / Permanent lactation timing fix
+
+维护者已确认永久泌乳修复有效，现归入 `2.2.14`。本版已整理版本与文档，尚未正式发布安装包；包含 `2.2.13` 及更早版本修复。详见 [2.2.14 发布说明](Docs/2.2.14发布说明.md) 与 [版本验证记录](Docs/2.2.14版本验证.md)。
+
+The maintainer has confirmed the permanent lactation fix, now grouped into `2.2.14`. Version metadata and documentation are prepared; an official installation package has not been published. Includes fixes from `2.2.13` and earlier versions. See the [bilingual release notes](Docs/2.2.14发布说明.md) and [validation record (Chinese)](Docs/2.2.14版本验证.md).
+
+### 修复 / Fix
+
+- 修复永久泌乳分批结算漏算时间：累计实际 tick 后统一生产及扣除营养，基础速度不再随组件调用间隔变化；保存未结算进度，满容量及关闭泌乳时不积攒生产时间。
+- Fixes lost time in permanent lactation batches. Milk production and nutrition costs now use accumulated ticks, independent of component update intervals. Pending progress is saved, and time is discarded while full or disabled.
+- 食物充足、从空开始且无额外产量或挤奶时，默认约 6 个游戏小时充满；接近满容量时只为实际存入的奶量扣营养。保留旧存档现有奶量，不追补历史漏算产量；HumanCattle 接管的生产流程不受本修复影响。
+- With sufficient nutrition, an empty reservoir fills in about six in-game hours under default settings, without extra production or milking. Nutrition costs are capped to the amount actually stored. Existing milk is retained without backfilling past losses; HumanCattle-controlled production is unaffected.
+
+### 兼容状态 / Compatibility status
 
 - 暂停并归档旧 RimTalk 兼容，移除运行入口和相关设置控件，等待整个模块重新设计。保留调教排班和旧设置数据。
 - Suspends and archives the legacy RimTalk integration pending a complete redesign. Runtime hooks and active settings controls are removed; Training schedules and legacy preferences are retained.
+
+未来的 RimTalk 兼容重置、性奴主动自慰与主动和他人性爱的保护拆分、主奴同床优化调整和可视化，记录在 [开发规划](Docs/未来内容开发规划.md)，不属于本版已实现功能。
+
+The RimTalk integration reset, separate protections for slave-initiated masturbation and sex with others, and shared-bed improvements and visualization remain [future development plans (Chinese)](Docs/未来内容开发规划.md).
 
 ## [2.2.13] — 2026-09-15 — 人格植入、手术记忆与仪式动画修复 / Implantation, surgery memory, and ritual animation fixes
 
