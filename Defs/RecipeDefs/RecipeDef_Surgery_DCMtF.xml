@@ -57,7 +57,6 @@
   </RecipeDef>
   <ThoughtDef>
     <defName>SSC_Thought_GenderChangeSuccess</defName> 
-    <defName>SSC_GenderChange_Memory</defName>
     <durationDays>15</durationDays> 
     <stackLimit>1</stackLimit> 
     <stages>

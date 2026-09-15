@@ -15,6 +15,7 @@ namespace SexSlaveCraft
         // -------------------------------------------------------
         // 新增部分：控制手术菜单的显示
         // -------------------------------------------------------
+        /// <summary>在原版可用性检查通过后，将手术限制为男性角色。</summary>
         public override bool AvailableOnNow(Thing thing, BodyPartRecord part = null)
         {
             // 1. 先执行原版的基础检查（如：是否被囚禁、是否有医疗床等）
@@ -41,6 +42,8 @@ namespace SexSlaveCraft
         // -------------------------------------------------------
         // 原有部分：手术执行逻辑
         // -------------------------------------------------------
+        /// <summary>手术成功后调整性别、器官和外观，并在术后记忆定义存在时添加心情记忆。</summary>
+        /// <remarks>记忆定义缺失时保留查询错误日志，跳过添加，避免已完成的手术在收尾时抛出空引用异常。</remarks>
         public override void ApplyOnPawn(Pawn pawn, BodyPartRecord part, Pawn billDoer, List<Thing> ingredients, Bill bill)
         {
             // 双重保险：虽然菜单限制了，但为了防止意外，执行前再查一次
@@ -73,11 +76,15 @@ namespace SexSlaveCraft
                 // 获取我们在 XML 里定义的 ThoughtDef
                 ThoughtDef successThought = DefDatabase<ThoughtDef>.GetNamed("SSC_Thought_GenderChangeSuccess");
 
-                // 给小人添加这个记忆
-                pawn.needs.mood.thoughts.memories.TryGainMemory(successThought);
+                // 原版记忆入口不接受空定义；缺失时保留 GetNamed 的诊断并安全跳过。
+                if (successThought != null)
+                {
+                    pawn.needs.mood.thoughts.memories.TryGainMemory(successThought);
+                }
             }
         }
 
+        /// <summary>移除原有生殖器官与胸部状态，通过 RJW 接口建立女性器官配置。</summary>
         private void RebuildSexPartsForFemale(Pawn pawn)
         {
             if (pawn?.health?.hediffSet == null) return;
@@ -109,6 +116,7 @@ namespace SexSlaveCraft
         }
 
         // --- 安全适配逻辑 (保持不变) ---
+        /// <summary>优先使用异种框架允许的体型；未处理时将原版男性体型改为女性体型。</summary>
         private void SafeFixBodyType(Pawn pawn)
         {
             bool hasAlienRaces = ModLister.GetActiveModWithIdentifier("erdelf.HumanoidAlienRaces") != null;
@@ -129,6 +137,7 @@ namespace SexSlaveCraft
         }
 
         // --- 反射部分 (保持不变) ---
+        /// <summary>通过反射读取异种允许的体型并选择合适项；接口缺失或处理异常时返回失败。</summary>
         private bool TryFixAlienBodyType(Pawn pawn)
         {
             try
