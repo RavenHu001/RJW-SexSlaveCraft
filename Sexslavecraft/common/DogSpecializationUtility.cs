@@ -107,7 +107,6 @@ namespace SexSlaveCraft
                     new LookTargets(handler, animal),
                     MessageTypeDefOf.NeutralEvent,
                     false);
-                RimTalkCompatibilityUtility.NotifySexStarted(handler, animal, "pet-dog animal interaction", job.def.defName);
             }
 
             return started;

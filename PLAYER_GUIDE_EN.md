@@ -1402,9 +1402,7 @@ SSC removes the LifeForce gene and spawns a genepack containing only that gene a
 
 ### 21.8 RimTalk and Scheduled Training
 
-RimTalk is an optional soft integration. SSC does not reference the RimTalk assembly directly, so the mod, ordinary Training, and scheduled Training continue to work when RimTalk is absent. Loading Harmony, RJW, and RimTalk before SSC is recommended. RimTalk Little Enhance, Health Enhance, and Expand Memory are optional rather than required.
-
-Enable or disable the bridge with `Trigger RimTalk dialogue for SSC sex scenes` in SSC mod settings. Disabling it stops SSC from making additional AI requests without disabling Training or its timetable.
+SSC's legacy RimTalk integration is suspended pending a complete redesign. SSC no longer sends scene dialogue, inserts Training interruption lines, clears RimTalk replies, or reserves dialogue generation. The settings page shows a suspension notice. RimTalk's own features remain controlled by RimTalk and its other extensions.
 
 Each Sex Slave has a timetable in the Training tab:
 
@@ -1417,31 +1415,7 @@ Each Sex Slave has a timetable in the Training tab:
 
 The timetable belongs to SSC and works without RimTalk.
 
-When an ordinary Training job is actually claimed, including a forced job, the RimTalk bridge performs the following sequence:
-
-1. It reserves the master/trainer and Sex Slave for the upcoming scene.
-2. It clears their old requests and discards old RimTalk replies that are queued but have not yet been displayed.
-3. It immediately inserts a local interruption line into RimTalk's display and API history.
-4. It temporarily prevents the reserved pawns from joining unrelated dialogue and holds the next global generation slot.
-5. Once the sex scene has really started, RimTalk is idle, and no response is waiting to be displayed, SSC sends one Event request for a synchronized multi-turn Training exchange.
-6. The reservation is released when the job ends or aborts, either pawn leaves the map, or 5,000 ticks elapse.
-
-The default interruption is:
-
-> ({MASTER} interrupts the conversation.) It is time for training.
-
-It may be edited in SSC settings and supports `{MASTER}`, `{SLAVE}`, `{TARGET}`, and `{ACT}`. This line is local and consumes no AI request. It is included in the following request as already-spoken context, so the model is told to continue rather than repeat it.
-
-RimTalk has one global AI generation channel. A streaming prompt cannot be rewritten after it has been sent, so SSC cannot redirect a response in mid-stream. It instead displays the local interruption immediately, suppresses new unrelated selection, and waits for the active request to finish before sending the Training Event. Claiming a Training job clears RimTalk's global queue of old undisplayed replies, not only replies belonging to the two participants; this prevents stale streamed dialogue from appearing after the interruption.
-
-With the bridge enabled, SSC also sends direct Event requests for:
-
-- each Binding Ritual Training phase;
-- Personality Excretion scenes;
-- consensual Public Use trade sex;
-- forced Public Use trade sex.
-
-These special events submit one request when their scene starts and do not use the scheduled-Training interruption. Each ordinary Training exchange likewise uses one AI Event request; the local transition line does not add a second call. Pawn profiles, mood, health, relationships, surroundings, chat history, and memory context still depend on the active RimTalk preset and installed RimTalk extensions.
+Legacy preferences are retained for future migration and cannot re-enable the archived integration.
 
 <!-- Current limitations checklist temporarily hidden.
 ## 22. Current Limitations and Known Differences

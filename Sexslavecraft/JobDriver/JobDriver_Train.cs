@@ -38,7 +38,6 @@ namespace SexSlaveCraft
             {
                 initAction = delegate
                 {
-                    RimTalkCompatibilityUtility.ReserveTrainingJob(pawn, Partner);
                     TrainingJobUtility.MarkTrainingStarted(Partner, false);
                 },
                 defaultCompleteMode = ToilCompleteMode.Instant
@@ -50,14 +49,13 @@ namespace SexSlaveCraft
             // CN: 步骤 2：启动 receiver Job，让性奴进入同一段日常调教场景。
             Toil startPartnerJob = new Toil();
             startPartnerJob.defaultCompleteMode = ToilCompleteMode.Instant;
-            // 准备回调：启动接收任务；失败时清除训练占用和对话预留，再中止本任务。
+            // 准备回调：启动接收任务；失败时清除训练占用，再中止本任务。
             startPartnerJob.initAction = delegate
             {
                 if (!TrainingJobUtility.TryStartDailyTrainingReceiver(pawn, Partner, job, partnerJob))
                 {
                     TrainingJobUtility.MarkValidationFailure(Partner, "SSC_TRAIN_RECEIVER");
                     TrainingJobUtility.NotifyTrainingAborted(Partner);
-                    RimTalkCompatibilityUtility.ReleaseTrainingJob(pawn, Partner);
                     pawn.jobs.EndCurrentJob(JobCondition.Incompletable);
                 }
             };
@@ -69,7 +67,7 @@ namespace SexSlaveCraft
             sexToil.defaultCompleteMode = ToilCompleteMode.Never;
             sexToil.defaultDuration = duration;
             sexToil.handlingFacing = true;
-            // 开始回调：同步位置与动作，检查兼容设备；Start 未中止任务时才发送训练开始通知。
+            // 开始回调：同步位置与动作，检查兼容设备；Start 中止任务时立即返回。
             sexToil.initAction = delegate
             {
                 TrainingJobUtility.SyncPartnerPosition(pawn, Partner);
@@ -119,7 +117,6 @@ namespace SexSlaveCraft
                 SSCLog.Verbose($"[SSC_TRAIN] Start daily training scene: trainer={pawn.LabelShort}, slave={Partner.LabelShort}, sexType={sceneSexType}, selectedMode={(Partner.TryGetComp<CompSexSlaveTraining>()?.selectedMode.ToString() ?? "null")}");
                 Start();
                 if (pawn.jobs.curDriver != this) return;
-                RimTalkCompatibilityUtility.NotifyTrainingSceneStarted(pawn, Partner, sceneSexType);
                 Log.Message("[SSC Debug] Start() called.");
             };
             // 每帧回调：更新场景与双方体力，保持位置同步，并在计时结束后切换步骤。
@@ -138,13 +135,12 @@ namespace SexSlaveCraft
                 SexUtility.reduce_rest(pawn, 2f);
                 if (ticks_left <= 0) ReadyForNextToil();
             };
-            // 收尾回调：释放 RJW 场景、设备关联、训练状态和对话预留，不在此发放训练收益。
+            // 收尾回调：释放 RJW 场景、设备关联和训练状态，不在此发放训练收益。
             sexToil.AddFinishAction(delegate
             {
                 base.End();
                 OnaholeCompatibilityUtility.TryUnregisterOnaholePartner(Partner, pawn);
                 TrainingJobUtility.CleanupTrainingState(Partner);
-                RimTalkCompatibilityUtility.ReleaseTrainingJob(pawn, Partner);
             });
             sexToil.FailOn(() => !OnaholeCompatibilityUtility.IsValidTrainingReceiver(Partner, partnerJob));
             yield return sexToil;

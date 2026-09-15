@@ -441,16 +441,9 @@ If a valid-looking target cannot be trained, try toggling `Use RJW original elig
 
 ### RimTalk and Scheduled Training
 
-RimTalk is optional. Enable `Trigger RimTalk dialogue for SSC sex scenes` in SSC settings, then use each Sex Slave's Training tab to choose a two-hour Training window and a frequency of once every 1–7 days.
+SSC's legacy RimTalk integration is suspended pending a complete redesign. SSC no longer sends scene dialogue, inserts Training interruption lines, clears RimTalk replies, or reserves dialogue generation. The settings page shows a suspension notice. RimTalk's own features remain controlled by RimTalk and its other extensions.
 
-- Automatic Training obeys both the timetable and the roughly nine-hour cooldown.
-- A forced order bypasses only the scheduled date/window, not cooldown or safety checks.
-- When the job is claimed, SSC displays a customizable local interruption using `{MASTER}`, `{SLAVE}`, `{TARGET}`, and `{ACT}`. This costs no tokens.
-- When the sex scene actually starts, SSC waits for RimTalk to become idle and submits one multi-turn Event request.
-- Binding Ritual phases, Personality Excretion, and Public Use trade sex also trigger direct RimTalk Event requests.
-- Without RimTalk, or with the SSC integration toggle disabled, scheduled Training still works and no SSC dialogue request is made.
-
-An active RimTalk stream cannot be redirected after its prompt has been sent. SSC therefore displays the local interruption first, blocks new unrelated dialogue from taking the next generation slot, and waits for the current stream to finish.
+Scheduled Training remains part of SSC. Use each Sex Slave's Training tab to select a two-hour window and a frequency of once every 1–7 days. Automatic Training obeys both the timetable and the roughly nine-hour cooldown. Forced orders bypass the scheduled date/window, but not cooldown or safety checks.
 
 <!-- Not-fully-implemented checklist temporarily hidden.
 ## 20. Content Not Fully Implemented

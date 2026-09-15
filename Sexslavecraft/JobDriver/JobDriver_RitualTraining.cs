@@ -157,11 +157,6 @@ namespace SexSlaveCraft
                 Start();
                 if (pawn.jobs.curDriver != this) return;
                 phaseSceneStarted = true;
-                RimTalkCompatibilityUtility.NotifySexStarted(
-                    pawn,
-                    slave,
-                    $"Binding Ritual phase {(slave.TryGetComp<CompSexSlaveTraining>()?.ritualPhase ?? 0) + 1} of 6",
-                    ritualSexType);
 
                 SSCLog.Verbose($"[SSC Ritual] Start() called. pawn IsAnimating = {RitualTrainingUtility.IsAnimating(pawn)}");
                 if (OnaholeCompatibilityUtility.IsPawnOnOnahole(slave))

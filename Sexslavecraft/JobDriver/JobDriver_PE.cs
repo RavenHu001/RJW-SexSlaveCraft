@@ -89,7 +89,6 @@ namespace SexSlaveCraft
                 SSCLog.Verbose($"[SSC_PE] Start personality excretion scene: actor={pawn.LabelShort}, victim={Partner.LabelShort}");
                 Start();
                 if (pawn.jobs.curDriver != this) return;
-                RimTalkCompatibilityUtility.NotifySexStarted(pawn, Partner, "personality excretion", "Anal");
             };
 
             // 每帧回调：维持位置、更新 RJW 与体力计时，时长结束后进入提取步骤。

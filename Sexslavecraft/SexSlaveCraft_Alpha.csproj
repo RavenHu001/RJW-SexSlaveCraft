@@ -155,7 +155,6 @@
     <Compile Include="ThePatches\Harmony_SharedBedCompatibility.cs" />
     <Compile Include="ThePatches\Harmony_BusTrade.cs" />
     <Compile Include="ThePatches\Harmony_PersonalityExcretion.cs" />
-    <Compile Include="ThePatches\Harmony_RimTalkTrainingReservation.cs" />
     <Compile Include="ThePatches\Harmony_RabbitCloneBirth.cs" />
     <Compile Include="Comps\CompUsable_Restricted.cs" />
     <Compile Include="Comps\Comp_Train.cs" />
@@ -163,7 +162,6 @@
     <Compile Include="Comps\ThingClass_WithComp_NoStack.cs" />
     <Compile Include="Comps\ThingsComp_PE_PES.cs" />
     <Compile Include="common\ResearchUtils.cs" />
-    <Compile Include="common\RimTalkCompatibilityUtility.cs" />
     <Compile Include="common\RitualTrainingUtility.cs" />
     <Compile Include="common\UapRitualCompatibilityUtility.cs" />
     <Compile Include="common\SSCMasterBondUtility.cs" />

@@ -280,11 +280,6 @@ namespace SexSlaveCraft
         /// <summary>提供兼容关系注销占位；宿主不保存外部模组的伙伴关系。</summary>
         public static void TryUnregisterOnaholePartner(Pawn slave, Pawn master) { }
     }
-    public static class RimTalkCompatibilityUtility
-    {
-        /// <summary>提供对话通知占位；测试不发送外部模组事件。</summary>
-        public static void NotifySexStarted(Pawn master, Pawn slave, string context, string sexType) { }
-    }
     public static class RitualTrainingUtility
     {
         /// <summary>提供动作切换占位；阶段计数由生产状态管理器验证，宿主不选择真实动作。</summary>

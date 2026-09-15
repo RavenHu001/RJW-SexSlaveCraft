@@ -1,3 +1,4 @@
+// Archived 2026-09-15: excluded from the runtime build pending a complete redesign.
 using HarmonyLib;
 using Verse;
 

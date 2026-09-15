@@ -131,12 +131,10 @@ namespace SexSlaveCraft
                 trader.jobs.TryTakeOrderedJob(waitJob, JobTag.Misc);
 
                 Job sexJob = JobMaker.MakeJob(sexJobDef, trader);
-                bool started = bus.jobs.TryTakeOrderedJob(sexJob, JobTag.Misc);
+                bus.jobs.TryTakeOrderedJob(sexJob, JobTag.Misc);
 
                 Messages.Message("SSC_Message_TradeConsensualSex".Translate(bus.LabelShort, trader.LabelShort),
                     new LookTargets(bus, trader), MessageTypeDefOf.PositiveEvent);
-                if (started)
-                    RimTalkCompatibilityUtility.NotifySexStarted(bus, trader, "public-use trade sex", "Consensual");
             }
         }
 
@@ -165,12 +163,10 @@ namespace SexSlaveCraft
                 // 让商人（施暴者）发起强暴任务，目标是你的小人（受害者）
                 rapist.jobs.StopAll();
                 Job rapeJob = JobMaker.MakeJob(rapeJobDef, victim);
-                bool started = rapist.jobs.TryTakeOrderedJob(rapeJob, JobTag.Misc);
+                rapist.jobs.TryTakeOrderedJob(rapeJob, JobTag.Misc);
 
                 Messages.Message("SSC_Message_TradeRapeOccurred".Translate(victim.LabelShort, rapist.LabelShort),
                     new LookTargets(rapist, victim), MessageTypeDefOf.NegativeEvent);
-                if (started)
-                    RimTalkCompatibilityUtility.NotifySexStarted(rapist, victim, "public-use trade rape", "Rape");
             }
         }
     }

@@ -18,7 +18,6 @@ namespace SexSlaveCraft
             var harmony = new Harmony("SexSlaveCraft.training.patch"); 
             SSCLog.Important($"[SSC Harmony] 开始加载Harmony补丁...");
             harmony.PatchAll();
-            RimTalkCompatibilityUtility.TryInstallPatches(harmony);
             SSCLog.Important("[SexSlaveCraft.training.patch] Harmony patches loaded successfully.");
 
             // EN: Binding Ritual fixes are registered by hand because this bundle needs precise control over which ritual UI / quality getters are changed.

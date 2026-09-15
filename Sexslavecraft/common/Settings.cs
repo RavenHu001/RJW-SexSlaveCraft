@@ -28,6 +28,8 @@ namespace SexSlaveCraft
         public bool enableDebugGizmos = false;
         public bool enableFullGelatinizedBodyTint = true;
         public bool enableRitualEnslavement = true;
+        // EN: Legacy preferences are retained for migration only; the RimTalk runtime is archived.
+        // CN: 以下旧设置只保留读写供未来迁移，RimTalk 运行模块已归档，不参与功能判定。
         public bool enableRimTalkSexDialogue = true;
         public int rimTalkMaxGenerationSpeed = 0;
         public string rimTalkTrainingInterruptTemplate = "";
@@ -177,41 +179,7 @@ namespace SexSlaveCraft
             );
 
             listingStandard.GapLine();
-            // EN: RimTalk requests can consume an external AI call, so players always get an explicit opt-out.
-            // CN: RimTalk 请求可能消耗外部 AI 调用，因此这里始终提供明确的关闭开关。
-            listingStandard.CheckboxLabeled(
-                "SSC_Setting_EnableRimTalkSexDialogue".Translate(),
-                ref settings.enableRimTalkSexDialogue,
-                "SSC_Setting_EnableRimTalkSexDialogue_Desc".Translate()
-            );
-
-            if (settings.enableRimTalkSexDialogue)
-            {
-                string speedValue = settings.rimTalkMaxGenerationSpeed <= 0
-                    ? (string)"SSC_Setting_RimTalkMaxSpeed_Follow".Translate()
-                    : (string)"SSC_Setting_RimTalkMaxSpeed_Value".Translate(settings.rimTalkMaxGenerationSpeed);
-                listingStandard.Label(
-                    "SSC_Setting_RimTalkMaxSpeed".Translate(speedValue),
-                    -1f,
-                    "SSC_Setting_RimTalkMaxSpeed_Desc".Translate());
-                settings.rimTalkMaxGenerationSpeed = Mathf.RoundToInt(
-                    listingStandard.Slider(settings.rimTalkMaxGenerationSpeed, 0f, 4f));
-
-                listingStandard.Label(
-                    "SSC_Setting_RimTalkInterruptTemplate".Translate(),
-                    -1f,
-                    "SSC_Setting_RimTalkInterruptTemplate_Desc".Translate());
-
-                string displayedTemplate = string.IsNullOrWhiteSpace(settings.rimTalkTrainingInterruptTemplate)
-                    ? (string)"SSC_RimTalk_DefaultInterrupt".Translate()
-                    : settings.rimTalkTrainingInterruptTemplate;
-                string editedTemplate = listingStandard.TextEntry(displayedTemplate, 2);
-                if (!string.Equals(editedTemplate, displayedTemplate, StringComparison.Ordinal) ||
-                    !string.IsNullOrWhiteSpace(settings.rimTalkTrainingInterruptTemplate))
-                {
-                    settings.rimTalkTrainingInterruptTemplate = editedTemplate;
-                }
-            }
+            listingStandard.Label("SSC_RimTalk_Paused".Translate());
 
             listingStandard.GapLine();
             // EN: Corruption decay is optional, and its base daily rate can be tuned independently of all dynamic factors.
