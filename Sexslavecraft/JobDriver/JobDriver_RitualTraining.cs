@@ -19,7 +19,9 @@ namespace SexSlaveCraft
         private bool phaseFinishHandled;
         private Lord ritualLord;
 
+        /// <summary>读取当前仪式任务 A 目标所指向的接收角色。</summary>
         protected Pawn Slave => (Pawn)job.targetA.Thing;
+        /// <summary>读取当前阶段使用的仪式位置，供双方站位同步。</summary>
         protected LocalTargetInfo RitualSpot => job.targetB;
 
         /// <summary>在阶段 Job 开始前记录所属 Lord 并验证主从归属；无有效仪式时返回 false。</summary>
@@ -88,6 +90,7 @@ namespace SexSlaveCraft
             // CN: 步骤 2：把主人和性奴压到同一格，读取当前仪式阶段，并给性奴分配 receiver Job。
             Toil prepare = new Toil();
             prepare.defaultCompleteMode = ToilCompleteMode.Instant;
+            // 准备回调：校验本场主从关系，恢复阶段动作并创建仪式接收任务。
             prepare.initAction = delegate
             {
                 Pawn slave = Slave;
@@ -125,6 +128,7 @@ namespace SexSlaveCraft
             Toil sexToil = new Toil();
             sexToil.defaultCompleteMode = ToilCompleteMode.Never;
             sexToil.handlingFacing = true;
+            // 开始回调：再次校验并同步设备；仅在 Start 后任务仍有效时记录阶段开始和启用动画。
             sexToil.initAction = delegate
             {
                 Pawn slave = Slave;
@@ -149,6 +153,7 @@ namespace SexSlaveCraft
                 // EN: Start() must run in initAction so RJW and the receiver Job enter the Binding Ritual scene together.
                 // CN: Start() 必须在 initAction 里调用，才能让 RJW 和 receiver Job 同步进入绑定仪式场景。
                 Start();
+                if (pawn.jobs.curDriver != this) return;
                 phaseSceneStarted = true;
                 RimTalkCompatibilityUtility.NotifySexStarted(
                     pawn,
@@ -164,6 +169,7 @@ namespace SexSlaveCraft
                 // CN: 如果常规动画 Hook 没有接上，就在这里手动补启动一次绑定仪式动画。
                 if (!RitualTrainingUtility.IsAnimating(pawn))
                 {
+                    // 动画启动回调：将返回的时长同步到主从双方驱动，避免阶段结束时间不一致。
                     RitualTrainingUtility.TryStartFallbackAnimation(pawn, slave, Bed, animTicks =>
                     {
                         ApplyAnimationTicks(animTicks);
@@ -178,6 +184,7 @@ namespace SexSlaveCraft
                     });
                 }
             };
+            // 每帧回调：维持双方仪式站位，更新时间和体力；计时耗尽才标记阶段完整执行。
             sexToil.tickAction = delegate
             {
                 Pawn slave = Slave;

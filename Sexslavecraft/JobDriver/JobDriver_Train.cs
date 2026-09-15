@@ -17,11 +17,13 @@ namespace SexSlaveCraft
     {
         private readonly JobDef partnerJob = SSCDefOf.SSC_TrainingReceiver;
 
+        /// <summary>预约本次日常调教的唯一接收目标，防止同时被其他独占任务使用。</summary>
         public override bool TryMakePreToilReservations(bool errorOnFailed)
         {
             return pawn.Reserve(Partner, job, 1, 0, null, errorOnFailed);
         }
 
+        /// <summary>构造日常调教的占用、移动、接收准备、场景执行和收益结算步骤，并注册中断条件。</summary>
         protected override IEnumerable<Toil> MakeNewToils()
         {
             setup_ticks();
@@ -48,6 +50,7 @@ namespace SexSlaveCraft
             // CN: 步骤 2：启动 receiver Job，让性奴进入同一段日常调教场景。
             Toil startPartnerJob = new Toil();
             startPartnerJob.defaultCompleteMode = ToilCompleteMode.Instant;
+            // 准备回调：启动接收任务；失败时清除训练占用和对话预留，再中止本任务。
             startPartnerJob.initAction = delegate
             {
                 if (!TrainingJobUtility.TryStartDailyTrainingReceiver(pawn, Partner, job, partnerJob))
@@ -66,6 +69,7 @@ namespace SexSlaveCraft
             sexToil.defaultCompleteMode = ToilCompleteMode.Never;
             sexToil.defaultDuration = duration;
             sexToil.handlingFacing = true;
+            // 开始回调：同步位置与动作，检查兼容设备；Start 未中止任务时才发送训练开始通知。
             sexToil.initAction = delegate
             {
                 TrainingJobUtility.SyncPartnerPosition(pawn, Partner);
@@ -114,9 +118,11 @@ namespace SexSlaveCraft
                 string sceneSexType = Sexprops != null ? Sexprops.sexType.ToString() : "null";
                 SSCLog.Verbose($"[SSC_TRAIN] Start daily training scene: trainer={pawn.LabelShort}, slave={Partner.LabelShort}, sexType={sceneSexType}, selectedMode={(Partner.TryGetComp<CompSexSlaveTraining>()?.selectedMode.ToString() ?? "null")}");
                 Start();
+                if (pawn.jobs.curDriver != this) return;
                 RimTalkCompatibilityUtility.NotifyTrainingSceneStarted(pawn, Partner, sceneSexType);
                 Log.Message("[SSC Debug] Start() called.");
             };
+            // 每帧回调：更新场景与双方体力，保持位置同步，并在计时结束后切换步骤。
             sexToil.tickAction = delegate
             {
                 // EN: Keep the trainer and sex slave on the same cell so the daily training scene does not drift apart.
@@ -132,6 +138,7 @@ namespace SexSlaveCraft
                 SexUtility.reduce_rest(pawn, 2f);
                 if (ticks_left <= 0) ReadyForNextToil();
             };
+            // 收尾回调：释放 RJW 场景、设备关联、训练状态和对话预留，不在此发放训练收益。
             sexToil.AddFinishAction(delegate
             {
                 base.End();
@@ -155,6 +162,7 @@ namespace SexSlaveCraft
             };
         }
 
+        /// <summary>对仍存活的目标结算日常调教评分和对应部位经验，随后通知训练完成并启动冷却。</summary>
         private void ExecuteConditioningOutcome()
         {
             if (Partner == null || Partner.Dead) return;
@@ -188,6 +196,7 @@ namespace SexSlaveCraft
     // ================================================================
     public class JobDriver_TrainingReceiver : JobDriver_SexBaseRecieverLoved
     {
+        /// <summary>初始化接收者的参与者和结束条件，预约发起者后进入轻量接收步骤。</summary>
         protected override IEnumerable<Toil> MakeNewToils()
         {
             DoSetup();
@@ -205,17 +214,20 @@ namespace SexSlaveCraft
             yield return CreateSimpleSexToil();
         }
 
+        /// <summary>创建由发起者控制时长的接收步骤；定期显示效果，结束时恢复衣着显示并刷新肖像。</summary>
         private Toil CreateSimpleSexToil()
         {
             Toil toil = new Toil();
             toil.defaultCompleteMode = ToilCompleteMode.Never;
             toil.socialMode = RandomSocialMode.Off;
             toil.handlingFacing = false;
+            // 每帧回调：按角色错开的时间间隔显示效果，不自行推进接收任务。
             toil.tickAction = delegate
             {
                 if ((Find.TickManager.TicksGame + pawn.HashOffset()) % ticks_between_hearts == 0)
                     ThrowMetaIconF(pawn.Position, pawn.Map, FleckDefOf.Heart);
             };
+            // 收尾回调：恢复类人角色的衣着显示，并尝试使缓存肖像失效。
             toil.AddFinishAction(delegate
             {
                 if (xxx.is_human(pawn))

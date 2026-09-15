@@ -14,11 +14,13 @@ namespace SexSlaveCraft
     {
         private readonly JobDef partnerJob = SSCDefOf.SSC_TrainingReceiver;
 
+        /// <summary>为人格排泄任务预约唯一接收目标；预约冲突时返回 false。</summary>
         public override bool TryMakePreToilReservations(bool errorOnFailed)
         {
             return pawn.Reserve(Partner, job, 1, 0, null, errorOnFailed);
         }
 
+        /// <summary>构造移动、接收方准备、场景执行和人格提取步骤，并在目标状态失效时中止任务。</summary>
         protected override IEnumerable<Toil> MakeNewToils()
         {
             setup_ticks();
@@ -28,6 +30,7 @@ namespace SexSlaveCraft
             this.FailOn(() => Partner.IsFighting());
             this.FailOn(() => !pawn.CanReserve(Partner, 1, 0));
 
+            // 状态检查回调：兔子分身或已失去人格排泄状态的目标不能继续此任务。
             this.FailOn(() =>
             {
                 if (RabbitCloneUtility.IsRabbitClone(Partner)) return true;
@@ -41,6 +44,7 @@ namespace SexSlaveCraft
             // CN: 步骤 1：启动 receiver Job，让受害者进入同一段人格排泄场景。
             Toil startPartnerJob = new Toil();
             startPartnerJob.defaultCompleteMode = ToilCompleteMode.Instant;
+            // 准备回调：创建接收任务，失败时记录原因并结束本次发起任务。
             startPartnerJob.initAction = delegate
             {
                 if (!TrainingJobUtility.TryStartPersonalityExcretionReceiver(pawn, Partner, job, partnerJob))
@@ -58,6 +62,7 @@ namespace SexSlaveCraft
             sexToil.defaultDuration = duration;
             sexToil.handlingFacing = true;
 
+            // 开始回调：同步双方和行为数据，通过校验且 Start 未中止任务后才通知对话兼容层。
             sexToil.initAction = delegate
             {
                 TrainingJobUtility.SyncPartnerPosition(pawn, Partner);
@@ -83,9 +88,11 @@ namespace SexSlaveCraft
                 }
                 SSCLog.Verbose($"[SSC_PE] Start personality excretion scene: actor={pawn.LabelShort}, victim={Partner.LabelShort}");
                 Start();
+                if (pawn.jobs.curDriver != this) return;
                 RimTalkCompatibilityUtility.NotifySexStarted(pawn, Partner, "personality excretion", "Anal");
             };
 
+            // 每帧回调：维持位置、更新 RJW 与体力计时，时长结束后进入提取步骤。
             sexToil.tickAction = delegate
             {
                 if ((Find.TickManager.TicksGame + pawn.thingIDNumber) % ticks_between_hearts == 0)
@@ -102,6 +109,7 @@ namespace SexSlaveCraft
                 if (ticks_left <= 0) ReadyForNextToil();
             };
 
+            // 接收方检查回调：目标脱离预期接收任务时记录失败原因并中止场景。
             sexToil.FailOn(() =>
             {
                 bool invalidReceiver = !OnaholeCompatibilityUtility.IsValidTrainingReceiver(Partner, partnerJob);
@@ -111,6 +119,7 @@ namespace SexSlaveCraft
                 }
                 return invalidReceiver;
             });
+            // 收尾回调：清理 RJW 场景并解除与兼容设备的参与者关联。
             sexToil.AddFinishAction(delegate
             {
                 base.End();
@@ -131,6 +140,7 @@ namespace SexSlaveCraft
             };
         }
 
+        /// <summary>结算已完成场景，保存人格凝胶、更新目标为空壳状态，并施加提取后的恢复期。</summary>
         private void CompletePersonalityExtraction()
         {
             Pawn victim = Partner;
@@ -153,6 +163,7 @@ namespace SexSlaveCraft
             SSCLog.Important($"[SSC_PE] Personality excretion completed: victim={victim.LabelShort}, product={product.def.defName}, hollowState={victim.health.hediffSet.HasHediff(SSCDefOf.SSC_PersonalityExcreted_Done)}");
         }
 
+        /// <summary>创建适合目标的人格凝胶并写入快照；物品缺少存储组件时记录错误，仍返回已创建物品。</summary>
         private static Thing CreateStoredPersonalityProduct(Pawn victim)
         {
             ThingDef productDef = PersonalityGelUtility.GetPersonalityGelDefForPawn(victim);
@@ -170,6 +181,7 @@ namespace SexSlaveCraft
             return product;
         }
 
+        /// <summary>清除目标关系、补上人格排泄特质，并将社交及其他技能调整到空壳身体的默认水平。</summary>
         private static void StripVictimPersonality(Pawn victim)
         {
             // EN: The body stays on the map, but its old social identity must be scrubbed before personality insertion.
@@ -189,6 +201,7 @@ namespace SexSlaveCraft
             }
         }
 
+        /// <summary>移除正在人格排泄的状态，并添加排泄完成状态，标记目标已成为可植入的空壳。</summary>
         private static void ReplaceExcretionHediff(Pawn victim)
         {
             Hediff oldHediff = victim.health.hediffSet.GetFirstHediffOfDef(SSCDefOf.SSC_PersonalityExcreting);
@@ -202,6 +215,7 @@ namespace SexSlaveCraft
 
         // EN: This post-excretion coma is the recovery gate after excretion, matching the insertion-side coma flow.
         // CN: 这个“人格排泄适应症”就是排泄后的恢复门槛，它和植入侧的昏迷流程相互对应。
+        /// <summary>在定义可用时施加人格排泄适应症，并将新状态的严重度设为 0.5。</summary>
         private static void AddPostExcretionComa(Pawn victim)
         {
             if (SSCDefOf.SSC_PostExcretionComa == null) return;

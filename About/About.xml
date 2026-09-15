@@ -6,17 +6,17 @@
 		<li>1.6</li>
 	</supportedVersions>
 	<packageId>rjw.sexslavecraft.TieJinVer</packageId>
-    <description>SexSlaveCraft 2.2.11 (TieJin Modify)
+    <description>SexSlaveCraft 2.2.12 (TieJin Modify)
 基于原模组 7 月停更时的 2.2.8 版本继续维护。
-本次更新：合并人格特质恢复及凝胶界面与翻译、特化历史与记忆数值迁移、特化完成显示与满级永久泌乳授予三组修复。
-追加完整繁中语言资源及英文路径修正，保留已有角色检查分页，并避免重复解析 HAR 种族。
-包含 2.2.10 的绑定仪式中断修复。
+本次更新：补齐恶堕衰减设置的简中、繁中、英文和俄文运行时翻译。
+修复非主人加入已开始行为时绕过主从保护的问题，并提前拦截首次发起，避免接收任务创建后才被拒绝产生的预约黄字。
+包含 2.2.11 的人格、语言与种族分页修复及更早版本修复。维护者已确认本轮修复有效。
 完整中英双语更新记录见模组目录中的 CHANGELOG.md。
 
 Continues development from the upstream 2.2.8 baseline.
-This update combines three groups of fixes: personality traits and gel UI/localization; specialization history and memory values; specialization completion display and permanent lactation at full breast development.
-Also adds Traditional Chinese language resources, corrects English translation paths, preserves existing inspection tabs, and avoids re-resolving HAR races.
-Includes the Binding Ritual interruption fixes from 2.2.10.
+This update adds missing runtime translations for Corruption decay settings in Simplified Chinese, Traditional Chinese, English, and Russian.
+Fixes non-owners bypassing protection when joining an existing interaction, and checks new attempts before creating a receiver job to avoid the late reservation warning.
+Includes the personality, localization, and race inspection tab fixes from 2.2.11 and earlier fixes. The maintainer has confirmed this round of fixes works.
 See CHANGELOG.md in the mod folder for the full Chinese and English release notes.</description>
 	<modDependencies>
 		<li>
