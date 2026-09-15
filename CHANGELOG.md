@@ -6,9 +6,9 @@ This continuation builds on upstream **2.2.8**, the baseline when upstream devel
 
 ## [2.2.13] — 2026-09-15 — 人格植入、手术记忆与仪式动画修复 / Implantation, surgery memory, and ritual animation fixes
 
-维护者已分别确认以下四项修复有效，统一归入 `2.2.13`。本版已完成版本归并，尚未正式发布。构建与验证记录见 [2.2.13 版本验证](Docs/2.2.13版本验证.md)，发布说明见 [2.2.13 发布说明](Docs/2.2.13发布说明.md)。
+维护者已分别确认以下四项修复有效，统一归入 `2.2.13`。正式安装包与 SHA-256 校验文件见 [v2.2.13 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft-TieJin-Modify/releases/tag/v2.2.13)。构建与验证记录见 [2.2.13 版本验证](Docs/2.2.13版本验证.md)，发布说明见 [2.2.13 发布说明](Docs/2.2.13发布说明.md)。
 
-The maintainer has confirmed each of the following four fixes. They are grouped into `2.2.13`, which is prepared but not yet published as a release. See the [validation record (Chinese)](Docs/2.2.13版本验证.md) and [bilingual release notes](Docs/2.2.13发布说明.md).
+The maintainer has confirmed each of the following four fixes. They are grouped into `2.2.13`, now available from [v2.2.13 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft-TieJin-Modify/releases/tag/v2.2.13) with the installation ZIP and SHA-256 checksum. See the [validation record (Chinese)](Docs/2.2.13版本验证.md) and [bilingual release notes](Docs/2.2.13发布说明.md).
 
 ### 1. 人格植入接触检查 / Contact checks during Personality Gel implantation
 
