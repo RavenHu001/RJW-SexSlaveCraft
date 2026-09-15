@@ -10,6 +10,8 @@ This continuation builds on upstream **2.2.8**, the baseline when upstream devel
 
 The maintainer confirmed these fixes after testing. Version `2.2.12` groups the following two fixes; see the [version validation record (Chinese)](Docs/2.2.12版本验证.md) for build and validation details.
 
+**正式发布 / Released：安装包与 SHA-256 校验文件见 [v2.2.12 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft-TieJin-Modify/releases/tag/v2.2.12)。Download the installation ZIP and checksum from the release page.**
+
 ### 1. 恶堕衰减设置运行时翻译 / Runtime translations for Corruption decay settings
 
 - 在实际加载的根目录 `Languages` 中补齐简中、繁中、英文和俄文的四个设置键，修复开关、每日衰减量及说明显示原始键名的问题。
