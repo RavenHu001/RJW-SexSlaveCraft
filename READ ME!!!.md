@@ -1,8 +1,8 @@
 # RJW-SexSlaveCraft Quick Start Guide
 
-> For RimWorld 1.6 and SexSlaveCraft 2.2.12.\
+> For RimWorld 1.6 and SexSlaveCraft 2.2.13.\
 > This continuation is based on upstream 2.2.8. See `CHANGELOG.md` for release history.\
-> Version 2.2.12 fixes missing runtime translations for Corruption decay settings and owner-protection bypasses when joining an existing interaction. It also checks new attempts before creating a receiver job to avoid the late reservation warning. Fixes from 2.2.11 and earlier versions are included.\
+> Version 2.2.13 includes four confirmed fixes: implantation completing at a distance, the memory after gender reassignment surgery, stale UAP locks stopping ritual animations, and ritual fallback animation lookup. Fixes from 2.2.12 and earlier versions are included.\
 > In-game names follow the mod's official English localization. For exact formulas, thresholds, and implementation notes, see `PLAYER_GUIDE_EN.md`.
 
 ## 1. What the Mod Does
@@ -299,6 +299,8 @@ It stores personality rather than flesh. It does not copy the receiving body's a
 2. Open its personality-card tab.
 3. Choose `Assign Target Hollow`.
 4. Wait for a colonist with Training work enabled, or manually order insertion.
+
+Implantation takes 600 ticks. The Hollow waits while retaining its posture and sleep, and both pawns must remain within touch range. Losing contact or a valid target interrupts the procedure before personality transfer or gel consumption.
 
 Successful implantation:
 

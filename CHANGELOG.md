@@ -4,6 +4,44 @@
 
 This continuation builds on upstream **2.2.8**, the baseline when upstream development stopped in July, and retains its version numbering. Entries are listed newest first. Technical details are in the [development log (Chinese)](Docs/开发更新记录.md).
 
+## [2.2.13] — 2026-09-15 — 人格植入、手术记忆与仪式动画修复 / Implantation, surgery memory, and ritual animation fixes
+
+维护者已分别确认以下四项修复有效，统一归入 `2.2.13`。本版已完成版本归并，尚未正式发布。构建与验证记录见 [2.2.13 版本验证](Docs/2.2.13版本验证.md)，发布说明见 [2.2.13 发布说明](Docs/2.2.13发布说明.md)。
+
+The maintainer has confirmed each of the following four fixes. They are grouped into `2.2.13`, which is prepared but not yet published as a release. See the [validation record (Chinese)](Docs/2.2.13版本验证.md) and [bilingual release notes](Docs/2.2.13发布说明.md).
+
+### 1. 人格植入接触检查 / Contact checks during Personality Gel implantation
+
+- 植入的 600 tick 操作期间让目标等待并持续检查接触，保留原有姿势和睡眠；目标走远或无法接触时中断。
+- 最终写入人格和消耗凝胶前，再检查双方同图、接触及目标仍存活且为空壳，避免隔空完成。
+- Keeps the target waiting during the 600-tick procedure while preserving posture and sleep. Losing contact interrupts implantation.
+- Rechecks contact, shared map, and a living Hollow before transferring personality data or consuming the gel, preventing completion at a distance.
+
+### 2. 性别重置术后记忆 / Memory after gender reassignment surgery
+
+- 删除同一术后记忆中重复的定义名称，使 XML、代码与译文使用同一个名称，恢复正常记忆添加。
+- 缺失定义时保留诊断并跳过添加，避免手术收尾空引用；保留原有 15 天、基础心情 −10 及一层堆叠限制。
+- Removes the duplicate memory definition name and aligns XML, code, and translations so the memory can be added normally.
+- Missing definitions retain their diagnostic and safely skip memory addition. The existing 15-day duration, −10 base mood effect, and one-stack limit remain.
+
+### 3. 仪式 UAP 位置锁兼容 / UAP position lock compatibility during rituals
+
+- 在新阶段开始前及已启动阶段收尾时释放双方旧位置锁，避免 UAP 的旧任务检查误停新阶段动画。
+- 迟到的旧阶段回调不释放新任务的位置锁；未安装 UAP 时安全跳过。
+- Releases participant position locks before a new stage starts and when a started stage finishes, preventing stale UAP job checks from stopping the new animation.
+- Late callbacks from an old stage preserve the new job's locks. UAP remains optional.
+
+### 4. 仪式备用动画查找 / Ritual fallback animation lookup
+
+- 从动画框架对应的定义库读取候选，修复有可用动画却因读取 `DefDatabase<Def>` 而找不到的问题。
+- 沿用框架的适用性检查、角色顺序和原有备用选择方式。确实没有匹配资源时仍提示并保留原有仪式计时。
+- Reads candidates from the animation framework's own definition database, fixing fallback lookup failing despite available animations.
+- Retains framework compatibility checks, participant order, and existing fallback selection. Truly missing matches still produce the existing warning and retain ritual timing.
+
+兼容说明 / Compatibility：不补发过去漏掉的手术记忆，也不恢复旧失败存档中已被清空的动画队列；动画仍取决于已安装的框架及适用资源。Does not retroactively grant missed surgery memories or reconstruct animation queues already cleared in old failure saves. Animation playback still depends on installed frameworks and compatible assets.
+
+本版包含 `2.2.12` 及更早版本修复。Includes fixes from `2.2.12` and earlier versions.
+
 ## [2.2.12] — 2026-09-14 — 恶堕衰减翻译与行为保护修复 / Corruption decay localization and interaction protection fixes
 
 维护者验证后确认本轮修复有效，将以下两项修复统一归入 `2.2.12`。详细构建与验证记录见 [2.2.12 版本验证](Docs/2.2.12版本验证.md)。
