@@ -2,7 +2,7 @@
   <HediffDef>
     <defName>Hediff_SSC_PersonalityExcreting</defName>
     <label>人格排泄准备中</label>
-    <description>从肛门注射的NPA开始发挥作用，收集个体的人格（灵魂）并准备排泄。</description>
+    <description>从肛门注射的PNA开始发挥作用，收集个体的人格（灵魂）并准备排泄。</description>
     <hediffClass>SexSlaveCraft.Hediff_SSC_PersonalityExcreting</hediffClass>
     <tendable>false</tendable>
     <everCurableByItem>false</everCurableByItem>
