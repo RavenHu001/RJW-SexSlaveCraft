@@ -1,6 +1,7 @@
 # RJW-SexSlaveCraft Complete Player Guide
 
 > For RimWorld 1.6 and SexSlaveCraft 2.2.14, based on the current workspace code and installed Defs.\
+> Milestone: known-bug fixes complete. Issues identified and confirmed as requiring fixes have been addressed as of this release.\
 > Audited on 2026-06-30.  
 > Based on upstream 2.2.8; version 2.2.9 includes the specialization and ritual progression fixes, and 2.2.10 fixes stale training locks after interrupted rituals. See `CHANGELOG.md`.\
 > Version 2.2.14 fixes lost time in permanent lactation by using accumulated ticks for milk production and nutrition costs. The maintainer has confirmed the fix. Includes fixes from 2.2.13 and earlier versions. Legacy RimTalk integration remains suspended pending a complete redesign.\

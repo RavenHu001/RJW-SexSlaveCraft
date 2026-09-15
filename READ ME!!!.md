@@ -1,6 +1,7 @@
 # RJW-SexSlaveCraft Quick Start Guide
 
 > For RimWorld 1.6 and SexSlaveCraft 2.2.14.\
+> Milestone: known-bug fixes complete. Issues identified and confirmed as requiring fixes have been addressed as of this release.\
 > This continuation is based on upstream 2.2.8. See `CHANGELOG.md` for release history.\
 > Version 2.2.14 fixes lost time in permanent lactation by using accumulated ticks for milk production and nutrition costs. The maintainer has confirmed the fix. Includes fixes from 2.2.13 and earlier versions. Legacy RimTalk integration remains suspended pending a complete redesign.\
 > In-game names follow the mod's official English localization. For exact formulas, thresholds, and implementation notes, see `PLAYER_GUIDE_EN.md`.

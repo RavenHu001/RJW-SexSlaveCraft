@@ -4,11 +4,15 @@
 
 This continuation builds on upstream **2.2.8**, the baseline when upstream development stopped in July, and retains its version numbering. Entries are listed newest first. Technical details are in the [development log (Chinese)](Docs/开发更新记录.md).
 
-## [2.2.14] — 2026-09-15 — 永久泌乳计时修复 / Permanent lactation timing fix
+## [2.2.14] — 2026-09-15 — 当前已发现 bug 修复完成版本 / Known-bug fixes complete
 
-维护者已确认永久泌乳修复有效，现归入 `2.2.14`。本版已整理版本与文档，尚未正式发布安装包；包含 `2.2.13` 及更早版本修复。详见 [2.2.14 发布说明](Docs/2.2.14发布说明.md) 与 [版本验证记录](Docs/2.2.14版本验证.md)。
+按维护者要求，将 `2.2.14` 标记为“当前已发现 bug 修复完成版本”：截至本版，已发现且确认需要修复的问题已处理完成，作为本阶段修复收尾版本。维护者已确认永久泌乳修复有效；本版包含 `2.2.13` 及更早版本修复。正式安装包与 SHA-256 校验文件见 [v2.2.14 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft-TieJin-Modify/releases/tag/v2.2.14)，详见 [2.2.14 发布说明](Docs/2.2.14发布说明.md) 与 [版本验证记录](Docs/2.2.14版本验证.md)。
 
-The maintainer has confirmed the permanent lactation fix, now grouped into `2.2.14`. Version metadata and documentation are prepared; an official installation package has not been published. Includes fixes from `2.2.13` and earlier versions. See the [bilingual release notes](Docs/2.2.14发布说明.md) and [validation record (Chinese)](Docs/2.2.14版本验证.md).
+At the maintainer's request, `2.2.14` marks completion of the current known-bug fixes: issues identified and confirmed as requiring fixes have been addressed as of this release. The maintainer has confirmed the permanent lactation fix. Includes fixes from `2.2.13` and earlier versions. The installation ZIP and SHA-256 checksum are available from [v2.2.14 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft-TieJin-Modify/releases/tag/v2.2.14). See the [bilingual release notes](Docs/2.2.14发布说明.md) and [validation record (Chinese)](Docs/2.2.14版本验证.md).
+
+此标记限定于当前已确认的问题范围，不表示未来不会发现新问题。自慰拦截与现有同床行为按维护者决定暂不视为 bug；旧 RimTalk 兼容通过隔离暂停处理，整体重置仍属未来开发。
+
+This milestone covers the currently confirmed issues and does not rule out future discoveries. Masturbation blocking and current shared-bed behavior are not classified as bugs by the maintainer for now. Legacy RimTalk integration has been suspended and isolated; a complete reset remains future work.
 
 ### 修复 / Fix
 

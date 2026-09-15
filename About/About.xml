@@ -7,12 +7,14 @@
 	</supportedVersions>
 	<packageId>rjw.sexslavecraft.TieJinVer</packageId>
     <description>SexSlaveCraft 2.2.14 (TieJin Modify)
+当前已发现 bug 修复完成版本：截至本版，已发现且确认需要修复的问题已处理完成。
 基于原模组 7 月停更时的 2.2.8 版本继续维护。
 修复永久泌乳分批结算漏算时间：累计实际 tick 后统一计算奶量和营养消耗，恢复配置的基础产奶速度。维护者已确认修复有效，包含 2.2.13 及更早版本修复。
 旧 RimTalk 兼容已暂停并归档，整个模块将在未来重做。
 完整中英双语更新记录见模组目录中的 CHANGELOG.md。
 
 Continues development from the upstream 2.2.8 baseline.
+Known-bug fixes complete: issues identified and confirmed as requiring fixes have been addressed as of this release.
 Fixes lost time in permanent lactation batches: milk production and nutrition costs now use accumulated ticks, restoring the configured base production rate. The maintainer has confirmed the fix works. Includes fixes from 2.2.13 and earlier versions.
 Legacy RimTalk integration is suspended and archived pending a complete redesign.
 See CHANGELOG.md in the mod folder for the full Chinese and English release notes.</description>
