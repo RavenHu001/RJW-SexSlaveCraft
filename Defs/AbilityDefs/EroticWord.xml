@@ -2,7 +2,7 @@
 <AbilityDef>
   <defName>SSC_EroticWord</defName>
   <label>情色之语</label>
-  <description>调教后的嘴已经有了紫色的刻印，通过PAN雾和适宜的心灵波让对方心甘情愿地转变为你的文化</description>
+  <description>调教后的嘴已经有了紫色的刻印，通过PNA雾和适宜的心灵波让对方心甘情愿地转变为你的文化</description>
   <jobDef>CastAbilityOnThing</jobDef>
   <targetRequired>True</targetRequired>
   <canUseAoeToGetTargets>False</canUseAoeToGetTargets>

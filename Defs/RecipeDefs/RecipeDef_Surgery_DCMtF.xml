@@ -3,7 +3,7 @@
   <RecipeDef ParentName="SurgeryFlesh">
     <defName>SSC_Surgery_GenderChange_MtF</defName>
     <label>性别重置手术 (男转女)</label>
-    <description>利用NPA侵蚀男性器官并重新塑造女性器官来将男性转化为女性。</description>
+    <description>利用PNA侵蚀男性器官并重新塑造女性器官来将男性转化为女性。</description>
     
     <workerClass>SexSlaveCraft.Recipe_GenderChange_MtF</workerClass>
     <jobString>正在施行变性手术</jobString>
