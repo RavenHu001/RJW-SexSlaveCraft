@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net9.0</TargetFramework>
+    <SscSourceRoot Condition="'$(SscSourceRoot)' == ''">../../Sexslavecraft</SscSourceRoot>
+    <DefineConstants Condition="'$(HarmonyAssemblyPath)' != ''">$(DefineConstants);REAL_HARMONY</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(SscSourceRoot)/common/SSCSexInteractionPolicy.cs" Link="Production/SSCSexInteractionPolicy.cs" />
+    <Compile Include="$(SscSourceRoot)/ThePatches/Harmony_ProtectSexSlave.cs" Link="Production/Harmony_ProtectSexSlave.cs" />
+    <Reference Include="0Harmony" Condition="'$(HarmonyAssemblyPath)' != ''">
+      <HintPath>$(HarmonyAssemblyPath)</HintPath>
+    </Reference>
+  </ItemGroup>
+</Project>

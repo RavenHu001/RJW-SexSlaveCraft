@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <SSC_Setting_EnableCorruptionDecay>啟用惡墮衰減</SSC_Setting_EnableCorruptionDecay>
+  <SSC_Setting_EnableCorruptionDecay_Desc>關閉後，惡墮不會自然下降；裝備最低值與性奴鎖鏈階段上限仍然生效。</SSC_Setting_EnableCorruptionDecay_Desc>
+  <SSC_Setting_CorruptionDecayPerDay>每日基礎惡墮衰減：{0}%</SSC_Setting_CorruptionDecayPerDay>
+  <SSC_Setting_CorruptionDecayPerDay_Desc>設定套用性需求、近期調教評分、好感、鎖鏈階段、部位開發、裝備和健康狀態修正前，每天損失的基礎惡墮量。預設值：2%。</SSC_Setting_CorruptionDecayPerDay_Desc>
+</LanguageData>

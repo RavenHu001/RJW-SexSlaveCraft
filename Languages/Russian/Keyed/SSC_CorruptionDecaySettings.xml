@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <SSC_Setting_EnableCorruptionDecay>Включить снижение развращения</SSC_Setting_EnableCorruptionDecay>
+  <SSC_Setting_EnableCorruptionDecay_Desc>Если отключено, развращение не снижается естественным образом. Минимум от одежды и ограничения стадии цепи секс-раба продолжают действовать.</SSC_Setting_EnableCorruptionDecay_Desc>
+  <SSC_Setting_CorruptionDecayPerDay>Базовое снижение развращения в день: {0}%</SSC_Setting_CorruptionDecayPerDay>
+  <SSC_Setting_CorruptionDecayPerDay_Desc>Задаёт базовое суточное снижение развращения до применения поправок на сексуальную потребность, последнюю оценку тренировки, отношение, стадию цепи, развитие частей тела, одежду и состояние здоровья. По умолчанию: 2%.</SSC_Setting_CorruptionDecayPerDay_Desc>
+</LanguageData>

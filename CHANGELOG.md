@@ -4,6 +4,32 @@
 
 This continuation builds on upstream **2.2.8**, the baseline when upstream development stopped in July, and retains its version numbering. Entries are listed newest first. Technical details are in the [development log (Chinese)](Docs/开发更新记录.md).
 
+## [2.2.12] — 2026-09-14 — 恶堕衰减翻译与行为保护修复 / Corruption decay localization and interaction protection fixes
+
+维护者验证后确认本轮修复有效，将以下两项修复统一归入 `2.2.12`。详细构建与验证记录见 [2.2.12 版本验证](Docs/2.2.12版本验证.md)。
+
+The maintainer confirmed these fixes after testing. Version `2.2.12` groups the following two fixes; see the [version validation record (Chinese)](Docs/2.2.12版本验证.md) for build and validation details.
+
+### 1. 恶堕衰减设置运行时翻译 / Runtime translations for Corruption decay settings
+
+- 在实际加载的根目录 `Languages` 中补齐简中、繁中、英文和俄文的四个设置键，修复开关、每日衰减量及说明显示原始键名的问题。
+- 本项仅补齐界面文本，不改变衰减公式、默认值或设置保存方式。
+- Adds all four setting keys to the runtime `Languages` folders for Simplified Chinese, Traditional Chinese, English, and Russian, fixing raw keys shown for the toggle, daily decay amount, and descriptions.
+- This change only supplies UI text; decay calculations, defaults, and saved settings remain the same.
+
+### 2. 行为开始阶段的主从保护 / Owner protection when interactions start
+
+- 修复开始阶段保护补丁未注册的问题，阻止非主人通过加入已经开始的行为绕过限制；拒绝加入者时保留原双方的现有任务。
+- 首次发起提前到接收任务创建前校验，避免创建接收任务后才拒绝产生的预约黄字。玩家强制指派同样需要通过保护检查。
+- 保留合法主人、他人训练许可及设置例外，补充未开始场景的收尾保护；SSC 训练和仪式在 `Start()` 被拒绝后不再继续开始通知或推进状态。
+- Registers the missing start guard and prevents non-owners from bypassing protection by joining an existing interaction, while preserving the original participants' jobs.
+- Checks new attempts before creating a receiver job, avoiding the reservation warning caused by rejecting that receiver too late. Player-forced jobs are also checked.
+- Preserves owner access, permitted training, and setting exceptions; guards cleanup for rejected scenes and stops SSC training and ritual code from continuing start notifications or state changes after a rejected `Start()`.
+
+验证 / Validation：八个回归套件共 173 项；新增 27 项保护用例另以真实 Harmony 注册运行。维护者确认修复有效，未提供按语言、场景或模组组合逐项列出的实测结果。Eight regression suites contain 173 checks, with the 27 new protection cases additionally run through real Harmony patch registration. The maintainer confirmed the fixes work without providing individual results for each language, scenario, or mod combination.
+
+技术说明 / Technical details：[行为开始保护修复](Docs/行为开始保护修复.md)。保留 `2.2.11` 及更早版本修复。Includes the fixes from `2.2.11` and earlier versions.
+
 ## [2.2.11] — 2026-09-14 — 人格、语言与种族分页修复合集 / Personality, localization, and race inspection tab fixes
 
 **正式发布：本版汇总人格、特化、语言与种族检查分页修复。维护者确认原三组修复有效，并反馈合并后目前未发现问题，同意按当前范围发布。安装包与校验文件见 [v2.2.11 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft-TieJin-Modify/releases/tag/v2.2.11)。**
