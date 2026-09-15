@@ -318,8 +318,8 @@ namespace rjw
         public Thing Bed;
         /// <summary>保留初始化计时的基类签名；测试使用直接配置的计时字段。</summary>
         public void setup_ticks() { }
-        /// <summary>提供 RJW 场景启动占位，使生产初始化回调可在无游戏环境中执行。</summary>
-        public void Start() { }
+        /// <summary>执行测试启动钩子，供用例检查兼容解锁与外部动画启动的先后顺序。</summary>
+        public void Start() => TestWorld.OnRjwStart?.Invoke(this);
         /// <summary>累计 RJW 收尾调用次数，用于检查中断清理和同步重入是否重复处理。</summary>
         public void End() => TestWorld.RjwEndCalls++;
         /// <summary>将剩余 tick 减一，让测试可以明确触发生产阶段结束条件。</summary>
@@ -342,6 +342,7 @@ internal static class TestWorld
     public static Map Map;
     public static int ProcessSexCalls;
     public static int RjwEndCalls;
+    public static Action<rjw.JobDriver_SexBaseInitiator> OnRjwStart;
 
     /// <summary>重建隔离的测试地图，清零调用计数并恢复 Job 定义，避免用例相互污染。</summary>
     public static void Reset()
@@ -349,6 +350,10 @@ internal static class TestWorld
         Map = new Map();
         ProcessSexCalls = 0;
         RjwEndCalls = 0;
+        OnRjwStart = null;
+#if SSC_TEST_WITH_UAP
+        UAP_Animations.UAP_AnimationPositionLockManager.Reset();
+#endif
         SSCDefOf.Training_Ritual = new JobDef { defName = "Training_Ritual" };
         SSCDefOf.SSC_TrainingReceiver = new JobDef { defName = "SSC_TrainingReceiver" };
     }

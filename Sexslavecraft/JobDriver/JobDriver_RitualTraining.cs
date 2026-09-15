@@ -152,6 +152,8 @@ namespace SexSlaveCraft
                 SSCLog.Verbose($"[SSC_RITUAL] Start ritual scene: master={pawn.LabelShort}, slave={slave.LabelShort}, ritualPhase={slave.TryGetComp<CompSexSlaveTraining>()?.ritualPhase ?? -1}, sexType={ritualSexType}");
                 // EN: Start() must run in initAction so RJW and the receiver Job enter the Binding Ritual scene together.
                 // CN: Start() 必须在 initAction 里调用，才能让 RJW 和 receiver Job 同步进入绑定仪式场景。
+                // 新动画启动前释放旧阶段的位置锁，避免 UAP 的延迟检查误停本阶段动画。
+                UapRitualCompatibilityUtility.ReleasePositionLocks(pawn, slave);
                 Start();
                 if (pawn.jobs.curDriver != this) return;
                 phaseSceneStarted = true;
@@ -221,6 +223,10 @@ namespace SexSlaveCraft
             bool completedActivePhase = phaseSceneStarted && phaseRanToCompletion && HasActiveRitual();
             try
             {
+                // 先解锁再执行外部结算和 End；迟到的旧驱动回调不能释放新阶段的位置锁。
+                if (phaseSceneStarted && pawn.jobs?.curDriver == this)
+                    UapRitualCompatibilityUtility.ReleasePositionLocks(pawn, slave);
+
                 if (completedActivePhase && Sexprops?.pawn != null && Sexprops.partner != null)
                 {
                     try { SexUtility.ProcessSex(Sexprops); }

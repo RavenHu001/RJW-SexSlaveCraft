@@ -165,6 +165,7 @@
     <Compile Include="common\ResearchUtils.cs" />
     <Compile Include="common\RimTalkCompatibilityUtility.cs" />
     <Compile Include="common\RitualTrainingUtility.cs" />
+    <Compile Include="common\UapRitualCompatibilityUtility.cs" />
     <Compile Include="common\SSCMasterBondUtility.cs" />
     <Compile Include="common\SSCLog.cs" />
     <Compile Include="common\SSCSharedBedUtility.cs" />

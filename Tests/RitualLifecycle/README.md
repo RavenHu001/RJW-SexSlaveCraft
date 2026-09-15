@@ -1,6 +1,7 @@
 # Binding Ritual lifecycle regression tests
 
-The suite contains 31 passing cases. Its code was committed with the lifecycle fix
+The suite contains 31 original lifecycle cases and 9 UAP compatibility cases (40 total).
+The original lifecycle tests were committed with the lifecycle fix
 in [481ac53](https://github.com/RavenHu001/RJW-SexSlaveCraft-TieJin-Modify/commit/481ac53135842064262d8a34a2beed173b0ace2b)
 on the `Bug-fix` branch. The release script runs this suite alongside the 29-case
 `RitualProgression` suite and stops packaging if either fails.
@@ -9,6 +10,8 @@ Run from the repository root with .NET SDK 9:
 
 ```powershell
 dotnet run --project Tests/RitualLifecycle/RitualLifecycle.csproj
+# Omit the UAP type entirely: 31 lifecycle cases plus one absence check (32 total).
+dotnet run --project Tests/RitualLifecycle/RitualLifecycle.csproj -p:EnableUapTestStub=false
 ```
 
 The project has no NuGet dependencies and does not require Unity or a game
@@ -17,6 +20,17 @@ Harmony patches, `JobGiver_RitualBinding` and `JobDriver_RitualTraining`.
 `GameStubs.cs` supplies the minimal game host and stores observable state. The
 tests do not duplicate the ritual ownership, progression, recovery or outcome
 eligibility algorithms.
+
+The UAP cases also link the production `UapRitualCompatibilityUtility`. A test-only
+type with UAP's real full name and unlock signature models the stale-job lock and
+its confirmed animation-stop behavior. A positive control reproduces that failure;
+the production driver must release old locks before RJW Start and on completion
+or interruption. Further checks cover unrelated participants, preserving new locks,
+late callbacks, load-time enumeration, preserving animations/jobs, and API exceptions.
+This adapter does not execute the installed UAP DLL or Unity rendering. In-game
+validation should restart RimWorld and start the ritual from a pre-ritual save,
+including Footjob and Vaginal transitions; an already-cleared animation queue in
+an old failure snapshot is not reconstructed by this phase-boundary fix.
 
 These tests exercise cancellation while walking, cancellation during a scene,
 interruption of a single job in a still active ritual, participant removal, phase
