@@ -1,9 +1,9 @@
 # RJW-SexSlaveCraft Complete Player Guide
 
-> For RimWorld 1.6 and SexSlaveCraft 2.2.12, based on the current workspace code and installed Defs.\
+> For RimWorld 1.6 and SexSlaveCraft 2.2.13, based on the current workspace code and installed Defs.\
 > Audited on 2026-06-30.  
 > Based on upstream 2.2.8; version 2.2.9 includes the specialization and ritual progression fixes, and 2.2.10 fixes stale training locks after interrupted rituals. See `CHANGELOG.md`.\
-> Version 2.2.12 fixes missing runtime translations for Corruption decay settings and owner-protection bypasses when joining an existing interaction. It also checks new attempts before creating a receiver job to avoid the late reservation warning. Fixes from 2.2.11 and earlier versions are included.\
+> Version 2.2.13 includes four confirmed fixes: implantation completing at a distance, the memory after gender reassignment surgery, stale UAP locks stopping ritual animations, and ritual fallback animation lookup. Fixes from 2.2.12 and earlier versions are included.\
 > This guide describes the behavior implemented by the current C# and XML. Where an old changelog or description disagrees with the code, the discrepancy is listed under “Current Limitations and Known Differences.”
 
 ## 1. Scope and Dependencies
@@ -943,6 +943,8 @@ Use the Personality tab on the gel to assign a Hollow. A Training worker can the
 - gel and pawn can be reached and reserved;
 - neither is forbidden.
 
+The procedure lasts 600 ticks. The Hollow waits while retaining posture and sleep, and contact must remain possible throughout. Before applying the personality, SSC rechecks contact, shared map, and that the target is still a living Hollow. A failed check interrupts implantation without transferring personality data or consuming the gel.
+
 ### 15.7 Restored Data
 
 Implantation:
@@ -1273,6 +1275,8 @@ On success:
 - chooses from valid race body types for HAR races;
 - removes beard and refreshes graphics.
 
+Pawns with mood needs also receive a surgery memory lasting 15 days, with a base mood effect of −10 and a one-stack limit. Version 2.2.13 fixes its duplicate definition name. If the definition is missing, SSC retains the diagnostic and skips memory addition. Memories missed in the past are not granted retroactively.
+
 The operation currently does not reference `Sex Reassignment Surgery (Male to Female)` as a research prerequisite, so that research node does not actually lock it.
 
 `Femboy Conversion` exists as a research node but is not implemented as a complete gameplay system.
@@ -1347,7 +1351,9 @@ If the target is already running `BeOnahole`:
 ### 21.2 Rimworld Animations
 
 - Binding Ritual searches by reflection for compatible group animations.
-- If normal animation startup fails, SSC attempts a manual fallback.
+- If normal animation startup fails, SSC reads the animation framework's own definition database and attempts a manual fallback.
+- Playback requires an installed framework and compatible assets. Missing matches retain the warning and existing ritual timing.
+- When UAP is installed, SSC releases participant position locks before new ritual stages and when started stages finish, preventing stale job checks from stopping new animations. This does not rebuild queues already cleared in old failure saves.
 - Weapons are hidden during animation.
 - The integration is optional and creates no hard dependency.
 

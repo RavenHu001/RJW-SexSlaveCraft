@@ -7,7 +7,7 @@ using Verse.AI;
 using Verse.AI.Group;
 
 // 测试只构造角色、Lord 和存档恢复后的字段；所有状态判断、阶段推进与清理均调用生产源码。
-internal static class Program
+internal static partial class Program
 {
     private static int cases;
     private static int failures;
@@ -435,6 +435,7 @@ internal static class Program
             Cleared(ritual.Comp);
         });
 
+        RunUapCompatibilityTests();
         Console.WriteLine($"{cases - failures}/{cases} lifecycle tests passed.");
         return failures == 0 ? 0 : 1;
     }

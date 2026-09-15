@@ -104,6 +104,10 @@ $testSuites = @(
     @{ Project = 'Tests/RitualProgression/RitualProgression.csproj'; Arguments = @((Join-Path $repoRoot 'Defs/HediffDefs/HediffOfSexSlave.xml')) },
     @{ Project = 'Tests/RitualLifecycle/RitualLifecycle.csproj'; Arguments = @() },
     @{ Project = 'Tests/PersonalityTraits/PersonalityTraits.csproj'; Arguments = @() },
+    # 2.2.13 新增修复的回归随打包执行；UAP 兼容用例包含在 RitualLifecycle 中。
+    @{ Project = 'Tests/PersonalityInsertion/PersonalityInsertion.csproj'; Arguments = @() },
+    @{ Project = 'Tests/GenderChangeMemory/GenderChangeMemory.csproj'; Arguments = @($repoRoot) },
+    @{ Project = 'Tests/RitualAnimationFallback/RitualAnimationFallback.csproj'; Arguments = @() },
     @{ Project = 'Tests/PersonalityMemories/PersonalityMemories.csproj'; Arguments = @() },
     @{ Project = 'Tests/PersonalitySpecializations/PersonalitySpecializations.csproj'; Arguments = @() },
     @{ Project = 'Tests/PersonalityCardLayout/PersonalityCardLayout.csproj'; Arguments = @($repoRoot) },

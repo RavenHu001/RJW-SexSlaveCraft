@@ -29,6 +29,7 @@ namespace SexSlaveCraft
             Log.Message($"[SSC Ritual] 仪式进入阶段 {phaseIndex + 1}，当前体位已切换为：{phaseData.interactionDefName}");
         }
 
+        /// <summary>从动画框架的定义库筛选可用动画并备用启动，成功后回传动画时长；框架缺省或无匹配项时返回 false。</summary>
         public static bool TryStartFallbackAnimation(Pawn initiator, Pawn slave, Building bed, Action<int> applyAnimationTicks)
         {
             try
@@ -55,7 +56,8 @@ namespace SexSlaveCraft
                 SSCLog.Verbose($"[SSC Ritual] Manual: participants count = {participants.Count}");
 
                 List<(Def def, List<Pawn> order, int priority)> animations = new List<(Def, List<Pawn>, int)>();
-                foreach (Def animationDef in DefDatabase<Def>.AllDefsListForReading)
+                // 定义库按泛型类型独立存储；使用运行时类型读取动画库，同时保留框架的可选依赖。
+                foreach (Def animationDef in GenDefDatabase.GetAllDefsInDatabaseForDef(GroupAnimationDefType))
                 {
                     if (!GroupAnimationDefType.IsInstanceOfType(animationDef)) continue;
                     if (TryCanAnimationBeUsed(animationDef, participants, out List<Pawn> order, out int priority))

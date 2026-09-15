@@ -4,11 +4,14 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>net9.0</TargetFramework>
     <SscSourceRoot Condition="'$(SscSourceRoot)' == ''">../../Sexslavecraft</SscSourceRoot>
+    <EnableUapTestStub Condition="'$(EnableUapTestStub)' == ''">true</EnableUapTestStub>
+    <DefineConstants Condition="'$(EnableUapTestStub)' == 'true'">$(DefineConstants);SSC_TEST_WITH_UAP</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(SscSourceRoot)/common/BindingRitualStateUtility.cs" Link="Production/BindingRitualStateUtility.cs" />
     <Compile Include="$(SscSourceRoot)/ThePatches/Harmony_BindingRitualLifecycle.cs" Link="Production/Harmony_BindingRitualLifecycle.cs" />
     <Compile Include="$(SscSourceRoot)/JobGiver/JobGiver_RitualMaster.cs" Link="Production/JobGiver_RitualMaster.cs" />
     <Compile Include="$(SscSourceRoot)/JobDriver/JobDriver_RitualTraining.cs" Link="Production/JobDriver_RitualTraining.cs" />
+    <Compile Include="$(SscSourceRoot)/common/UapRitualCompatibilityUtility.cs" Link="Production/UapRitualCompatibilityUtility.cs" />
   </ItemGroup>
 </Project>
