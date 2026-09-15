@@ -6,6 +6,8 @@ This continuation builds on upstream **2.2.8**, the baseline when upstream devel
 
 ## [未发布 / Unreleased]
 
+- 修复永久泌乳分批结算漏算时间：累计实际 tick 后统一生产及扣除营养，基础速度不再随组件调用间隔变化；保存未结算进度，满容量及关闭泌乳时不积攒生产时间。
+- Fixes lost time in permanent lactation batches. Milk production and nutrition costs now use accumulated ticks, independent of component update intervals. Pending progress is saved, and time is discarded while full or disabled.
 - 暂停并归档旧 RimTalk 兼容，移除运行入口和相关设置控件，等待整个模块重新设计。保留调教排班和旧设置数据。
 - Suspends and archives the legacy RimTalk integration pending a complete redesign. Runtime hooks and active settings controls are removed; Training schedules and legacy preferences are retained.
 

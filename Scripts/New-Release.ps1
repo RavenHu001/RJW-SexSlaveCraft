@@ -108,6 +108,7 @@ $testSuites = @(
     @{ Project = 'Tests/PersonalityInsertion/PersonalityInsertion.csproj'; Arguments = @() },
     @{ Project = 'Tests/GenderChangeMemory/GenderChangeMemory.csproj'; Arguments = @($repoRoot) },
     @{ Project = 'Tests/RitualAnimationFallback/RitualAnimationFallback.csproj'; Arguments = @() },
+    @{ Project = 'Tests/PermanentLactation/PermanentLactation.csproj'; Arguments = @($repoRoot) },
     @{ Project = 'Tests/PersonalityMemories/PersonalityMemories.csproj'; Arguments = @() },
     @{ Project = 'Tests/PersonalitySpecializations/PersonalitySpecializations.csproj'; Arguments = @() },
     @{ Project = 'Tests/PersonalityCardLayout/PersonalityCardLayout.csproj'; Arguments = @($repoRoot) },
