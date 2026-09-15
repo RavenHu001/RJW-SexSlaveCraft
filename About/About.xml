@@ -6,15 +6,15 @@
 		<li>1.6</li>
 	</supportedVersions>
 	<packageId>rjw.sexslavecraft.TieJinVer</packageId>
-    <description>SexSlaveCraft 2.2.13 (TieJin Modify)
+    <description>SexSlaveCraft 2.2.14 (TieJin Modify)
 基于原模组 7 月停更时的 2.2.8 版本继续维护。
-本次汇总四项修复：人格植入期间持续检查接触，防止目标走远后隔空完成；修复性别重置术后记忆定义及缺失定义时的收尾异常；修复 UAP 旧位置锁误停新仪式阶段动画；修正仪式备用动画定义库查询。
-仪式动画仍需已安装的动画框架与适用资源。包含 2.2.12 及更早版本修复。维护者已确认上述四项修复有效。
+修复永久泌乳分批结算漏算时间：累计实际 tick 后统一计算奶量和营养消耗，恢复配置的基础产奶速度。维护者已确认修复有效，包含 2.2.13 及更早版本修复。
+旧 RimTalk 兼容已暂停并归档，整个模块将在未来重做。
 完整中英双语更新记录见模组目录中的 CHANGELOG.md。
 
 Continues development from the upstream 2.2.8 baseline.
-This update includes four fixes: contact checks during Personality Gel implantation; the memory definition and missing-memory cleanup for gender reassignment surgery; stale UAP position locks stopping new ritual animations; and the definition database used by ritual fallback animations.
-Ritual animations still require an installed animation framework and compatible assets. Includes fixes from 2.2.12 and earlier versions. The maintainer has confirmed all four fixes work.
+Fixes lost time in permanent lactation batches: milk production and nutrition costs now use accumulated ticks, restoring the configured base production rate. The maintainer has confirmed the fix works. Includes fixes from 2.2.13 and earlier versions.
+Legacy RimTalk integration is suspended and archived pending a complete redesign.
 See CHANGELOG.md in the mod folder for the full Chinese and English release notes.</description>
 	<modDependencies>
 		<li>

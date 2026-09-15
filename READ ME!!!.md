@@ -1,8 +1,8 @@
 # RJW-SexSlaveCraft Quick Start Guide
 
-> For RimWorld 1.6 and SexSlaveCraft 2.2.13.\
+> For RimWorld 1.6 and SexSlaveCraft 2.2.14.\
 > This continuation is based on upstream 2.2.8. See `CHANGELOG.md` for release history.\
-> Version 2.2.13 includes four confirmed fixes: implantation completing at a distance, the memory after gender reassignment surgery, stale UAP locks stopping ritual animations, and ritual fallback animation lookup. Fixes from 2.2.12 and earlier versions are included.\
+> Version 2.2.14 fixes lost time in permanent lactation by using accumulated ticks for milk production and nutrition costs. The maintainer has confirmed the fix. Includes fixes from 2.2.13 and earlier versions. Legacy RimTalk integration remains suspended pending a complete redesign.\
 > In-game names follow the mod's official English localization. For exact formulas, thresholds, and implementation notes, see `PLAYER_GUIDE_EN.md`.
 
 ## 1. What the Mod Does
