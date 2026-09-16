@@ -256,4 +256,5 @@
   <SSC_Legacy_Short_MissingAgeTracker>SSC 舊版模式：目標缺少年齡追蹤資料。</SSC_Legacy_Short_MissingAgeTracker>
   <SSC_Legacy_Short_AgeGateFail>SSC 舊版模式：額外年齡門檻未透過。</SSC_Legacy_Short_AgeGateFail>
   <SSC_Legacy_Short_Pass>SSC 舊版模式：判定透過。</SSC_Legacy_Short_Pass>
+  <SSC_RitualRole_TrainerMismatch>{0} 的指定調教員是 {1}，所選主人 {2} 不符。</SSC_RitualRole_TrainerMismatch>
 </LanguageData>

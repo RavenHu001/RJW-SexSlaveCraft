@@ -67,8 +67,9 @@ namespace SexSlaveCraft
                     }
                     if (slaveComp?.selectedTrainer != null && slaveComp.selectedTrainer != p)
                     {
-                        if (!skipReason) reason = Strings.RitualRole_SlaveBoundToOther(
-                            slaveComp.selectedTrainer.LabelShort);
+                        // 此处比较的是调教员指派，不代表性奴已与该对象建立主人绑定。
+                        if (!skipReason) reason = "SSC_RitualRole_TrainerMismatch".Translate(
+                            slave.LabelShort, slaveComp.selectedTrainer.LabelShort, p.LabelShort);
                         return false;
                     }
                 }

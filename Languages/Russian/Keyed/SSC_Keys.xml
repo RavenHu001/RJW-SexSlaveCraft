@@ -276,4 +276,5 @@
   <SSC_Legacy_Short_MissingAgeTracker>Устаревший режим SSC: у цели нет age tracker.</SSC_Legacy_Short_MissingAgeTracker>
   <SSC_Legacy_Short_AgeGateFail>Устаревший режим SSC: дополнительный возрастной фильтр не пройден.</SSC_Legacy_Short_AgeGateFail>
   <SSC_Legacy_Short_Pass>Устаревший режим SSC: условия выполнены.</SSC_Legacy_Short_Pass>
+  <SSC_RitualRole_TrainerMismatch>Назначенный дрессировщик {0} — {1}; выбранный хозяин {2} не соответствует назначению.</SSC_RitualRole_TrainerMismatch>
 </LanguageData>
