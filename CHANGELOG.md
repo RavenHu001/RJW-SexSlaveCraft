@@ -6,9 +6,9 @@ This continuation builds on upstream **2.2.8**, the baseline when upstream devel
 
 ## [2.2.15] — 2026-09-16 — 公交车交易修复与未完成特化入口禁用 / Public Use trade fix and unfinished specialization selection
 
-本版汇总维护者已在游戏内确认有效的公交车交易修复，以及宠物猫、宠物兔入口禁用，包含 `2.2.14` 及更早版本修复。详见 [2.2.15 发布说明](Docs/2.2.15发布说明.md) 与 [版本验证记录](Docs/2.2.15版本验证.md)。本次为版本归并，尚未发布远端安装包。
+本版汇总维护者已在游戏内确认有效的公交车交易修复，以及宠物猫、宠物兔入口禁用，包含 `2.2.14` 及更早版本修复。详见 [2.2.15 发布说明](Docs/2.2.15发布说明.md) 与 [版本验证记录](Docs/2.2.15版本验证.md)。正式安装包与 SHA-256 校验文件见 [v2.2.15 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.2.15)。
 
-This version groups the maintainer-confirmed Public Use trade fix and disabled Pet Cat / Pet Rabbit selection, including fixes from `2.2.14` and earlier versions. See the [bilingual release notes](Docs/2.2.15发布说明.md) and [validation record (Chinese)](Docs/2.2.15版本验证.md). This is a version consolidation; no remote installation package has been published for it yet.
+This version groups the maintainer-confirmed Public Use trade fix and disabled Pet Cat / Pet Rabbit selection, including fixes from `2.2.14` and earlier versions. See the [bilingual release notes](Docs/2.2.15发布说明.md) and [validation record (Chinese)](Docs/2.2.15版本验证.md). The installation ZIP and SHA-256 checksum are available from [v2.2.15 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.2.15).
 
 ### 修复 / Fix
 
