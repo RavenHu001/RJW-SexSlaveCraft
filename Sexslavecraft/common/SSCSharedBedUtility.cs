@@ -29,7 +29,7 @@ namespace SexSlaveCraft
             if (!SSCIdentityUtility.IsSexSlave(pawn) || pawn.Dead || pawn.Destroyed) yield break;
             Pawn master = SSCBondUtility.GetChain(pawn)?.LinkedPawn;
             if (IsValidPartner(pawn, master)) yield return master;
-            Pawn trainer = pawn.TryGetComp<CompSexSlaveTraining>()?.selectedTrainer;
+            Pawn trainer = TrainerAssignmentUtility.GetActiveAssignedTrainer(pawn);
             if (trainer != master && IsValidPartner(pawn, trainer)) yield return trainer;
         }
 
@@ -49,7 +49,7 @@ namespace SexSlaveCraft
         public static bool IsDesignatedTrainer(Pawn sexSlave, Pawn trainer)
         {
             return SSCIdentityUtility.IsSexSlave(sexSlave)
-                && sexSlave.TryGetComp<CompSexSlaveTraining>()?.selectedTrainer == trainer
+                && trainer != null && TrainerAssignmentUtility.GetActiveAssignedTrainer(sexSlave) == trainer
                 && GetAllowedPartners(sexSlave).Contains(trainer);
         }
 

@@ -356,9 +356,9 @@ namespace SexSlaveCraft
     using Verse;
     public enum PawnIdentity { Unset, Slave, Master }
     public class Need_Corruption { public float CurLevelPercentage = 0.2f; }
-    public class CompSexSlaveTraining { public PawnIdentity pawnIdentity; public Pawn selectedTrainer; public SSCSharedSleepRecord sharedSleep; }
+    public class CompSexSlaveTraining { public PawnIdentity pawnIdentity; public Pawn selectedTrainer; public SSCSharedSleepRecord sharedSleep; public bool slaveTrainerEnabled, trainerIdentityInitialized = true; }
     public class Hediff_ChainOfSexSlave { public Pawn LinkedPawn; }
-    public static class SSCIdentityUtility
+    public static partial class SSCIdentityUtility
     {
         /// <summary>读取明确设置的 SSC 主人身份，不因担任调教员而自动授予主人标签。</summary>
         public static bool IsMaster(Pawn pawn) => pawn?.Training.pawnIdentity == PawnIdentity.Master;
@@ -369,6 +369,16 @@ namespace SexSlaveCraft
     {
         /// <summary>返回用例预置的锁链，包括可用于验证损坏引用的空主人锁链。</summary>
         public static Hediff_ChainOfSexSlave GetChain(Pawn pawn) => pawn?.Chain;
+    }
+    public static class TrainerAssignmentUtility
+    {
+        /// <summary>同床模型只接入有效指派；完整生产指派服务另由 TrainerIdentity 套件直接验证。</summary>
+        public static Pawn GetActiveAssignedTrainer(Pawn slave)
+        {
+            Pawn trainer = slave?.Training.selectedTrainer;
+            return trainer != null && trainer != slave && !trainer.Dead && !trainer.Destroyed
+                && SSCIdentityUtility.IsTrainer(trainer) ? trainer : null;
+        }
     }
     public static class SSCDefOf
     {

@@ -170,6 +170,7 @@ internal static partial class Program
             Assert(Widgets.Labels.Count == 3 && Widgets.Labels[1].text.Contains("TooLargeForBed") && Widgets.Labels[2].text == "IdeoligionForbids" && Widgets.Labels[2].rect.x == 430);
         });
         RunUpdatedSharedBedRules();
+        RunTrainerIdentityBedRules();
         Run("XML 记忆持续一天、不叠加并保留六档数值", CheckDefs);
         Run("四种界面翻译键完整且参数匹配", CheckLanguages);
         Run("共同睡眠记录接入现有 Pawn 存档", () => { string source = File.ReadAllText(Path.Combine(repo, "Sexslavecraft/Comps/Comp_Train.cs")); Assert(source.Contains("Scribe_Deep.Look(ref sharedSleep, \"sharedSleep\")")); });
@@ -194,6 +195,8 @@ internal static partial class Program
         Map map = new Map(); Pawn slave = NewPawn(map), partner = NewPawn(map);
         slave.GuestStatus = GuestStatus.Slave; slave.Training.pawnIdentity = PawnIdentity.Slave; slave.Training.selectedTrainer = partner;
         partner.LabelShortCap = "Trainer";
+        partner.Training.pawnIdentity = PawnIdentity.Slave;
+        partner.Training.slaveTrainerEnabled = true;
         Building_Bed bed = new Building_Bed { Map = map }; bed.OwnersForReading.Add(partner); partner.ownership.OwnedBed = bed;
         slave.VanillaBed = new Building_Bed { Map = map, ForSlaves = true };
         return (slave, partner, bed);

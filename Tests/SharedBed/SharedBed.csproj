@@ -5,6 +5,7 @@
     <SscSourceRoot Condition="'$(SscSourceRoot)' == ''">../../Sexslavecraft</SscSourceRoot>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(SscSourceRoot)/common/SSCIdentityUtility.Trainer.cs" Link="Production/SSCIdentityUtility.Trainer.cs" />
     <Compile Include="$(SscSourceRoot)/common/SSCSharedBedUtility.cs" Link="Production/SSCSharedBedUtility.cs" />
     <Compile Include="$(SscSourceRoot)/common/SSCSharedBedMemory.cs" Link="Production/SSCSharedBedMemory.cs" />
     <Compile Include="$(SscSourceRoot)/ThePatches/Harmony_SharedBedCompatibility.cs" Link="Production/Harmony_SharedBedCompatibility.cs" />

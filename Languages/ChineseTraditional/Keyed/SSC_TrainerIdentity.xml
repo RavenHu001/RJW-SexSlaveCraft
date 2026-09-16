@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_TrainerIdentity_Label>是調教員</SSC_TrainerIdentity_Label>
+  <SSC_TrainerIdentity_MasterTip>主人固定具有調教員身分。能否實際調教仍取決於工作安排和目標許可。</SSC_TrainerIdentity_MasterTip>
+  <SSC_TrainerIdentity_UnsetTip>未選擇身分固定不具有調教員資格；若要擔任調教員，請選擇主人或性奴身分。</SSC_TrainerIdentity_UnsetTip>
+  <SSC_TrainerIdentity_SlaveTip>開啟後可以被指定為調教員；仍需滿足原有工作條件和目標許可。關閉後保留原指派並標為停用，不中斷已開始的調教。</SSC_TrainerIdentity_SlaveTip>
+  <SSC_TrainerIdentity_InactiveAssignment>{0}（調教員身分停用）</SSC_TrainerIdentity_InactiveAssignment>
+  <SSC_TrainerIdentity_UnavailableAssignment>{0}（工作或身體條件暫不滿足）</SSC_TrainerIdentity_UnavailableAssignment>
+  <SSC_TrainerIdentity_Required>需要有效的調教員身分：主人，或已開啟調教員開關的性奴。</SSC_TrainerIdentity_Required>
+</LanguageData>

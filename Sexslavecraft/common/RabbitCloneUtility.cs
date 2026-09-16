@@ -321,6 +321,7 @@ namespace SexSlaveCraft
                  def.label.Contains("纳米")));
         }
 
+        /// <summary>准备新克隆体并复制原有特化配置；新个体的可选调教员资格从关闭开始。</summary>
         private static void PrepareFreshRabbitCloneBody(Pawn source, Pawn clone)
         {
             if (source == null || clone == null) return;
@@ -346,6 +347,8 @@ namespace SexSlaveCraft
                 cloneTraining.specializationProgress = sourceTraining.specializationProgress;
                 cloneTraining.selectedTrainer = sourceTraining.selectedTrainer;
                 cloneTraining.pawnIdentity = sourceTraining.pawnIdentity;
+                cloneTraining.slaveTrainerEnabled = false;
+                cloneTraining.trainerIdentityInitialized = true;
                 cloneTraining.allowOthersForTrainingOrSex = sourceTraining.allowOthersForTrainingOrSex;
                 cloneTraining.rabbitReproductionMode = sourceTraining.rabbitReproductionMode;
             }

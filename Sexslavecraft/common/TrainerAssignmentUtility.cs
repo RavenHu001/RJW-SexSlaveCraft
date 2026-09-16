@@ -14,9 +14,12 @@ namespace SexSlaveCraft
     {
         private static readonly WorkTypeDef TrainSexSlaveWorkType = DefDatabase<WorkTypeDef>.GetNamedSilentFail("TrainSexSlave");
 
+        /// <summary>先核对调教员身份，再应用目标的主人限制、开放许可和原始指派锁定。</summary>
+        /// <remarks>停用指派不等于未指定；允许其他人也不能绕过调教员身份。</remarks>
         public static bool IsAllowedTrainer(Pawn sexSlave, Pawn master)
         {
-            if (sexSlave == null || master == null) return false;
+            if (sexSlave == null || master == null || sexSlave == master
+                || master.Dead || master.Destroyed || !SSCIdentityUtility.IsTrainer(master)) return false;
 
             CompSexSlaveTraining comp = sexSlave.TryGetComp<CompSexSlaveTraining>();
             if (comp == null) return false;
@@ -45,6 +48,8 @@ namespace SexSlaveCraft
             return comp.selectedTrainer == master;
         }
 
+        /// <summary>从本次分类快照枚举可重新指定的调教员，不以旧 selectedTrainer 锁住候选列表。</summary>
+        /// <remarks>原版 FreeColonists 复用临时列表，指派校验再次读取会清空重填；枚举前必须复制。</remarks>
         public static IEnumerable<Pawn> GetTrainerCandidates(Pawn sexSlave)
         {
             Map map = sexSlave?.Map;
@@ -52,15 +57,14 @@ namespace SexSlaveCraft
 
             // EN: Candidate scan only returns free colonists who already have the TrainSexSlave work type enabled.
             // CN: 候选扫描只返回自由殖民者里那些已经启用“调教”工作类型的人。
-            Pawn forcedMaster = GetForcedMaster(sexSlave);
-            foreach (Pawn candidate in map.mapPawns.FreeColonists)
+            foreach (Pawn candidate in map.mapPawns.FreeColonists.ToList())
             {
-                if (!CanAssignAsTrainer(candidate)) continue;
-                if (forcedMaster != null && candidate != forcedMaster) continue;
+                if (!CanAssignTrainerTo(sexSlave, candidate)) continue;
                 yield return candidate;
             }
         }
 
+        /// <summary>读取实际主人独占约束；开放调教和公交车沿用原有例外。</summary>
         public static Pawn GetForcedMaster(Pawn sexSlave)
         {
             if (sexSlave?.health?.hediffSet == null) return null;
@@ -71,13 +75,47 @@ namespace SexSlaveCraft
             return SSCBondUtility.GetBoundMaster(sexSlave);
         }
 
+        /// <summary>检查指派所需身份、存活状态和原有工作开关；工作关闭不抹除调教员身份。</summary>
         public static bool CanAssignAsTrainer(Pawn candidate)
         {
-            if (candidate == null || candidate.Dead || candidate.Downed) return false;
+            if (candidate == null || candidate.Dead || candidate.Destroyed || candidate.Downed
+                || !SSCIdentityUtility.IsTrainer(candidate)) return false;
             if (candidate.workSettings == null || TrainSexSlaveWorkType == null) return false;
             return candidate.workSettings.WorkIsActive(TrainSexSlaveWorkType);
         }
 
+        /// <summary>菜单和直接指派共用资格：保持自由殖民者范围，排除自身，并检查实际主人约束。</summary>
+        public static bool CanAssignTrainerTo(Pawn sexSlave, Pawn candidate)
+        {
+            if (sexSlave == null || sexSlave == candidate || sexSlave.Map == null
+                || !CanAssignAsTrainer(candidate)
+                || !sexSlave.Map.mapPawns.FreeColonists.Contains(candidate)) return false;
+            Pawn forcedMaster = GetForcedMaster(sexSlave);
+            return forcedMaster == null || forcedMaster == candidate;
+        }
+
+        /// <summary>读取有效指定调教员；停用或失效时返回 null，但不清空原始指派记录。</summary>
+        /// <remarks>不检查工作开关、地图或倒地状态，避免临时工作条件影响同床与归属。</remarks>
+        public static Pawn GetActiveAssignedTrainer(Pawn sexSlave)
+        {
+            Pawn trainer = sexSlave?.TryGetComp<CompSexSlaveTraining>()?.selectedTrainer;
+            return trainer != null && trainer != sexSlave && !trainer.Dead && !trainer.Destroyed
+                && SSCIdentityUtility.IsTrainer(trainer) ? trainer : null;
+        }
+
+        /// <summary>返回指派显示名，并区分身份停用与工作暂停，保留失效指派供玩家调整。</summary>
+        public static string GetAssignedTrainerLabel(Pawn sexSlave)
+        {
+            Pawn trainer = sexSlave?.TryGetComp<CompSexSlaveTraining>()?.selectedTrainer;
+            if (trainer == null) return Strings.ITab_TrainerNone;
+            if (GetActiveAssignedTrainer(sexSlave) == null)
+                return "SSC_TrainerIdentity_InactiveAssignment".Translate(trainer.LabelShort);
+            if (!CanAssignAsTrainer(trainer))
+                return "SSC_TrainerIdentity_UnavailableAssignment".Translate(trainer.LabelShort);
+            return trainer.LabelShort;
+        }
+
+        /// <summary>供自动工作扫描复用完整目标检查。</summary>
         public static bool IsTrainingTargetAvailable(Pawn targetPawn, Pawn trainer, bool forced)
         {
             return TryGetTrainingTargetFailureReason(targetPawn, trainer, forced, out _);
@@ -103,6 +141,12 @@ namespace SexSlaveCraft
             if (targetPawn.Dead || targetPawn == trainer)
             {
                 reason = Strings.Train_Reason_DeadOrSelf;
+                return false;
+            }
+
+            if (!SSCIdentityUtility.IsTrainer(trainer))
+            {
+                reason = "SSC_TrainerIdentity_Required".Translate();
                 return false;
             }
 

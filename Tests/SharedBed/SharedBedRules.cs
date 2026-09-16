@@ -78,6 +78,7 @@ internal static partial class Program
         {
             var f = Setup(); f.bed.OwnersForReading.Clear(); Assign(f.bed, f.slave);
             f.partner.GuestStatus = GuestStatus.Slave;
+            f.partner.Training.pawnIdentity = PawnIdentity.Unset;
             Assert(!Use(f.bed, f.partner) && !Comp(f.bed).CanAssignTo(f.partner).Accepted);
         });
         Run("无关联性奴仍在候选中但不获得别人床位的许可", () =>
@@ -91,14 +92,14 @@ internal static partial class Program
         {
             var f = Setup(); f.bed.OwnersForReading.Clear();
             AssertBadges(f.slave, f.bed, "性奴"); AssertBadges(Master(f.slave.Map), f.bed, "主人");
-            AssertBadges(f.partner, f.bed, null);
+            AssertBadges(f.partner, f.bed, "性奴");
         });
         Run("先分配性奴显示其主人和指定调教员且提示本床关联", () =>
         {
             var f = Setup(); Pawn master = Master(f.slave.Map); f.slave.LabelShortCap = "SharedSlave";
             f.slave.Chain = new Hediff_ChainOfSexSlave { LinkedPawn = master };
             f.bed.OwnersForReading.Clear(); Assign(f.bed, f.slave);
-            AssertBadges(f.slave, f.bed, "性奴"); AssertBadges(master, f.bed, "主人"); AssertBadges(f.partner, f.bed, "调教员");
+            AssertBadges(f.slave, f.bed, "性奴"); AssertBadges(master, f.bed, "主人"); AssertBadges(f.partner, f.bed, "性奴 · 调教员");
             Assert(Harmony_SSC_SharedBedAssignmentUI.GetTooltip(f.partner, f.bed).Contains("SharedSlave"));
             AssertBadges(Master(f.slave.Map), f.bed, null);
         });
@@ -122,16 +123,16 @@ internal static partial class Program
             Pawn slave2 = NewPawn(f.slave.Map); slave2.Training.pawnIdentity = PawnIdentity.Slave;
             slave2.Chain = new Hediff_ChainOfSexSlave { LinkedPawn = master2 };
             f.bed.SleepingSlotsCount = 4; f.bed.OwnersForReading.Clear(); Assign(f.bed, f.slave); Assign(f.bed, slave2);
-            AssertBadges(master1, f.bed, "主人"); AssertBadges(master2, f.bed, "主人"); AssertBadges(f.partner, f.bed, "调教员");
+            AssertBadges(master1, f.bed, "主人"); AssertBadges(master2, f.bed, "主人"); AssertBadges(f.partner, f.bed, "性奴 · 调教员");
             Pawn unrelated = Master(f.slave.Map); AssertBadges(unrelated, f.bed, null);
             Assign(f.bed, unrelated); AssertBadges(unrelated, f.bed, "主人");
         });
         Run("取消分配实时移除调教员标记并恢复空床身份显示", () =>
         {
             var f = Setup(); f.bed.OwnersForReading.Clear(); Assign(f.bed, f.slave);
-            AssertBadges(f.partner, f.bed, "调教员");
+            AssertBadges(f.partner, f.bed, "性奴 · 调教员");
             f.bed.OwnersForReading.Remove(f.slave); f.slave.ownership.OwnedBed = null;
-            AssertBadges(f.partner, f.bed, null); AssertBadges(Master(f.slave.Map), f.bed, "主人");
+            AssertBadges(f.partner, f.bed, "性奴"); AssertBadges(Master(f.slave.Map), f.bed, "主人");
         });
         Run("没有 SSC 标签不拒绝原版合法分配或配偶共享", () =>
         {

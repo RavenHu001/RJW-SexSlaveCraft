@@ -252,6 +252,7 @@ namespace SexSlaveCraft
 
             // 先保存身份数据，这样读档逻辑才能知道这个 Pawn 应该按主人还是性奴处理。
             Scribe_Values.Look(ref pawnIdentity, "pawnIdentity", PawnIdentity.Unset);
+            ExposeTrainerIdentity();
 
             Scribe_Values.Look(ref mode, "mode", TrainingMode.Disabled);
             Scribe_Values.Look(ref selectedMode, "selectedMode", TrainingActType.Auto);

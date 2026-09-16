@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_TrainerIdentity_Label>Is a trainer</SSC_TrainerIdentity_Label>
+  <SSC_TrainerIdentity_MasterTip>Masters always have trainer status. Actual training still requires the appropriate work settings and permission for the target.</SSC_TrainerIdentity_MasterTip>
+  <SSC_TrainerIdentity_UnsetTip>Unassigned identities cannot be trainers. Choose Master or Sex Slave to make this pawn eligible.</SSC_TrainerIdentity_UnsetTip>
+  <SSC_TrainerIdentity_SlaveTip>Allows this sex slave to be assigned as a trainer, subject to existing work requirements and target permissions. Turning this off retains assignments as inactive and lets training already underway finish.</SSC_TrainerIdentity_SlaveTip>
+  <SSC_TrainerIdentity_InactiveAssignment>{0} (trainer status inactive)</SSC_TrainerIdentity_InactiveAssignment>
+  <SSC_TrainerIdentity_UnavailableAssignment>{0} (work or physical requirements not met)</SSC_TrainerIdentity_UnavailableAssignment>
+  <SSC_TrainerIdentity_Required>Requires trainer status: a master, or a sex slave with the trainer option enabled.</SSC_TrainerIdentity_Required>
+</LanguageData>

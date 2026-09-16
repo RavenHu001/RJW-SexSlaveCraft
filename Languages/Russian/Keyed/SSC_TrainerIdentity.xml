@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_TrainerIdentity_Label>Дрессировщик</SSC_TrainerIdentity_Label>
+  <SSC_TrainerIdentity_MasterTip>Хозяева всегда имеют статус дрессировщика. Для выполнения работы по-прежнему нужны соответствующие настройки труда и разрешение цели.</SSC_TrainerIdentity_MasterTip>
+  <SSC_TrainerIdentity_UnsetTip>Персонаж без выбранной роли не может быть дрессировщиком. Выберите роль хозяина или секс-раба.</SSC_TrainerIdentity_UnsetTip>
+  <SSC_TrainerIdentity_SlaveTip>Позволяет назначать этого секс-раба дрессировщиком при соблюдении условий труда и разрешений цели. Отключение сохраняет назначения как неактивные и не прерывает уже начатую дрессировку.</SSC_TrainerIdentity_SlaveTip>
+  <SSC_TrainerIdentity_InactiveAssignment>{0} (статус дрессировщика неактивен)</SSC_TrainerIdentity_InactiveAssignment>
+  <SSC_TrainerIdentity_UnavailableAssignment>{0} (не выполнены условия труда или физического состояния)</SSC_TrainerIdentity_UnavailableAssignment>
+  <SSC_TrainerIdentity_Required>Нужен статус дрессировщика: хозяин или секс-раб с включённой опцией дрессировщика.</SSC_TrainerIdentity_Required>
+</LanguageData>

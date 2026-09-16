@@ -9,7 +9,7 @@ using Verse;
 // CN: 原版法律身份（殖民者、囚犯、奴隶）与 SSC 角色身份保持相互独立。
 namespace SexSlaveCraft
 {
-    public static class SSCIdentityUtility
+    public static partial class SSCIdentityUtility
     {
         public static PawnIdentity GetIdentity(Pawn pawn)
         {

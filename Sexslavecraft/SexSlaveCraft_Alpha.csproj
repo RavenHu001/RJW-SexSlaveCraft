@@ -82,6 +82,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="common\AddCorruption.cs" />
+    <Compile Include="common\SSCIdentityUtility.Trainer.cs" />
+    <Compile Include="common\SSCTrainerIdentityMigration.cs" />
+    <Compile Include="Comps\Comp_Train.TrainerIdentity.cs" />
     <Compile Include="common\BindingRitualStateUtility.cs" />
     <Compile Include="common\BusSpecializationUtility.cs" />
     <Compile Include="common\DogSpecializationUtility.cs" />
