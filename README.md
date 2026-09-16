@@ -1,8 +1,8 @@
 # RJW-SexSlaveCraft Quick Start Guide
 
-> For RimWorld 1.6 and SexSlaveCraft 2.2.15.\
+> For RimWorld 1.6 and SexSlaveCraft 2.3.0.\
 > This continuation is based on upstream 2.2.8. See `CHANGELOG.md` for release history.\
-> Version 2.2.15 fixes Public Use interactions after caravan trades. Pet Cat and Pet Rabbit choices are disabled and marked Incomplete; saved rabbit birth modes are read-only. The maintainer has confirmed these changes. Includes fixes from 2.2.14 and earlier versions. Legacy RimTalk integration remains suspended pending a complete redesign.\
+> Version 2.3.0 groups shared-bed permissions and sleep memories, separate vanilla/Mint role badges, the trainer-role toggle, and menu, ritual-message and bound-identity fixes. Includes 2.2.15 and earlier fixes. This version is prepared locally and has not been published. Legacy RimTalk integration remains suspended; unfinished Pet Cat and Pet Rabbit choices remain disabled.\
 > In-game names follow the mod's official English localization. For exact formulas, thresholds, and implementation notes, see `PLAYER_GUIDE_EN.md`.
 
 ## 1. What the Mod Does
@@ -31,7 +31,7 @@ The Binding Ritual also requires the ideology ritual system to be available.
 
 ### Step 2: Assign a Trainer
 
-Enable the `Training` work type for at least one free colonist.
+Give at least one free colonist the `Master` identity, or enable `Is a trainer` on a `Sex Slave`, then enable the `Training` work type. The trainer toggle is always on for Masters, always off for Unset pawns, and optional for Sex Slaves.
 
 A good trainer generally has:
 
@@ -88,7 +88,9 @@ Once Corruption reaches the first bond threshold:
 - the target receives `Sex Slave Chain`;
 - the chain records the target's owner;
 - the Master gains `Libidinal Resonance Field`;
-- ownership restrictions, rebellion suppression, and shared-bed rules begin.
+- ownership restrictions and rebellion suppression begin.
+
+Bound pawns cannot switch SSC identity until their binding is explicitly removed. A Master with remaining bound slaves is also locked; the Sex Slave trainer toggle remains available. Shared-bed permission can also apply before binding when a valid trainer is assigned.
 
 Corruption uses a default base decay of 2% per day. The mod settings can disable it or adjust it from 0% to 20% per day; recent Training quality, opinion of the Master, body-part development, and deeper Chain stages continue to modify the actual loss.
 
@@ -386,11 +388,13 @@ A pawn with Sex Slave Chain:
 - cannot join slave rebellions;
 - has Berserk suppressed;
 - permanently loses vanilla disabled-work and slave work-speed penalties once historical maximum Corruption exceeds zero;
-- may share a normal double bed with the Master;
-- receives shared-bed mood based on Corruption and opinion;
 - gains increasingly positive rape memories at high Corruption.
 
 By default, a normal chained sex slave may only have consensual sex with the owner. Public Use or `Allow others to train or have sex` can lift that restriction.
+
+At more than 0.1% Corruption, an SSC Sex Slave may share an ordinary multi-person bed with the bonded Master and active Assigned Trainer. For a vanilla slave, assign the Master or trainer first, then the slave. Vanilla lovers/spouses remain unaffected; medical rest and deathrest take priority.
+
+After both pawns actually sleep together, the slave receives a one-day, non-stacking memory using the existing six mood values. Merely assigning a bed does not grant it. Vanilla and Mint lists show separate Master, Sex Slave and Trainer badges on the right of the name, with extra-permission status and threshold details on hover.
 
 ## 17. Special Apparel
 
@@ -474,7 +478,7 @@ Also note:
 Check:
 
 - `Training` research;
-- the trainer's Training work assignment;
+- active trainer identity and the trainer's Training work assignment;
 - target identity and `Allow Training`;
 - the nine-hour cooldown;
 - Assigned Trainer;

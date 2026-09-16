@@ -4,6 +4,20 @@
 
 This continuation builds on upstream **2.2.8**, the baseline when upstream development stopped in July, and retains its version numbering. Entries are listed newest first. Technical details are in the [development log (Chinese)](Docs/开发更新记录.md).
 
+## [2.3.0] — 2026-09-16 — 同床、调教员身份与分配界面 / Shared beds, trainer roles and assignment UI
+
+将维护者已分阶段确认有效的同床优化、调教员身份、床位标签及相关修复统一归入 2.3.0，包含 2.2.15 及更早版本修复。本次为版本归并与本地提交，尚未发布安装包。详见 [中英双语发布说明](Docs/2.3.0发布说明.md) 与 [版本验证](Docs/2.3.0版本验证.md)。
+
+Groups the maintainer-confirmed shared-bed, trainer-role and bed-assignment changes, including fixes from 2.2.15 and earlier versions. This is a local version consolidation; no installation package has been published. See the [bilingual release notes](Docs/2.3.0发布说明.md) and [validation record (Chinese)](Docs/2.3.0版本验证.md).
+
+- **同床 / Shared beds：** SSC 性奴恶堕高于 0.1% 时，可与主人及有效指定调教员获得额外许可，不再影响全局恋爱判断。医疗/死眠优先，原版环境检查保留；原版奴隶性奴须先有床伴才能加入空殖民者床。SSC Sex Slaves above 0.1% Corruption may share with both their Master and active Assigned Trainer without changing romance checks. Medical rest, deathrest and native checks retain priority; vanilla slaves require their partner to be assigned first.
+- **心情 / Mood：** 保留六档数值，改为实际共同睡眠结束后的一天、不叠加记忆，修复起床结算及定义不匹配红字。Preserves six mood values as one-day, non-stacking memories after actual shared sleep, fixing wake-up and mismatched-definition errors.
+- **界面 / UI：** 原版与 Mint 显示三个独立颜色身份标签，位于姓名右侧；空床显示全部身份，分配后按直接关系筛选，悬停说明许可状态及恶堕门槛。Vanilla and Mint show separate role badges to the right of the name, all roles on empty beds, direct relationships on occupied beds, and permission/threshold details on hover.
+- **调教员 / Trainers：** 主人固定开启、未选择固定关闭、性奴可选；指派及普通调教入口统一检查。旧档保留已指定性奴资格，停用对象保留指派并标注，修复指定菜单及滚动视图红字。Masters are always trainers, Unset pawns never are, and Sex Slaves can opt in. Assignment and ordinary Training share the check; migration retains existing assigned Sex Slave trainers, inactive assignments remain visible, and menu/scroll-view errors are fixed.
+- **绑定与仪式 / Bonds and rituals：** 锁定已绑定角色的身份切换，防止锁链及成长进度丢失；仪式正确解释指定调教员不匹配。Bound identity changes are blocked to preserve Chain progress, and ritual messages correctly explain trainer mismatches.
+
+四语文本及中英文指南同步；旧 RimTalk 和未完成猫/兔入口的暂停状态保留。Release 编译及 390 项回归通过。Four-language UI text and Chinese/English guides are updated; legacy RimTalk and unfinished Cat/Rabbit choices remain disabled. The Release build and 390 regression cases passed.
+
 ## [2.2.15] — 2026-09-16 — 公交车交易修复与未完成特化入口禁用 / Public Use trade fix and unfinished specialization selection
 
 本版汇总维护者已在游戏内确认有效的公交车交易修复，以及宠物猫、宠物兔入口禁用，包含 `2.2.14` 及更早版本修复。详见 [2.2.15 发布说明](Docs/2.2.15发布说明.md) 与 [版本验证记录](Docs/2.2.15版本验证.md)。正式安装包与 SHA-256 校验文件见 [v2.2.15 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.2.15)。

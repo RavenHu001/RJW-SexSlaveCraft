@@ -6,18 +6,19 @@
 		<li>1.6</li>
 	</supportedVersions>
 	<packageId>rjw.sexslavecraft.TieJinVer</packageId>
-    <description>SexSlaveCraft 2.2.15 (TieJin Modify)
-公交车交易触发修复与未完成特化入口禁用。
+    <description>SexSlaveCraft 2.3.0 (TieJin Modify)
+主奴同床、调教员身份与床位分配界面优化。
 基于原模组 7 月停更时的 2.2.8 版本继续维护。
-修复公交车角色完成商队交易后未启动互动的问题。宠物猫、宠物兔选择项置灰并标注“未完成”，旧档兔子生育模式改为只读。维护者已分别确认有效，包含 2.2.14 及更早版本修复。
-旧 RimTalk 兼容已暂停并归档，整个模块将在未来重做。
+性奴可与绑定主人及有效指定调教员获得额外同床许可，实际共同睡眠后生成一天、不叠加的心情记忆。原版和 Dubs Mint Menus 分配界面显示独立身份标签及许可状态。
+新增统一的调教员身份开关，并修复指定菜单红字、仪式拒绝原因及绑定角色身份切换导致锁链进度丢失的问题。包含 2.2.15 及更早版本修复。
+旧 RimTalk 兼容继续暂停，宠物猫、宠物兔未完成入口继续禁用。
 完整中英双语更新记录见模组目录中的 CHANGELOG.md。
 
 Continues development from the upstream 2.2.8 baseline.
-Fixes Public Use interactions after caravan trades and disables unfinished specialization selection.
-Pet Cat and Pet Rabbit choices are disabled and marked Incomplete; saved rabbit birth modes are displayed as read-only. The maintainer has confirmed these changes work. Includes fixes from 2.2.14 and earlier versions.
-Legacy RimTalk integration is suspended and archived pending a complete redesign.
-See CHANGELOG.md in the mod folder for the full Chinese and English release notes.</description>
+Improves shared-bed permissions, trainer roles and bed assignment displays. Sex slaves may share with their bonded master and active assigned trainer, with non-stacking, one-day memories after actual shared sleep.
+Separate role badges and permission status support vanilla and Dubs Mint Menus. Fixes trainer-menu errors, misleading ritual rejection messages and loss of bond progress through identity changes. Includes fixes from 2.2.15 and earlier versions.
+Legacy RimTalk integration remains suspended. Unfinished Pet Cat and Pet Rabbit choices remain disabled.
+See CHANGELOG.md for the full Chinese and English release notes.</description>
 	<modDependencies>
 		<li>
 		  <packageId>brrainz.harmony</packageId>
