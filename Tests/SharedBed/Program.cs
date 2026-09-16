@@ -128,7 +128,7 @@ internal static partial class Program
                 var font = Text.Font; var anchor = Text.Anchor; var color = GUI.color;
                 new Dialog_AssignBuildingOwner(Comp(f.bed)).Draw(f.slave, assigned);
                 Assert(Widgets.Labels.Count == 2 && Widgets.Labels[0].text == "性奴" && TooltipHandler.LastTooltip.Contains("指定调教员"));
-                Assert(Widgets.Labels[1].rect.x >= Widgets.Labels[0].rect.xMax && Text.Font == font && Text.Anchor == anchor && GUI.color.Equals(color));
+                Assert(Widgets.Labels[1].rect.x == 0 && Widgets.Labels[1].rect.xMax < Widgets.Labels[0].rect.x && Text.Font == font && Text.Anchor == anchor && GUI.color.Equals(color));
             }
         });
         Run("普通奴隶及其他建筑界面不加标记", () =>
@@ -138,7 +138,7 @@ internal static partial class Program
             f.slave.Training.pawnIdentity = PawnIdentity.Slave; Widgets.Labels.Clear();
             new Dialog_AssignBuildingOwner(new CompAssignableToPawn()).Draw(f.slave, false); Assert(Widgets.Labels.Count == 1);
         });
-        Run("悬停说明区分主人、调教员和门槛", () => { var f = Setup(); f.slave.Chain = new Hediff_ChainOfSexSlave { LinkedPawn = f.partner }; f.slave.needs.Corruption.CurLevelPercentage = 0; var tip = Harmony_SSC_SharedBedAssignmentUI.GetTooltip(f.slave, f.bed); Assert(tip.Contains("主人：") && tip.Contains("需高于")); });
+        Run("悬停说明区分主人、调教员和门槛", () => { var f = Setup(); f.slave.Chain = new Hediff_ChainOfSexSlave { LinkedPawn = f.partner }; f.slave.needs.Corruption.CurLevelPercentage = 0; var tip = Harmony_SSC_SharedBedAssignmentUI.GetTooltip(f.slave, f.bed); Assert(tip.Contains("主人：") && tip.Contains("未达标（需 >0.1%）")); });
         Run("Mint 已分配及未分配行显示同一标记、提示且避开按钮", () =>
         {
             foreach (bool assigned in new[] { true, false })
@@ -149,7 +149,7 @@ internal static partial class Program
                 new DubsMintMenus.Dialog_AssignBuildingOwner(Comp(f.bed)).DoRow(row, f.slave, assigned);
                 Assert(Widgets.Labels.Count == 2 && Widgets.Labels[0].text == "性奴");
                 Assert(TooltipHandler.LastTooltip == Harmony_SSC_SharedBedAssignmentUI.GetTooltip(f.slave, f.bed));
-                Assert(Widgets.Labels[1].rect.x >= Widgets.Labels[0].rect.xMax && Widgets.Labels[1].rect.xMax <= row.xMax - 175f);
+                Assert(Widgets.Labels[1].rect.x == row.x + row.width * .1f && Widgets.Labels[1].rect.xMax < Widgets.Labels[0].rect.x && Widgets.Labels[0].rect.xMax <= row.xMax - 175f);
                 Assert(Text.Font == font && Text.Anchor == anchor && GUI.color.Equals(color));
             }
         });
@@ -171,6 +171,7 @@ internal static partial class Program
         });
         RunUpdatedSharedBedRules();
         RunTrainerIdentityBedRules();
+        RunBadgePresentationRules();
         Run("XML 记忆持续一天、不叠加并保留六档数值", CheckDefs);
         Run("四种界面翻译键完整且参数匹配", CheckLanguages);
         Run("共同睡眠记录接入现有 Pawn 存档", () => { string source = File.ReadAllText(Path.Combine(repo, "Sexslavecraft/Comps/Comp_Train.cs")); Assert(source.Contains("Scribe_Deep.Look(ref sharedSleep, \"sharedSleep\")")); });

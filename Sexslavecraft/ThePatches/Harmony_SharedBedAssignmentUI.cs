@@ -66,20 +66,35 @@ namespace SexSlaveCraft
                 return;
             }
 
-            string badge = GetBadgeLabel(roles);
+            var badges = GetIndividualBadges(roles).ToArray();
             GameFont oldFont = Text.Font;
             TextAnchor oldAnchor = Text.Anchor;
             Color oldColor = GUI.color;
-            Rect badgeRect;
+            Rect groupRect = rect;
             try
             {
                 Text.Font = GameFont.Tiny;
                 Text.Anchor = TextAnchor.MiddleCenter;
-                float width = Mathf.Min(Text.CalcSize(badge).x + 8f, rect.width * 0.45f);
-                badgeRect = new Rect(rect.x, rect.y + (rect.height - 22f) * 0.5f, width, 22f);
-                Widgets.DrawBoxSolid(badgeRect, new Color(0.65f, 0.3f, 0.6f, 0.25f));
-                GUI.color = new Color(1f, 0.65f, 0.83f, oldColor.a);
-                Widgets.LabelEllipses(badgeRect, badge);
+                float[] widths = badges.Select(role => Text.CalcSize(GetBadgeLabel(role)).x + 8f).ToArray();
+                // 最多占姓名区域的 55%，为姓名保留原起点；长翻译按比例压缩，并通过提示保留全文。
+                float fixedWidth = badges.Length * 4f + 7f;
+                float groupWidth = Mathf.Min(widths.Sum() + fixedWidth, Mathf.Max(0f, rect.width * 0.55f));
+                float scale = Mathf.Min(1f, Mathf.Max(0f, groupWidth - fixedWidth) / widths.Sum());
+                groupRect = new Rect(rect.xMax - groupWidth, rect.y, groupWidth, rect.height);
+                float x = groupRect.x;
+                for (int i = 0; i < badges.Length && scale > 0f; i++)
+                {
+                    Color color = GetBadgeColor(badges[i]);
+                    Rect badgeRect = new Rect(x, rect.y + (rect.height - 20f) * 0.5f, widths[i] * scale, 20f);
+                    Widgets.DrawBoxSolid(badgeRect, new Color(color.r, color.g, color.b, 0.22f));
+                    GUI.color = new Color(color.r, color.g, color.b, oldColor.a);
+                    Widgets.LabelEllipses(badgeRect, GetBadgeLabel(badges[i]));
+                    x = badgeRect.xMax + 4f;
+                }
+                GUI.color = oldColor;
+                if (groupWidth >= fixedWidth)
+                    Widgets.DrawBoxSolid(new Rect(groupRect.xMax - 7f, rect.y + (rect.height - 7f) * 0.5f, 7f, 7f),
+                        GetStatusColor(GetSharingStatus(pawn, bed)));
             }
             finally
             {
@@ -88,12 +103,14 @@ namespace SexSlaveCraft
                 GUI.color = oldColor;
             }
 
-            TooltipHandler.TipRegion(badgeRect, GetTooltip(pawn, bed));
-            rect.xMin = badgeRect.xMax + 5f;
+            rect.width = Mathf.Max(0f, groupRect.x - 5f - rect.x);
             Widgets.LabelEllipses(rect, label);
+            // 原版拒绝原因也包含在 label 中；省略后仍可完整查看。
+            TooltipHandler.TipRegion(rect, label);
+            TooltipHandler.TipRegion(groupRect, GetTooltip(pawn, bed));
         }
 
-        /// <summary>空床显示主人/性奴身份；有人时仅标记已分配者及其直接 SSC 床伴，调教员由已分配性奴反查。</summary>
+        /// <summary>空床显示全部身份；有人时仅标记已分配者及其直接 SSC 床伴，保留这些人的全部实际身份。</summary>
         /// <remarks>多人床取直接关系并集，不递归扩散；该结果只控制标签，不过滤角色行或强制拒绝分配。</remarks>
         public static SSCSharedBedBadge GetAssignmentBadge(Pawn pawn, Building_Bed bed)
         {
@@ -104,44 +121,121 @@ namespace SexSlaveCraft
             SSCSharedBedBadge roles = SSCSharedBedBadge.None;
             if (SSCIdentityUtility.IsSexSlave(pawn)) roles |= SSCSharedBedBadge.SexSlave;
             if (SSCIdentityUtility.IsMaster(pawn)) roles |= SSCSharedBedBadge.Master;
-            if (owners.Any(owner => SSCSharedBedUtility.IsDesignatedTrainer(owner, pawn))) roles |= SSCSharedBedBadge.Trainer;
+            if (SSCIdentityUtility.IsTrainer(pawn)) roles |= SSCSharedBedBadge.Trainer;
             return roles;
         }
 
-        /// <summary>将本床适用的多个角色合并为一个本地化标签，避免同一人绘制重复标记。</summary>
-        public static string GetBadgeLabel(SSCSharedBedBadge roles)
+        /// <summary>按固定顺序枚举独立身份；兼任者分别绘制，不将多个身份拼进一个色块。</summary>
+        public static IEnumerable<SSCSharedBedBadge> GetIndividualBadges(SSCSharedBedBadge roles)
         {
-            var labels = new List<string>();
-            if ((roles & SSCSharedBedBadge.SexSlave) != 0) labels.Add("SSC_SharedBedBadge".Translate());
-            if ((roles & SSCSharedBedBadge.Master) != 0) labels.Add("SSC_SharedBedMasterBadge".Translate());
-            if ((roles & SSCSharedBedBadge.Trainer) != 0) labels.Add("SSC_SharedBedTrainerBadge".Translate());
-            return string.Join(" · ", labels);
+            if ((roles & SSCSharedBedBadge.Master) != 0) yield return SSCSharedBedBadge.Master;
+            if ((roles & SSCSharedBedBadge.SexSlave) != 0) yield return SSCSharedBedBadge.SexSlave;
+            if ((roles & SSCSharedBedBadge.Trainer) != 0) yield return SSCSharedBedBadge.Trainer;
         }
 
-        /// <summary>说明双方关系、性奴恶堕门槛及软限制；主人/调教员只列出与本床已分配性奴的直接关联。</summary>
+        /// <summary>返回身份的简短本地化名称；组合名称仅用于悬停标题。</summary>
+        public static string GetBadgeLabel(SSCSharedBedBadge roles)
+        {
+            if (roles == SSCSharedBedBadge.Master) return "SSC_SharedBedMasterBadge".Translate();
+            if (roles == SSCSharedBedBadge.SexSlave) return "SSC_SharedBedBadge".Translate();
+            if (roles == SSCSharedBedBadge.Trainer) return "SSC_SharedBedTrainerBadge".Translate();
+            return string.Join(" · ", GetIndividualBadges(roles).Select(GetBadgeLabel));
+        }
+
+        /// <summary>用金色、紫粉色、青蓝色分别区分主人、性奴和调教员，不以身份颜色表达许可状态。</summary>
+        public static Color GetBadgeColor(SSCSharedBedBadge role)
+        {
+            if (role == SSCSharedBedBadge.Master) return new Color(1f, 0.8f, 0.35f, 1f);
+            if (role == SSCSharedBedBadge.Trainer) return new Color(0.35f, 0.8f, 1f, 1f);
+            return new Color(1f, 0.65f, 0.83f, 1f);
+        }
+
+        /// <summary>用独立状态标记区分有效许可、等待床伴/保留床位和当前无额外许可。</summary>
+        public static Color GetStatusColor(SSCSharedBedStatus status)
+        {
+            if (status == SSCSharedBedStatus.Permitted) return new Color(0.4f, 0.9f, 0.45f, 1f);
+            if (status == SSCSharedBedStatus.Waiting || status == SSCSharedBedStatus.Retained)
+                return new Color(1f, 0.75f, 0.25f, 1f);
+            return new Color(0.6f, 0.6f, 0.6f, 1f);
+        }
+
+        /// <summary>复用实际 SSC 许可；空床只表示等待床伴，已有归属例外不冒充有效床伴关系。</summary>
+        public static SSCSharedBedStatus GetSharingStatus(Pawn pawn, Building_Bed bed)
+        {
+            if (SSCSharedBedUtility.HasPartnerBedPermission(bed, pawn)) return SSCSharedBedStatus.Permitted;
+            if (SSCSharedBedUtility.HasAssignedBedPermission(bed, pawn)) return SSCSharedBedStatus.Retained;
+            if (!SSCSharedBedUtility.IsOrdinarySharedBed(bed) || pawn == null || pawn.IsPrisoner)
+                return SSCSharedBedStatus.Unavailable;
+            if (bed.OwnersForReading.Count == 0 && (SSCIdentityUtility.IsMaster(pawn) || SSCIdentityUtility.IsTrainer(pawn)
+                || (SSCSharedBedUtility.HasMeaningfulCorruption(pawn) && SSCSharedBedUtility.GetAllowedPartners(pawn).Any())))
+                return SSCSharedBedStatus.Waiting;
+            return SSCSharedBedStatus.Unavailable;
+        }
+
+        /// <summary>显示当前恶堕比例和严格大于的门槛，数值格式避免把常见边界值四舍五入成相同显示。</summary>
+        private static string GetThresholdText(Pawn pawn)
+        {
+            return (SSCSharedBedUtility.HasMeaningfulCorruption(pawn)
+                ? "SSC_SharedBedThresholdMet" : "SSC_SharedBedThresholdUnmet")
+                .Translate((SSCSharedBedUtility.GetCorruption(pawn) * 100f).ToString("0.#####"));
+        }
+
+        /// <summary>返回本床中确实获得 SSC 双向许可的对象名称；复用同一对角色的生产判断。</summary>
+        private static string GetPermittedPartnerNames(Pawn pawn, Building_Bed bed)
+        {
+            return string.Join(", ", bed.OwnersForReading.Where(owner =>
+                SSCSharedBedUtility.CanShareWithPartner(bed, pawn, owner)).Select(owner => owner.LabelShortCap.ToString()));
+        }
+
+        /// <summary>按字段展示关系、门槛及本床 SSC 许可；原版环境检查和合法配偶同床继续由原版负责。</summary>
         public static string GetTooltip(Pawn pawn, Building_Bed bed)
         {
-            var lines = new List<string>();
+            var lines = new List<string> { GetBadgeLabel(GetAssignmentBadge(pawn, bed)) };
             if (SSCIdentityUtility.IsSexSlave(pawn))
             {
-                foreach (Pawn partner in SSCSharedBedUtility.GetAllowedPartners(pawn))
-                {
-                    bool master = SSCBondUtility.GetChain(pawn)?.LinkedPawn == partner;
-                    lines.Add((master ? "SSC_SharedBedMaster" : "SSC_SharedBedTrainer").Translate(partner.LabelShortCap));
-                }
-                if (lines.Count == 0) lines.Add("SSC_SharedBedNoPartner".Translate());
-                lines.Add((SSCSharedBedUtility.HasMeaningfulCorruption(pawn)
-                    ? "SSC_SharedBedThresholdMet" : "SSC_SharedBedThresholdUnmet").Translate());
+                Pawn master = SSCBondUtility.GetChain(pawn)?.LinkedPawn;
+                Pawn trainer = pawn.TryGetComp<CompSexSlaveTraining>()?.selectedTrainer;
+                string none = "SSC_SharedBedNone".Translate();
+                lines.Add("SSC_SharedBedMaster".Translate(master == null ? none : master.LabelShortCap.ToString()));
+                string trainerName = trainer == null ? none : trainer.LabelShortCap.ToString();
+                if (trainer != null && TrainerAssignmentUtility.GetActiveAssignedTrainer(pawn) == null)
+                    trainerName = "SSC_SharedBedInactiveTrainer".Translate(trainerName);
+                lines.Add("SSC_SharedBedTrainer".Translate(trainerName));
+                lines.Add(GetThresholdText(pawn));
             }
             if (bed != null)
             {
-                var related = bed.OwnersForReading.Where(owner => owner != pawn && SSCIdentityUtility.IsSexSlave(owner)
-                    && SSCSharedBedUtility.GetAllowedPartners(owner).Contains(pawn)).Select(owner => owner.LabelShortCap.ToString()).ToArray();
-                if (related.Length > 0) lines.Add("SSC_SharedBedRelatedSlaves".Translate(string.Join(", ", related)));
+                // 主人/调教员查看的是相关性奴的门槛；性奴兼任调教员时也分别列明，避免误用其自身恶堕。
+                foreach (Pawn owner in bed.OwnersForReading.Where(owner => owner != pawn
+                    && SSCSharedBedUtility.GetAllowedPartners(owner).Contains(pawn)))
+                    lines.Add("SSC_SharedBedPartnerThreshold".Translate(owner.LabelShortCap, GetThresholdText(owner)));
             }
-            if (lines.Count == 0) lines.Add("SSC_SharedBedRoleInfo".Translate());
-            return "SSC_SharedBedTooltip".Translate(GetBadgeLabel(GetAssignmentBadge(pawn, bed)), string.Join("\n", lines));
+            SSCSharedBedStatus status = GetSharingStatus(pawn, bed);
+            string reason;
+            if (status == SSCSharedBedStatus.Permitted)
+                reason = "SSC_SharedBedStatusAllowed".Translate(GetPermittedPartnerNames(pawn, bed));
+            else if (status == SSCSharedBedStatus.Retained) reason = "SSC_SharedBedStatusRetained".Translate();
+            else if (status == SSCSharedBedStatus.Waiting) reason = "SSC_SharedBedStatusWaiting".Translate();
+            else if (!SSCSharedBedUtility.IsOrdinarySharedBed(bed)) reason = "SSC_SharedBedStatusBedType".Translate();
+            else if (pawn == null || pawn.IsPrisoner) reason = "SSC_SharedBedStatusPrisoner".Translate();
+            else if (SSCIdentityUtility.IsSexSlave(pawn) && !SSCSharedBedUtility.HasMeaningfulCorruption(pawn)
+                && !SSCIdentityUtility.IsTrainer(pawn)) reason = "SSC_SharedBedStatusThreshold".Translate();
+            else reason = "SSC_SharedBedStatusNoPartner".Translate();
+            lines.Add("SSC_SharedBedStatus".Translate(reason));
+            if (status == SSCSharedBedStatus.Waiting && pawn.IsSlave)
+                lines.Add("SSC_SharedBedAssignPartnerFirst".Translate());
+            lines.Add("SSC_SharedBedNativeChecks".Translate());
+            return string.Join("\n", lines);
         }
+    }
+
+    /// <summary>仅描述 SSC 额外许可，不代表原版最终分配或实际使用结果。</summary>
+    public enum SSCSharedBedStatus
+    {
+        Unavailable,
+        Waiting,
+        Permitted,
+        Retained
     }
 
     /// <summary>Dubs Mint Menus 使用自己的角色行；反射接入，不将它变成必需依赖。</summary>
@@ -195,7 +289,7 @@ namespace SexSlaveCraft
             return result;
         }
 
-        /// <summary>为 Mint 床位姓名预留右侧按钮空间，再复用原版窗口的性奴标记绘制。</summary>
+        /// <summary>为 Mint 床位姓名预留右侧按钮空间，再复用原版窗口的独立身份和状态标记绘制。</summary>
         /// <param name="rect">Mint 原始姓名区域，可能延伸到按钮下方。</param>
         /// <param name="label">Mint 生成的姓名及可选拒绝原因，完整传给共享绘制函数。</param>
         /// <param name="pawn">当前行角色。</param>

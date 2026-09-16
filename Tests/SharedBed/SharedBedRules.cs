@@ -88,18 +88,18 @@ internal static partial class Program
             Assert(Comp(f.bed).AssigningCandidates.Contains(f.slave) && !Comp(f.bed).CanAssignTo(f.slave).Accepted);
             AssertBadges(f.slave, f.bed, null);
         });
-        Run("空床显示主人和性奴但不把普通调教员当作主人", () =>
+        Run("空床显示全部身份但不把性奴调教员当作主人", () =>
         {
             var f = Setup(); f.bed.OwnersForReading.Clear();
-            AssertBadges(f.slave, f.bed, "性奴"); AssertBadges(Master(f.slave.Map), f.bed, "主人");
-            AssertBadges(f.partner, f.bed, "性奴");
+            AssertBadges(f.slave, f.bed, "性奴"); AssertBadges(Master(f.slave.Map), f.bed, "主人 · 调教员");
+            AssertBadges(f.partner, f.bed, "性奴 · 调教员");
         });
         Run("先分配性奴显示其主人和指定调教员且提示本床关联", () =>
         {
             var f = Setup(); Pawn master = Master(f.slave.Map); f.slave.LabelShortCap = "SharedSlave";
             f.slave.Chain = new Hediff_ChainOfSexSlave { LinkedPawn = master };
             f.bed.OwnersForReading.Clear(); Assign(f.bed, f.slave);
-            AssertBadges(f.slave, f.bed, "性奴"); AssertBadges(master, f.bed, "主人"); AssertBadges(f.partner, f.bed, "性奴 · 调教员");
+            AssertBadges(f.slave, f.bed, "性奴"); AssertBadges(master, f.bed, "主人 · 调教员"); AssertBadges(f.partner, f.bed, "性奴 · 调教员");
             Assert(Harmony_SSC_SharedBedAssignmentUI.GetTooltip(f.partner, f.bed).Contains("SharedSlave"));
             AssertBadges(Master(f.slave.Map), f.bed, null);
         });
@@ -107,9 +107,9 @@ internal static partial class Program
         {
             var f = Setup(); Pawn master = Master(f.slave.Map); f.slave.Chain = new Hediff_ChainOfSexSlave { LinkedPawn = master };
             f.bed.OwnersForReading.Clear(); Assign(f.bed, master);
-            AssertBadges(master, f.bed, "主人"); AssertBadges(f.slave, f.bed, "性奴"); AssertBadges(f.partner, f.bed, null);
+            AssertBadges(master, f.bed, "主人 · 调教员"); AssertBadges(f.slave, f.bed, "性奴"); AssertBadges(f.partner, f.bed, null);
         });
-        Run("主人兼任调教员时只显示一个合并标签", () =>
+        Run("主人兼任调教员时分别显示两个标签", () =>
         {
             var f = Setup(); f.partner.Training.pawnIdentity = PawnIdentity.Master;
             f.slave.Chain = new Hediff_ChainOfSexSlave { LinkedPawn = f.partner };
@@ -123,16 +123,16 @@ internal static partial class Program
             Pawn slave2 = NewPawn(f.slave.Map); slave2.Training.pawnIdentity = PawnIdentity.Slave;
             slave2.Chain = new Hediff_ChainOfSexSlave { LinkedPawn = master2 };
             f.bed.SleepingSlotsCount = 4; f.bed.OwnersForReading.Clear(); Assign(f.bed, f.slave); Assign(f.bed, slave2);
-            AssertBadges(master1, f.bed, "主人"); AssertBadges(master2, f.bed, "主人"); AssertBadges(f.partner, f.bed, "性奴 · 调教员");
+            AssertBadges(master1, f.bed, "主人 · 调教员"); AssertBadges(master2, f.bed, "主人 · 调教员"); AssertBadges(f.partner, f.bed, "性奴 · 调教员");
             Pawn unrelated = Master(f.slave.Map); AssertBadges(unrelated, f.bed, null);
-            Assign(f.bed, unrelated); AssertBadges(unrelated, f.bed, "主人");
+            Assign(f.bed, unrelated); AssertBadges(unrelated, f.bed, "主人 · 调教员");
         });
-        Run("取消分配实时移除调教员标记并恢复空床身份显示", () =>
+        Run("取消分配后恢复空床的全部身份显示", () =>
         {
             var f = Setup(); f.bed.OwnersForReading.Clear(); Assign(f.bed, f.slave);
             AssertBadges(f.partner, f.bed, "性奴 · 调教员");
             f.bed.OwnersForReading.Remove(f.slave); f.slave.ownership.OwnedBed = null;
-            AssertBadges(f.partner, f.bed, "性奴"); AssertBadges(Master(f.slave.Map), f.bed, "主人");
+            AssertBadges(f.partner, f.bed, "性奴 · 调教员"); AssertBadges(Master(f.slave.Map), f.bed, "主人 · 调教员");
         });
         Run("没有 SSC 标签不拒绝原版合法分配或配偶共享", () =>
         {
@@ -195,10 +195,12 @@ internal static partial class Program
             Widgets.Labels.Clear(); TooltipHandler.LastTooltip = null;
             if (mint) new DubsMintMenus.Dialog_AssignBuildingOwner(Comp(bed)).DoRow(new Rect(0, 0, 600, 60), pawn, assigned);
             else new Dialog_AssignBuildingOwner(Comp(bed)).Draw(pawn, assigned);
-            Assert(Widgets.Labels.Count == (expected == null ? 1 : 2));
+            string[] badges = expected?.Split(" · ");
+            Assert(Widgets.Labels.Count == (badges == null ? 1 : badges.Length + 1));
             Assert(Widgets.Labels.Last().text == pawn.LabelShortCap);
             if (expected == null) Assert(TooltipHandler.LastTooltip == null);
-            else Assert(Widgets.Labels[0].text == expected && TooltipHandler.LastTooltip.StartsWith(expected));
+            else Assert(Widgets.Labels.Take(badges.Length).Select(item => item.text).SequenceEqual(badges)
+                && TooltipHandler.LastTooltip.StartsWith(expected));
         }
     }
 

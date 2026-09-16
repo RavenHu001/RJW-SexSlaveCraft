@@ -129,20 +129,22 @@ namespace Verse
     public static class Widgets
     {
         public static List<(Rect rect, string text)> Labels = new List<(Rect, string)>();
+        public static List<(Rect rect, Color color)> Boxes = new List<(Rect, Color)>();
         /// <summary>记录省略标签的区域和完整输入；不实际裁剪文本，禁止内联以保留补丁入口。</summary>
         [MethodImpl(MethodImplOptions.NoInlining)] public static void LabelEllipses(Rect rect, string text) => Labels.Add((rect, text));
         /// <summary>记录普通字符串标签，用于检查姓名与性奴标记的绘制调用。</summary>
         public static void Label(Rect rect, string text) => Labels.Add((rect, text));
         /// <summary>记录 TaggedString 标签，验证 Mint 的意识形态说明不被姓名补丁替换。</summary>
         public static void Label(Rect rect, TaggedString text) => Labels.Add((rect, text.ToString()));
-        /// <summary>保留标记底色的绘制接口；模型不执行实际图形渲染。</summary>
-        public static void DrawBoxSolid(Rect rect, Color color) { }
+        /// <summary>记录色块区域与颜色，检查独立身份色和状态标记；模型不执行实际图形渲染。</summary>
+        public static void DrawBoxSolid(Rect rect, Color color) => Boxes.Add((rect, color));
     }
     public static class TooltipHandler
     {
         public static string LastTooltip;
+        public static List<(Rect rect, string text)> Tips = new List<(Rect, string)>();
         /// <summary>保存最近注册的提示文本，供标记悬停说明断言使用。</summary>
-        public static void TipRegion(Rect rect, string text) => LastTooltip = text;
+        public static void TipRegion(Rect rect, string text) { LastTooltip = text; Tips.Add((rect, text)); }
     }
 }
 

@@ -5,10 +5,19 @@
   <SSC_SharedBedTrainerBadge>调教员</SSC_SharedBedTrainerBadge>
   <SSC_SharedBedMaster>主人：{0}</SSC_SharedBedMaster>
   <SSC_SharedBedTrainer>指定调教员：{0}</SSC_SharedBedTrainer>
-  <SSC_SharedBedNoPartner>没有可用的主人或指定调教员。</SSC_SharedBedNoPartner>
-  <SSC_SharedBedThresholdMet>已满足恶堕高于 0.1% 的同床门槛。</SSC_SharedBedThresholdMet>
-  <SSC_SharedBedThresholdUnmet>恶堕需高于 0.1% 才能获得额外同床许可。</SSC_SharedBedThresholdUnmet>
-  <SSC_SharedBedRelatedSlaves>本床相关性奴：{0}</SSC_SharedBedRelatedSlaves>
-  <SSC_SharedBedRoleInfo>SSC 身份标记；分配后只标记本床人员及其直接关联对象。</SSC_SharedBedRoleInfo>
-  <SSC_SharedBedTooltip>{0}\n{1}\n\n主人和指定调教员均可与性奴获得额外同床许可，限普通多人床。若性奴同时为原版奴隶，请先分配其主人或指定调教员，再分配性奴。实际使用仍需通过原版检查。\n标签按本床已分配人员的直接关系显示，不禁止原版允许的其他同床组合。\n医疗和死眠优先；普通休息优先保留已分配床位。</SSC_SharedBedTooltip>
+  <SSC_SharedBedNone>无</SSC_SharedBedNone>
+  <SSC_SharedBedInactiveTrainer>{0}（身份停用或不可用）</SSC_SharedBedInactiveTrainer>
+  <SSC_SharedBedThresholdMet>恶堕：{0}%｜已达标（需 &gt;0.1%）</SSC_SharedBedThresholdMet>
+  <SSC_SharedBedThresholdUnmet>恶堕：{0}%｜未达标（需 &gt;0.1%）</SSC_SharedBedThresholdUnmet>
+  <SSC_SharedBedPartnerThreshold>{0} — {1}</SSC_SharedBedPartnerThreshold>
+  <SSC_SharedBedStatus>SSC同床：{0}</SSC_SharedBedStatus>
+  <SSC_SharedBedStatusAllowed>可与 {0} 同床</SSC_SharedBedStatusAllowed>
+  <SSC_SharedBedStatusRetained>保留已有床位</SSC_SharedBedStatusRetained>
+  <SSC_SharedBedStatusWaiting>等待分配有效床伴</SSC_SharedBedStatusWaiting>
+  <SSC_SharedBedStatusBedType>此床型不提供额外许可</SSC_SharedBedStatusBedType>
+  <SSC_SharedBedStatusPrisoner>囚犯不提供额外许可</SSC_SharedBedStatusPrisoner>
+  <SSC_SharedBedStatusThreshold>恶堕未达标</SSC_SharedBedStatusThreshold>
+  <SSC_SharedBedStatusNoPartner>本床无符合条件的床伴</SSC_SharedBedStatusNoPartner>
+  <SSC_SharedBedAssignPartnerFirst>分配顺序：先主人或指定调教员，再性奴。</SSC_SharedBedAssignPartnerFirst>
+  <SSC_SharedBedNativeChecks>仅表示 SSC 额外许可；实际使用仍需通过原版检查。</SSC_SharedBedNativeChecks>
 </LanguageData>

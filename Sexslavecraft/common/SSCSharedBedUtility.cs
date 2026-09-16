@@ -45,7 +45,7 @@ namespace SexSlaveCraft
             return GetAllowedPartners(first).Contains(second) || GetAllowedPartners(second).Contains(first);
         }
 
-        /// <summary>判断指定调教员关系是否有效，用于只从本床已分配性奴反查调教员标签。</summary>
+        /// <summary>判断性奴与当前有效指定调教员的直接关系，不检查恶堕门槛或床位可用性。</summary>
         public static bool IsDesignatedTrainer(Pawn sexSlave, Pawn trainer)
         {
             return SSCIdentityUtility.IsSexSlave(sexSlave)
@@ -70,13 +70,19 @@ namespace SexSlaveCraft
         public static bool HasPartnerBedPermission(Building_Bed bed, Pawn pawn)
         {
             if (!IsOrdinarySharedBed(bed) || pawn == null || pawn.IsPrisoner) return false;
-            return bed.OwnersForReading.Any(owner =>
-                (CanRelaxSlaveBedCategory(pawn) && GetAllowedPartners(pawn).Contains(owner))
-                || (CanRelaxSlaveBedCategory(owner) && GetAllowedPartners(owner).Contains(pawn)));
+            return bed.OwnersForReading.Any(owner => CanShareWithPartner(bed, pawn, owner));
+        }
+
+        /// <summary>统一判断一对角色的 SSC 额外许可，供实际床位检查与界面状态共用；不代替原版环境检查。</summary>
+        public static bool CanShareWithPartner(Building_Bed bed, Pawn pawn, Pawn partner)
+        {
+            if (!IsOrdinarySharedBed(bed) || pawn == null || pawn.IsPrisoner) return false;
+            return (CanRelaxSlaveBedCategory(pawn) && GetAllowedPartners(pawn).Contains(partner))
+                || (CanRelaxSlaveBedCategory(partner) && GetAllowedPartners(partner).Contains(pawn));
         }
 
         /// <summary>保留符合条件的性奴已有普通多人床归属；不据此允许向空床新增分配。</summary>
-        private static bool HasAssignedBedPermission(Building_Bed bed, Pawn pawn)
+        public static bool HasAssignedBedPermission(Building_Bed bed, Pawn pawn)
         {
             return IsOrdinarySharedBed(bed) && CanRelaxSlaveBedCategory(pawn) && bed.OwnersForReading.Contains(pawn);
         }

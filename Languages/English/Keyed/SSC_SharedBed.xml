@@ -5,10 +5,19 @@
   <SSC_SharedBedTrainerBadge>Trainer</SSC_SharedBedTrainerBadge>
   <SSC_SharedBedMaster>Master: {0}</SSC_SharedBedMaster>
   <SSC_SharedBedTrainer>Assigned trainer: {0}</SSC_SharedBedTrainer>
-  <SSC_SharedBedNoPartner>No available master or assigned trainer.</SSC_SharedBedNoPartner>
-  <SSC_SharedBedThresholdMet>Corruption is above the 0.1% threshold for extra bed-sharing permission.</SSC_SharedBedThresholdMet>
-  <SSC_SharedBedThresholdUnmet>Corruption must be above 0.1% for extra bed-sharing permission.</SSC_SharedBedThresholdUnmet>
-  <SSC_SharedBedRelatedSlaves>Related sex slaves assigned to this bed: {0}</SSC_SharedBedRelatedSlaves>
-  <SSC_SharedBedRoleInfo>SSC role. Once this bed has owners, badges show its owners and their direct connections.</SSC_SharedBedRoleInfo>
-  <SSC_SharedBedTooltip>{0}\n{1}\nBoth the master and assigned trainer may share an ordinary multi-person bed with the sex slave. If the sex slave also has vanilla slave status, assign their master or assigned trainer to the bed first, then assign the sex slave. Normal game checks still apply.\nBadges follow the direct relationships of this bed's owners; other combinations allowed by the base game remain available.\nMedical rest and deathrest take priority. Ordinary rest prefers the already assigned bed.</SSC_SharedBedTooltip>
+  <SSC_SharedBedNone>None</SSC_SharedBedNone>
+  <SSC_SharedBedInactiveTrainer>{0} (inactive or unavailable)</SSC_SharedBedInactiveTrainer>
+  <SSC_SharedBedThresholdMet>Corruption: {0}% | Met (requires &gt;0.1%)</SSC_SharedBedThresholdMet>
+  <SSC_SharedBedThresholdUnmet>Corruption: {0}% | Not met (requires &gt;0.1%)</SSC_SharedBedThresholdUnmet>
+  <SSC_SharedBedPartnerThreshold>{0} — {1}</SSC_SharedBedPartnerThreshold>
+  <SSC_SharedBedStatus>SSC bed-sharing: {0}</SSC_SharedBedStatus>
+  <SSC_SharedBedStatusAllowed>May share with {0}</SSC_SharedBedStatusAllowed>
+  <SSC_SharedBedStatusRetained>Existing assignment retained</SSC_SharedBedStatusRetained>
+  <SSC_SharedBedStatusWaiting>Waiting for an eligible partner to be assigned</SSC_SharedBedStatusWaiting>
+  <SSC_SharedBedStatusBedType>No extra permission for this bed type</SSC_SharedBedStatusBedType>
+  <SSC_SharedBedStatusPrisoner>No extra permission for prisoners</SSC_SharedBedStatusPrisoner>
+  <SSC_SharedBedStatusThreshold>Corruption below requirement</SSC_SharedBedStatusThreshold>
+  <SSC_SharedBedStatusNoPartner>No eligible partner assigned to this bed</SSC_SharedBedStatusNoPartner>
+  <SSC_SharedBedAssignPartnerFirst>Assignment order: master or assigned trainer first, then sex slave.</SSC_SharedBedAssignPartnerFirst>
+  <SSC_SharedBedNativeChecks>SSC extra permission only; normal game checks still apply.</SSC_SharedBedNativeChecks>
 </LanguageData>

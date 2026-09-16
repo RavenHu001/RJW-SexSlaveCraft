@@ -2,13 +2,22 @@
 <LanguageData>
   <SSC_SharedBedBadge>Секс-раб</SSC_SharedBedBadge>
   <SSC_SharedBedMasterBadge>Хозяин</SSC_SharedBedMasterBadge>
-  <SSC_SharedBedTrainerBadge>Дрессировщик</SSC_SharedBedTrainerBadge>
+  <SSC_SharedBedTrainerBadge>Тренер</SSC_SharedBedTrainerBadge>
   <SSC_SharedBedMaster>Хозяин: {0}</SSC_SharedBedMaster>
-  <SSC_SharedBedTrainer>Назначенный дрессировщик: {0}</SSC_SharedBedTrainer>
-  <SSC_SharedBedNoPartner>Нет доступного хозяина или назначенного дрессировщика.</SSC_SharedBedNoPartner>
-  <SSC_SharedBedThresholdMet>Развращённость превышает порог 0,1% для дополнительного разрешения на совместный сон.</SSC_SharedBedThresholdMet>
-  <SSC_SharedBedThresholdUnmet>Для дополнительного разрешения на совместный сон развращённость должна превышать 0,1%.</SSC_SharedBedThresholdUnmet>
-  <SSC_SharedBedRelatedSlaves>Связанные секс-рабы, назначенные на эту кровать: {0}</SSC_SharedBedRelatedSlaves>
-  <SSC_SharedBedRoleInfo>Роль SSC. После назначения метки показывают владельцев этой кровати и напрямую связанных с ними персонажей.</SSC_SharedBedRoleInfo>
-  <SSC_SharedBedTooltip>{0}\n{1}\nИ хозяин, и назначенный дрессировщик могут делить обычную многоместную кровать с секс-рабом. Если секс-раб имеет статус раба базовой игры, сначала назначьте на кровать его хозяина или назначенного дрессировщика, а затем секс-раба. Проверки базовой игры сохраняются.\nМетки учитывают прямые связи владельцев кровати; другие сочетания, разрешённые базовой игрой, остаются доступны.\nЛечение и смертосон имеют приоритет. При обычном отдыхе предпочтительна уже назначенная кровать.</SSC_SharedBedTooltip>
+  <SSC_SharedBedTrainer>Назначенный тренер: {0}</SSC_SharedBedTrainer>
+  <SSC_SharedBedNone>Нет</SSC_SharedBedNone>
+  <SSC_SharedBedInactiveTrainer>{0} (роль отключена или недоступен)</SSC_SharedBedInactiveTrainer>
+  <SSC_SharedBedThresholdMet>Развращённость: {0}% | Порог пройден (нужно &gt;0,1%)</SSC_SharedBedThresholdMet>
+  <SSC_SharedBedThresholdUnmet>Развращённость: {0}% | Порог не пройден (нужно &gt;0,1%)</SSC_SharedBedThresholdUnmet>
+  <SSC_SharedBedPartnerThreshold>{0} — {1}</SSC_SharedBedPartnerThreshold>
+  <SSC_SharedBedStatus>Совместный сон SSC: {0}</SSC_SharedBedStatus>
+  <SSC_SharedBedStatusAllowed>Разрешён с {0}</SSC_SharedBedStatusAllowed>
+  <SSC_SharedBedStatusRetained>Текущее назначение сохранено</SSC_SharedBedStatusRetained>
+  <SSC_SharedBedStatusWaiting>Ожидание назначения подходящего партнёра</SSC_SharedBedStatusWaiting>
+  <SSC_SharedBedStatusBedType>Нет дополнительного разрешения для этого типа кровати</SSC_SharedBedStatusBedType>
+  <SSC_SharedBedStatusPrisoner>Нет дополнительного разрешения для заключённых</SSC_SharedBedStatusPrisoner>
+  <SSC_SharedBedStatusThreshold>Порог развращённости не пройден</SSC_SharedBedStatusThreshold>
+  <SSC_SharedBedStatusNoPartner>На кровать не назначен подходящий партнёр</SSC_SharedBedStatusNoPartner>
+  <SSC_SharedBedAssignPartnerFirst>Порядок: сначала хозяин или назначенный тренер, затем секс-раб.</SSC_SharedBedAssignPartnerFirst>
+  <SSC_SharedBedNativeChecks>Только дополнительное разрешение SSC; проверки базовой игры сохраняются.</SSC_SharedBedNativeChecks>
 </LanguageData>
