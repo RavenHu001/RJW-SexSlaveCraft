@@ -14,6 +14,8 @@ internal static class Program
     private static int passed, failed;
     private static string repo;
 
+    /// <summary>从 args[0] 读取仓库路径，加载翻译并安装真实 Harmony 补丁，运行模型回归后返回失败状态码。</summary>
+    /// <remarks>此入口执行最小生命周期和绘制模型，不启动游戏或验证真实 Unity 布局。</remarks>
     private static int Main(string[] args)
     {
         repo = Path.GetFullPath(args[0]);
@@ -137,6 +139,36 @@ internal static class Program
             new Dialog_AssignBuildingOwner(new CompAssignableToPawn()).Draw(f.slave, false); Assert(Widgets.Labels.Count == 1);
         });
         Run("悬停说明区分主人、调教员和门槛", () => { var f = Setup(); f.slave.Chain = new Hediff_ChainOfSexSlave { LinkedPawn = f.partner }; f.slave.needs.Corruption.CurLevelPercentage = 0; var tip = Harmony_SSC_SharedBedAssignmentUI.GetTooltip(f.slave); Assert(tip.Contains("已绑定") && tip.Contains("需高于")); });
+        Run("Mint 已分配及未分配行显示同一标记、提示且避开按钮", () =>
+        {
+            foreach (bool assigned in new[] { true, false })
+            {
+                var f = Setup(); Widgets.Labels.Clear(); TooltipHandler.LastTooltip = null;
+                var row = new Rect(20, 10, 600, 60);
+                var font = Text.Font; var anchor = Text.Anchor; var color = GUI.color;
+                new DubsMintMenus.Dialog_AssignBuildingOwner(Comp(f.bed)).DoRow(row, f.slave, assigned);
+                Assert(Widgets.Labels.Count == 2 && Widgets.Labels[0].text == "性奴");
+                Assert(TooltipHandler.LastTooltip == Harmony_SSC_SharedBedAssignmentUI.GetTooltip(f.slave));
+                Assert(Widgets.Labels[1].rect.x >= Widgets.Labels[0].rect.xMax && Widgets.Labels[1].rect.xMax <= row.xMax - 175f);
+                Assert(Text.Font == font && Text.Anchor == anchor && GUI.color.Equals(color));
+            }
+        });
+        Run("Mint 普通奴隶与非床建筑保留原姓名和区域", () =>
+        {
+            foreach (bool nonBed in new[] { true, false })
+            {
+                var f = Setup(); Widgets.Labels.Clear(); TooltipHandler.LastTooltip = null;
+                if (!nonBed) f.slave.Training.pawnIdentity = PawnIdentity.Unset;
+                new DubsMintMenus.Dialog_AssignBuildingOwner(nonBed ? new CompAssignableToPawn() : Comp(f.bed)).DoRow(new Rect(0, 0, 600, 60), f.slave, false);
+                Assert(Widgets.Labels.Count == 1 && Widgets.Labels[0].text == f.slave.LabelShortCap && Widgets.Labels[0].rect.xMax == 600 && TooltipHandler.LastTooltip == null);
+            }
+        });
+        Run("Mint 的不可分配原因与意识形态提示保留", () =>
+        {
+            var f = Setup(); Widgets.Labels.Clear();
+            new DubsMintMenus.Dialog_AssignBuildingOwner(Comp(f.bed)) { RejectedReason = "TooLargeForBed", ShowIdeologyInfo = true }.DoRow(new Rect(0, 0, 600, 60), f.slave, false);
+            Assert(Widgets.Labels.Count == 3 && Widgets.Labels[1].text.Contains("TooLargeForBed") && Widgets.Labels[2].text == "IdeoligionForbids" && Widgets.Labels[2].rect.x == 430);
+        });
         Run("XML 记忆持续一天、不叠加并保留六档数值", CheckDefs);
         Run("四种界面翻译键完整且参数匹配", CheckLanguages);
         Run("共同睡眠记录接入现有 Pawn 存档", () => { string source = File.ReadAllText(Path.Combine(repo, "Sexslavecraft/Comps/Comp_Train.cs")); Assert(source.Contains("Scribe_Deep.Look(ref sharedSleep, \"sharedSleep\")")); });
@@ -145,13 +177,17 @@ internal static class Program
         return failed == 0 ? 0 : 1;
     }
 
+    /// <summary>执行命名用例并累计结果；记录单个失败后继续运行其余用例。</summary>
     private static void Run(string name, Action test)
     {
         try { test(); passed++; Console.WriteLine("PASS " + name); }
         catch (Exception ex) { failed++; Console.WriteLine("FAIL " + name + ": " + ex); }
     }
+    /// <summary>条件不成立时抛出异常，由用例执行器统一记录失败。</summary>
     private static void Assert(bool value) { if (!value) throw new Exception("Assertion failed"); }
+    /// <summary>创建属于指定测试地图的角色，保留模型默认组件与需求。</summary>
     private static Pawn NewPawn(Map map) => new Pawn { Map = map };
+    /// <summary>创建未绑定性奴、指定调教员及其双人床，并保留原版奴隶床作为找床对照。</summary>
     private static (Pawn slave, Pawn partner, Building_Bed bed) Setup()
     {
         Map map = new Map(); Pawn slave = NewPawn(map), partner = NewPawn(map);
@@ -161,16 +197,24 @@ internal static class Program
         slave.VanillaBed = new Building_Bed { Map = map, ForSlaves = true };
         return (slave, partner, bed);
     }
+    /// <summary>在默认场景上设置双方同床且同时睡着，供共同睡眠结算用例使用。</summary>
     private static (Pawn slave, Pawn partner, Building_Bed bed) Sleeping()
     {
         var f = Setup(); f.slave.Bed = f.partner.Bed = f.bed; f.slave.Sleeping = f.partner.Sleeping = true; return f;
     }
+    /// <summary>通过已打补丁的模型入口检查床位使用资格，保持默认社交检查。</summary>
     private static bool Use(Building_Bed bed, Pawn pawn) => RestUtility.CanUseBedNow(bed, pawn, true, false, null);
+    /// <summary>通过已打补丁的找床入口，让角色以自身身份和预留规则寻找休息床。</summary>
     private static Building_Bed Find(Pawn pawn) => RestUtility.FindBedFor(pawn, pawn, true, false, pawn.GuestStatus);
+    /// <summary>为指定测试床构造分配组件，供候选资格与窗口用例复用。</summary>
     private static CompAssignableToPawn_Bed Comp(Building_Bed bed) => new CompAssignableToPawn_Bed { parent = bed };
+    /// <summary>触发一次床上休息效果，使生产补丁按当前双方状态记录共同睡眠。</summary>
     private static void Tick(Pawn pawn) => Toils_LayDown.ApplyBedRelatedEffects(pawn, pawn.Bed, pawn.Sleeping, true, 1);
+    /// <summary>模拟普通躺卧结束，依次经过房间心情处理和睡后记忆结算补丁。</summary>
     private static void Finish(Pawn pawn) => Toils_LayDown.FinalizeLayingJob(pawn, pawn.Bed, false);
+    /// <summary>取得模型中的可变记忆列表，便于布置旧记忆并检查结算结果。</summary>
     private static System.Collections.Generic.List<Thought_Memory> Memories(Pawn p) => p.needs.mood.thoughts.memories.Items;
+    /// <summary>检查两种同床 XML 定义均为一天、不叠加的记忆，并保留约定的六档心情数值。</summary>
     private static void CheckDefs()
     {
         var defs = XDocument.Load(Path.Combine(repo, "Defs/ThoughtDefs/Thought_SharedBed.xml")).Root.Elements().ToList();
@@ -182,6 +226,7 @@ internal static class Program
             Assert(def.Element("stages").Elements().Select(x => x.Element("baseMoodEffect").Value).SequenceEqual(new[] { "-6", "-3", "2", "5", "9", "13" }));
         }
     }
+    /// <summary>检查四语提示键与简中基准一致，并验证文本可以接受对象和门槛格式参数。</summary>
     private static void CheckLanguages()
     {
         string[] expected = Translation.Keys.Keys.OrderBy(x => x).ToArray();
