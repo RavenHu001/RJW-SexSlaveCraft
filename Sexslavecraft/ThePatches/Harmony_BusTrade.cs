@@ -3,13 +3,15 @@ using RimWorld;
 using Verse;
 using Verse.AI;
 using UnityEngine;
-using rjw; // 假设 xxx 等辅助类在这个命名空间
+using rjw;
 
 namespace SexSlaveCraft
 {
     [HarmonyPatch(typeof(TradeDeal), "TryExecute")]
     public static class Patch_TradeDeal_TryExecute_BusSex
     {
+        private const int PartnerWaitTicks = 600;
+
         public static void Postfix(bool __result, bool actuallyTraded)
         {
             // 1. 基础检查：交易必须成功
@@ -52,7 +54,7 @@ namespace SexSlaveCraft
                 // ====================================================
                 // 5. 获取恶堕率并计算性行为概率
                 // ====================================================
-                Need_Corruption corruptionNeed = busPawn.needs.TryGetNeed<Need_Corruption>();
+                Need_Corruption corruptionNeed = busPawn.needs?.TryGetNeed<Need_Corruption>();
                 float corruptionLevel = corruptionNeed != null ? corruptionNeed.CurLevel : 0f;
 
                 // 计算主动概率
@@ -70,7 +72,6 @@ namespace SexSlaveCraft
                 // 计算剩余概率的分配 (按 8:1 分配给强暴和原谅)
                 int remainingChance = 100 - voluntaryChance;
                 int rapeChance = Mathf.RoundToInt(remainingChance * (8f / 9f));
-                int forgiveChance = remainingChance - rapeChance; // 兜底，确保总和为 100
 
                 // 掷骰子 1-100
                 int roll = Rand.RangeInclusive(1, 100);
@@ -111,63 +112,127 @@ namespace SexSlaveCraft
 
         private static void StartConsensualSex(Pawn bus, Pawn trader)
         {
-            // A1. 同图检查
-            if (bus.Map == null || trader.Map == null || bus.Map != trader.Map) return;
+            if (!CanStartTradeInteraction(bus, trader)) return;
 
-            // A2. 距离检查 (太远了就算了，别跑半个地图去送)
-            if (!bus.Position.InHorDistOf(trader.Position, 15f)) return;
-
-            // A3. 敌对状态检查 (既然是两情相悦，不能在打架)
-            if (trader.InMentalState || trader.IsFighting()) return;
-
-            // A4. RJW 能力检查
-            if (!xxx.can_fuck(bus) || !xxx.can_fuck(trader)) return;
-
-            JobDef sexJobDef = DefDatabase<JobDef>.GetNamedSilentFail("Sex");
-            if (sexJobDef != null)
+            // can_fuck 只检查插入能力；可作为接受方的角色同样能发起 Quickie。
+            if ((!xxx.can_fuck(bus) && !xxx.can_be_fucked(bus)) ||
+                (!xxx.can_fuck(trader) && !xxx.can_be_fucked(trader)))
             {
-                trader.jobs.StopAll();
-                Job waitJob = JobMaker.MakeJob(JobDefOf.Wait_Wander, 120); // 等待约 2秒
-                trader.jobs.TryTakeOrderedJob(waitJob, JobTag.Misc);
+                LogSkipped(bus, trader, "rjw_consensual_eligibility");
+                return;
+            }
 
-                Job sexJob = JobMaker.MakeJob(sexJobDef, trader);
-                bus.jobs.TryTakeOrderedJob(sexJob, JobTag.Misc);
-
+            // RJW 没有名为 Sex 的 JobDef；Quickie 支持地图内、无需床位的互动。
+            if (TryStartTradeJob(bus, trader, xxx.quick_sex))
+            {
                 Messages.Message("SSC_Message_TradeConsensualSex".Translate(bus.LabelShort, trader.LabelShort),
                     new LookTargets(bus, trader), MessageTypeDefOf.PositiveEvent);
             }
         }
 
-        // ====================================================
-        // 新增：强暴逻辑
-        // ====================================================
         private static void StartRapeSex(Pawn rapist, Pawn victim)
         {
-            if (rapist.Map == null || victim.Map == null || rapist.Map != victim.Map) return;
-            if (!rapist.Position.InHorDistOf(victim.Position, 15f)) return;
-            if (rapist.InMentalState || rapist.IsFighting()) return;
+            if (!CanStartTradeInteraction(rapist, victim)) return;
 
-            // RJW 的强暴能力检查 (根据你安装的RJW版本，方法名可能略有不同，通常为 can_rape 和 can_get_raped)
-            if (!xxx.can_rape(rapist) || !xxx.can_get_raped(victim)) return;
-
-            // 获取 RJW 的强暴 Job (通常叫 "Rape" 或 "RandomRape")
-            JobDef rapeJobDef = DefDatabase<JobDef>.GetNamedSilentFail("Rape");
-
-            if (rapeJobDef != null)
+            if (!xxx.can_rape(rapist) || !xxx.can_get_raped(victim))
             {
-                // 停下受害者当前的工作，让其僵直一下等待被强暴
-                victim.jobs.StopAll();
-                Job waitJob = JobMaker.MakeJob(JobDefOf.Wait_Wander, 60);
-                victim.jobs.TryTakeOrderedJob(waitJob, JobTag.Misc);
+                LogSkipped(rapist, victim, "rjw_rape_eligibility");
+                return;
+            }
 
-                // 让商人（施暴者）发起强暴任务，目标是你的小人（受害者）
-                rapist.jobs.StopAll();
-                Job rapeJob = JobMaker.MakeJob(rapeJobDef, victim);
-                rapist.jobs.TryTakeOrderedJob(rapeJob, JobTag.Misc);
-
+            // 使用 RJW 注册的 RandomRape 定义，保留商人为发起方。
+            if (TryStartTradeJob(rapist, victim, xxx.RapeRandom))
+            {
                 Messages.Message("SSC_Message_TradeRapeOccurred".Translate(victim.LabelShort, rapist.LabelShort),
                     new LookTargets(rapist, victim), MessageTypeDefOf.NegativeEvent);
             }
+        }
+
+        private static bool CanStartTradeInteraction(Pawn initiator, Pawn partner)
+        {
+            if (initiator == null || partner == null || initiator == partner) return false;
+            if (initiator.Dead || partner.Dead || initiator.Downed || partner.Downed ||
+                initiator.Drafted || partner.Drafted || initiator.jobs == null || partner.jobs == null)
+            {
+                LogSkipped(initiator, partner, "pawn_unavailable");
+                return false;
+            }
+
+            if (!initiator.Spawned || !partner.Spawned || initiator.Map == null || initiator.Map != partner.Map ||
+                !initiator.Position.InHorDistOf(partner.Position, 15f))
+            {
+                LogSkipped(initiator, partner, "map_or_distance");
+                return false;
+            }
+
+            if (initiator.InMentalState || partner.InMentalState || initiator.IsFighting() || partner.IsFighting())
+            {
+                LogSkipped(initiator, partner, "mental_state_or_combat");
+                return false;
+            }
+
+            if (initiator.jobs.curDriver is JobDriver_Sex || partner.jobs.curDriver is JobDriver_Sex ||
+                !initiator.jobs.IsCurrentJobPlayerInterruptible() || !partner.jobs.IsCurrentJobPlayerInterruptible() ||
+                initiator.CurJob?.def.forceCompleteBeforeNextJob == true || partner.CurJob?.def.forceCompleteBeforeNextJob == true)
+            {
+                LogSkipped(initiator, partner, "busy_with_other_job");
+                return false;
+            }
+
+            if (!initiator.CanReserveAndReach(partner, PathEndMode.OnCell, Danger.Deadly))
+            {
+                LogSkipped(initiator, partner, "cannot_reserve_or_reach");
+                return false;
+            }
+
+            return true;
+        }
+
+        private static bool TryStartTradeJob(Pawn initiator, Pawn partner, JobDef jobDef)
+        {
+            if (jobDef == null)
+            {
+                LogSkipped(initiator, partner, "missing_job_def");
+                return false;
+            }
+
+            // 留出走近对方的时间；RJW 驱动到达后会接管接受方任务。
+            // 事件直接启动任务，避免玩家按住 Shift 时被当作排队命令，
+            // 也避免 TryTakeOrderedJob 将已有同类 Wait 视为成功却不刷新时长。
+            Job waitJob = JobMaker.MakeJob(JobDefOf.Wait);
+            waitJob.expiryInterval = PartnerWaitTicks;
+            waitJob.playerForced = true;
+            partner.jobs.StartJob(waitJob, JobCondition.InterruptForced, tag: JobTag.Misc, preToilReservationsCanFail: true);
+            if (partner.CurJob != waitJob)
+            {
+                // Wait 可能被旧任务的收尾步骤推迟，不能把排队当成已启动。
+                partner.jobs.jobQueue.RemoveAll(partner, queued => queued == waitJob);
+                LogSkipped(initiator, partner, "partner_wait_rejected");
+                return false;
+            }
+
+            Job interactionJob = JobMaker.MakeJob(jobDef, partner);
+            interactionJob.playerForced = true;
+            initiator.jobs.StartJob(interactionJob, JobCondition.InterruptForced, tag: JobTag.Misc, preToilReservationsCanFail: true);
+            if (initiator.CurJob != interactionJob)
+            {
+                initiator.jobs.jobQueue.RemoveAll(initiator, queued => queued == interactionJob);
+                // 只清理本次创建的等待任务，避免结束已被其他逻辑替换的工作。
+                if (partner.CurJob == waitJob)
+                    partner.jobs.EndCurrentJob(JobCondition.InterruptForced);
+                else
+                    partner.jobs.jobQueue.RemoveAll(partner, queued => queued == waitJob);
+                LogSkipped(initiator, partner, "initiator_job_rejected");
+                return false;
+            }
+
+            SSCLog.Verbose($"[SSC BusTrade] started job={jobDef.defName} initiator={initiator.LabelShort} partner={partner.LabelShort}");
+            return true;
+        }
+
+        private static void LogSkipped(Pawn initiator, Pawn partner, string reason)
+        {
+            SSCLog.Verbose($"[SSC BusTrade] skipped reason={reason} initiator={initiator?.LabelShort} partner={partner?.LabelShort}");
         }
     }
 }

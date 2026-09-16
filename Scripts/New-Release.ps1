@@ -113,7 +113,8 @@ $testSuites = @(
     @{ Project = 'Tests/PersonalitySpecializations/PersonalitySpecializations.csproj'; Arguments = @() },
     @{ Project = 'Tests/PersonalityCardLayout/PersonalityCardLayout.csproj'; Arguments = @($repoRoot) },
     @{ Project = 'Tests/RaceInjection/RaceInjection.csproj'; Arguments = @() },
-    @{ Project = 'Tests/InteractionProtection/InteractionProtection.csproj'; Arguments = @() }
+    @{ Project = 'Tests/InteractionProtection/InteractionProtection.csproj'; Arguments = @() },
+    @{ Project = 'Tests/BusTrade/BusTrade.csproj'; Arguments = @() }
 )
 foreach ($testSuite in $testSuites) {
     $testProject = Join-Path $repoRoot $testSuite.Project
@@ -150,7 +151,7 @@ try {
     }
     [IO.Directory]::CreateDirectory((Join-Path $modRoot 'Assemblies')) | Out-Null
     Copy-Item -LiteralPath $dllPath -Destination (Join-Path $modRoot 'Assemblies/Sexslavecraft.dll')
-    foreach ($document in @('VERSION', 'CHANGELOG.md', 'READ ME!!!.md', '读我，玩法介绍.md', '机制详解.md', 'PLAYER_GUIDE_EN.md')) {
+    foreach ($document in @('VERSION', 'CHANGELOG.md', 'README.md', '读我，玩法介绍.md', '机制详解.md', 'PLAYER_GUIDE_EN.md')) {
         Copy-Item -LiteralPath (Join-Path $repoRoot $document) -Destination $modRoot
     }
     Copy-Item -LiteralPath (Join-Path $repoRoot 'Docs') -Destination (Join-Path $modRoot 'Docs') -Recurse

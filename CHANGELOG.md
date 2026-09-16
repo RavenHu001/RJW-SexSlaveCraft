@@ -4,6 +4,24 @@
 
 This continuation builds on upstream **2.2.8**, the baseline when upstream development stopped in July, and retains its version numbering. Entries are listed newest first. Technical details are in the [development log (Chinese)](Docs/开发更新记录.md).
 
+## [2.2.15] — 2026-09-16 — 公交车交易修复与未完成特化入口禁用 / Public Use trade fix and unfinished specialization selection
+
+本版汇总维护者已在游戏内确认有效的公交车交易修复，以及宠物猫、宠物兔入口禁用，包含 `2.2.14` 及更早版本修复。详见 [2.2.15 发布说明](Docs/2.2.15发布说明.md) 与 [版本验证记录](Docs/2.2.15版本验证.md)。本次为版本归并，尚未发布远端安装包。
+
+This version groups the maintainer-confirmed Public Use trade fix and disabled Pet Cat / Pet Rabbit selection, including fixes from `2.2.14` and earlier versions. See the [bilingual release notes](Docs/2.2.15发布说明.md) and [validation record (Chinese)](Docs/2.2.15版本验证.md). This is a version consolidation; no remote installation package has been published for it yet.
+
+### 修复 / Fix
+
+- 修复公交车本人完成商队交易后互动未启动：使用实际 RJW 任务定义，纠正自愿分支对普通女性的能力误判，并检查实际启动结果；失败时清理本次等待或排队任务，避免成功提示误报。原有概率、交易成长和轨道贸易船排除规则保留。
+- Fixes interactions failing after a Public Use pawn personally completes a caravan trade. Uses the actual RJW job definitions, corrects the consensual eligibility check for ordinary female pawns, verifies that jobs start, and cleans up event-owned waiting or queued jobs after failure. Existing probabilities, trade growth, and orbital-trade exclusion are retained.
+
+### 界面 / Interface
+
+- 宠物猫、宠物兔选择项置灰并标注“未完成”；旧档中的对应当前方向及终极状态摘要也显示该标记，兔子生育模式改为只读展示。保留既有存档数据和底层实现。
+- Pet Cat and Pet Rabbit choices are disabled and marked Incomplete. Existing specialization and final-state summaries show the same marker, and saved rabbit birth modes are read-only. Existing save data and underlying implementations are retained.
+
+打包脚本同步使用已改名的 `README.md`，并包含新增的公交车交易回归套件。The packaging script uses the renamed `README.md` and includes the new BusTrade regression suite.
+
 ## [2.2.14] — 2026-09-15 — 当前已发现 bug 修复完成版本 / Known-bug fixes complete
 
 按维护者要求，将 `2.2.14` 标记为“当前已发现 bug 修复完成版本”：截至本版，已发现且确认需要修复的问题已处理完成，作为本阶段修复收尾版本。维护者已确认永久泌乳修复有效；本版包含 `2.2.13` 及更早版本修复。正式安装包与 SHA-256 校验文件见 [v2.2.14 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft-TieJin-Modify/releases/tag/v2.2.14)，详见 [2.2.14 发布说明](Docs/2.2.14发布说明.md) 与 [版本验证记录](Docs/2.2.14版本验证.md)。
