@@ -1,10 +1,9 @@
 # RJW-SexSlaveCraft Complete Player Guide
 
-> For RimWorld 1.6 and SexSlaveCraft 2.2.14, based on the current workspace code and installed Defs.\
-> Milestone: known-bug fixes complete. Issues identified and confirmed as requiring fixes have been addressed as of this release.\
+> For RimWorld 1.6 and SexSlaveCraft 2.2.15, based on the current workspace code and installed Defs.\
 > Audited on 2026-06-30.  
 > Based on upstream 2.2.8; version 2.2.9 includes the specialization and ritual progression fixes, and 2.2.10 fixes stale training locks after interrupted rituals. See `CHANGELOG.md`.\
-> Version 2.2.14 fixes lost time in permanent lactation by using accumulated ticks for milk production and nutrition costs. The maintainer has confirmed the fix. Includes fixes from 2.2.13 and earlier versions. Legacy RimTalk integration remains suspended pending a complete redesign.\
+> Version 2.2.15 fixes Public Use interactions after caravan trades. Pet Cat and Pet Rabbit choices are disabled and marked Incomplete; saved rabbit birth modes are read-only. The maintainer has confirmed these changes. Includes fixes from 2.2.14 and earlier versions. Legacy RimTalk integration remains suspended pending a complete redesign.\
 > This guide describes the behavior implemented by the current C# and XML. Where an old changelog or description disagrees with the code, the discrepancy is listed under “Current Limitations and Known Differences.”
 
 ## 1. Scope and Dependencies
@@ -772,7 +771,7 @@ The tab’s saved progress and direct Hediff severity changes are separate paths
 
 ### 12.4 Post-trade Event
 
-This event runs only when the Public Use pawn is the player’s negotiator.
+This event runs only when the Public Use pawn personally negotiates a successful trade with an actual exchange. Cancelled or empty trades do not trigger it.
 
 After trading with a pawn trader:
 
@@ -786,10 +785,12 @@ The remaining probability is split approximately 8:1 between assault and trader 
 
 An actual scene also requires:
 
-- both pawns on the same map and within 15 cells;
-- the trader not fighting or in a mental state;
+- both pawns spawned on the same map and within 15 cells, alive, standing, and undrafted;
+- neither pawn fighting, in a mental state, already in an interaction, or performing an uninterruptible job;
 - both pawns passing the appropriate RJW checks;
-- the matching RJW JobDef being available.
+- the initiator being able to reserve and reach the partner, with the matching job available and actually started.
+
+Version 2.2.15 uses RJW's `Quickie` / `RandomRape` definitions and allows either initiating or receiving anatomy in the consensual eligibility check. The partner is assigned a wait of up to 600 ticks while the initiator approaches. Success messages require the job to become current; failed starts clean up only the event's own waiting or queued jobs. Existing probabilities and trade growth calculations are retained.
 
 If physical or RJW conditions fail, the branch may still increase specialization Hediff severity without starting a scene.
 
@@ -1458,10 +1459,10 @@ This section records the audited code behavior and known limitations.
 | Personality Editing (currently Public Use only) | 1,500 | Body-part Training, Personality Excretion | Parent node for Public Use and Cow |
 | Milking Specialization | 1,200 | Personality Editing (currently Public Use only) | Cow Specialization and Final Cow recipe |
 | Public Use | 1,200 | Personality Editing (currently Public Use only) | Public Use Specialization and final recipe |
-| Pet: Cat | 1,200 | Personality Editing (currently Public Use only) | Not implemented |
+| Pet: Cat | 1,200 | Personality Editing (currently Public Use only) | Selection disabled; marked Incomplete |
 | Combatant | 1,200 | Personality Editing (currently Public Use only) | Not implemented |
 | Pet: Dog | 1,500 | Pet: Cat | Not implemented |
-| Pet: Rabbit | 1,800 | Pet: Dog | Not implemented |
+| Pet: Rabbit | 1,800 | Pet: Dog | Selection disabled; marked Incomplete; saved birth mode read-only |
 | Partial Gelatinization | 2,000 | Personality Excretion | Semi-gelatinization Surgery |
 | Full-body Gelatinization | 3,000 | Partial Gelatinization | Full Gelatinization Surgery |
 

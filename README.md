@@ -1,9 +1,8 @@
 # RJW-SexSlaveCraft Quick Start Guide
 
-> For RimWorld 1.6 and SexSlaveCraft 2.2.14.\
-> Milestone: known-bug fixes complete. Issues identified and confirmed as requiring fixes have been addressed as of this release.\
+> For RimWorld 1.6 and SexSlaveCraft 2.2.15.\
 > This continuation is based on upstream 2.2.8. See `CHANGELOG.md` for release history.\
-> Version 2.2.14 fixes lost time in permanent lactation by using accumulated ticks for milk production and nutrition costs. The maintainer has confirmed the fix. Includes fixes from 2.2.13 and earlier versions. Legacy RimTalk integration remains suspended pending a complete redesign.\
+> Version 2.2.15 fixes Public Use interactions after caravan trades. Pet Cat and Pet Rabbit choices are disabled and marked Incomplete; saved rabbit birth modes are read-only. The maintainer has confirmed these changes. Includes fixes from 2.2.14 and earlier versions. Legacy RimTalk integration remains suspended pending a complete redesign.\
 > In-game names follow the mod's official English localization. For exact formulas, thresholds, and implementation notes, see `PLAYER_GUIDE_EN.md`.
 
 ## 1. What the Mod Does
@@ -208,7 +207,7 @@ After a pawn-to-pawn trade, the negotiator may:
 - be raped by the trader;
 - be released without sex.
 
-Higher Corruption makes the consensual outcome more likely. Orbital trade ships do not trigger this mechanic.
+Higher Corruption makes the consensual outcome more likely, reaching 100% at 20% Corruption. The Public Use pawn must personally negotiate a successful trade with an actual exchange; cancelled or empty trades and orbital trade ships do not trigger this mechanic. Both pawns must be available, within 15 cells on the same map, and pass the relevant RJW and reachability checks.
 
 Reaching 100% does not directly create `Final Public Use Specialization`. Use the Personality Gel workflow described below.
 
