@@ -36,6 +36,7 @@ namespace SexSlaveCraft
             }
         }
 
+        /// <summary>绘制调教总栏；即使菜单或控件抛出异常，也在内部列表结束后关闭外层滚动区域。</summary>
         protected override void FillTab()
         {
             Pawn pawn = SelPawn;
@@ -50,38 +51,42 @@ namespace SexSlaveCraft
             Rect contentRect = new Rect(0f, 0f, outerRect.width - 18f, contentHeight);
 
             Widgets.BeginScrollView(viewRect, ref scrollPosition, contentRect);
+            try
+            {
+                float curY = 0f;
+                curY = DrawIdentitySection(new Rect(0f, curY, contentRect.width, GetIdentitySectionHeight(comp)), comp) + SectionSpacing;
 
-            float curY = 0f;
-            curY = DrawIdentitySection(new Rect(0f, curY, contentRect.width, GetIdentitySectionHeight(comp)), comp) + SectionSpacing;
-
-            if (comp.pawnIdentity == PawnIdentity.Master)
-            {
-                DrawMessageSection(new Rect(0f, curY, contentRect.width, 78f), Strings.ITab_AlreadyMaster, Color.cyan);
-            }
-            else if (comp.pawnIdentity == PawnIdentity.Unset)
-            {
-                DrawMessageSection(new Rect(0f, curY, contentRect.width, 78f), Strings.ITab_IdentityUnset, Color.yellow);
-            }
-            else if (!ResearchUtils.IsResearchFinished(SSCDefOf.SSC_BasicTraining))
-            {
-                DrawLockedSection(new Rect(0f, curY, contentRect.width, 108f));
-            }
-            else
-            {
-                curY = DrawTrainingSection(new Rect(0f, curY, contentRect.width, 124f), pawn, comp) + SectionSpacing;
-                curY = DrawScheduleSection(new Rect(0f, curY, contentRect.width, 210f), pawn, comp) + SectionSpacing;
-                curY = DrawSpecializationSection(new Rect(0f, curY, contentRect.width, 124f), pawn, comp) + SectionSpacing;
-
-                if (pawn.health.hediffSet.HasHediff(SSCDefOf.SSC_Lactating_SubState))
+                if (comp.pawnIdentity == PawnIdentity.Master)
                 {
-                    curY = DrawMilkSection(new Rect(0f, curY, contentRect.width, 88f), pawn, comp) + SectionSpacing;
+                    DrawMessageSection(new Rect(0f, curY, contentRect.width, 78f), Strings.ITab_AlreadyMaster, Color.cyan);
                 }
+                else if (comp.pawnIdentity == PawnIdentity.Unset)
+                {
+                    DrawMessageSection(new Rect(0f, curY, contentRect.width, 78f), Strings.ITab_IdentityUnset, Color.yellow);
+                }
+                else if (!ResearchUtils.IsResearchFinished(SSCDefOf.SSC_BasicTraining))
+                {
+                    DrawLockedSection(new Rect(0f, curY, contentRect.width, 108f));
+                }
+                else
+                {
+                    curY = DrawTrainingSection(new Rect(0f, curY, contentRect.width, 124f), pawn, comp) + SectionSpacing;
+                    curY = DrawScheduleSection(new Rect(0f, curY, contentRect.width, 210f), pawn, comp) + SectionSpacing;
+                    curY = DrawSpecializationSection(new Rect(0f, curY, contentRect.width, 124f), pawn, comp) + SectionSpacing;
 
-                curY = DrawPoseSection(new Rect(0f, curY, contentRect.width, 82f), comp) + SectionSpacing;
-                DrawTrainerSection(new Rect(0f, curY, contentRect.width, 82f), pawn, comp);
+                    if (pawn.health.hediffSet.HasHediff(SSCDefOf.SSC_Lactating_SubState))
+                    {
+                        curY = DrawMilkSection(new Rect(0f, curY, contentRect.width, 88f), pawn, comp) + SectionSpacing;
+                    }
+
+                    curY = DrawPoseSection(new Rect(0f, curY, contentRect.width, 82f), comp) + SectionSpacing;
+                    DrawTrainerSection(new Rect(0f, curY, contentRect.width, 82f), pawn, comp);
+                }
             }
-
-            Widgets.EndScrollView();
+            finally
+            {
+                Widgets.EndScrollView();
+            }
         }
 
         private static float CalculateContentHeight(Pawn pawn, CompSexSlaveTraining comp)
@@ -111,212 +116,309 @@ namespace SexSlaveCraft
             return height + 4f;
         }
 
+        /// <summary>为身份按钮、调教员开关和性奴接收状态预留高度。</summary>
         private static float GetIdentitySectionHeight(CompSexSlaveTraining comp)
         {
-            return comp.pawnIdentity == PawnIdentity.Slave ? 112f : 92f;
+            return comp.pawnIdentity == PawnIdentity.Slave ? 146f : 126f;
         }
 
+        /// <summary>绘制 SSC 身份及调教员开关；已有绑定时禁用身份按钮并提示原因。</summary>
         private float DrawIdentitySection(Rect rect, CompSexSlaveTraining comp)
         {
             DrawSection(rect, Strings.ITab_IdentityHeader, delegate(Rect innerRect)
             {
                 Listing_Standard listing = BeginSectionListing(innerRect);
-
-                string idLabel = GetIdentityLabel(comp.pawnIdentity);
-                if (listing.ButtonText(idLabel))
+                try
                 {
-                    List<FloatMenuOption> identityOptions = new List<FloatMenuOption>
+
+                    string idLabel = GetIdentityLabel(comp.pawnIdentity);
+                    bool identityLocked = SSCIdentityUtility.IsIdentityLocked(SelPawn);
+                    Rect identityRect = listing.GetRect(30f);
+                    bool oldEnabled = GUI.enabled;
+                    bool identityClicked;
+                    try
                     {
-                        new FloatMenuOption(Strings.ITab_SetIdentityUnset, delegate
+                        GUI.enabled = oldEnabled && !identityLocked;
+                        identityClicked = Widgets.ButtonText(identityRect, idLabel);
+                    }
+                    finally
+                    {
+                        GUI.enabled = oldEnabled;
+                    }
+                    if (identityLocked)
+                        TooltipHandler.TipRegion(identityRect, "SSC_Identity_BoundTip".Translate());
+                    listing.Gap(2f);
+                    if (identityClicked)
+                    {
+                        List<FloatMenuOption> identityOptions = new List<FloatMenuOption>
                         {
-                            SSCIdentityUtility.TrySetIdentity(SelPawn, PawnIdentity.Unset);
-                        }),
-                        new FloatMenuOption(Strings.ITab_SetAsSlave, delegate
-                        {
-                            SSCIdentityUtility.TrySetIdentity(SelPawn, PawnIdentity.Slave);
-                        }),
-                        new FloatMenuOption(Strings.ITab_SetAsMaster, delegate
-                        {
-                            SSCIdentityUtility.TrySetIdentity(SelPawn, PawnIdentity.Master);
-                        })
-                    };
-                    Find.WindowStack.Add(new FloatMenu(identityOptions));
-                }
+                            new FloatMenuOption(Strings.ITab_SetIdentityUnset, delegate
+                            {
+                                SSCIdentityUtility.TrySetIdentity(SelPawn, PawnIdentity.Unset);
+                            }),
+                            new FloatMenuOption(Strings.ITab_SetAsSlave, delegate
+                            {
+                                SSCIdentityUtility.TrySetIdentity(SelPawn, PawnIdentity.Slave);
+                            }),
+                            new FloatMenuOption(Strings.ITab_SetAsMaster, delegate
+                            {
+                                SSCIdentityUtility.TrySetIdentity(SelPawn, PawnIdentity.Master);
+                            })
+                        };
+                        Find.WindowStack.Add(new FloatMenu(identityOptions));
+                    }
 
-                if (comp.pawnIdentity == PawnIdentity.Slave)
-                {
                     listing.Gap(6f);
-                    GUI.color = new Color(0.75f, 0.75f, 0.75f);
-                    listing.Label(comp.IsEnabled ? Strings.ITab_StatusReady : Strings.ITab_StatusDisabled);
-                    GUI.color = Color.white;
-                }
+                    DrawTrainerIdentityToggle(listing, SelPawn, comp);
 
-                listing.End();
+                    if (comp.pawnIdentity == PawnIdentity.Slave)
+                    {
+                        listing.Gap(6f);
+                        GUI.color = new Color(0.75f, 0.75f, 0.75f);
+                        listing.Label(comp.IsEnabled ? Strings.ITab_StatusReady : Strings.ITab_StatusDisabled);
+                        GUI.color = Color.white;
+                    }
+
+                }
+                finally
+                {
+                    listing.End();
+                }
             });
 
             return rect.yMax;
         }
 
+        /// <summary>仅性奴可修改个人开关；绘制后恢复 GUI 状态，并说明身份与工作开关的区别。</summary>
+        private static void DrawTrainerIdentityToggle(Listing_Standard listing, Pawn pawn, CompSexSlaveTraining comp)
+        {
+            bool enabled = SSCIdentityUtility.IsTrainer(pawn);
+            bool previous = enabled;
+            string tooltip = (comp.pawnIdentity == PawnIdentity.Master ? "SSC_TrainerIdentity_MasterTip"
+                : comp.pawnIdentity == PawnIdentity.Slave ? "SSC_TrainerIdentity_SlaveTip"
+                : "SSC_TrainerIdentity_UnsetTip").Translate();
+            bool oldEnabled = GUI.enabled;
+            try
+            {
+                GUI.enabled = oldEnabled && comp.pawnIdentity == PawnIdentity.Slave;
+                listing.CheckboxLabeled("SSC_TrainerIdentity_Label".Translate(), ref enabled, tooltip);
+            }
+            finally
+            {
+                GUI.enabled = oldEnabled;
+            }
+            if (enabled != previous) SSCIdentityUtility.SetTrainerEnabled(pawn, enabled);
+        }
+
+        /// <summary>绘制调教设置，并保证控件中断时结束本节列表。</summary>
         private float DrawTrainingSection(Rect rect, Pawn pawn, CompSexSlaveTraining comp)
         {
             DrawSection(rect, Strings.ITab_TrainingSettingsHeader, delegate(Rect innerRect)
             {
                 Listing_Standard listing = BeginSectionListing(innerRect);
-                DrawTrainingToggle(listing, pawn, comp);
-                listing.Gap(8f);
-                DrawCooldownStatus(listing, comp);
-                listing.Gap(8f);
-                DrawAllowOthersToggle(listing, pawn, comp);
-                listing.End();
+                try
+                {
+                    DrawTrainingToggle(listing, pawn, comp);
+                    listing.Gap(8f);
+                    DrawCooldownStatus(listing, comp);
+                    listing.Gap(8f);
+                    DrawAllowOthersToggle(listing, pawn, comp);
+                }
+                finally
+                {
+                    listing.End();
+                }
             });
 
             return rect.yMax;
         }
 
+        /// <summary>绘制特化菜单，并保证菜单创建失败时结束本节列表。</summary>
         private float DrawSpecializationSection(Rect rect, Pawn pawn, CompSexSlaveTraining comp)
         {
             DrawSection(rect, Strings.ITab_SpecializationHeader, delegate(Rect innerRect)
             {
                 Listing_Standard listing = BeginSectionListing(innerRect);
-                DrawSpecializationSelector(listing, pawn, comp);
-                listing.End();
+                try
+                {
+                    DrawSpecializationSelector(listing, pawn, comp);
+                }
+                finally
+                {
+                    listing.End();
+                }
             });
 
             return rect.yMax;
         }
 
+        /// <summary>绘制调教排班，并保证控件中断时结束本节列表。</summary>
         private float DrawScheduleSection(Rect rect, Pawn pawn, CompSexSlaveTraining comp)
         {
             DrawSection(rect, "SSC_Schedule_Header".Translate(), delegate(Rect innerRect)
             {
                 Listing_Standard listing = BeginSectionListing(innerRect);
-
-                bool enabled = comp.scheduledTrainingEnabled;
-                listing.CheckboxLabeled("SSC_Schedule_Enable".Translate(), ref enabled);
-                comp.scheduledTrainingEnabled = enabled;
-
-                if (enabled)
+                try
                 {
-                    listing.Gap(4f);
-                    string hourLabel = "SSC_Schedule_HourButton".Translate(
-                        comp.scheduledTrainingHour.ToString("00"),
-                        comp.ScheduledTrainingEndHour.ToString("00"));
-                    if (listing.ButtonText(hourLabel))
+
+                    bool enabled = comp.scheduledTrainingEnabled;
+                    listing.CheckboxLabeled("SSC_Schedule_Enable".Translate(), ref enabled);
+                    comp.scheduledTrainingEnabled = enabled;
+
+                    if (enabled)
                     {
-                        List<FloatMenuOption> options = new List<FloatMenuOption>();
-                        for (int hour = 0; hour < 24; hour++)
+                        listing.Gap(4f);
+                        string hourLabel = "SSC_Schedule_HourButton".Translate(
+                            comp.scheduledTrainingHour.ToString("00"),
+                            comp.ScheduledTrainingEndHour.ToString("00"));
+                        if (listing.ButtonText(hourLabel))
                         {
-                            int selectedHour = hour;
-                            int endHour = (hour + CompSexSlaveTraining.ScheduledTrainingWindowHours) % 24;
-                            string label = "SSC_Schedule_HourOption".Translate(
-                                hour.ToString("00"),
-                                endHour.ToString("00"));
-                            options.Add(new FloatMenuOption(label, delegate
+                            List<FloatMenuOption> options = new List<FloatMenuOption>();
+                            for (int hour = 0; hour < 24; hour++)
                             {
-                                comp.scheduledTrainingHour = selectedHour;
-                            }));
+                                int selectedHour = hour;
+                                int endHour = (hour + CompSexSlaveTraining.ScheduledTrainingWindowHours) % 24;
+                                string label = "SSC_Schedule_HourOption".Translate(
+                                    hour.ToString("00"),
+                                    endHour.ToString("00"));
+                                options.Add(new FloatMenuOption(label, delegate
+                                {
+                                    comp.scheduledTrainingHour = selectedHour;
+                                }));
+                            }
+                            Find.WindowStack.Add(new FloatMenu(options));
                         }
-                        Find.WindowStack.Add(new FloatMenu(options));
-                    }
 
-                    string intervalLabel = "SSC_Schedule_IntervalButton".Translate(comp.scheduledTrainingIntervalDays);
-                    if (listing.ButtonText(intervalLabel))
-                    {
-                        List<FloatMenuOption> options = new List<FloatMenuOption>();
-                        for (int days = 1; days <= 7; days++)
+                        string intervalLabel = "SSC_Schedule_IntervalButton".Translate(comp.scheduledTrainingIntervalDays);
+                        if (listing.ButtonText(intervalLabel))
                         {
-                            int selectedDays = days;
-                            options.Add(new FloatMenuOption(
-                                "SSC_Schedule_IntervalOption".Translate(days),
-                                delegate { comp.scheduledTrainingIntervalDays = selectedDays; }));
+                            List<FloatMenuOption> options = new List<FloatMenuOption>();
+                            for (int days = 1; days <= 7; days++)
+                            {
+                                int selectedDays = days;
+                                options.Add(new FloatMenuOption(
+                                    "SSC_Schedule_IntervalOption".Translate(days),
+                                    delegate { comp.scheduledTrainingIntervalDays = selectedDays; }));
+                            }
+                            Find.WindowStack.Add(new FloatMenu(options));
                         }
-                        Find.WindowStack.Add(new FloatMenu(options));
+
+                        listing.Gap(4f);
+                        GUI.color = comp.IsScheduledTrainingAvailableNow
+                            ? new Color(0.45f, 1f, 0.55f)
+                            : new Color(0.75f, 0.75f, 0.75f);
+                        TaggedString scheduleStatus = comp.IsScheduledTrainingAvailableNow
+                            ? "SSC_Schedule_StatusNow".Translate()
+                            : "SSC_Schedule_StatusWaiting".Translate();
+                        listing.Label(scheduleStatus);
+                        GUI.color = Color.white;
+                    }
+                    else
+                    {
+                        listing.Gap(6f);
+                        GUI.color = new Color(0.75f, 0.75f, 0.75f);
+                        listing.Label("SSC_Schedule_StatusAnytime".Translate());
+                        GUI.color = Color.white;
                     }
 
-                    listing.Gap(4f);
-                    GUI.color = comp.IsScheduledTrainingAvailableNow
-                        ? new Color(0.45f, 1f, 0.55f)
-                        : new Color(0.75f, 0.75f, 0.75f);
-                    TaggedString scheduleStatus = comp.IsScheduledTrainingAvailableNow
-                        ? "SSC_Schedule_StatusNow".Translate()
-                        : "SSC_Schedule_StatusWaiting".Translate();
-                    listing.Label(scheduleStatus);
-                    GUI.color = Color.white;
                 }
-                else
+                finally
                 {
-                    listing.Gap(6f);
-                    GUI.color = new Color(0.75f, 0.75f, 0.75f);
-                    listing.Label("SSC_Schedule_StatusAnytime".Translate());
-                    GUI.color = Color.white;
+                    listing.End();
                 }
-
-                listing.End();
             });
 
             return rect.yMax;
         }
 
+        /// <summary>绘制泌乳配置与进度，并保证异常路径结束本节列表。</summary>
         private float DrawMilkSection(Rect rect, Pawn pawn, CompSexSlaveTraining comp)
         {
             DrawSection(rect, Strings.ITab_MilkProductionToggle, delegate(Rect innerRect)
             {
                 Listing_Standard listing = BeginSectionListing(innerRect);
-                DrawMilkToggle(listing, pawn, comp);
-                listing.Gap(6f);
-
-                Hediff lactating = pawn.health.hediffSet.GetFirstHediffOfDef(SSCDefOf.SSC_Lactating_SubState);
-                HediffComp_PermanentLactating lactatingComp = lactating?.TryGetComp<HediffComp_PermanentLactating>();
-                if (lactatingComp != null)
+                try
                 {
-                    string progress = lactatingComp.CompLabelInBracketsExtra;
-                    if (!string.IsNullOrEmpty(progress))
-                    {
-                        GUI.color = new Color(0.75f, 0.75f, 0.75f);
-                        listing.Label(progress);
-                        GUI.color = Color.white;
-                    }
-                }
+                    DrawMilkToggle(listing, pawn, comp);
+                    listing.Gap(6f);
 
-                listing.End();
+                    Hediff lactating = pawn.health.hediffSet.GetFirstHediffOfDef(SSCDefOf.SSC_Lactating_SubState);
+                    HediffComp_PermanentLactating lactatingComp = lactating?.TryGetComp<HediffComp_PermanentLactating>();
+                    if (lactatingComp != null)
+                    {
+                        string progress = lactatingComp.CompLabelInBracketsExtra;
+                        if (!string.IsNullOrEmpty(progress))
+                        {
+                            GUI.color = new Color(0.75f, 0.75f, 0.75f);
+                            listing.Label(progress);
+                            GUI.color = Color.white;
+                        }
+                    }
+
+                }
+                finally
+                {
+                    listing.End();
+                }
             });
 
             return rect.yMax;
         }
 
+        /// <summary>绘制姿势选择菜单，并保证菜单创建失败时结束本节列表。</summary>
         private float DrawPoseSection(Rect rect, CompSexSlaveTraining comp)
         {
             DrawSection(rect, Strings.ITab_PoseHeader, delegate(Rect innerRect)
             {
                 Listing_Standard listing = BeginSectionListing(innerRect);
-                DrawPoseSelector(listing, comp);
-                listing.End();
+                try
+                {
+                    DrawPoseSelector(listing, comp);
+                }
+                finally
+                {
+                    listing.End();
+                }
             });
 
             return rect.yMax;
         }
 
+        /// <summary>绘制指定调教员菜单，并保证候选生成异常时结束本节列表。</summary>
         private float DrawTrainerSection(Rect rect, Pawn pawn, CompSexSlaveTraining comp)
         {
             DrawSection(rect, Strings.ITab_TrainerHeader, delegate(Rect innerRect)
             {
                 Listing_Standard listing = BeginSectionListing(innerRect);
-                DrawTrainerSelector(listing, pawn, comp);
-                listing.End();
+                try
+                {
+                    DrawTrainerSelector(listing, pawn, comp);
+                }
+                finally
+                {
+                    listing.End();
+                }
             });
 
             return rect.yMax;
         }
 
+        /// <summary>绘制研究锁定说明，并保证异常路径结束本节列表。</summary>
         private void DrawLockedSection(Rect rect)
         {
             DrawSection(rect, Strings.ITab_TrainingLocked, delegate(Rect innerRect)
             {
                 Listing_Standard listing = BeginSectionListing(innerRect);
-                GUI.color = Color.yellow;
-                listing.Label(Strings.ITab_TrainingLockedDesc);
-                GUI.color = Color.white;
-                listing.End();
+                try
+                {
+                    GUI.color = Color.yellow;
+                    listing.Label(Strings.ITab_TrainingLockedDesc);
+                    GUI.color = Color.white;
+                }
+                finally
+                {
+                    listing.End();
+                }
             });
         }
 
@@ -354,6 +456,7 @@ namespace SexSlaveCraft
             drawContents(innerRect);
         }
 
+        /// <summary>列出同时满足身份、工作及主人限制的可指派对象，清空入口始终保留。</summary>
         private List<FloatMenuOption> GetTrainerOptions(Pawn slave)
         {
             List<FloatMenuOption> list = new List<FloatMenuOption>();
@@ -449,9 +552,10 @@ namespace SexSlaveCraft
             Find.WindowStack.Add(new FloatMenu(acts));
         }
 
+        /// <summary>显示原始指派及停用/暂不可执行状态，允许直接重新选择。</summary>
         private void DrawTrainerSelector(Listing_Standard listing, Pawn pawn, CompSexSlaveTraining comp)
         {
-            string trainerName = comp.selectedTrainer != null ? comp.selectedTrainer.LabelShort : Strings.ITab_TrainerNone;
+            string trainerName = TrainerAssignmentUtility.GetAssignedTrainerLabel(pawn);
             if (listing.ButtonText(trainerName))
             {
                 Find.WindowStack.Add(new FloatMenu(GetTrainerOptions(pawn)));

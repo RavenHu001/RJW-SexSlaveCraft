@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_SharedBedBadge>性奴</SSC_SharedBedBadge>
+  <SSC_SharedBedMasterBadge>主人</SSC_SharedBedMasterBadge>
+  <SSC_SharedBedTrainerBadge>調教員</SSC_SharedBedTrainerBadge>
+  <SSC_SharedBedMaster>主人：{0}</SSC_SharedBedMaster>
+  <SSC_SharedBedTrainer>指定調教員：{0}</SSC_SharedBedTrainer>
+  <SSC_SharedBedNone>無</SSC_SharedBedNone>
+  <SSC_SharedBedInactiveTrainer>{0}（身分停用或不可用）</SSC_SharedBedInactiveTrainer>
+  <SSC_SharedBedThresholdMet>惡墮：{0}%｜已達標（需 &gt;0.1%）</SSC_SharedBedThresholdMet>
+  <SSC_SharedBedThresholdUnmet>惡墮：{0}%｜未達標（需 &gt;0.1%）</SSC_SharedBedThresholdUnmet>
+  <SSC_SharedBedPartnerThreshold>{0} — {1}</SSC_SharedBedPartnerThreshold>
+  <SSC_SharedBedStatus>SSC同床：{0}</SSC_SharedBedStatus>
+  <SSC_SharedBedStatusAllowed>可與 {0} 同床</SSC_SharedBedStatusAllowed>
+  <SSC_SharedBedStatusRetained>保留已有床位</SSC_SharedBedStatusRetained>
+  <SSC_SharedBedStatusWaiting>等待分配有效床伴</SSC_SharedBedStatusWaiting>
+  <SSC_SharedBedStatusBedType>此床型不提供額外許可</SSC_SharedBedStatusBedType>
+  <SSC_SharedBedStatusPrisoner>囚犯不提供額外許可</SSC_SharedBedStatusPrisoner>
+  <SSC_SharedBedStatusThreshold>惡墮未達標</SSC_SharedBedStatusThreshold>
+  <SSC_SharedBedStatusNoPartner>本床無符合條件的床伴</SSC_SharedBedStatusNoPartner>
+  <SSC_SharedBedAssignPartnerFirst>分配順序：先主人或指定調教員，再性奴。</SSC_SharedBedAssignPartnerFirst>
+  <SSC_SharedBedNativeChecks>僅表示 SSC 額外許可；實際使用仍需通過原版檢查。</SSC_SharedBedNativeChecks>
+</LanguageData>

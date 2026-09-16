@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_SharedBedWithTrainer.stages.0.label>сон с тренером (отвращение)</SSC_SharedBedWithTrainer.stages.0.label>
+  <SSC_SharedBedWithTrainer.stages.0.description>Совместный сон с тренером оставил чувство сильного дискомфорта.</SSC_SharedBedWithTrainer.stages.0.description>
+  <SSC_SharedBedWithTrainer.stages.1.label>сон с тренером (сопротивление)</SSC_SharedBedWithTrainer.stages.1.label>
+  <SSC_SharedBedWithTrainer.stages.1.description>Во время последнего совместного отдыха с тренером было трудно расслабиться.</SSC_SharedBedWithTrainer.stages.1.description>
+  <SSC_SharedBedWithTrainer.stages.2.label>сон с тренером (колебание)</SSC_SharedBedWithTrainer.stages.2.label>
+  <SSC_SharedBedWithTrainer.stages.2.description>Сон рядом с тренером неожиданно принёс немного спокойствия.</SSC_SharedBedWithTrainer.stages.2.description>
+  <SSC_SharedBedWithTrainer.stages.3.label>сон с тренером (привыкание)</SSC_SharedBedWithTrainer.stages.3.label>
+  <SSC_SharedBedWithTrainer.stages.3.description>Сон рядом с тренером помог расслабиться и почувствовать себя в безопасности.</SSC_SharedBedWithTrainer.stages.3.description>
+  <SSC_SharedBedWithTrainer.stages.4.label>сон с тренером (привязанность)</SSC_SharedBedWithTrainer.stages.4.label>
+  <SSC_SharedBedWithTrainer.stages.4.description>Приятное чувство после последнего совместного отдыха с тренером до сих пор не покидает меня.</SSC_SharedBedWithTrainer.stages.4.description>
+  <SSC_SharedBedWithTrainer.stages.5.label>сон с тренером (полное принятие)</SSC_SharedBedWithTrainer.stages.5.label>
+  <SSC_SharedBedWithTrainer.stages.5.description>Сон рядом с тренером оставил особое чувство покоя и удовлетворения.</SSC_SharedBedWithTrainer.stages.5.description>
+</LanguageData>

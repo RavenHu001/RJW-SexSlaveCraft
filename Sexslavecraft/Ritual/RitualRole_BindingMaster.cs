@@ -14,6 +14,7 @@ namespace SexSlaveCraft
     // ==========================================
     public class RitualRole_BindingMaster : RitualRole
     {
+        /// <summary>主人角色仍须主人身份，并核对性奴的有效指定对象；调教员开关不授予主人角色。</summary>
         public override bool AppliesToPawn(Pawn p, out string reason, TargetInfo selectedTarget, LordJob_Ritual ritual = null, RitualRoleAssignments assignments = null, Precept_Ritual precept = null, bool skipReason = false)
         {
             reason = null;
@@ -59,10 +60,16 @@ namespace SexSlaveCraft
                 if (slave != null)
                 {
                     var slaveComp = slave.GetComp<CompSexSlaveTraining>();
+                    if (slaveComp?.selectedTrainer != null && TrainerAssignmentUtility.GetActiveAssignedTrainer(slave) == null)
+                    {
+                        if (!skipReason) reason = "SSC_TrainerIdentity_Required".Translate();
+                        return false;
+                    }
                     if (slaveComp?.selectedTrainer != null && slaveComp.selectedTrainer != p)
                     {
-                        if (!skipReason) reason = Strings.RitualRole_SlaveBoundToOther(
-                            slaveComp.selectedTrainer.LabelShort);
+                        // 此处比较的是调教员指派，不代表性奴已与该对象建立主人绑定。
+                        if (!skipReason) reason = "SSC_RitualRole_TrainerMismatch".Translate(
+                            slave.LabelShort, slaveComp.selectedTrainer.LabelShort, p.LabelShort);
                         return false;
                     }
                 }

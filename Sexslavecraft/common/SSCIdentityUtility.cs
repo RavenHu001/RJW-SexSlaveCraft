@@ -9,7 +9,7 @@ using Verse;
 // CN: 原版法律身份（殖民者、囚犯、奴隶）与 SSC 角色身份保持相互独立。
 namespace SexSlaveCraft
 {
-    public static class SSCIdentityUtility
+    public static partial class SSCIdentityUtility
     {
         public static PawnIdentity GetIdentity(Pawn pawn)
         {
@@ -101,21 +101,22 @@ namespace SexSlaveCraft
             return corruption != null && corruption.CurLevel > 0f;
         }
 
-        /// <summary>设置 SSC 身份并解除不再适用的绑定；离开性奴身份时清理仪式占用和训练配置。</summary>
-        /// <returns>存在训练组件且完成身份设置时返回 true，否则返回 false。</returns>
+        /// <summary>已有锁链或仍有有效绑定性奴时锁定身份，避免切换身份删除绑定和成长进度。</summary>
+        public static bool IsIdentityLocked(Pawn pawn)
+        {
+            return SSCBondUtility.GetChain(pawn) != null ||
+                   SSCBondUtility.GetBridle(pawn)?.ValidTargets.Any() == true;
+        }
+
+        /// <summary>仅允许无绑定角色切换 SSC 身份；拒绝时不修改绑定、仪式或训练配置。</summary>
+        /// <returns>完成设置或身份未变化时返回 true；缺少组件或绑定锁定时返回 false。</returns>
         public static bool TrySetIdentity(Pawn pawn, PawnIdentity identity)
         {
             CompSexSlaveTraining comp = pawn?.TryGetComp<CompSexSlaveTraining>();
             if (comp == null) return false;
-
-            if (identity == PawnIdentity.Slave && comp.pawnIdentity == PawnIdentity.Master)
-            {
-                SSCBondUtility.UnbindAllFromMaster(pawn);
-            }
-            else if (identity != PawnIdentity.Slave)
-            {
-                SSCBondUtility.Unbind(pawn);
-            }
+            // 重复设置不属于身份切换，绑定结算也会重复写入性奴身份。
+            if (comp.pawnIdentity == identity) return true;
+            if (IsIdentityLocked(pawn)) return false;
 
             comp.pawnIdentity = identity;
             if (identity != PawnIdentity.Slave)

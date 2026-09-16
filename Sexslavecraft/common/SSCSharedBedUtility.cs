@@ -1,284 +1,173 @@
-using System;
 using RimWorld;
+using System.Collections.Generic;
+using System.Linq;
 using Verse;
-using Verse.AI;
 
-// EN: This file is the rules layer behind `与主人同床`.
-// EN: It decides when a sex slave may treat the master as a valid bed partner, which bed should be used, and which thought stage should be shown the next morning.
-// CN: 这个文件是“与主人同床”系统背后的规则层。
-// CN: 它决定性奴何时可以把主人视为合法同床对象、该睡哪张床，以及第二天应该显示哪一档同床想法。
 namespace SexSlaveCraft
 {
+    /// <summary>只定义 SSC 的额外床伴许可；床型、环境、容量和预留仍由原版检查。</summary>
     public static class SSCSharedBedUtility
     {
         private const float MinCorruptionForSharedBed = 0.001f;
 
-        private static bool ShouldTreatAsRegularGuestForBeds(Pawn sleeper, GuestStatus? guestStatusOverride)
-        {
-            if (sleeper == null || !HasMeaningfulCorruption(sleeper)) return false;
-            GuestStatus effectiveStatus = guestStatusOverride ?? sleeper.GuestStatus ?? GuestStatus.Guest;
-            return effectiveStatus == GuestStatus.Slave;
-        }
-
-        private static T InvokeWithGuestStatusBypass<T>(Func<T> action)
-        {
-            if (SSCBedGuestStatusBypass.Active) return action();
-
-            SSCBedGuestStatusBypass.Active = true;
-            try
-            {
-                return action();
-            }
-            finally
-            {
-                SSCBedGuestStatusBypass.Active = false;
-            }
-        }
-
-        public static bool HasMeaningfulCorruption(Pawn pawn)
-        {
-            // EN: Shared-bed rules only start after corruption is no longer effectively zero.
-            // CN: “与主人同床”规则只有在恶堕不再接近零时才开始生效。
-            Need_Corruption need = pawn?.needs?.TryGetNeed<Need_Corruption>();
-            return need != null && need.CurLevelPercentage > MinCorruptionForSharedBed;
-        }
-
+        /// <summary>读取当前恶堕比例；角色或对应需求缺失时按零处理。</summary>
         public static float GetCorruption(Pawn pawn)
         {
             return pawn?.needs?.TryGetNeed<Need_Corruption>()?.CurLevelPercentage ?? 0f;
         }
 
-        public static bool HasFlawedLovers(Pawn first, Pawn second)
+        /// <summary>检查恶堕是否严格高于 0.1%，等于门槛时仍不授予额外同床许可。</summary>
+        public static bool HasMeaningfulCorruption(Pawn pawn)
         {
-            return first != null && second != null && SSCDefOf.SSC_FlawedLovers != null && first.relations.DirectRelationExists(SSCDefOf.SSC_FlawedLovers, second);
+            return GetCorruption(pawn) > MinCorruptionForSharedBed;
         }
 
-        public static bool TryGetResolvedMaster(Pawn pawn, out Pawn master)
+        /// <summary>依次枚举有效主人和指定调教员；绑定不排除调教员，同一人只返回一次。</summary>
+        /// <remarks>只解析 SSC 性奴的直接关系，不检查恶堕、床型或环境，也不改变调教员指派规则。</remarks>
+        public static IEnumerable<Pawn> GetAllowedPartners(Pawn pawn)
         {
-            master = null;
-            if (pawn == null) return false;
+            if (!SSCIdentityUtility.IsSexSlave(pawn) || pawn.Dead || pawn.Destroyed) yield break;
+            Pawn master = SSCBondUtility.GetChain(pawn)?.LinkedPawn;
+            if (IsValidPartner(pawn, master)) yield return master;
+            Pawn trainer = TrainerAssignmentUtility.GetActiveAssignedTrainer(pawn);
+            if (trainer != master && IsValidPartner(pawn, trainer)) yield return trainer;
+        }
 
-            // EN: Step 1: ChainOfSexSlave has priority, because the slave chain is the strongest owner signal in SSC.
-            // CN: 步骤 1：优先读取 ChainOfSexSlave，因为锁链是 SSC 里最强的主人归属信号。
-            master = SSCBondUtility.GetResolvedMaster(pawn);
-            if (master != null)
+        /// <summary>排除自身、空引用和已死亡或销毁的对象。</summary>
+        private static bool IsValidPartner(Pawn pawn, Pawn partner)
+        {
+            return partner != null && partner != pawn && !partner.Dead && !partner.Destroyed;
+        }
+
+        /// <summary>双向判断直接 SSC 同床关系，不递归扩展到对象的其他关系。</summary>
+        public static bool HasSharedBedRelation(Pawn first, Pawn second)
+        {
+            return GetAllowedPartners(first).Contains(second) || GetAllowedPartners(second).Contains(first);
+        }
+
+        /// <summary>判断性奴与当前有效指定调教员的直接关系，不检查恶堕门槛或床位可用性。</summary>
+        public static bool IsDesignatedTrainer(Pawn sexSlave, Pawn trainer)
+        {
+            return SSCIdentityUtility.IsSexSlave(sexSlave)
+                && trainer != null && TrainerAssignmentUtility.GetActiveAssignedTrainer(sexSlave) == trainer
+                && GetAllowedPartners(sexSlave).Contains(trainer);
+        }
+
+        /// <summary>限定 SSC 额外许可的床位类别；完整环境和可用性仍由原版判断。</summary>
+        public static bool IsOrdinarySharedBed(Building_Bed bed)
+        {
+            return bed != null && !bed.Medical && !bed.ForPrisoners && !bed.ForSlaves && bed.SleepingSlotsCount > 1;
+        }
+
+        /// <summary>检查原版奴隶床分类例外所需的性奴身份和恶堕门槛，排除囚犯。</summary>
+        private static bool CanRelaxSlaveBedCategory(Pawn pawn)
+        {
+            return SSCIdentityUtility.IsSexSlave(pawn) && !pawn.IsPrisoner && HasMeaningfulCorruption(pawn);
+        }
+
+        /// <summary>本床存在直接床伴关系，且对应性奴达到恶堕门槛时提供双向共享许可。</summary>
+        /// <remarks>不依赖哪一方先分配；普通原版奴隶不会因此获得床位身份覆盖。</remarks>
+        public static bool HasPartnerBedPermission(Building_Bed bed, Pawn pawn)
+        {
+            if (!IsOrdinarySharedBed(bed) || pawn == null || pawn.IsPrisoner) return false;
+            return bed.OwnersForReading.Any(owner => CanShareWithPartner(bed, pawn, owner));
+        }
+
+        /// <summary>统一判断一对角色的 SSC 额外许可，供实际床位检查与界面状态共用；不代替原版环境检查。</summary>
+        public static bool CanShareWithPartner(Building_Bed bed, Pawn pawn, Pawn partner)
+        {
+            if (!IsOrdinarySharedBed(bed) || pawn == null || pawn.IsPrisoner) return false;
+            return (CanRelaxSlaveBedCategory(pawn) && GetAllowedPartners(pawn).Contains(partner))
+                || (CanRelaxSlaveBedCategory(partner) && GetAllowedPartners(partner).Contains(pawn));
+        }
+
+        /// <summary>保留符合条件的性奴已有普通多人床归属；不据此允许向空床新增分配。</summary>
+        public static bool HasAssignedBedPermission(Building_Bed bed, Pawn pawn)
+        {
+            return IsOrdinarySharedBed(bed) && CanRelaxSlaveBedCategory(pawn) && bed.OwnersForReading.Contains(pawn);
+        }
+
+        /// <summary>同时检查实际囚犯身份和本次查询的身份参数，避免额外许可绕过囚犯床限制。</summary>
+        public static bool IsPrisoner(Pawn pawn, GuestStatus? guestStatus)
+        {
+            return pawn != null && (pawn.IsPrisoner || guestStatus == GuestStatus.Prisoner);
+        }
+
+        /// <summary>只在这次目标床查询中放宽原版奴隶床分类，不修改 Pawn 身份。</summary>
+        /// <param name="bedThing">原版正在检查的目标床，非床建筑不会获得许可。</param>
+        /// <param name="sleeper">准备使用床位的角色；囚犯不进行覆盖。</param>
+        /// <param name="guestStatusOverride">按引用调整的本次查询参数；仅有效身份为奴隶且符合额外许可时改为访客。</param>
+        public static void AdjustGuestStatusForPartnerBed(Thing bedThing, Pawn sleeper, ref GuestStatus? guestStatusOverride)
+        {
+            if (!CanRelaxSlaveBedCategory(sleeper) || IsPrisoner(sleeper, guestStatusOverride)) return;
+            if ((guestStatusOverride ?? sleeper.GuestStatus) != GuestStatus.Slave) return;
+            Building_Bed bed = bedThing as Building_Bed;
+            if (HasAssignedBedPermission(bed, sleeper) || HasPartnerBedPermission(bed, sleeper))
+                guestStatusOverride = GuestStatus.Guest;
+        }
+
+        /// <summary>分配界面仅放宽目标床的奴隶分类检查，保留原版体型等拒绝条件。</summary>
+        /// <returns>只保留本床已有归属或允许加入有效床伴；原版奴隶性奴不能先分配空殖民者床。</returns>
+        public static bool IsSlaveForBedAssignment(Pawn pawn, CompAssignableToPawn_Bed assignable)
+        {
+            Building_Bed bed = assignable.parent as Building_Bed;
+            bool allowed = IsOrdinarySharedBed(bed) && CanRelaxSlaveBedCategory(pawn)
+                && (bed.OwnersForReading.Contains(pawn) || HasPartnerBedPermission(bed, pawn));
+            return pawn.IsSlave && !allowed;
+        }
+
+        /// <summary>依次尝试角色自己的已分配床、主人床和调教员床；每一步均使用原版完整检查。</summary>
+        /// <param name="sleeper">准备休息的性奴。</param>
+        /// <param name="traveler">实际移动或搬运的角色；为空时使用 sleeper。</param>
+        /// <param name="checkSocialProperness">原样传给原版的社交适当性检查开关。</param>
+        /// <param name="ignoreOtherReservations">原样传给原版的忽略其他预留开关。</param>
+        /// <param name="guestStatus">原版找床调用的身份参数。</param>
+        /// <param name="bed">返回第一张可用床，否则为 null；不扫描其他无关普通床。</param>
+        public static bool TryGetPreferredPartnerBed(Pawn sleeper, Pawn traveler, bool checkSocialProperness,
+            bool ignoreOtherReservations, GuestStatus? guestStatus, out Building_Bed bed)
+        {
+            bed = null;
+            if (!SSCIdentityUtility.IsSexSlave(sleeper) || IsPrisoner(sleeper, guestStatus)) return false;
+            Building_Bed ownBed = sleeper.ownership?.OwnedBed;
+            if (ownBed != null && RestUtility.IsValidBedFor(ownBed, sleeper, traveler ?? sleeper,
+                checkSocialProperness, false, ignoreOtherReservations, guestStatus))
             {
+                bed = ownBed;
                 return true;
             }
-
-            return false;
-        }
-
-        public static bool AreConsideredBedPartners(Pawn first, Pawn second)
-        {
-            if (first == null || second == null) return false;
-            // EN: `SSC_FlawedLovers` is the strongest shared-bed bond and should always count first.
-            // CN: `SSC_FlawedLovers` 是最强的同床关系，只要存在就应该优先成立。
-            if (HasFlawedLovers(first, second)) return true;
-
-            return (TryGetResolvedMaster(first, out Pawn firstMaster) && firstMaster == second && HasMeaningfulCorruption(first))
-                || (TryGetResolvedMaster(second, out Pawn secondMaster) && secondMaster == first && HasMeaningfulCorruption(second));
-        }
-
-        public static bool TryGetSharedBedContext(Pawn pawn, out Pawn master, out Pawn bondedPawn, out Building_Bed bed)
-        {
-            master = null;
-            bondedPawn = null;
-            bed = pawn?.CurrentBed();
-            if (pawn == null || bed == null || bed.SleepingSlotsCount <= 1) return false;
-
-            // EN: Step 1: inspect the current bed occupants and look for a valid master / sex-slave pairing in the same bed.
-            // CN: 步骤 1：检查当前床上的所有占用者，看看其中有没有合法的“主人 / 性奴”同床组合。
-            foreach (Pawn other in bed.CurOccupants)
+            foreach (Pawn partner in GetAllowedPartners(sleeper))
             {
-                if (other == null || other == pawn) continue;
-
-                if (TryGetResolvedMaster(pawn, out Pawn pawnMaster) && pawnMaster == other && HasMeaningfulCorruption(pawn))
-                {
-                    master = other;
-                    bondedPawn = pawn;
-                    return true;
-                }
-
-                if (TryGetResolvedMaster(other, out Pawn otherMaster) && otherMaster == pawn && HasMeaningfulCorruption(other))
-                {
-                    master = pawn;
-                    bondedPawn = other;
-                    return true;
-                }
+                Building_Bed candidate = partner.ownership?.OwnedBed;
+                if (candidate == ownBed || !HasPartnerBedPermission(candidate, sleeper)) continue;
+                // 调用完整原版检查，SSC 不复制环境、寻路、禁用或预留规则。
+                if (!RestUtility.IsValidBedFor(candidate, sleeper, traveler ?? sleeper, checkSocialProperness,
+                    false, ignoreOtherReservations, guestStatus)) continue;
+                bed = candidate;
+                return true;
             }
-
             return false;
         }
 
-        public static int GetSharedBedThoughtStage(Pawn bondedPawn, Pawn master)
+        /// <summary>医疗需求、死眠状态或原版特殊床结果存在时保留原结果，确保特殊休息优先于同床偏好。</summary>
+        /// <remarks>医疗需求下即使原版没找到床也不覆盖；空角色同样保留原结果。</remarks>
+        public static bool PreserveSpecialRest(Pawn sleeper, Building_Bed vanillaBed)
         {
-            if (bondedPawn == null || master == null) return -1;
-            // EN: `SSC_FlawedLovers` jumps straight to the highest `与主人同床` stage.
-            // CN: `SSC_FlawedLovers` 会直接跳到“与主人同床”的最高阶段。
-            if (HasFlawedLovers(bondedPawn, master)) return 5;
+            return sleeper == null || sleeper.Deathresting || HealthAIUtility.ShouldSeekMedicalRest(sleeper)
+                || (vanillaBed != null && (vanillaBed.Medical || vanillaBed.def == ThingDefOf.DeathrestCasket));
+        }
 
-            float corruption = GetCorruption(bondedPawn);
+        /// <summary>按特殊关系、恶堕比例、对本次对象的好感依次选择六档睡后心情阶段。</summary>
+        /// <returns>0～5 分别对应 -6、-3、+2、+5、+9、+13；缺少任一角色时返回 -1。</returns>
+        public static int GetSharedBedThoughtStage(Pawn pawn, Pawn partner)
+        {
+            if (pawn == null || partner == null) return -1;
+            if (SSCDefOf.SSC_FlawedLovers != null
+                && pawn.relations.DirectRelationExists(SSCDefOf.SSC_FlawedLovers, partner)) return 5;
+            float corruption = GetCorruption(pawn);
             if (corruption >= 0.5f) return 4;
             if (corruption >= 0.3f) return 3;
-
-            int opinion = bondedPawn.relations?.OpinionOf(master) ?? 0;
-            if (opinion < 30) return 0;
-            if (opinion < 50) return 1;
-            return 2;
-        }
-
-        public static bool CanUseMasterBed(Building_Bed bed, Pawn sleeper, bool checkSocialProperness, GuestStatus? guestStatusOverride = null)
-        {
-            // EN: This is the main gate that lets a corrupted sex slave use the master's owned bed outside vanilla romance rules.
-            // CN: 这是“让恶堕性奴绕过原版恋人规则去睡主人床”的主判定入口。
-            // EN: Step 1: reject anything that is not a corrupted sex slave with a resolved master.
-            // CN: 步骤 1：先排除所有“不属于恶堕性奴且无法解析出主人”的情况。
-            if (bed == null || sleeper == null) return false;
-            if (!HasMeaningfulCorruption(sleeper)) return false;
-            if (!TryGetResolvedMaster(sleeper, out Pawn master) || master == null) return false;
-            if (!bed.OwnersForReading.Contains(master)) return false;
-            if (!bed.Spawned || bed.Map != sleeper.MapHeld || bed.IsBurning() || bed.Medical) return false;
-            if (!RestUtility.CanUseBedEver(sleeper, bed.def)) return false;
-            if (bed.CompAssignableToPawn.IdeoligionForbids(sleeper)) return false;
-            if (checkSocialProperness && !bed.IsSociallyProper(sleeper, false)) return false;
-            if (bed.ForPrisoners) return false;
-
-            // EN: Step 2: respect vanilla ownership / occupied-slot rules so SSC only overrides partner logic, not bed capacity rules.
-            // CN: 步骤 2：继续遵守原版“床位归属 / 占用格”规则，SSC 这里只覆盖伴侣逻辑，不覆盖床位容量逻辑。
-            int? assignedSleepingSlot;
-            bool isOwner = bed.IsOwner(sleeper, out assignedSleepingSlot);
-            int? currentSleepingSlot;
-            bool alreadyInBed = sleeper.CurrentBed(out currentSleepingSlot) == bed;
-            if (!bed.AnyUnoccupiedSleepingSlot && !isOwner && !alreadyInBed) return false;
-            if (!isOwner && !bed.AnyUnownedSleepingSlot && !alreadyInBed) return false;
-            if (alreadyInBed && currentSleepingSlot != assignedSleepingSlot && isOwner) return false;
-
-            // EN: Step 3: keep the usual forbidden / colony access checks for the final bed usage decision.
-            // CN: 步骤 3：在最后决策时继续保留原版的禁止访问和殖民地访问检查。
-            if (sleeper.IsColonist && (guestStatusOverride ?? sleeper.GuestStatus) != GuestStatus.Prisoner)
-                {
-                Job curJob = sleeper.CurJob;
-                if ((curJob == null || !curJob.ignoreForbidden) && !sleeper.Downed && bed.IsForbidden(sleeper)) return false;
-            }
-
-            return true;
-        }
-
-        public static bool TryAllowBedAsNonSlaveGuest(Building_Bed bed, Pawn sleeper, bool checkSocialProperness, GuestStatus? guestStatusOverride, out bool result)
-        {
-            result = false;
-            if (SSCBedGuestStatusBypass.Active || !ShouldTreatAsRegularGuestForBeds(sleeper, guestStatusOverride)) return false;
-            if (!CanUseRegularBedAsCorruptedSlave(bed, sleeper)) return true;
-
-            result = InvokeWithGuestStatusBypass<bool>(() => RestUtility.CanUseBedNow(bed, sleeper, checkSocialProperness, false, GuestStatus.Guest));
-            return true;
-        }
-
-        public static bool TryAllowOwnerShareAsNonSlaveGuest(Building_Bed bed, Pawn sleeper, GuestStatus? guestStatusOverride, out bool result)
-        {
-            result = false;
-            if (SSCBedGuestStatusBypass.Active || !ShouldTreatAsRegularGuestForBeds(sleeper, guestStatusOverride)) return false;
-            if (!CanUseRegularBedAsCorruptedSlave(bed, sleeper)) return true;
-
-            result = InvokeWithGuestStatusBypass<bool>(() => RestUtility.BedOwnerWillShare(bed, sleeper, GuestStatus.Guest));
-            return true;
-        }
-
-        public static bool TryGetPreferredMasterBed(Pawn sleeper, Pawn traveler, bool checkSocialProperness, bool ignoreOtherReservations, GuestStatus? guestStatus, out Building_Bed bed)
-        {
-            bed = null;
-            if (sleeper == null) return false;
-            if (!TryGetResolvedMaster(sleeper, out Pawn master) || master?.ownership?.OwnedBed == null) return false;
-
-            // EN: When vanilla bed search fails, this uses the master's owned bed as SSC's preferred fallback result.
-            // CN: 当原版找床失败时，这里会把主人的床作为 SSC 的首选回退结果。
-            Building_Bed masterBed = master.ownership.OwnedBed;
-            Pawn actor = traveler ?? sleeper;
-            if (!CanUseMasterBed(masterBed, sleeper, checkSocialProperness, guestStatus)) return false;
-            if (!actor.CanReach(masterBed, PathEndMode.OnCell, Danger.Deadly)) return false;
-            if (!ignoreOtherReservations && !actor.CanReserve(masterBed, masterBed.SleepingSlotsCount, 0)) return false;
-
-            bed = masterBed;
-            return true;
-        }
-
-        public static bool ShouldPreferMasterBed(Pawn sleeper, GuestStatus? guestStatus = null)
-        {
-            if (sleeper == null || !HasMeaningfulCorruption(sleeper)) return false;
-            if (!TryGetResolvedMaster(sleeper, out Pawn master) || master?.ownership?.OwnedBed == null) return false;
-
-            GuestStatus effectiveStatus = guestStatus ?? sleeper.GuestStatus ?? GuestStatus.Guest;
-            return effectiveStatus == GuestStatus.Slave;
-        }
-
-        public static bool CanAssignToMasterBed(Building_Bed bed, Pawn pawn, out string reason)
-        {
-            reason = null;
-            if (bed == null || pawn == null) return false;
-            if (!HasMeaningfulCorruption(pawn) || !TryGetResolvedMaster(pawn, out Pawn master) || master == null) return false;
-            if (!bed.OwnersForReading.Contains(master)) return false;
-            if (bed.ForPrisoners || bed.Medical) return false;
-            if (bed.SleepingSlotsCount <= 1) return false;
-            if (bed.ForSlaves) return false;
-
-            int maxOwners = bed.SleepingSlotsCount;
-            if (maxOwners > 0 && !bed.OwnersForReading.Contains(pawn) && bed.OwnersForReading.Count >= maxOwners)
-            {
-                reason = "该床位拥有者已满。";
-                return false;
-            }
-
-            if (bed.CompAssignableToPawn.IdeoligionForbids(pawn))
-            {
-                reason = "意识形态不允许该目标使用这张床。";
-                return false;
-            }
-
-            return true;
-        }
-
-        public static bool CanUseRegularBedAsCorruptedSlave(Building_Bed bed, Pawn sleeper)
-        {
-            if (bed == null || sleeper == null) return false;
-            if (!HasMeaningfulCorruption(sleeper)) return false;
-            if (bed.ForPrisoners || bed.ForSlaves || bed.Medical) return false;
-            return true;
-        }
-
-        public static bool TryFindNormalBedAsNonSlaveGuest(Pawn sleeper, Pawn traveler, bool checkSocialProperness, bool ignoreOtherReservations, GuestStatus? guestStatus, out Building_Bed bed)
-        {
-            bed = null;
-            if (SSCBedGuestStatusBypass.Active || !ShouldTreatAsRegularGuestForBeds(sleeper, guestStatus)) return false;
-
-            Pawn actor = traveler ?? sleeper;
-            Building_Bed bestBed = null;
-            float bestDistance = float.MaxValue;
-            foreach (Building_Bed candidate in sleeper.MapHeld.listerBuildings.AllBuildingsColonistOfClass<Building_Bed>())
-            {
-                if (!CanUseRegularBedAsCorruptedSlave(candidate, sleeper)) continue;
-
-                bool canUse = InvokeWithGuestStatusBypass<bool>(() => RestUtility.CanUseBedNow(candidate, sleeper, checkSocialProperness, ignoreOtherReservations, GuestStatus.Guest));
-                if (!canUse) continue;
-                if (!actor.CanReach(candidate, PathEndMode.OnCell, Danger.Deadly)) continue;
-                if (!ignoreOtherReservations && !actor.CanReserve(candidate, candidate.SleepingSlotsCount, 0)) continue;
-
-                float distance = actor.Position.DistanceToSquared(candidate.Position);
-                if (distance >= bestDistance) continue;
-
-                bestBed = candidate;
-                bestDistance = distance;
-            }
-
-            bed = bestBed;
-            return bed != null;
-        }
-
-        public static bool ShouldIgnoreNegativeSleepMood(Pawn pawn, Building_Bed bed)
-        {
-            if (pawn == null || bed == null) return false;
-            if (!TryGetSharedBedContext(pawn, out _, out _, out Building_Bed sharedBed)) return false;
-            return sharedBed == bed;
+            int opinion = pawn.relations?.OpinionOf(partner) ?? 0;
+            return opinion < 30 ? 0 : opinion < 50 ? 1 : 2;
         }
     }
 }

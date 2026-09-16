@@ -25,11 +25,12 @@ namespace SexSlaveCraft
             return GetChain(sexSlave)?.LinkedPawn;
         }
 
+        /// <summary>优先返回绑定主人；无主时只使用仍具调教员身份的指定对象。</summary>
         public static Pawn GetResolvedMaster(Pawn sexSlave)
         {
             Pawn boundMaster = GetBoundMaster(sexSlave);
             if (boundMaster != null) return boundMaster;
-            return sexSlave?.TryGetComp<CompSexSlaveTraining>()?.selectedTrainer;
+            return TrainerAssignmentUtility.GetActiveAssignedTrainer(sexSlave);
         }
 
         public static bool IsBoundTo(Pawn sexSlave, Pawn master)
@@ -37,31 +38,31 @@ namespace SexSlaveCraft
             return sexSlave != null && master != null && GetBoundMaster(sexSlave) == master;
         }
 
+        /// <summary>指派写入沿用菜单资格，允许清空；拒绝时保留原记录，不能由外部调用绕过身份过滤。</summary>
         public static bool TryAssignTrainer(Pawn sexSlave, Pawn trainer)
         {
             CompSexSlaveTraining comp = sexSlave?.TryGetComp<CompSexSlaveTraining>();
             if (comp == null) return false;
 
-            Pawn boundMaster = GetBoundMaster(sexSlave);
-            if (trainer != null && boundMaster != null && boundMaster != trainer &&
-                !comp.AllowsOthersForTrainingOrSex)
-            {
-                return false;
-            }
+            if (trainer != null && !TrainerAssignmentUtility.CanAssignTrainerTo(sexSlave, trainer)) return false;
 
             comp.selectedTrainer = trainer;
             return true;
         }
 
+        /// <summary>先确认目标可以成为性奴，再建立双向绑定；身份锁定或归属冲突时不改动已有关系。</summary>
         public static bool Bind(Pawn master, Pawn sexSlave, bool replaceExisting = false)
         {
             if (master == null || sexSlave == null || master == sexSlave) return false;
             if (!SSCIdentityUtility.IsMaster(master)) return false;
 
             Pawn existingMaster = GetBoundMaster(sexSlave);
+            if (existingMaster != null && existingMaster != master && !replaceExisting) return false;
+            if (SSCDefOf.ChainOfSexSlave == null || SSCDefOf.BridleOfSexSlave == null) return false;
+            // 必须先完成身份检查，不能添加锁链后才发现目标是已有性奴的主人。
+            if (!SSCIdentityUtility.TrySetIdentity(sexSlave, PawnIdentity.Slave)) return false;
             if (existingMaster != null && existingMaster != master)
             {
-                if (!replaceExisting) return false;
                 GetBridle(existingMaster)?.RemoveTarget(sexSlave);
             }
 
@@ -69,11 +70,10 @@ namespace SexSlaveCraft
             Hediff_BridleOfSexSlave bridle = Hediff_BridleOfSexSlave.AddToPawn(master, sexSlave);
             if (chain == null || bridle == null) return false;
 
-            SSCIdentityUtility.TrySetIdentity(sexSlave, PawnIdentity.Slave);
             CompSexSlaveTraining comp = sexSlave.TryGetComp<CompSexSlaveTraining>();
             if (comp != null && !comp.AllowsOthersForTrainingOrSex)
             {
-                TryAssignTrainer(sexSlave, master);
+                comp.selectedTrainer = master;
             }
 
             return true;

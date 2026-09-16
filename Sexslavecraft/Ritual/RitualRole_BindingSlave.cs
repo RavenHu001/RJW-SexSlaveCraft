@@ -14,6 +14,7 @@ namespace SexSlaveCraft
     // ==========================================
     public class RitualRole_BindingSlave : RitualRole
     {
+        /// <summary>校验仪式性奴角色及有效指定调教员，防止停用记录被当作可用仪式对象。</summary>
         public override bool AppliesToPawn(Pawn p, out string reason, TargetInfo selectedTarget, LordJob_Ritual ritual = null, RitualRoleAssignments assignments = null, Precept_Ritual precept = null, bool skipReason = false)
         {
             reason = null;
@@ -75,6 +76,11 @@ namespace SexSlaveCraft
                 {
                     reason = Strings.Ritual_NoMasterAssigned;
                 }
+                return false;
+            }
+            if (TrainerAssignmentUtility.GetActiveAssignedTrainer(p) == null)
+            {
+                if (!skipReason) reason = "SSC_TrainerIdentity_Required".Translate();
                 return false;
             }
 

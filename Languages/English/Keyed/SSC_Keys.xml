@@ -256,4 +256,5 @@ Pain shock threshold: +{8}</SSC_MasterEmpowerment_Summary>
   <SSC_Legacy_Short_MissingAgeTracker>SSC legacy mode: target has no age tracker.</SSC_Legacy_Short_MissingAgeTracker>
   <SSC_Legacy_Short_AgeGateFail>SSC legacy mode: extra age gate failed.</SSC_Legacy_Short_AgeGateFail>
   <SSC_Legacy_Short_Pass>SSC legacy mode: eligibility passed.</SSC_Legacy_Short_Pass>
+  <SSC_RitualRole_TrainerMismatch>{0}'s assigned trainer is {1}; the selected master, {2}, does not match.</SSC_RitualRole_TrainerMismatch>
 </LanguageData>

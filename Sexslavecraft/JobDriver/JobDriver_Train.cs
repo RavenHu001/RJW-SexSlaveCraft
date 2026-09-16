@@ -20,7 +20,8 @@ namespace SexSlaveCraft
         /// <summary>预约本次日常调教的唯一接收目标，防止同时被其他独占任务使用。</summary>
         public override bool TryMakePreToilReservations(bool errorOnFailed)
         {
-            return pawn.Reserve(Partner, job, 1, 0, null, errorOnFailed);
+            return TrainerAssignmentUtility.IsAllowedTrainer(Partner, pawn)
+                && pawn.Reserve(Partner, job, 1, 0, null, errorOnFailed);
         }
 
         /// <summary>构造日常调教的占用、移动、接收准备、场景执行和收益结算步骤，并注册中断条件。</summary>
@@ -52,6 +53,13 @@ namespace SexSlaveCraft
             // 准备回调：启动接收任务；失败时清除训练占用，再中止本任务。
             startPartnerJob.initAction = delegate
             {
+                // 排队或走位期间失去身份/对象许可时停止；实际开始后不开设每 tick 身份中断。
+                if (!TrainerAssignmentUtility.IsAllowedTrainer(Partner, pawn))
+                {
+                    TrainingJobUtility.NotifyTrainingAborted(Partner);
+                    pawn.jobs.EndCurrentJob(JobCondition.Incompletable);
+                    return;
+                }
                 if (!TrainingJobUtility.TryStartDailyTrainingReceiver(pawn, Partner, job, partnerJob))
                 {
                     TrainingJobUtility.MarkValidationFailure(Partner, "SSC_TRAIN_RECEIVER");

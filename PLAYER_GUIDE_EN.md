@@ -1,9 +1,9 @@
 # RJW-SexSlaveCraft Complete Player Guide
 
-> For RimWorld 1.6 and SexSlaveCraft 2.2.15, based on the current workspace code and installed Defs.\
-> Audited on 2026-06-30.  
+> For RimWorld 1.6 and SexSlaveCraft 2.3.0, based on the current workspace code and installed Defs.\
+> Base audit: 2026-06-30; 2.3.0 changes updated on 2026-09-16.\
 > Based on upstream 2.2.8; version 2.2.9 includes the specialization and ritual progression fixes, and 2.2.10 fixes stale training locks after interrupted rituals. See `CHANGELOG.md`.\
-> Version 2.2.15 fixes Public Use interactions after caravan trades. Pet Cat and Pet Rabbit choices are disabled and marked Incomplete; saved rabbit birth modes are read-only. The maintainer has confirmed these changes. Includes fixes from 2.2.14 and earlier versions. Legacy RimTalk integration remains suspended pending a complete redesign.\
+> Version 2.3.0 groups shared-bed permissions and sleep memories, separate vanilla/Mint role badges, the trainer-role toggle, and menu, ritual-message and bound-identity fixes. Includes 2.2.15 and earlier fixes. This version is prepared locally and has not been published. Legacy RimTalk integration remains suspended; unfinished Pet Cat and Pet Rabbit choices remain disabled.\
 > This guide describes the behavior implemented by the current C# and XML. Where an old changelog or description disagrees with the code, the discrepancy is listed under “Current Limitations and Known Differences.”
 
 ## 1. Scope and Dependencies
@@ -31,7 +31,7 @@ At startup, SSC injects its Training component, Training tab, and related surger
 ### 2.1 Minimum Playable Route
 
 1. Research `Training` for 500 research points.
-2. Enable the `Training` work type on at least one free colonist.
+2. Set at least one free colonist to Master, or enable `Is a trainer` on a Sex Slave, then enable the `Training` work type.
 3. Select a target and open the `Training` tab.
 4. Set `Pawn Identity` to `Sex Slave` and enable `Allow Training`.
 5. Choose an `Assigned Pose`; set an `Assigned Trainer` if a specific pawn must perform it.
@@ -57,7 +57,11 @@ The tab is available for colonists, colony prisoners, and slaves.
 | Sex Slave | Enables Training, specialization, pose, and trainer controls |
 | Master | Cannot be an ordinary Training target; can fill the master role in a Binding Ritual |
 
-`Master` is mainly a ritual-role requirement. An ordinary trainer only needs to be a free, standing colonist with the `Training` work type enabled; the trainer does not have to be marked as a Master.
+The `Is a trainer` toggle is always on for Masters, always off for Unset pawns, and optional for Sex Slaves (off by default). Identity, Training work priority, and the target’s Allow Training setting are separate. A Sex Slave with the toggle enabled can train others but does not gain the Master ritual role.
+
+Pawns with a Chain, and Masters whose Bridle still has valid bound targets, cannot change SSC identity. The UI and shared setter both reject the change, preserving bond and growth progress. Explicit unbinding restores switching when no blocking bond remains; the Sex Slave trainer toggle remains usable. This does not reconstruct Chains already lost before the fix.
+
+Existing saves grant trainer status once to SSC Sex Slaves already referenced as assigned trainers. Unset trainers keep their assignment but become inactive; they are not automatically promoted to Master. Later loads preserve manually disabled toggles.
 
 ### 3.2 Allow Training
 
@@ -98,10 +102,13 @@ Available choices:
 A candidate trainer must be:
 
 - a free colonist;
-- alive and not downed;
+- an active trainer, and not the target itself;
+- alive, not destroyed and not downed;
 - assigned to the `Training` work type.
 
 If the target has a `Sex Slave Chain` and does not allow others, its bonded master is the only valid trainer. Public Use or the manual allow-others option removes this restriction.
+
+The menu and direct assignments use the same filters. Automatic and forced ordinary Training also require trainer identity, including when Allow Others or Public Use is enabled. Disabling trainer status retains the old assignment and marks it inactive rather than opening the target to any trainer. Temporary work or health restrictions are shown separately and do not erase the relationship used for bed sharing. Already-started Training can finish; queued or approaching jobs recheck before starting.
 
 ## 4. Ordinary Training
 
@@ -1159,16 +1166,17 @@ Damage that is not shared:
 
 ### 18.3 Bed Sharing
 
-At more than 0.1% Corruption, a chained Sex Slave with a resolvable master can bypass vanilla lover restrictions and use the master’s ordinary multi-person bed.
+An SSC Sex Slave with current Corruption strictly above 0.1% gains extra permission to share an ordinary multi-person bed with both the bonded Master and active Assigned Trainer. Binding does not exclude the trainer. Ordinary vanilla slaves without SSC Sex Slave identity receive no such exception.
 
-Master resolution order:
+SSC does not alter vanilla romance checks. Existing lovers/spouses may still share beds. Medical rest and deathrest take priority; ordinary rest tries the pawn’s assigned bed, then the Master’s bed, then the trainer’s bed. Bed capacity, reachability, reservations and other environment checks remain native.
 
-1. Chain master;
-2. `Assigned Trainer` if there is no Chain.
+A Sex Slave with vanilla slave status cannot be assigned directly to an empty colonist bed: assign the Master or active trainer first, then the eligible slave. Colonist Sex Slaves follow native assignment rules. Existing bed ownership is not forcibly removed.
 
-Bed capacity, reachability, reservation, allowed area, ideology rules, non-medical status, non-prisoner status, and at least two sleeping slots still apply.
+Vanilla and Dubs Mint Menus show independent Master (gold), Sex Slave (pink-purple) and Trainer (cyan-blue) badges to the right of the name. Empty beds show all actual roles. Occupied beds show roles only for assigned pawns and their direct SSC partners, using the union for multiple owners without recursively extending it. Rows without badges remain available under native rules.
 
-When sharing the bed, the current negative slept-in-bedroom/barracks memory is removed and replaced with:
+A separate marker shows SSC permission: green for a qualifying assigned partner; yellow for waiting on an empty bed or retaining an existing assignment; gray for no extra permission. Hover text distinguishes these states and lists the Master, Assigned Trainer and relevant slaves’ current Corruption and threshold result. Native assignment rejection reasons and full names remain available on hover.
+
+Only actual simultaneous sleep in the same bed is recorded. When laying down ends, the Sex Slave receives a one-day, non-stacking memory. Merely assigning a bed or lying awake is insufficient. Master and trainer memories have separate text; if both actually shared the sleep, the Master memory takes priority even if the Master wakes first. The existing negative bedroom/barracks memory exemption applies to the slave and actual partners; no extra positive shared-bed memory is granted to the Master/trainer.
 
 | Condition | Mood |
 |---|---:|
@@ -1473,7 +1481,7 @@ This section records the audited code behavior and known limitations.
 Check, in order:
 
 1. `Training` research is complete.
-2. The trainer has the `Training` work type enabled.
+2. The trainer has active trainer identity and the `Training` work type enabled.
 3. The target’s `Pawn Identity` is `Sex Slave`.
 4. `Allow Training` is enabled.
 5. The target is not inside the nine-hour cooldown.

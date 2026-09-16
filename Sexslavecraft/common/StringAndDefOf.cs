@@ -74,6 +74,7 @@ namespace SexSlaveCraft
         public static ThoughtDef SSC_Ritual_Boring;
         public static ThoughtDef SSC_Ritual_Terrible;
         public static ThoughtDef SSC_SharedBedWithMaster;
+        public static ThoughtDef SSC_SharedBedWithTrainer;
         public static PawnRelationDef SSC_FlawedLovers;
 
         // Hediffs
@@ -127,6 +128,8 @@ namespace SexSlaveCraft
 
         // EN: Use strict lookup for SSC-owned defs so missing XML breaks loudly during startup instead of failing later inside gameplay.
         // CN: 对 SSC 自有 Def 使用严格获取，这样 XML 缺失会在启动阶段直接报错，而不是拖到玩法中途才炸出来。
+        /// <summary>按名称读取 SSC 自有定义，缺失时在启动阶段记录错误并返回 null。</summary>
+        /// <remarks>包括主人/调教员同床记忆定义；调用方仍需处理 DLL 与 XML 不配套时的空引用。</remarks>
         private static T GetDef<T>(string defName) where T : Def
         {
             T def = DefDatabase<T>.GetNamedSilentFail(defName);
@@ -137,6 +140,7 @@ namespace SexSlaveCraft
             return def;
         }
 
+        /// <summary>为指定互动任务统一关闭持械显示；缺失的可选任务定义会被跳过。</summary>
         private static void HideWeaponsDuringSexJobs(params JobDef[] jobDefs)
         {
             foreach (JobDef jobDef in jobDefs)
@@ -150,6 +154,8 @@ namespace SexSlaveCraft
             }
         }
 
+        /// <summary>缓存 SSC 自有及可选兼容定义，并初始化任务显示设置，供后续玩法和界面统一引用。</summary>
+        /// <remarks>两种同床记忆均从 XML 读取，不在运行时构造替代定义；缺失信息由 GetDef 报告。</remarks>
         static SSCDefOf()
         {
             // EN: Step 1: load every SSC-owned Def first so downstream systems can safely assume they already exist.
@@ -212,6 +218,7 @@ namespace SexSlaveCraft
             SSC_Ritual_Boring = GetDef<ThoughtDef>("SSC_Ritual_Boring");
             SSC_Ritual_Terrible = GetDef<ThoughtDef>("SSC_Ritual_Terrible");
             SSC_SharedBedWithMaster = GetDef<ThoughtDef>("SSC_SharedBedWithMaster");
+            SSC_SharedBedWithTrainer = GetDef<ThoughtDef>("SSC_SharedBedWithTrainer");
 
             BridleOfSexSlave = GetDef<HediffDef>("Hediff_BridleOfSexSlave");
             ChainOfSexSlave = GetDef<HediffDef>("Hediff_ChainOfSexSlave");
@@ -277,6 +284,7 @@ namespace SexSlaveCraft
         public static string DailyTrainingOutcome(string score, string corruption)
             => "SSC_DailyTrainingOutcome2".Translate(score, corruption);
 
+        /// <summary>格式化旧版训练结果，保留分数、等级和恶堕变化三个显示参数。</summary>
         public static string DailyTrainingOutcome_Legacy(string score, int level, string corruption)
             => "SSC_DailyTrainingOutcome".Translate(score, level, corruption);
 
@@ -284,9 +292,11 @@ namespace SexSlaveCraft
         public static string Ritual_MasterSlaveHeader(string masterName, string slaveName)
             => "SSC_Ritual_MasterSlaveHeader".Translate(masterName, slaveName);
 
+        /// <summary>生成仪式评分与等级的本地化结果文本。</summary>
         public static string Ritual_ScoreLevel(string score, int level)
             => "SSC_Ritual_ScoreLevel".Translate(score, level);
 
+        /// <summary>将调用方提供的恶堕增量文本填入仪式结果说明。</summary>
         public static string Ritual_CorruptionGain(string corruption)
             => "SSC_Ritual_CorruptionGain".Translate(corruption);
 
@@ -300,6 +310,7 @@ namespace SexSlaveCraft
         public static string RitualRole_MustBeColonistSlavePrisoner
             => "SSC_RitualRole_MustBeColonistSlavePrisoner".Translate();
 
+        /// <summary>生成角色已绑定其他主人的仪式拒绝说明，并显示当前主人姓名。</summary>
         public static string RitualRole_SlaveBoundToOther(string ownerName)
             => "SSC_RitualRole_SlaveBoundToOther".Translate(ownerName);
 
@@ -310,15 +321,19 @@ namespace SexSlaveCraft
         public static string Bond_BridleAdded(string masterName, string slaveName)
             => "SSC_Bond_BridleAdded".Translate(masterName, slaveName);
 
+        /// <summary>生成锁链绑定通知，按性奴、主人的顺序填入姓名。</summary>
         public static string Bond_ChainAdded(string slaveName, string masterName)
             => "SSC_Bond_ChainAdded".Translate(slaveName, masterName);
 
+        /// <summary>生成指定角色被奴役的仪式通知。</summary>
         public static string Ritual_Enslaved(string slaveName)
             => "SSC_Ritual_Enslaved".Translate(slaveName);
 
+        /// <summary>生成指定角色奴役失败的仪式通知。</summary>
         public static string Ritual_EnslaveFailed(string slaveName)
             => "SSC_Ritual_EnslaveFailed".Translate(slaveName);
 
+        /// <summary>格式化性奴特性从原等级提升到新等级的提示。</summary>
         public static string Trait_SexSlaveLevelUp(int oldDegree, int newDegree)
             => "SSC_Trait_SexSlaveLevelUp".Translate(oldDegree, newDegree);
         // 堕落阶段
@@ -336,8 +351,10 @@ namespace SexSlaveCraft
         public static string Bridle_LabelWithNames(string label, string names)
                 => "SSC_Bridle_LabelWithNames".Translate(label, names);
 
+        /// <summary>将已整理的性奴姓名列表填入缰绳描述。</summary>
         public static string Bridle_DescSlaves(string names)
             => "SSC_Bridle_DescSlaves".Translate(names);
+        /// <summary>将关联角色姓名附加到锁链标签的本地化模板中。</summary>
         public static string Chain_LabelWithPawn(string label, string pawnName)
             => "SSC_Chain_LabelWithPawn".Translate(label, pawnName);
         // 调教模式 Gizmo
@@ -409,10 +426,15 @@ namespace SexSlaveCraft
         public static string Message_PersonalityExcretedComplete(string pawnName) => "SSC_Message_PersonalityExcretedComplete".Translate(pawnName);
         public static string Message_PersonalityFusionComplete(string consumerName, string nickName) => "SSC_Message_PersonalityFusionComplete".Translate(consumerName, nickName);
         public static string Message_SameIdeologyNoEffect => "SSC_Message_SameIdeologyNoEffect".Translate();
+        /// <summary>生成指定角色转化完成的通知文本。</summary>
         public static string Message_EroticConversionComplete(string pawnName) => "SSC_Message_EroticConversionComplete".Translate(pawnName);
+        /// <summary>生成指定角色人格排出完成的通知文本。</summary>
         public static string Message_PersonalityExcretionComplete(string pawnName) => "SSC_Message_PersonalityExcretionComplete".Translate(pawnName);
+        /// <summary>格式化交易拒绝后被原谅的通知，保留商人、角色及代词参数。</summary>
         public static string Message_TradeRejectedForgiven(string traderName, string busName, string pronoun) => "SSC_Message_TradeRejectedForgiven".Translate(traderName, busName, pronoun);
+        /// <summary>格式化交易双方自愿互动的通知文本。</summary>
         public static string Message_TradeConsensualSex(string busName, string traderName) => "SSC_Message_TradeConsensualSex".Translate(busName, traderName);
+        /// <summary>格式化交易中发生强迫互动的通知，按受害者、施害者顺序填入姓名。</summary>
         public static string Message_TradeRapeOccurred(string victimName, string rapistName) => "SSC_Message_TradeRapeOccurred".Translate(victimName, rapistName);
         public static string Message_SlaveAlreadyLinked => "SSC_Message_SlaveAlreadyLinked".Translate();
         public static string Message_CannotUseNotHollow => "SSC_Message_CannotUseNotHollow".Translate();
@@ -421,15 +443,22 @@ namespace SexSlaveCraft
         public static string Label_SlaveTrainingIdentityMaster => "SSC_Label_SlaveTrainingIdentityMaster".Translate();
         public static string Label_TrainingCooldown(string time) => "SSC_Label_TrainingCooldown".Translate(time);
         public static string Label_WaitingForTraining => "SSC_Label_WaitingForTraining".Translate();
+        /// <summary>将训练状态文本填入角色信息标签。</summary>
         public static string Label_SlaveTrainingStatus(string status) => "SSC_Label_SlaveTrainingStatus".Translate(status);
+        /// <summary>将已格式化的百分比填入意识形态确定度下降标签。</summary>
         public static string Label_IdeologyCertaintyReduction(string percent) => "SSC_Label_IdeologyCertaintyReduction".Translate(percent);
         public static string Label_SexSlavePrefix => "SSC_Label_SexSlavePrefix".Translate();
+        /// <summary>将调用方提供的关系数量文本填入信息标签。</summary>
         public static string Label_RelationsCount(string count) => "SSC_Label_RelationsCount".Translate(count);
         public static string Label_SkillsHeader => "SSC_Label_SkillsHeader".Translate();
         public static string Label_TraitsHeader => "SSC_Label_TraitsHeader".Translate();
+        /// <summary>将姓名参数填入角色全名标签的本地化模板。</summary>
         public static string Label_FullName(string lastName) => "SSC_Label_FullName".Translate(lastName);
+        /// <summary>生成包含技能名称与等级文本的信息标签。</summary>
         public static string Label_SkillLevel(string skillName, string level) => "SSC_Label_SkillLevel".Translate(skillName, level);
+        /// <summary>生成技能热情标签，热情名称由调用方提供。</summary>
         public static string Label_SkillPassion(string passion) => "SSC_Label_SkillPassion".Translate(passion);
+        /// <summary>生成技能经验标签，经验显示格式由调用方处理。</summary>
         public static string Label_SkillXP(string xp) => "SSC_Label_SkillXP".Translate(xp);
         public static string Label_Bloodlust => "SSC_Label_Bloodlust".Translate();
 
@@ -450,6 +479,7 @@ namespace SexSlaveCraft
         public static string ITab_AllowTraining => "SSC_ITab_AllowTraining".Translate();
         public static string ITab_AllowOthers => "SSC_ITab_AllowOthers".Translate();
         public static string ITab_AllowOthersWarning => "SSC_ITab_AllowOthersWarning".Translate();
+        /// <summary>将剩余时间文本填入训练面板的冷却状态。</summary>
         public static string ITab_CooldownStatus(string time) => "SSC_ITab_CooldownStatus".Translate(time);
         public static string ITab_StatusReady => "SSC_ITab_StatusReady".Translate();
         public static string ITab_StatusDisabled => "SSC_ITab_StatusDisabled".Translate();
@@ -467,6 +497,7 @@ namespace SexSlaveCraft
         public static string ITab_SpecializationPetCat => "SSC_ITab_SpecializationPetCat".Translate();
         public static string ITab_SpecializationPetDog => "SSC_ITab_SpecializationPetDog".Translate();
         public static string ITab_SpecializationPetRabbit => "SSC_ITab_SpecializationPetRabbit".Translate();
+        /// <summary>将进度文本填入训练面板的特化进度标签。</summary>
         public static string ITab_SpecializationProgress(string progress) => "SSC_ITab_SpecializationProgress".Translate(progress);
         public static string ITab_SelectSpecializationNone => "SSC_ITab_SelectSpecializationNone".Translate();
         public static string ITab_SelectSpecializationBus => "SSC_ITab_SelectSpecializationBus".Translate();
@@ -485,6 +516,7 @@ namespace SexSlaveCraft
         public static string ITab_SpecializationUnfinishedSuffix => "SSC_ITab_SpecializationUnfinishedSuffix".Translate();
         public static string ITab_SpecializationComplete => "SSC_ITab_SpecializationComplete".Translate();
         public static string ITab_MilkProductionToggle => "SSC_ITab_MilkProductionToggle".Translate();
+        /// <summary>将模式名称填入兔特化繁殖模式标签。</summary>
         public static string ITab_RabbitReproductionMode(string mode) => "SSC_ITab_RabbitReproductionMode".Translate(mode);
         public static string ITab_RabbitReproductionOffspring => "SSC_ITab_RabbitReproductionOffspring".Translate();
         public static string ITab_RabbitReproductionClone => "SSC_ITab_RabbitReproductionClone".Translate();
@@ -513,15 +545,21 @@ namespace SexSlaveCraft
         public static string PES_TargetUnassigned => "SSC_PES_TargetUnassigned".Translate();
         public static string PES_ChangeTarget => "SSC_PES_ChangeTarget".Translate();
         public static string PES_SexSlaveTag => "SSC_PES_SexSlaveTag".Translate();
+        /// <summary>生成人格编辑界面使用的关系数量标签。</summary>
         public static string PES_RelationsCount(int count) => "SSC_PES_RelationsCount".Translate(count);
         public static string PES_SkillsHeader => "SSC_PES_SkillsHeader".Translate();
+        /// <summary>生成人格编辑界面的技能名称与等级文本。</summary>
         public static string PES_SkillLevel(string skillName, int level) => "SSC_PES_SkillLevel".Translate(skillName, level);
+        /// <summary>生成人格编辑界面的技能热情文本。</summary>
         public static string PES_SkillPassion(string passion) => "SSC_PES_SkillPassion".Translate(passion);
+        /// <summary>生成人格编辑界面的技能经验文本，保留传入的显示格式。</summary>
         public static string PES_SkillXP(string xp) => "SSC_PES_SkillXP".Translate(xp);
         public static string PES_TraitsHeader => "SSC_PES_TraitsHeader".Translate();
         public static string PES_NoTraits => "SSC_PES_NoTraits".Translate();
         public static string PES_BondHeader => "SSC_PES_BondHeader".Translate();
+        /// <summary>生成人格编辑界面的主人姓名标签。</summary>
         public static string PES_MasterLabel(string masterName) => "SSC_PES_MasterLabel".Translate(masterName);
+        /// <summary>生成人格编辑界面带有记忆数量的标题。</summary>
         public static string PES_MemoriesHeader(int count) => "SSC_PES_MemoriesHeader".Translate(count);
         public static string PES_MemoriesHint => "SSC_PES_MemoriesHint".Translate();
 
@@ -532,8 +570,10 @@ namespace SexSlaveCraft
         public static string PES_AssignedTo(string name) => "SSC_PES_AssignedTo".Translate(name);
         public static string PES_Unassign => "SSC_PES_Unassign".Translate();
         public static string PES_NoHollowTargets => "SSC_PES_NoHollowTargets".Translate();
+        /// <summary>生成人格编辑目标已经分配给其他角色的提示。</summary>
         public static string PES_AlreadyAssigned(string otherName) => "SSC_PES_AlreadyAssigned".Translate(otherName);
         public static string PES_WaitingForInsert => "SSC_PES_WaitingForInsert".Translate();
+        /// <summary>生成指定角色人格插入完成的通知文本。</summary>
         public static string Message_PersonalityInserted(string name) => "SSC_Message_PersonalityInserted".Translate(name);
 
         // ==========================================
@@ -542,7 +582,9 @@ namespace SexSlaveCraft
         public static string Inspect_Personality(string name) => "SSC_Inspect_Personality".Translate(name);
         public static string Inspect_PersonalityNone => "SSC_Inspect_PersonalityNone".Translate();
         public static string Inspect_SexSlaveTag => "SSC_Inspect_SexSlaveTag".Translate();
+        /// <summary>生成选中对象检查信息中的关系数量文本。</summary>
         public static string Inspect_RelationsCount(int count) => "SSC_Inspect_RelationsCount".Translate(count);
+        /// <summary>生成选中对象检查信息中的主人归属文本。</summary>
         public static string Inspect_BelongsTo(string masterName) => "SSC_Inspect_BelongsTo".Translate(masterName);
         public static string Inspect_ExtraStatus => "SSC_Inspect_ExtraStatus".Translate();
 
@@ -579,17 +621,26 @@ namespace SexSlaveCraft
         public static string Train_IdentityUnset => "SSC_Train_IdentityUnset".Translate();
         public static string Train_Cooldown(string time) => "SSC_Train_Cooldown".Translate(time);
         public static string Train_Waiting => "SSC_Train_Waiting".Translate();
+        /// <summary>将当前训练状态填入训练信息模板。</summary>
         public static string Train_Status(string status) => "SSC_Train_Status".Translate(status);
+        /// <summary>生成指定角色解锁公交车特化的通知文本。</summary>
         public static string Message_BusSpecializationUnlocked(string name) => "SSC_Message_BusSpecializationUnlocked".Translate(name);
+        /// <summary>生成指定角色解锁奶牛特化的通知文本。</summary>
         public static string Message_CowSpecializationUnlocked(string name) => "SSC_Message_CowSpecializationUnlocked".Translate(name);
+        /// <summary>生成宠物特化解锁通知，填入角色姓名与特化名称。</summary>
         public static string Message_PetSpecializationUnlocked(string name, string specialization) => "SSC_Message_PetSpecializationUnlocked".Translate(name, specialization);
         public static string PetAffectionGizmoLabel => "SSC_PetAffectionGizmoLabel".Translate();
+        /// <summary>生成宠物亲近指令的说明，并显示关联主人姓名。</summary>
         public static string PetAffectionGizmoDesc(string masterName) => "SSC_PetAffectionGizmoDesc".Translate(masterName);
         public static string PetAffectionNoMaster => "SSC_PetAffectionNoMaster".Translate();
         public static string PetAffectionNotPet => "SSC_PetAffectionNotPet".Translate();
+        /// <summary>将剩余时间文本填入宠物亲近冷却说明。</summary>
         public static string PetAffectionCooldown(string time) => "SSC_PetAffectionCooldown".Translate(time);
+        /// <summary>生成宠物与主人亲近的通知，按宠物、主人顺序填入姓名。</summary>
         public static string Message_PetAffection(string petName, string masterName) => "SSC_Message_PetAffection".Translate(petName, masterName);
+        /// <summary>生成兔特化克隆出生通知，区分来源角色与新克隆体。</summary>
         public static string Message_RabbitCloneBirth(string sourceName, string cloneName) => "SSC_Message_RabbitCloneBirth".Translate(sourceName, cloneName);
+        /// <summary>生成犬特化与动物互动触发通知，填入双方姓名。</summary>
         public static string Message_DogAnimalInteractionTriggered(string dogName, string animalName) => "SSC_Message_DogAnimalInteractionTriggered".Translate(dogName, animalName);
 
         // ==========================================
@@ -611,6 +662,7 @@ namespace SexSlaveCraft
         public static string Ritual_MissingTrainingComp => "SSC_Ritual_MissingTrainingComp".Translate();
         public static string Ritual_CannotBeSlaveAsMaster => "SSC_Ritual_CannotBeSlaveAsMaster".Translate();
         public static string Ritual_NoMasterAssigned => "SSC_Ritual_NoMasterAssigned".Translate();
+        /// <summary>生成锁链归属冲突的仪式提示，并显示已有主人姓名。</summary>
         public static string Ritual_ChainConflict(string masterName) => "SSC_Ritual_ChainConflict".Translate(masterName);
         public static string RJW_Short_TargetNull => "SSC_RJW_Short_TargetNull".Translate();
         public static string RJW_Short_Pass => "SSC_RJW_Short_Pass".Translate();
@@ -632,6 +684,7 @@ namespace SexSlaveCraft
         public static string Train_Reason_RitualBusy => "该目标正在进行绑定仪式。";
         public static string Train_Reason_ValidationCooldown => "该目标刚刚验证失败，请稍后再试。";
         public static string Train_Reason_AlreadyBeingTrained => "该目标正在接受调教。";
+        /// <summary>生成包含剩余时间的调教冷却拒绝说明；沿用现有直接插值文本。</summary>
         public static string Train_Reason_Cooldown(string time) => $"该目标仍在调教冷却中：{time}";
         public static string Train_Reason_TrainerLocked => "该目标只能由指定的主人或调教师进行调教。";
         public static string Train_Reason_NotReservable => "当前无法预定该目标。";
