@@ -244,7 +244,8 @@ namespace SexSlaveCraft
             return SexSlaveSpecializationType.None;
         }
 
-        /// <summary>读写训练配置、成长进度和仪式归属，兼容旧字段；仪式有效性核对延后到运行时。</summary>
+        /// <summary>读写训练配置、成长进度、仪式归属及共同睡眠记录，兼容旧字段；仪式有效性核对延后到运行时。</summary>
+        /// <remarks>sharedSleep 以深度序列化保存，避免读档后丢失尚未结算的同床经历；旧存档缺少该字段时保持空记录。</remarks>
         public override void PostExposeData()
         {
             base.PostExposeData();
