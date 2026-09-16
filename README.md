@@ -2,7 +2,7 @@
 
 > For RimWorld 1.6 and SexSlaveCraft 2.3.0.\
 > This continuation is based on upstream 2.2.8. See `CHANGELOG.md` for release history.\
-> Version 2.3.0 groups shared-bed permissions and sleep memories, separate vanilla/Mint role badges, the trainer-role toggle, and menu, ritual-message and bound-identity fixes. Includes 2.2.15 and earlier fixes. This version is prepared locally and has not been published. Legacy RimTalk integration remains suspended; unfinished Pet Cat and Pet Rabbit choices remain disabled.\
+> Version 2.3.0 groups shared-bed permissions and sleep memories, separate vanilla/Mint role badges, the trainer-role toggle, and menu, ritual-message and bound-identity fixes. Includes 2.2.15 and earlier fixes. The installation ZIP and checksum are available from [v2.3.0 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.0). Legacy RimTalk integration remains suspended; unfinished Pet Cat and Pet Rabbit choices remain disabled.\
 > In-game names follow the mod's official English localization. For exact formulas, thresholds, and implementation notes, see `PLAYER_GUIDE_EN.md`.
 
 ## 1. What the Mod Does

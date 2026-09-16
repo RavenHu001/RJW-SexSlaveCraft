@@ -3,7 +3,7 @@
 > For RimWorld 1.6 and SexSlaveCraft 2.3.0, based on the current workspace code and installed Defs.\
 > Base audit: 2026-06-30; 2.3.0 changes updated on 2026-09-16.\
 > Based on upstream 2.2.8; version 2.2.9 includes the specialization and ritual progression fixes, and 2.2.10 fixes stale training locks after interrupted rituals. See `CHANGELOG.md`.\
-> Version 2.3.0 groups shared-bed permissions and sleep memories, separate vanilla/Mint role badges, the trainer-role toggle, and menu, ritual-message and bound-identity fixes. Includes 2.2.15 and earlier fixes. This version is prepared locally and has not been published. Legacy RimTalk integration remains suspended; unfinished Pet Cat and Pet Rabbit choices remain disabled.\
+> Version 2.3.0 groups shared-bed permissions and sleep memories, separate vanilla/Mint role badges, the trainer-role toggle, and menu, ritual-message and bound-identity fixes. Includes 2.2.15 and earlier fixes. The installation ZIP and checksum are available from [v2.3.0 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.0). Legacy RimTalk integration remains suspended; unfinished Pet Cat and Pet Rabbit choices remain disabled.\
 > This guide describes the behavior implemented by the current C# and XML. Where an old changelog or description disagrees with the code, the discrepancy is listed under “Current Limitations and Known Differences.”
 
 ## 1. Scope and Dependencies
