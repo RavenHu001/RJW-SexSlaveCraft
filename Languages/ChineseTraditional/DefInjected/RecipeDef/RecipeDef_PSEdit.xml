@@ -1,3 +1,22 @@
 <?xml version='1.0' encoding='utf-8'?>
 <LanguageData>
+  <SSC_PSEdit_Bus_Final.label>性奴特化（終極公交車）</SSC_PSEdit_Bus_Final.label>
+  <SSC_PSEdit_Bus_Final.description>將已完成公交車特化的人格凝膠進一步塑形成終極公交車狀態。此配方只接受公交車特化進度達到 100% 的材料，並與普通公交車狀態互斥。</SSC_PSEdit_Bus_Final.description>
+  <SSC_PSEdit_Bus_Final.jobString>正在塑造終極公交車人格……</SSC_PSEdit_Bus_Final.jobString>
+
+  <SSC_PSEdit_Cow_Final.label>性奴特化（終極奶牛）</SSC_PSEdit_Cow_Final.label>
+  <SSC_PSEdit_Cow_Final.description>將已完成奶牛特化的人格凝膠進一步塑形成終極奶牛狀態。此配方只接受奶牛特化進度達到 100% 的材料，並與普通奶牛狀態互斥。</SSC_PSEdit_Cow_Final.description>
+  <SSC_PSEdit_Cow_Final.jobString>正在塑造終極奶牛人格……</SSC_PSEdit_Cow_Final.jobString>
+
+  <SSC_PSEdit_PetCat_Final.label>性奴特化（終極寵物貓）</SSC_PSEdit_PetCat_Final.label>
+  <SSC_PSEdit_PetCat_Final.description>將已完成寵物貓特化的人格凝膠進一步塑形成終極寵物貓狀態。此配方只接受寵物貓特化進度達到 100%，且帶有寵物貓基礎狀態的材料。</SSC_PSEdit_PetCat_Final.description>
+  <SSC_PSEdit_PetCat_Final.jobString>正在塑造終極寵物貓人格……</SSC_PSEdit_PetCat_Final.jobString>
+
+  <SSC_PSEdit_PetDog_Final.label>性奴特化（終極寵物狗）</SSC_PSEdit_PetDog_Final.label>
+  <SSC_PSEdit_PetDog_Final.description>將已完成寵物狗特化的人格凝膠進一步塑形成終極寵物狗狀態。此配方只接受寵物狗特化進度達到 100%，且帶有寵物狗基礎狀態的材料。</SSC_PSEdit_PetDog_Final.description>
+  <SSC_PSEdit_PetDog_Final.jobString>正在塑造終極寵物狗人格……</SSC_PSEdit_PetDog_Final.jobString>
+
+  <SSC_PSEdit_PetRabbit_Final.label>性奴特化（終極寵物兔）</SSC_PSEdit_PetRabbit_Final.label>
+  <SSC_PSEdit_PetRabbit_Final.description>將已完成寵物兔特化的人格凝膠進一步塑形成終極寵物兔狀態。此配方只接受寵物兔特化進度達到 100%，且帶有寵物兔基礎狀態的材料。</SSC_PSEdit_PetRabbit_Final.description>
+  <SSC_PSEdit_PetRabbit_Final.jobString>正在塑造終極寵物兔人格……</SSC_PSEdit_PetRabbit_Final.jobString>
 </LanguageData>

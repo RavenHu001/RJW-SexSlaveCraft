@@ -16,7 +16,9 @@ Groups the maintainer-confirmed shared-bed, trainer-role and bed-assignment chan
 - **调教员 / Trainers：** 主人固定开启、未选择固定关闭、性奴可选；指派及普通调教入口统一检查。旧档保留已指定性奴资格，停用对象保留指派并标注，修复指定菜单及滚动视图红字。Masters are always trainers, Unset pawns never are, and Sex Slaves can opt in. Assignment and ordinary Training share the check; migration retains existing assigned Sex Slave trainers, inactive assignments remain visible, and menu/scroll-view errors are fixed.
 - **绑定与仪式 / Bonds and rituals：** 锁定已绑定角色的身份切换，防止锁链及成长进度丢失；仪式正确解释指定调教员不匹配。Bound identity changes are blocked to preserve Chain progress, and ritual messages correctly explain trainer mismatches.
 
-四语文本及中英文指南同步；旧 RimTalk 和未完成猫/兔入口的暂停状态保留。Release 编译及 390 项回归通过。Four-language UI text and Chinese/English guides are updated; legacy RimTalk and unfinished Cat/Rabbit choices remain disabled. The Release build and 390 regression cases passed.
+- **翻译贡献 / Translation contribution：** 从开发者 **Baphomet** 基于 **2.2.15** 的维护版本中吸收 38 条翻译：繁中动态“调教余韵”8 条、五种终极人格塑形配方繁中 15 条及英文 15 条，补齐相应语言显示。感谢 Baphomet 的翻译维护贡献。Incorporates 38 translations from developer **Baphomet**'s maintenance version based on **2.2.15**: 8 Traditional Chinese entries for dynamic training mood memories, plus 15 Traditional Chinese and 15 English entries for the five final personality-shaping recipes. Thanks to Baphomet for these localization contributions.
+
+四语文本及中英文指南同步；旧 RimTalk 和未完成猫/兔入口的暂停状态保留。版本归并时 Release 编译及 390 项回归通过；随后吸收的 Baphomet 翻译通过 XML、重复键、定义引用及占位符静态检查，尚未进行游戏内显示验证。Four-language UI text and Chinese/English guides are updated; legacy RimTalk and unfinished Cat/Rabbit choices remain disabled. The Release build and 390 regression cases passed during version consolidation. The subsequent Baphomet translation import passed static XML, duplicate-key, definition-reference and placeholder checks; in-game display verification remains pending.
 
 ## [2.2.15] — 2026-09-16 — 公交车交易修复与未完成特化入口禁用 / Public Use trade fix and unfinished specialization selection
 
