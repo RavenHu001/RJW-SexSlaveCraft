@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_SharedBedBadge>Секс-раб</SSC_SharedBedBadge>
+  <SSC_SharedBedMaster>Есть привязка; хозяин: {0}</SSC_SharedBedMaster>
+  <SSC_SharedBedTrainer>Нет привязки; назначенный тренер: {0}</SSC_SharedBedTrainer>
+  <SSC_SharedBedNoPartner>Нет доступного хозяина или назначенного тренера.</SSC_SharedBedNoPartner>
+  <SSC_SharedBedThresholdMet>Развращённость превышает порог 0,1% для совместного сна.</SSC_SharedBedThresholdMet>
+  <SSC_SharedBedThresholdUnmet>Для дополнительного разрешения на совместный сон развращённость должна превышать 0,1%.</SSC_SharedBedThresholdUnmet>
+  <SSC_SharedBedTooltip>Секс-раб\n{0}\n{1}\n\nДо привязки дополнительное разрешение распространяется на обычную двуспальную кровать назначенного тренера. После привязки — только на кровать хозяина. Стандартные проверки доступности кровати сохраняются.\nЛечение и смертосон имеют приоритет. Обычные правила совместного сна любовников и супругов не меняются.</SSC_SharedBedTooltip>
+</LanguageData>

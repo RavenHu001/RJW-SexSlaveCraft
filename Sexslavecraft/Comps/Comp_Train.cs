@@ -44,6 +44,7 @@ namespace SexSlaveCraft
         public TrainingMode mode = TrainingMode.Disabled;
         public TrainingActType selectedMode = TrainingActType.Auto;
         public Pawn selectedTrainer;
+        public SSCSharedSleepRecord sharedSleep;
         public bool allowOthersForTrainingOrSex = false;
         public bool scheduledTrainingEnabled = false;
         public int scheduledTrainingHour = 20;
@@ -280,6 +281,7 @@ namespace SexSlaveCraft
             Scribe_Values.Look(ref lastTrainingScore, "lastTrainingScore", 0f);
 
             Scribe_References.Look(ref selectedTrainer, "selectedTrainer");
+            Scribe_Deep.Look(ref sharedSleep, "sharedSleep");
 
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {

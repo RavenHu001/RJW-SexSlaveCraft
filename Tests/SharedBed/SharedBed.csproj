@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net9.0</TargetFramework>
+    <SscSourceRoot Condition="'$(SscSourceRoot)' == ''">../../Sexslavecraft</SscSourceRoot>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(SscSourceRoot)/common/SSCSharedBedUtility.cs" Link="Production/SSCSharedBedUtility.cs" />
+    <Compile Include="$(SscSourceRoot)/common/SSCSharedBedMemory.cs" Link="Production/SSCSharedBedMemory.cs" />
+    <Compile Include="$(SscSourceRoot)/ThePatches/Harmony_SharedBedCompatibility.cs" Link="Production/Harmony_SharedBedCompatibility.cs" />
+    <Compile Include="$(SscSourceRoot)/ThePatches/Harmony_SharedBedAssignmentUI.cs" Link="Production/Harmony_SharedBedAssignmentUI.cs" />
+    <Reference Include="0Harmony"><HintPath>$(HarmonyAssemblyPath)</HintPath></Reference>
+  </ItemGroup>
+  <Target Name="RequireHarmony" BeforeTargets="ResolveReferences" Condition="!Exists('$(HarmonyAssemblyPath)')">
+    <Error Text="Supply -p:HarmonyAssemblyPath with the path to a local 0Harmony.dll. No game DLL is needed for this lifecycle model." />
+  </Target>
+</Project>

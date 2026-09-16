@@ -74,6 +74,7 @@ namespace SexSlaveCraft
         public static ThoughtDef SSC_Ritual_Boring;
         public static ThoughtDef SSC_Ritual_Terrible;
         public static ThoughtDef SSC_SharedBedWithMaster;
+        public static ThoughtDef SSC_SharedBedWithTrainer;
         public static PawnRelationDef SSC_FlawedLovers;
 
         // Hediffs
@@ -212,6 +213,7 @@ namespace SexSlaveCraft
             SSC_Ritual_Boring = GetDef<ThoughtDef>("SSC_Ritual_Boring");
             SSC_Ritual_Terrible = GetDef<ThoughtDef>("SSC_Ritual_Terrible");
             SSC_SharedBedWithMaster = GetDef<ThoughtDef>("SSC_SharedBedWithMaster");
+            SSC_SharedBedWithTrainer = GetDef<ThoughtDef>("SSC_SharedBedWithTrainer");
 
             BridleOfSexSlave = GetDef<HediffDef>("Hediff_BridleOfSexSlave");
             ChainOfSexSlave = GetDef<HediffDef>("Hediff_ChainOfSexSlave");

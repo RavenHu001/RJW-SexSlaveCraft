@@ -167,6 +167,8 @@
     <Compile Include="common\SSCMasterBondUtility.cs" />
     <Compile Include="common\SSCLog.cs" />
     <Compile Include="common\SSCSharedBedUtility.cs" />
+    <Compile Include="common\SSCSharedBedMemory.cs" />
+    <Compile Include="ThePatches\Harmony_SharedBedAssignmentUI.cs" />
     <Compile Include="common\SSCBondUtility.cs" />
     <Compile Include="common\SSCIdentityUtility.cs" />
     <Compile Include="common\SSCSexInteractionPolicy.cs" />

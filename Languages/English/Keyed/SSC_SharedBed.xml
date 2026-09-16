@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_SharedBedBadge>Sex slave</SSC_SharedBedBadge>
+  <SSC_SharedBedMaster>Bound; master: {0}</SSC_SharedBedMaster>
+  <SSC_SharedBedTrainer>Unbound; assigned trainer: {0}</SSC_SharedBedTrainer>
+  <SSC_SharedBedNoPartner>No available master or assigned trainer.</SSC_SharedBedNoPartner>
+  <SSC_SharedBedThresholdMet>Corruption is above the 0.1% sharing threshold.</SSC_SharedBedThresholdMet>
+  <SSC_SharedBedThresholdUnmet>Corruption must exceed 0.1% for additional bed-sharing permission.</SSC_SharedBedThresholdUnmet>
+  <SSC_SharedBedTooltip>Sex slave\n{0}\n{1}\n\nBefore binding, additional sharing permission applies to the assigned trainer's ordinary double bed. After binding, it applies only to the master's bed. Vanilla bed-use checks still apply.\nMedical rest and deathrest take priority. Vanilla lover and spouse bed-sharing rules are unchanged.</SSC_SharedBedTooltip>
+</LanguageData>

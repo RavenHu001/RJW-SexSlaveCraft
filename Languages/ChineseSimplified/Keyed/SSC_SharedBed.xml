@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_SharedBedBadge>性奴</SSC_SharedBedBadge>
+  <SSC_SharedBedMaster>已绑定，主人：{0}</SSC_SharedBedMaster>
+  <SSC_SharedBedTrainer>未绑定，指定调教员：{0}</SSC_SharedBedTrainer>
+  <SSC_SharedBedNoPartner>没有可用的主人或指定调教员。</SSC_SharedBedNoPartner>
+  <SSC_SharedBedThresholdMet>已满足恶堕高于 0.1% 的同床门槛。</SSC_SharedBedThresholdMet>
+  <SSC_SharedBedThresholdUnmet>恶堕需高于 0.1% 才能获得额外同床许可。</SSC_SharedBedThresholdUnmet>
+  <SSC_SharedBedTooltip>性奴\n{0}\n{1}\n\n未绑定时，可额外使用指定调教员拥有的普通双人床；绑定后，该许可仅对主人生效。床位仍需通过原版使用检查。\n医疗和死眠优先。原版恋人、配偶同床规则不变。</SSC_SharedBedTooltip>
+</LanguageData>

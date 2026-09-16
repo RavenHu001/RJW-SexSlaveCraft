@@ -2,9 +2,9 @@ using RimWorld;
 using Verse;
 
 // EN: This bootstrap adjusts SSC thought defs after they are loaded.
-// EN: It tweaks opinion offsets for training-memory thoughts and also provides the custom `与主人同床` thought worker used by the shared-bed system.
+// EN: It tweaks opinion offsets for training-memory thoughts.
 // CN: 这个启动器会在 SSC 想法 Def 载入后做二次调整。
-// CN: 它会微调“调教记忆”的好感度偏移，并提供共享床位系统使用的“与主人同床”想法 worker。
+// CN: 它会微调“调教记忆”的好感度偏移。同床效果由睡眠结束时生成的记忆处理。
 namespace SexSlaveCraft
 {
     [StaticConstructorOnStartup]
@@ -30,20 +30,4 @@ namespace SexSlaveCraft
         }
     }
 
-    public class ThoughtWorker_SSC_SharedBedWithMaster : ThoughtWorker
-    {
-        protected override ThoughtState CurrentStateInternal(Pawn p)
-        {
-            if (p == null || !p.RaceProps.Humanlike) return ThoughtState.Inactive;
-            // EN: Use SSCSharedBedUtility to ask whether this pawn actually slept in the master's bed and which stage applies.
-            // CN: 这里通过 SSCSharedBedUtility 判断这个 Pawn 是否真的和主人同床，以及该触发哪一档想法。
-            if (!SSCSharedBedUtility.TryGetSharedBedContext(p, out Pawn master, out Pawn bondedPawn, out Building_Bed bed)) return ThoughtState.Inactive;
-            if (bondedPawn != p) return ThoughtState.Inactive;
-
-            int stage = SSCSharedBedUtility.GetSharedBedThoughtStage(bondedPawn, master);
-            if (stage < 0) return ThoughtState.Inactive;
-
-            return ThoughtState.ActiveAtStage(stage);
-        }
-    }
 }
