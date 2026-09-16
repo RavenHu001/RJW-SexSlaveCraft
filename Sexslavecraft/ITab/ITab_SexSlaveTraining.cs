@@ -602,17 +602,21 @@ namespace SexSlaveCraft
                 {
                     if (PetSpecializationUtility.HasFinalPetState(pawn, petType))
                     {
-                        return PetSpecializationUtility.GetSpecializationLabel(petType) + " " + Strings.ITab_SpecializationFinalizedSuffix;
+                        string finalizedLabel = PetSpecializationUtility.GetSpecializationLabel(petType) + " " + Strings.ITab_SpecializationFinalizedSuffix;
+                        if (petType == SexSlaveSpecializationType.PetCat || petType == SexSlaveSpecializationType.PetRabbit)
+                            finalizedLabel += " " + Strings.ITab_SpecializationUnfinishedSuffix;
+                        return finalizedLabel;
                     }
                 }
             }
 
-            if (IsTypeFinalized(pawn, comp.specializationType))
+            bool finalized = IsTypeFinalized(pawn, comp.specializationType);
+            if (finalized)
             {
                 label += " " + Strings.ITab_SpecializationFinalizedSuffix;
             }
-            else if (comp.specializationType == SexSlaveSpecializationType.PetCat ||
-                     comp.specializationType == SexSlaveSpecializationType.PetRabbit)
+            if (comp.specializationType == SexSlaveSpecializationType.PetCat ||
+                comp.specializationType == SexSlaveSpecializationType.PetRabbit)
             {
                 label += " " + Strings.ITab_SpecializationUnfinishedSuffix;
             }
@@ -623,6 +627,12 @@ namespace SexSlaveCraft
         private static FloatMenuOption BuildPetSpecializationOption(Pawn pawn, CompSexSlaveTraining comp, SexSlaveSpecializationType type)
         {
             string optionLabel = PetSpecializationUtility.GetSelectLabel(type);
+            // 猫、兔特化尚未完成，玩家入口保持可见但不可选择。
+            if (type == SexSlaveSpecializationType.PetCat || type == SexSlaveSpecializationType.PetRabbit)
+            {
+                return new FloatMenuOption(optionLabel + " " + Strings.ITab_SpecializationUnfinishedSuffix, null);
+            }
+
             bool finalized = PetSpecializationUtility.HasFinalPetState(pawn, type);
             bool enabled = !finalized;
             string disabledReason = null;
@@ -640,11 +650,6 @@ namespace SexSlaveCraft
                 optionLabel = optionLabel + " (" + disabledReason + ")";
             }
 
-            if (type == SexSlaveSpecializationType.PetCat || type == SexSlaveSpecializationType.PetRabbit)
-            {
-                optionLabel = optionLabel + " " + Strings.ITab_SpecializationUnfinishedSuffix;
-            }
-
             return new FloatMenuOption(optionLabel, enabled ? (Action)delegate
             {
                 comp.SetSpecialization(type);
@@ -658,21 +663,8 @@ namespace SexSlaveCraft
             if (!comp.IsPetRabbitSpecialized && !PetSpecializationUtility.HasAnyPetState(pawn, SexSlaveSpecializationType.PetRabbit)) return;
 
             string modeLabel = GetRabbitReproductionModeLabel(comp.rabbitReproductionMode);
-            if (!listing.ButtonText(Strings.ITab_RabbitReproductionMode(modeLabel))) return;
-
-            List<FloatMenuOption> options = new List<FloatMenuOption>
-            {
-                new FloatMenuOption(Strings.ITab_SelectRabbitReproductionOffspring, delegate
-                {
-                    comp.rabbitReproductionMode = RabbitReproductionMode.Offspring;
-                }),
-                new FloatMenuOption(Strings.ITab_SelectRabbitReproductionClone, delegate
-                {
-                    comp.rabbitReproductionMode = RabbitReproductionMode.Clone;
-                })
-            };
-
-            Find.WindowStack.Add(new FloatMenu(options));
+            // 旧档仍展示已保存的模式，未完成期间不开放切换入口。
+            listing.Label(Strings.ITab_RabbitReproductionMode(modeLabel) + " " + Strings.ITab_SpecializationUnfinishedSuffix);
         }
 
         private static string GetRabbitReproductionModeLabel(RabbitReproductionMode mode)
