@@ -1,3 +1,22 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
+  <SSC_PSEdit_Bus_Final.label>Sex Slave Specialization (Final Public Use)</SSC_PSEdit_Bus_Final.label>
+  <SSC_PSEdit_Bus_Final.description>Further shapes personality gel with 100% Public Use specialization progress into its final state. This recipe accepts only fully specialized Public Use material and is mutually exclusive with the ordinary Public Use state.</SSC_PSEdit_Bus_Final.description>
+  <SSC_PSEdit_Bus_Final.jobString>Shaping final Public Use personality...</SSC_PSEdit_Bus_Final.jobString>
+
+  <SSC_PSEdit_Cow_Final.label>Sex Slave Specialization (Final Cow)</SSC_PSEdit_Cow_Final.label>
+  <SSC_PSEdit_Cow_Final.description>Further shapes personality gel with 100% Cow specialization progress into its final state. This recipe accepts only fully specialized Cow material and is mutually exclusive with the ordinary Cow state.</SSC_PSEdit_Cow_Final.description>
+  <SSC_PSEdit_Cow_Final.jobString>Shaping final Cow personality...</SSC_PSEdit_Cow_Final.jobString>
+
+  <SSC_PSEdit_PetCat_Final.label>Sex Slave Specialization (Final Pet Cat)</SSC_PSEdit_PetCat_Final.label>
+  <SSC_PSEdit_PetCat_Final.description>Further shapes personality gel with 100% Pet Cat specialization progress into its final state. This recipe accepts only material that has completed Pet Cat specialization and carries the base Pet Cat state.</SSC_PSEdit_PetCat_Final.description>
+  <SSC_PSEdit_PetCat_Final.jobString>Shaping final Pet Cat personality...</SSC_PSEdit_PetCat_Final.jobString>
+
+  <SSC_PSEdit_PetDog_Final.label>Sex Slave Specialization (Final Pet Dog)</SSC_PSEdit_PetDog_Final.label>
+  <SSC_PSEdit_PetDog_Final.description>Further shapes personality gel with 100% Pet Dog specialization progress into its final state. This recipe accepts only material that has completed Pet Dog specialization and carries the base Pet Dog state.</SSC_PSEdit_PetDog_Final.description>
+  <SSC_PSEdit_PetDog_Final.jobString>Shaping final Pet Dog personality...</SSC_PSEdit_PetDog_Final.jobString>
+
+  <SSC_PSEdit_PetRabbit_Final.label>Sex Slave Specialization (Final Pet Rabbit)</SSC_PSEdit_PetRabbit_Final.label>
+  <SSC_PSEdit_PetRabbit_Final.description>Further shapes personality gel with 100% Pet Rabbit specialization progress into its final state. This recipe accepts only material that has completed Pet Rabbit specialization and carries the base Pet Rabbit state.</SSC_PSEdit_PetRabbit_Final.description>
+  <SSC_PSEdit_PetRabbit_Final.jobString>Shaping final Pet Rabbit personality...</SSC_PSEdit_PetRabbit_Final.jobString>
 </LanguageData>
