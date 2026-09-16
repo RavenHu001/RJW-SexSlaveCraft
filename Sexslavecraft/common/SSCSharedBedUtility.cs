@@ -1,4 +1,6 @@
 using RimWorld;
+using System.Collections.Generic;
+using System.Linq;
 using Verse;
 
 namespace SexSlaveCraft
@@ -20,30 +22,63 @@ namespace SexSlaveCraft
             return GetCorruption(pawn) > MinCorruptionForSharedBed;
         }
 
-        /// <summary>未绑定时使用指定调教员；已有锁链时绝不回退到其他调教员。</summary>
-        /// <param name="pawn">必须拥有 SSC 性奴身份的角色，普通原版奴隶不适用。</param>
-        /// <param name="partner">解析得到的对象；返回 false 时不得使用该输出。</param>
-        /// <param name="isMaster">是否存在锁链，用于区分主人和调教员记忆，而非表示对象一定有效。</param>
-        /// <returns>对象非空、非自身且未死亡或销毁时返回 true。</returns>
-        public static bool TryGetPartner(Pawn pawn, out Pawn partner, out bool isMaster)
+        /// <summary>依次枚举有效主人和指定调教员；绑定不排除调教员，同一人只返回一次。</summary>
+        /// <remarks>只解析 SSC 性奴的直接关系，不检查恶堕、床型或环境，也不改变调教员指派规则。</remarks>
+        public static IEnumerable<Pawn> GetAllowedPartners(Pawn pawn)
         {
-            partner = null;
-            isMaster = false;
-            if (!SSCIdentityUtility.IsSexSlave(pawn)) return false;
-            Hediff_ChainOfSexSlave chain = SSCBondUtility.GetChain(pawn);
-            isMaster = chain != null;
-            partner = isMaster ? chain.LinkedPawn : pawn.TryGetComp<CompSexSlaveTraining>()?.selectedTrainer;
+            if (!SSCIdentityUtility.IsSexSlave(pawn) || pawn.Dead || pawn.Destroyed) yield break;
+            Pawn master = SSCBondUtility.GetChain(pawn)?.LinkedPawn;
+            if (IsValidPartner(pawn, master)) yield return master;
+            Pawn trainer = pawn.TryGetComp<CompSexSlaveTraining>()?.selectedTrainer;
+            if (trainer != master && IsValidPartner(pawn, trainer)) yield return trainer;
+        }
+
+        /// <summary>排除自身、空引用和已死亡或销毁的对象。</summary>
+        private static bool IsValidPartner(Pawn pawn, Pawn partner)
+        {
             return partner != null && partner != pawn && !partner.Dead && !partner.Destroyed;
         }
 
-        /// <summary>只为当前对象拥有的普通多人床提供额外许可，不向其他普通床扩散。</summary>
-        /// <remarks>此处只确定 SSC 许可范围，不代表床位可达或可使用；完整有效性仍需原版检查。</remarks>
+        /// <summary>双向判断直接 SSC 同床关系，不递归扩展到对象的其他关系。</summary>
+        public static bool HasSharedBedRelation(Pawn first, Pawn second)
+        {
+            return GetAllowedPartners(first).Contains(second) || GetAllowedPartners(second).Contains(first);
+        }
+
+        /// <summary>判断指定调教员关系是否有效，用于只从本床已分配性奴反查调教员标签。</summary>
+        public static bool IsDesignatedTrainer(Pawn sexSlave, Pawn trainer)
+        {
+            return SSCIdentityUtility.IsSexSlave(sexSlave)
+                && sexSlave.TryGetComp<CompSexSlaveTraining>()?.selectedTrainer == trainer
+                && GetAllowedPartners(sexSlave).Contains(trainer);
+        }
+
+        /// <summary>限定 SSC 额外许可的床位类别；完整环境和可用性仍由原版判断。</summary>
+        public static bool IsOrdinarySharedBed(Building_Bed bed)
+        {
+            return bed != null && !bed.Medical && !bed.ForPrisoners && !bed.ForSlaves && bed.SleepingSlotsCount > 1;
+        }
+
+        /// <summary>检查原版奴隶床分类例外所需的性奴身份和恶堕门槛，排除囚犯。</summary>
+        private static bool CanRelaxSlaveBedCategory(Pawn pawn)
+        {
+            return SSCIdentityUtility.IsSexSlave(pawn) && !pawn.IsPrisoner && HasMeaningfulCorruption(pawn);
+        }
+
+        /// <summary>本床存在直接床伴关系，且对应性奴达到恶堕门槛时提供双向共享许可。</summary>
+        /// <remarks>不依赖哪一方先分配；普通原版奴隶不会因此获得床位身份覆盖。</remarks>
         public static bool HasPartnerBedPermission(Building_Bed bed, Pawn pawn)
         {
-            return bed != null && !bed.Medical && !bed.ForPrisoners && !bed.ForSlaves
-                && bed.SleepingSlotsCount > 1 && HasMeaningfulCorruption(pawn)
-                && TryGetPartner(pawn, out Pawn partner, out _)
-                && bed.OwnersForReading.Contains(partner);
+            if (!IsOrdinarySharedBed(bed) || pawn == null || pawn.IsPrisoner) return false;
+            return bed.OwnersForReading.Any(owner =>
+                (CanRelaxSlaveBedCategory(pawn) && GetAllowedPartners(pawn).Contains(owner))
+                || (CanRelaxSlaveBedCategory(owner) && GetAllowedPartners(owner).Contains(pawn)));
+        }
+
+        /// <summary>保留符合条件的性奴已有普通多人床归属；不据此允许向空床新增分配。</summary>
+        private static bool HasAssignedBedPermission(Building_Bed bed, Pawn pawn)
+        {
+            return IsOrdinarySharedBed(bed) && CanRelaxSlaveBedCategory(pawn) && bed.OwnersForReading.Contains(pawn);
         }
 
         /// <summary>同时检查实际囚犯身份和本次查询的身份参数，避免额外许可绕过囚犯床限制。</summary>
@@ -58,39 +93,53 @@ namespace SexSlaveCraft
         /// <param name="guestStatusOverride">按引用调整的本次查询参数；仅有效身份为奴隶且符合额外许可时改为访客。</param>
         public static void AdjustGuestStatusForPartnerBed(Thing bedThing, Pawn sleeper, ref GuestStatus? guestStatusOverride)
         {
-            if (sleeper == null || IsPrisoner(sleeper, guestStatusOverride)) return;
+            if (!CanRelaxSlaveBedCategory(sleeper) || IsPrisoner(sleeper, guestStatusOverride)) return;
             if ((guestStatusOverride ?? sleeper.GuestStatus) != GuestStatus.Slave) return;
-            if (HasPartnerBedPermission(bedThing as Building_Bed, sleeper))
+            Building_Bed bed = bedThing as Building_Bed;
+            if (HasAssignedBedPermission(bed, sleeper) || HasPartnerBedPermission(bed, sleeper))
                 guestStatusOverride = GuestStatus.Guest;
         }
 
         /// <summary>分配界面仅放宽目标床的奴隶分类检查，保留原版体型等拒绝条件。</summary>
-        /// <returns>角色是原版奴隶且没有这张床的额外许可时返回 true；只影响本次分类分支。</returns>
+        /// <returns>只保留本床已有归属或允许加入有效床伴；原版奴隶性奴不能先分配空殖民者床。</returns>
         public static bool IsSlaveForBedAssignment(Pawn pawn, CompAssignableToPawn_Bed assignable)
         {
-            return pawn.IsSlave && !HasPartnerBedPermission(assignable.parent as Building_Bed, pawn);
+            Building_Bed bed = assignable.parent as Building_Bed;
+            bool allowed = IsOrdinarySharedBed(bed) && CanRelaxSlaveBedCategory(pawn)
+                && (bed.OwnersForReading.Contains(pawn) || HasPartnerBedPermission(bed, pawn));
+            return pawn.IsSlave && !allowed;
         }
 
-        /// <summary>尝试取得当前主人或调教员的归属床，并使用原版完整检查确认它可供本次休息使用。</summary>
+        /// <summary>依次尝试角色自己的已分配床、主人床和调教员床；每一步均使用原版完整检查。</summary>
         /// <param name="sleeper">准备休息的性奴。</param>
         /// <param name="traveler">实际移动或搬运的角色；为空时使用 sleeper。</param>
         /// <param name="checkSocialProperness">原样传给原版的社交适当性检查开关。</param>
         /// <param name="ignoreOtherReservations">原样传给原版的忽略其他预留开关。</param>
         /// <param name="guestStatus">原版找床调用的身份参数。</param>
-        /// <param name="bed">全部检查通过时返回指定对象的床，否则为 null。</param>
+        /// <param name="bed">返回第一张可用床，否则为 null；不扫描其他无关普通床。</param>
         public static bool TryGetPreferredPartnerBed(Pawn sleeper, Pawn traveler, bool checkSocialProperness,
             bool ignoreOtherReservations, GuestStatus? guestStatus, out Building_Bed bed)
         {
             bed = null;
-            if (sleeper == null || IsPrisoner(sleeper, guestStatus)
-                || !TryGetPartner(sleeper, out Pawn partner, out _)) return false;
-            Building_Bed candidate = partner.ownership?.OwnedBed;
-            if (!HasPartnerBedPermission(candidate, sleeper)) return false;
-            // 调用完整原版检查，SSC 不复制环境、寻路、禁用或预留规则。
-            if (!RestUtility.IsValidBedFor(candidate, sleeper, traveler ?? sleeper, checkSocialProperness,
-                false, ignoreOtherReservations, guestStatus)) return false;
-            bed = candidate;
-            return true;
+            if (!SSCIdentityUtility.IsSexSlave(sleeper) || IsPrisoner(sleeper, guestStatus)) return false;
+            Building_Bed ownBed = sleeper.ownership?.OwnedBed;
+            if (ownBed != null && RestUtility.IsValidBedFor(ownBed, sleeper, traveler ?? sleeper,
+                checkSocialProperness, false, ignoreOtherReservations, guestStatus))
+            {
+                bed = ownBed;
+                return true;
+            }
+            foreach (Pawn partner in GetAllowedPartners(sleeper))
+            {
+                Building_Bed candidate = partner.ownership?.OwnedBed;
+                if (candidate == ownBed || !HasPartnerBedPermission(candidate, sleeper)) continue;
+                // 调用完整原版检查，SSC 不复制环境、寻路、禁用或预留规则。
+                if (!RestUtility.IsValidBedFor(candidate, sleeper, traveler ?? sleeper, checkSocialProperness,
+                    false, ignoreOtherReservations, guestStatus)) continue;
+                bed = candidate;
+                return true;
+            }
+            return false;
         }
 
         /// <summary>医疗需求、死眠状态或原版特殊床结果存在时保留原结果，确保特殊休息优先于同床偏好。</summary>

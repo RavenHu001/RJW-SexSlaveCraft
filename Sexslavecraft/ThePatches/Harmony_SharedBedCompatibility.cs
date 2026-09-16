@@ -35,7 +35,7 @@ namespace SexSlaveCraft
     [HarmonyPatch(typeof(RestUtility), nameof(RestUtility.FindBedFor), new[] { typeof(Pawn), typeof(Pawn), typeof(bool), typeof(bool), typeof(GuestStatus?) })]
     public static class Harmony_SSC_FindBedFor
     {
-        /// <summary>保留医疗和死眠结果；普通休息时优先使用通过原版完整检查的主人或调教员床。</summary>
+        /// <summary>保留医疗和死眠结果；普通休息时依次尝试已有归属床、主人床及调教员床。</summary>
         /// <param name="__result">原版找到的床；指定对象的床不可用时保持原值。</param>
         /// <remarks>寻路角色、社交检查、预留和身份参数沿用原调用，不自行扫描其他普通床。</remarks>
         public static void Postfix(Pawn sleeper, Pawn traveler, bool checkSocialProperness,
@@ -75,15 +75,15 @@ namespace SexSlaveCraft
     [HarmonyPatch(typeof(CompAssignableToPawn_Bed), "get_AssigningCandidates")]
     public static class Harmony_SSC_BedAssigningCandidates
     {
-        /// <summary>将地图上符合本床 SSC 许可的殖民地奴隶补入候选列表，并去除重复角色。</summary>
+        /// <summary>普通多人床补充地图上的 SSC 性奴候选；展示独立于分配资格，原版奴隶需先有有效床伴才能加入。</summary>
         /// <param name="__instance">正在提供候选角色的床位分配组件。</param>
         /// <param name="__result">原版候选序列；无地图或原序列为空引用时不修改。</param>
         public static void Postfix(CompAssignableToPawn_Bed __instance, ref IEnumerable<Pawn> __result)
         {
             Building_Bed bed = __instance?.parent as Building_Bed;
-            if (bed?.Map == null || __result == null) return;
+            if (bed?.Map == null || __result == null || !SSCSharedBedUtility.IsOrdinarySharedBed(bed)) return;
             IEnumerable<Pawn> extra = bed.Map.mapPawns.SlavesOfColonySpawned
-                .Where(pawn => SSCSharedBedUtility.HasPartnerBedPermission(bed, pawn));
+                .Where(SSCIdentityUtility.IsSexSlave);
             __result = __result.Concat(extra).Distinct();
         }
     }

@@ -9,7 +9,7 @@ using SexSlaveCraft;
 using UnityEngine;
 using Verse;
 
-internal static class Program
+internal static partial class Program
 {
     private static int passed, failed;
     private static string repo;
@@ -29,9 +29,9 @@ internal static class Program
         Run("无 SSC 身份的原版奴隶不享有特许", () => { var f = Setup(); f.slave.Training.pawnIdentity = PawnIdentity.Unset; Assert(!Use(f.bed, f.slave)); });
         Run("普通奴隶自己的奴隶床照常使用", () => { var f = Setup(); f.slave.Training.pawnIdentity = PawnIdentity.Unset; f.bed.ForSlaves = true; Assert(Use(f.bed, f.slave)); });
         Run("仅有恶堕和特殊关系不会变成性奴", () => { var f = Setup(); f.slave.Training.pawnIdentity = PawnIdentity.Unset; f.slave.relations.FlawedLovers.Add(f.partner); Assert(!Use(f.bed, f.slave)); });
-        Run("绑定后只给主人额外许可", () => { var f = Setup(); Pawn master = NewPawn(f.slave.Map); f.slave.Chain = new Hediff_ChainOfSexSlave { LinkedPawn = master }; Assert(!Use(f.bed, f.slave)); f.bed.OwnersForReading[0] = master; Assert(Use(f.bed, f.slave)); });
-        Run("绑定主人死亡不会回退到调教员", () => { var f = Setup(); f.slave.Chain = new Hediff_ChainOfSexSlave { LinkedPawn = new Pawn { Dead = true } }; Assert(!Use(f.bed, f.slave)); });
-        Run("损坏的锁链引用不会回退到调教员", () => { var f = Setup(); f.slave.Chain = new Hediff_ChainOfSexSlave(); Assert(!Use(f.bed, f.slave)); });
+        Run("绑定后主人和指定调教员同时享有额外许可", () => { var f = Setup(); Pawn master = NewPawn(f.slave.Map); f.slave.Chain = new Hediff_ChainOfSexSlave { LinkedPawn = master }; Assert(Use(f.bed, f.slave)); f.bed.OwnersForReading[0] = master; Assert(Use(f.bed, f.slave)); });
+        Run("主人死亡不会取消有效指定调教员的许可", () => { var f = Setup(); f.slave.Chain = new Hediff_ChainOfSexSlave { LinkedPawn = new Pawn { Dead = true } }; Assert(Use(f.bed, f.slave)); });
+        Run("锁链没有主人时仍检查有效指定调教员", () => { var f = Setup(); f.slave.Chain = new Hediff_ChainOfSexSlave(); Assert(Use(f.bed, f.slave)); });
         Run("没有指定调教员时不扩展普通床", () => { var f = Setup(); f.slave.Training.selectedTrainer = null; Assert(!Use(f.bed, f.slave)); });
         Run("不会扩展陌生人的普通床或无主普通床", () => { var f = Setup(); f.bed.OwnersForReading.Clear(); Assert(!Use(f.bed, f.slave)); f.bed.OwnersForReading.Add(NewPawn(f.slave.Map)); Assert(!Use(f.bed, f.slave)); });
         Run("0.1% 门槛保持严格大于", () => { var f = Setup(); f.slave.needs.Corruption.CurLevelPercentage = .001f; Assert(!Use(f.bed, f.slave)); f.slave.needs.Corruption.CurLevelPercentage = .0011f; Assert(Use(f.bed, f.slave)); });
@@ -138,7 +138,7 @@ internal static class Program
             f.slave.Training.pawnIdentity = PawnIdentity.Slave; Widgets.Labels.Clear();
             new Dialog_AssignBuildingOwner(new CompAssignableToPawn()).Draw(f.slave, false); Assert(Widgets.Labels.Count == 1);
         });
-        Run("悬停说明区分主人、调教员和门槛", () => { var f = Setup(); f.slave.Chain = new Hediff_ChainOfSexSlave { LinkedPawn = f.partner }; f.slave.needs.Corruption.CurLevelPercentage = 0; var tip = Harmony_SSC_SharedBedAssignmentUI.GetTooltip(f.slave); Assert(tip.Contains("已绑定") && tip.Contains("需高于")); });
+        Run("悬停说明区分主人、调教员和门槛", () => { var f = Setup(); f.slave.Chain = new Hediff_ChainOfSexSlave { LinkedPawn = f.partner }; f.slave.needs.Corruption.CurLevelPercentage = 0; var tip = Harmony_SSC_SharedBedAssignmentUI.GetTooltip(f.slave, f.bed); Assert(tip.Contains("主人：") && tip.Contains("需高于")); });
         Run("Mint 已分配及未分配行显示同一标记、提示且避开按钮", () =>
         {
             foreach (bool assigned in new[] { true, false })
@@ -148,7 +148,7 @@ internal static class Program
                 var font = Text.Font; var anchor = Text.Anchor; var color = GUI.color;
                 new DubsMintMenus.Dialog_AssignBuildingOwner(Comp(f.bed)).DoRow(row, f.slave, assigned);
                 Assert(Widgets.Labels.Count == 2 && Widgets.Labels[0].text == "性奴");
-                Assert(TooltipHandler.LastTooltip == Harmony_SSC_SharedBedAssignmentUI.GetTooltip(f.slave));
+                Assert(TooltipHandler.LastTooltip == Harmony_SSC_SharedBedAssignmentUI.GetTooltip(f.slave, f.bed));
                 Assert(Widgets.Labels[1].rect.x >= Widgets.Labels[0].rect.xMax && Widgets.Labels[1].rect.xMax <= row.xMax - 175f);
                 Assert(Text.Font == font && Text.Anchor == anchor && GUI.color.Equals(color));
             }
@@ -169,6 +169,7 @@ internal static class Program
             new DubsMintMenus.Dialog_AssignBuildingOwner(Comp(f.bed)) { RejectedReason = "TooLargeForBed", ShowIdeologyInfo = true }.DoRow(new Rect(0, 0, 600, 60), f.slave, false);
             Assert(Widgets.Labels.Count == 3 && Widgets.Labels[1].text.Contains("TooLargeForBed") && Widgets.Labels[2].text == "IdeoligionForbids" && Widgets.Labels[2].rect.x == 430);
         });
+        RunUpdatedSharedBedRules();
         Run("XML 记忆持续一天、不叠加并保留六档数值", CheckDefs);
         Run("四种界面翻译键完整且参数匹配", CheckLanguages);
         Run("共同睡眠记录接入现有 Pawn 存档", () => { string source = File.ReadAllText(Path.Combine(repo, "Sexslavecraft/Comps/Comp_Train.cs")); Assert(source.Contains("Scribe_Deep.Look(ref sharedSleep, \"sharedSleep\")")); });

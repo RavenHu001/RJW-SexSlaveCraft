@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <SSC_SharedBedBadge>Секс-раб</SSC_SharedBedBadge>
-  <SSC_SharedBedMaster>Есть привязка; хозяин: {0}</SSC_SharedBedMaster>
-  <SSC_SharedBedTrainer>Нет привязки; назначенный тренер: {0}</SSC_SharedBedTrainer>
-  <SSC_SharedBedNoPartner>Нет доступного хозяина или назначенного тренера.</SSC_SharedBedNoPartner>
-  <SSC_SharedBedThresholdMet>Развращённость превышает порог 0,1% для совместного сна.</SSC_SharedBedThresholdMet>
+  <SSC_SharedBedMasterBadge>Хозяин</SSC_SharedBedMasterBadge>
+  <SSC_SharedBedTrainerBadge>Дрессировщик</SSC_SharedBedTrainerBadge>
+  <SSC_SharedBedMaster>Хозяин: {0}</SSC_SharedBedMaster>
+  <SSC_SharedBedTrainer>Назначенный дрессировщик: {0}</SSC_SharedBedTrainer>
+  <SSC_SharedBedNoPartner>Нет доступного хозяина или назначенного дрессировщика.</SSC_SharedBedNoPartner>
+  <SSC_SharedBedThresholdMet>Развращённость превышает порог 0,1% для дополнительного разрешения на совместный сон.</SSC_SharedBedThresholdMet>
   <SSC_SharedBedThresholdUnmet>Для дополнительного разрешения на совместный сон развращённость должна превышать 0,1%.</SSC_SharedBedThresholdUnmet>
-  <SSC_SharedBedTooltip>Секс-раб\n{0}\n{1}\n\nДо привязки дополнительное разрешение распространяется на обычную двуспальную кровать назначенного тренера. После привязки — только на кровать хозяина. Стандартные проверки доступности кровати сохраняются.\nЛечение и смертосон имеют приоритет. Обычные правила совместного сна любовников и супругов не меняются.</SSC_SharedBedTooltip>
+  <SSC_SharedBedRelatedSlaves>Связанные секс-рабы, назначенные на эту кровать: {0}</SSC_SharedBedRelatedSlaves>
+  <SSC_SharedBedRoleInfo>Роль SSC. После назначения метки показывают владельцев этой кровати и напрямую связанных с ними персонажей.</SSC_SharedBedRoleInfo>
+  <SSC_SharedBedTooltip>{0}\n{1}\nИ хозяин, и назначенный дрессировщик могут делить обычную многоместную кровать с секс-рабом. Если секс-раб имеет статус раба базовой игры, сначала назначьте на кровать его хозяина или назначенного дрессировщика, а затем секс-раба. Проверки базовой игры сохраняются.\nМетки учитывают прямые связи владельцев кровати; другие сочетания, разрешённые базовой игрой, остаются доступны.\nЛечение и смертосон имеют приоритет. При обычном отдыхе предпочтительна уже назначенная кровать.</SSC_SharedBedTooltip>
 </LanguageData>

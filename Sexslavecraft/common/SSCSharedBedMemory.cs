@@ -27,30 +27,39 @@ namespace SexSlaveCraft
         /// <summary>只记录双方确实同时睡着的情境，不把清醒躺卧当作共同睡眠。</summary>
         /// <param name="actor">正在获得休息效果的角色，须满足 SSC 身份、对象和恶堕条件。</param>
         /// <param name="bed">双方当前共同使用的多人床。</param>
-        /// <remarks>记录此刻的对象与阶段，不提前生成记忆；对象一侧只补充负面房间心情免除记录。</remarks>
+        /// <remarks>主人经历优先且不被之后的调教员经历覆盖；所有实际同睡对象均保留负面房间心情免除。</remarks>
         public static void RecordSleep(Pawn actor, Building_Bed bed)
         {
             if (actor == null || bed == null || bed.SleepingSlotsCount <= 1 || actor.CurrentBed() != bed
-                || actor.Awake() || !SSCSharedBedUtility.HasMeaningfulCorruption(actor)
-                || !SSCSharedBedUtility.TryGetPartner(actor, out Pawn partner, out bool withMaster)
-                || partner.CurrentBed() != bed || partner.Awake()) return;
+                || actor.Awake() || !SSCSharedBedUtility.HasMeaningfulCorruption(actor)) return;
 
             CompSexSlaveTraining comp = actor.TryGetComp<CompSexSlaveTraining>();
             if (comp == null) return;
-            if (comp.sharedSleep == null) comp.sharedSleep = new SSCSharedSleepRecord();
-            comp.sharedSleep.bed = bed;
-            comp.sharedSleep.partner = partner;
-            comp.sharedSleep.withMaster = withMaster;
-            comp.sharedSleep.stage = SSCSharedBedUtility.GetSharedBedThoughtStage(actor, partner);
-
-            // 主人/调教员只保留原有的负面房间记忆免除，不另加一份心情奖励。
-            CompSexSlaveTraining partnerComp = partner.TryGetComp<CompSexSlaveTraining>();
-            if (partnerComp != null && (partnerComp.sharedSleep == null || partnerComp.sharedSleep.stage < 0))
+            foreach (Pawn partner in SSCSharedBedUtility.GetAllowedPartners(actor))
             {
-                if (partnerComp.sharedSleep == null) partnerComp.sharedSleep = new SSCSharedSleepRecord();
-                partnerComp.sharedSleep.bed = bed;
-                partnerComp.sharedSleep.partner = actor;
+                if (partner.CurrentBed() != bed || partner.Awake()) continue;
+                bool withMaster = SSCBondUtility.GetChain(actor)?.LinkedPawn == partner;
+                if (comp.sharedSleep == null || comp.sharedSleep.bed != bed)
+                    comp.sharedSleep = new SSCSharedSleepRecord { bed = bed };
+                // 已实际与主人睡过时，主人先醒来不会让余下调教员经历覆盖主人记忆。
+                if (comp.sharedSleep.stage < 0 || withMaster || !comp.sharedSleep.withMaster)
+                {
+                    comp.sharedSleep.partner = partner;
+                    comp.sharedSleep.withMaster = withMaster;
+                    comp.sharedSleep.stage = SSCSharedBedUtility.GetSharedBedThoughtStage(actor, partner);
+                }
+                RecordRoomExemption(partner, actor, bed);
             }
+        }
+
+        /// <summary>为每个实际同睡对象记录房间心情免除，不覆盖其自身可能拥有的性奴心情阶段。</summary>
+        private static void RecordRoomExemption(Pawn partner, Pawn actor, Building_Bed bed)
+        {
+            CompSexSlaveTraining comp = partner.TryGetComp<CompSexSlaveTraining>();
+            if (comp == null) return;
+            if (comp.sharedSleep == null || comp.sharedSleep.bed != bed)
+                comp.sharedSleep = new SSCSharedSleepRecord { bed = bed };
+            if (comp.sharedSleep.stage < 0) comp.sharedSleep.partner = actor;
         }
 
         /// <summary>已有本床共同睡眠记录时，清理双方各自的负面卧室/营房记忆，保留非负面效果。</summary>

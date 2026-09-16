@@ -360,6 +360,8 @@ namespace SexSlaveCraft
     public class Hediff_ChainOfSexSlave { public Pawn LinkedPawn; }
     public static class SSCIdentityUtility
     {
+        /// <summary>读取明确设置的 SSC 主人身份，不因担任调教员而自动授予主人标签。</summary>
+        public static bool IsMaster(Pawn pawn) => pawn?.Training.pawnIdentity == PawnIdentity.Master;
         /// <summary>仅根据 SSC 身份字段识别性奴，不使用原版奴隶身份或关系作为替代。</summary>
         public static bool IsSexSlave(Pawn pawn) => pawn?.Training.pawnIdentity == PawnIdentity.Slave;
     }

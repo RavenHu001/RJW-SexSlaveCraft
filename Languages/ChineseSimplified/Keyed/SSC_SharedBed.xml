@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <SSC_SharedBedBadge>性奴</SSC_SharedBedBadge>
-  <SSC_SharedBedMaster>已绑定，主人：{0}</SSC_SharedBedMaster>
-  <SSC_SharedBedTrainer>未绑定，指定调教员：{0}</SSC_SharedBedTrainer>
+  <SSC_SharedBedMasterBadge>主人</SSC_SharedBedMasterBadge>
+  <SSC_SharedBedTrainerBadge>调教员</SSC_SharedBedTrainerBadge>
+  <SSC_SharedBedMaster>主人：{0}</SSC_SharedBedMaster>
+  <SSC_SharedBedTrainer>指定调教员：{0}</SSC_SharedBedTrainer>
   <SSC_SharedBedNoPartner>没有可用的主人或指定调教员。</SSC_SharedBedNoPartner>
   <SSC_SharedBedThresholdMet>已满足恶堕高于 0.1% 的同床门槛。</SSC_SharedBedThresholdMet>
   <SSC_SharedBedThresholdUnmet>恶堕需高于 0.1% 才能获得额外同床许可。</SSC_SharedBedThresholdUnmet>
-  <SSC_SharedBedTooltip>性奴\n{0}\n{1}\n\n未绑定时，可额外使用指定调教员拥有的普通双人床；绑定后，该许可仅对主人生效。床位仍需通过原版使用检查。\n医疗和死眠优先。原版恋人、配偶同床规则不变。</SSC_SharedBedTooltip>
+  <SSC_SharedBedRelatedSlaves>本床相关性奴：{0}</SSC_SharedBedRelatedSlaves>
+  <SSC_SharedBedRoleInfo>SSC 身份标记；分配后只标记本床人员及其直接关联对象。</SSC_SharedBedRoleInfo>
+  <SSC_SharedBedTooltip>{0}\n{1}\n\n主人和指定调教员均可与性奴获得额外同床许可，限普通多人床。若性奴同时为原版奴隶，请先分配其主人或指定调教员，再分配性奴。实际使用仍需通过原版检查。\n标签按本床已分配人员的直接关系显示，不禁止原版允许的其他同床组合。\n医疗和死眠优先；普通休息优先保留已分配床位。</SSC_SharedBedTooltip>
 </LanguageData>
