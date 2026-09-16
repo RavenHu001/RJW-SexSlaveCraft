@@ -122,7 +122,7 @@ namespace SexSlaveCraft
             return comp.pawnIdentity == PawnIdentity.Slave ? 146f : 126f;
         }
 
-        /// <summary>绘制 SSC 身份及共用调教员开关；主人和未选择显示不可修改的固定状态。</summary>
+        /// <summary>绘制 SSC 身份及调教员开关；已有绑定时禁用身份按钮并提示原因。</summary>
         private float DrawIdentitySection(Rect rect, CompSexSlaveTraining comp)
         {
             DrawSection(rect, Strings.ITab_IdentityHeader, delegate(Rect innerRect)
@@ -132,7 +132,23 @@ namespace SexSlaveCraft
                 {
 
                     string idLabel = GetIdentityLabel(comp.pawnIdentity);
-                    if (listing.ButtonText(idLabel))
+                    bool identityLocked = SSCIdentityUtility.IsIdentityLocked(SelPawn);
+                    Rect identityRect = listing.GetRect(30f);
+                    bool oldEnabled = GUI.enabled;
+                    bool identityClicked;
+                    try
+                    {
+                        GUI.enabled = oldEnabled && !identityLocked;
+                        identityClicked = Widgets.ButtonText(identityRect, idLabel);
+                    }
+                    finally
+                    {
+                        GUI.enabled = oldEnabled;
+                    }
+                    if (identityLocked)
+                        TooltipHandler.TipRegion(identityRect, "SSC_Identity_BoundTip".Translate());
+                    listing.Gap(2f);
+                    if (identityClicked)
                     {
                         List<FloatMenuOption> identityOptions = new List<FloatMenuOption>
                         {

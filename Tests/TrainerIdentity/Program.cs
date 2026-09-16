@@ -39,6 +39,114 @@ internal static class Program
             SSCIdentityUtility.TrySetIdentity(p, PawnIdentity.Unset); Assert(!SSCIdentityUtility.IsTrainer(p));
             SSCIdentityUtility.TrySetIdentity(p, PawnIdentity.Slave); Assert(SSCIdentityUtility.IsTrainer(p));
         });
+        Run("已绑定性奴拒绝切换且保留锁链进度、恶堕及训练仪式状态", () =>
+        {
+            foreach (PawnIdentity target in new[] { PawnIdentity.Unset, PawnIdentity.Master })
+            {
+                var f = Setup(); Assert(SSCBondUtility.Bind(f.master, f.slave));
+                var chain = SSCBondUtility.GetChain(f.slave); chain.Severity = 0.9f;
+                f.slave.needs.Corruption.CurLevel = 0.95f;
+                f.slave.needs.Corruption.HighestCorruptionLevel = 1f;
+                f.slave.Training.isRitualTraining = f.slave.Training.isBeingTrained = true;
+                Assert(SSCIdentityUtility.IsIdentityLocked(f.slave));
+                Assert(!SSCIdentityUtility.TrySetIdentity(f.slave, target));
+                Assert(SSCIdentityUtility.IsSexSlave(f.slave));
+                Assert(ReferenceEquals(chain, SSCBondUtility.GetChain(f.slave)) && chain.Severity == 0.9f);
+                Assert(SSCBondUtility.GetBoundMaster(f.slave) == f.master);
+                Assert(SSCBondUtility.GetBridle(f.master).targets.Contains(f.slave));
+                Assert(f.slave.needs.Corruption.CurLevel == 0.95f && f.slave.needs.Corruption.HighestCorruptionLevel == 1f);
+                Assert(f.slave.Training.selectedTrainer == f.master && f.slave.Training.mode == TrainingMode.Enabled);
+                Assert(f.slave.Training.isRitualTraining && f.slave.Training.isBeingTrained);
+            }
+        });
+        Run("有绑定性奴的主人拒绝两种身份切换且保留全部绑定", () =>
+        {
+            foreach (PawnIdentity target in new[] { PawnIdentity.Unset, PawnIdentity.Slave })
+            {
+                var f = Setup(); Pawn second = Pawn(PawnIdentity.Slave, f.slave.Map);
+                Assert(SSCBondUtility.Bind(f.master, f.slave) && SSCBondUtility.Bind(f.master, second));
+                var bridle = SSCBondUtility.GetBridle(f.master);
+                var firstChain = SSCBondUtility.GetChain(f.slave); firstChain.Severity = 0.9f;
+                var secondChain = SSCBondUtility.GetChain(second); secondChain.Severity = 0.5f;
+                Assert(SSCIdentityUtility.IsIdentityLocked(f.master));
+                Assert(!SSCIdentityUtility.TrySetIdentity(f.master, target));
+                Assert(SSCIdentityUtility.IsMaster(f.master) && ReferenceEquals(bridle, SSCBondUtility.GetBridle(f.master)));
+                Assert(bridle.targets.Count == 2 && bridle.targets.Contains(f.slave) && bridle.targets.Contains(second));
+                Assert(ReferenceEquals(firstChain, SSCBondUtility.GetChain(f.slave)) && firstChain.Severity == 0.9f);
+                Assert(ReferenceEquals(secondChain, SSCBondUtility.GetChain(second)) && secondChain.Severity == 0.5f);
+                Assert(firstChain.LinkedPawn == f.master && secondChain.LinkedPawn == f.master);
+            }
+        });
+        Run("重复设置绑定双方当前身份及重复绑定不清理状态", () =>
+        {
+            var f = Setup(); Assert(SSCBondUtility.Bind(f.master, f.slave));
+            var chain = SSCBondUtility.GetChain(f.slave); chain.Severity = 0.9f;
+            foreach (Pawn pawn in new[] { f.master, f.slave })
+            {
+                pawn.Training.isRitualTraining = pawn.Training.isBeingTrained = true;
+                pawn.Training.selectedTrainer = f.master;
+                Assert(SSCIdentityUtility.TrySetIdentity(pawn, pawn.Training.pawnIdentity));
+                Assert(pawn.Training.isRitualTraining && pawn.Training.isBeingTrained);
+                Assert(pawn.Training.mode == TrainingMode.Enabled && pawn.Training.selectedTrainer == f.master);
+            }
+            Assert(SSCBondUtility.Bind(f.master, f.slave));
+            Assert(ReferenceEquals(chain, SSCBondUtility.GetChain(f.slave)) && chain.Severity == 0.9f);
+            Assert(SSCBondUtility.GetBridle(f.master).targets.Count == 1);
+        });
+        Run("无绑定身份可自由切换并保留离开性奴时的训练清理", () =>
+        {
+            foreach (PawnIdentity source in Enum.GetValues<PawnIdentity>())
+            foreach (PawnIdentity target in Enum.GetValues<PawnIdentity>())
+            {
+                Pawn pawn = Pawn(source); pawn.Training.selectedTrainer = Pawn(PawnIdentity.Master);
+                pawn.Training.isRitualTraining = pawn.Training.isBeingTrained = true;
+                Assert(!SSCIdentityUtility.IsIdentityLocked(pawn));
+                Assert(SSCIdentityUtility.TrySetIdentity(pawn, target) && pawn.Training.pawnIdentity == target);
+                if (source != target && target != PawnIdentity.Slave)
+                    Assert(pawn.Training.mode == TrainingMode.Disabled && pawn.Training.selectedTrainer == null
+                        && !pawn.Training.isRitualTraining && !pawn.Training.isBeingTrained);
+            }
+        });
+        Run("明确解绑后解除身份锁定，主人仍有其他绑定时继续锁定", () =>
+        {
+            var f = Setup(); Pawn second = Pawn(PawnIdentity.Slave, f.slave.Map);
+            Assert(SSCBondUtility.Bind(f.master, f.slave) && SSCBondUtility.Bind(f.master, second));
+            Assert(SSCBondUtility.Unbind(f.slave));
+            Assert(SSCIdentityUtility.TrySetIdentity(f.slave, PawnIdentity.Unset));
+            Assert(!SSCIdentityUtility.TrySetIdentity(f.master, PawnIdentity.Unset));
+            Assert(SSCBondUtility.Unbind(second));
+            Assert(!SSCIdentityUtility.IsIdentityLocked(f.master));
+            Assert(SSCIdentityUtility.TrySetIdentity(f.master, PawnIdentity.Unset));
+        });
+        Run("绑定入口不能把已有性奴的主人改为性奴或留下半条绑定", () =>
+        {
+            var f = Setup(); Assert(SSCBondUtility.Bind(f.master, f.slave));
+            Pawn otherMaster = Pawn(PawnIdentity.Master, f.slave.Map);
+            foreach (bool replace in new[] { false, true })
+            {
+                Assert(!SSCBondUtility.Bind(otherMaster, f.master, replace));
+                Assert(SSCIdentityUtility.IsMaster(f.master) && SSCBondUtility.GetChain(f.master) == null);
+                Assert(SSCBondUtility.GetBridle(otherMaster) == null);
+                Assert(SSCBondUtility.GetBoundMaster(f.slave) == f.master);
+                Assert(SSCBondUtility.GetBridle(f.master).targets.SequenceEqual(new[] { f.slave }));
+            }
+        });
+        Run("首次绑定未选择或无绑定主人可成功，已有归属冲突仍拒绝", () =>
+        {
+            foreach (PawnIdentity identity in new[] { PawnIdentity.Unset, PawnIdentity.Master })
+            {
+                Pawn master = Pawn(PawnIdentity.Master), slave = Pawn(identity);
+                Assert(SSCBondUtility.Bind(master, slave));
+                Assert(SSCIdentityUtility.IsSexSlave(slave) && SSCBondUtility.GetBoundMaster(slave) == master);
+                Pawn other = Pawn(PawnIdentity.Master);
+                Assert(!SSCBondUtility.Bind(other, slave));
+                Assert(SSCBondUtility.GetBoundMaster(slave) == master && SSCBondUtility.GetBridle(other) == null);
+            }
+            Assert(!SSCIdentityUtility.TrySetIdentity(null, PawnIdentity.Slave));
+            Pawn missing = Pawn(); missing.Training = null;
+            Assert(!SSCBondUtility.Bind(Pawn(PawnIdentity.Master), missing));
+            Assert(SSCBondUtility.GetChain(missing) == null);
+        });
         Run("菜单排除未选择、关闭性奴、自身、原版候选外人员及工作关闭", () =>
         {
             var f = Setup(); Pawn on = Pawn(PawnIdentity.Slave, f.slave.Map, true);
@@ -234,6 +342,8 @@ internal static class Program
                 var entries = XDocument.Load(Path.Combine(repo, "Languages", language, "Keyed/SSC_TrainerIdentity.xml")).Root.Elements().ToList();
                 Assert(entries.Select(e => e.Name.LocalName).Order().SequenceEqual(expected));
                 foreach (var entry in entries) Assert(!string.IsNullOrWhiteSpace(string.Format(entry.Value, "Test")));
+                var identityXml = XDocument.Load(Path.Combine(repo, "Languages", language, "Keyed/SSC_Identity.xml"));
+                Assert(!string.IsNullOrWhiteSpace(identityXml.Root.Element("SSC_Identity_BoundTip")?.Value));
             }
         });
         Console.WriteLine($"{passed}/{passed + failed} passed (production trainer identity and assignment; game interface model).");
