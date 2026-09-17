@@ -1,512 +1,83 @@
-# RJW-SexSlaveCraft Quick Start Guide
+# RJW-SexSlaveCraft · TieJin Modify
 
-[Documentation index / 文档索引](Docs/README.md) · [中文快速入门](读我，玩法介绍.md) · [Changelog](CHANGELOG.md)
+RimWorld 1.6 的 RimJobWorld（RJW）扩展模组，基于上游 **2.2.8** 继续维护。此仓库包含模组源码、游戏资源、回归测试及中英文文档，当前仓库版本为 **2.3.0**。
 
-> For RimWorld 1.6 and SexSlaveCraft 2.3.0.\
-> This continuation is based on upstream 2.2.8. See `CHANGELOG.md` for release history.\
-> Version 2.3.0 groups shared-bed permissions and sleep memories, separate vanilla/Mint role badges, the trainer-role toggle, and menu, ritual-message and bound-identity fixes. Includes 2.2.15 and earlier fixes. The installation ZIP and checksum are available from [v2.3.0 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.0). Legacy RimTalk integration remains suspended; unfinished Pet Cat and Pet Rabbit choices remain disabled.\
-> In-game names follow the mod's official English localization. For exact formulas, thresholds, and implementation notes, see `PLAYER_GUIDE_EN.md`.
+[下载安装包](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.0) · [更新日志](CHANGELOG.md) · [文档索引](Docs/README.md) · [English quick start](QUICK_START_EN.md)
 
-## 1. What the Mod Does
+## 项目概况
 
-SexSlaveCraft (SSC) is built around this progression:
+SexSlaveCraft（SSC）围绕角色培养、身份与绑定关系、特化发展、人格转移及身体改造提供一套玩法系统。本接续版在原有内容基础上维护游戏兼容性、修复问题，并完善交互界面与本地化。
 
-1. Designate Masters and sex slaves.
-2. Use ordinary Training to raise Corruption and develop body parts.
-3. Perform the Binding Ritual to establish a bond and advance the `Sex Slave Chain` health stage.
-4. Develop either Public Use Specialization or Cow Specialization.
-5. extract a pawn's personality into Personality Gel, edit it, or implant it into a Hollow.
-6. Attempt Semi-gelatinization or Full Gelatinization.
+2.3.0 的主要更新包括：
 
-Required mods:
+- 同床许可与共同睡眠后的心情记忆。
+- 原版及 Dubs Mint Menus 床位分配界面的独立身份标签。
+- 统一的调教员身份开关。
+- 指定菜单、仪式提示及已绑定角色身份切换的修复。
 
-- Harmony
-- RimJobWorld (RJW)
+完整变更、适用范围和验证记录见 [2.3.0 发布说明](Docs/Releases/2.3.0/2.3.0发布说明.md) 与 [版本验证](Docs/Releases/2.3.0/2.3.0版本验证.md)。
 
-The Binding Ritual also requires the ideology ritual system to be available.
+## 安装
 
-## 2. Getting Started
+| 项目 | 要求 |
+| --- | --- |
+| 游戏版本 | RimWorld 1.6 |
+| 必需模组 | Harmony、RimJobWorld（RJW） |
+| 加载顺序 | Harmony、RimWorld 本体及 RJW 位于本模组之前 |
+| 绑定仪式 | 需要可用的 Ideology 仪式系统 |
 
-### Step 1: Research Training
+1. 从 [v2.3.0 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.0) 下载模组安装 ZIP；同页提供 SHA-256 校验文件。
+2. 退出游戏，将 ZIP 内的 `RJW-SexSlaveCraft-TieJin-Modify` 文件夹解压到 `RimWorld/Mods/`。
+3. 更新已有安装时，先将旧模组文件夹移出 `Mods`，再放入新版本，以免残留已删除的文件。
+4. 在游戏中启用依赖与本模组，按上述顺序加载。
 
-`Training` is the entry point for the mod. Complete it before trying to configure pawns.
+安装包包含已编译的模组 DLL，无需自行编译；游戏与第三方模组需要另行安装。开始游玩请阅读 [中文快速入门](读我，玩法介绍.md) 或 [English quick start](QUICK_START_EN.md)。
 
-### Step 2: Assign a Trainer
+## 文档导航
 
-Give at least one free colonist the `Master` identity, or enable `Is a trainer` on a `Sex Slave`, then enable the `Training` work type. The trainer toggle is always on for Masters, always off for Unset pawns, and optional for Sex Slaves.
+| 文档 | 内容 |
+| --- | --- |
+| [中文快速入门](读我，玩法介绍.md) | 基本操作、玩法流程与常见问题 |
+| [中文机制详解](机制详解.md) | 系统条件、公式和数值 |
+| [English quick start](QUICK_START_EN.md) | English gameplay introduction |
+| [English full guide](PLAYER_GUIDE_EN.md) | Detailed mechanics and reference |
+| [更新日志](CHANGELOG.md) | 中英双语版本变更 |
+| [文档索引](Docs/README.md) | 开发记录、设计规划、版本验证及测试说明 |
+| [发布与打包](Docs/Maintenance/发布与打包.md) | 编译环境、依赖配置、回归检查与安装包生成 |
+| [未来开发规划](Docs/Design/未来内容开发规划.md) | 后续需求与尚未实现的设计 |
 
-A good trainer generally has:
+当前旧 RimTalk 兼容处于暂停状态，旧实现保存在 `Archive/RimTalk/`；宠物猫、宠物兔的未完成入口仍禁用。其他兼容说明及具体玩法限制见玩家指南。
 
-- high Social skill;
-- good physical condition;
-- a positive relationship with the target;
-- usable RJW sex parts.
+## 开发与验证
 
-### Step 3: Configure the Target
+主工程为 `Sexslavecraft/SexSlaveCraft_Alpha.csproj`，目标框架为 **.NET Framework 4.7.2**。源码编译需要 Visual Studio MSBuild、对应开发组件，以及本机 RimWorld 和模组依赖程序集。工程引用需按本机环境配置，具体方式见 [发布与打包](Docs/Maintenance/发布与打包.md)。
 
-Select the intended target and open the `Training` tab:
+使用已有 DLL 进行版本校验、默认回归检查和本地打包，需要 PowerShell 7、Git 与 .NET SDK 9。在仓库根目录运行：
 
-1. set `Pawn Identity` to `sex slave`;
-2. enable `Allow Training`;
-3. select an `Assigned Pose`;
-4. optionally choose an `Assigned Trainer`.
+```powershell
+pwsh -File Scripts/New-Release.ps1
+```
 
-The target may be a colonist, prisoner, or slave, but must pass RJW's sex-target eligibility checks.
+修改 C# 源码后，配置好本机依赖，再使用 `-Build` 重新编译并打包：
 
-### Step 4: Start Training
+```powershell
+pwsh -File Scripts/New-Release.ps1 -Build
+```
 
-Trainers may take the job automatically. You can also right-click the target and order it manually.
+产物输出至根目录 `Releases/`。脚本只执行本地流程；`TrainerIdentity` 与 `SharedBed` 套件仍需按各自说明单独运行。测试入口见 [文档索引](Docs/README.md#随目录维护的说明)，自动回归的覆盖范围及游戏内验证要求见发布文档。
 
-After successful ordinary Training, the target enters a cooldown of roughly nine in-game hours.
+## 反馈与贡献
 
-## 3. What Training Provides
+问题反馈请提供模组版本、RimWorld 版本、相关模组及加载顺序、复现步骤和错误日志；涉及存档时说明是在新档还是旧档中出现。
 
-Ordinary Training can:
+提交修改时，请说明影响范围和验证结果。玩家可见的变化记录在 `CHANGELOG.md`，技术说明、规划及发布记录按 [文档维护约定](Docs/README.md#文档维护约定) 分类维护。
 
-- increase Corruption;
-- change the target's opinion of the trainer;
-- create mood memories;
-- reduce a prisoner or colonist's will;
-- develop the body part associated with the selected act;
-- contribute to Public Use or Cow systems.
+项目作者信息见 `About/About.xml`：Someone、Hajimi、TieJin。感谢上游作者及参与修复、翻译和验证的贡献者。
 
-Training quality is mainly affected by:
+## English overview
 
-- the trainer's Social skill;
-- the target's opinion of the trainer;
-- genital size compatibility;
-- vanilla slave status;
-- the target's Corruption and chain stage.
+This repository continues RJW-SexSlaveCraft from upstream **2.2.8** for **RimWorld 1.6**. The repository version is **2.3.0**. Harmony and RimJobWorld are required and must load before this mod.
 
-A high-Social Master is also the best choice for the Binding Ritual.
+Download the installation ZIP from the [v2.3.0 release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.0), then extract its mod folder into `RimWorld/Mods/`. When updating, move the old mod folder out before installing the replacement. The package includes the compiled mod DLL.
 
-## 4. Corruption and the Bond
-
-Corruption represents how deeply the target has been trained.
-
-Once Corruption reaches the first bond threshold:
-
-- the Master receives `Sex Slave Bridle`;
-- the target receives `Sex Slave Chain`;
-- the chain records the target's owner;
-- the Master gains `Libidinal Resonance Field`;
-- ownership restrictions and rebellion suppression begin.
-
-Bound pawns cannot switch SSC identity until their binding is explicitly removed. A Master with remaining bound slaves is also locked; the Sex Slave trainer toggle remains available. Shared-bed permission can also apply before binding when a valid trainer is assigned.
-
-Corruption uses a default base decay of 2% per day. The mod settings can disable it or adjust it from 0% to 20% per day; recent Training quality, opinion of the Master, body-part development, and deeper Chain stages continue to modify the actual loss.
-
-The current Chain stage brakes Corruption at the next threshold: the first stage can reach 30%, the second can reach 50%, and the third can reach 90%. After reaching a threshold, a Binding Ritual resolution is still required to advance the Chain stage.
-
-## 5. Binding Ritual
-
-The Binding Ritual is the main way to advance the Chain health stage. The Sex Slave trait is synchronized only from highest-ever Corruption and is not used as a gameplay predicate.
-
-### Setup
-
-1. Add `Binding Ritual` to the colony ideology.
-2. Set the ritual leader's `Pawn Identity` to `Master`.
-3. Set the target's identity to `sex slave`.
-4. Assign the ritual leader as the target's trainer.
-5. Choose a reachable ritual location.
-
-### Ritual Sequence
-
-A complete ritual performs six acts:
-
-1. Handjob
-2. Footjob
-3. 69
-4. Boobjob
-5. Anal
-6. Vaginal
-
-All six phases must finish. An interrupted ritual does not receive the final SSC outcome.
-
-Starting with 2.2.10, cancellation or departure of the Master or target releases the ritual lock.
-Daily training can resume subject to its usual eligibility, schedule, and cooldown rules.
-A new ritual starts at phase one; phase changes and save/load within the same active ritual preserve progress.
-
-### Improving Ritual Quality
-
-- use a Master with high Social skill;
-- invite more spectators;
-- improve room Impressiveness;
-- avoid repeating the ritual within three days.
-
-A completed Binding Ritual can:
-
-- grant a large amount of Corruption and full-body development;
-- reduce will;
-- advance the Sex Slave Chain;
-- synchronize the Sex Slave trait milestone mapped from highest-ever Corruption;
-- attempt ritual enslavement;
-- create a special Master/Perfect Sex Slave relationship at high opinion.
-
-## 6. Body-part Training
-
-Research `Body-part Training` before ordinary Training can grant body-part experience.
-
-| Act | Developed part |
-|---|---|
-| Handjob, Mutual Masturbation | Hands |
-| Footjob | Feet |
-| Oral | Mouth |
-| Boobjob | Breasts |
-| Vaginal, Fingering, Fisting, 69 | Genitals |
-| Anal, Rimming | Anus |
-
-The six development tracks broadly provide:
-
-- `Corruption Mark (Hands)`: work, shooting, and weapon handling;
-- `Corruption Mark (Feet)`: movement, dodge, and carrying capacity;
-- `Corruption Mark (Mouth)`: social impact, trade, and conversion;
-- `Corruption Mark (Breasts)`: beauty, animal work, and Permanent Lactation;
-- `Corruption Mark (Vagina)`: rest recovery, pain resistance, and Purple Aphrodisiac Nanofluid production;
-- `Corruption Mark (Anus)`: healing, immunity, and pain resistance.
-
-The Binding Ritual develops all six tracks at once.
-
-## 7. PNA and Lactation
-
-### Purple Aphrodisiac Nanofluid
-
-At maximum genital development, a pawn begins producing `Purple Aphrodisiac Nanofluid`.
-
-It is used for:
-
-- direct ingestion;
-- crafting the `Basic PNA Launcher`;
-- producing `Purple Aphrodisiac Nanofluid Plus`;
-- Personality Excretion;
-- Full Gelatinization Surgery.
-
-Ingestion causes `PNA Infection` and may cause `PNA Dependence`. Pawns with Sex Slave Chain are immune to PNA Dependence.
-
-### Permanent Lactation
-
-High breast development grants `Permanent Lactation Phase`.
-
-- milk production consumes nutrition;
-- production stalls during starvation;
-- lactation can be disabled from the Training tab;
-- Cow Specialization requires Permanent Lactation Phase.
-
-When Cow Specialization is active, completed sex scenes accelerate milk production and specialization progress.
-
-## 8. Public Use Specialization
-
-Complete `Public Use` research, then select `Bus` in the Training tab.
-
-Public Use Specialization:
-
-- automatically enables sex and Training with other pawns;
-- gains progress from sex with someone other than the owner;
-- triggers special events after trading as the negotiator;
-- improves trade, negotiation, Social Impact, and Talking.
-
-After a pawn-to-pawn trade, the negotiator may:
-
-- initiate consensual sex;
-- be raped by the trader;
-- be released without sex.
-
-Higher Corruption makes the consensual outcome more likely, reaching 100% at 20% Corruption. The Public Use pawn must personally negotiate a successful trade with an actual exchange; cancelled or empty trades and orbital trade ships do not trigger this mechanic. Both pawns must be available, within 15 cells on the same map, and pass the relevant RJW and reachability checks.
-
-Reaching 100% does not directly create `Final Public Use Specialization`. Use the Personality Gel workflow described below.
-
-## 9. Cow Specialization
-
-Cow Specialization requires:
-
-- `Milking Specialization` research;
-- `Sex Slave Chain` health stage 2 or higher (severity at least 30%);
-- `Permanent Lactation Phase`.
-
-Cow progress comes from produced or consumed milk and adds an extra milk reservoir.
-
-Tradeoffs:
-
-- reduced movement;
-- reduced Manipulation;
-- increased Vulnerability.
-
-Benefits:
-
-- faster milk production;
-- Beauty at higher stages;
-- rapid milk acceleration after sex.
-
-At 100%, use Personality Excretion and Personality Gel editing to obtain `Final Cow Specialization`.
-
-## 10. Final Specializations
-
-Both Final specializations use the same workflow:
-
-1. raise Public Use or Cow Specialization to 100%;
-2. perform Personality Excretion on that pawn;
-3. obtain Personality Gel containing the specialization data;
-4. process the gel at a sculpting table;
-5. implant the edited gel into a Hollow.
-
-Final specialization does not upgrade the original body directly.
-
-## 11. Personality Excretion
-
-### Preparation
-
-After researching `Personality Excretion`, schedule `Induce Personality Excretion` from the Health tab.
-
-The target receives `Preparing Personality Excretion`. It progresses naturally, while Anal sex accelerates it.
-
-### Extraction
-
-At 100% preparation:
-
-1. use a colonist with Training work enabled;
-2. right-click the target;
-3. order Personality Excretion;
-4. complete the fixed Anal scene.
-
-After completion:
-
-- Personality Gel spawns on the ground;
-- the original body becomes a Hollow;
-- the Hollow loses normal identity and social function;
-- the Hollow enters a short shutdown period.
-
-Deeper Sex Slave Chain stages produce higher-grade gel:
-
-- `Personality Gel`
-- `Basic Personality Gel`
-- `Advanced Personality Gel`
-- `Perfect Personality Gel`
-
-### Stored Data
-
-Personality Gel stores the source pawn's:
-
-- name;
-- skills and passions;
-- memories and direct relations;
-- backstories;
-- ordinary personality traits and their degrees, including ordinary traits temporarily suppressed by genes;
-- current Corruption, historical maximum Corruption, and bound Master;
-- highest-ever Corruption and its derived Sex Slave trait milestone;
-- Public Use or Cow data.
-
-It stores personality rather than flesh. It does not copy the receiving body's appearance, age, genes, or body parts.
-
-## 12. Personality Implantation
-
-1. Select Personality Gel.
-2. Open its personality-card tab.
-3. Choose `Assign Target Hollow`.
-4. Wait for a colonist with Training work enabled, or manually order insertion.
-
-Implantation takes 600 ticks. The Hollow waits while retaining its posture and sleep, and both pawns must remain within touch range. Losing contact or a valid target interrupts the procedure before personality transfer or gel consumption.
-
-Successful implantation:
-
-- consumes the gel;
-- restores the stored identity data;
-- restores Corruption, bond, skills, memories, and specialization;
-- applies `Personality Implantation Adaptation Syndrome` for about one day.
-
-Implantation replaces ordinary personality traits with the gel's snapshot, including when returning to the original body. The receiving body's genes and their traits remain intact; the Sex Slave trait is rebuilt separately from highest-ever Corruption. New gels exclude gene-granted traits, while older gels restore saved entries without knowing their original sources. A missing trait snapshot rejects implantation and preserves the gel. See the full guide for details.
-
-## 13. Semi-gelatinization
-
-After researching `Partial Gelatinization`, schedule `Semi-gelatinization Surgery` on an arm or leg.
-
-The process creates a race:
-
-- Adaptation reaches 100% first: the modification succeeds;
-- Severity reaches 100% first: the limb is destroyed.
-
-Higher Corruption strongly improves Adaptation.
-
-Success produces:
-
-- `Gelatinized Arm`: better Manipulation and armor, plus healing for injuries on that arm;
-- `Gelatinized Leg`: better Moving and armor.
-
-Parts with `Semi-gelatinization in Progress` are also preferred targets for redirected Master damage.
-
-## 14. Full Gelatinization
-
-Full Gelatinization is a high-risk endgame conversion.
-
-Requirements:
-
-- `Full-body Gelatinization` research;
-- a Hollow with `Personality Excretion (Complete)`;
-- Industrial medicine and Purple Aphrodisiac Nanofluid Plus;
-- a skilled doctor.
-
-Success depends on:
-
-- Corruption;
-- Hands, Feet, Mouth, Breasts, Genitals, and Anus development.
-
-Only 100% Corruption and 100% in all six tracks guarantee success.
-
-On success, `Full Gelatinization Complete`:
-
-- removes most previous non-SSC, non-RJW health conditions;
-- greatly improves Manipulation, Moving, Consciousness, armor, and regeneration;
-- can tint the body translucent purple.
-
-If Severity wins, the pawn is erased completely and leaves no recoverable corpse.
-
-## 15. Benefits for the Master
-
-### Libidinal Resonance Field
-
-The field becomes stronger as the Master binds more sex slaves and their average Corruption rises.
-
-It improves:
-
-- Manipulation;
-- melee hit and dodge;
-- Move Speed;
-- pain resistance;
-- negotiation and Social Impact at high stages;
-- incoming damage at the highest stage.
-
-### Damage Sharing
-
-`Sex Slave Bridle` provides a `Damage Sharing` toggle.
-
-When enabled, eligible bound sex slaves on the same map absorb most incoming damage for the Master. Higher-Corruption slaves carry more weight.
-
-Execution, surgery, EMP, and most toxic damage are not redirected.
-
-## 16. Other Effects on Bound Sex Slaves
-
-A pawn with Sex Slave Chain:
-
-- cannot join prison breaks;
-- cannot join slave rebellions;
-- has Berserk suppressed;
-- permanently loses vanilla disabled-work and slave work-speed penalties once historical maximum Corruption exceeds zero;
-- gains increasingly positive rape memories at high Corruption.
-
-By default, a normal chained sex slave may only have consensual sex with the owner. Public Use or `Allow others to train or have sex` can lift that restriction.
-
-At more than 0.1% Corruption, an SSC Sex Slave may share an ordinary multi-person bed with the bonded Master and active Assigned Trainer. For a vanilla slave, assign the Master or trainer first, then the slave. Vanilla lovers/spouses remain unaffected; medical rest and deathrest take priority.
-
-After both pawns actually sleep together, the slave receives a one-day, non-stacking memory using the existing six mood values. Merely assigning a bed does not grant it. Vanilla and Mint lists show separate Master, Sex Slave and Trainer badges on the right of the name, with extra-permission status and threshold details on hover.
-
-## 17. Special Apparel
-
-### Apparel Bulletproof Suit
-
-- inexpensive entry-level outfit;
-- basic protection;
-- holds Corruption at a minimum of 30%;
-- unlocks that floor only after the pawn’s historical maximum Corruption has reached 30%;
-- useful for maintaining a target that has already reached 30%;
-- the floor only applies inside the current Chain-stage interval.
-
-### Evilfall Combat Suit
-
-- requires `Perfect Sex Slave`;
-- strong armor and combat bonuses;
-- holds Corruption at 100%;
-- unlocks that floor only after the pawn’s historical maximum Corruption has reached 100%;
-- protects against rape when the setting allowing outside rape is enabled;
-- the floor only applies inside the current Chain-stage interval.
-
-The current decay-multiplier direction does not match the item descriptions. Minimum-Corruption effects preserve only milestones the pawn has already reached inside the current Chain interval.
-
-## 18. Important Settings
-
-For a first game, keep defaults and review:
-
-- `Enable sex-slave protection rules`;
-- `Allow sex slaves to be raped`;
-- `Only the owner may initiate non-rape sex`;
-- `Allow ritual enslavement`;
-- `Enable Corruption decay`;
-- `Base Corruption decay per day` (default 2%);
-- `Enable Full Gelatinization Body Tint`;
-- `Use Old Scoring`.
-
-If a valid-looking target cannot be trained, try toggling `Use RJW original eligibility for training age checks`. The code branches behind this option are reversed relative to the displayed explanation.
-
-## 19. Compatibility
-
-- `RJW Onahole`: preserves the Onahole receiver job during SSC scenes.
-- `Rimworld Animations`: supports ritual animations and hides weapons during animation.
-- `Human Cattle`: becomes the authoritative milk-reservoir system.
-- `Equal Milking`: recognizes Permanent Lactation Phase when Human Cattle is absent.
-- `RJW-PE`: reads age configuration for eligibility diagnostics.
-- `Humanoid Alien Races`: Sex Reassignment Surgery uses allowed body types.
-- `LifeForce`: conflicting SSC body states remove the LifeForce gene and drop it in a genepack.
-
-### RimTalk and Scheduled Training
-
-SSC's legacy RimTalk integration is suspended pending a complete redesign. SSC no longer sends scene dialogue, inserts Training interruption lines, clears RimTalk replies, or reserves dialogue generation. The settings page shows a suspension notice. RimTalk's own features remain controlled by RimTalk and its other extensions.
-
-Scheduled Training remains part of SSC. Use each Sex Slave's Training tab to select a two-hour window and a frequency of once every 1–7 days. Automatic Training obeys both the timetable and the roughly nine-hour cooldown. Forced orders bypass the scheduled date/window, but not cooldown or safety checks.
-
-<!-- Not-fully-implemented checklist temporarily hidden.
-## 20. Content Not Fully Implemented
-
-The following entries exist as research, defs, or placeholder code but do not currently form complete gameplay systems:
-
-- Fine Training and sensitivity discovery;
-- Pet: Cat, Pet: Dog, and Pet: Rabbit;
-- Combat Unit;
-- Femboy Conversion;
-- high-tier PNA weapon;
-- automatic granting of `Erotic Word`;
-- Genital Size Compatibility in the Binding Ritual.
-
-Also note:
-
-- `Basic PNA Launcher` research does not currently gate the weapon;
-- Sex Reassignment Surgery is not gated by its SSC research;
-- Final Cow Specialization does not automatically grant Full Gelatinization Complete;
-- trade-based Public Use growth and tab specialization progress can become desynchronized.
-
--->
-
-## 21. Quick Troubleshooting
-
-### No Training option
-
-Check:
-
-- `Training` research;
-- active trainer identity and the trainer's Training work assignment;
-- target identity and `Allow Training`;
-- the nine-hour cooldown;
-- Assigned Trainer;
-- Sex Slave Chain ownership;
-- RJW target eligibility.
-
-### Corruption reached a threshold but Chain did not advance
-
-Push Corruption to the current Chain stage’s brake cap, then complete a Binding Ritual. The first Chain stage can reach 30%, but Chain severity advances only during ritual resolution. If Corruption is still being forced back to 10%, confirm that the latest DLL is loaded.
-
-### Body-part experience does not increase
-
-Complete `Body-part Training` and select an act mapped to the intended part.
-
-### Cow cannot be selected
-
-You need Milking Specialization research, `Sex Slave Chain` health stage 2 or higher (severity at least 30%), and Permanent Lactation Phase.
-
-### Specialization reached 100% but did not upgrade
-
-Perform Personality Excretion, edit the gel at a sculpting table, then implant it into a Hollow.
-
-### Personality Excretion is ready but nobody performs it
-
-The extraction job requires a manual right-click order.
-
-### Full Gelatinization keeps failing
-
-It remains risky until Corruption and all six body-part tracks reach 100%. Wait for the game to report guaranteed success.
+For gameplay, read the [English quick start](QUICK_START_EN.md) or [full guide](PLAYER_GUIDE_EN.md). See the [bilingual changelog](CHANGELOG.md) for release history. Legacy RimTalk integration remains suspended, and unfinished Pet Cat and Pet Rabbit choices remain disabled.

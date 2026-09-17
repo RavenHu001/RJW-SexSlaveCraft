@@ -1,5 +1,7 @@
 # 文档索引
 
+[项目首页](../README.md)
+
 项目文档按用途分类。玩家指南保留在仓库根目录；测试、归档和着色器说明与对应目录放在一起。
 
 ## 玩家指南与更新日志
@@ -8,7 +10,7 @@
 | --- | --- |
 | [中文快速入门](../读我，玩法介绍.md) | 中文玩法介绍 |
 | [中文机制详解](../机制详解.md) | 完整条件、公式与数值 |
-| [English quick start](../README.md) | 英文快速入门 |
+| [English quick start](../QUICK_START_EN.md) | 英文快速入门 |
 | [English full guide](../PLAYER_GUIDE_EN.md) | 英文完整指南 |
 | [CHANGELOG](../CHANGELOG.md) | 按版本排列的玩家更新日志 |
 
