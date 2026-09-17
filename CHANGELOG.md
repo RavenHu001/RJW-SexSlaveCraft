@@ -1,14 +1,14 @@
 # 更新日志 / Changelog — SexSlaveCraft（TieJin 接续版 / TieJin continuation）
 
-本项目基于原模组 7 月停更时的 **2.2.8** 版本继续维护，沿用原有版本号。更新按版本从新到旧排列，技术细节见 [开发更新记录](Docs/开发更新记录.md)。
+本项目基于原模组 7 月停更时的 **2.2.8** 版本继续维护，沿用原有版本号。更新按版本从新到旧排列，技术细节见 [开发更新记录](Docs/Development/开发更新记录.md)。
 
-This continuation builds on upstream **2.2.8**, the baseline when upstream development stopped in July, and retains its version numbering. Entries are listed newest first. Technical details are in the [development log (Chinese)](Docs/开发更新记录.md).
+This continuation builds on upstream **2.2.8**, the baseline when upstream development stopped in July, and retains its version numbering. Entries are listed newest first. Technical details are in the [development log (Chinese)](Docs/Development/开发更新记录.md).
 
 ## [2.3.0] — 2026-09-16 — 同床、调教员身份与分配界面 / Shared beds, trainer roles and assignment UI
 
-将维护者已分阶段确认有效的同床优化、调教员身份、床位标签及相关修复统一归入 2.3.0，包含 2.2.15 及更早版本修复。正式安装包与 SHA-256 校验文件见 [v2.3.0 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.0)。详见 [中英双语发布说明](Docs/2.3.0发布说明.md) 与 [版本验证](Docs/2.3.0版本验证.md)。
+将维护者已分阶段确认有效的同床优化、调教员身份、床位标签及相关修复统一归入 2.3.0，包含 2.2.15 及更早版本修复。正式安装包与 SHA-256 校验文件见 [v2.3.0 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.0)。详见 [中英双语发布说明](Docs/Releases/2.3.0/2.3.0发布说明.md) 与 [版本验证](Docs/Releases/2.3.0/2.3.0版本验证.md)。
 
-Groups the maintainer-confirmed shared-bed, trainer-role and bed-assignment changes, including fixes from 2.2.15 and earlier versions. The installation ZIP and SHA-256 checksum are available from [v2.3.0 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.0). See the [bilingual release notes](Docs/2.3.0发布说明.md) and [validation record (Chinese)](Docs/2.3.0版本验证.md).
+Groups the maintainer-confirmed shared-bed, trainer-role and bed-assignment changes, including fixes from 2.2.15 and earlier versions. The installation ZIP and SHA-256 checksum are available from [v2.3.0 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.0). See the [bilingual release notes](Docs/Releases/2.3.0/2.3.0发布说明.md) and [validation record (Chinese)](Docs/Releases/2.3.0/2.3.0版本验证.md).
 
 - **同床 / Shared beds：** SSC 性奴恶堕高于 0.1% 时，可与主人及有效指定调教员获得额外许可，不再影响全局恋爱判断。医疗/死眠优先，原版环境检查保留；原版奴隶性奴须先有床伴才能加入空殖民者床。SSC Sex Slaves above 0.1% Corruption may share with both their Master and active Assigned Trainer without changing romance checks. Medical rest, deathrest and native checks retain priority; vanilla slaves require their partner to be assigned first.
 - **心情 / Mood：** 保留六档数值，改为实际共同睡眠结束后的一天、不叠加记忆，修复起床结算及定义不匹配红字。Preserves six mood values as one-day, non-stacking memories after actual shared sleep, fixing wake-up and mismatched-definition errors.
@@ -22,9 +22,9 @@ Groups the maintainer-confirmed shared-bed, trainer-role and bed-assignment chan
 
 ## [2.2.15] — 2026-09-16 — 公交车交易修复与未完成特化入口禁用 / Public Use trade fix and unfinished specialization selection
 
-本版汇总维护者已在游戏内确认有效的公交车交易修复，以及宠物猫、宠物兔入口禁用，包含 `2.2.14` 及更早版本修复。详见 [2.2.15 发布说明](Docs/2.2.15发布说明.md) 与 [版本验证记录](Docs/2.2.15版本验证.md)。正式安装包与 SHA-256 校验文件见 [v2.2.15 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.2.15)。
+本版汇总维护者已在游戏内确认有效的公交车交易修复，以及宠物猫、宠物兔入口禁用，包含 `2.2.14` 及更早版本修复。详见 [2.2.15 发布说明](Docs/Releases/2.2.15/2.2.15发布说明.md) 与 [版本验证记录](Docs/Releases/2.2.15/2.2.15版本验证.md)。正式安装包与 SHA-256 校验文件见 [v2.2.15 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.2.15)。
 
-This version groups the maintainer-confirmed Public Use trade fix and disabled Pet Cat / Pet Rabbit selection, including fixes from `2.2.14` and earlier versions. See the [bilingual release notes](Docs/2.2.15发布说明.md) and [validation record (Chinese)](Docs/2.2.15版本验证.md). The installation ZIP and SHA-256 checksum are available from [v2.2.15 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.2.15).
+This version groups the maintainer-confirmed Public Use trade fix and disabled Pet Cat / Pet Rabbit selection, including fixes from `2.2.14` and earlier versions. See the [bilingual release notes](Docs/Releases/2.2.15/2.2.15发布说明.md) and [validation record (Chinese)](Docs/Releases/2.2.15/2.2.15版本验证.md). The installation ZIP and SHA-256 checksum are available from [v2.2.15 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.2.15).
 
 ### 修复 / Fix
 
@@ -40,9 +40,9 @@ This version groups the maintainer-confirmed Public Use trade fix and disabled P
 
 ## [2.2.14] — 2026-09-15 — 当前已发现 bug 修复完成版本 / Known-bug fixes complete
 
-按维护者要求，将 `2.2.14` 标记为“当前已发现 bug 修复完成版本”：截至本版，已发现且确认需要修复的问题已处理完成，作为本阶段修复收尾版本。维护者已确认永久泌乳修复有效；本版包含 `2.2.13` 及更早版本修复。正式安装包与 SHA-256 校验文件见 [v2.2.14 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft-TieJin-Modify/releases/tag/v2.2.14)，详见 [2.2.14 发布说明](Docs/2.2.14发布说明.md) 与 [版本验证记录](Docs/2.2.14版本验证.md)。
+按维护者要求，将 `2.2.14` 标记为“当前已发现 bug 修复完成版本”：截至本版，已发现且确认需要修复的问题已处理完成，作为本阶段修复收尾版本。维护者已确认永久泌乳修复有效；本版包含 `2.2.13` 及更早版本修复。正式安装包与 SHA-256 校验文件见 [v2.2.14 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft-TieJin-Modify/releases/tag/v2.2.14)，详见 [2.2.14 发布说明](Docs/Releases/2.2.14/2.2.14发布说明.md) 与 [版本验证记录](Docs/Releases/2.2.14/2.2.14版本验证.md)。
 
-At the maintainer's request, `2.2.14` marks completion of the current known-bug fixes: issues identified and confirmed as requiring fixes have been addressed as of this release. The maintainer has confirmed the permanent lactation fix. Includes fixes from `2.2.13` and earlier versions. The installation ZIP and SHA-256 checksum are available from [v2.2.14 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft-TieJin-Modify/releases/tag/v2.2.14). See the [bilingual release notes](Docs/2.2.14发布说明.md) and [validation record (Chinese)](Docs/2.2.14版本验证.md).
+At the maintainer's request, `2.2.14` marks completion of the current known-bug fixes: issues identified and confirmed as requiring fixes have been addressed as of this release. The maintainer has confirmed the permanent lactation fix. Includes fixes from `2.2.13` and earlier versions. The installation ZIP and SHA-256 checksum are available from [v2.2.14 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft-TieJin-Modify/releases/tag/v2.2.14). See the [bilingual release notes](Docs/Releases/2.2.14/2.2.14发布说明.md) and [validation record (Chinese)](Docs/Releases/2.2.14/2.2.14版本验证.md).
 
 此标记限定于当前已确认的问题范围，不表示未来不会发现新问题。自慰拦截与现有同床行为按维护者决定暂不视为 bug；旧 RimTalk 兼容通过隔离暂停处理，整体重置仍属未来开发。
 
@@ -60,15 +60,15 @@ This milestone covers the currently confirmed issues and does not rule out futur
 - 暂停并归档旧 RimTalk 兼容，移除运行入口和相关设置控件，等待整个模块重新设计。保留调教排班和旧设置数据。
 - Suspends and archives the legacy RimTalk integration pending a complete redesign. Runtime hooks and active settings controls are removed; Training schedules and legacy preferences are retained.
 
-未来的 RimTalk 兼容重置、性奴主动自慰与主动和他人性爱的保护拆分、主奴同床优化调整和可视化，记录在 [开发规划](Docs/未来内容开发规划.md)，不属于本版已实现功能。
+未来的 RimTalk 兼容重置、性奴主动自慰与主动和他人性爱的保护拆分、主奴同床优化调整和可视化，记录在 [开发规划](Docs/Design/未来内容开发规划.md)，不属于本版已实现功能。
 
-The RimTalk integration reset, separate protections for slave-initiated masturbation and sex with others, and shared-bed improvements and visualization remain [future development plans (Chinese)](Docs/未来内容开发规划.md).
+The RimTalk integration reset, separate protections for slave-initiated masturbation and sex with others, and shared-bed improvements and visualization remain [future development plans (Chinese)](Docs/Design/未来内容开发规划.md).
 
 ## [2.2.13] — 2026-09-15 — 人格植入、手术记忆与仪式动画修复 / Implantation, surgery memory, and ritual animation fixes
 
-维护者已分别确认以下四项修复有效，统一归入 `2.2.13`。正式安装包与 SHA-256 校验文件见 [v2.2.13 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft-TieJin-Modify/releases/tag/v2.2.13)。构建与验证记录见 [2.2.13 版本验证](Docs/2.2.13版本验证.md)，发布说明见 [2.2.13 发布说明](Docs/2.2.13发布说明.md)。
+维护者已分别确认以下四项修复有效，统一归入 `2.2.13`。正式安装包与 SHA-256 校验文件见 [v2.2.13 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft-TieJin-Modify/releases/tag/v2.2.13)。构建与验证记录见 [2.2.13 版本验证](Docs/Releases/2.2.13/2.2.13版本验证.md)，发布说明见 [2.2.13 发布说明](Docs/Releases/2.2.13/2.2.13发布说明.md)。
 
-The maintainer has confirmed each of the following four fixes. They are grouped into `2.2.13`, now available from [v2.2.13 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft-TieJin-Modify/releases/tag/v2.2.13) with the installation ZIP and SHA-256 checksum. See the [validation record (Chinese)](Docs/2.2.13版本验证.md) and [bilingual release notes](Docs/2.2.13发布说明.md).
+The maintainer has confirmed each of the following four fixes. They are grouped into `2.2.13`, now available from [v2.2.13 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft-TieJin-Modify/releases/tag/v2.2.13) with the installation ZIP and SHA-256 checksum. See the [validation record (Chinese)](Docs/Releases/2.2.13/2.2.13版本验证.md) and [bilingual release notes](Docs/Releases/2.2.13/2.2.13发布说明.md).
 
 ### 1. 人格植入接触检查 / Contact checks during Personality Gel implantation
 
@@ -104,9 +104,9 @@ The maintainer has confirmed each of the following four fixes. They are grouped 
 
 ## [2.2.12] — 2026-09-14 — 恶堕衰减翻译与行为保护修复 / Corruption decay localization and interaction protection fixes
 
-维护者验证后确认本轮修复有效，将以下两项修复统一归入 `2.2.12`。详细构建与验证记录见 [2.2.12 版本验证](Docs/2.2.12版本验证.md)。
+维护者验证后确认本轮修复有效，将以下两项修复统一归入 `2.2.12`。详细构建与验证记录见 [2.2.12 版本验证](Docs/Releases/2.2.12/2.2.12版本验证.md)。
 
-The maintainer confirmed these fixes after testing. Version `2.2.12` groups the following two fixes; see the [version validation record (Chinese)](Docs/2.2.12版本验证.md) for build and validation details.
+The maintainer confirmed these fixes after testing. Version `2.2.12` groups the following two fixes; see the [version validation record (Chinese)](Docs/Releases/2.2.12/2.2.12版本验证.md) for build and validation details.
 
 **正式发布 / Released：安装包与 SHA-256 校验文件见 [v2.2.12 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft-TieJin-Modify/releases/tag/v2.2.12)。Download the installation ZIP and checksum from the release page.**
 
@@ -128,7 +128,7 @@ The maintainer confirmed these fixes after testing. Version `2.2.12` groups the 
 
 验证 / Validation：八个回归套件共 173 项；新增 27 项保护用例另以真实 Harmony 注册运行。维护者确认修复有效，未提供按语言、场景或模组组合逐项列出的实测结果。Eight regression suites contain 173 checks, with the 27 new protection cases additionally run through real Harmony patch registration. The maintainer confirmed the fixes work without providing individual results for each language, scenario, or mod combination.
 
-技术说明 / Technical details：[行为开始保护修复](Docs/行为开始保护修复.md)。保留 `2.2.11` 及更早版本修复。Includes the fixes from `2.2.11` and earlier versions.
+技术说明 / Technical details：[行为开始保护修复](Docs/Development/行为开始保护修复.md)。保留 `2.2.11` 及更早版本修复。Includes the fixes from `2.2.11` and earlier versions.
 
 ## [2.2.11] — 2026-09-14 — 人格、语言与种族分页修复合集 / Personality, localization, and race inspection tab fixes
 
@@ -143,7 +143,7 @@ The maintainer confirmed these fixes after testing. Version `2.2.12` groups the 
 - Implantation replaces ordinary traits from the saved snapshot, including same-body restoration, while retaining the host's genes and gene-granted traits. The Sex Slave trait is still rebuilt from highest-ever Corruption.
 - The gel card separates its header and fixed action area, scrolls skills and traits independently, wraps long trait names, and corrects layout and localization in Chinese, English, and Russian.
 
-详细说明 / Details：[人格普通特质迁移修复](Docs/人格普通特质迁移修复.md) · [人格凝胶界面布局调整](Docs/人格凝胶界面布局调整.md)。
+详细说明 / Details：[人格普通特质迁移修复](Docs/Development/人格普通特质迁移修复.md) · [人格凝胶界面布局调整](Docs/Development/人格凝胶界面布局调整.md)。
 
 ### 2. 特化历史与记忆数值迁移 / Specialization history and memory values
 
@@ -152,7 +152,7 @@ The maintainer confirmed these fixes after testing. Version `2.2.12` groups the 
 - Gels carry specialization history for every direction and replace the receiving body's history during implantation.
 - Memory snapshots preserve actual opinion values, stages, and native instance fields, including custom zero and fractional values.
 
-详细说明 / Details：[人格特化历史与记忆数值迁移修复](Docs/人格特化历史与记忆数值迁移修复.md)。
+详细说明 / Details：[人格特化历史与记忆数值迁移修复](Docs/Development/人格特化历史与记忆数值迁移修复.md)。
 
 ### 3. 特化完成显示与永久泌乳授予 / Specialization completion display and permanent lactation
 
@@ -163,7 +163,7 @@ The maintainer confirmed these fixes after testing. Version `2.2.12` groups the 
 
 兼容说明 / Compatibility：旧凝胶继续按已有数据及默认值恢复，无法追溯补回此前未保存的历史或自定义数值；旧特质快照无法辨认基因来源。Older gels retain their saved data and compatible defaults; previously omitted history or custom values cannot be reconstructed, and legacy trait snapshots cannot identify gene sources.
 
-原三组修复验证 / Validation of the original three fix groups：六个自动回归套件共 138 项；上述三组修复的游戏内有效性已由维护者确认，未提供逐项场景清单。Six regression suites contain 138 checks; the maintainer confirmed the original three fix groups in-game without providing an individual scenario checklist. 最终发布的七套件 146 项检查与构建记录 / Final release validation with seven suites and 146 checks：[2.2.11 发布验证](Docs/2.2.11发布验证.md)。
+原三组修复验证 / Validation of the original three fix groups：六个自动回归套件共 138 项；上述三组修复的游戏内有效性已由维护者确认，未提供逐项场景清单。Six regression suites contain 138 checks; the maintainer confirmed the original three fix groups in-game without providing an individual scenario checklist. 最终发布的七套件 146 项检查与构建记录 / Final release validation with seven suites and 146 checks：[2.2.11 发布验证](Docs/Releases/2.2.11/2.2.11发布验证.md)。
 
 ### 4. 语言与种族检查分页 / Localization and race inspection tabs
 
@@ -176,7 +176,7 @@ The maintainer confirmed these fixes after testing. Version `2.2.12` groups the 
 - Added 54 Traditional Chinese XML files and the ten gel UI keys introduced in this version; removed duplicate settings keys to avoid conflicting text definitions.
 - Race tab injection retains existing inspection tabs and adds the SSC tab only when missing. It no longer clears resolved tabs or reruns `ResolveReferences()`, addressing missing tabs on new pawns and repeated HAR resolution.
 
-本次暂缓 RimTalk 及渲染修复。新增修复的构建、静态检查与游戏实测状态见 [语言与种族分页合并记录](Docs/2.2.11语言与种族分页合并.md)；原三组修复的验证结果不代表新增兼容性场景已通过。RimTalk and rendering changes are deferred. Build, static-check, and in-game validation status for this addition is tracked in the [merge record (Chinese)](Docs/2.2.11语言与种族分页合并.md); previous validation does not establish that the new compatibility scenarios pass.
+本次暂缓 RimTalk 及渲染修复。新增修复的构建、静态检查与游戏实测状态见 [语言与种族分页合并记录](Docs/Development/2.2.11语言与种族分页合并.md)；原三组修复的验证结果不代表新增兼容性场景已通过。RimTalk and rendering changes are deferred. Build, static-check, and in-game validation status for this addition is tracked in the [merge record (Chinese)](Docs/Development/2.2.11语言与种族分页合并.md); previous validation does not establish that the new compatibility scenarios pass.
 
 ## [2.2.10] — 2026-09-13 — 绑定仪式中断热修复 / Binding Ritual interruption hotfix
 
@@ -202,7 +202,7 @@ The maintainer confirmed these fixes after testing. Version `2.2.12` groups the 
 
 验证 / Validation：生命周期测试 31/31、阶段进度测试 29/29 通过；游戏内验证由维护者确认通过。Lifecycle tests: 31/31; progression tests: 29/29. In-game validation was confirmed successful by the maintainer.
 
-详细说明 / Details：[绑定仪式中断修复 / Fix details (Chinese)](Docs/绑定仪式中断修复.md) · [发布验证记录 / Release validation (Chinese)](Docs/2.2.10发布验证.md)。
+详细说明 / Details：[绑定仪式中断修复 / Fix details (Chinese)](Docs/Development/绑定仪式中断修复.md) · [发布验证记录 / Release validation (Chinese)](Docs/Releases/2.2.10/2.2.10发布验证.md)。
 
 ## [2.2.9] — 2026-09-12 — 特化进度与仪式阶段修复 / Specialization and ritual progression fixes
 
