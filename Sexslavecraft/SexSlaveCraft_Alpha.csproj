@@ -177,6 +177,13 @@
     <Compile Include="common\SSCBondUtility.cs" />
     <Compile Include="common\SSCIdentityUtility.cs" />
     <Compile Include="common\SSCSexInteractionPolicy.cs" />
+    <Compile Include="common\Restrictions\SSCRestrictionData.cs" />
+    <Compile Include="common\Restrictions\SSCRestrictionDefinitions.cs" />
+    <Compile Include="common\Restrictions\SSCRestrictionResolver.cs" />
+    <Compile Include="common\Restrictions\SSCRestrictionPolicy.cs" />
+    <Compile Include="common\Restrictions\SSCSettings.Restrictions.cs" />
+    <Compile Include="common\Restrictions\DebugActions_SSCRestrictions.cs" />
+    <Compile Include="Comps\Comp_Train.Restrictions.cs" />
     <Compile Include="common\SSCThoughtBootstrap.cs" />
     <Compile Include="common\Settings.cs" />
     <Compile Include="common\Thought_MemoryDynamicTraining.cs" />

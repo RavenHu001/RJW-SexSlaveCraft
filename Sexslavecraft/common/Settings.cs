@@ -12,7 +12,7 @@ using Verse;
 // CN: 它把性奴保护、日志、资格判定、完全胶化外观和绑定仪式转奴这些开关统一放在这里。
 namespace SexSlaveCraft
 {
-    public class SSCSettings : ModSettings
+    public partial class SSCSettings : ModSettings
     {
         // EN: Strict protection stays off only when the player explicitly allows rape on chained sex slaves.
         // CN: 只有玩家明确允许时，锁链性奴才会退出严格保护模式。
@@ -37,8 +37,10 @@ namespace SexSlaveCraft
         public float corruptionDecayPerDay = 0.02f;
         public bool useOldScoring = false;
 
+        /// <summary>读写新限制配置及既有全局设置，并在加载结束后将数值选项限制在支持范围内。</summary>
         public override void ExposeData()
         {
+            ExposeRestrictionSettings();
             // EN: Save every toggle explicitly so old saves keep the same SSC behavior after updates.
             // CN: 每个开关都要显式保存，保证旧存档在更新后仍保持相同的 SSC 行为。
             Scribe_Values.Look(ref allowSexSlaveRape, "allowSexSlaveRape", false);
@@ -76,16 +78,19 @@ namespace SexSlaveCraft
         private Vector2 settingsScrollPosition;
         private float settingsContentHeight = 1000f;
 
+        /// <summary>加载当前模组的持久化设置，供规则查询和设置窗口共同使用。</summary>
         public SSCMod(ModContentPack content) : base(content)
         {
             settings = GetSettings<SSCSettings>();
         }
 
+        /// <summary>返回游戏模组设置列表中显示的本地化分类名称。</summary>
         public override string SettingsCategory()
         {
             return Strings.Setting_Category;
         }
 
+        /// <summary>绘制可滚动设置区与底部诊断入口，并按本次内容高度更新滚动范围。</summary>
         public override void DoSettingsWindowContents(Rect inRect)
         {
             // Keep the secondary diagnostics entry in a separate bottom-right footer.
@@ -115,6 +120,7 @@ namespace SexSlaveCraft
             base.DoSettingsWindowContents(inRect);
         }
 
+        /// <summary>按功能分组绘制现有设置控件，将玩家的勾选与数值调整写入全局设置对象。</summary>
         private static void DrawSettings(Listing_Standard listingStandard)
         {
             // EN: Step 1: draw the sex-slave protection rules first, because they change how Harmony guards sex jobs.

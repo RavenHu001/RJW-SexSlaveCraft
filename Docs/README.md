@@ -44,6 +44,7 @@
 - [绑定仪式中断修复](Development/绑定仪式中断修复.md)
 - [行为开始保护修复](Development/行为开始保护修复.md)
 - [调教员身份开关](Development/调教员身份开关.md)
+- [新限制系统阶段 1](Development/新限制系统阶段1.md)：核心实现、只读预览、迁移表与后续入口清单。
 - [简版诊断面板](Development/简版诊断面板.md)：目前没什么明确作用的辅助更新，保留为设置页右下角的次要入口。
 
 ## 版本发布与验证
@@ -67,6 +68,7 @@
 - [Archive/RimTalk](../Archive/RimTalk/README.md)
 - [Sexslavecraft/ShaderSources](../Sexslavecraft/ShaderSources/README.md)
 - [Tests/BusTrade](../Tests/BusTrade/README.md)
+- [Tests/RestrictionCore](../Tests/RestrictionCore/README.md)
 - [Tests/GenderChangeMemory](../Tests/GenderChangeMemory/README.md)
 - [Tests/PermanentLactation](../Tests/PermanentLactation/README.md)
 - [Tests/PersonalityCardLayout](../Tests/PersonalityCardLayout/README.md)

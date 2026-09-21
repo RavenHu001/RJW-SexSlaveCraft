@@ -42,9 +42,16 @@ $suites = @(
     @{ Name = 'InteractionProtection'; Arguments = @() },
     @{ Name = 'BusTrade'; Arguments = @() },
     @{ Name = 'TrainerIdentity'; Arguments = @($repoRoot) },
+    @{ Name = 'RestrictionCore'; Arguments = @($repoRoot) },
     @{ Name = 'SharedBed'; Arguments = @($repoRoot) }
 )
 
+<#
+.SYNOPSIS
+只读检查 Harmony 程序集名称和目标框架；可用于 net9.0 测试时返回空值，否则返回失败原因。
+.DESCRIPTION
+仅解析 PE 元数据，不执行第三方程序集；无论检查成功或失败都会释放文件句柄。
+#>
 function Get-HarmonyProblem {
     param([string]$Path)
     if (-not $Path) { return 'Supply -HarmonyAssemblyPath or SSC_TEST_HARMONY_PATH with a net9.0 0Harmony.dll.' }
@@ -82,6 +89,12 @@ function Get-HarmonyProblem {
     }
 }
 
+<#
+.SYNOPSIS
+执行单步 dotnet 命令，将阶段名及完整输出追加到指定日志，并返回输出文本。
+.DESCRIPTION
+非零退出码会抛出带日志路径的异常，由套件级调用方记录失败并继续其他套件。
+#>
 function Invoke-DotnetStep {
     param([string[]]$CommandArguments, [string]$Stage, [string]$LogPath)
     Add-Content -LiteralPath $LogPath -Value "`n[$Stage]" -Encoding utf8

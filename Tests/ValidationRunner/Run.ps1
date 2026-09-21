@@ -19,13 +19,24 @@ $savedPath = $env:PATH
 $savedHarmony = $env:SSC_TEST_HARMONY_PATH
 $savedMode = $env:SSC_VALIDATION_FIXTURE_MODE
 $checks = 0
+$suiteCount = @(Get-ChildItem -LiteralPath (Join-Path $repo 'Tests') -Recurse -Filter '*.csproj').Count
 
+<#
+.SYNOPSIS
+检查编排行为断言；成功时累计通过数并打印说明，失败时抛出异常终止夹具。
+#>
 function Assert([bool]$Condition, [string]$Message) {
     if (-not $Condition) { throw $Message }
     $script:checks++
     Write-Host "PASS $Message"
 }
 
+<#
+.SYNOPSIS
+在隔离仓库中运行指定模拟模式的验证或打包入口，保存控制台日志并读取汇总报告。
+.DESCRIPTION
+返回退出码、解析后的报告及输出目录，由调用方断言失败传播、依赖校验或打包结果。
+#>
 function Run-Case([string]$Name, [string]$Mode, [string]$Harmony, [bool]$Package = $false) {
     $env:SSC_VALIDATION_FIXTURE_MODE = $Mode
     $reportDir = Join-Path $fixture "reports/$Name"
@@ -98,34 +109,34 @@ exit 0
     Push-Location $shim
     try {
         $run = Run-Case 'success' 'pass' $HarmonyAssemblyPath
-        Assert ($run.Code -eq 0 -and $run.Report.PassedSuites -eq 15 -and $run.Report.TotalCases -eq 15) 'All suites execute; counts come from actual summaries (not hard-coded 390).'
+        Assert ($run.Code -eq 0 -and $run.Report.PassedSuites -eq $suiteCount -and $run.Report.TotalCases -eq $suiteCount) 'All suites execute; counts come from actual summaries (not hard-coded 390).'
         $run = Run-Case 'missing-harmony' 'pass' ''
-        Assert ($run.Code -ne 0 -and $run.Report.PassedSuites -eq 14 -and $run.Report.NotRunSuites -eq 1) 'Missing Harmony is NotRun and fails the overall check.'
+        Assert ($run.Code -ne 0 -and $run.Report.PassedSuites -eq ($suiteCount - 1) -and $run.Report.NotRunSuites -eq 1) 'Missing Harmony is NotRun and fails the overall check.'
         $run = Run-Case 'wrong-harmony' 'pass' $FrameworkHarmonyAssemblyPath
         Assert ($run.Code -ne 0 -and $run.Report.NotRunSuites -eq 1 -and $run.Report.Results[-1].Reason -match 'net9.0') 'Framework Harmony is rejected before SharedBed runs.'
         $run = Run-Case 'failures' 'failures' $HarmonyAssemblyPath
-        Assert ($run.Code -ne 0 -and $run.Report.FailedSuites -eq 5 -and $run.Report.PassedSuites -eq 10) 'Restore, build, test exit, missing summary and failed count all fail; later suites continue.'
+        Assert ($run.Code -ne 0 -and $run.Report.FailedSuites -eq 5 -and $run.Report.PassedSuites -eq ($suiteCount - 5)) 'Restore, build, test exit, missing summary and failed count all fail; later suites continue.'
         foreach ($mode in @('old-sdk', 'missing-runtime')) {
             $run = Run-Case $mode $mode $HarmonyAssemblyPath
-            Assert ($run.Code -ne 0 -and $run.Report.NotRunSuites -eq 15) "$mode marks all suites NotRun."
+            Assert ($run.Code -ne 0 -and $run.Report.NotRunSuites -eq $suiteCount) "$mode marks all suites NotRun."
         }
         $extra = Join-Path $fixture 'Tests/Unregistered.csproj'
         '<Project />' | Set-Content -LiteralPath $extra
         $run = Run-Case 'unregistered' 'pass' $HarmonyAssemblyPath
-        Assert ($run.Code -ne 0 -and $run.Report.NotRunSuites -eq 15) 'An unlisted project cannot silently escape validation.'
+        Assert ($run.Code -ne 0 -and $run.Report.NotRunSuites -eq $suiteCount) 'An unlisted project cannot silently escape validation.'
         Remove-Item -LiteralPath $extra
         $run = Run-Case 'blocked-package' 'pass' '' $true
         Assert ($run.Code -ne 0 -and -not (Test-Path -LiteralPath $run.OutputDir)) 'Incomplete validation stops packaging before any output directory is created.'
         $env:SSC_TEST_HARMONY_PATH = $HarmonyAssemblyPath
         $run = Run-Case 'package' 'pass' '' $true
-        Assert ($run.Code -eq 0 -and $run.Report.PassedSuites -eq 15) 'Packaging uses the unified entry and the Harmony environment variable.'
+        Assert ($run.Code -eq 0 -and $run.Report.PassedSuites -eq $suiteCount) 'Packaging uses the unified entry and the Harmony environment variable.'
         $zipPath = @(Get-ChildItem -LiteralPath $run.OutputDir -Filter '*.zip')[0].FullName
         $zip = [IO.Compression.ZipFile]::OpenRead($zipPath)
         try {
             $entry = @($zip.Entries | Where-Object FullName -like '*/RELEASE-MANIFEST.json')[0]
             $reader = [IO.StreamReader]::new($entry.Open())
             try { $manifest = $reader.ReadToEnd() | ConvertFrom-Json } finally { $reader.Dispose() }
-            Assert ($manifest.validation.suiteCount -eq 15 -and $manifest.validation.passedCases -eq 15) 'Package manifest includes completed validation counts.'
+            Assert ($manifest.validation.suiteCount -eq $suiteCount -and $manifest.validation.passedCases -eq $suiteCount) 'Package manifest includes completed validation counts.'
             Assert (@($zip.Entries | Where-Object { $_.FullName -like '*0Harmony.dll' -or $_.FullName -like '*/Tests/*' }).Count -eq 0) 'Test dependencies and test sources are not packaged.'
         }
         finally { $zip.Dispose() }

@@ -1,6 +1,13 @@
 <Defs>
 <ThingDef ParentName="ApparelBase">
     <defName>Apparel_EFOutfit</defName>
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCRestrictionEquipmentExtension">
+        <forced>
+          <receiveForced>Deny</receiveForced>
+        </forced>
+      </li>
+    </modExtensions>
     <label>恶堕少女战衣</label>
     <description>堕落战斗员的装扮，表面能量附有能量薄膜，能够防御大部分的攻击。全身的战斗媚药注射器能够保证战斗员在战斗中更加亢奋。ps：设计的原型就是yaoki的恶堕战斗员，这里感谢这位佬能带给我灵感（事实上画这衣服的贴图折腾了我一个半月不过还是很感谢）</description>
     <thingClass>Apparel</thingClass>
