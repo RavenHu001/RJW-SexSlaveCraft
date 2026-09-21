@@ -6,10 +6,10 @@
   <SSC_Restrictions_Title>行为限制：设置与测试</SSC_Restrictions_Title>
   <SSC_Restrictions_EditTab>个体规则</SSC_Restrictions_EditTab>
   <SSC_Restrictions_TestTab>许可测试</SSC_Restrictions_TestTab>
-  <SSC_Restrictions_TestNotice>新配置已支持初始化、迁移和保存；实际行为许可尚未接管，仍使用旧规则。</SSC_Restrictions_TestNotice>
+  <SSC_Restrictions_TestNotice>普通 RJW 双人、单人及人格排泄任务已使用新规则；日常调教、仪式和专项兼容入口仍待后续接管。</SSC_Restrictions_TestNotice>
   <SSC_Restrictions_OwnerNotice>实际主人对自己的绑定对象发起任何行为，新系统均直接允许，装备和个体限制不能否决。</SSC_Restrictions_OwnerNotice>
   <SSC_Restrictions_SystemSwitch>启用限制系统（与旧保护共用总开关）</SSC_Restrictions_SystemSwitch>
-  <SSC_Restrictions_SystemSwitchTip>这是全局设置，也会改变当前实际任务使用的旧保护总开关。关闭不清空角色保存值。</SSC_Restrictions_SystemSwitchTip>
+  <SSC_Restrictions_SystemSwitchTip>全局启用或停用行为限制；尚未接管的任务仍共用旧保护总开关。关闭不会清空角色保存值。</SSC_Restrictions_SystemSwitchTip>
   <SSC_Restrictions_ProfileSwitch>启用特化强制规则（新系统）</SSC_Restrictions_ProfileSwitch>
   <SSC_Restrictions_ProfileSwitchTip>全局设置。只控制新系统的特化覆盖，不关闭装备强制，也不改写个体保存值。</SSC_Restrictions_ProfileSwitchTip>
   <SSC_Restrictions_EditPawn>配置角色：{0}</SSC_Restrictions_EditPawn>
@@ -83,4 +83,6 @@
   <SSC_Restrictions_TrainerLocked>非主人调教已禁止，指定者锁定为实际主人：{0}。</SSC_Restrictions_TrainerLocked>
   <SSC_Restrictions_Expand>▶ 展开行为限制</SSC_Restrictions_Expand>
   <SSC_Restrictions_Collapse>◀ 收起行为限制</SSC_Restrictions_Collapse>
+  <SSC_Restrictions_JobRejected>行为被限制规则拒绝：{0}。</SSC_Restrictions_JobRejected>
+  <SSC_Restrictions_CommandRejected>当前行为限制不允许这条命令。请在角色限制栏查看主动、被动许可及强制来源。</SSC_Restrictions_CommandRejected>
 </LanguageData>

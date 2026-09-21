@@ -3,7 +3,7 @@
 .SYNOPSIS
 运行全部回归套件，生成逐套件日志及 JSON 汇总；任何失败或未执行均返回失败。
 .DESCRIPTION
-需要 .NET SDK 9（或更新 SDK）及 .NET 9 运行时。SharedBed 需要 net9.0 的 0Harmony.dll，
+需要 .NET SDK 9（或更新 SDK）及 .NET 9 运行时。SharedBed 与 InteractionProtection 需要 net9.0 的 0Harmony.dll，
 通过 -HarmonyAssemblyPath 或 SSC_TEST_HARMONY_PATH 提供，不自动下载、不使用游戏的 Harmony。
 默认将报告保存在 .builds/validation/<本次运行目录>；不编译或安装游戏模组。
 #>
@@ -151,7 +151,7 @@ foreach ($suite in $suites) {
     }
     $problems = @($globalProblems.ToArray())
     if (-not (Test-Path -LiteralPath $project -PathType Leaf)) { $problems += "Project missing: $project" }
-    if ($name -eq 'SharedBed' -and $harmonyProblem) { $problems += $harmonyProblem }
+    if ($name -in @('SharedBed', 'InteractionProtection') -and $harmonyProblem) { $problems += $harmonyProblem }
     if ($problems.Count -gt 0) {
         $result.Reason = $problems -join ' '
         Set-Content -LiteralPath $logPath -Value $result.Reason -Encoding utf8
@@ -161,7 +161,7 @@ foreach ($suite in $suites) {
         Set-Content -LiteralPath $logPath -Value "Suite: $name" -Encoding utf8
         try {
             $properties = @()
-            if ($name -eq 'SharedBed') { $properties += "-p:HarmonyAssemblyPath=$HarmonyAssemblyPath" }
+            if ($name -in @('SharedBed', 'InteractionProtection')) { $properties += "-p:HarmonyAssemblyPath=$HarmonyAssemblyPath" }
             $null = Invoke-DotnetStep -CommandArguments (@('restore', $project, '--configfile', $configPath, '--verbosity', 'quiet') + $properties) -Stage 'restore' -LogPath $logPath
             # Rebuild prevents a changed Harmony reference from reusing a previous test binary.
             $null = Invoke-DotnetStep -CommandArguments (@('build', $project, '--configuration', 'Release', '--no-restore', '--target:Rebuild', '--verbosity', 'quiet') + $properties) -Stage 'build' -LogPath $logPath

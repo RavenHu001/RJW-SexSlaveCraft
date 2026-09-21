@@ -10,7 +10,7 @@ using Verse.AI;
 // EN: Harmony adapters for SSC sex-interaction protection.
 // EN: Reservation, pre-toil and start checks delegate to one shared policy.
 // CN: 这是 SSC 性行为保护规则的 Harmony 适配层。
-// CN: 预约、进入步骤前与启动阶段都会委托给同一套共享决策规则。
+// CN: 已接管任务先转交统一限制入口；剩余日常、仪式及专项兼容保留后续批次的旧路径。
 namespace SexSlaveCraft
 {
     [HarmonyPatch(typeof(JobDriver_Sex), "TryMakePreToilReservations")]
@@ -187,10 +187,15 @@ namespace SexSlaveCraft
             return SSCSexInteractionPolicy.Evaluate(roles.aggressor, roles.victim, roles.isRape);
         }
 
-        /// <summary>在基类预约入口执行保护策略；保留白名单、总开关及强制指派的原有预约例外。</summary>
+        /// <summary>先转交阶段 3A 的预约许可；只有尚未接管的任务继续执行下面的旧保护分支。</summary>
         /// <returns>允许继续执行原预约方法时返回 true；拒绝时把预约结果设为 false 并跳过原方法。</returns>
         public static bool Prefix(JobDriver_Sex __instance, ref bool __result)
         {
+            if (SSCRestrictionJobGuard.TryReserve(__instance, out bool allowed))
+            {
+                if (!allowed) __result = false;
+                return allowed;
+            }
             if (ShouldDirectAllow(__instance))
             {
                 GuardLog("Reserve", "ALLOW", "direct_allow_whitelist", __instance, null);
@@ -251,13 +256,15 @@ namespace SexSlaveCraft
             return false;
         }
 
-        /// <summary>在发起者进入下一步骤前检查保护，覆盖首次发起和加入既有场景，并在行走后重新校验。</summary>
+        /// <summary>已接管的发起和接收任务调用统一守卫；剩余发起者继续原有步骤保护。</summary>
         /// <remarks>已开始的场景继续正常收尾；读档恢复不能仅凭接收方提前登记的参与者名单判定开始。</remarks>
         /// <returns>返回 false 时阻止步骤切换，使被拒绝者不进入接收任务创建或行为初始化。</returns>
         [HarmonyPrefix]
         [HarmonyPatch(typeof(JobDriver), "TryActuallyStartNextToil")]
         public static bool NextToil_Prefix(JobDriver __instance)
         {
+            if (__instance is JobDriver_Sex managed &&
+                SSCRestrictionJobGuard.TryCheck(managed, "BeforeToil", out bool allowed)) return allowed;
             if (!(__instance is JobDriver_SexBaseInitiator initiator)) return true;
             if (initiator.pawn?.jobs?.curDriver != initiator) return true;
 
@@ -285,6 +292,7 @@ namespace SexSlaveCraft
         [HarmonyPatch(typeof(JobDriver_SexBaseInitiator), "Start")]
         public static bool Start_Prefix(JobDriver_SexBaseInitiator __instance)
         {
+            if (SSCRestrictionJobGuard.TryCheck(__instance, "Start", out bool allowed)) return allowed;
             return CheckBeforeStart(__instance, "Start");
         }
 
@@ -293,6 +301,7 @@ namespace SexSlaveCraft
         [HarmonyPatch(typeof(JobDriver_SexBaseInitiator), "Start")]
         public static void Start_Postfix(JobDriver_SexBaseInitiator __instance, bool __runOriginal)
         {
+            if (SSCRestrictionJobGuard.TryMarkStarted(__instance, __runOriginal)) return;
             if (__runOriginal) StartStates.GetOrCreateValue(__instance).Started = true;
         }
 
@@ -302,6 +311,7 @@ namespace SexSlaveCraft
         [HarmonyPatch(typeof(JobDriver_SexBaseInitiator), "End")]
         public static bool End_Prefix(JobDriver_SexBaseInitiator __instance)
         {
+            if (SSCRestrictionJobGuard.TryEnd(__instance, out bool allowed)) return allowed;
             // A rejected Start has no scene to finish. RJW End otherwise dereferences
             // uninitialized Sexprops and can enqueue partner jobs for somebody else's scene.
             return !StartStates.TryGetValue(__instance, out StartState state) || !state.Rejected || state.Started;

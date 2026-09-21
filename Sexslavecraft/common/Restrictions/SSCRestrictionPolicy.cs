@@ -39,7 +39,7 @@ namespace SexSlaveCraft
         public SSCRestrictionResolution Entry { get; internal set; }
     }
 
-    /// <summary>新系统唯一行为许可入口。阶段 1 只供测试/预览调用，旧任务尚未接管。</summary>
+    /// <summary>新系统唯一行为许可入口；界面与已接管任务共用，后续批次的旧任务由适配层隔离。</summary>
     public static class SSCRestrictionPolicy
     {
         /// <summary>统一判定行为许可；方向明确的已绑定主人对自身目标发起请求时立即放行。</summary>

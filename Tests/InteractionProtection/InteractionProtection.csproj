@@ -6,6 +6,14 @@
     <DefineConstants Condition="'$(HarmonyAssemblyPath)' != ''">$(DefineConstants);REAL_HARMONY</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionData.cs" Link="Production/SSCRestrictionData.cs" />
+    <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionDefinitions.cs" Link="Production/SSCRestrictionDefinitions.cs" />
+    <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionResolver.cs" Link="Production/SSCRestrictionResolver.cs" />
+    <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionPolicy.cs" Link="Production/SSCRestrictionPolicy.cs" />
+    <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionJobContext.cs" Link="Production/SSCRestrictionJobContext.cs" />
+    <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionJobGuard.cs" Link="Production/SSCRestrictionJobGuard.cs" />
+    <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionJobHooks.cs" Link="Production/SSCRestrictionJobHooks.cs" />
+
     <Compile Include="$(SscSourceRoot)/common/SSCSexInteractionPolicy.cs" Link="Production/SSCSexInteractionPolicy.cs" />
     <Compile Include="$(SscSourceRoot)/ThePatches/Harmony_ProtectSexSlave.cs" Link="Production/Harmony_ProtectSexSlave.cs" />
     <Reference Include="0Harmony" Condition="'$(HarmonyAssemblyPath)' != ''">
