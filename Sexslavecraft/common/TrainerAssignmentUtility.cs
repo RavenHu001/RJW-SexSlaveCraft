@@ -14,38 +14,11 @@ namespace SexSlaveCraft
     {
         private static readonly WorkTypeDef TrainSexSlaveWorkType = DefDatabase<WorkTypeDef>.GetNamedSilentFail("TrainSexSlave");
 
-        /// <summary>先核对调教员身份，再应用目标的主人限制、开放许可和原始指派锁定。</summary>
-        /// <remarks>停用指派不等于未指定；允许其他人也不能绕过调教员身份。</remarks>
-        public static bool IsAllowedTrainer(Pawn sexSlave, Pawn master)
+        /// <summary>日常调教复用统一许可和资格检查；自动工作只交给指定者，手动主人命令不受其他指派排除。</summary>
+        public static bool IsAllowedTrainer(Pawn sexSlave, Pawn master, bool forced = false)
         {
-            if (sexSlave == null || master == null || sexSlave == master
-                || master.Dead || master.Destroyed || !SSCIdentityUtility.IsTrainer(master)) return false;
-
-            CompSexSlaveTraining comp = sexSlave.TryGetComp<CompSexSlaveTraining>();
-            if (comp == null) return false;
-
-            // EN: "Allow others" and public-use states are true opt-outs from the
-            // exclusive trainer lock. Keeping selectedTrainer active here made the
-            // UI promise broader access while the WorkGiver still rejected everyone.
-            // CN: “允许其他人”和公交车状态必须真正解除独占调教师限制；否则界面虽已
-            // 放开，WorkGiver 最终仍会按 selectedTrainer 拒绝其他所有人。
-            if (comp.AllowsOthersForTrainingOrSex ||
-                comp.IsBusSpecialized ||
-                BusSpecializationUtility.HasAnyBusState(sexSlave))
-            {
-                return true;
-            }
-
-            // EN: ChainOfSexSlave can force the current master unless the pawn is in the Bus state.
-            // CN: 除了公交车状态外，ChainOfSexSlave 可以强制指定当前唯一合法的主人。
-            Pawn forcedMaster = GetForcedMaster(sexSlave);
-            if (forcedMaster != null && forcedMaster != master)
-            {
-                return false;
-            }
-
-            if (comp.selectedTrainer == null) return true;
-            return comp.selectedTrainer == master;
+            return SSCRestrictionTrainingUtility.TryEvaluate(
+                SSCRestrictionTrainingUtility.CreateRequest(master, sexSlave, false), !forced, out _, out _);
         }
 
         /// <summary>从本次分类快照枚举可重新指定的调教员，不以旧 selectedTrainer 锁住候选列表。</summary>
@@ -64,15 +37,10 @@ namespace SexSlaveCraft
             }
         }
 
-        /// <summary>读取实际主人独占约束；开放调教和公交车沿用原有例外。</summary>
+        /// <summary>指定者选择锁定只读取新配置的调教条目；旧开放字段与公交车不再单独决定锁定。</summary>
         public static Pawn GetForcedMaster(Pawn sexSlave)
         {
-            if (sexSlave?.health?.hediffSet == null) return null;
-            CompSexSlaveTraining comp = sexSlave.TryGetComp<CompSexSlaveTraining>();
-            if (comp != null && (comp.AllowsOthersForTrainingOrSex || comp.IsBusSpecialized)) return null;
-            if (BusSpecializationUtility.HasAnyBusState(sexSlave)) return null;
-
-            return SSCBondUtility.GetBoundMaster(sexSlave);
+            return SSCRestrictionTrainingUtility.GetForcedTrainer(sexSlave);
         }
 
         /// <summary>检查指派所需身份、存活状态和原有工作开关；工作关闭不抹除调教员身份。</summary>
@@ -218,9 +186,9 @@ namespace SexSlaveCraft
                 return false;
             }
 
-            if (!IsAllowedTrainer(targetPawn, trainer))
+            if (!SSCRestrictionTrainingUtility.TryEvaluate(
+                SSCRestrictionTrainingUtility.CreateRequest(trainer, targetPawn, false), !forced, out _, out reason))
             {
-                reason = Strings.Train_Reason_TrainerLocked;
                 return false;
             }
 

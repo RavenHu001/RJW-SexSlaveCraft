@@ -48,6 +48,7 @@ internal static partial class Program
         Run("独立接收任务仍保留预约保护", ReceiverReservation);
         Run("无关 JobDriver 不受步骤补丁影响", UnrelatedJob);
         RunStage3ATests();
+        RunStage3BTests();
         Console.WriteLine($"结果：{passed}/{passed + failed} 项通过。");
         return failed == 0 ? 0 : 1;
     }
@@ -114,7 +115,7 @@ internal static partial class Program
         if (beforeToil) Assert(driver.ExternalEndCalls == 0, "正常拒绝路径不得触发外部动画收尾前缀");
         Assert(driver.ReservationWarnings == 0, "不能靠新建接收任务预约失败来阻止行为");
         Assert(driver.pawn.jobs.ImmediateJobSearches == 0, "拒绝不能在同一调用栈立即重新选择 AI 任务");
-        Assert(Messages.Count == (driver.job.playerForced || driver.job.def.defName == "SSC_Training_SexSlave" ? 1 : 0), "玩家命令提示一次，AI 不刷屏");
+        Assert(Messages.Count == (driver.job.playerForced ? 1 : 0), "玩家命令提示一次，AI 不刷屏");
     }
     /// <summary>核对前后缀特性与目标方法；真实 Harmony 模式进一步检查 PatchAll 实际安装的补丁信息。</summary>
     private static void PatchRegistration()
@@ -274,9 +275,13 @@ internal static partial class Program
     private static void Training(bool nonOwner, bool allowOthers, bool expected)
     {
         var p = People();
-        p.b.Training.AllowsOthersForTrainingOrSex = allowOthers;
-        var driver = Driver(nonOwner ? p.c : p.a, p.b, rape: false);
-        driver.job.def = new JobDef { defName = "SSC_Training_SexSlave" };
+        p.b.Training.restrictionConfig.rules.receiveTraining = allowOthers;
+        Pawn actor = nonOwner ? p.c : p.a;
+        actor.Training.pawnIdentity = PawnIdentity.Master;
+        p.b.Training.selectedTrainer = actor;
+        var driver = new JobDriver_Training { pawn = actor, job = new Job { def = new JobDef { defName = "SSC_Training_SexSlave" }, targetA = new LocalTargetInfo { Thing = p.b } } };
+        actor.jobs.curDriver = driver;
+        driver.MakeScenarioToils();
         Begin(driver);
         if (!expected) Rejected(driver);
         else Assert(driver.StartCalls == 1 && driver.ReservationWarnings == 0, "合法自愿训练必须保持放行");

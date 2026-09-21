@@ -16,12 +16,35 @@ namespace SexSlaveCraft
     public class JobDriver_Training : JobDriver_SexBaseInitiator
     {
         private readonly JobDef partnerJob = SSCDefOf.SSC_TrainingReceiver;
+        private Pawn preparedTrainingTarget;
+        private bool sceneStarted;
+        private bool hasSceneRecord = true;
+        private bool legacySceneProgress;
 
-        /// <summary>预约本次日常调教的唯一接收目标，防止同时被其他独占任务使用。</summary>
+        /// <summary>保存本任务实际占用的对象，使行走或准备阶段读档后的中断能释放原占用。</summary>
+        public override void ExposeData()
+        {
+            base.ExposeData();
+            Scribe_References.Look(ref preparedTrainingTarget, "sscPreparedTrainingTarget");
+            Scribe_Values.Look(ref hasSceneRecord, "sscDailySceneRecord", false);
+            Scribe_Values.Look(ref sceneStarted, "sscDailySceneStarted", false);
+            if (Scribe.mode == LoadSaveMode.LoadingVars)
+                legacySceneProgress = Sexprops != null && (orgasms > 0 || (duration > 0 && ticks_left < duration));
+            if (Scribe.mode == LoadSaveMode.PostLoadInit)
+            {
+                if (!hasSceneRecord && legacySceneProgress) sceneStarted = true;
+                hasSceneRecord = true;
+            }
+            // 升级旧档时任务目标仍属于本日常 Job；仅补领已有占用，不创建训练状态。
+            if (Scribe.mode == LoadSaveMode.PostLoadInit && preparedTrainingTarget == null &&
+                Partner?.TryGetComp<CompSexSlaveTraining>()?.isBeingTrained == true)
+                preparedTrainingTarget = Partner;
+        }
+
+        /// <summary>统一守卫通过后预约日常目标；这里只执行正常预约，不再次否决已开始场景的收尾资格。</summary>
         public override bool TryMakePreToilReservations(bool errorOnFailed)
         {
-            return TrainerAssignmentUtility.IsAllowedTrainer(Partner, pawn)
-                && pawn.Reserve(Partner, job, 1, 0, null, errorOnFailed);
+            return pawn.Reserve(Partner, job, 1, 0, null, errorOnFailed);
         }
 
         /// <summary>构造日常调教的占用、移动、接收准备、场景执行和收益结算步骤，并注册中断条件。</summary>
@@ -32,6 +55,7 @@ namespace SexSlaveCraft
             this.FailOn(() => pawn.Drafted || pawn.IsFighting());
             this.FailOn(() => Partner.IsFighting());
             this.FailOn(() => !pawn.CanReserve(Partner, 1, 0));
+            AddFinishAction(condition => CleanupPreparedTraining());
 
             // EN: Step 1: mark the sex slave as already being trained before movement starts, so no other training job grabs the same pawn.
             // CN: 步骤 1：在走位前先把性奴标记为“已在被调教”，避免其他调教 Job 抢走同一个目标。
@@ -39,6 +63,7 @@ namespace SexSlaveCraft
             {
                 initAction = delegate
                 {
+                    preparedTrainingTarget = Partner;
                     TrainingJobUtility.MarkTrainingStarted(Partner, false);
                 },
                 defaultCompleteMode = ToilCompleteMode.Instant
@@ -53,13 +78,7 @@ namespace SexSlaveCraft
             // 准备回调：启动接收任务；失败时清除训练占用，再中止本任务。
             startPartnerJob.initAction = delegate
             {
-                // 排队或走位期间失去身份/对象许可时停止；实际开始后不开设每 tick 身份中断。
-                if (!TrainerAssignmentUtility.IsAllowedTrainer(Partner, pawn))
-                {
-                    TrainingJobUtility.NotifyTrainingAborted(Partner);
-                    pawn.jobs.EndCurrentJob(JobCondition.Incompletable);
-                    return;
-                }
+                // 统一步骤守卫已在进入此回调前复查许可与指派，避免另外维护一套拒绝路径。
                 if (!TrainingJobUtility.TryStartDailyTrainingReceiver(pawn, Partner, job, partnerJob))
                 {
                     TrainingJobUtility.MarkValidationFailure(Partner, "SSC_TRAIN_RECEIVER");
@@ -125,6 +144,7 @@ namespace SexSlaveCraft
                 SSCLog.Verbose($"[SSC_TRAIN] Start daily training scene: trainer={pawn.LabelShort}, slave={Partner.LabelShort}, sexType={sceneSexType}, selectedMode={(Partner.TryGetComp<CompSexSlaveTraining>()?.selectedMode.ToString() ?? "null")}");
                 Start();
                 if (pawn.jobs.curDriver != this) return;
+                sceneStarted = true;
                 Log.Message("[SSC Debug] Start() called.");
             };
             // 每帧回调：更新场景与双方体力，保持位置同步，并在计时结束后切换步骤。
@@ -146,7 +166,8 @@ namespace SexSlaveCraft
             // 收尾回调：释放 RJW 场景、设备关联和训练状态，不在此发放训练收益。
             sexToil.AddFinishAction(delegate
             {
-                base.End();
+                if (pawn.jobs?.curDriver != this) return;
+                if (sceneStarted) base.End();
                 OnaholeCompatibilityUtility.TryUnregisterOnaholePartner(Partner, pawn);
                 TrainingJobUtility.CleanupTrainingState(Partner);
             });
@@ -159,11 +180,23 @@ namespace SexSlaveCraft
             {
                 initAction = delegate
                 {
+                    if (!sceneStarted || pawn.jobs?.curDriver != this) return;
                     SexUtility.ProcessSex(Sexprops);
                     ExecuteConditioningOutcome();
                 },
                 defaultCompleteMode = ToilCompleteMode.Instant
             };
+        }
+
+        /// <summary>任何退出路径都释放本 Job 建立的日常占用及设备关联；迟到回调不清理新任务或仪式。</summary>
+        private void CleanupPreparedTraining()
+        {
+            if (preparedTrainingTarget == null || pawn.jobs?.curDriver != this) return;
+            Pawn target = preparedTrainingTarget;
+            preparedTrainingTarget = null;
+            if (target.TryGetComp<CompSexSlaveTraining>()?.isRitualTraining == true) return;
+            OnaholeCompatibilityUtility.TryUnregisterOnaholePartner(target, pawn);
+            TrainingJobUtility.CleanupTrainingState(target);
         }
 
         /// <summary>对仍存活的目标结算日常调教评分和对应部位经验，随后通知训练完成并启动冷却。</summary>

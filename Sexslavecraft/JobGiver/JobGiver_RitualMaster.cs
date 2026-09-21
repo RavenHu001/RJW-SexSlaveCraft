@@ -43,6 +43,14 @@ namespace SexSlaveCraft
             // CN: 步骤 4：在主人开始走位前，先剔除死亡或不可用的性奴目标。
             if (slave.Dead) return null;
 
+            // 在目标修复、预约和仪式占用之前复查本阶段；拒绝时取消整场，避免无限等待重试。
+            if (!SSCRestrictionTrainingUtility.TryEvaluate(
+                SSCRestrictionTrainingUtility.CreateRequest(pawn, slave, true), false, out _, out string restrictionReason))
+            {
+                BindingRitualStateUtility.RejectPhase(pawn, slave, lord, restrictionReason);
+                return null;
+            }
+
             if (!Trainjudge.TryCanBeFuckedWithReason(slave, out string shortReason, out string detailedReport))
             {
                 SSCLog.WarningImportant($"[SSC_GIVER] 仪式目标不可用: {slave.LabelShort}. {shortReason}\n{detailedReport}");

@@ -6,6 +6,11 @@ using SexSlaveCraft;
 // Only the game object/serialization boundaries are modeled. All rule decisions are production code.
 namespace Verse
 {
+    public static class Translation
+    {
+        /// <summary>核心无界面模型保留提示键名。</summary>
+        public static string Translate(this string key, params object[] args) => key;
+    }
     public interface IExposable
     {
         /// <summary>为测试用序列化器提供对象字段的读写入口，签名与游戏接口保持一致。</summary>
@@ -79,7 +84,8 @@ namespace Verse
     public class Pawn
     {
         public string LabelShort;
-        public bool Dead, Destroyed;
+        public bool Dead, Destroyed, Downed, IsSlave, IsPrisonerOfColony;
+        public bool IsColonist = true;
         public Pawn BoundMaster;
         public bool HasBusState;
         public Pawn_ApparelTracker apparel = new Pawn_ApparelTracker();
@@ -150,8 +156,15 @@ namespace SexSlaveCraft
         /// <summary>按目标指向主人的单向引用检查绑定，确保反向请求不会被视为主人请求。</summary>
         public static bool IsBoundTo(Verse.Pawn slave, Verse.Pawn master) => slave != null && master != null && slave.BoundMaster == master;
     }
+    public static class TrainerAssignmentUtility
+    {
+        /// <summary>提供编译边界；资格与工作指派由独立集成套件验证。</summary>
+        public static Verse.Pawn GetActiveAssignedTrainer(Verse.Pawn pawn) => pawn?.Training.selectedTrainer;
+    }
     public static class SSCIdentityUtility
     {
+        /// <summary>核心套件仅提供主人身份的资格模型，性奴调教员由身份套件覆盖。</summary>
+        public static bool IsTrainer(Verse.Pawn pawn) => IsMaster(pawn);
         /// <summary>读取测试组件的主人身份，用于首次绑定准备的资格判断。</summary>
         public static bool IsMaster(Verse.Pawn pawn) => pawn?.Training?.pawnIdentity == PawnIdentity.Master;
     }

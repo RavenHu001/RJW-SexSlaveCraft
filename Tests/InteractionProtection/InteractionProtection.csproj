@@ -11,6 +11,7 @@
     <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionResolver.cs" Link="Production/SSCRestrictionResolver.cs" />
     <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionPolicy.cs" Link="Production/SSCRestrictionPolicy.cs" />
     <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionJobContext.cs" Link="Production/SSCRestrictionJobContext.cs" />
+    <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionTrainingUtility.cs" Link="Production/SSCRestrictionTrainingUtility.cs" />
     <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionJobGuard.cs" Link="Production/SSCRestrictionJobGuard.cs" />
     <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionJobHooks.cs" Link="Production/SSCRestrictionJobHooks.cs" />
 

@@ -39,6 +39,13 @@ namespace SexSlaveCraft
             Scribe_Values.Look(ref phaseRanToCompletion, "sscPhaseRanToCompletion", false);
             Scribe_Values.Look(ref phaseFinishHandled, "sscPhaseFinishHandled", false);
             Scribe_References.Look(ref ritualLord, "sscRitualLord");
+            SSCRestrictionJobGuard.RestoreRitualScene(this, phaseSceneStarted);
+        }
+
+        /// <summary>新阶段被拒绝时取消匹配的整场仪式，不发送完成 memo，也不保留无人能继续的仪式占用。</summary>
+        public void AbortForRestriction(string reason)
+        {
+            BindingRitualStateUtility.RejectPhase(pawn, Slave, ritualLord ?? pawn.GetLord(), reason);
         }
 
         /// <summary>运行时检查本 Job 是否仍对应目标当前的有效仪式，并在需要时认领旧档引用。</summary>

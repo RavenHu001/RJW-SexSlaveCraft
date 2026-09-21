@@ -37,7 +37,7 @@ internal static partial class Program
         Run("新的 Job 不继承同一驱动的开始凭据", ReusedDriver);
         Run("拒绝准备好的独占接收任务会释放其任务", PreparedReceiverCleanup);
         Run("迟到回调不终止双方的新任务", StaleBothSides);
-        Run("日常和仪式共享接收用途暂留后续批次", DeferredReceiverPurpose);
+        Run("日常和仪式共享接收用途按3B正确识别", DeferredReceiverPurpose);
         Run("动态预约补丁确实安装到重写方法", ReservationRegistration);
         Run("快速任务拒绝只清本次移动等待", QuickieCleanup);
         Run("快速任务读档后仍能清理本次等待", QuickieSaveCleanup);
@@ -322,7 +322,7 @@ internal static partial class Program
         Assert(p.c.jobs.curDriver == current && receiver.parteners.SequenceEqual(new[] { p.a }), "晚回调不能清新任务");
     }
 
-    /// <summary>共享接收方关联尚未接管的发起任务时，不误用普通双人许可。</summary>
+    /// <summary>共享接收方关联日常或仪式任务时，不误用普通双人许可。</summary>
     private static void DeferredReceiverPurpose()
     {
         var p = People();
@@ -330,7 +330,8 @@ internal static partial class Program
         {
             actor.pawn = p.c; actor.job = new Job { targetA = new LocalTargetInfo { Thing = p.b } }; p.c.jobs.curDriver = actor;
             var receiver = new JobDriver_SexBaseReciever { pawn = p.b, job = new Job { def = SSCDefOf.SSC_TrainingReceiver, targetA = new LocalTargetInfo { Thing = p.c } } };
-            Assert(!SSCRestrictionJobContext.TryCreate(receiver, out _), "后续用途不混入普通规则");
+            Assert(SSCRestrictionJobContext.TryCreate(receiver, out var request) && request.Kind ==
+                (actor is JobDriver_Training ? SSCInteractionKind.DailyTraining : SSCInteractionKind.RitualTraining), "调教用途不混入普通规则");
         }
     }
 

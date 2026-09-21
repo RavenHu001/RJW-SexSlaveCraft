@@ -91,11 +91,7 @@ namespace SexSlaveCraft
         /// <summary>读取新配置对指定者选择的锁定；总开关关闭时解除锁定，损坏配置不擅自改关系。</summary>
         public static Pawn GetForcedTrainer(Pawn pawn)
         {
-            if (!(SSCMod.settings?.enableSexSlaveProtectionRules ?? true)) return null;
-            SSCRestrictionConfig config = pawn?.TryGetComp<CompSexSlaveTraining>()?.restrictionConfig;
-            if (!SSCRestrictionResolver.IsApplicable(pawn) || config?.IsValid() != true) return null;
-            SSCRestrictionResolution rule = SSCRestrictionResolver.Resolve(pawn, config.rules, SSCRestrictionRule.ReceiveTraining);
-            return rule.Valid && rule.Value == SSCRestrictionValue.Deny ? SSCBondUtility.GetBoundMaster(pawn) : null;
+            return SSCRestrictionTrainingUtility.GetForcedTrainer(pawn);
         }
 
         /// <summary>只清理失效引用；开启限制且禁止非主人调教时改回主人，不恢复隐藏历史指定者。</summary>

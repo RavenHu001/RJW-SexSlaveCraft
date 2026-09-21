@@ -90,18 +90,6 @@ namespace SexSlaveCraft
         }
     }
 
-    [HarmonyPatch(typeof(TrainerAssignmentUtility), nameof(TrainerAssignmentUtility.GetForcedMaster))]
-    internal static class SSCRestrictionTrainerLockHook
-    {
-        /// <summary>已配置角色的菜单锁定使用新调教条目；尚未迁移的旧角色保留原有指派行为。</summary>
-        private static bool Prefix(Pawn sexSlave, ref Pawn __result)
-        {
-            if (sexSlave?.TryGetComp<CompSexSlaveTraining>()?.restrictionConfig == null) return true;
-            __result = SSCRestrictionLifecycle.GetForcedTrainer(sexSlave);
-            return false;
-        }
-    }
-
     [HarmonyPatch(typeof(SSCBondUtility), nameof(SSCBondUtility.TryAssignTrainer))]
     internal static class SSCRestrictionAssignHook
     {

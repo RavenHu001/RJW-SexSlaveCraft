@@ -4,7 +4,7 @@ using Verse.AI;
 
 namespace SexSlaveCraft
 {
-    /// <summary>将阶段 3A 的 RJW 任务转换为有方向的统一请求；这里只识别上下文，不决定许可。</summary>
+    /// <summary>将普通、日常调教及仪式任务转换为有方向的统一请求；这里只识别上下文，不决定许可。</summary>
     internal static class SSCRestrictionJobContext
     {
         /// <summary>仅为 RJW 任务获取缓存驱动，避免在全局 AI 和命令入口提前构造无关任务驱动。</summary>
@@ -14,13 +14,11 @@ namespace SexSlaveCraft
             return job.GetCachedDriver(pawn) as JobDriver_Sex;
         }
 
-        /// <summary>标识尚未接管的任务，避免共用 RJW 基类导致日常、仪式和专项兼容同时受两套规则控制。</summary>
+        /// <summary>标识尚未接管的专项兼容任务，避免同时受两套规则控制。</summary>
         private static bool IsDeferred(JobDriver_Sex driver)
         {
             string name = driver?.job?.def?.defName;
-            return driver is JobDriver_Training || driver is JobDriver_RitualTraining ||
-                name == "SSC_Training_SexSlave" || name == "SSC_Training_Ritual" ||
-                name == "rjw_genes_lifeforce_randomrape" || name == "rjw_genes_lifeforce_seduced";
+            return name == "rjw_genes_lifeforce_randomrape" || name == "rjw_genes_lifeforce_seduced";
         }
 
         /// <summary>沿接收任务的实际 Partner 查找指回本人的发起任务，不从调教员身份或装备猜测用途。</summary>
@@ -50,7 +48,9 @@ namespace SexSlaveCraft
             Pawn partner = driver.Partner;
             bool known = driver is JobDriver_SexBaseInitiator && initiator != null;
             SSCInteractionKind kind;
-            if (driver is JobDriver_Masturbate && (partner == null || partner == initiator))
+            if (driver is JobDriver_Training || driver is JobDriver_RitualTraining)
+                kind = SSCRestrictionTrainingUtility.CreateRequest(initiator, partner, driver is JobDriver_RitualTraining).Kind;
+            else if (driver is JobDriver_Masturbate && (partner == null || partner == initiator))
                 kind = SSCInteractionKind.Masturbation;
             else if (driver is JobDriver_PE)
                 kind = SSCInteractionKind.PersonalityExcretion;

@@ -21,6 +21,7 @@ namespace Verse
         public RaceProperties RaceProps = new RaceProperties();
         public JobDef CurJobDef;
         public bool Reservable = true;
+        public ApparelTracker apparel = new ApparelTracker();
         /// <summary>仅提供训练组件。</summary>
         public T TryGetComp<T>() where T : class => Training as T;
         /// <summary>仪式角色使用同一组件。</summary>
@@ -93,6 +94,7 @@ namespace Verse
     }
     public static class DefDatabase<T> where T : new()
     {
+        public static List<T> AllDefsListForReading = new List<T>();
         /// <summary>测试仅请求调教工作定义。</summary>
         public static T GetNamedSilentFail(string name) => new T();
     }
@@ -162,24 +164,44 @@ namespace RimWorld
     {
         public virtual ThingRequest PotentialWorkThingRequest => default;
         public virtual PathEndMode PathEndMode => default;
+
+        /// <summary>提供工作扫描基类默认行为，由生产覆写决定是否跳过。</summary>
         public virtual bool ShouldSkip(Pawn pawn, bool forced = false) => false;
+
+        /// <summary>基类不提供候选，测试直接运行生产枚举。</summary>
         public virtual IEnumerable<Thing> PotentialWorkThingsGlobal(Pawn pawn) => Array.Empty<Thing>();
+
+        /// <summary>提供工作菜单检查的覆写契约。</summary>
         public virtual bool HasJobOnThing(Pawn pawn, Thing thing, bool forced = false) => false;
+
+        /// <summary>提供任务生成的覆写契约。</summary>
         public virtual Job JobOnThing(Pawn pawn, Thing thing, bool forced = false) => null;
     }
     public static class PawnsFinder { public static List<Pawn> AllMapsWorldAndTemporary_AliveOrDead = new List<Pawn>(); }
-    public class LordJob_Ritual { }
+    public class LordJob_Ritual
+    {
+        public Pawn Master, Slave;
+        /// <summary>返回用例指定的主持与目标角色。</summary>
+        public Pawn PawnWithRole(string role) => role == "master" ? Master : Slave;
+    }
     public class Precept_Ritual { }
     public class Precept_Role { }
     public class RitualRoleAssignments
     {
-        public Pawn Slave;
-        public Pawn FirstAssignedPawn(string role) => Slave;
+        public Pawn Slave, Master;
+        /// <summary>分别返回双方选角，保证能够检查不同选角顺序。</summary>
+        public Pawn FirstAssignedPawn(string role) => role == "master" ? Master : Slave;
     }
     public class RitualRole
     {
+
+        /// <summary>角色基类默认通过，实际配对与许可执行生产代码。</summary>
         public virtual bool AppliesToPawn(Pawn p, out string reason, TargetInfo selectedTarget, LordJob_Ritual ritual = null, RitualRoleAssignments assignments = null, Precept_Ritual precept = null, bool skipReason = false) { reason = null; return true; }
+
+        /// <summary>提供原版文化职位检查的覆写契约。</summary>
         public virtual bool AppliesToRole(Precept_Role role, out string reason, Precept_Ritual ritual = null, Pawn p = null, bool skipReason = false) { reason = null; return true; }
+
+        /// <summary>测试角色均满足年龄条件，不模拟原版年龄筛选。</summary>
         public bool AppliesIfChild(Pawn pawn, out string reason, bool skipReason) { reason = null; return true; }
     }
 }
@@ -217,7 +239,11 @@ namespace SexSlaveCraft
     {
         public List<Pawn> targets = new List<Pawn>();
         public IEnumerable<Pawn> ValidTargets => targets;
+
+        /// <summary>从测试缰绳列表移除目标，支持生产解绑服务。</summary>
         public void RemoveTarget(Pawn target) => targets.Remove(target);
+
+        /// <summary>维护模型缰绳及目标列表，供生产绑定服务调用。</summary>
         public static Hediff_BridleOfSexSlave AddToPawn(Pawn master, Pawn slave)
         {
             var bridle = SSCBondUtility.GetBridle(master) ?? new Hediff_BridleOfSexSlave { def = SSCDefOf.BridleOfSexSlave };
@@ -231,29 +257,49 @@ namespace SexSlaveCraft
         public static object SexSlaveTrait = new object(), ChainOfSexSlave = new object(), BridleOfSexSlave = new object(), SSC_BasicTraining = new object();
         public static JobDef SSC_TrainingReceiver = new JobDef(), Training_Ritual = new JobDef(), TrainingSexSlave = new JobDef();
     }
-    public static class TraitUtility { public static bool AddOrUpdateTrait(Pawn pawn, object def, int degree) => true; }
-    public static class BusSpecializationUtility { public static bool HasAnyBusState(Pawn pawn) => pawn?.Training.BusState == true; }
-    public static class ResearchUtils { public static bool IsResearchFinished(object def) => true; }
+    public static class TraitUtility {
+        /// <summary>本套件不计算特质成长，只提供身份服务所需边界。</summary>
+        public static bool AddOrUpdateTrait(Pawn pawn, object def, int degree) => true; }
+    public static class BusSpecializationUtility {
+        /// <summary>读取用例显式配置的公交车状态。</summary>
+        public static bool HasAnyBusState(Pawn pawn) => pawn?.Training.BusState == true; }
+    public static class ResearchUtils {
+        /// <summary>默认研究已完成，许可测试不模拟科技树。</summary>
+        public static bool IsResearchFinished(object def) => true; }
     public static class BindingRitualStateUtility
     {
+
+        /// <summary>本身份套件不模拟仪式恢复；实际恢复在仪式套件验证。</summary>
         public static void RecoverPawnState(Pawn pawn) { }
+
+        /// <summary>清理模型仪式标记以观察身份切换的影响。</summary>
         public static void ClearRitualState(CompSexSlaveTraining comp) => comp.isRitualTraining = false;
     }
     public static class TrainingJobUtility
     {
         public static int ValidationCalls;
+
+        /// <summary>记录真实工作筛选何时进入目标能力校验。</summary>
         public static bool TryValidateTarget(Pawn pawn, bool forced, string prefix, out string reason) { ValidationCalls++; reason = null; return true; }
     }
     public static class Trainjudge
     {
+
+        /// <summary>角色默认满足身体条件，配对许可由生产策略判断。</summary>
         public static bool TryCanBeFuckedWithReason(Pawn pawn, out string reason, out string details) { reason = details = null; return true; }
     }
     public static class Strings
     {
         public const string ITab_TrainerNone = "none", RJW_Short_TargetNull = "null", Train_Reason_NotHumanlike = "not human", Train_Reason_DeadOrSelf = "dead/self", Train_Reason_InvalidFaction = "faction", Train_Reason_NotEnabled = "disabled", Train_Reason_RitualBusy = "ritual", Train_Reason_ValidationCooldown = "validation cooldown", Train_Reason_AlreadyBeingTrained = "busy", Train_Reason_TrainerLocked = "locked", Train_Reason_NotReservable = "reservation";
         public const string Ritual_MustBeColonist = "colonist", Ritual_NoCompData = "comp", Ritual_NotDesignatedMaster = "master", Ritual_MustBeColonistOrSlave = "status", Ritual_MissingTrainingComp = "comp", Ritual_CannotBeSlaveAsMaster = "identity", Ritual_NoMasterAssigned = "assigned";
+
+        /// <summary>保留冷却文本参数供工作拒绝原因检查。</summary>
         public static string Train_Reason_Cooldown(string time) => time;
+
+        /// <summary>提供历史关系提示签名，不参与许可。</summary>
         public static string RitualRole_SlaveBoundToOther(string name) => name;
+
+        /// <summary>提供历史锁链提示签名，不执行关系判定。</summary>
         public static string Ritual_ChainConflict(string name) => name;
     }
 }

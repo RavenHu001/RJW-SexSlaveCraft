@@ -15,5 +15,6 @@
     <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionMigration.cs" Link="Production/Migration.cs" />
     <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionLifecycle.cs" Link="Production/Lifecycle.cs" />
     <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionGameComponent.cs" Link="Production/GameComponent.cs" />
+    <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionTrainingUtility.cs" Link="Production/SSCRestrictionTrainingUtility.cs" />
   </ItemGroup>
 </Project>

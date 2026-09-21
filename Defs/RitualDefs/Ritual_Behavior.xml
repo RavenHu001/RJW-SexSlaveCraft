@@ -10,7 +10,7 @@
     <roles>
       <li Class="SexSlaveCraft.RitualRole_BindingMaster">
         <id>master</id>
-        <label>主人</label>
+        <label>主持者</label>
         <maxCount>1</maxCount>
         <required>True</required>
         <countsAsParticipant>True</countsAsParticipant>

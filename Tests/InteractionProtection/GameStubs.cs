@@ -16,7 +16,8 @@ namespace Verse
     {
         public string LabelShort;
         public int thingIDNumber;
-        public bool Dead;
+        public bool Dead, Destroyed, Downed, IsSlave, IsPrisonerOfColony;
+        public bool IsColonist = true;
         public object health = new object();
         public ApparelTracker apparel = new ApparelTracker();
         public Verse.AI.Pawn_JobTracker jobs = new Verse.AI.Pawn_JobTracker();
@@ -118,6 +119,7 @@ namespace Verse.AI
             bool result = true;
             if (!SSCRestrictionOrderedJobHook.Prefix(job, pawn, ref result)) return result;
 #endif
+            job.playerForced = true;
             OrderedMutations++;
             return true;
         }
@@ -330,7 +332,12 @@ namespace SexSlaveCraft
     public enum PawnIdentity { Unset, Slave, Master }
     public enum SexSlaveSpecializationType { None, Bus, Cow, PetCat, PetDog, PetRabbit }
     public class JobDriver_Training : rjw.JobDriver_SexBaseInitiator { }
-    public class JobDriver_RitualTraining : rjw.JobDriver_SexBaseInitiator { }
+    public class JobDriver_RitualTraining : rjw.JobDriver_SexBaseInitiator
+    {
+        public int CancelCalls;
+        /// <summary>记录整场取消请求；真实仪式信号和清理由仪式生命周期套件覆盖。</summary>
+        public void AbortForRestriction(string reason) { CancelCalls++; }
+    }
     public class JobDriver_PE : rjw.JobDriver_SexBaseInitiator { }
     public static class OnaholeCompatibilityUtility
     {
@@ -347,6 +354,17 @@ namespace SexSlaveCraft
     {
         /// <summary>从显式身份读出主人资格，不推测关系。</summary>
         public static bool IsMaster(Verse.Pawn pawn) => pawn?.Training.pawnIdentity == PawnIdentity.Master;
+        /// <summary>提供身份查询边界；真实身份切换由 TrainerIdentity 套件覆盖。</summary>
+        public static bool IsTrainer(Verse.Pawn pawn) => IsMaster(pawn) || (pawn?.Training.pawnIdentity == PawnIdentity.Slave && pawn.Training.slaveTrainerEnabled);
+    }
+    public static class TrainerAssignmentUtility
+    {
+        /// <summary>只提供有效指定对象查询，真实指派逻辑由 TrainerIdentity 套件覆盖。</summary>
+        public static Verse.Pawn GetActiveAssignedTrainer(Verse.Pawn target)
+        {
+            var actor = target?.Training.selectedTrainer;
+            return actor != null && !actor.Dead && !actor.Destroyed && actor != target && SSCIdentityUtility.IsTrainer(actor) ? actor : null;
+        }
     }
     public class CompSexSlaveTraining
     {
@@ -354,7 +372,7 @@ namespace SexSlaveCraft
         public SexSlaveSpecializationType specializationType;
         public SSCRestrictionConfig restrictionConfig = new SSCRestrictionConfig();
         public Verse.Pawn selectedTrainer;
-        public bool AllowsOthersForTrainingOrSex;
+        public bool AllowsOthersForTrainingOrSex, slaveTrainerEnabled;
     }
     public class Settings
     {

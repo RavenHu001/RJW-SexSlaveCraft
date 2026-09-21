@@ -16,6 +16,7 @@ namespace SexSlaveCraft
             public Job Job;
             public int JobId;
             public bool HasRecord = true;
+            public bool HasTrainingRecord = true;
             public bool Started;
             public bool Rejected;
             public Pawn Initiator;
@@ -54,7 +55,15 @@ namespace SexSlaveCraft
         {
             SceneState state = State(driver);
             return state.Started && state.Initiator == request.Initiator && state.Receiver == request.Receiver &&
-                state.Kind == request.Kind && request.DirectionKnown;
+                state.Kind == SceneKind(driver, request) && request.DirectionKnown;
+        }
+
+        /// <summary>首次绑定准备仍属于原日常场景或仪式阶段；途中绑定变化不把已开始场景误当成新用途。</summary>
+        private static SSCInteractionKind SceneKind(JobDriver_Sex driver, SSCRestrictionRequest request)
+        {
+            if (driver is JobDriver_Training) return SSCInteractionKind.DailyTraining;
+            if (driver is JobDriver_RitualTraining) return SSCInteractionKind.RitualTraining;
+            return request.Kind;
         }
 
         /// <summary>接收方只承接仍指向自己的发起任务凭据，不以参与者名单或已分配 SexProps 判定开始。</summary>
@@ -71,14 +80,13 @@ namespace SexSlaveCraft
         }
 
         /// <summary>预约阶段只返回许可，不结束正在被任务跟踪器安装的驱动，也不创建配置或玩家命令豁免。</summary>
-        public static bool TryReserve(JobDriver_Sex driver, out bool allowed)
+        public static bool TryReserve(JobDriver_Sex driver, out bool allowed, bool ordered = false)
         {
             allowed = true;
             if (!SSCRestrictionJobContext.TryCreate(driver, out SSCRestrictionRequest request)) return false;
             if (HasStarted(driver, request)) return true;
-            SSCRestrictionDecision decision = SSCRestrictionPolicy.Evaluate(request);
-            allowed = decision.Allowed;
-            LogDecision(driver, request, decision, "Reserve");
+            allowed = Evaluate(driver, request, out SSCRestrictionDecision decision, out string reason, ordered);
+            LogDecision(driver, request, decision, "Reserve", allowed, reason);
             State(driver).Rejected = !allowed;
             return true;
         }
@@ -90,11 +98,20 @@ namespace SexSlaveCraft
             if (!SSCRestrictionJobContext.TryCreate(driver, out SSCRestrictionRequest request)) return false;
             if (driver.pawn?.jobs?.curDriver != driver) { allowed = false; return true; }
             if (HasStarted(driver, request)) return true;
-            SSCRestrictionDecision decision = SSCRestrictionPolicy.Evaluate(request);
-            allowed = decision.Allowed;
-            LogDecision(driver, request, decision, phase);
-            if (!allowed) Reject(driver, request, decision);
+            allowed = Evaluate(driver, request, out SSCRestrictionDecision decision, out string reason);
+            LogDecision(driver, request, decision, phase, allowed, reason);
+            if (!allowed) Reject(driver, request, reason);
             return true;
+        }
+
+        /// <summary>接收端沿用发起任务的调度方式，避免 playerForced 的接收任务替自动日常工作解除唯一指派。</summary>
+        private static bool Evaluate(JobDriver_Sex driver, SSCRestrictionRequest request,
+            out SSCRestrictionDecision decision, out string reason, bool ordered = false)
+        {
+            JobDriver_Sex actor = driver is JobDriver_SexBaseReciever receiver
+                ? SSCRestrictionJobContext.FindInitiator(receiver) : driver;
+            bool automaticDaily = actor is JobDriver_Training && !ordered && actor.job?.playerForced != true;
+            return SSCRestrictionTrainingUtility.TryEvaluate(request, automaticDaily, out decision, out reason);
         }
 
         /// <summary>只在原 Start 确实执行且驱动仍为当前任务时记下凭据；准备阶段不会得到开始标记。</summary>
@@ -107,7 +124,7 @@ namespace SexSlaveCraft
             state.Started = true;
             state.Initiator = request.Initiator;
             state.Receiver = request.Receiver;
-            state.Kind = request.Kind;
+            state.Kind = SceneKind(driver, request);
             var receiver = request.Receiver?.jobs?.curDriver as JobDriver_SexBaseReciever;
             if (receiver != null && receiver.Partner == request.Initiator)
             {
@@ -115,7 +132,7 @@ namespace SexSlaveCraft
                 targetState.Started = true;
                 targetState.Initiator = request.Initiator;
                 targetState.Receiver = request.Receiver;
-                targetState.Kind = request.Kind;
+                targetState.Kind = state.Kind;
             }
             return true;
         }
@@ -131,7 +148,7 @@ namespace SexSlaveCraft
         }
 
         /// <summary>只撤销当前请求准备的接收关联，再结束本驱动；保留其他参与者和后来替换的新任务。</summary>
-        private static void Reject(JobDriver_Sex driver, SSCRestrictionRequest request, SSCRestrictionDecision decision)
+        private static void Reject(JobDriver_Sex driver, SSCRestrictionRequest request, string reason)
         {
             SceneState state = State(driver);
             if (state.Rejected && driver.pawn?.jobs?.curDriver != driver) return;
@@ -156,10 +173,11 @@ namespace SexSlaveCraft
                     TrainingJobUtility.MarkValidationFailure(target, "SSC_Restrictions_PE");
                 }
             }
+            if (driver is JobDriver_RitualTraining ritualDriver)
+                ritualDriver.AbortForRestriction(reason);
             if (driver.pawn?.jobs?.curDriver != driver) return;
-            if (driver.job?.playerForced == true)
-                Messages.Message("SSC_Restrictions_JobRejected".Translate(
-                    ("SSC_Restrictions_Reason_" + decision.Reason).Translate()),
+            if (driver.job?.playerForced == true && !(driver is JobDriver_RitualTraining))
+                Messages.Message(reason,
                     new LookTargets(request.Initiator, request.Receiver), MessageTypeDefOf.RejectInput);
             driver.pawn.jobs.EndCurrentJob(JobCondition.Incompletable, startNewJob: false);
         }
@@ -169,6 +187,7 @@ namespace SexSlaveCraft
         {
             SceneState state = State(driver);
             Scribe_Values.Look(ref state.HasRecord, "sscRestrictionSceneRecord", false);
+            Scribe_Values.Look(ref state.HasTrainingRecord, "sscRestrictionTrainingRecord", false);
             Scribe_Values.Look(ref state.Started, "sscRestrictionSceneStarted", false);
             Scribe_Values.Look(ref state.Kind, "sscRestrictionSceneKind", SSCInteractionKind.Unknown);
             Scribe_References.Look(ref state.Initiator, "sscRestrictionSceneInitiator");
@@ -180,16 +199,30 @@ namespace SexSlaveCraft
                 state.LegacyProgress = driver.Sexprops != null &&
                     (driver.orgasms > 0 || (driver.duration > 0 && driver.ticks_left < driver.duration));
             if (Scribe.mode != LoadSaveMode.PostLoadInit) return;
-            if (!state.HasRecord && state.LegacyProgress && driver is JobDriver_SexBaseInitiator &&
-                SSCRestrictionJobContext.TryCreate(driver, out SSCRestrictionRequest request) && request.DirectionKnown)
+            if (state.LegacyProgress && driver is JobDriver_SexBaseInitiator &&
+                SSCRestrictionJobContext.TryCreate(driver, out SSCRestrictionRequest request) && request.DirectionKnown &&
+                (!state.HasRecord || (!state.HasTrainingRecord && SSCRestrictionTrainingUtility.IsTraining(request))))
             {
                 state.Started = true;
                 state.Initiator = request.Initiator;
                 state.Receiver = request.Receiver;
-                state.Kind = request.Kind;
+                state.Kind = SceneKind(driver, request);
             }
             state.HasRecord = true;
+            state.HasTrainingRecord = true;
             if (state.PreparedJobs == null) state.PreparedJobs = new List<int>();
+        }
+
+        /// <summary>仪式自身已保存精确的 Start 标记；在派生驱动恢复完成后补回升级前场景的统一凭据。</summary>
+        public static void RestoreRitualScene(JobDriver_RitualTraining driver, bool sceneStarted)
+        {
+            if (Scribe.mode != LoadSaveMode.PostLoadInit || !sceneStarted ||
+                !SSCRestrictionJobContext.TryCreate(driver, out SSCRestrictionRequest request) || !request.DirectionKnown) return;
+            SceneState state = State(driver);
+            state.Started = true;
+            state.Initiator = request.Initiator;
+            state.Receiver = request.Receiver;
+            state.Kind = SceneKind(driver, request);
         }
 
         /// <summary>记录快速双人任务本次准备回调新建的移动和等待任务；按实例编号清理，不删除其他玩家排队命令。</summary>
@@ -241,11 +274,12 @@ namespace SexSlaveCraft
         }
 
         /// <summary>记录统一判定的用途、方向、条目与来源；不再输出易误导的新任务旧开关值。</summary>
-        private static void LogDecision(JobDriver_Sex driver, SSCRestrictionRequest request, SSCRestrictionDecision decision, string phase)
+        private static void LogDecision(JobDriver_Sex driver, SSCRestrictionRequest request, SSCRestrictionDecision decision,
+            string phase, bool allowed, string reason)
         {
             SSCLog.Verbose($"[SSC Restrictions] phase={phase} job={driver.job?.def?.defName} kind={request.Kind} " +
                 $"actor={request.Initiator?.LabelShort} receiver={request.Receiver?.LabelShort} direction={request.DirectionKnown} " +
-                $"allowed={decision.Allowed} reason={decision.Reason} rule={decision.Entry?.Rule} " +
+                $"allowed={allowed} permission={decision.Allowed} reason={decision.Reason} failure={reason} rule={decision.Entry?.Rule} " +
                 $"source={decision.Entry?.Source} def={decision.Entry?.SourceDef}");
         }
     }

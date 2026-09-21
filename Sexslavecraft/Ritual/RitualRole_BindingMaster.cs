@@ -1,90 +1,44 @@
-﻿using RimWorld;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using RimWorld;
 using Verse;
 using Verse.AI;
 
 namespace SexSlaveCraft
 {
-    // ==========================================
-    // 专门用于仪式中【主人】位置的检查
-    // ==========================================
+    /// <summary>主持资格与所有权分离；已有绑定可由实际主人或获准的指定调教员主持。</summary>
     public class RitualRole_BindingMaster : RitualRole
     {
-        /// <summary>主人角色仍须主人身份，并核对性奴的有效指定对象；调教员开关不授予主人角色。</summary>
-        public override bool AppliesToPawn(Pawn p, out string reason, TargetInfo selectedTarget, LordJob_Ritual ritual = null, RitualRoleAssignments assignments = null, Precept_Ritual precept = null, bool skipReason = false)
+        /// <summary>核对主持者正常资格；目标已选时复用统一调教许可及关系检查。</summary>
+        public override bool AppliesToPawn(Pawn p, out string reason, TargetInfo selectedTarget,
+            LordJob_Ritual ritual = null, RitualRoleAssignments assignments = null, Precept_Ritual precept = null, bool skipReason = false)
         {
             reason = null;
-
-            // 1. 基础生存状态检查
-            if (p == null || p.Dead || p.Downed || !p.Spawned || !p.RaceProps.Humanlike)
-            {
-                return false;
-            }
-
-            // 2. 殖民地检查：必须是本殖民地的人
-            if (!p.IsColonist)
+            if (p == null || p.Dead || p.Downed || !p.Spawned || !p.RaceProps.Humanlike) return false;
+            if (!p.IsColonist || p.IsSlave || p.IsPrisonerOfColony)
             {
                 if (!skipReason) reason = Strings.Ritual_MustBeColonist;
                 return false;
             }
-
-            // =========================================================
-            // 3. 核心修改：面板身份检查 (替代了之前的性别检查)
-            // =========================================================
-            var comp = p.GetComp<CompSexSlaveTraining>();
-
-            // 防呆：如果没有这个组件（说明 XML 没挂载上或者出错了），自然不能当主人
-            if (comp == null)
+            if (!SSCIdentityUtility.IsTrainer(p))
             {
-                if (!skipReason) reason = Strings.Ritual_NoCompData;
+                if (!skipReason) reason = "SSC_TrainerIdentity_Required".Translate();
                 return false;
             }
-
-            // 必须在面板中被明确指定为"主人"
-            if (!SSCIdentityUtility.IsMaster(p))
+            Pawn slave = assignments?.FirstAssignedPawn("slave") ?? ritual?.PawnWithRole("slave");
+            if (slave != null && !SSCRestrictionTrainingUtility.TryEvaluate(
+                SSCRestrictionTrainingUtility.CreateRequest(p, slave, true), false, out _, out string failure))
             {
-                if (!skipReason) reason = Strings.Ritual_NotDesignatedMaster;
+                if (!skipReason) reason = failure;
                 return false;
             }
-
-            // =========================================================
-            // 4. 配对检查：验证此 master 是已选 slave 的指定调教员
-            // =========================================================
-            if (assignments != null)
-            {
-                Pawn slave = assignments.FirstAssignedPawn("slave");
-                if (slave != null)
-                {
-                    var slaveComp = slave.GetComp<CompSexSlaveTraining>();
-                    if (slaveComp?.selectedTrainer != null && TrainerAssignmentUtility.GetActiveAssignedTrainer(slave) == null)
-                    {
-                        if (!skipReason) reason = "SSC_TrainerIdentity_Required".Translate();
-                        return false;
-                    }
-                    if (slaveComp?.selectedTrainer != null && slaveComp.selectedTrainer != p)
-                    {
-                        // 此处比较的是调教员指派，不代表性奴已与该对象建立主人绑定。
-                        if (!skipReason) reason = "SSC_RitualRole_TrainerMismatch".Translate(
-                            slave.LabelShort, slaveComp.selectedTrainer.LabelShort, p.LabelShort);
-                        return false;
-                    }
-                }
-            }
-
-            // 5. 物理可达性 (仪式通用需求：必须能走到仪式地点)
             if (selectedTarget.IsValid && !p.CanReach((LocalTargetInfo)selectedTarget, PathEndMode.Touch, Danger.Deadly))
             {
                 if (!skipReason) reason = "MessageRitualRoleCannotReach".Translate();
                 return false;
             }
-
             return true;
         }
 
+        /// <summary>不额外要求原版文化职位，实际资格由角色配对检查决定。</summary>
         public override bool AppliesToRole(Precept_Role role, out string reason, Precept_Ritual ritual = null, Pawn p = null, bool skipReason = false)
         {
             reason = null;

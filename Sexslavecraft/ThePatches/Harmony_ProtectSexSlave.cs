@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using HarmonyLib;
@@ -10,7 +10,7 @@ using Verse.AI;
 // EN: Harmony adapters for SSC sex-interaction protection.
 // EN: Reservation, pre-toil and start checks delegate to one shared policy.
 // CN: 这是 SSC 性行为保护规则的 Harmony 适配层。
-// CN: 已接管任务先转交统一限制入口；剩余日常、仪式及专项兼容保留后续批次的旧路径。
+// CN: 已接管任务先转交统一限制入口；剩余专项兼容保留后续批次的旧路径。
 namespace SexSlaveCraft
 {
     [HarmonyPatch(typeof(JobDriver_Sex), "TryMakePreToilReservations")]
@@ -187,7 +187,7 @@ namespace SexSlaveCraft
             return SSCSexInteractionPolicy.Evaluate(roles.aggressor, roles.victim, roles.isRape);
         }
 
-        /// <summary>先转交阶段 3A 的预约许可；只有尚未接管的任务继续执行下面的旧保护分支。</summary>
+        /// <summary>先转交已接管普通及调教任务的预约许可；只有尚未接管的任务继续执行下面的旧保护分支。</summary>
         /// <returns>允许继续执行原预约方法时返回 true；拒绝时把预约结果设为 false 并跳过原方法。</returns>
         public static bool Prefix(JobDriver_Sex __instance, ref bool __result)
         {

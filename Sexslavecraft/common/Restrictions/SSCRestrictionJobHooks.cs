@@ -56,8 +56,9 @@ namespace SexSlaveCraft
         /// <summary>玩家下令时先查统一许可，拒绝发生在清空原队列及预约之前，避免原版将许可拒绝记为预约异常。</summary>
         public static bool Prefix(Job job, Pawn ___pawn, ref bool __result)
         {
+            // 原版在此方法内部才设置 playerForced；前缀必须显式提供命令来源，不提前改动候选 Job。
             if (!(SSCRestrictionJobContext.GetDriver(job, ___pawn) is JobDriver_Sex driver) ||
-                !SSCRestrictionJobGuard.TryReserve(driver, out bool allowed) || allowed) return true;
+                !SSCRestrictionJobGuard.TryReserve(driver, out bool allowed, ordered: true) || allowed) return true;
             Messages.Message("SSC_Restrictions_CommandRejected".Translate(), ___pawn, MessageTypeDefOf.RejectInput, false);
             __result = false;
             return false;

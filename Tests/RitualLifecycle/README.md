@@ -1,6 +1,6 @@
 # Binding Ritual lifecycle regression tests
 
-The suite contains 31 original lifecycle cases and 9 UAP compatibility cases (40 total).
+The suite contains 31 original lifecycle cases and 9 UAP compatibility cases and 10 stage 3B daily/ritual cases (50 total).
 The original lifecycle tests were committed with the lifecycle fix
 in [481ac53](https://github.com/RavenHu001/RJW-SexSlaveCraft-TieJin-Modify/commit/481ac53135842064262d8a34a2beed173b0ace2b)
 on the `Bug-fix` branch. The release script runs this suite alongside the 29-case
@@ -10,7 +10,7 @@ Run from the repository root with .NET SDK 9:
 
 ```powershell
 dotnet run --project Tests/RitualLifecycle/RitualLifecycle.csproj
-# Omit the UAP type entirely: 31 lifecycle cases plus one absence check (32 total).
+# Omit the UAP type entirely: 41 lifecycle cases plus one absence check (42 total).
 dotnet run --project Tests/RitualLifecycle/RitualLifecycle.csproj -p:EnableUapTestStub=false
 ```
 
@@ -60,3 +60,5 @@ would load; this verifies recovery decisions and load-time toil enumeration, not
 the serializer itself. Full in-game cancellation and save/load remain integration
 checks. The separate `RitualProgression` suite exercises long-term chain and
 corruption numerical behavior.
+
+Stage 3B also links the production daily driver and restriction core/adapter. Ten additional cases cover preparation failure, walking cleanup, unstarted scene settlement, stale callbacks, normal daily payout, owner precedence, phase cancellation and cancellation ownership. Cancellation is modeled by invoking the production cleanup patches after removing the lord; the real RimWorld signal graph is not executed. Exact restriction save markers and Harmony dispatch are covered by InteractionProtection; role selection and the full trainer utility are covered by TrainerIdentity.
