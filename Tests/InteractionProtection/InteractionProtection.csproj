@@ -18,7 +18,6 @@
     <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionJobGuard.cs" Link="Production/SSCRestrictionJobGuard.cs" />
     <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionJobHooks.cs" Link="Production/SSCRestrictionJobHooks.cs" />
 
-    <Compile Include="$(SscSourceRoot)/common/SSCSexInteractionPolicy.cs" Link="Production/SSCSexInteractionPolicy.cs" />
     <Compile Include="$(SscSourceRoot)/ThePatches/Harmony_ProtectSexSlave.cs" Link="Production/Harmony_ProtectSexSlave.cs" />
     <Reference Include="0Harmony" Condition="'$(HarmonyAssemblyPath)' != ''">
       <HintPath>$(HarmonyAssemblyPath)</HintPath>

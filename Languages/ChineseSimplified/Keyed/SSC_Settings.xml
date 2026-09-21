@@ -2,16 +2,8 @@
 <LanguageData>
   <SSC_Setting_Category>SexSlaveCraft 设置</SSC_Setting_Category>
 
-  <SSC_Setting_EnableSexSlaveProtectionRules>启用 SSC 性行为保护规则</SSC_Setting_EnableSexSlaveProtectionRules>
-  <SSC_Setting_EnableSexSlaveProtectionRules_Desc>控制 SSC 对性奴、主人和公交车之间性行为的额外限制。关闭后将跳过以下 SSC 保护规则，改由 RJW 自身判定。</SSC_Setting_EnableSexSlaveProtectionRules_Desc>
-  <SSC_Setting_AllowSexSlaveRape>允许性奴被非主人强暴</SSC_Setting_AllowSexSlaveRape>
-  <SSC_Setting_AllowSexSlaveRape_Desc>开启后，非主人也可强暴带有性奴锁链的角色，但保护服装仍可阻止强暴。\n\n关闭后启用严格保护：只有锁链绑定的主人可以强暴该性奴。</SSC_Setting_AllowSexSlaveRape_Desc>
-  <SSC_Setting_ProtectBusAggressorRape>禁止公交车主动强暴</SSC_Setting_ProtectBusAggressorRape>
-  <SSC_Setting_ProtectBusAggressorRape_Desc>开启后，公交车专精角色不能作为强暴发起者；作为受位时仍不受主人限制。</SSC_Setting_ProtectBusAggressorRape_Desc>
-  <SSC_Setting_ProtectChainedAggressorRape>禁止锁链性奴主动强暴</SSC_Setting_ProtectChainedAggressorRape>
-  <SSC_Setting_ProtectChainedAggressorRape_Desc>开启后，带有性奴锁链的角色不能作为强暴发起者。</SSC_Setting_ProtectChainedAggressorRape_Desc>
-  <SSC_Setting_ProtectNonRapeOwnerOnly>自愿性行为仅限主人</SSC_Setting_ProtectNonRapeOwnerOnly>
-  <SSC_Setting_ProtectNonRapeOwnerOnly_Desc>开启后，锁链性奴的非强暴性行为仅允许与绑定主人进行；在调教面板中允许他人使用的角色不受此限制。</SSC_Setting_ProtectNonRapeOwnerOnly_Desc>
+  <SSC_Setting_EnableSexSlaveProtectionRules>启用性奴行为限制规则</SSC_Setting_EnableSexSlaveProtectionRules>
+  <SSC_Setting_EnableSexSlaveProtectionRules_Desc>统一控制性爱与调教的行为许可，包括个体规则及装备、特化强制值。关闭后暂停这些限制并保留配置；身份、指定调教员、同床和正常任务条件仍按各自规则处理。实际主人向自己的性奴发起行为始终直接通过本系统。</SSC_Setting_EnableSexSlaveProtectionRules_Desc>
 
   <SSC_Setting_EnableLogs>启用 SSC 日志</SSC_Setting_EnableLogs>
   <SSC_Setting_EnableLogs_Desc>SSC 普通日志的总开关。错误日志不受此项影响。</SSC_Setting_EnableLogs_Desc>

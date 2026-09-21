@@ -8,18 +8,21 @@ namespace SexSlaveCraft
 {
     public static class SSCBondUtility
     {
+        /// <summary>读取性奴侧锁链；角色或定义缺失时返回空，不在查询中修复关系。</summary>
         public static Hediff_ChainOfSexSlave GetChain(Pawn sexSlave)
         {
             if (sexSlave?.health?.hediffSet == null || SSCDefOf.ChainOfSexSlave == null) return null;
             return sexSlave.health.hediffSet.GetFirstHediffOfDef(SSCDefOf.ChainOfSexSlave) as Hediff_ChainOfSexSlave;
         }
 
+        /// <summary>读取主人侧缰绳；角色或定义缺失时返回空，不创建健康状态。</summary>
         public static Hediff_BridleOfSexSlave GetBridle(Pawn master)
         {
             if (master?.health?.hediffSet == null || SSCDefOf.BridleOfSexSlave == null) return null;
             return master.health.hediffSet.GetFirstHediffOfDef(SSCDefOf.BridleOfSexSlave) as Hediff_BridleOfSexSlave;
         }
 
+        /// <summary>读取锁链实际绑定的主人，不把指定调教员推断为主人。</summary>
         public static Pawn GetBoundMaster(Pawn sexSlave)
         {
             return GetChain(sexSlave)?.LinkedPawn;
@@ -33,6 +36,7 @@ namespace SexSlaveCraft
             return TrainerAssignmentUtility.GetActiveAssignedTrainer(sexSlave);
         }
 
+        /// <summary>检查目标到主人的有向绑定关系，反向关系不视为同一许可来源。</summary>
         public static bool IsBoundTo(Pawn sexSlave, Pawn master)
         {
             return sexSlave != null && master != null && GetBoundMaster(sexSlave) == master;
@@ -70,15 +74,13 @@ namespace SexSlaveCraft
             Hediff_BridleOfSexSlave bridle = Hediff_BridleOfSexSlave.AddToPawn(master, sexSlave);
             if (chain == null || bridle == null) return false;
 
-            CompSexSlaveTraining comp = sexSlave.TryGetComp<CompSexSlaveTraining>();
-            if (comp != null && !comp.AllowsOthersForTrainingOrSex)
-            {
-                comp.selectedTrainer = master;
-            }
+            // 绑定入口只建立关系；完成后的限制生命周期通知按新调教条目协调指定者。
+            // 不再先用旧开放字段覆盖指派、再由 Harmony 恢复原值。
 
             return true;
         }
 
+        /// <summary>解除性奴锁链及对应缰绳引用；按调用参数清理原主人的指派，保留其他指定者。</summary>
         public static bool Unbind(Pawn sexSlave, bool clearAssignedTrainer = true)
         {
             Hediff_ChainOfSexSlave chain = GetChain(sexSlave);
@@ -113,6 +115,7 @@ namespace SexSlaveCraft
             return changed;
         }
 
+        /// <summary>遍历缰绳目标快照逐个解绑，返回实际解除数量，避免修改正在枚举的集合。</summary>
         public static int UnbindAllFromMaster(Pawn master)
         {
             Hediff_BridleOfSexSlave bridle = GetBridle(master);
@@ -127,6 +130,7 @@ namespace SexSlaveCraft
             return count;
         }
 
+        /// <summary>以性奴锁链为依据补齐主人侧反向引用，不更换主人或依据旧保护字段改写指派。</summary>
         public static void RepairReciprocalLink(Pawn sexSlave)
         {
             Pawn master = GetBoundMaster(sexSlave);

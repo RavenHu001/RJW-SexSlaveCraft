@@ -49,7 +49,6 @@
         <corruptionMultiplier>1.5</corruptionMultiplier>
         <minCorruptionLevel>1.0</minCorruptionLevel>
       </li>
-      <li Class = "SexSlaveCraft.CompProperties_SSRapeCheck"></li>
     </comps>
 
     <!-- 制作材料 -->

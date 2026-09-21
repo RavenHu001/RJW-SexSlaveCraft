@@ -14,13 +14,8 @@ namespace SexSlaveCraft
 {
     public partial class SSCSettings : ModSettings
     {
-        // EN: Strict protection stays off only when the player explicitly allows rape on chained sex slaves.
-        // CN: 只有玩家明确允许时，锁链性奴才会退出严格保护模式。
-        public bool allowSexSlaveRape = false;
+        // 总开关沿用旧序列化键，避免升级后意外重新启用；当前只控制统一限制系统。
         public bool enableSexSlaveProtectionRules = true;
-        public bool protectBusAggressorRape = true;
-        public bool protectChainedAggressorRape = true;
-        public bool protectNonRapeOwnerOnly = true;
         public bool enableSSCLogs = true;
         public bool enableSSCVerboseLogs = false;
         public bool enableSSCImportantLogs = true;
@@ -42,11 +37,7 @@ namespace SexSlaveCraft
         {
             // EN: Save every toggle explicitly so old saves keep the same SSC behavior after updates.
             // CN: 每个开关都要显式保存，保证旧存档在更新后仍保持相同的 SSC 行为。
-            Scribe_Values.Look(ref allowSexSlaveRape, "allowSexSlaveRape", false);
             Scribe_Values.Look(ref enableSexSlaveProtectionRules, "enableSexSlaveProtectionRules", true);
-            Scribe_Values.Look(ref protectBusAggressorRape, "protectBusAggressorRape", true);
-            Scribe_Values.Look(ref protectChainedAggressorRape, "protectChainedAggressorRape", true);
-            Scribe_Values.Look(ref protectNonRapeOwnerOnly, "protectNonRapeOwnerOnly", true);
             Scribe_Values.Look(ref enableSSCLogs, "enableSSCLogs", true);
             Scribe_Values.Look(ref enableSSCVerboseLogs, "enableSSCVerboseLogs", false);
             Scribe_Values.Look(ref enableSSCImportantLogs, "enableSSCImportantLogs", true);
@@ -143,36 +134,11 @@ namespace SexSlaveCraft
         private static void DrawSettings(Listing_Standard listingStandard)
         {
             bool restrictionsWereEnabled = settings.enableSexSlaveProtectionRules;
-            // EN: Step 1: draw the sex-slave protection rules first, because they change how Harmony guards sex jobs.
-            // CN: 步骤 1：先画出“性奴保护规则”，因为它们会直接改变 Harmony 对性行为 Job 的拦截方式。
+            // 这里只提供统一限制总开关。旧四项全局开关已退役，原值仅供尚未升级的存档迁移。
             listingStandard.CheckboxLabeled(
                 "SSC_Setting_EnableSexSlaveProtectionRules".Translate(),
                 ref settings.enableSexSlaveProtectionRules,
                 "SSC_Setting_EnableSexSlaveProtectionRules_Desc".Translate()
-            );
-
-            listingStandard.CheckboxLabeled(
-                Strings.Setting_AllowSexSlaveRape,
-                ref settings.allowSexSlaveRape,
-                Strings.Setting_AllowSexSlaveRape_Desc
-            );
-
-            listingStandard.CheckboxLabeled(
-                "SSC_Setting_ProtectBusAggressorRape".Translate(),
-                ref settings.protectBusAggressorRape,
-                "SSC_Setting_ProtectBusAggressorRape_Desc".Translate()
-            );
-
-            listingStandard.CheckboxLabeled(
-                "SSC_Setting_ProtectChainedAggressorRape".Translate(),
-                ref settings.protectChainedAggressorRape,
-                "SSC_Setting_ProtectChainedAggressorRape_Desc".Translate()
-            );
-
-            listingStandard.CheckboxLabeled(
-                "SSC_Setting_ProtectNonRapeOwnerOnly".Translate(),
-                ref settings.protectNonRapeOwnerOnly,
-                "SSC_Setting_ProtectNonRapeOwnerOnly_Desc".Translate()
             );
 
             listingStandard.Gap(8f);

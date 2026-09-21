@@ -28,7 +28,7 @@ internal static class Program
         Run("非有限进度归零", NonFiniteProgressIsReset);
         Run("越界有限进度限制在有效区间", FiniteProgressIsClamped);
         Run("导出损坏的当前进度不会污染快照", ExportNormalizesCurrentProgress);
-        Run("恢复公交和非公交方向同步派生开关", RestoreUpdatesDerivedFlags);
+        Run("恢复方向不再改写旧例外，仅同步繁殖模式", RestoreKeepsLegacyRestrictions);
         Run("无当前方向仍请求清理基础健康状态", NoneRestoreRequestsCleanup);
         Run("多次人格覆盖不会累积先前历史", RepeatedRestoreDoesNotAccumulate);
         Run("恢复进度不迁移或清空身体奶量", RestoreKeepsBodyResource);
@@ -279,17 +279,21 @@ internal static class Program
         Assert(float.IsPositiveInfinity(source.specializationProgress), "导出不修改源状态");
     }
 
-    /// <summary>验证恢复沿用原方向配置规则，同步公开训练开关并重置非兔方向繁殖模式。</summary>
-    private static void RestoreUpdatesDerivedFlags()
+    /// <summary>验证方向恢复不再修改旧例外输入，非兔方向仍按原规则重置繁殖模式。</summary>
+    private static void RestoreKeepsLegacyRestrictions()
     {
-        var target = new CompSexSlaveTraining { rabbitReproductionMode = RabbitReproductionMode.Clone };
-        target.RestoreSpecializationProgress(SexSlaveSpecializationType.Bus, 0.5f, null);
-        Assert(target.allowOthersForTrainingOrSex, "公交方向应允许其他训练者");
-        Assert(target.rabbitReproductionMode == RabbitReproductionMode.Offspring, "非兔方向重置繁殖模式");
-        target.RestoreSpecializationProgress(SexSlaveSpecializationType.Cow, 0.2f, null);
-        Assert(!target.allowOthersForTrainingOrSex, "奶牛方向关闭公开训练");
-        target.RestoreSpecializationProgress(SexSlaveSpecializationType.None, 0f, null);
-        Assert(!target.allowOthersForTrainingOrSex, "无方向关闭公开训练");
+        foreach (bool legacy in new[] { false, true })
+        {
+            var target = new CompSexSlaveTraining { rabbitReproductionMode = RabbitReproductionMode.Clone,
+                allowOthersForTrainingOrSex = legacy };
+            foreach (var type in new[] { SexSlaveSpecializationType.Bus, SexSlaveSpecializationType.Cow,
+                SexSlaveSpecializationType.None })
+            {
+                target.RestoreSpecializationProgress(type, 0.5f, null);
+                Assert(target.allowOthersForTrainingOrSex == legacy, "方向恢复不能写入旧例外");
+                Assert(target.rabbitReproductionMode == RabbitReproductionMode.Offspring, "非兔方向重置繁殖模式");
+            }
+        }
     }
 
     /// <summary>验证恢复无方向的人格仍清理身体残留的基础状态，即使组件本身已无方向。</summary>

@@ -24,6 +24,7 @@ namespace SexSlaveCraft
 
         public static HediffDef RabbitCloneLowPnaDef => DefDatabase<HediffDef>.GetNamedSilentFail(RabbitCloneLowPnaDefName);
 
+        /// <summary>检查角色是否处于兔特化克隆繁殖模式，不在查询中改变身份或配置。</summary>
         public static bool IsRabbitCloneBirthModeEnabled(Pawn source)
         {
             CompSexSlaveTraining comp = source?.TryGetComp<CompSexSlaveTraining>();
@@ -33,6 +34,7 @@ namespace SexSlaveCraft
                    PetSpecializationUtility.HasAnyPetState(source, SexSlaveSpecializationType.PetRabbit);
         }
 
+        /// <summary>成功创建分身后才移除待产幼体和妊娠状态；失败时保留原生分娩流程。</summary>
         public static bool TryReplacePregnancyBirthWithClone(Hediff_BasePregnancy pregnancy)
         {
             Pawn source = pregnancy?.pawn;
@@ -56,6 +58,7 @@ namespace SexSlaveCraft
             return true;
         }
 
+        /// <summary>校验分身资格、复制并准备身体，再建立来源链接；链接失败时销毁本次生成的分身。</summary>
         public static bool TryCreateRabbitClone(Pawn source, out Pawn clone, bool showMessages = true)
         {
             clone = null;
@@ -128,6 +131,7 @@ namespace SexSlaveCraft
             return true;
         }
 
+        /// <summary>检查本体状态、种族、兔特化及分身上限，返回首个不能创建的原因。</summary>
         public static bool CanCreateRabbitClone(Pawn source, out string reason)
         {
             reason = null;
@@ -180,6 +184,7 @@ namespace SexSlaveCraft
             return true;
         }
 
+        /// <summary>依次从基础和终极兔特化状态取得分身来源组件，不补建缺失状态。</summary>
         public static HediffComp_RabbitCloneSource GetRabbitCloneSourceComp(Pawn pawn)
         {
             if (pawn?.health?.hediffSet == null) return null;
@@ -192,23 +197,27 @@ namespace SexSlaveCraft
             return (finalRabbit as HediffWithComps)?.TryGetComp<HediffComp_RabbitCloneSource>();
         }
 
+        /// <summary>根据分身链接组件识别复制体，不把普通兔特化角色视为分身。</summary>
         public static bool IsRabbitClone(Pawn pawn)
         {
             return GetRabbitCloneLinkComp(pawn) != null;
         }
 
+        /// <summary>核对分身链接的实际来源是否为指定本体。</summary>
         public static bool IsRabbitCloneOf(Pawn clone, Pawn source)
         {
             HediffComp_RabbitCloneLink link = GetRabbitCloneLinkComp(clone);
             return link != null && link.source == source;
         }
 
+        /// <summary>读取分身链接中的成熟标记；没有链接时返回否。</summary>
         public static bool IsMatureRabbitClone(Pawn pawn)
         {
             HediffComp_RabbitCloneLink link = GetRabbitCloneLinkComp(pawn);
             return link != null && link.mature;
         }
 
+        /// <summary>从分身健康状态取得链接组件，缺少角色或定义时安全返回空。</summary>
         public static HediffComp_RabbitCloneLink GetRabbitCloneLinkComp(Pawn pawn)
         {
             if (pawn?.health?.hediffSet == null) return null;
@@ -220,6 +229,7 @@ namespace SexSlaveCraft
             return (linkHediff as HediffWithComps)?.TryGetComp<HediffComp_RabbitCloneLink>();
         }
 
+        /// <summary>按成长进度推进生理年龄及链接严重度，达到终点时执行一次成熟处理。</summary>
         public static void TickRabbitCloneGrowth(Pawn clone, Pawn source, HediffComp_RabbitCloneLink link)
         {
             if (clone?.ageTracker == null || link == null) return;
@@ -247,12 +257,14 @@ namespace SexSlaveCraft
             }
         }
 
+        /// <summary>将出生后经过的游戏刻数换算为零到一的成长比例，未记录出生时视为零。</summary>
         public static float GetCloneGrowthProgress(HediffComp_RabbitCloneLink link)
         {
             if (link == null || link.bornTick < 0) return 0f;
             return Mathf.Clamp01((Find.TickManager.TicksGame - link.bornTick) / (float)RabbitCloneMaturationTicks);
         }
 
+        /// <summary>将分身年龄同步到本体，补充低产量状态并复制允许继承的健康状态，只结算一次成熟。</summary>
         public static void MatureRabbitClone(Pawn clone, Pawn source, HediffComp_RabbitCloneLink link)
         {
             if (clone == null || link == null || link.mature) return;
@@ -275,6 +287,7 @@ namespace SexSlaveCraft
             Messages.Message($"[SSC] {clone.LabelShort} 的兔分身已经成熟。", clone, MessageTypeDefOf.PositiveEvent, false);
         }
 
+        /// <summary>收集存活分身及本体，将休息和心情按组内平均值同步。</summary>
         public static void SyncRabbitCloneNeeds(Pawn source, List<Pawn> clones)
         {
             if (source == null || clones == null) return;
@@ -286,6 +299,7 @@ namespace SexSlaveCraft
             SyncNeed(group, p => p.needs?.mood, (need, value) => need.CurLevelPercentage = value);
         }
 
+        /// <summary>本体处于精神状态时让仍正常的分身进入游荡状态，不覆盖分身已有的精神状态。</summary>
         public static void PropagateSourceMentalState(Pawn source, List<Pawn> clones)
         {
             if (source?.mindState?.mentalStateHandler == null || !source.mindState.mentalStateHandler.InMentalState) return;
@@ -306,6 +320,7 @@ namespace SexSlaveCraft
             }
         }
 
+        /// <summary>优先读取基础产物定义，缺失时按现有名称规则查找普通 PNA 产物。</summary>
         public static ThingDef GetPnaProductThingDef()
         {
             HediffDef basePnaDef = DefDatabase<HediffDef>.GetNamedSilentFail(BasePnaProductionDefName);
@@ -349,13 +364,14 @@ namespace SexSlaveCraft
                 cloneTraining.pawnIdentity = sourceTraining.pawnIdentity;
                 cloneTraining.slaveTrainerEnabled = false;
                 cloneTraining.trainerIdentityInitialized = true;
-                cloneTraining.allowOthersForTrainingOrSex = sourceTraining.allowOthersForTrainingOrSex;
+                // 新克隆的限制由准备完成后的 ResetNewClone 独立初始化，不复制旧例外或新配置。
                 cloneTraining.rabbitReproductionMode = sourceTraining.rabbitReproductionMode;
             }
 
             SyncTraits(source, clone);
         }
 
+        /// <summary>根据本体年龄计算分身初始年龄，保证至少一刻且不超过既定幼体上限。</summary>
         private static long GetInitialCloneAgeTicks(Pawn source)
         {
             long sourceAge = source?.ageTracker?.AgeBiologicalTicks ?? GenDate.TicksPerYear;
@@ -363,6 +379,7 @@ namespace SexSlaveCraft
             return Math.Max(1L, Math.Min(sourceAge, earlyAge));
         }
 
+        /// <summary>在本体附近寻找可站立且未遮蔽的位置生成分身，找不到时使用本体所在格。</summary>
         private static void SpawnRabbitCloneNearSource(Pawn source, Pawn clone)
         {
             if (clone.Spawned || source?.Map == null) return;
@@ -377,6 +394,7 @@ namespace SexSlaveCraft
             GenSpawn.Spawn(clone, cell, source.Map);
         }
 
+        /// <summary>为新身体添加来源链接并记录初始年龄，缺少定义或健康组件时返回空。</summary>
         private static HediffComp_RabbitCloneLink AddRabbitCloneLink(Pawn source, Pawn clone)
         {
             HediffDef linkDef = RabbitCloneLinkDef;
@@ -390,6 +408,7 @@ namespace SexSlaveCraft
             return linkComp;
         }
 
+        /// <summary>为成熟分身补充低产量状态，避免重复添加已有健康状态。</summary>
         private static void AddLowPnaProduction(Pawn clone)
         {
             if (clone?.health?.hediffSet == null) return;
@@ -405,6 +424,7 @@ namespace SexSlaveCraft
             }
         }
 
+        /// <summary>从快照中移除不属于 SSC 保留范围的健康状态，避免遍历过程中修改原集合。</summary>
         private static void RemoveNonSscHediffs(Pawn pawn)
         {
             if (pawn?.health?.hediffSet?.hediffs == null) return;
@@ -422,6 +442,7 @@ namespace SexSlaveCraft
             }
         }
 
+        /// <summary>根据定义名及模组标识判断健康状态是否属于现有 SSC 继承范围。</summary>
         private static bool ShouldKeepSscHediff(HediffDef def)
         {
             if (def == null) return false;
@@ -439,6 +460,7 @@ namespace SexSlaveCraft
                    modName.IndexOf("sexslavecraft", StringComparison.OrdinalIgnoreCase) >= 0;
         }
 
+        /// <summary>复制允许继承的 SSC 状态及严重度，排除人格排泄和分身专用状态，再清理复制出的来源记录。</summary>
         private static void CopySscHediffsFromSource(Pawn source, Pawn clone)
         {
             if (source?.health?.hediffSet?.hediffs == null || clone?.health == null) return;
@@ -470,12 +492,14 @@ namespace SexSlaveCraft
             RemovePersonalityExcretionStates(clone);
         }
 
+        /// <summary>清空复制身体上的分身列表，避免把本体的其他分身当作自己的后代。</summary>
         private static void ClearCopiedCloneSourceLists(Pawn pawn)
         {
             HediffComp_RabbitCloneSource sourceComp = GetRabbitCloneSourceComp(pawn);
             sourceComp?.ClearClones();
         }
 
+        /// <summary>删除复制时带入的旧分身链接，供新身体随后建立独立来源关系。</summary>
         private static void RemoveExistingCloneLinks(Pawn pawn)
         {
             if (pawn?.health?.hediffSet == null) return;
@@ -491,6 +515,7 @@ namespace SexSlaveCraft
             }
         }
 
+        /// <summary>移除人格排泄中及已排泄状态，使新身体不会继承来源的排泄流程。</summary>
         public static void RemovePersonalityExcretionStates(Pawn pawn)
         {
             if (pawn?.health?.hediffSet == null) return;
@@ -499,6 +524,7 @@ namespace SexSlaveCraft
             RemoveHediffIfPresent(pawn, SSCDefOf.SSC_PersonalityExcreted_Done);
         }
 
+        /// <summary>删除指定的首个健康状态；角色、定义或状态不存在时不处理。</summary>
         private static void RemoveHediffIfPresent(Pawn pawn, HediffDef def)
         {
             if (pawn?.health?.hediffSet == null || def == null) return;
@@ -509,6 +535,7 @@ namespace SexSlaveCraft
             }
         }
 
+        /// <summary>复制来源特性并按接收者最高恶堕值重新协调性奴特性，不直接复制该派生特性。</summary>
         private static void SyncTraits(Pawn source, Pawn clone)
         {
             if (source?.story?.traits?.allTraits == null || clone?.story?.traits?.allTraits == null) return;
@@ -524,6 +551,7 @@ namespace SexSlaveCraft
             SSCIdentityUtility.SyncSexSlaveTraitFromHighestCorruption(clone);
         }
 
+        /// <summary>销毁并丢弃被克隆分娩替代的预生成幼体，随后清空妊娠组件列表。</summary>
         private static void DiscardPreparedPregnancyBabies(Hediff_BasePregnancy pregnancy)
         {
             if (pregnancy?.babies == null) return;
@@ -541,6 +569,7 @@ namespace SexSlaveCraft
             pregnancy.babies.Clear();
         }
 
+        /// <summary>对组内实际存在的同类需求计算平均比例，再统一写回，缺失需求不参加平均。</summary>
         private static void SyncNeed<TNeed>(List<Pawn> group, Func<Pawn, TNeed> getter, Action<TNeed, float> setter)
             where TNeed : Need
         {

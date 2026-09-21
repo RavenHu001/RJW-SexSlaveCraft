@@ -181,7 +181,6 @@
     <Compile Include="ThePatches\Harmony_SharedBedAssignmentUI.cs" />
     <Compile Include="common\SSCBondUtility.cs" />
     <Compile Include="common\SSCIdentityUtility.cs" />
-    <Compile Include="common\SSCSexInteractionPolicy.cs" />
     <Compile Include="common\Restrictions\SSCRestrictionData.cs" />
     <Compile Include="common\Restrictions\SSCRestrictionDefinitions.cs" />
     <Compile Include="common\Restrictions\SSCRestrictionResolver.cs" />
@@ -240,7 +239,6 @@
     <Compile Include="JobDriver\JobDriver_RitualTraining.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Comps\ThingsComp_Frist.cs" />
-    <Compile Include="Comps\ThingsComp_PreventRapeJustForSexSlave.cs" />
     <Compile Include="WorkGiver\WorkGiver_InsertPersonality.cs" />
     <Compile Include="WorkGiver\WorkGiver_PE.cs" />
     <Compile Include="WorkGiver\WorkGiver_Training.cs" />

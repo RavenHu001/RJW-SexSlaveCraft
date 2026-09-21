@@ -45,7 +45,6 @@ namespace SexSlaveCraft
         public TrainingActType selectedMode = TrainingActType.Auto;
         public Pawn selectedTrainer;
         public SSCSharedSleepRecord sharedSleep;
-        public bool allowOthersForTrainingOrSex = false;
         public bool scheduledTrainingEnabled = false;
         public int scheduledTrainingHour = 20;
         public int scheduledTrainingIntervalDays = 1;
@@ -121,9 +120,6 @@ namespace SexSlaveCraft
 
         /// <summary>同时检查宠物特化身份及其完成进度阈值。</summary>
         public bool HasCompletedPetSpecialization => specializationProgress >= 0.999f && IsPetSpecialized;
-
-        /// <summary>读取旧系统允许其他角色参与的开关，供尚未迁移的调用方使用。</summary>
-        public bool AllowsOthersForTrainingOrSex => allowOthersForTrainingOrSex;
 
         /// <summary>判断上次训练资格校验失败后的重试间隔是否尚未结束。</summary>
         public bool IsWaitingAfterFailedValidation => (Find.TickManager.TicksGame - lastFailedTrainingValidationTick) < FailedValidationRetryTicks;
@@ -277,7 +273,6 @@ namespace SexSlaveCraft
 
             Scribe_Values.Look(ref mode, "mode", TrainingMode.Disabled);
             Scribe_Values.Look(ref selectedMode, "selectedMode", TrainingActType.Auto);
-            Scribe_Values.Look(ref allowOthersForTrainingOrSex, "allowOthersForTrainingOrSex", false);
             Scribe_Values.Look(ref scheduledTrainingEnabled, "scheduledTrainingEnabled", false);
             Scribe_Values.Look(ref scheduledTrainingHour, "scheduledTrainingHour", 20);
             Scribe_Values.Look(ref scheduledTrainingIntervalDays, "scheduledTrainingIntervalDays", 1);
@@ -327,14 +322,8 @@ namespace SexSlaveCraft
                         selectedTrainer = null;
                     }
 
-                    if (boundMaster != null &&
-                        restrictionConfig == null &&
-                        !AllowsOthersForTrainingOrSex &&
-                        !IsBusSpecialized &&
-                        !BusSpecializationUtility.HasAnyBusState(loadedPawn))
-                    {
-                        selectedTrainer = boundMaster;
-                    }
+                    // 指派限制统一等 GameComponent 完成迁移后协调。
+                    // 此处不能再用旧开放字段提前改回主人，否则会破坏迁移前的真实指定关系。
 
                     bool inActiveTrainingJob =
                         loadedPawn.CurJobDef == SSCDefOf.TrainingSexSlave ||

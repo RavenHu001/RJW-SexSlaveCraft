@@ -38,18 +38,10 @@ namespace SexSlaveCraft
     [HarmonyPatch(typeof(SSCBondUtility), nameof(SSCBondUtility.Bind))]
     internal static class SSCRestrictionBindHook
     {
-        /// <summary>保留绑定前指派，防止旧绑定逻辑覆盖新配置已经允许的选择。</summary>
-        private static void Prefix(Pawn sexSlave, out Pawn __state)
-        {
-            __state = sexSlave?.TryGetComp<CompSexSlaveTraining>()?.selectedTrainer;
-        }
-
-        /// <summary>绑定全部完成后协调实际主人，修正旧绑定入口临时写入的指定者。</summary>
-        private static void Postfix(Pawn sexSlave, bool __result, Pawn __state)
+        /// <summary>绑定全部完成后按新配置协调实际主人；绑定过程不再产生需要恢复的旧指派覆盖。</summary>
+        private static void Postfix(Pawn sexSlave, bool __result)
         {
             if (!__result) return;
-            CompSexSlaveTraining comp = sexSlave?.TryGetComp<CompSexSlaveTraining>();
-            if (comp?.restrictionConfig != null) comp.selectedTrainer = __state;
             SSCRestrictionGameComponent.Notify(sexSlave);
         }
     }

@@ -273,8 +273,6 @@ namespace SexSlaveCraft
                     DrawTrainingToggle(listing, pawn, comp);
                     listing.Gap(8f);
                     DrawCooldownStatus(listing, comp);
-                    listing.Gap(8f);
-                    DrawAllowOthersToggle(listing, pawn, comp);
                 }
                 finally
                 {
@@ -849,21 +847,6 @@ namespace SexSlaveCraft
                     return Strings.ITab_RabbitReproductionClone;
                 default:
                     return Strings.ITab_RabbitReproductionOffspring;
-            }
-        }
-
-        /// <summary>保留旧运行路径的个体开放开关，并在关闭巴士开放时显示原有提示。</summary>
-        private static void DrawAllowOthersToggle(Listing_Standard listing, Pawn pawn, CompSexSlaveTraining comp)
-        {
-            bool allowOthers = comp.allowOthersForTrainingOrSex;
-            bool oldState = allowOthers;
-            listing.CheckboxLabeled(Strings.ITab_AllowOthers, ref allowOthers);
-            if (allowOthers == oldState) return;
-
-            comp.allowOthersForTrainingOrSex = allowOthers;
-            if (!allowOthers && comp.IsBusSpecialized)
-            {
-                Messages.Message(Strings.ITab_AllowOthersWarning, pawn, MessageTypeDefOf.CautionInput, false);
             }
         }
 

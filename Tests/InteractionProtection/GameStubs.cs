@@ -38,9 +38,6 @@ namespace Verse
     public class Apparel
     {
         public ThingDef def = new ThingDef();
-        public CompSSRapeCheck Protection;
-        /// <summary>将模拟服装上的防护组件按请求类型返回，供防护装备策略判断。</summary>
-        public T GetComp<T>() where T : class => Protection as T;
     }
     public class LookTargets
     {
@@ -337,7 +334,6 @@ namespace rjw
 namespace SexSlaveCraft
 {
     public class Hediff_ChainOfSexSlave { public Verse.Pawn LinkedPawn; }
-    public class CompSSRapeCheck { }
     public enum PawnIdentity { Unset, Slave, Master }
     public enum SexSlaveSpecializationType { None, Bus, Cow, PetCat, PetDog, PetRabbit }
     public class JobDriver_Training : rjw.JobDriver_SexBaseInitiator { }

@@ -32,6 +32,8 @@ internal static partial class Program
         {
             var settings = new SSCSettings { protectNonRapeOwnerOnly = false, allowSexSlaveRape = true,
                 protectChainedAggressorRape = false };
+            Scribe.node = new Dictionary<string, object> { ["protectNonRapeOwnerOnly"] = false,
+                ["allowSexSlaveRape"] = true, ["protectChainedAggressorRape"] = false };
             Scribe.mode = LoadSaveMode.LoadingVars; settings.ExposeData();
             Scribe.mode = LoadSaveMode.PostLoadInit; settings.ExposeData();
             Equal(true, settings.restrictionDefaults.allowMasturbation);
@@ -40,6 +42,64 @@ internal static partial class Program
             Equal(false, settings.restrictionDefaults.receiveTraining);
             settings.restrictionDefaults.receiveForced = false;
             settings.ExposeData(); Equal(false, settings.restrictionDefaults.receiveForced);
+        });
+        Run("Retired globals survive settings save and migrate another old save independently of new defaults", () =>
+        {
+            // 模拟先升级一个存档并改过新默认，再打开另一个仍未升级的旧存档。
+            // 原来的全局值必须保留，不能因旧控件删除而退回出厂值或套用新默认。
+            var settings = new SSCSettings();
+            Scribe.node = new Dictionary<string, object> { ["protectNonRapeOwnerOnly"] = false,
+                ["allowSexSlaveRape"] = true, ["protectBusAggressorRape"] = false,
+                ["protectChainedAggressorRape"] = false };
+            Scribe.mode = LoadSaveMode.LoadingVars; settings.ExposeData();
+            Scribe.mode = LoadSaveMode.PostLoadInit; settings.ExposeData();
+            settings.restrictionDefaults = new SSCRestrictionRules();
+            Scribe.node = new Dictionary<string, object>();
+            Scribe.mode = LoadSaveMode.Saving; settings.ExposeData();
+            Equal(true, Scribe.node["allowSexSlaveRape"]);
+            var reloaded = new SSCSettings();
+            Scribe.mode = LoadSaveMode.LoadingVars; reloaded.ExposeData();
+            Scribe.mode = LoadSaveMode.PostLoadInit; reloaded.ExposeData();
+            Scribe.mode = LoadSaveMode.Inactive; SSCMod.settings = reloaded;
+            Pawn old = FreshPawn("second old save", PawnIdentity.Slave);
+            LoadOldRestrictions(old); StartRestrictionGame(old);
+            Equal(true, old.Training.restrictionConfig.rules.receiveForced);
+            Equal(true, old.Training.restrictionConfig.rules.receiveConsensual);
+            Equal(true, old.Training.restrictionConfig.rules.allowForcedInitiation);
+            Equal(false, reloaded.restrictionDefaults.receiveForced);
+            Equal(false, reloaded.restrictionDefaults.receiveConsensual);
+            Equal(false, reloaded.protectBusAggressorRape);
+        });
+        Run("Missing retired keys use historical defaults and explicit new values are never remigrated", () =>
+        {
+            var settings = new SSCSettings();
+            Scribe.mode = LoadSaveMode.LoadingVars; settings.ExposeData();
+            Scribe.mode = LoadSaveMode.PostLoadInit; settings.ExposeData();
+            Equal(false, settings.restrictionDefaults.receiveForced);
+            Equal(SSCRestrictionValue.OwnerOnly, settings.restrictionDefaults.consensualInitiation);
+            settings.restrictionDefaults.receiveTraining = true;
+            Scribe.node = new Dictionary<string, object>();
+            Scribe.mode = LoadSaveMode.Saving; settings.ExposeData();
+            Scribe.node["protectNonRapeOwnerOnly"] = false;
+            Scribe.node["allowSexSlaveRape"] = true;
+            var restored = new SSCSettings();
+            Scribe.mode = LoadSaveMode.LoadingVars; restored.ExposeData();
+            Scribe.mode = LoadSaveMode.PostLoadInit; restored.ExposeData();
+            Equal(true, restored.restrictionDefaults.receiveTraining);
+            Equal(false, restored.restrictionDefaults.receiveForced);
+            Equal(SSCRestrictionValue.OwnerOnly, restored.restrictionDefaults.consensualInitiation);
+        });
+        Run("Closed legacy pawn keeps its designated trainer while the unified system is disabled", () =>
+        {
+            Pawn pawn = FreshPawn("old closed", PawnIdentity.Slave), owner = FreshPawn("owner"), other = FreshPawn("trainer");
+            pawn.BoundMaster = owner; pawn.Training.selectedTrainer = other;
+            SSCMod.settings.enableSexSlaveProtectionRules = false;
+            LoadOldRestrictions(pawn); StartRestrictionGame(pawn, owner, other);
+            Equal(false, pawn.Training.restrictionConfig.rules.receiveTraining);
+            Equal(other, pawn.Training.selectedTrainer);
+            SSCMod.settings.enableSexSlaveProtectionRules = true;
+            SSCRestrictionGameComponent.SettingsChanged();
+            Equal(owner, pawn.Training.selectedTrainer);
         });
         Run("Old eligible pawn captures pre-repair choices and migrates once after references", () =>
         {
@@ -122,13 +182,18 @@ internal static partial class Program
         Run("Pawn migration markers and pending inputs survive save reload", () =>
         {
             Pawn pawn = FreshPawn("old bus", PawnIdentity.Slave); pawn.HasBusState = true;
+            pawn.Training.allowOthersForTrainingOrSex = true;
             LoadOldRestrictions(pawn);
+            Scribe.node = new Dictionary<string, object>();
             Scribe.mode = LoadSaveMode.Saving; pawn.Training.ExposeRestrictions();
+            Equal(false, Scribe.node.ContainsKey("allowOthersForTrainingOrSex"));
             Pawn restored = FreshPawn("restored", PawnIdentity.Slave);
             Scribe.mode = LoadSaveMode.LoadingVars; restored.Training.ExposeRestrictions();
             Scribe.mode = LoadSaveMode.PostLoadInit; restored.Training.ExposeRestrictions();
             Equal(true, restored.Training.restrictionLifecycleSeen);
             Equal(true, restored.Training.legacyRestrictionInput.bus);
+            Equal(true, restored.Training.legacyRestrictionInput.open);
+            Equal(false, restored.Training.allowOthersForTrainingOrSex);
             Scribe.mode = LoadSaveMode.Inactive;
             StartRestrictionGame(restored);
             Equal(true, restored.Training.restrictionConfig.busDefaultsApplied);
@@ -394,7 +459,7 @@ internal static partial class Program
     /// <summary>模拟旧档缺少所有限制字段，完成字段加载与引用恢复阶段；旧身份和例外由用例先设置。</summary>
     private static void LoadOldRestrictions(Pawn pawn)
     {
-        Scribe.node = new Dictionary<string, object>();
+        Scribe.node = new Dictionary<string, object> { ["allowOthersForTrainingOrSex"] = pawn.Training.allowOthersForTrainingOrSex };
         Scribe.mode = LoadSaveMode.LoadingVars; pawn.Training.ExposeRestrictions();
         Scribe.mode = LoadSaveMode.PostLoadInit; pawn.Training.ExposeRestrictions();
         Scribe.mode = LoadSaveMode.Inactive;

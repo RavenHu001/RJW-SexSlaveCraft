@@ -132,13 +132,10 @@ namespace SexSlaveCraft
         public PawnIdentity pawnIdentity;
         public SexSlaveSpecializationType specializationType;
         public Verse.Pawn selectedTrainer;
-        public bool allowOthersForTrainingOrSex;
     }
     public partial class SSCSettings : Verse.IExposable
     {
         public bool enableSexSlaveProtectionRules = true;
-        public bool protectNonRapeOwnerOnly = true, protectBusAggressorRape = true, protectChainedAggressorRape = true;
-        public bool allowSexSlaveRape;
         /// <summary>转调生产代码的新限制设置序列化入口，测试替身不重复实现其保存逻辑。</summary>
         public void ExposeData() { ExposeRestrictionSettings(); }
     }

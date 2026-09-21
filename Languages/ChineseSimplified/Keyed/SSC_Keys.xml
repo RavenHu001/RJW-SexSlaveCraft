@@ -47,14 +47,11 @@
   <SSC_Mode_Rimming>舔肛</SSC_Mode_Rimming>
   <SSC_Mode_Sixtynine>69</SSC_Mode_Sixtynine>
   <!--调教开关（Sexmode GetGizmos）-->
-  <SSC_Toggle_GizmoDesc>循环切换模式：禁用 / 启用 / 保护。</SSC_Toggle_GizmoDesc>
   <SSC_Toggle_Label_Disabled>训练模式: 禁用</SSC_Toggle_Label_Disabled>
   <SSC_Toggle_Label_Enabled>训练模式: 启用</SSC_Toggle_Label_Enabled>
-  <SSC_Toggle_Label_Protect>训练模式: 保护</SSC_Toggle_Label_Protect>
   <SSC_Toggle_Label_Unknown>训练模式: 未知</SSC_Toggle_Label_Unknown>
-  <SSC_Toggle_Desc_Disabled>已禁用：禁止任何人对该角色进行调教。</SSC_Toggle_Desc_Disabled>
-  <SSC_Toggle_Desc_Enabled>已启用：目前仅主人可进行调教（需要仪式绑定）。</SSC_Toggle_Desc_Enabled>
-  <SSC_Toggle_Desc_Protect>保护模式：除主人外，任何人都不能强制该角色。</SSC_Toggle_Desc_Protect>
+  <SSC_Toggle_Desc_Disabled>已禁用日常调教。</SSC_Toggle_Desc_Disabled>
+  <SSC_Toggle_Desc_Enabled>已启用日常调教：由有效指定调教员按排班、行为规则及任务条件执行。</SSC_Toggle_Desc_Enabled>
   <SSC_Message_BerserkSuppressed>{0} 的狂暴被锁链压制了</SSC_Message_BerserkSuppressed>
   <SSC_EquipRestriction_NotCorruptedEnough>{0} 明显不愿意穿这件衣服（试着提高恶堕值）。</SSC_EquipRestriction_NotCorruptedEnough>
 <!--设置（setting）-->
@@ -126,8 +123,6 @@
   <SSC_ITab_TrainingLockedDesc>需要研究「调教」才能使用调教设置。</SSC_ITab_TrainingLockedDesc>
   <SSC_ITab_TrainingSettingsHeader>&lt;b&gt;调教设置&lt;/b&gt;</SSC_ITab_TrainingSettingsHeader>
   <SSC_ITab_AllowTraining>允许调教</SSC_ITab_AllowTraining>
-  <SSC_ITab_AllowOthers>允许其他人调教或进行性交</SSC_ITab_AllowOthers>
-  <SSC_ITab_AllowOthersWarning>公交车特化需要性奴与主人以外的人做爱才能增长经验值。</SSC_ITab_AllowOthersWarning>
   <SSC_ITab_CooldownStatus>&lt;color=orange&gt;冷却中: {0}&lt;/color&gt;</SSC_ITab_CooldownStatus>
   <SSC_ITab_StatusReady>状态: &lt;color=green&gt;就绪&lt;/color&gt;</SSC_ITab_StatusReady>
   <SSC_ITab_StatusDisabled>状态: &lt;color=grey&gt;已禁用&lt;/color&gt;</SSC_ITab_StatusDisabled>

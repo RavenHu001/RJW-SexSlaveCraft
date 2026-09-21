@@ -94,7 +94,7 @@ namespace SexSlaveCraft
             return Math.Max(0f, Math.Min(1f, progress));
         }
 
-        /// <summary>切换同一角色的当前方向，保留各方向历史，并同步方向派生的训练开关。</summary>
+        /// <summary>切换同一角色的当前方向并保留各方向历史；限制默认由方向变更后的统一生命周期事件处理。</summary>
         public void SetSpecialization(SexSlaveSpecializationType type)
         {
             SexSlaveSpecializationType previousType = specializationType;
@@ -119,20 +119,13 @@ namespace SexSlaveCraft
             specializationType = type;
             if (type == SexSlaveSpecializationType.None)
             {
-                allowOthersForTrainingOrSex = false;
                 specializationProgress = 0f;
                 rabbitReproductionMode = RabbitReproductionMode.Offspring;
                 return;
             }
 
-            if (type == SexSlaveSpecializationType.Bus)
-            {
-                allowOthersForTrainingOrSex = true;
-            }
-            else
-            {
-                allowOthersForTrainingOrSex = false;
-            }
+            // 不再写旧“允许其他人”开关。公交车只声明新系统中的两项被动默认/强制值，
+            // 方向切换本身不能扩大主动许可或调教许可，也不能抹掉已有个体选择。
 
             if (type != SexSlaveSpecializationType.PetRabbit)
             {

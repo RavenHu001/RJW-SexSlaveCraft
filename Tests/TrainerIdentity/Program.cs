@@ -351,6 +351,23 @@ internal static partial class Program
                 Assert(!string.IsNullOrWhiteSpace(identityXml.Root.Element("SSC_Identity_BoundTip")?.Value));
             }
         });
+        Run("绑定不再根据旧开放状态覆盖第三方或空指派", () =>
+        {
+            // 本套件直接调用生产绑定函数；新限制生命周期协调另由 RestrictionCore 覆盖。
+            // 绑定函数不能再制造一次旧规则覆盖，强制指定主人由统一协调入口负责。
+            foreach (bool legacy in new[] { false, true })
+            foreach (bool assigned in new[] { false, true })
+            {
+                var f = Setup(); Pawn other = assigned ? Pawn(PawnIdentity.Master, f.slave.Map) : null;
+                f.slave.Training.AllowsOthersForTrainingOrSex = legacy;
+                f.slave.Training.restrictionConfig.rules.receiveTraining = true;
+                f.slave.Training.selectedTrainer = other;
+                Assert(SSCBondUtility.Bind(f.master, f.slave));
+                Assert(f.slave.Training.selectedTrainer == other);
+                Assert(SSCBondUtility.Bind(f.master, f.slave));
+                Assert(f.slave.Training.selectedTrainer == other);
+            }
+        });
         RunStage3BTests();
         Console.WriteLine($"{passed}/{passed + failed} passed (production trainer identity and assignment; game interface model).");
         return failed == 0 ? 0 : 1;
