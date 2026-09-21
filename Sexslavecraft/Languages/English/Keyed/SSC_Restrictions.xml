@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <SSC_Restrictions_Open>Restrictions: configure and test</SSC_Restrictions_Open>
+  <SSC_Restrictions_SettingsTip>Choose the pawn to configure and both test participants inside the window. Selecting a pawn beforehand is optional.</SSC_Restrictions_SettingsTip>
+  <SSC_Restrictions_SettingsUnavailable>Load a save and open a map with a configurable pawn to use this interface.</SSC_Restrictions_SettingsUnavailable>
+  <SSC_Restrictions_Title>Restrictions: configure and test</SSC_Restrictions_Title>
+  <SSC_Restrictions_EditTab>Individual rules</SSC_Restrictions_EditTab>
+  <SSC_Restrictions_TestTab>Permission test</SSC_Restrictions_TestTab>
+  <SSC_Restrictions_TestNotice>Test interface: individual rules can be saved and tested here. Actual game jobs still use the legacy rules.</SSC_Restrictions_TestNotice>
+  <SSC_Restrictions_OwnerNotice>The actual owner initiating any interaction with their own bound pawn is immediately allowed. Equipment and individual restrictions cannot veto this.</SSC_Restrictions_OwnerNotice>
+  <SSC_Restrictions_SystemSwitch>Enable restrictions (shared legacy master switch)</SSC_Restrictions_SystemSwitch>
+  <SSC_Restrictions_SystemSwitchTip>Global setting. This also changes the legacy protection switch used by actual jobs. Turning it off preserves saved rules.</SSC_Restrictions_SystemSwitchTip>
+  <SSC_Restrictions_ProfileSwitch>Enable specialization overrides (new system)</SSC_Restrictions_ProfileSwitch>
+  <SSC_Restrictions_ProfileSwitchTip>Global setting. Only controls specialization overrides in the new system; equipment overrides and saved values are unaffected.</SSC_Restrictions_ProfileSwitchTip>
+  <SSC_Restrictions_EditPawn>Configure pawn: {0}</SSC_Restrictions_EditPawn>
+  <SSC_Restrictions_NotApplicable>This pawn is not managed by the new system: SSC slave identity or an existing owner bond is required. Any existing configuration is read-only.</SSC_Restrictions_NotApplicable>
+  <SSC_Restrictions_Uninitialized>No new configuration exists yet. You can explicitly create a test configuration using current defaults and specialization defaults. This does not migrate legacy settings.</SSC_Restrictions_Uninitialized>
+  <SSC_Restrictions_Initialize>Create test configuration from current defaults</SSC_Restrictions_Initialize>
+  <SSC_Restrictions_InvalidConfig>Unsupported or invalid configuration (version {0}). Editing is disabled; original data has been preserved.</SSC_Restrictions_InvalidConfig>
+  <SSC_Restrictions_SaveNotice>Edits are applied immediately and saved with the game. Saved values remain editable while overridden and are used again when the override ends.</SSC_Restrictions_SaveNotice>
+  <SSC_Restrictions_EditFailed>Cannot edit: the pawn's applicability or configuration changed. Please check it again.</SSC_Restrictions_EditFailed>
+  <SSC_Restrictions_Rule_Masturbation>Active · Solo masturbation</SSC_Restrictions_Rule_Masturbation>
+  <SSC_Restrictions_Rule_ConsensualInitiation>Active · Initiate consensual interaction</SSC_Restrictions_Rule_ConsensualInitiation>
+  <SSC_Restrictions_Rule_ForcedInitiation>Active · Initiate forced interaction</SSC_Restrictions_Rule_ForcedInitiation>
+  <SSC_Restrictions_Rule_ReceiveConsensual>Passive · Receive consensual interaction from non-owners</SSC_Restrictions_Rule_ReceiveConsensual>
+  <SSC_Restrictions_Rule_ReceiveForced>Passive · Receive forced interaction from non-owners</SSC_Restrictions_Rule_ReceiveForced>
+  <SSC_Restrictions_Rule_ReceiveTraining>Training · Receive training from non-owners</SSC_Restrictions_Rule_ReceiveTraining>
+  <SSC_Restrictions_SavedValue>Saved: {0} (click to change)</SSC_Restrictions_SavedValue>
+  <SSC_Restrictions_EffectiveValue>Effective: {0}; source: {1}</SSC_Restrictions_EffectiveValue>
+  <SSC_Restrictions_InvalidValue>Invalid configuration</SSC_Restrictions_InvalidValue>
+  <SSC_Restrictions_Value_Deny>Deny</SSC_Restrictions_Value_Deny>
+  <SSC_Restrictions_Value_OwnerOnly>Owner only</SSC_Restrictions_Value_OwnerOnly>
+  <SSC_Restrictions_Value_Allow>Allow</SSC_Restrictions_Value_Allow>
+  <SSC_Restrictions_Source_Saved>Individual saved value</SSC_Restrictions_Source_Saved>
+  <SSC_Restrictions_Source_Specialization>Specialization override</SSC_Restrictions_Source_Specialization>
+  <SSC_Restrictions_Source_Equipment>Equipment override</SSC_Restrictions_Source_Equipment>
+  <SSC_Restrictions_Source_SystemDisabled>System disabled</SSC_Restrictions_Source_SystemDisabled>
+  <SSC_Restrictions_TestAsReceiver>Test with this pawn as receiver</SSC_Restrictions_TestAsReceiver>
+  <SSC_Restrictions_Initiator>Initiator: {0}</SSC_Restrictions_Initiator>
+  <SSC_Restrictions_Receiver>Receiver: {0}</SSC_Restrictions_Receiver>
+  <SSC_Restrictions_Swap>Swap initiator and receiver</SSC_Restrictions_Swap>
+  <SSC_Restrictions_Kind>Interaction: {0}</SSC_Restrictions_Kind>
+  <SSC_Restrictions_Kind_Masturbation>Solo masturbation</SSC_Restrictions_Kind_Masturbation>
+  <SSC_Restrictions_Kind_Consensual>Consensual interaction</SSC_Restrictions_Kind_Consensual>
+  <SSC_Restrictions_Kind_Forced>Forced interaction</SSC_Restrictions_Kind_Forced>
+  <SSC_Restrictions_Kind_DailyTraining>Daily training</SSC_Restrictions_Kind_DailyTraining>
+  <SSC_Restrictions_Kind_RitualTraining>Ritual training</SSC_Restrictions_Kind_RitualTraining>
+  <SSC_Restrictions_Kind_PersonalityExcretion>Personality task</SSC_Restrictions_Kind_PersonalityExcretion>
+  <SSC_Restrictions_Kind_BindingPreparation>First binding preparation</SSC_Restrictions_Kind_BindingPreparation>
+  <SSC_Restrictions_SoloTip>Results use saved configurations live; no jobs are started. Solo interactions only check the initiator and ignore the receiver selection.</SSC_Restrictions_SoloTip>
+  <SSC_Restrictions_Result>Result: {0}\nReason: {1}</SSC_Restrictions_Result>
+  <SSC_Restrictions_Subject>Relevant pawn: {0}</SSC_Restrictions_Subject>
+  <SSC_Restrictions_ResultEntry>Rule: {0}\nSource: {1}</SSC_Restrictions_ResultEntry>
+  <SSC_Restrictions_Reason_BoundOwner>Actual owner immediately allowed</SSC_Restrictions_Reason_BoundOwner>
+  <SSC_Restrictions_Reason_SystemDisabled>Restriction system disabled</SSC_Restrictions_Reason_SystemDisabled>
+  <SSC_Restrictions_Reason_NotApplicable>Relevant pawns are not managed by this system</SSC_Restrictions_Reason_NotApplicable>
+  <SSC_Restrictions_Reason_Allowed>Required permissions satisfied</SSC_Restrictions_Reason_Allowed>
+  <SSC_Restrictions_Reason_IncompleteContext>Missing participants, direction or purpose</SSC_Restrictions_Reason_IncompleteContext>
+  <SSC_Restrictions_Reason_ConfigurationMissing>Relevant pawn has no new configuration; initialize it on the individual rules page</SSC_Restrictions_Reason_ConfigurationMissing>
+  <SSC_Restrictions_Reason_ConfigurationInvalid>Invalid configuration version, rule or file override</SSC_Restrictions_Reason_ConfigurationInvalid>
+  <SSC_Restrictions_Reason_RuleDenied>Effective rule denies this interaction</SSC_Restrictions_Reason_RuleDenied>
+  <SSC_Restrictions_Reason_OwnerOnly>Initiation is limited to this pawn's actual owner</SSC_Restrictions_Reason_OwnerOnly>
+  <SSC_Restrictions_Reason_InvalidBindingPreparation>Identity or assignment does not qualify for first binding preparation</SSC_Restrictions_Reason_InvalidBindingPreparation>
+  <SSC_Restrictions_EditInitiator>Edit initiator rules</SSC_Restrictions_EditInitiator>
+  <SSC_Restrictions_EditReceiver>Edit receiver rules</SSC_Restrictions_EditReceiver>
+  <SSC_Restrictions_None>Not selected</SSC_Restrictions_None>
+  <SSC_Restrictions_Error>Configuration check failed: {0}</SSC_Restrictions_Error>
+</LanguageData>

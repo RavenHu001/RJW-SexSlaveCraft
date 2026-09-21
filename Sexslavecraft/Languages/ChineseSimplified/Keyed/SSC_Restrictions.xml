@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <SSC_Restrictions_Open>行为限制：设置与测试</SSC_Restrictions_Open>
+  <SSC_Restrictions_SettingsTip>打开后可在窗口中选择配置角色和测试双方，无需预先选中角色。</SSC_Restrictions_SettingsTip>
+  <SSC_Restrictions_SettingsUnavailable>请载入存档并进入有可配置角色的地图后使用。</SSC_Restrictions_SettingsUnavailable>
+  <SSC_Restrictions_Title>行为限制：设置与测试</SSC_Restrictions_Title>
+  <SSC_Restrictions_EditTab>个体规则</SSC_Restrictions_EditTab>
+  <SSC_Restrictions_TestTab>许可测试</SSC_Restrictions_TestTab>
+  <SSC_Restrictions_TestNotice>测试界面：个体规则可保存，下方许可测试使用新系统；实际游戏任务目前仍使用旧规则。</SSC_Restrictions_TestNotice>
+  <SSC_Restrictions_OwnerNotice>实际主人对自己的绑定对象发起任何行为，新系统均直接允许，装备和个体限制不能否决。</SSC_Restrictions_OwnerNotice>
+  <SSC_Restrictions_SystemSwitch>启用限制系统（与旧保护共用总开关）</SSC_Restrictions_SystemSwitch>
+  <SSC_Restrictions_SystemSwitchTip>这是全局设置，也会改变当前实际任务使用的旧保护总开关。关闭不清空角色保存值。</SSC_Restrictions_SystemSwitchTip>
+  <SSC_Restrictions_ProfileSwitch>启用特化强制规则（新系统）</SSC_Restrictions_ProfileSwitch>
+  <SSC_Restrictions_ProfileSwitchTip>全局设置。只控制新系统的特化覆盖，不关闭装备强制，也不改写个体保存值。</SSC_Restrictions_ProfileSwitchTip>
+  <SSC_Restrictions_EditPawn>配置角色：{0}</SSC_Restrictions_EditPawn>
+  <SSC_Restrictions_NotApplicable>当前角色不受新系统管理：需要 SSC 性奴身份或已有绑定关系。已有配置仅供查看。</SSC_Restrictions_NotApplicable>
+  <SSC_Restrictions_Uninitialized>尚未建立新配置。可手动采用当前默认值及特化默认，建立用于测试的配置；此操作不会迁移旧设置。</SSC_Restrictions_Uninitialized>
+  <SSC_Restrictions_Initialize>使用当前默认值建立测试配置</SSC_Restrictions_Initialize>
+  <SSC_Restrictions_InvalidConfig>配置版本或数据异常（版本 {0}），暂不可编辑；已保留原始配置。</SSC_Restrictions_InvalidConfig>
+  <SSC_Restrictions_SaveNotice>修改立即写入角色，随游戏存档保存。强制覆盖期间仍可编辑保存值，覆盖消失后会重新使用该值。</SSC_Restrictions_SaveNotice>
+  <SSC_Restrictions_EditFailed>无法修改：角色适用状态或配置已变化，请重新检查。</SSC_Restrictions_EditFailed>
+  <SSC_Restrictions_Rule_Masturbation>主动 · 单人自慰</SSC_Restrictions_Rule_Masturbation>
+  <SSC_Restrictions_Rule_ConsensualInitiation>主动 · 发起双人自愿行为</SSC_Restrictions_Rule_ConsensualInitiation>
+  <SSC_Restrictions_Rule_ForcedInitiation>主动 · 发起强制行为</SSC_Restrictions_Rule_ForcedInitiation>
+  <SSC_Restrictions_Rule_ReceiveConsensual>被动 · 接受非主人自愿行为</SSC_Restrictions_Rule_ReceiveConsensual>
+  <SSC_Restrictions_Rule_ReceiveForced>被动 · 接受非主人强制行为</SSC_Restrictions_Rule_ReceiveForced>
+  <SSC_Restrictions_Rule_ReceiveTraining>调教 · 接受非主人调教</SSC_Restrictions_Rule_ReceiveTraining>
+  <SSC_Restrictions_SavedValue>保存值：{0}（点击修改）</SSC_Restrictions_SavedValue>
+  <SSC_Restrictions_EffectiveValue>当前生效：{0}；来源：{1}</SSC_Restrictions_EffectiveValue>
+  <SSC_Restrictions_InvalidValue>配置无效</SSC_Restrictions_InvalidValue>
+  <SSC_Restrictions_Value_Deny>禁止</SSC_Restrictions_Value_Deny>
+  <SSC_Restrictions_Value_OwnerOnly>仅限主人</SSC_Restrictions_Value_OwnerOnly>
+  <SSC_Restrictions_Value_Allow>允许</SSC_Restrictions_Value_Allow>
+  <SSC_Restrictions_Source_Saved>个体保存值</SSC_Restrictions_Source_Saved>
+  <SSC_Restrictions_Source_Specialization>特化强制</SSC_Restrictions_Source_Specialization>
+  <SSC_Restrictions_Source_Equipment>装备强制</SSC_Restrictions_Source_Equipment>
+  <SSC_Restrictions_Source_SystemDisabled>总开关已关闭</SSC_Restrictions_Source_SystemDisabled>
+  <SSC_Restrictions_TestAsReceiver>以此角色为接收者进行测试</SSC_Restrictions_TestAsReceiver>
+  <SSC_Restrictions_Initiator>发起者：{0}</SSC_Restrictions_Initiator>
+  <SSC_Restrictions_Receiver>接收者：{0}</SSC_Restrictions_Receiver>
+  <SSC_Restrictions_Swap>交换发起者与接收者</SSC_Restrictions_Swap>
+  <SSC_Restrictions_Kind>行为用途：{0}</SSC_Restrictions_Kind>
+  <SSC_Restrictions_Kind_Masturbation>单人自慰</SSC_Restrictions_Kind_Masturbation>
+  <SSC_Restrictions_Kind_Consensual>双人自愿行为</SSC_Restrictions_Kind_Consensual>
+  <SSC_Restrictions_Kind_Forced>强制行为</SSC_Restrictions_Kind_Forced>
+  <SSC_Restrictions_Kind_DailyTraining>日常调教</SSC_Restrictions_Kind_DailyTraining>
+  <SSC_Restrictions_Kind_RitualTraining>仪式调教</SSC_Restrictions_Kind_RitualTraining>
+  <SSC_Restrictions_Kind_PersonalityExcretion>人格专用任务</SSC_Restrictions_Kind_PersonalityExcretion>
+  <SSC_Restrictions_Kind_BindingPreparation>首次绑定准备</SSC_Restrictions_Kind_BindingPreparation>
+  <SSC_Restrictions_SoloTip>结果实时使用已保存配置；不会启动任务。单人用途只检查发起者，此时忽略接收者选择。</SSC_Restrictions_SoloTip>
+  <SSC_Restrictions_Result>测试结果：{0}\n原因：{1}</SSC_Restrictions_Result>
+  <SSC_Restrictions_Subject>相关角色：{0}</SSC_Restrictions_Subject>
+  <SSC_Restrictions_ResultEntry>规则：{0}\n来源：{1}</SSC_Restrictions_ResultEntry>
+  <SSC_Restrictions_Reason_BoundOwner>实际主人直接放行</SSC_Restrictions_Reason_BoundOwner>
+  <SSC_Restrictions_Reason_SystemDisabled>限制系统已关闭</SSC_Restrictions_Reason_SystemDisabled>
+  <SSC_Restrictions_Reason_NotApplicable>相关角色不受此系统管理</SSC_Restrictions_Reason_NotApplicable>
+  <SSC_Restrictions_Reason_Allowed>所需许可已满足</SSC_Restrictions_Reason_Allowed>
+  <SSC_Restrictions_Reason_IncompleteContext>参与者、方向或用途不完整</SSC_Restrictions_Reason_IncompleteContext>
+  <SSC_Restrictions_Reason_ConfigurationMissing>相关角色尚未建立新配置；请在个体规则页初始化</SSC_Restrictions_Reason_ConfigurationMissing>
+  <SSC_Restrictions_Reason_ConfigurationInvalid>配置版本、条目或文件覆盖无效</SSC_Restrictions_Reason_ConfigurationInvalid>
+  <SSC_Restrictions_Reason_RuleDenied>当前生效规则禁止此行为</SSC_Restrictions_Reason_RuleDenied>
+  <SSC_Restrictions_Reason_OwnerOnly>主动行为仅限该角色的实际主人</SSC_Restrictions_Reason_OwnerOnly>
+  <SSC_Restrictions_Reason_InvalidBindingPreparation>不符合首次绑定准备的身份或指定关系</SSC_Restrictions_Reason_InvalidBindingPreparation>
+  <SSC_Restrictions_EditInitiator>编辑发起者规则</SSC_Restrictions_EditInitiator>
+  <SSC_Restrictions_EditReceiver>编辑接收者规则</SSC_Restrictions_EditReceiver>
+  <SSC_Restrictions_None>未选择</SSC_Restrictions_None>
+  <SSC_Restrictions_Error>配置检查失败：{0}</SSC_Restrictions_Error>
+</LanguageData>

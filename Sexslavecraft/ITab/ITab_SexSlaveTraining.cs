@@ -18,6 +18,7 @@ namespace SexSlaveCraft
 
         private Vector2 scrollPosition;
 
+        /// <summary>初始化调教页尺寸、标题和教程标识。</summary>
         public ITab_SexSlaveTraining()
         {
             size = WinSize;
@@ -25,6 +26,7 @@ namespace SexSlaveCraft
             tutorTag = "SexSlaveTraining";
         }
 
+        /// <summary>仅为支持的原版身份且具有训练组件的角色显示调教页，不要求完成研究。</summary>
         public override bool IsVisible
         {
             get
@@ -89,6 +91,7 @@ namespace SexSlaveCraft
             }
         }
 
+        /// <summary>为当前身份、研究和特化可见的各节累计滚动高度。</summary>
         private static float CalculateContentHeight(Pawn pawn, CompSexSlaveTraining comp)
         {
             float height = GetIdentitySectionHeight(comp);
@@ -422,6 +425,7 @@ namespace SexSlaveCraft
             });
         }
 
+        /// <summary>在统一节框中绘制带颜色的身份提示，并恢复文字对齐与颜色。</summary>
         private void DrawMessageSection(Rect rect, string message, Color color)
         {
             DrawSection(rect, string.Empty, delegate(Rect innerRect)
@@ -434,6 +438,7 @@ namespace SexSlaveCraft
             });
         }
 
+        /// <summary>在节内容区域开始一个标准列表，调用方负责在结束时关闭。</summary>
         private static Listing_Standard BeginSectionListing(Rect innerRect)
         {
             Listing_Standard listing = new Listing_Standard();
@@ -441,6 +446,7 @@ namespace SexSlaveCraft
             return listing;
         }
 
+        /// <summary>绘制节背景及可选标题，再将收缩后的内容区域交给指定绘制函数。</summary>
         private static void DrawSection(Rect rect, string title, Action<Rect> drawContents)
         {
             Widgets.DrawMenuSection(rect);
@@ -491,6 +497,7 @@ namespace SexSlaveCraft
             return list;
         }
 
+        /// <summary>切换日常训练状态并清除当前训练占用；启用时显示现有资格校验结果。</summary>
         private static void DrawTrainingToggle(Listing_Standard listing, Pawn pawn, CompSexSlaveTraining comp)
         {
             bool isEnabled = comp.IsEnabled;
@@ -513,6 +520,7 @@ namespace SexSlaveCraft
             Log.Warning($"[SSC_ITAB] Training enable check failed: {pawn.LabelShort}. {shortReason}\n{detailedReport}");
         }
 
+        /// <summary>把当前 SSC 身份转换为调教页使用的本地化标签。</summary>
         private static string GetIdentityLabel(PawnIdentity identity)
         {
             switch (identity)
@@ -526,6 +534,7 @@ namespace SexSlaveCraft
             }
         }
 
+        /// <summary>显示剩余训练冷却时间，或在无冷却时显示当前启用状态。</summary>
         private static void DrawCooldownStatus(Listing_Standard listing, CompSexSlaveTraining comp)
         {
             if (comp.IsOnCooldown)
@@ -538,6 +547,7 @@ namespace SexSlaveCraft
             listing.Label(comp.IsEnabled ? (TaggedString)Strings.ITab_StatusReady : (TaggedString)Strings.ITab_StatusDisabled);
         }
 
+        /// <summary>列出支持的训练姿势，并保存玩家选择的模式。</summary>
         private static void DrawPoseSelector(Listing_Standard listing, CompSexSlaveTraining comp)
         {
             string modeLabel = Strings.GetModeLabel(comp.selectedMode);
@@ -562,6 +572,7 @@ namespace SexSlaveCraft
             }
         }
 
+        /// <summary>绘制特化选择和进度，按资格及终极状态限制选项，并同步所选方向的基础状态。</summary>
         private static void DrawSpecializationSelector(Listing_Standard listing, Pawn pawn, CompSexSlaveTraining comp)
         {
             string currentLabel = GetSpecializationLabel(pawn, comp);
@@ -638,6 +649,7 @@ namespace SexSlaveCraft
             DrawRabbitReproductionModeSelector(listing, pawn, comp);
         }
 
+        /// <summary>查询角色是否持有任一已完成特化状态，供未选择方向时显示摘要。</summary>
         private static bool HasAnyFinalizedState(Pawn pawn)
         {
             return BusSpecializationUtility.HasFinalBusState(pawn)
@@ -647,6 +659,7 @@ namespace SexSlaveCraft
                 || PetSpecializationUtility.HasFinalPetState(pawn, SexSlaveSpecializationType.PetRabbit);
         }
 
+        /// <summary>按指定特化方向检查对应终极状态，不让其他方向的完成状态影响结果。</summary>
         private static bool IsTypeFinalized(Pawn pawn, SexSlaveSpecializationType type)
         {
             switch (type)
@@ -664,6 +677,7 @@ namespace SexSlaveCraft
             }
         }
 
+        /// <summary>生成所选特化的标签；未选择时按现有终极状态提供提示。</summary>
         private static string GetSpecializationLabel(Pawn pawn, CompSexSlaveTraining comp)
         {
             string label;
@@ -728,6 +742,7 @@ namespace SexSlaveCraft
             return label;
         }
 
+        /// <summary>根据资格和终极状态构造宠物方向菜单项，合法选择后同步特化及基础状态。</summary>
         private static FloatMenuOption BuildPetSpecializationOption(Pawn pawn, CompSexSlaveTraining comp, SexSlaveSpecializationType type)
         {
             string optionLabel = PetSpecializationUtility.GetSelectLabel(type);
@@ -761,6 +776,7 @@ namespace SexSlaveCraft
             } : null);
         }
 
+        /// <summary>对兔特化角色显示已保存的繁殖模式；未完成的切换功能仍保持只读。</summary>
         private static void DrawRabbitReproductionModeSelector(Listing_Standard listing, Pawn pawn, CompSexSlaveTraining comp)
         {
             if (comp == null || pawn == null) return;
@@ -771,6 +787,7 @@ namespace SexSlaveCraft
             listing.Label(Strings.ITab_RabbitReproductionMode(modeLabel) + " " + Strings.ITab_SpecializationUnfinishedSuffix);
         }
 
+        /// <summary>将繁殖模式转换为本地化名称，未知值按后代模式显示。</summary>
         private static string GetRabbitReproductionModeLabel(RabbitReproductionMode mode)
         {
             switch (mode)
@@ -782,6 +799,7 @@ namespace SexSlaveCraft
             }
         }
 
+        /// <summary>保留旧运行路径的个体开放开关，并在关闭巴士开放时显示原有提示。</summary>
         private static void DrawAllowOthersToggle(Listing_Standard listing, Pawn pawn, CompSexSlaveTraining comp)
         {
             bool allowOthers = comp.allowOthersForTrainingOrSex;
@@ -796,6 +814,7 @@ namespace SexSlaveCraft
             }
         }
 
+        /// <summary>仅在角色具有泌乳状态时显示并保存产奶开关。</summary>
         private static void DrawMilkToggle(Listing_Standard listing, Pawn pawn, CompSexSlaveTraining comp)
         {
             if (!pawn.health.hediffSet.HasHediff(SSCDefOf.SSC_Lactating_SubState)) return;

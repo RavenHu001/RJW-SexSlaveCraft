@@ -9,6 +9,7 @@
     <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionDefinitions.cs" Link="Production/Definitions.cs" />
     <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionResolver.cs" Link="Production/Resolver.cs" />
     <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionPolicy.cs" Link="Production/Policy.cs" />
+    <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionEditor.cs" Link="Production/Editor.cs" />
     <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCSettings.Restrictions.cs" Link="Production/Settings.cs" />
     <Compile Include="$(SscSourceRoot)/Comps/Comp_Train.Restrictions.cs" Link="Production/Comp.cs" />
   </ItemGroup>

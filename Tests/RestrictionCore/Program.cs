@@ -349,6 +349,103 @@ internal static class Program
             foreach (string path in new[] { "Defs/SSCRestrictionProfiles.xml", "Defs/ThingsDefs/SexSlave_EvilFallOutfit.xml" })
                 Equal(File.ReadAllText(Path.Combine(root, path)), File.ReadAllText(Path.Combine(root, "Sexslavecraft", path)));
         });
+        Run("Explicit editor initialization owns defaults and never replaces an existing config", () =>
+        {
+            var pawn = Pawn("editable", PawnIdentity.Slave);
+            pawn.Training.restrictionConfig = null;
+            pawn.Training.selectedTrainer = Pawn("trainer");
+            pawn.Training.allowOthersForTrainingOrSex = true;
+            SSCMod.settings.enableSexSlaveProtectionRules = false;
+            SSCMod.settings.restrictionDefaults.receiveTraining = true;
+            Equal(true, SSCRestrictionEditor.TryInitialize(pawn));
+            Equal(true, pawn.Training.restrictionConfig.rules.receiveTraining);
+            Equal(true, SSCRestrictionEditor.TrySet(pawn, SSCRestrictionRule.ReceiveTraining, SSCRestrictionValue.Deny));
+            Equal(true, SSCMod.settings.restrictionDefaults.receiveTraining);
+            Equal(false, SSCRestrictionEditor.TryInitialize(pawn));
+            Equal(false, pawn.Training.restrictionConfig.rules.receiveTraining);
+            Equal(true, pawn.Training.allowOthersForTrainingOrSex);
+            Equal("trainer", pawn.Training.selectedTrainer.LabelShort);
+        });
+        Run("Editor cannot create or edit rules for an inapplicable pawn", () =>
+        {
+            var pawn = Pawn("unmanaged");
+            Equal(false, SSCRestrictionEditor.TrySet(pawn, SSCRestrictionRule.ReceiveTraining, SSCRestrictionValue.Allow));
+            Equal(false, pawn.Training.restrictionConfig.rules.receiveTraining);
+            pawn.Training.restrictionConfig = null;
+            Equal(false, SSCRestrictionEditor.TryInitialize(pawn));
+            Equal(null, pawn.Training.restrictionConfig);
+            pawn.BoundMaster = Pawn("owner");
+            Equal(true, SSCRestrictionEditor.TryInitialize(pawn));
+        });
+        Run("Editor preserves unsupported or corrupt configurations", () =>
+        {
+            var pawn = Pawn("invalid", PawnIdentity.Slave);
+            pawn.Training.restrictionConfig.version = 99;
+            Equal(false, SSCRestrictionEditor.TrySet(pawn, SSCRestrictionRule.ReceiveTraining, SSCRestrictionValue.Allow));
+            Equal(false, SSCRestrictionEditor.TryInitialize(pawn));
+            Equal(99, pawn.Training.restrictionConfig.version);
+            pawn.Training.restrictionConfig.version = SSCRestrictionConfig.CurrentVersion;
+            pawn.Training.restrictionConfig.rules.consensualInitiation = (SSCRestrictionValue)88;
+            Equal(false, SSCRestrictionEditor.IsValid(pawn.Training.restrictionConfig));
+            Equal(false, SSCRestrictionEditor.TrySet(pawn, SSCRestrictionRule.ReceiveTraining, SSCRestrictionValue.Allow));
+            Equal((SSCRestrictionValue)88, pawn.Training.restrictionConfig.rules.consensualInitiation);
+        });
+        Run("Editor preserves saved choices beneath equipment and specialization overrides", () =>
+        {
+            var p = Pair(); p.b.HasBusState = true; p.b.Training.restrictionConfig = null;
+            Wear(p.b, "gear", ReadEquipment());
+            Equal(true, SSCRestrictionEditor.TryInitialize(p.b));
+            Equal(true, p.b.Training.restrictionConfig.rules.receiveForced);
+            var other = Pawn("other");
+            Decision(other, p.b, SSCInteractionKind.Forced, false, SSCRestrictionReason.RuleDenied);
+            Equal(true, SSCRestrictionEditor.TrySet(p.b, SSCRestrictionRule.ReceiveForced, SSCRestrictionValue.Deny));
+            p.b.apparel.WornApparel.Clear();
+            Decision(other, p.b, SSCInteractionKind.Forced, true, SSCRestrictionReason.Allowed);
+            SSCMod.settings.enableSpecializationRestrictionOverrides = false;
+            Decision(other, p.b, SSCInteractionKind.Forced, false, SSCRestrictionReason.RuleDenied);
+            Decision(p.a, p.b, SSCInteractionKind.Forced, true, SSCRestrictionReason.BoundOwner);
+        });
+        Run("Editor rejects invalid choices without initializing or changing stored values", () =>
+        {
+            var pawn = Pawn("editable", PawnIdentity.Slave);
+            Equal(false, SSCRestrictionEditor.TrySet(pawn, SSCRestrictionRule.ReceiveTraining, SSCRestrictionValue.OwnerOnly));
+            Equal(false, SSCRestrictionEditor.TrySet(pawn, (SSCRestrictionRule)999, SSCRestrictionValue.Allow));
+            Equal(false, pawn.Training.restrictionConfig.rules.receiveTraining);
+            pawn.Training.restrictionConfig = null;
+            Equal(false, SSCRestrictionEditor.TrySet(pawn, SSCRestrictionRule.ReceiveTraining, SSCRestrictionValue.Allow));
+            Equal(null, pawn.Training.restrictionConfig);
+        });
+        Run("Editor changes survive save reload and drive the same permission entry", () =>
+        {
+            var p = Pair(); var other = Pawn("other");
+            Decision(other, p.b, SSCInteractionKind.DailyTraining, false, SSCRestrictionReason.RuleDenied);
+            Equal(true, SSCRestrictionEditor.TrySet(p.b, SSCRestrictionRule.ReceiveTraining, SSCRestrictionValue.Allow));
+            Scribe.mode = LoadSaveMode.Saving; p.b.Training.ExposeRestrictions();
+            p.b.Training = new CompSexSlaveTraining { pawnIdentity = PawnIdentity.Slave };
+            Scribe.mode = LoadSaveMode.LoadingVars; p.b.Training.ExposeRestrictions();
+            Decision(other, p.b, SSCInteractionKind.DailyTraining, true, SSCRestrictionReason.Allowed);
+            Decision(other, p.b, SSCInteractionKind.Consensual, false, SSCRestrictionReason.RuleDenied);
+        });
+        Run("Test interface translations cover controls and enum results in both shipped languages", () =>
+        {
+            var keys = new HashSet<string>();
+            foreach (string source in new[] { "common/Restrictions/Dialog_SSCRestrictions.cs", "common/Settings.cs" })
+                foreach (System.Text.RegularExpressions.Match match in System.Text.RegularExpressions.Regex.Matches(
+                    File.ReadAllText(Path.Combine(root, "Sexslavecraft", source)), "\"(SSC_Restrictions_[A-Za-z]+)\""))
+                    keys.Add(match.Groups[1].Value);
+            foreach (SSCRestrictionRule rule in Enum.GetValues<SSCRestrictionRule>()) keys.Add("SSC_Restrictions_Rule_" + rule);
+            foreach (SSCRestrictionReason reason in Enum.GetValues<SSCRestrictionReason>()) keys.Add("SSC_Restrictions_Reason_" + reason);
+            foreach (SSCRestrictionSource source in Enum.GetValues<SSCRestrictionSource>()) keys.Add("SSC_Restrictions_Source_" + source);
+            foreach (SSCInteractionKind kind in Enum.GetValues<SSCInteractionKind>().Where(k => k != SSCInteractionKind.Unknown)) keys.Add("SSC_Restrictions_Kind_" + kind);
+            foreach (SSCRestrictionValue value in Enum.GetValues<SSCRestrictionValue>().Where(v => v != SSCRestrictionValue.Unspecified)) keys.Add("SSC_Restrictions_Value_" + value);
+            foreach (string language in new[] { "English", "ChineseSimplified" })
+            {
+                string path = Path.Combine("Languages", language, "Keyed/SSC_Restrictions.xml");
+                var translations = XDocument.Load(Path.Combine(root, path)).Root.Elements().ToDictionary(e => e.Name.LocalName, e => e.Value);
+                foreach (string key in keys) Equal(true, translations.ContainsKey(key) && !string.IsNullOrWhiteSpace(translations[key]));
+                Equal(File.ReadAllText(Path.Combine(root, path)), File.ReadAllText(Path.Combine(root, "Sexslavecraft", path)));
+            }
+        });
         Console.WriteLine($"{passed}/{passed + failed} passed");
         return failed == 0 ? 0 : 1;
     }

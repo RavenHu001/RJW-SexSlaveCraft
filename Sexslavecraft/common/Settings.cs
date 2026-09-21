@@ -120,7 +120,26 @@ namespace SexSlaveCraft
             base.DoSettingsWindowContents(inRect);
         }
 
-        /// <summary>按功能分组绘制现有设置控件，将玩家的勾选与数值调整写入全局设置对象。</summary>
+        /// <summary>在设置页提供测试入口；优先使用选中角色，否则选择当前地图首个可配置角色，主菜单下禁用。</summary>
+        private static void DrawRestrictionTestEntry(Listing_Standard listing)
+        {
+            Map map = Current.Game != null ? Find.CurrentMap : null;
+            Pawn pawn = map != null ? Find.Selector?.SingleSelectedThing as Pawn : null;
+            if (pawn?.RaceProps?.Humanlike != true || pawn.TryGetComp<CompSexSlaveTraining>() == null)
+                pawn = map?.mapPawns.AllPawnsSpawned.FirstOrDefault(p => p.RaceProps.Humanlike && p.TryGetComp<CompSexSlaveTraining>() != null);
+            bool oldEnabled = GUI.enabled;
+            bool clicked;
+            try
+            {
+                GUI.enabled = oldEnabled && pawn != null;
+                clicked = listing.ButtonText("SSC_Restrictions_Open".Translate());
+            }
+            finally { GUI.enabled = oldEnabled; }
+            if (clicked) Find.WindowStack.Add(new Dialog_SSCRestrictions(pawn));
+            listing.Label((pawn == null ? "SSC_Restrictions_SettingsUnavailable" : "SSC_Restrictions_SettingsTip").Translate());
+        }
+
+        /// <summary>绘制测试入口及按功能分组的设置控件，将玩家的勾选与数值调整写入全局设置对象。</summary>
         private static void DrawSettings(Listing_Standard listingStandard)
         {
             // EN: Step 1: draw the sex-slave protection rules first, because they change how Harmony guards sex jobs.
@@ -155,6 +174,8 @@ namespace SexSlaveCraft
                 "SSC_Setting_ProtectNonRapeOwnerOnly_Desc".Translate()
             );
 
+            listingStandard.Gap(8f);
+            DrawRestrictionTestEntry(listingStandard);
             listingStandard.GapLine();
             // EN: Step 2: draw SSC log controls together so debug verbosity can be tuned from one block.
             // CN: 步骤 2：把 SSC 日志开关放在一起，方便在一个区域里调整调试输出等级。
