@@ -80,6 +80,7 @@
 - [Tests/RitualProgression](../Tests/RitualProgression/README.md)
 - [Tests/SharedBed](../Tests/SharedBed/README.md)
 - [Tests/TrainerIdentity](../Tests/TrainerIdentity/README.md)
+- [Tests/ValidationRunner](../Tests/ValidationRunner/README.md)：统一验证与打包阻断的流程检查。
 
 ## 文档维护约定
 

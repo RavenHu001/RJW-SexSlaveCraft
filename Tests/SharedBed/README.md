@@ -15,7 +15,7 @@ dotnet build Tests/SharedBed/SharedBed.csproj --configuration Release --target:R
 dotnet Tests/SharedBed/bin/Release/net9.0/SharedBed.dll .
 ```
 
-此套件需显式提供 Harmony，独立运行，不改变现有无外部依赖的发布测试入口。
+本套件已纳入 `Scripts/Test-All.ps1` 和打包流程。统一入口通过 `-HarmonyAssemblyPath` 或 `SSC_TEST_HARMONY_PATH` 获取 Harmony 路径，预检程序集名称与目标框架，缺失或不匹配时标记为未执行并阻止打包。上面的命令仍可用于单独排查；统一运行方式见 [发布与打包](../../Docs/Maintenance/发布与打包.md)。
 覆盖身份隔离、主人与指定调教员的双向床伴关系、恋人判定不变、医疗/死眠、原版检查调用、实际 transpiler 执行、
 分配标记及提示、共同睡眠结束结算、双方先后起床、记录存档字段和 XML 数值。
 同时覆盖 DLL/XML 不配套时缺失的另一种记忆定义、缺失的当前定义和旧版情境心情定义。

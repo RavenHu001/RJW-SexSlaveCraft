@@ -4,7 +4,16 @@
 
 This continuation builds on upstream **2.2.8**, the baseline when upstream development stopped in July, and retains its version numbering. Entries are listed newest first. Technical details are in the [development log (Chinese)](Docs/Development/开发更新记录.md).
 
-## [Unreleased] — 辅助诊断面板（暂无明确实际用途） / Auxiliary diagnostics panel (no clear practical use yet)
+## [Unreleased]
+
+### 开发工具：统一验证入口 / Development tooling: unified validation
+
+- 新增 `Scripts/Test-All.ps1`，统一运行全部 15 套回归，输出逐套件日志和 JSON 汇总；打包复用同一入口，任一失败或未执行均停止。SharedBed 的 net9.0 Harmony 通过参数或环境变量提供，提前拒绝缺失或错误框架的依赖；新增未登记测试项目也会报错。
+- Adds `Scripts/Test-All.ps1` to run all 15 regression suites with per-suite logs and a JSON summary. Packaging uses the same entry and stops on any failed or unexecuted suite. SharedBed's net9.0 Harmony is supplied by parameter or environment variable and checked before use. Unregistered test projects also fail validation.
+- 此项只调整开发验证与打包流程，不修改游戏玩法或运行时 DLL。运行方式见 [发布与打包](Docs/Maintenance/发布与打包.md#统一验证入口)。
+- This changes development validation and packaging only; gameplay and the runtime DLL are unchanged.
+
+### 辅助诊断面板（暂无明确实际用途） / Auxiliary diagnostics panel (no clear practical use yet)
 
 **更新定位：目前没什么明确作用的辅助更新。** 仅提供版本、依赖及部分兼容注册信息的查看与复制，目前没有确认它解决了具体问题或明显改善排查效率，不作为主要功能更新。
 

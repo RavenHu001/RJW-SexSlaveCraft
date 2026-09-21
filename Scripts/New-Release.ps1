@@ -6,12 +6,16 @@
 默认使用仓库中的预编译 DLL，因此没有游戏依赖的机器也能重复打包。
 改动 C# 后必须先编译，或使用 -Build。所有模式均运行回归测试和版本检查。
 ReferenceTargetsPath 可指向本机的 MSBuild 引用覆盖文件，避免把个人安装路径写入项目。
+全部 15 套回归统一由 Test-All.ps1 执行；HarmonyAssemblyPath 或 SSC_TEST_HARMONY_PATH
+必须指向 SharedBed 使用的 net9.0 Harmony，ValidationReportDirectory 可指定验证报告目录。
 #>
 [CmdletBinding()]
 param(
     [switch]$Build,
     [string]$ReferenceTargetsPath,
     [string]$MSBuildPath,
+    [string]$HarmonyAssemblyPath = $env:SSC_TEST_HARMONY_PATH,
+    [string]$ValidationReportDirectory,
     [string]$OutputDirectory,
     [switch]$Force
 )
@@ -98,32 +102,8 @@ if ($dllVersion.FileVersion -ne $fileVersion -or $dllVersion.ProductVersion -ne 
     throw "DLL version does not match $version. Rebuild before packaging."
 }
 
-# 测试直接使用仓库生产代码；阶段测试还读取实际 XML。任一套件失败均停止打包。
-# NuGet.Config 明确禁用外部源；测试没有包依赖，只要求本机安装 .NET SDK 9。
-$testSuites = @(
-    @{ Project = 'Tests/RitualProgression/RitualProgression.csproj'; Arguments = @((Join-Path $repoRoot 'Defs/HediffDefs/HediffOfSexSlave.xml')) },
-    @{ Project = 'Tests/RitualLifecycle/RitualLifecycle.csproj'; Arguments = @() },
-    @{ Project = 'Tests/PersonalityTraits/PersonalityTraits.csproj'; Arguments = @() },
-    # 2.2.13 新增修复的回归随打包执行；UAP 兼容用例包含在 RitualLifecycle 中。
-    @{ Project = 'Tests/PersonalityInsertion/PersonalityInsertion.csproj'; Arguments = @() },
-    @{ Project = 'Tests/GenderChangeMemory/GenderChangeMemory.csproj'; Arguments = @($repoRoot) },
-    @{ Project = 'Tests/RitualAnimationFallback/RitualAnimationFallback.csproj'; Arguments = @() },
-    @{ Project = 'Tests/PermanentLactation/PermanentLactation.csproj'; Arguments = @($repoRoot) },
-    @{ Project = 'Tests/PersonalityMemories/PersonalityMemories.csproj'; Arguments = @() },
-    @{ Project = 'Tests/PersonalitySpecializations/PersonalitySpecializations.csproj'; Arguments = @() },
-    @{ Project = 'Tests/PersonalityCardLayout/PersonalityCardLayout.csproj'; Arguments = @($repoRoot) },
-    @{ Project = 'Tests/RaceInjection/RaceInjection.csproj'; Arguments = @() },
-    @{ Project = 'Tests/InteractionProtection/InteractionProtection.csproj'; Arguments = @() },
-    @{ Project = 'Tests/BusTrade/BusTrade.csproj'; Arguments = @() }
-)
-foreach ($testSuite in $testSuites) {
-    $testProject = Join-Path $repoRoot $testSuite.Project
-    $testArguments = $testSuite.Arguments
-    & dotnet restore $testProject --configfile (Join-Path $repoRoot 'Tests/NuGet.Config') --verbosity quiet
-    if ($LASTEXITCODE -ne 0) { throw "Test restore failed: $testProject ($LASTEXITCODE)." }
-    & dotnet run --project $testProject --configuration Release --no-restore -- @testArguments
-    if ($LASTEXITCODE -ne 0) { throw "Regression tests failed: $testProject ($LASTEXITCODE)." }
-}
+# A single required validation entry; throws on failure or any unexecuted suite before staging.
+$validation = & (Join-Path $PSScriptRoot 'Test-All.ps1') -HarmonyAssemblyPath $HarmonyAssemblyPath -ReportDirectory $ValidationReportDirectory -PassThru
 
 $baseCommit = (& git -C $repoRoot rev-parse HEAD).Trim()
 if ($LASTEXITCODE -ne 0) { throw 'Cannot read the base Git commit.' }
@@ -186,6 +166,11 @@ Game and third-party mod DLLs are not included. See CHANGELOG.md for release not
         baseCommit = $baseCommit
         workingTreeDirty = [bool]$workingTreeStatus
         assemblyRebuilt = [bool]$Build
+        validation = [ordered]@{
+            suiteCount = $validation.SuiteCount
+            passedCases = $validation.PassedCases
+            totalCases = $validation.TotalCases
+        }
         files = $manifestFiles
     } | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $modRoot 'RELEASE-MANIFEST.json') -Encoding utf8NoBOM
 

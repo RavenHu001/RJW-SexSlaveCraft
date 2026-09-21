@@ -52,7 +52,16 @@ SexSlaveCraft（SSC）围绕角色培养、身份与绑定关系、特化发展�
 
 主工程为 `Sexslavecraft/SexSlaveCraft_Alpha.csproj`，目标框架为 **.NET Framework 4.7.2**。源码编译需要 Visual Studio MSBuild、对应开发组件，以及本机 RimWorld 和模组依赖程序集。工程引用需按本机环境配置，具体方式见 [发布与打包](Docs/Maintenance/发布与打包.md)。
 
-使用已有 DLL 进行版本校验、默认回归检查和本地打包，需要 PowerShell 7、Git 与 .NET SDK 9。在仓库根目录运行：
+统一验证需要 PowerShell 7、.NET SDK 9（或更新 SDK）、.NET 9 运行时，以及适用于 net9.0 的本地 Harmony DLL。先设置路径（示例路径需替换为本机位置），再运行全部 15 套回归：
+
+```powershell
+$env:SSC_TEST_HARMONY_PATH = 'C:\Dependencies\Harmony\net9.0\0Harmony.dll'
+pwsh -File Scripts/Test-All.ps1
+```
+
+也可直接传入 `-HarmonyAssemblyPath`。各套件的通过、失败或未执行状态，以及逐套件日志和 `summary.json`，保存在 `.builds/validation/` 的本次运行目录。任何失败或未执行都会使整体验证失败；SharedBed 不接受游戏使用的 .NET Framework Harmony。
+
+使用已有 DLL 进行版本校验和本地打包，另外需要 Git。配置好上述 Harmony 路径后运行：
 
 ```powershell
 pwsh -File Scripts/New-Release.ps1
@@ -64,7 +73,7 @@ pwsh -File Scripts/New-Release.ps1
 pwsh -File Scripts/New-Release.ps1 -Build
 ```
 
-产物输出至根目录 `Releases/`。脚本只执行本地流程；`TrainerIdentity` 与 `SharedBed` 套件仍需按各自说明单独运行。测试入口见 [文档索引](Docs/README.md#随目录维护的说明)，自动回归的覆盖范围及游戏内验证要求见发布文档。
+产物输出至根目录 `Releases/`。打包脚本调用同一个统一验证入口，包含 `TrainerIdentity` 与 `SharedBed`；只有全部套件通过才继续打包。脚本只执行本地流程。测试入口见 [文档索引](Docs/README.md#随目录维护的说明)，自动回归的覆盖范围及游戏内验证要求见发布文档。
 
 ## 反馈与贡献
 

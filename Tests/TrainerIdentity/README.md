@@ -23,7 +23,7 @@ dotnet run --project Tests/TrainerIdentity/TrainerIdentity.csproj --configuratio
 
 不运行 Unity。存档使用字典模型，不能代替真实 Scribe 引用恢复；工作用例执行真实 WorkGiver，日常 JobDriver 的队列/走位回调另需在游戏内复测。总栏字体、缩放和鼠标操作也需游戏内确认。同床通过独立的 [SharedBed](../SharedBed/README.md) 套件验证。
 
-本套件作为开发检查单独运行，尚未加入正式发布版本的打包入口。
+本套件已纳入 `Scripts/Test-All.ps1` 和打包流程，统一入口会自动传入仓库绝对路径；上面的命令仍可用于单独排查。统一运行方式见 [发布与打包](../../Docs/Maintenance/发布与打包.md)。
 
 2026-09-16 身份锁定修复验证：30/30 通过，Release 编译成功；维护者随后确认实机修复有效，授权更新文档并提交。该实机反馈不改变上述测试模型的覆盖边界。
 
