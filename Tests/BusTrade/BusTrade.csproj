@@ -6,5 +6,12 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(SscSourceRoot)/ThePatches/Harmony_BusTrade.cs" Link="Production/Harmony_BusTrade.cs" />
+    <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionData.cs" Link="Production/SSCRestrictionData.cs" />
+    <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionDefinitions.cs" Link="Production/SSCRestrictionDefinitions.cs" />
+    <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionResolver.cs" Link="Production/SSCRestrictionResolver.cs" />
+    <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionPolicy.cs" Link="Production/SSCRestrictionPolicy.cs" />
+    <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionJobContext.cs" Link="Production/SSCRestrictionJobContext.cs" />
+    <Compile Include="$(SscSourceRoot)/common/DogSpecializationUtility.cs" Link="Production/DogSpecializationUtility.cs" />
+    <Compile Include="../TrainerIdentity/RestrictionStubs.cs" Link="Boundary/RestrictionStubs.cs" />
   </ItemGroup>
 </Project>

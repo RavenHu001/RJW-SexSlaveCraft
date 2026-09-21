@@ -8,7 +8,7 @@ using Verse;
 using Verse.AI;
 using rjw;
 
-internal static class Program
+internal static partial class Program
 {
     private static int passed, failed;
 
@@ -45,6 +45,7 @@ internal static class Program
         Run("普通公交车按既有计分顺序与公式成长", NormalProgression);
         Run("终极公交车可启动任务但不继续成长", FinalProgression);
         Run("任务无法启动时仍保留交易成长规则", ProgressionWithoutJob);
+        RunStage3CTests();
         Console.WriteLine($"结果：{passed}/{passed + failed} 项通过。");
         return failed == 0 ? 0 : 1;
     }
@@ -58,13 +59,14 @@ internal static class Program
     /// <summary>重置提示、任务、成长、定义和随机状态，避免重复场景间泄漏数据。</summary>
     private static void Reset()
     {
+        ResetRestrictions();
         Messages.Entries.Clear();
         Pawn_JobTracker.Requests.Clear();
         ConditioningUtility.Gains.Clear();
         SSCLog.Entries.Clear();
         DefDatabase<JobDef>.Named.Clear();
-        xxx.quick_sex = new JobDef { defName = "Quickie" };
-        xxx.RapeRandom = new JobDef { defName = "RandomRape" };
+        xxx.quick_sex = new JobDef { defName = "Quickie", driverClass = typeof(JobDriver_SexBaseInitiator) };
+        xxx.RapeRandom = new JobDef { defName = "RandomRape", driverClass = typeof(JobDriver_Rape) };
         TrainingOutcomeUtility.Gain = 0.12f;
         TrainingOutcomeUtility.ScoredActor = TrainingOutcomeUtility.ScoredTarget = null;
         Rand.Roll = 1;
@@ -85,6 +87,9 @@ internal static class Program
             LabelShort = "Bus", Map = map, IsBus = true, gender = Gender.Female,
             CanFuck = false, CanBeFucked = true
         };
+        bus.Training.pawnIdentity = PawnIdentity.Slave;
+        bus.Training.restrictionConfig.rules.consensualInitiation = SSCRestrictionValue.Allow;
+        bus.Training.restrictionConfig.rules.receiveForced = true;
         bus.needs.Corruption.CurLevel = corruption;
         var trader = new Pawn
         {
@@ -113,7 +118,10 @@ internal static class Program
             "对方应在原地等待 600 ticks，供 RJW 驱动接管");
         Assert(Pawn_JobTracker.Requests.Count == 2 && Pawn_JobTracker.Requests[0].Pawn == partner
             && Pawn_JobTracker.Requests[1].Pawn == actor, "应先获得等待方的任务接收，再给发起方分配任务");
-        Assert(Messages.Entries.Count == 1, "接收任务后应仅提示一次");
+        Assert(Messages.Entries.Count == 0, "收到任务不代表实际发生");
+        // 此套件把原生场景开始作为显式边界；真实Start、去重与存档另由InteractionProtection调用生产守卫验证。
+        SSCRestrictionJobGuard.NotifyStarted(actor.CurJob);
+        Assert(Messages.Entries.Count == 1, "模拟原生开始后应仅提示一次");
         Assert(Messages.Entries[0].Targets.Pawns.Contains(actor) && Messages.Entries[0].Targets.Pawns.Contains(partner),
             "提示应指向实际参与者");
     }
@@ -137,6 +145,7 @@ internal static class Program
         Assert(target?.Type == typeof(TradeDeal) && target.Method == "TryExecute", "交易补丁目标应保持正确");
         Assert(patch.GetMethod("Postfix") != null, "按 Harmony 约定应存在 Postfix 入口");
     }
+    /// <summary>验证女性谈判者用Quickie向商人发起，发生提示由显式Start边界触发。</summary>
     private static void FemaleBusQuickie()
     {
         var p = People();
@@ -145,6 +154,7 @@ internal static class Program
         Started(p.bus, p.trader, xxx.quick_sex);
         Assert(Messages.Entries[0].Text.StartsWith("SSC_Message_TradeConsensualSex|"), "应显示自愿互动提示");
     }
+    /// <summary>验证双方仅有接收身体能力时仍可使用原有普通互动路径。</summary>
     private static void BothParticipantsMayReceive()
     {
         var p = People();
@@ -153,6 +163,7 @@ internal static class Program
         Trade();
         Started(p.bus, p.trader, xxx.quick_sex);
     }
+    /// <summary>验证不依赖不存在的旧Sex定义，直接使用RJW真实定义引用。</summary>
     private static void MissingLegacyConsensualDefinition()
     {
         var p = People();
@@ -161,6 +172,7 @@ internal static class Program
         Trade();
         Started(p.bus, p.trader, xxx.quick_sex);
     }
+    /// <summary>验证强制分支的发起者是商人，目标是谈判者。</summary>
     private static void ForcedParticipants()
     {
         var p = People(0f);
@@ -170,12 +182,14 @@ internal static class Program
         Started(p.trader, p.bus, xxx.RapeRandom);
         Assert(Messages.Entries[0].Text.StartsWith("SSC_Message_TradeRapeOccurred|"), "应保持强制分支提示");
     }
+    /// <summary>验证失败或空交易不调度任务、不产生消息或成长。</summary>
     private static void NoTrade(bool success, bool actual)
     {
         People();
         Patch_TradeDeal_TryExecute_BusSex.Postfix(success, actual);
         NoEffects();
     }
+    /// <summary>验证飞船交易继续保持原有不触发范围。</summary>
     private static void ShipTrade()
     {
         People();
@@ -183,6 +197,7 @@ internal static class Program
         Trade();
         NoEffects();
     }
+    /// <summary>验证非公交车谈判者不进入该特化事件。</summary>
     private static void NonBusTrade()
     {
         var p = People();
@@ -252,6 +267,7 @@ internal static class Program
         Started(p.bus, p.trader, xxx.quick_sex);
         Assert(p.trader.CurJob != previous, "不能把旧 Wait 的存在误认作本次等待启动成功");
     }
+    /// <summary>验证地图及距离门槛在任何任务中断之前检查。</summary>
     private static void MapAndDistance()
     {
         foreach (bool separateMap in new[] { true, false })
@@ -264,6 +280,7 @@ internal static class Program
             NoInteraction();
         }
     }
+    /// <summary>验证15格边界内的原有预约及寻路目标参数。</summary>
     private static void ReservationAndDistanceBoundary()
     {
         var p = People();
@@ -279,6 +296,7 @@ internal static class Program
         Trade();
         NoInteraction();
     }
+    /// <summary>逐方验证普通事件身体条件不会被新许可代替。</summary>
     private static void ConsensualEligibility()
     {
         foreach (bool changeBus in new[] { false, true })
@@ -291,6 +309,7 @@ internal static class Program
             NoInteraction();
         }
     }
+    /// <summary>逐方验证强制分支的原有RJW能力门槛。</summary>
     private static void ForcedEligibility()
     {
         foreach (bool changeBus in new[] { false, true })
@@ -304,6 +323,7 @@ internal static class Program
             NoInteraction();
         }
     }
+    /// <summary>验证等待方不接收任务时不启动发起者，也不提前提示发生。</summary>
     private static void PartnerRejects()
     {
         var p = People();
@@ -315,6 +335,7 @@ internal static class Program
         Assert(p.bus.CurJob == null && Messages.Entries.Count == 0, "等待失败不应报告启动");
         Assert(SSCLog.Entries.Count > 0, "失败应留下可开启的详细诊断");
     }
+    /// <summary>验证发起者不接收任务时撤销本事件等待。</summary>
     private static void InitiatorRejects()
     {
         var p = People();
@@ -325,6 +346,7 @@ internal static class Program
             "发起者拒绝后应结束本次等待");
         Assert(p.bus.CurJob == null && Messages.Entries.Count == 0, "发起者拒绝不应报告启动");
     }
+    /// <summary>验证失败清理不能结束另一方后来替换的新工作。</summary>
     private static void PreserveReplacementJob()
     {
         var p = People();
@@ -381,6 +403,7 @@ internal static class Program
         Assert(p.trader.CurJob == replacement && p.trader.jobs.EndCalls == 0 && Messages.Entries.Count == 0,
             "清理队列不能结束等待方的新工作或误报成功");
     }
+    /// <summary>验证强制分支任一端调度失败也精确清理。</summary>
     private static void ForcedRejection()
     {
         foreach (bool receiverRejects in new[] { false, true })
@@ -396,6 +419,7 @@ internal static class Program
             Assert(Pawn_JobTracker.Requests.Count == (receiverRejects ? 1 : 2), "任务接收顺序应与自愿分支一致");
         }
     }
+    /// <summary>验证真实RJW定义缺失时跳过并写诊断，不回退旧定义。</summary>
     private static void MissingActualDefinitions()
     {
         foreach (bool forced in new[] { false, true })
@@ -433,6 +457,7 @@ internal static class Program
                 sample.Item3 == "Quickie" ? xxx.quick_sex : xxx.RapeRandom);
         }
     }
+    /// <summary>验证缺少需求仍按原有零恶堕分支概率。</summary>
     private static void MissingCorruptionNeed()
     {
         var p = People();
@@ -441,6 +466,7 @@ internal static class Program
         Trade();
         Started(p.trader, p.bus, xxx.RapeRandom);
     }
+    /// <summary>验证成功成交的普通成长计分顺序、上限和折半规则。</summary>
     private static void NormalProgression()
     {
         foreach (var sample in new[] { (0.12f, 0.22f), (0.15f, 0.175f), (0.5f, 0.175f) })
@@ -456,6 +482,7 @@ internal static class Program
                 "成长计分的角色顺序应保持商人在前、公交车在后");
         }
     }
+    /// <summary>验证终极状态可触发互动，但不继续领取交易成长。</summary>
     private static void FinalProgression()
     {
         var p = People();
@@ -465,6 +492,7 @@ internal static class Program
         Assert(ConditioningUtility.Gains.Count == 0 && TrainingOutcomeUtility.ScoredActor == null,
             "终极公交车不得再次计分或成长");
     }
+    /// <summary>验证不可达导致行为未调度时，成功成交成长仍保留。</summary>
     private static void ProgressionWithoutJob()
     {
         var p = People();

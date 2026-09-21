@@ -14,13 +14,6 @@ namespace SexSlaveCraft
             return job.GetCachedDriver(pawn) as JobDriver_Sex;
         }
 
-        /// <summary>标识尚未接管的专项兼容任务，避免同时受两套规则控制。</summary>
-        private static bool IsDeferred(JobDriver_Sex driver)
-        {
-            string name = driver?.job?.def?.defName;
-            return name == "rjw_genes_lifeforce_randomrape" || name == "rjw_genes_lifeforce_seduced";
-        }
-
         /// <summary>沿接收任务的实际 Partner 查找指回本人的发起任务，不从调教员身份或装备猜测用途。</summary>
         public static JobDriver_SexBaseInitiator FindInitiator(JobDriver_SexBaseReciever receiver)
         {
@@ -28,17 +21,18 @@ namespace SexSlaveCraft
             return actor != null && actor.Partner == receiver.pawn ? actor : null;
         }
 
-        /// <summary>识别本批任务及双方方向；返回 false 仅代表留给后续批次的适配器，不是许可放行。</summary>
+        /// <summary>识别所有 RJW 基类任务及双方方向；上下文缺失也提交 Unknown 请求，不回退旧保护或白名单。</summary>
         public static bool TryCreate(JobDriver_Sex driver, out SSCRestrictionRequest request)
         {
             request = null;
-            if (driver == null || IsDeferred(driver)) return false;
+            if (driver == null) return false;
             if (driver is JobDriver_SexBaseReciever receiver)
             {
                 JobDriver_SexBaseInitiator actor = FindInitiator(receiver);
                 if (actor != null) return TryCreate(actor, out request);
-                if (receiver.GetType().Assembly != typeof(JobDriver_Sex).Assembly &&
-                    receiver.job?.def != SSCDefOf.SSC_TrainingReceiver) return false;
+                // BeOnahole同时承担家具占用和睡眠，无发起场景时不是性爱许可请求。
+                // 一旦存在真实发起者，上面的分支仍完整进入统一判定；不能凭家具身份放行任何参与者。
+                if (OnaholeCompatibilityUtility.IsBeOnaholeDriver(receiver)) return false;
                 // 接收方持有的数据可能属于已离开的第一位参与者，不能用它冒充当前发起任务。
                 request = new SSCRestrictionRequest(receiver.Partner, receiver.pawn, SSCInteractionKind.Unknown, false);
                 return true;

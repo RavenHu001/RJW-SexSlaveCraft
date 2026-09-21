@@ -1,15 +1,23 @@
-# 普通与调教任务限制回归
+# 任务限制与兼容生命周期回归
 
-直接编译生产新限制核心、上下文、守卫及 Harmony 适配器，保留后续批次旧路径测试。当前 76 项：玩家命令和 AI 候选、派生预约、行走复查、双向许可、主人最高许可、装备/特化、单人、人格排泄、共享接收用途、拒绝清理、存读档及对象池复用。
+直接编译生产限制核心、上下文、守卫和 Harmony 补丁，当前 **104 项**。覆盖普通双人、单人、人格排泄、日常/仪式、实际主人最高许可、装备/特化、玩家命令和 AI 候选、精确清理、存档及对象池复用。
 
-新增日常/仪式用途、首次准备、唯一指定者、主人命令在原版强制位写入前的识别、阶段边界和阶段 3A 存档升级。实际驱动回调及角色筛选另由 RitualLifecycle / TrainerIdentity 套件执行生产代码。
+阶段 3C 新增原版 Lovin 唯一发起方向、同步接收创建、实际开始和待收尾旧档；LifeForce 能力/准备/场景及可选目标发现；事件 Job 到独立运行驱动的状态交接、等待归属、Start 后通知与去重；家具常驻任务边界。Cleanup 正常优先级探针检验 SSC 在 RJW 式成功结算前缀之前纠正结束条件。
 
-统一执行：
+统一执行（强制使用真实 Harmony）：
 
 ```powershell
-pwsh -File Scripts/Test-All.ps1 -HarmonyAssemblyPath 'C:\Dependencies\Harmony\net9.0\0Harmony.dll'
+pwsh -File Scripts/Test-All.ps1 -HarmonyAssemblyPath 'C:/Dependencies/Harmony/net9.0/0Harmony.dll'
 ```
 
-统一脚本强制使用真实 Harmony `PatchAll`；也可不传 `HarmonyAssemblyPath` 单独构建此项目，使用替身中的直接补丁调用进行诊断。两种模式共用生产代码和场景断言。
+额外验证可选模组未安装：
 
-最小对象模型模拟步骤、预约、任务队列和序列化边界，不加载 Unity，也不代替真实引用恢复、实际工作调度及模组组合测试。本机依赖元数据检查和实机步骤见[阶段 3A](../../Docs/Development/新限制系统阶段3A.md)与[阶段 3B 开发记录](../../Docs/Development/新限制系统阶段3B.md)。
+```powershell
+dotnet run --project Tests/InteractionProtection -p:NoLifeForce=true -p:HarmonyAssemblyPath='C:/Dependencies/Harmony/net9.0/0Harmony.dll'
+```
+
+该模式把基因替身移入其他命名空间，让生产动态发现返回缺席；跳过四个需要实际基因类型的行为用例，其余 **100 项**仍运行真实 PatchAll。省略 Harmony 参数则运行相同生产逻辑的直接调用诊断模式。
+
+最小模型按本机元数据重现关键调用顺序：GetCachedDriver 与 MakeDriver 是不同实例；Lovin 同步创建另一端；RJW Start 才是开始证据。它不执行 Unity、原生完整 Scribe 引用解析、真实能力消耗、心理记忆或动画。事件概率与成长由 BusTrade 套件执行生产入口，日常/仪式实际驱动由 RitualLifecycle 执行。
+
+本机依据、覆盖范围和待实机步骤见[阶段 3C](../../Docs/Development/新限制系统阶段3C.md)。

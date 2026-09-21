@@ -58,8 +58,8 @@ namespace Verse
 }
 namespace RimWorld
 {
-    public static class JobDefOf { public static readonly Verse.JobDef Goto = new Verse.JobDef { defName = "Goto" }, Wait = new Verse.JobDef { defName = "Wait" }; }
-    public static class MessageTypeDefOf { public static readonly object RejectInput = new object(); }
+    public static class JobDefOf { public static readonly Verse.JobDef GotoMindControlled = new Verse.JobDef { defName = "GotoMindControlled" }, Goto = new Verse.JobDef { defName = "Goto" }, Wait = new Verse.JobDef { defName = "Wait" }; }
+    public static class MessageTypeDefOf { public static readonly object PositiveEvent = new object(), NegativeEvent = new object(), NeutralEvent = new object(), RejectInput = new object(); }
 }
 namespace Verse.AI
 {
@@ -70,7 +70,15 @@ namespace Verse.AI
         public int loadID = ++nextId;
         public JobDriver CachedDriver;
         /// <summary>返回用例构造的新任务缓存驱动，不切换角色当前任务。</summary>
-        public JobDriver GetCachedDriver(Verse.Pawn pawn) => CachedDriver;
+        public JobDriver GetCachedDriver(Verse.Pawn pawn) => CachedDriver ??= MakeDriver(pawn);
+        /// <summary>按本机原版MakeDriver创建新的运行实例，故意不复用预检缓存驱动。</summary>
+        public JobDriver MakeDriver(Verse.Pawn pawn)
+        {
+            var driver = (JobDriver)Activator.CreateInstance(def.driverClass);
+            driver.pawn = pawn; driver.job = this;
+            return driver;
+        }
+
         public Verse.JobDef def;
         public Verse.LocalTargetInfo targetA;
         public bool playerForced;
@@ -137,7 +145,7 @@ namespace Verse.AI
         public Action initAction;
         public Action finishAction;
     }
-    public class JobDriver
+    public partial class JobDriver
     {
         public Verse.Pawn pawn;
         public Job job;
@@ -169,6 +177,7 @@ namespace Verse.AI
             Ended = true;
             EndCondition = condition;
             EndCalls++;
+            Cleanup(condition);
             CleanupToil();
             pawn.jobs.curDriver = null;
         }
@@ -342,8 +351,15 @@ namespace SexSlaveCraft
     public static class OnaholeCompatibilityUtility
     {
         public static int UnregisterCalls;
+        /// <summary>提供常驻家具类型识别边界，真实参与者许可仍由生产守卫执行。</summary>
+        public static bool IsBeOnaholeDriver(object driver) => driver is RJW_Onahole.Jobs.JobDriver_BeOnahole;
         /// <summary>记录家具参与者解除次数，不模拟外部家具模组。</summary>
-        public static void TryUnregisterOnaholePartner(Verse.Pawn target, Verse.Pawn actor) { UnregisterCalls++; }
+        public static void TryUnregisterOnaholePartner(Verse.Pawn target, Verse.Pawn actor)
+        {
+            UnregisterCalls++;
+            if (target?.jobs.curDriver is RJW_Onahole.Jobs.JobDriver_BeOnahole receiver && receiver.PartnerPawn == actor)
+            { receiver.PartnerPawn = null; receiver.parteners.Remove(actor); }
+        }
     }
     public static class TrainingJobUtility
     {
@@ -404,7 +420,11 @@ namespace SexSlaveCraft
         /// <summary>接收并忽略生产详细日志，避免测试结果被诊断文本淹没。</summary>
         public static void Verbose(string message) { }
     }
-    public static class Strings { public const string Message_SlaveAlreadyLinked = "Protected"; }
+    public static class Strings {
+        public const string Message_SlaveAlreadyLinked = "Protected";
+        /// <summary>提供宠物事件翻译边界，实际开始时才会调用。</summary>
+        public static string Message_DogAnimalInteractionTriggered(string actor, string target) => "DogStarted";
+    }
     public static class SSCDefOf
     {
         public static readonly Verse.JobDef SSC_TrainingReceiver = Def("SSC_TrainingReceiver");

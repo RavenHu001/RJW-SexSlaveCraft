@@ -6,7 +6,7 @@
   <SSC_Restrictions_Title>Restrictions: configure and test</SSC_Restrictions_Title>
   <SSC_Restrictions_EditTab>Individual rules</SSC_Restrictions_EditTab>
   <SSC_Restrictions_TestTab>Permission test</SSC_Restrictions_TestTab>
-  <SSC_Restrictions_TestNotice>Ordinary RJW pair, solo, personality-excretion, daily training and ritual jobs now use these rules. Event prechecks and dedicated compatibility paths await later integration.</SSC_Restrictions_TestNotice>
+  <SSC_Restrictions_TestNotice>Ordinary pair, solo, personality-excretion, training and ritual jobs, trade and pet events, vanilla Lovin and supported LifeForce paths now use these rules.</SSC_Restrictions_TestNotice>
   <SSC_Restrictions_OwnerNotice>The actual owner initiating any interaction with their own bound pawn is immediately allowed. Equipment and individual restrictions cannot veto this.</SSC_Restrictions_OwnerNotice>
   <SSC_Restrictions_SystemSwitch>Enable restrictions (shared legacy master switch)</SSC_Restrictions_SystemSwitch>
   <SSC_Restrictions_SystemSwitchTip>Enables or disables interaction restrictions globally. Jobs awaiting integration still share the legacy master switch. Disabling does not erase saved pawn choices.</SSC_Restrictions_SystemSwitchTip>

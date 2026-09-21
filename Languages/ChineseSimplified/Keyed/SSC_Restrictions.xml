@@ -6,7 +6,7 @@
   <SSC_Restrictions_Title>行为限制：设置与测试</SSC_Restrictions_Title>
   <SSC_Restrictions_EditTab>个体规则</SSC_Restrictions_EditTab>
   <SSC_Restrictions_TestTab>许可测试</SSC_Restrictions_TestTab>
-  <SSC_Restrictions_TestNotice>普通 RJW 双人、单人、人格排泄、日常调教与仪式已使用新规则；事件预检和专项兼容入口仍待后续接管。</SSC_Restrictions_TestNotice>
+  <SSC_Restrictions_TestNotice>普通双人、单人、人格排泄、日常调教与仪式、交易和宠物事件、原版 Lovin 及已支持的 LifeForce 入口已使用新规则。</SSC_Restrictions_TestNotice>
   <SSC_Restrictions_OwnerNotice>实际主人对自己的绑定对象发起任何行为，新系统均直接允许，装备和个体限制不能否决。</SSC_Restrictions_OwnerNotice>
   <SSC_Restrictions_SystemSwitch>启用限制系统（与旧保护共用总开关）</SSC_Restrictions_SystemSwitch>
   <SSC_Restrictions_SystemSwitchTip>全局启用或停用行为限制；尚未接管的任务仍共用旧保护总开关。关闭不会清空角色保存值。</SSC_Restrictions_SystemSwitchTip>

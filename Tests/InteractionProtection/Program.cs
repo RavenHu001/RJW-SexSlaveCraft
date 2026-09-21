@@ -39,7 +39,7 @@ internal static partial class Program
         Run("未授权他人训练仍被拒绝", () => Training(true, false, false));
         Run("公交车被动条目强制生效", BusReceiver);
         Run("被绑定发起者的强制行为保护保持有效", ChainedInitiator);
-        Run("后续 LifeForce 批次暂沿用旧路径", Whitelist);
+        Run("LifeForce任务名不再绕过统一限制", Whitelist);
         Run("缺少参与者时保留安全放行", MissingTarget);
         Run("直接 Start 兜底阻止 RJW 原方法及原生 End", DirectStartFallback);
         Run("迟到 Start 回调不能结束该角色的新任务", StaleStartDoesNotEndNewJob);
@@ -49,6 +49,7 @@ internal static partial class Program
         Run("无关 JobDriver 不受步骤补丁影响", UnrelatedJob);
         RunStage3ATests();
         RunStage3BTests();
+        RunStage3CTests();
         Console.WriteLine($"结果：{passed}/{passed + failed} 项通过。");
         return failed == 0 ? 0 : 1;
     }
@@ -309,9 +310,9 @@ internal static partial class Program
     {
         var p = People();
         var driver = Driver(p.c, p.b);
-        driver.job.def = new JobDef { defName = "rjw_genes_lifeforce_randomrape" };
-        driver.Start();
-        Assert(driver.StartCalls == 1 && !driver.Ended, "既有 Start 白名单应保持有效");
+        driver.job.def.defName = "rjw_genes_lifeforce_randomrape";
+        Begin(driver);
+        Rejected(driver);
     }
     /// <summary>验证目标缺失时保护适配层不会自行拒绝，继续交由原任务的有效性检查处理。</summary>
     private static void MissingTarget()
