@@ -40,7 +40,6 @@ namespace SexSlaveCraft
         /// <summary>读写新限制配置及既有全局设置，并在加载结束后将数值选项限制在支持范围内。</summary>
         public override void ExposeData()
         {
-            ExposeRestrictionSettings();
             // EN: Save every toggle explicitly so old saves keep the same SSC behavior after updates.
             // CN: 每个开关都要显式保存，保证旧存档在更新后仍保持相同的 SSC 行为。
             Scribe_Values.Look(ref allowSexSlaveRape, "allowSexSlaveRape", false);
@@ -61,6 +60,7 @@ namespace SexSlaveCraft
             Scribe_Values.Look(ref enableCorruptionDecay, "enableCorruptionDecay", true);
             Scribe_Values.Look(ref corruptionDecayPerDay, "corruptionDecayPerDay", 0.02f);
             Scribe_Values.Look(ref useOldScoring, "useOldScoring", false);
+            ExposeRestrictionSettings();
 
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
@@ -142,6 +142,7 @@ namespace SexSlaveCraft
         /// <summary>绘制测试入口及按功能分组的设置控件，将玩家的勾选与数值调整写入全局设置对象。</summary>
         private static void DrawSettings(Listing_Standard listingStandard)
         {
+            bool restrictionsWereEnabled = settings.enableSexSlaveProtectionRules;
             // EN: Step 1: draw the sex-slave protection rules first, because they change how Harmony guards sex jobs.
             // CN: 步骤 1：先画出“性奴保护规则”，因为它们会直接改变 Harmony 对性行为 Job 的拦截方式。
             listingStandard.CheckboxLabeled(
@@ -176,6 +177,10 @@ namespace SexSlaveCraft
 
             listingStandard.Gap(8f);
             DrawRestrictionTestEntry(listingStandard);
+            listingStandard.GapLine();
+            SSCRestrictionUI.DrawSettings(listingStandard);
+            if (restrictionsWereEnabled != settings.enableSexSlaveProtectionRules)
+                SSCRestrictionGameComponent.SettingsChanged();
             listingStandard.GapLine();
             // EN: Step 2: draw SSC log controls together so debug verbosity can be tuned from one block.
             // CN: 步骤 2：把 SSC 日志开关放在一起，方便在一个区域里调整调试输出等级。

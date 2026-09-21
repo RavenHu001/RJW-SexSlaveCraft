@@ -13,7 +13,7 @@ namespace SexSlaveCraft
             Scribe_Values.Look(ref enableSpecializationRestrictionOverrides, "enableSpecializationRestrictionOverrides", true);
             Scribe_Deep.Look(ref restrictionDefaults, "restrictionDefaults");
             if (Scribe.mode == LoadSaveMode.PostLoadInit && restrictionDefaults == null)
-                restrictionDefaults = new SSCRestrictionRules();
+                restrictionDefaults = SSCRestrictionLegacySettings.Capture(this).Convert(false, false).rules;
         }
     }
 }

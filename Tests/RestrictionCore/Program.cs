@@ -6,7 +6,7 @@ using System.Xml.Linq;
 using SexSlaveCraft;
 using Verse;
 
-internal static class Program
+internal static partial class Program
 {
     private static string root;
     private static int passed, failed;
@@ -649,10 +649,13 @@ internal static class Program
         Run("Test interface translations cover controls and enum results in both shipped languages", () =>
         {
             var keys = new HashSet<string>();
-            foreach (string source in new[] { "common/Restrictions/Dialog_SSCRestrictions.cs", "common/Settings.cs" })
+            foreach (string source in new[] { "common/Restrictions/Dialog_SSCRestrictions.cs", "common/Restrictions/SSCRestrictionUI.cs",
+                "common/Settings.cs", "ITab/ITab_SexSlaveTraining.cs" })
                 foreach (System.Text.RegularExpressions.Match match in System.Text.RegularExpressions.Regex.Matches(
                     File.ReadAllText(Path.Combine(root, "Sexslavecraft", source)), "\"(SSC_Restrictions_[A-Za-z]+)\""))
                     keys.Add(match.Groups[1].Value);
+            foreach (string group in new[] { "Masturbation", "ReceiveConsensual", "ReceiveTraining" })
+                keys.Add("SSC_Restrictions_Group_" + group);
             foreach (SSCRestrictionRule rule in Enum.GetValues<SSCRestrictionRule>()) keys.Add("SSC_Restrictions_Rule_" + rule);
             foreach (SSCRestrictionReason reason in Enum.GetValues<SSCRestrictionReason>()) keys.Add("SSC_Restrictions_Reason_" + reason);
             foreach (SSCRestrictionSource source in Enum.GetValues<SSCRestrictionSource>()) keys.Add("SSC_Restrictions_Source_" + source);
@@ -666,6 +669,7 @@ internal static class Program
                 Equal(File.ReadAllText(Path.Combine(root, path)), File.ReadAllText(Path.Combine(root, "Sexslavecraft", path)));
             }
         });
+        RunLifecycleTests();
         Console.WriteLine($"{passed}/{passed + failed} passed");
         return failed == 0 ? 0 : 1;
     }
@@ -752,6 +756,11 @@ internal static class Program
         try
         {
             SSCMod.settings = new SSCSettings(); Scribe.mode = LoadSaveMode.Inactive; Scribe.node = new Dictionary<string, object>();
+            Current.Game = null;
+            RimWorld.PawnsFinder.AllMapsWorldAndTemporary_AliveOrDead = new List<Pawn>();
+            RimWorld.PawnsFinder.AllCaravansAndTravellingTransporters_AliveOrDead = new List<Pawn>();
+            SSCTrainerIdentityMigration.Ran = false;
+            Log.Errors.Clear();
             DefDatabase<SSCRestrictionProfileDef>.AllDefsListForReading = ReadProfiles();
             test(); passed++; Console.WriteLine("PASS " + name);
         }

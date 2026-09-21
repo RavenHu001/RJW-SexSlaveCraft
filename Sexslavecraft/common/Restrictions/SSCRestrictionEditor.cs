@@ -2,7 +2,7 @@ using Verse;
 
 namespace SexSlaveCraft
 {
-    /// <summary>测试界面的显式配置写入入口；不负责生命周期迁移或任务指派。</summary>
+    /// <summary>所有设置界面的配置写入入口，拒绝覆盖待迁移数据并在成功编辑后协调指定者。</summary>
     public static class SSCRestrictionEditor
     {
         /// <summary>检查配置版本和所有保存值，供界面决定是否允许编辑；不修复或替换异常数据。</summary>
@@ -11,7 +11,7 @@ namespace SexSlaveCraft
             return config?.IsValid() == true;
         }
 
-        /// <summary>仅在玩家明确点击且适用角色没有配置时建立独立测试配置；已有配置绝不覆盖。</summary>
+        /// <summary>仅在玩家明确重试且适用角色没有配置时建立独立配置；已有配置绝不覆盖。</summary>
         public static bool TryInitialize(Pawn pawn)
         {
             return TryInitialize(pawn, out _);
@@ -23,19 +23,25 @@ namespace SexSlaveCraft
         {
             error = null;
             CompSexSlaveTraining comp = pawn?.TryGetComp<CompSexSlaveTraining>();
-            if (comp == null || !SSCRestrictionResolver.IsApplicable(pawn) || comp.restrictionConfig != null) return false;
+            if (comp == null || !SSCRestrictionResolver.IsApplicable(pawn) || comp.restrictionConfig != null ||
+                comp.legacyRestrictionInput != null || comp.restrictionRestoreDepth > 0) return false;
             if (!SSCRestrictionResolver.TryCreateInitialConfiguration(pawn, SSCMod.settings?.restrictionDefaults,
                 out SSCRestrictionConfig config, out error)) return false;
             comp.restrictionConfig = config;
+            comp.restrictionLifecycleSeen = true;
+            SSCRestrictionLifecycle.CoordinateTrainer(pawn);
             return true;
         }
 
-        /// <summary>修改当前适用角色的单项保存值；强制来源不写回配置，也不改变绑定、旧许可或指定者。</summary>
+        /// <summary>修改当前适用角色的单项保存值；强制来源不写回配置，调教许可改变时协调指定者。</summary>
         public static bool TrySet(Pawn pawn, SSCRestrictionRule rule, SSCRestrictionValue value)
         {
-            SSCRestrictionConfig config = pawn?.TryGetComp<CompSexSlaveTraining>()?.restrictionConfig;
-            if (!SSCRestrictionResolver.IsApplicable(pawn) || !IsValid(config) || !SSCRestrictionRules.IsValid(rule, value)) return false;
+            CompSexSlaveTraining comp = pawn?.TryGetComp<CompSexSlaveTraining>();
+            SSCRestrictionConfig config = comp?.restrictionConfig;
+            if (comp == null || comp.restrictionRestoreDepth > 0 || !SSCRestrictionResolver.IsApplicable(pawn) ||
+                !IsValid(config) || !SSCRestrictionRules.IsValid(rule, value)) return false;
             config.rules.Set(rule, value);
+            SSCRestrictionLifecycle.CoordinateTrainer(pawn);
             return true;
         }
     }

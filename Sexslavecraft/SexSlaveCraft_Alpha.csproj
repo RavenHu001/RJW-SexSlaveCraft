@@ -84,6 +84,11 @@
     <Compile Include="common\AddCorruption.cs" />
     <Compile Include="common\SSCIdentityUtility.Trainer.cs" />
     <Compile Include="common\SSCTrainerIdentityMigration.cs" />
+    <Compile Include="common\Restrictions\SSCRestrictionMigration.cs" />
+    <Compile Include="common\Restrictions\SSCRestrictionLifecycle.cs" />
+    <Compile Include="common\Restrictions\SSCRestrictionGameComponent.cs" />
+    <Compile Include="common\Restrictions\SSCRestrictionLifecycleHooks.cs" />
+    <Compile Include="common\Restrictions\SSCRestrictionUI.cs" />
     <Compile Include="Comps\Comp_Train.TrainerIdentity.cs" />
     <Compile Include="common\BindingRitualStateUtility.cs" />
     <Compile Include="common\BusSpecializationUtility.cs" />

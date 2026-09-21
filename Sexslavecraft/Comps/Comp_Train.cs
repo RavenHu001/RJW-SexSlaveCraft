@@ -274,7 +274,6 @@ namespace SexSlaveCraft
             // 先保存身份数据，这样读档逻辑才能知道这个 Pawn 应该按主人还是性奴处理。
             Scribe_Values.Look(ref pawnIdentity, "pawnIdentity", PawnIdentity.Unset);
             ExposeTrainerIdentity();
-            ExposeRestrictions();
 
             Scribe_Values.Look(ref mode, "mode", TrainingMode.Disabled);
             Scribe_Values.Look(ref selectedMode, "selectedMode", TrainingActType.Auto);
@@ -307,6 +306,9 @@ namespace SexSlaveCraft
             Scribe_References.Look(ref selectedTrainer, "selectedTrainer");
             Scribe_Deep.Look(ref sharedSleep, "sharedSleep");
 
+            // 必须在旧输入全部读入后、关系和特化修复前捕获；实际迁移在 GameComponent 中执行。
+            ExposeRestrictions();
+
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
                 scheduledTrainingHour = Mathf.Clamp(scheduledTrainingHour, 0, 23);
@@ -326,6 +328,7 @@ namespace SexSlaveCraft
                     }
 
                     if (boundMaster != null &&
+                        restrictionConfig == null &&
                         !AllowsOthersForTrainingOrSex &&
                         !IsBusSpecialized &&
                         !BusSpecializationUtility.HasAnyBusState(loadedPawn))

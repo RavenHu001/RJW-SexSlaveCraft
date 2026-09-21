@@ -79,12 +79,41 @@ namespace Verse
     public class Pawn
     {
         public string LabelShort;
+        public bool Dead, Destroyed;
         public Pawn BoundMaster;
         public bool HasBusState;
         public Pawn_ApparelTracker apparel = new Pawn_ApparelTracker();
         public CompSexSlaveTraining Training = new CompSexSlaveTraining();
         /// <summary>按请求类型返回测试训练组件；本替身不模拟其他游戏组件。</summary>
         public T TryGetComp<T>() where T : class => Training as T;
+    }
+    public class Game
+    {
+        public SSCRestrictionGameComponent Restrictions;
+        /// <summary>返回本存档的生产迁移组件，不在替身中实现初始化规则。</summary>
+        public T GetComponent<T>() where T : class => Restrictions as T;
+    }
+    public static class Current { public static Game Game; }
+    public class GameComponent
+    {
+        /// <summary>保留游戏生命周期方法供生产组件重写，替身不执行额外逻辑。</summary>
+        public virtual void FinalizeInit() { }
+        /// <summary>保留游戏组件的序列化入口供生产代码重写。</summary>
+        public virtual void ExposeData() { }
+    }
+    public static class Log
+    {
+        public static readonly List<string> Errors = new List<string>();
+        /// <summary>收集初始化错误，验证失败可见且重复事件不会持续刷日志。</summary>
+        public static void Error(string message) { Errors.Add(message); }
+    }
+}
+namespace RimWorld
+{
+    public static class PawnsFinder
+    {
+        public static List<Verse.Pawn> AllMapsWorldAndTemporary_AliveOrDead = new List<Verse.Pawn>();
+        public static List<Verse.Pawn> AllCaravansAndTravellingTransporters_AliveOrDead = new List<Verse.Pawn>();
     }
 }
 namespace SexSlaveCraft
@@ -93,6 +122,7 @@ namespace SexSlaveCraft
     public enum SexSlaveSpecializationType { None, Bus, Cow, PetCat, PetDog, PetRabbit }
     public partial class CompSexSlaveTraining
     {
+        public Verse.Pawn parent;
         public PawnIdentity pawnIdentity;
         public SexSlaveSpecializationType specializationType;
         public Verse.Pawn selectedTrainer;
@@ -101,10 +131,18 @@ namespace SexSlaveCraft
     public partial class SSCSettings : Verse.IExposable
     {
         public bool enableSexSlaveProtectionRules = true;
+        public bool protectNonRapeOwnerOnly = true, protectBusAggressorRape = true, protectChainedAggressorRape = true;
+        public bool allowSexSlaveRape;
         /// <summary>转调生产代码的新限制设置序列化入口，测试替身不重复实现其保存逻辑。</summary>
         public void ExposeData() { ExposeRestrictionSettings(); }
     }
     public static class SSCMod { public static SSCSettings settings = new SSCSettings(); }
+    public static class SSCTrainerIdentityMigration
+    {
+        public static bool Ran;
+        /// <summary>只记录既有身份迁移调用顺序；限制规则由生产代码实现。</summary>
+        public static void Migrate(IEnumerable<Verse.Pawn> pawns) { Ran = true; }
+    }
     public static class SSCBondUtility
     {
         /// <summary>读取用例显式设置的绑定主人，不根据身份或指定训练者推断关系。</summary>

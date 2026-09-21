@@ -6,7 +6,7 @@
   <SSC_Restrictions_Title>Restrictions: configure and test</SSC_Restrictions_Title>
   <SSC_Restrictions_EditTab>Individual rules</SSC_Restrictions_EditTab>
   <SSC_Restrictions_TestTab>Permission test</SSC_Restrictions_TestTab>
-  <SSC_Restrictions_TestNotice>Test interface: individual rules can be saved and tested here. Actual game jobs still use the legacy rules.</SSC_Restrictions_TestNotice>
+  <SSC_Restrictions_TestNotice>New configurations support initialization, migration and saving. Actual interaction permissions still use the legacy rules.</SSC_Restrictions_TestNotice>
   <SSC_Restrictions_OwnerNotice>The actual owner initiating any interaction with their own bound pawn is immediately allowed. Equipment and individual restrictions cannot veto this.</SSC_Restrictions_OwnerNotice>
   <SSC_Restrictions_SystemSwitch>Enable restrictions (shared legacy master switch)</SSC_Restrictions_SystemSwitch>
   <SSC_Restrictions_SystemSwitchTip>Global setting. This also changes the legacy protection switch used by actual jobs. Turning it off preserves saved rules.</SSC_Restrictions_SystemSwitchTip>
@@ -14,8 +14,8 @@
   <SSC_Restrictions_ProfileSwitchTip>Global setting. Only controls specialization overrides in the new system; equipment overrides and saved values are unaffected.</SSC_Restrictions_ProfileSwitchTip>
   <SSC_Restrictions_EditPawn>Configure pawn: {0}</SSC_Restrictions_EditPawn>
   <SSC_Restrictions_NotApplicable>This pawn is not managed by the new system: SSC slave identity or an existing owner bond is required. Any existing configuration is read-only.</SSC_Restrictions_NotApplicable>
-  <SSC_Restrictions_Uninitialized>No new configuration exists yet. You can explicitly create a test configuration using current defaults and specialization defaults. This does not migrate legacy settings.</SSC_Restrictions_Uninitialized>
-  <SSC_Restrictions_Initialize>Create test configuration from current defaults</SSC_Restrictions_Initialize>
+  <SSC_Restrictions_Uninitialized>No configuration yet: automatic initialization may have failed or migration may be pending. Retry after fixing defaults. Pending legacy data will not be replaced by manual defaults.</SSC_Restrictions_Uninitialized>
+  <SSC_Restrictions_Initialize>Retry initialization from defaults</SSC_Restrictions_Initialize>
   <SSC_Restrictions_InvalidConfig>Unsupported or invalid configuration (version {0}). Editing is disabled; original data has been preserved.</SSC_Restrictions_InvalidConfig>
   <SSC_Restrictions_SaveNotice>Edits are applied immediately and saved with the game. Saved values remain editable while overridden and are used again when the override ends.</SSC_Restrictions_SaveNotice>
   <SSC_Restrictions_EditFailed>Cannot edit: the pawn's applicability or configuration changed. Please check it again.</SSC_Restrictions_EditFailed>
@@ -68,4 +68,19 @@
   <SSC_Restrictions_EditReceiver>Edit receiver rules</SSC_Restrictions_EditReceiver>
   <SSC_Restrictions_None>Not selected</SSC_Restrictions_None>
   <SSC_Restrictions_Error>Configuration check failed: {0}</SSC_Restrictions_Error>
+  <SSC_Restrictions_DefaultsTitle>New restriction system · Defaults</SSC_Restrictions_DefaultsTitle>
+  <SSC_Restrictions_DefaultsTip>Defaults apply when a pawn first becomes eligible. Existing choices are retained; first acquiring the Bus specialization applies its two reception defaults.</SSC_Restrictions_DefaultsTip>
+  <SSC_Restrictions_InvalidDefaults>The default template is invalid. Check the configuration file; existing pawn settings are preserved.</SSC_Restrictions_InvalidDefaults>
+  <SSC_Restrictions_ApplyAll>Apply defaults to all eligible pawns in this save…</SSC_Restrictions_ApplyAll>
+  <SSC_Restrictions_ApplyConfirm>This overwrites individual choices for all eligible pawns in the current save, including other maps, caravans, transport and world pawns. The current template and each pawn’s specialization defaults will be applied; equipment overrides will not be saved. Continue?</SSC_Restrictions_ApplyConfirm>
+  <SSC_Restrictions_ApplyResult>Defaults applied: {0} updated, {1} skipped, {2} failed.</SSC_Restrictions_ApplyResult>
+  <SSC_Restrictions_GlobalState>Global state: restrictions {0}; specialization overrides {1}.</SSC_Restrictions_GlobalState>
+  <SSC_Restrictions_Enabled>enabled</SSC_Restrictions_Enabled>
+  <SSC_Restrictions_Disabled>disabled</SSC_Restrictions_Disabled>
+  <SSC_Restrictions_Group_Masturbation>Initiation</SSC_Restrictions_Group_Masturbation>
+  <SSC_Restrictions_Group_ReceiveConsensual>Reception</SSC_Restrictions_Group_ReceiveConsensual>
+  <SSC_Restrictions_Group_ReceiveTraining>Training</SSC_Restrictions_Group_ReceiveTraining>
+  <SSC_Restrictions_TrainerLocked>Non-owner training is denied. The assigned trainer is locked to the bound owner: {0}.</SSC_Restrictions_TrainerLocked>
+  <SSC_Restrictions_Expand>▶ Expand behavior restrictions</SSC_Restrictions_Expand>
+  <SSC_Restrictions_Collapse>◀ Collapse behavior restrictions</SSC_Restrictions_Collapse>
 </LanguageData>

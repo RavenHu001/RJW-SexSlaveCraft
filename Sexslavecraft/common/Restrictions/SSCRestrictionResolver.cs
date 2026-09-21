@@ -33,6 +33,28 @@ namespace SexSlaveCraft
             return context.Matches(profile);
         }
 
+        /// <summary>首次取得公交车时只合入公交车声明的默认；先验证整份结果，成功后一起提交规则与标记。</summary>
+        public static bool TryApplyBusDefaults(Pawn pawn, SSCRestrictionConfig config, out SSCRestrictionResolution error)
+        {
+            error = null;
+            if (config?.IsValid() != true) return false;
+            SSCRestrictionRules rules = config.rules.Copy();
+            foreach (SSCRestrictionRule rule in SSCRestrictionRules.All)
+            {
+                SSCRestrictionResolution value = FromSaved(rules, rule);
+                var layer = new Layer();
+                foreach (SSCRestrictionProfileDef profile in DefDatabase<SSCRestrictionProfileDef>.AllDefsListForReading)
+                    if (profile?.specialization == SexSlaveSpecializationType.Bus && HasProfile(pawn, profile))
+                        layer.Consider(rule, profile.defaults, profile.defName);
+                layer.ApplyTo(value, SSCRestrictionSource.SpecializationDefault);
+                if (!value.Valid) { error = value; return false; }
+                rules.Set(rule, value.Value);
+            }
+            config.rules = rules;
+            config.busDefaultsApplied = true;
+            return true;
+        }
+
         /// <summary>从模板与当前特化默认创建独立配置；非法默认返回具体条目，失败不产生可保存配置。</summary>
         /// <remarks>不写回角色；总开关及特化强制开关不影响初始化默认，装备强制也不写入保存值。</remarks>
         public static bool TryCreateInitialConfiguration(Pawn pawn, SSCRestrictionRules template,

@@ -6,7 +6,7 @@
   <SSC_Restrictions_Title>行为限制：设置与测试</SSC_Restrictions_Title>
   <SSC_Restrictions_EditTab>个体规则</SSC_Restrictions_EditTab>
   <SSC_Restrictions_TestTab>许可测试</SSC_Restrictions_TestTab>
-  <SSC_Restrictions_TestNotice>测试界面：个体规则可保存，下方许可测试使用新系统；实际游戏任务目前仍使用旧规则。</SSC_Restrictions_TestNotice>
+  <SSC_Restrictions_TestNotice>新配置已支持初始化、迁移和保存；实际行为许可尚未接管，仍使用旧规则。</SSC_Restrictions_TestNotice>
   <SSC_Restrictions_OwnerNotice>实际主人对自己的绑定对象发起任何行为，新系统均直接允许，装备和个体限制不能否决。</SSC_Restrictions_OwnerNotice>
   <SSC_Restrictions_SystemSwitch>启用限制系统（与旧保护共用总开关）</SSC_Restrictions_SystemSwitch>
   <SSC_Restrictions_SystemSwitchTip>这是全局设置，也会改变当前实际任务使用的旧保护总开关。关闭不清空角色保存值。</SSC_Restrictions_SystemSwitchTip>
@@ -14,8 +14,8 @@
   <SSC_Restrictions_ProfileSwitchTip>全局设置。只控制新系统的特化覆盖，不关闭装备强制，也不改写个体保存值。</SSC_Restrictions_ProfileSwitchTip>
   <SSC_Restrictions_EditPawn>配置角色：{0}</SSC_Restrictions_EditPawn>
   <SSC_Restrictions_NotApplicable>当前角色不受新系统管理：需要 SSC 性奴身份或已有绑定关系。已有配置仅供查看。</SSC_Restrictions_NotApplicable>
-  <SSC_Restrictions_Uninitialized>尚未建立新配置。可手动采用当前默认值及特化默认，建立用于测试的配置；此操作不会迁移旧设置。</SSC_Restrictions_Uninitialized>
-  <SSC_Restrictions_Initialize>使用当前默认值建立测试配置</SSC_Restrictions_Initialize>
+  <SSC_Restrictions_Uninitialized>尚未建立配置：自动初始化可能失败或仍在等待迁移。修正默认数据后可重试；待迁移旧数据不会被手动默认覆盖。</SSC_Restrictions_Uninitialized>
+  <SSC_Restrictions_Initialize>重试建立默认配置</SSC_Restrictions_Initialize>
   <SSC_Restrictions_InvalidConfig>配置版本或数据异常（版本 {0}），暂不可编辑；已保留原始配置。</SSC_Restrictions_InvalidConfig>
   <SSC_Restrictions_SaveNotice>修改立即写入角色，随游戏存档保存。强制覆盖期间仍可编辑保存值，覆盖消失后会重新使用该值。</SSC_Restrictions_SaveNotice>
   <SSC_Restrictions_EditFailed>无法修改：角色适用状态或配置已变化，请重新检查。</SSC_Restrictions_EditFailed>
@@ -68,4 +68,19 @@
   <SSC_Restrictions_EditReceiver>编辑接收者规则</SSC_Restrictions_EditReceiver>
   <SSC_Restrictions_None>未选择</SSC_Restrictions_None>
   <SSC_Restrictions_Error>配置检查失败：{0}</SSC_Restrictions_Error>
+  <SSC_Restrictions_DefaultsTitle>新限制系统 · 默认配置</SSC_Restrictions_DefaultsTitle>
+  <SSC_Restrictions_DefaultsTip>默认配置只影响之后首次适用的角色。已有角色保持各自选择；公交车首次取得时会应用其两项被动默认。</SSC_Restrictions_DefaultsTip>
+  <SSC_Restrictions_InvalidDefaults>默认模板数据异常，请检查配置文件；已有角色配置保持不变。</SSC_Restrictions_InvalidDefaults>
+  <SSC_Restrictions_ApplyAll>为本存档全部适用角色应用默认配置…</SSC_Restrictions_ApplyAll>
+  <SSC_Restrictions_ApplyConfirm>这会覆盖当前存档内全部适用角色的个体选择，包括其他地图、商队、运输中及世界角色。按当前模板和各自特化默认重设，不把装备强制写入保存值。是否继续？</SSC_Restrictions_ApplyConfirm>
+  <SSC_Restrictions_ApplyResult>默认配置应用完成：成功 {0}，跳过 {1}，失败 {2}。</SSC_Restrictions_ApplyResult>
+  <SSC_Restrictions_GlobalState>全局状态：限制系统 {0}；特化强制 {1}。</SSC_Restrictions_GlobalState>
+  <SSC_Restrictions_Enabled>开启</SSC_Restrictions_Enabled>
+  <SSC_Restrictions_Disabled>关闭</SSC_Restrictions_Disabled>
+  <SSC_Restrictions_Group_Masturbation>主动行为</SSC_Restrictions_Group_Masturbation>
+  <SSC_Restrictions_Group_ReceiveConsensual>被动行为</SSC_Restrictions_Group_ReceiveConsensual>
+  <SSC_Restrictions_Group_ReceiveTraining>调教</SSC_Restrictions_Group_ReceiveTraining>
+  <SSC_Restrictions_TrainerLocked>非主人调教已禁止，指定者锁定为实际主人：{0}。</SSC_Restrictions_TrainerLocked>
+  <SSC_Restrictions_Expand>▶ 展开行为限制</SSC_Restrictions_Expand>
+  <SSC_Restrictions_Collapse>◀ 收起行为限制</SSC_Restrictions_Collapse>
 </LanguageData>

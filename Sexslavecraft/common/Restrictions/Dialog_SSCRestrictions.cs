@@ -61,9 +61,12 @@ namespace SexSlaveCraft
                     listing.Begin(content);
                     try
                     {
-                        listing.Label("SSC_Restrictions_TestNotice".Translate());
-                        listing.Label("SSC_Restrictions_OwnerNotice".Translate());
-                        listing.GapLine();
+                        if (testing)
+                        {
+                            listing.Label("SSC_Restrictions_TestNotice".Translate());
+                            listing.Label("SSC_Restrictions_OwnerNotice".Translate());
+                            listing.GapLine();
+                        }
                         DrawGlobalSwitches(listing);
                         listing.GapLine();
                         if (testing) DrawTest(listing); else DrawEditor(listing);
@@ -100,80 +103,22 @@ namespace SexSlaveCraft
             if (enabled == settings.enableSexSlaveProtectionRules && specialization == settings.enableSpecializationRestrictionOverrides) return;
             settings.enableSexSlaveProtectionRules = enabled;
             settings.enableSpecializationRestrictionOverrides = specialization;
+            SSCRestrictionGameComponent.SettingsChanged();
             settings.Write();
         }
 
-        /// <summary>显示保存配置并允许显式初始化；初始化失败时显示坏条目及来源，绘制不覆盖缺失或损坏数据。</summary>
+        /// <summary>选择当前编辑角色并复用正式角色控件，保留跳转到许可测试的入口。</summary>
         private void DrawEditor(Listing_Standard listing)
         {
             if (listing.ButtonText("SSC_Restrictions_EditPawn".Translate(PawnLabel(editedPawn))))
                 ChoosePawn(p => { editedPawn = p; scrollPosition = Vector2.zero; error = null; }, false);
-            bool applicable = SSCRestrictionResolver.IsApplicable(editedPawn);
-            SSCRestrictionConfig config = editedPawn?.TryGetComp<CompSexSlaveTraining>()?.restrictionConfig;
-            if (!applicable) listing.Label("SSC_Restrictions_NotApplicable".Translate());
-            if (config == null)
-            {
-                listing.Label("SSC_Restrictions_Uninitialized".Translate());
-                if (applicable && listing.ButtonText("SSC_Restrictions_Initialize".Translate()))
-                {
-                    try
-                    {
-                        SSCRestrictionResolution initializationError;
-                        bool initialized = SSCRestrictionEditor.TryInitialize(editedPawn, out initializationError);
-                        error = initialized ? null : initializationError == null
-                            ? "SSC_Restrictions_EditFailed".Translate().ToString()
-                            : "SSC_Restrictions_InitializeFailed".Translate(
-                                ("SSC_Restrictions_Rule_" + initializationError.Rule).Translate(), SourceLabel(initializationError)).ToString();
-                    }
-                    catch (Exception exception) { error = exception.Message; }
-                }
-                return;
-            }
-            if (!config.IsValid())
-            {
-                listing.Label("SSC_Restrictions_InvalidConfig".Translate(config.version));
-                return;
-            }
-            listing.Label("SSC_Restrictions_SaveNotice".Translate());
-            foreach (SSCRestrictionRule rule in Enum.GetValues(typeof(SSCRestrictionRule)))
-                DrawRule(listing, config.rules, rule, applicable);
+            SSCRestrictionUI.DrawPawn(listing, editedPawn);
             listing.Gap();
             if (listing.ButtonText("SSC_Restrictions_TestAsReceiver".Translate()))
             {
                 receiver = editedPawn;
                 SelectPage(true);
             }
-        }
-
-        /// <summary>绘制单项保存值与实时生效来源；被强制覆盖时仍可编辑保存值，供覆盖消失后使用。</summary>
-        private void DrawRule(Listing_Standard listing, SSCRestrictionRules rules, SSCRestrictionRule rule, bool editable)
-        {
-            listing.GapLine();
-            listing.Label(("SSC_Restrictions_Rule_" + rule).Translate());
-            SSCRestrictionValue saved = rules.Get(rule);
-            bool oldEnabled = GUI.enabled;
-            try
-            {
-                GUI.enabled = oldEnabled && editable;
-                if (listing.ButtonText("SSC_Restrictions_SavedValue".Translate(ValueLabel(saved))))
-                {
-                    Pawn pawn = editedPawn;
-                    var options = new List<FloatMenuOption>();
-                    foreach (SSCRestrictionValue value in Enum.GetValues(typeof(SSCRestrictionValue)))
-                    {
-                        if (!SSCRestrictionRules.IsValid(rule, value)) continue;
-                        SSCRestrictionValue choice = value;
-                        options.Add(new FloatMenuOption(ValueLabel(choice), () =>
-                        {
-                            error = SSCRestrictionEditor.TrySet(pawn, rule, choice) ? null : "SSC_Restrictions_EditFailed".Translate().ToString();
-                        }));
-                    }
-                    Find.WindowStack.Add(new FloatMenu(options));
-                }
-            }
-            finally { GUI.enabled = oldEnabled; }
-            SSCRestrictionResolution entry = SSCRestrictionResolver.Resolve(editedPawn, rules, rule);
-            listing.Label("SSC_Restrictions_EffectiveValue".Translate(entry.Valid ? ValueLabel(entry.Value) : "SSC_Restrictions_InvalidValue".Translate().ToString(), SourceLabel(entry)));
         }
 
         /// <summary>用当前保存配置实时测试指定方向和用途；显示许可原因及来源，不启动实际任务。</summary>

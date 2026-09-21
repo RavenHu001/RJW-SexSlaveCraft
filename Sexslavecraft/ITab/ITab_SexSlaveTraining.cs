@@ -17,6 +17,11 @@ namespace SexSlaveCraft
         private static readonly Vector2 WinSize = new Vector2(360f, 560f);
 
         private Vector2 scrollPosition;
+        private Vector2 restrictionScrollPosition;
+        private float restrictionContentHeight = 1400f;
+        private Pawn restrictionPawn;
+        private static bool restrictionsExpanded;
+        private static Game restrictionSession;
 
         /// <summary>初始化调教页尺寸、标题和教程标识。</summary>
         public ITab_SexSlaveTraining()
@@ -24,6 +29,41 @@ namespace SexSlaveCraft
             size = WinSize;
             labelKey = "Tab_SexSlaveTraining";
             tutorTag = "SexSlaveTraining";
+        }
+
+        /// <summary>按屏幕约束向右扩展规则栏，保持主调教栏的位置和宽度，整个面板处于原生窗口输入范围内。</summary>
+        protected override void UpdateSize()
+        {
+            if (restrictionSession != Current.Game)
+            {
+                restrictionSession = Current.Game;
+                restrictionsExpanded = false;
+            }
+            size = new Vector2(Mathf.Min(restrictionsExpanded ? 740f : WinSize.x, UI.screenWidth - 16f),
+                Mathf.Min(WinSize.y, Mathf.Max(100f, PaneTopY - 40f)));
+        }
+
+        /// <summary>绘制独立滚动的右侧角色配置；切换角色只重置滚动，不写入默认或修改保存值。</summary>
+        private void DrawRestrictionPanel(Rect rect, Pawn pawn)
+        {
+            if (restrictionPawn != pawn)
+            {
+                restrictionPawn = pawn;
+                restrictionScrollPosition = Vector2.zero;
+            }
+            Widgets.DrawMenuSection(rect);
+            Rect viewport = rect.ContractedBy(8f);
+            Rect content = new Rect(0f, 0f, Mathf.Max(1f, viewport.width - 20f),
+                Mathf.Max(viewport.height, restrictionContentHeight));
+            Widgets.BeginScrollView(viewport, ref restrictionScrollPosition, content);
+            try
+            {
+                var listing = new Listing_Standard { maxOneColumn = true };
+                listing.Begin(content);
+                try { SSCRestrictionUI.DrawPawn(listing, pawn); }
+                finally { restrictionContentHeight = listing.CurHeight + 12f; listing.End(); }
+            }
+            finally { Widgets.EndScrollView(); }
         }
 
         /// <summary>仅为支持的原版身份且具有训练组件的角色显示调教页，不要求完成研究。</summary>
@@ -48,9 +88,18 @@ namespace SexSlaveCraft
             if (comp == null) return;
 
             Rect outerRect = new Rect(0f, 0f, size.x, size.y).ContractedBy(10f);
+            Rect trainingRect = new Rect(outerRect.x, outerRect.y,
+                Mathf.Min(WinSize.x - 20f, outerRect.width), outerRect.height);
+            if (restrictionsExpanded)
+                DrawRestrictionPanel(new Rect(trainingRect.xMax + 10f, outerRect.y,
+                    outerRect.xMax - trainingRect.xMax - 10f, outerRect.height), pawn);
+            if (Widgets.ButtonText(new Rect(trainingRect.x, trainingRect.y, trainingRect.width, 30f),
+                (restrictionsExpanded ? "SSC_Restrictions_Collapse" : "SSC_Restrictions_Expand").Translate()))
+                restrictionsExpanded = !restrictionsExpanded;
+            trainingRect.yMin += 38f;
             float contentHeight = CalculateContentHeight(pawn, comp);
-            Rect viewRect = new Rect(0f, 0f, outerRect.width, outerRect.height);
-            Rect contentRect = new Rect(0f, 0f, outerRect.width - 18f, contentHeight);
+            Rect viewRect = trainingRect;
+            Rect contentRect = new Rect(0f, 0f, trainingRect.width - 18f, contentHeight);
 
             Widgets.BeginScrollView(viewRect, ref scrollPosition, contentRect);
             try
@@ -566,10 +615,14 @@ namespace SexSlaveCraft
         private void DrawTrainerSelector(Listing_Standard listing, Pawn pawn, CompSexSlaveTraining comp)
         {
             string trainerName = TrainerAssignmentUtility.GetAssignedTrainerLabel(pawn);
-            if (listing.ButtonText(trainerName))
+            bool previous = GUI.enabled;
+            try
             {
-                Find.WindowStack.Add(new FloatMenu(GetTrainerOptions(pawn)));
+                GUI.enabled = previous && SSCRestrictionLifecycle.GetForcedTrainer(pawn) == null;
+                if (listing.ButtonText(trainerName))
+                    Find.WindowStack.Add(new FloatMenu(GetTrainerOptions(pawn)));
             }
+            finally { GUI.enabled = previous; }
         }
 
         /// <summary>绘制特化选择和进度，按资格及终极状态限制选项，并同步所选方向的基础状态。</summary>

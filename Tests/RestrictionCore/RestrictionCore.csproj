@@ -12,5 +12,8 @@
     <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionEditor.cs" Link="Production/Editor.cs" />
     <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCSettings.Restrictions.cs" Link="Production/Settings.cs" />
     <Compile Include="$(SscSourceRoot)/Comps/Comp_Train.Restrictions.cs" Link="Production/Comp.cs" />
+    <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionMigration.cs" Link="Production/Migration.cs" />
+    <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionLifecycle.cs" Link="Production/Lifecycle.cs" />
+    <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionGameComponent.cs" Link="Production/GameComponent.cs" />
   </ItemGroup>
 </Project>
