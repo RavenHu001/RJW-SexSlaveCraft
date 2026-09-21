@@ -1,4 +1,3 @@
-using System;
 using Verse;
 
 namespace SexSlaveCraft
@@ -9,19 +8,24 @@ namespace SexSlaveCraft
         /// <summary>检查配置版本和所有保存值，供界面决定是否允许编辑；不修复或替换异常数据。</summary>
         public static bool IsValid(SSCRestrictionConfig config)
         {
-            if (config == null || config.version != SSCRestrictionConfig.CurrentVersion || config.rules == null) return false;
-            foreach (SSCRestrictionRule rule in Enum.GetValues(typeof(SSCRestrictionRule)))
-                if (!SSCRestrictionRules.IsValid(rule, config.rules.Get(rule))) return false;
-            return true;
+            return config?.IsValid() == true;
         }
 
         /// <summary>仅在玩家明确点击且适用角色没有配置时建立独立测试配置；已有配置绝不覆盖。</summary>
         public static bool TryInitialize(Pawn pawn)
         {
+            return TryInitialize(pawn, out _);
+        }
+
+        /// <summary>显式初始化并返回非法默认的条目与来源；不适用或已有配置时返回 false，错误条目为空。</summary>
+        /// <remarks>预期配置错误不会抛出异常；失败不写入半成品，也不覆盖已有配置。</remarks>
+        public static bool TryInitialize(Pawn pawn, out SSCRestrictionResolution error)
+        {
+            error = null;
             CompSexSlaveTraining comp = pawn?.TryGetComp<CompSexSlaveTraining>();
             if (comp == null || !SSCRestrictionResolver.IsApplicable(pawn) || comp.restrictionConfig != null) return false;
-            SSCRestrictionConfig config = SSCRestrictionResolver.CreateInitialConfiguration(pawn, SSCMod.settings?.restrictionDefaults);
-            if (!IsValid(config)) return false;
+            if (!SSCRestrictionResolver.TryCreateInitialConfiguration(pawn, SSCMod.settings?.restrictionDefaults,
+                out SSCRestrictionConfig config, out error)) return false;
             comp.restrictionConfig = config;
             return true;
         }

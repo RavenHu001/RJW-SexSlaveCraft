@@ -103,7 +103,7 @@ namespace SexSlaveCraft
             settings.Write();
         }
 
-        /// <summary>显示保存配置并允许显式初始化；不适用角色只读，缺失或损坏数据不会在绘制时被覆盖。</summary>
+        /// <summary>显示保存配置并允许显式初始化；初始化失败时显示坏条目及来源，绘制不覆盖缺失或损坏数据。</summary>
         private void DrawEditor(Listing_Standard listing)
         {
             if (listing.ButtonText("SSC_Restrictions_EditPawn".Translate(PawnLabel(editedPawn))))
@@ -118,13 +118,18 @@ namespace SexSlaveCraft
                 {
                     try
                     {
-                        if (!SSCRestrictionEditor.TryInitialize(editedPawn)) error = "SSC_Restrictions_EditFailed".Translate();
+                        SSCRestrictionResolution initializationError;
+                        bool initialized = SSCRestrictionEditor.TryInitialize(editedPawn, out initializationError);
+                        error = initialized ? null : initializationError == null
+                            ? "SSC_Restrictions_EditFailed".Translate().ToString()
+                            : "SSC_Restrictions_InitializeFailed".Translate(
+                                ("SSC_Restrictions_Rule_" + initializationError.Rule).Translate(), SourceLabel(initializationError)).ToString();
                     }
                     catch (Exception exception) { error = exception.Message; }
                 }
                 return;
             }
-            if (!SSCRestrictionEditor.IsValid(config))
+            if (!config.IsValid())
             {
                 listing.Label("SSC_Restrictions_InvalidConfig".Translate(config.version));
                 return;
@@ -193,7 +198,7 @@ namespace SexSlaveCraft
             try
             {
                 Pawn target = kind == SSCInteractionKind.Masturbation ? null : receiver;
-                SSCRestrictionDecision decision = SSCRestrictionPolicy.Evaluate(new SSCRestrictionRequest(initiator, target, kind));
+                SSCRestrictionDecision decision = SSCRestrictionPolicy.Evaluate(new SSCRestrictionRequest(initiator, target, kind, directionKnown: true));
                 listing.Label("SSC_Restrictions_Result".Translate(ValueLabel(decision.Allowed ? SSCRestrictionValue.Allow : SSCRestrictionValue.Deny), ("SSC_Restrictions_Reason_" + decision.Reason).Translate()));
                 if (decision.Subject != null) listing.Label("SSC_Restrictions_Subject".Translate(PawnLabel(decision.Subject)));
                 if (decision.Entry != null)

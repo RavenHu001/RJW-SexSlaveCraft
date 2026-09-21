@@ -1,4 +1,3 @@
-using System;
 using Verse;
 
 namespace SexSlaveCraft
@@ -24,9 +23,9 @@ namespace SexSlaveCraft
         // Only the read-only development preview may use temporary defaults for missing configurations.
         internal bool PreviewDefaults;
 
-        /// <summary>记录调用方确认的实际发起者、接收者和用途；方向不明时必须显式传入 false。</summary>
+        /// <summary>记录实际发起者、接收者和用途；调用方必须显式说明是否已确认方向。</summary>
         /// <remarks>接收者为空不会被自动解释为单人行为，单人请求仍需明确指定用途。</remarks>
-        public SSCRestrictionRequest(Pawn initiator, Pawn receiver, SSCInteractionKind kind, bool directionKnown = true)
+        public SSCRestrictionRequest(Pawn initiator, Pawn receiver, SSCInteractionKind kind, bool directionKnown)
         {
             Initiator = initiator; Receiver = receiver; Kind = kind; DirectionKnown = directionKnown;
         }
@@ -64,8 +63,7 @@ namespace SexSlaveCraft
             bool preparation = request.Kind == SSCInteractionKind.BindingPreparation;
             if (!actorApplies && !targetApplies && !(preparation && target?.TryGetComp<CompSexSlaveTraining>() != null))
                 return Result(true, SSCRestrictionReason.NotApplicable);
-            if (!request.DirectionKnown || actor == null || request.Kind == SSCInteractionKind.Unknown ||
-                !Enum.IsDefined(typeof(SSCInteractionKind), request.Kind))
+            if (!request.DirectionKnown || actor == null)
                 return Result(false, SSCRestrictionReason.IncompleteContext);
 
             if (request.Kind == SSCInteractionKind.Masturbation)
@@ -75,17 +73,30 @@ namespace SexSlaveCraft
             }
             if (target == null || actor == target) return Result(false, SSCRestrictionReason.IncompleteContext);
 
-            if (preparation)
+            switch (request.Kind)
             {
-                CompSexSlaveTraining comp = target.TryGetComp<CompSexSlaveTraining>();
-                bool valid = comp != null && comp.pawnIdentity != PawnIdentity.Master &&
-                    SSCBondUtility.GetBoundMaster(target) == null && comp.selectedTrainer == actor && SSCIdentityUtility.IsMaster(actor);
-                return Result(valid, valid ? SSCRestrictionReason.Allowed : SSCRestrictionReason.InvalidBindingPreparation);
+                case SSCInteractionKind.BindingPreparation:
+                    CompSexSlaveTraining comp = target.TryGetComp<CompSexSlaveTraining>();
+                    bool valid = comp != null && comp.pawnIdentity != PawnIdentity.Master &&
+                        SSCBondUtility.GetBoundMaster(target) == null && comp.selectedTrainer == actor && SSCIdentityUtility.IsMaster(actor);
+                    return Result(valid, valid ? SSCRestrictionReason.Allowed : SSCRestrictionReason.InvalidBindingPreparation);
+                case SSCInteractionKind.DailyTraining:
+                case SSCInteractionKind.RitualTraining:
+                    return targetApplies ? Check(target, SSCRestrictionRule.ReceiveTraining, request) : Result(true, SSCRestrictionReason.NotApplicable);
+                case SSCInteractionKind.Consensual:
+                case SSCInteractionKind.PersonalityExcretion:
+                    return CheckPair(actor, target, actorApplies, targetApplies, false, request);
+                case SSCInteractionKind.Forced:
+                    return CheckPair(actor, target, actorApplies, targetApplies, true, request);
+                default:
+                    return Result(false, SSCRestrictionReason.IncompleteContext);
             }
-            if (request.Kind == SSCInteractionKind.DailyTraining || request.Kind == SSCInteractionKind.RitualTraining)
-                return targetApplies ? Check(target, SSCRestrictionRule.ReceiveTraining, request) : Result(true, SSCRestrictionReason.NotApplicable);
+        }
 
-            bool forced = request.Kind == SSCInteractionKind.Forced;
+        /// <summary>先检查发起许可，再检查接收许可；主动仅限主人时使用发起者指向其实际主人的关系。</summary>
+        private static SSCRestrictionDecision CheckPair(Pawn actor, Pawn target, bool actorApplies, bool targetApplies,
+            bool forced, SSCRestrictionRequest request)
+        {
             SSCRestrictionDecision active = null;
             if (actorApplies)
             {
@@ -103,15 +114,23 @@ namespace SexSlaveCraft
                 : active ?? Result(true, SSCRestrictionReason.Allowed);
         }
 
-        /// <summary>校验角色配置并解析单项许可，返回拒绝原因及规则来源；OwnerOnly 的关系判断由主入口完成。</summary>
+        /// <summary>校验角色整份保存配置并解析单项许可，返回拒绝原因及规则来源；OwnerOnly 的关系判断由双边检查完成。</summary>
         /// <remarks>仅开发预览可临时使用默认配置；正式查询遇到未初始化配置时拒绝，始终不写入角色。</remarks>
         private static SSCRestrictionDecision Check(Pawn subject, SSCRestrictionRule rule, SSCRestrictionRequest request)
         {
             SSCRestrictionConfig config = subject.TryGetComp<CompSexSlaveTraining>()?.restrictionConfig;
             if (config == null && request.PreviewDefaults)
-                config = SSCRestrictionResolver.CreateInitialConfiguration(subject, SSCMod.settings?.restrictionDefaults);
+            {
+                SSCRestrictionResolution error;
+                if (!SSCRestrictionResolver.TryCreateInitialConfiguration(subject, SSCMod.settings?.restrictionDefaults, out config, out error))
+                {
+                    SSCRestrictionDecision invalid = Result(false, SSCRestrictionReason.ConfigurationInvalid, subject);
+                    invalid.Entry = error;
+                    return invalid;
+                }
+            }
             if (config == null) return Result(false, SSCRestrictionReason.ConfigurationMissing, subject);
-            if (config.version != SSCRestrictionConfig.CurrentVersion || config.rules == null)
+            if (!config.IsValid())
                 return Result(false, SSCRestrictionReason.ConfigurationInvalid, subject);
             SSCRestrictionResolution entry = SSCRestrictionResolver.Resolve(subject, config.rules, rule);
             bool allowed = entry.Valid && entry.Value != SSCRestrictionValue.Deny;

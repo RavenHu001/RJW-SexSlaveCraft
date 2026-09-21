@@ -1,4 +1,5 @@
 using System;
+using System.Collections.ObjectModel;
 using Verse;
 
 namespace SexSlaveCraft
@@ -15,6 +16,12 @@ namespace SexSlaveCraft
     /// <summary>六项保存值；全局默认使用同一结构，既不包含全局开关，也不包含覆盖结果。</summary>
     public sealed class SSCRestrictionRules : IExposable
     {
+        public static readonly ReadOnlyCollection<SSCRestrictionRule> All = Array.AsReadOnly(new[]
+        {
+            SSCRestrictionRule.Masturbation, SSCRestrictionRule.ConsensualInitiation, SSCRestrictionRule.ForcedInitiation,
+            SSCRestrictionRule.ReceiveConsensual, SSCRestrictionRule.ReceiveForced, SSCRestrictionRule.ReceiveTraining
+        });
+
         public bool allowMasturbation;
         public SSCRestrictionValue consensualInitiation = SSCRestrictionValue.OwnerOnly;
         public bool allowForcedInitiation;
@@ -58,9 +65,43 @@ namespace SexSlaveCraft
         /// <summary>检查条目及其保存值是否合法；Unspecified 仅供文件覆盖使用，不能成为保存值。</summary>
         public static bool IsValid(SSCRestrictionRule rule, SSCRestrictionValue value)
         {
-            return Enum.IsDefined(typeof(SSCRestrictionRule), rule) &&
+            return IsKnown(rule) &&
                 (value == SSCRestrictionValue.Allow || value == SSCRestrictionValue.Deny ||
                  (rule == SSCRestrictionRule.ConsensualInitiation && value == SSCRestrictionValue.OwnerOnly));
+        }
+
+        /// <summary>显式识别已实现的条目，避免高频查询中的枚举反射及新增枚举自动获得许可。</summary>
+        public static bool IsKnown(SSCRestrictionRule rule)
+        {
+            switch (rule)
+            {
+                case SSCRestrictionRule.Masturbation:
+                case SSCRestrictionRule.ConsensualInitiation:
+                case SSCRestrictionRule.ForcedInitiation:
+                case SSCRestrictionRule.ReceiveConsensual:
+                case SSCRestrictionRule.ReceiveForced:
+                case SSCRestrictionRule.ReceiveTraining:
+                    return true;
+                default: return false;
+            }
+        }
+
+        /// <summary>统一检查全部保存条目；任一坏项使整份规则无效，不修改原始数据。</summary>
+        public bool IsValid()
+        {
+            return !TryGetInvalidRule(out _);
+        }
+
+        /// <summary>按固定条目顺序找出首个非法保存值，供判定、初始化及界面共用诊断。</summary>
+        public bool TryGetInvalidRule(out SSCRestrictionRule invalidRule)
+        {
+            for (int i = 0; i < All.Count; i++)
+            {
+                SSCRestrictionRule rule = All[i];
+                if (!IsValid(rule, Get(rule))) { invalidRule = rule; return true; }
+            }
+            invalidRule = default(SSCRestrictionRule);
+            return false;
         }
 
         /// <summary>将布尔许可转换为规则解析器使用的统一枚举值。</summary>
@@ -88,6 +129,12 @@ namespace SexSlaveCraft
         public int version = CurrentVersion;
         public SSCRestrictionRules rules = new SSCRestrictionRules();
         public bool busDefaultsApplied;
+
+        /// <summary>统一校验配置版本、规则对象及全部保存条目；未知或损坏配置保持原样并返回无效。</summary>
+        public bool IsValid()
+        {
+            return version == CurrentVersion && rules != null && rules.IsValid();
+        }
 
         /// <summary>复制版本、迁移标记及独立规则对象；保留空规则，交由调用方校验。</summary>
         public SSCRestrictionConfig Copy()

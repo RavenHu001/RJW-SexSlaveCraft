@@ -19,6 +19,7 @@
   <SSC_Restrictions_InvalidConfig>Unsupported or invalid configuration (version {0}). Editing is disabled; original data has been preserved.</SSC_Restrictions_InvalidConfig>
   <SSC_Restrictions_SaveNotice>Edits are applied immediately and saved with the game. Saved values remain editable while overridden and are used again when the override ends.</SSC_Restrictions_SaveNotice>
   <SSC_Restrictions_EditFailed>Cannot edit: the pawn's applicability or configuration changed. Please check it again.</SSC_Restrictions_EditFailed>
+  <SSC_Restrictions_InitializeFailed>Cannot create configuration: the default for rule "{0}" is invalid. Source: {1}. No configuration was written to the pawn.</SSC_Restrictions_InitializeFailed>
   <SSC_Restrictions_Rule_Masturbation>Active · Solo masturbation</SSC_Restrictions_Rule_Masturbation>
   <SSC_Restrictions_Rule_ConsensualInitiation>Active · Initiate consensual interaction</SSC_Restrictions_Rule_ConsensualInitiation>
   <SSC_Restrictions_Rule_ForcedInitiation>Active · Initiate forced interaction</SSC_Restrictions_Rule_ForcedInitiation>
@@ -35,6 +36,8 @@
   <SSC_Restrictions_Source_Specialization>Specialization override</SSC_Restrictions_Source_Specialization>
   <SSC_Restrictions_Source_Equipment>Equipment override</SSC_Restrictions_Source_Equipment>
   <SSC_Restrictions_Source_SystemDisabled>System disabled</SSC_Restrictions_Source_SystemDisabled>
+  <SSC_Restrictions_Source_DefaultTemplate>Global default template</SSC_Restrictions_Source_DefaultTemplate>
+  <SSC_Restrictions_Source_SpecializationDefault>Specialization default</SSC_Restrictions_Source_SpecializationDefault>
   <SSC_Restrictions_TestAsReceiver>Test with this pawn as receiver</SSC_Restrictions_TestAsReceiver>
   <SSC_Restrictions_Initiator>Initiator: {0}</SSC_Restrictions_Initiator>
   <SSC_Restrictions_Receiver>Receiver: {0}</SSC_Restrictions_Receiver>

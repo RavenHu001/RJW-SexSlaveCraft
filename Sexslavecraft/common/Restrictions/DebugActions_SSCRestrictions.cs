@@ -55,8 +55,8 @@ namespace SexSlaveCraft
                 report.AppendLine(kind.ToString());
                 try
                 {
-                    AppendDecision(report, "Actual", SSCRestrictionPolicy.Evaluate(new SSCRestrictionRequest(actor, target, kind)));
-                    AppendDecision(report, "Preview", SSCRestrictionPolicy.Evaluate(new SSCRestrictionRequest(actor, target, kind) { PreviewDefaults = true }));
+                    AppendDecision(report, "Actual", SSCRestrictionPolicy.Evaluate(new SSCRestrictionRequest(actor, target, kind, directionKnown: true)));
+                    AppendDecision(report, "Preview", SSCRestrictionPolicy.Evaluate(new SSCRestrictionRequest(actor, target, kind, directionKnown: true) { PreviewDefaults = true }));
                 }
                 catch (Exception error) { report.AppendLine("Invalid definition/configuration: " + error.Message); }
             }

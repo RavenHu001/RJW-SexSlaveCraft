@@ -19,6 +19,7 @@
   <SSC_Restrictions_InvalidConfig>配置版本或数据异常（版本 {0}），暂不可编辑；已保留原始配置。</SSC_Restrictions_InvalidConfig>
   <SSC_Restrictions_SaveNotice>修改立即写入角色，随游戏存档保存。强制覆盖期间仍可编辑保存值，覆盖消失后会重新使用该值。</SSC_Restrictions_SaveNotice>
   <SSC_Restrictions_EditFailed>无法修改：角色适用状态或配置已变化，请重新检查。</SSC_Restrictions_EditFailed>
+  <SSC_Restrictions_InitializeFailed>无法建立配置：规则“{0}”的默认值无效。来源：{1}。角色尚未写入新配置。</SSC_Restrictions_InitializeFailed>
   <SSC_Restrictions_Rule_Masturbation>主动 · 单人自慰</SSC_Restrictions_Rule_Masturbation>
   <SSC_Restrictions_Rule_ConsensualInitiation>主动 · 发起双人自愿行为</SSC_Restrictions_Rule_ConsensualInitiation>
   <SSC_Restrictions_Rule_ForcedInitiation>主动 · 发起强制行为</SSC_Restrictions_Rule_ForcedInitiation>
@@ -35,6 +36,8 @@
   <SSC_Restrictions_Source_Specialization>特化强制</SSC_Restrictions_Source_Specialization>
   <SSC_Restrictions_Source_Equipment>装备强制</SSC_Restrictions_Source_Equipment>
   <SSC_Restrictions_Source_SystemDisabled>总开关已关闭</SSC_Restrictions_Source_SystemDisabled>
+  <SSC_Restrictions_Source_DefaultTemplate>全局默认模板</SSC_Restrictions_Source_DefaultTemplate>
+  <SSC_Restrictions_Source_SpecializationDefault>特化默认</SSC_Restrictions_Source_SpecializationDefault>
   <SSC_Restrictions_TestAsReceiver>以此角色为接收者进行测试</SSC_Restrictions_TestAsReceiver>
   <SSC_Restrictions_Initiator>发起者：{0}</SSC_Restrictions_Initiator>
   <SSC_Restrictions_Receiver>接收者：{0}</SSC_Restrictions_Receiver>

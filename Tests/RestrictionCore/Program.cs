@@ -27,6 +27,26 @@ internal static class Program
             Throws(() => rules.Set(SSCRestrictionRule.ReceiveTraining, SSCRestrictionValue.OwnerOnly));
             Throws(() => rules.Set((SSCRestrictionRule)777, SSCRestrictionValue.Allow));
         });
+        Run("Rule catalog covers each declared rule once and rejects unknown rules", () =>
+        {
+            Equal(Enum.GetValues<SSCRestrictionRule>().Length, SSCRestrictionRules.All.Count);
+            Equal(SSCRestrictionRules.All.Count, SSCRestrictionRules.All.Distinct().Count());
+            Equal(true, Enum.GetValues<SSCRestrictionRule>().ToHashSet().SetEquals(SSCRestrictionRules.All));
+            foreach (var rule in SSCRestrictionRules.All) Equal(true, SSCRestrictionRules.IsKnown(rule));
+            foreach (int value in new[] { -1, 777 })
+            {
+                Equal(false, SSCRestrictionRules.IsKnown((SSCRestrictionRule)value));
+                Equal(false, SSCRestrictionRules.IsValid((SSCRestrictionRule)value, SSCRestrictionValue.Allow));
+            }
+        });
+        Run("Resolver rejects an unknown rule without throwing or applying overrides", () =>
+        {
+            var pawn = Pawn("subject", PawnIdentity.Slave); pawn.HasBusState = true;
+            Wear(pawn, "gear", ReadEquipment());
+            var result = SSCRestrictionResolver.Resolve(pawn, pawn.Training.restrictionConfig.rules, (SSCRestrictionRule)777);
+            Equal(false, result.Valid); Equal(SSCRestrictionValue.Unspecified, result.Value);
+            Equal((SSCRestrictionRule)777, result.Rule); Equal(SSCRestrictionSource.Saved, result.Source);
+        });
         foreach (SSCInteractionKind kind in Enum.GetValues<SSCInteractionKind>().Concat(new[] { (SSCInteractionKind)777 }))
             Run("Actual owner immediately allows " + kind, () =>
             {
@@ -36,7 +56,7 @@ internal static class Program
                 p.b.Training.restrictionConfig.version = 99;
                 p.b.Training.selectedTrainer = Pawn("someone else");
                 p.b.Training.specializationType = SexSlaveSpecializationType.Bus;
-                DefDatabase<SSCRestrictionProfileDef>.AllDefsListForReading[0].forced.receiveForced = (SSCRestrictionValue)99;
+                BusProfile().forced.receiveForced = (SSCRestrictionValue)99;
                 Wear(p.b, "gear", new SSCRestrictionOverrides { receiveForced = SSCRestrictionValue.Deny });
                 Decision(p.a, p.b, kind, true, SSCRestrictionReason.BoundOwner);
             });
@@ -45,6 +65,40 @@ internal static class Program
             var p = Pair();
             var d = SSCRestrictionPolicy.Evaluate(new SSCRestrictionRequest(p.a, p.b, SSCInteractionKind.Forced, false));
             Equal(false, d.Allowed); Equal(SSCRestrictionReason.IncompleteContext, d.Reason);
+        });
+        Run("Request constructors require an explicit direction declaration", () =>
+        {
+            foreach (var constructor in typeof(SSCRestrictionRequest).GetConstructors())
+            {
+                var direction = constructor.GetParameters().Single(p => p.Name == "directionKnown");
+                Equal(typeof(bool), direction.ParameterType); Equal(false, direction.IsOptional);
+            }
+        });
+        Run("Every declared purpose has an explicit tested rule mapping", () =>
+        {
+            var purposes = new Dictionary<SSCInteractionKind, (SSCRestrictionRule active, SSCRestrictionRule passive)>
+            {
+                { SSCInteractionKind.Consensual, (SSCRestrictionRule.ConsensualInitiation, SSCRestrictionRule.ReceiveConsensual) },
+                { SSCInteractionKind.Forced, (SSCRestrictionRule.ForcedInitiation, SSCRestrictionRule.ReceiveForced) },
+                { SSCInteractionKind.PersonalityExcretion, (SSCRestrictionRule.ConsensualInitiation, SSCRestrictionRule.ReceiveConsensual) }
+            };
+            var independent = new[] { SSCInteractionKind.Unknown, SSCInteractionKind.Masturbation,
+                SSCInteractionKind.DailyTraining, SSCInteractionKind.RitualTraining, SSCInteractionKind.BindingPreparation };
+            Equal(true, Enum.GetValues<SSCInteractionKind>().ToHashSet().SetEquals(purposes.Keys.Concat(independent)));
+            foreach (var purpose in purposes)
+            {
+                Pawn actor = Pawn("actor", PawnIdentity.Slave), target = Pawn("target", PawnIdentity.Slave);
+                actor.Training.restrictionConfig.rules = PermissiveRules();
+                target.Training.restrictionConfig.rules = PermissiveRules();
+                actor.Training.restrictionConfig.rules.Set(purpose.Value.active, SSCRestrictionValue.Deny);
+                var active = Decision(actor, target, purpose.Key, false, SSCRestrictionReason.RuleDenied);
+                Equal(actor, active.Subject); Equal(purpose.Value.active, active.Entry.Rule);
+                actor.Training.restrictionConfig.rules.Set(purpose.Value.active, SSCRestrictionValue.Allow);
+                target.Training.restrictionConfig.rules.Set(purpose.Value.passive, SSCRestrictionValue.Deny);
+                var passive = Decision(actor, target, purpose.Key, false, SSCRestrictionReason.RuleDenied);
+                Equal(target, passive.Subject); Equal(purpose.Value.passive, passive.Entry.Rule);
+            }
+            Decision(Pawn("A"), Pawn("B", PawnIdentity.Slave), (SSCInteractionKind)777, false, SSCRestrictionReason.IncompleteContext);
         });
         Run("Master identity and trainer assignment are not ownership", () =>
         {
@@ -71,7 +125,7 @@ internal static class Program
                 a.Training.restrictionConfig.rules.consensualInitiation = active;
                 b.Training.restrictionConfig.rules.receiveConsensual = passive;
                 Equal(active == SSCRestrictionValue.Allow && passive,
-                    SSCRestrictionPolicy.Evaluate(new SSCRestrictionRequest(a, b, SSCInteractionKind.Consensual)).Allowed);
+                    SSCRestrictionPolicy.Evaluate(new SSCRestrictionRequest(a, b, SSCInteractionKind.Consensual, true)).Allowed);
             });
         Run("Forced permission checks both active and passive", () =>
         {
@@ -248,13 +302,76 @@ internal static class Program
             var d = Decision(Pawn("C"), p.b, SSCInteractionKind.Forced, false, SSCRestrictionReason.ConfigurationInvalid);
             Equal("bad_gear", d.Entry.SourceDef);
         });
+        Run("Invalid specialization retains its failing source despite valid equipment", () =>
+        {
+            var p = Pair(); p.b.HasBusState = true;
+            BusProfile().forced.receiveForced = SSCRestrictionValue.OwnerOnly;
+            Wear(p.b, "valid_gear", new SSCRestrictionOverrides { receiveForced = SSCRestrictionValue.Allow });
+            var decision = Decision(Pawn("C"), p.b, SSCInteractionKind.Forced, false, SSCRestrictionReason.ConfigurationInvalid);
+            Equal(SSCRestrictionSource.Specialization, decision.Entry.Source);
+            Equal("SSC_Restriction_Bus", decision.Entry.SourceDef);
+            Equal(SSCRestrictionRule.ReceiveForced, decision.Entry.Rule);
+            Equal(SSCRestrictionValue.OwnerOnly, decision.Entry.Value);
+        });
+        Run("Multiple matching specializations resolve strictness and ties independently of order", () =>
+        {
+            var p = Pair(); p.b.HasBusState = true; p.b.Training.specializationType = SexSlaveSpecializationType.Cow;
+            AddProfile("Z_cow_deny", SexSlaveSpecializationType.Cow, new SSCRestrictionOverrides { receiveForced = SSCRestrictionValue.Deny });
+            AddProfile("A_cow_deny", SexSlaveSpecializationType.Cow, new SSCRestrictionOverrides { receiveForced = SSCRestrictionValue.Deny });
+            for (int pass = 0; pass < 2; pass++)
+            {
+                var denied = Decision(Pawn("C"), p.b, SSCInteractionKind.Forced, false, SSCRestrictionReason.RuleDenied);
+                Equal("A_cow_deny", denied.Entry.SourceDef);
+                var allowed = Decision(Pawn("C"), p.b, SSCInteractionKind.Consensual, true, SSCRestrictionReason.Allowed);
+                Equal("SSC_Restriction_Bus", allowed.Entry.SourceDef);
+                DefDatabase<SSCRestrictionProfileDef>.AllDefsListForReading.Reverse();
+            }
+            p.b.HasBusState = false;
+            Decision(Pawn("C"), p.b, SSCInteractionKind.Consensual, false, SSCRestrictionReason.RuleDenied);
+        });
+        Run("Specialization errors choose the first invalid definition by name in either order", () =>
+        {
+            var p = Pair(); p.b.HasBusState = true;
+            AddProfile("Z_bad", SexSlaveSpecializationType.Bus, new SSCRestrictionOverrides { receiveForced = (SSCRestrictionValue)99 });
+            AddProfile("A_bad", SexSlaveSpecializationType.Bus, new SSCRestrictionOverrides { receiveForced = SSCRestrictionValue.OwnerOnly });
+            AddProfile("0_valid_deny", SexSlaveSpecializationType.Bus, new SSCRestrictionOverrides { receiveForced = SSCRestrictionValue.Deny });
+            for (int pass = 0; pass < 2; pass++)
+            {
+                var d = Decision(Pawn("C"), p.b, SSCInteractionKind.Forced, false, SSCRestrictionReason.ConfigurationInvalid);
+                Equal("A_bad", d.Entry.SourceDef); Equal(SSCRestrictionValue.OwnerOnly, d.Entry.Value);
+                DefDatabase<SSCRestrictionProfileDef>.AllDefsListForReading.Reverse();
+            }
+        });
+        Run("Equipment errors retain deterministic invalid values despite valid stricter entries", () =>
+        {
+            var p = Pair();
+            Wear(p.b, "Z_bad", new SSCRestrictionOverrides { receiveForced = (SSCRestrictionValue)99 });
+            Wear(p.b, "A_bad", new SSCRestrictionOverrides { receiveForced = SSCRestrictionValue.OwnerOnly });
+            Wear(p.b, "0_valid_deny", new SSCRestrictionOverrides { receiveForced = SSCRestrictionValue.Deny });
+            for (int pass = 0; pass < 2; pass++)
+            {
+                var d = Decision(Pawn("C"), p.b, SSCInteractionKind.Forced, false, SSCRestrictionReason.ConfigurationInvalid);
+                Equal(SSCRestrictionSource.Equipment, d.Entry.Source);
+                Equal("A_bad", d.Entry.SourceDef); Equal(SSCRestrictionValue.OwnerOnly, d.Entry.Value);
+                p.b.apparel.WornApparel.Reverse();
+            }
+        });
+        Run("Ordinary equipment and sparse unrelated overrides leave provenance intact", () =>
+        {
+            var p = Pair(); p.b.HasBusState = true;
+            p.b.apparel.WornApparel.Add(new Apparel { def = new ThingDef { defName = "ordinary" } });
+            Wear(p.b, "unrelated", new SSCRestrictionOverrides { receiveTraining = SSCRestrictionValue.Allow });
+            var d = Decision(Pawn("C"), p.b, SSCInteractionKind.Forced, true, SSCRestrictionReason.Allowed);
+            Equal(SSCRestrictionSource.Specialization, d.Entry.Source); Equal("SSC_Restriction_Bus", d.Entry.SourceDef);
+        });
         Run("Defaults factory clones template and applies bus defaults with force off", () =>
         {
             var p = Pair(); p.b.HasBusState = true;
             SSCMod.settings.enableSpecializationRestrictionOverrides = false;
             var template = SSCMod.settings.restrictionDefaults;
             var saved = p.b.Training.restrictionConfig;
-            var made = SSCRestrictionResolver.CreateInitialConfiguration(p.b, template);
+            Equal(true, SSCRestrictionResolver.TryCreateInitialConfiguration(p.b, template, out var made, out var error));
+            Equal(null, error);
             Equal(true, made.rules.receiveForced); Equal(true, made.rules.receiveConsensual);
             Equal(true, made.busDefaultsApplied); Equal(false, template.receiveForced);
             Equal(saved, p.b.Training.restrictionConfig);
@@ -267,10 +384,47 @@ internal static class Program
             Decision(Pawn("C"), p.b, SSCInteractionKind.Consensual, false, SSCRestrictionReason.RuleDenied);
             Equal(false, p.b.Training.restrictionConfig.busDefaultsApplied);
         });
+        Run("Invalid template fails with its original value and does not write a config", () =>
+        {
+            var p = Pair(); p.b.Training.restrictionConfig = null;
+            var template = new SSCRestrictionRules { consensualInitiation = (SSCRestrictionValue)88 };
+            Equal(false, SSCRestrictionResolver.TryCreateInitialConfiguration(p.b, template, out var made, out var error));
+            Equal(null, made); Equal(null, p.b.Training.restrictionConfig);
+            Equal(SSCRestrictionSource.DefaultTemplate, error.Source); Equal(SSCRestrictionRule.ConsensualInitiation, error.Rule);
+            Equal((SSCRestrictionValue)88, error.Value); Equal((SSCRestrictionValue)88, template.consensualInitiation);
+        });
+        Run("Invalid specialization defaults fail without committing earlier rules", () =>
+        {
+            var p = Pair(); p.b.HasBusState = true; p.b.Training.restrictionConfig = null;
+            BusProfile().defaults.masturbation = SSCRestrictionValue.Allow;
+            BusProfile().defaults.receiveForced = SSCRestrictionValue.OwnerOnly;
+            var template = new SSCRestrictionRules();
+            Equal(false, SSCRestrictionResolver.TryCreateInitialConfiguration(p.b, template, out var made, out var error));
+            Equal(null, made); Equal(null, p.b.Training.restrictionConfig); Equal(false, template.allowMasturbation);
+            Equal(SSCRestrictionSource.SpecializationDefault, error.Source); Equal("SSC_Restriction_Bus", error.SourceDef);
+            Equal(SSCRestrictionRule.ReceiveForced, error.Rule); Equal(SSCRestrictionValue.OwnerOnly, error.Value);
+        });
+        Run("Initialization merges all matching default profiles with sparse deterministic precedence", () =>
+        {
+            var p = Pair(); p.b.HasBusState = true; p.b.Training.specializationType = SexSlaveSpecializationType.Cow;
+            AddProfile("Z_cow", SexSlaveSpecializationType.Cow, null, new SSCRestrictionOverrides
+                { receiveForced = SSCRestrictionValue.Deny, masturbation = SSCRestrictionValue.Allow });
+            AddProfile("A_cow", SexSlaveSpecializationType.Cow, null, new SSCRestrictionOverrides { receiveForced = SSCRestrictionValue.Deny });
+            for (int pass = 0; pass < 2; pass++)
+            {
+                Equal(true, SSCRestrictionResolver.TryCreateInitialConfiguration(p.b, null, out var made, out var error));
+                Equal(null, error); Equal(true, made.busDefaultsApplied);
+                Equal(false, made.rules.receiveForced); Equal(true, made.rules.receiveConsensual); Equal(true, made.rules.allowMasturbation);
+                Equal(SSCRestrictionValue.OwnerOnly, made.rules.consensualInitiation);
+                DefDatabase<SSCRestrictionProfileDef>.AllDefsListForReading.Reverse();
+            }
+        });
         Run("Template edits do not change existing configuration", () =>
         {
             var p = Pair();
-            p.b.Training.restrictionConfig = SSCRestrictionResolver.CreateInitialConfiguration(p.b, SSCMod.settings.restrictionDefaults);
+            Equal(true, SSCRestrictionResolver.TryCreateInitialConfiguration(p.b, SSCMod.settings.restrictionDefaults, out var made, out var error));
+            Equal(null, error);
+            p.b.Training.restrictionConfig = made;
             SSCMod.settings.restrictionDefaults.receiveForced = true;
             Decision(Pawn("C"), p.b, SSCInteractionKind.Forced, false, SSCRestrictionReason.RuleDenied);
         });
@@ -289,7 +443,7 @@ internal static class Program
         Run("Read-only game preview uses same policy and temporary defaults", () =>
         {
             var p = Pair(); p.b.Training.restrictionConfig = null; p.b.HasBusState = true;
-            var request = new SSCRestrictionRequest(Pawn("C"), p.b, SSCInteractionKind.Forced) { PreviewDefaults = true };
+            var request = new SSCRestrictionRequest(Pawn("C"), p.b, SSCInteractionKind.Forced, true) { PreviewDefaults = true };
             Equal(true, SSCRestrictionPolicy.Evaluate(request).Allowed);
             Wear(p.b, "gear", ReadEquipment());
             Equal(false, SSCRestrictionPolicy.Evaluate(request).Allowed);
@@ -306,6 +460,47 @@ internal static class Program
             var p = Pair(); p.b.Training.restrictionConfig.rules.consensualInitiation = (SSCRestrictionValue)88;
             Decision(p.b, Pawn("C"), SSCInteractionKind.Consensual, false, SSCRestrictionReason.ConfigurationInvalid);
             Equal((SSCRestrictionValue)88, p.b.Training.restrictionConfig.rules.consensualInitiation);
+        });
+        Run("An invalid saved entry makes all consulted uses reject consistently", () =>
+        {
+            var subject = Pawn("corrupt", PawnIdentity.Slave);
+            subject.Training.restrictionConfig.rules = PermissiveRules();
+            subject.Training.restrictionConfig.rules.consensualInitiation = (SSCRestrictionValue)88;
+            Equal(false, subject.Training.restrictionConfig.IsValid());
+            Equal(false, SSCRestrictionEditor.IsValid(subject.Training.restrictionConfig));
+            foreach (var kind in new[] { SSCInteractionKind.Consensual, SSCInteractionKind.Forced, SSCInteractionKind.PersonalityExcretion,
+                SSCInteractionKind.DailyTraining, SSCInteractionKind.RitualTraining })
+                Decision(Pawn("other"), subject, kind, false, SSCRestrictionReason.ConfigurationInvalid);
+            Decision(subject, null, SSCInteractionKind.Masturbation, false, SSCRestrictionReason.ConfigurationInvalid);
+            Decision(subject, Pawn("other"), SSCInteractionKind.Forced, false, SSCRestrictionReason.ConfigurationInvalid);
+            Equal((SSCRestrictionValue)88, subject.Training.restrictionConfig.rules.consensualInitiation);
+        });
+        Run("Owner and system disable precede invalid whole-configuration checks", () =>
+        {
+            var p = Pair(); p.b.Training.restrictionConfig.rules.consensualInitiation = (SSCRestrictionValue)88;
+            Decision(p.a, p.b, SSCInteractionKind.Forced, true, SSCRestrictionReason.BoundOwner);
+            SSCMod.settings.enableSexSlaveProtectionRules = false;
+            Decision(Pawn("other"), p.b, SSCInteractionKind.DailyTraining, true, SSCRestrictionReason.SystemDisabled);
+            Decision(p.a, p.b, SSCInteractionKind.Unknown, true, SSCRestrictionReason.BoundOwner);
+        });
+        Run("Resolver rejects corrupt saved rules before valid specialization or equipment", () =>
+        {
+            var p = Pair(); p.b.HasBusState = true;
+            p.b.Training.restrictionConfig.rules.consensualInitiation = (SSCRestrictionValue)88;
+            Wear(p.b, "allow", new SSCRestrictionOverrides { receiveForced = SSCRestrictionValue.Allow });
+            var result = SSCRestrictionResolver.Resolve(p.b, p.b.Training.restrictionConfig.rules, SSCRestrictionRule.ReceiveForced);
+            Equal(false, result.Valid); Equal(SSCRestrictionSource.Saved, result.Source);
+            SSCMod.settings.enableSexSlaveProtectionRules = false;
+            result = SSCRestrictionResolver.Resolve(p.b, p.b.Training.restrictionConfig.rules, SSCRestrictionRule.ReceiveForced);
+            Equal(true, result.Valid); Equal(SSCRestrictionSource.SystemDisabled, result.Source);
+        });
+        Run("Independent training does not consult the initiator's unrelated broken configuration", () =>
+        {
+            Pawn actor = Pawn("actor", PawnIdentity.Slave), target = Pawn("target", PawnIdentity.Slave);
+            actor.Training.restrictionConfig.rules.consensualInitiation = (SSCRestrictionValue)88;
+            target.Training.restrictionConfig.rules.receiveTraining = true;
+            Decision(actor, target, SSCInteractionKind.DailyTraining, true, SSCRestrictionReason.Allowed);
+            Decision(actor, target, SSCInteractionKind.RitualTraining, true, SSCRestrictionReason.Allowed);
         });
         Run("Pawn config serialization round trip preserves explicit values", () =>
         {
@@ -344,9 +539,13 @@ internal static class Program
         });
         Run("XML definitions are valid and source/runtime copies match", () =>
         {
-            Equal(0, DefDatabase<SSCRestrictionProfileDef>.AllDefsListForReading.Single().ConfigErrors().Count());
+            Equal(true, DefDatabase<SSCRestrictionProfileDef>.AllDefsListForReading.Count > 0);
+            Equal("SSC_Restriction_Bus", BusProfile().defName);
+            foreach (var profile in DefDatabase<SSCRestrictionProfileDef>.AllDefsListForReading)
+                Equal(0, profile.ConfigErrors().Count());
             Equal(0, new SSCRestrictionEquipmentExtension { forced = ReadEquipment() }.ConfigErrors().Count());
-            foreach (string path in new[] { "Defs/SSCRestrictionProfiles.xml", "Defs/ThingsDefs/SexSlave_EvilFallOutfit.xml" })
+            foreach (string path in ProfileXmlFiles().Select(path => Path.GetRelativePath(root, path))
+                .Concat(new[] { "Defs/ThingsDefs/SexSlave_EvilFallOutfit.xml" }))
                 Equal(File.ReadAllText(Path.Combine(root, path)), File.ReadAllText(Path.Combine(root, "Sexslavecraft", path)));
         });
         Run("Explicit editor initialization owns defaults and never replaces an existing config", () =>
@@ -376,6 +575,27 @@ internal static class Program
             Equal(null, pawn.Training.restrictionConfig);
             pawn.BoundMaster = Pawn("owner");
             Equal(true, SSCRestrictionEditor.TryInitialize(pawn));
+        });
+        Run("Editor initialization reports bad global defaults without throwing or saving", () =>
+        {
+            var pawn = Pawn("editable", PawnIdentity.Slave); pawn.Training.restrictionConfig = null;
+            SSCMod.settings.restrictionDefaults.consensualInitiation = (SSCRestrictionValue)88;
+            Equal(false, SSCRestrictionEditor.TryInitialize(pawn, out var error));
+            Equal(null, pawn.Training.restrictionConfig); Equal(SSCRestrictionSource.DefaultTemplate, error.Source);
+            Equal(SSCRestrictionRule.ConsensualInitiation, error.Rule); Equal((SSCRestrictionValue)88, error.Value);
+            Equal(false, SSCRestrictionEditor.TryInitialize(pawn));
+        });
+        Run("Editor and read-only preview report bad profile defaults without changing the pawn", () =>
+        {
+            var pawn = Pawn("editable", PawnIdentity.Slave); pawn.Training.restrictionConfig = null; pawn.HasBusState = true;
+            BusProfile().defaults.receiveForced = SSCRestrictionValue.OwnerOnly;
+            Equal(false, SSCRestrictionEditor.TryInitialize(pawn, out var error));
+            Equal("SSC_Restriction_Bus", error.SourceDef); Equal(null, pawn.Training.restrictionConfig);
+            var request = new SSCRestrictionRequest(Pawn("other"), pawn, SSCInteractionKind.Forced, true) { PreviewDefaults = true };
+            var decision = SSCRestrictionPolicy.Evaluate(request);
+            Equal(false, decision.Allowed); Equal(SSCRestrictionReason.ConfigurationInvalid, decision.Reason);
+            Equal("SSC_Restriction_Bus", decision.Entry.SourceDef); Equal(SSCRestrictionValue.OwnerOnly, decision.Entry.Value);
+            Equal(null, pawn.Training.restrictionConfig);
         });
         Run("Editor preserves unsupported or corrupt configurations", () =>
         {
@@ -463,7 +683,7 @@ internal static class Program
     /// <summary>调用生产代码的统一入口，断言许可及原因，再返回结果供用例检查条目来源等细节。</summary>
     private static SSCRestrictionDecision Decision(Pawn a, Pawn b, SSCInteractionKind kind, bool allowed, SSCRestrictionReason reason)
     {
-        var d = SSCRestrictionPolicy.Evaluate(new SSCRestrictionRequest(a, b, kind));
+        var d = SSCRestrictionPolicy.Evaluate(new SSCRestrictionRequest(a, b, kind, true));
         Equal(allowed, d.Allowed); Equal(reason, d.Reason); return d;
     }
     /// <summary>为测试角色添加带指定强制条目的装备，用于验证覆盖优先级与同层冲突。</summary>
@@ -471,6 +691,22 @@ internal static class Program
     {
         var def = new ThingDef { defName = name }; def.modExtensions.Add(new SSCRestrictionEquipmentExtension { forced = values });
         pawn.apparel.WornApparel.Add(new Apparel { def = def });
+    }
+    /// <summary>构造全部开放的保存值，供测试通过单项拒绝区分实际检查的条目。</summary>
+    private static SSCRestrictionRules PermissiveRules()
+    {
+        return new SSCRestrictionRules
+        {
+            allowMasturbation = true, consensualInitiation = SSCRestrictionValue.Allow, allowForcedInitiation = true,
+            receiveConsensual = true, receiveForced = true, receiveTraining = true
+        };
+    }
+    /// <summary>向当前用例加入独立特化定义，验证同层冲突及多个方向同时适用时的稀疏合成。</summary>
+    private static void AddProfile(string name, SexSlaveSpecializationType specialization, SSCRestrictionOverrides forced,
+        SSCRestrictionOverrides defaults = null)
+    {
+        DefDatabase<SSCRestrictionProfileDef>.AllDefsListForReading.Add(new SSCRestrictionProfileDef
+            { defName = name, specialization = specialization, forced = forced, defaults = defaults });
     }
     /// <summary>读取实际装备 XML 中的新系统扩展，确保测试使用随模组发布的强制条目。</summary>
     private static SSCRestrictionOverrides ReadEquipment()
@@ -487,17 +723,38 @@ internal static class Program
             typeof(SSCRestrictionOverrides).GetField(child.Name.LocalName).SetValue(result, Enum.Parse<SSCRestrictionValue>(child.Value));
         return result;
     }
-    /// <summary>重置全局设置、序列化环境及巴士定义后执行单个用例，记录失败并继续后续测试。</summary>
+    /// <summary>枚举实际 Defs 目录中的所有特化规则文件，支持多个文件和一个文件内的多份定义。</summary>
+    private static IEnumerable<string> ProfileXmlFiles()
+    {
+        return Directory.EnumerateFiles(Path.Combine(root, "Defs"), "*.xml", SearchOption.AllDirectories)
+            .Where(path => XDocument.Load(path).Root.Elements("SexSlaveCraft.SSCRestrictionProfileDef").Any())
+            .OrderBy(path => path, StringComparer.Ordinal);
+    }
+    /// <summary>从所有实际 XML 读取特化定义，不依赖定义数量、文件名或定义顺序。</summary>
+    private static List<SSCRestrictionProfileDef> ReadProfiles()
+    {
+        return ProfileXmlFiles().SelectMany(path => XDocument.Load(path).Root.Elements("SexSlaveCraft.SSCRestrictionProfileDef"))
+            .Select(node => new SSCRestrictionProfileDef
+            {
+                defName = (string)node.Element("defName"),
+                specialization = Enum.Parse<SexSlaveSpecializationType>((string)node.Element("specialization")),
+                defaults = ReadOverrides(node.Element("defaults")), forced = ReadOverrides(node.Element("forced"))
+            }).ToList();
+    }
+    /// <summary>按稳定定义名定位实际公交车规则，其他特化定义的加入不会改变测试目标。</summary>
+    private static SSCRestrictionProfileDef BusProfile()
+    {
+        return DefDatabase<SSCRestrictionProfileDef>.AllDefsListForReading.Single(p => p.defName == "SSC_Restriction_Bus");
+    }
+    /// <summary>重置全局设置、序列化环境及全部实际特化定义后执行用例；初始化异常也计入失败汇总。</summary>
     private static void Run(string name, Action test)
     {
-        SSCMod.settings = new SSCSettings(); Scribe.mode = LoadSaveMode.Inactive; Scribe.node = new Dictionary<string, object>();
-        XElement bus = XDocument.Load(Path.Combine(root, "Defs/SSCRestrictionProfiles.xml")).Root.Elements().Single();
-        DefDatabase<SSCRestrictionProfileDef>.AllDefsListForReading = new List<SSCRestrictionProfileDef>
+        try
         {
-            new SSCRestrictionProfileDef { defName = (string)bus.Element("defName"), specialization = Enum.Parse<SexSlaveSpecializationType>((string)bus.Element("specialization")),
-                defaults = ReadOverrides(bus.Element("defaults")), forced = ReadOverrides(bus.Element("forced")) }
-        };
-        try { test(); passed++; Console.WriteLine("PASS " + name); }
+            SSCMod.settings = new SSCSettings(); Scribe.mode = LoadSaveMode.Inactive; Scribe.node = new Dictionary<string, object>();
+            DefDatabase<SSCRestrictionProfileDef>.AllDefsListForReading = ReadProfiles();
+            test(); passed++; Console.WriteLine("PASS " + name);
+        }
         catch (Exception error) { failed++; Console.WriteLine("FAIL " + name + "\n" + error); }
     }
     /// <summary>使用类型默认比较器断言相等，失败时报告预期值与实际值。</summary>
