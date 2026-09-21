@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_Diagnostics_Title>诊断与兼容</SSC_Diagnostics_Title>
+  <SSC_Diagnostics_Environment>基本信息</SSC_Diagnostics_Environment>
+  <SSC_Diagnostics_Dependencies>依赖程序集（已加载）</SSC_Diagnostics_Dependencies>
+  <SSC_Diagnostics_Compatibility>兼容接入检查</SSC_Diagnostics_Compatibility>
+  <SSC_Diagnostics_Language>语言：{0}</SSC_Diagnostics_Language>
+  <SSC_Diagnostics_PatchCount>SSC 已注册补丁数：{0}</SSC_Diagnostics_PatchCount>
+  <SSC_Diagnostics_AssemblyMissing>未检测到已加载的程序集</SSC_Diagnostics_AssemblyMissing>
+  <SSC_Diagnostics_InterfaceMissing>未找到所需接口：可能未安装或接口已变化。</SSC_Diagnostics_InterfaceMissing>
+  <SSC_Diagnostics_InterfaceFound>找到所需接口，程序集版本：{0}</SSC_Diagnostics_InterfaceFound>
+  <SSC_Diagnostics_Registered>预期补丁类已注册：{0}/{1}</SSC_Diagnostics_Registered>
+  <SSC_Diagnostics_Incomplete>接入不完整；以下补丁类未检测到注册，请结合日志排查：</SSC_Diagnostics_Incomplete>
+  <SSC_Diagnostics_CheckFailed>检查未完成（{0}）。请结合游戏日志排查。</SSC_Diagnostics_CheckFailed>
+  <SSC_Diagnostics_PatchNote>本页只检查接口和补丁注册，不代表运行效果、界面布局或所有模组组合已验证。</SSC_Diagnostics_PatchNote>
+  <SSC_Diagnostics_ReportNote>报告仅包含版本、依赖及兼容接入信息，不列出完整模组列表，也不读取存档、角色数据、完整日志或本机安装路径。</SSC_Diagnostics_ReportNote>
+  <SSC_Diagnostics_Refresh>刷新检查</SSC_Diagnostics_Refresh>
+  <SSC_Diagnostics_Copy>复制诊断信息</SSC_Diagnostics_Copy>
+  <SSC_Diagnostics_Copied>已复制</SSC_Diagnostics_Copied>
+</LanguageData>

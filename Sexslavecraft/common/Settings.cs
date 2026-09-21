@@ -73,6 +73,8 @@ namespace SexSlaveCraft
     public class SSCMod : Mod
     {
         public static SSCSettings settings;
+        private Vector2 settingsScrollPosition;
+        private float settingsContentHeight = 1000f;
 
         public SSCMod(ModContentPack content) : base(content)
         {
@@ -86,9 +88,35 @@ namespace SexSlaveCraft
 
         public override void DoSettingsWindowContents(Rect inRect)
         {
-            Listing_Standard listingStandard = new Listing_Standard();
-            listingStandard.Begin(inRect);
+            // Keep the secondary diagnostics entry in a separate bottom-right footer.
+            Rect viewport = new Rect(inRect.x, inRect.y, inRect.width, Mathf.Max(1f, inRect.height - 38f));
+            Rect content = new Rect(0f, 0f, Mathf.Max(1f, viewport.width - 20f),
+                Mathf.Max(viewport.height, settingsContentHeight));
+            Widgets.BeginScrollView(viewport, ref settingsScrollPosition, content);
+            try
+            {
+                var listing = new Listing_Standard { maxOneColumn = true };
+                listing.Begin(content);
+                try { DrawSettings(listing); }
+                finally
+                {
+                    settingsContentHeight = listing.CurHeight + 12f;
+                    listing.End();
+                }
+            }
+            finally { Widgets.EndScrollView(); }
 
+            string diagnosticsLabel = "SSC_Diagnostics_Title".Translate();
+            float buttonWidth = Mathf.Min(inRect.width, Mathf.Max(140f, Text.CalcSize(diagnosticsLabel).x + 24f));
+            if (Widgets.ButtonText(new Rect(inRect.xMax - buttonWidth, inRect.yMax - 28f, buttonWidth, 28f),
+                diagnosticsLabel))
+                Find.WindowStack.Add(new Dialog_SSCDiagnostics());
+
+            base.DoSettingsWindowContents(inRect);
+        }
+
+        private static void DrawSettings(Listing_Standard listingStandard)
+        {
             // EN: Step 1: draw the sex-slave protection rules first, because they change how Harmony guards sex jobs.
             // CN: 步骤 1：先画出“性奴保护规则”，因为它们会直接改变 Harmony 对性行为 Job 的拦截方式。
             listingStandard.CheckboxLabeled(
@@ -204,9 +232,6 @@ namespace SexSlaveCraft
                 ref settings.useOldScoring,
                 "SSC_Setting_UseOldScoring_Desc".Translate()
             );
-
-            listingStandard.End();
-            base.DoSettingsWindowContents(inRect);
         }
     }
 }

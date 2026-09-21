@@ -4,6 +4,17 @@
 
 This continuation builds on upstream **2.2.8**, the baseline when upstream development stopped in July, and retains its version numbering. Entries are listed newest first. Technical details are in the [development log (Chinese)](Docs/Development/开发更新记录.md).
 
+## [Unreleased] — 辅助诊断面板（暂无明确实际用途） / Auxiliary diagnostics panel (no clear practical use yet)
+
+**更新定位：目前没什么明确作用的辅助更新。** 仅提供版本、依赖及部分兼容注册信息的查看与复制，目前没有确认它解决了具体问题或明显改善排查效率，不作为主要功能更新。
+
+**Scope: an auxiliary update with no clear practical use established yet.** It only displays and copies version, dependency and selected compatibility registration information. No concrete issue resolution or clear troubleshooting benefit has been confirmed; this is not a major feature update.
+
+- Mod 设置底部右下角新增“诊断与兼容”小按钮，打开窗口可查看实际加载的 SSC 版本、程序集构建标识、游戏版本、语言、依赖程序集、部分兼容接口及补丁注册状态，支持刷新和复制报告；面板和报告均不再列出完整模组列表。
+- Adds a small Diagnostics and compatibility button at the bottom right of mod settings. Its window shows the loaded SSC version and assembly build ID, game version, language, dependency assemblies, selected compatibility interfaces and patch registrations. Supports refresh and copying; the panel and report omit the full mod list.
+- 设置页支持单列滚动；补齐简中、繁中、英文和俄文。维护者已确认初版面板可见、可操作；去除列表后的版本待实机复核。诊断只读，注册状态不等同于实机验证，详见 [开发记录](Docs/Development/简版诊断面板.md)。
+- Settings now scroll in one column. Includes Simplified Chinese, Traditional Chinese, English and Russian. The maintainer confirmed the initial panel was visible and operable; the revision removing the list awaits in-game confirmation. Checks are read-only; registration does not establish runtime correctness.
+
 ## [2.3.0] — 2026-09-16 — 同床、调教员身份与分配界面 / Shared beds, trainer roles and assignment UI
 
 将维护者已分阶段确认有效的同床优化、调教员身份、床位标签及相关修复统一归入 2.3.0，包含 2.2.15 及更早版本修复。正式安装包与 SHA-256 校验文件见 [v2.3.0 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.0)。详见 [中英双语发布说明](Docs/Releases/2.3.0/2.3.0发布说明.md) 与 [版本验证](Docs/Releases/2.3.0/2.3.0版本验证.md)。

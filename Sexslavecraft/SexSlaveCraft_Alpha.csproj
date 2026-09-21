@@ -105,6 +105,8 @@
     <Compile Include="common\LifeForceConflictUtility.cs" />
     <Compile Include="common\MapComponent_PersonalityAssignment.cs" />
     <Compile Include="common\ModLog.cs" />
+    <Compile Include="common\SSCDiagnostics.cs" />
+    <Compile Include="common\Dialog_SSCDiagnostics.cs" />
     <Compile Include="common\RecipeInjector.cs" />
     <Compile Include="common\SoftDependencyUtility.cs" />
     <Compile Include="Comps\CompAbilityEffect_EroticConversion.cs" />
