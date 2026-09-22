@@ -1,9 +1,9 @@
 # RJW-SexSlaveCraft Complete Player Guide
 
-> For RimWorld 1.6 and SexSlaveCraft 2.3.0, based on the current workspace code and installed Defs.\
-> Base audit: 2026-06-30; 2.3.0 changes updated on 2026-09-16.\
+> For RimWorld 1.6 and SexSlaveCraft 2.3.1, based on the current workspace code and installed Defs.\
+> Base audit: 2026-06-30; restriction-system changes updated for 2.3.1 on 2026-09-22.\
 > Based on upstream 2.2.8; version 2.2.9 includes the specialization and ritual progression fixes, and 2.2.10 fixes stale training locks after interrupted rituals. See `CHANGELOG.md`.\
-> Version 2.3.0 groups shared-bed permissions and sleep memories, separate vanilla/Mint role badges, the trainer-role toggle, and menu, ritual-message and bound-identity fixes. Includes 2.2.15 and earlier fixes. The installation ZIP and checksum are available from [v2.3.0 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.0). Legacy RimTalk integration remains suspended; unfinished Pet Cat and Pet Rabbit choices remain disabled.\
+> Version 2.3.1 adds unified per-pawn restrictions activated by an actual bond, immediate permission for owner initiation, equipment/profile overrides, save migration, trainer authorization and a right-side rule panel. ZIP and checksum: [v2.3.1 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.1). Legacy RimTalk remains suspended; unfinished Pet Cat and Pet Rabbit choices remain disabled.\
 > This guide describes the behavior implemented by the current C# and XML. Where an old changelog or description disagrees with the code, the discrepancy is listed under “Current Limitations and Known Differences.”
 
 ## 1. Scope and Dependencies
@@ -69,14 +69,9 @@ The Training WorkGiver scans a pawn only when `Allow Training` is enabled.
 
 Enabling it immediately runs an RJW receiver-eligibility check. A failed check does not turn the option back off, but eligibility is checked again before the job starts.
 
-### 3.3 Allow Others
+### 3.3 Behavior Restrictions
 
-`Allow others to train or have sex` removes the bonded master’s exclusive claim over trainers and consensual partners.
-
-- Selecting `Public Use Specialization` enables it automatically.
-- Selecting `Cow Specialization` disables it automatically.
-- Selecting no specialization disables it and resets specialization progress.
-- Manually disabling it on a Public Use pawn does not remove the specialization; it only shows a warning.
+Six individual permissions replace Allow Others; see section 18.6. Public Use affects two reception defaults/overrides. Specialization changes no longer rewrite the old exception.
 
 ### 3.4 Assigned Pose
 
@@ -106,9 +101,9 @@ A candidate trainer must be:
 - alive, not destroyed and not downed;
 - assigned to the `Training` work type.
 
-If the target has a `Sex Slave Chain` and does not allow others, its bonded master is the only valid trainer. Public Use or the manual allow-others option removes this restriction.
+If non-owner Training is denied for a bound target, assignment is coordinated to the owner. Selecting an eligible non-owner trainer also grants Training permission unless a forced rule denies it. Ordinary interactions keep their own checks.
 
-The menu and direct assignments use the same filters. Automatic and forced ordinary Training also require trainer identity, including when Allow Others or Public Use is enabled. Disabling trainer status retains the old assignment and marks it inactive rather than opening the target to any trainer. Temporary work or health restrictions are shown separately and do not erase the relationship used for bed sharing. Already-started Training can finish; queued or approaching jobs recheck before starting.
+Menus and direct assignments share eligibility and authorization checks. Automatic Training goes only to the active assigned trainer; the owner retains manual and ritual access. Disabling trainer status preserves the assignment as inactive; other trainers do not automatically take over. Temporary work or health restrictions do not erase the shared-bed relationship. Started scenes finish; preparation is checked again.
 
 ## 4. Ordinary Training
 
@@ -749,7 +744,7 @@ The high-tier PNA gun and ammunition XML are commented out and do not normally a
 
 Complete `Public Use`. Selecting it:
 
-- enables `Allow others to train or have sex`;
+- applies its two reception defaults after binding, with forced allowances while specialization overrides are enabled;
 - applies the ordinary Public Use Hediff;
 - restores saved specialization progress, with a minimum displayed Hediff severity of 1%;
 - advances only while the active specialization type remains Public Use.
@@ -764,7 +759,7 @@ The Training tab’s internal option is named `Bus`, but the official player-fac
 - Trade with a faction settlement: ordinary Public Use Hediff `+10%`.
 - Orbital trade ship: no effect.
 
-“Other than the master” first checks the Chain master. If Public Use has removed exclusive ownership, the system falls back to `Assigned Trainer`.
+Progress accounting is separate from interaction permission. Public Use does not remove the actual bond or grant owner permission to third parties.
 
 The tab’s saved progress and direct Hediff severity changes are separate paths and can desynchronize; see section 22.
 
@@ -1217,19 +1212,24 @@ A vanilla slave whose historical maximum Corruption has ever exceeded zero is pe
 - has the vanilla slave disabled-work list cleared;
 - no longer receives the vanilla slave work-speed StatPart.
 
-### 18.6 Sex-protection Rules
+### 18.6 Behavior Restrictions
 
-With the global protection setting enabled:
+With restrictions enabled, only pawns with an actual owner bond are affected. Identity, specialization or apparel alone does not activate rules. The actual owner initiating with their own bound pawn is immediately allowed; normal physical and job requirements still apply.
 
-- a chained Sex Slave cannot initiate assault;
-- consensual sex for an ordinary chained Sex Slave is master-only;
-- `Allow others to train or have sex` removes the consensual exclusivity;
-- a Public Use pawn is not protected when it is the victim;
-- a Public Use pawn may have consensual sex with anyone, but by default cannot initiate assault;
-- under strict defaults, only the master may assault an ordinary chained Sex Slave;
-- if `Sex slaves can be raped` is enabled, anyone may do so, but `Evilfall Combat Suit` blocks it.
+| Individual rule | Factory default for new pawns |
+| --- | --- |
+| Solo masturbation | Deny |
+| Consensual initiation | Enabled, owner only |
+| Forced initiation | Deny |
+| Consensual reception from non-owners | Deny |
+| Forced reception from non-owners | Deny |
+| Training from non-owners | Deny |
 
-LifeForce `randomrape` and `seduced` jobs are directly whitelisted and bypass SSC protection.
+Ordinary pair jobs check both initiation and reception; Training and rituals use the separate Training rule. Equipment overrides take priority over enabled specialization overrides, then saved choices. Public Use defaults and forces its two reception permissions, without opening initiation or Training. Protective apparel denies forced reception from non-owners. Overrides never overwrite saved choices.
+
+The Training ITab expands a right-side rule panel. Its entry is disabled when inactive; forced entries display effective values and are locked. Defaults have their own mod-settings window; editing them leaves existing pawns intact, while batch application requires confirmation.
+
+Legacy saves migrate once. Unbinding/rebinding retains choices. Started scenes finish normally; later jobs, phases and participants are checked again. Supported LifeForce paths and native Lovin use unified permission checks; legacy whitelists are removed.
 
 ## 19. Apparel and Sex Reassignment
 
@@ -1263,7 +1263,7 @@ Official English localization uses the name `Apparel Bulletproof Suit`.
 - the 100% floor unlocks only after this pawn’s historical maximum Corruption has reached 100%;
 - the floor only applies inside the current Chain-stage interval;
 - decay multiplier 1.5;
-- blocks assault when `Sex slaves can be raped` is enabled.
+- forces denial of non-owner forced reception while bonded and restrictions are enabled.
 
 `Need_Corruption` persistently records the highest Corruption that pawn has ever reached. Apparel floors preserve an unlocked milestone; they do not grant 30% or 100% by themselves. In the current formula, decay multipliers above 1 accelerate decay rather than slowing it.
 
@@ -1297,11 +1297,9 @@ The operation currently does not reference `Sex Reassignment Surgery (Male to Fe
 
 | Setting | Default | Effect |
 |---|---:|---|
-| Enable sex-slave protection rules | On | Global protection master switch |
-| Sex slaves can be raped | Off | Off keeps master exclusivity; on permits anyone, except when blocked by Evilfall Combat Suit |
-| Public Use cannot initiate rape | On | Restricts a Public Use pawn as aggressor |
-| Chained sex slaves cannot initiate rape | On | Restricts an ordinary chained pawn as aggressor |
-| Non-rape acts only allow the master | On | Restricts consensual acts |
+| Enable behavior restrictions | On | Controls unified restrictions and overrides; off retains configurations |
+| Enable specialization overrides | On | Controls profile overrides only; equipment remains active |
+| Default behavior rules | See section 18.6 | Used for initialization; explicit batch overwrite requires confirmation |
 | SSC logging | On | Custom normal logs |
 | High-frequency debug logging | Off | Guard, animation, and Training-flow logs |
 | Low-frequency key logging | On | Onahole, ritual conversion, and important fallbacks |
@@ -1447,7 +1445,6 @@ This section records the audited code behavior and known limitations.
 11. **Apparel decay multipliers run in the opposite direction from their descriptions.** Values 1.1 and 1.5 are multiplied into decay and therefore accelerate it. Their 30%/100% floors activate only after that pawn has historically reached the matching value.
 12. **The RJW-original age/eligibility setting is wired in reverse.** On uses `LegacyCanBeFucked` and additionally requires RJW `rape_enabled`; off directly calls `xxx.can_be_fucked`. Toggle it when an apparently valid target cannot be trained.
 13. **Chain progression requires reaching the threshold, then resolving a ritual.** Chain starts at 20%, and the current stage brakes Corruption at 30%. After reaching 30%, another Binding Ritual resolution is needed to raise Chain severity. The Sex Slave trait is synchronized only from highest-ever Corruption. Minimum-Corruption effects such as Apparel Bulletproof Suit preserve only milestones already reached inside the current Chain interval; they do not skip stages.
-14. **Some Public Use protection patches check only the ordinary Hediff.** A Final Public Use pawn usually retains Bus specialization data and allows others, but early branches for full victim exemption and inability to initiate assault search specifically for the ordinary Public Use Hediff.
 15. **The high-tier PNA gun is disabled.** Its XML is commented out; only the low-tier launcher is normally craftable.
 
 -->

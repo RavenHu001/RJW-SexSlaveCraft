@@ -2,9 +2,9 @@
 
 [Project home](README.md) · [Documentation index / 文档索引](Docs/README.md) · [中文快速入门](读我，玩法介绍.md) · [Changelog](CHANGELOG.md)
 
-> For RimWorld 1.6 and SexSlaveCraft 2.3.0.\
+> For RimWorld 1.6 and SexSlaveCraft 2.3.1.\
 > This continuation is based on upstream 2.2.8. See `CHANGELOG.md` for release history.\
-> Version 2.3.0 groups shared-bed permissions and sleep memories, separate vanilla/Mint role badges, the trainer-role toggle, and menu, ritual-message and bound-identity fixes. Includes 2.2.15 and earlier fixes. The installation ZIP and checksum are available from [v2.3.0 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.0). Legacy RimTalk integration remains suspended; unfinished Pet Cat and Pet Rabbit choices remain disabled.\
+> Version 2.3.1 adds unified per-pawn restrictions activated by an actual bond, immediate permission for owner initiation, equipment/profile overrides, save migration, trainer authorization and a right-side rule panel. ZIP and checksum: [v2.3.1 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.1). Legacy RimTalk remains suspended; unfinished Pet Cat and Pet Rabbit choices remain disabled.\
 > In-game names follow the mod's official English localization. For exact formulas, thresholds, and implementation notes, see `PLAYER_GUIDE_EN.md`.
 
 ## 1. What the Mod Does
@@ -200,7 +200,7 @@ Complete `Public Use` research, then select `Bus` in the Training tab.
 
 Public Use Specialization:
 
-- automatically enables sex and Training with other pawns;
+- applies its two reception defaults after binding and forces them when profile overrides are enabled; initiation and Training remain separate;
 - gains progress from sex with someone other than the owner;
 - triggers special events after trading as the negotiator;
 - improves trade, negotiation, Social Impact, and Talking.
@@ -392,7 +392,7 @@ A pawn with Sex Slave Chain:
 - permanently loses vanilla disabled-work and slave work-speed penalties once historical maximum Corruption exceeds zero;
 - gains increasingly positive rape memories at high Corruption.
 
-By default, a normal chained sex slave may only have consensual sex with the owner. Public Use or `Allow others to train or have sex` can lift that restriction.
+Bound pawns use six individual initiation, reception and Training permissions. Default consensual initiation is owner-only; Public Use opens only its two reception rules. Actual owner initiation is immediately allowed by the unified policy. See the [2.3.1 notes](Docs/Releases/2.3.1/2.3.1发布说明.md).
 
 At more than 0.1% Corruption, an SSC Sex Slave may share an ordinary multi-person bed with the bonded Master and active Assigned Trainer. For a vanilla slave, assign the Master or trainer first, then the slave. Vanilla lovers/spouses remain unaffected; medical rest and deathrest take priority.
 
@@ -415,7 +415,7 @@ After both pawns actually sleep together, the slave receives a one-day, non-stac
 - strong armor and combat bonuses;
 - holds Corruption at 100%;
 - unlocks that floor only after the pawn’s historical maximum Corruption has reached 100%;
-- protects against rape when the setting allowing outside rape is enabled;
+- forces denial of non-owner forced reception while bonded and restrictions are enabled;
 - the floor only applies inside the current Chain-stage interval.
 
 The current decay-multiplier direction does not match the item descriptions. Minimum-Corruption effects preserve only milestones the pawn has already reached inside the current Chain interval.
@@ -424,9 +424,9 @@ The current decay-multiplier direction does not match the item descriptions. Min
 
 For a first game, keep defaults and review:
 
-- `Enable sex-slave protection rules`;
-- `Allow sex slaves to be raped`;
-- `Only the owner may initiate non-rape sex`;
+- `Enable behavior restrictions`;
+- `Enable specialization overrides`;
+- Default behavior rules (separate window; batch overwrite requires confirmation);
 - `Allow ritual enslavement`;
 - `Enable Corruption decay`;
 - `Base Corruption decay per day` (default 2%);

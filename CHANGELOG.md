@@ -26,9 +26,9 @@ This continuation builds on upstream **2.2.8**, the baseline when upstream devel
 
 ## [2.3.1] — 2026-09-22 — 新限制系统与个体行为配置 / Unified restrictions and individual behavior rules
 
-**状态：待发布；本日期为更新日志编纂日期。** 汇总本轮已完成并经维护者确认的新限制系统、任务接入、旧档迁移、修复与界面调整。详细内容见 [2.3.1 中英双语更新说明](Docs/Releases/2.3.1/2.3.1发布说明.md)，实机反馈见 [开发完成与验收记录](Docs/Development/新限制系统开发完成与实机验收.md)。
+**正式发布。** 安装包及校验文件见 [v2.3.1 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.1)。 汇总本轮已完成并经维护者确认的新限制系统、任务接入、旧档迁移、修复与界面调整。详细内容见 [2.3.1 中英双语更新说明](Docs/Releases/2.3.1/2.3.1发布说明.md)，实机反馈见 [开发完成与验收记录](Docs/Development/新限制系统开发完成与实机验收.md)。
 
-**Status: pending release; the date above is the changelog preparation date.** Summarizes the implemented and maintainer-confirmed restriction system, job integration, save migration, fixes and UI changes. See the [bilingual 2.3.1 notes](Docs/Releases/2.3.1/2.3.1发布说明.md) and [development acceptance record (Chinese)](Docs/Development/新限制系统开发完成与实机验收.md).
+**Released.** ZIP and checksum: [v2.3.1 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.1). Summarizes the implemented and maintainer-confirmed restriction system, job integration, save migration, fixes and UI changes. See the [bilingual 2.3.1 notes](Docs/Releases/2.3.1/2.3.1发布说明.md) and [development acceptance record (Chinese)](Docs/Development/新限制系统开发完成与实机验收.md).
 
 - **个体规则 / Individual rules：** 新增主动、被动、调教三类共六项许可，分别管理自慰、自愿发起、强制发起、接受非主人自愿行为、接受非主人强制行为及接受非主人调教。自愿发起可选“仅限主人／不限对象”。Adds six per-pawn permissions covering solo activity, consensual/forced initiation, consensual/forced reception from non-owners, and non-owner Training. Consensual initiation supports Owner only or Anyone.
 - **绑定门槛与主人许可 / Bond scope and owner permission：** 限制仅在实际绑定主人后生效；单独设置性奴身份不会启用。实际主人向自己的绑定对象发起时，在统一入口内直接允许，个人、装备和特化限制不能否决。身体、研究、可达性等任务条件仍保留。Restrictions activate only after an actual owner bond. The actual owner initiating with their own bound pawn is immediately allowed by the unified policy; individual, equipment and specialization rules cannot veto it. Normal physical, research and reachability requirements still apply.
@@ -43,6 +43,8 @@ This continuation builds on upstream **2.2.8**, the baseline when upstream devel
 开发阶段的全量回归为 **16 套、645/645**；缺少 LifeForce 的额外变体 **108/108**。最新界面批次 Release 构建零警告、零错误，限制核心 **124/124**；这些是不同批次的已有结果，不累计为一次发布测试。维护者已确认基础功能、最新界面以及旧档升级后存读档、任务中途存读档、准备与已开始场景中的规则变化和常用兼容组合均无问题。
 
 Development validation passed **645/645 across 16 suites**, plus **108/108** in the optional LifeForce-absent variant. The latest UI batch built without warnings/errors and passed **124/124** restriction-core cases. These are separate existing runs, not one combined release test. The maintainer confirmed gameplay, UI, upgraded-save reloads, mid-job saves, rule changes before/after scene start and commonly used compatibility combinations.
+
+2.3.1 已同步运行版本元数据并重新构建，发布预检全量 **645/645** 通过，详见 [版本验证](Docs/Releases/2.3.1/2.3.1版本验证.md)。The runtime version was updated and rebuilt; release preflight passed **645/645** cases.
 
 科技赋予限制条件与更可见、情境化的拒绝反馈仍属于未来规划，不计入本版已实现内容。Research-based activation and more visible, contextual rejection feedback remain future work.
 

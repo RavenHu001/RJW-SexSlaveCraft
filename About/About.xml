@@ -6,19 +6,19 @@
 		<li>1.6</li>
 	</supportedVersions>
 	<packageId>rjw.sexslavecraft.TieJinVer</packageId>
-    <description>SexSlaveCraft 2.3.0 (TieJin Modify)
-主奴同床、调教员身份与床位分配界面优化。
-基于原模组 7 月停更时的 2.2.8 版本继续维护。
-性奴可与绑定主人及有效指定调教员获得额外同床许可，实际共同睡眠后生成一天、不叠加的心情记忆。原版和 Dubs Mint Menus 分配界面显示独立身份标签及许可状态。
-新增统一的调教员身份开关，并修复指定菜单红字、仪式拒绝原因及绑定角色身份切换导致锁链进度丢失的问题。包含 2.2.15 及更早版本修复。
+    <description>SexSlaveCraft 2.3.1 (TieJin Modify)
+新限制系统与个体行为配置。
+基于上游 2.2.8 继续维护，包含 2.3.0 及更早版本内容。
+已绑定角色可独立设置主动、被动和调教许可；实际主人向自己的绑定对象发起时，限制系统直接允许。装备与特化统一提供条目强制值。
+普通行为、日常调教、仪式、事件及已支持兼容入口使用统一判定，旧档自动迁移。调教页右侧提供勾叉式规则栏，默认配置收纳到设置子窗口。
 旧 RimTalk 兼容继续暂停，宠物猫、宠物兔未完成入口继续禁用。
-完整中英双语更新记录见模组目录中的 CHANGELOG.md。
+完整中英双语更新记录见 CHANGELOG.md。
 
-Continues development from the upstream 2.2.8 baseline.
-Improves shared-bed permissions, trainer roles and bed assignment displays. Sex slaves may share with their bonded master and active assigned trainer, with non-stacking, one-day memories after actual shared sleep.
-Separate role badges and permission status support vanilla and Dubs Mint Menus. Fixes trainer-menu errors, misleading ritual rejection messages and loss of bond progress through identity changes. Includes fixes from 2.2.15 and earlier versions.
-Legacy RimTalk integration remains suspended. Unfinished Pet Cat and Pet Rabbit choices remain disabled.
-See CHANGELOG.md for the full Chinese and English release notes.</description>
+Continues development from upstream 2.2.8, including 2.3.0 and earlier content.
+Adds individual initiation, reception and Training permissions for bound pawns. Their actual owner's initiation is immediately allowed by the restriction system. Equipment and specialization overrides use the same rules.
+Unifies ordinary jobs, Training, rituals, events and supported compatibility paths, with legacy-save migration. A right-side Training tab panel offers check/cross controls; defaults use a separate settings window.
+Legacy RimTalk remains suspended; unfinished Pet Cat and Pet Rabbit choices remain disabled.
+See CHANGELOG.md for the full Chinese and English notes.</description>
 	<modDependencies>
 		<li>
 		  <packageId>brrainz.harmony</packageId>
