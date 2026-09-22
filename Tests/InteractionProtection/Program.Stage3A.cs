@@ -14,7 +14,7 @@ internal static partial class Program
     {
         Run("重写预约方法也拒绝玩家强制请求", ReservationOverrides);
         Run("普通双人不再读取旧例外或旧全局条目", OldSettingsDoNotDecide);
-        Run("只有身份而没有锁链仍应用新规则", IdentityOnly);
+        Run("只有身份但未绑定时不应用限制，建立绑定后恢复个人配置", IdentityOnly);
         Run("实际主人不被自身条目或目标装备拒绝", OwnerWinsWholeRequest);
         Run("反向及仅主人身份不获得整次放行", DirectionIsNotReversed);
         Run("主动允许不能覆盖对方被动禁止", BothParticipants);
@@ -83,13 +83,20 @@ internal static partial class Program
         Assert(driver.StartCalls == 1, "新许可开始成功");
     }
 
-    /// <summary>验证阶段 2 激活的身份角色不用等待锁链存在就受规则约束。</summary>
+    /// <summary>身份分配不等于获得限制能力；未绑定期间保留配置，绑定后同一配置立即重新参与许可。</summary>
     private static void IdentityOnly()
     {
         var p = People();
         p.b.Chain = null;
         p.b.Training.pawnIdentity = PawnIdentity.Slave;
-        Assert(!Driver(p.c, p.b, false).TryMakePreToilReservations(false), "身份也适用");
+        Equip(p.b);
+        Assert(Driver(p.c, p.b, false).TryMakePreToilReservations(false), "未绑定不受被动自愿限制");
+        Assert(Driver(p.c, p.b).TryMakePreToilReservations(false), "未绑定不受条目或装备强制影响");
+        Assert(Solo(p.b).TryMakePreToilReservations(false), "未绑定单人也不应用限制");
+        Assert(!p.b.Training.restrictionConfig.rules.allowMasturbation, "停用不能改写已保存的禁止");
+        p.b.Chain = new Hediff_ChainOfSexSlave { LinkedPawn = p.a };
+        Assert(!Driver(p.c, p.b, false).TryMakePreToilReservations(false), "建立绑定后恢复原保存限制");
+        Assert(!Solo(p.b).TryMakePreToilReservations(false), "绑定后的单人使用原保存条目");
     }
 
     /// <summary>将主人本身设置成受限角色，并让接收方配置损坏且穿戴装备，仍应整次放行。</summary>
@@ -97,6 +104,7 @@ internal static partial class Program
     {
         var p = People();
         p.a.Training.pawnIdentity = PawnIdentity.Slave;
+        p.a.Chain = new Hediff_ChainOfSexSlave { LinkedPawn = p.c };
         p.b.Training.restrictionConfig.version = 999;
         Equip(p.b);
         var driver = Driver(p.a, p.b);
@@ -119,6 +127,7 @@ internal static partial class Program
     {
         var p = People();
         p.c.Training.pawnIdentity = PawnIdentity.Slave;
+        p.c.Chain = new Hediff_ChainOfSexSlave { LinkedPawn = p.a };
         p.c.Training.restrictionConfig.rules.consensualInitiation = SSCRestrictionValue.Allow;
         Assert(!Driver(p.c, p.b, false).TryMakePreToilReservations(false), "被动限制不可丢失");
         p.b.Training.restrictionConfig.rules.receiveConsensual = true;
@@ -129,6 +138,7 @@ internal static partial class Program
     private static void BusDoesNotOverrideActor()
     {
         var p = People(); p.b.IsBus = true; p.c.Training.pawnIdentity = PawnIdentity.Slave;
+        p.c.Chain = new Hediff_ChainOfSexSlave { LinkedPawn = p.a };
         Assert(!Driver(p.c, p.b).TryMakePreToilReservations(false), "禁止主动强制应优先拒绝");
     }
 
@@ -290,6 +300,7 @@ internal static partial class Program
     {
         var p = People(); var driver = Driver(p.a, p.b); Begin(driver);
         p.c.Training.pawnIdentity = PawnIdentity.Slave; driver.PartnerPawn = p.c; driver.Sexprops = null;
+        p.c.Chain = new Hediff_ChainOfSexSlave { LinkedPawn = p.b };
         Assert(SSCRestrictionJobGuard.TryCheck(driver, "Changed", out bool allowed) && !allowed, "新参与者应复查");
     }
 

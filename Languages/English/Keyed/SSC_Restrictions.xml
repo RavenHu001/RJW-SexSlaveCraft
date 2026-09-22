@@ -13,7 +13,7 @@
   <SSC_Restrictions_ProfileSwitch>Enable specialization overrides</SSC_Restrictions_ProfileSwitch>
   <SSC_Restrictions_ProfileSwitchTip>Controls specialization overrides without changing equipment overrides or personal saved values.</SSC_Restrictions_ProfileSwitchTip>
   <SSC_Restrictions_EditPawn>Configure pawn: {0}</SSC_Restrictions_EditPawn>
-  <SSC_Restrictions_NotApplicable>Not applicable to this pawn; existing settings are read-only.</SSC_Restrictions_NotApplicable>
+  <SSC_Restrictions_NotApplicable>No bound owner: restrictions are inactive. Existing settings are retained for viewing.</SSC_Restrictions_NotApplicable>
   <SSC_Restrictions_Uninitialized>No configuration yet. Wait for migration, or retry if initialization failed.</SSC_Restrictions_Uninitialized>
   <SSC_Restrictions_Initialize>Retry initialization from defaults</SSC_Restrictions_Initialize>
   <SSC_Restrictions_InvalidConfig>Unsupported or invalid configuration (version {0}). Editing is disabled; original data has been preserved.</SSC_Restrictions_InvalidConfig>
@@ -80,7 +80,7 @@
   <SSC_Restrictions_Group_Masturbation>Initiation</SSC_Restrictions_Group_Masturbation>
   <SSC_Restrictions_Group_ReceiveConsensual>Reception</SSC_Restrictions_Group_ReceiveConsensual>
   <SSC_Restrictions_Group_ReceiveTraining>Training</SSC_Restrictions_Group_ReceiveTraining>
-  <SSC_Restrictions_TrainerLocked>Non-owner training is denied. The assigned trainer is locked to the bound owner: {0}.</SSC_Restrictions_TrainerLocked>
+  <SSC_Restrictions_TrainerLocked>Training currently permits only the bound owner: {0}. Selecting another trainer enables training permission unless equipment or specialization forces denial.</SSC_Restrictions_TrainerLocked>
   <SSC_Restrictions_Expand>▶ Expand behavior restrictions</SSC_Restrictions_Expand>
   <SSC_Restrictions_Collapse>◀ Collapse behavior restrictions</SSC_Restrictions_Collapse>
   <SSC_Restrictions_JobRejected>Interaction denied by restriction rules: {0}.</SSC_Restrictions_JobRejected>
@@ -111,4 +111,7 @@
   <SSC_Restrictions_Tip_ReceiveConsensual>Allow receiving consensual activity from non-owners; the initiator must also have permission.</SSC_Restrictions_Tip_ReceiveConsensual>
   <SSC_Restrictions_Tip_ReceiveForced>Allow receiving forced activity from non-owners. Equipment may force this option off.</SSC_Restrictions_Tip_ReceiveForced>
   <SSC_Restrictions_Tip_ReceiveTraining>Allow non-owner daily or ritual training. Trainer qualifications and assignment requirements still apply.</SSC_Restrictions_Tip_ReceiveTraining>
+  <SSC_Restrictions_AssignAuthorizesSuffix> (also allow training)</SSC_Restrictions_AssignAuthorizesSuffix>
+  <SSC_Restrictions_AssignAuthorizesTip>Selecting a non-owner trainer also enables receiving non-owner training. Ordinary interactions still use their own rules; forced equipment or specialization restrictions still apply.</SSC_Restrictions_AssignAuthorizesTip>
+  <SSC_Restrictions_AssignFailed>Assignment failed: eligibility or restrictions changed, or a forced rule denies training. The previous assignment and personal choices are unchanged.</SSC_Restrictions_AssignFailed>
 </LanguageData>

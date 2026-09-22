@@ -53,8 +53,10 @@ namespace SexSlaveCraft
         /// <summary>转换为正式仪式请求，不把身份或公交车状态当成许可。</summary>
         private static bool CanPair(Pawn host, Pawn target, out string reason)
         {
-            return SSCRestrictionTrainingUtility.TryEvaluate(
-                SSCRestrictionTrainingUtility.CreateRequest(host, target, true), false, out _, out reason);
+            SSCTrainingAdmission admission = SSCRestrictionTrainingUtility.Evaluate(
+                SSCRestrictionTrainingUtility.CreateRequest(host, target, true), false);
+            reason = admission.Reason;
+            return admission.Allowed;
         }
 
         /// <summary>不额外要求原版文化职位，目标资格由实际身份及配对检查决定。</summary>

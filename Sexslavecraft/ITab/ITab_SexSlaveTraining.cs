@@ -518,21 +518,17 @@ namespace SexSlaveCraft
             drawContents(innerRect);
         }
 
-        /// <summary>列出同时满足身份、工作及主人限制的可指派对象，清空入口始终保留。</summary>
+        /// <summary>列出合格且可完成调教授权的对象；普通互动不随指派开放，强制来源禁止时不能换人。</summary>
         private List<FloatMenuOption> GetTrainerOptions(Pawn slave)
         {
             List<FloatMenuOption> list = new List<FloatMenuOption>();
             List<Pawn> candidates = TrainerAssignmentUtility.GetTrainerCandidates(slave).ToList();
-            Pawn forcedMaster = TrainerAssignmentUtility.GetForcedMaster(slave);
+            Pawn owner = SSCBondUtility.GetBoundMaster(slave);
+            SSCRestrictionConfig config = slave.TryGetComp<CompSexSlaveTraining>()?.restrictionConfig;
 
             if (candidates.Count == 0)
             {
                 list.Add(new FloatMenuOption(Strings.ITab_NoTrainerAvailable, null));
-                list.Add(new FloatMenuOption(Strings.ITab_ClearTrainer, delegate
-                {
-                    SSCBondUtility.TryAssignTrainer(slave, null);
-                }));
-                return list;
             }
 
             foreach (Pawn candidate in candidates)
@@ -540,17 +536,27 @@ namespace SexSlaveCraft
                 string label = candidate.LabelShort;
                 Action action;
 
-                if (forcedMaster != null && candidate == forcedMaster)
+                if (owner != null && candidate == owner)
                 {
                     label += Strings.ITab_TrainerMasterSuffix;
                 }
+                else if (owner != null && config?.IsValid() == true && !config.rules.receiveTraining)
+                    label += "SSC_Restrictions_AssignAuthorizesSuffix".Translate();
 
-                action = delegate { SSCBondUtility.TryAssignTrainer(slave, candidate); };
+                action = delegate { AssignTrainer(slave, candidate); };
                 list.Add(new FloatMenuOption(label, action));
             }
 
-            list.Add(new FloatMenuOption(Strings.ITab_ClearTrainer, delegate { SSCBondUtility.TryAssignTrainer(slave, null); }));
+            list.Add(new FloatMenuOption(Strings.ITab_ClearTrainer,
+                SSCRestrictionTrainerAssignment.CanAssign(slave, null) ? (Action)(() => AssignTrainer(slave, null)) : null));
             return list;
+        }
+
+        /// <summary>点击时重新验证规则及候选状态；菜单打开后的状态变化造成失败时给出提示，保留原指派。</summary>
+        private static void AssignTrainer(Pawn slave, Pawn trainer)
+        {
+            if (!SSCBondUtility.TryAssignTrainer(slave, trainer))
+                Messages.Message("SSC_Restrictions_AssignFailed".Translate(), slave, MessageTypeDefOf.RejectInput, false);
         }
 
         /// <summary>切换日常训练状态并清除当前训练占用；启用时显示现有资格校验结果。</summary>
@@ -618,18 +624,14 @@ namespace SexSlaveCraft
             Find.WindowStack.Add(new FloatMenu(acts));
         }
 
-        /// <summary>显示原始指派及停用/暂不可执行状态，允许直接重新选择。</summary>
+        /// <summary>显示原始指派并允许打开候选；选择非主人时同步授权调教，个人禁止不再把整个菜单禁用。</summary>
         private void DrawTrainerSelector(Listing_Standard listing, Pawn pawn, CompSexSlaveTraining comp)
         {
             string trainerName = TrainerAssignmentUtility.GetAssignedTrainerLabel(pawn);
-            bool previous = GUI.enabled;
-            try
-            {
-                GUI.enabled = previous && SSCRestrictionLifecycle.GetForcedTrainer(pawn) == null;
-                if (listing.ButtonText(trainerName))
-                    Find.WindowStack.Add(new FloatMenu(GetTrainerOptions(pawn)));
-            }
-            finally { GUI.enabled = previous; }
+            Rect row = listing.GetRect(30f);
+            if (Widgets.ButtonText(row, trainerName))
+                Find.WindowStack.Add(new FloatMenu(GetTrainerOptions(pawn)));
+            TooltipHandler.TipRegion(row, "SSC_Restrictions_AssignAuthorizesTip".Translate());
         }
 
         /// <summary>绘制特化选择和进度，按资格及终极状态限制选项，并同步所选方向的基础状态。</summary>

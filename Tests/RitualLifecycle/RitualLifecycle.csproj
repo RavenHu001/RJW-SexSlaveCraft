@@ -20,5 +20,6 @@
     <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionPolicy.cs" Link="Production/SSCRestrictionPolicy.cs" />
     <Compile Include="../TrainerIdentity/RestrictionStubs.cs" Link="RestrictionStubs.cs" />
     <Compile Include="$(SscSourceRoot)/JobDriver/JobDriver_Train.cs" Link="Production/JobDriver_Train.cs" />
+    <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionConfigurationBuilder.cs" Link="Production/SSCRestrictionConfigurationBuilder.cs" />
   </ItemGroup>
 </Project>

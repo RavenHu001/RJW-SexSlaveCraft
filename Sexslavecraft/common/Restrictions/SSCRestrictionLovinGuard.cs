@@ -121,13 +121,22 @@ namespace SexSlaveCraft
         /// </remarks>
         public static IEnumerable<Toil> Wrap(JobDriver_Lovin driver, IEnumerable<Toil> toils)
         {
+            int initializers = 0;
             foreach (Toil toil in toils)
             {
                 Action original = toil.initAction;
                 if (original?.Method.DeclaringType == typeof(JobDriver_Lovin))
+                {
+                    initializers++;
                     toil.initAction = () => InitializePair(driver, original);
+                }
                 yield return toil;
             }
+            // 游戏版本或其他补丁可能替换原版回调形状。保留现有步骤与回调，不凭猜测移动索引或创造开始凭据。
+            // 完整枚举后核对，可区分正常的唯一配对回调与无法确认的兼容布局，且每次启动最多诊断一次。
+            if (initializers != 1)
+                SSCRestrictionCompatibilityDiagnostics.WarnOnce("RimWorld.JobDriver_Lovin.PairInitializer",
+                    "原版 Lovin 配对回调数量与已核对布局不符（实际=" + initializers + "，预期=1）；请检查游戏或替换 Lovin 的模组版本。原有步骤保持不变。");
         }
 
         /// <summary>执行唯一原版配对回调；嵌套接收端只沿用方向，由最外层发起者确认双方仍在同一任务后发布开始凭据。</summary>

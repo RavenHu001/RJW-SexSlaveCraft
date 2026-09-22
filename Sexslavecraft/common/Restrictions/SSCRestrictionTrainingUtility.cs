@@ -1,7 +1,43 @@
-using Verse;
+﻿using Verse;
 
 namespace SexSlaveCraft
 {
+    /// <summary>工作准入的失败类型；行为许可与身体、身份、指派条件保持分层。</summary>
+    internal enum SSCTrainingFailure { None, PermissionDenied, TrainerRequired, TargetInvalid, BindingMasterRequired, AssignmentRequired }
+
+    /// <summary>明确区分整体工作准入与限制系统许可，避免主人许可通过被误读为全部工作条件通过。</summary>
+    internal sealed class SSCTrainingAdmission
+    {
+        public SSCRestrictionDecision Permission { get; }
+        public SSCTrainingFailure Failure { get; }
+        public bool Allowed => Failure == SSCTrainingFailure.None;
+
+        /// <summary>保留完整许可结果与工作失败类型；成功时无需构造任何本地化原因。</summary>
+        public SSCTrainingAdmission(SSCRestrictionDecision permission, SSCTrainingFailure failure)
+        {
+            Permission = permission;
+            Failure = failure;
+        }
+
+        /// <summary>仅在调用者需要显示或记录时生成失败文字，不把翻译作为业务判断条件。</summary>
+        public string Reason
+        {
+            get
+            {
+                switch (Failure)
+                {
+                    case SSCTrainingFailure.PermissionDenied:
+                        return "SSC_Restrictions_JobRejected".Translate(("SSC_Restrictions_Reason_" + Permission.Reason).Translate());
+                    case SSCTrainingFailure.TrainerRequired: return "SSC_TrainerIdentity_Required".Translate();
+                    case SSCTrainingFailure.TargetInvalid: return "SSC_Restrictions_TrainingTargetInvalid".Translate();
+                    case SSCTrainingFailure.BindingMasterRequired: return "SSC_Restrictions_BindingMasterRequired".Translate();
+                    case SSCTrainingFailure.AssignmentRequired: return "SSC_Restrictions_TrainingAssignmentRequired".Translate();
+                    default: return null;
+                }
+            }
+        }
+    }
+
     /// <summary>为日常与仪式提供用途和工作关系适配；行为许可始终由统一策略决定。</summary>
     internal static class SSCRestrictionTrainingUtility
     {
@@ -33,43 +69,27 @@ namespace SexSlaveCraft
 
         /// <summary>先查询统一许可，再核对工作资格；自动日常工作只交给指定者，主人手动发起及主持不受指派排除。</summary>
         /// <remarks>总开关停用不取消首次建绑资质与唯一指派；这里没有公交车、装备或旧开放字段的许可分支。</remarks>
-        public static bool TryEvaluate(SSCRestrictionRequest request, bool requireAssignment,
-            out SSCRestrictionDecision decision, out string reason)
+        public static SSCTrainingAdmission Evaluate(SSCRestrictionRequest request, bool requireAssignment)
         {
-            decision = SSCRestrictionPolicy.Evaluate(request);
-            reason = null;
+            SSCRestrictionDecision decision = SSCRestrictionPolicy.Evaluate(request);
             if (!decision.Allowed)
-            {
-                reason = "SSC_Restrictions_JobRejected".Translate(("SSC_Restrictions_Reason_" + decision.Reason).Translate());
-                return false;
-            }
-            if (!IsTraining(request)) return true;
+                return new SSCTrainingAdmission(decision, SSCTrainingFailure.PermissionDenied);
+            if (!IsTraining(request)) return new SSCTrainingAdmission(decision, SSCTrainingFailure.None);
             Pawn actor = request.Initiator;
             Pawn target = request.Receiver;
             if (actor == null || target == null || actor == target || actor.Dead || actor.Destroyed ||
                 actor.Downed || !actor.IsColonist || actor.IsSlave || actor.IsPrisonerOfColony || !SSCIdentityUtility.IsTrainer(actor))
-            {
-                reason = "SSC_TrainerIdentity_Required".Translate();
-                return false;
-            }
+                return new SSCTrainingAdmission(decision, SSCTrainingFailure.TrainerRequired);
             if (target.TryGetComp<CompSexSlaveTraining>() == null || SSCIdentityUtility.IsMaster(target))
-            {
-                reason = "SSC_Restrictions_TrainingTargetInvalid".Translate();
-                return false;
-            }
+                return new SSCTrainingAdmission(decision, SSCTrainingFailure.TargetInvalid);
             // 首次准备只能由指定且可建立所有权的主人完成；停用行为限制也不能授予新主人身份。
             if (request.Kind == SSCInteractionKind.BindingPreparation && !SSCIdentityUtility.IsMaster(actor))
-            {
-                reason = "SSC_Restrictions_BindingMasterRequired".Translate();
-                return false;
-            }
+                return new SSCTrainingAdmission(decision, SSCTrainingFailure.BindingMasterRequired);
             if ((requireAssignment || decision.Reason != SSCRestrictionReason.BoundOwner) &&
                 TrainerAssignmentUtility.GetActiveAssignedTrainer(target) != actor)
-            {
-                reason = "SSC_Restrictions_TrainingAssignmentRequired".Translate();
-                return false;
-            }
-            return true;
+                return new SSCTrainingAdmission(decision, SSCTrainingFailure.AssignmentRequired);
+            return new SSCTrainingAdmission(decision, SSCTrainingFailure.None);
         }
+
     }
 }

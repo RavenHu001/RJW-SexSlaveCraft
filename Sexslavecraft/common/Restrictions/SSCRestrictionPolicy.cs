@@ -1,4 +1,4 @@
-using Verse;
+﻿using Verse;
 
 namespace SexSlaveCraft
 {
@@ -20,7 +20,7 @@ namespace SexSlaveCraft
         public readonly Pawn Receiver;
         public readonly SSCInteractionKind Kind;
         public readonly bool DirectionKnown;
-        // Only the read-only development preview may use temporary defaults for missing configurations.
+        // 只有只读开发预览可以为已生效但缺配置的角色构建临时默认，普通查询不得初始化。
         internal bool PreviewDefaults;
 
         /// <summary>记录实际发起者、接收者和用途；调用方必须显式说明是否已确认方向。</summary>
@@ -39,7 +39,7 @@ namespace SexSlaveCraft
         public SSCRestrictionResolution Entry { get; internal set; }
     }
 
-    /// <summary>新系统唯一行为许可入口；界面与已接管任务共用，后续批次的旧任务由适配层隔离。</summary>
+    /// <summary>唯一行为许可入口；界面及各任务适配层共用，不在判断时写入角色配置。</summary>
     public static class SSCRestrictionPolicy
     {
         /// <summary>统一判定行为许可；方向明确的已绑定主人对自身目标发起请求时立即放行。</summary>
@@ -52,7 +52,7 @@ namespace SexSlaveCraft
             if (request == null) return Result(false, SSCRestrictionReason.IncompleteContext);
             Pawn actor = request.Initiator;
             Pawn target = request.Receiver;
-            // Must precede config reads, purpose validation, equipment and all per-entry restrictions.
+            // 主人对自身绑定对象的最高许可先于配置、用途、装备及所有条目校验。
             if (request.DirectionKnown && actor != null && target != null && actor != target && SSCBondUtility.IsBoundTo(target, actor))
                 return Result(true, SSCRestrictionReason.BoundOwner);
             if (SSCMod.settings != null && !SSCMod.settings.enableSexSlaveProtectionRules)
@@ -60,6 +60,7 @@ namespace SexSlaveCraft
 
             bool actorApplies = SSCRestrictionResolver.IsApplicable(actor);
             bool targetApplies = SSCRestrictionResolver.IsApplicable(target);
+            // 建绑准备检查的是建立关系的资格，不能因目标尚未启用限制就跳过此用途的资格判断。
             bool preparation = request.Kind == SSCInteractionKind.BindingPreparation;
             if (!actorApplies && !targetApplies && !(preparation && target?.TryGetComp<CompSexSlaveTraining>() != null))
                 return Result(true, SSCRestrictionReason.NotApplicable);
@@ -122,7 +123,7 @@ namespace SexSlaveCraft
             if (config == null && request.PreviewDefaults)
             {
                 SSCRestrictionResolution error;
-                if (!SSCRestrictionResolver.TryCreateInitialConfiguration(subject, SSCMod.settings?.restrictionDefaults, out config, out error))
+                if (!SSCRestrictionConfigurationBuilder.TryCreateInitial(subject, SSCMod.settings?.restrictionDefaults, out config, out error))
                 {
                     SSCRestrictionDecision invalid = Result(false, SSCRestrictionReason.ConfigurationInvalid, subject);
                     invalid.Entry = error;

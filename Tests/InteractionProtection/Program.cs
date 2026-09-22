@@ -50,6 +50,7 @@ internal static partial class Program
         RunStage3ATests();
         RunStage3BTests();
         RunStage3CTests();
+        RunJobRefactorTests();
         Console.WriteLine($"结果：{passed}/{passed + failed} 项通过。");
         return failed == 0 ? 0 : 1;
     }

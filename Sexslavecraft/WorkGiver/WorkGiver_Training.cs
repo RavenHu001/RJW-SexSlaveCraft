@@ -3,82 +3,52 @@ using RimWorld;
 using Verse.AI;
 using Verse;
 
-// EN: This file exposes ordinary training as a workgiver.
-// EN: It relies on shared trainer and target utilities for consistent rules.
-// CN: 这个文件把普通调教暴露为 WorkGiver。
-// CN: 它依赖共享的 trainer 和 target 工具来统一规则。
 namespace SexSlaveCraft
 {
+    /// <summary>把日常调教接入原版工作扫描；候选枚举、完整校验与任务创建各有独立入口。</summary>
     public class WorkGiver_Training : WorkGiver_Scanner
     {
-
-
         public override ThingRequest PotentialWorkThingRequest => ThingRequest.ForGroup(ThingRequestGroup.Pawn);
         public override PathEndMode PathEndMode => PathEndMode.Touch;
 
-        // ==========================================================
-        // 1. ShouldSkip 检查：看是不是连大门都没让进
-        // ==========================================================
+        /// <summary>基础调教研究未完成时跳过整个工作类别，之后沿用原版扫描器条件。</summary>
         public override bool ShouldSkip(Pawn pawn, bool forced = false)
         {
-
-
-            // 科技检查
-            if (!ResearchUtils.IsResearchFinished(SSCDefOf.SSC_BasicTraining))
-            {
-
-                return true;
-            }
-
-            bool baseSkip = base.ShouldSkip(pawn, forced);
-
-
-            return baseSkip;
+            return !ResearchUtils.IsResearchFinished(SSCDefOf.SSC_BasicTraining) || base.ShouldSkip(pawn, forced);
         }
 
-        // PotentialWorkThingsGlobal 主要用于自动寻找工作(非强制指派)，这里我们保持原样，不加Log防刷屏
+        /// <summary>只读筛选可能的自动工作对象，不为枚举恢复状态、移除冲突基因或分配任务。</summary>
         public override IEnumerable<Thing> PotentialWorkThingsGlobal(Pawn pawn)
         {
-            foreach (var potentialTarget in pawn.Map.mapPawns.AllPawns)
+            if (pawn?.Map == null) yield break;
+            foreach (Pawn potentialTarget in pawn.Map.mapPawns.AllPawns)
             {
-                if (!TrainerAssignmentUtility.IsTrainingTargetAvailable(potentialTarget, pawn, false)) continue;
-
-                yield return potentialTarget;
+                if (TrainerAssignmentUtility.IsPotentialTrainingTarget(potentialTarget, pawn))
+                    yield return potentialTarget;
             }
         }
 
-        // ==========================================================
-        // 2. HasJobOnThing：右键菜单生成的第一道关卡
-        // ==========================================================
+        /// <summary>完整检查当前目标并设置右键失败提示；查询结果不会创建随后被丢弃的临时 Job。</summary>
         public override bool HasJobOnThing(Pawn pawn, Thing t, bool forced = false)
         {
-
-
-            bool hasJob = JobOnThing(pawn, t, forced) != null;
-
-
-            return hasJob;
+            return TryPrepareTarget(pawn, t as Pawn, forced);
         }
 
-        // ==========================================================
-        // 3. JobOnThing：核心逻辑，一层一层扒开看是在哪断的
-        // ==========================================================
+        /// <summary>创建前重新验证当前状态，避免候选查询后设置、预约或指派变化造成过期许可。</summary>
         public override Job JobOnThing(Pawn pawn, Thing t, bool forced = false)
         {
+            Pawn target = t as Pawn;
+            return TryPrepareTarget(pawn, target, forced)
+                ? JobMaker.MakeJob(SSCDefOf.TrainingSexSlave, target)
+                : null;
+        }
 
-
-            Pawn targetPawn = t as Pawn;
-            if (!TrainerAssignmentUtility.TryGetTrainingTargetFailureReason(targetPawn, pawn, forced, out string reason))
-            {
-                if (forced && !string.IsNullOrEmpty(reason))
-                {
-                    JobFailReason.Is(reason);
-                }
-                return null;
-            }
-
-
-            return JobMaker.MakeJob(SSCDefOf.TrainingSexSlave, targetPawn);
+        /// <summary>查询和创建共用完整准备入口；兼容修复在此明确发生，强制命令保留具体失败原因。</summary>
+        private static bool TryPrepareTarget(Pawn trainer, Pawn target, bool forced)
+        {
+            if (TrainerAssignmentUtility.TryPrepareTrainingTarget(target, trainer, forced, out string reason)) return true;
+            if (forced && !string.IsNullOrEmpty(reason)) JobFailReason.Is(reason);
+            return false;
         }
     }
 }

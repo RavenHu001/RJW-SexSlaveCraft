@@ -257,6 +257,7 @@ namespace SexSlaveCraft
     }
     public static class SSCLog
     {
+        public static bool VerboseEnabled => false;
         /// <summary>忽略详细日志，避免正常执行的测试输出被游戏诊断信息淹没。</summary>
         public static void Verbose(string message) { }
         /// <summary>提供重要日志的无操作适配；用例结果由测试执行器单独输出。</summary>

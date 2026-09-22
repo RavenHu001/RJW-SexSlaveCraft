@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Verse;
@@ -21,6 +21,9 @@ namespace SexSlaveCraft
             error = null;
             CompSexSlaveTraining comp = pawn?.TryGetComp<CompSexSlaveTraining>();
             if (comp == null || comp.restrictionRestoreDepth > 0) return false;
+            // 未绑定时只保留已有数据与待迁移输入，不初始化、不合入新特化默认，也不把旧配置视作异常。
+            // 绑定完成后的同一生命周期入口会继续迁移或初始化，首次生效采用那一刻的模板。
+            if (!SSCRestrictionResolver.IsApplicable(pawn)) return false;
             if (comp.restrictionConfig == null)
             {
                 if (comp.legacyRestrictionInput != null)
@@ -32,8 +35,7 @@ namespace SexSlaveCraft
                 }
                 else
                 {
-                    if (!SSCRestrictionResolver.IsApplicable(pawn)) return false;
-                    if (!SSCRestrictionResolver.TryCreateInitialConfiguration(pawn, SSCMod.settings?.restrictionDefaults,
+                    if (!SSCRestrictionConfigurationBuilder.TryCreateInitial(pawn, SSCMod.settings?.restrictionDefaults,
                         out SSCRestrictionConfig initial, out error)) return false;
                     comp.restrictionConfig = initial;
                 }
@@ -42,9 +44,11 @@ namespace SexSlaveCraft
 
             SSCRestrictionConfig config = comp.restrictionConfig;
             if (!config.IsValid()) return false;
-            if (SSCRestrictionResolver.IsApplicable(pawn) && !config.busDefaultsApplied && HasBus(pawn))
+            if (!config.busDefaultsApplied && HasBus(pawn))
             {
-                if (!SSCRestrictionResolver.TryApplyBusDefaults(pawn, config, out error)) return false;
+                if (!SSCRestrictionConfigurationBuilder.TryApplyBusDefaults(pawn, config,
+                    out SSCRestrictionConfig candidate, out error)) return false;
+                comp.restrictionConfig = candidate;
             }
             return true;
         }
@@ -55,7 +59,7 @@ namespace SexSlaveCraft
             return new RestoreScope(pawn);
         }
 
-        /// <summary>清除整只复制带来的配置、迁移与默认标记，让新克隆按当前模板独立初始化。</summary>
+        /// <summary>清除整只复制带来的配置、迁移与默认标记，让新克隆在自己的绑定生效时按当前模板初始化。</summary>
         public static void ResetNewClone(Pawn pawn)
         {
             CompSexSlaveTraining comp = pawn?.TryGetComp<CompSexSlaveTraining>();
@@ -77,7 +81,7 @@ namespace SexSlaveCraft
                 CompSexSlaveTraining comp = pawn.TryGetComp<CompSexSlaveTraining>();
                 if (comp == null || !SSCRestrictionResolver.IsApplicable(pawn)) { result.Skipped++; continue; }
                 if (comp.restrictionRestoreDepth > 0 || snapshot == null ||
-                    !SSCRestrictionResolver.TryCreateInitialConfiguration(pawn, snapshot, out SSCRestrictionConfig config, out _))
+                    !SSCRestrictionConfigurationBuilder.TryCreateInitial(pawn, snapshot, out SSCRestrictionConfig config, out _))
                 { result.Failed++; continue; }
                 comp.restrictionConfig = config;
                 comp.legacyRestrictionInput = null;
@@ -102,7 +106,9 @@ namespace SexSlaveCraft
             if (comp.selectedTrainer != null && (comp.selectedTrainer.Dead || comp.selectedTrainer.Destroyed))
                 comp.selectedTrainer = null;
             Pawn forced = GetForcedTrainer(pawn);
-            if (forced != null) comp.selectedTrainer = forced;
+            // GetForcedTrainer 表达“条目只准主人”，即使主人死亡仍用于界面锁定。
+            // 实际工作指派不得写回死亡/销毁角色；保留锁链和条目，不借清理操作改变所有权或开放第三方。
+            if (forced != null && !forced.Dead && !forced.Destroyed) comp.selectedTrainer = forced;
         }
 
         /// <summary>在最外层恢复完成或异常退出时刷新实际保留状态，确保嵌套操作不会提前写入默认。</summary>

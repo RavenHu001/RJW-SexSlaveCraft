@@ -86,7 +86,8 @@ namespace SexSlaveCraft
             foreach (SSCRestrictionRule rule in SSCRestrictionRules.All)
             {
                 DrawGroup(listing, rule);
-                SSCRestrictionResolution entry = SSCRestrictionResolver.Resolve(pawn, config.rules, rule);
+                // 未绑定角色只展示保留的个人选择，不把当前装备/特化标成正在生效的强制来源。
+                SSCRestrictionResolution entry = applicable ? SSCRestrictionResolver.Resolve(pawn, config.rules, rule) : null;
                 string extraTip = null;
                 if (rule == SSCRestrictionRule.ReceiveTraining)
                 {

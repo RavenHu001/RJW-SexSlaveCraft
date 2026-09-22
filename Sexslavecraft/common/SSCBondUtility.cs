@@ -42,7 +42,7 @@ namespace SexSlaveCraft
             return sexSlave != null && master != null && GetBoundMaster(sexSlave) == master;
         }
 
-        /// <summary>指派写入沿用菜单资格，允许清空；拒绝时保留原记录，不能由外部调用绕过身份过滤。</summary>
+        /// <summary>通过菜单资格后原子提交指派及必要的非主人调教授权；强制覆盖拒绝时保留原选择。</summary>
         public static bool TryAssignTrainer(Pawn sexSlave, Pawn trainer)
         {
             CompSexSlaveTraining comp = sexSlave?.TryGetComp<CompSexSlaveTraining>();
@@ -50,8 +50,7 @@ namespace SexSlaveCraft
 
             if (trainer != null && !TrainerAssignmentUtility.CanAssignTrainerTo(sexSlave, trainer)) return false;
 
-            comp.selectedTrainer = trainer;
-            return true;
+            return SSCRestrictionTrainerAssignment.TryAssign(sexSlave, trainer);
         }
 
         /// <summary>先确认目标可以成为性奴，再建立双向绑定；身份锁定或归属冲突时不改动已有关系。</summary>
@@ -74,9 +73,9 @@ namespace SexSlaveCraft
             Hediff_BridleOfSexSlave bridle = Hediff_BridleOfSexSlave.AddToPawn(master, sexSlave);
             if (chain == null || bridle == null) return false;
 
-            // 绑定入口只建立关系；完成后的限制生命周期通知按新调教条目协调指定者。
-            // 不再先用旧开放字段覆盖指派、再由 Harmony 恢复原值。
-
+            // 自有事务完成后显式通知：读此方法即可看见首次绑定初始化与指派协调，
+            // 不再依赖针对本方法的隐式 Harmony 后缀；原生/第三方入口仍由相应 Hook 接入。
+            SSCRestrictionGameComponent.Notify(sexSlave);
             return true;
         }
 
@@ -108,7 +107,9 @@ namespace SexSlaveCraft
                 CompSexSlaveTraining comp = sexSlave?.TryGetComp<CompSexSlaveTraining>();
                 if (comp != null && (master == null || comp.selectedTrainer == master))
                 {
-                    TryAssignTrainer(sexSlave, null);
+                    // 这是解绑事务的关系清理，不是玩家重新指派；人格恢复期间也必须清除原主，
+                    // 不能被限制编辑的恢复锁挡住。上面的条件继续保留明确指定的第三方。
+                    comp.selectedTrainer = null;
                 }
             }
 

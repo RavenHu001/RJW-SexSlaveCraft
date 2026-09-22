@@ -267,6 +267,7 @@ namespace SexSlaveCraft
     }
     public static class SSCLog
     {
+        public static bool VerboseEnabled => true;
         public static List<string> Entries = new();
         /// <summary>收集诊断日志，不向游戏消息列表插入事件发生提示。</summary>
         public static void Verbose(string message) => Entries.Add(message);

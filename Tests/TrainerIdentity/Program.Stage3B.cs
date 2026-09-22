@@ -111,7 +111,8 @@ internal static partial class Program
             var f = Setup(); var other = Pawn(PawnIdentity.Master, f.slave.Map);
             var request = SSCRestrictionTrainingUtility.CreateRequest(f.master, f.slave, true);
             Assert(request.Kind == SSCInteractionKind.BindingPreparation);
-            Assert(SSCRestrictionTrainingUtility.TryEvaluate(request, false, out var result, out _) && result.Reason != SSCRestrictionReason.BoundOwner);
+            SSCTrainingAdmission result = SSCRestrictionTrainingUtility.Evaluate(request, false);
+            Assert(result.Allowed && result.Permission.Reason != SSCRestrictionReason.BoundOwner);
             Assert(new WorkGiver_Training().JobOnThing(f.master, f.slave, false) != null);
             Assert(!new RitualRole_BindingMaster().AppliesToPawn(other, out _, default, assignments: new RitualRoleAssignments { Slave = f.slave }));
             Assert(SSCBondUtility.GetBoundMaster(f.slave) == null);
@@ -125,6 +126,14 @@ internal static partial class Program
             f.slave.apparel.WornApparel.Add(gear);
             Assert(new WorkGiver_Training().JobOnThing(other, f.slave, false) != null);
             Assert(new RitualRole_BindingMaster().AppliesToPawn(other, out _, default, assignments: new RitualRoleAssignments { Slave = f.slave }));
+        });
+        Run("主人许可通过与工作准入独立，倒地主人仍无法执行工作", () =>
+        {
+            var f = Setup(); SSCBondUtility.Bind(f.master, f.slave); f.master.Downed = true;
+            SSCTrainingAdmission admission = SSCRestrictionTrainingUtility.Evaluate(
+                SSCRestrictionTrainingUtility.CreateRequest(f.master, f.slave, false), false);
+            Assert(admission.Permission.Allowed && admission.Permission.Reason == SSCRestrictionReason.BoundOwner);
+            Assert(!admission.Allowed && admission.Failure == SSCTrainingFailure.TrainerRequired);
         });
     }
 }

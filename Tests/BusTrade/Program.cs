@@ -88,6 +88,8 @@ internal static partial class Program
             CanFuck = false, CanBeFucked = true
         };
         bus.Training.pawnIdentity = PawnIdentity.Slave;
+        // 限制只作用于实际绑定对象；使用独立主人，避免商人请求误获主人优先许可。
+        bus.BoundMaster = new Pawn { LabelShort = "Owner", Map = map };
         bus.Training.restrictionConfig.rules.consensualInitiation = SSCRestrictionValue.Allow;
         bus.Training.restrictionConfig.rules.receiveForced = true;
         bus.needs.Corruption.CurLevel = corruption;

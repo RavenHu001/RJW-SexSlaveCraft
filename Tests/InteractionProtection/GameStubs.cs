@@ -413,8 +413,12 @@ namespace SexSlaveCraft
     }
     public static class SSCLog
     {
+        public static bool VerboseEnabled = false;
+        public static readonly List<string> Warnings = new List<string>();
         /// <summary>接收并忽略生产详细日志，避免测试结果被诊断文本淹没。</summary>
         public static void Verbose(string message) { }
+        /// <summary>记录兼容警告，供测试验证缺席安静、接口变化只提示一次。</summary>
+        public static void WarningImportant(string message) => Warnings.Add(message);
     }
     public static class Strings {
         public const string Message_SlaveAlreadyLinked = "Protected";

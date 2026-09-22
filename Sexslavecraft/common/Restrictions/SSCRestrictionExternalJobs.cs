@@ -63,7 +63,8 @@ namespace SexSlaveCraft
             SSCRestrictionDecision decision = SSCRestrictionPolicy.Evaluate(SeduceRequest(driver.job.targetA.Thing as Pawn, driver.pawn));
             if (decision.Allowed) return true;
             // 在交接步骤前失败，不执行原模组的取消征召、增加记忆或启动另一方任务。
-            SSCLog.Verbose($"[SSC Restrictions] Seduced rejected reason={decision.Reason}");
+            if (SSCLog.VerboseEnabled)
+                SSCLog.Verbose($"[SSC Restrictions] Seduced rejected reason={decision.Reason}");
             driver.pawn.jobs.EndCurrentJob(JobCondition.Incompletable, startNewJob: false);
             return false;
         }
@@ -75,11 +76,11 @@ namespace SexSlaveCraft
         /// <summary>缺失可选驱动时跳过整个补丁类；仅返回空TargetMethods仍会使Harmony尝试无目标补丁。</summary>
         public static bool Prepare() => TargetMethods().Any();
 
-        /// <summary>只为当前已安装的 Seduced 驱动登记预约补丁；缺模组时返回空目标集。</summary>
+        /// <summary>只为已核对签名的 Seduced 驱动登记预约补丁；缺席安静跳过，已安装版本不匹配则诊断。</summary>
         public static IEnumerable<MethodBase> TargetMethods()
         {
-            Type type = AccessTools.TypeByName(SSCRestrictionExternalJobs.SeducedType);
-            MethodInfo method = type == null ? null : AccessTools.DeclaredMethod(type, "TryMakePreToilReservations", new[] { typeof(bool) });
+            MethodInfo method = SSCRestrictionCompatibilityDiagnostics.OptionalMethod(SSCRestrictionExternalJobs.SeducedType,
+                typeof(JobDriver), "TryMakePreToilReservations", typeof(bool), typeof(bool));
             if (method != null) yield return method;
         }
 
@@ -101,8 +102,8 @@ namespace SexSlaveCraft
         /// <summary>动态定位可选能力的目标验证方法，避免编译时引用基因模组。</summary>
         public static IEnumerable<MethodBase> TargetMethods()
         {
-            Type type = AccessTools.TypeByName(SSCRestrictionExternalJobs.SeduceEffectType);
-            MethodInfo method = type == null ? null : AccessTools.DeclaredMethod(type, "Valid", new[] { typeof(LocalTargetInfo), typeof(bool) });
+            MethodInfo method = SSCRestrictionCompatibilityDiagnostics.OptionalMethod(SSCRestrictionExternalJobs.SeduceEffectType,
+                typeof(CompAbilityEffect), "Valid", typeof(bool), typeof(LocalTargetInfo), typeof(bool));
             if (method != null) yield return method;
         }
 
@@ -126,8 +127,8 @@ namespace SexSlaveCraft
         /// <summary>动态定位实际施法入口；Apply 前缀必须早于原方法中的 StopAll 执行。</summary>
         public static IEnumerable<MethodBase> TargetMethods()
         {
-            Type type = AccessTools.TypeByName(SSCRestrictionExternalJobs.SeduceEffectType);
-            MethodInfo method = type == null ? null : AccessTools.DeclaredMethod(type, "Apply", new[] { typeof(LocalTargetInfo), typeof(LocalTargetInfo) });
+            MethodInfo method = SSCRestrictionCompatibilityDiagnostics.OptionalMethod(SSCRestrictionExternalJobs.SeduceEffectType,
+                typeof(CompAbilityEffect), "Apply", typeof(void), typeof(LocalTargetInfo), typeof(LocalTargetInfo));
             if (method != null) yield return method;
         }
 
@@ -135,7 +136,7 @@ namespace SexSlaveCraft
         public static bool Prefix(CompAbilityEffect __instance, LocalTargetInfo target)
         {
             SSCRestrictionDecision decision = SSCRestrictionPolicy.Evaluate(SSCRestrictionExternalJobs.SeduceRequest(__instance.parent?.pawn, target.Thing as Pawn));
-            if (!decision.Allowed)
+            if (!decision.Allowed && SSCLog.VerboseEnabled)
                 SSCLog.Verbose($"[SSC Restrictions] Seduce Apply rejected reason={decision.Reason}");
             return decision.Allowed;
         }

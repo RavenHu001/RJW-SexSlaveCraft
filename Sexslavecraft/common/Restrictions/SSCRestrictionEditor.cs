@@ -1,4 +1,4 @@
-using Verse;
+﻿using Verse;
 
 namespace SexSlaveCraft
 {
@@ -25,7 +25,7 @@ namespace SexSlaveCraft
             CompSexSlaveTraining comp = pawn?.TryGetComp<CompSexSlaveTraining>();
             if (comp == null || !SSCRestrictionResolver.IsApplicable(pawn) || comp.restrictionConfig != null ||
                 comp.legacyRestrictionInput != null || comp.restrictionRestoreDepth > 0) return false;
-            if (!SSCRestrictionResolver.TryCreateInitialConfiguration(pawn, SSCMod.settings?.restrictionDefaults,
+            if (!SSCRestrictionConfigurationBuilder.TryCreateInitial(pawn, SSCMod.settings?.restrictionDefaults,
                 out SSCRestrictionConfig config, out error)) return false;
             comp.restrictionConfig = config;
             comp.restrictionLifecycleSeen = true;

@@ -6,7 +6,7 @@ namespace SexSlaveCraft
 {
     /// <summary>RJW 生命周期适配层：只安排检查时机，所有许可均交给统一限制系统。</summary>
     /// <remarks>
-    /// 阶段3C已删除旧白名单、玩家命令豁免和旧保护策略回退。保持类名便于现有补丁定位，
+    /// 此处统一接入行为限制系统，实际主人许可也由统一策略决定。保持类名便于现有补丁定位，
     /// 不代表仍使用锁链保护算法。派生驱动自行覆盖的预约方法由动态预约补丁处理。
     /// </remarks>
     [HarmonyPatch(typeof(JobDriver_Sex), "TryMakePreToilReservations")]

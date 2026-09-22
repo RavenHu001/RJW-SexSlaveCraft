@@ -24,11 +24,15 @@ namespace SexSlaveCraft
                 return false;
             }
             Pawn slave = assignments?.FirstAssignedPawn("slave") ?? ritual?.PawnWithRole("slave");
-            if (slave != null && !SSCRestrictionTrainingUtility.TryEvaluate(
-                SSCRestrictionTrainingUtility.CreateRequest(p, slave, true), false, out _, out string failure))
+            if (slave != null)
             {
-                if (!skipReason) reason = failure;
-                return false;
+                SSCTrainingAdmission admission = SSCRestrictionTrainingUtility.Evaluate(
+                    SSCRestrictionTrainingUtility.CreateRequest(p, slave, true), false);
+                if (!admission.Allowed)
+                {
+                    if (!skipReason) reason = admission.Reason;
+                    return false;
+                }
             }
             if (selectedTarget.IsValid && !p.CanReach((LocalTargetInfo)selectedTarget, PathEndMode.Touch, Danger.Deadly))
             {

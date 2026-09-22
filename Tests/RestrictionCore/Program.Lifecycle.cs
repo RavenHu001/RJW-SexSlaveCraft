@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using SexSlaveCraft;
@@ -61,7 +61,7 @@ internal static partial class Program
             Scribe.mode = LoadSaveMode.LoadingVars; reloaded.ExposeData();
             Scribe.mode = LoadSaveMode.PostLoadInit; reloaded.ExposeData();
             Scribe.mode = LoadSaveMode.Inactive; SSCMod.settings = reloaded;
-            Pawn old = FreshPawn("second old save", PawnIdentity.Slave);
+            Pawn old = FreshBoundPawn("second old save");
             LoadOldRestrictions(old); StartRestrictionGame(old);
             Equal(true, old.Training.restrictionConfig.rules.receiveForced);
             Equal(true, old.Training.restrictionConfig.rules.receiveConsensual);
@@ -91,7 +91,7 @@ internal static partial class Program
         });
         Run("Closed legacy pawn keeps its designated trainer while the unified system is disabled", () =>
         {
-            Pawn pawn = FreshPawn("old closed", PawnIdentity.Slave), owner = FreshPawn("owner"), other = FreshPawn("trainer");
+            Pawn pawn = FreshBoundPawn("old closed"), owner = FreshPawn("owner"), other = FreshPawn("trainer");
             pawn.BoundMaster = owner; pawn.Training.selectedTrainer = other;
             SSCMod.settings.enableSexSlaveProtectionRules = false;
             LoadOldRestrictions(pawn); StartRestrictionGame(pawn, owner, other);
@@ -103,7 +103,7 @@ internal static partial class Program
         });
         Run("Old eligible pawn captures pre-repair choices and migrates once after references", () =>
         {
-            Pawn pawn = FreshPawn("old", PawnIdentity.Slave);
+            Pawn pawn = FreshBoundPawn("old");
             pawn.Training.allowOthersForTrainingOrSex = true;
             LoadOldRestrictions(pawn);
             Equal(true, pawn.Training.legacyRestrictionInput.open);
@@ -128,6 +128,9 @@ internal static partial class Program
             SSCMod.settings.restrictionDefaults.receiveTraining = false;
             pawn.Training.pawnIdentity = PawnIdentity.Slave;
             SSCRestrictionGameComponent.Notify(pawn);
+            Equal(null, pawn.Training.restrictionConfig);
+            pawn.BoundMaster = FreshPawn("first owner", PawnIdentity.Master);
+            SSCRestrictionGameComponent.Notify(pawn);
             Equal(false, pawn.Training.restrictionConfig.rules.receiveTraining);
         });
         Run("Legacy binding without SSC identity still migrates its own old choices", () =>
@@ -144,7 +147,7 @@ internal static partial class Program
         {
             SSCMod.settings.enableSexSlaveProtectionRules = false;
             SSCMod.settings.restrictionDefaults.receiveTraining = true;
-            Pawn pawn = FreshPawn("new", PawnIdentity.Slave);
+            Pawn pawn = FreshBoundPawn("new");
             StartRestrictionGame(pawn);
             Equal(true, pawn.Training.restrictionConfig.rules.receiveTraining);
             SSCMod.settings.restrictionDefaults.receiveTraining = false;
@@ -164,7 +167,7 @@ internal static partial class Program
             Scribe.mode = LoadSaveMode.LoadingVars; Current.Game.Restrictions.ExposeData();
             Scribe.mode = LoadSaveMode.PostLoadInit; Current.Game.Restrictions.ExposeData();
             Scribe.mode = LoadSaveMode.Inactive; Current.Game.Restrictions.FinalizeInit();
-            Pawn delayed = FreshPawn("delayed", PawnIdentity.Slave);
+            Pawn delayed = FreshBoundPawn("delayed");
             LoadOldRestrictions(delayed);
             SSCRestrictionGameComponent.Notify(delayed);
             Equal(true, delayed.Training.restrictionConfig.rules.receiveConsensual);
@@ -172,7 +175,7 @@ internal static partial class Program
         });
         Run("Pending legacy migration cannot be replaced by manual initialization", () =>
         {
-            Pawn pawn = FreshPawn("pending", PawnIdentity.Slave);
+            Pawn pawn = FreshBoundPawn("pending");
             LoadOldRestrictions(pawn);
             Equal(false, SSCRestrictionEditor.TryInitialize(pawn));
             Equal(false, SSCRestrictionLifecycle.Refresh(pawn, null, out _));
@@ -181,13 +184,13 @@ internal static partial class Program
         });
         Run("Pawn migration markers and pending inputs survive save reload", () =>
         {
-            Pawn pawn = FreshPawn("old bus", PawnIdentity.Slave); pawn.HasBusState = true;
+            Pawn pawn = FreshBoundPawn("old bus"); pawn.HasBusState = true;
             pawn.Training.allowOthersForTrainingOrSex = true;
             LoadOldRestrictions(pawn);
             Scribe.node = new Dictionary<string, object>();
             Scribe.mode = LoadSaveMode.Saving; pawn.Training.ExposeRestrictions();
             Equal(false, Scribe.node.ContainsKey("allowOthersForTrainingOrSex"));
-            Pawn restored = FreshPawn("restored", PawnIdentity.Slave);
+            Pawn restored = FreshBoundPawn("restored");
             Scribe.mode = LoadSaveMode.LoadingVars; restored.Training.ExposeRestrictions();
             Scribe.mode = LoadSaveMode.PostLoadInit; restored.Training.ExposeRestrictions();
             Equal(true, restored.Training.restrictionLifecycleSeen);
@@ -201,7 +204,7 @@ internal static partial class Program
         });
         Run("Existing phase-one values survive upgrade even when old fields disagree", () =>
         {
-            Pawn pawn = FreshPawn("phase one", PawnIdentity.Slave);
+            Pawn pawn = FreshBoundPawn("phase one");
             pawn.Training.restrictionConfig = new SSCRestrictionConfig { rules = PermissiveRules() };
             Scribe.mode = LoadSaveMode.Saving; pawn.Training.ExposeRestrictions();
             Scribe.node.Remove("sscRestrictionLifecycleSeen");
@@ -214,7 +217,7 @@ internal static partial class Program
         });
         Run("First bus acquisition applies only bus defaults once even with overrides off", () =>
         {
-            Pawn pawn = FreshPawn("new", PawnIdentity.Slave);
+            Pawn pawn = FreshBoundPawn("new");
             SSCMod.settings.enableSpecializationRestrictionOverrides = false;
             StartRestrictionGame(pawn);
             pawn.Training.restrictionConfig.rules.allowMasturbation = true;
@@ -234,7 +237,7 @@ internal static partial class Program
         });
         Run("Invalid first bus defaults are atomic and can succeed after correction", () =>
         {
-            Pawn pawn = FreshPawn("bus", PawnIdentity.Slave);
+            Pawn pawn = FreshBoundPawn("bus");
             StartRestrictionGame(pawn);
             pawn.Training.specializationType = SexSlaveSpecializationType.Bus;
             BusProfile().defaults.receiveForced = SSCRestrictionValue.OwnerOnly;
@@ -250,7 +253,7 @@ internal static partial class Program
         });
         Run("Legacy bus preserves its training mapping without applying new defaults again", () =>
         {
-            Pawn pawn = FreshPawn("legacy bus", PawnIdentity.Slave); pawn.HasBusState = true;
+            Pawn pawn = FreshBoundPawn("legacy bus"); pawn.HasBusState = true;
             LoadOldRestrictions(pawn);
             BusProfile().defaults.receiveForced = SSCRestrictionValue.Deny;
             StartRestrictionGame(pawn);
@@ -259,7 +262,7 @@ internal static partial class Program
         });
         Run("Personality insertion preserves recipient choices and consumes current bus defaults", () =>
         {
-            Pawn pawn = FreshPawn("recipient", PawnIdentity.Slave);
+            Pawn pawn = FreshBoundPawn("recipient");
             StartRestrictionGame(pawn);
             SSCRestrictionConfig original = pawn.Training.restrictionConfig;
             using (SSCRestrictionLifecycle.BeginRestore(pawn))
@@ -285,6 +288,7 @@ internal static partial class Program
                 using (SSCRestrictionLifecycle.BeginRestore(pawn))
                 {
                     pawn.Training.pawnIdentity = PawnIdentity.Slave;
+                    pawn.BoundMaster = FreshPawn("restored owner", PawnIdentity.Master);
                     pawn.HasBusState = true;
                     SSCRestrictionGameComponent.Notify(pawn);
                 }
@@ -301,6 +305,7 @@ internal static partial class Program
                 using (SSCRestrictionLifecycle.BeginRestore(pawn))
                 {
                     pawn.Training.pawnIdentity = PawnIdentity.Slave;
+                    pawn.BoundMaster = FreshPawn("restored owner", PawnIdentity.Master);
                     throw new InvalidOperationException("fixture");
                 }
             }
@@ -310,13 +315,18 @@ internal static partial class Program
         });
         Run("New clone drops copied objects and markers while the source remains untouched", () =>
         {
-            Pawn source = FreshPawn("source", PawnIdentity.Slave), clone = FreshPawn("clone", PawnIdentity.Slave);
+            Pawn source = FreshBoundPawn("source"), clone = FreshPawn("clone", PawnIdentity.Slave);
             StartRestrictionGame(source);
             source.Training.restrictionConfig.rules = PermissiveRules();
             source.Training.restrictionConfig.busDefaultsApplied = true;
             clone.Training.restrictionConfig = source.Training.restrictionConfig;
             clone.Training.legacyRestrictionInput = new SSCRestrictionLegacyPawn { open = true };
             SSCRestrictionLifecycle.ResetNewClone(clone);
+            Equal(null, clone.Training.restrictionConfig);
+            Equal(null, clone.Training.legacyRestrictionInput);
+            // 新生克隆即使复制了身份也尚未启用；实际建立自己的绑定后再按当时模板创建独立配置。
+            clone.BoundMaster = FreshPawn("clone owner", PawnIdentity.Master);
+            SSCRestrictionGameComponent.Notify(clone);
             Equal(false, ReferenceEquals(source.Training.restrictionConfig, clone.Training.restrictionConfig));
             Equal(false, clone.Training.restrictionConfig.rules.receiveTraining);
             Equal(false, clone.Training.restrictionConfig.busDefaultsApplied);
@@ -325,14 +335,14 @@ internal static partial class Program
         });
         Run("Existing old clone follows its own legacy input instead of fresh-clone reset", () =>
         {
-            Pawn pawn = FreshPawn("old clone", PawnIdentity.Slave);
+            Pawn pawn = FreshBoundPawn("old clone");
             pawn.Training.allowOthersForTrainingOrSex = true;
             LoadOldRestrictions(pawn); StartRestrictionGame(pawn);
             Equal(true, pawn.Training.restrictionConfig.rules.receiveTraining);
         });
         Run("Losing identity and changing owner preserve settings while coordinating the new relationship", () =>
         {
-            Pawn pawn = FreshPawn("target", PawnIdentity.Slave), owner = FreshPawn("owner", PawnIdentity.Master);
+            Pawn pawn = FreshBoundPawn("target"), owner = FreshPawn("owner", PawnIdentity.Master);
             StartRestrictionGame(pawn, owner);
             var config = pawn.Training.restrictionConfig;
             pawn.Training.pawnIdentity = PawnIdentity.Unset;
@@ -345,8 +355,8 @@ internal static partial class Program
         });
         Run("Batch defaults deduplicate targets, include off-map objects, and supersede pending migration", () =>
         {
-            Pawn map = FreshPawn("map", PawnIdentity.Slave), world = FreshPawn("world", PawnIdentity.Slave);
-            Pawn caravan = FreshPawn("caravan", PawnIdentity.Slave), unrelated = FreshPawn("unrelated");
+            Pawn map = FreshBoundPawn("map"), world = FreshBoundPawn("world");
+            Pawn caravan = FreshBoundPawn("caravan"), unrelated = FreshPawn("unrelated");
             LoadOldRestrictions(world);
             var template = new SSCRestrictionRules { receiveTraining = true };
             var result = SSCRestrictionLifecycle.ApplyDefaults(new[] { map, world, caravan, unrelated, map, null }, template);
@@ -360,8 +370,8 @@ internal static partial class Program
         });
         Run("Game-wide target snapshot includes explicit caravan and transport collections exactly once", () =>
         {
-            Pawn map = FreshPawn("map", PawnIdentity.Slave), caravan = FreshPawn("caravan", PawnIdentity.Slave);
-            Pawn transport = FreshPawn("transport", PawnIdentity.Slave);
+            Pawn map = FreshBoundPawn("map"), caravan = FreshBoundPawn("caravan");
+            Pawn transport = FreshBoundPawn("transport");
             RimWorld.PawnsFinder.AllCaravansAndTravellingTransporters_AliveOrDead.AddRange(new[] { caravan, transport, map });
             StartRestrictionGame(map);
             Equal(3, SSCRestrictionGameComponent.AllPawns().Count);
@@ -370,7 +380,7 @@ internal static partial class Program
         });
         Run("Batch failure preserves complete old configs and continues with other pawns", () =>
         {
-            Pawn bus = FreshPawn("bus", PawnIdentity.Slave), normal = FreshPawn("normal", PawnIdentity.Slave);
+            Pawn bus = FreshBoundPawn("bus"), normal = FreshBoundPawn("normal");
             StartRestrictionGame(bus, normal);
             var saved = bus.Training.restrictionConfig;
             bus.HasBusState = true;
@@ -383,7 +393,7 @@ internal static partial class Program
         });
         Run("Batch defaults never save equipment forcing or change the global switches", () =>
         {
-            Pawn pawn = FreshPawn("equipped", PawnIdentity.Slave); pawn.HasBusState = true;
+            Pawn pawn = FreshBoundPawn("equipped"); pawn.HasBusState = true;
             Wear(pawn, "gear", ReadEquipment());
             SSCMod.settings.enableSexSlaveProtectionRules = false;
             SSCMod.settings.enableSpecializationRestrictionOverrides = false;
@@ -400,7 +410,7 @@ internal static partial class Program
         });
         Run("Disabled system preserves assignments until re-enabled then never restores hidden choices", () =>
         {
-            Pawn pawn = FreshPawn("slave", PawnIdentity.Slave), owner = FreshPawn("owner"), other = FreshPawn("other");
+            Pawn pawn = FreshBoundPawn("slave"), owner = FreshPawn("owner"), other = FreshPawn("other");
             pawn.BoundMaster = owner; pawn.Training.selectedTrainer = other;
             SSCMod.settings.enableSexSlaveProtectionRules = false;
             StartRestrictionGame(pawn, owner, other);
@@ -416,7 +426,7 @@ internal static partial class Program
         });
         Run("Allowed non-owner training keeps inactive assignments and only clears dead references", () =>
         {
-            Pawn pawn = FreshPawn("slave", PawnIdentity.Slave), other = FreshPawn("inactive");
+            Pawn pawn = FreshBoundPawn("slave"), other = FreshPawn("inactive");
             SSCMod.settings.restrictionDefaults.receiveTraining = true;
             pawn.Training.selectedTrainer = other; StartRestrictionGame(pawn);
             Equal(other, pawn.Training.selectedTrainer);
@@ -425,7 +435,7 @@ internal static partial class Program
         });
         Run("Unsupported configurations stay untouched through load and lifecycle notifications", () =>
         {
-            Pawn pawn = FreshPawn("future", PawnIdentity.Slave);
+            Pawn pawn = FreshBoundPawn("future");
             var future = new SSCRestrictionConfig { version = 99 }; pawn.Training.restrictionConfig = future;
             pawn.HasBusState = true; StartRestrictionGame(pawn);
             SSCRestrictionGameComponent.Notify(pawn);
@@ -434,7 +444,7 @@ internal static partial class Program
         });
         Run("Loading events do not initialize before all references and migration identities are ready", () =>
         {
-            Pawn pawn = FreshPawn("loading", PawnIdentity.Slave);
+            Pawn pawn = FreshBoundPawn("loading");
             Current.Game = new Game(); Current.Game.Restrictions = new SSCRestrictionGameComponent(Current.Game);
             SSCRestrictionGameComponent.Notify(pawn); Equal(null, pawn.Training.restrictionConfig);
             Scribe.mode = LoadSaveMode.LoadingVars;
@@ -453,6 +463,14 @@ internal static partial class Program
         var pawn = new Pawn { LabelShort = name };
         pawn.Training.parent = pawn;
         pawn.Training.pawnIdentity = identity;
+        return pawn;
+    }
+
+    /// <summary>建立显式绑定但不创建配置，供初始化、迁移及持久化用例从生效边界开始运行。</summary>
+    private static Pawn FreshBoundPawn(string name)
+    {
+        Pawn pawn = FreshPawn(name, PawnIdentity.Slave);
+        pawn.BoundMaster = FreshPawn(name + " owner", PawnIdentity.Master);
         return pawn;
     }
 

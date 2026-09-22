@@ -44,10 +44,11 @@ namespace SexSlaveCraft
             if (slave.Dead) return null;
 
             // 在目标修复、预约和仪式占用之前复查本阶段；拒绝时取消整场，避免无限等待重试。
-            if (!SSCRestrictionTrainingUtility.TryEvaluate(
-                SSCRestrictionTrainingUtility.CreateRequest(pawn, slave, true), false, out _, out string restrictionReason))
+            SSCTrainingAdmission admission = SSCRestrictionTrainingUtility.Evaluate(
+                SSCRestrictionTrainingUtility.CreateRequest(pawn, slave, true), false);
+            if (!admission.Allowed)
             {
-                BindingRitualStateUtility.RejectPhase(pawn, slave, lord, restrictionReason);
+                BindingRitualStateUtility.RejectPhase(pawn, slave, lord, admission.Reason);
                 return null;
             }
 

@@ -1,6 +1,6 @@
 # 交易与宠物事件限制回归
 
-直接编译生产交易后缀、DogSpecializationUtility、统一配置/解析/策略及 RJW 任务分类，当前 **42 项**。通过完整成交、训练和驯服通知入口验证行为，不直接调用内部选择函数。
+直接编译生产交易后缀、DogSpecializationUtility、统一配置/解析/策略及 RJW 任务分类，当前 **43 项**。通过完整成交、训练和驯服通知入口验证行为，不直接调用内部选择函数。
 
 ```powershell
 dotnet run --project Tests/BusTrade/BusTrade.csproj
@@ -13,3 +13,5 @@ dotnet run --project Tests/BusTrade/BusTrade.csproj
 边界说明：游戏角色、能力、随机输入、任务接收和计分输出使用最小替身；请求分类与许可核心是真实生产代码。SSCRestrictionJobGuard 在此套件仅作为事件登记/实际开始边界，实际 Start 触发、等待序列化、缓存与运行驱动分离及去重由 InteractionProtection 使用真实守卫和 Harmony 验证。本套件不能替代实机动画、能力消耗或实际任务运行。
 
 历史交易修复的 30 项基线及 2026-09-16 实机反馈属于旧版本记录；本批阶段 3C 维护者基础实机测试未发现问题并授权提交，此反馈不代表全部边界场景均已逐项验收。详情见[阶段 3C](../../Docs/Development/新限制系统阶段3C.md)。
+
+绑定门槛修订增加未绑定身份-only 对象不受事件限制的回归；原受限角色夹具改为明确绑定。

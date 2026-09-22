@@ -8,7 +8,7 @@ namespace SexSlaveCraft
     [HarmonyPatch(typeof(SSCIdentityUtility), nameof(SSCIdentityUtility.TrySetIdentity))]
     internal static class SSCRestrictionIdentityHook
     {
-        /// <summary>身份成功设置即固定首次适用模板，不等界面、研究或第一次行为。</summary>
+        /// <summary>身份变更后刷新已有绑定配置；单独分配性奴身份不再激活限制或创建配置。</summary>
         private static void Postfix(Pawn pawn, bool __result)
         {
             if (__result) SSCRestrictionGameComponent.Notify(pawn);
@@ -32,17 +32,6 @@ namespace SexSlaveCraft
         private static void Postfix(Pawn pawn)
         {
             SSCRestrictionGameComponent.Notify(pawn);
-        }
-    }
-
-    [HarmonyPatch(typeof(SSCBondUtility), nameof(SSCBondUtility.Bind))]
-    internal static class SSCRestrictionBindHook
-    {
-        /// <summary>绑定全部完成后按新配置协调实际主人；绑定过程不再产生需要恢复的旧指派覆盖。</summary>
-        private static void Postfix(Pawn sexSlave, bool __result)
-        {
-            if (!__result) return;
-            SSCRestrictionGameComponent.Notify(sexSlave);
         }
     }
 
@@ -79,19 +68,6 @@ namespace SexSlaveCraft
         private static void Postfix(Pawn __instance)
         {
             SSCRestrictionGameComponent.Notify(__instance);
-        }
-    }
-
-    [HarmonyPatch(typeof(SSCBondUtility), nameof(SSCBondUtility.TryAssignTrainer))]
-    internal static class SSCRestrictionAssignHook
-    {
-        /// <summary>锁定为主人时拒绝清空或换人，防止菜单外写入绕过设置；不替代正常资格校验。</summary>
-        private static bool Prefix(Pawn sexSlave, Pawn trainer, ref bool __result)
-        {
-            Pawn forced = SSCRestrictionLifecycle.GetForcedTrainer(sexSlave);
-            if (forced == null || forced == trainer) return true;
-            __result = false;
-            return false;
         }
     }
 

@@ -8,9 +8,6 @@ using Verse.AI;
 
 namespace SexSlaveCraft
 {
-    /// <summary>事件仅标记通知来源，不增加任何许可；枚举值入存档后保持稳定。</summary>
-    internal enum SSCRestrictionEvent { None, TradeConsensual, TradeForced, Dog }
-
     /// <summary>管理本批任务的检查时机、可保存开始凭据和拒绝清理；所有许可均交给 SSCRestrictionPolicy。</summary>
     internal static class SSCRestrictionJobGuard
     {
@@ -28,28 +25,13 @@ namespace SexSlaveCraft
             public Pawn Receiver;
             public SSCInteractionKind Kind;
             public bool LegacyProgress;
-            // 这里只记录本请求实际创建的准备任务，绝不按Pawn或任务类型批量取消其他工作。
-            public Pawn PreparedTarget;
-            public List<int> PreparedJobs = new List<int>();
-            // 通知跟随Job存档；没有实际Start时不发送，恢复已发送的场景也不再发送。
-            public SSCRestrictionEvent Event;
-            public bool EventNotified;
+            // 准备归属和事件交接各自封装；场景只决定何时可登记、通知及清理。
+            public readonly SSCRestrictionJobPreparation Preparation = new SSCRestrictionJobPreparation();
+            public readonly SSCRestrictionJobEvents Events = new SSCRestrictionJobEvents();
         }
 
         private static readonly ConditionalWeakTable<JobDriver_Sex, SceneState> States =
             new ConditionalWeakTable<JobDriver_Sex, SceneState>();
-
-        private sealed class PendingEvent
-        {
-            public int JobId;
-            public Pawn Actor, Target;
-            public SSCRestrictionEvent Source;
-            public List<int> Waits = new List<int>();
-        }
-
-        // 原版GetCachedDriver只用于预检；StartJob调用MakeDriver另建实例。
-        // 因此待调度事件必须先属于Job，实际运行驱动第一次查询时才领取；绝不能把缓存驱动当运行驱动。
-        private static readonly ConditionalWeakTable<Job, PendingEvent> PendingEvents = new ConditionalWeakTable<Job, PendingEvent>();
 
         /// <summary>按驱动和当前 Job 隔离状态；即使外部复用驱动，也不能继承上一个任务的开始许可。</summary>
         private static SceneState State(JobDriver_Sex driver)
@@ -68,17 +50,7 @@ namespace SexSlaveCraft
                 state = new SceneState { Job = driver.job, JobId = driver.job?.loadID ?? 0 };
                 States.Add(driver, state);
             }
-            if (driver.job != null && PendingEvents.TryGetValue(driver.job, out PendingEvent pending))
-            {
-                if (pending.JobId != driver.job.loadID) PendingEvents.Remove(driver.job);
-                else if (pending.Actor == driver.pawn && driver.pawn?.jobs?.curDriver == driver)
-                {
-                    state.Event = pending.Source;
-                    state.PreparedTarget = pending.Target;
-                    state.PreparedJobs.AddRange(pending.Waits);
-                    PendingEvents.Remove(driver.job);
-                }
-            }
+            state.Events.ClaimPending(driver, state.Preparation);
             return state;
         }
 
@@ -150,7 +122,10 @@ namespace SexSlaveCraft
             JobDriver_Sex actor = driver is JobDriver_SexBaseReciever receiver
                 ? SSCRestrictionJobContext.FindInitiator(receiver) : driver;
             bool automaticDaily = actor is JobDriver_Training && !ordered && actor.job?.playerForced != true;
-            return SSCRestrictionTrainingUtility.TryEvaluate(request, automaticDaily, out decision, out reason);
+            SSCTrainingAdmission admission = SSCRestrictionTrainingUtility.Evaluate(request, automaticDaily);
+            decision = admission.Permission;
+            reason = admission.Reason;
+            return admission.Allowed;
         }
 
         /// <summary>只在原 Start 确实执行且驱动仍为当前任务时记下凭据；准备阶段不会得到开始标记。</summary>
@@ -173,7 +148,7 @@ namespace SexSlaveCraft
                 targetState.Receiver = request.Receiver;
                 targetState.Kind = state.Kind;
             }
-            NotifyEventStarted(state);
+            state.Events.NotifyStarted(state.Initiator, state.Receiver);
             return true;
         }
 
@@ -193,7 +168,7 @@ namespace SexSlaveCraft
             SceneState state = State(driver);
             if (state.Rejected && driver.pawn?.jobs?.curDriver != driver) return;
             state.Rejected = true;
-            CleanupPreparation(state);
+            state.Preparation.Cleanup();
             if (driver is JobDriver_SexBaseInitiator initiator)
             {
                 Pawn target = request.Receiver;
@@ -218,7 +193,7 @@ namespace SexSlaveCraft
             if (driver is JobDriver_RitualTraining ritualDriver)
                 ritualDriver.AbortForRestriction(reason);
             if (driver.pawn?.jobs?.curDriver != driver) return;
-            if (driver.job?.playerForced == true && !(driver is JobDriver_RitualTraining) && state.Event == SSCRestrictionEvent.None)
+            if (driver.job?.playerForced == true && !(driver is JobDriver_RitualTraining) && !state.Events.IsEvent)
                 Messages.Message(reason,
                     new LookTargets(request.Initiator, request.Receiver), MessageTypeDefOf.RejectInput);
             driver.pawn.jobs.EndCurrentJob(JobCondition.Incompletable, startNewJob: false);
@@ -235,10 +210,8 @@ namespace SexSlaveCraft
             Scribe_Values.Look(ref state.Kind, "sscRestrictionSceneKind", SSCInteractionKind.Unknown);
             Scribe_References.Look(ref state.Initiator, "sscRestrictionSceneInitiator");
             Scribe_References.Look(ref state.Receiver, "sscRestrictionSceneReceiver");
-            Scribe_References.Look(ref state.PreparedTarget, "sscRestrictionPreparedTarget");
-            Scribe_Collections.Look(ref state.PreparedJobs, "sscRestrictionPreparedJobs", LookMode.Value);
-            Scribe_Values.Look(ref state.Event, "sscRestrictionEvent", SSCRestrictionEvent.None);
-            Scribe_Values.Look(ref state.EventNotified, "sscRestrictionEventNotified", false);
+            state.Preparation.ExposeData();
+            state.Events.ExposeData();
             // 原版 PostLoadInit 的 SetupToils 会重建 RJW 计时；必须先在 LoadingVars 捕获旧存档进度。
             if (Scribe.mode == LoadSaveMode.LoadingVars)
                 state.LegacyProgress = driver.Sexprops != null &&
@@ -257,7 +230,6 @@ namespace SexSlaveCraft
             state.HasRecord = true;
             state.HasTrainingRecord = true;
             state.HasCompatibilityRecord = true;
-            if (state.PreparedJobs == null) state.PreparedJobs = new List<int>();
         }
 
         /// <summary>仪式自身已保存精确的 Start 标记；在派生驱动恢复完成后补回升级前场景的统一凭据。</summary>
@@ -282,41 +254,21 @@ namespace SexSlaveCraft
                 toil.initAction = () =>
                 {
                     Pawn target = driver.Partner;
-                    HashSet<int> before = PreparationJobs(target);
+                    HashSet<int> before = SSCRestrictionJobPreparation.Snapshot(target);
                     original?.Invoke();
                     if (driver.pawn?.jobs?.curDriver != driver || State(driver).Started) return;
-                    SceneState state = State(driver);
-                    state.PreparedTarget = target;
-                    foreach (int id in PreparationJobs(target))
-                        if (!before.Contains(id) && !state.PreparedJobs.Contains(id)) state.PreparedJobs.Add(id);
+                    State(driver).Preparation.RecordNew(target, before);
                 };
                 yield return toil;
             }
         }
-
-        /// <summary>快照目标当前及排队中的普通移动、等待任务编号，供前后差异确定本请求创建的任务。</summary>
-        private static HashSet<int> PreparationJobs(Pawn target)
-        {
-            var result = new HashSet<int>();
-            if (target?.jobs == null) return result;
-            Job current = target.CurJob;
-            if (IsPreparationJob(current)) result.Add(current.loadID);
-            foreach (QueuedJob queued in target.jobs.jobQueue)
-                if (IsPreparationJob(queued.job)) result.Add(queued.job.loadID);
-            return result;
-        }
-
-        /// <summary>仅识别已核对的快速任务准备类型，不把任意接收任务或玩家工作作为等待任务处理。</summary>
-        private static bool IsPreparationJob(Job job) => job != null &&
-            (job.def == JobDefOf.Goto || job.def == JobDefOf.Wait || job.def == JobDefOf.GotoMindControlled);
 
         /// <summary>事件调度前检查实际Job驱动并登记来源；拒绝时尚未打断任何工作，也不以事件名推测许可。</summary>
         public static bool PrepareEvent(Pawn actor, Job job, SSCRestrictionEvent source)
         {
             JobDriver_Sex driver = SSCRestrictionJobContext.GetDriver(job, actor);
             if (driver == null || !TryReserve(driver, out bool allowed) || !allowed) return false;
-            PendingEvents.Remove(job);
-            PendingEvents.Add(job, new PendingEvent { JobId = job.loadID, Actor = actor, Source = source });
+            SSCRestrictionJobEvents.Prepare(actor, job, source);
             return true;
         }
 
@@ -331,60 +283,24 @@ namespace SexSlaveCraft
 
         /// <summary>在启动行为任务前登记事件新建的等待任务，确保预约失败或立即取消时也可精确回收。</summary>
         public static void RegisterEventWait(Pawn actor, Job job, Pawn target, Job wait)
-        {
-            if (!PendingEvents.TryGetValue(job, out PendingEvent pending) || pending.JobId != job.loadID || pending.Actor != actor) return;
-            pending.Target = target;
-            if (!pending.Waits.Contains(wait.loadID)) pending.Waits.Add(wait.loadID);
-        }
+            => SSCRestrictionJobEvents.RegisterWait(actor, job, target, wait);
 
         /// <summary>调度未被接收时移除Job上的待领取事件，防止对象池继续持有旧参与者引用。</summary>
-        public static void CancelPendingEvent(Job job) => PendingEvents.Remove(job);
+        public static void CancelPendingEvent(Job job) => SSCRestrictionJobEvents.CancelPending(job);
 
         /// <summary>场景未开始便结束时清理本请求准备任务，已开始或属于新任务的状态不受影响。</summary>
         public static void CleanupAbortedPreparation(JobDriver_Sex driver)
         {
             SceneState state = State(driver);
-            if (!state.Started) CleanupPreparation(state);
-        }
-
-        /// <summary>实际开始后发布一次事件提示；交易收益不在这里发放，避免与成交成长混算。</summary>
-        private static void NotifyEventStarted(SceneState state)
-        {
-            if (state.Event == SSCRestrictionEvent.None || state.EventNotified) return;
-            state.EventNotified = true;
-            Pawn actor = state.Initiator, target = state.Receiver;
-            switch (state.Event)
-            {
-                case SSCRestrictionEvent.TradeConsensual:
-                    Messages.Message("SSC_Message_TradeConsensualSex".Translate(actor.LabelShort, target.LabelShort),
-                        new LookTargets(actor, target), MessageTypeDefOf.PositiveEvent);
-                    break;
-                case SSCRestrictionEvent.TradeForced:
-                    Messages.Message("SSC_Message_TradeRapeOccurred".Translate(target.LabelShort, actor.LabelShort),
-                        new LookTargets(actor, target), MessageTypeDefOf.NegativeEvent);
-                    break;
-                case SSCRestrictionEvent.Dog:
-                    Messages.Message(Strings.Message_DogAnimalInteractionTriggered(actor.LabelShort, target.LabelShort),
-                        new LookTargets(actor, target), MessageTypeDefOf.NeutralEvent);
-                    break;
-            }
-        }
-
-        /// <summary>规则拒绝时撤销本请求留下的排队和当前准备任务；编号不匹配的新任务保持不变。</summary>
-        private static void CleanupPreparation(SceneState state)
-        {
-            Pawn target = state.PreparedTarget;
-            if (target?.jobs == null || state.PreparedJobs == null || state.PreparedJobs.Count == 0) return;
-            target.jobs.jobQueue.RemoveAll(target, job => IsPreparationJob(job) && state.PreparedJobs.Contains(job.loadID));
-            if (IsPreparationJob(target.CurJob) && state.PreparedJobs.Contains(target.CurJob.loadID))
-                target.jobs.EndCurrentJob(JobCondition.Incompletable, startNewJob: false);
-            state.PreparedJobs.Clear();
+            if (!state.Started) state.Preparation.Cleanup();
         }
 
         /// <summary>记录统一判定的用途、方向、条目与来源；不再输出易误导的新任务旧开关值。</summary>
         private static void LogDecision(JobDriver_Sex driver, SSCRestrictionRequest request, SSCRestrictionDecision decision,
             string phase, bool allowed, string reason)
         {
+            // 调用方先检查日志闸门，避免关闭详细日志时仍格式化参与者、规则来源和完整诊断字符串。
+            if (!SSCLog.VerboseEnabled) return;
             SSCLog.Verbose($"[SSC Restrictions] phase={phase} job={driver.job?.def?.defName} kind={request.Kind} " +
                 $"actor={request.Initiator?.LabelShort} receiver={request.Receiver?.LabelShort} direction={request.DirectionKnown} " +
                 $"allowed={allowed} permission={decision.Allowed} reason={decision.Reason} failure={reason} rule={decision.Entry?.Rule} " +

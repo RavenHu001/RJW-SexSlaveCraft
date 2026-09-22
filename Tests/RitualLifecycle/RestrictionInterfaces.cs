@@ -42,7 +42,7 @@ namespace SexSlaveCraft
     {
         /// <summary>复用生产调教适配器，完整工作扫描由身份套件验证。</summary>
         public static bool IsAllowedTrainer(Pawn target, Pawn actor, bool forced = false) =>
-            SSCRestrictionTrainingUtility.TryEvaluate(SSCRestrictionTrainingUtility.CreateRequest(actor, target, false), !forced, out _, out _);
+            SSCRestrictionTrainingUtility.Evaluate(SSCRestrictionTrainingUtility.CreateRequest(actor, target, false), !forced).Allowed;
         /// <summary>提供有效指派边界，完整身份和指派代码由 TrainerIdentity 套件验证。</summary>
         public static Pawn GetActiveAssignedTrainer(Pawn target)
         {

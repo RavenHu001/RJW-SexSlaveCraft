@@ -60,6 +60,7 @@ internal static partial class Program
         Run("3C交易检查双方主动和被动配置", () =>
         {
             var p = People(); p.trader.Training.pawnIdentity = PawnIdentity.Slave;
+            p.trader.BoundMaster = p.bus.BoundMaster;
             Trade(); NoInteraction();
             p.trader.Training.restrictionConfig.rules.receiveConsensual = true; Trade(); Started(p.bus, p.trader, xxx.quick_sex);
         });
@@ -112,6 +113,12 @@ internal static partial class Program
             Assert(PetSpecializationUtility.Gains.Count == 1, "收到任务只有工作成长");
             DogSpecializationUtility.NotifyAnimalInteractionProcessed(new SexProps { pawn = p.dog, partner = p.animal });
             Assert(PetSpecializationUtility.Gains.Count == 2 && PetSpecializationUtility.Gains.Last() > PetSpecializationUtility.Gains.First(), "真实行为通知才提供行为成长");
+        });
+        Run("3C仅有性奴身份但未绑定时不启用个人限制", () =>
+        {
+            var p = People(); p.bus.BoundMaster = null;
+            p.bus.Training.restrictionConfig.rules.consensualInitiation = SSCRestrictionValue.Deny;
+            Trade(); Started(p.bus, p.trader, xxx.quick_sex);
         });
         Run("3C总开关停用仍保留交易及宠物资格门槛", () =>
         {

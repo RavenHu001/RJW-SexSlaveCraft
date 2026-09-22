@@ -10,7 +10,7 @@ namespace SexSlaveCraft
     internal static class DebugActions_SSCRestrictions
     {
         /// <summary>以当前选中的角色为发起者，提供单人或地图目标选项，打开只读许可预览。</summary>
-        [DebugAction("SSC", "Restrictions stage 1 (read-only)", allowedGameStates = AllowedGameStates.PlayingOnMap)]
+        [DebugAction("SSC", "Restrictions policy preview (read-only)", allowedGameStates = AllowedGameStates.PlayingOnMap)]
         private static void Preview()
         {
             Pawn actor = Find.Selector.SingleSelectedThing as Pawn;
@@ -36,8 +36,8 @@ namespace SexSlaveCraft
         private static void ShowReport(Pawn actor, Pawn target)
         {
             var report = new StringBuilder();
-            report.AppendLine("SSC restrictions — stage 1 / 新限制核心阶段 1");
-            report.AppendLine("READ ONLY. Actual jobs still use legacy rules. / 只读预览，实际任务仍使用旧规则。");
+            report.AppendLine("SSC restrictions — policy preview / 统一限制许可预览");
+            report.AppendLine("READ ONLY. Checks permission only; does not start a job. / 只读查询许可，不启动任务或验证全部工作条件。");
             report.AppendLine("Actor: " + actor.LabelShort + " -> " + (target?.LabelShort ?? "(solo)"));
             report.AppendLine("Profiles loaded: " + DefDatabase<SSCRestrictionProfileDef>.AllDefsListForReading.Count);
             AppendPawn(report, "Actor", actor);

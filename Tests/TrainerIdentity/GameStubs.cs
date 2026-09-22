@@ -144,8 +144,14 @@ namespace Verse.AI
     public class Job { public Pawn target; }
     public static class JobMaker
     {
-        /// <summary>记录生产工作入口生成的目标。</summary>
-        public static Job MakeJob(JobDef def, Pawn target) => new Job { target = target };
+        public static int CreatedJobs;
+
+        /// <summary>记录实际任务分配次数与目标，以区分查询和创建阶段。</summary>
+        public static Job MakeJob(JobDef def, Pawn target)
+        {
+            CreatedJobs++;
+            return new Job { target = target };
+        }
     }
     public static class JobFailReason
     {
@@ -213,6 +219,7 @@ namespace SexSlaveCraft
     public partial class CompSexSlaveTraining
     {
         public PawnIdentity pawnIdentity;
+        public int restrictionRestoreDepth;
         public Pawn selectedTrainer;
         public TrainingMode mode = TrainingMode.Enabled;
         public bool AllowsOthersForTrainingOrSex, IsBusSpecialized, BusState;
@@ -252,6 +259,13 @@ namespace SexSlaveCraft
             return bridle;
         }
     }
+    public static class SSCRestrictionGameComponent
+    {
+        public static int Notifications;
+
+        /// <summary>记录绑定事务显式通知；真实配置初始化及协调由 RestrictionCore 验证。</summary>
+        public static void Notify(Pawn pawn) { Notifications++; }
+    }
     public static class SSCDefOf
     {
         public static object SexSlaveTrait = new object(), ChainOfSexSlave = new object(), BridleOfSexSlave = new object(), SSC_BasicTraining = new object();
@@ -268,9 +282,10 @@ namespace SexSlaveCraft
         public static bool IsResearchFinished(object def) => true; }
     public static class BindingRitualStateUtility
     {
+        public static int RecoveryCalls;
 
-        /// <summary>本身份套件不模拟仪式恢复；实际恢复在仪式套件验证。</summary>
-        public static void RecoverPawnState(Pawn pawn) { }
+        /// <summary>记录恢复入口调用；真实仪式恢复由 RitualLifecycle 套件验证。</summary>
+        public static void RecoverPawnState(Pawn pawn) { RecoveryCalls++; }
 
         /// <summary>清理模型仪式标记以观察身份切换的影响。</summary>
         public static void ClearRitualState(CompSexSlaveTraining comp) => comp.isRitualTraining = false;

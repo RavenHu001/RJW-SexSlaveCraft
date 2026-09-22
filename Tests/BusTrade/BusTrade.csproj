@@ -13,5 +13,6 @@
     <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionJobContext.cs" Link="Production/SSCRestrictionJobContext.cs" />
     <Compile Include="$(SscSourceRoot)/common/DogSpecializationUtility.cs" Link="Production/DogSpecializationUtility.cs" />
     <Compile Include="../TrainerIdentity/RestrictionStubs.cs" Link="Boundary/RestrictionStubs.cs" />
+    <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionConfigurationBuilder.cs" Link="Production/SSCRestrictionConfigurationBuilder.cs" />
   </ItemGroup>
 </Project>

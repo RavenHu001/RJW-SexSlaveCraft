@@ -1,4 +1,4 @@
-using Verse;
+﻿using Verse;
 
 namespace SexSlaveCraft
 {
@@ -26,7 +26,10 @@ namespace SexSlaveCraft
             if (Scribe.mode != LoadSaveMode.PostLoadInit || restrictionLifecycleSeen) return;
             restrictionLifecycleSeen = true;
             Pawn pawn = parent as Pawn;
-            if (restrictionConfig == null && legacyRestrictionInput == null && SSCRestrictionResolver.IsApplicable(pawn))
+            // 捕获旧输入沿用历史适用范围，不能把“现在未绑定、尚未生效”误解为旧档没有玩家选择。
+            // 这只是保存迁移材料；Lifecycle 等实际绑定存在后才将其转换为生效配置。
+            bool hadLegacyScope = pawnIdentity == PawnIdentity.Slave || SSCRestrictionResolver.IsApplicable(pawn);
+            if (restrictionConfig == null && legacyRestrictionInput == null && hadLegacyScope)
                 legacyRestrictionInput = new SSCRestrictionLegacyPawn
                 {
                     open = allowOthersForTrainingOrSex,

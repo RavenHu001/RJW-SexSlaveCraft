@@ -13,7 +13,7 @@
   <SSC_Restrictions_ProfileSwitch>启用特化强制规则</SSC_Restrictions_ProfileSwitch>
   <SSC_Restrictions_ProfileSwitchTip>控制特化的条目覆盖，不影响装备强制或个人保存值。</SSC_Restrictions_ProfileSwitchTip>
   <SSC_Restrictions_EditPawn>配置角色：{0}</SSC_Restrictions_EditPawn>
-  <SSC_Restrictions_NotApplicable>当前角色不适用；已有配置仅供查看。</SSC_Restrictions_NotApplicable>
+  <SSC_Restrictions_NotApplicable>尚未绑定主人，行为限制未启用；已有配置保留，仅供查看。</SSC_Restrictions_NotApplicable>
   <SSC_Restrictions_Uninitialized>尚无配置，请等待迁移；初始化失败时可重试。</SSC_Restrictions_Uninitialized>
   <SSC_Restrictions_Initialize>重试建立默认配置</SSC_Restrictions_Initialize>
   <SSC_Restrictions_InvalidConfig>配置版本或数据异常（版本 {0}），暂不可编辑；已保留原始配置。</SSC_Restrictions_InvalidConfig>
@@ -80,7 +80,7 @@
   <SSC_Restrictions_Group_Masturbation>主动行为</SSC_Restrictions_Group_Masturbation>
   <SSC_Restrictions_Group_ReceiveConsensual>被动行为</SSC_Restrictions_Group_ReceiveConsensual>
   <SSC_Restrictions_Group_ReceiveTraining>调教</SSC_Restrictions_Group_ReceiveTraining>
-  <SSC_Restrictions_TrainerLocked>非主人调教已禁止，指定者锁定为实际主人：{0}。</SSC_Restrictions_TrainerLocked>
+  <SSC_Restrictions_TrainerLocked>当前仅允许实际主人调教：{0}。另选调教员会尝试开启调教许可；装备或特化强制禁止时仍不可指定。</SSC_Restrictions_TrainerLocked>
   <SSC_Restrictions_Expand>▶ 展开行为限制</SSC_Restrictions_Expand>
   <SSC_Restrictions_Collapse>◀ 收起行为限制</SSC_Restrictions_Collapse>
   <SSC_Restrictions_JobRejected>行为被限制规则拒绝：{0}。</SSC_Restrictions_JobRejected>
@@ -111,4 +111,7 @@
   <SSC_Restrictions_Tip_ReceiveConsensual>允许接受非主人的自愿性行为；对方仍需具备发起许可。</SSC_Restrictions_Tip_ReceiveConsensual>
   <SSC_Restrictions_Tip_ReceiveForced>允许接受非主人的强制行为；装备可强制禁止此项。</SSC_Restrictions_Tip_ReceiveForced>
   <SSC_Restrictions_Tip_ReceiveTraining>允许非主人进行日常或仪式调教，仍需满足调教员资格与指派要求。</SSC_Restrictions_Tip_ReceiveTraining>
+  <SSC_Restrictions_AssignAuthorizesSuffix>（同时允许调教）</SSC_Restrictions_AssignAuthorizesSuffix>
+  <SSC_Restrictions_AssignAuthorizesTip>选择非主人调教员时，同步开启接受非主人调教。普通互动仍按各自条目检查；装备或特化的强制禁止仍然有效。</SSC_Restrictions_AssignAuthorizesTip>
+  <SSC_Restrictions_AssignFailed>无法完成指派：资格或限制状态已改变，或强制规则不允许调教。原指派及个人选择保持不变。</SSC_Restrictions_AssignFailed>
 </LanguageData>

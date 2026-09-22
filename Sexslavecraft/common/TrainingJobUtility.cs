@@ -11,21 +11,21 @@ namespace SexSlaveCraft
 {
     public static class TrainingJobUtility
     {
+        /// <summary>执行兼容准备和身体校验的简便入口；调用方应已通过低成本身份、排班和许可检查。</summary>
         public static bool TryValidateTarget(Pawn target, bool forced, string logPrefix)
         {
             return TryValidateTarget(target, forced, logPrefix, out _);
         }
 
+        /// <summary>先执行既有 LifeForce 冲突迁移，再校验实际身体条件；此方法不是无副作用的查询。</summary>
         public static bool TryValidateTarget(Pawn target, bool forced, string logPrefix, out string shortReason)
         {
             shortReason = null;
             if (target == null) return false;
 
-            SSCLog.Verbose($"[{logPrefix}] ValidateTarget start: target={target.LabelShort}, forced={forced}, job={target.CurJobDef?.defName ?? "null"}, ritual={target.TryGetComp<CompSexSlaveTraining>()?.isRitualTraining ?? false}, training={target.TryGetComp<CompSexSlaveTraining>()?.isBeingTrained ?? false}");
+            if (SSCLog.VerboseEnabled) SSCLog.Verbose($"[{logPrefix}] ValidateTarget start: target={target.LabelShort}, forced={forced}, job={target.CurJobDef?.defName ?? "null"}, ritual={target.TryGetComp<CompSexSlaveTraining>()?.isRitualTraining ?? false}, training={target.TryGetComp<CompSexSlaveTraining>()?.isBeingTrained ?? false}");
 
-            // EN: Step 1: clear LifeForce conflicts before any sex-target eligibility check runs.
-            // CN: 步骤 1：先清理 LifeForce 冲突，再进入性行为目标资格判定。
-            LifeForceConflictUtility.TryRemoveLifeForceGeneIfConflicting(target);
+            PrepareTargetCompatibility(target);
 
             if (Trainjudge.TryCanBeFuckedWithReason(target, out string failureReason, out string detailedReport))
             {
@@ -45,17 +45,27 @@ namespace SexSlaveCraft
             }
             else
             {
-                SSCLog.Verbose($"[{logPrefix}] Automatic target eligibility failed: {target.LabelShort}. {failureReason}");
+                if (SSCLog.VerboseEnabled) SSCLog.Verbose($"[{logPrefix}] Automatic target eligibility failed: {target.LabelShort}. {failureReason}");
             }
             return false;
         }
 
+        /// <summary>执行既有的 LifeForce 冲突迁移；只在目标进入完整兼容校验后调用，不用于候选扫描。</summary>
+        private static void PrepareTargetCompatibility(Pawn target)
+        {
+            // 冲突工具仅在目标实际持有指定 SSC 状态且存在活动 LifeForce 基因时处理，
+            // 保留其生成基因包、移除冲突基因和通知行为。不能为了把查询改成只读而
+            // 删除此调用，否则先前可训练的兼容对象可能在身体校验前再次被阻断。
+            LifeForceConflictUtility.TryRemoveLifeForceGeneIfConflicting(target);
+        }
+
+        /// <summary>开始场景前复核身体资格；失败时记录重试冷却、释放准备状态并终止当前发起任务。</summary>
         public static bool TryValidateStartOrAbort(Pawn actor, Pawn target, string logPrefix)
         {
-            SSCLog.Verbose($"[{logPrefix}] ValidateStart start: actor={actor?.LabelShort ?? "null"}, target={target?.LabelShort ?? "null"}, actorJob={actor?.CurJobDef?.defName ?? "null"}, targetJob={target?.CurJobDef?.defName ?? "null"}");
+            if (SSCLog.VerboseEnabled) SSCLog.Verbose($"[{logPrefix}] ValidateStart start: actor={actor?.LabelShort ?? "null"}, target={target?.LabelShort ?? "null"}, actorJob={actor?.CurJobDef?.defName ?? "null"}, targetJob={target?.CurJobDef?.defName ?? "null"}");
             if (Trainjudge.TryCanBeFuckedWithReason(target, out string shortReason, out string detailedReport))
             {
-                SSCLog.Verbose($"[{logPrefix}] ValidateStart passed: target={target?.LabelShort ?? "null"}");
+                if (SSCLog.VerboseEnabled) SSCLog.Verbose($"[{logPrefix}] ValidateStart passed: target={target?.LabelShort ?? "null"}");
                 return true;
             }
 
@@ -69,6 +79,7 @@ namespace SexSlaveCraft
             return false;
         }
 
+        /// <summary>同步参与者到接收者位置或明确的仪式格，并终止旧寻路以防动画开始后再次走离。</summary>
         public static void SyncPartnerPosition(Pawn actor, Pawn partner, IntVec3? forcedCell = null)
         {
             if (actor == null || partner == null) return;
@@ -92,6 +103,7 @@ namespace SexSlaveCraft
             partner.pather.StopDead();
         }
 
+        /// <summary>在已有任务驱动上清除睡眠标志，不创建或更换角色当前任务。</summary>
         public static void EnsureAwake(Pawn pawn)
         {
             if (pawn?.jobs?.curDriver != null)
@@ -100,6 +112,7 @@ namespace SexSlaveCraft
             }
         }
 
+        /// <summary>登记本次调教准备占用；仪式额外保留阶段间连续占用标记。</summary>
         public static void MarkTrainingStarted(Pawn pawn, bool isRitual)
         {
             CompSexSlaveTraining comp = pawn?.TryGetComp<CompSexSlaveTraining>();
@@ -111,7 +124,7 @@ namespace SexSlaveCraft
                 comp.isRitualTraining = true;
             }
 
-            SSCLog.Verbose($"[SSC TrainingState] Started: pawn={pawn.LabelShort}, isRitual={isRitual}, ritualPhase={comp.ritualPhase}");
+            if (SSCLog.VerboseEnabled) SSCLog.Verbose($"[SSC TrainingState] Started: pawn={pawn.LabelShort}, isRitual={isRitual}, ritualPhase={comp.ritualPhase}");
         }
 
         /// <summary>释放本次训练启动标记并恢复失效仪式状态；仍有效的仪式保留占用，允许阶段重试。</summary>
@@ -124,46 +137,52 @@ namespace SexSlaveCraft
             // 占用；整场已结束则交给统一恢复入口解除，避免两套清理规则分叉。
             BindingRitualStateUtility.RecoverPawnState(pawn);
             comp.isBeingTrained = false;
-            SSCLog.Verbose($"[SSC TrainingState] Aborted: pawn={pawn.LabelShort}");
+            if (SSCLog.VerboseEnabled) SSCLog.Verbose($"[SSC TrainingState] Aborted: pawn={pawn.LabelShort}");
         }
 
+        /// <summary>清除日常调教占用；有效仪式的占用由仪式生命周期单独管理。</summary>
         public static void CleanupTrainingState(Pawn pawn)
         {
             CompSexSlaveTraining comp = pawn?.TryGetComp<CompSexSlaveTraining>();
             if (comp == null || comp.isRitualTraining) return;
 
             comp.isBeingTrained = false;
-            SSCLog.Verbose($"[SSC TrainingState] Cleanup normal training: pawn={pawn.LabelShort}");
+            if (SSCLog.VerboseEnabled) SSCLog.Verbose($"[SSC TrainingState] Cleanup normal training: pawn={pawn.LabelShort}");
         }
 
+        /// <summary>记录身体校验失败时刻，让后续工作扫描按既有重试冷却等待。</summary>
         public static void MarkValidationFailure(Pawn pawn, string logPrefix)
         {
             CompSexSlaveTraining comp = pawn?.TryGetComp<CompSexSlaveTraining>();
             if (comp == null) return;
 
             comp.lastFailedTrainingValidationTick = Find.TickManager.TicksGame;
-            SSCLog.Verbose($"[{logPrefix}] Validation failure cooldown armed: pawn={pawn.LabelShort}, retryTicks={CompSexSlaveTraining.FailedValidationRetryTicks}");
+            if (SSCLog.VerboseEnabled) SSCLog.Verbose($"[{logPrefix}] Validation failure cooldown armed: pawn={pawn.LabelShort}, retryTicks={CompSexSlaveTraining.FailedValidationRetryTicks}");
         }
 
+        /// <summary>为日常调教启动接收任务，复用现存的相同接收任务并释放发起任务的目标预约。</summary>
         public static bool TryStartDailyTrainingReceiver(Pawn actor, Pawn partner, Job parentJob, JobDef receiverJobDef)
         {
-            SSCLog.Verbose($"[SSC Receiver] Daily training receiver start requested: actor={actor?.LabelShort ?? "null"}, partner={partner?.LabelShort ?? "null"}, receiverJob={receiverJobDef?.defName ?? "null"}");
+            if (SSCLog.VerboseEnabled) SSCLog.Verbose($"[SSC Receiver] Daily training receiver start requested: actor={actor?.LabelShort ?? "null"}, partner={partner?.LabelShort ?? "null"}, receiverJob={receiverJobDef?.defName ?? "null"}");
             return TryStartReceiverJobCore(actor, partner, parentJob, receiverJobDef, false, true, false, null);
         }
 
+        /// <summary>为人格排泄启动接收任务，沿用日常接收流程但不改变上层的普通行为许可分类。</summary>
         public static bool TryStartPersonalityExcretionReceiver(Pawn actor, Pawn partner, Job parentJob, JobDef receiverJobDef)
         {
-            SSCLog.Verbose($"[SSC Receiver] PE receiver start requested: actor={actor?.LabelShort ?? "null"}, partner={partner?.LabelShort ?? "null"}, receiverJob={receiverJobDef?.defName ?? "null"}");
+            if (SSCLog.VerboseEnabled) SSCLog.Verbose($"[SSC Receiver] PE receiver start requested: actor={actor?.LabelShort ?? "null"}, partner={partner?.LabelShort ?? "null"}, receiverJob={receiverJobDef?.defName ?? "null"}");
             return TryStartReceiverJobCore(actor, partner, parentJob, receiverJobDef, false, true, false, null);
         }
 
+        /// <summary>在当前仪式地点重新创建接收任务，使下一阶段重新绑定当前地点和主持者。</summary>
         public static bool TryStartBindingRitualReceiver(Pawn actor, Pawn partner, Job parentJob, JobDef receiverJobDef, IntVec3 ritualSpot)
         {
-            // Binding Ritual is allowed to restart the receiver job so the slave always rebinds to the current ritual spot.
-            SSCLog.Verbose($"[SSC Receiver] Binding ritual receiver start requested: actor={actor?.LabelShort ?? "null"}, partner={partner?.LabelShort ?? "null"}, receiverJob={receiverJobDef?.defName ?? "null"}, ritualSpot={ritualSpot}");
+            // 仪式每阶段允许重新启动接收任务，以当前仪式位置为准重新建立配对。
+            if (SSCLog.VerboseEnabled) SSCLog.Verbose($"[SSC Receiver] Binding ritual receiver start requested: actor={actor?.LabelShort ?? "null"}, partner={partner?.LabelShort ?? "null"}, receiverJob={receiverJobDef?.defName ?? "null"}, ritualSpot={ritualSpot}");
             return TryStartReceiverJobCore(actor, partner, parentJob, receiverJobDef, true, false, true, ritualSpot);
         }
 
+        /// <summary>执行接收任务交接：保留 Onahole 专用接收器，按调用用途处理预约并确认新任务实际接管。</summary>
         private static bool TryStartReceiverJobCore(Pawn actor, Pawn partner, Job parentJob, JobDef receiverJobDef, bool playerForced, bool releaseReservation, bool forceRestartExisting, IntVec3? forcedCell)
         {
             if (actor == null || partner == null || !partner.Spawned || receiverJobDef == null)
@@ -175,7 +194,7 @@ namespace SexSlaveCraft
                 return false;
             }
 
-            SSCLog.Verbose($"[SSC Receiver] Core start: actor={actor.LabelShort}, partner={partner.LabelShort}, actorJob={actor.CurJobDef?.defName ?? "null"}, partnerJob={partner.CurJobDef?.defName ?? "null"}, receiverJob={receiverJobDef?.defName ?? "null"}, releaseReservation={releaseReservation}, forceRestart={forceRestartExisting}, playerForced={playerForced}, forcedCell={(forcedCell.HasValue ? forcedCell.Value.ToString() : "null")}");
+            if (SSCLog.VerboseEnabled) SSCLog.Verbose($"[SSC Receiver] Core start: actor={actor.LabelShort}, partner={partner.LabelShort}, actorJob={actor.CurJobDef?.defName ?? "null"}, partnerJob={partner.CurJobDef?.defName ?? "null"}, receiverJob={receiverJobDef?.defName ?? "null"}, releaseReservation={releaseReservation}, forceRestart={forceRestartExisting}, playerForced={playerForced}, forcedCell={(forcedCell.HasValue ? forcedCell.Value.ToString() : "null")}");
 
             if (OnaholeCompatibilityUtility.IsPawnOnOnahole(partner))
             {
@@ -188,9 +207,8 @@ namespace SexSlaveCraft
                     return true;
                 }
 
-                // Never replace BeOnahole with SSC_TrainingReceiver. Interrupting the
-                // bound receiver makes Onahole rebind its pawn and can recursively
-                // restart the initiator's work job in the same tick.
+                // 家具专用接收任务持有自己的绑定状态，不能替换成 SSC_TrainingReceiver。
+                // 打断它可能使家具在同一 tick 重新绑定角色，递归重启发起者的工作任务。
                 SSCLog.WarningImportant($"[SSC Onahole] Partner registration failed; preserving the existing Onahole receiver. State: {OnaholeCompatibilityUtility.GetOnaholeReceiverStateReport(partner, receiverJobDef)}");
                 return false;
             }
@@ -199,13 +217,13 @@ namespace SexSlaveCraft
 
             if (releaseReservation && actor.Map != null && parentJob != null)
             {
-                SSCLog.Verbose($"[SSC Receiver] Releasing reservation: actor={actor.LabelShort}, target={parentJob.targetA.Thing?.Label ?? parentJob.targetA.Cell.ToString()}, parentJob={parentJob.def?.defName ?? "null"}");
+                if (SSCLog.VerboseEnabled) SSCLog.Verbose($"[SSC Receiver] Releasing reservation: actor={actor.LabelShort}, target={parentJob.targetA.Thing?.Label ?? parentJob.targetA.Cell.ToString()}, parentJob={parentJob.def?.defName ?? "null"}");
                 actor.Map.reservationManager.Release(parentJob.targetA, actor, parentJob);
             }
 
             if (!forceRestartExisting && partner.CurJobDef == receiverJobDef)
             {
-                SSCLog.Verbose($"[SSC Receiver] Partner already in receiver job: partner={partner.LabelShort}, receiverJob={receiverJobDef?.defName ?? "null"}");
+                if (SSCLog.VerboseEnabled) SSCLog.Verbose($"[SSC Receiver] Partner already in receiver job: partner={partner.LabelShort}, receiverJob={receiverJobDef?.defName ?? "null"}");
                 return true;
             }
 

@@ -195,13 +195,13 @@ internal static partial class Program
             Assert(SSCBondUtility.TryAssignTrainer(f.slave, null) && f.slave.Training.selectedTrainer == null);
             Assert(!TrainerAssignmentUtility.IsAllowedTrainer(f.slave, Pawn(PawnIdentity.Master, f.slave.Map)));
         });
-        Run("实际主人约束在菜单和直接指派一致，开放后允许更换", () =>
+        Run("个人禁止调教仍允许菜单选择合格非主人，明确指派才提交授权", () =>
         {
             var f = Setup(); SSCBondUtility.Bind(f.master, f.slave); Pawn other = Pawn(PawnIdentity.Master, f.slave.Map);
-            Assert(TrainerAssignmentUtility.GetTrainerCandidates(f.slave).Single() == f.master);
-            Assert(!SSCBondUtility.TryAssignTrainer(f.slave, other));
-            f.slave.Training.restrictionConfig.rules.receiveTraining = true;
+            Assert(TrainerAssignmentUtility.GetTrainerCandidates(f.slave).Contains(other));
+            Assert(!f.slave.Training.restrictionConfig.rules.receiveTraining);
             Assert(SSCBondUtility.TryAssignTrainer(f.slave, other));
+            Assert(f.slave.Training.restrictionConfig.rules.receiveTraining && f.slave.Training.selectedTrainer == other);
         });
         Run("主人工作暂停不影响绑定默认指派", () =>
         {
@@ -369,6 +369,7 @@ internal static partial class Program
             }
         });
         RunStage3BTests();
+        RunWorkScanTests();
         Console.WriteLine($"{passed}/{passed + failed} passed (production trainer identity and assignment; game interface model).");
         return failed == 0 ? 0 : 1;
     }

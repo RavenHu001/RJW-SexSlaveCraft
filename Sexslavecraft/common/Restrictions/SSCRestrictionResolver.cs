@@ -1,5 +1,4 @@
-using System;
-using System.Collections.Generic;
+﻿using System;
 using Verse;
 
 namespace SexSlaveCraft
@@ -19,11 +18,14 @@ namespace SexSlaveCraft
     /// <summary>只读解析条目来源，不协调关系或创建角色配置；每次调用重新读取当前状态，不跨次缓存。</summary>
     public static class SSCRestrictionResolver
     {
-        /// <summary>以性奴身份或已有绑定关系判断是否受系统管理；仅持有训练组件不代表适用。</summary>
+        /// <summary>以真实锁链中的主人引用作为当前生效门槛；仅设置性奴身份或指定调教员不会启用限制。</summary>
+        /// <remarks>
+        /// 旧档可能尚未补齐 SSC 身份，因此只要已有真实绑定仍须生效。主人死亡不等于解绑，不能借此释放保护。
+        /// 未来若加入科技授予机制，应在这个集中入口扩展；界面、许可和生命周期不能各自推断生效条件。
+        /// </remarks>
         public static bool IsApplicable(Pawn pawn)
         {
-            return pawn != null && (pawn.TryGetComp<CompSexSlaveTraining>()?.pawnIdentity == PawnIdentity.Slave ||
-                SSCBondUtility.GetBoundMaster(pawn) != null);
+            return SSCBondUtility.GetBoundMaster(pawn) != null;
         }
 
         /// <summary>检查当前特化或已有巴士状态是否匹配定义，只读取角色而不修正其状态。</summary>
@@ -31,69 +33,6 @@ namespace SexSlaveCraft
         {
             var context = new ProfileContext(pawn);
             return context.Matches(profile);
-        }
-
-        /// <summary>首次取得公交车时只合入公交车声明的默认；先验证整份结果，成功后一起提交规则与标记。</summary>
-        public static bool TryApplyBusDefaults(Pawn pawn, SSCRestrictionConfig config, out SSCRestrictionResolution error)
-        {
-            error = null;
-            if (config?.IsValid() != true) return false;
-            SSCRestrictionRules rules = config.rules.Copy();
-            foreach (SSCRestrictionRule rule in SSCRestrictionRules.All)
-            {
-                SSCRestrictionResolution value = FromSaved(rules, rule);
-                var layer = new Layer();
-                foreach (SSCRestrictionProfileDef profile in DefDatabase<SSCRestrictionProfileDef>.AllDefsListForReading)
-                    if (profile?.specialization == SexSlaveSpecializationType.Bus && HasProfile(pawn, profile))
-                        layer.Consider(rule, profile.defaults, profile.defName);
-                layer.ApplyTo(value, SSCRestrictionSource.SpecializationDefault);
-                if (!value.Valid) { error = value; return false; }
-                rules.Set(rule, value.Value);
-            }
-            config.rules = rules;
-            config.busDefaultsApplied = true;
-            return true;
-        }
-
-        /// <summary>从模板与当前特化默认创建独立配置；非法默认返回具体条目，失败不产生可保存配置。</summary>
-        /// <remarks>不写回角色；总开关及特化强制开关不影响初始化默认，装备强制也不写入保存值。</remarks>
-        public static bool TryCreateInitialConfiguration(Pawn pawn, SSCRestrictionRules template,
-            out SSCRestrictionConfig config, out SSCRestrictionResolution error)
-        {
-            config = null;
-            error = null;
-            SSCRestrictionRules defaults = template ?? new SSCRestrictionRules();
-            if (defaults.TryGetInvalidRule(out SSCRestrictionRule invalidRule))
-            {
-                error = FromSaved(defaults, invalidRule);
-                error.Source = SSCRestrictionSource.DefaultTemplate;
-                return false;
-            }
-
-            var context = new ProfileContext(pawn);
-            var profiles = new List<SSCRestrictionProfileDef>();
-            bool busDefaultsApplied = false;
-            foreach (SSCRestrictionProfileDef profile in DefDatabase<SSCRestrictionProfileDef>.AllDefsListForReading)
-            {
-                if (!context.Matches(profile)) continue;
-                profiles.Add(profile);
-                if (profile.specialization == SexSlaveSpecializationType.Bus) busDefaultsApplied = true;
-            }
-
-            SSCRestrictionRules rules = defaults.Copy();
-            for (int i = 0; i < SSCRestrictionRules.All.Count; i++)
-            {
-                SSCRestrictionRule rule = SSCRestrictionRules.All[i];
-                SSCRestrictionResolution value = FromSaved(rules, rule);
-                var layer = new Layer();
-                foreach (SSCRestrictionProfileDef profile in profiles)
-                    layer.Consider(rule, profile.defaults, profile.defName);
-                layer.ApplyTo(value, SSCRestrictionSource.SpecializationDefault);
-                if (!value.Valid) { error = value; return false; }
-                rules.Set(rule, value.Value);
-            }
-            config = new SSCRestrictionConfig { rules = rules, busDefaultsApplied = busDefaultsApplied };
-            return true;
         }
 
         /// <summary>按装备、特化、保存值的优先级解析；任何层无效时保留该层错误来源并立即返回。</summary>
@@ -139,7 +78,7 @@ namespace SexSlaveCraft
         }
 
         /// <summary>生成单项保存值与合法性结果；未知条目或缺少规则返回无效，不在查询中抛出参数异常。</summary>
-        private static SSCRestrictionResolution FromSaved(SSCRestrictionRules saved, SSCRestrictionRule rule)
+        internal static SSCRestrictionResolution FromSaved(SSCRestrictionRules saved, SSCRestrictionRule rule)
         {
             SSCRestrictionValue value = saved != null && SSCRestrictionRules.IsKnown(rule)
                 ? saved.Get(rule) : SSCRestrictionValue.Unspecified;
@@ -151,7 +90,7 @@ namespace SexSlaveCraft
         }
 
         /// <summary>仅在单次解析内复用组件及巴士状态查询，不持有跨查询的角色状态缓存。</summary>
-        private struct ProfileContext
+        internal struct ProfileContext
         {
             private readonly Pawn pawn;
             private readonly SexSlaveSpecializationType specialization;
@@ -183,7 +122,7 @@ namespace SexSlaveCraft
         }
 
         /// <summary>用单次遍历累计同层结果，无需条目对象或排序；非法项优先保留其具体值及来源。</summary>
-        private struct Layer
+        internal struct Layer
         {
             private bool hasValue;
             private SSCRestrictionValue value;

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -41,7 +41,7 @@ internal static partial class Program
         });
         Run("Resolver rejects an unknown rule without throwing or applying overrides", () =>
         {
-            var pawn = Pawn("subject", PawnIdentity.Slave); pawn.HasBusState = true;
+            var pawn = BoundPawn("subject"); pawn.HasBusState = true;
             Wear(pawn, "gear", ReadEquipment());
             var result = SSCRestrictionResolver.Resolve(pawn, pawn.Training.restrictionConfig.rules, (SSCRestrictionRule)777);
             Equal(false, result.Valid); Equal(SSCRestrictionValue.Unspecified, result.Value);
@@ -87,7 +87,7 @@ internal static partial class Program
             Equal(true, Enum.GetValues<SSCInteractionKind>().ToHashSet().SetEquals(purposes.Keys.Concat(independent)));
             foreach (var purpose in purposes)
             {
-                Pawn actor = Pawn("actor", PawnIdentity.Slave), target = Pawn("target", PawnIdentity.Slave);
+                Pawn actor = BoundPawn("actor"), target = BoundPawn("target");
                 actor.Training.restrictionConfig.rules = PermissiveRules();
                 target.Training.restrictionConfig.rules = PermissiveRules();
                 actor.Training.restrictionConfig.rules.Set(purpose.Value.active, SSCRestrictionValue.Deny);
@@ -98,7 +98,7 @@ internal static partial class Program
                 var passive = Decision(actor, target, purpose.Key, false, SSCRestrictionReason.RuleDenied);
                 Equal(target, passive.Subject); Equal(purpose.Value.passive, passive.Entry.Rule);
             }
-            Decision(Pawn("A"), Pawn("B", PawnIdentity.Slave), (SSCInteractionKind)777, false, SSCRestrictionReason.IncompleteContext);
+            Decision(Pawn("A"), BoundPawn("B"), (SSCInteractionKind)777, false, SSCRestrictionReason.IncompleteContext);
         });
         Run("Master identity and trainer assignment are not ownership", () =>
         {
@@ -121,7 +121,7 @@ internal static partial class Program
         foreach (bool passive in new[] { false, true })
             Run("Both sides checked: " + active + "/" + passive, () =>
             {
-                Pawn a = Pawn("A", PawnIdentity.Slave), b = Pawn("B", PawnIdentity.Slave);
+                Pawn a = BoundPawn("A"), b = BoundPawn("B");
                 a.Training.restrictionConfig.rules.consensualInitiation = active;
                 b.Training.restrictionConfig.rules.receiveConsensual = passive;
                 Equal(active == SSCRestrictionValue.Allow && passive,
@@ -129,7 +129,7 @@ internal static partial class Program
             });
         Run("Forced permission checks both active and passive", () =>
         {
-            Pawn a = Pawn("A", PawnIdentity.Slave), b = Pawn("B", PawnIdentity.Slave);
+            Pawn a = BoundPawn("A"), b = BoundPawn("B");
             a.Training.restrictionConfig.rules.allowForcedInitiation = true;
             Decision(a, b, SSCInteractionKind.Forced, false, SSCRestrictionReason.RuleDenied);
             b.Training.restrictionConfig.rules.receiveForced = true;
@@ -157,7 +157,7 @@ internal static partial class Program
         });
         Run("Unknown purposes reject only relevant requests", () =>
         {
-            Decision(Pawn("A"), Pawn("B", PawnIdentity.Slave), SSCInteractionKind.Unknown, false, SSCRestrictionReason.IncompleteContext);
+            Decision(Pawn("A"), BoundPawn("B"), SSCInteractionKind.Unknown, false, SSCRestrictionReason.IncompleteContext);
             Decision(Pawn("A"), Pawn("B"), SSCInteractionKind.Unknown, true, SSCRestrictionReason.NotApplicable);
         });
         Run("Merely having a comp or old option does not activate rules", () =>
@@ -176,7 +176,7 @@ internal static partial class Program
         foreach (SSCInteractionKind kind in new[] { SSCInteractionKind.DailyTraining, SSCInteractionKind.RitualTraining })
             Run("Training ignores ordinary permissions: " + kind, () =>
             {
-                Pawn a = Pawn("A", PawnIdentity.Slave), b = Pawn("B", PawnIdentity.Slave);
+                Pawn a = BoundPawn("A"), b = BoundPawn("B");
                 a.Training.restrictionConfig.rules.consensualInitiation = SSCRestrictionValue.Deny;
                 b.Training.restrictionConfig.rules.receiveTraining = true;
                 Decision(a, b, kind, true, SSCRestrictionReason.Allowed);
@@ -270,7 +270,7 @@ internal static partial class Program
         });
         Run("Active-only allowance retains the resolved source", () =>
         {
-            Pawn actor = Pawn("A", PawnIdentity.Slave);
+            Pawn actor = BoundPawn("A");
             Wear(actor, "active_gear", new SSCRestrictionOverrides { consensualInitiation = SSCRestrictionValue.Allow });
             var d = Decision(actor, Pawn("B"), SSCInteractionKind.Consensual, true, SSCRestrictionReason.Allowed);
             Equal(actor, d.Subject); Equal(SSCRestrictionSource.Equipment, d.Entry.Source);
@@ -370,7 +370,7 @@ internal static partial class Program
             SSCMod.settings.enableSpecializationRestrictionOverrides = false;
             var template = SSCMod.settings.restrictionDefaults;
             var saved = p.b.Training.restrictionConfig;
-            Equal(true, SSCRestrictionResolver.TryCreateInitialConfiguration(p.b, template, out var made, out var error));
+            Equal(true, SSCRestrictionConfigurationBuilder.TryCreateInitial(p.b, template, out var made, out var error));
             Equal(null, error);
             Equal(true, made.rules.receiveForced); Equal(true, made.rules.receiveConsensual);
             Equal(true, made.busDefaultsApplied); Equal(false, template.receiveForced);
@@ -388,7 +388,7 @@ internal static partial class Program
         {
             var p = Pair(); p.b.Training.restrictionConfig = null;
             var template = new SSCRestrictionRules { consensualInitiation = (SSCRestrictionValue)88 };
-            Equal(false, SSCRestrictionResolver.TryCreateInitialConfiguration(p.b, template, out var made, out var error));
+            Equal(false, SSCRestrictionConfigurationBuilder.TryCreateInitial(p.b, template, out var made, out var error));
             Equal(null, made); Equal(null, p.b.Training.restrictionConfig);
             Equal(SSCRestrictionSource.DefaultTemplate, error.Source); Equal(SSCRestrictionRule.ConsensualInitiation, error.Rule);
             Equal((SSCRestrictionValue)88, error.Value); Equal((SSCRestrictionValue)88, template.consensualInitiation);
@@ -399,7 +399,7 @@ internal static partial class Program
             BusProfile().defaults.masturbation = SSCRestrictionValue.Allow;
             BusProfile().defaults.receiveForced = SSCRestrictionValue.OwnerOnly;
             var template = new SSCRestrictionRules();
-            Equal(false, SSCRestrictionResolver.TryCreateInitialConfiguration(p.b, template, out var made, out var error));
+            Equal(false, SSCRestrictionConfigurationBuilder.TryCreateInitial(p.b, template, out var made, out var error));
             Equal(null, made); Equal(null, p.b.Training.restrictionConfig); Equal(false, template.allowMasturbation);
             Equal(SSCRestrictionSource.SpecializationDefault, error.Source); Equal("SSC_Restriction_Bus", error.SourceDef);
             Equal(SSCRestrictionRule.ReceiveForced, error.Rule); Equal(SSCRestrictionValue.OwnerOnly, error.Value);
@@ -412,7 +412,7 @@ internal static partial class Program
             AddProfile("A_cow", SexSlaveSpecializationType.Cow, null, new SSCRestrictionOverrides { receiveForced = SSCRestrictionValue.Deny });
             for (int pass = 0; pass < 2; pass++)
             {
-                Equal(true, SSCRestrictionResolver.TryCreateInitialConfiguration(p.b, null, out var made, out var error));
+                Equal(true, SSCRestrictionConfigurationBuilder.TryCreateInitial(p.b, null, out var made, out var error));
                 Equal(null, error); Equal(true, made.busDefaultsApplied);
                 Equal(false, made.rules.receiveForced); Equal(true, made.rules.receiveConsensual); Equal(true, made.rules.allowMasturbation);
                 Equal(SSCRestrictionValue.OwnerOnly, made.rules.consensualInitiation);
@@ -422,7 +422,7 @@ internal static partial class Program
         Run("Template edits do not change existing configuration", () =>
         {
             var p = Pair();
-            Equal(true, SSCRestrictionResolver.TryCreateInitialConfiguration(p.b, SSCMod.settings.restrictionDefaults, out var made, out var error));
+            Equal(true, SSCRestrictionConfigurationBuilder.TryCreateInitial(p.b, SSCMod.settings.restrictionDefaults, out var made, out var error));
             Equal(null, error);
             p.b.Training.restrictionConfig = made;
             SSCMod.settings.restrictionDefaults.receiveForced = true;
@@ -463,7 +463,7 @@ internal static partial class Program
         });
         Run("An invalid saved entry makes all consulted uses reject consistently", () =>
         {
-            var subject = Pawn("corrupt", PawnIdentity.Slave);
+            var subject = BoundPawn("corrupt");
             subject.Training.restrictionConfig.rules = PermissiveRules();
             subject.Training.restrictionConfig.rules.consensualInitiation = (SSCRestrictionValue)88;
             Equal(false, subject.Training.restrictionConfig.IsValid());
@@ -496,7 +496,7 @@ internal static partial class Program
         });
         Run("Independent training does not consult the initiator's unrelated broken configuration", () =>
         {
-            Pawn actor = Pawn("actor", PawnIdentity.Slave), target = Pawn("target", PawnIdentity.Slave);
+            Pawn actor = BoundPawn("actor"), target = BoundPawn("target");
             actor.Training.restrictionConfig.rules.consensualInitiation = (SSCRestrictionValue)88;
             target.Training.restrictionConfig.rules.receiveTraining = true;
             Decision(actor, target, SSCInteractionKind.DailyTraining, true, SSCRestrictionReason.Allowed);
@@ -550,7 +550,7 @@ internal static partial class Program
         });
         Run("Explicit editor initialization owns defaults and never replaces an existing config", () =>
         {
-            var pawn = Pawn("editable", PawnIdentity.Slave);
+            var pawn = BoundPawn("editable");
             pawn.Training.restrictionConfig = null;
             pawn.Training.selectedTrainer = Pawn("trainer");
             pawn.Training.allowOthersForTrainingOrSex = true;
@@ -578,7 +578,7 @@ internal static partial class Program
         });
         Run("Editor initialization reports bad global defaults without throwing or saving", () =>
         {
-            var pawn = Pawn("editable", PawnIdentity.Slave); pawn.Training.restrictionConfig = null;
+            var pawn = BoundPawn("editable"); pawn.Training.restrictionConfig = null;
             SSCMod.settings.restrictionDefaults.consensualInitiation = (SSCRestrictionValue)88;
             Equal(false, SSCRestrictionEditor.TryInitialize(pawn, out var error));
             Equal(null, pawn.Training.restrictionConfig); Equal(SSCRestrictionSource.DefaultTemplate, error.Source);
@@ -587,7 +587,7 @@ internal static partial class Program
         });
         Run("Editor and read-only preview report bad profile defaults without changing the pawn", () =>
         {
-            var pawn = Pawn("editable", PawnIdentity.Slave); pawn.Training.restrictionConfig = null; pawn.HasBusState = true;
+            var pawn = BoundPawn("editable"); pawn.Training.restrictionConfig = null; pawn.HasBusState = true;
             BusProfile().defaults.receiveForced = SSCRestrictionValue.OwnerOnly;
             Equal(false, SSCRestrictionEditor.TryInitialize(pawn, out var error));
             Equal("SSC_Restriction_Bus", error.SourceDef); Equal(null, pawn.Training.restrictionConfig);
@@ -599,7 +599,7 @@ internal static partial class Program
         });
         Run("Editor preserves unsupported or corrupt configurations", () =>
         {
-            var pawn = Pawn("invalid", PawnIdentity.Slave);
+            var pawn = BoundPawn("invalid");
             pawn.Training.restrictionConfig.version = 99;
             Equal(false, SSCRestrictionEditor.TrySet(pawn, SSCRestrictionRule.ReceiveTraining, SSCRestrictionValue.Allow));
             Equal(false, SSCRestrictionEditor.TryInitialize(pawn));
@@ -627,7 +627,7 @@ internal static partial class Program
         });
         Run("Editor rejects invalid choices without initializing or changing stored values", () =>
         {
-            var pawn = Pawn("editable", PawnIdentity.Slave);
+            var pawn = BoundPawn("editable");
             Equal(false, SSCRestrictionEditor.TrySet(pawn, SSCRestrictionRule.ReceiveTraining, SSCRestrictionValue.OwnerOnly));
             Equal(false, SSCRestrictionEditor.TrySet(pawn, (SSCRestrictionRule)999, SSCRestrictionValue.Allow));
             Equal(false, pawn.Training.restrictionConfig.rules.receiveTraining);
@@ -676,6 +676,7 @@ internal static partial class Program
         });
         RunLifecycleTests();
         RunCompactUiPreferenceTests();
+        RunBoundScopeTests();
         Console.WriteLine($"{passed}/{passed + failed} passed");
         return failed == 0 ? 0 : 1;
     }
@@ -684,6 +685,13 @@ internal static partial class Program
     private static Pawn Pawn(string name, PawnIdentity identity = PawnIdentity.Unset)
     {
         return new Pawn { LabelShort = name, Training = new CompSexSlaveTraining { pawnIdentity = identity, restrictionConfig = new SSCRestrictionConfig() } };
+    }
+    /// <summary>显式创建已绑定的规则测试对象；基础 Pawn 工厂仍保留未绑定语义，避免身份暗中授予生效资格。</summary>
+    private static Pawn BoundPawn(string name)
+    {
+        Pawn pawn = Pawn(name, PawnIdentity.Slave);
+        pawn.BoundMaster = Pawn(name + " owner", PawnIdentity.Master);
+        return pawn;
     }
     /// <summary>创建主人 a 与已绑定目标 b，作为方向、主人许可和反向请求测试的共同起点。</summary>
     private static (Pawn a, Pawn b) Pair()

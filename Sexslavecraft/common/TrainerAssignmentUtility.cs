@@ -5,9 +5,9 @@ using Verse;
 using Verse.AI;
 
 // EN: This file decides who may train a given sex slave.
-// EN: It merges ChainOfSexSlave owner rules, manual trainer assignment, worktype checks, and target availability checks.
+// EN: Permission is delegated to the unified restriction policy; this file coordinates assignment and normal work conditions.
 // CN: 这个文件负责决定“谁可以调教这个性奴”。
-// CN: 它会合并 ChainOfSexSlave 主人规则、手动指定 trainer、工作类型检查，以及目标可用性检查。
+// CN: 许可交给统一限制策略；这里协调指定调教员、工作类型和目标可用性，不另设主人保护算法。
 namespace SexSlaveCraft
 {
     public static class TrainerAssignmentUtility
@@ -17,8 +17,8 @@ namespace SexSlaveCraft
         /// <summary>日常调教复用统一许可和资格检查；自动工作只交给指定者，手动主人命令不受其他指派排除。</summary>
         public static bool IsAllowedTrainer(Pawn sexSlave, Pawn master, bool forced = false)
         {
-            return SSCRestrictionTrainingUtility.TryEvaluate(
-                SSCRestrictionTrainingUtility.CreateRequest(master, sexSlave, false), !forced, out _, out _);
+            return SSCRestrictionTrainingUtility.Evaluate(
+                SSCRestrictionTrainingUtility.CreateRequest(master, sexSlave, false), !forced).Allowed;
         }
 
         /// <summary>从本次分类快照枚举可重新指定的调教员，不以旧 selectedTrainer 锁住候选列表。</summary>
@@ -52,14 +52,13 @@ namespace SexSlaveCraft
             return candidate.workSettings.WorkIsActive(TrainSexSlaveWorkType);
         }
 
-        /// <summary>菜单和直接指派共用资格：保持自由殖民者范围，排除自身，并检查实际主人约束。</summary>
+        /// <summary>菜单和直接指派共用资格：保持自由殖民者范围、排除自身，再只读检查指派及所需授权能否提交。</summary>
         public static bool CanAssignTrainerTo(Pawn sexSlave, Pawn candidate)
         {
             if (sexSlave == null || sexSlave == candidate || sexSlave.Map == null
                 || !CanAssignAsTrainer(candidate)
                 || !sexSlave.Map.mapPawns.FreeColonists.Contains(candidate)) return false;
-            Pawn forcedMaster = GetForcedMaster(sexSlave);
-            return forcedMaster == null || forcedMaster == candidate;
+            return SSCRestrictionTrainerAssignment.CanAssign(sexSlave, candidate);
         }
 
         /// <summary>读取有效指定调教员；停用或失效时返回 null，但不清空原始指派记录。</summary>
@@ -83,15 +82,22 @@ namespace SexSlaveCraft
             return trainer.LabelShort;
         }
 
-        /// <summary>供自动工作扫描复用完整目标检查。</summary>
-        public static bool IsTrainingTargetAvailable(Pawn targetPawn, Pawn trainer, bool forced)
+        /// <summary>只读筛选自动工作的粗略候选；不查询最终许可，不修复状态，也不触发兼容迁移。</summary>
+        /// <remarks>可能陈旧的仪式和训练占用标记留给完整准备入口恢复，避免先筛掉后永远无法修复。</remarks>
+        public static bool IsPotentialTrainingTarget(Pawn targetPawn, Pawn trainer)
         {
-            return TryGetTrainingTargetFailureReason(targetPawn, trainer, forced, out _);
+            if (targetPawn == null || trainer == null || targetPawn == trainer || targetPawn.Dead
+                || !targetPawn.RaceProps.Humanlike || !SSCIdentityUtility.IsSupportedVanillaStatus(targetPawn)
+                || GetActiveAssignedTrainer(targetPawn) != trainer) return false;
+            CompSexSlaveTraining comp = targetPawn.TryGetComp<CompSexSlaveTraining>();
+            if (comp == null || !comp.IsEnabled || comp.IsWaitingAfterFailedValidation || comp.IsOnCooldown) return false;
+            return !comp.scheduledTrainingEnabled || comp.IsScheduledTrainingDayDue && comp.IsWithinScheduledTrainingWindow;
         }
 
-        /// <summary>核对目标的日常训练资格，先恢复失效仪式占用，再检查排班、冷却及调教师限制。</summary>
+        /// <summary>完整准备日常训练对象：恢复残留占用、检查现行许可与工作条件，最后执行兼容修复和身体校验。</summary>
         /// <returns>目标可接受训练时返回 true；否则返回 false，并通过 reason 提供首个拒绝原因。</returns>
-        public static bool TryGetTrainingTargetFailureReason(Pawn targetPawn, Pawn trainer, bool forced, out string reason)
+        /// <remarks>此入口包含恢复与兼容迁移副作用；纯候选枚举必须使用 IsPotentialTrainingTarget。</remarks>
+        public static bool TryPrepareTrainingTarget(Pawn targetPawn, Pawn trainer, bool forced, out string reason)
         {
             reason = null;
             if (targetPawn == null || trainer == null)
@@ -125,7 +131,7 @@ namespace SexSlaveCraft
             }
 
             // 先修复已结束仪式的残留占用，再判断调教资格；自动和强制命令共用此入口。
-            BindingRitualStateUtility.RecoverPawnState(targetPawn);
+            RecoverTrainingTargetState(targetPawn);
             CompSexSlaveTraining compToggle = targetPawn.TryGetComp<CompSexSlaveTraining>();
             if (compToggle == null || !compToggle.IsEnabled)
             {
@@ -169,14 +175,8 @@ namespace SexSlaveCraft
             // CN: 已经处于 TrainingReceiver 或 Training_Ritual 的性奴正在被使用，不能再次拉去调教。
             if (compToggle.isBeingTrained)
             {
-                bool isActiveTrainingJob = targetPawn.CurJobDef == SSCDefOf.SSC_TrainingReceiver || targetPawn.CurJobDef == SSCDefOf.Training_Ritual;
-                if (isActiveTrainingJob)
-                {
-                    reason = Strings.Train_Reason_AlreadyBeingTrained;
-                    return false;
-                }
-
-                compToggle.isBeingTrained = false;
+                reason = Strings.Train_Reason_AlreadyBeingTrained;
+                return false;
             }
 
             if (compToggle.IsOnCooldown)
@@ -186,9 +186,11 @@ namespace SexSlaveCraft
                 return false;
             }
 
-            if (!SSCRestrictionTrainingUtility.TryEvaluate(
-                SSCRestrictionTrainingUtility.CreateRequest(trainer, targetPawn, false), !forced, out _, out reason))
+            SSCTrainingAdmission admission = SSCRestrictionTrainingUtility.Evaluate(
+                SSCRestrictionTrainingUtility.CreateRequest(trainer, targetPawn, false), !forced);
+            if (!admission.Allowed)
             {
+                reason = admission.Reason;
                 return false;
             }
 
@@ -210,6 +212,17 @@ namespace SexSlaveCraft
             }
 
             return true;
+        }
+
+        /// <summary>恢复已失效的仪式和日常占用，保留仍有实际接收任务或有效仪式支撑的训练标记。</summary>
+        private static void RecoverTrainingTargetState(Pawn targetPawn)
+        {
+            BindingRitualStateUtility.RecoverPawnState(targetPawn);
+            CompSexSlaveTraining comp = targetPawn.TryGetComp<CompSexSlaveTraining>();
+            if (comp == null || comp.isRitualTraining || !comp.isBeingTrained) return;
+            bool hasTrainingJob = targetPawn.CurJobDef == SSCDefOf.SSC_TrainingReceiver
+                || targetPawn.CurJobDef == SSCDefOf.Training_Ritual;
+            if (!hasTrainingJob) comp.isBeingTrained = false;
         }
     }
 }

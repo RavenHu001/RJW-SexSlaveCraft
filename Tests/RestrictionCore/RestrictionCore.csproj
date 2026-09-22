@@ -7,6 +7,7 @@
   <ItemGroup>
     <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionData.cs" Link="Production/Data.cs" />
     <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionDefinitions.cs" Link="Production/Definitions.cs" />
+    <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionConfigurationBuilder.cs" Link="Production/ConfigurationBuilder.cs" />
     <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionResolver.cs" Link="Production/Resolver.cs" />
     <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionPolicy.cs" Link="Production/Policy.cs" />
     <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionEditor.cs" Link="Production/Editor.cs" />
