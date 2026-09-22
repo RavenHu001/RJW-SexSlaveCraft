@@ -7,7 +7,7 @@ using SexSlaveCraft;
 using Verse;
 using Verse.AI;
 
-internal static class Program
+internal static partial class Program
 {
     private static int passed, failed;
 
@@ -189,19 +189,19 @@ internal static class Program
             Assert(!SSCBondUtility.TryAssignTrainer(f.slave, Pawn(PawnIdentity.Unset, f.slave.Map)));
             Assert(f.slave.Training.selectedTrainer == other);
         });
-        Run("清空始终允许且恢复原有未指定规则", () =>
+        Run("清空始终允许但不开放任意自动接替", () =>
         {
             var f = Setup(); f.slave.Training.selectedTrainer = f.master; f.master.workSettings.Active = false;
             Assert(SSCBondUtility.TryAssignTrainer(f.slave, null) && f.slave.Training.selectedTrainer == null);
-            Assert(TrainerAssignmentUtility.IsAllowedTrainer(f.slave, Pawn(PawnIdentity.Master, f.slave.Map)));
+            Assert(!TrainerAssignmentUtility.IsAllowedTrainer(f.slave, Pawn(PawnIdentity.Master, f.slave.Map)));
         });
-        Run("实际主人约束在菜单和直接指派一致，开放后允许更换", () =>
+        Run("个人禁止调教仍允许菜单选择合格非主人，明确指派才提交授权", () =>
         {
             var f = Setup(); SSCBondUtility.Bind(f.master, f.slave); Pawn other = Pawn(PawnIdentity.Master, f.slave.Map);
-            Assert(TrainerAssignmentUtility.GetTrainerCandidates(f.slave).Single() == f.master);
-            Assert(!SSCBondUtility.TryAssignTrainer(f.slave, other));
-            f.slave.Training.AllowsOthersForTrainingOrSex = true;
+            Assert(TrainerAssignmentUtility.GetTrainerCandidates(f.slave).Contains(other));
+            Assert(!f.slave.Training.restrictionConfig.rules.receiveTraining);
             Assert(SSCBondUtility.TryAssignTrainer(f.slave, other));
+            Assert(f.slave.Training.restrictionConfig.rules.receiveTraining && f.slave.Training.selectedTrainer == other);
         });
         Run("主人工作暂停不影响绑定默认指派", () =>
         {
@@ -212,7 +212,8 @@ internal static class Program
         });
         Run("停用指派不变成未指定，也不允许他人接替", () =>
         {
-            var f = Setup(); Pawn trainer = Pawn(PawnIdentity.Slave, f.slave.Map, true);
+            var f = Setup(); SSCBondUtility.Bind(f.master, f.slave); f.slave.Training.restrictionConfig.rules.receiveTraining = true;
+            Pawn trainer = Pawn(PawnIdentity.Slave, f.slave.Map, true);
             Assert(SSCBondUtility.TryAssignTrainer(f.slave, trainer));
             SSCIdentityUtility.SetTrainerEnabled(trainer, false);
             Assert(f.slave.Training.selectedTrainer == trainer && TrainerAssignmentUtility.GetActiveAssignedTrainer(f.slave) == null);
@@ -231,7 +232,7 @@ internal static class Program
                 f.slave.Training.selectedTrainer = off;
                 Assert(!TrainerAssignmentUtility.IsAllowedTrainer(f.slave, unset));
                 Assert(!TrainerAssignmentUtility.IsAllowedTrainer(f.slave, off));
-                Assert(TrainerAssignmentUtility.IsAllowedTrainer(f.slave, f.master));
+                Assert(!TrainerAssignmentUtility.IsAllowedTrainer(f.slave, f.master));
             }
         });
         Run("工作暂停和倒地不抹除有效指派，死亡和自身失效", () =>
@@ -249,6 +250,9 @@ internal static class Program
             var work = new WorkGiver_Training(); TrainingJobUtility.ValidationCalls = 0;
             Assert(work.JobOnThing(trainer, f.slave, false) == null && work.JobOnThing(trainer, f.slave, true) == null);
             Assert(JobFailReason.Last.Contains("调教员身份") && TrainingJobUtility.ValidationCalls == 0);
+            SSCBondUtility.Bind(f.master, f.slave);
+            f.slave.Training.selectedTrainer = trainer;
+            f.slave.Training.restrictionConfig.rules.receiveTraining = true;
             SSCIdentityUtility.SetTrainerEnabled(trainer, true);
             Assert(work.JobOnThing(trainer, f.slave, false)?.target == f.slave);
             Assert(work.PotentialWorkThingsGlobal(trainer).Contains(f.slave));
@@ -265,6 +269,7 @@ internal static class Program
         Run("关闭身份保留在途状态，禁止下一次启动", () =>
         {
             var f = Setup(); Pawn trainer = Pawn(PawnIdentity.Slave, f.slave.Map, true);
+            SSCBondUtility.Bind(f.master, f.slave); f.slave.Training.restrictionConfig.rules.receiveTraining = true;
             f.slave.Training.selectedTrainer = trainer; f.slave.Training.isBeingTrained = true;
             Assert(TrainerAssignmentUtility.IsAllowedTrainer(f.slave, trainer));
             SSCIdentityUtility.SetTrainerEnabled(trainer, false);
@@ -291,8 +296,8 @@ internal static class Program
             var f = Setup(); Pawn trainer = Pawn(PawnIdentity.Slave, f.slave.Map, true);
             f.slave.Training.selectedTrainer = trainer;
             var masterRole = new RitualRole_BindingMaster(); var slaveRole = new RitualRole_BindingSlave();
-            Assert(!masterRole.AppliesToPawn(trainer, out _, default));
-            Assert(slaveRole.AppliesToPawn(f.slave, out _, default));
+            Assert(!masterRole.AppliesToPawn(trainer, out _, default, assignments: new RitualRoleAssignments { Slave = f.slave }));
+            Assert(!slaveRole.AppliesToPawn(f.slave, out _, default));
             SSCIdentityUtility.SetTrainerEnabled(trainer, false);
             Assert(!slaveRole.AppliesToPawn(f.slave, out _, default));
             Assert(!masterRole.AppliesToPawn(f.master, out _, default, assignments: new RitualRoleAssignments { Slave = f.slave }));
@@ -346,6 +351,25 @@ internal static class Program
                 Assert(!string.IsNullOrWhiteSpace(identityXml.Root.Element("SSC_Identity_BoundTip")?.Value));
             }
         });
+        Run("绑定不再根据旧开放状态覆盖第三方或空指派", () =>
+        {
+            // 本套件直接调用生产绑定函数；新限制生命周期协调另由 RestrictionCore 覆盖。
+            // 绑定函数不能再制造一次旧规则覆盖，强制指定主人由统一协调入口负责。
+            foreach (bool legacy in new[] { false, true })
+            foreach (bool assigned in new[] { false, true })
+            {
+                var f = Setup(); Pawn other = assigned ? Pawn(PawnIdentity.Master, f.slave.Map) : null;
+                f.slave.Training.AllowsOthersForTrainingOrSex = legacy;
+                f.slave.Training.restrictionConfig.rules.receiveTraining = true;
+                f.slave.Training.selectedTrainer = other;
+                Assert(SSCBondUtility.Bind(f.master, f.slave));
+                Assert(f.slave.Training.selectedTrainer == other);
+                Assert(SSCBondUtility.Bind(f.master, f.slave));
+                Assert(f.slave.Training.selectedTrainer == other);
+            }
+        });
+        RunStage3BTests();
+        RunWorkScanTests();
         Console.WriteLine($"{passed}/{passed + failed} passed (production trainer identity and assignment; game interface model).");
         return failed == 0 ? 0 : 1;
     }
@@ -360,12 +384,14 @@ internal static class Program
     /// <summary>准备可接受调教的性奴和同图主人。</summary>
     private static (Pawn slave, Pawn master) Setup()
     {
-        Pawn slave = Pawn(PawnIdentity.Slave); return (slave, Pawn(PawnIdentity.Master, slave.Map));
+        Pawn slave = Pawn(PawnIdentity.Slave); Pawn master = Pawn(PawnIdentity.Master, slave.Map);
+        slave.Training.selectedTrainer = master; return (slave, master);
     }
 
     /// <summary>运行独立场景并在失败后继续报告其余场景。</summary>
     private static void Run(string name, Action test)
     {
+        SSCMod.settings = new Settings();
         try { test(); passed++; Console.WriteLine("PASS " + name); }
         catch (Exception ex) { failed++; Console.WriteLine("FAIL " + name + ": " + ex); }
     }

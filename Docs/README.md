@@ -44,6 +44,19 @@
 - [绑定仪式中断修复](Development/绑定仪式中断修复.md)
 - [行为开始保护修复](Development/行为开始保护修复.md)
 - [调教员身份开关](Development/调教员身份开关.md)
+- [新限制系统开发完成与实机验收](Development/新限制系统开发完成与实机验收.md)：当前完成状态、维护者确认的重点实机场景及发布边界。
+- [新限制系统阶段 1](Development/新限制系统阶段1.md)：核心实现、只读预览、迁移表与后续入口清单。
+- [新限制系统阶段 2](Development/新限制系统阶段2.md)：自动初始化、旧档迁移、人格与克隆隔离、默认模板、批量应用及角色右侧栏。
+- [新限制系统阶段 3A](Development/新限制系统阶段3A.md)：RJW 普通双人、单人及人格排泄任务接管，方向、保存恢复与拒绝清理。
+- [新限制系统阶段 3B](Development/新限制系统阶段3B.md)：日常调教与仪式接管、唯一指派、主持资格、阶段取消及准备清理。
+- [新限制系统阶段 3C](Development/新限制系统阶段3C.md)：事件预检、实际开始通知、原版 Lovin 双端及 LifeForce 兼容。
+- [新限制系统阶段 4 前半清理](Development/新限制系统阶段4清理.md)：退役旧策略、例外入口和装备标记，隔离旧档迁移数据。
+- [新限制系统阶段 4 后半界面](Development/新限制系统阶段4界面.md)：原生勾叉、对象范围单选与记忆、短标记及悬停说明。
+- [新限制系统功能代码导读与复盘](Development/新限制系统功能代码导读与复盘.md)：阶段 4 完成后的实际调用流程、各文件职责、已确认问题与分批重构建议。
+- [新限制系统界面可用状态与默认子页](Development/新限制系统界面可用状态与默认子页.md)：入口置灰、强制条目锁定、默认模板收纳及批量覆盖警示。
+- [新限制系统绑定门槛与职责整理](Development/新限制系统绑定门槛与职责整理.md)：复盘实施、仅绑定生效、指定调教员同步授权、XML 保存机制与验证记录。
+- [新限制系统最小测试界面](Development/新限制系统测试界面.md)：个体配置编辑、显式初始化、实时许可测试及操作步骤。
+- [新限制系统核心复盘修复](Development/新限制系统核心复盘修复.md)：错误来源、统一校验、初始化失败处理、明确方向与解析分配优化。
 - [简版诊断面板](Development/简版诊断面板.md)：目前没什么明确作用的辅助更新，保留为设置页右下角的次要入口。
 
 ## 版本发布与验证
@@ -52,6 +65,7 @@
 
 | 版本 | 发布说明 | 验证记录 |
 | --- | --- | --- |
+| 2.3.1（待发布） | [更新说明](Releases/2.3.1/2.3.1发布说明.md) | [开发验收记录](Development/新限制系统开发完成与实机验收.md) |
 | 2.3.0 | [发布说明](Releases/2.3.0/2.3.0发布说明.md) | [验证记录](Releases/2.3.0/2.3.0版本验证.md) |
 | 2.2.15 | [发布说明](Releases/2.2.15/2.2.15发布说明.md) | [验证记录](Releases/2.2.15/2.2.15版本验证.md) |
 | 2.2.14 | [发布说明](Releases/2.2.14/2.2.14发布说明.md) | [验证记录](Releases/2.2.14/2.2.14版本验证.md) |
@@ -67,6 +81,7 @@
 - [Archive/RimTalk](../Archive/RimTalk/README.md)
 - [Sexslavecraft/ShaderSources](../Sexslavecraft/ShaderSources/README.md)
 - [Tests/BusTrade](../Tests/BusTrade/README.md)
+- [Tests/RestrictionCore](../Tests/RestrictionCore/README.md)
 - [Tests/GenderChangeMemory](../Tests/GenderChangeMemory/README.md)
 - [Tests/PermanentLactation](../Tests/PermanentLactation/README.md)
 - [Tests/PersonalityCardLayout](../Tests/PersonalityCardLayout/README.md)

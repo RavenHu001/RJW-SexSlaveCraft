@@ -45,7 +45,6 @@ namespace SexSlaveCraft
         public TrainingActType selectedMode = TrainingActType.Auto;
         public Pawn selectedTrainer;
         public SSCSharedSleepRecord sharedSleep;
-        public bool allowOthersForTrainingOrSex = false;
         public bool scheduledTrainingEnabled = false;
         public int scheduledTrainingHour = 20;
         public int scheduledTrainingIntervalDays = 1;
@@ -83,36 +82,49 @@ namespace SexSlaveCraft
         public const int ScheduledTrainingWindowHours = 2;
         public const int PetAffectionCooldownTicks = 60000;
 
+        /// <summary>读取玩家是否启用了日常训练。</summary>
         public bool IsEnabled => mode == TrainingMode.Enabled;
 
+        /// <summary>判断当前选择的特化方向是否为巴士。</summary>
         public bool IsBusSpecialized => specializationType == SexSlaveSpecializationType.Bus;
 
+        /// <summary>检查进度是否达到巴士基础阈值；调用方另行确认当前特化方向。</summary>
         public bool HasReachedBusThreshold => specializationProgress >= 0.20f;
 
+        /// <summary>检查进度是否达到巴士完成阈值；调用方另行确认当前特化方向。</summary>
         public bool HasCompletedBusSpecialization => specializationProgress >= 0.999f;
 
+        /// <summary>判断当前选择的特化方向是否为奶牛。</summary>
         public bool IsCowSpecialized => specializationType == SexSlaveSpecializationType.Cow;
 
+        /// <summary>检查进度是否达到奶牛基础阈值；调用方另行确认当前特化方向。</summary>
         public bool HasReachedCowThreshold => specializationProgress >= 0.20f;
 
+        /// <summary>检查进度是否达到奶牛完成阈值；调用方另行确认当前特化方向。</summary>
         public bool HasCompletedCowSpecialization => specializationProgress >= 0.999f;
 
+        /// <summary>判断当前选择的特化方向是否为宠物猫。</summary>
         public bool IsPetCatSpecialized => specializationType == SexSlaveSpecializationType.PetCat;
 
+        /// <summary>判断当前选择的特化方向是否为宠物狗。</summary>
         public bool IsPetDogSpecialized => specializationType == SexSlaveSpecializationType.PetDog;
 
+        /// <summary>判断当前选择的特化方向是否为宠物兔。</summary>
         public bool IsPetRabbitSpecialized => specializationType == SexSlaveSpecializationType.PetRabbit;
 
+        /// <summary>判断当前特化是否属于任一种宠物方向。</summary>
         public bool IsPetSpecialized => PetSpecializationUtility.IsPetSpecialization(specializationType);
 
+        /// <summary>同时检查宠物特化身份及其基础进度阈值。</summary>
         public bool HasReachedPetThreshold => specializationProgress >= 0.20f && IsPetSpecialized;
 
+        /// <summary>同时检查宠物特化身份及其完成进度阈值。</summary>
         public bool HasCompletedPetSpecialization => specializationProgress >= 0.999f && IsPetSpecialized;
 
-        public bool AllowsOthersForTrainingOrSex => allowOthersForTrainingOrSex;
-
+        /// <summary>判断上次训练资格校验失败后的重试间隔是否尚未结束。</summary>
         public bool IsWaitingAfterFailedValidation => (Find.TickManager.TicksGame - lastFailedTrainingValidationTick) < FailedValidationRetryTicks;
 
+        /// <summary>将所在地年份及年内天数换算为连续日号；缺少有效父对象时返回哨兵值。</summary>
         public int CurrentLocalDay
         {
             get
@@ -122,11 +134,13 @@ namespace SexSlaveCraft
             }
         }
 
+        /// <summary>判断预约训练的间隔天数是否已满足；未启用预约或尚无训练记录时视为满足。</summary>
         public bool IsScheduledTrainingDayDue =>
             !scheduledTrainingEnabled ||
             lastTrainingLocalDay < 0 ||
             CurrentLocalDay - lastTrainingLocalDay >= Mathf.Max(1, scheduledTrainingIntervalDays);
 
+        /// <summary>按当地小时检查两小时预约窗口，支持跨午夜；未启用预约时不限制时段。</summary>
         public bool IsWithinScheduledTrainingWindow
         {
             get
@@ -141,12 +155,15 @@ namespace SexSlaveCraft
             }
         }
 
+        /// <summary>同时检查预约训练的日期间隔和当前时段是否满足。</summary>
         public bool IsScheduledTrainingAvailableNow =>
             IsScheduledTrainingDayDue && IsWithinScheduledTrainingWindow;
 
+        /// <summary>计算预约窗口的结束小时，将跨午夜的结果折回 0 至 23 时。</summary>
         public int ScheduledTrainingEndHour =>
             (Mathf.Clamp(scheduledTrainingHour, 0, 23) + ScheduledTrainingWindowHours) % 24;
 
+        /// <summary>判断日常训练冷却是否仍在持续；绑定仪式使用独立阶段状态，不受此冷却约束。</summary>
         public bool IsOnCooldown
         {
             get
@@ -244,7 +261,7 @@ namespace SexSlaveCraft
             return SexSlaveSpecializationType.None;
         }
 
-        /// <summary>读写训练配置、成长进度、仪式归属及共同睡眠记录，兼容旧字段；仪式有效性核对延后到运行时。</summary>
+        /// <summary>读写训练配置、新限制配置、成长进度、仪式归属及共同睡眠记录，兼容旧字段；仪式有效性核对延后到运行时。</summary>
         /// <remarks>sharedSleep 以深度序列化保存，避免读档后丢失尚未结算的同床经历；旧存档缺少该字段时保持空记录。</remarks>
         public override void PostExposeData()
         {
@@ -256,7 +273,6 @@ namespace SexSlaveCraft
 
             Scribe_Values.Look(ref mode, "mode", TrainingMode.Disabled);
             Scribe_Values.Look(ref selectedMode, "selectedMode", TrainingActType.Auto);
-            Scribe_Values.Look(ref allowOthersForTrainingOrSex, "allowOthersForTrainingOrSex", false);
             Scribe_Values.Look(ref scheduledTrainingEnabled, "scheduledTrainingEnabled", false);
             Scribe_Values.Look(ref scheduledTrainingHour, "scheduledTrainingHour", 20);
             Scribe_Values.Look(ref scheduledTrainingIntervalDays, "scheduledTrainingIntervalDays", 1);
@@ -285,6 +301,9 @@ namespace SexSlaveCraft
             Scribe_References.Look(ref selectedTrainer, "selectedTrainer");
             Scribe_Deep.Look(ref sharedSleep, "sharedSleep");
 
+            // 必须在旧输入全部读入后、关系和特化修复前捕获；实际迁移在 GameComponent 中执行。
+            ExposeRestrictions();
+
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
                 scheduledTrainingHour = Mathf.Clamp(scheduledTrainingHour, 0, 23);
@@ -303,13 +322,8 @@ namespace SexSlaveCraft
                         selectedTrainer = null;
                     }
 
-                    if (boundMaster != null &&
-                        !AllowsOthersForTrainingOrSex &&
-                        !IsBusSpecialized &&
-                        !BusSpecializationUtility.HasAnyBusState(loadedPawn))
-                    {
-                        selectedTrainer = boundMaster;
-                    }
+                    // 指派限制统一等 GameComponent 完成迁移后协调。
+                    // 此处不能再用旧开放字段提前改回主人，否则会破坏迁移前的真实指定关系。
 
                     bool inActiveTrainingJob =
                         loadedPawn.CurJobDef == SSCDefOf.TrainingSexSlave ||

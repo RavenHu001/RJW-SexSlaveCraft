@@ -14,10 +14,19 @@ namespace SexSlaveCraft
     public class ITab_SexSlaveTraining : ITab
     {
         private const float SectionSpacing = 12f;
+        // 展开入口属于左侧滚动内容；高度和间隔同时用于绘制及总高度计算。
+        private const float RestrictionToggleHeight = 30f;
+        private const float RestrictionToggleSpacing = 8f;
         private static readonly Vector2 WinSize = new Vector2(360f, 560f);
 
         private Vector2 scrollPosition;
+        private Vector2 restrictionScrollPosition;
+        private float restrictionContentHeight = 1400f;
+        private Pawn restrictionPawn;
+        private static bool restrictionsExpanded;
+        private static Game restrictionSession;
 
+        /// <summary>初始化调教页尺寸、标题和教程标识。</summary>
         public ITab_SexSlaveTraining()
         {
             size = WinSize;
@@ -25,6 +34,69 @@ namespace SexSlaveCraft
             tutorTag = "SexSlaveTraining";
         }
 
+        /// <summary>按屏幕约束向右扩展规则栏，保持主调教栏的位置和宽度，整个面板处于原生窗口输入范围内。</summary>
+        protected override void UpdateSize()
+        {
+            if (restrictionSession != Current.Game)
+            {
+                restrictionSession = Current.Game;
+                restrictionsExpanded = false;
+            }
+            // 展开偏好保留在会话内；切到未绑定角色或停用系统时，不显示右栏也不占据右栏宽度。
+            size = new Vector2(Mathf.Min(restrictionsExpanded && CanShowRestrictions(SelPawn) ? 740f : WinSize.x, UI.screenWidth - 16f),
+                Mathf.Min(WinSize.y, Mathf.Max(100f, PaneTopY - 40f)));
+        }
+
+        /// <summary>角色实际受系统管理且总限制启用时才能展开；科技等未来范围条件继续由统一适用入口决定。</summary>
+        private static bool CanShowRestrictions(Pawn pawn)
+        {
+            return (SSCMod.settings?.enableSexSlaveProtectionRules ?? true) && SSCRestrictionResolver.IsApplicable(pawn);
+        }
+
+        /// <summary>保持原按钮位置，对不受限制的角色明确置灰并拦截点击，悬停说明不可用原因。</summary>
+        private static void DrawRestrictionToggle(Rect rect, Pawn pawn)
+        {
+            bool available = CanShowRestrictions(pawn);
+            bool oldEnabled = GUI.enabled;
+            Color oldColor = GUI.color;
+            try
+            {
+                GUI.enabled = oldEnabled && available;
+                if (!GUI.enabled) GUI.color = oldColor * new Color(0.55f, 0.55f, 0.55f, 1f);
+                string key = available && restrictionsExpanded ? "SSC_Restrictions_Collapse" : "SSC_Restrictions_Expand";
+                if (Widgets.ButtonText(rect, key.Translate()) && GUI.enabled)
+                    restrictionsExpanded = !restrictionsExpanded;
+            }
+            finally { GUI.enabled = oldEnabled; GUI.color = oldColor; }
+            if (!available)
+                TooltipHandler.TipRegion(rect, (!(SSCMod.settings?.enableSexSlaveProtectionRules ?? true)
+                    ? "SSC_Restrictions_PanelDisabled" : "SSC_Restrictions_PanelUnavailable").Translate());
+        }
+
+        /// <summary>绘制独立滚动的右侧角色配置；切换角色只重置滚动，不写入默认或修改保存值。</summary>
+        private void DrawRestrictionPanel(Rect rect, Pawn pawn)
+        {
+            if (restrictionPawn != pawn)
+            {
+                restrictionPawn = pawn;
+                restrictionScrollPosition = Vector2.zero;
+            }
+            Widgets.DrawMenuSection(rect);
+            Rect viewport = rect.ContractedBy(8f);
+            Rect content = new Rect(0f, 0f, Mathf.Max(1f, viewport.width - 20f),
+                Mathf.Max(viewport.height, restrictionContentHeight));
+            Widgets.BeginScrollView(viewport, ref restrictionScrollPosition, content);
+            try
+            {
+                var listing = new Listing_Standard { maxOneColumn = true };
+                listing.Begin(content);
+                try { SSCRestrictionUI.DrawPawn(listing, pawn); }
+                finally { restrictionContentHeight = listing.CurHeight + 12f; listing.End(); }
+            }
+            finally { Widgets.EndScrollView(); }
+        }
+
+        /// <summary>仅为支持的原版身份且具有训练组件的角色显示调教页，不要求完成研究。</summary>
         public override bool IsVisible
         {
             get
@@ -46,15 +118,27 @@ namespace SexSlaveCraft
             if (comp == null) return;
 
             Rect outerRect = new Rect(0f, 0f, size.x, size.y).ContractedBy(10f);
+            // 原版先绘制右上角关闭键（顶部 4～22 像素），再调用 FillTab。
+            // 两侧内容均从 24 像素以下开始，滚动到任何位置也不会覆盖关闭键。
+            outerRect.yMin = Mathf.Max(outerRect.yMin, 24f);
+            Rect trainingRect = new Rect(outerRect.x, outerRect.y,
+                Mathf.Min(WinSize.x - 20f, outerRect.width), outerRect.height);
+            if (restrictionsExpanded && CanShowRestrictions(pawn))
+                DrawRestrictionPanel(new Rect(trainingRect.xMax + 10f, outerRect.y,
+                    outerRect.xMax - trainingRect.xMax - 10f, outerRect.height), pawn);
             float contentHeight = CalculateContentHeight(pawn, comp);
-            Rect viewRect = new Rect(0f, 0f, outerRect.width, outerRect.height);
-            Rect contentRect = new Rect(0f, 0f, outerRect.width - 18f, contentHeight);
+            Rect viewRect = trainingRect;
+            Rect contentRect = new Rect(0f, 0f, trainingRect.width - 18f, contentHeight);
 
             Widgets.BeginScrollView(viewRect, ref scrollPosition, contentRect);
             try
             {
                 float curY = 0f;
                 curY = DrawIdentitySection(new Rect(0f, curY, contentRect.width, GetIdentitySectionHeight(comp)), comp) + SectionSpacing;
+
+                // 入口位置与高度保持稳定；没有实际绑定或总限制停用时可见但不可操作。
+                DrawRestrictionToggle(new Rect(0f, curY, contentRect.width, RestrictionToggleHeight), pawn);
+                curY += RestrictionToggleHeight + RestrictionToggleSpacing;
 
                 if (comp.pawnIdentity == PawnIdentity.Master)
                 {
@@ -89,9 +173,10 @@ namespace SexSlaveCraft
             }
         }
 
+        /// <summary>为身份、限制展开入口及当前可见各节累计滚动高度，保持按钮和后续内容均可滚动访问。</summary>
         private static float CalculateContentHeight(Pawn pawn, CompSexSlaveTraining comp)
         {
-            float height = GetIdentitySectionHeight(comp);
+            float height = GetIdentitySectionHeight(comp) + RestrictionToggleHeight + RestrictionToggleSpacing;
 
             if (comp.pawnIdentity == PawnIdentity.Master || comp.pawnIdentity == PawnIdentity.Unset)
             {
@@ -221,8 +306,6 @@ namespace SexSlaveCraft
                     DrawTrainingToggle(listing, pawn, comp);
                     listing.Gap(8f);
                     DrawCooldownStatus(listing, comp);
-                    listing.Gap(8f);
-                    DrawAllowOthersToggle(listing, pawn, comp);
                 }
                 finally
                 {
@@ -422,6 +505,7 @@ namespace SexSlaveCraft
             });
         }
 
+        /// <summary>在统一节框中绘制带颜色的身份提示，并恢复文字对齐与颜色。</summary>
         private void DrawMessageSection(Rect rect, string message, Color color)
         {
             DrawSection(rect, string.Empty, delegate(Rect innerRect)
@@ -434,6 +518,7 @@ namespace SexSlaveCraft
             });
         }
 
+        /// <summary>在节内容区域开始一个标准列表，调用方负责在结束时关闭。</summary>
         private static Listing_Standard BeginSectionListing(Rect innerRect)
         {
             Listing_Standard listing = new Listing_Standard();
@@ -441,6 +526,7 @@ namespace SexSlaveCraft
             return listing;
         }
 
+        /// <summary>绘制节背景及可选标题，再将收缩后的内容区域交给指定绘制函数。</summary>
         private static void DrawSection(Rect rect, string title, Action<Rect> drawContents)
         {
             Widgets.DrawMenuSection(rect);
@@ -456,21 +542,17 @@ namespace SexSlaveCraft
             drawContents(innerRect);
         }
 
-        /// <summary>列出同时满足身份、工作及主人限制的可指派对象，清空入口始终保留。</summary>
+        /// <summary>列出合格且可完成调教授权的对象；普通互动不随指派开放，强制来源禁止时不能换人。</summary>
         private List<FloatMenuOption> GetTrainerOptions(Pawn slave)
         {
             List<FloatMenuOption> list = new List<FloatMenuOption>();
             List<Pawn> candidates = TrainerAssignmentUtility.GetTrainerCandidates(slave).ToList();
-            Pawn forcedMaster = TrainerAssignmentUtility.GetForcedMaster(slave);
+            Pawn owner = SSCBondUtility.GetBoundMaster(slave);
+            SSCRestrictionConfig config = slave.TryGetComp<CompSexSlaveTraining>()?.restrictionConfig;
 
             if (candidates.Count == 0)
             {
                 list.Add(new FloatMenuOption(Strings.ITab_NoTrainerAvailable, null));
-                list.Add(new FloatMenuOption(Strings.ITab_ClearTrainer, delegate
-                {
-                    SSCBondUtility.TryAssignTrainer(slave, null);
-                }));
-                return list;
             }
 
             foreach (Pawn candidate in candidates)
@@ -478,19 +560,30 @@ namespace SexSlaveCraft
                 string label = candidate.LabelShort;
                 Action action;
 
-                if (forcedMaster != null && candidate == forcedMaster)
+                if (owner != null && candidate == owner)
                 {
                     label += Strings.ITab_TrainerMasterSuffix;
                 }
+                else if (owner != null && config?.IsValid() == true && !config.rules.receiveTraining)
+                    label += "SSC_Restrictions_AssignAuthorizesSuffix".Translate();
 
-                action = delegate { SSCBondUtility.TryAssignTrainer(slave, candidate); };
+                action = delegate { AssignTrainer(slave, candidate); };
                 list.Add(new FloatMenuOption(label, action));
             }
 
-            list.Add(new FloatMenuOption(Strings.ITab_ClearTrainer, delegate { SSCBondUtility.TryAssignTrainer(slave, null); }));
+            list.Add(new FloatMenuOption(Strings.ITab_ClearTrainer,
+                SSCRestrictionTrainerAssignment.CanAssign(slave, null) ? (Action)(() => AssignTrainer(slave, null)) : null));
             return list;
         }
 
+        /// <summary>点击时重新验证规则及候选状态；菜单打开后的状态变化造成失败时给出提示，保留原指派。</summary>
+        private static void AssignTrainer(Pawn slave, Pawn trainer)
+        {
+            if (!SSCBondUtility.TryAssignTrainer(slave, trainer))
+                Messages.Message("SSC_Restrictions_AssignFailed".Translate(), slave, MessageTypeDefOf.RejectInput, false);
+        }
+
+        /// <summary>切换日常训练状态并清除当前训练占用；启用时显示现有资格校验结果。</summary>
         private static void DrawTrainingToggle(Listing_Standard listing, Pawn pawn, CompSexSlaveTraining comp)
         {
             bool isEnabled = comp.IsEnabled;
@@ -513,6 +606,7 @@ namespace SexSlaveCraft
             Log.Warning($"[SSC_ITAB] Training enable check failed: {pawn.LabelShort}. {shortReason}\n{detailedReport}");
         }
 
+        /// <summary>把当前 SSC 身份转换为调教页使用的本地化标签。</summary>
         private static string GetIdentityLabel(PawnIdentity identity)
         {
             switch (identity)
@@ -526,6 +620,7 @@ namespace SexSlaveCraft
             }
         }
 
+        /// <summary>显示剩余训练冷却时间，或在无冷却时显示当前启用状态。</summary>
         private static void DrawCooldownStatus(Listing_Standard listing, CompSexSlaveTraining comp)
         {
             if (comp.IsOnCooldown)
@@ -538,6 +633,7 @@ namespace SexSlaveCraft
             listing.Label(comp.IsEnabled ? (TaggedString)Strings.ITab_StatusReady : (TaggedString)Strings.ITab_StatusDisabled);
         }
 
+        /// <summary>列出支持的训练姿势，并保存玩家选择的模式。</summary>
         private static void DrawPoseSelector(Listing_Standard listing, CompSexSlaveTraining comp)
         {
             string modeLabel = Strings.GetModeLabel(comp.selectedMode);
@@ -552,16 +648,17 @@ namespace SexSlaveCraft
             Find.WindowStack.Add(new FloatMenu(acts));
         }
 
-        /// <summary>显示原始指派及停用/暂不可执行状态，允许直接重新选择。</summary>
+        /// <summary>显示原始指派并允许打开候选；选择非主人时同步授权调教，个人禁止不再把整个菜单禁用。</summary>
         private void DrawTrainerSelector(Listing_Standard listing, Pawn pawn, CompSexSlaveTraining comp)
         {
             string trainerName = TrainerAssignmentUtility.GetAssignedTrainerLabel(pawn);
-            if (listing.ButtonText(trainerName))
-            {
+            Rect row = listing.GetRect(30f);
+            if (Widgets.ButtonText(row, trainerName))
                 Find.WindowStack.Add(new FloatMenu(GetTrainerOptions(pawn)));
-            }
+            TooltipHandler.TipRegion(row, "SSC_Restrictions_AssignAuthorizesTip".Translate());
         }
 
+        /// <summary>绘制特化选择和进度，按资格及终极状态限制选项，并同步所选方向的基础状态。</summary>
         private static void DrawSpecializationSelector(Listing_Standard listing, Pawn pawn, CompSexSlaveTraining comp)
         {
             string currentLabel = GetSpecializationLabel(pawn, comp);
@@ -638,6 +735,7 @@ namespace SexSlaveCraft
             DrawRabbitReproductionModeSelector(listing, pawn, comp);
         }
 
+        /// <summary>查询角色是否持有任一已完成特化状态，供未选择方向时显示摘要。</summary>
         private static bool HasAnyFinalizedState(Pawn pawn)
         {
             return BusSpecializationUtility.HasFinalBusState(pawn)
@@ -647,6 +745,7 @@ namespace SexSlaveCraft
                 || PetSpecializationUtility.HasFinalPetState(pawn, SexSlaveSpecializationType.PetRabbit);
         }
 
+        /// <summary>按指定特化方向检查对应终极状态，不让其他方向的完成状态影响结果。</summary>
         private static bool IsTypeFinalized(Pawn pawn, SexSlaveSpecializationType type)
         {
             switch (type)
@@ -664,6 +763,7 @@ namespace SexSlaveCraft
             }
         }
 
+        /// <summary>生成所选特化的标签；未选择时按现有终极状态提供提示。</summary>
         private static string GetSpecializationLabel(Pawn pawn, CompSexSlaveTraining comp)
         {
             string label;
@@ -728,6 +828,7 @@ namespace SexSlaveCraft
             return label;
         }
 
+        /// <summary>根据资格和终极状态构造宠物方向菜单项，合法选择后同步特化及基础状态。</summary>
         private static FloatMenuOption BuildPetSpecializationOption(Pawn pawn, CompSexSlaveTraining comp, SexSlaveSpecializationType type)
         {
             string optionLabel = PetSpecializationUtility.GetSelectLabel(type);
@@ -761,6 +862,7 @@ namespace SexSlaveCraft
             } : null);
         }
 
+        /// <summary>对兔特化角色显示已保存的繁殖模式；未完成的切换功能仍保持只读。</summary>
         private static void DrawRabbitReproductionModeSelector(Listing_Standard listing, Pawn pawn, CompSexSlaveTraining comp)
         {
             if (comp == null || pawn == null) return;
@@ -771,6 +873,7 @@ namespace SexSlaveCraft
             listing.Label(Strings.ITab_RabbitReproductionMode(modeLabel) + " " + Strings.ITab_SpecializationUnfinishedSuffix);
         }
 
+        /// <summary>将繁殖模式转换为本地化名称，未知值按后代模式显示。</summary>
         private static string GetRabbitReproductionModeLabel(RabbitReproductionMode mode)
         {
             switch (mode)
@@ -782,20 +885,7 @@ namespace SexSlaveCraft
             }
         }
 
-        private static void DrawAllowOthersToggle(Listing_Standard listing, Pawn pawn, CompSexSlaveTraining comp)
-        {
-            bool allowOthers = comp.allowOthersForTrainingOrSex;
-            bool oldState = allowOthers;
-            listing.CheckboxLabeled(Strings.ITab_AllowOthers, ref allowOthers);
-            if (allowOthers == oldState) return;
-
-            comp.allowOthersForTrainingOrSex = allowOthers;
-            if (!allowOthers && comp.IsBusSpecialized)
-            {
-                Messages.Message(Strings.ITab_AllowOthersWarning, pawn, MessageTypeDefOf.CautionInput, false);
-            }
-        }
-
+        /// <summary>仅在角色具有泌乳状态时显示并保存产奶开关。</summary>
         private static void DrawMilkToggle(Listing_Standard listing, Pawn pawn, CompSexSlaveTraining comp)
         {
             if (!pawn.health.hediffSet.HasHediff(SSCDefOf.SSC_Lactating_SubState)) return;

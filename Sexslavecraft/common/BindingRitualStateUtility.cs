@@ -11,6 +11,15 @@ namespace SexSlaveCraft
         public const int PhaseCount = 6;
         private const string BindingBehaviorDefName = "SSC_BindingRitualBehavior";
 
+        /// <summary>只取消仍由这对角色主持的当前仪式；复用原版取消信号，保证没有完成结算或日常冷却。</summary>
+        public static void RejectPhase(Pawn actor, Pawn target, Lord ritualLord, string reason)
+        {
+            if (!IsActiveRitualFor(actor, target, ritualLord)) return;
+            Messages.Message("SSC_Restrictions_RitualCancelled".Translate(reason),
+                new LookTargets(actor, target), MessageTypeDefOf.RejectInput, false);
+            ((LordJob_Ritual)ritualLord.LordJob).Cancel();
+        }
+
         /// <summary>按行为定义识别绑定仪式；空引用或其他类型的仪式返回 false。</summary>
         public static bool IsBindingRitual(LordJob_Ritual ritual)
         {

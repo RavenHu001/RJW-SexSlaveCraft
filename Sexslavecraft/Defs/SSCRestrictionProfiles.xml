@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <SexSlaveCraft.SSCRestrictionProfileDef>
+    <defName>SSC_Restriction_Bus</defName>
+    <specialization>Bus</specialization>
+    <defaults>
+      <receiveConsensual>Allow</receiveConsensual>
+      <receiveForced>Allow</receiveForced>
+    </defaults>
+    <forced>
+      <receiveConsensual>Allow</receiveConsensual>
+      <receiveForced>Allow</receiveForced>
+    </forced>
+  </SexSlaveCraft.SSCRestrictionProfileDef>
+</Defs>

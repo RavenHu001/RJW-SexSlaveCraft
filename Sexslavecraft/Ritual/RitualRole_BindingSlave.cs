@@ -1,119 +1,69 @@
-﻿using RimWorld;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using RimWorld;
 using Verse;
 using Verse.AI;
 
 namespace SexSlaveCraft
 {
-    // ==========================================
-    // 专门用于仪式中【性奴 / 祭品】位置的检查
-    // ==========================================
     public class RitualRole_BindingSlave : RitualRole
     {
-        /// <summary>校验仪式性奴角色及有效指定调教员，防止停用记录被当作可用仪式对象。</summary>
-        public override bool AppliesToPawn(Pawn p, out string reason, TargetInfo selectedTarget, LordJob_Ritual ritual = null, RitualRoleAssignments assignments = null, Precept_Ritual precept = null, bool skipReason = false)
+        /// <summary>保留身体和身份条件，与主持端共用配对检查，保证先后选角结果一致。</summary>
+        public override bool AppliesToPawn(Pawn p, out string reason, TargetInfo selectedTarget,
+            LordJob_Ritual ritual = null, RitualRoleAssignments assignments = null, Precept_Ritual precept = null, bool skipReason = false)
         {
             reason = null;
-
-            // 1. 基础生存状态检查
-            if (p == null || !p.Spawned || !p.RaceProps.Humanlike || p.Dead || p.Downed)
-            {
-                return false;
-            }
-
-            // 2. 身份检查 (殖民者 OR 奴隶 OR 囚犯)
+            if (p == null || !p.Spawned || !p.RaceProps.Humanlike || p.Dead || p.Downed) return false;
             if (!SSCIdentityUtility.IsSupportedVanillaStatus(p))
             {
                 if (!skipReason) reason = Strings.Ritual_MustBeColonistOrSlave;
                 return false;
             }
-
-            // 3. 物理可达性检查
             if (selectedTarget.IsValid && !p.CanReach((LocalTargetInfo)selectedTarget, PathEndMode.Touch, Danger.Deadly))
             {
                 if (!skipReason) reason = "MessageRitualRoleCannotReach".Translate();
                 return false;
             }
-
-            // 4. 年龄检查 (原版逻辑，防止选到婴儿)
             if (!base.AppliesIfChild(p, out reason, skipReason)) return false;
-
-            // 4.1 RJW 可受位检查（详细原因）
             if (!Trainjudge.TryCanBeFuckedWithReason(p, out string shortReason, out string detailedReport))
             {
                 if (!skipReason) reason = shortReason;
                 Log.Warning($"[SSC_RITUAL_ROLE] Candidate blocked: {p.LabelShort}. {shortReason}\n{detailedReport}");
                 return false;
             }
-
-            // =========================================================
-            // 5. 核心检查：组件、身份与主人指定
-            // =========================================================
-            var comp = p.GetComp<CompSexSlaveTraining>();
-
-            // 如果连组件都没有，直接拒绝
-            if (comp == null)
+            if (p.TryGetComp<CompSexSlaveTraining>() == null || SSCIdentityUtility.IsMaster(p))
             {
-                if (!skipReason) reason = Strings.Ritual_MissingTrainingComp;
+                if (!skipReason) reason = "SSC_Restrictions_TrainingTargetInvalid".Translate();
                 return false;
             }
-
-            // A. 身份冲突检查：如果是“主人”身份，不能当祭品
-            if (SSCIdentityUtility.IsMaster(p))
+            Pawn host = assignments?.FirstAssignedPawn("master") ?? ritual?.PawnWithRole("master");
+            string failure;
+            if (host != null)
             {
-                if (!skipReason) reason = Strings.Ritual_CannotBeSlaveAsMaster;
-                return false;
+                if (CanPair(host, p, out failure)) return true;
             }
-
-            // B. 核心条件：是否在面板指定了调教员
-            if (comp.selectedTrainer == null)
+            else
             {
-                if (!skipReason)
-                {
-                    reason = Strings.Ritual_NoMasterAssigned;
-                }
-                return false;
+                // 未选主持者时至少有一位关系候选；空指派或停用指派不能排除实际主人。
+                if (CanPair(SSCBondUtility.GetBoundMaster(p), p, out failure) ||
+                    CanPair(TrainerAssignmentUtility.GetActiveAssignedTrainer(p), p, out failure)) return true;
             }
-            if (TrainerAssignmentUtility.GetActiveAssignedTrainer(p) == null)
-            {
-                if (!skipReason) reason = "SSC_TrainerIdentity_Required".Translate();
-                return false;
-            }
-
-            // =========================================================
-            // 6. 锁链一致性检查 (如果已穿戴锁链)
-            // =========================================================
-
-            // 🔥 新增：如果带有“公交车”(SSC_Hediff_Bus) 状态，则直接跳过归属检查
-            if (!BusSpecializationUtility.HasAnyBusState(p) && !(comp?.AllowsOthersForTrainingOrSex ?? false))
-            {
-                Hediff_ChainOfSexSlave chainHediff = SSCBondUtility.GetChain(p);
-
-                if (chainHediff != null)
-                {
-                    // 如果身上有锁链，且锁链的主人 和 面板指定的主人 不一致
-                    if (chainHediff.LinkedPawn != null && chainHediff.LinkedPawn != comp.selectedTrainer)
-                    {
-                        if (!skipReason) reason = Strings.Ritual_ChainConflict(chainHediff.LinkedPawn.LabelShort);
-                        return false;
-                    }
-                }
-            }
-
-            return true;
+            if (!skipReason) reason = failure;
+            return false;
         }
 
-        // 针对“文化职位”的判定逻辑
+        /// <summary>转换为正式仪式请求，不把身份或公交车状态当成许可。</summary>
+        private static bool CanPair(Pawn host, Pawn target, out string reason)
+        {
+            SSCTrainingAdmission admission = SSCRestrictionTrainingUtility.Evaluate(
+                SSCRestrictionTrainingUtility.CreateRequest(host, target, true), false);
+            reason = admission.Reason;
+            return admission.Allowed;
+        }
+
+        /// <summary>不额外要求原版文化职位，目标资格由实际身份及配对检查决定。</summary>
         public override bool AppliesToRole(Precept_Role role, out string reason, Precept_Ritual ritual = null, Pawn p = null, bool skipReason = false)
         {
             reason = null;
             return true;
         }
-
-        // 不需要 ExposeData，因为没有需要存档的独有数据字段
     }
 }

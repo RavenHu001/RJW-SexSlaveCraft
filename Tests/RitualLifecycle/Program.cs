@@ -66,6 +66,7 @@ internal static partial class Program
     /// <summary>运行全部仪式生命周期回归用例；全部通过返回 0，存在失败返回 1，供发行脚本判断。</summary>
     private static int Main()
     {
+        RunStage3BTests();
         Check("cancelling while walking cleans state without executing the future scene finish", () =>
         {
             var ritual = new RitualFixture();

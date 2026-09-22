@@ -7,7 +7,7 @@ using SexSlaveCraft;
 using Verse;
 using Verse.AI;
 
-internal static class Program
+internal static partial class Program
 {
     private static int passed, failed;
 
@@ -30,16 +30,16 @@ internal static class Program
         Run("接收任务提前登记参与者不等于 Start 已执行", ReceiverPreparationIsNotStarted);
         Run("主人 A 正常开始、收尾和结算", OwnerCanComplete);
         Run("关闭总保护开关后允许 C", () => AllowedSetting(s => s.enableSexSlaveProtectionRules = false));
-        Run("允许非主人设置开启后允许 C", () => AllowedSetting(s => s.allowSexSlaveRape = true));
+        Run("接受非主人强制许可开启后允许 C", () => { var p = People(); p.b.Training.restrictionConfig.rules.receiveForced = true; var d = Driver(p.c, p.b); Begin(d); Assert(d.StartCalls == 1, "个体许可应生效"); });
         Run("允许非主人时防护装备仍有效", ProtectionGear);
         Run("自愿行为主人限制关闭不放行强制行为", DerivedRapeDriver);
         Run("泛型发起者加入强制接收任务仍识别为强制行为", RapedReceiverClassification);
         Run("普通训练的主人仍可开始", () => Training(false, false, true));
         Run("获准由他人训练的目标仍可开始", () => Training(true, true, true));
         Run("未授权他人训练仍被拒绝", () => Training(true, false, false));
-        Run("公交车目标例外保持有效", BusReceiver);
+        Run("公交车被动条目强制生效", BusReceiver);
         Run("被绑定发起者的强制行为保护保持有效", ChainedInitiator);
-        Run("直接放行白名单保持有效", Whitelist);
+        Run("LifeForce任务名不再绕过统一限制", Whitelist);
         Run("缺少参与者时保留安全放行", MissingTarget);
         Run("直接 Start 兜底阻止 RJW 原方法及原生 End", DirectStartFallback);
         Run("迟到 Start 回调不能结束该角色的新任务", StaleStartDoesNotEndNewJob);
@@ -47,6 +47,10 @@ internal static class Program
         Run("读档恢复的已开始场景仍可收尾", ResumeStartedScene);
         Run("独立接收任务仍保留预约保护", ReceiverReservation);
         Run("无关 JobDriver 不受步骤补丁影响", UnrelatedJob);
+        RunStage3ATests();
+        RunStage3BTests();
+        RunStage3CTests();
+        RunJobRefactorTests();
         Console.WriteLine($"结果：{passed}/{passed + failed} 项通过。");
         return failed == 0 ? 0 : 1;
     }
@@ -56,6 +60,14 @@ internal static class Program
     {
         SSCMod.settings = new Settings();
         Messages.Count = 0;
+        Scribe.mode = LoadSaveMode.Inactive;
+        Scribe.node.Clear();
+        DefDatabase<SSCRestrictionProfileDef>.AllDefsListForReading.Clear();
+        DefDatabase<SSCRestrictionProfileDef>.AllDefsListForReading.Add(new SSCRestrictionProfileDef
+        {
+            defName = "Bus", specialization = SexSlaveSpecializationType.Bus,
+            forced = new SSCRestrictionOverrides { receiveConsensual = SSCRestrictionValue.Allow, receiveForced = SSCRestrictionValue.Allow }
+        });
         try { test(); passed++; Console.WriteLine("通过：" + name); }
         catch (Exception error) { failed++; Console.WriteLine("失败：" + name + "\n" + error); }
     }
@@ -79,12 +91,13 @@ internal static class Program
         driver.pawn = actor;
         driver.job = new Job
         {
-            def = rape ? SSCDefOf.RapeComfortPawn : new JobDef { defName = "SSC_Training" },
+            def = rape ? SSCDefOf.RapeComfortPawn : new JobDef { defName = "OrdinaryPair" },
             targetA = new LocalTargetInfo { Thing = target }, playerForced = forced
         };
         actor.jobs.curDriver = driver;
+        driver.job.def.driverClass = driver.GetType();
         driver.MakeScenarioToils();
-        Assert(driver.TryMakePreToilReservations(false), "模拟 RJW 发起者的预约覆盖应成功");
+
         return driver;
     }
     /// <summary>依次推进模拟的行走、接收准备和场景开始步骤；一旦任务结束就停止推进。</summary>
@@ -104,7 +117,7 @@ internal static class Program
         if (beforeToil) Assert(driver.ExternalEndCalls == 0, "正常拒绝路径不得触发外部动画收尾前缀");
         Assert(driver.ReservationWarnings == 0, "不能靠新建接收任务预约失败来阻止行为");
         Assert(driver.pawn.jobs.ImmediateJobSearches == 0, "拒绝不能在同一调用栈立即重新选择 AI 任务");
-        Assert(Messages.Count == 1, "应提供一次拒绝提示");
+        Assert(Messages.Count == (driver.job.playerForced ? 1 : 0), "玩家命令提示一次，AI 不刷屏");
     }
     /// <summary>核对前后缀特性与目标方法；真实 Harmony 模式进一步检查 PatchAll 实际安装的补丁信息。</summary>
     private static void PatchRegistration()
@@ -185,11 +198,11 @@ internal static class Program
         var p = People();
         var owner = Driver(p.a, p.b);
         Begin(owner);
-        SSCMod.settings.allowSexSlaveRape = true;
+        p.b.Training.restrictionConfig.rules.receiveForced = true;
         var driver = Driver(p.c, p.b);
         driver.TryActuallyStartNextToil();
         driver.TryActuallyStartNextToil();
-        SSCMod.settings.allowSexSlaveRape = false;
+        p.b.Training.restrictionConfig.rules.receiveForced = false;
         driver.TryActuallyStartNextToil();
         Rejected(driver);
         Assert(((JobDriver_SexBaseReciever)p.b.jobs.curDriver).parteners.SequenceEqual(new[] { p.a }),
@@ -211,13 +224,13 @@ internal static class Program
     private static void ReceiverPreparationIsNotStarted()
     {
         var p = People();
-        SSCMod.settings.allowSexSlaveRape = true;
+        p.b.Training.restrictionConfig.rules.receiveForced = true;
         var driver = Driver(p.c, p.b);
         driver.TryActuallyStartNextToil();
         driver.TryActuallyStartNextToil();
         Assert(((JobDriver_SexBaseReciever)p.b.jobs.curDriver).parteners.Contains(p.c),
             "接收方准备步骤应已预先登记 C");
-        SSCMod.settings.allowSexSlaveRape = false;
+        p.b.Training.restrictionConfig.rules.receiveForced = false;
         driver.TryActuallyStartNextToil();
         Rejected(driver);
     }
@@ -234,8 +247,8 @@ internal static class Program
     private static void ProtectionGear()
     {
         var p = People();
-        SSCMod.settings.allowSexSlaveRape = true;
-        p.b.apparel.WornApparel.Add(new Apparel { Protection = new CompSSRapeCheck() });
+        p.b.Training.restrictionConfig.rules.receiveForced = true;
+        Equip(p.b);
         var driver = Driver(p.c, p.b);
         Begin(driver);
         Rejected(driver);
@@ -264,8 +277,13 @@ internal static class Program
     private static void Training(bool nonOwner, bool allowOthers, bool expected)
     {
         var p = People();
-        p.b.Training.AllowsOthersForTrainingOrSex = allowOthers;
-        var driver = Driver(nonOwner ? p.c : p.a, p.b, rape: false);
+        p.b.Training.restrictionConfig.rules.receiveTraining = allowOthers;
+        Pawn actor = nonOwner ? p.c : p.a;
+        actor.Training.pawnIdentity = PawnIdentity.Master;
+        p.b.Training.selectedTrainer = actor;
+        var driver = new JobDriver_Training { pawn = actor, job = new Job { def = new JobDef { defName = "SSC_Training_SexSlave" }, targetA = new LocalTargetInfo { Thing = p.b } } };
+        actor.jobs.curDriver = driver;
+        driver.MakeScenarioToils();
         Begin(driver);
         if (!expected) Rejected(driver);
         else Assert(driver.StartCalls == 1 && driver.ReservationWarnings == 0, "合法自愿训练必须保持放行");
@@ -277,7 +295,7 @@ internal static class Program
         p.b.IsBus = true;
         var driver = Driver(p.c, p.b);
         Begin(driver);
-        Assert(driver.StartCalls == 1, "公交车目标例外必须保持放行");
+        Assert(driver.StartCalls == 1, "公交车强制条目应允许接收");
     }
     /// <summary>验证带锁链的角色不能通过发起驱动绕过其主动强制行为限制。</summary>
     private static void ChainedInitiator()
@@ -293,9 +311,9 @@ internal static class Program
     {
         var p = People();
         var driver = Driver(p.c, p.b);
-        driver.job.def = new JobDef { defName = "rjw_genes_lifeforce_randomrape" };
-        driver.Start();
-        Assert(driver.StartCalls == 1 && !driver.Ended, "既有 Start 白名单应保持有效");
+        driver.job.def.defName = "rjw_genes_lifeforce_randomrape";
+        Begin(driver);
+        Rejected(driver);
     }
     /// <summary>验证目标缺失时保护适配层不会自行拒绝，继续交由原任务的有效性检查处理。</summary>
     private static void MissingTarget()
@@ -336,21 +354,27 @@ internal static class Program
     private static void FinishStartedScene()
     {
         var p = People();
-        SSCMod.settings.allowSexSlaveRape = true;
+        p.b.Training.restrictionConfig.rules.receiveForced = true;
         var driver = Driver(p.c, p.b);
         Begin(driver);
-        SSCMod.settings.allowSexSlaveRape = false;
+        p.b.Training.restrictionConfig.rules.receiveForced = false;
         driver.TryActuallyStartNextToil();
         Assert(driver.SceneEndCalls == 1 && driver.CompletedEffects == 1 && !driver.Ended,
             "已合法开始的场景应按原流程完成收尾");
     }
-    /// <summary>模拟无内存开始标记的读档场景，验证凭已有行为数据和参与者状态恢复后仍可正常收尾。</summary>
+    /// <summary>模拟升级旧存档，验证已发生实际计时的场景恢复后仍可正常收尾。</summary>
     private static void ResumeStartedScene()
     {
         var p = People();
         var driver = Driver(p.c, p.b);
         driver.Sexprops = new SexProps { pawn = p.c, partner = p.b, isRape = true };
         driver.Index = 2;
+        driver.ticks_left = 500;
+        Scribe.mode = LoadSaveMode.LoadingVars;
+        driver.ExposeData();
+        Scribe.mode = LoadSaveMode.PostLoadInit;
+        driver.ExposeData();
+        Scribe.mode = LoadSaveMode.Inactive;
         var receiver = new JobDriver_SexBaseRecieverRaped { pawn = p.b, job = new Job() };
         receiver.parteners.Add(p.c);
         p.b.jobs.curDriver = receiver;

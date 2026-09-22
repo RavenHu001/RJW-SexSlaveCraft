@@ -8,18 +8,21 @@ namespace SexSlaveCraft
 {
     public static class SSCBondUtility
     {
+        /// <summary>读取性奴侧锁链；角色或定义缺失时返回空，不在查询中修复关系。</summary>
         public static Hediff_ChainOfSexSlave GetChain(Pawn sexSlave)
         {
             if (sexSlave?.health?.hediffSet == null || SSCDefOf.ChainOfSexSlave == null) return null;
             return sexSlave.health.hediffSet.GetFirstHediffOfDef(SSCDefOf.ChainOfSexSlave) as Hediff_ChainOfSexSlave;
         }
 
+        /// <summary>读取主人侧缰绳；角色或定义缺失时返回空，不创建健康状态。</summary>
         public static Hediff_BridleOfSexSlave GetBridle(Pawn master)
         {
             if (master?.health?.hediffSet == null || SSCDefOf.BridleOfSexSlave == null) return null;
             return master.health.hediffSet.GetFirstHediffOfDef(SSCDefOf.BridleOfSexSlave) as Hediff_BridleOfSexSlave;
         }
 
+        /// <summary>读取锁链实际绑定的主人，不把指定调教员推断为主人。</summary>
         public static Pawn GetBoundMaster(Pawn sexSlave)
         {
             return GetChain(sexSlave)?.LinkedPawn;
@@ -33,12 +36,13 @@ namespace SexSlaveCraft
             return TrainerAssignmentUtility.GetActiveAssignedTrainer(sexSlave);
         }
 
+        /// <summary>检查目标到主人的有向绑定关系，反向关系不视为同一许可来源。</summary>
         public static bool IsBoundTo(Pawn sexSlave, Pawn master)
         {
             return sexSlave != null && master != null && GetBoundMaster(sexSlave) == master;
         }
 
-        /// <summary>指派写入沿用菜单资格，允许清空；拒绝时保留原记录，不能由外部调用绕过身份过滤。</summary>
+        /// <summary>通过菜单资格后原子提交指派及必要的非主人调教授权；强制覆盖拒绝时保留原选择。</summary>
         public static bool TryAssignTrainer(Pawn sexSlave, Pawn trainer)
         {
             CompSexSlaveTraining comp = sexSlave?.TryGetComp<CompSexSlaveTraining>();
@@ -46,8 +50,7 @@ namespace SexSlaveCraft
 
             if (trainer != null && !TrainerAssignmentUtility.CanAssignTrainerTo(sexSlave, trainer)) return false;
 
-            comp.selectedTrainer = trainer;
-            return true;
+            return SSCRestrictionTrainerAssignment.TryAssign(sexSlave, trainer);
         }
 
         /// <summary>先确认目标可以成为性奴，再建立双向绑定；身份锁定或归属冲突时不改动已有关系。</summary>
@@ -70,15 +73,13 @@ namespace SexSlaveCraft
             Hediff_BridleOfSexSlave bridle = Hediff_BridleOfSexSlave.AddToPawn(master, sexSlave);
             if (chain == null || bridle == null) return false;
 
-            CompSexSlaveTraining comp = sexSlave.TryGetComp<CompSexSlaveTraining>();
-            if (comp != null && !comp.AllowsOthersForTrainingOrSex)
-            {
-                comp.selectedTrainer = master;
-            }
-
+            // 自有事务完成后显式通知：读此方法即可看见首次绑定初始化与指派协调，
+            // 不再依赖针对本方法的隐式 Harmony 后缀；原生/第三方入口仍由相应 Hook 接入。
+            SSCRestrictionGameComponent.Notify(sexSlave);
             return true;
         }
 
+        /// <summary>解除性奴锁链及对应缰绳引用；按调用参数清理原主人的指派，保留其他指定者。</summary>
         public static bool Unbind(Pawn sexSlave, bool clearAssignedTrainer = true)
         {
             Hediff_ChainOfSexSlave chain = GetChain(sexSlave);
@@ -106,13 +107,16 @@ namespace SexSlaveCraft
                 CompSexSlaveTraining comp = sexSlave?.TryGetComp<CompSexSlaveTraining>();
                 if (comp != null && (master == null || comp.selectedTrainer == master))
                 {
-                    TryAssignTrainer(sexSlave, null);
+                    // 这是解绑事务的关系清理，不是玩家重新指派；人格恢复期间也必须清除原主，
+                    // 不能被限制编辑的恢复锁挡住。上面的条件继续保留明确指定的第三方。
+                    comp.selectedTrainer = null;
                 }
             }
 
             return changed;
         }
 
+        /// <summary>遍历缰绳目标快照逐个解绑，返回实际解除数量，避免修改正在枚举的集合。</summary>
         public static int UnbindAllFromMaster(Pawn master)
         {
             Hediff_BridleOfSexSlave bridle = GetBridle(master);
@@ -127,6 +131,7 @@ namespace SexSlaveCraft
             return count;
         }
 
+        /// <summary>以性奴锁链为依据补齐主人侧反向引用，不更换主人或依据旧保护字段改写指派。</summary>
         public static void RepairReciprocalLink(Pawn sexSlave)
         {
             Pawn master = GetBoundMaster(sexSlave);

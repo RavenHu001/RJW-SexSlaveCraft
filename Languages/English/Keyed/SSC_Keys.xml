@@ -39,14 +39,11 @@
   <SSC_Mode_Fisting>Fisting</SSC_Mode_Fisting>
   <SSC_Mode_Rimming>Rimming</SSC_Mode_Rimming>
   <SSC_Mode_Sixtynine>69</SSC_Mode_Sixtynine>
-  <SSC_Toggle_GizmoDesc>Cycle mode: Disabled / Enabled / Protect.</SSC_Toggle_GizmoDesc>
   <SSC_Toggle_Label_Disabled>Training Mode: Disabled</SSC_Toggle_Label_Disabled>
   <SSC_Toggle_Label_Enabled>Training Mode: Enabled</SSC_Toggle_Label_Enabled>
-  <SSC_Toggle_Label_Protect>Training Mode: Protect</SSC_Toggle_Label_Protect>
   <SSC_Toggle_Label_Unknown>Training Mode: Unknown</SSC_Toggle_Label_Unknown>
-  <SSC_Toggle_Desc_Disabled>Disabled: nobody can train this pawn.</SSC_Toggle_Desc_Disabled>
-  <SSC_Toggle_Desc_Enabled>Enabled: currently only the master can train (ritual binding required).</SSC_Toggle_Desc_Enabled>
-  <SSC_Toggle_Desc_Protect>Protected: no one except the master can force this pawn.</SSC_Toggle_Desc_Protect>
+  <SSC_Toggle_Desc_Disabled>Daily training is disabled.</SSC_Toggle_Desc_Disabled>
+  <SSC_Toggle_Desc_Enabled>Daily training is enabled: the active designated trainer follows the schedule, behavior rules and job requirements.</SSC_Toggle_Desc_Enabled>
   <SSC_Message_BerserkSuppressed>{0}'s berserk state was suppressed by the chain</SSC_Message_BerserkSuppressed>
   <SSC_EquipRestriction_NotCorruptedEnough>{0} clearly does not want to wear this outfit (try increasing corruption?)</SSC_EquipRestriction_NotCorruptedEnough>
   <Tab_SexSlaveTraining>Training</Tab_SexSlaveTraining>
@@ -102,8 +99,6 @@
   <SSC_ITab_TrainingLockedDesc>Research "Training" is required to use training settings.</SSC_ITab_TrainingLockedDesc>
   <SSC_ITab_TrainingSettingsHeader>&lt;b&gt;Training Settings&lt;/b&gt;</SSC_ITab_TrainingSettingsHeader>
   <SSC_ITab_AllowTraining>Allow Training</SSC_ITab_AllowTraining>
-  <SSC_ITab_AllowOthers>Allow others to train or have sex</SSC_ITab_AllowOthers>
-  <SSC_ITab_AllowOthersWarning>Bus specialization needs sex with someone other than the owner to gain experience.</SSC_ITab_AllowOthersWarning>
   <SSC_ITab_CooldownStatus>&lt;color=orange&gt;Cooldown: {0}&lt;/color&gt;</SSC_ITab_CooldownStatus>
   <SSC_ITab_StatusReady>Status: &lt;color=green&gt;Ready&lt;/color&gt;</SSC_ITab_StatusReady>
   <SSC_ITab_StatusDisabled>Status: &lt;color=grey&gt;Disabled&lt;/color&gt;</SSC_ITab_StatusDisabled>

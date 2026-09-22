@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -281,6 +281,7 @@ namespace SexSlaveCraft
         // ... (保持你原有的 Strings 类代码不变) ...
         // 日常训练
         // {0}: score (string), {1}: level (int), {2}: corruptionGain (string)
+        /// <summary>生成日常训练的评分和恶堕增长提示，不再显示旧评分等级。</summary>
         public static string DailyTrainingOutcome(string score, string corruption)
             => "SSC_DailyTrainingOutcome2".Translate(score, corruption);
 
@@ -289,6 +290,7 @@ namespace SexSlaveCraft
             => "SSC_DailyTrainingOutcome".Translate(score, level, corruption);
 
         // 仪式相关
+        /// <summary>生成“主人 {0} | 性奴: {1}”的本地化文本，并填入调用参数。</summary>
         public static string Ritual_MasterSlaveHeader(string masterName, string slaveName)
             => "SSC_Ritual_MasterSlaveHeader".Translate(masterName, slaveName);
 
@@ -304,6 +306,7 @@ namespace SexSlaveCraft
 
         public static string Ritual_NoNewStage => "SSC_Ritual_NoNewStage".Translate();
         // 仪式结果
+        /// <summary>生成“；由于理智脱出，{0} 彻底成为了 {1} 的性奴。”的本地化文本，并填入调用参数。</summary>
         public static string Ritual_FlawedLoversCreated(string slaveName, string masterName)
             => "SSC_Ritual_FlawedLoversCreated".Translate(slaveName, masterName);
         // 仪式角色检查
@@ -318,6 +321,7 @@ namespace SexSlaveCraft
             => "SSC_RitualRole_SlaveBoundToOther_Unknown".Translate();
 
         // 绑定 / 转奴 / 特质变化文本
+        /// <summary>生成“{0} 在炒饭智能的帮助下用无形的链子拴住了 {1}”的本地化文本，并填入调用参数。</summary>
         public static string Bond_BridleAdded(string masterName, string slaveName)
             => "SSC_Bond_BridleAdded".Translate(masterName, slaveName);
 
@@ -345,9 +349,11 @@ namespace SexSlaveCraft
         public static string Stage_Stable => "SSC_Stage_Stable".Translate();
 
         // 需求提示格式
+        /// <summary>生成“{0}: {1} ({2})；{3}”的本地化文本，并填入调用参数。</summary>
         public static string Need_TipFormat(string label, string percent, string stage, string desc)
             => "SSC_Need_TipFormat".Translate(label, percent, stage, desc);
         //健康状态部分
+        /// <summary>生成“{0} ({1})”的本地化文本，并填入调用参数。</summary>
         public static string Bridle_LabelWithNames(string label, string names)
                 => "SSC_Bridle_LabelWithNames".Translate(label, names);
 
@@ -362,28 +368,27 @@ namespace SexSlaveCraft
 
         // 辅助方法：获取枚举对应的翻译
         // 逻辑：如果传入 Vaginal，它会自动去寻找 "SSC_Mode_Vaginal" 这个 Key
+        /// <summary>根据调教姿势枚举读取对应的本地化名称。</summary>
         public static string GetModeLabel(TrainingActType type)
         {
             return $"SSC_Mode_{type}".Translate();
         }
 
         // Gizmo 标题：调用上面的方法获取中文名，然后填入标题
+        /// <summary>把当前姿势的本地化名称填入调教模式按钮标题。</summary>
         public static string TrainingMode_GizmoLabel(TrainingActType type)
         {
             return "SSC_TrainingMode_GizmoLabel".Translate(GetModeLabel(type));
         }
-        public static string Toggle_GizmoDesc => "SSC_Toggle_GizmoDesc".Translate();
         public static string Toggle_Label_Disabled => "SSC_Toggle_Label_Disabled".Translate();
         public static string Toggle_Label_Enabled => "SSC_Toggle_Label_Enabled".Translate();
-        public static string Toggle_Label_Protect => "SSC_Toggle_Label_Protect".Translate();
         public static string Toggle_Label_Unknown => "SSC_Toggle_Label_Unknown".Translate();
         // 装备限制
+        /// <summary>生成“{0} 明显不愿意穿这件衣服（试着提高恶堕值）。”的本地化文本，并填入调用参数。</summary>
         public static string EquipRestriction_NotCorruptedEnough(string pawnName)
             => "SSC_EquipRestriction_NotCorruptedEnough".Translate(pawnName);
         // Mod 设置
         public static string Setting_Category => "SSC_Setting_Category".Translate();
-        public static string Setting_AllowSexSlaveRape => "SSC_Setting_AllowSexSlaveRape".Translate();
-        public static string Setting_AllowSexSlaveRape_Desc => "SSC_Setting_AllowSexSlaveRape_Desc".Translate();
         public static string Setting_EnableSexSlaveProtectionRules => "SSC_Setting_EnableSexSlaveProtectionRules".Translate();
         public static string Setting_EnableSexSlaveProtectionRules_Desc => "SSC_Setting_EnableSexSlaveProtectionRules_Desc".Translate();
         public static string Setting_UseRJWOriginalEligibility => "SSC_Setting_UseRJWOriginalEligibility".Translate();
@@ -396,8 +401,8 @@ namespace SexSlaveCraft
         // 简单开关状态描述
         public static string Toggle_Desc_Disabled => "SSC_Toggle_Desc_Disabled".Translate();
         public static string Toggle_Desc_Enabled => "SSC_Toggle_Desc_Enabled".Translate();
-        public static string Toggle_Desc_Protect => "SSC_Toggle_Desc_Protect".Translate();
         // 精神状态压制
+        /// <summary>生成“{0} 的狂暴被锁链压制了”的本地化文本，并填入调用参数。</summary>
         public static string Message_BerserkSuppressed(string pawnName)
             => "SSC_Message_BerserkSuppressed".Translate(pawnName);
         // 调教员选择 Gizmo
@@ -405,6 +410,7 @@ namespace SexSlaveCraft
         public static string Trainer_GizmoLabel_None => "SSC_Trainer_None".Translate();
 
         // 2. 对应 XML: <SSC_Trainer_Selected>，带参数 {0}
+        /// <summary>将指定调教员姓名填入按钮标题。</summary>
         public static string Trainer_GizmoLabel_Selected(string name) => "SSC_Trainer_Selected".Translate(name);
 
         // 3. 对应 XML: <SSC_Trainer_Desc>
@@ -423,7 +429,9 @@ namespace SexSlaveCraft
         // ==========================================
         
         // 消息类字符串
+        /// <summary>生成“{0} 的人格已排泄完毕。”的本地化文本，并填入调用参数。</summary>
         public static string Message_PersonalityExcretedComplete(string pawnName) => "SSC_Message_PersonalityExcretedComplete".Translate(pawnName);
+        /// <summary>生成“{0} 已完全融合了 {1} 的人格，并吸收了人格凝胶塑像的特质”的本地化文本，并填入调用参数。</summary>
         public static string Message_PersonalityFusionComplete(string consumerName, string nickName) => "SSC_Message_PersonalityFusionComplete".Translate(consumerName, nickName);
         public static string Message_SameIdeologyNoEffect => "SSC_Message_SameIdeologyNoEffect".Translate();
         /// <summary>生成指定角色转化完成的通知文本。</summary>
@@ -441,6 +449,7 @@ namespace SexSlaveCraft
 
         // UI标签类字符串
         public static string Label_SlaveTrainingIdentityMaster => "SSC_Label_SlaveTrainingIdentityMaster".Translate();
+        /// <summary>生成“训练冷却中 ({0})”的本地化文本，并填入调用参数。</summary>
         public static string Label_TrainingCooldown(string time) => "SSC_Label_TrainingCooldown".Translate(time);
         public static string Label_WaitingForTraining => "SSC_Label_WaitingForTraining".Translate();
         /// <summary>将训练状态文本填入角色信息标签。</summary>
@@ -477,8 +486,6 @@ namespace SexSlaveCraft
         public static string ITab_TrainingLockedDesc => "SSC_ITab_TrainingLockedDesc".Translate();
         public static string ITab_TrainingSettingsHeader => "SSC_ITab_TrainingSettingsHeader".Translate();
         public static string ITab_AllowTraining => "SSC_ITab_AllowTraining".Translate();
-        public static string ITab_AllowOthers => "SSC_ITab_AllowOthers".Translate();
-        public static string ITab_AllowOthersWarning => "SSC_ITab_AllowOthersWarning".Translate();
         /// <summary>将剩余时间文本填入训练面板的冷却状态。</summary>
         public static string ITab_CooldownStatus(string time) => "SSC_ITab_CooldownStatus".Translate(time);
         public static string ITab_StatusReady => "SSC_ITab_StatusReady".Translate();
@@ -567,6 +574,7 @@ namespace SexSlaveCraft
         // ITab_PES 人格凝胶分配相关
         // ==========================================
         public static string PES_AssignTarget => "SSC_PES_AssignTarget".Translate();
+        /// <summary>生成“已指定: {0}”的本地化文本，并填入调用参数。</summary>
         public static string PES_AssignedTo(string name) => "SSC_PES_AssignedTo".Translate(name);
         public static string PES_Unassign => "SSC_PES_Unassign".Translate();
         public static string PES_NoHollowTargets => "SSC_PES_NoHollowTargets".Translate();
@@ -579,6 +587,7 @@ namespace SexSlaveCraft
         // ==========================================
         // CompInspectStringExtra 检查面板
         // ==========================================
+        /// <summary>生成“人格: {0}”的本地化文本，并填入调用参数。</summary>
         public static string Inspect_Personality(string name) => "SSC_Inspect_Personality".Translate(name);
         public static string Inspect_PersonalityNone => "SSC_Inspect_PersonalityNone".Translate();
         public static string Inspect_SexSlaveTag => "SSC_Inspect_SexSlaveTag".Translate();
@@ -591,17 +600,21 @@ namespace SexSlaveCraft
         // ==========================================
         // HediffComp_ProducePAN 生产进度
         // ==========================================
+        /// <summary>生成“进度: {0} (缺乏营养，停滞)”的本地化文本，并填入调用参数。</summary>
         public static string Produce_ProgressStalled(string progress) => "SSC_Produce_ProgressStalled".Translate(progress);
+        /// <summary>生成“进度: {0}”的本地化文本，并填入调用参数。</summary>
         public static string Produce_Progress(string progress) => "SSC_Produce_Progress".Translate(progress);
 
         // ==========================================
         // Harmony_ShowPAN 检查栏生产进度
         // ==========================================
+        /// <summary>生成“{0} 生产进度: {1}”的本地化文本，并填入调用参数。</summary>
         public static string Inspect_ProductionProgress(string productName, string progress) => "SSC_Inspect_ProductionProgress".Translate(productName, progress);
 
         // ==========================================
         // ConditioningUtility 仪式训练
         // ==========================================
+        /// <summary>生成“{0} 的全身上下都在这场仪式中得到了深度的开发与训练。”的本地化文本，并填入调用参数。</summary>
         public static string Ritual_FullBodyTraining(string slaveName) => "SSC_Ritual_FullBodyTraining".Translate(slaveName);
 
         // ==========================================
@@ -612,6 +625,7 @@ namespace SexSlaveCraft
         // ==========================================
         // CompAbilityEffect_EroticConversion 浮动文字
         // ==========================================
+        /// <summary>生成“-{0} 认可度”的本地化文本，并填入调用参数。</summary>
         public static string Float_CertaintyReduction(string percent) => "SSC_Float_CertaintyReduction".Translate(percent);
 
         // ==========================================
@@ -619,6 +633,7 @@ namespace SexSlaveCraft
         // ==========================================
         public static string Train_IdentityMaster => "SSC_Train_IdentityMaster".Translate();
         public static string Train_IdentityUnset => "SSC_Train_IdentityUnset".Translate();
+        /// <summary>生成“训练冷却中 ({0})”的本地化文本，并填入调用参数。</summary>
         public static string Train_Cooldown(string time) => "SSC_Train_Cooldown".Translate(time);
         public static string Train_Waiting => "SSC_Train_Waiting".Translate();
         /// <summary>将当前训练状态填入训练信息模板。</summary>
@@ -646,14 +661,18 @@ namespace SexSlaveCraft
         // ==========================================
         // HediffComp_PermanentLactating 泌乳进度
         // ==========================================
+        /// <summary>生成“充盈度: {0} (缺乏营养，停滞)”的本地化文本，并填入调用参数。</summary>
         public static string Lactating_Stalled(string progress) => "SSC_Lactating_Stalled".Translate(progress);
+        /// <summary>生成“充盈度: {0} (已关闭泌乳)”的本地化文本，并填入调用参数。</summary>
         public static string Lactating_Disabled(string progress) => "SSC_Lactating_Disabled".Translate(progress);
 
         // ==========================================
         // Ritual 角色检查
         // ==========================================
         public static string Ritual_Unassigned => "SSC_Ritual_Unassigned".Translate();
+        /// <summary>生成“{0} (未分配): {1}”的本地化文本，并填入调用参数。</summary>
         public static string Ritual_UnassignedDesc(string label, string offset) => "SSC_Ritual_UnassignedDesc".Translate(label, offset);
+        /// <summary>生成“{0} (UI错误)”的本地化文本，并填入调用参数。</summary>
         public static string Ritual_UIError(string label) => "SSC_Ritual_UIError".Translate(label);
         public static string Ritual_MustBeColonist => "SSC_Ritual_MustBeColonist".Translate();
         public static string Ritual_NoCompData => "SSC_Ritual_NoCompData".Translate();

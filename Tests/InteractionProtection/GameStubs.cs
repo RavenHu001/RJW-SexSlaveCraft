@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using SexSlaveCraft;
 
@@ -9,29 +10,34 @@ using SexSlaveCraft;
 namespace Verse
 {
     public class Thing { }
-    public class JobDef { public string defName; }
+    public class JobDef { public string defName; public Type driverClass; }
     public struct LocalTargetInfo { public Thing Thing; }
     public class Pawn : Thing
     {
         public string LabelShort;
         public int thingIDNumber;
+        public bool Dead, Destroyed, Downed, IsSlave, IsPrisonerOfColony;
+        public bool IsColonist = true;
         public object health = new object();
         public ApparelTracker apparel = new ApparelTracker();
         public Verse.AI.Pawn_JobTracker jobs = new Verse.AI.Pawn_JobTracker();
         /// <summary>从模拟任务跟踪器读取角色的当前任务定义，供生产角色判定逻辑使用。</summary>
+        public Verse.AI.Job CurJob => jobs.curDriver?.job;
+        /// <summary>读取当前模拟任务定义。</summary>
         public JobDef CurJobDef => jobs.curDriver?.job?.def;
         public Hediff_ChainOfSexSlave Chain;
         public CompSexSlaveTraining Training = new CompSexSlaveTraining();
         public bool IsBus;
+        public int ClearedReservations;
+        /// <summary>记录取消被拒绝 AI 候选的预约，不模拟地图预约实现。</summary>
+        public void ClearReservationsForJob(Verse.AI.Job job) { ClearedReservations++; }
         /// <summary>返回测试角色持有的训练组件；请求其他组件类型时返回 null。</summary>
         public T TryGetComp<T>() where T : class => Training as T;
     }
     public class ApparelTracker { public List<Apparel> WornApparel = new List<Apparel>(); }
     public class Apparel
     {
-        public CompSSRapeCheck Protection;
-        /// <summary>将模拟服装上的防护组件按请求类型返回，供防护装备策略判断。</summary>
-        public T GetComp<T>() where T : class => Protection as T;
+        public ThingDef def = new ThingDef();
     }
     public class LookTargets
     {
@@ -43,23 +49,85 @@ namespace Verse
         public static int Count;
         /// <summary>记录一次游戏提示调用，供用例检查拒绝提示是否重复；不显示真实界面。</summary>
         public static void Message(string message, LookTargets targets, object type) { Count++; }
+        /// <summary>记录玩家命令被拒绝时的单角色提示。</summary>
+        public static void Message(string message, Pawn target, object type, bool historical) { Count++; }
     }
 }
 namespace RimWorld
 {
-    public static class MessageTypeDefOf { public static readonly object RejectInput = new object(); }
+    public static class JobDefOf { public static readonly Verse.JobDef GotoMindControlled = new Verse.JobDef { defName = "GotoMindControlled" }, Goto = new Verse.JobDef { defName = "Goto" }, Wait = new Verse.JobDef { defName = "Wait" }; }
+    public static class MessageTypeDefOf { public static readonly object PositiveEvent = new object(), NegativeEvent = new object(), NeutralEvent = new object(), RejectInput = new object(); }
 }
 namespace Verse.AI
 {
     public enum JobCondition { Ongoing, Incompletable, Succeeded }
     public class Job
     {
+        private static int nextId;
+        public int loadID = ++nextId;
+        public JobDriver CachedDriver;
+        /// <summary>返回用例构造的新任务缓存驱动，不切换角色当前任务。</summary>
+        public JobDriver GetCachedDriver(Verse.Pawn pawn) => CachedDriver ??= MakeDriver(pawn);
+        /// <summary>按本机原版MakeDriver创建新的运行实例，故意不复用预检缓存驱动。</summary>
+        public JobDriver MakeDriver(Verse.Pawn pawn)
+        {
+            var driver = (JobDriver)Activator.CreateInstance(def.driverClass);
+            driver.pawn = pawn; driver.job = this;
+            return driver;
+        }
+
         public Verse.JobDef def;
         public Verse.LocalTargetInfo targetA;
         public bool playerForced;
     }
+    public struct ThinkResult
+    {
+        public Job Job;
+        public static readonly ThinkResult NoJob = new ThinkResult();
+    }
+    public class ThinkNode_JobGiver
+    {
+        public Job Candidate;
+        /// <summary>模拟思考树生成候选后的生产补丁，拒绝后上层可继续其他节点。</summary>
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public ThinkResult TryIssueJobPackage(Verse.Pawn pawn)
+        {
+            var result = new ThinkResult { Job = Candidate };
+#if !REAL_HARMONY
+            SSCRestrictionAutomaticJobHook.Postfix(pawn, ref result);
+#endif
+            return result;
+        }
+    }
+    public static class JobMaker
+    {
+        public static Job LastReturned;
+        /// <summary>记录未使用候选已归还对象池，避免模型隐去资源释放要求。</summary>
+        public static void ReturnToPool(Job job) { LastReturned = job; }
+    }
+    public class QueuedJob { public Job job; }
+    public class JobQueue : List<QueuedJob>
+    {
+        /// <summary>删除满足条件的排队任务；测试不额外模拟预约资源。</summary>
+        public void RemoveAll(Verse.Pawn pawn, Predicate<Job> predicate) => RemoveAll(q => predicate(q.job));
+    }
     public class Pawn_JobTracker
     {
+        public JobQueue jobQueue = new JobQueue();
+        public Verse.Pawn pawn;
+        public int OrderedMutations;
+        /// <summary>模拟原版命令入口会修改队列；拒绝应在这些副作用发生前返回。</summary>
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public bool TryTakeOrderedJob(Job job)
+        {
+#if !REAL_HARMONY
+            bool result = true;
+            if (!SSCRestrictionOrderedJobHook.Prefix(job, pawn, ref result)) return result;
+#endif
+            job.playerForced = true;
+            OrderedMutations++;
+            return true;
+        }
         public JobDriver curDriver;
         public int ImmediateJobSearches;
         /// <summary>结束当前模拟任务，并记录是否请求立即重新选取任务，用于检测拒绝后的递归风险。</summary>
@@ -74,7 +142,7 @@ namespace Verse.AI
         public Action initAction;
         public Action finishAction;
     }
-    public class JobDriver
+    public partial class JobDriver
     {
         public Verse.Pawn pawn;
         public Job job;
@@ -106,6 +174,7 @@ namespace Verse.AI
             Ended = true;
             EndCondition = condition;
             EndCalls++;
+            Cleanup(condition);
             CleanupToil();
             pawn.jobs.curDriver = null;
         }
@@ -122,16 +191,26 @@ namespace rjw
     {
         public Verse.Pawn pawn, partner;
         /// <summary>在最小行为数据模型中，将 pawn 作为发起者返回。</summary>
-        public Verse.Pawn initiator => pawn;
+        public Verse.Pawn initiator => isReceiver ? partner : pawn;
         /// <summary>在最小行为数据模型中，将 partner 作为接受者返回。</summary>
-        public Verse.Pawn recipient => partner;
-        public bool isRape, usedCondom;
+        public Verse.Pawn recipient => isReceiver ? pawn : partner;
+        public bool isReceiver, isRevese, isRape, usedCondom;
     }
     public class JobDriver_Sex : Verse.AI.JobDriver
     {
         public SexProps Sexprops;
+        public Verse.Pawn PartnerPawn;
+        public int duration = 1000, ticks_left = 1000, orgasms;
+        /// <summary>模拟驱动保存入口，在无真实补丁模式下直接调用生产序列化。</summary>
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public virtual void ExposeData()
+        {
+#if !REAL_HARMONY
+            SSCRestrictionSceneSaveHook.Postfix(this);
+#endif
+        }
         /// <summary>从模拟任务的 A 目标读取参与角色，缺失目标或类型不匹配时返回 null。</summary>
-        public Verse.Pawn Partner => job?.targetA.Thing as Verse.Pawn;
+        public Verse.Pawn Partner => PartnerPawn ?? job?.targetA.Thing as Verse.Pawn;
         /// <summary>模拟 RJW 基类默认成功的预约方法；默认模式显式调用生产预约前缀。</summary>
         [MethodImpl(MethodImplOptions.NoInlining)]
         public virtual bool TryMakePreToilReservations(bool errorOnFailed)
@@ -156,7 +235,15 @@ namespace rjw
 
         // RJW initiators override reservations without calling the patched base method.
         /// <summary>模拟发起者覆盖预约方法且不调用基类的路径，保留原漏洞所依赖的预约绕过条件。</summary>
-        public override bool TryMakePreToilReservations(bool errorOnFailed) => true;
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public override bool TryMakePreToilReservations(bool errorOnFailed)
+        {
+#if !REAL_HARMONY
+            bool result = true;
+            if (!SSCRestrictionReservationHook.Prefix(this, ref result)) return result;
+#endif
+            return true;
+        }
 
         /// <summary>模拟 RJW Start 的参与者登记和行为数据初始化，并记录原方法实际执行次数。</summary>
         /// <remarks>默认模式显式调用生产前后缀；真实 Harmony 模式由 PatchAll 安装这些检查。</remarks>
@@ -171,7 +258,7 @@ namespace rjw
             }
 #endif
             StartCalls++;
-            var receiver = Partner.jobs.curDriver as JobDriver_SexBaseReciever;
+            var receiver = Partner?.jobs.curDriver as JobDriver_SexBaseReciever;
             if (receiver != null && !receiver.parteners.Contains(pawn)) receiver.parteners.Add(pawn);
             Sexprops ??= new SexProps { pawn = pawn, partner = Partner, isRape = this is JobDriver_Rape };
 #if !REAL_HARMONY
@@ -236,20 +323,74 @@ namespace rjw
             Toils.Add(new Verse.AI.Toil { initAction = () => CompletedEffects++ });
         }
     }
+    public class JobDriver_SexQuick : JobDriver_SexBaseInitiator
+    {
+        /// <summary>提供真实 Harmony 可补丁的方法，实际准备步骤由各用例构造。</summary>
+        protected virtual IEnumerable<Verse.AI.Toil> MakeNewToils() => Toils;
+    }
+    public class JobDriver_Masturbate : JobDriver_SexBaseInitiator { }
     public class JobDriver_Rape : JobDriver_SexBaseInitiator { }
 }
 namespace SexSlaveCraft
 {
     public class Hediff_ChainOfSexSlave { public Verse.Pawn LinkedPawn; }
-    public class CompSSRapeCheck { }
+    public enum PawnIdentity { Unset, Slave, Master }
+    public enum SexSlaveSpecializationType { None, Bus, Cow, PetCat, PetDog, PetRabbit }
+    public class JobDriver_Training : rjw.JobDriver_SexBaseInitiator { }
+    public class JobDriver_RitualTraining : rjw.JobDriver_SexBaseInitiator
+    {
+        public int CancelCalls;
+        /// <summary>记录整场取消请求；真实仪式信号和清理由仪式生命周期套件覆盖。</summary>
+        public void AbortForRestriction(string reason) { CancelCalls++; }
+    }
+    public class JobDriver_PE : rjw.JobDriver_SexBaseInitiator { }
+    public static class OnaholeCompatibilityUtility
+    {
+        public static int UnregisterCalls;
+        /// <summary>提供常驻家具类型识别边界，真实参与者许可仍由生产守卫执行。</summary>
+        public static bool IsBeOnaholeDriver(object driver) => driver is RJW_Onahole.Jobs.JobDriver_BeOnahole;
+        /// <summary>记录家具参与者解除次数，不模拟外部家具模组。</summary>
+        public static void TryUnregisterOnaholePartner(Verse.Pawn target, Verse.Pawn actor)
+        {
+            UnregisterCalls++;
+            if (target?.jobs.curDriver is RJW_Onahole.Jobs.JobDriver_BeOnahole receiver && receiver.PartnerPawn == actor)
+            { receiver.PartnerPawn = null; receiver.parteners.Remove(actor); }
+        }
+    }
+    public static class TrainingJobUtility
+    {
+        /// <summary>为生产拒绝清理提供记录验证失败的最小边界。</summary>
+        public static void MarkValidationFailure(Verse.Pawn target, string prefix) { }
+    }
+    public static class SSCIdentityUtility
+    {
+        /// <summary>从显式身份读出主人资格，不推测关系。</summary>
+        public static bool IsMaster(Verse.Pawn pawn) => pawn?.Training.pawnIdentity == PawnIdentity.Master;
+        /// <summary>提供身份查询边界；真实身份切换由 TrainerIdentity 套件覆盖。</summary>
+        public static bool IsTrainer(Verse.Pawn pawn) => IsMaster(pawn) || (pawn?.Training.pawnIdentity == PawnIdentity.Slave && pawn.Training.slaveTrainerEnabled);
+    }
+    public static class TrainerAssignmentUtility
+    {
+        /// <summary>只提供有效指定对象查询，真实指派逻辑由 TrainerIdentity 套件覆盖。</summary>
+        public static Verse.Pawn GetActiveAssignedTrainer(Verse.Pawn target)
+        {
+            var actor = target?.Training.selectedTrainer;
+            return actor != null && !actor.Dead && !actor.Destroyed && actor != target && SSCIdentityUtility.IsTrainer(actor) ? actor : null;
+        }
+    }
     public class CompSexSlaveTraining
     {
+        public PawnIdentity pawnIdentity;
+        public SexSlaveSpecializationType specializationType;
+        public SSCRestrictionConfig restrictionConfig = new SSCRestrictionConfig();
         public Verse.Pawn selectedTrainer;
-        public bool AllowsOthersForTrainingOrSex;
+        public bool AllowsOthersForTrainingOrSex, slaveTrainerEnabled;
     }
     public class Settings
     {
         public bool enableSexSlaveProtectionRules = true;
+        public bool enableSpecializationRestrictionOverrides = true;
+        public SSCRestrictionRules restrictionDefaults = new SSCRestrictionRules();
         public bool allowSexSlaveRape;
         public bool protectBusAggressorRape = true;
         public bool protectChainedAggressorRape = true;
@@ -258,6 +399,10 @@ namespace SexSlaveCraft
     public static class SSCMod { public static Settings settings = new Settings(); }
     public static class SSCBondUtility
     {
+        /// <summary>由锁链引用确定实际绑定主人。</summary>
+        public static Verse.Pawn GetBoundMaster(Verse.Pawn pawn) => pawn?.Chain?.LinkedPawn;
+        /// <summary>仅承认目标指向发起者的有向绑定。</summary>
+        public static bool IsBoundTo(Verse.Pawn slave, Verse.Pawn owner) => owner != null && GetBoundMaster(slave) == owner;
         /// <summary>直接读取模拟角色的锁链，代替真实游戏中的健康状态查找。</summary>
         public static Hediff_ChainOfSexSlave GetChain(Verse.Pawn pawn) => pawn?.Chain;
     }
@@ -268,12 +413,21 @@ namespace SexSlaveCraft
     }
     public static class SSCLog
     {
+        public static bool VerboseEnabled = false;
+        public static readonly List<string> Warnings = new List<string>();
         /// <summary>接收并忽略生产详细日志，避免测试结果被诊断文本淹没。</summary>
         public static void Verbose(string message) { }
+        /// <summary>记录兼容警告，供测试验证缺席安静、接口变化只提示一次。</summary>
+        public static void WarningImportant(string message) => Warnings.Add(message);
     }
-    public static class Strings { public const string Message_SlaveAlreadyLinked = "Protected"; }
+    public static class Strings {
+        public const string Message_SlaveAlreadyLinked = "Protected";
+        /// <summary>提供宠物事件翻译边界，实际开始时才会调用。</summary>
+        public static string Message_DogAnimalInteractionTriggered(string actor, string target) => "DogStarted";
+    }
     public static class SSCDefOf
     {
+        public static readonly Verse.JobDef SSC_TrainingReceiver = Def("SSC_TrainingReceiver");
         public static readonly Verse.JobDef RandomRape = Def("RandomRape"),
             RapeComfortPawn = Def("RapeComfortPawn"), RapeEnemy = Def("RapeEnemy"),
             RapeEnemyByAnimal = Def("RapeEnemyByAnimal"), RapeEnemyByInsect = Def("RapeEnemyByInsect"),
@@ -300,7 +454,7 @@ namespace HarmonyLib
         public Type Type;
         public string Method;
         /// <summary>保存补丁目标类型和方法名，供无 Harmony 依赖模式下的注册元数据检查使用。</summary>
-        public HarmonyPatch(Type type, string method) { Type = type; Method = method; }
+        public HarmonyPatch(Type type = null, string method = null) { Type = type; Method = method; }
     }
     public class HarmonyPrefix : Attribute { }
     public class HarmonyPostfix : Attribute { }

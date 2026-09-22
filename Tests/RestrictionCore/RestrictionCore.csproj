@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net9.0</TargetFramework>
+    <SscSourceRoot Condition="'$(SscSourceRoot)' == ''">../../Sexslavecraft</SscSourceRoot>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionData.cs" Link="Production/Data.cs" />
+    <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionDefinitions.cs" Link="Production/Definitions.cs" />
+    <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionConfigurationBuilder.cs" Link="Production/ConfigurationBuilder.cs" />
+    <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionResolver.cs" Link="Production/Resolver.cs" />
+    <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionPolicy.cs" Link="Production/Policy.cs" />
+    <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionEditor.cs" Link="Production/Editor.cs" />
+    <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCSettings.Restrictions.cs" Link="Production/Settings.cs" />
+    <Compile Include="$(SscSourceRoot)/Comps/Comp_Train.Restrictions.cs" Link="Production/Comp.cs" />
+    <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionMigration.cs" Link="Production/Migration.cs" />
+    <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionLifecycle.cs" Link="Production/Lifecycle.cs" />
+    <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionGameComponent.cs" Link="Production/GameComponent.cs" />
+    <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionTrainingUtility.cs" Link="Production/SSCRestrictionTrainingUtility.cs" />
+  </ItemGroup>
+</Project>

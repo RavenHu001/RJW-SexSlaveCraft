@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using RimWorld;
 using Verse;
 using Verse.AI;
@@ -10,8 +10,10 @@ namespace SexSlaveCraft
     [HarmonyPatch(typeof(TradeDeal), "TryExecute")]
     public static class Patch_TradeDeal_TryExecute_BusSex
     {
+        // 保持既有接近时间；等待只是准备，不能作为事件实际发生的证据。
         private const int PartnerWaitTicks = 600;
 
+        /// <summary>仅成功成交后掷骰一次并保留既有交易成长；互动许可失败不撤销交易、不重掷。</summary>
         public static void Postfix(bool __result, bool actuallyTraded)
         {
             // 1. 基础检查：交易必须成功
@@ -110,6 +112,7 @@ namespace SexSlaveCraft
             }
         }
 
+        /// <summary>保留双方身体条件，按公交车发起的真实Quickie调度，实际开始提示交给场景守卫。</summary>
         private static void StartConsensualSex(Pawn bus, Pawn trader)
         {
             if (!CanStartTradeInteraction(bus, trader)) return;
@@ -123,13 +126,10 @@ namespace SexSlaveCraft
             }
 
             // RJW 没有名为 Sex 的 JobDef；Quickie 支持地图内、无需床位的互动。
-            if (TryStartTradeJob(bus, trader, xxx.quick_sex))
-            {
-                Messages.Message("SSC_Message_TradeConsensualSex".Translate(bus.LabelShort, trader.LabelShort),
-                    new LookTargets(bus, trader), MessageTypeDefOf.PositiveEvent);
-            }
+            TryStartTradeJob(bus, trader, xxx.quick_sex, SSCRestrictionEvent.TradeConsensual);
         }
 
+        /// <summary>保留强制行为能力门槛，按商人发起的RandomRape调度，不把谈判者误当发起者。</summary>
         private static void StartRapeSex(Pawn rapist, Pawn victim)
         {
             if (!CanStartTradeInteraction(rapist, victim)) return;
@@ -141,13 +141,10 @@ namespace SexSlaveCraft
             }
 
             // 使用 RJW 注册的 RandomRape 定义，保留商人为发起方。
-            if (TryStartTradeJob(rapist, victim, xxx.RapeRandom))
-            {
-                Messages.Message("SSC_Message_TradeRapeOccurred".Translate(victim.LabelShort, rapist.LabelShort),
-                    new LookTargets(rapist, victim), MessageTypeDefOf.NegativeEvent);
-            }
+            TryStartTradeJob(rapist, victim, xxx.RapeRandom, SSCRestrictionEvent.TradeForced);
         }
 
+        /// <summary>检查双方可用性、地图距离、可中断性及寻路；这些执行条件独立于统一行为许可。</summary>
         private static bool CanStartTradeInteraction(Pawn initiator, Pawn partner)
         {
             if (initiator == null || partner == null || initiator == partner) return false;
@@ -188,11 +185,23 @@ namespace SexSlaveCraft
             return true;
         }
 
-        private static bool TryStartTradeJob(Pawn initiator, Pawn partner, JobDef jobDef)
+        /// <summary>先预检许可再安排等待和行为任务；只撤销本事件创建的任务，不清空无关队列。</summary>
+        private static bool TryStartTradeJob(Pawn initiator, Pawn partner, JobDef jobDef, SSCRestrictionEvent source)
         {
             if (jobDef == null)
             {
                 LogSkipped(initiator, partner, "missing_job_def");
+                return false;
+            }
+
+            // 先按实际驱动判定方向及强制/自愿性质。拒绝发生在第一次StartJob之前，双方原工作保持原样。
+            // 事件已经掷骰，不改走另一分支；成功成交的成长仍由Postfix统一处理。
+            Job interactionJob = JobMaker.MakeJob(jobDef, partner);
+            interactionJob.playerForced = true;
+            if (!SSCRestrictionJobGuard.PrepareEvent(initiator, interactionJob, source))
+            {
+                LogSkipped(initiator, partner, "restriction_preflight");
+                JobMaker.ReturnToPool(interactionJob);
                 return false;
             }
 
@@ -207,15 +216,18 @@ namespace SexSlaveCraft
             {
                 // Wait 可能被旧任务的收尾步骤推迟，不能把排队当成已启动。
                 partner.jobs.jobQueue.RemoveAll(partner, queued => queued == waitJob);
+                SSCRestrictionJobGuard.CancelPendingEvent(interactionJob);
+                JobMaker.ReturnToPool(interactionJob);
                 LogSkipped(initiator, partner, "partner_wait_rejected");
                 return false;
             }
 
-            Job interactionJob = JobMaker.MakeJob(jobDef, partner);
-            interactionJob.playerForced = true;
+            // 在启动前登记等待归属，立即预约失败和之后走位失败均能清理相同任务。
+            SSCRestrictionJobGuard.RegisterEventWait(initiator, interactionJob, partner, waitJob);
             initiator.jobs.StartJob(interactionJob, JobCondition.InterruptForced, tag: JobTag.Misc, preToilReservationsCanFail: true);
             if (initiator.CurJob != interactionJob)
             {
+                SSCRestrictionJobGuard.CancelPendingEvent(interactionJob);
                 initiator.jobs.jobQueue.RemoveAll(initiator, queued => queued == interactionJob);
                 // 只清理本次创建的等待任务，避免结束已被其他逻辑替换的工作。
                 if (partner.CurJob == waitJob)
@@ -226,10 +238,11 @@ namespace SexSlaveCraft
                 return false;
             }
 
-            SSCLog.Verbose($"[SSC BusTrade] started job={jobDef.defName} initiator={initiator.LabelShort} partner={partner.LabelShort}");
+            SSCLog.Verbose($"[SSC BusTrade] scheduled job={jobDef.defName} initiator={initiator.LabelShort} partner={partner.LabelShort}");
             return true;
         }
 
+        /// <summary>只写详细诊断，自动交易事件失败不刷屏或伪报行为发生。</summary>
         private static void LogSkipped(Pawn initiator, Pawn partner, string reason)
         {
             SSCLog.Verbose($"[SSC BusTrade] skipped reason={reason} initiator={initiator?.LabelShort} partner={partner?.LabelShort}");

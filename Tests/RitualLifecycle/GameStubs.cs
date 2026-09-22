@@ -20,7 +20,6 @@ namespace HarmonyLib
 
 namespace Verse
 {
-    public class Def { public string defName; }
     public class ThingComp { public Thing parent; }
     public class Thing
     {
@@ -28,9 +27,12 @@ namespace Verse
         /// <summary>从测试对象的组件列表返回首个匹配类型的组件；找不到时返回 null。</summary>
         public T TryGetComp<T>() where T : ThingComp => comps.Find(comp => comp is T) as T;
     }
-    public class Pawn : Thing
+    public partial class Pawn : Thing
     {
-        public bool Dead;
+        public bool Dead, Destroyed, Downed, IsSlave, IsPrisonerOfColony;
+        public bool IsColonist = true;
+        public Pawn BoundMaster;
+        public ApparelTracker apparel = new ApparelTracker();
         public bool Spawned = true;
         public Map Map;
         public Lord lord;
@@ -73,11 +75,13 @@ namespace Verse
     {
         /// <summary>将生产代码的错误日志写入测试输出，便于定位执行失败。</summary>
         public static void Error(string message) => Console.WriteLine(message);
+        /// <summary>忽略日常驱动诊断，避免混入测试计数输出。</summary>
+        public static void Message(string message) { }
     }
     public static class Scribe_Values
     {
         /// <summary>提供布尔字段序列化占位入口；保留测试设置的值，不模拟实际存档读写。</summary>
-        public static void Look(ref bool value, string label, bool defaultValue) { }
+        public static void Look<T>(ref T value, string label, T defaultValue) { }
     }
     public static class Scribe_References
     {
@@ -121,6 +125,10 @@ namespace Verse.AI
         public Action initAction;
         public Action tickAction;
         public bool handlingFacing;
+        public int defaultDuration;
+        public RandomSocialMode socialMode;
+        /// <summary>保存场景失败条件签名；具体失败由用例触发。</summary>
+        public void FailOn(Func<bool> condition) { }
         public ToilCompleteMode defaultCompleteMode;
         public readonly List<Action> FinishActions = new List<Action>();
         /// <summary>保存当前 Toil 的结束回调，供测试模拟当前阶段收尾。</summary>
@@ -132,6 +140,8 @@ namespace Verse.AI
     {
         /// <summary>返回没有场景收尾回调的移动 Toil 占位对象；宿主不模拟寻路。</summary>
         public static Toil GotoCell(IntVec3 cell, PathEndMode endMode) => new Toil();
+        /// <summary>日常移动使用无副作用步骤，允许单独中断行走阶段。</summary>
+        public static Toil GotoThing(TargetIndex index, PathEndMode mode) => new Toil();
     }
     public abstract class ThinkNode_JobGiver
     {
@@ -166,6 +176,8 @@ namespace Verse.AI
     {
         /// <summary>保留目标失效检查的扩展签名；本宿主不模拟原版目标失效调度。</summary>
         public static void FailOnDespawnedOrNull(this JobDriver driver, TargetIndex target) { }
+        /// <summary>保留日常目标失效签名，不模拟完整地图标记。</summary>
+        public static void FailOnDespawnedNullOrForbidden(this JobDriver driver, TargetIndex target) { }
         /// <summary>保存生产有效性检查，使测试可以在指定运行时机主动求值。</summary>
         public static void FailOn(this JobDriver driver, Func<bool> condition) => driver.FailConditions.Add(condition);
     }
@@ -194,6 +206,15 @@ namespace RimWorld
     public class Precept_Ritual { public RitualBehaviorWorker behavior; }
     public class LordJob_Ritual : LordJob
     {
+        public int CancelCalls;
+        /// <summary>模拟取消信号触发地图移除及生产清理补丁；阶段驱动回调由执行器单独触发。</summary>
+        public void Cancel()
+        {
+            CancelCalls++;
+            lord.Map.lordManager.lords.Remove(lord);
+            Harmony_BindingRitualCleanup.Prefix(this);
+            Harmony_BindingRitualPostCleanup.Postfix(this);
+        }
         public Precept_Ritual Ritual;
         public LocalTargetInfo selectedTarget;
         public readonly Dictionary<string, Pawn> Roles = new Dictionary<string, Pawn>();
@@ -210,8 +231,10 @@ namespace RimWorld
 
 namespace SexSlaveCraft
 {
-    public class CompSexSlaveTraining : ThingComp
+    public partial class CompSexSlaveTraining : ThingComp
     {
+        public PawnIdentity pawnIdentity;
+        public bool slaveTrainerEnabled;
         public Lord bindingRitualLord;
         public bool bindingRitualOutcomeClaimed;
         public bool isRitualTraining;
@@ -221,7 +244,11 @@ namespace SexSlaveCraft
         public float specializationProgress;
         public int lastTrainingTick = -999999;
         /// <summary>若仪式路径误用日常训练完成入口则立即报错，防止测试遗漏冷却污染。</summary>
-        public void Notify_TrainingCompleted() => throw new InvalidOperationException("Ritual must not add daily cooldown.");
+        public void Notify_TrainingCompleted()
+        {
+            if (isRitualTraining) throw new InvalidOperationException("Ritual must not add daily cooldown.");
+            TestWorld.DailyCooldowns++;
+        }
     }
     public static class SSCDefOf
     {
@@ -230,6 +257,7 @@ namespace SexSlaveCraft
     }
     public static class SSCLog
     {
+        public static bool VerboseEnabled => false;
         /// <summary>忽略详细日志，避免正常执行的测试输出被游戏诊断信息淹没。</summary>
         public static void Verbose(string message) { }
         /// <summary>提供重要日志的无操作适配；用例结果由测试执行器单独输出。</summary>
@@ -255,10 +283,16 @@ namespace SexSlaveCraft
         public static bool TryValidateStartOrAbort(Pawn master, Pawn slave, string prefix)
             => Trainjudge.TryCanBeFuckedWithReason(slave, out _, out _);
         /// <summary>直接同步双方的测试坐标；不执行寻路停止或传送通知。</summary>
-        public static void SyncPartnerPosition(Pawn master, Pawn slave, IntVec3 cell)
-        { master.Position = cell; slave.Position = cell; }
+        public static void SyncPartnerPosition(Pawn master, Pawn slave, IntVec3? cell = null)
+        { master.Position = cell ?? slave.Position; slave.Position = master.Position; }
         /// <summary>提供唤醒占位入口；宿主参与者没有睡眠状态。</summary>
         public static void EnsureAwake(Pawn pawn) { }
+        /// <summary>按用例控制接收准备能否成功，不模拟真实任务调度。</summary>
+        public static bool TryStartDailyTrainingReceiver(Pawn actor, Pawn target, Job job, JobDef receiver) => TestWorld.ReceiverSucceeds;
+        /// <summary>复位日常占用，保留仪式占用。</summary>
+        public static void CleanupTrainingState(Pawn pawn) { var c = pawn.TryGetComp<CompSexSlaveTraining>(); if (!c.isRitualTraining) c.isBeingTrained = false; }
+        /// <summary>记录验证失败边界；测试不推进真实游戏冷却。</summary>
+        public static void MarkValidationFailure(Pawn pawn, string prefix) { }
         /// <summary>给目标分配测试接收 Job 并返回成功；不运行真实接收端调度。</summary>
         public static bool TryStartBindingRitualReceiver(Pawn master, Pawn slave, Job job, JobDef receiver, IntVec3 cell)
         { TestWorld.AssignReceiverJob(slave); return true; }
@@ -272,7 +306,9 @@ namespace SexSlaveCraft
     public static class OnaholeCompatibilityUtility
     {
         /// <summary>固定返回同步成功，使测试进入正常场景初始化路径。</summary>
-        public static bool TrySynchronizeOnaholeSexProps(Pawn pawn, rjw.SexProps props) => true;
+        public static bool TrySynchronizeOnaholeSexProps(Pawn pawn, rjw.SexProps props) => TestWorld.SynchronizeSucceeds;
+        /// <summary>正常用例保持接收有效，拒绝清理由交互套件单独验证。</summary>
+        public static bool IsValidTrainingReceiver(Pawn pawn, JobDef job) => true;
         /// <summary>固定返回 false；本套件不模拟飞机杯兼容状态。</summary>
         public static bool IsPawnOnOnahole(Pawn pawn) => false;
         /// <summary>返回未使用的诊断占位文本，不读取真实兼容组件。</summary>
@@ -302,6 +338,11 @@ namespace rjw
     }
     public abstract class JobDriver_Sex : JobDriver
     {
+        public Pawn Partner => job.targetA.Thing as Pawn;
+        public TargetIndex iTarget = TargetIndex.A;
+        public int orgasms, ticks_between_hearts = 10;
+        /// <summary>无界面模型不生成心形特效。</summary>
+        public void ThrowMetaIconF(IntVec3 cell, Map map, object fleck) { }
         public int ticks_left = 100;
         public int sex_ticks;
         public int orgasmStartTick;
@@ -335,7 +376,8 @@ namespace rjw
 internal static class TestWorld
 {
     public static Map Map;
-    public static int ProcessSexCalls;
+    public static int ProcessSexCalls, DailyOutcomes, DailyCooldowns;
+    public static bool ReceiverSucceeds = true, SynchronizeSucceeds = true;
     public static int RjwEndCalls;
     public static Action<rjw.JobDriver_SexBaseInitiator> OnRjwStart;
 
@@ -343,7 +385,9 @@ internal static class TestWorld
     public static void Reset()
     {
         Map = new Map();
-        ProcessSexCalls = 0;
+        SSCMod.settings = new Settings();
+        ProcessSexCalls = DailyOutcomes = DailyCooldowns = 0;
+        ReceiverSucceeds = SynchronizeSucceeds = true;
         RjwEndCalls = 0;
         OnRjwStart = null;
 #if SSC_TEST_WITH_UAP
@@ -382,6 +426,13 @@ internal sealed class RitualFixture
     {
         Master = master ?? TestWorld.NewPawn();
         Slave = slave ?? TestWorld.NewPawn();
+        if (master == null) Master.TryGetComp<CompSexSlaveTraining>().pawnIdentity = PawnIdentity.Master;
+        if (slave == null)
+        {
+            Slave.TryGetComp<CompSexSlaveTraining>().pawnIdentity = PawnIdentity.Slave;
+            Slave.TryGetComp<CompSexSlaveTraining>().selectedTrainer = Master;
+            Slave.BoundMaster = Master;
+        }
         Job = new LordJob_Ritual
         {
             Ritual = new Precept_Ritual

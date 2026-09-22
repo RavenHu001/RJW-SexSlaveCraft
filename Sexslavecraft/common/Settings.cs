@@ -12,15 +12,10 @@ using Verse;
 // CN: 它把性奴保护、日志、资格判定、完全胶化外观和绑定仪式转奴这些开关统一放在这里。
 namespace SexSlaveCraft
 {
-    public class SSCSettings : ModSettings
+    public partial class SSCSettings : ModSettings
     {
-        // EN: Strict protection stays off only when the player explicitly allows rape on chained sex slaves.
-        // CN: 只有玩家明确允许时，锁链性奴才会退出严格保护模式。
-        public bool allowSexSlaveRape = false;
+        // 总开关沿用旧序列化键，避免升级后意外重新启用；当前只控制统一限制系统。
         public bool enableSexSlaveProtectionRules = true;
-        public bool protectBusAggressorRape = true;
-        public bool protectChainedAggressorRape = true;
-        public bool protectNonRapeOwnerOnly = true;
         public bool enableSSCLogs = true;
         public bool enableSSCVerboseLogs = false;
         public bool enableSSCImportantLogs = true;
@@ -37,15 +32,12 @@ namespace SexSlaveCraft
         public float corruptionDecayPerDay = 0.02f;
         public bool useOldScoring = false;
 
+        /// <summary>读写新限制配置及既有全局设置，并在加载结束后将数值选项限制在支持范围内。</summary>
         public override void ExposeData()
         {
             // EN: Save every toggle explicitly so old saves keep the same SSC behavior after updates.
             // CN: 每个开关都要显式保存，保证旧存档在更新后仍保持相同的 SSC 行为。
-            Scribe_Values.Look(ref allowSexSlaveRape, "allowSexSlaveRape", false);
             Scribe_Values.Look(ref enableSexSlaveProtectionRules, "enableSexSlaveProtectionRules", true);
-            Scribe_Values.Look(ref protectBusAggressorRape, "protectBusAggressorRape", true);
-            Scribe_Values.Look(ref protectChainedAggressorRape, "protectChainedAggressorRape", true);
-            Scribe_Values.Look(ref protectNonRapeOwnerOnly, "protectNonRapeOwnerOnly", true);
             Scribe_Values.Look(ref enableSSCLogs, "enableSSCLogs", true);
             Scribe_Values.Look(ref enableSSCVerboseLogs, "enableSSCVerboseLogs", false);
             Scribe_Values.Look(ref enableSSCImportantLogs, "enableSSCImportantLogs", true);
@@ -59,6 +51,7 @@ namespace SexSlaveCraft
             Scribe_Values.Look(ref enableCorruptionDecay, "enableCorruptionDecay", true);
             Scribe_Values.Look(ref corruptionDecayPerDay, "corruptionDecayPerDay", 0.02f);
             Scribe_Values.Look(ref useOldScoring, "useOldScoring", false);
+            ExposeRestrictionSettings();
 
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
@@ -76,16 +69,19 @@ namespace SexSlaveCraft
         private Vector2 settingsScrollPosition;
         private float settingsContentHeight = 1000f;
 
+        /// <summary>加载当前模组的持久化设置，供规则查询和设置窗口共同使用。</summary>
         public SSCMod(ModContentPack content) : base(content)
         {
             settings = GetSettings<SSCSettings>();
         }
 
+        /// <summary>返回游戏模组设置列表中显示的本地化分类名称。</summary>
         public override string SettingsCategory()
         {
             return Strings.Setting_Category;
         }
 
+        /// <summary>绘制可滚动设置区与底部诊断入口，并按本次内容高度更新滚动范围。</summary>
         public override void DoSettingsWindowContents(Rect inRect)
         {
             // Keep the secondary diagnostics entry in a separate bottom-right footer.
@@ -115,40 +111,43 @@ namespace SexSlaveCraft
             base.DoSettingsWindowContents(inRect);
         }
 
+        /// <summary>在设置页提供测试入口；优先使用选中角色，否则选择当前地图首个可配置角色，主菜单下禁用。</summary>
+        private static void DrawRestrictionTestEntry(Listing_Standard listing)
+        {
+            Map map = Current.Game != null ? Find.CurrentMap : null;
+            Pawn pawn = map != null ? Find.Selector?.SingleSelectedThing as Pawn : null;
+            if (pawn?.RaceProps?.Humanlike != true || pawn.TryGetComp<CompSexSlaveTraining>() == null)
+                pawn = map?.mapPawns.AllPawnsSpawned.FirstOrDefault(p => p.RaceProps.Humanlike && p.TryGetComp<CompSexSlaveTraining>() != null);
+            bool oldEnabled = GUI.enabled;
+            bool clicked;
+            try
+            {
+                GUI.enabled = oldEnabled && pawn != null;
+                Rect button = listing.GetRect(30f);
+                clicked = Widgets.ButtonText(button, "SSC_Restrictions_Open".Translate()) && GUI.enabled;
+                TooltipHandler.TipRegion(button,
+                    (pawn == null ? "SSC_Restrictions_SettingsUnavailable" : "SSC_Restrictions_SettingsTip").Translate());
+            }
+            finally { GUI.enabled = oldEnabled; }
+            if (clicked) Find.WindowStack.Add(new Dialog_SSCRestrictions(pawn));
+        }
+
+        /// <summary>按功能绘制全局设置；限制区仅保留开关、模板子窗口入口及位于末尾的测试入口。</summary>
         private static void DrawSettings(Listing_Standard listingStandard)
         {
-            // EN: Step 1: draw the sex-slave protection rules first, because they change how Harmony guards sex jobs.
-            // CN: 步骤 1：先画出“性奴保护规则”，因为它们会直接改变 Harmony 对性行为 Job 的拦截方式。
+            bool restrictionsWereEnabled = settings.enableSexSlaveProtectionRules;
+            // 这里只提供统一限制总开关。旧四项全局开关已退役，原值仅供尚未升级的存档迁移。
             listingStandard.CheckboxLabeled(
                 "SSC_Setting_EnableSexSlaveProtectionRules".Translate(),
                 ref settings.enableSexSlaveProtectionRules,
                 "SSC_Setting_EnableSexSlaveProtectionRules_Desc".Translate()
             );
 
-            listingStandard.CheckboxLabeled(
-                Strings.Setting_AllowSexSlaveRape,
-                ref settings.allowSexSlaveRape,
-                Strings.Setting_AllowSexSlaveRape_Desc
-            );
-
-            listingStandard.CheckboxLabeled(
-                "SSC_Setting_ProtectBusAggressorRape".Translate(),
-                ref settings.protectBusAggressorRape,
-                "SSC_Setting_ProtectBusAggressorRape_Desc".Translate()
-            );
-
-            listingStandard.CheckboxLabeled(
-                "SSC_Setting_ProtectChainedAggressorRape".Translate(),
-                ref settings.protectChainedAggressorRape,
-                "SSC_Setting_ProtectChainedAggressorRape_Desc".Translate()
-            );
-
-            listingStandard.CheckboxLabeled(
-                "SSC_Setting_ProtectNonRapeOwnerOnly".Translate(),
-                ref settings.protectNonRapeOwnerOnly,
-                "SSC_Setting_ProtectNonRapeOwnerOnly_Desc".Translate()
-            );
-
+            SSCRestrictionUI.DrawSettings(listingStandard);
+            listingStandard.Gap(8f);
+            DrawRestrictionTestEntry(listingStandard);
+            if (restrictionsWereEnabled != settings.enableSexSlaveProtectionRules)
+                SSCRestrictionGameComponent.SettingsChanged();
             listingStandard.GapLine();
             // EN: Step 2: draw SSC log controls together so debug verbosity can be tuned from one block.
             // CN: 步骤 2：把 SSC 日志开关放在一起，方便在一个区域里调整调试输出等级。
