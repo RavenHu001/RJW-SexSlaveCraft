@@ -15,7 +15,7 @@ namespace SexSlaveCraft
             SSCSettings settings = SSCMod.settings;
             if (settings == null) return;
             listing.Label("SSC_Restrictions_DefaultsTitle".Translate());
-            listing.Label("SSC_Restrictions_DefaultsTip".Translate());
+            listing.Label("SSC_Restrictions_DefaultsShort".Translate(), -1f, "SSC_Restrictions_DefaultsTip".Translate());
             bool enabled = settings.enableSpecializationRestrictionOverrides;
             listing.CheckboxLabeled("SSC_Restrictions_ProfileSwitch".Translate(), ref enabled,
                 "SSC_Restrictions_ProfileSwitchTip".Translate());
@@ -31,7 +31,7 @@ namespace SexSlaveCraft
                 foreach (SSCRestrictionRule rule in SSCRestrictionRules.All)
                 {
                     DrawGroup(listing, rule);
-                    DrawChoice(listing, rule, defaults.Get(rule), true, value =>
+                    DrawChoice(listing, rule, defaults, true, null, value =>
                     {
                         settings.restrictionDefaults.Set(rule, value);
                         settings.Write();
@@ -62,12 +62,11 @@ namespace SexSlaveCraft
         /// <summary>绘制角色配置、实时强制来源及全局状态；不适用角色已有配置只读，缺失配置可显式重试。</summary>
         public static void DrawPawn(Listing_Standard listing, Pawn pawn)
         {
-            listing.Label(pawn?.LabelShort ?? "SSC_Restrictions_None".Translate().ToString());
-            listing.Label("SSC_Restrictions_TestNotice".Translate());
-            listing.Label("SSC_Restrictions_OwnerNotice".Translate());
-            listing.Label("SSC_Restrictions_GlobalState".Translate(
-                ValueLabel(SSCMod.settings?.enableSexSlaveProtectionRules ?? true),
-                ValueLabel(SSCMod.settings?.enableSpecializationRestrictionOverrides ?? true)));
+            listing.Label("SSC_Restrictions_PawnTitle".Translate(pawn?.LabelShort ?? "SSC_Restrictions_None".Translate().ToString()));
+            // 日常面板只常驻一条操作说明；保存机制放在悬停中，接管清单留给许可测试页。
+            listing.Label("SSC_Restrictions_CompactNotice".Translate(), -1f, "SSC_Restrictions_SaveNotice".Translate());
+            if (!(SSCMod.settings?.enableSexSlaveProtectionRules ?? true))
+                listing.Label("SSC_Restrictions_Paused".Translate());
             bool applicable = SSCRestrictionResolver.IsApplicable(pawn);
             if (!applicable) listing.Label("SSC_Restrictions_NotApplicable".Translate());
             SSCRestrictionConfig config = pawn?.TryGetComp<CompSexSlaveTraining>()?.restrictionConfig;
@@ -84,21 +83,22 @@ namespace SexSlaveCraft
                 return;
             }
             if (!config.IsValid()) { listing.Label("SSC_Restrictions_InvalidConfig".Translate(config.version)); return; }
-            listing.Label("SSC_Restrictions_SaveNotice".Translate());
             foreach (SSCRestrictionRule rule in SSCRestrictionRules.All)
             {
                 DrawGroup(listing, rule);
-                DrawChoice(listing, rule, config.rules.Get(rule), applicable, value =>
+                SSCRestrictionResolution entry = SSCRestrictionResolver.Resolve(pawn, config.rules, rule);
+                string extraTip = null;
+                if (rule == SSCRestrictionRule.ReceiveTraining)
+                {
+                    Pawn forced = SSCRestrictionLifecycle.GetForcedTrainer(pawn);
+                    if (forced != null) extraTip = "SSC_Restrictions_TrainerLocked".Translate(forced.LabelShort);
+                }
+                DrawChoice(listing, rule, config.rules, applicable, entry, value =>
                 {
                     if (!SSCRestrictionEditor.TrySet(pawn, rule, value))
                         Messages.Message("SSC_Restrictions_EditFailed".Translate(), MessageTypeDefOf.RejectInput, false);
-                });
-                SSCRestrictionResolution entry = SSCRestrictionResolver.Resolve(pawn, config.rules, rule);
-                listing.Label("SSC_Restrictions_EffectiveValue".Translate(entry.Valid ? ValueLabel(entry.Value) :
-                    "SSC_Restrictions_InvalidValue".Translate().ToString(), SourceLabel(entry)));
+                }, extraTip);
             }
-            Pawn forced = SSCRestrictionLifecycle.GetForcedTrainer(pawn);
-            if (forced != null) listing.Label("SSC_Restrictions_TrainerLocked".Translate(forced.LabelShort));
         }
 
         /// <summary>在主动、被动、调教的首项绘制分组标题，避免六项规则成为没有分类的长列表。</summary>
@@ -110,39 +110,116 @@ namespace SexSlaveCraft
             listing.Label(("SSC_Restrictions_Group_" + rule).Translate());
         }
 
-        /// <summary>为规则提供合法值菜单；捕获当前角色回调，切换选中对象不会把选择写给另一个角色。</summary>
-        private static void DrawChoice(Listing_Standard listing, SSCRestrictionRule rule, SSCRestrictionValue saved,
-            bool editable, Action<SSCRestrictionValue> apply)
+        /// <summary>绘制左文右勾叉的原生开关；编辑个人保存值，强制来源只显示标记，不改写或锁住个人选择。</summary>
+        private static void DrawChoice(Listing_Standard listing, SSCRestrictionRule rule, SSCRestrictionRules rules,
+            bool editable, SSCRestrictionResolution entry, Action<SSCRestrictionValue> apply, string extraTip = null)
         {
-            listing.Label(("SSC_Restrictions_Rule_" + rule).Translate());
+            SSCRestrictionValue saved = rules.Get(rule);
+            bool allowed = saved != SSCRestrictionValue.Deny;
+            string label = ("SSC_Restrictions_Option_" + rule).Translate();
+            string badge = OverrideBadge(entry);
+            string tip = ("SSC_Restrictions_Tip_" + rule).Translate();
+            if (entry != null && (!entry.Valid || entry.Source != SSCRestrictionSource.Saved))
+                tip += "\n\n" + "SSC_Restrictions_OverrideTip".Translate(ValueLabel(saved),
+                    entry.Valid ? ValueLabel(entry.Value) : "SSC_Restrictions_InvalidValue".Translate().ToString(), SourceLabel(entry));
+            if (!string.IsNullOrEmpty(extraTip)) tip += "\n" + extraTip;
+
+            // 给右侧勾叉和可选来源标记独立留位。长译文按实际文本高度换行，不遮住操作区。
+            float badgeWidth = badge == null ? 0f : Mathf.Min(listing.ColumnWidth * 0.36f, Text.CalcSize(badge).x + 8f);
+            float labelWidth = Mathf.Max(1f, listing.ColumnWidth - 32f - badgeWidth);
+            float height = Mathf.Max(28f, Text.CalcHeight(label, labelWidth) + 4f);
+            if (badge != null) height = Mathf.Max(height, Text.CalcHeight(badge, Mathf.Max(1f, badgeWidth - 4f)) + 4f);
+            Rect row = listing.GetRect(height);
+            Rect labelRect = new Rect(row.x, row.y + 2f, labelWidth, height - 4f);
             bool previous = GUI.enabled;
+            bool changed = allowed;
             try
             {
                 GUI.enabled = previous && editable;
-                if (!listing.ButtonText("SSC_Restrictions_SavedValue".Translate(ValueLabel(saved)))) return;
-                var options = new List<FloatMenuOption>();
-                foreach (SSCRestrictionValue value in Enum.GetValues(typeof(SSCRestrictionValue)))
-                {
-                    if (!SSCRestrictionRules.IsValid(rule, value)) continue;
-                    SSCRestrictionValue choice = value;
-                    options.Add(new FloatMenuOption(ValueLabel(choice), () => apply(choice)));
-                }
-                Find.WindowStack.Add(new FloatMenu(options));
+                Widgets.Label(labelRect, label);
+                // 使用游戏本身的 Checkbox 贴图，即与“是调教员”相同的绿勾/红叉，不绘制方框。
+                Widgets.Checkbox(row.xMax - 24f, row.y + (height - 24f) / 2f, ref changed, 24f, !GUI.enabled);
+                // 标签区与图标热区互不重叠，整行可点且不会因同一次点击翻转两次。
+                if (GUI.enabled && Widgets.ButtonInvisible(new Rect(row.x, row.y, row.width - 28f, height)))
+                    changed = !changed;
             }
             finally { GUI.enabled = previous; }
+            if (badge != null)
+            {
+                Color oldColor = GUI.color;
+                try
+                {
+                    GUI.color = entry.Valid ? new Color(1f, 0.8f, 0.4f) : Color.red;
+                    Widgets.Label(new Rect(row.xMax - 32f - badgeWidth, row.y + 2f, badgeWidth - 4f, height - 4f), badge);
+                }
+                finally { GUI.color = oldColor; }
+            }
+            TooltipHandler.TipRegion(row, tip);
+            if (changed != allowed)
+                apply(changed ? (rule == SSCRestrictionRule.ConsensualInitiation ? rules.ConsensualTarget : SSCRestrictionValue.Allow)
+                    : SSCRestrictionValue.Deny);
+            if (rule == SSCRestrictionRule.ConsensualInitiation)
+                DrawTargetChoices(listing, rules, editable, apply);
         }
 
-        /// <summary>显示两个全局开关的本地化开启或关闭状态，不把它们误当作保存值。</summary>
-        private static string ValueLabel(bool value) => (value ? "SSC_Restrictions_Enabled" : "SSC_Restrictions_Disabled").Translate();
+        /// <summary>在自愿发起项下缩进绘制互斥对象选项；关闭主项时保持选择但禁用点击，窄栏自动分两行。</summary>
+        private static void DrawTargetChoices(Listing_Standard listing, SSCRestrictionRules rules, bool editable,
+            Action<SSCRestrictionValue> apply)
+        {
+            const float indent = 18f;
+            string owner = "SSC_Restrictions_Value_OwnerOnly".Translate();
+            string anyone = "SSC_Restrictions_AnyTarget".Translate();
+            float width = Mathf.Max(1f, listing.ColumnWidth - indent);
+            bool stacked = Text.CalcSize(owner).x + Text.CalcSize(anyone).x + 72f > width;
+            float cellWidth = stacked ? width : (width - 8f) / 2f;
+            float height = Mathf.Max(28f, Mathf.Max(Text.CalcHeight(owner, Mathf.Max(1f, cellWidth - 28f)),
+                Text.CalcHeight(anyone, Mathf.Max(1f, cellWidth - 28f))) + 4f);
+            Rect space = listing.GetRect(stacked ? height * 2f : height);
+            Rect first = new Rect(space.x + indent, space.y, cellWidth, height);
+            Rect second = new Rect(stacked ? first.x : first.xMax + 8f, stacked ? first.yMax : first.y, cellWidth, height);
+            bool previous = GUI.enabled;
+            try
+            {
+                GUI.enabled = previous && editable && rules.consensualInitiation != SSCRestrictionValue.Deny;
+                SSCRestrictionValue selected = rules.ConsensualTarget;
+                if (Widgets.RadioButtonLabeled(first, owner, selected == SSCRestrictionValue.OwnerOnly, !GUI.enabled) && GUI.enabled && selected != SSCRestrictionValue.OwnerOnly)
+                    apply(SSCRestrictionValue.OwnerOnly);
+                if (Widgets.RadioButtonLabeled(second, anyone, selected == SSCRestrictionValue.Allow, !GUI.enabled) && GUI.enabled && selected != SSCRestrictionValue.Allow)
+                    apply(SSCRestrictionValue.Allow);
+            }
+            finally { GUI.enabled = previous; }
+            TooltipHandler.TipRegion(first, "SSC_Restrictions_TargetOwnerTip".Translate());
+            TooltipHandler.TipRegion(second, "SSC_Restrictions_TargetAnyTip".Translate());
+        }
+
+        /// <summary>仅为装备/特化强制或无效条目生成短标记；普通保存值和全局停用不重复占用每行空间。</summary>
+        private static string OverrideBadge(SSCRestrictionResolution entry)
+        {
+            if (entry == null) return null;
+            if (!entry.Valid) return "SSC_Restrictions_InvalidValue".Translate();
+            string key = entry.Source == SSCRestrictionSource.Equipment ? "SSC_Restrictions_EquipmentBadge" :
+                entry.Source == SSCRestrictionSource.Specialization ? "SSC_Restrictions_ProfileBadge" : null;
+            return key == null ? null : key.Translate(ValueLabel(entry.Value)).ToString();
+        }
 
         /// <summary>显示条目保存值或有效值的本地化名称。</summary>
         private static string ValueLabel(SSCRestrictionValue value) => ("SSC_Restrictions_Value_" + value).Translate();
 
-        /// <summary>展示来源及定义名，便于核对同层合成和非法默认的具体出处。</summary>
+        /// <summary>悬停优先显示装备名称或特化名称；定义缺失时保留原标识，便于定位异常来源。</summary>
         private static string SourceLabel(SSCRestrictionResolution entry)
         {
             string label = ("SSC_Restrictions_Source_" + entry.Source).Translate();
-            return entry.SourceDef == null ? label : label + " (" + entry.SourceDef + ")";
+            if (entry.SourceDef == null) return label;
+            string name = entry.SourceDef;
+            if (entry.Source == SSCRestrictionSource.Equipment)
+                name = DefDatabase<ThingDef>.GetNamedSilentFail(entry.SourceDef)?.LabelCap.ToString() ?? name;
+            else if (entry.Source == SSCRestrictionSource.Specialization || entry.Source == SSCRestrictionSource.SpecializationDefault)
+            {
+                SSCRestrictionProfileDef profile = DefDatabase<SSCRestrictionProfileDef>.GetNamedSilentFail(entry.SourceDef);
+                if (profile?.specialization == SexSlaveSpecializationType.Bus) name = Strings.ITab_SpecializationBus;
+                else if (!string.IsNullOrEmpty(profile?.label)) name = profile.LabelCap.ToString();
+            }
+            return label + " (" + name + ")";
         }
     }
 }

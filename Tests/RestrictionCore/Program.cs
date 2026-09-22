@@ -656,7 +656,12 @@ internal static partial class Program
                     keys.Add(match.Groups[1].Value);
             foreach (string group in new[] { "Masturbation", "ReceiveConsensual", "ReceiveTraining" })
                 keys.Add("SSC_Restrictions_Group_" + group);
-            foreach (SSCRestrictionRule rule in Enum.GetValues<SSCRestrictionRule>()) keys.Add("SSC_Restrictions_Rule_" + rule);
+            foreach (SSCRestrictionRule rule in Enum.GetValues<SSCRestrictionRule>())
+            {
+                keys.Add("SSC_Restrictions_Rule_" + rule);
+                keys.Add("SSC_Restrictions_Option_" + rule);
+                keys.Add("SSC_Restrictions_Tip_" + rule);
+            }
             foreach (SSCRestrictionReason reason in Enum.GetValues<SSCRestrictionReason>()) keys.Add("SSC_Restrictions_Reason_" + reason);
             foreach (SSCRestrictionSource source in Enum.GetValues<SSCRestrictionSource>()) keys.Add("SSC_Restrictions_Source_" + source);
             foreach (SSCInteractionKind kind in Enum.GetValues<SSCInteractionKind>().Where(k => k != SSCInteractionKind.Unknown)) keys.Add("SSC_Restrictions_Kind_" + kind);
@@ -670,6 +675,7 @@ internal static partial class Program
             }
         });
         RunLifecycleTests();
+        RunCompactUiPreferenceTests();
         Console.WriteLine($"{passed}/{passed + failed} passed");
         return failed == 0 ? 0 : 1;
     }

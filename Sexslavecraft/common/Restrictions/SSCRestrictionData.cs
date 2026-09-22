@@ -29,6 +29,16 @@ namespace SexSlaveCraft
         public bool receiveForced;
         public bool receiveTraining;
 
+        // 只记住自愿发起开关关闭前的对象范围，不是第七项许可，也不参与规则有效性判断。
+        // 旧档缺字段时从原有三态值推导；原来已禁止则按仅限主人起步，不擅自扩大许可。
+        private SSCRestrictionValue preferredConsensualTarget = SSCRestrictionValue.OwnerOnly;
+
+        /// <summary>返回自愿发起的对象选择；开启时以实际规则为准，关闭时读取偏好，坏偏好只回退到仅限主人。</summary>
+        public SSCRestrictionValue ConsensualTarget =>
+            consensualInitiation == SSCRestrictionValue.Allow || consensualInitiation == SSCRestrictionValue.OwnerOnly
+                ? consensualInitiation
+                : preferredConsensualTarget == SSCRestrictionValue.Allow ? SSCRestrictionValue.Allow : SSCRestrictionValue.OwnerOnly;
+
         /// <summary>读取指定条目的保存值，将布尔条目统一转换为 Allow 或 Deny；未知条目抛出异常。</summary>
         public SSCRestrictionValue Get(SSCRestrictionRule rule)
         {
@@ -51,7 +61,11 @@ namespace SexSlaveCraft
             switch (rule)
             {
                 case SSCRestrictionRule.Masturbation: allowMasturbation = value == SSCRestrictionValue.Allow; break;
-                case SSCRestrictionRule.ConsensualInitiation: consensualInitiation = value; break;
+                case SSCRestrictionRule.ConsensualInitiation:
+                    // 关闭前先捕获真实选择；重复关闭仍保留偏好。重新开启/改选时同步新的范围。
+                    preferredConsensualTarget = value == SSCRestrictionValue.Deny ? ConsensualTarget : value;
+                    consensualInitiation = value;
+                    break;
                 case SSCRestrictionRule.ForcedInitiation: allowForcedInitiation = value == SSCRestrictionValue.Allow; break;
                 case SSCRestrictionRule.ReceiveConsensual: receiveConsensual = value == SSCRestrictionValue.Allow; break;
                 case SSCRestrictionRule.ReceiveForced: receiveForced = value == SSCRestrictionValue.Allow; break;
@@ -115,6 +129,9 @@ namespace SexSlaveCraft
         {
             Scribe_Values.Look(ref allowMasturbation, "allowMasturbation", false);
             Scribe_Values.Look(ref consensualInitiation, "consensualInitiation", SSCRestrictionValue.OwnerOnly);
+            // 这是向后兼容的可选界面偏好字段，不改变版本 1 的六项规则或重新触发角色迁移。
+            Scribe_Values.Look(ref preferredConsensualTarget, "preferredConsensualTarget",
+                consensualInitiation == SSCRestrictionValue.Allow ? SSCRestrictionValue.Allow : SSCRestrictionValue.OwnerOnly);
             Scribe_Values.Look(ref allowForcedInitiation, "allowForcedInitiation", false);
             Scribe_Values.Look(ref receiveConsensual, "receiveConsensual", false);
             Scribe_Values.Look(ref receiveForced, "receiveForced", false);

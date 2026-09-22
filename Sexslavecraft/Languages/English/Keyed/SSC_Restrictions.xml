@@ -8,16 +8,16 @@
   <SSC_Restrictions_TestTab>Permission test</SSC_Restrictions_TestTab>
   <SSC_Restrictions_TestNotice>Ordinary pair, solo, personality-excretion, training and ritual jobs, trade and pet events, vanilla Lovin and supported LifeForce paths now use these rules.</SSC_Restrictions_TestNotice>
   <SSC_Restrictions_OwnerNotice>The actual owner initiating any interaction with their own bound pawn is immediately allowed. Equipment and individual restrictions cannot veto this.</SSC_Restrictions_OwnerNotice>
-  <SSC_Restrictions_SystemSwitch>Enable restrictions (shared legacy master switch)</SSC_Restrictions_SystemSwitch>
-  <SSC_Restrictions_SystemSwitchTip>Enables or disables interaction restrictions globally. Jobs awaiting integration still share the legacy master switch. Disabling does not erase saved pawn choices.</SSC_Restrictions_SystemSwitchTip>
-  <SSC_Restrictions_ProfileSwitch>Enable specialization overrides (new system)</SSC_Restrictions_ProfileSwitch>
-  <SSC_Restrictions_ProfileSwitchTip>Global setting. Only controls specialization overrides in the new system; equipment overrides and saved values are unaffected.</SSC_Restrictions_ProfileSwitchTip>
+  <SSC_Restrictions_SystemSwitch>Enable behavior restrictions</SSC_Restrictions_SystemSwitch>
+  <SSC_Restrictions_SystemSwitchTip>Globally enables behavior rules and equipment/profile overrides. Disabling retains personal configurations.</SSC_Restrictions_SystemSwitchTip>
+  <SSC_Restrictions_ProfileSwitch>Enable specialization overrides</SSC_Restrictions_ProfileSwitch>
+  <SSC_Restrictions_ProfileSwitchTip>Controls specialization overrides without changing equipment overrides or personal saved values.</SSC_Restrictions_ProfileSwitchTip>
   <SSC_Restrictions_EditPawn>Configure pawn: {0}</SSC_Restrictions_EditPawn>
-  <SSC_Restrictions_NotApplicable>This pawn is not managed by the new system: SSC slave identity or an existing owner bond is required. Any existing configuration is read-only.</SSC_Restrictions_NotApplicable>
-  <SSC_Restrictions_Uninitialized>No configuration yet: automatic initialization may have failed or migration may be pending. Retry after fixing defaults. Pending legacy data will not be replaced by manual defaults.</SSC_Restrictions_Uninitialized>
+  <SSC_Restrictions_NotApplicable>Not applicable to this pawn; existing settings are read-only.</SSC_Restrictions_NotApplicable>
+  <SSC_Restrictions_Uninitialized>No configuration yet. Wait for migration, or retry if initialization failed.</SSC_Restrictions_Uninitialized>
   <SSC_Restrictions_Initialize>Retry initialization from defaults</SSC_Restrictions_Initialize>
   <SSC_Restrictions_InvalidConfig>Unsupported or invalid configuration (version {0}). Editing is disabled; original data has been preserved.</SSC_Restrictions_InvalidConfig>
-  <SSC_Restrictions_SaveNotice>Edits are applied immediately and saved with the game. Saved values remain editable while overridden and are used again when the override ends.</SSC_Restrictions_SaveNotice>
+  <SSC_Restrictions_SaveNotice>Click a check or cross to edit personal settings, saved with the game. You can edit during overrides; your choice applies when they end.</SSC_Restrictions_SaveNotice>
   <SSC_Restrictions_EditFailed>Cannot edit: the pawn's applicability or configuration changed. Please check it again.</SSC_Restrictions_EditFailed>
   <SSC_Restrictions_InitializeFailed>Cannot create configuration: the default for rule "{0}" is invalid. Source: {1}. No configuration was written to the pawn.</SSC_Restrictions_InitializeFailed>
   <SSC_Restrictions_Rule_Masturbation>Active · Solo masturbation</SSC_Restrictions_Rule_Masturbation>
@@ -68,7 +68,7 @@
   <SSC_Restrictions_EditReceiver>Edit receiver rules</SSC_Restrictions_EditReceiver>
   <SSC_Restrictions_None>Not selected</SSC_Restrictions_None>
   <SSC_Restrictions_Error>Configuration check failed: {0}</SSC_Restrictions_Error>
-  <SSC_Restrictions_DefaultsTitle>New restriction system · Defaults</SSC_Restrictions_DefaultsTitle>
+  <SSC_Restrictions_DefaultsTitle>Default behavior rules</SSC_Restrictions_DefaultsTitle>
   <SSC_Restrictions_DefaultsTip>Defaults apply when a pawn first becomes eligible. Existing choices are retained; first acquiring the Bus specialization applies its two reception defaults.</SSC_Restrictions_DefaultsTip>
   <SSC_Restrictions_InvalidDefaults>The default template is invalid. Check the configuration file; existing pawn settings are preserved.</SSC_Restrictions_InvalidDefaults>
   <SSC_Restrictions_ApplyAll>Apply defaults to all eligible pawns in this save…</SSC_Restrictions_ApplyAll>
@@ -89,4 +89,26 @@
   <SSC_Restrictions_BindingMasterRequired>Preparing a first bond requires the assigned candidate to have Master identity.</SSC_Restrictions_BindingMasterRequired>
   <SSC_Restrictions_TrainingAssignmentRequired>Training requires the active assigned trainer. Other pawns do not automatically take over.</SSC_Restrictions_TrainingAssignmentRequired>
   <SSC_Restrictions_RitualCancelled>The next ritual phase cannot start. The ritual has been cancelled: {0}</SSC_Restrictions_RitualCancelled>
+  <SSC_Restrictions_PawnTitle>Behavior rules · {0}</SSC_Restrictions_PawnTitle>
+  <SSC_Restrictions_CompactNotice>Checks show saved permissions. Your owner initiating is always allowed.</SSC_Restrictions_CompactNotice>
+  <SSC_Restrictions_Paused>Restrictions paused; personal settings are retained.</SSC_Restrictions_Paused>
+  <SSC_Restrictions_DefaultsShort>Applies only to newly eligible pawns.</SSC_Restrictions_DefaultsShort>
+  <SSC_Restrictions_AnyTarget>Anyone</SSC_Restrictions_AnyTarget>
+  <SSC_Restrictions_EquipmentBadge>Gear: {0}</SSC_Restrictions_EquipmentBadge>
+  <SSC_Restrictions_ProfileBadge>Profile: {0}</SSC_Restrictions_ProfileBadge>
+  <SSC_Restrictions_OverrideTip>Personal: {0}; effective: {1}.\nSource: {2}. Your choice is retained and applies when the override ends.</SSC_Restrictions_OverrideTip>
+  <SSC_Restrictions_TargetOwnerTip>Initiate consensual activity only with the actual bound owner. Turning the main option off retains this choice.</SSC_Restrictions_TargetOwnerTip>
+  <SSC_Restrictions_TargetAnyTip>Initiate consensual activity with anyone; their reception rules still apply. Turning the main option off retains this choice.</SSC_Restrictions_TargetAnyTip>
+  <SSC_Restrictions_Option_Masturbation>Masturbate</SSC_Restrictions_Option_Masturbation>
+  <SSC_Restrictions_Option_ConsensualInitiation>Initiate consensual sex</SSC_Restrictions_Option_ConsensualInitiation>
+  <SSC_Restrictions_Option_ForcedInitiation>Initiate forced sex</SSC_Restrictions_Option_ForcedInitiation>
+  <SSC_Restrictions_Option_ReceiveConsensual>Receive consensual sex from non-owners</SSC_Restrictions_Option_ReceiveConsensual>
+  <SSC_Restrictions_Option_ReceiveForced>Receive forced sex from non-owners</SSC_Restrictions_Option_ReceiveForced>
+  <SSC_Restrictions_Option_ReceiveTraining>Receive training from non-owners</SSC_Restrictions_Option_ReceiveTraining>
+  <SSC_Restrictions_Tip_Masturbation>Allow initiating solo masturbation.</SSC_Restrictions_Tip_Masturbation>
+  <SSC_Restrictions_Tip_ConsensualInitiation>Allow initiating consensual activity with the targets selected below. Their reception rules still apply.</SSC_Restrictions_Tip_ConsensualInitiation>
+  <SSC_Restrictions_Tip_ForcedInitiation>Allow initiating forced activity; the target must also pass their reception rules.</SSC_Restrictions_Tip_ForcedInitiation>
+  <SSC_Restrictions_Tip_ReceiveConsensual>Allow receiving consensual activity from non-owners; the initiator must also have permission.</SSC_Restrictions_Tip_ReceiveConsensual>
+  <SSC_Restrictions_Tip_ReceiveForced>Allow receiving forced activity from non-owners. Equipment may force this option off.</SSC_Restrictions_Tip_ReceiveForced>
+  <SSC_Restrictions_Tip_ReceiveTraining>Allow non-owner daily or ritual training. Trainer qualifications and assignment requirements still apply.</SSC_Restrictions_Tip_ReceiveTraining>
 </LanguageData>

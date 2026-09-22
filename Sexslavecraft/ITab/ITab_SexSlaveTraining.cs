@@ -14,6 +14,9 @@ namespace SexSlaveCraft
     public class ITab_SexSlaveTraining : ITab
     {
         private const float SectionSpacing = 12f;
+        // 展开入口属于左侧滚动内容；高度和间隔同时用于绘制及总高度计算。
+        private const float RestrictionToggleHeight = 30f;
+        private const float RestrictionToggleSpacing = 8f;
         private static readonly Vector2 WinSize = new Vector2(360f, 560f);
 
         private Vector2 scrollPosition;
@@ -88,15 +91,14 @@ namespace SexSlaveCraft
             if (comp == null) return;
 
             Rect outerRect = new Rect(0f, 0f, size.x, size.y).ContractedBy(10f);
+            // 原版先绘制右上角关闭键（顶部 4～22 像素），再调用 FillTab。
+            // 两侧内容均从 24 像素以下开始，滚动到任何位置也不会覆盖关闭键。
+            outerRect.yMin = Mathf.Max(outerRect.yMin, 24f);
             Rect trainingRect = new Rect(outerRect.x, outerRect.y,
                 Mathf.Min(WinSize.x - 20f, outerRect.width), outerRect.height);
             if (restrictionsExpanded)
                 DrawRestrictionPanel(new Rect(trainingRect.xMax + 10f, outerRect.y,
                     outerRect.xMax - trainingRect.xMax - 10f, outerRect.height), pawn);
-            if (Widgets.ButtonText(new Rect(trainingRect.x, trainingRect.y, trainingRect.width, 30f),
-                (restrictionsExpanded ? "SSC_Restrictions_Collapse" : "SSC_Restrictions_Expand").Translate()))
-                restrictionsExpanded = !restrictionsExpanded;
-            trainingRect.yMin += 38f;
             float contentHeight = CalculateContentHeight(pawn, comp);
             Rect viewRect = trainingRect;
             Rect contentRect = new Rect(0f, 0f, trainingRect.width - 18f, contentHeight);
@@ -106,6 +108,13 @@ namespace SexSlaveCraft
             {
                 float curY = 0f;
                 curY = DrawIdentitySection(new Rect(0f, curY, contentRect.width, GetIdentitySectionHeight(comp)), comp) + SectionSpacing;
+
+                // 紧邻调教设置上方，并随左栏滚动；研究未完成或身份不适用时也保留入口，
+                // 由右侧限制面板自行显示可编辑、只读或初始化状态。
+                if (Widgets.ButtonText(new Rect(0f, curY, contentRect.width, RestrictionToggleHeight),
+                    (restrictionsExpanded ? "SSC_Restrictions_Collapse" : "SSC_Restrictions_Expand").Translate()))
+                    restrictionsExpanded = !restrictionsExpanded;
+                curY += RestrictionToggleHeight + RestrictionToggleSpacing;
 
                 if (comp.pawnIdentity == PawnIdentity.Master)
                 {
@@ -140,10 +149,10 @@ namespace SexSlaveCraft
             }
         }
 
-        /// <summary>为当前身份、研究和特化可见的各节累计滚动高度。</summary>
+        /// <summary>为身份、限制展开入口及当前可见各节累计滚动高度，保持按钮和后续内容均可滚动访问。</summary>
         private static float CalculateContentHeight(Pawn pawn, CompSexSlaveTraining comp)
         {
-            float height = GetIdentitySectionHeight(comp);
+            float height = GetIdentitySectionHeight(comp) + RestrictionToggleHeight + RestrictionToggleSpacing;
 
             if (comp.pawnIdentity == PawnIdentity.Master || comp.pawnIdentity == PawnIdentity.Unset)
             {

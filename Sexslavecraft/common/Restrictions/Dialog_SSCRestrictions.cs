@@ -6,7 +6,7 @@ using Verse;
 
 namespace SexSlaveCraft
 {
-    /// <summary>可保存个体规则并测试统一入口的最小界面；实际任务仍由旧系统运行。</summary>
+    /// <summary>复用紧凑个体编辑控件并提供统一入口的详细许可测试；不会启动实际任务。</summary>
     internal sealed class Dialog_SSCRestrictions : Window
     {
         private Pawn editedPawn;
@@ -91,7 +91,7 @@ namespace SexSlaveCraft
             error = null;
         }
 
-        /// <summary>编辑并保存两个全局开关；总开关与旧保护共用，特化开关仅影响新规则。</summary>
+        /// <summary>编辑并保存统一限制和特化覆盖两个全局开关，不重置个体配置。</summary>
         private static void DrawGlobalSwitches(Listing_Standard listing)
         {
             SSCSettings settings = SSCMod.settings;
