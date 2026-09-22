@@ -42,8 +42,35 @@ namespace SexSlaveCraft
                 restrictionSession = Current.Game;
                 restrictionsExpanded = false;
             }
-            size = new Vector2(Mathf.Min(restrictionsExpanded ? 740f : WinSize.x, UI.screenWidth - 16f),
+            // 展开偏好保留在会话内；切到未绑定角色或停用系统时，不显示右栏也不占据右栏宽度。
+            size = new Vector2(Mathf.Min(restrictionsExpanded && CanShowRestrictions(SelPawn) ? 740f : WinSize.x, UI.screenWidth - 16f),
                 Mathf.Min(WinSize.y, Mathf.Max(100f, PaneTopY - 40f)));
+        }
+
+        /// <summary>角色实际受系统管理且总限制启用时才能展开；科技等未来范围条件继续由统一适用入口决定。</summary>
+        private static bool CanShowRestrictions(Pawn pawn)
+        {
+            return (SSCMod.settings?.enableSexSlaveProtectionRules ?? true) && SSCRestrictionResolver.IsApplicable(pawn);
+        }
+
+        /// <summary>保持原按钮位置，对不受限制的角色明确置灰并拦截点击，悬停说明不可用原因。</summary>
+        private static void DrawRestrictionToggle(Rect rect, Pawn pawn)
+        {
+            bool available = CanShowRestrictions(pawn);
+            bool oldEnabled = GUI.enabled;
+            Color oldColor = GUI.color;
+            try
+            {
+                GUI.enabled = oldEnabled && available;
+                if (!GUI.enabled) GUI.color = oldColor * new Color(0.55f, 0.55f, 0.55f, 1f);
+                string key = available && restrictionsExpanded ? "SSC_Restrictions_Collapse" : "SSC_Restrictions_Expand";
+                if (Widgets.ButtonText(rect, key.Translate()) && GUI.enabled)
+                    restrictionsExpanded = !restrictionsExpanded;
+            }
+            finally { GUI.enabled = oldEnabled; GUI.color = oldColor; }
+            if (!available)
+                TooltipHandler.TipRegion(rect, (!(SSCMod.settings?.enableSexSlaveProtectionRules ?? true)
+                    ? "SSC_Restrictions_PanelDisabled" : "SSC_Restrictions_PanelUnavailable").Translate());
         }
 
         /// <summary>绘制独立滚动的右侧角色配置；切换角色只重置滚动，不写入默认或修改保存值。</summary>
@@ -96,7 +123,7 @@ namespace SexSlaveCraft
             outerRect.yMin = Mathf.Max(outerRect.yMin, 24f);
             Rect trainingRect = new Rect(outerRect.x, outerRect.y,
                 Mathf.Min(WinSize.x - 20f, outerRect.width), outerRect.height);
-            if (restrictionsExpanded)
+            if (restrictionsExpanded && CanShowRestrictions(pawn))
                 DrawRestrictionPanel(new Rect(trainingRect.xMax + 10f, outerRect.y,
                     outerRect.xMax - trainingRect.xMax - 10f, outerRect.height), pawn);
             float contentHeight = CalculateContentHeight(pawn, comp);
@@ -109,11 +136,8 @@ namespace SexSlaveCraft
                 float curY = 0f;
                 curY = DrawIdentitySection(new Rect(0f, curY, contentRect.width, GetIdentitySectionHeight(comp)), comp) + SectionSpacing;
 
-                // 紧邻调教设置上方，并随左栏滚动；研究未完成或身份不适用时也保留入口，
-                // 由右侧限制面板自行显示可编辑、只读或初始化状态。
-                if (Widgets.ButtonText(new Rect(0f, curY, contentRect.width, RestrictionToggleHeight),
-                    (restrictionsExpanded ? "SSC_Restrictions_Collapse" : "SSC_Restrictions_Expand").Translate()))
-                    restrictionsExpanded = !restrictionsExpanded;
+                // 入口位置与高度保持稳定；没有实际绑定或总限制停用时可见但不可操作。
+                DrawRestrictionToggle(new Rect(0f, curY, contentRect.width, RestrictionToggleHeight), pawn);
                 curY += RestrictionToggleHeight + RestrictionToggleSpacing;
 
                 if (comp.pawnIdentity == PawnIdentity.Master)

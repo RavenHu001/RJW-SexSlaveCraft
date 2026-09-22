@@ -123,14 +123,16 @@ namespace SexSlaveCraft
             try
             {
                 GUI.enabled = oldEnabled && pawn != null;
-                clicked = listing.ButtonText("SSC_Restrictions_Open".Translate());
+                Rect button = listing.GetRect(30f);
+                clicked = Widgets.ButtonText(button, "SSC_Restrictions_Open".Translate()) && GUI.enabled;
+                TooltipHandler.TipRegion(button,
+                    (pawn == null ? "SSC_Restrictions_SettingsUnavailable" : "SSC_Restrictions_SettingsTip").Translate());
             }
             finally { GUI.enabled = oldEnabled; }
             if (clicked) Find.WindowStack.Add(new Dialog_SSCRestrictions(pawn));
-            listing.Label((pawn == null ? "SSC_Restrictions_SettingsUnavailable" : "SSC_Restrictions_SettingsTip").Translate());
         }
 
-        /// <summary>绘制测试入口及按功能分组的设置控件，将玩家的勾选与数值调整写入全局设置对象。</summary>
+        /// <summary>按功能绘制全局设置；限制区仅保留开关、模板子窗口入口及位于末尾的测试入口。</summary>
         private static void DrawSettings(Listing_Standard listingStandard)
         {
             bool restrictionsWereEnabled = settings.enableSexSlaveProtectionRules;
@@ -141,10 +143,9 @@ namespace SexSlaveCraft
                 "SSC_Setting_EnableSexSlaveProtectionRules_Desc".Translate()
             );
 
+            SSCRestrictionUI.DrawSettings(listingStandard);
             listingStandard.Gap(8f);
             DrawRestrictionTestEntry(listingStandard);
-            listingStandard.GapLine();
-            SSCRestrictionUI.DrawSettings(listingStandard);
             if (restrictionsWereEnabled != settings.enableSexSlaveProtectionRules)
                 SSCRestrictionGameComponent.SettingsChanged();
             listingStandard.GapLine();

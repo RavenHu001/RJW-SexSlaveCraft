@@ -200,6 +200,7 @@
     <Compile Include="common\Restrictions\DebugActions_SSCRestrictions.cs" />
     <Compile Include="common\Restrictions\SSCRestrictionEditor.cs" />
     <Compile Include="common\Restrictions\Dialog_SSCRestrictions.cs" />
+    <Compile Include="common\Restrictions\Dialog_SSCRestrictionDefaults.cs" />
     <Compile Include="Comps\Comp_Train.Restrictions.cs" />
     <Compile Include="common\SSCThoughtBootstrap.cs" />
     <Compile Include="common\Settings.cs" />

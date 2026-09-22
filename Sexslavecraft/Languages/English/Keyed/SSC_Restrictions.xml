@@ -17,7 +17,7 @@
   <SSC_Restrictions_Uninitialized>No configuration yet. Wait for migration, or retry if initialization failed.</SSC_Restrictions_Uninitialized>
   <SSC_Restrictions_Initialize>Retry initialization from defaults</SSC_Restrictions_Initialize>
   <SSC_Restrictions_InvalidConfig>Unsupported or invalid configuration (version {0}). Editing is disabled; original data has been preserved.</SSC_Restrictions_InvalidConfig>
-  <SSC_Restrictions_SaveNotice>Click a check or cross to edit personal settings, saved with the game. You can edit during overrides; your choice applies when they end.</SSC_Restrictions_SaveNotice>
+  <SSC_Restrictions_SaveNotice>Click checks or crosses to edit personal settings, saved with the game. Forced rules show effective values and cannot be edited; saved choices return when overrides end.</SSC_Restrictions_SaveNotice>
   <SSC_Restrictions_EditFailed>Cannot edit: the pawn's applicability or configuration changed. Please check it again.</SSC_Restrictions_EditFailed>
   <SSC_Restrictions_InitializeFailed>Cannot create configuration: the default for rule "{0}" is invalid. Source: {1}. No configuration was written to the pawn.</SSC_Restrictions_InitializeFailed>
   <SSC_Restrictions_Rule_Masturbation>Active · Solo masturbation</SSC_Restrictions_Rule_Masturbation>
@@ -71,7 +71,7 @@
   <SSC_Restrictions_DefaultsTitle>Default behavior rules</SSC_Restrictions_DefaultsTitle>
   <SSC_Restrictions_DefaultsTip>Defaults apply when a pawn first becomes eligible. Existing choices are retained; first acquiring the Bus specialization applies its two reception defaults.</SSC_Restrictions_DefaultsTip>
   <SSC_Restrictions_InvalidDefaults>The default template is invalid. Check the configuration file; existing pawn settings are preserved.</SSC_Restrictions_InvalidDefaults>
-  <SSC_Restrictions_ApplyAll>Apply defaults to all eligible pawns in this save…</SSC_Restrictions_ApplyAll>
+  <SSC_Restrictions_ApplyAll>! Apply defaults and overwrite all eligible pawns…</SSC_Restrictions_ApplyAll>
   <SSC_Restrictions_ApplyConfirm>This overwrites individual choices for all eligible pawns in the current save, including other maps, caravans, transport and world pawns. The current template and each pawn’s specialization defaults will be applied; equipment overrides will not be saved. Continue?</SSC_Restrictions_ApplyConfirm>
   <SSC_Restrictions_ApplyResult>Defaults applied: {0} updated, {1} skipped, {2} failed.</SSC_Restrictions_ApplyResult>
   <SSC_Restrictions_GlobalState>Global state: restrictions {0}; specialization overrides {1}.</SSC_Restrictions_GlobalState>
@@ -90,9 +90,9 @@
   <SSC_Restrictions_TrainingAssignmentRequired>Training requires the active assigned trainer. Other pawns do not automatically take over.</SSC_Restrictions_TrainingAssignmentRequired>
   <SSC_Restrictions_RitualCancelled>The next ritual phase cannot start. The ritual has been cancelled: {0}</SSC_Restrictions_RitualCancelled>
   <SSC_Restrictions_PawnTitle>Behavior rules · {0}</SSC_Restrictions_PawnTitle>
-  <SSC_Restrictions_CompactNotice>Checks show saved permissions. Your owner initiating is always allowed.</SSC_Restrictions_CompactNotice>
+  <SSC_Restrictions_CompactNotice>Checks mean allowed; forced rules are locked. Your owner initiating is always allowed.</SSC_Restrictions_CompactNotice>
   <SSC_Restrictions_Paused>Restrictions paused; personal settings are retained.</SSC_Restrictions_Paused>
-  <SSC_Restrictions_DefaultsShort>Applies only to newly eligible pawns.</SSC_Restrictions_DefaultsShort>
+  <SSC_Restrictions_DefaultsShort>Editing the template does not automatically overwrite existing pawns.</SSC_Restrictions_DefaultsShort>
   <SSC_Restrictions_AnyTarget>Anyone</SSC_Restrictions_AnyTarget>
   <SSC_Restrictions_EquipmentBadge>Gear: {0}</SSC_Restrictions_EquipmentBadge>
   <SSC_Restrictions_ProfileBadge>Profile: {0}</SSC_Restrictions_ProfileBadge>
@@ -114,4 +114,9 @@
   <SSC_Restrictions_AssignAuthorizesSuffix> (also allow training)</SSC_Restrictions_AssignAuthorizesSuffix>
   <SSC_Restrictions_AssignAuthorizesTip>Selecting a non-owner trainer also enables receiving non-owner training. Ordinary interactions still use their own rules; forced equipment or specialization restrictions still apply.</SSC_Restrictions_AssignAuthorizesTip>
   <SSC_Restrictions_AssignFailed>Assignment failed: eligibility or restrictions changed, or a forced rule denies training. The previous assignment and personal choices are unchanged.</SSC_Restrictions_AssignFailed>
+  <SSC_Restrictions_DefaultsOpen>Edit default behavior rules…</SSC_Restrictions_DefaultsOpen>
+  <SSC_Restrictions_ForcedLocked>A forced rule controls this option. Editing is disabled; your saved choice returns when the override ends.</SSC_Restrictions_ForcedLocked>
+  <SSC_Restrictions_PanelDisabled>Behavior restrictions are globally disabled. Enable them in the mod settings.</SSC_Restrictions_PanelDisabled>
+  <SSC_Restrictions_PanelUnavailable>This pawn has no bound owner and is not affected by behavior restrictions.</SSC_Restrictions_PanelUnavailable>
+  <SSC_Restrictions_ApplyAllTip>Warning: overwrites personal configurations for all eligible pawns in the current save. Requires confirmation, a loaded save and a valid template.</SSC_Restrictions_ApplyAllTip>
 </LanguageData>

@@ -17,7 +17,7 @@
   <SSC_Restrictions_Uninitialized>尚无配置，请等待迁移；初始化失败时可重试。</SSC_Restrictions_Uninitialized>
   <SSC_Restrictions_Initialize>重试建立默认配置</SSC_Restrictions_Initialize>
   <SSC_Restrictions_InvalidConfig>配置版本或数据异常（版本 {0}），暂不可编辑；已保留原始配置。</SSC_Restrictions_InvalidConfig>
-  <SSC_Restrictions_SaveNotice>点击勾叉修改个人设置，随游戏存档保存。强制覆盖期间仍可编辑，覆盖解除后使用个人选择。</SSC_Restrictions_SaveNotice>
+  <SSC_Restrictions_SaveNotice>点击勾叉修改个人设置，随游戏存档保存。强制项显示生效值且不可修改；原个人选择保留，覆盖解除后恢复。</SSC_Restrictions_SaveNotice>
   <SSC_Restrictions_EditFailed>无法修改：角色适用状态或配置已变化，请重新检查。</SSC_Restrictions_EditFailed>
   <SSC_Restrictions_InitializeFailed>无法建立配置：规则“{0}”的默认值无效。来源：{1}。角色尚未写入新配置。</SSC_Restrictions_InitializeFailed>
   <SSC_Restrictions_Rule_Masturbation>主动 · 单人自慰</SSC_Restrictions_Rule_Masturbation>
@@ -71,7 +71,7 @@
   <SSC_Restrictions_DefaultsTitle>行为规则默认配置</SSC_Restrictions_DefaultsTitle>
   <SSC_Restrictions_DefaultsTip>默认配置只影响之后首次适用的角色。已有角色保持各自选择；公交车首次取得时会应用其两项被动默认。</SSC_Restrictions_DefaultsTip>
   <SSC_Restrictions_InvalidDefaults>默认模板数据异常，请检查配置文件；已有角色配置保持不变。</SSC_Restrictions_InvalidDefaults>
-  <SSC_Restrictions_ApplyAll>为本存档全部适用角色应用默认配置…</SSC_Restrictions_ApplyAll>
+  <SSC_Restrictions_ApplyAll>! 应用默认配置并覆盖全部适用角色…</SSC_Restrictions_ApplyAll>
   <SSC_Restrictions_ApplyConfirm>这会覆盖当前存档内全部适用角色的个体选择，包括其他地图、商队、运输中及世界角色。按当前模板和各自特化默认重设，不把装备强制写入保存值。是否继续？</SSC_Restrictions_ApplyConfirm>
   <SSC_Restrictions_ApplyResult>默认配置应用完成：成功 {0}，跳过 {1}，失败 {2}。</SSC_Restrictions_ApplyResult>
   <SSC_Restrictions_GlobalState>全局状态：限制系统 {0}；特化强制 {1}。</SSC_Restrictions_GlobalState>
@@ -90,9 +90,9 @@
   <SSC_Restrictions_TrainingAssignmentRequired>调教任务需要有效的指定调教员；自动工作不会由其他人接替。</SSC_Restrictions_TrainingAssignmentRequired>
   <SSC_Restrictions_RitualCancelled>当前仪式阶段无法开始，仪式已取消：{0}</SSC_Restrictions_RitualCancelled>
   <SSC_Restrictions_PawnTitle>行为限制 · {0}</SSC_Restrictions_PawnTitle>
-  <SSC_Restrictions_CompactNotice>勾表示个人允许；实际主人发起始终允许。</SSC_Restrictions_CompactNotice>
+  <SSC_Restrictions_CompactNotice>勾表示允许；强制项已锁定。实际主人发起始终允许。</SSC_Restrictions_CompactNotice>
   <SSC_Restrictions_Paused>限制已停用，个人设置仍保留。</SSC_Restrictions_Paused>
-  <SSC_Restrictions_DefaultsShort>仅用于之后首次适用的角色。</SSC_Restrictions_DefaultsShort>
+  <SSC_Restrictions_DefaultsShort>编辑模板不会自动覆盖已有角色。</SSC_Restrictions_DefaultsShort>
   <SSC_Restrictions_AnyTarget>不限对象</SSC_Restrictions_AnyTarget>
   <SSC_Restrictions_EquipmentBadge>装备{0}</SSC_Restrictions_EquipmentBadge>
   <SSC_Restrictions_ProfileBadge>特化{0}</SSC_Restrictions_ProfileBadge>
@@ -114,4 +114,9 @@
   <SSC_Restrictions_AssignAuthorizesSuffix>（同时允许调教）</SSC_Restrictions_AssignAuthorizesSuffix>
   <SSC_Restrictions_AssignAuthorizesTip>选择非主人调教员时，同步开启接受非主人调教。普通互动仍按各自条目检查；装备或特化的强制禁止仍然有效。</SSC_Restrictions_AssignAuthorizesTip>
   <SSC_Restrictions_AssignFailed>无法完成指派：资格或限制状态已改变，或强制规则不允许调教。原指派及个人选择保持不变。</SSC_Restrictions_AssignFailed>
+  <SSC_Restrictions_DefaultsOpen>编辑行为规则默认配置…</SSC_Restrictions_DefaultsOpen>
+  <SSC_Restrictions_ForcedLocked>此项由强制规则控制，暂不可修改；解除覆盖后恢复个人选择。</SSC_Restrictions_ForcedLocked>
+  <SSC_Restrictions_PanelDisabled>行为限制总开关已关闭。可在 Mod 设置中启用。</SSC_Restrictions_PanelDisabled>
+  <SSC_Restrictions_PanelUnavailable>此角色尚未绑定主人，不受行为限制系统影响。</SSC_Restrictions_PanelUnavailable>
+  <SSC_Restrictions_ApplyAllTip>警告：将覆盖当前存档中全部适用角色的个人配置。点击后需确认；仅载入存档且模板有效时可用。</SSC_Restrictions_ApplyAllTip>
 </LanguageData>
