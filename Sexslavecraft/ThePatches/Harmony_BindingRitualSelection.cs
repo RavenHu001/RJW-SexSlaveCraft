@@ -92,6 +92,27 @@ namespace SexSlaveCraft
         public static void Prefix(List<FloatMenuOption> __0) => BindingRitualSelectionWidget.WrapMenu(__0);
     }
 
+    // 原版点击/拖拽在 AfterWindowStack 才执行；登记时捕获 SSC 窗口，执行时重新建立提交范围。
+    [HarmonyPatch(typeof(DragAndDropWidget), nameof(DragAndDropWidget.Draggable))]
+    internal static class Harmony_BindingRitualDeferredClick
+    {
+        public static void Prefix(ref Action __3, ref Action __4)
+        { __3 = BindingRitualSelectionWidget.WrapDeferred(__3); __4 = BindingRitualSelectionWidget.WrapDeferred(__4); }
+    }
+
+    [HarmonyPatch(typeof(DragAndDropWidget), nameof(DragAndDropWidget.DropArea))]
+    internal static class Harmony_BindingRitualDeferredDrop
+    {
+        public static void Prefix(ref Action<object> __2) => __2 = BindingRitualSelectionWidget.WrapDeferred(__2);
+    }
+
+    [HarmonyPatch(typeof(DragAndDropWidget), nameof(DragAndDropWidget.NewGroup))]
+    internal static class Harmony_BindingRitualDeferredGroup
+    {
+        public static void Prefix(ref Action<object, UnityEngine.Vector2> __0)
+            => __0 = BindingRitualSelectionWidget.WrapDeferred(__0);
+    }
+
     [HarmonyPatch]
     internal static class Harmony_BindingRitualBeforeMutation
     {
@@ -101,9 +122,14 @@ namespace SexSlaveCraft
             yield return AccessTools.Method(typeof(RitualRoleAssignments), nameof(RitualRoleAssignments.RemoveParticipant));
             yield return AccessTools.Method(typeof(RitualRoleAssignments), nameof(RitualRoleAssignments.TryAssignSpectate));
         }
-        public static void Prefix(RitualRoleAssignments __instance, Pawn __0, MethodBase __originalMethod)
-            => BindingRitualSelectionWidget.BeforeMutation(__instance, __0,
+        public static bool Prefix(RitualRoleAssignments __instance, Pawn __0, MethodBase __originalMethod)
+        {
+            // TryAssignAnyRole 的替换回退允许 replacing=null。它既不能作为观众，也不能写入 allPawns。
+            if (__0 == null && BindingRitualSelectionUtility.IsWindow(__instance)) return false;
+            BindingRitualSelectionWidget.BeforeMutation(__instance, __0,
                 __originalMethod.Name == nameof(RitualRoleAssignments.RemoveParticipant));
+            return true;
+        }
     }
 
     [HarmonyPatch(typeof(RitualRoleAssignments), nameof(RitualRoleAssignments.TryAssign))]
@@ -126,7 +152,7 @@ namespace SexSlaveCraft
         public static void Postfix(RitualRoleAssignments __instance, RitualRole __1, bool __result)
         {
             if (!__result && BindingRitualSelectionUtility.IsExecutionRole(__1))
-                BindingRitualSelectionWidget.MarkRejected(__instance);
+                BindingRitualSelectionWidget.MarkRejected(__instance, true);
         }
         public static Exception Finalizer(Exception __exception, IDisposable __state)
         { __state?.Dispose(); return __exception; }

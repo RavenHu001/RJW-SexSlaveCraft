@@ -26,7 +26,7 @@ namespace SexSlaveCraft
             public BindingRitualSelectionWidget Widget;
             public Snapshot Before;
             public Pawn Replacing;
-            public bool Attempted, Rejected;
+            public bool Attempted, Rejected, Mutated;
             public string Reason;
         }
 
@@ -112,19 +112,35 @@ namespace SexSlaveCraft
         /// <summary>右键菜单回调在后续事件执行，必须拥有独立作用域，不能沿用打开菜单时的资格结果。</summary>
         public static void WrapMenu(List<FloatMenuOption> options)
         {
-            BindingRitualSelectionWidget widget = current?.Widget;
-            if (widget == null) return;
+            if (current == null) return;
             foreach (FloatMenuOption option in options)
-            {
-                Action original = option.action;
-                if (original != null) option.action = () => Run(widget, original);
-            }
+                option.action = WrapDeferred(option.action);
+        }
+
+        /// <summary>登记仅包装回调，不执行资格查询；窗口外的原版控件及空回调保持原样。</summary>
+        public static Action WrapDeferred(Action action)
+        {
+            BindingRitualSelectionWidget widget = current?.Widget;
+            return widget == null || action == null ? action : () => Run(widget, action);
+        }
+
+        public static Action<T> WrapDeferred<T>(Action<T> action)
+        {
+            BindingRitualSelectionWidget widget = current?.Widget;
+            return widget == null || action == null ? action : value => Run(widget, () => action(value));
+        }
+
+        public static Action<T1, T2> WrapDeferred<T1, T2>(Action<T1, T2> action)
+        {
+            BindingRitualSelectionWidget widget = current?.Widget;
+            return widget == null || action == null ? action : (first, second) => Run(widget, () => action(first, second));
         }
 
         public static void BeforeMutation(RitualRoleAssignments assignments, Pawn pawn, bool removingParticipant)
         {
             if (current?.Assignments != assignments) return;
             if (current.Before == null) current.Before = new Snapshot(assignments);
+            current.Mutated = true;
             if (removingParticipant && !current.Attempted) current.Replacing = pawn;
         }
 
@@ -132,7 +148,7 @@ namespace SexSlaveCraft
         {
             if (current?.Assignments != assignments)
                 return BindingRitualSelectionUtility.ValidateAttempt(assignments, role, pawn, null, out reason);
-            BeforeMutation(assignments, pawn, false);
+            if (current.Before == null) current.Before = new Snapshot(assignments);
             if (current.Rejected) { reason = current.Reason; return false; }
             bool first = !current.Attempted;
             current.Attempted = true;
@@ -143,9 +159,11 @@ namespace SexSlaveCraft
                 : BindingRitualSelectionUtility.ValidateAttempt(assignments, role, pawn, null, out reason);
         }
 
-        public static bool MarkRejected(RitualRoleAssignments assignments)
+        public static bool MarkRejected(RitualRoleAssignments assignments, bool requireMutation = false)
         {
             if (current?.Assignments != assignments) return false;
+            // 满槽的第一轮 TryAssign 只是原版探测，尚未改动分配；允许第二轮进入替换。
+            if (requireMutation && !current.Mutated) { current.Attempted = false; return false; }
             current.Rejected = true;
             return true;
         }

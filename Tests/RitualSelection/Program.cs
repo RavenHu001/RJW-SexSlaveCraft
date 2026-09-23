@@ -334,6 +334,75 @@ internal static class Program
             Assert(f.A.FirstAssignedPawn("master") == f.Host && f.A.FirstAssignedPawn("slave") == f.Target);
             Assert(f.Window.Widget.CachedTarget == f.Target);
         });
+        Run("绘制结束后点击不合格候选，空槽回退不抛错或污染候选列表", () =>
+        {
+            var f = new Fixture(); f.Open(); f.Target.Eligible = false;
+            var candidates = f.A.AllCandidatePawns.ToArray(); var spectators = f.A.SpectatorsForReading.ToArray();
+            f.Window.Draw(() => DragAndDropWidget.Draggable(0, default, f.Target,
+                () => f.Window.Widget.ClickCandidate(f.Target, f.TargetRole), null));
+            Assert(Counters.Eligibility == 0); DragAndDropWidget.Click();
+            Assert(f.A.FirstAssignedPawn("slave") == null && Counters.Eligibility == 1 && Counters.Messages == 1);
+            Assert(f.A.AllCandidatePawns.SequenceEqual(candidates) && f.A.SpectatorsForReading.SequenceEqual(spectators));
+            f.Window.Draw(); Assert(f.A.AllCandidatePawns.All(p => p != null));
+        });
+        Run("绘制结束后的点击仍能正常选入合法小人", () =>
+        {
+            var f = new Fixture(); f.Open();
+            f.Window.Draw(() => DragAndDropWidget.Draggable(0, default, f.Target,
+                () => f.Window.Widget.ClickCandidate(f.Target, f.TargetRole), null));
+            DragAndDropWidget.Click(); Assert(f.A.FirstAssignedPawn("slave") == f.Target && Counters.Eligibility == 1);
+        });
+        Run("真实右键时序：绘制后打开菜单，再点击菜单项拒绝换人", () =>
+        {
+            var f = new Fixture(1); f.Open(); f.SelectBoth(); var candidate = f.Map.Pawns[2]; candidate.BoundMaster = f.Host;
+            FloatMenu menu = null;
+            f.Window.Draw(() => DragAndDropWidget.Draggable(0, default, candidate, null,
+                () => menu = new FloatMenu(new List<FloatMenuOption> { new FloatMenuOption {
+                    action = () => f.Window.Widget.Replace(candidate, new RitualRole[] { f.TargetRole }, f.Target) } })));
+            DragAndDropWidget.RightClick(); candidate.Eligible = false; Counters.Reset(); menu.Options[0].action();
+            Assert(f.A.FirstAssignedPawn("slave") == f.Target && Counters.Messages == 1 && Counters.Eligibility == 1);
+        });
+        Run("点击合法候选允许从满槽试选失败继续到替换，不误回滚", () =>
+        {
+            var f = new Fixture(1); f.Open(); f.SelectBoth(); var candidate = f.Map.Pawns[2]; candidate.BoundMaster = f.Host;
+            f.Window.Draw(() => DragAndDropWidget.Draggable(0, default, candidate,
+                () => f.Window.Widget.ClickCandidate(candidate, f.TargetRole), null));
+            Counters.Reset(); DragAndDropWidget.Click();
+            Assert(f.A.FirstAssignedPawn("slave") == candidate && f.A.SpectatorsForReading.Contains(f.Target));
+            Assert(Counters.Eligibility == 1 && Counters.Messages == 0);
+        });
+        Run("绘制后拖到角色栏的失败换人恢复旧人和候选顺序", () =>
+        {
+            var f = new Fixture(1); f.Open(); f.SelectBoth(); var candidate = f.Map.Pawns[2]; candidate.BoundMaster = f.Host;
+            var candidates = f.A.AllCandidatePawns.ToArray();
+            f.Window.Draw(() => DragAndDropWidget.DropArea(0, default,
+                p => f.Window.Widget.Replace((Pawn)p, new RitualRole[] { f.TargetRole }, f.Target), null));
+            candidate.Eligible = false; DragAndDropWidget.Drop(candidate);
+            Assert(f.A.FirstAssignedPawn("slave") == f.Target && f.A.AllCandidatePawns.SequenceEqual(candidates));
+        });
+        Run("绘制后组回调异常会回滚且不污染下一次操作", () =>
+        {
+            var f = new Fixture(1); f.Open(); f.SelectBoth(); var candidate = f.Map.Pawns[2]; candidate.BoundMaster = f.Host;
+            f.Window.Draw(() => DragAndDropWidget.NewGroup((p, pos) =>
+                f.Window.Widget.Replace((Pawn)p, new RitualRole[] { f.TargetRole }, f.Target)));
+            rjw.xxx.Throw = true; ExpectThrow(() => DragAndDropWidget.DropOutside(candidate, default));
+            rjw.xxx.Throw = false; candidate.Eligible = false;
+            Assert(f.A.FirstAssignedPawn("slave") == f.Target && !f.TargetSlot(candidate));
+        });
+        Run("SSC 空替换对象不加入列表也不进入观众检查", () =>
+        {
+            var f = new Fixture(); f.Open(); var candidates = f.A.AllCandidatePawns.ToArray();
+            f.A.RemoveParticipant(null); Assert(!f.A.TryAssignSpectate(null) && !f.A.TryUnassignAnyRole(null));
+            Assert(f.A.AllCandidatePawns.SequenceEqual(candidates) && !f.A.SpectatorsForReading.Contains(null));
+        });
+        Run("无关窗口的点击和拖拽回调不改写", () =>
+        {
+            Action click = () => { }; Action<object> drop = _ => { }; Action<object, UnityEngine.Vector2> outside = (_, __) => { };
+            DragAndDropWidget.Draggable(0, default, null, click, null);
+            DragAndDropWidget.DropArea(0, default, drop, null); DragAndDropWidget.NewGroup(outside);
+            Assert(ReferenceEquals(click, DragAndDropWidget.Click) && DragAndDropWidget.RightClick == null);
+            Assert(ReferenceEquals(drop, DragAndDropWidget.Drop) && ReferenceEquals(outside, DragAndDropWidget.DropOutside));
+        });
         Run("运行中的 Lord 即使持有准备分配对象仍执行完整检查", () =>
         {
             var f = new Fixture(); f.Open(); f.Target.Eligible = false;

@@ -55,10 +55,24 @@ namespace Verse
         public void Close() { Closed = true; PostClose(); }
     }
 }
-namespace UnityEngine { public struct Rect { } }
+namespace UnityEngine { public struct Rect { } public struct Vector2 { } }
 namespace Verse.AI { public enum PathEndMode { Touch } }
 namespace Verse
 {
+    // Original dispatches these callbacks after all windows have finished drawing.
+    public static class DragAndDropWidget
+    {
+        public static Action Click, RightClick;
+        public static Action<object> Drop;
+        public static Action<object, UnityEngine.Vector2> DropOutside;
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static bool Draggable(int group, UnityEngine.Rect rect, object context, Action click, Action rightClick)
+        { Click = click; RightClick = rightClick; return false; }
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static void DropArea(int group, UnityEngine.Rect rect, Action<object> action, object context) { Drop = action; }
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static int NewGroup(Action<object, UnityEngine.Vector2> action) { DropOutside = action; return 0; }
+    }
     public class FloatMenuOption { public Action action; }
     public class FloatMenu
     {
@@ -214,12 +228,27 @@ namespace RimWorld
         public PawnRoleSelectionWidgetBase(object assignments) { this.assignments = assignments; }
         public bool Select(Verse.Pawn pawn, IEnumerable<T> roles) => TryAssign(pawn, roles, true, null, true, false);
         public bool Replace(Verse.Pawn pawn, IEnumerable<T> roles, Verse.Pawn replacing) => TryAssignReplace(pawn, roles, replacing);
+        public bool ClickCandidate(Verse.Pawn pawn, T role)
+        {
+            if (Select(pawn, new[] { role })) return true;
+            // Models TryAssignAnyRole's second pass after a lightweight candidate passes
+            // CannotAssignReason but the actual assignment rejects. Empty slot => replacing is null.
+            var a = (RitualRoleAssignments)assignments;
+            return Replace(pawn, new[] { role }, a.FirstAssignedPawn((RitualRole)(object)role));
+        }
         [MethodImpl(MethodImplOptions.NoInlining)]
         private bool TryAssign(Verse.Pawn pawn, IEnumerable<T> roles, bool showMessages, Verse.Pawn insertBefore, bool doSound, bool insertLast)
         {
             if (!(assignments is RitualRoleAssignments a)) { UnrelatedCalls++; return true; }
             foreach (var role in roles.Cast<RitualRole>())
             {
+                // A full group first probes TryAssign without removing the occupant;
+                // TryAssignAnyRole will then try replacement in its second pass.
+                if (a.AssignedPawns(role).Count() == role.maxCount)
+                {
+                    if (a.TryAssign(pawn, role, out _)) { Notify_AssignmentsChanged(); return true; }
+                    continue;
+                }
                 // Model the original's mutation-before-DoTryAssign path.
                 foreach (var previous in a.AssignedPawns(role).ToArray()) a.TryUnassignAnyRole(previous);
                 if (a.TryAssign(pawn, role, out _, insertBefore: insertBefore)) { Notify_AssignmentsChanged(); return true; }
