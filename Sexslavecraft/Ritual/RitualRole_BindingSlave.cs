@@ -10,6 +10,24 @@ namespace SexSlaveCraft
         public override bool AppliesToPawn(Pawn p, out string reason, TargetInfo selectedTarget,
             LordJob_Ritual ritual = null, RitualRoleAssignments assignments = null, Precept_Ritual precept = null, bool skipReason = false)
         {
+            if (!AppliesToCandidate(p, out reason, skipReason)) return false;
+            if (ritual == null && BindingRitualSelectionUtility.IsPreview(assignments)) return true;
+            Pawn host = assignments?.FirstAssignedPawn("master") ?? ritual?.PawnWithRole("master");
+            string failure;
+            bool paired = host != null ? CanPair(host, p, out failure, skipReason)
+                : CanPair(SSCBondUtility.GetBoundMaster(p), p, out failure, skipReason)
+                    || CanPair(TrainerAssignmentUtility.GetActiveAssignedTrainer(p), p, out failure, skipReason);
+            if (!paired)
+            {
+                if (!skipReason) reason = failure;
+                return false;
+            }
+            return ValidateIndividual(p, out reason, selectedTarget, skipReason);
+        }
+
+        /// <summary>候选预览保留基础身份和原版年龄规则，不触发 RJW、寻路或配对查询。</summary>
+        internal bool AppliesToCandidate(Pawn p, out string reason, bool skipReason)
+        {
             reason = null;
             if (p == null || !p.Spawned || !p.RaceProps.Humanlike || p.Dead || p.Downed) return false;
             if (!SSCIdentityUtility.IsSupportedVanillaStatus(p))
@@ -17,45 +35,33 @@ namespace SexSlaveCraft
                 if (!skipReason) reason = Strings.Ritual_MustBeColonistOrSlave;
                 return false;
             }
-            if (selectedTarget.IsValid && !p.CanReach((LocalTargetInfo)selectedTarget, PathEndMode.Touch, Danger.Deadly))
-            {
-                if (!skipReason) reason = "MessageRitualRoleCannotReach".Translate();
-                return false;
-            }
             if (!base.AppliesIfChild(p, out reason, skipReason)) return false;
-            if (!Trainjudge.TryCanBeFuckedWithReason(p, out string shortReason, out string detailedReport))
-            {
-                if (!skipReason) reason = shortReason;
-                Log.Warning($"[SSC_RITUAL_ROLE] Candidate blocked: {p.LabelShort}. {shortReason}\n{detailedReport}");
-                return false;
-            }
             if (p.TryGetComp<CompSexSlaveTraining>() == null || SSCIdentityUtility.IsMaster(p))
             {
                 if (!skipReason) reason = "SSC_Restrictions_TrainingTargetInvalid".Translate();
                 return false;
             }
-            Pawn host = assignments?.FirstAssignedPawn("master") ?? ritual?.PawnWithRole("master");
-            string failure;
-            if (host != null)
+            return true;
+        }
+
+        /// <summary>执行者被选入槽位或正式开始时才进行可达性及一次身体校验，不记录正常拒绝日志。</summary>
+        internal bool ValidateIndividual(Pawn p, out string reason, TargetInfo selectedTarget, bool skipReason = false)
+        {
+            if (!AppliesToCandidate(p, out reason, skipReason)) return false;
+            if (selectedTarget.IsValid && !p.CanReach((LocalTargetInfo)selectedTarget, PathEndMode.Touch, Danger.Deadly))
             {
-                if (CanPair(host, p, out failure)) return true;
+                if (!skipReason) reason = "MessageRitualRoleCannotReach".Translate();
+                return false;
             }
-            else
-            {
-                // 未选主持者时至少有一位关系候选；空指派或停用指派不能排除实际主人。
-                if (CanPair(SSCBondUtility.GetBoundMaster(p), p, out failure) ||
-                    CanPair(TrainerAssignmentUtility.GetActiveAssignedTrainer(p), p, out failure)) return true;
-            }
-            if (!skipReason) reason = failure;
-            return false;
+            return Trainjudge.TryCanBeFuckedWithReason(p, out reason, skipReason);
         }
 
         /// <summary>转换为正式仪式请求，不把身份或公交车状态当成许可。</summary>
-        private static bool CanPair(Pawn host, Pawn target, out string reason)
+        private static bool CanPair(Pawn host, Pawn target, out string reason, bool skipReason)
         {
             SSCTrainingAdmission admission = SSCRestrictionTrainingUtility.Evaluate(
                 SSCRestrictionTrainingUtility.CreateRequest(host, target, true), false);
-            reason = admission.Reason;
+            reason = skipReason ? null : admission.Reason;
             return admission.Allowed;
         }
 

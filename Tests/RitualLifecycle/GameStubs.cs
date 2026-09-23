@@ -269,6 +269,8 @@ namespace SexSlaveCraft
     }
     public static class Trainjudge
     {
+        public static bool TryCanBeFuckedWithReason(Pawn pawn, out string reason, bool skipReason = false)
+        { reason = null; return pawn != null && pawn.Spawned && !pawn.Dead; }
         /// <summary>按测试对象是否存在、已生成且存活返回资格结果；不模拟完整游戏资格规则。</summary>
         public static bool TryCanBeFuckedWithReason(Pawn pawn, out string reason, out string report)
         {

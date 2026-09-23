@@ -52,9 +52,9 @@ namespace SexSlaveCraft
                 return null;
             }
 
-            if (!Trainjudge.TryCanBeFuckedWithReason(slave, out string shortReason, out string detailedReport))
+            if (!Trainjudge.TryCanBeFuckedWithReason(slave, out string shortReason))
             {
-                SSCLog.WarningImportant($"[SSC_GIVER] 仪式目标不可用: {slave.LabelShort}. {shortReason}\n{detailedReport}");
+                SSCLog.WarningImportant($"[SSC_GIVER] 仪式目标不可用: {slave.LabelShort}. {shortReason}");
                 return null;
             }
 

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_RitualSelection_ChooseParticipants>Выберите ведущего и цель ритуала вручную. При назначении на роль проверяется пригодность участника.</SSC_RitualSelection_ChooseParticipants>
+  <SSC_RitualSelection_MissingRoles>Сначала выберите ведущего и цель ритуала.</SSC_RitualSelection_MissingRoles>
+  <SSC_RitualSelection_Invalid>Выбранный персонаж сейчас не может выполнять эту роль в ритуале.</SSC_RitualSelection_Invalid>
+</LanguageData>

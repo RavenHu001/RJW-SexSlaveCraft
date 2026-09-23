@@ -91,6 +91,8 @@
     <Compile Include="common\Restrictions\SSCRestrictionUI.cs" />
     <Compile Include="Comps\Comp_Train.TrainerIdentity.cs" />
     <Compile Include="common\BindingRitualStateUtility.cs" />
+    <Compile Include="common\BindingRitualSelectionUtility.cs" />
+    <Compile Include="common\BindingRitualSelectionWidget.cs" />
     <Compile Include="common\BusSpecializationUtility.cs" />
     <Compile Include="common\DogSpecializationUtility.cs" />
     <Compile Include="common\PetSpecializationUtility.cs" />
@@ -160,6 +162,7 @@
     <Compile Include="ThePatches\Harmony_PreventRitualTimeShow.cs" />
     <Compile Include="ThePatches\Harmony_RitualFix.cs" />
     <Compile Include="ThePatches\Harmony_BindingRitualLifecycle.cs" />
+    <Compile Include="ThePatches\Harmony_BindingRitualSelection.cs" />
     <Compile Include="ThePatches\Harmony_ShowPAN.cs" />
     <Compile Include="ThePatches\Harmony_MasterDamageShare.cs" />
     <Compile Include="ThePatches\Harmony_SharedBedCompatibility.cs" />

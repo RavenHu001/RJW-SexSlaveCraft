@@ -27,7 +27,7 @@ namespace SexSlaveCraft
 
             PrepareTargetCompatibility(target);
 
-            if (Trainjudge.TryCanBeFuckedWithReason(target, out string failureReason, out string detailedReport))
+            if (Trainjudge.TryCanBeFuckedWithReason(target, out string failureReason))
             {
                 shortReason = null;
                 return true;
@@ -41,7 +41,7 @@ namespace SexSlaveCraft
             shortReason = failureReason;
             if (forced)
             {
-                Log.Warning($"[{logPrefix}] Target eligibility failed: {target.LabelShort}. {failureReason}\n{detailedReport}");
+                Log.Warning($"[{logPrefix}] Target eligibility failed: {target.LabelShort}. {failureReason}");
             }
             else
             {
@@ -63,7 +63,7 @@ namespace SexSlaveCraft
         public static bool TryValidateStartOrAbort(Pawn actor, Pawn target, string logPrefix)
         {
             if (SSCLog.VerboseEnabled) SSCLog.Verbose($"[{logPrefix}] ValidateStart start: actor={actor?.LabelShort ?? "null"}, target={target?.LabelShort ?? "null"}, actorJob={actor?.CurJobDef?.defName ?? "null"}, targetJob={target?.CurJobDef?.defName ?? "null"}");
-            if (Trainjudge.TryCanBeFuckedWithReason(target, out string shortReason, out string detailedReport))
+            if (Trainjudge.TryCanBeFuckedWithReason(target, out string shortReason))
             {
                 if (SSCLog.VerboseEnabled) SSCLog.Verbose($"[{logPrefix}] ValidateStart passed: target={target?.LabelShort ?? "null"}");
                 return true;
@@ -73,7 +73,7 @@ namespace SexSlaveCraft
             // CN: 这是性行为真正开始前的最后一道守卫，所以也必须顺手清掉已准备好的训练状态。
             MarkValidationFailure(target, logPrefix);
             Messages.Message(shortReason, target, MessageTypeDefOf.RejectInput, false);
-            Log.Warning($"[{logPrefix}] Start blocked: {target?.LabelShort}. {shortReason}\n{detailedReport}");
+            Log.Warning($"[{logPrefix}] Start blocked: {target?.LabelShort}. {shortReason}");
             NotifyTrainingAborted(target);
             actor.jobs.EndCurrentJob(JobCondition.Incompletable);
             return false;

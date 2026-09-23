@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_RitualSelection_ChooseParticipants>Select the host and ritual target manually. Eligibility is checked when assigning a role.</SSC_RitualSelection_ChooseParticipants>
+  <SSC_RitualSelection_MissingRoles>Select a host and ritual target first.</SSC_RitualSelection_MissingRoles>
+  <SSC_RitualSelection_Invalid>The selected pawn cannot fill this ritual role right now.</SSC_RitualSelection_Invalid>
+</LanguageData>

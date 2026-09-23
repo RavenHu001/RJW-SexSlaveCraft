@@ -596,14 +596,13 @@ namespace SexSlaveCraft
             comp.isBeingTrained = false;
 
             if (!isEnabled) return;
-            if (Trainjudge.TryCanBeFuckedWithReason(pawn, out string shortReason, out string detailedReport))
+            if (Trainjudge.TryCanBeFuckedWithReason(pawn, out string shortReason))
             {
                 Messages.Message("SSC_Message_TrainingEnabledEligible".Translate(), pawn, MessageTypeDefOf.NeutralEvent, false);
                 return;
             }
 
             Messages.Message(shortReason, pawn, MessageTypeDefOf.RejectInput, false);
-            Log.Warning($"[SSC_ITAB] Training enable check failed: {pawn.LabelShort}. {shortReason}\n{detailedReport}");
         }
 
         /// <summary>把当前 SSC 身份转换为调教页使用的本地化标签。</summary>

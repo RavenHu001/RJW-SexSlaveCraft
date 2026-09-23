@@ -302,6 +302,12 @@ namespace SexSlaveCraft
 
         /// <summary>角色默认满足身体条件，配对许可由生产策略判断。</summary>
         public static bool TryCanBeFuckedWithReason(Pawn pawn, out string reason, out string details) { reason = details = null; return true; }
+        public static bool TryCanBeFuckedWithReason(Pawn pawn, out string reason, bool skipReason = false) { reason = null; return true; }
+    }
+    // 本套件验证窗口外的完整身份/许可规则；窗口作用域和真实身体入口由 RitualSelection 覆盖。
+    internal static class BindingRitualSelectionUtility
+    {
+        public static bool IsPreview(RitualRoleAssignments assignments) => false;
     }
     public static class Strings
     {

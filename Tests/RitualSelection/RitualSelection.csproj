@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net9.0</TargetFramework>
+    <SscSourceRoot Condition="'$(SscSourceRoot)' == ''">../../Sexslavecraft</SscSourceRoot>
+    <NoWarn>$(NoWarn);CS8981</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="0Harmony"><HintPath>$(HarmonyAssemblyPath)</HintPath></Reference>
+    <Compile Include="$(SscSourceRoot)/common/PawnSexEligibilityUtility.cs" Link="Production/PawnSexEligibilityUtility.cs" />
+    <Compile Include="$(SscSourceRoot)/common/RJWPECompatibility.cs" Link="Production/RJWPECompatibility.cs" />
+    <Compile Include="$(SscSourceRoot)/common/BindingRitualSelectionUtility.cs" Link="Production/BindingRitualSelectionUtility.cs" />
+    <Compile Include="$(SscSourceRoot)/common/BindingRitualSelectionWidget.cs" Link="Production/BindingRitualSelectionWidget.cs" />
+    <Compile Include="$(SscSourceRoot)/Ritual/RitualRole_BindingMaster.cs" Link="Production/RitualRole_BindingMaster.cs" />
+    <Compile Include="$(SscSourceRoot)/Ritual/RitualRole_BindingSlave.cs" Link="Production/RitualRole_BindingSlave.cs" />
+    <Compile Include="$(SscSourceRoot)/ThePatches/Harmony_BindingRitualSelection.cs" Link="Production/Harmony_BindingRitualSelection.cs" />
+    <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionTrainingUtility.cs" Link="Production/SSCRestrictionTrainingUtility.cs" />
+  </ItemGroup>
+</Project>

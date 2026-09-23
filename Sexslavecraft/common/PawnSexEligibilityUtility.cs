@@ -12,12 +12,23 @@ namespace SexSlaveCraft
 {
     public static class Trainjudge
     {
+        /// <summary>普通资格查询只执行一次 RJW 判断；调用者可跳过原因，不构造诊断报告。</summary>
+        public static bool TryCanBeFuckedWithReason(Pawn pawn, out string shortReason, bool skipReason = false)
+        {
+            bool useSSCMode = SSCMod.settings?.useRJWOriginalEligibility ?? true;
+            bool result = pawn != null && (!useSSCMode || RJWSettings.rape_enabled) && xxx.can_be_fucked(pawn);
+            shortReason = skipReason ? null : BuildCanBeFuckedShortReason(pawn, useSSCMode, result);
+            return result;
+        }
+
+        /// <summary>显式诊断入口；保留原有公共签名，完整报告与短原因共享一次 RJW 结果。</summary>
         public static bool TryCanBeFuckedWithReason(Pawn pawn, out string shortReason, out string detailedReport)
         {
             bool useRJWOriginalEligibility = SSCMod.settings?.useRJWOriginalEligibility ?? true;
-            bool result = useRJWOriginalEligibility ? LegacyCanBeFucked(pawn, out _) : xxx.can_be_fucked(pawn);
+            bool rawResult = pawn != null && xxx.can_be_fucked(pawn);
+            bool result = rawResult && (!useRJWOriginalEligibility || RJWSettings.rape_enabled);
             shortReason = BuildCanBeFuckedShortReason(pawn, useRJWOriginalEligibility, result);
-            detailedReport = BuildCanBeFuckedReport(pawn);
+            detailedReport = BuildCanBeFuckedReport(pawn, rawResult);
             return result;
         }
 
@@ -37,8 +48,8 @@ namespace SexSlaveCraft
 
             if (useRJWOriginalEligibility)
             {
-                LegacyCanBeFucked(pawn, out string legacyReason);
-                return legacyReason;
+                return !RJWSettings.rape_enabled ? Strings.Legacy_Short_RequireRapeEnabled
+                    : result ? Strings.Legacy_Short_Pass : Strings.Legacy_Short_FailCanBeFucked;
             }
 
             if (result)
@@ -82,6 +93,12 @@ namespace SexSlaveCraft
 
         public static string BuildCanBeFuckedReport(Pawn pawn)
         {
+            return BuildCanBeFuckedReport(pawn, pawn != null && xxx.can_be_fucked(pawn));
+        }
+
+        /// <summary>报告仅供显式诊断请求使用，复用已取得的 RJW 判定。</summary>
+        private static string BuildCanBeFuckedReport(Pawn pawn, bool canBeFucked)
+        {
             if (pawn == null) return "SSC_RJW_TargetNull".Translate();
 
             bool isHuman = xxx.is_human(pawn);
@@ -114,9 +131,9 @@ namespace SexSlaveCraft
                                pawn.apparel.WornApparel.Any(x => x.def?.defName != null && x.def.defName.ToLower().Contains("warcasket"));
 
             bool useRJWOriginalEligibility = SSCMod.settings?.useRJWOriginalEligibility ?? true;
-            bool canBeFucked = xxx.can_be_fucked(pawn);
             bool rapeEnabled = RJWSettings.rape_enabled;
-            bool legacyCanBeFucked = LegacyCanBeFucked(pawn, out string legacyReason);
+            bool legacyCanBeFucked = rapeEnabled && canBeFucked;
+            string legacyReason = BuildCanBeFuckedShortReason(pawn, true, legacyCanBeFucked);
             bool legacyGrowthGatePass = true;
 
             string reason;
@@ -170,7 +187,7 @@ namespace SexSlaveCraft
             }
             else
             {
-                bool rjwpeLoaded = RJWPECompatibility.IsRJWPELoaded();
+                bool rjwpeLoaded = rjwpeConfig?.Detected ?? false;
                 string note = (rjwpeConfig != null && !string.IsNullOrEmpty(rjwpeConfig.Note)) ? rjwpeConfig.Note : "not available";
                 sb.AppendLine($"- rjwpe: detected={rjwpeLoaded}, sexConfig=unavailable, note={note}");
             }
@@ -188,25 +205,7 @@ namespace SexSlaveCraft
 
         public static bool SexSlaveTrainJudge(Pawn pawn)
         {
-            return TryCanBeFuckedWithReport(pawn, out _);
-        }
-
-        private static bool LegacyCanBeFucked(Pawn pawn, out string reason)
-        {
-            if (!RJWSettings.rape_enabled)
-            {
-                reason = Strings.Legacy_Short_RequireRapeEnabled;
-                return false;
-            }
-
-            if (!xxx.can_be_fucked(pawn))
-            {
-                reason = Strings.Legacy_Short_FailCanBeFucked;
-                return false;
-            }
-
-            reason = Strings.Legacy_Short_Pass;
-            return true;
+            return TryCanBeFuckedWithReason(pawn, out _, true);
         }
     }
 }

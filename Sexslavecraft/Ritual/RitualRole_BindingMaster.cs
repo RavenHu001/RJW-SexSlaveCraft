@@ -11,6 +11,25 @@ namespace SexSlaveCraft
         public override bool AppliesToPawn(Pawn p, out string reason, TargetInfo selectedTarget,
             LordJob_Ritual ritual = null, RitualRoleAssignments assignments = null, Precept_Ritual precept = null, bool skipReason = false)
         {
+            if (!AppliesToCandidate(p, out reason, skipReason)) return false;
+            if (ritual == null && BindingRitualSelectionUtility.IsPreview(assignments)) return true;
+            Pawn slave = assignments?.FirstAssignedPawn("slave") ?? ritual?.PawnWithRole("slave");
+            if (slave != null)
+            {
+                SSCTrainingAdmission admission = SSCRestrictionTrainingUtility.Evaluate(
+                    SSCRestrictionTrainingUtility.CreateRequest(p, slave, true), false);
+                if (!admission.Allowed)
+                {
+                    if (!skipReason) reason = admission.Reason;
+                    return false;
+                }
+            }
+            return ValidateIndividual(p, out reason, selectedTarget, skipReason);
+        }
+
+        /// <summary>候选列表只读取基本状态和身份，不做寻路或双人许可查询。</summary>
+        internal bool AppliesToCandidate(Pawn p, out string reason, bool skipReason)
+        {
             reason = null;
             if (p == null || p.Dead || p.Downed || !p.Spawned || !p.RaceProps.Humanlike) return false;
             if (!p.IsColonist || p.IsSlave || p.IsPrisonerOfColony)
@@ -23,17 +42,13 @@ namespace SexSlaveCraft
                 if (!skipReason) reason = "SSC_TrainerIdentity_Required".Translate();
                 return false;
             }
-            Pawn slave = assignments?.FirstAssignedPawn("slave") ?? ritual?.PawnWithRole("slave");
-            if (slave != null)
-            {
-                SSCTrainingAdmission admission = SSCRestrictionTrainingUtility.Evaluate(
-                    SSCRestrictionTrainingUtility.CreateRequest(p, slave, true), false);
-                if (!admission.Allowed)
-                {
-                    if (!skipReason) reason = admission.Reason;
-                    return false;
-                }
-            }
+            return true;
+        }
+
+        /// <summary>实际选择及开始时核对本人的完整条件；配对由提交服务按拟定组合单独校验。</summary>
+        internal bool ValidateIndividual(Pawn p, out string reason, TargetInfo selectedTarget, bool skipReason = false)
+        {
+            if (!AppliesToCandidate(p, out reason, skipReason)) return false;
             if (selectedTarget.IsValid && !p.CanReach((LocalTargetInfo)selectedTarget, PathEndMode.Touch, Danger.Deadly))
             {
                 if (!skipReason) reason = "MessageRitualRoleCannotReach".Translate();
