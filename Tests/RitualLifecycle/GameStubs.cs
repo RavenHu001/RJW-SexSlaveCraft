@@ -231,6 +231,8 @@ namespace RimWorld
 
 namespace SexSlaveCraft
 {
+    // 限制定义依赖公共方向枚举；本套件不测试特化切换。
+    public enum SexSlaveSpecializationType { None, Bus, Cow, PetCat, PetDog, PetRabbit, TrainerOfficer }
     public partial class CompSexSlaveTraining : ThingComp
     {
         public PawnIdentity pawnIdentity;
@@ -241,6 +243,7 @@ namespace SexSlaveCraft
         public bool isBeingTrained;
         public int ritualPhase;
         public Pawn selectedTrainer;
+        public SexSlaveSpecializationType specializationType;
         public float specializationProgress;
         public int lastTrainingTick = -999999;
         /// <summary>若仪式路径误用日常训练完成入口则立即报错，防止测试遗漏冷却污染。</summary>

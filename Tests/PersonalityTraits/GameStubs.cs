@@ -769,6 +769,7 @@ namespace SexSlaveCraft
         public RabbitReproductionMode rabbitReproductionMode;
         public bool allowOthersForTrainingOrSex;
         public bool milkProductionEnabled;
+        public bool trainerInvalidExitBlocksAdoption;
         /// <summary>隔离方向切换的健康状态清理边界，实际进度切换和快照算法直接链接生产代码。</summary>
         private static void RemoveInactiveSpecializationStates(Pawn pawn, CompSexSlaveTraining comp, SexSlaveSpecializationType type)
         {
@@ -778,6 +779,12 @@ namespace SexSlaveCraft
         public static void ReconcileSpecialization(Pawn p)
         {
         }
+    }
+
+    // 此套件验证人格快照与公共方向历史；训导官健康状态维护由 TrainerIdentity 验证。
+    public static class TrainerSpecializationLifecycle
+    {
+        public static void Notify(Pawn pawn) { }
     }
 
     public static class RabbitCloneUtility

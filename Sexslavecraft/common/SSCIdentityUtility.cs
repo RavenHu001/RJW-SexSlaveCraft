@@ -127,6 +127,10 @@ namespace SexSlaveCraft
                 comp.isBeingTrained = false;
             }
 
+            // 身份真正变化后通知训导官生命周期。绑定事务会暂缓这次检查，
+            // 待主人锁链和身份全部就绪后统一判断持续条件。
+            TrainerSpecializationLifecycle.Notify(pawn);
+
             return true;
         }
 

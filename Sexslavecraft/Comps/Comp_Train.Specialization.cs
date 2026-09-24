@@ -41,6 +41,7 @@ namespace SexSlaveCraft
             // 先取消旧方向，避免切换入口把接收身体的当前进度重新写入刚导入的历史。
             specializationType = SexSlaveSpecializationType.None;
             specializationProgress = 0f;
+            trainerInvalidExitBlocksAdoption = false;
             SetSpecialization(restoredType);
 
             // 无当前方向时切换入口不会触发清理，仍需去掉身体上不再生效的基础状态。
@@ -123,8 +124,13 @@ namespace SexSlaveCraft
             {
                 specializationProgress = 0f;
                 rabbitReproductionMode = RabbitReproductionMode.Offspring;
+                TrainerSpecializationLifecycle.Notify(parent as Pawn);
                 return;
             }
+
+            // 玩家主动选择新方向后，先前失格退出的自动认领防护不再适用。
+            // 通知须在当前方向字段更新之后运行，避免维护器观察到半完成的切换。
+            trainerInvalidExitBlocksAdoption = false;
 
             // 不再写旧“允许其他人”开关。公交车只声明新系统中的两项被动默认/强制值，
             // 方向切换本身不能扩大主动许可或调教许可，也不能抹掉已有个体选择。
@@ -133,6 +139,7 @@ namespace SexSlaveCraft
             {
                 rabbitReproductionMode = RabbitReproductionMode.Offspring;
             }
+            TrainerSpecializationLifecycle.Notify(parent as Pawn);
         }
 
         /// <summary>读取同一角色此前归档的方向进度，没有历史记录时从零开始。</summary>

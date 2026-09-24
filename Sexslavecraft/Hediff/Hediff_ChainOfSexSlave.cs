@@ -58,6 +58,8 @@ namespace SexSlaveCraft
             Pawn formerMaster = LinkedPawn;
             base.PostRemoved();
             SSCBondUtility.GetBridle(formerMaster)?.RemoveTarget(pawn);
+            // 包含外部模组直接移除锁链的路径；Unbind 内的事务会延迟本次维护。
+            TrainerSpecializationLifecycle.Notify(pawn);
         }
 
         public static Hediff_ChainOfSexSlave AddToPawn(Pawn SexSlave, Pawn Master)
@@ -110,6 +112,11 @@ namespace SexSlaveCraft
 
             float oldSeverity = hediff.Severity;
             hediff.Severity = Mathf.Clamp(oldSeverity + amount, 0f, hediff.def.maxSeverity);
+
+            // 只有跨越训导官所需的第 3 阶段边界时才执行状态维护。
+            // 普通锁链成长不会因每次严重度写入都检查特化和绑定。
+            if ((oldSeverity >= 0.5f) != (hediff.Severity >= 0.5f))
+                TrainerSpecializationLifecycle.Notify(pawn);
 
             ModLog.Message($"[ChainOfSexSlave] Severity for {pawn} increased {oldSeverity:F2} → {hediff.Severity:F2}");
 

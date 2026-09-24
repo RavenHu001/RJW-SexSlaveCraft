@@ -140,6 +140,11 @@ namespace SexSlaveCraft
         public void ExposeData() { ExposeRestrictionSettings(); }
     }
     public static class SSCMod { public static SSCSettings settings = new SSCSettings(); }
+    // 限制套件保留现有配置语义；训导官状态机在 TrainerIdentity 中运行生产代码。
+    public static class TrainerSpecializationLifecycle
+    {
+        public static void Maintain(Verse.Pawn pawn) { }
+    }
     public static class SSCTrainerIdentityMigration
     {
         public static bool Ran;

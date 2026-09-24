@@ -75,7 +75,14 @@ namespace Verse
     }
     // 只保留 Def 对象身份；状态是否存在仍由生产资格代码调用 HediffSet 查询。
     public class HediffDef { }
-    public class Hediff { public object def; public float Severity; }
+    public class Hediff
+    {
+        public object def;
+        private float severity;
+        public int SeverityWrites;
+        /// <summary>统计每次赋值，以验证稳定状态没有重复写入健康严重度。</summary>
+        public float Severity { get => severity; set { severity = value; SeverityWrites++; } }
+    }
     public class HediffSet
     {
         public List<Hediff> hediffs = new List<Hediff>();
@@ -87,8 +94,22 @@ namespace Verse
     public class Health
     {
         public HediffSet hediffSet = new HediffSet();
+        public int Adds, Removes;
+        public bool FailAdds;
+        /// <summary>记录生产维护器的真实添加次数，并可模拟目标 Hediff 创建失败。</summary>
+        public Hediff AddHediff(HediffDef def)
+        {
+            if (FailAdds) return null;
+            var hediff = new Hediff { def = def };
+            hediffSet.hediffs.Add(hediff);
+            Adds++;
+            return hediff;
+        }
         /// <summary>供真实解绑服务移除锁链。</summary>
-        public void RemoveHediff(Hediff hediff) => hediffSet.hediffs.Remove(hediff);
+        public void RemoveHediff(Hediff hediff)
+        {
+            if (hediffSet.hediffs.Remove(hediff)) Removes++;
+        }
     }
     public class Game { }
     public class GameComponent
@@ -104,6 +125,8 @@ namespace Verse
     }
     public static class Find { public static TickManager TickManager = new TickManager(); }
     public class TickManager { public int TicksGame = 100000; }
+    public enum LoadSaveMode { Inactive, LoadingVars, PostLoadInit }
+    public static class Scribe { public static LoadSaveMode mode = LoadSaveMode.Inactive; }
     public static class Scribe_Values
     {
         public static bool Loading;
@@ -229,6 +252,9 @@ namespace SexSlaveCraft
         public RabbitReproductionMode rabbitReproductionMode;
         public PawnIdentity pawnIdentity;
         public int restrictionRestoreDepth;
+        public int trainerMutationDepth;
+        public bool trainerMaintenanceInProgress;
+        public bool trainerInvalidExitBlocksAdoption;
         public Pawn selectedTrainer;
         public TrainingMode mode = TrainingMode.Enabled;
         public bool AllowsOthersForTrainingOrSex, IsBusSpecialized, BusState;

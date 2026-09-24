@@ -1,5 +1,5 @@
 <Defs>
-  <!-- 普通培养状态随当前训导官方向存在。严重度将由后续生命周期阶段与公共特化进度同步；
+  <!-- 普通培养状态随当前训导官方向存在。严重度由状态生命周期与公共特化进度同步；
        此处先定义显示阶段，不在尚未确定数值前加入属性或限制强制效果。 -->
   <HediffDef>
     <defName>SSC_Hediff_TrainerOfficer</defName>
@@ -37,7 +37,7 @@
   </HediffDef>
 
   <!-- 禁用标记保存终极化事实，不提供属性、强制条目或调教员资格。
-       条件恢复后的替换及双标记归并属于后续状态生命周期阶段。 -->
+       状态生命周期在条件恢复后替换它，并按当前条件归并双标记。 -->
   <HediffDef>
     <defName>SSC_Hediff_TrainerOfficer_FinalDisabled</defName>
     <label>性奴特化（终极训导官，禁用）</label>

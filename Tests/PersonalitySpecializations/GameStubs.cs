@@ -17,6 +17,7 @@ namespace SexSlaveCraft
         public bool allowOthersForTrainingOrSex;
         public RabbitReproductionMode rabbitReproductionMode;
         public float savedCowReservoirCharge;
+        public bool trainerInvalidExitBlocksAdoption;
         public int inactiveStateCleanupCalls;
         public SexSlaveSpecializationType lastKeptType;
 
@@ -26,5 +27,11 @@ namespace SexSlaveCraft
             comp.inactiveStateCleanupCalls++;
             comp.lastKeptType = typeToKeep;
         }
+    }
+
+    // 此套件只测试公共进度切换；状态维护的生产代码在 TrainerIdentity 中单独链接验证。
+    public static class TrainerSpecializationLifecycle
+    {
+        public static void Notify(Pawn pawn) { }
     }
 }

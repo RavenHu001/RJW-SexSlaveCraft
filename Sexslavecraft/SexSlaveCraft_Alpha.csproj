@@ -96,8 +96,9 @@
     <Compile Include="common\BusSpecializationUtility.cs" />
     <Compile Include="common\DogSpecializationUtility.cs" />
     <Compile Include="common\PetSpecializationUtility.cs" />
-    <!-- 训导官阶段 1 只提供状态与资格查询；生命周期和调教员身份接入在后续阶段。 -->
+    <!-- 训导官只读资格与阶段 2 状态维护分离；调教员身份接入仍在后续阶段。 -->
     <Compile Include="common\TrainerSpecializationUtility.cs" />
+    <Compile Include="common\TrainerSpecializationLifecycle.cs" />
     <Compile Include="common\RabbitCloneUtility.cs" />
     <Compile Include="common\ConditioningUtility.cs" />
     <Compile Include="common\CorruptionProgressionUtility.cs" />

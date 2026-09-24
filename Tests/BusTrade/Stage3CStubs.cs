@@ -107,12 +107,15 @@ namespace UnityEngine
 namespace SexSlaveCraft
 {
     public enum PawnIdentity { None, Master, Slave }
+    // 交易套件只需要方向字段供真实限制解析编译，具体方向生命周期另行验证。
+    public enum SexSlaveSpecializationType { None, Bus, Cow, PetCat, PetDog, PetRabbit, TrainerOfficer }
     public partial class CompSexSlaveTraining
     {
         public PawnIdentity pawnIdentity;
         public Pawn selectedTrainer;
         public bool IsPetDogSpecialized;
         public float specializationProgress;
+        public SexSlaveSpecializationType specializationType;
         public int lastDogAnimalInteractionTick;
     }
     public static class SSCBondUtility

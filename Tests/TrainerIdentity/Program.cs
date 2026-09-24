@@ -18,8 +18,10 @@ internal static partial class Program
         var xml = XDocument.Load(Path.Combine(repo, "Languages/ChineseSimplified/Keyed/SSC_TrainerIdentity.xml"));
         foreach (var key in xml.Root.Elements()) Verse.Extensions.Translations[key.Name.LocalName] = key.Value;
         RunEducationCompatibilityTests();
-        // 阶段 1 只验证特化数据与只读资格；下方旧身份用例仍按现行开关规则运行。
+        // 训导官只读资格和阶段 2 状态生命周期使用生产源码验证；
+        // 下方旧身份用例仍按现行开关规则运行。
         RunTrainerSpecializationTests(repo);
+        RunTrainerLifecycleTests();
         Run("三种身份的开关真值表与固定身份拒绝写入", () =>
         {
             foreach (PawnIdentity identity in Enum.GetValues<PawnIdentity>())

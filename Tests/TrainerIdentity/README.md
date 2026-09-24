@@ -7,7 +7,7 @@ dotnet run --project Tests/TrainerIdentity/TrainerIdentity.csproj --configuratio
   -p:RestoreConfigFile="完整仓库路径/Tests/NuGet.Config" -- .
 ```
 
-直接编译生产身份工具、开关存档字段、一次性迁移、指定调教员服务、绑定服务、日常 WorkGiver、两个仪式角色，以及训导官阶段 1 的特化数据和只读资格入口。当前 60 项覆盖（含阶段 3B 的新规则、日常筛选与双向选角）：
+直接编译生产身份工具、开关存档字段、一次性迁移、指定调教员服务、绑定服务、日常 WorkGiver、两个仪式角色，以及训导官阶段 1 的只读资格和阶段 2 的状态维护器。当前 70 项覆盖（含阶段 3B 的新规则、日常筛选与双向选角）：
 
 - 主人/未选择固定状态，性奴可选及真实身份切换。
 - 已绑定性奴和仍有绑定性奴的主人拒绝身份切换，保留锁链实例、严重度、恶堕与训练/仪式状态。
@@ -21,6 +21,7 @@ dotnet run --project Tests/TrainerIdentity/TrainerIdentity.csproj --configuratio
 - 旧档缺字段、显式关闭、世界对象迁移及重复加载幂等。
 - 四语提示键与格式参数。
 - 训导官阶段 1：特化枚举和 XML 定义、SSC 身份与实际绑定、自由殖民者及锁链门槛、普通 20% 资格、跨方向终极资格、禁用和异常状态。现有 `IsTrainer` 尚未接入该资格。
+- 训导官阶段 2：普通方向失格归档与清理、条件恢复后玩家重选、解绑事务、跨方向终极禁用/恢复、双标记归并、目标添加失败保留原记录、恢复作用域、有效孤儿状态认领及稳定维护零写入。原版阵营/访客状态 Harmony 接线、真实 Scribe 和 Tick 耗时仍需游戏内验收。
 
 不运行 Unity。存档使用字典模型，不能代替真实 Scribe 引用恢复；工作用例执行真实 WorkGiver，日常 JobDriver 的准备、结束回调由 RitualLifecycle 链接生产驱动验证，完整队列/走位仍需游戏内复测。总栏字体、缩放和鼠标操作也需游戏内确认。同床通过独立的 [SharedBed](../SharedBed/README.md) 套件验证。
 
