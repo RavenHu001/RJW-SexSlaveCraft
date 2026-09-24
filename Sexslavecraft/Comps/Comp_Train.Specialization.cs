@@ -12,7 +12,9 @@ namespace SexSlaveCraft
         Cow,
         PetCat,
         PetDog,
-        PetRabbit
+        PetRabbit,
+        // 只在末尾追加，避免改动旧存档中现有方向的枚举值。
+        TrainerOfficer
     }
 
     public partial class CompSexSlaveTraining

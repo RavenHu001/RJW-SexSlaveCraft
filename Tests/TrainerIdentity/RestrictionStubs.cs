@@ -36,11 +36,9 @@ namespace Verse
 }
 namespace SexSlaveCraft
 {
-    public enum SexSlaveSpecializationType { None, Bus, Cow, PetCat, PetDog, PetRabbit }
     public partial class CompSexSlaveTraining
     {
         public SSCRestrictionConfig restrictionConfig = new SSCRestrictionConfig();
-        public SexSlaveSpecializationType specializationType;
     }
     public class Settings
     {

@@ -73,6 +73,8 @@ namespace Verse
         /// <summary>只提供恶堕需求。</summary>
         public T TryGetNeed<T>() where T : class => Corruption as T;
     }
+    // 只保留 Def 对象身份；状态是否存在仍由生产资格代码调用 HediffSet 查询。
+    public class HediffDef { }
     public class Hediff { public object def; public float Severity; }
     public class HediffSet
     {
@@ -218,8 +220,13 @@ namespace SexSlaveCraft
     using Verse;
     public enum PawnIdentity { Unset, Slave, Master }
     public enum TrainingMode { Disabled, Enabled }
+    public enum RabbitReproductionMode { Offspring, Clone }
     public partial class CompSexSlaveTraining
     {
+        // 公共特化模块所需的宿主字段；实际方向切换和进度归档直接编译生产文件。
+        public Thing parent;
+        public float savedCowReservoirCharge;
+        public RabbitReproductionMode rabbitReproductionMode;
         public PawnIdentity pawnIdentity;
         public int restrictionRestoreDepth;
         public Pawn selectedTrainer;
@@ -230,6 +237,9 @@ namespace SexSlaveCraft
         public int scheduledTrainingIntervalDays, scheduledTrainingHour, ScheduledTrainingEndHour, lastTrainingTick;
         public const int CooldownTicks = 100;
         public bool IsEnabled => pawnIdentity == PawnIdentity.Slave && mode == TrainingMode.Enabled;
+
+        // 本套件验证真实的方向进度切换；健康状态清理由其他套件覆盖。
+        private static void RemoveInactiveSpecializationStates(Pawn pawn, CompSexSlaveTraining comp, SexSlaveSpecializationType typeToKeep) { }
     }
     public class Need_Corruption { public float HighestCorruptionLevel, CurLevel; }
     public class Hediff_ChainOfSexSlave : Hediff
@@ -271,6 +281,8 @@ namespace SexSlaveCraft
     public static class SSCDefOf
     {
         public static object SexSlaveTrait = new object(), ChainOfSexSlave = new object(), BridleOfSexSlave = new object(), SSC_BasicTraining = new object();
+        // 三个不同对象模拟已解析的普通、有效终极与禁用终极 Def。
+        public static HediffDef SSC_Hediff_TrainerOfficer = new HediffDef(), SSC_Hediff_TrainerOfficer_Final = new HediffDef(), SSC_Hediff_TrainerOfficer_FinalDisabled = new HediffDef();
         public static JobDef SSC_TrainingReceiver = new JobDef(), Training_Ritual = new JobDef(), TrainingSexSlave = new JobDef();
     }
     public static class TraitUtility {

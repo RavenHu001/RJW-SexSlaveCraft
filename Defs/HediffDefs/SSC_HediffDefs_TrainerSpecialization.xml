@@ -1,0 +1,50 @@
+<Defs>
+  <!-- 普通培养状态随当前训导官方向存在。严重度将由后续生命周期阶段与公共特化进度同步；
+       此处先定义显示阶段，不在尚未确定数值前加入属性或限制强制效果。 -->
+  <HediffDef>
+    <defName>SSC_Hediff_TrainerOfficer</defName>
+    <label>性奴特化（训导官）</label>
+    <description>该性奴正在接受训导官培养。达到基础阶段后可获得担任调教员的资格，实际任职仍需手动开启。</description>
+    <initialSeverity>0.01</initialSeverity>
+    <isBad>false</isBad>
+    <tendable>false</tendable>
+    <everCurableByItem>false</everCurableByItem>
+    <makesSickThought>false</makesSickThought>
+    <stages>
+      <!-- 选择方向时从低严重度开始；仅持有培养状态不会立刻取得任职资格。 -->
+      <li>
+        <minSeverity>0.00</minSeverity>
+        <label>训导官培养中</label>
+      </li>
+      <!-- 基础阶段从 20% 开始，与只读资格常量一致；个人调教员开关仍须单独开启。 -->
+      <li>
+        <minSeverity>0.20</minSeverity>
+        <label>性奴特化（训导官）</label>
+      </li>
+    </stages>
+  </HediffDef>
+
+  <!-- 有效终极标记可以在切换当前培养方向后保留。
+       查询时仍实时检查绑定、锁链阶段及自由殖民者条件，不能只凭此标记授予资格。 -->
+  <HediffDef>
+    <defName>SSC_Hediff_TrainerOfficer_Final</defName>
+    <label>性奴特化（终极训导官）</label>
+    <description>该性奴已完成训导官终极化。任职与效果仍取决于当前的绑定、锁链阶段和自由殖民者身份。</description>
+    <isBad>false</isBad>
+    <tendable>false</tendable>
+    <everCurableByItem>false</everCurableByItem>
+    <makesSickThought>false</makesSickThought>
+  </HediffDef>
+
+  <!-- 禁用标记保存终极化事实，不提供属性、强制条目或调教员资格。
+       条件恢复后的替换及双标记归并属于后续状态生命周期阶段。 -->
+  <HediffDef>
+    <defName>SSC_Hediff_TrainerOfficer_FinalDisabled</defName>
+    <label>性奴特化（终极训导官，禁用）</label>
+    <description>训导官终极化记录仍在，但当前条件不足，专业效果与调教员资格暂时停用。</description>
+    <isBad>false</isBad>
+    <tendable>false</tendable>
+    <everCurableByItem>false</everCurableByItem>
+    <makesSickThought>false</makesSickThought>
+  </HediffDef>
+</Defs>
