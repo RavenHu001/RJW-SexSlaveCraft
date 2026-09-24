@@ -196,6 +196,17 @@ namespace rjw
         public Verse.Pawn recipient => isReceiver ? pawn : partner;
         public bool isReceiver, isRevese, isRape, usedCondom;
     }
+    public static class SexUtility
+    {
+        /// <summary>模拟 RJW 的结算入口；无 Harmony 模式显式调用生产后缀，真实模式由补丁注入。</summary>
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static void ProcessSex(SexProps props)
+        {
+#if !REAL_HARMONY
+            SSCTrainerInitiatedSexProgressHook.Postfix(props, true);
+#endif
+        }
+    }
     public class JobDriver_Sex : Verse.AI.JobDriver
     {
         public SexProps Sexprops;
@@ -361,6 +372,20 @@ namespace SexSlaveCraft
     {
         /// <summary>为生产拒绝清理提供记录验证失败的最小边界。</summary>
         public static void MarkValidationFailure(Verse.Pawn target, string prefix) { }
+    }
+    public static class TrainerSpecializationProgressUtility
+    {
+        public static int InitiatedSexAwards;
+        public static Verse.Pawn LastInitiator, LastRecipient;
+
+        /// <summary>记录通过生产任务守卫后的经验通知，验证事件来源、实际发起方向和去重。</summary>
+        public static float NotifyInitiatedSexCompleted(Verse.Pawn initiator, Verse.Pawn recipient)
+        {
+            InitiatedSexAwards++;
+            LastInitiator = initiator;
+            LastRecipient = recipient;
+            return 0.01f;
+        }
     }
     public static class SSCIdentityUtility
     {

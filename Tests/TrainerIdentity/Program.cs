@@ -22,6 +22,7 @@ internal static partial class Program
         // 下方旧身份用例仍按现行开关规则运行。
         RunTrainerSpecializationTests(repo);
         RunTrainerLifecycleTests();
+        RunTrainerProgressTests();
         Run("三种身份的开关真值表与固定身份拒绝写入", () =>
         {
             foreach (PawnIdentity identity in Enum.GetValues<PawnIdentity>())

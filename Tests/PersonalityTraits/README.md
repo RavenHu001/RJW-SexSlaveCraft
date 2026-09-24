@@ -20,12 +20,13 @@ dotnet run --project Tests/PersonalityTraits/PersonalityTraits.csproj --configur
 - `common/PersonalityTraitUtility.cs`：真实普通特质采集与恢复。
 - `common/PersonalityMemoryUtility.cs`：真实记忆快照、复制与恢复。
 - `Comps/Comp_Train.Specialization.cs`：真实方向切换、历史进度读写、完整导出与替换恢复。
+- `common/TrainerSpecializationGelUtility.cs` 与 `Recipe/Recipe_PEMake.cs`：训导官三种互斥标签、终极配方筛料及加工结算。
 
 若要验证其他导出的源码目录，可传入 `-p:SscSourceRoot=<源码绝对目录>`。
 
 ## 覆盖内容
 
-共 23 个用例，其中原有的 15 个普通特质用例继续覆盖：
+共 28 个用例，其中原有的 15 个普通特质用例继续覆盖：
 
 - 跨身体替换普通特质，以及同身体恢复较早快照，包括同一定义的不同等级。
 - 保存受抑制普通特质，排除基因授予和 SSC 派生特质，并隔离源角色、凝胶与副本的可变特质实例。
@@ -44,6 +45,8 @@ dotnet run --project Tests/PersonalityTraits/PersonalityTraits.csproj --configur
 - 加工复制不共享可变记忆条目；旧记忆缺少实例版本和好感字段时仍使用定义默认值。
 - 完整特化历史字典和新增记忆字段实际参与生产存档入口的读写，缺少新字段时保留明确的旧格式标记。
 
+训导官阶段 3 追加 5 个用例：普通历史、有效终极和禁用终极随人格凝胶跨身体迁移，宿主旧标签不污染源人格；终极配方复查当前方向、进度及普通标签，拒绝重复加工和异常数值，并保留其他方向历史。
+
 ## 引擎替身契约与验证边界
 
 `GameStubs.cs` 为生产入口提供无界面环境。特质相关行为依据修复时核对的本机 RimWorld 1.6 程序集：
@@ -61,4 +64,4 @@ Scribe 替身记录和回放标量、定义与对象引用，并复制列表、�
 
 测试假设相关 DLC 行为启用。定义、冲突、基因、健康状态与能力都是最小内存模型，不加载游戏 XML 或 Harmony 补丁；能力追踪器使用定义集合而不是真实能力实例。图像和缓存通知为空实现，私有特质缓存刷新入口则保留，以执行生产反射路径。后续基因变化、工作限制、需求、健康状态联动、界面与其他模组兼容性仍需游戏验证。
 
-缺失快照用例会主动验证一条预期错误；生产异常捕获中出现任何其他错误都会使当前用例失败。成功运行退出码为零，并输出 `RESULT: 23/23 cases passed.`。
+缺失快照用例会主动验证一条预期错误；生产异常捕获中出现任何其他错误都会使当前用例失败。成功运行退出码为零，并输出 `RESULT: 28/28 cases passed.`。

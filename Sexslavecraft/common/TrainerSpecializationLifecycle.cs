@@ -107,9 +107,15 @@ namespace SexSlaveCraft
             if (ordinary == null || (adding &&
                 pawn.health.hediffSet.GetFirstHediffOfDef(SSCDefOf.SSC_Hediff_TrainerOfficer) == null)) return;
 
-            // 与已有特化相同，外部增加的 Hediff 严重度可以并入当前方向进度。
-            // 坏档数值限制在零至一；稳定值不再重复赋给 Hediff.Severity。
-            float merged = Math.Max(NormalizeProgress(comp.specializationProgress), NormalizeProgress(ordinary.Severity));
+            // 普通标记的 0.01 初始严重度只用于游戏内显示，不能凭选择方向或
+            // 人格恢复直接产生 1% 经验。只有超过显示下限的既有严重度才视为
+            // 外部写入的实际成长，并入组件；新建标记始终以组件进度为准。
+            float markerProgress = adding || ordinary.Severity <= InitialOrdinarySeverity
+                ? 0f : NormalizeProgress(ordinary.Severity);
+            float merged = Math.Max(NormalizeProgress(comp.specializationProgress), markerProgress);
+
+            // 坏档数值限制在零至一；没有变化时不写回组件或 Hediff，
+            // 使低频维护在稳定状态下保持无副作用。
             if (comp.specializationProgress != merged) comp.specializationProgress = merged;
             float severity = Math.Max(InitialOrdinarySeverity, merged);
             if (ordinary.Severity != severity) ordinary.Severity = severity;

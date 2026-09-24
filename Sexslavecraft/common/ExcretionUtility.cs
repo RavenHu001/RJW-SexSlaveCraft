@@ -91,6 +91,10 @@ namespace SexSlaveCraft
             }
 
             PetSpecializationUtility.RemoveAllPetStates(consumer);
+
+            // 清除接收身体的普通、有效终极和禁用终极标签。必须在源人格
+            // 的方向和进度恢复前完成，避免宿主完成记录或普通严重度混入。
+            TrainerSpecializationGelUtility.RemoveAllTrainerStates(consumer);
         }
 
         /// <summary>校验凝胶快照，替换人格与全部特化历史并恢复记忆实例；成功后消耗凝胶，校验或恢复失败时返回失败。</summary>
@@ -230,6 +234,13 @@ namespace SexSlaveCraft
                             continue;
                         }
 
+                        // 训导官三种标签由下方的互斥恢复统一处理。通用路径
+                        // 对严重度采取取较大值，会把宿主旧进度并入源人格。
+                        if (TrainerSpecializationGelUtility.IsTrainerTag(hediffDef))
+                        {
+                            continue;
+                        }
+
                         if (hediffDef != null)
                         {
                             try
@@ -265,6 +276,13 @@ namespace SexSlaveCraft
                 {
                     Log.Warning($"[SSC Tag Debug] ⚠️ 被塞入的这个雕像/凝胶体内，没有任何 Tag 数据！");
                 }
+
+                // 即使旧凝胶没有任何标签，仍须保证接收身体的训导官标签
+                // 已被清空；有标签时只恢复源人格所持的一个权威状态。
+                // 阶段 2 的外层恢复作用域会在身份、绑定和标签全部就位后
+                // 决定终极标记是否应转为禁用，不能在此处提前维护。
+                TrainerSpecializationGelUtility.ApplyExclusiveTrainerTags(consumer, data);
+
                 // 同步组件与刚恢复的健康状态，使凝胶携带的专精立即被识别并可持续训练。
                 CompSexSlaveTraining.ReconcileSpecialization(consumer);
 

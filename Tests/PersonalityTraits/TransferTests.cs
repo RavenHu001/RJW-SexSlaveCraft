@@ -109,6 +109,98 @@ internal static partial class Program
         }
     }
 
+    /// <summary>经真实快照与植入流程迁移普通训导官标签，验证宿主旧严重度不会抬高源进度。</summary>
+    private static void TrainerOrdinaryTagTransfer()
+    {
+        // 源人格同时拥有当前进度和同系普通标签；两者须按原值进入凝胶快照。
+        Pawn source = Body("TrainerSource");
+        CompSexSlaveTraining sourceTraining = Training(source);
+        sourceTraining.SetSpecialization(SexSlaveSpecializationType.TrainerOfficer);
+        sourceTraining.specializationProgress = 0.35f;
+        source.health.AddHediff(SSCDefOf.SSC_Hediff_TrainerOfficer).Severity = 0.35f;
+        CompPersonalityStore stored = Gel();
+        stored.StorePawnData(source);
+        Assert(stored.HasTag(SSCDefOf.SSC_Hediff_TrainerOfficer)
+            && stored.GetTagSeverity(SSCDefOf.SSC_Hediff_TrainerOfficer) == 0.35f,
+            "普通训导官标签及其严重度必须显式进入凝胶。 ");
+
+        // 加工副本接收同一个人格；宿主较高的旧标签必须先被清掉。
+        CompPersonalityStore processed = Gel();
+        processed.CopyFrom(stored);
+        Pawn receiver = Body("OldHost");
+        CompSexSlaveTraining hostTraining = Training(receiver);
+        hostTraining.SetSpecialization(SexSlaveSpecializationType.TrainerOfficer);
+        hostTraining.specializationProgress = 0.8f;
+        receiver.health.AddHediff(SSCDefOf.SSC_Hediff_TrainerOfficer).Severity = 0.8f;
+        Assert(ExcretionUtility.InheritEverything(receiver, processed), "普通训导官人格植入必须成功。");
+
+        // 源方向、进度及标签都应保持 0.35，不允许取宿主的 0.8 最大值。
+        Hediff restored = receiver.health.hediffSet.GetFirstHediffOfDef(SSCDefOf.SSC_Hediff_TrainerOfficer);
+        Assert(hostTraining.specializationType == SexSlaveSpecializationType.TrainerOfficer
+            && hostTraining.specializationProgress == 0.35f && restored?.Severity == 0.35f,
+            "宿主旧训导官标签或进度不得混入源人格。");
+    }
+
+    /// <summary>分别测试有效与禁用终极记录经提取、复制、植入后的互斥恢复。</summary>
+    private static void TrainerFinalTagTransfer()
+    {
+        foreach (HediffDef sourceTag in new[]
+        {
+            SSCDefOf.SSC_Hediff_TrainerOfficer_Final,
+            SSCDefOf.SSC_Hediff_TrainerOfficer_FinalDisabled
+        })
+        {
+            HediffDef hostTag = sourceTag == SSCDefOf.SSC_Hediff_TrainerOfficer_Final
+                ? SSCDefOf.SSC_Hediff_TrainerOfficer_FinalDisabled
+                : SSCDefOf.SSC_Hediff_TrainerOfficer_Final;
+
+            // 终极记录独立于当前培养方向；禁用标签也必须进入源快照。
+            Pawn source = Body("FinalSource");
+            CompSexSlaveTraining sourceTraining = Training(source);
+            sourceTraining.SetSpecialization(SexSlaveSpecializationType.TrainerOfficer);
+            sourceTraining.specializationProgress = 1f;
+            sourceTraining.SetSpecialization(SexSlaveSpecializationType.Cow);
+            source.health.AddHediff(sourceTag).Severity = 1f;
+            CompPersonalityStore stored = Gel();
+            stored.StorePawnData(source);
+            Assert(stored.HasTag(sourceTag), "两种终极标签都必须被显式保存。");
+
+            // 新身体预先持有相反的终极记录，验证植入先清宿主、后应用源记录。
+            CompPersonalityStore processed = Gel();
+            processed.CopyFrom(stored);
+            Pawn receiver = Body("FinalHost");
+            CompSexSlaveTraining hostTraining = Training(receiver);
+            hostTraining.SetSpecialization(SexSlaveSpecializationType.Bus);
+            receiver.health.AddHediff(hostTag).Severity = 1f;
+            Assert(ExcretionUtility.InheritEverything(receiver, processed), "终极训导官人格植入必须成功。");
+            Assert(receiver.health.hediffSet.GetFirstHediffOfDef(sourceTag) != null
+                && receiver.health.hediffSet.GetFirstHediffOfDef(hostTag) == null,
+                "植入后只能保留源人格的终极状态，不得混入宿主完成记录。");
+            Assert(hostTraining.specializationType == SexSlaveSpecializationType.Cow,
+                "终极记录不得自动改写当前培养方向。");
+        }
+    }
+
+    /// <summary>源人格没有训导官标签时也要清除宿主三个同系标记。</summary>
+    private static void TrainerMissingTagClearsHost()
+    {
+        // 构造不带训导官完成记录的源凝胶；普通与终极状态属于宿主旧身体。
+        CompPersonalityStore clean = Gel();
+        clean.StorePawnData(Body("CleanSource"));
+        Pawn receiver = Body("MarkedHost");
+        Training(receiver);
+        receiver.health.AddHediff(SSCDefOf.SSC_Hediff_TrainerOfficer);
+        receiver.health.AddHediff(SSCDefOf.SSC_Hediff_TrainerOfficer_Final);
+        receiver.health.AddHediff(SSCDefOf.SSC_Hediff_TrainerOfficer_FinalDisabled);
+
+        // 即使凝胶标签字典为空，清理仍须发生；历史或孤儿标签不能复活旧资格。
+        Assert(ExcretionUtility.InheritEverything(receiver, clean), "无标签人格植入必须成功。");
+        Assert(receiver.health.hediffSet.GetFirstHediffOfDef(SSCDefOf.SSC_Hediff_TrainerOfficer) == null
+            && receiver.health.hediffSet.GetFirstHediffOfDef(SSCDefOf.SSC_Hediff_TrainerOfficer_Final) == null
+            && receiver.health.hediffSet.GetFirstHediffOfDef(SSCDefOf.SSC_Hediff_TrainerOfficer_FinalDisabled) == null,
+            "源人格没有训导官记录时，宿主全部同系标签都必须消失。");
+    }
+
     /// <summary>创建带有四个不同基础数值阶段的测试记忆定义，不依赖游戏定义加载。</summary>
     private static ThoughtDef MemoryDef(string name, bool social)
     {

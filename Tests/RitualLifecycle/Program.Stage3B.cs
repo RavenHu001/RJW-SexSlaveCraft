@@ -62,7 +62,16 @@ internal static partial class Program
             f.toils[3].Finish(); f.toils[4].initAction(); f.driver.Finish(JobCondition.Succeeded);
             Equal(1, TestWorld.RjwEndCalls, "End"); Equal(1, TestWorld.ProcessSexCalls, "ProcessSex");
             Equal(1, TestWorld.DailyOutcomes, "outcome"); Equal(1, TestWorld.DailyCooldowns, "cooldown");
+            Equal(1, TestWorld.TrainerProgressAwards, "trainer specialization completion event");
             Require(!f.comp.isBeingTrained, "occupancy");
+        });
+        Check("repeated daily payout callback cannot grant trainer progress twice", () =>
+        {
+            // 同一个真实发起 Job 完成后若即时步骤重入，新增经验只领取一次。
+            var f = Daily(); f.toils[0].initAction(); f.toils[2].initAction(); f.toils[3].initAction();
+            f.driver.ticks_left = 1; f.toils[3].tickAction(); f.toils[3].Finish();
+            f.toils[4].initAction(); f.toils[4].initAction();
+            Equal(1, TestWorld.TrainerProgressAwards, "repeated daily trainer progress");
         });
         Check("daily late callbacks preserve replacement task and target occupancy", () =>
         {

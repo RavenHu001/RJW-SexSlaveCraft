@@ -20,6 +20,7 @@ namespace SexSlaveCraft
         private bool sceneStarted;
         private bool hasSceneRecord = true;
         private bool legacySceneProgress;
+        private bool trainerProgressAwarded;
 
         /// <summary>保存本任务实际占用的对象，使行走或准备阶段读档后的中断能释放原占用。</summary>
         public override void ExposeData()
@@ -28,6 +29,9 @@ namespace SexSlaveCraft
             Scribe_References.Look(ref preparedTrainingTarget, "sscPreparedTrainingTarget");
             Scribe_Values.Look(ref hasSceneRecord, "sscDailySceneRecord", false);
             Scribe_Values.Look(ref sceneStarted, "sscDailySceneStarted", false);
+            // 经验认领属于这一次日常 Job。保存后读档，即使最后的即时步骤
+            // 被再次调用，也不会为同一场景再次发放训导官进度。
+            Scribe_Values.Look(ref trainerProgressAwarded, "sscTrainerProgressAwarded", false);
             if (Scribe.mode == LoadSaveMode.LoadingVars)
                 legacySceneProgress = Sexprops != null && (orgasms > 0 || (duration > 0 && ticks_left < duration));
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
@@ -182,7 +186,7 @@ namespace SexSlaveCraft
             {
                 initAction = delegate
                 {
-                    if (!sceneStarted || pawn.jobs?.curDriver != this) return;
+                    if (!sceneStarted || ticks_left > 0 || pawn.jobs?.curDriver != this) return;
                     SexUtility.ProcessSex(Sexprops);
                     ExecuteConditioningOutcome();
                 },
@@ -223,6 +227,15 @@ namespace SexSlaveCraft
             if (compToggle != null)
             {
                 compToggle.Notify_TrainingCompleted();
+            }
+
+            // RJW 的 ProcessSex 也会经过普通双人经验补丁，但该补丁排除 SSC
+            // 日常 Job；这里在真正完成全部训练结算后，给双方各自的特化发奖。
+            // 先保存领取事实再运行奖励逻辑，防止回调重入或读档重复领经验。
+            if (!trainerProgressAwarded && Sexprops != null)
+            {
+                trainerProgressAwarded = true;
+                TrainerSpecializationProgressUtility.NotifyTrainingCompleted(pawn, Partner);
             }
 
             string finalSexType = Sexprops != null ? Sexprops.sexType.ToString() : "null";

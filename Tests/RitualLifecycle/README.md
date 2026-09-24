@@ -62,3 +62,5 @@ checks. The separate `RitualProgression` suite exercises long-term chain and
 corruption numerical behavior.
 
 Stage 3B also links the production daily driver and restriction core/adapter. Ten additional cases cover preparation failure, walking cleanup, unstarted scene settlement, stale callbacks, normal daily payout, owner precedence, phase cancellation and cancellation ownership. Cancellation is modeled by invoking the production cleanup patches after removing the lord; the real RimWorld signal graph is not executed. Exact restriction save markers and Harmony dispatch are covered by InteractionProtection; role selection and the full trainer utility are covered by TrainerIdentity.
+
+The Training Officer Stage 3 assertions require a completed daily scene to notify specialization progress once. A repeated payout callback cannot notify it again; the actual progress calculation is covered by TrainerIdentity.

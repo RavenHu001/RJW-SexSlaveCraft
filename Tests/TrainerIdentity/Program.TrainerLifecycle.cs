@@ -12,6 +12,10 @@ internal static partial class Program
             pawn.Training.SetSpecialization(SexSlaveSpecializationType.TrainerOfficer);
             Hediff ordinary = Marker(pawn, SSCDefOf.SSC_Hediff_TrainerOfficer);
             Assert(ordinary != null && ordinary.Severity == 0.01f);
+            // 普通标记的显示下限不是一次成功事件；初次选择方向后经验必须仍为零。
+            Assert(pawn.Training.specializationProgress == 0f);
+            TrainerSpecializationLifecycle.Maintain(pawn);
+            Assert(pawn.Training.specializationProgress == 0f);
 
             pawn.Training.specializationProgress = 0.4f;
             TrainerSpecializationLifecycle.Maintain(pawn);

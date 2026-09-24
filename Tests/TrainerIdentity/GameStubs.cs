@@ -264,6 +264,14 @@ namespace SexSlaveCraft
         public const int CooldownTicks = 100;
         public bool IsEnabled => pawnIdentity == PawnIdentity.Slave && mode == TrainingMode.Enabled;
 
+        /// <summary>仅模拟公共组件的进度写入边界；方向、持续条件与经验事件仍由直接链接的生产工具校验。</summary>
+        public float AddSpecializationProgress(float amount)
+        {
+            if (amount <= 0f || specializationType == SexSlaveSpecializationType.None) return specializationProgress;
+            specializationProgress = Math.Max(0f, Math.Min(1f, specializationProgress + amount));
+            return specializationProgress;
+        }
+
         // 本套件验证真实的方向进度切换；健康状态清理由其他套件覆盖。
         private static void RemoveInactiveSpecializationStates(Pawn pawn, CompSexSlaveTraining comp, SexSlaveSpecializationType typeToKeep) { }
     }

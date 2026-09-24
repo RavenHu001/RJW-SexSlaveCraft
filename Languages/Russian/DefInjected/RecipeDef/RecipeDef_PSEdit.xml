@@ -3,4 +3,8 @@
   <SSC_PSEdit_Bus.label>Редактирование личности «Общественное пользование»</SSC_PSEdit_Bus.label>
   <SSC_PSEdit_Bus.description>Формирование личности в вариант «Общественное пользование», позволяющее использовать секс-раба всеми и получать «преимущества» в торговле и дипломатии.</SSC_PSEdit_Bus.description>
   <SSC_PSEdit_Bus.jobString>Специализация личности...</SSC_PSEdit_Bus.jobString>
+
+  <SSC_PSEdit_TrainerOfficer_Final.label>Специализация секс-раба (старший инструктор)</SSC_PSEdit_TrainerOfficer_Final.label>
+  <SSC_PSEdit_TrainerOfficer_Final.description>Завершает специализацию инструктора через гель личности. Материал должен содержать обычную метку инструктора и не должен иметь действующей или отключённой финальной метки.</SSC_PSEdit_TrainerOfficer_Final.description>
+  <SSC_PSEdit_TrainerOfficer_Final.jobString>Формирование личности старшего инструктора...</SSC_PSEdit_TrainerOfficer_Final.jobString>
 </LanguageData>

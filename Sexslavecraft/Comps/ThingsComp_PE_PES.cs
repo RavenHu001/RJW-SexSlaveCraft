@@ -447,6 +447,11 @@ namespace SexSlaveCraft
             BusSpecializationUtility.StoreExclusiveBusTags(this, p);
             BusSpecializationUtility.StoreExclusiveCowTags(this, p);
             PetSpecializationUtility.StoreExclusivePetTags(this, p);
+
+            // 训导官的禁用终极标记没有配方输出，通用枚举无法发现。
+            // 显式保存还会归并普通/有效/禁用三种互斥状态，并以组件
+            // 的当前进度作为普通标签的权威值。
+            TrainerSpecializationGelUtility.StoreExclusiveTrainerTags(this, p);
         }
     }
 }

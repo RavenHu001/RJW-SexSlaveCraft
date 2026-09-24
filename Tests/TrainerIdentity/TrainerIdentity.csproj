@@ -10,6 +10,7 @@
     <Compile Include="$(SscSourceRoot)/Comps/Comp_Train.Specialization.cs" Link="Production/Comp_Train.Specialization.cs" />
     <Compile Include="$(SscSourceRoot)/common/TrainerSpecializationUtility.cs" Link="Production/TrainerSpecializationUtility.cs" />
     <Compile Include="$(SscSourceRoot)/common/TrainerSpecializationLifecycle.cs" Link="Production/TrainerSpecializationLifecycle.cs" />
+    <Compile Include="$(SscSourceRoot)/common/TrainerSpecializationProgressUtility.cs" Link="Production/TrainerSpecializationProgressUtility.cs" />
     <Compile Include="$(SscSourceRoot)/common/SSCIdentityUtility.Trainer.cs" Link="Production/SSCIdentityUtility.Trainer.cs" />
     <Compile Include="$(SscSourceRoot)/Comps/Comp_Train.TrainerIdentity.cs" Link="Production/Comp_Train.TrainerIdentity.cs" />
     <Compile Include="$(SscSourceRoot)/common/SSCTrainerIdentityMigration.cs" Link="Production/SSCTrainerIdentityMigration.cs" />

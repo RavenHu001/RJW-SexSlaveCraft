@@ -8,6 +8,10 @@
   <SSC_PSEdit_Cow_Final.description>Further shapes personality gel with 100% Cow specialization progress into its final state. This recipe accepts only fully specialized Cow material and is mutually exclusive with the ordinary Cow state.</SSC_PSEdit_Cow_Final.description>
   <SSC_PSEdit_Cow_Final.jobString>Shaping final Cow personality...</SSC_PSEdit_Cow_Final.jobString>
 
+  <SSC_PSEdit_TrainerOfficer_Final.label>Sex Slave Specialization (Final Training Officer)</SSC_PSEdit_TrainerOfficer_Final.label>
+  <SSC_PSEdit_TrainerOfficer_Final.description>Shapes personality gel with completed Training Officer progress into its final state. The material must carry the ordinary Training Officer tag and must not already have an active or disabled final record.</SSC_PSEdit_TrainerOfficer_Final.description>
+  <SSC_PSEdit_TrainerOfficer_Final.jobString>Shaping final Training Officer personality...</SSC_PSEdit_TrainerOfficer_Final.jobString>
+
   <SSC_PSEdit_PetCat_Final.label>Sex Slave Specialization (Final Pet Cat)</SSC_PSEdit_PetCat_Final.label>
   <SSC_PSEdit_PetCat_Final.description>Further shapes personality gel with 100% Pet Cat specialization progress into its final state. This recipe accepts only material that has completed Pet Cat specialization and carries the base Pet Cat state.</SSC_PSEdit_PetCat_Final.description>
   <SSC_PSEdit_PetCat_Final.jobString>Shaping final Pet Cat personality...</SSC_PSEdit_PetCat_Final.jobString>

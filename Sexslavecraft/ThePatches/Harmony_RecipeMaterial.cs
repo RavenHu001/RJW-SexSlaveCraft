@@ -37,7 +37,21 @@ namespace SexSlaveCraft
                 return;
             }
 
-            if (smartRecipe.requireSpecializationComplete && comp.specializationProgress < 0.999f)
+            // “完成”需要真实且有限的当前进度。NaN 与门槛比较始终为 false，
+            // 若只保留原来的小于判断，损坏或外部写入的凝胶会错误通过筛选。
+            if (smartRecipe.requireSpecializationComplete &&
+                (float.IsNaN(comp.specializationProgress) || float.IsInfinity(comp.specializationProgress)
+                || comp.specializationProgress < 0.999f))
+            {
+                __result = false;
+                return;
+            }
+
+            // 训导官比通用方向多一个普通标签前提，并有“禁用终极”完成记录。
+            // 这里与实际配方结算共用判定，既阻止重复加工，也阻止没有基础状态
+            // 却只凭进度数值加工的旧档或异常凝胶。
+            if (TrainerOfficerRecipeUtility.IsFinalizationRecipe(smartRecipe)
+                && !TrainerOfficerRecipeUtility.IsEligibleGel(comp))
             {
                 __result = false;
                 return;

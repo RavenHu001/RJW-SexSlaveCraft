@@ -253,6 +253,12 @@ namespace SexSlaveCraft
             TestWorld.DailyCooldowns++;
         }
     }
+    public static class TrainerSpecializationProgressUtility
+    {
+        /// <summary>记录真实日常驱动到达新增经验事件的次数；资格与数值由 TrainerIdentity 的生产工具用例验证。</summary>
+        public static void NotifyTrainingCompleted(Pawn trainer, Pawn receiver)
+            => TestWorld.TrainerProgressAwards++;
+    }
     public static class SSCDefOf
     {
         public static JobDef Training_Ritual;
@@ -381,7 +387,7 @@ namespace rjw
 internal static class TestWorld
 {
     public static Map Map;
-    public static int ProcessSexCalls, DailyOutcomes, DailyCooldowns;
+    public static int ProcessSexCalls, DailyOutcomes, DailyCooldowns, TrainerProgressAwards;
     public static bool ReceiverSucceeds = true, SynchronizeSucceeds = true;
     public static int RjwEndCalls;
     public static Action<rjw.JobDriver_SexBaseInitiator> OnRjwStart;
@@ -391,7 +397,7 @@ internal static class TestWorld
     {
         Map = new Map();
         SSCMod.settings = new Settings();
-        ProcessSexCalls = DailyOutcomes = DailyCooldowns = 0;
+        ProcessSexCalls = DailyOutcomes = DailyCooldowns = TrainerProgressAwards = 0;
         ReceiverSucceeds = SynchronizeSucceeds = true;
         RjwEndCalls = 0;
         OnRjwStart = null;
