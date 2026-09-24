@@ -210,6 +210,7 @@
     <Compile Include="common\Thought_MemoryDynamicTraining.cs" />
     <Compile Include="common\TrainingOutcomeUtility.cs" />
     <Compile Include="common\TrainerAssignmentUtility.cs" />
+    <Compile Include="common\ProgressionEducationCompatibility.cs" />
     <Compile Include="common\TrainingExpUtility.cs" />
     <Compile Include="common\WorkGiverTargetUtility.cs" />
     <Compile Include="common\TraitUtility.cs" />

@@ -11,6 +11,8 @@ namespace Verse
     public class Thing { public bool Destroyed; public Map Map; }
     public class Pawn : Thing
     {
+        public Verse.AI.Group.Lord lord;
+        public Verse.AI.Group.Lord GetLord() => lord;
         public bool Dead, Downed, Spawned = true, IsColonist = true, IsPrisonerOfColony, IsSlave;
         public string LabelShort = "Pawn";
         public CompSexSlaveTraining Training = new CompSexSlaveTraining();

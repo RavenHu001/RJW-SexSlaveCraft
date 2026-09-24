@@ -10,6 +10,7 @@
     <Compile Include="$(SscSourceRoot)/Comps/Comp_Train.TrainerIdentity.cs" Link="Production/Comp_Train.TrainerIdentity.cs" />
     <Compile Include="$(SscSourceRoot)/common/SSCTrainerIdentityMigration.cs" Link="Production/SSCTrainerIdentityMigration.cs" />
     <Compile Include="$(SscSourceRoot)/common/TrainerAssignmentUtility.cs" Link="Production/TrainerAssignmentUtility.cs" />
+    <Compile Include="$(SscSourceRoot)/common/ProgressionEducationCompatibility.cs" Link="Production/ProgressionEducationCompatibility.cs" />
     <Compile Include="$(SscSourceRoot)/common/SSCBondUtility.cs" Link="Production/SSCBondUtility.cs" />
     <Compile Include="$(SscSourceRoot)/WorkGiver/WorkGiver_Training.cs" Link="Production/WorkGiver_Training.cs" />
     <Compile Include="$(SscSourceRoot)/Ritual/RitualRole_BindingMaster.cs" Link="Production/RitualRole_BindingMaster.cs" />

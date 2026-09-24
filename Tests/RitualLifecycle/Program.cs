@@ -67,6 +67,7 @@ internal static partial class Program
     private static int Main()
     {
         RunStage3BTests();
+        RunEducationCompatibilityTests();
         Check("cancelling while walking cleans state without executing the future scene finish", () =>
         {
             var ritual = new RitualFixture();

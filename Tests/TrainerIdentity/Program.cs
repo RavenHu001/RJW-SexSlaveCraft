@@ -17,6 +17,7 @@ internal static partial class Program
         string repo = Path.GetFullPath(args.Length == 0 ? "../.." : args[0]);
         var xml = XDocument.Load(Path.Combine(repo, "Languages/ChineseSimplified/Keyed/SSC_TrainerIdentity.xml"));
         foreach (var key in xml.Root.Elements()) Verse.Extensions.Translations[key.Name.LocalName] = key.Value;
+        RunEducationCompatibilityTests();
         Run("三种身份的开关真值表与固定身份拒绝写入", () =>
         {
             foreach (PawnIdentity identity in Enum.GetValues<PawnIdentity>())
