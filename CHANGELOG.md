@@ -6,6 +6,13 @@ This continuation builds on upstream **2.2.8**, the baseline when upstream devel
 
 ## [Unreleased]
 
+### Progression: Education 兼容 / Progression: Education compatibility
+
+- 自动调教避让正在参与课程的角色，避免听课和接受调教任务反复抢占；目标在途中加入课程时也会退出自动调教，下课后恢复自动选择。手动强制命令保持原行为。
+- Automatic training now yields to pawns participating in classes, preventing repeated switching between attending class and receiving training. It also stops if the target joins a class while the trainer is approaching; automatic selection resumes after class participation ends. Player-forced orders retain their existing behavior.
+- 可选兼容组件不要求安装 Education。相关回归 107/107 通过，维护者已确认实机修复有效；详见 [核查与修复记录](Docs/Development/ProgressionEducation与调教任务抢占核查.md)。
+- Education remains optional. All 107 tests in the affected suites passed, and the maintainer confirmed the fix in game.
+
 ### 开发工具：统一验证入口 / Development tooling: unified validation
 
 - 新增 `Scripts/Test-All.ps1`，统一运行全部 15 套回归，输出逐套件日志和 JSON 汇总；打包复用同一入口，任一失败或未执行均停止。SharedBed 的 net9.0 Harmony 通过参数或环境变量提供，提前拒绝缺失或错误框架的依赖；新增未登记测试项目也会报错。

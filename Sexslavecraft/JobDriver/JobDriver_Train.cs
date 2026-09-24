@@ -55,6 +55,8 @@ namespace SexSlaveCraft
             this.FailOn(() => pawn.Drafted || pawn.IsFighting());
             this.FailOn(() => Partner.IsFighting());
             this.FailOn(() => !pawn.CanReserve(Partner, 1, 0));
+            // 候选选定后可能开课；在途及执行阶段重新检查，退出时沿用现有占用清理。
+            this.FailOn(() => ProgressionEducationCompatibility.ShouldDeferAutomaticTraining(Partner, job.playerForced));
             AddFinishAction(condition => CleanupPreparedTraining());
 
             // EN: Step 1: mark the sex slave as already being trained before movement starts, so no other training job grabs the same pawn.

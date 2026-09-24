@@ -91,6 +91,7 @@ namespace SexSlaveCraft
                 || GetActiveAssignedTrainer(targetPawn) != trainer) return false;
             CompSexSlaveTraining comp = targetPawn.TryGetComp<CompSexSlaveTraining>();
             if (comp == null || !comp.IsEnabled || comp.IsWaitingAfterFailedValidation || comp.IsOnCooldown) return false;
+            if (ProgressionEducationCompatibility.ShouldDeferAutomaticTraining(targetPawn)) return false;
             return !comp.scheduledTrainingEnabled || comp.IsScheduledTrainingDayDue && comp.IsWithinScheduledTrainingWindow;
         }
 
@@ -129,6 +130,9 @@ namespace SexSlaveCraft
                 reason = Strings.Train_Reason_InvalidFaction;
                 return false;
             }
+
+            // 自动工作避让实际课程成员；手动命令不受此兼容规则影响。
+            if (ProgressionEducationCompatibility.ShouldDeferAutomaticTraining(targetPawn, forced)) return false;
 
             // 先修复已结束仪式的残留占用，再判断调教资格；自动和强制命令共用此入口。
             RecoverTrainingTargetState(targetPawn);

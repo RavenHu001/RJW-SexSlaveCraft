@@ -33,6 +33,7 @@
 
 - [2.2.11语言与种族分页合并](Development/2.2.11语言与种族分页合并.md)
 - [RimTalk兼容隔离](Development/RimTalk兼容隔离.md)
+- [Education 与调教任务抢占](Development/ProgressionEducation与调教任务抢占核查.md)：问题核查及自动调教避让课程的可选兼容组件。
 - [主奴同床优化](Development/主奴同床优化.md)
 - [人格凝胶界面布局调整](Development/人格凝胶界面布局调整.md)
 - [人格普通特质迁移修复](Development/人格普通特质迁移修复.md)
