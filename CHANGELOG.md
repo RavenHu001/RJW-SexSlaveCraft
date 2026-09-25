@@ -14,6 +14,8 @@ This continuation builds on upstream **2.2.8**, the baseline when upstream devel
 - Successful Training received, Training performed, and actively initiated partnered sex grant decreasing amounts of progress. The two initiation permissions apply from selecting an effective Training Officer direction. The maintainer confirmed the main feature in game; performance and balance remain unmeasured.
 - 修复终极化后明确选择“未选择”仍被终极健康状态自动认领的问题；日常调教走位改用 `Touch`，并在寻路静止时清理调教员的遗留 UAP 位置锁、有限次数重试。维护者已确认两项修复在游戏中有效。
 - Preserves an explicit Unset specialization after finalization. Daily Training uses Touch approach, clears a trainer's stale UAP position lock, and retries a stopped path for a bounded period. The maintainer confirmed both fixes in game.
+- 调教接收任务仅释放当前发起任务实际持有的目标预约，修复预约已经消失时的红字；维护者已确认实机有效。
+- The Training receiver releases a target reservation only when the current initiating job still owns it, fixing the error when the reservation is already gone. The maintainer confirmed the fix in game.
 
 ### Progression: Education 兼容 / Progression: Education compatibility
 
