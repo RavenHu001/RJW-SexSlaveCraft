@@ -23,11 +23,14 @@ namespace Verse
 
     public class RecipeDef : Def
     {
+        public RecipeWorker Worker;
     }
 
     public class RecipeWorker
     {
         public RecipeDef recipe;
+        // 原版先调用该消耗入口，再经 Bill_Production 通知配方工作者完成。
+        public virtual void ConsumeIngredient(Thing ingredient, RecipeDef recipe, Map map) => ingredient.Destroy(DestroyMode.Vanish);
         public virtual void Notify_IterationCompleted(Pawn billDoer, List<Thing> ingredients) { }
     }
 
@@ -162,6 +165,7 @@ namespace Verse
     public class Thing
     {
         public bool Destroyed;
+        public int stackCount = 1;
         public ThingDef def;
         public Dictionary<Type, object> Comps = new Dictionary<Type, object>();
         /// <summary>按组件类型查找测试物品上注册的实例，没有匹配项时返回空引用。</summary>
@@ -223,6 +227,8 @@ namespace Verse
 
     public class Pawn : Thing
     {
+        public Verse.AI.Pawn_JobTracker jobs = new Verse.AI.Pawn_JobTracker();
+        public Verse.AI.Job CurJob => jobs.curJob;
         public bool Dead;
         public Name Name = new NameTriple("", "pawn", "");
         public string LabelShort => (Name as NameTriple)?.Nick ?? "pawn";
@@ -737,6 +743,12 @@ namespace RimWorld
 
 namespace HarmonyLib
 {
+    [AttributeUsage(AttributeTargets.Class)]
+    public sealed class HarmonyPatch : Attribute
+    {
+        public HarmonyPatch(Type type, string methodName) { }
+    }
+
     public static class AccessTools
     {
         /// <summary>按名称反射查找公开或非公开方法，模拟本次生产代码使用的反射辅助接口。</summary>

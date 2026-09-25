@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_Hediff_TrainerOfficer.label>sex slave specialization (Training Officer)</SSC_Hediff_TrainerOfficer.label>
+  <SSC_Hediff_TrainerOfficer.description>This sex slave is developing the Training Officer specialization. Reaching the basic stage grants eligibility to serve as a trainer; the personal trainer option must still be enabled manually.</SSC_Hediff_TrainerOfficer.description>
+  <SSC_Hediff_TrainerOfficer.stages.0.label>Training Officer in training</SSC_Hediff_TrainerOfficer.stages.0.label>
+  <SSC_Hediff_TrainerOfficer.stages.1.label>sex slave specialization (Training Officer)</SSC_Hediff_TrainerOfficer.stages.1.label>
+
+  <SSC_Hediff_TrainerOfficer_Final.label>sex slave specialization (Final Training Officer)</SSC_Hediff_TrainerOfficer_Final.label>
+  <SSC_Hediff_TrainerOfficer_Final.description>This sex slave has finalized the Training Officer specialization. Trainer eligibility and specialization effects still depend on the current master bond, chain stage, and free colonist status.</SSC_Hediff_TrainerOfficer_Final.description>
+
+  <SSC_Hediff_TrainerOfficer_FinalDisabled.label>sex slave specialization (Final Training Officer, disabled)</SSC_Hediff_TrainerOfficer_FinalDisabled.label>
+  <SSC_Hediff_TrainerOfficer_FinalDisabled.description>The final Training Officer record is preserved, but current conditions are not met. Specialization effects and trainer eligibility are temporarily disabled.</SSC_Hediff_TrainerOfficer_FinalDisabled.description>
+</LanguageData>

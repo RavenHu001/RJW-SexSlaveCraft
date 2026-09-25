@@ -100,7 +100,7 @@ namespace SexSlaveCraft
         public bool HasReachedBusThreshold => specializationProgress >= 0.20f;
 
         /// <summary>检查进度是否达到巴士完成阈值；调用方另行确认当前特化方向。</summary>
-        public bool HasCompletedBusSpecialization => specializationProgress >= 0.999f;
+        public bool HasCompletedBusSpecialization => specializationProgress >= SpecializationCompletionProgress;
 
         /// <summary>判断当前选择的特化方向是否为奶牛。</summary>
         public bool IsCowSpecialized => specializationType == SexSlaveSpecializationType.Cow;
@@ -109,7 +109,7 @@ namespace SexSlaveCraft
         public bool HasReachedCowThreshold => specializationProgress >= 0.20f;
 
         /// <summary>检查进度是否达到奶牛完成阈值；调用方另行确认当前特化方向。</summary>
-        public bool HasCompletedCowSpecialization => specializationProgress >= 0.999f;
+        public bool HasCompletedCowSpecialization => specializationProgress >= SpecializationCompletionProgress;
 
         /// <summary>判断当前选择的特化方向是否为宠物猫。</summary>
         public bool IsPetCatSpecialized => specializationType == SexSlaveSpecializationType.PetCat;
@@ -127,7 +127,7 @@ namespace SexSlaveCraft
         public bool HasReachedPetThreshold => specializationProgress >= 0.20f && IsPetSpecialized;
 
         /// <summary>同时检查宠物特化身份及其完成进度阈值。</summary>
-        public bool HasCompletedPetSpecialization => specializationProgress >= 0.999f && IsPetSpecialized;
+        public bool HasCompletedPetSpecialization => specializationProgress >= SpecializationCompletionProgress && IsPetSpecialized;
 
         /// <summary>判断上次训练资格校验失败后的重试间隔是否尚未结束。</summary>
         public bool IsWaitingAfterFailedValidation => (Find.TickManager.TicksGame - lastFailedTrainingValidationTick) < FailedValidationRetryTicks;

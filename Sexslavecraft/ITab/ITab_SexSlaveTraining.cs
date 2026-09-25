@@ -14,6 +14,12 @@ namespace SexSlaveCraft
     public class ITab_SexSlaveTraining : ITab
     {
         private const float SectionSpacing = 12f;
+        // 节框留白与标题高度由绘制和动态测量共用；列表间距也显式固定，
+        // 避免身份区计算的高度与 Listing_Standard 实际推进的位置不一致。
+        private const float SectionPadding = 12f;
+        private const float SectionTitleHeight = 28f;
+        private const float IdentityButtonHeight = 30f;
+        private const float IdentityListingSpacing = 2f;
         // 展开入口属于左侧滚动内容；高度和间隔同时用于绘制及总高度计算。
         private const float RestrictionToggleHeight = 30f;
         private const float RestrictionToggleSpacing = 8f;
@@ -130,15 +136,20 @@ namespace SexSlaveCraft
             if (restrictionsExpanded && CanShowRestrictions(pawn))
                 DrawRestrictionPanel(new Rect(trainingRect.xMax + 10f, outerRect.y,
                     outerRect.xMax - trainingRect.xMax - 10f, outerRect.height), pawn);
-            float contentHeight = CalculateContentHeight(pawn, comp);
+            // 身份资格、翻译文字和测量结果只为本次绘制生成一次。
+            // 滚动范围及节框使用同一份结果，长译文换行时后续内容随之下移。
+            float contentWidth = trainingRect.width - 18f;
+            TrainerIdentityView identityView = BuildTrainerIdentityView(pawn, comp, contentWidth);
+            float contentHeight = CalculateContentHeight(pawn, comp, identityView.SectionHeight);
             Rect viewRect = trainingRect;
-            Rect contentRect = new Rect(0f, 0f, trainingRect.width - 18f, contentHeight);
+            Rect contentRect = new Rect(0f, 0f, contentWidth, contentHeight);
 
             Widgets.BeginScrollView(viewRect, ref scrollPosition, contentRect);
             try
             {
                 float curY = 0f;
-                curY = DrawIdentitySection(new Rect(0f, curY, contentRect.width, GetIdentitySectionHeight(comp)), comp) + SectionSpacing;
+                curY = DrawIdentitySection(new Rect(0f, curY, contentRect.width,
+                    identityView.SectionHeight), comp, identityView) + SectionSpacing;
 
                 // 入口位置与高度保持稳定；没有实际绑定或总限制停用时可见但不可操作。
                 DrawRestrictionToggle(new Rect(0f, curY, contentRect.width, RestrictionToggleHeight), pawn);
@@ -179,9 +190,9 @@ namespace SexSlaveCraft
         }
 
         /// <summary>为身份、限制展开入口及当前可见各节累计滚动高度，保持按钮和后续内容均可滚动访问。</summary>
-        private static float CalculateContentHeight(Pawn pawn, CompSexSlaveTraining comp)
+        private static float CalculateContentHeight(Pawn pawn, CompSexSlaveTraining comp, float identityHeight)
         {
-            float height = GetIdentitySectionHeight(comp) + RestrictionToggleHeight + RestrictionToggleSpacing;
+            float height = identityHeight + RestrictionToggleHeight + RestrictionToggleSpacing;
 
             if (comp.pawnIdentity == PawnIdentity.Master || comp.pawnIdentity == PawnIdentity.Unset)
             {
@@ -206,10 +217,67 @@ namespace SexSlaveCraft
             return height + 4f;
         }
 
-        /// <summary>为身份按钮、调教员开关和性奴接收状态预留高度。</summary>
-        private static float GetIdentitySectionHeight(CompSexSlaveTraining comp)
+        /// <summary>只在本次界面事件内复用任职结果、翻译及测量值，不跨帧缓存角色资格。</summary>
+        private struct TrainerIdentityView
         {
-            return comp.pawnIdentity == PawnIdentity.Slave ? 146f : 126f;
+            public bool IsSlave;
+            public bool Enabled;
+            public bool Qualified;
+            public string Label;
+            public string Tooltip;
+            public string Status;
+            public float ToggleHeight;
+            public float StatusHeight;
+            public float SectionHeight;
+        }
+
+        /// <summary>读取一次资格，并按实际字体、标签和可用宽度计算身份区高度。</summary>
+        private static TrainerIdentityView BuildTrainerIdentityView(Pawn pawn, CompSexSlaveTraining comp, float width)
+        {
+            // 勾选状态来自保存选择。资格只决定能否任职与重新开启；失格后
+            // 仍显示已保存的勾选，让玩家可以关闭该选择而不误报为个人关闭。
+            bool isSlave = comp.pawnIdentity == PawnIdentity.Slave;
+            bool enabled = comp.pawnIdentity == PawnIdentity.Master || isSlave && comp.slaveTrainerEnabled;
+            TrainerSpecializationFailure failure = TrainerSpecializationFailure.None;
+            bool qualified = isSlave && TrainerSpecializationUtility.HasTrainerQualification(pawn, out failure);
+            bool active = comp.pawnIdentity == PawnIdentity.Master || enabled && qualified;
+            string label = "SSC_TrainerIdentity_Label".Translate();
+            if (isSlave)
+                label += active ? "SSC_TrainerIdentity_Active".Translate() :
+                    enabled ? "SSC_TrainerIdentity_SavedInactive".Translate() :
+                    "SSC_TrainerIdentity_Off".Translate();
+
+            // 显示状态复用上面的资格结果，不再通过 IsTrainer 重读锁链。
+            // 点击提交仍走 SetTrainerEnabled 的权威检查，不能用界面快照授予资格。
+            string tooltip = (comp.pawnIdentity == PawnIdentity.Master ? "SSC_TrainerIdentity_MasterTip"
+                : isSlave ? "SSC_TrainerIdentity_SlaveTip" : "SSC_TrainerIdentity_UnsetTip").Translate();
+            if (isSlave && !qualified)
+                tooltip += "\n\n" + "SSC_TrainerIdentity_QualificationTip".Translate() +
+                    "\n" + GetTrainerFailureReason(failure);
+            string status = isSlave ? (comp.IsEnabled ? Strings.ITab_StatusReady : Strings.ITab_StatusDisabled) : null;
+
+            // 绘制节框会使用 Small 字体；测量时使用相同字体并恢复原设置。
+            // 复选框右侧占 24 像素，标签须扣掉这段宽度再测量，以免文本被勾选框遮挡。
+            GameFont oldFont = Text.Font;
+            try
+            {
+                Text.Font = GameFont.Small;
+                float innerWidth = Mathf.Max(1f, width - SectionPadding * 2f);
+                float toggleHeight = Mathf.Max(24f, Text.CalcHeight(label, Mathf.Max(1f, innerWidth - 24f)));
+                float statusHeight = isSlave ? Text.CalcHeight(status, innerWidth) : 0f;
+                float contentHeight = IdentityButtonHeight + 2f + 6f + toggleHeight + IdentityListingSpacing;
+                if (isSlave) contentHeight += 6f + statusHeight + IdentityListingSpacing;
+                return new TrainerIdentityView
+                {
+                    IsSlave = isSlave, Enabled = enabled, Qualified = qualified,
+                    Label = label, Tooltip = tooltip, Status = status,
+                    ToggleHeight = toggleHeight, StatusHeight = statusHeight,
+                    // 保留短文字下的原有留白；只有实际内容需要更多空间时才扩高。
+                    SectionHeight = Mathf.Max(isSlave ? 146f : 126f,
+                        SectionPadding * 2f + SectionTitleHeight + contentHeight)
+                };
+            }
+            finally { Text.Font = oldFont; }
         }
 
         /// <summary>按训导官状态和兔特化模式计算区块高度，供绘制和滚动范围共用。</summary>
@@ -227,17 +295,21 @@ namespace SexSlaveCraft
         }
 
         /// <summary>绘制 SSC 身份及调教员开关；已有绑定时禁用身份按钮并提示原因。</summary>
-        private float DrawIdentitySection(Rect rect, CompSexSlaveTraining comp)
+        private float DrawIdentitySection(Rect rect, CompSexSlaveTraining comp, TrainerIdentityView view)
         {
             DrawSection(rect, Strings.ITab_IdentityHeader, delegate(Rect innerRect)
             {
                 Listing_Standard listing = BeginSectionListing(innerRect);
+                // 本栏只能纵向滚动。即使某个 UI 补丁改变实际字体高度，
+                // 也不允许原版 Listing 将后续接收状态移到不可见的第二列。
+                listing.maxOneColumn = true;
+                listing.verticalSpacing = IdentityListingSpacing;
                 try
                 {
 
                     string idLabel = GetIdentityLabel(comp.pawnIdentity);
                     bool identityLocked = SSCIdentityUtility.IsIdentityLocked(SelPawn);
-                    Rect identityRect = listing.GetRect(30f);
+                    Rect identityRect = listing.GetRect(IdentityButtonHeight);
                     bool oldEnabled = GUI.enabled;
                     bool identityClicked;
                     try
@@ -273,13 +345,13 @@ namespace SexSlaveCraft
                     }
 
                     listing.Gap(6f);
-                    DrawTrainerIdentityToggle(listing, SelPawn, comp);
+                    DrawTrainerIdentityToggle(listing, SelPawn, view);
 
-                    if (comp.pawnIdentity == PawnIdentity.Slave)
+                    if (view.IsSlave)
                     {
                         listing.Gap(6f);
                         GUI.color = new Color(0.75f, 0.75f, 0.75f);
-                        listing.Label(comp.IsEnabled ? Strings.ITab_StatusReady : Strings.ITab_StatusDisabled);
+                        listing.Label(view.Status, view.StatusHeight);
                         GUI.color = Color.white;
                     }
 
@@ -294,35 +366,18 @@ namespace SexSlaveCraft
         }
 
         /// <summary>显示个人保存选择与有效任职的区别；失格时仍允许关闭先前保存的开启选择。</summary>
-        private static void DrawTrainerIdentityToggle(Listing_Standard listing, Pawn pawn, CompSexSlaveTraining comp)
+        private static void DrawTrainerIdentityToggle(Listing_Standard listing, Pawn pawn, TrainerIdentityView view)
         {
-            // 复选框编辑的是存档中的个人选择。若使用 IsTrainer 的有效结果，
-            // 失格但仍保存开启选择的性奴会显示为关闭，也无法主动清除该选择。
-            bool enabled = comp.pawnIdentity == PawnIdentity.Master ||
-                comp.pawnIdentity == PawnIdentity.Slave && comp.slaveTrainerEnabled;
+            // 绘制和高度预留读取同一份本帧文字及保存选择；不在这里再次查询资格。
+            bool enabled = view.Enabled;
             bool previous = enabled;
-            TrainerSpecializationFailure failure = TrainerSpecializationFailure.None;
-            bool qualified = comp.pawnIdentity == PawnIdentity.Slave &&
-                TrainerSpecializationUtility.HasTrainerQualification(pawn, out failure);
-            bool active = SSCIdentityUtility.IsTrainer(pawn);
-            string label = "SSC_TrainerIdentity_Label".Translate();
-            if (comp.pawnIdentity == PawnIdentity.Slave)
-                label += active ? "SSC_TrainerIdentity_Active".Translate() :
-                    enabled ? "SSC_TrainerIdentity_SavedInactive".Translate() :
-                    "SSC_TrainerIdentity_Off".Translate();
-            string tooltip = (comp.pawnIdentity == PawnIdentity.Master ? "SSC_TrainerIdentity_MasterTip"
-                : comp.pawnIdentity == PawnIdentity.Slave ? "SSC_TrainerIdentity_SlaveTip"
-                : "SSC_TrainerIdentity_UnsetTip").Translate();
-            if (comp.pawnIdentity == PawnIdentity.Slave && !qualified)
-                tooltip += "\n\n" + "SSC_TrainerIdentity_QualificationTip".Translate() +
-                    "\n" + GetTrainerFailureReason(failure);
             bool oldEnabled = GUI.enabled;
             try
             {
                 // 尚未取得任职资格时只能关闭旧选择，不能新开启；提交时
                 // SetTrainerEnabled 再次校验，防止绘制与点击之间的状态变化。
-                GUI.enabled = oldEnabled && comp.pawnIdentity == PawnIdentity.Slave && (qualified || previous);
-                listing.CheckboxLabeled(label, ref enabled, tooltip);
+                GUI.enabled = oldEnabled && view.IsSlave && (view.Qualified || previous);
+                listing.CheckboxLabeled(view.Label, ref enabled, view.Tooltip, view.ToggleHeight);
             }
             finally
             {
@@ -575,12 +630,12 @@ namespace SexSlaveCraft
         {
             Widgets.DrawMenuSection(rect);
 
-            Rect innerRect = rect.ContractedBy(12f);
+            Rect innerRect = rect.ContractedBy(SectionPadding);
             if (!string.IsNullOrEmpty(title))
             {
                 Text.Font = GameFont.Small;
-                Widgets.Label(new Rect(innerRect.x, innerRect.y, innerRect.width, 28f), title);
-                innerRect.yMin += 28f;
+                Widgets.Label(new Rect(innerRect.x, innerRect.y, innerRect.width, SectionTitleHeight), title);
+                innerRect.yMin += SectionTitleHeight;
             }
 
             drawContents(innerRect);

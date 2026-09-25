@@ -6,9 +6,10 @@ using Verse.AI;
 internal static partial class Program
 {
     /// <summary>通过生产日常驱动建立独立执行器，返回真实步骤列表供失败与迟到回调测试。</summary>
-    private static (JobDriver_Training driver, Toil[] toils, CompSexSlaveTraining comp) Daily()
+    private static (JobDriver_Training driver, Toil[] toils, CompSexSlaveTraining comp) Daily(Pawn actor = null)
     {
-        Pawn actor = TestWorld.NewPawn(), target = TestWorld.NewPawn();
+        actor = actor ?? TestWorld.NewPawn();
+        Pawn target = TestWorld.NewPawn();
         actor.TryGetComp<CompSexSlaveTraining>().pawnIdentity = PawnIdentity.Master;
         var comp = target.TryGetComp<CompSexSlaveTraining>(); comp.pawnIdentity = PawnIdentity.Slave;
         comp.selectedTrainer = actor; target.BoundMaster = actor;
@@ -32,6 +33,86 @@ internal static partial class Program
     /// <summary>验证真实日常与仪式驱动的清理和结算，不在替身中实现这些流程。</summary>
     private static void RunStage3BTests()
     {
+        Check("one trainer reaches and starts receivers for two consecutive daily targets", () =>
+        {
+            // 复用同一发起者完成两次真实驱动流程。宿主只提供到达通知和预约表；
+            // 接收任务交接、释放检查和训练标记均由生产 TrainingJobUtility 执行。
+            Pawn actor = TestWorld.NewPawn();
+            for (int encounter = 1; encounter <= 2; encounter++)
+            {
+                var f = Daily(actor);
+                Pawn target = (Pawn)f.driver.job.targetA.Thing;
+                target.Position = new IntVec3(encounter * 5, 0, 0);
+                f.toils[0].initAction();
+                actor.pather.OnArrival = () => f.toils[2].initAction();
+                f.toils[1].initAction();
+                Require(actor.pather.MovingNow, "next target path did not start");
+                actor.pather.Arrive();
+
+                // 不能仅以调教员的工作名称判定成功：目标必须真正被接收任务接管，
+                // 并且该任务指向本次发起者，双方位置也完成同步。
+                Equal(SSCDefOf.SSC_TrainingReceiver, target.CurJobDef, "receiver job");
+                Equal(actor, target.CurJob.targetA.Thing, "receiver initiator");
+                Equal(1, target.jobs.StartCalls, "receiver start count");
+                Equal(target.Position, actor.Position, "handoff position");
+                Equal(encounter, actor.Map.reservationManager.ReleaseCalls, "one release per encounter");
+
+                // 第一场正常收尾后，再为同一角色分配第二场；累计奖励须与真实完成场数一致。
+                f.toils[3].initAction();
+                f.driver.ticks_left = 1;
+                f.toils[3].tickAction();
+                f.toils[3].Finish();
+                f.toils[4].initAction();
+                f.driver.Finish(JobCondition.Succeeded);
+                Require(!f.comp.isBeingTrained, "completed target occupancy");
+            }
+            Equal(2, TestWorld.DailyOutcomes, "consecutive completions");
+            Equal(2, TestWorld.TrainerProgressAwards, "consecutive progress events");
+        });
+        Check("receiver handoff tolerates reservation removed during position synchronization", () =>
+        {
+            // 生产工具先同步位置再交接。模拟传送通知中的外部清理恰好移除预约，
+            // 无条件 Release 会在宿主中抛错，使此前实机红字成为可回归的失败。
+            var f = Daily();
+            Pawn actor = f.driver.pawn;
+            Pawn target = (Pawn)f.driver.job.targetA.Thing;
+            target.Position = new IntVec3(5, 0, 0);
+            ReservationManager reservations = actor.Map.reservationManager;
+            actor.OnTeleport = () => reservations.Release(f.driver.job.targetA, actor, f.driver.job);
+            f.toils[0].initAction();
+            f.toils[2].initAction();
+            Equal(1, reservations.ReleaseCalls, "external release only");
+            Equal(SSCDefOf.SSC_TrainingReceiver, target.CurJobDef, "receiver still starts");
+            Equal(1, target.jobs.StartCalls, "receiver starts once");
+        });
+        Check("receiver handoff preserves reservation belonging to another job of the same pawn", () =>
+        {
+            // 人物和目标都相同仍不足以证明预约属于当前任务；另一 Job 的记录
+            // 必须保留，以免旧任务交接误释放替代任务的资源。
+            var f = Daily();
+            Pawn actor = f.driver.pawn;
+            Pawn target = (Pawn)f.driver.job.targetA.Thing;
+            ReservationManager reservations = actor.Map.reservationManager;
+            reservations.Release(f.driver.job.targetA, actor, f.driver.job);
+            var otherJob = new Job();
+            reservations.Reserve(target, actor, otherJob);
+            f.toils[2].initAction();
+            Require(reservations.ReservedBy(f.driver.job.targetA, actor, otherJob), "unrelated reservation lost");
+            Equal(1, reservations.ReleaseCalls, "no extra release");
+            Equal(SSCDefOf.SSC_TrainingReceiver, target.CurJobDef, "receiver still starts");
+        });
+        Check("repeated handoff reuses its receiver without releasing the reservation twice", () =>
+        {
+            // 接收器已经接管后再次请求交接，应复用同一 Job；此时原预约已经释放。
+            var f = Daily();
+            Pawn target = (Pawn)f.driver.job.targetA.Thing;
+            f.toils[2].initAction();
+            Job receiver = target.CurJob;
+            f.toils[2].initAction();
+            Equal(receiver, target.CurJob, "existing receiver was replaced");
+            Equal(1, target.jobs.StartCalls, "repeated start");
+            Equal(1, f.driver.pawn.Map.reservationManager.ReleaseCalls, "repeated release");
+        });
         Check("daily training follows moving targets using reachable touch mode", () =>
         {
             // 工作扫描已用 Touch 判断可达；直接枚举生产驱动，验证连续
@@ -87,7 +168,7 @@ internal static partial class Program
             }
             Equal(JobCondition.Incompletable, f.driver.pawn.jobs.EndCondition.Value, "blocked path outcome");
             Equal(10, f.driver.pawn.pather.StartPathCalls, "bounded retries");
-            Equal(1, TestWorld.PathValidationFailures, "target retry cooldown");
+            Equal(660, f.comp.lastFailedTrainingValidationTick, "target retry cooldown");
         });
         Check("daily walking interruption releases occupancy without payout or cooldown", () =>
         {

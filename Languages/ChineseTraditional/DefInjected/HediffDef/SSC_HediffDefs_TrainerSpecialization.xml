@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_Hediff_TrainerOfficer.label>性奴特化（訓導官）</SSC_Hediff_TrainerOfficer.label>
+  <SSC_Hediff_TrainerOfficer.description>該性奴正在接受訓導官培養。達到基礎階段後可獲得擔任調教員的資格，實際任職仍需手動開啟。</SSC_Hediff_TrainerOfficer.description>
+  <SSC_Hediff_TrainerOfficer.stages.0.label>訓導官培養中</SSC_Hediff_TrainerOfficer.stages.0.label>
+  <SSC_Hediff_TrainerOfficer.stages.1.label>性奴特化（訓導官）</SSC_Hediff_TrainerOfficer.stages.1.label>
+
+  <SSC_Hediff_TrainerOfficer_Final.label>性奴特化（終極訓導官）</SSC_Hediff_TrainerOfficer_Final.label>
+  <SSC_Hediff_TrainerOfficer_Final.description>該性奴已完成訓導官終極化。任職與效果仍取決於目前的綁定、鎖鏈階段和自由殖民者身分。</SSC_Hediff_TrainerOfficer_Final.description>
+
+  <SSC_Hediff_TrainerOfficer_FinalDisabled.label>性奴特化（終極訓導官，停用）</SSC_Hediff_TrainerOfficer_FinalDisabled.label>
+  <SSC_Hediff_TrainerOfficer_FinalDisabled.description>訓導官終極化紀錄仍在，但目前條件不足，專業效果與調教員資格暫時停用。</SSC_Hediff_TrainerOfficer_FinalDisabled.description>
+</LanguageData>

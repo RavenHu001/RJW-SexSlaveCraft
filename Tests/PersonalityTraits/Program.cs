@@ -36,6 +36,10 @@ internal static partial class Program
         Run("无训导官标签的凝胶清除宿主完成记录", TrainerMissingTagClearsHost);
         Run("训导官终极配方拒绝无基础标签、异常进度与重复完成记录", TrainerRecipeEligibility);
         Run("训导官终极配方复制历史并互斥替换标签", TrainerRecipeOutput);
+        Run("训导官原料在加工期间失效时保料且不扣账单次数", TrainerRecipeChangedDuringWork);
+        Run("训导官半成品在原版销毁容器前检查真实内装原料", TrainerRecipeUnfinishedProtection);
+        Run("训导官结算拒绝空来源、错误数量和多份人格集合", TrainerRecipeInvalidIngredientCollections);
+        Run("训导官结算守护保持其他人格配方与普通配方流程", TrainerRecipeLeavesOtherRecipesAlone);
         Run("多阶段记忆和自定义正负零好感经过提取与加工植入后保持", MemoryTransfer);
         Run("加工复制保留记忆全部字段且不共享可变记忆条目", MemoryCopyIsolation);
         Run("旧记忆快照在加工与植入后使用定义默认数值", LegacyMemoryTransfer);

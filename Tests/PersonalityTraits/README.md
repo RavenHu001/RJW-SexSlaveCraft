@@ -21,12 +21,13 @@ dotnet run --project Tests/PersonalityTraits/PersonalityTraits.csproj --configur
 - `common/PersonalityMemoryUtility.cs`：真实记忆快照、复制与恢复。
 - `Comps/Comp_Train.Specialization.cs`：真实方向切换、历史进度读写、完整导出与替换恢复。
 - `common/TrainerSpecializationGelUtility.cs` 与 `Recipe/Recipe_PEMake.cs`：训导官三种互斥标签、终极配方筛料及加工结算。
+- `ThePatches/Harmony_TrainerRecipeCompletion.cs`：真正结算前的原料复查，失效时终止任务，保护人格原料与账单次数。
 
 若要验证其他导出的源码目录，可传入 `-p:SscSourceRoot=<源码绝对目录>`。
 
 ## 覆盖内容
 
-共 28 个用例，其中原有的 15 个普通特质用例继续覆盖：
+共 32 个用例，其中原有的 15 个普通特质用例继续覆盖：
 
 - 跨身体替换普通特质，以及同身体恢复较早快照，包括同一定义的不同等级。
 - 保存受抑制普通特质，排除基因授予和 SSC 派生特质，并隔离源角色、凝胶与副本的可变特质实例。
@@ -47,6 +48,13 @@ dotnet run --project Tests/PersonalityTraits/PersonalityTraits.csproj --configur
 
 训导官阶段 3 追加 5 个用例：普通历史、有效终极和禁用终极随人格凝胶跨身体迁移，宿主旧标签不污染源人格；终极配方复查当前方向、进度及普通标签，拒绝重复加工和异常数值，并保留其他方向历史。
 
+整体复盘追加 4 个结算用例，并将原有正常产物用例改为经过最终 Toil 与账单：
+
+- Toil 建立后原料进度、方向或标签改变，在实际结算前拒绝；保留材料，不生成终极产物，不减少账单重复次数。
+- 半成品优先使用其内装原料；失效时保留半成品容器及人格，恢复合法数据后仍能正常加工。
+- 原料缺失、数量错误、已经销毁或夹带多份人格时拒绝，避免吞掉没有被复制的人格；请求一份但实体异常堆叠多份时，也须在分堆前拒绝，保留整堆原料。
+- 其他人格标签配方和普通生产配方仍按原版动作消耗与完成。
+
 ## 引擎替身契约与验证边界
 
 `GameStubs.cs` 为生产入口提供无界面环境。特质相关行为依据修复时核对的本机 RimWorld 1.6 程序集：
@@ -60,8 +68,10 @@ dotnet run --project Tests/PersonalityTraits/PersonalityTraits.csproj --configur
 
 训练组件使用生产分部类中的真实方向与历史算法，只把健康状态清理、训练状态对账等外部边界留为空实现。因此这些用例能验证快照数据和接线是否正确，不能代替实际健康状态联动测试。
 
+`RecipeGameStubs.cs` 的配方结算替身依据本机 RimWorld 1.6 程序集核对：`FinishRecipeAndStartStoringProduct` 的初始动作先执行 `CalculateIngredients`（半成品路径会消耗容器），再生成 XML 产物、消耗原料，最后调用 `Bill_Production.Notify_IterationCompleted`；账单先扣重复次数，再调用配方工作者。因此用例必须经过真实 SSC 结算补丁，不能以直接调用工作者后原料未销毁，作为游戏中“保料”的证据。正常产物的复制与标签修改仍运行生产工作者。测试直接调用真实补丁的 Postfix 安装包装动作，不模拟 Harmony 自动发现与运行时安装，也不模拟工人寻路、材料搬运、可堆叠材料分堆和产物搬运；实际 API 兼容性由 Release 构建核对，游戏内完整加工仍需实机验证。
+
 Scribe 替身记录和回放标量、定义与对象引用，并复制列表、字典容器。记忆条目的 `ExposeData` 单独验证全部字段；列表中的深层对象、跨存档人物或戒律引用解析以及 XML 节点格式不在模拟范围内。这是**存档字段契约验证，不是真实 RimWorld 存档文件往返测试**。
 
 测试假设相关 DLC 行为启用。定义、冲突、基因、健康状态与能力都是最小内存模型，不加载游戏 XML 或 Harmony 补丁；能力追踪器使用定义集合而不是真实能力实例。图像和缓存通知为空实现，私有特质缓存刷新入口则保留，以执行生产反射路径。后续基因变化、工作限制、需求、健康状态联动、界面与其他模组兼容性仍需游戏验证。
 
-缺失快照用例会主动验证一条预期错误；生产异常捕获中出现任何其他错误都会使当前用例失败。成功运行退出码为零，并输出 `RESULT: 28/28 cases passed.`。
+缺失快照用例会主动验证一条预期错误；生产异常捕获中出现任何其他错误都会使当前用例失败。成功运行退出码为零，并输出 `RESULT: 32/32 cases passed.`。

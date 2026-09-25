@@ -19,6 +19,10 @@ namespace SexSlaveCraft
 
     public partial class CompSexSlaveTraining
     {
+        // 普通培养完成沿用既有特化的 0.999 容差。界面与终极化配方
+        // 共用此值，避免单精度累计略低于 1 时出现“可加工但未完成”。
+        public const float SpecializationCompletionProgress = 0.999f;
+
         public SexSlaveSpecializationType specializationType = SexSlaveSpecializationType.None;
         public float specializationProgress = 0f;
         private Dictionary<string, float> perTypeProgress;

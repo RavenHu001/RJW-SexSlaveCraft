@@ -50,7 +50,8 @@ namespace SexSlaveCraft
             // 异常浮点值也必须拒绝：NaN 在普通“小于门槛”比较中会漏过。
             float progress = gel.specializationProgress;
             if (gel.specializationType != SexSlaveSpecializationType.TrainerOfficer
-                || float.IsNaN(progress) || float.IsInfinity(progress) || progress < 0.999f || progress > 1f)
+                || float.IsNaN(progress) || float.IsInfinity(progress)
+                || progress < CompSexSlaveTraining.SpecializationCompletionProgress || progress > 1f)
                 return false;
 
             // 基础标签证明凝胶仍处于普通培养状态；两种终极标签都证明已经加工过。
@@ -73,8 +74,9 @@ namespace SexSlaveCraft
 
             CompPersonalityStore sourceComp = sourceItem.TryGetComp<CompPersonalityStore>();
 
-            // 账单原料筛选发生在加工前；实际结算时再次检查训导官资格，
-            // 防止材料数据在工作期间改变后仍销毁原料并制作终极凝胶。
+            // 这里只负责拒绝生成不合法的产物，不能用来保护已被原版消耗的材料。
+            // 正常工作台账单会先经过 Harmony_TrainerRecipeCompletion 的消耗前检查；
+            // 这里保留复查，保护其他模组直接调用工作者时的输出资格。
             if (recipe is RecipeDef_PSTag finalRecipe
                 && TrainerOfficerRecipeUtility.IsFinalizationRecipe(finalRecipe)
                 && !TrainerOfficerRecipeUtility.IsEligibleGel(sourceComp)) return;

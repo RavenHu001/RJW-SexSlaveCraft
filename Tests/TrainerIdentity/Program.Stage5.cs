@@ -102,5 +102,45 @@ internal static partial class Program
                     .All(element => !string.IsNullOrWhiteSpace(element.Value)));
             }
         });
+
+        Run("训导官三类健康状态及普通阶段均有完整注入翻译", () =>
+        {
+            // 从实际 Def 提取健康页会显示的字段。阶段索引来自 XML 顺序，
+            // 后续增删阶段时不必手写第二份键列表，也不会只检查菜单 Keyed 文本。
+            var definitions = XDocument.Load(Path.Combine(repo, "Defs", "HediffDefs",
+                "SSC_HediffDefs_TrainerSpecialization.xml"));
+            var required = new HashSet<string>();
+            foreach (XElement definition in definitions.Root.Elements("HediffDef"))
+            {
+                string defName = definition.Element("defName")?.Value;
+                Assert(!string.IsNullOrWhiteSpace(defName));
+                foreach (string field in new[] { "label", "description" })
+                {
+                    Assert(!string.IsNullOrWhiteSpace(definition.Element(field)?.Value));
+                    required.Add(defName + "." + field);
+                }
+                XElement[] stages = definition.Element("stages")?.Elements("li").ToArray()
+                    ?? Array.Empty<XElement>();
+                for (int stage = 0; stage < stages.Length; stage++)
+                    if (stages[stage].Element("label") != null)
+                        required.Add(defName + ".stages." + stage + ".label");
+            }
+
+            // 三类状态共六项名称/说明，普通状态另有两个阶段名；简体中文
+            // 使用上述 Def 原文，其余三语须在实际加载目录中各提供唯一且非空的注入项。
+            Assert(required.Count == 8);
+            foreach (string language in new[] { "ChineseTraditional", "English", "Russian" })
+            {
+                string directory = Path.Combine(repo, "Languages", language, "DefInjected", "HediffDef");
+                var translations = Directory.GetFiles(directory, "*.xml")
+                    .SelectMany(path => XDocument.Load(path).Root.Elements())
+                    .Where(element => required.Contains(element.Name.LocalName))
+                    .GroupBy(element => element.Name.LocalName)
+                    .ToDictionary(group => group.Key, group => group.ToArray());
+                foreach (string key in required)
+                    Assert(translations.TryGetValue(key, out XElement[] entries) && entries.Length == 1
+                        && !string.IsNullOrWhiteSpace(entries[0].Value));
+            }
+        });
     }
 }

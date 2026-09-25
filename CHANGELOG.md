@@ -16,6 +16,8 @@ This continuation builds on upstream **2.2.8**, the baseline when upstream devel
 - Preserves an explicit Unset specialization after finalization. Daily Training uses Touch approach, clears a trainer's stale UAP position lock, and retries a stopped path for a bounded period. The maintainer confirmed both fixes in game.
 - 调教接收任务仅释放当前发起任务实际持有的目标预约，修复预约已经消失时的红字；维护者已确认实机有效。
 - The Training receiver releases a target reservation only when the current initiating job still owns it, fixing the error when the reservation is already gone. The maintainer confirmed the fix in game.
+- 终极化配方在消耗前拒绝失效或异常人格凝胶，保留材料与账单次数；普通完成提示和配方统一使用浮点容差。身份区适应长译文，补齐繁中、英、俄健康状态翻译，并减少重复资格查询。本轮复盘修复已通过自动验证，维护者实机复测未发现问题并授权提交。
+- Finalization now rejects invalid or malformed personality gels before consuming ingredients or bill repetitions. Completion status and recipe eligibility share one floating-point tolerance. The identity panel fits longer translations; Traditional Chinese, English and Russian health-state text is complete, with fewer repeated eligibility queries. Automated checks passed; the maintainer reported no issues during in-game retesting and approved the commit.
 
 ### Progression: Education 兼容 / Progression: Education compatibility
 

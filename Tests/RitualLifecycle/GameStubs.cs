@@ -23,12 +23,17 @@ namespace Verse
     public class ThingComp { public Thing parent; }
     public class Thing
     {
+        public string Label => "test thing";
         public readonly List<ThingComp> comps = new List<ThingComp>();
         /// <summary>从测试对象的组件列表返回首个匹配类型的组件；找不到时返回 null。</summary>
         public T TryGetComp<T>() where T : ThingComp => comps.Find(comp => comp is T) as T;
     }
     public partial class Pawn : Thing
     {
+        public Pawn()
+        {
+            jobs.pawn = this;
+        }
         public bool Dead, Destroyed, Downed, IsSlave, IsPrisonerOfColony;
         public bool IsColonist = true;
         public Pawn BoundMaster;
@@ -43,6 +48,9 @@ namespace Verse
         public string LabelShort = "test pawn";
         public string Name => LabelShort;
         public IntVec3 Position;
+        public Action OnTeleport;
+        /// <summary>提供原版传送通知边界，可模拟其他模组在此处清理预约。</summary>
+        public void Notify_Teleported(bool endCurrentJob, bool resetTweenedPos) => OnTeleport?.Invoke();
         public Pawn_DrawTracker Drawer = new Pawn_DrawTracker();
         public bool Reachable = true;
         public bool Reservable = true;
@@ -53,7 +61,11 @@ namespace Verse
         /// <summary>返回用例配置的预定检查结果；不会创建真实预定。</summary>
         public bool CanReserve(Pawn target, int maxPawns, int stackCount, object layer, bool forced) => Reservable;
     }
-    public class Map { public LordManager lordManager = new LordManager(); }
+    public class Map
+    {
+        public LordManager lordManager = new LordManager();
+        public ReservationManager reservationManager = new ReservationManager();
+    }
     public enum Danger { Deadly }
     public readonly record struct IntVec3(int x, int y, int z);
     public struct LocalTargetInfo
@@ -74,6 +86,7 @@ namespace Verse
     }
     public static class Log
     {
+        public static void Warning(string message) { }
         /// <summary>将生产代码的错误日志写入测试输出，便于定位执行失败。</summary>
         public static void Error(string message) => Console.WriteLine(message);
         /// <summary>忽略日常驱动诊断，避免混入测试计数输出。</summary>
@@ -108,6 +121,11 @@ namespace Verse.AI
         public bool MovingNow, BlockStarts;
         public int StartPathCalls;
         public PathEndMode LastEndMode;
+        public Action OnArrival;
+        /// <summary>同步位置后停止移动；不替生产工具执行任务交接。</summary>
+        public void StopDead() => MovingNow = false;
+        /// <summary>以明确的到达信号推进测试步骤，不实现地图寻路算法。</summary>
+        public void Arrive() { MovingNow = false; OnArrival?.Invoke(); }
         /// <summary>记录生产驱动的补发寻路；可模拟外部位置锁吞掉 StartPath。</summary>
         public void StartPath(LocalTargetInfo target, PathEndMode mode)
         {
@@ -121,14 +139,44 @@ namespace Verse.AI
         /// <summary>按给定定义和目标创建测试 Job，供生产 JobGiver 填充其余字段。</summary>
         public static Job MakeJob(JobDef def, Pawn target)
             => new Job { def = def, targetA = new LocalTargetInfo(target) };
+        public static Job MakeJob(JobDef def, Pawn target, IntVec3 cell)
+            => new Job { def = def, targetA = new LocalTargetInfo(target), targetB = new LocalTargetInfo(cell) };
     }
     public class Pawn_JobTracker
     {
+        public Pawn pawn;
+        public int StartCalls;
         public Job curJob;
         public JobDriver curDriver;
         public JobCondition? EndCondition;
         /// <summary>记录请求的 Job 结束原因；具体收尾回调由测试执行器显式驱动。</summary>
         public void EndCurrentJob(JobCondition condition) { EndCondition = condition; }
+        /// <summary>模拟原版安装接收任务的外部边界；失败控制在此，生产交接工具照常执行。</summary>
+        public void StartJob(Job next, JobCondition condition)
+        {
+            StartCalls++;
+            if (!TestWorld.ReceiverSucceeds) return;
+            curJob = next;
+            curDriver = new JobDriver_TrainingReceiver { pawn = pawn, job = next };
+        }
+    }
+    /// <summary>最小预约存储：按目标、角色和 Job 匹配，错误释放抛异常，以暴露重复 Release。</summary>
+    public class ReservationManager
+    {
+        private readonly List<(Thing target, Pawn actor, Job job)> reservations = new List<(Thing, Pawn, Job)>();
+        public int ReleaseCalls;
+        /// <summary>记录引擎边界收到的预约申请，不代替生产任务进行申请。</summary>
+        public void Reserve(Thing target, Pawn actor, Job job) => reservations.Add((target, actor, job));
+        /// <summary>按三个引用共同匹配，允许测试区分同一角色的不同工作。</summary>
+        public bool ReservedBy(LocalTargetInfo target, Pawn actor, Job job)
+            => reservations.Any(r => r.target == target.Thing && r.actor == actor && r.job == job);
+        /// <summary>错误释放直接使回归失败，不像游戏日志那样容许用例继续通过。</summary>
+        public void Release(LocalTargetInfo target, Pawn actor, Job job)
+        {
+            if (!ReservedBy(target, actor, job)) throw new InvalidOperationException("Tried to release an unreserved target.");
+            reservations.RemoveAll(r => r.target == target.Thing && r.actor == actor && r.job == job);
+            ReleaseCalls++;
+        }
     }
     public enum JobCondition { Incompletable, InterruptForced, Succeeded }
     public enum PathEndMode { Touch, OnCell }
@@ -136,6 +184,7 @@ namespace Verse.AI
     public enum ToilCompleteMode { Instant, Never }
     public class Toil
     {
+        public Pawn actor;
         public Action initAction;
         public Action tickAction;
         public bool handlingFacing;
@@ -158,7 +207,13 @@ namespace Verse.AI
         public static Toil GotoThing(TargetIndex index, PathEndMode mode)
         {
             TestWorld.LastGotoThingMode = mode;
-            return new Toil { initAction = () => TestWorld.OnGotoInit?.Invoke() };
+            var toil = new Toil();
+            toil.initAction = () =>
+            {
+                TestWorld.OnGotoInit?.Invoke();
+                toil.actor.pather.StartPath(toil.actor.CurJob.targetA, mode);
+            };
+            return toil;
         }
     }
     public abstract class ThinkNode_JobGiver
@@ -170,13 +225,21 @@ namespace Verse.AI
     }
     public abstract class JobDriver
     {
+        public bool asleep;
         public Pawn pawn;
         public Job job;
         public bool ReadyForNext;
         /// <summary>保留生产 JobDriver 的 Toil 构造契约，由实际生产实现生成流程。</summary>
         protected abstract IEnumerable<Toil> MakeNewToils();
         /// <summary>向测试公开生产 Toil 枚举入口，便于显式执行各阶段回调。</summary>
-        public IEnumerable<Toil> CreateToilsForTest() => MakeNewToils();
+        public IEnumerable<Toil> CreateToilsForTest()
+        {
+            foreach (Toil toil in MakeNewToils())
+            {
+                toil.actor = pawn;
+                yield return toil;
+            }
+        }
         /// <summary>为生产覆写提供默认成功的宿主入口；不创建真实游戏预定。</summary>
         public virtual bool TryMakePreToilReservations(bool errorOnFailed) => true;
         /// <summary>提供基类存档入口占位；不模拟游戏基类的序列化及引用恢复。</summary>
@@ -264,6 +327,8 @@ namespace SexSlaveCraft
         public SexSlaveSpecializationType specializationType;
         public float specializationProgress;
         public int lastTrainingTick = -999999;
+        public int lastFailedTrainingValidationTick = -999999;
+        public const int FailedValidationRetryTicks = 300;
         /// <summary>若仪式路径误用日常训练完成入口则立即报错，防止测试遗漏冷却污染。</summary>
         public void Notify_TrainingCompleted()
         {
@@ -306,34 +371,15 @@ namespace SexSlaveCraft
             return pawn != null && pawn.Spawned && !pawn.Dead;
         }
     }
-    public static class TrainingJobUtility
+    public static class LifeForceConflictUtility
     {
-        /// <summary>复用宿主目标资格判断；有效用例中返回 true，不模拟生产失败后的中止副作用。</summary>
-        public static bool TryValidateStartOrAbort(Pawn master, Pawn slave, string prefix)
-            => Trainjudge.TryCanBeFuckedWithReason(slave, out _, out _);
-        /// <summary>直接同步双方的测试坐标；不执行寻路停止或传送通知。</summary>
-        public static void SyncPartnerPosition(Pawn master, Pawn slave, IntVec3? cell = null)
-        { master.Position = cell ?? slave.Position; slave.Position = master.Position; }
-        /// <summary>提供唤醒占位入口；宿主参与者没有睡眠状态。</summary>
-        public static void EnsureAwake(Pawn pawn) { }
-        /// <summary>按用例控制接收准备能否成功，不模拟真实任务调度。</summary>
-        public static bool TryStartDailyTrainingReceiver(Pawn actor, Pawn target, Job job, JobDef receiver) => TestWorld.ReceiverSucceeds;
-        /// <summary>复位日常占用，保留仪式占用。</summary>
-        public static void CleanupTrainingState(Pawn pawn) { var c = pawn.TryGetComp<CompSexSlaveTraining>(); if (!c.isRitualTraining) c.isBeingTrained = false; }
-        /// <summary>记录验证失败边界；测试不推进真实游戏冷却。</summary>
-        public static void MarkValidationFailure(Pawn pawn, string prefix) => TestWorld.PathValidationFailures++;
-        /// <summary>给目标分配测试接收 Job 并返回成功；不运行真实接收端调度。</summary>
-        public static bool TryStartBindingRitualReceiver(Pawn master, Pawn slave, Job job, JobDef receiver, IntVec3 cell)
-        { TestWorld.AssignReceiverJob(slave); return true; }
-        /// <summary>提供启动失败路径的简化标记复位；当前用例不通过此适配器验证生产失败恢复逻辑。</summary>
-        public static void NotifyTrainingAborted(Pawn pawn)
-        { var comp = pawn.TryGetComp<CompSexSlaveTraining>(); comp.isBeingTrained = false; comp.isRitualTraining = false; }
-        /// <summary>设置宿主训练标记，并在指定仪式模式时标记仪式训练。</summary>
-        public static void MarkTrainingStarted(Pawn pawn, bool ritual)
-        { var comp = pawn.TryGetComp<CompSexSlaveTraining>(); comp.isBeingTrained = true; comp.isRitualTraining |= ritual; }
+        /// <summary>外部基因迁移不属于本套件，保留生产目标验证所需签名。</summary>
+        public static void TryRemoveLifeForceGeneIfConflicting(Pawn pawn) { }
     }
     public static class OnaholeCompatibilityUtility
     {
+        /// <summary>本套件没有家具接收器，专用伙伴注册交由外部兼容用例验证。</summary>
+        public static bool TryRegisterOnaholePartner(Pawn target, Pawn actor) => false;
         /// <summary>固定返回同步成功，使测试进入正常场景初始化路径。</summary>
         public static bool TrySynchronizeOnaholeSexProps(Pawn pawn, rjw.SexProps props) => TestWorld.SynchronizeSucceeds;
         /// <summary>正常用例保持接收有效，拒绝清理由交互套件单独验证。</summary>
@@ -410,7 +456,6 @@ internal static class TestWorld
     public static int RjwEndCalls;
     public static PathEndMode LastGotoThingMode;
     public static Action OnGotoInit;
-    public static int PathValidationFailures;
     public static Action<rjw.JobDriver_SexBaseInitiator> OnRjwStart;
 
     /// <summary>重建隔离的测试地图，清零调用计数并恢复 Job 定义，避免用例相互污染。</summary>
@@ -421,7 +466,6 @@ internal static class TestWorld
         ProcessSexCalls = DailyOutcomes = DailyCooldowns = TrainerProgressAwards = 0;
         ReceiverSucceeds = SynchronizeSucceeds = true;
         RjwEndCalls = 0;
-        PathValidationFailures = 0;
         LastGotoThingMode = PathEndMode.OnCell;
         OnGotoInit = null;
         Find.TickManager.TicksGame = 0;

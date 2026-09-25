@@ -89,12 +89,13 @@ namespace SexSlaveCraft
             if (comp == null || comp.specializationType != SexSlaveSpecializationType.TrainerOfficer)
                 return TrainerSpecializationDisplayState.None;
 
-            // 普通进度到 100% 仍待人格凝胶终极化。坏档的 NaN/无穷值不应
-            // 在状态文本中冒充已完成或已经跨过基础阶段。
+            // 普通完成仍待人格凝胶终极化；使用配方同一容差处理浮点累计。
+            // 坏档的 NaN/无穷值不应在状态文本中冒充已完成或已跨过基础阶段。
             float progress = comp.specializationProgress;
             if (float.IsNaN(progress) || float.IsInfinity(progress))
                 return TrainerSpecializationDisplayState.Training;
-            if (progress >= 1f) return TrainerSpecializationDisplayState.OrdinaryComplete;
+            if (progress >= CompSexSlaveTraining.SpecializationCompletionProgress)
+                return TrainerSpecializationDisplayState.OrdinaryComplete;
             if (progress >= BasicQualificationProgress) return TrainerSpecializationDisplayState.BasicUnlocked;
             return TrainerSpecializationDisplayState.Training;
         }
@@ -133,7 +134,10 @@ namespace SexSlaveCraft
 
             // 只认锁链指向的实际主人；GetResolvedMaster 可能回退到指定调教员，
             // 若在这里使用，会让无主性奴借他人指派取得“最臣服”的资格。
-            if (SSCBondUtility.GetBoundMaster(pawn) == null)
+            // 在这一次查询中保留锁链引用，绑定和阶段共用读取结果；
+            // 不把引用跨 tick 缓存，第三方替换锁链后下一次查询立即生效。
+            Hediff_ChainOfSexSlave chain = SSCBondUtility.GetChain(pawn);
+            if (chain?.LinkedPawn == null)
             {
                 failure = TrainerSpecializationFailure.NoBoundMaster;
                 return false;
@@ -141,7 +145,7 @@ namespace SexSlaveCraft
 
             // 阶段取当前锁链严重度。历史达到过第 3 阶段但现已退阶时，
             // 普通培养与终极效果都必须立即失格，不等待低频 Hediff 维护。
-            if (SSCIdentityUtility.GetSexSlaveStage(pawn) < RequiredSexSlaveStage)
+            if (SSCIdentityUtility.GetSexSlaveStageFromChain(chain) < RequiredSexSlaveStage)
             {
                 failure = TrainerSpecializationFailure.ChainStageTooLow;
                 return false;

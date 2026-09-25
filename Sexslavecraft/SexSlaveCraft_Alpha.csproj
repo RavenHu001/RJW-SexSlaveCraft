@@ -245,6 +245,7 @@
     <Compile Include="ThePatches\Harmony_PreventWearEFOutfit.cs" />
     <Compile Include="ThePatches\Harmony_ProtectSexSlave.cs" />
     <Compile Include="ThePatches\Harmony_RecipeMaterial.cs" />
+    <Compile Include="ThePatches\Harmony_TrainerRecipeCompletion.cs" />
     <Compile Include="ThePatches\Harmony_SexSlaveCorruptionAdd.cs" />
     <Compile Include="ThePatches\Harmony_SexSlaveNameColor.cs" />
     <Compile Include="ThePatches\Harmony_SlaveWorkRestrictions.cs" />

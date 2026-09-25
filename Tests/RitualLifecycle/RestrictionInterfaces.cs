@@ -13,11 +13,21 @@ namespace Verse
     {
         /// <summary>提供提示目标签名，不模拟镜头跳转。</summary>
         public LookTargets(params Pawn[] pawns) { }
+        /// <summary>保留原版 Pawn 提示目标的隐式转换，不实现消息显示逻辑。</summary>
+        public static implicit operator LookTargets(Pawn pawn) => new LookTargets(pawn);
     }
     public static class Messages
     {
         /// <summary>接收生产取消提示，不在测试中显示界面。</summary>
         public static void Message(string reason, LookTargets targets, object type, bool historical) { }
+    }
+}
+namespace Verse.AI
+{
+    public static class JobFailReason
+    {
+        /// <summary>仅提供手动工作失败理由的接口；测试不绘制右键菜单。</summary>
+        public static void Is(string reason) { }
     }
 }
 namespace RimWorld { public static class MessageTypeDefOf { public static object RejectInput = new object(); } }

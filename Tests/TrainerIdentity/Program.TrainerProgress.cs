@@ -11,6 +11,34 @@ internal static partial class Program
     /// <summary>以生产经验工具检验三种收益、前置资格、异常值和终极化边界。</summary>
     private static void RunTrainerProgressTests()
     {
+        Run("真实浮点累计达到普通完成容差时显示完成", () =>
+        {
+            // 两条正常成长路径会在单精度中略低于 1。用生产奖励入口累加，
+            // 确认显示与配方共用的完成容差一致，而非仅测试直接赋值 1f。
+            foreach (var scenario in new[]
+            {
+                (start: 0f, count: 100, amount: TrainerSpecializationProgressUtility.InitiatedSexProgress),
+                (start: 0.2f, count: 32, amount: TrainerSpecializationProgressUtility.ProvidedTrainingProgress)
+            })
+            {
+                Pawn pawn = EligibleTrainerPawn();
+                pawn.Training.SetSpecialization(SexSlaveSpecializationType.TrainerOfficer);
+                pawn.Training.specializationProgress = scenario.start;
+                for (int i = 0; i < scenario.count; i++)
+                    TrainerSpecializationProgressUtility.TryGainProgress(pawn, scenario.amount);
+                Assert(pawn.Training.specializationProgress >= CompSexSlaveTraining.SpecializationCompletionProgress);
+                Assert(TrainerSpecializationUtility.GetDisplayState(pawn) == TrainerSpecializationDisplayState.OrdinaryComplete);
+            }
+
+            // 完成容差以下仍显示基础阶段；恰好到达公共边界时才转为普通完成。
+            Pawn boundary = EligibleTrainerPawn();
+            boundary.Training.SetSpecialization(SexSlaveSpecializationType.TrainerOfficer);
+            boundary.Training.specializationProgress = 0.998f;
+            Assert(TrainerSpecializationUtility.GetDisplayState(boundary) == TrainerSpecializationDisplayState.BasicUnlocked);
+            boundary.Training.specializationProgress = CompSexSlaveTraining.SpecializationCompletionProgress;
+            Assert(TrainerSpecializationUtility.GetDisplayState(boundary) == TrainerSpecializationDisplayState.OrdinaryComplete);
+        });
+
         Run("训导官三类经验单次收益按被调教、施教、主动行为递减", () =>
         {
             // 数值来自统一工具，避免不同事件自行写常量导致策划顺序失效。

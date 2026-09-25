@@ -36,6 +36,7 @@
 - [RimTalk兼容隔离](Development/RimTalk兼容隔离.md)
 - [Education 与调教任务抢占](Development/ProgressionEducation与调教任务抢占核查.md)：问题核查及自动调教避让课程的可选兼容组件。
 - [训导官阶段 5 与实机反馈](Development/训导官特化阶段5.md)：主体完成结论、验证范围及待量化项目。
+- [训导官特化复盘修复](Development/训导官特化复盘修复.md)：配方消耗前检查、统一完成阈值、查询与界面优化，以及凝胶恢复和预约交接回归。
 - [终极化方向清空与连续调教任务](Development/终极化方向清空与连续调教任务.md)：两项附带缺陷的原因、修复与复测边界。
 - [主奴同床优化](Development/主奴同床优化.md)
 - [人格凝胶界面布局调整](Development/人格凝胶界面布局调整.md)
@@ -100,6 +101,7 @@
 - [Tests/RitualProgression](../Tests/RitualProgression/README.md)
 - [Tests/SharedBed](../Tests/SharedBed/README.md)
 - [Tests/TrainerIdentity](../Tests/TrainerIdentity/README.md)
+- [Tests/TrainerIntegration](../Tests/TrainerIntegration/README.md)
 - [Tests/ValidationRunner](../Tests/ValidationRunner/README.md)：统一验证与打包阻断的流程检查。
 
 ## 文档维护约定
