@@ -17,6 +17,10 @@ namespace SexSlaveCraft
         // 展开入口属于左侧滚动内容；高度和间隔同时用于绘制及总高度计算。
         private const float RestrictionToggleHeight = 30f;
         private const float RestrictionToggleSpacing = 8f;
+        // 训导官有独立于当前培养方向的终极记录；多一行状态时同步增加绘制区与滚动高度。
+        private const float SpecializationSectionHeight = 124f;
+        private const float TrainerStatusExtraHeight = 44f;
+        private const float RabbitModeExtraHeight = 28f;
         private static readonly Vector2 WinSize = new Vector2(360f, 560f);
 
         private Vector2 scrollPosition;
@@ -156,7 +160,8 @@ namespace SexSlaveCraft
                 {
                     curY = DrawTrainingSection(new Rect(0f, curY, contentRect.width, 124f), pawn, comp) + SectionSpacing;
                     curY = DrawScheduleSection(new Rect(0f, curY, contentRect.width, 210f), pawn, comp) + SectionSpacing;
-                    curY = DrawSpecializationSection(new Rect(0f, curY, contentRect.width, 124f), pawn, comp) + SectionSpacing;
+                    curY = DrawSpecializationSection(new Rect(0f, curY, contentRect.width,
+                        GetSpecializationSectionHeight(pawn, comp)), pawn, comp) + SectionSpacing;
 
                     if (pawn.health.hediffSet.HasHediff(SSCDefOf.SSC_Lactating_SubState))
                     {
@@ -190,7 +195,7 @@ namespace SexSlaveCraft
 
             height += SectionSpacing + 124f;
             height += SectionSpacing + 210f;
-            height += SectionSpacing + 124f;
+            height += SectionSpacing + GetSpecializationSectionHeight(pawn, comp);
             if (pawn.health.hediffSet.HasHediff(SSCDefOf.SSC_Lactating_SubState))
             {
                 height += SectionSpacing + 88f;
@@ -205,6 +210,20 @@ namespace SexSlaveCraft
         private static float GetIdentitySectionHeight(CompSexSlaveTraining comp)
         {
             return comp.pawnIdentity == PawnIdentity.Slave ? 146f : 126f;
+        }
+
+        /// <summary>按训导官状态和兔特化模式计算区块高度，供绘制和滚动范围共用。</summary>
+        private static float GetSpecializationSectionHeight(Pawn pawn, CompSexSlaveTraining comp)
+        {
+            // 状态行在窄栏和长译文下可能换成两行；兔特化的繁殖模式仍可能
+            // 同时出现，因此两项额外高度分别计算，避免跨方向终极记录遮挡后续控件。
+            bool showTrainerStatus = comp.specializationType == SexSlaveSpecializationType.TrainerOfficer ||
+                TrainerSpecializationUtility.HasFinalRecord(pawn);
+            bool showRabbitMode = comp.IsPetRabbitSpecialized ||
+                PetSpecializationUtility.HasAnyPetState(pawn, SexSlaveSpecializationType.PetRabbit);
+            return SpecializationSectionHeight +
+                (showTrainerStatus ? TrainerStatusExtraHeight : 0f) +
+                (showRabbitMode ? RabbitModeExtraHeight : 0f);
         }
 
         /// <summary>绘制 SSC 身份及调教员开关；已有绑定时禁用身份按钮并提示原因。</summary>
@@ -282,16 +301,21 @@ namespace SexSlaveCraft
             bool enabled = comp.pawnIdentity == PawnIdentity.Master ||
                 comp.pawnIdentity == PawnIdentity.Slave && comp.slaveTrainerEnabled;
             bool previous = enabled;
+            TrainerSpecializationFailure failure = TrainerSpecializationFailure.None;
             bool qualified = comp.pawnIdentity == PawnIdentity.Slave &&
-                TrainerSpecializationUtility.HasTrainerQualification(pawn, out _);
+                TrainerSpecializationUtility.HasTrainerQualification(pawn, out failure);
             bool active = SSCIdentityUtility.IsTrainer(pawn);
             string label = "SSC_TrainerIdentity_Label".Translate();
-            if (enabled && !active) label += "SSC_TrainerIdentity_SavedInactive".Translate();
+            if (comp.pawnIdentity == PawnIdentity.Slave)
+                label += active ? "SSC_TrainerIdentity_Active".Translate() :
+                    enabled ? "SSC_TrainerIdentity_SavedInactive".Translate() :
+                    "SSC_TrainerIdentity_Off".Translate();
             string tooltip = (comp.pawnIdentity == PawnIdentity.Master ? "SSC_TrainerIdentity_MasterTip"
                 : comp.pawnIdentity == PawnIdentity.Slave ? "SSC_TrainerIdentity_SlaveTip"
                 : "SSC_TrainerIdentity_UnsetTip").Translate();
             if (comp.pawnIdentity == PawnIdentity.Slave && !qualified)
-                tooltip += "\n\n" + "SSC_TrainerIdentity_QualificationTip".Translate();
+                tooltip += "\n\n" + "SSC_TrainerIdentity_QualificationTip".Translate() +
+                    "\n" + GetTrainerFailureReason(failure);
             bool oldEnabled = GUI.enabled;
             try
             {
@@ -305,6 +329,14 @@ namespace SexSlaveCraft
                 GUI.enabled = oldEnabled;
             }
             if (enabled != previous) SSCIdentityUtility.SetTrainerEnabled(pawn, enabled);
+        }
+
+        /// <summary>将只读资格失败码转换为菜单和任职开关共用的具体说明。</summary>
+        private static string GetTrainerFailureReason(TrainerSpecializationFailure failure)
+        {
+            // 失格原因只影响显示；菜单和工作入口仍调用资格工具重新判断，
+            // 避免翻译文本或界面刷新时机成为另一套权限规则。
+            return ("SSC_TrainerIdentity_Failure_" + failure).Translate();
         }
 
         /// <summary>绘制调教设置，并保证控件中断时结束本节列表。</summary>
@@ -730,7 +762,8 @@ namespace SexSlaveCraft
                     } : null),
                     BuildPetSpecializationOption(pawn, comp, SexSlaveSpecializationType.PetCat),
                     BuildPetSpecializationOption(pawn, comp, SexSlaveSpecializationType.PetDog),
-                    BuildPetSpecializationOption(pawn, comp, SexSlaveSpecializationType.PetRabbit)
+                    BuildPetSpecializationOption(pawn, comp, SexSlaveSpecializationType.PetRabbit),
+                    BuildTrainerSpecializationOption(pawn, comp)
                 };
                 Find.WindowStack.Add(new FloatMenu(options));
             }
@@ -743,7 +776,53 @@ namespace SexSlaveCraft
                 ? Strings.ITab_SpecializationComplete
                 : comp.specializationProgress.ToStringPercent();
             listing.Label(Strings.ITab_SpecializationProgress(progressText));
+            TrainerSpecializationDisplayState trainerState = TrainerSpecializationUtility.GetDisplayState(pawn);
+            if (trainerState != TrainerSpecializationDisplayState.None)
+            {
+                // 终极记录可在培养其他方向时继续存在，故始终显示独立状态；
+                // 普通方向的基础资格和 100% 完成则仅在当前培养训导官时出现。
+                string status = ("SSC_TrainerIdentity_Status_" + trainerState).Translate().ToString();
+                string tip = trainerState == TrainerSpecializationDisplayState.FinalDisabled
+                    ? GetTrainerFinalDisabledReason(pawn)
+                    : "SSC_TrainerIdentity_RestrictionTip".Translate().ToString();
+                listing.Label("SSC_TrainerIdentity_StatusLine".Translate(status), -1f, tip);
+            }
             DrawRabbitReproductionModeSelector(listing, pawn, comp);
+        }
+
+        /// <summary>终极记录禁用时优先说明当前持续条件；标记等待维护时给出专门提示。</summary>
+        private static string GetTrainerFinalDisabledReason(Pawn pawn)
+        {
+            return TrainerSpecializationUtility.MeetsContinuousConditions(pawn, out TrainerSpecializationFailure failure)
+                ? "SSC_TrainerIdentity_FinalDisabledPending".Translate().ToString()
+                : GetTrainerFailureReason(failure);
+        }
+
+        /// <summary>构造始终可见的训导官菜单项，并在点击时复查研究和培养条件。</summary>
+        private static FloatMenuOption BuildTrainerSpecializationOption(Pawn pawn, CompSexSlaveTraining comp)
+        {
+            bool available = TrainerSpecializationUtility.CanSelectTrainerSpecialization(pawn,
+                out TrainerSpecializationFailure failure);
+            string label = Strings.ITab_SelectSpecializationTrainerOfficer;
+            if (!available)
+                label += failure == TrainerSpecializationFailure.AlreadyFinalized
+                    ? " " + Strings.ITab_SpecializationFinalizedSuffix
+                    : " (" + GetTrainerFailureReason(failure) + ")";
+
+            // 已置灰的选项没有动作；可用选项仍须在点击时复查，避免菜单打开后
+            // 解绑、退阶、身份变化或研究状态变化绕过选择门槛。
+            return new FloatMenuOption(label, available ? (Action)delegate
+            {
+                if (!TrainerSpecializationUtility.CanSelectTrainerSpecialization(pawn,
+                    out TrainerSpecializationFailure currentFailure))
+                {
+                    Messages.Message("SSC_TrainerIdentity_SelectionRejected".Translate(
+                        GetTrainerFailureReason(currentFailure)), pawn, MessageTypeDefOf.RejectInput, false);
+                    return;
+                }
+                if (pawn.TryGetComp<CompSexSlaveTraining>() != comp) return;
+                comp.SetSpecialization(SexSlaveSpecializationType.TrainerOfficer);
+            } : null);
         }
 
         /// <summary>查询角色是否持有任一已完成特化状态，供未选择方向时显示摘要。</summary>
@@ -753,7 +832,8 @@ namespace SexSlaveCraft
                 || BusSpecializationUtility.HasFinalCowState(pawn)
                 || PetSpecializationUtility.HasFinalPetState(pawn, SexSlaveSpecializationType.PetCat)
                 || PetSpecializationUtility.HasFinalPetState(pawn, SexSlaveSpecializationType.PetDog)
-                || PetSpecializationUtility.HasFinalPetState(pawn, SexSlaveSpecializationType.PetRabbit);
+                || PetSpecializationUtility.HasFinalPetState(pawn, SexSlaveSpecializationType.PetRabbit)
+                || TrainerSpecializationUtility.HasFinalRecord(pawn);
         }
 
         /// <summary>按指定特化方向检查对应终极状态，不让其他方向的完成状态影响结果。</summary>
@@ -765,6 +845,8 @@ namespace SexSlaveCraft
                     return BusSpecializationUtility.HasFinalBusState(pawn);
                 case SexSlaveSpecializationType.Cow:
                     return BusSpecializationUtility.HasFinalCowState(pawn);
+                case SexSlaveSpecializationType.TrainerOfficer:
+                    return TrainerSpecializationUtility.HasFinalRecord(pawn);
                 case SexSlaveSpecializationType.PetCat:
                 case SexSlaveSpecializationType.PetDog:
                 case SexSlaveSpecializationType.PetRabbit:
@@ -785,6 +867,9 @@ namespace SexSlaveCraft
                     break;
                 case SexSlaveSpecializationType.Cow:
                     label = Strings.ITab_SpecializationCow;
+                    break;
+                case SexSlaveSpecializationType.TrainerOfficer:
+                    label = Strings.ITab_SpecializationTrainerOfficer;
                     break;
                 case SexSlaveSpecializationType.PetCat:
                 case SexSlaveSpecializationType.PetDog:
@@ -823,6 +908,11 @@ namespace SexSlaveCraft
                         return finalizedLabel;
                     }
                 }
+
+                // 保留既有方向摘要的优先级；若仅有训导官终极记录，菜单按钮
+                // 也直接展示它。多终极记录时下方独立状态行仍提示训导官状态。
+                if (TrainerSpecializationUtility.HasFinalRecord(pawn))
+                    return Strings.ITab_SpecializationTrainerOfficer + " " + Strings.ITab_SpecializationFinalizedSuffix;
             }
 
             bool finalized = IsTypeFinalized(pawn, comp.specializationType);

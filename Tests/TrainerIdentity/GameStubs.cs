@@ -315,6 +315,7 @@ namespace SexSlaveCraft
     public static class SSCDefOf
     {
         public static object SexSlaveTrait = new object(), ChainOfSexSlave = new object(), BridleOfSexSlave = new object(), SSC_BasicTraining = new object();
+        public static object SSC_RES_TrainerOfficer = new object();
         // 三个不同对象模拟已解析的普通、有效终极与禁用终极 Def。
         public static HediffDef SSC_Hediff_TrainerOfficer = new HediffDef(), SSC_Hediff_TrainerOfficer_Final = new HediffDef(), SSC_Hediff_TrainerOfficer_FinalDisabled = new HediffDef();
         public static JobDef SSC_TrainingReceiver = new JobDef(), Training_Ritual = new JobDef(), TrainingSexSlave = new JobDef();
@@ -326,8 +327,9 @@ namespace SexSlaveCraft
         /// <summary>读取用例显式配置的公交车状态。</summary>
         public static bool HasAnyBusState(Pawn pawn) => pawn?.Training.BusState == true; }
     public static class ResearchUtils {
-        /// <summary>默认研究已完成，许可测试不模拟科技树。</summary>
-        public static bool IsResearchFinished(object def) => true; }
+        /// <summary>默认研究已完成；阶段 5 菜单用例可以暂时关闭研究检查。</summary>
+        public static bool TrainerOfficerResearchFinished = true;
+        public static bool IsResearchFinished(object def) => def != SSCDefOf.SSC_RES_TrainerOfficer || TrainerOfficerResearchFinished; }
     public static class BindingRitualStateUtility
     {
         public static int RecoveryCalls;

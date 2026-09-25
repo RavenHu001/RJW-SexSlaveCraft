@@ -150,7 +150,7 @@
     <researchViewY>1.00</researchViewY>
   </ResearchProjectDef>
 
-  <!-- 与其他第一层性奴特化研究并列，解锁训导官人格凝胶的终极化配方。 -->
+  <!-- 与其他第一层性奴特化研究并列，允许从菜单选择训导官方向，并解锁终极人格凝胶配方。 -->
   <ResearchProjectDef>
     <defName>SSC_RES_TrainerOfficer</defName>
     <label>训导官特化</label>

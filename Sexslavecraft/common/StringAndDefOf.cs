@@ -109,6 +109,7 @@ namespace SexSlaveCraft
         public static ResearchProjectDef SSC_BasicTraining;
         public static ResearchProjectDef SSC_BodyPartTraining;
         public static ResearchProjectDef SSC_RES_CowTraining;
+        public static ResearchProjectDef SSC_RES_TrainerOfficer;
 
         // Recipes
         public static RecipeDef SSC_InducePersonalityExcretion;
@@ -257,6 +258,7 @@ namespace SexSlaveCraft
             SSC_BasicTraining = GetDef<ResearchProjectDef>("SSC_RES_BasicTraining");
             SSC_BodyPartTraining = GetDef<ResearchProjectDef>("SSC_RES_BodyPartTraining");
             SSC_RES_CowTraining = GetDef<ResearchProjectDef>("SSC_RES_CowTraining");
+            SSC_RES_TrainerOfficer = GetDef<ResearchProjectDef>("SSC_RES_TrainerOfficer");
 
             SSC_InducePersonalityExcretion = GetDef<RecipeDef>("SSC_InducePersonalityExcretion");
             SSC_Surgery_GenderChange_MtF = GetDef<RecipeDef>("SSC_Surgery_GenderChange_MtF");
@@ -511,6 +513,7 @@ namespace SexSlaveCraft
         public static string ITab_SpecializationNone => "SSC_ITab_SpecializationNone".Translate();
         public static string ITab_SpecializationBus => "SSC_ITab_SpecializationBus".Translate();
         public static string ITab_SpecializationCow => "SSC_ITab_SpecializationCow".Translate();
+        public static string ITab_SpecializationTrainerOfficer => "SSC_ITab_SpecializationTrainerOfficer".Translate();
         public static string ITab_SpecializationPetCat => "SSC_ITab_SpecializationPetCat".Translate();
         public static string ITab_SpecializationPetDog => "SSC_ITab_SpecializationPetDog".Translate();
         public static string ITab_SpecializationPetRabbit => "SSC_ITab_SpecializationPetRabbit".Translate();
@@ -519,6 +522,7 @@ namespace SexSlaveCraft
         public static string ITab_SelectSpecializationNone => "SSC_ITab_SelectSpecializationNone".Translate();
         public static string ITab_SelectSpecializationBus => "SSC_ITab_SelectSpecializationBus".Translate();
         public static string ITab_SelectSpecializationCow => "SSC_ITab_SelectSpecializationCow".Translate();
+        public static string ITab_SelectSpecializationTrainerOfficer => "SSC_ITab_SelectSpecializationTrainerOfficer".Translate();
         public static string ITab_SelectSpecializationPetCat => "SSC_ITab_SelectSpecializationPetCat".Translate();
         public static string ITab_SelectSpecializationPetDog => "SSC_ITab_SelectSpecializationPetDog".Translate();
         public static string ITab_SelectSpecializationPetRabbit => "SSC_ITab_SelectSpecializationPetRabbit".Translate();

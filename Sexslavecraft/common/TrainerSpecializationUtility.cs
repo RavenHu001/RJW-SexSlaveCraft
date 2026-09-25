@@ -23,7 +23,22 @@ namespace SexSlaveCraft
         /// <summary>没有有效终极状态，当前培养方向也不是训导官。</summary>
         WrongSpecialization,
         /// <summary>当前培养训导官，但尚未取得 20% 基础资格。</summary>
-        BasicStageNotReached
+        BasicStageNotReached,
+        /// <summary>训导官研究尚未完成，不能从菜单开始这一培养方向。</summary>
+        ResearchNotFinished,
+        /// <summary>终极化记录已存在，不能再次选择普通培养方向。</summary>
+        AlreadyFinalized
+    }
+
+    /// <summary>界面显示的训导官培养阶段；完成记录与当前生效状态分别判断。</summary>
+    public enum TrainerSpecializationDisplayState
+    {
+        None,
+        Training,
+        BasicUnlocked,
+        OrdinaryComplete,
+        Finalized,
+        FinalDisabled
     }
 
     /// <summary>只读取训导官的持续条件、完成记录与当前任职资格。</summary>
@@ -35,6 +50,54 @@ namespace SexSlaveCraft
 
         // 第 3 阶段从当前锁链严重度 0.5 开始，不从历史 Trait 或恶堕峰值推断。
         public const int RequiredSexSlaveStage = 3;
+
+        /// <summary>菜单打开及提交时共用同一只读资格判断，防止菜单停留期间条件变化。</summary>
+        public static bool CanSelectTrainerSpecialization(Pawn pawn, out TrainerSpecializationFailure failure)
+        {
+            // 终极记录即使暂时禁用，也不能再次选择普通方向。将此原因放在首位，
+            // 避免菜单把已有终极化误报成只是缺少绑定或研究。
+            if (HasFinalRecord(pawn))
+            {
+                failure = TrainerSpecializationFailure.AlreadyFinalized;
+                return false;
+            }
+
+            // 培养条件与任职条件共用权威的身份、实际主人和锁链检查；
+            // 研究只约束玩家重新选择方向，不使已培养的角色在研究状态异常时退化。
+            if (!MeetsContinuousConditions(pawn, out failure)) return false;
+            if (!ResearchUtils.IsResearchFinished(SSCDefOf.SSC_RES_TrainerOfficer))
+            {
+                failure = TrainerSpecializationFailure.ResearchNotFinished;
+                return false;
+            }
+
+            failure = TrainerSpecializationFailure.None;
+            return true;
+        }
+
+        /// <summary>读取培养与终极记录供界面显示；查询过程不修复 Hediff 或写入进度。</summary>
+        public static TrainerSpecializationDisplayState GetDisplayState(Pawn pawn)
+        {
+            // 禁用标记和当前持续条件都能令终极效果失效；在低频维护运行之前，
+            // 界面也不能把仍保留的完成记录显示为正在生效。
+            if (HasFinalRecord(pawn))
+                return HasActiveFinalEffect(pawn)
+                    ? TrainerSpecializationDisplayState.Finalized
+                    : TrainerSpecializationDisplayState.FinalDisabled;
+
+            CompSexSlaveTraining comp = pawn?.TryGetComp<CompSexSlaveTraining>();
+            if (comp == null || comp.specializationType != SexSlaveSpecializationType.TrainerOfficer)
+                return TrainerSpecializationDisplayState.None;
+
+            // 普通进度到 100% 仍待人格凝胶终极化。坏档的 NaN/无穷值不应
+            // 在状态文本中冒充已完成或已经跨过基础阶段。
+            float progress = comp.specializationProgress;
+            if (float.IsNaN(progress) || float.IsInfinity(progress))
+                return TrainerSpecializationDisplayState.Training;
+            if (progress >= 1f) return TrainerSpecializationDisplayState.OrdinaryComplete;
+            if (progress >= BasicQualificationProgress) return TrainerSpecializationDisplayState.BasicUnlocked;
+            return TrainerSpecializationDisplayState.Training;
+        }
 
         /// <summary>培养和终极效果共同依赖的持续条件；离图本身不算失格。</summary>
         /// <remarks>本查询不检查研究、工作安排或暂时身体状态；研究仅属于以后选择方向时的入口条件。</remarks>

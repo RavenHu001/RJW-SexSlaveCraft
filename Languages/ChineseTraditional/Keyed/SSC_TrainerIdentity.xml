@@ -1,12 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <SSC_TrainerIdentity_Label>是調教員</SSC_TrainerIdentity_Label>
+  <SSC_ITab_SpecializationTrainerOfficer>訓導官</SSC_ITab_SpecializationTrainerOfficer>
+  <SSC_ITab_SelectSpecializationTrainerOfficer>選擇訓導官特化</SSC_ITab_SelectSpecializationTrainerOfficer>
+  <SSC_TrainerIdentity_Active>（身分有效）</SSC_TrainerIdentity_Active>
+  <SSC_TrainerIdentity_Off>（個人關閉）</SSC_TrainerIdentity_Off>
   <SSC_TrainerIdentity_SourceName>訓導官</SSC_TrainerIdentity_SourceName>
   <SSC_TrainerIdentity_MasterTip>主人固定具有調教員身分。能否實際調教仍取決於工作安排和目標許可。</SSC_TrainerIdentity_MasterTip>
   <SSC_TrainerIdentity_UnsetTip>未選擇身分固定不具有調教員資格；主人固定具備資格，性奴須培養訓導官才能取得資格。</SSC_TrainerIdentity_UnsetTip>
   <SSC_TrainerIdentity_SlaveTip>此項保存個人任職選擇。取得訓導官資格後可開啟，仍須滿足工作條件和目標許可。失格時保留開啟選擇但暫停任職；關閉後保留原指派並標為停用，不中斷已開始的調教。</SSC_TrainerIdentity_SlaveTip>
   <SSC_TrainerIdentity_SavedInactive>（已保存開啟，當前未任職）</SSC_TrainerIdentity_SavedInactive>
   <SSC_TrainerIdentity_QualificationTip>開啟任職需要當前訓導官進度達到 20%，或持有有效的終極訓導官狀態，並滿足自由殖民者、綁定主人和鎖鏈階段條件。當前未取得有效資格。</SSC_TrainerIdentity_QualificationTip>
+  <SSC_TrainerIdentity_Failure_MissingPawnOrTrainingComp>無法讀取角色的訓練記錄</SSC_TrainerIdentity_Failure_MissingPawnOrTrainingComp>
+  <SSC_TrainerIdentity_Failure_NotSexSlave>需要 SSC 性奴身分</SSC_TrainerIdentity_Failure_NotSexSlave>
+  <SSC_TrainerIdentity_Failure_NotFreeColonist>需要自由殖民者身分</SSC_TrainerIdentity_Failure_NotFreeColonist>
+  <SSC_TrainerIdentity_Failure_NoBoundMaster>需要綁定實際主人</SSC_TrainerIdentity_Failure_NoBoundMaster>
+  <SSC_TrainerIdentity_Failure_ChainStageTooLow>需要達到屈服性奴階段</SSC_TrainerIdentity_Failure_ChainStageTooLow>
+  <SSC_TrainerIdentity_Failure_FinalDisabled>終極訓導官當前禁用</SSC_TrainerIdentity_Failure_FinalDisabled>
+  <SSC_TrainerIdentity_Failure_WrongSpecialization>當前未培養訓導官</SSC_TrainerIdentity_Failure_WrongSpecialization>
+  <SSC_TrainerIdentity_Failure_BasicStageNotReached>需要達到 20% 基礎階段</SSC_TrainerIdentity_Failure_BasicStageNotReached>
+  <SSC_TrainerIdentity_Failure_ResearchNotFinished>需要完成訓導官特化研究</SSC_TrainerIdentity_Failure_ResearchNotFinished>
+  <SSC_TrainerIdentity_Failure_AlreadyFinalized>已終極化</SSC_TrainerIdentity_Failure_AlreadyFinalized>
+  <SSC_TrainerIdentity_SelectionRejected>無法選擇訓導官特化：{0}</SSC_TrainerIdentity_SelectionRejected>
+  <SSC_TrainerIdentity_StatusLine>訓導官：{0}</SSC_TrainerIdentity_StatusLine>
+  <SSC_TrainerIdentity_Status_Training>培養中</SSC_TrainerIdentity_Status_Training>
+  <SSC_TrainerIdentity_Status_BasicUnlocked>基礎資格已解鎖</SSC_TrainerIdentity_Status_BasicUnlocked>
+  <SSC_TrainerIdentity_Status_OrdinaryComplete>普通培養完成</SSC_TrainerIdentity_Status_OrdinaryComplete>
+  <SSC_TrainerIdentity_Status_Finalized>已終極化</SSC_TrainerIdentity_Status_Finalized>
+  <SSC_TrainerIdentity_Status_FinalDisabled>已終極化，當前禁用</SSC_TrainerIdentity_Status_FinalDisabled>
+  <SSC_TrainerIdentity_FinalDisabledPending>終極狀態暫時禁用，等待狀態維護後恢復</SSC_TrainerIdentity_FinalDisabledPending>
+  <SSC_TrainerIdentity_RestrictionTip>滿足持續條件時，訓導官特化從選中方向起即可強制允許本人主動發起自願或強迫行為；20% 門檻只約束調教員任職。強制規則仍受全域開關和其他來源優先級控制。</SSC_TrainerIdentity_RestrictionTip>
   <SSC_TrainerIdentity_InactiveAssignment>{0}（調教員身分停用）</SSC_TrainerIdentity_InactiveAssignment>
   <SSC_TrainerIdentity_UnavailableAssignment>{0}（工作或身體條件暫不滿足）</SSC_TrainerIdentity_UnavailableAssignment>
   <SSC_TrainerIdentity_Required>需要有效的調教員身分：主人，或已取得訓導官資格並開啟任職的性奴。</SSC_TrainerIdentity_Required>
