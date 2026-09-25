@@ -4,7 +4,7 @@
   <HediffDef>
     <defName>SSC_Hediff_TrainerOfficer</defName>
     <label>性奴特化（训导官）</label>
-    <description>该性奴正在接受训导官培养。达到基础阶段后可获得担任调教员的资格，实际任职仍需手动开启。</description>
+    <description>该性奴正学习代主人调教其他性奴。培养进度达到 20% 且满足任职条件后，可开启调教员任职。</description>
     <initialSeverity>0.01</initialSeverity>
     <isBad>false</isBad>
     <tendable>false</tendable>
@@ -50,7 +50,7 @@
   <HediffDef>
     <defName>SSC_Hediff_TrainerOfficer_Final</defName>
     <label>性奴特化（终极训导官）</label>
-    <description>该性奴已完成训导官终极化。任职与效果仍取决于当前的绑定、锁链阶段和自由殖民者身份。</description>
+    <description>训导官培养已终极化。保持自由殖民者身份、绑定主人和所需锁链阶段时，可担任调教员并获得终极加成。</description>
     <isBad>false</isBad>
     <tendable>false</tendable>
     <everCurableByItem>false</everCurableByItem>
@@ -76,7 +76,7 @@
   <HediffDef>
     <defName>SSC_Hediff_TrainerOfficer_FinalDisabled</defName>
     <label>性奴特化（终极训导官，禁用）</label>
-    <description>训导官终极化记录仍在，但当前条件不足，专业效果与调教员资格暂时停用。</description>
+    <description>终极化成果仍在；当前条件不足，调教员资格与特化加成暂时停用。</description>
     <isBad>false</isBad>
     <tendable>false</tendable>
     <everCurableByItem>false</everCurableByItem>

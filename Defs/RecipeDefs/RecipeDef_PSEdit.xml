@@ -122,7 +122,7 @@
   <RecipeDef Class="SexSlaveCraft.RecipeDef_PSTag">
     <defName>SSC_PSEdit_TrainerOfficer_Final</defName>
     <label>性奴特化（终极训导官）</label>
-    <description>将已完成训导官培养的人格凝胶塑造成终极训导官状态。材料必须保有普通训导官标签，且不能已有有效或禁用的终极记录。</description>
+    <description>将已完成训导官培养、尚未终极化的人格凝胶塑造成终极训导官。</description>
     <jobString>正在塑造终极训导官人格...</jobString>
     <workAmount>3500</workAmount>
     <workSpeedStat>GeneralLaborSpeed</workSpeedStat>

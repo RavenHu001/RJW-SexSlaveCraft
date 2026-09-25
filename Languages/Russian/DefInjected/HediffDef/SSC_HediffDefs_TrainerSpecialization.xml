@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <SSC_Hediff_TrainerOfficer.label>специализация секс-раба (инструктор)</SSC_Hediff_TrainerOfficer.label>
-  <SSC_Hediff_TrainerOfficer.description>Этот секс-раб осваивает специализацию инструктора. Достижение базового этапа даёт право работать дрессировщиком; личный переключатель статуса дрессировщика нужно включить вручную.</SSC_Hediff_TrainerOfficer.description>
+  <SSC_Hediff_TrainerOfficer.description>Этот секс-раб учится дрессировать других секс-рабов по поручению хозяина. После 20% прогресса и при соблюдении условий можно включить роль дрессировщика.</SSC_Hediff_TrainerOfficer.description>
   <SSC_Hediff_TrainerOfficer.stages.0.label>обучение инструктора</SSC_Hediff_TrainerOfficer.stages.0.label>
   <SSC_Hediff_TrainerOfficer.stages.1.label>специализация секс-раба (инструктор)</SSC_Hediff_TrainerOfficer.stages.1.label>
+  <SSC_Hediff_TrainerOfficer.stages.2.label>специализация секс-раба (опытный инструктор)</SSC_Hediff_TrainerOfficer.stages.2.label>
 
   <SSC_Hediff_TrainerOfficer_Final.label>специализация секс-раба (старший инструктор)</SSC_Hediff_TrainerOfficer_Final.label>
-  <SSC_Hediff_TrainerOfficer_Final.description>Этот секс-раб завершил финализацию специализации инструктора. Право работать дрессировщиком и эффекты специализации по-прежнему зависят от привязки к хозяину, этапа цепи и статуса свободного колониста.</SSC_Hediff_TrainerOfficer_Final.description>
+  <SSC_Hediff_TrainerOfficer_Final.description>Специализация инструктора завершена. При статусе свободного колониста, привязке к хозяину и нужном этапе цепи персонаж может работать дрессировщиком и получает финальные бонусы.</SSC_Hediff_TrainerOfficer_Final.description>
 
   <SSC_Hediff_TrainerOfficer_FinalDisabled.label>специализация секс-раба (старший инструктор, отключено)</SSC_Hediff_TrainerOfficer_FinalDisabled.label>
-  <SSC_Hediff_TrainerOfficer_FinalDisabled.description>Запись о финализации специализации инструктора сохранена, но текущие условия не выполнены. Эффекты специализации и право работать дрессировщиком временно отключены.</SSC_Hediff_TrainerOfficer_FinalDisabled.description>
+  <SSC_Hediff_TrainerOfficer_FinalDisabled.description>Результат финализации сохранён; текущие условия не выполнены, поэтому право работать дрессировщиком и бонусы специализации временно отключены.</SSC_Hediff_TrainerOfficer_FinalDisabled.description>
 </LanguageData>

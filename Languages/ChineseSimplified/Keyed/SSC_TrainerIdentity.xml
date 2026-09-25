@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-  <SSC_TrainerIdentity_Label>是调教员</SSC_TrainerIdentity_Label>
+  <SSC_TrainerIdentity_Label>调教员任职</SSC_TrainerIdentity_Label>
   <SSC_ITab_SpecializationTrainerOfficer>训导官</SSC_ITab_SpecializationTrainerOfficer>
-  <SSC_ITab_SelectSpecializationTrainerOfficer>选择训导官特化</SSC_ITab_SelectSpecializationTrainerOfficer>
-  <SSC_TrainerIdentity_Active>（身份有效）</SSC_TrainerIdentity_Active>
-  <SSC_TrainerIdentity_Off>（个人关闭）</SSC_TrainerIdentity_Off>
+  <SSC_ITab_SelectSpecializationTrainerOfficer>设为: 训导官</SSC_ITab_SelectSpecializationTrainerOfficer>
+  <SSC_TrainerIdentity_Active>（已开启）</SSC_TrainerIdentity_Active>
+  <SSC_TrainerIdentity_Off>（已关闭）</SSC_TrainerIdentity_Off>
   <SSC_TrainerIdentity_SourceName>训导官</SSC_TrainerIdentity_SourceName>
-  <SSC_TrainerIdentity_MasterTip>主人固定具有调教员身份。能否实际调教仍取决于工作安排和目标许可。</SSC_TrainerIdentity_MasterTip>
-  <SSC_TrainerIdentity_UnsetTip>未选择身份固定不具有调教员资格；主人固定具备资格，性奴须培养训导官才能取得资格。</SSC_TrainerIdentity_UnsetTip>
-  <SSC_TrainerIdentity_SlaveTip>此项保存个人任职选择。取得训导官资格后可开启，仍需满足工作条件和目标许可。失格时保留开启选择但暂停任职；关闭后保留原指派并标为停用，不中断已开始的调教。</SSC_TrainerIdentity_SlaveTip>
-  <SSC_TrainerIdentity_SavedInactive>（已保存开启，当前未任职）</SSC_TrainerIdentity_SavedInactive>
-  <SSC_TrainerIdentity_QualificationTip>开启任职需要当前训导官进度达到 20%，或持有有效的终极训导官状态，并满足自由殖民者、绑定主人和锁链阶段条件。当前未取得有效资格。</SSC_TrainerIdentity_QualificationTip>
+  <SSC_TrainerIdentity_MasterTip>主人直接具备调教员资格；实际调教仍需满足工作条件和目标许可。</SSC_TrainerIdentity_MasterTip>
+  <SSC_TrainerIdentity_UnsetTip>未选择身份时不能担任调教员。主人直接具备资格；性奴需培养训导官。</SSC_TrainerIdentity_UnsetTip>
+  <SSC_TrainerIdentity_SlaveTip>取得训导官资格后可开启。资格失效时暂停任职，但保留开关和指派；关闭也不清除指派或中断正在进行的调教。实际调教仍需满足工作条件和目标许可。</SSC_TrainerIdentity_SlaveTip>
+  <SSC_TrainerIdentity_SavedInactive>（已开启，暂不可任职）</SSC_TrainerIdentity_SavedInactive>
+  <SSC_TrainerIdentity_QualificationTip>当前无法任职，原因：</SSC_TrainerIdentity_QualificationTip>
   <SSC_TrainerIdentity_Failure_MissingPawnOrTrainingComp>无法读取角色的训练记录</SSC_TrainerIdentity_Failure_MissingPawnOrTrainingComp>
   <SSC_TrainerIdentity_Failure_NotSexSlave>需要 SSC 性奴身份</SSC_TrainerIdentity_Failure_NotSexSlave>
   <SSC_TrainerIdentity_Failure_NotFreeColonist>需要自由殖民者身份</SSC_TrainerIdentity_Failure_NotFreeColonist>
@@ -21,16 +21,16 @@
   <SSC_TrainerIdentity_Failure_BasicStageNotReached>需要达到 20% 基础阶段</SSC_TrainerIdentity_Failure_BasicStageNotReached>
   <SSC_TrainerIdentity_Failure_ResearchNotFinished>需要完成训导官特化研究</SSC_TrainerIdentity_Failure_ResearchNotFinished>
   <SSC_TrainerIdentity_Failure_AlreadyFinalized>已终极化</SSC_TrainerIdentity_Failure_AlreadyFinalized>
-  <SSC_TrainerIdentity_SelectionRejected>无法选择训导官特化：{0}</SSC_TrainerIdentity_SelectionRejected>
+  <SSC_TrainerIdentity_SelectionRejected>无法设为训导官：{0}</SSC_TrainerIdentity_SelectionRejected>
   <SSC_TrainerIdentity_StatusLine>训导官：{0}</SSC_TrainerIdentity_StatusLine>
   <SSC_TrainerIdentity_Status_Training>培养中</SSC_TrainerIdentity_Status_Training>
-  <SSC_TrainerIdentity_Status_BasicUnlocked>基础资格已解锁</SSC_TrainerIdentity_Status_BasicUnlocked>
-  <SSC_TrainerIdentity_Status_OrdinaryComplete>普通培养完成</SSC_TrainerIdentity_Status_OrdinaryComplete>
+  <SSC_TrainerIdentity_Status_BasicUnlocked>任职进度达标</SSC_TrainerIdentity_Status_BasicUnlocked>
+  <SSC_TrainerIdentity_Status_OrdinaryComplete>培养完成</SSC_TrainerIdentity_Status_OrdinaryComplete>
   <SSC_TrainerIdentity_Status_Finalized>已终极化</SSC_TrainerIdentity_Status_Finalized>
   <SSC_TrainerIdentity_Status_FinalDisabled>已终极化，当前禁用</SSC_TrainerIdentity_Status_FinalDisabled>
-  <SSC_TrainerIdentity_FinalDisabledPending>终极状态暂时禁用，等待状态维护后恢复</SSC_TrainerIdentity_FinalDisabledPending>
-  <SSC_TrainerIdentity_RestrictionTip>满足持续条件时，训导官特化从选中方向起即可强制允许本人主动发起自愿或强迫行为；20% 门槛只约束调教员任职。强制规则仍受全局开关和其他来源优先级控制。</SSC_TrainerIdentity_RestrictionTip>
+  <SSC_TrainerIdentity_FinalDisabledPending>条件已恢复，终极效果即将生效</SSC_TrainerIdentity_FinalDisabledPending>
+  <SSC_TrainerIdentity_RestrictionTip>选中训导官且满足持续条件时，允许主动发起自愿性行为和强制行为；20% 进度仅用于调教员任职。全局开关和规则优先级仍生效。</SSC_TrainerIdentity_RestrictionTip>
   <SSC_TrainerIdentity_InactiveAssignment>{0}（调教员身份停用）</SSC_TrainerIdentity_InactiveAssignment>
   <SSC_TrainerIdentity_UnavailableAssignment>{0}（工作或身体条件暂不满足）</SSC_TrainerIdentity_UnavailableAssignment>
-  <SSC_TrainerIdentity_Required>需要有效的调教员身份：主人，或已取得训导官资格并开启任职的性奴。</SSC_TrainerIdentity_Required>
+  <SSC_TrainerIdentity_Required>需要主人或已任职的训导官。</SSC_TrainerIdentity_Required>
 </LanguageData>

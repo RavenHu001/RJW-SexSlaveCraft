@@ -9,7 +9,7 @@
   <SSC_PSEdit_Cow_Final.jobString>Shaping final Cow personality...</SSC_PSEdit_Cow_Final.jobString>
 
   <SSC_PSEdit_TrainerOfficer_Final.label>Sex Slave Specialization (Final Training Officer)</SSC_PSEdit_TrainerOfficer_Final.label>
-  <SSC_PSEdit_TrainerOfficer_Final.description>Shapes personality gel with completed Training Officer progress into its final state. The material must carry the ordinary Training Officer tag and must not already have an active or disabled final record.</SSC_PSEdit_TrainerOfficer_Final.description>
+  <SSC_PSEdit_TrainerOfficer_Final.description>Shapes personality gel into a Final Training Officer. Requires completed Training Officer training and no prior finalization.</SSC_PSEdit_TrainerOfficer_Final.description>
   <SSC_PSEdit_TrainerOfficer_Final.jobString>Shaping final Training Officer personality...</SSC_PSEdit_TrainerOfficer_Final.jobString>
 
   <SSC_PSEdit_PetCat_Final.label>Sex Slave Specialization (Final Pet Cat)</SSC_PSEdit_PetCat_Final.label>
