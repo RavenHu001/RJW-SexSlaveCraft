@@ -11,7 +11,7 @@ using RimWorld;
 // CN: 它允许玩家开关调教、选择姿势，并限制 trainer 指派。
 namespace SexSlaveCraft
 {
-    public class ITab_SexSlaveTraining : ITab
+    public partial class ITab_SexSlaveTraining : ITab
     {
         private const float SectionSpacing = 12f;
         // 节框留白与标题高度由绘制和动态测量共用；列表间距也显式固定，
@@ -824,13 +824,7 @@ namespace SexSlaveCraft
             }
 
             listing.Gap(6f);
-            // 当前方向只读取自己的终极状态；未选择方向时，沿用上方标签的已终极化摘要。
-            bool displayedTypeFinalized = IsTypeFinalized(pawn, comp.specializationType)
-                || (comp.specializationType == SexSlaveSpecializationType.None && HasAnyFinalizedState(pawn));
-            string progressText = displayedTypeFinalized
-                ? Strings.ITab_SpecializationComplete
-                : comp.specializationProgress.ToStringPercent();
-            listing.Label(Strings.ITab_SpecializationProgress(progressText));
+            listing.Label(Strings.ITab_SpecializationProgress(GetSpecializationProgressText(pawn, comp)));
             TrainerSpecializationDisplayState trainerState = TrainerSpecializationUtility.GetDisplayState(pawn);
             if (trainerState != TrainerSpecializationDisplayState.None)
             {
@@ -878,110 +872,6 @@ namespace SexSlaveCraft
                 if (pawn.TryGetComp<CompSexSlaveTraining>() != comp) return;
                 comp.SetSpecialization(SexSlaveSpecializationType.TrainerOfficer);
             } : null);
-        }
-
-        /// <summary>查询角色是否持有任一已完成特化状态，供未选择方向时显示摘要。</summary>
-        private static bool HasAnyFinalizedState(Pawn pawn)
-        {
-            return BusSpecializationUtility.HasFinalBusState(pawn)
-                || BusSpecializationUtility.HasFinalCowState(pawn)
-                || PetSpecializationUtility.HasFinalPetState(pawn, SexSlaveSpecializationType.PetCat)
-                || PetSpecializationUtility.HasFinalPetState(pawn, SexSlaveSpecializationType.PetDog)
-                || PetSpecializationUtility.HasFinalPetState(pawn, SexSlaveSpecializationType.PetRabbit)
-                || TrainerSpecializationUtility.HasFinalRecord(pawn);
-        }
-
-        /// <summary>按指定特化方向检查对应终极状态，不让其他方向的完成状态影响结果。</summary>
-        private static bool IsTypeFinalized(Pawn pawn, SexSlaveSpecializationType type)
-        {
-            switch (type)
-            {
-                case SexSlaveSpecializationType.Bus:
-                    return BusSpecializationUtility.HasFinalBusState(pawn);
-                case SexSlaveSpecializationType.Cow:
-                    return BusSpecializationUtility.HasFinalCowState(pawn);
-                case SexSlaveSpecializationType.TrainerOfficer:
-                    return TrainerSpecializationUtility.HasFinalRecord(pawn);
-                case SexSlaveSpecializationType.PetCat:
-                case SexSlaveSpecializationType.PetDog:
-                case SexSlaveSpecializationType.PetRabbit:
-                    return PetSpecializationUtility.HasFinalPetState(pawn, type);
-                default:
-                    return false;
-            }
-        }
-
-        /// <summary>生成所选特化的标签；未选择时按现有终极状态提供提示。</summary>
-        private static string GetSpecializationLabel(Pawn pawn, CompSexSlaveTraining comp)
-        {
-            string label;
-            switch (comp.specializationType)
-            {
-                case SexSlaveSpecializationType.Bus:
-                    label = Strings.ITab_SpecializationBus;
-                    break;
-                case SexSlaveSpecializationType.Cow:
-                    label = Strings.ITab_SpecializationCow;
-                    break;
-                case SexSlaveSpecializationType.TrainerOfficer:
-                    label = Strings.ITab_SpecializationTrainerOfficer;
-                    break;
-                case SexSlaveSpecializationType.PetCat:
-                case SexSlaveSpecializationType.PetDog:
-                case SexSlaveSpecializationType.PetRabbit:
-                    label = PetSpecializationUtility.GetSpecializationLabel(comp.specializationType);
-                    break;
-                default:
-                    label = Strings.ITab_SpecializationNone;
-                    break;
-            }
-
-            if (comp.specializationType == SexSlaveSpecializationType.None && HasAnyFinalizedState(pawn))
-            {
-                if (BusSpecializationUtility.HasFinalBusState(pawn))
-                {
-                    return Strings.ITab_SpecializationBus + " " + Strings.ITab_SpecializationFinalizedSuffix;
-                }
-
-                if (BusSpecializationUtility.HasFinalCowState(pawn))
-                {
-                    return Strings.ITab_SpecializationCow + " " + Strings.ITab_SpecializationFinalizedSuffix;
-                }
-
-                foreach (SexSlaveSpecializationType petType in new[]
-                         {
-                             SexSlaveSpecializationType.PetCat,
-                             SexSlaveSpecializationType.PetDog,
-                             SexSlaveSpecializationType.PetRabbit
-                         })
-                {
-                    if (PetSpecializationUtility.HasFinalPetState(pawn, petType))
-                    {
-                        string finalizedLabel = PetSpecializationUtility.GetSpecializationLabel(petType) + " " + Strings.ITab_SpecializationFinalizedSuffix;
-                        if (petType == SexSlaveSpecializationType.PetCat || petType == SexSlaveSpecializationType.PetRabbit)
-                            finalizedLabel += " " + Strings.ITab_SpecializationUnfinishedSuffix;
-                        return finalizedLabel;
-                    }
-                }
-
-                // 保留既有方向摘要的优先级；若仅有训导官终极记录，菜单按钮
-                // 也直接展示它。多终极记录时下方独立状态行仍提示训导官状态。
-                if (TrainerSpecializationUtility.HasFinalRecord(pawn))
-                    return Strings.ITab_SpecializationTrainerOfficer + " " + Strings.ITab_SpecializationFinalizedSuffix;
-            }
-
-            bool finalized = IsTypeFinalized(pawn, comp.specializationType);
-            if (finalized)
-            {
-                label += " " + Strings.ITab_SpecializationFinalizedSuffix;
-            }
-            if (comp.specializationType == SexSlaveSpecializationType.PetCat ||
-                comp.specializationType == SexSlaveSpecializationType.PetRabbit)
-            {
-                label += " " + Strings.ITab_SpecializationUnfinishedSuffix;
-            }
-
-            return label;
         }
 
         /// <summary>根据资格和终极状态构造宠物方向菜单项，合法选择后同步特化及基础状态。</summary>

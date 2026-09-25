@@ -1,9 +1,14 @@
 using Verse;
+using SexSlaveCraft;
 
 namespace Verse
 {
     public class Thing { }
-    public class Pawn : Thing { }
+    public class Pawn : Thing
+    {
+        // 仅存储外部健康状态查询结果，标签选择逻辑来自生产 ITab。
+        public readonly System.Collections.Generic.HashSet<SexSlaveSpecializationType> Finalized = new System.Collections.Generic.HashSet<SexSlaveSpecializationType>();
+    }
 }
 
 namespace SexSlaveCraft
