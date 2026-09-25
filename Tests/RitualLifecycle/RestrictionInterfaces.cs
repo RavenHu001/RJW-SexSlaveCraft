@@ -55,6 +55,11 @@ namespace SexSlaveCraft
         /// <summary>本仪式流程模型不额外模拟公交车状态。</summary>
         public static bool HasAnyBusState(Pawn pawn) => false;
     }
+    public static class TrainerSpecializationUtility
+    {
+        /// <summary>仪式生命周期模型不设置训导官方向；完整资格由 TrainerIdentity 套件检查。</summary>
+        public static bool HasActiveRestrictionEffect(Pawn pawn) => false;
+    }
     public static class SSCRestrictionJobGuard
     {
         /// <summary>提供精确开始凭据的编译边界；真实守卫与加载顺序由 InteractionProtection 验证。</summary>

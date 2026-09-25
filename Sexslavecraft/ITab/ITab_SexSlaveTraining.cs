@@ -274,19 +274,31 @@ namespace SexSlaveCraft
             return rect.yMax;
         }
 
-        /// <summary>仅性奴可修改个人开关；绘制后恢复 GUI 状态，并说明身份与工作开关的区别。</summary>
+        /// <summary>显示个人保存选择与有效任职的区别；失格时仍允许关闭先前保存的开启选择。</summary>
         private static void DrawTrainerIdentityToggle(Listing_Standard listing, Pawn pawn, CompSexSlaveTraining comp)
         {
-            bool enabled = SSCIdentityUtility.IsTrainer(pawn);
+            // 复选框编辑的是存档中的个人选择。若使用 IsTrainer 的有效结果，
+            // 失格但仍保存开启选择的性奴会显示为关闭，也无法主动清除该选择。
+            bool enabled = comp.pawnIdentity == PawnIdentity.Master ||
+                comp.pawnIdentity == PawnIdentity.Slave && comp.slaveTrainerEnabled;
             bool previous = enabled;
+            bool qualified = comp.pawnIdentity == PawnIdentity.Slave &&
+                TrainerSpecializationUtility.HasTrainerQualification(pawn, out _);
+            bool active = SSCIdentityUtility.IsTrainer(pawn);
+            string label = "SSC_TrainerIdentity_Label".Translate();
+            if (enabled && !active) label += "SSC_TrainerIdentity_SavedInactive".Translate();
             string tooltip = (comp.pawnIdentity == PawnIdentity.Master ? "SSC_TrainerIdentity_MasterTip"
                 : comp.pawnIdentity == PawnIdentity.Slave ? "SSC_TrainerIdentity_SlaveTip"
                 : "SSC_TrainerIdentity_UnsetTip").Translate();
+            if (comp.pawnIdentity == PawnIdentity.Slave && !qualified)
+                tooltip += "\n\n" + "SSC_TrainerIdentity_QualificationTip".Translate();
             bool oldEnabled = GUI.enabled;
             try
             {
-                GUI.enabled = oldEnabled && comp.pawnIdentity == PawnIdentity.Slave;
-                listing.CheckboxLabeled("SSC_TrainerIdentity_Label".Translate(), ref enabled, tooltip);
+                // 尚未取得任职资格时只能关闭旧选择，不能新开启；提交时
+                // SetTrainerEnabled 再次校验，防止绘制与点击之间的状态变化。
+                GUI.enabled = oldEnabled && comp.pawnIdentity == PawnIdentity.Slave && (qualified || previous);
+                listing.CheckboxLabeled(label, ref enabled, tooltip);
             }
             finally
             {

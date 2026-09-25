@@ -96,7 +96,7 @@
     <Compile Include="common\BusSpecializationUtility.cs" />
     <Compile Include="common\DogSpecializationUtility.cs" />
     <Compile Include="common\PetSpecializationUtility.cs" />
-    <!-- 训导官资格、状态维护、人格标签与经验分别编译；调教员身份接入仍在后续阶段。 -->
+    <!-- 训导官资格、状态维护、人格标签及经验均已接入；调教员身份与强制限制由统一入口处理。 -->
     <Compile Include="common\TrainerSpecializationUtility.cs" />
     <Compile Include="common\TrainerSpecializationLifecycle.cs" />
     <Compile Include="common\TrainerSpecializationGelUtility.cs" />

@@ -358,7 +358,18 @@ namespace SexSlaveCraft
     using Verse;
     public enum PawnIdentity { Unset, Slave, Master }
     public class Need_Corruption { public float CurLevelPercentage = 0.2f; }
-    public class CompSexSlaveTraining { public PawnIdentity pawnIdentity; public Pawn selectedTrainer; public SSCSharedSleepRecord sharedSleep; public bool slaveTrainerEnabled, trainerIdentityInitialized = true; }
+    public class CompSexSlaveTraining { public PawnIdentity pawnIdentity; public Pawn selectedTrainer; public SSCSharedSleepRecord sharedSleep; public bool slaveTrainerEnabled, trainerIdentityInitialized = true, TrainerQualified = true; }
+    public enum TrainerSpecializationFailure { None, NotQualified }
+    public static class TrainerSpecializationUtility
+    {
+        /// <summary>同床套件只模拟资格结果；实际持续条件和 20% 计算由 TrainerIdentity 链接生产工具验证。</summary>
+        public static bool HasTrainerQualification(Pawn pawn, out TrainerSpecializationFailure failure)
+        {
+            bool qualified = pawn?.Training?.TrainerQualified == true;
+            failure = qualified ? TrainerSpecializationFailure.None : TrainerSpecializationFailure.NotQualified;
+            return qualified;
+        }
+    }
     public class Hediff_ChainOfSexSlave { public Pawn LinkedPawn; }
     public static partial class SSCIdentityUtility
     {

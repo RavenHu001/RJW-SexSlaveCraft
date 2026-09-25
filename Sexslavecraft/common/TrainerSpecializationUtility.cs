@@ -109,6 +109,25 @@ namespace SexSlaveCraft
                 && !HasMarker(pawn, SSCDefOf.SSC_Hediff_TrainerOfficer_FinalDisabled);
         }
 
+        /// <summary>限制系统的训导官强制条目从选择方向时生效，不等待调教员任职的 20% 门槛。</summary>
+        /// <remarks>与个人调教员开关无关；已终极化者可跨方向生效，禁用标记和持续条件失效均立即阻止匹配。</remarks>
+        public static bool HasActiveRestrictionEffect(Pawn pawn)
+        {
+            // 先检查身份、自由殖民者、实际主人和当前锁链。低频维护尚未移除
+            // 失效状态时，此处仍必须马上停止强制覆盖，且不能修改培养记录。
+            if (!MeetsContinuousConditions(pawn, out _)) return false;
+
+            // 禁用标记优先于当前方向及可能残留的有效终极标记，避免异常双标记
+            // 或尚未归并的读档状态暂时赋予强制许可。
+            if (HasMarker(pawn, SSCDefOf.SSC_Hediff_TrainerOfficer_FinalDisabled)) return false;
+
+            // 选中训导官的普通培养者从零进度即可取得这两项特化效果；
+            // 切走后只有仍有效的终极标记能继续提供效果，历史进度不算。
+            CompSexSlaveTraining comp = pawn.TryGetComp<CompSexSlaveTraining>();
+            return comp.specializationType == SexSlaveSpecializationType.TrainerOfficer
+                || HasMarker(pawn, SSCDefOf.SSC_Hediff_TrainerOfficer_Final);
+        }
+
         /// <summary>仅判断特化是否赋予手动任职的资格，不读取个人开关、工作或目标指派。</summary>
         public static bool HasTrainerQualification(Pawn pawn, out TrainerSpecializationFailure failure)
         {

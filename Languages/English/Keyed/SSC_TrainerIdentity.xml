@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <SSC_TrainerIdentity_Label>Is a trainer</SSC_TrainerIdentity_Label>
+  <SSC_TrainerIdentity_SourceName>Training Officer</SSC_TrainerIdentity_SourceName>
   <SSC_TrainerIdentity_MasterTip>Masters always have trainer status. Actual training still requires the appropriate work settings and permission for the target.</SSC_TrainerIdentity_MasterTip>
-  <SSC_TrainerIdentity_UnsetTip>Unassigned identities cannot be trainers. Choose Master or Sex Slave to make this pawn eligible.</SSC_TrainerIdentity_UnsetTip>
-  <SSC_TrainerIdentity_SlaveTip>Allows this sex slave to be assigned as a trainer, subject to existing work requirements and target permissions. Turning this off retains assignments as inactive and lets training already underway finish.</SSC_TrainerIdentity_SlaveTip>
+  <SSC_TrainerIdentity_UnsetTip>Unassigned identities cannot be trainers. Masters always qualify; sex slaves must develop the Training Officer specialization.</SSC_TrainerIdentity_UnsetTip>
+  <SSC_TrainerIdentity_SlaveTip>This saves the personal trainer choice. A qualified Training Officer may turn it on, subject to work requirements and target permission. Losing qualification pauses trainer status but preserves the choice. Turning it off retains assignments as inactive and lets training already underway finish.</SSC_TrainerIdentity_SlaveTip>
+  <SSC_TrainerIdentity_SavedInactive> (saved as on, currently inactive)</SSC_TrainerIdentity_SavedInactive>
+  <SSC_TrainerIdentity_QualificationTip>Trainer status requires 20% progress in the current Training Officer specialization or an active final Training Officer state, plus free colonist status, a bound master, and the required chain stage. This pawn does not currently qualify.</SSC_TrainerIdentity_QualificationTip>
   <SSC_TrainerIdentity_InactiveAssignment>{0} (trainer status inactive)</SSC_TrainerIdentity_InactiveAssignment>
   <SSC_TrainerIdentity_UnavailableAssignment>{0} (work or physical requirements not met)</SSC_TrainerIdentity_UnavailableAssignment>
-  <SSC_TrainerIdentity_Required>Requires trainer status: a master, or a sex slave with the trainer option enabled.</SSC_TrainerIdentity_Required>
+  <SSC_TrainerIdentity_Required>Requires trainer status: a master, or a qualified Training Officer sex slave with the trainer option enabled.</SSC_TrainerIdentity_Required>
 </LanguageData>

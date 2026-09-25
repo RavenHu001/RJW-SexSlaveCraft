@@ -346,7 +346,7 @@ namespace SexSlaveCraft
 {
     public class Hediff_ChainOfSexSlave { public Verse.Pawn LinkedPawn; }
     public enum PawnIdentity { Unset, Slave, Master }
-    public enum SexSlaveSpecializationType { None, Bus, Cow, PetCat, PetDog, PetRabbit }
+    public enum SexSlaveSpecializationType { None, Bus, Cow, PetCat, PetDog, PetRabbit, TrainerOfficer }
     public class JobDriver_Training : rjw.JobDriver_SexBaseInitiator { }
     public class JobDriver_RitualTraining : rjw.JobDriver_SexBaseInitiator
     {
@@ -435,6 +435,11 @@ namespace SexSlaveCraft
     {
         /// <summary>读取测试用公交车状态标记；空角色不具有该状态。</summary>
         public static bool HasAnyBusState(Verse.Pawn pawn) => pawn?.IsBus == true;
+    }
+    public static class TrainerSpecializationUtility
+    {
+        /// <summary>交互守卫套件不模拟训导官状态；真实资格与许可组合由 TrainerIdentity 验证。</summary>
+        public static bool HasActiveRestrictionEffect(Verse.Pawn pawn) => false;
     }
     public static class SSCLog
     {

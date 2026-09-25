@@ -87,10 +87,16 @@ namespace SexSlaveCraft
         public static bool IsPotentialTrainingTarget(Pawn targetPawn, Pawn trainer)
         {
             if (targetPawn == null || trainer == null || targetPawn == trainer || targetPawn.Dead
-                || !targetPawn.RaceProps.Humanlike || !SSCIdentityUtility.IsSupportedVanillaStatus(targetPawn)
-                || GetActiveAssignedTrainer(targetPawn) != trainer) return false;
+                || !targetPawn.RaceProps.Humanlike || !SSCIdentityUtility.IsSupportedVanillaStatus(targetPawn)) return false;
             CompSexSlaveTraining comp = targetPawn.TryGetComp<CompSexSlaveTraining>();
-            if (comp == null || !comp.IsEnabled || comp.IsWaitingAfterFailedValidation || comp.IsOnCooldown) return false;
+
+            // 地图扫描的大多数 Pawn 并未指派给当前执行者。先比较保存引用
+            // 和目标基础状态，只对真正相关的目标查询锁链与特化任职资格。
+            if (comp == null || comp.selectedTrainer != trainer || !comp.IsEnabled
+                || comp.IsWaitingAfterFailedValidation || comp.IsOnCooldown) return false;
+            if (trainer.Dead || trainer.Destroyed || !SSCIdentityUtility.IsTrainer(trainer)) return false;
+
+            // 这里仍只做粗筛；最终许可、预约和兼容状态交给准备入口检查。
             if (ProgressionEducationCompatibility.ShouldDeferAutomaticTraining(targetPawn)) return false;
             return !comp.scheduledTrainingEnabled || comp.IsScheduledTrainingDayDue && comp.IsWithinScheduledTrainingWindow;
         }

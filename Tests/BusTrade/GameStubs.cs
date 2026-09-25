@@ -245,6 +245,11 @@ namespace SexSlaveCraft
         /// <summary>读取模拟终极状态，决定原有交易成长是否停止。</summary>
         public static bool HasFinalBusState(Verse.Pawn pawn) => pawn?.IsFinalBus == true;
     }
+    public static class TrainerSpecializationUtility
+    {
+        /// <summary>公交车交易模型只保留原方向状态；训导官的只读匹配由身份套件验证。</summary>
+        public static bool HasActiveRestrictionEffect(Verse.Pawn pawn) => false;
+    }
     public static class ConditioningUtility
     {
         public static List<(Verse.Pawn Pawn, float Gain)> Gains = new();

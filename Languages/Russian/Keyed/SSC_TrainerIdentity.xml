@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <SSC_TrainerIdentity_Label>Дрессировщик</SSC_TrainerIdentity_Label>
+  <SSC_TrainerIdentity_SourceName>Инструктор</SSC_TrainerIdentity_SourceName>
   <SSC_TrainerIdentity_MasterTip>Хозяева всегда имеют статус дрессировщика. Для выполнения работы по-прежнему нужны соответствующие настройки труда и разрешение цели.</SSC_TrainerIdentity_MasterTip>
-  <SSC_TrainerIdentity_UnsetTip>Персонаж без выбранной роли не может быть дрессировщиком. Выберите роль хозяина или секс-раба.</SSC_TrainerIdentity_UnsetTip>
-  <SSC_TrainerIdentity_SlaveTip>Позволяет назначать этого секс-раба дрессировщиком при соблюдении условий труда и разрешений цели. Отключение сохраняет назначения как неактивные и не прерывает уже начатую дрессировку.</SSC_TrainerIdentity_SlaveTip>
+  <SSC_TrainerIdentity_UnsetTip>Персонаж без выбранной роли не может быть дрессировщиком. Хозяева всегда имеют этот статус; секс-рабу нужна специализация инструктора.</SSC_TrainerIdentity_UnsetTip>
+  <SSC_TrainerIdentity_SlaveTip>Сохраняет личный выбор статуса дрессировщика. Инструктор с нужной квалификацией может включить его с учётом настроек труда и разрешения цели. Потеря квалификации приостанавливает статус, сохраняя выбор. Отключение сохраняет назначения как неактивные и не прерывает уже начатую дрессировку.</SSC_TrainerIdentity_SlaveTip>
+  <SSC_TrainerIdentity_SavedInactive> (выбор сохранён, статус сейчас неактивен)</SSC_TrainerIdentity_SavedInactive>
+  <SSC_TrainerIdentity_QualificationTip>Для статуса дрессировщика нужен прогресс специализации инструктора не менее 20% либо действующее финальное состояние, а также статус свободного колониста, привязанный хозяин и необходимый этап цепи. Сейчас квалификация отсутствует.</SSC_TrainerIdentity_QualificationTip>
   <SSC_TrainerIdentity_InactiveAssignment>{0} (статус дрессировщика неактивен)</SSC_TrainerIdentity_InactiveAssignment>
   <SSC_TrainerIdentity_UnavailableAssignment>{0} (не выполнены условия труда или физического состояния)</SSC_TrainerIdentity_UnavailableAssignment>
-  <SSC_TrainerIdentity_Required>Нужен статус дрессировщика: хозяин или секс-раб с включённой опцией дрессировщика.</SSC_TrainerIdentity_Required>
+  <SSC_TrainerIdentity_Required>Нужен статус дрессировщика: хозяин или секс-раб с квалификацией инструктора и включённой опцией дрессировщика.</SSC_TrainerIdentity_Required>
 </LanguageData>

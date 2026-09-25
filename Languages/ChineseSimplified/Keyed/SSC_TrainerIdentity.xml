@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <SSC_TrainerIdentity_Label>是调教员</SSC_TrainerIdentity_Label>
+  <SSC_TrainerIdentity_SourceName>训导官</SSC_TrainerIdentity_SourceName>
   <SSC_TrainerIdentity_MasterTip>主人固定具有调教员身份。能否实际调教仍取决于工作安排和目标许可。</SSC_TrainerIdentity_MasterTip>
-  <SSC_TrainerIdentity_UnsetTip>未选择身份固定不具有调教员资格；若要担任调教员，请选择主人或性奴身份。</SSC_TrainerIdentity_UnsetTip>
-  <SSC_TrainerIdentity_SlaveTip>开启后可以被指定为调教员；仍需满足原有工作条件和目标许可。关闭后保留原指派并标为停用，不中断已开始的调教。</SSC_TrainerIdentity_SlaveTip>
+  <SSC_TrainerIdentity_UnsetTip>未选择身份固定不具有调教员资格；主人固定具备资格，性奴须培养训导官才能取得资格。</SSC_TrainerIdentity_UnsetTip>
+  <SSC_TrainerIdentity_SlaveTip>此项保存个人任职选择。取得训导官资格后可开启，仍需满足工作条件和目标许可。失格时保留开启选择但暂停任职；关闭后保留原指派并标为停用，不中断已开始的调教。</SSC_TrainerIdentity_SlaveTip>
+  <SSC_TrainerIdentity_SavedInactive>（已保存开启，当前未任职）</SSC_TrainerIdentity_SavedInactive>
+  <SSC_TrainerIdentity_QualificationTip>开启任职需要当前训导官进度达到 20%，或持有有效的终极训导官状态，并满足自由殖民者、绑定主人和锁链阶段条件。当前未取得有效资格。</SSC_TrainerIdentity_QualificationTip>
   <SSC_TrainerIdentity_InactiveAssignment>{0}（调教员身份停用）</SSC_TrainerIdentity_InactiveAssignment>
   <SSC_TrainerIdentity_UnavailableAssignment>{0}（工作或身体条件暂不满足）</SSC_TrainerIdentity_UnavailableAssignment>
-  <SSC_TrainerIdentity_Required>需要有效的调教员身份：主人，或已开启调教员开关的性奴。</SSC_TrainerIdentity_Required>
+  <SSC_TrainerIdentity_Required>需要有效的调教员身份：主人，或已取得训导官资格并开启任职的性奴。</SSC_TrainerIdentity_Required>
 </LanguageData>

@@ -252,6 +252,8 @@ namespace SexSlaveCraft
             {
                 SSCRestrictionProfileDef profile = DefDatabase<SSCRestrictionProfileDef>.GetNamedSilentFail(entry.SourceDef);
                 if (profile?.specialization == SexSlaveSpecializationType.Bus) name = Strings.ITab_SpecializationBus;
+                else if (profile?.specialization == SexSlaveSpecializationType.TrainerOfficer)
+                    name = "SSC_TrainerIdentity_SourceName".Translate();
                 else if (!string.IsNullOrEmpty(profile?.label)) name = profile.LabelCap.ToString();
             }
             return label + " (" + name + ")";

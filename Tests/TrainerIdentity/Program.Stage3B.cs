@@ -25,7 +25,7 @@ internal static partial class Program
         Run("非主人调教只读取调教条目，旧开放和公交车不能放行", () =>
         {
             var f = Setup(); SSCBondUtility.Bind(f.master, f.slave);
-            var other = Pawn(PawnIdentity.Slave, f.slave.Map, true); f.slave.Training.selectedTrainer = other;
+            var other = QualifiedTrainer(f.slave.Map); f.slave.Training.selectedTrainer = other;
             f.slave.Training.AllowsOthersForTrainingOrSex = true;
             f.slave.Training.IsBusSpecialized = f.slave.Training.BusState = true;
             var rules = f.slave.Training.restrictionConfig.rules;
@@ -39,7 +39,7 @@ internal static partial class Program
         Run("停用或工作暂停保留指派，不开放自动接替", () =>
         {
             var f = Setup(); SSCBondUtility.Bind(f.master, f.slave);
-            var other = Pawn(PawnIdentity.Slave, f.slave.Map, true);
+            var other = QualifiedTrainer(f.slave.Map);
             f.slave.Training.selectedTrainer = other; f.slave.Training.restrictionConfig.rules.receiveTraining = true;
             other.workSettings.Active = false;
             Assert(TrainerAssignmentUtility.GetActiveAssignedTrainer(f.slave) == other);
@@ -51,7 +51,7 @@ internal static partial class Program
         });
         Run("总开关关闭不解除唯一工作指派或授予初次绑定主人资格", () =>
         {
-            var f = Setup(); var other = Pawn(PawnIdentity.Slave, f.slave.Map, true);
+            var f = Setup(); var other = QualifiedTrainer(f.slave.Map);
             SSCMod.settings.enableSexSlaveProtectionRules = false;
             f.slave.Training.selectedTrainer = other;
             Assert(new WorkGiver_Training().JobOnThing(other, f.slave, true) == null);
@@ -62,7 +62,7 @@ internal static partial class Program
         Run("主人和有效性奴调教员均可主持，双方先后选角一致", () =>
         {
             var f = Setup(); SSCBondUtility.Bind(f.master, f.slave);
-            var other = Pawn(PawnIdentity.Slave, f.slave.Map, true);
+            var other = QualifiedTrainer(f.slave.Map);
             f.slave.Training.selectedTrainer = other; f.slave.Training.restrictionConfig.rules.receiveTraining = true;
             var masterRole = new RitualRole_BindingMaster(); var slaveRole = new RitualRole_BindingSlave();
             foreach (var host in new[] { f.master, other })

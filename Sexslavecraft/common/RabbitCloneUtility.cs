@@ -364,6 +364,8 @@ namespace SexSlaveCraft
                 cloneTraining.pawnIdentity = sourceTraining.pawnIdentity;
                 cloneTraining.slaveTrainerEnabled = false;
                 cloneTraining.trainerIdentityInitialized = true;
+                // 克隆是新角色，不继承本体可能尚未完成的旧档迁移版本。
+                cloneTraining.trainerOfficerMigrationVersion = CompSexSlaveTraining.CurrentTrainerOfficerMigrationVersion;
                 // 新克隆的限制由准备完成后的 ResetNewClone 独立初始化，不复制旧例外或新配置。
                 cloneTraining.rabbitReproductionMode = sourceTraining.rabbitReproductionMode;
             }

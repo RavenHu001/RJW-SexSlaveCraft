@@ -18,32 +18,33 @@ internal static partial class Program
         var xml = XDocument.Load(Path.Combine(repo, "Languages/ChineseSimplified/Keyed/SSC_TrainerIdentity.xml"));
         foreach (var key in xml.Root.Elements()) Verse.Extensions.Translations[key.Name.LocalName] = key.Value;
         RunEducationCompatibilityTests();
-        // 训导官只读资格和阶段 2 状态生命周期使用生产源码验证；
-        // 下方旧身份用例仍按现行开关规则运行。
+        // 训导官只读资格、生命周期和任职入口均使用生产源码验证；
+        // 下方身份用例按阶段 4 的“资格与个人选择同时成立”运行。
         RunTrainerSpecializationTests(repo);
         RunTrainerLifecycleTests();
         RunTrainerProgressTests();
-        Run("三种身份的开关真值表与固定身份拒绝写入", () =>
+        RunStage4Tests(repo);
+        Run("主人固定任职，未选择与无训导官资格的性奴不能开启", () =>
         {
             foreach (PawnIdentity identity in Enum.GetValues<PawnIdentity>())
             foreach (bool saved in new[] { false, true })
             {
                 Pawn p = Pawn(identity); p.Training.slaveTrainerEnabled = saved;
-                Assert(SSCIdentityUtility.IsTrainer(p) == (identity == PawnIdentity.Master || identity == PawnIdentity.Slave && saved));
+                Assert(SSCIdentityUtility.IsTrainer(p) == (identity == PawnIdentity.Master));
                 bool changed = SSCIdentityUtility.SetTrainerEnabled(p, !saved);
-                Assert(changed == (identity == PawnIdentity.Slave));
+                Assert(changed == (identity == PawnIdentity.Slave && saved));
                 Assert(p.Training.slaveTrainerEnabled == (changed ? !saved : saved));
             }
             Assert(!SSCIdentityUtility.IsTrainer(null));
             Pawn missing = Pawn(); missing.Training = null; Assert(!SSCIdentityUtility.IsTrainer(missing));
         });
-        Run("真实身份切换不继承主人强制开启，保留性奴个人选择", () =>
+        Run("真实身份切换不继承主人强制开启，未绑定者不能仅凭开关任职", () =>
         {
             Pawn p = Pawn(PawnIdentity.Master);
             SSCIdentityUtility.TrySetIdentity(p, PawnIdentity.Slave); Assert(!SSCIdentityUtility.IsTrainer(p));
-            SSCIdentityUtility.SetTrainerEnabled(p, true);
+            Assert(!SSCIdentityUtility.SetTrainerEnabled(p, true));
             SSCIdentityUtility.TrySetIdentity(p, PawnIdentity.Unset); Assert(!SSCIdentityUtility.IsTrainer(p));
-            SSCIdentityUtility.TrySetIdentity(p, PawnIdentity.Slave); Assert(SSCIdentityUtility.IsTrainer(p));
+            SSCIdentityUtility.TrySetIdentity(p, PawnIdentity.Slave); Assert(!SSCIdentityUtility.IsTrainer(p));
         });
         Run("已绑定性奴拒绝切换且保留锁链进度、恶堕及训练仪式状态", () =>
         {
@@ -155,10 +156,10 @@ internal static partial class Program
         });
         Run("菜单排除未选择、关闭性奴、自身、原版候选外人员及工作关闭", () =>
         {
-            var f = Setup(); Pawn on = Pawn(PawnIdentity.Slave, f.slave.Map, true);
+            var f = Setup(); Pawn on = QualifiedTrainer(f.slave.Map);
             Pawn off = Pawn(PawnIdentity.Slave, f.slave.Map), unset = Pawn(PawnIdentity.Unset, f.slave.Map);
             Pawn paused = Pawn(PawnIdentity.Master, f.slave.Map); paused.workSettings.Active = false;
-            Pawn legalSlave = Pawn(PawnIdentity.Slave, f.slave.Map, true); legalSlave.IsSlave = true; legalSlave.IsColonist = false;
+            Pawn legalSlave = QualifiedTrainer(f.slave.Map); legalSlave.IsSlave = true; legalSlave.IsColonist = false;
             f.slave.Map.mapPawns.FreeColonistsSource.Remove(legalSlave);
             f.slave.Training.slaveTrainerEnabled = true;
             Assert(TrainerAssignmentUtility.GetTrainerCandidates(f.slave).SequenceEqual(new[] { f.master, on }));
@@ -168,7 +169,7 @@ internal static partial class Program
         Run("停用旧调教员后生成菜单候选不因原版共享分类列表重建而抛异常", () =>
         {
             var f = Setup(); Pawn inactive = Pawn(PawnIdentity.Unset, f.slave.Map);
-            Pawn replacement = Pawn(PawnIdentity.Slave, f.slave.Map, true);
+            Pawn replacement = QualifiedTrainer(f.slave.Map);
             f.slave.Training.selectedTrainer = inactive;
             using (var candidates = TrainerAssignmentUtility.GetTrainerCandidates(f.slave).GetEnumerator())
             {
@@ -219,7 +220,7 @@ internal static partial class Program
         Run("停用指派不变成未指定，也不允许他人接替", () =>
         {
             var f = Setup(); SSCBondUtility.Bind(f.master, f.slave); f.slave.Training.restrictionConfig.rules.receiveTraining = true;
-            Pawn trainer = Pawn(PawnIdentity.Slave, f.slave.Map, true);
+            Pawn trainer = QualifiedTrainer(f.slave.Map);
             Assert(SSCBondUtility.TryAssignTrainer(f.slave, trainer));
             SSCIdentityUtility.SetTrainerEnabled(trainer, false);
             Assert(f.slave.Training.selectedTrainer == trainer && TrainerAssignmentUtility.GetActiveAssignedTrainer(f.slave) == null);
@@ -259,7 +260,10 @@ internal static partial class Program
             SSCBondUtility.Bind(f.master, f.slave);
             f.slave.Training.selectedTrainer = trainer;
             f.slave.Training.restrictionConfig.rules.receiveTraining = true;
-            SSCIdentityUtility.SetTrainerEnabled(trainer, true);
+            // 指派本身不提供资格；执行者满足训导官阶段后才可开启。
+            Assert(!SSCIdentityUtility.SetTrainerEnabled(trainer, true));
+            QualifyTrainer(trainer);
+            Assert(SSCIdentityUtility.SetTrainerEnabled(trainer, true));
             Assert(work.JobOnThing(trainer, f.slave, false)?.target == f.slave);
             Assert(work.PotentialWorkThingsGlobal(trainer).Contains(f.slave));
         });
@@ -274,7 +278,7 @@ internal static partial class Program
         });
         Run("关闭身份保留在途状态，禁止下一次启动", () =>
         {
-            var f = Setup(); Pawn trainer = Pawn(PawnIdentity.Slave, f.slave.Map, true);
+            var f = Setup(); Pawn trainer = QualifiedTrainer(f.slave.Map);
             SSCBondUtility.Bind(f.master, f.slave); f.slave.Training.restrictionConfig.rules.receiveTraining = true;
             f.slave.Training.selectedTrainer = trainer; f.slave.Training.isBeingTrained = true;
             Assert(TrainerAssignmentUtility.IsAllowedTrainer(f.slave, trainer));
@@ -284,7 +288,7 @@ internal static partial class Program
         });
         Run("无主归属使用有效调教员，有主仍返回实际主人", () =>
         {
-            var f = Setup(); Pawn trainer = Pawn(PawnIdentity.Slave, f.slave.Map, true);
+            var f = Setup(); Pawn trainer = QualifiedTrainer(f.slave.Map);
             f.slave.Training.selectedTrainer = trainer; Assert(SSCBondUtility.GetResolvedMaster(f.slave) == trainer);
             SSCIdentityUtility.SetTrainerEnabled(trainer, false); Assert(SSCBondUtility.GetResolvedMaster(f.slave) == null);
             SSCBondUtility.Bind(f.master, f.slave); f.slave.Training.selectedTrainer = trainer;
@@ -299,7 +303,7 @@ internal static partial class Program
         });
         Run("新绑定仪式拒绝停用指派，性奴调教员不获得主人角色", () =>
         {
-            var f = Setup(); Pawn trainer = Pawn(PawnIdentity.Slave, f.slave.Map, true);
+            var f = Setup(); Pawn trainer = QualifiedTrainer(f.slave.Map);
             f.slave.Training.selectedTrainer = trainer;
             var masterRole = new RitualRole_BindingMaster(); var slaveRole = new RitualRole_BindingSlave();
             Assert(!masterRole.AppliesToPawn(trainer, out _, default, assignments: new RitualRoleAssignments { Slave = f.slave }));
@@ -313,29 +317,62 @@ internal static partial class Program
         Run("旧档缺字段区别于显式关闭，新组件默认不迁移", () =>
         {
             Pawn old = Pawn(PawnIdentity.Slave); Scribe_Values.Data.Clear(); Scribe_Values.Loading = true;
-            old.Training.ExposeTrainerIdentity(); Assert(!old.Training.trainerIdentityInitialized && !old.Training.slaveTrainerEnabled);
-            var fresh = Pawn(PawnIdentity.Slave); Assert(fresh.Training.trainerIdentityInitialized && !SSCIdentityUtility.IsTrainer(fresh));
+            old.Training.ExposeTrainerIdentity();
+            Assert(!old.Training.trainerIdentityInitialized && !old.Training.slaveTrainerEnabled
+                && old.Training.trainerOfficerMigrationVersion == 0);
+            var fresh = Pawn(PawnIdentity.Slave);
+            Assert(fresh.Training.trainerIdentityInitialized && !SSCIdentityUtility.IsTrainer(fresh)
+                && fresh.Training.trainerOfficerMigrationVersion == CompSexSlaveTraining.CurrentTrainerOfficerMigrationVersion);
+            Scribe_Values.Loading = false;
         });
-        Run("旧档迁移只保留已指定性奴资格，未选择不提权", () =>
+        Run("旧指派迁移先执行，训导官版本再关闭性奴个人开关", () =>
         {
             var f = Setup(); Pawn trainer = Pawn(PawnIdentity.Slave), unset = Pawn(PawnIdentity.Unset), unused = Pawn(PawnIdentity.Slave);
-            foreach (Pawn p in new[] { trainer, unset, unused }) p.Training.trainerIdentityInitialized = false;
+            foreach (Pawn p in new[] { trainer, unset, unused })
+            {
+                p.Training.trainerIdentityInitialized = false;
+                p.Training.trainerOfficerMigrationVersion = 0;
+            }
             f.slave.Training.selectedTrainer = trainer; f.master.Training.selectedTrainer = unset;
             SSCTrainerIdentityMigration.Migrate(new[] { f.slave, f.master, unused });
-            Assert(SSCIdentityUtility.IsTrainer(trainer) && trainer.Training.trainerIdentityInitialized);
+            Assert(!trainer.Training.slaveTrainerEnabled && trainer.Training.trainerIdentityInitialized
+                && trainer.Training.trainerOfficerMigrationVersion == 1);
             Assert(!SSCIdentityUtility.IsTrainer(unset) && unset.Training.pawnIdentity == PawnIdentity.Unset);
-            Assert(!SSCIdentityUtility.IsTrainer(unused));
+            Assert(!unused.Training.slaveTrainerEnabled && unused.Training.trainerOfficerMigrationVersion == 1);
+            Assert(f.slave.Training.selectedTrainer == trainer);
         });
-        Run("地图外指派通过游戏初始化迁移，重载不重新打开", () =>
+        Run("已有旧初始化标记的旧档仍关闭一次，主人固定身份保持有效", () =>
+        {
+            Pawn slave = Pawn(PawnIdentity.Slave), master = Pawn(PawnIdentity.Master);
+            slave.Training.trainerIdentityInitialized = master.Training.trainerIdentityInitialized = true;
+            slave.Training.trainerOfficerMigrationVersion = master.Training.trainerOfficerMigrationVersion = 0;
+            slave.Training.slaveTrainerEnabled = master.Training.slaveTrainerEnabled = true;
+            SSCTrainerIdentityMigration.Migrate(new[] { slave, master });
+            Assert(!slave.Training.slaveTrainerEnabled && slave.Training.trainerOfficerMigrationVersion == 1);
+            Assert(SSCIdentityUtility.IsTrainer(master) && master.Training.slaveTrainerEnabled
+                && master.Training.trainerOfficerMigrationVersion == 1);
+            // 新版本标记使后续手动选择不受第二个初始化入口影响。
+            slave.Training.slaveTrainerEnabled = true;
+            SSCTrainerIdentityMigration.Migrate(new[] { slave, master });
+            Assert(slave.Training.slaveTrainerEnabled);
+        });
+        Run("地图外间接指派被重置一次，重载不覆盖玩家的新选择", () =>
         {
             var f = Setup(); Pawn world = Pawn(PawnIdentity.Slave); world.Map = null;
-            world.Training.trainerIdentityInitialized = false; f.slave.Training.selectedTrainer = world;
+            world.Training.trainerIdentityInitialized = false;
+            world.Training.trainerOfficerMigrationVersion = 0;
+            f.slave.Training.selectedTrainer = world;
             PawnsFinder.AllMapsWorldAndTemporary_AliveOrDead.Clear(); PawnsFinder.AllMapsWorldAndTemporary_AliveOrDead.Add(f.slave);
-            var migration = new SSCTrainerIdentityMigration(new Game()); migration.FinalizeInit(); Assert(SSCIdentityUtility.IsTrainer(world));
-            SSCIdentityUtility.SetTrainerEnabled(world, false);
+            var migration = new SSCTrainerIdentityMigration(new Game()); migration.FinalizeInit();
+            Assert(world.Training.trainerIdentityInitialized && !world.Training.slaveTrainerEnabled
+                && world.Training.trainerOfficerMigrationVersion == 1);
+            // 升级后重新选择的开关连同新版本保存；再次初始化不能触发旧指派提权。
+            world.Training.slaveTrainerEnabled = true;
             Scribe_Values.Loading = false; Scribe_Values.Data.Clear(); world.Training.ExposeTrainerIdentity();
-            world.Training.slaveTrainerEnabled = true; Scribe_Values.Loading = true; world.Training.ExposeTrainerIdentity();
-            migration.FinalizeInit(); Assert(!SSCIdentityUtility.IsTrainer(world) && world.Training.trainerIdentityInitialized);
+            world.Training.slaveTrainerEnabled = false; Scribe_Values.Loading = true; world.Training.ExposeTrainerIdentity();
+            migration.FinalizeInit();
+            Assert(world.Training.slaveTrainerEnabled && world.Training.trainerOfficerMigrationVersion == 1);
+            Scribe_Values.Loading = false;
         });
         Run("迁移不将新生成的被指派性奴或死者自动开启", () =>
         {
@@ -385,6 +422,25 @@ internal static partial class Program
     {
         var pawn = new Pawn { Map = map ?? new Map() }; pawn.Training.pawnIdentity = identity; pawn.Training.slaveTrainerEnabled = enabled;
         pawn.Map.mapPawns.FreeColonistsSource.Add(pawn); pawn.Map.mapPawns.AllPawns.Add(pawn); return pawn;
+    }
+
+    /// <summary>为工作及指派场景建立达到 20% 的有效训导官；主人在另一张地图，避免污染候选列表。</summary>
+    private static Pawn QualifiedTrainer(Map map)
+    {
+        Pawn trainer = Pawn(PawnIdentity.Slave, map);
+        QualifyTrainer(trainer);
+        Assert(SSCIdentityUtility.SetTrainerEnabled(trainer, true));
+        return trainer;
+    }
+
+    /// <summary>用生产绑定与方向切换入口准备任职条件，不在测试中模拟资格结果。</summary>
+    private static void QualifyTrainer(Pawn trainer)
+    {
+        Pawn master = Pawn(PawnIdentity.Master);
+        Assert(SSCBondUtility.Bind(master, trainer));
+        SSCBondUtility.GetChain(trainer).Severity = 0.5f;
+        trainer.Training.SetSpecialization(SexSlaveSpecializationType.TrainerOfficer);
+        trainer.Training.specializationProgress = TrainerSpecializationUtility.BasicQualificationProgress;
     }
 
     /// <summary>准备可接受调教的性奴和同图主人。</summary>

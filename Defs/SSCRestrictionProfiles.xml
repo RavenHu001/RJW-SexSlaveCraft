@@ -12,4 +12,12 @@
       <receiveForced>Allow</receiveForced>
     </forced>
   </SexSlaveCraft.SSCRestrictionProfileDef>
+  <SexSlaveCraft.SSCRestrictionProfileDef>
+    <defName>SSC_Restriction_TrainerOfficer</defName>
+    <specialization>TrainerOfficer</specialization>
+    <forced>
+      <consensualInitiation>Allow</consensualInitiation>
+      <forcedInitiation>Allow</forcedInitiation>
+    </forced>
+  </SexSlaveCraft.SSCRestrictionProfileDef>
 </Defs>
