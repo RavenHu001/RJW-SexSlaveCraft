@@ -126,9 +126,9 @@ internal static partial class Program
                         required.Add(defName + ".stages." + stage + ".label");
             }
 
-            // 三类状态共六项名称/说明，普通状态另有两个阶段名；简体中文
-            // 使用上述 Def 原文，其余三语须在实际加载目录中各提供唯一且非空的注入项。
-            Assert(required.Count == 8);
+            // 保证三类状态均被读取；翻译字段随实际阶段定义生成，不把旧阶段数量
+            // 写死为八项。简体中文使用 Def 原文，其余三语须逐项提供唯一非空译文。
+            Assert(definitions.Root.Elements("HediffDef").Count() == 3 && required.Count > 0);
             foreach (string language in new[] { "ChineseTraditional", "English", "Russian" })
             {
                 string directory = Path.Combine(repo, "Languages", language, "DefInjected", "HediffDef");

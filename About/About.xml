@@ -6,17 +6,19 @@
 		<li>1.6</li>
 	</supportedVersions>
 	<packageId>rjw.sexslavecraft.TieJinVer</packageId>
-    <description>SexSlaveCraft 2.3.1 (TieJin Modify)
-新限制系统与个体行为配置。
-基于上游 2.2.8 继续维护，包含 2.3.0 及更早版本内容。
-已绑定角色可独立设置主动、被动和调教许可；实际主人向自己的绑定对象发起时，限制系统直接允许。装备与特化统一提供条目强制值。
-普通行为、日常调教、仪式、事件及已支持兼容入口使用统一判定，旧档自动迁移。调教页右侧提供勾叉式规则栏，默认配置收纳到设置子窗口。
+    <description>SexSlaveCraft 2.3.2 (TieJin Modify)
+训导官特化与调教稳定性。
+基于上游 2.2.8 继续维护，包含 2.3.1 及更早版本内容。
+新增代主人调教其他性奴的训导官特化，包含研究、培养、20% 任职资格、50% 熟练阶段、人格凝胶终极化和分阶段属性加成。
+旧档性奴调教员开关一次性关闭，取得新资格后可重新开启；绑定、指派和历史进度保留。
+优化绑定仪式选人，自动调教兼容 Education 课程，修复连续目标停滞、预约释放红字、终极化原料消耗及“未选择”显示，补齐四语文案。
 旧 RimTalk 兼容继续暂停，宠物猫、宠物兔未完成入口继续禁用。
 完整中英双语更新记录见 CHANGELOG.md。
 
-Continues development from upstream 2.2.8, including 2.3.0 and earlier content.
-Adds individual initiation, reception and Training permissions for bound pawns. Their actual owner's initiation is immediately allowed by the restriction system. Equipment and specialization overrides use the same rules.
-Unifies ordinary jobs, Training, rituals, events and supported compatibility paths, with legacy-save migration. A right-side Training tab panel offers check/cross controls; defaults use a separate settings window.
+Continues development from upstream 2.2.8, including 2.3.1 and earlier content.
+Adds Training Officers with research, progression, trainer eligibility at 20%, an experienced stage at 50%, personality-gel finalization and staged attribute bonuses.
+Old Sex Slave trainer toggles reset once; obtain eligibility and enable duty again. Bonds, assignments and progress remain.
+Improves binding ritual selection and optional Education compatibility; fixes consecutive Training, reservation errors, invalid finalization ingredients and Unset display, with four-language text.
 Legacy RimTalk remains suspended; unfinished Pet Cat and Pet Rabbit choices remain disabled.
 See CHANGELOG.md for the full Chinese and English notes.</description>
 	<modDependencies>

@@ -4,11 +4,11 @@
 
 This continuation builds on upstream **2.2.8**, the baseline when upstream development stopped in July, and retains its version numbering. Entries are listed newest first. Technical details are in the [development log (Chinese)](Docs/Development/开发更新记录.md).
 
-## [2.3.2] — 待发布 / Unreleased — 训导官特化与调教稳定性 / Training Officers and Training reliability
+## [2.3.2] — 2026-09-25 — 训导官特化与调教稳定性 / Training Officers and Training reliability
 
-归纳 2.3.1 发布后截至 `05170b1` 的全部已实现更新，包含最新属性加成与四语文案。**本次仅整理文档，尚未更新运行版本元数据、打包或发布。** 详见 [2.3.2 中英更新说明](Docs/Releases/2.3.2/2.3.2发布说明.md)与[整理及验证状态](Docs/Releases/2.3.2/2.3.2版本验证.md)。
+归纳 2.3.1 发布后截至 `05170b1` 的全部已实现更新，包含最新属性加成与四语文案。版本元数据与安装包按 2.3.2 统一；发布入口：[v2.3.2](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.2)。 详见 [2.3.2 中英更新说明](Docs/Releases/2.3.2/2.3.2发布说明.md)与[整理及验证状态](Docs/Releases/2.3.2/2.3.2版本验证.md)。
 
-Covers implemented changes since released 2.3.1 through `05170b1`, including the latest bonuses and localization. **Documentation only: runtime version metadata, packaging and publication remain pending.** See the [bilingual notes](Docs/Releases/2.3.2/2.3.2发布说明.md) and [validation status](Docs/Releases/2.3.2/2.3.2版本验证.md).
+Covers implemented changes since released 2.3.1 through `05170b1`, including the latest bonuses and localization. Runtime metadata and the installation package use 2.3.2. Release: [v2.3.2](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.2). See the [bilingual notes](Docs/Releases/2.3.2/2.3.2发布说明.md) and [validation status](Docs/Releases/2.3.2/2.3.2版本验证.md).
 
 - **训导官与任职 / Training Officers:** 新增代主人调教其他性奴的职能特化。SSC 性奴须为自由殖民者、已绑定实际主人且锁链达到第 3 阶段；当前普通进度达到 20% 或拥有有效终极状态，才可手动开启调教员。主人固定资格保持。Adds a specialization for performing Training on the owner's behalf. An SSC Sex Slave must be a bonded free colonist at Chain stage 3 or higher, with 20% current progress or an active final state, to opt into trainer duty. Masters retain their fixed eligibility.
 - **培养与终极化 / Progression and finalization:** 新增成本 1200 的研究及工作量 3500 的雕刻台人格凝胶配方。成功接受调教、施教、主动双人行为分别增加 5、2.5、1 个百分点；主动行为包括规则允许的强制行为。普通完成不会自动终极化，重复与中断结算不发放经验。Adds research costing 1,200 and a personality-gel finalization recipe requiring 3,500 work. Completed Training received, Training performed and initiated pair activity grant 5, 2.5 and 1 percentage points respectively, including permitted forced initiation. Full ordinary progress requires manual finalization; duplicate or interrupted completion does not grant rewards.
@@ -19,7 +19,7 @@ Covers implemented changes since released 2.3.1 through `05170b1`, including the
 - **连续任务与预约 / Consecutive jobs and reservations:** 修复第二目标工作显示调教却停在原地的问题，统一 Touch 接近、清理遗留 UAP 位置锁并对停止寻路有限重试；仅释放当前 Job 持有的预约，消除重复释放红字。Fixes trainers stuck at the previous target through Touch approach, stale UAP lock cleanup and bounded path recovery. Releases only reservations owned by the initiating job, preventing repeated-release errors.
 - **Education 兼容 / Education compatibility:** 自动调教避让活动课程中的学生和教师，途中或执行中入课也会退出，下课后恢复候选。兼容可选，手动强制命令及教育自身规则保持原行为。Automatic Training yields to active students and teachers, including class entry during travel/execution, and resumes eligibility after class. Education remains optional; manual forced orders and education-side rules retain their behavior.
 - **界面与凝胶保护 / UI and gel safeguards:** 修复终极化后“未选择”的状态认领和显示回退，保留终极效果与历史；消耗前拒绝异常凝胶并保留账单次数；统一完成容差，优化长译文布局，补齐简中、繁中、英文、俄文研究、配方、阶段和状态提示。Preserves and correctly displays Unset after finalization without removing benefits/history; rejects invalid gels before consumption or bill counting; unifies completion tolerance, fits long text and completes four-language research, recipe, stage and status text.
-- **维护与验证 / Maintenance and validation:** 减少同次资格查询，复用现有低频和状态事件；统一回归由 16 套扩为 18 套，补充仪式选人、人格恢复、真实任务交接和界面回归。历史全量 780/780 及后续专项通过、实机确认均按批次记录；最新身份专项为 85/87，两处旧数量/文案断言待同步，尚无本版发布预检结论。Reduces repeated queries and extends the existing runner from 16 to 18 suites. Historical 780/780 and later targeted/in-game results are recorded by development batch. The latest identity check is 85/87 due to two outdated count/text assertions; release validation is pending.
+- **维护与验证 / Maintenance and validation:** 减少同次资格查询，复用现有低频和状态事件；统一回归由 16 套扩为 18 套，补充仪式选人、人格恢复、真实任务交接和界面回归。历史验证和实机确认按批次记录；两处旧数量/文案断言已适配，2.3.2 Release 重建与发布预检 18 套 782/782 全部通过。Reduces repeated queries and extends the existing runner from 16 to 18 suites. Historical and in-game results remain recorded by development batch. Two outdated count/text assertions were updated; the 2.3.2 Release build and all 18 preflight suites passed (782/782).
 
 训导官专属心情与社交反馈等未来构想未计入已实现内容。Dedicated Training Officer mood/social feedback and other future plans are not included as implemented features.
 

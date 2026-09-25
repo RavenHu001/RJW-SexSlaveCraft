@@ -257,7 +257,9 @@ internal static partial class Program
             var f = Setup(); Pawn trainer = Pawn(PawnIdentity.Slave, f.slave.Map);
             var work = new WorkGiver_Training(); TrainingJobUtility.ValidationCalls = 0;
             Assert(work.JobOnThing(trainer, f.slave, false) == null && work.JobOnThing(trainer, f.slave, true) == null);
-            Assert(JobFailReason.Last.Contains("调教员身份") && TrainingJobUtility.ValidationCalls == 0);
+            // 拒绝提示跟随真实翻译入口；继续验证无资格者在昂贵身体检查前就被拒绝，
+            // 避免本地化措辞调整导致行为正确的用例失败。
+            Assert(JobFailReason.Last == "SSC_TrainerIdentity_Required".Translate() && TrainingJobUtility.ValidationCalls == 0);
             SSCBondUtility.Bind(f.master, f.slave);
             f.slave.Training.selectedTrainer = trainer;
             f.slave.Training.restrictionConfig.rules.receiveTraining = true;

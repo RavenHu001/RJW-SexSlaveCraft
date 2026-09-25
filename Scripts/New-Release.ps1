@@ -6,8 +6,8 @@
 默认使用仓库中的预编译 DLL，因此没有游戏依赖的机器也能重复打包。
 改动 C# 后必须先编译，或使用 -Build。所有模式均运行回归测试和版本检查。
 ReferenceTargetsPath 可指向本机的 MSBuild 引用覆盖文件，避免把个人安装路径写入项目。
-全部 15 套回归统一由 Test-All.ps1 执行；HarmonyAssemblyPath 或 SSC_TEST_HARMONY_PATH
-必须指向 SharedBed 使用的 net9.0 Harmony，ValidationReportDirectory 可指定验证报告目录。
+全部回归统一由 Test-All.ps1 执行；HarmonyAssemblyPath 或 SSC_TEST_HARMONY_PATH
+必须指向测试使用的 net9.0 Harmony，ValidationReportDirectory 可指定验证报告目录。
 #>
 [CmdletBinding()]
 param(

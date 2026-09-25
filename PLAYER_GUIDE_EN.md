@@ -1,12 +1,12 @@
 # RJW-SexSlaveCraft Complete Player Guide
 
-> For RimWorld 1.6 and SexSlaveCraft 2.3.1, based on the current workspace code and installed Defs.\
-> Base audit: 2026-06-30; restriction-system changes updated for 2.3.1 on 2026-09-22.\
+> For RimWorld 1.6 and SexSlaveCraft 2.3.2, based on the current workspace code and installed Defs.\
+> Base audit: 2026-06-30; Training Officer and reliability changes updated for 2.3.2 on 2026-09-25.\
 > Based on upstream 2.2.8; version 2.2.9 includes the specialization and ritual progression fixes, and 2.2.10 fixes stale training locks after interrupted rituals. See `CHANGELOG.md`.\
-> Version 2.3.1 adds unified per-pawn restrictions activated by an actual bond, immediate permission for owner initiation, equipment/profile overrides, save migration, trainer authorization and a right-side rule panel. ZIP and checksum: [v2.3.1 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.1). Legacy RimTalk remains suspended; unfinished Pet Cat and Pet Rabbit choices remain disabled.\
+> Version 2.3.2 adds Training Officer progression, eligibility and bonuses, improves ritual selection and optional Education compatibility, and fixes consecutive Training, reservations, gel processing and UI. Old Sex Slave trainer toggles reset once; obtain eligibility and enable duty again. ZIP and checksum: [v2.3.2 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.2). Legacy RimTalk remains suspended; unfinished Pet Cat and Pet Rabbit choices remain disabled.\
 > This guide describes the behavior implemented by the current C# and XML. Where an old changelog or description disagrees with the code, the discrepancy is listed under “Current Limitations and Known Differences.”
 
-> The current development build includes Training Officer specialization. Its rules below are not part of the published 2.3.1 package.
+> See the [2.3.2 notes](Docs/Releases/2.3.2/2.3.2发布说明.md) for Training Officer progression, attributes and upgrading.
 
 ## 1. Scope and Dependencies
 
