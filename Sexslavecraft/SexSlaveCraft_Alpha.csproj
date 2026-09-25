@@ -96,6 +96,11 @@
     <Compile Include="common\BusSpecializationUtility.cs" />
     <Compile Include="common\DogSpecializationUtility.cs" />
     <Compile Include="common\PetSpecializationUtility.cs" />
+    <!-- 训导官资格、状态维护、人格标签及经验均已接入；调教员身份与强制限制由统一入口处理。 -->
+    <Compile Include="common\TrainerSpecializationUtility.cs" />
+    <Compile Include="common\TrainerSpecializationLifecycle.cs" />
+    <Compile Include="common\TrainerSpecializationGelUtility.cs" />
+    <Compile Include="common\TrainerSpecializationProgressUtility.cs" />
     <Compile Include="common\RabbitCloneUtility.cs" />
     <Compile Include="common\ConditioningUtility.cs" />
     <Compile Include="common\CorruptionProgressionUtility.cs" />
@@ -151,6 +156,7 @@
     <Compile Include="Ritual\RitualOutcomeComp_SocialSkill.cs" />
     <Compile Include="ITab\ITab_PES.cs" />
     <Compile Include="ITab\ITab_SexSlaveTraining.cs" />
+    <Compile Include="ITab\ITab_SexSlaveTraining.SpecializationDisplay.cs" />
     <Compile Include="JobDriver\JobDriver_PE.cs" />
     <Compile Include="Recipe\Recipe_PEMake.cs" />
     <Compile Include="ThePatches\Harmony_CorruptionRapeThoughts.cs" />
@@ -240,6 +246,7 @@
     <Compile Include="ThePatches\Harmony_PreventWearEFOutfit.cs" />
     <Compile Include="ThePatches\Harmony_ProtectSexSlave.cs" />
     <Compile Include="ThePatches\Harmony_RecipeMaterial.cs" />
+    <Compile Include="ThePatches\Harmony_TrainerRecipeCompletion.cs" />
     <Compile Include="ThePatches\Harmony_SexSlaveCorruptionAdd.cs" />
     <Compile Include="ThePatches\Harmony_SexSlaveNameColor.cs" />
     <Compile Include="ThePatches\Harmony_SlaveWorkRestrictions.cs" />

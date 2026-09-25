@@ -13,6 +13,7 @@
     <Compile Include="$(SscSourceRoot)/JobGiver/JobGiver_RitualMaster.cs" Link="Production/JobGiver_RitualMaster.cs" />
     <Compile Include="$(SscSourceRoot)/JobDriver/JobDriver_RitualTraining.cs" Link="Production/JobDriver_RitualTraining.cs" />
     <Compile Include="$(SscSourceRoot)/common/UapRitualCompatibilityUtility.cs" Link="Production/UapRitualCompatibilityUtility.cs" />
+    <Compile Include="$(SscSourceRoot)/common/TrainingJobUtility.cs" Link="Production/TrainingJobUtility.cs" />
     <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionTrainingUtility.cs" Link="Production/SSCRestrictionTrainingUtility.cs" />
     <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionData.cs" Link="Production/SSCRestrictionData.cs" />
     <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionDefinitions.cs" Link="Production/SSCRestrictionDefinitions.cs" />

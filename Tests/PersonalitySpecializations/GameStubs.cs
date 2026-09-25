@@ -1,9 +1,14 @@
 using Verse;
+using SexSlaveCraft;
 
 namespace Verse
 {
     public class Thing { }
-    public class Pawn : Thing { }
+    public class Pawn : Thing
+    {
+        // 仅存储外部健康状态查询结果，标签选择逻辑来自生产 ITab。
+        public readonly System.Collections.Generic.HashSet<SexSlaveSpecializationType> Finalized = new System.Collections.Generic.HashSet<SexSlaveSpecializationType>();
+    }
 }
 
 namespace SexSlaveCraft
@@ -17,6 +22,8 @@ namespace SexSlaveCraft
         public bool allowOthersForTrainingOrSex;
         public RabbitReproductionMode rabbitReproductionMode;
         public float savedCowReservoirCharge;
+        public bool trainerInvalidExitBlocksAdoption;
+        public bool specializationExplicitlyUnset;
         public int inactiveStateCleanupCalls;
         public SexSlaveSpecializationType lastKeptType;
 
@@ -26,5 +33,11 @@ namespace SexSlaveCraft
             comp.inactiveStateCleanupCalls++;
             comp.lastKeptType = typeToKeep;
         }
+    }
+
+    // 此套件只测试公共进度切换；状态维护的生产代码在 TrainerIdentity 中单独链接验证。
+    public static class TrainerSpecializationLifecycle
+    {
+        public static void Notify(Pawn pawn) { }
     }
 }

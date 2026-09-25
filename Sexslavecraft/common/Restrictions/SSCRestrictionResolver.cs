@@ -28,7 +28,7 @@ namespace SexSlaveCraft
             return SSCBondUtility.GetBoundMaster(pawn) != null;
         }
 
-        /// <summary>检查当前特化或已有巴士状态是否匹配定义，只读取角色而不修正其状态。</summary>
+        /// <summary>检查当前特化及保留的有效状态是否匹配定义，只读取角色而不修正其状态。</summary>
         public static bool HasProfile(Pawn pawn, SSCRestrictionProfileDef profile)
         {
             var context = new ProfileContext(pawn);
@@ -57,7 +57,10 @@ namespace SexSlaveCraft
                 var layer = new Layer();
                 foreach (SSCRestrictionProfileDef profile in DefDatabase<SSCRestrictionProfileDef>.AllDefsListForReading)
                 {
-                    if (profile?.forced != null && context.Matches(profile))
+                    // 稀疏 Profile 只为少数条目提供强制值。先跳过本次未声明的
+                    // 条目，再检查训导官持续条件，避免接收许可等无关查询重复读锁链。
+                    if (profile?.forced != null && profile.forced.Get(rule) != SSCRestrictionValue.Unspecified
+                        && context.Matches(profile))
                         layer.Consider(rule, profile.forced, profile.defName);
                 }
                 layer.ApplyTo(result, SSCRestrictionSource.Specialization);
@@ -96,6 +99,8 @@ namespace SexSlaveCraft
             private readonly SexSlaveSpecializationType specialization;
             private bool busChecked;
             private bool hasBusState;
+            private bool trainerChecked;
+            private bool hasTrainerEffect;
 
             /// <summary>读取当前所选方向；仅在需要匹配额外巴士状态时才查询健康状态。</summary>
             public ProfileContext(Pawn pawn)
@@ -104,12 +109,29 @@ namespace SexSlaveCraft
                 specialization = pawn?.TryGetComp<CompSexSlaveTraining>()?.specializationType ?? SexSlaveSpecializationType.None;
                 busChecked = false;
                 hasBusState = false;
+                trainerChecked = false;
+                hasTrainerEffect = false;
             }
 
-            /// <summary>匹配有效方向或保留的巴士状态；同一次解析最多查询一次巴士健康状态。</summary>
+            /// <summary>训导官单独检查持续条件与禁用状态；其他方向保持原有匹配规则。</summary>
             public bool Matches(SSCRestrictionProfileDef profile)
             {
                 if (pawn == null || profile == null || profile.specialization == SexSlaveSpecializationType.None) return false;
+
+                // 训导官从选择方向时就有主动行为强制效果，但 20% 任职资格
+                // 不能用于此处；终极标记还允许在切换培养方向后继续匹配。
+                // 必须先于通用的“方向相同即匹配”分支，才能排除失格与禁用。
+                if (profile.specialization == SexSlaveSpecializationType.TrainerOfficer)
+                {
+                    if (!trainerChecked)
+                    {
+                        hasTrainerEffect = TrainerSpecializationUtility.HasActiveRestrictionEffect(pawn);
+                        trainerChecked = true;
+                    }
+                    return hasTrainerEffect;
+                }
+
+                // 巴士和现有方向维持原行为；同一次解析只重复使用已读取的状态。
                 if (specialization == profile.specialization) return true;
                 if (profile.specialization != SexSlaveSpecializationType.Bus) return false;
                 if (!busChecked)

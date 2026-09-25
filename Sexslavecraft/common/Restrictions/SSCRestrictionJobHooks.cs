@@ -40,6 +40,23 @@ namespace SexSlaveCraft
         public static void Postfix(JobDriver_Sex __instance) => SSCRestrictionJobGuard.ExposeData(__instance);
     }
 
+    [HarmonyPatch(typeof(SexUtility), nameof(SexUtility.ProcessSex))]
+    internal static class SSCTrainerInitiatedSexProgressHook
+    {
+        /// <summary>只在 RJW 正常结算返回后领取普通双人行为经验；任务归属和次数由场景守卫核实。</summary>
+        public static void Postfix(SexProps props, bool __runOriginal)
+        {
+            // 其他补丁可能跳过 RJW 原结算；Harmony 此时仍会调用后缀。
+            // 未执行原方法就没有完成事件，不能凭旧的开始凭据领奖。
+            if (!__runOriginal) return;
+
+            // 日常调教、绑定仪式和人格排泄虽也调用 ProcessSex，仍各走自己
+            // 的专用结算路径。此处仅转发通过普通任务认领的实际发起者。
+            if (SSCRestrictionJobGuard.TryClaimOrdinarySexOutcome(props, out Pawn initiator, out Pawn recipient))
+                TrainerSpecializationProgressUtility.NotifyInitiatedSexCompleted(initiator, recipient);
+        }
+    }
+
     [HarmonyPatch]
     internal static class SSCRestrictionQuickiePreparationHook
     {

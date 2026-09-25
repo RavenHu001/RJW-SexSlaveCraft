@@ -1,6 +1,7 @@
 # Binding Ritual lifecycle regression tests
 
-The suite contains 31 original lifecycle cases and 9 UAP compatibility cases and 10 stage 3B daily/ritual cases (50 total).
+The suite currently contains 61 cases, including ritual lifecycle, UAP compatibility,
+daily training, Education interactions, and receiver handoff/reservation regressions.
 The original lifecycle tests were committed with the lifecycle fix
 in [481ac53](https://github.com/RavenHu001/RJW-SexSlaveCraft-TieJin-Modify/commit/481ac53135842064262d8a34a2beed173b0ace2b)
 on the `Bug-fix` branch. The release script runs this suite alongside the 29-case
@@ -10,13 +11,14 @@ Run from the repository root with .NET SDK 9:
 
 ```powershell
 dotnet run --project Tests/RitualLifecycle/RitualLifecycle.csproj
-# Omit the UAP type entirely: 41 lifecycle cases plus one absence check (42 total).
+# Omit the UAP type entirely: 51 shared cases plus one absence check (52 total).
 dotnet run --project Tests/RitualLifecycle/RitualLifecycle.csproj -p:EnableUapTestStub=false
 ```
 
 The project has no NuGet dependencies and does not require Unity or a game
 installation. It links the production `BindingRitualStateUtility`, lifecycle
-Harmony patches, `JobGiver_RitualBinding` and `JobDriver_RitualTraining`.
+Harmony patches, `JobGiver_RitualBinding`, `JobDriver_RitualTraining`, the daily driver,
+and the real `TrainingJobUtility`.
 `GameStubs.cs` supplies the minimal game host and stores observable state. The
 tests do not duplicate the ritual ownership, progression, recovery or outcome
 eligibility algorithms.
@@ -44,13 +46,17 @@ cooldown fields present in the host comp.
 The host runs the real driver's preparation, scene initialization, tick and finish
 callbacks. Job cleanup invokes only the driver's global finish actions and the
 current toil's finish actions; a future scene toil is never finished on behalf of
-a walking job. Validation and receiver-start adapters return successful results
-for the valid host pawns; RJW calls are counted without running their game effects.
+a walking job. Physical eligibility remains an interface model; receiver startup,
+position synchronization, reservation checks and abort cleanup run production code.
+The host job tracker can accept or reject a requested receiver. RJW calls are
+counted without running their game effects.
 
-Helper methods and adapters have Chinese XML documentation comments describing
-their behavior and limits. In particular, the simplified validation-failure
-adapter does not verify the production abort-recovery path; its behavior must not
-be treated as a simulation of the full game job lifecycle.
+The reservation model stores exact target/pawn/job triples and throws on an invalid
+release. Four regression cases cover consecutive targets for one trainer, removal
+during teleport notification, preservation of another job's reservation, and repeated
+handoff. They require the actual target receiver job and initiator to be installed,
+not just a training label on the initiating pawn. The path follower supplies an
+explicit arrival callback; it does not calculate map paths or run the game scheduler.
 
 The host invokes the production Harmony patch methods directly. It does not apply
 Harmony detours or execute RimWorld's complete lord state graph, job scheduling,
@@ -61,4 +67,6 @@ the serializer itself. Full in-game cancellation and save/load remain integratio
 checks. The separate `RitualProgression` suite exercises long-term chain and
 corruption numerical behavior.
 
-Stage 3B also links the production daily driver and restriction core/adapter. Ten additional cases cover preparation failure, walking cleanup, unstarted scene settlement, stale callbacks, normal daily payout, owner precedence, phase cancellation and cancellation ownership. Cancellation is modeled by invoking the production cleanup patches after removing the lord; the real RimWorld signal graph is not executed. Exact restriction save markers and Harmony dispatch are covered by InteractionProtection; role selection and the full trainer utility are covered by TrainerIdentity.
+Stage 3B also links the production daily driver and restriction core/adapter. Its cases cover preparation failure, walking cleanup, unstarted scene settlement, stale callbacks, normal daily payout, owner precedence, phase cancellation and cancellation ownership. Cancellation is modeled by invoking the production cleanup patches after removing the lord; the real RimWorld signal graph is not executed. Exact restriction save markers and Harmony dispatch are covered by InteractionProtection; role selection and the full trainer identity utility are covered by TrainerIdentity.
+
+The Training Officer Stage 3 assertions require a completed daily scene to notify specialization progress once. A repeated payout callback cannot notify it again; the actual progress calculation is covered by TrainerIdentity.

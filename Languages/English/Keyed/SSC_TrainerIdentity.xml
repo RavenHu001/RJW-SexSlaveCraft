@@ -1,10 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-  <SSC_TrainerIdentity_Label>Is a trainer</SSC_TrainerIdentity_Label>
-  <SSC_TrainerIdentity_MasterTip>Masters always have trainer status. Actual training still requires the appropriate work settings and permission for the target.</SSC_TrainerIdentity_MasterTip>
-  <SSC_TrainerIdentity_UnsetTip>Unassigned identities cannot be trainers. Choose Master or Sex Slave to make this pawn eligible.</SSC_TrainerIdentity_UnsetTip>
-  <SSC_TrainerIdentity_SlaveTip>Allows this sex slave to be assigned as a trainer, subject to existing work requirements and target permissions. Turning this off retains assignments as inactive and lets training already underway finish.</SSC_TrainerIdentity_SlaveTip>
+  <SSC_TrainerIdentity_Label>Trainer role</SSC_TrainerIdentity_Label>
+  <SSC_ITab_SpecializationTrainerOfficer>Training Officer</SSC_ITab_SpecializationTrainerOfficer>
+  <SSC_ITab_SelectSpecializationTrainerOfficer>Set as: Training Officer</SSC_ITab_SelectSpecializationTrainerOfficer>
+  <SSC_TrainerIdentity_Active> (enabled)</SSC_TrainerIdentity_Active>
+  <SSC_TrainerIdentity_Off> (off)</SSC_TrainerIdentity_Off>
+  <SSC_TrainerIdentity_SourceName>Training Officer</SSC_TrainerIdentity_SourceName>
+  <SSC_TrainerIdentity_MasterTip>Masters qualify as trainers. Training still requires suitable work settings and target permission.</SSC_TrainerIdentity_MasterTip>
+  <SSC_TrainerIdentity_UnsetTip>A pawn without an identity cannot serve as a trainer. Masters qualify directly; sex slaves need Training Officer qualification.</SSC_TrainerIdentity_UnsetTip>
+  <SSC_TrainerIdentity_SlaveTip>Enable this after qualifying as a Training Officer. Losing qualification keeps this choice and assignments but suspends the role. Turning it off also keeps assignments and lets ongoing training finish. Work settings and target permission still apply.</SSC_TrainerIdentity_SlaveTip>
+  <SSC_TrainerIdentity_SavedInactive> (enabled, role unavailable)</SSC_TrainerIdentity_SavedInactive>
+  <SSC_TrainerIdentity_QualificationTip>Cannot serve as trainer now:</SSC_TrainerIdentity_QualificationTip>
+  <SSC_TrainerIdentity_Failure_MissingPawnOrTrainingComp>Training records are unavailable</SSC_TrainerIdentity_Failure_MissingPawnOrTrainingComp>
+  <SSC_TrainerIdentity_Failure_NotSexSlave>Requires SSC sex slave identity</SSC_TrainerIdentity_Failure_NotSexSlave>
+  <SSC_TrainerIdentity_Failure_NotFreeColonist>Requires free colonist status</SSC_TrainerIdentity_Failure_NotFreeColonist>
+  <SSC_TrainerIdentity_Failure_NoBoundMaster>Requires an actual bound master</SSC_TrainerIdentity_Failure_NoBoundMaster>
+  <SSC_TrainerIdentity_Failure_ChainStageTooLow>Requires the submissive sex slave chain stage</SSC_TrainerIdentity_Failure_ChainStageTooLow>
+  <SSC_TrainerIdentity_Failure_FinalDisabled>Final Training Officer state is currently disabled</SSC_TrainerIdentity_Failure_FinalDisabled>
+  <SSC_TrainerIdentity_Failure_WrongSpecialization>Training Officer is not the current specialization</SSC_TrainerIdentity_Failure_WrongSpecialization>
+  <SSC_TrainerIdentity_Failure_BasicStageNotReached>Requires the 20% basic stage</SSC_TrainerIdentity_Failure_BasicStageNotReached>
+  <SSC_TrainerIdentity_Failure_ResearchNotFinished>Requires Training Officer research</SSC_TrainerIdentity_Failure_ResearchNotFinished>
+  <SSC_TrainerIdentity_Failure_AlreadyFinalized>Already finalized</SSC_TrainerIdentity_Failure_AlreadyFinalized>
+  <SSC_TrainerIdentity_SelectionRejected>Cannot set Training Officer specialization: {0}</SSC_TrainerIdentity_SelectionRejected>
+  <SSC_TrainerIdentity_StatusLine>Training Officer: {0}</SSC_TrainerIdentity_StatusLine>
+  <SSC_TrainerIdentity_Status_Training>in training</SSC_TrainerIdentity_Status_Training>
+  <SSC_TrainerIdentity_Status_BasicUnlocked>progress requirement met</SSC_TrainerIdentity_Status_BasicUnlocked>
+  <SSC_TrainerIdentity_Status_OrdinaryComplete>training complete</SSC_TrainerIdentity_Status_OrdinaryComplete>
+  <SSC_TrainerIdentity_Status_Finalized>finalized</SSC_TrainerIdentity_Status_Finalized>
+  <SSC_TrainerIdentity_Status_FinalDisabled>finalized, currently disabled</SSC_TrainerIdentity_Status_FinalDisabled>
+  <SSC_TrainerIdentity_FinalDisabledPending>Conditions are restored; final effects will resume shortly</SSC_TrainerIdentity_FinalDisabledPending>
+  <SSC_TrainerIdentity_RestrictionTip>Once selected, this specialization allows consensual and forced initiation while its ongoing conditions are met. The 20% threshold applies only to the trainer role. Global settings and rule priority still apply.</SSC_TrainerIdentity_RestrictionTip>
   <SSC_TrainerIdentity_InactiveAssignment>{0} (trainer status inactive)</SSC_TrainerIdentity_InactiveAssignment>
   <SSC_TrainerIdentity_UnavailableAssignment>{0} (work or physical requirements not met)</SSC_TrainerIdentity_UnavailableAssignment>
-  <SSC_TrainerIdentity_Required>Requires trainer status: a master, or a sex slave with the trainer option enabled.</SSC_TrainerIdentity_Required>
+  <SSC_TrainerIdentity_Required>Requires a master or an active Training Officer.</SSC_TrainerIdentity_Required>
 </LanguageData>

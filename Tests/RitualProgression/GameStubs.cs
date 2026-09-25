@@ -181,6 +181,11 @@ namespace SexSlaveCraft
         public float corruptionDecayPerDay = 0.02f;
     }
     public static class SSCMod { public static TestSettings settings = new TestSettings(); }
+    // 数值套件只验证锁链计算；跨门槛通知后的状态转换在 TrainerIdentity 中验证。
+    public static class TrainerSpecializationLifecycle
+    {
+        public static void Notify(Pawn pawn) { }
+    }
     // Trait 同步被忽略，GetSexSlaveStage 仅供装备替身判断“有锁链”。
     // 实际阶段断言使用生产 TrainingOutcomeUtility，不能把这里的返回值当作阶段算法验证。
     public static class SSCIdentityUtility

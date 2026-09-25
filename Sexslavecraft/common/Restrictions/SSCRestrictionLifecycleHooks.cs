@@ -1,5 +1,6 @@
 using System;
 using HarmonyLib;
+using RimWorld;
 using Verse;
 
 namespace SexSlaveCraft
@@ -68,6 +69,7 @@ namespace SexSlaveCraft
         private static void Postfix(Pawn __instance)
         {
             SSCRestrictionGameComponent.Notify(__instance);
+            TrainerSpecializationLifecycle.Notify(__instance);
         }
     }
 
@@ -78,18 +80,46 @@ namespace SexSlaveCraft
         private static void Postfix(Hediff_ChainOfSexSlave __result)
         {
             SSCRestrictionGameComponent.Notify(__result?.pawn);
+            // 外部入口可能直接建立锁链；真正的绑定事务会在结束后再维护。
+            TrainerSpecializationLifecycle.Notify(__result?.pawn);
         }
     }
 
     [HarmonyPatch(typeof(Pawn_HealthTracker), nameof(Pawn_HealthTracker.AddHediff),
         new[] { typeof(Hediff), typeof(BodyPartRecord), typeof(DamageInfo?), typeof(DamageWorker.DamageResult) })]
-    internal static class SSCRestrictionBusHealthHook
+    internal static class SSCSpecializationHealthHook
     {
-        /// <summary>仅在公交车基础或终极状态加入后处理首次默认，覆盖离图角色；其他健康变化不扫描规则。</summary>
+        /// <summary>只在公交车或训导官相关标记加入后通知对应生命周期，其他健康变化直接返回。</summary>
         private static void Postfix(Hediff hediff)
         {
             if (hediff != null && (hediff.def == SSCDefOf.SSC_Hediff_Bus || hediff.def == SSCDefOf.SSC_Hediff_Bus_Final))
                 SSCRestrictionGameComponent.Notify(hediff.pawn);
+            // 复用现有 AddHediff 补丁，只有训导官三个 Def 会进入维护器。
+            // 外部配方加入终极标记后立即切换有效/禁用状态，不增加新全局补丁。
+            if (hediff != null && (hediff.def == SSCDefOf.SSC_Hediff_TrainerOfficer ||
+                hediff.def == SSCDefOf.SSC_Hediff_TrainerOfficer_Final ||
+                hediff.def == SSCDefOf.SSC_Hediff_TrainerOfficer_FinalDisabled))
+                TrainerSpecializationLifecycle.Notify(hediff.pawn);
+        }
+    }
+
+    [HarmonyPatch(typeof(Pawn), nameof(Pawn.SetFaction))]
+    internal static class SSCTrainerFactionHook
+    {
+        /// <summary>阵营变更结束后检查已有训导官状态；不补丁高频殖民者属性读取。</summary>
+        private static void Postfix(Pawn __instance)
+        {
+            TrainerSpecializationLifecycle.Notify(__instance);
+        }
+    }
+
+    [HarmonyPatch(typeof(Pawn_GuestTracker), nameof(Pawn_GuestTracker.SetGuestStatus))]
+    internal static class SSCTrainerGuestStatusHook
+    {
+        /// <summary>囚犯/原版奴隶等身份切换后维护；Harmony 注入追踪器持有的私有 pawn 字段。</summary>
+        private static void Postfix(Pawn ___pawn)
+        {
+            TrainerSpecializationLifecycle.Notify(___pawn);
         }
     }
 }

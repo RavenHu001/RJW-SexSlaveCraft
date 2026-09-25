@@ -21,6 +21,31 @@ namespace Verse
     {
     }
 
+    public class RecipeDef : Def
+    {
+        public RecipeWorker Worker;
+    }
+
+    public class RecipeWorker
+    {
+        public RecipeDef recipe;
+        // 原版先调用该消耗入口，再经 Bill_Production 通知配方工作者完成。
+        public virtual void ConsumeIngredient(Thing ingredient, RecipeDef recipe, Map map) => ingredient.Destroy(DestroyMode.Vanish);
+        public virtual void Notify_IterationCompleted(Pawn billDoer, List<Thing> ingredients) { }
+    }
+
+    public enum ThingPlaceMode { Near }
+
+    public static class GenPlace
+    {
+        public static Thing LastPlaced;
+        public static bool TryPlaceThing(Thing thing, object position, Map map, ThingPlaceMode mode)
+        {
+            LastPlaced = thing;
+            return true;
+        }
+    }
+
     public enum DestroyMode
     {
         Vanish
@@ -140,6 +165,8 @@ namespace Verse
     public class Thing
     {
         public bool Destroyed;
+        public int stackCount = 1;
+        public ThingDef def;
         public Dictionary<Type, object> Comps = new Dictionary<Type, object>();
         /// <summary>按组件类型查找测试物品上注册的实例，没有匹配项时返回空引用。</summary>
         public T TryGetComp<T>()
@@ -200,6 +227,8 @@ namespace Verse
 
     public class Pawn : Thing
     {
+        public Verse.AI.Pawn_JobTracker jobs = new Verse.AI.Pawn_JobTracker();
+        public Verse.AI.Job CurJob => jobs.curJob;
         public bool Dead;
         public Name Name = new NameTriple("", "pawn", "");
         public string LabelShort => (Name as NameTriple)?.Nick ?? "pawn";
@@ -272,7 +301,7 @@ namespace Verse
         /// <summary>创建带有人格存储组件的测试物品，供生产提取流程生成凝胶。</summary>
         public static Thing MakeThing(ThingDef def)
         {
-            var t = new Thing();
+            var t = new Thing { def = def };
             var c = new SexSlaveCraft.CompPersonalityStore
             {
                 parent = t
@@ -361,10 +390,6 @@ namespace RimWorld
     }
 
     public class PawnRelationDef : Def
-    {
-    }
-
-    public class RecipeDef : Def
     {
     }
 
@@ -718,6 +743,12 @@ namespace RimWorld
 
 namespace HarmonyLib
 {
+    [AttributeUsage(AttributeTargets.Class)]
+    public sealed class HarmonyPatch : Attribute
+    {
+        public HarmonyPatch(Type type, string methodName) { }
+    }
+
     public static class AccessTools
     {
         /// <summary>按名称反射查找公开或非公开方法，模拟本次生产代码使用的反射辅助接口。</summary>
@@ -758,17 +789,14 @@ namespace SexSlaveCraft
     {
     }
 
-    public class RecipeDef_PSTag : RecipeDef
-    {
-        public HediffDef hediffToAdd;
-    }
-
     public partial class CompSexSlaveTraining : ThingComp
     {
         public PawnIdentity pawnIdentity;
         public RabbitReproductionMode rabbitReproductionMode;
         public bool allowOthersForTrainingOrSex;
         public bool milkProductionEnabled;
+        public bool trainerInvalidExitBlocksAdoption;
+        public bool specializationExplicitlyUnset;
         /// <summary>隔离方向切换的健康状态清理边界，实际进度切换和快照算法直接链接生产代码。</summary>
         private static void RemoveInactiveSpecializationStates(Pawn pawn, CompSexSlaveTraining comp, SexSlaveSpecializationType type)
         {
@@ -778,6 +806,12 @@ namespace SexSlaveCraft
         public static void ReconcileSpecialization(Pawn p)
         {
         }
+    }
+
+    // 此套件验证人格快照与公共方向历史；训导官健康状态维护由 TrainerIdentity 验证。
+    public static class TrainerSpecializationLifecycle
+    {
+        public static void Notify(Pawn pawn) { }
     }
 
     public static class RabbitCloneUtility
@@ -790,6 +824,8 @@ namespace SexSlaveCraft
     {
         /// <summary>返回最小凝胶物品定义，使提取流程不依赖真实物品配置。</summary>
         public static ThingDef GetPersonalityGelDefForPawn(Pawn p) => new ThingDef();
+        /// <summary>返回加工产物的测试定义；配方工作者仍直接运行生产复制和标签转换代码。</summary>
+        public static ThingDef GetEditedThingDef(ThingDef source) => new ThingDef { defName = "EditedGel" };
     }
 
     public static class SSCDefOf
@@ -807,6 +843,9 @@ namespace SexSlaveCraft
             defName = "SSC_PersonalityExcreted_Done"
         };
         public static HediffDef SSC_Hediff_Bus, SSC_Hediff_Bus_Final, SSC_Hediff_Cow, SSC_Hediff_Cow_Final;
+        public static HediffDef SSC_Hediff_TrainerOfficer = new HediffDef { defName = "SSC_Hediff_TrainerOfficer" };
+        public static HediffDef SSC_Hediff_TrainerOfficer_Final = new HediffDef { defName = "SSC_Hediff_TrainerOfficer_Final" };
+        public static HediffDef SSC_Hediff_TrainerOfficer_FinalDisabled = new HediffDef { defName = "SSC_Hediff_TrainerOfficer_FinalDisabled" };
     }
 
     public static class SSCBondUtility
@@ -837,6 +876,8 @@ namespace SexSlaveCraft
 
     public static class PetSpecializationUtility
     {
+        /// <summary>本套件的训导官配方没有宠物基础标签，返回空定义供生产工作者继续执行。</summary>
+        public static HediffDef GetBaseHediffForFinal(HediffDef final) => null;
         /// <summary>提供宠物专精状态清理接口的空实现。</summary>
         public static void RemoveAllPetStates(Pawn p)
         {

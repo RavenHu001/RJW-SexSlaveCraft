@@ -217,8 +217,15 @@ namespace SexSlaveCraft
 
             if (releaseReservation && actor.Map != null && parentJob != null)
             {
-                if (SSCLog.VerboseEnabled) SSCLog.Verbose($"[SSC Receiver] Releasing reservation: actor={actor.LabelShort}, target={parentJob.targetA.Thing?.Label ?? parentJob.targetA.Cell.ToString()}, parentJob={parentJob.def?.defName ?? "null"}");
-                actor.Map.reservationManager.Release(parentJob.targetA, actor, parentJob);
+                // 同步位置或其他模组的任务交接可能已清掉原预约。
+                // 原版 Release 对不存在的预约会报错；只释放当前 Job
+                // 实际持有的目标，避免误动同一角色的其他任务预约。
+                ReservationManager reservations = actor.Map.reservationManager;
+                if (reservations.ReservedBy(parentJob.targetA, actor, parentJob))
+                {
+                    if (SSCLog.VerboseEnabled) SSCLog.Verbose($"[SSC Receiver] Releasing reservation: actor={actor.LabelShort}, target={parentJob.targetA.Thing?.Label ?? parentJob.targetA.Cell.ToString()}, parentJob={parentJob.def?.defName ?? "null"}");
+                    reservations.Release(parentJob.targetA, actor, parentJob);
+                }
             }
 
             if (!forceRestartExisting && partner.CurJobDef == receiverJobDef)

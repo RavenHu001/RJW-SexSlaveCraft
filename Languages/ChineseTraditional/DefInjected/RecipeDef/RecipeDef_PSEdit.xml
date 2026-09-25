@@ -8,6 +8,10 @@
   <SSC_PSEdit_Cow_Final.description>將已完成奶牛特化的人格凝膠進一步塑形成終極奶牛狀態。此配方只接受奶牛特化進度達到 100% 的材料，並與普通奶牛狀態互斥。</SSC_PSEdit_Cow_Final.description>
   <SSC_PSEdit_Cow_Final.jobString>正在塑造終極奶牛人格……</SSC_PSEdit_Cow_Final.jobString>
 
+  <SSC_PSEdit_TrainerOfficer_Final.label>性奴特化（終極訓導官）</SSC_PSEdit_TrainerOfficer_Final.label>
+  <SSC_PSEdit_TrainerOfficer_Final.description>將已完成訓導官培養、尚未終極化的人格凝膠塑造成終極訓導官。</SSC_PSEdit_TrainerOfficer_Final.description>
+  <SSC_PSEdit_TrainerOfficer_Final.jobString>正在塑造終極訓導官人格……</SSC_PSEdit_TrainerOfficer_Final.jobString>
+
   <SSC_PSEdit_PetCat_Final.label>性奴特化（終極寵物貓）</SSC_PSEdit_PetCat_Final.label>
   <SSC_PSEdit_PetCat_Final.description>將已完成寵物貓特化的人格凝膠進一步塑形成終極寵物貓狀態。此配方只接受寵物貓特化進度達到 100%，且帶有寵物貓基礎狀態的材料。</SSC_PSEdit_PetCat_Final.description>
   <SSC_PSEdit_PetCat_Final.jobString>正在塑造終極寵物貓人格……</SSC_PSEdit_PetCat_Final.jobString>

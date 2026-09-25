@@ -167,6 +167,11 @@ namespace SexSlaveCraft
             // EN: Use ConditioningUtility here to apply SSC's Binding Ritual aftermath for the master and sex slave.
             // CN: 这里调用 ConditioningUtility，用来结算主人和性奴在“绑定仪式”中的 SSC 专属后果。
             string sscDetails = ConditioningUtility.ExecuteRitualOutcome(master, slave, quality, outcome.memory);
+
+            // 六个阶段的 ProcessSex 各自只负责 RJW 的阶段效果，不发放训导官
+            // 调教经验。上方已消费本场 Lord 的一次性完成资格，且正式训练
+            // 后果已经结算，此时按整场完成事件分别检查主从成长条件。
+            TrainerSpecializationProgressUtility.NotifyTrainingCompleted(master, slave);
             bool relationAdded = false;
 
             // 仅判定性奴对主人的好感 >= 80，添加缺陷恋人关系

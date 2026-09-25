@@ -25,6 +25,7 @@ namespace SexSlaveCraft
             public Pawn Receiver;
             public SSCInteractionKind Kind;
             public bool LegacyProgress;
+            public bool TrainerProgressClaimed;
             // 准备归属和事件交接各自封装；场景只决定何时可登记、通知及清理。
             public readonly SSCRestrictionJobPreparation Preparation = new SSCRestrictionJobPreparation();
             public readonly SSCRestrictionJobEvents Events = new SSCRestrictionJobEvents();
@@ -162,6 +163,40 @@ namespace SexSlaveCraft
             return true;
         }
 
+        /// <summary>为一次已开始的普通 RJW 双人任务认领完成经验，返回实际发起方向。</summary>
+        public static bool TryClaimOrdinarySexOutcome(SexProps props, out Pawn initiator, out Pawn recipient)
+        {
+            initiator = null;
+            recipient = null;
+
+            // ProcessSex 的 pawn 会受姿势反转影响。实际发起者只能从其当前
+            // Job 与统一请求的方向读取，且传入的 SexProps 必须属于此任务。
+            JobDriver_SexBaseInitiator driver = props?.initiator?.jobs?.curDriver as JobDriver_SexBaseInitiator;
+            if (driver == null || driver.pawn != props.initiator || driver.Sexprops != props ||
+                driver is JobDriver_Training || driver is JobDriver_RitualTraining || driver is JobDriver_PE ||
+                !SSCRestrictionJobContext.TryCreate(driver, out SSCRestrictionRequest request) ||
+                !request.DirectionKnown || request.Initiator != driver.pawn ||
+                request.Receiver == null || request.Receiver != props.recipient ||
+                (request.Kind != SSCInteractionKind.Consensual && request.Kind != SSCInteractionKind.Forced)) return false;
+
+            // RJW 普通双人 Job 只在发起方计时结束后进入 ProcessSex 的即时
+            // 结算步骤。额外检查倒计时，阻止其他补丁提前调用该方法领奖；
+            // 接收方驱动有独立计时，不参与本次完成判断。
+            if (driver.ticks_left > 0) return false;
+
+            // Start 成功后才有凭据；准备、预约、拒绝及接收任务的调用都不能领。
+            // 用同一个持久化任务状态先消费本次奖励，即使奖励者当前失格也
+            // 不允许后续重复调用 ProcessSex 时补领旧场景经验。
+            SceneState state = State(driver);
+            if (!state.Started || state.Rejected || state.TrainerProgressClaimed ||
+                state.Initiator != request.Initiator || state.Receiver != request.Receiver ||
+                state.Kind != request.Kind) return false;
+            state.TrainerProgressClaimed = true;
+            initiator = request.Initiator;
+            recipient = request.Receiver;
+            return true;
+        }
+
         /// <summary>只撤销当前请求准备的接收关联，再结束本驱动；保留其他参与者和后来替换的新任务。</summary>
         private static void Reject(JobDriver_Sex driver, SSCRestrictionRequest request, string reason)
         {
@@ -208,6 +243,8 @@ namespace SexSlaveCraft
             Scribe_Values.Look(ref state.HasCompatibilityRecord, "sscRestrictionCompatibilityRecord", false);
             Scribe_Values.Look(ref state.Started, "sscRestrictionSceneStarted", false);
             Scribe_Values.Look(ref state.Kind, "sscRestrictionSceneKind", SSCInteractionKind.Unknown);
+            // 和开始凭据存在同一 Job 的存档中；老档默认尚未领过这项新经验。
+            Scribe_Values.Look(ref state.TrainerProgressClaimed, "sscTrainerSexProgressClaimed", false);
             Scribe_References.Look(ref state.Initiator, "sscRestrictionSceneInitiator");
             Scribe_References.Look(ref state.Receiver, "sscRestrictionSceneReceiver");
             state.Preparation.ExposeData();

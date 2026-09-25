@@ -43,6 +43,7 @@ $suites = @(
     @{ Name = 'InteractionProtection'; Arguments = @() },
     @{ Name = 'BusTrade'; Arguments = @() },
     @{ Name = 'TrainerIdentity'; Arguments = @($repoRoot) },
+    @{ Name = 'TrainerIntegration'; Arguments = @() },
     @{ Name = 'RestrictionCore'; Arguments = @($repoRoot) },
     @{ Name = 'SharedBed'; Arguments = @($repoRoot) }
 )

@@ -1,0 +1,85 @@
+<Defs>
+  <!-- 普通培养状态随当前训导官方向存在。严重度由状态生命周期与公共特化进度同步；
+       每个阶段写入该阶段的完整属性加成，切换阶段时由游戏自动替换，不能把增量逐段累加。 -->
+  <HediffDef>
+    <defName>SSC_Hediff_TrainerOfficer</defName>
+    <label>性奴特化（训导官）</label>
+    <description>该性奴正学习代主人调教其他性奴。培养进度达到 20% 且满足任职条件后，可开启调教员任职。</description>
+    <initialSeverity>0.01</initialSeverity>
+    <isBad>false</isBad>
+    <tendable>false</tendable>
+    <everCurableByItem>false</everCurableByItem>
+    <makesSickThought>false</makesSickThought>
+    <stages>
+      <!-- 选择方向时从低严重度开始；仅持有培养状态不会立刻取得任职资格。 -->
+      <li>
+        <minSeverity>0.00</minSeverity>
+        <label>训导官培养中</label>
+      </li>
+      <!-- 基础阶段从 20% 开始，与只读资格常量一致；个人调教员开关仍须单独开启。
+           崩溃临界值降低 3 个百分点，压制能力提高 10 个百分点，教化能力乘以 1.05。
+           后两项属于 Ideology，未启用 DLC 时不加载对应 StatDef 节点。 -->
+      <li>
+        <minSeverity>0.20</minSeverity>
+        <label>性奴特化（训导官）</label>
+        <statOffsets>
+          <MentalBreakThreshold>-0.03</MentalBreakThreshold>
+          <SuppressionPower MayRequire="Ludeon.RimWorld.Ideology">0.10</SuppressionPower>
+        </statOffsets>
+        <statFactors>
+          <ConversionPower MayRequire="Ludeon.RimWorld.Ideology">1.05</ConversionPower>
+        </statFactors>
+      </li>
+      <!-- 熟练阶段从 50% 开始；这里写入完整加成，替代基础阶段的数值。 -->
+      <li>
+        <minSeverity>0.50</minSeverity>
+        <label>性奴特化（熟练训导官）</label>
+        <statOffsets>
+          <MentalBreakThreshold>-0.06</MentalBreakThreshold>
+          <SuppressionPower MayRequire="Ludeon.RimWorld.Ideology">0.20</SuppressionPower>
+        </statOffsets>
+        <statFactors>
+          <ConversionPower MayRequire="Ludeon.RimWorld.Ideology">1.10</ConversionPower>
+        </statFactors>
+      </li>
+    </stages>
+  </HediffDef>
+
+  <!-- 有效终极标记可以在切换当前培养方向后保留，并取代同系普通培养标记。
+       查询时仍实时检查绑定、锁链阶段及自由殖民者条件，不能只凭此标记授予资格。 -->
+  <HediffDef>
+    <defName>SSC_Hediff_TrainerOfficer_Final</defName>
+    <label>性奴特化（终极训导官）</label>
+    <description>训导官培养已终极化。保持自由殖民者身份、绑定主人和所需锁链阶段时，可担任调教员并获得终极加成。</description>
+    <isBad>false</isBad>
+    <tendable>false</tendable>
+    <everCurableByItem>false</everCurableByItem>
+    <makesSickThought>false</makesSickThought>
+    <stages>
+      <!-- 终极阶段直接提供完整加成；与普通培养阶段不叠加。
+           Ideology 未启用时只保留崩溃临界值加成。 -->
+      <li>
+        <minSeverity>0</minSeverity>
+        <statOffsets>
+          <MentalBreakThreshold>-0.1</MentalBreakThreshold>
+          <SuppressionPower MayRequire="Ludeon.RimWorld.Ideology">0.30</SuppressionPower>
+        </statOffsets>
+        <statFactors>
+          <ConversionPower MayRequire="Ludeon.RimWorld.Ideology">1.15</ConversionPower>
+        </statFactors>
+      </li>
+    </stages>
+  </HediffDef>
+
+  <!-- 禁用标记保存终极化事实，不提供属性、强制条目或调教员资格。
+       状态生命周期在条件恢复后替换它，并按当前条件归并双标记。 -->
+  <HediffDef>
+    <defName>SSC_Hediff_TrainerOfficer_FinalDisabled</defName>
+    <label>性奴特化（终极训导官，禁用）</label>
+    <description>终极化成果仍在；当前条件不足，调教员资格与特化加成暂时停用。</description>
+    <isBad>false</isBad>
+    <tendable>false</tendable>
+    <everCurableByItem>false</everCurableByItem>
+    <makesSickThought>false</makesSickThought>
+  </HediffDef>
+</Defs>

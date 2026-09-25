@@ -150,6 +150,21 @@
     <researchViewY>1.00</researchViewY>
   </ResearchProjectDef>
 
+  <!-- 与其他第一层性奴特化研究并列，允许从菜单选择训导官方向，并解锁终极人格凝胶配方。 -->
+  <ResearchProjectDef>
+    <defName>SSC_RES_TrainerOfficer</defName>
+    <label>训导官特化</label>
+    <description>培养代主人调教其他性奴的训导官，并解锁其终极人格塑形。</description>
+    <baseCost>1200</baseCost>
+    <techLevel>Industrial</techLevel>
+    <tab>SSC_ResearchTabDef</tab>
+    <prerequisites>
+      <li>SSC_RES_SlaveSpecialization</li>
+    </prerequisites>
+    <researchViewX>5.00</researchViewX>
+    <researchViewY>2.50</researchViewY>
+  </ResearchProjectDef>
+
   <ResearchProjectDef>
     <defName>SSC_RES_PetCat</defName>
     <label>宠物：猫</label>

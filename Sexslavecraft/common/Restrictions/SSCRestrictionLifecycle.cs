@@ -138,6 +138,9 @@ namespace SexSlaveCraft
                 if (comp.restrictionRestoreDepth != 0) return;
                 if (hadConfiguration && comp.restrictionConfig?.IsValid() == true && HasBus(pawn))
                     comp.restrictionConfig.busDefaultsApplied = true;
+                // 人格恢复中的身份、绑定和特化通知均已延迟；最外层结束时
+                // 再按接收身体的最终状态退出普通方向或切换终极标记。
+                TrainerSpecializationLifecycle.Maintain(pawn);
                 SSCRestrictionGameComponent.Notify(pawn);
             }
         }

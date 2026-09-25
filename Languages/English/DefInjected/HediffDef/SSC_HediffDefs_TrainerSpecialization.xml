@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_Hediff_TrainerOfficer.label>sex slave specialization (Training Officer)</SSC_Hediff_TrainerOfficer.label>
+  <SSC_Hediff_TrainerOfficer.description>This sex slave is learning to train others on their master's behalf. At 20% progress, they may enable the trainer role if its other requirements are met.</SSC_Hediff_TrainerOfficer.description>
+  <SSC_Hediff_TrainerOfficer.stages.0.label>Training Officer in training</SSC_Hediff_TrainerOfficer.stages.0.label>
+  <SSC_Hediff_TrainerOfficer.stages.1.label>sex slave specialization (Training Officer)</SSC_Hediff_TrainerOfficer.stages.1.label>
+  <SSC_Hediff_TrainerOfficer.stages.2.label>sex slave specialization (Skilled Training Officer)</SSC_Hediff_TrainerOfficer.stages.2.label>
+
+  <SSC_Hediff_TrainerOfficer_Final.label>sex slave specialization (Final Training Officer)</SSC_Hediff_TrainerOfficer_Final.label>
+  <SSC_Hediff_TrainerOfficer_Final.description>Training Officer specialization is finalized. With free colonist status, a bound master, and the required chain stage, this pawn can serve as a trainer and gains final bonuses.</SSC_Hediff_TrainerOfficer_Final.description>
+
+  <SSC_Hediff_TrainerOfficer_FinalDisabled.label>sex slave specialization (Final Training Officer, disabled)</SSC_Hediff_TrainerOfficer_FinalDisabled.label>
+  <SSC_Hediff_TrainerOfficer_FinalDisabled.description>Finalization is retained, but current conditions are unmet. Trainer eligibility and specialization bonuses are temporarily suspended.</SSC_Hediff_TrainerOfficer_FinalDisabled.description>
+</LanguageData>

@@ -4,32 +4,24 @@
 
 This continuation builds on upstream **2.2.8**, the baseline when upstream development stopped in July, and retains its version numbering. Entries are listed newest first. Technical details are in the [development log (Chinese)](Docs/Development/开发更新记录.md).
 
-## [Unreleased]
+## [2.3.2] — 待发布 / Unreleased — 训导官特化与调教稳定性 / Training Officers and Training reliability
 
-### Progression: Education 兼容 / Progression: Education compatibility
+归纳 2.3.1 发布后截至 `05170b1` 的全部已实现更新，包含最新属性加成与四语文案。**本次仅整理文档，尚未更新运行版本元数据、打包或发布。** 详见 [2.3.2 中英更新说明](Docs/Releases/2.3.2/2.3.2发布说明.md)与[整理及验证状态](Docs/Releases/2.3.2/2.3.2版本验证.md)。
 
-- 自动调教避让正在参与课程的角色，避免听课和接受调教任务反复抢占；目标在途中加入课程时也会退出自动调教，下课后恢复自动选择。手动强制命令保持原行为。
-- Automatic training now yields to pawns participating in classes, preventing repeated switching between attending class and receiving training. It also stops if the target joins a class while the trainer is approaching; automatic selection resumes after class participation ends. Player-forced orders retain their existing behavior.
-- 可选兼容组件不要求安装 Education。相关回归 107/107 通过，维护者已确认实机修复有效；详见 [核查与修复记录](Docs/Development/ProgressionEducation与调教任务抢占核查.md)。
-- Education remains optional. All 107 tests in the affected suites passed, and the maintainer confirmed the fix in game.
+Covers implemented changes since released 2.3.1 through `05170b1`, including the latest bonuses and localization. **Documentation only: runtime version metadata, packaging and publication remain pending.** See the [bilingual notes](Docs/Releases/2.3.2/2.3.2发布说明.md) and [validation status](Docs/Releases/2.3.2/2.3.2版本验证.md).
 
-### 开发工具：统一验证入口 / Development tooling: unified validation
+- **训导官与任职 / Training Officers:** 新增代主人调教其他性奴的职能特化。SSC 性奴须为自由殖民者、已绑定实际主人且锁链达到第 3 阶段；当前普通进度达到 20% 或拥有有效终极状态，才可手动开启调教员。主人固定资格保持。Adds a specialization for performing Training on the owner's behalf. An SSC Sex Slave must be a bonded free colonist at Chain stage 3 or higher, with 20% current progress or an active final state, to opt into trainer duty. Masters retain their fixed eligibility.
+- **培养与终极化 / Progression and finalization:** 新增成本 1200 的研究及工作量 3500 的雕刻台人格凝胶配方。成功接受调教、施教、主动双人行为分别增加 5、2.5、1 个百分点；主动行为包括规则允许的强制行为。普通完成不会自动终极化，重复与中断结算不发放经验。Adds research costing 1,200 and a personality-gel finalization recipe requiring 3,500 work. Completed Training received, Training performed and initiated pair activity grant 5, 2.5 and 1 percentage points respectively, including permitted forced initiation. Full ordinary progress requires manual finalization; duplicate or interrupted completion does not grant rewards.
+- **属性加成 / Attribute bonuses:** 20%／50%／有效终极依次提供崩溃临界值 −3／−6／−10 个百分点、压制能力 +10／+20／+30 个百分点、教化能力 ×1.05／×1.10／×1.15；阶段不叠加，后两项要求 Ideology。At 20%, 50% and active finalization, grants mental break threshold offsets of −3/−6/−10 percentage points, suppression power offsets of +10/+20/+30 points, and conversion power factors of ×1.05/×1.10/×1.15. Stages do not stack; the latter two stats require Ideology.
+- **资格生命周期与限制 / Eligibility and permissions:** 普通失格保存进度后退出培养，终极失格保留禁用记录，条件恢复后重新生效。选中有效训导官方向即提供两项主动行为强制允许，无须等待 20% 或开启任职；沿用全局开关、装备优先和对方许可。人格凝胶传承进度与完成记录，恢复结束后按接收身体条件维护。Losing eligibility archives ordinary progress or disables a retained final record. The two initiation overrides apply from selecting an eligible direction, independent of the trainer toggle and 20% threshold, while respecting global switches, equipment and recipient rules. Gel transfer retains source progress/final records and evaluates the recipient after restoration.
+- **升级提示 / Upgrade note:** **旧档性奴调教员开关一次性关闭**；绑定、指派与进度保留，取得新资格后须手动重新开启，重复读档不重置新选择。**Old Sex Slave trainer toggles reset once.** Bonds, assignments and progress remain; obtain eligibility and enable duty again. Later loads preserve new choices.
+- **仪式选人 / Ritual selection:** 两个执行槽改为手动选人，浏览候选使用轻量检查，实际选入和开始时验证。减少重复 RJW 查询，失败恢复分配与品质预览；修复延迟点击、拖拽、空角色及头像红字，保留合法替换和原版观众分配。Uses manual performer selection, lightweight browsing and validation on selection/start. Reduces repeated RJW checks, restores assignments/previews on rejection, and fixes delayed-click, drag, null-participant and portrait errors while preserving valid replacements and native spectators.
+- **连续任务与预约 / Consecutive jobs and reservations:** 修复第二目标工作显示调教却停在原地的问题，统一 Touch 接近、清理遗留 UAP 位置锁并对停止寻路有限重试；仅释放当前 Job 持有的预约，消除重复释放红字。Fixes trainers stuck at the previous target through Touch approach, stale UAP lock cleanup and bounded path recovery. Releases only reservations owned by the initiating job, preventing repeated-release errors.
+- **Education 兼容 / Education compatibility:** 自动调教避让活动课程中的学生和教师，途中或执行中入课也会退出，下课后恢复候选。兼容可选，手动强制命令及教育自身规则保持原行为。Automatic Training yields to active students and teachers, including class entry during travel/execution, and resumes eligibility after class. Education remains optional; manual forced orders and education-side rules retain their behavior.
+- **界面与凝胶保护 / UI and gel safeguards:** 修复终极化后“未选择”的状态认领和显示回退，保留终极效果与历史；消耗前拒绝异常凝胶并保留账单次数；统一完成容差，优化长译文布局，补齐简中、繁中、英文、俄文研究、配方、阶段和状态提示。Preserves and correctly displays Unset after finalization without removing benefits/history; rejects invalid gels before consumption or bill counting; unifies completion tolerance, fits long text and completes four-language research, recipe, stage and status text.
+- **维护与验证 / Maintenance and validation:** 减少同次资格查询，复用现有低频和状态事件；统一回归由 16 套扩为 18 套，补充仪式选人、人格恢复、真实任务交接和界面回归。历史全量 780/780 及后续专项通过、实机确认均按批次记录；最新身份专项为 85/87，两处旧数量/文案断言待同步，尚无本版发布预检结论。Reduces repeated queries and extends the existing runner from 16 to 18 suites. Historical 780/780 and later targeted/in-game results are recorded by development batch. The latest identity check is 85/87 due to two outdated count/text assertions; release validation is pending.
 
-- 新增 `Scripts/Test-All.ps1`，统一运行全部 15 套回归，输出逐套件日志和 JSON 汇总；打包复用同一入口，任一失败或未执行均停止。SharedBed 的 net9.0 Harmony 通过参数或环境变量提供，提前拒绝缺失或错误框架的依赖；新增未登记测试项目也会报错。
-- Adds `Scripts/Test-All.ps1` to run all 15 regression suites with per-suite logs and a JSON summary. Packaging uses the same entry and stops on any failed or unexecuted suite. SharedBed's net9.0 Harmony is supplied by parameter or environment variable and checked before use. Unregistered test projects also fail validation.
-- 此项只调整开发验证与打包流程，不修改游戏玩法或运行时 DLL。运行方式见 [发布与打包](Docs/Maintenance/发布与打包.md#统一验证入口)。
-- This changes development validation and packaging only; gameplay and the runtime DLL are unchanged.
-
-### 辅助诊断面板（暂无明确实际用途） / Auxiliary diagnostics panel (no clear practical use yet)
-
-**更新定位：目前没什么明确作用的辅助更新。** 仅提供版本、依赖及部分兼容注册信息的查看与复制，目前没有确认它解决了具体问题或明显改善排查效率，不作为主要功能更新。
-
-**Scope: an auxiliary update with no clear practical use established yet.** It only displays and copies version, dependency and selected compatibility registration information. No concrete issue resolution or clear troubleshooting benefit has been confirmed; this is not a major feature update.
-
-- Mod 设置底部右下角新增“诊断与兼容”小按钮，打开窗口可查看实际加载的 SSC 版本、程序集构建标识、游戏版本、语言、依赖程序集、部分兼容接口及补丁注册状态，支持刷新和复制报告；面板和报告均不再列出完整模组列表。
-- Adds a small Diagnostics and compatibility button at the bottom right of mod settings. Its window shows the loaded SSC version and assembly build ID, game version, language, dependency assemblies, selected compatibility interfaces and patch registrations. Supports refresh and copying; the panel and report omit the full mod list.
-- 设置页支持单列滚动；补齐简中、繁中、英文和俄文。维护者已确认初版面板可见、可操作；去除列表后的版本待实机复核。诊断只读，注册状态不等同于实机验证，详见 [开发记录](Docs/Development/简版诊断面板.md)。
-- Settings now scroll in one column. Includes Simplified Chinese, Traditional Chinese, English and Russian. The maintainer confirmed the initial panel was visible and operable; the revision removing the list awaits in-game confirmation. Checks are read-only; registration does not establish runtime correctness.
+训导官专属心情与社交反馈等未来构想未计入已实现内容。Dedicated Training Officer mood/social feedback and other future plans are not included as implemented features.
 
 ## [2.3.1] — 2026-09-22 — 新限制系统与个体行为配置 / Unified restrictions and individual behavior rules
 
@@ -54,6 +46,11 @@ Development validation passed **645/645 across 16 suites**, plus **108/108** in 
 2.3.1 已同步运行版本元数据并重新构建，发布预检全量 **645/645** 通过，详见 [版本验证](Docs/Releases/2.3.1/2.3.1版本验证.md)。The runtime version was updated and rebuilt; release preflight passed **645/645** cases.
 
 科技赋予限制条件与更可见、情境化的拒绝反馈仍属于未来规划，不计入本版已实现内容。Research-based activation and more visible, contextual rejection feedback remain future work.
+
+### 2.3.1 已有工具补记 / Existing tooling notes for 2.3.1
+
+- 统一验证入口 `Scripts/Test-All.ps1` 在 2.3.1 中已存在，当时纳入 16 套回归，提供日志、JSON 汇总、依赖检查和失败阻止打包。原未归版条目在此补记，2.3.2 的增量为套件及覆盖扩展。The unified validation runner already existed in 2.3.1 with 16 suites, logs, JSON summaries, dependency checks and packaging failure gates; 2.3.2 extends its coverage. See [发布与打包](Docs/Maintenance/发布与打包.md).
+- 辅助“诊断与兼容”面板及四语设置滚动页同样已在 2.3.1 中存在，用于查看和复制版本、依赖及部分兼容注册信息；尚未确认其具体排查收益，不列作 2.3.2 新增功能。The auxiliary diagnostics panel and localized scrolling settings were already present in 2.3.1. They display/copy version, dependency and selected compatibility data, with no specific diagnostic benefit established; they are not new 2.3.2 features. See [开发记录](Docs/Development/简版诊断面板.md).
 
 ## [2.3.0] — 2026-09-16 — 同床、调教员身份与分配界面 / Shared beds, trainer roles and assignment UI
 

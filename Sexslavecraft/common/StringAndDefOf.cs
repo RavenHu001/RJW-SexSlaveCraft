@@ -89,6 +89,11 @@ namespace SexSlaveCraft
         public static HediffDef SSC_Hediff_Bus_Final;
         public static HediffDef SSC_Hediff_Cow;
         public static HediffDef SSC_Hediff_Cow_Final;
+        // 训导官的三种状态分别表示当前普通培养、有效终极和暂时禁用的终极记录。
+        // 禁用 Def 是完成事实的持久载体，不等同于退回普通培养。
+        public static HediffDef SSC_Hediff_TrainerOfficer;
+        public static HediffDef SSC_Hediff_TrainerOfficer_Final;
+        public static HediffDef SSC_Hediff_TrainerOfficer_FinalDisabled;
         public static HediffDef SSC_HumanCattleLactationBridge;
         public static HediffDef SSC_Hediff_RabbitCloneLink;
         public static HediffDef SSC_Hediff_RabbitCloneLowPNA;
@@ -104,6 +109,7 @@ namespace SexSlaveCraft
         public static ResearchProjectDef SSC_BasicTraining;
         public static ResearchProjectDef SSC_BodyPartTraining;
         public static ResearchProjectDef SSC_RES_CowTraining;
+        public static ResearchProjectDef SSC_RES_TrainerOfficer;
 
         // Recipes
         public static RecipeDef SSC_InducePersonalityExcretion;
@@ -231,6 +237,11 @@ namespace SexSlaveCraft
             SSC_Hediff_Bus_Final = GetDef<HediffDef>("SSC_Hediff_Bus_Final");
             SSC_Hediff_Cow = GetDef<HediffDef>("SSC_Hediff_Cow");
             SSC_Hediff_Cow_Final = GetDef<HediffDef>("SSC_Hediff_Cow_Final");
+            // 三种状态都是 SSC 自有 Def，沿用严格查找：XML 缺失时在启动阶段报错，
+            // 后续只读资格仍会对 null 安全失败，不把缺失定义误判成已终极化。
+            SSC_Hediff_TrainerOfficer = GetDef<HediffDef>("SSC_Hediff_TrainerOfficer");
+            SSC_Hediff_TrainerOfficer_Final = GetDef<HediffDef>("SSC_Hediff_TrainerOfficer_Final");
+            SSC_Hediff_TrainerOfficer_FinalDisabled = GetDef<HediffDef>("SSC_Hediff_TrainerOfficer_FinalDisabled");
             SSC_HumanCattleLactationBridge = DefDatabase<HediffDef>.GetNamedSilentFail("SSC_HumanCattleLactationBridge");
             SSC_Hediff_RabbitCloneLink = GetDef<HediffDef>("SSC_Hediff_RabbitCloneLink");
             SSC_Hediff_RabbitCloneLowPNA = GetDef<HediffDef>("SSC_Hediff_RabbitCloneLowPNA");
@@ -247,6 +258,7 @@ namespace SexSlaveCraft
             SSC_BasicTraining = GetDef<ResearchProjectDef>("SSC_RES_BasicTraining");
             SSC_BodyPartTraining = GetDef<ResearchProjectDef>("SSC_RES_BodyPartTraining");
             SSC_RES_CowTraining = GetDef<ResearchProjectDef>("SSC_RES_CowTraining");
+            SSC_RES_TrainerOfficer = GetDef<ResearchProjectDef>("SSC_RES_TrainerOfficer");
 
             SSC_InducePersonalityExcretion = GetDef<RecipeDef>("SSC_InducePersonalityExcretion");
             SSC_Surgery_GenderChange_MtF = GetDef<RecipeDef>("SSC_Surgery_GenderChange_MtF");
@@ -501,6 +513,7 @@ namespace SexSlaveCraft
         public static string ITab_SpecializationNone => "SSC_ITab_SpecializationNone".Translate();
         public static string ITab_SpecializationBus => "SSC_ITab_SpecializationBus".Translate();
         public static string ITab_SpecializationCow => "SSC_ITab_SpecializationCow".Translate();
+        public static string ITab_SpecializationTrainerOfficer => "SSC_ITab_SpecializationTrainerOfficer".Translate();
         public static string ITab_SpecializationPetCat => "SSC_ITab_SpecializationPetCat".Translate();
         public static string ITab_SpecializationPetDog => "SSC_ITab_SpecializationPetDog".Translate();
         public static string ITab_SpecializationPetRabbit => "SSC_ITab_SpecializationPetRabbit".Translate();
@@ -509,6 +522,7 @@ namespace SexSlaveCraft
         public static string ITab_SelectSpecializationNone => "SSC_ITab_SelectSpecializationNone".Translate();
         public static string ITab_SelectSpecializationBus => "SSC_ITab_SelectSpecializationBus".Translate();
         public static string ITab_SelectSpecializationCow => "SSC_ITab_SelectSpecializationCow".Translate();
+        public static string ITab_SelectSpecializationTrainerOfficer => "SSC_ITab_SelectSpecializationTrainerOfficer".Translate();
         public static string ITab_SelectSpecializationPetCat => "SSC_ITab_SelectSpecializationPetCat".Translate();
         public static string ITab_SelectSpecializationPetDog => "SSC_ITab_SelectSpecializationPetDog".Translate();
         public static string ITab_SelectSpecializationPetRabbit => "SSC_ITab_SelectSpecializationPetRabbit".Translate();

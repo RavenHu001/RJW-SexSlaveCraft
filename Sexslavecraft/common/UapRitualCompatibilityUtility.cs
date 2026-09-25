@@ -5,12 +5,12 @@ using Verse;
 
 namespace SexSlaveCraft
 {
-    /// <summary>仅在 SSC 仪式阶段边界释放 UAP 遗留的位置锁，避免旧任务的延迟清理误停新动画。</summary>
+    /// <summary>在 SSC 场景与走位边界释放 UAP 遗留的位置锁，避免旧任务妨碍后续动画或寻路。</summary>
     internal static class UapRitualCompatibilityUtility
     {
         private static readonly MethodInfo UnlockParticipantsMethod = FindUnlockParticipantsMethod();
 
-        /// <summary>释放本场仪式双方的位置锁；不停止动画、不结束任务，缺少 UAP 或接口不兼容时安全跳过。</summary>
+        /// <summary>释放指定参与者的位置锁；不停止动画、不结束任务，缺少 UAP 或接口不兼容时安全跳过。</summary>
         internal static void ReleasePositionLocks(Pawn initiator, Pawn slave)
         {
             if (UnlockParticipantsMethod == null || (initiator == null && slave == null)) return;
@@ -27,7 +27,7 @@ namespace SexSlaveCraft
             {
                 // 外部模组接口异常只能使兼容清理失效，不能中断仪式的启动、计时和结算。
                 Exception cause = ex is TargetInvocationException invocation ? invocation.InnerException ?? ex : ex;
-                SSCLog.WarningImportant($"[SSC Ritual] UAP position-lock release failed: {cause}");
+                SSCLog.WarningImportant($"[SSC UAP] Position-lock release failed: {cause}");
             }
         }
 
@@ -52,7 +52,7 @@ namespace SexSlaveCraft
             }
             catch (Exception ex)
             {
-                SSCLog.WarningImportant($"[SSC Ritual] UAP position-lock API lookup failed: {ex}");
+                SSCLog.WarningImportant($"[SSC UAP] Position-lock API lookup failed: {ex}");
             }
 
             return null;

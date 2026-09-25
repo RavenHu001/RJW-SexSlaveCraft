@@ -24,6 +24,17 @@ internal static partial class Program
             AssertBadges(f.partner, f.bed, "性奴");
             Assert(f.slave.Training.selectedTrainer == f.partner);
         });
+        Run("已开启个人选择但资格失效时移除调教员标签和新增同床许可", () =>
+        {
+            var f = Setup();
+            Assert(Use(f.bed, f.slave));
+            f.partner.Training.TrainerQualified = false;
+            Assert(f.partner.Training.slaveTrainerEnabled);
+            Assert(!Use(f.bed, f.slave) && !Comp(f.bed).CanAssignTo(f.slave).Accepted);
+            AssertBadges(f.partner, f.bed, "性奴");
+            f.partner.Training.TrainerQualified = true;
+            Assert(Use(f.bed, f.slave));
+        });
         Run("未选择身份即使残留开关也不提供调教员同床许可", () =>
         {
             var f = Setup(); f.partner.Training.pawnIdentity = PawnIdentity.Unset;

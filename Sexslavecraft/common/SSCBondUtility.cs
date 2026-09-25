@@ -1,4 +1,5 @@
 using RimWorld;
+using System;
 using System.Linq;
 using Verse;
 
@@ -62,58 +63,64 @@ namespace SexSlaveCraft
             Pawn existingMaster = GetBoundMaster(sexSlave);
             if (existingMaster != null && existingMaster != master && !replaceExisting) return false;
             if (SSCDefOf.ChainOfSexSlave == null || SSCDefOf.BridleOfSexSlave == null) return false;
-            // 必须先完成身份检查，不能添加锁链后才发现目标是已有性奴的主人。
-            if (!SSCIdentityUtility.TrySetIdentity(sexSlave, PawnIdentity.Slave)) return false;
-            if (existingMaster != null && existingMaster != master)
+            using (TrainerSpecializationLifecycle.BeginMutation(sexSlave))
             {
-                GetBridle(existingMaster)?.RemoveTarget(sexSlave);
+                // 身份、锁链和缰绳分步建立；事务结束前的“暂无绑定主人”
+                // 不能让训导官普通培养错误退出。失败路径也由作用域统一检查最终状态。
+                if (!SSCIdentityUtility.TrySetIdentity(sexSlave, PawnIdentity.Slave)) return false;
+                if (existingMaster != null && existingMaster != master)
+                {
+                    GetBridle(existingMaster)?.RemoveTarget(sexSlave);
+                }
+
+                Hediff_ChainOfSexSlave chain = Hediff_ChainOfSexSlave.AddToPawn(sexSlave, master);
+                Hediff_BridleOfSexSlave bridle = Hediff_BridleOfSexSlave.AddToPawn(master, sexSlave);
+                if (chain == null || bridle == null) return false;
+
+                // 限制系统沿用原有事务通知；训导官维护在作用域释放时运行。
+                SSCRestrictionGameComponent.Notify(sexSlave);
+                return true;
             }
-
-            Hediff_ChainOfSexSlave chain = Hediff_ChainOfSexSlave.AddToPawn(sexSlave, master);
-            Hediff_BridleOfSexSlave bridle = Hediff_BridleOfSexSlave.AddToPawn(master, sexSlave);
-            if (chain == null || bridle == null) return false;
-
-            // 自有事务完成后显式通知：读此方法即可看见首次绑定初始化与指派协调，
-            // 不再依赖针对本方法的隐式 Harmony 后缀；原生/第三方入口仍由相应 Hook 接入。
-            SSCRestrictionGameComponent.Notify(sexSlave);
-            return true;
         }
 
         /// <summary>解除性奴锁链及对应缰绳引用；按调用参数清理原主人的指派，保留其他指定者。</summary>
         public static bool Unbind(Pawn sexSlave, bool clearAssignedTrainer = true)
         {
-            Hediff_ChainOfSexSlave chain = GetChain(sexSlave);
-            Pawn master = chain?.LinkedPawn;
-            bool changed = false;
-
-            if (master != null)
+            using (TrainerSpecializationLifecycle.BeginMutation(sexSlave))
             {
-                Hediff_BridleOfSexSlave bridle = GetBridle(master);
-                if (bridle != null)
+                Hediff_ChainOfSexSlave chain = GetChain(sexSlave);
+                Pawn master = chain?.LinkedPawn;
+                bool changed = false;
+
+                if (master != null)
                 {
-                    bridle.RemoveTarget(sexSlave);
+                    Hediff_BridleOfSexSlave bridle = GetBridle(master);
+                    if (bridle != null)
+                    {
+                        bridle.RemoveTarget(sexSlave);
+                        changed = true;
+                    }
+                }
+
+                if (chain != null && sexSlave?.health != null)
+                {
+                    sexSlave.health.RemoveHediff(chain);
                     changed = true;
                 }
-            }
 
-            if (chain != null && sexSlave?.health != null)
-            {
-                sexSlave.health.RemoveHediff(chain);
-                changed = true;
-            }
-
-            if (clearAssignedTrainer)
-            {
-                CompSexSlaveTraining comp = sexSlave?.TryGetComp<CompSexSlaveTraining>();
-                if (comp != null && (master == null || comp.selectedTrainer == master))
+                if (clearAssignedTrainer)
                 {
-                    // 这是解绑事务的关系清理，不是玩家重新指派；人格恢复期间也必须清除原主，
-                    // 不能被限制编辑的恢复锁挡住。上面的条件继续保留明确指定的第三方。
-                    comp.selectedTrainer = null;
+                    CompSexSlaveTraining comp = sexSlave?.TryGetComp<CompSexSlaveTraining>();
+                    if (comp != null && (master == null || comp.selectedTrainer == master))
+                    {
+                        // 这是解绑事务的关系清理，不是玩家重新指派；人格恢复期间也必须清除原主，
+                        // 不能被限制编辑的恢复锁挡住。上面的条件继续保留明确指定的第三方。
+                        comp.selectedTrainer = null;
+                    }
                 }
-            }
 
-            return changed;
+                return changed;
+            }
         }
 
         /// <summary>遍历缰绳目标快照逐个解绑，返回实际解除数量，避免修改正在枚举的集合。</summary>

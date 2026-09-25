@@ -23,6 +23,7 @@
 设计和复盘文档保留各自的状态及基线；规划内容不代表已经实现。
 
 - [主奴同床机制复盘](Design/主奴同床机制复盘.md)
+- [训导官特化与调教员资格开发规划](Design/训导官特化与调教员资格开发规划.md)：主体已完成并获实机确认；记录资格、成长、终极状态、迁移及后续量化核验。
 - [新限制系统开发规划](Design/新限制系统开发规划.md)：规则、配置、界面与实施顺序。
 - [新限制系统代码复盘与实施参考](Design/新限制系统设计与代码复盘.md)：2.3.0 差异、源码接入与验收清单。
 - [未来内容开发规划](Design/未来内容开发规划.md)
@@ -34,6 +35,9 @@
 - [2.2.11语言与种族分页合并](Development/2.2.11语言与种族分页合并.md)
 - [RimTalk兼容隔离](Development/RimTalk兼容隔离.md)
 - [Education 与调教任务抢占](Development/ProgressionEducation与调教任务抢占核查.md)：问题核查及自动调教避让课程的可选兼容组件。
+- [训导官阶段 5 与实机反馈](Development/训导官特化阶段5.md)：主体完成结论、验证范围及待量化项目。
+- [训导官特化复盘修复](Development/训导官特化复盘修复.md)：配方消耗前检查、统一完成阈值、查询与界面优化，以及凝胶恢复和预约交接回归。
+- [终极化方向清空与连续调教任务](Development/终极化方向清空与连续调教任务.md)：两项附带缺陷的原因、修复与复测边界。
 - [主奴同床优化](Development/主奴同床优化.md)
 - [人格凝胶界面布局调整](Development/人格凝胶界面布局调整.md)
 - [人格普通特质迁移修复](Development/人格普通特质迁移修复.md)
@@ -67,6 +71,7 @@
 
 | 版本 | 发布说明 | 验证记录 |
 | --- | --- | --- |
+| 2.3.2（待发布） | [中英更新说明](Releases/2.3.2/2.3.2发布说明.md) | [整理与验证状态](Releases/2.3.2/2.3.2版本验证.md) |
 | 2.3.1 | [发布说明](Releases/2.3.1/2.3.1发布说明.md) · [Discord 公告](Releases/2.3.1/Discord公告.md) | [版本验证](Releases/2.3.1/2.3.1版本验证.md) |
 | 2.3.0 | [发布说明](Releases/2.3.0/2.3.0发布说明.md) | [验证记录](Releases/2.3.0/2.3.0版本验证.md) |
 | 2.2.15 | [发布说明](Releases/2.2.15/2.2.15发布说明.md) | [验证记录](Releases/2.2.15/2.2.15版本验证.md) |
@@ -97,6 +102,7 @@
 - [Tests/RitualProgression](../Tests/RitualProgression/README.md)
 - [Tests/SharedBed](../Tests/SharedBed/README.md)
 - [Tests/TrainerIdentity](../Tests/TrainerIdentity/README.md)
+- [Tests/TrainerIntegration](../Tests/TrainerIntegration/README.md)
 - [Tests/ValidationRunner](../Tests/ValidationRunner/README.md)：统一验证与打包阻断的流程检查。
 
 ## 文档维护约定

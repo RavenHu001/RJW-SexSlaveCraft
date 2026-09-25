@@ -196,6 +196,17 @@ namespace rjw
         public Verse.Pawn recipient => isReceiver ? pawn : partner;
         public bool isReceiver, isRevese, isRape, usedCondom;
     }
+    public static class SexUtility
+    {
+        /// <summary>模拟 RJW 的结算入口；无 Harmony 模式显式调用生产后缀，真实模式由补丁注入。</summary>
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static void ProcessSex(SexProps props)
+        {
+#if !REAL_HARMONY
+            SSCTrainerInitiatedSexProgressHook.Postfix(props, true);
+#endif
+        }
+    }
     public class JobDriver_Sex : Verse.AI.JobDriver
     {
         public SexProps Sexprops;
@@ -335,7 +346,7 @@ namespace SexSlaveCraft
 {
     public class Hediff_ChainOfSexSlave { public Verse.Pawn LinkedPawn; }
     public enum PawnIdentity { Unset, Slave, Master }
-    public enum SexSlaveSpecializationType { None, Bus, Cow, PetCat, PetDog, PetRabbit }
+    public enum SexSlaveSpecializationType { None, Bus, Cow, PetCat, PetDog, PetRabbit, TrainerOfficer }
     public class JobDriver_Training : rjw.JobDriver_SexBaseInitiator { }
     public class JobDriver_RitualTraining : rjw.JobDriver_SexBaseInitiator
     {
@@ -361,6 +372,20 @@ namespace SexSlaveCraft
     {
         /// <summary>为生产拒绝清理提供记录验证失败的最小边界。</summary>
         public static void MarkValidationFailure(Verse.Pawn target, string prefix) { }
+    }
+    public static class TrainerSpecializationProgressUtility
+    {
+        public static int InitiatedSexAwards;
+        public static Verse.Pawn LastInitiator, LastRecipient;
+
+        /// <summary>记录通过生产任务守卫后的经验通知，验证事件来源、实际发起方向和去重。</summary>
+        public static float NotifyInitiatedSexCompleted(Verse.Pawn initiator, Verse.Pawn recipient)
+        {
+            InitiatedSexAwards++;
+            LastInitiator = initiator;
+            LastRecipient = recipient;
+            return 0.01f;
+        }
     }
     public static class SSCIdentityUtility
     {
@@ -410,6 +435,11 @@ namespace SexSlaveCraft
     {
         /// <summary>读取测试用公交车状态标记；空角色不具有该状态。</summary>
         public static bool HasAnyBusState(Verse.Pawn pawn) => pawn?.IsBus == true;
+    }
+    public static class TrainerSpecializationUtility
+    {
+        /// <summary>交互守卫套件不模拟训导官状态；真实资格与许可组合由 TrainerIdentity 验证。</summary>
+        public static bool HasActiveRestrictionEffect(Verse.Pawn pawn) => false;
     }
     public static class SSCLog
     {

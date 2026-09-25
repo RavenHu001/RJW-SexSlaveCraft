@@ -30,7 +30,13 @@ namespace SexSlaveCraft
             List<Pawn> pawns = AllPawns();
             SSCTrainerIdentityMigration.Migrate(pawns);
             Ready = true;
-            foreach (Pawn pawn in pawns) Notify(pawn);
+            foreach (Pawn pawn in pawns)
+            {
+                // 复用已有的读档初始化快照，在跨 Pawn 引用全部恢复后
+                // 一次性整理离图角色的训导官状态，不新增周期性世界扫描。
+                TrainerSpecializationLifecycle.Maintain(pawn);
+                Notify(pawn);
+            }
         }
 
         /// <summary>获得当前存档内地图、世界和临时容器角色的独立快照，避免枚举中关系更新改变集合。</summary>

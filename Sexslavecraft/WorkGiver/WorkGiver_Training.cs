@@ -20,7 +20,9 @@ namespace SexSlaveCraft
         /// <summary>只读筛选可能的自动工作对象，不为枚举恢复状态、移除冲突基因或分配任务。</summary>
         public override IEnumerable<Thing> PotentialWorkThingsGlobal(Pawn pawn)
         {
-            if (pawn?.Map == null) yield break;
+            // 没有有效调教员身份时不遍历全图目标；身份判断是只读的，
+            // 状态恢复与最终许可仍由随后真正准备工作时的入口处理。
+            if (pawn?.Map == null || !SSCIdentityUtility.IsTrainer(pawn)) yield break;
             foreach (Pawn potentialTarget in pawn.Map.mapPawns.AllPawns)
             {
                 if (TrainerAssignmentUtility.IsPotentialTrainingTarget(potentialTarget, pawn))

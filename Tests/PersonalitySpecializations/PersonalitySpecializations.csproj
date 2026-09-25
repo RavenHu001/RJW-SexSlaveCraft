@@ -7,5 +7,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(SscSourceRoot)/Comps/Comp_Train.Specialization.cs" Link="Production/Comp_Train.Specialization.cs" />
+    <Compile Include="$(SscSourceRoot)/ITab/ITab_SexSlaveTraining.SpecializationDisplay.cs" Link="Production/ITab_SexSlaveTraining.SpecializationDisplay.cs" />
   </ItemGroup>
 </Project>

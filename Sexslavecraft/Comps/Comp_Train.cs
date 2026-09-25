@@ -50,6 +50,14 @@ namespace SexSlaveCraft
         public int scheduledTrainingIntervalDays = 1;
         public int lastTrainingLocalDay = -999999;
         public float savedCowReservoirCharge = 0f;
+        // 训导官生命周期的事务/重入状态只存在于运行期；失格后禁止自动认领
+        // 则须随存档保存，否则读档会从其他残留终极状态改写刚退出的方向。
+        public int trainerMutationDepth;
+        public bool trainerMaintenanceInProgress;
+        public bool trainerInvalidExitBlocksAdoption;
+        // 玩家明确选择“未选择”后仍保留终极 Hediff，但低频对账不能把它重新
+        // 认领为当前方向。该选择要随存档保存；旧档缺字段时仍可按原规则恢复。
+        public bool specializationExplicitlyUnset;
         public bool milkProductionEnabled = true;
         public RabbitReproductionMode rabbitReproductionMode = RabbitReproductionMode.Offspring;
 
@@ -92,7 +100,7 @@ namespace SexSlaveCraft
         public bool HasReachedBusThreshold => specializationProgress >= 0.20f;
 
         /// <summary>检查进度是否达到巴士完成阈值；调用方另行确认当前特化方向。</summary>
-        public bool HasCompletedBusSpecialization => specializationProgress >= 0.999f;
+        public bool HasCompletedBusSpecialization => specializationProgress >= SpecializationCompletionProgress;
 
         /// <summary>判断当前选择的特化方向是否为奶牛。</summary>
         public bool IsCowSpecialized => specializationType == SexSlaveSpecializationType.Cow;
@@ -101,7 +109,7 @@ namespace SexSlaveCraft
         public bool HasReachedCowThreshold => specializationProgress >= 0.20f;
 
         /// <summary>检查进度是否达到奶牛完成阈值；调用方另行确认当前特化方向。</summary>
-        public bool HasCompletedCowSpecialization => specializationProgress >= 0.999f;
+        public bool HasCompletedCowSpecialization => specializationProgress >= SpecializationCompletionProgress;
 
         /// <summary>判断当前选择的特化方向是否为宠物猫。</summary>
         public bool IsPetCatSpecialized => specializationType == SexSlaveSpecializationType.PetCat;
@@ -119,7 +127,7 @@ namespace SexSlaveCraft
         public bool HasReachedPetThreshold => specializationProgress >= 0.20f && IsPetSpecialized;
 
         /// <summary>同时检查宠物特化身份及其完成进度阈值。</summary>
-        public bool HasCompletedPetSpecialization => specializationProgress >= 0.999f && IsPetSpecialized;
+        public bool HasCompletedPetSpecialization => specializationProgress >= SpecializationCompletionProgress && IsPetSpecialized;
 
         /// <summary>判断上次训练资格校验失败后的重试间隔是否尚未结束。</summary>
         public bool IsWaitingAfterFailedValidation => (Find.TickManager.TicksGame - lastFailedTrainingValidationTick) < FailedValidationRetryTicks;
@@ -206,10 +214,18 @@ namespace SexSlaveCraft
             if (pawn?.health?.hediffSet == null) return;
 
             CompSexSlaveTraining comp = pawn.TryGetComp<CompSexSlaveTraining>();
-            if (comp == null || comp.pawnIdentity == PawnIdentity.Master) return;
+            if (comp == null) return;
+
+            // 终极训导官记录可在其他当前方向上存在，必须在通用认领的
+            // “无方向”提前返回之前维护；无关角色在该入口中快速退出。
+            TrainerSpecializationLifecycle.Maintain(pawn);
+            if (comp.pawnIdentity == PawnIdentity.Master) return;
 
             if (comp.specializationType == SexSlaveSpecializationType.None)
             {
+                // 旧档缺少组件方向时仍可从健康状态恢复；玩家明确留空，或
+                // 训导官失格退出后必须保持“无”，不能从终极标记重新选回。
+                if (!comp.CanAdoptSpecializationFromHealth) return;
                 SexSlaveSpecializationType adopted = DetectAdoptableType(pawn);
                 if (adopted == SexSlaveSpecializationType.None) return;
 
@@ -280,6 +296,8 @@ namespace SexSlaveCraft
             Scribe_Values.Look(ref specializationType, "specializationType", SexSlaveSpecializationType.None);
             Scribe_Values.Look(ref specializationProgress, "specializationProgress", 0f);
             Scribe_Values.Look(ref savedCowReservoirCharge, "savedCowReservoirCharge", 0f);
+            Scribe_Values.Look(ref trainerInvalidExitBlocksAdoption, "trainerInvalidExitBlocksAdoption", false);
+            Scribe_Values.Look(ref specializationExplicitlyUnset, "specializationExplicitlyUnset", false);
             Scribe_Collections.Look(ref perTypeProgress, "perTypeProgress", LookMode.Value, LookMode.Value);
             Scribe_Values.Look(ref milkProductionEnabled, "milkProductionEnabled", true);
             Scribe_Values.Look(ref rabbitReproductionMode, "rabbitReproductionMode", RabbitReproductionMode.Offspring);
@@ -410,6 +428,11 @@ namespace SexSlaveCraft
             RemovePetStateIfNotKept(pawn, typeToKeep, SexSlaveSpecializationType.PetCat);
             RemovePetStateIfNotKept(pawn, typeToKeep, SexSlaveSpecializationType.PetDog);
             RemovePetStateIfNotKept(pawn, typeToKeep, SexSlaveSpecializationType.PetRabbit);
+
+            // 训导官普通 Hediff 只代表正在培养。方向退出时必须同时清理，
+            // 否则下一轮对账会把失格角色从残留标记重新认领回来。
+            if (typeToKeep != SexSlaveSpecializationType.TrainerOfficer)
+                RemoveSpecializationHediff(pawn, SSCDefOf.SSC_Hediff_TrainerOfficer);
         }
 
         /// <summary>移除未被保留的宠物方向基础状态。</summary>

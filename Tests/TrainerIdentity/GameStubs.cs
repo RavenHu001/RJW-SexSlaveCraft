@@ -73,7 +73,16 @@ namespace Verse
         /// <summary>只提供恶堕需求。</summary>
         public T TryGetNeed<T>() where T : class => Corruption as T;
     }
-    public class Hediff { public object def; public float Severity; }
+    // 只保留 Def 对象身份；状态是否存在仍由生产资格代码调用 HediffSet 查询。
+    public class HediffDef { }
+    public class Hediff
+    {
+        public object def;
+        private float severity;
+        public int SeverityWrites;
+        /// <summary>统计每次赋值，以验证稳定状态没有重复写入健康严重度。</summary>
+        public float Severity { get => severity; set { severity = value; SeverityWrites++; } }
+    }
     public class HediffSet
     {
         public List<Hediff> hediffs = new List<Hediff>();
@@ -85,8 +94,22 @@ namespace Verse
     public class Health
     {
         public HediffSet hediffSet = new HediffSet();
+        public int Adds, Removes;
+        public bool FailAdds;
+        /// <summary>记录生产维护器的真实添加次数，并可模拟目标 Hediff 创建失败。</summary>
+        public Hediff AddHediff(HediffDef def)
+        {
+            if (FailAdds) return null;
+            var hediff = new Hediff { def = def };
+            hediffSet.hediffs.Add(hediff);
+            Adds++;
+            return hediff;
+        }
         /// <summary>供真实解绑服务移除锁链。</summary>
-        public void RemoveHediff(Hediff hediff) => hediffSet.hediffs.Remove(hediff);
+        public void RemoveHediff(Hediff hediff)
+        {
+            if (hediffSet.hediffs.Remove(hediff)) Removes++;
+        }
     }
     public class Game { }
     public class GameComponent
@@ -102,6 +125,8 @@ namespace Verse
     }
     public static class Find { public static TickManager TickManager = new TickManager(); }
     public class TickManager { public int TicksGame = 100000; }
+    public enum LoadSaveMode { Inactive, LoadingVars, PostLoadInit }
+    public static class Scribe { public static LoadSaveMode mode = LoadSaveMode.Inactive; }
     public static class Scribe_Values
     {
         public static bool Loading;
@@ -218,10 +243,19 @@ namespace SexSlaveCraft
     using Verse;
     public enum PawnIdentity { Unset, Slave, Master }
     public enum TrainingMode { Disabled, Enabled }
+    public enum RabbitReproductionMode { Offspring, Clone }
     public partial class CompSexSlaveTraining
     {
+        // 公共特化模块所需的宿主字段；实际方向切换和进度归档直接编译生产文件。
+        public Thing parent;
+        public float savedCowReservoirCharge;
+        public RabbitReproductionMode rabbitReproductionMode;
         public PawnIdentity pawnIdentity;
         public int restrictionRestoreDepth;
+        public int trainerMutationDepth;
+        public bool trainerMaintenanceInProgress;
+        public bool trainerInvalidExitBlocksAdoption;
+        public bool specializationExplicitlyUnset;
         public Pawn selectedTrainer;
         public TrainingMode mode = TrainingMode.Enabled;
         public bool AllowsOthersForTrainingOrSex, IsBusSpecialized, BusState;
@@ -230,6 +264,17 @@ namespace SexSlaveCraft
         public int scheduledTrainingIntervalDays, scheduledTrainingHour, ScheduledTrainingEndHour, lastTrainingTick;
         public const int CooldownTicks = 100;
         public bool IsEnabled => pawnIdentity == PawnIdentity.Slave && mode == TrainingMode.Enabled;
+
+        /// <summary>仅模拟公共组件的进度写入边界；方向、持续条件与经验事件仍由直接链接的生产工具校验。</summary>
+        public float AddSpecializationProgress(float amount)
+        {
+            if (amount <= 0f || specializationType == SexSlaveSpecializationType.None) return specializationProgress;
+            specializationProgress = Math.Max(0f, Math.Min(1f, specializationProgress + amount));
+            return specializationProgress;
+        }
+
+        // 本套件验证真实的方向进度切换；健康状态清理由其他套件覆盖。
+        private static void RemoveInactiveSpecializationStates(Pawn pawn, CompSexSlaveTraining comp, SexSlaveSpecializationType typeToKeep) { }
     }
     public class Need_Corruption { public float HighestCorruptionLevel, CurLevel; }
     public class Hediff_ChainOfSexSlave : Hediff
@@ -271,6 +316,9 @@ namespace SexSlaveCraft
     public static class SSCDefOf
     {
         public static object SexSlaveTrait = new object(), ChainOfSexSlave = new object(), BridleOfSexSlave = new object(), SSC_BasicTraining = new object();
+        public static object SSC_RES_TrainerOfficer = new object();
+        // 三个不同对象模拟已解析的普通、有效终极与禁用终极 Def。
+        public static HediffDef SSC_Hediff_TrainerOfficer = new HediffDef(), SSC_Hediff_TrainerOfficer_Final = new HediffDef(), SSC_Hediff_TrainerOfficer_FinalDisabled = new HediffDef();
         public static JobDef SSC_TrainingReceiver = new JobDef(), Training_Ritual = new JobDef(), TrainingSexSlave = new JobDef();
     }
     public static class TraitUtility {
@@ -280,8 +328,9 @@ namespace SexSlaveCraft
         /// <summary>读取用例显式配置的公交车状态。</summary>
         public static bool HasAnyBusState(Pawn pawn) => pawn?.Training.BusState == true; }
     public static class ResearchUtils {
-        /// <summary>默认研究已完成，许可测试不模拟科技树。</summary>
-        public static bool IsResearchFinished(object def) => true; }
+        /// <summary>默认研究已完成；阶段 5 菜单用例可以暂时关闭研究检查。</summary>
+        public static bool TrainerOfficerResearchFinished = true;
+        public static bool IsResearchFinished(object def) => def != SSCDefOf.SSC_RES_TrainerOfficer || TrainerOfficerResearchFinished; }
     public static class BindingRitualStateUtility
     {
         public static int RecoveryCalls;

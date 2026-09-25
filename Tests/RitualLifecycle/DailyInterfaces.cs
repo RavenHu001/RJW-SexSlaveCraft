@@ -15,8 +15,13 @@ namespace Verse
         public int thingIDNumber;
         /// <summary>本流程模型默认不处于战斗状态。</summary>
         public bool IsFighting() => false;
-        /// <summary>提供日常预约入口，不模拟预约管理器。</summary>
-        public bool Reserve(Pawn target, Job job, int count, int stack, object layer, bool error) => Reservable;
+        /// <summary>通过宿主预约存储登记生产驱动申请的目标，后续由生产交接工具释放。</summary>
+        public bool Reserve(Pawn target, Job job, int count, int stack, object layer, bool error)
+        {
+            if (!Reservable) return false;
+            Map.reservationManager.Reserve(target, this, job);
+            return true;
+        }
         /// <summary>日常持续预约检查沿用用例指定结果。</summary>
         public bool CanReserve(Pawn target, int count, int stack) => Reservable;
         /// <summary>用固定偏移支持无需渲染的周期效果调用。</summary>

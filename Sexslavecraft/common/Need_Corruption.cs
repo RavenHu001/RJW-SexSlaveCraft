@@ -211,7 +211,12 @@ namespace SexSlaveCraft
                     // 两段都不匹配，最终错误赋值 0。
                     // 新逻辑按阶段表找前一级：0.9 档 -> 0.5，0.5 档 -> 0.3，
                     // 0.3 档 -> 0.1，0.1 档 -> 0；本轮只有这一次赋值，不循环连续退阶。
+                    float previousSeverity = chainHediff.Severity;
                     chainHediff.Severity = TrainingOutcomeUtility.GetPreviousChainStageFloor(pawn);
+                    // 自然退阶不经由 IncreaseChainSeverity。仅跌破第 3 阶段时
+                    // 通知训导官退出或禁用终极记录，其余衰减不增加维护开销。
+                    if (previousSeverity >= 0.5f && chainHediff.Severity < 0.5f)
+                        TrainerSpecializationLifecycle.Notify(pawn);
                 }
             }
 

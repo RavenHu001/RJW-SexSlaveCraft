@@ -125,7 +125,7 @@ namespace RimWorld
 namespace SexSlaveCraft
 {
     public enum PawnIdentity { Unset, Slave, Master }
-    public enum SexSlaveSpecializationType { None, Bus, Cow, PetCat, PetDog, PetRabbit }
+    public enum SexSlaveSpecializationType { None, Bus, Cow, PetCat, PetDog, PetRabbit, TrainerOfficer }
     public partial class CompSexSlaveTraining
     {
         public Verse.Pawn parent;
@@ -140,6 +140,11 @@ namespace SexSlaveCraft
         public void ExposeData() { ExposeRestrictionSettings(); }
     }
     public static class SSCMod { public static SSCSettings settings = new SSCSettings(); }
+    // 限制套件保留现有配置语义；训导官状态机在 TrainerIdentity 中运行生产代码。
+    public static class TrainerSpecializationLifecycle
+    {
+        public static void Maintain(Verse.Pawn pawn) { }
+    }
     public static class SSCTrainerIdentityMigration
     {
         public static bool Ran;
@@ -169,5 +174,10 @@ namespace SexSlaveCraft
     {
         /// <summary>返回用例设置的巴士健康状态标记，模拟与所选特化方向独立的状态来源。</summary>
         public static bool HasAnyBusState(Verse.Pawn pawn) => pawn?.HasBusState == true;
+    }
+    public static class TrainerSpecializationUtility
+    {
+        /// <summary>本套件保持原有限制案例；训导官真实状态与解析组合由 TrainerIdentity 生产源码套件验证。</summary>
+        public static bool HasActiveRestrictionEffect(Verse.Pawn pawn) => false;
     }
 }

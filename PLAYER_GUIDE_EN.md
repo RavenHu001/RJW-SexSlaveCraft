@@ -6,6 +6,8 @@
 > Version 2.3.1 adds unified per-pawn restrictions activated by an actual bond, immediate permission for owner initiation, equipment/profile overrides, save migration, trainer authorization and a right-side rule panel. ZIP and checksum: [v2.3.1 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.1). Legacy RimTalk remains suspended; unfinished Pet Cat and Pet Rabbit choices remain disabled.\
 > This guide describes the behavior implemented by the current C# and XML. Where an old changelog or description disagrees with the code, the discrepancy is listed under “Current Limitations and Known Differences.”
 
+> The current development build includes Training Officer specialization. Its rules below are not part of the published 2.3.1 package.
+
 ## 1. Scope and Dependencies
 
 SexSlaveCraft, abbreviated SSC below, is built around this progression loop:
@@ -13,7 +15,7 @@ SexSlaveCraft, abbreviated SSC below, is built around this progression loop:
 1. Set a humanlike pawn’s `Pawn Identity` to `Master` or `Sex Slave`.
 2. Use ordinary `Training` to raise Corruption, opinion, and body-part experience while reducing Will.
 3. Use the `Binding Ritual` to establish the master–slave bond, deepen the `Sex Slave Chain` health stage, and attempt slave conversion.
-4. Develop either `Public Use Specialization` or `Cow Specialization`.
+4. Develop `Public Use`, `Cow`, or `Training Officer` specialization.
 5. Use `Personality Excretion` to store a personality in `Personality Gel`, implant it into a Hollow, or edit it into a final specialization.
 6. Use `Semi-gelatinization Surgery` and `Full Gelatinization Surgery` for high-risk body transformation.
 
@@ -31,7 +33,7 @@ At startup, SSC injects its Training component, Training tab, and related surger
 ### 2.1 Minimum Playable Route
 
 1. Research `Training` for 500 research points.
-2. Set at least one free colonist to Master, or enable `Is a trainer` on a Sex Slave, then enable the `Training` work type.
+2. Set at least one free colonist to Master and enable `Training` work. A Sex Slave can later qualify through Training Officer specialization.
 3. Select a target and open the `Training` tab.
 4. Set `Pawn Identity` to `Sex Slave` and enable `Allow Training`.
 5. Choose an `Assigned Pose`; set an `Assigned Trainer` if a specific pawn must perform it.
@@ -44,6 +46,7 @@ At startup, SSC injects its Training component, Training tab, and related surger
 - General route: `Training` → `Body-part Training` → `Personality Excretion` → semi/full gelatinization.
 - Social and trade route: `Personality Editing (currently Public Use only)` → `Public Use` → `Public Use Specialization` → extract at 100% → edit into `Final Public Use Specialization` gel → implant.
 - Milk route: raise Breasts to 70% → gain `Permanent Lactation Phase` → research `Milking Specialization` → `Cow Specialization` → edit into `Final Cow Specialization` gel.
+- Training Officer route: research `Training Officer Specialization` → maintain a valid Master bond and Chain stage 3 as a free colonist Sex Slave → select Training Officer → reach 20% and turn on `Is a trainer` → complete training and shape final personality gel.
 
 ## 3. The Training Tab
 
@@ -54,14 +57,14 @@ The tab is available for colonists, colony prisoners, and slaves.
 | Identity | Function |
 |---|---|
 | Unset | Hides normal Training configuration |
-| Sex Slave | Enables Training, specialization, pose, and trainer controls |
+| Sex Slave | Enables Training, specialization, pose, and trainer controls; may turn on trainer duty after qualifying as a Training Officer |
 | Master | Cannot be an ordinary Training target; can fill the master role in a Binding Ritual |
 
-The `Is a trainer` toggle is always on for Masters, always off for Unset pawns, and optional for Sex Slaves (off by default). Identity, Training work priority, and the target’s Allow Training setting are separate. A Sex Slave with the toggle enabled can train others but does not gain the Master ritual role.
+Masters always qualify as trainers, and Unset pawns never do. A Sex Slave must finish `Training Officer Specialization` research, remain a free colonist with a valid Master bond and current Chain stage 3 or higher, and reach 20% progress in the selected Training Officer direction before turning on `Is a trainer`. An active Final Training Officer also qualifies after switching directions. Losing a continuous condition suspends trainer duty while preserving the personal on/off choice. Training work priority and the target's `Allow Training` setting are separate. A qualifying Sex Slave can train others but does not gain the Master ritual role.
 
 Pawns with a Chain, and Masters whose Bridle still has valid bound targets, cannot change SSC identity. The UI and shared setter both reject the change, preserving bond and growth progress. Explicit unbinding restores switching when no blocking bond remains; the Sex Slave trainer toggle remains usable. This does not reconstruct Chains already lost before the fix.
 
-Existing saves grant trainer status once to SSC Sex Slaves already referenced as assigned trainers. Unset trainers keep their assignment but become inactive; they are not automatically promoted to Master. Later loads preserve manually disabled toggles.
+On upgrade, the old Sex Slave trainer toggle is turned off once, including for previously assigned trainers. Assignment records remain but are inactive until the pawn qualifies and the player turns the toggle on again. Unset trainers are not promoted to Master. Later loads preserve the new choice.
 
 ### 3.2 Allow Training
 
@@ -71,7 +74,7 @@ Enabling it immediately runs an RJW receiver-eligibility check. A failed check d
 
 ### 3.3 Behavior Restrictions
 
-Six individual permissions replace Allow Others; see section 18.6. Public Use affects two reception defaults/overrides. Specialization changes no longer rewrite the old exception.
+Six individual permissions replace Allow Others; see section 18.6. Public Use affects two reception defaults/overrides. An effective Training Officer forces permission for initiating consensual or forced sex as soon as the direction is selected; the 20% threshold governs trainer duty only. An active final record continues to apply after switching directions, while an invalid record is suspended. Global controls and source priority still apply. Specialization changes do not rewrite saved personal choices.
 
 ### 3.4 Assigned Pose
 
