@@ -1,6 +1,6 @@
 <Defs>
   <!-- 普通培养状态随当前训导官方向存在。严重度由状态生命周期与公共特化进度同步；
-       此处先定义显示阶段，不在尚未确定数值前加入属性或限制强制效果。 -->
+       每个阶段写入该阶段的完整属性加成，切换阶段时由游戏自动替换，不能把增量逐段累加。 -->
   <HediffDef>
     <defName>SSC_Hediff_TrainerOfficer</defName>
     <label>性奴特化（训导官）</label>
@@ -16,15 +16,36 @@
         <minSeverity>0.00</minSeverity>
         <label>训导官培养中</label>
       </li>
-      <!-- 基础阶段从 20% 开始，与只读资格常量一致；个人调教员开关仍须单独开启。 -->
+      <!-- 基础阶段从 20% 开始，与只读资格常量一致；个人调教员开关仍须单独开启。
+           崩溃临界值降低 3 个百分点，压制能力提高 10 个百分点，教化能力乘以 1.05。
+           后两项属于 Ideology，未启用 DLC 时不加载对应 StatDef 节点。 -->
       <li>
         <minSeverity>0.20</minSeverity>
         <label>性奴特化（训导官）</label>
+        <statOffsets>
+          <MentalBreakThreshold>-0.03</MentalBreakThreshold>
+          <SuppressionPower MayRequire="Ludeon.RimWorld.Ideology">0.10</SuppressionPower>
+        </statOffsets>
+        <statFactors>
+          <ConversionPower MayRequire="Ludeon.RimWorld.Ideology">1.05</ConversionPower>
+        </statFactors>
+      </li>
+      <!-- 熟练阶段从 50% 开始；这里写入完整加成，替代基础阶段的数值。 -->
+      <li>
+        <minSeverity>0.50</minSeverity>
+        <label>性奴特化（熟练训导官）</label>
+        <statOffsets>
+          <MentalBreakThreshold>-0.06</MentalBreakThreshold>
+          <SuppressionPower MayRequire="Ludeon.RimWorld.Ideology">0.20</SuppressionPower>
+        </statOffsets>
+        <statFactors>
+          <ConversionPower MayRequire="Ludeon.RimWorld.Ideology">1.10</ConversionPower>
+        </statFactors>
       </li>
     </stages>
   </HediffDef>
 
-  <!-- 有效终极标记可以在切换当前培养方向后保留。
+  <!-- 有效终极标记可以在切换当前培养方向后保留，并取代同系普通培养标记。
        查询时仍实时检查绑定、锁链阶段及自由殖民者条件，不能只凭此标记授予资格。 -->
   <HediffDef>
     <defName>SSC_Hediff_TrainerOfficer_Final</defName>
@@ -34,6 +55,20 @@
     <tendable>false</tendable>
     <everCurableByItem>false</everCurableByItem>
     <makesSickThought>false</makesSickThought>
+    <stages>
+      <!-- 终极阶段直接提供完整加成；与普通培养阶段不叠加。
+           Ideology 未启用时只保留崩溃临界值加成。 -->
+      <li>
+        <minSeverity>0</minSeverity>
+        <statOffsets>
+          <MentalBreakThreshold>-0.1</MentalBreakThreshold>
+          <SuppressionPower MayRequire="Ludeon.RimWorld.Ideology">0.30</SuppressionPower>
+        </statOffsets>
+        <statFactors>
+          <ConversionPower MayRequire="Ludeon.RimWorld.Ideology">1.15</ConversionPower>
+        </statFactors>
+      </li>
+    </stages>
   </HediffDef>
 
   <!-- 禁用标记保存终极化事实，不提供属性、强制条目或调教员资格。
