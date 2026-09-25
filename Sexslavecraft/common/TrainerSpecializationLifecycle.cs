@@ -80,8 +80,9 @@ namespace SexSlaveCraft
                 }
 
                 // 旧档或外部恢复可能只留下普通 Hediff 而没有组件方向。
-                // 仅在条件满足、且不是本功能主动失格退出后才允许认领。
-                if (ordinary != null && eligible && !comp.trainerInvalidExitBlocksAdoption &&
+                // 仅在条件满足、且未发生自动失格退出或玩家明确留空后才允许认领。
+                // 与组件的终极标记认领使用同一门闩，避免普通标记绕过“未选择”。
+                if (ordinary != null && eligible && comp.CanAdoptSpecializationFromHealth &&
                     comp.specializationType == SexSlaveSpecializationType.None)
                 {
                     comp.SetSpecialization(SexSlaveSpecializationType.TrainerOfficer);

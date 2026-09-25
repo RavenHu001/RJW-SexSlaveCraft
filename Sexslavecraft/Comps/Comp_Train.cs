@@ -55,6 +55,9 @@ namespace SexSlaveCraft
         public int trainerMutationDepth;
         public bool trainerMaintenanceInProgress;
         public bool trainerInvalidExitBlocksAdoption;
+        // 玩家明确选择“未选择”后仍保留终极 Hediff，但低频对账不能把它重新
+        // 认领为当前方向。该选择要随存档保存；旧档缺字段时仍可按原规则恢复。
+        public bool specializationExplicitlyUnset;
         public bool milkProductionEnabled = true;
         public RabbitReproductionMode rabbitReproductionMode = RabbitReproductionMode.Offspring;
 
@@ -220,9 +223,9 @@ namespace SexSlaveCraft
 
             if (comp.specializationType == SexSlaveSpecializationType.None)
             {
-                // 普通训导官主动失格退出后保留“无”方向，不能让别的残留
-                // 终极 Hediff 在同轮或读档后的下一轮自动替玩家选方向。
-                if (comp.trainerInvalidExitBlocksAdoption) return;
+                // 旧档缺少组件方向时仍可从健康状态恢复；玩家明确留空，或
+                // 训导官失格退出后必须保持“无”，不能从终极标记重新选回。
+                if (!comp.CanAdoptSpecializationFromHealth) return;
                 SexSlaveSpecializationType adopted = DetectAdoptableType(pawn);
                 if (adopted == SexSlaveSpecializationType.None) return;
 
@@ -294,6 +297,7 @@ namespace SexSlaveCraft
             Scribe_Values.Look(ref specializationProgress, "specializationProgress", 0f);
             Scribe_Values.Look(ref savedCowReservoirCharge, "savedCowReservoirCharge", 0f);
             Scribe_Values.Look(ref trainerInvalidExitBlocksAdoption, "trainerInvalidExitBlocksAdoption", false);
+            Scribe_Values.Look(ref specializationExplicitlyUnset, "specializationExplicitlyUnset", false);
             Scribe_Collections.Look(ref perTypeProgress, "perTypeProgress", LookMode.Value, LookMode.Value);
             Scribe_Values.Look(ref milkProductionEnabled, "milkProductionEnabled", true);
             Scribe_Values.Look(ref rabbitReproductionMode, "rabbitReproductionMode", RabbitReproductionMode.Offspring);

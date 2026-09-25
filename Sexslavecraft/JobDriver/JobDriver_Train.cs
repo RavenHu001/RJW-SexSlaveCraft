@@ -21,6 +21,9 @@ namespace SexSlaveCraft
         private bool hasSceneRecord = true;
         private bool legacySceneProgress;
         private bool trainerProgressAwarded;
+        private int approachIdleRetries;
+        private const int ApproachRetryIntervalTicks = 60;
+        private const int MaxApproachIdleRetries = 10;
 
         /// <summary>保存本任务实际占用的对象，使行走或准备阶段读档后的中断能释放原占用。</summary>
         public override void ExposeData()
@@ -32,6 +35,9 @@ namespace SexSlaveCraft
             // 经验认领属于这一次日常 Job。保存后读档，即使最后的即时步骤
             // 被再次调用，也不会为同一场景再次发放训导官进度。
             Scribe_Values.Look(ref trainerProgressAwarded, "sscTrainerProgressAwarded", false);
+            // 行走中的存档可能已经停在 Goto toil，却没有活动寻路。
+            // 保留有限重试次数，读档后继续修复而不会无限挂在同一任务。
+            Scribe_Values.Look(ref approachIdleRetries, "sscApproachIdleRetries", 0);
             if (Scribe.mode == LoadSaveMode.LoadingVars)
                 legacySceneProgress = Sexprops != null && (orgasms > 0 || (duration > 0 && ticks_left < duration));
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
@@ -75,7 +81,44 @@ namespace SexSlaveCraft
                 defaultCompleteMode = ToilCompleteMode.Instant
             };
 
-            yield return Toils_Goto.GotoThing(iTarget, PathEndMode.OnCell);
+            // 日常目标仍可自由活动。与工作扫描共用 Touch，接近后由场景
+            // 初始化同步双方位置。上场 RJW/UAP 动画若留下位置锁，会拦截
+            // StartPath 而让原版 Goto toil 永久等待一次永远不会到来的到达通知。
+            Toil approachTarget = Toils_Goto.GotoThing(iTarget, PathEndMode.Touch);
+            System.Action startApproach = approachTarget.initAction;
+            approachTarget.initAction = delegate
+            {
+                approachIdleRetries = 0;
+                // 此时本人的旧场景已结束，释放其遗留锁再发起首次寻路。
+                // 不碰目标身上的锁，以免影响目标当前合法的其他活动。
+                UapRitualCompatibilityUtility.ReleasePositionLocks(pawn, null);
+                startApproach();
+            };
+            approachTarget.tickAction = delegate
+            {
+                if (pawn.jobs?.curDriver != this || Partner == null) return;
+                if (pawn.pather.MovingNow)
+                {
+                    approachIdleRetries = 0;
+                    return;
+                }
+
+                // 读档恢复在走位 toil 中间时不会重跑 initAction。寻路若被旧锁
+                // 拦截或后来被外部停止，每 60 tick 只补试一次，避免逐 tick 寻路。
+                if (Find.TickManager.TicksGame % ApproachRetryIntervalTicks != 0) return;
+                if (++approachIdleRetries > MaxApproachIdleRetries)
+                {
+                    // 外部持续阻止移动时结束这份无进展的 Job，让工作扫描
+                    // 重新选择目标；现有短暂失败冷却防止同目标立即反复分配。
+                    TrainingJobUtility.MarkValidationFailure(Partner, "SSC_TRAIN_PATH");
+                    pawn.jobs.EndCurrentJob(JobCondition.Incompletable);
+                    return;
+                }
+
+                UapRitualCompatibilityUtility.ReleasePositionLocks(pawn, null);
+                pawn.pather.StartPath(new LocalTargetInfo(Partner), PathEndMode.Touch);
+            };
+            yield return approachTarget;
 
             // EN: Step 2: start the receiver Job so the sex slave enters the same daily training scene.
             // CN: 步骤 2：启动 receiver Job，让性奴进入同一段日常调教场景。

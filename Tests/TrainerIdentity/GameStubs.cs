@@ -255,6 +255,7 @@ namespace SexSlaveCraft
         public int trainerMutationDepth;
         public bool trainerMaintenanceInProgress;
         public bool trainerInvalidExitBlocksAdoption;
+        public bool specializationExplicitlyUnset;
         public Pawn selectedTrainer;
         public TrainingMode mode = TrainingMode.Enabled;
         public bool AllowsOthersForTrainingOrSex, IsBusSpecialized, BusState;

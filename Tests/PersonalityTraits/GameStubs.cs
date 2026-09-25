@@ -784,6 +784,7 @@ namespace SexSlaveCraft
         public bool allowOthersForTrainingOrSex;
         public bool milkProductionEnabled;
         public bool trainerInvalidExitBlocksAdoption;
+        public bool specializationExplicitlyUnset;
         /// <summary>隔离方向切换的健康状态清理边界，实际进度切换和快照算法直接链接生产代码。</summary>
         private static void RemoveInactiveSpecializationStates(Pawn pawn, CompSexSlaveTraining comp, SexSlaveSpecializationType type)
         {

@@ -18,6 +18,7 @@ namespace SexSlaveCraft
         public RabbitReproductionMode rabbitReproductionMode;
         public float savedCowReservoirCharge;
         public bool trainerInvalidExitBlocksAdoption;
+        public bool specializationExplicitlyUnset;
         public int inactiveStateCleanupCalls;
         public SexSlaveSpecializationType lastKeptType;
 

@@ -7,6 +7,8 @@
 > Version 2.3.1 adds unified per-pawn restrictions activated by an actual bond, immediate permission for owner initiation, equipment/profile overrides, save migration, trainer authorization and a right-side rule panel. ZIP and checksum: [v2.3.1 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.1). Legacy RimTalk remains suspended; unfinished Pet Cat and Pet Rabbit choices remain disabled.\
 > In-game names follow the mod's official English localization. For exact formulas, thresholds, and implementation notes, see `PLAYER_GUIDE_EN.md`.
 
+> The current development build includes Training Officer specialization; its rules below are not in the published 2.3.1 package.
+
 ## 1. What the Mod Does
 
 SexSlaveCraft (SSC) is built around this progression:
@@ -14,7 +16,7 @@ SexSlaveCraft (SSC) is built around this progression:
 1. Designate Masters and sex slaves.
 2. Use ordinary Training to raise Corruption and develop body parts.
 3. Perform the Binding Ritual to establish a bond and advance the `Sex Slave Chain` health stage.
-4. Develop either Public Use Specialization or Cow Specialization.
+4. Develop Public Use, Cow, or Training Officer specialization.
 5. extract a pawn's personality into Personality Gel, edit it, or implant it into a Hollow.
 6. Attempt Semi-gelatinization or Full Gelatinization.
 
@@ -33,7 +35,7 @@ The Binding Ritual also requires the ideology ritual system to be available.
 
 ### Step 2: Assign a Trainer
 
-Give at least one free colonist the `Master` identity, or enable `Is a trainer` on a `Sex Slave`, then enable the `Training` work type. The trainer toggle is always on for Masters, always off for Unset pawns, and optional for Sex Slaves.
+Give at least one free colonist the `Master` identity and enable `Training` work. Masters always qualify as trainers. A Sex Slave can turn on `Is a trainer` after researching Training Officer Specialization, becoming a free colonist with a valid Master bond and Chain stage 3 or higher, selecting Training Officer, and reaching 20% progress. An active Final Training Officer also qualifies after switching specialization. Unset pawns never qualify.
 
 A good trainer generally has:
 

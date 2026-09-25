@@ -37,6 +37,7 @@ namespace Verse
         public Map Map;
         public Lord lord;
         public Pawn_JobTracker jobs = new Pawn_JobTracker();
+        public Pawn_PathFollower pather = new Pawn_PathFollower();
         public Job CurJob => jobs.curJob;
         public JobDef CurJobDef => CurJob?.def;
         public string LabelShort = "test pawn";
@@ -102,6 +103,19 @@ namespace Verse.AI
         public int expiryInterval;
         public bool playerForced;
     }
+    public class Pawn_PathFollower
+    {
+        public bool MovingNow, BlockStarts;
+        public int StartPathCalls;
+        public PathEndMode LastEndMode;
+        /// <summary>记录生产驱动的补发寻路；可模拟外部位置锁吞掉 StartPath。</summary>
+        public void StartPath(LocalTargetInfo target, PathEndMode mode)
+        {
+            StartPathCalls++;
+            LastEndMode = mode;
+            if (!BlockStarts) MovingNow = true;
+        }
+    }
     public static class JobMaker
     {
         /// <summary>按给定定义和目标创建测试 Job，供生产 JobGiver 填充其余字段。</summary>
@@ -140,8 +154,12 @@ namespace Verse.AI
     {
         /// <summary>返回没有场景收尾回调的移动 Toil 占位对象；宿主不模拟寻路。</summary>
         public static Toil GotoCell(IntVec3 cell, PathEndMode endMode) => new Toil();
-        /// <summary>日常移动使用无副作用步骤，允许单独中断行走阶段。</summary>
-        public static Toil GotoThing(TargetIndex index, PathEndMode mode) => new Toil();
+        /// <summary>记录生产日常移动选用的终点语义；宿主不模拟原版寻路。</summary>
+        public static Toil GotoThing(TargetIndex index, PathEndMode mode)
+        {
+            TestWorld.LastGotoThingMode = mode;
+            return new Toil { initAction = () => TestWorld.OnGotoInit?.Invoke() };
+        }
     }
     public abstract class ThinkNode_JobGiver
     {
@@ -303,7 +321,7 @@ namespace SexSlaveCraft
         /// <summary>复位日常占用，保留仪式占用。</summary>
         public static void CleanupTrainingState(Pawn pawn) { var c = pawn.TryGetComp<CompSexSlaveTraining>(); if (!c.isRitualTraining) c.isBeingTrained = false; }
         /// <summary>记录验证失败边界；测试不推进真实游戏冷却。</summary>
-        public static void MarkValidationFailure(Pawn pawn, string prefix) { }
+        public static void MarkValidationFailure(Pawn pawn, string prefix) => TestWorld.PathValidationFailures++;
         /// <summary>给目标分配测试接收 Job 并返回成功；不运行真实接收端调度。</summary>
         public static bool TryStartBindingRitualReceiver(Pawn master, Pawn slave, Job job, JobDef receiver, IntVec3 cell)
         { TestWorld.AssignReceiverJob(slave); return true; }
@@ -390,6 +408,9 @@ internal static class TestWorld
     public static int ProcessSexCalls, DailyOutcomes, DailyCooldowns, TrainerProgressAwards;
     public static bool ReceiverSucceeds = true, SynchronizeSucceeds = true;
     public static int RjwEndCalls;
+    public static PathEndMode LastGotoThingMode;
+    public static Action OnGotoInit;
+    public static int PathValidationFailures;
     public static Action<rjw.JobDriver_SexBaseInitiator> OnRjwStart;
 
     /// <summary>重建隔离的测试地图，清零调用计数并恢复 Job 定义，避免用例相互污染。</summary>
@@ -400,6 +421,10 @@ internal static class TestWorld
         ProcessSexCalls = DailyOutcomes = DailyCooldowns = TrainerProgressAwards = 0;
         ReceiverSucceeds = SynchronizeSucceeds = true;
         RjwEndCalls = 0;
+        PathValidationFailures = 0;
+        LastGotoThingMode = PathEndMode.OnCell;
+        OnGotoInit = null;
+        Find.TickManager.TicksGame = 0;
         OnRjwStart = null;
 #if SSC_TEST_WITH_UAP
         UAP_Animations.UAP_AnimationPositionLockManager.Reset();

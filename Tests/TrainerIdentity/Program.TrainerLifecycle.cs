@@ -184,6 +184,18 @@ internal static partial class Program
             Assert(invalid.Training.specializationType == SexSlaveSpecializationType.None);
             Assert(Marker(invalid, SSCDefOf.SSC_Hediff_TrainerOfficer) == null);
         });
+
+        Run("明确留空时孤儿训导官普通标记不得绕过认领防护", () =>
+        {
+            // 旧档的孤儿普通标记仍可由上一个用例认领；玩家明确选择
+            // “未选择”后，即使外部代码重新加入该标记，维护器也须清理。
+            Pawn pawn = EligibleTrainerPawn();
+            pawn.Training.SetSpecialization(SexSlaveSpecializationType.None);
+            pawn.health.AddHediff(SSCDefOf.SSC_Hediff_TrainerOfficer);
+            TrainerSpecializationLifecycle.Maintain(pawn);
+            Assert(pawn.Training.specializationType == SexSlaveSpecializationType.None);
+            Assert(Marker(pawn, SSCDefOf.SSC_Hediff_TrainerOfficer) == null);
+        });
     }
 
     /// <summary>创建已有完整主人绑定和第 3 阶段锁链的测试角色。</summary>

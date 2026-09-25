@@ -32,6 +32,7 @@ internal static class Program
         Run("无当前方向仍请求清理基础健康状态", NoneRestoreRequestsCleanup);
         Run("多次人格覆盖不会累积先前历史", RepeatedRestoreDoesNotAccumulate);
         Run("恢复进度不迁移或清空身体奶量", RestoreKeepsBodyResource);
+        Run("明确留空后终极标记不能重新认领方向", ExplicitNoneBlocksAdoption);
         Console.WriteLine($"结果：{passed}/{passed + failed} 项通过。");
         return failed == 0 ? 0 : 1;
     }
@@ -74,6 +75,31 @@ internal static class Program
         comp.SetSpecialization(SexSlaveSpecializationType.Cow);
         comp.specializationProgress = 0.2f;
         return comp;
+    }
+
+    /// <summary>生产切换入口保存“未选择”意图，同时保留旧档健康状态恢复的入口。</summary>
+    private static void ExplicitNoneBlocksAdoption()
+    {
+        var comp = new CompSexSlaveTraining();
+        Assert(comp.CanAdoptSpecializationFromHealth, "旧档默认仍允许认领遗留健康状态");
+
+        // 终极状态由健康系统保留；这里只验证组件的持久选择位不会让
+        // 低频对账把用户刚选的“未选择”改回旧的培养方向。
+        comp.SetSpecialization(SexSlaveSpecializationType.Bus);
+        comp.specializationProgress = 1f;
+        comp.SetSpecialization(SexSlaveSpecializationType.None);
+        Assert(comp.specializationExplicitlyUnset && !comp.CanAdoptSpecializationFromHealth,
+            "明确留空应阻止自动认领");
+        Equal(1f, comp.ExportSpecializationProgress()["Bus"], "留空仍须保留历史进度");
+
+        // 再次手选方向应解除留空标记；人格导入的“无”也应保留
+        // 人格本身的空方向，而不是认领接收身体上的终极记录。
+        comp.SetSpecialization(SexSlaveSpecializationType.Cow);
+        Assert(!comp.specializationExplicitlyUnset && comp.CanAdoptSpecializationFromHealth,
+            "新方向应解除留空标记");
+        comp.RestoreSpecializationProgress(SexSlaveSpecializationType.None, 0f, comp.ExportSpecializationProgress());
+        Assert(comp.specializationExplicitlyUnset && !comp.CanAdoptSpecializationFromHealth,
+            "人格明确的空方向应保持空方向");
     }
 
     /// <summary>通过生产导出与恢复接口把源组件的人格进度移入目标组件。</summary>

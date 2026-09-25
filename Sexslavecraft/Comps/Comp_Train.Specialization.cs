@@ -23,6 +23,10 @@ namespace SexSlaveCraft
         public float specializationProgress = 0f;
         private Dictionary<string, float> perTypeProgress;
 
+        /// <summary>旧档健康状态可自动认领方向；玩家明确留空或训导官失格退出后须保持留空。</summary>
+        public bool CanAdoptSpecializationFromHealth => !specializationExplicitlyUnset &&
+            !trainerInvalidExitBlocksAdoption;
+
         /// <summary>导出独立的各方向进度快照，并用当前进度覆盖尚未归档的同方向记录。</summary>
         public Dictionary<string, float> ExportSpecializationProgress()
         {
@@ -42,6 +46,7 @@ namespace SexSlaveCraft
             specializationType = SexSlaveSpecializationType.None;
             specializationProgress = 0f;
             trainerInvalidExitBlocksAdoption = false;
+            specializationExplicitlyUnset = false;
             SetSpecialization(restoredType);
 
             // 无当前方向时切换入口不会触发清理，仍需去掉身体上不再生效的基础状态。
@@ -122,6 +127,9 @@ namespace SexSlaveCraft
             specializationType = type;
             if (type == SexSlaveSpecializationType.None)
             {
+                // 终极 Hediff 保留为永久完成事实。记录玩家/人格明确的空方向，
+                // 防止下一次 CompTickRare 从终极 Hediff 把刚选的方向改回去。
+                specializationExplicitlyUnset = true;
                 specializationProgress = 0f;
                 rabbitReproductionMode = RabbitReproductionMode.Offspring;
                 TrainerSpecializationLifecycle.Notify(parent as Pawn);
@@ -131,6 +139,7 @@ namespace SexSlaveCraft
             // 玩家主动选择新方向后，先前失格退出的自动认领防护不再适用。
             // 通知须在当前方向字段更新之后运行，避免维护器观察到半完成的切换。
             trainerInvalidExitBlocksAdoption = false;
+            specializationExplicitlyUnset = false;
 
             // 不再写旧“允许其他人”开关。公交车只声明新系统中的两项被动默认/强制值，
             // 方向切换本身不能扩大主动许可或调教许可，也不能抹掉已有个体选择。

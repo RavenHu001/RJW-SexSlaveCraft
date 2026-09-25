@@ -6,6 +6,15 @@ This continuation builds on upstream **2.2.8**, the baseline when upstream devel
 
 ## [Unreleased]
 
+### 训导官特化与调教员资格 / Training Officer specialization and trainer eligibility
+
+- 新增训导官培养、研究、普通与终极状态、人格凝胶传承及四语界面。有效绑定且锁链达到第 3 阶段的自由殖民者性奴，当前培养达到 20% 或持有有效终极状态后，才能手动开启调教员；旧档性奴个人开关一次性关闭，原指派保留为停用记录。
+- Adds Training Officer research, progression, final state, personality-gel transfer, and localized UI. A bonded free-colonist Sex Slave at Chain stage 3 or higher may opt into trainer duty at 20% progress or with an active final record. Migration resets the old Sex Slave toggle once and retains inactive assignments.
+- 培养经验按成功接受调教、调教别人、主动双人行为依次递减；选中训导官且条件有效时，强制允许主动发起自愿与强迫行为，不等待 20% 任职门槛。维护者已确认主体功能实机正常；性能与数值平衡仍待量化。
+- Successful Training received, Training performed, and actively initiated partnered sex grant decreasing amounts of progress. The two initiation permissions apply from selecting an effective Training Officer direction. The maintainer confirmed the main feature in game; performance and balance remain unmeasured.
+- 修复终极化后明确选择“未选择”仍被终极健康状态自动认领的问题；日常调教走位改用 `Touch`，并在寻路静止时清理调教员的遗留 UAP 位置锁、有限次数重试。维护者已确认两项修复在游戏中有效。
+- Preserves an explicit Unset specialization after finalization. Daily Training uses Touch approach, clears a trainer's stale UAP position lock, and retries a stopped path for a bounded period. The maintainer confirmed both fixes in game.
+
 ### Progression: Education 兼容 / Progression: Education compatibility
 
 - 自动调教避让正在参与课程的角色，避免听课和接受调教任务反复抢占；目标在途中加入课程时也会退出自动调教，下课后恢复自动选择。手动强制命令保持原行为。

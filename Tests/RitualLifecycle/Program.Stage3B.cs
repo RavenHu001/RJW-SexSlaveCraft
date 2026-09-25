@@ -32,6 +32,63 @@ internal static partial class Program
     /// <summary>验证真实日常与仪式驱动的清理和结算，不在替身中实现这些流程。</summary>
     private static void RunStage3BTests()
     {
+        Check("daily training follows moving targets using reachable touch mode", () =>
+        {
+            // 工作扫描已用 Touch 判断可达；直接枚举生产驱动，验证连续
+            // 分配任务时的移动步骤也以同一语义跟随尚可自由活动的目标。
+            Daily();
+            Equal(PathEndMode.Touch, TestWorld.LastGotoThingMode, "daily movement end mode");
+        });
+#if SSC_TEST_WITH_UAP
+        Check("daily approach clears only the trainer's old UAP position lock", () =>
+        {
+            // 用生产 Goto toil 的包装入口验证调用时序：前一场动画留下的
+            // 调教员位置锁须在寻路开始前清理，目标当前的锁不应被误删。
+            var f = Daily();
+            var target = f.driver.job.targetA.Thing as Pawn;
+            UAP_Animations.UAP_AnimationPositionLockManager.LockParticipants(f.driver.pawn, target);
+            TestWorld.OnGotoInit = () =>
+            {
+                Require(!UAP_Animations.UAP_AnimationPositionLockManager.IsLocked(f.driver.pawn), "trainer lock reached path start");
+                Require(UAP_Animations.UAP_AnimationPositionLockManager.IsLocked(target), "target lock was changed");
+            };
+            f.toils[1].initAction();
+        });
+#endif
+        Check("loaded idle daily approach retries a stopped path and resumes movement", () =>
+        {
+            // 模拟存档直接恢复在走位步骤：initAction 不再运行，旧锁曾让
+            // pather 保持静止。生产 tick 回调须补发 Touch 寻路且限频。
+            var f = Daily();
+            f.driver.pawn.pather.BlockStarts = true;
+            Find.TickManager.TicksGame = 60;
+            f.toils[1].tickAction();
+            Equal(1, f.driver.pawn.pather.StartPathCalls, "first path retry");
+            Equal(PathEndMode.Touch, f.driver.pawn.pather.LastEndMode, "retry end mode");
+            Find.TickManager.TicksGame = 61;
+            f.toils[1].tickAction();
+            Equal(1, f.driver.pawn.pather.StartPathCalls, "retry frequency");
+            f.driver.pawn.pather.BlockStarts = false;
+            Find.TickManager.TicksGame = 120;
+            f.toils[1].tickAction();
+            Require(f.driver.pawn.pather.MovingNow, "path did not resume");
+            Find.TickManager.TicksGame = 180;
+            f.toils[1].tickAction();
+            Equal(2, f.driver.pawn.pather.StartPathCalls, "moving path should not restart");
+        });
+        Check("permanently blocked daily approach ends instead of displaying endless Training", () =>
+        {
+            var f = Daily();
+            f.driver.pawn.pather.BlockStarts = true;
+            for (int i = 1; i <= 11; i++)
+            {
+                Find.TickManager.TicksGame = i * 60;
+                f.toils[1].tickAction();
+            }
+            Equal(JobCondition.Incompletable, f.driver.pawn.jobs.EndCondition.Value, "blocked path outcome");
+            Equal(10, f.driver.pawn.pather.StartPathCalls, "bounded retries");
+            Equal(1, TestWorld.PathValidationFailures, "target retry cooldown");
+        });
         Check("daily walking interruption releases occupancy without payout or cooldown", () =>
         {
             var f = Daily(); f.toils[0].initAction(); Require(f.comp.isBeingTrained, "prepared flag");
