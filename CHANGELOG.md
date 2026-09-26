@@ -4,7 +4,11 @@
 
 This continuation builds on upstream **2.2.8**, the baseline when upstream development stopped in July, and retains its version numbering. Entries are listed newest first. Technical details are in the [development log (Chinese)](Docs/Development/开发更新记录.md).
 
-## [未发布 / Unreleased] — 2026-09-26 — RJW 泄欲对象资格 / RJW Comfort designation
+## [2.3.3] — 2026-09-26 — RJW 泄欲对象资格与特化科技说明 / RJW Comfort designation and specialization descriptions
+
+本版包含最新两次玩家可见改动：`229e220` 的 RJW 泄欲对象资格与 `df785fb` 的特化科技说明。两次提交之前还有 `2ffdeb0`，仅更新未来开发规划，不作为已实现功能。安装包及校验文件见 [v2.3.3 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.3)，详细内容见 [2.3.3 发布说明](Docs/Releases/2.3.3/2.3.3发布说明.md)。
+
+This release covers the two latest player-visible changes: RJW Comfort designation in `229e220` and specialization research descriptions in `df785fb`. The preceding `2ffdeb0` changes a future plan only. Download the ZIP and checksum from [v2.3.3](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.3); see the [bilingual release notes](Docs/Releases/2.3.3/2.3.3发布说明.md).
 
 - **RJW 面板 / RJW panel：** SSC 小人到达性奴阶段（锁链第 2 阶段及以上）后，可按 RJW 原有资格、权限和身体条件在其面板中被指派为泄欲对象；见习性奴不会仅凭 SSC 身份获得该资格。保留 RJW 原有的受虐狂、囚犯和奴隶路径，不联动 SSC 个体限制。维护者已在本机游戏中确认补丁有效；其他模组组合尚未实测。At SSC Sex Slave stage (Chain stage 2 or higher), a pawn can be designated as a Comfort pawn in the RJW panel, subject to RJW's existing settings, permissions and physical checks. Trainees gain no eligibility from SSC status alone. RJW's existing Masochist, prisoner and slave paths remain, without linking SSC's individual restrictions. The maintainer confirmed the patch in game; combinations with other mods have not been tested.
 - **特化科技说明 / Specialization research descriptions：** 在奶牛、公交车、训导官和宠物狗的科技介绍中补充实际功能、培养门槛及经验来源；猫、兔和战斗员明确标注未完成或未实装，以及目前没有可用的经验来源。移除人格编辑科技名称中过时的“目前只有公交车可用”，并同步简中、繁中、英文和俄文文案。Adds implemented effects, requirements and experience sources to Cow, Public Use, Training Officer and Pet Dog research descriptions. Cat, Rabbit and Combatant descriptions identify unavailable paths and experience sources. Removes the outdated “Public Use only” research label and updates Simplified Chinese, Traditional Chinese, English and Russian text. Gameplay behavior is unchanged.

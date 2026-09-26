@@ -2,12 +2,12 @@
 
 [Project home](README.md) · [Documentation index / 文档索引](Docs/README.md) · [中文快速入门](读我，玩法介绍.md) · [Changelog](CHANGELOG.md)
 
-> For RimWorld 1.6 and SexSlaveCraft 2.3.2.\
+> For RimWorld 1.6 and SexSlaveCraft 2.3.3.\
 > This continuation is based on upstream 2.2.8. See `CHANGELOG.md` for release history.\
-> Version 2.3.2 adds Training Officer progression, eligibility and bonuses, improves ritual selection and optional Education compatibility, and fixes consecutive Training, reservations, gel processing and UI. Old Sex Slave trainer toggles reset once; obtain eligibility and enable duty again. ZIP and checksum: [v2.3.2 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.2). Legacy RimTalk remains suspended; unfinished Pet Cat and Pet Rabbit choices remain disabled.\
+> Version 2.3.3 lets SSC sex slaves at Chain stage 2 or higher qualify for RJW Comfort designation under RJW's existing rules and adds specialization effects and experience sources to research descriptions in four languages. ZIP and checksum: [v2.3.3 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.3). Legacy RimTalk remains suspended; unfinished Pet Cat and Pet Rabbit choices remain disabled.\
 > In-game names follow the mod's official English localization. For exact formulas, thresholds, and implementation notes, see `PLAYER_GUIDE_EN.md`.
 
-> See the [2.3.2 notes](Docs/Releases/2.3.2/2.3.2发布说明.md) for Training Officer progression, attributes and upgrading.
+> See the [2.3.3 notes](Docs/Releases/2.3.3/2.3.3发布说明.md) for this release and the [2.3.2 notes](Docs/Releases/2.3.2/2.3.2发布说明.md) for Training Officer progression, attributes and upgrading.
 
 ## 1. What the Mod Does
 
