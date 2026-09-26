@@ -13,22 +13,22 @@
   <SSC_RES_PNASimpleLauncher.label>Базовый PNA-лаунчер</SSC_RES_PNASimpleLauncher.label>
   <SSC_RES_PNAConcentration.label>Технология концентрации PNA</SSC_RES_PNAConcentration.label>
   <SSC_RES_PE.label>Экскреция личности</SSC_RES_PE.label>
-  <SSC_RES_SlaveSpecialization.label>Редактирование личности (пока только «Общественное пользование»)</SSC_RES_SlaveSpecialization.label>
-  <SSC_RES_SlaveSpecialization.description>Исследование путей специализации секс-рабов.</SSC_RES_SlaveSpecialization.description>
+  <SSC_RES_SlaveSpecialization.label>Редактирование личности</SSC_RES_SlaveSpecialization.label>
+  <SSC_RES_SlaveSpecialization.description>Открывает развитие специализаций секс-рабов. После исследования направления его можно выбрать на вкладке личности, если оно реализовано. При смене направления прогресс каждого из них сохраняется отдельно. Эффекты и источники опыта указаны в описании соответствующего исследования.</SSC_RES_SlaveSpecialization.description>
   <SSC_RES_CowTraining.label>Специализация «Дойная корова»</SSC_RES_CowTraining.label>
-  <SSC_RES_CowTraining.description>Даёт секс-рабам повышенный выход молока и делает их более подходящими для секс-работы.</SSC_RES_CowTraining.description>
+  <SSC_RES_CowTraining.description>Эффекты: Специализацию «Дойная корова» можно выбрать при 2-й стадии цепи и наличии лактации. Она даёт дополнительный запас молока; секс ускоряет его выработку, причём эффект растёт с прогрессом. С 20% повышается уязвимость, снижаются скорость и манипуляция; с 50% повышается красота. Завершённую подготовку можно закрепить гелем личности.\n\nОпыт: Растёт пропорционально продвижению выработки молока, включая ускорение после секса и расход лактации в моде Human Cattle. Секс без продвижения выработки молока сам по себе опыта не даёт.</SSC_RES_CowTraining.description>
   <SSC_RES_PublicUse.label>Общественное пользование</SSC_RES_PublicUse.label>
-  <SSC_RES_PublicUse.description>Делает секс-рабов более подходящими для секс-работы и социальной деятельности.</SSC_RES_PublicUse.description>
+  <SSC_RES_PublicUse.description>Эффекты: Открывает специализацию «Общественное пользование», которая разрешает и принудительно сохраняет согласие на добровольный и принудительный секс. На 20% и 50% растут торговые и переговорные показатели, социальное влияние и речь. Торговля с торговцем может запустить взаимодействие. Завершённую подготовку можно закрепить гелем личности.\n\nОпыт: Завершённый секс не с хозяином даёт 5%; ежедневная дрессировка даёт прогресс по результату; успешная сделка с фракцией или торговцем также даёт прогресс. Сделки с торговыми кораблями не учитываются.</SSC_RES_PublicUse.description>
   <SSC_RES_TrainerOfficer.label>Специализация инструктора</SSC_RES_TrainerOfficer.label>
-  <SSC_RES_TrainerOfficer.description>Позволяет готовить инструкторов, которые дрессируют других секс-рабов по поручению хозяина, и открывает финальное формирование личности.</SSC_RES_TrainerOfficer.description>
+  <SSC_RES_TrainerOfficer.description>Эффекты: Свободный колонист со статусом секс-раба, привязанным хозяином и 3-й стадией цепи может выбрать инструктора. После выбора можно инициировать добровольный или принудительный секс. На 20% можно включить личный переключатель инструктора, дрессировать других секс-рабов и получить бонусы к порогу срыва, подавлению и обращению; на 50% бонусы усиливаются. Завершённую подготовку можно закрепить гелем личности.\n\nОпыт: Завершение дрессировки в роли обучаемого или ритуала привязки даёт 5%; дрессировка другого секс-раба квалифицированным активным инструктором даёт 2,5%; инициированный и завершённый секс с другим персонажем даёт 1%.</SSC_RES_TrainerOfficer.description>
   <SSC_RES_PetCat.label>Питомец: кошка</SSC_RES_PetCat.label>
-  <SSC_RES_PetCat.description>Превращает секс-раба в catgirl.</SSC_RES_PetCat.description>
+  <SSC_RES_PetCat.description>Планируемые эффекты: Специализация кошки ориентирована на скорость, уклонение и ласку к хозяину. Выбор пока не завершён: обычное развитие недоступно, источника опыта специализации нет.</SSC_RES_PetCat.description>
   <SSC_RES_Combatant.label>Боевая единица</SSC_RES_Combatant.label>
-  <SSC_RES_Combatant.description>Специальная дрессировка создаёт боевых рабов, которые на поле боя абсолютно подчиняются приказам.</SSC_RES_Combatant.description>
+  <SSC_RES_Combatant.description>Планируемая специализация послушного бойца. Пока не реализована: её нельзя выбрать, она не даёт эффектов и не имеет источника опыта.</SSC_RES_Combatant.description>
   <SSC_RES_PetDog.label>Питомец: собака</SSC_RES_PetDog.label>
-  <SSC_RES_PetDog.description>Превращает секс-раба в doggirl.</SSC_RES_PetDog.description>
+  <SSC_RES_PetDog.description>Эффекты: Специализация собаки постепенно повышает шанс приручения и дрессировки животных. Работа с животными может вызвать дополнительное взаимодействие. Питомцы также могут ласкаться к хозяину, давая ему краткий бонус настроения. Завершённую подготовку можно закрепить гелем личности.\n\nОпыт: Завершённая дрессировка животного даёт базовые 0,4%, попытка приручения — 0,6%, завершённый секс с животным — 2%. Прирост увеличивается с текущим прогрессом. Ласка к хозяину опыта не даёт.</SSC_RES_PetDog.description>
   <SSC_RES_PetRabbit.label>Питомец: кролик</SSC_RES_PetRabbit.label>
-  <SSC_RES_PetRabbit.description>Превращает секс-раба в bunnygirl.</SSC_RES_PetRabbit.description>
+  <SSC_RES_PetRabbit.description>Планируемые эффекты: Специализация кролика ориентирована на скорость, отдых, иммунитет и режимы размножения или клонирования. Выбор и смена режима пока не завершены: обычное развитие недоступно, источника опыта специализации нет.</SSC_RES_PetRabbit.description>
   <SSC_RES_GelatinizationPartial.label>Частичная gelatinизация</SSC_RES_GelatinizationPartial.label>
   <SSC_RES_GelatinizationPartial.description>Предварительная gelatinизационная модификация.</SSC_RES_GelatinizationPartial.description>
   <SSC_RES_GelatinizationFull.label>Полная gelatinизация тела</SSC_RES_GelatinizationFull.label>

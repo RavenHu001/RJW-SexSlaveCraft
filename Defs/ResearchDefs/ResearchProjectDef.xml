@@ -109,8 +109,8 @@
 
   <ResearchProjectDef>
     <defName>SSC_RES_SlaveSpecialization</defName>
-    <label>人格编辑（目前只有公交车可用）</label>
-    <description>研究性奴的特化</description>
+    <label>人格编辑</label>
+    <description>解锁性奴特化培养。完成对应方向的研究后，可在人格界面选择已实装的特化；切换方向时，各方向的培养进度会分别保留。具体功能与经验来源见对应科技。</description>
     <baseCost>1500</baseCost>
     <techLevel>Industrial</techLevel>
     <tab>SSC_ResearchTabDef</tab>
@@ -125,7 +125,7 @@
   <ResearchProjectDef>
     <defName>SSC_RES_CowTraining</defName>
     <label>奶牛化</label>
-    <description>让性奴获得更高的产奶量，且更适合参与性工作</description>
+    <description>功能：达到性奴锁链第 2 阶段且具有泌乳状态后，可选择奶牛特化。获得额外储奶能力；性行为可加速产奶，培养进度越高，加速效果越强。达到 20% 后更易受伤，移动和操作能力下降；50% 后增加美丽度。培养完成后可用人格凝胶终极化。\n\n经验：按产奶推进量增长，包括性行为催产以及 Human Cattle 模组的泌乳消耗；单纯完成性行为而没有产奶推进量不会直接增加特化经验。</description>
     <baseCost>1200</baseCost>
     <techLevel>Industrial</techLevel>
     <tab>SSC_ResearchTabDef</tab>
@@ -139,7 +139,7 @@
   <ResearchProjectDef>
     <defName>SSC_RES_PublicUse</defName>
     <label>公共车</label>
-    <description>让性奴更适合参与性工作和社交工作</description>
+    <description>功能：可选择公交车特化，默认允许并强制保持接受自愿及强制性行为。达到 20% 和 50% 时逐步提高交易价格、谈判、社交影响和说话能力；与商人交易后可能触发互动。培养完成后可用人格凝胶终极化。\n\n经验：与主人以外的角色完成性行为每次获得 5%；接受日常调教会按调教结果增长；作为谈判者与派系或商人成功交易也会增长，飞船交易不计入。</description>
     <baseCost>1200</baseCost>
     <techLevel>Industrial</techLevel>
     <tab>SSC_ResearchTabDef</tab>
@@ -154,7 +154,7 @@
   <ResearchProjectDef>
     <defName>SSC_RES_TrainerOfficer</defName>
     <label>训导官特化</label>
-    <description>培养代主人调教其他性奴的训导官，并解锁其终极人格塑形。</description>
+    <description>功能：自由殖民者身份的性奴，绑定主人且锁链达到第 3 阶段后可选择训导官特化。选择后可主动发起自愿或强制性行为；达到 20% 后可开启个人调教员开关，代主人调教其他性奴，并获得崩溃临界值、压制和教化加成；50% 后加成进一步增强。培养完成后可用人格凝胶终极化。\n\n经验：完成一次受训或绑定仪式获得 5%；取得调教员资格并实际完成调教其他性奴获得 2.5%；主动完成双人性行为获得 1%。</description>
     <baseCost>1200</baseCost>
     <techLevel>Industrial</techLevel>
     <tab>SSC_ResearchTabDef</tab>
@@ -168,7 +168,7 @@
   <ResearchProjectDef>
     <defName>SSC_RES_PetCat</defName>
     <label>宠物：猫</label>
-    <description>让性奴成为猫娘</description>
+    <description>预设功能：宠物猫特化偏向移动、闪避和亲昵主人。当前选择入口尚未完成，无法正常培养，也没有可用的特化经验获取方式。</description>
     <baseCost>1200</baseCost>
     <techLevel>Industrial</techLevel>
     <tab>SSC_ResearchTabDef</tab>
@@ -182,7 +182,7 @@
   <ResearchProjectDef>
     <defName>SSC_RES_Combatant</defName>
     <label>战斗员</label>
-    <description>经过特殊调教，能在战场上绝对服从命令的战斗奴隶。</description>
+    <description>预定培养能在战场服从命令的战斗性奴。该特化目前尚未实装，无法选择，也没有特化功能或经验获取方式。</description>
     <baseCost>1200</baseCost>
     <techLevel>Industrial</techLevel>
     <tab>SSC_ResearchTabDef</tab>
@@ -196,7 +196,7 @@
   <ResearchProjectDef>
     <defName>SSC_RES_PetDog</defName>
     <label>宠物：狗</label>
-    <description>让性奴成为狗娘。</description>
+    <description>功能：可选择宠物狗特化，逐步提高驯服和训练动物的成功率；处理动物时可能触发动物互动。宠物特化还可亲昵主人，给予主人短暂的心情加成。培养完成后可用人格凝胶终极化。\n\n经验：完成动物训练获得基础 0.4%，完成驯服尝试获得基础 0.6%，实际完成与动物的性行为获得基础 2%；成长倍率随当前进度提高。亲昵主人不增加特化经验。</description>
     <baseCost>1500</baseCost>
     <techLevel>Industrial</techLevel>
     <tab>SSC_ResearchTabDef</tab>
@@ -210,7 +210,7 @@
   <ResearchProjectDef>
     <defName>SSC_RES_PetRabbit</defName>
     <label>宠物：兔</label>
-    <description>让性奴成为兔娘。</description>
+    <description>预设功能：宠物兔特化偏向移动、休息与免疫恢复，并预留繁殖及兔分身模式。当前选择与模式切换入口尚未完成，无法正常培养，也没有可用的特化经验获取方式。</description>
     <baseCost>1800</baseCost>
     <techLevel>Industrial</techLevel>
     <tab>SSC_ResearchTabDef</tab>

@@ -13,22 +13,22 @@
   <SSC_RES_PNASimpleLauncher.label>PNA簡易發射器</SSC_RES_PNASimpleLauncher.label>
   <SSC_RES_PNAConcentration.label>PNA濃縮技術</SSC_RES_PNAConcentration.label>
   <SSC_RES_PE.label>人格排洩</SSC_RES_PE.label>
-  <SSC_RES_SlaveSpecialization.label>人格編輯（目前只有公交車可用）</SSC_RES_SlaveSpecialization.label>
-  <SSC_RES_SlaveSpecialization.description>研究性奴的特化</SSC_RES_SlaveSpecialization.description>
+  <SSC_RES_SlaveSpecialization.label>人格編輯</SSC_RES_SlaveSpecialization.label>
+  <SSC_RES_SlaveSpecialization.description>解鎖性奴特化培養。完成對應方向的研究後，可在人格介面選擇已實裝的特化；切換方向時，各方向的培養進度會分別保留。具體功能與經驗來源見對應科技。</SSC_RES_SlaveSpecialization.description>
   <SSC_RES_CowTraining.label>奶牛化</SSC_RES_CowTraining.label>
-  <SSC_RES_CowTraining.description>讓性奴獲得更高的產奶量，且更適合參與性工作</SSC_RES_CowTraining.description>
+  <SSC_RES_CowTraining.description>功能：達到性奴鎖鏈第 2 階段且具有泌乳狀態後，可選擇奶牛特化。獲得額外儲奶能力；性行為可加速產奶，培養進度越高，加速效果越強。達到 20% 後更易受傷，移動和操作能力下降；50% 後增加美麗度。培養完成後可用人格凝膠終極化。\n\n經驗：按產奶推進量增長，包括性行為催產以及 Human Cattle 模組的泌乳消耗；單純完成性行為而沒有產奶推進量不會直接增加特化經驗。</SSC_RES_CowTraining.description>
   <SSC_RES_PublicUse.label>公共車</SSC_RES_PublicUse.label>
-  <SSC_RES_PublicUse.description>讓性奴更適合參與性工作和社交工作</SSC_RES_PublicUse.description>
+  <SSC_RES_PublicUse.description>功能：可選擇公交車特化，預設允許並強制保持接受自願及強制性行為。達到 20% 和 50% 時逐步提高交易價格、談判、社交影響和說話能力；與商人交易後可能觸發互動。培養完成後可用人格凝膠終極化。\n\n經驗：與主人以外的角色完成性行為每次獲得 5%；接受日常調教會按調教結果增長；作為談判者與派系或商人成功交易也會增長，飛船交易不計入。</SSC_RES_PublicUse.description>
   <SSC_RES_TrainerOfficer.label>訓導官特化</SSC_RES_TrainerOfficer.label>
-  <SSC_RES_TrainerOfficer.description>培養代主人調教其他性奴的訓導官，並解鎖其終極人格塑形。</SSC_RES_TrainerOfficer.description>
+  <SSC_RES_TrainerOfficer.description>功能：自由殖民者身分的性奴，綁定主人且鎖鏈達到第 3 階段後可選擇訓導官特化。選擇後可主動發起自願或強制性行為；達到 20% 後可開啟個人調教員開關，代主人調教其他性奴，並獲得崩潰臨界值、壓制和教化加成；50% 後加成進一步增強。培養完成後可用人格凝膠終極化。\n\n經驗：完成一次受訓或綁定儀式獲得 5%；取得調教員資格並實際完成調教其他性奴獲得 2.5%；主動完成雙人性行為獲得 1%。</SSC_RES_TrainerOfficer.description>
   <SSC_RES_PetCat.label>寵物：貓</SSC_RES_PetCat.label>
-  <SSC_RES_PetCat.description>讓性奴成為貓娘</SSC_RES_PetCat.description>
+  <SSC_RES_PetCat.description>預設功能：寵物貓特化偏向移動、閃避和親暱主人。目前選擇入口尚未完成，無法正常培養，也沒有可用的特化經驗獲取方式。</SSC_RES_PetCat.description>
   <SSC_RES_Combatant.label>戰鬥員</SSC_RES_Combatant.label>
-  <SSC_RES_Combatant.description>經過特殊調教，能在戰場上絕對服從命令的戰鬥奴隸。</SSC_RES_Combatant.description>
+  <SSC_RES_Combatant.description>預定培養能在戰場服從命令的戰鬥性奴。該特化目前尚未實裝，無法選擇，也沒有特化功能或經驗獲取方式。</SSC_RES_Combatant.description>
   <SSC_RES_PetDog.label>寵物：狗</SSC_RES_PetDog.label>
-  <SSC_RES_PetDog.description>讓性奴成為狗娘。</SSC_RES_PetDog.description>
+  <SSC_RES_PetDog.description>功能：可選擇寵物狗特化，逐步提高馴服和訓練動物的成功率；處理動物時可能觸發動物互動。寵物特化還可親暱主人，給予主人短暫的心情加成。培養完成後可用人格凝膠終極化。\n\n經驗：完成動物訓練獲得基礎 0.4%，完成馴服嘗試獲得基礎 0.6%，實際完成與動物的性行為獲得基礎 2%；成長倍率隨目前進度提高。親暱主人不增加特化經驗。</SSC_RES_PetDog.description>
   <SSC_RES_PetRabbit.label>寵物：兔</SSC_RES_PetRabbit.label>
-  <SSC_RES_PetRabbit.description>讓性奴成為兔娘。</SSC_RES_PetRabbit.description>
+  <SSC_RES_PetRabbit.description>預設功能：寵物兔特化偏向移動、休息與免疫恢復，並預留繁殖及兔分身模式。目前選擇與模式切換入口尚未完成，無法正常培養，也沒有可用的特化經驗獲取方式。</SSC_RES_PetRabbit.description>
   <SSC_RES_GelatinizationPartial.label>凝膠化（部分）</SSC_RES_GelatinizationPartial.label>
   <SSC_RES_GelatinizationPartial.description>初步的凝膠化改造。</SSC_RES_GelatinizationPartial.description>
   <SSC_RES_GelatinizationFull.label>凝膠化（全身）</SSC_RES_GelatinizationFull.label>

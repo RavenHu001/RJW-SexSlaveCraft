@@ -13,22 +13,22 @@
   <SSC_RES_PNASimpleLauncher.label>Basic PNA Launcher</SSC_RES_PNASimpleLauncher.label>
   <SSC_RES_PNAConcentration.label>PNA Concentration Technology</SSC_RES_PNAConcentration.label>
   <SSC_RES_PE.label>Personality Excretion</SSC_RES_PE.label>
-  <SSC_RES_SlaveSpecialization.label>Personality Editing (currently Public Use only)</SSC_RES_SlaveSpecialization.label>
-  <SSC_RES_SlaveSpecialization.description>Research specialization paths for sex slaves.</SSC_RES_SlaveSpecialization.description>
+  <SSC_RES_SlaveSpecialization.label>Personality Editing</SSC_RES_SlaveSpecialization.label>
+  <SSC_RES_SlaveSpecialization.description>Unlocks sex slave specialization training. Research a path to select it in the personality tab once implemented. Progress is saved separately for each path when switching. See each path's research description for its effects and experience sources.</SSC_RES_SlaveSpecialization.description>
   <SSC_RES_CowTraining.label>Milking Specialization</SSC_RES_CowTraining.label>
-  <SSC_RES_CowTraining.description>Gives sex slaves higher milk output and makes them more suitable for sex work.</SSC_RES_CowTraining.description>
+  <SSC_RES_CowTraining.description>Effects: A sex slave at chain stage 2 with lactation can select Cow. It gains extra milk storage, and sex accelerates milk production more as training progresses. At 20%, vulnerability rises while movement and manipulation fall; at 50%, beauty rises. A completed path can be finalized with personality gel.\n\nExperience: Gained from the amount of milk production advanced, including sex driven production and Human Cattle lactation consumption. Sex alone grants no Cow experience without milk production progress.</SSC_RES_CowTraining.description>
   <SSC_RES_PublicUse.label>Public Use</SSC_RES_PublicUse.label>
-  <SSC_RES_PublicUse.description>Makes sex slaves more suitable for sex work and social work.</SSC_RES_PublicUse.description>
+  <SSC_RES_PublicUse.description>Effects: Unlocks the Bus path, which allows and enforces receiving consensual and forced sex. At 20% and 50%, trade prices, negotiation, social impact, and talking improve. Trades with a pawn trader may trigger an interaction. A completed path can be finalized with personality gel.\n\nExperience: Completing sex with someone other than the master grants 5%; daily training adds progress based on its outcome; successful faction or pawn trader deals also add progress. Ship trades do not count.</SSC_RES_PublicUse.description>
   <SSC_RES_TrainerOfficer.label>Training Officer Specialization</SSC_RES_TrainerOfficer.label>
-  <SSC_RES_TrainerOfficer.description>Develop Training Officers who train other sex slaves on their master's behalf, and unlock final personality shaping.</SSC_RES_TrainerOfficer.description>
+  <SSC_RES_TrainerOfficer.description>Effects: A free colonist with sex slave identity, a bound master, and chain stage 3 can select Training Officer. Selection permits initiating consensual or forced sex. At 20%, its personal trainer switch can be enabled to train other sex slaves and it gains mental break threshold, suppression, and conversion bonuses; these improve at 50%. A completed path can be finalized with personality gel.\n\nExperience: Completing training as the receiver or a binding ritual grants 5%; completing training as a qualified, enabled trainer grants 2.5%; initiating and completing sex with another pawn grants 1%.</SSC_RES_TrainerOfficer.description>
   <SSC_RES_PetCat.label>Pet: Cat</SSC_RES_PetCat.label>
-  <SSC_RES_PetCat.description>Turns a sex slave into a catgirl.</SSC_RES_PetCat.description>
+  <SSC_RES_PetCat.description>Planned effects: Cat specialization focuses on movement, dodging, and affection toward the master. Its selection is currently unfinished, so it cannot be trained normally and has no available specialization experience source.</SSC_RES_PetCat.description>
   <SSC_RES_Combatant.label>Combat Unit</SSC_RES_Combatant.label>
-  <SSC_RES_Combatant.description>Special training creates combat slaves who obey orders absolutely on the battlefield.</SSC_RES_Combatant.description>
+  <SSC_RES_Combatant.description>Planned combat specialization for obedient fighters. This path is not implemented: it cannot be selected and has no specialization effects or experience source.</SSC_RES_Combatant.description>
   <SSC_RES_PetDog.label>Pet: Dog</SSC_RES_PetDog.label>
-  <SSC_RES_PetDog.description>Turns a sex slave into a doggirl.</SSC_RES_PetDog.description>
+  <SSC_RES_PetDog.description>Effects: Dog specialization improves taming and animal training chances as it progresses. Handling animals may trigger an animal interaction. Pet specialists can also show affection to their master for a short mood bonus. A completed path can be finalized with personality gel.\n\nExperience: Completed animal training grants a base 0.4%, a completed taming attempt grants a base 0.6%, and completed sex with an animal grants a base 2%. Gains scale with current progress. Showing affection to the master grants no specialization experience.</SSC_RES_PetDog.description>
   <SSC_RES_PetRabbit.label>Pet: Rabbit</SSC_RES_PetRabbit.label>
-  <SSC_RES_PetRabbit.description>Turns a sex slave into a bunnygirl.</SSC_RES_PetRabbit.description>
+  <SSC_RES_PetRabbit.description>Planned effects: Rabbit specialization focuses on movement, rest, immunity gain, and reproduction or clone modes. Selection and mode switching are currently unfinished, so it cannot be trained normally and has no available specialization experience source.</SSC_RES_PetRabbit.description>
   <SSC_RES_GelatinizationPartial.label>Partial Gelatinization</SSC_RES_GelatinizationPartial.label>
   <SSC_RES_GelatinizationPartial.description>Preliminary gelatinization modification.</SSC_RES_GelatinizationPartial.description>
   <SSC_RES_GelatinizationFull.label>Full-body Gelatinization</SSC_RES_GelatinizationFull.label>

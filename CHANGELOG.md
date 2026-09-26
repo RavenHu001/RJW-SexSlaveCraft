@@ -7,6 +7,7 @@ This continuation builds on upstream **2.2.8**, the baseline when upstream devel
 ## [未发布 / Unreleased] — 2026-09-26 — RJW 泄欲对象资格 / RJW Comfort designation
 
 - **RJW 面板 / RJW panel：** SSC 小人到达性奴阶段（锁链第 2 阶段及以上）后，可按 RJW 原有资格、权限和身体条件在其面板中被指派为泄欲对象；见习性奴不会仅凭 SSC 身份获得该资格。保留 RJW 原有的受虐狂、囚犯和奴隶路径，不联动 SSC 个体限制。维护者已在本机游戏中确认补丁有效；其他模组组合尚未实测。At SSC Sex Slave stage (Chain stage 2 or higher), a pawn can be designated as a Comfort pawn in the RJW panel, subject to RJW's existing settings, permissions and physical checks. Trainees gain no eligibility from SSC status alone. RJW's existing Masochist, prisoner and slave paths remain, without linking SSC's individual restrictions. The maintainer confirmed the patch in game; combinations with other mods have not been tested.
+- **特化科技说明 / Specialization research descriptions：** 在奶牛、公交车、训导官和宠物狗的科技介绍中补充实际功能、培养门槛及经验来源；猫、兔和战斗员明确标注未完成或未实装，以及目前没有可用的经验来源。移除人格编辑科技名称中过时的“目前只有公交车可用”，并同步简中、繁中、英文和俄文文案。Adds implemented effects, requirements and experience sources to Cow, Public Use, Training Officer and Pet Dog research descriptions. Cat, Rabbit and Combatant descriptions identify unavailable paths and experience sources. Removes the outdated “Public Use only” research label and updates Simplified Chinese, Traditional Chinese, English and Russian text. Gameplay behavior is unchanged.
 
 ## [2.3.2] — 2026-09-25 — 训导官特化与调教稳定性 / Training Officers and Training reliability
 
