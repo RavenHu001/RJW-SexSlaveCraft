@@ -4,6 +4,10 @@
 
 This continuation builds on upstream **2.2.8**, the baseline when upstream development stopped in July, and retains its version numbering. Entries are listed newest first. Technical details are in the [development log (Chinese)](Docs/Development/开发更新记录.md).
 
+## [未发布 / Unreleased] — 2026-09-26 — RJW 泄欲对象资格 / RJW Comfort designation
+
+- **RJW 面板 / RJW panel：** SSC 小人到达性奴阶段（锁链第 2 阶段及以上）后，可按 RJW 原有资格、权限和身体条件在其面板中被指派为泄欲对象；见习性奴不会仅凭 SSC 身份获得该资格。保留 RJW 原有的受虐狂、囚犯和奴隶路径，不联动 SSC 个体限制。维护者已在本机游戏中确认补丁有效；其他模组组合尚未实测。At SSC Sex Slave stage (Chain stage 2 or higher), a pawn can be designated as a Comfort pawn in the RJW panel, subject to RJW's existing settings, permissions and physical checks. Trainees gain no eligibility from SSC status alone. RJW's existing Masochist, prisoner and slave paths remain, without linking SSC's individual restrictions. The maintainer confirmed the patch in game; combinations with other mods have not been tested.
+
 ## [2.3.2] — 2026-09-25 — 训导官特化与调教稳定性 / Training Officers and Training reliability
 
 归纳 2.3.1 发布后截至 `05170b1` 的全部已实现更新，包含最新属性加成与四语文案。版本元数据与安装包按 2.3.2 统一；发布入口：[v2.3.2](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.2)。 详见 [2.3.2 中英更新说明](Docs/Releases/2.3.2/2.3.2发布说明.md)与[整理及验证状态](Docs/Releases/2.3.2/2.3.2版本验证.md)。

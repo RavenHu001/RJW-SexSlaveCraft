@@ -175,6 +175,7 @@
     <Compile Include="ThePatches\Harmony_BusTrade.cs" />
     <Compile Include="ThePatches\Harmony_PersonalityExcretion.cs" />
     <Compile Include="ThePatches\Harmony_RabbitCloneBirth.cs" />
+    <Compile Include="ThePatches\Harmony_RJWComfortDesignation.cs" />
     <Compile Include="Comps\CompUsable_Restricted.cs" />
     <Compile Include="Comps\Comp_Train.cs" />
     <Compile Include="Comps\Comp_Train.Specialization.cs" />
