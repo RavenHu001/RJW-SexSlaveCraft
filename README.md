@@ -36,6 +36,7 @@ SexSlaveCraft（SSC）围绕角色培养、身份与绑定关系、特化发展�
 
 | 文档 | 内容 |
 | --- | --- |
+| [模组介绍 / Mod overview](Docs/模组介绍.md) | 中英双语主题、内容与玩法概述，可用于其他平台介绍 / Bilingual overview for external platforms |
 | [中文快速入门](读我，玩法介绍.md) | 基本操作、玩法流程与常见问题 |
 | [中文机制详解](机制详解.md) | 系统条件、公式和数值 |
 | [English quick start](QUICK_START_EN.md) | English gameplay introduction |
