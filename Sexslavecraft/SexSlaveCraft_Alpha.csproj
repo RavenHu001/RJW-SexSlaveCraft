@@ -93,6 +93,7 @@
     <Compile Include="common\BindingRitualStateUtility.cs" />
     <Compile Include="common\BindingRitualSelectionUtility.cs" />
     <Compile Include="common\BindingRitualSelectionWidget.cs" />
+    <Compile Include="common\CombatantSpecializationUtility.cs" />
     <Compile Include="common\BusSpecializationUtility.cs" />
     <Compile Include="common\DogSpecializationUtility.cs" />
     <Compile Include="common\PetSpecializationUtility.cs" />
@@ -179,6 +180,7 @@
     <Compile Include="Comps\CompUsable_Restricted.cs" />
     <Compile Include="Comps\Comp_Train.cs" />
     <Compile Include="Comps\Comp_Train.Specialization.cs" />
+    <Compile Include="Comps\Comp_Train.SpecializationHealth.cs" />
     <Compile Include="Comps\ThingClass_WithComp_NoStack.cs" />
     <Compile Include="Comps\ThingsComp_PE_PES.cs" />
     <Compile Include="common\ResearchUtils.cs" />

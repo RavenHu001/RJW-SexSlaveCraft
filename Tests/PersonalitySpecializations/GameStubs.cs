@@ -13,12 +13,14 @@ namespace Verse
 
 namespace SexSlaveCraft
 {
+    public enum PawnIdentity { Unset, Slave, Master }
     public enum RabbitReproductionMode { Offspring, Clone }
 
     // 仅提供生产特化模块所依赖的训练配置与游戏对象边界；进度算法全部来自生产源码。
     public partial class CompSexSlaveTraining
     {
         public Thing parent;
+        public PawnIdentity pawnIdentity;
         public bool allowOthersForTrainingOrSex;
         public RabbitReproductionMode rabbitReproductionMode;
         public float savedCowReservoirCharge;

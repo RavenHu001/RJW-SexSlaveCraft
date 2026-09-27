@@ -82,7 +82,11 @@ internal static class Program
     /// <summary>联合执行真实方向切换和真实 ITab 显示，防止数据已清空而按钮仍冒充旧方向。</summary>
     private static void FinalizedSelectionCanDisplayNone()
     {
-        foreach (SexSlaveSpecializationType type in Enum.GetValues(typeof(SexSlaveSpecializationType)))
+        // 战斗员阶段一仅提供普通培养；这里只遍历已实现终极记录的方向。
+        foreach (SexSlaveSpecializationType type in new[] { SexSlaveSpecializationType.Bus,
+            SexSlaveSpecializationType.Cow, SexSlaveSpecializationType.PetCat,
+            SexSlaveSpecializationType.PetDog, SexSlaveSpecializationType.PetRabbit,
+            SexSlaveSpecializationType.TrainerOfficer })
         {
             if (type == SexSlaveSpecializationType.None) continue;
             var pawn = new Pawn();

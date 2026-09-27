@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <!-- 严重度仅用于派生阶段；实际进度由训练组件保存，0.01 下限不构成经验。 -->
+  <HediffDef>
+    <defName>SSC_Hediff_Combatant</defName>
+    <label>战斗员培养</label>
+    <description>正在培养通用战斗能力。20% 起获得基础收益，50% 起获得熟练收益及常态减伤；精神崩溃临界值的降低在日常也生效。射击精度和近战命中的加成作用于原始评分，并非最终概率的百分点。普通培养完成后保留熟练收益，不授予特殊能力。</description>
+    <initialSeverity>0.01</initialSeverity>
+    <maxSeverity>1</maxSeverity>
+    <isBad>false</isBad>
+    <tendable>false</tendable>
+    <everCurableByItem>false</everCurableByItem>
+    <makesSickThought>false</makesSickThought>
+    <stages>
+      <li>
+        <minSeverity>0</minSeverity>
+        <label>战斗员培养中</label>
+      </li>
+      <li>
+        <minSeverity>0.20</minSeverity>
+        <label>基础战斗员</label>
+        <statOffsets>
+          <ShootingAccuracyPawn>2</ShootingAccuracyPawn>
+          <MeleeHitChance>2</MeleeHitChance>
+          <MentalBreakThreshold>-0.02</MentalBreakThreshold>
+        </statOffsets>
+        <statFactors>
+          <AimingDelayFactor>0.95</AimingDelayFactor>
+          <MeleeCooldownFactor>0.95</MeleeCooldownFactor>
+          <IncomingDamageFactor>1</IncomingDamageFactor>
+        </statFactors>
+      </li>
+      <!-- 写入完整熟练收益，替换基础阶段；普通完成仍停留在这一阶段。 -->
+      <li>
+        <minSeverity>0.50</minSeverity>
+        <label>熟练战斗员</label>
+        <statOffsets>
+          <ShootingAccuracyPawn>4</ShootingAccuracyPawn>
+          <MeleeHitChance>4</MeleeHitChance>
+          <MentalBreakThreshold>-0.04</MentalBreakThreshold>
+        </statOffsets>
+        <statFactors>
+          <AimingDelayFactor>0.90</AimingDelayFactor>
+          <MeleeCooldownFactor>0.90</MeleeCooldownFactor>
+          <IncomingDamageFactor>0.90</IncomingDamageFactor>
+        </statFactors>
+      </li>
+    </stages>
+  </HediffDef>
+</Defs>

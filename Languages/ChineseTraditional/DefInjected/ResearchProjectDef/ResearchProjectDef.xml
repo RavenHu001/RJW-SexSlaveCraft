@@ -24,7 +24,7 @@
   <SSC_RES_PetCat.label>寵物：貓</SSC_RES_PetCat.label>
   <SSC_RES_PetCat.description>預設功能：寵物貓特化偏向移動、閃避和親暱主人。目前選擇入口尚未完成，無法正常培養，也沒有可用的特化經驗獲取方式。</SSC_RES_PetCat.description>
   <SSC_RES_Combatant.label>戰鬥員</SSC_RES_Combatant.label>
-  <SSC_RES_Combatant.description>預定培養能在戰場服從命令的戰鬥性奴。該特化目前尚未實裝，無法選擇，也沒有特化功能或經驗獲取方式。</SSC_RES_Combatant.description>
+  <SSC_RES_Combatant.description>功能：解鎖戰鬥員普通培養方向，無需 SSC 身分、主人綁定或鎖鏈階段。20% 起提高射擊與近戰命中評分、縮短瞄準和近戰冷卻，並降低日常精神崩潰臨界值；50% 起進一步強化，並使常態承傷乘以 0.90。切換方向保留歷史進度。\n\n目前已實作選擇、普通階段屬性及進度儲存；經驗來源、凝膠終極化和特殊能力尚未接入。</SSC_RES_Combatant.description>
   <SSC_RES_PetDog.label>寵物：狗</SSC_RES_PetDog.label>
   <SSC_RES_PetDog.description>功能：可選擇寵物狗特化，逐步提高馴服和訓練動物的成功率；處理動物時可能觸發動物互動。寵物特化還可親暱主人，給予主人短暫的心情加成。培養完成後可用人格凝膠終極化。\n\n經驗：完成動物訓練獲得基礎 0.4%，完成馴服嘗試獲得基礎 0.6%，實際完成與動物的性行為獲得基礎 2%；成長倍率隨目前進度提高。親暱主人不增加特化經驗。</SSC_RES_PetDog.description>
   <SSC_RES_PetRabbit.label>寵物：兔</SSC_RES_PetRabbit.label>

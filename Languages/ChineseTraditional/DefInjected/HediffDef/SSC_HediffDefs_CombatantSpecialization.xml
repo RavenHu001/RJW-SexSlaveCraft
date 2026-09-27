@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_Hediff_Combatant.label>戰鬥員培養</SSC_Hediff_Combatant.label>
+  <SSC_Hediff_Combatant.description>正在培養通用戰鬥能力。20% 起獲得基礎收益，50% 起獲得熟練收益及常態減傷；精神崩潰臨界值的降低在日常也生效。射擊精度和近戰命中的加成作用於原始評分，並非最終機率的百分點。普通培養完成後保留熟練收益，不授予特殊能力。</SSC_Hediff_Combatant.description>
+  <SSC_Hediff_Combatant.stages.0.label>戰鬥員培養中</SSC_Hediff_Combatant.stages.0.label>
+  <SSC_Hediff_Combatant.stages.1.label>基礎戰鬥員</SSC_Hediff_Combatant.stages.1.label>
+  <SSC_Hediff_Combatant.stages.2.label>熟練戰鬥員</SSC_Hediff_Combatant.stages.2.label>
+</LanguageData>

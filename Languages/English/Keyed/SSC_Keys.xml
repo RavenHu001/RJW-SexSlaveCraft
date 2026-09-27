@@ -109,7 +109,7 @@
   <SSC_ITab_TrainerMasterSuffix> (Master)</SSC_ITab_TrainerMasterSuffix>
   <SSC_ITab_TrainerLockedSuffix> (Unavailable)</SSC_ITab_TrainerLockedSuffix>
   <SSC_ITab_ClearTrainer>Clear Assignment</SSC_ITab_ClearTrainer>
-  <SSC_ITab_SpecializationHeader>&lt;b&gt;Sex Slave Specialization&lt;/b&gt;</SSC_ITab_SpecializationHeader>
+  <SSC_ITab_SpecializationHeader>&lt;b&gt;Specialization&lt;/b&gt;</SSC_ITab_SpecializationHeader>
   <SSC_ITab_SpecializationNone>Unset</SSC_ITab_SpecializationNone>
   <SSC_ITab_SpecializationBus>Bus</SSC_ITab_SpecializationBus>
   <SSC_ITab_SpecializationCow>Cow</SSC_ITab_SpecializationCow>
