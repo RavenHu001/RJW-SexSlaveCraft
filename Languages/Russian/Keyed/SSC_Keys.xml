@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
+  <SSC_PE_TargetBusy>Другой персонаж уже проводит извлечение личности у этой цели.</SSC_PE_TargetBusy>
   <SSC_DailyTrainingOutcome>[Ежедневная дрессировка] Оценка: {0} (уровень {1}) | Развращение: +{2}</SSC_DailyTrainingOutcome>
   <SSC_Ritual_MasterSlaveHeader>Господин {0} | Секс-раб: {1}</SSC_Ritual_MasterSlaveHeader>
   <SSC_Ritual_ScoreLevel>Оценка: {0} (уровень {1})</SSC_Ritual_ScoreLevel>

@@ -18,6 +18,8 @@ namespace Verse
         public int thingIDNumber;
         public bool Dead, Destroyed, Downed, IsSlave, IsPrisonerOfColony;
         public bool IsColonist = true;
+        public bool Spawned = true, Drafted, InMentalState;
+        public object Map;
         public object health = new object();
         public ApparelTracker apparel = new ApparelTracker();
         public Verse.AI.Pawn_JobTracker jobs = new Verse.AI.Pawn_JobTracker();
@@ -111,7 +113,7 @@ namespace Verse.AI
         /// <summary>删除满足条件的排队任务；测试不额外模拟预约资源。</summary>
         public void RemoveAll(Verse.Pawn pawn, Predicate<Job> predicate) => RemoveAll(q => predicate(q.job));
     }
-    public class Pawn_JobTracker
+    public partial class Pawn_JobTracker
     {
         public JobQueue jobQueue = new JobQueue();
         public Verse.Pawn pawn;

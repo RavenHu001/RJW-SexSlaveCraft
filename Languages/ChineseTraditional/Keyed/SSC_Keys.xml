@@ -1,5 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <LanguageData>
+  <SSC_PE_TargetBusy>該角色正在由另一名執行者進行人格排泄。</SSC_PE_TargetBusy>
   <SSC_DailyTrainingOutcome>[日常訓練] 評分:{0} (等級{1}) | 惡墮率:+{2}</SSC_DailyTrainingOutcome>
   <SSC_Ritual_MasterSlaveHeader>主人 {0} | 性奴: {1}</SSC_Ritual_MasterSlaveHeader>
   <SSC_Ritual_ScoreLevel>評分: {0} (等級 {1})</SSC_Ritual_ScoreLevel>

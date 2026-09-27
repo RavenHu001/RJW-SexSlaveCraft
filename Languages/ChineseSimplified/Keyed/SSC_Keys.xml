@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
+  <SSC_PE_TargetBusy>该角色正在由另一名执行者进行人格排泄。</SSC_PE_TargetBusy>
   <!--仪式结算部分（ritual）-->
   <SSC_DailyTrainingOutcome>[日常训练] 评分:{0} (等级{1}) | 恶堕率:+{2}</SSC_DailyTrainingOutcome>
 

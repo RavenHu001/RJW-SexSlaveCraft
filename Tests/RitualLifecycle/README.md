@@ -1,7 +1,8 @@
 # Binding Ritual lifecycle regression tests
 
-The suite currently contains 69 cases, including ritual lifecycle, UAP compatibility,
-daily training, Education interactions, and receiver handoff/reservation regressions.
+The suite currently contains 79 cases, including ritual lifecycle, UAP compatibility,
+daily training, Education interactions, receiver handoff/reservation regressions,
+and exclusive ownership during personality excretion.
 The original lifecycle tests were committed with the lifecycle fix
 in [481ac53](https://github.com/RavenHu001/RJW-SexSlaveCraft-TieJin-Modify/commit/481ac53135842064262d8a34a2beed173b0ace2b)
 on the `Bug-fix` branch. The release script runs this suite alongside the 29-case
@@ -18,7 +19,14 @@ dotnet run --project Tests/RitualLifecycle/RitualLifecycle.csproj -p:EnableUapTe
 The project has no NuGet dependencies and does not require Unity or a game
 installation. It links the production `BindingRitualStateUtility`, lifecycle
 Harmony patches, `JobGiver_RitualBinding`, `JobDriver_RitualTraining`, the daily driver,
-and the real `TrainingJobUtility`.
+and the real `TrainingJobUtility`. Personality-excretion cases also compile the production
+`JobDriver_PE`, `WorkGiver_PE`, `WorkGiverTargetUtility` and `PersonalityExcretionJobUtility`.
+Ten cases cover reservation retention, both player-forced flags, stale candidates,
+repeated handoff, cancellation/reassignment and one gel produced by the original
+actor after a contender is rejected. Reservation storage and RJW partner registration
+are small engine-boundary models; personality payload storage, rendering and Unity
+are not executed. The new cases failed eight times against the pre-fix production
+files and all pass with the fix.
 `GameStubs.cs` supplies the minimal game host and stores observable state. The
 tests do not duplicate the ritual ownership, progression, recovery or outcome
 eligibility algorithms.

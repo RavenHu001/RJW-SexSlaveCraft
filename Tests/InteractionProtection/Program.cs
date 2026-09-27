@@ -52,6 +52,7 @@ internal static partial class Program
         RunStage3CTests();
         RunStage3DTests();
         RunJobRefactorTests();
+        RunPersonalityExcretionProtectionTests();
         Console.WriteLine($"结果：{passed}/{passed + failed} 项通过。");
         return failed == 0 ? 0 : 1;
     }

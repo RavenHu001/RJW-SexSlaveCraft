@@ -19,7 +19,7 @@ namespace Verse
     public static class Messages
     {
         /// <summary>接收生产取消提示，不在测试中显示界面。</summary>
-        public static void Message(string reason, LookTargets targets, object type, bool historical) { }
+        public static void Message(string reason, LookTargets targets, object type, bool historical = true) { }
     }
 }
 namespace Verse.AI
@@ -27,10 +27,11 @@ namespace Verse.AI
     public static class JobFailReason
     {
         /// <summary>仅提供手动工作失败理由的接口；测试不绘制右键菜单。</summary>
-        public static void Is(string reason) { }
+        public static string LastReason;
+        public static void Is(string reason) { LastReason = reason; }
     }
 }
-namespace RimWorld { public static class MessageTypeDefOf { public static object RejectInput = new object(); } }
+namespace RimWorld { public static class MessageTypeDefOf { public static object RejectInput = new object(), NeutralEvent = new object(); } }
 namespace SexSlaveCraft
 {
     public enum PawnIdentity { Unset, Slave, Master }

@@ -4,12 +4,13 @@
 
 This continuation builds on upstream **2.2.8**, the baseline when upstream development stopped in July, and retains its version numbering. Entries are listed newest first. Technical details are in the [development log (Chinese)](Docs/Development/开发更新记录.md).
 
-## [Unreleased] — 战斗员特化与特化显示整理 / Combatant specialization and status display
+## [Unreleased] — 战斗员特化、显示整理与任务修复 / Combatant specialization, status display and job fixes
 
 截至 2026-09-27，战斗员首版五阶段开发已完成，新增专属图标及健康状态显示整理。功能与实机验收范围见[完成核查记录](Docs/Development/战斗员特化完成核查.md)。本节为开发版更新，尚未指定新版本或制作正式发布包；已发布的 2.3.3 不含这些新增内容。
 
 As of 2026-09-27, all five stages of the first Combatant implementation are complete, including its dedicated icon and specialization display updates. These are development-branch changes, not part of the published 2.3.3 package. No new release version or package has been assigned.
 
+- **人格排泄 / Personality excretion:** 修复接收者被普通自动工作或满足需求的任务抢占而中断人格排泄的问题；手动和自动发起采用相同保护，正常结束或取消后解除。另修复两名人格排泄执行者争抢同一目标：保留原执行者预约，拒绝后来者抢占或加入，取消后才允许重新接手。[实现与验证记录](Docs/Development/人格排泄接收任务抢占修复.md)。Prevents ordinary automatic work and need jobs from replacing the receiver job during personality excretion, regardless of how the initiating job was assigned. Protection ends with completion or cancellation. Also prevents two excretion initiators from competing for the same target by retaining the first actor’s reservation and rejecting later contenders; cancellation permits reassignment.
 - **培养入口 / Eligibility:** 完成战斗员研究后，SSC 身份为性奴的角色可选择培养；无需绑定主人或达到特定锁链阶段。主人及未设定身份不显示特化区。Combatant requires its research and SSC Sex Slave identity, without a master bond or Chain-stage requirement. The specialization section is hidden for Masters and unset identities.
 - **成长来源 / Progression:** 正常完成日常调教按评分增长，单次上限 4 个百分点；实际绑定主人施教为基础收益的 1.5 倍，上限 6 个百分点。直接击杀按目标实际体型增长，单次最多 3 个百分点；排除调教中断、绑定仪式、屠宰和间接死亡，并防止重复结算。Completed daily Training grants score-based progress capped at 4 percentage points; the actual bound master grants 1.5 times the base reward, capped at 6. Direct kills grant body-size-based progress capped at 3 points. Interrupted Training, Binding Rituals, slaughter, indirect deaths and duplicate payouts are excluded.
 - **阶段收益 / Passive bonuses:** 20% 和 50% 分别解锁基础与熟练效果，提高射击和近战命中评分，缩短瞄准及近战冷却，降低精神崩溃临界值；熟练阶段承伤 ×0.90，终极阶段 ×0.80。切换方向保留独立进度，各阶段不叠加。Basic and proficient bonuses begin at 20% and 50%, improving accuracy ratings, aim and melee recovery, and mental stability. Incoming damage is ×0.90 at proficiency and ×0.80 after finalization. Switching paths preserves independent progress; stages do not stack.
@@ -18,7 +19,7 @@ As of 2026-09-27, all five stages of the first Combatant implementation are comp
 - **存档与人格 / Saves and transfer:** 正常存读档保留技能冷却及强化剩余时间；人格迁移按共用流程重新授予技能，不迁移旧冷却或临时强化。Normal saves retain cooldown and remaining buff duration. Personality transfer grants the ability through the shared flow without transferring the old cooldown or active buff.
 - **界面与美术 / UI and art:** 新增平面化女性剪影、皮革圆环项圈与紫色神经纹路组成的专属技能图标。战斗员状态采用淡紫色，训导官采用青绿色、禁用状态采用灰绿色；删除终极公交车与奶牛重复显示的阶段名称及四语对应翻译。Adds a dedicated flat female-silhouette icon with a ringed leather collar and violet neural accents. Combatant labels use lavender; Training Officers use teal and muted gray-green when disabled. Removes duplicated final Public Use/Cow stage labels in all four languages.
 - **文本与测试工具 / Text and testing tools:** 四语说明统一纳米机械液改造与主动活化设定，技能概述不重复健康页自动属性列表，补充普通完成后的终极化提示。开发模式及模组调试按钮同时开启时，可直接拉满当前特化普通培养进度；不会自动终极化。Four-language descriptions consistently explain nanofluid modification and activation, with concise ability summaries and finalization guidance. With developer mode and mod debug gizmos enabled, a command completes the current ordinary specialization without finalizing it.
-- **验证 / Validation:** 最新完成核查重新运行 19 套回归，854/854 项通过，其中战斗员专项 49/49；272 个 XML、四语、图标引用与本机原版组件检查通过。完整玩法和数值验收依据维护者已有确认，本轮未重新运行游戏。Latest audit: all 19 suites and 854 cases passed, including 49 Combatant cases; 272 XML files, localization, icon references and local game-component checks passed. Gameplay and balance acceptance follows the maintainer's prior confirmation; this audit did not rerun the game.
+- **验证 / Validation:** 战斗员完成核查重新运行 19 套回归，854/854 项通过，其中战斗员专项 49/49；272 个 XML、四语、图标引用与本机原版组件检查通过。完整玩法和数值验收依据维护者已有确认，本轮未重新运行游戏。Combatant completion audit: all 19 suites and 854 cases passed, including 49 Combatant cases; 272 XML files, localization, icon references and local game-component checks passed. Gameplay and balance acceptance follows the maintainer's prior confirmation; this audit did not rerun the game.
 
 ## [2.3.3] — 2026-09-26 — RJW 泄欲对象资格与特化科技说明 / RJW Comfort designation and specialization descriptions
 

@@ -21,7 +21,7 @@ namespace HarmonyLib
 namespace Verse
 {
     public class ThingComp { public Thing parent; }
-    public class Thing
+    public partial class Thing
     {
         public string Label => "test thing";
         public readonly List<ThingComp> comps = new List<ThingComp>();
@@ -34,11 +34,10 @@ namespace Verse
         {
             jobs.pawn = this;
         }
-        public bool Dead, Destroyed, Downed, IsSlave, IsPrisonerOfColony;
+        public bool Dead, Downed, IsSlave, IsPrisonerOfColony;
         public bool IsColonist = true;
         public Pawn BoundMaster;
         public ApparelTracker apparel = new ApparelTracker();
-        public bool Spawned = true;
         public Map Map;
         public Lord lord;
         public Pawn_JobTracker jobs = new Pawn_JobTracker();
@@ -59,9 +58,10 @@ namespace Verse
         /// <summary>返回用例配置的可达性结果，供生产 JobGiver 的可达性分支使用。</summary>
         public bool CanReach(Pawn target, PathEndMode pathEndMode, Danger danger) => Reachable;
         /// <summary>返回用例配置的预定检查结果；不会创建真实预定。</summary>
-        public bool CanReserve(Pawn target, int maxPawns, int stackCount, object layer, bool forced) => Reservable;
+        public bool CanReserve(Pawn target, int maxPawns, int stackCount, object layer, bool forced)
+            => Reservable && (forced || Map.reservationManager.CanReserve(target, this));
     }
-    public class Map
+    public partial class Map
     {
         public LordManager lordManager = new LordManager();
         public ReservationManager reservationManager = new ReservationManager();
@@ -163,7 +163,9 @@ namespace Verse.AI
             StartCalls++;
             if (!TestWorld.ReceiverSucceeds) return;
             curJob = next;
-            curDriver = new JobDriver_TrainingReceiver { pawn = pawn, job = next };
+            var receiver = new JobDriver_TrainingReceiver { pawn = pawn, job = next };
+            receiver.parteners.Add(next.targetA.Thing as Pawn); // RJW DoSetup 的登记边界。
+            curDriver = receiver;
         }
     }
     /// <summary>最小预约存储：按目标、角色和 Job 匹配，错误释放抛异常，以暴露重复 Release。</summary>
@@ -171,6 +173,8 @@ namespace Verse.AI
     {
         private readonly List<(Thing target, Pawn actor, Job job)> reservations = new List<(Thing, Pawn, Job)>();
         public int ReleaseCalls;
+        public bool CanReserve(Thing target, Pawn actor)
+            => !reservations.Any(r => r.target == target && r.actor != actor);
         /// <summary>记录引擎边界收到的预约申请，不代替生产任务进行申请。</summary>
         public void Reserve(Thing target, Pawn actor, Job job) => reservations.Add((target, actor, job));
         /// <summary>按三个引用共同匹配，允许测试区分同一角色的不同工作。</summary>
@@ -185,7 +189,7 @@ namespace Verse.AI
         }
     }
     public enum JobCondition { Incompletable, InterruptForced, Succeeded }
-    public enum PathEndMode { Touch, OnCell }
+    public enum PathEndMode { Touch, OnCell, ClosestTouch }
     public enum TargetIndex { A }
     public enum ToilCompleteMode { Instant, Never }
     public class Toil
@@ -348,7 +352,7 @@ namespace SexSlaveCraft
         public static void NotifyTrainingCompleted(Pawn trainer, Pawn receiver)
             => TestWorld.TrainerProgressAwards++;
     }
-    public static class SSCDefOf
+    public static partial class SSCDefOf
     {
         public static JobDef Training_Ritual;
         public static JobDef SSC_TrainingReceiver;
@@ -382,7 +386,7 @@ namespace SexSlaveCraft
         /// <summary>外部基因迁移不属于本套件，保留生产目标验证所需签名。</summary>
         public static void TryRemoveLifeForceGeneIfConflicting(Pawn pawn) { }
     }
-    public static class OnaholeCompatibilityUtility
+    public static partial class OnaholeCompatibilityUtility
     {
         /// <summary>本套件没有家具接收器，专用伙伴注册交由外部兼容用例验证。</summary>
         public static bool TryRegisterOnaholePartner(Pawn target, Pawn actor) => false;
@@ -438,7 +442,11 @@ namespace rjw
         /// <summary>执行测试启动钩子，供用例检查兼容解锁与外部动画启动的先后顺序。</summary>
         public void Start() => TestWorld.OnRjwStart?.Invoke(this);
         /// <summary>累计 RJW 收尾调用次数，用于检查中断清理和同步重入是否重复处理。</summary>
-        public void End() => TestWorld.RjwEndCalls++;
+        public void End()
+        {
+            TestWorld.RjwEndCalls++;
+            if (Partner?.jobs.curDriver is JobDriver_SexBaseReciever receiver) receiver.parteners.Remove(pawn);
+        }
         /// <summary>将剩余 tick 减一，让测试可以明确触发生产阶段结束条件。</summary>
         public void SexTick(Pawn master, Pawn slave) => ticks_left--;
     }
