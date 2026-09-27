@@ -2,6 +2,7 @@
 <LanguageData>
   <SSC_ITab_SpecializationCombatant>Боец</SSC_ITab_SpecializationCombatant>
   <SSC_ITab_SelectSpecializationCombatant>Выбрать бойца</SSC_ITab_SelectSpecializationCombatant>
+  <SSC_ITab_SpecializationCombatantDisabledIdentity>Требуется роль секс-раба SSC</SSC_ITab_SpecializationCombatantDisabledIdentity>
   <SSC_ITab_SpecializationCombatantDisabledResearch>Требуется исследование «Боец»</SSC_ITab_SpecializationCombatantDisabledResearch>
   <SSC_ITab_SpecializationOrdinaryComplete>Обычная подготовка завершена</SSC_ITab_SpecializationOrdinaryComplete>
 </LanguageData>

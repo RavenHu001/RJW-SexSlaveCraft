@@ -520,6 +520,7 @@ namespace SexSlaveCraft
         public static string ITab_SpecializationTrainerOfficer => "SSC_ITab_SpecializationTrainerOfficer".Translate();
         public static string ITab_SpecializationCombatant => "SSC_ITab_SpecializationCombatant".Translate();
         public static string ITab_SelectSpecializationCombatant => "SSC_ITab_SelectSpecializationCombatant".Translate();
+        public static string ITab_SpecializationCombatantDisabledIdentity => "SSC_ITab_SpecializationCombatantDisabledIdentity".Translate();
         public static string ITab_SpecializationCombatantDisabledResearch => "SSC_ITab_SpecializationCombatantDisabledResearch".Translate();
         public static string ITab_SpecializationOrdinaryComplete => "SSC_ITab_SpecializationOrdinaryComplete".Translate();
         public static string ITab_SpecializationPetCat => "SSC_ITab_SpecializationPetCat".Translate();

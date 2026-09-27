@@ -24,15 +24,9 @@ namespace SexSlaveCraft
             // 终极训导官记录可在其他当前方向上存在，必须在通用认领的
             // “无方向”提前返回之前维护；无关角色在该入口中快速退出。
             TrainerSpecializationLifecycle.Maintain(pawn);
-            // 在主人和明确留空的提前返回之前维护战斗员；不改变其他方向的身份规则。
+            // 同步当前战斗员方向及明确留空后的普通状态。
             CombatantSpecializationUtility.Sync(pawn);
-            if (comp.pawnIdentity == PawnIdentity.Master)
-            {
-                // 主人也可能正在培养战斗员；清理其非当前普通状态，仍保留所有终极成果。
-                if (comp.specializationType == SexSlaveSpecializationType.Combatant)
-                    RemoveInactiveSpecializationStates(pawn, comp, comp.specializationType);
-                return;
-            }
+            if (comp.pawnIdentity == PawnIdentity.Master) return;
 
             if (comp.specializationType == SexSlaveSpecializationType.None)
             {

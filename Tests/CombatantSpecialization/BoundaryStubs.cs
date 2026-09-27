@@ -66,6 +66,7 @@ namespace SexSlaveCraft
     }
     public static class SSCIdentityUtility
     {
+        public static bool IsSexSlave(Pawn p) => p?.Training?.pawnIdentity == PawnIdentity.Slave;
         public static bool IsSupportedVanillaStatus(Pawn p) =>
             p != null && (p.IsColonist || p.IsPrisonerOfColony || p.IsSlave);
     }
@@ -106,6 +107,7 @@ namespace SexSlaveCraft
     }
     public static class Strings
     {
+        public const string ITab_SpecializationCombatantDisabledIdentity = "sex slave identity required";
         public const string ITab_SpecializationCombatantDisabledResearch = "research required";
         public const string ITab_SpecializationNone = "none";
         public const string ITab_SpecializationBus = "bus";
@@ -121,6 +123,7 @@ namespace SexSlaveCraft
     {
         public static string Label(Pawn p) => GetSpecializationLabel(p, p.Training);
         public static string Progress(Pawn p) => GetSpecializationProgressText(p, p.Training);
+        public static bool SpecializationVisible(Pawn p) => CanShowSpecializationSection(p?.Training);
         public static bool LegacyOptions(Pawn p) => CanShowLegacySpecializationOptions(p.Training);
     }
 }

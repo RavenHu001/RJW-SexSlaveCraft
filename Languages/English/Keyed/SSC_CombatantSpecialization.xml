@@ -2,6 +2,7 @@
 <LanguageData>
   <SSC_ITab_SpecializationCombatant>Combatant</SSC_ITab_SpecializationCombatant>
   <SSC_ITab_SelectSpecializationCombatant>Select combatant</SSC_ITab_SelectSpecializationCombatant>
+  <SSC_ITab_SpecializationCombatantDisabledIdentity>Requires SSC sex slave identity</SSC_ITab_SpecializationCombatantDisabledIdentity>
   <SSC_ITab_SpecializationCombatantDisabledResearch>Requires Combatant research</SSC_ITab_SpecializationCombatantDisabledResearch>
   <SSC_ITab_SpecializationOrdinaryComplete>Ordinary training complete</SSC_ITab_SpecializationOrdinaryComplete>
 </LanguageData>

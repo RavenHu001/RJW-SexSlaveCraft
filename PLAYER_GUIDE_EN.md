@@ -1534,7 +1534,7 @@ This is intentional integration behavior. Human Cattle becomes the sole real res
 
 ### How does Combatant progress?
 
-After completing Combatant research, select Combatant on the Training tab. No SSC identity, bound master, or chain stage is required. Basic bonuses start at 20%; proficient bonuses start at 50% and multiply incoming damage by 0.90. Switching directions preserves progress.
+After completing Combatant research, pawns with SSC sex slave identity can select Combatant on the Training tab. Masters and pawns with no SSC identity do not see the specialization section; vanilla slave status alone does not qualify. A bound master or chain stage is not required. Basic bonuses start at 20%; proficient bonuses start at 50% and multiply incoming damage by 0.90. Switching directions preserves progress.
 
 Completed ordinary Training grants `clamp(score / 2000, 0, 0.04)` progress. The actual bound master multiplies this reward by 1.5: up to 4% normally, or 6% with the bound master. Other trainers still grant the base reward. Nonpositive or invalid scores grant none.
 

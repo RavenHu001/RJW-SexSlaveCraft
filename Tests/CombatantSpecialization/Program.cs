@@ -18,11 +18,11 @@ internal static partial class Program
         CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
         root = Path.GetFullPath(args.Length == 0 ? "." : args[0]);
         Run("旧枚举编号不变", EnumCompatibility);
-        Run("选择只依赖战斗员研究，覆盖原版及 SSC 身份", SelectionMatrix);
+        Run("选择要求 SSC 性奴及战斗员研究，兼容三种原版身份", SelectionMatrix);
         Run("缺失研究、组件或不支持的对象不会开放入口", InvalidSelection);
         Run("其他方向保留原身份与基础研究门槛", LegacySelection);
         Run("零进度反复对账不增长或重建状态", ZeroDoesNotGrow);
-        Run("主人和未设定身份均进行实际普通对账", IdentityIndependentSync);
+        Run("特化区仅向 SSC 性奴显示", SpecializationVisibility);
         Run("重复标记归一，组件覆盖陈旧严重度", DuplicateAndStaleStates);
         Run("普通培养完成不添加终极标记或能力", OrdinaryCompletion);
         Run("切换历史独立，当前状态立即更新", Switching);
@@ -53,7 +53,7 @@ internal static partial class Program
         Check(float.IsFinite(actual) && Math.Abs(expected - actual) < 0.000001f,
             $"期望 {expected}，实际 {actual}");
     }
-    private static Pawn Pawn(PawnIdentity identity = PawnIdentity.Unset)
+    private static Pawn Pawn(PawnIdentity identity = PawnIdentity.Slave)
     {
         var p = new Pawn();
         p.Training = new CompSexSlaveTraining { parent = p, pawnIdentity = identity };
@@ -85,7 +85,9 @@ internal static partial class Program
             SSCDefOf.SSC_RES_Combatant.IsFinished = false;
             Check(!CombatantSpecializationUtility.CanSelect(p, out var reason) && !string.IsNullOrEmpty(reason), "研究前须锁定");
             SSCDefOf.SSC_RES_Combatant.IsFinished = true;
-            Check(CombatantSpecializationUtility.CanSelect(p, out reason) && reason == null, "附加了身份或基础研究门槛");
+            bool eligible = identity == PawnIdentity.Slave;
+            Check(CombatantSpecializationUtility.CanSelect(p, out reason) == eligible, "性奴身份门槛错误");
+            Check(reason == (eligible ? null : Strings.ITab_SpecializationCombatantDisabledIdentity), "身份拒绝原因错误");
         }
     }
     private static void InvalidSelection()
@@ -116,21 +118,20 @@ internal static partial class Program
         Equal(0, p.Training.specializationProgress); Equal(0.01f, Ordinary(p).Severity);
         Check(ReferenceEquals(original, Ordinary(p)) && p.health.hediffSet.hediffs.Count == 1, "重复重建状态");
     }
-    private static void IdentityIndependentSync()
+    private static void SpecializationVisibility()
     {
-        var p = Pawn(); Train(p, 0.6f);
-        SSCDefOf.SSC_RES_Combatant.IsFinished = false;
+        Check(!ITab_SexSlaveTraining.SpecializationVisible(null), "空对象显示特化区");
         foreach (var identity in Enum.GetValues<PawnIdentity>())
+        foreach (bool research in new[] { false, true })
         {
-            p.Training.pawnIdentity = identity;
-            p.health.RemoveHediff(Ordinary(p));
-            CompSexSlaveTraining.ReconcileSpecialization(p);
-            Equal(0.6f, Ordinary(p).Severity);
+            SSCDefOf.SSC_RES_Combatant.IsFinished = research;
+            Check(ITab_SexSlaveTraining.SpecializationVisible(Pawn(identity)) == (identity == PawnIdentity.Slave),
+                "主人或未设定身份不应显示特化区，性奴研究前仍应显示锁定选项");
         }
     }
     private static void DuplicateAndStaleStates()
     {
-        var p = Pawn(PawnIdentity.Master); Train(p, 0.2f); var original = Ordinary(p);
+        var p = Pawn(PawnIdentity.Slave); Train(p, 0.2f); var original = Ordinary(p);
         original.Severity = 0.9f;
         p.health.AddHediff(SSCDefOf.SSC_Hediff_Combatant).Severity = 1;
         p.health.AddHediff(SSCDefOf.SSC_Hediff_Bus);
@@ -147,7 +148,7 @@ internal static partial class Program
     }
     private static void Switching()
     {
-        var p = Pawn(PawnIdentity.Master); Train(p, 0.62f);
+        var p = Pawn(PawnIdentity.Slave); Train(p, 0.62f);
         var final = p.health.AddHediff(SSCDefOf.SSC_Hediff_Bus_Final);
         p.Training.SetSpecialization(SexSlaveSpecializationType.Cow);
         Check(Ordinary(p) == null, "切走没有立即清理"); Equal(0, p.Training.specializationProgress);
@@ -207,7 +208,7 @@ internal static partial class Program
     }
     private static void SaveRoundTrip()
     {
-        var p = Pawn(PawnIdentity.Master);
+        var p = Pawn(PawnIdentity.Slave);
         p.Training.SetSpecialization(SexSlaveSpecializationType.Cow); p.Training.specializationProgress = 0.3f;
         Train(p, 0.62f); var loaded = Reload(p);
         Equal(0.62f, Ordinary(loaded).Severity);
@@ -277,7 +278,7 @@ internal static partial class Program
         foreach (var lang in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" })
         {
             var keyed = XDocument.Load(Path.Combine(root, "Languages", lang, "Keyed/SSC_CombatantSpecialization.xml"));
-            Check(keyed.Root.Elements().Count() == 4 && keyed.Root.Elements().All(e => !string.IsNullOrWhiteSpace(e.Value)), "缺少界面翻译");
+            Check(keyed.Root.Elements().Count() == 5 && keyed.Root.Elements().All(e => !string.IsNullOrWhiteSpace(e.Value)), "缺少界面翻译");
             if (lang == "ChineseSimplified") continue;
             var defs = XDocument.Load(Path.Combine(root, "Languages", lang, "DefInjected/HediffDef/SSC_HediffDefs_CombatantSpecialization.xml"));
             Check(defs.Root.Elements().Count() == 5, "缺少阶段翻译");

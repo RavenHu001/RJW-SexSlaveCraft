@@ -68,10 +68,16 @@ namespace SexSlaveCraft
             return label;
         }
 
+        /// <summary>性奴特化仅向 SSC 性奴显示，不以原版奴隶身份代替。</summary>
+        private static bool CanShowSpecializationSection(CompSexSlaveTraining comp)
+        {
+            return comp != null && comp.pawnIdentity == PawnIdentity.Slave;
+        }
+
         /// <summary>保留其他方向原本来自页签外层的身份与基础研究门槛。</summary>
         private static bool CanShowLegacySpecializationOptions(CompSexSlaveTraining comp)
         {
-            return comp != null && comp.pawnIdentity == PawnIdentity.Slave &&
+            return CanShowSpecializationSection(comp) &&
                 ResearchUtils.IsResearchFinished(SSCDefOf.SSC_BasicTraining);
         }
 

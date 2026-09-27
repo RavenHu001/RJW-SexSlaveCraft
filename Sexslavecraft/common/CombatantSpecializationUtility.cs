@@ -3,17 +3,22 @@ using Verse;
 
 namespace SexSlaveCraft
 {
-    /// <summary>普通战斗员只依赖当前方向和组件进度，不维护身份、绑定或锁链资格。</summary>
+    /// <summary>普通战斗员仅向 SSC 性奴开放；状态同步以当前方向和组件进度为准。</summary>
     public static class CombatantSpecializationUtility
     {
         private const float InitialSeverity = 0.01f;
 
-        /// <summary>选择时只检查组件、现有页签支持范围及战斗员研究。</summary>
+        /// <summary>选择时检查 SSC 性奴身份、现有页签支持范围及战斗员研究。</summary>
         public static bool CanSelect(Pawn pawn, out string reason)
         {
             reason = null;
             if (pawn?.TryGetComp<CompSexSlaveTraining>() == null ||
                 !SSCIdentityUtility.IsSupportedVanillaStatus(pawn)) return false;
+            if (!SSCIdentityUtility.IsSexSlave(pawn))
+            {
+                reason = Strings.ITab_SpecializationCombatantDisabledIdentity;
+                return false;
+            }
             if (!ResearchUtils.IsResearchFinished(SSCDefOf.SSC_RES_Combatant))
             {
                 reason = Strings.ITab_SpecializationCombatantDisabledResearch;

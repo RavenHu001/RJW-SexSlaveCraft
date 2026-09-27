@@ -29,12 +29,13 @@ namespace SexSlaveCraft
             return value > 0f && !float.IsNaN(value) && !float.IsInfinity(value);
         }
 
-        /// <summary>不附加身份、研究、绑定、锁链或恶堕倍率；组件是唯一经验来源。</summary>
+        /// <summary>仅 SSC 性奴可获得战斗员经验；不附加研究、绑定、锁链或恶堕倍率。</summary>
         public static float TryGainProgress(Pawn pawn, float amount)
         {
             if (pawn == null || pawn.Dead || pawn.Destroyed || !IsPositiveFinite(amount)) return 0f;
             CompSexSlaveTraining comp = pawn.TryGetComp<CompSexSlaveTraining>();
-            if (comp == null || comp.specializationType != SexSlaveSpecializationType.Combatant) return 0f;
+            if (comp == null || !SSCIdentityUtility.IsSexSlave(pawn) ||
+                comp.specializationType != SexSlaveSpecializationType.Combatant) return 0f;
 
             float before = CompSexSlaveTraining.NormalizeSpecializationProgress(comp.specializationProgress);
             comp.specializationProgress = before;

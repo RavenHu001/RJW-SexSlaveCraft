@@ -48,16 +48,21 @@ internal static partial class Program
             Equal(.10f, Ordinary(receiver).Severity);
             Equal(0, master.Training.specializationProgress);
         });
-        Run("事件不额外限制研究身份原版身份或进度倍率", () =>
+        Run("两类事件仅向 SSC 性奴发奖，无额外研究或进度倍率", () =>
         {
             SSCDefOf.SSC_RES_Combatant.IsFinished = false;
             foreach (PawnIdentity identity in Enum.GetValues<PawnIdentity>())
             foreach (float progress in new[] { 0f, .25f, .75f })
             {
-                Pawn receiver = Combatant(progress); receiver.Training.pawnIdentity = identity;
+                // 直接构造事件输入验证提交入口，不测试身份切换或旧记录迁移。
+                Pawn receiver = Pawn(identity); Train(receiver, progress);
                 receiver.IsColonist = false; receiver.IsSlave = true;
-                Equal(.02f, CombatantSpecializationProgressUtility.NotifyDailyTrainingCompleted(Pawn(), receiver, 40));
-                Equal(progress + .02f, Ordinary(receiver).Severity);
+                bool eligible = identity == PawnIdentity.Slave;
+                Equal(eligible ? .02f : 0, CombatantSpecializationProgressUtility.NotifyDailyTrainingCompleted(Pawn(), receiver, 40));
+                Equal(progress + (eligible ? .02f : 0), receiver.Training.specializationProgress);
+                new Pawn().Kill(Hit(receiver));
+                Equal(progress + (eligible ? .03f : 0), receiver.Training.specializationProgress);
+                if (eligible) Equal(progress + .03f, Ordinary(receiver).Severity);
             }
         });
         Run("无效参与者与错误方向不获奖", () =>

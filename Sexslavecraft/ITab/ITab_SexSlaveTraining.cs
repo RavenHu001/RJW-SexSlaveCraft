@@ -155,9 +155,11 @@ namespace SexSlaveCraft
                 // 入口位置与高度保持稳定；没有实际绑定或总限制停用时可见但不可操作。
                 DrawRestrictionToggle(new Rect(0f, curY, contentRect.width, RestrictionToggleHeight), pawn);
                 curY += RestrictionToggleHeight + RestrictionToggleSpacing;
-                // 普通战斗员对已有页签支持的所有身份开放；旧方向仍在菜单内保留原门槛。
-                curY = DrawSpecializationSection(new Rect(0f, curY, contentRect.width,
-                    specializationHeight), pawn, comp) + SectionSpacing;
+                if (CanShowSpecializationSection(comp))
+                {
+                    curY = DrawSpecializationSection(new Rect(0f, curY, contentRect.width,
+                        specializationHeight), pawn, comp) + SectionSpacing;
+                }
 
                 if (comp.pawnIdentity == PawnIdentity.Master)
                 {
@@ -199,7 +201,7 @@ namespace SexSlaveCraft
 
             if (comp.pawnIdentity == PawnIdentity.Master || comp.pawnIdentity == PawnIdentity.Unset)
             {
-                return height + SectionSpacing + 84f;
+                return height + 84f;
             }
 
             if (!ResearchUtils.IsResearchFinished(SSCDefOf.SSC_BasicTraining))
@@ -285,6 +287,7 @@ namespace SexSlaveCraft
         /// <summary>按训导官状态和兔特化模式计算区块高度，供绘制和滚动范围共用。</summary>
         private static float GetSpecializationSectionHeight(Pawn pawn, CompSexSlaveTraining comp, float width)
         {
+            if (!CanShowSpecializationSection(comp)) return 0f;
             // 状态行在窄栏和长译文下可能换成两行；兔特化的繁殖模式仍可能
             // 同时出现，因此两项额外高度分别计算，避免跨方向终极记录遮挡后续控件。
             bool showTrainerStatus = comp.specializationType == SexSlaveSpecializationType.TrainerOfficer ||
@@ -861,7 +864,7 @@ namespace SexSlaveCraft
             DrawRabbitReproductionModeSelector(listing, pawn, comp);
         }
 
-        /// <summary>菜单打开和点击时均检查研究；选择后由组件同步普通状态。</summary>
+        /// <summary>菜单打开和点击时均检查性奴身份及研究；选择后由组件同步普通状态。</summary>
         private static FloatMenuOption BuildCombatantSpecializationOption(Pawn pawn, CompSexSlaveTraining comp)
         {
             bool available = CombatantSpecializationUtility.CanSelect(pawn, out string reason);
