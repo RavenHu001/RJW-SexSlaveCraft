@@ -5,6 +5,7 @@
     <defName>SSC_Hediff_Combatant</defName>
     <label>性奴特化（战斗员）</label>
     <description>紫色纳米机械液正随着培养逐步改造身体与神经系统，使武器操控更加稳定，动作与应激反应更加协调。\n\n培养完成后，可将抽取的人格凝胶加工为终极战斗员，再通过植入获得终极效果。</description>
+    <defaultLabelColor>(0.75, 0.65, 0.90)</defaultLabelColor>
     <initialSeverity>0.01</initialSeverity>
     <maxSeverity>1</maxSeverity>
     <isBad>false</isBad>
@@ -53,6 +54,7 @@
     <hediffClass>HediffWithComps</hediffClass>
     <label>性奴特化（终极战斗员）</label>
     <description>经过终极化塑造，紫色纳米机械液对身体与神经系统的改造已形成稳定模式。战斗适应能力得到全面强化，并能主动活化体内微械，发动“战斗超频”。\n\n这份成果随人格保留，切换培养方向、解绑或锁链退阶不会使其消失。</description>
+    <defaultLabelColor>(0.85, 0.70, 1.0)</defaultLabelColor>
     <initialSeverity>1</initialSeverity>
     <maxSeverity>1</maxSeverity>
     <isBad>false</isBad>
