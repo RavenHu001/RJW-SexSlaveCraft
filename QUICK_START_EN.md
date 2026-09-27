@@ -252,6 +252,8 @@ Combatant training uses purple nanofluid to reshape the body and nervous system 
 
 Check health conditions for specific attributes. Overdrive lasts 1 in-game hour and has a 4-hour cooldown starting on activation. Undrafting does not end an active buff. Final achievements transfer with the personality; active Overdrive and the old ability's cooldown do not.
 
+Combatant health labels use lavender, with a brighter final state. Training Officers use teal, or muted gray-green when the final state is disabled. Final Public Use and Cow names appear once each. Combat Overdrive has a dedicated female-silhouette icon with a ringed leather collar and violet neural accents.
+
 See the [full Combatant reference](PLAYER_GUIDE_EN.md#how-does-combatant-progress) for formulas and attributes.
 
 ## 10. Final Specializations

@@ -4,7 +4,7 @@ RimWorld 1.6 的 RimJobWorld（RJW）扩展模组，基于上游 **2.2.8** 继�
 
 [下载安装包](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.3) · [更新日志](CHANGELOG.md) · [文档索引](Docs/README.md) · [English quick start](QUICK_START_EN.md)
 
-当前开发分支已完成战斗员特化：性奴培养、两类经验、人格凝胶终极化与“战斗超频”。阶段五的实机流程及数值验收已获维护者确认，四语文案和资源检查已收尾；这些内容尚未包含在下方的 2.3.3 发布包中。见[阶段五记录](Docs/Development/战斗员特化阶段五.md)。
+当前开发分支已完成战斗员特化：性奴培养、两类经验、人格凝胶终极化与“战斗超频”。阶段五的实机流程及数值验收已获维护者确认，四语文案和资源检查已收尾；这些内容尚未包含在下方的 2.3.3 发布包中。专属技能图标和状态显示整理也已完成，详见[完成核查](Docs/Development/战斗员特化完成核查.md)。
 
 ## 项目概况
 
@@ -54,7 +54,7 @@ SexSlaveCraft（SSC）围绕角色培养、身份与绑定关系、特化发展�
 
 主工程为 `Sexslavecraft/SexSlaveCraft_Alpha.csproj`，目标框架为 **.NET Framework 4.7.2**。源码编译需要 Visual Studio MSBuild、对应开发组件，以及本机 RimWorld 和模组依赖程序集。工程引用需按本机环境配置，具体方式见 [发布与打包](Docs/Maintenance/发布与打包.md)。
 
-统一验证需要 PowerShell 7、.NET SDK 9（或更新 SDK）、.NET 9 运行时，以及适用于 net9.0 的本地 Harmony DLL。先设置路径（示例路径需替换为本机位置），再运行全部 18 套回归：
+统一验证需要 PowerShell 7、.NET SDK 9（或更新 SDK）、.NET 9 运行时，以及适用于 net9.0 的本地 Harmony DLL。先设置路径（示例路径需替换为本机位置），再运行全部 19 套回归：
 
 ```powershell
 $env:SSC_TEST_HARMONY_PATH = 'C:\Dependencies\Harmony\net9.0\0Harmony.dll'
@@ -86,6 +86,8 @@ pwsh -File Scripts/New-Release.ps1 -Build
 项目作者信息见 `About/About.xml`：Someone、Hajimi、TieJin。感谢上游作者及参与修复、翻译和验证的贡献者。
 
 ## English overview
+
+The development branch includes the completed Combatant specialization, Combat Overdrive and its dedicated icon, plus specialization label/color updates. These additions are not in the published 2.3.3 package; see the [completion audit (Chinese)](Docs/Development/战斗员特化完成核查.md).
 
 This repository continues RJW-SexSlaveCraft from upstream **2.2.8** for **RimWorld 1.6**. The repository version is **2.3.3**. Harmony and RimJobWorld are required and must load before this mod.
 

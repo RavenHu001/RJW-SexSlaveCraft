@@ -1538,6 +1538,8 @@ Combatant training guides purple nanofluid to reshape the body and nervous syste
 
 **Selection and progress.** Complete Combatant research and set the pawn's SSC identity to Sex Slave on the Training tab. No bound master or chain stage is required; vanilla slave status alone does not qualify. Switching specializations preserves each path's progress, and selecting None pauses ordinary training. Ordinary bonuses are removed when switching away or selecting None; returning restores the saved progress and its bonuses. Final bonuses survive specialization changes, unbinding and chain regression.
 
+**Display.** Combatant health labels use lavender, with a brighter final state. Training Officers use teal, or muted gray-green when the final state is disabled. Final Public Use and Cow names appear once each. Combat Overdrive has a dedicated female-silhouette icon with a ringed leather collar and violet neural accents.
+
 **Passive bonuses.** Each stage uses its complete set of bonuses below. Final bonuses replace ordinary bonuses.
 
 | Attribute | Basic: 20% | Proficient: 50% through ordinary completion | Finalized and implanted |
