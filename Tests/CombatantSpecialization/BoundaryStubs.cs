@@ -72,6 +72,7 @@ namespace SexSlaveCraft
     }
     public static class SSCDefOf
     {
+        public static HediffDef SSC_Hediff_Combatant_Final = new HediffDef { defName = "SSC_Hediff_Combatant_Final" };
         public static HediffDef SSC_Hediff_Combatant = new HediffDef { defName = "SSC_Hediff_Combatant" };
         public static readonly HediffDef SSC_Hediff_Bus = new HediffDef();
         public static readonly HediffDef SSC_Hediff_Bus_Final = new HediffDef();

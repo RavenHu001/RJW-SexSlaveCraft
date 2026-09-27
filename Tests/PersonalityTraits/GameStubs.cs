@@ -259,6 +259,7 @@ namespace Verse
 
     public class Hediff
     {
+        public T TryGetComp<T>() where T : class => null;
         public HediffDef def;
         public float Severity;
     }
@@ -270,6 +271,7 @@ namespace Verse
 
     public class HediffSet
     {
+        public bool HasHediff(HediffDef def) => GetFirstHediffOfDef(def) != null;
         public List<Hediff> hediffs = new List<Hediff>();
         /// <summary>从测试健康状态列表中查找首个指定定义的条目。</summary>
         public Hediff GetFirstHediffOfDef(HediffDef def) => hediffs.FirstOrDefault(x => x.def == def);
@@ -747,6 +749,7 @@ namespace HarmonyLib
     public sealed class HarmonyPatch : Attribute
     {
         public HarmonyPatch(Type type, string methodName) { }
+        public HarmonyPatch(Type type, string methodName, Type[] arguments) { }
     }
 
     public static class AccessTools
@@ -763,7 +766,8 @@ namespace SexSlaveCraft
     public enum PawnIdentity
     {
         Unset,
-        Slave
+        Slave,
+        Master
     }
 
     public enum RabbitReproductionMode
@@ -797,21 +801,14 @@ namespace SexSlaveCraft
         public bool milkProductionEnabled;
         public bool trainerInvalidExitBlocksAdoption;
         public bool specializationExplicitlyUnset;
-        /// <summary>隔离方向切换的健康状态清理边界，实际进度切换和快照算法直接链接生产代码。</summary>
-        private static void RemoveInactiveSpecializationStates(Pawn pawn, CompSexSlaveTraining comp, SexSlaveSpecializationType type)
-        {
-        }
-
-        /// <summary>提供专精状态同步接口的空实现；本测试不验证专精系统。</summary>
-        public static void ReconcileSpecialization(Pawn p)
-        {
-        }
+        public float savedCowReservoirCharge;
     }
 
     // 此套件验证人格快照与公共方向历史；训导官健康状态维护由 TrainerIdentity 验证。
     public static class TrainerSpecializationLifecycle
     {
         public static void Notify(Pawn pawn) { }
+        public static void Maintain(Pawn pawn) { }
     }
 
     public static class RabbitCloneUtility
@@ -820,16 +817,22 @@ namespace SexSlaveCraft
         public static bool IsRabbitClone(Pawn p) => false;
     }
 
-    public static class PersonalityGelUtility
-    {
-        /// <summary>返回最小凝胶物品定义，使提取流程不依赖真实物品配置。</summary>
-        public static ThingDef GetPersonalityGelDefForPawn(Pawn p) => new ThingDef();
-        /// <summary>返回加工产物的测试定义；配方工作者仍直接运行生产复制和标签转换代码。</summary>
-        public static ThingDef GetEditedThingDef(ThingDef source) => new ThingDef { defName = "EditedGel" };
-    }
-
+    public class HediffComp_CowMilkReservoir { public float CurrentCharge; }
+    public static class ResearchUtils { public static bool IsResearchFinished(object def) => def != null; }
     public static class SSCDefOf
     {
+        public static object SSC_RES_Combatant = new object();
+        public static HediffDef SSC_Hediff_Combatant = new HediffDef { defName = "SSC_Hediff_Combatant" };
+        public static HediffDef SSC_Hediff_Combatant_Final = new HediffDef { defName = "SSC_Hediff_Combatant_Final" };
+        public static ThingDef SSC_PersonalitySlime = new ThingDef { defName = "SSC_PersonalitySlime" };
+        public static ThingDef SSC_PS_P = new ThingDef { defName = "SSC_PS_P" };
+        public static ThingDef SSC_PS_U = new ThingDef { defName = "SSC_PS_U" };
+        public static ThingDef SSC_PS_P_U = new ThingDef { defName = "SSC_PS_P_U" };
+        public static ThingDef SSC_PersonalitySlime_Edited = new ThingDef { defName = "SSC_PersonalitySlime_Edited" };
+        public static ThingDef SSC_PS_P_Edited = new ThingDef { defName = "SSC_PS_P_Edited" };
+        public static ThingDef SSC_PS_U_Edited = new ThingDef { defName = "SSC_PS_U_Edited" };
+        public static ThingDef SSC_PS_P_U_Edited = new ThingDef { defName = "SSC_PS_P_U_Edited" };
+
         public static TraitDef SSC_Trait_PE = new TraitDef
         {
             defName = "SSC_Trait_PE"
@@ -863,9 +866,12 @@ namespace SexSlaveCraft
 
     public static class SSCIdentityUtility
     {
+        public static bool IsSexSlave(Pawn p) => p?.TryGetComp<CompSexSlaveTraining>()?.pawnIdentity == PawnIdentity.Slave;
+        public static bool IsSupportedVanillaStatus(Pawn p) => p != null;
         /// <summary>提供身份设置接口的空实现；本测试不验证身份系统的副作用。</summary>
         public static void TrySetIdentity(Pawn p, PawnIdentity i)
         {
+            if (p.TryGetComp<CompSexSlaveTraining>() is CompSexSlaveTraining c) c.pawnIdentity = i;
         }
 
         /// <summary>提供性奴派生特质同步接口的空实现；本测试聚焦普通人格特质。</summary>
@@ -876,6 +882,9 @@ namespace SexSlaveCraft
 
     public static class PetSpecializationUtility
     {
+        public static bool HasFinalPetState(Pawn p, SexSlaveSpecializationType t) => false;
+        public static void EnsurePetHediffFromSpecialization(Pawn p) { }
+        public static HediffDef GetBaseHediffDef(SexSlaveSpecializationType t) => null;
         /// <summary>本套件的训导官配方没有宠物基础标签，返回空定义供生产工作者继续执行。</summary>
         public static HediffDef GetBaseHediffForFinal(HediffDef final) => null;
         /// <summary>提供宠物专精状态清理接口的空实现。</summary>
@@ -898,6 +907,10 @@ namespace SexSlaveCraft
 
     public static class BusSpecializationUtility
     {
+        public static bool HasFinalBusState(Pawn p) => false;
+        public static bool HasFinalCowState(Pawn p) => false;
+        public static void EnsureBusHediffFromSpecialization(Pawn p) { }
+        public static void EnsureCowHediffFromSpecialization(Pawn p) { }
         /// <summary>提供公交车专精标签应用接口的空实现。</summary>
         public static void ApplyExclusiveBusTags(Pawn p, CompPersonalityStore c)
         {
@@ -921,6 +934,9 @@ namespace SexSlaveCraft
 
     public static class Strings
     {
+        public const string ITab_SpecializationCombatantDisabledIdentity = "identity";
+        public const string ITab_SpecializationCombatantDisabledResearch = "research";
+        public const string ITab_SpecializationFinalizedSuffix = "finalized";
         /// <summary>直接返回角色文字，替代提取完成提示的本地化生成。</summary>
         public static string Message_PersonalityExcretedComplete(string s) => s;
         /// <summary>返回来源文字，提供植入完成提示的最小测试实现。</summary>

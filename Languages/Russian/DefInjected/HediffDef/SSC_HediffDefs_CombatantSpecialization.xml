@@ -5,4 +5,6 @@
   <SSC_Hediff_Combatant.stages.0.label>подготовка бойца</SSC_Hediff_Combatant.stages.0.label>
   <SSC_Hediff_Combatant.stages.1.label>начинающий боец</SSC_Hediff_Combatant.stages.1.label>
   <SSC_Hediff_Combatant.stages.2.label>опытный боец</SSC_Hediff_Combatant.stages.2.label>
+  <SSC_Hediff_Combatant_Final.label>финальный боец</SSC_Hediff_Combatant_Final.label>
+  <SSC_Hediff_Combatant_Final.description>Постоянная боевая специализация, получаемая после обработки и внедрения личностного геля. Повышает исходные оценки точности стрельбы и попадания в ближнем бою, сокращает время прицеливания и перезарядку ближних атак, снижает повседневный порог психического срыва и умножает входящий урон на 0,80. Заменяет обычные бонусы бойца и сохраняется при смене направления, отвязке и снижении стадии цепи. При извлечении личности покидает прежнее тело вместе с ней. Активная способность пока недоступна.</SSC_Hediff_Combatant_Final.description>
 </LanguageData>

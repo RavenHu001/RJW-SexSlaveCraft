@@ -452,6 +452,7 @@ namespace SexSlaveCraft
             // 显式保存还会归并普通/有效/禁用三种互斥状态，并以组件
             // 的当前进度作为普通标签的权威值。
             TrainerSpecializationGelUtility.StoreExclusiveTrainerTags(this, p);
+            CombatantSpecializationGelUtility.StoreExclusiveTags(this, p);
         }
     }
 }

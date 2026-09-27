@@ -6,9 +6,11 @@
 dotnet run --project Tests/CombatantSpecialization/CombatantSpecialization.csproj --configuration Release --property:RestoreConfigFile=Tests/NuGet.Config --property:HarmonyAssemblyPath=<0Harmony.dll绝对路径> -- .
 ```
 
-已登记到 `Scripts/Test-All.ps1`，共 37 组测试。前 17 组覆盖阶段一的枚举、研究及身份入口、状态对账、方向历史、序列化边界、普通完成显示、真实 XML 的阶段属性和四语资源。
+已登记到 `Scripts/Test-All.ps1`，共 42 组测试。前 17 组覆盖阶段一的枚举、研究及身份入口、状态对账、方向历史、序列化边界、普通完成显示、真实 XML 的阶段属性和四语资源。
 
 阶段二增加 20 组：两类收益公式、普通／主人上限、实际主人与指定者区别、仅 SSC 性奴获得两类经验、无额外研究／进度倍率、数值与完成边界、健康同步及历史恢复，以及直接死亡、屠宰／处决、持续燃烧、分摊伤害、爆炸来源、嵌套去重、重复通知、多目标、复活及异常退出。
+
+阶段三增加 5 组：普通／终极互斥、终极实例保持、重复培养与经验拒绝、跨方向和留空展示、加载对账、终极属性及八种凝胶配方资源。
 
 本套件直接编译生产数据分部、健康对账、经验工具、死亡事件工具及 Harmony 补丁。公共 `AddSpecializationProgress` 已移入生产数据分部，测试不再复制其实现。游戏对象与外部资格服务使用最小边界模型；生产 Harmony 补丁实际安装到模型的 `Pawn.Kill`、`Fire.DoFireDamage`、`Explosion.AffectCell` 方法上，验证 Prefix/Postfix/Finalizer 的配合。
 

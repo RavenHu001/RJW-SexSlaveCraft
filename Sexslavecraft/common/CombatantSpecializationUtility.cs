@@ -19,6 +19,11 @@ namespace SexSlaveCraft
                 reason = Strings.ITab_SpecializationCombatantDisabledIdentity;
                 return false;
             }
+            if (HasFinalState(pawn))
+            {
+                reason = Strings.ITab_SpecializationFinalizedSuffix;
+                return false;
+            }
             if (!ResearchUtils.IsResearchFinished(SSCDefOf.SSC_RES_Combatant))
             {
                 reason = Strings.ITab_SpecializationCombatantDisabledResearch;
@@ -27,12 +32,30 @@ namespace SexSlaveCraft
             return true;
         }
 
-        /// <summary>组件进度是唯一权威；重复调用不增长进度，也不重建已有状态。</summary>
+        /// <summary>终极成果只由人格携带的终极标记决定，与当前培养方向及绑定无关。</summary>
+        public static bool HasFinalState(Pawn pawn)
+        {
+            return SSCDefOf.SSC_Hediff_Combatant_Final != null &&
+                pawn?.health?.hediffSet?.GetFirstHediffOfDef(SSCDefOf.SSC_Hediff_Combatant_Final) != null;
+        }
+
+        /// <summary>终极成果优先；普通以组件进度为准，重复调用不增长进度或重建已有状态。</summary>
         public static void Sync(Pawn pawn)
         {
             if (pawn?.health?.hediffSet == null || SSCDefOf.SSC_Hediff_Combatant == null) return;
             CompSexSlaveTraining comp = pawn.TryGetComp<CompSexSlaveTraining>();
             if (comp == null) return;
+            if (HasFinalState(pawn))
+            {
+                RemoveOrdinaryState(pawn);
+                // 保留原终极实例，避免阶段四挂接能力后被同步刷新冷却。
+                Hediff final = pawn.health.hediffSet.GetFirstHediffOfDef(SSCDefOf.SSC_Hediff_Combatant_Final);
+                var states = pawn.health.hediffSet.hediffs;
+                for (int i = states.Count - 1; i >= 0; i--)
+                    if (states[i].def == SSCDefOf.SSC_Hediff_Combatant_Final && states[i] != final)
+                        pawn.health.RemoveHediff(states[i]);
+                return;
+            }
             if (comp.specializationType != SexSlaveSpecializationType.Combatant)
             {
                 RemoveOrdinaryState(pawn);

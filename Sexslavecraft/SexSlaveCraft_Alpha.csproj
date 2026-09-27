@@ -94,6 +94,7 @@
     <Compile Include="common\BindingRitualSelectionUtility.cs" />
     <Compile Include="common\BindingRitualSelectionWidget.cs" />
     <Compile Include="common\CombatantSpecializationUtility.cs" />
+    <Compile Include="common\CombatantSpecializationGelUtility.cs" />
     <Compile Include="common\CombatantSpecializationProgressUtility.cs" />
     <Compile Include="common\CombatantKillUtility.cs" />
     <Compile Include="ThePatches\Harmony_CombatantExperience.cs" />

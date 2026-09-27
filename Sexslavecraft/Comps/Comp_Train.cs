@@ -345,10 +345,30 @@ namespace SexSlaveCraft
                 yield break;
             }
 
-            if (!Prefs.DevMode || SSCMod.settings?.enableDebugGizmos != true || pawn.Faction != Faction.OfPlayer)
+            if (!Prefs.DevMode || SSCMod.settings?.enableDebugGizmos != true)
             {
                 yield break;
             }
+
+            // 特化页也支持殖民地囚犯；此测试入口沿用同一对象范围。
+            if (SSCIdentityUtility.IsSupportedVanillaStatus(pawn) && specializationType != SexSlaveSpecializationType.None)
+            {
+                yield return new Command_Action
+                {
+                    defaultLabel = "SSC_DEV_CompleteSpecialization".Translate(),
+                    defaultDesc = "SSC_DEV_CompleteSpecialization_Desc".Translate(),
+                    action = delegate
+                    {
+                        // 按点击时的当前方向操作，避免按钮生成后切到未选择。
+                        if (specializationType == SexSlaveSpecializationType.None) return;
+                        specializationProgress = 1f;
+                        SetSavedProgress(specializationType, 1f);
+                        ReconcileSpecialization(pawn);
+                    }
+                };
+            }
+
+            if (pawn.Faction != Faction.OfPlayer) yield break;
 
             yield return new Command_Action
             {

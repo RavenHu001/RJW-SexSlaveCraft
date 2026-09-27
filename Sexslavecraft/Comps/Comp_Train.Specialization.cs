@@ -38,6 +38,14 @@ namespace SexSlaveCraft
             return CopySpecializationProgress(specializationType, specializationProgress, perTypeProgress);
         }
 
+        /// <summary>快照保存后让战斗员培养随人格离开身体；保留其他方向的既有行为。</summary>
+        internal void ClearCombatantProgressAfterExtraction()
+        {
+            if (specializationType == SexSlaveSpecializationType.Combatant)
+                SetSpecialization(SexSlaveSpecializationType.None);
+            perTypeProgress?.Remove(SexSlaveSpecializationType.Combatant.ToString());
+        }
+
         /// <summary>用人格快照整体替换身体原有训练历史；旧凝胶缺少历史时只恢复已知的当前方向。</summary>
         public void RestoreSpecializationProgress(
             SexSlaveSpecializationType type,

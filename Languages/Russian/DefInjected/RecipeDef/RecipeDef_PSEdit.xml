@@ -7,4 +7,7 @@
   <SSC_PSEdit_TrainerOfficer_Final.label>Специализация секс-раба (старший инструктор)</SSC_PSEdit_TrainerOfficer_Final.label>
   <SSC_PSEdit_TrainerOfficer_Final.description>Преобразует гель личности обученного инструктора в старшего инструктора. Требуется завершённая подготовка без прежней финализации.</SSC_PSEdit_TrainerOfficer_Final.description>
   <SSC_PSEdit_TrainerOfficer_Final.jobString>Формирование личности старшего инструктора...</SSC_PSEdit_TrainerOfficer_Final.jobString>
+  <SSC_PSEdit_Combatant_Final.label>Специализация секс-раба (финальный боец)</SSC_PSEdit_Combatant_Final.label>
+  <SSC_PSEdit_Combatant_Final.description>Превращает личностный гель с завершённой обычной подготовкой бойца в финального бойца. Требуются текущее направление бойца, его обычная метка и отсутствие прежней финализации бойца.</SSC_PSEdit_Combatant_Final.description>
+  <SSC_PSEdit_Combatant_Final.jobString>Формирование личности финального бойца...</SSC_PSEdit_Combatant_Final.jobString>
 </LanguageData>

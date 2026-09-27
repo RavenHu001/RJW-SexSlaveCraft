@@ -35,6 +35,7 @@ internal static partial class Program
         Run("阶段边界读取真实 XML，熟练收益不叠加", StageDefinitions);
         Run("研究成本、前置与四语资源完整", Resources);
         RunExperienceCases();
+        RunFinalCases();
         Console.WriteLine($"结果：{passed}/{passed + failed} 项通过。");
         return failed == 0 ? 0 : 1;
     }
@@ -144,7 +145,8 @@ internal static partial class Program
         var p = Pawn(); Train(p, 1);
         Check(p.health.hediffSet.hediffs.Count == 1 && Ordinary(p) != null, "普通完成生成额外状态");
         var xml = XDocument.Load(Path.Combine(root, "Defs/HediffDefs/SSC_HediffDefs_CombatantSpecialization.xml"));
-        Check(xml.Root.Elements().Count() == 1 && !xml.Descendants("comps").Any(), "普通定义包含额外状态或授予能力组件");
+        var ordinary = xml.Root.Elements().Single(e => (string)e.Element("defName") == "SSC_Hediff_Combatant");
+        Check(ordinary.Element("comps") == null, "普通定义授予能力组件");
     }
     private static void Switching()
     {
@@ -250,7 +252,8 @@ internal static partial class Program
     private static void StageDefinitions()
     {
         var stages = XDocument.Load(Path.Combine(root, "Defs/HediffDefs/SSC_HediffDefs_CombatantSpecialization.xml"))
-            .Descendants("stages").Single().Elements("li").ToArray();
+            .Root.Elements("HediffDef").Single(e => (string)e.Element("defName") == "SSC_Hediff_Combatant")
+            .Element("stages").Elements("li").ToArray();
         Check(stages.Length == 3, "普通阶段数量错误");
         foreach (var entry in new[] { (0f, 0), (0.19999f, 0), (0.2f, 1), (0.49999f, 1), (0.5f, 2), (0.999f, 2), (1f, 2) })
         {
@@ -281,7 +284,7 @@ internal static partial class Program
             Check(keyed.Root.Elements().Count() == 5 && keyed.Root.Elements().All(e => !string.IsNullOrWhiteSpace(e.Value)), "缺少界面翻译");
             if (lang == "ChineseSimplified") continue;
             var defs = XDocument.Load(Path.Combine(root, "Languages", lang, "DefInjected/HediffDef/SSC_HediffDefs_CombatantSpecialization.xml"));
-            Check(defs.Root.Elements().Count() == 5, "缺少阶段翻译");
+            Check(defs.Root.Elements().Count() == 7, "缺少阶段翻译");
         }
     }
 }

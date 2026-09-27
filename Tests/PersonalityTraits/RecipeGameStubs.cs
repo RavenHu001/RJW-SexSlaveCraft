@@ -28,9 +28,10 @@ namespace Verse
 
 namespace RimWorld
 {
-    public class Bill_Production
+    public class Bill { public RecipeDef recipe; }
+
+    public class Bill_Production : Bill
     {
-        public RecipeDef recipe;
         public int repeatCount = 1;
         public int completedIterations;
 

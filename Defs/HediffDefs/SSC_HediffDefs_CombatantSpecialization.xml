@@ -47,4 +47,31 @@
       </li>
     </stages>
   </HediffDef>
+  <!-- 终极成果随人格永久保存；阶段四再接入主动能力。 -->
+  <HediffDef>
+    <defName>SSC_Hediff_Combatant_Final</defName>
+    <label>终极战斗员</label>
+    <description>人格凝胶加工并植入后获得的永久战斗特化。提高射击与近战命中原始评分，缩短瞄准和近战冷却，降低日常精神崩溃临界值，承伤乘以 0.80。替换普通战斗员效果，切换培养方向、解绑或退阶后仍保留；人格抽取时随人格离开原身体。主动能力尚未接入。</description>
+    <initialSeverity>1</initialSeverity>
+    <maxSeverity>1</maxSeverity>
+    <isBad>false</isBad>
+    <tendable>false</tendable>
+    <everCurableByItem>false</everCurableByItem>
+    <makesSickThought>false</makesSickThought>
+    <stages>
+      <li>
+        <minSeverity>0</minSeverity>
+        <statOffsets>
+          <ShootingAccuracyPawn>6</ShootingAccuracyPawn>
+          <MeleeHitChance>6</MeleeHitChance>
+          <MentalBreakThreshold>-0.06</MentalBreakThreshold>
+        </statOffsets>
+        <statFactors>
+          <AimingDelayFactor>0.85</AimingDelayFactor>
+          <MeleeCooldownFactor>0.85</MeleeCooldownFactor>
+          <IncomingDamageFactor>0.80</IncomingDamageFactor>
+        </statFactors>
+      </li>
+    </stages>
+  </HediffDef>
 </Defs>

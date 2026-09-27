@@ -869,7 +869,9 @@ namespace SexSlaveCraft
         {
             bool available = CombatantSpecializationUtility.CanSelect(pawn, out string reason);
             string label = Strings.ITab_SelectSpecializationCombatant;
-            if (!available && !string.IsNullOrEmpty(reason)) label += " (" + reason + ")";
+            if (CombatantSpecializationUtility.HasFinalState(pawn))
+                label += " " + Strings.ITab_SpecializationFinalizedSuffix;
+            else if (!available && !string.IsNullOrEmpty(reason)) label += " (" + reason + ")";
             return new FloatMenuOption(label, available ? (Action)delegate
             {
                 if (!CombatantSpecializationUtility.CanSelect(pawn, out _)) return;

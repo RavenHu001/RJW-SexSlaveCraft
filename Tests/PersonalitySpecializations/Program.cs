@@ -82,11 +82,11 @@ internal static class Program
     /// <summary>联合执行真实方向切换和真实 ITab 显示，防止数据已清空而按钮仍冒充旧方向。</summary>
     private static void FinalizedSelectionCanDisplayNone()
     {
-        // 战斗员阶段一仅提供普通培养；这里只遍历已实现终极记录的方向。
+        // 遍历全部已实现的终极方向，包括阶段三战斗员。
         foreach (SexSlaveSpecializationType type in new[] { SexSlaveSpecializationType.Bus,
             SexSlaveSpecializationType.Cow, SexSlaveSpecializationType.PetCat,
             SexSlaveSpecializationType.PetDog, SexSlaveSpecializationType.PetRabbit,
-            SexSlaveSpecializationType.TrainerOfficer })
+            SexSlaveSpecializationType.TrainerOfficer, SexSlaveSpecializationType.Combatant })
         {
             if (type == SexSlaveSpecializationType.None) continue;
             var pawn = new Pawn();
@@ -112,7 +112,7 @@ internal static class Program
     private static void MultipleFinalRecordsDoNotReplaceSelection()
     {
         var pawn = new Pawn();
-        pawn.Finalized.UnionWith(new[] { SexSlaveSpecializationType.Bus, SexSlaveSpecializationType.TrainerOfficer });
+        pawn.Finalized.UnionWith(new[] { SexSlaveSpecializationType.Bus, SexSlaveSpecializationType.TrainerOfficer, SexSlaveSpecializationType.Combatant });
         var comp = new CompSexSlaveTraining { parent = pawn };
         comp.SetSpecialization(SexSlaveSpecializationType.Cow);
         comp.specializationProgress = 0.35f;
@@ -124,7 +124,7 @@ internal static class Program
         Assert(ITab_SexSlaveTraining.ProgressForTest(pawn, comp) == 0f.ToStringPercent(), "多个终极记录令空方向显示已完成");
         comp.RestoreSpecializationProgress(SexSlaveSpecializationType.None, 0f, comp.ExportSpecializationProgress());
         Assert(ITab_SexSlaveTraining.LabelForTest(pawn, comp) == Strings.ITab_SpecializationNone, "恢复后的空方向被替代");
-        Assert(pawn.Finalized.Count == 2, "历史终极记录应完整保留");
+        Assert(pawn.Finalized.Count == 3, "历史终极记录应完整保留");
     }
 
     /// <summary>生产切换入口保存“未选择”意图，同时保留旧档健康状态恢复的入口。</summary>

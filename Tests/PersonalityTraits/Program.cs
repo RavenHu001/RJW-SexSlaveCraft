@@ -45,6 +45,7 @@ internal static partial class Program
         Run("旧记忆快照在加工与植入后使用定义默认数值", LegacyMemoryTransfer);
         Run("完整特化历史参与凝胶存档字段读写并识别缺失旧字段", SpecializationPersistenceContract);
         Run("记忆新字段参与存档读写并识别旧数据默认值", MemoryPersistenceContract);
+        RunCombatantCases();
         Console.WriteLine($"RESULT: {passed}/{passed + failed} cases passed.");
         return failed == 0 ? 0 : 1;
     }

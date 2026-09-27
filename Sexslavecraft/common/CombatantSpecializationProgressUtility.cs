@@ -35,7 +35,8 @@ namespace SexSlaveCraft
             if (pawn == null || pawn.Dead || pawn.Destroyed || !IsPositiveFinite(amount)) return 0f;
             CompSexSlaveTraining comp = pawn.TryGetComp<CompSexSlaveTraining>();
             if (comp == null || !SSCIdentityUtility.IsSexSlave(pawn) ||
-                comp.specializationType != SexSlaveSpecializationType.Combatant) return 0f;
+                comp.specializationType != SexSlaveSpecializationType.Combatant ||
+                CombatantSpecializationUtility.HasFinalState(pawn)) return 0f;
 
             float before = CompSexSlaveTraining.NormalizeSpecializationProgress(comp.specializationProgress);
             comp.specializationProgress = before;

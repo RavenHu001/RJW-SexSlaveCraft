@@ -9,6 +9,8 @@ namespace SexSlaveCraft
         {
             switch (type)
             {
+                case SexSlaveSpecializationType.Combatant:
+                    return CombatantSpecializationUtility.HasFinalState(pawn);
                 case SexSlaveSpecializationType.Bus:
                     return BusSpecializationUtility.HasFinalBusState(pawn);
                 case SexSlaveSpecializationType.Cow:
@@ -88,6 +90,8 @@ namespace SexSlaveCraft
             // 终极记录仍由各自健康状态及训导官独立状态行展示，不在这里改写其效果。
             if (comp.specializationType == SexSlaveSpecializationType.Combatant)
             {
+                if (IsTypeFinalized(pawn, comp.specializationType))
+                    return Strings.ITab_SpecializationComplete;
                 float progress = CompSexSlaveTraining.NormalizeSpecializationProgress(comp.specializationProgress);
                 // 一位小数避免 99.5% 被整数格式舍入成 100%；完成判断使用公共容差。
                 return progress >= CompSexSlaveTraining.SpecializationCompletionProgress

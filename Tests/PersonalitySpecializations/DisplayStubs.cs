@@ -46,6 +46,10 @@ namespace SexSlaveCraft
         public static bool HasFinalPetState(Pawn pawn, SexSlaveSpecializationType type) => pawn.Finalized.Contains(type);
         public static string GetSpecializationLabel(SexSlaveSpecializationType type) => type.ToString();
     }
+    public static class CombatantSpecializationUtility
+    {
+        public static bool HasFinalState(Pawn pawn) => pawn.Finalized.Contains(SexSlaveSpecializationType.Combatant);
+    }
     public static class TrainerSpecializationUtility
     {
         public static bool HasFinalRecord(Pawn pawn) => pawn.Finalized.Contains(SexSlaveSpecializationType.TrainerOfficer);

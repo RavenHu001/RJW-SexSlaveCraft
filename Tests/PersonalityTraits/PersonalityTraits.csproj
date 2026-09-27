@@ -13,5 +13,10 @@
     <Compile Include="$(SscSourceRoot)/common/TrainerSpecializationGelUtility.cs" Link="Production/TrainerSpecializationGelUtility.cs" />
     <Compile Include="$(SscSourceRoot)/Recipe/Recipe_PEMake.cs" Link="Production/Recipe_PEMake.cs" />
     <Compile Include="$(SscSourceRoot)/ThePatches/Harmony_TrainerRecipeCompletion.cs" Link="Production/Harmony_TrainerRecipeCompletion.cs" />
+    <Compile Include="$(SscSourceRoot)/common/CombatantSpecializationUtility.cs" Link="Production/CombatantSpecializationUtility.cs" />
+    <Compile Include="$(SscSourceRoot)/common/CombatantSpecializationGelUtility.cs" Link="Production/CombatantSpecializationGelUtility.cs" />
+    <Compile Include="$(SscSourceRoot)/Comps/Comp_Train.SpecializationHealth.cs" Link="Production/Comp_Train.SpecializationHealth.cs" />
+    <Compile Include="$(SscSourceRoot)/common/PersonalityGelUtility.cs" Link="Production/PersonalityGelUtility.cs" />
+    <Compile Include="$(SscSourceRoot)/ThePatches/Harmony_RecipeMaterial.cs" Link="Production/Harmony_RecipeMaterial.cs" />
   </ItemGroup>
 </Project>
