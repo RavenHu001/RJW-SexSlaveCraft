@@ -1438,7 +1438,7 @@ This section records the audited code behavior and known limitations.
 1. **Fine Training is not implemented.** The body-part detection, sensitivity, reward, and progress methods in `FineTrainingUtility` still return placeholders. The Training tab fields are reserved only.
 2. **Binding Ritual genital compatibility is fixed at the worst bracket.** The ritual calls a size-difference method that currently returns `0`, producing `-20%`. Ordinary Training size scoring works separately.
 3. **Erotic Word has no normal acquisition path.** The ability and grant component exist, but the Mouth Hediff XML does not attach the component.
-4. **Several research nodes are technology-tree placeholders.** `Basic PNA Application`, `Basic PNA Launcher`, `Femboy Conversion`, pet cat/dog/rabbit, and `Combatant` do not unlock a complete matching system. `Personality Editing (currently Public Use only)` mainly acts as the parent node for Public Use and Cow research.
+4. **Several research nodes are technology-tree placeholders.** `Basic PNA Application`, `Basic PNA Launcher`, `Femboy Conversion`, and pet cat/dog/rabbit do not unlock a complete matching system. `Combatant` supports ordinary training and experience; gel finalization and its special ability remain pending. `Personality Editing (currently Public Use only)` mainly acts as the parent node for Public Use and Cow research.
 5. **Basic PNA Launcher checks vanilla Machining only.** Its recipe does not reference SSC’s launcher research.
 6. **Sex Reassignment Surgery is not research-locked.** Its operation exists without a `researchPrerequisite`. Its companion ThoughtDef XML also contains a duplicate `defName`, which may cause a load issue for the success memory.
 7. **Personality trait transfer and the gel UI have been fixed.** The maintainer has confirmed this round of fixes is effective. Ordinary personality traits are now restored from the gel snapshot while preserving the receiving body's genes and their traits. Legacy entries are restored as personality traits because their source was not recorded; new gels save only traits without a gene source. The Sex Slave trait is still rebuilt separately from restored highest-ever Corruption. See the [fix record (Chinese)](Docs/Development/人格普通特质迁移修复.md) for details.
@@ -1468,7 +1468,7 @@ This section records the audited code behavior and known limitations.
 | Milking Specialization | 1,200 | Personality Editing (currently Public Use only) | Cow Specialization and Final Cow recipe |
 | Public Use | 1,200 | Personality Editing (currently Public Use only) | Public Use Specialization and final recipe |
 | Pet: Cat | 1,200 | Personality Editing (currently Public Use only) | Selection disabled; marked Incomplete |
-| Combatant | 1,200 | Personality Editing (currently Public Use only) | Not implemented |
+| Combatant | 1,200 | Personality Editing (currently Public Use only) | Ordinary bonuses and Training/direct-kill experience implemented; finalization pending |
 | Pet: Dog | 1,500 | Pet: Cat | Not implemented |
 | Pet: Rabbit | 1,800 | Pet: Dog | Selection disabled; marked Incomplete; saved birth mode read-only |
 | Partial Gelatinization | 2,000 | Personality Excretion | Semi-gelatinization Surgery |
@@ -1531,3 +1531,13 @@ This is a continuing race rather than one success roll. Before all six body-part
 ### SSC milk reservoirs stop under Human Cattle
 
 This is intentional integration behavior. Human Cattle becomes the sole real reservoir, SSC clears and disables its own milk reservoirs, and Cow multipliers are injected into `BaseLactationFactor`.
+
+### How does Combatant progress?
+
+After completing Combatant research, select Combatant on the Training tab. No SSC identity, bound master, or chain stage is required. Basic bonuses start at 20%; proficient bonuses start at 50% and multiply incoming damage by 0.90. Switching directions preserves progress.
+
+Completed ordinary Training grants `clamp(score / 2000, 0, 0.04)` progress. The actual bound master multiplies this reward by 1.5: up to 4% normally, or 6% with the bound master. Other trainers still grant the base reward. Nonpositive or invalid scores grant none.
+
+Direct kills grant the victim's actual body size × 1% progress, capped at 3%, with no minimum. Victim species, faction, hostility and downed status do not affect this reward. Direct hunting kills, executions and finishing blows count. Binding Rituals, slaughter, blood loss, ongoing fire, traps and redirected bond damage do not count; no last-attacker history is consulted.
+
+Ordinary completion stops further growth and retains proficient bonuses without granting an ability. Combatant gel finalization and its special ability are not yet implemented.

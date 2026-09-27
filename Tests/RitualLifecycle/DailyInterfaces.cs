@@ -75,13 +75,32 @@ namespace SexSlaveCraft
     public static class ConditioningUtility
     {
         /// <summary>返回固定分数以观察生产结算入口。</summary>
-        public static float GetScore(Pawn actor, Pawn target) => 1;
+        public static float GetScore(Pawn actor, Pawn target)
+        {
+            TestWorld.ScoreCalls++;
+            return TestWorld.ScoreCalls * 40f;
+        }
         /// <summary>记录日常结算次数，不重写实际收益算法。</summary>
-        public static void ExecuteOutcome(Pawn actor, Pawn target) => TestWorld.DailyOutcomes++;
+        public static void ExecuteOutcome(Pawn actor, Pawn target, float score)
+        {
+            TestWorld.DailyOutcomes++;
+            TestWorld.OutcomeScore = score;
+            TestWorld.OnDailyOutcome?.Invoke();
+        }
+    }
+    public static class CombatantSpecializationProgressUtility
+    {
+        // 数值与主人关系由 CombatantSpecialization 套件验证，这里记录真实 Job 的发奖时序。
+        public static float NotifyDailyTrainingCompleted(Pawn trainer, Pawn receiver, float score)
+        {
+            TestWorld.CombatantProgressAwards++;
+            TestWorld.CombatantScore = score;
+            return 0;
+        }
     }
     public static class TrainingExpUtility
     {
         /// <summary>本流程套件不计算部位经验，只验证收益是否被调用。</summary>
-        public static void ApplyExperienceFromScore(Pawn target, int kind, float score, float multiplier) { }
+        public static void ApplyExperienceFromScore(Pawn target, int kind, float score, float multiplier) => TestWorld.BodyScore = score;
     }
 }

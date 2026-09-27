@@ -95,7 +95,13 @@ namespace Verse
     public static class Scribe_Values
     {
         /// <summary>提供布尔字段序列化占位入口；保留测试设置的值，不模拟实际存档读写。</summary>
-        public static void Look<T>(ref T value, string label, T defaultValue) { }
+        public static void Look<T>(ref T value, string label, T defaultValue)
+        {
+            if (Scribe.mode == LoadSaveMode.Saving) Saved[label] = value;
+            else if (Scribe.mode == LoadSaveMode.LoadingVars)
+                value = Saved.TryGetValue(label, out object stored) ? (T)stored : defaultValue;
+        }
+        public static readonly Dictionary<string, object> Saved = new Dictionary<string, object>();
     }
     public static class Scribe_References
     {
@@ -444,7 +450,7 @@ namespace rjw
         /// <summary>提供体力消耗占位；宿主不维护需求数值。</summary>
         public static void reduce_rest(Pawn pawn, float multiplier = 1f) { }
         /// <summary>累计场景结算次数，不派发实际奖励或产生游戏副作用。</summary>
-        public static void ProcessSex(SexProps props) => TestWorld.ProcessSexCalls++;
+        public static void ProcessSex(SexProps props) { TestWorld.ProcessSexCalls++; TestWorld.OnProcessSex?.Invoke(); }
     }
 }
 
@@ -453,6 +459,9 @@ internal static class TestWorld
     public static Map Map;
     public static int ProcessSexCalls, DailyOutcomes, DailyCooldowns, TrainerProgressAwards;
     public static bool ReceiverSucceeds = true, SynchronizeSucceeds = true;
+    public static int CombatantProgressAwards, ScoreCalls;
+    public static float OutcomeScore, BodyScore, CombatantScore;
+    public static Action OnDailyOutcome, OnProcessSex;
     public static int RjwEndCalls;
     public static PathEndMode LastGotoThingMode;
     public static Action OnGotoInit;
@@ -464,6 +473,11 @@ internal static class TestWorld
         Map = new Map();
         SSCMod.settings = new Settings();
         ProcessSexCalls = DailyOutcomes = DailyCooldowns = TrainerProgressAwards = 0;
+        CombatantProgressAwards = ScoreCalls = 0;
+        OutcomeScore = BodyScore = CombatantScore = 0;
+        OnDailyOutcome = OnProcessSex = null;
+        Scribe.mode = LoadSaveMode.Inactive;
+        Scribe_Values.Saved.Clear();
         ReceiverSucceeds = SynchronizeSucceeds = true;
         RjwEndCalls = 0;
         LastGotoThingMode = PathEndMode.OnCell;

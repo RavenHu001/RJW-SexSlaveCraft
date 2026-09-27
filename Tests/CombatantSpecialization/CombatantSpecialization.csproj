@@ -10,5 +10,12 @@
     <Compile Include="$(SscSourceRoot)/common/CombatantSpecializationUtility.cs" Link="Production/CombatantSpecializationUtility.cs" />
     <Compile Include="$(SscSourceRoot)/common/ResearchUtils.cs" Link="Production/ResearchUtils.cs" />
     <Compile Include="$(SscSourceRoot)/ITab/ITab_SexSlaveTraining.SpecializationDisplay.cs" Link="Production/ITab_SexSlaveTraining.SpecializationDisplay.cs" />
+    <Compile Include="$(SscSourceRoot)/common/CombatantSpecializationProgressUtility.cs" Link="Production/CombatantSpecializationProgressUtility.cs" />
+    <Compile Include="$(SscSourceRoot)/common/CombatantKillUtility.cs" Link="Production/CombatantKillUtility.cs" />
+    <Compile Include="$(SscSourceRoot)/ThePatches/Harmony_CombatantExperience.cs" Link="Production/Harmony_CombatantExperience.cs" />
+    <Reference Include="0Harmony"><HintPath>$(HarmonyAssemblyPath)</HintPath></Reference>
   </ItemGroup>
+  <Target Name="RequireHarmony" BeforeTargets="ResolveReferences" Condition="!Exists('$(HarmonyAssemblyPath)')">
+    <Error Text="Supply -p:HarmonyAssemblyPath with a local net9.0 0Harmony.dll." />
+  </Target>
 </Project>

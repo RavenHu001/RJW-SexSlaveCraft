@@ -20,7 +20,7 @@ namespace SexSlaveCraft
         private bool sceneStarted;
         private bool hasSceneRecord = true;
         private bool legacySceneProgress;
-        private bool trainerProgressAwarded;
+        private bool dailyOutcomeClaimed;
         private int approachIdleRetries;
         private const int ApproachRetryIntervalTicks = 60;
         private const int MaxApproachIdleRetries = 10;
@@ -32,9 +32,9 @@ namespace SexSlaveCraft
             Scribe_References.Look(ref preparedTrainingTarget, "sscPreparedTrainingTarget");
             Scribe_Values.Look(ref hasSceneRecord, "sscDailySceneRecord", false);
             Scribe_Values.Look(ref sceneStarted, "sscDailySceneStarted", false);
-            // 经验认领属于这一次日常 Job。保存后读档，即使最后的即时步骤
-            // 被再次调用，也不会为同一场景再次发放训导官进度。
-            Scribe_Values.Look(ref trainerProgressAwarded, "sscTrainerProgressAwarded", false);
+            // 沿用旧特化奖励存档键。现统一认领整次日常结算，避免重复 ProcessSex、
+            // 评分或特化发奖；旧档中已领取的任务也不会在升级后补发战斗员经验。
+            Scribe_Values.Look(ref dailyOutcomeClaimed, "sscTrainerProgressAwarded", false);
             // 行走中的存档可能已经停在 Goto toil，却没有活动寻路。
             // 保留有限重试次数，读档后继续修复而不会无限挂在同一任务。
             Scribe_Values.Look(ref approachIdleRetries, "sscApproachIdleRetries", 0);
@@ -229,7 +229,10 @@ namespace SexSlaveCraft
             {
                 initAction = delegate
                 {
-                    if (!sceneStarted || ticks_left > 0 || pawn.jobs?.curDriver != this) return;
+                    if (!sceneStarted || ticks_left > 0 || pawn.jobs?.curDriver != this || dailyOutcomeClaimed ||
+                        Sexprops == null || Partner == null || Partner.Dead || Partner.Destroyed) return;
+                    // 先保存认领事实，覆盖外部回调重入及结算中途异常后的重复通知。
+                    dailyOutcomeClaimed = true;
                     SexUtility.ProcessSex(Sexprops);
                     ExecuteConditioningOutcome();
                 },
@@ -251,12 +254,12 @@ namespace SexSlaveCraft
         /// <summary>对仍存活的目标结算日常调教评分和对应部位经验，随后通知训练完成并启动冷却。</summary>
         private void ExecuteConditioningOutcome()
         {
-            if (Partner == null || Partner.Dead) return;
+            if (Partner == null || Partner.Dead || Partner.Destroyed) return;
 
             // EN: Step 1: remember the daily training score before the facade applies the actual outcome.
             // CN: 步骤 1：先记下这次日常调教分数，再进入正式结算。
             float score = ConditioningUtility.GetScore(pawn, Partner);
-            ConditioningUtility.ExecuteOutcome(pawn, Partner);
+            ConditioningUtility.ExecuteOutcome(pawn, Partner, score);
             if (Sexprops != null)
             {
                 // EN: Step 2: convert this training scene into the matching body-part experience payout.
@@ -274,12 +277,9 @@ namespace SexSlaveCraft
 
             // RJW 的 ProcessSex 也会经过普通双人经验补丁，但该补丁排除 SSC
             // 日常 Job；这里在真正完成全部训练结算后，给双方各自的特化发奖。
-            // 先保存领取事实再运行奖励逻辑，防止回调重入或读档重复领经验。
-            if (!trainerProgressAwarded && Sexprops != null)
-            {
-                trainerProgressAwarded = true;
-                TrainerSpecializationProgressUtility.NotifyTrainingCompleted(pawn, Partner);
-            }
+            // 整次认领已在进入结算前保存；两种特化各自判断，不互相阻止。
+            TrainerSpecializationProgressUtility.NotifyTrainingCompleted(pawn, Partner);
+            CombatantSpecializationProgressUtility.NotifyDailyTrainingCompleted(pawn, Partner, score);
 
             string finalSexType = Sexprops != null ? Sexprops.sexType.ToString() : "null";
             SSCLog.Important($"[SSC_TRAIN] Daily training completed: trainer={pawn.LabelShort}, slave={Partner.LabelShort}, sexType={finalSexType}, score={score:F2}, cooldownStarted={(compToggle != null)}");

@@ -1,6 +1,6 @@
 # Binding Ritual lifecycle regression tests
 
-The suite currently contains 61 cases, including ritual lifecycle, UAP compatibility,
+The suite currently contains 69 cases, including ritual lifecycle, UAP compatibility,
 daily training, Education interactions, and receiver handoff/reservation regressions.
 The original lifecycle tests were committed with the lifecycle fix
 in [481ac53](https://github.com/RavenHu001/RJW-SexSlaveCraft-TieJin-Modify/commit/481ac53135842064262d8a34a2beed173b0ace2b)
@@ -11,7 +11,7 @@ Run from the repository root with .NET SDK 9:
 
 ```powershell
 dotnet run --project Tests/RitualLifecycle/RitualLifecycle.csproj
-# Omit the UAP type entirely: 51 shared cases plus one absence check (52 total).
+# Omit the UAP type entirely: shared cases plus an absence check.
 dotnet run --project Tests/RitualLifecycle/RitualLifecycle.csproj -p:EnableUapTestStub=false
 ```
 
@@ -70,3 +70,11 @@ corruption numerical behavior.
 Stage 3B also links the production daily driver and restriction core/adapter. Its cases cover preparation failure, walking cleanup, unstarted scene settlement, stale callbacks, normal daily payout, owner precedence, phase cancellation and cancellation ownership. Cancellation is modeled by invoking the production cleanup patches after removing the lord; the real RimWorld signal graph is not executed. Exact restriction save markers and Harmony dispatch are covered by InteractionProtection; role selection and the full trainer identity utility are covered by TrainerIdentity.
 
 The Training Officer Stage 3 assertions require a completed daily scene to notify specialization progress once. A repeated payout callback cannot notify it again; the actual progress calculation is covered by TrainerIdentity.
+
+The eight stage-two combatant cases run the production daily driver to verify one
+score shared by the formal outcome, body experience and combatant award; repeated
+or reentrant callbacks; partial-outcome exceptions; reconstruction of completed
+and unfinished jobs through their actual ExposeData keys; interruptions; separate
+jobs; and exclusion of ritual phases. Outcome calculations and the combatant award
+are observable boundary stubs here; the actual combatant rules run in the
+CombatantSpecialization suite. The Scribe dictionary model is not a real game save.

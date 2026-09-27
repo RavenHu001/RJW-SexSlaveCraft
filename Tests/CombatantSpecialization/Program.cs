@@ -9,7 +9,7 @@ using System.Xml.Linq;
 using SexSlaveCraft;
 using Verse;
 
-internal static class Program
+internal static partial class Program
 {
     private static int passed, failed;
     private static string root;
@@ -34,6 +34,7 @@ internal static class Program
         Run("显示区分普通完成和终极，未完成不舍入至百分百", CompletionDisplay);
         Run("阶段边界读取真实 XML，熟练收益不叠加", StageDefinitions);
         Run("研究成本、前置与四语资源完整", Resources);
+        RunExperienceCases();
         Console.WriteLine($"结果：{passed}/{passed + failed} 项通过。");
         return failed == 0 ? 0 : 1;
     }

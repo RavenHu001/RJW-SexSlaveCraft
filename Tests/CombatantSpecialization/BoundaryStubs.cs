@@ -6,8 +6,8 @@ using SexSlaveCraft;
 
 namespace Verse
 {
-    public class Thing { }
-    public class Pawn : Thing
+    public class Thing { public bool Destroyed; }
+    public partial class Pawn : Thing
     {
         public bool IsColonist = true, IsPrisonerOfColony, IsSlave;
         public CompSexSlaveTraining Training;

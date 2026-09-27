@@ -160,6 +160,14 @@ namespace SexSlaveCraft
             SpecializationHealthChanged();
         }
 
+        /// <summary>为当前方向累计正向训练进度，并把结果限制在完成范围内。</summary>
+        public float AddSpecializationProgress(float amount)
+        {
+            if (amount <= 0f || specializationType == SexSlaveSpecializationType.None) return specializationProgress;
+            specializationProgress = Math.Max(0f, Math.Min(1f, specializationProgress + amount));
+            return specializationProgress;
+        }
+
         // 游戏宿主负责派生健康状态；独立的数据测试无需加载完整 Pawn 组件。
         partial void SpecializationHealthChanged();
 

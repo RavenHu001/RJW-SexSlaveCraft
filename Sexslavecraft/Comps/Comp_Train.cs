@@ -332,14 +332,6 @@ namespace SexSlaveCraft
             return Strings.Train_Status(status);
         }
 
-        /// <summary>为当前方向累计正向训练进度，并把结果限制在完成范围内。</summary>
-        public float AddSpecializationProgress(float amount)
-        {
-            if (amount <= 0f || specializationType == SexSlaveSpecializationType.None) return specializationProgress;
-            specializationProgress = Mathf.Clamp01(specializationProgress + amount);
-            return specializationProgress;
-        }
-
         /// <summary>生成训练配置与开发调试按钮；开发清理操作也通过统一入口复位仪式临时状态。</summary>
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
         {

@@ -12,14 +12,19 @@ namespace SexSlaveCraft
         public static void ExecuteOutcome(Pawn master, Pawn sexSlave)
         {
             if (sexSlave == null || master == null) return;
+            ExecuteOutcome(master, sexSlave, GetScore(master, sexSlave));
+        }
 
+        /// <summary>日常驱动传入本次唯一评分，旧评分的随机项也只采样一次。</summary>
+        public static void ExecuteOutcome(Pawn master, Pawn sexSlave, float score)
+        {
+            if (sexSlave == null || master == null) return;
             if (SSCMod.settings?.useOldScoring ?? false)
             {
-                ExecuteOutcome_Legacy(master, sexSlave);
+                ExecuteOutcome_Legacy(master, sexSlave, score);
                 return;
             }
 
-            float score = TrainingOutcomeUtility.GetScore(master, sexSlave);
             float corruptionGain = TrainingOutcomeUtility.CalculateCorruptionGain(score);
 
             float chainCap = TrainingOutcomeUtility.GetChainCap(sexSlave);
@@ -51,9 +56,8 @@ namespace SexSlaveCraft
             }
         }
 
-        private static void ExecuteOutcome_Legacy(Pawn master, Pawn sexSlave)
+        private static void ExecuteOutcome_Legacy(Pawn master, Pawn sexSlave, float score)
         {
-            float score = LegacyTrainingUtility.GetScore_Legacy(master, sexSlave);
             int finalLevel = LegacyTrainingUtility.DetermineLevel_Legacy(master, score);
 
             float corruptionGain = LegacyTrainingUtility.CalculateCorruptionGain_Legacy(score, finalLevel);
