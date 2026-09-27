@@ -5,7 +5,7 @@
     <label>战斗超频</label>
     <description>主动活化体内的紫色纳米机械液，使经过改造的身体与神经系统进入短暂的超频状态，强化攻击、防护与行动能力。仅征召时可发动。</description>
     <abilityClass>SexSlaveCraft.Ability_CombatOverdrive</abilityClass>
-    <iconPath>UI/Commands/Attack</iconPath>
+    <iconPath>UI/Icons/Abilities/SSC_CombatOverdrive</iconPath>
     <jobDef>CastAbilityOnThing</jobDef>
     <targetRequired>false</targetRequired>
     <canUseAoeToGetTargets>false</canUseAoeToGetTargets>

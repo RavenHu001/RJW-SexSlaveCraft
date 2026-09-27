@@ -69,6 +69,13 @@ try {
         $sourceDefs[$name][0]
     }
     $ability = SourceDef 'SSC_CombatOverdrive'
+    # ContentFinder resolves iconPath relative to Textures, without the extension.
+    $textureRoot = [IO.Path]::GetFullPath((Join-Path $repo 'Textures'))
+    $iconFile = [IO.Path]::GetFullPath((Join-Path $textureRoot ((NodeText $ability 'iconPath') + '.png')))
+    Require ($iconFile.StartsWith($textureRoot + [IO.Path]::DirectorySeparatorChar, [StringComparison]::OrdinalIgnoreCase)) 'Icon path escapes Textures'
+    Require (Test-Path -LiteralPath $iconFile -PathType Leaf) 'Missing Combat Overdrive icon'
+    $report.Inputs[$iconFile] = (Get-FileHash -LiteralPath $iconFile -Algorithm SHA256).Hash
+    Record 'Combat Overdrive texture reference'
     $ordinary = SourceDef 'SSC_Hediff_Combatant'
     $final = SourceDef 'SSC_Hediff_Combatant_Final'
     $buff = SourceDef 'SSC_Hediff_CombatOverdrive'
