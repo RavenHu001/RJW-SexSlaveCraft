@@ -4,7 +4,7 @@
 
 > For RimWorld 1.6 and SexSlaveCraft 2.3.4.\
 > This continuation is based on upstream 2.2.8. See `CHANGELOG.md` for release history.\
-> Version 2.3.4 adds the complete Combatant specialization, Combat Overdrive and its icon, improves specialization labels/colors, and fixes personality-excretion interruptions and competing initiators. The version is assigned; packaging and remote publication are pending. Legacy RimTalk remains suspended; unfinished Pet Cat and Pet Rabbit choices remain disabled.\
+> Version 2.3.4 adds the complete Combatant specialization, Combat Overdrive and its icon, improves specialization labels/colors, and fixes personality-excretion interruptions and competing initiators. Download the ZIP and SHA-256 checksum from [v2.3.4](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.4). Legacy RimTalk remains suspended; unfinished Pet Cat and Pet Rabbit choices remain disabled.\
 > In-game names follow the mod's official English localization. For exact formulas, thresholds, and implementation notes, see `PLAYER_GUIDE_EN.md`.
 
 > See the [2.3.4 notes](Docs/Releases/2.3.4/2.3.4发布说明.md) for this release and the [2.3.2 notes](Docs/Releases/2.3.2/2.3.2发布说明.md) for Training Officer progression, attributes and upgrading.
