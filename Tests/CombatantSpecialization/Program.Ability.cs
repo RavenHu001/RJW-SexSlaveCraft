@@ -35,6 +35,8 @@ internal static partial class Program
             (string)ability.Element("disableGizmoWhileUndrafted") == "true", "征召或自身配置缺失");
         Equal(10000, Value(ability, "cooldownTicksRange"));
         var effect = ability.Element("comps").Elements().Single();
+        // 原版此属性类的构造函数不设置 compClass；缺失时 Ability.Initialize 报空类型并跳过效果。
+        Check((string)effect.Element("compClass") == "CompAbilityEffect_GiveHediff", "缺少可实例化的 Hediff 效果组件类型");
         Check((string)effect.Attribute("Class") == "CompProperties_AbilityGiveHediff" &&
             (string)effect.Element("hediffDef") == "SSC_Hediff_CombatOverdrive" &&
             (string)effect.Element("onlyApplyToSelf") == "true" &&
