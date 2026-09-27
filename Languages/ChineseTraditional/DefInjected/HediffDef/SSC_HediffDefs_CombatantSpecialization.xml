@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-  <SSC_Hediff_Combatant.label>戰鬥員培養</SSC_Hediff_Combatant.label>
-  <SSC_Hediff_Combatant.description>正在培養通用戰鬥能力。20% 起獲得基礎收益，50% 起獲得熟練收益及常態減傷；精神崩潰臨界值的降低在日常也生效。射擊精度和近戰命中的加成作用於原始評分，並非最終機率的百分點。普通培養完成後保留熟練收益，不授予特殊能力。</SSC_Hediff_Combatant.description>
+  <SSC_Hediff_Combatant.label>性奴特化（戰鬥員）</SSC_Hediff_Combatant.label>
+  <SSC_Hediff_Combatant.description>紫色奈米機械液正隨著培養逐步改造身體與神經系統，使武器操控更加穩定，動作與應激反應更加協調。\n\n培養完成後，可將抽取的人格凝膠加工為終極戰鬥員，再透過植入獲得終極效果。</SSC_Hediff_Combatant.description>
   <SSC_Hediff_Combatant.stages.0.label>戰鬥員培養中</SSC_Hediff_Combatant.stages.0.label>
-  <SSC_Hediff_Combatant.stages.1.label>基礎戰鬥員</SSC_Hediff_Combatant.stages.1.label>
-  <SSC_Hediff_Combatant.stages.2.label>熟練戰鬥員</SSC_Hediff_Combatant.stages.2.label>
-  <SSC_Hediff_Combatant_Final.label>終極戰鬥員</SSC_Hediff_Combatant_Final.label>
-  <SSC_Hediff_Combatant_Final.description>人格凝膠加工並植入後獲得的永久戰鬥特化。提高射擊與近戰命中原始評分，縮短瞄準和近戰冷卻，降低日常精神崩潰臨界值，承傷乘以 0.80。替換普通戰鬥員效果，切換培養方向、解綁或退階後仍保留；人格抽取時隨人格離開原身體。授予僅征召時可用的「戰鬥超頻」：六項戰鬥強化持續 1 遊戲小時，冷卻 4 遊戲小時。</SSC_Hediff_Combatant_Final.description>
+  <SSC_Hediff_Combatant.stages.1.label>性奴特化（戰鬥員）</SSC_Hediff_Combatant.stages.1.label>
+  <SSC_Hediff_Combatant.stages.2.label>性奴特化（熟練戰鬥員）</SSC_Hediff_Combatant.stages.2.label>
+  <SSC_Hediff_Combatant_Final.label>性奴特化（終極戰鬥員）</SSC_Hediff_Combatant_Final.label>
+  <SSC_Hediff_Combatant_Final.description>經過終極化塑造，紫色奈米機械液對身體與神經系統的改造已形成穩定模式。戰鬥適應能力得到全面強化，並能主動活化體內微械，發動「戰鬥超頻」。\n\n這份成果隨人格保留，切換培養方向、解綁或鎖鏈退階不會使其消失。</SSC_Hediff_Combatant_Final.description>
   <SSC_Hediff_CombatOverdrive.label>戰鬥超頻</SSC_Hediff_CombatOverdrive.label>
-  <SSC_Hediff_CombatOverdrive.description>終極戰鬥員的短時強化：近戰傷害 ×1.30、近戰冷卻 ×0.75、遠程冷卻 ×0.80、承傷 ×0.75、移動速度 ×1.25、疼痛 ×0.50。持續 1 遊戲小時；解除征召不取消，抽取或替換人格時清除，不隨人格遷移。</SSC_Hediff_CombatOverdrive.description>
+  <SSC_Hediff_CombatOverdrive.description>體內的紫色奈米機械液已被主動活化，身體與神經系統正處於超頻狀態。肌肉響應更迅速，痛覺受到抑制，身體的防護與機動能力暫時增強。</SSC_Hediff_CombatOverdrive.description>
 </LanguageData>

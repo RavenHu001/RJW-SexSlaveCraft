@@ -360,7 +360,7 @@
   <RecipeDef Class="SexSlaveCraft.RecipeDef_PSTag">
     <defName>SSC_PSEdit_Combatant_Final</defName>
     <label>性奴特化（终极战斗员）</label>
-    <description>将已完成战斗员培养、尚未终极化的人格凝胶塑造成终极战斗员。</description>
+    <description>将当前培养方向为战斗员、已完成普通培养且尚未完成战斗员终极化的人格凝胶，加工为终极战斗员人格凝胶。植入后，角色获得永久战斗强化，并能主动活化体内的纳米机械液，发动“战斗超频”。保留人格已有的其他终极特化。</description>
     <jobString>正在塑造终极战斗员人格...</jobString>
     <workAmount>3500</workAmount>
     <workSpeedStat>GeneralLaborSpeed</workSpeedStat>

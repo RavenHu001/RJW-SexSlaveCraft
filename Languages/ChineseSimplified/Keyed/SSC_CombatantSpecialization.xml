@@ -4,5 +4,6 @@
   <SSC_ITab_SelectSpecializationCombatant>选择战斗员</SSC_ITab_SelectSpecializationCombatant>
   <SSC_ITab_SpecializationCombatantDisabledIdentity>需为 SSC 性奴身份</SSC_ITab_SpecializationCombatantDisabledIdentity>
   <SSC_ITab_SpecializationCombatantDisabledResearch>需完成战斗员研究</SSC_ITab_SpecializationCombatantDisabledResearch>
-  <SSC_ITab_SpecializationOrdinaryComplete>普通培养完成</SSC_ITab_SpecializationOrdinaryComplete>
+  <SSC_ITab_SpecializationOrdinaryComplete>培养完成，待终极化</SSC_ITab_SpecializationOrdinaryComplete>
+  <SSC_ITab_CombatantFinalizationTip>抽取人格凝胶，在雕刻台加工为终极战斗员后重新植入，即可获得终极效果和“战斗超频”。</SSC_ITab_CombatantFinalizationTip>
 </LanguageData>

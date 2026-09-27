@@ -44,7 +44,7 @@ At startup, SSC injects its Training component, Training tab, and related surger
 ### 2.2 Mid- and Late-game Routes
 
 - General route: `Training` → `Body-part Training` → `Personality Excretion` → semi/full gelatinization.
-- Social and trade route: `Personality Editing (currently Public Use only)` → `Public Use` → `Public Use Specialization` → extract at 100% → edit into `Final Public Use Specialization` gel → implant.
+- Social and trade route: `Personality Editing` → `Public Use` → `Public Use Specialization` → extract at 100% → edit into `Final Public Use Specialization` gel → implant.
 - Milk route: raise Breasts to 70% → gain `Permanent Lactation Phase` → research `Milking Specialization` → `Cow Specialization` → edit into `Final Cow Specialization` gel.
 - Training Officer route: research `Training Officer Specialization` → maintain a valid Master bond and Chain stage 3 as a free colonist Sex Slave → select Training Officer → reach 20% and turn on `Is a trainer` → complete training and shape final personality gel.
 
@@ -1438,7 +1438,7 @@ This section records the audited code behavior and known limitations.
 1. **Fine Training is not implemented.** The body-part detection, sensitivity, reward, and progress methods in `FineTrainingUtility` still return placeholders. The Training tab fields are reserved only.
 2. **Binding Ritual genital compatibility is fixed at the worst bracket.** The ritual calls a size-difference method that currently returns `0`, producing `-20%`. Ordinary Training size scoring works separately.
 3. **Erotic Word has no normal acquisition path.** The ability and grant component exist, but the Mouth Hediff XML does not attach the component.
-4. **Several research nodes are technology-tree placeholders.** `Basic PNA Application`, `Basic PNA Launcher`, `Femboy Conversion`, and pet cat/dog/rabbit do not unlock a complete matching system. `Combatant` supports ordinary training, experience, gel finalization, and the final Combat Overdrive ability. `Personality Editing (currently Public Use only)` mainly acts as the parent node for Public Use and Cow research.
+4. **Several research nodes are technology-tree placeholders.** `Basic PNA Application`, `Basic PNA Launcher`, `Femboy Conversion`, and pet cat/dog/rabbit do not unlock a complete matching system. `Combatant` supports ordinary training, experience, gel finalization, and the final Combat Overdrive ability. `Personality Editing` mainly acts as the parent node for Public Use and Cow research.
 5. **Basic PNA Launcher checks vanilla Machining only.** Its recipe does not reference SSC’s launcher research.
 6. **Sex Reassignment Surgery is not research-locked.** Its operation exists without a `researchPrerequisite`. Its companion ThoughtDef XML also contains a duplicate `defName`, which may cause a load issue for the success memory.
 7. **Personality trait transfer and the gel UI have been fixed.** The maintainer has confirmed this round of fixes is effective. Ordinary personality traits are now restored from the gel snapshot while preserving the receiving body's genes and their traits. Legacy entries are restored as personality traits because their source was not recorded; new gels save only traits without a gene source. The Sex Slave trait is still rebuilt separately from restored highest-ever Corruption. See the [fix record (Chinese)](Docs/Development/人格普通特质迁移修复.md) for details.
@@ -1464,11 +1464,11 @@ This section records the audited code behavior and known limitations.
 | Basic PNA Launcher | 1,000 | Basic PNA Application, Precision Rifling | Launcher recipe does not reference it |
 | PNA Concentration Technology | 1,200 | Basic PNA Application | Converts normal PNA to PNA Plus |
 | Personality Excretion | 1,500 | PNA Concentration Technology | Preparation operation and gel extraction |
-| Personality Editing (currently Public Use only) | 1,500 | Body-part Training, Personality Excretion | Parent node for Public Use and Cow |
-| Milking Specialization | 1,200 | Personality Editing (currently Public Use only) | Cow Specialization and Final Cow recipe |
-| Public Use | 1,200 | Personality Editing (currently Public Use only) | Public Use Specialization and final recipe |
-| Pet: Cat | 1,200 | Personality Editing (currently Public Use only) | Selection disabled; marked Incomplete |
-| Combatant | 1,200 | Personality Editing (currently Public Use only) | Ordinary training, experience, gel finalization, and final Combat Overdrive implemented |
+| Personality Editing | 1,500 | Body-part Training, Personality Excretion | Parent node for Public Use and Cow |
+| Milking Specialization | 1,200 | Personality Editing | Cow Specialization and Final Cow recipe |
+| Public Use | 1,200 | Personality Editing | Public Use Specialization and final recipe |
+| Pet: Cat | 1,200 | Personality Editing | Selection disabled; marked Incomplete |
+| Combatant | 1,200 | Personality Editing | Ordinary training, experience, gel finalization, and final Combat Overdrive implemented |
 | Pet: Dog | 1,500 | Pet: Cat | Not implemented |
 | Pet: Rabbit | 1,800 | Pet: Dog | Selection disabled; marked Incomplete; saved birth mode read-only |
 | Partial Gelatinization | 2,000 | Personality Excretion | Semi-gelatinization Surgery |
@@ -1534,12 +1534,50 @@ This is intentional integration behavior. Human Cattle becomes the sole real res
 
 ### How does Combatant progress?
 
-After completing Combatant research, pawns with SSC sex slave identity can select Combatant on the Training tab. Masters and pawns with no SSC identity do not see the specialization section; vanilla slave status alone does not qualify. A bound master or chain stage is not required. Basic bonuses start at 20%; proficient bonuses start at 50% and multiply incoming damage by 0.90. Switching directions preserves progress.
+Combatant training guides purple nanofluid to reshape the body and nervous system. Finalization stores this pattern with the personality. Combat Overdrive actively stimulates those nanomachines for a brief combat boost.
 
-Completed ordinary Training grants `clamp(score / 2000, 0, 0.04)` progress. The actual bound master multiplies this reward by 1.5: up to 4% normally, or 6% with the bound master. Other trainers still grant the base reward. Nonpositive or invalid scores grant none.
+**Selection and progress.** Complete Combatant research and set the pawn's SSC identity to Sex Slave on the Training tab. No bound master or chain stage is required; vanilla slave status alone does not qualify. Switching specializations preserves each path's progress, and selecting None pauses ordinary training. Ordinary bonuses are removed when switching away or selecting None; returning restores the saved progress and its bonuses. Final bonuses survive specialization changes, unbinding and chain regression.
 
-Direct kills grant the victim's actual body size × 1% progress, capped at 3%, with no minimum. Victim species, faction, hostility and downed status do not affect this reward. Direct hunting kills, executions and finishing blows count. Binding Rituals, slaughter, blood loss, ongoing fire, traps and redirected bond damage do not count; no last-attacker history is consulted.
+**Passive bonuses.** Each stage uses its complete set of bonuses below. Final bonuses replace ordinary bonuses.
 
-Ordinary completion stops further growth and retains proficient bonuses. Extract the personality gel and finalize it at a sculpting table using one eligible gel and 3500 work; all eight existing gel bases are supported. The gel must have Combatant as its current direction, progress at or above the shared 0.999 completion threshold, the ordinary tag, and no prior Combatant finalization. Implantation replaces ordinary bonuses with permanent final bonuses: +6 raw shooting and melee hit ratings, aiming time and melee cooldown ×0.85, mental break threshold −0.06, and incoming damage ×0.80. Final bonuses survive direction changes, unbinding, and chain regression and move with the personality. Extraction removes Combatant states and progress from the old body.
+| Attribute | Basic: 20% | Proficient: 50% through ordinary completion | Finalized and implanted |
+| --- | ---: | ---: | ---: |
+| Raw shooting accuracy rating | +2 | +4 | +6 |
+| Raw melee hit rating | +2 | +4 | +6 |
+| Aiming time | ×0.95 | ×0.90 | ×0.85 |
+| Melee attack cooldown | ×0.95 | ×0.90 | ×0.85 |
+| Mental break threshold | −2 percentage points | −4 percentage points | −6 percentage points |
+| Incoming damage | ×1.00 | ×0.90 | ×0.80 |
 
-Finalization also grants **Combat Overdrive**: melee damage ×1.30, melee cooldown ×0.75, ranged cooldown ×0.80, incoming damage ×0.75, movement speed ×1.25, and pain ×0.50 for 1 in-game hour. Its 4-hour cooldown starts on activation. Manually cast on self while drafted; undrafting after activation does not cancel the buff or reset cooldown. Combined with final passive bonuses, this specialization gives incoming damage ×0.60 and melee cooldown ×0.6375. The interval between shots within a burst is unchanged. Normal saves preserve cooldown and remaining buff time. Personality extraction or replacement removes the old ability and buff; migration grants a new ability through the shared process without transferring cooldown or temporary buffs.
+These bonuses begin at 20%. Accuracy ratings are converted through game curves; they are not direct percentage-point increases to hit probability. The mental break threshold reduction also applies outside combat.
+
+**Experience.** Only SSC sex slaves currently training Combatant gain progress. Ordinary completion or prior finalization stops further gains. Progress in these formulas uses a 0–1 scale and is limited by the remaining progress.
+
+| Source | Progress gained | Per-event cap |
+| --- | --- | --- |
+| Completed daily Training | `min(score / 2000, 0.04)` | 4 percentage points |
+| Training by the actual bound master | Calculate the capped base reward above, then multiply by 1.5 | 6 percentage points |
+| Direct kill | `min(actual body size × 0.01, 0.03)` | 3 percentage points |
+
+Zero or negative scores grant no progress. Other eligible trainers grant the base reward; assigned trainers do not receive the master multiplier merely by being assigned. Interrupted Training and Binding Rituals grant none.
+
+Kill rewards have no minimum: body size 0.25 grants 0.25 percentage points, and body size 1 grants 1 point. Species, faction, hostility and downed status do not affect rewards. Direct hunting kills, executions, finishing blows and direct weapon/projectile explosions count. Slaughter, blood loss, ongoing fire, traps, environmental chain explosions and deaths from redirected bond damage do not. Indirect deaths do not credit a previous attacker.
+
+**Finalization.** When the tab shows training complete and ready to finalize, keep Combatant selected, extract the personality gel, process it at a sculpting table and implant it. The recipe consumes one eligible gel and requires 3500 work; all eight existing gel bases are supported. The personality must have completed ordinary Combatant training without prior Combatant finalization. Other specialization histories and final achievements are preserved. Ordinary completion retains proficient bonuses and grants no ability by itself.
+
+**Combat Overdrive.** Final combatants can activate it on themselves while drafted. The ability description summarizes its function, while the health condition automatically lists its effects. The ability's own multipliers are:
+
+| Effect | Multiplier |
+| --- | ---: |
+| Melee damage | ×1.30 |
+| Melee attack cooldown | ×0.75 |
+| Ranged attack cooldown | ×0.80 |
+| Incoming damage | ×0.75 |
+| Movement speed | ×1.25 |
+| Pain | ×0.50 |
+
+The buff lasts 1 in-game hour. Its 4-hour cooldown starts on successful activation. Undrafting hides the command and prevents further activation, but an active buff continues. Ranged attack cooldown affects recovery between firing cycles, not the interval between shots within a burst.
+
+Combined with final passive bonuses, this specialization alone gives incoming damage `0.80 × 0.75 = 0.60` and melee cooldown `0.85 × 0.75 = 0.6375`. Body training, equipment and other effects still contribute to the final result.
+
+**Saves and personality transfer.** Normal saves preserve cooldown and remaining buff time. Personality extraction or replacement removes the old body's Combatant states, ability and active buff. Implanting a final personality grants a new ability without carrying over the old cooldown or active buff. A personality without Combatant achievements does not inherit them from its receiving body.

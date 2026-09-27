@@ -4,5 +4,6 @@
   <SSC_ITab_SelectSpecializationCombatant>Выбрать бойца</SSC_ITab_SelectSpecializationCombatant>
   <SSC_ITab_SpecializationCombatantDisabledIdentity>Требуется роль секс-раба SSC</SSC_ITab_SpecializationCombatantDisabledIdentity>
   <SSC_ITab_SpecializationCombatantDisabledResearch>Требуется исследование «Боец»</SSC_ITab_SpecializationCombatantDisabledResearch>
-  <SSC_ITab_SpecializationOrdinaryComplete>Обычная подготовка завершена</SSC_ITab_SpecializationOrdinaryComplete>
+  <SSC_ITab_SpecializationOrdinaryComplete>Подготовка завершена; можно финализировать</SSC_ITab_SpecializationOrdinaryComplete>
+  <SSC_ITab_CombatantFinalizationTip>Извлеките гель личности, обработайте его на столе скульптора для получения финального бойца, затем внедрите его, чтобы получить финальные бонусы и «Боевой форсаж».</SSC_ITab_CombatantFinalizationTip>
 </LanguageData>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <SSC_CombatOverdrive.label>戰鬥超頻</SSC_CombatOverdrive.label>
-  <SSC_CombatOverdrive.description>激發終極戰鬥員的作戰潛能：近戰傷害 ×1.30、近戰冷卻 ×0.75、遠程冷卻 ×0.80、承傷 ×0.75、移動速度 ×1.25、疼痛 ×0.50，持續 1 遊戲小時。與終極被動疊加後，本特化的承傷乘數為 0.60，近戰冷卻乘數為 0.6375。遠程冷卻不改變連射內部間隔。\n\n僅征召時可見、可用，手動對自身發動；發動後解除征召不取消強化。冷卻 4 遊戲小時，從發動時開始計算。人格抽取或替換會清除強化，強化不隨人格遷移。</SSC_CombatOverdrive.description>
+  <SSC_CombatOverdrive.description>主動活化體內的紫色奈米機械液，使經過改造的身體與神經系統進入短暫的超頻狀態，強化攻擊、防護與行動能力。僅徵召時可發動。</SSC_CombatOverdrive.description>
 </LanguageData>

@@ -4,5 +4,6 @@
   <SSC_ITab_SelectSpecializationCombatant>Select combatant</SSC_ITab_SelectSpecializationCombatant>
   <SSC_ITab_SpecializationCombatantDisabledIdentity>Requires SSC sex slave identity</SSC_ITab_SpecializationCombatantDisabledIdentity>
   <SSC_ITab_SpecializationCombatantDisabledResearch>Requires Combatant research</SSC_ITab_SpecializationCombatantDisabledResearch>
-  <SSC_ITab_SpecializationOrdinaryComplete>Ordinary training complete</SSC_ITab_SpecializationOrdinaryComplete>
+  <SSC_ITab_SpecializationOrdinaryComplete>Training complete; ready to finalize</SSC_ITab_SpecializationOrdinaryComplete>
+  <SSC_ITab_CombatantFinalizationTip>Extract the personality gel, process it into a final combatant at a sculpting table, then implant it to gain the final bonuses and Combat Overdrive.</SSC_ITab_CombatantFinalizationTip>
 </LanguageData>

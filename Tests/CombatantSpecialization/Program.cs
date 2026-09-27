@@ -282,7 +282,10 @@ internal static partial class Program
         foreach (var lang in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" })
         {
             var keyed = XDocument.Load(Path.Combine(root, "Languages", lang, "Keyed/SSC_CombatantSpecialization.xml"));
-            Check(keyed.Root.Elements().Count() == 5 && keyed.Root.Elements().All(e => !string.IsNullOrWhiteSpace(e.Value)), "缺少界面翻译");
+            foreach (string key in new[] { "SSC_ITab_SpecializationCombatant", "SSC_ITab_SelectSpecializationCombatant",
+                "SSC_ITab_SpecializationCombatantDisabledIdentity", "SSC_ITab_SpecializationCombatantDisabledResearch",
+                "SSC_ITab_SpecializationOrdinaryComplete", "SSC_ITab_CombatantFinalizationTip" })
+                Check(!string.IsNullOrWhiteSpace((string)keyed.Root.Element(key)), "缺少界面翻译：" + key);
             if (lang == "ChineseSimplified") continue;
             var defs = XDocument.Load(Path.Combine(root, "Languages", lang, "DefInjected/HediffDef/SSC_HediffDefs_CombatantSpecialization.xml"));
             foreach (string key in new[] { "SSC_Hediff_Combatant.label", "SSC_Hediff_Combatant.description",

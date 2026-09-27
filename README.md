@@ -4,6 +4,8 @@ RimWorld 1.6 的 RimJobWorld（RJW）扩展模组，基于上游 **2.2.8** 继�
 
 [下载安装包](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.3) · [更新日志](CHANGELOG.md) · [文档索引](Docs/README.md) · [English quick start](QUICK_START_EN.md)
 
+当前开发分支已完成战斗员特化：性奴培养、两类经验、人格凝胶终极化与“战斗超频”。阶段五的实机流程及数值验收已获维护者确认，四语文案和资源检查已收尾；这些内容尚未包含在下方的 2.3.3 发布包中。见[阶段五记录](Docs/Development/战斗员特化阶段五.md)。
+
 ## 项目概况
 
 SexSlaveCraft（SSC）围绕角色培养、身份与绑定关系、特化发展、人格转移及身体改造提供一套玩法系统。本接续版在原有内容基础上维护游戏兼容性、修复问题，并完善交互界面与本地化。

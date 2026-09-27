@@ -16,7 +16,7 @@ SexSlaveCraft (SSC) is built around this progression:
 1. Designate Masters and sex slaves.
 2. Use ordinary Training to raise Corruption and develop body parts.
 3. Perform the Binding Ritual to establish a bond and advance the `Sex Slave Chain` health stage.
-4. Develop Public Use, Cow, or Training Officer specialization.
+4. Develop a specialization such as Public Use, Cow, Training Officer or Combatant.
 5. extract a pawn's personality into Personality Gel, edit it, or implant it into a Hollow.
 6. Attempt Semi-gelatinization or Full Gelatinization.
 
@@ -241,11 +241,24 @@ Benefits:
 
 At 100%, use Personality Excretion and Personality Gel editing to obtain `Final Cow Specialization`.
 
+## Combatant Specialization
+
+Combatant training uses purple nanofluid to reshape the body and nervous system for melee and ranged combat. Complete Combatant research and set the pawn's SSC identity to Sex Slave on the Training tab. No bound master or chain stage is required.
+
+1. Gain progress through completed daily Training and direct kills. Training by the bound master grants extra progress. Binding Rituals, slaughter and indirect deaths do not count.
+2. Basic bonuses begin at 20%; stronger bonuses and ongoing damage reduction begin at 50%. Switching specializations preserves progress.
+3. Once training is complete, extract the personality gel, finalize it at a sculpting table, and implant it.
+4. Final bonuses stay with the personality. While drafted, activate Combat Overdrive to stimulate the body's nanomachines for a brief combat boost.
+
+Check health conditions for specific attributes. Overdrive lasts 1 in-game hour and has a 4-hour cooldown starting on activation. Undrafting does not end an active buff. Final achievements transfer with the personality; active Overdrive and the old ability's cooldown do not.
+
+See the [full Combatant reference](PLAYER_GUIDE_EN.md#how-does-combatant-progress) for formulas and attributes.
+
 ## 10. Final Specializations
 
-Both Final specializations use the same workflow:
+Public Use, Cow and Combatant follow the same finalization workflow:
 
-1. raise Public Use or Cow Specialization to 100%;
+1. complete ordinary training in the chosen specialization;
 2. perform Personality Excretion on that pawn;
 3. obtain Personality Gel containing the specialization data;
 4. process the gel at a sculpting table;

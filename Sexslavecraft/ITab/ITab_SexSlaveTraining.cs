@@ -849,7 +849,12 @@ namespace SexSlaveCraft
             }
 
             listing.Gap(6f);
-            listing.Label(Strings.ITab_SpecializationProgress(GetSpecializationProgressText(pawn, comp)));
+            string progressTip = comp.specializationType == SexSlaveSpecializationType.Combatant &&
+                !CombatantSpecializationUtility.HasFinalState(pawn) &&
+                CompSexSlaveTraining.NormalizeSpecializationProgress(comp.specializationProgress) >=
+                    CompSexSlaveTraining.SpecializationCompletionProgress
+                ? "SSC_ITab_CombatantFinalizationTip".Translate().ToString() : null;
+            listing.Label((TaggedString)Strings.ITab_SpecializationProgress(GetSpecializationProgressText(pawn, comp)), -1f, progressTip);
             TrainerSpecializationDisplayState trainerState = TrainerSpecializationUtility.GetDisplayState(pawn);
             if (trainerState != TrainerSpecializationDisplayState.None)
             {

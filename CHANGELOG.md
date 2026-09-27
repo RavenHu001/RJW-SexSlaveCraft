@@ -4,6 +4,12 @@
 
 This continuation builds on upstream **2.2.8**, the baseline when upstream development stopped in July, and retains its version numbering. Entries are listed newest first. Technical details are in the [development log (Chinese)](Docs/Development/开发更新记录.md).
 
+## [Unreleased] — 战斗员特化 / Combatant specialization
+
+- 新增仅向 SSC 性奴开放的战斗员培养，通过正常完成日常调教及直接击杀成长；绑定主人调教提供额外经验。培养完成后可用人格凝胶终极化，获得永久被动与主动技能“战斗超频”。Adds Combatant training for SSC sex slaves, with progress from completed daily Training and direct kills, plus a bound-master Training bonus. Personality-gel finalization grants permanent passives and Combat Overdrive.
+- 四语文案以紫色纳米机械液改造身体与神经系统、主动活化形成超频为设定；技能概述与健康状态自动属性展示分工，补充培养完成后的操作提示。Four-language descriptions explain nanofluid modification and active overdrive, keep ability summaries concise, and add finalization guidance.
+- 阶段五完整玩法流程及培养速度、战斗收益验收由维护者确认完成；资源与本机原版组件检查见[阶段五记录](Docs/Development/战斗员特化阶段五.md)。The maintainer has accepted the complete gameplay and progression/combat checks; resource and local game-component checks are documented in the stage-five record. No new release version has been assigned.
+
 ## [2.3.3] — 2026-09-26 — RJW 泄欲对象资格与特化科技说明 / RJW Comfort designation and specialization descriptions
 
 本版包含最新两次玩家可见改动：`229e220` 的 RJW 泄欲对象资格与 `df785fb` 的特化科技说明。两次提交之前还有 `2ffdeb0`，仅更新未来开发规划，不作为已实现功能。安装包及校验文件见 [v2.3.3 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.3)，详细内容见 [2.3.3 发布说明](Docs/Releases/2.3.3/2.3.3发布说明.md)。
