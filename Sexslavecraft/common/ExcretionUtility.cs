@@ -19,7 +19,11 @@ namespace SexSlaveCraft
             // 步骤 2：生成人格凝胶物品，并把受害者的人格载荷写入其中。
             Thing slime = ThingMaker.MakeThing(targetSlimeDef);
             var comp = slime.TryGetComp<CompPersonalityStore>();
-            if (comp != null) comp.StorePawnData(victim);
+            if (comp != null)
+            {
+                comp.StorePawnData(victim);
+                CombatantSpecializationGelUtility.DetachAfterExtraction(victim);
+            }
 
             GenSpawn.Spawn(slime, victim.Position, victim.Map);
             // 步骤 3：剥离社交身份，让身体真正进入空壳状态。
@@ -95,6 +99,7 @@ namespace SexSlaveCraft
             // 清除接收身体的普通、有效终极和禁用终极标签。必须在源人格
             // 的方向和进度恢复前完成，避免宿主完成记录或普通严重度混入。
             TrainerSpecializationGelUtility.RemoveAllTrainerStates(consumer);
+            CombatantSpecializationGelUtility.RemoveAllStates(consumer);
         }
 
         /// <summary>校验凝胶快照，替换人格与全部特化历史并恢复记忆实例；成功后消耗凝胶，校验或恢复失败时返回失败。</summary>
@@ -234,9 +239,10 @@ namespace SexSlaveCraft
                             continue;
                         }
 
-                        // 训导官三种标签由下方的互斥恢复统一处理。通用路径
+                        // 训导官与战斗员标签由下方互斥恢复统一处理。通用路径
                         // 对严重度采取取较大值，会把宿主旧进度并入源人格。
-                        if (TrainerSpecializationGelUtility.IsTrainerTag(hediffDef))
+                        if (TrainerSpecializationGelUtility.IsTrainerTag(hediffDef) ||
+                            CombatantSpecializationGelUtility.IsCombatantTag(hediffDef))
                         {
                             continue;
                         }
@@ -282,6 +288,7 @@ namespace SexSlaveCraft
                 // 阶段 2 的外层恢复作用域会在身份、绑定和标签全部就位后
                 // 决定终极标记是否应转为禁用，不能在此处提前维护。
                 TrainerSpecializationGelUtility.ApplyExclusiveTrainerTags(consumer, data);
+                CombatantSpecializationGelUtility.ApplyExclusiveTags(consumer, data);
 
                 // 同步组件与刚恢复的健康状态，使凝胶携带的专精立即被识别并可持续训练。
                 CompSexSlaveTraining.ReconcileSpecialization(consumer);

@@ -167,11 +167,15 @@ namespace SexSlaveCraft
             return TryStartReceiverJobCore(actor, partner, parentJob, receiverJobDef, false, true, false, null);
         }
 
-        /// <summary>为人格排泄启动接收任务，沿用日常接收流程但不改变上层的普通行为许可分类。</summary>
+        /// <summary>为人格排泄交接接收任务；只允许原执行者复用，并保留目标预约直到发起任务结束。</summary>
         public static bool TryStartPersonalityExcretionReceiver(Pawn actor, Pawn partner, Job parentJob, JobDef receiverJobDef)
         {
+            // 在同步位置、注册设备参与者、释放预约或复用接收 Job 之前拒绝后来者。
+            Pawn activeActor = PersonalityExcretionJobUtility.GetActiveInitiator(partner);
+            if (activeActor != null && activeActor != actor) return false;
             if (SSCLog.VerboseEnabled) SSCLog.Verbose($"[SSC Receiver] PE receiver start requested: actor={actor?.LabelShort ?? "null"}, partner={partner?.LabelShort ?? "null"}, receiverJob={receiverJobDef?.defName ?? "null"}");
-            return TryStartReceiverJobCore(actor, partner, parentJob, receiverJobDef, false, true, false, null);
+            // 原配对结束后，即使旧接收 Job 尚未退出，也必须重新绑定新的执行者。
+            return TryStartReceiverJobCore(actor, partner, parentJob, receiverJobDef, false, false, activeActor != actor, null);
         }
 
         /// <summary>在当前仪式地点重新创建接收任务，使下一阶段重新绑定当前地点和主持者。</summary>

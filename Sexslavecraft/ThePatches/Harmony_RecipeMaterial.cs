@@ -47,11 +47,10 @@ namespace SexSlaveCraft
                 return;
             }
 
-            // 训导官比通用方向多一个普通标签前提，并有“禁用终极”完成记录。
+            // 战斗员与训导官均要求普通标签；训导官还需排除“禁用终极”记录。
             // 这里与实际配方结算共用判定，既阻止重复加工，也阻止没有基础状态
             // 却只凭进度数值加工的旧档或异常凝胶。
-            if (TrainerOfficerRecipeUtility.IsFinalizationRecipe(smartRecipe)
-                && !TrainerOfficerRecipeUtility.IsEligibleGel(comp))
+            if (!SpecializationFinalizationRecipeUtility.IsEligibleGel(smartRecipe, comp))
             {
                 __result = false;
                 return;

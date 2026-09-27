@@ -15,7 +15,7 @@ dotnet run --project Tests/PersonalityTraits/PersonalityTraits.csproj --configur
 
 项目直接链接以下生产源码，不在测试中重写人格迁移或进度快照算法：
 
-- `common/ExcretionUtility.cs`：真实提取、植入、校验与凝胶消耗入口。
+- `common/ExcretionUtility.cs`：真实提取、植入、校验与凝胶消耗入口。实际场景任务 `JobDriver_PE` 未在此模型中执行，两条抽取入口均已接线，场景完成及游戏存档需实机验收。
 - `Comps/ThingsComp_PE_PES.cs`：真实人格采集、加工复制和存档字段入口。
 - `common/PersonalityTraitUtility.cs`：真实普通特质采集与恢复。
 - `common/PersonalityMemoryUtility.cs`：真实记忆快照、复制与恢复。
@@ -27,7 +27,7 @@ dotnet run --project Tests/PersonalityTraits/PersonalityTraits.csproj --configur
 
 ## 覆盖内容
 
-共 32 个用例，其中原有的 15 个普通特质用例继续覆盖：
+共 44 个用例，其中原有的 15 个普通特质用例继续覆盖：
 
 - 跨身体替换普通特质，以及同身体恢复较早快照，包括同一定义的不同等级。
 - 保存受抑制普通特质，排除基因授予和 SSC 派生特质，并隔离源角色、凝胶与副本的可变特质实例。
@@ -55,6 +55,8 @@ dotnet run --project Tests/PersonalityTraits/PersonalityTraits.csproj --configur
 - 原料缺失、数量错误、已经销毁或夹带多份人格时拒绝，避免吞掉没有被复制的人格；请求一份但实体异常堆叠多份时，也须在分堆前拒绝，保留整堆原料。
 - 其他人格标签配方和普通生产配方仍按原版动作消耗与完成。
 
+阶段三战斗员追加 12 个用例：普通及终极跨体迁移、抽取后旧身体清理、宿主成果隔离、非当前历史及其他方向保留、标签归一与存档字段往返、真实筛料入口、八种实际凝胶映射、加工中资格变化、异常来源、半成品及工作者复查。新增生产链接包括 `CombatantSpecializationUtility`、`CombatantSpecializationGelUtility`、`Comp_Train.SpecializationHealth`、`PersonalityGelUtility` 和 `Harmony_RecipeMaterial`。
+
 ## 引擎替身契约与验证边界
 
 `GameStubs.cs` 为生产入口提供无界面环境。特质相关行为依据修复时核对的本机 RimWorld 1.6 程序集：
@@ -66,7 +68,7 @@ dotnet run --project Tests/PersonalityTraits/PersonalityTraits.csproj --configur
 
 记忆替身依据本次核对的真实引擎契约：创建记忆先指定阶段，再按该阶段初始化社交默认好感；添加普通记忆会使用传入人物覆盖原字段，社交记忆允许回退到已保存的人物，且无人物的社交记忆不能加入。用例使用彼此不同的记忆定义，避免把本测试不模拟的合并结果当作通过依据。真实记忆的可获得性、堆叠、合并、过期和后续刷新行为由独立记忆测试与游戏内验证补充，本项目不宣称完整模拟这些机制。
 
-训练组件使用生产分部类中的真实方向与历史算法，只把健康状态清理、训练状态对账等外部边界留为空实现。因此这些用例能验证快照数据和接线是否正确，不能代替实际健康状态联动测试。
+训练组件使用真实方向、历史和健康状态对账分部类，并编译真实战斗员状态、人格标签工具及凝胶映射。战斗员用例实际执行切换后的同步、宿主清理、恢复和最终对账；其他方向的外部健康服务仍由边界替身隔离。健康列表是内存模型，不能代替游戏引擎及 Hediff 组件回调。
 
 `RecipeGameStubs.cs` 的配方结算替身依据本机 RimWorld 1.6 程序集核对：`FinishRecipeAndStartStoringProduct` 的初始动作先执行 `CalculateIngredients`（半成品路径会消耗容器），再生成 XML 产物、消耗原料，最后调用 `Bill_Production.Notify_IterationCompleted`；账单先扣重复次数，再调用配方工作者。因此用例必须经过真实 SSC 结算补丁，不能以直接调用工作者后原料未销毁，作为游戏中“保料”的证据。正常产物的复制与标签修改仍运行生产工作者。测试直接调用真实补丁的 Postfix 安装包装动作，不模拟 Harmony 自动发现与运行时安装，也不模拟工人寻路、材料搬运、可堆叠材料分堆和产物搬运；实际 API 兼容性由 Release 构建核对，游戏内完整加工仍需实机验证。
 
@@ -74,4 +76,4 @@ Scribe 替身记录和回放标量、定义与对象引用，并复制列表、�
 
 测试假设相关 DLC 行为启用。定义、冲突、基因、健康状态与能力都是最小内存模型，不加载游戏 XML 或 Harmony 补丁；能力追踪器使用定义集合而不是真实能力实例。图像和缓存通知为空实现，私有特质缓存刷新入口则保留，以执行生产反射路径。后续基因变化、工作限制、需求、健康状态联动、界面与其他模组兼容性仍需游戏验证。
 
-缺失快照用例会主动验证一条预期错误；生产异常捕获中出现任何其他错误都会使当前用例失败。成功运行退出码为零，并输出 `RESULT: 32/32 cases passed.`。
+缺失快照用例会主动验证一条预期错误；生产异常捕获中出现任何其他错误都会使当前用例失败。成功运行退出码为零，并输出 `RESULT: 44/44 cases passed.`。

@@ -6,17 +6,20 @@
 		<li>1.6</li>
 	</supportedVersions>
 	<packageId>rjw.sexslavecraft.TieJinVer</packageId>
-    <description>SexSlaveCraft 2.3.3 (TieJin Modify)
-RJW 泄欲对象资格与特化科技说明。
-基于上游 2.2.8 继续维护，包含 2.3.2 及更早版本内容。
+    <description>SexSlaveCraft 2.3.4 (TieJin Modify)
+新增完整战斗员特化：性奴培养、调教与直接击杀经验、人格凝胶终极化及战斗超频。
+新增普通特化进度测试按钮与专属技能图标；整理特化名称和状态颜色，统一四语说明。
+修复人格排泄被普通工作／需求任务中断，以及多个执行者争抢同一目标的问题。
+基于上游 2.2.8 继续维护，包含 2.3.3 及更早版本内容。
 锁链达到第 2 阶段的 SSC 性奴可按 RJW 原有条件被指派为泄欲对象；见习性奴不因此获得资格。
-各性奴特化科技介绍现列出已实现功能和经验增长方式，未完成方向明确标注状态；同步简中、繁中、英文和俄文。
 旧 RimTalk 兼容继续暂停，宠物猫、宠物兔未完成入口继续禁用。
 完整中英双语更新记录见 CHANGELOG.md。
 
-Continues development from upstream 2.2.8, including 2.3.2 and earlier content.
+Version 2.3.4 adds the complete Combatant specialization: Training and direct-kill progression, personality gel finalization and Combat Overdrive.
+Adds an ordinary-specialization progress testing command and a dedicated ability icon, with clearer specialization labels, colors and four-language descriptions.
+Fixes personality excretion interrupted by automatic work or need jobs, and prevents competing initiators from taking the same target.
+Continues development from upstream 2.2.8, including 2.3.3 and earlier content.
 SSC sex slaves at Chain stage 2 or higher can be designated as RJW Comfort pawns under RJW's existing conditions; trainees gain no eligibility from SSC identity alone.
-Specialization research now explains implemented effects and experience sources and identifies unfinished paths in four languages.
 Legacy RimTalk remains suspended; unfinished Pet Cat and Pet Rabbit choices remain disabled.
 See CHANGELOG.md for the full Chinese and English notes.</description>
 	<modDependencies>

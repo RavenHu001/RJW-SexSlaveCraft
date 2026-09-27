@@ -93,6 +93,13 @@
     <Compile Include="common\BindingRitualStateUtility.cs" />
     <Compile Include="common\BindingRitualSelectionUtility.cs" />
     <Compile Include="common\BindingRitualSelectionWidget.cs" />
+    <Compile Include="common\CombatantSpecializationUtility.cs" />
+    <Compile Include="common\CombatantSpecializationGelUtility.cs" />
+    <Compile Include="common\CombatantSpecializationProgressUtility.cs" />
+    <Compile Include="common\CombatantKillUtility.cs" />
+    <Compile Include="ThePatches\Harmony_CombatantExperience.cs" />
+    <Compile Include="ThePatches\Harmony_PersonalityExcretionJobProtection.cs" />
+    <Compile Include="common\PersonalityExcretionJobUtility.cs" />
     <Compile Include="common\BusSpecializationUtility.cs" />
     <Compile Include="common\DogSpecializationUtility.cs" />
     <Compile Include="common\PetSpecializationUtility.cs" />
@@ -122,6 +129,7 @@
     <Compile Include="common\RecipeInjector.cs" />
     <Compile Include="common\SoftDependencyUtility.cs" />
     <Compile Include="Comps\CompAbilityEffect_EroticConversion.cs" />
+    <Compile Include="Comps\Ability_CombatOverdrive.cs" />
     <Compile Include="Hediff\HediffCompProperties_GelatinizationAdaptation.cs" />
     <Compile Include="Hediff\HediffCompProperties_FullGelatinizationAdaptation.cs" />
     <Compile Include="Hediff\HediffCompProperties_FullGelatinizedRegen.cs" />
@@ -179,6 +187,7 @@
     <Compile Include="Comps\CompUsable_Restricted.cs" />
     <Compile Include="Comps\Comp_Train.cs" />
     <Compile Include="Comps\Comp_Train.Specialization.cs" />
+    <Compile Include="Comps\Comp_Train.SpecializationHealth.cs" />
     <Compile Include="Comps\ThingClass_WithComp_NoStack.cs" />
     <Compile Include="Comps\ThingsComp_PE_PES.cs" />
     <Compile Include="common\ResearchUtils.cs" />

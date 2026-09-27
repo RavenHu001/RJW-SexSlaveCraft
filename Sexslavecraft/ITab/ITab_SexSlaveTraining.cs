@@ -140,7 +140,8 @@ namespace SexSlaveCraft
             // 滚动范围及节框使用同一份结果，长译文换行时后续内容随之下移。
             float contentWidth = trainingRect.width - 18f;
             TrainerIdentityView identityView = BuildTrainerIdentityView(pawn, comp, contentWidth);
-            float contentHeight = CalculateContentHeight(pawn, comp, identityView.SectionHeight);
+            float specializationHeight = GetSpecializationSectionHeight(pawn, comp, contentWidth);
+            float contentHeight = CalculateContentHeight(pawn, comp, identityView.SectionHeight, specializationHeight);
             Rect viewRect = trainingRect;
             Rect contentRect = new Rect(0f, 0f, contentWidth, contentHeight);
 
@@ -154,6 +155,11 @@ namespace SexSlaveCraft
                 // 入口位置与高度保持稳定；没有实际绑定或总限制停用时可见但不可操作。
                 DrawRestrictionToggle(new Rect(0f, curY, contentRect.width, RestrictionToggleHeight), pawn);
                 curY += RestrictionToggleHeight + RestrictionToggleSpacing;
+                if (CanShowSpecializationSection(comp))
+                {
+                    curY = DrawSpecializationSection(new Rect(0f, curY, contentRect.width,
+                        specializationHeight), pawn, comp) + SectionSpacing;
+                }
 
                 if (comp.pawnIdentity == PawnIdentity.Master)
                 {
@@ -171,8 +177,6 @@ namespace SexSlaveCraft
                 {
                     curY = DrawTrainingSection(new Rect(0f, curY, contentRect.width, 124f), pawn, comp) + SectionSpacing;
                     curY = DrawScheduleSection(new Rect(0f, curY, contentRect.width, 210f), pawn, comp) + SectionSpacing;
-                    curY = DrawSpecializationSection(new Rect(0f, curY, contentRect.width,
-                        GetSpecializationSectionHeight(pawn, comp)), pawn, comp) + SectionSpacing;
 
                     if (pawn.health.hediffSet.HasHediff(SSCDefOf.SSC_Lactating_SubState))
                     {
@@ -190,13 +194,14 @@ namespace SexSlaveCraft
         }
 
         /// <summary>为身份、限制展开入口及当前可见各节累计滚动高度，保持按钮和后续内容均可滚动访问。</summary>
-        private static float CalculateContentHeight(Pawn pawn, CompSexSlaveTraining comp, float identityHeight)
+        private static float CalculateContentHeight(Pawn pawn, CompSexSlaveTraining comp, float identityHeight, float specializationHeight)
         {
-            float height = identityHeight + RestrictionToggleHeight + RestrictionToggleSpacing;
+            float height = identityHeight + RestrictionToggleHeight + RestrictionToggleSpacing
+                + SectionSpacing + specializationHeight;
 
             if (comp.pawnIdentity == PawnIdentity.Master || comp.pawnIdentity == PawnIdentity.Unset)
             {
-                return height + SectionSpacing + 84f;
+                return height + 84f;
             }
 
             if (!ResearchUtils.IsResearchFinished(SSCDefOf.SSC_BasicTraining))
@@ -206,7 +211,6 @@ namespace SexSlaveCraft
 
             height += SectionSpacing + 124f;
             height += SectionSpacing + 210f;
-            height += SectionSpacing + GetSpecializationSectionHeight(pawn, comp);
             if (pawn.health.hediffSet.HasHediff(SSCDefOf.SSC_Lactating_SubState))
             {
                 height += SectionSpacing + 88f;
@@ -281,15 +285,29 @@ namespace SexSlaveCraft
         }
 
         /// <summary>按训导官状态和兔特化模式计算区块高度，供绘制和滚动范围共用。</summary>
-        private static float GetSpecializationSectionHeight(Pawn pawn, CompSexSlaveTraining comp)
+        private static float GetSpecializationSectionHeight(Pawn pawn, CompSexSlaveTraining comp, float width)
         {
+            if (!CanShowSpecializationSection(comp)) return 0f;
             // 状态行在窄栏和长译文下可能换成两行；兔特化的繁殖模式仍可能
             // 同时出现，因此两项额外高度分别计算，避免跨方向终极记录遮挡后续控件。
             bool showTrainerStatus = comp.specializationType == SexSlaveSpecializationType.TrainerOfficer ||
                 TrainerSpecializationUtility.HasFinalRecord(pawn);
             bool showRabbitMode = comp.IsPetRabbitSpecialized ||
                 PetSpecializationUtility.HasAnyPetState(pawn, SexSlaveSpecializationType.PetRabbit);
-            return SpecializationSectionHeight +
+            float progressExtraHeight = 0f;
+            if (comp.specializationType == SexSlaveSpecializationType.Combatant)
+            {
+                GameFont previousFont = Text.Font;
+                try
+                {
+                    Text.Font = GameFont.Small;
+                    string progress = Strings.ITab_SpecializationProgress(GetSpecializationProgressText(pawn, comp));
+                    progressExtraHeight = Mathf.Max(0f,
+                        Text.CalcHeight(progress, Mathf.Max(1f, width - SectionPadding * 2f)) - Text.LineHeight);
+                }
+                finally { Text.Font = previousFont; }
+            }
+            return SpecializationSectionHeight + progressExtraHeight +
                 (showTrainerStatus ? TrainerStatusExtraHeight : 0f) +
                 (showRabbitMode ? RabbitModeExtraHeight : 0f);
         }
@@ -763,68 +781,80 @@ namespace SexSlaveCraft
 
             if (listing.ButtonText(currentLabel))
             {
-                string busOptionLabel = Strings.ITab_SelectSpecializationBus;
-                bool busFinalized = BusSpecializationUtility.HasFinalBusState(pawn);
-                bool busEnabled = !busFinalized;
-                string busDisabledReason = null;
-                if (busEnabled)
+                var options = new List<FloatMenuOption>
                 {
-                    busEnabled = BusSpecializationUtility.CanUseBusSpecialization(pawn, out busDisabledReason);
-                }
-
-                if (busFinalized)
-                {
-                    busOptionLabel = busOptionLabel + " " + Strings.ITab_SpecializationFinalizedSuffix;
-                }
-                else if (!busEnabled)
-                {
-                    busOptionLabel = busOptionLabel + " (" + busDisabledReason + ")";
-                }
-
-                string cowOptionLabel = Strings.ITab_SelectSpecializationCow;
-                bool cowFinalized = BusSpecializationUtility.HasFinalCowState(pawn);
-                bool cowEnabled = !cowFinalized;
-                string cowDisabledReason = null;
-                if (cowEnabled)
-                {
-                    cowEnabled = BusSpecializationUtility.CanUseCowSpecialization(pawn, out cowDisabledReason);
-                }
-
-                if (cowFinalized)
-                {
-                    cowOptionLabel = cowOptionLabel + " " + Strings.ITab_SpecializationFinalizedSuffix;
-                }
-                else if (!cowEnabled)
-                {
-                    cowOptionLabel = cowOptionLabel + " (" + cowDisabledReason + ")";
-                }
-
-                List<FloatMenuOption> options = new List<FloatMenuOption>
-                {
-                    new FloatMenuOption(Strings.ITab_SelectSpecializationNone, delegate
-                    {
-                        comp.SetSpecialization(SexSlaveSpecializationType.None);
-                    }),
-                    new FloatMenuOption(busOptionLabel, busEnabled ? (Action)delegate
-                    {
-                        comp.SetSpecialization(SexSlaveSpecializationType.Bus);
-                        BusSpecializationUtility.EnsureBusHediffFromSpecialization(pawn);
-                    } : null),
-                    new FloatMenuOption(cowOptionLabel, cowEnabled ? (Action)delegate
-                    {
-                        comp.SetSpecialization(SexSlaveSpecializationType.Cow);
-                        BusSpecializationUtility.EnsureCowHediffFromSpecialization(pawn);
-                    } : null),
-                    BuildPetSpecializationOption(pawn, comp, SexSlaveSpecializationType.PetCat),
-                    BuildPetSpecializationOption(pawn, comp, SexSlaveSpecializationType.PetDog),
-                    BuildPetSpecializationOption(pawn, comp, SexSlaveSpecializationType.PetRabbit),
-                    BuildTrainerSpecializationOption(pawn, comp)
+                    new FloatMenuOption(Strings.ITab_SelectSpecializationNone,
+                        () => comp.SetSpecialization(SexSlaveSpecializationType.None)),
+                    BuildCombatantSpecializationOption(pawn, comp)
                 };
+                if (CanShowLegacySpecializationOptions(comp))
+                {
+                    string busOptionLabel = Strings.ITab_SelectSpecializationBus;
+                    bool busFinalized = BusSpecializationUtility.HasFinalBusState(pawn);
+                    bool busEnabled = !busFinalized;
+                    string busDisabledReason = null;
+                    if (busEnabled)
+                    {
+                        busEnabled = BusSpecializationUtility.CanUseBusSpecialization(pawn, out busDisabledReason);
+                    }
+
+                    if (busFinalized)
+                    {
+                        busOptionLabel = busOptionLabel + " " + Strings.ITab_SpecializationFinalizedSuffix;
+                    }
+                    else if (!busEnabled)
+                    {
+                        busOptionLabel = busOptionLabel + " (" + busDisabledReason + ")";
+                    }
+
+                    string cowOptionLabel = Strings.ITab_SelectSpecializationCow;
+                    bool cowFinalized = BusSpecializationUtility.HasFinalCowState(pawn);
+                    bool cowEnabled = !cowFinalized;
+                    string cowDisabledReason = null;
+                    if (cowEnabled)
+                    {
+                        cowEnabled = BusSpecializationUtility.CanUseCowSpecialization(pawn, out cowDisabledReason);
+                    }
+
+                    if (cowFinalized)
+                    {
+                        cowOptionLabel = cowOptionLabel + " " + Strings.ITab_SpecializationFinalizedSuffix;
+                    }
+                    else if (!cowEnabled)
+                    {
+                        cowOptionLabel = cowOptionLabel + " (" + cowDisabledReason + ")";
+                    }
+
+                    options.AddRange(new[]
+                    {
+                        new FloatMenuOption(busOptionLabel, busEnabled ? (Action)delegate
+                        {
+                            if (!CanShowLegacySpecializationOptions(comp)) return;
+                            comp.SetSpecialization(SexSlaveSpecializationType.Bus);
+                            BusSpecializationUtility.EnsureBusHediffFromSpecialization(pawn);
+                        } : null),
+                        new FloatMenuOption(cowOptionLabel, cowEnabled ? (Action)delegate
+                        {
+                            if (!CanShowLegacySpecializationOptions(comp)) return;
+                            comp.SetSpecialization(SexSlaveSpecializationType.Cow);
+                            BusSpecializationUtility.EnsureCowHediffFromSpecialization(pawn);
+                        } : null),
+                        BuildPetSpecializationOption(pawn, comp, SexSlaveSpecializationType.PetCat),
+                        BuildPetSpecializationOption(pawn, comp, SexSlaveSpecializationType.PetDog),
+                        BuildPetSpecializationOption(pawn, comp, SexSlaveSpecializationType.PetRabbit),
+                        BuildTrainerSpecializationOption(pawn, comp)
+                    });
+                }
                 Find.WindowStack.Add(new FloatMenu(options));
             }
 
             listing.Gap(6f);
-            listing.Label(Strings.ITab_SpecializationProgress(GetSpecializationProgressText(pawn, comp)));
+            string progressTip = comp.specializationType == SexSlaveSpecializationType.Combatant &&
+                !CombatantSpecializationUtility.HasFinalState(pawn) &&
+                CompSexSlaveTraining.NormalizeSpecializationProgress(comp.specializationProgress) >=
+                    CompSexSlaveTraining.SpecializationCompletionProgress
+                ? "SSC_ITab_CombatantFinalizationTip".Translate().ToString() : null;
+            listing.Label((TaggedString)Strings.ITab_SpecializationProgress(GetSpecializationProgressText(pawn, comp)), -1f, progressTip);
             TrainerSpecializationDisplayState trainerState = TrainerSpecializationUtility.GetDisplayState(pawn);
             if (trainerState != TrainerSpecializationDisplayState.None)
             {
@@ -837,6 +867,21 @@ namespace SexSlaveCraft
                 listing.Label("SSC_TrainerIdentity_StatusLine".Translate(status), -1f, tip);
             }
             DrawRabbitReproductionModeSelector(listing, pawn, comp);
+        }
+
+        /// <summary>菜单打开和点击时均检查性奴身份及研究；选择后由组件同步普通状态。</summary>
+        private static FloatMenuOption BuildCombatantSpecializationOption(Pawn pawn, CompSexSlaveTraining comp)
+        {
+            bool available = CombatantSpecializationUtility.CanSelect(pawn, out string reason);
+            string label = Strings.ITab_SelectSpecializationCombatant;
+            if (CombatantSpecializationUtility.HasFinalState(pawn))
+                label += " " + Strings.ITab_SpecializationFinalizedSuffix;
+            else if (!available && !string.IsNullOrEmpty(reason)) label += " (" + reason + ")";
+            return new FloatMenuOption(label, available ? (Action)delegate
+            {
+                if (!CombatantSpecializationUtility.CanSelect(pawn, out _)) return;
+                comp.SetSpecialization(SexSlaveSpecializationType.Combatant);
+            } : null);
         }
 
         /// <summary>终极记录禁用时优先说明当前持续条件；标记等待维护时给出专门提示。</summary>
@@ -870,6 +915,7 @@ namespace SexSlaveCraft
                     return;
                 }
                 if (pawn.TryGetComp<CompSexSlaveTraining>() != comp) return;
+                if (!CanShowLegacySpecializationOptions(comp)) return;
                 comp.SetSpecialization(SexSlaveSpecializationType.TrainerOfficer);
             } : null);
         }
@@ -903,6 +949,7 @@ namespace SexSlaveCraft
 
             return new FloatMenuOption(optionLabel, enabled ? (Action)delegate
             {
+                if (!CanShowLegacySpecializationOptions(comp)) return;
                 comp.SetSpecialization(type);
                 PetSpecializationUtility.EnsurePetHediffFromSpecialization(pawn);
             } : null);

@@ -17,6 +17,7 @@ namespace SexSlaveCraft
         /// <summary>为人格排泄任务预约唯一接收目标；预约冲突时返回 false。</summary>
         public override bool TryMakePreToilReservations(bool errorOnFailed)
         {
+            if (PersonalityExcretionJobUtility.IsOccupiedByOther(Partner, pawn)) return false;
             return pawn.Reserve(Partner, job, 1, 0, null, errorOnFailed);
         }
 
@@ -29,6 +30,8 @@ namespace SexSlaveCraft
             this.FailOn(() => pawn.Drafted || pawn.IsFighting());
             this.FailOn(() => Partner.IsFighting());
             this.FailOn(() => !pawn.CanReserve(Partner, 1, 0));
+            // 候选或在途任务可能早于另一位执行者开始；已有有效配对时只退出后来者。
+            this.FailOn(() => PersonalityExcretionJobUtility.IsOccupiedByOther(Partner, pawn));
 
             // 状态检查回调：兔子分身或已失去人格排泄状态的目标不能继续此任务。
             this.FailOn(() =>
@@ -49,7 +52,9 @@ namespace SexSlaveCraft
             {
                 if (!TrainingJobUtility.TryStartPersonalityExcretionReceiver(pawn, Partner, job, partnerJob))
                 {
-                    TrainingJobUtility.MarkValidationFailure(Partner, "SSC_PE_RECEIVER");
+                    // 争用只是本执行者未取得目标，不污染正在进行的任务或目标的身体校验冷却。
+                    if (!PersonalityExcretionJobUtility.IsOccupiedByOther(Partner, pawn))
+                        TrainingJobUtility.MarkValidationFailure(Partner, "SSC_PE_RECEIVER");
                     pawn.jobs.EndCurrentJob(JobCondition.Incompletable);
                 }
             };
@@ -148,6 +153,8 @@ namespace SexSlaveCraft
             // EN: Step 1: create the personality gel and store the victim's personality payload inside it.
             // CN: 步骤 1：生成人格凝胶，并把受害者的人格载荷写进去。
             Thing product = CreateStoredPersonalityProduct(victim);
+            if (product.TryGetComp<CompPersonalityStore>() != null)
+                CombatantSpecializationGelUtility.DetachAfterExtraction(victim);
 
             // EN: Step 2: strip the victim into a hollow pawn and swap the personality-excretion state hediff.
             // CN: 步骤 2：把受害者剥离成空壳 Pawn，并切换人格排泄状态 Hediff。

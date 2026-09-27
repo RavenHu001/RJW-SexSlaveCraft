@@ -23,4 +23,7 @@
   <SSC_PSEdit_PetRabbit_Final.label>Sex Slave Specialization (Final Pet Rabbit)</SSC_PSEdit_PetRabbit_Final.label>
   <SSC_PSEdit_PetRabbit_Final.description>Further shapes personality gel with 100% Pet Rabbit specialization progress into its final state. This recipe accepts only material that has completed Pet Rabbit specialization and carries the base Pet Rabbit state.</SSC_PSEdit_PetRabbit_Final.description>
   <SSC_PSEdit_PetRabbit_Final.jobString>Shaping final Pet Rabbit personality...</SSC_PSEdit_PetRabbit_Final.jobString>
+  <SSC_PSEdit_Combatant_Final.label>Sex Slave Specialization (Final Combatant)</SSC_PSEdit_Combatant_Final.label>
+  <SSC_PSEdit_Combatant_Final.description>Processes personality gel with Combatant as its current specialization, completed ordinary training and no prior Combatant finalization into final combatant gel. Implanting it grants permanent combat bonuses and Combat Overdrive, which actively stimulates the body's nanomachines. Other final specializations stored in the personality are preserved.</SSC_PSEdit_Combatant_Final.description>
+  <SSC_PSEdit_Combatant_Final.jobString>Shaping final combatant personality...</SSC_PSEdit_Combatant_Final.jobString>
 </LanguageData>

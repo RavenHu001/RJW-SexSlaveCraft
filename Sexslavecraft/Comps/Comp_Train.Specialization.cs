@@ -14,7 +14,8 @@ namespace SexSlaveCraft
         PetDog,
         PetRabbit,
         // 只在末尾追加，避免改动旧存档中现有方向的枚举值。
-        TrainerOfficer
+        TrainerOfficer,
+        Combatant
     }
 
     public partial class CompSexSlaveTraining
@@ -35,6 +36,14 @@ namespace SexSlaveCraft
         public Dictionary<string, float> ExportSpecializationProgress()
         {
             return CopySpecializationProgress(specializationType, specializationProgress, perTypeProgress);
+        }
+
+        /// <summary>快照保存后让战斗员培养随人格离开身体；保留其他方向的既有行为。</summary>
+        internal void ClearCombatantProgressAfterExtraction()
+        {
+            if (specializationType == SexSlaveSpecializationType.Combatant)
+                SetSpecialization(SexSlaveSpecializationType.None);
+            perTypeProgress?.Remove(SexSlaveSpecializationType.Combatant.ToString());
         }
 
         /// <summary>用人格快照整体替换身体原有训练历史；旧凝胶缺少历史时只恢复已知的当前方向。</summary>
@@ -100,7 +109,7 @@ namespace SexSlaveCraft
         }
 
         /// <summary>把损坏的非有限进度归零，并将普通数值限制在有效的零到一范围内。</summary>
-        private static float NormalizeSpecializationProgress(float progress)
+        internal static float NormalizeSpecializationProgress(float progress)
         {
             if (float.IsNaN(progress) || float.IsInfinity(progress)) return 0f;
             return Math.Max(0f, Math.Min(1f, progress));
@@ -109,6 +118,8 @@ namespace SexSlaveCraft
         /// <summary>切换同一角色的当前方向并保留各方向历史；限制默认由方向变更后的统一生命周期事件处理。</summary>
         public void SetSpecialization(SexSlaveSpecializationType type)
         {
+            type = NormalizeSpecializationType(type);
+            specializationProgress = NormalizeSpecializationProgress(specializationProgress);
             SexSlaveSpecializationType previousType = specializationType;
             bool changedType = previousType != type;
 
@@ -137,6 +148,7 @@ namespace SexSlaveCraft
                 specializationProgress = 0f;
                 rabbitReproductionMode = RabbitReproductionMode.Offspring;
                 TrainerSpecializationLifecycle.Notify(parent as Pawn);
+                SpecializationHealthChanged();
                 return;
             }
 
@@ -153,20 +165,42 @@ namespace SexSlaveCraft
                 rabbitReproductionMode = RabbitReproductionMode.Offspring;
             }
             TrainerSpecializationLifecycle.Notify(parent as Pawn);
+            SpecializationHealthChanged();
+        }
+
+        /// <summary>为当前方向累计正向训练进度，并把结果限制在完成范围内。</summary>
+        public float AddSpecializationProgress(float amount)
+        {
+            if (amount <= 0f || specializationType == SexSlaveSpecializationType.None) return specializationProgress;
+            specializationProgress = Math.Max(0f, Math.Min(1f, specializationProgress + amount));
+            return specializationProgress;
+        }
+
+        // 游戏宿主负责派生健康状态；独立的数据测试无需加载完整 Pawn 组件。
+        partial void SpecializationHealthChanged();
+
+        /// <summary>读档后规范化当前字段与历史，不从显示用的 Hediff 严重度反推经验。</summary>
+        internal void NormalizeSpecializationData()
+        {
+            specializationType = NormalizeSpecializationType(specializationType);
+            specializationProgress = specializationType == SexSlaveSpecializationType.None
+                ? 0f : NormalizeSpecializationProgress(specializationProgress);
+            perTypeProgress = CopySpecializationProgress(specializationType, specializationProgress, perTypeProgress);
         }
 
         /// <summary>读取同一角色此前归档的方向进度，没有历史记录时从零开始。</summary>
         private float GetSavedProgress(SexSlaveSpecializationType type)
         {
             if (perTypeProgress == null) return 0f;
-            return perTypeProgress.TryGetValue(type.ToString(), out float value) ? value : 0f;
+            return perTypeProgress.TryGetValue(type.ToString(), out float value)
+                ? NormalizeSpecializationProgress(value) : 0f;
         }
 
         /// <summary>归档离开方向前的最新进度，供同一人格之后切回该方向使用。</summary>
         private void SetSavedProgress(SexSlaveSpecializationType type, float value)
         {
             perTypeProgress = perTypeProgress ?? new Dictionary<string, float>();
-            perTypeProgress[type.ToString()] = value;
+            perTypeProgress[type.ToString()] = NormalizeSpecializationProgress(value);
         }
     }
 }

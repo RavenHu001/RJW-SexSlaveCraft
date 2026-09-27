@@ -94,6 +94,10 @@ namespace SexSlaveCraft
         public static HediffDef SSC_Hediff_TrainerOfficer;
         public static HediffDef SSC_Hediff_TrainerOfficer_Final;
         public static HediffDef SSC_Hediff_TrainerOfficer_FinalDisabled;
+        public static HediffDef SSC_Hediff_Combatant;
+        public static HediffDef SSC_Hediff_Combatant_Final;
+        public static HediffDef SSC_Hediff_CombatOverdrive;
+        public static AbilityDef SSC_CombatOverdrive;
         public static HediffDef SSC_HumanCattleLactationBridge;
         public static HediffDef SSC_Hediff_RabbitCloneLink;
         public static HediffDef SSC_Hediff_RabbitCloneLowPNA;
@@ -110,6 +114,7 @@ namespace SexSlaveCraft
         public static ResearchProjectDef SSC_BodyPartTraining;
         public static ResearchProjectDef SSC_RES_CowTraining;
         public static ResearchProjectDef SSC_RES_TrainerOfficer;
+        public static ResearchProjectDef SSC_RES_Combatant;
 
         // Recipes
         public static RecipeDef SSC_InducePersonalityExcretion;
@@ -242,6 +247,10 @@ namespace SexSlaveCraft
             SSC_Hediff_TrainerOfficer = GetDef<HediffDef>("SSC_Hediff_TrainerOfficer");
             SSC_Hediff_TrainerOfficer_Final = GetDef<HediffDef>("SSC_Hediff_TrainerOfficer_Final");
             SSC_Hediff_TrainerOfficer_FinalDisabled = GetDef<HediffDef>("SSC_Hediff_TrainerOfficer_FinalDisabled");
+            SSC_Hediff_Combatant = GetDef<HediffDef>("SSC_Hediff_Combatant");
+            SSC_Hediff_Combatant_Final = GetDef<HediffDef>("SSC_Hediff_Combatant_Final");
+            SSC_Hediff_CombatOverdrive = GetDef<HediffDef>("SSC_Hediff_CombatOverdrive");
+            SSC_CombatOverdrive = GetDef<AbilityDef>("SSC_CombatOverdrive");
             SSC_HumanCattleLactationBridge = DefDatabase<HediffDef>.GetNamedSilentFail("SSC_HumanCattleLactationBridge");
             SSC_Hediff_RabbitCloneLink = GetDef<HediffDef>("SSC_Hediff_RabbitCloneLink");
             SSC_Hediff_RabbitCloneLowPNA = GetDef<HediffDef>("SSC_Hediff_RabbitCloneLowPNA");
@@ -259,6 +268,7 @@ namespace SexSlaveCraft
             SSC_BodyPartTraining = GetDef<ResearchProjectDef>("SSC_RES_BodyPartTraining");
             SSC_RES_CowTraining = GetDef<ResearchProjectDef>("SSC_RES_CowTraining");
             SSC_RES_TrainerOfficer = GetDef<ResearchProjectDef>("SSC_RES_TrainerOfficer");
+            SSC_RES_Combatant = GetDef<ResearchProjectDef>("SSC_RES_Combatant");
 
             SSC_InducePersonalityExcretion = GetDef<RecipeDef>("SSC_InducePersonalityExcretion");
             SSC_Surgery_GenderChange_MtF = GetDef<RecipeDef>("SSC_Surgery_GenderChange_MtF");
@@ -514,6 +524,11 @@ namespace SexSlaveCraft
         public static string ITab_SpecializationBus => "SSC_ITab_SpecializationBus".Translate();
         public static string ITab_SpecializationCow => "SSC_ITab_SpecializationCow".Translate();
         public static string ITab_SpecializationTrainerOfficer => "SSC_ITab_SpecializationTrainerOfficer".Translate();
+        public static string ITab_SpecializationCombatant => "SSC_ITab_SpecializationCombatant".Translate();
+        public static string ITab_SelectSpecializationCombatant => "SSC_ITab_SelectSpecializationCombatant".Translate();
+        public static string ITab_SpecializationCombatantDisabledIdentity => "SSC_ITab_SpecializationCombatantDisabledIdentity".Translate();
+        public static string ITab_SpecializationCombatantDisabledResearch => "SSC_ITab_SpecializationCombatantDisabledResearch".Translate();
+        public static string ITab_SpecializationOrdinaryComplete => "SSC_ITab_SpecializationOrdinaryComplete".Translate();
         public static string ITab_SpecializationPetCat => "SSC_ITab_SpecializationPetCat".Translate();
         public static string ITab_SpecializationPetDog => "SSC_ITab_SpecializationPetDog".Translate();
         public static string ITab_SpecializationPetRabbit => "SSC_ITab_SpecializationPetRabbit".Translate();

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
+  <SSC_PE_TargetBusy>该角色正在由另一名执行者进行人格排泄。</SSC_PE_TargetBusy>
   <!--仪式结算部分（ritual）-->
   <SSC_DailyTrainingOutcome>[日常训练] 评分:{0} (等级{1}) | 恶堕率:+{2}</SSC_DailyTrainingOutcome>
 
@@ -133,7 +134,7 @@
   <SSC_ITab_TrainerMasterSuffix> (主人)</SSC_ITab_TrainerMasterSuffix>
   <SSC_ITab_TrainerLockedSuffix> (不可用)</SSC_ITab_TrainerLockedSuffix>
   <SSC_ITab_ClearTrainer>清除指定</SSC_ITab_ClearTrainer>
-  <SSC_ITab_SpecializationHeader>&lt;b&gt;性奴特化&lt;/b&gt;</SSC_ITab_SpecializationHeader>
+  <SSC_ITab_SpecializationHeader>&lt;b&gt;特化培养&lt;/b&gt;</SSC_ITab_SpecializationHeader>
   <SSC_ITab_SpecializationNone>未选择</SSC_ITab_SpecializationNone>
   <SSC_ITab_SpecializationBus>公交车</SSC_ITab_SpecializationBus>
   <SSC_ITab_SpecializationCow>奶牛</SSC_ITab_SpecializationCow>

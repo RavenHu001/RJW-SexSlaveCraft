@@ -68,7 +68,6 @@
       <li>
         <minSeverity>0.00</minSeverity>
 
-        <label>性奴特化（终极公交车）</label>
         <statOffsets>
           <TradePriceImprovement>0.30</TradePriceImprovement>
           <NegotiationAbility>0.40</NegotiationAbility>
@@ -168,7 +167,6 @@
     <stages>
       <li>
         <minSeverity>0.00</minSeverity>
-        <label>性奴特化（终极奶牛）</label>
         <statOffsets>
           <Vulnerability>3.00</Vulnerability>
           <PawnBeauty>2</PawnBeauty>

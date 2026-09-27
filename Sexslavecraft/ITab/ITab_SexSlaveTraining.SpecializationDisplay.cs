@@ -9,6 +9,8 @@ namespace SexSlaveCraft
         {
             switch (type)
             {
+                case SexSlaveSpecializationType.Combatant:
+                    return CombatantSpecializationUtility.HasFinalState(pawn);
                 case SexSlaveSpecializationType.Bus:
                     return BusSpecializationUtility.HasFinalBusState(pawn);
                 case SexSlaveSpecializationType.Cow:
@@ -35,6 +37,9 @@ namespace SexSlaveCraft
                     break;
                 case SexSlaveSpecializationType.Cow:
                     label = Strings.ITab_SpecializationCow;
+                    break;
+                case SexSlaveSpecializationType.Combatant:
+                    label = Strings.ITab_SpecializationCombatant;
                     break;
                 case SexSlaveSpecializationType.TrainerOfficer:
                     label = Strings.ITab_SpecializationTrainerOfficer;
@@ -65,11 +70,33 @@ namespace SexSlaveCraft
             return label;
         }
 
+        /// <summary>性奴特化仅向 SSC 性奴显示，不以原版奴隶身份代替。</summary>
+        private static bool CanShowSpecializationSection(CompSexSlaveTraining comp)
+        {
+            return comp != null && comp.pawnIdentity == PawnIdentity.Slave;
+        }
+
+        /// <summary>保留其他方向原本来自页签外层的身份与基础研究门槛。</summary>
+        private static bool CanShowLegacySpecializationOptions(CompSexSlaveTraining comp)
+        {
+            return CanShowSpecializationSection(comp) &&
+                ResearchUtils.IsResearchFinished(SSCDefOf.SSC_BasicTraining);
+        }
+
         /// <summary>生成当前培养方向的进度文字，供绘制与无界面回归共用。</summary>
         private static string GetSpecializationProgressText(Pawn pawn, CompSexSlaveTraining comp)
         {
             // 进度与按钮采用同一个当前方向；None 不能因为其他完成记录而显示已完成。
             // 终极记录仍由各自健康状态及训导官独立状态行展示，不在这里改写其效果。
+            if (comp.specializationType == SexSlaveSpecializationType.Combatant)
+            {
+                if (IsTypeFinalized(pawn, comp.specializationType))
+                    return Strings.ITab_SpecializationComplete;
+                float progress = CompSexSlaveTraining.NormalizeSpecializationProgress(comp.specializationProgress);
+                // 一位小数避免 99.5% 被整数格式舍入成 100%；完成判断使用公共容差。
+                return progress >= CompSexSlaveTraining.SpecializationCompletionProgress
+                    ? Strings.ITab_SpecializationOrdinaryComplete : progress.ToString("P1");
+            }
             bool displayedTypeFinalized = IsTypeFinalized(pawn, comp.specializationType);
             string progressText = displayedTypeFinalized
                 ? Strings.ITab_SpecializationComplete

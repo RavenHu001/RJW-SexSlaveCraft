@@ -18,12 +18,13 @@ namespace Verse
         /// <summary>通过宿主预约存储登记生产驱动申请的目标，后续由生产交接工具释放。</summary>
         public bool Reserve(Pawn target, Job job, int count, int stack, object layer, bool error)
         {
-            if (!Reservable) return false;
+            if (!Reservable || !Map.reservationManager.CanReserve(target, this)) return false;
             Map.reservationManager.Reserve(target, this, job);
             return true;
         }
         /// <summary>日常持续预约检查沿用用例指定结果。</summary>
-        public bool CanReserve(Pawn target, int count, int stack) => Reservable;
+        public bool CanReserve(Pawn target, int count, int stack)
+            => Reservable && Map.reservationManager.CanReserve(target, this);
         /// <summary>用固定偏移支持无需渲染的周期效果调用。</summary>
         public int HashOffset() => thingIDNumber;
     }
@@ -57,7 +58,7 @@ namespace rjw
         /// <summary>提供接收者准备签名，不复制RJW参与者算法。</summary>
         public void DoSetup() { }
     }
-    public static class xxx
+    public static partial class xxx
     {
         /// <summary>模型角色均为类人，允许执行生产接收收尾。</summary>
         public static bool is_human(Pawn pawn) => true;
@@ -67,7 +68,7 @@ namespace SexSlaveCraft
 {
     public enum TrainingActType { Auto }
     public partial class CompSexSlaveTraining { public TrainingActType selectedMode; }
-    public static class RJWSexPropsUtility
+    public static partial class RJWSexPropsUtility
     {
         /// <summary>测试不锁定特定动作，只提供生产方法签名。</summary>
         public static void ApplyTrainingAct(rjw.SexProps props, Pawn actor, Pawn target, TrainingActType mode) { }
@@ -75,13 +76,32 @@ namespace SexSlaveCraft
     public static class ConditioningUtility
     {
         /// <summary>返回固定分数以观察生产结算入口。</summary>
-        public static float GetScore(Pawn actor, Pawn target) => 1;
+        public static float GetScore(Pawn actor, Pawn target)
+        {
+            TestWorld.ScoreCalls++;
+            return TestWorld.ScoreCalls * 40f;
+        }
         /// <summary>记录日常结算次数，不重写实际收益算法。</summary>
-        public static void ExecuteOutcome(Pawn actor, Pawn target) => TestWorld.DailyOutcomes++;
+        public static void ExecuteOutcome(Pawn actor, Pawn target, float score)
+        {
+            TestWorld.DailyOutcomes++;
+            TestWorld.OutcomeScore = score;
+            TestWorld.OnDailyOutcome?.Invoke();
+        }
+    }
+    public static class CombatantSpecializationProgressUtility
+    {
+        // 数值与主人关系由 CombatantSpecialization 套件验证，这里记录真实 Job 的发奖时序。
+        public static float NotifyDailyTrainingCompleted(Pawn trainer, Pawn receiver, float score)
+        {
+            TestWorld.CombatantProgressAwards++;
+            TestWorld.CombatantScore = score;
+            return 0;
+        }
     }
     public static class TrainingExpUtility
     {
         /// <summary>本流程套件不计算部位经验，只验证收益是否被调用。</summary>
-        public static void ApplyExperienceFromScore(Pawn target, int kind, float score, float multiplier) { }
+        public static void ApplyExperienceFromScore(Pawn target, int kind, float score, float multiplier) => TestWorld.BodyScore = score;
     }
 }

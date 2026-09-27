@@ -23,4 +23,7 @@
   <SSC_PSEdit_PetRabbit_Final.label>性奴特化（終極寵物兔）</SSC_PSEdit_PetRabbit_Final.label>
   <SSC_PSEdit_PetRabbit_Final.description>將已完成寵物兔特化的人格凝膠進一步塑形成終極寵物兔狀態。此配方只接受寵物兔特化進度達到 100%，且帶有寵物兔基礎狀態的材料。</SSC_PSEdit_PetRabbit_Final.description>
   <SSC_PSEdit_PetRabbit_Final.jobString>正在塑造終極寵物兔人格……</SSC_PSEdit_PetRabbit_Final.jobString>
+  <SSC_PSEdit_Combatant_Final.label>性奴特化（終極戰鬥員）</SSC_PSEdit_Combatant_Final.label>
+  <SSC_PSEdit_Combatant_Final.description>將當前培養方向為戰鬥員、已完成普通培養且尚未完成戰鬥員終極化的人格凝膠，加工為終極戰鬥員人格凝膠。植入後，角色獲得永久戰鬥強化，並能主動活化體內的奈米機械液，發動「戰鬥超頻」。保留人格已有的其他終極特化。</SSC_PSEdit_Combatant_Final.description>
+  <SSC_PSEdit_Combatant_Final.jobString>正在塑造終極戰鬥員人格...</SSC_PSEdit_Combatant_Final.jobString>
 </LanguageData>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <AbilityDef>
+    <defName>SSC_CombatOverdrive</defName>
+    <label>战斗超频</label>
+    <description>主动活化体内的紫色纳米机械液，使经过改造的身体与神经系统进入短暂的超频状态，强化攻击、防护与行动能力。仅征召时可发动。</description>
+    <abilityClass>SexSlaveCraft.Ability_CombatOverdrive</abilityClass>
+    <iconPath>UI/Icons/Abilities/SSC_CombatOverdrive</iconPath>
+    <jobDef>CastAbilityOnThing</jobDef>
+    <targetRequired>false</targetRequired>
+    <canUseAoeToGetTargets>false</canUseAoeToGetTargets>
+    <hostile>false</hostile>
+    <showPsycastEffects>false</showPsycastEffects>
+    <showWhenDrafted>true</showWhenDrafted>
+    <displayGizmoWhileUndrafted>false</displayGizmoWhileUndrafted>
+    <disableGizmoWhileUndrafted>true</disableGizmoWhileUndrafted>
+    <cooldownTicksRange>10000</cooldownTicksRange>
+    <statBases>
+      <Ability_Duration>41.666668</Ability_Duration>
+    </statBases>
+    <verbProperties>
+      <verbClass>Verb_CastAbility</verbClass>
+      <warmupTime>0</warmupTime>
+      <range>0</range>
+      <requireLineOfSight>false</requireLineOfSight>
+      <targetParams>
+        <canTargetSelf>true</canTargetSelf>
+        <canTargetPawns>false</canTargetPawns>
+        <canTargetBuildings>false</canTargetBuildings>
+        <canTargetLocations>false</canTargetLocations>
+      </targetParams>
+    </verbProperties>
+    <comps>
+      <li Class="CompProperties_AbilityGiveHediff">
+        <compClass>CompAbilityEffect_GiveHediff</compClass>
+        <hediffDef>SSC_Hediff_CombatOverdrive</hediffDef>
+        <onlyApplyToSelf>true</onlyApplyToSelf>
+        <replaceExisting>true</replaceExisting>
+        <!-- 原版按每秒 60 ticks 换算；固定覆盖值确保恰为 2500 ticks。 -->
+        <durationSecondsOverride>41.666668</durationSecondsOverride>
+      </li>
+    </comps>
+  </AbilityDef>
+</Defs>

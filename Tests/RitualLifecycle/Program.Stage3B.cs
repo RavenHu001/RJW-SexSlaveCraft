@@ -211,6 +211,7 @@ internal static partial class Program
             f.toils[4].initAction(); f.toils[4].initAction();
             Equal(1, TestWorld.TrainerProgressAwards, "repeated daily trainer progress");
         });
+        CheckCombatantDailySettlement();
         Check("daily late callbacks preserve replacement task and target occupancy", () =>
         {
             var f = Daily(); f.toils[0].initAction(); f.toils[2].initAction(); f.toils[3].initAction();

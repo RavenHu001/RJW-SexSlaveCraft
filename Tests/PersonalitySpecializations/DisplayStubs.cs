@@ -20,6 +20,9 @@ namespace SexSlaveCraft
         public static string ProgressForTest(Pawn pawn, CompSexSlaveTraining comp) => GetSpecializationProgressText(pawn, comp);
     }
 
+    public static class SSCDefOf { public static readonly object SSC_BasicTraining = new object(); }
+    public static class ResearchUtils { public static bool IsResearchFinished(object research) => true; }
+
     // 翻译和健康状态是外部边界；用固定词与显式集合支持各种完成记录组合。
     public static class Strings
     {
@@ -27,6 +30,8 @@ namespace SexSlaveCraft
         public const string ITab_SpecializationBus = "公交车";
         public const string ITab_SpecializationCow = "奶牛";
         public const string ITab_SpecializationTrainerOfficer = "训导官";
+        public const string ITab_SpecializationCombatant = "战斗员";
+        public const string ITab_SpecializationOrdinaryComplete = "普通培养完成";
         public const string ITab_SpecializationFinalizedSuffix = "已终极化";
         public const string ITab_SpecializationUnfinishedSuffix = "未完成内容";
         public const string ITab_SpecializationComplete = "已完成";
@@ -40,6 +45,10 @@ namespace SexSlaveCraft
     {
         public static bool HasFinalPetState(Pawn pawn, SexSlaveSpecializationType type) => pawn.Finalized.Contains(type);
         public static string GetSpecializationLabel(SexSlaveSpecializationType type) => type.ToString();
+    }
+    public static class CombatantSpecializationUtility
+    {
+        public static bool HasFinalState(Pawn pawn) => pawn.Finalized.Contains(SexSlaveSpecializationType.Combatant);
     }
     public static class TrainerSpecializationUtility
     {

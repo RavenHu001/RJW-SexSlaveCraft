@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <!-- 严重度仅用于派生阶段；实际进度由训练组件保存，0.01 下限不构成经验。 -->
+  <HediffDef>
+    <defName>SSC_Hediff_Combatant</defName>
+    <label>性奴特化（战斗员）</label>
+    <description>紫色纳米机械液正随着培养逐步改造身体与神经系统，使武器操控更加稳定，动作与应激反应更加协调。\n\n培养完成后，可将抽取的人格凝胶加工为终极战斗员，再通过植入获得终极效果。</description>
+    <defaultLabelColor>(0.75, 0.65, 0.90)</defaultLabelColor>
+    <initialSeverity>0.01</initialSeverity>
+    <maxSeverity>1</maxSeverity>
+    <isBad>false</isBad>
+    <tendable>false</tendable>
+    <everCurableByItem>false</everCurableByItem>
+    <makesSickThought>false</makesSickThought>
+    <stages>
+      <li>
+        <minSeverity>0</minSeverity>
+        <label>战斗员培养中</label>
+      </li>
+      <li>
+        <minSeverity>0.20</minSeverity>
+        <label>性奴特化（战斗员）</label>
+        <statOffsets>
+          <ShootingAccuracyPawn>2</ShootingAccuracyPawn>
+          <MeleeHitChance>2</MeleeHitChance>
+          <MentalBreakThreshold>-0.02</MentalBreakThreshold>
+        </statOffsets>
+        <statFactors>
+          <AimingDelayFactor>0.95</AimingDelayFactor>
+          <MeleeCooldownFactor>0.95</MeleeCooldownFactor>
+          <IncomingDamageFactor>1</IncomingDamageFactor>
+        </statFactors>
+      </li>
+      <!-- 写入完整熟练收益，替换基础阶段；普通完成仍停留在这一阶段。 -->
+      <li>
+        <minSeverity>0.50</minSeverity>
+        <label>性奴特化（熟练战斗员）</label>
+        <statOffsets>
+          <ShootingAccuracyPawn>4</ShootingAccuracyPawn>
+          <MeleeHitChance>4</MeleeHitChance>
+          <MentalBreakThreshold>-0.04</MentalBreakThreshold>
+        </statOffsets>
+        <statFactors>
+          <AimingDelayFactor>0.90</AimingDelayFactor>
+          <MeleeCooldownFactor>0.90</MeleeCooldownFactor>
+          <IncomingDamageFactor>0.90</IncomingDamageFactor>
+        </statFactors>
+      </li>
+    </stages>
+  </HediffDef>
+  <!-- 终极成果随人格永久保存，并授予战斗超频。 -->
+  <HediffDef>
+    <defName>SSC_Hediff_Combatant_Final</defName>
+    <hediffClass>HediffWithComps</hediffClass>
+    <label>性奴特化（终极战斗员）</label>
+    <description>经过终极化塑造，紫色纳米机械液对身体与神经系统的改造已形成稳定模式。战斗适应能力得到全面强化，并能主动活化体内微械，发动“战斗超频”。\n\n这份成果随人格保留，切换培养方向、解绑或锁链退阶不会使其消失。</description>
+    <defaultLabelColor>(0.85, 0.70, 1.0)</defaultLabelColor>
+    <initialSeverity>1</initialSeverity>
+    <maxSeverity>1</maxSeverity>
+    <isBad>false</isBad>
+    <tendable>false</tendable>
+    <everCurableByItem>false</everCurableByItem>
+    <makesSickThought>false</makesSickThought>
+    <comps>
+      <li Class="SexSlaveCraft.HediffCompProperties_GiveAbility">
+        <abilityDef>SSC_CombatOverdrive</abilityDef>
+      </li>
+    </comps>
+    <stages>
+      <li>
+        <minSeverity>0</minSeverity>
+        <statOffsets>
+          <ShootingAccuracyPawn>6</ShootingAccuracyPawn>
+          <MeleeHitChance>6</MeleeHitChance>
+          <MentalBreakThreshold>-0.06</MentalBreakThreshold>
+        </statOffsets>
+        <statFactors>
+          <AimingDelayFactor>0.85</AimingDelayFactor>
+          <MeleeCooldownFactor>0.85</MeleeCooldownFactor>
+          <IncomingDamageFactor>0.80</IncomingDamageFactor>
+        </statFactors>
+      </li>
+    </stages>
+  </HediffDef>
+  <HediffDef>
+    <defName>SSC_Hediff_CombatOverdrive</defName>
+    <hediffClass>HediffWithComps</hediffClass>
+    <label>战斗超频</label>
+    <description>体内的紫色纳米机械液已被主动活化，身体与神经系统正处于超频状态。肌肉响应更迅速，痛觉受到抑制，身体的防护与机动能力暂时增强。</description>
+    <initialSeverity>1</initialSeverity>
+    <maxSeverity>1</maxSeverity>
+    <isBad>false</isBad>
+    <tendable>false</tendable>
+    <everCurableByItem>false</everCurableByItem>
+    <makesSickThought>false</makesSickThought>
+    <comps>
+      <li Class="HediffCompProperties_Disappears">
+        <disappearsAfterTicks>2500</disappearsAfterTicks>
+      </li>
+    </comps>
+    <stages>
+      <li>
+        <painFactor>0.50</painFactor>
+        <statFactors>
+          <MeleeDamageFactor>1.30</MeleeDamageFactor>
+          <MeleeCooldownFactor>0.75</MeleeCooldownFactor>
+          <RangedCooldownFactor>0.80</RangedCooldownFactor>
+          <IncomingDamageFactor>0.75</IncomingDamageFactor>
+          <MoveSpeed>1.25</MoveSpeed>
+        </statFactors>
+      </li>
+    </stages>
+  </HediffDef>
+</Defs>

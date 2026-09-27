@@ -438,6 +438,7 @@ internal static partial class Program
         });
 
         RunUapCompatibilityTests();
+        RunPersonalityExcretionTests();
         Console.WriteLine($"{cases - failures}/{cases} lifecycle tests passed.");
         return failures == 0 ? 0 : 1;
     }

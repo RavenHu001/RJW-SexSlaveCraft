@@ -1,0 +1,140 @@
+// 仅隔离游戏对象、旧方向与翻译；战斗员、方向切换、健康对账和显示均使用生产源码。
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using SexSlaveCraft;
+
+namespace Verse
+{
+    public class Thing { public bool Destroyed; }
+    public partial class Pawn : Thing
+    {
+        public bool IsColonist = true, IsPrisonerOfColony, IsSlave;
+        public CompSexSlaveTraining Training;
+        public Health health;
+        public Pawn() { health = new Health { Owner = this }; abilities = new RimWorld.Pawn_AbilityTracker(this); }
+        public T TryGetComp<T>() where T : class => Training as T;
+    }
+    public class HediffDef { public string defName; }
+    public class Hediff
+    {
+        public HediffDef def;
+        public Pawn pawn;
+        public HediffComp_GiveAbility Grant;
+        public float Severity;
+        public T TryGetComp<T>() where T : class => null;
+    }
+    public class HediffSet
+    {
+        public readonly List<Hediff> hediffs = new List<Hediff>();
+        public Hediff GetFirstHediffOfDef(HediffDef def) => hediffs.FirstOrDefault(h => h.def == def);
+        public bool HasHediff(HediffDef def) => GetFirstHediffOfDef(def) != null;
+    }
+    public class Health
+    {
+        public Pawn Owner;
+        public readonly HediffSet hediffSet = new HediffSet();
+        public Hediff AddHediff(HediffDef def)
+        {
+            var h = new Hediff { def = def, Severity = 0.01f, pawn = Owner };
+            if (def == SSCDefOf.SSC_Hediff_Combatant_Final)
+                h.Grant = new HediffComp_GiveAbility { parent = h, props = new HediffCompProperties_GiveAbility { abilityDef = SSCDefOf.SSC_CombatOverdrive } };
+            hediffSet.hediffs.Add(h);
+            return h;
+        }
+        public void RemoveHediff(Hediff h)
+        {
+            if (hediffSet.hediffs.Remove(h)) h.Grant?.CompPostPostRemoved();
+        }
+    }
+    public class ResearchProjectDef { public bool IsFinished; }
+    public static class DefDatabase<T> where T : class
+    {
+        public static T GetNamedSilentFail(string name) => null;
+    }
+    public enum LoadSaveMode { Inactive, LoadingVars, PostLoadInit }
+    public static class Scribe { public static LoadSaveMode mode; }
+    public static class PercentFormatting
+    {
+        public static string ToStringPercent(this float value) => value.ToString("P0");
+    }
+}
+
+namespace SexSlaveCraft
+{
+    using Verse;
+    public enum PawnIdentity { Unset, Slave, Master }
+    public enum RabbitReproductionMode { Offspring, Clone }
+    public partial class CompSexSlaveTraining
+    {
+        public Thing parent;
+        public PawnIdentity pawnIdentity;
+        public bool specializationExplicitlyUnset, trainerInvalidExitBlocksAdoption;
+        public RabbitReproductionMode rabbitReproductionMode;
+        public float savedCowReservoirCharge;
+    }
+    public static class SSCIdentityUtility
+    {
+        public static bool IsSexSlave(Pawn p) => p?.Training?.pawnIdentity == PawnIdentity.Slave;
+        public static bool IsSupportedVanillaStatus(Pawn p) =>
+            p != null && (p.IsColonist || p.IsPrisonerOfColony || p.IsSlave);
+    }
+    public static class SSCDefOf
+    {
+        public static readonly RimWorld.AbilityDef SSC_CombatOverdrive = new RimWorld.AbilityDef();
+        public static HediffDef SSC_Hediff_Combatant_Final = new HediffDef { defName = "SSC_Hediff_Combatant_Final" };
+        public static HediffDef SSC_Hediff_Combatant = new HediffDef { defName = "SSC_Hediff_Combatant" };
+        public static readonly HediffDef SSC_Hediff_Bus = new HediffDef();
+        public static readonly HediffDef SSC_Hediff_Bus_Final = new HediffDef();
+        public static readonly HediffDef SSC_Hediff_Cow = new HediffDef();
+        public static readonly HediffDef SSC_Hediff_Cow_Final = new HediffDef();
+        public static readonly HediffDef SSC_Hediff_TrainerOfficer = new HediffDef();
+        public static readonly ResearchProjectDef SSC_BasicTraining = new ResearchProjectDef();
+        public static ResearchProjectDef SSC_RES_Combatant = new ResearchProjectDef();
+    }
+    public class HediffComp_CowMilkReservoir { public float CurrentCharge; }
+    public static class TrainerSpecializationLifecycle
+    {
+        public static void Notify(Pawn p) { }
+        public static void Maintain(Pawn p) { }
+    }
+    public static class TrainerSpecializationUtility
+    {
+        public static bool HasFinalRecord(Pawn p) => false;
+    }
+    public static class BusSpecializationUtility
+    {
+        public static bool HasFinalBusState(Pawn p) => p.health.hediffSet.HasHediff(SSCDefOf.SSC_Hediff_Bus_Final);
+        public static bool HasFinalCowState(Pawn p) => p.health.hediffSet.HasHediff(SSCDefOf.SSC_Hediff_Cow_Final);
+        public static void EnsureBusHediffFromSpecialization(Pawn p) { }
+        public static void EnsureCowHediffFromSpecialization(Pawn p) { }
+    }
+    public static class PetSpecializationUtility
+    {
+        public static bool HasFinalPetState(Pawn p, SexSlaveSpecializationType t) => false;
+        public static void EnsurePetHediffFromSpecialization(Pawn p) { }
+        public static HediffDef GetBaseHediffDef(SexSlaveSpecializationType t) => null;
+        public static string GetSpecializationLabel(SexSlaveSpecializationType t) => t.ToString();
+    }
+    public static class Strings
+    {
+        public const string ITab_SpecializationCombatantDisabledIdentity = "sex slave identity required";
+        public const string ITab_SpecializationCombatantDisabledResearch = "research required";
+        public const string ITab_SpecializationNone = "none";
+        public const string ITab_SpecializationBus = "bus";
+        public const string ITab_SpecializationCow = "cow";
+        public const string ITab_SpecializationTrainerOfficer = "trainer";
+        public const string ITab_SpecializationCombatant = "combatant";
+        public const string ITab_SpecializationFinalizedSuffix = "finalized";
+        public const string ITab_SpecializationUnfinishedSuffix = "unfinished";
+        public const string ITab_SpecializationComplete = "complete";
+        public const string ITab_SpecializationOrdinaryComplete = "ordinary complete";
+    }
+    public partial class ITab_SexSlaveTraining
+    {
+        public static string Label(Pawn p) => GetSpecializationLabel(p, p.Training);
+        public static string Progress(Pawn p) => GetSpecializationProgressText(p, p.Training);
+        public static bool SpecializationVisible(Pawn p) => CanShowSpecializationSection(p?.Training);
+        public static bool LegacyOptions(Pawn p) => CanShowLegacySpecializationOptions(p.Training);
+    }
+}

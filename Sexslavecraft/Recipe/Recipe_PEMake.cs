@@ -62,6 +62,43 @@ namespace SexSlaveCraft
         }
     }
 
+    /// <summary>战斗员终极化要求当前普通培养完成；不接受其他方向历史或已有终极记录。</summary>
+    internal static class CombatantRecipeUtility
+    {
+        internal static bool IsFinalizationRecipe(RecipeDef_PSTag recipe)
+        {
+            return recipe?.hediffToAdd != null && SSCDefOf.SSC_Hediff_Combatant_Final != null &&
+                recipe.hediffToAdd == SSCDefOf.SSC_Hediff_Combatant_Final;
+        }
+
+        internal static bool IsEligibleGel(CompPersonalityStore gel)
+        {
+            if (gel == null || SSCDefOf.SSC_Hediff_Combatant == null ||
+                SSCDefOf.SSC_Hediff_Combatant_Final == null) return false;
+            float progress = gel.specializationProgress;
+            return gel.specializationType == SexSlaveSpecializationType.Combatant &&
+                !float.IsNaN(progress) && !float.IsInfinity(progress) &&
+                progress >= CompSexSlaveTraining.SpecializationCompletionProgress && progress <= 1f &&
+                gel.HasTag(SSCDefOf.SSC_Hediff_Combatant) && !gel.HasTag(SSCDefOf.SSC_Hediff_Combatant_Final);
+        }
+    }
+
+    /// <summary>筛料、消耗前检查和产物复查共用资格分派；其他配方保留原流程。</summary>
+    internal static class SpecializationFinalizationRecipeUtility
+    {
+        internal static bool IsProtectedRecipe(RecipeDef_PSTag recipe)
+        {
+            return TrainerOfficerRecipeUtility.IsFinalizationRecipe(recipe) || CombatantRecipeUtility.IsFinalizationRecipe(recipe);
+        }
+
+        internal static bool IsEligibleGel(RecipeDef_PSTag recipe, CompPersonalityStore gel)
+        {
+            if (TrainerOfficerRecipeUtility.IsFinalizationRecipe(recipe)) return TrainerOfficerRecipeUtility.IsEligibleGel(gel);
+            if (CombatantRecipeUtility.IsFinalizationRecipe(recipe)) return CombatantRecipeUtility.IsEligibleGel(gel);
+            return true;
+        }
+    }
+
     // =========================================================
     // 2. 配方工作者：负责搬运数据，并动态注入 XML 里定义的 Tag
     // =========================================================
@@ -78,8 +115,7 @@ namespace SexSlaveCraft
             // 正常工作台账单会先经过 Harmony_TrainerRecipeCompletion 的消耗前检查；
             // 这里保留复查，保护其他模组直接调用工作者时的输出资格。
             if (recipe is RecipeDef_PSTag finalRecipe
-                && TrainerOfficerRecipeUtility.IsFinalizationRecipe(finalRecipe)
-                && !TrainerOfficerRecipeUtility.IsEligibleGel(sourceComp)) return;
+                && !SpecializationFinalizationRecipeUtility.IsEligibleGel(finalRecipe, sourceComp)) return;
 
             ThingDef targetDef = PersonalityGelUtility.GetEditedThingDef(sourceItem.def);
 
@@ -117,6 +153,9 @@ namespace SexSlaveCraft
                     }
 
                     HediffDef petBaseTag = PetSpecializationUtility.GetBaseHediffForFinal(smartRecipe.hediffToAdd);
+                    // exclusiveTags 也用于筛料，普通标签只能在合格人格复制后单独移除。
+                    if (CombatantRecipeUtility.IsFinalizationRecipe(smartRecipe))
+                        targetComp.RemoveTag(SSCDefOf.SSC_Hediff_Combatant);
                     if (petBaseTag != null)
                     {
                         targetComp.RemoveTag(petBaseTag);

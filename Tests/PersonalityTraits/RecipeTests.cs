@@ -52,7 +52,7 @@ internal static partial class Program
     {
         // 构造带有其他方向历史的已完成普通凝胶，使加工后的进度继承可被观察。
         CompPersonalityStore source = Gel();
-        source.parent.def = new ThingDef { defName = "SourceGel" };
+        source.parent.def = SSCDefOf.SSC_PersonalitySlime;
         source.parent.Comps[typeof(CompPersonalityStore)] = source;
         source.specializationType = SexSlaveSpecializationType.TrainerOfficer;
         source.specializationProgress = 1f;
@@ -218,7 +218,7 @@ internal static partial class Program
     private static CompPersonalityStore CompletedTrainerGel()
     {
         CompPersonalityStore source = Gel();
-        source.parent.def = new ThingDef { defName = "SourceGel" };
+        source.parent.def = SSCDefOf.SSC_PersonalitySlime;
         source.parent.Comps[typeof(CompPersonalityStore)] = source;
         source.specializationType = SexSlaveSpecializationType.TrainerOfficer;
         source.specializationProgress = 1f;

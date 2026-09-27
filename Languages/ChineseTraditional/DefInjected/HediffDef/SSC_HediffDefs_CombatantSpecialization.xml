@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_Hediff_Combatant.label>性奴特化（戰鬥員）</SSC_Hediff_Combatant.label>
+  <SSC_Hediff_Combatant.description>紫色奈米機械液正隨著培養逐步改造身體與神經系統，使武器操控更加穩定，動作與應激反應更加協調。\n\n培養完成後，可將抽取的人格凝膠加工為終極戰鬥員，再透過植入獲得終極效果。</SSC_Hediff_Combatant.description>
+  <SSC_Hediff_Combatant.stages.0.label>戰鬥員培養中</SSC_Hediff_Combatant.stages.0.label>
+  <SSC_Hediff_Combatant.stages.1.label>性奴特化（戰鬥員）</SSC_Hediff_Combatant.stages.1.label>
+  <SSC_Hediff_Combatant.stages.2.label>性奴特化（熟練戰鬥員）</SSC_Hediff_Combatant.stages.2.label>
+  <SSC_Hediff_Combatant_Final.label>性奴特化（終極戰鬥員）</SSC_Hediff_Combatant_Final.label>
+  <SSC_Hediff_Combatant_Final.description>經過終極化塑造，紫色奈米機械液對身體與神經系統的改造已形成穩定模式。戰鬥適應能力得到全面強化，並能主動活化體內微械，發動「戰鬥超頻」。\n\n這份成果隨人格保留，切換培養方向、解綁或鎖鏈退階不會使其消失。</SSC_Hediff_Combatant_Final.description>
+  <SSC_Hediff_CombatOverdrive.label>戰鬥超頻</SSC_Hediff_CombatOverdrive.label>
+  <SSC_Hediff_CombatOverdrive.description>體內的紫色奈米機械液已被主動活化，身體與神經系統正處於超頻狀態。肌肉響應更迅速，痛覺受到抑制，身體的防護與機動能力暫時增強。</SSC_Hediff_CombatOverdrive.description>
+</LanguageData>

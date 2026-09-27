@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
+  <SSC_PE_TargetBusy>Другой персонаж уже проводит извлечение личности у этой цели.</SSC_PE_TargetBusy>
   <SSC_DailyTrainingOutcome>[Ежедневная дрессировка] Оценка: {0} (уровень {1}) | Развращение: +{2}</SSC_DailyTrainingOutcome>
   <SSC_Ritual_MasterSlaveHeader>Господин {0} | Секс-раб: {1}</SSC_Ritual_MasterSlaveHeader>
   <SSC_Ritual_ScoreLevel>Оценка: {0} (уровень {1})</SSC_Ritual_ScoreLevel>
@@ -124,7 +125,7 @@
   <SSC_ITab_TrainerMasterSuffix> (Господин)</SSC_ITab_TrainerMasterSuffix>
   <SSC_ITab_TrainerLockedSuffix> (Недоступен)</SSC_ITab_TrainerLockedSuffix>
   <SSC_ITab_ClearTrainer>Снять назначение</SSC_ITab_ClearTrainer>
-  <SSC_ITab_SpecializationHeader>&lt;b&gt;Специализация секс-раба&lt;/b&gt;</SSC_ITab_SpecializationHeader>
+  <SSC_ITab_SpecializationHeader>&lt;b&gt;Специализация&lt;/b&gt;</SSC_ITab_SpecializationHeader>
   <SSC_ITab_SpecializationNone>Не задана</SSC_ITab_SpecializationNone>
   <SSC_ITab_SpecializationBus>Автобус</SSC_ITab_SpecializationBus>
   <SSC_ITab_SpecializationCow>Корова</SSC_ITab_SpecializationCow>
