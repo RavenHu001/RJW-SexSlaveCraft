@@ -4,11 +4,11 @@
 
 This continuation builds on upstream **2.2.8**, the baseline when upstream development stopped in July, and retains its version numbering. Entries are listed newest first. Technical details are in the [development log (Chinese)](Docs/Development/开发更新记录.md).
 
-## [Unreleased] — 战斗员特化、显示整理与任务修复 / Combatant specialization, status display and job fixes
+## [2.3.4] — 2026-09-27 — 战斗员特化、显示整理与任务修复 / Combatant specialization, status display and job fixes
 
-截至 2026-09-27，战斗员首版五阶段开发已完成，新增专属图标及健康状态显示整理。功能与实机验收范围见[完成核查记录](Docs/Development/战斗员特化完成核查.md)。本节为开发版更新，尚未指定新版本或制作正式发布包；已发布的 2.3.3 不含这些新增内容。
+本版汇总 `v2.3.3`（`3f62e41`）之后至 `3260182` 的全部已实现更新：战斗员特化五阶段、测试按钮、专属图标、特化显示整理及人格排泄任务修复，并收录中英模组介绍和配套开发记录。版本已确定为 2.3.4，安装包及远端发布尚待完成；详见[中英发布说明](Docs/Releases/2.3.4/2.3.4发布说明.md)与[版本验证](Docs/Releases/2.3.4/2.3.4版本验证.md)。
 
-As of 2026-09-27, all five stages of the first Combatant implementation are complete, including its dedicated icon and specialization display updates. These are development-branch changes, not part of the published 2.3.3 package. No new release version or package has been assigned.
+Version 2.3.4 includes all implemented changes after `v2.3.3` (`3f62e41`) through `3260182`: the complete Combatant specialization, testing command, dedicated icon, specialization display updates and personality-excretion fixes, plus the bilingual mod overview and development records. The version is assigned; packaging and remote publication are pending. See the [release notes](Docs/Releases/2.3.4/2.3.4发布说明.md) and [validation record](Docs/Releases/2.3.4/2.3.4版本验证.md).
 
 - **人格排泄任务保持 / Personality excretion continuity:** 修复被执行者在人格排泄途中转去搬运、进食、睡眠或娱乐，导致任务中断的问题。手动和自动发起采用相同保护，保留玩家取消及任务失效时的退出。Prevents the recipient from interrupting personality excretion to haul, eat, sleep or seek recreation. The same protection applies to manually and automatically initiated jobs, while explicit cancellation and invalid-job cleanup remain available.
 - **人格排泄执行者冲突 / Competing excretion initiators:** 修复两名执行者争抢同一目标的问题。先开始者保持执行，后来者会被拒绝，原任务及进度不会因争抢重启；取消后允许其他执行者重新接手，并建立正确的新配对。两项修复均已同步本机并获维护者实机有效确认，对应提交 `928b5d2`；详见[实现与验证记录](Docs/Development/人格排泄接收任务抢占修复.md)。Prevents two initiators from competing for the same target: the first continues, later contenders are rejected without restarting the scene or its progress, and cancellation allows another initiator to establish a new pair. Both fixes were installed locally and confirmed effective in-game by the maintainer (commit `928b5d2`).
@@ -20,6 +20,7 @@ As of 2026-09-27, all five stages of the first Combatant implementation are comp
 - **存档与人格 / Saves and transfer:** 正常存读档保留技能冷却及强化剩余时间；人格迁移按共用流程重新授予技能，不迁移旧冷却或临时强化。Normal saves retain cooldown and remaining buff duration. Personality transfer grants the ability through the shared flow without transferring the old cooldown or active buff.
 - **界面与美术 / UI and art:** 新增平面化女性剪影、皮革圆环项圈与紫色神经纹路组成的专属技能图标。战斗员状态采用淡紫色，训导官采用青绿色、禁用状态采用灰绿色；删除终极公交车与奶牛重复显示的阶段名称及四语对应翻译。Adds a dedicated flat female-silhouette icon with a ringed leather collar and violet neural accents. Combatant labels use lavender; Training Officers use teal and muted gray-green when disabled. Removes duplicated final Public Use/Cow stage labels in all four languages.
 - **文本与测试工具 / Text and testing tools:** 四语说明统一纳米机械液改造与主动活化设定，技能概述不重复健康页自动属性列表，补充普通完成后的终极化提示。开发模式及模组调试按钮同时开启时，可直接拉满当前特化普通培养进度；不会自动终极化。Four-language descriptions consistently explain nanofluid modification and activation, with concise ability summaries and finalization guidance. With developer mode and mod debug gizmos enabled, a command completes the current ordinary specialization without finalizing it.
+- **文档与维护 / Documentation and maintenance:** 新增中英模组介绍、战斗员分阶段实施与完成核查记录，更新玩家指南和规划；自动回归由 18 套扩为 19 套，增加战斗员资源核验工具。Adds a bilingual mod overview, Combatant implementation and completion records, updated player guides and plans; expands automated regression from 18 to 19 suites and adds a Combatant resource audit.
 - **验证 / Validation:** 人格排泄修复新增 32 项回归，最新完整检查 19 套、886/886 项通过，其中战斗员专项 49/49；272 个 XML、四语、图标引用与本机原版组件检查通过。战斗员完整玩法和数值验收沿用此前确认；人格排泄两轮修复另获本机实机确认。The excretion fixes add 32 regression cases. The latest full check passed all 19 suites and 886 cases, including 49 Combatant cases; 272 XML files, localization, icon references and local game-component checks also passed. Combatant gameplay and balance acceptance follows the earlier confirmation; both excretion fixes were separately confirmed in-game.
 
 ## [2.3.3] — 2026-09-26 — RJW 泄欲对象资格与特化科技说明 / RJW Comfort designation and specialization descriptions

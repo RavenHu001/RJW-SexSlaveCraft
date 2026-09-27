@@ -1,12 +1,12 @@
 # RJW-SexSlaveCraft Complete Player Guide
 
-> For RimWorld 1.6 and SexSlaveCraft 2.3.3, based on the current workspace code and installed Defs.\
-> Base audit: 2026-06-30; Training Officer and reliability changes updated for 2.3.2 on 2026-09-25; RJW Comfort designation and research descriptions updated for 2.3.3 on 2026-09-26.\
+> For RimWorld 1.6 and SexSlaveCraft 2.3.4, based on the current workspace code and installed Defs.\
+> Base audit: 2026-06-30; Combatant, display updates and personality-excretion fixes updated for 2.3.4 on 2026-09-27.\
 > Based on upstream 2.2.8; version 2.2.9 includes the specialization and ritual progression fixes, and 2.2.10 fixes stale training locks after interrupted rituals. See `CHANGELOG.md`.\
-> Version 2.3.3 lets SSC sex slaves at Chain stage 2 or higher qualify for RJW Comfort designation under RJW's existing rules and explains specialization effects and experience sources in research descriptions. ZIP and checksum: [v2.3.3 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.3). Legacy RimTalk remains suspended; unfinished Pet Cat and Pet Rabbit choices remain disabled.\
+> Version 2.3.4 adds the complete Combatant specialization, Combat Overdrive and its icon, improves specialization labels/colors, and fixes personality-excretion interruptions and competing initiators. The version is assigned; packaging and remote publication are pending. Legacy RimTalk remains suspended; unfinished Pet Cat and Pet Rabbit choices remain disabled.\
 > This guide describes the behavior implemented by the current C# and XML. Where an old changelog or description disagrees with the code, the discrepancy is listed under “Current Limitations and Known Differences.”
 
-> See the [2.3.3 notes](Docs/Releases/2.3.3/2.3.3发布说明.md) for this release and the [2.3.2 notes](Docs/Releases/2.3.2/2.3.2发布说明.md) for Training Officer progression, attributes and upgrading.
+> See the [2.3.4 notes](Docs/Releases/2.3.4/2.3.4发布说明.md) for this release and the [2.3.2 notes](Docs/Releases/2.3.2/2.3.2发布说明.md) for Training Officer progression, attributes and upgrading.
 
 ## 1. Scope and Dependencies
 
