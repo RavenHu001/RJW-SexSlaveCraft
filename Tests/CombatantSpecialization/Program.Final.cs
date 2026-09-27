@@ -80,7 +80,7 @@ internal static partial class Program
         Equal(-0.06f, Value(offsets, "MentalBreakThreshold"));
         Equal(0.85f, Value(factors, "AimingDelayFactor")); Equal(0.85f, Value(factors, "MeleeCooldownFactor"));
         Equal(0.8f, Value(factors, "IncomingDamageFactor"));
-        Check(def.Element("comps") == null, "阶段三提前授予能力");
+        Check(def.Element("comps").Descendants("abilityDef").Single().Value == "SSC_CombatOverdrive", "终极能力未接入");
         var recipe = XDocument.Load(Path.Combine(root, "Defs/RecipeDefs/RecipeDef_PSEdit.xml"))
             .Root.Elements().Single(e => (string)e.Element("defName") == "SSC_PSEdit_Combatant_Final");
         Equal(3500f, Value(recipe, "workAmount"));

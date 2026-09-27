@@ -47,17 +47,23 @@
       </li>
     </stages>
   </HediffDef>
-  <!-- 终极成果随人格永久保存；阶段四再接入主动能力。 -->
+  <!-- 终极成果随人格永久保存，并授予战斗超频。 -->
   <HediffDef>
     <defName>SSC_Hediff_Combatant_Final</defName>
+    <hediffClass>HediffWithComps</hediffClass>
     <label>终极战斗员</label>
-    <description>人格凝胶加工并植入后获得的永久战斗特化。提高射击与近战命中原始评分，缩短瞄准和近战冷却，降低日常精神崩溃临界值，承伤乘以 0.80。替换普通战斗员效果，切换培养方向、解绑或退阶后仍保留；人格抽取时随人格离开原身体。主动能力尚未接入。</description>
+    <description>人格凝胶加工并植入后获得的永久战斗特化。提高射击与近战命中原始评分，缩短瞄准和近战冷却，降低日常精神崩溃临界值，承伤乘以 0.80。替换普通战斗员效果，切换培养方向、解绑或退阶后仍保留；人格抽取时随人格离开原身体。授予仅征召时可用的“战斗超频”：六项战斗强化持续 1 游戏小时，冷却 4 游戏小时。</description>
     <initialSeverity>1</initialSeverity>
     <maxSeverity>1</maxSeverity>
     <isBad>false</isBad>
     <tendable>false</tendable>
     <everCurableByItem>false</everCurableByItem>
     <makesSickThought>false</makesSickThought>
+    <comps>
+      <li Class="SexSlaveCraft.HediffCompProperties_GiveAbility">
+        <abilityDef>SSC_CombatOverdrive</abilityDef>
+      </li>
+    </comps>
     <stages>
       <li>
         <minSeverity>0</minSeverity>
@@ -70,6 +76,35 @@
           <AimingDelayFactor>0.85</AimingDelayFactor>
           <MeleeCooldownFactor>0.85</MeleeCooldownFactor>
           <IncomingDamageFactor>0.80</IncomingDamageFactor>
+        </statFactors>
+      </li>
+    </stages>
+  </HediffDef>
+  <HediffDef>
+    <defName>SSC_Hediff_CombatOverdrive</defName>
+    <hediffClass>HediffWithComps</hediffClass>
+    <label>战斗超频</label>
+    <description>终极战斗员的短时强化：近战伤害 ×1.30、近战冷却 ×0.75、远程冷却 ×0.80、承伤 ×0.75、移动速度 ×1.25、疼痛 ×0.50。持续 1 游戏小时；解除征召不取消，抽取或替换人格时清除，不随人格迁移。</description>
+    <initialSeverity>1</initialSeverity>
+    <maxSeverity>1</maxSeverity>
+    <isBad>false</isBad>
+    <tendable>false</tendable>
+    <everCurableByItem>false</everCurableByItem>
+    <makesSickThought>false</makesSickThought>
+    <comps>
+      <li Class="HediffCompProperties_Disappears">
+        <disappearsAfterTicks>2500</disappearsAfterTicks>
+      </li>
+    </comps>
+    <stages>
+      <li>
+        <painFactor>0.50</painFactor>
+        <statFactors>
+          <MeleeDamageFactor>1.30</MeleeDamageFactor>
+          <MeleeCooldownFactor>0.75</MeleeCooldownFactor>
+          <RangedCooldownFactor>0.80</RangedCooldownFactor>
+          <IncomingDamageFactor>0.75</IncomingDamageFactor>
+          <MoveSpeed>1.25</MoveSpeed>
         </statFactors>
       </li>
     </stages>

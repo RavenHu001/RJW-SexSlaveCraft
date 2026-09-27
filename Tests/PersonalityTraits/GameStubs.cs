@@ -823,6 +823,8 @@ namespace SexSlaveCraft
     {
         public static object SSC_RES_Combatant = new object();
         public static HediffDef SSC_Hediff_Combatant = new HediffDef { defName = "SSC_Hediff_Combatant" };
+        public static readonly HediffDef SSC_Hediff_CombatOverdrive = new HediffDef { defName = "SSC_Hediff_CombatOverdrive" };
+        public static readonly AbilityDef SSC_CombatOverdrive = new AbilityDef { defName = "SSC_CombatOverdrive" };
         public static HediffDef SSC_Hediff_Combatant_Final = new HediffDef { defName = "SSC_Hediff_Combatant_Final" };
         public static ThingDef SSC_PersonalitySlime = new ThingDef { defName = "SSC_PersonalitySlime" };
         public static ThingDef SSC_PS_P = new ThingDef { defName = "SSC_PS_P" };

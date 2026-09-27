@@ -15,6 +15,7 @@ namespace Verse
     }
     public class ThingDef { }
     public struct IntVec3 { }
+    public struct LocalTargetInfo { public Thing Thing; }
     public partial class Pawn
     {
         public bool Dead, Downed, PreventDeath;
@@ -44,7 +45,6 @@ namespace Verse
 namespace Verse.AI
 {
     public class JobDriver { }
-    public struct LocalTargetInfo { public Thing Thing; }
     public class Job { public LocalTargetInfo targetA; }
     public class Pawn_JobTracker { public JobDriver curDriver; public Job curJob; }
 }

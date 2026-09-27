@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <AbilityDef>
+    <defName>SSC_CombatOverdrive</defName>
+    <label>战斗超频</label>
+    <description>激发终极战斗员的作战潜能：近战伤害 ×1.30、近战冷却 ×0.75、远程冷却 ×0.80、承伤 ×0.75、移动速度 ×1.25、疼痛 ×0.50，持续 1 游戏小时。与终极被动叠加后，本特化的承伤乘数为 0.60，近战冷却乘数为 0.6375。远程冷却不改变连射内部间隔。\n\n仅征召时可见、可用，手动对自身发动；发动后解除征召不取消强化。冷却 4 游戏小时，从发动时开始计算。人格抽取或替换会清除强化，强化不随人格迁移。</description>
+    <abilityClass>SexSlaveCraft.Ability_CombatOverdrive</abilityClass>
+    <iconPath>UI/Commands/Attack</iconPath>
+    <jobDef>CastAbilityOnThing</jobDef>
+    <targetRequired>false</targetRequired>
+    <canUseAoeToGetTargets>false</canUseAoeToGetTargets>
+    <hostile>false</hostile>
+    <showPsycastEffects>false</showPsycastEffects>
+    <showWhenDrafted>true</showWhenDrafted>
+    <displayGizmoWhileUndrafted>false</displayGizmoWhileUndrafted>
+    <disableGizmoWhileUndrafted>true</disableGizmoWhileUndrafted>
+    <cooldownTicksRange>10000</cooldownTicksRange>
+    <statBases>
+      <Ability_Duration>41.666668</Ability_Duration>
+    </statBases>
+    <verbProperties>
+      <verbClass>Verb_CastAbility</verbClass>
+      <warmupTime>0</warmupTime>
+      <range>0</range>
+      <requireLineOfSight>false</requireLineOfSight>
+      <targetParams>
+        <canTargetSelf>true</canTargetSelf>
+        <canTargetPawns>false</canTargetPawns>
+        <canTargetBuildings>false</canTargetBuildings>
+        <canTargetLocations>false</canTargetLocations>
+      </targetParams>
+    </verbProperties>
+    <comps>
+      <li Class="CompProperties_AbilityGiveHediff">
+        <hediffDef>SSC_Hediff_CombatOverdrive</hediffDef>
+        <onlyApplyToSelf>true</onlyApplyToSelf>
+        <replaceExisting>true</replaceExisting>
+        <!-- 原版按每秒 60 ticks 换算；固定覆盖值确保恰为 2500 ticks。 -->
+        <durationSecondsOverride>41.666668</durationSecondsOverride>
+      </li>
+    </comps>
+  </AbilityDef>
+</Defs>

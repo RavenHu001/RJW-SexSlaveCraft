@@ -11,13 +11,16 @@ namespace Verse
     {
         public bool IsColonist = true, IsPrisonerOfColony, IsSlave;
         public CompSexSlaveTraining Training;
-        public Health health = new Health();
+        public Health health;
+        public Pawn() { health = new Health { Owner = this }; abilities = new RimWorld.Pawn_AbilityTracker(this); }
         public T TryGetComp<T>() where T : class => Training as T;
     }
     public class HediffDef { public string defName; }
     public class Hediff
     {
         public HediffDef def;
+        public Pawn pawn;
+        public HediffComp_GiveAbility Grant;
         public float Severity;
         public T TryGetComp<T>() where T : class => null;
     }
@@ -29,14 +32,20 @@ namespace Verse
     }
     public class Health
     {
+        public Pawn Owner;
         public readonly HediffSet hediffSet = new HediffSet();
         public Hediff AddHediff(HediffDef def)
         {
-            var h = new Hediff { def = def, Severity = 0.01f };
+            var h = new Hediff { def = def, Severity = 0.01f, pawn = Owner };
+            if (def == SSCDefOf.SSC_Hediff_Combatant_Final)
+                h.Grant = new HediffComp_GiveAbility { parent = h, props = new HediffCompProperties_GiveAbility { abilityDef = SSCDefOf.SSC_CombatOverdrive } };
             hediffSet.hediffs.Add(h);
             return h;
         }
-        public void RemoveHediff(Hediff h) => hediffSet.hediffs.Remove(h);
+        public void RemoveHediff(Hediff h)
+        {
+            if (hediffSet.hediffs.Remove(h)) h.Grant?.CompPostPostRemoved();
+        }
     }
     public class ResearchProjectDef { public bool IsFinished; }
     public static class DefDatabase<T> where T : class
@@ -72,6 +81,7 @@ namespace SexSlaveCraft
     }
     public static class SSCDefOf
     {
+        public static readonly RimWorld.AbilityDef SSC_CombatOverdrive = new RimWorld.AbilityDef();
         public static HediffDef SSC_Hediff_Combatant_Final = new HediffDef { defName = "SSC_Hediff_Combatant_Final" };
         public static HediffDef SSC_Hediff_Combatant = new HediffDef { defName = "SSC_Hediff_Combatant" };
         public static readonly HediffDef SSC_Hediff_Bus = new HediffDef();

@@ -36,6 +36,7 @@ internal static partial class Program
         Run("研究成本、前置与四语资源完整", Resources);
         RunExperienceCases();
         RunFinalCases();
+        RunAbilityCases();
         Console.WriteLine($"结果：{passed}/{passed + failed} 项通过。");
         return failed == 0 ? 0 : 1;
     }
@@ -284,7 +285,10 @@ internal static partial class Program
             Check(keyed.Root.Elements().Count() == 5 && keyed.Root.Elements().All(e => !string.IsNullOrWhiteSpace(e.Value)), "缺少界面翻译");
             if (lang == "ChineseSimplified") continue;
             var defs = XDocument.Load(Path.Combine(root, "Languages", lang, "DefInjected/HediffDef/SSC_HediffDefs_CombatantSpecialization.xml"));
-            Check(defs.Root.Elements().Count() == 7, "缺少阶段翻译");
+            foreach (string key in new[] { "SSC_Hediff_Combatant.label", "SSC_Hediff_Combatant.description",
+                "SSC_Hediff_Combatant.stages.0.label", "SSC_Hediff_Combatant.stages.1.label", "SSC_Hediff_Combatant.stages.2.label",
+                "SSC_Hediff_Combatant_Final.label", "SSC_Hediff_Combatant_Final.description" })
+                Check(!string.IsNullOrWhiteSpace((string)defs.Root.Element(key)), "缺少阶段翻译：" + key);
         }
     }
 }

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_CombatOverdrive.label>combat overdrive</SSC_CombatOverdrive.label>
+  <SSC_CombatOverdrive.description>Unleash the final combatant's potential: melee damage ×1.30, melee cooldown ×0.75, ranged cooldown ×0.80, incoming damage ×0.75, movement speed ×1.25, and pain ×0.50 for 1 in-game hour. Combined with final passive bonuses, this specialization gives incoming damage ×0.60 and melee cooldown ×0.6375. Ranged cooldown does not affect the interval between shots within a burst.\n\nManually cast on self; visible and usable only while drafted. Undrafting after activation does not cancel the buff. The 4-hour cooldown starts on activation. Personality extraction or replacement removes the buff; it does not transfer with the personality.</SSC_CombatOverdrive.description>
+</LanguageData>

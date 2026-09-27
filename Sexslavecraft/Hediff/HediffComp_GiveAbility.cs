@@ -57,6 +57,9 @@ namespace SexSlaveCraft
             base.CompPostPostRemoved();
             if (Props.abilityDef != null && parent.pawn?.abilities != null)
             {
+                // 对账删除重复标记时，保留仍由另一份有效同类状态授予的技能及冷却。
+                if (parent.pawn.health?.hediffSet?.hediffs.Any(h =>
+                    h != parent && h.def == parent.def && h.Severity >= Props.minSeverity) == true) return;
                 parent.pawn.abilities.RemoveAbility(Props.abilityDef);
             }
         }

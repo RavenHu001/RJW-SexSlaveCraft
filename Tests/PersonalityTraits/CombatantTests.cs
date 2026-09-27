@@ -22,6 +22,50 @@ internal static partial class Program
         Run("战斗员异常原料集合与未知产物映射不会吞料", CombatantRecipeInvalidSources);
         Run("战斗员半成品优先检查内装人格，失败保留容器", CombatantRecipeUnfinished);
         Run("直接调用配方工作者同样拒绝不合格战斗员凝胶", CombatantWorkerRecheck);
+        Run("超频中抽取清除旧身体技能与强化，凝胶仅保存终极", CombatantOverdriveExtraction);
+        Run("植入终极或空白人格均清除宿主超频与旧技能", CombatantOverdriveReplacement);
+        Run("同身体重新植入恢复终极但不恢复临时强化", CombatantOverdriveSameBody);
+    }
+
+    private static void AddOverdrive(Pawn pawn)
+    {
+        pawn.health.AddHediff(SSCDefOf.SSC_Hediff_Combatant_Final);
+        pawn.health.AddHediff(SSCDefOf.SSC_Hediff_CombatOverdrive);
+        pawn.abilities.GainAbility(SSCDefOf.SSC_CombatOverdrive);
+    }
+
+    private static void CombatantOverdriveExtraction()
+    {
+        var source = Body("ActiveSource"); CombatantTraining(source, 1f); AddOverdrive(source);
+        var unrelated = new HediffDef(); source.health.AddHediff(unrelated);
+        var otherAbility = new AbilityDef(); source.abilities.GainAbility(otherAbility);
+        var gel = Excrete(source);
+        Assert(gel.HasTag(SSCDefOf.SSC_Hediff_Combatant_Final) && !gel.HasTag(SSCDefOf.SSC_Hediff_CombatOverdrive), "临时强化被打包或终极丢失");
+        Assert(!CombatantTag(source, SSCDefOf.SSC_Hediff_CombatOverdrive) && !CombatantTag(source, SSCDefOf.SSC_Hediff_Combatant_Final) &&
+            !source.abilities.GrantedAbilities.Contains(SSCDefOf.SSC_CombatOverdrive), "旧身体保留技能或强化");
+        Assert(CombatantTag(source, unrelated) && source.abilities.GrantedAbilities.Contains(otherAbility), "清理波及其他状态或技能");
+    }
+
+    private static void CombatantOverdriveReplacement()
+    {
+        foreach (bool incomingFinal in new[] { true, false })
+        {
+            var host = Body("ActiveHost"); CombatantTraining(host, 1f); AddOverdrive(host);
+            var gel = Gel(); if (incomingFinal) gel.SetTag(SSCDefOf.SSC_Hediff_Combatant_Final, 1f);
+            Assert(ExcretionUtility.InheritEverything(host, gel), "植入失败");
+            Assert(!CombatantTag(host, SSCDefOf.SSC_Hediff_CombatOverdrive) &&
+                !host.abilities.GrantedAbilities.Contains(SSCDefOf.SSC_CombatOverdrive), "宿主临时强化或原技能未移除");
+            Assert(CombatantTag(host, SSCDefOf.SSC_Hediff_Combatant_Final) == incomingFinal, "终极恢复不服从源人格");
+            // 此套件不模拟 Hediff Tick；恢复后授予新实例由战斗员套件的生产授予组件验证。
+        }
+    }
+
+    private static void CombatantOverdriveSameBody()
+    {
+        var body = Body("SameBody"); CombatantTraining(body, 1f); AddOverdrive(body);
+        var gel = Excrete(body);
+        Assert(ExcretionUtility.InheritEverything(body, gel), "同身体植入失败");
+        Assert(CombatantTag(body, SSCDefOf.SSC_Hediff_Combatant_Final) && !CombatantTag(body, SSCDefOf.SSC_Hediff_CombatOverdrive), "临时强化随人格恢复");
     }
 
     private static CompSexSlaveTraining CombatantTraining(Pawn pawn, float progress)

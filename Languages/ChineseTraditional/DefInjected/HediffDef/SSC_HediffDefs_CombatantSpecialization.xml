@@ -6,5 +6,7 @@
   <SSC_Hediff_Combatant.stages.1.label>基礎戰鬥員</SSC_Hediff_Combatant.stages.1.label>
   <SSC_Hediff_Combatant.stages.2.label>熟練戰鬥員</SSC_Hediff_Combatant.stages.2.label>
   <SSC_Hediff_Combatant_Final.label>終極戰鬥員</SSC_Hediff_Combatant_Final.label>
-  <SSC_Hediff_Combatant_Final.description>人格凝膠加工並植入後獲得的永久戰鬥特化。提高射擊與近戰命中原始評分，縮短瞄準和近戰冷卻，降低日常精神崩潰臨界值，承傷乘以 0.80。替換普通戰鬥員效果，切換培養方向、解綁或退階後仍保留；人格抽取時隨人格離開原身體。主動能力尚未接入。</SSC_Hediff_Combatant_Final.description>
+  <SSC_Hediff_Combatant_Final.description>人格凝膠加工並植入後獲得的永久戰鬥特化。提高射擊與近戰命中原始評分，縮短瞄準和近戰冷卻，降低日常精神崩潰臨界值，承傷乘以 0.80。替換普通戰鬥員效果，切換培養方向、解綁或退階後仍保留；人格抽取時隨人格離開原身體。授予僅征召時可用的「戰鬥超頻」：六項戰鬥強化持續 1 遊戲小時，冷卻 4 遊戲小時。</SSC_Hediff_Combatant_Final.description>
+  <SSC_Hediff_CombatOverdrive.label>戰鬥超頻</SSC_Hediff_CombatOverdrive.label>
+  <SSC_Hediff_CombatOverdrive.description>終極戰鬥員的短時強化：近戰傷害 ×1.30、近戰冷卻 ×0.75、遠程冷卻 ×0.80、承傷 ×0.75、移動速度 ×1.25、疼痛 ×0.50。持續 1 遊戲小時；解除征召不取消，抽取或替換人格時清除，不隨人格遷移。</SSC_Hediff_CombatOverdrive.description>
 </LanguageData>
