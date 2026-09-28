@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <SSC_SelfTraining_Assign>指派自我调教</SSC_SelfTraining_Assign>
+  <SSC_SelfTraining_NoInteraction>没有当前身体可执行的单人行为</SSC_SelfTraining_NoInteraction>
+  <SSC_SelfTraining_InteractionChanged>所选行为已无法执行。</SSC_SelfTraining_InteractionChanged>
+  <SSC_SelfTraining_JobRejected>自我调教任务未被接受。</SSC_SelfTraining_JobRejected>
+</LanguageData>

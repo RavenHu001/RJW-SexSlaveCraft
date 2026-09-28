@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net9.0</TargetFramework>
+    <NoWarn>$(NoWarn);CS8981</NoWarn>
+    <SscSourceRoot Condition="'$(SscSourceRoot)' == ''">../../Sexslavecraft</SscSourceRoot>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(SscSourceRoot)/Comps/Comp_Train.SelfTraining.cs" Link="Production/Comp_Train.SelfTraining.cs" />
+    <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCSelfTrainingInteractions.cs" Link="Production/SSCSelfTrainingInteractions.cs" />
+  </ItemGroup>
+</Project>

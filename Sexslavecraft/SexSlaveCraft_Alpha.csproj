@@ -156,6 +156,9 @@
     <Compile Include="JobDriver\JobDriver_PetAffection.cs" />
     <Compile Include="JobDriver\JobDriver_Train.cs" />
     <Compile Include="JobDriver\JobDriver_SelfTraining.cs" />
+    <Compile Include="Comps\Comp_Train.SelfTraining.cs" />
+    <Compile Include="common\Restrictions\SSCSelfTrainingInteractions.cs" />
+    <Compile Include="common\Restrictions\FloatMenuOptionProvider_SSCSelfTraining.cs" />
     <Compile Include="JobGiver\JobGiver_SlaveKeepJob.cs" />
     <Compile Include="Recipe\Recipe_ApplyGelatinization.cs" />
     <Compile Include="Recipe\Recipe_ApplyFullGelatinization.cs" />

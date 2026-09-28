@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <SSC_SelfTraining_Assign>Assign self-training</SSC_SelfTraining_Assign>
+  <SSC_SelfTraining_NoInteraction>No available solo interactions</SSC_SelfTraining_NoInteraction>
+  <SSC_SelfTraining_InteractionChanged>The chosen interaction is no longer possible.</SSC_SelfTraining_InteractionChanged>
+  <SSC_SelfTraining_JobRejected>Self-training job was rejected.</SSC_SelfTraining_JobRejected>
+</LanguageData>

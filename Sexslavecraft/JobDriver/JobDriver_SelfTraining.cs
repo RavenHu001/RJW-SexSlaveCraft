@@ -13,11 +13,13 @@ namespace SexSlaveCraft
     public class JobDriver_SelfTraining : JobDriver_Masturbate
     {
         private SSCSelfTrainingSnapshot snapshot;
+        private InteractionDef manualInteraction;
 
         public override void ExposeData()
         {
             base.ExposeData();
             Scribe_Deep.Look(ref snapshot, "sscSelfTrainingSnapshot");
+            Scribe_Defs.Look(ref manualInteraction, "sscManualSelfTrainingInteraction");
         }
 
         /// <summary>供开发入口及开始步骤共用；许可仍由统一策略和任务守卫复查。</summary>
@@ -106,7 +108,13 @@ namespace SexSlaveCraft
                     if (!SSCRestrictionJobGuard.HasStartedScene(this, SSCInteractionKind.SelfTraining)) Abort();
                     return;
                 }
-                if (!CanStart(pawn, cell, out _) || !TryPrepareInteraction()) { Abort(); return; }
+                if (!CanStart(pawn, cell, out string reason) || !TryPrepareInteraction(out reason))
+                {
+                    if (job?.playerForced == true)
+                        Messages.Message(reason, pawn, MessageTypeDefOf.RejectInput, false);
+                    Abort();
+                    return;
+                }
                 startRjw?.Invoke();
                 if (!IsCurrentJob || !SSCRestrictionJobGuard.HasStartedScene(this, SSCInteractionKind.SelfTraining))
                 {
@@ -126,11 +134,27 @@ namespace SexSlaveCraft
             };
         }
 
-        private bool TryPrepareInteraction()
+        private bool TryPrepareInteraction(out string reason)
         {
-            if (Sexprops == null)
+            reason = null;
+            if (manualInteraction == null)
+                manualInteraction = pawn.TryGetComp<CompSexSlaveTraining>()?.TakeManualSelfTraining(job);
+            if (manualInteraction != null)
+            {
+                if (!SSCSelfTrainingInteractions.TryBuild(pawn, manualInteraction, out SexProps selected))
+                {
+                    reason = "SSC_SelfTraining_InteractionChanged".Translate();
+                    return false;
+                }
+                Sexprops = selected;
+            }
+            else if (Sexprops == null)
                 Sexprops = SexUtility.SelectSextype(pawn, pawn, false, false);
-            if (!HasValidInteraction()) return false;
+            if (!HasValidInteraction())
+            {
+                reason = "SSC_SelfTraining_NoInteraction".Translate();
+                return false;
+            }
             Sexprops.isRevese = Sexprops.interaction.HasInteractionTag(SexInteractionTag.Reverse);
             return true;
         }
