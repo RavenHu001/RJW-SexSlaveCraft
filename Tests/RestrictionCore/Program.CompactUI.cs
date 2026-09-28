@@ -4,7 +4,7 @@ using Verse;
 
 internal static partial class Program
 {
-    /// <summary>验证紧凑开关的对象偏好能保存、复制并兼容旧档，且不能绕过原六项许可或覆盖规则。</summary>
+    /// <summary>验证紧凑开关的对象偏好能保存、复制并兼容旧档，且不能绕过独立许可或覆盖规则。</summary>
     private static void RunCompactUiPreferenceTests()
     {
         Run("Consensual toggle preserves each target choice through repeated disable and save reload", () =>

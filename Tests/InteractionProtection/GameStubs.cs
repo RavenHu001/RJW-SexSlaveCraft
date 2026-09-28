@@ -391,6 +391,7 @@ namespace SexSlaveCraft
     }
     public static class SSCIdentityUtility
     {
+        public static bool IsSexSlave(Verse.Pawn pawn) => pawn?.Training.pawnIdentity == PawnIdentity.Slave;
         /// <summary>从显式身份读出主人资格，不推测关系。</summary>
         public static bool IsMaster(Verse.Pawn pawn) => pawn?.Training.pawnIdentity == PawnIdentity.Master;
         /// <summary>提供身份查询边界；真实身份切换由 TrainerIdentity 套件覆盖。</summary>

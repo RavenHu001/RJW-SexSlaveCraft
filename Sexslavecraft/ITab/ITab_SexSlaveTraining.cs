@@ -57,10 +57,11 @@ namespace SexSlaveCraft
                 Mathf.Min(WinSize.y, Mathf.Max(100f, PaneTopY - 40f)));
         }
 
-        /// <summary>角色实际受系统管理且总限制启用时才能展开；科技等未来范围条件继续由统一适用入口决定。</summary>
+        /// <summary>普通限制生效或具备自我调教资格时可展开；总限制关闭时保持现有面板停用语义。</summary>
         private static bool CanShowRestrictions(Pawn pawn)
         {
-            return (SSCMod.settings?.enableSexSlaveProtectionRules ?? true) && SSCRestrictionResolver.IsApplicable(pawn);
+            return (SSCMod.settings?.enableSexSlaveProtectionRules ?? true) &&
+                (SSCRestrictionResolver.IsApplicable(pawn) || SSCSelfTrainingEligibility.IsEligible(pawn));
         }
 
         /// <summary>保持原按钮位置，对不受限制的角色明确置灰并拦截点击，悬停说明不可用原因。</summary>
@@ -113,7 +114,7 @@ namespace SexSlaveCraft
             {
                 Pawn p = SelPawn;
                 if (p == null) return false;
-                if (!SSCIdentityUtility.IsSupportedVanillaStatus(p)) return false;
+                if (!SSCIdentityUtility.IsSupportedVanillaStatus(p) && !SSCSelfTrainingEligibility.IsEligible(p)) return false;
                 return p.GetComp<CompSexSlaveTraining>() != null;
             }
         }

@@ -9,7 +9,7 @@ namespace SexSlaveCraft
     /// <summary>模组设置、角色侧栏及测试窗口共用的规则控件；绘制只读，按钮回调才写入配置。</summary>
     internal static class SSCRestrictionUI
     {
-        /// <summary>设置主页只显示特化总开关和默认配置入口，六项模板及批量操作收纳到独立窗口。</summary>
+        /// <summary>设置主页只显示特化总开关和默认配置入口，规则模板及批量操作收纳到独立窗口。</summary>
         public static void DrawSettings(Listing_Standard listing)
         {
             SSCSettings settings = SSCMod.settings;
@@ -91,12 +91,13 @@ namespace SexSlaveCraft
             if (!(SSCMod.settings?.enableSexSlaveProtectionRules ?? true))
                 listing.Label("SSC_Restrictions_Paused".Translate());
             bool applicable = SSCRestrictionResolver.IsApplicable(pawn);
-            if (!applicable) listing.Label("SSC_Restrictions_NotApplicable".Translate());
+            bool selfApplicable = SSCSelfTrainingEligibility.IsEligible(pawn);
+            if (!applicable && !selfApplicable) listing.Label("SSC_Restrictions_NotApplicable".Translate());
             SSCRestrictionConfig config = pawn?.TryGetComp<CompSexSlaveTraining>()?.restrictionConfig;
             if (config == null)
             {
                 listing.Label("SSC_Restrictions_Uninitialized".Translate());
-                if (applicable && listing.ButtonText("SSC_Restrictions_Initialize".Translate()))
+                if ((applicable || selfApplicable) && listing.ButtonText("SSC_Restrictions_Initialize".Translate()))
                 {
                     if (!SSCRestrictionEditor.TryInitialize(pawn, out SSCRestrictionResolution error))
                         Messages.Message(error == null ? "SSC_Restrictions_EditFailed".Translate() :
@@ -110,14 +111,15 @@ namespace SexSlaveCraft
             {
                 DrawGroup(listing, rule);
                 // 未绑定角色只展示保留的个人选择，不把当前装备/特化标成正在生效的强制来源。
-                SSCRestrictionResolution entry = applicable ? SSCRestrictionResolver.Resolve(pawn, config.rules, rule) : null;
+                bool rowApplicable = rule == SSCRestrictionRule.SelfTraining ? selfApplicable : applicable;
+                SSCRestrictionResolution entry = rowApplicable ? SSCRestrictionResolver.Resolve(pawn, config.rules, rule) : null;
                 string extraTip = null;
                 if (rule == SSCRestrictionRule.ReceiveTraining)
                 {
                     Pawn forced = SSCRestrictionLifecycle.GetForcedTrainer(pawn);
                     if (forced != null) extraTip = "SSC_Restrictions_TrainerLocked".Translate(forced.LabelShort);
                 }
-                DrawChoice(listing, rule, config.rules, applicable, entry, value =>
+                DrawChoice(listing, rule, config.rules, rowApplicable, entry, value =>
                 {
                     if (!SSCRestrictionEditor.TrySet(pawn, rule, value))
                         Messages.Message("SSC_Restrictions_EditFailed".Translate(), MessageTypeDefOf.RejectInput, false);
@@ -125,7 +127,7 @@ namespace SexSlaveCraft
             }
         }
 
-        /// <summary>在主动、被动、调教的首项绘制分组标题，避免六项规则成为没有分类的长列表。</summary>
+        /// <summary>在主动、被动、调教的首项绘制分组标题，避免规则成为没有分类的长列表。</summary>
         private static void DrawGroup(Listing_Standard listing, SSCRestrictionRule rule)
         {
             if (rule != SSCRestrictionRule.Masturbation && rule != SSCRestrictionRule.ReceiveConsensual &&

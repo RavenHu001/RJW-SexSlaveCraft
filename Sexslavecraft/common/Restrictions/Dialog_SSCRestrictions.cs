@@ -142,7 +142,7 @@ namespace SexSlaveCraft
             listing.GapLine();
             try
             {
-                Pawn target = kind == SSCInteractionKind.Masturbation ? null : receiver;
+                Pawn target = kind == SSCInteractionKind.Masturbation || kind == SSCInteractionKind.SelfTraining ? null : receiver;
                 SSCRestrictionDecision decision = SSCRestrictionPolicy.Evaluate(new SSCRestrictionRequest(initiator, target, kind, directionKnown: true));
                 listing.Label("SSC_Restrictions_Result".Translate(ValueLabel(decision.Allowed ? SSCRestrictionValue.Allow : SSCRestrictionValue.Deny), ("SSC_Restrictions_Reason_" + decision.Reason).Translate()));
                 if (decision.Subject != null) listing.Label("SSC_Restrictions_Subject".Translate(PawnLabel(decision.Subject)));

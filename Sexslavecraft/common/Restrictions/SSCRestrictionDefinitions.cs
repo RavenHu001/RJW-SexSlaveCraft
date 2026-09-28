@@ -13,6 +13,7 @@ namespace SexSlaveCraft
         public SSCRestrictionValue receiveConsensual = SSCRestrictionValue.Unspecified;
         public SSCRestrictionValue receiveForced = SSCRestrictionValue.Unspecified;
         public SSCRestrictionValue receiveTraining = SSCRestrictionValue.Unspecified;
+        public SSCRestrictionValue selfTraining = SSCRestrictionValue.Unspecified;
 
         /// <summary>读取文件声明的单项覆盖；未声明项保留 Unspecified，未知条目抛出异常。</summary>
         public SSCRestrictionValue Get(SSCRestrictionRule rule)
@@ -25,6 +26,7 @@ namespace SexSlaveCraft
                 case SSCRestrictionRule.ReceiveConsensual: return receiveConsensual;
                 case SSCRestrictionRule.ReceiveForced: return receiveForced;
                 case SSCRestrictionRule.ReceiveTraining: return receiveTraining;
+                case SSCRestrictionRule.SelfTraining: return selfTraining;
                 default: throw new ArgumentOutOfRangeException(nameof(rule));
             }
         }

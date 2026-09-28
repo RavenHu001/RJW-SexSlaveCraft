@@ -21,9 +21,9 @@ namespace SexSlaveCraft
             error = null;
             CompSexSlaveTraining comp = pawn?.TryGetComp<CompSexSlaveTraining>();
             if (comp == null || comp.restrictionRestoreDepth > 0) return false;
-            // 未绑定时只保留已有数据与待迁移输入，不初始化、不合入新特化默认，也不把旧配置视作异常。
-            // 绑定完成后的同一生命周期入口会继续迁移或初始化，首次生效采用那一刻的模板。
-            if (!SSCRestrictionResolver.IsApplicable(pawn)) return false;
+            // 未绑定且不具自我调教资格时只保留已有数据与待迁移输入。
+            // 持有锁链的 SSC 性奴即使主人引用失效，仍需有可保存的自我调教许可。
+            if (!SSCRestrictionResolver.IsApplicable(pawn) && !SSCSelfTrainingEligibility.IsEligible(pawn)) return false;
             if (comp.restrictionConfig == null)
             {
                 if (comp.legacyRestrictionInput != null)
@@ -79,7 +79,8 @@ namespace SexSlaveCraft
             foreach (Pawn pawn in (pawns ?? Enumerable.Empty<Pawn>()).Where(p => p != null).Distinct().ToList())
             {
                 CompSexSlaveTraining comp = pawn.TryGetComp<CompSexSlaveTraining>();
-                if (comp == null || !SSCRestrictionResolver.IsApplicable(pawn)) { result.Skipped++; continue; }
+                if (comp == null || (!SSCRestrictionResolver.IsApplicable(pawn) && !SSCSelfTrainingEligibility.IsEligible(pawn)))
+                { result.Skipped++; continue; }
                 if (comp.restrictionRestoreDepth > 0 || snapshot == null ||
                     !SSCRestrictionConfigurationBuilder.TryCreateInitial(pawn, snapshot, out SSCRestrictionConfig config, out _))
                 { result.Failed++; continue; }

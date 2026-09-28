@@ -13,6 +13,7 @@
     <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionConfigurationBuilder.cs" Link="Production/SSCRestrictionConfigurationBuilder.cs" />
     <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionResolver.cs" Link="Production/SSCRestrictionResolver.cs" />
     <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionPolicy.cs" Link="Production/SSCRestrictionPolicy.cs" />
+    <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCSelfTrainingEligibility.cs" Link="Production/SSCSelfTrainingEligibility.cs" />
     <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionExternalJobs.cs" Link="Production/SSCRestrictionExternalJobs.cs" />
     <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionLovinGuard.cs" Link="Production/SSCRestrictionLovinGuard.cs" />
     <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionJobContext.cs" Link="Production/SSCRestrictionJobContext.cs" />

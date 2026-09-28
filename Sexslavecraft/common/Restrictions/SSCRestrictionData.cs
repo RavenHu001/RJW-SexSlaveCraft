@@ -7,19 +7,20 @@ namespace SexSlaveCraft
     public enum SSCRestrictionRule
     {
         Masturbation, ConsensualInitiation, ForcedInitiation,
-        ReceiveConsensual, ReceiveForced, ReceiveTraining
+        ReceiveConsensual, ReceiveForced, ReceiveTraining, SelfTraining
     }
 
     // Unspecified is only valid in file overrides, never in saved rules.
     public enum SSCRestrictionValue { Unspecified = -1, Deny = 0, OwnerOnly = 1, Allow = 2 }
 
-    /// <summary>六项保存值；全局默认使用同一结构，既不包含全局开关，也不包含覆盖结果。</summary>
+    /// <summary>七项保存值；全局默认使用同一结构，既不包含全局开关，也不包含覆盖结果。</summary>
     public sealed class SSCRestrictionRules : IExposable
     {
         public static readonly ReadOnlyCollection<SSCRestrictionRule> All = Array.AsReadOnly(new[]
         {
             SSCRestrictionRule.Masturbation, SSCRestrictionRule.ConsensualInitiation, SSCRestrictionRule.ForcedInitiation,
-            SSCRestrictionRule.ReceiveConsensual, SSCRestrictionRule.ReceiveForced, SSCRestrictionRule.ReceiveTraining
+            SSCRestrictionRule.ReceiveConsensual, SSCRestrictionRule.ReceiveForced, SSCRestrictionRule.ReceiveTraining,
+            SSCRestrictionRule.SelfTraining
         });
 
         public bool allowMasturbation;
@@ -28,8 +29,9 @@ namespace SexSlaveCraft
         public bool receiveConsensual;
         public bool receiveForced;
         public bool receiveTraining;
+        public bool allowSelfTraining = true;
 
-        // 只记住自愿发起开关关闭前的对象范围，不是第七项许可，也不参与规则有效性判断。
+        // 只记住自愿发起开关关闭前的对象范围，不是独立许可，也不参与规则有效性判断。
         // 旧档缺字段时从原有三态值推导；原来已禁止则按仅限主人起步，不擅自扩大许可。
         private SSCRestrictionValue preferredConsensualTarget = SSCRestrictionValue.OwnerOnly;
 
@@ -50,6 +52,7 @@ namespace SexSlaveCraft
                 case SSCRestrictionRule.ReceiveConsensual: return Value(receiveConsensual);
                 case SSCRestrictionRule.ReceiveForced: return Value(receiveForced);
                 case SSCRestrictionRule.ReceiveTraining: return Value(receiveTraining);
+                case SSCRestrictionRule.SelfTraining: return Value(allowSelfTraining);
                 default: throw new ArgumentOutOfRangeException(nameof(rule));
             }
         }
@@ -70,6 +73,7 @@ namespace SexSlaveCraft
                 case SSCRestrictionRule.ReceiveConsensual: receiveConsensual = value == SSCRestrictionValue.Allow; break;
                 case SSCRestrictionRule.ReceiveForced: receiveForced = value == SSCRestrictionValue.Allow; break;
                 case SSCRestrictionRule.ReceiveTraining: receiveTraining = value == SSCRestrictionValue.Allow; break;
+                case SSCRestrictionRule.SelfTraining: allowSelfTraining = value == SSCRestrictionValue.Allow; break;
             }
         }
 
@@ -95,6 +99,7 @@ namespace SexSlaveCraft
                 case SSCRestrictionRule.ReceiveConsensual:
                 case SSCRestrictionRule.ReceiveForced:
                 case SSCRestrictionRule.ReceiveTraining:
+                case SSCRestrictionRule.SelfTraining:
                     return true;
                 default: return false;
             }
@@ -124,18 +129,19 @@ namespace SexSlaveCraft
             return allowed ? SSCRestrictionValue.Allow : SSCRestrictionValue.Deny;
         }
 
-        /// <summary>读写六项原始规则；缺失字段使用工厂默认，不把特化或装备覆盖写入保存值。</summary>
+        /// <summary>读写七项原始规则；旧档缺少自我调教字段时默认开启，显式关闭仍按保存值恢复。</summary>
         public void ExposeData()
         {
             Scribe_Values.Look(ref allowMasturbation, "allowMasturbation", false);
             Scribe_Values.Look(ref consensualInitiation, "consensualInitiation", SSCRestrictionValue.OwnerOnly);
-            // 这是向后兼容的可选界面偏好字段，不改变版本 1 的六项规则或重新触发角色迁移。
+            // 这是向后兼容的可选界面偏好字段，不改变原六项规则的旧档解释或重新触发角色迁移。
             Scribe_Values.Look(ref preferredConsensualTarget, "preferredConsensualTarget",
                 consensualInitiation == SSCRestrictionValue.Allow ? SSCRestrictionValue.Allow : SSCRestrictionValue.OwnerOnly);
             Scribe_Values.Look(ref allowForcedInitiation, "allowForcedInitiation", false);
             Scribe_Values.Look(ref receiveConsensual, "receiveConsensual", false);
             Scribe_Values.Look(ref receiveForced, "receiveForced", false);
             Scribe_Values.Look(ref receiveTraining, "receiveTraining", false);
+            Scribe_Values.Look(ref allowSelfTraining, "allowSelfTraining", true);
         }
     }
 

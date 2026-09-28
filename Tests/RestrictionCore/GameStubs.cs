@@ -58,6 +58,15 @@ namespace Verse
             finally { Scribe.node = parent; }
         }
     }
+    public static class Scribe_References
+    {
+        public static void Look(ref Pawn value, string key)
+        {
+            if (Scribe.mode == LoadSaveMode.Saving) Scribe.node[key] = value;
+            else if (Scribe.mode == LoadSaveMode.LoadingVars)
+                value = Scribe.node.TryGetValue(key, out object saved) ? (Pawn)saved : null;
+        }
+    }
     public class Def
     {
         public string defName;
@@ -87,11 +96,25 @@ namespace Verse
         public bool Dead, Destroyed, Downed, IsSlave, IsPrisonerOfColony;
         public bool IsColonist = true;
         public Pawn BoundMaster;
+        public bool HasChain;
+        public float ChainSeverity = 0.1f;
+        public Pawn_NeedsTracker needs = new Pawn_NeedsTracker();
+        public Pawn_RelationsTracker relations = new Pawn_RelationsTracker();
         public bool HasBusState;
         public Pawn_ApparelTracker apparel = new Pawn_ApparelTracker();
         public CompSexSlaveTraining Training = new CompSexSlaveTraining();
         /// <summary>按请求类型返回测试训练组件；本替身不模拟其他游戏组件。</summary>
         public T TryGetComp<T>() where T : class => Training as T;
+    }
+    public class Pawn_NeedsTracker
+    {
+        public SexSlaveCraft.Need_Corruption Corruption = new SexSlaveCraft.Need_Corruption();
+        public T TryGetNeed<T>() where T : class => Corruption as T;
+    }
+    public class Pawn_RelationsTracker
+    {
+        public Dictionary<Pawn, int> Opinions = new Dictionary<Pawn, int>();
+        public int OpinionOf(Pawn pawn) => Opinions.TryGetValue(pawn, out int opinion) ? opinion : 0;
     }
     public class Game
     {
@@ -124,6 +147,8 @@ namespace RimWorld
 }
 namespace SexSlaveCraft
 {
+    public class Need_Corruption { public float CurLevel; }
+    public class Hediff_ChainOfSexSlave { public float Severity; }
     public enum PawnIdentity { Unset, Slave, Master }
     public enum SexSlaveSpecializationType { None, Bus, Cow, PetCat, PetDog, PetRabbit, TrainerOfficer }
     public partial class CompSexSlaveTraining
@@ -155,6 +180,8 @@ namespace SexSlaveCraft
     {
         /// <summary>读取用例显式设置的绑定主人，不根据身份或指定训练者推断关系。</summary>
         public static Verse.Pawn GetBoundMaster(Verse.Pawn pawn) => pawn?.BoundMaster;
+        public static Hediff_ChainOfSexSlave GetChain(Verse.Pawn pawn) => pawn != null && (pawn.HasChain || pawn.BoundMaster != null)
+            ? new Hediff_ChainOfSexSlave { Severity = pawn.ChainSeverity } : null;
         /// <summary>按目标指向主人的单向引用检查绑定，确保反向请求不会被视为主人请求。</summary>
         public static bool IsBoundTo(Verse.Pawn slave, Verse.Pawn master) => slave != null && master != null && slave.BoundMaster == master;
     }
@@ -165,6 +192,13 @@ namespace SexSlaveCraft
     }
     public static class SSCIdentityUtility
     {
+        public static bool IsSexSlave(Verse.Pawn pawn) => pawn?.Training?.pawnIdentity == PawnIdentity.Slave;
+        public static int GetSexSlaveStage(Verse.Pawn pawn)
+        {
+            if (SSCBondUtility.GetChain(pawn) == null) return 0;
+            float severity = pawn.ChainSeverity;
+            return severity >= 0.9f ? 4 : severity >= 0.5f ? 3 : severity >= 0.3f ? 2 : severity >= 0.1f ? 1 : 0;
+        }
         /// <summary>核心套件仅提供主人身份的资格模型，性奴调教员由身份套件覆盖。</summary>
         public static bool IsTrainer(Verse.Pawn pawn) => IsMaster(pawn);
         /// <summary>读取测试组件的主人身份，用于首次绑定准备的资格判断。</summary>

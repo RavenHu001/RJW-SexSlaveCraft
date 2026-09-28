@@ -209,6 +209,8 @@
     <Compile Include="common\Restrictions\SSCRestrictionTrainerAssignment.cs" />
     <Compile Include="common\Restrictions\SSCRestrictionConfigurationBuilder.cs" />
     <Compile Include="common\Restrictions\SSCRestrictionPolicy.cs" />
+    <Compile Include="common\Restrictions\SSCSelfTrainingEligibility.cs" />
+    <Compile Include="common\Restrictions\SSCSelfTrainingUtility.cs" />
     <Compile Include="common\Restrictions\SSCRestrictionJobContext.cs" />
     <Compile Include="common\Restrictions\SSCRestrictionExternalJobs.cs" />
     <Compile Include="common\Restrictions\SSCRestrictionLovinGuard.cs" />

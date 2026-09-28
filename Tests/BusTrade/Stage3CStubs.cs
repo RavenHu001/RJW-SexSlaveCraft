@@ -122,11 +122,13 @@ namespace SexSlaveCraft
     {
         /// <summary>查询显式绑定引用，不把指定调教者作为主人。</summary>
         public static Pawn GetBoundMaster(Pawn pawn) => pawn?.BoundMaster;
+        public static object GetChain(Pawn pawn) => pawn?.BoundMaster == null ? null : new object();
         /// <summary>仅允许正确的有向实际绑定关系。</summary>
         public static bool IsBoundTo(Pawn target, Pawn actor) => actor != null && target?.BoundMaster == actor;
     }
     public static class SSCIdentityUtility
     {
+        public static bool IsSexSlave(Pawn pawn) => pawn?.Training.pawnIdentity == PawnIdentity.Slave;
         /// <summary>提供首次准备请求的身份查询边界。</summary>
         public static bool IsMaster(Pawn pawn) => pawn?.Training.pawnIdentity == PawnIdentity.Master;
     }

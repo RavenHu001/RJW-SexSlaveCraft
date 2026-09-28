@@ -3,13 +3,13 @@ using Verse;
 
 namespace SexSlaveCraft
 {
-    /// <summary>独立编辑全局默认模板，避免六项个人式控件在 Mod 设置主页与全局开关混淆。</summary>
+    /// <summary>独立编辑全局默认模板，避免个人式控件在 Mod 设置主页与全局开关混淆。</summary>
     internal sealed class Dialog_SSCRestrictionDefaults : Window
     {
         private Vector2 scrollPosition;
         private float contentHeight = 620f;
 
-        /// <summary>给六项模板提供适中宽度，并将关闭按钮及滚动内容限制在可见屏幕内。</summary>
+        /// <summary>给规则模板提供适中宽度，并将关闭按钮及滚动内容限制在可见屏幕内。</summary>
         public override Vector2 InitialSize => new Vector2(Mathf.Min(560f, UI.screenWidth - 32f),
             Mathf.Min(680f, UI.screenHeight - 32f));
 

@@ -23,7 +23,8 @@ namespace SexSlaveCraft
         {
             error = null;
             CompSexSlaveTraining comp = pawn?.TryGetComp<CompSexSlaveTraining>();
-            if (comp == null || !SSCRestrictionResolver.IsApplicable(pawn) || comp.restrictionConfig != null ||
+            if (comp == null || (!SSCRestrictionResolver.IsApplicable(pawn) && !SSCSelfTrainingEligibility.IsEligible(pawn)) ||
+                comp.restrictionConfig != null ||
                 comp.legacyRestrictionInput != null || comp.restrictionRestoreDepth > 0) return false;
             if (!SSCRestrictionConfigurationBuilder.TryCreateInitial(pawn, SSCMod.settings?.restrictionDefaults,
                 out SSCRestrictionConfig config, out error)) return false;
@@ -38,7 +39,9 @@ namespace SexSlaveCraft
         {
             CompSexSlaveTraining comp = pawn?.TryGetComp<CompSexSlaveTraining>();
             SSCRestrictionConfig config = comp?.restrictionConfig;
-            if (comp == null || comp.restrictionRestoreDepth > 0 || !SSCRestrictionResolver.IsApplicable(pawn) ||
+            bool applicable = rule == SSCRestrictionRule.SelfTraining
+                ? SSCSelfTrainingEligibility.IsEligible(pawn) : SSCRestrictionResolver.IsApplicable(pawn);
+            if (comp == null || comp.restrictionRestoreDepth > 0 || !applicable ||
                 !IsValid(config) || !SSCRestrictionRules.IsValid(rule, value)) return false;
             config.rules.Set(rule, value);
             SSCRestrictionLifecycle.CoordinateTrainer(pawn);

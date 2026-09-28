@@ -39,11 +39,13 @@ namespace SexSlaveCraft
     {
         /// <summary>提供真实策略所需的有向绑定引用。</summary>
         public static Pawn GetBoundMaster(Pawn pawn) => pawn?.BoundMaster;
+        public static object GetChain(Pawn pawn) => pawn?.BoundMaster == null ? null : new object();
         /// <summary>仅承认明确指向当前发起者的绑定。</summary>
         public static bool IsBoundTo(Pawn target, Pawn actor) => actor != null && target?.BoundMaster == actor;
     }
     public static class SSCIdentityUtility
     {
+        public static bool IsSexSlave(Pawn pawn) => pawn?.TryGetComp<CompSexSlaveTraining>()?.pawnIdentity == PawnIdentity.Slave;
         /// <summary>读取模型显式主人身份。</summary>
         public static bool IsMaster(Pawn pawn) => pawn?.TryGetComp<CompSexSlaveTraining>()?.pawnIdentity == PawnIdentity.Master;
         /// <summary>按模型身份开关暴露资格，不修改身份或绑定。</summary>
