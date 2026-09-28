@@ -23,6 +23,7 @@
     <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionJobEvents.cs" Link="Production/SSCRestrictionJobEvents.cs" />
     <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionCompatibilityDiagnostics.cs" Link="Production/SSCRestrictionCompatibilityDiagnostics.cs" />
     <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionJobHooks.cs" Link="Production/SSCRestrictionJobHooks.cs" />
+    <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCSelfTrainingAutoJob.cs" Link="Production/SSCSelfTrainingAutoJob.cs" />
 
     <Compile Include="$(SscSourceRoot)/ThePatches/Harmony_ProtectSexSlave.cs" Link="Production/Harmony_ProtectSexSlave.cs" />
     <Compile Include="$(SscSourceRoot)/ThePatches/Harmony_PersonalityExcretionJobProtection.cs" Link="Production/Harmony_PersonalityExcretionJobProtection.cs" />

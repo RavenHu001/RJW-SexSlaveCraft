@@ -11,7 +11,19 @@ namespace Verse
 {
     public class Thing { }
     public class JobDef { public string defName; public Type driverClass; }
-    public struct LocalTargetInfo { public Thing Thing; }
+    public struct IntVec3 { public int X; public bool IsValid => X >= 0; }
+    public struct LocalTargetInfo
+    {
+        public Thing Thing;
+        public IntVec3 Cell;
+        public Pawn Pawn => Thing as Pawn;
+    }
+    public static class Rand
+    {
+        public static float NextValue;
+        public static int Calls;
+        public static float Value { get { Calls++; return NextValue; } }
+    }
     public class Pawn : Thing
     {
         public string LabelShort;
@@ -19,6 +31,8 @@ namespace Verse
         public bool Dead, Destroyed, Downed, IsSlave, IsPrisonerOfColony;
         public bool IsColonist = true;
         public bool Spawned = true, Drafted, InMentalState;
+        public bool CanSelfTrain = true;
+        public float AutoSelfTrainingChance = 0.30f;
         public object Map;
         public object health = new object();
         public ApparelTracker apparel = new ApparelTracker();
@@ -80,23 +94,33 @@ namespace Verse.AI
 
         public Verse.JobDef def;
         public Verse.LocalTargetInfo targetA;
+        public Verse.LocalTargetInfo targetB, targetC;
         public bool playerForced;
     }
+    public enum JobTag { Misc }
     public struct ThinkResult
     {
-        public Job Job;
+        public Job Job { get; }
+        public ThinkNode SourceNode { get; }
+        public JobTag? Tag { get; }
+        public bool FromQueue { get; }
+        public ThinkResult(Job job, ThinkNode sourceNode, JobTag? tag = null, bool fromQueue = false)
+        { Job = job; SourceNode = sourceNode; Tag = tag; FromQueue = fromQueue; }
         public static readonly ThinkResult NoJob = new ThinkResult();
     }
-    public class ThinkNode_JobGiver
+    public class ThinkNode { }
+    public class ThinkNode_JobGiver : ThinkNode
     {
         public Job Candidate;
+        public JobTag? Tag;
+        public bool FromQueue;
         /// <summary>模拟思考树生成候选后的生产补丁，拒绝后上层可继续其他节点。</summary>
         [MethodImpl(MethodImplOptions.NoInlining)]
         public ThinkResult TryIssueJobPackage(Verse.Pawn pawn)
         {
-            var result = new ThinkResult { Job = Candidate };
+            var result = new ThinkResult(Candidate, this, Tag, FromQueue);
 #if !REAL_HARMONY
-            SSCRestrictionAutomaticJobHook.Postfix(pawn, ref result);
+            SSCRestrictionAutomaticJobHook.Postfix(this, pawn, ref result);
 #endif
             return result;
         }
@@ -104,6 +128,9 @@ namespace Verse.AI
     public static class JobMaker
     {
         public static Job LastReturned;
+        public static int Made;
+        public static Job MakeJob(Verse.JobDef def, Verse.LocalTargetInfo a, Verse.LocalTargetInfo b, Verse.LocalTargetInfo c)
+        { Made++; return new Job { def = def, targetA = a, targetB = b, targetC = c }; }
         /// <summary>记录未使用候选已归还对象池，避免模型隐去资源释放要求。</summary>
         public static void ReturnToPool(Job job) { LastReturned = job; }
     }
@@ -343,6 +370,14 @@ namespace rjw
         protected virtual IEnumerable<Verse.AI.Toil> MakeNewToils() => Toils;
     }
     public class JobDriver_Masturbate : JobDriver_SexBaseInitiator { }
+    public class JobGiver_Masturbate : Verse.AI.ThinkNode_JobGiver { }
+#pragma warning disable CS8981 // Mirror RJW's actual lowercase type name.
+    public static class xxx
+    {
+        public static readonly Verse.JobDef Masturbate = new Verse.JobDef
+            { defName = "Masturbate", driverClass = typeof(JobDriver_Masturbate) };
+    }
+#pragma warning restore CS8981
     public class JobDriver_Rape : JobDriver_SexBaseInitiator { }
 }
 namespace SexSlaveCraft
@@ -351,7 +386,19 @@ namespace SexSlaveCraft
     public enum PawnIdentity { Unset, Slave, Master }
     public enum SexSlaveSpecializationType { None, Bus, Cow, PetCat, PetDog, PetRabbit, TrainerOfficer }
     public class JobDriver_Training : rjw.JobDriver_SexBaseInitiator { }
-    public class JobDriver_SelfTraining : rjw.JobDriver_Masturbate { }
+    public class JobDriver_SelfTraining : rjw.JobDriver_Masturbate
+    {
+        public static bool CanStart(Verse.Pawn pawn, Verse.IntVec3 destination, out string reason)
+        {
+            reason = null;
+            return pawn?.CanSelfTrain == true && destination.IsValid &&
+                SSCRestrictionPolicy.Evaluate(new SSCRestrictionRequest(pawn, pawn, SSCInteractionKind.SelfTraining, true)).Allowed;
+        }
+    }
+    public static class SSCSelfTrainingUtility
+    {
+        public static float GetAutoSelectionChance(Verse.Pawn pawn) => pawn.AutoSelfTrainingChance;
+    }
     public class JobDriver_RitualTraining : rjw.JobDriver_SexBaseInitiator
     {
         public int CancelCalls;
@@ -462,6 +509,8 @@ namespace SexSlaveCraft
     }
     public static class SSCDefOf
     {
+        public static readonly Verse.JobDef SelfTraining = new Verse.JobDef
+            { defName = "SSC_SelfTraining", driverClass = typeof(JobDriver_SelfTraining) };
         public static readonly Verse.JobDef SSC_TrainingReceiver = Def("SSC_TrainingReceiver");
         public static readonly Verse.JobDef RandomRape = Def("RandomRape"),
             RapeComfortPawn = Def("RapeComfortPawn"), RapeEnemy = Def("RapeEnemy"),

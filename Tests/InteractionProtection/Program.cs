@@ -48,6 +48,7 @@ internal static partial class Program
         Run("独立接收任务仍保留预约保护", ReceiverReservation);
         Run("无关 JobDriver 不受步骤补丁影响", UnrelatedJob);
         RunStage3ATests();
+        RunSelfTrainingAutoTests();
         RunStage3BTests();
         RunStage3CTests();
         RunStage3DTests();
@@ -62,6 +63,9 @@ internal static partial class Program
     {
         SSCMod.settings = new Settings();
         Messages.Count = 0;
+        JobMaker.LastReturned = null;
+        JobMaker.Made = 0;
+        Rand.Calls = 0;
         Scribe.mode = LoadSaveMode.Inactive;
         Scribe.node.Clear();
         DefDatabase<SSCRestrictionProfileDef>.AllDefsListForReading.Clear();

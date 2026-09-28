@@ -222,6 +222,7 @@
     <Compile Include="common\Restrictions\SSCRestrictionTrainingUtility.cs" />
     <Compile Include="common\Restrictions\SSCRestrictionJobGuard.cs" />
     <Compile Include="common\Restrictions\SSCRestrictionJobHooks.cs" />
+    <Compile Include="common\Restrictions\SSCSelfTrainingAutoJob.cs" />
     <Compile Include="common\Restrictions\SSCSettings.Restrictions.cs" />
     <Compile Include="common\Restrictions\DebugActions_SSCRestrictions.cs" />
     <Compile Include="common\Restrictions\SSCRestrictionEditor.cs" />

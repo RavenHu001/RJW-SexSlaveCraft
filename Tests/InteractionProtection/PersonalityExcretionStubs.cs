@@ -25,7 +25,7 @@ namespace Verse.AI
 
         private bool ApplyThinkTreeCandidate(Job candidate)
         {
-            if (ShouldStartJobFromThinkTree(new ThinkResult { Job = candidate }))
+            if (ShouldStartJobFromThinkTree(new ThinkResult(candidate, null)))
             {
                 EndCurrentJob(JobCondition.Incompletable, false);
                 curDriver = new JobDriver { pawn = pawn, job = candidate };
