@@ -4,6 +4,14 @@
 
 This continuation builds on upstream **2.2.8**, the baseline when upstream development stopped in July, and retains its version numbering. Entries are listed newest first. Technical details are in the [development log (Chinese)](Docs/Development/开发更新记录.md).
 
+## [未发布 / Unreleased]
+
+### 2026-09-28 — 调教任务交接修复 / Training handoff fix
+
+- **调教启动中断 / Interrupted Training startup:** 修复调教员与目标合到同一格后立即转去吃饭、加工或其他工作，导致接收任务启动失败的问题。位置同步现在保留双方当前任务，由接收任务启动步骤统一完成交接；保留玩家取消、征召等正常中断。Fixes Training failing to start when the trainer switches to eating, crafting or another job immediately after moving onto the target's cell. Position synchronization now preserves both current jobs until the receiver handoff, while normal cancellation and drafting remain available.
+- **旧回调与配对保护 / Stale callbacks and pairing:** 修复原任务结束或 Job 对象被复用后，旧调教回调误释放新工作的预约、结束新工作或清理新占用的问题。接收任务按实际参与者配对，失效交接只回收本次孤立接收器；共享此流程的绑定仪式、人格排泄及家具接收器同步补充保护。Prevents callbacks from ended or pooled jobs from releasing a replacement job's reservations, ending that job or clearing its training state. Receiver handoffs verify the actual pair and clean up only their own orphan receiver. The shared Binding Ritual, personality-excretion and furniture-receiver paths receive the same safeguards.
+- **验证 / Validation:** 对应提交 `0d61aa7`，新增 13 项交接回归；生命周期 92/92、无 UAP 变体 83/83、任务限制 142/142、仪式进度 29/29 通过，真实游戏程序集编译通过。已同步本机，维护者实机复测确认有效。Commit `0d61aa7` adds 13 handoff regression cases. Validation passed 92/92 lifecycle cases, 83/83 without UAP, 142/142 interaction-protection cases and 29/29 ritual-progression cases, plus compilation against the installed game assemblies. The fix was installed locally and confirmed effective in-game by the maintainer.
+
 ## [2.3.4] — 2026-09-27 — 战斗员特化、显示整理与任务修复 / Combatant specialization, status display and job fixes
 
 本版汇总 `v2.3.3`（`3f62e41`）之后至 `3260182` 的全部已实现更新：战斗员特化五阶段、测试按钮、专属图标、特化显示整理及人格排泄任务修复，并收录中英模组介绍和配套开发记录。2.3.4 正式发布，安装包与 SHA-256 校验文件见 [v2.3.4 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.4)；详见[中英发布说明](Docs/Releases/2.3.4/2.3.4发布说明.md)与[版本验证](Docs/Releases/2.3.4/2.3.4版本验证.md)。
