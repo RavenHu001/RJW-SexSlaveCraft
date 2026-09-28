@@ -133,6 +133,7 @@ namespace SexSlaveCraft
         public static bool IsMaster(Pawn pawn) => pawn?.Training.pawnIdentity == PawnIdentity.Master;
     }
     public class JobDriver_Training : rjw.JobDriver_SexBaseInitiator { }
+    public class JobDriver_SelfTraining : rjw.JobDriver_Masturbate { }
     public class JobDriver_RitualTraining : rjw.JobDriver_SexBaseInitiator { }
     public class JobDriver_PE : rjw.JobDriver_SexBaseInitiator { }
     public static class SSCRestrictionTrainingUtility

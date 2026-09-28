@@ -211,6 +211,7 @@ namespace rjw
     }
     public class JobDriver_Sex : Verse.AI.JobDriver
     {
+        public Verse.Thing Target => job?.targetA.Thing;
         public SexProps Sexprops;
         public Verse.Pawn PartnerPawn;
         public int duration = 1000, ticks_left = 1000, orgasms;
@@ -350,6 +351,7 @@ namespace SexSlaveCraft
     public enum PawnIdentity { Unset, Slave, Master }
     public enum SexSlaveSpecializationType { None, Bus, Cow, PetCat, PetDog, PetRabbit, TrainerOfficer }
     public class JobDriver_Training : rjw.JobDriver_SexBaseInitiator { }
+    public class JobDriver_SelfTraining : rjw.JobDriver_Masturbate { }
     public class JobDriver_RitualTraining : rjw.JobDriver_SexBaseInitiator
     {
         public int CancelCalls;

@@ -155,6 +155,7 @@
     <Compile Include="JobDriver\JobDriver_InsertPersonality.cs" />
     <Compile Include="JobDriver\JobDriver_PetAffection.cs" />
     <Compile Include="JobDriver\JobDriver_Train.cs" />
+    <Compile Include="JobDriver\JobDriver_SelfTraining.cs" />
     <Compile Include="JobGiver\JobGiver_SlaveKeepJob.cs" />
     <Compile Include="Recipe\Recipe_ApplyGelatinization.cs" />
     <Compile Include="Recipe\Recipe_ApplyFullGelatinization.cs" />
@@ -211,6 +212,7 @@
     <Compile Include="common\Restrictions\SSCRestrictionPolicy.cs" />
     <Compile Include="common\Restrictions\SSCSelfTrainingEligibility.cs" />
     <Compile Include="common\Restrictions\SSCSelfTrainingUtility.cs" />
+    <Compile Include="common\Restrictions\DebugActions_SSCSelfTraining.cs" />
     <Compile Include="common\Restrictions\SSCRestrictionJobContext.cs" />
     <Compile Include="common\Restrictions\SSCRestrictionExternalJobs.cs" />
     <Compile Include="common\Restrictions\SSCRestrictionLovinGuard.cs" />

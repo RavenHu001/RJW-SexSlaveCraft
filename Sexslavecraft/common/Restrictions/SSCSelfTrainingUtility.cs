@@ -61,6 +61,12 @@ namespace SexSlaveCraft
             return 0.5f * baseGain;
         }
 
+        /// <summary>只发放当前锁链阶段仍容纳的增量；不会通过本任务创建新的阶段推进规则。</summary>
+        public static float CalculateGrantedGain(float plannedGain, float currentCorruption, float stageCap)
+        {
+            return Math.Max(0f, Math.Min(plannedGain, stageCap - currentCorruption));
+        }
+
         private static float Clamp01(float value) => Math.Max(0f, Math.Min(1f, value));
     }
 

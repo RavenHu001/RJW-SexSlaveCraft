@@ -19,6 +19,7 @@ namespace SexSlaveCraft
         // EN: SSC-owned Jobs are mandatory and must exist for daily training, personality excretion, insertion, and the Binding Ritual.
         // CN: 这些是 SSC 自己的核心 Job，日常调教、人格排泄、人格植入和绑定仪式都依赖它们。
         public static JobDef TrainingSexSlave;
+        public static JobDef SelfTraining;
         public static JobDef Training_Ritual;
         public static JobDef SSC_TrainingReceiver;
         public static JobDef SSC_Job_PE; // 人格排泄作业
@@ -172,6 +173,7 @@ namespace SexSlaveCraft
             // EN: Step 1: load every SSC-owned Def first so downstream systems can safely assume they already exist.
             // CN: 步骤 1：先加载全部 SSC 自有 Def，方便下游系统安全地假定它们已经存在。
             TrainingSexSlave = GetDef<JobDef>("SSC_Training_SexSlave");
+            SelfTraining = GetDef<JobDef>("SSC_SelfTraining");
             Training_Ritual = GetDef<JobDef>("SSC_Training_Ritual");
             SSC_TrainingReceiver = GetDef<JobDef>("SSC_TrainingReceiver");
             SSC_Job_PE = GetDef<JobDef>("SSC_Job_PE");
@@ -180,7 +182,7 @@ namespace SexSlaveCraft
 
             // EN: Sex jobs must suppress equipped weapons even when their XML or ritual state asks RimWorld to show them.
             // CN: 性交 Job 必须压过 XML 或仪式状态里的持械要求，避免角色带着武器播放动画。
-            HideWeaponsDuringSexJobs(TrainingSexSlave, Training_Ritual, SSC_TrainingReceiver, SSC_Job_PE);
+            HideWeaponsDuringSexJobs(TrainingSexSlave, SelfTraining, Training_Ritual, SSC_TrainingReceiver, SSC_Job_PE);
 
             // EN: Step 2: then try the optional RJW compatibility defs without turning missing entries into startup errors.
             // CN: 步骤 2：再去读取可选的 RJW 兼容 Def，并且不要把缺失项升级成启动错误。

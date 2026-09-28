@@ -23,6 +23,7 @@ internal static partial class Program
         Run("装备不限制普通非强制请求", GearDoesNotBlockConsensual);
         Run("总开关关闭同时暂停条目及装备强制", DisabledGear);
         Run("单人预约禁止及允许均生效", SoloReservations);
+        Run("自我调教驱动只读取独立许可并核对本人目标", SelfTrainingPurpose);
         Run("单人开始和收尾持久化", SoloSaveAndFinish);
         Run("缺少目标不能被推断为自慰", MissingTargetIsNotSolo);
         Run("PartnerPawn 布局优先于目标 A", PartnerPawnLayout);
@@ -184,6 +185,45 @@ internal static partial class Program
         Assert(!Solo(p.b).TryMakePreToilReservations(false), "默认禁止自慰");
         p.b.Training.restrictionConfig.rules.allowMasturbation = true;
         Assert(Solo(p.b).TryMakePreToilReservations(false), "显式允许自慰");
+    }
+
+    private static void SelfTrainingPurpose()
+    {
+        var p = People();
+        p.b.Training.pawnIdentity = PawnIdentity.Slave;
+        p.b.Training.restrictionConfig.rules.allowMasturbation = false;
+        var driver = new JobDriver_SelfTraining
+        {
+            pawn = p.b,
+            job = new Job { def = new JobDef { defName = "SSC_SelfTraining" },
+                targetA = new LocalTargetInfo { Thing = p.b } }
+        };
+        driver.job.def.driverClass = driver.GetType();
+        p.b.jobs.curDriver = driver;
+        Assert(SSCRestrictionJobContext.TryCreate(driver, out SSCRestrictionRequest request) &&
+            request.Kind == SSCInteractionKind.SelfTraining && request.DirectionKnown,
+            "新任务应识别为明确的单人自我调教");
+        Assert(driver.TryMakePreToilReservations(false), "普通自慰关闭不应拦截自我调教");
+        driver.Start();
+        Assert(SSCRestrictionJobGuard.HasStartedScene(driver, SSCInteractionKind.SelfTraining),
+            "真实 Start 后应具有自我调教开始凭据");
+        var restored = new JobDriver_SelfTraining { pawn = p.b, job = driver.job, Sexprops = driver.Sexprops };
+        Restore(driver, restored);
+        p.b.jobs.curDriver = restored;
+        Assert(SSCRestrictionJobGuard.HasStartedScene(restored, SSCInteractionKind.SelfTraining),
+            "读档后仍保留同一自我调教任务的开始凭据");
+        p.b.jobs.curDriver = driver;
+        p.b.Training.restrictionConfig.rules.allowSelfTraining = false;
+        Assert(!new JobDriver_SelfTraining
+        {
+            pawn = p.b,
+            job = new Job { def = driver.job.def, targetA = new LocalTargetInfo { Thing = p.b } }
+        }.TryMakePreToilReservations(false), "关闭自我调教应拒绝新任务");
+        driver.job.targetA = new LocalTargetInfo { Thing = p.c };
+        Assert(SSCRestrictionJobContext.TryCreate(driver, out request) && !request.DirectionKnown,
+            "更换 A 目标后不能冒用已开始的本人场景");
+        Assert(!SSCRestrictionJobGuard.HasStartedScene(driver, SSCInteractionKind.SelfTraining),
+            "开始凭据不能被替换目标继承");
     }
 
     /// <summary>模拟保存再建立新驱动并加载生产开始凭据，保留同一场景的实际执行位置和数据。</summary>
