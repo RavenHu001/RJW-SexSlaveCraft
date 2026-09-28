@@ -67,6 +67,8 @@ internal static partial class Program
     private static int Main()
     {
         RunStage3BTests();
+        // 单独覆盖站位同步、任务对象复用及接收交接重入，避免常规生命周期用例遗漏这些边界。
+        RunReceiverHandoffTests();
         RunEducationCompatibilityTests();
         Check("cancelling while walking cleans state without executing the future scene finish", () =>
         {

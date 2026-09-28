@@ -48,8 +48,13 @@ namespace Verse
         public string Name => LabelShort;
         public IntVec3 Position;
         public Action OnTeleport;
-        /// <summary>提供原版传送通知边界，可模拟其他模组在此处清理预约。</summary>
-        public void Notify_Teleported(bool endCurrentJob, bool resetTweenedPos) => OnTeleport?.Invoke();
+        /// <summary>模拟传送通知的结束任务语义，并允许外部回调在此替换任务。</summary>
+        public void Notify_Teleported(bool endCurrentJob, bool resetTweenedPos)
+        {
+            // 保留原版参数的关键副作用，再执行测试注入；否则传入 true 的旧缺陷会被空替身掩盖。
+            if (endCurrentJob && CurJob != null) jobs.EndCurrentJob(JobCondition.InterruptForced);
+            OnTeleport?.Invoke();
+        }
         public Pawn_DrawTracker Drawer = new Pawn_DrawTracker();
         public bool Reachable = true;
         public bool Reservable = true;
@@ -115,6 +120,9 @@ namespace Verse.AI
     public class JobDef : Def { }
     public class Job
     {
+        // 新任务获得独立编号；复用用例显式改变此值，检验“同对象、不同任务”的边界。
+        private static int nextId;
+        public int loadID = ++nextId;
         public JobDef def;
         public LocalTargetInfo targetA;
         public LocalTargetInfo targetB;
@@ -155,17 +163,25 @@ namespace Verse.AI
         public Job curJob;
         public JobDriver curDriver;
         public JobCondition? EndCondition;
+        public Action AfterStartJob;
         /// <summary>记录请求的 Job 结束原因；具体收尾回调由测试执行器显式驱动。</summary>
-        public void EndCurrentJob(JobCondition condition) { EndCondition = condition; }
+        public void EndCurrentJob(JobCondition condition, bool startNewJob = true)
+        {
+            // 普通用例由执行器驱动收尾；孤立接收器清理要求同步移除当前任务且不派发新工作。
+            EndCondition = condition;
+            if (!startNewJob) { curJob = null; curDriver = null; }
+        }
         /// <summary>模拟原版安装接收任务的外部边界；失败控制在此，生产交接工具照常执行。</summary>
         public void StartJob(Job next, JobCondition condition)
         {
+            // 先模拟安装接收驱动及 RJW 参与者登记，再注入原版 StartJob 内可能发生的任务切换。
             StartCalls++;
             if (!TestWorld.ReceiverSucceeds) return;
             curJob = next;
             var receiver = new JobDriver_TrainingReceiver { pawn = pawn, job = next };
             receiver.parteners.Add(next.targetA.Thing as Pawn); // RJW DoSetup 的登记边界。
             curDriver = receiver;
+            AfterStartJob?.Invoke();
         }
     }
     /// <summary>最小预约存储：按目标、角色和 Job 匹配，错误释放抛异常，以暴露重复 Release。</summary>
@@ -386,20 +402,34 @@ namespace SexSlaveCraft
         /// <summary>外部基因迁移不属于本套件，保留生产目标验证所需签名。</summary>
         public static void TryRemoveLifeForceGeneIfConflicting(Pawn pawn) { }
     }
+    // 用独立类型标识家具常驻接收器；登记回调模拟外部模组，不实现生产交接或回滚算法。
+    public sealed class TestFurnitureReceiver : JobDriver_TrainingReceiver
+    {
+        public Action OnRegister;
+    }
     public static partial class OnaholeCompatibilityUtility
     {
-        /// <summary>本套件没有家具接收器，专用伙伴注册交由外部兼容用例验证。</summary>
-        public static bool TryRegisterOnaholePartner(Pawn target, Pawn actor) => false;
+        /// <summary>模拟外部家具的参与者登记边界，可在登记回调中替换发起任务。</summary>
+        public static bool TryRegisterOnaholePartner(Pawn target, Pawn actor)
+        {
+            // 仅提供幂等登记和可重入边界，是否回滚关系由生产 TrainingJobUtility 决定。
+            if (!(target.jobs.curDriver is TestFurnitureReceiver receiver)) return false;
+            if (!receiver.parteners.Contains(actor)) receiver.parteners.Add(actor);
+            receiver.OnRegister?.Invoke();
+            return true;
+        }
         /// <summary>固定返回同步成功，使测试进入正常场景初始化路径。</summary>
         public static bool TrySynchronizeOnaholeSexProps(Pawn pawn, rjw.SexProps props) => TestWorld.SynchronizeSucceeds;
         /// <summary>正常用例保持接收有效，拒绝清理由交互套件单独验证。</summary>
         public static bool IsValidTrainingReceiver(Pawn pawn, JobDef job) => true;
-        /// <summary>固定返回 false；本套件不模拟飞机杯兼容状态。</summary>
-        public static bool IsPawnOnOnahole(Pawn pawn) => false;
+        public static bool IsPawnOnOnahole(Pawn pawn) => pawn?.jobs.curDriver is TestFurnitureReceiver;
         /// <summary>返回未使用的诊断占位文本，不读取真实兼容组件。</summary>
         public static string GetOnaholeReceiverStateReport(Pawn pawn, JobDef jobDef) => "unused";
-        /// <summary>提供兼容关系注销占位；宿主不保存外部模组的伙伴关系。</summary>
-        public static void TryUnregisterOnaholePartner(Pawn slave, Pawn master) { }
+        public static void TryUnregisterOnaholePartner(Pawn slave, Pawn master)
+        {
+            // 删除指定参与者而不终止家具任务，便于断言旧回调没有拆除常驻接收器。
+            if (slave?.jobs.curDriver is TestFurnitureReceiver receiver) receiver.parteners.Remove(master);
+        }
     }
     public static class RitualTrainingUtility
     {

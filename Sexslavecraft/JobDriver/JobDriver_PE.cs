@@ -50,12 +50,19 @@ namespace SexSlaveCraft
             // 准备回调：创建接收任务，失败时记录原因并结束本次发起任务。
             startPartnerJob.initAction = delegate
             {
-                if (!TrainingJobUtility.TryStartPersonalityExcretionReceiver(pawn, Partner, job, partnerJob))
+                // 固定本次排泄任务和目标，避免接收启动的外部回调使 Partner 指向复用后的任务。
+                var context = new TrainingJobUtility.JobContext(this);
+                if (!context.IsCurrent) return;
+                Pawn target = Partner;
+                bool started = TrainingJobUtility.TryStartPersonalityExcretionReceiver(pawn, target, job, partnerJob);
+                // 交接期间换工作时直接退出，不对新任务执行 EndCurrentJob 或写失败冷却。
+                if (!context.IsCurrent) return;
+                if (!started)
                 {
                     // 争用只是本执行者未取得目标，不污染正在进行的任务或目标的身体校验冷却。
-                    if (!PersonalityExcretionJobUtility.IsOccupiedByOther(Partner, pawn))
-                        TrainingJobUtility.MarkValidationFailure(Partner, "SSC_PE_RECEIVER");
-                    pawn.jobs.EndCurrentJob(JobCondition.Incompletable);
+                    if (!PersonalityExcretionJobUtility.IsOccupiedByOther(target, pawn))
+                        TrainingJobUtility.MarkValidationFailure(target, "SSC_PE_RECEIVER");
+                    if (context.IsCurrent) pawn.jobs.EndCurrentJob(JobCondition.Incompletable);
                 }
             };
             yield return startPartnerJob;
@@ -70,7 +77,15 @@ namespace SexSlaveCraft
             // 开始回调：同步双方和行为数据，通过校验且 Start 未中止任务后才通知对话兼容层。
             sexToil.initAction = delegate
             {
-                TrainingJobUtility.SyncPartnerPosition(pawn, Partner);
+                // 场景开始前的第二次位置同步也必须保留发起任务，且允许外部正常取消。
+                var context = new TrainingJobUtility.JobContext(this);
+                if (!context.IsCurrent) return;
+                if (!TrainingJobUtility.SyncPartnerPosition(pawn, Partner))
+                {
+                    // 失败处理只终止仍然有效的原任务，保留同步期间接管的其他工作。
+                    if (context.IsCurrent) pawn.jobs.EndCurrentJob(JobCondition.Incompletable);
+                    return;
+                }
                 TrainingJobUtility.EnsureAwake(Partner);
 
                 // EN: Personality excretion is fixed to anal so the generated SexProps always match this excretion scene.
@@ -78,6 +93,8 @@ namespace SexSlaveCraft
                 if (Sexprops == null)
                 {
                     Sexprops = SexUtility.SelectSextype(pawn, Partner, false, false);
+                    // 外部动作选择结束后确认归属，再应用本次场景固定的动作参数。
+                    if (!context.IsCurrent) return;
                     RJWSexPropsUtility.ApplySexType(Sexprops, pawn, Partner, xxx.rjwSextype.Anal, "Sex_Anal");
                 }
 
@@ -85,7 +102,10 @@ namespace SexSlaveCraft
                 {
                     return;
                 }
-                if (!OnaholeCompatibilityUtility.TrySynchronizeOnaholeSexProps(Partner, Sexprops))
+                // 家具同步可能重入任务调度；不能把旧场景的同步失败施加到新工作上。
+                bool synchronized = OnaholeCompatibilityUtility.TrySynchronizeOnaholeSexProps(Partner, Sexprops);
+                if (!context.IsCurrent) return;
+                if (!synchronized)
                 {
                     TrainingJobUtility.MarkValidationFailure(Partner, "SSC_PE_ONAHOLE_PROPS");
                     pawn.jobs.EndCurrentJob(JobCondition.Incompletable);
@@ -93,7 +113,8 @@ namespace SexSlaveCraft
                 }
                 SSCLog.Verbose($"[SSC_PE] Start personality excretion scene: actor={pawn.LabelShort}, victim={Partner.LabelShort}");
                 Start();
-                if (pawn.jobs.curDriver != this) return;
+                // Start 也可能取消任务；不允许失效回调继续进入后续场景逻辑。
+                if (!context.IsCurrent) return;
             };
 
             // 每帧回调：维持位置、更新 RJW 与体力计时，时长结束后进入提取步骤。

@@ -100,6 +100,9 @@ namespace SexSlaveCraft
             // 准备回调：校验本场主从关系，恢复阶段动作并创建仪式接收任务。
             prepare.initAction = delegate
             {
+                // 固定当前仪式阶段的执行身份，随后任何外部调用都不能借用后继阶段的任务。
+                var context = new TrainingJobUtility.JobContext(this);
+                if (!context.IsCurrent) return;
                 Pawn slave = Slave;
                 if (slave == null || !slave.Spawned) return;
                 if (!TrainingJobUtility.TryValidateStartOrAbort(pawn, slave, "SSC_RITUAL"))
@@ -108,10 +111,17 @@ namespace SexSlaveCraft
                 }
 
                 IntVec3 spot = RitualSpot.Cell;
-                TrainingJobUtility.SyncPartnerPosition(pawn, slave, spot);
+                // 仪式会移动双方；任意一端的位置通知使任务失效时，停止本阶段准备。
+                if (!TrainingJobUtility.SyncPartnerPosition(pawn, slave, spot))
+                {
+                    if (context.IsCurrent) pawn.jobs.EndCurrentJob(JobCondition.Incompletable);
+                    return;
+                }
 
                 if (Sexprops == null)
                     Sexprops = SexUtility.SelectSextype(pawn, slave, false, false);
+                // 只有原阶段仍在执行，才可以登记训练占用和应用阶段动作。
+                if (!context.IsCurrent) return;
 
                 // EN: Load the current ritualPhase so the resumed Binding Ritual continues from the right act instead of restarting from phase 0.
                 // CN: 读取当前 ritualPhase，保证恢复中的绑定仪式会从正确姿势继续，而不是重新回到 phase 0。
@@ -122,10 +132,13 @@ namespace SexSlaveCraft
 
                 SSCLog.Verbose($"[SSC_RITUAL] Prepare phase: master={pawn.LabelShort}, slave={slave.LabelShort}, ritualPhase={phase}, ritualSpot={spot}");
 
-                if (!TrainingJobUtility.TryStartBindingRitualReceiver(pawn, slave, job, SSCDefOf.SSC_TrainingReceiver, spot))
+                // 接收启动允许重入；新阶段或其他工作接管后，不再运行旧阶段的中止清理。
+                bool started = TrainingJobUtility.TryStartBindingRitualReceiver(pawn, slave, job, SSCDefOf.SSC_TrainingReceiver, spot);
+                if (!context.IsCurrent) return;
+                if (!started)
                 {
                     TrainingJobUtility.NotifyTrainingAborted(slave);
-                    pawn.jobs.EndCurrentJob(JobCondition.Incompletable);
+                    if (context.IsCurrent) pawn.jobs.EndCurrentJob(JobCondition.Incompletable);
                 }
             };
             yield return prepare;
@@ -138,9 +151,16 @@ namespace SexSlaveCraft
             // 开始回调：再次校验并同步设备；仅在 Start 后任务仍有效时记录阶段开始和启用动画。
             sexToil.initAction = delegate
             {
+                // 再次进入场景时重新保存边界快照，覆盖准备完成后发生的取消或任务切换。
+                var context = new TrainingJobUtility.JobContext(this);
+                if (!context.IsCurrent) return;
                 Pawn slave = Slave;
 
-                TrainingJobUtility.SyncPartnerPosition(pawn, slave, job.targetB.Cell);
+                if (!TrainingJobUtility.SyncPartnerPosition(pawn, slave, job.targetB.Cell))
+                {
+                    if (context.IsCurrent) pawn.jobs.EndCurrentJob(JobCondition.Incompletable);
+                    return;
+                }
                 TrainingJobUtility.EnsureAwake(slave);
 
                 if (!TrainingJobUtility.TryValidateStartOrAbort(pawn, slave, "SSC_RITUAL"))
@@ -148,10 +168,13 @@ namespace SexSlaveCraft
                     return;
                 }
 
-                if (!OnaholeCompatibilityUtility.TrySynchronizeOnaholeSexProps(slave, Sexprops))
+                // 家具同步结束后先判定归属，再决定是否撤销本次准备状态。
+                bool synchronized = OnaholeCompatibilityUtility.TrySynchronizeOnaholeSexProps(slave, Sexprops);
+                if (!context.IsCurrent) return;
+                if (!synchronized)
                 {
                     TrainingJobUtility.NotifyTrainingAborted(slave);
-                    pawn.jobs.EndCurrentJob(JobCondition.Incompletable);
+                    if (context.IsCurrent) pawn.jobs.EndCurrentJob(JobCondition.Incompletable);
                     return;
                 }
 
@@ -161,8 +184,10 @@ namespace SexSlaveCraft
                 // CN: Start() 必须在 initAction 里调用，才能让 RJW 和 receiver Job 同步进入绑定仪式场景。
                 // 新动画启动前释放旧阶段的位置锁，避免 UAP 的延迟检查误停本阶段动画。
                 UapRitualCompatibilityUtility.ReleasePositionLocks(pawn, slave);
+                // 动画兼容调用和 RJW Start 都是外部边界；仅原阶段存活时记录场景已开始。
+                if (!context.IsCurrent) return;
                 Start();
-                if (pawn.jobs.curDriver != this) return;
+                if (!context.IsCurrent) return;
                 phaseSceneStarted = true;
 
                 SSCLog.Verbose($"[SSC Ritual] Start() called. pawn IsAnimating = {RitualTrainingUtility.IsAnimating(pawn)}");
