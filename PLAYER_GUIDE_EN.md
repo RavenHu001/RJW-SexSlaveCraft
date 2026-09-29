@@ -3,7 +3,7 @@
 > For RimWorld 1.6 and SexSlaveCraft 2.3.5, based on the current repository code and Defs.\
 > Base audit: 2026-06-30; self-training, Training handoff fixes and validation records updated for 2.3.5 on 2026-09-28.\
 > Based on upstream 2.2.8; version 2.2.9 includes the specialization and ritual progression fixes, and 2.2.10 fixes stale training locks after interrupted rituals. See `CHANGELOG.md`.\
-> Version 2.3.5 adds self-training permission, manual orders, automatic diversion, scoring and mood feedback, and fixes Training handoffs and stale job callbacks. This is a repository version update; this workflow has not created an installation package or public release. Legacy RimTalk remains suspended; unfinished Pet Cat and Pet Rabbit choices remain disabled.\
+> Version 2.3.5 adds self-training permission, manual orders, automatic diversion, scoring and mood feedback, and fixes Training handoffs and stale job callbacks. Download the installation ZIP and SHA-256 checksum from [v2.3.5 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.5). Legacy RimTalk remains suspended; unfinished Pet Cat and Pet Rabbit choices remain disabled.\
 > This guide describes the behavior implemented by the current C# and XML. Where an old changelog or description disagrees with the code, the discrepancy is listed under “Current Limitations and Known Differences.”
 
 > See the [2.3.5 notes](Docs/Releases/2.3.5/2.3.5发布说明.md) for this version and the [2.3.2 notes](Docs/Releases/2.3.2/2.3.2发布说明.md) for Training Officer progression, attributes and upgrading.

@@ -6,9 +6,9 @@ This continuation builds on upstream **2.2.8**, the baseline when upstream devel
 
 ## [2.3.5] — 2026-09-28 — 自我调教与调教任务交接修复 / Self-training and Training handoff fixes
 
-本版归并 `v2.3.4`（`9c2aadf`）之后至 `abf60d1` 的全部分支更新，并同步版本元数据及文档。当前为仓库版本归并，尚未在本次流程中生成安装包或创建正式发布。详见[中英发布说明](Docs/Releases/2.3.5/2.3.5发布说明.md)和[版本验证](Docs/Releases/2.3.5/2.3.5版本验证.md)。
+本版归并 `v2.3.4`（`9c2aadf`）之后至 `abf60d1` 的全部分支更新，并同步版本元数据及文档。2.3.5 已正式发布，安装包与 SHA-256 校验文件见 [v2.3.5 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.5)。详见[中英发布说明](Docs/Releases/2.3.5/2.3.5发布说明.md)和[版本验证](Docs/Releases/2.3.5/2.3.5版本验证.md)。
 
-This version includes all branch changes after `v2.3.4` (`9c2aadf`) through `abf60d1`, plus version metadata and documentation updates. This is a repository version update; this workflow has not produced an installation package or a public release. See the [bilingual notes](Docs/Releases/2.3.5/2.3.5发布说明.md) and [validation record](Docs/Releases/2.3.5/2.3.5版本验证.md).
+This version includes all branch changes after `v2.3.4` (`9c2aadf`) through `abf60d1`, plus version metadata and documentation updates. Version 2.3.5 is released; download the installation ZIP and SHA-256 checksum from [v2.3.5 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.5). See the [bilingual notes](Docs/Releases/2.3.5/2.3.5发布说明.md) and [validation record](Docs/Releases/2.3.5/2.3.5版本验证.md).
 
 ### 2026-09-28 — 自我调教 / Self-training
 
