@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_Diagnostics_Title>Diagnostics and compatibility</SSC_Diagnostics_Title>
+  <SSC_Diagnostics_Environment>Environment</SSC_Diagnostics_Environment>
+  <SSC_Diagnostics_Dependencies>Dependency assemblies (loaded)</SSC_Diagnostics_Dependencies>
+  <SSC_Diagnostics_Compatibility>Compatibility checks</SSC_Diagnostics_Compatibility>
+  <SSC_Diagnostics_Language>Language: {0}</SSC_Diagnostics_Language>
+  <SSC_Diagnostics_PatchCount>Registered SSC patches: {0}</SSC_Diagnostics_PatchCount>
+  <SSC_Diagnostics_AssemblyMissing>No loaded assembly detected</SSC_Diagnostics_AssemblyMissing>
+  <SSC_Diagnostics_InterfaceMissing>Required interface not found: the mod may be absent or its interface may have changed.</SSC_Diagnostics_InterfaceMissing>
+  <SSC_Diagnostics_InterfaceFound>Required interface found; assembly version: {0}</SSC_Diagnostics_InterfaceFound>
+  <SSC_Diagnostics_Registered>Expected patch classes registered: {0}/{1}</SSC_Diagnostics_Registered>
+  <SSC_Diagnostics_Incomplete>Registration is incomplete. These patch classes were not detected; check the game log:</SSC_Diagnostics_Incomplete>
+  <SSC_Diagnostics_CheckFailed>Check incomplete ({0}). Consult the game log.</SSC_Diagnostics_CheckFailed>
+  <SSC_Diagnostics_PatchNote>This page checks interfaces and patch registration only. It does not verify runtime behavior, UI layout, or every mod combination.</SSC_Diagnostics_PatchNote>
+  <SSC_Diagnostics_ReportNote>The report contains only version, dependency and compatibility information. It omits the full mod list and does not read saves, pawn data, full logs or local installation paths.</SSC_Diagnostics_ReportNote>
+  <SSC_Diagnostics_Refresh>Refresh checks</SSC_Diagnostics_Refresh>
+  <SSC_Diagnostics_Copy>Copy diagnostics</SSC_Diagnostics_Copy>
+  <SSC_Diagnostics_Copied>Copied</SSC_Diagnostics_Copied>
+</LanguageData>

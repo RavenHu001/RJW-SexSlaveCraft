@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_Diagnostics_Title>Диагностика и совместимость</SSC_Diagnostics_Title>
+  <SSC_Diagnostics_Environment>Окружение</SSC_Diagnostics_Environment>
+  <SSC_Diagnostics_Dependencies>Загруженные сборки зависимостей</SSC_Diagnostics_Dependencies>
+  <SSC_Diagnostics_Compatibility>Проверка совместимости</SSC_Diagnostics_Compatibility>
+  <SSC_Diagnostics_Language>Язык: {0}</SSC_Diagnostics_Language>
+  <SSC_Diagnostics_PatchCount>Зарегистрировано патчей SSC: {0}</SSC_Diagnostics_PatchCount>
+  <SSC_Diagnostics_AssemblyMissing>Загруженная сборка не обнаружена</SSC_Diagnostics_AssemblyMissing>
+  <SSC_Diagnostics_InterfaceMissing>Нужный интерфейс не найден: мод может отсутствовать или его интерфейс изменился.</SSC_Diagnostics_InterfaceMissing>
+  <SSC_Diagnostics_InterfaceFound>Нужный интерфейс найден; версия сборки: {0}</SSC_Diagnostics_InterfaceFound>
+  <SSC_Diagnostics_Registered>Зарегистрировано ожидаемых классов патчей: {0}/{1}</SSC_Diagnostics_Registered>
+  <SSC_Diagnostics_Incomplete>Регистрация неполная. Следующие классы патчей не обнаружены; проверьте журнал игры:</SSC_Diagnostics_Incomplete>
+  <SSC_Diagnostics_CheckFailed>Проверка не завершена ({0}). См. журнал игры.</SSC_Diagnostics_CheckFailed>
+  <SSC_Diagnostics_PatchNote>Проверяются только интерфейсы и регистрация патчей. Работа функций, вид интерфейса и все сочетания модов не проверяются.</SSC_Diagnostics_PatchNote>
+  <SSC_Diagnostics_ReportNote>Отчёт содержит только сведения о версиях, зависимостях и совместимости. Полный список модов не включён. Сохранения, данные персонажей, полные журналы и пути установки не считываются.</SSC_Diagnostics_ReportNote>
+  <SSC_Diagnostics_Refresh>Повторить проверку</SSC_Diagnostics_Refresh>
+  <SSC_Diagnostics_Copy>Копировать отчёт</SSC_Diagnostics_Copy>
+  <SSC_Diagnostics_Copied>Скопировано</SSC_Diagnostics_Copied>
+</LanguageData>

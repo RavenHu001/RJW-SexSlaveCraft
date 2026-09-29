@@ -1,12 +1,12 @@
 # RJW-SexSlaveCraft Complete Player Guide
 
-> For RimWorld 1.6 and SexSlaveCraft 2.3.4, based on the current workspace code and installed Defs.\
-> Base audit: 2026-06-30; Combatant, display updates and personality-excretion fixes updated for 2.3.4 on 2026-09-27.\
+> For RimWorld 1.6 and SexSlaveCraft 2.3.5, based on the current repository code and Defs.\
+> Base audit: 2026-06-30; self-training, Training handoff fixes and validation records updated for 2.3.5 on 2026-09-28.\
 > Based on upstream 2.2.8; version 2.2.9 includes the specialization and ritual progression fixes, and 2.2.10 fixes stale training locks after interrupted rituals. See `CHANGELOG.md`.\
-> Version 2.3.4 adds the complete Combatant specialization, Combat Overdrive and its icon, improves specialization labels/colors, and fixes personality-excretion interruptions and competing initiators. Download the ZIP and SHA-256 checksum from [v2.3.4](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.4). Legacy RimTalk remains suspended; unfinished Pet Cat and Pet Rabbit choices remain disabled.\
+> Version 2.3.5 adds self-training permission, manual orders, automatic diversion, scoring and mood feedback, and fixes Training handoffs and stale job callbacks. This is a repository version update; this workflow has not created an installation package or public release. Legacy RimTalk remains suspended; unfinished Pet Cat and Pet Rabbit choices remain disabled.\
 > This guide describes the behavior implemented by the current C# and XML. Where an old changelog or description disagrees with the code, the discrepancy is listed under “Current Limitations and Known Differences.”
 
-> See the [2.3.4 notes](Docs/Releases/2.3.4/2.3.4发布说明.md) for this release and the [2.3.2 notes](Docs/Releases/2.3.2/2.3.2发布说明.md) for Training Officer progression, attributes and upgrading.
+> See the [2.3.5 notes](Docs/Releases/2.3.5/2.3.5发布说明.md) for this version and the [2.3.2 notes](Docs/Releases/2.3.2/2.3.2发布说明.md) for Training Officer progression, attributes and upgrading.
 
 ## 1. Scope and Dependencies
 
@@ -147,6 +147,21 @@ After a successful scene:
 7. Mood and opinion memories are applied.
 8. The actual act grants experience to its mapped body part.
 9. The 22,500-tick cooldown begins.
+
+### 4.4 Self-training
+
+An SSC Sex Slave with a `Sex Slave Chain` may enable `Allow Self-training` independently of ordinary masturbation. It defaults to on for new pawns and missing fields in old saves; an explicit off choice persists. Select and right-click the pawn to choose an available solo interaction. Automatic self-training branches only from an RJW automatic masturbation candidate. With both permissions available, the four current Chain stages select self-training at 30% / 55% / 80% / 50%; with only self-training available, the candidate becomes self-training. Genes that forbid masturbation still block this first version.
+
+At scene start, `C` is current Corruption clamped to 0–1, and `A` is opinion of the imagined pawn divided by 100 and clamped to 0–1. The actual bound Master takes priority over a valid Assigned Trainer. With no valid pawn or nonpositive opinion, `A = 0`.
+
+```text
+S = 10 + 20 × C + 10 × A
+G = 0.5 × Clamp(S / 500 + 0.025, 0.01, 0.12)
+```
+
+The score ranges from 10 to 40. Before the current Chain cap, `G` is 2.25–5.25 percentage points. Old ordinary Training scoring, Social skill, Masochist and body-part sizes do not affect this formula. The completion message follows ordinary Training's `Score | Corruption` format and identifies the pawn.
+
+Completion gives the pawn one dedicated mood memory lasting one day, with at most one copy. Its mood combines a stage base of −4 / −2 / 0 / +2, +2 for Masochist, and the imagined pawn's original opinion at scene start: −3 for ≤−30, +2 for ≥30, otherwise 0. Denying ordinary masturbation also produces one of two mutually exclusive ongoing moods depending on whether self-training is allowed; stage and Masochist affect them. Self-training neither creates a bond nor updates ordinary Training cooldown, scheduled completion date or last score.
 
 ## 5. Current Training Score
 
@@ -294,9 +309,9 @@ The initial Chain severity is `20%`.
 | Chain severity | Stage | Corruption brake cap | Body-part XP |
 |---:|---|---:|---:|
 | No Chain | — | 12% | ×1.0 |
-| 10%–29.99% | Imprint (Pain) | 30% | ×1.1 |
+| 10%–29.99% | Novice Sex Slave | 30% | ×1.1 |
 | 30%–49.99% | Sex Slave | 50% | ×1.3 |
-| 50%–89.99% | Imprint (Adaptation) | 90% | ×1.6 |
+| 50%–89.99% | Submissive Sex Slave | 90% | ×1.6 |
 | ≥ 90% | Meat Toiletization | 100% | ×2.0 |
 
 The brake cap is the next Corruption threshold this Chain stage is allowed to reach. After reaching 30%/50%/90%, the pawn still needs a Binding Ritual resolution to raise Chain severity. Gameplay checks use the Chain health stage; the Sex Slave trait is synchronized only from highest-ever Corruption and is not an authoritative gameplay predicate.
@@ -307,9 +322,9 @@ Chain stage stat effects:
 
 | Stage | Capacities | Market value |
 |---|---|---:|
-| Imprint (Pain) | Consciousness, Talking, Manipulation each -0.3 | ×0.9 |
+| Novice Sex Slave | Consciousness, Talking, Manipulation each -0.3 | ×0.9 |
 | Sex Slave | Consciousness -0.2, Talking -0.2, Manipulation -0.1 | ×0.8 |
-| Imprint (Adaptation) | Consciousness +0.1, Talking +0.1 | ×0.7 |
+| Submissive Sex Slave | Consciousness +0.1, Talking +0.1 | ×0.7 |
 | Meat Toiletization | Consciousness +0.3, Talking +0.3, Manipulation +0.2 | ×0.5 |
 
 Every Chain stage grants immunity to PNA addiction.
@@ -318,9 +333,9 @@ Persistent mood by stage:
 
 | Stage | Mood |
 |---|---:|
-| Imprint (Pain) | -10 |
+| Novice Sex Slave | -10 |
 | Sex Slave | -5 |
-| Imprint (Adaptation) | +3 |
+| Submissive Sex Slave | +3 |
 | Meat Toiletization | +12 |
 
 ### 6.5 Chain Regression

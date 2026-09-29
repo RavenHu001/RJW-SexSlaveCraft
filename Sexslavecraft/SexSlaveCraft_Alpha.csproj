@@ -155,6 +155,10 @@
     <Compile Include="JobDriver\JobDriver_InsertPersonality.cs" />
     <Compile Include="JobDriver\JobDriver_PetAffection.cs" />
     <Compile Include="JobDriver\JobDriver_Train.cs" />
+    <Compile Include="JobDriver\JobDriver_SelfTraining.cs" />
+    <Compile Include="Comps\Comp_Train.SelfTraining.cs" />
+    <Compile Include="common\Restrictions\SSCSelfTrainingInteractions.cs" />
+    <Compile Include="common\Restrictions\FloatMenuOptionProvider_SSCSelfTraining.cs" />
     <Compile Include="JobGiver\JobGiver_SlaveKeepJob.cs" />
     <Compile Include="Recipe\Recipe_ApplyGelatinization.cs" />
     <Compile Include="Recipe\Recipe_ApplyFullGelatinization.cs" />
@@ -209,12 +213,18 @@
     <Compile Include="common\Restrictions\SSCRestrictionTrainerAssignment.cs" />
     <Compile Include="common\Restrictions\SSCRestrictionConfigurationBuilder.cs" />
     <Compile Include="common\Restrictions\SSCRestrictionPolicy.cs" />
+    <Compile Include="common\Restrictions\SSCSelfTrainingEligibility.cs" />
+    <Compile Include="common\Restrictions\SSCSelfTrainingUtility.cs" />
+    <Compile Include="common\Restrictions\SSCSelfTrainingFeedbackRules.cs" />
+    <Compile Include="common\Restrictions\SSCSelfTrainingFeedback.cs" />
+    <Compile Include="common\Restrictions\DebugActions_SSCSelfTraining.cs" />
     <Compile Include="common\Restrictions\SSCRestrictionJobContext.cs" />
     <Compile Include="common\Restrictions\SSCRestrictionExternalJobs.cs" />
     <Compile Include="common\Restrictions\SSCRestrictionLovinGuard.cs" />
     <Compile Include="common\Restrictions\SSCRestrictionTrainingUtility.cs" />
     <Compile Include="common\Restrictions\SSCRestrictionJobGuard.cs" />
     <Compile Include="common\Restrictions\SSCRestrictionJobHooks.cs" />
+    <Compile Include="common\Restrictions\SSCSelfTrainingAutoJob.cs" />
     <Compile Include="common\Restrictions\SSCSettings.Restrictions.cs" />
     <Compile Include="common\Restrictions\DebugActions_SSCRestrictions.cs" />
     <Compile Include="common\Restrictions\SSCRestrictionEditor.cs" />
@@ -224,6 +234,7 @@
     <Compile Include="common\SSCThoughtBootstrap.cs" />
     <Compile Include="common\Settings.cs" />
     <Compile Include="common\Thought_MemoryDynamicTraining.cs" />
+    <Compile Include="common\Thought_MemorySelfTraining.cs" />
     <Compile Include="common\TrainingOutcomeUtility.cs" />
     <Compile Include="common\TrainerAssignmentUtility.cs" />
     <Compile Include="common\ProgressionEducationCompatibility.cs" />

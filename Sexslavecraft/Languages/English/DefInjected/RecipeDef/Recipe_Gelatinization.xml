@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <ApplyGelatinization.label>Semi-gelatinization Surgery</ApplyGelatinization.label>
+  <ApplyGelatinization.description>Perform semi-gelatinization surgery on a limb. Gel material is injected, then adaptation begins. If adaptation reaches 100% first, modification succeeds; if severity reaches 100% first, the limb is destroyed.</ApplyGelatinization.description>
+  <ApplyGelatinization.jobString>Perform semi-gelatinization surgery</ApplyGelatinization.jobString>
+  <ApplyFullGelatinization.label>Full Gelatinization Surgery</ApplyFullGelatinization.label>
+  <ApplyFullGelatinization.description>Perform full gelatinization surgery on a body that has already completed personality excretion. The entire body enters a race between adaptation and severity; if adaptation reaches 100% first, full gelatinization succeeds, and if severity reaches 100% first, the body collapses completely.</ApplyFullGelatinization.description>
+  <ApplyFullGelatinization.jobString>Perform full gelatinization surgery</ApplyFullGelatinization.jobString>
+</LanguageData>

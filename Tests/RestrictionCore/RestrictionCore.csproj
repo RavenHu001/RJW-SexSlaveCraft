@@ -10,6 +10,9 @@
     <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionConfigurationBuilder.cs" Link="Production/ConfigurationBuilder.cs" />
     <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionResolver.cs" Link="Production/Resolver.cs" />
     <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionPolicy.cs" Link="Production/Policy.cs" />
+    <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCSelfTrainingEligibility.cs" Link="Production/SSCSelfTrainingEligibility.cs" />
+    <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCSelfTrainingUtility.cs" Link="Production/SSCSelfTrainingUtility.cs" />
+    <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCSelfTrainingFeedbackRules.cs" Link="Production/SSCSelfTrainingFeedbackRules.cs" />
     <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionEditor.cs" Link="Production/Editor.cs" />
     <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCSettings.Restrictions.cs" Link="Production/Settings.cs" />
     <Compile Include="$(SscSourceRoot)/Comps/Comp_Train.Restrictions.cs" Link="Production/Comp.cs" />

@@ -26,6 +26,7 @@
   <SSC_Restrictions_Rule_ReceiveConsensual>Passive · Receive consensual interaction from non-owners</SSC_Restrictions_Rule_ReceiveConsensual>
   <SSC_Restrictions_Rule_ReceiveForced>Passive · Receive forced interaction from non-owners</SSC_Restrictions_Rule_ReceiveForced>
   <SSC_Restrictions_Rule_ReceiveTraining>Training · Receive training from non-owners</SSC_Restrictions_Rule_ReceiveTraining>
+  <SSC_Restrictions_Rule_SelfTraining>Training · Self-training</SSC_Restrictions_Rule_SelfTraining>
   <SSC_Restrictions_SavedValue>Saved: {0} (click to change)</SSC_Restrictions_SavedValue>
   <SSC_Restrictions_EffectiveValue>Effective: {0}; source: {1}</SSC_Restrictions_EffectiveValue>
   <SSC_Restrictions_InvalidValue>Invalid configuration</SSC_Restrictions_InvalidValue>
@@ -50,6 +51,7 @@
   <SSC_Restrictions_Kind_RitualTraining>Ritual training</SSC_Restrictions_Kind_RitualTraining>
   <SSC_Restrictions_Kind_PersonalityExcretion>Personality task</SSC_Restrictions_Kind_PersonalityExcretion>
   <SSC_Restrictions_Kind_BindingPreparation>First binding preparation</SSC_Restrictions_Kind_BindingPreparation>
+  <SSC_Restrictions_Kind_SelfTraining>Self-training</SSC_Restrictions_Kind_SelfTraining>
   <SSC_Restrictions_SoloTip>Results use saved configurations live; no jobs are started. Solo interactions only check the initiator and ignore the receiver selection.</SSC_Restrictions_SoloTip>
   <SSC_Restrictions_Result>Result: {0}\nReason: {1}</SSC_Restrictions_Result>
   <SSC_Restrictions_Subject>Relevant pawn: {0}</SSC_Restrictions_Subject>
@@ -64,6 +66,7 @@
   <SSC_Restrictions_Reason_RuleDenied>Effective rule denies this interaction</SSC_Restrictions_Reason_RuleDenied>
   <SSC_Restrictions_Reason_OwnerOnly>Initiation is limited to this pawn's actual owner</SSC_Restrictions_Reason_OwnerOnly>
   <SSC_Restrictions_Reason_InvalidBindingPreparation>Identity or assignment does not qualify for first binding preparation</SSC_Restrictions_Reason_InvalidBindingPreparation>
+  <SSC_Restrictions_Reason_SelfTrainingIneligible>Requires an SSC sex slave with a chain</SSC_Restrictions_Reason_SelfTrainingIneligible>
   <SSC_Restrictions_EditInitiator>Edit initiator rules</SSC_Restrictions_EditInitiator>
   <SSC_Restrictions_EditReceiver>Edit receiver rules</SSC_Restrictions_EditReceiver>
   <SSC_Restrictions_None>Not selected</SSC_Restrictions_None>
@@ -105,12 +108,14 @@
   <SSC_Restrictions_Option_ReceiveConsensual>Receive consensual sex from non-owners</SSC_Restrictions_Option_ReceiveConsensual>
   <SSC_Restrictions_Option_ReceiveForced>Receive forced sex from non-owners</SSC_Restrictions_Option_ReceiveForced>
   <SSC_Restrictions_Option_ReceiveTraining>Receive training from non-owners</SSC_Restrictions_Option_ReceiveTraining>
+  <SSC_Restrictions_Option_SelfTraining>Allow self-training</SSC_Restrictions_Option_SelfTraining>
   <SSC_Restrictions_Tip_Masturbation>Allow initiating solo masturbation.</SSC_Restrictions_Tip_Masturbation>
   <SSC_Restrictions_Tip_ConsensualInitiation>Allow initiating consensual activity with the targets selected below. Their reception rules still apply.</SSC_Restrictions_Tip_ConsensualInitiation>
   <SSC_Restrictions_Tip_ForcedInitiation>Allow initiating forced activity; the target must also pass their reception rules.</SSC_Restrictions_Tip_ForcedInitiation>
   <SSC_Restrictions_Tip_ReceiveConsensual>Allow receiving consensual activity from non-owners; the initiator must also have permission.</SSC_Restrictions_Tip_ReceiveConsensual>
   <SSC_Restrictions_Tip_ReceiveForced>Allow receiving forced activity from non-owners. Equipment may force this option off.</SSC_Restrictions_Tip_ReceiveForced>
   <SSC_Restrictions_Tip_ReceiveTraining>Allow non-owner daily or ritual training. Trainer qualifications and assignment requirements still apply.</SSC_Restrictions_Tip_ReceiveTraining>
+  <SSC_Restrictions_Tip_SelfTraining>Allow an SSC sex slave with a chain to train themselves, independently of ordinary masturbation permission. RJW ability and location checks still apply.</SSC_Restrictions_Tip_SelfTraining>
   <SSC_Restrictions_AssignAuthorizesSuffix> (also allow training)</SSC_Restrictions_AssignAuthorizesSuffix>
   <SSC_Restrictions_AssignAuthorizesTip>Selecting a non-owner trainer also enables receiving non-owner training. Ordinary interactions still use their own rules; forced equipment or specialization restrictions still apply.</SSC_Restrictions_AssignAuthorizesTip>
   <SSC_Restrictions_AssignFailed>Assignment failed: eligibility or restrictions changed, or a forced rule denies training. The previous assignment and personal choices are unchanged.</SSC_Restrictions_AssignFailed>

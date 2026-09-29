@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <Hediff_GelatinizationTemporary.label>Semi-gelatinization in Progress</Hediff_GelatinizationTemporary.label>
+  <Hediff_GelatinizationTemporary.labelNoun>Semi-gelatinization Treatment</Hediff_GelatinizationTemporary.labelNoun>
+  <Hediff_GelatinizationTemporary.description>A limb is undergoing semi-gelatinization. Adaptation and severity race each other: if adaptation reaches 100% first, the limb becomes a gelatinized prosthetic; if severity reaches 100% first, the limb is destroyed.</Hediff_GelatinizationTemporary.description>
+  <Hediff_GelatinizedArm.label>Gelatinized Arm</Hediff_GelatinizedArm.label>
+  <Hediff_GelatinizedArm.labelNoun>Gelatinized Arm</Hediff_GelatinizedArm.labelNoun>
+  <Hediff_GelatinizedArm.description>The arm has been modified into a semi-gelatinized prosthetic, granting additional strength and flexibility.</Hediff_GelatinizedArm.description>
+  <Hediff_GelatinizedLeg.label>Gelatinized Leg</Hediff_GelatinizedLeg.label>
+  <Hediff_GelatinizedLeg.labelNoun>Gelatinized Leg</Hediff_GelatinizedLeg.labelNoun>
+  <Hediff_GelatinizedLeg.description>The leg has been modified into a semi-gelatinized prosthetic, granting additional move speed and defense.</Hediff_GelatinizedLeg.description>
+  <SSC_FullGelatinizationTemporary.label>Full Gelatinization in Progress</SSC_FullGelatinizationTemporary.label>
+  <SSC_FullGelatinizationTemporary.labelNoun>Full Gelatinization</SSC_FullGelatinizationTemporary.labelNoun>
+  <SSC_FullGelatinizationTemporary.description>The whole body is undergoing gelatinized restructuring. Adaptation and severity keep racing each other: if adaptation reaches 100% first, full completion is achieved; if severity reaches 100% first, the body collapses outright.</SSC_FullGelatinizationTemporary.description>
+  <SSC_FullGelatinizedBody.label>Full Gelatinization Complete</SSC_FullGelatinizedBody.label>
+  <SSC_FullGelatinizedBody.labelNoun>Full Gelatinized Body</SSC_FullGelatinizedBody.labelNoun>
+  <SSC_FullGelatinizedBody.description>This body has completed full gelatinized restructuring. Aside from RJW organ states, prior physical damage is washed away, leaving only a stabilized gelatinized form.</SSC_FullGelatinizedBody.description>
+  <SSC_FullGelatinizedBody.stages.0.label>Gel Shell</SSC_FullGelatinizedBody.stages.0.label>
+</LanguageData>

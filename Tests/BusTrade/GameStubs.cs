@@ -208,6 +208,7 @@ namespace RimWorld
 namespace rjw
 {
     public class JobDriver_Sex : Verse.AI.JobDriver {
+        public Verse.Thing Target => job?.targetA.Thing;
         public SexProps Sexprops;
         public Verse.Pawn Partner => job?.targetA.Thing as Verse.Pawn;
     }

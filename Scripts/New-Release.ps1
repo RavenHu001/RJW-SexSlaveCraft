@@ -51,6 +51,8 @@ foreach ($requiredDirectory in @('Defs', 'Languages', 'Textures', 'Resources')) 
         throw "Required runtime directory is missing: $requiredDirectory"
     }
 }
+& (Join-Path $PSScriptRoot 'Sync-LanguagesMirror.ps1')
+& (Join-Path $PSScriptRoot 'Test-RestrictionLocalization.ps1')
 
 if (-not $OutputDirectory) { $OutputDirectory = Join-Path $repoRoot 'Releases' }
 $outputRoot = [IO.Path]::GetFullPath($OutputDirectory)

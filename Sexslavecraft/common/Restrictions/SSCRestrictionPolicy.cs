@@ -4,13 +4,15 @@ namespace SexSlaveCraft
 {
     public enum SSCInteractionKind
     {
-        Unknown, Masturbation, Consensual, Forced, DailyTraining, RitualTraining, PersonalityExcretion, BindingPreparation
+        Unknown, Masturbation, Consensual, Forced, DailyTraining, RitualTraining, PersonalityExcretion, BindingPreparation,
+        SelfTraining
     }
 
     public enum SSCRestrictionReason
     {
         BoundOwner, SystemDisabled, NotApplicable, Allowed, IncompleteContext,
-        ConfigurationMissing, ConfigurationInvalid, RuleDenied, OwnerOnly, InvalidBindingPreparation
+        ConfigurationMissing, ConfigurationInvalid, RuleDenied, OwnerOnly, InvalidBindingPreparation,
+        SelfTrainingIneligible
     }
 
     /// <summary>适配器必须提供实际发起方向和用途，不从性别、姿势或主人身份猜测方向。</summary>
@@ -52,6 +54,17 @@ namespace SexSlaveCraft
             if (request == null) return Result(false, SSCRestrictionReason.IncompleteContext);
             Pawn actor = request.Initiator;
             Pawn target = request.Receiver;
+            // 自我调教的身份与锁链是行为资格，即使总限制关闭也不能绕过。
+            if (request.Kind == SSCInteractionKind.SelfTraining)
+            {
+                if (!request.DirectionKnown || actor == null || (target != null && target != actor))
+                    return Result(false, SSCRestrictionReason.IncompleteContext);
+                if (!SSCSelfTrainingEligibility.IsEligible(actor))
+                    return Result(false, SSCRestrictionReason.SelfTrainingIneligible, actor);
+                if (SSCMod.settings != null && !SSCMod.settings.enableSexSlaveProtectionRules)
+                    return Result(true, SSCRestrictionReason.SystemDisabled);
+                return Check(actor, SSCRestrictionRule.SelfTraining, request);
+            }
             // 主人对自身绑定对象的最高许可先于配置、用途、装备及所有条目校验。
             if (request.DirectionKnown && actor != null && target != null && actor != target && SSCBondUtility.IsBoundTo(target, actor))
                 return Result(true, SSCRestrictionReason.BoundOwner);

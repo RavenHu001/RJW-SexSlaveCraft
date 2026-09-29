@@ -2,36 +2,36 @@
 <LanguageData>
   <SSC_Hediff_PetCat.label>pet cat specialization</SSC_Hediff_PetCat.label>
   <SSC_Hediff_PetCat.description>A developing pet-cat specialization. It emphasizes agility, evasion, and affectionate attachment to the master.</SSC_Hediff_PetCat.description>
-  <SSC_Hediff_PetCat.stages.成型中.label>forming</SSC_Hediff_PetCat.stages.成型中.label>
-  <SSC_Hediff_PetCat.stages.灵巧.label>agile</SSC_Hediff_PetCat.stages.灵巧.label>
-  <SSC_Hediff_PetCat.stages.难以捕捉.label>elusive</SSC_Hediff_PetCat.stages.难以捕捉.label>
+  <SSC_Hediff_PetCat.stages.0.label>forming</SSC_Hediff_PetCat.stages.0.label>
+  <SSC_Hediff_PetCat.stages.1.label>agile</SSC_Hediff_PetCat.stages.1.label>
+  <SSC_Hediff_PetCat.stages.2.label>elusive</SSC_Hediff_PetCat.stages.2.label>
 
   <SSC_Hediff_PetCat_Final.label>final pet cat specialization</SSC_Hediff_PetCat_Final.label>
   <SSC_Hediff_PetCat_Final.description>A completed pet-cat specialization stored through personality gel. The pawn is highly evasive and strongly tuned to affectionate master-bond behavior.</SSC_Hediff_PetCat_Final.description>
 
   <SSC_Hediff_PetDog.label>pet dog specialization</SSC_Hediff_PetDog.label>
   <SSC_Hediff_PetDog.description>A developing pet-dog specialization. It emphasizes animal handling, obedience, and animal-training interactions.</SSC_Hediff_PetDog.description>
-  <SSC_Hediff_PetDog.stages.成型中.label>forming</SSC_Hediff_PetDog.stages.成型中.label>
-  <SSC_Hediff_PetDog.stages.服从.label>obedient</SSC_Hediff_PetDog.stages.服从.label>
-  <SSC_Hediff_PetDog.stages.兽栏调教完成.label>kennel-trained</SSC_Hediff_PetDog.stages.兽栏调教完成.label>
-  <SSC_Hediff_PetDog.stages.领群犬.label>pack leader</SSC_Hediff_PetDog.stages.领群犬.label>
+  <SSC_Hediff_PetDog.stages.0.label>forming</SSC_Hediff_PetDog.stages.0.label>
+  <SSC_Hediff_PetDog.stages.1.label>obedient</SSC_Hediff_PetDog.stages.1.label>
+  <SSC_Hediff_PetDog.stages.2.label>kennel-trained</SSC_Hediff_PetDog.stages.2.label>
+  <SSC_Hediff_PetDog.stages.3.label>pack leader</SSC_Hediff_PetDog.stages.3.label>
 
   <SSC_Hediff_PetDog_Final.label>final pet dog specialization</SSC_Hediff_PetDog_Final.label>
   <SSC_Hediff_PetDog_Final.description>A completed pet-dog specialization stored through personality gel. The pawn is strongly adapted for animal handling and animal-training interactions.</SSC_Hediff_PetDog_Final.description>
 
   <SSC_Hediff_PetRabbit.label>pet rabbit specialization</SSC_Hediff_PetRabbit.label>
   <SSC_Hediff_PetRabbit.description>A developing pet-rabbit specialization. It emphasizes PNA-linked growth, reproductive modes, affectionate attachment, and light agility.</SSC_Hediff_PetRabbit.description>
-  <SSC_Hediff_PetRabbit.stages.成型中.label>forming</SSC_Hediff_PetRabbit.stages.成型中.label>
-  <SSC_Hediff_PetRabbit.stages.轻快.label>quickened</SSC_Hediff_PetRabbit.stages.轻快.label>
-  <SSC_Hediff_PetRabbit.stages.温顺成型.label>soft-bred</SSC_Hediff_PetRabbit.stages.温顺成型.label>
+  <SSC_Hediff_PetRabbit.stages.0.label>forming</SSC_Hediff_PetRabbit.stages.0.label>
+  <SSC_Hediff_PetRabbit.stages.1.label>quickened</SSC_Hediff_PetRabbit.stages.1.label>
+  <SSC_Hediff_PetRabbit.stages.2.label>soft-bred</SSC_Hediff_PetRabbit.stages.2.label>
 
   <SSC_Hediff_PetRabbit_Final.label>final pet rabbit specialization</SSC_Hediff_PetRabbit_Final.label>
   <SSC_Hediff_PetRabbit_Final.description>A completed pet-rabbit specialization stored through personality gel. The pawn is stabilized for PNA-linked growth, reproductive modes, recovery, and light agility.</SSC_Hediff_PetRabbit_Final.description>
 
   <SSC_Hediff_RabbitCloneLink.label>rabbit clone</SSC_Hediff_RabbitCloneLink.label>
   <SSC_Hediff_RabbitCloneLink.description>This pawn is a clone split from a pet-rabbit specialist. It shares rest and mood with the source, matures rapidly, and cannot undergo personality excretion.</SSC_Hediff_RabbitCloneLink.description>
-  <SSC_Hediff_RabbitCloneLink.stages.成型中.label>forming</SSC_Hediff_RabbitCloneLink.stages.成型中.label>
-  <SSC_Hediff_RabbitCloneLink.stages.成熟.label>mature</SSC_Hediff_RabbitCloneLink.stages.成熟.label>
+  <SSC_Hediff_RabbitCloneLink.stages.0.label>forming</SSC_Hediff_RabbitCloneLink.stages.0.label>
+  <SSC_Hediff_RabbitCloneLink.stages.1.label>mature</SSC_Hediff_RabbitCloneLink.stages.1.label>
 
   <SSC_Hediff_RabbitCloneLowPNA.label>rabbit clone PNA production</SSC_Hediff_RabbitCloneLowPNA.label>
   <SSC_Hediff_RabbitCloneLowPNA.description>A low-efficiency PNA output state stabilized after a rabbit clone reaches maturity.</SSC_Hediff_RabbitCloneLowPNA.description>

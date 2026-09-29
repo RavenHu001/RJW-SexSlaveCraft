@@ -28,6 +28,7 @@
 - [战斗员特化开发规划](Design/战斗员特化开发规划.md)：首版五阶段均已完成，验收与最新检查见完成核查记录；研究入口要求 SSC 性奴身份，无绑定／锁链门槛，采用调教评分与直接击杀体型经验、熟练减伤、仅征召时可用的终极能力，复用现有终极化流程。
 - [新限制系统开发规划](Design/新限制系统开发规划.md)：规则、配置、界面与实施顺序。
 - [新限制系统代码复盘与实施参考](Design/新限制系统设计与代码复盘.md)：2.3.0 差异、源码接入与验收清单。
+- [自我调教系统开发规划](Design/自我调教系统开发规划.md)：首版归入 2.3.5，记录独立许可、手动任务、自动分流、收益与心情的六阶段开发和复核范围；首版受禁止自慰基因阻断，兼容留待未来。
 - [未来内容开发规划](Design/未来内容开发规划.md)
 
 ## 开发记录
@@ -82,6 +83,7 @@
 
 | 版本 | 发布说明 | 验证记录 |
 | --- | --- | --- |
+| 2.3.5（2026-09-28 版本归并） | [中英更新说明](Releases/2.3.5/2.3.5发布说明.md) | [版本验证](Releases/2.3.5/2.3.5版本验证.md) |
 | 2.3.4（2026-09-27） | [中英更新说明](Releases/2.3.4/2.3.4发布说明.md) | [版本验证](Releases/2.3.4/2.3.4版本验证.md) |
 | 2.3.3（2026-09-26） | [中英更新说明](Releases/2.3.3/2.3.3发布说明.md) | [版本验证](Releases/2.3.3/2.3.3版本验证.md) |
 | 2.3.2（2026-09-25） | [中英更新说明](Releases/2.3.2/2.3.2发布说明.md) | [版本验证](Releases/2.3.2/2.3.2版本验证.md) |
@@ -114,6 +116,7 @@
 - [Tests/RitualLifecycle](../Tests/RitualLifecycle/README.md)
 - [Tests/RitualProgression](../Tests/RitualProgression/README.md)
 - [Tests/SharedBed](../Tests/SharedBed/README.md)
+- [Tests/SelfTrainingManual](../Tests/SelfTrainingManual/README.md)：手动选择与生产任务驱动验证，覆盖中断、存读档、动画回调和一次性结算。
 - [Tests/TrainerIdentity](../Tests/TrainerIdentity/README.md)
 - [Tests/TrainerIntegration](../Tests/TrainerIntegration/README.md)
 - [Tests/ValidationRunner](../Tests/ValidationRunner/README.md)：统一验证与打包阻断的流程检查。

@@ -1,6 +1,6 @@
 # Binding Ritual lifecycle regression tests
 
-The suite currently contains 79 cases, including ritual lifecycle, UAP compatibility,
+The suite currently contains 92 cases (83 without UAP), including ritual lifecycle, UAP compatibility,
 daily training, Education interactions, receiver handoff/reservation regressions,
 and exclusive ownership during personality excretion.
 The original lifecycle tests were committed with the lifecycle fix
@@ -30,6 +30,21 @@ files and all pass with the fix.
 `GameStubs.cs` supplies the minimal game host and stores observable state. The
 tests do not duplicate the ritual ownership, progression, recovery or outcome
 eligibility algorithms.
+
+The 13 receiver-handoff cases cover non-interrupting position synchronization,
+replacement work and its reservations, reuse of the same Job object with a new
+loadID, orphan receiver cleanup, repeated scene synchronization, mismatched pairs,
+ritual/PE callers, and preservation of furniture receivers. The initial five cases
+all failed against the original code. The host models the endCurrentJob teleport
+flag and offers callbacks at teleport and receiver startup; pooled reuse is injected
+explicitly, rather than emulating the entire engine scheduler. These tests do not
+execute RimWorld's hunger/work selection or the installed furniture mod.
+
+For in-game acceptance, restart with the rebuilt DLL and test adjacent-cell daily
+training with (1) an empty food need and available food and (2) full food and an
+available crafting bill. Position synchronization must preserve the initiator job,
+start its matching receiver, and allow completion. Also check cancellation/drafting,
+same-cell starts, consecutive targets, ritual phase changes and furniture receivers.
 
 The UAP cases also link the production `UapRitualCompatibilityUtility`. A test-only
 type with UAP's real full name and unlock signature models the stale-job lock and

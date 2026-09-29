@@ -34,6 +34,9 @@ namespace SexSlaveCraft
         {
             if (!__state) return;
 
+            // 自我调教只在完整完成时按专用快照结算，不能按高潮次数额外发奖。
+            if (__instance is JobDriver_SelfTraining) return;
+
             Pawn pawn = __instance.Partner;
             if (pawn == null) return;
 

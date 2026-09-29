@@ -4,6 +4,25 @@
 
 This continuation builds on upstream **2.2.8**, the baseline when upstream development stopped in July, and retains its version numbering. Entries are listed newest first. Technical details are in the [development log (Chinese)](Docs/Development/开发更新记录.md).
 
+## [2.3.5] — 2026-09-28 — 自我调教与调教任务交接修复 / Self-training and Training handoff fixes
+
+本版归并 `v2.3.4`（`9c2aadf`）之后至 `abf60d1` 的全部分支更新，并同步版本元数据及文档。当前为仓库版本归并，尚未在本次流程中生成安装包或创建正式发布。详见[中英发布说明](Docs/Releases/2.3.5/2.3.5发布说明.md)和[版本验证](Docs/Releases/2.3.5/2.3.5版本验证.md)。
+
+This version includes all branch changes after `v2.3.4` (`9c2aadf`) through `abf60d1`, plus version metadata and documentation updates. This is a repository version update; this workflow has not produced an installation package or a public release. See the [bilingual notes](Docs/Releases/2.3.5/2.3.5发布说明.md) and [validation record](Docs/Releases/2.3.5/2.3.5版本验证.md).
+
+### 2026-09-28 — 自我调教 / Self-training
+
+- **独立许可与任务 / Separate permission and job:** 持链 SSC 性奴默认允许自我调教，可在限制面板独立关闭；选中并右键本人可手动选择可执行部位，自动行为只从 RJW 已产生的自慰候选分流。四阶段分流概率为 30%／55%／80%／50%，首版仍受禁止自慰基因阻断。Chain-bearing SSC Sex Slaves may self-train by default, with a separate restriction toggle, a self-targeted manual menu and diversion from RJW automatic masturbation candidates. The four stage chances are 30% / 55% / 80% / 50%; anti-masturbation genes still block this first version.
+- **独立收益与反馈 / Separate reward and feedback:** 自我调教按场景开始时的恶堕和正向好感评分，给予受锁链阶段约束的恶堕收益及一天专用记忆；两种许可组合有对应状态心情。左上角消息采用日常调教式“角色 | 评分 | 恶堕”格式。Self-training scores Corruption and positive opinion at scene start, grants Chain-capped Corruption and a dedicated one-day memory, and adds permission-state moods. Its result message shows `pawn | score | Corruption` in the ordinary Training style.
+- **限制文本 / Restriction text:** 补齐繁中及俄文行为限制面板的全部条目，包含自我调教许可；同步源码项目语言镜像并在发布前检查一致性。Completes Traditional Chinese and Russian restriction-panel text, including self-training permission, and checks the source-project language mirror before packaging.
+- **回归与发布验证 / Regression and release validation:** 修正自我调教测试汇总格式，避免用例通过却阻断发布；新增 36 项生产任务驱动检查，自我调教套件共 50 项，覆盖中断、存读档、动画回调、阶段上限及一次性结算。完整回归 20 套、966/966 通过；动画视觉仍需实机确认。Fixes the test summary format that blocked packaging despite passing tests, and adds 36 production-driver checks for 50 self-training checks in total. Coverage includes interruption, save/load, animation callbacks, stage caps and one-time rewards. All 20 suites passed, with 966/966 checks; visual animation still requires in-game confirmation.
+
+### 2026-09-28 — 调教任务交接修复 / Training handoff fix
+
+- **调教启动中断 / Interrupted Training startup:** 修复调教员与目标合到同一格后立即转去吃饭、加工或其他工作，导致接收任务启动失败的问题。位置同步现在保留双方当前任务，由接收任务启动步骤统一完成交接；保留玩家取消、征召等正常中断。Fixes Training failing to start when the trainer switches to eating, crafting or another job immediately after moving onto the target's cell. Position synchronization now preserves both current jobs until the receiver handoff, while normal cancellation and drafting remain available.
+- **旧回调与配对保护 / Stale callbacks and pairing:** 修复原任务结束或 Job 对象被复用后，旧调教回调误释放新工作的预约、结束新工作或清理新占用的问题。接收任务按实际参与者配对，失效交接只回收本次孤立接收器；共享此流程的绑定仪式、人格排泄及家具接收器同步补充保护。Prevents callbacks from ended or pooled jobs from releasing a replacement job's reservations, ending that job or clearing its training state. Receiver handoffs verify the actual pair and clean up only their own orphan receiver. The shared Binding Ritual, personality-excretion and furniture-receiver paths receive the same safeguards.
+- **验证 / Validation:** 对应提交 `0d61aa7`，新增 13 项交接回归；生命周期 92/92、无 UAP 变体 83/83、任务限制 142/142、仪式进度 29/29 通过，真实游戏程序集编译通过。已同步本机，维护者实机复测确认有效。Commit `0d61aa7` adds 13 handoff regression cases. Validation passed 92/92 lifecycle cases, 83/83 without UAP, 142/142 interaction-protection cases and 29/29 ritual-progression cases, plus compilation against the installed game assemblies. The fix was installed locally and confirmed effective in-game by the maintainer.
+
 ## [2.3.4] — 2026-09-27 — 战斗员特化、显示整理与任务修复 / Combatant specialization, status display and job fixes
 
 本版汇总 `v2.3.3`（`3f62e41`）之后至 `3260182` 的全部已实现更新：战斗员特化五阶段、测试按钮、专属图标、特化显示整理及人格排泄任务修复，并收录中英模组介绍和配套开发记录。2.3.4 正式发布，安装包与 SHA-256 校验文件见 [v2.3.4 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.4)；详见[中英发布说明](Docs/Releases/2.3.4/2.3.4发布说明.md)与[版本验证](Docs/Releases/2.3.4/2.3.4版本验证.md)。

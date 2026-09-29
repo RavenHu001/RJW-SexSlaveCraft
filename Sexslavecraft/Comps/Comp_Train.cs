@@ -201,6 +201,7 @@ namespace SexSlaveCraft
             base.CompTickRare();
 
             if (!(parent is Pawn pawn)) return;
+            ReconcileManualSelfTraining(pawn);
             BindingRitualStateUtility.RecoverPawnState(pawn);
             ReconcileSpecialization(pawn);
             PetSpecializationUtility.TryStartAutomaticPetAffectionJob(pawn, this);
@@ -250,6 +251,7 @@ namespace SexSlaveCraft
 
             // 必须在旧输入全部读入后、关系和特化修复前捕获；实际迁移在 GameComponent 中执行。
             ExposeRestrictions();
+            ExposeManualSelfTraining();
 
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {

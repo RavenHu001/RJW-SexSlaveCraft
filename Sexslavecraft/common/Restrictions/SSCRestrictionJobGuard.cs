@@ -84,6 +84,13 @@ namespace SexSlaveCraft
             return MatchesStarted(driver, request);
         }
 
+        /// <summary>由专用单人驱动核对统一守卫确实记录了本次 Start，而非仅有旧 SexProps。</summary>
+        internal static bool HasStartedScene(JobDriver_Sex driver, SSCInteractionKind kind)
+        {
+            return SSCRestrictionJobContext.TryCreate(driver, out SSCRestrictionRequest request) &&
+                request.Kind == kind && HasStarted(driver, request);
+        }
+
         /// <summary>预约阶段只返回许可，不结束正在被任务跟踪器安装的驱动，也不创建配置或玩家命令豁免。</summary>
         public static bool TryReserve(JobDriver_Sex driver, out bool allowed, bool ordered = false)
         {

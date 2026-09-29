@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <SSC_MasterBondEmpowerment.label>Libidinal Resonance Field</SSC_MasterBondEmpowerment.label>
+  <SSC_MasterBondEmpowerment.description>A libidinal field formed by the coupling of purple nanomachine resonance and psychic force. As more slaves are bound and their corruption deepens, the field steadily strengthens the master's body, battle instinct, and power of domination.</SSC_MasterBondEmpowerment.description>
+  <SSC_MasterBondEmpowerment.stages.0.label>Faint</SSC_MasterBondEmpowerment.stages.0.label>
+  <SSC_MasterBondEmpowerment.stages.1.label>Apparent</SSC_MasterBondEmpowerment.stages.1.label>
+  <SSC_MasterBondEmpowerment.stages.2.label>Diffuse</SSC_MasterBondEmpowerment.stages.2.label>
+  <SSC_MasterBondEmpowerment.stages.3.label>Formless</SSC_MasterBondEmpowerment.stages.3.label>
+  <Hediff_PNA_Combat_Buff.label>PNA Combat Enhancement</Hediff_PNA_Combat_Buff.label>
+  <Hediff_PNA_Combat_Buff.description>Under purple nanomachine aphrodisiac stimulation, a sex slave's cells become active and agitated, increasing combat capability.</Hediff_PNA_Combat_Buff.description>
+  <Hediff_PNA_Combat_Buff_Plus.label>PNA Combat Enhancement (Concentrated)</Hediff_PNA_Combat_Buff_Plus.label>
+  <Hediff_PNA_Combat_Buff_Plus.description>Under concentrated purple nanomachine stimulation, a sex slave's potential is greatly unleashed.</Hediff_PNA_Combat_Buff_Plus.description>
+  <Hediff_PNA_Debuff.label>PNA Infection</Hediff_PNA_Debuff.label>
+  <Hediff_PNA_Debuff.description>Under purple nanomachine infection, sensitivity rises continuously until entering continuous-climax paralysis.</Hediff_PNA_Debuff.description>
+  <Hediff_PNA_Debuff.stages.0.label>Flushed</Hediff_PNA_Debuff.stages.0.label>
+  <Hediff_PNA_Debuff.stages.1.label>Continuous Climax</Hediff_PNA_Debuff.stages.1.label>
+  <Hediff_PNA_Consciousness_Record.label>Consciousness Snapshot</Hediff_PNA_Consciousness_Record.label>
+  <Hediff_PNA_Consciousness_Record.description>Used to record the target's peak consciousness while exposed to hormones (normally not intended to be seen).</Hediff_PNA_Consciousness_Record.description>
+  <SSC_PostExcretionComa.label>Personality Excretion Adaptation Syndrome</SSC_PostExcretionComa.label>
+  <SSC_PostExcretionComa.description>After forced personality extraction, the brain and nervous system enter severe restructuring and blanking; the initial personality is taking control.</SSC_PostExcretionComa.description>
+  <SSC_PostExcretionComa.stages.0.label>Deep Shutdown</SSC_PostExcretionComa.stages.0.label>
+  <SSC_PostInsertionComa.label>Personality Implantation Adaptation Syndrome</SSC_PostInsertionComa.label>
+  <SSC_PostInsertionComa.description>After forced insertion of an external personality into a hollow body, the brain and nervous system need time to adapt and recover.</SSC_PostInsertionComa.description>
+  <SSC_PostInsertionComa.stages.0.label>Deep Shutdown</SSC_PostInsertionComa.stages.0.label>
+</LanguageData>

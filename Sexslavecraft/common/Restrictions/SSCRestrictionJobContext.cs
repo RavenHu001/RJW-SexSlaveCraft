@@ -44,6 +44,12 @@ namespace SexSlaveCraft
             SSCInteractionKind kind;
             if (driver is JobDriver_Training || driver is JobDriver_RitualTraining)
                 kind = SSCRestrictionTrainingUtility.CreateRequest(initiator, partner, driver is JobDriver_RitualTraining).Kind;
+            else if (driver is JobDriver_SelfTraining)
+            {
+                kind = SSCInteractionKind.SelfTraining;
+                // 单人任务必须确实以本人为 A 目标；不能凭驱动类型接受被替换的参与者。
+                known = known && partner == initiator && driver.Target == initiator;
+            }
             else if (driver is JobDriver_Masturbate && (partner == null || partner == initiator))
                 kind = SSCInteractionKind.Masturbation;
             else if (driver is JobDriver_PE)
@@ -58,7 +64,8 @@ namespace SexSlaveCraft
             SexProps props = driver.Sexprops;
             // 姿势反转 isRevese 不影响发起方向；已有数据必须与当前任务的有向参与者一致。
             if (props != null && (props.initiator != initiator ||
-                (props.recipient != partner && !(kind == SSCInteractionKind.Masturbation && props.recipient == initiator))))
+                (props.recipient != partner && !((kind == SSCInteractionKind.Masturbation ||
+                    kind == SSCInteractionKind.SelfTraining) && props.recipient == initiator))))
                 known = false;
             request = new SSCRestrictionRequest(initiator, partner, kind, known);
             return true;

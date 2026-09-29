@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_Diagnostics_Title>診斷與相容</SSC_Diagnostics_Title>
+  <SSC_Diagnostics_Environment>基本資訊</SSC_Diagnostics_Environment>
+  <SSC_Diagnostics_Dependencies>依賴組件（已載入）</SSC_Diagnostics_Dependencies>
+  <SSC_Diagnostics_Compatibility>相容接入檢查</SSC_Diagnostics_Compatibility>
+  <SSC_Diagnostics_Language>語言：{0}</SSC_Diagnostics_Language>
+  <SSC_Diagnostics_PatchCount>SSC 已註冊補丁數：{0}</SSC_Diagnostics_PatchCount>
+  <SSC_Diagnostics_AssemblyMissing>未偵測到已載入的組件</SSC_Diagnostics_AssemblyMissing>
+  <SSC_Diagnostics_InterfaceMissing>找不到所需介面：可能未安裝或介面已變更。</SSC_Diagnostics_InterfaceMissing>
+  <SSC_Diagnostics_InterfaceFound>找到所需介面，組件版本：{0}</SSC_Diagnostics_InterfaceFound>
+  <SSC_Diagnostics_Registered>預期補丁類別已註冊：{0}/{1}</SSC_Diagnostics_Registered>
+  <SSC_Diagnostics_Incomplete>接入不完整；以下補丁類別未偵測到註冊，請搭配日誌排查：</SSC_Diagnostics_Incomplete>
+  <SSC_Diagnostics_CheckFailed>檢查未完成（{0}）。請搭配遊戲日誌排查。</SSC_Diagnostics_CheckFailed>
+  <SSC_Diagnostics_PatchNote>本頁僅檢查介面和補丁註冊，不代表執行效果、介面配置或所有模組組合已驗證。</SSC_Diagnostics_PatchNote>
+  <SSC_Diagnostics_ReportNote>報告僅包含版本、依賴及相容接入資訊，不列出完整模組清單，也不讀取存檔、角色資料、完整日誌或本機安裝路徑。</SSC_Diagnostics_ReportNote>
+  <SSC_Diagnostics_Refresh>重新檢查</SSC_Diagnostics_Refresh>
+  <SSC_Diagnostics_Copy>複製診斷資訊</SSC_Diagnostics_Copy>
+  <SSC_Diagnostics_Copied>已複製</SSC_Diagnostics_Copied>
+</LanguageData>

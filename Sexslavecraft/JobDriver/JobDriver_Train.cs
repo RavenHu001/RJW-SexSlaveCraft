@@ -127,12 +127,20 @@ namespace SexSlaveCraft
             // 准备回调：启动接收任务；失败时清除训练占用，再中止本任务。
             startPartnerJob.initAction = delegate
             {
+                // 进入交接时固定原任务和目标；后续 Partner 可能随 Job 对象复用而改变。
+                var context = new TrainingJobUtility.JobContext(this);
+                if (!context.IsCurrent) return;
+                Pawn target = Partner;
                 // 统一步骤守卫已在进入此回调前复查许可与指派，避免另外维护一套拒绝路径。
-                if (!TrainingJobUtility.TryStartDailyTrainingReceiver(pawn, Partner, job, partnerJob))
+                bool started = TrainingJobUtility.TryStartDailyTrainingReceiver(pawn, target, job, partnerJob);
+                // StartJob/传送通知可重入工作调度；旧回调不能清理新任务或新目标。
+                if (!context.IsCurrent) return;
+                if (!started)
                 {
-                    TrainingJobUtility.MarkValidationFailure(Partner, "SSC_TRAIN_RECEIVER");
-                    TrainingJobUtility.NotifyTrainingAborted(Partner);
-                    pawn.jobs.EndCurrentJob(JobCondition.Incompletable);
+                    // 只有仍属于本次调教的失败才写冷却并清理占用；换工作已由上方直接返回。
+                    TrainingJobUtility.MarkValidationFailure(target, "SSC_TRAIN_RECEIVER");
+                    TrainingJobUtility.NotifyTrainingAborted(target);
+                    if (context.IsCurrent) pawn.jobs.EndCurrentJob(JobCondition.Incompletable);
                 }
             };
             yield return startPartnerJob;
@@ -146,7 +154,15 @@ namespace SexSlaveCraft
             // 开始回调：同步位置与动作，检查兼容设备；Start 中止任务时立即返回。
             sexToil.initAction = delegate
             {
-                TrainingJobUtility.SyncPartnerPosition(pawn, Partner);
+                // 场景初始化还会再次同步位置，必须像首次交接一样保护当前任务归属。
+                var context = new TrainingJobUtility.JobContext(this);
+                if (!context.IsCurrent) return;
+                if (!TrainingJobUtility.SyncPartnerPosition(pawn, Partner))
+                {
+                    // 同步失败可以终止原调教，但不能终止回调期间刚接手的新工作。
+                    if (context.IsCurrent) pawn.jobs.EndCurrentJob(JobCondition.Incompletable);
+                    return;
+                }
                 TrainingJobUtility.EnsureAwake(Partner);
 
                 if (Sexprops == null)
@@ -154,6 +170,8 @@ namespace SexSlaveCraft
                     CompSexSlaveTraining compMode = Partner.TryGetComp<CompSexSlaveTraining>();
                     TrainingActType mode = compMode?.selectedMode ?? TrainingActType.Auto;
                     Sexprops = SexUtility.SelectSextype(pawn, Partner, false, false);
+                    // RJW 动作选择返回后复查，再读取目标和应用玩家指定模式。
+                    if (!context.IsCurrent) return;
                     if (mode != TrainingActType.Auto)
                     {
                         // EN: The selected training act only overrides RJW when the player explicitly locked a training mode.
@@ -182,17 +200,21 @@ namespace SexSlaveCraft
                     return;
                 }
 
-                if (!OnaholeCompatibilityUtility.TrySynchronizeOnaholeSexProps(Partner, Sexprops))
+                // 家具兼容调用可能触发外部任务切换，先复查归属再执行失败清理。
+                bool synchronized = OnaholeCompatibilityUtility.TrySynchronizeOnaholeSexProps(Partner, Sexprops);
+                if (!context.IsCurrent) return;
+                if (!synchronized)
                 {
                     TrainingJobUtility.NotifyTrainingAborted(Partner);
-                    pawn.jobs.EndCurrentJob(JobCondition.Incompletable);
+                    if (context.IsCurrent) pawn.jobs.EndCurrentJob(JobCondition.Incompletable);
                     return;
                 }
 
                 string sceneSexType = Sexprops != null ? Sexprops.sexType.ToString() : "null";
                 SSCLog.Verbose($"[SSC_TRAIN] Start daily training scene: trainer={pawn.LabelShort}, slave={Partner.LabelShort}, sexType={sceneSexType}, selectedMode={(Partner.TryGetComp<CompSexSlaveTraining>()?.selectedMode.ToString() ?? "null")}");
                 Start();
-                if (pawn.jobs.curDriver != this) return;
+                // RJW Start 完整返回且原任务仍在，才允许标记已开始并在以后结算。
+                if (!context.IsCurrent) return;
                 sceneStarted = true;
                 Log.Message("[SSC Debug] Start() called.");
             };

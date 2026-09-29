@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <SSC_SelfTraining_Assign>Назначить самодрессировку</SSC_SelfTraining_Assign>
+  <SSC_SelfTraining_NoInteraction>В текущем состоянии тела нет доступных одиночных действий.</SSC_SelfTraining_NoInteraction>
+  <SSC_SelfTraining_InteractionChanged>Выбранное действие больше невозможно. Выберите другое.</SSC_SelfTraining_InteractionChanged>
+  <SSC_SelfTraining_JobRejected>Не удалось назначить самодрессировку.</SSC_SelfTraining_JobRejected>
+  <SSC_SelfTraining_SelectPawn>Сначала выберите персонажа.</SSC_SelfTraining_SelectPawn>
+  <SSC_SelfTraining_CannotStart>Этот персонаж сейчас не может начать одиночное действие.</SSC_SelfTraining_CannotStart>
+  <SSC_SelfTraining_PermissionDenied>Самодрессировка не разрешена или персонаж не подходит.</SSC_SelfTraining_PermissionDenied>
+  <SSC_SelfTraining_RJWBlocked>RJW блокирует возможность мастурбации.</SSC_SelfTraining_RJWBlocked>
+  <SSC_SelfTraining_DestinationUnavailable>Место недоступно.</SSC_SelfTraining_DestinationUnavailable>
+  <SSC_SelfTraining_NeedUnavailable>У персонажа нет потребности в развращении, самодрессировка невозможна.</SSC_SelfTraining_NeedUnavailable>
+</LanguageData>

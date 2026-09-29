@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_Hediff_Combatant.label>sex slave specialization (Combatant)</SSC_Hediff_Combatant.label>
+  <SSC_Hediff_Combatant.description>As training progresses, purple nanofluid gradually reshapes the body and nervous system, steadying weapon control and coordinating movement and stress responses.\n\nOnce training is complete, extract and process the personality gel into a final combatant, then implant it to gain the final bonuses.</SSC_Hediff_Combatant.description>
+  <SSC_Hediff_Combatant.stages.0.label>Combatant in training</SSC_Hediff_Combatant.stages.0.label>
+  <SSC_Hediff_Combatant.stages.1.label>sex slave specialization (Combatant)</SSC_Hediff_Combatant.stages.1.label>
+  <SSC_Hediff_Combatant.stages.2.label>sex slave specialization (Skilled Combatant)</SSC_Hediff_Combatant.stages.2.label>
+  <SSC_Hediff_Combatant_Final.label>sex slave specialization (Final Combatant)</SSC_Hediff_Combatant_Final.label>
+  <SSC_Hediff_Combatant_Final.description>Finalization has established a stable pattern for the purple nanofluid's changes to the body and nervous system. Combat capabilities are enhanced, and the pawn can actively stimulate these nanomachines to trigger Combat Overdrive.\n\nThis achievement stays with the personality through specialization changes, unbinding and chain regression.</SSC_Hediff_Combatant_Final.description>
+  <SSC_Hediff_CombatOverdrive.label>combat overdrive</SSC_Hediff_CombatOverdrive.label>
+  <SSC_Hediff_CombatOverdrive.description>The purple nanofluid within the body has been activated, driving the body and nervous system into overdrive. Muscles respond faster, pain is suppressed, and physical protection and mobility are temporarily enhanced.</SSC_Hediff_CombatOverdrive.description>
+</LanguageData>

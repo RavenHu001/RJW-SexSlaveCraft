@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <SSC_Make_SuperDrug.label>Make Super Drug</SSC_Make_SuperDrug.label>
+  <SSC_Make_SuperDrug.description>Concentrated PNA.</SSC_Make_SuperDrug.description>
+  <SSC_Make_SuperDrug.jobString>Performing make super drug</SSC_Make_SuperDrug.jobString>
+  <SSC_Make_SuperDrug_forth.label>Make Super Drug Forth</SSC_Make_SuperDrug_forth.label>
+  <SSC_Make_SuperDrug_forth.description>Concentrated PNA.</SSC_Make_SuperDrug_forth.description>
+  <SSC_Make_SuperDrug_forth.jobString>Performing make super drug forth</SSC_Make_SuperDrug_forth.jobString>
+</LanguageData>

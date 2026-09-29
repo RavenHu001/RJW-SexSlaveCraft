@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <ThoughtDef>
+    <defName>SSC_SelfTraining_Completed</defName>
+    <!-- 玩家可见的标签与描述由 Thought_MemorySelfTraining 按 Keyed 字符串覆盖，本处文本只作回退。
+         阶段序号 = 完成后心情（-7～+6）+ 7，故第 n 项的 baseMoodEffect 必须等于 n - 7；
+         调整档位数值前请同步 SSCSelfTrainingFeedbackRules.CompletionMood。 -->
+    <thoughtClass>SexSlaveCraft.Thought_MemorySelfTraining</thoughtClass>
+    <durationDays>1</durationDays>
+    <stackLimit>1</stackLimit>
+    <stages>
+      <li>
+        <label>self-training aftereffect</label>
+        <description>I reflected on my self-training.</description>
+        <baseMoodEffect>-7</baseMoodEffect>
+      </li>
+      <li>
+        <label>self-training aftereffect</label>
+        <description>I reflected on my self-training.</description>
+        <baseMoodEffect>-6</baseMoodEffect>
+      </li>
+      <li>
+        <label>self-training aftereffect</label>
+        <description>I reflected on my self-training.</description>
+        <baseMoodEffect>-5</baseMoodEffect>
+      </li>
+      <li>
+        <label>self-training aftereffect</label>
+        <description>I reflected on my self-training.</description>
+        <baseMoodEffect>-4</baseMoodEffect>
+      </li>
+      <li>
+        <label>self-training aftereffect</label>
+        <description>I reflected on my self-training.</description>
+        <baseMoodEffect>-3</baseMoodEffect>
+      </li>
+      <li>
+        <label>self-training aftereffect</label>
+        <description>I reflected on my self-training.</description>
+        <baseMoodEffect>-2</baseMoodEffect>
+      </li>
+      <li>
+        <label>self-training aftereffect</label>
+        <description>I reflected on my self-training.</description>
+        <baseMoodEffect>-1</baseMoodEffect>
+      </li>
+      <li>
+        <label>self-training aftereffect</label>
+        <description>I reflected on my self-training.</description>
+        <baseMoodEffect>0</baseMoodEffect>
+      </li>
+      <li>
+        <label>self-training aftereffect</label>
+        <description>I reflected on my self-training.</description>
+        <baseMoodEffect>1</baseMoodEffect>
+      </li>
+      <li>
+        <label>self-training aftereffect</label>
+        <description>I reflected on my self-training.</description>
+        <baseMoodEffect>2</baseMoodEffect>
+      </li>
+      <li>
+        <label>self-training aftereffect</label>
+        <description>I reflected on my self-training.</description>
+        <baseMoodEffect>3</baseMoodEffect>
+      </li>
+      <li>
+        <label>self-training aftereffect</label>
+        <description>I reflected on my self-training.</description>
+        <baseMoodEffect>4</baseMoodEffect>
+      </li>
+      <li>
+        <label>self-training aftereffect</label>
+        <description>I reflected on my self-training.</description>
+        <baseMoodEffect>5</baseMoodEffect>
+      </li>
+      <li>
+        <label>self-training aftereffect</label>
+        <description>I reflected on my self-training.</description>
+        <baseMoodEffect>6</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+  <ThoughtDef>
+    <defName>SSC_SelfTraining_BothDenied</defName>
+    <!-- 阶段顺序：0～3 为锁链阶段 1～4（无受虐狂），4～7 为同阶段的有受虐狂；
+         显示文本由四语 DefInjected 提供，数值与 SSCSelfTrainingFeedbackRules.PermissionMood 对应。 -->
+    <workerClass>SexSlaveCraft.ThoughtWorker_SelfTrainingBothDenied</workerClass>
+    <stages>
+      <li>
+        <label>restricted self-relief</label>
+        <description>My permitted forms of self-relief affect how I feel.</description>
+        <baseMoodEffect>-5</baseMoodEffect>
+      </li>
+      <li>
+        <label>restricted self-relief</label>
+        <description>My permitted forms of self-relief affect how I feel.</description>
+        <baseMoodEffect>-6</baseMoodEffect>
+      </li>
+      <li>
+        <label>restricted self-relief</label>
+        <description>My permitted forms of self-relief affect how I feel.</description>
+        <baseMoodEffect>-7</baseMoodEffect>
+      </li>
+      <li>
+        <label>restricted self-relief</label>
+        <description>My permitted forms of self-relief affect how I feel.</description>
+        <baseMoodEffect>-8</baseMoodEffect>
+      </li>
+      <li>
+        <label>restricted self-relief</label>
+        <description>My permitted forms of self-relief affect how I feel.</description>
+        <baseMoodEffect>-3</baseMoodEffect>
+      </li>
+      <li>
+        <label>restricted self-relief</label>
+        <description>My permitted forms of self-relief affect how I feel.</description>
+        <baseMoodEffect>-2</baseMoodEffect>
+      </li>
+      <li>
+        <label>restricted self-relief</label>
+        <description>My permitted forms of self-relief affect how I feel.</description>
+        <baseMoodEffect>-1</baseMoodEffect>
+      </li>
+      <li>
+        <label>restricted self-relief</label>
+        <description>My permitted forms of self-relief affect how I feel.</description>
+        <baseMoodEffect>0</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+  <ThoughtDef>
+    <defName>SSC_SelfTraining_Only</defName>
+    <!-- 阶段顺序同 SSC_SelfTraining_BothDenied：0～3 无受虐狂，4～7 有受虐狂。 -->
+    <workerClass>SexSlaveCraft.ThoughtWorker_SelfTrainingOnly</workerClass>
+    <stages>
+      <li>
+        <label>self-training permitted</label>
+        <description>My permitted forms of self-relief affect how I feel.</description>
+        <baseMoodEffect>-2</baseMoodEffect>
+      </li>
+      <li>
+        <label>self-training permitted</label>
+        <description>My permitted forms of self-relief affect how I feel.</description>
+        <baseMoodEffect>-1</baseMoodEffect>
+      </li>
+      <li>
+        <label>self-training permitted</label>
+        <description>My permitted forms of self-relief affect how I feel.</description>
+        <baseMoodEffect>0</baseMoodEffect>
+      </li>
+      <li>
+        <label>self-training permitted</label>
+        <description>My permitted forms of self-relief affect how I feel.</description>
+        <baseMoodEffect>1</baseMoodEffect>
+      </li>
+      <li>
+        <label>self-training permitted</label>
+        <description>My permitted forms of self-relief affect how I feel.</description>
+        <baseMoodEffect>0</baseMoodEffect>
+      </li>
+      <li>
+        <label>self-training permitted</label>
+        <description>My permitted forms of self-relief affect how I feel.</description>
+        <baseMoodEffect>1</baseMoodEffect>
+      </li>
+      <li>
+        <label>self-training permitted</label>
+        <description>My permitted forms of self-relief affect how I feel.</description>
+        <baseMoodEffect>2</baseMoodEffect>
+      </li>
+      <li>
+        <label>self-training permitted</label>
+        <description>My permitted forms of self-relief affect how I feel.</description>
+        <baseMoodEffect>3</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+</Defs>

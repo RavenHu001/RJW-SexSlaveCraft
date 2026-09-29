@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8'?>
+<LanguageData>
+  <SSC_Make_SuperDrug.label>製作濃縮奈米機械液體</SSC_Make_SuperDrug.label>
+  <SSC_Make_SuperDrug.description>濃縮PNA。</SSC_Make_SuperDrug.description>
+  <SSC_Make_SuperDrug.jobString>正在合成濃縮奈米機械液體。</SSC_Make_SuperDrug.jobString>
+  <SSC_Make_SuperDrug_forth.label>製作4份濃縮奈米機械液體</SSC_Make_SuperDrug_forth.label>
+  <SSC_Make_SuperDrug_forth.description>濃縮PNA。</SSC_Make_SuperDrug_forth.description>
+  <SSC_Make_SuperDrug_forth.jobString>正在合成濃縮奈米機械液體x4。</SSC_Make_SuperDrug_forth.jobString>
+</LanguageData>

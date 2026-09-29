@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <SSC_SelfTraining_Assign>指派自我調教</SSC_SelfTraining_Assign>
+  <SSC_SelfTraining_NoInteraction>目前身體狀態下沒有可執行的單人行為。</SSC_SelfTraining_NoInteraction>
+  <SSC_SelfTraining_InteractionChanged>所選行為已無法執行，請重新選擇。</SSC_SelfTraining_InteractionChanged>
+  <SSC_SelfTraining_JobRejected>無法安排自我調教任務。</SSC_SelfTraining_JobRejected>
+  <SSC_SelfTraining_SelectPawn>請先選中一個角色。</SSC_SelfTraining_SelectPawn>
+  <SSC_SelfTraining_CannotStart>該角色目前無法開始單人行為。</SSC_SelfTraining_CannotStart>
+  <SSC_SelfTraining_PermissionDenied>未開啟自我調教許可，或該角色不符資格。</SSC_SelfTraining_PermissionDenied>
+  <SSC_SelfTraining_RJWBlocked>RJW 自慰能力受阻。</SSC_SelfTraining_RJWBlocked>
+  <SSC_SelfTraining_DestinationUnavailable>目標地點無法抵達。</SSC_SelfTraining_DestinationUnavailable>
+  <SSC_SelfTraining_NeedUnavailable>該角色缺少惡墮需求，無法自我調教。</SSC_SelfTraining_NeedUnavailable>
+</LanguageData>

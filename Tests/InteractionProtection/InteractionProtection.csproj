@@ -13,6 +13,7 @@
     <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionConfigurationBuilder.cs" Link="Production/SSCRestrictionConfigurationBuilder.cs" />
     <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionResolver.cs" Link="Production/SSCRestrictionResolver.cs" />
     <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionPolicy.cs" Link="Production/SSCRestrictionPolicy.cs" />
+    <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCSelfTrainingEligibility.cs" Link="Production/SSCSelfTrainingEligibility.cs" />
     <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionExternalJobs.cs" Link="Production/SSCRestrictionExternalJobs.cs" />
     <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionLovinGuard.cs" Link="Production/SSCRestrictionLovinGuard.cs" />
     <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionJobContext.cs" Link="Production/SSCRestrictionJobContext.cs" />
@@ -22,6 +23,7 @@
     <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionJobEvents.cs" Link="Production/SSCRestrictionJobEvents.cs" />
     <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionCompatibilityDiagnostics.cs" Link="Production/SSCRestrictionCompatibilityDiagnostics.cs" />
     <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionJobHooks.cs" Link="Production/SSCRestrictionJobHooks.cs" />
+    <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCSelfTrainingAutoJob.cs" Link="Production/SSCSelfTrainingAutoJob.cs" />
 
     <Compile Include="$(SscSourceRoot)/ThePatches/Harmony_ProtectSexSlave.cs" Link="Production/Harmony_ProtectSexSlave.cs" />
     <Compile Include="$(SscSourceRoot)/ThePatches/Harmony_PersonalityExcretionJobProtection.cs" Link="Production/Harmony_PersonalityExcretionJobProtection.cs" />

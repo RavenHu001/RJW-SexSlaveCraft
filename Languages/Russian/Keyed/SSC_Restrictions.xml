@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <SSC_Restrictions_Open>Ограничения поведения: настройка и проверка</SSC_Restrictions_Open>
+  <SSC_Restrictions_SettingsTip>В этом окне можно выбрать персонажа для настройки и обоих участников проверки. Предварительно выбирать персонажа не требуется.</SSC_Restrictions_SettingsTip>
+  <SSC_Restrictions_SettingsUnavailable>Загрузите сохранение и откройте карту с персонажем, которого можно настроить.</SSC_Restrictions_SettingsUnavailable>
+  <SSC_Restrictions_Title>Ограничения поведения: настройка и проверка</SSC_Restrictions_Title>
+  <SSC_Restrictions_EditTab>Личные правила</SSC_Restrictions_EditTab>
+  <SSC_Restrictions_TestTab>Проверка разрешений</SSC_Restrictions_TestTab>
+  <SSC_Restrictions_TestNotice>Эти правила применяются к обычным парным и одиночным действиям, извлечению личности, дрессировке, ритуалам, торговле, событиям с питомцами, обычному Lovin и поддерживаемым действиям LifeForce.</SSC_Restrictions_TestNotice>
+  <SSC_Restrictions_OwnerNotice>Действия настоящего хозяина со своим связанным персонажем всегда разрешены. Снаряжение и личные ограничения не могут их запретить.</SSC_Restrictions_OwnerNotice>
+  <SSC_Restrictions_SystemSwitch>Включить ограничения поведения</SSC_Restrictions_SystemSwitch>
+  <SSC_Restrictions_SystemSwitchTip>Включает правила поведения, а также ограничения от снаряжения и специализаций. При выключении личные настройки сохраняются.</SSC_Restrictions_SystemSwitchTip>
+  <SSC_Restrictions_ProfileSwitch>Включить ограничения специализаций</SSC_Restrictions_ProfileSwitch>
+  <SSC_Restrictions_ProfileSwitchTip>Управляет ограничениями специализаций, не меняя ограничения снаряжения и сохранённые личные настройки.</SSC_Restrictions_ProfileSwitchTip>
+  <SSC_Restrictions_EditPawn>Настроить персонажа: {0}</SSC_Restrictions_EditPawn>
+  <SSC_Restrictions_NotApplicable>Нет связанного хозяина: ограничения не действуют. Сохранённые настройки доступны для просмотра.</SSC_Restrictions_NotApplicable>
+  <SSC_Restrictions_Uninitialized>Настройки ещё нет. Дождитесь переноса данных или повторите создание после ошибки.</SSC_Restrictions_Uninitialized>
+  <SSC_Restrictions_Initialize>Повторить создание настроек по умолчанию</SSC_Restrictions_Initialize>
+  <SSC_Restrictions_InvalidConfig>Версия или данные настроек недействительны (версия {0}). Изменение недоступно; исходные данные сохранены.</SSC_Restrictions_InvalidConfig>
+  <SSC_Restrictions_SaveNotice>Нажимайте на галочки и крестики, чтобы изменить личные настройки. Они сохраняются вместе с игрой. Принудительные правила показывают действующее значение и недоступны для изменения; после снятия ограничения личный выбор восстановится.</SSC_Restrictions_SaveNotice>
+  <SSC_Restrictions_EditFailed>Не удалось изменить настройку: состояние персонажа или правила изменились. Проверьте ещё раз.</SSC_Restrictions_EditFailed>
+  <SSC_Restrictions_InitializeFailed>Не удалось создать настройки: значение по умолчанию для правила «{0}» недействительно. Источник: {1}. Новая настройка персонажу не записана.</SSC_Restrictions_InitializeFailed>
+  <SSC_Restrictions_Rule_Masturbation>Активное · Одиночная мастурбация</SSC_Restrictions_Rule_Masturbation>
+  <SSC_Restrictions_Rule_ConsensualInitiation>Активное · Начать добровольное парное действие</SSC_Restrictions_Rule_ConsensualInitiation>
+  <SSC_Restrictions_Rule_ForcedInitiation>Активное · Начать принудительное действие</SSC_Restrictions_Rule_ForcedInitiation>
+  <SSC_Restrictions_Rule_ReceiveConsensual>Пассивное · Принять добровольное действие не от хозяина</SSC_Restrictions_Rule_ReceiveConsensual>
+  <SSC_Restrictions_Rule_ReceiveForced>Пассивное · Принять принудительное действие не от хозяина</SSC_Restrictions_Rule_ReceiveForced>
+  <SSC_Restrictions_Rule_ReceiveTraining>Дрессировка · Принять дрессировку не от хозяина</SSC_Restrictions_Rule_ReceiveTraining>
+  <SSC_Restrictions_Rule_SelfTraining>Дрессировка · Самодрессировка</SSC_Restrictions_Rule_SelfTraining>
+  <SSC_Restrictions_SavedValue>Сохранено: {0} (нажмите для изменения)</SSC_Restrictions_SavedValue>
+  <SSC_Restrictions_EffectiveValue>Действует: {0}; источник: {1}</SSC_Restrictions_EffectiveValue>
+  <SSC_Restrictions_InvalidValue>Недействительные настройки</SSC_Restrictions_InvalidValue>
+  <SSC_Restrictions_Value_Deny>Запретить</SSC_Restrictions_Value_Deny>
+  <SSC_Restrictions_Value_OwnerOnly>Только хозяин</SSC_Restrictions_Value_OwnerOnly>
+  <SSC_Restrictions_Value_Allow>Разрешить</SSC_Restrictions_Value_Allow>
+  <SSC_Restrictions_Source_Saved>Личное сохранённое значение</SSC_Restrictions_Source_Saved>
+  <SSC_Restrictions_Source_Specialization>Ограничение специализации</SSC_Restrictions_Source_Specialization>
+  <SSC_Restrictions_Source_Equipment>Ограничение снаряжения</SSC_Restrictions_Source_Equipment>
+  <SSC_Restrictions_Source_SystemDisabled>Система выключена</SSC_Restrictions_Source_SystemDisabled>
+  <SSC_Restrictions_Source_DefaultTemplate>Общий шаблон по умолчанию</SSC_Restrictions_Source_DefaultTemplate>
+  <SSC_Restrictions_Source_SpecializationDefault>Значение специализации по умолчанию</SSC_Restrictions_Source_SpecializationDefault>
+  <SSC_Restrictions_TestAsReceiver>Проверить с этим персонажем в роли принимающего</SSC_Restrictions_TestAsReceiver>
+  <SSC_Restrictions_Initiator>Инициатор: {0}</SSC_Restrictions_Initiator>
+  <SSC_Restrictions_Receiver>Принимающий: {0}</SSC_Restrictions_Receiver>
+  <SSC_Restrictions_Swap>Поменять инициатора и принимающего местами</SSC_Restrictions_Swap>
+  <SSC_Restrictions_Kind>Вид действия: {0}</SSC_Restrictions_Kind>
+  <SSC_Restrictions_Kind_Masturbation>Одиночная мастурбация</SSC_Restrictions_Kind_Masturbation>
+  <SSC_Restrictions_Kind_Consensual>Добровольное парное действие</SSC_Restrictions_Kind_Consensual>
+  <SSC_Restrictions_Kind_Forced>Принудительное действие</SSC_Restrictions_Kind_Forced>
+  <SSC_Restrictions_Kind_DailyTraining>Ежедневная дрессировка</SSC_Restrictions_Kind_DailyTraining>
+  <SSC_Restrictions_Kind_RitualTraining>Ритуальная дрессировка</SSC_Restrictions_Kind_RitualTraining>
+  <SSC_Restrictions_Kind_PersonalityExcretion>Действие с личностью</SSC_Restrictions_Kind_PersonalityExcretion>
+  <SSC_Restrictions_Kind_BindingPreparation>Подготовка первого связывания</SSC_Restrictions_Kind_BindingPreparation>
+  <SSC_Restrictions_Kind_SelfTraining>Самодрессировка</SSC_Restrictions_Kind_SelfTraining>
+  <SSC_Restrictions_SoloTip>Проверка использует текущие сохранённые настройки и не запускает задачи. Одиночное действие проверяет только инициатора; выбор принимающего не учитывается.</SSC_Restrictions_SoloTip>
+  <SSC_Restrictions_Result>Результат: {0}\nПричина: {1}</SSC_Restrictions_Result>
+  <SSC_Restrictions_Subject>Персонаж: {0}</SSC_Restrictions_Subject>
+  <SSC_Restrictions_ResultEntry>Правило: {0}\nИсточник: {1}</SSC_Restrictions_ResultEntry>
+  <SSC_Restrictions_Reason_BoundOwner>Настоящий хозяин всегда имеет разрешение</SSC_Restrictions_Reason_BoundOwner>
+  <SSC_Restrictions_Reason_SystemDisabled>Система ограничений выключена</SSC_Restrictions_Reason_SystemDisabled>
+  <SSC_Restrictions_Reason_NotApplicable>Эти персонажи не управляются системой ограничений</SSC_Restrictions_Reason_NotApplicable>
+  <SSC_Restrictions_Reason_Allowed>Необходимые разрешения получены</SSC_Restrictions_Reason_Allowed>
+  <SSC_Restrictions_Reason_IncompleteContext>Не указаны участники, направление или вид действия</SSC_Restrictions_Reason_IncompleteContext>
+  <SSC_Restrictions_Reason_ConfigurationMissing>У персонажа нет новых настроек; создайте их на вкладке личных правил</SSC_Restrictions_Reason_ConfigurationMissing>
+  <SSC_Restrictions_Reason_ConfigurationInvalid>Недействительная версия настроек, правило или ограничение файла</SSC_Restrictions_Reason_ConfigurationInvalid>
+  <SSC_Restrictions_Reason_RuleDenied>Действующее правило запрещает это действие</SSC_Restrictions_Reason_RuleDenied>
+  <SSC_Restrictions_Reason_OwnerOnly>Начать действие может только настоящий хозяин персонажа</SSC_Restrictions_Reason_OwnerOnly>
+  <SSC_Restrictions_Reason_InvalidBindingPreparation>Личность или назначение не подходят для подготовки первого связывания</SSC_Restrictions_Reason_InvalidBindingPreparation>
+  <SSC_Restrictions_Reason_SelfTrainingIneligible>Требуется SSC секс-рабыня с цепью</SSC_Restrictions_Reason_SelfTrainingIneligible>
+  <SSC_Restrictions_EditInitiator>Изменить правила инициатора</SSC_Restrictions_EditInitiator>
+  <SSC_Restrictions_EditReceiver>Изменить правила принимающего</SSC_Restrictions_EditReceiver>
+  <SSC_Restrictions_None>Не выбран</SSC_Restrictions_None>
+  <SSC_Restrictions_Error>Ошибка проверки настроек: {0}</SSC_Restrictions_Error>
+  <SSC_Restrictions_DefaultsTitle>Правила поведения по умолчанию</SSC_Restrictions_DefaultsTitle>
+  <SSC_Restrictions_DefaultsTip>Значения по умолчанию применяются, когда персонаж впервые получает право на настройки. Существующий выбор сохраняется; при первом получении специализации «Публичное использование» применяются два её правила приёма.</SSC_Restrictions_DefaultsTip>
+  <SSC_Restrictions_InvalidDefaults>Шаблон по умолчанию недействителен. Проверьте файл настроек; личный выбор персонажей сохранён.</SSC_Restrictions_InvalidDefaults>
+  <SSC_Restrictions_ApplyAll>! Применить шаблон ко всем подходящим персонажам…</SSC_Restrictions_ApplyAll>
+  <SSC_Restrictions_ApplyConfirm>Личные настройки всех подходящих персонажей в текущем сохранении будут перезаписаны, включая персонажей на других картах, в караванах, транспорте и мире. Применятся текущий шаблон и значения их специализаций по умолчанию; ограничения снаряжения не будут сохранены. Продолжить?</SSC_Restrictions_ApplyConfirm>
+  <SSC_Restrictions_ApplyResult>Шаблон применён: изменено {0}, пропущено {1}, ошибок {2}.</SSC_Restrictions_ApplyResult>
+  <SSC_Restrictions_GlobalState>Общее состояние: ограничения {0}; ограничения специализаций {1}.</SSC_Restrictions_GlobalState>
+  <SSC_Restrictions_Enabled>включены</SSC_Restrictions_Enabled>
+  <SSC_Restrictions_Disabled>выключены</SSC_Restrictions_Disabled>
+  <SSC_Restrictions_Group_Masturbation>Активные действия</SSC_Restrictions_Group_Masturbation>
+  <SSC_Restrictions_Group_ReceiveConsensual>Приём действий</SSC_Restrictions_Group_ReceiveConsensual>
+  <SSC_Restrictions_Group_ReceiveTraining>Дрессировка</SSC_Restrictions_Group_ReceiveTraining>
+  <SSC_Restrictions_TrainerLocked>Сейчас дрессировка разрешена только настоящему хозяину: {0}. Назначение другого дрессировщика включит разрешение, если снаряжение или специализация не запрещают его принудительно.</SSC_Restrictions_TrainerLocked>
+  <SSC_Restrictions_Expand>▶ Показать ограничения поведения</SSC_Restrictions_Expand>
+  <SSC_Restrictions_Collapse>◀ Скрыть ограничения поведения</SSC_Restrictions_Collapse>
+  <SSC_Restrictions_JobRejected>Действие запрещено правилами: {0}.</SSC_Restrictions_JobRejected>
+  <SSC_Restrictions_CommandRejected>Текущие ограничения запрещают эту команду. Проверьте разрешения на активные и пассивные действия и источники принудительных правил.</SSC_Restrictions_CommandRejected>
+  <SSC_Restrictions_TrainingTargetInvalid>У цели нет данных для дрессировки или её нынешняя роль не позволяет принять дрессировку.</SSC_Restrictions_TrainingTargetInvalid>
+  <SSC_Restrictions_BindingMasterRequired>Для подготовки первого связывания назначенный персонаж должен иметь роль хозяина.</SSC_Restrictions_BindingMasterRequired>
+  <SSC_Restrictions_TrainingAssignmentRequired>Для дрессировки требуется действующий назначенный дрессировщик. Другие персонажи не заменяют его автоматически.</SSC_Restrictions_TrainingAssignmentRequired>
+  <SSC_Restrictions_RitualCancelled>Следующий этап ритуала не может начаться. Ритуал отменён: {0}</SSC_Restrictions_RitualCancelled>
+  <SSC_Restrictions_PawnTitle>Ограничения поведения · {0}</SSC_Restrictions_PawnTitle>
+  <SSC_Restrictions_CompactNotice>Галочка означает разрешение; принудительные правила заблокированы. Настоящему хозяину действия всегда разрешены.</SSC_Restrictions_CompactNotice>
+  <SSC_Restrictions_Paused>Ограничения выключены; личные настройки сохранены.</SSC_Restrictions_Paused>
+  <SSC_Restrictions_DefaultsShort>Изменение шаблона не перезаписывает настройки существующих персонажей.</SSC_Restrictions_DefaultsShort>
+  <SSC_Restrictions_AnyTarget>Любой</SSC_Restrictions_AnyTarget>
+  <SSC_Restrictions_EquipmentBadge>Снаряжение: {0}</SSC_Restrictions_EquipmentBadge>
+  <SSC_Restrictions_ProfileBadge>Специализация: {0}</SSC_Restrictions_ProfileBadge>
+  <SSC_Restrictions_OverrideTip>Личное значение: {0}; действует: {1}.\nИсточник: {2}. Личный выбор сохранится и вернётся после снятия ограничения.</SSC_Restrictions_OverrideTip>
+  <SSC_Restrictions_TargetOwnerTip>Добровольное действие можно начать только с настоящим связанным хозяином. При выключении основного разрешения этот выбор сохраняется.</SSC_Restrictions_TargetOwnerTip>
+  <SSC_Restrictions_TargetAnyTip>Добровольное действие можно начать с кем угодно; разрешения принимающего всё равно проверяются. При выключении основного разрешения этот выбор сохраняется.</SSC_Restrictions_TargetAnyTip>
+  <SSC_Restrictions_Option_Masturbation>Мастурбировать</SSC_Restrictions_Option_Masturbation>
+  <SSC_Restrictions_Option_ConsensualInitiation>Начать добровольное сексуальное действие</SSC_Restrictions_Option_ConsensualInitiation>
+  <SSC_Restrictions_Option_ForcedInitiation>Начать принудительное сексуальное действие</SSC_Restrictions_Option_ForcedInitiation>
+  <SSC_Restrictions_Option_ReceiveConsensual>Принять добровольное действие не от хозяина</SSC_Restrictions_Option_ReceiveConsensual>
+  <SSC_Restrictions_Option_ReceiveForced>Принять принудительное действие не от хозяина</SSC_Restrictions_Option_ReceiveForced>
+  <SSC_Restrictions_Option_ReceiveTraining>Принять дрессировку не от хозяина</SSC_Restrictions_Option_ReceiveTraining>
+  <SSC_Restrictions_Option_SelfTraining>Разрешить самодрессировку</SSC_Restrictions_Option_SelfTraining>
+  <SSC_Restrictions_Tip_Masturbation>Разрешает начинать одиночную мастурбацию.</SSC_Restrictions_Tip_Masturbation>
+  <SSC_Restrictions_Tip_ConsensualInitiation>Разрешает начинать добровольные парные действия с выбранными ниже целями. Их разрешения на приём также проверяются.</SSC_Restrictions_Tip_ConsensualInitiation>
+  <SSC_Restrictions_Tip_ForcedInitiation>Разрешает начинать принудительные действия; принимающий также должен пройти проверку разрешений.</SSC_Restrictions_Tip_ForcedInitiation>
+  <SSC_Restrictions_Tip_ReceiveConsensual>Разрешает принимать добровольные действия не от хозяина; инициатору тоже требуется разрешение.</SSC_Restrictions_Tip_ReceiveConsensual>
+  <SSC_Restrictions_Tip_ReceiveForced>Разрешает принимать принудительные действия не от хозяина. Снаряжение может принудительно запретить этот пункт.</SSC_Restrictions_Tip_ReceiveForced>
+  <SSC_Restrictions_Tip_ReceiveTraining>Разрешает ежедневную или ритуальную дрессировку не от хозяина. Требования к дрессировщику и назначению сохраняются.</SSC_Restrictions_Tip_ReceiveTraining>
+  <SSC_Restrictions_Tip_SelfTraining>Разрешает SSC секс-рабыне с цепью самостоятельно проходить дрессировку, независимо от разрешения на обычную мастурбацию. Требования RJW к способностям и месту также действуют.</SSC_Restrictions_Tip_SelfTraining>
+  <SSC_Restrictions_AssignAuthorizesSuffix> (также разрешить дрессировку)</SSC_Restrictions_AssignAuthorizesSuffix>
+  <SSC_Restrictions_AssignAuthorizesTip>Выбор дрессировщика, который не является хозяином, также разрешает принимать от него дрессировку. Обычные действия проверяются по собственным правилам; принудительные запреты снаряжения и специализации сохраняются.</SSC_Restrictions_AssignAuthorizesTip>
+  <SSC_Restrictions_AssignFailed>Назначение не удалось: право на него или ограничения изменились либо принудительное правило запрещает дрессировку. Предыдущее назначение и личный выбор сохранены.</SSC_Restrictions_AssignFailed>
+  <SSC_Restrictions_DefaultsOpen>Изменить правила поведения по умолчанию…</SSC_Restrictions_DefaultsOpen>
+  <SSC_Restrictions_ForcedLocked>Этот пункт управляется принудительным правилом и пока недоступен для изменения. После снятия ограничения личный выбор восстановится.</SSC_Restrictions_ForcedLocked>
+  <SSC_Restrictions_PanelDisabled>Общие ограничения поведения выключены. Включите их в настройках мода.</SSC_Restrictions_PanelDisabled>
+  <SSC_Restrictions_PanelUnavailable>У персонажа нет связанного хозяина; система ограничений поведения на него не действует.</SSC_Restrictions_PanelUnavailable>
+  <SSC_Restrictions_ApplyAllTip>Внимание: личные настройки всех подходящих персонажей в текущем сохранении будут перезаписаны. Требуются подтверждение, загруженное сохранение и действительный шаблон.</SSC_Restrictions_ApplyAllTip>
+</LanguageData>

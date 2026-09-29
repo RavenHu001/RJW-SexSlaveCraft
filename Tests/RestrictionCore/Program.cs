@@ -15,11 +15,12 @@ internal static partial class Program
     private static int Main(string[] args)
     {
         root = Path.GetFullPath(args.Length > 0 ? args[0] : ".");
-        Run("Factory defaults match six-rule contract", () =>
+        Run("Factory defaults include independent self-training", () =>
         {
             var rules = new SSCRestrictionRules();
             foreach (SSCRestrictionRule rule in Enum.GetValues<SSCRestrictionRule>())
-                Equal(rule == SSCRestrictionRule.ConsensualInitiation ? SSCRestrictionValue.OwnerOnly : SSCRestrictionValue.Deny, rules.Get(rule));
+                Equal(rule == SSCRestrictionRule.ConsensualInitiation ? SSCRestrictionValue.OwnerOnly :
+                    rule == SSCRestrictionRule.SelfTraining ? SSCRestrictionValue.Allow : SSCRestrictionValue.Deny, rules.Get(rule));
         });
         Run("Unknown/OwnerOnly boolean values cannot be saved", () =>
         {
@@ -47,7 +48,8 @@ internal static partial class Program
             Equal(false, result.Valid); Equal(SSCRestrictionValue.Unspecified, result.Value);
             Equal((SSCRestrictionRule)777, result.Rule); Equal(SSCRestrictionSource.Saved, result.Source);
         });
-        foreach (SSCInteractionKind kind in Enum.GetValues<SSCInteractionKind>().Concat(new[] { (SSCInteractionKind)777 }))
+        foreach (SSCInteractionKind kind in Enum.GetValues<SSCInteractionKind>().Where(k => k != SSCInteractionKind.SelfTraining)
+            .Concat(new[] { (SSCInteractionKind)777 }))
             Run("Actual owner immediately allows " + kind, () =>
             {
                 var p = Pair();
@@ -83,7 +85,8 @@ internal static partial class Program
                 { SSCInteractionKind.PersonalityExcretion, (SSCRestrictionRule.ConsensualInitiation, SSCRestrictionRule.ReceiveConsensual) }
             };
             var independent = new[] { SSCInteractionKind.Unknown, SSCInteractionKind.Masturbation,
-                SSCInteractionKind.DailyTraining, SSCInteractionKind.RitualTraining, SSCInteractionKind.BindingPreparation };
+                SSCInteractionKind.DailyTraining, SSCInteractionKind.RitualTraining, SSCInteractionKind.BindingPreparation,
+                SSCInteractionKind.SelfTraining };
             Equal(true, Enum.GetValues<SSCInteractionKind>().ToHashSet().SetEquals(purposes.Keys.Concat(independent)));
             foreach (var purpose in purposes)
             {
@@ -677,6 +680,7 @@ internal static partial class Program
         RunLifecycleTests();
         RunCompactUiPreferenceTests();
         RunBoundScopeTests();
+        RunSelfTrainingTests();
         Console.WriteLine($"{passed}/{passed + failed} passed");
         return failed == 0 ? 0 : 1;
     }

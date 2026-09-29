@@ -2,12 +2,12 @@
 
 [Project home](README.md) · [Documentation index / 文档索引](Docs/README.md) · [中文快速入门](读我，玩法介绍.md) · [Changelog](CHANGELOG.md)
 
-> For RimWorld 1.6 and SexSlaveCraft 2.3.4.\
+> For RimWorld 1.6 and SexSlaveCraft 2.3.5.\
 > This continuation is based on upstream 2.2.8. See `CHANGELOG.md` for release history.\
-> Version 2.3.4 adds the complete Combatant specialization, Combat Overdrive and its icon, improves specialization labels/colors, and fixes personality-excretion interruptions and competing initiators. Download the ZIP and SHA-256 checksum from [v2.3.4](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.4). Legacy RimTalk remains suspended; unfinished Pet Cat and Pet Rabbit choices remain disabled.\
+> Version 2.3.5 adds self-training permission, manual orders, automatic diversion, scoring and mood feedback, and fixes Training handoffs and stale job callbacks. This is a repository version update; this workflow has not created an installation package or public release. Legacy RimTalk remains suspended; unfinished Pet Cat and Pet Rabbit choices remain disabled.\
 > In-game names follow the mod's official English localization. For exact formulas, thresholds, and implementation notes, see `PLAYER_GUIDE_EN.md`.
 
-> See the [2.3.4 notes](Docs/Releases/2.3.4/2.3.4发布说明.md) for this release and the [2.3.2 notes](Docs/Releases/2.3.2/2.3.2发布说明.md) for Training Officer progression, attributes and upgrading.
+> See the [2.3.5 notes](Docs/Releases/2.3.5/2.3.5发布说明.md) for this version and the [2.3.2 notes](Docs/Releases/2.3.2/2.3.2发布说明.md) for Training Officer progression, attributes and upgrading.
 
 ## 1. What the Mod Does
 
@@ -60,6 +60,12 @@ The target may be a colonist, prisoner, or slave, but must pass RJW's sex-target
 Trainers may take the job automatically. You can also right-click the target and order it manually.
 
 After successful ordinary Training, the target enters a cooldown of roughly nine in-game hours.
+
+### Self-training
+
+An SSC Sex Slave with a `Sex Slave Chain` has a separate `Allow Self-training` permission, enabled by default for new and existing saves. Select that pawn and right-click the pawn to choose an available solo act. Automatic self-training can branch only from an RJW automatic masturbation candidate: when both permissions are available, the four Chain stages select self-training at 30% / 55% / 80% / 50%. When ordinary masturbation is denied but self-training is allowed, the candidate becomes self-training.
+
+Completion grants Corruption and a dedicated one-day mood memory, subject to the current Chain cap. It does not start ordinary Training cooldown or create a bond. Denying ordinary masturbation produces different ongoing moods depending on whether self-training remains allowed. In this first version, genes that forbid masturbation also block self-training.
 
 ## 3. What Training Provides
 

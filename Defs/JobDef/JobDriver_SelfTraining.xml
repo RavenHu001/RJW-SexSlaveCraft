@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+  <JobDef>
+    <defName>SSC_SelfTraining</defName>
+    <driverClass>SexSlaveCraft.JobDriver_SelfTraining</driverClass>
+    <reportString>self-training.</reportString>
+    <casualInterruptible>false</casualInterruptible>
+    <playerInterruptible>true</playerInterruptible>
+  </JobDef>
+</Defs>

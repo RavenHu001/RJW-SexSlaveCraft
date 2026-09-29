@@ -99,8 +99,9 @@ namespace SexSlaveCraft
     internal static class SSCRestrictionAutomaticJobHook
     {
         /// <summary>AI 候选产生后先查统一许可；被拒绝时返回无任务，让思考树继续其他工作而非进入预约失败循环。</summary>
-        public static void Postfix(Pawn pawn, ref ThinkResult __result)
+        public static void Postfix(ThinkNode_JobGiver __instance, Pawn pawn, ref ThinkResult __result)
         {
+            SSCSelfTrainingAutoJob.Divert(__instance, pawn, ref __result);
             Job job = __result.Job;
             bool rejected = SSCRestrictionExternalJobs.TryReserve(job, pawn, out bool externalAllowed) && !externalAllowed;
             if (!rejected && SSCRestrictionJobContext.GetDriver(job, pawn) is JobDriver_Sex driver)
