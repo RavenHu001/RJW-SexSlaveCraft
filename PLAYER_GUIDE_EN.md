@@ -148,6 +148,21 @@ After a successful scene:
 8. The actual act grants experience to its mapped body part.
 9. The 22,500-tick cooldown begins.
 
+### 4.4 Self-training
+
+An SSC Sex Slave with a `Sex Slave Chain` may enable `Allow Self-training` independently of ordinary masturbation. It defaults to on for new pawns and missing fields in old saves; an explicit off choice persists. Select and right-click the pawn to choose an available solo interaction. Automatic self-training branches only from an RJW automatic masturbation candidate. With both permissions available, the four current Chain stages select self-training at 30% / 55% / 80% / 50%; with only self-training available, the candidate becomes self-training. Genes that forbid masturbation still block this first version.
+
+At scene start, `C` is current Corruption clamped to 0–1, and `A` is opinion of the imagined pawn divided by 100 and clamped to 0–1. The actual bound Master takes priority over a valid Assigned Trainer. With no valid pawn or nonpositive opinion, `A = 0`.
+
+```text
+S = 10 + 20 × C + 10 × A
+G = 0.5 × Clamp(S / 500 + 0.025, 0.01, 0.12)
+```
+
+The score ranges from 10 to 40. Before the current Chain cap, `G` is 2.25–5.25 percentage points. Old ordinary Training scoring, Social skill, Masochist and body-part sizes do not affect this formula. The completion message follows ordinary Training's `Score | Corruption` format and identifies the pawn.
+
+Completion gives the pawn one dedicated mood memory lasting one day, with at most one copy. Its mood combines a stage base of −4 / −2 / 0 / +2, +2 for Masochist, and the imagined pawn's original opinion at scene start: −3 for ≤−30, +2 for ≥30, otherwise 0. Denying ordinary masturbation also produces one of two mutually exclusive ongoing moods depending on whether self-training is allowed; stage and Masochist affect them. Self-training neither creates a bond nor updates ordinary Training cooldown, scheduled completion date or last score.
+
 ## 5. Current Training Score
 
 ### 5.1 Base Score

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-  <SSC_SelfTraining_Outcome>{0} завершил(а) самотренировку: оценка {1}, расчётный прирост порчи {2}.</SSC_SelfTraining_Outcome>
+  <SSC_SelfTraining_Outcome>[Самотренировка] {0} | Оценка: {1} | Развращение: +{2}</SSC_SelfTraining_Outcome>
   <SSC_SelfTraining_MemoryStage1>Неловкость после самотренировки</SSC_SelfTraining_MemoryStage1>
   <SSC_SelfTraining_MemoryStage1Desc>Упражняться в одиночестве всё ещё неловко.</SSC_SelfTraining_MemoryStage1Desc>
   <SSC_SelfTraining_MemoryStage2>Сомнения после самотренировки</SSC_SelfTraining_MemoryStage2>

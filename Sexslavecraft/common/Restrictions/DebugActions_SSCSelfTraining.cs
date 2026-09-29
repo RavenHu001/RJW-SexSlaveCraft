@@ -7,14 +7,14 @@ namespace SexSlaveCraft
 {
     internal static class DebugActions_SSCSelfTraining
     {
-        /// <summary>阶段 2 的受控入口；正式右键指派和自动分流分别在后续阶段接入。</summary>
-        [DebugAction("SSC", "Self-training: choose spot (stage 2)", allowedGameStates = AllowedGameStates.PlayingOnMap)]
+        /// <summary>供开发模式手动指定自我调教地点。</summary>
+        [DebugAction("SSC", "Self-training: choose spot", allowedGameStates = AllowedGameStates.PlayingOnMap)]
         private static void StartSelected()
         {
             Pawn pawn = Find.Selector.SingleSelectedThing as Pawn;
             if (pawn == null)
             {
-                Messages.Message("Select one pawn first. / 请先选中一个角色。", MessageTypeDefOf.RejectInput);
+                Messages.Message("SSC_SelfTraining_SelectPawn".Translate(), MessageTypeDefOf.RejectInput);
                 return;
             }
             Find.Targeter.BeginTargeting(new TargetingParameters
@@ -34,7 +34,7 @@ namespace SexSlaveCraft
             }
             Job job = JobMaker.MakeJob(SSCDefOf.SelfTraining, pawn, null, destination);
             if (!pawn.jobs.TryTakeOrderedJob(job))
-                Messages.Message("Self-training job was rejected. / 自我调教任务未被接受。", pawn,
+                Messages.Message("SSC_SelfTraining_JobRejected".Translate(), pawn,
                     MessageTypeDefOf.RejectInput, false);
         }
     }

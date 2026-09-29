@@ -29,31 +29,30 @@ namespace SexSlaveCraft
             if (actor == null || actor.Dead || actor.Destroyed || !actor.Spawned || actor.Map == null ||
                 actor.health?.Downed == true || actor.Drafted || actor.IsBurning() || actor.IsFighting())
             {
-                reason = "Pawn cannot start a solo scene. / 角色当前无法开始单人场景。";
+                reason = "SSC_SelfTraining_CannotStart".Translate();
                 return false;
             }
             SSCRestrictionDecision permission = SSCRestrictionPolicy.Evaluate(
                 new SSCRestrictionRequest(actor, actor, SSCInteractionKind.SelfTraining, true));
             if (!permission.Allowed)
             {
-                reason = "Self-training permission or eligibility denied: " + permission.Reason +
-                    " / 自我调教许可或资格不满足。";
+                reason = "SSC_SelfTraining_PermissionDenied".Translate();
                 return false;
             }
             if (!xxx.can_masturbate(actor))
             {
-                reason = "RJW masturbation ability is blocked. / RJW 自慰能力被阻断。";
+                reason = "SSC_SelfTraining_RJWBlocked".Translate();
                 return false;
             }
             if (!destination.IsValid || !destination.InBounds(actor.Map) ||
                 !actor.CanReach(destination, PathEndMode.OnCell, Danger.Deadly))
             {
-                reason = "Destination is unavailable. / 目标地点不可达。";
+                reason = "SSC_SelfTraining_DestinationUnavailable".Translate();
                 return false;
             }
             if (actor.needs?.TryGetNeed<Need_Corruption>() == null)
             {
-                reason = "Corruption need is unavailable. / 角色没有恶堕需求。";
+                reason = "SSC_SelfTraining_NeedUnavailable".Translate();
                 return false;
             }
             return true;
@@ -126,7 +125,7 @@ namespace SexSlaveCraft
             };
             for (int i = 0; i < toils.Count; i++) yield return toils[i];
 
-            // 基类的完成步骤先执行 RJW 的 Aftersex；本步骤是阶段 5 记忆的统一结算入口。
+            // 基类的完成步骤先执行 RJW 的 Aftersex；本步骤统一处理自我调教收益和反馈。
             yield return new Toil
             {
                 initAction = CompleteSelfTraining,

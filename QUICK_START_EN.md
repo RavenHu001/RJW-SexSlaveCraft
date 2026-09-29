@@ -61,6 +61,12 @@ Trainers may take the job automatically. You can also right-click the target and
 
 After successful ordinary Training, the target enters a cooldown of roughly nine in-game hours.
 
+### Self-training
+
+An SSC Sex Slave with a `Sex Slave Chain` has a separate `Allow Self-training` permission, enabled by default for new and existing saves. Select that pawn and right-click the pawn to choose an available solo act. Automatic self-training can branch only from an RJW automatic masturbation candidate: when both permissions are available, the four Chain stages select self-training at 30% / 55% / 80% / 50%. When ordinary masturbation is denied but self-training is allowed, the candidate becomes self-training.
+
+Completion grants Corruption and a dedicated one-day mood memory, subject to the current Chain cap. It does not start ordinary Training cooldown or create a bond. Denying ordinary masturbation produces different ongoing moods depending on whether self-training remains allowed. In this first version, genes that forbid masturbation also block self-training.
+
 ## 3. What Training Provides
 
 Ordinary Training can:
