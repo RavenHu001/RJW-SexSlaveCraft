@@ -215,6 +215,8 @@
     <Compile Include="common\Restrictions\SSCRestrictionPolicy.cs" />
     <Compile Include="common\Restrictions\SSCSelfTrainingEligibility.cs" />
     <Compile Include="common\Restrictions\SSCSelfTrainingUtility.cs" />
+    <Compile Include="common\Restrictions\SSCSelfTrainingFeedbackRules.cs" />
+    <Compile Include="common\Restrictions\SSCSelfTrainingFeedback.cs" />
     <Compile Include="common\Restrictions\DebugActions_SSCSelfTraining.cs" />
     <Compile Include="common\Restrictions\SSCRestrictionJobContext.cs" />
     <Compile Include="common\Restrictions\SSCRestrictionExternalJobs.cs" />
@@ -232,6 +234,7 @@
     <Compile Include="common\SSCThoughtBootstrap.cs" />
     <Compile Include="common\Settings.cs" />
     <Compile Include="common\Thought_MemoryDynamicTraining.cs" />
+    <Compile Include="common\Thought_MemorySelfTraining.cs" />
     <Compile Include="common\TrainingOutcomeUtility.cs" />
     <Compile Include="common\TrainerAssignmentUtility.cs" />
     <Compile Include="common\ProgressionEducationCompatibility.cs" />

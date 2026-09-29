@@ -93,6 +93,7 @@ namespace Verse
     public class Pawn
     {
         public string LabelShort;
+        public string LabelShortCap => LabelShort;
         public bool Dead, Destroyed, Downed, IsSlave, IsPrisonerOfColony;
         public bool IsColonist = true;
         public Pawn BoundMaster;

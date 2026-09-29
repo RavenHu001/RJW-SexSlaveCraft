@@ -110,6 +110,7 @@ namespace SexSlaveCraft
             // GetForcedTrainer 表达“条目只准主人”，即使主人死亡仍用于界面锁定。
             // 实际工作指派不得写回死亡/销毁角色；保留锁链和条目，不借清理操作改变所有权或开放第三方。
             if (forced != null && !forced.Dead && !forced.Destroyed) comp.selectedTrainer = forced;
+            SSCSelfTrainingFeedback.NotifyStatusChanged(pawn);
         }
 
         /// <summary>在最外层恢复完成或异常退出时刷新实际保留状态，确保嵌套操作不会提前写入默认。</summary>

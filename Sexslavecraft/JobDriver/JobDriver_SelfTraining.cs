@@ -173,9 +173,12 @@ namespace SexSlaveCraft
                 !SSCSelfTrainingEligibility.IsEligible(pawn) || snapshot?.Captured != true) return;
             Need_Corruption need = pawn.needs?.TryGetNeed<Need_Corruption>();
             if (need == null || !snapshot.TryClaimCompletion()) return;
+            float before = need.CurLevel;
             float gain = SSCSelfTrainingUtility.CalculateGrantedGain(snapshot.CorruptionGain,
-                need.CurLevel, TrainingOutcomeUtility.GetChainCap(pawn));
+                before, TrainingOutcomeUtility.GetChainCap(pawn));
             if (gain > 0f) CorruptionUtility.AddCorruption(pawn, gain);
+            gain = Math.Max(0f, need.CurLevel - before);
+            SSCSelfTrainingFeedback.OnCompleted(pawn, snapshot, gain);
             SSCLog.Important($"[SSC SelfTraining] Completed: pawn={pawn.LabelShort}, interaction={Sexprops.dictionaryKey?.defName}, " +
                 $"score={snapshot.Score:F2}, gain={gain:F4}");
         }

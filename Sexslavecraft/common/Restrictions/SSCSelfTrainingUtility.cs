@@ -42,6 +42,8 @@ namespace SexSlaveCraft
             return new SSCSelfTrainingSnapshot
             {
                 ImaginedPawn = imagined,
+                HadImaginedPawnAtStart = imagined != null,
+                ImaginedPawnLabelAtStart = imagined?.LabelShortCap,
                 CorruptionAtStart = pawn.needs?.TryGetNeed<Need_Corruption>()?.CurLevel ?? 0f,
                 RawOpinionAtStart = imagined != null ? pawn.relations?.OpinionOf(imagined) ?? 0 : 0,
                 Captured = true
@@ -74,6 +76,8 @@ namespace SexSlaveCraft
     public sealed class SSCSelfTrainingSnapshot : IExposable
     {
         public Pawn ImaginedPawn;
+        public bool HadImaginedPawnAtStart;
+        public string ImaginedPawnLabelAtStart;
         public float CorruptionAtStart;
         public int RawOpinionAtStart;
         public bool Captured;
@@ -93,6 +97,8 @@ namespace SexSlaveCraft
         public void ExposeData()
         {
             Scribe_References.Look(ref ImaginedPawn, "sscSelfTrainingImaginedPawn");
+            Scribe_Values.Look(ref HadImaginedPawnAtStart, "sscSelfTrainingHadImaginedPawn", false);
+            Scribe_Values.Look(ref ImaginedPawnLabelAtStart, "sscSelfTrainingImaginedPawnLabel");
             Scribe_Values.Look(ref CorruptionAtStart, "sscSelfTrainingCorruptionAtStart", 0f);
             Scribe_Values.Look(ref RawOpinionAtStart, "sscSelfTrainingRawOpinionAtStart", 0);
             Scribe_Values.Look(ref Captured, "sscSelfTrainingCaptured", false);

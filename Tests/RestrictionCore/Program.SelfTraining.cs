@@ -106,6 +106,8 @@ internal static partial class Program
             pawn.relations.Opinions[trainer] = 80;
             SSCSelfTrainingSnapshot snapshot = SSCSelfTrainingUtility.CaptureAtSceneStart(pawn);
             Equal(master, snapshot.ImaginedPawn); Equal(-50, snapshot.RawOpinionAtStart);
+            Equal(true, snapshot.HadImaginedPawnAtStart);
+            Equal(master.LabelShortCap, snapshot.ImaginedPawnLabelAtStart);
             Equal(16f, snapshot.Score);
             Equal(true, Math.Abs(0.0285f - snapshot.CorruptionGain) < 0.000001f);
             master.Dead = true;
@@ -140,8 +142,58 @@ internal static partial class Program
             Scribe.mode = LoadSaveMode.LoadingVars; Scribe_Deep.Look(ref snapshot, "snapshot");
             Equal(true, snapshot.Captured); Equal(true, snapshot.CompletionClaimed);
             Equal(pawn.BoundMaster, snapshot.ImaginedPawn);
+            Equal(true, snapshot.HadImaginedPawnAtStart);
+            Equal(pawn.BoundMaster.LabelShortCap, snapshot.ImaginedPawnLabelAtStart);
             Equal(-30, snapshot.RawOpinionAtStart);
             Equal(false, snapshot.TryClaimCompletion());
+        });
+        Run("Self-training completion mood covers stage, trait and imagined opinion", () =>
+        {
+            int[] stageMood = { -4, -2, 0, 2 };
+            int[] opinionMood = { 0, -3, 0, 2 };
+            for (int stage = 1; stage <= 4; stage++)
+                foreach (bool masochist in new[] { false, true })
+                    for (int category = 0; category <= 3; category++)
+                        Equal(stageMood[stage - 1] + (masochist ? 2 : 0) + opinionMood[category],
+                            SSCSelfTrainingFeedbackRules.CompletionMood(stage, masochist, category));
+            Equal(1, SSCSelfTrainingFeedbackRules.OpinionCategory(true, -30));
+            Equal(2, SSCSelfTrainingFeedbackRules.OpinionCategory(true, -29));
+            Equal(2, SSCSelfTrainingFeedbackRules.OpinionCategory(true, 29));
+            Equal(3, SSCSelfTrainingFeedbackRules.OpinionCategory(true, 30));
+            Equal(0, SSCSelfTrainingFeedbackRules.OpinionCategory(false, -100));
+            Equal(SSCSelfTrainingFeedbackRules.CompletionMood(1, false, 1),
+                SSCSelfTrainingFeedbackRules.CompletionMood(0, false, 1));
+        });
+        Run("Self-training permission moods cover both states and eight stage/trait combinations", () =>
+        {
+            int[,] expected = { { -5, -6, -7, -8 }, { -3, -2, -1, 0 },
+                { -2, -1, 0, 1 }, { 0, 1, 2, 3 } };
+            foreach (bool trainingAllowed in new[] { false, true })
+                foreach (bool masochist in new[] { false, true })
+                    for (int stage = 1; stage <= 4; stage++)
+                    {
+                        int row = (trainingAllowed ? 2 : 0) + (masochist ? 1 : 0);
+                        Equal(expected[row, stage - 1], SSCSelfTrainingFeedbackRules.PermissionMood(
+                            trainingAllowed, stage, masochist));
+                        Equal(stage - 1 + (masochist ? 4 : 0),
+                            SSCSelfTrainingFeedbackRules.PermissionStageIndex(stage, masochist));
+                    }
+        });
+        Run("Situational feedback requires an effective SSC denial and valid self-training decision", () =>
+        {
+            Equal(true, SSCSelfTrainingFeedbackRules.TryPermissionKind(
+                SSCRestrictionReason.RuleDenied, SSCRestrictionReason.Allowed, out bool onlyTraining));
+            Equal(true, onlyTraining);
+            Equal(true, SSCSelfTrainingFeedbackRules.TryPermissionKind(
+                SSCRestrictionReason.RuleDenied, SSCRestrictionReason.RuleDenied, out bool bothDenied));
+            Equal(false, bothDenied);
+            foreach (SSCRestrictionReason reason in new[] { SSCRestrictionReason.Allowed,
+                SSCRestrictionReason.NotApplicable, SSCRestrictionReason.SystemDisabled,
+                SSCRestrictionReason.ConfigurationInvalid })
+                Equal(false, SSCSelfTrainingFeedbackRules.TryPermissionKind(
+                    reason, SSCRestrictionReason.RuleDenied, out _));
+            Equal(false, SSCSelfTrainingFeedbackRules.TryPermissionKind(
+                SSCRestrictionReason.RuleDenied, SSCRestrictionReason.ConfigurationMissing, out _));
         });
     }
 }

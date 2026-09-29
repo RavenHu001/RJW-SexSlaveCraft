@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_SelfTraining_Outcome>{0} завершил(а) самотренировку: оценка {1}, фактический прирост порчи {2}.</SSC_SelfTraining_Outcome>
+  <SSC_SelfTraining_MemoryStage1>Неловкость после самотренировки</SSC_SelfTraining_MemoryStage1>
+  <SSC_SelfTraining_MemoryStage1Desc>Упражняться в одиночестве всё ещё неловко.</SSC_SelfTraining_MemoryStage1Desc>
+  <SSC_SelfTraining_MemoryStage2>Сомнения после самотренировки</SSC_SelfTraining_MemoryStage2>
+  <SSC_SelfTraining_MemoryStage2Desc>Я начинаю принимать эту личную практику.</SSC_SelfTraining_MemoryStage2Desc>
+  <SSC_SelfTraining_MemoryStage3>Привычка к самотренировке</SSC_SelfTraining_MemoryStage3>
+  <SSC_SelfTraining_MemoryStage3Desc>Самотренировка стала привычной.</SSC_SelfTraining_MemoryStage3Desc>
+  <SSC_SelfTraining_MemoryStage4>Удовлетворение после самотренировки</SSC_SelfTraining_MemoryStage4>
+  <SSC_SelfTraining_MemoryStage4Desc>Я спокойно вспоминаю прошедшую практику.</SSC_SelfTraining_MemoryStage4Desc>
+  <SSC_SelfTraining_MemoryNoMasochist>Неприятные ощущения мне не по душе.</SSC_SelfTraining_MemoryNoMasochist>
+  <SSC_SelfTraining_MemoryMasochist>Некоторые неприятные ощущения оказались приятны.</SSC_SelfTraining_MemoryMasochist>
+  <SSC_SelfTraining_MemoryOpinion0>Я не представлял(а) никого конкретного.</SSC_SelfTraining_MemoryOpinion0>
+  <SSC_SelfTraining_MemoryOpinion1>Мысли о {0} вызвали у меня сопротивление.</SSC_SelfTraining_MemoryOpinion1>
+  <SSC_SelfTraining_MemoryOpinion2>Мои мысли обратились к {0}.</SSC_SelfTraining_MemoryOpinion2>
+  <SSC_SelfTraining_MemoryOpinion3>Мысли о {0} сделали этот опыт теплее.</SSC_SelfTraining_MemoryOpinion3>
+</LanguageData>

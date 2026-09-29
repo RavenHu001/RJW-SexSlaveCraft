@@ -192,6 +192,16 @@ namespace SexSlaveCraft
     {
         public static void SyncSexSlaveTraitFromHighestCorruption(Pawn pawn) { }
         public static int GetSexSlaveStage(Pawn pawn) => SSCBondUtility.GetChain(pawn) != null ? 1 : 0;
+        public static int GetSexSlaveStageFromChain(Hediff_ChainOfSexSlave chain)
+        {
+            if (chain == null) return 0;
+            return chain.Severity >= 0.9f ? 4 : chain.Severity >= 0.5f ? 3 :
+                chain.Severity >= 0.3f ? 2 : chain.Severity >= 0.1f ? 1 : 0;
+        }
+    }
+    public static class SSCSelfTrainingFeedback
+    {
+        public static void NotifyStatusChanged(Pawn pawn) { }
     }
     public class Hediff_BridleOfSexSlave
     {

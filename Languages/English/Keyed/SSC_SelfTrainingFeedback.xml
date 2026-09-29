@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_SelfTraining_Outcome>{0} completed self-training: score {1}, corruption gained {2}.</SSC_SelfTraining_Outcome>
+  <SSC_SelfTraining_MemoryStage1>Uneasy after self-training</SSC_SelfTraining_MemoryStage1>
+  <SSC_SelfTraining_MemoryStage1Desc>Practicing alone still makes me uneasy.</SSC_SelfTraining_MemoryStage1Desc>
+  <SSC_SelfTraining_MemoryStage2>Conflicted after self-training</SSC_SelfTraining_MemoryStage2>
+  <SSC_SelfTraining_MemoryStage2Desc>I am beginning to accept this private practice.</SSC_SelfTraining_MemoryStage2Desc>
+  <SSC_SelfTraining_MemoryStage3>Accustomed to self-training</SSC_SelfTraining_MemoryStage3>
+  <SSC_SelfTraining_MemoryStage3Desc>Self-training now feels familiar to me.</SSC_SelfTraining_MemoryStage3Desc>
+  <SSC_SelfTraining_MemoryStage4>Satisfied after self-training</SSC_SelfTraining_MemoryStage4>
+  <SSC_SelfTraining_MemoryStage4Desc>I feel at ease with what I practiced.</SSC_SelfTraining_MemoryStage4Desc>
+  <SSC_SelfTraining_MemoryNoMasochist>I did not seek discomfort.</SSC_SelfTraining_MemoryNoMasochist>
+  <SSC_SelfTraining_MemoryMasochist>Some of the discomfort felt welcome.</SSC_SelfTraining_MemoryMasochist>
+  <SSC_SelfTraining_MemoryOpinion0>My thoughts settled on no one in particular.</SSC_SelfTraining_MemoryOpinion0>
+  <SSC_SelfTraining_MemoryOpinion1>Thinking of {0} stirred resistance in me.</SSC_SelfTraining_MemoryOpinion1>
+  <SSC_SelfTraining_MemoryOpinion2>My thoughts drifted toward {0}.</SSC_SelfTraining_MemoryOpinion2>
+  <SSC_SelfTraining_MemoryOpinion3>Thinking of {0} made the experience warmer.</SSC_SelfTraining_MemoryOpinion3>
+</LanguageData>

@@ -51,6 +51,7 @@ namespace SexSlaveCraft
         public static ThoughtDef SSC_Training_Mood_Lvl2;
         public static ThoughtDef SSC_Training_Mood_Lvl3;
         public static ThoughtDef SSC_Training_MoodDynamic;
+        public static ThoughtDef SSC_SelfTraining_Completed;
 
         // Social Thoughts
         public static ThoughtDef SSC_Training_Social_Lvl1;
@@ -207,6 +208,7 @@ namespace SexSlaveCraft
             SSC_Training_Mood_Lvl2 = GetDef<ThoughtDef>("SSC_Training_Mood_Lvl2");
             SSC_Training_Mood_Lvl3 = GetDef<ThoughtDef>("SSC_Training_Mood_Lvl3");
             SSC_Training_MoodDynamic = GetDef<ThoughtDef>("SSC_Training_MoodDynamic");
+            SSC_SelfTraining_Completed = GetDef<ThoughtDef>("SSC_SelfTraining_Completed");
 
             // --- Social Thoughts ---
             SSC_Training_Social_Lvl1 = GetDef<ThoughtDef>("SSC_Training_Social_Lvl1");

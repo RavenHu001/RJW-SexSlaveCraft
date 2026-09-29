@@ -46,4 +46,9 @@ namespace SexSlaveCraft
         public SSCRestrictionRules restrictionDefaults = new SSCRestrictionRules();
     }
     public static class SSCMod { public static Settings settings = new Settings(); }
+    // 身份集成套件不加载游戏心情系统。
+    public static class SSCSelfTrainingFeedback
+    {
+        public static void NotifyStatusChanged(Verse.Pawn pawn) { }
+    }
 }
