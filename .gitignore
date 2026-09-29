@@ -21,12 +21,15 @@ mono_crash.*
 [Dd]ebugPublic/
 [Rr]elease/
 [Rr]eleases/
-# Track this version's release notes without exposing old local release artifacts.
+# Track versioned release notes without exposing local release artifacts.
 !/Docs/Releases/
 /Docs/Releases/*
 !/Docs/Releases/2.3.4/
 /Docs/Releases/2.3.4/*
 !/Docs/Releases/2.3.4/*.md
+!/Docs/Releases/2.3.5/
+/Docs/Releases/2.3.5/*
+!/Docs/Releases/2.3.5/*.md
 x64/
 x86/
 [Ww][Ii][Nn]32/
