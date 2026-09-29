@@ -78,4 +78,5 @@ comp.RegisterManualSelfTraining(second, breast);
 comp.ClearManualSelfTraining(second);
 Check(comp.TakeManualSelfTraining(first) == hand, "第二次指派被拒绝不能清除前一任务的选择");
 
-Console.WriteLine($"SelfTrainingManual: {count}/{count} passed");
+DriverLifecycleTests.Run(Check);
+Console.WriteLine($"{count}/{count} passed (self-training selection and production driver lifecycle).");

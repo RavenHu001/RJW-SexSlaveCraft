@@ -2,12 +2,12 @@ using System.Collections.Generic;
 
 namespace Verse
 {
-    public enum LoadSaveMode { Inactive, Saving, LoadingVars, PostLoadInit }
+    public enum LoadSaveMode { Inactive, Saving, LoadingVars, ResolvingCrossRefs, PostLoadInit }
     public enum LookMode { Value, Def }
-    public static class Scribe
+    public static partial class Scribe
     {
         public static LoadSaveMode mode;
-        public static readonly Dictionary<string, object> Data = new();
+        public static Dictionary<string, object> Data = new();
     }
     public static class Scribe_Collections
     {
@@ -18,7 +18,7 @@ namespace Verse
                 value = Scribe.Data.TryGetValue(key, out object saved) ? new Dictionary<K, V>((Dictionary<K, V>)saved) : null;
         }
     }
-    public class Pawn
+    public partial class Pawn
     {
         public Verse.AI.Job CurJob;
         public Verse.AI.Pawn_JobTracker jobs = new();
@@ -27,13 +27,13 @@ namespace Verse
 }
 namespace Verse.AI
 {
-    public class Job { public int loadID; }
+    public partial class Job { public int loadID; }
     public class QueuedJob { public Job job; }
-    public class Pawn_JobTracker { public List<QueuedJob> jobQueue = new(); }
+    public partial class Pawn_JobTracker { public List<QueuedJob> jobQueue = new(); }
 }
 namespace RimWorld
 {
-    public class InteractionDef
+    public partial class InteractionDef
     {
         public rjw.Modules.Interactions.SexInteractionExtension Extension;
         public T GetModExtension<T>() where T : class => Extension as T;
@@ -41,21 +41,19 @@ namespace RimWorld
 }
 namespace rjw
 {
-    public static class xxx { public enum rjwSextype { None, Masturbation, Vaginal } }
-    public static class SexUtility { public static readonly List<RimWorld.InteractionDef> SexInteractions = new(); }
-    public class SexProps
+    public static partial class xxx { public enum rjwSextype { None, Masturbation, Vaginal } }
+    public static partial class SexUtility { public static readonly List<RimWorld.InteractionDef> SexInteractions = new(); }
+    public partial class SexProps
     {
         public Verse.Pawn pawn, partner;
         public bool canBeGuilty = true;
-        public rjw.Modules.Interactions.SexInteraction interaction;
-        public rjw.Modules.Interactions.SexInteractionResolved resolved;
         public SexProps(Verse.Pawn pawn, Verse.Pawn partner) { this.pawn = pawn; this.partner = partner; }
     }
 }
 namespace rjw.Modules.Interactions
 {
-    public class SexInteractionExtension { public rjw.xxx.rjwSextype Type; }
-    public class SexInteraction
+    public class SexInteractionExtension { public rjw.xxx.rjwSextype Type; public bool Reverse; }
+    public partial class SexInteraction
     {
         public RimWorld.InteractionDef Def;
         public SexInteractionExtension Extension;
