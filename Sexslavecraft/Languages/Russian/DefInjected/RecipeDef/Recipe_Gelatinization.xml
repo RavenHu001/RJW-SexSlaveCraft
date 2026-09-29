@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <ApplyGelatinization.label>Операция полуgelatinизации</ApplyGelatinization.label>
+  <ApplyGelatinization.description>Провести операцию полуgelatinизации конечности. Вводится gel-материал, после чего начинается адаптация. Если адаптация достигнет 100% первой — модификация успешна; если тяжесть достигнет 100% первой — конечность уничтожена.</ApplyGelatinization.description>
+  <ApplyGelatinization.jobString>Проведение операции полуgelatinизации</ApplyGelatinization.jobString>
+  <ApplyFullGelatinization.label>Операция полной gelatinизации</ApplyFullGelatinization.label>
+  <ApplyFullGelatinization.description>Провести операцию полной gelatinизации на теле, уже прошедшем экскрецию личности. Всё тело вступает в гонку между адаптацией и тяжестью; если адаптация достигнет 100% первой — полная gelatinизация успешна, если тяжесть достигнет 100% первой — тело полностью разрушается.</ApplyFullGelatinization.description>
+  <ApplyFullGelatinization.jobString>Проведение операции полной gelatinизации</ApplyFullGelatinization.jobString>
+</LanguageData>

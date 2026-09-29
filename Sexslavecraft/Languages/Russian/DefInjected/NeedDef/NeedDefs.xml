@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <Corruption.label>Развращение</Corruption.label>
+  <Corruption.description>Уровень развращения персонажа.</Corruption.description>
+  <Need_PNA.label>Тяга к наножидкости</Need_PNA.label>
+  <Need_PNA.description>Тело, модифицированное фиолетовыми наномашинами, постоянно нуждается в новых дозах наножидкости; иначе возникает тяжёлая психологическая пустота.</Need_PNA.description>
+</LanguageData>

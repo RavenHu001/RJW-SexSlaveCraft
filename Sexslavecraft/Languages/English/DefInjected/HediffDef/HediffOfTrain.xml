@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <SSC_Exp_Hand.label>Corruption Mark (Hands)</SSC_Exp_Hand.label>
+  <SSC_Exp_Hand.description>Thanks to Fried Rice Intelligence nanomachines and repeated sexual training, purple marks appear on the hands. These enhanced hands become extremely dexterous and provide inhuman stability and draw speed when handling weapons.</SSC_Exp_Hand.description>
+  <SSC_Exp_Hand.stages.0.label>In Development</SSC_Exp_Hand.stages.0.label>
+  <SSC_Exp_Hand.stages.1.label>Proficient</SSC_Exp_Hand.stages.1.label>
+  <SSC_Exp_Hand.stages.2.label>Sensitive</SSC_Exp_Hand.stages.2.label>
+  <SSC_Exp_Hand.stages.3.label>Marked Corruption</SSC_Exp_Hand.stages.3.label>
+  <SSC_Exp_Oral.label>Corruption Mark (Mouth)</SSC_Exp_Oral.label>
+  <SSC_Exp_Oral.description>Fried Rice Intelligence nanomachines leave purple marks around the mouth. The tongue becomes highly flexible, and trace pheromones strongly influence others' subconsciousness, turning speech into a powerful diplomatic weapon.</SSC_Exp_Oral.description>
+  <SSC_Exp_Oral.stages.0.label>Initial Development</SSC_Exp_Oral.stages.0.label>
+  <SSC_Exp_Oral.stages.1.label>Proficient</SSC_Exp_Oral.stages.1.label>
+  <SSC_Exp_Oral.stages.2.label>Sensitive</SSC_Exp_Oral.stages.2.label>
+  <SSC_Exp_Oral.stages.3.label>Marked Corruption</SSC_Exp_Oral.stages.3.label>
+  <SSC_Exp_Foot.label>Corruption Mark (Feet)</SSC_Exp_Foot.label>
+  <SSC_Exp_Foot.description>Fried Rice Intelligence nanomachines leave marks on the feet. Steps become light and seductive, granting extreme dodge instinct while reinforcing the torso to greatly increase carrying capacity.</SSC_Exp_Foot.description>
+  <SSC_Exp_Foot.stages.0.label>In Development</SSC_Exp_Foot.stages.0.label>
+  <SSC_Exp_Foot.stages.1.label>Proficient</SSC_Exp_Foot.stages.1.label>
+  <SSC_Exp_Foot.stages.2.label>Sensitive</SSC_Exp_Foot.stages.2.label>
+  <SSC_Exp_Foot.stages.3.label>Marked Corruption</SSC_Exp_Foot.stages.3.label>
+  <SSC_Exp_Genitals.label>Corruption Mark (Vagina)</SSC_Exp_Genitals.label>
+  <SSC_Exp_Genitals.description>After extreme development, the interior is fully restructured by nanomachines. It becomes exceptionally beautiful and sensitive, secretes purple nanofluid, and grants remarkable pain tolerance and recovery speed.</SSC_Exp_Genitals.description>
+  <SSC_Exp_Genitals.stages.0.label>In Development</SSC_Exp_Genitals.stages.0.label>
+  <SSC_Exp_Genitals.stages.1.label>Proficient</SSC_Exp_Genitals.stages.1.label>
+  <SSC_Exp_Genitals.stages.2.label>Sensitive</SSC_Exp_Genitals.stages.2.label>
+  <SSC_Exp_Genitals.stages.3.label>Meat Toiletization</SSC_Exp_Genitals.stages.3.label>
+  <SSC_Exp_Breast.label>Corruption Mark (Breasts)</SSC_Exp_Breast.label>
+  <SSC_Exp_Breast.description>Under nanomachine enhancement, the breasts are completely rebuilt, becoming highly seductive and continuously producing milk. Their emitted warmth can strongly calm those who make contact.</SSC_Exp_Breast.description>
+  <SSC_Exp_Breast.stages.0.label>Early Modification</SSC_Exp_Breast.stages.0.label>
+  <SSC_Exp_Breast.stages.1.label>Proficient</SSC_Exp_Breast.stages.1.label>
+  <SSC_Exp_Breast.stages.2.label>Fully Modified</SSC_Exp_Breast.stages.2.label>
+  <SSC_Exp_Breast.stages.3.label>Marked Corruption</SSC_Exp_Breast.stages.3.label>
+  <SSC_Exp_Anus.label>Corruption Mark (Anus)</SSC_Exp_Anus.label>
+  <SSC_Exp_Anus.description>Through repeated sexual training, the rear is fully developed by nanomachines. Activity is intense here, granting terrifying wound healing and immunity, and adaptive sizing based on inserted objects.</SSC_Exp_Anus.description>
+  <SSC_Exp_Anus.stages.0.label>Initial Development</SSC_Exp_Anus.stages.0.label>
+  <SSC_Exp_Anus.stages.1.label>Proficient</SSC_Exp_Anus.stages.1.label>
+  <SSC_Exp_Anus.stages.2.label>Sensitive</SSC_Exp_Anus.stages.2.label>
+  <SSC_Exp_Anus.stages.3.label>Marked Corruption</SSC_Exp_Anus.stages.3.label>
+  <SSC_Lactating_SubState.label>Permanent Lactation Phase</SSC_Lactating_SubState.label>
+  <SSC_Lactating_SubState.description>Under deep nanomachine intervention, lactation is locked in an always-active state. Like a parasite, it continuously draws food from the host's stomach to synthesize milk.</SSC_Lactating_SubState.description>
+  <SSC_Lactating_SubState.comps.0.labelInBrackets>Milk fullness {CHARGEFACTOR_percentage}</SSC_Lactating_SubState.comps.0.labelInBrackets>
+  <SSC_Purple_HyperLactation.label>Aphrodisiac Nanofluid Output (Vagina)</SSC_Purple_HyperLactation.label>
+  <SSC_Purple_HyperLactation.description>The body's glands actively secrete a special purple nanofluid, which is transported through the bloodstream to the vagina.</SSC_Purple_HyperLactation.description>
+</LanguageData>

@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='utf-8'?>
+<LanguageData>
+  <Hediff_GelatinizationTemporary.label>半凝膠化處理中</Hediff_GelatinizationTemporary.label>
+  <Hediff_GelatinizationTemporary.labelNoun>半凝膠化處理</Hediff_GelatinizationTemporary.labelNoun>
+  <Hediff_GelatinizationTemporary.description>肢體正在進行半凝膠化改造。適應度和嚴重度在進行競賽，適應度先達到 100% 則成功改造為凝膠義肢，嚴重度先達到 100% 則肢體毀壞。</Hediff_GelatinizationTemporary.description>
+  <Hediff_GelatinizedArm.label>凝膠化手臂</Hediff_GelatinizedArm.label>
+  <Hediff_GelatinizedArm.labelNoun>凝膠化手臂</Hediff_GelatinizedArm.labelNoun>
+  <Hediff_GelatinizedArm.description>手臂已被改造為半凝膠化義肢，提供額外的力量和靈活性。</Hediff_GelatinizedArm.description>
+  <Hediff_GelatinizedLeg.label>凝膠化腿部</Hediff_GelatinizedLeg.label>
+  <Hediff_GelatinizedLeg.labelNoun>凝膠化腿部</Hediff_GelatinizedLeg.labelNoun>
+  <Hediff_GelatinizedLeg.description>腿部已被改造為半凝膠化義肢，提供額外的移動速度和防禦力。</Hediff_GelatinizedLeg.description>
+  <SSC_FullGelatinizationTemporary.label>全凝膠化處理中</SSC_FullGelatinizationTemporary.label>
+  <SSC_FullGelatinizationTemporary.labelNoun>全凝膠化</SSC_FullGelatinizationTemporary.labelNoun>
+  <SSC_FullGelatinizationTemporary.description>全身正在進行凝膠化重構。適應度與嚴重度會持續競賽：適應度先達到 100% 則徹底完成，全身將被凝膠化；嚴重度先達到 100% 則身體直接崩毀。</SSC_FullGelatinizationTemporary.description>
+  <SSC_FullGelatinizedBody.label>全凝膠化完成</SSC_FullGelatinizedBody.label>
+  <SSC_FullGelatinizedBody.labelNoun>全凝膠化軀體</SSC_FullGelatinizedBody.labelNoun>
+  <SSC_FullGelatinizedBody.description>這具身體已經完成全凝膠化重構。除了 RJW 器官狀態外，其他舊有生理損耗都被清洗，只留下凝膠化後的穩定形態。</SSC_FullGelatinizedBody.description>
+  <SSC_FullGelatinizedBody.stages.0.label>凝膠軀殼</SSC_FullGelatinizedBody.stages.0.label>
+</LanguageData>

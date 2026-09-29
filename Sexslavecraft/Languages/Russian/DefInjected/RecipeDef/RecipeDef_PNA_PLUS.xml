@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <SSC_Make_SuperDrug.label>Изготовить супер-препарат</SSC_Make_SuperDrug.label>
+  <SSC_Make_SuperDrug.description>Концентрированная PNA.</SSC_Make_SuperDrug.description>
+  <SSC_Make_SuperDrug.jobString>Изготовление супер-препарата</SSC_Make_SuperDrug.jobString>
+  <SSC_Make_SuperDrug_forth.label>Изготовить супер-препарат (четвёртый)</SSC_Make_SuperDrug_forth.label>
+  <SSC_Make_SuperDrug_forth.description>Концентрированная PNA.</SSC_Make_SuperDrug_forth.description>
+  <SSC_Make_SuperDrug_forth.jobString>Изготовление супер-препарата (четвёртый)</SSC_Make_SuperDrug_forth.jobString>
+</LanguageData>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_RitualSelection_ChooseParticipants>請手動選擇主持者和儀式目標。放入角色欄時會檢查資格。</SSC_RitualSelection_ChooseParticipants>
+  <SSC_RitualSelection_MissingRoles>請先選擇主持者和儀式目標。</SSC_RitualSelection_MissingRoles>
+  <SSC_RitualSelection_Invalid>所選角色目前無法擔任該儀式角色。</SSC_RitualSelection_Invalid>
+</LanguageData>

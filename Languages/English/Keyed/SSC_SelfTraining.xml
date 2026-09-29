@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
   <SSC_SelfTraining_Assign>Assign self-training</SSC_SelfTraining_Assign>
-  <SSC_SelfTraining_NoInteraction>No available solo interactions</SSC_SelfTraining_NoInteraction>
-  <SSC_SelfTraining_InteractionChanged>The chosen interaction is no longer possible.</SSC_SelfTraining_InteractionChanged>
-  <SSC_SelfTraining_JobRejected>Self-training job was rejected.</SSC_SelfTraining_JobRejected>
+  <SSC_SelfTraining_NoInteraction>No available solo interaction in the current body state.</SSC_SelfTraining_NoInteraction>
+  <SSC_SelfTraining_InteractionChanged>The chosen interaction is no longer possible. Choose another.</SSC_SelfTraining_InteractionChanged>
+  <SSC_SelfTraining_JobRejected>The self-training job could not be assigned.</SSC_SelfTraining_JobRejected>
   <SSC_SelfTraining_SelectPawn>Select one pawn first.</SSC_SelfTraining_SelectPawn>
-  <SSC_SelfTraining_CannotStart>This pawn cannot start a solo scene now.</SSC_SelfTraining_CannotStart>
-  <SSC_SelfTraining_PermissionDenied>Self-training permission or eligibility is denied.</SSC_SelfTraining_PermissionDenied>
+  <SSC_SelfTraining_CannotStart>This pawn cannot start a solo interaction now.</SSC_SelfTraining_CannotStart>
+  <SSC_SelfTraining_PermissionDenied>Self-training permission is off, or this pawn is not eligible.</SSC_SelfTraining_PermissionDenied>
   <SSC_SelfTraining_RJWBlocked>RJW masturbation ability is blocked.</SSC_SelfTraining_RJWBlocked>
   <SSC_SelfTraining_DestinationUnavailable>The destination is unavailable.</SSC_SelfTraining_DestinationUnavailable>
-  <SSC_SelfTraining_NeedUnavailable>This pawn has no Corruption need.</SSC_SelfTraining_NeedUnavailable>
+  <SSC_SelfTraining_NeedUnavailable>This pawn lacks a Corruption need and cannot self-train.</SSC_SelfTraining_NeedUnavailable>
 </LanguageData>

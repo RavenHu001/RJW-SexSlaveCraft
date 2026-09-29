@@ -10,6 +10,7 @@ This continuation builds on upstream **2.2.8**, the baseline when upstream devel
 
 - **独立许可与任务 / Separate permission and job:** 持链 SSC 性奴默认允许自我调教，可在限制面板独立关闭；选中并右键本人可手动选择可执行部位，自动行为只从 RJW 已产生的自慰候选分流。四阶段分流概率为 30%／55%／80%／50%，首版仍受禁止自慰基因阻断。Chain-bearing SSC Sex Slaves may self-train by default, with a separate restriction toggle, a self-targeted manual menu and diversion from RJW automatic masturbation candidates. The four stage chances are 30% / 55% / 80% / 50%; anti-masturbation genes still block this first version.
 - **独立收益与反馈 / Separate reward and feedback:** 自我调教按场景开始时的恶堕和正向好感评分，给予受锁链阶段约束的恶堕收益及一天专用记忆；两种许可组合有对应状态心情。左上角消息采用日常调教式“角色 | 评分 | 恶堕”格式。Self-training scores Corruption and positive opinion at scene start, grants Chain-capped Corruption and a dedicated one-day memory, and adds permission-state moods. Its result message shows `pawn | score | Corruption` in the ordinary Training style.
+- **限制文本 / Restriction text:** 补齐繁中及俄文行为限制面板的全部条目，包含自我调教许可；同步源码项目语言镜像并在发布前检查一致性。Completes Traditional Chinese and Russian restriction-panel text, including self-training permission, and checks the source-project language mirror before packaging.
 
 ### 2026-09-28 — 调教任务交接修复 / Training handoff fix
 

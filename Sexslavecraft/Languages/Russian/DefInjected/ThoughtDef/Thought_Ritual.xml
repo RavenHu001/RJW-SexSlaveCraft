@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <SSC_Ritual_Best.stages.0.label>Священный ритуал привязки (идеально)</SSC_Ritual_Best.stages.0.label>
+  <SSC_Ritual_Best.stages.0.description>Этот ритуал был чистым искусством. Это абсолютное чувство доминирования опьяняет.</SSC_Ritual_Best.stages.0.description>
+  <SSC_Ritual_Good.stages.0.label>Ритуал привязки (успешно)</SSC_Ritual_Good.stages.0.label>
+  <SSC_Ritual_Good.stages.0.description>Ритуал прошёл гладко. Это чувство порядка успокаивает.</SSC_Ritual_Good.stages.0.description>
+  <SSC_Ritual_Boring.stages.0.label>Ритуал привязки (средне)</SSC_Ritual_Boring.stages.0.label>
+  <SSC_Ritual_Boring.stages.0.description>Немного скучно. Ничего особенного.</SSC_Ritual_Boring.stages.0.description>
+  <SSC_Ritual_Terrible.stages.0.label>Ритуал привязки (плохо)</SSC_Ritual_Terrible.stages.0.label>
+  <SSC_Ritual_Terrible.stages.0.description>Это был фарс. Не стоило тратить время на просмотр.</SSC_Ritual_Terrible.stages.0.description>
+</LanguageData>

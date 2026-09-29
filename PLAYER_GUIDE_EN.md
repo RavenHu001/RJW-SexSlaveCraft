@@ -309,9 +309,9 @@ The initial Chain severity is `20%`.
 | Chain severity | Stage | Corruption brake cap | Body-part XP |
 |---:|---|---:|---:|
 | No Chain | — | 12% | ×1.0 |
-| 10%–29.99% | Imprint (Pain) | 30% | ×1.1 |
+| 10%–29.99% | Novice Sex Slave | 30% | ×1.1 |
 | 30%–49.99% | Sex Slave | 50% | ×1.3 |
-| 50%–89.99% | Imprint (Adaptation) | 90% | ×1.6 |
+| 50%–89.99% | Submissive Sex Slave | 90% | ×1.6 |
 | ≥ 90% | Meat Toiletization | 100% | ×2.0 |
 
 The brake cap is the next Corruption threshold this Chain stage is allowed to reach. After reaching 30%/50%/90%, the pawn still needs a Binding Ritual resolution to raise Chain severity. Gameplay checks use the Chain health stage; the Sex Slave trait is synchronized only from highest-ever Corruption and is not an authoritative gameplay predicate.
@@ -322,9 +322,9 @@ Chain stage stat effects:
 
 | Stage | Capacities | Market value |
 |---|---|---:|
-| Imprint (Pain) | Consciousness, Talking, Manipulation each -0.3 | ×0.9 |
+| Novice Sex Slave | Consciousness, Talking, Manipulation each -0.3 | ×0.9 |
 | Sex Slave | Consciousness -0.2, Talking -0.2, Manipulation -0.1 | ×0.8 |
-| Imprint (Adaptation) | Consciousness +0.1, Talking +0.1 | ×0.7 |
+| Submissive Sex Slave | Consciousness +0.1, Talking +0.1 | ×0.7 |
 | Meat Toiletization | Consciousness +0.3, Talking +0.3, Manipulation +0.2 | ×0.5 |
 
 Every Chain stage grants immunity to PNA addiction.
@@ -333,9 +333,9 @@ Persistent mood by stage:
 
 | Stage | Mood |
 |---|---:|
-| Imprint (Pain) | -10 |
+| Novice Sex Slave | -10 |
 | Sex Slave | -5 |
-| Imprint (Adaptation) | +3 |
+| Submissive Sex Slave | +3 |
 | Meat Toiletization | +12 |
 
 ### 6.5 Chain Regression

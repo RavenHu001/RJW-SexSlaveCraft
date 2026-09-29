@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_DEV_CompleteSpecialization>DEV: Specialization 100%</SSC_DEV_CompleteSpecialization>
+  <SSC_DEV_CompleteSpecialization_Desc>Set the currently selected specialization training progress to 100%, save its progress, and immediately synchronize ordinary training effects. Does not finalize the specialization or directly grant final abilities.</SSC_DEV_CompleteSpecialization_Desc>
+</LanguageData>

@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='utf-8'?>
+<LanguageData>
+  <SSC_TrainingOpinionMemory_Resentment>調教後的反感</SSC_TrainingOpinionMemory_Resentment>
+  <SSC_TrainingOpinionMemory_Wavering>調教後的動搖</SSC_TrainingOpinionMemory_Wavering>
+  <SSC_TrainingOpinionMemory_Adaptation>調教後的適應</SSC_TrainingOpinionMemory_Adaptation>
+  <SSC_TrainingOpinionMemory_Submission>調教後的沉淪</SSC_TrainingOpinionMemory_Submission>
+  <SSC_TrainingOpinionMemory_ResentmentDesc>{0}對我做了那麼過分的事，我絕不會輕易原諒他。好感變化為{1}。</SSC_TrainingOpinionMemory_ResentmentDesc>
+  <SSC_TrainingOpinionMemory_WaveringDesc>不，不是這樣的……我明明應該討厭{0}，為什麼心裡卻開始動搖了……好感變化為{1}。</SSC_TrainingOpinionMemory_WaveringDesc>
+  <SSC_TrainingOpinionMemory_AdaptationDesc>我好像已經習慣{0}的調教了……只要是他的話，似乎也沒有那麼難以接受。好感變化為{1}。</SSC_TrainingOpinionMemory_AdaptationDesc>
+  <SSC_TrainingOpinionMemory_SubmissionDesc>已經回不去了……無論是身體還是內心，我都越來越離不開{0}了……好感變化為{1}。</SSC_TrainingOpinionMemory_SubmissionDesc>
+</LanguageData>

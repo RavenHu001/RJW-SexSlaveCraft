@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
   <SSC_SelfTraining_Assign>指派自我调教</SSC_SelfTraining_Assign>
-  <SSC_SelfTraining_NoInteraction>没有当前身体可执行的单人行为</SSC_SelfTraining_NoInteraction>
-  <SSC_SelfTraining_InteractionChanged>所选行为已无法执行。</SSC_SelfTraining_InteractionChanged>
-  <SSC_SelfTraining_JobRejected>自我调教任务未被接受。</SSC_SelfTraining_JobRejected>
+  <SSC_SelfTraining_NoInteraction>当前身体状态下没有可执行的单人行为。</SSC_SelfTraining_NoInteraction>
+  <SSC_SelfTraining_InteractionChanged>所选行为已无法执行，请重新选择。</SSC_SelfTraining_InteractionChanged>
+  <SSC_SelfTraining_JobRejected>无法安排自我调教任务。</SSC_SelfTraining_JobRejected>
+  <SSC_SelfTraining_SelectPawn>请先选中一个角色。</SSC_SelfTraining_SelectPawn>
+  <SSC_SelfTraining_CannotStart>该角色当前无法开始单人行为。</SSC_SelfTraining_CannotStart>
+  <SSC_SelfTraining_PermissionDenied>未开启自我调教许可，或该角色不具备资格。</SSC_SelfTraining_PermissionDenied>
+  <SSC_SelfTraining_RJWBlocked>RJW 自慰能力被阻断。</SSC_SelfTraining_RJWBlocked>
+  <SSC_SelfTraining_DestinationUnavailable>目标地点不可达。</SSC_SelfTraining_DestinationUnavailable>
+  <SSC_SelfTraining_NeedUnavailable>该角色缺少恶堕需求，无法自我调教。</SSC_SelfTraining_NeedUnavailable>
 </LanguageData>

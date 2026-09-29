@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='utf-8'?>
+<LanguageData>
+  <SSC_Ritual_Best.stages.0.label>神聖的契約儀式 (完美)</SSC_Ritual_Best.stages.0.label>
+  <SSC_Ritual_Best.stages.0.description>那場儀式簡直是藝術。這種絕對的支配感令人陶醉。</SSC_Ritual_Best.stages.0.description>
+  <SSC_Ritual_Good.stages.0.label>契約儀式 (成功)</SSC_Ritual_Good.stages.0.label>
+  <SSC_Ritual_Good.stages.0.description>儀式進行得很順利，這種秩序感讓我感到安心。</SSC_Ritual_Good.stages.0.description>
+  <SSC_Ritual_Boring.stages.0.label>契約儀式 (平庸)</SSC_Ritual_Boring.stages.0.label>
+  <SSC_Ritual_Boring.stages.0.description>有些沉悶，沒什麼特別的。</SSC_Ritual_Boring.stages.0.description>
+  <SSC_Ritual_Terrible.stages.0.label>契約儀式 (糟糕)</SSC_Ritual_Terrible.stages.0.label>
+  <SSC_Ritual_Terrible.stages.0.description>這簡直是一場鬧劇，我不該浪費時間看的。</SSC_Ritual_Terrible.stages.0.description>
+</LanguageData>
