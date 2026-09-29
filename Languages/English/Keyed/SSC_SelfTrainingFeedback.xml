@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-  <SSC_SelfTraining_Outcome>{0} completed self-training: score {1}, corruption gained {2}.</SSC_SelfTraining_Outcome>
+  <SSC_SelfTraining_Outcome>{0} completed self-training: score {1}, calculated corruption gain {2}.</SSC_SelfTraining_Outcome>
   <SSC_SelfTraining_MemoryStage1>Uneasy after self-training</SSC_SelfTraining_MemoryStage1>
   <SSC_SelfTraining_MemoryStage1Desc>Practicing alone still makes me uneasy.</SSC_SelfTraining_MemoryStage1Desc>
   <SSC_SelfTraining_MemoryStage2>Conflicted after self-training</SSC_SelfTraining_MemoryStage2>

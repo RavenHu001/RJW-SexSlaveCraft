@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-  <SSC_SelfTraining_Outcome>{0}完成了自我调教：评分 {1}，实际恶堕增加 {2}。</SSC_SelfTraining_Outcome>
+  <SSC_SelfTraining_Outcome>{0}完成了自我调教：评分 {1}，计算恶堕增量 {2}。</SSC_SelfTraining_Outcome>
   <SSC_SelfTraining_MemoryStage1>自我调教后的不适</SSC_SelfTraining_MemoryStage1>
   <SSC_SelfTraining_MemoryStage1Desc>独自练习仍让我感到不自在。</SSC_SelfTraining_MemoryStage1Desc>
   <SSC_SelfTraining_MemoryStage2>自我调教后的矛盾</SSC_SelfTraining_MemoryStage2>

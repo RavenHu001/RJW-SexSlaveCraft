@@ -132,6 +132,10 @@ internal static partial class Program
             Equal(40f, SSCSelfTrainingUtility.CalculateScore(2f, 200));
             Equal(true, Math.Abs(0.03f - SSCSelfTrainingUtility.CalculateGrantedGain(0.04f, 0.27f, 0.30f)) < 0.000001f);
             Equal(0f, SSCSelfTrainingUtility.CalculateGrantedGain(0.04f, 0.30f, 0.30f));
+            float plannedAt38 = SSCSelfTrainingUtility.CalculateCorruptionGain(38f);
+            Equal(true, Math.Abs(plannedAt38 - 0.0505f) < 0.000001f);
+            Equal(true, Math.Abs(SSCSelfTrainingUtility.CalculateGrantedGain(
+                plannedAt38, 0.8999f, 0.9f) - 0.0001f) < 0.000001f);
             Pawn pawn = BoundPawn("slave");
             pawn.needs.Corruption.CurLevel = 0.5f;
             pawn.relations.Opinions[pawn.BoundMaster] = -30;

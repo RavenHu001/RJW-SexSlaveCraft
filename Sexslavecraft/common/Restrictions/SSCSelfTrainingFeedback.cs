@@ -7,7 +7,7 @@ namespace SexSlaveCraft
     /// <summary>完成记忆和许可状态心情的游戏侧入口。</summary>
     public static class SSCSelfTrainingFeedback
     {
-        public static void OnCompleted(Pawn pawn, SSCSelfTrainingSnapshot snapshot, float grantedGain)
+        public static void OnCompleted(Pawn pawn, SSCSelfTrainingSnapshot snapshot)
         {
             int stage = SSCSelfTrainingFeedbackRules.NormalizeStage(SSCIdentityUtility.GetSexSlaveStage(pawn));
             bool masochist = xxx.is_masochist(pawn);
@@ -31,7 +31,7 @@ namespace SexSlaveCraft
             }
 
             Messages.Message("SSC_SelfTraining_Outcome".Translate(
-                pawn.LabelShortCap, snapshot.Score.ToString("F1"), grantedGain.ToString("P1")),
+                pawn.LabelShortCap, snapshot.Score.ToString("F1"), snapshot.CorruptionGain.ToString("P1")),
                 pawn, MessageTypeDefOf.NeutralEvent, false);
         }
 
