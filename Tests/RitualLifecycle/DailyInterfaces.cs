@@ -89,10 +89,10 @@ namespace SexSlaveCraft
             TestWorld.OnDailyOutcome?.Invoke();
         }
     }
-    public static class CombatantSpecializationProgressUtility
+    public static class SpecializationTrainingProgressUtility
     {
-        // 数值与主人关系由 CombatantSpecialization 套件验证，这里记录真实 Job 的发奖时序。
-        public static float NotifyDailyTrainingCompleted(Pawn trainer, Pawn receiver, float score)
+        // 数值与主人关系由特化进度套件验证，这里记录真实 Job 的发奖时序。
+        public static float NotifyTrainingCompleted(Pawn trainer, Pawn receiver, float score)
         {
             TestWorld.CombatantProgressAwards++;
             TestWorld.CombatantScore = score;

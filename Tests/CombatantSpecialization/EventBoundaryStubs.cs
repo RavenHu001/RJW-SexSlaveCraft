@@ -50,6 +50,7 @@ namespace Verse.AI
 }
 namespace RimWorld
 {
+    public static class MessageTypeDefOf { public static readonly object PositiveEvent = new object(); }
     public static class DamageDefOf
     {
         public static readonly DamageDef ExecutionCut = new DamageDef();

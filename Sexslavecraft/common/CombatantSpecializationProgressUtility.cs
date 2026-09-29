@@ -3,7 +3,7 @@ using Verse;
 
 namespace SexSlaveCraft
 {
-    /// <summary>事件层确认完成及一次性认领；此处统一计算并提交战斗员普通培养进度。</summary>
+    /// <summary>保留战斗员击杀经验，并提供目前供全部方向复用的受训评分公式。</summary>
     public static class CombatantSpecializationProgressUtility
     {
         public const float TrainingScoreDivisor = 2000f;
@@ -51,12 +51,5 @@ namespace SexSlaveCraft
             return after - before;
         }
 
-        /// <summary>只供完整日常结算调用；非主人同样有基础收益，绑定关系仅决定额外倍率。</summary>
-        public static float NotifyDailyTrainingCompleted(Pawn trainer, Pawn receiver, float score)
-        {
-            if (trainer == null || receiver == null || trainer == receiver || trainer.Dead || trainer.Destroyed) return 0f;
-            bool byBoundMaster = SSCBondUtility.GetBoundMaster(receiver) == trainer;
-            return TryGainProgress(receiver, TrainingProgress(score, byBoundMaster));
-        }
     }
 }

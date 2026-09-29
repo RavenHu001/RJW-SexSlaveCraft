@@ -81,10 +81,13 @@ namespace SexSlaveCraft
                 }
                 else
                 {
-                    // EN: Two-way sync so trade/training severity gains fold into progress instead of being wiped.
-                    // CN: 双向同步：交易/调教积累的严重度会并入进度，而不是被进度覆盖洗掉。
-                    hediff.Severity = Mathf.Max(hediff.Severity, InitialHediffSeverity, comp.specializationProgress);
-                    comp.specializationProgress = Mathf.Max(comp.specializationProgress, hediff.Severity);
+                    // 显示用的 0.01 不代表已取得经验；仅导入真正高于显示下限的
+                    // 外部 Hediff 进度，之后由组件进度同步状态。
+                    float markerProgress = hediff.Severity > InitialHediffSeverity
+                        ? CompSexSlaveTraining.NormalizeSpecializationProgress(hediff.Severity) : 0f;
+                    comp.specializationProgress = Mathf.Max(
+                        CompSexSlaveTraining.NormalizeSpecializationProgress(comp.specializationProgress), markerProgress);
+                    hediff.Severity = Mathf.Max(InitialHediffSeverity, comp.specializationProgress);
                 }
             }
         }
@@ -136,8 +139,11 @@ namespace SexSlaveCraft
                 }
                 else
                 {
-                    hediff.Severity = Mathf.Max(hediff.Severity, InitialHediffSeverity, comp.specializationProgress);
-                    comp.specializationProgress = Mathf.Max(comp.specializationProgress, hediff.Severity);
+                    float markerProgress = hediff.Severity > InitialHediffSeverity
+                        ? CompSexSlaveTraining.NormalizeSpecializationProgress(hediff.Severity) : 0f;
+                    comp.specializationProgress = Mathf.Max(
+                        CompSexSlaveTraining.NormalizeSpecializationProgress(comp.specializationProgress), markerProgress);
+                    hediff.Severity = Mathf.Max(InitialHediffSeverity, comp.specializationProgress);
                 }
             }
         }
@@ -163,6 +169,9 @@ namespace SexSlaveCraft
 
             CompSexSlaveTraining comp = pawn.TryGetComp<CompSexSlaveTraining>();
             if (comp == null || !comp.IsBusSpecialized) return;
+            if (HasFinalBusState(pawn)) return;
+            EnsureBusHediffFromSpecialization(pawn);
+            if (comp.specializationProgress >= CompSexSlaveTraining.SpecializationCompletionProgress) return;
 
             Pawn owner = GetOwner(pawn, comp);
             if (owner != null && owner == otherPawn) return;
@@ -182,6 +191,9 @@ namespace SexSlaveCraft
 
             CompSexSlaveTraining comp = pawn.TryGetComp<CompSexSlaveTraining>();
             if (comp == null || !comp.IsCowSpecialized) return;
+            if (HasFinalCowState(pawn)) return;
+            EnsureCowHediffFromSpecialization(pawn);
+            if (comp.specializationProgress >= CompSexSlaveTraining.SpecializationCompletionProgress) return;
             if (!pawn.health.hediffSet.HasHediff(SSCDefOf.SSC_Lactating_SubState)) return;
 
             float oldProgress = comp.specializationProgress;

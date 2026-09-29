@@ -13,6 +13,7 @@
     <Compile Include="$(SscSourceRoot)/common/ResearchUtils.cs" Link="Production/ResearchUtils.cs" />
     <Compile Include="$(SscSourceRoot)/ITab/ITab_SexSlaveTraining.SpecializationDisplay.cs" Link="Production/ITab_SexSlaveTraining.SpecializationDisplay.cs" />
     <Compile Include="$(SscSourceRoot)/common/CombatantSpecializationProgressUtility.cs" Link="Production/CombatantSpecializationProgressUtility.cs" />
+    <Compile Include="$(SscSourceRoot)/common/SpecializationTrainingProgressUtility.cs" Link="Production/SpecializationTrainingProgressUtility.cs" />
     <Compile Include="$(SscSourceRoot)/common/CombatantKillUtility.cs" Link="Production/CombatantKillUtility.cs" />
     <Compile Include="$(SscSourceRoot)/ThePatches/Harmony_CombatantExperience.cs" Link="Production/Harmony_CombatantExperience.cs" />
     <Reference Include="0Harmony"><HintPath>$(HarmonyAssemblyPath)</HintPath></Reference>

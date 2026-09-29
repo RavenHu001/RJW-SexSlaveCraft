@@ -297,11 +297,10 @@ namespace SexSlaveCraft
                 compToggle.Notify_TrainingCompleted();
             }
 
-            // RJW 的 ProcessSex 也会经过普通双人经验补丁，但该补丁排除 SSC
-            // 日常 Job；这里在真正完成全部训练结算后，给双方各自的特化发奖。
-            // 整次认领已在进入结算前保存；两种特化各自判断，不互相阻止。
-            TrainerSpecializationProgressUtility.NotifyTrainingCompleted(pawn, Partner);
-            CombatantSpecializationProgressUtility.NotifyDailyTrainingCompleted(pawn, Partner, score);
+            // 整次认领已在进入结算前保存；受训者只领取当前方向的一份基础经验，
+            // 施教者的训导官特色经验独立判断。RJW 普通双人经验补丁排除 SSC 日常 Job。
+            SpecializationTrainingProgressUtility.NotifyTrainingCompleted(pawn, Partner, score);
+            TrainerSpecializationProgressUtility.NotifyProvidedTrainingCompleted(pawn, Partner);
 
             string finalSexType = Sexprops != null ? Sexprops.sexType.ToString() : "null";
             SSCLog.Important($"[SSC_TRAIN] Daily training completed: trainer={pawn.LabelShort}, slave={Partner.LabelShort}, sexType={finalSexType}, score={score:F2}, cooldownStarted={(compToggle != null)}");

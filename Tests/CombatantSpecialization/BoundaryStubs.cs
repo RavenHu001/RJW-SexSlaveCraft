@@ -9,6 +9,8 @@ namespace Verse
     public class Thing { public bool Destroyed; }
     public partial class Pawn : Thing
     {
+        public string LabelShort => "pawn";
+        public bool TrainerEligible = true, TrainerFinal, PetFinal;
         public bool IsColonist = true, IsPrisonerOfColony, IsSlave;
         public CompSexSlaveTraining Training;
         public Health health;
@@ -58,6 +60,10 @@ namespace Verse
     {
         public static string ToStringPercent(this float value) => value.ToString("P0");
     }
+    public static class Messages
+    {
+        public static void Message(string text, Pawn pawn, object type, bool historical) { }
+    }
 }
 
 namespace SexSlaveCraft
@@ -100,7 +106,20 @@ namespace SexSlaveCraft
     }
     public static class TrainerSpecializationUtility
     {
-        public static bool HasFinalRecord(Pawn p) => false;
+        public static bool HasFinalRecord(Pawn p) => p?.TrainerFinal == true;
+        public static bool MeetsContinuousConditions(Pawn p, out object failure)
+        {
+            failure = null;
+            return p?.TrainerEligible == true;
+        }
+    }
+    public static class TrainerSpecializationProgressUtility
+    {
+        public static float TryGainProgress(Pawn p, float amount)
+        {
+            float before = p.Training.specializationProgress;
+            return p.Training.AddSpecializationProgress(amount) - before;
+        }
     }
     public static class BusSpecializationUtility
     {
@@ -111,13 +130,21 @@ namespace SexSlaveCraft
     }
     public static class PetSpecializationUtility
     {
-        public static bool HasFinalPetState(Pawn p, SexSlaveSpecializationType t) => false;
+        public static bool HasFinalPetState(Pawn p, SexSlaveSpecializationType t) => p?.PetFinal == true;
         public static void EnsurePetHediffFromSpecialization(Pawn p) { }
+        public static bool TryGainPetProgress(Pawn p, SexSlaveSpecializationType t, float amount)
+        {
+            if (p?.Training?.specializationType != t) return false;
+            p.Training.AddSpecializationProgress(amount);
+            return true;
+        }
         public static HediffDef GetBaseHediffDef(SexSlaveSpecializationType t) => null;
         public static string GetSpecializationLabel(SexSlaveSpecializationType t) => t.ToString();
     }
     public static class Strings
     {
+        public static string Message_BusSpecializationUnlocked(string name) => name;
+        public static string Message_CowSpecializationUnlocked(string name) => name;
         public const string ITab_SpecializationCombatantDisabledIdentity = "sex slave identity required";
         public const string ITab_SpecializationCombatantDisabledResearch = "research required";
         public const string ITab_SpecializationNone = "none";

@@ -6,9 +6,7 @@ namespace SexSlaveCraft
     /// <remarks>任务是否真正完成及一次性认领由各自的 Job 或仪式状态负责；这里统一检查领取者资格与数值。</remarks>
     public static class TrainerSpecializationProgressUtility
     {
-        // 被调教最高、调教别人其次、主动双人性行为最低。数值集中在此，
-        // 避免日常、仪式和 RJW 行为补丁使用不同的成长速度。
-        public const float ReceivedTrainingProgress = 0.05f;
+        // 被调教经验由所有方向共用的动态评分入口发放；这里只保留特色来源。
         public const float ProvidedTrainingProgress = 0.025f;
         public const float InitiatedSexProgress = 0.01f;
 
@@ -26,7 +24,8 @@ namespace SexSlaveCraft
             // 普通进度已达 100% 但尚未使用人格凝胶终极化时，不再重复累计；
             // 终极化记录也不能借当前方向重新获得普通培养进度。
             float before = comp.specializationProgress;
-            if (float.IsNaN(before) || float.IsInfinity(before) || before < 0f || before >= 1f) return 0f;
+            if (float.IsNaN(before) || float.IsInfinity(before) || before < 0f ||
+                before >= CompSexSlaveTraining.SpecializationCompletionProgress) return 0f;
             float after = comp.AddSpecializationProgress(amount);
             float gained = after - before;
             if (gained <= 0f || float.IsNaN(gained) || float.IsInfinity(gained)) return 0f;
@@ -37,17 +36,10 @@ namespace SexSlaveCraft
             return gained;
         }
 
-        /// <summary>一场完成的日常调教或整场绑定仪式，分别判断受训者与施教者的成长资格。</summary>
-        public static void NotifyTrainingCompleted(Pawn trainer, Pawn receiver)
+        /// <summary>一场完成的日常调教或整场绑定仪式，只判断施教者的训导官特色收益。</summary>
+        public static void NotifyProvidedTrainingCompleted(Pawn trainer, Pawn receiver)
         {
-            // 发起者和接收者必须是两名仍存在的角色。两种收益互不依赖：
-            // 主人不培养训导官时，正在培养的受训性奴仍可取得被调教经验。
             if (trainer == null || receiver == null || trainer == receiver) return;
-            if (!receiver.Dead && !receiver.Destroyed)
-                TryGainProgress(receiver, ReceivedTrainingProgress);
-
-            // 双方各自判断。受训者在完成收尾时失去培养资格，不应影响仍
-            // 符合任职条件的施教者；施教者失格也不影响受训者已有的收益。
             if (trainer.Dead || trainer.Destroyed || receiver.Dead || receiver.Destroyed) return;
 
             // 施教经验只能来自真正以调教员身份完成的工作。个人开关和 20% 门槛

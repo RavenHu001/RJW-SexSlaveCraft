@@ -365,7 +365,7 @@ namespace SexSlaveCraft
     public static class TrainerSpecializationProgressUtility
     {
         /// <summary>记录真实日常驱动到达新增经验事件的次数；资格与数值由 TrainerIdentity 的生产工具用例验证。</summary>
-        public static void NotifyTrainingCompleted(Pawn trainer, Pawn receiver)
+        public static void NotifyProvidedTrainingCompleted(Pawn trainer, Pawn receiver)
             => TestWorld.TrainerProgressAwards++;
     }
     public static partial class SSCDefOf

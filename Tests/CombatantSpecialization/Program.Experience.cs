@@ -15,6 +15,60 @@ internal static partial class Program
     private static void RunExperienceCases()
     {
         new Harmony("ssc.tests.combatant").PatchAll(typeof(Program).Assembly);
+        Run("日常与仪式使用相同动态公式，仪式分数不使用部位虚拟量纲", () =>
+        {
+            Equal(60f, SpecializationTrainingProgressUtility.RitualScore(.8f));
+            Equal(.03f, CombatantSpecializationProgressUtility.TrainingProgress(
+                SpecializationTrainingProgressUtility.RitualScore(.8f), false));
+            Equal(0f, SpecializationTrainingProgressUtility.RitualScore(float.NaN));
+            Equal(0f, SpecializationTrainingProgressUtility.RitualScore(float.PositiveInfinity));
+        });
+        Run("公共受训经验只增长当前方向，并遵守完成、终极和资格门槛", () =>
+        {
+            foreach (SexSlaveSpecializationType type in new[]
+            {
+                SexSlaveSpecializationType.Bus, SexSlaveSpecializationType.Cow,
+                SexSlaveSpecializationType.PetCat, SexSlaveSpecializationType.PetDog,
+                SexSlaveSpecializationType.PetRabbit, SexSlaveSpecializationType.TrainerOfficer,
+                SexSlaveSpecializationType.Combatant
+            })
+            {
+                Pawn trainer = Pawn(), receiver = Pawn();
+                receiver.Training.SetSpecialization(type);
+                Equal(.02f, SpecializationTrainingProgressUtility.NotifyTrainingCompleted(trainer, receiver, 40f));
+                Equal(.02f, receiver.Training.specializationProgress);
+                Equal(0f, trainer.Training.specializationProgress);
+                receiver.Training.specializationProgress = .999f;
+                Equal(0f, SpecializationTrainingProgressUtility.NotifyTrainingCompleted(trainer, receiver, 40f));
+                receiver.Training.specializationProgress = .25f;
+                switch (type)
+                {
+                    case SexSlaveSpecializationType.Bus:
+                        receiver.health.AddHediff(SSCDefOf.SSC_Hediff_Bus_Final);
+                        break;
+                    case SexSlaveSpecializationType.Cow:
+                        receiver.health.AddHediff(SSCDefOf.SSC_Hediff_Cow_Final);
+                        break;
+                    case SexSlaveSpecializationType.TrainerOfficer:
+                        receiver.TrainerFinal = true;
+                        break;
+                    case SexSlaveSpecializationType.Combatant:
+                        receiver.health.AddHediff(SSCDefOf.SSC_Hediff_Combatant_Final);
+                        break;
+                    default:
+                        receiver.PetFinal = true;
+                        break;
+                }
+                Equal(0f, SpecializationTrainingProgressUtility.NotifyTrainingCompleted(trainer, receiver, 40f));
+                Equal(.25f, receiver.Training.specializationProgress);
+            }
+            Pawn disqualified = Pawn();
+            disqualified.Training.SetSpecialization(SexSlaveSpecializationType.TrainerOfficer);
+            disqualified.TrainerEligible = false;
+            Equal(0f, SpecializationTrainingProgressUtility.NotifyTrainingCompleted(Pawn(), disqualified, 40f));
+            Pawn noDirection = Pawn();
+            Equal(0f, SpecializationTrainingProgressUtility.NotifyTrainingCompleted(Pawn(), noDirection, 40f));
+        });
         Run("评分动态收益、主人倍率及两个上限", () =>
         {
             foreach (var v in new[] { (0f, 0f), (-20f, 0f), (20f, .01f), (40f, .02f), (60f, .03f), (80f, .04f), (200f, .04f), (float.MaxValue, .04f) })
@@ -39,12 +93,12 @@ internal static partial class Program
         {
             Pawn master = Pawn(PawnIdentity.Master), other = Pawn(PawnIdentity.Master);
             Pawn receiver = Combatant(); receiver.BoundMaster = master; receiver.AssignedTrainer = other;
-            Equal(.03f, CombatantSpecializationProgressUtility.NotifyDailyTrainingCompleted(master, receiver, 40));
-            Equal(.02f, CombatantSpecializationProgressUtility.NotifyDailyTrainingCompleted(other, receiver, 40));
+            Equal(.03f, SpecializationTrainingProgressUtility.NotifyTrainingCompleted(master, receiver, 40));
+            Equal(.02f, SpecializationTrainingProgressUtility.NotifyTrainingCompleted(other, receiver, 40));
             receiver.BoundMaster = null;
-            Equal(.02f, CombatantSpecializationProgressUtility.NotifyDailyTrainingCompleted(other, receiver, 40));
+            Equal(.02f, SpecializationTrainingProgressUtility.NotifyTrainingCompleted(other, receiver, 40));
             receiver.BoundMaster = other;
-            Equal(.03f, CombatantSpecializationProgressUtility.NotifyDailyTrainingCompleted(other, receiver, 40));
+            Equal(.03f, SpecializationTrainingProgressUtility.NotifyTrainingCompleted(other, receiver, 40));
             Equal(.10f, Ordinary(receiver).Severity);
             Equal(0, master.Training.specializationProgress);
         });
@@ -58,7 +112,7 @@ internal static partial class Program
                 Pawn receiver = Pawn(identity); Train(receiver, progress);
                 receiver.IsColonist = false; receiver.IsSlave = true;
                 bool eligible = identity == PawnIdentity.Slave;
-                Equal(eligible ? .02f : 0, CombatantSpecializationProgressUtility.NotifyDailyTrainingCompleted(Pawn(), receiver, 40));
+                Equal(eligible ? .02f : 0, SpecializationTrainingProgressUtility.NotifyTrainingCompleted(Pawn(), receiver, 40));
                 Equal(progress + (eligible ? .02f : 0), receiver.Training.specializationProgress);
                 new Pawn().Kill(Hit(receiver));
                 Equal(progress + (eligible ? .03f : 0), receiver.Training.specializationProgress);
@@ -68,12 +122,12 @@ internal static partial class Program
         Run("无效参与者与错误方向不获奖", () =>
         {
             Pawn p = Combatant(), trainer = Pawn();
-            Equal(0, CombatantSpecializationProgressUtility.NotifyDailyTrainingCompleted(null, p, 80));
-            Equal(0, CombatantSpecializationProgressUtility.NotifyDailyTrainingCompleted(p, p, 80));
+            Equal(0, SpecializationTrainingProgressUtility.NotifyTrainingCompleted(null, p, 80));
+            Equal(0, SpecializationTrainingProgressUtility.NotifyTrainingCompleted(p, p, 80));
             trainer.Dead = true;
-            Equal(0, CombatantSpecializationProgressUtility.NotifyDailyTrainingCompleted(trainer, p, 80));
+            Equal(0, SpecializationTrainingProgressUtility.NotifyTrainingCompleted(trainer, p, 80));
             trainer.Dead = false; trainer.Destroyed = true;
-            Equal(0, CombatantSpecializationProgressUtility.NotifyDailyTrainingCompleted(trainer, p, 80));
+            Equal(0, SpecializationTrainingProgressUtility.NotifyTrainingCompleted(trainer, p, 80));
             foreach (SexSlaveSpecializationType direction in Enum.GetValues<SexSlaveSpecializationType>())
             {
                 if (direction == SexSlaveSpecializationType.Combatant) continue;

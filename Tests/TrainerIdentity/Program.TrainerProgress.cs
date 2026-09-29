@@ -8,7 +8,7 @@ internal static partial class Program
     private static bool NearProgress(float actual, float expected)
         => Math.Abs(actual - expected) < 0.00001f;
 
-    /// <summary>以生产经验工具检验三种收益、前置资格、异常值和终极化边界。</summary>
+    /// <summary>以生产经验工具检验训导官特色收益、前置资格、异常值和终极化边界。</summary>
     private static void RunTrainerProgressTests()
     {
         Run("真实浮点累计达到普通完成容差时显示完成", () =>
@@ -39,14 +39,10 @@ internal static partial class Program
             Assert(TrainerSpecializationUtility.GetDisplayState(boundary) == TrainerSpecializationDisplayState.OrdinaryComplete);
         });
 
-        Run("训导官三类经验单次收益按被调教、施教、主动行为递减", () =>
+        Run("训导官保留施教和主动行为两类特色经验", () =>
         {
-            // 数值来自统一工具，避免不同事件自行写常量导致策划顺序失效。
-            Assert(TrainerSpecializationProgressUtility.ReceivedTrainingProgress == 0.05f);
             Assert(TrainerSpecializationProgressUtility.ProvidedTrainingProgress == 0.025f);
             Assert(TrainerSpecializationProgressUtility.InitiatedSexProgress == 0.01f);
-            Assert(TrainerSpecializationProgressUtility.ReceivedTrainingProgress
-                > TrainerSpecializationProgressUtility.ProvidedTrainingProgress);
             Assert(TrainerSpecializationProgressUtility.ProvidedTrainingProgress
                 > TrainerSpecializationProgressUtility.InitiatedSexProgress);
         });
@@ -70,30 +66,30 @@ internal static partial class Program
             Assert(TrainerSpecializationUtility.HasTrainerQualification(actor, out _));
         });
 
-        Run("成功日常调教分别给符合条件的受训者和施教者结算", () =>
+        Run("施教特色经验只给符合条件的训导官，不给受训者固定奖励", () =>
         {
-            // 20% 基础阶段前，接收方获得最高收益，施教性奴不会绕过门槛。
+            // 受训基础收益交给统一入口；施教性奴仍不能绕过 20% 任职门槛。
             Pawn actor = EligibleTrainerPawn();
             actor.Training.SetSpecialization(SexSlaveSpecializationType.TrainerOfficer);
             actor.Training.slaveTrainerEnabled = true;
             Pawn receiver = EligibleTrainerPawn();
             receiver.Training.SetSpecialization(SexSlaveSpecializationType.TrainerOfficer);
-            TrainerSpecializationProgressUtility.NotifyTrainingCompleted(actor, receiver);
+            TrainerSpecializationProgressUtility.NotifyProvidedTrainingCompleted(actor, receiver);
             Assert(actor.Training.specializationProgress == 0f);
-            Assert(NearProgress(receiver.Training.specializationProgress, 0.05f));
+            Assert(receiver.Training.specializationProgress == 0f);
 
             // 解锁后再成功完成一场，双方独立领取对应来源，普通性交来源不得叠加在此入口。
             actor.Training.specializationProgress = 0.2f;
             TrainerSpecializationLifecycle.Maintain(actor);
-            TrainerSpecializationProgressUtility.NotifyTrainingCompleted(actor, receiver);
+            TrainerSpecializationProgressUtility.NotifyProvidedTrainingCompleted(actor, receiver);
             Assert(NearProgress(actor.Training.specializationProgress, 0.225f));
-            Assert(NearProgress(receiver.Training.specializationProgress, 0.1f));
+            Assert(receiver.Training.specializationProgress == 0f);
 
             // 玩家关闭个人选择后只停止施教经验，受训者的方向进度仍按自身条件结算。
             actor.Training.slaveTrainerEnabled = false;
-            TrainerSpecializationProgressUtility.NotifyTrainingCompleted(actor, receiver);
+            TrainerSpecializationProgressUtility.NotifyProvidedTrainingCompleted(actor, receiver);
             Assert(NearProgress(actor.Training.specializationProgress, 0.225f));
-            Assert(NearProgress(receiver.Training.specializationProgress, 0.15f));
+            Assert(receiver.Training.specializationProgress == 0f);
         });
 
         Run("异常增量、失格、切方向与终极记录都不能写入训导官进度", () =>

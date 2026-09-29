@@ -144,10 +144,13 @@ namespace SexSlaveCraft
                 }
                 else
                 {
-                    // EN: Two-way sync so injected/lost severity is folded into progress instead of being downgraded.
-                    // CN: 双向同步：注入或已存在的更高严重度并入进度，避免被降级。
-                    hediff.Severity = Mathf.Max(hediff.Severity, InitialHediffSeverity, comp.specializationProgress);
-                    comp.specializationProgress = Mathf.Max(comp.specializationProgress, hediff.Severity);
+                    // 初始 0.01 仅用于显示，不能在下次对账时反写成经验。
+                    // 更高的外部 Hediff 进度仍导入组件，供旧档和注入内容使用。
+                    float markerProgress = hediff.Severity > InitialHediffSeverity
+                        ? CompSexSlaveTraining.NormalizeSpecializationProgress(hediff.Severity) : 0f;
+                    comp.specializationProgress = Mathf.Max(
+                        CompSexSlaveTraining.NormalizeSpecializationProgress(comp.specializationProgress), markerProgress);
+                    hediff.Severity = Mathf.Max(InitialHediffSeverity, comp.specializationProgress);
                 }
             }
         }
@@ -195,10 +198,13 @@ namespace SexSlaveCraft
 
         public static bool TryGainPetProgress(Pawn pawn, SexSlaveSpecializationType type, float amount, bool showThresholdMessage = true)
         {
-            if (pawn == null || amount <= 0f || !IsPetSpecialization(type)) return false;
+            if (pawn == null || amount <= 0f || float.IsNaN(amount) || float.IsInfinity(amount) ||
+                !IsPetSpecialization(type) || HasFinalPetState(pawn, type)) return false;
 
             CompSexSlaveTraining comp = pawn.TryGetComp<CompSexSlaveTraining>();
             if (comp == null || comp.specializationType != type) return false;
+            EnsurePetHediffFromSpecialization(pawn);
+            if (comp.specializationProgress >= CompSexSlaveTraining.SpecializationCompletionProgress) return false;
 
             float oldProgress = comp.specializationProgress;
             comp.AddSpecializationProgress(amount);

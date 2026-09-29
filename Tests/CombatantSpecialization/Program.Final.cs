@@ -31,7 +31,7 @@ internal static partial class Program
         var p = Pawn(); Train(p, 0.3f);
         p.health.AddHediff(SSCDefOf.SSC_Hediff_Combatant_Final);
         Check(!CombatantSpecializationUtility.CanSelect(p, out var reason) && reason == Strings.ITab_SpecializationFinalizedSuffix, "允许重复选择");
-        Equal(0f, CombatantSpecializationProgressUtility.NotifyDailyTrainingCompleted(Pawn(), p, 80f));
+        Equal(0f, SpecializationTrainingProgressUtility.NotifyTrainingCompleted(Pawn(), p, 80f));
         Equal(0f, CombatantSpecializationProgressUtility.TryGainProgress(p, CombatantSpecializationProgressUtility.KillProgress(2f)));
         Equal(0.3f, p.Training.specializationProgress);
     }

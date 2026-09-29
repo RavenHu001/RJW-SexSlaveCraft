@@ -92,12 +92,12 @@ corruption numerical behavior.
 
 Stage 3B also links the production daily driver and restriction core/adapter. Its cases cover preparation failure, walking cleanup, unstarted scene settlement, stale callbacks, normal daily payout, owner precedence, phase cancellation and cancellation ownership. Cancellation is modeled by invoking the production cleanup patches after removing the lord; the real RimWorld signal graph is not executed. Exact restriction save markers and Harmony dispatch are covered by InteractionProtection; role selection and the full trainer identity utility are covered by TrainerIdentity.
 
-The Training Officer Stage 3 assertions require a completed daily scene to notify specialization progress once. A repeated payout callback cannot notify it again; the actual progress calculation is covered by TrainerIdentity.
+The Training Officer Stage 3 assertions require a completed daily scene to notify the trainer's provided-training reward once. A repeated payout callback cannot notify it again; TrainerIdentity covers that reward's eligibility, while CombatantSpecialization covers the shared receiver formula.
 
-The eight stage-two combatant cases run the production daily driver to verify one
-score shared by the formal outcome, body experience and combatant award; repeated
+The eight daily specialization cases run the production daily driver to verify one
+score shared by the formal outcome, body experience and common base award; repeated
 or reentrant callbacks; partial-outcome exceptions; reconstruction of completed
 and unfinished jobs through their actual ExposeData keys; interruptions; separate
-jobs; and exclusion of ritual phases. Outcome calculations and the combatant award
-are observable boundary stubs here; the actual combatant rules run in the
+jobs; and exclusion of ritual phases. Outcome calculations and the base award
+are observable boundary stubs here; the formula and direction rules run in the
 CombatantSpecialization suite. The Scribe dictionary model is not a real game save.

@@ -32,13 +32,6 @@ namespace SexSlaveCraft
 
             CorruptionUtility.AddCorruption(sexSlave, corruptionGain);
 
-            float hediffIncrease = corruptionGain * 0.5f;
-            if (BusSpecializationUtility.ShouldProcessBusGrowth(sexSlave))
-            {
-                BusSpecializationUtility.EnsureBusHediffFromSpecialization(sexSlave);
-                IncreaseBusHediffSeverity(sexSlave, hediffIncrease);
-            }
-
             WillReductionUtility.ApplyWillReductionByCorruptionBand(master, sexSlave, corruptionGain, false);
             CorruptionProgressionUtility.ProcessCorruptionProgression(master, sexSlave, false, score);
 
@@ -64,13 +57,6 @@ namespace SexSlaveCraft
             corruptionGain *= SSCMasterBondUtility.GetTrainingCorruptionMultiplier(master);
             CorruptionUtility.AddCorruption(sexSlave, corruptionGain);
 
-            float hediffIncrease = corruptionGain * 0.5f;
-            if (BusSpecializationUtility.ShouldProcessBusGrowth(sexSlave))
-            {
-                BusSpecializationUtility.EnsureBusHediffFromSpecialization(sexSlave);
-                IncreaseBusHediffSeverity(sexSlave, hediffIncrease);
-            }
-
             WillReductionUtility.ApplyWillReductionByCorruptionBand(master, sexSlave, corruptionGain, false);
             CorruptionProgressionUtility.ProcessCorruptionProgression(master, sexSlave, false, score);
 
@@ -89,7 +75,7 @@ namespace SexSlaveCraft
                 return ExecuteRitualOutcome_Legacy(master, sexSlave, quality, ritualOutcomeMemory);
             }
 
-            float finalScore = quality * 75f;
+            float finalScore = quality * SpecializationTrainingProgressUtility.RitualScorePerQuality;
             int finalLevel = (quality >= 0.8f) ? 3 : ((quality <= 0.25f) ? 1 : 2);
             float corruptionGain = quality * 0.08f * 2.0f;
 
@@ -137,7 +123,7 @@ namespace SexSlaveCraft
 
         private static string ExecuteRitualOutcome_Legacy(Pawn master, Pawn sexSlave, float quality, ThoughtDef ritualOutcomeMemory)
         {
-            float finalScore = quality * 75f;
+            float finalScore = quality * SpecializationTrainingProgressUtility.RitualScorePerQuality;
             int finalLevel = (quality >= 0.8f) ? 3 : ((quality <= 0.25f) ? 1 : 2);
             float corruptionGain = quality * 0.08f * 2.0f;
             corruptionGain *= SSCMasterBondUtility.GetTrainingCorruptionMultiplier(master);
@@ -225,6 +211,7 @@ namespace SexSlaveCraft
         public static string ProcessCorruptionProgression(Pawn Master, Pawn SexSlave, bool isRitual, float score = 0f)
             => CorruptionProgressionUtility.ProcessCorruptionProgression(Master, SexSlave, isRitual, score);
 
+        /// <summary>公交车交易保留独立的特色成长；日常受训改由公共基础经验结算。</summary>
         public static void IncreaseBusHediffSeverity(Pawn pawn, float amount)
         {
             if (!BusSpecializationUtility.ShouldProcessBusGrowth(pawn)) return;
@@ -233,9 +220,8 @@ namespace SexSlaveCraft
 
             CompSexSlaveTraining comp = pawn?.TryGetComp<CompSexSlaveTraining>();
             if (comp == null) return;
+            if (comp.specializationProgress >= CompSexSlaveTraining.SpecializationCompletionProgress) return;
 
-            // EN: All bus growth now lands on the single progress track; the hediff severity is derived from it.
-            // CN: 公交车成长统一走 progress 单轨，hediff 严重度由 progress 派生，避免双轨互相覆盖。
             comp.AddSpecializationProgress(amount);
             BusSpecializationUtility.EnsureBusHediffFromSpecialization(pawn);
         }
