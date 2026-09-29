@@ -4,6 +4,11 @@
 
 This continuation builds on upstream **2.2.8**, the baseline when upstream development stopped in July, and retains its version numbering. Entries are listed newest first. Technical details are in the [development log (Chinese)](Docs/Development/开发更新记录.md).
 
+## 未发布 / Unreleased — 2026-09-29 — 统一特化基础培养经验 / Unified specialization Training progress
+
+- **统一受训成长 / Shared Training progress:** 当前正在培养的性奴特化在完整日常调教或绑定仪式成功结算后获得一次基础经验，沿用战斗员评分公式：`min(score / 2000, 0.04)`，由实际绑定主人施教时再乘 1.5。仪式评分为 `quality × 75`；中断、重复回调、普通培养完成或已有该方向终极成果时不再发放。猫、兔的选择入口仍未开放，自我调教不提供这项特化经验。The current Sex Slave specialization gains one base progress reward after completed daily Training or a successful full Binding Ritual. It uses the Combatant formula, `min(score / 2000, 0.04)`, multiplied by 1.5 when the actual bound master trains the pawn. Rituals use `quality × 75` as the score. Interrupted or duplicate outcomes and completed or finalized specializations grant no further base progress. Cat and Rabbit selection remain disabled; self-training does not grant this progress.
+- **既有奖励与验证 / Existing rewards and validation:** 训导官原固定受训奖励和公交车旧日常受训增量已由公共基础经验替换；训导官施教、战斗员直接击杀及其他特色来源保留。实现提交为 `36e9483`，Release 构建和 20 套自动回归 968/968 通过，维护者已确认游戏内有效。猫狗新技能、宠物互斥和亲昵扩展仍在规划中；详见[专项规划](Docs/Design/猫狗特化与统一培养经验初步规划.md)。The former fixed Training Officer reward and Public Use daily Training increment are replaced by shared base progress; Training Officer teaching, Combatant direct kills and other distinct sources remain. Commit `36e9483` passed a Release build and all 20 automated suites (968/968), and the maintainer confirmed it works in game. New Cat/Dog abilities, pet exclusivity and affection changes remain planned; see the [design plan](Docs/Design/猫狗特化与统一培养经验初步规划.md).
+
 ## [2.3.5] — 2026-09-28 — 自我调教与调教任务交接修复 / Self-training and Training handoff fixes
 
 本版归并 `v2.3.4`（`9c2aadf`）之后至 `abf60d1` 的全部分支更新，并同步版本元数据及文档。2.3.5 已正式发布，安装包与 SHA-256 校验文件见 [v2.3.5 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.5)。详见[中英发布说明](Docs/Releases/2.3.5/2.3.5发布说明.md)和[版本验证](Docs/Releases/2.3.5/2.3.5版本验证.md)。
