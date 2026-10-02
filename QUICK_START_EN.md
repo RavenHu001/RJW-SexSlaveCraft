@@ -2,12 +2,12 @@
 
 [Project home](README.md) · [Documentation index / 文档索引](Docs/README.md) · [中文快速入门](读我，玩法介绍.md) · [Changelog](CHANGELOG.md)
 
-> For RimWorld 1.6 and SexSlaveCraft 2.3.5.\
+> For RimWorld 1.6 and SexSlaveCraft 2.3.6.\
 > This continuation is based on upstream 2.2.8. See `CHANGELOG.md` for release history.\
-> Version 2.3.5 adds self-training permission, manual orders, automatic diversion, scoring and mood feedback, and fixes Training handoffs and stale job callbacks. Download the installation ZIP and SHA-256 checksum from [v2.3.5 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.5). Legacy RimTalk remains suspended; unfinished Pet Cat and Pet Rabbit choices remain disabled.\
+> Version 2.3.6 adds shared base specialization progress from completed daily Training and full Binding Rituals. The 2.3.5 self-training and Training handoff updates remain included. Download the installation ZIP and SHA-256 checksum from [v2.3.6 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.6). Legacy RimTalk remains suspended; unfinished Pet Cat and Pet Rabbit choices remain disabled.\
 > In-game names follow the mod's official English localization. For exact formulas, thresholds, and implementation notes, see `PLAYER_GUIDE_EN.md`.
 
-> See the [2.3.5 notes](Docs/Releases/2.3.5/2.3.5发布说明.md) for this version and the [2.3.2 notes](Docs/Releases/2.3.2/2.3.2发布说明.md) for Training Officer progression, attributes and upgrading.
+> See the [2.3.6 notes](Docs/Releases/2.3.6/2.3.6发布说明.md) for this version and the [2.3.5 notes](Docs/Releases/2.3.5/2.3.5发布说明.md) for self-training.
 
 ## 1. What the Mod Does
 
@@ -251,7 +251,7 @@ At 100%, use Personality Excretion and Personality Gel editing to obtain `Final 
 
 Combatant training uses purple nanofluid to reshape the body and nervous system for melee and ranged combat. Complete Combatant research and set the pawn's SSC identity to Sex Slave on the Training tab. No bound master or chain stage is required.
 
-1. Gain progress through completed daily Training and direct kills. Training by the bound master grants extra progress. Binding Rituals, slaughter and indirect deaths do not count.
+1. Gain progress through completed daily Training, full Binding Rituals and direct kills. Training by the bound master grants extra progress. Slaughter and indirect deaths do not count.
 2. Basic bonuses begin at 20%; stronger bonuses and ongoing damage reduction begin at 50%. Switching specializations preserves progress.
 3. Once training is complete, extract the personality gel, finalize it at a sculpting table, and implant it.
 4. Final bonuses stay with the personality. While drafted, activate Combat Overdrive to stimulate the body's nanomachines for a brief combat boost.

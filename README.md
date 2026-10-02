@@ -1,23 +1,22 @@
 # RJW-SexSlaveCraft · TieJin Modify
 
-RimWorld 1.6 的 RimJobWorld（RJW）扩展模组，基于上游 **2.2.8** 继续维护。此仓库包含模组源码、游戏资源、回归测试及中英文文档，当前仓库版本为 **2.3.5**。
+RimWorld 1.6 的 RimJobWorld（RJW）扩展模组，基于上游 **2.2.8** 继续维护。此仓库包含模组源码、游戏资源、回归测试及中英文文档，当前仓库版本为 **2.3.6**。
 
-[2.3.5 更新说明](Docs/Releases/2.3.5/2.3.5发布说明.md) · [下载安装包](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.5) · [更新日志](CHANGELOG.md) · [文档索引](Docs/README.md) · [English quick start](QUICK_START_EN.md)
+[2.3.6 更新说明](Docs/Releases/2.3.6/2.3.6发布说明.md) · [下载安装包](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.6) · [更新日志](CHANGELOG.md) · [文档索引](Docs/README.md) · [English quick start](QUICK_START_EN.md)
 
-2.3.5 已正式发布，包含自我调教和调教任务交接修复；安装 ZIP 与 SHA-256 校验文件见 [v2.3.5 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.5)。2.3.4 历史安装包不包含这些新增内容。当前构建、回归及实机验证范围见[2.3.5 版本验证](Docs/Releases/2.3.5/2.3.5版本验证.md)。
+2.3.6 已正式发布，统一日常调教与完整绑定仪式的基础特化经验；安装 ZIP 与 SHA-256 校验文件见 [v2.3.6 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.6)。2.3.5 历史安装包不包含这项变更。当前构建、回归及实机验证范围见[2.3.6 版本验证](Docs/Releases/2.3.6/2.3.6版本验证.md)。
 
 ## 项目概况
 
 SexSlaveCraft（SSC）围绕角色培养、身份与绑定关系、特化发展、人格转移及身体改造提供一套玩法系统。本接续版在原有内容基础上维护游戏兼容性、修复问题，并完善交互界面与本地化。
 
-2.3.5 汇总 2.3.4 之后的全部已实现更新：
+2.3.6 相对 2.3.5 的更新：
 
-- 自我调教独立许可、右键手动指派及 RJW 自动候选分流；新角色和旧档缺字段时默认开启，四阶段概率为 30%／55%／80%／50%。
-- 独立评分、受阶段上限约束的收益、一天专用记忆及两类许可状态心情；不占用日常调教冷却，首版仍受禁止自慰基因阻断。
-- 调教站位同步与旧任务回调保护，覆盖共享交接流程的日常调教、绑定仪式、人格排泄和家具接收器。
-- 完善四语反馈，补齐繁中及俄文限制面板并校验语言镜像；修正测试汇总，回归共 20 套、966 项。
+- 当前正在培养的 SSC 性奴特化在完整日常调教或整场绑定仪式成功后获得一次基础经验，沿用战斗员动态评分公式；实际绑定主人施教时收益乘以 1.5。
+- 训导官旧固定受训奖励和公交车旧日常受训增量由公共入口替换；施教、直接击杀等特色来源保留。自我调教不提供基础特化经验，猫、兔选择入口仍禁用。
+- 原有自我调教、调教任务交接保护及其他 2.3.5 内容继续包含在本版中。
 
-完整变更见 [2.3.5 中英发布说明](Docs/Releases/2.3.5/2.3.5发布说明.md)，构建与验证见[版本验证](Docs/Releases/2.3.5/2.3.5版本验证.md)。2.3.2 的升级提示仍见其[发布说明](Docs/Releases/2.3.2/2.3.2发布说明.md)。
+完整变更见 [2.3.6 中英发布说明](Docs/Releases/2.3.6/2.3.6发布说明.md)，构建与验证见[版本验证](Docs/Releases/2.3.6/2.3.6版本验证.md)。2.3.5 自我调教的升级说明仍见其[发布说明](Docs/Releases/2.3.5/2.3.5发布说明.md)。
 
 ## 安装
 
@@ -28,7 +27,7 @@ SexSlaveCraft（SSC）围绕角色培养、身份与绑定关系、特化发展�
 | 加载顺序 | Harmony、RimWorld 本体及 RJW 位于本模组之前 |
 | 绑定仪式 | 需要可用的 Ideology 仪式系统 |
 
-1. 从 [v2.3.5 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.5) 下载 2.3.5 安装 ZIP 和 SHA-256 校验文件。
+1. 从 [v2.3.6 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.6) 下载 2.3.6 安装 ZIP 和 SHA-256 校验文件。
 2. 退出游戏，将 ZIP 内的 `RJW-SexSlaveCraft-TieJin-Modify` 文件夹解压到 `RimWorld/Mods/`。
 3. 更新已有安装时，先将旧模组文件夹移出 `Mods`，再放入新版本，以免残留已删除的文件。
 4. 在游戏中启用依赖与本模组，按上述顺序加载。
@@ -88,10 +87,10 @@ pwsh -File Scripts/New-Release.ps1 -Build
 
 ## English overview
 
-This repository continues RJW-SexSlaveCraft from upstream **2.2.8** for **RimWorld 1.6**. The repository version is **2.3.5**. Harmony and RimJobWorld are required and must load before this mod.
+This repository continues RJW-SexSlaveCraft from upstream **2.2.8** for **RimWorld 1.6**. The repository version is **2.3.6**. Harmony and RimJobWorld are required and must load before this mod.
 
-Version 2.3.5 adds self-training with separate permission, manual orders, automatic diversion, scoring and mood feedback. It fixes Training handoffs and stale job callbacks, completes restriction localization and expands regression coverage to 20 suites and 966 checks. See the [bilingual release notes](Docs/Releases/2.3.5/2.3.5发布说明.md).
+Version 2.3.6 adds shared, score-based base specialization progress after completed daily Training and full Binding Rituals. It replaces the former fixed Training Officer reward and Public Use daily increment while retaining distinct progress sources. See the [bilingual release notes](Docs/Releases/2.3.6/2.3.6发布说明.md).
 
-Version 2.3.5 is released. Download the installation ZIP and SHA-256 checksum from [v2.3.5 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.5). Historical 2.3.4 packages do not include these additions. When updating an installation, move the old mod folder out of `RimWorld/Mods/` before installing the replacement.
+Version 2.3.6 is released. Download the installation ZIP and SHA-256 checksum from [v2.3.6 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.6). Historical 2.3.5 packages do not include shared specialization progress. When updating an installation, move the old mod folder out of `RimWorld/Mods/` before installing the replacement.
 
 For gameplay, read the [English quick start](QUICK_START_EN.md) or [full guide](PLAYER_GUIDE_EN.md). See the [bilingual changelog](CHANGELOG.md) for release history. Legacy RimTalk integration remains suspended, and unfinished Pet Cat and Pet Rabbit choices remain disabled.

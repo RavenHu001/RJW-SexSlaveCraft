@@ -1,12 +1,12 @@
 # RJW-SexSlaveCraft Complete Player Guide
 
-> For RimWorld 1.6 and SexSlaveCraft 2.3.5, based on the current repository code and Defs.\
-> Base audit: 2026-06-30; self-training, Training handoff fixes and validation records updated for 2.3.5 on 2026-09-28.\
+> For RimWorld 1.6 and SexSlaveCraft 2.3.6, based on the current repository code and Defs.\
+> Base audit: 2026-06-30; self-training and Training handoff fixes updated for 2.3.5, shared specialization progress updated for 2.3.6 on 2026-10-02.\
 > Based on upstream 2.2.8; version 2.2.9 includes the specialization and ritual progression fixes, and 2.2.10 fixes stale training locks after interrupted rituals. See `CHANGELOG.md`.\
-> Version 2.3.5 adds self-training permission, manual orders, automatic diversion, scoring and mood feedback, and fixes Training handoffs and stale job callbacks. Download the installation ZIP and SHA-256 checksum from [v2.3.5 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.5). Legacy RimTalk remains suspended; unfinished Pet Cat and Pet Rabbit choices remain disabled.\
+> Version 2.3.6 adds shared base specialization progress from completed daily Training and full Binding Rituals, using the Combatant score formula. The 2.3.5 self-training and Training handoff updates remain included. Download the installation ZIP and SHA-256 checksum from [v2.3.6 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.6). Legacy RimTalk remains suspended; unfinished Pet Cat and Pet Rabbit choices remain disabled.\
 > This guide describes the behavior implemented by the current C# and XML. Where an old changelog or description disagrees with the code, the discrepancy is listed under “Current Limitations and Known Differences.”
 
-> See the [2.3.5 notes](Docs/Releases/2.3.5/2.3.5发布说明.md) for this version and the [2.3.2 notes](Docs/Releases/2.3.2/2.3.2发布说明.md) for Training Officer progression, attributes and upgrading.
+> See the [2.3.6 notes](Docs/Releases/2.3.6/2.3.6发布说明.md) for this version and the [2.3.5 notes](Docs/Releases/2.3.5/2.3.5发布说明.md) for self-training.
 
 ## 1. Scope and Dependencies
 
@@ -772,14 +772,14 @@ The Training tab’s internal option is named `Bus`, but the official player-fac
 ### 12.2 Progress Sources
 
 - Completing any RJW act with someone other than the master: specialization progress `+5%`.
-- Ordinary Training: ordinary Public Use Hediff severity gains half of that session’s Corruption gain.
+- Completed daily Training or a full Binding Ritual: shared score-based base specialization progress; the former half-Corruption daily increment no longer applies.
 - Trade with a pawn trader: ordinary Public Use Hediff gains roughly `10% + calculated Corruption gain`.
 - Trade with a faction settlement: ordinary Public Use Hediff `+10%`.
 - Orbital trade ship: no effect.
 
 Progress accounting is separate from interaction permission. Public Use does not remove the actual bond or grant owner permission to third parties.
 
-The tab’s saved progress and direct Hediff severity changes are separate paths and can desynchronize; see section 22.
+Base Training progress and trade rewards now update the saved component progress and synchronize the ordinary Hediff. Final recipes check the saved progress.
 
 ### 12.3 Stats
 
@@ -1457,7 +1457,7 @@ This section records the audited code behavior and known limitations.
 5. **Basic PNA Launcher checks vanilla Machining only.** Its recipe does not reference SSC’s launcher research.
 6. **Sex Reassignment Surgery is not research-locked.** Its operation exists without a `researchPrerequisite`. Its companion ThoughtDef XML also contains a duplicate `defName`, which may cause a load issue for the success memory.
 7. **Personality trait transfer and the gel UI have been fixed.** The maintainer has confirmed this round of fixes is effective. Ordinary personality traits are now restored from the gel snapshot while preserving the receiving body's genes and their traits. Legacy entries are restored as personality traits because their source was not recorded; new gels save only traits without a gene source. The Sex Slave trait is still rebuilt separately from restored highest-ever Corruption. See the [fix record (Chinese)](Docs/Development/人格普通特质迁移修复.md) for details.
-8. **Public Use has two potentially desynchronized progress values.** The tab uses `specializationProgress`, while trade and some Training logic directly change Public Use Hediff severity. Later tab synchronization can overwrite Hediff-only gains. Final recipes check the tab’s saved progress.
+8. **Public Use progress now uses the saved component.** Version 2.3.6 routes daily base Training progress through the shared component entry; trade rewards also update component progress and synchronize the ordinary Hediff. Final recipes continue to check saved progress.
 9. **Switching directly between Public Use and Cow preserves progress and the other family’s Hediff.** Only selecting no specialization resets progress. This permits coexistence and may also carry progress across types.
 10. **Final Cow does not cause full gelatinization.** Old notes mention this linkage, but current Defs and C# do not add the completed state.
 11. **Apparel decay multipliers run in the opposite direction from their descriptions.** Values 1.1 and 1.5 are multiplied into decay and therefore accelerate it. Their 30%/100% floors activate only after that pawn has historically reached the matching value.
@@ -1573,10 +1573,11 @@ These bonuses begin at 20%. Accuracy ratings are converted through game curves; 
 | Source | Progress gained | Per-event cap |
 | --- | --- | --- |
 | Completed daily Training | `min(score / 2000, 0.04)` | 4 percentage points |
+| Successfully completed full Binding Ritual | Use `ritual quality × 75` as the score in the same formula | 4 percentage points |
 | Training by the actual bound master | Calculate the capped base reward above, then multiply by 1.5 | 6 percentage points |
 | Direct kill | `min(actual body size × 0.01, 0.03)` | 3 percentage points |
 
-Zero or negative scores grant no progress. Other eligible trainers grant the base reward; assigned trainers do not receive the master multiplier merely by being assigned. Interrupted Training and Binding Rituals grant none.
+Zero or negative scores grant no progress. Other eligible trainers grant the base reward; assigned trainers do not receive the master multiplier merely by being assigned. Interrupted Training and incomplete Rituals grant none. Other currently trained specializations use the same base formula; ordinary completion or finalization stops further progress. Self-training grants none.
 
 Kill rewards have no minimum: body size 0.25 grants 0.25 percentage points, and body size 1 grants 1 point. Species, faction, hostility and downed status do not affect rewards. Direct hunting kills, executions, finishing blows and direct weapon/projectile explosions count. Slaughter, blood loss, ongoing fire, traps, environmental chain explosions and deaths from redirected bond damage do not. Indirect deaths do not credit a previous attacker.
 

@@ -6,19 +6,17 @@
 		<li>1.6</li>
 	</supportedVersions>
 	<packageId>rjw.sexslavecraft.TieJinVer</packageId>
-    <description>SexSlaveCraft 2.3.5 (TieJin Modify)
-新增自我调教：独立许可、右键手动指派与自动分流，使用独立评分、完成记忆和许可状态心情。
-新角色及旧档缺字段时默认开启；四阶段分流概率为 30%／55%／80%／50%，首版仍受禁止自慰基因阻断。
-修复调教站位同步打断任务及旧回调干扰新工作；补齐繁中、俄文限制面板文本与任务生命周期回归。
-基于上游 2.2.8 继续维护，包含完整战斗员特化等 2.3.4 及更早版本内容。
+    <description>SexSlaveCraft 2.3.6 (TieJin Modify)
+统一特化基础培养经验：当前培养的性奴特化在完整日常调教和绑定仪式成功结算后获得一次动态经验，沿用战斗员评分公式；实际绑定主人施教时提高收益。
+训导官旧固定受训奖励及公交车旧日常受训增量改由公共入口发放，施教、击杀及其他特色经验仍保留。自我调教不提供此特化经验；猫、兔入口仍未开放。
+基于上游 2.2.8 继续维护，包含 2.3.5 自我调教、任务交接修复及更早版本内容。
 锁链达到第 2 阶段的 SSC 性奴可按 RJW 原有条件被指派为泄欲对象；见习性奴不因此获得资格。
 旧 RimTalk 兼容继续暂停，宠物猫、宠物兔未完成入口继续禁用。
 完整中英双语更新记录见 CHANGELOG.md。
 
-Version 2.3.5 adds self-training with separate permission, manual orders, automatic diversion, scoring, completion memories and permission-state moods.
-Enabled by default for new pawns and old saves missing the field. Stage chances are 30% / 55% / 80% / 50%; anti-masturbation genes still block it.
-Fixes Training interrupted by position synchronization and stale callbacks interfering with replacement jobs; completes Traditional Chinese and Russian restriction text and task lifecycle regression coverage.
-Continues development from upstream 2.2.8, including the complete Combatant specialization and other 2.3.4 and earlier content.
+Version 2.3.6 gives the currently trained Sex Slave specialization one shared, score-based base progress reward after completed daily Training or a successful full Binding Ritual. Training by the actual bound master increases this reward.
+The former fixed Training Officer reward and Public Use daily increment now use the shared path; teaching, direct kills and other distinct progress sources remain. Self-training grants no specialization progress, and Pet Cat/Rabbit selection remains disabled.
+Continues development from upstream 2.2.8, including version 2.3.5 self-training and Training handoff fixes.
 SSC sex slaves at Chain stage 2 or higher can be designated as RJW Comfort pawns under RJW's existing conditions; trainees gain no eligibility from SSC identity alone.
 Legacy RimTalk remains suspended; unfinished Pet Cat and Pet Rabbit choices remain disabled.
 See CHANGELOG.md for the full Chinese and English notes.</description>
