@@ -23,6 +23,7 @@ namespace SexSlaveCraft
         protected override IEnumerable<Toil> MakeNewToils()
         {
             this.FailOnDespawnedNullOrForbidden(TargetIndex.A);
+            // 每次执行检查当前宠物效果与实际绑定；终极转练仍可继续，普通转练或换主人则中断。
             this.FailOn(() => !PetSpecializationUtility.CanDoPetAffectionNow(pawn, Master));
 
             Toil affection = Toils_General.Wait(AffectionDurationTicks, TargetIndex.A);

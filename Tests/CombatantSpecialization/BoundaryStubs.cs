@@ -135,6 +135,9 @@ namespace SexSlaveCraft
             PetSpecializationRules.CanTrain(t, p?.Training?.specializationType ?? SexSlaveSpecializationType.None,
                 p?.PetFinal == true, p?.PetFinal == true, p?.PetFinal == true);
         public static void EnsurePetHediffFromSpecialization(Pawn p) { }
+        // 本套件只验证战斗员生命周期；宠物状态清理由宠物专项运行真实源码验证。
+        public static void RemoveInactiveOrdinaryPetStates(Pawn p) { }
+        public static void SyncPetStates(Pawn p) { }
         public static bool TryGainPetProgress(Pawn p, SexSlaveSpecializationType t, float amount)
         {
             if (p?.Training?.specializationType != t) return false;

@@ -93,6 +93,35 @@ namespace SexSlaveCraft
             return false;
         }
 
+        /// <summary>只读查询生效资格；历史和残留普通标签不授予行为资格，也不改变存档。</summary>
+        public static bool HasActivePetEffects(Pawn pawn, SexSlaveSpecializationType type)
+        {
+            if (pawn?.health?.hediffSet == null || pawn.Destroyed || pawn.Dead) return false;
+            CompSexSlaveTraining comp = pawn.TryGetComp<CompSexSlaveTraining>();
+            return PetSpecializationRules.HasEffects(type, comp?.specializationType ?? SexSlaveSpecializationType.None,
+                HasFinalPetState(pawn, SexSlaveSpecializationType.PetCat),
+                HasFinalPetState(pawn, SexSlaveSpecializationType.PetDog),
+                HasFinalPetState(pawn, SexSlaveSpecializationType.PetRabbit));
+        }
+
+        /// <summary>终极成果使用完成进度；普通效果只读取本种当前进度，绝不借用其他方向或历史。</summary>
+        public static float GetEffectivePetProgress(Pawn pawn, SexSlaveSpecializationType type)
+        {
+            if (!HasActivePetEffects(pawn, type)) return 0f;
+            if (HasFinalPetState(pawn, type)) return 1f;
+            return CompSexSlaveTraining.NormalizeSpecializationProgress(
+                pawn.TryGetComp<CompSexSlaveTraining>().specializationProgress);
+        }
+
+        /// <summary>亲昵需要真实训练组件，以及任一当前普通宠物或保留的终极宠物成果。</summary>
+        public static bool HasPetAffectionQualification(Pawn pawn)
+        {
+            if (pawn?.TryGetComp<CompSexSlaveTraining>() == null) return false;
+            foreach (SexSlaveSpecializationType type in PetTypes)
+                if (HasActivePetEffects(pawn, type)) return true;
+            return false;
+        }
+
         /// <summary>持续培养不重查研究或玩家开放状态，合法旧档猫兔仍可成长。</summary>
         public static bool CanTrainPetSpecialization(Pawn pawn, SexSlaveSpecializationType type)
         {
@@ -169,25 +198,22 @@ namespace SexSlaveCraft
             }
         }
 
+        /// <summary>清理不生效的普通状态后同步当前普通进度；不删除终极成果或选择冲突成果。</summary>
         public static void SyncPetStates(Pawn pawn)
         {
-            if (pawn?.health?.hediffSet == null) return;
+            RemoveInactiveOrdinaryPetStates(pawn);
+            EnsurePetHediffFromSpecialization(pawn);
+        }
 
+        /// <summary>仅清理普通状态；切换通知及人格恢复期间不导入宿主进度，也不提前创建普通状态。</summary>
+        internal static void RemoveInactiveOrdinaryPetStates(Pawn pawn)
+        {
+            if (pawn?.health?.hediffSet == null || pawn.TryGetComp<CompSexSlaveTraining>() == null) return;
             foreach (SexSlaveSpecializationType type in PetTypes)
             {
-                HediffDef finalDef = GetFinalHediffDef(type);
-                HediffDef baseDef = GetBaseHediffDef(type);
-                if (finalDef == null || baseDef == null) continue;
-
-                Hediff finalHediff = pawn.health.hediffSet.GetFirstHediffOfDef(finalDef);
-                Hediff baseHediff = pawn.health.hediffSet.GetFirstHediffOfDef(baseDef);
-                if (finalHediff != null && baseHediff != null)
-                {
-                    pawn.health.RemoveHediff(baseHediff);
-                }
+                // 组内任意终极成果都结束普通宠物培养，避免同种普通与终极属性重复叠加。
+                if (!CanTrainPetSpecialization(pawn, type)) RemoveIfPresent(pawn, GetBaseHediffDef(type));
             }
-
-            EnsurePetHediffFromSpecialization(pawn);
         }
 
         public static bool CanUsePetSpecialization(Pawn pawn, SexSlaveSpecializationType type, out string reason)
@@ -292,9 +318,11 @@ namespace SexSlaveCraft
         {
             if (pet == null) return false;
             comp = comp ?? pet.TryGetComp<CompSexSlaveTraining>();
-            if (comp == null || !IsPetSpecialization(comp.specializationType)) return false;
+            // 防止旧组件引用绕过当前冷却；资格由当前普通方向或独立终极成果提供。
+            if (comp == null || pet.TryGetComp<CompSexSlaveTraining>() != comp ||
+                !HasPetAffectionQualification(pet)) return false;
 
-            Pawn master = SSCBondUtility.GetResolvedMaster(pet);
+            Pawn master = SSCBondUtility.GetBoundMaster(pet);
             if (!CanDoPetAffectionNow(pet, master)) return false;
             if (!IsPetAffectionCooldownReady(comp)) return false;
             if (!CanStartPetAffectionJobWithoutDisruptingWork(pet)) return false;
@@ -309,7 +337,7 @@ namespace SexSlaveCraft
         {
             if (pet == null) return false;
             CompSexSlaveTraining comp = pet.TryGetComp<CompSexSlaveTraining>();
-            if (comp == null || !IsPetSpecialization(comp.specializationType)) return false;
+            if (comp == null || !HasPetAffectionQualification(pet)) return false;
             if (!CanDoPetAffectionNow(pet, master)) return false;
             if (!IsPetAffectionCooldownReady(comp)) return false;
 
@@ -328,7 +356,9 @@ namespace SexSlaveCraft
 
         public static bool CanDoPetAffectionNow(Pawn pet, Pawn master)
         {
-            if (pet == null || master == null || master.DestroyedOrNull() || master.Dead)
+            // 调度、执行中 FailOn 和完成结算共用同一检查，绑定或成果中途变化即失效。
+            if (!HasPetAffectionQualification(pet) || master == null || master.DestroyedOrNull() || master.Dead ||
+                SSCBondUtility.GetBoundMaster(pet) != master)
             {
                 return false;
             }
@@ -480,11 +510,10 @@ namespace SexSlaveCraft
 
         private static void RemoveIfPresent(Pawn pawn, HediffDef def)
         {
-            Hediff hediff = pawn?.health?.hediffSet?.GetFirstHediffOfDef(def);
-            if (hediff != null)
-            {
+            if (pawn?.health?.hediffSet == null || def == null) return;
+            Hediff hediff;
+            while ((hediff = pawn.health.hediffSet.GetFirstHediffOfDef(def)) != null)
                 pawn.health.RemoveHediff(hediff);
-            }
         }
     }
 }

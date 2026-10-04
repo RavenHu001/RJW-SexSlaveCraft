@@ -64,7 +64,12 @@ namespace SexSlaveCraft
         public static readonly ResearchProjectDef SSC_BasicTraining = new ResearchProjectDef();
         public static readonly JobDef SSC_Job_PetAffection = new JobDef();
     }
-    public static partial class SSCBondUtility { public static Pawn GetResolvedMaster(Pawn pawn) => null; }
+    public static partial class SSCBondUtility
+    {
+        // 迁移套件不执行亲昵；实际绑定查询及对象变更由宠物专项观察验证。
+        public static Pawn GetBoundMaster(Pawn pawn) => null;
+        public static Pawn GetResolvedMaster(Pawn pawn) => null;
+    }
     public static partial class Strings
     {
         public const string ITab_SpecializationPetCat = "cat", ITab_SpecializationPetDog = "dog", ITab_SpecializationPetRabbit = "rabbit";

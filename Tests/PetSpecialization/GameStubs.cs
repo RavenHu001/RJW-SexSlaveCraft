@@ -1,4 +1,4 @@
-// 只隔离游戏容器、未修改的其他特化和亲昵宿主；宠物规则及全部培养入口直接编译生产源码。
+// 只隔离游戏容器、未修改的其他特化和任务宿主；宠物规则、培养、狗工作和亲昵入口直接编译生产源码。
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +6,11 @@ using SexSlaveCraft;
 
 namespace UnityEngine
 {
-    public static class Mathf { public static float Max(float a, float b) => Math.Max(a, b); }
+    public static class Mathf
+    {
+        public static float Max(float a, float b) => Math.Max(a, b);
+        public static float Min(float a, float b) => Math.Min(a, b);
+    }
 }
 
 namespace Verse
@@ -48,7 +52,7 @@ namespace Verse
         }
         public void RemoveHediff(Hediff hediff) { RemoveCalls++; hediffSet.hediffs.Remove(hediff); }
     }
-    public class Pawn : Thing
+    public partial class Pawn : Thing
     {
         public CompSexSlaveTraining Training;
         public PawnHealth health = new PawnHealth();
@@ -57,18 +61,29 @@ namespace Verse
         public string LabelShort => "pet";
         public object Map = new object();
         public IntVec3 Position;
-        public Pawn BoundMaster;
+        public Pawn BoundMaster, AssignedTrainer;
         public PawnNeeds needs = new PawnNeeds();
         public Verse.AI.PawnJobTracker jobs = new Verse.AI.PawnJobTracker();
         public JobDef CurJobDef;
         public T TryGetComp<T>() where T : class => Training as T;
     }
-    public struct IntVec3 { public bool InHorDistOf(IntVec3 other, float distance) => true; }
+    public struct IntVec3
+    {
+        public int x, z;
+        public IntVec3(int x, int z) { this.x = x; this.z = z; }
+        public float DistanceToSquared(IntVec3 other) => (x - other.x) * (x - other.x) + (z - other.z) * (z - other.z);
+        public bool InHorDistOf(IntVec3 other, float distance) => DistanceToSquared(other) <= distance * distance;
+    }
     public static class ThingExtensions { public static bool DestroyedOrNull(this Thing thing) => thing == null || thing.Destroyed; }
     public class PawnNeeds { public Mood mood = new Mood(); }
     public class Mood { public Thoughts thoughts = new Thoughts(); }
     public class Thoughts { public Memories memories = new Memories(); }
-    public class Memories { public void TryGainMemory(ThoughtDef def, Pawn pawn) { } }
+    public class Memories
+    {
+        // 仅观察完成入口是否发出记忆请求，不模拟原版记忆合并与心情属性。
+        public readonly List<(ThoughtDef def, Pawn pawn)> Requests = new();
+        public void TryGainMemory(ThoughtDef def, Pawn pawn) => Requests.Add((def, pawn));
+    }
     public static class Find { public static readonly TickManager TickManager = new TickManager(); }
     public class TickManager { public int TicksGame; }
     public static class GenTicks { public const int TickRareInterval = 250; }
@@ -93,10 +108,19 @@ namespace RimWorld
 
 namespace Verse.AI
 {
-    public class Job { public int expiryInterval; }
+    public partial class Job { public int expiryInterval; }
     public enum JobTag { Misc }
-    public static class JobMaker { public static Job MakeJob(Verse.JobDef def, Verse.Pawn target) => new Job(); }
-    public class PawnJobTracker { public bool TryTakeOrderedJob(Job job, JobTag tag) => true; }
+    public static class JobMaker
+    {
+        public static Job MakeJob(Verse.JobDef def, Verse.Thing target, Verse.Thing second = null) => new Job { def = def, target = target };
+        public static void ReturnToPool(Job job) { }
+    }
+    public partial class PawnJobTracker
+    {
+        public bool AcceptJobs = true;
+        public readonly List<Job> Requests = new();
+        public bool TryTakeOrderedJob(Job job, JobTag tag) { Requests.Add(job); return AcceptJobs; }
+    }
 }
 
 namespace SexSlaveCraft
@@ -112,6 +136,7 @@ namespace SexSlaveCraft
         public RabbitReproductionMode rabbitReproductionMode;
         public float savedCowReservoirCharge;
         public int lastPetAffectionTick;
+        public int lastDogAnimalInteractionTick = -999999;
         public const int PetAffectionCooldownTicks = 60000;
     }
     public static class SSCIdentityUtility { public static bool IsSexSlave(Pawn pawn) => pawn?.Training?.pawnIdentity == PawnIdentity.Slave; }
@@ -119,7 +144,7 @@ namespace SexSlaveCraft
     public static class SSCBondUtility
     {
         public static Pawn GetBoundMaster(Pawn pawn) => pawn?.BoundMaster;
-        public static Pawn GetResolvedMaster(Pawn pawn) => pawn?.BoundMaster;
+        public static Pawn GetResolvedMaster(Pawn pawn) => pawn?.BoundMaster ?? pawn?.AssignedTrainer;
     }
     public static class SSCDefOf
     {

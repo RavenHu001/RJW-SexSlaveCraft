@@ -13,11 +13,15 @@ namespace SexSlaveCraft
             rabbitFinal = PetSpecializationUtility.HasFinalPetState(pawn, SexSlaveSpecializationType.PetRabbit);
         }
 
-        /// <summary>完整切换后立即更新普通战斗员；读档期间由 PostLoadInit 统一恢复。</summary>
+        /// <summary>完整切换后立即清理普通宠物并更新战斗员；读档期间由 PostLoadInit 统一恢复。</summary>
         partial void SpecializationHealthChanged()
         {
             if (Scribe.mode == LoadSaveMode.Inactive)
+            {
+                // 人格恢复会先更新方向再恢复标签，这里只清理，避免宿主旧普通严重度污染源进度。
+                PetSpecializationUtility.RemoveInactiveOrdinaryPetStates(parent as Pawn);
                 CombatantSpecializationUtility.Sync(parent as Pawn);
+            }
         }
 
         // 对账特化状态：凝胶注入/旧存档可能只有 hediff 而没有 comp 类型，
@@ -35,15 +39,27 @@ namespace SexSlaveCraft
             TrainerSpecializationLifecycle.Maintain(pawn);
             // 同步当前战斗员方向及明确留空后的普通状态。
             CombatantSpecializationUtility.Sync(pawn);
-            if (comp.pawnIdentity == PawnIdentity.Master) return;
+            if (comp.pawnIdentity == PawnIdentity.Master)
+            {
+                PetSpecializationUtility.RemoveInactiveOrdinaryPetStates(pawn);
+                return;
+            }
 
             if (comp.specializationType == SexSlaveSpecializationType.None)
             {
                 // 旧档缺少组件方向时仍可从健康状态恢复；玩家明确留空，或
                 // 训导官失格退出后必须保持“无”，不能从终极标记重新选回。
-                if (!comp.CanAdoptSpecializationFromHealth) return;
+                if (!comp.CanAdoptSpecializationFromHealth)
+                {
+                    PetSpecializationUtility.SyncPetStates(pawn);
+                    return;
+                }
                 SexSlaveSpecializationType adopted = DetectAdoptableType(pawn);
-                if (adopted == SexSlaveSpecializationType.None) return;
+                if (adopted == SexSlaveSpecializationType.None)
+                {
+                    PetSpecializationUtility.SyncPetStates(pawn);
+                    return;
+                }
 
                 comp.SetSpecialization(adopted);
             }
@@ -56,12 +72,10 @@ namespace SexSlaveCraft
                 case SexSlaveSpecializationType.Cow:
                     BusSpecializationUtility.EnsureCowHediffFromSpecialization(pawn);
                     break;
-                case SexSlaveSpecializationType.PetCat:
-                case SexSlaveSpecializationType.PetDog:
-                case SexSlaveSpecializationType.PetRabbit:
-                    PetSpecializationUtility.EnsurePetHediffFromSpecialization(pawn);
-                    break;
             }
+
+            // 旧档先认领方向再清理；留空已在提前返回前清理，终极标签始终保留。
+            PetSpecializationUtility.SyncPetStates(pawn);
 
             // 保持"进行中"特化的互斥性；终极化 hediff 永不删除。
             RemoveInactiveSpecializationStates(pawn, comp, comp.specializationType);

@@ -5,7 +5,7 @@ using System.Reflection;
 using SexSlaveCraft;
 using Verse;
 
-internal static class Program
+internal static partial class Program
 {
     private static readonly SexSlaveSpecializationType[] Pets =
     {
@@ -44,6 +44,7 @@ internal static class Program
         Run("宠物终极不阻断非宠物共享与底层经验", NonPetExperienceRemainsAvailable);
         Run("实际绑定主人倍率沿用共享生产公式", BoundMasterFormula);
         Run("共享经验拒绝死亡、销毁、无组件及错误身份", InvalidSharedReceivers);
+        RunEffectAndBehaviorCases();
         Console.WriteLine($"结果：{passed}/{passed + failed} 项通过。");
         return failed == 0 ? 0 : 1;
     }
@@ -67,6 +68,8 @@ internal static class Program
         }
         SSCDefOf.SSC_BasicTraining.IsFinished = true;
         Scribe.mode = LoadSaveMode.Inactive;
+        Find.TickManager.TicksGame = 100000;
+        Rand.Chances.Clear(); Rand.ChanceResult = false;
         Messages.Calls = TrainerSpecializationLifecycle.NotifyCalls = CombatantSpecializationUtility.SyncCalls = 0;
     }
 

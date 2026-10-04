@@ -40,6 +40,8 @@ internal static partial class Program
         Run("宠物工作者独立复查资格但允许原版正常消耗后的来源", PetRecipeWorker);
         Run("普通宠物提取、终极加工与跨体植入不混入宿主成果", PetRecipePipeline);
         Run("恢复任务的最终步骤复查当前凝胶而非缓存筛料结果", PetRecipeResumedCompletion);
+        Run("跨方向或留空的宠物终极经真实提取植入后保留效果及源历史", PetFinalEffectsPipeline);
+        Run("普通宠物植入同方向高进度宿主不提前导入宿主严重度", PetOrdinaryHostProgressIsolation);
     }
 
     /// <summary>通过生产映射取得普通状态定义，避免测试另建名称映射。</summary>
@@ -441,6 +443,46 @@ internal static partial class Program
                 && host.ExportSpecializationProgress()["Cow"] == 0.22f && !host.ExportSpecializationProgress().ContainsKey(other.ToString())
                 && output.parent.Destroyed, "植入混入宿主历史或未消耗凝胶");
             AssertOnlyOrdinary(receiver, source.story.traits.allTraits.First(t => t.def.defName == "PetTrait").def, 1);
+        }
+    }
+
+    /// <summary>运行真实人格提取与植入，保证跨方向成果既不丢失也不重新选择当前方向。</summary>
+    private static void PetFinalEffectsPipeline()
+    {
+        foreach (var type in Pets)
+        foreach (var current in new[] { SexSlaveSpecializationType.None, SexSlaveSpecializationType.Cow, SexSlaveSpecializationType.Combatant })
+        {
+            var source = Body("FinalPetSource"); var comp = Training(source); comp.pawnIdentity = PawnIdentity.Slave;
+            comp.SetSpecialization(type); comp.specializationProgress = 1f; source.health.AddHediff(PetFinal(type));
+            comp.SetSpecialization(current); comp.specializationProgress = current == SexSlaveSpecializationType.None ? 0 : .27f;
+            CompSexSlaveTraining.ReconcileSpecialization(source);
+            var history = comp.ExportSpecializationProgress(); var gel = Excrete(source);
+            var receiver = Body("DifferentHost"); var host = Training(receiver); host.pawnIdentity = PawnIdentity.Slave;
+            host.SetSpecialization(Pets.First(p => p != type)); host.specializationProgress = .9f;
+            receiver.health.AddHediff(PetFinal(Pets.First(p => p != type)));
+            Assert(ExcretionUtility.InheritEverything(receiver, gel), "跨方向终极植入失败");
+            for (int i = 0; i < 3; i++) CompSexSlaveTraining.ReconcileSpecialization(receiver);
+            Assert(host.specializationType == current && host.specializationProgress == (current == SexSlaveSpecializationType.None ? 0 : .27f), "终极恢复改变当前方向或进度");
+            Assert(PetSpecializationUtility.HasActivePetEffects(receiver, type) && PetSpecializationUtility.GetEffectivePetProgress(receiver, type) == 1f
+                && PetSpecializationUtility.HasPetAffectionQualification(receiver), "迁移后终极效果资格丢失");
+            Assert(Pets.All(p => !receiver.health.hediffSet.HasHediff(PetBase(p)) && receiver.health.hediffSet.HasHediff(PetFinal(p)) == (p == type)), "宿主宠物状态残留");
+            Assert(history.OrderBy(e => e.Key).SequenceEqual(host.ExportSpecializationProgress().OrderBy(e => e.Key)), "宿主历史污染源人格");
+        }
+    }
+
+    /// <summary>正式植入先恢复组件后恢复标签，较高的宿主普通严重度不能在中间阶段反写。</summary>
+    private static void PetOrdinaryHostProgressIsolation()
+    {
+        foreach (var type in Pets)
+        {
+            var source = Body("OrdinaryPetSource"); var comp = Training(source); comp.pawnIdentity = PawnIdentity.Slave;
+            comp.SetSpecialization(type); comp.specializationProgress = .3f; CompSexSlaveTraining.ReconcileSpecialization(source);
+            var gel = Excrete(source);
+            var receiver = Body("HighProgressHost"); var host = Training(receiver); host.pawnIdentity = PawnIdentity.Slave;
+            host.SetSpecialization(type); host.specializationProgress = .9f; CompSexSlaveTraining.ReconcileSpecialization(receiver);
+            Assert(ExcretionUtility.InheritEverything(receiver, gel), "普通植入失败");
+            Assert(host.specializationProgress == .3f && receiver.health.hediffSet.GetFirstHediffOfDef(PetBase(type)).Severity == .3f,
+                "宿主普通进度污染新人格");
         }
     }
 

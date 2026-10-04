@@ -39,5 +39,15 @@ namespace SexSlaveCraft
             return IsPetSpecialization(type) && type == currentType &&
                 !catFinal && !dogFinal && !rabbitFinal;
         }
+
+        /// <summary>普通效果只属于当前方向；本种终极成果独立于当前培养方向生效。</summary>
+        public static bool HasEffects(SexSlaveSpecializationType type, SexSlaveSpecializationType currentType,
+            bool catFinal, bool dogFinal, bool rabbitFinal)
+        {
+            if (!IsPetSpecialization(type)) return false;
+            bool ownFinal = type == SexSlaveSpecializationType.PetCat ? catFinal :
+                type == SexSlaveSpecializationType.PetDog ? dogFinal : rabbitFinal;
+            return ownFinal || CanTrain(type, currentType, catFinal, dogFinal, rabbitFinal);
+        }
     }
 }
