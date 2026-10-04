@@ -11,6 +11,9 @@
     <Compile Include="$(SscSourceRoot)/Comps/ThingsComp_PE_PES.cs" Link="Production/ThingsComp_PE_PES.cs" />
     <Compile Include="$(SscSourceRoot)/Comps/Comp_Train.Specialization.cs" Link="Production/Comp_Train.Specialization.cs" />
     <Compile Include="$(SscSourceRoot)/common/PetSpecializationRules.cs" Link="Production/PetSpecializationRules.cs" />
+    <!-- 直接编译真实宠物工具与配方资格，使原料、标签及植入回归不依赖空宠物替身。 -->
+    <Compile Include="$(SscSourceRoot)/common/PetSpecializationUtility.cs" Link="Production/PetSpecializationUtility.cs" />
+    <Compile Include="$(SscSourceRoot)/common/PetFinalizationRecipeUtility.cs" Link="Production/PetFinalizationRecipeUtility.cs" />
     <Compile Include="$(SscSourceRoot)/common/TrainerSpecializationGelUtility.cs" Link="Production/TrainerSpecializationGelUtility.cs" />
     <Compile Include="$(SscSourceRoot)/Recipe/Recipe_PEMake.cs" Link="Production/Recipe_PEMake.cs" />
     <Compile Include="$(SscSourceRoot)/ThePatches/Harmony_TrainerRecipeCompletion.cs" Link="Production/Harmony_TrainerRecipeCompletion.cs" />

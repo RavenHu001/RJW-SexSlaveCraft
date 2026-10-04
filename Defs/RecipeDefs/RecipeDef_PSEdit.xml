@@ -195,8 +195,13 @@
     <filterIfTagExists>true</filterIfTagExists>
     <requireSpecializationType>PetCat</requireSpecializationType>
     <requireSpecializationComplete>true</requireSpecializationComplete>
+    <!-- 猫、狗、兔共用终极互斥组，奶牛等组外成果不在此列表。
+         公共资格先拒绝已有任意宠物终极的来源；工作者只清理产物副本。
+         普通标签是原料的必要资格，复制后另行移除，不加入此互斥列表。 -->
     <exclusiveTags>
       <li>SSC_Hediff_PetCat_Final</li>
+      <li>SSC_Hediff_PetDog_Final</li>
+      <li>SSC_Hediff_PetRabbit_Final</li>
     </exclusiveTags>
 
     <recipeUsers>
@@ -254,8 +259,13 @@
     <filterIfTagExists>true</filterIfTagExists>
     <requireSpecializationType>PetDog</requireSpecializationType>
     <requireSpecializationComplete>true</requireSpecializationComplete>
+    <!-- 复用既有狗终极化配方，组内已有猫、狗或兔终极的人格均不能再次加工。
+         普通狗标签仍是入料要求；三种普通标签由工作者在复制后清理。
+         列表操作只影响新产物，不代替来源资格拒绝或旧多终极迁移。 -->
     <exclusiveTags>
+      <li>SSC_Hediff_PetCat_Final</li>
       <li>SSC_Hediff_PetDog_Final</li>
+      <li>SSC_Hediff_PetRabbit_Final</li>
     </exclusiveTags>
 
     <recipeUsers>
@@ -313,7 +323,12 @@
     <filterIfTagExists>true</filterIfTagExists>
     <requireSpecializationType>PetRabbit</requireSpecializationType>
     <requireSpecializationComplete>true</requireSpecializationComplete>
+    <!-- 兔保留共同终极互斥识别；此声明不开放兔的玩家选择入口。
+         合法旧兔人格仍走公共加工资格，任何已有宠物终极都会被拒绝。
+         仅产物标签按此列表清理，培养历史及组外成果继续保留。 -->
     <exclusiveTags>
+      <li>SSC_Hediff_PetCat_Final</li>
+      <li>SSC_Hediff_PetDog_Final</li>
       <li>SSC_Hediff_PetRabbit_Final</li>
     </exclusiveTags>
 

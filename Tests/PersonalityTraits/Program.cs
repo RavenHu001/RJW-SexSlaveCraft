@@ -13,6 +13,7 @@ internal static partial class Program
     /// <summary>执行人格特质与完整迁移链路回归用例，汇总通过数量，并以退出码报告是否存在失败。</summary>
     private static int Main()
     {
+        RegisterPetDefinitions();
         Run("Cross-body insertion replaces ordinary traits and consumes gel", CrossBodyInsertion);
         Run("Same-body insertion restores an earlier trait snapshot", SameBodySnapshot);
         Run("Same TraitDef with a different degree is replaced", SameDefDifferentDegree);
@@ -46,6 +47,7 @@ internal static partial class Program
         Run("完整特化历史参与凝胶存档字段读写并识别缺失旧字段", SpecializationPersistenceContract);
         Run("记忆新字段参与存档读写并识别旧数据默认值", MemoryPersistenceContract);
         RunCombatantCases();
+        RunPetRecipeCases();
         Console.WriteLine($"RESULT: {passed}/{passed + failed} cases passed.");
         return failed == 0 ? 0 : 1;
     }

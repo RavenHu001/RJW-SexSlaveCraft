@@ -14,9 +14,21 @@ namespace SexSlaveCraft
     [HarmonyPatch(typeof(Bill), "IsFixedOrAllowedIngredient", new Type[] { typeof(Thing) })]
     public static class Patch_IsFixedOrAllowedIngredient
     {
+        /// <summary>在账单原料筛选后追加人格资格限制，宠物分支保留原账单的拒绝结果。</summary>
         public static void Postfix(Bill __instance, Thing thing, ref bool __result)
         {
             if (!(__instance.recipe is RecipeDef_PSTag smartRecipe)) return;
+            if (PetFinalizationRecipeUtility.IsFinalizationRecipe(smartRecipe))
+            {
+                // 第一关只筛选当下可搬运的单份人格凝胶，并预检加工产物。
+                // 使用原结果与资格相与，固定原料或玩家账单已拒绝的材料不会被放行。
+                // 已知宠物配方即使关闭通用标签过滤或缺目标 Def，也必须经过此关；
+                // 实际制作完成时还会复查，筛料通过不是本次加工永久获准。
+                __result = __result && thing != null && !thing.Destroyed && thing.stackCount == 1 &&
+                    PetFinalizationRecipeUtility.CanCreateProduct(thing.def) &&
+                    SpecializationFinalizationRecipeUtility.IsEligibleGel(smartRecipe, thing.TryGetComp<CompPersonalityStore>());
+                return;
+            }
             if (!smartRecipe.filterIfTagExists || smartRecipe.hediffToAdd == null) return;
 
             CompPersonalityStore comp = thing.TryGetComp<CompPersonalityStore>();

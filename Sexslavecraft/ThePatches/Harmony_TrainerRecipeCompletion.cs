@@ -5,10 +5,12 @@ using Verse.AI;
 
 namespace SexSlaveCraft
 {
-    /// <summary>在原版结算动作的任何消耗与账单计数之前，复查训导官与战斗员终极化原料。</summary>
+    /// <summary>在原版结算动作的任何消耗与账单计数之前，复查训导官、战斗员及宠物终极化原料。</summary>
     [HarmonyPatch(typeof(Toils_Recipe), nameof(Toils_Recipe.FinishRecipeAndStartStoringProduct))]
     public static class Harmony_TrainerRecipeCompletion
     {
+        // 保留原有补丁类名与安装位置，在同一个结算动作中扩展宠物保护，
+        // 避免新增另一套原料消耗、产物生成或账单计数流程。
         /// <summary>保留原版最终结算动作，并在其运行前读取当次任务进行只读预检。</summary>
         public static void Postfix(Toil __result)
         {
@@ -23,7 +25,7 @@ namespace SexSlaveCraft
                 Pawn actor = completionToil.actor;
                 Job job = actor?.CurJob;
 
-                // 本补丁守护训导官与战斗员终极配方。其他配方沿用原动作，
+                // 本补丁守护训导官、战斗员及宠物终极配方。其他配方沿用原动作，
                 // 不改写原料消耗、产物搬运、技能经验或账单的完成行为。
                 if (job?.RecipeDef is RecipeDef_PSTag recipe
                     && SpecializationFinalizationRecipeUtility.IsProtectedRecipe(recipe)
@@ -87,8 +89,12 @@ namespace SexSlaveCraft
         {
             // 消耗后工作者仍可读取组件，所以销毁检查必须放在这里的消耗前边界。
             // 同时预检产物定义，避免无法转换的外部凝胶被吞掉却没有任何产物。
+            // 宠物还须确认产物声明人格组件；这个额外限制只应用于宠物，
+            // 训导官、战斗员继续沿用既有资格和目标映射检查。
             return !ingredient.Destroyed
                 && SpecializationFinalizationRecipeUtility.IsEligibleGel(recipe, ingredient.TryGetComp<CompPersonalityStore>())
+                && (!PetFinalizationRecipeUtility.IsFinalizationRecipe(recipe) ||
+                    PetFinalizationRecipeUtility.CanCreateProduct(ingredient.def))
                 && PersonalityGelUtility.GetEditedThingDef(ingredient.def) != null;
         }
     }

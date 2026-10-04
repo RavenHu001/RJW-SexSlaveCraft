@@ -53,6 +53,8 @@ namespace Verse.AI
 
     public class Job
     {
+        public JobDef def;
+        public int expiryInterval;
         public Bill_Production bill;
         public RecipeDef RecipeDef => bill?.recipe;
         public List<ThingCountClass> placedThings;
@@ -60,7 +62,7 @@ namespace Verse.AI
         public LocalTargetInfo GetTarget(TargetIndex index) => index == TargetIndex.C ? targetC : default;
     }
 
-    public class Pawn_JobTracker
+    public partial class Pawn_JobTracker
     {
         public Job curJob;
         public JobCondition? endedWith;

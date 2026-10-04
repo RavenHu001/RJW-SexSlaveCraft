@@ -88,11 +88,17 @@ namespace SexSlaveCraft
     {
         internal static bool IsProtectedRecipe(RecipeDef_PSTag recipe)
         {
-            return TrainerOfficerRecipeUtility.IsFinalizationRecipe(recipe) || CombatantRecipeUtility.IsFinalizationRecipe(recipe);
+            // 复用现有最终结算守卫，把宠物终极化纳入其保护范围，
+            // 无需再安装第二个结算补丁；其他配方仍执行原版完成动作。
+            return TrainerOfficerRecipeUtility.IsFinalizationRecipe(recipe) || CombatantRecipeUtility.IsFinalizationRecipe(recipe)
+                || PetFinalizationRecipeUtility.IsFinalizationRecipe(recipe);
         }
 
         internal static bool IsEligibleGel(RecipeDef_PSTag recipe, CompPersonalityStore gel)
         {
+            // 宠物先分派到专用契约检查。即使官方配方缺失输出 Def，
+            // 也会在此拒绝，不能落到末尾通用配方的放行结果。
+            if (PetFinalizationRecipeUtility.IsFinalizationRecipe(recipe)) return PetFinalizationRecipeUtility.IsEligibleGel(recipe, gel);
             if (TrainerOfficerRecipeUtility.IsFinalizationRecipe(recipe)) return TrainerOfficerRecipeUtility.IsEligibleGel(gel);
             if (CombatantRecipeUtility.IsFinalizationRecipe(recipe)) return CombatantRecipeUtility.IsEligibleGel(gel);
             return true;
@@ -104,9 +110,13 @@ namespace SexSlaveCraft
     // =========================================================
     public class Recipe_PSTagWorker : RecipeWorker
     {
+        /// <summary>复查来源并复制人格到对应等级的产物，随后替换状态标签和放置凝胶。</summary>
         public override void Notify_IterationCompleted(Pawn billDoer, List<Thing> ingredients)
         {
-            Thing sourceItem = ingredients.FirstOrDefault(x => x.TryGetComp<CompPersonalityStore>() != null);
+            // 原版账单及外部调用都从实际传入集合读取来源；空集合或空条目
+            // 不应触发组件访问异常。此处不自行计算或扣减账单完成次数。
+            if (ingredients == null) return;
+            Thing sourceItem = ingredients.FirstOrDefault(x => x?.TryGetComp<CompPersonalityStore>() != null);
             if (sourceItem == null) return;
 
             CompPersonalityStore sourceComp = sourceItem.TryGetComp<CompPersonalityStore>();
@@ -117,6 +127,15 @@ namespace SexSlaveCraft
             if (recipe is RecipeDef_PSTag finalRecipe
                 && !SpecializationFinalizationRecipeUtility.IsEligibleGel(finalRecipe, sourceComp)) return;
 
+            bool petFinalization = PetFinalizationRecipeUtility.IsFinalizationRecipe(recipe as RecipeDef_PSTag);
+            // 宠物加工只复制一个人格，拒绝多来源及无法生成存储组件的基底。
+            // 原版 Destroy 会把非 Pawn 来源的 stackCount 清零，因此只对存活
+            // 来源复查实体数量；正常消耗后的来源已由最终 Toil 检查为一份。
+            // 若在这里要求已销毁来源仍为一份，合法账单会扣次数却没有产物。
+            if (petFinalization && ((!sourceItem.Destroyed && sourceItem.stackCount != 1) ||
+                ingredients.Count(x => x?.TryGetComp<CompPersonalityStore>() != null) != 1 ||
+                !PetFinalizationRecipeUtility.CanCreateProduct(sourceItem.def))) return;
+
             ThingDef targetDef = PersonalityGelUtility.GetEditedThingDef(sourceItem.def);
 
             if (targetDef == null) return;
@@ -124,12 +143,22 @@ namespace SexSlaveCraft
             Thing newItem = ThingMaker.MakeThing(targetDef);
             CompPersonalityStore targetComp = newItem.TryGetComp<CompPersonalityStore>();
 
+            if (petFinalization && targetComp == null)
+            {
+                // 定义预检之外再确认真实实例，防止外部修改生成空人格产物。
+                // 失败只销毁刚创建的无效产物，不在这里销毁尚存的来源凝胶；
+                // 已由原版消耗的来源无法在此补偿，保料依赖消耗前守卫。
+                newItem.Destroy(DestroyMode.Vanish);
+                return;
+            }
+
             if (targetComp != null)
             {
-                // 继承原数据
+                // 先完整复制人格字段、特质、记忆、方向历史及标签，再改产物标签。
+                // CopyFrom 隔离可变快照，后面的移除和写入不会修改源人格数据。
                 targetComp.CopyFrom(sourceComp);
 
-                // 🔥 【核心注入逻辑】读取 XML 里的 hediffToAdd，动态打入雕像体内！
+                // 输出状态由 XML 指定；各方向先清理其普通或互斥标签，再写终极。
                 if (recipe is RecipeDef_PSTag smartRecipe && smartRecipe.hediffToAdd != null)
                 {
                     if (smartRecipe.hediffToAdd == SSCDefOf.SSC_Hediff_Bus_Final)
@@ -156,13 +185,21 @@ namespace SexSlaveCraft
                     // exclusiveTags 也用于筛料，普通标签只能在合格人格复制后单独移除。
                     if (CombatantRecipeUtility.IsFinalizationRecipe(smartRecipe))
                         targetComp.RemoveTag(SSCDefOf.SSC_Hediff_Combatant);
-                    if (petBaseTag != null)
+                    if (petFinalization)
+                    {
+                        // 清除整个宠物组的普通标记，避免旧普通标签随终极产物叠加。
+                        // 当前方向和各方向历史继续保留，组外标签不在清理范围内。
+                        PetFinalizationRecipeUtility.RemoveOrdinaryTags(targetComp);
+                    }
+                    else if (petBaseTag != null)
                     {
                         targetComp.RemoveTag(petBaseTag);
                     }
 
                     if (smartRecipe.exclusiveTags != null)
                     {
+                        // 此列表只修改产物副本。宠物来源若已有任意终极，前面的
+                        // 共用资格已拒绝；不能靠这里移除冲突来把旧成果改成另一种。
                         foreach (HediffDef exclusiveTag in smartRecipe.exclusiveTags)
                         {
                             if (exclusiveTag != null)
@@ -172,11 +209,13 @@ namespace SexSlaveCraft
                         }
                     }
 
-                    // 使用你之前写好的 SetTag 方法
+                    // 宠物配方已确认严重度为 1；写入一个目标终极供正常植入恢复。
                     targetComp.SetTag(smartRecipe.hediffToAdd, smartRecipe.severity);
                 }
             }
 
+            // 原版账单已消耗来源时不重复销毁；外部直接调用成功时才消费尚存来源。
+            // 产物沿用原来的近处放置流程，账单计数仍由引擎负责。
             if (!sourceItem.Destroyed) sourceItem.Destroy(DestroyMode.Vanish);
             GenPlace.TryPlaceThing(newItem, billDoer.Position, billDoer.Map, ThingPlaceMode.Near);
         }
