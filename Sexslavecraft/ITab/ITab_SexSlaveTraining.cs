@@ -925,34 +925,22 @@ namespace SexSlaveCraft
         private static FloatMenuOption BuildPetSpecializationOption(Pawn pawn, CompSexSlaveTraining comp, SexSlaveSpecializationType type)
         {
             string optionLabel = PetSpecializationUtility.GetSelectLabel(type);
-            // 猫、兔特化尚未完成，玩家入口保持可见但不可选择。
-            if (type == SexSlaveSpecializationType.PetCat || type == SexSlaveSpecializationType.PetRabbit)
+            bool enabled = PetSpecializationUtility.CanSelectPetSpecialization(pawn, type,
+                out PetSpecializationFailure failure);
+            if (!enabled)
             {
-                return new FloatMenuOption(optionLabel + " " + Strings.ITab_SpecializationUnfinishedSuffix, null);
-            }
-
-            bool finalized = PetSpecializationUtility.HasFinalPetState(pawn, type);
-            bool enabled = !finalized;
-            string disabledReason = null;
-            if (enabled)
-            {
-                enabled = PetSpecializationUtility.CanUsePetSpecialization(pawn, type, out disabledReason);
-            }
-
-            if (finalized)
-            {
-                optionLabel = optionLabel + " " + Strings.ITab_SpecializationFinalizedSuffix;
-            }
-            else if (!enabled)
-            {
-                optionLabel = optionLabel + " (" + disabledReason + ")";
+                string reason = PetSpecializationUtility.GetSelectionFailureReason(failure);
+                optionLabel += failure == PetSpecializationFailure.NotImplemented ||
+                    failure == PetSpecializationFailure.AlreadyFinalized ? " " + reason : " (" + reason + ")";
             }
 
             return new FloatMenuOption(optionLabel, enabled ? (Action)delegate
             {
-                if (!CanShowLegacySpecializationOptions(comp)) return;
-                comp.SetSpecialization(type);
-                PetSpecializationUtility.EnsurePetHediffFromSpecialization(pawn);
+                if (!PetSpecializationUtility.TrySelectPetSpecialization(pawn, comp, type,
+                    out PetSpecializationFailure currentFailure))
+                    Messages.Message("SSC_PetSpecialization_SelectionRejected".Translate(
+                        PetSpecializationUtility.GetSelectionFailureReason(currentFailure)),
+                        pawn, MessageTypeDefOf.RejectInput, false);
             } : null);
         }
 

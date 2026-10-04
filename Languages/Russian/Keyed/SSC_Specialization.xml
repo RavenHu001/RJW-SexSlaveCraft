@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_ITab_SpecializationPetDisabledConflictingFinal>Другая финальная специализация питомца не позволяет выбрать это направление</SSC_ITab_SpecializationPetDisabledConflictingFinal>
+  <SSC_PetSpecialization_SelectionRejected>Нельзя выбрать специализацию питомца: {0}</SSC_PetSpecialization_SelectionRejected>
+</LanguageData>

@@ -26,4 +26,6 @@
   <SSC_Message_PetAffection>{0} 向主人 {1} 做出了亲昵动作。</SSC_Message_PetAffection>
   <SSC_Message_RabbitCloneBirth>{0} 产出了兔分身 {1}。</SSC_Message_RabbitCloneBirth>
   <SSC_Message_DogAnimalInteractionTriggered>{0} 与 {1} 的动物互动被触发。</SSC_Message_DogAnimalInteractionTriggered>
+  <SSC_ITab_SpecializationPetDisabledConflictingFinal>已有其他宠物终极成果，无法改选此宠物方向</SSC_ITab_SpecializationPetDisabledConflictingFinal>
+  <SSC_PetSpecialization_SelectionRejected>无法选择宠物特化：{0}</SSC_PetSpecialization_SelectionRejected>
 </LanguageData>

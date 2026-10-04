@@ -60,7 +60,8 @@ namespace SexSlaveCraft
             specializationProgress = 0f;
             trainerInvalidExitBlocksAdoption = false;
             specializationExplicitlyUnset = false;
-            SetSpecialization(restoredType);
+            // 人格整体替换不是玩家切换：宿主旧成果和研究不能阻止源快照恢复。
+            ApplySpecialization(restoredType);
 
             // 无当前方向时切换入口不会触发清理，仍需去掉身体上不再生效的基础状态。
             // 新方向的健康状态继续由人格植入流程末尾的统一对账恢复。
@@ -118,7 +119,26 @@ namespace SexSlaveCraft
         /// <summary>切换同一角色的当前方向并保留各方向历史；限制默认由方向变更后的统一生命周期事件处理。</summary>
         public void SetSpecialization(SexSlaveSpecializationType type)
         {
+            TrySetSpecialization(type, out _);
+        }
+
+        /// <summary>在任何状态写入前检查宠物终极冲突；玩家开放与研究门槛由选择入口检查。</summary>
+        public bool TrySetSpecialization(SexSlaveSpecializationType type, out PetSpecializationFailure failure)
+        {
             type = NormalizeSpecializationType(type);
+            bool catFinal = false, dogFinal = false, rabbitFinal = false;
+            if (PetSpecializationRules.IsPetSpecialization(type))
+                ReadPetFinalStates(ref catFinal, ref dogFinal, ref rabbitFinal);
+            if (!PetSpecializationRules.CanChangeDirection(type, catFinal, dogFinal, rabbitFinal, out failure))
+                return false;
+
+            ApplySpecialization(type);
+            return true;
+        }
+
+        /// <summary>提交已经验证的方向，或恢复人格快照；不得在此重新套用玩家选择门槛。</summary>
+        private void ApplySpecialization(SexSlaveSpecializationType type)
+        {
             specializationProgress = NormalizeSpecializationProgress(specializationProgress);
             SexSlaveSpecializationType previousType = specializationType;
             bool changedType = previousType != type;
@@ -172,12 +192,22 @@ namespace SexSlaveCraft
         public float AddSpecializationProgress(float amount)
         {
             if (amount <= 0f || specializationType == SexSlaveSpecializationType.None) return specializationProgress;
+            if (PetSpecializationRules.IsPetSpecialization(specializationType))
+            {
+                bool catFinal = false, dogFinal = false, rabbitFinal = false;
+                ReadPetFinalStates(ref catFinal, ref dogFinal, ref rabbitFinal);
+                if (float.IsNaN(amount) || float.IsInfinity(amount) ||
+                    specializationProgress >= SpecializationCompletionProgress ||
+                    !PetSpecializationRules.CanTrain(specializationType, specializationType, catFinal, dogFinal, rabbitFinal))
+                    return specializationProgress;
+            }
             specializationProgress = Math.Max(0f, Math.Min(1f, specializationProgress + amount));
             return specializationProgress;
         }
 
         // 游戏宿主负责派生健康状态；独立的数据测试无需加载完整 Pawn 组件。
         partial void SpecializationHealthChanged();
+        partial void ReadPetFinalStates(ref bool catFinal, ref bool dogFinal, ref bool rabbitFinal);
 
         /// <summary>读档后规范化当前字段与历史，不从显示用的 Hediff 严重度反推经验。</summary>
         internal void NormalizeSpecializationData()

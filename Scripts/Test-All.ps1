@@ -38,6 +38,7 @@ $suites = @(
     @{ Name = 'PermanentLactation'; Arguments = @($repoRoot) },
     @{ Name = 'PersonalityMemories'; Arguments = @() },
     @{ Name = 'PersonalitySpecializations'; Arguments = @() },
+    @{ Name = 'PetSpecialization'; Arguments = @() },
     @{ Name = 'CombatantSpecialization'; Arguments = @($repoRoot) },
     @{ Name = 'PersonalityCardLayout'; Arguments = @($repoRoot) },
     @{ Name = 'RaceInjection'; Arguments = @() },

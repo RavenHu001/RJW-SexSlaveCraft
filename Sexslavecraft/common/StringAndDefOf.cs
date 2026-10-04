@@ -552,6 +552,7 @@ namespace SexSlaveCraft
         public static string ITab_SpecializationCowDisabledMissingRequirements => "SSC_ITab_SpecializationCowDisabledMissingRequirements".Translate();
         public static string ITab_SpecializationPetDisabledResearch => "SSC_ITab_SpecializationPetDisabledResearch".Translate();
         public static string ITab_SpecializationPetDisabledMissingRequirements => "SSC_ITab_SpecializationPetDisabledMissingRequirements".Translate();
+        public static string ITab_SpecializationPetDisabledConflictingFinal => "SSC_ITab_SpecializationPetDisabledConflictingFinal".Translate();
         public static string ITab_SpecializationFinalizedSuffix => "SSC_ITab_SpecializationFinalizedSuffix".Translate();
         public static string ITab_SpecializationUnfinishedSuffix => "SSC_ITab_SpecializationUnfinishedSuffix".Translate();
         public static string ITab_SpecializationComplete => "SSC_ITab_SpecializationComplete".Translate();

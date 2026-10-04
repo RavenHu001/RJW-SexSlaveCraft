@@ -102,7 +102,7 @@ namespace SexSlaveCraft
                 case SexSlaveSpecializationType.PetCat:
                 case SexSlaveSpecializationType.PetDog:
                 case SexSlaveSpecializationType.PetRabbit:
-                    return !PetSpecializationUtility.HasFinalPetState(receiver, type);
+                    return PetSpecializationUtility.CanTrainPetSpecialization(receiver, type);
                 case SexSlaveSpecializationType.TrainerOfficer:
                     return TrainerSpecializationUtility.MeetsContinuousConditions(receiver, out _)
                         && !TrainerSpecializationUtility.HasFinalRecord(receiver);

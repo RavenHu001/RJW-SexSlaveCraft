@@ -131,6 +131,9 @@ namespace SexSlaveCraft
     public static class PetSpecializationUtility
     {
         public static bool HasFinalPetState(Pawn p, SexSlaveSpecializationType t) => p?.PetFinal == true;
+        public static bool CanTrainPetSpecialization(Pawn p, SexSlaveSpecializationType t) =>
+            PetSpecializationRules.CanTrain(t, p?.Training?.specializationType ?? SexSlaveSpecializationType.None,
+                p?.PetFinal == true, p?.PetFinal == true, p?.PetFinal == true);
         public static void EnsurePetHediffFromSpecialization(Pawn p) { }
         public static bool TryGainPetProgress(Pawn p, SexSlaveSpecializationType t, float amount)
         {

@@ -20,9 +20,7 @@ namespace SexSlaveCraft
 
         public static bool IsPetSpecialization(SexSlaveSpecializationType type)
         {
-            return type == SexSlaveSpecializationType.PetCat ||
-                   type == SexSlaveSpecializationType.PetDog ||
-                   type == SexSlaveSpecializationType.PetRabbit;
+            return PetSpecializationRules.IsPetSpecialization(type);
         }
 
         public static HediffDef GetBaseHediffDef(SexSlaveSpecializationType type)
@@ -88,6 +86,23 @@ namespace SexSlaveCraft
             return finalDef != null && pawn.health.hediffSet.HasHediff(finalDef);
         }
 
+        public static bool HasAnyFinalPetState(Pawn pawn)
+        {
+            foreach (SexSlaveSpecializationType type in PetTypes)
+                if (HasFinalPetState(pawn, type)) return true;
+            return false;
+        }
+
+        /// <summary>持续培养不重查研究或玩家开放状态，合法旧档猫兔仍可成长。</summary>
+        public static bool CanTrainPetSpecialization(Pawn pawn, SexSlaveSpecializationType type)
+        {
+            CompSexSlaveTraining comp = pawn?.TryGetComp<CompSexSlaveTraining>();
+            return comp != null && PetSpecializationRules.CanTrain(type, comp.specializationType,
+                HasFinalPetState(pawn, SexSlaveSpecializationType.PetCat),
+                HasFinalPetState(pawn, SexSlaveSpecializationType.PetDog),
+                HasFinalPetState(pawn, SexSlaveSpecializationType.PetRabbit));
+        }
+
         public static bool IsPetTag(HediffDef def)
         {
             if (def == null) return false;
@@ -123,8 +138,7 @@ namespace SexSlaveCraft
             if (pawn?.health?.hediffSet == null) return;
 
             CompSexSlaveTraining comp = pawn.TryGetComp<CompSexSlaveTraining>();
-            if (comp == null || !IsPetSpecialization(comp.specializationType)) return;
-            if (HasFinalPetState(pawn, comp.specializationType)) return;
+            if (comp == null || !CanTrainPetSpecialization(pawn, comp.specializationType)) return;
 
             HediffDef baseDef = GetBaseHediffDef(comp.specializationType);
             if (baseDef == null) return;
@@ -178,28 +192,80 @@ namespace SexSlaveCraft
 
         public static bool CanUsePetSpecialization(Pawn pawn, SexSlaveSpecializationType type, out string reason)
         {
-            reason = null;
-            if (pawn == null || !IsPetSpecialization(type))
+            bool allowed = CanSelectPetSpecialization(pawn, type, out PetSpecializationFailure failure);
+            reason = GetSelectionFailureReason(failure);
+            return allowed;
+        }
+
+        /// <summary>玩家选择的完整资格；与底层方向恢复和持续培养分开。</summary>
+        public static bool CanSelectPetSpecialization(Pawn pawn, SexSlaveSpecializationType type,
+            out PetSpecializationFailure failure)
+        {
+            failure = PetSpecializationFailure.MissingRequirements;
+            CompSexSlaveTraining comp = pawn?.TryGetComp<CompSexSlaveTraining>();
+            if (comp == null || !IsPetSpecialization(type)) return false;
+            if (type == SexSlaveSpecializationType.PetCat || type == SexSlaveSpecializationType.PetRabbit)
             {
-                reason = Strings.ITab_SpecializationPetDisabledMissingRequirements;
+                failure = PetSpecializationFailure.NotImplemented;
+                return false;
+            }
+            if (comp.pawnIdentity != PawnIdentity.Slave) return false;
+            if (!PetSpecializationRules.CanChangeDirection(type,
+                HasFinalPetState(pawn, SexSlaveSpecializationType.PetCat),
+                HasFinalPetState(pawn, SexSlaveSpecializationType.PetDog),
+                HasFinalPetState(pawn, SexSlaveSpecializationType.PetRabbit), out failure)) return false;
+            if (HasFinalPetState(pawn, type))
+            {
+                failure = PetSpecializationFailure.AlreadyFinalized;
                 return false;
             }
 
-            string researchDefName = GetResearchDefName(type);
-            ResearchProjectDef research = DefDatabase<ResearchProjectDef>.GetNamedSilentFail(researchDefName);
-            if (research != null && !ResearchUtils.IsResearchFinished(research))
+            ResearchProjectDef research = DefDatabase<ResearchProjectDef>.GetNamedSilentFail(GetResearchDefName(type));
+            if (SSCDefOf.SSC_BasicTraining == null || research == null)
             {
-                reason = Strings.ITab_SpecializationPetDisabledResearch;
+                failure = PetSpecializationFailure.MissingRequirements;
+                return false;
+            }
+            if (!ResearchUtils.IsResearchFinished(SSCDefOf.SSC_BasicTraining) ||
+                !ResearchUtils.IsResearchFinished(research))
+            {
+                failure = PetSpecializationFailure.ResearchRequired;
                 return false;
             }
 
+            failure = PetSpecializationFailure.None;
             return true;
+        }
+
+        /// <summary>菜单动作和其他玩家入口均在提交时复查，并确认仍使用同一个训练组件。</summary>
+        public static bool TrySelectPetSpecialization(Pawn pawn, CompSexSlaveTraining comp,
+            SexSlaveSpecializationType type, out PetSpecializationFailure failure)
+        {
+            failure = PetSpecializationFailure.MissingRequirements;
+            if (comp == null || pawn?.TryGetComp<CompSexSlaveTraining>() != comp) return false;
+            if (!CanSelectPetSpecialization(pawn, type, out failure) ||
+                !comp.TrySetSpecialization(type, out failure)) return false;
+            EnsurePetHediffFromSpecialization(pawn);
+            return true;
+        }
+
+        public static string GetSelectionFailureReason(PetSpecializationFailure failure)
+        {
+            switch (failure)
+            {
+                case PetSpecializationFailure.None: return null;
+                case PetSpecializationFailure.NotImplemented: return Strings.ITab_SpecializationUnfinishedSuffix;
+                case PetSpecializationFailure.ResearchRequired: return Strings.ITab_SpecializationPetDisabledResearch;
+                case PetSpecializationFailure.AlreadyFinalized: return Strings.ITab_SpecializationFinalizedSuffix;
+                case PetSpecializationFailure.ConflictingFinal: return Strings.ITab_SpecializationPetDisabledConflictingFinal;
+                default: return Strings.ITab_SpecializationPetDisabledMissingRequirements;
+            }
         }
 
         public static bool TryGainPetProgress(Pawn pawn, SexSlaveSpecializationType type, float amount, bool showThresholdMessage = true)
         {
             if (pawn == null || amount <= 0f || float.IsNaN(amount) || float.IsInfinity(amount) ||
-                !IsPetSpecialization(type) || HasFinalPetState(pawn, type)) return false;
+                !CanTrainPetSpecialization(pawn, type)) return false;
 
             CompSexSlaveTraining comp = pawn.TryGetComp<CompSexSlaveTraining>();
             if (comp == null || comp.specializationType != type) return false;

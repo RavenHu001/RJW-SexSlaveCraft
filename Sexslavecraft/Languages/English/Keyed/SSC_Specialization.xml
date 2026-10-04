@@ -26,4 +26,6 @@
   <SSC_Message_PetAffection>{0} showed affection to master {1}.</SSC_Message_PetAffection>
   <SSC_Message_RabbitCloneBirth>{0} gave birth to rabbit clone {1}.</SSC_Message_RabbitCloneBirth>
   <SSC_Message_DogAnimalInteractionTriggered>{0}'s animal interaction with {1} has started.</SSC_Message_DogAnimalInteractionTriggered>
+  <SSC_ITab_SpecializationPetDisabledConflictingFinal>Another final pet specialization prevents selecting this pet direction</SSC_ITab_SpecializationPetDisabledConflictingFinal>
+  <SSC_PetSpecialization_SelectionRejected>Cannot select pet specialization: {0}</SSC_PetSpecialization_SelectionRejected>
 </LanguageData>
