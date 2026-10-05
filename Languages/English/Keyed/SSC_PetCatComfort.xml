@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
+  <!-- Target identity, consciousness and same-cell reachability have separate reasons. -->
   <SSC_PetCatComfortRequiresFinal>Requires final Pet Cat specialization.</SSC_PetCatComfortRequiresFinal>
   <SSC_PetCatComfortInvalidCaster>The caster must be alive, spawned, not downed and outside a mental state.</SSC_PetCatComfortInvalidCaster>
-  <SSC_PetCatComfortInvalidTarget>Target another alive, spawned player-faction humanlike pawn on the same map, within range and line of sight. A target outside a mental state must also have a mood need.</SSC_PetCatComfortInvalidTarget>
+  <SSC_PetCatComfortInvalidTarget>Target another alive, spawned player-faction humanlike pawn on the same map. A target outside a mental state must also have a mood need.</SSC_PetCatComfortInvalidTarget>
+  <SSC_PetCatComfortUnconsciousTarget>The target lacks enough consciousness to receive comfort.</SSC_PetCatComfortUnconsciousTarget>
+  <SSC_PetCatComfortUnreachableTarget>Cannot reach the target's cell.</SSC_PetCatComfortUnreachableTarget>
   <SSC_PetCatComfortMissingEffect>Soothing Resonance's effect is currently unavailable.</SSC_PetCatComfortMissingEffect>
 </LanguageData>

@@ -8,6 +8,8 @@
     <!-- 能力资格、状态分支、授予/撤销和冷却迁移均直接执行生产源码。 -->
     <Compile Include="$(SscSourceRoot)/Comps/Ability_PetCatComfort.cs" Link="Production/Ability_PetCatComfort.cs" />
     <Compile Include="$(SscSourceRoot)/Comps/CompAbilityEffect_PetCatComfort.cs" Link="Production/CompAbilityEffect_PetCatComfort.cs" />
+    <Compile Include="$(SscSourceRoot)/Comps/Verb_PetCatComfort.cs" Link="Production/Verb_PetCatComfort.cs" />
+    <Compile Include="$(SscSourceRoot)/JobDriver/JobDriver_PetCatComfort.cs" Link="Production/JobDriver_PetCatComfort.cs" />
     <Compile Include="$(SscSourceRoot)/common/PetCatAbilityUtility.cs" Link="Production/PetCatAbilityUtility.cs" />
     <Compile Include="$(SscSourceRoot)/Hediff/HediffComp_GiveAbility.cs" Link="Production/HediffComp_GiveAbility.cs" />
     <Compile Include="$(SscSourceRoot)/common/PetSpecializationRules.cs" Link="Production/PetSpecializationRules.cs" />

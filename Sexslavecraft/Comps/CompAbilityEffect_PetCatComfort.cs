@@ -24,7 +24,7 @@ namespace SexSlaveCraft
             string reason;
             bool allowed = PetCatAbilityUtility.IsEffectConfigured(Props.encouragementHediff, Props.durationTicks);
             if (!allowed) reason = "SSC_PetCatComfortMissingEffect";
-            else allowed = PetCatAbilityUtility.CanApply(parent.pawn, target.Pawn, out reason, parent.verb.verbProps.range);
+            else allowed = PetCatAbilityUtility.CanSelectTarget(parent.pawn, target.Pawn, out reason);
             if (!allowed)
             {
                 if (throwMessages)
@@ -36,7 +36,8 @@ namespace SexSlaveCraft
 
         public override bool CanApplyOn(LocalTargetInfo target, LocalTargetInfo dest)
         {
-            // 菜单选取、原版执行前复查和实际效果共用资格；不锁定预热开始时的分支。
+            // 原版排队与 WarmupTick 都调用此入口，因此这里不能把远处可达目标拒绝。
+            // 同格限制由 Verb 开始预热、任务过程及 Ability.Activate 分别复查。
             return Valid(target);
         }
 
@@ -44,8 +45,7 @@ namespace SexSlaveCraft
         {
             // Apply 不检查原版冷却，因为此时 PreActivate 已经启动它。
             // 恢复分支与激励分支只能完成一个，不附带亲昵经验或后续互动。
-            if (PetCatAbilityUtility.Apply(parent.pawn, target.Pawn, Props.encouragementHediff,
-                Props.durationTicks, parent.verb.verbProps.range))
+            if (PetCatAbilityUtility.Apply(parent.pawn, target.Pawn, Props.encouragementHediff, Props.durationTicks))
                 base.Apply(target, dest);
         }
     }

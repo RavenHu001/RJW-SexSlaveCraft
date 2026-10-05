@@ -28,7 +28,7 @@ namespace Verse
     public class ResearchProjectDef : Def { public bool IsFinished = true; }
     public class ThoughtDef : Def { }
     public class TraitDef : Def { }
-    public class JobDef : Def { }
+    public class JobDef : Def { public bool abilityCasting; }
     public class Thing { public bool Destroyed; public Map Map = new(); public IntVec3 Position; }
     public class Map { public bool LineOfSight = true; }
     public static class GenSight
@@ -41,12 +41,17 @@ namespace Verse
         public IntVec3(int x, int z) { this.x = x; this.z = z; }
         public float DistanceToSquared(IntVec3 other) => (x - other.x) * (x - other.x) + (z - other.z) * (z - other.z);
         public bool InHorDistOf(IntVec3 other, float distance) => DistanceToSquared(other) <= distance * distance;
+        public static bool operator ==(IntVec3 a, IntVec3 b) => a.x == b.x && a.z == b.z;
+        public static bool operator !=(IntVec3 a, IntVec3 b) => !(a == b);
+        public override bool Equals(object other) => other is IntVec3 cell && this == cell;
+        public override int GetHashCode() => HashCode.Combine(x, z);
     }
     public struct LocalTargetInfo
     {
         public Thing Thing;
         public Pawn Pawn => Thing as Pawn;
         public bool IsValid => Thing != null;
+        public IntVec3 Cell => Thing?.Position ?? default;
         public static implicit operator LocalTargetInfo(Thing thing) => new() { Thing = thing };
     }
     public struct AcceptanceReport
@@ -63,9 +68,12 @@ namespace Verse
         public static T GetNamedSilentFail(string name) => name != null && Definitions.TryGetValue(name, out T def) ? def : null;
         public static void Add(T def) => Definitions[def.defName] = def;
     }
-    public class Pawn : Thing
+    public partial class Pawn : Thing
     {
         public bool Dead, Downed, Drafted, Spawned = true;
+        public bool Conscious { get => health?.capacities?.CanBeAwake == true; set => health.capacities.CanBeAwake = value; }
+        public bool Sleeping, Reachable = true;
+        public Verse.AI.PathEndMode LastReachMode;
         public bool InMentalState => MentalState != null;
         public Verse.AI.MentalState MentalState;
         public CompSexSlaveTraining Training;
@@ -82,6 +90,7 @@ namespace Verse
         public Pawn() { health = new PawnHealth { Owner = this }; abilities = new RimWorld.Pawn_AbilityTracker(this); }
         public T TryGetComp<T>() where T : class => Training as T;
         public bool IsHashIntervalTick(int interval) => true;
+        public bool CanReach(Thing target, Verse.AI.PathEndMode mode, Danger danger) { LastReachMode = mode; return Reachable; }
     }
     public class RaceProperties { public bool Humanlike = true, Animal; }
     public class PawnStory { public TraitTracker traits = new(); }
@@ -114,8 +123,12 @@ namespace Verse
     }
     public class HediffComp_Disappears : HediffComp { public int ticksToDisappear; }
     public class HediffCompProperties_Disappears : HediffCompProperties { public int disappearsAfterTicks; }
-    public class VerbProperties { public float range = 6; }
-    public class Verb { public VerbProperties verbProps = new(); }
+    public class VerbProperties
+    {
+        public float range, warmupTime = 2;
+    }
+    public partial class Verb { public VerbProperties verbProps = new(); }
+    public enum Danger { Deadly }
     public class HediffSet
     {
         public readonly List<Hediff> hediffs = new();
@@ -125,6 +138,7 @@ namespace Verse
     public class PawnHealth
     {
         public Pawn Owner;
+        public PawnCapacityTracker capacities = new();
         public readonly HediffSet hediffSet = new();
         public Hediff AddHediff(HediffDef def)
         {
@@ -136,10 +150,11 @@ namespace Verse
         }
         public void RemoveHediff(Hediff h) { if (hediffSet.hediffs.Remove(h)) h.Grant?.CompPostPostRemoved(); }
     }
+    public class PawnCapacityTracker { public bool CanBeAwake = true; }
     public static class Find { public static TickManager TickManager = new(); }
     public class TickManager { public int TicksGame; }
     public static class GenTicks { public const int TickRareInterval = 250; public static int TicksGame => Find.TickManager.TicksGame; }
-    public enum LoadSaveMode { Inactive, LoadingVars, PostLoadInit }
+    public enum LoadSaveMode { Inactive, LoadingVars, PostLoadInit, Saving }
     public static class Scribe { public static LoadSaveMode mode; }
     public static class ThingExtensions { public static bool DestroyedOrNull(this Thing thing) => thing == null || thing.Destroyed; }
     public static class Messages
@@ -164,18 +179,24 @@ namespace Verse.AI
             OnRecover?.Invoke();
         }
     }
-    public class Job { public int expiryInterval; }
+    public partial class Job { public int expiryInterval; }
     public enum JobTag { Misc }
-    public class PawnJobTracker { public bool TryTakeOrderedJob(Job job, JobTag tag) => true; }
+    public partial class PawnJobTracker { public bool TryTakeOrderedJob(Job job, JobTag tag) => true; }
     public static class JobMaker { public static Job MakeJob(Verse.JobDef def, Verse.Thing target) => new(); }
 }
 
 namespace RimWorld
 {
     public class Faction { public static readonly Faction OfPlayer = new(); public bool IsPlayer => ReferenceEquals(this, OfPlayer); }
+    public static class RestUtility
+    {
+        public static bool Awake(Verse.Pawn pawn) => !pawn.Sleeping;
+        public static void WakeUp(Verse.Pawn pawn, bool startJob = true) { pawn.Sleeping = false; pawn.NativeWakeCalls++; }
+    }
     public class AbilityDef : Verse.Def
     {
         public int cooldownTicks = 60000;
+        public bool stunTargetWhileCasting = true;
         public Func<Ability, CompAbilityEffect> EffectFactory;
     }
     public class Ability
@@ -186,15 +207,18 @@ namespace RimWorld
         public int ActivationCalls, CooldownStartCalls;
         private int cooldownEnd;
         public readonly List<CompAbilityEffect> EffectComps = new();
-        public Verse.Verb verb = new();
+        public Verse.Verb verb;
+        public bool Casting => verb?.WarmingUp == true;
         public Ability() { }
         public Ability(Verse.Pawn pawn) { this.pawn = pawn; }
         public Ability(Verse.Pawn pawn, AbilityDef def)
         {
             this.pawn = pawn; this.def = def;
+            verb = new Verb_PetCatComfort { ability = this, caster = pawn };
             if (def?.EffectFactory != null) EffectComps.Add(def.EffectFactory(this));
         }
         public virtual Verse.AcceptanceReport CanCast => BaseAllowed && CooldownTicksRemaining == 0;
+        public virtual void ExposeData() { }
         public int CooldownTicksRemaining => Math.Max(0, cooldownEnd - Verse.Find.TickManager.TicksGame);
         public void StartCooldown(int ticks) { CooldownStartCalls++; cooldownEnd = Verse.Find.TickManager.TicksGame + ticks; }
         public void ResetCooldown() { cooldownEnd = 0; }

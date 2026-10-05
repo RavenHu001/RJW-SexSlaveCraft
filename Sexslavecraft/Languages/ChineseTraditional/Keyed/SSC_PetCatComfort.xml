@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
+  <!-- 拒絕原因區分目標身分、意識與到同格的路徑；普通睡眠和倒地不單獨排除目標。 -->
   <SSC_PetCatComfortRequiresFinal>需要終極寵物貓專精。</SSC_PetCatComfortRequiresFinal>
   <SSC_PetCatComfortInvalidCaster>施放者必須存活、已生成、未倒地且沒有精神狀態。</SSC_PetCatComfortInvalidCaster>
-  <SSC_PetCatComfortInvalidTarget>目標必須是同地圖射程與視線內的另一名存活、已生成的玩家陣營人形角色；未處於精神狀態的目標還須有心情需求。</SSC_PetCatComfortInvalidTarget>
+  <SSC_PetCatComfortInvalidTarget>目標必須是同地圖上另一名存活、已生成的玩家陣營人形角色；未處於精神狀態的目標還須有心情需求。</SSC_PetCatComfortInvalidTarget>
+  <SSC_PetCatComfortUnconsciousTarget>目標意識不足，無法接受安撫。</SSC_PetCatComfortUnconsciousTarget>
+  <SSC_PetCatComfortUnreachableTarget>無法到達目標所在格。</SSC_PetCatComfortUnreachableTarget>
   <SSC_PetCatComfortMissingEffect>安撫共鳴效果目前不可用。</SSC_PetCatComfortMissingEffect>
 </LanguageData>

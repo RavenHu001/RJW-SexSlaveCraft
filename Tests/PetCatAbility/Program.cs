@@ -7,7 +7,7 @@ using SexSlaveCraft;
 using Verse;
 using Verse.AI;
 
-internal static class Program
+internal static partial class Program
 {
     private static int passed, failed;
     private static string root;
@@ -19,21 +19,21 @@ internal static class Program
     private static int Main(string[] args)
     {
         root = Path.GetFullPath(args.Length > 0 ? args[0] : ".");
-        Run("猫技能XML只有单一效果与一天冷却，6格视线和征召/非征召均可用", Definitions);
+        Run("猫技能XML只有单一效果与一天冷却，地图选择并接近同格原版读条", Definitions);
         Run("猫激励使用定时状态与工作倍率，猫终极挂真实能力授予组件", EffectDefinitions);
         Run("猫鼓舞心情为Hediff即时思绪，状态存续时提供8点且不另发长期记忆", MoodDefinition);
         Run("技能、鼓舞、思绪与拒绝原因的四语和源码镜像完整", Translations);
         Run("普通完成与狗兔终极不授予猫技能，猫终极达到有效严重度才可用", FinalQualification);
         Run("猫终极跨全部方向、身份和征召状态可用，不依赖绑定与研究", CrossDirectionQualification);
         Run("施放者死亡、销毁、倒地、离图、精神状态或空壳均拒绝", InvalidCasters);
-        Run("目标必须为同图玩家阵营其他人形角色，范围与视线在运行时复查", TargetQualifications);
-        Run("6格及自定义范围边界正确，损坏范围安全拒绝", RangeBoundaries);
+        Run("目标必须为同图玩家阵营其他有意识人形角色，各入口复查", TargetQualifications);
+        Run("地图选择不限制距离视线，可达同格才施放，不可达目标拒绝", RangeBoundaries);
         Run("正常目标需要心情，精神状态目标无心情或倒地仍可恢复", MentalMoodBoundary);
         Run("所有当前精神状态及来源直接恢复一次，不附带激励或删除疾病", MentalRecovery);
         Run("预热后正常目标进入精神状态时只恢复，原精神状态消失时只给激励", LateBranchChanges);
         Run("预热中精神状态被替换时只恢复当前实例，恢复后的新状态不二次处理", ReplacedMentalState);
         Run("效果组件Valid和CanApplyOn共用资格并保留原版Valid限制", ComponentValidation);
-        Run("排队后资格、目标、距离、视线失效不进入PreActivate或消耗冷却", ExecutionRecheck);
+        Run("排队后资格、目标、位置或意识失效不进入PreActivate或消耗冷却", ExecutionRecheck);
         Run("两种效果共用完整一天冷却，生效组件不因PreActivate已扣冷却而失效", SharedCooldown);
         Run("激励刷新原实例与计时，多猫及重复标签不叠加状态", EncouragementRefresh);
         Run("配置损坏在激活前拒绝并给出拒绝原因", InvalidEffectConfiguration);
@@ -46,6 +46,7 @@ internal static class Program
         Run("无猫终极植入不保留孤儿猫能力，其他能力不受影响", RestoreWithoutFinal);
         Run("抽取后清源猫状态、技能与猫历史，保留其他方向及成果", DetachAfterExtraction);
         Run("缺失角色、能力容器与定义的迁移入口安全，不制造错误资格", MissingBoundaries);
+        RunMovementCases();
         Console.WriteLine($"RESULT: {passed}/{passed + failed} cases passed.");
         return failed == 0 ? 0 : 1;
     }
@@ -60,6 +61,7 @@ internal static class Program
     private static void Reset()
     {
         Find.TickManager.TicksGame = 100000; Scribe.mode = LoadSaveMode.Inactive; Messages.Requests.Clear();
+        Scribe_Values.Values.Clear();
         DefDatabase<HediffDef>.Definitions.Clear(); DefDatabase<ResearchProjectDef>.Definitions.Clear();
         foreach (string pet in new[] { "PetCat", "PetDog", "PetRabbit" })
         {
@@ -87,7 +89,7 @@ internal static class Program
     private static (Pawn caster, Pawn target, Ability_PetCatComfort ability) Pair()
     {
         var caster = Pawn(Cat, .34f); caster.health.AddHediff(CatFinal); TickGrant(caster);
-        var target = Pawn(SexSlaveSpecializationType.Cow, .27f); target.Map = caster.Map; target.Position = new IntVec3(2, 0);
+        var target = Pawn(SexSlaveSpecializationType.Cow, .27f); target.Map = caster.Map; target.Position = caster.Position;
         return (caster, target, (Ability_PetCatComfort)caster.abilities.GetAbility(SSCDefOf.SSC_PetCatComfort));
     }
     private static CompAbilityEffect_PetCatComfort Effect(Ability ability) => (CompAbilityEffect_PetCatComfort)ability.EffectComps.Single();
@@ -117,9 +119,20 @@ internal static class Program
         foreach (string field in new[] { "targetRequired", "showWhenDrafted", "displayGizmoWhileUndrafted" }) Check((string)def.Element(field) == "true", "missing " + field);
         Check((string)def.Element("disableGizmoWhileUndrafted") == "false", "undrafted disabled");
         var verb = def.Element("verbProperties");
-        Equal(6, float.Parse((string)verb.Element("range"))); Equal(2, float.Parse((string)verb.Element("warmupTime")));
-        Check((string)verb.Element("requireLineOfSight") == "true", "no line of sight");
+        Equal(0, float.Parse((string)verb.Element("range"))); Equal(2, float.Parse((string)verb.Element("warmupTime")));
+        Check((string)verb.Element("verbClass") == typeof(Verb_PetCatComfort).FullName, "map selection verb missing");
+        Check((string)verb.Element("requireLineOfSight") == "false", "legacy line of sight gate remains");
+        Check((string)def.Element("stunTargetWhileCasting") == "true", "native target stun missing");
+        Check((string)def.Element("warmupMoteSocialSymbol") == "UI/Icons/Ritual", "native warmup social symbol missing");
+        Check(def.Descendants("showCastingProgressBar").Any(e => (string)e == "true"), "native casting progress not enabled");
+        Check((string)def.Element("jobDef") == "SSC_Job_PetCatComfort", "ability did not use approach driver");
+        var job = Directory.EnumerateFiles(Path.Combine(root, "Defs/JobDefs"), "*.xml")
+            .SelectMany(path => XDocument.Load(path).Root.Elements())
+            .Single(e => (string)e.Element("defName") == "SSC_Job_PetCatComfort");
+        Check((string)job.Element("driverClass") == typeof(JobDriver_PetCatComfort).FullName && (string)job.Element("abilityCasting") == "false" &&
+            (string)job.Element("collideWithPawns") == "false", "approach job relies on early casting or pawn collision");
         Check((string)verb.Element("targetParams").Element("canTargetSelf") == "false", "self target enabled");
+        Check((string)verb.Element("targetParams").Element("neverTargetIncapacitated") == "false", "conscious downed targets excluded by XML");
         var comp = def.Element("comps").Elements().Single();
         Check((string)comp.Attribute("Class") == typeof(CompProperties_AbilityPetCatComfort).FullName, "wrong sole effect component");
         Check((string)comp.Element("encouragementHediff") == Buff.defName && (string)comp.Element("durationTicks") == "30000", "effect configuration mismatch");
@@ -153,8 +166,13 @@ internal static class Program
         foreach (string language in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" })
         {
             var keyed = XDocument.Load(Path.Combine(root, "Languages", language, "Keyed/SSC_PetCatComfort.xml"));
-            foreach (string key in new[] { "RequiresFinal", "InvalidCaster", "InvalidTarget", "MissingEffect" })
+            foreach (string key in new[] { "RequiresFinal", "InvalidCaster", "InvalidTarget", "MissingEffect", "UnconsciousTarget", "UnreachableTarget" })
                 Check(!string.IsNullOrWhiteSpace((string)keyed.Root.Element("SSC_PetCatComfort" + key)), "missing reason translation " + language + "/" + key);
+            Check(XNode.DeepEquals(keyed.Root, XDocument.Load(Path.Combine(root, "Sexslavecraft/Languages", language, "Keyed/SSC_PetCatComfort.xml")).Root), "source reason mirror mismatch " + language);
+            string jobPath = Path.Combine("Languages", language, "DefInjected/JobDef/SSC_PetCatComfortJobDefs.xml");
+            var translatedJob = XDocument.Load(Path.Combine(root, jobPath));
+            Check(!string.IsNullOrWhiteSpace((string)translatedJob.Root.Element("SSC_Job_PetCatComfort.reportString")) &&
+                XNode.DeepEquals(translatedJob.Root, XDocument.Load(Path.Combine(root, "Sexslavecraft", jobPath)).Root), "job translation or mirror missing " + language);
             foreach (var resource in new[] {
                 ("DefInjected/AbilityDef/SSC_PetCatComfort.xml", "SSC_PetCatComfort.label", "SSC_PetCatComfort.description"),
                 ("DefInjected/HediffDef/SSC_PetCatComfort.xml", "SSC_Hediff_PetCatEncouragement.label", "SSC_Hediff_PetCatEncouragement.description"),
@@ -241,23 +259,27 @@ internal static class Program
             if (scenario == 6) target.RaceProps.Humanlike = false;
             if (scenario == 7) target.Faction = new Faction();
             if (scenario == 8) target.Map = new Map();
-            if (scenario == 9) target.Position = new IntVec3(7, 0);
-            if (scenario == 10) p.caster.Map.LineOfSight = false;
+            if (scenario == 9) target.Conscious = false;
+            if (scenario == 10) target.RaceProps = null;
             Check(!PetCatAbilityUtility.CanApply(p.caster, target, out _) && !Effect(p.ability).Valid(target), "invalid target accepted " + scenario);
             Check(!p.ability.Activate(target, default) && p.ability.ActivationCalls == 0 && p.ability.CooldownTicksRemaining == 0, "invalid target consumed cooldown");
         }
     }
 
-    /// <summary>范围取当前技能verb值；NaN、无穷与负值不能造成无限范围或旁路。</summary>
+    /// <summary>目标选择与生效位置分开；路径宿主只记录OnCell，不模拟真实墙体寻路。</summary>
     private static void RangeBoundaries()
     {
-        var p = Pair(); p.target.Position = new IntVec3(6, 0);
-        Check(PetCatAbilityUtility.CanApply(p.caster, p.target, out _), "six tiles rejected");
-        p.target.Position = new IntVec3(6, 1); Check(!PetCatAbilityUtility.CanApply(p.caster, p.target, out _), "outside radius accepted");
-        p.target.Position = new IntVec3(2, 0); p.ability.verb.verbProps.range = 1;
-        Check(!Effect(p.ability).Valid(p.target), "component ignores custom range");
-        foreach (float range in new[] { -1, float.NaN, float.NegativeInfinity, float.PositiveInfinity })
-            Check(!PetCatAbilityUtility.CanApply(p.caster, p.target, out _, range), "bad range accepted");
+        var p = Pair(); p.target.Position = new IntVec3(200, 100); p.caster.Map.LineOfSight = false;
+        Check(PetCatAbilityUtility.CanTarget(p.caster, p.target, out _) && PetCatAbilityUtility.CanSelectTarget(p.caster, p.target, out _) &&
+            Effect(p.ability).Valid(p.target), "remote reachable target rejected by legacy range or line of sight");
+        Check(p.caster.LastReachMode == PathEndMode.OnCell, "selection checks wrong path end mode");
+        Check(!PetCatAbilityUtility.CanApply(p.caster, p.target, out _) && !p.ability.Activate(p.target, default) && p.ability.ActivationCalls == 0,
+            "remote target applied before approach");
+        p.caster.Reachable = false;
+        Check(!PetCatAbilityUtility.CanSelectTarget(p.caster, p.target, out string reason) && reason == "SSC_PetCatComfortUnreachableTarget" &&
+            !Effect(p.ability).Valid(p.target), "unreachable target selection accepted");
+        p.caster.Reachable = true; p.caster.Position = p.target.Position;
+        Check(PetCatAbilityUtility.CanApply(p.caster, p.target, out _), "same-cell target still uses line of sight"); Cast(p);
     }
 
     /// <summary>有实际精神状态时不检查心情需求或目标倒地；无状态时心情是激励目标条件。</summary>
@@ -338,7 +360,7 @@ internal static class Program
             if (scenario == 3) p.caster.health.AddHediff(SSCDefOf.SSC_PersonalityExcreted_Done);
             if (scenario == 4) p.target.Dead = true;
             if (scenario == 5) p.target.Position = new IntVec3(7, 0);
-            if (scenario == 6) p.caster.Map.LineOfSight = false;
+            if (scenario == 6) p.target.Conscious = false;
             if (scenario == 7) p.target.Faction = new Faction();
             if (scenario == 8) p.target.needs.mood = null;
             if (scenario == 9) p.target.Map = new Map();

@@ -289,6 +289,8 @@ namespace Verse
     public class HealthTracker
     {
         public HediffSet hediffSet = new HediffSet();
+        // 猫目标意识检查仅为本迁移套件的编译边界；意识分支由猫技能专项验证。
+        public PawnCapacityTracker capacities = new PawnCapacityTracker();
         /// <summary>从测试角色的健康状态列表中移除指定实例。</summary>
         public void RemoveHediff(Hediff h)
         {
@@ -306,6 +308,7 @@ namespace Verse
             return h;
         }
     }
+    public class PawnCapacityTracker { public bool CanBeAwake = true; }
 
     public static class ThingMaker
     {

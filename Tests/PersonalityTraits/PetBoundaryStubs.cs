@@ -20,6 +20,8 @@ namespace Verse
         public RaceProperties RaceProps = new RaceProperties();
         public Faction Faction = Faction.OfPlayer;
         public JobDef CurJobDef => CurJob?.def;
+        // 仅补齐猫技能选择资格的编译宿主；迁移套件不验证真实意识或寻路。
+        public bool CanReach(Thing target, Verse.AI.PathEndMode mode, Danger danger) => true;
     }
     // 技能效果分支只需编译边界，本套件不据此验证视线、精神恢复或健康组件生成。
     public class RaceProperties { public bool Humanlike = true; }
@@ -28,6 +30,7 @@ namespace Verse
     public class HediffCompProperties { }
     public class HediffCompProperties_Disappears : HediffCompProperties { }
     public class HediffComp_Disappears { public int ticksToDisappear; }
+    public enum Danger { Deadly }
     public static class PetHostExtensions
     {
         public static bool DestroyedOrNull(this Thing thing) => thing == null || thing.Destroyed;
@@ -66,6 +69,7 @@ namespace RimWorld
 namespace Verse.AI
 {
     public class MentalState { public void RecoverFromState() { } }
+    public enum PathEndMode { OnCell }
     // 这里的任务创建和接收仅用于编译亲昵分支；配方结算使用独立时序替身。
     public enum JobTag { Misc }
     public static class JobMaker { public static Job MakeJob(JobDef def, Pawn target) => new Job { def = def }; }

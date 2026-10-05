@@ -2,14 +2,13 @@ using System;
 using System.Linq;
 using RimWorld;
 using Verse;
+using Verse.AI;
 
 namespace SexSlaveCraft
 {
     /// <summary>猫终极技能的共同资格、分支效果及人格迁移；不承担旧猫终极状态迁移。</summary>
     public static class PetCatAbilityUtility
     {
-        public const float DefaultRange = 6f;
-
         private static bool HasFinalQualification(Pawn pawn)
         {
             HediffDef finalDef = PetSpecializationUtility.GetFinalHediffDef(SexSlaveSpecializationType.PetCat);
@@ -30,20 +29,45 @@ namespace SexSlaveCraft
             return true;
         }
 
-        public static bool CanApply(Pawn caster, Pawn target, out string reason, float range = DefaultRange)
+        /// <summary>行走与读条共用的基本目标资格；距离由接近任务负责。</summary>
+        public static bool CanTarget(Pawn caster, Pawn target, out string reason)
         {
             if (!CanUse(caster, out reason)) return false;
             reason = "SSC_PetCatComfortInvalidTarget";
             if (target == null || target == caster || target.Destroyed || target.Dead || !target.Spawned ||
                 target.health?.hediffSet == null || target.RaceProps?.Humanlike != true ||
-                target.Faction != Faction.OfPlayer || target.Map != caster.Map ||
-                float.IsNaN(range) || float.IsInfinity(range) || range < 0f ||
-                !caster.Position.InHorDistOf(target.Position, range) ||
-                !GenSight.LineOfSight(caster.Position, target.Position, caster.Map)) return false;
+                target.Faction != Faction.OfPlayer || target.Map != caster.Map) return false;
 
+            // CanBeAwake 使用原版意识资格，普通睡眠和仍有意识的倒地不等于昏迷。
+            // 不查询紧张性昏迷等具体 Hediff；原版预热会唤醒可醒来的睡眠目标。
+            reason = "SSC_PetCatComfortUnconsciousTarget";
+            if (target.health.capacities?.CanBeAwake != true) return false;
+
+            reason = "SSC_PetCatComfortInvalidTarget";
             // 读取实际阵营而不检查 HostileTo，确保己方狂暴等敌对行为不会被误拒。
             // 有精神状态时不要求心情需求；无状态时才检查激励所需的心情需求。
             if (target.MentalState == null && target.needs?.mood == null) return false;
+            reason = null;
+            return true;
+        }
+
+        /// <summary>地图选取只要求能走至目标所在格，不按旧射程或当前视线筛选。</summary>
+        public static bool CanSelectTarget(Pawn caster, Pawn target, out string reason)
+        {
+            if (!CanTarget(caster, target, out reason)) return false;
+            reason = "SSC_PetCatComfortUnreachableTarget";
+            // 玩家主动下达的交互允许原版危险路径；仍不能跨地图或穿越封闭障碍。
+            if (!caster.CanReach(target, PathEndMode.OnCell, Danger.Deadly)) return false;
+            reason = null;
+            return true;
+        }
+
+        /// <summary>原版预热开始与实际效果都要求双方仍在同一格。</summary>
+        public static bool CanApply(Pawn caster, Pawn target, out string reason)
+        {
+            if (!CanTarget(caster, target, out reason)) return false;
+            reason = "SSC_PetCatComfortInvalidTarget";
+            if (caster.Position != target.Position) return false;
             reason = null;
             return true;
         }
@@ -55,10 +79,9 @@ namespace SexSlaveCraft
                 encouragement.comps?.Any(c => c is HediffCompProperties_Disappears) == true;
         }
 
-        public static bool Apply(Pawn caster, Pawn target, HediffDef encouragement, int durationTicks,
-            float range = DefaultRange)
+        public static bool Apply(Pawn caster, Pawn target, HediffDef encouragement, int durationTicks)
         {
-            if (!IsEffectConfigured(encouragement, durationTicks) || !CanApply(caster, target, out _, range))
+            if (!IsEffectConfigured(encouragement, durationTicks) || !CanApply(caster, target, out _))
                 return false;
 
             // 所有当前 MentalState 均通过原版恢复入口结束，保留恢复通知和 PostEnd。

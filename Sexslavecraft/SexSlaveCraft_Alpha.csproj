@@ -137,6 +137,7 @@
     <Compile Include="Comps\Ability_CombatOverdrive.cs" />
     <Compile Include="Comps\Ability_PetCatComfort.cs" />
     <Compile Include="Comps\CompAbilityEffect_PetCatComfort.cs" />
+    <Compile Include="Comps\Verb_PetCatComfort.cs" />
     <Compile Include="Hediff\HediffCompProperties_GelatinizationAdaptation.cs" />
     <Compile Include="Hediff\HediffCompProperties_FullGelatinizationAdaptation.cs" />
     <Compile Include="Hediff\HediffCompProperties_FullGelatinizedRegen.cs" />
@@ -161,6 +162,7 @@
     <Compile Include="Hediff\Hediff_GelatinizedLeg.cs" />
     <Compile Include="JobDriver\JobDriver_InsertPersonality.cs" />
     <Compile Include="JobDriver\JobDriver_PetAffection.cs" />
+    <Compile Include="JobDriver\JobDriver_PetCatComfort.cs" />
     <Compile Include="JobDriver\JobDriver_Train.cs" />
     <Compile Include="JobDriver\JobDriver_SelfTraining.cs" />
     <Compile Include="Comps\Comp_Train.SelfTraining.cs" />

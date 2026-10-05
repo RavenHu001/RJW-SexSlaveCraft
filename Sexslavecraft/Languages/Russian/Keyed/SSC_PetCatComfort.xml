@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
+  <!-- Отдельные причины для статуса цели, уровня сознания и доступности её клетки. -->
   <SSC_PetCatComfortRequiresFinal>Нужна финальная специализация кошки.</SSC_PetCatComfortRequiresFinal>
   <SSC_PetCatComfortInvalidCaster>Применяющий персонаж должен быть жив, находиться на карте, не быть обездвижен и не находиться в психическом состоянии.</SSC_PetCatComfortInvalidCaster>
-  <SSC_PetCatComfortInvalidTarget>Целью должен быть другой живой человекоподобный персонаж фракции игрока на той же карте, в пределах дальности и прямой видимости. Если он не находится в психическом состоянии, ему также нужна потребность в настроении.</SSC_PetCatComfortInvalidTarget>
+  <SSC_PetCatComfortInvalidTarget>Целью должен быть другой живой человекоподобный персонаж фракции игрока на той же карте. Если он не находится в психическом состоянии, ему также нужна потребность в настроении.</SSC_PetCatComfortInvalidTarget>
+  <SSC_PetCatComfortUnconsciousTarget>У цели недостаточный уровень сознания для утешения.</SSC_PetCatComfortUnconsciousTarget>
+  <SSC_PetCatComfortUnreachableTarget>Невозможно добраться до клетки цели.</SSC_PetCatComfortUnreachableTarget>
   <SSC_PetCatComfortMissingEffect>Эффект успокаивающего резонанса сейчас недоступен.</SSC_PetCatComfortMissingEffect>
 </LanguageData>
