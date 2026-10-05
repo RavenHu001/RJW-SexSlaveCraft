@@ -25,6 +25,8 @@ namespace Verse
 
     public class HediffDef : Def
     {
+        public Type hediffClass;
+        public List<HediffCompProperties> comps;
     }
 
     public class RecipeDef : Def
@@ -474,17 +476,23 @@ namespace RimWorld
     public class Pawn_AbilityTracker
     {
         public HashSet<AbilityDef> GrantedAbilities = new HashSet<AbilityDef>();
+        private readonly Dictionary<AbilityDef, Ability> instances = new Dictionary<AbilityDef, Ability>();
         /// <summary>以集合记录已授予能力，使同一能力被多个来源重复授予时保持幂等。</summary>
         public void GainAbility(AbilityDef def)
         {
             GrantedAbilities.Add(def);
+            if (!instances.ContainsKey(def)) instances.Add(def, new Ability());
         }
 
         /// <summary>直接移除指定能力，模拟原版移除特质时不会为共享能力进行来源计数的行为。</summary>
         public void RemoveAbility(AbilityDef def)
         {
             GrantedAbilities.Remove(def);
+            instances.Remove(def);
         }
+
+        /// <summary>返回独立能力实例；同一身体重复授予不会重置其已有冷却。</summary>
+        public Ability GetAbility(AbilityDef def) => instances.TryGetValue(def, out var ability) ? ability : null;
     }
 
     public class Trait
@@ -835,6 +843,7 @@ namespace SexSlaveCraft
         public static HediffDef SSC_Hediff_Combatant = new HediffDef { defName = "SSC_Hediff_Combatant" };
         public static readonly HediffDef SSC_Hediff_CombatOverdrive = new HediffDef { defName = "SSC_Hediff_CombatOverdrive" };
         public static readonly AbilityDef SSC_CombatOverdrive = new AbilityDef { defName = "SSC_CombatOverdrive" };
+        public static readonly AbilityDef SSC_PetCatComfort = new AbilityDef { defName = "SSC_PetCatComfort" };
         public static HediffDef SSC_Hediff_Combatant_Final = new HediffDef { defName = "SSC_Hediff_Combatant_Final" };
         public static ThingDef SSC_PersonalitySlime = new ThingDef { defName = "SSC_PersonalitySlime" };
         public static ThingDef SSC_PS_P = new ThingDef { defName = "SSC_PS_P" };

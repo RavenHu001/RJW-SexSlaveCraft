@@ -16,8 +16,18 @@ namespace Verse
     public partial class Pawn
     {
         public bool Downed, Drafted, Spawned = true;
+        public Verse.AI.MentalState MentalState;
+        public RaceProperties RaceProps = new RaceProperties();
+        public Faction Faction = Faction.OfPlayer;
         public JobDef CurJobDef => CurJob?.def;
     }
+    // 技能效果分支只需编译边界，本套件不据此验证视线、精神恢复或健康组件生成。
+    public class RaceProperties { public bool Humanlike = true; }
+    public static class GenSight { public static bool LineOfSight(object a, object b, Map map) => true; }
+    public class HediffWithComps : Hediff { }
+    public class HediffCompProperties { }
+    public class HediffCompProperties_Disappears : HediffCompProperties { }
+    public class HediffComp_Disappears { public int ticksToDisappear; }
     public static class PetHostExtensions
     {
         public static bool DestroyedOrNull(this Thing thing) => thing == null || thing.Destroyed;
@@ -30,6 +40,16 @@ namespace Verse
 
 namespace RimWorld
 {
+    public class Faction { public static readonly Faction OfPlayer = new Faction(); }
+    // 实际游戏的冷却 getter / StartCooldown / ResetCooldown 已用本机 IL 核验。
+    // 这里只模型化绝对结束 tick，迁移和剩余时间计算仍执行真实猫生产工具。
+    public class Ability
+    {
+        private int cooldownEndTick;
+        public int CooldownTicksRemaining => System.Math.Max(0, cooldownEndTick - Find.TickManager.TicksGame);
+        public void StartCooldown(int ticks) => cooldownEndTick = Find.TickManager.TicksGame + ticks;
+        public void ResetCooldown() => cooldownEndTick = 0;
+    }
     // 保留生产宠物工具调用的等待任务与记忆接口，不运行真实任务或记忆合并。
     public static class JobDefOf
     {
@@ -45,6 +65,7 @@ namespace RimWorld
 
 namespace Verse.AI
 {
+    public class MentalState { public void RecoverFromState() { } }
     // 这里的任务创建和接收仅用于编译亲昵分支；配方结算使用独立时序替身。
     public enum JobTag { Misc }
     public static class JobMaker { public static Job MakeJob(JobDef def, Pawn target) => new Job { def = def }; }

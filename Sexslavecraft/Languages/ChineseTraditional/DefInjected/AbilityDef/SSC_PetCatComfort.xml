@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_PetCatComfort.label>安撫共鳴</SSC_PetCatComfort.label>
+  <SSC_PetCatComfort.description>終極寵物貓可安撫另一名玩家陣營的人形角色。目標正處於精神狀態時，使其恢復；未處於精神狀態且有心情需求時，給予「貓咪鼓舞」，心情 +8、全域工作速度 ×1.10，持續 12 遊戲內小時。重複鼓舞刷新持續時間，不疊加。射程 6 格，需要視線，準備 2 秒，冷卻 1 遊戲內天；徵召與未徵召時均可使用。</SSC_PetCatComfort.description>
+</LanguageData>

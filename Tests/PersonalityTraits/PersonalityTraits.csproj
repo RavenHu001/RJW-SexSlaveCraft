@@ -13,6 +13,8 @@
     <Compile Include="$(SscSourceRoot)/common/PetSpecializationRules.cs" Link="Production/PetSpecializationRules.cs" />
     <!-- 直接编译真实宠物工具与配方资格，使原料、标签及植入回归不依赖空宠物替身。 -->
     <Compile Include="$(SscSourceRoot)/common/PetSpecializationUtility.cs" Link="Production/PetSpecializationUtility.cs" />
+    <!-- 猫抽取、加工和植入的冷却及清理直接运行生产实现，能力追踪器仅提供游戏边界。 -->
+    <Compile Include="$(SscSourceRoot)/common/PetCatAbilityUtility.cs" Link="Production/PetCatAbilityUtility.cs" />
     <Compile Include="$(SscSourceRoot)/common/PetFinalizationRecipeUtility.cs" Link="Production/PetFinalizationRecipeUtility.cs" />
     <Compile Include="$(SscSourceRoot)/common/TrainerSpecializationGelUtility.cs" Link="Production/TrainerSpecializationGelUtility.cs" />
     <Compile Include="$(SscSourceRoot)/Recipe/Recipe_PEMake.cs" Link="Production/Recipe_PEMake.cs" />

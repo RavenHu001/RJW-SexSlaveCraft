@@ -100,6 +100,7 @@ namespace SexSlaveCraft
         public static HediffDef SSC_Hediff_Combatant_Final;
         public static HediffDef SSC_Hediff_CombatOverdrive;
         public static AbilityDef SSC_CombatOverdrive;
+        public static AbilityDef SSC_PetCatComfort;
         public static HediffDef SSC_HumanCattleLactationBridge;
         public static HediffDef SSC_Hediff_RabbitCloneLink;
         public static HediffDef SSC_Hediff_RabbitCloneLowPNA;
@@ -255,6 +256,7 @@ namespace SexSlaveCraft
             SSC_Hediff_Combatant_Final = GetDef<HediffDef>("SSC_Hediff_Combatant_Final");
             SSC_Hediff_CombatOverdrive = GetDef<HediffDef>("SSC_Hediff_CombatOverdrive");
             SSC_CombatOverdrive = GetDef<AbilityDef>("SSC_CombatOverdrive");
+            SSC_PetCatComfort = GetDef<AbilityDef>("SSC_PetCatComfort");
             SSC_HumanCattleLactationBridge = DefDatabase<HediffDef>.GetNamedSilentFail("SSC_HumanCattleLactationBridge");
             SSC_Hediff_RabbitCloneLink = GetDef<HediffDef>("SSC_Hediff_RabbitCloneLink");
             SSC_Hediff_RabbitCloneLowPNA = GetDef<HediffDef>("SSC_Hediff_RabbitCloneLowPNA");

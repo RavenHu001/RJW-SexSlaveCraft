@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_PetCatComfort.label>安抚共鸣</SSC_PetCatComfort.label>
+  <SSC_PetCatComfort.description>终极宠物猫可安抚另一名玩家阵营的人形角色。目标正处于精神状态时，使其恢复；未处于精神状态且有心情需求时，给予“猫咪鼓舞”，心情 +8、全局工作速度 ×1.10，持续 12 游戏内小时。重复鼓舞刷新持续时间，不叠加。射程 6 格，需要视线，准备 2 秒，冷却 1 游戏内天；征召与未征召时均可使用。</SSC_PetCatComfort.description>
+</LanguageData>

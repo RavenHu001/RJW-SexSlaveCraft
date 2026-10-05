@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_PetCatComfort.label>soothing resonance</SSC_PetCatComfort.label>
+  <SSC_PetCatComfort.description>A final Pet Cat can comfort another player-faction humanlike pawn. A target in a mental state recovers; a target outside a mental state with a mood need instead gains Cat Encouragement: +8 mood and ×1.10 global work speed for 12 in-game hours. Reapplying encouragement refreshes its duration without stacking. Range: 6 cells; line of sight required; warmup: 2 seconds; cooldown: 1 in-game day. Available while drafted or undrafted.</SSC_PetCatComfort.description>
+</LanguageData>

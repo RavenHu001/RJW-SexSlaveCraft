@@ -46,6 +46,15 @@ namespace SexSlaveCraft
             perTypeProgress?.Remove(SexSlaveSpecializationType.Combatant.ToString());
         }
 
+        /// <summary>猫培养随已保存的人格离开；其他方向和其他历史保持既有行为。</summary>
+        internal void ClearPetCatProgressAfterExtraction()
+        {
+            // 猫健康状态先由抽取入口移除，再清方向，避免对账从残留标记认领。
+            if (specializationType == SexSlaveSpecializationType.PetCat)
+                SetSpecialization(SexSlaveSpecializationType.None);
+            perTypeProgress?.Remove(SexSlaveSpecializationType.PetCat.ToString());
+        }
+
         /// <summary>用人格快照整体替换身体原有训练历史；旧凝胶缺少历史时只恢复已知的当前方向。</summary>
         public void RestoreSpecializationProgress(
             SexSlaveSpecializationType type,

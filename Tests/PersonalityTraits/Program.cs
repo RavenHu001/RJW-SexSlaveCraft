@@ -48,6 +48,7 @@ internal static partial class Program
         Run("记忆新字段参与存档读写并识别旧数据默认值", MemoryPersistenceContract);
         RunCombatantCases();
         RunPetRecipeCases();
+        RunPetCatMigrationCases();
         Console.WriteLine($"RESULT: {passed}/{passed + failed} cases passed.");
         return failed == 0 ? 0 : 1;
     }
