@@ -4,7 +4,8 @@
 
 > For RimWorld 1.6 and SexSlaveCraft 2.3.6.\
 > This continuation is based on upstream 2.2.8. See `CHANGELOG.md` for release history.\
-> Version 2.3.6 adds shared base specialization progress from completed daily Training and full Binding Rituals. The 2.3.5 self-training and Training handoff updates remain included. Download the installation ZIP and SHA-256 checksum from [v2.3.6 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.6). Legacy RimTalk remains suspended; unfinished Pet Cat and Pet Rabbit choices remain disabled.\
+> Version 2.3.6 adds shared base specialization progress from completed daily Training and full Binding Rituals. The 2.3.5 self-training and Training handoff updates remain included. Download the installation ZIP and SHA-256 checksum from [v2.3.6 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.6). Legacy RimTalk remains suspended.\
+> Development update (2026-10-05): Cat selection and affection progress are available in the current branch, alongside ordinary Dog training and passive gel finalization. Final Cat and Dog active abilities are still unfinished, and Rabbit selection remains disabled. These later changes are not included in the published 2.3.6 ZIP.\
 > In-game names follow the mod's official English localization. For exact formulas, thresholds, and implementation notes, see `PLAYER_GUIDE_EN.md`.
 
 > See the [2.3.6 notes](Docs/Releases/2.3.6/2.3.6发布说明.md) for this version and the [2.3.5 notes](Docs/Releases/2.3.5/2.3.5发布说明.md) for self-training.
@@ -262,6 +263,12 @@ Combatant health labels use lavender, with a brighter final state. Training Offi
 
 See the [full Combatant reference](PLAYER_GUIDE_EN.md#how-does-combatant-progress) for formulas and attributes.
 
+## Pet Cat and Dog (development branch)
+
+To select Cat, set the pawn's SSC identity to Sex Slave, complete Training and Cat research, and have no final Cat, Dog or Rabbit specialization. Selection requires neither a bound master nor a chain stage. Cat gains movement speed and melee dodge at 20%, with stronger bonuses at 50%.
+
+Completed daily Training and full Binding Rituals give the current ordinary pet path shared training progress. A current ordinary Cat also gains 1 percentage point after successfully showing affection to its actual bound master while idle nearby, using the existing one-day affection cooldown. Completed ordinary training, any final pet specialization, or another current path prevents Cat affection rewards; Dog affection grants no progress. Cat and Dog can be finalized through personality gel, retaining their passive bonuses and affection even after switching to another training direction. Their final active abilities are not implemented yet; Rabbit selection remains disabled.
+
 ## 10. Final Specializations
 
 Public Use, Cow and Combatant follow the same finalization workflow:
@@ -480,7 +487,7 @@ Scheduled Training remains part of SSC. Use each Sex Slave's Training tab to sel
 The following entries exist as research, defs, or placeholder code but do not currently form complete gameplay systems:
 
 - Fine Training and sensitivity discovery;
-- Pet: Cat, Pet: Dog, and Pet: Rabbit;
+- Final Cat and Dog active abilities (ordinary training and passive gel finalization are available in the development branch); Pet Rabbit selection remains disabled;
 - Combat Unit;
 - Femboy Conversion;
 - high-tier PNA weapon;

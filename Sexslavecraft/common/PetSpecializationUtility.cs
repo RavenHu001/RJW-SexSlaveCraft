@@ -10,6 +10,8 @@ namespace SexSlaveCraft
         private const float ThresholdProgress = 0.20f;
         private const float InitialHediffSeverity = 0.01f;
         private const float AutoAffectionMaxDistance = 2.9f;
+        // 猫的陪伴特色经验按一次成功亲昵结算；频率沿用共用的一天完成冷却。
+        private const float CatAffectionProgressGain = 0.01f;
 
         private static readonly SexSlaveSpecializationType[] PetTypes =
         {
@@ -230,7 +232,8 @@ namespace SexSlaveCraft
             failure = PetSpecializationFailure.MissingRequirements;
             CompSexSlaveTraining comp = pawn?.TryGetComp<CompSexSlaveTraining>();
             if (comp == null || !IsPetSpecialization(type)) return false;
-            if (type == SexSlaveSpecializationType.PetCat || type == SexSlaveSpecializationType.PetRabbit)
+            // 猫普通路线已开放，继续复用身份、研究与终极互斥检查；兔仍保留禁用入口。
+            if (type == SexSlaveSpecializationType.PetRabbit)
             {
                 failure = PetSpecializationFailure.NotImplemented;
                 return false;
@@ -341,16 +344,21 @@ namespace SexSlaveCraft
             if (!CanDoPetAffectionNow(pet, master)) return false;
             if (!IsPetAffectionCooldownReady(comp)) return false;
 
+            // 在记忆与经验副作用之前认领本次完成；重复回调及结算重入不能再次领奖。
+            // 此字段已有存档支持，成功后沿用 60000 tick 冷却，中断仍不消耗冷却。
+            comp.lastPetAffectionTick = Find.TickManager.TicksGame;
+
             ThoughtDef thoughtDef = DefDatabase<ThoughtDef>.GetNamedSilentFail("SSC_PetAffection_Mood");
             if (thoughtDef != null && master?.needs?.mood?.thoughts?.memories != null)
             {
                 master.needs.mood.thoughts.memories.TryGainMemory(thoughtDef, pet);
             }
 
-            comp.lastPetAffectionTick = Find.TickManager.TicksGame;
-
-            // EN: Pet affection is deliberately not adding specialization experience yet.
-            // CN: 亲昵动作暂时不增加宠物专精经验；等经验来源和数值敲定后，再接 TryGainPetProgress。
+            // 仅 SSC 性奴的当前普通猫获得 1 个百分点特色经验；公共培养入口继续
+            // 检查当前方向、普通完成及任意宠物终极，终极猫转练不会给新方向发奖。
+            // 狗、兔及普通培养完成后的亲昵仍只保留原有记忆和冷却。
+            if (comp.pawnIdentity == PawnIdentity.Slave)
+                TryGainPetProgress(pet, SexSlaveSpecializationType.PetCat, CatAffectionProgressGain);
             return true;
         }
 

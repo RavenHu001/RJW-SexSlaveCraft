@@ -7,6 +7,10 @@
   <SSC_PSEdit_TrainerOfficer_Final.label>Специализация секс-раба (старший инструктор)</SSC_PSEdit_TrainerOfficer_Final.label>
   <SSC_PSEdit_TrainerOfficer_Final.description>Преобразует гель личности обученного инструктора в старшего инструктора. Требуется завершённая подготовка без прежней финализации.</SSC_PSEdit_TrainerOfficer_Final.description>
   <SSC_PSEdit_TrainerOfficer_Final.jobString>Формирование личности старшего инструктора...</SSC_PSEdit_TrainerOfficer_Final.jobString>
+  <SSC_PSEdit_PetCat_Final.label>Специализация секс-раба (финальная кошка)</SSC_PSEdit_PetCat_Final.label>
+  <SSC_PSEdit_PetCat_Final.description>Обрабатывает гель личности с текущим направлением кошки, завершённой обычной подготовкой и базовым состоянием кошки в финальную личность кошки. Материал не должен иметь финальной специализации кошки, собаки или кролика. Внедрение даёт постоянные бонусы скорости передвижения и уклонения в ближнем бою и сохраняет ласку к фактически привязанному хозяину; финальная активная способность пока не реализована.</SSC_PSEdit_PetCat_Final.description>
+  <SSC_PSEdit_PetCat_Final.jobString>Формирование личности финальной кошки...</SSC_PSEdit_PetCat_Final.jobString>
+
   <SSC_PSEdit_Combatant_Final.label>Специализация секс-раба (финальный боец)</SSC_PSEdit_Combatant_Final.label>
   <SSC_PSEdit_Combatant_Final.description>Обрабатывает гель личности с текущей специализацией бойца, завершённой обычной подготовкой и без прежней финализации бойца. Внедрение готового геля даёт постоянные боевые бонусы и «Боевой форсаж», активно стимулирующий наномашины в теле. Другие финальные специализации личности сохраняются.</SSC_PSEdit_Combatant_Final.description>
   <SSC_PSEdit_Combatant_Final.jobString>Формирование личности финального бойца...</SSC_PSEdit_Combatant_Final.jobString>

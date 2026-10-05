@@ -61,8 +61,8 @@ namespace SexSlaveCraft
             {
                 label += " " + Strings.ITab_SpecializationFinalizedSuffix;
             }
-            if (comp.specializationType == SexSlaveSpecializationType.PetCat ||
-                comp.specializationType == SexSlaveSpecializationType.PetRabbit)
+            // 猫普通培养已可正常使用；未开放的兔仍显示未完成，不提前宣称猫主动技能已交付。
+            if (comp.specializationType == SexSlaveSpecializationType.PetRabbit)
             {
                 label += " " + Strings.ITab_SpecializationUnfinishedSuffix;
             }
@@ -88,12 +88,14 @@ namespace SexSlaveCraft
         {
             // 进度与按钮采用同一个当前方向；None 不能因为其他完成记录而显示已完成。
             // 终极记录仍由各自健康状态及训导官独立状态行展示，不在这里改写其效果。
-            if (comp.specializationType == SexSlaveSpecializationType.Combatant)
+            if (comp.specializationType == SexSlaveSpecializationType.Combatant ||
+                comp.specializationType == SexSlaveSpecializationType.PetCat)
             {
                 if (IsTypeFinalized(pawn, comp.specializationType))
                     return Strings.ITab_SpecializationComplete;
                 float progress = CompSexSlaveTraining.NormalizeSpecializationProgress(comp.specializationProgress);
-                // 一位小数避免 99.5% 被整数格式舍入成 100%；完成判断使用公共容差。
+                // 猫与战斗员使用一位小数，避免 99.5% 被整数格式舍入成 100%；
+                // 达到公共完成容差时明确显示普通培养完成，不把普通完成写成终极成果。
                 return progress >= CompSexSlaveTraining.SpecializationCompletionProgress
                     ? Strings.ITab_SpecializationOrdinaryComplete : progress.ToString("P1");
             }

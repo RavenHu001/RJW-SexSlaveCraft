@@ -221,7 +221,8 @@ internal static partial class Program
             var p = AffectionPair(type, progress);
             Assert(PetSpecializationUtility.TryStartAutomaticPetAffectionJob(p.pet), "ordinary affection rejected");
             Assert(PetSpecializationUtility.CompletePetAffection(p.pet, p.master), "ordinary affection completion rejected");
-            Equal(progress, p.pet.Training.specializationProgress);
+            Equal(type == Pets[0] && progress < .999f ? Math.Min(1, progress + .01f) : progress,
+                p.pet.Training.specializationProgress);
         }
     }
 

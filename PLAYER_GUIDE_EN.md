@@ -3,7 +3,8 @@
 > For RimWorld 1.6 and SexSlaveCraft 2.3.6, based on the current repository code and Defs.\
 > Base audit: 2026-06-30; self-training and Training handoff fixes updated for 2.3.5, shared specialization progress updated for 2.3.6 on 2026-10-02.\
 > Based on upstream 2.2.8; version 2.2.9 includes the specialization and ritual progression fixes, and 2.2.10 fixes stale training locks after interrupted rituals. See `CHANGELOG.md`.\
-> Version 2.3.6 adds shared base specialization progress from completed daily Training and full Binding Rituals, using the Combatant score formula. The 2.3.5 self-training and Training handoff updates remain included. Download the installation ZIP and SHA-256 checksum from [v2.3.6 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.6). Legacy RimTalk remains suspended; unfinished Pet Cat and Pet Rabbit choices remain disabled.\
+> Version 2.3.6 adds shared base specialization progress from completed daily Training and full Binding Rituals, using the Combatant score formula. The 2.3.5 self-training and Training handoff updates remain included. Download the installation ZIP and SHA-256 checksum from [v2.3.6 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.6). Legacy RimTalk remains suspended.\
+> Development update (2026-10-05): Cat selection and affection progress are available in the current branch, alongside ordinary Dog training and passive gel finalization. Final Cat and Dog active abilities are still unfinished, and Rabbit selection remains disabled. These later changes are not included in the published 2.3.6 ZIP.\
 > This guide describes the behavior implemented by the current C# and XML. Where an old changelog or description disagrees with the code, the discrepancy is listed under “Current Limitations and Known Differences.”
 
 > See the [2.3.6 notes](Docs/Releases/2.3.6/2.3.6发布说明.md) for this version and the [2.3.5 notes](Docs/Releases/2.3.5/2.3.5发布说明.md) for self-training.
@@ -1453,7 +1454,7 @@ This section records the audited code behavior and known limitations.
 1. **Fine Training is not implemented.** The body-part detection, sensitivity, reward, and progress methods in `FineTrainingUtility` still return placeholders. The Training tab fields are reserved only.
 2. **Binding Ritual genital compatibility is fixed at the worst bracket.** The ritual calls a size-difference method that currently returns `0`, producing `-20%`. Ordinary Training size scoring works separately.
 3. **Erotic Word has no normal acquisition path.** The ability and grant component exist, but the Mouth Hediff XML does not attach the component.
-4. **Several research nodes are technology-tree placeholders.** `Basic PNA Application`, `Basic PNA Launcher`, `Femboy Conversion`, and pet cat/dog/rabbit do not unlock a complete matching system. `Combatant` supports ordinary training, experience, gel finalization, and the final Combat Overdrive ability. `Personality Editing` mainly acts as the parent node for Public Use and Cow research.
+4. **Several research nodes are technology-tree placeholders.** `Basic PNA Application`, `Basic PNA Launcher`, and `Femboy Conversion` do not unlock a complete matching system. The current development branch supports ordinary Cat and Dog training, experience and passive gel finalization; their final active abilities are not implemented yet. Rabbit selection remains disabled. `Combatant` supports ordinary training, experience, gel finalization, and the final Combat Overdrive ability. `Personality Editing` acts as the parent node for specialization research.
 5. **Basic PNA Launcher checks vanilla Machining only.** Its recipe does not reference SSC’s launcher research.
 6. **Sex Reassignment Surgery is not research-locked.** Its operation exists without a `researchPrerequisite`. Its companion ThoughtDef XML also contains a duplicate `defName`, which may cause a load issue for the success memory.
 7. **Personality trait transfer and the gel UI have been fixed.** The maintainer has confirmed this round of fixes is effective. Ordinary personality traits are now restored from the gel snapshot while preserving the receiving body's genes and their traits. Legacy entries are restored as personality traits because their source was not recorded; new gels save only traits without a gene source. The Sex Slave trait is still rebuilt separately from restored highest-ever Corruption. See the [fix record (Chinese)](Docs/Development/人格普通特质迁移修复.md) for details.
@@ -1469,6 +1470,8 @@ This section records the audited code behavior and known limitations.
 
 ## 23. Research Tree
 
+In the current development branch, Cat selection requires SSC Sex Slave identity, completed Training and Cat research, and no final Cat, Dog or Rabbit specialization. A bound master and a chain stage are not selection requirements. Completed daily Training or full Binding Rituals give the current ordinary pet path shared progress. A current ordinary Cat additionally gains 1 percentage point from successful affection toward its actual bound master while idle nearby, using the existing 60,000-tick (one-day) cooldown. Completed ordinary training, any final pet specialization, or a different current direction blocks this reward; Dog affection grants no progress. Cat's movement and melee dodge bonuses begin at 20% and improve at 50%. Final Cat and Dog passive bonuses and affection stay active after switching training directions; their active abilities remain unfinished.
+
 | Research | Cost | Prerequisite | Current gameplay function |
 |---|---:|---|---|
 | Training | 500 | None | Training tab features and WorkGiver |
@@ -1482,9 +1485,9 @@ This section records the audited code behavior and known limitations.
 | Personality Editing | 1,500 | Body-part Training, Personality Excretion | Parent node for Public Use and Cow |
 | Milking Specialization | 1,200 | Personality Editing | Cow Specialization and Final Cow recipe |
 | Public Use | 1,200 | Personality Editing | Public Use Specialization and final recipe |
-| Pet: Cat | 1,200 | Personality Editing | Selection disabled; marked Incomplete |
+| Pet: Cat | 1,200 | Personality Editing | Ordinary training, shared experience, affection progress and passive gel finalization; final active ability unfinished |
 | Combatant | 1,200 | Personality Editing | Ordinary training, experience, gel finalization, and final Combat Overdrive implemented |
-| Pet: Dog | 1,500 | Pet: Cat | Not implemented |
+| Pet: Dog | 1,500 | Pet: Cat | Ordinary training, shared and animal-related experience, animal interaction and passive gel finalization; final active ability unfinished |
 | Pet: Rabbit | 1,800 | Pet: Dog | Selection disabled; marked Incomplete; saved birth mode read-only |
 | Partial Gelatinization | 2,000 | Personality Excretion | Semi-gelatinization Surgery |
 | Full-body Gelatinization | 3,000 | Partial Gelatinization | Full Gelatinization Surgery |

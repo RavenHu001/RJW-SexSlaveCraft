@@ -248,6 +248,21 @@ internal static partial class Program
         }
         p.Training.SetSpecialization(SexSlaveSpecializationType.None);
         Check(ITab_SexSlaveTraining.Label(p) == Strings.ITab_SpecializationNone, "留空名称错误");
+        // 共用选择标签在猫普通路线开放后不再标记未完成，兔仍保留禁用提示。
+        p.Training.SetSpecialization(SexSlaveSpecializationType.PetCat);
+        Check(ITab_SexSlaveTraining.Label(p) == SexSlaveSpecializationType.PetCat.ToString(), "已开放猫路线仍显示未完成");
+        foreach (float v in new[] { 0.995f, 0.998f, 0.99899f })
+        {
+            p.Training.specializationProgress = v;
+            Check(!ITab_SexSlaveTraining.Progress(p).Contains("100") && !ITab_SexSlaveTraining.Progress(p).Contains("complete"), "猫提前显示完成");
+        }
+        foreach (float v in new[] { 0.999f, 1f })
+        {
+            p.Training.specializationProgress = v;
+            Check(ITab_SexSlaveTraining.Progress(p) == Strings.ITab_SpecializationOrdinaryComplete, "猫完成显示与配方容差不一致");
+        }
+        p.Training.SetSpecialization(SexSlaveSpecializationType.PetRabbit);
+        Check(ITab_SexSlaveTraining.Label(p).Contains(Strings.ITab_SpecializationUnfinishedSuffix), "兔未完成提示被删除");
     }
     private static float Value(XElement e, string path) => float.Parse(e.Element(path).Value, CultureInfo.InvariantCulture);
     private static void StageDefinitions()

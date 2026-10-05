@@ -183,7 +183,7 @@
   <RecipeDef Class="SexSlaveCraft.RecipeDef_PSTag">
     <defName>SSC_PSEdit_PetCat_Final</defName>
     <label>性奴特化（终极宠物猫）</label>
-    <description>将已经完成宠物猫特化的人格凝胶进一步塑形为终极宠物猫状态。该配方只接受宠物猫特化达到 100% 且带有宠物猫基础状态的材料。</description>
+    <description>将当前培养方向为宠物猫、普通培养已完成且带有宠物猫基础状态的人格凝胶，加工为终极宠物猫人格。原料不能已有猫、狗或兔终极成果。植入后获得永久移动速度与近战闪避加成，并可继续亲昵实际绑定的主人；终极主动技能尚未实装。</description>
     <jobString>正在塑造终极宠物猫人格...</jobString>
     <workAmount>3500</workAmount>
     <workSpeedStat>GeneralLaborSpeed</workSpeedStat>

@@ -22,11 +22,11 @@
   <SSC_RES_TrainerOfficer.label>訓導官特化</SSC_RES_TrainerOfficer.label>
   <SSC_RES_TrainerOfficer.description>功能：自由殖民者身分的性奴，綁定主人且鎖鏈達到第 3 階段後可選擇訓導官特化。選擇後可主動發起自願或強制性行為；達到 20% 後可開啟個人調教員開關，代主人調教其他性奴，並獲得崩潰臨界值、壓制和教化加成；50% 後加成進一步增強。培養完成後可用人格凝膠終極化。\n\n經驗：完成一次受訓或綁定儀式獲得 5%；取得調教員資格並實際完成調教其他性奴獲得 2.5%；主動完成雙人性行為獲得 1%。</SSC_RES_TrainerOfficer.description>
   <SSC_RES_PetCat.label>寵物：貓</SSC_RES_PetCat.label>
-  <SSC_RES_PetCat.description>預設功能：寵物貓特化偏向移動、閃避和親暱主人。目前選擇入口尚未完成，無法正常培養，也沒有可用的特化經驗獲取方式。</SSC_RES_PetCat.description>
+  <SSC_RES_PetCat.description>功能：身分設為 SSC 性奴，完成調教與貓研究且尚無貓、狗或兔終極成果後，可選擇寵物貓特化；選擇不要求綁定主人或指定鎖鏈階段。達到 20% 時提高移動速度與近戰閃避，50% 時進一步增強；靠近實際綁定的主人且處於閒暇時，可自動親暱並給予主人短暫的心情加成。培養完成後可用人格凝膠終極化，保留移動、閃避及親暱效果；終極主動技能尚未實裝。\n\n經驗：正常完成日常調教或綁定儀式，按結果獲得共同受訓經驗；當前普通貓成功親暱主人後獲得 1 個百分點，沿用親暱的一天冷卻。普通培養已完成、已有任意寵物終極或當前方向不是貓時，親暱不增加貓培養進度。</SSC_RES_PetCat.description>
   <SSC_RES_Combatant.label>戰鬥員</SSC_RES_Combatant.label>
   <SSC_RES_Combatant.description>引導紫色奈米機械液進一步改造性奴的身體與神經系統，強化武器操控、身體防護與應激調節。需要將角色身分設為「性奴」，無需綁定主人或達到指定鎖鏈階段。培養進度達到 20% 時獲得基礎收益，50% 時進一步強化並獲得常態減傷。\n\n透過正常完成日常調教和直接擊殺成長。調教每次最多增加 4 個百分點，由綁定主人施教時最多增加 6 個百分點；擊殺收益隨目標實際體型增加，每次最多增加 3 個百分點。綁定儀式、屠宰及間接死亡不提供經驗。\n\n完成培養後，可在雕刻台將人格凝膠加工為終極戰鬥員。植入後獲得永久戰鬥強化，並解鎖主動活化體內微械的「戰鬥超頻」。切換培養方向保留各方向進度，終極成果隨人格保留。</SSC_RES_Combatant.description>
   <SSC_RES_PetDog.label>寵物：狗</SSC_RES_PetDog.label>
-  <SSC_RES_PetDog.description>功能：可選擇寵物狗特化，逐步提高馴服和訓練動物的成功率；處理動物時可能觸發動物互動。寵物特化還可親暱主人，給予主人短暫的心情加成。培養完成後可用人格凝膠終極化。\n\n經驗：完成動物訓練獲得基礎 0.4%，完成馴服嘗試獲得基礎 0.6%，實際完成與動物的性行為獲得基礎 2%；成長倍率隨目前進度提高。親暱主人不增加特化經驗。</SSC_RES_PetDog.description>
+  <SSC_RES_PetDog.description>功能：可選擇寵物狗特化，逐步提高馴服和訓練動物的成功率；處理動物時可能觸發動物互動。寵物特化還可親暱主人，給予主人短暫的心情加成。培養完成後可用人格凝膠終極化。\n\n經驗：正常完成日常調教或綁定儀式，按結果獲得共同受訓經驗；完成動物訓練獲得基礎 0.4%，完成馴服嘗試獲得基礎 0.6%，實際完成與動物的性行為獲得基礎 2%；動物相關成長倍率隨當前進度提高。狗親暱主人不增加培養進度。</SSC_RES_PetDog.description>
   <SSC_RES_PetRabbit.label>寵物：兔</SSC_RES_PetRabbit.label>
   <SSC_RES_PetRabbit.description>預設功能：寵物兔特化偏向移動、休息與免疫恢復，並預留繁殖及兔分身模式。目前選擇與模式切換入口尚未完成，無法正常培養，也沒有可用的特化經驗獲取方式。</SSC_RES_PetRabbit.description>
   <SSC_RES_GelatinizationPartial.label>凝膠化（部分）</SSC_RES_GelatinizationPartial.label>

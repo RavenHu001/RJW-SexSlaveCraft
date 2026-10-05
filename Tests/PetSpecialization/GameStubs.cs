@@ -82,7 +82,14 @@ namespace Verse
     {
         // 仅观察完成入口是否发出记忆请求，不模拟原版记忆合并与心情属性。
         public readonly List<(ThoughtDef def, Pawn pawn)> Requests = new();
-        public void TryGainMemory(ThoughtDef def, Pawn pawn) => Requests.Add((def, pawn));
+        // 一次性回调用于验证结算重入边界；宿主本身不实现冷却或发奖规则。
+        public Action OnNextGainMemory;
+        public void TryGainMemory(ThoughtDef def, Pawn pawn)
+        {
+            Requests.Add((def, pawn));
+            Action callback = OnNextGainMemory; OnNextGainMemory = null;
+            callback?.Invoke();
+        }
     }
     public static class Find { public static readonly TickManager TickManager = new TickManager(); }
     public class TickManager { public int TicksGame; }

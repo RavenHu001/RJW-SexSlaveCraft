@@ -13,7 +13,7 @@
   <SSC_PSEdit_TrainerOfficer_Final.jobString>正在塑造終極訓導官人格……</SSC_PSEdit_TrainerOfficer_Final.jobString>
 
   <SSC_PSEdit_PetCat_Final.label>性奴特化（終極寵物貓）</SSC_PSEdit_PetCat_Final.label>
-  <SSC_PSEdit_PetCat_Final.description>將已完成寵物貓特化的人格凝膠進一步塑形成終極寵物貓狀態。此配方只接受寵物貓特化進度達到 100%，且帶有寵物貓基礎狀態的材料。</SSC_PSEdit_PetCat_Final.description>
+  <SSC_PSEdit_PetCat_Final.description>將當前培養方向為寵物貓、普通培養已完成且帶有寵物貓基礎狀態的人格凝膠，加工為終極寵物貓人格。原料不能已有貓、狗或兔終極成果。植入後獲得永久移動速度與近戰閃避加成，並可繼續親暱實際綁定的主人；終極主動技能尚未實裝。</SSC_PSEdit_PetCat_Final.description>
   <SSC_PSEdit_PetCat_Final.jobString>正在塑造終極寵物貓人格……</SSC_PSEdit_PetCat_Final.jobString>
 
   <SSC_PSEdit_PetDog_Final.label>性奴特化（終極寵物狗）</SSC_PSEdit_PetDog_Final.label>

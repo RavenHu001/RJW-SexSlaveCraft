@@ -27,14 +27,14 @@ internal static partial class Program
         Run("明确留空保留终极及历史且对账不能重新认领", ExplicitNoneKeepsFinal);
         Run("宠物终极不阻止非宠物方向切换", NonPetDirectionsRemainAvailable);
         Run("旧档猫狗兔终极从健康状态认领仍可用", LegacyFinalAdoption);
-        Run("猫兔人格进度恢复绕过玩家未开放与研究门槛", LegacyPetRestore);
+        Run("猫兔人格进度恢复绕过玩家研究门槛及兔未开放限制", LegacyPetRestore);
         Run("旧档猫兔普通状态在未完成研究下继续培养", LegacyOrdinaryPetTraining);
         Run("狗玩家选择成功并创建显示标记，重复同步不赠送经验", PlayerDogSelection);
         Run("玩家选择需要 SSC 性奴身份", PlayerIdentityGate);
         Run("玩家选择同时检查基础与狗研究，缺失定义安全拒绝", PlayerResearchGate);
         Run("玩家提交重新检查身份、研究及终极事实", PlayerSubmissionRechecks);
         Run("替换后的训练组件不能由旧菜单引用提交", StaleComponentIsRejected);
-        Run("猫兔玩家入口继续禁用且不改状态", UnfinishedPlayerOptions);
+        Run("兔玩家入口继续禁用且不改状态", UnfinishedPlayerOptions);
         Run("失败原因映射与旧 CanUse 包装一致", FailureMessages);
         Run("任意宠物终极阻止共享、特色和底层经验且不创建普通标记", AllExperienceEntrypointsRespectFinals);
         Run("历史宠物进度不授予非当前方向培养资格", HistoryDoesNotGrantTraining);
@@ -45,6 +45,7 @@ internal static partial class Program
         Run("实际绑定主人倍率沿用共享生产公式", BoundMasterFormula);
         Run("共享经验拒绝死亡、销毁、无组件及错误身份", InvalidSharedReceivers);
         RunEffectAndBehaviorCases();
+        RunCatTrainingCases();
         Console.WriteLine($"结果：{passed}/{passed + failed} 项通过。");
         return failed == 0 ? 0 : 1;
     }
@@ -244,7 +245,7 @@ internal static partial class Program
             Assert(pawn.Training.TrySetSpecialization(type, out var failure), "same final internal adoption denied");
             Failure(PetSpecializationFailure.None, failure);
             Assert(!PetSpecializationUtility.CanSelectPetSpecialization(pawn, type, out failure), "final player selection accepted");
-            Failure(type == Pets[1] ? PetSpecializationFailure.AlreadyFinalized : PetSpecializationFailure.NotImplemented, failure);
+            Failure(type == Pets[2] ? PetSpecializationFailure.NotImplemented : PetSpecializationFailure.AlreadyFinalized, failure);
         }
     }
 
@@ -374,7 +375,7 @@ internal static partial class Program
 
     private static void UnfinishedPlayerOptions()
     {
-        foreach (var type in new[] { Pets[0], Pets[2] })
+        foreach (var type in new[] { Pets[2] })
         {
             var pawn = Pawn(SexSlaveSpecializationType.Cow, .31f); var snapshot = new Snapshot(pawn);
             Assert(!PetSpecializationUtility.TrySelectPetSpecialization(pawn, pawn.Training, type, out var failure), "unfinished option accepted");

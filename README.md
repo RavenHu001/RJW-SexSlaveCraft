@@ -6,6 +6,8 @@ RimWorld 1.6 的 RimJobWorld（RJW）扩展模组，基于上游 **2.2.8** 继�
 
 2.3.6 已正式发布，统一日常调教与完整绑定仪式的基础特化经验；安装 ZIP 与 SHA-256 校验文件见 [v2.3.6 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.6)。2.3.5 历史安装包不包含这项变更。当前构建、回归及实机验证范围见[2.3.6 版本验证](Docs/Releases/2.3.6/2.3.6版本验证.md)。
 
+当前开发分支已开放猫普通培养：当前普通猫成功亲昵实际绑定的主人后获得 1 个百分点，沿用一天冷却。猫、狗已有普通培养和凝胶终极化被动；终极主动技能尚未实装，兔选择入口仍禁用。这些后续开发内容不包含在已发布的 2.3.6 ZIP 中。
+
 ## 项目概况
 
 SexSlaveCraft（SSC）围绕角色培养、身份与绑定关系、特化发展、人格转移及身体改造提供一套玩法系统。本接续版在原有内容基础上维护游戏兼容性、修复问题，并完善交互界面与本地化。
@@ -13,7 +15,7 @@ SexSlaveCraft（SSC）围绕角色培养、身份与绑定关系、特化发展�
 2.3.6 相对 2.3.5 的更新：
 
 - 当前正在培养的 SSC 性奴特化在完整日常调教或整场绑定仪式成功后获得一次基础经验，沿用战斗员动态评分公式；实际绑定主人施教时收益乘以 1.5。
-- 训导官旧固定受训奖励和公交车旧日常受训增量由公共入口替换；施教、直接击杀等特色来源保留。自我调教不提供基础特化经验，猫、兔选择入口仍禁用。
+- 训导官旧固定受训奖励和公交车旧日常受训增量由公共入口替换；施教、直接击杀等特色来源保留。自我调教不提供基础特化经验；该发布版本中猫、兔选择入口仍禁用。
 - 原有自我调教、调教任务交接保护及其他 2.3.5 内容继续包含在本版中。
 
 完整变更见 [2.3.6 中英发布说明](Docs/Releases/2.3.6/2.3.6发布说明.md)，构建与验证见[版本验证](Docs/Releases/2.3.6/2.3.6版本验证.md)。2.3.5 自我调教的升级说明仍见其[发布说明](Docs/Releases/2.3.5/2.3.5发布说明.md)。
@@ -48,7 +50,7 @@ SexSlaveCraft（SSC）围绕角色培养、身份与绑定关系、特化发展�
 | [发布与打包](Docs/Maintenance/发布与打包.md) | 编译环境、依赖配置、回归检查与安装包生成 |
 | [未来开发规划](Docs/Design/未来内容开发规划.md) | 后续需求与尚未实现的设计 |
 
-当前旧 RimTalk 兼容处于暂停状态，旧实现保存在 `Archive/RimTalk/`；宠物猫、宠物兔的未完成入口仍禁用。其他兼容说明及具体玩法限制见玩家指南。
+当前旧 RimTalk 兼容处于暂停状态，旧实现保存在 `Archive/RimTalk/`；开发分支的猫、狗可正常培养，宠物兔选择入口仍禁用。其他兼容说明及具体玩法限制见玩家指南。
 
 ## 开发与验证
 
@@ -93,4 +95,4 @@ Version 2.3.6 adds shared, score-based base specialization progress after comple
 
 Version 2.3.6 is released. Download the installation ZIP and SHA-256 checksum from [v2.3.6 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.6). Historical 2.3.5 packages do not include shared specialization progress. When updating an installation, move the old mod folder out of `RimWorld/Mods/` before installing the replacement.
 
-For gameplay, read the [English quick start](QUICK_START_EN.md) or [full guide](PLAYER_GUIDE_EN.md). See the [bilingual changelog](CHANGELOG.md) for release history. Legacy RimTalk integration remains suspended, and unfinished Pet Cat and Pet Rabbit choices remain disabled.
+For gameplay, read the [English quick start](QUICK_START_EN.md) or [full guide](PLAYER_GUIDE_EN.md). See the [bilingual changelog](CHANGELOG.md) for release history. Legacy RimTalk integration remains suspended. The current development branch supports ordinary Cat and Dog training and passive gel finalization; a current ordinary Cat gains 1 percentage point from successful affection toward its actual bound master, using the existing one-day cooldown. Final active abilities are not implemented yet, and Pet Rabbit selection remains disabled. These later development changes are not included in the published 2.3.6 ZIP.
