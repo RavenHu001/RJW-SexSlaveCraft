@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-  <!-- Describes map selection and a same-cell warmup; effect values remain unchanged. -->
+  <!-- Describes the same-cell warmup, progress bar and hearts; effect values remain unchanged. -->
   <SSC_PetCatComfort.label>soothing resonance</SSC_PetCatComfort.label>
-  <SSC_PetCatComfort.description>A final Pet Cat can select another conscious player-faction humanlike pawn anywhere on the same map, walk onto its cell, then comfort it for 2 seconds while the target pauses. Sleeping targets are woken normally; downed targets with enough consciousness can also receive comfort. A target in a mental state recovers; a target outside a mental state with a mood need instead gains Cat Encouragement: +8 mood and ×1.10 global work speed for 12 in-game hours. Reapplying encouragement refreshes its duration without stacking. Completion starts a cooldown of 1 in-game day. Available while drafted or undrafted.</SSC_PetCatComfort.description>
+  <SSC_PetCatComfort.description>A final Pet Cat can select another conscious player-faction humanlike pawn anywhere on the same map, walk onto its cell, then comfort it for 2 seconds with a progress bar and a steady stream of hearts while the target pauses. Sleeping targets are woken normally; downed targets with enough consciousness can also receive comfort. A target in a mental state recovers; a target outside a mental state with a mood need instead gains Cat Encouragement: +8 mood and ×1.10 global work speed for 12 in-game hours. Reapplying encouragement refreshes its duration without stacking. Completion starts a cooldown of 1 in-game day. Available while drafted or undrafted.</SSC_PetCatComfort.description>
 </LanguageData>

@@ -52,6 +52,7 @@ namespace Verse
         public Pawn Pawn => Thing as Pawn;
         public bool IsValid => Thing != null;
         public IntVec3 Cell => Thing?.Position ?? default;
+        public UnityEngine.Vector3 CenterVector3 => new(Cell.x + .5f, 0, Cell.z + .5f);
         public static implicit operator LocalTargetInfo(Thing thing) => new() { Thing = thing };
     }
     public struct AcceptanceReport
@@ -61,7 +62,12 @@ namespace Verse
         public static implicit operator AcceptanceReport(string reason) => false;
         public static implicit operator bool(AcceptanceReport value) => value.Accepted;
     }
-    public static class Translator { public static string Translate(this string key) => key; }
+    public static class Translator
+    {
+        public static string Translate(this string key) => key;
+        // 记录插入参数而不加载游戏语言；四语译文和占位符另由XML契约检查。
+        public static string Translate(this string key, params object[] args) => key + "(" + string.Join(",", args) + ")";
+    }
     public static class DefDatabase<T> where T : Def
     {
         public static readonly Dictionary<string, T> Definitions = new();
@@ -86,7 +92,8 @@ namespace Verse
         public Pawn BoundMaster;
         public Verse.AI.PawnJobTracker jobs = new();
         public JobDef CurJobDef;
-        public string LabelShort => "cat";
+        public string LabelName = "cat";
+        public string LabelShort => LabelName;
         public Pawn() { health = new PawnHealth { Owner = this }; abilities = new RimWorld.Pawn_AbilityTracker(this); }
         public T TryGetComp<T>() where T : class => Training as T;
         public bool IsHashIntervalTick(int interval) => true;
@@ -197,9 +204,10 @@ namespace RimWorld
     {
         public int cooldownTicks = 60000;
         public bool stunTargetWhileCasting = true;
+        public UnityEngine.Texture2D uiIcon = new("ability");
         public Func<Ability, CompAbilityEffect> EffectFactory;
     }
-    public class Ability
+    public partial class Ability
     {
         public Verse.Pawn pawn;
         public AbilityDef def;
@@ -233,7 +241,7 @@ namespace RimWorld
         }
     }
     public class CompProperties_AbilityEffect { public Type compClass; }
-    public class CompAbilityEffect
+    public partial class CompAbilityEffect
     {
         public bool BaseAllowed = true;
         public int BaseApplyCalls;

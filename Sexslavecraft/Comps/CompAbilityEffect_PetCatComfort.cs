@@ -41,6 +41,12 @@ namespace SexSlaveCraft
             return Valid(target);
         }
 
+        public override string ExtraLabelMouseAttachment(LocalTargetInfo target)
+        {
+            // 提示只描述当前可选对象与接近流程；不缓存读条结束时才决定的效果分支。
+            return Valid(target) ? "SSC_PetCatComfortTargetHint".Translate(target.Pawn.LabelShort).ToString() : null;
+        }
+
         public override void Apply(LocalTargetInfo target, LocalTargetInfo dest)
         {
             // Apply 不检查原版冷却，因为此时 PreActivate 已经启动它。

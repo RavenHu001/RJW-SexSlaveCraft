@@ -21,6 +21,23 @@ namespace SexSlaveCraft
             return true;
         }
 
+        public override void DrawHighlight(LocalTargetInfo target)
+        {
+            // 原版高亮使用 CanHitTarget，而本技能的该入口专门限制同格执行。
+            // 显示层改用地图选取资格，使远处可走到的对象也出现原版目标圈。
+            if (!ValidateTarget(target, false)) return;
+            GenDraw.DrawTargetHighlightWithLayer(target.CenterVector3, AltitudeLayer.MetaOverlays);
+            ability.DrawEffectPreviews(target);
+        }
+
+        public override void OnGUI(LocalTargetInfo target)
+        {
+            // 鼠标附件同样表示能否选择，不提前放宽预热或生效的同格条件。
+            // 保留原版附加文字入口，由效果组件给出目标名称与走近后的施放提示。
+            GenUI.DrawMouseAttachment(ValidateTarget(target, false) ? UIIcon : TexCommand.CannotShoot);
+            DrawAttachmentExtraLabel(target);
+        }
+
         public override bool CanHitTarget(LocalTargetInfo target)
         {
             // 原版零射程的 CanHitTarget 无距离限制；明确要求同格才能开始预热。

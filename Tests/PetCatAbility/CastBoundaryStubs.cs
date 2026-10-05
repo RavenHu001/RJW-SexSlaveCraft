@@ -100,7 +100,7 @@ namespace Verse
 
 namespace RimWorld
 {
-    public class Verb_CastAbility : Verb
+    public partial class Verb_CastAbility : Verb
     {
         public Ability ability;
         public override bool TryStartCastOn(LocalTargetInfo target, LocalTargetInfo dest, bool surpriseAttack = false,

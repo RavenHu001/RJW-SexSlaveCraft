@@ -47,6 +47,7 @@ internal static partial class Program
         Run("抽取后清源猫状态、技能与猫历史，保留其他方向及成果", DetachAfterExtraction);
         Run("缺失角色、能力容器与定义的迁移入口安全，不制造错误资格", MissingBoundaries);
         RunMovementCases();
+        RunVisualCases();
         Console.WriteLine($"RESULT: {passed}/{passed + failed} cases passed.");
         return failed == 0 ? 0 : 1;
     }
@@ -62,6 +63,7 @@ internal static partial class Program
     {
         Find.TickManager.TicksGame = 100000; Scribe.mode = LoadSaveMode.Inactive; Messages.Requests.Clear();
         Scribe_Values.Values.Clear();
+        GenDraw.Highlights.Clear(); GenUI.Attachments.Clear(); Widgets.AttachedLabels.Clear();
         DefDatabase<HediffDef>.Definitions.Clear(); DefDatabase<ResearchProjectDef>.Definitions.Clear();
         foreach (string pet in new[] { "PetCat", "PetDog", "PetRabbit" })
         {
@@ -123,7 +125,18 @@ internal static partial class Program
         Check((string)verb.Element("verbClass") == typeof(Verb_PetCatComfort).FullName, "map selection verb missing");
         Check((string)verb.Element("requireLineOfSight") == "false", "legacy line of sight gate remains");
         Check((string)def.Element("stunTargetWhileCasting") == "true", "native target stun missing");
-        Check((string)def.Element("warmupMoteSocialSymbol") == "UI/Icons/Ritual", "native warmup social symbol missing");
+        Check((string)def.Element("warmupMoteSocialSymbol") == "Things/Mote/Heart", "native heart social symbol missing");
+        Check((string)def.Element("warmupEffecter") == "SSC_PetCatComfortWarmup" && def.Element("emittedFleck") == null,
+            "heart must be attached to native warmup effecter rather than unconditional ability emission");
+        // 仅核对原版特效的资源接线与节奏，不在宿主复制Effecter生成或取消算法。
+        var hearts = Definition("Defs/EffecterDefs/SSC_PetCatComfortEffects.xml", "SSC_PetCatComfortWarmup").Element("children").Elements().Single();
+        Check((string)hearts.Element("subEffecterClass") == "SubEffecter_SprayerContinuous" && (string)hearts.Element("fleckDef") == "Heart" &&
+            (string)hearts.Element("spawnLocType") == "OnTarget", "warmup does not use sole native continuous Heart effect on target");
+        Check((string)hearts.Element("ticksBetweenMotes") == "30" && (string)hearts.Element("initialDelayTicks") == "0" &&
+            (string)hearts.Element("makeMoteOnSubtrigger") == "false" && (string)hearts.Element("maxMoteCount") == "5" &&
+            (string)hearts.Element("burstCount") == "1", "heart cadence or bounded native warmup setup wrong");
+        Check((string)hearts.Element("positionOffset") == "(0.35, 0, 0.6)", "heart emission is obscured by same-cell pawn");
+        Equal(1.2f, float.Parse((string)hearts.Element("scale"))); Equal(.42f, float.Parse((string)hearts.Element("speed")));
         Check(def.Descendants("showCastingProgressBar").Any(e => (string)e == "true"), "native casting progress not enabled");
         Check((string)def.Element("jobDef") == "SSC_Job_PetCatComfort", "ability did not use approach driver");
         var job = Directory.EnumerateFiles(Path.Combine(root, "Defs/JobDefs"), "*.xml")
@@ -168,6 +181,8 @@ internal static partial class Program
             var keyed = XDocument.Load(Path.Combine(root, "Languages", language, "Keyed/SSC_PetCatComfort.xml"));
             foreach (string key in new[] { "RequiresFinal", "InvalidCaster", "InvalidTarget", "MissingEffect", "UnconsciousTarget", "UnreachableTarget" })
                 Check(!string.IsNullOrWhiteSpace((string)keyed.Root.Element("SSC_PetCatComfort" + key)), "missing reason translation " + language + "/" + key);
+            string hint = (string)keyed.Root.Element("SSC_PetCatComfortTargetHint");
+            Check(!string.IsNullOrWhiteSpace(hint) && hint.Contains("{0}"), "missing target name hint or placeholder " + language);
             Check(XNode.DeepEquals(keyed.Root, XDocument.Load(Path.Combine(root, "Sexslavecraft/Languages", language, "Keyed/SSC_PetCatComfort.xml")).Root), "source reason mirror mismatch " + language);
             string jobPath = Path.Combine("Languages", language, "DefInjected/JobDef/SSC_PetCatComfortJobDefs.xml");
             var translatedJob = XDocument.Load(Path.Combine(root, jobPath));

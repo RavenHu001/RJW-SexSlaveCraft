@@ -2,11 +2,11 @@
 <Defs>
   <!-- 一个按钮共用一天冷却；唯一效果组件在结算时按目标当前精神状态选择恢复或鼓舞。
        自定义任务先到目标同格，再进入原版两秒预热；范围零由自定义 Verb 解释为地图选择。
-       原版 Mote_Speech 使用现有图标显示预热社交气泡，无需灵能或 DLC 特效。 -->
+       原版读条、心形社交气泡和持续爱心只呈现预热过程，由原版结束预热时停止维护。 -->
   <AbilityDef>
     <defName>SSC_PetCatComfort</defName>
     <label>安抚共鸣</label>
-    <description>终极宠物猫可选择同地图上另一名有意识的玩家阵营人形角色，走到其所在格后进行 2 秒安抚，期间目标暂停行动；普通睡眠可被唤醒，意识合格的倒地角色也可接受安抚。目标正处于精神状态时，使其恢复；未处于精神状态且有心情需求时，给予“猫咪鼓舞”，心情 +8、全局工作速度 ×1.10，持续 12 游戏内小时。重复鼓舞刷新持续时间，不叠加。完成后冷却 1 游戏内天；征召与未征召时均可使用。</description>
+    <description>终极宠物猫可选择同地图上另一名有意识的玩家阵营人形角色，走到其所在格后进行 2 秒安抚，期间显示读条并持续冒出爱心，目标暂停行动；普通睡眠可被唤醒，意识合格的倒地角色也可接受安抚。目标正处于精神状态时，使其恢复；未处于精神状态且有心情需求时，给予“猫咪鼓舞”，心情 +8、全局工作速度 ×1.10，持续 12 游戏内小时。重复鼓舞刷新持续时间，不叠加。完成后冷却 1 游戏内天；征召与未征召时均可使用。</description>
     <abilityClass>SexSlaveCraft.Ability_PetCatComfort</abilityClass>
     <iconPath>UI/Icons/Ritual</iconPath>
     <jobDef>SSC_Job_PetCatComfort</jobDef>
@@ -16,7 +16,8 @@
     <showPsycastEffects>false</showPsycastEffects>
     <stunTargetWhileCasting>true</stunTargetWhileCasting>
     <showCastingProgressBar>true</showCastingProgressBar>
-    <warmupMoteSocialSymbol>UI/Icons/Ritual</warmupMoteSocialSymbol>
+    <warmupMoteSocialSymbol>Things/Mote/Heart</warmupMoteSocialSymbol>
+    <warmupEffecter>SSC_PetCatComfortWarmup</warmupEffecter>
     <casterMustBeCapableOfViolence>false</casterMustBeCapableOfViolence>
     <showWhenDrafted>true</showWhenDrafted>
     <displayGizmoWhileUndrafted>true</displayGizmoWhileUndrafted>

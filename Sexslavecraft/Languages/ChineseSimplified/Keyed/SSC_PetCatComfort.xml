@@ -7,4 +7,6 @@
   <SSC_PetCatComfortUnconsciousTarget>目标意识不足，无法接受安抚。</SSC_PetCatComfortUnconsciousTarget>
   <SSC_PetCatComfortUnreachableTarget>无法到达目标所在格。</SSC_PetCatComfortUnreachableTarget>
   <SSC_PetCatComfortMissingEffect>安抚共鸣效果当前不可用。</SSC_PetCatComfortMissingEffect>
+  <!-- 仅合法地图目标显示悬停引导，{0} 为目标名字；并不宣告已进入同格施放。 -->
+  <SSC_PetCatComfortTargetHint>安抚 {0}（走至同格后施放）</SSC_PetCatComfortTargetHint>
 </LanguageData>
