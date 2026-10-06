@@ -418,6 +418,7 @@ namespace RimWorld
 
     public class AbilityDef : Def
     {
+        public JobDef jobDef;
     }
 
     public class TraitDegreeData

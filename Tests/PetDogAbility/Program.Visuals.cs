@@ -10,7 +10,7 @@ internal static partial class Program
         Run("合法远处目标悬停显示原版圈光标名字提示，UI不放宽同格施放", ValidTargetVisuals);
         Run("非法目标无圈提示且使用禁用光标，UI不进入预热或结算", InvalidTargetVisuals);
         Run("原版适用性入口保留地图及效果资格和拒绝消息，远处不能直接施放", NativeApplicabilityBoundary);
-        Run("同一动物悬停时变为玩家阵营后反馈禁用，资格恢复重新显示原版反馈", HoverQualificationChanges);
+        Run("动物变玩家阵营且无待训项目后禁用，恢复野生资格重新显示反馈", HoverQualificationChanges);
     }
 
     /// <summary>绘制仅记录原版API调用，不模拟鼠标Targeter、GPU或Effecter调度。</summary>
@@ -58,7 +58,7 @@ internal static partial class Program
         NoSettlement(p);
     }
 
-    /// <summary>动物阵营变化后同一Verb按当前资格刷新；不会继续显示已经驯服的合法目标反馈。</summary>
+    /// <summary>同一Verb按当前资格刷新；已驯服且无待训项目不继续显示合法目标反馈。</summary>
     private static void HoverQualificationChanges()
     {
         var p = Pair(); p.target.Position = new IntVec3(220, 120); p.target.LabelName = "changing-animal";

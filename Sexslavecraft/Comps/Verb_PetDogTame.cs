@@ -39,6 +39,7 @@ namespace SexSlaveCraft
             // Stance_Warmup 每 tick 使用 From 版本；原版零射程会接受相邻 Touch。
             // 预热期间被搬走或目标离开同格时必须中断，不能降级成隔格释放。
             return PetDogAbilityUtility.CanTarget(ability.pawn, target.Pawn, out _) &&
+                PetDogAbilityUtility.MatchesJobBranch(ability.pawn, target.Pawn) &&
                 root == target.Pawn.Position;
         }
 

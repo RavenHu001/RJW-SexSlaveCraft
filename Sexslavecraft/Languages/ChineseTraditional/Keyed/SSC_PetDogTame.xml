@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-  <!-- The target hint uses {0} for the animal name; invalid targets have separate rejection reasons. -->
+  <!-- Target hints and success messages use {0} for the animal; training uses {1} for the project. -->
   <SSC_PetDogTameRequiresFinal>需要終極寵物狗專精。</SSC_PetDogTameRequiresFinal>
   <SSC_PetDogTameInvalidCaster>施放者必須屬於玩家陣營、存活、已生成、未倒地且沒有精神狀態。</SSC_PetDogTameInvalidCaster>
-  <SSC_PetDogTameInvalidTarget>目標必須是同地圖上存活、已生成、沒有精神狀態的無陣營動物。</SSC_PetDogTameInvalidTarget>
+  <SSC_PetDogTameInvalidTarget>目標必須是同地圖上存活、已生成、沒有精神狀態的無陣營或玩家陣營動物，且不能是樹精。</SSC_PetDogTameInvalidTarget>
   <SSC_PetDogTameUnconsciousTarget>目標意識不足，無法接受馴導。</SSC_PetDogTameUnconsciousTarget>
   <SSC_PetDogTameUntamableTarget>目標不符合原版可馴服條件。</SSC_PetDogTameUntamableTarget>
   <SSC_PetDogTameUnreachableTarget>無法到達目標所在格。</SSC_PetDogTameUnreachableTarget>
   <SSC_PetDogTameMissingEffect>定向馴導效果目前不可用。</SSC_PetDogTameMissingEffect>
   <SSC_PetDogTameTargetHint>馴導 {0}（走至同格後直接馴服）</SSC_PetDogTameTargetHint>
+  <SSC_PetDogTameTrainingTargetHint>訓練 {0}：{1}（走至同格後完整完成該項目）</SSC_PetDogTameTrainingTargetHint>
+  <SSC_PetDogTameNoTrainingTarget>目標沒有已勾選、滿足原版前置及種族/體型條件且仍需訓練的項目。</SSC_PetDogTameNoTrainingTarget>
+  <SSC_PetDogTameTrainingSuccess>已完成 {0} 的訓練項目：{1}。</SSC_PetDogTameTrainingSuccess>
 </LanguageData>

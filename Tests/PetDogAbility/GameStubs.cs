@@ -16,7 +16,7 @@ namespace UnityEngine
 
 namespace Verse
 {
-    public class Def { public string defName; }
+    public class Def { public string defName; public string label; public string LabelCap => label ?? defName; }
     public class HediffDef : Def
     {
         public Type hediffClass = typeof(HediffWithComps);
@@ -92,7 +92,8 @@ namespace Verse
         public PawnStory story = new();
         public Pawn BoundMaster;
         public Verse.AI.PawnJobTracker jobs = new();
-        public JobDef CurJobDef;
+        public Verse.AI.Job CurJob => jobs?.curJob;
+        public JobDef CurJobDef => CurJob?.def;
         public string LabelName = "cat";
         public string LabelShort => LabelName;
         public Pawn() { health = new PawnHealth { Owner = this }; abilities = new RimWorld.Pawn_AbilityTracker(this); }
@@ -100,7 +101,7 @@ namespace Verse
         public bool IsHashIntervalTick(int interval) => true;
         public bool CanReach(Thing target, Verse.AI.PathEndMode mode, Danger danger) { LastReachMode = mode; return Reachable; }
     }
-    public class RaceProperties { public bool Humanlike = true, Animal, IsMechanoid; }
+    public class RaceProperties { public bool Humanlike = true, Animal, IsMechanoid; public AnimalType animalType; }
     public class PawnStory { public TraitTracker traits = new(); }
     public class TraitTracker
     {
@@ -219,6 +220,7 @@ namespace RimWorld
     public class AbilityDef : Verse.Def
     {
         public int cooldownTicks = 60000;
+        public Verse.JobDef jobDef;
         public bool stunTargetWhileCasting = true;
         public UnityEngine.Texture2D uiIcon = new("ability");
         public Func<Ability, CompAbilityEffect> EffectFactory;
@@ -243,6 +245,12 @@ namespace RimWorld
         }
         public virtual Verse.AcceptanceReport CanCast => BaseAllowed && CooldownTicksRemaining == 0;
         public virtual void ExposeData() { }
+        public int BaseGetJobCalls;
+        public virtual Verse.AI.Job GetJob(Verse.LocalTargetInfo target, Verse.LocalTargetInfo destination)
+        {
+            BaseGetJobCalls++;
+            return new Verse.AI.Job { def = def.jobDef, targetA = target, targetB = destination, ability = this, verbToUse = verb };
+        }
         public int CooldownTicksRemaining => Math.Max(0, cooldownEnd - Verse.Find.TickManager.TicksGame);
         public void StartCooldown(int ticks) { CooldownStartCalls++; cooldownEnd = Verse.Find.TickManager.TicksGame + ticks; }
         public void ResetCooldown() { cooldownEnd = 0; }
@@ -312,6 +320,8 @@ namespace SexSlaveCraft
         public static readonly HediffDef SSC_Hediff_Bus = new(), SSC_Hediff_Bus_Final = new(), SSC_Hediff_Cow = new(), SSC_Hediff_Cow_Final = new();
         public static readonly HediffDef SSC_Hediff_TrainerOfficer = new(), SSC_Hediff_Combatant = new(), SSC_Hediff_Combatant_Final = new();
         public static readonly JobDef SSC_Job_PetAffection = new();
+        public static readonly JobDef SSC_Job_PetDogTame = new() { defName = "SSC_Job_PetDogTame" };
+        public static readonly JobDef SSC_Job_PetDogTrain = new() { defName = "SSC_Job_PetDogTrain" };
     }
     public class CompPersonalityStore
     {

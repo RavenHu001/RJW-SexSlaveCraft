@@ -11,7 +11,7 @@ namespace SexSlaveCraft
         }
     }
 
-    /// <summary>直接驯服的单一效果；选择资格与实际同格效果分别复查。</summary>
+    /// <summary>驯服／训练的单一效果；选择资格与实际同格效果分别复查。</summary>
     public class CompAbilityEffect_PetDogTame : CompAbilityEffect
     {
         // 仅用于一次同步 Activate 的结果，不写入存档、不缓存目标资格或驯服分支。
@@ -37,7 +37,12 @@ namespace SexSlaveCraft
 
         public override string ExtraLabelMouseAttachment(LocalTargetInfo target)
         {
-            return Valid(target) ? "SSC_PetDogTameTargetHint".Translate(target.Pawn.LabelShort).ToString() : null;
+            if (!Valid(target)) return null;
+            TrainableDef training = target.Pawn.Faction == Faction.OfPlayer
+                ? PetDogAbilityUtility.GetNextTraining(target.Pawn) : null;
+            return training != null
+                ? "SSC_PetDogTameTrainingTargetHint".Translate(target.Pawn.LabelShort, training.LabelCap).ToString()
+                : "SSC_PetDogTameTargetHint".Translate(target.Pawn.LabelShort).ToString();
         }
 
         public override void Apply(LocalTargetInfo target, LocalTargetInfo dest)

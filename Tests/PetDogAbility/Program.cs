@@ -24,7 +24,7 @@ internal static partial class Program
         Run("旧普通Hediff终极狗授予技能，重复维护保留能力及冷却", LegacyGrant);
         Run("终极狗跨方向留空及SSC身份可用，不依赖绑定研究与征召", CrossDirectionQualification);
         Run("失格施放者在全部入口拒绝，不进入原版激活", InvalidCasters);
-        Run("目标为同地图清醒无精神状态无阵营可驯服动物", TargetQualifications);
+        Run("目标基础资格及玩家无待训项目拒绝", TargetQualifications);
         Run("原版CanTame拒绝动物在选择预热生效各入口均拒绝", NativeTamingQualification);
         Run("远处与隔墙可达目标可选，实际预热和生效要求同格", RangeBoundaries);
         Run("Valid与CanApplyOn保留原版限制并报告非法目标", ComponentValidation);
@@ -42,6 +42,7 @@ internal static partial class Program
         Run("缺角色能力容器或定义的维护迁移入口安全", MissingBoundaries);
         RunMovementCases();
         RunVisualCases();
+        RunOwnedTrainingCases();
         Console.WriteLine($"RESULT: {passed}/{passed + failed} cases passed.");
         return failed == 0 ? 0 : 1;
     }
@@ -58,6 +59,7 @@ internal static partial class Program
         Find.TickManager.TicksGame = 100000; Scribe.mode = LoadSaveMode.Inactive; Messages.Requests.Clear();
         Scribe_Values.Values.Clear(); GenDraw.Highlights.Clear(); GenUI.Attachments.Clear(); Widgets.AttachedLabels.Clear();
         InteractionWorker_RecruitAttempt.Requests.Clear();
+        TrainableUtility.TrainableDefsInListOrder.Clear();
         DefDatabase<HediffDef>.Definitions.Clear(); DefDatabase<ResearchProjectDef>.Definitions.Clear();
         foreach (string pet in new[] { "PetCat", "PetDog", "PetRabbit" })
         {
@@ -66,6 +68,7 @@ internal static partial class Program
             DefDatabase<ResearchProjectDef>.Add(new ResearchProjectDef { defName = "SSC_RES_" + pet, IsFinished = false });
         }
         SSCDefOf.SSC_BasicTraining.IsFinished = false;
+        SSCDefOf.SSC_PetDogTame.jobDef = SSCDefOf.SSC_Job_PetDogTame;
         SSCDefOf.SSC_PetDogTame.EffectFactory = ability => new CompAbilityEffect_PetDogTame
         { parent = ability, props = new CompProperties_AbilityPetDogTame() };
     }
@@ -94,7 +97,7 @@ internal static partial class Program
     private static XElement Definition(string path, string name) => XDocument.Load(Path.Combine(root, path)).Root.Elements().Single(e => (string)e.Element("defName") == name);
     private static void NoSettlement((Pawn caster, Pawn target, Ability_PetDogTame ability) p)
     {
-        Check(p.ability.ActivationCalls == 0 && p.ability.CooldownStartCalls == 0 && InteractionWorker_RecruitAttempt.Requests.Count == 0,
+        Check(p.ability.ActivationCalls == 0 && p.ability.CooldownStartCalls == 0 && InteractionWorker_RecruitAttempt.Requests.Count == 0 && (p.target.training == null || p.target.training.Requests.Count == 0),
             "invalid/approaching cast entered native activation, cooldown or recruit");
     }
 

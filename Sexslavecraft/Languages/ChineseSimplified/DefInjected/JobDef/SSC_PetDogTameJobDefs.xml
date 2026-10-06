@@ -2,4 +2,5 @@
 <LanguageData>
   <!-- TargetA is replaced by the native job report. -->
   <SSC_Job_PetDogTame.reportString>正在训导 TargetA。</SSC_Job_PetDogTame.reportString>
+  <SSC_Job_PetDogTrain.reportString>正在训练 TargetA。</SSC_Job_PetDogTrain.reportString>
 </LanguageData>

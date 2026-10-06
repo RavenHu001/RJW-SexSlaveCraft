@@ -233,7 +233,7 @@ internal sealed class CastBoundaryRunner
     {
         Driver = new SexSlaveCraft.JobDriver_PetDogTame
         {
-            pawn = pawn, job = new Job { ability = ability, verbToUse = ability.verb, targetA = target, def = new JobDef { abilityCasting = false } }
+            pawn = pawn, job = ability.GetJob(target, default)
         };
         pawn.jobs.curDriver = Driver; pawn.jobs.curJob = Driver.job;
         Toils = Driver.BuildToils();

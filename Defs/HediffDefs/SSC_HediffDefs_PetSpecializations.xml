@@ -101,7 +101,7 @@
     <defName>SSC_Hediff_PetDog_Final</defName>
     <hediffClass>HediffWithComps</hediffClass>
     <label>终极宠物狗专精</label>
-    <description>通过人格凝胶完成的终极宠物狗专精。保留动物处理和训练属性，并获得“定向驯导”：走到同地图上符合条件的野生动物所在格，完成短暂训导后直接驯服。</description>
+    <description>通过人格凝胶完成的终极宠物狗专精。保留动物处理和训练属性，并获得“定向驯导”：走到同地图上符合条件的动物所在格，完成短暂训导后直接驯服野生动物，或完整完成己方动物的一个已勾选训练项目。</description>
     <isBad>false</isBad>
     <initialSeverity>1</initialSeverity>
     <maxSeverity>1</maxSeverity>

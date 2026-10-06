@@ -10,6 +10,7 @@ namespace UnityEngine
 
 namespace Verse
 {
+    public enum AnimalType { Normal, Dryad }
     // 亲昵调度与玩家选择的编译边界，本套件不以这些替身验证寻路或研究解锁。
     public class JobDef : Def { }
     public class ResearchProjectDef : Def { public bool IsFinished = true; }
@@ -20,11 +21,19 @@ namespace Verse
         public RaceProperties RaceProps = new RaceProperties();
         public Faction Faction = Faction.OfPlayer;
         public JobDef CurJobDef => CurJob?.def;
+        // 己方训练分支仅补编译边界，迁移套件不会执行或模拟训练算法。
+        public Pawn_TrainingTracker training;
+        public Pawn_MindState mindState;
         // 仅补齐猫技能选择资格的编译宿主；迁移套件不验证真实意识或寻路。
         public bool CanReach(Thing target, Verse.AI.PathEndMode mode, Danger danger) => true;
     }
     // 技能效果分支只需编译边界，本套件不据此验证视线、精神恢复或健康组件生成。
-    public class RaceProperties { public bool Humanlike = true; public bool Animal; }
+    public class RaceProperties { public bool Humanlike = true; public bool Animal; public AnimalType animalType; }
+    public class Pawn_MindState { public int lastAssignedInteractTime, interactionsToday; }
+    public static class PetTranslateBoundary
+    {
+        public static string Translate(this string key, params object[] values) => key;
+    }
     public static class GenSight { public static bool LineOfSight(object a, object b, Map map) => true; }
     public class HediffWithComps : Hediff { }
     public class HediffCompProperties { }
@@ -43,6 +52,17 @@ namespace Verse
 
 namespace RimWorld
 {
+    public class TrainableDef : Def { }
+    public static class TrainableUtility { public static readonly System.Collections.Generic.List<TrainableDef> TrainableDefsInListOrder = new(); }
+    // 全部为迁移套件不可触发的编译宿主；真正训练分支在PetDogAbility运行生产源码验证。
+    public class Pawn_TrainingTracker
+    {
+        public bool GetWanted(TrainableDef def) => false;
+        public bool CanBeTrained(TrainableDef def) => false;
+        public bool CanAssignToTrain(TrainableDef def) => false;
+        public bool HasLearned(TrainableDef def) => false;
+        public void Train(TrainableDef def, Pawn trainer, bool complete = false) { }
+    }
     public class Faction { public static readonly Faction OfPlayer = new Faction(); }
     // 狗迁移用例不施放技能；驯服资格及成功链仅提供编译边界，不重写原版算法。
     public static class TameUtility { public static bool CanTame(Pawn target) => true; }
@@ -54,6 +74,7 @@ namespace RimWorld
     // 这里只模型化绝对结束 tick，迁移和剩余时间计算仍执行真实猫、狗生产工具。
     public class Ability
     {
+        public AbilityDef def;
         private int cooldownEndTick;
         public int CooldownTicksRemaining => System.Math.Max(0, cooldownEndTick - Find.TickManager.TicksGame);
         public void StartCooldown(int ticks) => cooldownEndTick = Find.TickManager.TicksGame + ticks;
@@ -94,6 +115,7 @@ namespace SexSlaveCraft
     {
         public static readonly ResearchProjectDef SSC_BasicTraining = new ResearchProjectDef();
         public static readonly JobDef SSC_Job_PetAffection = new JobDef();
+        public static readonly JobDef SSC_Job_PetDogTrain = new JobDef();
     }
     public static partial class SSCBondUtility
     {

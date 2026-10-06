@@ -29,10 +29,11 @@ namespace SexSlaveCraft
             AddFinishAction(condition => CleanupOwnWarmup());
 
             // 目标保持 Pawn 引用，原版寻路会追踪移动中的当前位置。
-            // 不提前暂停目标，也不预订或替换目标任务，以免改变尚未驯服的动物行为。
+            // 不提前暂停目标，也不预订或替换目标任务，以免改变接近时的动物行为。
             Toil approach = Toils_Goto.GotoThing(TargetIndex.A, PathEndMode.OnCell);
             approach.FailOn(() => !job.ability.CanCast ||
-                !PetDogAbilityUtility.CanTarget(pawn, TargetPawn, out _));
+                !PetDogAbilityUtility.CanTarget(pawn, TargetPawn, out _) ||
+                !PetDogAbilityUtility.MatchesJobBranch(pawn, TargetPawn));
             Action startApproach = approach.initAction;
             approach.initAction = delegate
             {
@@ -67,7 +68,7 @@ namespace SexSlaveCraft
             // 不调用 base.MakeNewToils：其中的结束回调可能为 abilityCasting 任务扣冷却。
             // 这里只复用一次 CastVerb，原版预热负责 2 秒倒计时、暂停、气泡和实际 Activate。
             Toil cast = Toils_Combat.CastVerb(TargetIndex.A, TargetIndex.B, false);
-            // 预热中的资格每 tick 复查；完成后冷却已启动，驯服也会改变目标阵营资格。
+            // 预热中的资格每 tick 复查；成功后冷却已启动，驯服或训练也会改变目标资格。
             // 此时允许原版 FinishedBusy 正常收尾，不能把已成功结算误标成失败。
             cast.FailOn(() => job.verbToUse.WarmingUp &&
                 !PetDogAbilityUtility.CanApply(pawn, TargetPawn, out _));

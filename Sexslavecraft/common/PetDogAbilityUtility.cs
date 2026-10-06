@@ -6,7 +6,7 @@ using Verse.AI;
 
 namespace SexSlaveCraft
 {
-    /// <summary>狗终极驯导的资格、原版直接驯服、旧成果授予及人格冷却迁移。</summary>
+    /// <summary>狗终极驯导的资格、原版驯服／己方训练、旧成果授予及人格冷却迁移。</summary>
     public static class PetDogAbilityUtility
     {
         private static bool HasFinalQualification(Pawn pawn)
@@ -40,15 +40,25 @@ namespace SexSlaveCraft
             if (!CanUse(caster, out reason)) return false;
             reason = "SSC_PetDogTameInvalidTarget";
             if (target == null || target == caster || target.Destroyed || target.Dead || !target.Spawned ||
-                target.Map != caster.Map || target.RaceProps?.Animal != true || target.Faction != null ||
+                target.Map != caster.Map || target.RaceProps?.Animal != true ||
+                (target.Faction != null && target.Faction != Faction.OfPlayer) ||
                 target.MentalState != null || target.health?.hediffSet == null) return false;
             // 原版意识资格允许可醒来的睡眠与有意识的倒地；不额外治疗或结束精神状态。
             reason = "SSC_PetDogTameUnconsciousTarget";
             if (target.health.capacities?.CanBeAwake != true) return false;
-            reason = "SSC_PetDogTameUntamableTarget";
-            // 使用本机原版资格接口，保留野性、动物类型及 Scaria 等原版限制。
-            // 不把食物、驯服指定或操作者工作技能门槛带入终极主动技能。
-            if (!TameUtility.CanTame(target)) return false;
+            if (target.Faction == Faction.OfPlayer)
+            {
+                reason = "SSC_PetDogTameMissingEffect";
+                if (SSCDefOf.SSC_Job_PetDogTrain == null) return false;
+                reason = "SSC_PetDogTameNoTrainingTarget";
+                if (GetNextTraining(target) == null) return false;
+            }
+            else
+            {
+                reason = "SSC_PetDogTameUntamableTarget";
+                // 野生分支沿用原版可驯服资格，不带入食物、指定或操作者工作技能门槛。
+                if (!TameUtility.CanTame(target)) return false;
+            }
             reason = null;
             return true;
         }
@@ -66,19 +76,68 @@ namespace SexSlaveCraft
         {
             if (!CanTarget(caster, target, out reason)) return false;
             reason = "SSC_PetDogTameInvalidTarget";
-            if (caster.Position != target.Position) return false;
+            if (caster.Position != target.Position || !MatchesJobBranch(caster, target)) return false;
             reason = null;
             return true;
         }
 
-        /// <summary>同格预热完成后直接走原版驯服成功链，不调用随机驯服尝试或狗工作通知。</summary>
+        /// <summary>按原版列表优先级取一个已勾选、仍需训练且符合当前动物资格的项目。</summary>
+        public static TrainableDef GetNextTraining(Pawn animal)
+        {
+            if (animal?.training == null || animal.RaceProps?.Animal != true ||
+                animal.RaceProps.animalType == AnimalType.Dryad) return null;
+            // NextTrainableToTrain 只检查勾选及前置／剩余步骤；额外使用原版
+            // CanAssignToTrain 检查种族、智力与当前体型，跳过残留的不合法勾选。
+            foreach (TrainableDef trainable in TrainableUtility.TrainableDefsInListOrder)
+                if (trainable != null && animal.training.GetWanted(trainable) &&
+                    animal.training.CanBeTrained(trainable) && animal.training.CanAssignToTrain(trainable))
+                    return trainable;
+            return null;
+        }
+
+        /// <summary>执行中的任务用原版保存的 JobDef 固定分支，重新选取其他目标不受旧任务限制。</summary>
+        public static bool MatchesJobBranch(Pawn caster, Pawn target)
+        {
+            Job job = caster?.CurJob;
+            if (job == null || SSCDefOf.SSC_PetDogTame == null || job.ability?.def != SSCDefOf.SSC_PetDogTame ||
+                job.GetTarget(TargetIndex.A).Pawn != target) return true;
+            if (job.def == SSCDefOf.SSC_Job_PetDogTrain)
+                return target?.Faction == Faction.OfPlayer;
+            return job.def == SSCDefOf.SSC_PetDogTame.jobDef && target?.Faction == null;
+        }
+
+        /// <summary>同格预热结束后完成一个当前有效分支，不调用普通训练／驯服尝试或狗工作通知。</summary>
         public static bool Apply(Pawn caster, Pawn target)
         {
             if (!CanApply(caster, target, out _)) return false;
-            // DoRecruit 对动物执行正常阵营转换、命名、驯服记录、关系及成功反馈。
-            // 不另给培养经验、技能经验或工作后事件；第三方阻止转换时报告无实效。
-            InteractionWorker_RecruitAttempt.DoRecruit(caster, target);
-            return target.Faction == Faction.OfPlayer;
+            if (target.Faction == null)
+            {
+                // 保留原版阵营转换、命名、关系、记录与反馈；不另发普通工作奖励。
+                InteractionWorker_RecruitAttempt.DoRecruit(caster, target);
+                return target.Faction == Faction.OfPlayer;
+            }
+
+            // 项目按实际生效时的勾选和资格重选；只完成一项，不同时完成其后解锁项目。
+            // trainer=null 避免完成服从时自动把施放者设为动物主人；现有主人也不改变。
+            TrainableDef training = GetNextTraining(target);
+            if (training == null) return false;
+            Pawn_TrainingTracker tracker = target.training;
+            tracker.Train(training, null, complete: true);
+            // 已学项目可能仍缺补训步骤，不能仅凭 HasLearned 判为成功。
+            // 第三方阻止实效时返回失败，由 Ability 退回本次新冷却。
+            if (target.training != tracker || target.Faction != Faction.OfPlayer ||
+                !tracker.HasLearned(training) || tracker.CanBeTrained(training)) return false;
+
+            // 技能用独立的一天冷却，不拒绝近期普通训练；成功后更新原版工作间隔，
+            // 防止普通训兽工作紧接着再操作。失败不消费该时间或互动次数。
+            if (target.mindState != null)
+            {
+                target.mindState.lastAssignedInteractTime = Find.TickManager.TicksGame;
+                target.mindState.interactionsToday++;
+            }
+            Messages.Message("SSC_PetDogTameTrainingSuccess".Translate(target.LabelShort, training.LabelCap),
+                target, MessageTypeDefOf.PositiveEvent, false);
+            return true;
         }
 
         /// <summary>旧终极狗可能保存为普通 Hediff，直接按成果对账授予，不替换原状态。</summary>

@@ -10,4 +10,13 @@
     <collideWithPawns>false</collideWithPawns>
     <casualInterruptible>false</casualInterruptible>
   </JobDef>
+  <!-- 己方动物训练与野生驯服共用接近和预热流程；独立任务定义固定本次施放的目标分支。 -->
+  <JobDef>
+    <defName>SSC_Job_PetDogTrain</defName>
+    <driverClass>SexSlaveCraft.JobDriver_PetDogTame</driverClass>
+    <reportString>正在训练 TargetA。</reportString>
+    <abilityCasting>false</abilityCasting>
+    <collideWithPawns>false</collideWithPawns>
+    <casualInterruptible>false</casualInterruptible>
+  </JobDef>
 </Defs>

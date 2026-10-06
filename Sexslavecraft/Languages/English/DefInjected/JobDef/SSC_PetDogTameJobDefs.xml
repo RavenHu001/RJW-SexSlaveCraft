@@ -2,4 +2,5 @@
 <LanguageData>
   <!-- TargetA is replaced by the native job report. -->
   <SSC_Job_PetDogTame.reportString>Guiding TargetA.</SSC_Job_PetDogTame.reportString>
+  <SSC_Job_PetDogTrain.reportString>Training TargetA.</SSC_Job_PetDogTrain.reportString>
 </LanguageData>

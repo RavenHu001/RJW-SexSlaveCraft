@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-  <!-- Map selection, same-cell warmup and direct taming; no extra training branch. -->
+  <!-- Map selection and same-cell warmup serve direct wild taming and one complete owned-animal training project. -->
   <SSC_PetDogTame.label>定向馴導</SSC_PetDogTame.label>
-  <SSC_PetDogTame.description>終極寵物狗可選擇同地圖上存活、有意識、沒有精神狀態、無陣營且符合原版可馴服條件的動物，走到其所在格後進行 2 秒馴導，期間顯示讀條、馴導氣泡和連續說話波紋，目標暫停行動。普通睡眠可被喚醒，意識合格的倒地動物也可選擇。完成後直接將目標馴服為玩家陣營動物，無需食物或額外材料，不再進行一次成功率判定。完成後冷卻 1 遊戲內天；取消或目標失效不消耗新冷卻。徵召與未徵召時均可使用。目前不推進己方動物訓練，也不產生額外特化經驗或工作後事件。</SSC_PetDogTame.description>
+  <SSC_PetDogTame.description>終極寵物狗可選擇同地圖上存活、有意識、沒有精神狀態的無陣營或玩家陣營動物，走到其所在格後進行 2 秒馴導，期間顯示讀條、馴導氣泡和連續說話波紋，目標暫停行動。普通睡眠可被喚醒，意識合格的倒地動物也可選擇，樹精除外。無陣營動物須符合原版可馴服條件，完成後直接馴服為玩家陣營。玩家動物須有已勾選、滿足原版前置及種族/體型條件且仍需訓練的項目；完成時按原版優先順序選擇一個項目並補至完成，已學項目衰減後也可補滿，不改變動物主人。不需要食物、額外材料或成功率判定，不受普通訓練間隔限制。兩個分支共用 1 遊戲內天冷卻；取消、目標失效或沒有有效訓練項目不消耗新冷卻。徵召與未徵召時均可使用，不增加動物技能或特化經驗，也不觸發工作後事件。</SSC_PetDogTame.description>
 </LanguageData>
