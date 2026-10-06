@@ -3,13 +3,13 @@ using Verse;
 
 namespace SexSlaveCraft
 {
-    /// <summary>将地图目标选择与同格施放分开，保留原版预热和目标限时暂停。</summary>
-    public class Verb_PetDogTame : Verb_CastAbility
+    /// <summary>复用原版接触技能的目标显示，将地图选取与同格施放分开。</summary>
+    public class Verb_PetDogTame : Verb_CastAbilityTouch
     {
         public override bool ValidateTarget(LocalTargetInfo target, bool showMessages = true)
         {
-            // 原版 range=0 会改用 Touch 可达检查。本技能要求 OnCell，并允许隔墙绕路。
-            // 这里直接执行地图选取资格，再保留每个效果组件的配置与资格检查。
+            // 原版接触技能的选取不检查当前施放距离；本技能额外要求能走至目标同格。
+            // 直接检查地图选取资格与效果组件，允许隔墙绕路，不调用原版相邻 Touch 判断。
             if (!PetDogAbilityUtility.CanSelectTarget(ability.pawn, target.Pawn, out string reason))
             {
                 if (showMessages)
@@ -21,21 +21,11 @@ namespace SexSlaveCraft
             return true;
         }
 
-        public override void DrawHighlight(LocalTargetInfo target)
+        public override bool IsApplicableTo(LocalTargetInfo target, bool throwMessages = false)
         {
-            // 原版高亮使用 CanHitTarget，而本技能的该入口专门限制同格执行。
-            // 显示层改用地图选取资格，使远处可走到的对象也出现原版目标圈。
-            if (!ValidateTarget(target, false)) return;
-            GenDraw.DrawTargetHighlightWithLayer(target.CenterVector3, AltitudeLayer.MetaOverlays);
-            ability.DrawEffectPreviews(target);
-        }
-
-        public override void OnGUI(LocalTargetInfo target)
-        {
-            // 鼠标附件同样表示能否选择，不提前放宽预热或生效的同格条件。
-            // 保留原版附加文字入口，由效果组件给出目标名称与走近后的施放提示。
-            GenUI.DrawMouseAttachment(ValidateTarget(target, false) ? UIIcon : TexCommand.CannotShoot);
-            DrawAttachmentExtraLabel(target);
+            // 原版接触技能高亮只查询 IsApplicableTo，必须接入完整选取资格以排除失格目标。
+            // ValidateTarget 直接检查工具和组件，不回调本方法；保留原版目标圈、鼠标附件及提示文字。
+            return ValidateTarget(target, throwMessages);
         }
 
         public override bool CanHitTarget(LocalTargetInfo target)
