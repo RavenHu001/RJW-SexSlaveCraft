@@ -13,6 +13,7 @@ namespace SexSlaveCraft
         private Pawn waitingMaster;
         private int waitingJobId = -1;
         private bool interactionStarted;
+        private bool followupEvaluated;
 
         private Pawn Master => job.GetTarget(TargetIndex.A).Pawn;
         private bool IsCurrentJob => !ended && pawn.jobs?.curDriver == this && pawn.CurJob == job;
@@ -25,6 +26,7 @@ namespace SexSlaveCraft
             Scribe_References.Look(ref waitingMaster, "sscAffectionWaitingMaster");
             Scribe_Values.Look(ref waitingJobId, "sscAffectionWaitingJobId", -1);
             Scribe_Values.Look(ref interactionStarted, "sscAffectionInteractionStarted", false);
+            Scribe_Values.Look(ref followupEvaluated, "sscAffectionFollowupEvaluated", false);
         }
 
         public override bool TryMakePreToilReservations(bool errorOnFailed)
@@ -113,12 +115,37 @@ namespace SexSlaveCraft
             };
             finish.initAction = delegate
             {
-                if (!IsCurrentJob) return;
+                if (!IsCurrentJob || followupEvaluated) return;
                 // 目标结束或替换了本次等待就不完成；统一入口继续认领冷却、记忆与猫经验。
-                if (HasOwnMasterWait() && PetSpecializationUtility.CompletePetAffection(pawn, Master))
-                    ReleaseOwnMasterWait();
-                else
+                if (!HasOwnMasterWait() || !PetSpecializationUtility.CompletePetAffection(pawn, Master))
+                {
                     EndJobWith(JobCondition.Incompletable);
+                    return;
+                }
+
+                // 奖励成功后先保存已判定事实；概率未中、失格或安装失败都不能为同次亲昵重抽。
+                followupEvaluated = true;
+                if (!IsCurrentJob || !HasOwnMasterWait()) return;
+                Pawn master = waitingMaster;
+                Job waiting = master.CurJob;
+                Job followup = PetAffectionFollowupUtility.TryPrepare(pawn, master, waiting);
+                if (followup == null)
+                {
+                    ReleaseOwnMasterWait();
+                    return;
+                }
+                // 资格查询可能经其他模组重入替换任务；候选尚未安装时只归还候选和自己的等待。
+                if (!IsCurrentJob || !HasOwnMasterWait())
+                {
+                    PetAffectionFollowupUtility.CancelPrepared(followup);
+                    ReleaseOwnMasterWait();
+                    return;
+                }
+
+                // 先移交等待归属，再替换宠物任务；旧亲昵的 finishAction 不能释放后续正在用的等待。
+                waitingMaster = null;
+                waitingJobId = -1;
+                PetAffectionFollowupUtility.TryStart(pawn, master, followup, waiting);
             };
             yield return finish;
         }

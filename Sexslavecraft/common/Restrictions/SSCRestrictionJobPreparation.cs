@@ -24,7 +24,7 @@ namespace SexSlaveCraft
         }
 
         /// <summary>仅接受已核对的准备类型，未知第三方任务和行为接收任务均由其自身生命周期处理。</summary>
-        private static bool IsPreparationJob(Job job) => job != null &&
+        private static bool IsPreparationJob(Job job) => job != null && !job.playerForced &&
             (job.def == JobDefOf.Goto || job.def == JobDefOf.Wait || job.def == JobDefOf.GotoMindControlled);
 
         /// <summary>登记原生准备回调新增的任务；回调之前存在的队列和当前工作不属于本请求。</summary>
@@ -43,6 +43,10 @@ namespace SexSlaveCraft
             target = pawn;
             if (!jobs.Contains(jobId)) jobs.Add(jobId);
         }
+
+        /// <summary>只读核对精确准备归属；同类型但编号不同的新命令不能借用本请求的等待或移动。</summary>
+        public bool Owns(Pawn pawn, Job job)
+            => target == pawn && IsPreparationJob(job) && jobs != null && jobs.Contains(job.loadID);
 
         /// <summary>沿用已发布存档键，加载空列表时恢复可写容器；不要求升级或重建已有任务。</summary>
         public void ExposeData()

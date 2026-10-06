@@ -39,6 +39,7 @@ $suites = @(
     @{ Name = 'PersonalityMemories'; Arguments = @() },
     @{ Name = 'PersonalitySpecializations'; Arguments = @() },
     @{ Name = 'PetSpecialization'; Arguments = @() },
+    @{ Name = 'PetAffectionFollowup'; Arguments = @($repoRoot) },
     @{ Name = 'PetCatAbility'; Arguments = @($repoRoot) },
     @{ Name = 'PetDogAbility'; Arguments = @($repoRoot) },
     @{ Name = 'CombatantSpecialization'; Arguments = @($repoRoot) },

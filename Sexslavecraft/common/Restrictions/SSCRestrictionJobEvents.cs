@@ -8,7 +8,7 @@ using Verse.AI;
 namespace SexSlaveCraft
 {
     /// <summary>事件仅标记通知来源，不增加任何许可；枚举值入存档后保持稳定。</summary>
-    internal enum SSCRestrictionEvent { None, TradeConsensual, TradeForced, Dog }
+    internal enum SSCRestrictionEvent { None, TradeConsensual, TradeForced, Dog, PetAffection }
 
     /// <summary>负责候选 Job 到实际运行驱动的事件交接，以及实际开始之后的一次性通知。</summary>
     internal sealed class SSCRestrictionJobEvents
@@ -87,6 +87,11 @@ namespace SexSlaveCraft
                 case SSCRestrictionEvent.Dog:
                     Messages.Message(Strings.Message_DogAnimalInteractionTriggered(actor.LabelShort, target.LabelShort),
                         new LookTargets(actor, target), MessageTypeDefOf.NeutralEvent);
+                    break;
+                case SSCRestrictionEvent.PetAffection:
+                    // 亲昵完成和概率命中都不是后续已发生；只由实际 Start 凭据触发这一条提示。
+                    Messages.Message("SSC_Message_PetAffectionFollowupStarted".Translate(actor.LabelShort, target.LabelShort),
+                        new LookTargets(actor, target), MessageTypeDefOf.PositiveEvent);
                     break;
             }
         }

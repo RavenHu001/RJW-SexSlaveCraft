@@ -174,6 +174,14 @@ namespace rjw
 
 namespace SexSlaveCraft
 {
+    // 本套件仍专注亲昵资格/经验/可见等待；后续事件单独链接真实入口在PetAffectionFollowup验证。
+    // 默认返回无后续，确保旧用例只观察已经验收的亲昵规则，而不模拟RJW配对算法。
+    public static class PetAffectionFollowupUtility
+    {
+        public static Job TryPrepare(Pawn pet, Pawn master, Job waiting) => null;
+        public static bool TryStart(Pawn pet, Pawn master, Job followup, Job waiting) => false;
+        public static void CancelPrepared(Job followup) { }
+    }
     public enum SSCRestrictionEvent { Dog }
     public static class SSCRestrictionJobGuard
     {

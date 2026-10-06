@@ -104,6 +104,7 @@
     <Compile Include="common\BusSpecializationUtility.cs" />
     <Compile Include="common\DogSpecializationUtility.cs" />
     <Compile Include="common\PetSpecializationUtility.cs" />
+    <Compile Include="common\PetAffectionFollowupUtility.cs" />
     <Compile Include="common\PetSpecializationRules.cs" />
     <Compile Include="common\PetCatAbilityUtility.cs" />
     <Compile Include="common\PetDogAbilityUtility.cs" />
@@ -166,6 +167,7 @@
     <Compile Include="Hediff\Hediff_GelatinizedLeg.cs" />
     <Compile Include="JobDriver\JobDriver_InsertPersonality.cs" />
     <Compile Include="JobDriver\JobDriver_PetAffection.cs" />
+    <Compile Include="JobDriver\JobDriver_PetAffectionFollowup.cs" />
     <Compile Include="JobDriver\JobDriver_PetCatComfort.cs" />
     <Compile Include="JobDriver\JobDriver_PetDogTame.cs" />
     <Compile Include="JobDriver\JobDriver_Train.cs" />

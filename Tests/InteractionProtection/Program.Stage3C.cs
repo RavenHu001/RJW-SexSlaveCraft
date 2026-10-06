@@ -201,7 +201,7 @@ internal static partial class Program
         });
         Run("3C事件通知只在Start后一次，保存恢复不重复", () =>
         {
-            foreach (SSCRestrictionEvent source in new[] { SSCRestrictionEvent.TradeConsensual, SSCRestrictionEvent.TradeForced, SSCRestrictionEvent.Dog })
+            foreach (SSCRestrictionEvent source in new[] { SSCRestrictionEvent.TradeConsensual, SSCRestrictionEvent.TradeForced, SSCRestrictionEvent.Dog, SSCRestrictionEvent.PetAffection })
             {
                 Messages.Count = 0; var p = People(); var d = Driver(p.a, p.b, source == SSCRestrictionEvent.TradeForced);
                 d.job.CachedDriver = d;
