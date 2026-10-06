@@ -54,6 +54,7 @@ namespace Verse.AI
 
     public class Job
     {
+        public bool playerForced;
         public JobDef def;
         public int expiryInterval;
         public Bill_Production bill;

@@ -17,6 +17,7 @@ namespace Verse
     public partial class Pawn
     {
         public bool Downed, Drafted, Spawned = true;
+        public bool InMentalState;
         public Verse.AI.MentalState MentalState;
         public RaceProperties RaceProps = new RaceProperties();
         public Faction Faction = Faction.OfPlayer;
@@ -26,6 +27,9 @@ namespace Verse
         public Pawn_MindState mindState;
         // 仅补齐猫技能选择资格的编译宿主；迁移套件不验证真实意识或寻路。
         public bool CanReach(Thing target, Verse.AI.PathEndMode mode, Danger danger) => true;
+        // 普通亲昵新资格仅补编译边界，迁移套件不模拟身体或工作调度。
+        public bool IsFighting() => false;
+        public bool Awake() => true;
     }
     // 技能效果分支只需编译边界，本套件不据此验证视线、精神恢复或健康组件生成。
     public class RaceProperties { public bool Humanlike = true; public bool Animal; public AnimalType animalType; }
@@ -39,7 +43,7 @@ namespace Verse
     public class HediffCompProperties { }
     public class HediffCompProperties_Disappears : HediffCompProperties { }
     public class HediffComp_Disappears { public int ticksToDisappear; }
-    public enum Danger { Deadly }
+    public enum Danger { Deadly, Some }
     public static class PetHostExtensions
     {
         public static bool DestroyedOrNull(this Thing thing) => thing == null || thing.Destroyed;
@@ -96,11 +100,21 @@ namespace RimWorld
 namespace Verse.AI
 {
     public class MentalState { public void RecoverFromState() { } }
-    public enum PathEndMode { OnCell }
+    public enum PathEndMode { OnCell, Touch }
+    public static class ReachabilityImmediate
+    {
+        public static bool CanReachImmediate(Pawn actor, Thing target, PathEndMode mode) => true;
+    }
+    public class QueuedJob { public Job job; }
+    public class JobQueue : System.Collections.Generic.List<QueuedJob> { }
     // 这里的任务创建和接收仅用于编译亲昵分支；配方结算使用独立时序替身。
     public enum JobTag { Misc }
     public static class JobMaker { public static Job MakeJob(JobDef def, Pawn target) => new Job { def = def }; }
-    public partial class Pawn_JobTracker { public bool TryTakeOrderedJob(Job job, JobTag tag) => true; }
+    public partial class Pawn_JobTracker
+    {
+        public JobQueue jobQueue = new();
+        public bool TryTakeOrderedJob(Job job, JobTag tag) => true;
+    }
 }
 
 namespace SexSlaveCraft

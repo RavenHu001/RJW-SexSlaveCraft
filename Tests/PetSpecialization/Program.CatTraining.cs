@@ -115,15 +115,16 @@ internal static partial class Program
         Equal(0, p.pet.Training.specializationProgress);
         var driver = new JobDriver_PetAffection { pawn = p.pet, job = JobMaker.MakeJob(SSCDefOf.SSC_Job_PetAffection, p.master) };
         var toils = driver.BuildToils().ToArray();
-        Assert(toils.Length == 2 && toils[0].duration == 45 && !driver.FailureConditions.Any(f => f()), "cat driver invalid");
-        toils[0].tickAction(); Equal(0, p.pet.Training.specializationProgress);
+        Assert(toils.Length == 3 && toils[1].duration == 120 && !driver.FailureConditions.Any(f => f()), "cat driver invalid");
+        BeginAffection(driver, toils, p.master);
+        toils[1].tickAction(); Equal(0, p.pet.Training.specializationProgress);
         Assert(p.master.needs.mood.thoughts.memories.Requests.Count == 0, "waiting generated memory");
-        toils[1].initAction();
+        toils[2].initAction();
         Equal(.01f, p.pet.Training.specializationProgress);
         Equal(.01f, p.pet.health.hediffSet.GetFirstHediffOfDef(PetSpecializationUtility.GetBaseHediffDef(Pets[0])).Severity);
         Assert(p.master.needs.mood.thoughts.memories.Requests.Count == 1, "completion missing memory");
         Assert(p.pet.Training.lastPetAffectionTick == Find.TickManager.TicksGame, "completion missing cooldown");
-        toils[1].initAction(); Equal(.01f, p.pet.Training.specializationProgress);
+        toils[2].initAction(); Equal(.01f, p.pet.Training.specializationProgress);
         Assert(p.master.needs.mood.thoughts.memories.Requests.Count == 1, "repeat driver callback generated memory");
     }
 
@@ -216,6 +217,7 @@ internal static partial class Program
             var p = AffectionPair(Pets[0]);
             var driver = new JobDriver_PetAffection { pawn = p.pet, job = JobMaker.MakeJob(SSCDefOf.SSC_Job_PetAffection, p.master) };
             var toils = driver.BuildToils().ToArray();
+            BeginAffection(driver, toils, p.master);
             if (scenario == 0) p.pet.BoundMaster = null;
             if (scenario == 1) { p.pet.BoundMaster = null; p.pet.AssignedTrainer = p.master; }
             if (scenario == 2) p.pet.BoundMaster = Pawn();
@@ -233,7 +235,7 @@ internal static partial class Program
             if (scenario == 14) p.master.Dead = true;
             var snapshot = new Snapshot(p.pet);
             Assert(driver.FailureConditions.Any(f => f()), "invalid cat driver accepted " + scenario);
-            toils[1].initAction(); snapshot.Unchanged(p.pet);
+            toils[2].initAction(); snapshot.Unchanged(p.pet);
             Assert(p.pet.Training.lastPetAffectionTick == -999999 && p.master.needs.mood.thoughts.memories.Requests.Count == 0,
                 "failed cat affection produced effects " + scenario);
         }
@@ -248,10 +250,11 @@ internal static partial class Program
             var p = AffectionPair(start, .63f);
             var driver = new JobDriver_PetAffection { pawn = p.pet, job = JobMaker.MakeJob(SSCDefOf.SSC_Job_PetAffection, p.master) };
             var toils = driver.BuildToils().ToArray();
+            BeginAffection(driver, toils, p.master);
             p.pet.Training.SetSpecialization(finish); p.pet.Training.specializationProgress = .27f;
             var histories = p.pet.Training.ExportSpecializationProgress();
             Assert(!driver.FailureConditions.Any(f => f()), "pet direction switch invalidated common affection");
-            toils[1].initAction(); Equal(finish == Pets[0] ? .28f : .27f, p.pet.Training.specializationProgress);
+            toils[2].initAction(); Equal(finish == Pets[0] ? .28f : .27f, p.pet.Training.specializationProgress);
             var after = p.pet.Training.ExportSpecializationProgress();
             foreach (var entry in histories.Where(e => e.Key != finish.ToString())) Equal(entry.Value, after[entry.Key]);
             Assert(p.pet.Training.specializationType == finish && p.master.needs.mood.thoughts.memories.Requests.Count == 1,

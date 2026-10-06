@@ -19,7 +19,7 @@
   <SSC_Message_PetSpecializationUnlocked>{0} 的 {1} 专精开始稳定成型。</SSC_Message_PetSpecializationUnlocked>
 
   <SSC_PetAffectionGizmoLabel>亲昵主人</SSC_PetAffectionGizmoLabel>
-  <SSC_PetAffectionGizmoDesc>向主人 {0} 做出亲昵动作，使主人获得短暂心情加成。</SSC_PetAffectionGizmoDesc>
+  <SSC_PetAffectionGizmoDesc>靠近主人 {0}，贴近互动两秒，使主人获得短暂心情加成。完成后冷却一天。</SSC_PetAffectionGizmoDesc>
   <SSC_PetAffectionNoMaster>没有可亲昵的主人</SSC_PetAffectionNoMaster>
   <SSC_PetAffectionNotPet>只有宠物专精角色可以亲昵主人</SSC_PetAffectionNotPet>
   <SSC_PetAffectionCooldown>亲昵动作冷却中：{0}</SSC_PetAffectionCooldown>

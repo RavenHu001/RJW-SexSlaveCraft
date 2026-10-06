@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
+  <SSC_PetAffectionGizmoDesc>Подойти к хозяину {0} и проявлять нежность рядом с ним в течение двух секунд, ненадолго улучшая его настроение. После завершения взаимодействия начинается суточная перезарядка.</SSC_PetAffectionGizmoDesc>
   <SSC_ITab_SpecializationPetDisabledConflictingFinal>Другая финальная специализация питомца не позволяет выбрать это направление</SSC_ITab_SpecializationPetDisabledConflictingFinal>
   <SSC_PetSpecialization_SelectionRejected>Нельзя выбрать специализацию питомца: {0}</SSC_PetSpecialization_SelectionRejected>
 </LanguageData>

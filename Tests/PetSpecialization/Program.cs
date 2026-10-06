@@ -47,6 +47,7 @@ internal static partial class Program
         RunEffectAndBehaviorCases();
         RunCatTrainingCases();
         RunDogWorkEntryCases();
+        RunAffectionVisibleCases();
         Console.WriteLine($"结果：{passed}/{passed + failed} 项通过。");
         return failed == 0 ? 0 : 1;
     }
@@ -70,6 +71,9 @@ internal static partial class Program
         }
         SSCDefOf.SSC_BasicTraining.IsFinished = true;
         Scribe.mode = LoadSaveMode.Inactive;
+        Scribe.Values.Clear();
+        Verse.AI.Toils_General.NativeWaitWithInit = null;
+        Verse.AI.Toils_General.NativeWaitWithTick = null;
         Find.TickManager.TicksGame = 100000;
         Rand.Chances.Clear(); Rand.ChanceResult = false;
         SSCRestrictionJobGuard.PrepareCalls = 0;

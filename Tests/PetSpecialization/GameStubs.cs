@@ -21,6 +21,7 @@ namespace Verse
     public class ResearchProjectDef : Def { public bool IsFinished = true; }
     public class ThoughtDef : Def { }
     public class JobDef : Def { }
+    public class EffecterDef : Def { }
     public static class DefDatabase<T> where T : Def
     {
         public static readonly Dictionary<string, T> Definitions = new Dictionary<string, T>();
@@ -41,6 +42,8 @@ namespace Verse
     }
     public class PawnHealth
     {
+        public PawnCapacityTracker capacities = new();
+        public bool CanAwake { get => capacities.CanBeAwake; set => capacities.CanBeAwake = value; }
         public readonly HediffSet hediffSet = new HediffSet();
         public int AddCalls, RemoveCalls;
         public Hediff AddHediff(HediffDef def)
@@ -52,6 +55,7 @@ namespace Verse
         }
         public void RemoveHediff(Hediff hediff) { RemoveCalls++; hediffSet.hediffs.Remove(hediff); }
     }
+    public class PawnCapacityTracker { public bool CanBeAwake = true; }
     public partial class Pawn : Thing
     {
         public CompSexSlaveTraining Training;
@@ -64,7 +68,11 @@ namespace Verse
         public Pawn BoundMaster, AssignedTrainer;
         public PawnNeeds needs = new PawnNeeds();
         public Verse.AI.PawnJobTracker jobs = new Verse.AI.PawnJobTracker();
-        public JobDef CurJobDef;
+        public JobDef CurJobDef
+        {
+            get => CurJob?.def;
+            set => jobs.curJob = value == null ? null : new Verse.AI.Job { def = value };
+        }
         public T TryGetComp<T>() where T : class => Training as T;
     }
     public struct IntVec3
@@ -94,8 +102,26 @@ namespace Verse
     public static class Find { public static readonly TickManager TickManager = new TickManager(); }
     public class TickManager { public int TicksGame; }
     public static class GenTicks { public const int TickRareInterval = 250; }
-    public enum LoadSaveMode { Inactive, LoadingVars, PostLoadInit }
-    public static class Scribe { public static LoadSaveMode mode; }
+    public enum LoadSaveMode { Inactive, Saving, LoadingVars, PostLoadInit }
+    // 仅记录字段契约及对象引用；不模拟深层存档或真实跨图引用解析。
+    public static class Scribe
+    {
+        public static LoadSaveMode mode;
+        public static readonly Dictionary<string, object> Values = new();
+    }
+    public static class Scribe_Values
+    {
+        public static void Look<T>(ref T value, string key, T defaultValue = default)
+        {
+            if (Scribe.mode == LoadSaveMode.Saving) Scribe.Values[key] = value;
+            if (Scribe.mode == LoadSaveMode.LoadingVars)
+                value = Scribe.Values.TryGetValue(key, out object saved) ? (T)saved : defaultValue;
+        }
+    }
+    public static class Scribe_References
+    {
+        public static void Look<T>(ref T value, string key) where T : class => Scribe_Values.Look(ref value, key);
+    }
     public static class Messages
     {
         public static int Calls;

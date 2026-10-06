@@ -137,7 +137,7 @@ namespace Verse
         public float range, warmupTime = 2;
     }
     public partial class Verb { public VerbProperties verbProps = new(); }
-    public enum Danger { Deadly }
+    public enum Danger { Some, Deadly }
     public class HediffSet
     {
         public readonly List<Hediff> hediffs = new();

@@ -120,7 +120,7 @@ namespace RimWorld
 
 namespace Verse.AI
 {
-    public enum PathEndMode { OnCell }
+    public enum PathEndMode { OnCell, Touch }
     public enum JobCondition { Succeeded, Incompletable, InterruptForced }
     public enum ToilCompleteMode { Instant, PatherArrival, FinishedBusy }
     public partial class Job

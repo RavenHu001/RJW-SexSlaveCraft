@@ -235,8 +235,9 @@ internal static partial class Program
             if (scenario == 1 || scenario == 4) { Final(p.pet, Pets[1]); p.pet.Training.SetSpecialization(SexSlaveSpecializationType.Cow); }
             var driver = new JobDriver_PetAffection { pawn = p.pet, job = JobMaker.MakeJob(SSCDefOf.SSC_Job_PetAffection, p.master) };
             var toils = driver.BuildToils().ToArray();
-            Assert(toils.Length == 2 && toils[0].duration == 45 && !driver.FailureConditions.Any(f => f()), "initial job invalid");
-            toils[0].tickAction(); Assert(p.pet.rotationTracker.LastTarget == p.master, "facing lost");
+            Assert(toils.Length == 3 && toils[1].duration == 120 && !driver.FailureConditions.Any(f => f()), "initial job invalid");
+            BeginAffection(driver, toils, p.master);
+            toils[1].tickAction(); Assert(p.master.rotationTracker.LastTarget == p.pet, "master facing lost");
             if (scenario == 0) p.pet.Training.SetSpecialization(SexSlaveSpecializationType.Cow);
             if (scenario == 1) p.pet.health.RemoveHediff(p.pet.health.hediffSet.GetFirstHediffOfDef(PetSpecializationUtility.GetFinalHediffDef(Pets[1])));
             if (scenario == 2) p.pet.BoundMaster = Pawn();
@@ -250,7 +251,7 @@ internal static partial class Program
             }
             bool expectedValid = scenario == 4;
             Assert(driver.FailureConditions.Any(f => f()) != expectedValid, "running job did not recheck");
-            toils[1].initAction();
+            toils[2].initAction();
             Assert(p.master.needs.mood.thoughts.memories.Requests.Count == (expectedValid ? 1 : 0), "invalid job produced memory");
             Assert(p.pet.Training.lastPetAffectionTick == (expectedValid ? Find.TickManager.TicksGame : -999999), "invalid job consumed cooldown");
         }

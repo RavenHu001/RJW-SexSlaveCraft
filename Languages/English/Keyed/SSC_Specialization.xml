@@ -19,7 +19,7 @@
   <SSC_Message_PetSpecializationUnlocked>{0}'s {1} specialization has started to stabilize.</SSC_Message_PetSpecializationUnlocked>
 
   <SSC_PetAffectionGizmoLabel>Show affection to master</SSC_PetAffectionGizmoLabel>
-  <SSC_PetAffectionGizmoDesc>Show affection to master {0}, giving the master a short mood boost.</SSC_PetAffectionGizmoDesc>
+  <SSC_PetAffectionGizmoDesc>Approach master {0} and spend two seconds showing affection up close, giving the master a short mood boost. Completing the interaction starts a one-day cooldown.</SSC_PetAffectionGizmoDesc>
   <SSC_PetAffectionNoMaster>No valid master to receive affection</SSC_PetAffectionNoMaster>
   <SSC_PetAffectionNotPet>Only pet-specialized pawns can show pet affection</SSC_PetAffectionNotPet>
   <SSC_PetAffectionCooldown>Pet affection is on cooldown: {0}</SSC_PetAffectionCooldown>

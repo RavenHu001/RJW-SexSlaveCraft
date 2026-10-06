@@ -15,7 +15,7 @@
   <SSC_ITab_SelectRabbitReproductionClone>分身模式：生產時優先生成兔分身</SSC_ITab_SelectRabbitReproductionClone>
   <SSC_Message_PetSpecializationUnlocked>{0} 的 {1} 專精開始穩定成型。</SSC_Message_PetSpecializationUnlocked>
   <SSC_PetAffectionGizmoLabel>親暱主人</SSC_PetAffectionGizmoLabel>
-  <SSC_PetAffectionGizmoDesc>向主人 {0} 做出親暱動作，使主人獲得短暫心情加成。</SSC_PetAffectionGizmoDesc>
+  <SSC_PetAffectionGizmoDesc>靠近主人 {0}，貼近互動兩秒，使主人獲得短暫心情加成。完成後冷卻一天。</SSC_PetAffectionGizmoDesc>
   <SSC_PetAffectionNoMaster>沒有可親暱的主人</SSC_PetAffectionNoMaster>
   <SSC_PetAffectionNotPet>只有寵物專精角色可以親暱主人</SSC_PetAffectionNotPet>
   <SSC_PetAffectionCooldown>親暱動作冷卻中：{0}</SSC_PetAffectionCooldown>

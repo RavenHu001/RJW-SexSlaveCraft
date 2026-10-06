@@ -326,13 +326,18 @@ namespace SexSlaveCraft
                 !HasPetAffectionQualification(pet)) return false;
 
             Pawn master = SSCBondUtility.GetBoundMaster(pet);
-            if (!CanDoPetAffectionNow(pet, master)) return false;
+            // 自动只发现附近的主人；真正接触检查留给到达和结算阶段。
+            // 双方都空闲才发起，不能以主人的强制等待抢走工作或玩家命令。
+            if (!CanApproachPetAffectionNow(pet, master)) return false;
             if (!IsPetAffectionCooldownReady(comp)) return false;
-            if (!CanStartPetAffectionJobWithoutDisruptingWork(pet)) return false;
+            if (!CanStartPetAffectionJobWithoutDisruptingWork(pet) ||
+                !CanStartPetAffectionJobWithoutDisruptingWork(master)) return false;
+            if (!pet.CanReach(master, PathEndMode.Touch, Danger.Some)) return false;
             if (SSCDefOf.SSC_Job_PetAffection == null) return false;
 
             Job job = JobMaker.MakeJob(SSCDefOf.SSC_Job_PetAffection, master);
-            job.expiryInterval = GenTicks.TickRareInterval;
+            // 近距离慢速行走也要留出完成两秒互动的时间；不追逐已离开发现范围的主人。
+            job.expiryInterval = 600;
             return pet.jobs != null && pet.jobs.TryTakeOrderedJob(job, JobTag.Misc);
         }
 
@@ -364,9 +369,16 @@ namespace SexSlaveCraft
 
         public static bool CanDoPetAffectionNow(Pawn pet, Pawn master)
         {
-            // 调度、执行中 FailOn 和完成结算共用同一检查，绑定或成果中途变化即失效。
+            // 奖励只在实际接触时结算，不能隔墙或站在发现范围的边缘直接完成。
+            return CanApproachPetAffectionNow(pet, master) &&
+                ReachabilityImmediate.CanReachImmediate(pet, master, PathEndMode.Touch);
+        }
+
+        /// <summary>发现与接近共用身体、绑定和附近范围资格；接触另在互动与结算时检查。</summary>
+        public static bool CanApproachPetAffectionNow(Pawn pet, Pawn master)
+        {
             if (!HasPetAffectionQualification(pet) || master == null || master.DestroyedOrNull() || master.Dead ||
-                SSCBondUtility.GetBoundMaster(pet) != master)
+                pet == master || SSCBondUtility.GetBoundMaster(pet) != master)
             {
                 return false;
             }
@@ -376,7 +388,11 @@ namespace SexSlaveCraft
                 return false;
             }
 
-            if (pet.Dead || pet.Downed || master.Downed || pet.Drafted || master.Drafted)
+            // 普通陪伴需要双方清醒且可行动；睡眠、精神状态或战斗不被自动任务打断。
+            if (pet.Dead || pet.Downed || master.Downed || pet.Drafted || master.Drafted ||
+                pet.InMentalState || master.InMentalState || pet.IsFighting() || master.IsFighting() ||
+                pet.health?.capacities?.CanBeAwake != true || master.health?.capacities?.CanBeAwake != true ||
+                !pet.Awake() || !master.Awake())
             {
                 return false;
             }
@@ -390,23 +406,32 @@ namespace SexSlaveCraft
                    Find.TickManager.TicksGame - comp.lastPetAffectionTick >= CompSexSlaveTraining.PetAffectionCooldownTicks;
         }
 
-        private static bool CanStartPetAffectionJobWithoutDisruptingWork(Pawn pet)
+        /// <summary>自动陪伴只接替空闲漫步／等待；已有准备等待、命令或队列都不抢占。</summary>
+        public static bool CanStartPetAffectionJobWithoutDisruptingWork(Pawn pet)
         {
             if (pet?.jobs == null) return false;
+
+            if (pet.CurJob?.playerForced == true) return false;
+            foreach (QueuedJob queued in pet.jobs.jobQueue)
+                if (queued.job != null) return false;
 
             JobDef curJobDef = pet.CurJobDef;
             if (curJobDef == null) return true;
             if (curJobDef == SSCDefOf.SSC_Job_PetAffection) return false;
 
-            // EN: This affection job is only allowed to replace idle waiting jobs.
-            // CN: 亲昵 job 只允许替换空闲等待类 job，避免打断搬运、建造、战斗等正常工作。
-            if (curJobDef == JobDefOf.Wait || curJobDef == JobDefOf.Wait_Wander)
+            // Wait_MaintainPosture 常用于其他互动的准备等待，不再按普通空闲处理。
+            if (curJobDef == JobDefOf.Wait)
+            {
+                // ForceWait 也使用 Wait，但有明确到期时间；那是其他交互持有的等待。
+                return pet.CurJob.expiryInterval <= 0;
+            }
+            if (curJobDef == JobDefOf.Wait_Wander)
             {
                 return true;
             }
 
             string defName = curJobDef.defName;
-            return defName == "Wait_MaintainPosture" || defName == "GotoWander";
+            return defName == "GotoWander";
         }
 
         public static string GetSpecializationLabel(SexSlaveSpecializationType type)
