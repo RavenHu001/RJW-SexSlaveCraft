@@ -14,8 +14,8 @@ internal static partial class Program
     {
         Run("猫普通抽取先存快照再清源当前方向、历史及孤儿技能", CatOrdinaryExtraction);
         Run("猫终极抽取先保存冷却并移除源全部重复猫状态", CatFinalExtraction);
-        Run("猫成果抽取保留非猫当前方向及所有非猫历史", CatExtractionKeepsOtherProgress);
-        Run("狗兔抽取保留原有普通或终极状态及历史", CatExtractionLeavesOtherPetsAlone);
+        Run("猫狗成果抽取保留兔及组外当前方向和历史", CatExtractionKeepsOtherProgress);
+        Run("兔抽取保留原有普通或终极状态及历史", CatExtractionLeavesOtherPetsAlone);
         Run("复用人格存储时猫冷却不从上次快照残留", CatStoreReuse);
         Run("人格 CopyFrom 独立复制猫绝对冷却并允许时间流逝", CatCooldownCopy);
         Run("猫终极人格经真实加工保留绝对冷却且仅扣一次账单", CatCooldownRecipe);
@@ -74,9 +74,9 @@ internal static partial class Program
         AssertCatDetached(source, comp);
         Assert(comp.specializationType == SexSlaveSpecializationType.None && comp.specializationProgress == 0f,
             "当前猫方向未清空");
-        Assert(comp.ExportSpecializationProgress().Count == 3 && comp.ExportSpecializationProgress()["Cow"] == .22f
-            && comp.ExportSpecializationProgress()["PetDog"] == .31f && comp.ExportSpecializationProgress()["PetRabbit"] == .2f,
-            "猫清理修改了其他方向历史");
+        Assert(comp.ExportSpecializationProgress().Count == 2 && comp.ExportSpecializationProgress()["Cow"] == .22f
+            && comp.ExportSpecializationProgress()["PetRabbit"] == .2f,
+            "猫狗抽取清理修改了其他方向历史");
         gel.specializationProgressByType["Cow"] = .9f;
         Assert(comp.ExportSpecializationProgress()["Cow"] == .22f, "源历史与凝胶共享字典");
     }
@@ -100,7 +100,7 @@ internal static partial class Program
     private static void CatExtractionKeepsOtherProgress()
     {
         foreach (var current in new[] { SexSlaveSpecializationType.None, SexSlaveSpecializationType.Cow,
-            SexSlaveSpecializationType.Bus, SexSlaveSpecializationType.PetDog, SexSlaveSpecializationType.PetRabbit })
+            SexSlaveSpecializationType.Bus, SexSlaveSpecializationType.PetRabbit })
         {
             Find.TickManager.TicksGame = 2000;
             // 先设置当前方向再放入独立猫终极事实，避免用真实切换入口
@@ -111,7 +111,7 @@ internal static partial class Program
             source.abilities.GainAbility(SSCDefOf.SSC_PetCatComfort);
             source.abilities.GetAbility(SSCDefOf.SSC_PetCatComfort).StartCooldown(600);
             var expected = comp.ExportSpecializationProgress(); var gel = Excrete(source);
-            AssertCatDetached(source, comp); expected.Remove("PetCat");
+            AssertCatDetached(source, comp); expected.Remove("PetCat"); expected.Remove("PetDog");
             Assert(comp.specializationType == current && comp.specializationProgress == (current == SexSlaveSpecializationType.None ? 0f : .37f)
                 && expected.OrderBy(e => e.Key).SequenceEqual(comp.ExportSpecializationProgress().OrderBy(e => e.Key)),
                 "猫清理改变了其他当前方向、当前值或历史");
@@ -122,7 +122,7 @@ internal static partial class Program
 
     private static void CatExtractionLeavesOtherPetsAlone()
     {
-        foreach (var type in new[] { SexSlaveSpecializationType.PetDog, SexSlaveSpecializationType.PetRabbit })
+        foreach (var type in new[] { SexSlaveSpecializationType.PetRabbit })
         foreach (bool final in new[] { false, true })
         {
             var source = Body("OtherPet"); var comp = Training(source); comp.pawnIdentity = PawnIdentity.Slave;
@@ -134,7 +134,7 @@ internal static partial class Program
             Assert(source.health.hediffSet.HasHediff(final ? PetFinal(type) : PetBase(type))
                 && comp.specializationType == type && comp.specializationProgress == (final ? 1f : .4f)
                 && expected.OrderBy(e => e.Key).SequenceEqual(comp.ExportSpecializationProgress().OrderBy(e => e.Key)),
-                "猫抽取接入改变了狗兔既有源身体行为");
+                "猫狗抽取接入改变了兔既有源身体行为");
             Assert(gel.petCatComfortCooldownEndTick == 0, "非猫人格携带了猫冷却");
         }
     }
@@ -176,9 +176,9 @@ internal static partial class Program
     }
 
     /// <summary>运行真实守卫、原版消耗顺序模型与真实配方工作者，不以手动 CopyFrom 代替加工。</summary>
-    private static CompPersonalityStore ProcessCatGel(CompPersonalityStore gel)
+    private static CompPersonalityStore ProcessPetGel(CompPersonalityStore gel)
     {
-        var recipe = new RecipeDef_PSTag { defName = "CatMigrationNeutralEdit", hediffToAdd = new HediffDef { defName = "NeutralEdit" } };
+        var recipe = new RecipeDef_PSTag { defName = "PetMigrationNeutralEdit", hediffToAdd = new HediffDef { defName = "NeutralEdit" } };
         var crafter = RecipeCrafter(recipe, gel.parent); var bill = crafter.CurJob.bill;
         GuardedRecipeCompletion(crafter).initAction();
         var output = GenPlace.LastPlaced?.TryGetComp<CompPersonalityStore>();
@@ -190,7 +190,7 @@ internal static partial class Program
     {
         Find.TickManager.TicksGame = 1000;
         var source = FinalCat("RecipeCat", 1000, out _); var gel = Excrete(source);
-        Find.TickManager.TicksGame = 1400; var processed = ProcessCatGel(gel);
+        Find.TickManager.TicksGame = 1400; var processed = ProcessPetGel(gel);
         Assert(processed.petCatComfortCooldownEndTick == 2000 && processed.HasTag(PetFinal(SexSlaveSpecializationType.PetCat))
             && processed.specializationProgressByType["PetCat"] == 1f, "加工遗漏猫成果或重启冷却");
     }
@@ -201,7 +201,7 @@ internal static partial class Program
         var source = FinalCat("FullChainCat", 1000, out _);
         var sourceAbility = source.abilities.GetAbility(SSCDefOf.SSC_PetCatComfort);
         Find.TickManager.TicksGame = 1200; var gel = Excrete(source);
-        Find.TickManager.TicksGame = 1400; var processed = ProcessCatGel(gel);
+        Find.TickManager.TicksGame = 1400; var processed = ProcessPetGel(gel);
         var host = Body("OldHost"); var hostTraining = Training(host); hostTraining.pawnIdentity = PawnIdentity.Slave;
         hostTraining.SetSpecialization(SexSlaveSpecializationType.PetDog); hostTraining.specializationProgress = .9f;
         host.health.AddHediff(PetFinal(SexSlaveSpecializationType.PetDog)).Severity = 1f;
@@ -274,7 +274,7 @@ internal static partial class Program
         var source = FinalCat("EncouragedCat", 500, out _);
         var encouragement = new HediffDef { defName = "SSC_Hediff_PetCatEncouragement", hediffClass = typeof(HediffWithComps) };
         source.health.AddHediff(encouragement).Severity = 1f;
-        var gel = Excrete(source); var processed = ProcessCatGel(gel);
+        var gel = Excrete(source); var processed = ProcessPetGel(gel);
         Assert(!gel.HasTag(encouragement) && !processed.HasTag(encouragement), "临时激励被采集或加工为人格标签");
         var host = Body("EncouragementHost"); Training(host);
         Assert(ExcretionUtility.InheritEverything(host, processed) && !host.health.hediffSet.HasHediff(encouragement),

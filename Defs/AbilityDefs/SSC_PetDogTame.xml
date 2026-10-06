@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <!-- 首版只直接驯服无阵营且符合原版可驯服条件的清醒动物，不接入己方训练分支。
+       地图选取与实际同格施放分别由自定义 Verb 检查；原版两秒预热完成后才结算一天冷却。
+       读条、训导社交符号与说话波纹仅呈现准备过程，不发普通工作经验或触发工作后事件。 -->
+  <AbilityDef>
+    <defName>SSC_PetDogTame</defName>
+    <label>定向驯导</label>
+    <description>终极宠物狗可选择同地图上存活、有意识、没有精神状态、无阵营且符合原版可驯服条件的动物，走到其所在格后进行 2 秒训导，期间显示读条、训导气泡和连续说话波纹，目标暂停行动。普通睡眠可被唤醒，意识合格的倒地动物也可选择。完成后直接将目标驯服为玩家阵营动物，无需食物或额外材料，不再进行一次成功率判定。完成后冷却 1 游戏内天；取消或目标失效不消耗新冷却。征召与未征召时均可使用。当前不推进己方动物训练，也不产生额外特化经验或工作后事件。</description>
+    <abilityClass>SexSlaveCraft.Ability_PetDogTame</abilityClass>
+    <iconPath>UI/Icons/Trainables/Tameness</iconPath>
+    <jobDef>SSC_Job_PetDogTame</jobDef>
+    <targetRequired>true</targetRequired>
+    <canUseAoeToGetTargets>false</canUseAoeToGetTargets>
+    <hostile>false</hostile>
+    <showPsycastEffects>false</showPsycastEffects>
+    <stunTargetWhileCasting>true</stunTargetWhileCasting>
+    <showCastingProgressBar>true</showCastingProgressBar>
+    <warmupMoteSocialSymbol>Things/Mote/SpeechSymbols/TrainAttempt</warmupMoteSocialSymbol>
+    <warmupEffecter>SSC_PetDogTameWarmup</warmupEffecter>
+    <casterMustBeCapableOfViolence>false</casterMustBeCapableOfViolence>
+    <showWhenDrafted>true</showWhenDrafted>
+    <displayGizmoWhileUndrafted>true</displayGizmoWhileUndrafted>
+    <disableGizmoWhileUndrafted>false</disableGizmoWhileUndrafted>
+    <cooldownTicksRange>60000</cooldownTicksRange>
+    <verbProperties>
+      <verbClass>SexSlaveCraft.Verb_PetDogTame</verbClass>
+      <warmupTime>2</warmupTime>
+      <range>0</range>
+      <requireLineOfSight>false</requireLineOfSight>
+      <targetParams>
+        <canTargetSelf>false</canTargetSelf>
+        <canTargetPawns>true</canTargetPawns>
+        <canTargetHumans>false</canTargetHumans>
+        <canTargetAnimals>true</canTargetAnimals>
+        <canTargetMechs>false</canTargetMechs>
+        <neverTargetIncapacitated>false</neverTargetIncapacitated>
+        <canTargetBuildings>false</canTargetBuildings>
+        <canTargetLocations>false</canTargetLocations>
+      </targetParams>
+    </verbProperties>
+    <comps>
+      <li Class="SexSlaveCraft.CompProperties_AbilityPetDogTame" />
+    </comps>
+  </AbilityDef>
+</Defs>

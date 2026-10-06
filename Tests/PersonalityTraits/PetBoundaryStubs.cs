@@ -24,7 +24,7 @@ namespace Verse
         public bool CanReach(Thing target, Verse.AI.PathEndMode mode, Danger danger) => true;
     }
     // 技能效果分支只需编译边界，本套件不据此验证视线、精神恢复或健康组件生成。
-    public class RaceProperties { public bool Humanlike = true; }
+    public class RaceProperties { public bool Humanlike = true; public bool Animal; }
     public static class GenSight { public static bool LineOfSight(object a, object b, Map map) => true; }
     public class HediffWithComps : Hediff { }
     public class HediffCompProperties { }
@@ -44,8 +44,14 @@ namespace Verse
 namespace RimWorld
 {
     public class Faction { public static readonly Faction OfPlayer = new Faction(); }
+    // 狗迁移用例不施放技能；驯服资格及成功链仅提供编译边界，不重写原版算法。
+    public static class TameUtility { public static bool CanTame(Pawn target) => true; }
+    public static class InteractionWorker_RecruitAttempt
+    {
+        public static void DoRecruit(Pawn recruiter, Pawn recruitee, bool useAudiovisualEffects = true) { }
+    }
     // 实际游戏的冷却 getter / StartCooldown / ResetCooldown 已用本机 IL 核验。
-    // 这里只模型化绝对结束 tick，迁移和剩余时间计算仍执行真实猫生产工具。
+    // 这里只模型化绝对结束 tick，迁移和剩余时间计算仍执行真实猫、狗生产工具。
     public class Ability
     {
         private int cooldownEndTick;

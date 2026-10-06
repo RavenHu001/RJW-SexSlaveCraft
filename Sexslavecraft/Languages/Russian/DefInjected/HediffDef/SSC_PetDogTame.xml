@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <!-- Final dog passive bonuses remain; Directed Taming is newly granted. -->
+  <SSC_Hediff_PetDog_Final.label>финальная специализация домашней собаки</SSC_Hediff_PetDog_Final.label>
+  <SSC_Hediff_PetDog_Final.description>Финальная специализация собаки, сохранённая в геле личности. Сохраняет бонусы к обращению с животными и дрессировке, а также даёт «Направленное приручение»: подойти в клетку подходящего дикого животного на той же карте и сразу приручить его после короткого наставления.</SSC_Hediff_PetDog_Final.description>
+</LanguageData>

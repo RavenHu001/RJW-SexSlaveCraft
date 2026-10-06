@@ -17,7 +17,7 @@
   <SSC_Hediff_PetDog.stages.3.label>pack leader</SSC_Hediff_PetDog.stages.3.label>
 
   <SSC_Hediff_PetDog_Final.label>final pet dog specialization</SSC_Hediff_PetDog_Final.label>
-  <SSC_Hediff_PetDog_Final.description>A completed pet-dog specialization stored through personality gel. The pawn is strongly adapted for animal handling and animal-training interactions.</SSC_Hediff_PetDog_Final.description>
+  <SSC_Hediff_PetDog_Final.description>A final Pet Dog specialization stored through personality gel. Retains animal handling and training bonuses and grants Directed Taming: approach an eligible wild animal on the same map and directly tame it after brief guidance in its cell.</SSC_Hediff_PetDog_Final.description>
 
   <SSC_Hediff_PetRabbit.label>pet rabbit specialization</SSC_Hediff_PetRabbit.label>
   <SSC_Hediff_PetRabbit.description>A developing pet-rabbit specialization. It emphasizes PNA-linked growth, reproductive modes, affectionate attachment, and light agility.</SSC_Hediff_PetRabbit.description>

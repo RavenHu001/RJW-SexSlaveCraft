@@ -86,6 +86,8 @@ namespace SexSlaveCraft
         public Dictionary<string, float> specializationProgressByType;
         // 猫技能随人格保存绝对冷却结束 tick；0 表示可用或旧快照缺少此字段。
         public int petCatComfortCooldownEndTick;
+        // 狗技能使用同一绝对时间约定；存放及加工期间仍随游戏时钟流逝。
+        public int petDogTameCooldownEndTick;
         public bool personalityExcretionCompleted = false;
         public bool milkProductionEnabled = true;
 
@@ -130,6 +132,7 @@ namespace SexSlaveCraft
             Scribe_Values.Look(ref specializationProgress, "specializationProgress", 0f);
             Scribe_Collections.Look(ref specializationProgressByType, "specializationProgressByType", LookMode.Value, LookMode.Value);
             Scribe_Values.Look(ref petCatComfortCooldownEndTick, "petCatComfortCooldownEndTick", 0);
+            Scribe_Values.Look(ref petDogTameCooldownEndTick, "petDogTameCooldownEndTick", 0);
             Scribe_Values.Look(ref personalityExcretionCompleted, "personalityExcretionCompleted", false);
             Scribe_Values.Look(ref milkProductionEnabled, "milkProductionEnabled", true);
 
@@ -214,6 +217,7 @@ namespace SexSlaveCraft
                 : new Dictionary<string, float>(other.specializationProgressByType);
             // 加工只复制截止时间，不在新凝胶上重新启动或冻结冷却。
             this.petCatComfortCooldownEndTick = other.petCatComfortCooldownEndTick;
+            this.petDogTameCooldownEndTick = other.petDogTameCooldownEndTick;
             this.personalityExcretionCompleted = other.personalityExcretionCompleted;
             this.milkProductionEnabled = other.milkProductionEnabled;
             this.childhood = other.childhood;
@@ -390,6 +394,8 @@ namespace SexSlaveCraft
             specializationProgressByType = trainingComp?.ExportSpecializationProgress()
                 ?? new Dictionary<string, float>();
             petCatComfortCooldownEndTick = PetCatAbilityUtility.CaptureCooldownDeadline(p);
+            // 每次重新采集都覆盖旧值；没有有效狗终极资格或实际冷却时记为零。
+            petDogTameCooldownEndTick = PetDogAbilityUtility.CaptureCooldownDeadline(p);
             if (trainingComp != null)
             {
                 sscIdentity = trainingComp.pawnIdentity;

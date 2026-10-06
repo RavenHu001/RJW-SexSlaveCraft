@@ -847,6 +847,7 @@ namespace SexSlaveCraft
         public static readonly HediffDef SSC_Hediff_CombatOverdrive = new HediffDef { defName = "SSC_Hediff_CombatOverdrive" };
         public static readonly AbilityDef SSC_CombatOverdrive = new AbilityDef { defName = "SSC_CombatOverdrive" };
         public static readonly AbilityDef SSC_PetCatComfort = new AbilityDef { defName = "SSC_PetCatComfort" };
+        public static readonly AbilityDef SSC_PetDogTame = new AbilityDef { defName = "SSC_PetDogTame" };
         public static HediffDef SSC_Hediff_Combatant_Final = new HediffDef { defName = "SSC_Hediff_Combatant_Final" };
         public static ThingDef SSC_PersonalitySlime = new ThingDef { defName = "SSC_PersonalitySlime" };
         public static ThingDef SSC_PS_P = new ThingDef { defName = "SSC_PS_P" };

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <!-- The target hint uses {0} for the animal name; invalid targets have separate rejection reasons. -->
+  <SSC_PetDogTameRequiresFinal>Нужна финальная специализация собаки.</SSC_PetDogTameRequiresFinal>
+  <SSC_PetDogTameInvalidCaster>Применяющий персонаж должен принадлежать фракции игрока, быть жив и находиться на карте, не быть обездвижен и не находиться в психическом состоянии.</SSC_PetDogTameInvalidCaster>
+  <SSC_PetDogTameInvalidTarget>Целью должно быть живое животное без фракции, находящееся на той же карте и не имеющее психического состояния.</SSC_PetDogTameInvalidTarget>
+  <SSC_PetDogTameUnconsciousTarget>У цели недостаточный уровень сознания для наставления.</SSC_PetDogTameUnconsciousTarget>
+  <SSC_PetDogTameUntamableTarget>Цель не соответствует стандартным условиям приручения.</SSC_PetDogTameUntamableTarget>
+  <SSC_PetDogTameUnreachableTarget>Невозможно добраться до клетки цели.</SSC_PetDogTameUnreachableTarget>
+  <SSC_PetDogTameMissingEffect>Эффект направленного приручения сейчас недоступен.</SSC_PetDogTameMissingEffect>
+  <SSC_PetDogTameTargetHint>Наставить {0} (подойти в ту же клетку и приручить)</SSC_PetDogTameTargetHint>
+</LanguageData>

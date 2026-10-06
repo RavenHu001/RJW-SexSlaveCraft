@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <!-- The target hint uses {0} for the animal name; invalid targets have separate rejection reasons. -->
+  <SSC_PetDogTameRequiresFinal>需要终极宠物狗专精。</SSC_PetDogTameRequiresFinal>
+  <SSC_PetDogTameInvalidCaster>施放者必须属于玩家阵营、存活、已生成、未倒地且没有精神状态。</SSC_PetDogTameInvalidCaster>
+  <SSC_PetDogTameInvalidTarget>目标必须是同地图上存活、已生成、没有精神状态的无阵营动物。</SSC_PetDogTameInvalidTarget>
+  <SSC_PetDogTameUnconsciousTarget>目标意识不足，无法接受训导。</SSC_PetDogTameUnconsciousTarget>
+  <SSC_PetDogTameUntamableTarget>目标不符合原版可驯服条件。</SSC_PetDogTameUntamableTarget>
+  <SSC_PetDogTameUnreachableTarget>无法到达目标所在格。</SSC_PetDogTameUnreachableTarget>
+  <SSC_PetDogTameMissingEffect>定向驯导效果当前不可用。</SSC_PetDogTameMissingEffect>
+  <SSC_PetDogTameTargetHint>训导 {0}（走至同格后直接驯服）</SSC_PetDogTameTargetHint>
+</LanguageData>

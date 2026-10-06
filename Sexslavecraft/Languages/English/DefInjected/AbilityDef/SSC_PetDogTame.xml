@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <!-- Map selection, same-cell warmup and direct taming; no extra training branch. -->
+  <SSC_PetDogTame.label>directed taming</SSC_PetDogTame.label>
+  <SSC_PetDogTame.description>A final Pet Dog can select a living, conscious, factionless animal on the same map that has no mental state and meets the vanilla taming conditions, then walk into its cell for 2 seconds of guidance. A progress bar, training bubble and repeated speech waves appear while the target pauses. Normal sleepers can be awakened; downed animals with sufficient consciousness are also eligible. Completion directly tames the animal into the player faction without food, extra materials or another success roll. Successful use starts a 1 in-game day cooldown; cancellation or an invalid target starts no new cooldown. Available while drafted and undrafted. This version does not advance training for owned animals, award extra specialization experience or trigger post-work events.</SSC_PetDogTame.description>
+</LanguageData>

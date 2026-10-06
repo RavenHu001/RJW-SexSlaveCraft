@@ -49,6 +49,7 @@ internal static partial class Program
         RunCombatantCases();
         RunPetRecipeCases();
         RunPetCatMigrationCases();
+        RunPetDogMigrationCases();
         Console.WriteLine($"RESULT: {passed}/{passed + failed} cases passed.");
         return failed == 0 ? 0 : 1;
     }

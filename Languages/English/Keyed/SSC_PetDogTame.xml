@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <!-- The target hint uses {0} for the animal name; invalid targets have separate rejection reasons. -->
+  <SSC_PetDogTameRequiresFinal>Requires final Pet Dog specialization.</SSC_PetDogTameRequiresFinal>
+  <SSC_PetDogTameInvalidCaster>The caster must belong to the player faction, be alive and spawned, not downed, and have no mental state.</SSC_PetDogTameInvalidCaster>
+  <SSC_PetDogTameInvalidTarget>The target must be a living, spawned, factionless animal on the same map with no mental state.</SSC_PetDogTameInvalidTarget>
+  <SSC_PetDogTameUnconsciousTarget>The target lacks sufficient consciousness to receive guidance.</SSC_PetDogTameUnconsciousTarget>
+  <SSC_PetDogTameUntamableTarget>The target does not meet the vanilla taming conditions.</SSC_PetDogTameUntamableTarget>
+  <SSC_PetDogTameUnreachableTarget>Cannot reach the target's cell.</SSC_PetDogTameUnreachableTarget>
+  <SSC_PetDogTameMissingEffect>The Directed Taming effect is currently unavailable.</SSC_PetDogTameMissingEffect>
+  <SSC_PetDogTameTargetHint>Guide {0} (approach its cell to tame directly)</SSC_PetDogTameTargetHint>
+</LanguageData>

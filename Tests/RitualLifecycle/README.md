@@ -1,6 +1,6 @@
 # Binding Ritual lifecycle regression tests
 
-The suite currently contains 92 cases (83 without UAP), including ritual lifecycle, UAP compatibility,
+The suite currently contains 93 cases (84 without UAP), including ritual lifecycle, UAP compatibility,
 daily training, Education interactions, receiver handoff/reservation regressions,
 and exclusive ownership during personality excretion.
 The original lifecycle tests were committed with the lifecycle fix
@@ -21,12 +21,15 @@ installation. It links the production `BindingRitualStateUtility`, lifecycle
 Harmony patches, `JobGiver_RitualBinding`, `JobDriver_RitualTraining`, the daily driver,
 and the real `TrainingJobUtility`. Personality-excretion cases also compile the production
 `JobDriver_PE`, `WorkGiver_PE`, `WorkGiverTargetUtility` and `PersonalityExcretionJobUtility`.
-Ten cases cover reservation retention, both player-forced flags, stale candidates,
+Eleven cases cover reservation retention, both player-forced flags, stale candidates,
 repeated handoff, cancellation/reassignment and one gel produced by the original
 actor after a contender is rejected. Reservation storage and RJW partner registration
 are small engine-boundary models; personality payload storage, rendering and Unity
-are not executed. The new cases failed eight times against the pre-fix production
-files and all pass with the fix.
+are not executed. The original ownership cases failed eight times against the pre-fix production
+files and all pass with the fix. The completed scene also records that its payload is stored
+before cat and dog effects are detached; a missing storage component cannot invoke either
+detach boundary. These checks run the real extraction task, while the actual pet-state and
+cooldown algorithms are exercised by PersonalityTraits and PetCatAbility/PetDogAbility.
 `GameStubs.cs` supplies the minimal game host and stores observable state. The
 tests do not duplicate the ritual ownership, progression, recovery or outcome
 eligibility algorithms.

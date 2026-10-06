@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <!-- Map selection, same-cell warmup and direct taming; no extra training branch. -->
+  <SSC_PetDogTame.label>定向馴導</SSC_PetDogTame.label>
+  <SSC_PetDogTame.description>終極寵物狗可選擇同地圖上存活、有意識、沒有精神狀態、無陣營且符合原版可馴服條件的動物，走到其所在格後進行 2 秒馴導，期間顯示讀條、馴導氣泡和連續說話波紋，目標暫停行動。普通睡眠可被喚醒，意識合格的倒地動物也可選擇。完成後直接將目標馴服為玩家陣營動物，無需食物或額外材料，不再進行一次成功率判定。完成後冷卻 1 遊戲內天；取消或目標失效不消耗新冷卻。徵召與未徵召時均可使用。目前不推進己方動物訓練，也不產生額外特化經驗或工作後事件。</SSC_PetDogTame.description>
+</LanguageData>

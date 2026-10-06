@@ -23,12 +23,13 @@ dotnet run --project Tests/PersonalityTraits/PersonalityTraits.csproj --configur
 - `common/TrainerSpecializationGelUtility.cs` 与 `Recipe/Recipe_PEMake.cs`：训导官三种互斥标签、终极配方筛料及加工结算。
 - `ThePatches/Harmony_TrainerRecipeCompletion.cs`：真正结算前的原料复查，失效时终止任务，保护人格原料与账单次数。
 - `common/PetSpecializationUtility.cs`、`common/PetSpecializationRules.cs` 与 `common/PetFinalizationRecipeUtility.cs`：真实宠物定义映射、标签迁移、组内互斥及终极化资格。
+- `common/PetCatAbilityUtility.cs` 与 `common/PetDogAbilityUtility.cs`：真实猫狗终极冷却采集、源身体清理及植入后立即恢复。
 
 若要验证其他导出的源码目录，可传入 `-p:SscSourceRoot=<源码绝对目录>`。
 
 ## 覆盖内容
 
-共 63 个用例组；组内按方向、凝胶基底和失效方式遍历多种场景。其中原有的 15 个普通特质用例继续覆盖：
+共 88 个用例组；组内按方向、凝胶基底和失效方式遍历多种场景。其中原有的 15 个普通特质用例继续覆盖：
 
 - 跨身体替换普通特质，以及同身体恢复较早快照，包括同一定义的不同等级。
 - 保存受抑制普通特质，排除基因授予和 SSC 派生特质，并隔离源角色、凝胶与副本的可变特质实例。
@@ -74,6 +75,14 @@ dotnet run --project Tests/PersonalityTraits/PersonalityTraits.csproj --configur
 - 猫／狗／兔终极与当前非宠物或明确留空共同保存，经真实提取和跨体植入后保持源当前方向、完整历史和终极效果资格；重复对账不从终极重新选择方向、不残留宿主宠物标签。
 - 普通宠物植入同种高进度宿主，组件恢复期间不把宿主较高普通严重度导入新人格，正式标签恢复及最终对账后保持源进度。
 
+猫技能迁移追加 13 个用例组，狗技能迁移追加 12 个用例组：
+
+- 真实提取先采集普通或终极标签、完整历史及绝对冷却截止时间，再删除源身体的猫狗普通/终极状态、当前方向、对应历史和残留技能；兔及组外历史保留。
+- 狗工具的独立清理用例另行确认只删除狗成果，保留猫、兔及组外健康状态、方向和历史；完整提取链由猫狗各自工具共同清理。
+- 直接链接真实 `StorePawnData`、`CopyFrom`、最终配方 Toil 与工作者、`InheritEverything` 及猫狗技能工具，覆盖存放和加工时继续计时、跨体技能实例独立、宿主旧猫狗能力清除、到期冷却立即可用。
+- 普通人格、孤儿技能、无实际能力或低严重度终极不能保存冷却；无对应终极资格的人格不能只凭伪造冷却字段授予技能。
+- 猫狗截止字段采用不同的稳定 Scribe 键，分别读写；旧凝胶缺少新增字段时归零并在有效终极植入后立即授予可用技能。此项仅检查字段契约，不模拟完整游戏存档。
+
 ## 引擎替身契约与验证边界
 
 `GameStubs.cs` 为生产入口提供无界面环境。特质相关行为依据修复时核对的本机 RimWorld 1.6 程序集：
@@ -93,6 +102,6 @@ dotnet run --project Tests/PersonalityTraits/PersonalityTraits.csproj --configur
 
 Scribe 替身记录和回放标量、定义与对象引用，并复制列表、字典容器。记忆条目的 `ExposeData` 单独验证全部字段；列表中的深层对象、跨存档人物或戒律引用解析以及 XML 节点格式不在模拟范围内。这是**存档字段契约验证，不是真实 RimWorld 存档文件往返测试**。
 
-测试假设相关 DLC 行为启用。定义、冲突、基因、健康状态与能力都是最小内存模型，不加载游戏 XML 或 Harmony 补丁；能力追踪器使用定义集合而不是真实能力实例。图像和缓存通知为空实现，私有特质缓存刷新入口则保留，以执行生产反射路径。后续基因变化、工作限制、需求、健康状态联动、界面与其他模组兼容性仍需游戏验证。
+测试假设相关 DLC 行为启用。定义、冲突、基因、健康状态与能力都是最小内存模型，不加载游戏 XML 或 Harmony 补丁；能力追踪器保存边界 Ability 实例，其冷却按已核验的原版 getter/StartCooldown/ResetCooldown 契约建模，剩余时间计算及迁移仍运行真实生产工具。狗驯服资格及 `DoRecruit` 仅提供编译边界，本套件不施放技能或复刻成功链，也不验证技能授予组件调度。图像和缓存通知为空实现，私有特质缓存刷新入口则保留，以执行生产反射路径。后续基因变化、工作限制、需求、健康状态联动、界面与其他模组兼容性仍需游戏验证。
 
-缺失快照用例会主动验证一条预期错误；生产异常捕获中出现任何其他错误都会使当前用例失败。成功运行退出码为零，并输出 `RESULT: 63/63 cases passed.`。
+缺失快照用例会主动验证一条预期错误；生产异常捕获中出现任何其他错误都会使当前用例失败。成功运行退出码为零，并输出 `RESULT: 88/88 cases passed.`。
