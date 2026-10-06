@@ -46,6 +46,7 @@ internal static partial class Program
         Run("共享经验拒绝死亡、销毁、无组件及错误身份", InvalidSharedReceivers);
         RunEffectAndBehaviorCases();
         RunCatTrainingCases();
+        RunDogWorkEntryCases();
         Console.WriteLine($"结果：{passed}/{passed + failed} 项通过。");
         return failed == 0 ? 0 : 1;
     }
@@ -71,6 +72,7 @@ internal static partial class Program
         Scribe.mode = LoadSaveMode.Inactive;
         Find.TickManager.TicksGame = 100000;
         Rand.Chances.Clear(); Rand.ChanceResult = false;
+        SSCRestrictionJobGuard.PrepareCalls = 0;
         Messages.Calls = TrainerSpecializationLifecycle.NotifyCalls = CombatantSpecializationUtility.SyncCalls = 0;
     }
 

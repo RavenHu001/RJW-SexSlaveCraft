@@ -11,7 +11,7 @@ namespace Verse
     public class JobDef : Def { public Type driverClass; public bool forceCompleteBeforeNextJob; }
     public enum Gender { None, Male, Female }
     public enum Danger { None, Some, Deadly }
-    public struct LocalTargetInfo
+    public partial struct LocalTargetInfo
     {
         public Thing Thing;
         /// <summary>将角色转换为任务目标，保留原引用以核对有向参与者。</summary>

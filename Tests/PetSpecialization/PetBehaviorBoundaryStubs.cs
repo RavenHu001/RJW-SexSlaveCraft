@@ -38,7 +38,7 @@ namespace Verse
 
 namespace Verse.AI
 {
-    public enum TargetIndex { A }
+    public enum TargetIndex { A, B }
     public enum PathEndMode { Touch, OnCell }
     public enum JobCondition { InterruptForced }
     public enum ToilCompleteMode { Instant, Delay }
@@ -50,9 +50,9 @@ namespace Verse.AI
     public partial class Job
     {
         public JobDef def;
-        public Thing target;
+        public Thing target, targetB;
         public bool playerForced;
-        public LocalTargetInfo GetTarget(TargetIndex index) => new() { Thing = target };
+        public LocalTargetInfo GetTarget(TargetIndex index) => new() { Thing = index == TargetIndex.B ? targetB : target };
     }
     public partial class PawnJobTracker
     {
@@ -64,6 +64,7 @@ namespace Verse.AI
     public class JobQueue { public void RemoveAll(Pawn pawn, Predicate<Job> predicate) { } }
     public class Toil
     {
+        public Pawn actor;
         public ToilCompleteMode defaultCompleteMode;
         public Action initAction, tickAction;
         public bool handlingFacing;
@@ -116,7 +117,8 @@ namespace SexSlaveCraft
     public static class SSCRestrictionJobGuard
     {
         // 此套件不启动外部行为；仅观察真实狗工作入口的资格、收益、冷却和概率。
-        public static bool PrepareEvent(Pawn pawn, Job job, SSCRestrictionEvent source) => false;
+        public static int PrepareCalls;
+        public static bool PrepareEvent(Pawn pawn, Job job, SSCRestrictionEvent source) { PrepareCalls++; return false; }
         public static void CancelPendingEvent(Job job) { }
     }
 }

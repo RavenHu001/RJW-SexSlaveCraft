@@ -26,7 +26,7 @@ namespace SexSlaveCraft
             return PetSpecializationUtility.HasActivePetEffects(pawn, SexSlaveSpecializationType.PetDog);
         }
 
-        /// <summary>完成动物训练后先计入工作成长，再尝试低频事件。</summary>
+        /// <summary>一次实际动物训练互动的原版动作结束后计入工作成长，再尝试低频事件；随机失败也计入。</summary>
         public static void NotifyAnimalTrainingCompleted(Pawn handler, Pawn animal)
         {
             if (!IsValidDogAnimalHandlingPair(handler, animal)) return;
