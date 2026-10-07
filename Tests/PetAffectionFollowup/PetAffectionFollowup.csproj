@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType><TargetFramework>net9.0</TargetFramework>
+    <SscSourceRoot Condition="'$(SscSourceRoot)' == ''">../../Sexslavecraft</SscSourceRoot>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(SscSourceRoot)/common/PetAffectionFollowupUtility.cs" Link="Production/PetAffectionFollowupUtility.cs" />
+    <Compile Include="$(SscSourceRoot)/JobDriver/JobDriver_PetAffection.cs" Link="Production/JobDriver_PetAffection.cs" />
+    <Compile Include="$(SscSourceRoot)/JobDriver/JobDriver_PetAffectionFollowup.cs" Link="Production/JobDriver_PetAffectionFollowup.cs" />
+  </ItemGroup>
+</Project>

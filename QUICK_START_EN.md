@@ -2,12 +2,13 @@
 
 [Project home](README.md) · [Documentation index / 文档索引](Docs/README.md) · [中文快速入门](读我，玩法介绍.md) · [Changelog](CHANGELOG.md)
 
-> For RimWorld 1.6 and SexSlaveCraft 2.3.6.\
+> For RimWorld 1.6 and SexSlaveCraft 2.3.7.\
 > This continuation is based on upstream 2.2.8. See `CHANGELOG.md` for release history.\
-> Version 2.3.6 adds shared base specialization progress from completed daily Training and full Binding Rituals. The 2.3.5 self-training and Training handoff updates remain included. Download the installation ZIP and SHA-256 checksum from [v2.3.6 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.6). Legacy RimTalk remains suspended; unfinished Pet Cat and Pet Rabbit choices remain disabled.\
+> This version retains 2.3.6 shared daily Training/full Binding Ritual specialization progress and 2.3.5 self-training/handoff fixes. The existing published ZIP and checksum remain at [v2.3.6 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.6), which does not include 2.3.7 additions. Legacy RimTalk remains suspended.\
+> Version 2.3.7 consolidation (2026-10-06): Includes Cat/Dog training, pet exclusivity, gel finalization, active abilities, visible affection, ordinary-completion display and finalization tooltips. The 20% adult Cat/Dog consensual follow-up is implemented and awaits in-game acceptance. Rabbit selection remains disabled. Version 2.3.7 is not formally released; these additions are absent from the existing 2.3.6 ZIP.\
 > In-game names follow the mod's official English localization. For exact formulas, thresholds, and implementation notes, see `PLAYER_GUIDE_EN.md`.
 
-> See the [2.3.6 notes](Docs/Releases/2.3.6/2.3.6发布说明.md) for this version and the [2.3.5 notes](Docs/Releases/2.3.5/2.3.5发布说明.md) for self-training.
+> See the [2.3.7 notes](Docs/Releases/2.3.7/2.3.7发布说明.md) for this version and the [2.3.6](Docs/Releases/2.3.6/2.3.6发布说明.md) and [2.3.5](Docs/Releases/2.3.5/2.3.5发布说明.md) notes for retained features.
 
 ## 1. What the Mod Does
 
@@ -262,6 +263,25 @@ Combatant health labels use lavender, with a brighter final state. Training Offi
 
 See the [full Combatant reference](PLAYER_GUIDE_EN.md#how-does-combatant-progress) for formulas and attributes.
 
+## Pet Cat and Dog (2.3.7)
+
+To select Cat or Dog, set SSC identity to Sex Slave, complete Training and the matching pet research, and have no final Cat, Dog or Rabbit specialization. Selection requires neither a bound master nor a chain stage. Cat gains movement speed and melee dodge at 20%, with stronger bonuses at 50%; Dog improves animal taming and training stats at 20%, 50% and 80%. Ordinary direction changes retain separate progress; ordinary effects apply only to the current path.
+
+Completed daily Training and full Binding Rituals give the current ordinary pet path shared progress. A current ordinary Cat gains 1 percentage point after successful affection toward its actual bound master; ordinary completion, any final pet specialization or another current path prevents this reward. Dog affection grants no progress. Actual animal training interactions and taming attempts give ordinary Dogs distinct progress; failed training rolls count as attempts, while cancellation before an interaction gives no training reward.
+
+Cat and Dog progress uses one decimal place: 99.5%–99.8% remains incomplete. At the shared completion threshold, the progress line reads "Training complete; ready to finalize". Hover over it for the steps: extract personality gel, process it into a final Cat or Dog at a sculpting table, then implant it. Ordinary completion does not directly grant a final ability. Only one final Cat, Dog or Rabbit specialization may be obtained; final bonuses, abilities and affection remain after switching to a non-pet training path. Rabbit selection remains disabled.
+
+| Final ability | Use and effect |
+| --- | --- |
+| Cat: Soothing Resonance | Select another conscious player-faction humanlike pawn anywhere on the same map. Walk onto its cell and soothe it for two seconds with hearts. At completion, recover its current mental state, or grant +8 mood and ×1.10 global work speed for half a day if it has no mental state and has a mood need. Reapplication refreshes encouragement. All current mental states can be recovered; catatonic breakdown is not treated. Both effects share a one-day cooldown. |
+| Dog: Directed Taming | Select an eligible factionless or player-owned animal on the same map and instruct it on its cell for two seconds. Directly tame a wild animal, or fully complete one currently eligible, checked training item for a player-owned animal using vanilla priority, including retraining a decayed item. Preserve the animal's master. Both branches share a one-day cooldown and require no extra food or materials. Cancellation, an invalid target or no valid training item starts no new cooldown. The ability grants no extra animal-work progress or work follow-up event. |
+
+Both abilities work while drafted or undrafted. Targets must be conscious; ordinary sleep can be interrupted and conscious downed targets are allowed. Directed Taming also excludes mental states and dryads. The caster must be able to reach the target's cell.
+
+Ordinary affection starts automatically when both pawns are idle, awake and within about 2.9 cells. The pet approaches its actual bound master, pauses for two seconds and shows progress, facing and hearts. Success gives the master +5 mood for six hours, with one memory maximum, and starts a one-day affection cooldown. Work, combat, sleep and player commands prevent automatic interruption. Cancellation grants neither rewards nor a completion cooldown.
+
+After successful affection, ordinary and effective final Cats/Dogs may initiate a consensual follow-up with their actual bound master. Both must be humanlike, biologically at least 18 and adult under RJW rules. When SSC permission and RJW consensual/quick-hookup settings, body eligibility, desire, pair willingness and cooldowns allow it, make one 20% roll for that completed affection. A miss, refusal or failure preserves affection rewards; it does not search for another partner, reroll or force an interaction. New commands during preparation cancel it and preserve the new jobs. There is no extra affection progress or new pair cooldown. In-game acceptance of this follow-up is still pending.
+
 ## 10. Final Specializations
 
 Public Use, Cow and Combatant follow the same finalization workflow:
@@ -480,7 +500,7 @@ Scheduled Training remains part of SSC. Use each Sex Slave's Training tab to sel
 The following entries exist as research, defs, or placeholder code but do not currently form complete gameplay systems:
 
 - Fine Training and sensitivity discovery;
-- Pet: Cat, Pet: Dog, and Pet: Rabbit;
+- Pet Rabbit selection, clone and reproduction gameplay (selection remains disabled);
 - Combat Unit;
 - Femboy Conversion;
 - high-tier PNA weapon;

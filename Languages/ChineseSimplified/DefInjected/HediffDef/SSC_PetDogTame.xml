@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <!-- Final dog passive bonuses remain; Directed Taming is newly granted. -->
+  <SSC_Hediff_PetDog_Final.label>终极宠物狗专精</SSC_Hediff_PetDog_Final.label>
+  <SSC_Hediff_PetDog_Final.description>通过人格凝胶完成的终极宠物狗专精。保留动物处理和训练属性，并获得“定向驯导”：走到同地图上符合条件的动物所在格，完成短暂训导后直接驯服野生动物，或完整完成己方动物的一个已勾选训练项目。</SSC_Hediff_PetDog_Final.description>
+</LanguageData>

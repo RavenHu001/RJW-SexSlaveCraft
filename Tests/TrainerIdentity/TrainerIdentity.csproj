@@ -8,6 +8,7 @@
     <!-- 同时编译真实特化组件和只读资格入口，测试不重写业务判定。 -->
     <Compile Include="$(SscSourceRoot)/common/SSCIdentityUtility.cs" Link="Production/SSCIdentityUtility.cs" />
     <Compile Include="$(SscSourceRoot)/Comps/Comp_Train.Specialization.cs" Link="Production/Comp_Train.Specialization.cs" />
+    <Compile Include="$(SscSourceRoot)/common/PetSpecializationRules.cs" Link="Production/PetSpecializationRules.cs" />
     <Compile Include="$(SscSourceRoot)/common/TrainerSpecializationUtility.cs" Link="Production/TrainerSpecializationUtility.cs" />
     <Compile Include="$(SscSourceRoot)/common/TrainerSpecializationLifecycle.cs" Link="Production/TrainerSpecializationLifecycle.cs" />
     <Compile Include="$(SscSourceRoot)/common/TrainerSpecializationProgressUtility.cs" Link="Production/TrainerSpecializationProgressUtility.cs" />

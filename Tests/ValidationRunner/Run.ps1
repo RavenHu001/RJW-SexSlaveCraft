@@ -20,6 +20,8 @@ $savedHarmony = $env:SSC_TEST_HARMONY_PATH
 $savedMode = $env:SSC_VALIDATION_FIXTURE_MODE
 $checks = 0
 $suiteCount = @(Get-ChildItem -LiteralPath (Join-Path $repo 'Tests') -Recurse -Filter '*.csproj').Count
+# These four suites require the net9.0 Harmony build; ordinary PetAffectionFollowup directly executes its hook boundary.
+$harmonySuiteCount = 4
 
 <#
 .SYNOPSIS
@@ -56,13 +58,22 @@ function Run-Case([string]$Name, [string]$Mode, [string]$Harmony, [bool]$Package
 }
 
 try {
-    foreach ($dir in @('Scripts', 'Tests', 'shim', 'About', 'Assemblies', 'Sexslavecraft/Properties', 'Defs', 'Languages', 'Textures', 'Resources', 'Docs')) {
+    foreach ($dir in @('Scripts', 'Tests', 'shim', 'About', 'Assemblies', 'Sexslavecraft/Properties', 'Sexslavecraft/Languages', 'Defs', 'Languages', 'Textures', 'Resources', 'Docs')) {
         [IO.Directory]::CreateDirectory((Join-Path $fixture $dir)) | Out-Null
     }
-    foreach ($file in @('Scripts/Test-All.ps1', 'Scripts/New-Release.ps1', 'Tests/NuGet.Config', 'VERSION', 'CHANGELOG.md',
+    foreach ($file in @('Scripts/Test-All.ps1', 'Scripts/New-Release.ps1', 'Scripts/Sync-LanguagesMirror.ps1', 'Scripts/Test-RestrictionLocalization.ps1', 'Tests/NuGet.Config', 'VERSION', 'CHANGELOG.md',
         'About/About.xml', 'Assemblies/Sexslavecraft.dll', 'Sexslavecraft/Properties/AssemblyInfo.cs', 'README.md',
         'QUICK_START_EN.md', '读我，玩法介绍.md', '机制详解.md', 'PLAYER_GUIDE_EN.md')) {
         Copy-Item -LiteralPath (Join-Path $repo $file) -Destination (Join-Path $fixture $file)
+    }
+    # New-Release checks localization and its mirror before invoking validation. Supply those real prerequisites in the fixture.
+    foreach ($language in @('English', 'ChineseSimplified', 'ChineseTraditional', 'Russian')) {
+        $relative = "Languages/$language/Keyed/SSC_Restrictions.xml"
+        foreach ($prefix in @('', 'Sexslavecraft/')) {
+            $destination = Join-Path $fixture ($prefix + $relative)
+            [IO.Directory]::CreateDirectory([IO.Path]::GetDirectoryName($destination)) | Out-Null
+            Copy-Item -LiteralPath (Join-Path $repo ($prefix + $relative)) -Destination $destination
+        }
     }
     # Use each real project name, but no production code or game runtime in this fixture.
     foreach ($project in Get-ChildItem -LiteralPath (Join-Path $repo 'Tests') -Recurse -Filter '*.csproj') {
@@ -111,9 +122,9 @@ exit 0
         $run = Run-Case 'success' 'pass' $HarmonyAssemblyPath
         Assert ($run.Code -eq 0 -and $run.Report.PassedSuites -eq $suiteCount -and $run.Report.TotalCases -eq $suiteCount) 'All suites execute; counts come from actual summaries (not hard-coded 390).'
         $run = Run-Case 'missing-harmony' 'pass' ''
-        Assert ($run.Code -ne 0 -and $run.Report.PassedSuites -eq ($suiteCount - 3) -and $run.Report.NotRunSuites -eq 3) 'Missing Harmony is NotRun and fails the overall check.'
+        Assert ($run.Code -ne 0 -and $run.Report.PassedSuites -eq ($suiteCount - $harmonySuiteCount) -and $run.Report.NotRunSuites -eq $harmonySuiteCount) 'Missing Harmony is NotRun and fails the overall check.'
         $run = Run-Case 'wrong-harmony' 'pass' $FrameworkHarmonyAssemblyPath
-        Assert ($run.Code -ne 0 -and $run.Report.NotRunSuites -eq 3 -and $run.Report.Results[-1].Reason -match 'net9.0') 'Framework Harmony is rejected before any Harmony suite runs.'
+        Assert ($run.Code -ne 0 -and $run.Report.NotRunSuites -eq $harmonySuiteCount -and $run.Report.Results[-1].Reason -match 'net9.0') 'Framework Harmony is rejected before any Harmony suite runs.'
         $run = Run-Case 'failures' 'failures' $HarmonyAssemblyPath
         Assert ($run.Code -ne 0 -and $run.Report.FailedSuites -eq 5 -and $run.Report.PassedSuites -eq ($suiteCount - 5)) 'Restore, build, test exit, missing summary and failed count all fail; later suites continue.'
         foreach ($mode in @('old-sdk', 'missing-runtime')) {

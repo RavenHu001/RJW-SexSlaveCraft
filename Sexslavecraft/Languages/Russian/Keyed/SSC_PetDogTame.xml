@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <!-- Target hints and success messages use {0} for the animal; training uses {1} for the project. -->
+  <SSC_PetDogTameRequiresFinal>Нужна финальная специализация собаки.</SSC_PetDogTameRequiresFinal>
+  <SSC_PetDogTameInvalidCaster>Применяющий персонаж должен принадлежать фракции игрока, быть жив и находиться на карте, не быть обездвижен и не находиться в психическом состоянии.</SSC_PetDogTameInvalidCaster>
+  <SSC_PetDogTameInvalidTarget>Целью должно быть живое животное на той же карте, без психического состояния, не принадлежащее фракции или принадлежащее игроку. Дриады недопустимы.</SSC_PetDogTameInvalidTarget>
+  <SSC_PetDogTameUnconsciousTarget>У цели недостаточный уровень сознания для наставления.</SSC_PetDogTameUnconsciousTarget>
+  <SSC_PetDogTameUntamableTarget>Цель не соответствует стандартным условиям приручения.</SSC_PetDogTameUntamableTarget>
+  <SSC_PetDogTameUnreachableTarget>Невозможно добраться до клетки цели.</SSC_PetDogTameUnreachableTarget>
+  <SSC_PetDogTameMissingEffect>Эффект направленного приручения сейчас недоступен.</SSC_PetDogTameMissingEffect>
+  <SSC_PetDogTameTargetHint>Наставить {0} (подойти в ту же клетку и приручить)</SSC_PetDogTameTargetHint>
+  <SSC_PetDogTameTrainingTargetHint>Дрессировать {0}: {1} (подойти в ту же клетку и завершить обучение)</SSC_PetDogTameTrainingTargetHint>
+  <SSC_PetDogTameNoTrainingTarget>У цели нет отмеченного и ещё не завершённого обучения, соответствующего стандартным предварительным условиям, виду и размеру тела.</SSC_PetDogTameNoTrainingTarget>
+  <SSC_PetDogTameTrainingSuccess>{0}: завершено обучение «{1}».</SSC_PetDogTameTrainingSuccess>
+</LanguageData>

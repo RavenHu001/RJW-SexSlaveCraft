@@ -16,13 +16,13 @@ namespace SexSlaveCraft
         }
     }
 
-    [HarmonyPatch(typeof(CompSexSlaveTraining), nameof(CompSexSlaveTraining.SetSpecialization))]
+    [HarmonyPatch(typeof(CompSexSlaveTraining), nameof(CompSexSlaveTraining.TrySetSpecialization))]
     internal static class SSCRestrictionSpecializationHook
     {
         /// <summary>方向更新完成后处理公交车首次取得事件，重复选择不覆盖已保存选择。</summary>
-        private static void Postfix(CompSexSlaveTraining __instance)
+        private static void Postfix(CompSexSlaveTraining __instance, bool __result)
         {
-            SSCRestrictionGameComponent.Notify(__instance.parent as Pawn);
+            if (__result) SSCRestrictionGameComponent.Notify(__instance.parent as Pawn);
         }
     }
 

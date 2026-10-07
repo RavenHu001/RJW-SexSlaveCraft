@@ -201,6 +201,8 @@ namespace SexSlaveCraft
             base.CompTickRare();
 
             if (!(parent is Pawn pawn)) return;
+            // 旧终极狗保存的普通 Hediff 没有授予组件；按真实成果维护技能，保留已有实例及冷却。
+            PetDogAbilityUtility.Maintain(pawn);
             ReconcileManualSelfTraining(pawn);
             BindingRitualStateUtility.RecoverPawnState(pawn);
             ReconcileSpecialization(pawn);
@@ -258,6 +260,8 @@ namespace SexSlaveCraft
                 NormalizeSpecializationData();
                 // 战斗员不依赖身份/关系恢复顺序，读档完成时即可按组件重建普通收益。
                 CombatantSpecializationUtility.Sync(parent as Pawn);
+                // 不依赖身份或主人恢复顺序，也不将旧终极 Hediff 替换成新实例。
+                PetDogAbilityUtility.Maintain(parent as Pawn);
                 scheduledTrainingHour = Mathf.Clamp(scheduledTrainingHour, 0, 23);
                 scheduledTrainingIntervalDays = Mathf.Clamp(scheduledTrainingIntervalDays, 1, 7);
 

@@ -46,6 +46,7 @@ internal static partial class Program
         Run("终极公交车可启动任务但不继续成长", FinalProgression);
         Run("任务无法启动时仍保留交易成长规则", ProgressionWithoutJob);
         RunStage3CTests();
+        RunDogWorkEntryTests();
         Console.WriteLine($"结果：{passed}/{passed + failed} 项通过。");
         return failed == 0 ? 0 : 1;
     }

@@ -22,6 +22,8 @@ namespace SexSlaveCraft
             if (comp != null)
             {
                 comp.StorePawnData(victim);
+                PetCatAbilityUtility.DetachAfterExtraction(victim);
+                PetDogAbilityUtility.DetachAfterExtraction(victim);
                 CombatantSpecializationGelUtility.DetachAfterExtraction(victim);
             }
 
@@ -95,6 +97,9 @@ namespace SexSlaveCraft
             }
 
             PetSpecializationUtility.RemoveAllPetStates(consumer);
+            // 同时清除无终极标记却残留在宿主能力追踪器中的猫、狗技能。
+            PetCatAbilityUtility.RemoveAbility(consumer);
+            PetDogAbilityUtility.RemoveAbility(consumer);
 
             // 清除接收身体的普通、有效终极和禁用终极标签。必须在源人格
             // 的方向和进度恢复前完成，避免宿主完成记录或普通严重度混入。
@@ -292,6 +297,11 @@ namespace SexSlaveCraft
 
                 // 同步组件与刚恢复的健康状态，使凝胶携带的专精立即被识别并可持续训练。
                 CompSexSlaveTraining.ReconcileSpecialization(consumer);
+
+                // 终极标记与全部人格字段就位后立即恢复技能的剩余冷却。
+                // 只携带绝对结束时间，不复制原身体的 Ability 实例或临时激励。
+                PetCatAbilityUtility.RestoreCooldown(consumer, data.petCatComfortCooldownEndTick);
+                PetDogAbilityUtility.RestoreCooldown(consumer, data.petDogTameCooldownEndTick);
 
                 Messages.Message(Strings.Message_PersonalityFusionComplete(consumer.LabelShort, data.nickName), consumer, MessageTypeDefOf.NeutralEvent);
 

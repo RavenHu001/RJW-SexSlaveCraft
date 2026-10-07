@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <!-- 临时鼓舞由技能刷新同一状态的倒计时；工作倍率和心情共用状态生命周期。 -->
+  <HediffDef>
+    <defName>SSC_Hediff_PetCatEncouragement</defName>
+    <hediffClass>HediffWithComps</hediffClass>
+    <label>猫咪鼓舞</label>
+    <description>被终极宠物猫温柔地鼓舞，心情 +8、全局工作速度 ×1.10。持续 12 游戏内小时；再次获得鼓舞时刷新持续时间，不叠加。</description>
+    <initialSeverity>1</initialSeverity>
+    <maxSeverity>1</maxSeverity>
+    <isBad>false</isBad>
+    <tendable>false</tendable>
+    <everCurableByItem>false</everCurableByItem>
+    <makesSickThought>false</makesSickThought>
+    <comps>
+      <li Class="HediffCompProperties_Disappears">
+        <disappearsAfterTicks>30000</disappearsAfterTicks>
+      </li>
+    </comps>
+    <stages>
+      <li>
+        <minSeverity>0</minSeverity>
+        <statFactors>
+          <WorkSpeedGlobal>1.10</WorkSpeedGlobal>
+        </statFactors>
+      </li>
+    </stages>
+  </HediffDef>
+</Defs>

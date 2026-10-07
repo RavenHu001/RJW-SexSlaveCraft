@@ -16,7 +16,7 @@ namespace Verse
         public RaceProperties RaceProps = new RaceProperties();
         public Ownership ownership = new Ownership();
         public JobDef CurJobDef => CurJob?.def;
-        public bool Hostile, CanAnimalSex = true, IsFinalDog;
+        public bool Hostile, CanAnimalSex = true, IsFinalDog, Destroyed;
         /// <summary>返回当前角色的独立配置组件，不在查询中初始化或迁移。</summary>
         public T TryGetComp<T>() where T : class => Training as T;
         /// <summary>返回模型的敌对状态，供原有事件资格门槛使用。</summary>
@@ -175,6 +175,14 @@ namespace SexSlaveCraft
         public static bool HasAnyPetState(Pawn pawn, SexSlaveSpecializationType type) => pawn?.Training.IsPetDogSpecialized == true;
         /// <summary>读取用例显式指定的终极状态。</summary>
         public static bool HasFinalPetState(Pawn pawn, SexSlaveSpecializationType type) => pawn.IsFinalDog;
+        /// <summary>宠物资格边界；真实方向与成果矩阵由宠物专项链接生产工具验证。</summary>
+        public static bool HasActivePetEffects(Pawn pawn, SexSlaveSpecializationType type) => pawn != null &&
+            !pawn.Dead && !pawn.Destroyed && type == SexSlaveSpecializationType.PetDog &&
+            (pawn.Training.IsPetDogSpecialized || pawn.IsFinalDog);
+        public static bool CanTrainPetSpecialization(Pawn pawn, SexSlaveSpecializationType type) =>
+            pawn?.Training.IsPetDogSpecialized == true && !pawn.IsFinalDog;
+        public static float GetEffectivePetProgress(Pawn pawn, SexSlaveSpecializationType type) =>
+            !HasActivePetEffects(pawn, type) ? 0 : pawn.IsFinalDog ? 1 : Math.Clamp(pawn.Training.specializationProgress, 0, 1);
         /// <summary>记录工作或行为成长，区分拒绝前已完成的工作与未发生的行为。</summary>
         public static bool TryGainPetProgress(Pawn pawn, SexSlaveSpecializationType type, float gain, bool showThresholdMessage)
         { Gains.Add(gain); return true; }

@@ -183,7 +183,7 @@
   <RecipeDef Class="SexSlaveCraft.RecipeDef_PSTag">
     <defName>SSC_PSEdit_PetCat_Final</defName>
     <label>性奴特化（终极宠物猫）</label>
-    <description>将已经完成宠物猫特化的人格凝胶进一步塑形为终极宠物猫状态。该配方只接受宠物猫特化达到 100% 且带有宠物猫基础状态的材料。</description>
+    <description>将当前培养方向为宠物猫、普通培养已完成且带有宠物猫基础状态的人格凝胶，加工为终极宠物猫人格。原料不能已有猫、狗或兔终极成果。植入后获得永久移动速度与近战闪避加成，并可继续亲昵实际绑定的主人；并获得“安抚共鸣”，使其他玩家阵营人形角色从精神状态中恢复，或给予短暂的心情与工作速度鼓舞。</description>
     <jobString>正在塑造终极宠物猫人格...</jobString>
     <workAmount>3500</workAmount>
     <workSpeedStat>GeneralLaborSpeed</workSpeedStat>
@@ -195,8 +195,13 @@
     <filterIfTagExists>true</filterIfTagExists>
     <requireSpecializationType>PetCat</requireSpecializationType>
     <requireSpecializationComplete>true</requireSpecializationComplete>
+    <!-- 猫、狗、兔共用终极互斥组，奶牛等组外成果不在此列表。
+         公共资格先拒绝已有任意宠物终极的来源；工作者只清理产物副本。
+         普通标签是原料的必要资格，复制后另行移除，不加入此互斥列表。 -->
     <exclusiveTags>
       <li>SSC_Hediff_PetCat_Final</li>
+      <li>SSC_Hediff_PetDog_Final</li>
+      <li>SSC_Hediff_PetRabbit_Final</li>
     </exclusiveTags>
 
     <recipeUsers>
@@ -254,8 +259,13 @@
     <filterIfTagExists>true</filterIfTagExists>
     <requireSpecializationType>PetDog</requireSpecializationType>
     <requireSpecializationComplete>true</requireSpecializationComplete>
+    <!-- 复用既有狗终极化配方，组内已有猫、狗或兔终极的人格均不能再次加工。
+         普通狗标签仍是入料要求；三种普通标签由工作者在复制后清理。
+         列表操作只影响新产物，不代替来源资格拒绝或旧多终极迁移。 -->
     <exclusiveTags>
+      <li>SSC_Hediff_PetCat_Final</li>
       <li>SSC_Hediff_PetDog_Final</li>
+      <li>SSC_Hediff_PetRabbit_Final</li>
     </exclusiveTags>
 
     <recipeUsers>
@@ -313,7 +323,12 @@
     <filterIfTagExists>true</filterIfTagExists>
     <requireSpecializationType>PetRabbit</requireSpecializationType>
     <requireSpecializationComplete>true</requireSpecializationComplete>
+    <!-- 兔保留共同终极互斥识别；此声明不开放兔的玩家选择入口。
+         合法旧兔人格仍走公共加工资格，任何已有宠物终极都会被拒绝。
+         仅产物标签按此列表清理，培养历史及组外成果继续保留。 -->
     <exclusiveTags>
+      <li>SSC_Hediff_PetCat_Final</li>
+      <li>SSC_Hediff_PetDog_Final</li>
       <li>SSC_Hediff_PetRabbit_Final</li>
     </exclusiveTags>
 

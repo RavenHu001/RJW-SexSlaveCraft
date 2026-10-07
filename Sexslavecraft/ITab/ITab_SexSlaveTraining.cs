@@ -850,11 +850,9 @@ namespace SexSlaveCraft
             }
 
             listing.Gap(6f);
-            string progressTip = comp.specializationType == SexSlaveSpecializationType.Combatant &&
-                !CombatantSpecializationUtility.HasFinalState(pawn) &&
-                CompSexSlaveTraining.NormalizeSpecializationProgress(comp.specializationProgress) >=
-                    CompSexSlaveTraining.SpecializationCompletionProgress
-                ? "SSC_ITab_CombatantFinalizationTip".Translate().ToString() : null;
+            // 进度行沿用同一个完成门槛，悬停说明按当前战斗员／猫／狗方向提供终极化引导。
+            // 查询不创建健康状态或授予技能，已取得宠物终极成果时不再提示重复加工。
+            string progressTip = GetSpecializationProgressTip(pawn, comp);
             listing.Label((TaggedString)Strings.ITab_SpecializationProgress(GetSpecializationProgressText(pawn, comp)), -1f, progressTip);
             TrainerSpecializationDisplayState trainerState = TrainerSpecializationUtility.GetDisplayState(pawn);
             if (trainerState != TrainerSpecializationDisplayState.None)
@@ -925,34 +923,22 @@ namespace SexSlaveCraft
         private static FloatMenuOption BuildPetSpecializationOption(Pawn pawn, CompSexSlaveTraining comp, SexSlaveSpecializationType type)
         {
             string optionLabel = PetSpecializationUtility.GetSelectLabel(type);
-            // 猫、兔特化尚未完成，玩家入口保持可见但不可选择。
-            if (type == SexSlaveSpecializationType.PetCat || type == SexSlaveSpecializationType.PetRabbit)
+            bool enabled = PetSpecializationUtility.CanSelectPetSpecialization(pawn, type,
+                out PetSpecializationFailure failure);
+            if (!enabled)
             {
-                return new FloatMenuOption(optionLabel + " " + Strings.ITab_SpecializationUnfinishedSuffix, null);
-            }
-
-            bool finalized = PetSpecializationUtility.HasFinalPetState(pawn, type);
-            bool enabled = !finalized;
-            string disabledReason = null;
-            if (enabled)
-            {
-                enabled = PetSpecializationUtility.CanUsePetSpecialization(pawn, type, out disabledReason);
-            }
-
-            if (finalized)
-            {
-                optionLabel = optionLabel + " " + Strings.ITab_SpecializationFinalizedSuffix;
-            }
-            else if (!enabled)
-            {
-                optionLabel = optionLabel + " (" + disabledReason + ")";
+                string reason = PetSpecializationUtility.GetSelectionFailureReason(failure);
+                optionLabel += failure == PetSpecializationFailure.NotImplemented ||
+                    failure == PetSpecializationFailure.AlreadyFinalized ? " " + reason : " (" + reason + ")";
             }
 
             return new FloatMenuOption(optionLabel, enabled ? (Action)delegate
             {
-                if (!CanShowLegacySpecializationOptions(comp)) return;
-                comp.SetSpecialization(type);
-                PetSpecializationUtility.EnsurePetHediffFromSpecialization(pawn);
+                if (!PetSpecializationUtility.TrySelectPetSpecialization(pawn, comp, type,
+                    out PetSpecializationFailure currentFailure))
+                    Messages.Message("SSC_PetSpecialization_SelectionRejected".Translate(
+                        PetSpecializationUtility.GetSelectionFailureReason(currentFailure)),
+                        pawn, MessageTypeDefOf.RejectInput, false);
             } : null);
         }
 

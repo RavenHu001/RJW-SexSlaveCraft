@@ -50,10 +50,11 @@ namespace Verse
     public class SkillTracker { public List<SkillRecord> skills = new List<SkillRecord>(); }
     public static class ThingMaker
     {
+        public static bool IncludePersonalityStore = true;
         public static Thing MakeThing(ThingDef def)
         {
             var result = new Thing { def = def };
-            result.comps.Add(new SexSlaveCraft.CompPersonalityStore());
+            if (IncludePersonalityStore) result.comps.Add(new SexSlaveCraft.CompPersonalityStore());
             return result;
         }
     }
@@ -103,7 +104,21 @@ namespace SexSlaveCraft
     {
         public static void ApplySexType(rjw.SexProps props, Pawn actor, Pawn target, rjw.xxx.rjwSextype type, string interaction) { }
     }
-    public class CompPersonalityStore : ThingComp { public Pawn Stored; public void StorePawnData(Pawn pawn) => Stored = pawn; }
+    // 只记录生产任务调用的先后顺序；宠物清理及人格快照算法由各自专项直接执行生产代码。
+    public static class PetExtractionBoundary { public static readonly List<string> Calls = new List<string>(); }
+    public class CompPersonalityStore : ThingComp
+    {
+        public Pawn Stored;
+        public void StorePawnData(Pawn pawn) { Stored = pawn; PetExtractionBoundary.Calls.Add("store"); }
+    }
+    public static class PetCatAbilityUtility
+    {
+        public static void DetachAfterExtraction(Pawn pawn) => PetExtractionBoundary.Calls.Add("cat");
+    }
+    public static class PetDogAbilityUtility
+    {
+        public static void DetachAfterExtraction(Pawn pawn) => PetExtractionBoundary.Calls.Add("dog");
+    }
     public static class PersonalityGelUtility { public static ThingDef GetPersonalityGelDefForPawn(Pawn pawn) => new ThingDef(); }
     public static class CombatantSpecializationGelUtility { public static void DetachAfterExtraction(Pawn pawn) { } }
     public class MapComponent_PersonalityAssignment { public Thing GetAssignedGel(Pawn hollow) => null; }

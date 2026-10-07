@@ -8,6 +8,7 @@
     <Compile Include="$(SscSourceRoot)/Comps/Ability_CombatOverdrive.cs" Link="Production/Ability_CombatOverdrive.cs" />
     <Compile Include="$(SscSourceRoot)/Hediff/HediffComp_GiveAbility.cs" Link="Production/HediffComp_GiveAbility.cs" />
     <Compile Include="$(SscSourceRoot)/Comps/Comp_Train.Specialization.cs" Link="Production/Comp_Train.Specialization.cs" />
+    <Compile Include="$(SscSourceRoot)/common/PetSpecializationRules.cs" Link="Production/PetSpecializationRules.cs" />
     <Compile Include="$(SscSourceRoot)/Comps/Comp_Train.SpecializationHealth.cs" Link="Production/Comp_Train.SpecializationHealth.cs" />
     <Compile Include="$(SscSourceRoot)/common/CombatantSpecializationUtility.cs" Link="Production/CombatantSpecializationUtility.cs" />
     <Compile Include="$(SscSourceRoot)/common/ResearchUtils.cs" Link="Production/ResearchUtils.cs" />

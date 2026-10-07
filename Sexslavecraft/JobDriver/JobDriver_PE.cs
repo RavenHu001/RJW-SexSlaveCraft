@@ -175,7 +175,12 @@ namespace SexSlaveCraft
             // CN: 步骤 1：生成人格凝胶，并把受害者的人格载荷写进去。
             Thing product = CreateStoredPersonalityProduct(victim);
             if (product.TryGetComp<CompPersonalityStore>() != null)
+            {
+                // 两条抽取入口都在成功保存快照后清源成果，避免场景抽取留下猫狗技能或历史。
+                PetCatAbilityUtility.DetachAfterExtraction(victim);
+                PetDogAbilityUtility.DetachAfterExtraction(victim);
                 CombatantSpecializationGelUtility.DetachAfterExtraction(victim);
+            }
 
             // EN: Step 2: strip the victim into a hollow pawn and swap the personality-excretion state hediff.
             // CN: 步骤 2：把受害者剥离成空壳 Pawn，并切换人格排泄状态 Hediff。

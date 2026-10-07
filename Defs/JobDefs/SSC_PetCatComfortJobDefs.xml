@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <!-- 接近阶段不算施放，避免远处提前显示预热气泡；同格后由原版 CastVerb 进入施放。
+       不与目标碰撞，允许进入同格而不将目标顶走；普通工作不打断，玩家仍可主动取消。 -->
+  <JobDef>
+    <defName>SSC_Job_PetCatComfort</defName>
+    <driverClass>SexSlaveCraft.JobDriver_PetCatComfort</driverClass>
+    <reportString>正在安抚 TargetA。</reportString>
+    <abilityCasting>false</abilityCasting>
+    <collideWithPawns>false</collideWithPawns>
+    <casualInterruptible>false</casualInterruptible>
+  </JobDef>
+</Defs>

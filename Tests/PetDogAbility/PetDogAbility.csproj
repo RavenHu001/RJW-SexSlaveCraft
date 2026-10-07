@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net9.0</TargetFramework>
+    <SscSourceRoot Condition="'$(SscSourceRoot)' == ''">../../Sexslavecraft</SscSourceRoot>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- 能力资格、状态分支、授予/撤销和冷却迁移均直接执行生产源码。 -->
+    <Compile Include="$(SscSourceRoot)/Comps/Ability_PetDogTame.cs" Link="Production/Ability_PetDogTame.cs" />
+    <Compile Include="$(SscSourceRoot)/Comps/CompAbilityEffect_PetDogTame.cs" Link="Production/CompAbilityEffect_PetDogTame.cs" />
+    <Compile Include="$(SscSourceRoot)/Comps/Verb_PetDogTame.cs" Link="Production/Verb_PetDogTame.cs" />
+    <Compile Include="$(SscSourceRoot)/JobDriver/JobDriver_PetDogTame.cs" Link="Production/JobDriver_PetDogTame.cs" />
+    <Compile Include="$(SscSourceRoot)/common/PetDogAbilityUtility.cs" Link="Production/PetDogAbilityUtility.cs" />
+    <Compile Include="$(SscSourceRoot)/Hediff/HediffComp_GiveAbility.cs" Link="Production/HediffComp_GiveAbility.cs" />
+    <Compile Include="$(SscSourceRoot)/common/PetSpecializationRules.cs" Link="Production/PetSpecializationRules.cs" />
+    <Compile Include="$(SscSourceRoot)/common/PetSpecializationUtility.cs" Link="Production/PetSpecializationUtility.cs" />
+    <Compile Include="$(SscSourceRoot)/Comps/Comp_Train.Specialization.cs" Link="Production/Comp_Train.Specialization.cs" />
+    <Compile Include="$(SscSourceRoot)/Comps/Comp_Train.SpecializationHealth.cs" Link="Production/Comp_Train.SpecializationHealth.cs" />
+  </ItemGroup>
+</Project>

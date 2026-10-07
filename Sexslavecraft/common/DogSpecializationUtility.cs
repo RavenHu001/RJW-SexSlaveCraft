@@ -19,17 +19,14 @@ namespace SexSlaveCraft
         private const float FinalDogAnimalInteractionChanceBonus = 0.04f;
         private const float MaxAnimalInteractionChance = 0.18f;
         private const float ProgressGainMultiplierBonus = 0.50f;
-        private const float FinalDogProgressGainBonus = 0.25f;
 
-        /// <summary>检查当前方向或有效宠物狗状态，历史进度本身不赋予事件资格。</summary>
+        /// <summary>检查当前普通狗或保留的终极狗；历史与残留普通标签不授予工作行为资格。</summary>
         public static bool IsDogSpecialized(Pawn pawn)
         {
-            CompSexSlaveTraining comp = pawn?.TryGetComp<CompSexSlaveTraining>();
-            return comp?.IsPetDogSpecialized == true ||
-                   PetSpecializationUtility.HasAnyPetState(pawn, SexSlaveSpecializationType.PetDog);
+            return PetSpecializationUtility.HasActivePetEffects(pawn, SexSlaveSpecializationType.PetDog);
         }
 
-        /// <summary>完成动物训练后先计入工作成长，再尝试低频事件。</summary>
+        /// <summary>一次实际动物训练互动的原版动作结束后计入工作成长，再尝试低频事件；随机失败也计入。</summary>
         public static void NotifyAnimalTrainingCompleted(Pawn handler, Pawn animal)
         {
             if (!IsValidDogAnimalHandlingPair(handler, animal)) return;
@@ -174,27 +171,22 @@ namespace SexSlaveCraft
             return null;
         }
 
-        /// <summary>沿用宠物进度及终极状态的成长倍率，不读取或改写行为许可。</summary>
+        /// <summary>只为仍在普通狗培养中的角色计算工作成长，终极与其他当前方向不获得该成长。</summary>
         private static float GetScaledProgressGain(Pawn dog, float baseAmount)
         {
-            if (baseAmount <= 0f) return 0f;
+            if (baseAmount <= 0f || !PetSpecializationUtility.CanTrainPetSpecialization(dog, SexSlaveSpecializationType.PetDog))
+                return 0f;
 
-            CompSexSlaveTraining comp = dog?.TryGetComp<CompSexSlaveTraining>();
-            float progress = comp?.specializationProgress ?? 0f;
+            float progress = PetSpecializationUtility.GetEffectivePetProgress(dog, SexSlaveSpecializationType.PetDog);
             float multiplier = 1f + progress * ProgressGainMultiplierBonus;
-            if (PetSpecializationUtility.HasFinalPetState(dog, SexSlaveSpecializationType.PetDog))
-            {
-                multiplier += FinalDogProgressGainBonus;
-            }
 
             return baseAmount * multiplier;
         }
 
-        /// <summary>计算原有事件概率并应用上限，限制拒绝不会改变概率。</summary>
+        /// <summary>保留原有概率参数；终极狗按自身完成成果计算，转练或留空不借用其他方向进度。</summary>
         private static float GetAnimalInteractionChance(Pawn dog)
         {
-            CompSexSlaveTraining comp = dog?.TryGetComp<CompSexSlaveTraining>();
-            float progress = comp?.specializationProgress ?? 0f;
+            float progress = PetSpecializationUtility.GetEffectivePetProgress(dog, SexSlaveSpecializationType.PetDog);
             float chance = MinAnimalInteractionChance + progress * ProgressAnimalInteractionChanceBonus;
             if (PetSpecializationUtility.HasFinalPetState(dog, SexSlaveSpecializationType.PetDog))
             {

@@ -17,6 +17,7 @@ namespace Verse
     public struct LocalTargetInfo
     {
         public Thing Thing;
+        public Pawn Pawn => Thing as Pawn;
         public LocalTargetInfo(Thing thing) { Thing = thing; }
     }
 
@@ -53,14 +54,19 @@ namespace Verse.AI
 
     public class Job
     {
+        public bool playerForced;
+        public JobDef def;
+        public int expiryInterval;
         public Bill_Production bill;
         public RecipeDef RecipeDef => bill?.recipe;
         public List<ThingCountClass> placedThings;
         public LocalTargetInfo targetC;
-        public LocalTargetInfo GetTarget(TargetIndex index) => index == TargetIndex.C ? targetC : default;
+        public LocalTargetInfo targetA;
+        public Ability ability;
+        public LocalTargetInfo GetTarget(TargetIndex index) => index == TargetIndex.C ? targetC : index == TargetIndex.A ? targetA : default;
     }
 
-    public class Pawn_JobTracker
+    public partial class Pawn_JobTracker
     {
         public Job curJob;
         public JobCondition? endedWith;

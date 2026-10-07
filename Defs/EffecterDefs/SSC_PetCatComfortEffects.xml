@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <!-- 只在原版两秒预热期间喷出爱心，不改变效果、加成或冷却。
+       Core Heart 继承原版 FleckBase_Thrown；每 30 tick 一颗，首次不延迟，正常预热约四颗。
+       位置参照原版 MetaIcon 的右上偏移，并稍抬高以避开同格人物身体。
+       原版终止预热 Effecter 后停止喷射，已产生的粒子按 Core 生命周期自然淡出。 -->
+  <EffecterDef>
+    <defName>SSC_PetCatComfortWarmup</defName>
+    <children>
+      <li>
+        <subEffecterClass>SubEffecter_SprayerContinuous</subEffecterClass>
+        <fleckDef>Heart</fleckDef>
+        <spawnLocType>OnTarget</spawnLocType>
+        <positionOffset>(0.35, 0, 0.6)</positionOffset>
+        <ticksBetweenMotes>30</ticksBetweenMotes>
+        <initialDelayTicks>0</initialDelayTicks>
+        <makeMoteOnSubtrigger>false</makeMoteOnSubtrigger>
+        <maxMoteCount>5</maxMoteCount>
+        <burstCount>1</burstCount>
+        <scale>1.2</scale>
+        <rotation>0</rotation>
+        <rotationRate>0</rotationRate>
+        <speed>0.42</speed>
+        <angle>30~60</angle>
+        <fleckUsesAngleForVelocity>true</fleckUsesAngleForVelocity>
+        <absoluteAngle>true</absoluteAngle>
+      </li>
+    </children>
+  </EffecterDef>
+</Defs>

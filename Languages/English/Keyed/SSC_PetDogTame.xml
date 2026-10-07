@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <!-- Target hints and success messages use {0} for the animal; training uses {1} for the project. -->
+  <SSC_PetDogTameRequiresFinal>Requires final Pet Dog specialization.</SSC_PetDogTameRequiresFinal>
+  <SSC_PetDogTameInvalidCaster>The caster must belong to the player faction, be alive and spawned, not downed, and have no mental state.</SSC_PetDogTameInvalidCaster>
+  <SSC_PetDogTameInvalidTarget>The target must be a living, spawned animal on the same map with no mental state, be factionless or belong to the player, and not be a dryad.</SSC_PetDogTameInvalidTarget>
+  <SSC_PetDogTameUnconsciousTarget>The target lacks sufficient consciousness to receive guidance.</SSC_PetDogTameUnconsciousTarget>
+  <SSC_PetDogTameUntamableTarget>The target does not meet the vanilla taming conditions.</SSC_PetDogTameUntamableTarget>
+  <SSC_PetDogTameUnreachableTarget>Cannot reach the target's cell.</SSC_PetDogTameUnreachableTarget>
+  <SSC_PetDogTameMissingEffect>The Directed Taming effect is currently unavailable.</SSC_PetDogTameMissingEffect>
+  <SSC_PetDogTameTargetHint>Guide {0} (approach its cell to tame directly)</SSC_PetDogTameTargetHint>
+  <SSC_PetDogTameTrainingTargetHint>Train {0}: {1} (approach its cell to complete this project)</SSC_PetDogTameTrainingTargetHint>
+  <SSC_PetDogTameNoTrainingTarget>The target has no enabled, unfinished training project that meets vanilla prerequisites and species/body-size requirements.</SSC_PetDogTameNoTrainingTarget>
+  <SSC_PetDogTameTrainingSuccess>{0} has completed training in {1}.</SSC_PetDogTameTrainingSuccess>
+</LanguageData>

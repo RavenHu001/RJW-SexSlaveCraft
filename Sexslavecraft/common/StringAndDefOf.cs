@@ -100,6 +100,10 @@ namespace SexSlaveCraft
         public static HediffDef SSC_Hediff_Combatant_Final;
         public static HediffDef SSC_Hediff_CombatOverdrive;
         public static AbilityDef SSC_CombatOverdrive;
+        public static AbilityDef SSC_PetCatComfort;
+        public static AbilityDef SSC_PetDogTame;
+        // 与野生驯服共用驱动；JobDef 保存己方训练分支，避免途中阵营变化改换效果。
+        public static JobDef SSC_Job_PetDogTrain;
         public static HediffDef SSC_HumanCattleLactationBridge;
         public static HediffDef SSC_Hediff_RabbitCloneLink;
         public static HediffDef SSC_Hediff_RabbitCloneLowPNA;
@@ -255,6 +259,9 @@ namespace SexSlaveCraft
             SSC_Hediff_Combatant_Final = GetDef<HediffDef>("SSC_Hediff_Combatant_Final");
             SSC_Hediff_CombatOverdrive = GetDef<HediffDef>("SSC_Hediff_CombatOverdrive");
             SSC_CombatOverdrive = GetDef<AbilityDef>("SSC_CombatOverdrive");
+            SSC_PetCatComfort = GetDef<AbilityDef>("SSC_PetCatComfort");
+            SSC_PetDogTame = GetDef<AbilityDef>("SSC_PetDogTame");
+            SSC_Job_PetDogTrain = GetDef<JobDef>("SSC_Job_PetDogTrain");
             SSC_HumanCattleLactationBridge = DefDatabase<HediffDef>.GetNamedSilentFail("SSC_HumanCattleLactationBridge");
             SSC_Hediff_RabbitCloneLink = GetDef<HediffDef>("SSC_Hediff_RabbitCloneLink");
             SSC_Hediff_RabbitCloneLowPNA = GetDef<HediffDef>("SSC_Hediff_RabbitCloneLowPNA");
@@ -552,6 +559,7 @@ namespace SexSlaveCraft
         public static string ITab_SpecializationCowDisabledMissingRequirements => "SSC_ITab_SpecializationCowDisabledMissingRequirements".Translate();
         public static string ITab_SpecializationPetDisabledResearch => "SSC_ITab_SpecializationPetDisabledResearch".Translate();
         public static string ITab_SpecializationPetDisabledMissingRequirements => "SSC_ITab_SpecializationPetDisabledMissingRequirements".Translate();
+        public static string ITab_SpecializationPetDisabledConflictingFinal => "SSC_ITab_SpecializationPetDisabledConflictingFinal".Translate();
         public static string ITab_SpecializationFinalizedSuffix => "SSC_ITab_SpecializationFinalizedSuffix".Translate();
         public static string ITab_SpecializationUnfinishedSuffix => "SSC_ITab_SpecializationUnfinishedSuffix".Translate();
         public static string ITab_SpecializationComplete => "SSC_ITab_SpecializationComplete".Translate();

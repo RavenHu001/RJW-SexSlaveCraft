@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net9.0</TargetFramework>
+    <SscSourceRoot Condition="'$(SscSourceRoot)' == ''">../../Sexslavecraft</SscSourceRoot>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(SscSourceRoot)/Comps/Comp_Train.Specialization.cs" Link="Production/Comp_Train.Specialization.cs" />
+    <Compile Include="$(SscSourceRoot)/Comps/Comp_Train.SpecializationHealth.cs" Link="Production/Comp_Train.SpecializationHealth.cs" />
+    <Compile Include="$(SscSourceRoot)/common/PetSpecializationRules.cs" Link="Production/PetSpecializationRules.cs" />
+    <Compile Include="$(SscSourceRoot)/common/PetSpecializationUtility.cs" Link="Production/PetSpecializationUtility.cs" />
+    <!-- 工作收益和亲昵资格执行真实入口；游戏任务宿主仅提供可观察的边界。 -->
+    <Compile Include="$(SscSourceRoot)/common/DogSpecializationUtility.cs" Link="Production/DogSpecializationUtility.cs" />
+    <Compile Include="$(SscSourceRoot)/ThePatches/Harmony_DogSpecialization.cs" Link="Production/Harmony_DogSpecialization.cs" />
+    <Compile Include="$(SscSourceRoot)/JobDriver/JobDriver_PetAffection.cs" Link="Production/JobDriver_PetAffection.cs" />
+    <Compile Include="$(SscSourceRoot)/common/SpecializationTrainingProgressUtility.cs" Link="Production/SpecializationTrainingProgressUtility.cs" />
+    <Compile Include="$(SscSourceRoot)/common/CombatantSpecializationProgressUtility.cs" Link="Production/CombatantSpecializationProgressUtility.cs" />
+  </ItemGroup>
+</Project>

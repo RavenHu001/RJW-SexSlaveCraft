@@ -133,6 +133,7 @@ internal static partial class Program
         Check("PE first actor completes one extraction after a rejected contender", () =>
         {
             GenSpawn.Spawned.Clear();
+            PetExtractionBoundary.Calls.Clear();
             var first = new PEExecution(); first.Start();
             var second = new PEExecution(first.Target);
             second.Toils[1].initAction();
@@ -145,10 +146,26 @@ internal static partial class Program
             Equal(1, GenSpawn.Spawned.Count, "personality gel count");
             Equal(first.Target, GenSpawn.Spawned.Single().TryGetComp<CompPersonalityStore>().Stored, "gel source");
             Equal(1, TestWorld.ProcessSexCalls, "extraction count");
+            Require(PetExtractionBoundary.Calls.SequenceEqual(new[] { "store", "cat", "dog" }),
+                "scene extraction must save once before detaching cat and dog personality effects");
             Require(first.Target.health.hediffSet.HasHediff(SSCDefOf.SSC_PersonalityExcreted_Done), "hollow state missing");
             Require(!first.Target.health.hediffSet.HasHediff(SSCDefOf.SSC_PersonalityExcreting), "excretion state not removed");
             Require(PersonalityExcretionJobUtility.GetActiveInitiator(first.Target) == null, "completed scene kept ownership");
             Require(new WorkGiver_PE().JobOnThing(second.Actor, first.Target) == null, "completed body offered for extraction again");
+        });
+        Check("PE does not detach cat or dog effects before a personality snapshot exists", () =>
+        {
+            PetExtractionBoundary.Calls.Clear();
+            var execution = new PEExecution(); execution.Start();
+            Require(PetExtractionBoundary.Calls.Count == 0, "approach or scene start detached personality effects");
+            try
+            {
+                ThingMaker.IncludePersonalityStore = false;
+                execution.Toils[2].Finish();
+                execution.Toils[3].initAction();
+                Require(PetExtractionBoundary.Calls.Count == 0, "missing storage component detached personality effects");
+            }
+            finally { ThingMaker.IncludePersonalityStore = true; }
         });
     }
 }

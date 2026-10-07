@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_Hediff_PetCatEncouragement.label>猫咪鼓舞</SSC_Hediff_PetCatEncouragement.label>
+  <SSC_Hediff_PetCatEncouragement.description>被终极宠物猫温柔地鼓舞，心情 +8、全局工作速度 ×1.10。持续 12 游戏内小时；再次获得鼓舞时刷新持续时间，不叠加。</SSC_Hediff_PetCatEncouragement.description>
+  <SSC_Hediff_PetCat_Final.label>终极宠物猫专精</SSC_Hediff_PetCat_Final.label>
+  <SSC_Hediff_PetCat_Final.description>通过人格凝胶完成的终极宠物猫专精。保留移动、闪避和亲昵效果，并获得“安抚共鸣”：使其他玩家阵营人形角色从精神状态中恢复，或给予短暂的心情与工作速度鼓舞。</SSC_Hediff_PetCat_Final.description>
+</LanguageData>

@@ -298,10 +298,23 @@ namespace SexSlaveCraft
                 toil.initAction = () =>
                 {
                     Pawn target = driver.Partner;
+                    SceneState state = State(driver);
                     HashSet<int> before = SSCRestrictionJobPreparation.Snapshot(target);
-                    original?.Invoke();
-                    if (driver.pawn?.jobs?.curDriver != driver || State(driver).Started) return;
-                    State(driver).Preparation.RecordNew(target, before);
+                    try
+                    {
+                        original?.Invoke();
+                    }
+                    finally
+                    {
+                        // 原回调可能在同步取消后才安装准备，或安装后抛异常；仍认领其新增非玩家任务。
+                        // 使用回调前的场景状态，避免 Job 已归池／复用后把归属挂到新的请求上。
+                        if (!state.Started)
+                        {
+                            state.Preparation.RecordNew(target, before);
+                            if (driver.pawn?.jobs?.curDriver != driver || driver.job != state.Job ||
+                                driver.job?.loadID != state.JobId) state.Preparation.Cleanup();
+                        }
+                    }
                 };
                 yield return toil;
             }
@@ -328,6 +341,10 @@ namespace SexSlaveCraft
         /// <summary>在启动行为任务前登记事件新建的等待任务，确保预约失败或立即取消时也可精确回收。</summary>
         public static void RegisterEventWait(Pawn actor, Job job, Pawn target, Job wait)
             => SSCRestrictionJobEvents.RegisterWait(actor, job, target, wait);
+
+        /// <summary>后续事件只读检查本场景拥有的准备任务；此入口不改变许可、登记和清理流程。</summary>
+        internal static bool OwnsPreparedJob(JobDriver_Sex driver, Pawn target, Job job)
+            => driver != null && State(driver).Preparation.Owns(target, job);
 
         /// <summary>调度未被接收时移除Job上的待领取事件，防止对象池继续持有旧参与者引用。</summary>
         public static void CancelPendingEvent(Job job) => SSCRestrictionJobEvents.CancelPending(job);

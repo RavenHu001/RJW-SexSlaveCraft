@@ -3,6 +3,8 @@ using Verse;
 
 namespace Verse
 {
+    // 翻译边界只返回键；引导选择逻辑来自生产显示分部。
+    public static class TestTranslator { public static string Translate(this string key) => key; }
     public static class TestPercentFormatting
     {
         /// <summary>仅提供固定文化的数值格式，不实现任何特化显示选择。</summary>
@@ -44,6 +46,8 @@ namespace SexSlaveCraft
     public static class PetSpecializationUtility
     {
         public static bool HasFinalPetState(Pawn pawn, SexSlaveSpecializationType type) => pawn.Finalized.Contains(type);
+        public static bool HasAnyFinalPetState(Pawn pawn) => pawn.Finalized.Contains(SexSlaveSpecializationType.PetCat) ||
+            pawn.Finalized.Contains(SexSlaveSpecializationType.PetDog) || pawn.Finalized.Contains(SexSlaveSpecializationType.PetRabbit);
         public static string GetSpecializationLabel(SexSlaveSpecializationType type) => type.ToString();
     }
     public static class CombatantSpecializationUtility

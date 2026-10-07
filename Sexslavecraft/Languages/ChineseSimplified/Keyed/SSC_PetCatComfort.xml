@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <!-- 拒绝原因区分目标身份、意识与到同格的路径；普通睡眠和倒地不单独排除目标。 -->
+  <SSC_PetCatComfortRequiresFinal>需要终极宠物猫专精。</SSC_PetCatComfortRequiresFinal>
+  <SSC_PetCatComfortInvalidCaster>施放者必须存活、已生成、未倒地且没有精神状态。</SSC_PetCatComfortInvalidCaster>
+  <SSC_PetCatComfortInvalidTarget>目标必须是同地图上另一名存活、已生成的玩家阵营人形角色；未处于精神状态的目标还须有心情需求。</SSC_PetCatComfortInvalidTarget>
+  <SSC_PetCatComfortUnconsciousTarget>目标意识不足，无法接受安抚。</SSC_PetCatComfortUnconsciousTarget>
+  <SSC_PetCatComfortUnreachableTarget>无法到达目标所在格。</SSC_PetCatComfortUnreachableTarget>
+  <SSC_PetCatComfortMissingEffect>安抚共鸣效果当前不可用。</SSC_PetCatComfortMissingEffect>
+  <!-- 仅合法地图目标显示悬停引导，{0} 为目标名字；并不宣告已进入同格施放。 -->
+  <SSC_PetCatComfortTargetHint>安抚 {0}（走至同格后施放）</SSC_PetCatComfortTargetHint>
+</LanguageData>

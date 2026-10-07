@@ -13,7 +13,7 @@
   <SSC_PSEdit_TrainerOfficer_Final.jobString>Shaping final Training Officer personality...</SSC_PSEdit_TrainerOfficer_Final.jobString>
 
   <SSC_PSEdit_PetCat_Final.label>Sex Slave Specialization (Final Pet Cat)</SSC_PSEdit_PetCat_Final.label>
-  <SSC_PSEdit_PetCat_Final.description>Further shapes personality gel with 100% Pet Cat specialization progress into its final state. This recipe accepts only material that has completed Pet Cat specialization and carries the base Pet Cat state.</SSC_PSEdit_PetCat_Final.description>
+  <SSC_PSEdit_PetCat_Final.description>Processes personality gel with Pet Cat as its current path, completed ordinary training and the base Pet Cat state into a final Pet Cat personality. The material must have no final Cat, Dog or Rabbit specialization. Implanting it grants permanent movement speed and melee dodge bonuses and retains affection toward the actual bound master; it also grants Soothing Resonance to recover another player-faction humanlike pawn from a mental state, or briefly encourage its mood and work speed.</SSC_PSEdit_PetCat_Final.description>
   <SSC_PSEdit_PetCat_Final.jobString>Shaping final Pet Cat personality...</SSC_PSEdit_PetCat_Final.jobString>
 
   <SSC_PSEdit_PetDog_Final.label>Sex Slave Specialization (Final Pet Dog)</SSC_PSEdit_PetDog_Final.label>

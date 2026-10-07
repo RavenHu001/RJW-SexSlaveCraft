@@ -15,10 +15,18 @@ namespace Verse
 
     public class ThingDef : Def
     {
+        // 延续本套件物品默认可存储人格的模型，同时允许用例移除组件声明，
+        // 验证真实产物预检；实际游戏 Def 的组件列表由 XML 加载。
+        public List<CompProperties> comps = new List<CompProperties>
+        {
+            new CompProperties { compClass = typeof(SexSlaveCraft.CompPersonalityStore) }
+        };
     }
 
     public class HediffDef : Def
     {
+        public Type hediffClass;
+        public List<HediffCompProperties> comps;
     }
 
     public class RecipeDef : Def
@@ -171,10 +179,11 @@ namespace Verse
         /// <summary>按组件类型查找测试物品上注册的实例，没有匹配项时返回空引用。</summary>
         public T TryGetComp<T>()
             where T : class => Comps.TryGetValue(typeof(T), out var c) ? c as T : null;
-        /// <summary>记录物品已被销毁，以便验证凝胶是否在成功植入后被消耗。</summary>
+        /// <summary>模拟原版销毁：记录销毁状态，并将非 Pawn 物品的堆叠数清零。</summary>
         public virtual void Destroy(DestroyMode mode)
         {
             Destroyed = true;
+            if (!(this is Pawn)) stackCount = 0;
         }
     }
 
@@ -225,7 +234,7 @@ namespace Verse
         public int AgeBiologicalYears = 25;
     }
 
-    public class Pawn : Thing
+    public partial class Pawn : Thing
     {
         public Verse.AI.Pawn_JobTracker jobs = new Verse.AI.Pawn_JobTracker();
         public Verse.AI.Job CurJob => jobs.curJob;
@@ -280,6 +289,8 @@ namespace Verse
     public class HealthTracker
     {
         public HediffSet hediffSet = new HediffSet();
+        // 猫目标意识检查仅为本迁移套件的编译边界；意识分支由猫技能专项验证。
+        public PawnCapacityTracker capacities = new PawnCapacityTracker();
         /// <summary>从测试角色的健康状态列表中移除指定实例。</summary>
         public void RemoveHediff(Hediff h)
         {
@@ -297,6 +308,7 @@ namespace Verse
             return h;
         }
     }
+    public class PawnCapacityTracker { public bool CanBeAwake = true; }
 
     public static class ThingMaker
     {
@@ -304,6 +316,8 @@ namespace Verse
         public static Thing MakeThing(ThingDef def)
         {
             var t = new Thing { def = def };
+            // 生成替身服从组件声明，缺失人格组件时不能自动补出合法产物。
+            if (def?.comps?.Any(props => props?.compClass == typeof(SexSlaveCraft.CompPersonalityStore)) != true) return t;
             var c = new SexSlaveCraft.CompPersonalityStore
             {
                 parent = t
@@ -326,7 +340,7 @@ namespace Verse
     public static class Messages
     {
         /// <summary>提供游戏提示接口的空实现，避免测试依赖界面系统。</summary>
-        public static void Message(string s, Thing t, object d)
+        public static void Message(string s, Thing t, object d, bool historical = true)
         {
         }
     }
@@ -404,6 +418,7 @@ namespace RimWorld
 
     public class AbilityDef : Def
     {
+        public JobDef jobDef;
     }
 
     public class TraitDegreeData
@@ -465,17 +480,23 @@ namespace RimWorld
     public class Pawn_AbilityTracker
     {
         public HashSet<AbilityDef> GrantedAbilities = new HashSet<AbilityDef>();
+        private readonly Dictionary<AbilityDef, Ability> instances = new Dictionary<AbilityDef, Ability>();
         /// <summary>以集合记录已授予能力，使同一能力被多个来源重复授予时保持幂等。</summary>
         public void GainAbility(AbilityDef def)
         {
             GrantedAbilities.Add(def);
+            if (!instances.ContainsKey(def)) instances.Add(def, new Ability());
         }
 
         /// <summary>直接移除指定能力，模拟原版移除特质时不会为共享能力进行来源计数的行为。</summary>
         public void RemoveAbility(AbilityDef def)
         {
             GrantedAbilities.Remove(def);
+            instances.Remove(def);
         }
+
+        /// <summary>返回独立能力实例；同一身体重复授予不会重置其已有冷却。</summary>
+        public Ability GetAbility(AbilityDef def) => instances.TryGetValue(def, out var ability) ? ability : null;
     }
 
     public class Trait
@@ -732,6 +753,7 @@ namespace RimWorld
     public static class MessageTypeDefOf
     {
         public static object NeutralEvent = new object ();
+        public static object PositiveEvent = new object();
     }
 
     public static class MeditationFocusTypeAvailabilityCache
@@ -819,12 +841,14 @@ namespace SexSlaveCraft
 
     public class HediffComp_CowMilkReservoir { public float CurrentCharge; }
     public static class ResearchUtils { public static bool IsResearchFinished(object def) => def != null; }
-    public static class SSCDefOf
+    public static partial class SSCDefOf
     {
         public static object SSC_RES_Combatant = new object();
         public static HediffDef SSC_Hediff_Combatant = new HediffDef { defName = "SSC_Hediff_Combatant" };
         public static readonly HediffDef SSC_Hediff_CombatOverdrive = new HediffDef { defName = "SSC_Hediff_CombatOverdrive" };
         public static readonly AbilityDef SSC_CombatOverdrive = new AbilityDef { defName = "SSC_CombatOverdrive" };
+        public static readonly AbilityDef SSC_PetCatComfort = new AbilityDef { defName = "SSC_PetCatComfort" };
+        public static readonly AbilityDef SSC_PetDogTame = new AbilityDef { defName = "SSC_PetDogTame" };
         public static HediffDef SSC_Hediff_Combatant_Final = new HediffDef { defName = "SSC_Hediff_Combatant_Final" };
         public static ThingDef SSC_PersonalitySlime = new ThingDef { defName = "SSC_PersonalitySlime" };
         public static ThingDef SSC_PS_P = new ThingDef { defName = "SSC_PS_P" };
@@ -853,7 +877,7 @@ namespace SexSlaveCraft
         public static HediffDef SSC_Hediff_TrainerOfficer_FinalDisabled = new HediffDef { defName = "SSC_Hediff_TrainerOfficer_FinalDisabled" };
     }
 
-    public static class SSCBondUtility
+    public static partial class SSCBondUtility
     {
         /// <summary>提供解除绑定接口的空实现；人格特质测试不运行锁链系统。</summary>
         public static void Unbind(Pawn p)
@@ -878,31 +902,6 @@ namespace SexSlaveCraft
 
         /// <summary>提供性奴派生特质同步接口的空实现；本测试聚焦普通人格特质。</summary>
         public static void SyncSexSlaveTraitFromHighestCorruption(Pawn p)
-        {
-        }
-    }
-
-    public static class PetSpecializationUtility
-    {
-        public static bool HasFinalPetState(Pawn p, SexSlaveSpecializationType t) => false;
-        public static void EnsurePetHediffFromSpecialization(Pawn p) { }
-        public static HediffDef GetBaseHediffDef(SexSlaveSpecializationType t) => null;
-        /// <summary>本套件的训导官配方没有宠物基础标签，返回空定义供生产工作者继续执行。</summary>
-        public static HediffDef GetBaseHediffForFinal(HediffDef final) => null;
-        /// <summary>提供宠物专精状态清理接口的空实现。</summary>
-        public static void RemoveAllPetStates(Pawn p)
-        {
-        }
-
-        /// <summary>将测试标签视为非宠物专精标签，不模拟真实专精标签分类。</summary>
-        public static bool IsPetTag(HediffDef d) => false;
-        /// <summary>提供宠物专精标签应用接口的空实现。</summary>
-        public static void ApplyExclusivePetTags(Pawn p, CompPersonalityStore c)
-        {
-        }
-
-        /// <summary>提供宠物专精标签存储接口的空实现。</summary>
-        public static void StoreExclusivePetTags(CompPersonalityStore c, Pawn p)
         {
         }
     }
@@ -934,7 +933,7 @@ namespace SexSlaveCraft
         }
     }
 
-    public static class Strings
+    public static partial class Strings
     {
         public const string ITab_SpecializationCombatantDisabledIdentity = "identity";
         public const string ITab_SpecializationCombatantDisabledResearch = "research";

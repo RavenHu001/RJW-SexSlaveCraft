@@ -11,6 +11,7 @@ namespace Verse
     {
         public string LabelShort => "pawn";
         public bool TrainerEligible = true, TrainerFinal, PetFinal;
+        public readonly HashSet<SexSlaveSpecializationType> FinalPets = new();
         public bool IsColonist = true, IsPrisonerOfColony, IsSlave;
         public CompSexSlaveTraining Training;
         public Health health;
@@ -130,8 +131,18 @@ namespace SexSlaveCraft
     }
     public static class PetSpecializationUtility
     {
-        public static bool HasFinalPetState(Pawn p, SexSlaveSpecializationType t) => p?.PetFinal == true;
+        public static bool HasFinalPetState(Pawn p, SexSlaveSpecializationType t) =>
+            p?.PetFinal == true || p?.FinalPets.Contains(t) == true;
+        public static bool HasAnyFinalPetState(Pawn p) => p?.PetFinal == true || p?.FinalPets.Count > 0;
+        public static bool CanTrainPetSpecialization(Pawn p, SexSlaveSpecializationType t) =>
+            PetSpecializationRules.CanTrain(t, p?.Training?.specializationType ?? SexSlaveSpecializationType.None,
+                HasFinalPetState(p, SexSlaveSpecializationType.PetCat),
+                HasFinalPetState(p, SexSlaveSpecializationType.PetDog),
+                HasFinalPetState(p, SexSlaveSpecializationType.PetRabbit));
         public static void EnsurePetHediffFromSpecialization(Pawn p) { }
+        // 本套件只验证战斗员生命周期；宠物状态清理由宠物专项运行真实源码验证。
+        public static void RemoveInactiveOrdinaryPetStates(Pawn p) { }
+        public static void SyncPetStates(Pawn p) { }
         public static bool TryGainPetProgress(Pawn p, SexSlaveSpecializationType t, float amount)
         {
             if (p?.Training?.specializationType != t) return false;
@@ -161,6 +172,7 @@ namespace SexSlaveCraft
     {
         public static string Label(Pawn p) => GetSpecializationLabel(p, p.Training);
         public static string Progress(Pawn p) => GetSpecializationProgressText(p, p.Training);
+        public static string ProgressTip(Pawn p) => GetSpecializationProgressTip(p, p?.Training);
         public static bool SpecializationVisible(Pawn p) => CanShowSpecializationSection(p?.Training);
         public static bool LegacyOptions(Pawn p) => CanShowLegacySpecializationOptions(p.Training);
     }

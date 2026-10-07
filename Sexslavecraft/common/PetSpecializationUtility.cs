@@ -10,6 +10,8 @@ namespace SexSlaveCraft
         private const float ThresholdProgress = 0.20f;
         private const float InitialHediffSeverity = 0.01f;
         private const float AutoAffectionMaxDistance = 2.9f;
+        // 猫的陪伴特色经验按一次成功亲昵结算；频率沿用共用的一天完成冷却。
+        private const float CatAffectionProgressGain = 0.01f;
 
         private static readonly SexSlaveSpecializationType[] PetTypes =
         {
@@ -20,9 +22,7 @@ namespace SexSlaveCraft
 
         public static bool IsPetSpecialization(SexSlaveSpecializationType type)
         {
-            return type == SexSlaveSpecializationType.PetCat ||
-                   type == SexSlaveSpecializationType.PetDog ||
-                   type == SexSlaveSpecializationType.PetRabbit;
+            return PetSpecializationRules.IsPetSpecialization(type);
         }
 
         public static HediffDef GetBaseHediffDef(SexSlaveSpecializationType type)
@@ -88,6 +88,52 @@ namespace SexSlaveCraft
             return finalDef != null && pawn.health.hediffSet.HasHediff(finalDef);
         }
 
+        public static bool HasAnyFinalPetState(Pawn pawn)
+        {
+            foreach (SexSlaveSpecializationType type in PetTypes)
+                if (HasFinalPetState(pawn, type)) return true;
+            return false;
+        }
+
+        /// <summary>只读查询生效资格；历史和残留普通标签不授予行为资格，也不改变存档。</summary>
+        public static bool HasActivePetEffects(Pawn pawn, SexSlaveSpecializationType type)
+        {
+            if (pawn?.health?.hediffSet == null || pawn.Destroyed || pawn.Dead) return false;
+            CompSexSlaveTraining comp = pawn.TryGetComp<CompSexSlaveTraining>();
+            return PetSpecializationRules.HasEffects(type, comp?.specializationType ?? SexSlaveSpecializationType.None,
+                HasFinalPetState(pawn, SexSlaveSpecializationType.PetCat),
+                HasFinalPetState(pawn, SexSlaveSpecializationType.PetDog),
+                HasFinalPetState(pawn, SexSlaveSpecializationType.PetRabbit));
+        }
+
+        /// <summary>终极成果使用完成进度；普通效果只读取本种当前进度，绝不借用其他方向或历史。</summary>
+        public static float GetEffectivePetProgress(Pawn pawn, SexSlaveSpecializationType type)
+        {
+            if (!HasActivePetEffects(pawn, type)) return 0f;
+            if (HasFinalPetState(pawn, type)) return 1f;
+            return CompSexSlaveTraining.NormalizeSpecializationProgress(
+                pawn.TryGetComp<CompSexSlaveTraining>().specializationProgress);
+        }
+
+        /// <summary>亲昵需要真实训练组件，以及任一当前普通宠物或保留的终极宠物成果。</summary>
+        public static bool HasPetAffectionQualification(Pawn pawn)
+        {
+            if (pawn?.TryGetComp<CompSexSlaveTraining>() == null) return false;
+            foreach (SexSlaveSpecializationType type in PetTypes)
+                if (HasActivePetEffects(pawn, type)) return true;
+            return false;
+        }
+
+        /// <summary>持续培养不重查研究或玩家开放状态，合法旧档猫兔仍可成长。</summary>
+        public static bool CanTrainPetSpecialization(Pawn pawn, SexSlaveSpecializationType type)
+        {
+            CompSexSlaveTraining comp = pawn?.TryGetComp<CompSexSlaveTraining>();
+            return comp != null && PetSpecializationRules.CanTrain(type, comp.specializationType,
+                HasFinalPetState(pawn, SexSlaveSpecializationType.PetCat),
+                HasFinalPetState(pawn, SexSlaveSpecializationType.PetDog),
+                HasFinalPetState(pawn, SexSlaveSpecializationType.PetRabbit));
+        }
+
         public static bool IsPetTag(HediffDef def)
         {
             if (def == null) return false;
@@ -123,8 +169,7 @@ namespace SexSlaveCraft
             if (pawn?.health?.hediffSet == null) return;
 
             CompSexSlaveTraining comp = pawn.TryGetComp<CompSexSlaveTraining>();
-            if (comp == null || !IsPetSpecialization(comp.specializationType)) return;
-            if (HasFinalPetState(pawn, comp.specializationType)) return;
+            if (comp == null || !CanTrainPetSpecialization(pawn, comp.specializationType)) return;
 
             HediffDef baseDef = GetBaseHediffDef(comp.specializationType);
             if (baseDef == null) return;
@@ -155,51 +200,101 @@ namespace SexSlaveCraft
             }
         }
 
+        /// <summary>清理不生效的普通状态后同步当前普通进度；不删除终极成果或选择冲突成果。</summary>
         public static void SyncPetStates(Pawn pawn)
         {
-            if (pawn?.health?.hediffSet == null) return;
+            RemoveInactiveOrdinaryPetStates(pawn);
+            EnsurePetHediffFromSpecialization(pawn);
+        }
 
+        /// <summary>仅清理普通状态；切换通知及人格恢复期间不导入宿主进度，也不提前创建普通状态。</summary>
+        internal static void RemoveInactiveOrdinaryPetStates(Pawn pawn)
+        {
+            if (pawn?.health?.hediffSet == null || pawn.TryGetComp<CompSexSlaveTraining>() == null) return;
             foreach (SexSlaveSpecializationType type in PetTypes)
             {
-                HediffDef finalDef = GetFinalHediffDef(type);
-                HediffDef baseDef = GetBaseHediffDef(type);
-                if (finalDef == null || baseDef == null) continue;
-
-                Hediff finalHediff = pawn.health.hediffSet.GetFirstHediffOfDef(finalDef);
-                Hediff baseHediff = pawn.health.hediffSet.GetFirstHediffOfDef(baseDef);
-                if (finalHediff != null && baseHediff != null)
-                {
-                    pawn.health.RemoveHediff(baseHediff);
-                }
+                // 组内任意终极成果都结束普通宠物培养，避免同种普通与终极属性重复叠加。
+                if (!CanTrainPetSpecialization(pawn, type)) RemoveIfPresent(pawn, GetBaseHediffDef(type));
             }
-
-            EnsurePetHediffFromSpecialization(pawn);
         }
 
         public static bool CanUsePetSpecialization(Pawn pawn, SexSlaveSpecializationType type, out string reason)
         {
-            reason = null;
-            if (pawn == null || !IsPetSpecialization(type))
+            bool allowed = CanSelectPetSpecialization(pawn, type, out PetSpecializationFailure failure);
+            reason = GetSelectionFailureReason(failure);
+            return allowed;
+        }
+
+        /// <summary>玩家选择的完整资格；与底层方向恢复和持续培养分开。</summary>
+        public static bool CanSelectPetSpecialization(Pawn pawn, SexSlaveSpecializationType type,
+            out PetSpecializationFailure failure)
+        {
+            failure = PetSpecializationFailure.MissingRequirements;
+            CompSexSlaveTraining comp = pawn?.TryGetComp<CompSexSlaveTraining>();
+            if (comp == null || !IsPetSpecialization(type)) return false;
+            // 猫普通路线已开放，继续复用身份、研究与终极互斥检查；兔仍保留禁用入口。
+            if (type == SexSlaveSpecializationType.PetRabbit)
             {
-                reason = Strings.ITab_SpecializationPetDisabledMissingRequirements;
+                failure = PetSpecializationFailure.NotImplemented;
+                return false;
+            }
+            if (comp.pawnIdentity != PawnIdentity.Slave) return false;
+            if (!PetSpecializationRules.CanChangeDirection(type,
+                HasFinalPetState(pawn, SexSlaveSpecializationType.PetCat),
+                HasFinalPetState(pawn, SexSlaveSpecializationType.PetDog),
+                HasFinalPetState(pawn, SexSlaveSpecializationType.PetRabbit), out failure)) return false;
+            if (HasFinalPetState(pawn, type))
+            {
+                failure = PetSpecializationFailure.AlreadyFinalized;
                 return false;
             }
 
-            string researchDefName = GetResearchDefName(type);
-            ResearchProjectDef research = DefDatabase<ResearchProjectDef>.GetNamedSilentFail(researchDefName);
-            if (research != null && !ResearchUtils.IsResearchFinished(research))
+            ResearchProjectDef research = DefDatabase<ResearchProjectDef>.GetNamedSilentFail(GetResearchDefName(type));
+            if (SSCDefOf.SSC_BasicTraining == null || research == null)
             {
-                reason = Strings.ITab_SpecializationPetDisabledResearch;
+                failure = PetSpecializationFailure.MissingRequirements;
+                return false;
+            }
+            if (!ResearchUtils.IsResearchFinished(SSCDefOf.SSC_BasicTraining) ||
+                !ResearchUtils.IsResearchFinished(research))
+            {
+                failure = PetSpecializationFailure.ResearchRequired;
                 return false;
             }
 
+            failure = PetSpecializationFailure.None;
             return true;
+        }
+
+        /// <summary>菜单动作和其他玩家入口均在提交时复查，并确认仍使用同一个训练组件。</summary>
+        public static bool TrySelectPetSpecialization(Pawn pawn, CompSexSlaveTraining comp,
+            SexSlaveSpecializationType type, out PetSpecializationFailure failure)
+        {
+            failure = PetSpecializationFailure.MissingRequirements;
+            if (comp == null || pawn?.TryGetComp<CompSexSlaveTraining>() != comp) return false;
+            if (!CanSelectPetSpecialization(pawn, type, out failure) ||
+                !comp.TrySetSpecialization(type, out failure)) return false;
+            EnsurePetHediffFromSpecialization(pawn);
+            return true;
+        }
+
+        public static string GetSelectionFailureReason(PetSpecializationFailure failure)
+        {
+            switch (failure)
+            {
+                case PetSpecializationFailure.None: return null;
+                case PetSpecializationFailure.NotImplemented: return Strings.ITab_SpecializationUnfinishedSuffix;
+                case PetSpecializationFailure.ResearchRequired: return Strings.ITab_SpecializationPetDisabledResearch;
+                case PetSpecializationFailure.AlreadyFinalized: return Strings.ITab_SpecializationFinalizedSuffix;
+                case PetSpecializationFailure.ConflictingFinal: return Strings.ITab_SpecializationPetDisabledConflictingFinal;
+                default: return Strings.ITab_SpecializationPetDisabledMissingRequirements;
+            }
         }
 
         public static bool TryGainPetProgress(Pawn pawn, SexSlaveSpecializationType type, float amount, bool showThresholdMessage = true)
         {
             if (pawn == null || amount <= 0f || float.IsNaN(amount) || float.IsInfinity(amount) ||
-                !IsPetSpecialization(type) || HasFinalPetState(pawn, type)) return false;
+                !CanTrainPetSpecialization(pawn, type)) return false;
 
             CompSexSlaveTraining comp = pawn.TryGetComp<CompSexSlaveTraining>();
             if (comp == null || comp.specializationType != type) return false;
@@ -226,16 +321,23 @@ namespace SexSlaveCraft
         {
             if (pet == null) return false;
             comp = comp ?? pet.TryGetComp<CompSexSlaveTraining>();
-            if (comp == null || !IsPetSpecialization(comp.specializationType)) return false;
+            // 防止旧组件引用绕过当前冷却；资格由当前普通方向或独立终极成果提供。
+            if (comp == null || pet.TryGetComp<CompSexSlaveTraining>() != comp ||
+                !HasPetAffectionQualification(pet)) return false;
 
-            Pawn master = SSCBondUtility.GetResolvedMaster(pet);
-            if (!CanDoPetAffectionNow(pet, master)) return false;
+            Pawn master = SSCBondUtility.GetBoundMaster(pet);
+            // 自动只发现附近的主人；真正接触检查留给到达和结算阶段。
+            // 双方都空闲才发起，不能以主人的强制等待抢走工作或玩家命令。
+            if (!CanApproachPetAffectionNow(pet, master)) return false;
             if (!IsPetAffectionCooldownReady(comp)) return false;
-            if (!CanStartPetAffectionJobWithoutDisruptingWork(pet)) return false;
+            if (!CanStartPetAffectionJobWithoutDisruptingWork(pet) ||
+                !CanStartPetAffectionJobWithoutDisruptingWork(master)) return false;
+            if (!pet.CanReach(master, PathEndMode.Touch, Danger.Some)) return false;
             if (SSCDefOf.SSC_Job_PetAffection == null) return false;
 
             Job job = JobMaker.MakeJob(SSCDefOf.SSC_Job_PetAffection, master);
-            job.expiryInterval = GenTicks.TickRareInterval;
+            // 近距离慢速行走也要留出完成两秒互动的时间；不追逐已离开发现范围的主人。
+            job.expiryInterval = 600;
             return pet.jobs != null && pet.jobs.TryTakeOrderedJob(job, JobTag.Misc);
         }
 
@@ -243,9 +345,13 @@ namespace SexSlaveCraft
         {
             if (pet == null) return false;
             CompSexSlaveTraining comp = pet.TryGetComp<CompSexSlaveTraining>();
-            if (comp == null || !IsPetSpecialization(comp.specializationType)) return false;
+            if (comp == null || !HasPetAffectionQualification(pet)) return false;
             if (!CanDoPetAffectionNow(pet, master)) return false;
             if (!IsPetAffectionCooldownReady(comp)) return false;
+
+            // 在记忆与经验副作用之前认领本次完成；重复回调及结算重入不能再次领奖。
+            // 此字段已有存档支持，成功后沿用 60000 tick 冷却，中断仍不消耗冷却。
+            comp.lastPetAffectionTick = Find.TickManager.TicksGame;
 
             ThoughtDef thoughtDef = DefDatabase<ThoughtDef>.GetNamedSilentFail("SSC_PetAffection_Mood");
             if (thoughtDef != null && master?.needs?.mood?.thoughts?.memories != null)
@@ -253,16 +359,26 @@ namespace SexSlaveCraft
                 master.needs.mood.thoughts.memories.TryGainMemory(thoughtDef, pet);
             }
 
-            comp.lastPetAffectionTick = Find.TickManager.TicksGame;
-
-            // EN: Pet affection is deliberately not adding specialization experience yet.
-            // CN: 亲昵动作暂时不增加宠物专精经验；等经验来源和数值敲定后，再接 TryGainPetProgress。
+            // 仅 SSC 性奴的当前普通猫获得 1 个百分点特色经验；公共培养入口继续
+            // 检查当前方向、普通完成及任意宠物终极，终极猫转练不会给新方向发奖。
+            // 狗、兔及普通培养完成后的亲昵仍只保留原有记忆和冷却。
+            if (comp.pawnIdentity == PawnIdentity.Slave)
+                TryGainPetProgress(pet, SexSlaveSpecializationType.PetCat, CatAffectionProgressGain);
             return true;
         }
 
         public static bool CanDoPetAffectionNow(Pawn pet, Pawn master)
         {
-            if (pet == null || master == null || master.DestroyedOrNull() || master.Dead)
+            // 奖励只在实际接触时结算，不能隔墙或站在发现范围的边缘直接完成。
+            return CanApproachPetAffectionNow(pet, master) &&
+                ReachabilityImmediate.CanReachImmediate(pet, master, PathEndMode.Touch);
+        }
+
+        /// <summary>发现与接近共用身体、绑定和附近范围资格；接触另在互动与结算时检查。</summary>
+        public static bool CanApproachPetAffectionNow(Pawn pet, Pawn master)
+        {
+            if (!HasPetAffectionQualification(pet) || master == null || master.DestroyedOrNull() || master.Dead ||
+                pet == master || SSCBondUtility.GetBoundMaster(pet) != master)
             {
                 return false;
             }
@@ -272,7 +388,11 @@ namespace SexSlaveCraft
                 return false;
             }
 
-            if (pet.Dead || pet.Downed || master.Downed || pet.Drafted || master.Drafted)
+            // 普通陪伴需要双方清醒且可行动；睡眠、精神状态或战斗不被自动任务打断。
+            if (pet.Dead || pet.Downed || master.Downed || pet.Drafted || master.Drafted ||
+                pet.InMentalState || master.InMentalState || pet.IsFighting() || master.IsFighting() ||
+                pet.health?.capacities?.CanBeAwake != true || master.health?.capacities?.CanBeAwake != true ||
+                !pet.Awake() || !master.Awake())
             {
                 return false;
             }
@@ -286,23 +406,32 @@ namespace SexSlaveCraft
                    Find.TickManager.TicksGame - comp.lastPetAffectionTick >= CompSexSlaveTraining.PetAffectionCooldownTicks;
         }
 
-        private static bool CanStartPetAffectionJobWithoutDisruptingWork(Pawn pet)
+        /// <summary>自动陪伴只接替空闲漫步／等待；已有准备等待、命令或队列都不抢占。</summary>
+        public static bool CanStartPetAffectionJobWithoutDisruptingWork(Pawn pet)
         {
             if (pet?.jobs == null) return false;
+
+            if (pet.CurJob?.playerForced == true) return false;
+            foreach (QueuedJob queued in pet.jobs.jobQueue)
+                if (queued.job != null) return false;
 
             JobDef curJobDef = pet.CurJobDef;
             if (curJobDef == null) return true;
             if (curJobDef == SSCDefOf.SSC_Job_PetAffection) return false;
 
-            // EN: This affection job is only allowed to replace idle waiting jobs.
-            // CN: 亲昵 job 只允许替换空闲等待类 job，避免打断搬运、建造、战斗等正常工作。
-            if (curJobDef == JobDefOf.Wait || curJobDef == JobDefOf.Wait_Wander)
+            // Wait_MaintainPosture 常用于其他互动的准备等待，不再按普通空闲处理。
+            if (curJobDef == JobDefOf.Wait)
+            {
+                // ForceWait 也使用 Wait，但有明确到期时间；那是其他交互持有的等待。
+                return pet.CurJob.expiryInterval <= 0;
+            }
+            if (curJobDef == JobDefOf.Wait_Wander)
             {
                 return true;
             }
 
             string defName = curJobDef.defName;
-            return defName == "Wait_MaintainPosture" || defName == "GotoWander";
+            return defName == "GotoWander";
         }
 
         public static string GetSpecializationLabel(SexSlaveSpecializationType type)
@@ -414,11 +543,10 @@ namespace SexSlaveCraft
 
         private static void RemoveIfPresent(Pawn pawn, HediffDef def)
         {
-            Hediff hediff = pawn?.health?.hediffSet?.GetFirstHediffOfDef(def);
-            if (hediff != null)
-            {
+            if (pawn?.health?.hediffSet == null || def == null) return;
+            Hediff hediff;
+            while ((hediff = pawn.health.hediffSet.GetFirstHediffOfDef(def)) != null)
                 pawn.health.RemoveHediff(hediff);
-            }
         }
     }
 }

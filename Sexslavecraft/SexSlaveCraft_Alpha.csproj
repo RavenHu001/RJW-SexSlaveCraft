@@ -104,6 +104,12 @@
     <Compile Include="common\BusSpecializationUtility.cs" />
     <Compile Include="common\DogSpecializationUtility.cs" />
     <Compile Include="common\PetSpecializationUtility.cs" />
+    <Compile Include="common\PetAffectionFollowupUtility.cs" />
+    <Compile Include="common\PetSpecializationRules.cs" />
+    <Compile Include="common\PetCatAbilityUtility.cs" />
+    <Compile Include="common\PetDogAbilityUtility.cs" />
+    <!-- 旧式项目显式列举源码；将宠物配方公共资格编入运行 DLL，供三个入口调用。 -->
+    <Compile Include="common\PetFinalizationRecipeUtility.cs" />
     <!-- 训导官资格、状态维护、人格标签及经验均已接入；调教员身份与强制限制由统一入口处理。 -->
     <Compile Include="common\TrainerSpecializationUtility.cs" />
     <Compile Include="common\TrainerSpecializationLifecycle.cs" />
@@ -131,6 +137,12 @@
     <Compile Include="common\SoftDependencyUtility.cs" />
     <Compile Include="Comps\CompAbilityEffect_EroticConversion.cs" />
     <Compile Include="Comps\Ability_CombatOverdrive.cs" />
+    <Compile Include="Comps\Ability_PetCatComfort.cs" />
+    <Compile Include="Comps\CompAbilityEffect_PetCatComfort.cs" />
+    <Compile Include="Comps\Verb_PetCatComfort.cs" />
+    <Compile Include="Comps\Ability_PetDogTame.cs" />
+    <Compile Include="Comps\CompAbilityEffect_PetDogTame.cs" />
+    <Compile Include="Comps\Verb_PetDogTame.cs" />
     <Compile Include="Hediff\HediffCompProperties_GelatinizationAdaptation.cs" />
     <Compile Include="Hediff\HediffCompProperties_FullGelatinizationAdaptation.cs" />
     <Compile Include="Hediff\HediffCompProperties_FullGelatinizedRegen.cs" />
@@ -155,6 +167,9 @@
     <Compile Include="Hediff\Hediff_GelatinizedLeg.cs" />
     <Compile Include="JobDriver\JobDriver_InsertPersonality.cs" />
     <Compile Include="JobDriver\JobDriver_PetAffection.cs" />
+    <Compile Include="JobDriver\JobDriver_PetAffectionFollowup.cs" />
+    <Compile Include="JobDriver\JobDriver_PetCatComfort.cs" />
+    <Compile Include="JobDriver\JobDriver_PetDogTame.cs" />
     <Compile Include="JobDriver\JobDriver_Train.cs" />
     <Compile Include="JobDriver\JobDriver_SelfTraining.cs" />
     <Compile Include="Comps\Comp_Train.SelfTraining.cs" />

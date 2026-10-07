@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <!-- Отчёт задания сохраняет TargetA для подстановки имени цели игрой. -->
+  <SSC_Job_PetCatComfort.reportString>Утешение TargetA.</SSC_Job_PetCatComfort.reportString>
+</LanguageData>
