@@ -6,7 +6,7 @@ RimWorld 1.6 的 RimJobWorld（RJW）扩展模组，基于上游 **2.2.8** 继�
 
 2.3.6 已正式发布，统一日常调教与完整绑定仪式的基础特化经验；安装 ZIP 与 SHA-256 校验文件见 [v2.3.6 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.6)。2.3.5 历史安装包不包含这项变更。当前构建、回归及实机验证范围见[2.3.6 版本验证](Docs/Releases/2.3.6/2.3.6版本验证.md)。
 
-当前开发分支已开放猫普通培养：当前普通猫成功亲昵实际绑定的主人后获得 1 个百分点，沿用一天冷却。猫、狗已有普通培养和凝胶终极化被动；终极主动技能尚未实装，兔选择入口仍禁用。这些后续开发内容不包含在已发布的 2.3.6 ZIP 中。
+当前开发分支已实现猫狗普通培养、宠物互斥、凝胶终极化及主动技能：终极猫使用“安抚共鸣”，终极狗使用“定向驯导”。附近空闲的宠物会接近实际绑定主人，完成两秒可见亲昵；当前普通猫额外获得 1 个百分点，完成后冷却一天。成年猫狗在双方自愿条件与许可允许时，以 20% 概率向实际主人发起后续互动；该后续已实现，待实机验收。猫狗进度区分普通完成与终极成果，普通完成后悬停可查看凝胶终极化步骤。兔入口仍禁用。这些开发内容不包含在已发布的 2.3.6 ZIP 中。
 
 ## 项目概况
 
@@ -56,7 +56,7 @@ SexSlaveCraft（SSC）围绕角色培养、身份与绑定关系、特化发展�
 
 主工程为 `Sexslavecraft/SexSlaveCraft_Alpha.csproj`，目标框架为 **.NET Framework 4.7.2**。源码编译需要 Visual Studio MSBuild、对应开发组件，以及本机 RimWorld 和模组依赖程序集。工程引用需按本机环境配置，具体方式见 [发布与打包](Docs/Maintenance/发布与打包.md)。
 
-统一验证需要 PowerShell 7、.NET SDK 9（或更新 SDK）、.NET 9 运行时，以及适用于 net9.0 的本地 Harmony DLL。先设置路径（示例路径需替换为本机位置），再运行全部 20 套回归：
+统一验证需要 PowerShell 7、.NET SDK 9（或更新 SDK）、.NET 9 运行时，以及适用于 net9.0 的本地 Harmony DLL。先设置路径（示例路径需替换为本机位置），再运行开发分支当前全部 24 套回归：
 
 ```powershell
 $env:SSC_TEST_HARMONY_PATH = 'C:\Dependencies\Harmony\net9.0\0Harmony.dll'
@@ -95,4 +95,4 @@ Version 2.3.6 adds shared, score-based base specialization progress after comple
 
 Version 2.3.6 is released. Download the installation ZIP and SHA-256 checksum from [v2.3.6 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.6). Historical 2.3.5 packages do not include shared specialization progress. When updating an installation, move the old mod folder out of `RimWorld/Mods/` before installing the replacement.
 
-For gameplay, read the [English quick start](QUICK_START_EN.md) or [full guide](PLAYER_GUIDE_EN.md). See the [bilingual changelog](CHANGELOG.md) for release history. Legacy RimTalk integration remains suspended. The current development branch supports ordinary Cat and Dog training and passive gel finalization; a current ordinary Cat gains 1 percentage point from successful affection toward its actual bound master, using the existing one-day cooldown. Final active abilities are not implemented yet, and Pet Rabbit selection remains disabled. These later development changes are not included in the published 2.3.6 ZIP.
+For gameplay, read the [English quick start](QUICK_START_EN.md) or [full guide](PLAYER_GUIDE_EN.md). See the [bilingual changelog](CHANGELOG.md) for release history. Legacy RimTalk integration remains suspended. The current development branch implements ordinary Cat and Dog training, pet exclusivity, gel finalization, Soothing Resonance for final Cats and Directed Taming for final Dogs. Idle pets near their actual bound master approach for two seconds of visible affection; a current ordinary Cat gains 1 percentage point, with a one-day affection cooldown. Eligible adult Cats and Dogs have a 20% chance to initiate a consensual follow-up with that master; this follow-up awaits in-game acceptance. Cat and Dog progress distinguishes ordinary completion from finalization and offers a gel finalization tooltip after ordinary completion. Rabbit selection remains disabled. These development changes are not included in the published 2.3.6 ZIP.

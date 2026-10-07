@@ -850,11 +850,9 @@ namespace SexSlaveCraft
             }
 
             listing.Gap(6f);
-            string progressTip = comp.specializationType == SexSlaveSpecializationType.Combatant &&
-                !CombatantSpecializationUtility.HasFinalState(pawn) &&
-                CompSexSlaveTraining.NormalizeSpecializationProgress(comp.specializationProgress) >=
-                    CompSexSlaveTraining.SpecializationCompletionProgress
-                ? "SSC_ITab_CombatantFinalizationTip".Translate().ToString() : null;
+            // 进度行沿用同一个完成门槛，悬停说明按当前战斗员／猫／狗方向提供终极化引导。
+            // 查询不创建健康状态或授予技能，已取得宠物终极成果时不再提示重复加工。
+            string progressTip = GetSpecializationProgressTip(pawn, comp);
             listing.Label((TaggedString)Strings.ITab_SpecializationProgress(GetSpecializationProgressText(pawn, comp)), -1f, progressTip);
             TrainerSpecializationDisplayState trainerState = TrainerSpecializationUtility.GetDisplayState(pawn);
             if (trainerState != TrainerSpecializationDisplayState.None)

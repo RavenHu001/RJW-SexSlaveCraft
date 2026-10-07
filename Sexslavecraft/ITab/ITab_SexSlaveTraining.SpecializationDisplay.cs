@@ -61,7 +61,7 @@ namespace SexSlaveCraft
             {
                 label += " " + Strings.ITab_SpecializationFinalizedSuffix;
             }
-            // 猫普通培养已可正常使用；未开放的兔仍显示未完成，不提前宣称猫主动技能已交付。
+            // 猫狗普通培养和终极技能已开放；未开放的兔仍显示未完成。
             if (comp.specializationType == SexSlaveSpecializationType.PetRabbit)
             {
                 label += " " + Strings.ITab_SpecializationUnfinishedSuffix;
@@ -89,12 +89,13 @@ namespace SexSlaveCraft
             // 进度与按钮采用同一个当前方向；None 不能因为其他完成记录而显示已完成。
             // 终极记录仍由各自健康状态及训导官独立状态行展示，不在这里改写其效果。
             if (comp.specializationType == SexSlaveSpecializationType.Combatant ||
-                comp.specializationType == SexSlaveSpecializationType.PetCat)
+                comp.specializationType == SexSlaveSpecializationType.PetCat ||
+                comp.specializationType == SexSlaveSpecializationType.PetDog)
             {
                 if (IsTypeFinalized(pawn, comp.specializationType))
                     return Strings.ITab_SpecializationComplete;
                 float progress = CompSexSlaveTraining.NormalizeSpecializationProgress(comp.specializationProgress);
-                // 猫与战斗员使用一位小数，避免 99.5% 被整数格式舍入成 100%；
+                // 猫狗与战斗员使用一位小数，避免 99.5% 被整数格式舍入成 100%；
                 // 达到公共完成容差时明确显示普通培养完成，不把普通完成写成终极成果。
                 return progress >= CompSexSlaveTraining.SpecializationCompletionProgress
                     ? Strings.ITab_SpecializationOrdinaryComplete : progress.ToString("P1");
@@ -104,6 +105,32 @@ namespace SexSlaveCraft
                 ? Strings.ITab_SpecializationComplete
                 : comp.specializationProgress.ToStringPercent();
             return progressText;
+        }
+
+        /// <summary>普通培养完成后的只读引导；绘制与回归共用，不修改进度、成果或配方资格。</summary>
+        private static string GetSpecializationProgressTip(Pawn pawn, CompSexSlaveTraining comp)
+        {
+            if (comp == null || CompSexSlaveTraining.NormalizeSpecializationProgress(comp.specializationProgress) <
+                CompSexSlaveTraining.SpecializationCompletionProgress) return null;
+
+            // 引导只属于当前方向。普通完成仍需提取、加工和植入，不能将历史进度
+            // 或其他方向保留的终极成果解释为当前方向已经终极化。
+            if (comp.specializationType == SexSlaveSpecializationType.Combatant)
+                return IsTypeFinalized(pawn, comp.specializationType)
+                    ? null : "SSC_ITab_CombatantFinalizationTip".Translate().ToString();
+
+            // 任意宠物终极成果都会阻止再次进行宠物终极加工；有成果时不提供
+            // 无法执行的加工建议。猫狗使用各自的配方与技能说明，兔仍不开放。
+            if (PetSpecializationUtility.HasAnyFinalPetState(pawn)) return null;
+            switch (comp.specializationType)
+            {
+                case SexSlaveSpecializationType.PetCat:
+                    return "SSC_ITab_PetCatFinalizationTip".Translate().ToString();
+                case SexSlaveSpecializationType.PetDog:
+                    return "SSC_ITab_PetDogFinalizationTip".Translate().ToString();
+                default:
+                    return null;
+            }
         }
     }
 }

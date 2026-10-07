@@ -6,6 +6,8 @@
   <SSC_ITab_SelectSpecializationPetCat>選擇寵物貓專精</SSC_ITab_SelectSpecializationPetCat>
   <SSC_ITab_SelectSpecializationPetDog>選擇寵物狗專精</SSC_ITab_SelectSpecializationPetDog>
   <SSC_ITab_SelectSpecializationPetRabbit>選擇寵物兔專精</SSC_ITab_SelectSpecializationPetRabbit>
+  <SSC_ITab_PetCatFinalizationTip>抽取人格凝膠，在雕刻臺加工為終極寵物貓後重新植入，即可獲得終極移動、閃避效果和「安撫共鳴」。普通培養完成不會直接授予終極技能。</SSC_ITab_PetCatFinalizationTip>
+  <SSC_ITab_PetDogFinalizationTip>抽取人格凝膠，在雕刻臺加工為終極寵物狗後重新植入，即可獲得終極動物處理效果和「定向馴導」，直接馴服野生動物或完整完成己方動物的一個訓練項目。普通培養完成不會直接授予終極技能。</SSC_ITab_PetDogFinalizationTip>
   <SSC_ITab_SpecializationPetDisabledResearch>需要完成對應寵物研究</SSC_ITab_SpecializationPetDisabledResearch>
   <SSC_ITab_SpecializationPetDisabledMissingRequirements>不滿足寵物專精條件</SSC_ITab_SpecializationPetDisabledMissingRequirements>
   <SSC_ITab_RabbitReproductionMode>兔生育模式：{0}</SSC_ITab_RabbitReproductionMode>

@@ -32,6 +32,9 @@ internal static partial class Program
         Run("明确留空字段重建后保留历史和其他终极成果", EmptySaveRoundTrip);
         Run("读档中不提前添加状态，完成后按组件恢复", LoadingBoundary);
         Run("显示区分普通完成和终极，未完成不舍入至百分百", CompletionDisplay);
+        Run("狗显示真实完成门槛，不提前显示百分百或终极", DogCompletionDisplay);
+        Run("猫狗完成引导只属于当前普通方向，不建议重复加工", PetFinalizationTips);
+        Run("猫狗终极化引导四语唯一、非空并与镜像一致", PetFinalizationResources);
         Run("阶段边界读取真实 XML，熟练收益不叠加", StageDefinitions);
         Run("研究成本、前置与四语资源完整", Resources);
         RunExperienceCases();
@@ -263,6 +266,82 @@ internal static partial class Program
         }
         p.Training.SetSpecialization(SexSlaveSpecializationType.PetRabbit);
         Check(ITab_SexSlaveTraining.Label(p).Contains(Strings.ITab_SpecializationUnfinishedSuffix), "兔未完成提示被删除");
+    }
+    private static void DogCompletionDisplay()
+    {
+        var p = Pawn(); p.Training.SetSpecialization(SexSlaveSpecializationType.PetDog);
+        foreach (float v in new[] { 0.995f, 0.998f, 0.99899f })
+        {
+            p.Training.specializationProgress = v;
+            string progress = ITab_SexSlaveTraining.Progress(p);
+            Check(!progress.Contains("100") && !progress.Contains("complete"), "狗未达到配方门槛却显示完成");
+            Check(progress.Contains("."), "狗未显示一位小数");
+        }
+        foreach (float v in new[] { 0.999f, 1f })
+        {
+            p.Training.specializationProgress = v;
+            Check(ITab_SexSlaveTraining.Progress(p) == Strings.ITab_SpecializationOrdinaryComplete, "狗普通完成提示错误");
+            Check(!ITab_SexSlaveTraining.Label(p).Contains("finalized"), "普通完成冒充终极");
+        }
+        p.FinalPets.Add(SexSlaveSpecializationType.PetDog);
+        Check(ITab_SexSlaveTraining.Progress(p) == Strings.ITab_SpecializationComplete, "终极狗显示仍待加工");
+        p.Training.SetSpecialization(SexSlaveSpecializationType.Combatant);
+        p.Training.specializationProgress = 0.3f;
+        Check(!ITab_SexSlaveTraining.Progress(p).Contains("complete"), "终极狗污染当前其他方向");
+    }
+    private static void PetFinalizationTips()
+    {
+        Check(ITab_SexSlaveTraining.ProgressTip(null) == null, "空对象出现引导");
+        var p = Pawn();
+        foreach (var type in new[] { SexSlaveSpecializationType.PetCat, SexSlaveSpecializationType.PetDog })
+        {
+            p.Training.SetSpecialization(type);
+            foreach (float v in new[] { float.NaN, float.PositiveInfinity, -1f, 0f, 0.99899f })
+            {
+                p.Training.specializationProgress = v;
+                Check(ITab_SexSlaveTraining.ProgressTip(p) == null, "未完成或损坏进度出现终极化引导");
+            }
+            string key = type == SexSlaveSpecializationType.PetCat ? "SSC_ITab_PetCatFinalizationTip" : "SSC_ITab_PetDogFinalizationTip";
+            foreach (float v in new[] { 0.999f, 1f })
+            {
+                p.Training.specializationProgress = v;
+                Check(ITab_SexSlaveTraining.ProgressTip(p) == key, "当前猫狗方向引导不正确");
+                Equal(v, p.Training.specializationProgress);
+                Check(p.health.hediffSet.hediffs.Count == 0 && p.FinalPets.Count == 0, "只读引导创建状态");
+            }
+            foreach (var final in new[] { SexSlaveSpecializationType.PetCat, SexSlaveSpecializationType.PetDog, SexSlaveSpecializationType.PetRabbit })
+            {
+                p.FinalPets.Add(final);
+                Check(ITab_SexSlaveTraining.ProgressTip(p) == null, "已有宠物终极成果仍建议再次加工");
+                p.FinalPets.Clear();
+            }
+        }
+        foreach (var type in new[] { SexSlaveSpecializationType.None, SexSlaveSpecializationType.PetRabbit, SexSlaveSpecializationType.Cow, SexSlaveSpecializationType.Bus, SexSlaveSpecializationType.TrainerOfficer })
+        {
+            p.Training.SetSpecialization(type); p.Training.specializationProgress = 1f;
+            Check(ITab_SexSlaveTraining.ProgressTip(p) == null, "其他方向或历史完成套用宠物引导");
+        }
+        Train(p, 0.999f);
+        p.FinalPets.Add(SexSlaveSpecializationType.PetDog);
+        Check(ITab_SexSlaveTraining.ProgressTip(p) == "SSC_ITab_CombatantFinalizationTip", "宠物终极成果阻止组外战斗员引导");
+        p.health.AddHediff(SSCDefOf.SSC_Hediff_Combatant_Final);
+        Check(ITab_SexSlaveTraining.ProgressTip(p) == null, "终极战斗员仍建议重复加工");
+    }
+    private static void PetFinalizationResources()
+    {
+        foreach (string language in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" })
+        {
+            string relative = Path.Combine(language, "Keyed", "SSC_Specialization.xml");
+            string source = Path.Combine(root, "Languages", relative);
+            var keys = Directory.EnumerateFiles(Path.Combine(root, "Languages", language, "Keyed"), "*.xml")
+                .SelectMany(path => XDocument.Load(path).Root.Elements()).ToArray();
+            foreach (string key in new[] { "SSC_ITab_PetCatFinalizationTip", "SSC_ITab_PetDogFinalizationTip" })
+            {
+                var values = keys.Where(e => e.Name.LocalName == key).ToArray();
+                Check(values.Length == 1 && !string.IsNullOrWhiteSpace(values[0].Value), "引导翻译缺失、为空或重复：" + language + "/" + key);
+            }
+            Check(File.ReadAllBytes(source).SequenceEqual(File.ReadAllBytes(Path.Combine(root, "Sexslavecraft", "Languages", relative))), "引导语言镜像不一致：" + language);
+        }
     }
     private static float Value(XElement e, string path) => float.Parse(e.Element(path).Value, CultureInfo.InvariantCulture);
     private static void StageDefinitions()
