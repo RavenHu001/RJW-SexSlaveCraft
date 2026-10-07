@@ -2,13 +2,13 @@
 
 [Project home](README.md) · [Documentation index / 文档索引](Docs/README.md) · [中文快速入门](读我，玩法介绍.md) · [Changelog](CHANGELOG.md)
 
-> For RimWorld 1.6 and SexSlaveCraft 2.3.6.\
+> For RimWorld 1.6 and SexSlaveCraft 2.3.7.\
 > This continuation is based on upstream 2.2.8. See `CHANGELOG.md` for release history.\
-> Version 2.3.6 adds shared base specialization progress from completed daily Training and full Binding Rituals. The 2.3.5 self-training and Training handoff updates remain included. Download the installation ZIP and SHA-256 checksum from [v2.3.6 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.6). Legacy RimTalk remains suspended.\
-> Development update (2026-10-06): The current branch implements Cat/Dog training, pet exclusivity, gel finalization, final active abilities and visible affection. The 20% adult Cat/Dog consensual follow-up is implemented and awaits in-game acceptance. Ordinary-completion display and finalization tooltips are available. Rabbit selection remains disabled. These development changes are not included in the published 2.3.6 ZIP.\
+> This version retains 2.3.6 shared daily Training/full Binding Ritual specialization progress and 2.3.5 self-training/handoff fixes. The existing published ZIP and checksum remain at [v2.3.6 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.6), which does not include 2.3.7 additions. Legacy RimTalk remains suspended.\
+> Version 2.3.7 consolidation (2026-10-06): Includes Cat/Dog training, pet exclusivity, gel finalization, active abilities, visible affection, ordinary-completion display and finalization tooltips. The 20% adult Cat/Dog consensual follow-up is implemented and awaits in-game acceptance. Rabbit selection remains disabled. Version 2.3.7 is not formally released; these additions are absent from the existing 2.3.6 ZIP.\
 > In-game names follow the mod's official English localization. For exact formulas, thresholds, and implementation notes, see `PLAYER_GUIDE_EN.md`.
 
-> See the [2.3.6 notes](Docs/Releases/2.3.6/2.3.6发布说明.md) for this version and the [2.3.5 notes](Docs/Releases/2.3.5/2.3.5发布说明.md) for self-training.
+> See the [2.3.7 notes](Docs/Releases/2.3.7/2.3.7发布说明.md) for this version and the [2.3.6](Docs/Releases/2.3.6/2.3.6发布说明.md) and [2.3.5](Docs/Releases/2.3.5/2.3.5发布说明.md) notes for retained features.
 
 ## 1. What the Mod Does
 
@@ -263,7 +263,7 @@ Combatant health labels use lavender, with a brighter final state. Training Offi
 
 See the [full Combatant reference](PLAYER_GUIDE_EN.md#how-does-combatant-progress) for formulas and attributes.
 
-## Pet Cat and Dog (development branch)
+## Pet Cat and Dog (2.3.7)
 
 To select Cat or Dog, set SSC identity to Sex Slave, complete Training and the matching pet research, and have no final Cat, Dog or Rabbit specialization. Selection requires neither a bound master nor a chain stage. Cat gains movement speed and melee dodge at 20%, with stronger bonuses at 50%; Dog improves animal taming and training stats at 20%, 50% and 80%. Ordinary direction changes retain separate progress; ordinary effects apply only to the current path.
 

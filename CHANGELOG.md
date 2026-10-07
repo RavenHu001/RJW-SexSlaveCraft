@@ -4,15 +4,17 @@
 
 This continuation builds on upstream **2.2.8**, the baseline when upstream development stopped in July, and retains its version numbering. Entries are listed newest first. Technical details are in the [development log (Chinese)](Docs/Development/开发更新记录.md).
 
-## [未发布 / Unreleased] — 猫狗特化开发分支 / Cat and Dog development branch
+## [2.3.7] — 2026-10-06 — 猫狗特化与宠物互动 / Cat and Dog specializations and pet interactions
 
-以下内容尚未包含在正式 2.3.6 安装包中。These changes are not included in the published 2.3.6 package.
+本版归并 `v2.3.6`（`754c3ce`）之后至 `a24562e` 的全部 17 项开发提交，版本元数据与运行 DLL 同步为 2.3.7；**尚未正式发布**。详见[中英发布说明](Docs/Releases/2.3.7/2.3.7发布说明.md)及[版本验证](Docs/Releases/2.3.7/2.3.7版本验证.md)。
+
+This version consolidates all 17 development commits after `v2.3.6` (`754c3ce`) through `a24562e`, with version metadata and the runtime DLL updated to 2.3.7. **It is not formally released.** See the linked bilingual notes and validation record. These additions are not included in the published 2.3.6 package.
 
 - 开放猫普通培养，接入成功亲昵 1 个百分点特色经验；统一猫狗兔互斥、配方消耗前保护及跨方向保留的终极效果。Cat training and its 1-point affection reward are available, with pet exclusivity, pre-consumption recipe checks and retained final effects.
 - 终极猫获得同地图选人、同格两秒安抚的“安抚共鸣”，恢复当前精神状态或给予半天鼓舞；终极狗获得“定向驯导”，直接驯服野生动物或完整完成己方动物一个有效勾选训练项目。两项技能各自采用一天冷却，接入目标提示、读条及特效。Final Cats gain Soothing Resonance for mental-state recovery or half-day encouragement; final Dogs gain Directed Taming for direct taming or full completion of one eligible checked training item. Both use map-wide selection, two-second interaction on the target cell and their own one-day cooldowns, with targeting feedback and effects.
 - 修整狗普通训练成长，确认真实动物训练互动后结算；普通亲昵增加接近、两秒停留、双方朝向、读条及爱心，保护双方重要任务和新命令。Dog work progress is settled after an actual training interaction. Ordinary affection adds visible approach and two-second interaction while protecting work and new commands.
 - 成功亲昵后，成年猫狗在双方 SSC/RJW 自愿资格允许时，以一次 20% 判定向实际主人发起后续；不中、拒绝或失败保留亲昵结果。此后续已实现并提交，实机验收待完成。After successful affection, eligible adult Cats/Dogs make one 20% roll for a consensual follow-up with their actual bound master. A miss, refusal or failure preserves affection rewards. This follow-up is implemented and committed, with in-game acceptance pending.
-- 猫狗培养进度统一一位小数和普通完成提示，完成后悬停显示四语人格凝胶终极化步骤；研究、玩家指南及规划状态同步当前实现。兔入口仍禁用。Cat/Dog progress uses one decimal place, distinguishes ordinary completion from finalization and offers localized gel finalization tooltips. Research, player guides and plans reflect the branch; Rabbit selection remains disabled.
+- 猫狗培养进度统一一位小数和普通完成提示，完成后悬停显示四语人格凝胶终极化步骤；研究、玩家指南及规划状态同步当前实现。兔入口仍禁用。Cat/Dog progress uses one decimal place, distinguishes ordinary completion from finalization and offers localized gel finalization tooltips. Research, player guides and plans reflect 2.3.7; Rabbit selection remains disabled.
 
 实现与验证范围见[专项规划](Docs/Design/猫狗特化与统一培养经验初步规划.md)及[显示与说明收尾记录](Docs/Development/猫狗特化显示与说明收尾.md)。Implementation and validation scope are recorded in the linked plan and development record.
 

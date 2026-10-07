@@ -6,20 +6,18 @@
 		<li>1.6</li>
 	</supportedVersions>
 	<packageId>rjw.sexslavecraft.TieJinVer</packageId>
-    <description>SexSlaveCraft 2.3.6 (TieJin Modify)
-统一特化基础培养经验：当前培养的性奴特化在完整日常调教和绑定仪式成功结算后获得一次动态经验，沿用战斗员评分公式；实际绑定主人施教时提高收益。
-训导官旧固定受训奖励及公交车旧日常受训增量改由公共入口发放，施教、击杀及其他特色经验仍保留。自我调教不提供此特化经验；猫、兔入口仍未开放。
-基于上游 2.2.8 继续维护，包含 2.3.5 自我调教、任务交接修复及更早版本内容。
-锁链达到第 2 阶段的 SSC 性奴可按 RJW 原有条件被指派为泄欲对象；见习性奴不因此获得资格。
-旧 RimTalk 兼容继续暂停，宠物猫、宠物兔未完成入口继续禁用。
-完整中英双语更新记录见 CHANGELOG.md。
+    <description>SexSlaveCraft 2.3.7 (TieJin Modify)
+猫狗特化与宠物互动：开放猫普通培养及亲昵特色经验，统一猫狗兔互斥、凝胶终极化保护及跨方向保留的终极效果。
+终极猫“安抚共鸣”可恢复玩家阵营目标的当前精神状态，或给予半天鼓舞；终极狗“定向驯导”可直接驯服野生动物，或完整完成己方动物一个有效勾选训练项目。两项技能支持同地图选择、同格两秒读条、目标提示及特效，各自冷却一天。
+修整狗动物训练成长；宠物亲昵增加接近、读条与爱心，并保护双方任务。成年猫狗在许可与自愿条件允许时，以 20% 概率向实际主人发起后续互动。培养界面区分普通完成与终极成果，提供凝胶加工引导。
+基于上游 2.2.8 继续维护，包含 2.3.6 统一特化基础经验、2.3.5 自我调教及更早版本内容。锁链达到第 2 阶段的 SSC 性奴可按 RJW 原有条件被指派为泄欲对象。
+宠物兔入口仍禁用，旧 RimTalk 兼容继续暂停。2.3.7 已完成版本归并，尚未正式发布；亲昵后续实机验收待完成。完整记录见 CHANGELOG.md 和 Docs/Releases/2.3.7/。
 
-Version 2.3.6 gives the currently trained Sex Slave specialization one shared, score-based base progress reward after completed daily Training or a successful full Binding Ritual. Training by the actual bound master increases this reward.
-The former fixed Training Officer reward and Public Use daily increment now use the shared path; teaching, direct kills and other distinct progress sources remain. Self-training grants no specialization progress, and Pet Cat/Rabbit selection remains disabled.
-Continues development from upstream 2.2.8, including version 2.3.5 self-training and Training handoff fixes.
-SSC sex slaves at Chain stage 2 or higher can be designated as RJW Comfort pawns under RJW's existing conditions; trainees gain no eligibility from SSC identity alone.
-Legacy RimTalk remains suspended; unfinished Pet Cat and Pet Rabbit choices remain disabled.
-See CHANGELOG.md for the full Chinese and English notes.</description>
+Version 2.3.7 consolidates Cat and Dog specializations and pet interactions. Cat training and affection progress are available, with pet exclusivity, protected gel finalization and final effects retained across direction changes.
+Final Cats gain Soothing Resonance to recover a player-faction target's current mental state or grant half-day encouragement. Final Dogs gain Directed Taming to tame a wild animal directly or fully complete one eligible checked training item on a player-owned animal. Both use map-wide selection, a two-second interaction on the target cell, targeting feedback and effects, with their own one-day cooldowns.
+Dog work progress follows actual animal-training interactions. Visible affection adds approach, progress and hearts while protecting both participants' tasks. Eligible adult Cats and Dogs have a 20% chance to initiate a consensual follow-up with their actual master. Progress distinguishes ordinary completion from finalization and offers gel-processing guidance.
+Continues from upstream 2.2.8, retaining version 2.3.6 shared specialization progress, version 2.3.5 self-training and earlier features. SSC Sex Slaves at Chain stage 2 or higher can be designated as RJW Comfort pawns under RJW's existing conditions.
+Rabbit selection remains disabled and legacy RimTalk remains suspended. Version 2.3.7 is consolidated but not formally released; affection follow-up in-game acceptance is pending. See CHANGELOG.md and Docs/Releases/2.3.7/ for details.</description>
 	<modDependencies>
 		<li>
 		  <packageId>brrainz.harmony</packageId>
