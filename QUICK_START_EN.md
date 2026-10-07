@@ -4,8 +4,8 @@
 
 > For RimWorld 1.6 and SexSlaveCraft 2.3.7.\
 > This continuation is based on upstream 2.2.8. See `CHANGELOG.md` for release history.\
-> This version retains 2.3.6 shared daily Training/full Binding Ritual specialization progress and 2.3.5 self-training/handoff fixes. The existing published ZIP and checksum remain at [v2.3.6 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.6), which does not include 2.3.7 additions. Legacy RimTalk remains suspended.\
-> Version 2.3.7 consolidation (2026-10-06): Includes Cat/Dog training, pet exclusivity, gel finalization, active abilities, visible affection, ordinary-completion display and finalization tooltips. The 20% adult Cat/Dog consensual follow-up is implemented and awaits in-game acceptance. Rabbit selection remains disabled. Version 2.3.7 is not formally released; these additions are absent from the existing 2.3.6 ZIP.\
+> This version retains 2.3.6 shared daily Training/full Binding Ritual specialization progress and 2.3.5 self-training/handoff fixes. Download the installation ZIP and SHA-256 checksum from [v2.3.7 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.7). Legacy RimTalk remains suspended.\
+> Version 2.3.7 content (2026-10-06): Includes Cat/Dog training, pet exclusivity, gel finalization, active abilities, visible affection, ordinary-completion display and finalization tooltips. The 20% adult Cat/Dog consensual follow-up is implemented and awaits in-game acceptance. Rabbit selection remains disabled. These additions are absent from historical 2.3.6 packages.\
 > In-game names follow the mod's official English localization. For exact formulas, thresholds, and implementation notes, see `PLAYER_GUIDE_EN.md`.
 
 > See the [2.3.7 notes](Docs/Releases/2.3.7/2.3.7发布说明.md) for this version and the [2.3.6](Docs/Releases/2.3.6/2.3.6发布说明.md) and [2.3.5](Docs/Releases/2.3.5/2.3.5发布说明.md) notes for retained features.

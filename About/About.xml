@@ -11,13 +11,13 @@
 终极猫“安抚共鸣”可恢复玩家阵营目标的当前精神状态，或给予半天鼓舞；终极狗“定向驯导”可直接驯服野生动物，或完整完成己方动物一个有效勾选训练项目。两项技能支持同地图选择、同格两秒读条、目标提示及特效，各自冷却一天。
 修整狗动物训练成长；宠物亲昵增加接近、读条与爱心，并保护双方任务。成年猫狗在许可与自愿条件允许时，以 20% 概率向实际主人发起后续互动。培养界面区分普通完成与终极成果，提供凝胶加工引导。
 基于上游 2.2.8 继续维护，包含 2.3.6 统一特化基础经验、2.3.5 自我调教及更早版本内容。锁链达到第 2 阶段的 SSC 性奴可按 RJW 原有条件被指派为泄欲对象。
-宠物兔入口仍禁用，旧 RimTalk 兼容继续暂停。2.3.7 已完成版本归并，尚未正式发布；亲昵后续实机验收待完成。完整记录见 CHANGELOG.md 和 Docs/Releases/2.3.7/。
+宠物兔入口仍禁用，旧 RimTalk 兼容继续暂停。2.3.7 版本内容、安装与验证范围见发布文档；亲昵后续实机验收待完成。完整记录见 CHANGELOG.md 和 Docs/Releases/2.3.7/。
 
 Version 2.3.7 consolidates Cat and Dog specializations and pet interactions. Cat training and affection progress are available, with pet exclusivity, protected gel finalization and final effects retained across direction changes.
 Final Cats gain Soothing Resonance to recover a player-faction target's current mental state or grant half-day encouragement. Final Dogs gain Directed Taming to tame a wild animal directly or fully complete one eligible checked training item on a player-owned animal. Both use map-wide selection, a two-second interaction on the target cell, targeting feedback and effects, with their own one-day cooldowns.
 Dog work progress follows actual animal-training interactions. Visible affection adds approach, progress and hearts while protecting both participants' tasks. Eligible adult Cats and Dogs have a 20% chance to initiate a consensual follow-up with their actual master. Progress distinguishes ordinary completion from finalization and offers gel-processing guidance.
 Continues from upstream 2.2.8, retaining version 2.3.6 shared specialization progress, version 2.3.5 self-training and earlier features. SSC Sex Slaves at Chain stage 2 or higher can be designated as RJW Comfort pawns under RJW's existing conditions.
-Rabbit selection remains disabled and legacy RimTalk remains suspended. Version 2.3.7 is consolidated but not formally released; affection follow-up in-game acceptance is pending. See CHANGELOG.md and Docs/Releases/2.3.7/ for details.</description>
+Rabbit selection remains disabled and legacy RimTalk remains suspended. See the release documents for version 2.3.7 content, installation and validation scope; affection follow-up in-game acceptance is pending. See CHANGELOG.md and Docs/Releases/2.3.7/ for details.</description>
 	<modDependencies>
 		<li>
 		  <packageId>brrainz.harmony</packageId>

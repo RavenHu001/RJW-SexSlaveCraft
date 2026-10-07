@@ -6,9 +6,9 @@ This continuation builds on upstream **2.2.8**, the baseline when upstream devel
 
 ## [2.3.7] — 2026-10-06 — 猫狗特化与宠物互动 / Cat and Dog specializations and pet interactions
 
-本版归并 `v2.3.6`（`754c3ce`）之后至 `a24562e` 的全部 17 项开发提交，版本元数据与运行 DLL 同步为 2.3.7；**尚未正式发布**。详见[中英发布说明](Docs/Releases/2.3.7/2.3.7发布说明.md)及[版本验证](Docs/Releases/2.3.7/2.3.7版本验证.md)。
+本版归并 `v2.3.6`（`754c3ce`）之后至 `a24562e` 的全部 17 项开发提交，版本元数据与运行 DLL 同步为 2.3.7。安装 ZIP 与 SHA-256 校验文件见 [v2.3.7 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.7)。 详见[中英发布说明](Docs/Releases/2.3.7/2.3.7发布说明.md)及[版本验证](Docs/Releases/2.3.7/2.3.7版本验证.md)。
 
-This version consolidates all 17 development commits after `v2.3.6` (`754c3ce`) through `a24562e`, with version metadata and the runtime DLL updated to 2.3.7. **It is not formally released.** See the linked bilingual notes and validation record. These additions are not included in the published 2.3.6 package.
+This version consolidates all 17 development commits after `v2.3.6` (`754c3ce`) through `a24562e`, with version metadata and the runtime DLL updated to 2.3.7. Download the installation ZIP and SHA-256 checksum from [v2.3.7 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.7). See the linked bilingual notes and validation record. These additions are not included in the historical 2.3.6 package.
 
 - 开放猫普通培养，接入成功亲昵 1 个百分点特色经验；统一猫狗兔互斥、配方消耗前保护及跨方向保留的终极效果。Cat training and its 1-point affection reward are available, with pet exclusivity, pre-consumption recipe checks and retained final effects.
 - 终极猫获得同地图选人、同格两秒安抚的“安抚共鸣”，恢复当前精神状态或给予半天鼓舞；终极狗获得“定向驯导”，直接驯服野生动物或完整完成己方动物一个有效勾选训练项目。两项技能各自采用一天冷却，接入目标提示、读条及特效。Final Cats gain Soothing Resonance for mental-state recovery or half-day encouragement; final Dogs gain Directed Taming for direct taming or full completion of one eligible checked training item. Both use map-wide selection, two-second interaction on the target cell and their own one-day cooldowns, with targeting feedback and effects.

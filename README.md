@@ -2,9 +2,9 @@
 
 RimWorld 1.6 的 RimJobWorld（RJW）扩展模组，基于上游 **2.2.8** 继续维护。此仓库包含模组源码、游戏资源、回归测试及中英文文档，当前仓库版本为 **2.3.7**。
 
-[2.3.7 更新说明](Docs/Releases/2.3.7/2.3.7发布说明.md) · [已发布 2.3.6 安装包](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.6) · [更新日志](CHANGELOG.md) · [文档索引](Docs/README.md) · [English quick start](QUICK_START_EN.md)
+[2.3.7 更新说明](Docs/Releases/2.3.7/2.3.7发布说明.md) · [下载安装包](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.7) · [更新日志](CHANGELOG.md) · [文档索引](Docs/README.md) · [English quick start](QUICK_START_EN.md)
 
-2.3.6 发布后的全部开发已归入 **2.3.7**，截至功能提交 `a24562e`。当前为版本归并，**尚未正式发布 2.3.7 安装包**；最新既有下载仍为 [v2.3.6 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.6)，不包含本轮猫狗扩展。版本、构建及验收范围见[2.3.7 版本验证](Docs/Releases/2.3.7/2.3.7版本验证.md)。
+2.3.7 汇总 2.3.6 发布后的猫狗特化与宠物互动开发，功能基线为 `a24562e`，并包含版本归并与发布文档。安装 ZIP 与 SHA-256 校验文件见 [v2.3.7 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.7)。 历史 2.3.6 ZIP 不包含本轮猫狗扩展。版本、构建及验收范围见[2.3.7 版本验证](Docs/Releases/2.3.7/2.3.7版本验证.md)。
 
 2.3.7 包含猫狗普通培养、宠物互斥、凝胶终极化及主动技能：终极猫使用“安抚共鸣”，终极狗使用“定向驯导”。附近空闲的宠物会接近实际绑定主人，完成两秒可见亲昵；当前普通猫额外获得 1 个百分点，完成后冷却一天。成年猫狗在双方自愿条件与许可允许时，以 20% 概率向实际主人发起后续互动；该后续已实现，待实机验收。猫狗进度区分普通完成与终极成果，普通完成后悬停可查看凝胶终极化步骤。兔入口仍禁用。
 
@@ -31,7 +31,7 @@ SexSlaveCraft（SSC）围绕角色培养、身份与绑定关系、特化发展�
 | 加载顺序 | Harmony、RimWorld 本体及 RJW 位于本模组之前 |
 | 绑定仪式 | 需要可用的 Ideology 仪式系统 |
 
-1. 现有正式安装包仍为 2.3.6（不含 2.3.7 猫狗扩展）：从 [v2.3.6 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.6) 下载 2.3.6 安装 ZIP 和 SHA-256 校验文件。
+1. 从 [v2.3.7 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.7) 下载 2.3.7 安装 ZIP 和 SHA-256 校验文件。
 2. 退出游戏，将 ZIP 内的 `RJW-SexSlaveCraft-TieJin-Modify` 文件夹解压到 `RimWorld/Mods/`。
 3. 更新已有安装时，先将旧模组文件夹移出 `Mods`，再放入新版本，以免残留已删除的文件。
 4. 在游戏中启用依赖与本模组，按上述顺序加载。
@@ -95,6 +95,6 @@ This repository continues RJW-SexSlaveCraft from upstream **2.2.8** for **RimWor
 
 Version 2.3.7 consolidates all development after released 2.3.6 through feature commit `a24562e`. It includes Cat/Dog training, pet exclusivity, protected gel finalization, Soothing Resonance for final Cats and Directed Taming for final Dogs. Both abilities use map-wide targeting, a two-second interaction on the target cell and their own one-day cooldowns. Dog work progress follows actual training interactions. Idle pets near their actual master approach for visible affection; a current ordinary Cat gains 1 percentage point, with a one-day affection cooldown. Eligible adult Cats/Dogs have a 20% chance to initiate a consensual follow-up with that master; this follow-up awaits in-game acceptance. Progress distinguishes ordinary completion from finalization and offers gel-processing tooltips. Rabbit selection remains disabled.
 
-**Version 2.3.7 is consolidated but not formally released.** The existing installation ZIP and checksum remain at [v2.3.6 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.6); that package does not contain the new Cat/Dog features. See the [2.3.7 bilingual notes](Docs/Releases/2.3.7/2.3.7发布说明.md) and [validation record](Docs/Releases/2.3.7/2.3.7版本验证.md). Shared base specialization progress from 2.3.6 and self-training/handoff fixes from 2.3.5 are retained.
+Download the installation ZIP and SHA-256 checksum from [v2.3.7 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.7). Historical 2.3.6 packages do not contain the new Cat/Dog features. See the [2.3.7 bilingual notes](Docs/Releases/2.3.7/2.3.7发布说明.md) and [validation record](Docs/Releases/2.3.7/2.3.7版本验证.md). Shared base specialization progress from 2.3.6 and self-training/handoff fixes from 2.3.5 are retained.
 
 For gameplay, read the [English quick start](QUICK_START_EN.md) or [full guide](PLAYER_GUIDE_EN.md). See the [bilingual changelog](CHANGELOG.md) for release history. Legacy RimTalk integration remains suspended. When updating an installation, move the old mod folder out of `RimWorld/Mods/` before installing the replacement.
