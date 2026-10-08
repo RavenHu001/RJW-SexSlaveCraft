@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-  <SSC_RitualSelection_ChooseParticipants>Select the host and ritual target manually. Eligibility is checked when assigning a role.</SSC_RitualSelection_ChooseParticipants>
+  <SSC_RitualSelection_ChooseParticipants>Select the host and ritual target manually. Hover over portraits for eligibility; assigning a role checks again.</SSC_RitualSelection_ChooseParticipants>
   <SSC_RitualSelection_MissingRoles>Select a host and ritual target first.</SSC_RitualSelection_MissingRoles>
   <SSC_RitualSelection_Invalid>The selected pawn cannot fill this ritual role right now.</SSC_RitualSelection_Invalid>
+  <SSC_RitualSelection_HostBadge>H</SSC_RitualSelection_HostBadge>
+  <SSC_RitualSelection_TargetBadge>T</SSC_RitualSelection_TargetBadge>
+  <SSC_RitualSelection_HostCandidate>Host candidate</SSC_RitualSelection_HostCandidate>
+  <SSC_RitualSelection_TargetCandidate>Target candidate</SSC_RitualSelection_TargetCandidate>
+  <SSC_RitualSelection_Candidate>Basic role requirements are met; choose a counterpart to check the pair.</SSC_RitualSelection_Candidate>
+  <SSC_RitualSelection_PairReady>Current pair requirements are met; reachability and body requirements still need checking.</SSC_RitualSelection_PairReady>
+  <SSC_RitualSelection_Assigned>Assigned to this role.</SSC_RitualSelection_Assigned>
+  <SSC_RitualSelection_Allowed>Can currently be assigned to this role.</SSC_RitualSelection_Allowed>
+  <SSC_RitualSelection_CannotAssign>Cannot currently assign: {0}</SSC_RitualSelection_CannotAssign>
+  <SSC_RitualSelection_PairBlocked>Cannot fill this role now: {0}</SSC_RitualSelection_PairBlocked>
+  <SSC_RitualSelection_Legend>Badges show basic role eligibility. Hover over portraits for conditions; a slash marks an unavailable role, and a check marks an assigned role.</SSC_RitualSelection_Legend>
 </LanguageData>

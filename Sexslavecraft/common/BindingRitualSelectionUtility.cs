@@ -90,14 +90,101 @@ namespace SexSlaveCraft
         /// <summary>按即将形成的角色分配校验；拖到已有头像上时同时验证原版会交换过去的角色。</summary>
         public static bool ValidateAttempt(RitualRoleAssignments assignments, RitualRole role, Pawn candidate,
             Pawn replacing, out string reason)
-            => ValidateAttempt(assignments, role, candidate, replacing, assignments.FirstAssignedPawn("master"),
-                assignments.FirstAssignedPawn("slave"), out reason);
+            => ValidateAttempt(assignments, role, candidate, replacing, assignments?.FirstAssignedPawn("master"),
+                assignments?.FirstAssignedPawn("slave"), out reason);
 
         public static bool ValidateAttempt(RitualRoleAssignments assignments, RitualRole role, Pawn candidate,
             Pawn replacing, Pawn master, Pawn slave, out string reason)
         {
             reason = null;
-            if (!windows.TryGetValue(assignments, out WindowState state)) return true;
+            if (assignments == null || !windows.TryGetValue(assignments, out WindowState state)) return true;
+            if (!IsExecutionRole(role)) return true;
+            if (!ProposePair(role, candidate, replacing, ref master, ref slave))
+            { reason = InvalidReason(); return false; }
+            return Validate(assignments, master, slave, state.Target, false, out reason);
+        }
+
+        /// <summary>悬停检查使用与提交相同的拟定组合及完整条件，但不读写一次操作的验证缓存。</summary>
+        public static bool InspectAttempt(RitualRoleAssignments assignments, RitualRole role, Pawn candidate,
+            Pawn replacing, out string reason)
+        {
+            if (!TryGetProposedPair(assignments, role, candidate, replacing,
+                out Pawn master, out Pawn slave, out TargetInfo target, out reason)) return false;
+            if (!CanPreviewAssignment(assignments, role, candidate, out reason, replacing)) return false;
+            if (master != null && master == slave) { reason = InvalidReason(); return false; }
+            bool allowed = ValidateUncached(assignments, master, slave, target, out reason);
+            if (allowed) reason = null;
+            else if (string.IsNullOrEmpty(reason)) reason = InvalidReason();
+            return allowed;
+        }
+
+        /// <summary>原版强制分配及满槽移动另有拒绝；只为显示说明，不改变提交或启动规则。</summary>
+        internal static bool CanPreviewAssignment(RitualRoleAssignments assignments, RitualRole role, Pawn candidate,
+            out string reason, Pawn replacing = null)
+        {
+            reason = null;
+            if (assignments == null || candidate == null || role == null || string.IsNullOrEmpty(role.id))
+            { reason = InvalidReason(); return false; }
+            RitualRole lockedRole = null;
+            if (assignments.ForcedRolesForReading?.ContainsValue(candidate) == true)
+                lockedRole = assignments.ForcedRole(candidate) ?? role;
+            else if (assignments.ForcedRolesForReading != null &&
+                assignments.ForcedRolesForReading.TryGetValue(role.id, out Pawn fixedPawn) && fixedPawn != null)
+                lockedRole = role;
+            if (lockedRole != null)
+            {
+                reason = "RoleIsLocked".Translate(lockedRole.LabelCap);
+                return false;
+            }
+            if (role.maxCount > 0)
+            {
+                int remaining = 0;
+                bool alreadyAssigned = false;
+                foreach (Pawn assigned in assignments.AssignedPawns(role))
+                {
+                    alreadyAssigned |= assigned == candidate;
+                    if (assigned != replacing) remaining++;
+                }
+                // 已选人物的提示描述当前状态；新人物必须有空位或明确替换当前头像。
+                if (!alreadyAssigned && remaining >= role.maxCount)
+                {
+                    reason = "MaxPawnsPerRole".Translate(role.LabelCap, role.maxCount);
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        /// <summary>只供已登记的 SSC 窗口查询；角色必须是该窗口实际拥有的执行角色。</summary>
+        internal static bool TryGetProposedPair(RitualRoleAssignments assignments, RitualRole role, Pawn candidate,
+            Pawn replacing, out Pawn master, out Pawn slave, out TargetInfo target, out string reason)
+        {
+            master = slave = null;
+            target = default(TargetInfo);
+            reason = null;
+            if (assignments == null || !IsBinding(assignments.Ritual) || !IsExecutionRole(role) ||
+                assignments.AllRolesForReading == null || !assignments.AllRolesForReading.Contains(role) ||
+                !windows.TryGetValue(assignments, out WindowState state))
+            { reason = InvalidReason(); return false; }
+            bool hasMaster = false, hasSlave = false;
+            foreach (RitualRole definedRole in assignments.AllRolesForReading)
+            {
+                hasMaster |= definedRole is RitualRole_BindingMaster;
+                hasSlave |= definedRole is RitualRole_BindingSlave;
+            }
+            if (!hasMaster || !hasSlave) { reason = InvalidReason(); return false; }
+            master = assignments.FirstAssignedPawn("master");
+            slave = assignments.FirstAssignedPawn("slave");
+            target = state.Target;
+            if (!ProposePair(role, candidate, replacing, ref master, ref slave))
+            { reason = InvalidReason(); return false; }
+            return true;
+        }
+
+        /// <summary>交换对方已选角色时，原槽位人物成为对方的新候选；空槽移动则清空原角色。</summary>
+        private static bool ProposePair(RitualRole role, Pawn candidate, Pawn replacing, ref Pawn master, ref Pawn slave)
+        {
+            if (candidate == null) return false;
             if (role is RitualRole_BindingMaster)
             {
                 if (slave == candidate) slave = replacing;
@@ -108,9 +195,8 @@ namespace SexSlaveCraft
                 if (master == candidate) master = replacing;
                 slave = candidate;
             }
-            else return true;
-            if (candidate == null) { reason = InvalidReason(); return false; }
-            return Validate(assignments, master, slave, state.Target, false, out reason);
+            else return false;
+            return true;
         }
 
         /// <summary>启动前必须同时存在两个执行者；此入口也用于绕过窗口的直接启动。</summary>
@@ -184,7 +270,7 @@ namespace SexSlaveCraft
             return slave == null || slaveRole.ValidateIndividual(slave, out reason, target);
         }
 
-        private static string InvalidReason() => "SSC_RitualSelection_Invalid".Translate();
+        internal static string InvalidReason() => "SSC_RitualSelection_Invalid".Translate();
 
         /// <summary>普通选角拒绝只显示短提示，不构造详细报告、不写警告日志。</summary>
         public static void Reject(string reason)
