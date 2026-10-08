@@ -4,6 +4,13 @@
 
 This continuation builds on upstream **2.2.8**, the baseline when upstream development stopped in July, and retains its version numbering. Entries are listed newest first. Technical details are in the [development log (Chinese)](Docs/Development/开发更新记录.md).
 
+## [Unreleased] — 开发分支 / Development branch
+
+以下改动已在开发分支实现，维护者本机测试反馈目前未发现问题并批准提交，尚未发布；正式 2.3.8 ZIP 不包含这些改动。These changes are implemented in the development branch. The maintainer reports no issues in local testing and has approved committing them; they remain unreleased. The stable 2.3.8 ZIP does not contain them.
+
+- **统一受训身份 / Unified receiver identity:** 日常自动与手动调教、绑定仪式，以及新增调教员指派统一要求 SSC 性奴身份；原版奴隶身份、关闭行为限制和强制命令不能豁免。候选、实际准入、执行及结算复查身份，同时保留各入口已有条件。Automatic/forced Training, Binding Rituals and new trainer assignments require SSC Sex Slave identity. Vanilla slave status, disabled restrictions and forced commands do not waive it. Candidate, admission, execution and outcome checks preserve each entry's existing conditions.
+- **旧档与回调 / Historical saves and callbacks:** 不自动改写身份或删除成长；不合资格的旧任务停止。未设身份但保留有效历史锁链者可经面板确认恢复身份，保留原主人、配置及成长；迟到回调不得发放收益或清理新任务占用。Identity and growth are not rewritten on load; ineligible old tasks stop. Unset pawns with valid historical Chains can explicitly restore the role while retaining ownership, settings and progress. Late callbacks cannot grant rewards or clear a newer task's preparation.
+
 ## [2.3.8] — 2026-10-08 — 绑定仪式助兴修复与选人提示 / Binding Ritual spectator fixes and role hints
 
 本版归并 `v2.3.7`（`71b5c88`）之后至 `2dcf68e` 的全部 8 项开发提交，不重复计入 2.3.7 发布归档。已发布为最新正式版，当次 24 套、1363/1363 项门禁通过。详见[中英发布说明](Docs/Releases/2.3.8/2.3.8发布说明.md)及[版本验证](Docs/Releases/2.3.8/2.3.8版本验证.md)。安装 ZIP 与 SHA-256 校验文件见 [v2.3.8 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.8)。

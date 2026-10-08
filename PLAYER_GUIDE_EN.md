@@ -1,5 +1,7 @@
 # RJW-SexSlaveCraft Complete Player Guide
 
+> **Development branch (2026-10-08):** The current source implements unified receiver identity checks and explicit historical Chain identity recovery. The maintainer reports no issues in local testing and has approved committing them; they remain unreleased. The stable 2.3.8 ZIP does not contain them. Sections marked “development branch” describe the current source, while release notes retain their historical scope.
+
 > For RimWorld 1.6 and SexSlaveCraft 2.3.8, based on the current repository code and Defs.\
 > Base audit: 2026-06-30; self-training and handoff fixes updated for 2.3.5, shared progress for 2.3.6 on 2026-10-02, Cat/Dog features for 2.3.7 on 2026-10-06, and ritual quality/selection hints for 2.3.8 on 2026-10-08.\
 > Based on upstream 2.2.8; version 2.2.9 includes the specialization and ritual progression fixes, and 2.2.10 fixes stale training locks after interrupted rituals. See `CHANGELOG.md`.\
@@ -65,11 +67,17 @@ Masters always qualify as trainers, and Unset pawns never do. A Sex Slave must f
 
 Pawns with a Chain, and Masters whose Bridle still has valid bound targets, cannot change SSC identity. The UI and shared setter both reject the change, preserving bond and growth progress. Explicit unbinding restores switching when no blocking bond remains; the Sex Slave trainer toggle remains usable. This does not reconstruct Chains already lost before the fix.
 
+**Unified receiver identity in the development branch.** Automatic Training, forced Training, Binding Rituals and new trainer assignments require the receiver's SSC role to be `Sex Slave`. Vanilla colonist, prisoner or slave status, Corruption, the Sex Slave trait and historical enable/assignment settings cannot replace this role. Receiver identity, trainer qualification, ownership, permissions and physical eligibility remain separate checks. Disabling behavior restrictions, using the bound Master or forcing a command does not waive the receiver role. Set Sex Slave identity first, then assign an SSC Master for first bonding; an unbound Sex Slave without a Chain can still establish the first bond. Self-training shares the identity rule and retains its Chain and independent permission requirements.
+
+Candidate hints, selection, startup, ongoing execution and outcomes recheck receiver identity. Changing a ritual protagonist's SSC identity during preparation cancels the matching ritual. Losing the receiver role stops the task and releases only its own preparation; unfinished Training rewards are not granted. Daily research, enable settings, cooldowns, timetables and class avoidance retain their existing scope. Rituals do not inherit the daily enable switch or cooldown.
+
+**Historical saves in the development branch.** Loading does not infer or rewrite SSC identity from enable settings, assignments, Corruption or Chains, and does not erase growth. Historical settings on an Unset pawn do not grant receiver eligibility; ineligible old tasks stop even if the scene had started. An Unset pawn without a Chain can choose Sex Slave normally. If an Unset pawn retains a valid historical Chain, the Training tab offers `Restore historical sex slave role` with confirmation. This restores only the role, preserving the original Chain, owner, Training mode, assignment, Corruption and specialization progress. It does not rebind the pawn or grant trainer qualification. Dead pawns, missing or damaged relationships and conflicting valid Master-side bonds have no recovery option. Recovery does not resume an interrupted old task.
+
 On upgrade, the old Sex Slave trainer toggle is turned off once, including for previously assigned trainers. Assignment records remain but are inactive until the pawn qualifies and the player turns the toggle on again. Unset trainers are not promoted to Master. Later loads preserve the new choice.
 
 ### 3.2 Allow Training
 
-The Training WorkGiver scans a pawn only when `Allow Training` is enabled.
+The Training WorkGiver scans a pawn only when `Allow Training` is enabled. The development branch also requires SSC Sex Slave identity; a saved enable setting cannot replace it.
 
 Enabling it immediately runs an RJW receiver-eligibility check. A failed check does not turn the option back off, but eligibility is checked again before the job starts.
 
@@ -97,6 +105,8 @@ Available choices:
 `Automatic` lets RJW choose. A manual choice overwrites the current RJW `SexProps` and interaction.
 
 ### 3.5 Assigned Trainer
+
+The development branch accepts new assignments only for SSC Sex Slaves. The candidate list, confirmation and direct assignment entry recheck the receiver role. An unbound pawn's historical assignment can still be cleared; existing owner-only rules continue to govern clearing a bound pawn's assignment.
 
 A candidate trainer must be:
 
@@ -403,14 +413,14 @@ Races with a natural base Will of 15 or less have a ritual conversion cap of 90%
 - The host has a valid trainer identity: an SSC Master or an eligible SSC Sex Slave trainer.
 - The target is a colonist, colony slave, or colony prisoner.
 - The target is alive, not downed, and passes RJW receiver eligibility.
-- The target is not marked as a Master.
+- The target has SSC Sex Slave identity (the development branch's unified requirement).
 - For first bonding, the host must be an SSC Master and the target's active assigned trainer.
 - For an existing bond, the actual Master may host without being excluded by another assigned trainer. A third-party host must be the active assigned trainer and pass the applicable Training permission checks.
 - Both pawns can reach the ritual location.
 
 The setup window uses gold whip icons for host candidates and purple collar icons for sex slave candidates. Collar icons additionally require SSC Sex Slave identity; vanilla colonist, prisoner or slave status alone does not qualify. Eligible Sex Slave trainers can show both icons. A whip indicates host/trainer duty and does not establish ownership. A slash indicates the role is currently unavailable; a check indicates assignment. Hover or drag to inspect the proposed pair and its full requirements.
 
-These icons provide candidate information. Actual selection and start still use the existing role, pairing, body and reachability checks; this release does not add a universal SSC Sex Slave identity requirement to every Training or ritual entry. Unifying that requirement remains planned. Pawns without a candidate icon may still be spectators.
+These icons provide candidate information and do not replace complete admission checks. Stable 2.3.8 tightened collar candidate hints without unifying backend admission. The current development branch requires SSC Sex Slave identity during actual selection, startup, execution and outcomes, while retaining role, pairing, physical, permission and reachability checks. Pawns without a candidate icon may still be spectators.
 
 ### 8.2 Fixed Six-act Sequence
 
@@ -1233,7 +1243,7 @@ With a Chain:
 - interception refills Suppression;
 - Suppression no longer changes naturally.
 
-A vanilla slave whose historical maximum Corruption has ever exceeded zero is permanently treated as an SSC Sex Slave, even if current Corruption later decays to zero:
+A vanilla slave whose historical maximum Corruption has exceeded zero permanently retains the following slave work adjustments, even if current Corruption later decays to zero. These effects do not grant SSC role identity or Training eligibility:
 
 - has the vanilla slave disabled-work list cleared;
 - no longer receives the vanilla slave work-speed StatPart.
@@ -1255,7 +1265,7 @@ Ordinary pair jobs check both initiation and reception; Training and rituals use
 
 The Training ITab expands a right-side rule panel. Its entry is disabled when inactive; forced entries display effective values and are locked. Defaults have their own mod-settings window; editing them leaves existing pawns intact, while batch application requires confirmation.
 
-Legacy saves migrate once. Unbinding/rebinding retains choices. Started scenes finish normally; later jobs, phases and participants are checked again. Supported LifeForce paths and native Lovin use unified permission checks; legacy whitelists are removed.
+Legacy saves migrate once. Unbinding/rebinding retains choices. Permission changes retain normal cleanup for started scenes; later jobs, phases and participants are checked again. The development branch treats receiver identity as a continuing requirement: Training scenes whose receiver loses SSC Sex Slave identity stop without unfinished rewards. Supported LifeForce paths and native Lovin use unified permission checks; legacy whitelists are removed.
 
 ## 19. Apparel and Sex Reassignment
 

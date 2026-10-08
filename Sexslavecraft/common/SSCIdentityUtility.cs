@@ -2,6 +2,7 @@ using RimWorld;
 using System.Collections.Generic;
 using System.Linq;
 using Verse;
+using Verse.AI.Group;
 
 // EN: This file is the single entry point for SSC role and progression identity checks.
 // EN: Vanilla legal status (colonist, prisoner, slave) remains independent from the SSC role.
@@ -125,6 +126,12 @@ namespace SexSlaveCraft
             if (comp.pawnIdentity == identity) return true;
             if (IsIdentityLocked(pawn)) return false;
 
+            PawnIdentity previousIdentity = comp.pawnIdentity;
+            // 先取消仍匹配此角色的仪式，再清除组件归属，避免取消回调失去原 Lord。
+            if (!CancelBindingRitualBeforeIdentityChange(pawn, comp)) return false;
+            // Cancel 可经外部回调替换组件、改身份或建立新绑定；原切换不得覆盖新状态。
+            if (pawn.TryGetComp<CompSexSlaveTraining>() != comp || comp.pawnIdentity != previousIdentity ||
+                IsIdentityLocked(pawn)) return false;
             comp.pawnIdentity = identity;
             if (identity != PawnIdentity.Slave)
             {
@@ -139,6 +146,53 @@ namespace SexSlaveCraft
             TrainerSpecializationLifecycle.Notify(pawn);
 
             return true;
+        }
+
+        /// <summary>仅为未选择身份且保留有效历史锁链的角色提供显式恢复，不依据调教配置自动认领。</summary>
+        public static bool CanRestoreLegacySlaveIdentity(Pawn pawn)
+        {
+            if (Scribe.mode != LoadSaveMode.Inactive || pawn == null || pawn.Dead || pawn.Destroyed || pawn.Discarded)
+                return false;
+            CompSexSlaveTraining comp = pawn.TryGetComp<CompSexSlaveTraining>();
+            if (comp == null || comp.pawnIdentity != PawnIdentity.Unset || comp.restrictionRestoreDepth > 0)
+                return false;
+            Pawn owner = SSCBondUtility.GetChain(pawn)?.LinkedPawn;
+            // 死亡不等于解绑；销毁、丢弃、自指和双角色矛盾则不属于可恢复的历史关系。
+            return owner != null && owner != pawn && !owner.Destroyed && !owner.Discarded &&
+                SSCBondUtility.GetBridle(pawn)?.ValidTargets.Any() != true;
+        }
+
+        /// <summary>玩家确认后仅补回 Slave 身份；不重绑、不改模式、指派、恶堕或特化成长。</summary>
+        public static bool TryRestoreLegacySlaveIdentity(Pawn pawn)
+        {
+            if (!CanRestoreLegacySlaveIdentity(pawn)) return false;
+            // 普通切换仍被历史锁链锁定。此定向修复只接受 Unset，不泛化为 Master 转换。
+            // 不立即运行可能重算成长或协调指派的生命周期；正常资格查询读取恢复后的身份。
+            pawn.TryGetComp<CompSexSlaveTraining>().pawnIdentity = PawnIdentity.Slave;
+            return true;
+        }
+
+        private static bool CancelBindingRitualBeforeIdentityChange(Pawn pawn, CompSexSlaveTraining comp)
+        {
+            Lord savedLord = comp.bindingRitualLord;
+            Lord currentLord = pawn.GetLord();
+            CancelMatchingBindingRitual(pawn, savedLord);
+            // 只取消调用前已有的场次；取消回调新加入的仪式不属于本次切换的旧状态。
+            if (currentLord != savedLord) CancelMatchingBindingRitual(pawn, currentLord);
+            Lord remainingLord = pawn.GetLord();
+            // 原场次正常结束可以变为空；新场次则必须保留其身份与占用，不运行旧切换的清理。
+            return (remainingLord == null || remainingLord == currentLord) &&
+                (comp.bindingRitualLord == null || comp.bindingRitualLord == savedLord);
+        }
+
+        private static void CancelMatchingBindingRitual(Pawn pawn, Lord ritualLord)
+        {
+            if (!(ritualLord?.LordJob is LordJob_Ritual ritual)) return;
+            Pawn actor = ritual.PawnWithRole("master");
+            Pawn target = ritual.PawnWithRole("slave");
+            if (pawn != actor && pawn != target) return;
+            BindingRitualStateUtility.RejectPhase(actor, target, ritualLord,
+                "SSC_Identity_RitualRoleChanged".Translate());
         }
 
         public static bool IsSupportedVanillaStatus(Pawn pawn)

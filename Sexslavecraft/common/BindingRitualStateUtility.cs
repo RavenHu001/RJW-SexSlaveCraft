@@ -42,11 +42,20 @@ namespace SexSlaveCraft
                 && ritual.PawnWithRole("slave") == slave;
         }
 
+        /// <summary>持续核对受训身份；失格时取消仍匹配的整场，结构归属判断不包含身份资格。</summary>
+        public static bool EnsureTargetIdentity(Pawn master, Pawn slave, Lord ritualLord)
+        {
+            if (SSCIdentityUtility.IsSexSlave(slave)) return true;
+            RejectPhase(master, slave, ritualLord, "SSC_Training_TargetIdentityRequired".Translate());
+            return false;
+        }
+
         /// <summary>为有效仪式认领目标并设置占用；同一场保留阶段，新场清除上一场进度。</summary>
         /// <returns>可以执行当前阶段时返回 true；仪式无效、缺少组件或已完成六阶段时返回 false。</returns>
         public static bool TryBeginPhase(Pawn master, Pawn slave, Lord ritualLord)
         {
             if (!IsActiveRitualFor(master, slave, ritualLord)) return false;
+            if (!EnsureTargetIdentity(master, slave, ritualLord)) return false;
             CompSexSlaveTraining training = slave.TryGetComp<CompSexSlaveTraining>();
             if (training == null) return false;
 
@@ -73,6 +82,7 @@ namespace SexSlaveCraft
             CompSexSlaveTraining training = slave.TryGetComp<CompSexSlaveTraining>();
             if (training == null || training.bindingRitualLord != ritualLord
                 || !training.isRitualTraining || training.ritualPhase >= PhaseCount) return false;
+            if (!EnsureTargetIdentity(master, slave, ritualLord)) return false;
 
             training.ritualPhase++;
             // 第六阶段也保持占用，直到结果处理与整场 Cleanup 完成。
@@ -91,10 +101,21 @@ namespace SexSlaveCraft
                 || !training.isRitualTraining || training.ritualPhase != PhaseCount
                 || training.bindingRitualOutcomeClaimed) return false;
             if (!IsActiveRitualFor(ritual.PawnWithRole("master"), slave, ritual.lord)) return false;
+            if (!EnsureTargetIdentity(ritual.PawnWithRole("master"), slave, ritual.lord)) return false;
 
             // 先消费资格，再派发奖励；即使结算抛异常也不能重复派发已产生的奖励。
             training.bindingRitualOutcomeClaimed = true;
             return true;
+        }
+
+        /// <summary>结算外部回调后仍须属于已认领的同场主从，失格身份不能继续领取后续收益。</summary>
+        public static bool CanContinueOutcome(LordJob_Ritual ritual, Pawn master, Pawn slave)
+        {
+            if (!IsBindingRitual(ritual) || !IsActiveRitualFor(master, slave, ritual.lord)) return false;
+            CompSexSlaveTraining training = slave?.TryGetComp<CompSexSlaveTraining>();
+            if (training == null || training.bindingRitualLord != ritual.lord || !training.isRitualTraining
+                || training.ritualPhase != PhaseCount || !training.bindingRitualOutcomeClaimed) return false;
+            return EnsureTargetIdentity(master, slave, ritual.lord);
         }
 
         /// <summary>统一解除结束仪式的临时状态，兼顾目标角色和参与者列表；允许重复调用。</summary>
@@ -134,7 +155,11 @@ namespace SexSlaveCraft
             if (ritualLord != null)
             {
                 Pawn master = (ritualLord.LordJob as LordJob_Ritual)?.PawnWithRole("master");
-                if (IsActiveRitualFor(master, pawn, ritualLord)) return;
+                if (IsActiveRitualFor(master, pawn, ritualLord))
+                {
+                    EnsureTargetIdentity(master, pawn, ritualLord);
+                    return;
+                }
                 ClearRitualState(training);
                 return;
             }
@@ -147,6 +172,7 @@ namespace SexSlaveCraft
                 Pawn master = (currentLord?.LordJob as LordJob_Ritual)?.PawnWithRole("master");
                 if (IsActiveRitualFor(master, pawn, currentLord))
                 {
+                    if (!EnsureTargetIdentity(master, pawn, currentLord)) return;
                     training.bindingRitualLord = currentLord;
                     training.ritualPhase = System.Math.Max(0, System.Math.Min(PhaseCount, training.ritualPhase));
                     return;

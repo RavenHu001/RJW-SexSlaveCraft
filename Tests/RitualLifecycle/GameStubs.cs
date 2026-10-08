@@ -46,7 +46,13 @@ namespace Verse
         public JobDef CurJobDef => CurJob?.def;
         public string LabelShort = "test pawn";
         public string Name => LabelShort;
-        public IntVec3 Position;
+        private IntVec3 position;
+        public Action OnPositionChanged;
+        public IntVec3 Position
+        {
+            get => position;
+            set { position = value; OnPositionChanged?.Invoke(); }
+        }
         public Action OnTeleport;
         /// <summary>模拟传送通知的结束任务语义，并允许外部回调在此替换任务。</summary>
         public void Notify_Teleported(bool endCurrentJob, bool resetTweenedPos)
@@ -436,9 +442,10 @@ namespace SexSlaveCraft
         /// <summary>提供动作切换占位；阶段计数由生产状态管理器验证，宿主不选择真实动作。</summary>
         public static void ApplyPhaseToSexProps(rjw.SexProps props, Pawn master, Pawn slave, int phase) { }
         /// <summary>固定返回已有动画，避免生命周期用例启动动画回退分支。</summary>
-        public static bool IsAnimating(Pawn pawn) => true;
+        public static bool IsAnimating(Pawn pawn) => TestWorld.Animating;
         /// <summary>提供回退动画占位；不播放动画，也不调用时长设置回调。</summary>
-        public static void TryStartFallbackAnimation(Pawn master, Pawn slave, Thing bed, Action<int> setTicks) { }
+        public static void TryStartFallbackAnimation(Pawn master, Pawn slave, Thing bed, Action<int> setTicks)
+            => TestWorld.AnimationTicksCallback = setTicks;
     }
 }
 
@@ -478,7 +485,11 @@ namespace rjw
             if (Partner?.jobs.curDriver is JobDriver_SexBaseReciever receiver) receiver.parteners.Remove(pawn);
         }
         /// <summary>将剩余 tick 减一，让测试可以明确触发生产阶段结束条件。</summary>
-        public void SexTick(Pawn master, Pawn slave) => ticks_left--;
+        public void SexTick(Pawn master, Pawn slave)
+        {
+            ticks_left--;
+            TestWorld.OnSexTick?.Invoke();
+        }
     }
     public static class SexUtility
     {
@@ -496,10 +507,12 @@ internal static class TestWorld
 {
     public static Map Map;
     public static int ProcessSexCalls, DailyOutcomes, DailyCooldowns, TrainerProgressAwards;
-    public static bool ReceiverSucceeds = true, SynchronizeSucceeds = true;
+    public static bool ReceiverSucceeds = true, SynchronizeSucceeds = true, Animating = true;
     public static int CombatantProgressAwards, ScoreCalls;
     public static float OutcomeScore, BodyScore, CombatantScore;
     public static Action OnDailyOutcome, OnProcessSex;
+    public static Action OnSexTick;
+    public static Action<int> AnimationTicksCallback;
     public static int RjwEndCalls;
     public static PathEndMode LastGotoThingMode;
     public static Action OnGotoInit;
@@ -514,6 +527,9 @@ internal static class TestWorld
         CombatantProgressAwards = ScoreCalls = 0;
         OutcomeScore = BodyScore = CombatantScore = 0;
         OnDailyOutcome = OnProcessSex = null;
+        OnSexTick = null;
+        AnimationTicksCallback = null;
+        Animating = true;
         Scribe.mode = LoadSaveMode.Inactive;
         Scribe_Values.Saved.Clear();
         ReceiverSucceeds = SynchronizeSucceeds = true;

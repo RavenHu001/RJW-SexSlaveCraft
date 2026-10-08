@@ -30,7 +30,7 @@ internal static partial class Program
             Ritual.behavior.def.roles.Add(HostRole);
             Ritual.behavior.def.roles.Add(TargetRole);
             Map.Pawns.Add(Host); Map.Pawns.Add(Target);
-            for (int i = 0; i < extras; i++) Map.Pawns.Add(new Pawn { Eligible = i % 2 == 0 });
+            for (int i = 0; i < extras; i++) Map.Pawns.Add(new Pawn { SexSlave = true, Eligible = i % 2 == 0 });
             Ritual.behavior.AvailabilityPawns = Map.Pawns;
         }
         public void Open(List<string> notes = null, Pawn selected = null, Dialog_BeginRitual.ActionCallback callback = null)
@@ -132,7 +132,7 @@ internal static partial class Program
         Run("身体不合格仅显示短拒绝，旧选择和观众不变", () =>
         {
             var f = new Fixture(); f.Open(); f.SelectBoth();
-            var invalid = new Pawn { Eligible = false, BoundMaster = f.Host };
+            var invalid = new Pawn { SexSlave = true, Eligible = false, BoundMaster = f.Host };
             f.A.TryAssignSpectate(invalid); Counters.Reset();
             Assert(!f.TargetSlot(invalid));
             Assert(f.A.FirstAssignedPawn("slave") == f.Target && f.A.SpectatorsForReading.Contains(invalid));
@@ -141,7 +141,7 @@ internal static partial class Program
         Run("拖到已有头像上的失败换人失败后恢复旧人", () =>
         {
             var f = new Fixture(); f.Open(); f.SelectBoth();
-            var invalid = new Pawn { Eligible = false, BoundMaster = f.Host };
+            var invalid = new Pawn { SexSlave = true, Eligible = false, BoundMaster = f.Host };
             Assert(!f.Window.Replace(invalid, new RitualRole[] { f.TargetRole }, f.Target));
             Assert(f.A.FirstAssignedPawn("slave") == f.Target);
         });
@@ -156,7 +156,7 @@ internal static partial class Program
         });
         Run("原版交换两个执行角色时先验证最终交换组合", () =>
         {
-            var f = new Fixture(); f.Host.Master = false; f.Host.Trainer = true; f.Target.Trainer = true;
+            var f = new Fixture(); f.Host.Master = false; f.Host.SexSlave = true; f.Host.Trainer = true; f.Target.Trainer = true;
             f.Target.BoundMaster = null; f.Target.AssignedTrainer = f.Host;
             // Both directions are established training relationships, without granting ownership.
             f.Target.BoundMaster = f.Host;
@@ -179,7 +179,7 @@ internal static partial class Program
         });
         Run("原版基础条件拒绝先于 RJW 且保留原选择", () =>
         {
-            var f = new Fixture(); f.Open(); var invalid = new Pawn { VanillaBlocked = true }; Counters.Reset();
+            var f = new Fixture(); f.Open(); var invalid = new Pawn { SexSlave = true, VanillaBlocked = true }; Counters.Reset();
             Assert(!f.TargetSlot(invalid) && Counters.Eligibility == 0);
         });
         Run("不能到达仪式地点时实际指派拒绝", () =>
@@ -198,10 +198,11 @@ internal static partial class Program
             Assert(!f.TargetRole.AppliesToPawn(f.Target, out _, f.Spot, assignments: f.A));
             Assert(!f.TargetSlot() && Counters.Eligibility == 0);
         });
-        foreach (string change in new[] { "body", "permission", "downed", "reachable", "trainer" })
+        foreach (string change in new[] { "identity", "body", "permission", "downed", "reachable", "trainer" })
             Run($"点击开始前重新读取状态：{change}", () =>
             {
                 var f = new Fixture(); f.Open(); f.SelectBoth();
+                if (change == "identity") f.Target.SexSlave = false;
                 if (change == "body") f.Target.Eligible = false;
                 if (change == "permission") f.Target.BoundMaster = null;
                 if (change == "downed") f.Host.Downed = true;
@@ -255,7 +256,7 @@ internal static partial class Program
         Run("实际验证异常不污染后续操作或移除原选择", () =>
         {
             var f = new Fixture(); f.Open(); f.SelectBoth();
-            var candidate = new Pawn { BoundMaster = f.Host }; rjw.xxx.Throw = true;
+            var candidate = new Pawn { SexSlave = true, BoundMaster = f.Host }; rjw.xxx.Throw = true;
             ExpectThrow(() => f.Window.Replace(candidate, new RitualRole[] { f.TargetRole }, f.Target));
             rjw.xxx.Throw = false; candidate.Eligible = false;
             Assert(!f.TargetSlot(candidate) && f.A.FirstAssignedPawn("slave") == f.Target);
@@ -327,7 +328,7 @@ internal static partial class Program
         });
         Run("交换第二步被原版拒绝时回滚并刷新品质预览", () =>
         {
-            var f = new Fixture(); f.Host.Master = false; f.Host.Trainer = f.Target.Trainer = true;
+            var f = new Fixture(); f.Host.Master = false; f.Host.SexSlave = true; f.Host.Trainer = f.Target.Trainer = true;
             f.Host.BoundMaster = f.Target; f.Open(); f.SelectBoth();
             f.A.RejectAssignPawn = f.Host;
             f.Window.Replace(f.Target, new RitualRole[] { f.HostRole }, f.Host);
@@ -428,6 +429,7 @@ internal static partial class Program
             }
         });
         RunPreviewTests();
+        RunTrainingIdentityTests();
         RunVisualTests();
         RunAudienceTests(args.Length > 0 ? args[0] : null);
         Console.WriteLine($"结果：{passed}/{passed + failed} 项通过。");

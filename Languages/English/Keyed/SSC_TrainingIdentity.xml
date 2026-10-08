@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_Training_TargetIdentityRequired>The training target must have the SSC sex slave role. Vanilla colonist, prisoner, or slave status does not replace it.</SSC_Training_TargetIdentityRequired>
+  <SSC_Identity_RitualRoleChanged>A participant's SSC role has changed.</SSC_Identity_RitualRoleChanged>
+  <SSC_Identity_LegacyRecoveryHint>A historical chain remains, but the SSC role is unset. Training is paused. The sex slave role can be restored manually without changing existing data.</SSC_Identity_LegacyRecoveryHint>
+  <SSC_Identity_LegacyRecoveryButton>Restore historical sex slave role</SSC_Identity_LegacyRecoveryButton>
+  <SSC_Identity_LegacyRecoveryConfirm>{0} retains a historical chain to {1}, but their SSC role is unset. Restore the SSC sex slave role?\n\nThis only restores the role. Chain growth, corruption, specialization, training mode, assigned trainer, and ownership are preserved. Saved training settings will become active again.</SSC_Identity_LegacyRecoveryConfirm>
+  <SSC_Identity_LegacyRecoveryRejected>The role or historical bond has changed. This recovery cannot proceed. Review the pawn's current state.</SSC_Identity_LegacyRecoveryRejected>
+  <SSC_Identity_LegacyRecoveryCompleted>Restored {0}'s SSC sex slave role. Existing training settings and progression data were preserved.</SSC_Identity_LegacyRecoveryCompleted>
+</LanguageData>

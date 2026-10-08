@@ -36,9 +36,9 @@ namespace SexSlaveCraft
                 return false;
             }
             if (!base.AppliesIfChild(p, out reason, skipReason)) return false;
-            if (p.TryGetComp<CompSexSlaveTraining>() == null || SSCIdentityUtility.IsMaster(p))
+            if (!SSCIdentityUtility.IsSexSlave(p))
             {
-                if (!skipReason) reason = "SSC_Restrictions_TrainingTargetInvalid".Translate();
+                if (!skipReason) reason = "SSC_Training_TargetIdentityRequired".Translate();
                 return false;
             }
             return true;
@@ -53,7 +53,9 @@ namespace SexSlaveCraft
                 if (!skipReason) reason = "MessageRitualRoleCannotReach".Translate();
                 return false;
             }
-            return Trainjudge.TryCanBeFuckedWithReason(p, out reason, skipReason);
+            if (!Trainjudge.TryCanBeFuckedWithReason(p, out reason, skipReason)) return false;
+            // RJW 身体查询属于外部边界，返回后不能沿用查询前的身份资格。
+            return AppliesToCandidate(p, out reason, skipReason);
         }
 
         /// <summary>转换为正式仪式请求，不把身份或公交车状态当成许可。</summary>

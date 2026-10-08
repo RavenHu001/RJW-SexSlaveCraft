@@ -142,7 +142,7 @@ namespace SexSlaveCraft
             float contentWidth = trainingRect.width - 18f;
             TrainerIdentityView identityView = BuildTrainerIdentityView(pawn, comp, contentWidth);
             float specializationHeight = GetSpecializationSectionHeight(pawn, comp, contentWidth);
-            float contentHeight = CalculateContentHeight(pawn, comp, identityView.SectionHeight, specializationHeight);
+            float contentHeight = CalculateContentHeight(pawn, comp, identityView.SectionHeight, specializationHeight, contentWidth);
             Rect viewRect = trainingRect;
             Rect contentRect = new Rect(0f, 0f, contentWidth, contentHeight);
 
@@ -168,7 +168,11 @@ namespace SexSlaveCraft
                 }
                 else if (comp.pawnIdentity == PawnIdentity.Unset)
                 {
-                    DrawMessageSection(new Rect(0f, curY, contentRect.width, 78f), Strings.ITab_IdentityUnset, Color.yellow);
+                    if (SSCIdentityUtility.CanRestoreLegacySlaveIdentity(pawn))
+                        DrawLegacyIdentityRecoverySection(new Rect(0f, curY, contentRect.width,
+                            GetLegacyIdentityRecoveryHeight(contentRect.width)), pawn, comp);
+                    else
+                        DrawMessageSection(new Rect(0f, curY, contentRect.width, 78f), Strings.ITab_IdentityUnset, Color.yellow);
                 }
                 else if (!ResearchUtils.IsResearchFinished(SSCDefOf.SSC_BasicTraining))
                 {
@@ -195,13 +199,15 @@ namespace SexSlaveCraft
         }
 
         /// <summary>为身份、限制展开入口及当前可见各节累计滚动高度，保持按钮和后续内容均可滚动访问。</summary>
-        private static float CalculateContentHeight(Pawn pawn, CompSexSlaveTraining comp, float identityHeight, float specializationHeight)
+        private static float CalculateContentHeight(Pawn pawn, CompSexSlaveTraining comp, float identityHeight, float specializationHeight, float width)
         {
             float height = identityHeight + RestrictionToggleHeight + RestrictionToggleSpacing
                 + SectionSpacing + specializationHeight;
 
             if (comp.pawnIdentity == PawnIdentity.Master || comp.pawnIdentity == PawnIdentity.Unset)
             {
+                if (SSCIdentityUtility.CanRestoreLegacySlaveIdentity(pawn))
+                    return height + GetLegacyIdentityRecoveryHeight(width) + 6f;
                 return height + 84f;
             }
 
@@ -345,19 +351,23 @@ namespace SexSlaveCraft
                     listing.Gap(2f);
                     if (identityClicked)
                     {
+                        Pawn identityPawn = SelPawn;
                         List<FloatMenuOption> identityOptions = new List<FloatMenuOption>
                         {
                             new FloatMenuOption(Strings.ITab_SetIdentityUnset, delegate
                             {
-                                SSCIdentityUtility.TrySetIdentity(SelPawn, PawnIdentity.Unset);
+                                if (identityPawn?.TryGetComp<CompSexSlaveTraining>() != comp) return;
+                                SSCIdentityUtility.TrySetIdentity(identityPawn, PawnIdentity.Unset);
                             }),
                             new FloatMenuOption(Strings.ITab_SetAsSlave, delegate
                             {
-                                SSCIdentityUtility.TrySetIdentity(SelPawn, PawnIdentity.Slave);
+                                if (identityPawn?.TryGetComp<CompSexSlaveTraining>() != comp) return;
+                                SSCIdentityUtility.TrySetIdentity(identityPawn, PawnIdentity.Slave);
                             }),
                             new FloatMenuOption(Strings.ITab_SetAsMaster, delegate
                             {
-                                SSCIdentityUtility.TrySetIdentity(SelPawn, PawnIdentity.Master);
+                                if (identityPawn?.TryGetComp<CompSexSlaveTraining>() != comp) return;
+                                SSCIdentityUtility.TrySetIdentity(identityPawn, PawnIdentity.Master);
                             })
                         };
                         Find.WindowStack.Add(new FloatMenu(identityOptions));
@@ -464,7 +474,8 @@ namespace SexSlaveCraft
 
                     bool enabled = comp.scheduledTrainingEnabled;
                     listing.CheckboxLabeled("SSC_Schedule_Enable".Translate(), ref enabled);
-                    comp.scheduledTrainingEnabled = enabled;
+                    if (enabled != comp.scheduledTrainingEnabled && CanEditTrainingConfiguration(pawn, comp))
+                        comp.scheduledTrainingEnabled = enabled;
 
                     if (enabled)
                     {
@@ -484,6 +495,7 @@ namespace SexSlaveCraft
                                     endHour.ToString("00"));
                                 options.Add(new FloatMenuOption(label, delegate
                                 {
+                                    if (!CanEditTrainingConfiguration(pawn, comp)) return;
                                     comp.scheduledTrainingHour = selectedHour;
                                 }));
                             }
@@ -499,7 +511,11 @@ namespace SexSlaveCraft
                                 int selectedDays = days;
                                 options.Add(new FloatMenuOption(
                                     "SSC_Schedule_IntervalOption".Translate(days),
-                                    delegate { comp.scheduledTrainingIntervalDays = selectedDays; }));
+                                    delegate
+                                    {
+                                        if (!CanEditTrainingConfiguration(pawn, comp)) return;
+                                        comp.scheduledTrainingIntervalDays = selectedDays;
+                                    }));
                             }
                             Find.WindowStack.Add(new FloatMenu(options));
                         }
@@ -623,6 +639,42 @@ namespace SexSlaveCraft
             });
         }
 
+        private static float GetLegacyIdentityRecoveryHeight(float width)
+        {
+            return SectionPadding * 2f + Text.CalcHeight("SSC_Identity_LegacyRecoveryHint".Translate(),
+                Mathf.Max(1f, width - SectionPadding * 2f)) + 8f + IdentityButtonHeight;
+        }
+
+        /// <summary>历史锁链只提供手动恢复入口；确认后再次核对原组件、锁链及主人，不自动恢复。</summary>
+        private static void DrawLegacyIdentityRecoverySection(Rect rect, Pawn pawn, CompSexSlaveTraining comp)
+        {
+            DrawSection(rect, string.Empty, delegate(Rect innerRect)
+            {
+                string hint = "SSC_Identity_LegacyRecoveryHint".Translate();
+                float hintHeight = Text.CalcHeight(hint, innerRect.width);
+                Widgets.Label(new Rect(innerRect.x, innerRect.y, innerRect.width, hintHeight), hint);
+                Rect button = new Rect(innerRect.x, innerRect.y + hintHeight + 8f,
+                    innerRect.width, IdentityButtonHeight);
+                if (!Widgets.ButtonText(button, "SSC_Identity_LegacyRecoveryButton".Translate())) return;
+                Hediff_ChainOfSexSlave chain = SSCBondUtility.GetChain(pawn);
+                Pawn owner = chain?.LinkedPawn;
+                if (!SSCIdentityUtility.CanRestoreLegacySlaveIdentity(pawn)) return;
+                Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation(
+                    "SSC_Identity_LegacyRecoveryConfirm".Translate(pawn.LabelShort, owner.LabelShort), () =>
+                    {
+                        if (pawn.TryGetComp<CompSexSlaveTraining>() != comp || SSCBondUtility.GetChain(pawn) != chain ||
+                            SSCBondUtility.GetBoundMaster(pawn) != owner || !SSCIdentityUtility.TryRestoreLegacySlaveIdentity(pawn))
+                        {
+                            Messages.Message("SSC_Identity_LegacyRecoveryRejected".Translate(), pawn,
+                                MessageTypeDefOf.RejectInput, false);
+                            return;
+                        }
+                        Messages.Message("SSC_Identity_LegacyRecoveryCompleted".Translate(pawn.LabelShort), pawn,
+                            MessageTypeDefOf.PositiveEvent, false);
+                    }));
+            });
+        }
+
         /// <summary>在统一节框中绘制带颜色的身份提示，并恢复文字对齐与颜色。</summary>
         private void DrawMessageSection(Rect rect, string message, Color color)
         {
@@ -666,7 +718,8 @@ namespace SexSlaveCraft
             List<FloatMenuOption> list = new List<FloatMenuOption>();
             List<Pawn> candidates = TrainerAssignmentUtility.GetTrainerCandidates(slave).ToList();
             Pawn owner = SSCBondUtility.GetBoundMaster(slave);
-            SSCRestrictionConfig config = slave.TryGetComp<CompSexSlaveTraining>()?.restrictionConfig;
+            CompSexSlaveTraining comp = slave.TryGetComp<CompSexSlaveTraining>();
+            SSCRestrictionConfig config = comp?.restrictionConfig;
 
             if (candidates.Count == 0)
             {
@@ -685,18 +738,25 @@ namespace SexSlaveCraft
                 else if (owner != null && config?.IsValid() == true && !config.rules.receiveTraining)
                     label += "SSC_Restrictions_AssignAuthorizesSuffix".Translate();
 
-                action = delegate { AssignTrainer(slave, candidate); };
+                action = delegate { AssignTrainer(slave, candidate, comp); };
                 list.Add(new FloatMenuOption(label, action));
             }
 
             list.Add(new FloatMenuOption(Strings.ITab_ClearTrainer,
-                SSCRestrictionTrainerAssignment.CanAssign(slave, null) ? (Action)(() => AssignTrainer(slave, null)) : null));
+                SSCRestrictionTrainerAssignment.CanAssign(slave, null) ? (Action)(() => AssignTrainer(slave, null, comp)) : null));
             return list;
         }
 
         /// <summary>点击时重新验证规则及候选状态；菜单打开后的状态变化造成失败时给出提示，保留原指派。</summary>
-        private static void AssignTrainer(Pawn slave, Pawn trainer)
+        private static void AssignTrainer(Pawn slave, Pawn trainer, CompSexSlaveTraining expectedComp)
         {
+            // 菜单中的选择和清空都属于原组件；迟到菜单不能改写外部恢复安装的新配置。
+            if (expectedComp == null || slave?.TryGetComp<CompSexSlaveTraining>() != expectedComp)
+            {
+                Messages.Message("SSC_Restrictions_AssignFailed".Translate(), slave, MessageTypeDefOf.RejectInput, false);
+                return;
+            }
+            if (trainer != null && !CanEditTrainingConfiguration(slave, expectedComp)) return;
             if (!SSCBondUtility.TryAssignTrainer(slave, trainer))
                 Messages.Message("SSC_Restrictions_AssignFailed".Translate(), slave, MessageTypeDefOf.RejectInput, false);
         }
@@ -709,6 +769,7 @@ namespace SexSlaveCraft
 
             listing.CheckboxLabeled(Strings.ITab_AllowTraining, ref isEnabled);
             if (oldState == isEnabled) return;
+            if (!CanEditTrainingConfiguration(pawn, comp)) return;
 
             comp.mode = isEnabled ? TrainingMode.Enabled : TrainingMode.Disabled;
             comp.isBeingTrained = false;
@@ -753,13 +814,18 @@ namespace SexSlaveCraft
         /// <summary>列出支持的训练姿势，并保存玩家选择的模式。</summary>
         private static void DrawPoseSelector(Listing_Standard listing, CompSexSlaveTraining comp)
         {
+            Pawn pawn = comp.parent as Pawn;
             string modeLabel = Strings.GetModeLabel(comp.selectedMode);
             if (!listing.ButtonText(modeLabel)) return;
 
             List<FloatMenuOption> acts = new List<FloatMenuOption>();
             foreach (TrainingActType type in Enum.GetValues(typeof(TrainingActType)))
             {
-                acts.Add(new FloatMenuOption(Strings.GetModeLabel(type), delegate { comp.selectedMode = type; }));
+                acts.Add(new FloatMenuOption(Strings.GetModeLabel(type), delegate
+                {
+                    if (!CanEditTrainingConfiguration(pawn, comp)) return;
+                    comp.selectedMode = type;
+                }));
             }
 
             Find.WindowStack.Add(new FloatMenu(acts));
@@ -770,9 +836,18 @@ namespace SexSlaveCraft
         {
             string trainerName = TrainerAssignmentUtility.GetAssignedTrainerLabel(pawn);
             Rect row = listing.GetRect(30f);
-            if (Widgets.ButtonText(row, trainerName))
+            if (Widgets.ButtonText(row, trainerName) && CanEditTrainingConfiguration(pawn, comp))
                 Find.WindowStack.Add(new FloatMenu(GetTrainerOptions(pawn)));
             TooltipHandler.TipRegion(row, "SSC_Restrictions_AssignAuthorizesTip".Translate());
+        }
+
+        /// <summary>设置回调只接受仍属于原 Pawn 的 SSC 性奴组件，不用已绘制面板代替后台身份检查。</summary>
+        private static bool CanEditTrainingConfiguration(Pawn pawn, CompSexSlaveTraining comp)
+        {
+            if (comp != null && pawn?.TryGetComp<CompSexSlaveTraining>() == comp && SSCIdentityUtility.IsSexSlave(pawn))
+                return true;
+            Messages.Message("SSC_Training_TargetIdentityRequired".Translate(), pawn, MessageTypeDefOf.RejectInput, false);
+            return false;
         }
 
         /// <summary>绘制特化选择和进度，按资格及终极状态限制选项，并同步所选方向的基础状态。</summary>

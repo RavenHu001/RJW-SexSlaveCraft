@@ -2,6 +2,8 @@
 
 [Project home](README.md) · [Documentation index / 文档索引](Docs/README.md) · [中文快速入门](读我，玩法介绍.md) · [Changelog](CHANGELOG.md)
 
+> **Development branch (2026-10-08):** Unified receiver identity checks and explicit historical Chain identity recovery are implemented in the current branch. The maintainer reports no issues in local testing and has approved committing them; they remain unreleased. The stable 2.3.8 ZIP does not contain these changes. Sections marked “development branch” describe the current source.
+
 > For RimWorld 1.6 and SexSlaveCraft 2.3.8.\
 > This continuation is based on upstream 2.2.8. See `CHANGELOG.md` for release history.\
 > This version retains 2.3.6 shared daily Training/full Binding Ritual specialization progress and 2.3.5 self-training/handoff fixes. Download the installation ZIP and SHA-256 checksum from [v2.3.8 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.8). Legacy RimTalk remains suspended.\
@@ -54,7 +56,7 @@ Select the intended target and open the `Training` tab:
 3. select an `Assigned Pose`;
 4. optionally choose an `Assigned Trainer`.
 
-The target may be a colonist, prisoner, or slave, but must pass RJW's sex-target eligibility checks.
+The target may be a colonist, prisoner, or vanilla slave, but must pass RJW's sex-target eligibility checks. The development branch also requires SSC `Sex Slave` identity for automatic Training, forced Training, Binding Rituals and new trainer assignments. Vanilla slave status cannot replace it. Set the SSC role first, then assign the Master who will perform the first bond; a Chain is not required beforehand. Daily Training still uses its own enable switch, timetable and cooldown; rituals do not inherit those conditions.
 
 ### Step 4: Start Training
 
@@ -103,6 +105,8 @@ Once Corruption reaches the first bond threshold:
 
 Bound pawns cannot switch SSC identity until their binding is explicitly removed. A Master with remaining bound slaves is also locked; the Sex Slave trainer toggle remains available. Shared-bed permission can also apply before binding when a valid trainer is assigned.
 
+The development branch does not infer SSC identity from old enable settings, assignments or Corruption. An Unset pawn without a Chain can be set to Sex Slave normally. If an Unset pawn retains a valid historical Chain, click `Restore historical sex slave role` on the Training tab and confirm. Recovery restores only the role, preserving ownership, saved Training settings and growth. The option is unavailable for invalid historical relationships. Old tasks with an ineligible receiver stop; growth remains, and a restored pawn needs a new task.
+
 Corruption uses a default base decay of 2% per day. The mod settings can disable it or adjust it from 0% to 20% per day; recent Training quality, opinion of the Master, body-part development, and deeper Chain stages continue to modify the actual loss.
 
 The current Chain stage brakes Corruption at the next threshold: the first stage can reach 30%, the second can reach 50%, and the third can reach 90%. After reaching a threshold, a Binding Ritual resolution is still required to advance the Chain stage.
@@ -119,7 +123,7 @@ The Binding Ritual is the main way to advance the Chain health stage. The Sex Sl
 4. Assign the ritual leader as the target's trainer.
 5. Choose a reachable ritual location.
 
-In the setup window, the gold whip marks host candidates and the purple collar marks SSC Sex Slave candidates. Icons show basic eligibility: hover for pairing, body and reachability requirements. A slash means unavailable; a check means assigned. A qualified Sex Slave trainer can have both icons. The whip indicates host/trainer duty rather than ownership. First bonding requires the assigned Master; for existing bonds, the actual Master or an eligible assigned trainer may host under the current permission rules. The candidate icons do not change those admission rules.
+In the setup window, the gold whip marks host candidates and the purple collar marks SSC Sex Slave candidates. Icons show basic eligibility: hover for pairing, body and reachability requirements. A slash means unavailable; a check means assigned. A qualified Sex Slave trainer can have both icons. The whip indicates host/trainer duty rather than ownership. First bonding requires the assigned Master; for existing bonds, the actual Master or an eligible assigned trainer may host under the current permission rules. Stable 2.3.8 added candidate hints only; the development branch now checks SSC Sex Slave identity during actual selection, startup, execution and outcomes. A candidate icon still does not mean all requirements have passed.
 
 ### Ritual Sequence
 

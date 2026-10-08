@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_Training_TargetIdentityRequired>Цель обучения должна иметь роль секс-раба SSC. Обычный статус колониста, пленника или раба её не заменяет.</SSC_Training_TargetIdentityRequired>
+  <SSC_Identity_RitualRoleChanged>Роль SSC одного из участников изменилась.</SSC_Identity_RitualRoleChanged>
+  <SSC_Identity_LegacyRecoveryHint>Сохранилась старая цепь, но роль SSC не выбрана. Обучение приостановлено. Роль секс-раба можно восстановить вручную, сохранив имеющиеся данные.</SSC_Identity_LegacyRecoveryHint>
+  <SSC_Identity_LegacyRecoveryButton>Восстановить роль секс-раба</SSC_Identity_LegacyRecoveryButton>
+  <SSC_Identity_LegacyRecoveryConfirm>У {0} сохранилась старая цепь к {1}, но роль SSC не выбрана. Восстановить роль секс-раба SSC?\n\nБудет восстановлена только роль. Развитие цепи, развращение, специализация, режим обучения, назначенный инструктор и принадлежность сохранятся. Сохранённые настройки обучения снова вступят в силу.</SSC_Identity_LegacyRecoveryConfirm>
+  <SSC_Identity_LegacyRecoveryRejected>Роль или старая связь изменились. Восстановление невозможно. Проверьте текущее состояние персонажа.</SSC_Identity_LegacyRecoveryRejected>
+  <SSC_Identity_LegacyRecoveryCompleted>Роль секс-раба SSC для {0} восстановлена. Настройки обучения и данные развития сохранены.</SSC_Identity_LegacyRecoveryCompleted>
+</LanguageData>

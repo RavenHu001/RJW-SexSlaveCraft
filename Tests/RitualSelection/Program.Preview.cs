@@ -41,22 +41,23 @@ internal static partial class Program
             var ownerHost = BindingRitualRolePreviewUtility.Inspect(f.A, f.HostRole, f.Host);
             var ownerTarget = BindingRitualRolePreviewUtility.Inspect(f.A, f.TargetRole, f.Host);
             Assert(ownerHost.Candidate && ownerHost.PairAllowed && !ownerTarget.Candidate && !ownerTarget.PairAllowed);
-            var trainer = new Pawn { Trainer = true };
+            var trainer = new Pawn { SexSlave = true, Trainer = true };
             Assert(BindingRitualRolePreviewUtility.Inspect(f.A, f.HostRole, trainer).Candidate);
             Assert(BindingRitualRolePreviewUtility.Inspect(f.A, f.TargetRole, trainer).Candidate);
             Assert(Counters.Eligibility == 0 && Counters.Reach == 0 && Counters.Permissions == 0);
         });
-        Run("基础目标资格不要求已有 SSC 性奴身份，保留原版奴隶和囚犯身份", () =>
+        Run("基础目标资格要求 SSC 性奴身份，保留原版殖民者、奴隶和囚犯范围", () =>
         {
             var f = new Fixture(); f.Open();
-            foreach (Pawn pawn in new[] { new Pawn(), new Pawn { IsColonist = false, IsSlave = true },
-                new Pawn { IsColonist = false, IsPrisonerOfColony = true } })
+            foreach (Pawn pawn in new[] { new Pawn { SexSlave = true }, new Pawn { SexSlave = true, IsColonist = false, IsSlave = true },
+                new Pawn { SexSlave = true, IsColonist = false, IsPrisonerOfColony = true } })
             {
                 var preview = BindingRitualRolePreviewUtility.Inspect(f.A, f.TargetRole, pawn);
                 Assert(preview.Candidate && preview.PairAllowed && !preview.Assigned);
             }
-            foreach (Pawn pawn in new[] { new Pawn { Child = true }, new Pawn { HasComp = false },
-                new Pawn { IsColonist = false }, new Pawn { Master = true }, new Pawn { Dead = true } })
+            foreach (Pawn pawn in new[] { new Pawn(), new Pawn { IsSlave = true }, new Pawn { IsPrisonerOfColony = true },
+                new Pawn { SexSlave = true, Child = true }, new Pawn { HasComp = false },
+                new Pawn { SexSlave = true, IsColonist = false }, new Pawn { Master = true }, new Pawn { SexSlave = true, Dead = true } })
             {
                 var preview = BindingRitualRolePreviewUtility.Inspect(f.A, f.TargetRole, pawn);
                 Assert(!preview.Candidate && !preview.PairAllowed && !string.IsNullOrEmpty(preview.Reason));
@@ -92,7 +93,7 @@ internal static partial class Program
         Run("配对标记随当前选择变化重新求值，不把基础候选误报为可配对", () =>
         {
             var f = new Fixture(); f.Open();
-            var candidate = new Pawn();
+            var candidate = new Pawn { SexSlave = true };
             Assert(BindingRitualRolePreviewUtility.Inspect(f.A, f.TargetRole, candidate).PairAllowed);
             Assert(f.HostSlot());
             var blocked = BindingRitualRolePreviewUtility.Inspect(f.A, f.TargetRole, candidate);
@@ -229,7 +230,7 @@ internal static partial class Program
         });
         Run("角色互换的轻量、完整预览及实际提交使用相同最终配对", () =>
         {
-            var f = new Fixture(); f.Host.Master = false; f.Host.Trainer = f.Target.Trainer = true;
+            var f = new Fixture(); f.Host.Master = false; f.Host.SexSlave = true; f.Host.Trainer = f.Target.Trainer = true;
             f.Host.BoundMaster = f.Target; f.Open(); f.SelectBoth(); Counters.Reset();
             var preview = BindingRitualRolePreviewUtility.Inspect(f.A, f.HostRole, f.Target, f.Host);
             Assert(preview.Candidate && preview.PairAllowed && !preview.Assigned);
@@ -242,7 +243,7 @@ internal static partial class Program
         {
             var f = new Fixture(); f.Target.Trainer = true; f.Open(); f.SelectBoth(); Counters.Reset();
             var preview = BindingRitualRolePreviewUtility.Inspect(f.A, f.HostRole, f.Target, f.Host);
-            Assert(preview.Candidate && !preview.PairAllowed && preview.Reason == "SSC_Restrictions_TrainingTargetInvalid");
+            Assert(preview.Candidate && !preview.PairAllowed && preview.Reason == "SSC_Training_TargetIdentityRequired");
             Assert(!BindingRitualSelectionUtility.InspectAttempt(f.A, f.HostRole, f.Target, f.Host, out _));
             Assert(Counters.Eligibility == 0 && Counters.Reach == 0);
             Assert(!f.Window.Replace(f.Target, new RitualRole[] { f.HostRole }, f.Host));

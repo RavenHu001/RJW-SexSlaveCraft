@@ -28,6 +28,8 @@ namespace SexSlaveCraft
             replacement = null;
             CompSexSlaveTraining comp = target?.TryGetComp<CompSexSlaveTraining>();
             if (comp == null || comp.restrictionRestoreDepth > 0) return false;
+            // 新增指派不能给未设置 SSC 性奴身份的对象授予调教资格；清理旧指派沿用原规则。
+            if (trainer != null && !SSCIdentityUtility.IsSexSlave(target)) return false;
             if (!SSCRestrictionResolver.IsApplicable(target)) return true;
 
             Pawn owner = SSCBondUtility.GetBoundMaster(target);

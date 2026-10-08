@@ -13,6 +13,7 @@ namespace Verse
         public bool Spawned = true, IsColonist = true, Eligible = true, Reachable = true, HasComp = true;
         public bool Dead, Destroyed, Downed, IsSlave, IsPrisonerOfColony, Master, SexSlave, Trainer, Child, VanillaBlocked;
         public string LabelShort = "Adult";
+        public Action OnEligibility;
         public Pawn BoundMaster, AssignedTrainer;
         public readonly HashSet<Pawn> PermittedHosts = new HashSet<Pawn>();
         public RaceProperties RaceProps = new RaceProperties();
@@ -397,7 +398,7 @@ namespace rjw
     {
         public static bool Throw;
         public static bool can_be_fucked(Verse.Pawn pawn)
-        { Counters.Eligibility++; if (Throw) throw new InvalidOperationException("eligibility probe"); return pawn.Eligible; }
+        { Counters.Eligibility++; if (Throw) throw new InvalidOperationException("eligibility probe"); pawn.OnEligibility?.Invoke(); return pawn.Eligible; }
         public static bool can_do_loving(Verse.Pawn pawn) => !pawn.Child;
         public static bool is_human(Verse.Pawn pawn) => true;
         public static bool is_animal(Verse.Pawn pawn) => false;
