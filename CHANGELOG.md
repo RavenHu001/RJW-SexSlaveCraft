@@ -4,12 +4,18 @@
 
 This continuation builds on upstream **2.2.8**, the baseline when upstream development stopped in July, and retains its version numbering. Entries are listed newest first. Technical details are in the [development log (Chinese)](Docs/Development/开发更新记录.md).
 
-## [Unreleased] — 绑定仪式观众助兴修复 / Binding Ritual spectator bonus fixes
+## [2.3.8] — 2026-10-08 — 绑定仪式助兴修复与选人提示 / Binding Ritual spectator fixes and role hints
 
-- 修复准备窗口将主持者和仪式目标重复算入观众的问题；结算仅计算实际观看至少半场的观众，零观众为 +0%，四名合格观众为 +12.5%，十人及以上封顶 +20%。Fixes protagonists being counted again as spectators in the setup preview. Outcomes count spectators who attended at least half the ritual: none gives +0%, four eligible spectators give +12.5%, and ten or more cap at +20%.
-- 修复观众全程到场却结算为零人的问题：改用本场实际经过时间，并让信件始终显示观众分项。专项回归 81/81、Release 编译与实际游戏计时字段访问验证通过；已同步本机，维护者确认修改有效。该修复尚未纳入已发布的 2.3.7 安装包。Fixes full attendance yielding zero spectators by using actual elapsed ritual time, and always displays the spectator factor in the result letter. All 81 targeted regression checks, the Release build and access to the actual game timer passed; the locally installed fix was confirmed effective in game. This fix is not included in the published 2.3.7 package.
+本版归并 `v2.3.7`（`71b5c88`）之后至 `2dcf68e` 的全部 8 项开发提交，不重复计入 2.3.7 发布归档。详见[中英发布说明](Docs/Releases/2.3.8/2.3.8发布说明.md)及[版本验证](Docs/Releases/2.3.8/2.3.8版本验证.md)。安装 ZIP 与 SHA-256 校验文件见 [v2.3.8 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.8)。
 
-实现、修复过程与验证范围见[绑定仪式观众助兴修复](Docs/Development/绑定仪式观众助兴修复.md)。Implementation and validation details are in the linked development record.
+This version consolidates all 8 development commits after `v2.3.7` (`71b5c88`) through `2dcf68e`, excluding the previous release archive. See the linked bilingual notes and validation record. Download the ZIP and SHA-256 checksum from [v2.3.8 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.8).
+
+- **观众助兴 / Spectator bonus:** 准备窗口和结算都排除主持者与仪式性奴，结算按本场实际经过时间计算，实际观看至少半场才提供加成。零观众为 +0%，四名合格观众为 +12.5%，十人及以上封顶 +20%；结果信件始终显示观众分项。维护者已确认修复有效。The preview and outcome exclude both protagonists. Only spectators attending at least half the actual elapsed ritual contribute: none gives +0%, four give +12.5%, and ten or more cap at +20%. Result letters always show the spectator factor. The maintainer confirmed the fix works in game.
+- **角色图标 / Role icons:** 用金色鞭子标记主持候选、紫色项圈标记 SSC 性奴候选，双资格图标在头像左上横向排列，减少遮挡。鞭子表示主持及调教资格，不等于 SSC 主人身份或所有权；候选图标不代表已通过全部条件。新布局已获维护者实机确认。A gold whip marks host candidates and a purple collar marks SSC Sex Slave candidates. Dual icons share one row above the portrait. The whip indicates hosting/trainer eligibility rather than Master identity or ownership; candidates still require complete checks. The maintainer confirmed the new layout in game.
+- **选人反馈 / Selection feedback:** 保留已选勾选和不可选斜线，悬停、拖拽显示允许状态或具体拒绝原因；配对提示遵守指定调教员、行为许可和原版角色锁定等现有限制。沿用点击、右键、拖拽、换人和交换流程，观众分配不受候选图标影响。Checks and slashes distinguish assigned and unavailable roles. Hover and drag feedback shows eligibility or the actual refusal reason, including assignment, permission and native role-lock restrictions. Existing selection, replacement, swap and spectator flows are retained.
+- **简明说明与范围 / Concise text and scope:** 四语图例、候选名称和状态文案精简，界面中的“目标”统一为“性奴”。紫色候选图标只授予 SSC 性奴；实际选角与开始沿用既有后台准入条件，统一受调教门槛仍属未来规划。Four-language legends, candidate names and status text are shortened, with “target” renamed to “sex slave” in selection hints. Only SSC Sex Slaves receive the collar candidate icon; backend role admission and startup retain their existing rules. Unifying Training admission remains future work.
+
+实现及历史验证见[观众助兴修复](Docs/Development/绑定仪式观众助兴修复.md)和[角色候选提示](Docs/Development/绑定仪式角色候选提示.md)。Implementation and historical validation are recorded in the linked development documents.
 
 ## [2.3.7] — 2026-10-06 — 猫狗特化与宠物互动 / Cat and Dog specializations and pet interactions
 

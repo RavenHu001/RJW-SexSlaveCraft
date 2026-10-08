@@ -2,13 +2,13 @@
 
 [Project home](README.md) · [Documentation index / 文档索引](Docs/README.md) · [中文快速入门](读我，玩法介绍.md) · [Changelog](CHANGELOG.md)
 
-> For RimWorld 1.6 and SexSlaveCraft 2.3.7.\
+> For RimWorld 1.6 and SexSlaveCraft 2.3.8.\
 > This continuation is based on upstream 2.2.8. See `CHANGELOG.md` for release history.\
-> This version retains 2.3.6 shared daily Training/full Binding Ritual specialization progress and 2.3.5 self-training/handoff fixes. Download the installation ZIP and SHA-256 checksum from [v2.3.7 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.7). Legacy RimTalk remains suspended.\
-> Version 2.3.7 content (2026-10-06): Includes Cat/Dog training, pet exclusivity, gel finalization, active abilities, visible affection, ordinary-completion display and finalization tooltips. The 20% adult Cat/Dog consensual follow-up is implemented and awaits in-game acceptance. Rabbit selection remains disabled. These additions are absent from historical 2.3.6 packages.\
+> This version retains 2.3.6 shared daily Training/full Binding Ritual specialization progress and 2.3.5 self-training/handoff fixes. Download the installation ZIP and SHA-256 checksum from [v2.3.8 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.8). Legacy RimTalk remains suspended.\
+> Version 2.3.8 content (2026-10-08): Fixes Binding Ritual spectator counting and attendance quality, adds host/sex slave candidate icons and concise hover hints, and retains 2.3.7 Cat/Dog content. Includes Cat/Dog training, pet exclusivity, gel finalization, active abilities, visible affection, ordinary-completion display and finalization tooltips. The 20% adult Cat/Dog consensual follow-up is implemented and awaits in-game acceptance. Rabbit selection remains disabled. These additions are absent from historical 2.3.6 packages.\
 > In-game names follow the mod's official English localization. For exact formulas, thresholds, and implementation notes, see `PLAYER_GUIDE_EN.md`.
 
-> See the [2.3.7 notes](Docs/Releases/2.3.7/2.3.7发布说明.md) for this version and the [2.3.6](Docs/Releases/2.3.6/2.3.6发布说明.md) and [2.3.5](Docs/Releases/2.3.5/2.3.5发布说明.md) notes for retained features.
+> See the [2.3.8 notes](Docs/Releases/2.3.8/2.3.8发布说明.md) for this version and the [2.3.7](Docs/Releases/2.3.7/2.3.7发布说明.md), [2.3.6](Docs/Releases/2.3.6/2.3.6发布说明.md) and [2.3.5](Docs/Releases/2.3.5/2.3.5发布说明.md) notes for retained features.
 
 ## 1. What the Mod Does
 
@@ -119,6 +119,8 @@ The Binding Ritual is the main way to advance the Chain health stage. The Sex Sl
 4. Assign the ritual leader as the target's trainer.
 5. Choose a reachable ritual location.
 
+In the setup window, the gold whip marks host candidates and the purple collar marks SSC Sex Slave candidates. Icons show basic eligibility: hover for pairing, body and reachability requirements. A slash means unavailable; a check means assigned. A qualified Sex Slave trainer can have both icons. The whip indicates host/trainer duty rather than ownership. First bonding requires the assigned Master; for existing bonds, the actual Master or an eligible assigned trainer may host under the current permission rules. The candidate icons do not change those admission rules.
+
 ### Ritual Sequence
 
 A complete ritual performs six acts:
@@ -142,6 +144,8 @@ A new ritual starts at phase one; phase changes and save/load within the same ac
 - invite more spectators;
 - improve room Impressiveness;
 - avoid repeating the ritual within three days.
+
+Both protagonists are excluded from the audience. The preview uses assigned spectators; the final bonus counts eligible spectators who watched at least half the ritual's actual elapsed time. A spectator who leaves after meeting that threshold still contributes. The bonus ranges from +0% at zero to +20% at ten, with linear interpolation; the result also lists the factor when nobody qualifies.
 
 A completed Binding Ritual can:
 

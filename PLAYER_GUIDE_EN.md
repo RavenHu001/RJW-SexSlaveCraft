@@ -1,13 +1,13 @@
 # RJW-SexSlaveCraft Complete Player Guide
 
-> For RimWorld 1.6 and SexSlaveCraft 2.3.7, based on the current repository code and Defs.\
-> Base audit: 2026-06-30; self-training and handoff fixes updated for 2.3.5, shared progress for 2.3.6 on 2026-10-02, and Cat/Dog features for 2.3.7 on 2026-10-06.\
+> For RimWorld 1.6 and SexSlaveCraft 2.3.8, based on the current repository code and Defs.\
+> Base audit: 2026-06-30; self-training and handoff fixes updated for 2.3.5, shared progress for 2.3.6 on 2026-10-02, Cat/Dog features for 2.3.7 on 2026-10-06, and ritual quality/selection hints for 2.3.8 on 2026-10-08.\
 > Based on upstream 2.2.8; version 2.2.9 includes the specialization and ritual progression fixes, and 2.2.10 fixes stale training locks after interrupted rituals. See `CHANGELOG.md`.\
-> This version retains 2.3.6 shared daily Training/full Binding Ritual specialization progress and 2.3.5 self-training/handoff fixes. Download the installation ZIP and SHA-256 checksum from [v2.3.7 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.7). Legacy RimTalk remains suspended.\
-> Version 2.3.7 content (2026-10-06): Includes Cat/Dog training, pet exclusivity, gel finalization, active abilities, visible affection, ordinary-completion display and finalization tooltips. The 20% adult Cat/Dog consensual follow-up is implemented and awaits in-game acceptance. Rabbit selection remains disabled. These additions are absent from historical 2.3.6 packages.\
+> This version retains 2.3.6 shared daily Training/full Binding Ritual specialization progress and 2.3.5 self-training/handoff fixes. Download the installation ZIP and SHA-256 checksum from [v2.3.8 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.8). Legacy RimTalk remains suspended.\
+> Version 2.3.8 content (2026-10-08): Fixes Binding Ritual spectator counting and attendance quality, adds host/sex slave candidate icons and concise hover hints, and retains 2.3.7 Cat/Dog content. Includes Cat/Dog training, pet exclusivity, gel finalization, active abilities, visible affection, ordinary-completion display and finalization tooltips. The 20% adult Cat/Dog consensual follow-up is implemented and awaits in-game acceptance. Rabbit selection remains disabled. These additions are absent from historical 2.3.6 packages.\
 > This guide describes the behavior implemented by the current C# and XML. Where an old changelog or description disagrees with the code, the discrepancy is listed under “Current Limitations and Known Differences.”
 
-> See the [2.3.7 notes](Docs/Releases/2.3.7/2.3.7发布说明.md) for this version and the [2.3.6](Docs/Releases/2.3.6/2.3.6发布说明.md) and [2.3.5](Docs/Releases/2.3.5/2.3.5发布说明.md) notes for retained features.
+> See the [2.3.8 notes](Docs/Releases/2.3.8/2.3.8发布说明.md) for this version and the [2.3.7](Docs/Releases/2.3.7/2.3.7发布说明.md), [2.3.6](Docs/Releases/2.3.6/2.3.6发布说明.md) and [2.3.5](Docs/Releases/2.3.5/2.3.5发布说明.md) notes for retained features.
 
 ## 1. Scope and Dependencies
 
@@ -399,15 +399,18 @@ Races with a natural base Will of 15 or less have a ritual conversion cap of 90%
 ### 8.1 Requirements
 
 - The ideoligion contains `Binding Ritual`.
-- The ritual master is a free colonist of the player faction.
-- The ritual master’s `Pawn Identity` is `Master`.
+- The host is a free colonist of the player faction.
+- The host has a valid trainer identity: an SSC Master or an eligible SSC Sex Slave trainer.
 - The target is a colonist, colony slave, or colony prisoner.
 - The target is alive, not downed, and passes RJW receiver eligibility.
 - The target is not marked as a Master.
-- The target has an `Assigned Trainer`.
-- The assigned trainer is the ritual master.
-- If the target has a non-Public-Use Chain, its existing master is also the ritual master.
+- For first bonding, the host must be an SSC Master and the target's active assigned trainer.
+- For an existing bond, the actual Master may host without being excluded by another assigned trainer. A third-party host must be the active assigned trainer and pass the applicable Training permission checks.
 - Both pawns can reach the ritual location.
+
+The setup window uses gold whip icons for host candidates and purple collar icons for sex slave candidates. Collar icons additionally require SSC Sex Slave identity; vanilla colonist, prisoner or slave status alone does not qualify. Eligible Sex Slave trainers can show both icons. A whip indicates host/trainer duty and does not establish ownership. A slash indicates the role is currently unavailable; a check indicates assignment. Hover or drag to inspect the proposed pair and its full requirements.
+
+These icons provide candidate information. Actual selection and start still use the existing role, pairing, body and reachability checks; this release does not add a universal SSC Sex Slave identity requirement to every Training or ritual entry. Unifying that requirement remains planned. Pawns without a candidate icon may still be spectators.
 
 ### 8.2 Fixed Six-act Sequence
 
@@ -444,7 +447,7 @@ Quality is the sum of the following terms, clamped to 0–100%:
 
 The spectator bonus interpolates linearly between these points: three give +10%, and four give +12.5%. The master and ritual target are excluded. The setup preview estimates the assigned audience; the final outcome requires attendance for at least half the ritual's actual elapsed time. Brief visits do not count, while spectators who leave after meeting the threshold retain their contribution. Result letters also show the factor when no spectators qualify.
 
-The unreleased fix dated 2026-10-07 uses actual elapsed time to correct full attendance being counted as zero. The maintainer confirmed it works in game; the published 2.3.7 package does not yet contain this fix. See the [development record (Chinese)](Docs/Development/绑定仪式观众助兴修复.md).
+Version 2.3.8 includes the actual-time correction for full attendance being counted as zero, as well as protagonist exclusion in the preview and final outcome. The maintainer confirmed the spectator fix works in game. Historical 2.3.7 packages do not contain it; see the [development record (Chinese)](Docs/Development/绑定仪式观众助兴修复.md).
 
 Ritual genital compatibility is not fully connected and stays at its lowest bracket. Ordinary Training size scoring is unaffected.
 
