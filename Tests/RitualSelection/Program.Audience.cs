@@ -31,6 +31,7 @@ internal static partial class Program
     private static void RunAudienceTests(string root)
     {
         root ??= Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../../.."));
+        RunAudienceCollectorTests(root);
         Run("观众预览随两个主角分配从 5 人降到 3 人", () =>
         {
             var f = new Fixture(3); f.Open(); var comp = AudienceComp(root);
@@ -130,6 +131,98 @@ internal static partial class Program
             first.presentForTicks[f.Map.Pawns[2]] = 6000;
             Near(1, comp.Count(ritual, first)); Near(0, comp.Count(ritual, second));
             first.Reset(); Near(0, comp.Count(ritual, first));
+        });
+    }
+
+    private static LordJob_Ritual AudienceLord(Fixture f)
+    {
+        var ritual = new LordJob_Ritual { assignments = f.A, Map = f.Map, Spot = new IntVec3(127, 134) };
+        foreach (Pawn pawn in f.Map.Pawns)
+        {
+            pawn.Map = f.Map;
+            pawn.Position = new IntVec3(130, 134);
+            pawn.mindState.duty = new Verse.AI.PawnDuty
+            {
+                def = DutyDefOf.Spectate, focus = new LocalTargetInfo(pawn.Position)
+            };
+            ritual.PawnsToCountTowardsPresence.Add(pawn);
+        }
+        return ritual;
+    }
+
+    private static void RunAudienceCollectorTests(string root)
+    {
+        Run("逐帧采集：通用聚会区域外的指定观众站位仍计入六阶段结算", () =>
+        {
+            var f = new Fixture(3); f.Open(); f.SelectBoth(); var comp = AudienceComp(root);
+            var ritual = AudienceLord(f);
+            GatheringsUtility.Area = (cell, spot, map) => false;
+            var original = new RitualOutcomeComp_ParticipantCount();
+            var originalData = (RitualOutcomeComp_DataThingPresence)original.MakeData();
+            var data = (RitualOutcomeComp_DataThingPresence)comp.MakeData();
+            for (int phase = 0; phase < 6; phase++)
+                for (int tick = 0; tick < 100; tick++)
+                {
+                    // LordJobTick collects before LordToilTick advances ritual progress.
+                    original.Tick(ritual, originalData, 1f); comp.Tick(ritual, data, 1f);
+                    ritual.TicksPassedWithProgress++;
+                }
+            Assert(originalData.presentForTicks.Count == 0);
+            Assert(data.presentForTicks.Count == 3);
+            foreach (Pawn spectator in f.A.SpectatorsForReading) Near(600, data.presentForTicks[spectator]);
+            Near(3, comp.Count(ritual, data)); Near(0.10f, comp.QualityOffset(ritual, data));
+        });
+        Run("逐帧采集：聚会区域与指定站位同时满足时出席不重复累加", () =>
+        {
+            var f = new Fixture(1); f.Open(); f.SelectBoth(); var comp = AudienceComp(root);
+            var ritual = AudienceLord(f); GatheringsUtility.Area = (cell, spot, map) => true;
+            var data = (RitualOutcomeComp_DataThingPresence)comp.MakeData();
+            for (int i = 0; i < 20; i++) { comp.Tick(ritual, data, 0.25f); ritual.TicksPassedWithProgress += 0.25f; }
+            Near(5f, data.presentForTicks[f.Map.Pawns[2]]); Near(1, comp.Count(ritual, data));
+            Assert(!data.presentForTicks.ContainsKey(f.Host) && !data.presentForTicks.ContainsKey(f.Target));
+        });
+        Run("逐帧采集：未抵达观看位置或执行无关职责不记出席", () =>
+        {
+            var f = new Fixture(2); f.Open(); f.SelectBoth(); var comp = AudienceComp(root);
+            var ritual = AudienceLord(f); GatheringsUtility.Area = (cell, spot, map) => false;
+            f.Map.Pawns[2].Position = new IntVec3(100, 100);
+            f.Map.Pawns[3].mindState.duty.def = new Verse.AI.DutyDef();
+            var data = (RitualOutcomeComp_DataThingPresence)comp.MakeData();
+            for (int i = 0; i < 100; i++) { comp.Tick(ritual, data, 1f); ritual.TicksPassedWithProgress++; }
+            Assert(data.presentForTicks.Count == 0); Near(0, comp.QualityOffset(ritual, data));
+        });
+        Run("逐帧采集：非本场成员、其他地图、非参与、非人类与倒地观众不记出席", () =>
+        {
+            var f = new Fixture(6); f.Open(); f.SelectBoth(); var comp = AudienceComp(root);
+            var ritual = AudienceLord(f); GatheringsUtility.Area = (cell, spot, map) => true;
+            var pawns = f.Map.Pawns.ToArray(); // RemoveParticipant reorders the shared candidate list.
+            ritual.PawnsToCountTowardsPresence.Remove(pawns[2]);
+            pawns[3].Map = new Map(); f.A.RemoveParticipant(pawns[4]);
+            pawns[5].RaceProps.Humanlike = false; pawns[6].Downed = true; pawns[7].Spawned = false;
+            var data = (RitualOutcomeComp_DataThingPresence)comp.MakeData();
+            comp.Tick(ritual, data, 1f); Assert(data.presentForTicks.Count == 0);
+        });
+        Run("逐帧采集：看完一半才离场保留贡献，较早离场不提供加成", () =>
+        {
+            var f = new Fixture(2); f.Open(); f.SelectBoth(); var comp = AudienceComp(root);
+            var ritual = AudienceLord(f); GatheringsUtility.Area = (cell, spot, map) => false;
+            var data = (RitualOutcomeComp_DataThingPresence)comp.MakeData();
+            for (int i = 0; i < 600; i++)
+            {
+                if (i == 200) ritual.PawnsToCountTowardsPresence.Remove(f.Map.Pawns[2]);
+                if (i == 300) ritual.PawnsToCountTowardsPresence.Remove(f.Map.Pawns[3]);
+                comp.Tick(ritual, data, 1f); ritual.TicksPassedWithProgress++;
+            }
+            Near(200, data.presentForTicks[f.Map.Pawns[2]]); Near(300, data.presentForTicks[f.Map.Pawns[3]]);
+            Near(1, comp.Count(ritual, data)); Near(0.05f, comp.QualityOffset(ritual, data));
+        });
+        Run("逐帧采集：缺失数据与非正进度不累计出席", () =>
+        {
+            var f = new Fixture(1); f.Open(); f.SelectBoth(); var comp = AudienceComp(root);
+            var ritual = AudienceLord(f); var data = (RitualOutcomeComp_DataThingPresence)comp.MakeData();
+            comp.Tick(ritual, data, 0f); comp.Tick(ritual, data, -1f);
+            comp.Tick(ritual, null, 1f); comp.Tick(null, data, 1f);
+            Assert(data.presentForTicks.Count == 0);
         });
     }
 }
