@@ -6,9 +6,9 @@ This continuation builds on upstream **2.2.8**, the baseline when upstream devel
 
 ## [2.3.8] — 2026-10-08 — 绑定仪式助兴修复与选人提示 / Binding Ritual spectator fixes and role hints
 
-本版归并 `v2.3.7`（`71b5c88`）之后至 `2dcf68e` 的全部 8 项开发提交，不重复计入 2.3.7 发布归档。详见[中英发布说明](Docs/Releases/2.3.8/2.3.8发布说明.md)及[版本验证](Docs/Releases/2.3.8/2.3.8版本验证.md)。安装 ZIP 与 SHA-256 校验文件见 [v2.3.8 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.8)。
+本版归并 `v2.3.7`（`71b5c88`）之后至 `2dcf68e` 的全部 8 项开发提交，不重复计入 2.3.7 发布归档。已发布为最新正式版，当次 24 套、1363/1363 项门禁通过。详见[中英发布说明](Docs/Releases/2.3.8/2.3.8发布说明.md)及[版本验证](Docs/Releases/2.3.8/2.3.8版本验证.md)。安装 ZIP 与 SHA-256 校验文件见 [v2.3.8 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.8)。
 
-This version consolidates all 8 development commits after `v2.3.7` (`71b5c88`) through `2dcf68e`, excluding the previous release archive. See the linked bilingual notes and validation record. Download the ZIP and SHA-256 checksum from [v2.3.8 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.8).
+This version consolidates all 8 development commits after `v2.3.7` (`71b5c88`) through `2dcf68e`, excluding the previous release archive. Published as the latest stable release; the current gate passed 24 suites and 1363/1363 cases. See the linked bilingual notes and validation record. Download the ZIP and SHA-256 checksum from [v2.3.8 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.8).
 
 - **观众助兴 / Spectator bonus:** 准备窗口和结算都排除主持者与仪式性奴，结算按本场实际经过时间计算，实际观看至少半场才提供加成。零观众为 +0%，四名合格观众为 +12.5%，十人及以上封顶 +20%；结果信件始终显示观众分项。维护者已确认修复有效。The preview and outcome exclude both protagonists. Only spectators attending at least half the actual elapsed ritual contribute: none gives +0%, four give +12.5%, and ten or more cap at +20%. Result letters always show the spectator factor. The maintainer confirmed the fix works in game.
 - **角色图标 / Role icons:** 用金色鞭子标记主持候选、紫色项圈标记 SSC 性奴候选，双资格图标在头像左上横向排列，减少遮挡。鞭子表示主持及调教资格，不等于 SSC 主人身份或所有权；候选图标不代表已通过全部条件。新布局已获维护者实机确认。A gold whip marks host candidates and a purple collar marks SSC Sex Slave candidates. Dual icons share one row above the portrait. The whip indicates hosting/trainer eligibility rather than Master identity or ownership; candidates still require complete checks. The maintainer confirmed the new layout in game.
