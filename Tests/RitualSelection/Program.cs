@@ -14,7 +14,7 @@ internal static partial class Program
     private sealed class Fixture
     {
         public Pawn Host = new Pawn { Master = true, LabelShort = "Host" };
-        public Pawn Target = new Pawn { LabelShort = "Target" };
+        public Pawn Target = new Pawn { SexSlave = true, LabelShort = "Target" };
         public RitualRole_BindingMaster HostRole = new RitualRole_BindingMaster { id = "master" };
         public RitualRole_BindingSlave TargetRole = new RitualRole_BindingSlave { id = "slave", substitutable = true };
         public Precept_Ritual Ritual = new Precept_Ritual();
@@ -413,18 +413,22 @@ internal static partial class Program
         Run("窗口说明不改动调用方共享列表", () =>
         {
             var notes = new List<string> { "original" }; var f = new Fixture(); f.Open(notes);
-            Assert(notes.Count == 1 && f.Window.ExtraInfos.Count == 2);
+            Assert(notes.Count == 1 && f.Window.ExtraInfos.Count == 3);
         });
         if (args.Length > 0) Run("四语新提示完整且键一致", () =>
         {
-            string[] expected = { "SSC_RitualSelection_ChooseParticipants", "SSC_RitualSelection_MissingRoles", "SSC_RitualSelection_Invalid" };
+            string[] expected = { "ChooseParticipants", "MissingRoles", "Invalid", "HostBadge", "TargetBadge", "HostCandidate", "TargetCandidate",
+                "Candidate", "PairReady", "Assigned", "Allowed", "CannotAssign", "PairBlocked", "Legend" };
             foreach (string language in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" })
             {
                 var doc = XDocument.Load(Path.Combine(args[0], "Languages", language, "Keyed", "SSC_RitualSelection.xml"));
-                Assert(doc.Root.Elements().Select(x => x.Name.LocalName).OrderBy(x => x).SequenceEqual(expected.OrderBy(x => x)));
+                Assert(doc.Root.Elements().Select(x => x.Name.LocalName).OrderBy(x => x)
+                    .SequenceEqual(expected.Select(x => "SSC_RitualSelection_" + x).OrderBy(x => x)));
                 Assert(doc.Root.Elements().All(x => !string.IsNullOrWhiteSpace(x.Value)));
             }
         });
+        RunPreviewTests();
+        RunVisualTests();
         RunAudienceTests(args.Length > 0 ? args[0] : null);
         Console.WriteLine($"结果：{passed}/{passed + failed} 项通过。");
         return failed == 0 ? 0 : 1;

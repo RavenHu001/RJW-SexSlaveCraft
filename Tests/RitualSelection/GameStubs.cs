@@ -11,7 +11,7 @@ namespace Verse
     public class Pawn : Thing
     {
         public bool Spawned = true, IsColonist = true, Eligible = true, Reachable = true, HasComp = true;
-        public bool Dead, Destroyed, Downed, IsSlave, IsPrisonerOfColony, Master, Trainer, Child, VanillaBlocked;
+        public bool Dead, Destroyed, Downed, IsSlave, IsPrisonerOfColony, Master, SexSlave, Trainer, Child, VanillaBlocked;
         public string LabelShort = "Adult";
         public Pawn BoundMaster, AssignedTrainer;
         public readonly HashSet<Pawn> PermittedHosts = new HashSet<Pawn>();
@@ -62,7 +62,28 @@ namespace Verse
         public void Close() { Closed = true; PostClose(); }
     }
 }
-namespace UnityEngine { public struct Rect { } public struct Vector2 { } }
+namespace UnityEngine
+{
+    public struct Rect
+    {
+        public float x, y, width, height;
+        public float xMax => x + width;
+        public float yMax => y + height;
+        public Rect(float x, float y, float width, float height)
+        { this.x = x; this.y = y; this.width = width; this.height = height; }
+    }
+    public struct Vector2
+    {
+        public float x, y;
+        public Vector2(float x, float y) { this.x = x; this.y = y; }
+    }
+    public struct Vector3
+    {
+        public float x, y, z;
+        public Vector3(float x, float y, float z = 0f) { this.x = x; this.y = y; this.z = z; }
+        public static implicit operator Vector3(Vector2 point) => new Vector3(point.x, point.y);
+    }
+}
 namespace Verse.AI { public enum PathEndMode { Touch } }
 namespace Verse
 {
@@ -72,6 +93,10 @@ namespace Verse
         public static Action Click, RightClick;
         public static Action<object> Drop;
         public static Action<object, UnityEngine.Vector2> DropOutside;
+        public static bool Dragging { get; set; }
+        public static object Dragged, HoverPawn;
+        public static object CurrentlyDraggedDraggable() => Dragged;
+        public static object DraggableAt(int group, UnityEngine.Vector3 point) => HoverPawn;
         [MethodImpl(MethodImplOptions.NoInlining)]
         public static bool Draggable(int group, UnityEngine.Rect rect, object context, Action click, Action rightClick)
         { Click = click; RightClick = rightClick; return false; }
@@ -114,6 +139,7 @@ namespace RimWorld
     public class RitualRole
     {
         public string id;
+        public string LabelCap => id;
         public bool required = true, substitutable;
         public bool countsAsParticipant = true;
         public int maxCount = 1;
@@ -180,6 +206,8 @@ namespace RimWorld
             => FirstAssignedPawn(role) is Verse.Pawn pawn ? new[] { pawn } : Array.Empty<Verse.Pawn>();
         public RitualRole RoleForPawn(Verse.Pawn pawn, bool includeForced = true)
             => pawn == null ? null : AllRolesForReading.FirstOrDefault(role => FirstAssignedPawn(role) == pawn);
+        public RitualRole ForcedRole(Verse.Pawn pawn)
+            => AllRolesForReading.FirstOrDefault(role => ForcedRolesForReading.TryGetValue(role.id, out var forced) && forced == pawn);
         [MethodImpl(MethodImplOptions.NoInlining)] public bool TryUnassignAnyRole(Verse.Pawn pawn)
         {
             bool changed = false;
@@ -242,10 +270,12 @@ namespace RimWorld
     public class PawnRoleSelectionWidgetBase<T> : IPawnRoleSelectionWidget where T : class
     {
         protected object assignments;
+        private int dragAndDropGroup = 0;
+        public int UIGroup => dragAndDropGroup;
         public int Notifications, UnrelatedCalls;
         public virtual void Notify_AssignmentsChanged() { Notifications++; }
-        public Action DrawAction;
-        public void DrawPawnList(UnityEngine.Rect rect) => DrawAction?.Invoke();
+        public Action DrawAction, UiDraw;
+        public void DrawPawnList(UnityEngine.Rect rect) { DrawAction?.Invoke(); UiDraw?.Invoke(); }
         public void WindowUpdate() { }
         public PawnRoleSelectionWidgetBase(object assignments) { this.assignments = assignments; }
         public bool Select(Verse.Pawn pawn, IEnumerable<T> roles) => TryAssign(pawn, roles, true, null, true, false);
@@ -294,6 +324,8 @@ namespace RimWorld
     {
         public Verse.Pawn CachedTarget;
         public PawnRitualRoleSelectionWidget(RitualRoleAssignments assignments) : base(assignments) { }
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public virtual string ExtraTipContents(Verse.Pawn pawn) => "native";
         public override void Notify_AssignmentsChanged()
         { base.Notify_AssignmentsChanged(); CachedTarget = ((RitualRoleAssignments)assignments).FirstAssignedPawn("slave"); }
     }
@@ -391,6 +423,7 @@ namespace SexSlaveCraft
     {
         public static bool IsSupportedVanillaStatus(Verse.Pawn pawn) => pawn.IsColonist || pawn.IsSlave || pawn.IsPrisonerOfColony;
         public static bool IsMaster(Verse.Pawn pawn) => pawn?.Master == true;
+        public static bool IsSexSlave(Verse.Pawn pawn) => pawn?.HasComp == true && !pawn.Master && pawn.SexSlave;
         public static bool IsTrainer(Verse.Pawn pawn) => pawn?.HasComp == true && (pawn.Master || pawn.Trainer);
     }
     public static class SSCBondUtility { public static Verse.Pawn GetBoundMaster(Verse.Pawn pawn) => pawn?.BoundMaster; }
@@ -443,5 +476,10 @@ namespace SexSlaveCraft
 internal static class Counters
 {
     public static int Eligibility, Reports, Warnings, Reach, Permissions, Translations, Messages;
-    public static void Reset() { Eligibility = Reports = Warnings = Reach = Permissions = Translations = Messages = 0; }
+    public static void Reset()
+    {
+        Eligibility = Reports = Warnings = Reach = Permissions = Translations = Messages = 0;
+        Verse.DragAndDropWidget.Dragging = false;
+        Verse.DragAndDropWidget.Dragged = Verse.DragAndDropWidget.HoverPawn = null;
+    }
 }

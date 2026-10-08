@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-  <SSC_RitualSelection_ChooseParticipants>Select the host and ritual target manually. Eligibility is checked when assigning a role.</SSC_RitualSelection_ChooseParticipants>
-  <SSC_RitualSelection_MissingRoles>Select a host and ritual target first.</SSC_RitualSelection_MissingRoles>
-  <SSC_RitualSelection_Invalid>The selected pawn cannot fill this ritual role right now.</SSC_RitualSelection_Invalid>
+  <SSC_RitualSelection_ChooseParticipants>Select a host and sex slave. Hover for requirements.</SSC_RitualSelection_ChooseParticipants>
+  <SSC_RitualSelection_MissingRoles>Select a host and sex slave.</SSC_RitualSelection_MissingRoles>
+  <SSC_RitualSelection_Invalid>Unavailable for this role.</SSC_RitualSelection_Invalid>
+  <SSC_RitualSelection_HostBadge>H</SSC_RitualSelection_HostBadge>
+  <SSC_RitualSelection_TargetBadge>S</SSC_RitualSelection_TargetBadge>
+  <SSC_RitualSelection_HostCandidate>Host candidate</SSC_RitualSelection_HostCandidate>
+  <SSC_RitualSelection_TargetCandidate>Sex slave candidate</SSC_RitualSelection_TargetCandidate>
+  <SSC_RitualSelection_Candidate>Choose the other participant to check the pair.</SSC_RitualSelection_Candidate>
+  <SSC_RitualSelection_PairReady>Pair eligible; body and reachability checks pending.</SSC_RitualSelection_PairReady>
+  <SSC_RitualSelection_Assigned>Assigned.</SSC_RitualSelection_Assigned>
+  <SSC_RitualSelection_Allowed>Available.</SSC_RitualSelection_Allowed>
+  <SSC_RitualSelection_CannotAssign>Unavailable: {0}</SSC_RitualSelection_CannotAssign>
+  <SSC_RitualSelection_PairBlocked>Unavailable: {0}</SSC_RitualSelection_PairBlocked>
+  <SSC_RitualSelection_Legend>Whip: host. Collar: sex slave. Icons mark candidates. Hover for requirements; slash: unavailable, check: assigned.</SSC_RitualSelection_Legend>
 </LanguageData>

@@ -64,6 +64,7 @@ namespace SexSlaveCraft
             // 复制调用方列表，避免改变其他窗口复用的说明集合。
             ___extraInfos = ___extraInfos == null ? new List<string>() : new List<string>(___extraInfos);
             ___extraInfos.Add("SSC_RitualSelection_ChooseParticipants".Translate());
+            ___extraInfos.Add("SSC_RitualSelection_Legend".Translate());
         }
     }
 

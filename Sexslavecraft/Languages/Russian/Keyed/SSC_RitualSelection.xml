@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-  <SSC_RitualSelection_ChooseParticipants>Выберите ведущего и цель ритуала вручную. При назначении на роль проверяется пригодность участника.</SSC_RitualSelection_ChooseParticipants>
-  <SSC_RitualSelection_MissingRoles>Сначала выберите ведущего и цель ритуала.</SSC_RitualSelection_MissingRoles>
-  <SSC_RitualSelection_Invalid>Выбранный персонаж сейчас не может выполнять эту роль в ритуале.</SSC_RitualSelection_Invalid>
+  <SSC_RitualSelection_ChooseParticipants>Выберите ведущего и секс-раба. Наведите курсор для условий.</SSC_RitualSelection_ChooseParticipants>
+  <SSC_RitualSelection_MissingRoles>Выберите ведущего и секс-раба.</SSC_RitualSelection_MissingRoles>
+  <SSC_RitualSelection_Invalid>Эта роль недоступна.</SSC_RitualSelection_Invalid>
+  <SSC_RitualSelection_HostBadge>В</SSC_RitualSelection_HostBadge>
+  <SSC_RitualSelection_TargetBadge>Р</SSC_RitualSelection_TargetBadge>
+  <SSC_RitualSelection_HostCandidate>Кандидат в ведущие</SSC_RitualSelection_HostCandidate>
+  <SSC_RitualSelection_TargetCandidate>Кандидат на роль секс-раба</SSC_RitualSelection_TargetCandidate>
+  <SSC_RitualSelection_Candidate>Выберите второго участника для проверки пары.</SSC_RitualSelection_Candidate>
+  <SSC_RitualSelection_PairReady>Пара подходит; тело и доступность ещё не проверены.</SSC_RitualSelection_PairReady>
+  <SSC_RitualSelection_Assigned>Назначен.</SSC_RitualSelection_Assigned>
+  <SSC_RitualSelection_Allowed>Можно выбрать.</SSC_RitualSelection_Allowed>
+  <SSC_RitualSelection_CannotAssign>Недоступно: {0}</SSC_RitualSelection_CannotAssign>
+  <SSC_RitualSelection_PairBlocked>Недоступно: {0}</SSC_RitualSelection_PairBlocked>
+  <SSC_RitualSelection_Legend>Хлыст — ведущий, ошейник — секс-раб. Значки отмечают кандидатов. Условия — при наведении; черта — недоступно, галочка — назначен.</SSC_RitualSelection_Legend>
 </LanguageData>

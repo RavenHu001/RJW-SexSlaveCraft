@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-  <SSC_RitualSelection_ChooseParticipants>请手动选择主持者和仪式目标。放入角色栏时会检查资格。</SSC_RitualSelection_ChooseParticipants>
-  <SSC_RitualSelection_MissingRoles>请先选择主持者和仪式目标。</SSC_RitualSelection_MissingRoles>
-  <SSC_RitualSelection_Invalid>所选角色当前无法担任该仪式角色。</SSC_RitualSelection_Invalid>
+  <SSC_RitualSelection_ChooseParticipants>请选择主持和性奴，悬停头像查看条件。</SSC_RitualSelection_ChooseParticipants>
+  <SSC_RitualSelection_MissingRoles>请选择主持和性奴。</SSC_RitualSelection_MissingRoles>
+  <SSC_RitualSelection_Invalid>无法担任此角色。</SSC_RitualSelection_Invalid>
+  <SSC_RitualSelection_HostBadge>主持</SSC_RitualSelection_HostBadge>
+  <SSC_RitualSelection_TargetBadge>性奴</SSC_RitualSelection_TargetBadge>
+  <SSC_RitualSelection_HostCandidate>主持候选</SSC_RitualSelection_HostCandidate>
+  <SSC_RitualSelection_TargetCandidate>性奴候选</SSC_RitualSelection_TargetCandidate>
+  <SSC_RitualSelection_Candidate>待确认配对。</SSC_RitualSelection_Candidate>
+  <SSC_RitualSelection_PairReady>配对通过，身体与通行条件待检查。</SSC_RitualSelection_PairReady>
+  <SSC_RitualSelection_Assigned>已选。</SSC_RitualSelection_Assigned>
+  <SSC_RitualSelection_Allowed>可选。</SSC_RitualSelection_Allowed>
+  <SSC_RitualSelection_CannotAssign>不可选：{0}</SSC_RitualSelection_CannotAssign>
+  <SSC_RitualSelection_PairBlocked>不可选：{0}</SSC_RitualSelection_PairBlocked>
+  <SSC_RitualSelection_Legend>鞭子：主持；项圈：性奴。图标表示候选。悬停看条件；斜线不可选，勾选已选。</SSC_RitualSelection_Legend>
 </LanguageData>

@@ -16,6 +16,7 @@ namespace SexSlaveCraft
     {
         private readonly IPawnRoleSelectionWidget inner;
         private readonly RitualRoleAssignments assignments;
+        private readonly BindingRitualSelectionVisuals visuals;
         [ThreadStatic] private static Edit current;
         private static readonly FieldInfo assignedRolesField = AccessTools.Field(typeof(RitualRoleAssignments), "assignedRoles");
         private static readonly MethodInfo notifyChanged = AccessTools.Method(typeof(PawnRitualRoleSelectionWidget), "Notify_AssignmentsChanged");
@@ -72,10 +73,13 @@ namespace SexSlaveCraft
         }
 
         public BindingRitualSelectionWidget(IPawnRoleSelectionWidget inner, RitualRoleAssignments assignments)
-        { this.inner = inner; this.assignments = assignments; }
+        { this.inner = inner; this.assignments = assignments; visuals = new BindingRitualSelectionVisuals(inner, assignments); }
 
         public void WindowUpdate() => inner.WindowUpdate();
-        public void DrawPawnList(Rect rect) => Run(this, () => inner.DrawPawnList(rect));
+        public void DrawPawnList(Rect rect) => Run(this, () =>
+        {
+            using (visuals.BeginDraw()) inner.DrawPawnList(rect);
+        });
 
         private static void Run(BindingRitualSelectionWidget widget, Action action)
         {

@@ -93,6 +93,9 @@
     <Compile Include="common\BindingRitualStateUtility.cs" />
     <Compile Include="common\BindingRitualSelectionUtility.cs" />
     <Compile Include="common\BindingRitualSelectionWidget.cs" />
+    <Compile Include="common\BindingRitualRolePreview.cs" />
+    <Compile Include="common\BindingRitualSelectionVisuals.cs" />
+    <Compile Include="ThePatches\Harmony_BindingRitualSelectionVisuals.cs" />
     <Compile Include="common\CombatantSpecializationUtility.cs" />
     <Compile Include="common\CombatantSpecializationGelUtility.cs" />
     <Compile Include="common\CombatantSpecializationProgressUtility.cs" />
