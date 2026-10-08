@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-  <SSC_RitualSelection_ChooseParticipants>請手動選擇主持者和儀式目標。懸停頭像查看資格，放入角色欄時再次檢查。</SSC_RitualSelection_ChooseParticipants>
-  <SSC_RitualSelection_MissingRoles>請先選擇主持者和儀式目標。</SSC_RitualSelection_MissingRoles>
-  <SSC_RitualSelection_Invalid>所選角色目前無法擔任該儀式角色。</SSC_RitualSelection_Invalid>
+  <SSC_RitualSelection_ChooseParticipants>請選擇主持和性奴，懸停頭像查看條件。</SSC_RitualSelection_ChooseParticipants>
+  <SSC_RitualSelection_MissingRoles>請選擇主持和性奴。</SSC_RitualSelection_MissingRoles>
+  <SSC_RitualSelection_Invalid>無法擔任此角色。</SSC_RitualSelection_Invalid>
   <SSC_RitualSelection_HostBadge>主持</SSC_RitualSelection_HostBadge>
-  <SSC_RitualSelection_TargetBadge>目標</SSC_RitualSelection_TargetBadge>
+  <SSC_RitualSelection_TargetBadge>性奴</SSC_RitualSelection_TargetBadge>
   <SSC_RitualSelection_HostCandidate>主持候選</SSC_RitualSelection_HostCandidate>
-  <SSC_RitualSelection_TargetCandidate>目標候選</SSC_RitualSelection_TargetCandidate>
-  <SSC_RitualSelection_Candidate>基礎資格通過，配對待確認。</SSC_RitualSelection_Candidate>
-  <SSC_RitualSelection_PairReady>目前配對條件滿足；可達性和身體條件待檢查。</SSC_RitualSelection_PairReady>
-  <SSC_RitualSelection_Assigned>已選入該角色。</SSC_RitualSelection_Assigned>
-  <SSC_RitualSelection_Allowed>目前可放入該角色。</SSC_RitualSelection_Allowed>
-  <SSC_RitualSelection_CannotAssign>目前無法放入：{0}</SSC_RitualSelection_CannotAssign>
-  <SSC_RitualSelection_PairBlocked>目前無法擔任此角色：{0}</SSC_RitualSelection_PairBlocked>
-  <SSC_RitualSelection_Legend>金色鞭子：主持候選（含合格的性奴調教員）；紫色項圈：SSC 性奴目標候選。圖示僅表示基礎資格。懸停頭像查看條件；斜線表示目前角色不可選，勾選表示已分配。</SSC_RitualSelection_Legend>
+  <SSC_RitualSelection_TargetCandidate>性奴候選</SSC_RitualSelection_TargetCandidate>
+  <SSC_RitualSelection_Candidate>待確認配對。</SSC_RitualSelection_Candidate>
+  <SSC_RitualSelection_PairReady>配對通過，身體與通行條件待檢查。</SSC_RitualSelection_PairReady>
+  <SSC_RitualSelection_Assigned>已選。</SSC_RitualSelection_Assigned>
+  <SSC_RitualSelection_Allowed>可選。</SSC_RitualSelection_Allowed>
+  <SSC_RitualSelection_CannotAssign>不可選：{0}</SSC_RitualSelection_CannotAssign>
+  <SSC_RitualSelection_PairBlocked>不可選：{0}</SSC_RitualSelection_PairBlocked>
+  <SSC_RitualSelection_Legend>鞭子：主持；項圈：性奴。圖示表示候選。懸停看條件；斜線不可選，勾選已選。</SSC_RitualSelection_Legend>
 </LanguageData>
