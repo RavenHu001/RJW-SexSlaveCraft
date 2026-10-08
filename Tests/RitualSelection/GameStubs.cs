@@ -97,6 +97,9 @@ namespace RimWorld
         public Verse.Pawn Master, Slave;
         public RitualRoleAssignments assignments;
         public float TicksPassedWithProgress;
+        private int ticksPassed;
+        // Host the actual private, persisted engine timer for the production Harmony field accessor.
+        public int ElapsedTicks { get => ticksPassed; set => ticksPassed = value; }
         public int DurationTicks = 99999999;
         public Verse.Map Map;
         public Verse.IntVec3 Spot;

@@ -1,13 +1,22 @@
 using System;
+using HarmonyLib;
 using RimWorld;
 using Verse;
 using Verse.AI;
 
 namespace SexSlaveCraft
 {
-    /// <summary>绑定仪式只让观众提供助兴加成，出席门槛按实际仪式进度计算。</summary>
+    /// <summary>绑定仪式只让观众提供助兴加成，出席门槛按本场实际经过的 tick 计算。</summary>
     public class RitualOutcomeComp_BindingSpectatorCount : RitualOutcomeComp_ParticipantCount
     {
+        private static readonly AccessTools.FieldRef<LordJob_Ritual, int> ElapsedTicks
+            = AccessTools.FieldRefAccess<LordJob_Ritual, int>("ticksPassed");
+
+        // 原版只在有时长结束触发器的阶段增加 TicksPassedWithProgress；SSC 的两个
+        // 阶段由送达/工作结束触发，所以该进度始终为零。ticksPassed 则每帧递增且随 Lord 存档。
+        public static int AttendanceDurationTicks(LordJob_Ritual ritual)
+            => ritual == null ? 0 : Math.Max(0, ElapsedTicks(ritual));
+
         // 保留原版 MakeData 和出席记录的存档格式，兼容旧档中的观众记录。
         // 显式排除两主角，避免强制角色与观众列表重叠时被原版 RoleForPawn 优先视为观众。
         private static bool IsSpectator(RitualRoleAssignments assignments, Pawn pawn)
@@ -36,17 +45,19 @@ namespace SexSlaveCraft
                     !AtSpectatorPosition(pawn)) continue;
 
                 presence.presentForTicks.TryGetValue(pawn, out float ticks);
-                presence.presentForTicks[pawn] = ticks + progressPerTick;
+                // 分子、分母都用实际经过的 tick，不把阶段进度速度当成观看时间。
+                presence.presentForTicks[pawn] = ticks + 1f;
             }
         }
 
         public override float Count(LordJob_Ritual ritual, RitualOutcomeComp_Data data)
         {
             var presence = data as RitualOutcomeComp_DataThingPresence;
-            if (ritual == null || presence == null || ritual.TicksPassedWithProgress <= 0f) return 0f;
+            int duration = AttendanceDurationTicks(ritual);
+            if (presence == null || duration <= 0) return 0f;
 
             // durationTicks 是等待六阶段完成的超长占位值，不能作为观众出席门槛。
-            float minimumPresence = ritual.TicksPassedWithProgress / 2f;
+            float minimumPresence = duration / 2f;
             int count = 0;
             foreach (var entry in presence.presentForTicks)
                 if (entry.Key is Pawn pawn && IsSpectator(ritual.assignments, pawn) &&

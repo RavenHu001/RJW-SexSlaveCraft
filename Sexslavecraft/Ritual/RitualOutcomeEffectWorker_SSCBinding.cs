@@ -143,7 +143,8 @@ namespace SexSlaveCraft
             {
                 if (!(comp is RitualOutcomeComp_BindingSpectatorCount audience)) continue;
                 var presence = DataForComp(comp) as RitualOutcomeComp_DataThingPresence;
-                SSCLog.Important($"[SSC_RITUAL_AUDIENCE] progress={jobRitual.TicksPassedWithProgress}, minimum={jobRitual.TicksPassedWithProgress / 2f}, records={presence?.presentForTicks.Count ?? 0}, counted={audience.Count(jobRitual, presence)}");
+                int elapsed = RitualOutcomeComp_BindingSpectatorCount.AttendanceDurationTicks(jobRitual);
+                SSCLog.Important($"[SSC_RITUAL_AUDIENCE] progress={jobRitual.TicksPassedWithProgress}, elapsed={elapsed}, minimum={elapsed / 2f}, records={presence?.presentForTicks.Count ?? 0}, counted={audience.Count(jobRitual, presence)}");
                 foreach (Pawn spectator in jobRitual.assignments.SpectatorsForReading)
                 {
                     if (spectator == null) continue;
