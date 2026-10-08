@@ -4,6 +4,13 @@
 
 This continuation builds on upstream **2.2.8**, the baseline when upstream development stopped in July, and retains its version numbering. Entries are listed newest first. Technical details are in the [development log (Chinese)](Docs/Development/开发更新记录.md).
 
+## [Unreleased] — 绑定仪式观众助兴修复 / Binding Ritual spectator bonus fixes
+
+- 修复准备窗口将主持者和仪式目标重复算入观众的问题；结算仅计算实际观看至少半场的观众，零观众为 +0%，四名合格观众为 +12.5%，十人及以上封顶 +20%。Fixes protagonists being counted again as spectators in the setup preview. Outcomes count spectators who attended at least half the ritual: none gives +0%, four eligible spectators give +12.5%, and ten or more cap at +20%.
+- 修复观众全程到场却结算为零人的问题：改用本场实际经过时间，并让信件始终显示观众分项。专项回归 81/81、Release 编译与实际游戏计时字段访问验证通过；已同步本机，维护者确认修改有效。该修复尚未纳入已发布的 2.3.7 安装包。Fixes full attendance yielding zero spectators by using actual elapsed ritual time, and always displays the spectator factor in the result letter. All 81 targeted regression checks, the Release build and access to the actual game timer passed; the locally installed fix was confirmed effective in game. This fix is not included in the published 2.3.7 package.
+
+实现、修复过程与验证范围见[绑定仪式观众助兴修复](Docs/Development/绑定仪式观众助兴修复.md)。Implementation and validation details are in the linked development record.
+
 ## [2.3.7] — 2026-10-06 — 猫狗特化与宠物互动 / Cat and Dog specializations and pet interactions
 
 本版归并 `v2.3.6`（`754c3ce`）之后至 `a24562e` 的全部 17 项开发提交，版本元数据与运行 DLL 同步为 2.3.7。安装 ZIP 与 SHA-256 校验文件见 [v2.3.7 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.7)。 详见[中英发布说明](Docs/Releases/2.3.7/2.3.7发布说明.md)及[版本验证](Docs/Releases/2.3.7/2.3.7版本验证.md)。

@@ -182,6 +182,7 @@
     <Compile Include="Ritual\RitualRole_BindingMaster.cs" />
     <Compile Include="Ritual\RitualOutcomeComp_GenitalDifference.cs" />
     <Compile Include="Ritual\RitualOutcomeComp_SocialSkill.cs" />
+    <Compile Include="Ritual\RitualOutcomeComp_BindingSpectatorCount.cs" />
     <Compile Include="ITab\ITab_PES.cs" />
     <Compile Include="ITab\ITab_SexSlaveTraining.cs" />
     <Compile Include="ITab\ITab_SexSlaveTraining.SpecializationDisplay.cs" />

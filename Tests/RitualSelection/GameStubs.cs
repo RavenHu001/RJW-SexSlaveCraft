@@ -8,7 +8,7 @@ using SexSlaveCraft;
 // Unity rendering/pathfinding and RJW internals are counted boundaries, not timing substitutes.
 namespace Verse
 {
-    public class Pawn
+    public class Pawn : Thing
     {
         public bool Spawned = true, IsColonist = true, Eligible = true, Reachable = true, HasComp = true;
         public bool Dead, Destroyed, Downed, IsSlave, IsPrisonerOfColony, Master, Trainer, Child, VanillaBlocked;
@@ -18,6 +18,7 @@ namespace Verse
         public RaceProperties RaceProps = new RaceProperties();
         public AgeTracker ageTracker = new AgeTracker();
         public ApparelTracker apparel = new ApparelTracker();
+        public Verse.AI.Pawn_MindState mindState = new Verse.AI.Pawn_MindState();
         public ThingDef def = new ThingDef();
         public T TryGetComp<T>() where T : class, new() => HasComp ? new T() : null;
         public bool CanReach(LocalTargetInfo target, Verse.AI.PathEndMode mode, Danger danger)
@@ -31,7 +32,13 @@ namespace Verse
     public class ApparelTracker { public List<Apparel> WornApparel = new List<Apparel>(); }
     public class Map { public List<Pawn> Pawns = new List<Pawn>(); }
     public struct TargetInfo { public bool IsValid; public int Key; }
-    public struct LocalTargetInfo { public static explicit operator LocalTargetInfo(TargetInfo target) => default; }
+    public struct LocalTargetInfo
+    {
+        public bool IsValid;
+        public IntVec3 Cell;
+        public LocalTargetInfo(IntVec3 cell) { Cell = cell; IsValid = true; }
+        public static explicit operator LocalTargetInfo(TargetInfo target) => default;
+    }
     public enum Danger { Deadly }
     public static class Translator
     {
@@ -85,7 +92,20 @@ namespace Verse
 namespace RimWorld
 {
     public static class MessageTypeDefOf { public static readonly object RejectInput = new object(); }
-    public class LordJob_Ritual { public Verse.Pawn Master, Slave; public Verse.Pawn PawnWithRole(string role) => role == "master" ? Master : Slave; }
+    public class LordJob_Ritual
+    {
+        public Verse.Pawn Master, Slave;
+        public RitualRoleAssignments assignments;
+        public float TicksPassedWithProgress;
+        private int ticksPassed;
+        // Host the actual private, persisted engine timer for the production Harmony field accessor.
+        public int ElapsedTicks { get => ticksPassed; set => ticksPassed = value; }
+        public int DurationTicks = 99999999;
+        public Verse.Map Map;
+        public Verse.IntVec3 Spot;
+        public List<Verse.Pawn> PawnsToCountTowardsPresence = new List<Verse.Pawn>();
+        public Verse.Pawn PawnWithRole(string role) => role == "master" ? Master : Slave;
+    }
     public class Precept_Role { }
     public class RitualObligation { }
     public class RitualOutcomeEffectDef { }
@@ -95,6 +115,7 @@ namespace RimWorld
     {
         public string id;
         public bool required = true, substitutable;
+        public bool countsAsParticipant = true;
         public int maxCount = 1;
         public virtual bool AppliesToPawn(Verse.Pawn p, out string reason, Verse.TargetInfo selectedTarget, LordJob_Ritual ritual = null,
             RitualRoleAssignments assignments = null, Precept_Ritual precept = null, bool skipReason = false) { reason = null; return true; }
@@ -148,6 +169,7 @@ namespace RimWorld
         public List<RitualRole> AllRolesForReading => ritual.behavior.def.roles;
         public List<Verse.Pawn> SpectatorsForReading => spectators;
         public List<Verse.Pawn> AllCandidatePawns => allPawns;
+        public bool PawnSpectating(Verse.Pawn pawn) => spectators.Contains(pawn);
         public RitualRoleAssignments(Precept_Ritual ritual, Verse.TargetInfo target) { this.ritual = ritual; ritualTarget = target; }
         public void Setup(List<Verse.Pawn> pawns, Dictionary<string, Verse.Pawn> forced, Verse.Pawn selected)
         { allPawns = pawns; ForcedRolesForReading = forced ?? new Dictionary<string, Verse.Pawn>(); SelectedPawn = selected; }

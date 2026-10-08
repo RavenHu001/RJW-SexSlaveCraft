@@ -81,7 +81,8 @@ namespace SexSlaveCraft
             }
             foreach (RitualOutcomeComp comp in def.comps)
             {
-                if (comp is RitualOutcomeComp_Quality && comp.Applies(jobRitual) && Mathf.Abs(comp.QualityOffset(jobRitual, DataForComp(comp))) >= float.Epsilon)
+                if (comp is RitualOutcomeComp_Quality && comp.Applies(jobRitual) &&
+                    (comp is RitualOutcomeComp_BindingSpectatorCount || Mathf.Abs(comp.QualityOffset(jobRitual, DataForComp(comp))) >= float.Epsilon))
                 {
                     taggedString += "\n  - " + comp.GetDesc(jobRitual, DataForComp(comp)).CapitalizeFirst();
                 }
@@ -136,6 +137,25 @@ namespace SexSlaveCraft
             }
 
             SSCLog.Important($"[SSC 仪式结算] 进入结算: master={master.LabelShort}, slave={slave.LabelShort}, prisoner={slave.IsPrisonerOfColony}, colonist={slave.IsColonist}, slaveState={slave.IsSlave}, guestNull={(slave.guest == null)}");
+
+            // 在任何结算副作用和原版 ResetCompDatas 之前记录真实出席，便于实机复核零人原因。
+            foreach (RitualOutcomeComp comp in def.comps)
+            {
+                if (!(comp is RitualOutcomeComp_BindingSpectatorCount audience)) continue;
+                var presence = DataForComp(comp) as RitualOutcomeComp_DataThingPresence;
+                int elapsed = RitualOutcomeComp_BindingSpectatorCount.AttendanceDurationTicks(jobRitual);
+                SSCLog.Important($"[SSC_RITUAL_AUDIENCE] progress={jobRitual.TicksPassedWithProgress}, elapsed={elapsed}, minimum={elapsed / 2f}, records={presence?.presentForTicks.Count ?? 0}, counted={audience.Count(jobRitual, presence)}");
+                foreach (Pawn spectator in jobRitual.assignments.SpectatorsForReading)
+                {
+                    if (spectator == null) continue;
+                    float ticks = 0f;
+                    presence?.presentForTicks.TryGetValue(spectator, out ticks);
+                    bool owned = jobRitual.lord.ownedPawns.Contains(spectator);
+                    bool inArea = spectator.Spawned && spectator.Map == jobRitual.Map &&
+                        GatheringsUtility.InGatheringArea(spectator.Position, jobRitual.Spot, spectator.MapHeld);
+                    SSCLog.Important($"[SSC_RITUAL_AUDIENCE] pawn={spectator.LabelShort}, present={ticks}, owned={owned}, inArea={inArea}, position={spectator.Position}, duty={spectator.mindState?.duty?.def?.defName}, focus={spectator.mindState?.duty?.focus}, job={spectator.CurJobDef?.defName}");
+                }
+            }
 
             // 1. 获取纯净质量与结局
             float quality = GetQuality(jobRitual, progress);

@@ -8,7 +8,7 @@ using RimWorld;
 using SexSlaveCraft;
 using Verse;
 
-internal static class Program
+internal static partial class Program
 {
     private static int passed, failed;
     private sealed class Fixture
@@ -425,6 +425,7 @@ internal static class Program
                 Assert(doc.Root.Elements().All(x => !string.IsNullOrWhiteSpace(x.Value)));
             }
         });
+        RunAudienceTests(args.Length > 0 ? args[0] : null);
         Console.WriteLine($"结果：{passed}/{passed + failed} 项通过。");
         return failed == 0 ? 0 : 1;
     }

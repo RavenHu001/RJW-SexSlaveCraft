@@ -436,11 +436,15 @@ Quality is the sum of the following terms, clamped to 0–100%:
 
 | Component | Curve |
 |---|---|
-| Spectators | 1 → +5%; 5 → +15%; 10 → +20% |
+| Spectators | 0 → +0%; 1 → +5%; 5 → +15%; 10 or more → +20% |
 | Room impressiveness | 0 → 0%; 50 → +5%; 120 → +10% |
 | Genital compatibility | score 0/1/2/3/4/5 → -20%/-10%/-5%/+5%/+15%/+30% |
 | Master Social skill | 0/5/10/15/20 → -20%/0%/+20%/+30%/+40% |
 | Repeated within three days | -20% |
+
+The spectator bonus interpolates linearly between these points: three give +10%, and four give +12.5%. The master and ritual target are excluded. The setup preview estimates the assigned audience; the final outcome requires attendance for at least half the ritual's actual elapsed time. Brief visits do not count, while spectators who leave after meeting the threshold retain their contribution. Result letters also show the factor when no spectators qualify.
+
+The unreleased fix dated 2026-10-07 uses actual elapsed time to correct full attendance being counted as zero. The maintainer confirmed it works in game; the published 2.3.7 package does not yet contain this fix. See the [development record (Chinese)](Docs/Development/绑定仪式观众助兴修复.md).
 
 Ritual genital compatibility is not fully connected and stays at its lowest bracket. Ordinary Training size scoring is unaffected.
 
