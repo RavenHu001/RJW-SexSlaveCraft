@@ -36,6 +36,64 @@ internal static partial class Program
 
     private static void RunVisualTests()
     {
+        foreach (string status in new[] { "殖民者", "原版奴隶", "囚犯" })
+        foreach (bool sscSlave in new[] { false, true })
+            Run($"目标角标按 SSC 性奴身份过滤：{status}, SSC性奴={sscSlave}", () =>
+            {
+                ResetUi(); var f = new Fixture();
+                var candidate = new Pawn { SexSlave = sscSlave, IsColonist = status == "殖民者",
+                    IsSlave = status == "原版奴隶", IsPrisonerOfColony = status == "囚犯" };
+                f.Map.Pawns.Add(candidate); f.Open();
+                var spectators = f.A.SpectatorsForReading.ToArray(); int writes = f.A.Writes;
+                Event.current.mousePosition = new Vector2(40, 40); Counters.Reset();
+                PaintUi(f, () => PaintPortrait(f, candidate, new Rect(0, 0, 50, 50)));
+                Assert(UiRecorder.Marks.Any(m => m.Kind == "label" && m.Text == "SSC_RitualSelection_TargetBadge") == sscSlave);
+                Assert(UiRecorder.Marks.Any(m => m.Kind == "tip" && m.Text.Contains("SSC_RitualSelection_TargetCandidate")) == sscSlave);
+                Assert(UiRecorder.Marks.Count(m => m.Kind == "native-icons") == 1 && f.A.Writes == writes);
+                Assert(f.A.SpectatorsForReading.SequenceEqual(spectators) && Counters.Messages == 0);
+                Assert(Counters.Eligibility == (sscSlave ? 1 : 0) && Counters.Reach == (sscSlave ? 1 : 0));
+            });
+        Run("SSC 主人仅显示主持角标和主持候选提示", () =>
+        {
+            ResetUi(); var f = new Fixture(); f.Open(); Event.current.mousePosition = new Vector2(40, 40);
+            PaintUi(f, () => PaintPortrait(f, f.Host, new Rect(0, 0, 50, 50)));
+            Assert(UiRecorder.Marks.Count(m => m.Kind == "badge") == 1);
+            Assert(UiRecorder.Marks.Any(m => m.Kind == "label" && m.Text == "SSC_RitualSelection_HostBadge"));
+            Assert(!UiRecorder.Marks.Any(m => m.Kind == "tip" && m.Text.Contains("SSC_RitualSelection_TargetCandidate")));
+        });
+        foreach (bool forced in new[] { false, true })
+            Run($"已选目标撤销 SSC 性奴身份立即隐藏标签和勾选，保留分配：强制角色={forced}", () =>
+            {
+                ResetUi(); var f = new Fixture(); f.Open(); f.SelectBoth();
+                if (forced) f.A.ForcedRolesForReading["slave"] = f.Target;
+                Event.current.mousePosition = new Vector2(40, 40);
+                PaintUi(f, () => PaintPortrait(f, f.Target, new Rect(0, 0, 50, 50)));
+                Assert(UiRecorder.Marks.Any(m => m.Kind == "badge") && UiRecorder.Marks.Any(m => m.Kind == "check"));
+                var spectators = f.A.SpectatorsForReading.ToArray(); int writes = f.A.Writes;
+                f.Target.SexSlave = false; Time.realtimeSinceStartup = 0.1f; UiRecorder.Marks.Clear(); Counters.Reset();
+                PaintUi(f, () => PaintPortrait(f, f.Target, new Rect(0, 0, 50, 50)));
+                Assert(!UiRecorder.Marks.Any(m => m.Kind == "badge" || m.Kind == "check" || m.Kind == "border"));
+                Assert(!UiRecorder.Marks.Any(m => m.Kind == "tip" && m.Text.Contains("SSC_RitualSelection_TargetCandidate")));
+                Assert(f.A.FirstAssignedPawn("slave") == f.Target && f.A.FirstAssignedPawn("master") == f.Host);
+                Assert(f.A.Writes == writes && f.A.SpectatorsForReading.SequenceEqual(spectators));
+                Assert(f.Target.BoundMaster == f.Host && f.Target.AssignedTrainer == f.Host);
+                Assert(Counters.Eligibility == 0 && Counters.Reach == 0 && Counters.Messages == 0);
+                f.Target.SexSlave = true; UiRecorder.Marks.Clear();
+                PaintUi(f, () => PaintPortrait(f, f.Target, new Rect(0, 0, 50, 50)));
+                Assert(UiRecorder.Marks.Any(m => m.Kind == "badge") && UiRecorder.Marks.Any(m => m.Kind == "check"));
+            });
+        Run("没有目标标签的非性奴仍沿用实际拖放和启动规则", () =>
+        {
+            ResetUi(); var f = new Fixture(); f.Target.SexSlave = false; f.Open(); Assert(f.HostSlot());
+            Counters.Reset(); DragAndDropWidget.Dragging = true; DragAndDropWidget.Dragged = f.Target;
+            Event.current.mousePosition = new Vector2(80, 30);
+            PaintUi(f, () => PaintSlot(f.TargetRole, new Rect(0, 0, 150, 70)));
+            Assert(UiRecorder.Marks.Any(m => m.Kind == "border" && m.Color.g > m.Color.r));
+            Assert(Counters.Eligibility == 1 && f.A.FirstAssignedPawn("slave") == null);
+            DragAndDropWidget.Dragging = false;
+            Assert(f.TargetSlot() && f.Window.CanBegin);
+            Assert(f.A.FirstAssignedPawn("slave") == f.Target && !f.Target.SexSlave);
+        });
         Run("实际绘制钩子：1000 人角色角标重绘不调用 RJW 或寻路", () =>
         {
             ResetUi(); var f = new Fixture(998); f.Open(); Counters.Reset();
@@ -68,7 +126,7 @@ internal static partial class Program
         Run("配对不兼容显示斜线但不移除目标观众", () =>
         {
             ResetUi(); var f = new Fixture(); f.Open(); Assert(f.HostSlot());
-            var target = new Pawn { AssignedTrainer = new Pawn { Master = true } };
+            var target = new Pawn { SexSlave = true, AssignedTrainer = new Pawn { Master = true } };
             Assert(f.A.TryAssignSpectate(target)); Counters.Reset();
             PaintUi(f, () => PaintPortrait(f, target, new Rect(0, 0, 50, 50)));
             Assert(UiRecorder.Marks.Any(m => m.Kind == "slash") && f.A.SpectatorsForReading.Contains(target));

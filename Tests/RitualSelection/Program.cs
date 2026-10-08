@@ -14,7 +14,7 @@ internal static partial class Program
     private sealed class Fixture
     {
         public Pawn Host = new Pawn { Master = true, LabelShort = "Host" };
-        public Pawn Target = new Pawn { LabelShort = "Target" };
+        public Pawn Target = new Pawn { SexSlave = true, LabelShort = "Target" };
         public RitualRole_BindingMaster HostRole = new RitualRole_BindingMaster { id = "master" };
         public RitualRole_BindingSlave TargetRole = new RitualRole_BindingSlave { id = "slave", substitutable = true };
         public Precept_Ritual Ritual = new Precept_Ritual();

@@ -11,7 +11,7 @@ namespace Verse
     public class Pawn : Thing
     {
         public bool Spawned = true, IsColonist = true, Eligible = true, Reachable = true, HasComp = true;
-        public bool Dead, Destroyed, Downed, IsSlave, IsPrisonerOfColony, Master, Trainer, Child, VanillaBlocked;
+        public bool Dead, Destroyed, Downed, IsSlave, IsPrisonerOfColony, Master, SexSlave, Trainer, Child, VanillaBlocked;
         public string LabelShort = "Adult";
         public Pawn BoundMaster, AssignedTrainer;
         public readonly HashSet<Pawn> PermittedHosts = new HashSet<Pawn>();
@@ -423,6 +423,7 @@ namespace SexSlaveCraft
     {
         public static bool IsSupportedVanillaStatus(Verse.Pawn pawn) => pawn.IsColonist || pawn.IsSlave || pawn.IsPrisonerOfColony;
         public static bool IsMaster(Verse.Pawn pawn) => pawn?.Master == true;
+        public static bool IsSexSlave(Verse.Pawn pawn) => pawn?.HasComp == true && !pawn.Master && pawn.SexSlave;
         public static bool IsTrainer(Verse.Pawn pawn) => pawn?.HasComp == true && (pawn.Master || pawn.Trainer);
     }
     public static class SSCBondUtility { public static Verse.Pawn GetBoundMaster(Verse.Pawn pawn) => pawn?.BoundMaster; }

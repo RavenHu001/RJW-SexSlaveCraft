@@ -91,6 +91,10 @@ namespace SexSlaveCraft
         private int Group => (int)groupField.GetValue(owner);
         private Pawn Replacing(RitualRole role) => assignments.FirstAssignedPawn(role.id);
 
+        // 目标提示暂以 SSC 性奴身份为门槛；只限制显示，不替代实际选角或开始检查。
+        private bool CanShowRoleHint(Pawn pawn, RitualRole role)
+            => role != null && (role != targetRole || SSCIdentityUtility.IsSexSlave(pawn));
+
         private BindingRitualRolePreview Preview(Pawn pawn, RitualRole role)
         {
             if (!previews.TryGetValue(pawn, out BindingRitualRolePreview[] states))
@@ -127,9 +131,10 @@ namespace SexSlaveCraft
             if (!DragAndDropWidget.Dragging && Mouse.IsOver(rect) && !tooltipActive)
             {
                 RitualRole focus = previousHost != null ? targetRole : previousTarget != null ? hostRole : null;
-                if (focus == null || !Preview(pawn, focus).Candidate)
-                    focus = Preview(pawn, hostRole).Assigned ? hostRole : Preview(pawn, targetRole).Candidate ? targetRole : hostRole;
-                if (focus != null && Preview(pawn, focus).Candidate)
+                if (!CanShowRoleHint(pawn, focus) || !Preview(pawn, focus).Candidate)
+                    focus = Preview(pawn, hostRole).Assigned ? hostRole
+                        : CanShowRoleHint(pawn, targetRole) && Preview(pawn, targetRole).Candidate ? targetRole : hostRole;
+                if (CanShowRoleHint(pawn, focus) && Preview(pawn, focus).Candidate)
                 {
                     Detail result = Inspect(pawn, focus, Replacing(focus));
                     DrawBorder(rect, result.Allowed);
@@ -139,7 +144,8 @@ namespace SexSlaveCraft
 
         private void DrawBadge(Rect portrait, Pawn pawn, RitualRole role, string label, Color color, ref float y, ref bool tooltipActive)
         {
-            if (role == null) return;
+            // 已分配状态也不能为非性奴补画目标标签；身份变化不等待预览缓存过期。
+            if (!CanShowRoleHint(pawn, role)) return;
             BindingRitualRolePreview state = Preview(pawn, role);
             if (!state.Candidate && !state.Assigned) return;
             using (new TextBlock(GameFont.Tiny, TextAnchor.MiddleCenter, false, Color.white))
@@ -196,7 +202,8 @@ namespace SexSlaveCraft
             if (hostRole == null || targetRole == null || DragAndDropWidget.Dragging ||
                 !portraits.TryGetValue(pawn, out Rect rect) || !Mouse.IsOver(rect)) return null;
             // 此原版方法会为所有头像构造提示，但完整资格只针对鼠标下的一人。
-            return RoleTip(pawn, hostRole) + "\n\n" + RoleTip(pawn, targetRole);
+            string tip = RoleTip(pawn, hostRole);
+            return CanShowRoleHint(pawn, targetRole) ? tip + "\n\n" + RoleTip(pawn, targetRole) : tip;
         }
 
         public void DrawDropFeedback()
