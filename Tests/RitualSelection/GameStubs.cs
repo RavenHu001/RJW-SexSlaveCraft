@@ -8,7 +8,7 @@ using SexSlaveCraft;
 // Unity rendering/pathfinding and RJW internals are counted boundaries, not timing substitutes.
 namespace Verse
 {
-    public class Pawn
+    public class Pawn : Thing
     {
         public bool Spawned = true, IsColonist = true, Eligible = true, Reachable = true, HasComp = true;
         public bool Dead, Destroyed, Downed, IsSlave, IsPrisonerOfColony, Master, Trainer, Child, VanillaBlocked;
@@ -85,7 +85,14 @@ namespace Verse
 namespace RimWorld
 {
     public static class MessageTypeDefOf { public static readonly object RejectInput = new object(); }
-    public class LordJob_Ritual { public Verse.Pawn Master, Slave; public Verse.Pawn PawnWithRole(string role) => role == "master" ? Master : Slave; }
+    public class LordJob_Ritual
+    {
+        public Verse.Pawn Master, Slave;
+        public RitualRoleAssignments assignments;
+        public float TicksPassedWithProgress;
+        public int DurationTicks = 99999999;
+        public Verse.Pawn PawnWithRole(string role) => role == "master" ? Master : Slave;
+    }
     public class Precept_Role { }
     public class RitualObligation { }
     public class RitualOutcomeEffectDef { }
