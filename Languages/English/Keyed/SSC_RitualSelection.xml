@@ -13,5 +13,5 @@
   <SSC_RitualSelection_Allowed>Can currently be assigned to this role.</SSC_RitualSelection_Allowed>
   <SSC_RitualSelection_CannotAssign>Cannot currently assign: {0}</SSC_RitualSelection_CannotAssign>
   <SSC_RitualSelection_PairBlocked>Cannot fill this role now: {0}</SSC_RitualSelection_PairBlocked>
-  <SSC_RitualSelection_Legend>Badges show basic role eligibility. Hover over portraits for conditions; a slash marks an unavailable role, and a check marks an assigned role.</SSC_RitualSelection_Legend>
+  <SSC_RitualSelection_Legend>Gold whip: host candidate, including qualified sex slave trainers. Purple collar: SSC sex slave target candidate. Icons show basic eligibility only. Hover over portraits for conditions; a slash marks an unavailable role, and a check marks an assigned role.</SSC_RitualSelection_Legend>
 </LanguageData>

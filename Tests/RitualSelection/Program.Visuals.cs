@@ -7,6 +7,9 @@ using Verse;
 
 internal static partial class Program
 {
+    private const string HostIconPath = "UI/Icons/RitualRole_Host";
+    private const string TargetIconPath = "UI/Icons/RitualRole_Target";
+
     private static void PaintUi(Fixture f, Action paint)
     {
         f.Window.Widget.UiDraw = () =>
@@ -47,7 +50,7 @@ internal static partial class Program
                 var spectators = f.A.SpectatorsForReading.ToArray(); int writes = f.A.Writes;
                 Event.current.mousePosition = new Vector2(40, 40); Counters.Reset();
                 PaintUi(f, () => PaintPortrait(f, candidate, new Rect(0, 0, 50, 50)));
-                Assert(UiRecorder.Marks.Any(m => m.Kind == "label" && m.Text == "SSC_RitualSelection_TargetBadge") == sscSlave);
+                Assert(UiRecorder.Marks.Any(m => m.Kind == "role-icon" && m.Text == TargetIconPath) == sscSlave);
                 Assert(UiRecorder.Marks.Any(m => m.Kind == "tip" && m.Text.Contains("SSC_RitualSelection_TargetCandidate")) == sscSlave);
                 Assert(UiRecorder.Marks.Count(m => m.Kind == "native-icons") == 1 && f.A.Writes == writes);
                 Assert(f.A.SpectatorsForReading.SequenceEqual(spectators) && Counters.Messages == 0);
@@ -58,7 +61,7 @@ internal static partial class Program
             ResetUi(); var f = new Fixture(); f.Open(); Event.current.mousePosition = new Vector2(40, 40);
             PaintUi(f, () => PaintPortrait(f, f.Host, new Rect(0, 0, 50, 50)));
             Assert(UiRecorder.Marks.Count(m => m.Kind == "badge") == 1);
-            Assert(UiRecorder.Marks.Any(m => m.Kind == "label" && m.Text == "SSC_RitualSelection_HostBadge"));
+            Assert(UiRecorder.Marks.Any(m => m.Kind == "role-icon" && m.Text == HostIconPath));
             Assert(!UiRecorder.Marks.Any(m => m.Kind == "tip" && m.Text.Contains("SSC_RitualSelection_TargetCandidate")));
         });
         foreach (bool forced in new[] { false, true })
@@ -115,14 +118,59 @@ internal static partial class Program
             Assert(UiRecorder.Marks.Count(m => m.Kind == "badge") == 1 && UiRecorder.Marks.Count(m => m.Kind == "native-icons") == 2);
             Assert(Counters.Eligibility == 0 && f.A.Writes == writes && f.A.SpectatorsForReading.Contains(f.Target));
         });
-        Run("双角色文字角标不占用第二行右下文化图标位置", () =>
+        Run("鞭子与项圈使用不同资产，双图标同一行并避开勾选和文化图标", () =>
         {
             ResetUi(); var f = new Fixture(); f.Target.Trainer = true; f.Open();
             PaintUi(f, () => PaintPortrait(f, f.Target, new Rect(0, 0, 50, 50)));
             var badges = UiRecorder.Marks.Where(m => m.Kind == "badge").ToArray();
-            Assert(badges.Length == 2 && badges[0].Rect.y < badges[1].Rect.y);
-            Assert(badges[1].Rect.xMax <= 30 && badges[1].Rect.yMax < 50);
+            var icons = UiRecorder.Marks.Where(m => m.Kind == "role-icon").ToArray();
+            Assert(badges.Length == 2 && icons.Length == 2);
+            Assert(icons[0].Text == HostIconPath && icons[1].Text == TargetIconPath && icons[0].Text != icons[1].Text);
+            Assert(badges[0].Rect.y == badges[1].Rect.y && badges[0].Rect.xMax < badges[1].Rect.x);
+            Assert(badges.All(m => m.Rect.width <= 16f && m.Rect.height <= 16f && m.Rect.yMax <= 17f && m.Rect.xMax <= 40f));
+            Assert(icons.All(m => m.Rect.width <= 14f && m.Rect.height <= 14f));
+            Assert(!UiRecorder.Marks.Any(m => m.Kind == "label"));
         });
+        Run("仅有目标资格时项圈保留第一角标位置", () =>
+        {
+            ResetUi(); var f = new Fixture(); f.Open();
+            PaintUi(f, () => PaintPortrait(f, f.Target, new Rect(10, 20, 50, 50)));
+            var badge = UiRecorder.Marks.Single(m => m.Kind == "badge");
+            var icon = UiRecorder.Marks.Single(m => m.Kind == "role-icon");
+            Assert(badge.Rect.x == 12f && badge.Rect.y == 21f && icon.Text == TargetIconPath);
+            Assert(icon.Rect.x >= badge.Rect.x && icon.Rect.xMax <= badge.Rect.xMax);
+        });
+        foreach (float portraitWidth in new[] { 20f, 28f, 40f })
+            Run($"窄头像双图标缩小且保持头像与勾选边界：宽{portraitWidth}", () =>
+            {
+                ResetUi(); var f = new Fixture(); f.Target.Trainer = true; f.Open();
+                PaintUi(f, () => PaintPortrait(f, f.Target, new Rect(10, 20, portraitWidth, 50)));
+                var badges = UiRecorder.Marks.Where(m => m.Kind == "badge").ToArray();
+                var icons = UiRecorder.Marks.Where(m => m.Kind == "role-icon").ToArray();
+                Assert(badges.Length == 2 && icons.Length == 2);
+                Assert(badges[0].Rect.y == badges[1].Rect.y && badges[0].Rect.xMax < badges[1].Rect.x);
+                Assert(badges.All(m => m.Rect.width > 0f && m.Rect.width <= 16f && m.Rect.height <= 16f
+                    && m.Rect.x >= 10f && m.Rect.xMax <= 10f + portraitWidth - 10f));
+                for (int i = 0; i < icons.Length; i++)
+                    Assert(icons[i].Rect.width > 0f && icons[i].Rect.height > 0f && icons[i].Rect.x >= badges[i].Rect.x
+                        && icons[i].Rect.xMax <= badges[i].Rect.xMax && icons[i].Rect.y >= badges[i].Rect.y
+                        && icons[i].Rect.yMax <= badges[i].Rect.yMax);
+            });
+        foreach (bool hostHovered in new[] { true, false })
+            Run($"双资格图标独立显示对应角色提示：主持={hostHovered}", () =>
+            {
+                ResetUi(); var f = new Fixture(); f.Target.Trainer = true; f.Open();
+                PaintUi(f, () => PaintPortrait(f, f.Target, new Rect(0, 0, 50, 50)));
+                var badge = UiRecorder.Marks.Where(m => m.Kind == "badge").ElementAt(hostHovered ? 0 : 1).Rect;
+                UiRecorder.Marks.Clear(); Counters.Reset();
+                Event.current.mousePosition = new Vector2(badge.x + badge.width / 2f, badge.y + badge.height / 2f);
+                bool active = false;
+                PaintUi(f, () => active = PaintPortrait(f, f.Target, new Rect(0, 0, 50, 50)));
+                string expected = hostHovered ? "SSC_RitualSelection_HostCandidate" : "SSC_RitualSelection_TargetCandidate";
+                Assert(active && UiRecorder.Marks.Count(m => m.Kind == "tip") == 1);
+                Assert(UiRecorder.Marks.Single(m => m.Kind == "tip").Text.StartsWith(expected));
+                Assert(!UiRecorder.Marks.Any(m => m.Kind == "label"));
+            });
         Run("配对不兼容显示斜线但不移除目标观众", () =>
         {
             ResetUi(); var f = new Fixture(); f.Open(); Assert(f.HostSlot());
@@ -130,6 +178,8 @@ internal static partial class Program
             Assert(f.A.TryAssignSpectate(target)); Counters.Reset();
             PaintUi(f, () => PaintPortrait(f, target, new Rect(0, 0, 50, 50)));
             Assert(UiRecorder.Marks.Any(m => m.Kind == "slash") && f.A.SpectatorsForReading.Contains(target));
+            var icon = UiRecorder.Marks.Single(m => m.Kind == "role-icon");
+            Assert(icon.Text == TargetIconPath && icon.Color.r == icon.Color.g && icon.Color.g == icon.Color.b);
             Assert(Counters.Eligibility == 0 && Counters.Reach == 0 && Counters.Messages == 0);
         });
         Run("角标悬停取代原头像提示并显示完整身体拒绝", () =>
@@ -234,8 +284,21 @@ internal static partial class Program
             ResetUi(); var f = new Fixture(); f.Open(); f.SelectBoth();
             GUI.color = new Color(0.2f, 0.3f, 0.4f); Text.Font = GameFont.Small; Text.Anchor = TextAnchor.UpperLeft;
             PaintUi(f, () => PaintPortrait(f, f.Target, new Rect(0, 0, 50, 50)));
-            Assert(UiRecorder.Marks.Count(m => m.Kind == "check") == 1 && GUI.color.r == 0.2f && GUI.color.g == 0.3f);
+            Assert(UiRecorder.Marks.Count(m => m.Kind == "check") == 1 && GUI.color.r == 0.2f && GUI.color.g == 0.3f && GUI.color.b == 0.4f);
+            var badge = UiRecorder.Marks.Single(m => m.Kind == "badge").Rect;
+            var check = UiRecorder.Marks.Single(m => m.Kind == "check").Rect;
+            Assert(badge.xMax <= check.x && check.width == 8f && check.height == 8f);
             Assert(Text.Font == GameFont.Small && Text.Anchor == TextAnchor.UpperLeft);
+        });
+        Run("主持金色、目标紫色且图标绘制恢复完整 GUI 颜色", () =>
+        {
+            ResetUi(); var f = new Fixture(); f.Target.Trainer = true; f.Open();
+            GUI.color = new Color(0.2f, 0.3f, 0.4f, 0.6f);
+            PaintUi(f, () => PaintPortrait(f, f.Target, new Rect(0, 0, 50, 50)));
+            var host = UiRecorder.Marks.Single(m => m.Kind == "role-icon" && m.Text == HostIconPath).Color;
+            var target = UiRecorder.Marks.Single(m => m.Kind == "role-icon" && m.Text == TargetIconPath).Color;
+            Assert(host.r > host.g && host.g > host.b && target.b > target.r && target.r > target.g);
+            Assert(GUI.color.r == 0.2f && GUI.color.g == 0.3f && GUI.color.b == 0.4f && GUI.color.a == 0.6f);
         });
         Run("嵌套滚动视图不装饰无关头像或角色槽", () =>
         {

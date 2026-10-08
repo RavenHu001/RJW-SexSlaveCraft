@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <!-- Single-color whip: a broad open lash and a short diagonal grip. -->
+  <path d="M 47 73 C 24 60 21 35 37 21 C 54 6 83 9 100 25 C 116 40 114 60 99 65 C 89 68 80 60 84 52"
+        fill="none" stroke="#ffffff" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M 14 108 L 42 65 Q 45 61 49 64 L 57 69 Q 61 72 58 76 L 29 117 Q 26 120 22 117 L 16 113 Q 12 111 14 108 Z"
+        fill="#ffffff" />
+</svg>

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <!-- Single-color collar: a wide band, a transparent opening, and a hanging ring. -->
+  <path d="M 9 31 C 9 7 119 7 119 31 L 119 51 C 119 73 9 73 9 51 Z M 22 31 C 22 19 106 19 106 31 C 106 43 22 43 22 31 Z"
+        fill="#ffffff" fill-rule="evenodd" />
+  <path d="M 58 63 L 70 63 L 70 84 L 58 84 Z" fill="#ffffff" />
+  <circle cx="64" cy="99" r="18" fill="none" stroke="#ffffff" stroke-width="9" />
+</svg>

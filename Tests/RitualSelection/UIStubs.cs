@@ -27,18 +27,28 @@ namespace UnityEngine
         public static Color white => new Color(1f, 1f, 1f);
     }
     public enum TextAnchor { UpperLeft, MiddleCenter }
-    public class Texture2D { }
+    public class Texture2D
+    {
+        public readonly string AssetPath;
+        public Texture2D(string assetPath = null) { AssetPath = assetPath; }
+    }
     public static class Time { public static float realtimeSinceStartup; }
     public sealed class Event { public static Event current = new Event(); public Vector2 mousePosition; }
     public static class GUI
     {
         public static Color color = Color.white;
-        public static void DrawTexture(Rect rect, Texture2D texture) => UiRecorder.Add("check", rect);
+        public static void DrawTexture(Rect rect, Texture2D texture)
+            => UiRecorder.Add(texture.AssetPath?.StartsWith("UI/Icons/RitualRole_", StringComparison.Ordinal) == true
+                ? "role-icon" : "check", rect, texture.AssetPath);
     }
 }
 
 namespace Verse
 {
+    public static class ContentFinder<T>
+    {
+        public static T Get(string path, bool reportFailure = true) => (T)(object)new Texture2D(path);
+    }
     public enum GameFont { Tiny, Small }
     public static class Mouse
     {
@@ -50,7 +60,7 @@ namespace Verse
         public static GameFont Font = GameFont.Small;
         public static TextAnchor Anchor = TextAnchor.UpperLeft;
         public static bool WordWrap = true;
-        public static Vector2 CalcSize(string text) => new Vector2(text == "SSC_RitualSelection_HostBadge" || text == "SSC_RitualSelection_TargetBadge" ? 24f : (text?.Length ?? 0) * 6f, 17f);
+        public static Vector2 CalcSize(string text) => new Vector2((text?.Length ?? 0) * 6f, 17f);
         public static float CalcHeight(string text, float width) => Math.Max(17f, (float)Math.Ceiling(CalcSize(text).x / Math.Max(1f, width)) * 17f);
     }
     public struct TextBlock : IDisposable
@@ -79,6 +89,7 @@ namespace Verse
         [MethodImpl(MethodImplOptions.NoInlining)]
         public static void EndScrollView() { UiRecorder.Add("end", default); }
         public static void DrawBoxSolidWithOutline(Rect rect, Color background, Color outline, int thickness = 1) => UiRecorder.Add("badge", rect);
+        public static void DrawBoxSolid(Rect rect, Color background) => UiRecorder.Add("badge", rect);
         public static void DrawBox(Rect rect, int thickness = 1, Texture2D texture = null) => UiRecorder.Add("border", rect);
         public static void Label(Rect rect, string text) => UiRecorder.Add("label", rect, text);
         public static void DrawLine(Vector2 start, Vector2 end, Color color, float width) => UiRecorder.Add("slash", new Rect(start.x, start.y, end.x - start.x, end.y - start.y));

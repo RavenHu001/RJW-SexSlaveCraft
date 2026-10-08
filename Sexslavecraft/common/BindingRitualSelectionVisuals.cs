@@ -14,6 +14,10 @@ namespace SexSlaveCraft
     internal sealed class BindingRitualSelectionVisuals
     {
         private const float RefreshSeconds = 0.35f;
+        private const float BadgeSize = 16f;
+        private const float BadgeGap = 2f;
+        private static readonly Texture2D HostIcon = ContentFinder<Texture2D>.Get("UI/Icons/RitualRole_Host", true);
+        private static readonly Texture2D TargetIcon = ContentFinder<Texture2D>.Get("UI/Icons/RitualRole_Target", true);
         private static readonly Color HostColor = new Color(1f, 0.76f, 0.32f);
         private static readonly Color TargetColor = new Color(0.78f, 0.6f, 1f);
         private static readonly Color AllowedColor = new Color(0.45f, 0.9f, 0.5f);
@@ -27,8 +31,6 @@ namespace SexSlaveCraft
         private readonly PawnRitualRoleSelectionWidget owner;
         private readonly RitualRoleAssignments assignments;
         private readonly RitualRole hostRole, targetRole;
-        private readonly string hostBadge = "SSC_RitualSelection_HostBadge".Translate();
-        private readonly string targetBadge = "SSC_RitualSelection_TargetBadge".Translate();
         private readonly Dictionary<Pawn, BindingRitualRolePreview[]> previews = new Dictionary<Pawn, BindingRitualRolePreview[]>();
         private readonly Dictionary<Pawn, Rect> portraits = new Dictionary<Pawn, Rect>();
         private readonly List<RoleSlot> slots = new List<RoleSlot>();
@@ -95,6 +97,13 @@ namespace SexSlaveCraft
         private bool CanShowRoleHint(Pawn pawn, RitualRole role)
             => role != null && (role != targetRole || SSCIdentityUtility.IsSexSlave(pawn));
 
+        private bool CanShowBadge(Pawn pawn, RitualRole role)
+        {
+            if (!CanShowRoleHint(pawn, role)) return false;
+            BindingRitualRolePreview state = Preview(pawn, role);
+            return state.Candidate || state.Assigned;
+        }
+
         private BindingRitualRolePreview Preview(Pawn pawn, RitualRole role)
         {
             if (!previews.TryGetValue(pawn, out BindingRitualRolePreview[] states))
@@ -124,9 +133,18 @@ namespace SexSlaveCraft
         {
             if (scrollDepth != 1 || pawn == null) return;
             portraits[pawn] = rect;
-            float y = rect.y + 1f;
-            DrawBadge(rect, pawn, hostRole, hostBadge, HostColor, ref y, ref tooltipActive);
-            DrawBadge(rect, pawn, targetRole, targetBadge, TargetColor, ref y, ref tooltipActive);
+            int badgeCount = (CanShowBadge(pawn, hostRole) ? 1 : 0) + (CanShowBadge(pawn, targetRole) ? 1 : 0);
+            if (badgeCount > 0)
+            {
+                // 两枚图标始终同一行；右侧留出勾选区域，窄头像按实际可用宽度缩小。
+                float size = Math.Min(BadgeSize, (rect.width - 14f - BadgeGap * (badgeCount - 1)) / badgeCount);
+                if (size > 0f)
+                {
+                    float x = rect.x + 2f;
+                    DrawBadge(rect, pawn, hostRole, HostIcon, HostColor, size, ref x, ref tooltipActive);
+                    DrawBadge(rect, pawn, targetRole, TargetIcon, TargetColor, size, ref x, ref tooltipActive);
+                }
+            }
             // 只有当前悬停头像执行完整查询，不能因悬停角色栏而全量寻路/身体检查。
             if (!DragAndDropWidget.Dragging && Mouse.IsOver(rect) && !tooltipActive)
             {
@@ -142,40 +160,44 @@ namespace SexSlaveCraft
             }
         }
 
-        private void DrawBadge(Rect portrait, Pawn pawn, RitualRole role, string label, Color color, ref float y, ref bool tooltipActive)
+        private void DrawBadge(Rect portrait, Pawn pawn, RitualRole role, Texture2D icon, Color color,
+            float size, ref float x, ref bool tooltipActive)
         {
             // 已分配状态也不能为非性奴补画目标标签；身份变化不等待预览缓存过期。
-            if (!CanShowRoleHint(pawn, role)) return;
+            if (!CanShowBadge(pawn, role)) return;
             BindingRitualRolePreview state = Preview(pawn, role);
-            if (!state.Candidate && !state.Assigned) return;
-            using (new TextBlock(GameFont.Tiny, TextAnchor.MiddleCenter, false, Color.white))
+            var badge = new Rect(x, portrait.y + 1f, size, size);
+            bool blocked = !state.Candidate || !state.PairAllowed;
+            Color before = GUI.color;
+            try
             {
-                // 第二行避开原版右下角的文化/身份图标；两种资格同时存在时仍保留文字。
-                float available = y > portrait.y + 1f ? portrait.width - 24f : portrait.width - 4f;
-                float width = Math.Min(available, Text.CalcSize(label).x + 8f);
-                var badge = new Rect(portrait.x + 2f, y, width, 17f);
-                bool blocked = !state.Candidate || !state.PairAllowed;
-                Widgets.DrawBoxSolidWithOutline(badge, BadgeBackground, blocked ? DimmedColor : color);
-                Widgets.Label(badge, label);
+                GUI.color = Color.white;
+                Widgets.DrawBoxSolid(badge, BadgeBackground);
+                GUI.color = blocked ? DimmedColor : color;
+                float inset = Math.Min(1f, size / 4f);
+                GUI.DrawTexture(new Rect(badge.x + inset, badge.y + inset, size - 2f * inset, size - 2f * inset), icon);
                 if (state.Assigned)
                 {
-                    Color before = GUI.color;
-                    try { GUI.color = color; GUI.DrawTexture(new Rect(portrait.xMax - 10f, portrait.y + 4f, 8f, 8f), Widgets.CheckboxOnTex); }
-                    finally { GUI.color = before; }
+                    GUI.color = color;
+                    GUI.DrawTexture(new Rect(portrait.xMax - 10f, portrait.y + 4f, 8f, 8f), Widgets.CheckboxOnTex);
                 }
-                if (blocked)
-                    Widgets.DrawLine(new Vector2(badge.x + 2f, badge.yMax - 2f), new Vector2(badge.xMax - 2f, badge.y + 2f), RejectedColor, 1.5f);
-                if (!DragAndDropWidget.Dragging && Mouse.IsOver(badge))
-                {
-                    // 原版在图标绘制后登记整张头像提示；此标志只替换当前角标的提示。
-                    tooltipActive = true;
-                    string tip = RoleTip(pawn, role);
-                    TooltipHandler.TipRegion(badge, tip);
-                    Detail result = Inspect(pawn, role, Replacing(role));
-                    DrawBorder(portrait, result.Allowed);
-                }
-                y += 18f;
             }
+            finally { GUI.color = before; }
+            if (blocked)
+            {
+                float inset = Math.Min(2f, size / 4f);
+                Widgets.DrawLine(new Vector2(badge.x + inset, badge.yMax - inset),
+                    new Vector2(badge.xMax - inset, badge.y + inset), RejectedColor, Math.Min(1.5f, size / 8f));
+            }
+            if (!DragAndDropWidget.Dragging && Mouse.IsOver(badge))
+            {
+                // 原版在图标绘制后登记整张头像提示；此标志只替换当前图标的提示。
+                tooltipActive = true;
+                TooltipHandler.TipRegion(badge, RoleTip(pawn, role));
+                Detail result = Inspect(pawn, role, Replacing(role));
+                DrawBorder(portrait, result.Allowed);
+            }
+            x += size + BadgeGap;
         }
 
         private string RoleTip(Pawn pawn, RitualRole role)

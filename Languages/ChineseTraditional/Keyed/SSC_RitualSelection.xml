@@ -13,5 +13,5 @@
   <SSC_RitualSelection_Allowed>目前可放入該角色。</SSC_RitualSelection_Allowed>
   <SSC_RitualSelection_CannotAssign>目前無法放入：{0}</SSC_RitualSelection_CannotAssign>
   <SSC_RitualSelection_PairBlocked>目前無法擔任此角色：{0}</SSC_RitualSelection_PairBlocked>
-  <SSC_RitualSelection_Legend>角標僅表示基礎角色資格。懸停頭像查看條件；斜線表示目前角色不可選，勾選表示已分配。</SSC_RitualSelection_Legend>
+  <SSC_RitualSelection_Legend>金色鞭子：主持候選（含合格的性奴調教員）；紫色項圈：SSC 性奴目標候選。圖示僅表示基礎資格。懸停頭像查看條件；斜線表示目前角色不可選，勾選表示已分配。</SSC_RitualSelection_Legend>
 </LanguageData>
