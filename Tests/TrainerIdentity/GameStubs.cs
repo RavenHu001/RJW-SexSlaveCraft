@@ -13,7 +13,7 @@ namespace Verse
     {
         public Verse.AI.Group.Lord lord;
         public Verse.AI.Group.Lord GetLord() => lord;
-        public bool Dead, Downed, Spawned = true, IsColonist = true, IsPrisonerOfColony, IsSlave;
+        public bool Dead, Downed, Discarded, Spawned = true, IsColonist = true, IsPrisonerOfColony, IsSlave;
         public string LabelShort = "Pawn";
         public CompSexSlaveTraining Training = new CompSexSlaveTraining();
         public WorkSettings workSettings = new WorkSettings();
@@ -211,7 +211,7 @@ namespace RimWorld
         public virtual Job JobOnThing(Pawn pawn, Thing thing, bool forced = false) => null;
     }
     public static class PawnsFinder { public static List<Pawn> AllMapsWorldAndTemporary_AliveOrDead = new List<Pawn>(); }
-    public class LordJob_Ritual
+    public class LordJob_Ritual : Verse.AI.Group.LordJob
     {
         public Pawn Master, Slave;
         /// <summary>返回用例指定的主持与目标角色。</summary>
@@ -257,13 +257,15 @@ namespace SexSlaveCraft
         public bool trainerInvalidExitBlocksAdoption;
         public bool specializationExplicitlyUnset;
         public Pawn selectedTrainer;
-        public TrainingMode mode = TrainingMode.Enabled;
+        public TrainingMode mode = TrainingMode.Disabled;
         public bool AllowsOthersForTrainingOrSex, IsBusSpecialized, BusState;
         public bool isRitualTraining, IsWaitingAfterFailedValidation, scheduledTrainingEnabled, isBeingTrained, IsOnCooldown;
+        public Verse.AI.Group.Lord bindingRitualLord;
         public bool IsScheduledTrainingDayDue = true, IsWithinScheduledTrainingWindow = true;
         public int scheduledTrainingIntervalDays, scheduledTrainingHour, ScheduledTrainingEndHour, lastTrainingTick;
         public const int CooldownTicks = 100;
-        public bool IsEnabled => pawnIdentity == PawnIdentity.Slave && mode == TrainingMode.Enabled;
+        // 与生产组件一致：启用只是保存设置，SSC 受训身份由各准入入口独立检查。
+        public bool IsEnabled => mode == TrainingMode.Enabled;
 
         // 本套件验证真实的方向进度切换；健康状态清理由其他套件覆盖。
         private static void RemoveInactiveSpecializationStates(Pawn pawn, CompSexSlaveTraining comp, SexSlaveSpecializationType typeToKeep) { }
@@ -326,6 +328,11 @@ namespace SexSlaveCraft
     public static class BindingRitualStateUtility
     {
         public static int RecoveryCalls;
+        public static int RejectionCalls;
+        public static Action OnRejection;
+
+        /// <summary>仅记录生产身份切换是否通知匹配仪式；实际取消和占用清理由 RitualLifecycle 覆盖。</summary>
+        public static void RejectPhase(Pawn actor, Pawn target, Verse.AI.Group.Lord lord, string reason) { RejectionCalls++; OnRejection?.Invoke(); }
 
         /// <summary>记录恢复入口调用；真实仪式恢复由 RitualLifecycle 套件验证。</summary>
         public static void RecoverPawnState(Pawn pawn) { RecoveryCalls++; }
@@ -336,9 +343,10 @@ namespace SexSlaveCraft
     public static class TrainingJobUtility
     {
         public static int ValidationCalls;
+        public static Action OnValidation;
 
         /// <summary>记录真实工作筛选何时进入目标能力校验。</summary>
-        public static bool TryValidateTarget(Pawn pawn, bool forced, string prefix, out string reason) { ValidationCalls++; reason = null; return true; }
+        public static bool TryValidateTarget(Pawn pawn, bool forced, string prefix, out string reason) { ValidationCalls++; OnValidation?.Invoke(); reason = null; return true; }
     }
     public static class Trainjudge
     {

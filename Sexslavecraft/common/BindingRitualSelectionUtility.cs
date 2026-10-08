@@ -216,6 +216,11 @@ namespace SexSlaveCraft
                 return false;
             }
             if (master != null && master == slave) { reason = InvalidReason(); return false; }
+            if (slave != null && !SSCIdentityUtility.IsSexSlave(slave))
+            {
+                reason = "SSC_Training_TargetIdentityRequired".Translate();
+                return false;
+            }
             // UI 交换会经过暂时只有一个角色的中间状态；已验证的最终组合覆盖该操作内的子集。
             if (operation?.Assignments == assignments)
             {

@@ -85,17 +85,17 @@ internal static partial class Program
                 PaintUi(f, () => PaintPortrait(f, f.Target, new Rect(0, 0, 50, 50)));
                 Assert(UiRecorder.Marks.Any(m => m.Kind == "badge") && UiRecorder.Marks.Any(m => m.Kind == "check"));
             });
-        Run("没有目标标签的非性奴仍沿用实际拖放和启动规则", () =>
+        Run("没有目标标签的非性奴不能拖放选入或启动仪式", () =>
         {
             ResetUi(); var f = new Fixture(); f.Target.SexSlave = false; f.Open(); Assert(f.HostSlot());
             Counters.Reset(); DragAndDropWidget.Dragging = true; DragAndDropWidget.Dragged = f.Target;
             Event.current.mousePosition = new Vector2(80, 30);
             PaintUi(f, () => PaintSlot(f.TargetRole, new Rect(0, 0, 150, 70)));
-            Assert(UiRecorder.Marks.Any(m => m.Kind == "border" && m.Color.g > m.Color.r));
-            Assert(Counters.Eligibility == 1 && f.A.FirstAssignedPawn("slave") == null);
+            Assert(UiRecorder.Marks.Any(m => m.Kind == "border" && m.Color.r > m.Color.g));
+            Assert(Counters.Eligibility == 0 && f.A.FirstAssignedPawn("slave") == null);
             DragAndDropWidget.Dragging = false;
-            Assert(f.TargetSlot() && f.Window.CanBegin);
-            Assert(f.A.FirstAssignedPawn("slave") == f.Target && !f.Target.SexSlave);
+            Assert(!f.TargetSlot() && !f.Window.CanBegin);
+            Assert(f.A.FirstAssignedPawn("slave") == null && !f.Target.SexSlave);
         });
         Run("实际绘制钩子：1000 人角色角标重绘不调用 RJW 或寻路", () =>
         {

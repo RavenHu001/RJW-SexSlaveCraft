@@ -55,6 +55,8 @@ namespace SexSlaveCraft
             // 旧档中的 Job 没有 Lord 引用，在第一次运行检查时认领；不在
             // MakeNewToils 的读档枚举阶段修改状态，避免引用尚未恢复就误清零。
             if (ritualLord == null) ritualLord = pawn.GetLord();
+            if (!BindingRitualStateUtility.IsActiveRitualFor(pawn, Slave, ritualLord)) return false;
+            if (!BindingRitualStateUtility.EnsureTargetIdentity(pawn, Slave, ritualLord)) return false;
             CompSexSlaveTraining training = Slave?.TryGetComp<CompSexSlaveTraining>();
             if (training?.bindingRitualLord == null && training?.isRitualTraining == true)
             {
@@ -64,6 +66,10 @@ namespace SexSlaveCraft
                 && training?.isRitualTraining == true
                 && BindingRitualStateUtility.IsActiveRitualFor(pawn, Slave, ritualLord);
         }
+
+        /// <summary>外部回调返回后只继续原阶段及原目标；同一 Job 对象被复用也不能借用新目标。</summary>
+        private bool IsCurrentPhase(TrainingJobUtility.JobContext context)
+            => context.IsCurrent && context.Target.Thing == Slave;
 
         /// <summary>根据从零开始的阶段索引设置当前场景动作；不推进仪式阶段计数。</summary>
         private void SwitchSexPhase(int phaseIndex)
@@ -78,11 +84,19 @@ namespace SexSlaveCraft
         protected override IEnumerable<Toil> MakeNewToils()
         {
             setup_ticks();
+            Job originalJob = job;
+            int originalJobId = job.loadID;
+            Pawn originalTarget = Slave;
+            Func<bool> ownsToils = () => ReferenceEquals(job, originalJob)
+                && job.loadID == originalJobId && Slave == originalTarget;
             this.FailOnDespawnedOrNull(TargetIndex.A);
-            this.FailOn(() => !HasActiveRitual());
+            this.FailOn(() => ownsToils() && !HasActiveRitual());
             // 全局结束回调覆盖走路和准备阶段。有效仪式中的一次 Job 中断仍可重试；
             // 若仪式已结束则修复占用，不触发成功结算或日常训练冷却。
-            AddFinishAction(condition => BindingRitualStateUtility.RecoverPawnState(Slave));
+            AddFinishAction(condition =>
+            {
+                if (ownsToils()) BindingRitualStateUtility.RecoverPawnState(originalTarget);
+            });
 
             var lord = ritualLord ?? pawn.GetLord();
             IntVec3 spotCell = job.targetB.IsValid ? job.targetB.Cell : pawn.Position;
@@ -101,27 +115,29 @@ namespace SexSlaveCraft
             prepare.initAction = delegate
             {
                 // 固定当前仪式阶段的执行身份，随后任何外部调用都不能借用后继阶段的任务。
+                if (!ownsToils()) return;
                 var context = new TrainingJobUtility.JobContext(this);
-                if (!context.IsCurrent) return;
+                if (!IsCurrentPhase(context) || !HasActiveRitual()) return;
                 Pawn slave = Slave;
                 if (slave == null || !slave.Spawned) return;
                 if (!TrainingJobUtility.TryValidateStartOrAbort(pawn, slave, "SSC_RITUAL"))
                 {
                     return;
                 }
+                if (!IsCurrentPhase(context) || !HasActiveRitual()) return;
 
                 IntVec3 spot = RitualSpot.Cell;
                 // 仪式会移动双方；任意一端的位置通知使任务失效时，停止本阶段准备。
                 if (!TrainingJobUtility.SyncPartnerPosition(pawn, slave, spot))
                 {
-                    if (context.IsCurrent) pawn.jobs.EndCurrentJob(JobCondition.Incompletable);
+                    if (IsCurrentPhase(context)) pawn.jobs.EndCurrentJob(JobCondition.Incompletable);
                     return;
                 }
 
                 if (Sexprops == null)
                     Sexprops = SexUtility.SelectSextype(pawn, slave, false, false);
                 // 只有原阶段仍在执行，才可以登记训练占用和应用阶段动作。
-                if (!context.IsCurrent) return;
+                if (!IsCurrentPhase(context) || !HasActiveRitual()) return;
 
                 // EN: Load the current ritualPhase so the resumed Binding Ritual continues from the right act instead of restarting from phase 0.
                 // CN: 读取当前 ritualPhase，保证恢复中的绑定仪式会从正确姿势继续，而不是重新回到 phase 0。
@@ -134,11 +150,11 @@ namespace SexSlaveCraft
 
                 // 接收启动允许重入；新阶段或其他工作接管后，不再运行旧阶段的中止清理。
                 bool started = TrainingJobUtility.TryStartBindingRitualReceiver(pawn, slave, job, SSCDefOf.SSC_TrainingReceiver, spot);
-                if (!context.IsCurrent) return;
+                if (!IsCurrentPhase(context) || !HasActiveRitual()) return;
                 if (!started)
                 {
                     TrainingJobUtility.NotifyTrainingAborted(slave);
-                    if (context.IsCurrent) pawn.jobs.EndCurrentJob(JobCondition.Incompletable);
+                    if (IsCurrentPhase(context)) pawn.jobs.EndCurrentJob(JobCondition.Incompletable);
                 }
             };
             yield return prepare;
@@ -152,29 +168,32 @@ namespace SexSlaveCraft
             sexToil.initAction = delegate
             {
                 // 再次进入场景时重新保存边界快照，覆盖准备完成后发生的取消或任务切换。
+                if (!ownsToils()) return;
                 var context = new TrainingJobUtility.JobContext(this);
-                if (!context.IsCurrent) return;
+                if (!IsCurrentPhase(context) || !HasActiveRitual()) return;
                 Pawn slave = Slave;
 
                 if (!TrainingJobUtility.SyncPartnerPosition(pawn, slave, job.targetB.Cell))
                 {
-                    if (context.IsCurrent) pawn.jobs.EndCurrentJob(JobCondition.Incompletable);
+                    if (IsCurrentPhase(context)) pawn.jobs.EndCurrentJob(JobCondition.Incompletable);
                     return;
                 }
                 TrainingJobUtility.EnsureAwake(slave);
+                if (!IsCurrentPhase(context) || !HasActiveRitual()) return;
 
                 if (!TrainingJobUtility.TryValidateStartOrAbort(pawn, slave, "SSC_RITUAL"))
                 {
                     return;
                 }
+                if (!IsCurrentPhase(context) || !HasActiveRitual()) return;
 
                 // 家具同步结束后先判定归属，再决定是否撤销本次准备状态。
                 bool synchronized = OnaholeCompatibilityUtility.TrySynchronizeOnaholeSexProps(slave, Sexprops);
-                if (!context.IsCurrent) return;
+                if (!IsCurrentPhase(context) || !HasActiveRitual()) return;
                 if (!synchronized)
                 {
                     TrainingJobUtility.NotifyTrainingAborted(slave);
-                    if (context.IsCurrent) pawn.jobs.EndCurrentJob(JobCondition.Incompletable);
+                    if (IsCurrentPhase(context)) pawn.jobs.EndCurrentJob(JobCondition.Incompletable);
                     return;
                 }
 
@@ -185,10 +204,11 @@ namespace SexSlaveCraft
                 // 新动画启动前释放旧阶段的位置锁，避免 UAP 的延迟检查误停本阶段动画。
                 UapRitualCompatibilityUtility.ReleasePositionLocks(pawn, slave);
                 // 动画兼容调用和 RJW Start 都是外部边界；仅原阶段存活时记录场景已开始。
-                if (!context.IsCurrent) return;
+                if (!IsCurrentPhase(context) || !HasActiveRitual()) return;
                 Start();
-                if (!context.IsCurrent) return;
+                if (!IsCurrentPhase(context)) return;
                 phaseSceneStarted = true;
+                if (!HasActiveRitual()) return;
 
                 SSCLog.Verbose($"[SSC Ritual] Start() called. pawn IsAnimating = {RitualTrainingUtility.IsAnimating(pawn)}");
                 if (OnaholeCompatibilityUtility.IsPawnOnOnahole(slave))
@@ -198,9 +218,12 @@ namespace SexSlaveCraft
                 // CN: 如果常规动画 Hook 没有接上，就在这里手动补启动一次绑定仪式动画。
                 if (!RitualTrainingUtility.IsAnimating(pawn))
                 {
+                    var receiverContext = new TrainingJobUtility.JobContext(slave?.jobs?.curDriver);
                     // 动画启动回调：将返回的时长同步到主从双方驱动，避免阶段结束时间不一致。
                     RitualTrainingUtility.TryStartFallbackAnimation(pawn, slave, Bed, animTicks =>
                     {
+                        if (!IsCurrentPhase(context) || !HasActiveRitual()) return;
+                        if (receiverContext.Driver != null && !receiverContext.IsCurrent) return;
                         ApplyAnimationTicks(animTicks);
 
                         if (slave?.jobs?.curDriver is JobDriver_Sex receiverSex)
@@ -216,13 +239,21 @@ namespace SexSlaveCraft
             // 每帧回调：维持双方仪式站位，更新时间和体力；计时耗尽才标记阶段完整执行。
             sexToil.tickAction = delegate
             {
+                if (!ownsToils()) return;
+                var context = new TrainingJobUtility.JobContext(this);
+                if (!IsCurrentPhase(context) || !HasActiveRitual()) return;
                 Pawn slave = Slave;
                 if (pawn.Position != job.targetB.Cell) pawn.Position = job.targetB.Cell;
+                if (!IsCurrentPhase(context) || !HasActiveRitual()) return;
                 if (slave != null && slave.Position != job.targetB.Cell) slave.Position = job.targetB.Cell;
+                if (!IsCurrentPhase(context) || !HasActiveRitual()) return;
 
                 SexTick(pawn, slave);
+                if (!IsCurrentPhase(context) || !HasActiveRitual()) return;
                 SexUtility.reduce_rest(slave);
+                if (!IsCurrentPhase(context) || !HasActiveRitual()) return;
                 SexUtility.reduce_rest(pawn, 2f);
+                if (!IsCurrentPhase(context) || !HasActiveRitual()) return;
 
                 if (ticks_left <= 0)
                 {
@@ -230,18 +261,22 @@ namespace SexSlaveCraft
                     ReadyForNextToil();
                 }
             };
-            sexToil.AddFinishAction(OnPhaseComplete);
+            sexToil.AddFinishAction(() =>
+            {
+                if (ownsToils()) OnPhaseComplete(new TrainingJobUtility.JobContext(this));
+            });
             yield return sexToil;
         }
 
         /// <summary>仅一次地收尾当前场景；完整执行且仍属于有效仪式时推进阶段，末阶段发送完成 memo。</summary>
         /// <remarks>中断不推进阶段；防止 memo 同步清理引起重入，并隔离旧 Job 对新仪式的迟到回调。</remarks>
-        private void OnPhaseComplete()
+        private void OnPhaseComplete(TrainingJobUtility.JobContext context)
         {
             // 最后阶段的 memo 可同步触发整场结算和 Job.Cleanup，再次进入此方法。
             // 在任何 RJW 副作用前置位，确保同一个阶段只处理一次。
             if (phaseFinishHandled) return;
             phaseFinishHandled = true;
+            if (!IsCurrentPhase(context)) return;
             Pawn slave = Slave;
             if (slave == null) return;
             CompSexSlaveTraining training = slave.TryGetComp<CompSexSlaveTraining>();
@@ -258,10 +293,14 @@ namespace SexSlaveCraft
                 {
                     try { SexUtility.ProcessSex(Sexprops); }
                     catch (Exception ex) { Log.Error($"[SSC] 结算冲突: {ex.Message}"); }
+                    if (!IsCurrentPhase(context)) return;
+                    completedActivePhase = HasActiveRitual();
                 }
 
                 if (phaseSceneStarted && Sexprops != null) base.End();
+                if (!IsCurrentPhase(context)) return;
                 OnaholeCompatibilityUtility.TryUnregisterOnaholePartner(slave, pawn);
+                if (!IsCurrentPhase(context)) return;
 
                 CompRJW receiverComp = slave.GetCompRJW();
                 if (receiverComp != null && receiverComp.drawNude)
@@ -270,7 +309,8 @@ namespace SexSlaveCraft
                     slave.Drawer.renderer.SetAllGraphicsDirty();
                 }
 
-                if (!completedActivePhase || !BindingRitualStateUtility.TryCompletePhase(pawn, slave, ritualLord))
+                if (!completedActivePhase || !HasActiveRitual()
+                    || !BindingRitualStateUtility.TryCompletePhase(pawn, slave, ritualLord))
                 {
                     SSCLog.Verbose($"[SSC_RITUAL] 阶段中断，不推进: master={pawn.LabelShort}, slave={slave.LabelShort}");
                     return;
@@ -287,7 +327,7 @@ namespace SexSlaveCraft
             }
             finally
             {
-                BindingRitualStateUtility.RecoverPawnState(slave);
+                if (IsCurrentPhase(context)) BindingRitualStateUtility.RecoverPawnState(slave);
             }
         }
 

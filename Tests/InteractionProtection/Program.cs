@@ -50,6 +50,7 @@ internal static partial class Program
         RunStage3ATests();
         RunSelfTrainingAutoTests();
         RunStage3BTests();
+        RunTrainingIdentityTests();
         RunStage3CTests();
         RunStage3DTests();
         RunJobRefactorTests();
@@ -88,6 +89,7 @@ internal static partial class Program
     {
         var a = new Pawn { LabelShort = "A", thingIDNumber = 1 };
         var b = new Pawn { LabelShort = "B", thingIDNumber = 2, Chain = new Hediff_ChainOfSexSlave { LinkedPawn = a } };
+        b.Training.pawnIdentity = PawnIdentity.Slave;
         var c = new Pawn { LabelShort = "C", thingIDNumber = 3 };
         return (a, b, c);
     }

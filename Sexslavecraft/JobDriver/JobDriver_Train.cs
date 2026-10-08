@@ -51,23 +51,31 @@ namespace SexSlaveCraft
                 preparedTrainingTarget = Partner;
         }
 
-        /// <summary>统一守卫通过后预约日常目标；这里只执行正常预约，不再次否决已开始场景的收尾资格。</summary>
+        /// <summary>统一守卫通过后预约日常目标；受训 SSC 身份在旧档恢复时仍是必要条件。</summary>
         public override bool TryMakePreToilReservations(bool errorOnFailed)
         {
-            return pawn.Reserve(Partner, job, 1, 0, null, errorOnFailed);
+            return SSCIdentityUtility.IsSexSlave(Partner) && pawn.Reserve(Partner, job, 1, 0, null, errorOnFailed);
         }
 
         /// <summary>构造日常调教的占用、移动、接收准备、场景执行和收益结算步骤，并注册中断条件。</summary>
         protected override IEnumerable<Toil> MakeNewToils()
         {
+            // 步骤闭包属于创建它们的 Job；迟到回调不能在入口重新认领已复用的任务或新目标。
+            Job originalJob = job;
+            int originalJobId = job.loadID;
+            Pawn originalTarget = Partner;
+            System.Func<bool> ownsToils = () => object.ReferenceEquals(job, originalJob) &&
+                job.loadID == originalJobId && Partner == originalTarget;
             setup_ticks();
             this.FailOnDespawnedNullOrForbidden(iTarget);
+            // SSC 受训身份属于持续资格，已开始和旧档恢复的场景也必须满足。
+            this.FailOn(() => ownsToils() && !SSCIdentityUtility.IsSexSlave(originalTarget));
             this.FailOn(() => pawn.Drafted || pawn.IsFighting());
             this.FailOn(() => Partner.IsFighting());
             this.FailOn(() => !pawn.CanReserve(Partner, 1, 0));
             // 候选选定后可能开课；在途及执行阶段重新检查，退出时沿用现有占用清理。
             this.FailOn(() => ProgressionEducationCompatibility.ShouldDeferAutomaticTraining(Partner, job.playerForced));
-            AddFinishAction(condition => CleanupPreparedTraining());
+            AddFinishAction(condition => { if (ownsToils()) CleanupPreparedTraining(); });
 
             // EN: Step 1: mark the sex slave as already being trained before movement starts, so no other training job grabs the same pawn.
             // CN: 步骤 1：在走位前先把性奴标记为“已在被调教”，避免其他调教 Job 抢走同一个目标。
@@ -75,8 +83,12 @@ namespace SexSlaveCraft
             {
                 initAction = delegate
                 {
-                    preparedTrainingTarget = Partner;
-                    TrainingJobUtility.MarkTrainingStarted(Partner, false);
+                    if (!ownsToils()) return;
+                    var context = new TrainingJobUtility.JobContext(this);
+                    Pawn target = originalTarget;
+                    if (!ValidateTargetIdentityOrAbort(context, target)) return;
+                    preparedTrainingTarget = target;
+                    TrainingJobUtility.MarkTrainingStarted(target, false);
                 },
                 defaultCompleteMode = ToilCompleteMode.Instant
             };
@@ -88,15 +100,23 @@ namespace SexSlaveCraft
             System.Action startApproach = approachTarget.initAction;
             approachTarget.initAction = delegate
             {
+                if (!ownsToils()) return;
+                var context = new TrainingJobUtility.JobContext(this);
+                Pawn target = originalTarget;
+                if (!ValidateTargetIdentityOrAbort(context, target)) return;
                 approachIdleRetries = 0;
                 // 此时本人的旧场景已结束，释放其遗留锁再发起首次寻路。
                 // 不碰目标身上的锁，以免影响目标当前合法的其他活动。
                 UapRitualCompatibilityUtility.ReleasePositionLocks(pawn, null);
+                if (!ValidateTargetIdentityOrAbort(context, target)) return;
                 startApproach();
             };
             approachTarget.tickAction = delegate
             {
-                if (pawn.jobs?.curDriver != this || Partner == null) return;
+                if (!ownsToils()) return;
+                var context = new TrainingJobUtility.JobContext(this);
+                Pawn target = originalTarget;
+                if (!ValidateTargetIdentityOrAbort(context, target)) return;
                 if (pawn.pather.MovingNow)
                 {
                     approachIdleRetries = 0;
@@ -110,13 +130,14 @@ namespace SexSlaveCraft
                 {
                     // 外部持续阻止移动时结束这份无进展的 Job，让工作扫描
                     // 重新选择目标；现有短暂失败冷却防止同目标立即反复分配。
-                    TrainingJobUtility.MarkValidationFailure(Partner, "SSC_TRAIN_PATH");
+                    TrainingJobUtility.MarkValidationFailure(target, "SSC_TRAIN_PATH");
                     pawn.jobs.EndCurrentJob(JobCondition.Incompletable);
                     return;
                 }
 
                 UapRitualCompatibilityUtility.ReleasePositionLocks(pawn, null);
-                pawn.pather.StartPath(new LocalTargetInfo(Partner), PathEndMode.Touch);
+                if (!ValidateTargetIdentityOrAbort(context, target)) return;
+                pawn.pather.StartPath(new LocalTargetInfo(target), PathEndMode.Touch);
             };
             yield return approachTarget;
 
@@ -127,14 +148,15 @@ namespace SexSlaveCraft
             // 准备回调：启动接收任务；失败时清除训练占用，再中止本任务。
             startPartnerJob.initAction = delegate
             {
+                if (!ownsToils()) return;
                 // 进入交接时固定原任务和目标；后续 Partner 可能随 Job 对象复用而改变。
                 var context = new TrainingJobUtility.JobContext(this);
-                if (!context.IsCurrent) return;
-                Pawn target = Partner;
+                Pawn target = originalTarget;
+                if (!ValidateTargetIdentityOrAbort(context, target)) return;
                 // 统一步骤守卫已在进入此回调前复查许可与指派，避免另外维护一套拒绝路径。
                 bool started = TrainingJobUtility.TryStartDailyTrainingReceiver(pawn, target, job, partnerJob);
                 // StartJob/传送通知可重入工作调度；旧回调不能清理新任务或新目标。
-                if (!context.IsCurrent) return;
+                if (!ValidateTargetIdentityOrAbort(context, target)) return;
                 if (!started)
                 {
                     // 只有仍属于本次调教的失败才写冷却并清理占用；换工作已由上方直接返回。
@@ -154,29 +176,33 @@ namespace SexSlaveCraft
             // 开始回调：同步位置与动作，检查兼容设备；Start 中止任务时立即返回。
             sexToil.initAction = delegate
             {
+                if (!ownsToils()) return;
                 // 场景初始化还会再次同步位置，必须像首次交接一样保护当前任务归属。
                 var context = new TrainingJobUtility.JobContext(this);
-                if (!context.IsCurrent) return;
-                if (!TrainingJobUtility.SyncPartnerPosition(pawn, Partner))
+                Pawn target = originalTarget;
+                if (!ValidateTargetIdentityOrAbort(context, target)) return;
+                if (!TrainingJobUtility.SyncPartnerPosition(pawn, target))
                 {
                     // 同步失败可以终止原调教，但不能终止回调期间刚接手的新工作。
-                    if (context.IsCurrent) pawn.jobs.EndCurrentJob(JobCondition.Incompletable);
+                    if (IsCurrentTarget(context, target)) pawn.jobs.EndCurrentJob(JobCondition.Incompletable);
                     return;
                 }
-                TrainingJobUtility.EnsureAwake(Partner);
+                if (!ValidateTargetIdentityOrAbort(context, target)) return;
+                TrainingJobUtility.EnsureAwake(target);
 
                 if (Sexprops == null)
                 {
-                    CompSexSlaveTraining compMode = Partner.TryGetComp<CompSexSlaveTraining>();
+                    CompSexSlaveTraining compMode = target.TryGetComp<CompSexSlaveTraining>();
                     TrainingActType mode = compMode?.selectedMode ?? TrainingActType.Auto;
-                    Sexprops = SexUtility.SelectSextype(pawn, Partner, false, false);
+                    SexProps selectedProps = SexUtility.SelectSextype(pawn, target, false, false);
                     // RJW 动作选择返回后复查，再读取目标和应用玩家指定模式。
-                    if (!context.IsCurrent) return;
+                    if (!ValidateTargetIdentityOrAbort(context, target)) return;
+                    Sexprops = selectedProps;
                     if (mode != TrainingActType.Auto)
                     {
                         // EN: The selected training act only overrides RJW when the player explicitly locked a training mode.
                         // CN: 只有玩家手动锁定调教模式时，才会覆写 RJW 自动选择的姿势。
-                        RJWSexPropsUtility.ApplyTrainingAct(Sexprops, pawn, Partner, mode);
+                        RJWSexPropsUtility.ApplyTrainingAct(Sexprops, pawn, target, mode);
                     }
                 }
 
@@ -195,18 +221,20 @@ namespace SexSlaveCraft
                     SSCLog.WarningImportant("[SSC Debug] partner is NOT a JobDriver_SexBaseReciever — animation will NOT start!");
                 }
 
-                if (!TrainingJobUtility.TryValidateStartOrAbort(pawn, Partner, "SSC_TRAIN"))
+                if (!ValidateTargetIdentityOrAbort(context, target) ||
+                    !TrainingJobUtility.TryValidateStartOrAbort(pawn, target, "SSC_TRAIN"))
                 {
                     return;
                 }
 
                 // 家具兼容调用可能触发外部任务切换，先复查归属再执行失败清理。
-                bool synchronized = OnaholeCompatibilityUtility.TrySynchronizeOnaholeSexProps(Partner, Sexprops);
-                if (!context.IsCurrent) return;
+                if (!ValidateTargetIdentityOrAbort(context, target)) return;
+                bool synchronized = OnaholeCompatibilityUtility.TrySynchronizeOnaholeSexProps(target, Sexprops);
+                if (!ValidateTargetIdentityOrAbort(context, target)) return;
                 if (!synchronized)
                 {
-                    TrainingJobUtility.NotifyTrainingAborted(Partner);
-                    if (context.IsCurrent) pawn.jobs.EndCurrentJob(JobCondition.Incompletable);
+                    TrainingJobUtility.NotifyTrainingAborted(target);
+                    if (IsCurrentTarget(context, target)) pawn.jobs.EndCurrentJob(JobCondition.Incompletable);
                     return;
                 }
 
@@ -214,33 +242,46 @@ namespace SexSlaveCraft
                 SSCLog.Verbose($"[SSC_TRAIN] Start daily training scene: trainer={pawn.LabelShort}, slave={Partner.LabelShort}, sexType={sceneSexType}, selectedMode={(Partner.TryGetComp<CompSexSlaveTraining>()?.selectedMode.ToString() ?? "null")}");
                 Start();
                 // RJW Start 完整返回且原任务仍在，才允许标记已开始并在以后结算。
-                if (!context.IsCurrent) return;
+                if (!IsCurrentTarget(context, target)) return;
                 sceneStarted = true;
+                if (!ValidateTargetIdentityOrAbort(context, target)) return;
                 Log.Message("[SSC Debug] Start() called.");
             };
             // 每帧回调：更新场景与双方体力，保持位置同步，并在计时结束后切换步骤。
             sexToil.tickAction = delegate
             {
+                if (!ownsToils()) return;
+                var context = new TrainingJobUtility.JobContext(this);
+                Pawn target = originalTarget;
+                if (!ValidateTargetIdentityOrAbort(context, target)) return;
                 // EN: Keep the trainer and sex slave on the same cell so the daily training scene does not drift apart.
                 // CN: 持续把调教师和性奴压在同一格里，避免整段日常调教场景越跑越散。
-                if (pawn.Position != Partner.Position) pawn.Position = Partner.Position;
+                if (pawn.Position != target.Position) pawn.Position = target.Position;
+                if (!ValidateTargetIdentityOrAbort(context, target)) return;
                 if ((Find.TickManager.TicksGame + pawn.thingIDNumber) % ticks_between_hearts == 0)
                 {
                     ThrowMetaIconF(pawn.Position, pawn.Map, FleckDefOf.Heart);
                 }
 
-                SexTick(pawn, Partner);
-                SexUtility.reduce_rest(Partner);
+                SexTick(pawn, target);
+                if (!ValidateTargetIdentityOrAbort(context, target)) return;
+                SexUtility.reduce_rest(target);
+                if (!ValidateTargetIdentityOrAbort(context, target)) return;
                 SexUtility.reduce_rest(pawn, 2f);
+                if (!ValidateTargetIdentityOrAbort(context, target)) return;
                 if (ticks_left <= 0) ReadyForNextToil();
             };
             // 收尾回调：释放 RJW 场景、设备关联和训练状态，不在此发放训练收益。
             sexToil.AddFinishAction(delegate
             {
-                if (pawn.jobs?.curDriver != this) return;
+                if (!ownsToils()) return;
+                var context = new TrainingJobUtility.JobContext(this);
+                Pawn target = originalTarget;
+                if (!IsCurrentTarget(context, target)) return;
                 if (sceneStarted) base.End();
-                OnaholeCompatibilityUtility.TryUnregisterOnaholePartner(Partner, pawn);
-                TrainingJobUtility.CleanupTrainingState(Partner);
+                if (!IsCurrentTarget(context, target)) return;
+                OnaholeCompatibilityUtility.TryUnregisterOnaholePartner(target, pawn);
+                if (IsCurrentTarget(context, target)) TrainingJobUtility.CleanupTrainingState(target);
             });
             sexToil.FailOn(() => !OnaholeCompatibilityUtility.IsValidTrainingReceiver(Partner, partnerJob));
             yield return sexToil;
@@ -251,12 +292,18 @@ namespace SexSlaveCraft
             {
                 initAction = delegate
                 {
-                    if (!sceneStarted || ticks_left > 0 || pawn.jobs?.curDriver != this || dailyOutcomeClaimed ||
-                        Sexprops == null || Partner == null || Partner.Dead || Partner.Destroyed) return;
+                    if (!ownsToils()) return;
+                    var context = new TrainingJobUtility.JobContext(this);
+                    Pawn target = originalTarget;
+                    if (!sceneStarted || ticks_left > 0 || dailyOutcomeClaimed ||
+                        Sexprops == null || target == null || target.Dead || target.Destroyed ||
+                        !ValidateTargetIdentityOrAbort(context, target)) return;
+                    SexProps props = Sexprops;
                     // 先保存认领事实，覆盖外部回调重入及结算中途异常后的重复通知。
                     dailyOutcomeClaimed = true;
-                    SexUtility.ProcessSex(Sexprops);
-                    ExecuteConditioningOutcome();
+                    SexUtility.ProcessSex(props);
+                    if (!ValidateTargetIdentityOrAbort(context, target)) return;
+                    ExecuteConditioningOutcome(context, target, props);
                 },
                 defaultCompleteMode = ToilCompleteMode.Instant
             };
@@ -265,33 +312,52 @@ namespace SexSlaveCraft
         /// <summary>任何退出路径都释放本 Job 建立的日常占用及设备关联；迟到回调不清理新任务或仪式。</summary>
         private void CleanupPreparedTraining()
         {
-            if (preparedTrainingTarget == null || pawn.jobs?.curDriver != this) return;
+            var context = new TrainingJobUtility.JobContext(this);
+            if (preparedTrainingTarget == null || !IsCurrentTarget(context, preparedTrainingTarget)) return;
             Pawn target = preparedTrainingTarget;
             preparedTrainingTarget = null;
             if (target.TryGetComp<CompSexSlaveTraining>()?.isRitualTraining == true) return;
             OnaholeCompatibilityUtility.TryUnregisterOnaholePartner(target, pawn);
-            TrainingJobUtility.CleanupTrainingState(target);
+            if (IsCurrentTarget(context, target)) TrainingJobUtility.CleanupTrainingState(target);
+        }
+
+        /// <summary>回调只可继续操作它进入时固定的任务及目标，不能借用重入后替换的目标。</summary>
+        private bool IsCurrentTarget(TrainingJobUtility.JobContext context, Pawn target)
+            => context.IsCurrent && target != null && context.Target.Thing == target && Partner == target;
+
+        /// <summary>已开始场景也复查 SSC 身份；失格只结束仍属于该回调的任务，由原收尾释放占用。</summary>
+        private bool ValidateTargetIdentityOrAbort(TrainingJobUtility.JobContext context, Pawn target)
+        {
+            if (!IsCurrentTarget(context, target)) return false;
+            if (SSCIdentityUtility.IsSexSlave(target)) return true;
+            if (job.playerForced)
+                Messages.Message("SSC_Training_TargetIdentityRequired".Translate(), target, MessageTypeDefOf.RejectInput, false);
+            if (IsCurrentTarget(context, target)) pawn.jobs.EndCurrentJob(JobCondition.Incompletable, startNewJob: false);
+            return false;
         }
 
         /// <summary>对仍存活的目标结算日常调教评分和对应部位经验，随后通知训练完成并启动冷却。</summary>
-        private void ExecuteConditioningOutcome()
+        private void ExecuteConditioningOutcome(TrainingJobUtility.JobContext context, Pawn target, SexProps props)
         {
-            if (Partner == null || Partner.Dead || Partner.Destroyed) return;
+            if (target.Dead || target.Destroyed || !ValidateTargetIdentityOrAbort(context, target)) return;
 
             // EN: Step 1: remember the daily training score before the facade applies the actual outcome.
             // CN: 步骤 1：先记下这次日常调教分数，再进入正式结算。
-            float score = ConditioningUtility.GetScore(pawn, Partner);
-            ConditioningUtility.ExecuteOutcome(pawn, Partner, score);
-            if (Sexprops != null)
+            float score = ConditioningUtility.GetScore(pawn, target);
+            if (!ValidateTargetIdentityOrAbort(context, target)) return;
+            ConditioningUtility.ExecuteOutcome(pawn, target, score);
+            if (!ValidateTargetIdentityOrAbort(context, target)) return;
+            if (props != null)
             {
                 // EN: Step 2: convert this training scene into the matching body-part experience payout.
                 // CN: 步骤 2：把这次调教场景换算成对应部位的经验奖励。
-                TrainingExpUtility.ApplyExperienceFromScore(Partner, Sexprops.sexType, score, 1.0f);
+                TrainingExpUtility.ApplyExperienceFromScore(target, props.sexType, score, 1.0f);
+                if (!ValidateTargetIdentityOrAbort(context, target)) return;
             }
 
             // EN: Step 3: close the training session and start cooldown tracking on the sex slave comp.
             // CN: 步骤 3：结束本次调教，并让性奴组件进入冷却计时。
-            CompSexSlaveTraining compToggle = Partner.TryGetComp<CompSexSlaveTraining>();
+            CompSexSlaveTraining compToggle = target.TryGetComp<CompSexSlaveTraining>();
             if (compToggle != null)
             {
                 compToggle.Notify_TrainingCompleted();
@@ -299,11 +365,13 @@ namespace SexSlaveCraft
 
             // 整次认领已在进入结算前保存；受训者只领取当前方向的一份基础经验，
             // 施教者的训导官特色经验独立判断。RJW 普通双人经验补丁排除 SSC 日常 Job。
-            SpecializationTrainingProgressUtility.NotifyTrainingCompleted(pawn, Partner, score);
-            TrainerSpecializationProgressUtility.NotifyProvidedTrainingCompleted(pawn, Partner);
+            SpecializationTrainingProgressUtility.NotifyTrainingCompleted(pawn, target, score);
+            if (!ValidateTargetIdentityOrAbort(context, target)) return;
+            TrainerSpecializationProgressUtility.NotifyProvidedTrainingCompleted(pawn, target);
+            if (!ValidateTargetIdentityOrAbort(context, target)) return;
 
-            string finalSexType = Sexprops != null ? Sexprops.sexType.ToString() : "null";
-            SSCLog.Important($"[SSC_TRAIN] Daily training completed: trainer={pawn.LabelShort}, slave={Partner.LabelShort}, sexType={finalSexType}, score={score:F2}, cooldownStarted={(compToggle != null)}");
+            string finalSexType = props != null ? props.sexType.ToString() : "null";
+            SSCLog.Important($"[SSC_TRAIN] Daily training completed: trainer={pawn.LabelShort}, slave={target.LabelShort}, sexType={finalSexType}, score={score:F2}, cooldownStarted={(compToggle != null)}");
         }
     }
 

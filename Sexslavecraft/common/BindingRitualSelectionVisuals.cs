@@ -93,7 +93,7 @@ namespace SexSlaveCraft
         private int Group => (int)groupField.GetValue(owner);
         private Pawn Replacing(RitualRole role) => assignments.FirstAssignedPawn(role.id);
 
-        // 目标提示暂以 SSC 性奴身份为门槛；只限制显示，不替代实际选角或开始检查。
+        // 目标提示与实际角色准入共用 SSC 性奴身份，提交和开始仍须完整复查。
         private bool CanShowRoleHint(Pawn pawn, RitualRole role)
             => role != null && (role != targetRole || SSCIdentityUtility.IsSexSlave(pawn));
 

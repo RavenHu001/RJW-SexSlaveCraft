@@ -55,7 +55,7 @@ namespace SexSlaveCraft
         /// <summary>菜单和直接指派共用资格：保持自由殖民者范围、排除自身，再只读检查指派及所需授权能否提交。</summary>
         public static bool CanAssignTrainerTo(Pawn sexSlave, Pawn candidate)
         {
-            if (sexSlave == null || sexSlave == candidate || sexSlave.Map == null
+            if (!SSCIdentityUtility.IsSexSlave(sexSlave) || sexSlave == candidate || sexSlave.Map == null
                 || !CanAssignAsTrainer(candidate)
                 || !sexSlave.Map.mapPawns.FreeColonists.Contains(candidate)) return false;
             return SSCRestrictionTrainerAssignment.CanAssign(sexSlave, candidate);
@@ -87,6 +87,7 @@ namespace SexSlaveCraft
         public static bool IsPotentialTrainingTarget(Pawn targetPawn, Pawn trainer)
         {
             if (targetPawn == null || trainer == null || targetPawn == trainer || targetPawn.Dead
+                || !SSCIdentityUtility.IsSexSlave(targetPawn)
                 || !targetPawn.RaceProps.Humanlike || !SSCIdentityUtility.IsSupportedVanillaStatus(targetPawn)) return false;
             CompSexSlaveTraining comp = targetPawn.TryGetComp<CompSexSlaveTraining>();
 
@@ -122,6 +123,13 @@ namespace SexSlaveCraft
             if (targetPawn.Dead || targetPawn == trainer)
             {
                 reason = Strings.Train_Reason_DeadOrSelf;
+                return false;
+            }
+
+            // 先拒绝身份失格目标，不让候选查询修复其占用或触发兼容迁移。
+            if (!SSCIdentityUtility.IsSexSlave(targetPawn))
+            {
+                reason = "SSC_Training_TargetIdentityRequired".Translate();
                 return false;
             }
 
@@ -218,6 +226,13 @@ namespace SexSlaveCraft
             // 会反复扫描大量 Pawn；过早校验会刷日志，还可能改动并非实际目标的 Pawn。
             if (!TrainingJobUtility.TryValidateTarget(targetPawn, forced, "SSC_TRAIN", out reason))
             {
+                return false;
+            }
+
+            // 身体/兼容入口可能调用外部补丁；返回后不能继续承认已失效的 SSC 身份。
+            if (!SSCIdentityUtility.IsSexSlave(targetPawn))
+            {
+                reason = "SSC_Training_TargetIdentityRequired".Translate();
                 return false;
             }
 

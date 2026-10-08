@@ -680,6 +680,7 @@ internal static partial class Program
         RunLifecycleTests();
         RunCompactUiPreferenceTests();
         RunBoundScopeTests();
+        RunTrainingIdentityTests();
         RunSelfTrainingTests();
         Console.WriteLine($"{passed}/{passed + failed} passed");
         return failed == 0 ? 0 : 1;

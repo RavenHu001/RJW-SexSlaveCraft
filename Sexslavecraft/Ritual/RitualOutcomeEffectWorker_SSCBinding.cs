@@ -136,6 +136,13 @@ namespace SexSlaveCraft
                 return;
             }
 
+            var phaseContext = new TrainingJobUtility.JobContext(master.jobs?.curDriver);
+            bool hasPhaseJob = phaseContext.Driver is JobDriver_RitualTraining;
+            Func<bool> canContinue = () =>
+                (!hasPhaseJob || phaseContext.IsCurrent && phaseContext.Target.Thing == slave)
+                && BindingRitualStateUtility.CanContinueOutcome(jobRitual, master, slave);
+            if (!canContinue()) return;
+
             SSCLog.Important($"[SSC 仪式结算] 进入结算: master={master.LabelShort}, slave={slave.LabelShort}, prisoner={slave.IsPrisonerOfColony}, colonist={slave.IsColonist}, slaveState={slave.IsSlave}, guestNull={(slave.guest == null)}");
 
             // 在任何结算副作用和原版 ResetCompDatas 之前记录真实出席，便于实机复核零人原因。
@@ -159,12 +166,14 @@ namespace SexSlaveCraft
 
             // 1. 获取纯净质量与结局
             float quality = GetQuality(jobRitual, progress);
+            if (!canContinue()) return;
             RitualOutcomePossibility outcome = GetOutcome(quality, jobRitual);
-            if (outcome == null) return;
+            if (outcome == null || !canContinue()) return;
 
             // 2. 派发记忆 (全员包含观众)
             foreach (KeyValuePair<Pawn, int> item in totalPresence)
             {
+                if (!canContinue()) return;
                 Pawn p = item.Key;
                 if (!outcome.roleIdsNotGainingMemory.NullOrEmpty())
                 {
@@ -176,6 +185,7 @@ namespace SexSlaveCraft
                 {
                     // 🔥【核心修复】直接使用基础 Thought_Memory 接收，完美兼容自定义 XML
                     Thought_Memory newThought = MakeMemory(p, jobRitual, outcome.memory);
+                    if (!canContinue()) return;
                     if (newThought != null)
                     {
                         p.needs.mood.thoughts.memories.TryGainMemory(newThought);
@@ -186,21 +196,28 @@ namespace SexSlaveCraft
             // 3. 运行 SSC 自定义结算
             // EN: Use ConditioningUtility here to apply SSC's Binding Ritual aftermath for the master and sex slave.
             // CN: 这里调用 ConditioningUtility，用来结算主人和性奴在“绑定仪式”中的 SSC 专属后果。
+            if (!canContinue()) return;
             string sscDetails = ConditioningUtility.ExecuteRitualOutcome(master, slave, quality, outcome.memory);
+            if (!canContinue()) return;
 
             // 六个阶段的 ProcessSex 各自只负责 RJW 阶段效果。上方已消费
             // 本场 Lord 的一次性资格，按整场结果只发一份当前方向基础经验。
             SpecializationTrainingProgressUtility.NotifyTrainingCompleted(master, slave,
                 SpecializationTrainingProgressUtility.RitualScore(quality));
+            if (!canContinue()) return;
             TrainerSpecializationProgressUtility.NotifyProvidedTrainingCompleted(master, slave);
+            if (!canContinue()) return;
             bool relationAdded = false;
 
             // 仅判定性奴对主人的好感 >= 80，添加缺陷恋人关系
             if (slave.relations.OpinionOf(master) >= 80)
             {
+                if (!canContinue()) return;
                 if (!master.relations.DirectRelationExists(SSCDefOf.SSC_FlawedLovers, slave))
                 {
+                    if (!canContinue()) return;
                     master.relations.AddDirectRelation(SSCDefOf.SSC_FlawedLovers, slave);
+                    if (!canContinue()) return;
                     relationAdded = true;
                 }
             }
@@ -210,12 +227,15 @@ namespace SexSlaveCraft
             LookTargets letterLookTargets = new LookTargets(master, slave);
             if (jobRitual.Ritual?.attachableOutcomeEffect != null && jobRitual.Ritual.attachableOutcomeEffect.AppliesToOutcome(jobRitual.Ritual.outcomeEffect.def, outcome))
             {
+                if (!canContinue()) return;
                 jobRitual.Ritual.attachableOutcomeEffect.Worker.Apply(totalPresence, jobRitual, outcome, out extraOutcomeDesc, ref letterLookTargets);
+                if (!canContinue()) return;
             }
 
             string extraDevPointsText = null;
             if (jobRitual.Ritual?.ideo != null && jobRitual.Ritual.ideo.Fluid)
             {
+                if (!canContinue()) return;
                 int num = def.outcomeChances.IndexOf(outcome);
                 if (num >= 0 && jobRitual.Ritual.ideo.development.TryGainDevelopmentPointsForRitualOutcome(jobRitual.Ritual, num, out var developmentPoints))
                 {
@@ -244,6 +264,7 @@ namespace SexSlaveCraft
             finalLetterText.AppendLine(OutcomeQualityBreakdownDesc(quality, progress, jobRitual));
 
             // 发送弹窗
+            if (!canContinue()) return;
             Find.LetterStack.ReceiveLetter(
                 "OutcomeLetterLabel".Translate(outcome.label.Named("OUTCOMELABEL"), jobRitual.Ritual.Label.Named("RITUALLABEL")),
                 finalLetterText.ToString(),

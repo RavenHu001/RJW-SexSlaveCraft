@@ -88,7 +88,8 @@ namespace SexSlaveCraft
         internal static bool HasStartedScene(JobDriver_Sex driver, SSCInteractionKind kind)
         {
             return SSCRestrictionJobContext.TryCreate(driver, out SSCRestrictionRequest request) &&
-                request.Kind == kind && HasStarted(driver, request);
+                request.Kind == kind && (!SSCRestrictionTrainingUtility.IsTraining(request) ||
+                    SSCIdentityUtility.IsSexSlave(request.Receiver)) && HasStarted(driver, request);
         }
 
         /// <summary>预约阶段只返回许可，不结束正在被任务跟踪器安装的驱动，也不创建配置或玩家命令豁免。</summary>
@@ -96,20 +97,22 @@ namespace SexSlaveCraft
         {
             allowed = true;
             if (!SSCRestrictionJobContext.TryCreate(driver, out SSCRestrictionRequest request)) return false;
-            if (HasStarted(driver, request)) return true;
+            if (HasStarted(driver, request) && (!SSCRestrictionTrainingUtility.IsTraining(request) ||
+                SSCIdentityUtility.IsSexSlave(request.Receiver))) return true;
             allowed = Evaluate(driver, request, out SSCRestrictionDecision decision, out string reason, ordered);
             LogDecision(driver, request, decision, "Reserve", allowed, reason);
             State(driver).Rejected = !allowed;
             return true;
         }
 
-        /// <summary>在步骤或 Start 前重新查询；已开始的原场景保留收尾，迟到回调直接停止且不碰新任务。</summary>
+        /// <summary>步骤与 Start 前重查；调教身份持续有效才保留开始凭据，普通场景沿用原收尾，迟到回调不碰新任务。</summary>
         public static bool TryCheck(JobDriver_Sex driver, string phase, out bool allowed)
         {
             allowed = true;
             if (!SSCRestrictionJobContext.TryCreate(driver, out SSCRestrictionRequest request)) return false;
             if (driver.pawn?.jobs?.curDriver != driver) { allowed = false; return true; }
-            if (HasStarted(driver, request)) return true;
+            if (HasStarted(driver, request) && (!SSCRestrictionTrainingUtility.IsTraining(request) ||
+                SSCIdentityUtility.IsSexSlave(request.Receiver))) return true;
             allowed = Evaluate(driver, request, out SSCRestrictionDecision decision, out string reason);
             LogDecision(driver, request, decision, phase, allowed, reason);
             if (!allowed && driver is JobDriver_SexBaseReciever persistent && OnaholeCompatibilityUtility.IsBeOnaholeDriver(persistent))

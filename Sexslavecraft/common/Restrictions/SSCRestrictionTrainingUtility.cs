@@ -3,7 +3,7 @@
 namespace SexSlaveCraft
 {
     /// <summary>工作准入的失败类型；行为许可与身体、身份、指派条件保持分层。</summary>
-    internal enum SSCTrainingFailure { None, PermissionDenied, TrainerRequired, TargetInvalid, BindingMasterRequired, AssignmentRequired }
+    internal enum SSCTrainingFailure { None, PermissionDenied, TrainerRequired, TargetInvalid, BindingMasterRequired, AssignmentRequired, TargetIdentityRequired }
 
     /// <summary>明确区分整体工作准入与限制系统许可，避免主人许可通过被误读为全部工作条件通过。</summary>
     internal sealed class SSCTrainingAdmission
@@ -30,6 +30,7 @@ namespace SexSlaveCraft
                         return "SSC_Restrictions_JobRejected".Translate(("SSC_Restrictions_Reason_" + Permission.Reason).Translate());
                     case SSCTrainingFailure.TrainerRequired: return "SSC_TrainerIdentity_Required".Translate();
                     case SSCTrainingFailure.TargetInvalid: return "SSC_Restrictions_TrainingTargetInvalid".Translate();
+                    case SSCTrainingFailure.TargetIdentityRequired: return "SSC_Training_TargetIdentityRequired".Translate();
                     case SSCTrainingFailure.BindingMasterRequired: return "SSC_Restrictions_BindingMasterRequired".Translate();
                     case SSCTrainingFailure.AssignmentRequired: return "SSC_Restrictions_TrainingAssignmentRequired".Translate();
                     default: return null;
@@ -63,8 +64,8 @@ namespace SexSlaveCraft
         /// <summary>识别需要额外检查调教资格与唯一指派的请求，不将人格排泄归为调教。</summary>
         public static bool IsTraining(SSCRestrictionRequest request)
         {
-            return request.Kind == SSCInteractionKind.DailyTraining || request.Kind == SSCInteractionKind.RitualTraining ||
-                request.Kind == SSCInteractionKind.BindingPreparation;
+            return request != null && (request.Kind == SSCInteractionKind.DailyTraining || request.Kind == SSCInteractionKind.RitualTraining ||
+                request.Kind == SSCInteractionKind.BindingPreparation);
         }
 
         /// <summary>先查询统一许可，再核对工作资格；自动日常工作只交给指定者，主人手动发起及主持不受指派排除。</summary>
@@ -72,6 +73,10 @@ namespace SexSlaveCraft
         public static SSCTrainingAdmission Evaluate(SSCRestrictionRequest request, bool requireAssignment)
         {
             SSCRestrictionDecision decision = SSCRestrictionPolicy.Evaluate(request);
+            // 身份是工作资格，不受主人最高许可、总限制开关或强制命令豁免。
+            // 无锁链的性奴仍可首次建绑；不从成长、指派或原版身份推断 SSC 身份。
+            if (IsTraining(request) && request.Receiver != null && !SSCIdentityUtility.IsSexSlave(request.Receiver))
+                return new SSCTrainingAdmission(decision, SSCTrainingFailure.TargetIdentityRequired);
             if (!decision.Allowed)
                 return new SSCTrainingAdmission(decision, SSCTrainingFailure.PermissionDenied);
             if (!IsTraining(request)) return new SSCTrainingAdmission(decision, SSCTrainingFailure.None);
@@ -80,7 +85,7 @@ namespace SexSlaveCraft
             if (actor == null || target == null || actor == target || actor.Dead || actor.Destroyed ||
                 actor.Downed || !actor.IsColonist || actor.IsSlave || actor.IsPrisonerOfColony || !SSCIdentityUtility.IsTrainer(actor))
                 return new SSCTrainingAdmission(decision, SSCTrainingFailure.TrainerRequired);
-            if (target.TryGetComp<CompSexSlaveTraining>() == null || SSCIdentityUtility.IsMaster(target))
+            if (target.TryGetComp<CompSexSlaveTraining>() == null || target.Dead || target.Destroyed)
                 return new SSCTrainingAdmission(decision, SSCTrainingFailure.TargetInvalid);
             // 首次准备只能由指定且可建立所有权的主人完成；停用行为限制也不能授予新主人身份。
             if (request.Kind == SSCInteractionKind.BindingPreparation && !SSCIdentityUtility.IsMaster(actor))

@@ -91,6 +91,7 @@ internal static partial class Program
             var chain = SSCBondUtility.GetChain(f.slave); chain.Severity = 0.9f;
             foreach (Pawn pawn in new[] { f.master, f.slave })
             {
+                pawn.Training.mode = TrainingMode.Enabled;
                 pawn.Training.isRitualTraining = pawn.Training.isBeingTrained = true;
                 pawn.Training.selectedTrainer = f.master;
                 Assert(SSCIdentityUtility.TrySetIdentity(pawn, pawn.Training.pawnIdentity));
@@ -107,6 +108,7 @@ internal static partial class Program
             foreach (PawnIdentity target in Enum.GetValues<PawnIdentity>())
             {
                 Pawn pawn = Pawn(source); pawn.Training.selectedTrainer = Pawn(PawnIdentity.Master);
+                pawn.Training.mode = TrainingMode.Enabled;
                 pawn.Training.isRitualTraining = pawn.Training.isBeingTrained = true;
                 Assert(!SSCIdentityUtility.IsIdentityLocked(pawn));
                 Assert(SSCIdentityUtility.TrySetIdentity(pawn, target) && pawn.Training.pawnIdentity == target);
@@ -416,6 +418,7 @@ internal static partial class Program
         });
         RunStage3BTests();
         RunWorkScanTests();
+        RunTrainingTargetIdentityTests();
         Console.WriteLine($"{passed}/{passed + failed} passed (production trainer identity and assignment; game interface model).");
         return failed == 0 ? 0 : 1;
     }
@@ -450,6 +453,7 @@ internal static partial class Program
     private static (Pawn slave, Pawn master) Setup()
     {
         Pawn slave = Pawn(PawnIdentity.Slave); Pawn master = Pawn(PawnIdentity.Master, slave.Map);
+        slave.Training.mode = TrainingMode.Enabled;
         slave.Training.selectedTrainer = master; return (slave, master);
     }
 

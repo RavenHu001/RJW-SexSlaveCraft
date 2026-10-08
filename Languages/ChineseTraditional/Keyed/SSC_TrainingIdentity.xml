@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_Training_TargetIdentityRequired>受調教目標必須具有 SSC 性奴身分；原版殖民者、囚犯或奴隸身分不能代替。</SSC_Training_TargetIdentityRequired>
+  <SSC_Identity_RitualRoleChanged>參與者的 SSC 身分發生變化。</SSC_Identity_RitualRoleChanged>
+  <SSC_Identity_LegacyRecoveryHint>保留了歷史鎖鏈，但尚未設定 SSC 身分，調教已暫停。可手動恢復性奴身分並保留既有資料。</SSC_Identity_LegacyRecoveryHint>
+  <SSC_Identity_LegacyRecoveryButton>恢復歷史性奴身分</SSC_Identity_LegacyRecoveryButton>
+  <SSC_Identity_LegacyRecoveryConfirm>{0} 保留了與 {1} 的歷史鎖鏈，但尚未設定 SSC 身分。是否恢復為 SSC 性奴？\n\n只恢復性奴身分，保留鎖鏈成長、惡墮、特化、訓練模式、調教員指派及歸屬。恢復後，儲存的訓練設定將重新生效。</SSC_Identity_LegacyRecoveryConfirm>
+  <SSC_Identity_LegacyRecoveryRejected>角色身分或歷史綁定已改變，無法執行此次恢復。請重新查看角色狀態。</SSC_Identity_LegacyRecoveryRejected>
+  <SSC_Identity_LegacyRecoveryCompleted>已恢復 {0} 的 SSC 性奴身分，既有訓練設定與成長資料已保留。</SSC_Identity_LegacyRecoveryCompleted>
+</LanguageData>
