@@ -65,8 +65,12 @@ namespace SexSlaveCraft
             if (baseline == 0) return 0;
 
             float scaled = baseline * WeakFactor;
-            // 使用绝对值四舍五入再补回符号，明确“五入”而不是银行家舍入。
-            int rounded = Mathf.RoundToInt(Mathf.Abs(scaled));
+            // 这里显式指定“五入”，不使用 UnityEngine.Mathf.RoundToInt：
+            // 后者等价于 Math.Round 的默认“取偶”，会把 5×0.5=2.5 舍成 2，
+            // 与设计约定的 4.7 节数值表（+5→+3、+9→+5、-5→-3）不符。
+            // 用 System.Math 的显式中点规则后，结果不再依赖宿主运行时的舍入实现。
+            int rounded = (int)System.Math.Round(scaled, System.MidpointRounding.AwayFromZero);
+            rounded = System.Math.Abs(rounded);
             if (rounded < MinimumVisibleMagnitude) rounded = MinimumVisibleMagnitude;
             return baseline < 0 ? -rounded : rounded;
         }
@@ -74,8 +78,8 @@ namespace SexSlaveCraft
         /// <summary>按新模式本次好感变化 D 计算弱套实际社交偏移；D=0 由调用方提前拦截。</summary>
         public static int WeakOpinionOffset(float opinionDelta)
         {
-            // 原算法已经对 D 取整，这里直接对整数基准做换算，避免出现半值。
-            int baseline = Mathf.RoundToInt(opinionDelta);
+            // 原算法已经对 D 取整，这里只做同一套“五入”的整数化，避免出现半值。
+            int baseline = (int)System.Math.Round(opinionDelta, System.MidpointRounding.AwayFromZero);
             return WeakValue(baseline);
         }
 

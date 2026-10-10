@@ -4,6 +4,7 @@ using System.Linq;
 using RimWorld;
 using SexSlaveCraft;
 using Verse;
+using UnityEngine;
 
 // 记忆发放与数值换算用例：驱动真实 ConditioningUtility 与 LegacyTrainingUtility。
 internal static partial class Program
@@ -19,14 +20,28 @@ internal static partial class Program
         Equal(3, TrainerTrainingMemoryUtility.WeakValue(5), "旧模式适应社交取整");
         Equal(8, TrainerTrainingMemoryUtility.WeakValue(15), "旧模式沉沦社交");
 
+        // 半值边界：基准 ×0.5 恰好落在 .5 上，必须“五入”而不是“取偶”。
+        // 这里对应设计文档 4.7 节数值表；曾经因为使用 Mathf.RoundToInt（取偶）
+        // 而把 +5 舍成 +2、+9 舍成 +4、-5 舍成 -2，与约定不符。
+        Equal(3, TrainerTrainingMemoryUtility.WeakValue(5), "半值 +5 应入到 +3");
+        Equal(5, TrainerTrainingMemoryUtility.WeakValue(9), "半值 +9 应入到 +5");
+        Equal(-3, TrainerTrainingMemoryUtility.WeakValue(-5), "半值 -5 应入到 -3");
+        Equal(-5, TrainerTrainingMemoryUtility.WeakValue(-9), "半值 -9 应入到 -5");
+        Equal(2, TrainerTrainingMemoryUtility.WeakValue(3), "半值 +3 应入到 +2");
+        Equal(4, TrainerTrainingMemoryUtility.WeakValue(7), "半值 +7 应入到 +4");
+        Equal(6, TrainerTrainingMemoryUtility.WeakValue(11), "半值 +11 应入到 +6");
+        Equal(7, TrainerTrainingMemoryUtility.WeakValue(13), "半值 +13 应入到 +7");
+        Equal(-2, TrainerTrainingMemoryUtility.WeakValue(-3), "半值 -3 应入到 -2");
+        Equal(-4, TrainerTrainingMemoryUtility.WeakValue(-7), "半值 -7 应入到 -4");
+
+        // 替身必须与真实引擎一致：Unity 的 Mathf.RoundToInt 在 .5 上取偶。
+        // 用替身自身再确认一次，避免以后有人把替身改回“远离零”而掩盖同类问题。
+        Equal(2, Mathf.RoundToInt(2.5f), "替身的 Mathf.RoundToInt 必须复现 Unity 的取偶语义");
+
         // 非零基准被舍入成零时必须保底 ±1，不能变成零效果。
         Equal(1, TrainerTrainingMemoryUtility.WeakValue(1), "正一保底");
         Equal(-1, TrainerTrainingMemoryUtility.WeakValue(-1), "负一保底");
         Equal(0, TrainerTrainingMemoryUtility.WeakValue(0), "零基准保持零");
-
-        // 负数的“五入”必须向绝对值更大的一侧，而不是向零截断。
-        Equal(4, TrainerTrainingMemoryUtility.WeakValue(7), "七的一半向上取整");
-        Equal(-4, TrainerTrainingMemoryUtility.WeakValue(-7), "负七的一半向上取整");
 
         Assert(Math.Abs(TrainerTrainingMemoryUtility.WeakFactor - 0.5f) < 0.0001f, "弱化系数应为 0.5");
     }

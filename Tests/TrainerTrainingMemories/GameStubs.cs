@@ -4,12 +4,17 @@ using System.Collections.Generic;
 // 本套件只复现记忆发放所需的引擎接口，业务判定全部链接生产源码。
 namespace UnityEngine
 {
-    /// <summary>只提供生产代码使用的数学函数；舍入采用“五入”而不是银行家舍入。</summary>
+    /// <summary>
+    /// 只提供生产代码使用的数学函数。
+    /// RoundToInt 刻意复现 Unity 的真实语义：它等价于 Math.Round 的默认“取偶”，
+    /// 因此 5×0.5=2.5 会舍成 2。替身若是“远离零”舍入，就会把
+    /// 生产代码误用 Mathf.RoundToInt 的问题掩盖过去——本套件曾因此漏掉一个真实缺陷。
+    /// </summary>
     public static class Mathf
     {
         public const float Epsilon = 1.401298E-45f;
 
-        public static int RoundToInt(float value) => (int)Math.Round(value, MidpointRounding.AwayFromZero);
+        public static int RoundToInt(float value) => (int)Math.Round(value);
 
         public static int CeilToInt(float value) => (int)Math.Ceiling(value);
 
