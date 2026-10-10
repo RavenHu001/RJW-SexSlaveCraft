@@ -4,7 +4,7 @@
 
 > For RimWorld 1.6 and SexSlaveCraft 2.3.9.\
 > This continuation is based on upstream 2.2.8. See `CHANGELOG.md` for release history.\
-> This version retains the 2.3.8 Binding Ritual spectator fixes and selection hints, 2.3.7 Cat/Dog specializations, 2.3.6 shared daily Training/full Binding Ritual specialization progress and 2.3.5 self-training/handoff fixes. **2.3.9 is not yet packaged or tagged**; the current public download remains [v2.3.8 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.8). Legacy RimTalk remains suspended.\
+> This version retains the 2.3.8 Binding Ritual spectator fixes and selection hints, 2.3.7 Cat/Dog specializations, 2.3.6 shared daily Training/full Binding Ritual specialization progress and 2.3.5 self-training/handoff fixes. Download the installation ZIP and SHA-256 checksum from [v2.3.9 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.9). Legacy RimTalk remains suspended.\
 > Version 2.3.9 content (2026-10-10): unified receiver identity (daily, ritual and trainer assignment all require SSC Sex Slave identity, with candidacy, selection, execution and outcome re-checks), Trainer Officer duty mood and owner appraisal, the Officer's reverse trust in the actual Master, the Officer's separate weakened memory set (K=0.5), and a rewritten gender-neutral Officer text. Rabbit selection remains disabled.\
 > In-game names follow the mod's official English localization. For exact formulas, thresholds, and implementation notes, see `PLAYER_GUIDE_EN.md`.
 
