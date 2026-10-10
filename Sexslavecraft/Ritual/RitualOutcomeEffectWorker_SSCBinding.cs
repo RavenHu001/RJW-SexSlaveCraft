@@ -207,6 +207,9 @@ namespace SexSlaveCraft
             if (!canContinue()) return;
             TrainerSpecializationProgressUtility.NotifyProvidedTrainingCompleted(master, slave);
             if (!canContinue()) return;
+            // 复用整场一次性认领，不从六个阶段或经验增量派发职责记忆。
+            TrainerOfficerFeedback.NotifyTrainingCompleted(master, slave);
+            if (!canContinue()) return;
             bool relationAdded = false;
 
             // 仅判定性奴对主人的好感 >= 80，添加缺陷恋人关系

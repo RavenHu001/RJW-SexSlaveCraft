@@ -23,6 +23,7 @@ internal static partial class Program
         RunTrainerSpecializationTests(repo);
         RunTrainerLifecycleTests();
         RunTrainerProgressTests();
+        RunTrainerOfficerFeedbackTests(repo);
         RunStage4Tests(repo);
         RunStage5Tests(repo);
         Run("主人固定任职，未选择与无训导官资格的性奴不能开启", () =>

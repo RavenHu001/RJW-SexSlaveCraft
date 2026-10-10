@@ -45,7 +45,7 @@ namespace Verse
             return hediff;
         }
     }
-    public class RelationTracker { public void ClearAllRelations() { } }
+    public partial class RelationTracker { public void ClearAllRelations() { } }
     public class StoryTracker { public TraitSet traits = new TraitSet(); }
     public class SkillTracker { public List<SkillRecord> skills = new List<SkillRecord>(); }
     public static class ThingMaker
@@ -99,7 +99,7 @@ namespace SexSlaveCraft
     }
     public partial class CompSexSlaveTraining { public bool IsWaitingAfterFailedValidation => false; }
     public static class RabbitCloneUtility { public static bool IsRabbitClone(Pawn pawn) => false; }
-    public static class Strings { public static string Message_PersonalityExcretionComplete(string label) => label; }
+    public static partial class Strings { public static string Message_PersonalityExcretionComplete(string label) => label; }
     public static partial class RJWSexPropsUtility
     {
         public static void ApplySexType(rjw.SexProps props, Pawn actor, Pawn target, rjw.xxx.rjwSextype type, string interaction) { }

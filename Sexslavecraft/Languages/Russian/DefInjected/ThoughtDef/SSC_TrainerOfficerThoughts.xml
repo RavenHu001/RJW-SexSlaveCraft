@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_TrainerOfficer_DutyFulfilled.stages.0.label>обязанности наставника выполнены</SSC_TrainerOfficer_DutyFulfilled.stages.0.label>
+  <SSC_TrainerOfficer_DutyFulfilled.stages.0.description>Я завершил занятие. Выполнение порученных обязанностей приносит мне удовлетворение.</SSC_TrainerOfficer_DutyFulfilled.stages.0.description>
+  <SSC_TrainerOfficer_Appraisal.stages.0.label>назначенный наставник</SSC_TrainerOfficer_Appraisal.stages.0.label>
+  <SSC_TrainerOfficer_Appraisal.stages.0.description>Этот наставник связан со мной и выполняет обязанности, которые я ему поручил.</SSC_TrainerOfficer_Appraisal.stages.0.description>
+</LanguageData>

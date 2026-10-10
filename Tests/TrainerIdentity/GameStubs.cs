@@ -70,6 +70,7 @@ namespace Verse
     public class Needs
     {
         public Need_Corruption Corruption = new Need_Corruption();
+        public RimWorld.Need_Mood mood = new RimWorld.Need_Mood();
         /// <summary>只提供恶堕需求。</summary>
         public T TryGetNeed<T>() where T : class => Corruption as T;
     }
@@ -314,6 +315,7 @@ namespace SexSlaveCraft
         // 三个不同对象模拟已解析的普通、有效终极与禁用终极 Def。
         public static HediffDef SSC_Hediff_TrainerOfficer = new HediffDef(), SSC_Hediff_TrainerOfficer_Final = new HediffDef(), SSC_Hediff_TrainerOfficer_FinalDisabled = new HediffDef();
         public static JobDef SSC_TrainingReceiver = new JobDef(), Training_Ritual = new JobDef(), TrainingSexSlave = new JobDef();
+        public static RimWorld.ThoughtDef SSC_TrainerOfficer_DutyFulfilled;
     }
     public static class TraitUtility {
         /// <summary>本套件不计算特质成长，只提供身份服务所需边界。</summary>

@@ -40,6 +40,8 @@ The Binding Ritual also requires the ideology ritual system to be available.
 
 Give at least one free colonist the `Master` identity and enable `Training` work. Masters always qualify as trainers. A Sex Slave can turn on `Is a trainer` after researching Training Officer Specialization, becoming a free colonist with a valid Master bond and Chain stage 3 or higher, selecting Training Officer, and reaching 20% progress. An active Final Training Officer also qualifies after switching specialization. Unset pawns never qualify.
 
+The unreleased development branch adds Trainer Officer feedback. Completing daily Training or a whole Ritual grants an active Officer +3 mood for one day; further completions refresh one memory. Their actual Master has +5 opinion of them while they remain bound and actively appointed. Ordinary completion and active final Officers training another direction also qualify. This feature is not included in the stable 2.3.8 package.
+
 A good trainer generally has:
 
 - high Social skill;

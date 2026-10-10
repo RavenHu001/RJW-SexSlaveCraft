@@ -118,6 +118,7 @@
     <Compile Include="common\TrainerSpecializationLifecycle.cs" />
     <Compile Include="common\TrainerSpecializationGelUtility.cs" />
     <Compile Include="common\TrainerSpecializationProgressUtility.cs" />
+    <Compile Include="common\TrainerOfficerFeedback.cs" />
     <Compile Include="common\RabbitCloneUtility.cs" />
     <Compile Include="common\ConditioningUtility.cs" />
     <Compile Include="common\CorruptionProgressionUtility.cs" />

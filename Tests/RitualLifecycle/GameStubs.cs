@@ -316,8 +316,8 @@ namespace RimWorld
 {
     public class RitualBehaviorDef : Def { }
     public class RitualBehaviorWorker { public RitualBehaviorDef def; }
-    public class Precept_Ritual { public RitualBehaviorWorker behavior; }
-    public class LordJob_Ritual : LordJob
+    public partial class Precept_Ritual { public RitualBehaviorWorker behavior; }
+    public partial class LordJob_Ritual : LordJob
     {
         public int CancelCalls;
         /// <summary>模拟取消信号触发地图移除及生产清理补丁；阶段驱动回调由执行器单独触发。</summary>
@@ -372,7 +372,21 @@ namespace SexSlaveCraft
     {
         /// <summary>记录真实日常驱动到达新增经验事件的次数；资格与数值由 TrainerIdentity 的生产工具用例验证。</summary>
         public static void NotifyProvidedTrainingCompleted(Pawn trainer, Pawn receiver)
-            => TestWorld.TrainerProgressAwards++;
+        {
+            TestWorld.TrainerProgressAwards++;
+            TestWorld.OnTrainerProgress?.Invoke();
+        }
+    }
+    public static class TrainerOfficerFeedback
+    {
+        /// <summary>仅记录真实驱动/整场结算调用；生产反馈资格和记忆由 TrainerIdentity 直接编译验证。</summary>
+        public static void NotifyTrainingCompleted(Pawn trainer, Pawn receiver)
+        {
+            TestWorld.TrainerFeedbackAwards++;
+            TestWorld.FeedbackTrainer = trainer;
+            TestWorld.FeedbackReceiver = receiver;
+            TestWorld.OnTrainerFeedback?.Invoke();
+        }
     }
     public static partial class SSCDefOf
     {
@@ -506,11 +520,15 @@ namespace rjw
 internal static class TestWorld
 {
     public static Map Map;
-    public static int ProcessSexCalls, DailyOutcomes, DailyCooldowns, TrainerProgressAwards;
+    public static int ProcessSexCalls, DailyOutcomes, DailyCooldowns, TrainerProgressAwards, TrainerFeedbackAwards;
     public static bool ReceiverSucceeds = true, SynchronizeSucceeds = true, Animating = true;
     public static int CombatantProgressAwards, ScoreCalls;
     public static float OutcomeScore, BodyScore, CombatantScore;
     public static Action OnDailyOutcome, OnProcessSex;
+    public static Action OnTrainerProgress, OnTrainerFeedback;
+    public static int RitualOutcomes, RitualLetters;
+    public static Action OnRitualOutcome;
+    public static Pawn FeedbackTrainer, FeedbackReceiver;
     public static Action OnSexTick;
     public static Action<int> AnimationTicksCallback;
     public static int RjwEndCalls;
@@ -523,10 +541,14 @@ internal static class TestWorld
     {
         Map = new Map();
         SSCMod.settings = new Settings();
-        ProcessSexCalls = DailyOutcomes = DailyCooldowns = TrainerProgressAwards = 0;
+        ProcessSexCalls = DailyOutcomes = DailyCooldowns = TrainerProgressAwards = TrainerFeedbackAwards = 0;
         CombatantProgressAwards = ScoreCalls = 0;
         OutcomeScore = BodyScore = CombatantScore = 0;
         OnDailyOutcome = OnProcessSex = null;
+        OnTrainerProgress = OnTrainerFeedback = null;
+        RitualOutcomes = RitualLetters = 0;
+        OnRitualOutcome = null;
+        FeedbackTrainer = FeedbackReceiver = null;
         OnSexTick = null;
         AnimationTicksCallback = null;
         Animating = true;

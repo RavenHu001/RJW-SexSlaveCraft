@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Xml.Linq;
 using RimWorld;
 using SexSlaveCraft;
 using Verse;
@@ -11,8 +13,9 @@ internal static class Program
     private static int failed;
 
     /// <summary>执行真实生产记忆工具的独立回归用例，并通过退出码报告失败。</summary>
-    private static int Main()
+    private static int Main(string[] args)
     {
+        string repo = Path.GetFullPath(args.Length > 0 ? args[0] : Path.Combine(AppContext.BaseDirectory, "../../../../.."));
         Run("所有心情阶段与非零偏移、年龄、倍率完整恢复", MoodStages);
         Run("社交默认值及正负零小数自定义值完整恢复", SocialValues);
         Run("普通记忆的关联人物通过引擎显式参数保留", OrdinaryOtherPawn);
@@ -24,6 +27,7 @@ internal static class Program
         Run("缺少好感标记时保留所选阶段的定义默认值", MissingOpinionMarker);
         Run("有效阶段与好感在引擎分组前完成恢复", DynamicGroups);
         Run("已有多个普通记忆在合法堆叠范围内保持年龄和阶段", MoodStacking);
+        Run("履行训导职责记忆通过人格复制与存档后保留剩余一天期限", () => TrainerOfficerDutyMemory(repo));
         Run("恢复会替换宿主记忆且空快照可清空旧记忆", ReplaceHost);
         Run("空输入和没有心情需求的身体不会抛异常", NullInputs);
         Run("失效人物的社交记忆跳过而普通记忆仍可恢复", InvalidOtherPawn);
@@ -302,6 +306,43 @@ internal static class Program
         Assert(restored.Count == 4 && restored.Select(m => m.age).SequenceEqual(new[] { 100, 101, 102, 103 }),
             "合法堆叠中的记忆数量和年龄必须保持。");
         Assert(restored.Select(m => m.CurStageIndex).SequenceEqual(new[] { 0, 0, 1, 1 }), "阶段分组必须保持。");
+    }
+
+    /// <summary>以实际职责定义验证人格复制与迁移，不重置已消耗的记忆年龄或增加关联对象。</summary>
+    private static void TrainerOfficerDutyMemory(string repo)
+    {
+        var definition = XDocument.Load(Path.Combine(repo, "Defs/ThoughtDefs/SSC_TrainerOfficerThoughts.xml"))
+            .Root.Elements("ThoughtDef").Single(d => (string)d.Element("defName") == "SSC_TrainerOfficer_DutyFulfilled");
+        var def = new ThoughtDef
+        {
+            defName = (string)definition.Element("defName"),
+            factory = () => new Thought_Memory(),
+            durationDays = (float)definition.Element("durationDays"),
+            stackLimit = (int)definition.Element("stackLimit"),
+            stackLimitForSameOtherPawn = (int)definition.Element("stackLimitForSameOtherPawn"),
+            stages = definition.Element("stages").Elements("li").Select(stage => new ThoughtStage
+            {
+                baseMoodEffect = (float)stage.Element("baseMoodEffect")
+            }).ToList()
+        };
+        foreach (int age in new[] { 0, 31000, 59999 })
+        {
+            var source = ThoughtMaker.MakeThought(def);
+            source.age = age;
+            var saved = SaveAndLoad(PersonalityMemoryUtility.Copy(PersonalityMemoryUtility.Capture(source)));
+            var recipient = new Pawn();
+            recipient.needs.mood.thoughts.memories.TryGainMemory(ThoughtMaker.MakeThought(def));
+            PersonalityMemoryUtility.Restore(recipient, new List<StoredMemoryData> { saved });
+            PersonalityMemoryUtility.Restore(recipient, new List<StoredMemoryData> { saved });
+            var restored = recipient.needs.mood.thoughts.memories.Memories.Single();
+            Assert(restored.age == age && restored.def == def && restored.CurStageIndex == 0
+                && restored.CurStage.baseMoodEffect == 3f && restored.otherPawn == null,
+                "职责记忆迁移必须保留年龄、定义与 +3 心情，不能因宿主记忆或再次恢复而刷新/叠加。");
+            Assert(!restored.permanent && restored.durationTicksOverride == -1 && restored.def.durationDays == 1f,
+                "职责记忆应使用原定义的一天期限，不能迁移成永久或另设时间。");
+            Assert((int)(restored.def.durationDays * 60000) - restored.age == 60000 - age,
+                "人格迁移不得延长实际剩余期限。");
+        }
     }
 
     /// <summary>验证替换和空快照语义，避免接收身体残留原有记忆。</summary>

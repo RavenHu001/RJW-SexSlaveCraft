@@ -12,6 +12,7 @@ internal static partial class Program
         Equal(0, TestWorld.DailyCooldowns, "daily cooldown");
         Equal(0, TestWorld.CombatantProgressAwards, "target specialization award");
         Equal(0, TestWorld.TrainerProgressAwards, "trainer award");
+        Equal(0, TestWorld.TrainerFeedbackAwards, "trainer duty feedback");
     }
 
     private static void RunTrainingIdentityTests()
