@@ -3,7 +3,9 @@
   <!-- 训导官弱化套：与主人原套完全独立的 8 个 Def，不覆盖、不改写 SSC_Training_*。
        弱值均为整数，按维护者确认的 K=0.5 换算：四舍五入到整数，非零基准保底绝对值 1。
        旧模式弱社交直接写入运行后的值（+3／+8），不再由 SSCThoughtBootstrap 二次改写。
-       描述中的动作统一用“调教”，“训导”只用于训导官这一角色名。 -->
+       文案基调与主人原套一致：露骨但不描写具体动作；主线是“受训者是主人的所有物，
+       训导官只是主人授权的支配工具”。动作词统一用“调教”，角色名保留“训导官”。
+       全篇不使用性别代词，改用“训导官／那／角色名”指代，以适配本模组的跨性别机制。 -->
 
   <ThoughtDef>
     <defName>SSC_TrainerTraining_MoodDynamic</defName>
@@ -13,22 +15,22 @@
     <stages>
       <li>
         <label>训导官调教余韵 (反感)</label>
-        <description>同样受人支配的训导官却来调教我，那种不适感挥之不去。</description>
+        <description>不就是和我一样被链子拴着的贱货吗……主人的东西被另一个性奴按在身下摆弄，我恶心到发抖。</description>
         <baseMoodEffect>-5</baseMoodEffect>
       </li>
       <li>
         <label>训导官调教余韵 (动摇)</label>
-        <description>明明身份相近，刚才的调教似乎并没有那么难以接受……</description>
+        <description>都是主人的所有物，凭什么训导官能对我下令……可被那双调教过无数遍的手按住时，腰自己软了下去。</description>
         <baseMoodEffect>1</baseMoodEffect>
       </li>
       <li>
         <label>训导官调教余韵 (适应)</label>
-        <description>我好像渐渐习惯了训导官的调教方式。</description>
+        <description>身体越来越听训导官的话了……被同为性奴的人操到发出声音，我到底被主人驯成什么样子了。</description>
         <baseMoodEffect>4</baseMoodEffect>
       </li>
       <li>
         <label>训导官调教余韵 (沉沦)</label>
-        <description>一回想起那名训导官的调教，脑子就有些发昏……</description>
+        <description>哦哦哦……被训导官调教过的身体，光是想起来就自己发烫……训导官要我摆成什么样子，我都拒绝不了……</description>
         <baseMoodEffect>8</baseMoodEffect>
       </li>
     </stages>
@@ -44,22 +46,22 @@
     <stages>
       <li>
         <label>训导官调教记忆 (反感)</label>
-        <description>同样受人支配的{0}却来调教我，让我难以接受。好感变化为{1}。</description>
+        <description>同是被主人拴着的贱货，凭什么{0}能对我下令……要我听从一个性奴的调教，比被主人上还屈辱。好感变化为{1}。</description>
         <baseOpinionOffset>-5</baseOpinionOffset>
       </li>
       <li>
         <label>训导官调教记忆 (动摇)</label>
-        <description>明明身份相近，我却开始接受训导官{0}的调教。好感变化为{1}。</description>
+        <description>明明只是主人的另一件所有物，我却开始盼着{0}的调教……被同为性奴的人摆布到这种地步，我是不是已经坏掉了。好感变化为{1}。</description>
         <baseOpinionOffset>1</baseOpinionOffset>
       </li>
       <li>
         <label>训导官调教记忆 (适应)</label>
-        <description>我逐渐习惯了训导官{0}的调教。好感变化为{1}。</description>
+        <description>被{0}调教得越来越顺服了……反正是主人把我交出去的，那就照主人期待的样子，接受同为性奴的{0}的调教吧。好感变化为{1}。</description>
         <baseOpinionOffset>4</baseOpinionOffset>
       </li>
       <li>
         <label>训导官调教记忆 (沉沦)</label>
-        <description>那次经历让我越来越依赖训导官{0}的调教。好感变化为{1}。</description>
+        <description>身体被{0}调教成了这副样子……被同一个主人拴着的性奴操到求饶，这大概正是主人想要的性奴吧。好感变化为{1}。</description>
         <baseOpinionOffset>8</baseOpinionOffset>
       </li>
     </stages>
@@ -73,7 +75,7 @@
     <stages>
       <li>
         <label>训导官调教余韵 (厌恶)</label>
-        <description>被身份相近的训导官这样对待，我实在反胃。</description>
+        <description>被同为性奴的训导官这样摆弄，恶心又屈辱……我到底只是主人随手交给别人用的东西吗。</description>
         <baseMoodEffect>-5</baseMoodEffect>
       </li>
     </stages>
@@ -87,7 +89,7 @@
     <stages>
       <li>
         <label>训导官调教余韵 (迷茫)</label>
-        <description>训导官的调教并不让人难受，这反而让我不知所措……</description>
+        <description>训导官的手法不比主人差，甚至还更懂该怎么弄我……同为性奴，为什么我会被训导官弄得这么舒服。</description>
         <baseMoodEffect>1</baseMoodEffect>
       </li>
     </stages>
@@ -101,7 +103,7 @@
     <stages>
       <li>
         <label>训导官调教余韵 (极乐)</label>
-        <description>光是回想训导官的手法，脑子就一片空白了……</description>
+        <description>哦哦哦齁齁齁……只是回想训导官是怎么调教我的，脑子就一片空白了……主人把我交出去，是对的……</description>
         <baseMoodEffect>8</baseMoodEffect>
       </li>
     </stages>
@@ -115,7 +117,7 @@
     <stages>
       <li>
         <label>训导官调教记忆 (反感)</label>
-        <description>那个训导官凭什么那样对待我，我不会轻易忘记。</description>
+        <description>那个训导官仗着主人的授权这样对我……那明明也只是条被拴着的性奴。</description>
         <baseOpinionOffset>-10</baseOpinionOffset>
       </li>
     </stages>
@@ -129,7 +131,7 @@
     <stages>
       <li>
         <label>训导官调教记忆 (适应)</label>
-        <description>被训导官那样对待，我好像也没有那么抗拒了……</description>
+        <description>被训导官那样调教，我好像已经不那么抗拒了……反正都是主人的人。</description>
         <baseOpinionOffset>3</baseOpinionOffset>
       </li>
     </stages>
@@ -143,7 +145,7 @@
     <stages>
       <li>
         <label>训导官调教记忆 (沉沦)</label>
-        <description>我好像越来越期待那位训导官的调教了……</description>
+        <description>我已经开始期待那位训导官的调教了……主人吩咐什么，我都会照做。</description>
         <baseOpinionOffset>8</baseOpinionOffset>
       </li>
     </stages>
