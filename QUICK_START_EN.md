@@ -2,15 +2,13 @@
 
 [Project home](README.md) · [Documentation index / 文档索引](Docs/README.md) · [中文快速入门](读我，玩法介绍.md) · [Changelog](CHANGELOG.md)
 
-> **Development branch (2026-10-08):** Unified receiver identity checks and explicit historical Chain identity recovery are implemented in the current branch. The maintainer reports no issues in local testing and has approved committing them; they remain unreleased. The stable 2.3.8 ZIP does not contain these changes. Sections marked “development branch” describe the current source.
-
-> For RimWorld 1.6 and SexSlaveCraft 2.3.8.\
+> For RimWorld 1.6 and SexSlaveCraft 2.3.9.\
 > This continuation is based on upstream 2.2.8. See `CHANGELOG.md` for release history.\
-> This version retains 2.3.6 shared daily Training/full Binding Ritual specialization progress and 2.3.5 self-training/handoff fixes. Download the installation ZIP and SHA-256 checksum from [v2.3.8 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.8). Legacy RimTalk remains suspended.\
-> Version 2.3.8 content (2026-10-08): Fixes Binding Ritual spectator counting and attendance quality, adds host/sex slave candidate icons and concise hover hints, and retains 2.3.7 Cat/Dog content. Includes Cat/Dog training, pet exclusivity, gel finalization, active abilities, visible affection, ordinary-completion display and finalization tooltips. The 20% adult Cat/Dog consensual follow-up is implemented and awaits in-game acceptance. Rabbit selection remains disabled. These additions are absent from historical 2.3.6 packages.\
+> This version retains the 2.3.8 Binding Ritual spectator fixes and selection hints, 2.3.7 Cat/Dog specializations, 2.3.6 shared daily Training/full Binding Ritual specialization progress and 2.3.5 self-training/handoff fixes. **2.3.9 is not yet packaged or tagged**; the current public download remains [v2.3.8 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.8). Legacy RimTalk remains suspended.\
+> Version 2.3.9 content (2026-10-10): unified receiver identity (daily, ritual and trainer assignment all require SSC Sex Slave identity, with candidacy, selection, execution and outcome re-checks), Trainer Officer duty mood and owner appraisal, the Officer's reverse trust in the actual Master, the Officer's separate weakened memory set (K=0.5), and a rewritten gender-neutral Officer text. Rabbit selection remains disabled.\
 > In-game names follow the mod's official English localization. For exact formulas, thresholds, and implementation notes, see `PLAYER_GUIDE_EN.md`.
 
-> See the [2.3.8 notes](Docs/Releases/2.3.8/2.3.8发布说明.md) for this version and the [2.3.7](Docs/Releases/2.3.7/2.3.7发布说明.md), [2.3.6](Docs/Releases/2.3.6/2.3.6发布说明.md) and [2.3.5](Docs/Releases/2.3.5/2.3.5发布说明.md) notes for retained features.
+> See the [2.3.9 notes](Docs/Releases/2.3.9/2.3.9发布说明.md) for this version and the [2.3.8](Docs/Releases/2.3.8/2.3.8发布说明.md), [2.3.7](Docs/Releases/2.3.7/2.3.7发布说明.md), [2.3.6](Docs/Releases/2.3.6/2.3.6发布说明.md) and [2.3.5](Docs/Releases/2.3.5/2.3.5发布说明.md) notes for retained features.
 
 ## 1. What the Mod Does
 
@@ -40,7 +38,7 @@ The Binding Ritual also requires the ideology ritual system to be available.
 
 Give at least one free colonist the `Master` identity and enable `Training` work. Masters always qualify as trainers. A Sex Slave can turn on `Is a trainer` after researching Training Officer Specialization, becoming a free colonist with a valid Master bond and Chain stage 3 or higher, selecting Training Officer, and reaching 20% progress. An active Final Training Officer also qualifies after switching specialization. Unset pawns never qualify.
 
-The unreleased development branch adds Trainer Officer feedback. Completing daily Training or a whole Ritual grants an active Officer +3 mood for one day; further completions refresh one memory. Their actual Master has +5 opinion of them while they remain bound and actively appointed. Ordinary completion and active final Officers training another direction also qualify. This feature is not included in the stable 2.3.8 package.
+2.3.9 adds Trainer Officer feedback. Completing daily Training or a whole Ritual grants an active Officer +3 mood for one day; further completions refresh one memory. Their actual Master has +5 opinion of them while they remain bound and actively appointed, and the Officer holds +5 reverse opinion plus a +3 steady mood toward that Master. Ordinary completion and active final Officers training another direction also qualify. All of these are conditional thoughts rather than memories, and receiver memories granted through an Officer use a separate weakened set (K=0.5).
 
 A good trainer generally has:
 
@@ -58,7 +56,7 @@ Select the intended target and open the `Training` tab:
 3. select an `Assigned Pose`;
 4. optionally choose an `Assigned Trainer`.
 
-The target may be a colonist, prisoner, or vanilla slave, but must pass RJW's sex-target eligibility checks. The development branch also requires SSC `Sex Slave` identity for automatic Training, forced Training, Binding Rituals and new trainer assignments. Vanilla slave status cannot replace it. Set the SSC role first, then assign the Master who will perform the first bond; a Chain is not required beforehand. Daily Training still uses its own enable switch, timetable and cooldown; rituals do not inherit those conditions.
+The target may be a colonist, prisoner, or vanilla slave, but must pass RJW's sex-target eligibility checks. 2.3.9 also requires SSC `Sex Slave` identity for automatic Training, forced Training, Binding Rituals and new trainer assignments. Vanilla slave status cannot replace it. Set the SSC role first, then assign the Master who will perform the first bond; a Chain is not required beforehand. Daily Training still uses its own enable switch, timetable and cooldown; rituals do not inherit those conditions.
 
 ### Step 4: Start Training
 
@@ -107,7 +105,7 @@ Once Corruption reaches the first bond threshold:
 
 Bound pawns cannot switch SSC identity until their binding is explicitly removed. A Master with remaining bound slaves is also locked; the Sex Slave trainer toggle remains available. Shared-bed permission can also apply before binding when a valid trainer is assigned.
 
-The development branch does not infer SSC identity from old enable settings, assignments or Corruption. An Unset pawn without a Chain can be set to Sex Slave normally. If an Unset pawn retains a valid historical Chain, click `Restore historical sex slave role` on the Training tab and confirm. Recovery restores only the role, preserving ownership, saved Training settings and growth. The option is unavailable for invalid historical relationships. Old tasks with an ineligible receiver stop; growth remains, and a restored pawn needs a new task.
+2.3.9 does not infer SSC identity from old enable settings, assignments or Corruption. An Unset pawn without a Chain can be set to Sex Slave normally. If an Unset pawn retains a valid historical Chain, click `Restore historical sex slave role` on the Training tab and confirm. Recovery restores only the role, preserving ownership, saved Training settings and growth. The option is unavailable for invalid historical relationships. Old tasks with an ineligible receiver stop; growth remains, and a restored pawn needs a new task.
 
 Corruption uses a default base decay of 2% per day. The mod settings can disable it or adjust it from 0% to 20% per day; recent Training quality, opinion of the Master, body-part development, and deeper Chain stages continue to modify the actual loss.
 
@@ -125,7 +123,7 @@ The Binding Ritual is the main way to advance the Chain health stage. The Sex Sl
 4. Assign the ritual leader as the target's trainer.
 5. Choose a reachable ritual location.
 
-In the setup window, the gold whip marks host candidates and the purple collar marks SSC Sex Slave candidates. Icons show basic eligibility: hover for pairing, body and reachability requirements. A slash means unavailable; a check means assigned. A qualified Sex Slave trainer can have both icons. The whip indicates host/trainer duty rather than ownership. First bonding requires the assigned Master; for existing bonds, the actual Master or an eligible assigned trainer may host under the current permission rules. Stable 2.3.8 added candidate hints only; the development branch now checks SSC Sex Slave identity during actual selection, startup, execution and outcomes. A candidate icon still does not mean all requirements have passed.
+In the setup window, the gold whip marks host candidates and the purple collar marks SSC Sex Slave candidates. Icons show basic eligibility: hover for pairing, body and reachability requirements. A slash means unavailable; a check means assigned. A qualified Sex Slave trainer can have both icons. The whip indicates host/trainer duty rather than ownership. First bonding requires the assigned Master; for existing bonds, the actual Master or an eligible assigned trainer may host under the current permission rules. Stable 2.3.8 added candidate hints only; 2.3.9 checks SSC Sex Slave identity during actual selection, startup, execution and outcomes. A candidate icon still does not mean all requirements have passed.
 
 ### Ritual Sequence
 

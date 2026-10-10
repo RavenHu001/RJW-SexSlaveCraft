@@ -6,16 +6,20 @@
 		<li>1.6</li>
 	</supportedVersions>
 	<packageId>rjw.sexslavecraft.TieJinVer</packageId>
-    <description>SexSlaveCraft 2.3.8 (TieJin Modify)
-绑定仪式观众助兴与选人提示：准备窗口排除主持和性奴的重复观众计数，结算按本场实际经过时间检查出席；观看至少半场的观众提供助兴，零观众为 +0%，十人及以上封顶 +20%，结果信件始终列出此项。
-选人头像以金色鞭子表示主持候选、紫色项圈表示 SSC 性奴候选；悬停查看配对、当前条件与拒绝原因，斜线表示不可选，勾选表示已选。四语提示精简，并将候选称呼统一为“性奴”。身份过滤只用于候选图标，实际仪式资格沿用已有规则。
-继承 2.3.7 猫狗特化与宠物互动、2.3.6 统一特化基础经验、2.3.5 自我调教及更早内容。基于上游 2.2.8 继续维护。锁链达到第 2 阶段的 SSC 性奴可按 RJW 原有条件被指派为泄欲对象。
-宠物兔入口仍禁用，旧 RimTalk 兼容继续暂停；20% 亲昵自愿后续仍待实机验收。版本内容与验证范围见 CHANGELOG.md 和 Docs/Releases/2.3.8/。
+    <description>SexSlaveCraft 2.3.9 (TieJin Modify)
+2.3.9 归并 2.3.8 之后的全部开发：统一受训身份门槛、训导官职责心情与主人评价、训导官独立弱化记忆套、训导官文案基调重写，以及训导官对实际主人的反向信任。
+统一受训身份：日常自动与手动调教、绑定仪式和调教员指派统一要求 SSC 性奴身份，原版奴隶身份、关闭行为限制和强制命令都不能豁免；候选、实际准入、执行与结算都会复查，并保留各入口原有条件。身份失格会中止对应调教，但不会改写存档中的身份或成长；未设身份却保留有效历史锁链者可经面板确认恢复。
+训导官反馈：有效任职的训导官完成一次日常调教或整场仪式后获得“履行训导职责”+3 心情一天，重复完成只刷新一份记忆；实际主人对自己绑定且有效任职的训导官有 +5“受委任的训导官”评价，同时训导官对这位主人获得 +5 反向好感和 +3 常驻心情。两条条件性想法随任职、绑定与资格实时生效或消失，临时倒地、停工或旅行不影响，不写记忆列表、不进人格凝胶。
+训导官使用的受训者记忆是独立弱化套（K=0.5，心情 -5／+1／+4／+8），与主人原套互不覆盖、各自计时；主人与其他合法执行者仍使用原套。训导官相关心情、评价与同床文案已整体重写并去除性别指向。弱值按四舍五入到整数、非零基准保底 1 计算，半值向远离零方向取整。
+继承 2.3.8 绑定仪式观众助兴修复与选人提示、2.3.7 猫狗特化与宠物互动、2.3.6 统一特化基础经验、2.3.5 自我调教及更早内容。基于上游 2.2.8 继续维护。锁链达到第 2 阶段的 SSC 性奴可按 RJW 原有条件被指派为泄欲对象。
+宠物兔入口仍禁用，旧 RimTalk 兼容继续暂停；20% 亲昵自愿后续仍待实机验收。版本内容与验证范围见 CHANGELOG.md 和 Docs/Releases/2.3.9/。
 
-Version 2.3.8 fixes Binding Ritual spectator bonuses and improves participant selection. The setup preview excludes the host and sex slave from spectator counts. Outcomes use actual elapsed ritual time and count spectators who attended at least half the ceremony: none gives +0%, ten or more cap at +20%. Result letters always show this factor.
-Gold whip icons mark host candidates and purple collars mark SSC Sex Slave candidates. Hover for pair conditions and rejection reasons; a slash marks unavailable and a check marks assigned. Selection copy is shorter in four languages and consistently names the sex slave. The identity filter applies to candidate icons; actual ritual admission follows existing rules.
-Retains 2.3.7 Cat/Dog specializations and pet interactions, 2.3.6 shared specialization progress, 2.3.5 self-training and earlier features. Continues from upstream 2.2.8. SSC Sex Slaves at Chain stage 2 or higher can be designated as RJW Comfort pawns under RJW's existing conditions.
-Rabbit selection remains disabled and legacy RimTalk remains suspended. In-game acceptance of the 20% consensual affection follow-up remains pending. See CHANGELOG.md and Docs/Releases/2.3.8/ for content and validation scope.</description>
+Version 2.3.9 consolidates all development after 2.3.8: unified receiver identity admission, Trainer Officer duty mood and owner appraisal, the Officer's separate weakened memory set, the rewritten Officer text, and the Officer's reverse trust in the actual Master.
+Unified receiver identity: automatic and manual Training, Binding Rituals and trainer assignment all require SSC Sex Slave identity. Vanilla slave status, disabled restrictions and forced commands do not waive it. Candidate, admission, execution and outcome checks are repeated while each entry point keeps its existing conditions. Losing eligibility stops the matching Training without rewriting saved identity or growth; pawns with a valid historical Chain but unset identity can explicitly restore the role from the panel.
+Officer feedback: an actively appointed Officer gains a one-day +3 duty mood after completing daily Training or a whole Ritual, and further completions refresh that single memory. The actual Master holds a conditional +5 appraisal of their bound, actively appointed Officer, while the Officer holds +5 reverse opinion and a +3 steady mood toward that Master. These conditional thoughts follow appointment, bond and eligibility live, are unaffected by temporary downing, work suspension or travel, and are never written into memory lists or personality gel.
+Receiver memories granted through an Officer use a separate weakened set (K=0.5, mood -5/+1/+4/+8) that never overwrites the owner's set and keeps its own timers; the actual Master and other eligible executors keep the original set. Officer mood, appraisal and shared-bed text was rewritten and made gender-neutral. Weak values round to whole numbers with a minimum non-zero magnitude of 1, rounding half away from zero.
+Retains 2.3.8 Binding Ritual spectator fixes and selection hints, 2.3.7 Cat/Dog specializations and pet interactions, 2.3.6 shared specialization progress, 2.3.5 self-training and earlier features. Continues from upstream 2.2.8. SSC Sex Slaves at Chain stage 2 or higher can be designated as RJW Comfort pawns under RJW's existing conditions.
+Rabbit selection remains disabled and legacy RimTalk remains suspended. In-game acceptance of the 20% consensual affection follow-up remains pending. See CHANGELOG.md and Docs/Releases/2.3.9/ for content and validation scope.</description>
 	<modDependencies>
 		<li>
 		  <packageId>brrainz.harmony</packageId>
