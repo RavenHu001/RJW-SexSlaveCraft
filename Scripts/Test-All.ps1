@@ -49,6 +49,7 @@ $suites = @(
     @{ Name = 'BusTrade'; Arguments = @() },
     @{ Name = 'TrainerIdentity'; Arguments = @($repoRoot) },
     @{ Name = 'TrainerIntegration'; Arguments = @() },
+    @{ Name = 'TrainerTrainingMemories'; Arguments = @($repoRoot) },
     @{ Name = 'RestrictionCore'; Arguments = @($repoRoot) },
     @{ Name = 'SelfTrainingManual'; Arguments = @() },
     @{ Name = 'SharedBed'; Arguments = @($repoRoot) }

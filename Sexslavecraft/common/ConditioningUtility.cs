@@ -19,9 +19,13 @@ namespace SexSlaveCraft
         public static void ExecuteOutcome(Pawn master, Pawn sexSlave, float score)
         {
             if (sexSlave == null || master == null) return;
+
+            // 一次结算只读取一次套别：进入效果应用后不再重查当前任职，
+            // 避免同一次结算前后选择两套记忆，也避免给无效执行者发放新奖励。
+            TrainingMemorySet memorySet = TrainerTrainingMemoryUtility.Resolve(master);
             if (SSCMod.settings?.useOldScoring ?? false)
             {
-                ExecuteOutcome_Legacy(master, sexSlave, score);
+                ExecuteOutcome_Legacy(master, sexSlave, score, memorySet);
                 return;
             }
 
@@ -35,8 +39,11 @@ namespace SexSlaveCraft
             WillReductionUtility.ApplyWillReductionByCorruptionBand(master, sexSlave, corruptionGain, false);
             CorruptionProgressionUtility.ProcessCorruptionProgression(master, sexSlave, false, score);
 
+            // 保留原算法的取整结果决定档位与是否变化；弱化只在后续按基准整数换算，
+            // 因此主人路径的 D 与所有原有效果完全不变。
             int opinionDelta = (int)TrainingOutcomeUtility.CalculateOpinionChange(score, master, sexSlave);
-            ApplyTrainingMemories(opinionDelta, master, sexSlave);
+            // 套别与发放集中在共用入口，生产路径与回归用例共用同一条实现。
+            TrainerTrainingMemoryUtility.ApplyDynamicMemories(memorySet, opinionDelta, master, sexSlave);
 
             string logMsg = Strings.DailyTrainingOutcome(
                 score.ToString("F1"), corruptionGain.ToString("P1"));
@@ -49,7 +56,7 @@ namespace SexSlaveCraft
             }
         }
 
-        private static void ExecuteOutcome_Legacy(Pawn master, Pawn sexSlave, float score)
+        private static void ExecuteOutcome_Legacy(Pawn master, Pawn sexSlave, float score, TrainingMemorySet memorySet)
         {
             int finalLevel = LegacyTrainingUtility.DetermineLevel_Legacy(master, score);
 
@@ -63,7 +70,8 @@ namespace SexSlaveCraft
             string logMsg = Strings.DailyTrainingOutcome_Legacy(
                 score.ToString("F1"), finalLevel, corruptionGain.ToString("P1"));
             Messages.Message(logMsg, sexSlave, MessageTypeDefOf.NeutralEvent, false);
-            LegacyTrainingUtility.ApplyMemories_Legacy(finalLevel, master, sexSlave, true);
+            // 日常显式传入已确定的套别；仪式仍走原套且不发社交记忆。
+            LegacyTrainingUtility.ApplyMemories_Legacy(finalLevel, master, sexSlave, true, memorySet);
         }
 
         public static string ExecuteRitualOutcome(Pawn master, Pawn sexSlave, float quality, ThoughtDef ritualOutcomeMemory = null)
@@ -178,31 +186,6 @@ namespace SexSlaveCraft
                 memories.TryGainMemory(SSCDefOf.SSC_Training_Mood_Lvl2, master);
             else
                 memories.TryGainMemory(SSCDefOf.SSC_Training_Mood_Lvl3, master);
-        }
-
-        private static void ApplyTrainingMemories(int opinionDelta, Pawn master, Pawn sexSlave)
-        {
-            if (opinionDelta == 0) return;
-
-            var memories = sexSlave.needs.mood?.thoughts.memories;
-            if (memories == null) return;
-
-            int displayStage = Thought_MemoryDynamicTraining.GetDisplayStage(opinionDelta);
-
-            if (SSCDefOf.SSC_Training_MoodDynamic != null)
-            {
-                var moodThought = ThoughtMaker.MakeThought(
-                    SSCDefOf.SSC_Training_MoodDynamic, displayStage);
-                memories.TryGainMemory(moodThought, master);
-            }
-
-            if (SSCDefOf.SSC_Training_OpinionDynamic != null)
-            {
-                var socialThought = (Thought_MemoryDynamicTraining)ThoughtMaker.MakeThought(
-                    SSCDefOf.SSC_Training_OpinionDynamic);
-                socialThought.opinionOffset = opinionDelta;
-                memories.TryGainMemory(socialThought, master);
-            }
         }
 
         public static float GetScore(Pawn Master, Pawn SexSlave) => TrainingOutcomeUtility.GetScore(Master, SexSlave);

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_TrainerTrainingOpinionMemory_Resentment>訓導官調教餘韻（反感）</SSC_TrainerTrainingOpinionMemory_Resentment>
+  <SSC_TrainerTrainingOpinionMemory_Wavering>訓導官調教餘韻（動搖）</SSC_TrainerTrainingOpinionMemory_Wavering>
+  <SSC_TrainerTrainingOpinionMemory_Adaptation>訓導官調教餘韻（適應）</SSC_TrainerTrainingOpinionMemory_Adaptation>
+  <SSC_TrainerTrainingOpinionMemory_Submission>訓導官調教餘韻（沉淪）</SSC_TrainerTrainingOpinionMemory_Submission>
+  <SSC_TrainerTrainingOpinionMemory_ResentmentDesc>同樣受人支配的{0}卻來調教我，讓我難以接受。好感變化為{1}。</SSC_TrainerTrainingOpinionMemory_ResentmentDesc>
+  <SSC_TrainerTrainingOpinionMemory_WaveringDesc>明明身分相近，我卻開始接受訓導官{0}的調教。好感變化為{1}。</SSC_TrainerTrainingOpinionMemory_WaveringDesc>
+  <SSC_TrainerTrainingOpinionMemory_AdaptationDesc>我逐漸習慣了訓導官{0}的調教。好感變化為{1}。</SSC_TrainerTrainingOpinionMemory_AdaptationDesc>
+  <SSC_TrainerTrainingOpinionMemory_SubmissionDesc>那次經歷讓我越來越依賴訓導官{0}的調教。好感變化為{1}。</SSC_TrainerTrainingOpinionMemory_SubmissionDesc>
+</LanguageData>

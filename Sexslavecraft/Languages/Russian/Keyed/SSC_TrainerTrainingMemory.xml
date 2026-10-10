@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_TrainerTrainingOpinionMemory_Resentment>Отголосок тренировок наставника (неприязнь)</SSC_TrainerTrainingOpinionMemory_Resentment>
+  <SSC_TrainerTrainingOpinionMemory_Wavering>Отголосок тренировок наставника (колебание)</SSC_TrainerTrainingOpinionMemory_Wavering>
+  <SSC_TrainerTrainingOpinionMemory_Adaptation>Отголосок тренировок наставника (привыкание)</SSC_TrainerTrainingOpinionMemory_Adaptation>
+  <SSC_TrainerTrainingOpinionMemory_Submission>Отголосок тренировок наставника (подчинение)</SSC_TrainerTrainingOpinionMemory_Submission>
+  <SSC_TrainerTrainingOpinionMemory_ResentmentDesc>{0}, кем управляют так же, как мной, пришёл меня тренировать. Я не могу это принять. Мнение изменилось на {1}.</SSC_TrainerTrainingOpinionMemory_ResentmentDesc>
+  <SSC_TrainerTrainingOpinionMemory_WaveringDesc>Мы так похожи по положению, но я уже начинаю принимать тренировки наставника {0}. Мнение изменилось на {1}.</SSC_TrainerTrainingOpinionMemory_WaveringDesc>
+  <SSC_TrainerTrainingOpinionMemory_AdaptationDesc>Я постепенно привыкаю к тренировкам наставника {0}. Мнение изменилось на {1}.</SSC_TrainerTrainingOpinionMemory_AdaptationDesc>
+  <SSC_TrainerTrainingOpinionMemory_SubmissionDesc>Тот случай заставил меня всё сильнее зависеть от тренировок наставника {0}. Мнение изменилось на {1}.</SSC_TrainerTrainingOpinionMemory_SubmissionDesc>
+</LanguageData>

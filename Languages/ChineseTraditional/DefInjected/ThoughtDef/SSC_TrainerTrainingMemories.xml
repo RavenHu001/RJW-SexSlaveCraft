@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 訓導官弱化套僅用於原始碼目錄鏡像；根目錄 Languages 為發布來源，兩處內容保持一致。 -->
+<LanguageData>
+  <SSC_TrainerTraining_MoodDynamic.stages.0.label>訓導官調教餘韻 (反感)</SSC_TrainerTraining_MoodDynamic.stages.0.label>
+  <SSC_TrainerTraining_MoodDynamic.stages.0.description>同樣受人支配的訓導官卻來調教我，那種不適感揮之不去。</SSC_TrainerTraining_MoodDynamic.stages.0.description>
+  <SSC_TrainerTraining_MoodDynamic.stages.1.label>訓導官調教餘韻 (動搖)</SSC_TrainerTraining_MoodDynamic.stages.1.label>
+  <SSC_TrainerTraining_MoodDynamic.stages.1.description>明明身分相近，剛才的調教似乎並沒有那麼難以接受……</SSC_TrainerTraining_MoodDynamic.stages.1.description>
+  <SSC_TrainerTraining_MoodDynamic.stages.2.label>訓導官調教餘韻 (適應)</SSC_TrainerTraining_MoodDynamic.stages.2.label>
+  <SSC_TrainerTraining_MoodDynamic.stages.2.description>我好像漸漸習慣了訓導官的調教方式。</SSC_TrainerTraining_MoodDynamic.stages.2.description>
+  <SSC_TrainerTraining_MoodDynamic.stages.3.label>訓導官調教餘韻 (沉淪)</SSC_TrainerTraining_MoodDynamic.stages.3.label>
+  <SSC_TrainerTraining_MoodDynamic.stages.3.description>一回想起那名訓導官的調教，腦子就有些發昏……</SSC_TrainerTraining_MoodDynamic.stages.3.description>
+
+  <SSC_TrainerTraining_OpinionDynamic.stages.0.label>訓導官調教記憶 (反感)</SSC_TrainerTraining_OpinionDynamic.stages.0.label>
+  <SSC_TrainerTraining_OpinionDynamic.stages.0.description>同樣受人支配的{0}卻來調教我，讓我難以接受。好感變化為{1}。</SSC_TrainerTraining_OpinionDynamic.stages.0.description>
+  <SSC_TrainerTraining_OpinionDynamic.stages.1.label>訓導官調教記憶 (動搖)</SSC_TrainerTraining_OpinionDynamic.stages.1.label>
+  <SSC_TrainerTraining_OpinionDynamic.stages.1.description>明明身分相近，我卻開始接受訓導官{0}的調教。好感變化為{1}。</SSC_TrainerTraining_OpinionDynamic.stages.1.description>
+  <SSC_TrainerTraining_OpinionDynamic.stages.2.label>訓導官調教記憶 (適應)</SSC_TrainerTraining_OpinionDynamic.stages.2.label>
+  <SSC_TrainerTraining_OpinionDynamic.stages.2.description>我逐漸習慣了訓導官{0}的調教。好感變化為{1}。</SSC_TrainerTraining_OpinionDynamic.stages.2.description>
+  <SSC_TrainerTraining_OpinionDynamic.stages.3.label>訓導官調教記憶 (沉淪)</SSC_TrainerTraining_OpinionDynamic.stages.3.label>
+  <SSC_TrainerTraining_OpinionDynamic.stages.3.description>那次經歷讓我越來越依賴訓導官{0}的調教。好感變化為{1}。</SSC_TrainerTraining_OpinionDynamic.stages.3.description>
+
+  <SSC_TrainerTraining_Mood_Lvl1.stages.0.label>訓導官調教餘韻 (厭惡)</SSC_TrainerTraining_Mood_Lvl1.stages.0.label>
+  <SSC_TrainerTraining_Mood_Lvl1.stages.0.description>被身分相近的訓導官這樣對待，我實在反胃。</SSC_TrainerTraining_Mood_Lvl1.stages.0.description>
+  <SSC_TrainerTraining_Mood_Lvl2.stages.0.label>訓導官調教餘韻 (迷茫)</SSC_TrainerTraining_Mood_Lvl2.stages.0.label>
+  <SSC_TrainerTraining_Mood_Lvl2.stages.0.description>訓導官的調教並不讓人難受，這反而讓我不知所措……</SSC_TrainerTraining_Mood_Lvl2.stages.0.description>
+  <SSC_TrainerTraining_Mood_Lvl3.stages.0.label>訓導官調教餘韻 (極樂)</SSC_TrainerTraining_Mood_Lvl3.stages.0.label>
+  <SSC_TrainerTraining_Mood_Lvl3.stages.0.description>光是回想訓導官的手法，腦子就一片空白了……</SSC_TrainerTraining_Mood_Lvl3.stages.0.description>
+
+  <SSC_TrainerTraining_Social_Lvl1.stages.0.label>訓導官調教記憶 (反感)</SSC_TrainerTraining_Social_Lvl1.stages.0.label>
+  <SSC_TrainerTraining_Social_Lvl1.stages.0.description>那個訓導官憑什麼那樣對待我，我不會輕易忘記。</SSC_TrainerTraining_Social_Lvl1.stages.0.description>
+  <SSC_TrainerTraining_Social_Lvl2.stages.0.label>訓導官調教記憶 (適應)</SSC_TrainerTraining_Social_Lvl2.stages.0.label>
+  <SSC_TrainerTraining_Social_Lvl2.stages.0.description>被訓導官那樣對待，我好像也沒有那麼抗拒了……</SSC_TrainerTraining_Social_Lvl2.stages.0.description>
+  <SSC_TrainerTraining_Social_Lvl3.stages.0.label>訓導官調教記憶 (沉淪)</SSC_TrainerTraining_Social_Lvl3.stages.0.label>
+  <SSC_TrainerTraining_Social_Lvl3.stages.0.description>我好像越來越期待那位訓導官的調教了……</SSC_TrainerTraining_Social_Lvl3.stages.0.description>
+</LanguageData>

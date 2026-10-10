@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Source-tree mirror of the trainer weak-memory strings; the root Languages folder is the shipping source. -->
+<LanguageData>
+  <SSC_TrainerTraining_MoodDynamic.stages.0.label>trainer training aftereffect (resentment)</SSC_TrainerTraining_MoodDynamic.stages.0.label>
+  <SSC_TrainerTraining_MoodDynamic.stages.0.description>Someone under the same kind of control came to train me. The discomfort will not go away.</SSC_TrainerTraining_MoodDynamic.stages.0.description>
+  <SSC_TrainerTraining_MoodDynamic.stages.1.label>trainer training aftereffect (wavering)</SSC_TrainerTraining_MoodDynamic.stages.1.label>
+  <SSC_TrainerTraining_MoodDynamic.stages.1.description>Our positions are so similar, yet that training did not feel as unbearable as I expected...</SSC_TrainerTraining_MoodDynamic.stages.1.description>
+  <SSC_TrainerTraining_MoodDynamic.stages.2.label>trainer training aftereffect (adaptation)</SSC_TrainerTraining_MoodDynamic.stages.2.label>
+  <SSC_TrainerTraining_MoodDynamic.stages.2.description>I seem to be getting used to the way that trainer trains me.</SSC_TrainerTraining_MoodDynamic.stages.2.description>
+  <SSC_TrainerTraining_MoodDynamic.stages.3.label>trainer training aftereffect (submission)</SSC_TrainerTraining_MoodDynamic.stages.3.label>
+  <SSC_TrainerTraining_MoodDynamic.stages.3.description>Just recalling that trainer's hands makes my mind go blank...</SSC_TrainerTraining_MoodDynamic.stages.3.description>
+
+  <SSC_TrainerTraining_OpinionDynamic.stages.0.label>trainer training memory (resentment)</SSC_TrainerTraining_OpinionDynamic.stages.0.label>
+  <SSC_TrainerTraining_OpinionDynamic.stages.0.description>{0}, who is controlled just like me, came to train me. I cannot accept it. Opinion changed by {1}.</SSC_TrainerTraining_OpinionDynamic.stages.0.description>
+  <SSC_TrainerTraining_OpinionDynamic.stages.1.label>trainer training memory (wavering)</SSC_TrainerTraining_OpinionDynamic.stages.1.label>
+  <SSC_TrainerTraining_OpinionDynamic.stages.1.description>Our positions are so similar, yet I am starting to accept trainer {0}'s training. Opinion changed by {1}.</SSC_TrainerTraining_OpinionDynamic.stages.1.description>
+  <SSC_TrainerTraining_OpinionDynamic.stages.2.label>trainer training memory (adaptation)</SSC_TrainerTraining_OpinionDynamic.stages.2.label>
+  <SSC_TrainerTraining_OpinionDynamic.stages.2.description>I am slowly getting used to trainer {0}'s training. Opinion changed by {1}.</SSC_TrainerTraining_OpinionDynamic.stages.2.description>
+  <SSC_TrainerTraining_OpinionDynamic.stages.3.label>trainer training memory (submission)</SSC_TrainerTraining_OpinionDynamic.stages.3.label>
+  <SSC_TrainerTraining_OpinionDynamic.stages.3.description>That experience left me relying more and more on trainer {0}'s training. Opinion changed by {1}.</SSC_TrainerTraining_OpinionDynamic.stages.3.description>
+
+  <SSC_TrainerTraining_Mood_Lvl1.stages.0.label>trainer training aftereffect (disgust)</SSC_TrainerTraining_Mood_Lvl1.stages.0.label>
+  <SSC_TrainerTraining_Mood_Lvl1.stages.0.description>Being treated that way by a trainer who is controlled just like me makes me sick.</SSC_TrainerTraining_Mood_Lvl1.stages.0.description>
+  <SSC_TrainerTraining_Mood_Lvl2.stages.0.label>trainer training aftereffect (confusion)</SSC_TrainerTraining_Mood_Lvl2.stages.0.label>
+  <SSC_TrainerTraining_Mood_Lvl2.stages.0.description>That trainer's training was not unpleasant at all, and that is what confuses me...</SSC_TrainerTraining_Mood_Lvl2.stages.0.description>
+  <SSC_TrainerTraining_Mood_Lvl3.stages.0.label>trainer training aftereffect (bliss)</SSC_TrainerTraining_Mood_Lvl3.stages.0.label>
+  <SSC_TrainerTraining_Mood_Lvl3.stages.0.description>Just recalling that trainer's technique empties my mind...</SSC_TrainerTraining_Mood_Lvl3.stages.0.description>
+
+  <SSC_TrainerTraining_Social_Lvl1.stages.0.label>trainer training memory (resentment)</SSC_TrainerTraining_Social_Lvl1.stages.0.label>
+  <SSC_TrainerTraining_Social_Lvl1.stages.0.description>What right did that trainer have to treat me like that? I will not forget it easily.</SSC_TrainerTraining_Social_Lvl1.stages.0.description>
+  <SSC_TrainerTraining_Social_Lvl2.stages.0.label>trainer training memory (adaptation)</SSC_TrainerTraining_Social_Lvl2.stages.0.label>
+  <SSC_TrainerTraining_Social_Lvl2.stages.0.description>Being handled that way by a trainer, I no longer resist it quite so much...</SSC_TrainerTraining_Social_Lvl2.stages.0.description>
+  <SSC_TrainerTraining_Social_Lvl3.stages.0.label>trainer training memory (submission)</SSC_TrainerTraining_Social_Lvl3.stages.0.label>
+  <SSC_TrainerTraining_Social_Lvl3.stages.0.description>I think I am starting to look forward to that trainer's training...</SSC_TrainerTraining_Social_Lvl3.stages.0.description>
+</LanguageData>
