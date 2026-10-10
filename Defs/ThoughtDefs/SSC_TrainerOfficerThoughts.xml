@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <ThoughtDef>
+    <defName>SSC_TrainerOfficer_DutyFulfilled</defName>
+    <thoughtClass>Thought_Memory</thoughtClass>
+    <durationDays>1</durationDays>
+    <stackLimit>1</stackLimit>
+    <stackLimitForSameOtherPawn>1</stackLimitForSameOtherPawn>
+    <stages>
+      <li>
+        <label>替主人把性奴调教服帖</label>
+        <description>我替主人把那具身子又操开了一点。被主人这样使唤着，一想到自己正在替主人管住别的性奴，下面就湿了。</description>
+        <baseMoodEffect>3</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+  <ThoughtDef>
+    <defName>SSC_TrainerOfficer_Appraisal</defName>
+    <thoughtClass>Thought_SituationalSocial</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_TrainerOfficerAppraisal</workerClass>
+    <stages>
+      <li>
+        <label>主人使唤得顺手的性奴</label>
+        <description>这条性奴是我调教出来的，如今又能替我去操开别的性奴。它知道自己的身子是谁的，也知道该替我把谁调教服帖。</description>
+        <baseOpinionOffset>5</baseOpinionOffset>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+  <!-- 反向的任职信任：训导官对实际绑定主人的条件性好感与心情。
+       两者都不是记忆，不设时长与容量、不进人格凝胶，条件失效即消失。
+       心情条必须显式声明 Thought_Situational，否则带 workerClass 时可能被解析成社交形态。 -->
+  <ThoughtDef>
+    <defName>SSC_TrainerOfficer_TrustedByOwnerSocial</defName>
+    <thoughtClass>Thought_SituationalSocial</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_TrainerOfficerTrustedByOwner</workerClass>
+    <stages>
+      <li>
+        <label>受到主人信任</label>
+        <description>主人把别的性奴交到我手上。这是只有被信任的性奴才拿得到的差事。</description>
+        <baseOpinionOffset>5</baseOpinionOffset>
+      </li>
+    </stages>
+  </ThoughtDef>
+  <ThoughtDef>
+    <defName>SSC_TrainerOfficer_TrustedByOwnerMood</defName>
+    <thoughtClass>Thought_Situational</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_TrainerOfficerTrustedByOwnerMood</workerClass>
+    <stages>
+      <li>
+        <label>主人的器重</label>
+        <description>主人把调教别的性奴的差事交给了我。被主人这样用着，比被放着不管更让我安心。</description>
+        <baseMoodEffect>3</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+</Defs>

@@ -369,6 +369,9 @@ namespace SexSlaveCraft
             if (!ValidateTargetIdentityOrAbort(context, target)) return;
             TrainerSpecializationProgressUtility.NotifyProvidedTrainingCompleted(pawn, target);
             if (!ValidateTargetIdentityOrAbort(context, target)) return;
+            // 职责反馈独立于普通经验：满进度及有效终极训导官也能获得完成记忆。
+            TrainerOfficerFeedback.NotifyTrainingCompleted(pawn, target);
+            if (!ValidateTargetIdentityOrAbort(context, target)) return;
 
             string finalSexType = props != null ? props.sexType.ToString() : "null";
             SSCLog.Important($"[SSC_TRAIN] Daily training completed: trainer={pawn.LabelShort}, slave={target.LabelShort}, sexType={finalSexType}, score={score:F2}, cooldownStarted={(compToggle != null)}");

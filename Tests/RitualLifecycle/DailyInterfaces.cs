@@ -7,7 +7,7 @@ namespace Verse
 {
     public enum LoadSaveMode { Inactive, Saving, LoadingVars, PostLoadInit }
     public static class Scribe { public static LoadSaveMode mode; }
-    public static class Find { public static TickManager TickManager = new TickManager(); }
+    public static partial class Find { public static TickManager TickManager = new TickManager(); }
     public class TickManager { public int TicksGame; }
     public partial class Pawn
     {
@@ -73,7 +73,7 @@ namespace SexSlaveCraft
         /// <summary>测试不锁定特定动作，只提供生产方法签名。</summary>
         public static void ApplyTrainingAct(rjw.SexProps props, Pawn actor, Pawn target, TrainingActType mode) { }
     }
-    public static class ConditioningUtility
+    public static partial class ConditioningUtility
     {
         /// <summary>返回固定分数以观察生产结算入口。</summary>
         public static float GetScore(Pawn actor, Pawn target)
@@ -89,7 +89,7 @@ namespace SexSlaveCraft
             TestWorld.OnDailyOutcome?.Invoke();
         }
     }
-    public static class SpecializationTrainingProgressUtility
+    public static partial class SpecializationTrainingProgressUtility
     {
         // 数值与主人关系由特化进度套件验证，这里记录真实 Job 的发奖时序。
         public static float NotifyTrainingCompleted(Pawn trainer, Pawn receiver, float score)

@@ -52,12 +52,28 @@ namespace SexSlaveCraft
         public static ThoughtDef SSC_Training_Mood_Lvl3;
         public static ThoughtDef SSC_Training_MoodDynamic;
         public static ThoughtDef SSC_SelfTraining_Completed;
+        public static ThoughtDef SSC_TrainerOfficer_DutyFulfilled;
+        // 反向任职信任：条件性社交好感与条件性心情，都不是记忆。
+        public static ThoughtDef SSC_TrainerOfficer_TrustedByOwnerSocial;
+        public static ThoughtDef SSC_TrainerOfficer_TrustedByOwnerMood;
+
+        // 训导官弱化心情套：与主人原套独立，单次结算只发其中一套。
+        public static ThoughtDef SSC_TrainerTraining_Mood_Lvl1;
+        public static ThoughtDef SSC_TrainerTraining_Mood_Lvl2;
+        public static ThoughtDef SSC_TrainerTraining_Mood_Lvl3;
+        public static ThoughtDef SSC_TrainerTraining_MoodDynamic;
 
         // Social Thoughts
         public static ThoughtDef SSC_Training_Social_Lvl1;
         public static ThoughtDef SSC_Training_Social_Lvl2;
         public static ThoughtDef SSC_Training_Social_Lvl3;
         public static ThoughtDef SSC_Training_OpinionDynamic;
+
+        // 训导官弱化社交套：对象始终是实际施教的训导官本人。
+        public static ThoughtDef SSC_TrainerTraining_Social_Lvl1;
+        public static ThoughtDef SSC_TrainerTraining_Social_Lvl2;
+        public static ThoughtDef SSC_TrainerTraining_Social_Lvl3;
+        public static ThoughtDef SSC_TrainerTraining_OpinionDynamic;
 
         // Corruption Rape Thoughts
         public static ThoughtDef SSC_CorruptionRape_Stage1;
@@ -213,12 +229,24 @@ namespace SexSlaveCraft
             SSC_Training_Mood_Lvl3 = GetDef<ThoughtDef>("SSC_Training_Mood_Lvl3");
             SSC_Training_MoodDynamic = GetDef<ThoughtDef>("SSC_Training_MoodDynamic");
             SSC_SelfTraining_Completed = GetDef<ThoughtDef>("SSC_SelfTraining_Completed");
+            SSC_TrainerOfficer_DutyFulfilled = GetDef<ThoughtDef>("SSC_TrainerOfficer_DutyFulfilled");
+            SSC_TrainerOfficer_TrustedByOwnerSocial = GetDef<ThoughtDef>("SSC_TrainerOfficer_TrustedByOwnerSocial");
+            SSC_TrainerOfficer_TrustedByOwnerMood = GetDef<ThoughtDef>("SSC_TrainerOfficer_TrustedByOwnerMood");
+            // 训导官弱套与主人原套分别解析；任一新 Def 缺失时对应路径保持旧行为。
+            SSC_TrainerTraining_Mood_Lvl1 = GetDef<ThoughtDef>("SSC_TrainerTraining_Mood_Lvl1");
+            SSC_TrainerTraining_Mood_Lvl2 = GetDef<ThoughtDef>("SSC_TrainerTraining_Mood_Lvl2");
+            SSC_TrainerTraining_Mood_Lvl3 = GetDef<ThoughtDef>("SSC_TrainerTraining_Mood_Lvl3");
+            SSC_TrainerTraining_MoodDynamic = GetDef<ThoughtDef>("SSC_TrainerTraining_MoodDynamic");
 
             // --- Social Thoughts ---
             SSC_Training_Social_Lvl1 = GetDef<ThoughtDef>("SSC_Training_Social_Lvl1");
             SSC_Training_Social_Lvl2 = GetDef<ThoughtDef>("SSC_Training_Social_Lvl2");
             SSC_Training_Social_Lvl3 = GetDef<ThoughtDef>("SSC_Training_Social_Lvl3");
             SSC_Training_OpinionDynamic = GetDef<ThoughtDef>("SSC_Training_OpinionDynamic");
+            SSC_TrainerTraining_Social_Lvl1 = GetDef<ThoughtDef>("SSC_TrainerTraining_Social_Lvl1");
+            SSC_TrainerTraining_Social_Lvl2 = GetDef<ThoughtDef>("SSC_TrainerTraining_Social_Lvl2");
+            SSC_TrainerTraining_Social_Lvl3 = GetDef<ThoughtDef>("SSC_TrainerTraining_Social_Lvl3");
+            SSC_TrainerTraining_OpinionDynamic = GetDef<ThoughtDef>("SSC_TrainerTraining_OpinionDynamic");
 
             // --- Corruption Rape Thoughts ---
             SSC_CorruptionRape_Stage1 = GetDef<ThoughtDef>("SSC_CorruptionRape_Stage1");

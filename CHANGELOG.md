@@ -6,7 +6,9 @@ This continuation builds on upstream **2.2.8**, the baseline when upstream devel
 
 ## [Unreleased] — 开发分支 / Development branch
 
-以下改动已在开发分支实现，维护者本机测试反馈目前未发现问题并批准提交，尚未发布；正式 2.3.8 ZIP 不包含这些改动。These changes are implemented in the development branch. The maintainer reports no issues in local testing and has approved committing them; they remain unreleased. The stable 2.3.8 ZIP does not contain them.
+以下改动属于未发布开发内容；实机反馈与验证范围按各专项记录理解，正式 2.3.8 ZIP 不包含这些改动。These changes remain unreleased. In-game feedback and verification boundaries are recorded separately for each feature. The stable 2.3.8 ZIP does not contain them.
+
+- **训导官职责反馈 / Trainer Officer feedback:** 有效任职的训导官完成日常调教或整场仪式后获得“履行训导职责”心情 +3，持续一天；重复完成刷新一份记忆，不叠加，普通培养已满及有效终极跨方向同样适用。实际主人对自己有效任职的训导官获得“受委任的训导官”好感 +5，随绑定、资格和个人开关生效或消失；临时停工、倒地或离图不取消该评价。见[实现记录](Docs/Development/训导官职责反馈实现与测试记录.md)，维护者已确认本项修改有效并授权提交。Active Trainer Officers gain +3 mood for one day after completing daily Training or a whole Ritual. Further completions refresh a single memory; ordinary completion and active final Officers training another direction remain eligible. Their actual Master has a conditional +5 opinion while the Officer remains bound and actively appointed. Temporary work suspension, downing or travel does not remove this appraisal. The maintainer confirmed the changes work in game and approved committing them.
 
 - **统一受训身份 / Unified receiver identity:** 日常自动与手动调教、绑定仪式，以及新增调教员指派统一要求 SSC 性奴身份；原版奴隶身份、关闭行为限制和强制命令不能豁免。候选、实际准入、执行及结算复查身份，同时保留各入口已有条件。Automatic/forced Training, Binding Rituals and new trainer assignments require SSC Sex Slave identity. Vanilla slave status, disabled restrictions and forced commands do not waive it. Candidate, admission, execution and outcome checks preserve each entry's existing conditions.
 - **旧档与回调 / Historical saves and callbacks:** 不自动改写身份或删除成长；不合资格的旧任务停止。未设身份但保留有效历史锁链者可经面板确认恢复身份，保留原主人、配置及成长；迟到回调不得发放收益或清理新任务占用。Identity and growth are not rewritten on load; ineligible old tasks stop. Unset pawns with valid historical Chains can explicitly restore the role while retaining ownership, settings and progress. Late callbacks cannot grant rewards or clear a newer task's preparation.

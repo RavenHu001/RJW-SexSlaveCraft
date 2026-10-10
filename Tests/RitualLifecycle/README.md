@@ -1,6 +1,6 @@
 # Binding Ritual lifecycle regression tests
 
-The suite currently contains 93 cases (84 without UAP), including ritual lifecycle, UAP compatibility,
+The suite currently contains 142 cases, including ritual lifecycle, UAP compatibility,
 daily training, Education interactions, receiver handoff/reservation regressions,
 and exclusive ownership during personality excretion.
 The original lifecycle tests were committed with the lifecycle fix
@@ -33,6 +33,22 @@ cooldown algorithms are exercised by PersonalityTraits and PetCatAbility/PetDogA
 `GameStubs.cs` supplies the minimal game host and stores observable state. The
 tests do not duplicate the ritual ownership, progression, recovery or outcome
 eligibility algorithms.
+
+The trainer-officer feedback first version adds 18 cases and compiles the complete production
+`RitualOutcomeEffectWorker_SSCBinding.Apply`. Daily cases exercise both forced flags, actual
+trainer/receiver references, recursive callbacks, interrupted/missing scenes, formal outcome
+exceptions, reconstruction with consumed/unconsumed job flags, and identity/task replacement
+between experience and feedback. Whole-ritual cases run six real phase drivers, confirm no
+per-phase feedback, then execute one production outcome for the actual officer; poor completed
+outcomes still notify. Cancellation, recursive outcome calls, exceptions, restored consumed
+claim fields and replacement rituals cannot repeat or borrow the notification. Callback changes
+during feedback preserve replacement state and suppress later stale effects. The new
+`RitualOutcomeInterfaces.cs` only supplies vanilla quality/text/letter API boundaries with one
+outcome option, no spectator comp, no vanilla memory and no attachable outcome effect. It does
+not reproduce ownership, phase progression or once-only outcome claims. Restored ritual fields
+are supplied as they would appear after reference loading; this is not a complete Scribe
+serialization test. Production officer qualification/social direction is tested by TrainerIdentity,
+and one-day memory age across personality migration by PersonalityMemories.
 
 The 13 receiver-handoff cases cover non-interrupting position synchronization,
 replacement work and its reservations, reuse of the same Job object with a new

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 简体中文此前缺少该文件，游戏内会回退到 Def 源文；这里补齐并统一使用“训导官”。 -->
+<LanguageData>
+  <SSC_SharedBedWithTrainer.stages.0.label>与训导官同床（厌恶）</SSC_SharedBedWithTrainer.stages.0.label>
+  <SSC_SharedBedWithTrainer.stages.0.description>被主人塞到训导官身边过夜，我整晚僵着身子，连翻身都不敢。</SSC_SharedBedWithTrainer.stages.0.description>
+  <SSC_SharedBedWithTrainer.stages.1.label>与训导官同床（抗拒）</SSC_SharedBedWithTrainer.stages.1.label>
+  <SSC_SharedBedWithTrainer.stages.1.description>又和训导官同床了。被主人安排睡在训导官身边，我还是没法放松。</SSC_SharedBedWithTrainer.stages.1.description>
+  <SSC_SharedBedWithTrainer.stages.2.label>与训导官同床（动摇）</SSC_SharedBedWithTrainer.stages.2.label>
+  <SSC_SharedBedWithTrainer.stages.2.description>同床的次数多了，被训导官从背后抱住时，我竟然觉得有点安心。</SSC_SharedBedWithTrainer.stages.2.description>
+  <SSC_SharedBedWithTrainer.stages.3.label>与训导官同床（驯化）</SSC_SharedBedWithTrainer.stages.3.label>
+  <SSC_SharedBedWithTrainer.stages.3.description>在训导官身边我反而睡得最沉。被主人调教过的身体，看来连该睡在哪里都学乖了。</SSC_SharedBedWithTrainer.stages.3.description>
+  <SSC_SharedBedWithTrainer.stages.4.label>与训导官同床（沉迷）</SSC_SharedBedWithTrainer.stages.4.label>
+  <SSC_SharedBedWithTrainer.stages.4.description>要是一晚不被训导官抱着睡，我反而睡不踏实……这大概也是主人想看到的。</SSC_SharedBedWithTrainer.stages.4.description>
+  <SSC_SharedBedWithTrainer.stages.5.label>与训导官同床（彻底驯服）</SSC_SharedBedWithTrainer.stages.5.label>
+  <SSC_SharedBedWithTrainer.stages.5.description>被训导官抱在怀里的那种安心感，已经成了我唯一能安心闭眼的地方。</SSC_SharedBedWithTrainer.stages.5.description>
+</LanguageData>

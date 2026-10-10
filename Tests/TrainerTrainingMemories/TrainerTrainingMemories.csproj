@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- 独立无界面测试宿主：直接编译生产套别分流、弱值换算、发放入口与新动态社交实例类。
+       新版评分路径的发放已集中在 TrainerTrainingMemoryUtility，因此无需引入 ConditioningUtility
+       的恶堕／意志／仪式／经验等无关依赖。 -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net9.0</TargetFramework>
+    <SscSourceRoot Condition="'$(SscSourceRoot)' == ''">../../Sexslavecraft</SscSourceRoot>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(SscSourceRoot)/common/TrainerTrainingMemoryUtility.cs" Link="Production/TrainerTrainingMemoryUtility.cs" />
+    <Compile Include="$(SscSourceRoot)/common/Thought_MemoryTrainerTraining.cs" Link="Production/Thought_MemoryTrainerTraining.cs" />
+    <Compile Include="$(SscSourceRoot)/common/Thought_MemoryDynamicTraining.cs" Link="Production/Thought_MemoryDynamicTraining.cs" />
+    <Compile Include="$(SscSourceRoot)/common/TrainerOfficerFeedback.cs" Link="Production/TrainerOfficerFeedback.cs" />
+    <Compile Include="$(SscSourceRoot)/common/SSCIdentityUtility.Trainer.cs" Link="Production/SSCIdentityUtility.Trainer.cs" />
+    <Compile Include="$(SscSourceRoot)/common/LegacyTrainingUtility.cs" Link="Production/LegacyTrainingUtility.cs" />
+    <Compile Include="$(SscSourceRoot)/common/PersonalityMemoryUtility.cs" Link="Production/PersonalityMemoryUtility.cs" />
+    <Compile Include="$(SscSourceRoot)/common/SSCThoughtBootstrap.cs" Link="Production/SSCThoughtBootstrap.cs" />
+  </ItemGroup>
+</Project>

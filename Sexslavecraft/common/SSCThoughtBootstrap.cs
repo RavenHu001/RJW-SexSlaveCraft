@@ -23,6 +23,10 @@ namespace SexSlaveCraft
             // CN: SSC 的“调教记忆”社交想法需要比 XML 默认值更强一点的好感度偏移。
             SetOpinionOffset(SSCDefOf.SSC_Training_Social_Lvl2, 5);
             SetOpinionOffset(SSCDefOf.SSC_Training_Social_Lvl3, 15);
+
+            // 训导官弱套的旧模式社交 Def 已在 XML 中直接写入运行后的整数值（+3／+8），
+            // 这里刻意不做二次改写，避免把弱值错误地折算成 +5／+15 或再乘一次系数。
+            // 弱值口径见 TrainerTrainingMemoryUtility.WeakFactor 与设计文档第 4.1 节。
         }
 
         /// <summary>更新指定心情第一阶段的好感效果；定义或阶段缺失时跳过。</summary>

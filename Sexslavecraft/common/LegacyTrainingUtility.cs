@@ -125,24 +125,38 @@ namespace SexSlaveCraft
             return found;
         }
 
-        public static void ApplyMemories_Legacy(int level, Pawn master, Pawn sexSlave, bool includeSocialThought)
+        /// <summary>
+        /// 按本次结算已确定的套别发放旧模式记忆。
+        /// 兼容调用默认仍为原套；日常显式传入套别，仪式保持原套且不发社交记忆。
+        /// </summary>
+        public static void ApplyMemories_Legacy(int level, Pawn master, Pawn sexSlave, bool includeSocialThought,
+            TrainingMemorySet memorySet = TrainingMemorySet.Existing)
         {
+            // 失格执行者不发本次受训者记忆，也不回退领取较强的原套。
+            if (memorySet == TrainingMemorySet.None) return;
+
             var memories = sexSlave.needs.mood?.thoughts.memories;
             if (memories == null) return;
+
+            bool weakSet = memorySet == TrainingMemorySet.Officer;
+            // 等级仍由本次已经确定的 finalLevel 决定，弱化不改写感受分类。
             if (level == 1)
             {
-                memories.TryGainMemory(SSCDefOf.SSC_Training_Mood_Lvl1, master);
-                if (includeSocialThought) memories.TryGainMemory(SSCDefOf.SSC_Training_Social_Lvl1, master);
+                memories.TryGainMemory(weakSet ? SSCDefOf.SSC_TrainerTraining_Mood_Lvl1 : SSCDefOf.SSC_Training_Mood_Lvl1, master);
+                if (includeSocialThought)
+                    memories.TryGainMemory(weakSet ? SSCDefOf.SSC_TrainerTraining_Social_Lvl1 : SSCDefOf.SSC_Training_Social_Lvl1, master);
             }
             else if (level == 2)
             {
-                memories.TryGainMemory(SSCDefOf.SSC_Training_Mood_Lvl2, master);
-                if (includeSocialThought) memories.TryGainMemory(SSCDefOf.SSC_Training_Social_Lvl2, master);
+                memories.TryGainMemory(weakSet ? SSCDefOf.SSC_TrainerTraining_Mood_Lvl2 : SSCDefOf.SSC_Training_Mood_Lvl2, master);
+                if (includeSocialThought)
+                    memories.TryGainMemory(weakSet ? SSCDefOf.SSC_TrainerTraining_Social_Lvl2 : SSCDefOf.SSC_Training_Social_Lvl2, master);
             }
             else
             {
-                memories.TryGainMemory(SSCDefOf.SSC_Training_Mood_Lvl3, master);
-                if (includeSocialThought) memories.TryGainMemory(SSCDefOf.SSC_Training_Social_Lvl3, master);
+                memories.TryGainMemory(weakSet ? SSCDefOf.SSC_TrainerTraining_Mood_Lvl3 : SSCDefOf.SSC_Training_Mood_Lvl3, master);
+                if (includeSocialThought)
+                    memories.TryGainMemory(weakSet ? SSCDefOf.SSC_TrainerTraining_Social_Lvl3 : SSCDefOf.SSC_Training_Social_Lvl3, master);
             }
         }
     }

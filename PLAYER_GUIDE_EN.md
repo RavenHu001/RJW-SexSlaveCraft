@@ -75,6 +75,8 @@ Candidate hints, selection, startup, ongoing execution and outcomes recheck rece
 
 On upgrade, the old Sex Slave trainer toggle is turned off once, including for previously assigned trainers. Assignment records remain but are inactive until the pawn qualifies and the player turns the toggle on again. Unset trainers are not promoted to Master. Later loads preserve the new choice.
 
+**Trainer Officer feedback in the unreleased development branch.** An active Officer completing daily Training or a whole Ritual gains +3 mood for one day. Different receivers share one memory, and further completions refresh it without stacking. Ordinary Officers at 100% and active final Officers training another specialization still qualify independently of experience gains. Cancellation, failure, individual ritual stages, self-training and receiving Training grant no duty memory. An existing memory expires naturally after appointment is disabled or qualification is lost. The actual SSC Master has a conditional +5 opinion of their bound, actively appointed Officer; disabling appointment, unbinding, Chain regression or final-effect suspension removes the appraisal. Temporary downing, work suspension or travel does not remove it. Social display follows the vanilla query cache of about 100 ticks. This feature adds no reverse opinion or extra receiver opinion and is not included in the stable 2.3.8 package.
+
 ### 3.2 Allow Training
 
 The Training WorkGiver scans a pawn only when `Allow Training` is enabled. The development branch also requires SSC Sex Slave identity; a saved enable setting cannot replace it.

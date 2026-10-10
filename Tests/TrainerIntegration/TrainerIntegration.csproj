@@ -7,6 +7,7 @@
   <ItemGroup>
     <!-- 共用游戏对象的最小接口模型；不复制身份、绑定、标签或维护算法。 -->
     <Compile Include="../TrainerIdentity/GameStubs.cs" Link="Shared/GameStubs.cs" />
+    <Compile Include="../TrainerIdentity/FeedbackInterfaces.cs" Link="Shared/FeedbackInterfaces.cs" />
     <Compile Include="../TrainerIdentity/RestrictionStubs.cs" Link="Shared/RestrictionStubs.cs" />
     <Compile Include="$(SscSourceRoot)/Comps/Comp_Train.Specialization.cs" Link="Production/Comp_Train.Specialization.cs" />
     <Compile Include="$(SscSourceRoot)/common/PetSpecializationRules.cs" Link="Production/PetSpecializationRules.cs" />

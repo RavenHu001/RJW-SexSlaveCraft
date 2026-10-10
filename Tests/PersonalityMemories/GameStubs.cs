@@ -99,6 +99,7 @@ namespace RimWorld
         public bool throwOnCheck;
         public int stackLimit = 10;
         public int stackLimitForSameOtherPawn = 10;
+        public float durationDays;
     }
 
     public class Thought_Memory
