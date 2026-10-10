@@ -49,8 +49,11 @@ namespace RimWorld
 
     public class ThoughtWorker
     {
+        protected virtual ThoughtState CurrentStateInternal(Pawn p) => ThoughtState.Inactive;
         protected virtual ThoughtState CurrentSocialStateInternal(Pawn p, Pawn otherPawn) => ThoughtState.Inactive;
         /// <summary>仅暴露原版 protected 查询以运行真实 Worker。</summary>
         public ThoughtState EvaluateForTest(Pawn p, Pawn otherPawn) => CurrentSocialStateInternal(p, otherPawn);
+        /// <summary>非社交条件心情的查询入口，对应原版 CurrentState(Pawn)。</summary>
+        public ThoughtState EvaluateStateForTest(Pawn p) => CurrentStateInternal(p);
     }
 }

@@ -35,12 +35,19 @@ namespace RimWorld
 {
     public class ThoughtWorker
     {
+        protected virtual ThoughtState CurrentStateInternal(Verse.Pawn pawn)
+            => ThoughtState.Inactive;
+
         protected virtual ThoughtState CurrentSocialStateInternal(Verse.Pawn pawn, Verse.Pawn otherPawn)
             => ThoughtState.Inactive;
 
         /// <summary>仅为运行真实 Worker 暴露原版 protected 查询入口。</summary>
         public ThoughtState EvaluateForTest(Verse.Pawn pawn, Verse.Pawn otherPawn)
             => CurrentSocialStateInternal(pawn, otherPawn);
+
+        /// <summary>非社交条件心情的查询入口，对应原版 CurrentState(Pawn)。</summary>
+        public ThoughtState EvaluateStateForTest(Verse.Pawn pawn)
+            => CurrentStateInternal(pawn);
     }
 
     /// <summary>健康与 Hediff 容器的最小模型；旧模式部位尺寸查询会在空列表上提前返回。</summary>

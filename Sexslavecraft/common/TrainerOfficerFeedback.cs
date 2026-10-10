@@ -33,7 +33,11 @@ namespace SexSlaveCraft
             memories.TryGainMemory(def);
         }
 
-        /// <summary>主人仅评价实际绑定给自己、当前有效任职的训导官；查询完全只读。</summary>
+        /// <summary>
+        /// 主人仅评价实际绑定给自己、当前有效任职的训导官；查询完全只读。
+        /// 本方法只判断“这对角色是否成立”，不表示好感方向：
+        /// 主人对训导官的评价与训导官对主人的任职信任都复用它作为共同条件。
+        /// </summary>
         public static bool HasOwnerAppraisal(Pawn owner, Pawn officer)
         {
             // 不从指定调教员或缰绳目标推断关系，也不扫描其他受训者的指派。
@@ -41,6 +45,25 @@ namespace SexSlaveCraft
                 && SSCIdentityUtility.IsMaster(owner)
                 && IsActiveOfficer(officer)
                 && SSCBondUtility.GetBoundMaster(officer) == owner;
+        }
+
+        /// <summary>
+        /// 训导官当前是否拥有可信的主人：有效任职，且实际绑定主人存活并具 SSC 主人身份。
+        /// 与 <see cref="HasOwnerAppraisal"/> 校验的是同一对角色，只是查询方向相反。
+        /// 只读，不扫描其他受训者指派，也不以开关或工作完成发历史记忆。
+        /// </summary>
+        public static bool HasTrustedOwner(Pawn officer, out Pawn owner)
+        {
+            owner = null;
+            if (!IsActiveOfficer(officer)) return false;
+
+            Pawn boundMaster = SSCBondUtility.GetBoundMaster(officer);
+            // 自身、已死亡或已销毁的主人不能提供任职信任。
+            if (boundMaster == null || boundMaster == officer || !IsLivingPawn(boundMaster)) return false;
+            if (!SSCIdentityUtility.IsMaster(boundMaster)) return false;
+
+            owner = boundMaster;
+            return true;
         }
 
         private static bool IsLivingPawn(Pawn pawn)
@@ -56,6 +79,27 @@ namespace SexSlaveCraft
         {
             // 由原版社交想法刷新当前状态；关闭开关、解绑或失格后不留下永久记忆。
             return TrainerOfficerFeedback.HasOwnerAppraisal(p, otherPawn)
+                ? ThoughtState.ActiveAtStage(0) : ThoughtState.Inactive;
+        }
+    }
+
+    /// <summary>训导官对实际绑定主人的条件性好感；对象必须正是自己当前的主人。</summary>
+    public sealed class ThoughtWorker_TrainerOfficerTrustedByOwner : ThoughtWorker
+    {
+        protected override ThoughtState CurrentSocialStateInternal(Pawn p, Pawn otherPawn)
+        {
+            // 原版传入的 p 是持有想法的训导官，otherPawn 是社交栏正在比较的角色。
+            return TrainerOfficerFeedback.HasTrustedOwner(p, out Pawn owner) && owner == otherPawn
+                ? ThoughtState.ActiveAtStage(0) : ThoughtState.Inactive;
+        }
+    }
+
+    /// <summary>训导官本人因被主人委派调教职责而获得的持续心情；条件消失即失效。</summary>
+    public sealed class ThoughtWorker_TrainerOfficerTrustedByOwnerMood : ThoughtWorker
+    {
+        protected override ThoughtState CurrentStateInternal(Pawn p)
+        {
+            return TrainerOfficerFeedback.HasTrustedOwner(p, out _)
                 ? ThoughtState.ActiveAtStage(0) : ThoughtState.Inactive;
         }
     }

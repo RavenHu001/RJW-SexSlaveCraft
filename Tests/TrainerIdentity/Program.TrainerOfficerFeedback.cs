@@ -24,7 +24,8 @@ internal static partial class Program
 
         Run("训导官反馈真实定义及四语镜像完整，职责心情单份一天且评价为条件好感", () =>
         {
-            Assert(xml.Root.Elements("ThoughtDef").Count() == 2);
+            // 本节两条之外，另有第 10 节的任职信任两条条件性想法，共 4 条。
+            Assert(xml.Root.Elements("ThoughtDef").Count() == 4);
             Assert((string)duty.Element("thoughtClass") == "Thought_Memory"
                 && SSCDefOf.SSC_TrainerOfficer_DutyFulfilled.stackLimit == 1
                 && (int)duty.Element("stackLimitForSameOtherPawn") == 1
@@ -41,8 +42,11 @@ internal static partial class Program
                 string relativeLanguage = $"Languages/{language}/DefInjected/ThoughtDef/SSC_TrainerOfficerThoughts.xml";
                 var translated = XDocument.Load(Path.Combine(repo, relativeLanguage));
                 string[] keys = { "SSC_TrainerOfficer_DutyFulfilled.stages.0.label", "SSC_TrainerOfficer_DutyFulfilled.stages.0.description",
-                    "SSC_TrainerOfficer_Appraisal.stages.0.label", "SSC_TrainerOfficer_Appraisal.stages.0.description" };
-                Assert(translated.Root.Elements().Select(e => e.Name.LocalName).Distinct().Count() == 4
+                    "SSC_TrainerOfficer_Appraisal.stages.0.label", "SSC_TrainerOfficer_Appraisal.stages.0.description",
+                    // 第 10 节新增两条也必须在该文件里有四语文案。
+                    "SSC_TrainerOfficer_TrustedByOwnerSocial.stages.0.label", "SSC_TrainerOfficer_TrustedByOwnerSocial.stages.0.description",
+                    "SSC_TrainerOfficer_TrustedByOwnerMood.stages.0.label", "SSC_TrainerOfficer_TrustedByOwnerMood.stages.0.description" };
+                Assert(translated.Root.Elements().Select(e => e.Name.LocalName).Distinct().Count() == keys.Length
                     && keys.All(key => !string.IsNullOrWhiteSpace((string)translated.Root.Element(key))));
                 Assert(XNode.DeepEquals(translated, XDocument.Load(Path.Combine(repo, "Sexslavecraft", relativeLanguage))));
             }
