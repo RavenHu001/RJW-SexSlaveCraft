@@ -116,23 +116,54 @@ namespace SexSlaveCraft
                    SSCBondUtility.GetBridle(pawn)?.ValidTargets.Any() == true;
         }
 
-        /// <summary>仅允许无绑定角色切换 SSC 身份；拒绝时不修改绑定、仪式或训练配置。</summary>
-        /// <returns>完成设置或身份未变化时返回 true；缺少组件或绑定锁定时返回 false。</returns>
+        /// <summary>普通身份选择统一检查主人资格和绑定锁定；关闭手动赋予不撤销当前身份。</summary>
         public static bool TrySetIdentity(Pawn pawn, PawnIdentity identity)
+        {
+            // 在旧主人首次退出身份前保留其历史资格；查询和界面绘制不执行迁移。
+            SSCMasterQualificationMigration.MigratePawn(pawn);
+            return TrySetIdentityCore(pawn, identity, null);
+        }
+
+        /// <summary>仅供人格植入恢复已保存的身份与资格，仍遵守绑定锁定及仪式取消保护。</summary>
+        internal static bool TryRestorePersonalityIdentity(Pawn pawn, PawnIdentity identity, bool qualificationUnlocked)
+        {
+            return TrySetIdentityCore(pawn, identity, qualificationUnlocked);
+        }
+
+        private static bool TrySetIdentityCore(Pawn pawn, PawnIdentity identity, bool? restoredQualification)
         {
             CompSexSlaveTraining comp = pawn?.TryGetComp<CompSexSlaveTraining>();
             if (comp == null) return false;
+            if (identity != PawnIdentity.Unset && identity != PawnIdentity.Slave && identity != PawnIdentity.Master)
+                return false;
             // 重复设置不属于身份切换，绑定结算也会重复写入性奴身份。
-            if (comp.pawnIdentity == identity) return true;
+            if (comp.pawnIdentity == identity)
+            {
+                if (restoredQualification.HasValue) comp.ReplaceMasterQualification(restoredQualification.Value);
+                return true;
+            }
+            if (!restoredQualification.HasValue && identity == PawnIdentity.Master &&
+                !SSCMasterQualificationUtility.CanSelectMaster(pawn)) return false;
             if (IsIdentityLocked(pawn)) return false;
 
             PawnIdentity previousIdentity = comp.pawnIdentity;
+            bool previousQualification = comp.masterQualificationUnlocked;
+            int previousQualificationVersion = comp.masterQualificationVersion;
             // 先取消仍匹配此角色的仪式，再清除组件归属，避免取消回调失去原 Lord。
             if (!CancelBindingRitualBeforeIdentityChange(pawn, comp)) return false;
             // Cancel 可经外部回调替换组件、改身份或建立新绑定；原切换不得覆盖新状态。
             if (pawn.TryGetComp<CompSexSlaveTraining>() != comp || comp.pawnIdentity != previousIdentity ||
                 IsIdentityLocked(pawn)) return false;
+            // 取消回调可能改变设置或换入另一个人格，旧请求不得覆盖其最新资格。
+            if (restoredQualification.HasValue)
+            {
+                if (comp.masterQualificationUnlocked != previousQualification ||
+                    comp.masterQualificationVersion != previousQualificationVersion) return false;
+            }
+            else if (identity == PawnIdentity.Master && !SSCMasterQualificationUtility.CanSelectMaster(pawn))
+                return false;
             comp.pawnIdentity = identity;
+            if (restoredQualification.HasValue) comp.ReplaceMasterQualification(restoredQualification.Value);
             if (identity != PawnIdentity.Slave)
             {
                 BindingRitualStateUtility.ClearRitualState(comp);

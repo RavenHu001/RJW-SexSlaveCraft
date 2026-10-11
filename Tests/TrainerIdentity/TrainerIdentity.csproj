@@ -7,6 +7,11 @@
   <ItemGroup>
     <!-- 同时编译真实特化组件和只读资格入口，测试不重写业务判定。 -->
     <Compile Include="$(SscSourceRoot)/common/SSCIdentityUtility.cs" Link="Production/SSCIdentityUtility.cs" />
+    <Compile Include="$(SscSourceRoot)/Comps/Comp_Train.MasterQualification.cs" Link="Production/Comp_Train.MasterQualification.cs" />
+    <Compile Include="$(SscSourceRoot)/common/SSCSettings.MasterQualification.cs" Link="Production/SSCSettings.MasterQualification.cs" />
+    <Compile Include="$(SscSourceRoot)/common/SSCMasterQualificationUtility.cs" Link="Production/SSCMasterQualificationUtility.cs" />
+    <Compile Include="$(SscSourceRoot)/common/SSCMasterQualificationMigration.cs" Link="Production/SSCMasterQualificationMigration.cs" />
+    <Compile Include="$(SscSourceRoot)/common/SSCMasterQualificationGameComponent.cs" Link="Production/SSCMasterQualificationGameComponent.cs" />
     <Compile Include="$(SscSourceRoot)/Comps/Comp_Train.Specialization.cs" Link="Production/Comp_Train.Specialization.cs" />
     <Compile Include="$(SscSourceRoot)/common/PetSpecializationRules.cs" Link="Production/PetSpecializationRules.cs" />
     <Compile Include="$(SscSourceRoot)/common/TrainerSpecializationUtility.cs" Link="Production/TrainerSpecializationUtility.cs" />

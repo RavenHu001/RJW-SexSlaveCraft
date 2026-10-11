@@ -18,6 +18,7 @@ internal static partial class Program
         var xml = XDocument.Load(Path.Combine(repo, "Languages/ChineseSimplified/Keyed/SSC_TrainerIdentity.xml"));
         foreach (var key in xml.Root.Elements()) Verse.Extensions.Translations[key.Name.LocalName] = key.Value;
         RunEducationCompatibilityTests();
+        RunMasterQualificationTests(repo);
         // 训导官只读资格、生命周期和任职入口均使用生产源码验证；
         // 下方身份用例按阶段 4 的“资格与个人选择同时成立”运行。
         RunTrainerSpecializationTests(repo);

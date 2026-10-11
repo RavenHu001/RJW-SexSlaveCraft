@@ -78,6 +78,8 @@ namespace SexSlaveCraft
         public bool hasSexSlaveTrait = false;
         public int sexSlaveDegree = 0;
         public PawnIdentity sscIdentity = PawnIdentity.Slave;
+        public bool masterQualificationUnlocked;
+        public int masterQualificationVersion = CompSexSlaveTraining.CurrentMasterQualificationVersion;
         public float corruptionLevel = -1f;
         public float highestCorruptionLevel = -1f;
         public SexSlaveSpecializationType specializationType = SexSlaveSpecializationType.None;
@@ -126,6 +128,8 @@ namespace SexSlaveCraft
             Scribe_Values.Look(ref hasSexSlaveTrait, "hasSexSlaveTrait", false);
             Scribe_Values.Look(ref sexSlaveDegree, "sexSlaveDegree", 0);
             Scribe_Values.Look(ref sscIdentity, "sscIdentity", PawnIdentity.Slave);
+            Scribe_Values.Look(ref masterQualificationUnlocked, "masterQualificationUnlocked", false);
+            Scribe_Values.Look(ref masterQualificationVersion, "masterQualificationVersion", 0);
             Scribe_Values.Look(ref corruptionLevel, "corruptionLevel", -1f);
             Scribe_Values.Look(ref highestCorruptionLevel, "highestCorruptionLevel", -1f);
             Scribe_Values.Look(ref specializationType, "specializationType", SexSlaveSpecializationType.None);
@@ -159,6 +163,15 @@ namespace SexSlaveCraft
             {
                 hediffTags = new Dictionary<HediffDef, float>();
             }
+            if (Scribe.mode == LoadSaveMode.PostLoadInit) NormalizeMasterQualification();
+        }
+
+        /// <summary>旧主人凝胶一次性补资格；新格式的 Master + false 必须保持未解锁。</summary>
+        public void NormalizeMasterQualification()
+        {
+            if (masterQualificationVersion >= CompSexSlaveTraining.CurrentMasterQualificationVersion) return;
+            masterQualificationUnlocked = sscIdentity == PawnIdentity.Master;
+            masterQualificationVersion = CompSexSlaveTraining.CurrentMasterQualificationVersion;
         }
 
         // ---------------------------------------------------------
@@ -208,6 +221,8 @@ namespace SexSlaveCraft
             this.hasSexSlaveTrait = other.hasSexSlaveTrait;
             this.sexSlaveDegree = other.sexSlaveDegree;
             this.sscIdentity = other.sscIdentity;
+            this.masterQualificationUnlocked = other.masterQualificationUnlocked;
+            this.masterQualificationVersion = other.masterQualificationVersion;
             this.corruptionLevel = other.corruptionLevel;
             this.highestCorruptionLevel = other.highestCorruptionLevel;
             this.specializationType = other.specializationType;
@@ -391,6 +406,10 @@ namespace SexSlaveCraft
             }
 
             CompSexSlaveTraining trainingComp = p.TryGetComp<CompSexSlaveTraining>();
+            SSCMasterQualificationMigration.MigratePawn(p);
+            // 每次采集覆盖旧值，缺少组件也不能保留这份凝胶上一次的资格。
+            masterQualificationUnlocked = trainingComp?.masterQualificationUnlocked ?? false;
+            masterQualificationVersion = CompSexSlaveTraining.CurrentMasterQualificationVersion;
             specializationProgressByType = trainingComp?.ExportSpecializationProgress()
                 ?? new Dictionary<string, float>();
             petCatComfortCooldownEndTick = PetCatAbilityUtility.CaptureCooldownDeadline(p);

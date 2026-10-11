@@ -363,13 +363,21 @@ namespace SexSlaveCraft
                             {
                                 if (identityPawn?.TryGetComp<CompSexSlaveTraining>() != comp) return;
                                 SSCIdentityUtility.TrySetIdentity(identityPawn, PawnIdentity.Slave);
-                            }),
-                            new FloatMenuOption(Strings.ITab_SetAsMaster, delegate
-                            {
-                                if (identityPawn?.TryGetComp<CompSexSlaveTraining>() != comp) return;
-                                SSCIdentityUtility.TrySetIdentity(identityPawn, PawnIdentity.Master);
                             })
                         };
+                        bool canSelectMaster = comp.pawnIdentity == PawnIdentity.Master ||
+                            SSCMasterQualificationUtility.CanSelectMaster(identityPawn);
+                        string masterOptionLabel = Strings.ITab_SetAsMaster;
+                        if (!canSelectMaster)
+                            masterOptionLabel += " (" + "SSC_Identity_MasterQualificationRequired".Translate() + ")";
+                        identityOptions.Add(new FloatMenuOption(masterOptionLabel,
+                            canSelectMaster ? (Action)delegate
+                            {
+                                if (identityPawn?.TryGetComp<CompSexSlaveTraining>() != comp) return;
+                                if (!SSCIdentityUtility.TrySetIdentity(identityPawn, PawnIdentity.Master))
+                                    Messages.Message("SSC_Identity_SelectionUnavailable".Translate(), identityPawn,
+                                        MessageTypeDefOf.RejectInput, false);
+                            } : null));
                         Find.WindowStack.Add(new FloatMenu(identityOptions));
                     }
 

@@ -26,6 +26,8 @@
     <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionPolicy.cs" Link="Production/SSCRestrictionPolicy.cs" />
     <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCSelfTrainingEligibility.cs" Link="Production/SSCSelfTrainingEligibility.cs" />
     <Compile Include="../TrainerIdentity/RestrictionStubs.cs" Link="RestrictionStubs.cs" />
+    <Compile Include="$(SscSourceRoot)/Comps/Comp_Train.MasterQualification.cs" Link="Production/Comp_Train.MasterQualification.cs" />
+    <Compile Include="$(SscSourceRoot)/common/SSCMasterQualificationUtility.cs" Link="Production/SSCMasterQualificationUtility.cs" />
     <Compile Include="$(SscSourceRoot)/JobDriver/JobDriver_Train.cs" Link="Production/JobDriver_Train.cs" />
     <Compile Include="$(SscSourceRoot)/common/ProgressionEducationCompatibility.cs" Link="Production/ProgressionEducationCompatibility.cs" />
     <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionConfigurationBuilder.cs" Link="Production/SSCRestrictionConfigurationBuilder.cs" />

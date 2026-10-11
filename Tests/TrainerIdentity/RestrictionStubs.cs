@@ -42,6 +42,7 @@ namespace SexSlaveCraft
     }
     public class Settings
     {
+        public bool allowDirectMasterSelection = true;
         public bool enableSexSlaveProtectionRules = true, enableSpecializationRestrictionOverrides = true;
         public SSCRestrictionRules restrictionDefaults = new SSCRestrictionRules();
     }

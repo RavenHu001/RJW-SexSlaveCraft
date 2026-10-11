@@ -13,6 +13,10 @@
     <Compile Include="$(SscSourceRoot)/common/PetSpecializationRules.cs" Link="Production/PetSpecializationRules.cs" />
     <Compile Include="$(SscSourceRoot)/Comps/Comp_Train.TrainerIdentity.cs" Link="Production/Comp_Train.TrainerIdentity.cs" />
     <Compile Include="$(SscSourceRoot)/common/SSCIdentityUtility.cs" Link="Production/SSCIdentityUtility.cs" />
+    <Compile Include="$(SscSourceRoot)/Comps/Comp_Train.MasterQualification.cs" Link="Production/Comp_Train.MasterQualification.cs" />
+    <Compile Include="$(SscSourceRoot)/common/SSCSettings.MasterQualification.cs" Link="Production/SSCSettings.MasterQualification.cs" />
+    <Compile Include="$(SscSourceRoot)/common/SSCMasterQualificationUtility.cs" Link="Production/SSCMasterQualificationUtility.cs" />
+    <Compile Include="$(SscSourceRoot)/common/SSCMasterQualificationMigration.cs" Link="Production/SSCMasterQualificationMigration.cs" />
     <Compile Include="$(SscSourceRoot)/common/SSCIdentityUtility.Trainer.cs" Link="Production/SSCIdentityUtility.Trainer.cs" />
     <Compile Include="$(SscSourceRoot)/common/SSCBondUtility.cs" Link="Production/SSCBondUtility.cs" />
     <Compile Include="$(SscSourceRoot)/common/TrainerAssignmentUtility.cs" Link="Production/TrainerAssignmentUtility.cs" />

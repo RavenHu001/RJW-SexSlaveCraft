@@ -838,6 +838,10 @@ namespace SexSlaveCraft
         /// <summary>将测试角色视为普通角色，避免提取入口因克隆体规则提前返回。</summary>
         public static bool IsRabbitClone(Pawn p) => false;
     }
+    public static class SSCMod
+    {
+        public static SSCSettings settings = new SSCSettings();
+    }
 
     public class HediffComp_CowMilkReservoir { public float CurrentCharge; }
     public static class ResearchUtils { public static bool IsResearchFinished(object def) => def != null; }
@@ -898,6 +902,16 @@ namespace SexSlaveCraft
         public static void TrySetIdentity(Pawn p, PawnIdentity i)
         {
             if (p.TryGetComp<CompSexSlaveTraining>() is CompSexSlaveTraining c) c.pawnIdentity = i;
+        }
+
+        // 身份切换核心由 TrainerIdentity 验证；这里仅承接真实人格流转的写入边界。
+        public static bool TryRestorePersonalityIdentity(Pawn p, PawnIdentity identity, bool qualificationUnlocked)
+        {
+            var comp = p?.TryGetComp<CompSexSlaveTraining>();
+            if (comp == null) return false;
+            comp.pawnIdentity = identity;
+            comp.ReplaceMasterQualification(qualificationUnlocked);
+            return true;
         }
 
         /// <summary>提供性奴派生特质同步接口的空实现；本测试聚焦普通人格特质。</summary>

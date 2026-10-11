@@ -109,7 +109,13 @@ namespace SexSlaveCraft
     public class CompPersonalityStore : ThingComp
     {
         public Pawn Stored;
-        public void StorePawnData(Pawn pawn) { Stored = pawn; PetExtractionBoundary.Calls.Add("store"); }
+        public bool MasterQualificationUnlocked;
+        public void StorePawnData(Pawn pawn)
+        {
+            Stored = pawn;
+            MasterQualificationUnlocked = pawn.TryGetComp<CompSexSlaveTraining>()?.masterQualificationUnlocked == true;
+            PetExtractionBoundary.Calls.Add("store");
+        }
     }
     public static class PetCatAbilityUtility
     {

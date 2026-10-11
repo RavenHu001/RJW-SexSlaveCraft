@@ -1,6 +1,6 @@
 # Binding Ritual lifecycle regression tests
 
-The suite currently contains 142 cases, including ritual lifecycle, UAP compatibility,
+The suite currently contains 144 cases, including ritual lifecycle, UAP compatibility,
 daily training, Education interactions, receiver handoff/reservation regressions,
 and exclusive ownership during personality excretion.
 The original lifecycle tests were committed with the lifecycle fix
@@ -21,6 +21,11 @@ installation. It links the production `BindingRitualStateUtility`, lifecycle
 Harmony patches, `JobGiver_RitualBinding`, `JobDriver_RitualTraining`, the daily driver,
 and the real `TrainingJobUtility`. Personality-excretion cases also compile the production
 `JobDriver_PE`, `WorkGiver_PE`, `WorkGiverTargetUtility` and `PersonalityExcretionJobUtility`.
+
+The 2026-10-11 qualification cases run the real extraction completion and qualification
+clearer: the snapshot is captured before the original body is cleared; cancellation and
+missing storage retain its qualification. Snapshot contents are an interface model here;
+the real personality store and complete transfer are covered by `PersonalityTraits`.
 Eleven cases cover reservation retention, both player-forced flags, stale candidates,
 repeated handoff, cancellation/reassignment and one gel produced by the original
 actor after a contender is rejected. Reservation storage and RJW partner registration

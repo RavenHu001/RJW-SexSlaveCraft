@@ -28,6 +28,8 @@ namespace SexSlaveCraft
             }
 
             GenSpawn.Spawn(slime, victim.Position, victim.Map);
+            // 资格已经进入成功生成的凝胶；空壳不能继续保留同一人格的资格。
+            if (comp != null) SSCMasterQualificationUtility.ClearPersonalityQualification(victim);
             // 步骤 3：剥离社交身份，让身体真正进入空壳状态。
             if (victim.relations != null) victim.relations.ClearAllRelations();
 
@@ -56,6 +58,7 @@ namespace SexSlaveCraft
         public static void CleanConsumerData(Pawn consumer)
         {
             if (consumer == null) return;
+            SSCMasterQualificationUtility.ClearPersonalityQualification(consumer);
             // 清理准备接收人格的身体，移除残留恶堕、性奴特质和锁链状态。
             if (consumer.needs != null)
             {
@@ -116,6 +119,18 @@ namespace SexSlaveCraft
             if (consumer.story?.traits?.allTraits == null || data.storedTraits == null)
             {
                 Log.Error("[SSC] Personality insertion requires a valid trait snapshot and a humanlike trait tracker.");
+                return false;
+            }
+            if (data.sscIdentity != PawnIdentity.Unset && data.sscIdentity != PawnIdentity.Slave &&
+                data.sscIdentity != PawnIdentity.Master)
+            {
+                Log.Error("[SSC] Personality insertion has an invalid saved SSC identity.");
+                return false;
+            }
+            data.NormalizeMasterQualification();
+            if (data.masterQualificationUnlocked && consumer.TryGetComp<CompSexSlaveTraining>() == null)
+            {
+                Log.Error("[SSC] Personality insertion cannot preserve Master qualification without an SSC training component.");
                 return false;
             }
 
@@ -181,7 +196,12 @@ namespace SexSlaveCraft
                     trainingComp.RestoreSpecializationProgress(data.specializationType,
                         data.specializationProgress, data.specializationProgressByType);
                     trainingComp.milkProductionEnabled = data.milkProductionEnabled;
-                    SSCIdentityUtility.TrySetIdentity(consumer, data.sscIdentity);
+                    if (!SSCIdentityUtility.TryRestorePersonalityIdentity(consumer, data.sscIdentity,
+                        data.masterQualificationUnlocked))
+                    {
+                        Log.Error("[SSC] Personality insertion could not restore the saved SSC identity.");
+                        return false;
+                    }
                 }
                 // 步骤 6：重建锁链，让主从系统继续知道当前绑定的主人。
                 if (data.chainHediffData?.masterPawn != null && consumer.health != null &&

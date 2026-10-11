@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <SSC_Identity_BoundTip>An existing master-slave bond prevents role changes. Bound sex slaves and masters with bound sex slaves must keep their current role.</SSC_Identity_BoundTip>
+  <SSC_Identity_MasterQualificationRequired>Master qualification required</SSC_Identity_MasterQualificationRequired>
+  <SSC_Identity_SelectionUnavailable>Cannot switch to Master now. Check Master qualification and existing bonds.</SSC_Identity_SelectionUnavailable>
+  <SSC_Setting_AllowDirectMasterSelection>Allow direct manual selection of Master identity</SSC_Setting_AllowDirectMasterSelection>
+  <SSC_Setting_AllowDirectMasterSelection_Desc>Enabled by default. Allows choosing Master from the identity menu without granting permanent Master qualification. When disabled, qualification is required. Existing identities are retained, and bonds still prevent identity changes.</SSC_Setting_AllowDirectMasterSelection_Desc>
 </LanguageData>

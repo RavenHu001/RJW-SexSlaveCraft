@@ -90,6 +90,11 @@
     <Compile Include="common\Restrictions\SSCRestrictionLifecycleHooks.cs" />
     <Compile Include="common\Restrictions\SSCRestrictionUI.cs" />
     <Compile Include="Comps\Comp_Train.TrainerIdentity.cs" />
+    <Compile Include="Comps\Comp_Train.MasterQualification.cs" />
+    <Compile Include="common\SSCSettings.MasterQualification.cs" />
+    <Compile Include="common\SSCMasterQualificationUtility.cs" />
+    <Compile Include="common\SSCMasterQualificationMigration.cs" />
+    <Compile Include="common\SSCMasterQualificationGameComponent.cs" />
     <Compile Include="common\BindingRitualStateUtility.cs" />
     <Compile Include="common\BindingRitualSelectionUtility.cs" />
     <Compile Include="common\BindingRitualSelectionWidget.cs" />

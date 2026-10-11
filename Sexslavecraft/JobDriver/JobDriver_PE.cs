@@ -187,6 +187,9 @@ namespace SexSlaveCraft
             StripVictimPersonality(victim);
             ReplaceExcretionHediff(victim);
             GenSpawn.Spawn(product, victim.Position, victim.Map);
+            // 场景抽取同样只在凝胶成功生成后清空原身体的资格。
+            if (product.TryGetComp<CompPersonalityStore>() != null)
+                SSCMasterQualificationUtility.ClearPersonalityQualification(victim);
 
             // EN: Step 3: add the post-excretion coma so personality insertion cannot happen immediately.
             // CN: 步骤 3：补上人格排泄适应症，避免立刻继续做人格植入流程。
