@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <!-- 始终加载的个人资格道具；有无 Royalty 都能使用，研究蓝图计数由原版负责。 -->
+  <ThingDef>
+    <defName>SSC_MasterQualificationItem</defName>
+    <label>主人资格模块</label>
+    <description>保存调教知识与人格认证程序的数据模块。使用后永久取得主人资格，可在身份菜单选择主人，但不会自动改变当前身份。有皇权扩展时，也会补齐“调教”研究所需的蓝图；研究仍需正常完成。SSC 性奴无法使用，已取得资格者不能重复使用。资格随人格凝胶转移，克隆不继承。成功使用消耗一个模块。</description>
+    <thingClass>ThingWithComps</thingClass>
+    <category>Item</category>
+    <altitudeLayer>Item</altitudeLayer>
+    <drawerType>MapMeshOnly</drawerType>
+    <!-- 首版复用原版 Core 图像并加紫色，不依赖任何 DLC 的图像资源。 -->
+    <graphicData>
+      <texPath>Things/Item/Equipment/WeaponSpecial/OrbitalTargeterPowerBeam/OrbitalTargeterPowerBeam</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+      <color>(0.75, 0.45, 1)</color>
+      <drawSize>0.7</drawSize>
+    </graphicData>
+    <selectable>true</selectable>
+    <rotatable>false</rotatable>
+    <alwaysHaulable>true</alwaysHaulable>
+    <drawGUIOverlay>true</drawGUIOverlay>
+    <pathCost>14</pathCost>
+    <stackLimit>10</stackLimit>
+    <tickerType>Never</tickerType>
+    <useHitPoints>true</useHitPoints>
+    <techLevel>Spacer</techLevel>
+    <!-- 首版价格和携带参数；长期来源与数值平衡留待后续批次。 -->
+    <statBases>
+      <MaxHitPoints>100</MaxHitPoints>
+      <MarketValue>1000</MarketValue>
+      <Mass>0.1</Mass>
+      <Flammability>0.5</Flammability>
+      <DeteriorationRate>0</DeteriorationRate>
+    </statBases>
+    <thingCategories><li>ItemsMisc</li></thingCategories>
+    <!-- 原版负责预约、接触与读条，单一 SSC 效果负责最终授予和成功消耗。 -->
+    <comps>
+      <li Class="CompProperties_Usable">
+        <useJob>UseItem</useJob>
+        <useLabel>使用主人资格模块</useLabel>
+        <useDuration>600</useDuration>
+      </li>
+      <li Class="CompProperties_UseEffect">
+        <compClass>SexSlaveCraft.CompUseEffect_MasterQualification</compClass>
+      </li>
+      <!-- 允许正常禁用物品；不添加独立销毁效果，避免授予失败仍消耗。 -->
+      <li Class="CompProperties_Forbiddable" />
+    </comps>
+  </ThingDef>
+</Defs>

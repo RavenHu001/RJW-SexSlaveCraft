@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_MasterQualification_InvalidPawn>該角色無法取得主人資格。</SSC_MasterQualification_InvalidPawn>
+  <SSC_MasterQualification_Slave>SSC 性奴無法使用主人資格模組。</SSC_MasterQualification_Slave>
+  <SSC_MasterQualification_AlreadyUnlocked>已取得主人資格。</SSC_MasterQualification_AlreadyUnlocked>
+  <SSC_MasterQualification_Unavailable>主人資格道具或研究資料不可用。</SSC_MasterQualification_Unavailable>
+  <SSC_MasterQualification_InvalidItem>沒有可用的主人資格模組。</SSC_MasterQualification_InvalidItem>
+  <SSC_MasterQualification_Granted>{0} 已永久取得主人資格，可在身分選單選擇主人。</SSC_MasterQualification_Granted>
+  <SSC_MasterQualification_DebugSpawn>除錯：生成 1 個主人資格模組</SSC_MasterQualification_DebugSpawn>
+  <SSC_MasterQualification_DebugSpawnTip>在目前地圖選中物件附近生成一個模組；未選中地圖物件時放在地圖中央。不會直接授予資格。</SSC_MasterQualification_DebugSpawnTip>
+  <SSC_MasterQualification_DebugUnavailable>需要載入地圖，且主人資格模組定義可用。</SSC_MasterQualification_DebugUnavailable>
+  <SSC_MasterQualification_DebugSpawned>已生成 1 個主人資格模組。</SSC_MasterQualification_DebugSpawned>
+  <SSC_MasterQualification_DebugSpawnFailed>無法放置主人資格模組，請切換地圖或選擇其他位置後重試。</SSC_MasterQualification_DebugSpawnFailed>
+</LanguageData>

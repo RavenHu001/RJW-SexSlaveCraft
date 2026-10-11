@@ -3,7 +3,7 @@ using Verse;
 namespace SexSlaveCraft
 {
     /// <summary>个人主人资格的只读准入和人格清理入口，不依据当前身份自动授予。</summary>
-    public static class SSCMasterQualificationUtility
+    public static partial class SSCMasterQualificationUtility
     {
         public static bool HasQualification(Pawn pawn)
         {

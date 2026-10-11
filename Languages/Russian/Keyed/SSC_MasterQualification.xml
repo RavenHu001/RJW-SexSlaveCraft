@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_MasterQualification_InvalidPawn>Этот персонаж не может получить право стать хозяином.</SSC_MasterQualification_InvalidPawn>
+  <SSC_MasterQualification_Slave>Секс-рабы SSC не могут использовать модуль квалификации хозяина.</SSC_MasterQualification_Slave>
+  <SSC_MasterQualification_AlreadyUnlocked>Право стать хозяином уже получено.</SSC_MasterQualification_AlreadyUnlocked>
+  <SSC_MasterQualification_Unavailable>Предмет квалификации хозяина или данные исследования недоступны.</SSC_MasterQualification_Unavailable>
+  <SSC_MasterQualification_InvalidItem>Нет доступного модуля квалификации хозяина.</SSC_MasterQualification_InvalidItem>
+  <SSC_MasterQualification_Granted>{0} навсегда получает право стать хозяином и может выбрать эту роль в меню идентичности.</SSC_MasterQualification_Granted>
+  <SSC_MasterQualification_DebugSpawn>Отладка: создать 1 модуль квалификации хозяина</SSC_MasterQualification_DebugSpawn>
+  <SSC_MasterQualification_DebugSpawnTip>Создаёт один модуль рядом с выбранным объектом на текущей карте или в центре карты, если объект не выбран. Не выдаёт квалификацию напрямую.</SSC_MasterQualification_DebugSpawnTip>
+  <SSC_MasterQualification_DebugUnavailable>Требуется загруженная карта и определение модуля квалификации хозяина.</SSC_MasterQualification_DebugUnavailable>
+  <SSC_MasterQualification_DebugSpawned>Создан 1 модуль квалификации хозяина.</SSC_MasterQualification_DebugSpawned>
+  <SSC_MasterQualification_DebugSpawnFailed>Невозможно разместить модуль квалификации хозяина. Выберите другую карту или место.</SSC_MasterQualification_DebugSpawnFailed>
+</LanguageData>

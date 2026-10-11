@@ -64,7 +64,7 @@ namespace SexSlaveCraft
         }
     }
 
-    public class SSCMod : Mod
+    public partial class SSCMod : Mod
     {
         public static SSCSettings settings;
         private Vector2 settingsScrollPosition;
@@ -193,6 +193,8 @@ namespace SexSlaveCraft
                 ref settings.enableDebugGizmos,
                 Strings.Setting_EnableDebugGizmos_Desc
             );
+            // 道具生成是设置里的独立测试按钮；上方开关只控制角色调试 Gizmo，不控制此入口。
+            DrawMasterQualificationDebugEntry(listingStandard);
 
             listingStandard.GapLine();
             // EN: Step 5: expose the full-gel body tint option for the `全凝胶化完成` visual style.

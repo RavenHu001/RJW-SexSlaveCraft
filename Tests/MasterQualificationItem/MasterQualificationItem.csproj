@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net9.0</TargetFramework>
+    <SscSourceRoot Condition="'$(SscSourceRoot)' == ''">../../Sexslavecraft</SscSourceRoot>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(SscSourceRoot)/Comps/Comp_Train.MasterQualification.cs" Link="Production/Comp_Train.MasterQualification.cs" />
+    <Compile Include="$(SscSourceRoot)/common/SSCMasterQualificationUtility.cs" Link="Production/SSCMasterQualificationUtility.cs" />
+    <Compile Include="$(SscSourceRoot)/common/SSCMasterQualificationUtility.Item.cs" Link="Production/SSCMasterQualificationUtility.Item.cs" />
+    <Compile Include="$(SscSourceRoot)/Comps/CompUseEffect_MasterQualification.cs" Link="Production/CompUseEffect_MasterQualification.cs" />
+    <Compile Include="$(SscSourceRoot)/common/SSCMasterQualificationDebugUtility.cs" Link="Production/SSCMasterQualificationDebugUtility.cs" />
+    <Compile Include="$(SscSourceRoot)/common/SSCMod.MasterQualification.cs" Link="Production/SSCMod.MasterQualification.cs" />
+  </ItemGroup>
+</Project>
