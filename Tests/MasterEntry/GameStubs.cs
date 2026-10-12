@@ -11,6 +11,7 @@ namespace UnityEngine
 
 namespace Verse
 {
+    // 最小定义、角色和实物状态用于生产准入；不模拟完整研究、人格或运输舱物理行为。
     public class Def { public string defName; }
     public class ThingDef : Def { }
     public class HediffDef : Def { }
@@ -40,6 +41,7 @@ namespace Verse
         public HashSet<HediffDef> Values = new();
         public bool HasHediff(HediffDef def) => Values.Contains(def);
     }
+    // 地图集合与 Parent 分开保存，以注入“旧对象仍在、但已从当前游戏移除”的场景。
     public class Map
     {
         public bool IsPlayerHome = true;
@@ -65,6 +67,7 @@ namespace Verse
         public static Map CurrentMap;
         public static SignalManager SignalManager = new();
     }
+    // 拒绝原因保留键名，测试生产流程选择了哪个原因，不依赖测试机器的当前语言。
     public struct AcceptanceReport
     {
         public bool Accepted;
@@ -80,6 +83,7 @@ namespace Verse
         public virtual void GameComponentTick() { }
         public virtual void GameComponentUpdate() { }
     }
+    // 同时支持排队与立即回调，覆盖原版 ExecuteWhenFinished 两种执行时机。
     public static class LongEventHandler
     {
         public static List<Action> Queue = new();
@@ -88,6 +92,7 @@ namespace Verse
         public static void Finish() { var copy = Queue.ToArray(); Queue.Clear(); foreach (var a in copy) a(); }
     }
     public enum LoadSaveMode { Inactive, Saving, LoadingVars }
+    // 只验证生产保存的字段/默认值，引用在此仍是内存对象；不声称执行原版跨引用加载。
     public static class Scribe
     {
         public static LoadSaveMode mode;
@@ -112,11 +117,13 @@ namespace Verse
         public List<string> Sent = new();
         public void SendSignal(Signal signal)
         {
+            // 记录发送顺序并转给任务快照，允许投放成功处理在同一调用里结束任务。
             Sent.Add(signal.tag);
             foreach (var q in Find.QuestManager.QuestsListForReading.ToArray()) q.Receive(signal);
         }
     }
     public static class Log { public static List<string> Errors = new(); public static void Error(string text) => Errors.Add(text); }
+    // UI 宿主不绘制像素，只记录点击、提示和消息；禁用及 GUI 恢复由生产 partial 执行。
     public class Listing_Standard { public UnityEngine.Rect GetRect(float height) => new(); }
     public static class Widgets
     {
@@ -144,6 +151,7 @@ namespace RimWorld.Planet
 namespace RimWorld
 {
     public class Faction { public static Faction OfPlayer = new(); }
+    // 地图与场景准入边界仍调用生产任务根的 TestRun，而不是在宿主重复写准入规则。
     public class QuestScriptDef : Verse.Def
     {
         public QuestGen.QuestNode root;
@@ -166,17 +174,20 @@ namespace RimWorld
         public void AddPart(QuestPart part) { part.quest = this; PartsListForReading.Add(part); }
         public void Accept()
         {
+            // 只有未接受状态发送启动信号，接受前的 Tick 不能启用生产投放协调部分。
             if (State != QuestState.NotYetAccepted) return;
             State = QuestState.Ongoing;
             Verse.Find.SignalManager.SendSignal(new Verse.Signal(InitiateSignal));
         }
         public void Receive(Verse.Signal signal)
         {
+            // 采用任务 id 隔离及进行中门槛；这是本任务所用的原版信号子集，不是完整 Quest 引擎。
             if (!signal.tag.StartsWith("Quest" + id + ".")) return;
             foreach (var part in PartsListForReading.ToArray()) if (!Historical && State == QuestState.Ongoing) part.Notify_QuestSignalReceived(signal);
         }
         public void Tick()
         {
+            // 历史任务不运行，启用的生产协调部分才 Tick；投放中结束任务后跳过剩余处理。
             if (Historical) return;
             foreach (var p in PartsListForReading.OfType<QuestPartActivable>().ToArray())
                 if (!Historical && p.State == QuestPartState.Enabled) p.QuestPartTick();
@@ -190,6 +201,7 @@ namespace RimWorld
         public bool Contains(Quest quest) => QuestsListForReading.Contains(quest);
         public void Add(Quest quest)
         {
+            // 登记前/后分别注入异常，验证生产服务以 Contains 结果决定是否提交创建历史。
             AddCalls++;
             if (ThrowBeforeAdd) throw new InvalidOperationException("before registration");
             QuestsListForReading.Add(quest);
@@ -205,6 +217,7 @@ namespace RimWorld
     }
     public abstract class QuestPartActivable : QuestPart
     {
+        // 最小启用/完成状态支持生产协调部分；不模拟基类的警报及额外完成信号。
         public string inSignalEnable;
         private QuestPartState state;
         public QuestPartState State => state;
@@ -224,6 +237,7 @@ namespace RimWorld
     }
     public class QuestPart_DropPods : QuestPart
     {
+        // 只模拟未投出、已派送与成功信号；实际运输舱飞行、落地、开舱属于实机验证。
         public string inSignal, outSignalResult;
         public Planet.MapParent mapParent;
         public IEnumerable<Verse.Thing> Things;
@@ -234,6 +248,7 @@ namespace RimWorld
         {
             if (signal.tag != inSignal) return;
             Calls++;
+            // 失败保留同一实物，成功清空本部分持有集合，供生产重试和防重复逻辑观察。
             if (Fail || mapParent?.Map == null) return;
             foreach (var t in Things.Where(x => !x.Destroyed && !x.SpawnedOrAnyParentSpawned))
             { t.SpawnedOrAnyParentSpawned = true; DeliveredUnits += t.stackCount; }
@@ -243,6 +258,7 @@ namespace RimWorld
     }
     public class QuestPart_QuestEnd : QuestPart
     {
+        // 结束后调用各部分清理，检验 SSC 协调部分会解除历史任务的模块引用。
         public string inSignal;
         public QuestEndOutcome? outcome;
         public override void Notify_QuestSignalReceived(Verse.Signal signal)
@@ -274,6 +290,7 @@ namespace RimWorld
 
 namespace RimWorld.QuestGen
 {
+    // Slate 和生成器仅提供生产根节点的上下文；奖励及信号链由实际 RunInt 建立。
     public class Slate
     {
         public Dictionary<string, object> Data = new();
@@ -295,6 +312,7 @@ namespace RimWorld.QuestGen
         public static int Calls;
         public static RimWorld.Quest Generate(RimWorld.QuestScriptDef root, Slate initial)
         {
+            // 空返回模拟原版生成失败；成功时绑定独立任务 id，再运行真实 SSC 根节点。
             Calls++;
             if (Fail) return null;
             quest = new RimWorld.Quest { id = Calls, root = root }; slate = initial;
@@ -306,6 +324,7 @@ namespace RimWorld.QuestGen
 
 namespace SexSlaveCraft
 {
+    // SSC 外围状态存根只提供字段和 Pawn 快照，获取规则、组件与设置按钮均链接生产文件。
     public enum PawnIdentity { Unset, Slave, Master }
     public class CompSexSlaveTraining { public PawnIdentity pawnIdentity; public bool masterQualificationUnlocked; }
     public partial class SSCMod { }

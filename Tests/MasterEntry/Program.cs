@@ -21,33 +21,41 @@ internal static class Program
     /// <summary>每组独立创建游戏、任务、Pawn 与故障边界，避免静态宿主污染多存档结论。</summary>
     private static void Reset()
     {
+        // 重建游戏和基地，组件按真实构造签名接收所属游戏，便于验证旧回调的存档隔离。
         Faction.OfPlayer = new Faction();
         Current.Game = new Game();
         Current.Game.Entry = new SSCMasterEntryGameComponent(Current.Game);
         Find.CurrentMap = new Map(); Current.Game.Maps.Add(Find.CurrentMap);
         Find.SignalManager = new SignalManager();
+        // Def 指向本套件链接的生产任务根；没有另写一套获取/投放业务来代替生产逻辑。
         SSCDefOf.SSC_MasterQualificationItem = new ThingDef { defName = "SSC_MasterQualificationItem" };
         SSCDefOf.SSC_BasicTraining = new ResearchProjectDef();
         SSCDefOf.SSC_PersonalityExcreted_Done = new HediffDef();
         SSCDefOf.SSC_InitialMasterQualification = new QuestScriptDef
         { defName = SSCMasterEntryUtility.QuestDefName, root = new QuestNode_Root_MasterQualification() };
+        // 重置加载与保存宿主，记录 Pawn 扫描次数，区分首次自动条件查询和周期重试。
         SSCRestrictionGameComponent.Pawns.Clear(); SSCRestrictionGameComponent.Scans = 0;
         LongEventHandler.Queue.Clear();
         LongEventHandler.Immediate = false;
         Scribe.mode = LoadSaveMode.Inactive; Scribe.Data.Clear();
+        // 每组先清空生成、登记、信件和投放的故障注入及计数，避免上一组影响下一组结果。
         QuestGen.Calls = 0; QuestGen.Fail = false;
         QuestPart_DropPods.Calls = 0; QuestPart_DropPods.DeliveredUnits = 0; QuestPart_DropPods.Fail = false;
         QuestUtility.Letters = 0; QuestUtility.ThrowLetter = false;
         Log.Errors.Clear(); Messages.Text.Clear();
+        // GUI 点击宿主可在绘制中注入状态变化，专门验证按钮点击后的生产复查。
         UnityEngine.GUI.enabled = true; Widgets.Click = true; Widgets.BeforeReturn = null; TooltipHandler.LastTip = null;
     }
+    /// <summary>隔离每组状态，失败仍继续运行后续用例，最终统一报告实际通过数量。</summary>
     private static void Run(string name, Action action)
     {
         Reset();
         try { action(); passed++; Console.WriteLine("PASS " + name); }
         catch (Exception ex) { failed++; Console.WriteLine("FAIL " + name + ": " + ex); }
     }
+    // 先执行长事件结束，再模拟一次运行 Update；初始化不要求游戏推进 Tick。
     private static void Init() { Entry.FinalizeInit(); LongEventHandler.Finish(); Entry.GameComponentUpdate(); }
+    /// <summary>保存生产组件输出的字段，返回独立字典；原版跨引用解析不由这里模拟。</summary>
     private static Dictionary<string, object> Save(GameComponent component)
     {
         Scribe.Data = new(); Scribe.mode = LoadSaveMode.Saving; component.ExposeData();
@@ -57,11 +65,13 @@ internal static class Program
     // 只模拟字段保存/恢复：原版任务与物品跨引用的真实往返另列实机步骤。
     private static void Reload(Dictionary<string, object> data = null)
     {
+        // 新建组件以清空 ready 等运行期字段，再把保存值交回实际 ExposeData 加载。
         data ??= Save(Entry);
         Current.Game.Entry = new SSCMasterEntryGameComponent(Current.Game);
         Scribe.Data = data; Scribe.mode = LoadSaveMode.LoadingVars; Entry.ExposeData(); Scribe.mode = LoadSaveMode.Inactive;
         Init();
     }
+    /// <summary>只设置当前身份，不预置永久资格，验证手动主人也属于自动检测范围。</summary>
     private static Pawn Master()
     {
         var pawn = new Pawn { Faction = Faction.OfPlayer };
@@ -74,6 +84,7 @@ internal static class Program
     private static QuestPart_MasterQualificationDelivery Delivery(Quest quest) => quest.PartsListForReading.OfType<QuestPart_MasterQualificationDelivery>().Single();
     private static void Draw()
     {
+        // 反射调用真实私有绘制入口，不为测试扩大生产 API，也不重复实现按钮逻辑。
         typeof(SSCMod).GetMethod("DrawMasterEntryDebugEntry", BindingFlags.NonPublic | BindingFlags.Static)
             .Invoke(null, new object[] { new Listing_Standard() });
     }
@@ -313,6 +324,7 @@ internal static class Program
                 Check(File.ReadAllBytes(full).SequenceEqual(File.ReadAllBytes(Path.Combine(rootPath, "Sexslavecraft", path))));
             }
         });
+        // 汇总格式由统一门禁读取；任何单组失败都让进程返回非零，不以日志存在代替通过。
         Console.WriteLine($"RESULT: {passed}/{passed + failed} cases passed");
         return failed == 0 ? 0 : 1;
     }
