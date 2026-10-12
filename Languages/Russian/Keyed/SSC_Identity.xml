@@ -3,6 +3,6 @@
   <SSC_Identity_BoundTip>Существующая связь хозяина и секс-раба не позволяет сменить роль. Привязанные секс-рабы и хозяева с привязанными секс-рабами должны сохранять текущую роль.</SSC_Identity_BoundTip>
   <SSC_Identity_MasterQualificationRequired>Требуется право стать хозяином</SSC_Identity_MasterQualificationRequired>
   <SSC_Identity_SelectionUnavailable>Сейчас нельзя выбрать роль хозяина. Проверьте право на эту роль и существующие связи.</SSC_Identity_SelectionUnavailable>
-  <SSC_Setting_AllowDirectMasterSelection>Разрешить назначать роль хозяина вручную</SSC_Setting_AllowDirectMasterSelection>
-  <SSC_Setting_AllowDirectMasterSelection_Desc>Включено по умолчанию. Позволяет выбрать роль хозяина в меню, но не предоставляет постоянное право на неё. При отключении требуется полученное право. Текущие роли сохраняются; связи по-прежнему запрещают смену роли.</SSC_Setting_AllowDirectMasterSelection_Desc>
+  <SSC_Setting_AllowDirectMasterSelection>Разрешить прямой выбор хозяина</SSC_Setting_AllowDirectMasterSelection>
+  <SSC_Setting_AllowDirectMasterSelection_Desc>Включено по умолчанию. Выбор роли не выдаёт постоянное право на неё. При отключении право требуется. Текущие роли и ограничения связи сохраняются.</SSC_Setting_AllowDirectMasterSelection_Desc>
 </LanguageData>

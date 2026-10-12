@@ -3,6 +3,6 @@
   <SSC_Identity_BoundTip>已有主奴绑定，无法切换身份。已绑定的性奴，以及仍有绑定性奴的主人，必须保留当前身份。</SSC_Identity_BoundTip>
   <SSC_Identity_MasterQualificationRequired>需要主人资格</SSC_Identity_MasterQualificationRequired>
   <SSC_Identity_SelectionUnavailable>当前无法切换为主人，请检查主人资格与绑定状态。</SSC_Identity_SelectionUnavailable>
-  <SSC_Setting_AllowDirectMasterSelection>允许直接手动赋予主人身份</SSC_Setting_AllowDirectMasterSelection>
-  <SSC_Setting_AllowDirectMasterSelection_Desc>默认开启，可直接在身份菜单选择主人，但不会授予永久主人资格。关闭后需已取得主人资格；已有身份不被撤销，身份切换仍受绑定限制。</SSC_Setting_AllowDirectMasterSelection_Desc>
+  <SSC_Setting_AllowDirectMasterSelection>允许直接选择主人</SSC_Setting_AllowDirectMasterSelection>
+  <SSC_Setting_AllowDirectMasterSelection_Desc>默认开启，选择身份不授予永久资格。关闭后需取得资格；已有身份保留，绑定锁定不变。</SSC_Setting_AllowDirectMasterSelection_Desc>
 </LanguageData>

@@ -2,19 +2,19 @@
 <LanguageData>
   <SSC_MasterQualification_StatusUnlocked>Permanent Master qualification: acquired</SSC_MasterQualification_StatusUnlocked>
   <SSC_MasterQualification_StatusLocked>Permanent Master qualification: not acquired</SSC_MasterQualification_StatusLocked>
-  <SSC_MasterQualification_PawnStatusTip>This permanent qualification belongs to the personality and is recorded separately from the current SSC identity and global research state. It survives leaving Master identity and transfers through personality gel; clones do not inherit it. Bonding still restricts identity changes.</SSC_MasterQualification_PawnStatusTip>
-  <SSC_MasterQualification_DirectSelectionOnTip>Direct manual Master selection is enabled: an unqualified pawn may choose Master, but choosing that identity does not grant permanent qualification. This setting does not supply research techprints.</SSC_MasterQualification_DirectSelectionOnTip>
-  <SSC_MasterQualification_DirectSelectionOffTip>Direct manual Master selection is disabled: an unqualified pawn must first use a Master qualification module to choose Master. Disabling the setting removes neither existing identity nor permanent qualification.</SSC_MasterQualification_DirectSelectionOffTip>
-  <SSC_MasterQualification_GelStatusTip>This is the qualification stored in the gel's personality. Implantation replaces the host's previous personality qualification. Extraction, copying and processing preserve this record; clones do not inherit it. Research progress and techprints from the original save do not transfer.</SSC_MasterQualification_GelStatusTip>
+  <SSC_MasterQualification_PawnStatusTip>Permanent and transferred with the personality; clones do not inherit it. Separate from current identity.</SSC_MasterQualification_PawnStatusTip>
+  <SSC_MasterQualification_DirectSelectionOnTip>Direct Master selection is on: qualification is not required, but selecting Master does not grant it.</SSC_MasterQualification_DirectSelectionOnTip>
+  <SSC_MasterQualification_DirectSelectionOffTip>Direct Master selection is off: qualification is required. Existing identities are retained.</SSC_MasterQualification_DirectSelectionOffTip>
+  <SSC_MasterQualification_GelStatusTip>Implantation replaces the host&apos;s qualification with this record. Gel copying and processing preserve it; clones do not inherit it.</SSC_MasterQualification_GelStatusTip>
   <SSC_MasterQualification_InvalidPawn>This pawn cannot acquire Master qualification.</SSC_MasterQualification_InvalidPawn>
   <SSC_MasterQualification_Slave>SSC sex slaves cannot use a Master qualification module.</SSC_MasterQualification_Slave>
   <SSC_MasterQualification_AlreadyUnlocked>Master qualification already acquired.</SSC_MasterQualification_AlreadyUnlocked>
-  <SSC_MasterQualification_Unavailable>Master qualification item or research data is unavailable.</SSC_MasterQualification_Unavailable>
+  <SSC_MasterQualification_Unavailable>Master module or research unavailable.</SSC_MasterQualification_Unavailable>
   <SSC_MasterQualification_InvalidItem>No usable Master qualification module.</SSC_MasterQualification_InvalidItem>
-  <SSC_MasterQualification_Granted>{0} has permanently acquired Master qualification and can choose Master in the identity menu.</SSC_MasterQualification_Granted>
-  <SSC_MasterQualification_DebugSpawn>Debug: spawn 1 Master qualification module</SSC_MasterQualification_DebugSpawn>
-  <SSC_MasterQualification_DebugSpawnTip>Spawn one module near the selected object on the current map, or at the map center if no map object is selected. Does not directly grant qualification.</SSC_MasterQualification_DebugSpawnTip>
-  <SSC_MasterQualification_DebugUnavailable>Requires a loaded map and the Master qualification module definition.</SSC_MasterQualification_DebugUnavailable>
+  <SSC_MasterQualification_Granted>{0} has permanent Master qualification and can select Master.</SSC_MasterQualification_Granted>
+  <SSC_MasterQualification_DebugSpawn>Debug: spawn Master module</SSC_MasterQualification_DebugSpawn>
+  <SSC_MasterQualification_DebugSpawnTip>Spawn 1 module near the selected object, or at map center.</SSC_MasterQualification_DebugSpawnTip>
+  <SSC_MasterQualification_DebugUnavailable>Map or Master module unavailable.</SSC_MasterQualification_DebugUnavailable>
   <SSC_MasterQualification_DebugSpawned>Spawned 1 Master qualification module.</SSC_MasterQualification_DebugSpawned>
-  <SSC_MasterQualification_DebugSpawnFailed>Cannot place the Master qualification module. Try another map or selected location.</SSC_MasterQualification_DebugSpawnFailed>
+  <SSC_MasterQualification_DebugSpawnFailed>Spawn failed. Try another map or location.</SSC_MasterQualification_DebugSpawnFailed>
 </LanguageData>

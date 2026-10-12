@@ -4,7 +4,7 @@
   <ThingDef>
     <defName>SSC_MasterQualificationItem</defName>
     <label>主人资格模块</label>
-    <description>保存调教知识与人格认证程序的数据模块。使用后永久取得主人资格，可在身份菜单选择主人，但不会自动改变当前身份。有皇权扩展时，也会补齐“调教”研究所需的蓝图；研究仍需正常完成。SSC 性奴无法使用，已取得资格者不能重复使用。资格随人格凝胶转移，克隆不继承。成功使用消耗一个模块。目前仅作为任务和古代遗迹奖励出现，不在商人库存中刷新。</description>
+    <description>保存调教知识的认证模块。使用后永久解锁主人选项，不自动改变身份。有皇权扩展时补齐“调教”蓝图，仍需正常研究。仅限未取得资格的非 SSC 性奴使用，成功消耗 1 个。资格随人格转移，克隆不继承。来自任务和古代遗迹奖励，商人不出售。</description>
     <thingClass>ThingWithComps</thingClass>
     <category>Item</category>
     <altitudeLayer>Item</altitudeLayer>

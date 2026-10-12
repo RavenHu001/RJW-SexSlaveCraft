@@ -2,19 +2,19 @@
 <LanguageData>
   <SSC_MasterQualification_StatusUnlocked>永久主人資格：已取得</SSC_MasterQualification_StatusUnlocked>
   <SSC_MasterQualification_StatusLocked>永久主人資格：未取得</SSC_MasterQualification_StatusLocked>
-  <SSC_MasterQualification_PawnStatusTip>這是隨人格儲存的永久資格，與目前 SSC 身分和全域研究狀態分別記錄。退出主人身分後仍保留；人格凝膠轉移保留，複製人不繼承。身分切換仍受綁定鎖定約束。</SSC_MasterQualification_PawnStatusTip>
-  <SSC_MasterQualification_DirectSelectionOnTip>「允許直接手動賦予主人身分」已開啟：未取得永久資格也可選擇主人，但選擇身分不會賦予永久資格。此設定不會補齊研究藍圖。</SSC_MasterQualification_DirectSelectionOnTip>
-  <SSC_MasterQualification_DirectSelectionOffTip>「允許直接手動賦予主人身分」已關閉：未取得永久資格者須先使用主人資格模組，才能選擇主人。關閉設定不移除既有身分或永久資格。</SSC_MasterQualification_DirectSelectionOffTip>
-  <SSC_MasterQualification_GelStatusTip>這是凝膠中儲存的人格資格，植入時取代宿主舊人格的資格記錄。採集、複製和加工保留此記錄，複製人不繼承；不轉移原存檔的研究進度或藍圖。</SSC_MasterQualification_GelStatusTip>
+  <SSC_MasterQualification_PawnStatusTip>永久保留，隨人格轉移；複製人不繼承。資格與目前身分無關。</SSC_MasterQualification_PawnStatusTip>
+  <SSC_MasterQualification_DirectSelectionOnTip>直接選擇主人已開啟：無須資格也可選擇主人，但不會授予永久資格。</SSC_MasterQualification_DirectSelectionOnTip>
+  <SSC_MasterQualification_DirectSelectionOffTip>直接選擇主人已關閉：須取得資格才能選擇主人；既有身分保留。</SSC_MasterQualification_DirectSelectionOffTip>
+  <SSC_MasterQualification_GelStatusTip>植入時以此資格取代宿主原記錄。複製和加工保留，複製人不繼承。</SSC_MasterQualification_GelStatusTip>
   <SSC_MasterQualification_InvalidPawn>該角色無法取得主人資格。</SSC_MasterQualification_InvalidPawn>
   <SSC_MasterQualification_Slave>SSC 性奴無法使用主人資格模組。</SSC_MasterQualification_Slave>
   <SSC_MasterQualification_AlreadyUnlocked>已取得主人資格。</SSC_MasterQualification_AlreadyUnlocked>
-  <SSC_MasterQualification_Unavailable>主人資格道具或研究資料不可用。</SSC_MasterQualification_Unavailable>
+  <SSC_MasterQualification_Unavailable>主人資格模組或研究不可用。</SSC_MasterQualification_Unavailable>
   <SSC_MasterQualification_InvalidItem>沒有可用的主人資格模組。</SSC_MasterQualification_InvalidItem>
-  <SSC_MasterQualification_Granted>{0} 已永久取得主人資格，可在身分選單選擇主人。</SSC_MasterQualification_Granted>
-  <SSC_MasterQualification_DebugSpawn>除錯：生成 1 個主人資格模組</SSC_MasterQualification_DebugSpawn>
-  <SSC_MasterQualification_DebugSpawnTip>在目前地圖選中物件附近生成一個模組；未選中地圖物件時放在地圖中央。不會直接授予資格。</SSC_MasterQualification_DebugSpawnTip>
-  <SSC_MasterQualification_DebugUnavailable>需要載入地圖，且主人資格模組定義可用。</SSC_MasterQualification_DebugUnavailable>
+  <SSC_MasterQualification_Granted>{0} 已取得永久主人資格，可選擇主人身分。</SSC_MasterQualification_Granted>
+  <SSC_MasterQualification_DebugSpawn>除錯：生成主人資格模組</SSC_MasterQualification_DebugSpawn>
+  <SSC_MasterQualification_DebugSpawnTip>在選中物件附近生成 1 個模組；未選中時放在地圖中央。</SSC_MasterQualification_DebugSpawnTip>
+  <SSC_MasterQualification_DebugUnavailable>地圖或主人資格模組不可用。</SSC_MasterQualification_DebugUnavailable>
   <SSC_MasterQualification_DebugSpawned>已生成 1 個主人資格模組。</SSC_MasterQualification_DebugSpawned>
-  <SSC_MasterQualification_DebugSpawnFailed>無法放置主人資格模組，請切換地圖或選擇其他位置後重試。</SSC_MasterQualification_DebugSpawnFailed>
+  <SSC_MasterQualification_DebugSpawnFailed>生成失敗，請更換地圖或位置後重試。</SSC_MasterQualification_DebugSpawnFailed>
 </LanguageData>

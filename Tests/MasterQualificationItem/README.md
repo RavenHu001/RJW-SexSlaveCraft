@@ -59,7 +59,7 @@ pwsh -NoProfile -File Scripts/Test-MasterQualificationSources.ps1 -GameRoot 'D:\
 
 1. 将第二批 DLL、`Defs/ThingsDefs/SSC_MasterQualificationItem.xml`、`Defs/ResearchDefs/ResearchProjectDef.xml` 和根目录四语 `Languages` 同步到本机安装目录，再完全退出并重启游戏。仓库中的已验证 DLL SHA-256 为 `E1F1202BAF1D2A70482A82E1708020DBA03E40E8CBFDD882582DAF2A8AA4A0BD`；本机同步结果可核对 `.builds/master-qualification-stage2/sync-result.json`。
 2. 使用测试存档，准备两名未解锁资格、SSC 身份未设置且没有绑定的小人 A、B。旧档原有主人已由第一批迁移补齐资格，适合验证重复拒绝，不适合验证首次获取。
-3. 在 SSC 模组设置关闭“允许直接手动赋予主人身份”。先确认 A、B 的主人选项不可选；这才是观察道具是否真正解锁资格的起点。
+3. 在 SSC 模组设置关闭“允许直接选择主人”。先确认 A、B 的主人选项不可选；这才是观察道具是否真正解锁资格的起点。
 4. 选中地图上的 A，在设置调试区点击“生成 1 个主人资格模块”三至五次。该按钮无需开启调试 Gizmo；模块应出现在 A 附近，打开物品信息应有图像、说明与使用菜单。
 
 ### 核心流程

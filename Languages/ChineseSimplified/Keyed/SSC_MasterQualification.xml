@@ -2,19 +2,19 @@
 <LanguageData>
   <SSC_MasterQualification_StatusUnlocked>永久主人资格：已取得</SSC_MasterQualification_StatusUnlocked>
   <SSC_MasterQualification_StatusLocked>永久主人资格：未取得</SSC_MasterQualification_StatusLocked>
-  <SSC_MasterQualification_PawnStatusTip>这是随人格保存的永久资格，与当前 SSC 身份和全局研究状态分别记录。退出主人身份后仍保留；人格凝胶转移保留，克隆不继承。身份切换仍受绑定锁定约束。</SSC_MasterQualification_PawnStatusTip>
-  <SSC_MasterQualification_DirectSelectionOnTip>“允许直接手动赋予主人身份”已开启：未取得永久资格也可选择主人，但选择身份不会授予永久资格。该设置不会补齐研究蓝图。</SSC_MasterQualification_DirectSelectionOnTip>
-  <SSC_MasterQualification_DirectSelectionOffTip>“允许直接手动赋予主人身份”已关闭：未取得永久资格者需先使用主人资格模块，才能选择主人。关闭设置不移除已有身份或永久资格。</SSC_MasterQualification_DirectSelectionOffTip>
-  <SSC_MasterQualification_GelStatusTip>这是凝胶中保存的人格资格，植入时替换宿主旧人格的资格记录。采集、复制和加工保留该记录，克隆不继承；不转移原存档的研究进度或蓝图。</SSC_MasterQualification_GelStatusTip>
+  <SSC_MasterQualification_PawnStatusTip>永久保留，随人格转移；克隆不继承。资格与当前身份无关。</SSC_MasterQualification_PawnStatusTip>
+  <SSC_MasterQualification_DirectSelectionOnTip>直接选择主人已开启：无需资格也可选择主人，但不会授予永久资格。</SSC_MasterQualification_DirectSelectionOnTip>
+  <SSC_MasterQualification_DirectSelectionOffTip>直接选择主人已关闭：需取得资格才能选择主人；已有身份保留。</SSC_MasterQualification_DirectSelectionOffTip>
+  <SSC_MasterQualification_GelStatusTip>植入时以此资格替换宿主原记录。复制和加工保留，克隆不继承。</SSC_MasterQualification_GelStatusTip>
   <SSC_MasterQualification_InvalidPawn>该角色无法取得主人资格。</SSC_MasterQualification_InvalidPawn>
   <SSC_MasterQualification_Slave>SSC 性奴无法使用主人资格模块。</SSC_MasterQualification_Slave>
   <SSC_MasterQualification_AlreadyUnlocked>已取得主人资格。</SSC_MasterQualification_AlreadyUnlocked>
-  <SSC_MasterQualification_Unavailable>主人资格道具或研究数据不可用。</SSC_MasterQualification_Unavailable>
+  <SSC_MasterQualification_Unavailable>主人资格模块或研究不可用。</SSC_MasterQualification_Unavailable>
   <SSC_MasterQualification_InvalidItem>没有可用的主人资格模块。</SSC_MasterQualification_InvalidItem>
-  <SSC_MasterQualification_Granted>{0} 已永久取得主人资格，可在身份菜单选择主人。</SSC_MasterQualification_Granted>
-  <SSC_MasterQualification_DebugSpawn>调试：生成 1 个主人资格模块</SSC_MasterQualification_DebugSpawn>
-  <SSC_MasterQualification_DebugSpawnTip>在当前地图选中对象附近生成一个模块；未选中地图对象时放在地图中央。不会直接授予资格。</SSC_MasterQualification_DebugSpawnTip>
-  <SSC_MasterQualification_DebugUnavailable>需要载入地图，且主人资格模块定义可用。</SSC_MasterQualification_DebugUnavailable>
+  <SSC_MasterQualification_Granted>{0} 已取得永久主人资格，可选择主人身份。</SSC_MasterQualification_Granted>
+  <SSC_MasterQualification_DebugSpawn>调试：生成主人资格模块</SSC_MasterQualification_DebugSpawn>
+  <SSC_MasterQualification_DebugSpawnTip>在选中对象附近生成 1 个模块；未选中时放在地图中央。</SSC_MasterQualification_DebugSpawnTip>
+  <SSC_MasterQualification_DebugUnavailable>地图或主人资格模块不可用。</SSC_MasterQualification_DebugUnavailable>
   <SSC_MasterQualification_DebugSpawned>已生成 1 个主人资格模块。</SSC_MasterQualification_DebugSpawned>
-  <SSC_MasterQualification_DebugSpawnFailed>无法放置主人资格模块，请切换地图或选择其他位置后重试。</SSC_MasterQualification_DebugSpawnFailed>
+  <SSC_MasterQualification_DebugSpawnFailed>生成失败，请更换地图或位置后重试。</SSC_MasterQualification_DebugSpawnFailed>
 </LanguageData>

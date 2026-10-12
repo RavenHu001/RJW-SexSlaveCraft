@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <SSC_MasterEntry_QuestName>Master qualification: first connection</SSC_MasterEntry_QuestName>
-  <SSC_MasterEntry_QuestDescription>Your colony has received an invitation to connect to a conditioning system. An automated delivery node offers 1 Master qualification module free of charge, with no payment or combat required.\n\nAccept the quest to receive the module by drop pod at your base. If no suitable base is available, delivery will wait until one becomes available.\n\nA pawn who is not an SSC sex slave and has not acquired qualification can use the module to permanently unlock the Master identity option. It does not change identity automatically. With Royalty, it also supplies the techprint required for Conditioning; the research must still be completed normally. This offer does not expire.</SSC_MasterEntry_QuestDescription>
-  <SSC_MasterEntry_DebugRequest>Debug: trigger initial Master qualification quest</SSC_MasterEntry_DebugRequest>
-  <SSC_MasterEntry_DebugRequestTip>Create a quest offering 1 free module. Ignores research, existing Masters and previous issuance, but cannot create another while a matching quest is pending. Does not directly spawn an item or grant qualification.</SSC_MasterEntry_DebugRequestTip>
-  <SSC_MasterEntry_Unavailable>Requires a fully loaded game and the Master qualification module and quest definitions.</SSC_MasterEntry_Unavailable>
-  <SSC_MasterEntry_AlreadyPending>A Master qualification acquisition quest is already pending. Resolve it first.</SSC_MasterEntry_AlreadyPending>
-  <SSC_MasterEntry_NoMap>Requires a player home map suitable for drop pod delivery.</SSC_MasterEntry_NoMap>
-  <SSC_MasterEntry_CreateFailed>Unable to create the Master qualification quest yet. The request has been kept for a later retry.</SSC_MasterEntry_CreateFailed>
-  <SSC_MasterEntry_Created>Initial Master qualification quest created. Accept it in the quest list.</SSC_MasterEntry_Created>
+  <SSC_MasterEntry_QuestDescription>An automated delivery node offers your colony 1 free Master qualification module.\n\nAccept for delivery by drop pod to your base. Delivery waits if no base is available. No combat, payment or acceptance deadline.\n\nThe module permanently unlocks Master selection. See the item description for use conditions.</SSC_MasterEntry_QuestDescription>
+  <SSC_MasterEntry_DebugRequest>Debug: create Master module quest</SSC_MasterEntry_DebugRequest>
+  <SSC_MasterEntry_DebugRequestTip>Create a quest for 1 free module, regardless of research or previous grants. Another unfinished claim quest blocks duplicates.</SSC_MasterEntry_DebugRequestTip>
+  <SSC_MasterEntry_Unavailable>Game or claim quest unavailable.</SSC_MasterEntry_Unavailable>
+  <SSC_MasterEntry_AlreadyPending>A claim quest is unfinished. Resolve it first.</SSC_MasterEntry_AlreadyPending>
+  <SSC_MasterEntry_NoMap>Requires a player base that can receive drop pods.</SSC_MasterEntry_NoMap>
+  <SSC_MasterEntry_CreateFailed>Quest creation failed. Will retry automatically.</SSC_MasterEntry_CreateFailed>
+  <SSC_MasterEntry_Created>Claim quest created. Accept it in the quest list.</SSC_MasterEntry_Created>
 </LanguageData>

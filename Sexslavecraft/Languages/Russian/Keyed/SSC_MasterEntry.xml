@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <SSC_MasterEntry_QuestName>Допуск хозяина: первое подключение</SSC_MasterEntry_QuestName>
-  <SSC_MasterEntry_QuestDescription>Ваша колония получила приглашение подключиться к системе обучения. Автоматический узел доставки предлагает 1 модуль допуска хозяина бесплатно, без оплаты и боевых задач.\n\nПримите задание, чтобы получить модуль в транспортной капсуле на своей базе. Если подходящей базы временно нет, доставка подождёт её появления.\n\nПерсонаж, не являющийся секс-рабом SSC и ещё не получивший допуск, может использовать модуль для постоянного открытия роли хозяина. Роль не меняется автоматически. При наличии Royalty модуль также предоставляет техпринт для исследования обучения; само исследование необходимо завершить обычным способом. Предложение не имеет срока действия.</SSC_MasterEntry_QuestDescription>
-  <SSC_MasterEntry_DebugRequest>Отладка: создать первое задание на допуск хозяина</SSC_MasterEntry_DebugRequest>
-  <SSC_MasterEntry_DebugRequestTip>Создать задание с 1 бесплатным модулем независимо от исследований, наличия хозяев и предыдущей выдачи. Пока аналогичное задание не завершено, повторное создание запрещено. Не создаёт предмет напрямую и не выдаёт допуск.</SSC_MasterEntry_DebugRequestTip>
-  <SSC_MasterEntry_Unavailable>Нужны полностью загруженная игра и определения модуля допуска хозяина и задания.</SSC_MasterEntry_Unavailable>
-  <SSC_MasterEntry_AlreadyPending>Задание на получение допуска хозяина ещё не завершено. Сначала завершите его.</SSC_MasterEntry_AlreadyPending>
-  <SSC_MasterEntry_NoMap>Нужна карта базы игрока, подходящая для доставки капсулой.</SSC_MasterEntry_NoMap>
-  <SSC_MasterEntry_CreateFailed>Пока не удалось создать задание на допуск хозяина. Запрос сохранён для повторной попытки.</SSC_MasterEntry_CreateFailed>
-  <SSC_MasterEntry_Created>Первое задание на допуск хозяина создано. Примите его в списке заданий.</SSC_MasterEntry_Created>
+  <SSC_MasterEntry_QuestDescription>Автоматический узел доставки предлагает колонии 1 бесплатный модуль квалификации хозяина.\n\nПримите задание для доставки капсулой на базу. Без базы доставка подождёт. Бой и оплата не нужны; срока принятия нет.\n\nМодуль навсегда открывает выбор роли хозяина. Условия использования указаны в описании предмета.</SSC_MasterEntry_QuestDescription>
+  <SSC_MasterEntry_DebugRequest>Отладка: задание на модуль хозяина</SSC_MasterEntry_DebugRequest>
+  <SSC_MasterEntry_DebugRequestTip>Создать задание с 1 бесплатным модулем независимо от исследований и прошлых выдач. Незавершённое задание на получение блокирует повторное создание.</SSC_MasterEntry_DebugRequestTip>
+  <SSC_MasterEntry_Unavailable>Игра или задание на получение недоступны.</SSC_MasterEntry_Unavailable>
+  <SSC_MasterEntry_AlreadyPending>Задание на получение ещё не завершено. Завершите его сначала.</SSC_MasterEntry_AlreadyPending>
+  <SSC_MasterEntry_NoMap>Нужна база игрока, способная принять капсулы.</SSC_MasterEntry_NoMap>
+  <SSC_MasterEntry_CreateFailed>Создать задание не удалось. Попытка повторится автоматически.</SSC_MasterEntry_CreateFailed>
+  <SSC_MasterEntry_Created>Задание создано. Примите его в списке заданий.</SSC_MasterEntry_Created>
 </LanguageData>
