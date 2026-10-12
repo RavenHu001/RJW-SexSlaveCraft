@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-  <SSC_MasterQualification_StatusUnlocked>Постоянное право стать господином: получено</SSC_MasterQualification_StatusUnlocked>
-  <SSC_MasterQualification_StatusLocked>Постоянное право стать господином: не получено</SSC_MasterQualification_StatusLocked>
+  <SSC_MasterQualification_StatusUnlocked>Право стать господином: получено</SSC_MasterQualification_StatusUnlocked>
+  <SSC_MasterQualification_StatusLocked>Право стать господином: не получено</SSC_MasterQualification_StatusLocked>
   <SSC_MasterQualification_PawnStatusTip>Сохраняется навсегда и переносится с личностью; клоны не наследуют. Не зависит от текущей роли.</SSC_MasterQualification_PawnStatusTip>
   <SSC_MasterQualification_DirectSelectionOnTip>Прямой выбор господина включён: право не требуется, но выбор роли не выдаёт его.</SSC_MasterQualification_DirectSelectionOnTip>
   <SSC_MasterQualification_DirectSelectionOffTip>Прямой выбор господина выключен: требуется полученное право. Текущие роли сохраняются.</SSC_MasterQualification_DirectSelectionOffTip>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-  <SSC_MasterQualification_StatusUnlocked>Permanent Master qualification: acquired</SSC_MasterQualification_StatusUnlocked>
-  <SSC_MasterQualification_StatusLocked>Permanent Master qualification: not acquired</SSC_MasterQualification_StatusLocked>
+  <SSC_MasterQualification_StatusUnlocked>Master qualification: acquired</SSC_MasterQualification_StatusUnlocked>
+  <SSC_MasterQualification_StatusLocked>Master qualification: not acquired</SSC_MasterQualification_StatusLocked>
   <SSC_MasterQualification_PawnStatusTip>Permanent and transferred with the personality; clones do not inherit it. Separate from current identity.</SSC_MasterQualification_PawnStatusTip>
   <SSC_MasterQualification_DirectSelectionOnTip>Direct Master selection is on: qualification is not required, but selecting Master does not grant it.</SSC_MasterQualification_DirectSelectionOnTip>
   <SSC_MasterQualification_DirectSelectionOffTip>Direct Master selection is off: qualification is required. Existing identities are retained.</SSC_MasterQualification_DirectSelectionOffTip>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-  <SSC_MasterQualification_StatusUnlocked>永久主人资格：已取得</SSC_MasterQualification_StatusUnlocked>
-  <SSC_MasterQualification_StatusLocked>永久主人资格：未取得</SSC_MasterQualification_StatusLocked>
+  <SSC_MasterQualification_StatusUnlocked>主人资格：已取得</SSC_MasterQualification_StatusUnlocked>
+  <SSC_MasterQualification_StatusLocked>主人资格：未取得</SSC_MasterQualification_StatusLocked>
   <SSC_MasterQualification_PawnStatusTip>永久保留，随人格转移；克隆不继承。资格与当前身份无关。</SSC_MasterQualification_PawnStatusTip>
   <SSC_MasterQualification_DirectSelectionOnTip>直接选择主人已开启：无需资格也可选择主人，但不会授予永久资格。</SSC_MasterQualification_DirectSelectionOnTip>
   <SSC_MasterQualification_DirectSelectionOffTip>直接选择主人已关闭：需取得资格才能选择主人；已有身份保留。</SSC_MasterQualification_DirectSelectionOffTip>
