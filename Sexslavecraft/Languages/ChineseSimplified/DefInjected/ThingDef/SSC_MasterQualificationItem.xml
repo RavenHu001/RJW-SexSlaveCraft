@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-  <SSC_MasterQualificationItem.label>主人资格模块</SSC_MasterQualificationItem.label>
-  <SSC_MasterQualificationItem.description>保存调教知识的认证模块。使用后永久解锁主人选项，不自动改变身份。有皇权扩展时补齐“调教”蓝图，仍需正常研究。仅限未取得资格的非 SSC 性奴使用，成功消耗 1 个。资格随人格转移，克隆不继承。来自任务和古代遗迹奖励，商人不出售。</SSC_MasterQualificationItem.description>
-  <SSC_MasterQualificationItem.comps.0.useLabel>使用主人资格模块</SSC_MasterQualificationItem.comps.0.useLabel>
+  <SSC_MasterQualificationItem.label>欲望之种</SSC_MasterQualificationItem.label>
+  <SSC_MasterQualificationItem.description>一枚泛着幽紫光泽的超凡造物，触感温热，仿佛在等待一个愿意接纳它的人。\n\n它会以未知的方式融入宿主，将某个遥远意志的情欲秘知化为直觉。</SSC_MasterQualificationItem.description>
+  <SSC_MasterQualificationItem.comps.0.useLabel>使用欲望之种</SSC_MasterQualificationItem.comps.0.useLabel>
 </LanguageData>

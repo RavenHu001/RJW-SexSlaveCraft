@@ -34,13 +34,13 @@ The Binding Ritual also requires the ideology ritual system to be available.
 
 This section describes the current development branch. It is not included in the released 2.3.9 download linked above.
 
-On the first eligible load, if `Training` is unfinished and the player has no living, non-Hollow SSC Master, a free quest offers **1 Master qualification module**. Accept it for delivery by drop pod to a home map. Reloading does not repeatedly grant the automatic quest. Later modules come from quest and ancient ruin rewards; caravans, settlements and orbital traders do not stock modules for purchase.
+On the first eligible load, if `Training` is unfinished and the player has no living, non-Hollow SSC Master, a free quest offers **1 Seed of Desire**. Accept it for delivery by drop pod to a home map. Reloading does not repeatedly grant the automatic quest. Later seeds come from quest and ancient ruin rewards; caravans, settlements and orbital traders do not stock seeds for purchase.
 
-Have a pawn who is not an SSC Sex Slave and has not acquired permanent qualification use the module. Success consumes one and permanently unlocks Master selection for that personality; **it does not change the current identity**. With Royalty, it also supplies missing techprints for `Training`, which still requires normal research. Without Royalty it grants personal qualification only. The separate vanilla research techprint remains usable, but does not grant personal Master qualification.
+Have a pawn who is not an SSC Sex Slave and has not acquired permanent qualification use the seed. Success consumes one and permanently unlocks Master selection for that personality; **it does not change the current identity**. With Royalty, it also supplies missing techprints for `Training`, which still requires normal research. Without Royalty it grants personal qualification only. The separate vanilla research techprint remains usable, but does not grant personal Master qualification.
 
-Direct Master selection is enabled by default. It permits selection without permanent qualification, but supplies neither permanent qualification nor research techprints. Disable it to require a module first. The pawn's Training tab and personality gel card both show **“Permanent Master qualification: acquired / not acquired”**, with tooltips explaining the distinction. Qualification transfers with personality gel; clones do not inherit it. Existing bond restrictions still apply to identity changes.
+Direct Master selection is enabled by default. It permits selection without permanent qualification, but supplies neither permanent qualification nor research techprints. Disable it to require a seed first. The pawn's Training tab and personality gel card both show **“Permanent Master qualification: acquired / not acquired”**, with tooltips explaining the distinction. Qualification transfers with personality gel; clones do not inherit it. Existing bond restrictions still apply to identity changes.
 
-Settings offer two testing/recovery buttons: spawn one module, or trigger the initial free quest. Spawning places an item directly; the quest button creates a claim quest and cannot duplicate another unfinished claim quest.
+Settings offer two testing/recovery buttons: spawn one seed, or trigger the initial free quest. Spawning places an item directly; the quest button creates a claim quest and cannot duplicate another unfinished claim quest.
 
 ### Step 1: Research Training
 

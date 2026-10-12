@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <SSC_MasterEntry_QuestName>Допуск хозяина: первое подключение</SSC_MasterEntry_QuestName>
-  <SSC_MasterEntry_QuestDescription>Автоматический узел доставки предлагает колонии 1 бесплатный модуль квалификации хозяина.\n\nПримите задание для доставки капсулой на базу. Без базы доставка подождёт. Бой и оплата не нужны; срока принятия нет.\n\nМодуль навсегда открывает выбор роли хозяина. Условия использования указаны в описании предмета.</SSC_MasterEntry_QuestDescription>
-  <SSC_MasterEntry_DebugRequest>Отладка: задание на модуль хозяина</SSC_MasterEntry_DebugRequest>
-  <SSC_MasterEntry_DebugRequestTip>Создать задание с 1 бесплатным модулем независимо от исследований и прошлых выдач. Незавершённое задание на получение блокирует повторное создание.</SSC_MasterEntry_DebugRequestTip>
+  <SSC_MasterEntry_QuestDescription>Автоматический узел доставки предлагает колонии 1 бесплатное семя желания.\n\nПримите задание для доставки капсулой на базу. Без базы доставка подождёт. Бой и оплата не нужны; срока принятия нет.\n\nИспользование навсегда открывает выбор роли хозяина.</SSC_MasterEntry_QuestDescription>
+  <SSC_MasterEntry_DebugRequest>Отладка: задание на семя желания</SSC_MasterEntry_DebugRequest>
+  <SSC_MasterEntry_DebugRequestTip>Создать задание с 1 бесплатным семенем независимо от исследований и прошлых выдач. Незавершённое задание на получение блокирует повторное создание.</SSC_MasterEntry_DebugRequestTip>
   <SSC_MasterEntry_Unavailable>Игра или задание на получение недоступны.</SSC_MasterEntry_Unavailable>
   <SSC_MasterEntry_AlreadyPending>Задание на получение ещё не завершено. Завершите его сначала.</SSC_MasterEntry_AlreadyPending>
   <SSC_MasterEntry_NoMap>Нужна база игрока, способная принять капсулы.</SSC_MasterEntry_NoMap>

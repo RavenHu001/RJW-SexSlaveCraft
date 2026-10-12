@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <SSC_MasterEntry_QuestName>主人资格：初次接入</SSC_MasterEntry_QuestName>
-  <SSC_MasterEntry_QuestDescription>无人配送节点为殖民地免费提供 1 个主人资格模块。\n\n接受后空投至基地；暂时无基地时等待。无需战斗或付款，领取不限时。\n\n模块可永久解锁主人选项，使用条件见物品说明。</SSC_MasterEntry_QuestDescription>
+  <SSC_MasterEntry_QuestDescription>无人配送节点为殖民地免费提供 1 枚欲望之种。\n\n接受后空投至基地；暂时无基地时等待。无需战斗或付款，领取不限时。\n\n使用后可永久解锁主人选项。</SSC_MasterEntry_QuestDescription>
   <SSC_MasterEntry_DebugRequest>调试：创建主人资格领取任务</SSC_MasterEntry_DebugRequest>
-  <SSC_MasterEntry_DebugRequestTip>创建免费领取 1 个模块的任务，不受研究和既往发放限制。已有同类未结束任务时不可重复创建。</SSC_MasterEntry_DebugRequestTip>
+  <SSC_MasterEntry_DebugRequestTip>创建免费领取 1 枚种子的任务，不受研究和既往发放限制。已有同类未结束任务时不可重复创建。</SSC_MasterEntry_DebugRequestTip>
   <SSC_MasterEntry_Unavailable>游戏或领取任务暂不可用。</SSC_MasterEntry_Unavailable>
   <SSC_MasterEntry_AlreadyPending>已有未结束的领取任务，请先处理。</SSC_MasterEntry_AlreadyPending>
   <SSC_MasterEntry_NoMap>需要可接收空投的玩家基地。</SSC_MasterEntry_NoMap>

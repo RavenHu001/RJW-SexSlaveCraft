@@ -7,14 +7,14 @@
   <SSC_MasterQualification_DirectSelectionOffTip>Direct Master selection is off: qualification is required. Existing identities are retained.</SSC_MasterQualification_DirectSelectionOffTip>
   <SSC_MasterQualification_GelStatusTip>Implantation replaces the host&apos;s qualification with this record. Gel copying and processing preserve it; clones do not inherit it.</SSC_MasterQualification_GelStatusTip>
   <SSC_MasterQualification_InvalidPawn>This pawn cannot acquire Master qualification.</SSC_MasterQualification_InvalidPawn>
-  <SSC_MasterQualification_Slave>SSC sex slaves cannot use a Master qualification module.</SSC_MasterQualification_Slave>
+  <SSC_MasterQualification_Slave>SSC sex slaves cannot use a Seed of Desire.</SSC_MasterQualification_Slave>
   <SSC_MasterQualification_AlreadyUnlocked>Master qualification already acquired.</SSC_MasterQualification_AlreadyUnlocked>
-  <SSC_MasterQualification_Unavailable>Master module or research unavailable.</SSC_MasterQualification_Unavailable>
-  <SSC_MasterQualification_InvalidItem>No usable Master qualification module.</SSC_MasterQualification_InvalidItem>
+  <SSC_MasterQualification_Unavailable>Seed of Desire or research unavailable.</SSC_MasterQualification_Unavailable>
+  <SSC_MasterQualification_InvalidItem>No usable Seed of Desire.</SSC_MasterQualification_InvalidItem>
   <SSC_MasterQualification_Granted>{0} has permanent Master qualification and can select Master.</SSC_MasterQualification_Granted>
-  <SSC_MasterQualification_DebugSpawn>Debug: spawn Master module</SSC_MasterQualification_DebugSpawn>
-  <SSC_MasterQualification_DebugSpawnTip>Spawn 1 module near the selected object, or at map center.</SSC_MasterQualification_DebugSpawnTip>
-  <SSC_MasterQualification_DebugUnavailable>Map or Master module unavailable.</SSC_MasterQualification_DebugUnavailable>
-  <SSC_MasterQualification_DebugSpawned>Spawned 1 Master qualification module.</SSC_MasterQualification_DebugSpawned>
+  <SSC_MasterQualification_DebugSpawn>Debug: spawn Seed of Desire</SSC_MasterQualification_DebugSpawn>
+  <SSC_MasterQualification_DebugSpawnTip>Spawn 1 seed near the selected object, or at map center.</SSC_MasterQualification_DebugSpawnTip>
+  <SSC_MasterQualification_DebugUnavailable>Map or Seed of Desire unavailable.</SSC_MasterQualification_DebugUnavailable>
+  <SSC_MasterQualification_DebugSpawned>Spawned 1 Seed of Desire.</SSC_MasterQualification_DebugSpawned>
   <SSC_MasterQualification_DebugSpawnFailed>Spawn failed. Try another map or location.</SSC_MasterQualification_DebugSpawnFailed>
 </LanguageData>

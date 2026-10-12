@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <SSC_MasterEntry_QuestName>主人資格：初次接入</SSC_MasterEntry_QuestName>
-  <SSC_MasterEntry_QuestDescription>無人配送節點為殖民地免費提供 1 個主人資格模組。\n\n接受後空投至基地；暫時無基地時等待。無須戰鬥或付款，領取不限時。\n\n模組可永久解鎖主人選項，使用條件見物品說明。</SSC_MasterEntry_QuestDescription>
+  <SSC_MasterEntry_QuestDescription>無人配送節點為殖民地免費提供 1 枚慾望之種。\n\n接受後空投至基地；暫時無基地時等待。無須戰鬥或付款，領取不限時。\n\n使用後可永久解鎖主人選項。</SSC_MasterEntry_QuestDescription>
   <SSC_MasterEntry_DebugRequest>除錯：建立主人資格領取任務</SSC_MasterEntry_DebugRequest>
-  <SSC_MasterEntry_DebugRequestTip>建立免費領取 1 個模組的任務，不受研究和既往發放限制。已有同類未結束任務時不可重複建立。</SSC_MasterEntry_DebugRequestTip>
+  <SSC_MasterEntry_DebugRequestTip>建立免費領取 1 枚種子的任務，不受研究和既往發放限制。已有同類未結束任務時不可重複建立。</SSC_MasterEntry_DebugRequestTip>
   <SSC_MasterEntry_Unavailable>遊戲或領取任務暫不可用。</SSC_MasterEntry_Unavailable>
   <SSC_MasterEntry_AlreadyPending>已有未結束的領取任務，請先處理。</SSC_MasterEntry_AlreadyPending>
   <SSC_MasterEntry_NoMap>需要可接收空投的玩家基地。</SSC_MasterEntry_NoMap>

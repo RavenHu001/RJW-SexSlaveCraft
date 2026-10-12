@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-  <SSC_MasterQualificationItem.label>Модуль квалификации хозяина</SSC_MasterQualificationItem.label>
-  <SSC_MasterQualificationItem.description>Модуль сертификации со знаниями о дрессировке. Навсегда открывает выбор роли хозяина, не меняя текущую роль. С Royalty добавляет недостающие техпринты «Дрессировки»; исследование нужно завершить обычно. Только для персонажей без этого права, не являющихся секс-рабами SSC. Расходует 1 при успехе. Право переносится с личностью; клоны не наследуют. Награда заданий и древних руин; торговцы не продают.</SSC_MasterQualificationItem.description>
-  <SSC_MasterQualificationItem.comps.0.useLabel>Использовать модуль квалификации хозяина</SSC_MasterQualificationItem.comps.0.useLabel>
+  <SSC_MasterQualificationItem.label>Семя желания</SSC_MasterQualificationItem.label>
+  <SSC_MasterQualificationItem.description>Архотехническое творение с тёмно-фиолетовым отливом, тёплое на ощупь, словно ожидающее того, кто готов его принять.\n\nНеведомым образом оно сливается с носителем, превращая тайные знания о желании некой далёкой воли в интуицию.</SSC_MasterQualificationItem.description>
+  <SSC_MasterQualificationItem.comps.0.useLabel>Использовать семя желания</SSC_MasterQualificationItem.comps.0.useLabel>
 </LanguageData>

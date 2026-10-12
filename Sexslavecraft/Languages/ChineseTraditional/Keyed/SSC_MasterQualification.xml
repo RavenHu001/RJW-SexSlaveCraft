@@ -7,14 +7,14 @@
   <SSC_MasterQualification_DirectSelectionOffTip>直接選擇主人已關閉：須取得資格才能選擇主人；既有身分保留。</SSC_MasterQualification_DirectSelectionOffTip>
   <SSC_MasterQualification_GelStatusTip>植入時以此資格取代宿主原記錄。複製和加工保留，複製人不繼承。</SSC_MasterQualification_GelStatusTip>
   <SSC_MasterQualification_InvalidPawn>該角色無法取得主人資格。</SSC_MasterQualification_InvalidPawn>
-  <SSC_MasterQualification_Slave>SSC 性奴無法使用主人資格模組。</SSC_MasterQualification_Slave>
+  <SSC_MasterQualification_Slave>SSC 性奴無法使用慾望之種。</SSC_MasterQualification_Slave>
   <SSC_MasterQualification_AlreadyUnlocked>已取得主人資格。</SSC_MasterQualification_AlreadyUnlocked>
-  <SSC_MasterQualification_Unavailable>主人資格模組或研究不可用。</SSC_MasterQualification_Unavailable>
-  <SSC_MasterQualification_InvalidItem>沒有可用的主人資格模組。</SSC_MasterQualification_InvalidItem>
+  <SSC_MasterQualification_Unavailable>慾望之種或研究不可用。</SSC_MasterQualification_Unavailable>
+  <SSC_MasterQualification_InvalidItem>沒有可用的慾望之種。</SSC_MasterQualification_InvalidItem>
   <SSC_MasterQualification_Granted>{0} 已取得永久主人資格，可選擇主人身分。</SSC_MasterQualification_Granted>
-  <SSC_MasterQualification_DebugSpawn>除錯：生成主人資格模組</SSC_MasterQualification_DebugSpawn>
-  <SSC_MasterQualification_DebugSpawnTip>在選中物件附近生成 1 個模組；未選中時放在地圖中央。</SSC_MasterQualification_DebugSpawnTip>
-  <SSC_MasterQualification_DebugUnavailable>地圖或主人資格模組不可用。</SSC_MasterQualification_DebugUnavailable>
-  <SSC_MasterQualification_DebugSpawned>已生成 1 個主人資格模組。</SSC_MasterQualification_DebugSpawned>
+  <SSC_MasterQualification_DebugSpawn>除錯：生成慾望之種</SSC_MasterQualification_DebugSpawn>
+  <SSC_MasterQualification_DebugSpawnTip>在選中物件附近生成 1 枚種子；未選中時放在地圖中央。</SSC_MasterQualification_DebugSpawnTip>
+  <SSC_MasterQualification_DebugUnavailable>地圖或慾望之種不可用。</SSC_MasterQualification_DebugUnavailable>
+  <SSC_MasterQualification_DebugSpawned>已生成 1 枚慾望之種。</SSC_MasterQualification_DebugSpawned>
   <SSC_MasterQualification_DebugSpawnFailed>生成失敗，請更換地圖或位置後重試。</SSC_MasterQualification_DebugSpawnFailed>
 </LanguageData>

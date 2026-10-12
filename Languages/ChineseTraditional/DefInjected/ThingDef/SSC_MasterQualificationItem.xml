@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-  <SSC_MasterQualificationItem.label>主人資格模組</SSC_MasterQualificationItem.label>
-  <SSC_MasterQualificationItem.description>儲存調教知識的認證模組。使用後永久解鎖主人選項，不自動改變身分。有皇權擴展時補齊「調教」藍圖，仍須正常研究。僅限未取得資格的非 SSC 性奴使用，成功消耗 1 個。資格隨人格轉移，複製人不繼承。來自任務和古代遺跡獎勵，商人不出售。</SSC_MasterQualificationItem.description>
-  <SSC_MasterQualificationItem.comps.0.useLabel>使用主人資格模組</SSC_MasterQualificationItem.comps.0.useLabel>
+  <SSC_MasterQualificationItem.label>慾望之種</SSC_MasterQualificationItem.label>
+  <SSC_MasterQualificationItem.description>一枚泛著幽紫光澤的超凡造物，觸感溫熱，彷彿在等待一個願意接納它的人。\n\n它會以未知的方式融入宿主，將某個遙遠意志的情慾祕知化為直覺。</SSC_MasterQualificationItem.description>
+  <SSC_MasterQualificationItem.comps.0.useLabel>使用慾望之種</SSC_MasterQualificationItem.comps.0.useLabel>
 </LanguageData>

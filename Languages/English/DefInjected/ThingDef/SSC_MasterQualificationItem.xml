@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-  <SSC_MasterQualificationItem.label>Master qualification module</SSC_MasterQualificationItem.label>
-  <SSC_MasterQualificationItem.description>A certification module containing training knowledge. Permanently unlocks Master selection without changing identity. With Royalty, supplies missing Training techprints; normal research is still required. Only unqualified pawns who are not SSC sex slaves can use it. Success consumes 1. Qualification transfers with personality; clones do not inherit it. Found in quest and ancient ruin rewards, not sold by traders.</SSC_MasterQualificationItem.description>
-  <SSC_MasterQualificationItem.comps.0.useLabel>Use Master qualification module</SSC_MasterQualificationItem.comps.0.useLabel>
+  <SSC_MasterQualificationItem.label>Seed of Desire</SSC_MasterQualificationItem.label>
+  <SSC_MasterQualificationItem.description>An archotech creation with a dusky violet sheen, warm to the touch, as though waiting for someone willing to embrace it.\n\nIt merges with its host by unknown means, turning a distant will&apos;s hidden knowledge of desire into intuition.</SSC_MasterQualificationItem.description>
+  <SSC_MasterQualificationItem.comps.0.useLabel>Use Seed of Desire</SSC_MasterQualificationItem.comps.0.useLabel>
 </LanguageData>
