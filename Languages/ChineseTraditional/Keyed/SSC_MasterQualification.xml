@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
+  <SSC_MasterQualification_StatusUnlocked>永久主人資格：已取得</SSC_MasterQualification_StatusUnlocked>
+  <SSC_MasterQualification_StatusLocked>永久主人資格：未取得</SSC_MasterQualification_StatusLocked>
+  <SSC_MasterQualification_PawnStatusTip>這是隨人格儲存的永久資格，與目前 SSC 身分和全域研究狀態分別記錄。退出主人身分後仍保留；人格凝膠轉移保留，複製人不繼承。身分切換仍受綁定鎖定約束。</SSC_MasterQualification_PawnStatusTip>
+  <SSC_MasterQualification_DirectSelectionOnTip>「允許直接手動賦予主人身分」已開啟：未取得永久資格也可選擇主人，但選擇身分不會賦予永久資格。此設定不會補齊研究藍圖。</SSC_MasterQualification_DirectSelectionOnTip>
+  <SSC_MasterQualification_DirectSelectionOffTip>「允許直接手動賦予主人身分」已關閉：未取得永久資格者須先使用主人資格模組，才能選擇主人。關閉設定不移除既有身分或永久資格。</SSC_MasterQualification_DirectSelectionOffTip>
+  <SSC_MasterQualification_GelStatusTip>這是凝膠中儲存的人格資格，植入時取代宿主舊人格的資格記錄。採集、複製和加工保留此記錄，複製人不繼承；不轉移原存檔的研究進度或藍圖。</SSC_MasterQualification_GelStatusTip>
   <SSC_MasterQualification_InvalidPawn>該角色無法取得主人資格。</SSC_MasterQualification_InvalidPawn>
   <SSC_MasterQualification_Slave>SSC 性奴無法使用主人資格模組。</SSC_MasterQualification_Slave>
   <SSC_MasterQualification_AlreadyUnlocked>已取得主人資格。</SSC_MasterQualification_AlreadyUnlocked>

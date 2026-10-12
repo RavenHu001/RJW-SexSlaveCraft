@@ -160,7 +160,11 @@ namespace SexSlaveCraft
             float[] heights = traits.Select(trait => Mathf.Max(24f,
                 Text.CalcHeight(trait.LabelCap, contentWidth - 12f) + 2f)).ToArray();
             float contentHeight = traits.Count == 0 ? rowHeight : heights.Sum();
-            float summaryHeight = rowHeight * 5f + 12f;
+            // 固定摘要读取凝胶中保存的资格；不从旧身份、锁链主人或全局设置推断。
+            // 新增状态按右栏实际宽度测量，先预留摘要高度，再缩减特质滚动区。
+            string qualificationLabel = SSCMasterQualificationDisplay.GetLabel(comp.masterQualificationUnlocked);
+            float qualificationHeight = SSCMasterQualificationDisplay.GetHeight(qualificationLabel, rect.width, rowHeight);
+            float summaryHeight = rowHeight * 5f + 12f + qualificationHeight;
             float availableHeight = Mathf.Max(0f, rect.height - rowHeight - 4f - SectionGap - summaryHeight);
             float viewportHeight = Mathf.Min(contentHeight, availableHeight);
             Rect viewport = new Rect(rect.x, rect.y + rowHeight + 4f, rect.width, viewportHeight);
@@ -192,14 +196,19 @@ namespace SexSlaveCraft
                 }
             }
             // 少量特质时摘要随列表收缩上移，多量特质时停留在正文底部。
-            DrawSummary(new Rect(rect.x, viewport.yMax + SectionGap, rect.width, summaryHeight), comp, rowHeight);
+            DrawSummary(new Rect(rect.x, viewport.yMax + SectionGap, rect.width, summaryHeight), comp, rowHeight,
+                qualificationLabel, qualificationHeight);
         }
 
-        /// <summary>显示不随特质列表滚动的主人、锁链严重度以及关系和记忆数量。</summary>
-        private void DrawSummary(Rect rect, CompPersonalityStore comp, float rowHeight)
+        /// <summary>显示不随特质列表滚动的永久资格、主人、锁链严重度以及关系和记忆数量。</summary>
+        private void DrawSummary(Rect rect, CompPersonalityStore comp, float rowHeight,
+            string qualificationLabel, float qualificationHeight)
         {
             DrawDivider(rect.x, rect.y, rect.width);
             float y = rect.y + 4f;
+            SSCMasterQualificationDisplay.Draw(new Rect(rect.x, y, rect.width, qualificationHeight),
+                qualificationLabel, SSCMasterQualificationDisplay.GetGelTooltip());
+            y += qualificationHeight;
             DrawSingleLine(new Rect(rect.x, y, rect.width, rowHeight), Strings.PES_BondHeader);
             y += rowHeight;
             Pawn master = comp.chainHediffData?.masterPawn;

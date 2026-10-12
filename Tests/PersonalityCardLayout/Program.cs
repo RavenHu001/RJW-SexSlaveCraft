@@ -20,11 +20,11 @@ internal static class Program
     private static int passed, failed;
     private static string repo;
 
-    /// <summary>验证三种语言及多种特质数量，并检查独立滚动、数据缺失和分配交互。</summary>
+    /// <summary>验证四语、多种特质数量及永久资格，并检查独立滚动、数据缺失和分配交互。</summary>
     private static int Main(string[] args)
     {
         repo = Path.GetFullPath(args.Length > 0 ? args[0] : ".");
-        foreach (string language in new[] { "ChineseSimplified", "English", "Russian" })
+        foreach (string language in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" })
             foreach (int count in new[] { 0, 3, 15, 30 })
                 Run($"{language} / {count} traits: fixed information stays visible", () => Layout(language, count));
         Run("Long trait names wrap without overlapping the next row", LongNames);
@@ -33,6 +33,13 @@ internal static class Program
         Run("Missing collections and invalid entries render safely", MissingData);
         Run("Drawing restores global GUI state and balances groups", GuiState);
         Run("Assignment menu targets the gel that opened it", Assignment);
+        // 使用完整凝胶绘制入口验证两种永久状态，并检查共享角色展示服务的长译文和设置说明。
+        foreach (string language in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" })
+        {
+            foreach (bool unlocked in new[] { false, true })
+                Run($"{language} / qualification {unlocked}: saved gel record stays visible", () => Qualification(language, unlocked));
+            Run($"{language}: pawn status wraps and explains manual selection separately", () => PawnQualification(language));
+        }
         if (args.Length > 1 && failed == 0)
         {
             Directory.CreateDirectory(args[1]);
@@ -110,11 +117,72 @@ internal static class Program
     private static bool Overlap(Rect a, Rect b) =>
         Math.Min(a.xMax, b.xMax) - Math.Max(a.x, b.x) > .01f && Math.Min(a.yMax, b.yMax) - Math.Max(a.y, b.y) > .01f;
 
+    /// <summary>有锁链主人和性奴标记的凝胶仍只显示自身保存值；刷新、切换不会污染该值。</summary>
+    private static void Qualification(string language, bool unlocked)
+    {
+        Strings.Load(repo, language);
+        Thing gel = Gel(30);
+        gel.Comp.masterQualificationUnlocked = unlocked;
+        var card = new TestCard();
+        card.Draw(gel);
+        string key = unlocked ? "SSC_MasterQualification_StatusUnlocked" : "SSC_MasterQualification_StatusLocked";
+        string label = Strings.TranslateKey(key);
+        var row = DrawLog.Items.Single(item => item.Kind == "label" && item.Text == label);
+        Assert(row.Clip == null && row.Wrap, "Qualification must be complete and outside trait scrolling.");
+        Assert(row.Rect.height >= Text.CalcHeight(label, row.Rect.width), "Long status must reserve its full height.");
+        Assert(DrawLog.Items.Any(item => item.Kind == "tooltip" && item.Text == Strings.TranslateKey("SSC_MasterQualification_GelStatusTip")),
+            "Gel must explain personality replacement, preservation and clone exclusion.");
+        Assert(gel.Comp.masterQualificationUnlocked == unlocked, "Drawing must not grant or clear qualification.");
+        // 共用已有布局断言核对两种状态的固定信息、滚动区及按钮，不只检查新增行。
+        Layout(language, 30, unlocked);
+        card.Draw(gel);
+        var other = Gel(0); other.Comp.masterQualificationUnlocked = !unlocked;
+        card.Draw(other);
+        Assert(DrawLog.Items.Any(item => item.Kind == "label" && item.Text == SSCMasterQualificationDisplay.GetLabel(!unlocked)),
+            "Switching gels must read the new personality record.");
+        Assert(gel.Comp.masterQualificationUnlocked == unlocked, "Switching must not alter the previous gel.");
+    }
+
+    /// <summary>角色状态文案不受手动放行提示影响；窄栏下共享绘制服务按真实译文分配高度。</summary>
+    private static void PawnQualification(string language)
+    {
+        DrawLog.Clear();
+        Strings.Load(repo, language);
+        string locked = SSCMasterQualificationDisplay.GetLabel(false);
+        string unlocked = SSCMasterQualificationDisplay.GetLabel(true);
+        Assert(locked != unlocked, "Permanent states must have distinct translations.");
+        foreach (bool direct in new[] { false, true })
+        {
+            string tip = SSCMasterQualificationDisplay.GetPawnTooltip(direct);
+            Assert(tip.Contains(Strings.TranslateKey("SSC_MasterQualification_PawnStatusTip")) &&
+                tip.Contains(Strings.TranslateKey(direct ? "SSC_MasterQualification_DirectSelectionOnTip" : "SSC_MasterQualification_DirectSelectionOffTip")),
+                "Pawn tooltip must separately explain saved qualification and the current manual setting.");
+            foreach (string label in new[] { locked, unlocked })
+            {
+                float height = SSCMasterQualificationDisplay.GetHeight(label, 120f, Text.LineHeight);
+                Assert(height >= Text.CalcHeight(label, 120f), "Narrow status must wrap without clipping.");
+                bool previousWordWrap = Text.WordWrap;
+                try
+                {
+                    Text.WordWrap = false;
+                    SSCMasterQualificationDisplay.Draw(new Rect(0f, 0f, 120f, height), label, tip);
+                    Assert(!Text.WordWrap && DrawLog.Items.Last(item => item.Kind == "label").Wrap,
+                        "Status must force wrapping locally and restore the previous GUI state.");
+                }
+                finally { Text.WordWrap = previousWordWrap; }
+            }
+        }
+        Assert(DrawLog.Items.Count(item => item.Kind == "label" && item.Text == locked) == 2 &&
+            DrawLog.Items.Count(item => item.Kind == "label" && item.Text == unlocked) == 2,
+            "Manual-setting tooltips must not replace the permanent status.");
+    }
+
     /// <summary>验证固定文字互不重叠且位于窗口内，多条目列表必须具备可滚动的内容范围。</summary>
-    private static void Layout(string language, int count)
+    private static void Layout(string language, int count, bool qualification = false)
     {
         Strings.Load(repo, language);
         Thing gel = Gel(count);
+        gel.Comp.masterQualificationUnlocked = qualification;
         new TestCard().Draw(gel);
         var fixedLabels = DrawLog.Items.Where(item => item.Kind == "label" && item.Clip == null).ToList();
         foreach (var label in fixedLabels)

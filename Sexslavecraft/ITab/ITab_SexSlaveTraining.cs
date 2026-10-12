@@ -240,6 +240,9 @@ namespace SexSlaveCraft
             public float ToggleHeight;
             public float StatusHeight;
             public float SectionHeight;
+            public string MasterQualificationLabel;
+            public string MasterQualificationTooltip;
+            public float MasterQualificationHeight;
         }
 
         /// <summary>读取一次资格，并按实际字体、标签和可用宽度计算身份区高度。</summary>
@@ -267,6 +270,12 @@ namespace SexSlaveCraft
                     "\n" + GetTrainerFailureReason(failure);
             string status = isSlave ? (comp.IsEnabled ? Strings.ITab_StatusReady : Strings.ITab_StatusDisabled) : null;
 
+            // 永久资格来自人格保存字段；当前 Master 身份、绑定及手动选择设置都不能替代它。
+            // 只在本次绘制共享文案和测量，不迁移或写回角色数据。
+            string masterQualificationLabel = SSCMasterQualificationDisplay.GetLabel(comp.masterQualificationUnlocked);
+            string masterQualificationTooltip = SSCMasterQualificationDisplay.GetPawnTooltip(
+                SSCMod.settings?.allowDirectMasterSelection ?? true);
+
             // 绘制节框会使用 Small 字体；测量时使用相同字体并恢复原设置。
             // 复选框右侧占 24 像素，标签须扣掉这段宽度再测量，以免文本被勾选框遮挡。
             GameFont oldFont = Text.Font;
@@ -276,13 +285,19 @@ namespace SexSlaveCraft
                 float innerWidth = Mathf.Max(1f, width - SectionPadding * 2f);
                 float toggleHeight = Mathf.Max(24f, Text.CalcHeight(label, Mathf.Max(1f, innerWidth - 24f)));
                 float statusHeight = isSlave ? Text.CalcHeight(status, innerWidth) : 0f;
+                float masterQualificationHeight = SSCMasterQualificationDisplay.GetHeight(
+                    masterQualificationLabel, innerWidth, Text.LineHeight);
                 float contentHeight = IdentityButtonHeight + 2f + 6f + toggleHeight + IdentityListingSpacing;
+                contentHeight += masterQualificationHeight + 6f + IdentityListingSpacing;
                 if (isSlave) contentHeight += 6f + statusHeight + IdentityListingSpacing;
                 return new TrainerIdentityView
                 {
                     IsSlave = isSlave, Enabled = enabled, Qualified = qualified,
                     Label = label, Tooltip = tooltip, Status = status,
                     ToggleHeight = toggleHeight, StatusHeight = statusHeight,
+                    MasterQualificationLabel = masterQualificationLabel,
+                    MasterQualificationTooltip = masterQualificationTooltip,
+                    MasterQualificationHeight = masterQualificationHeight,
                     // 保留短文字下的原有留白；只有实际内容需要更多空间时才扩高。
                     SectionHeight = Mathf.Max(isSlave ? 146f : 126f,
                         SectionPadding * 2f + SectionTitleHeight + contentHeight)
@@ -381,6 +396,10 @@ namespace SexSlaveCraft
                         Find.WindowStack.Add(new FloatMenu(identityOptions));
                     }
 
+                    listing.Gap(6f);
+                    // 使用上方同一次测量的行高，四语长状态不会覆盖调教员开关。
+                    SSCMasterQualificationDisplay.Draw(listing.GetRect(view.MasterQualificationHeight),
+                        view.MasterQualificationLabel, view.MasterQualificationTooltip);
                     listing.Gap(6f);
                     DrawTrainerIdentityToggle(listing, SelPawn, view);
 

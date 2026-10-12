@@ -6,5 +6,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="../../Sexslavecraft/ITab/ITab_PES.cs" Link="Production/ITab_PES.cs" />
+    <Compile Include="../../Sexslavecraft/common/SSCMasterQualificationDisplay.cs" Link="Production/SSCMasterQualificationDisplay.cs" />
   </ItemGroup>
 </Project>

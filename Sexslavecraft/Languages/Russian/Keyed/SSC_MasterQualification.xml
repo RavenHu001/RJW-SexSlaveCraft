@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
+  <SSC_MasterQualification_StatusUnlocked>Постоянное право стать хозяином: получено</SSC_MasterQualification_StatusUnlocked>
+  <SSC_MasterQualification_StatusLocked>Постоянное право стать хозяином: не получено</SSC_MasterQualification_StatusLocked>
+  <SSC_MasterQualification_PawnStatusTip>Это постоянное право хранится в личности отдельно от текущей роли SSC и общего состояния исследований. Оно сохраняется после выхода из роли хозяина и переносится через гель личности; клоны его не наследуют. Связь по-прежнему ограничивает смену роли.</SSC_MasterQualification_PawnStatusTip>
+  <SSC_MasterQualification_DirectSelectionOnTip>Прямой ручной выбор роли хозяина включён: персонаж без постоянного права может выбрать эту роль, но сам выбор не выдаёт постоянное право. Настройка не добавляет техпринты исследований.</SSC_MasterQualification_DirectSelectionOnTip>
+  <SSC_MasterQualification_DirectSelectionOffTip>Прямой ручной выбор роли хозяина выключен: персонажу без постоянного права сначала нужно использовать модуль квалификации хозяина. Отключение настройки не удаляет текущую роль или постоянное право.</SSC_MasterQualification_DirectSelectionOffTip>
+  <SSC_MasterQualification_GelStatusTip>Это право хранится в личности внутри геля. При имплантации оно заменяет запись прежней личности носителя. Извлечение, копирование и обработка сохраняют запись; клоны её не наследуют. Прогресс исследований и техпринты исходного сохранения не переносятся.</SSC_MasterQualification_GelStatusTip>
   <SSC_MasterQualification_InvalidPawn>Этот персонаж не может получить право стать хозяином.</SSC_MasterQualification_InvalidPawn>
   <SSC_MasterQualification_Slave>Секс-рабы SSC не могут использовать модуль квалификации хозяина.</SSC_MasterQualification_Slave>
   <SSC_MasterQualification_AlreadyUnlocked>Право стать хозяином уже получено.</SSC_MasterQualification_AlreadyUnlocked>

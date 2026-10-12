@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
+  <SSC_MasterQualification_StatusUnlocked>Permanent Master qualification: acquired</SSC_MasterQualification_StatusUnlocked>
+  <SSC_MasterQualification_StatusLocked>Permanent Master qualification: not acquired</SSC_MasterQualification_StatusLocked>
+  <SSC_MasterQualification_PawnStatusTip>This permanent qualification belongs to the personality and is recorded separately from the current SSC identity and global research state. It survives leaving Master identity and transfers through personality gel; clones do not inherit it. Bonding still restricts identity changes.</SSC_MasterQualification_PawnStatusTip>
+  <SSC_MasterQualification_DirectSelectionOnTip>Direct manual Master selection is enabled: an unqualified pawn may choose Master, but choosing that identity does not grant permanent qualification. This setting does not supply research techprints.</SSC_MasterQualification_DirectSelectionOnTip>
+  <SSC_MasterQualification_DirectSelectionOffTip>Direct manual Master selection is disabled: an unqualified pawn must first use a Master qualification module to choose Master. Disabling the setting removes neither existing identity nor permanent qualification.</SSC_MasterQualification_DirectSelectionOffTip>
+  <SSC_MasterQualification_GelStatusTip>This is the qualification stored in the gel's personality. Implantation replaces the host's previous personality qualification. Extraction, copying and processing preserve this record; clones do not inherit it. Research progress and techprints from the original save do not transfer.</SSC_MasterQualification_GelStatusTip>
   <SSC_MasterQualification_InvalidPawn>This pawn cannot acquire Master qualification.</SSC_MasterQualification_InvalidPawn>
   <SSC_MasterQualification_Slave>SSC sex slaves cannot use a Master qualification module.</SSC_MasterQualification_Slave>
   <SSC_MasterQualification_AlreadyUnlocked>Master qualification already acquired.</SSC_MasterQualification_AlreadyUnlocked>
