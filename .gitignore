@@ -24,6 +24,7 @@ mono_crash.*
 # Track versioned release notes without exposing local release artifacts.
 !/Docs/Releases/
 /Docs/Releases/*
+!/Docs/Releases/README.md
 !/Docs/Releases/2.3.4/
 /Docs/Releases/2.3.4/*
 !/Docs/Releases/2.3.4/*.md
