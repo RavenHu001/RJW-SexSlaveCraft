@@ -12,6 +12,8 @@ dotnet run --project Tests/PersonalityCardLayout/PersonalityCardLayout.csproj --
 
 测试直接链接完整生产文件 `ITab_PES.cs` 和两页面共用的 `SSCMasterQualificationDisplay.cs`，记录真实绘制代码传给界面接口的矩形、文字、滚动视口及菜单回调。字体、物品和界面接口由 `GuiHost.cs` 提供最小替身；翻译文本直接读取仓库的简中、繁中、英文、俄文语言文件。
 
+角色与凝胶当前共用“主人资格：已取得／未取得”状态标题。标题省略“永久”，悬停仍说明永久保留、人格转移与克隆不继承；本次四语状态行简化后，34/34 项检查通过。
+
 共 34 项检查：
 
 - 四种语言分别验证 0、3、15、30 个特质：固定文字互不重叠，摘要和按钮保留在窗口内，少量特质收缩，多量特质滚动。
