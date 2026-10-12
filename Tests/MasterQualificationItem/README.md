@@ -9,15 +9,40 @@ dotnet run --project Tests/MasterQualificationItem/MasterQualificationItem.cspro
 
 已登记到 `Scripts/Test-All.ps1`，不依赖 NuGet 包或 Harmony。直接编译生产资格字段、资格服务及道具 partial、使用效果、调试生成服务和设置按钮 partial。
 
-31 项用例组覆盖：
+40 项用例组覆盖（第二批 31 项与 3B 来源 9 项）：
 
 - 首次授予、单个与堆叠消耗、SSC 性奴及重复使用拒绝、原版奴隶可用、手动主人仍可取得资格；死亡、销毁、非人形、空壳、缺组件、损坏身份和道具拒绝。
 - 菜单通过后身份变为 SSC 性奴、其他入口已授资格或道具失效，生产效果在结算前重新检查；成功提示只在授予及消耗后出现。
 - 有／无 Royalty、蓝图缺口与需求已满、两名角色分别使用、零／部分／完成研究进度不变、研究边界抛异常时不授资格或消耗。只读检查不改变旧版本标记。
 - 真实设置按钮在主菜单、无地图、缺 Def 及外层 GUI 禁用时不生成，恢复 GUI 状态；生成一个、选中同图对象附近与地图中央回退、放置失败清理、并入现有堆叠的提示目标。
 - XML 始终加载、原版 `UseItem`、单一 SSC 效果控制消耗、Royalty 条件研究字段、独立原版蓝图未被替换、四语与源码语言镜像。
+- 3B 停止贸易库存、心灵枪任务奖励标签、神殿高价值组追加、普通房间单件神器等效权重、增强房间/安全箱与心灵枪同组、两个可选池独立缺失、其他 Def 不改、必需 Core 目标缺失报告失败。XML 补丁模型只核对配置及 XPath；真实原版 Apply 另由实库审计脚本执行。
 
-边界：存根只提供 Pawn、研究管理器、物品拆分、放置和 GUI 的宿主接口；SSC 的检查、授予、消耗和按钮代码直接执行。原版 `JobDriver_UseItem`、蓝图生成器、旧档 `BackCompatibility.ResearchManagerPostLoadInit`、实际 DLC/XML 条件加载、纹理显示和真实存档往返没有在此套件执行，须结合真实依赖构建及实机验证。研究不增加智识经验以 SSC 仅调用 `AddTechprints` 的生产路径为依据，不将存根当作原版引擎证明。
+边界：存根只提供 Pawn、研究管理器、物品拆分、放置和 GUI 的宿主接口；SSC 的检查、授予、消耗和按钮代码直接执行。原版 `JobDriver_UseItem`、蓝图生成器、旧档 `BackCompatibility.ResearchManagerPostLoadInit`、实际 DLC/XML 条件加载、纹理显示和真实存档往返没有在此套件执行，须结合真实依赖构建及实机验证。研究不增加智识经验以 SSC 仅调用 `AddTechprints` 的生产路径为依据，不将存根当作原版引擎证明。3B 的完整游戏 Def 加载、交易/奖励随机生成及自然遗迹产出亦须实机确认。
+
+## 3B 原版实库审计
+
+在独立 PowerShell 7 进程中运行：
+
+```powershell
+pwsh -NoProfile -File Scripts/Test-MasterQualificationSources.ps1 -GameRoot 'D:\STEAM\steamapps\common\RimWorld'
+```
+
+脚本只读本机游戏文件，用真实 `PatchOperationSequence/Add/Conditional.Apply` 对实际 Core XML 执行补丁，分别核对不含可选池及含 Ideology 增强房间/安全箱两种输入；删除模块追加后原定义须完全一致。随后用原版 `StockGenerator_Tag.HandlesThingDef` 与 `TradeabilityUtility.TraderCanSell` 验证贸易排除，并核对实际心灵枪和模块共用的任务奖励标签。报告保存到 `.builds/master-sources-3b/native-source-audit.json`，包含输入哈希及验证边界。
+
+补丁字段由反射填充，模块仅填充交易识别所读字段；未调用完整游戏 XML 加载或 ThingDef 图像构造。独立进程只在内存补足分析器所读的 Prefs，不读取/保存玩家设置。此审计不执行随机库存、奖励生成或玩家存档。
+
+## 3B 实机测试
+
+1. 同步本批 `Defs/ThingsDefs/SSC_MasterQualificationItem.xml`、`Patches/SSC_MasterQualificationSources.xml` 和四语物品说明，完整重启游戏。3B 不改运行 C#，继续使用已验证的 3A DLL。现有库存、任务奖励与已生成遗迹不会追溯补发，需生成新的来源。
+2. 使用基础调教研究**已完成**的测试档，关闭直接手动赋予身份，准备一位未取得永久资格的非 SSC 性奴。已有主人也可以，长期来源不依赖初次任务自动条件。
+3. 开启开发者模式，在调试输出 `Thing set maker possible defs`（对应 `ThingSetMakerPossibleDefs`）中找到 `SSC_MasterQualificationItem`。它应属于 `Reward_ItemsStandard`、`MapGen_AncientTempleContents` 和 `MapGen_AncientComplexRoomLoot_Default`；启用 Ideology 时也属于 `MapGen_AncientComplexRoomLoot_Better` 和 `MapGen_AncientComplex_SecurityCrate`。这是候选池检查，不要求每次随机都出模块。
+4. 用开发者动作 `Spawning → Spawn thing set` 分别选择上述生成器，在测试地图生成并检查无红字。神殿先抽原有高价值组，再从有效物品中抽模块；增强房间/安全箱与心灵枪同组，保留组权重 0.05/0.5，单件概率还要除以组内有效候选数。普通房间模块权重为 0.002，属于低概率入口，少量尝试不出现很正常，优先验证候选池而非要求很快抽到。普通奖励与心灵枪使用同标签，实际数量与单件机会仍由原版预算决定。
+5. 刷新新的商队、城镇和商船库存，确认模块不作为商人出售物品出现。移除贸易标签并设置 `Sellable`，只保留玩家卖出已有模块的能力；没有新的购买来源。3A 免费任务和调试按钮仍按原规则可用。
+6. 从这些来源取得模块后，让测试角色正常使用：成功消耗一个并解锁主人选项，研究保持已完成；原有主人资格和其他角色身份不改变。
+7. 在无 Royalty 的游戏配置下重启并复查候选池/生成/使用；无 Ideology 时不应出现增强房间/安全箱缺失的 Patch 报错，Core 来源继续可用。有 Ideology 时加测两个可选池。
+
+常规游玩还应确认新生成的真实任务奖励和新探索遗迹能够出现模块。调试生成检查与候选池检查不等同于自然事件逐项验收；稀有来源需要多次观察，现有设置的“生成一个模块”按钮不验证 3B 投放。
 
 ## 第二批实机测试
 

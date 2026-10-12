@@ -4,7 +4,7 @@
   <ThingDef>
     <defName>SSC_MasterQualificationItem</defName>
     <label>主人资格模块</label>
-    <description>保存调教知识与人格认证程序的数据模块。使用后永久取得主人资格，可在身份菜单选择主人，但不会自动改变当前身份。有皇权扩展时，也会补齐“调教”研究所需的蓝图；研究仍需正常完成。SSC 性奴无法使用，已取得资格者不能重复使用。资格随人格凝胶转移，克隆不继承。成功使用消耗一个模块。</description>
+    <description>保存调教知识与人格认证程序的数据模块。使用后永久取得主人资格，可在身份菜单选择主人，但不会自动改变当前身份。有皇权扩展时，也会补齐“调教”研究所需的蓝图；研究仍需正常完成。SSC 性奴无法使用，已取得资格者不能重复使用。资格随人格凝胶转移，克隆不继承。成功使用消耗一个模块。目前仅作为任务和古代遗迹奖励出现，不在商人库存中刷新。</description>
     <thingClass>ThingWithComps</thingClass>
     <category>Item</category>
     <altitudeLayer>Item</altitudeLayer>
@@ -25,7 +25,7 @@
     <tickerType>Never</tickerType>
     <useHitPoints>true</useHitPoints>
     <techLevel>Spacer</techLevel>
-    <!-- 首版价格和携带参数；长期来源与数值平衡留待后续批次。 -->
+    <!-- 个人资格模块按高价值稀有品投放，数量沿用各原版来源规则，价格平衡可后续调整。 -->
     <statBases>
       <MaxHitPoints>100</MaxHitPoints>
       <MarketValue>1000</MarketValue>
@@ -34,6 +34,11 @@
       <DeteriorationRate>0</DeteriorationRate>
     </statBases>
     <thingCategories><li>ItemsMisc</li></thingCategories>
+    <!-- 暂停所有商人出售库存，包括商队、城镇与商船；保留玩家卖出已有模块的能力。 -->
+    <tradeability>Sellable</tradeability>
+    <!-- 与原版心灵冲击枪/狂暴枪共用任务奖励标签；数量和机会由原版预算及候选池决定。 -->
+    <thingSetMakerTags><li>RewardStandardHighFreq</li></thingSetMakerTags>
+    <minRewardCount>1</minRewardCount>
     <!-- 原版负责预约、接触与读条，单一 SSC 效果负责最终授予和成功消耗。 -->
     <comps>
       <li Class="CompProperties_Usable">

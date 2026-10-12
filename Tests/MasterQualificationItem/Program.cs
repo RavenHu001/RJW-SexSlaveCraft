@@ -8,7 +8,7 @@ using SexSlaveCraft;
 using UnityEngine;
 using Verse;
 
-internal static class Program
+internal static partial class Program
 {
     // SSC 规则直接链接生产文件；下面只准备原版边界状态并断言结果，不复制授予逻辑。
     private static int passed, failed;
@@ -204,6 +204,7 @@ internal static class Program
         Run("道具始终加载、原版 UseItem 与唯一效果控制消耗", ItemDefinition);
         Run("研究只对 Royalty 加蓝图条件，不新增全局迁移或替换原版蓝图", ResearchDefinition);
         Run("四语物品、按钮、拒绝和提示完整且镜像一致", Translations);
+        RunAcquisitionDefinitions();
         Console.WriteLine($"{passed}/{passed + failed} passed");
         return failed == 0 ? 0 : 1;
     }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <SSC_MasterQualificationItem.label>主人資格模組</SSC_MasterQualificationItem.label>
-  <SSC_MasterQualificationItem.description>保存調教知識與人格認證程式的資料模組。使用後永久取得主人資格，可在身分選單選擇主人，但不會自動改變目前身分。有皇權擴充時，也會補齊「調教」研究所需的藍圖；研究仍需正常完成。SSC 性奴無法使用，已取得資格者不能重複使用。資格隨人格凝膠轉移，複製人不繼承。成功使用消耗一個模組。</SSC_MasterQualificationItem.description>
+  <SSC_MasterQualificationItem.description>保存調教知識與人格認證程式的資料模組。使用後永久取得主人資格，可在身分選單選擇主人，但不會自動改變目前身分。有皇權擴充時，也會補齊「調教」研究所需的藍圖；研究仍需正常完成。SSC 性奴無法使用，已取得資格者不能重複使用。資格隨人格凝膠轉移，複製人不繼承。成功使用消耗一個模組。目前僅作為任務和古代遺跡獎勵出現，不在商人庫存中刷新。</SSC_MasterQualificationItem.description>
   <SSC_MasterQualificationItem.comps.0.useLabel>使用主人資格模組</SSC_MasterQualificationItem.comps.0.useLabel>
 </LanguageData>
