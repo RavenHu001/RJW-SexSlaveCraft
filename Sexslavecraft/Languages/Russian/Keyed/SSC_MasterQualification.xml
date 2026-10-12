@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-  <SSC_MasterQualification_StatusUnlocked>Постоянное право стать хозяином: получено</SSC_MasterQualification_StatusUnlocked>
-  <SSC_MasterQualification_StatusLocked>Постоянное право стать хозяином: не получено</SSC_MasterQualification_StatusLocked>
+  <SSC_MasterQualification_StatusUnlocked>Постоянное право стать господином: получено</SSC_MasterQualification_StatusUnlocked>
+  <SSC_MasterQualification_StatusLocked>Постоянное право стать господином: не получено</SSC_MasterQualification_StatusLocked>
   <SSC_MasterQualification_PawnStatusTip>Сохраняется навсегда и переносится с личностью; клоны не наследуют. Не зависит от текущей роли.</SSC_MasterQualification_PawnStatusTip>
-  <SSC_MasterQualification_DirectSelectionOnTip>Прямой выбор хозяина включён: право не требуется, но выбор роли не выдаёт его.</SSC_MasterQualification_DirectSelectionOnTip>
-  <SSC_MasterQualification_DirectSelectionOffTip>Прямой выбор хозяина выключен: требуется полученное право. Текущие роли сохраняются.</SSC_MasterQualification_DirectSelectionOffTip>
+  <SSC_MasterQualification_DirectSelectionOnTip>Прямой выбор господина включён: право не требуется, но выбор роли не выдаёт его.</SSC_MasterQualification_DirectSelectionOnTip>
+  <SSC_MasterQualification_DirectSelectionOffTip>Прямой выбор господина выключен: требуется полученное право. Текущие роли сохраняются.</SSC_MasterQualification_DirectSelectionOffTip>
   <SSC_MasterQualification_GelStatusTip>При имплантации заменяет право прежней личности носителя. Копирование и обработка геля сохраняют запись; клоны не наследуют.</SSC_MasterQualification_GelStatusTip>
-  <SSC_MasterQualification_InvalidPawn>Этот персонаж не может получить право стать хозяином.</SSC_MasterQualification_InvalidPawn>
+  <SSC_MasterQualification_InvalidPawn>Этот персонаж не может получить право стать господином.</SSC_MasterQualification_InvalidPawn>
   <SSC_MasterQualification_Slave>Секс-рабы SSC не могут использовать семя желания.</SSC_MasterQualification_Slave>
-  <SSC_MasterQualification_AlreadyUnlocked>Право стать хозяином уже получено.</SSC_MasterQualification_AlreadyUnlocked>
+  <SSC_MasterQualification_AlreadyUnlocked>Право стать господином уже получено.</SSC_MasterQualification_AlreadyUnlocked>
   <SSC_MasterQualification_Unavailable>Семя желания или исследование недоступны.</SSC_MasterQualification_Unavailable>
   <SSC_MasterQualification_InvalidItem>Нет доступного семени желания.</SSC_MasterQualification_InvalidItem>
-  <SSC_MasterQualification_Granted>{0} получает постоянное право выбрать роль хозяина.</SSC_MasterQualification_Granted>
+  <SSC_MasterQualification_Granted>{0} получает постоянное право выбрать роль господина.</SSC_MasterQualification_Granted>
   <SSC_MasterQualification_DebugSpawn>Отладка: создать семя желания</SSC_MasterQualification_DebugSpawn>
   <SSC_MasterQualification_DebugSpawnTip>Создать 1 семя рядом с выбранным объектом, иначе — в центре карты.</SSC_MasterQualification_DebugSpawnTip>
   <SSC_MasterQualification_DebugUnavailable>Карта или семя желания недоступны.</SSC_MasterQualification_DebugUnavailable>

@@ -17,7 +17,7 @@ SexSlaveCraft（SSC）围绕角色培养、身份与绑定关系、特化发展�
 2.3.9 相对 2.3.8 的更新：
 
 - **统一受训身份**：日常自动与手动调教、绑定仪式和调教员指派统一要求目标为 SSC 性奴。原版奴隶身份、关闭行为限制开关和强制命令都不能豁免；候选、实际选入、执行与结算都会复查，并保留各入口原有的身体、许可与通行条件。读档不改写已有身份与成长，不合资格的旧任务停止；未设身份但保留有效历史锁链者可在面板明确恢复身份。
-- **当前开发分支（尚未发布）**：主人资格模块解锁个人永久资格，角色身份栏与人格凝胶页分开显示该记录；资格随人格转移，克隆不继承。免费任务按存档去重，后续模块来自任务／遗迹，贸易库存暂停。默认仍允许直接手动选择主人；有 Royalty 时模块也补齐基础研究蓝图，原版独立蓝图保留。用法见[中文快速入门](读我，玩法介绍.md#开发分支补充主人资格入口)与[English quick start](QUICK_START_EN.md#development-branch-master-qualification-entry)。The unreleased branch adds personal Master qualification, visible on pawns and personality gels, with free/rare reward sources. Qualification transfers with personality gel but is not inherited by clones; research techprints remain separate.
+- **当前开发分支（尚未发布）**：欲望之种解锁个人永久资格，角色身份栏与人格凝胶页分开显示该记录；资格随人格转移，克隆不继承。免费任务按存档去重，后续种子来自任务／遗迹，贸易库存暂停。默认仍允许直接手动选择主人；有 Royalty 时种子也补齐基础研究蓝图，原版独立蓝图保留。用法见[中文快速入门](读我，玩法介绍.md#开发分支补充主人资格入口)与[English quick start](QUICK_START_EN.md#development-branch-master-qualification-entry)。The unreleased branch adds personal Master qualification, visible on pawns and personality gels, with free/rare reward sources. Qualification transfers with personality gel but is not inherited by clones; research techprints remain separate.
 - **训导官职责反馈**：有效任职的训导官正常完成一次日常调教或整场仪式后获得“履行训导职责”+3 心情一天，重复完成只刷新一份记忆；实际主人对其有 +5“受委任的训导官”评价，训导官同时对这位主人获得 +5 反向好感和 +3 常驻心情。后两条是条件性想法而不是记忆，随任职、绑定与资格实时生效或消失，不写记忆列表、不进人格凝胶。
 - **训导官弱化记忆套**：训导官作为执行者发放受训者记忆时使用独立弱化套（K=0.5，心情 −5／+1／+4／+8），与主人原套互不覆盖、各自计时；主人与其他合法执行者仍用原套，单次结算只发一套。弱值四舍五入到整数、非零基准保底 1，半值远离零取整。
 - **训导官文案重写**：训导官相关心情、评价、弱化记忆与同床文案整体重写，与主人原套同一基调，并全文去除性别指向；补齐简体中文原先缺失的同床条目。
