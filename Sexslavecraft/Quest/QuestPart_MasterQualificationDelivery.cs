@@ -36,6 +36,11 @@ namespace SexSlaveCraft
             if (map == null) return;
             // 在发送信号前更新目标并锁定派送；原版信号处理可在本调用内完成任务及清理部分。
             drop.mapParent = map.Parent;
+            // 复用原版空投信件：仅在实际投放时发送并定位运输舱，不另发第二封通知。
+            // 投放前解析也覆盖旧档中尚未交付的任务；文本保存由原版 DropPods 负责。
+            drop.customLetterLabel = "SSC_MasterEntry_DeliveryLetterLabel".Translate().ToString();
+            drop.customLetterText = "SSC_MasterEntry_DeliveryLetterText".Translate().ToString();
+            drop.sendStandardLetter = true;
             deliveryRequested = true;
             Find.SignalManager.SendSignal(new Signal(deliverSignal));
             // 原版信号边界未完成且物品仍未投出时可重试；已进入空投/地图的同一实物不再次发出。

@@ -4,7 +4,7 @@
   <ThingDef>
     <defName>SSC_MasterQualificationItem</defName>
     <label>欲望之种</label>
-    <description>一枚泛着幽紫光泽的超凡造物，触感温热，仿佛在等待一个愿意接纳它的人。\n\n它会以未知的方式融入宿主，将某个遥远意志的情欲秘知化为直觉。</description>
+    <description>一枚泛着幽紫光泽的超凡造物，触感温热，像是在等一个愿意接纳它的人。\n\n它会以未知的方式融进宿主的身体，而后慢慢显出它要的是什么样的主人。</description>
     <thingClass>ThingWithComps</thingClass>
     <category>Item</category>
     <altitudeLayer>Item</altitudeLayer>

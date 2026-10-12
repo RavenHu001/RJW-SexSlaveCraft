@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <SSC_MasterQualificationItem.label>Семя желания</SSC_MasterQualificationItem.label>
-  <SSC_MasterQualificationItem.description>Архотехническое творение с тёмно-фиолетовым отливом, тёплое на ощупь, словно ожидающее того, кто готов его принять.\n\nНеведомым образом оно сливается с носителем, превращая тайные знания о желании некой далёкой воли в интуицию.</SSC_MasterQualificationItem.description>
+  <SSC_MasterQualificationItem.description>Архотехническое творение с тёмно-фиолетовым отливом, тёплое на ощупь, словно ожидающее того, кто готов его принять.\n\nНеведомым образом оно сливается с телом носителя, а затем постепенно раскрывает, какого господина желает.</SSC_MasterQualificationItem.description>
   <SSC_MasterQualificationItem.comps.0.useLabel>Использовать семя желания</SSC_MasterQualificationItem.comps.0.useLabel>
 </LanguageData>

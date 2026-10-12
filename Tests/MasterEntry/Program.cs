@@ -41,6 +41,7 @@ internal static class Program
         // 每组先清空生成、登记、信件和投放的故障注入及计数，避免上一组影响下一组结果。
         QuestGen.Calls = 0; QuestGen.Fail = false;
         QuestPart_DropPods.Calls = 0; QuestPart_DropPods.DeliveredUnits = 0; QuestPart_DropPods.Fail = false;
+        QuestPart_DropPods.DeliveryLetters.Clear();
         QuestUtility.Letters = 0; QuestUtility.ThrowLetter = false;
         Log.Errors.Clear(); Messages.Text.Clear();
         // GUI 点击宿主可在绘制中注入状态变化，专门验证按钮点击后的生产复查。
@@ -244,6 +245,35 @@ internal static class Program
             Find.SignalManager.SendSignal(new Signal(Delivery(quest).deliverSignal)); quest.Tick(); Delivery(quest).QuestPartTick();
             Check(QuestPart_DropPods.DeliveredUnits == 1 && QuestPart_DropPods.Calls == 1);
         });
+        // 实际投放复用原版信件字段；接受前、无基地、失败重试和读档不得提前或重复通知。
+        Run("接受前不通知，投放时替换原版标题正文且只通知一次", () => {
+            Init(); var quest = LastQuest; quest.Tick(); Check(QuestPart_DropPods.DeliveryLetters.Count == 0);
+            quest.Accept(); quest.Tick();
+            var letter = QuestPart_DropPods.DeliveryLetters.Single();
+            Check(letter.Label == "SSC_MasterEntry_DeliveryLetterLabel" && letter.Text == "SSC_MasterEntry_DeliveryLetterText");
+            Check(letter.Map == Drop(quest).mapParent.Map);
+            Reload(); Find.SignalManager.SendSignal(new Signal(Delivery(quest).deliverSignal)); Delivery(quest).QuestPartTick();
+            Check(QuestPart_DropPods.DeliveryLetters.Count == 1 && QuestPart_DropPods.DeliveredUnits == 1);
+        });
+        Run("旧待交付任务恢复后使用当前通知并跟随新基地", () => {
+            Init(); var quest = LastQuest; quest.Accept(); Find.Maps.Clear(); quest.Tick();
+            Check(QuestPart_DropPods.DeliveryLetters.Count == 0);
+            var part = Delivery(quest); Scribe.Data = new(); Scribe.mode = LoadSaveMode.Saving; part.ExposeData();
+            Scribe.mode = LoadSaveMode.Inactive;
+            var copy = new QuestPart_MasterQualificationDelivery(); Scribe.mode = LoadSaveMode.LoadingVars; copy.ExposeData();
+            Scribe.mode = LoadSaveMode.Inactive; quest.PartsListForReading.Remove(part); quest.AddPart(copy);
+            Drop(quest).customLetterLabel = null; Drop(quest).customLetterText = null;
+            var map = new Map(); Find.Maps.Add(map); Find.TickManager.TicksGame = 1200; quest.Tick();
+            var letter = QuestPart_DropPods.DeliveryLetters.Single();
+            Check(letter.Map == map && letter.Label == "SSC_MasterEntry_DeliveryLetterLabel" && letter.Text == "SSC_MasterEntry_DeliveryLetterText");
+        });
+        Run("投放失败不通知，重试成功仅发一封", () => {
+            Init(); var quest = LastQuest; QuestPart_DropPods.Fail = true; quest.Accept(); quest.Tick();
+            Check(QuestPart_DropPods.DeliveryLetters.Count == 0 && quest.State == QuestState.Ongoing);
+            QuestPart_DropPods.Fail = false; Find.TickManager.TicksGame = 1200; quest.Tick();
+            Check(QuestPart_DropPods.DeliveryLetters.Count == 1 && QuestPart_DropPods.DeliveredUnits == 1);
+            Reload(); quest.Tick(); Check(QuestPart_DropPods.DeliveryLetters.Count == 1);
+        });
         Run("接受后原地图丢失转到另一基地", () => {
             Init(); var quest = LastQuest; Find.Maps.Clear(); var map = new Map(); Find.Maps.Add(map); Find.CurrentMap = map;
             quest.Accept(); quest.Tick(); Check(Drop(quest).mapParent == map.Parent && QuestPart_DropPods.DeliveredUnits == 1);
@@ -316,7 +346,7 @@ internal static class Program
             Check(File.ReadAllText(Path.Combine(rootPath, "Sexslavecraft/common/Settings.cs")).Contains("DrawMasterEntryDebugEntry(listingStandard);"));
         });
         Run("四语任务按钮与拒绝文案齐全，语言镜像一致", () => {
-            string[] keys = { "QuestName", "QuestDescription", "DebugRequest", "DebugRequestTip", "Unavailable", "AlreadyPending", "NoMap", "CreateFailed", "Created" };
+            string[] keys = { "QuestName", "QuestDescription", "DebugRequest", "DebugRequestTip", "Unavailable", "AlreadyPending", "NoMap", "CreateFailed", "Created", "DeliveryLetterLabel", "DeliveryLetterText" };
             foreach (var language in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" }) {
                 var path = Path.Combine("Languages", language, "Keyed/SSC_MasterEntry.xml"); var full = Path.Combine(rootPath, path);
                 var xml = XDocument.Load(full); foreach (var key in keys) Check(!string.IsNullOrWhiteSpace((string)xml.Root.Element("SSC_MasterEntry_" + key)));

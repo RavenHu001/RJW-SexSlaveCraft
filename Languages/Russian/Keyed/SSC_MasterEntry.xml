@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-  <SSC_MasterEntry_QuestName>Допуск господина: первое подключение</SSC_MasterEntry_QuestName>
-  <SSC_MasterEntry_QuestDescription>Автоматический узел доставки предлагает колонии 1 бесплатное семя желания.\n\nПримите задание для доставки капсулой на базу. Без базы доставка подождёт. Бой и оплата не нужны; срока принятия нет.\n\nИспользование навсегда открывает выбор роли господина.</SSC_MasterEntry_QuestDescription>
+  <SSC_MasterEntry_QuestName>SSC：Ощущение неведомого происхождения</SSC_MasterEntry_QuestName>
+  <SSC_MasterEntry_QuestDescription>Психический сигнал от некоего архотехнического разума проникает в сознание колонистов, неся в себе намёк на пробуждение желания.\n\nКажется, этот разум лишь ждёт ответа.</SSC_MasterEntry_QuestDescription>
   <SSC_MasterEntry_DebugRequest>Отладка: задание на семя желания</SSC_MasterEntry_DebugRequest>
   <SSC_MasterEntry_DebugRequestTip>Создать задание с 1 бесплатным семенем независимо от исследований и прошлых выдач. Незавершённое задание на получение блокирует повторное создание.</SSC_MasterEntry_DebugRequestTip>
   <SSC_MasterEntry_Unavailable>Игра или задание на получение недоступны.</SSC_MasterEntry_Unavailable>
@@ -9,4 +9,6 @@
   <SSC_MasterEntry_NoMap>Нужна база игрока, способная принять капсулы.</SSC_MasterEntry_NoMap>
   <SSC_MasterEntry_CreateFailed>Создать задание не удалось. Попытка повторится автоматически.</SSC_MasterEntry_CreateFailed>
   <SSC_MasterEntry_Created>Задание создано. Примите его в списке заданий.</SSC_MasterEntry_Created>
+  <SSC_MasterEntry_DeliveryLetterLabel>Ответ</SSC_MasterEntry_DeliveryLetterLabel>
+  <SSC_MasterEntry_DeliveryLetterText>На базу опустилось архотехническое творение — без подписи и без каких-либо пояснений.</SSC_MasterEntry_DeliveryLetterText>
 </LanguageData>

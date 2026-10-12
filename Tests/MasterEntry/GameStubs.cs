@@ -242,17 +242,25 @@ namespace RimWorld
         public Planet.MapParent mapParent;
         public IEnumerable<Verse.Thing> Things;
         public bool useTradeDropSpot;
+        public string customLetterText, customLetterLabel;
+        public bool sendStandardLetter = true;
         public static bool Fail;
         public static int Calls, DeliveredUnits;
+        // 记录原版投放边界收到的自定义信件，不模拟真实运输舱飞行或 LetterStack。
+        public static List<(string Label, string Text, Verse.Map Map)> DeliveryLetters = new();
         public override void Notify_QuestSignalReceived(Verse.Signal signal)
         {
             if (signal.tag != inSignal) return;
             Calls++;
             // 失败保留同一实物，成功清空本部分持有集合，供生产重试和防重复逻辑观察。
             if (Fail || mapParent?.Map == null) return;
-            foreach (var t in Things.Where(x => !x.Destroyed && !x.SpawnedOrAnyParentSpawned))
+            var pending = Things.Where(x => !x.Destroyed && !x.SpawnedOrAnyParentSpawned).ToArray();
+            if (pending.Length == 0) return;
+            foreach (var t in pending)
             { t.SpawnedOrAnyParentSpawned = true; DeliveredUnits += t.stackCount; }
             Things = Array.Empty<Verse.Thing>();
+            if (sendStandardLetter)
+                DeliveryLetters.Add((customLetterLabel, customLetterText, mapParent.Map));
             Verse.Find.SignalManager.SendSignal(new Verse.Signal(outSignalResult));
         }
     }
