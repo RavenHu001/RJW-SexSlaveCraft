@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net9.0</TargetFramework>
+    <SscSourceRoot Condition="'$(SscSourceRoot)' == ''">../../Sexslavecraft</SscSourceRoot>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(SscSourceRoot)/common/SSCMasterEntryUtility.cs" Link="Production/SSCMasterEntryUtility.cs" />
+    <Compile Include="$(SscSourceRoot)/common/SSCMasterEntryGameComponent.cs" Link="Production/SSCMasterEntryGameComponent.cs" />
+    <Compile Include="$(SscSourceRoot)/common/SSCMod.MasterEntry.cs" Link="Production/SSCMod.MasterEntry.cs" />
+    <Compile Include="$(SscSourceRoot)/Quest/QuestNode_Root_MasterQualification.cs" Link="Production/QuestNode_Root_MasterQualification.cs" />
+    <Compile Include="$(SscSourceRoot)/Quest/QuestPart_MasterQualificationDelivery.cs" Link="Production/QuestPart_MasterQualificationDelivery.cs" />
+  </ItemGroup>
+</Project>

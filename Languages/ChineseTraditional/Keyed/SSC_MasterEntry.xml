@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_MasterEntry_QuestName>主人資格：初次接入</SSC_MasterEntry_QuestName>
+  <SSC_MasterEntry_QuestDescription>你的殖民地收到了一份調教系統的初次接入邀請。一個無人配送節點願意免費提供 1 個主人資格模組，無需報酬，也沒有戰鬥要求。\n\n接受後，模組將透過運輸艙送到你的基地。若暫時沒有可投放的基地，配送會等待基地恢復。\n\n讓非 SSC 性奴且尚未取得資格的小人使用模組，即可永久解鎖主人身分選項；它不會自動改變身分。有皇權擴展時，還會補齊「調教」研究所需的藍圖，研究仍需正常完成。任務沒有接受時限。</SSC_MasterEntry_QuestDescription>
+  <SSC_MasterEntry_DebugRequest>除錯：觸發主人資格初次取得任務</SSC_MasterEntry_DebugRequest>
+  <SSC_MasterEntry_DebugRequestTip>建立一個免費領取 1 個模組的任務。忽略科技、現存主人和歷史發放條件，但已有同類待處理任務時不能重複建立。不會直接生成道具或授予資格。</SSC_MasterEntry_DebugRequestTip>
+  <SSC_MasterEntry_Unavailable>需要已完成載入的遊戲，以及主人資格模組和領取任務定義。</SSC_MasterEntry_Unavailable>
+  <SSC_MasterEntry_AlreadyPending>已有尚未結束的主人資格領取任務，請先處理該任務。</SSC_MasterEntry_AlreadyPending>
+  <SSC_MasterEntry_NoMap>需要可接收運輸艙的玩家基地地圖。</SSC_MasterEntry_NoMap>
+  <SSC_MasterEntry_CreateFailed>暫時無法建立主人資格領取任務。請求已保留，將稍後重試。</SSC_MasterEntry_CreateFailed>
+  <SSC_MasterEntry_Created>已建立主人資格初次取得任務，請在任務列表中接受。</SSC_MasterEntry_Created>
+</LanguageData>

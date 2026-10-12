@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_MasterEntry_QuestName>主人资格：初次接入</SSC_MasterEntry_QuestName>
+  <SSC_MasterEntry_QuestDescription>你的殖民地收到了一份调教系统的初次接入邀请。一个无人配送节点愿意免费提供 1 个主人资格模块，无需报酬，也没有战斗要求。\n\n接受后，模块将通过运输舱送到你的基地。若暂时没有可投放的基地，配送会等待基地恢复。\n\n让非 SSC 性奴且尚未取得资格的小人使用模块，即可永久解锁主人身份选项；它不会自动改变身份。有皇权扩展时，还会补齐“调教”研究所需的蓝图，研究仍需正常完成。任务没有接受时限。</SSC_MasterEntry_QuestDescription>
+  <SSC_MasterEntry_DebugRequest>调试：触发主人资格初次获取任务</SSC_MasterEntry_DebugRequest>
+  <SSC_MasterEntry_DebugRequestTip>创建一个免费领取 1 个模块的任务。忽略科技、现存主人和历史发放条件，但已有同类待处理任务时不能重复创建。不会直接生成道具或授予资格。</SSC_MasterEntry_DebugRequestTip>
+  <SSC_MasterEntry_Unavailable>需要已完成加载的游戏，以及主人资格模块和领取任务定义。</SSC_MasterEntry_Unavailable>
+  <SSC_MasterEntry_AlreadyPending>已有尚未结束的主人资格领取任务，请先处理该任务。</SSC_MasterEntry_AlreadyPending>
+  <SSC_MasterEntry_NoMap>需要可接收运输舱的玩家基地地图。</SSC_MasterEntry_NoMap>
+  <SSC_MasterEntry_CreateFailed>暂时无法创建主人资格领取任务。请求已保留，将稍后重试。</SSC_MasterEntry_CreateFailed>
+  <SSC_MasterEntry_Created>已创建主人资格初次获取任务，请在任务列表中接受。</SSC_MasterEntry_Created>
+</LanguageData>

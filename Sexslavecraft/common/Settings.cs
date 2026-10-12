@@ -195,6 +195,7 @@ namespace SexSlaveCraft
             );
             // 道具生成是设置里的独立测试按钮；上方开关只控制角色调试 Gizmo，不控制此入口。
             DrawMasterQualificationDebugEntry(listingStandard);
+            DrawMasterEntryDebugEntry(listingStandard);
 
             listingStandard.GapLine();
             // EN: Step 5: expose the full-gel body tint option for the `全凝胶化完成` visual style.

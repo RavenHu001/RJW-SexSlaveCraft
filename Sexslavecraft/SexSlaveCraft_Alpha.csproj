@@ -98,6 +98,12 @@
     <Compile Include="common\SSCMasterQualificationDebugUtility.cs" />
     <Compile Include="common\SSCMod.MasterQualification.cs" />
     <Compile Include="Comps\CompUseEffect_MasterQualification.cs" />
+    <!-- 第三批 3A：存档获取请求、原版任务/空投协调及设置手动入口。 -->
+    <Compile Include="common\SSCMasterEntryUtility.cs" />
+    <Compile Include="common\SSCMasterEntryGameComponent.cs" />
+    <Compile Include="common\SSCMod.MasterEntry.cs" />
+    <Compile Include="Quest\QuestNode_Root_MasterQualification.cs" />
+    <Compile Include="Quest\QuestPart_MasterQualificationDelivery.cs" />
     <Compile Include="common\SSCMasterQualificationMigration.cs" />
     <Compile Include="common\SSCMasterQualificationGameComponent.cs" />
     <Compile Include="common\BindingRitualStateUtility.cs" />
