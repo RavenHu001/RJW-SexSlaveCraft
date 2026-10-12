@@ -13,7 +13,7 @@ namespace Verse
     {
         public Verse.AI.Group.Lord lord;
         public Verse.AI.Group.Lord GetLord() => lord;
-        public bool Dead, Downed, Discarded, Spawned = true, IsColonist = true, IsPrisonerOfColony, IsSlave;
+        public bool Dead, Downed, Discarded, Spawned = true, IsColonist = true, IsPrisonerOfColony, IsSlave, IsClone;
         public string LabelShort = "Pawn";
         public CompSexSlaveTraining Training = new CompSexSlaveTraining();
         public WorkSettings workSettings = new WorkSettings();
@@ -307,11 +307,18 @@ namespace SexSlaveCraft
 
         /// <summary>记录绑定事务显式通知；真实配置初始化及协调由 RestrictionCore 验证。</summary>
         public static void Notify(Pawn pawn) { Notifications++; }
+        // 世界快照是游戏边界；实际迁移和组件生命周期链接生产代码。
+        public static List<Pawn> AllPawns() => RimWorld.PawnsFinder.AllMapsWorldAndTemporary_AliveOrDead.ToList();
+    }
+    public static class RabbitCloneUtility
+    {
+        public static bool IsRabbitClone(Pawn pawn) => pawn?.IsClone == true;
     }
     public static class SSCDefOf
     {
         public static object SexSlaveTrait = new object(), ChainOfSexSlave = new object(), BridleOfSexSlave = new object(), SSC_BasicTraining = new object();
         public static object SSC_RES_TrainerOfficer = new object();
+        public static HediffDef SSC_PersonalityExcreted_Done = new HediffDef();
         // 三个不同对象模拟已解析的普通、有效终极与禁用终极 Def。
         public static HediffDef SSC_Hediff_TrainerOfficer = new HediffDef(), SSC_Hediff_TrainerOfficer_Final = new HediffDef(), SSC_Hediff_TrainerOfficer_FinalDisabled = new HediffDef();
         public static JobDef SSC_TrainingReceiver = new JobDef(), Training_Ritual = new JobDef(), TrainingSexSlave = new JobDef();

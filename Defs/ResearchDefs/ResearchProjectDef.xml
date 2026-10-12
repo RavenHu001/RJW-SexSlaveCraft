@@ -5,6 +5,13 @@
     <label>调教</label>
     <description>研究遗留下的调教典籍，得到调教的方式。</description>
     <baseCost>500</baseCost>
+    <!-- Royalty 环境启用原版蓝图需求及生成；旧研究兼容直接沿用原版加载补齐。 -->
+    <techprintCount MayRequire="Ludeon.RimWorld.Royalty">1</techprintCount>
+    <techprintMarketValue MayRequire="Ludeon.RimWorld.Royalty">1000</techprintMarketValue>
+    <heldByFactionCategoryTags MayRequire="Ludeon.RimWorld.Royalty">
+      <li>Empire</li>
+      <li>Outlander</li>
+    </heldByFactionCategoryTags>
     <techLevel>Industrial</techLevel>
     <tab>SSC_ResearchTabDef</tab>
     <researchViewX>0.00</researchViewX>

@@ -17,7 +17,7 @@ namespace SexSlaveCraft
         public bool restrictionLifecycleSeen;
     }
 
-    public class SSCSettings
+    public partial class SSCSettings
     {
         // 限制迁移源码的外部设置契约。本套件不触发旧档设置迁移。
         public bool protectNonRapeOwnerOnly = true;

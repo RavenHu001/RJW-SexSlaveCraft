@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_MasterEntry_QuestName>SSC：A psychic impression of unknown origin</SSC_MasterEntry_QuestName>
+  <SSC_MasterEntry_QuestDescription>A psychic signal from an archotech intelligence settles into the colonists&apos; consciousness, with an undertone that stirs desire.\n\nIt seems only to be waiting for a reply.</SSC_MasterEntry_QuestDescription>
+  <SSC_MasterEntry_DebugRequest>Debug: create Seed of Desire quest</SSC_MasterEntry_DebugRequest>
+  <SSC_MasterEntry_DebugRequestTip>Create a quest for 1 free seed, regardless of research or previous grants. Another unfinished claim quest blocks duplicates.</SSC_MasterEntry_DebugRequestTip>
+  <SSC_MasterEntry_Unavailable>Game or claim quest unavailable.</SSC_MasterEntry_Unavailable>
+  <SSC_MasterEntry_AlreadyPending>A claim quest is unfinished. Resolve it first.</SSC_MasterEntry_AlreadyPending>
+  <SSC_MasterEntry_NoMap>Requires a player base that can receive drop pods.</SSC_MasterEntry_NoMap>
+  <SSC_MasterEntry_CreateFailed>Quest creation failed. Will retry automatically.</SSC_MasterEntry_CreateFailed>
+  <SSC_MasterEntry_Created>Claim quest created. Accept it in the quest list.</SSC_MasterEntry_Created>
+  <SSC_MasterEntry_DeliveryLetterLabel>Reply</SSC_MasterEntry_DeliveryLetterLabel>
+  <SSC_MasterEntry_DeliveryLetterText>An archotech creation has landed at the base—unsigned, with no explanation left behind.</SSC_MasterEntry_DeliveryLetterText>
+</LanguageData>

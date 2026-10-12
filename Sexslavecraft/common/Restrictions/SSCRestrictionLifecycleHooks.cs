@@ -16,6 +16,16 @@ namespace SexSlaveCraft
         }
     }
 
+    [HarmonyPatch(typeof(SSCIdentityUtility), nameof(SSCIdentityUtility.TryRestorePersonalityIdentity))]
+    internal static class SSCRestrictionPersonalityIdentityHook
+    {
+        /// <summary>人格恢复使用定向身份入口后，同样通知已有配置；外层恢复作用域负责延后协调。</summary>
+        private static void Postfix(Pawn pawn, bool __result)
+        {
+            if (__result) SSCRestrictionGameComponent.Notify(pawn);
+        }
+    }
+
     [HarmonyPatch(typeof(CompSexSlaveTraining), nameof(CompSexSlaveTraining.TrySetSpecialization))]
     internal static class SSCRestrictionSpecializationHook
     {

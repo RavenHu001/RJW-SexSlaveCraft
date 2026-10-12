@@ -45,6 +45,10 @@ namespace SexSlaveCraft
         // Things
         public static ThingDef EFOutfit;
         public static ThingDef SSC_PersonalitySlime;
+        // 独立 SSC 资格道具始终加载；原版自动研究蓝图继续由原版管理。
+        public static ThingDef SSC_MasterQualificationItem;
+        // 初次领取任务始终加载，由 SSC 控制创建和去重，不占用随机任务池。
+        public static QuestScriptDef SSC_InitialMasterQualification;
 
         // Mood Thoughts
         public static ThoughtDef SSC_Training_Mood_Lvl1;
@@ -222,6 +226,9 @@ namespace SexSlaveCraft
             // --- Things ---
             EFOutfit = GetDef<ThingDef>("Apparel_EFOutfit");
             SSC_PersonalitySlime = GetDef<ThingDef>("SSC_PersonalitySlime");
+            // 作为必需定义注册；XML 与 DLL 未配套时记录错误，道具服务会拒绝结算。
+            SSC_MasterQualificationItem = GetDef<ThingDef>("SSC_MasterQualificationItem");
+            SSC_InitialMasterQualification = GetDef<QuestScriptDef>("SSC_InitialMasterQualification");
 
             // --- Mood Thoughts ---
             SSC_Training_Mood_Lvl1 = GetDef<ThoughtDef>("SSC_Training_Mood_Lvl1");

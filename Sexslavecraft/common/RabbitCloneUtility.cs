@@ -356,6 +356,7 @@ namespace SexSlaveCraft
 
             CompSexSlaveTraining sourceTraining = source.TryGetComp<CompSexSlaveTraining>();
             CompSexSlaveTraining cloneTraining = clone.TryGetComp<CompSexSlaveTraining>();
+            SSCMasterQualificationUtility.InitializeNewClone(clone);
             if (sourceTraining != null && cloneTraining != null)
             {
                 cloneTraining.specializationType = sourceTraining.specializationType;

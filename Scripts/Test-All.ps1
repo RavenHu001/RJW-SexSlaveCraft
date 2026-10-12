@@ -48,6 +48,8 @@ $suites = @(
     @{ Name = 'InteractionProtection'; Arguments = @() },
     @{ Name = 'BusTrade'; Arguments = @() },
     @{ Name = 'TrainerIdentity'; Arguments = @($repoRoot) },
+    @{ Name = 'MasterQualificationItem'; Arguments = @($repoRoot) },
+    @{ Name = 'MasterEntry'; Arguments = @($repoRoot) },
     @{ Name = 'TrainerIntegration'; Arguments = @() },
     @{ Name = 'TrainerTrainingMemories'; Arguments = @($repoRoot) },
     @{ Name = 'RestrictionCore'; Arguments = @($repoRoot) },

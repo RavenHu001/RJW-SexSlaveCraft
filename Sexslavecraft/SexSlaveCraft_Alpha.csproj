@@ -90,6 +90,23 @@
     <Compile Include="common\Restrictions\SSCRestrictionLifecycleHooks.cs" />
     <Compile Include="common\Restrictions\SSCRestrictionUI.cs" />
     <Compile Include="Comps\Comp_Train.TrainerIdentity.cs" />
+    <Compile Include="Comps\Comp_Train.MasterQualification.cs" />
+    <Compile Include="common\SSCSettings.MasterQualification.cs" />
+    <Compile Include="common\SSCMasterQualificationUtility.cs" />
+    <Compile Include="common\SSCMasterQualificationDisplay.cs" />
+    <!-- 第二批：统一道具结算、设置生成按钮及原版使用效果适配。 -->
+    <Compile Include="common\SSCMasterQualificationUtility.Item.cs" />
+    <Compile Include="common\SSCMasterQualificationDebugUtility.cs" />
+    <Compile Include="common\SSCMod.MasterQualification.cs" />
+    <Compile Include="Comps\CompUseEffect_MasterQualification.cs" />
+    <!-- 第三批 3A：存档获取请求、原版任务/空投协调及设置手动入口。 -->
+    <Compile Include="common\SSCMasterEntryUtility.cs" />
+    <Compile Include="common\SSCMasterEntryGameComponent.cs" />
+    <Compile Include="common\SSCMod.MasterEntry.cs" />
+    <Compile Include="Quest\QuestNode_Root_MasterQualification.cs" />
+    <Compile Include="Quest\QuestPart_MasterQualificationDelivery.cs" />
+    <Compile Include="common\SSCMasterQualificationMigration.cs" />
+    <Compile Include="common\SSCMasterQualificationGameComponent.cs" />
     <Compile Include="common\BindingRitualStateUtility.cs" />
     <Compile Include="common\BindingRitualSelectionUtility.cs" />
     <Compile Include="common\BindingRitualSelectionWidget.cs" />

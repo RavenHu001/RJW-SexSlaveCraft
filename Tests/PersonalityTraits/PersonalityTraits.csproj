@@ -6,6 +6,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(SscSourceRoot)/common/ExcretionUtility.cs" Link="Production/ExcretionUtility.cs" />
+    <Compile Include="$(SscSourceRoot)/Comps/Comp_Train.MasterQualification.cs" Link="Production/Comp_Train.MasterQualification.cs" />
+    <Compile Include="$(SscSourceRoot)/common/SSCSettings.MasterQualification.cs" Link="Production/SSCSettings.MasterQualification.cs" />
+    <Compile Include="$(SscSourceRoot)/common/SSCMasterQualificationUtility.cs" Link="Production/SSCMasterQualificationUtility.cs" />
+    <Compile Include="$(SscSourceRoot)/common/SSCMasterQualificationMigration.cs" Link="Production/SSCMasterQualificationMigration.cs" />
     <Compile Include="$(SscSourceRoot)/common/PersonalityTraitUtility.cs" Link="Production/PersonalityTraitUtility.cs" />
     <Compile Include="$(SscSourceRoot)/common/PersonalityMemoryUtility.cs" Link="Production/PersonalityMemoryUtility.cs" />
     <Compile Include="$(SscSourceRoot)/Comps/ThingsComp_PE_PES.cs" Link="Production/ThingsComp_PE_PES.cs" />

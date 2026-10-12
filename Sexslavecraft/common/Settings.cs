@@ -51,6 +51,7 @@ namespace SexSlaveCraft
             Scribe_Values.Look(ref enableCorruptionDecay, "enableCorruptionDecay", true);
             Scribe_Values.Look(ref corruptionDecayPerDay, "corruptionDecayPerDay", 0.02f);
             Scribe_Values.Look(ref useOldScoring, "useOldScoring", false);
+            ExposeMasterQualificationSettings();
             ExposeRestrictionSettings();
 
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
@@ -63,7 +64,7 @@ namespace SexSlaveCraft
         }
     }
 
-    public class SSCMod : Mod
+    public partial class SSCMod : Mod
     {
         public static SSCSettings settings;
         private Vector2 settingsScrollPosition;
@@ -135,6 +136,12 @@ namespace SexSlaveCraft
         /// <summary>按功能绘制全局设置；限制区仅保留开关、模板子窗口入口及位于末尾的测试入口。</summary>
         private static void DrawSettings(Listing_Standard listingStandard)
         {
+            listingStandard.CheckboxLabeled(
+                "SSC_Setting_AllowDirectMasterSelection".Translate(),
+                ref settings.allowDirectMasterSelection,
+                "SSC_Setting_AllowDirectMasterSelection_Desc".Translate()
+            );
+            listingStandard.GapLine();
             bool restrictionsWereEnabled = settings.enableSexSlaveProtectionRules;
             // 这里只提供统一限制总开关。旧四项全局开关已退役，原值仅供尚未升级的存档迁移。
             listingStandard.CheckboxLabeled(
@@ -186,6 +193,9 @@ namespace SexSlaveCraft
                 ref settings.enableDebugGizmos,
                 Strings.Setting_EnableDebugGizmos_Desc
             );
+            // 道具生成是设置里的独立测试按钮；上方开关只控制角色调试 Gizmo，不控制此入口。
+            DrawMasterQualificationDebugEntry(listingStandard);
+            DrawMasterEntryDebugEntry(listingStandard);
 
             listingStandard.GapLine();
             // EN: Step 5: expose the full-gel body tint option for the `全凝胶化完成` visual style.

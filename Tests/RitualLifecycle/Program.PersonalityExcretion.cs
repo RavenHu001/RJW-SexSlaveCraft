@@ -46,6 +46,31 @@ internal static partial class Program
 
     private static void RunPersonalityExcretionTests()
     {
+        Check("PE scene snapshots Master qualification before clearing the original body", () =>
+        {
+            var execution = new PEExecution();
+            var comp = execution.Target.TryGetComp<CompSexSlaveTraining>(); comp.ReplaceMasterQualification(true);
+            execution.Start();
+            Require(comp.masterQualificationUnlocked, "scene start cleared qualification before extraction");
+            execution.Toils[3].initAction();
+            var store = GenSpawn.Spawned.Last().TryGetComp<CompPersonalityStore>();
+            Require(store.MasterQualificationUnlocked, "scene snapshot lost the source qualification");
+            Require(!comp.masterQualificationUnlocked && comp.masterQualificationVersion == 1,
+                "scene extraction kept qualification on the emptied body");
+        });
+        Check("PE cancellation or missing personality storage cannot clear Master qualification", () =>
+        {
+            var cancelled = new PEExecution(); var comp = cancelled.Target.TryGetComp<CompSexSlaveTraining>();
+            comp.ReplaceMasterQualification(true); cancelled.Start();
+            cancelled.Toils[2].Finish(); cancelled.EngineCleanup();
+            Require(comp.masterQualificationUnlocked, "cancelled scene cleared qualification");
+            var missing = new PEExecution(); var missingComp = missing.Target.TryGetComp<CompSexSlaveTraining>();
+            missingComp.ReplaceMasterQualification(true); missing.Start();
+            ThingMaker.IncludePersonalityStore = false;
+            try { missing.Toils[3].initAction(); }
+            finally { ThingMaker.IncludePersonalityStore = true; }
+            Require(missingComp.masterQualificationUnlocked, "missing storage cleared qualification without preserving it");
+        });
         Check("PE handoff retains its reservation and repeated handoff preserves the receiver", () =>
         {
             var first = new PEExecution();

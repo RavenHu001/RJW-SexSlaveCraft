@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <SSC_Identity_BoundTip>已有主奴綁定，無法切換身分。已綁定的性奴，以及仍有綁定性奴的主人，必須保留目前身分。</SSC_Identity_BoundTip>
+  <SSC_Identity_MasterQualificationRequired>需要主人資格</SSC_Identity_MasterQualificationRequired>
+  <SSC_Identity_SelectionUnavailable>目前無法切換為主人，請檢查主人資格與綁定狀態。</SSC_Identity_SelectionUnavailable>
+  <SSC_Setting_AllowDirectMasterSelection>允許直接選擇主人</SSC_Setting_AllowDirectMasterSelection>
+  <SSC_Setting_AllowDirectMasterSelection_Desc>預設開啟，選擇身分不授予永久資格。關閉後須取得資格；既有身分保留，綁定鎖定不變。</SSC_Setting_AllowDirectMasterSelection_Desc>
 </LanguageData>

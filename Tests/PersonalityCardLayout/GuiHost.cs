@@ -58,6 +58,11 @@ namespace UnityEngine
 
 namespace Verse
 {
+    // 展示服务使用真实四语文件；仅替代原版翻译入口，不重写资格文案或业务判定。
+    public static class TranslationExtensions
+    {
+        public static string Translate(this string key) => SexSlaveCraft.Strings.TranslateKey(key);
+    }
     public enum GameFont { Tiny, Small, Medium }
     public static class Text
     {
@@ -210,6 +215,7 @@ namespace SexSlaveCraft
     {
         public string firstName = "Riley", nickName = "Riley", lastName = "Test";
         public bool hasSexSlaveTrait = true;
+        public bool masterQualificationUnlocked;
         public RimWorld.BackstoryDef childhood = new RimWorld.BackstoryDef { title = "医疗助理" }, adulthood = new RimWorld.BackstoryDef { title = "舰队科学家" };
         public List<StoredSkillData> storedSkills = new List<StoredSkillData>();
         public List<RimWorld.Trait> storedTraits = new List<RimWorld.Trait>();
@@ -235,9 +241,11 @@ namespace SexSlaveCraft
         /// <summary>直接读取仓库语言文件，让布局检查使用真实翻译文本。</summary>
         public static void Load(string root, string language)
         {
-            translations = XDocument.Load(Path.Combine(root, "Languages", language, "Keyed", "SSC_Keys.xml"))
-                .Root.Elements().GroupBy(element => element.Name.LocalName).ToDictionary(group => group.Key, group => group.First().Value);
+            translations = new[] { "SSC_Keys.xml", "SSC_MasterQualification.xml" }
+                .SelectMany(file => XDocument.Load(Path.Combine(root, "Languages", language, "Keyed", file)).Root.Elements())
+                .GroupBy(element => element.Name.LocalName).ToDictionary(group => group.Key, group => group.First().Value);
         }
+        public static string TranslateKey(string key) => translations[key];
         /// <summary>取得真实翻译，并替换测试用例提供的占位符参数。</summary>
         private static string Get(string name, params object[] args) => string.Format(translations["SSC_PES_" + name], args);
         /// <summary>生成完整姓名提示。</summary>

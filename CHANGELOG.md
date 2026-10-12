@@ -4,6 +4,18 @@
 
 This continuation builds on upstream **2.2.8**, the baseline when upstream development stopped in July, and retains its version numbering. Entries are listed newest first. Technical details are in the [development log (Chinese)](Docs/Development/开发更新记录.md).
 
+## [未发布 / Unreleased] — 主人资格入口 / Master qualification entry
+
+当前开发分支新增内容，尚未包含于正式 2.3.9 下载；版本号暂未递增。Current development branch additions, not included in the released 2.3.9 download; version metadata is unchanged.
+
+- **个人资格 / Personal qualification:** 欲望之种永久解锁个人主人选项，不自动改身份；资格随人格凝胶保存、复制、加工和植入，克隆不继承。手动选择主人默认允许，但不自动写入永久资格。Seeds of Desire permanently unlock personal Master selection without changing identity. Qualification transfers with personality gel; clones do not inherit it. Direct manual selection remains enabled by default but does not grant the permanent record.
+- **研究与获取 / Research and acquisition:** Royalty 下补齐基础“调教”蓝图，不增加研究进度或直接完成研究；原版独立蓝图仍是另一研究来源。初次免费任务按存档去重，设置可生成欲望之种或手动触发任务。后续种子参照神器进入任务和遗迹奖励，商队、城镇及商船库存暂停，已有种子仍可卖出。With Royalty, seeds supply missing Training techprints without adding research progress; the separate vanilla techprint remains available. A save-deduplicated free quest and settings buttons provide initial/testing access. Later seeds use artifact-referenced quest and ruin pools, with trader purchase stock disabled and player sales preserved.
+- **状态展示与指南 / Status and guides:** 角色身份栏和人格凝胶页统一显示“主人资格：已取得／未取得”；资格仍永久保留，悬停区分人格记录、当前身份、手动赋予与研究，四语说明和中英玩家指南同步。Pawn and gel panels show “Master qualification: acquired / not acquired”. Qualification remains permanent; four-language tooltips distinguish the personality record, current identity, manual selection and research. Chinese and English guides use the same display wording.
+
+- **叙事与投放通知 / Narrative and delivery letter:** 欲望之种描述与初次任务正文采用新的四语叙事，简中任务名为“SSC：一份来历不明的感应”。原版生成运输舱时发送“答复”投放信，可定位投放处；不改变领取、奖励和去重规则。The seed description and initial quest use new four-language narrative text. Vanilla drop-pod generation sends a custom “Reply” letter with a delivery location target; claim, reward and deduplication rules are unchanged.
+
+首批资格、第二批道具与研究、3A 初次任务已获维护者实机反馈；第 4 批展示与指南已获维护者有效确认，3B 自然来源及平衡仍保留实机验收边界，自动检查范围见[开发记录](Docs/Development/开发更新记录.md)。Earlier qualification, item/research and initial-quest batches received maintainer in-game feedback. The maintainer confirmed the stage 4 displays and guides work; natural 3B sources and balance retain their in-game acceptance scope.
+
 ## [2.3.9] — 2026-10-10 — 统一受训身份与训导官反馈 / Unified receiver identity and Trainer Officer feedback
 
 本版归并 `v2.3.8`（`fd60efa`）之后至 `7564173` 的全部 **12 项开发提交**：统一受训身份门槛与旧档恢复、训导官职责心情与主人评价、训导官独立弱化记忆套、训导官文案基调重写与去性别化，以及训导官对实际主人的反向信任。2.3.8 发布结果归档与两次 PR 合并不重复计为开发增量。版本元数据与运行 DLL 已同步为 **2.3.9／2.3.9.0**；构建、自动回归与实机验收范围见[2.3.9 版本验证](Docs/Releases/2.3.9/2.3.9版本验证.md)，玩家内容见[中英发布说明](Docs/Releases/2.3.9/2.3.9发布说明.md)。
