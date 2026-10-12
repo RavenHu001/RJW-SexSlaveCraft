@@ -9,11 +9,11 @@
     <category>Item</category>
     <altitudeLayer>Item</altitudeLayer>
     <drawerType>MapMeshOnly</drawerType>
-    <!-- 首版复用原版 Core 图像并加紫色，不依赖任何 DLC 的图像资源。 -->
+    <!-- 欲望之种独立贴图自行包含紫色与深紫色，白色 tint 保留原色；不依赖 DLC 图像。 -->
     <graphicData>
-      <texPath>Things/Item/Equipment/WeaponSpecial/OrbitalTargeterPowerBeam/OrbitalTargeterPowerBeam</texPath>
+      <texPath>Things/Item/SSC_DesireSeed</texPath>
       <graphicClass>Graphic_Single</graphicClass>
-      <color>(0.75, 0.45, 1)</color>
+      <color>(1, 1, 1)</color>
       <drawSize>0.7</drawSize>
     </graphicData>
     <selectable>true</selectable>
