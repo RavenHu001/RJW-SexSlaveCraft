@@ -15,7 +15,7 @@ namespace SexSlaveCraft
         // 原版能力、属性与自然愈合读取 CurStage；返回中性阶段才会真正暂停全部加成。
         // 不改严重度或 CurStageIndex，身份返回后仍能读取原有成长阶段。
         public override HediffStage CurStage => IsActive ? base.CurStage : InactiveStage;
-        // 严重度代表经验，不显示疾病百分比；具体数值在下方悬停中提供。
+        // 严重度只用于保存经验，不在健康栏显示百分比；经验与进度由主人面板展示。
         public override string SeverityLabel => null;
 
         /// <summary>健康栏仍显示保存的阶段，退出身份或空壳状态另标明加成暂停。</summary>
@@ -29,12 +29,6 @@ namespace SexSlaveCraft
             }
         }
 
-        /// <summary>用经验数值解释严重度，避免把成长显示为疾病百分比。</summary>
-        public override string GetTooltip(Pawn pawn, bool showHediffsDebugInfo)
-        {
-            // 保留原版当前有效属性与调试信息，再补累计经验；上限同样读取当前 Def。
-            return base.GetTooltip(pawn, showHediffsDebugInfo) + "\n" +
-                "SSC_MasterProgression_Experience".Translate(Severity.ToString("0"), def.maxSeverity.ToString("0"));
-        }
+        // 悬停直接沿用原版设定描述、阶段短句和有效属性，不额外追加成长经验。
     }
 }

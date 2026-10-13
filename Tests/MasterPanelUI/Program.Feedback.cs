@@ -133,6 +133,9 @@ internal static partial class Program
             Assert(tooltip.Contains(def.description) && tooltip.Contains(def.stages[i].extraTooltip));
             var view = Tab().Read(pawn);
             Assert(view.Stage == def.stages[i].label);
+            // 健康悬停精简不影响面板的经验和进度；四语均不再追加经验行。
+            Assert(view.Experience == "SSC_MasterProgression_Experience".Translate(record.Severity.ToString("0"), def.maxSeverity.ToString("0")));
+            Assert(!tooltip.Contains(view.Experience));
             if (i + 1 < def.stages.Count)
                 Assert(view.Progress == "SSC_MasterProgression_NextStage".Translate(def.stages[i + 1].label,
                     (def.stages[i + 1].minSeverity - record.Severity).ToString("0")));

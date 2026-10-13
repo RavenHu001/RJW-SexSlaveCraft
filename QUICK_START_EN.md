@@ -42,7 +42,7 @@ Direct Master selection is enabled by default. It permits selection without perm
 
 Settings offer two testing/recovery buttons: spawn one seed, or trigger the initial free quest. Spawning places an item directly; the quest button creates a claim quest and cannot duplicate another unfinished claim quest.
 
-Becoming a Master creates a four-stage progression record. Personally completing daily training grants **1 experience**; a complete binding ritual grants **3**. Interruptions grant none, and Trainer Officer work gives no proxy experience to its owner. Fully trained targets still provide practice. Hover over the health entry to see experience; provisional thresholds are 0/12/40/100. Growth transfers with personality gel. Leaving Master identity preserves growth and suspends bonuses.
+Becoming a Master creates a four-stage progression record. Personally completing daily training grants **1 experience**; a complete binding ritual grants **3**. Interruptions grant none, and Trainer Officer work gives no proxy experience to its owner. Fully trained targets still provide practice. View experience in the Master panel; the health tooltip shows descriptions and bonuses. Provisional thresholds are 0/12/40/100. Growth transfers with personality gel. Leaving Master identity preserves growth and suspends bonuses.
 
 The health entry is named “Symbiosis of Desire”, with Budding, Awakening, Command and Ascendance stages. Hover for the stage text and bonuses. The Master panel names the next stage. Crossing a threshold through practice or debug experience produces a message targeting the Master; loading, personality insertion and returning to the Master role do not report level-ups.
 
