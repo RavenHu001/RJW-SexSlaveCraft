@@ -123,6 +123,8 @@ namespace Verse
         }
         public int CurStageIndex => Math.Max(0, def.stages.FindLastIndex(s => severity >= s.minSeverity));
         public virtual HediffStage CurStage => def.stages.Count == 0 ? null : def.stages[CurStageIndex];
+        // 提供已核验的原版可见性接口；生产覆写负责按身份隐藏。
+        public virtual bool Visible => true;
         public virtual bool ShouldRemove => severity <= 0;
         public virtual string SeverityLabel => null;
         public virtual string LabelInBrackets => CurStage?.label;

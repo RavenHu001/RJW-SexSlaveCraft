@@ -68,7 +68,8 @@ internal static partial class Program
             comp.pawnIdentity = PawnIdentity.Unset;
             var gel = Excrete(source); Pawn host = Body("Host"); MasterTraining(host, PawnIdentity.Master, false);
             Assert(ExcretionUtility.InheritEverything(host, gel), "Inactive source insertion must succeed.");
-            Assert(SSCMasterProgressionUtility.GetExperience(host) == 40 && !SSCMasterProgressionUtility.GetRecord(host).IsActive,
+            Assert(SSCMasterProgressionUtility.GetExperience(host) == 40 && !SSCMasterProgressionUtility.GetRecord(host).IsActive &&
+                !SSCMasterProgressionUtility.GetRecord(host).Visible,
                 "Growth follows personality independently of its active role.");
         });
         Run("旧主人凝胶独立迁移成长，上一批已有资格版本不会阻止补基础阶段", () =>

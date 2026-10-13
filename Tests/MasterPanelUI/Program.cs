@@ -130,6 +130,7 @@ internal static partial class Program
         Pawn pawn = Grown(40); pawn.health.AddHediff(new Hediff { def = SSCDefOf.SSC_PersonalityExcreted_Done });
         var view = Tab().Read(pawn); Tab().Draw(pawn);
         Assert(view.Stage == SSCMasterProgressionUtility.GetRecord(pawn).LabelInBrackets && view.Benefits == Key("BenefitsInactive"));
+        Assert(!SSCMasterProgressionUtility.GetRecord(pawn).Visible);
         Assert(SSCMasterProgressionUtility.GetExperience(pawn) == 40);
     }
     private static void ReadOnly()
@@ -143,6 +144,7 @@ internal static partial class Program
     {
         Pawn pawn = Grown(40); pawn.Training.pawnIdentity = PawnIdentity.Slave;
         var view = Tab().Read(pawn); Assert(!view.CanEdit && view.Benefits == Key("BenefitsInactive") && view.Experience != null);
+        Assert(!SSCMasterProgressionUtility.GetRecord(pawn).Visible);
     }
     /// <summary>不悬停时没有原版日志查询；悬停执行真实记录输出，移除后的旧回调为空。</summary>
     private static void LazyTooltip()

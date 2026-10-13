@@ -132,7 +132,7 @@ internal static partial class Program
             string tooltip = record.GetTooltip(pawn, false);
             Assert(tooltip.Contains(def.description) && tooltip.Contains(def.stages[i].extraTooltip));
             var view = Tab().Read(pawn);
-            Assert(view.Stage == def.stages[i].label);
+            Assert(view.Stage == def.stages[i].label && record.Visible);
             // 健康悬停精简不影响面板的经验和进度；四语均不再追加经验行。
             Assert(view.Experience == "SSC_MasterProgression_Experience".Translate(record.Severity.ToString("0"), def.maxSeverity.ToString("0")));
             Assert(!tooltip.Contains(view.Experience));
@@ -140,6 +140,7 @@ internal static partial class Program
                 Assert(view.Progress == "SSC_MasterProgression_NextStage".Translate(def.stages[i + 1].label,
                     (def.stages[i + 1].minSeverity - record.Severity).ToString("0")));
             pawn.Training.pawnIdentity = PawnIdentity.Unset;
+            Assert(!record.Visible && record.Severity == def.stages[i].minSeverity);
             Assert(!record.GetTooltip(pawn, false).Contains(def.stages[i].extraTooltip));
         }
     }

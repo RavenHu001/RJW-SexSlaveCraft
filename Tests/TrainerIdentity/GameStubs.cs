@@ -100,6 +100,8 @@ namespace Verse
         public float Severity { get => severity; set { int old = CurStageIndex; severity = value; SeverityWrites++; if (old != CurStageIndex && pawn?.health.hediffSet.hediffs.Contains(this) == true) pawn.health.Notify_HediffChanged(this); } }
         public virtual int CurStageIndex => Math.Max(0, def.stages.FindLastIndex(s => Severity >= s.minSeverity));
         public virtual HediffStage CurStage => def?.stages.Count > 0 ? def.stages[CurStageIndex] : null;
+        // 提供已核验的原版可见性接口；生产覆写负责按身份隐藏。
+        public virtual bool Visible => true;
         public virtual bool ShouldRemove => Severity <= 0;
         public virtual string SeverityLabel => null;
         public virtual string LabelInBrackets => CurStage?.label;

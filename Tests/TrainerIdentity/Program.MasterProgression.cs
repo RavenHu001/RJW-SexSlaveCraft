@@ -30,7 +30,7 @@ internal static partial class Program
         {
             Pawn pawn = Pawn(); Assert(SSCIdentityUtility.TrySetIdentity(pawn, PawnIdentity.Master));
             var record = SSCMasterProgressionUtility.GetRecord(pawn);
-            Assert(record != null && record.Severity == 0 && !record.ShouldRemove && record.IsActive && !pawn.Training.masterQualificationUnlocked);
+            Assert(record != null && record.Severity == 0 && !record.ShouldRemove && record.IsActive && record.Visible && !pawn.Training.masterQualificationUnlocked);
         });
         Run("退出身份保留成长并刷新缓存，返回主人恢复原阶段", () =>
         {
@@ -38,9 +38,9 @@ internal static partial class Program
             SSCMasterProgressionUtility.TryAddExperience(pawn, 45);
             var record = SSCMasterProgressionUtility.GetRecord(pawn); int before = pawn.health.ChangeNotifications;
             Assert(SSCIdentityUtility.TrySetIdentity(pawn, PawnIdentity.Unset));
-            Assert(ReferenceEquals(record, SSCMasterProgressionUtility.GetRecord(pawn)) && record.Severity == 45 && !record.IsActive &&
+            Assert(ReferenceEquals(record, SSCMasterProgressionUtility.GetRecord(pawn)) && record.Severity == 45 && !record.IsActive && !record.Visible &&
                 record.CurStage.capMods.Count == 0 && pawn.health.ChangeNotifications > before);
-            Assert(SSCIdentityUtility.TrySetIdentity(pawn, PawnIdentity.Master) && record.IsActive && record.CurStageIndex == 2);
+            Assert(SSCIdentityUtility.TrySetIdentity(pawn, PawnIdentity.Master) && record.IsActive && record.Visible && record.CurStageIndex == 2);
         });
         Run("跨越四阶段阈值且经验截断到最高阶段，拒绝无效增量", () =>
         {
@@ -52,6 +52,26 @@ internal static partial class Program
             }
             Assert(SSCMasterProgressionUtility.TryAddExperience(pawn, 10) == 1 && record.Severity == 100 && record.CurStageIndex == 3);
             Assert(SSCMasterProgressionUtility.TryAddExperience(pawn, 10) == 0 && SSCMasterProgressionUtility.TryAddExperience(pawn, -3) == 0);
+        });
+        Run("隐藏成长严重度存读档后返回主人仍显示原阶段", () =>
+        {
+            Pawn source = Pawn(); Assert(SSCIdentityUtility.TrySetIdentity(source, PawnIdentity.Master));
+            SSCMasterProgressionUtility.TryAddExperience(source, 45);
+            Assert(SSCIdentityUtility.TrySetIdentity(source, PawnIdentity.Unset));
+            var saved = SSCMasterProgressionUtility.GetRecord(source);
+            Assert(!saved.Visible && source.health.hediffSet.hediffs.Contains(saved));
+            // 严重度执行真实 Hediff ExposeData；宿主只替代 Scribe 字典，不模拟全存档引用。
+            Scribe_Values.Data.Clear(); Scribe_Values.Loading = false; saved.ExposeData();
+            Pawn restored = Pawn(PawnIdentity.Unset);
+            var loaded = (Hediff_MasterProgression)HediffMaker.MakeHediff(SSCDefOf.SSC_Hediff_MasterProgression, restored);
+            Scribe_Values.Loading = true;
+            try { loaded.ExposeData(); }
+            finally { Scribe_Values.Loading = false; Scribe_Values.Data.Clear(); }
+            restored.health.AddHediff(loaded);
+            Assert(!loaded.Visible && SSCMasterProgressionUtility.GetExperience(restored) == 45);
+            Assert(SSCIdentityUtility.TrySetIdentity(restored, PawnIdentity.Master));
+            Assert(loaded.Visible && loaded.Severity == 45 && loaded.CurStageIndex == 2 &&
+                loaded.LabelInBrackets == SSCDefOf.SSC_Hediff_MasterProgression.stages[2].label);
         });
         Run("旧主人补基础阶段仅一次，现代无记录与重复主人选择不补建", () =>
         {
