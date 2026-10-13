@@ -9,6 +9,9 @@ namespace SexSlaveCraft
     {
         public const int CurrentVersion = 1;
         public const int DebugExperience = 10;
+        // 固定实践经验只由已认领的完整结算调用；不随评分、受训者进度或仪式阶段数变化。
+        public const int DailyTrainingExperience = 1;
+        public const int BindingRitualExperience = 3;
         public const float NoRecord = -1f;
         public const string DefName = "SSC_Hediff_MasterProgression";
 
@@ -126,7 +129,7 @@ namespace SexSlaveCraft
         /// <summary>实践与调试共用增加入口；不为现代无记录主人或空壳自动创建阶段。</summary>
         public static float TryAddExperience(Pawn pawn, int amount)
         {
-            // 调试和将来的实践经验都只授予存活的有效主人，且必须已有成长记录。
+            // 调试与实践经验都只授予存活的有效主人，且必须已有成长记录。
             // 无记录返回零，不把加经验接口变成另一条身份建立或旧档补建入口。
             if (amount <= 0 || pawn == null || pawn.Dead || !CanCarryRecord(pawn) || !IsActive(pawn)) return 0f;
             Hediff_MasterProgression record = GetRecord(pawn);

@@ -50,11 +50,14 @@ internal static partial class Program
         {
             var execution = new PEExecution();
             var comp = execution.Target.TryGetComp<CompSexSlaveTraining>(); comp.ReplaceMasterQualification(true);
+            Require(SSCMasterProgressionUtility.RestoreRecord(execution.Target, 40), "source growth setup");
             execution.Start();
             Require(comp.masterQualificationUnlocked, "scene start cleared qualification before extraction");
             execution.Toils[3].initAction();
             var store = GenSpawn.Spawned.Last().TryGetComp<CompPersonalityStore>();
             Require(store.MasterQualificationUnlocked, "scene snapshot lost the source qualification");
+            Equal(40f, store.MasterGrowthPoints, "scene snapshot before source growth clear");
+            Equal(-1f, SSCMasterProgressionUtility.GetExperience(execution.Target), "emptied source growth");
             Require(!comp.masterQualificationUnlocked && comp.masterQualificationVersion == 1,
                 "scene extraction kept qualification on the emptied body");
         });
@@ -171,7 +174,7 @@ internal static partial class Program
             Equal(1, GenSpawn.Spawned.Count, "personality gel count");
             Equal(first.Target, GenSpawn.Spawned.Single().TryGetComp<CompPersonalityStore>().Stored, "gel source");
             Equal(1, TestWorld.ProcessSexCalls, "extraction count");
-            Require(PetExtractionBoundary.Calls.SequenceEqual(new[] { "store", "cat", "dog", "masterGrowth" }),
+            Require(PetExtractionBoundary.Calls.SequenceEqual(new[] { "store", "cat", "dog" }),
                 "scene extraction must save once before detaching cat and dog personality effects");
             Require(first.Target.health.hediffSet.HasHediff(SSCDefOf.SSC_PersonalityExcreted_Done), "hollow state missing");
             Require(!first.Target.health.hediffSet.HasHediff(SSCDefOf.SSC_PersonalityExcreting), "excretion state not removed");

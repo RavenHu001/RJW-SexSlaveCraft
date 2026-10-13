@@ -75,11 +75,11 @@ namespace SexSlaveCraft
     }
     public static partial class ConditioningUtility
     {
-        /// <summary>返回固定分数以观察生产结算入口。</summary>
+        /// <summary>默认分数随查询次数变化以检测重复评分，允许配置低评分完成边界。</summary>
         public static float GetScore(Pawn actor, Pawn target)
         {
             TestWorld.ScoreCalls++;
-            return TestWorld.ScoreCalls * 40f;
+            return TestWorld.DailyScoreOverride ?? TestWorld.ScoreCalls * 40f;
         }
         /// <summary>记录日常结算次数，不重写实际收益算法。</summary>
         public static void ExecuteOutcome(Pawn actor, Pawn target, float score)

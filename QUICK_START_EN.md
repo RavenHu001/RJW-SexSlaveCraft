@@ -42,6 +42,8 @@ Direct Master selection is enabled by default. It permits selection without perm
 
 Settings offer two testing/recovery buttons: spawn one seed, or trigger the initial free quest. Spawning places an item directly; the quest button creates a claim quest and cannot duplicate another unfinished claim quest.
 
+Becoming a Master creates a four-stage progression record. Personally completing daily training grants **1 experience**; a complete binding ritual grants **3**. Interruptions grant none, and Trainer Officer work gives no proxy experience to its owner. Fully trained targets still provide practice. Hover over the health entry to see experience; provisional thresholds are 0/12/40/100. Growth transfers with personality gel. Leaving Master identity preserves growth and suspends bonuses.
+
 ### Step 1: Research Training
 
 `Training` is the entry point for the mod. Complete it before trying to configure pawns.

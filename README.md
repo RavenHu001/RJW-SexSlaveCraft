@@ -14,6 +14,8 @@ RimWorld 1.6 的 RimJobWorld（RJW）扩展模组，基于上游 **2.2.8** 继�
 
 欲望之种解锁个人永久资格，角色身份栏与人格凝胶页分开显示该记录；资格随人格转移，克隆不继承。免费任务按存档去重，后续种子来自任务／遗迹，贸易库存暂停。默认仍允许直接手动选择主人；有 Royalty 时种子也补齐基础研究蓝图，原版独立蓝图保留。用法见[中文快速入门](读我，玩法介绍.md#开发分支补充主人资格入口)与[English quick start](QUICK_START_EN.md#development-branch-master-qualification-entry)。The unreleased branch adds personal Master qualification, visible on pawns and personality gels, with free/rare reward sources. Qualification transfers with personality gel but is not inherited by clones; research techprints remain separate.
 
+主人成长已接入本人日常调教 +1、整场仪式 +3；训导官代劳不转记，成长随人格凝胶保存。Master progression now grants +1 for personally completed daily training and +3 for a whole binding ritual; Trainer Officer work gives no proxy credit. See [第二批测试说明](Docs/Development/主人阶段第二批测试说明.md).
+
 上述内容尚未包含于正式 2.3.9 下载；实施、验收与同步状态见[开发记录索引](Docs/Development/README.md)。
 
 ## 项目概况

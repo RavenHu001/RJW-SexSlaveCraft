@@ -99,6 +99,14 @@ The pawn's identity section always shows `Master qualification: acquired / not a
 
 **Later sources and settings.** Seeds enter standard quest rewards and ancient ruin loot pools using artifact references; they remain obtainable after research is complete. With Ideology, enhanced rooms and ancient security crates are also included. Seeds are rare, and group weights are not per-item probabilities. Caravans, settlements and orbital traders do not stock them for purchase; players may sell existing seeds. No crafting recipe is provided. Settings can spawn one seed directly on the current map or trigger the initial free quest. The quest button bypasses research, existing-Master and past-grant conditions but cannot duplicate another unfinished claim quest. Neither button grants qualification directly; missing maps or other unavailable conditions disable buttons with an explanation.
 
+### 3.1.2 Development branch: Master progression and practice
+
+Becoming a Master creates a four-stage progression record. Personally completing daily training grants **1 experience**; a complete binding ritual grants **3**. Interruptions grant none, and Trainer Officer work gives no proxy experience to its owner. Fully trained targets still provide practice. Hover over the health entry to see experience; provisional thresholds are 0/12/40/100. Growth transfers with personality gel. Leaving Master identity preserves growth and suspends bonuses.
+
+Bonuses apply only while the current SSC identity is Master. At the provisional highest stage, the progression itself adds 40 percentage points of Consciousness and 30 of Manipulation. Seed use does not create or reset progression. Clones inherit neither the Master role nor growth; gel implantation replaces the host record exactly.
+
+Rewards are claimed once per completed session; previously settled jobs receive no historical experience. The current cap is 100. An authorized different Master earns its own practice, while a Trainer Officer in the ritual host role grants no proxy experience. The +10 debug command requires developer mode and SSC debug Gizmos and never creates a missing growth record. See the [batch 2 test guide (Chinese)](Docs/Development/主人阶段第二批测试说明.md).
+
 ### 3.2 Allow Training
 
 The Training WorkGiver scans a pawn only when `Allow Training` is enabled. 2.3.9 also requires SSC Sex Slave identity; a saved enable setting cannot replace it.
