@@ -2,7 +2,7 @@
 
 [文档总索引](../Docs/README.md) · [发布与打包](../Docs/Maintenance/发布与打包.md) · [开发记录](../Docs/Development/README.md)
 
-当前 `Scripts/Test-All.ps1` 登记 **27 套机制回归**；正式 2.3.9 发布时为 25 套，后续开发增加 `MasterQualificationItem` 与 `MasterEntry`。下列专项 README 保留各自命令、覆盖范围和实机步骤，实际通过数量以当次报告为准。
+当前 `Scripts/Test-All.ps1` 登记 **28 套机制回归**；正式 2.3.9 发布时为 25 套，后续开发增加 `MasterQualificationItem`、`MasterEntry` 与 `MasterPanelUI`。下列专项 README 保留各自命令、覆盖范围和实机步骤，实际通过数量以当次报告为准。
 
 ## 统一入口
 
@@ -20,6 +20,8 @@ pwsh -File Scripts/Test-All.ps1 -HarmonyAssemblyPath 'C:\Dependencies\Harmony\ne
 - [MasterEntry](MasterEntry/README.md)：主人资格初次获取任务回归与实机测试。
 - [主人阶段第一批测试说明](../Docs/Development/主人阶段第一批测试说明.md)：成长回归已纳入 TrainerIdentity、PersonalityTraits 和 RitualLifecycle，未新增独立机制套件。
 - [主人阶段第二批测试说明](../Docs/Development/主人阶段第二批测试说明.md)：实践经验联通真实日常 Job、整场仪式 Apply 和成长工具；441/441 专项用例通过，2026-10-13 维护者确认实机测试有效。
+
+- [MasterPanelUI](MasterPanelUI/README.md)：第三批真实主人面板、阶段区间、四语布局及原缰绳开关回归；2026-10-13 维护者确认面板和开关符合预期，实机步骤见[第三批测试说明](../Docs/Development/主人阶段第三批测试说明.md)。
 
 ## 身份、训导官与自我调教
 
@@ -63,4 +65,4 @@ pwsh -File Scripts/Test-All.ps1 -HarmonyAssemblyPath 'C:\Dependencies\Harmony\ne
 
 ## 编排与打包流程回归
 
-- [ValidationRunner](ValidationRunner/README.md)：验证统一脚本的状态汇总、依赖预检与打包阻断；独立流程检查，不计入上述 27 套机制回归。
+- [ValidationRunner](ValidationRunner/README.md)：验证统一脚本的状态汇总、依赖预检与打包阻断；独立流程检查，不计入上述 28 套机制回归。

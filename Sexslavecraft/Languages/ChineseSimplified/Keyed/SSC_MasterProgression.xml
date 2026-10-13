@@ -4,4 +4,13 @@
   <SSC_MasterProgression_Experience>成长经验：{0} / {1}</SSC_MasterProgression_Experience>
   <SSC_MasterProgression_DebugAdd>调试：主人经验 +{0}</SSC_MasterProgression_DebugAdd>
   <SSC_MasterProgression_DebugAddTip>增加主人经验，上限为最高阶段。</SSC_MasterProgression_DebugAddTip>
+  <SSC_MasterProgression_PanelHeader>主人成长</SSC_MasterProgression_PanelHeader>
+  <SSC_MasterProgression_NoRecord>暂无成长记录</SSC_MasterProgression_NoRecord>
+  <SSC_MasterProgression_Benefits>意识、操控、社交加成；高阶加快自然愈合。</SSC_MasterProgression_Benefits>
+  <SSC_MasterProgression_BenefitsInactive>阶段加成未生效。</SSC_MasterProgression_BenefitsInactive>
+  <SSC_MasterProgression_MaxStage>已达最高阶段</SSC_MasterProgression_MaxStage>
+  <SSC_MasterProgression_NextStage>距下一阶段还需 {0} 经验</SSC_MasterProgression_NextStage>
+  <SSC_MasterProgression_PracticeTip>本人完成日常调教 +1，整场绑定仪式 +3。训导官代劳不增加主人经验。</SSC_MasterProgression_PracticeTip>
+  <SSC_MasterProgression_ShareNoBond>尚未绑定性奴。</SSC_MasterProgression_ShareNoBond>
+  <SSC_MasterProgression_ShareReadOnly>仅可修改玩家主人的开关。</SSC_MasterProgression_ShareReadOnly>
 </LanguageData>

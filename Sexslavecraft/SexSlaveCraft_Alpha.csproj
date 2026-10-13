@@ -214,6 +214,7 @@
     <Compile Include="ITab\ITab_PES.cs" />
     <Compile Include="ITab\ITab_SexSlaveTraining.cs" />
     <Compile Include="ITab\ITab_SexSlaveTraining.SpecializationDisplay.cs" />
+    <Compile Include="ITab\ITab_SexSlaveTraining.MasterPanel.cs" />
     <Compile Include="JobDriver\JobDriver_PE.cs" />
     <Compile Include="Recipe\Recipe_PEMake.cs" />
     <Compile Include="ThePatches\Harmony_CorruptionRapeThoughts.cs" />

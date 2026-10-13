@@ -107,6 +107,8 @@ Bonuses apply only while the current SSC identity is Master. At the provisional 
 
 Rewards are claimed once per completed session; previously settled jobs receive no historical experience. The current cap is 100. An authorized different Master earns its own practice, while a Trainer Officer in the ritual host role grants no proxy experience. The +10 debug command requires developer mode and SSC debug Gizmos and never creates a missing growth record. See the [batch 2 test guide (Chinese)](Docs/Development/主人阶段第二批测试说明.md).
 
+The Master training tab shows stage, total experience and progress toward the next stage. Hover over the bonus summary for values. Damage sharing is configured here and remains saved in the bridle: without a bridle the toggle is disabled, but a temporary lack of eligible recipients does not prevent changing the preference. The former damage-sharing Gizmo is removed. Thresholds and the cap come from the Def; the highest stage shows a full bar. Viewing a missing record never creates one. The maintainer confirmed the batch 3 panel and toggle work as expected on 2026-10-13; see the [test guide (Chinese)](Docs/Development/主人阶段第三批测试说明.md).
+
 ### 3.2 Allow Training
 
 The Training WorkGiver scans a pawn only when `Allow Training` is enabled. 2.3.9 also requires SSC Sex Slave identity; a saved enable setting cannot replace it.

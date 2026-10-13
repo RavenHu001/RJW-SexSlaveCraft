@@ -4,4 +4,13 @@
   <SSC_MasterProgression_Experience>Growth experience: {0} / {1}</SSC_MasterProgression_Experience>
   <SSC_MasterProgression_DebugAdd>Debug: Master experience +{0}</SSC_MasterProgression_DebugAdd>
   <SSC_MasterProgression_DebugAddTip>Adds Master experience, capped at the highest stage.</SSC_MasterProgression_DebugAddTip>
+  <SSC_MasterProgression_PanelHeader>Master growth</SSC_MasterProgression_PanelHeader>
+  <SSC_MasterProgression_NoRecord>No growth record</SSC_MasterProgression_NoRecord>
+  <SSC_MasterProgression_Benefits>Consciousness, manipulation and social bonuses; faster natural healing at higher stages.</SSC_MasterProgression_Benefits>
+  <SSC_MasterProgression_BenefitsInactive>Stage bonuses are inactive.</SSC_MasterProgression_BenefitsInactive>
+  <SSC_MasterProgression_MaxStage>Highest stage reached</SSC_MasterProgression_MaxStage>
+  <SSC_MasterProgression_NextStage>{0} experience to the next stage</SSC_MasterProgression_NextStage>
+  <SSC_MasterProgression_PracticeTip>Personally completing daily training grants +1; a whole binding ritual grants +3. Trainer Officer work gives no proxy experience.</SSC_MasterProgression_PracticeTip>
+  <SSC_MasterProgression_ShareNoBond>No bound sex slaves.</SSC_MasterProgression_ShareNoBond>
+  <SSC_MasterProgression_ShareReadOnly>Only player Masters can change this setting.</SSC_MasterProgression_ShareReadOnly>
 </LanguageData>

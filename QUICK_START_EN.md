@@ -44,6 +44,8 @@ Settings offer two testing/recovery buttons: spawn one seed, or trigger the init
 
 Becoming a Master creates a four-stage progression record. Personally completing daily training grants **1 experience**; a complete binding ritual grants **3**. Interruptions grant none, and Trainer Officer work gives no proxy experience to its owner. Fully trained targets still provide practice. Hover over the health entry to see experience; provisional thresholds are 0/12/40/100. Growth transfers with personality gel. Leaving Master identity preserves growth and suspends bonuses.
 
+The Master training tab shows stage, total experience and progress toward the next stage. Hover over the bonus summary for values. Damage sharing is configured here and remains saved in the bridle: without a bridle the toggle is disabled, but a temporary lack of eligible recipients does not prevent changing the preference. The former damage-sharing Gizmo is removed.
+
 ### Step 1: Research Training
 
 `Training` is the entry point for the mod. Complete it before trying to configure pawns.

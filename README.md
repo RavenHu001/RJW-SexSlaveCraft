@@ -16,6 +16,8 @@ RimWorld 1.6 的 RimJobWorld（RJW）扩展模组，基于上游 **2.2.8** 继�
 
 主人成长已接入本人日常调教 +1、整场仪式 +3；训导官代劳不转记，成长随人格凝胶保存。Master progression now grants +1 for personally completed daily training and +3 for a whole binding ritual; Trainer Officer work gives no proxy credit. See [第二批测试说明](Docs/Development/主人阶段第二批测试说明.md).
 
+主人调教页现可查看阶段、经验和距下一阶段的进度，并操作原缰绳的伤害分担开关；详细加成可悬停查看。The Master training tab now shows growth and hosts the bridle’s existing damage-sharing toggle. See [第三批测试说明](Docs/Development/主人阶段第三批测试说明.md).
+
 上述内容尚未包含于正式 2.3.9 下载；实施、验收与同步状态见[开发记录索引](Docs/Development/README.md)。
 
 ## 项目概况
@@ -80,7 +82,7 @@ SexSlaveCraft（SSC）围绕角色培养、身份与绑定关系、特化发展�
 
 主工程为 `Sexslavecraft/SexSlaveCraft_Alpha.csproj`，目标框架为 **.NET Framework 4.7.2**。源码编译需要 Visual Studio MSBuild、对应开发组件，以及本机 RimWorld 和模组依赖程序集。工程引用需按本机环境配置，具体方式见 [发布与打包](Docs/Maintenance/发布与打包.md)。
 
-统一验证需要 PowerShell 7、.NET SDK 9（或更新 SDK）、.NET 9 运行时，以及适用于 net9.0 的本地 Harmony DLL。先设置路径（示例路径需替换为本机位置），再运行当前全部 27 套回归（正式 2.3.9 发布时为 25 套）：
+统一验证需要 PowerShell 7、.NET SDK 9（或更新 SDK）、.NET 9 运行时，以及适用于 net9.0 的本地 Harmony DLL。先设置路径（示例路径需替换为本机位置），再运行当前全部 28 套回归（正式 2.3.9 发布时为 25 套）：
 
 ```powershell
 $env:SSC_TEST_HARMONY_PATH = 'C:\Dependencies\Harmony\net9.0\0Harmony.dll'
@@ -121,6 +123,6 @@ Version 2.3.8 consolidates Binding Ritual fixes and selection hints developed af
 
 Version 2.3.7 consolidates all development after released 2.3.6 through feature commit `a24562e`. It includes Cat/Dog training, pet exclusivity, protected gel finalization, Soothing Resonance for final Cats and Directed Taming for final Dogs. Both abilities use map-wide targeting, a two-second interaction on the target cell and their own one-day cooldowns. Dog work progress follows actual training interactions. Idle pets near their actual master approach for visible affection; a current ordinary Cat gains 1 percentage point, with a one-day affection cooldown. Eligible adult Cats/Dogs have a 20% chance to initiate a consensual follow-up with that master; this follow-up awaits in-game acceptance. Progress distinguishes ordinary completion from finalization and offers gel-processing tooltips. Rabbit selection remains disabled.
 
-The 2.3.9 publication gate passed all 25 suites and 1512/1512 cases. The current development test entry registers 27 suites, adding Master qualification item and entry checks; see the [test index](Tests/README.md). See the [2.3.9 bilingual notes](Docs/Releases/2.3.9/2.3.9发布说明.md) and [validation record](Docs/Releases/2.3.9/2.3.9版本验证.md) for publication checks and acceptance boundaries. For the previous package, see the [2.3.8 notes](Docs/Releases/2.3.8/2.3.8发布说明.md) and [validation record](Docs/Releases/2.3.8/2.3.8版本验证.md). Historical 2.3.7 packages do not contain the ritual improvements; historical 2.3.6 packages do not contain the Cat/Dog additions. Shared base specialization progress from 2.3.6 and self-training/handoff fixes from 2.3.5 are retained.
+The 2.3.9 publication gate passed all 25 suites and 1512/1512 cases. The current development test entry registers 28 suites, adding Master qualification item, entry and panel checks; see the [test index](Tests/README.md). See the [2.3.9 bilingual notes](Docs/Releases/2.3.9/2.3.9发布说明.md) and [validation record](Docs/Releases/2.3.9/2.3.9版本验证.md) for publication checks and acceptance boundaries. For the previous package, see the [2.3.8 notes](Docs/Releases/2.3.8/2.3.8发布说明.md) and [validation record](Docs/Releases/2.3.8/2.3.8版本验证.md). Historical 2.3.7 packages do not contain the ritual improvements; historical 2.3.6 packages do not contain the Cat/Dog additions. Shared base specialization progress from 2.3.6 and self-training/handoff fixes from 2.3.5 are retained.
 
 For gameplay, read the [English quick start](QUICK_START_EN.md) or [full guide](PLAYER_GUIDE_EN.md). See the [bilingual changelog](CHANGELOG.md) for release history. Legacy RimTalk integration remains suspended. When updating an installation, move the old mod folder out of `RimWorld/Mods/` before installing the replacement.
