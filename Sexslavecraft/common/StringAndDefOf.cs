@@ -103,6 +103,7 @@ namespace SexSlaveCraft
         public static HediffDef BridleOfSexSlave;
         public static HediffDef ChainOfSexSlave;
         public static HediffDef SSC_MasterBondEmpowerment;
+        public static HediffDef SSC_Hediff_MasterProgression;
         public static HediffDef SSC_FullGelatinizationTemporary;
         public static HediffDef SSC_FullGelatinizedBody;
         public static HediffDef SSC_PersonalityExcreting;
@@ -277,6 +278,7 @@ namespace SexSlaveCraft
             BridleOfSexSlave = GetDef<HediffDef>("Hediff_BridleOfSexSlave");
             ChainOfSexSlave = GetDef<HediffDef>("Hediff_ChainOfSexSlave");
             SSC_MasterBondEmpowerment = GetDef<HediffDef>("SSC_MasterBondEmpowerment");
+            SSC_Hediff_MasterProgression = GetDef<HediffDef>("SSC_Hediff_MasterProgression");
             SSC_FullGelatinizationTemporary = GetDef<HediffDef>("SSC_FullGelatinizationTemporary");
             SSC_FullGelatinizedBody = GetDef<HediffDef>("SSC_FullGelatinizedBody");
             SSC_PersonalityExcreting = GetDef<HediffDef>("Hediff_SSC_PersonalityExcreting");

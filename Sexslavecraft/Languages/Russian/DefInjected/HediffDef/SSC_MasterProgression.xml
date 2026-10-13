@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_Hediff_MasterProgression.label>Развитие господина</SSC_Hediff_MasterProgression.label>
+  <SSC_Hediff_MasterProgression.description>Развитие господина сохраняется вместе с личностью. Бонусы действуют только в роли господина.</SSC_Hediff_MasterProgression.description>
+  <SSC_Hediff_MasterProgression.stages.0.label>Ступень 1</SSC_Hediff_MasterProgression.stages.0.label>
+  <SSC_Hediff_MasterProgression.stages.1.label>Ступень 2</SSC_Hediff_MasterProgression.stages.1.label>
+  <SSC_Hediff_MasterProgression.stages.2.label>Ступень 3</SSC_Hediff_MasterProgression.stages.2.label>
+  <SSC_Hediff_MasterProgression.stages.3.label>Ступень 4</SSC_Hediff_MasterProgression.stages.3.label>
+</LanguageData>

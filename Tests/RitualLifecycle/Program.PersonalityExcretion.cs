@@ -171,7 +171,7 @@ internal static partial class Program
             Equal(1, GenSpawn.Spawned.Count, "personality gel count");
             Equal(first.Target, GenSpawn.Spawned.Single().TryGetComp<CompPersonalityStore>().Stored, "gel source");
             Equal(1, TestWorld.ProcessSexCalls, "extraction count");
-            Require(PetExtractionBoundary.Calls.SequenceEqual(new[] { "store", "cat", "dog" }),
+            Require(PetExtractionBoundary.Calls.SequenceEqual(new[] { "store", "cat", "dog", "masterGrowth" }),
                 "scene extraction must save once before detaching cat and dog personality effects");
             Require(first.Target.health.hediffSet.HasHediff(SSCDefOf.SSC_PersonalityExcreted_Done), "hollow state missing");
             Require(!first.Target.health.hediffSet.HasHediff(SSCDefOf.SSC_PersonalityExcreting), "excretion state not removed");

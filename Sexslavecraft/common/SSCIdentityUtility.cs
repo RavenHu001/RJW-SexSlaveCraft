@@ -119,8 +119,9 @@ namespace SexSlaveCraft
         /// <summary>普通身份选择统一检查主人资格和绑定锁定；关闭手动赋予不撤销当前身份。</summary>
         public static bool TrySetIdentity(Pawn pawn, PawnIdentity identity)
         {
-            // 在旧主人首次退出身份前保留其历史资格；查询和界面绘制不执行迁移。
+            // 在旧主人首次退出身份前保留其历史资格与基础成长；查询和界面绘制不执行迁移。
             SSCMasterQualificationMigration.MigratePawn(pawn);
+            SSCMasterProgressionMigration.MigratePawn(pawn);
             return TrySetIdentityCore(pawn, identity, null);
         }
 
@@ -140,6 +141,9 @@ namespace SexSlaveCraft
             if (comp.pawnIdentity == identity)
             {
                 if (restoredQualification.HasValue) comp.ReplaceMasterQualification(restoredQualification.Value);
+                // 同身份请求只刷新现有成长，不补零经验。Master→Master 人格植入
+                // 仍由恢复核心替换来源记录，不能靠“身份变化”通知完成流转。
+                SSCMasterProgressionUtility.RefreshActivation(pawn);
                 return true;
             }
             if (!restoredQualification.HasValue && identity == PawnIdentity.Master &&
@@ -172,6 +176,9 @@ namespace SexSlaveCraft
                 comp.isBeingTrained = false;
             }
 
+            // 成功写入身份之后再建立或启停成长。普通选择允许首次建立；
+            // 人格恢复不补基础阶段，恢复核心随后精确应用来源，包括明确没有记录的主人。
+            SSCMasterProgressionUtility.NotifyIdentityChanged(pawn, !restoredQualification.HasValue);
             // 身份真正变化后通知训导官生命周期。绑定事务会暂缓这次检查，
             // 待主人锁链和身份全部就绪后统一判断持续条件。
             TrainerSpecializationLifecycle.Notify(pawn);

@@ -26,6 +26,8 @@ namespace Verse
     public class HediffDef : Def
     {
         public Type hediffClass;
+        public float maxSeverity = 100f;
+        public List<HediffStage> stages = new List<HediffStage>();
         public List<HediffCompProperties> comps;
     }
 
@@ -271,6 +273,28 @@ namespace Verse
         public T TryGetComp<T>() where T : class => null;
         public HediffDef def;
         public float Severity;
+        public Pawn pawn;
+        public virtual int CurStageIndex => Math.Max(0, def.stages.FindLastIndex(s => Severity >= s.minSeverity));
+        public virtual HediffStage CurStage => def?.stages.Count > 0 ? def.stages[CurStageIndex] : null;
+        public virtual bool ShouldRemove => Severity <= 0;
+        public virtual string SeverityLabel => null;
+        public virtual string LabelInBrackets => CurStage?.label;
+        public virtual string GetTooltip(Pawn pawn, bool debug) => string.Empty;
+    }
+    public class HediffStage
+    {
+        public string label;
+        public float minSeverity;
+        public List<object> capMods = new List<object>();
+        public float naturalHealingFactor = -1f;
+    }
+    public static class HediffMaker
+    {
+        public static Hediff MakeHediff(HediffDef def, Pawn pawn)
+        {
+            var result = (Hediff)Activator.CreateInstance(def.hediffClass ?? typeof(Hediff));
+            result.def = def; result.pawn = pawn; return result;
+        }
     }
 
     public class HediffWithTarget : Hediff
@@ -289,6 +313,9 @@ namespace Verse
     public class HealthTracker
     {
         public HediffSet hediffSet = new HediffSet();
+        public int ChangeNotifications;
+        public void AddHediff(Hediff hediff) => hediffSet.hediffs.Add(hediff);
+        public void Notify_HediffChanged(Hediff hediff) => ChangeNotifications++;
         // 猫目标意识检查仅为本迁移套件的编译边界；意识分支由猫技能专项验证。
         public PawnCapacityTracker capacities = new PawnCapacityTracker();
         /// <summary>从测试角色的健康状态列表中移除指定实例。</summary>
@@ -847,6 +874,11 @@ namespace SexSlaveCraft
     public static class ResearchUtils { public static bool IsResearchFinished(object def) => def != null; }
     public static partial class SSCDefOf
     {
+        public static HediffDef SSC_Hediff_MasterProgression = new HediffDef
+        {
+            defName = "SSC_Hediff_MasterProgression", hediffClass = typeof(Hediff_MasterProgression), maxSeverity = 100f,
+            stages = new List<HediffStage> { new HediffStage { minSeverity = 0 }, new HediffStage { minSeverity = 12 }, new HediffStage { minSeverity = 40 }, new HediffStage { minSeverity = 100 } }
+        };
         public static object SSC_RES_Combatant = new object();
         public static HediffDef SSC_Hediff_Combatant = new HediffDef { defName = "SSC_Hediff_Combatant" };
         public static readonly HediffDef SSC_Hediff_CombatOverdrive = new HediffDef { defName = "SSC_Hediff_CombatOverdrive" };
@@ -896,6 +928,7 @@ namespace SexSlaveCraft
 
     public static class SSCIdentityUtility
     {
+        public static bool IsMaster(Pawn p) => p?.TryGetComp<CompSexSlaveTraining>()?.pawnIdentity == PawnIdentity.Master;
         public static bool IsSexSlave(Pawn p) => p?.TryGetComp<CompSexSlaveTraining>()?.pawnIdentity == PawnIdentity.Slave;
         public static bool IsSupportedVanillaStatus(Pawn p) => p != null;
         /// <summary>提供身份设置接口的空实现；本测试不验证身份系统的副作用。</summary>

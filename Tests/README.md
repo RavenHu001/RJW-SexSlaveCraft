@@ -18,6 +18,7 @@ pwsh -File Scripts/Test-All.ps1 -HarmonyAssemblyPath 'C:\Dependencies\Harmony\ne
 
 - [MasterQualificationItem](MasterQualificationItem/README.md)：主人资格道具与研究接入回归。
 - [MasterEntry](MasterEntry/README.md)：主人资格初次获取任务回归与实机测试。
+- [主人阶段第一批测试说明](../Docs/Development/主人阶段第一批测试说明.md)：成长回归已纳入 TrainerIdentity、PersonalityTraits 和 RitualLifecycle，未新增独立机制套件。
 
 ## 身份、训导官与自我调教
 

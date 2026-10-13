@@ -4,7 +4,7 @@
 
 This continuation builds on upstream **2.2.8**, the baseline when upstream development stopped in July, and retains its version numbering. Entries are listed newest first. Technical details are in the [development log (Chinese)](Docs/Development/开发更新记录.md).
 
-## [未发布 / Unreleased] — 主人资格入口 / Master qualification entry
+## [未发布 / Unreleased] — 主人资格与成长 / Master qualification and progression
 
 当前开发分支新增内容，尚未包含于正式 2.3.9 下载；版本号暂未递增。Current development branch additions, not included in the released 2.3.9 download; version metadata is unchanged.
 
@@ -13,6 +13,8 @@ This continuation builds on upstream **2.2.8**, the baseline when upstream devel
 - **状态展示与指南 / Status and guides:** 角色身份栏和人格凝胶页统一显示“主人资格：已取得／未取得”；资格仍永久保留，悬停区分人格记录、当前身份、手动赋予与研究，四语说明和中英玩家指南同步。Pawn and gel panels show “Master qualification: acquired / not acquired”. Qualification remains permanent; four-language tooltips distinguish the personality record, current identity, manual selection and research. Chinese and English guides use the same display wording.
 
 - **叙事与投放通知 / Narrative and delivery letter:** 欲望之种描述与初次任务正文采用新的四语叙事，简中任务名为“SSC：一份来历不明的感应”。原版生成运输舱时发送“答复”投放信，可定位投放处；不改变领取、奖励和去重规则。The seed description and initial quest use new four-language narrative text. Vanilla drop-pod generation sends a custom “Reply” letter with a delivery location target; claim, reward and deduplication rules are unchanged.
+
+- **主人成长第一批 / Master progression, batch 1:** 首次成为主人建立四阶段常驻成长；退出身份保留经验并停用加成。成长随人格凝胶精确转移，抽取后空壳不保留；新克隆不复制主人身份及成长。旧主人和旧主人凝胶仅一次补基础阶段，开发按钮可加 10 经验。2026-10-13 维护者测试确认未发现问题；当前数值仍为初值，实际训练经验与主人专属面板尚未接入。Becoming a Master creates a four-stage progression record. Leaving the role suspends bonuses while retaining experience. Personality gel transfers the record exactly and clears the extracted body; new clones inherit neither the Master role nor its progression. Legacy Masters and Master gels receive a one-time baseline migration. A debug command adds 10 experience. The maintainer reported no issues after in-game testing on 2026-10-13. Values remain provisional; training rewards and the dedicated panel are pending.
 
 首批资格、第二批道具与研究、3A 初次任务已获维护者实机反馈；第 4 批展示与指南已获维护者有效确认，3B 自然来源及平衡仍保留实机验收边界，自动检查范围见[开发记录](Docs/Development/开发更新记录.md)。Earlier qualification, item/research and initial-quest batches received maintainer in-game feedback. The maintainer confirmed the stage 4 displays and guides work; natural 3B sources and balance retain their in-game acceptance scope.
 

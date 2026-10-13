@@ -127,5 +127,10 @@ namespace SexSlaveCraft
     }
     public static class PersonalityGelUtility { public static ThingDef GetPersonalityGelDefForPawn(Pawn pawn) => new ThingDef(); }
     public static class CombatantSpecializationGelUtility { public static void DetachAfterExtraction(Pawn pawn) { } }
+    // 主人成长实际保存与清理由人格专项验证；本套件保留真实场景任务的接入边界。
+    public static class SSCMasterProgressionUtility
+    {
+        public static void ClearPersonalityRecord(Pawn pawn) => PetExtractionBoundary.Calls.Add("masterGrowth");
+    }
     public class MapComponent_PersonalityAssignment { public Thing GetAssignedGel(Pawn hollow) => null; }
 }

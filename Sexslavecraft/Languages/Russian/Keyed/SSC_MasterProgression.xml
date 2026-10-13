@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_MasterProgression_InactiveStage>{0} (неактивно)</SSC_MasterProgression_InactiveStage>
+  <SSC_MasterProgression_Experience>Опыт развития: {0} / {1}</SSC_MasterProgression_Experience>
+  <SSC_MasterProgression_DebugAdd>Отладка: опыт господина +{0}</SSC_MasterProgression_DebugAdd>
+  <SSC_MasterProgression_DebugAddTip>Добавляет опыт господину до высшей ступени.</SSC_MasterProgression_DebugAddTip>
+</LanguageData>

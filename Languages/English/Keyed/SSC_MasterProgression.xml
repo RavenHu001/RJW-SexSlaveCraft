@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_MasterProgression_InactiveStage>{0} (inactive)</SSC_MasterProgression_InactiveStage>
+  <SSC_MasterProgression_Experience>Growth experience: {0} / {1}</SSC_MasterProgression_Experience>
+  <SSC_MasterProgression_DebugAdd>Debug: Master experience +{0}</SSC_MasterProgression_DebugAdd>
+  <SSC_MasterProgression_DebugAddTip>Adds Master experience, capped at the highest stage.</SSC_MasterProgression_DebugAddTip>
+</LanguageData>

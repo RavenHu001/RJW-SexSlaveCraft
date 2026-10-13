@@ -20,6 +20,7 @@ namespace Verse
         public bool InMentalState;
         public Verse.AI.MentalState MentalState;
         public RaceProperties RaceProps = new RaceProperties();
+        public bool Discarded;
         public Faction Faction = Faction.OfPlayer;
         public JobDef CurJobDef => CurJob?.def;
         // 己方训练分支仅补编译边界，迁移套件不会执行或模拟训练算法。

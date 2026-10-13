@@ -75,14 +75,43 @@ namespace Verse
         public T TryGetNeed<T>() where T : class => Corruption as T;
     }
     // 只保留 Def 对象身份；状态是否存在仍由生产资格代码调用 HediffSet 查询。
-    public class HediffDef { }
+    public class HediffDef
+    {
+        public string defName;
+        public Type hediffClass;
+        public float maxSeverity = 100f;
+        public List<HediffStage> stages = new List<HediffStage>();
+    }
+    public class HediffStage
+    {
+        public string label;
+        public float minSeverity;
+        public List<object> capMods = new List<object>();
+        public float naturalHealingFactor = -1f;
+    }
     public class Hediff
     {
-        public object def;
+        public HediffDef def;
+        public Pawn pawn;
         private float severity;
         public int SeverityWrites;
         /// <summary>统计每次赋值，以验证稳定状态没有重复写入健康严重度。</summary>
-        public float Severity { get => severity; set { severity = value; SeverityWrites++; } }
+        public float Severity { get => severity; set { int old = CurStageIndex; severity = value; SeverityWrites++; if (old != CurStageIndex && pawn?.health.hediffSet.hediffs.Contains(this) == true) pawn.health.Notify_HediffChanged(this); } }
+        public virtual int CurStageIndex => Math.Max(0, def.stages.FindLastIndex(s => Severity >= s.minSeverity));
+        public virtual HediffStage CurStage => def?.stages.Count > 0 ? def.stages[CurStageIndex] : null;
+        public virtual bool ShouldRemove => Severity <= 0;
+        public virtual string SeverityLabel => null;
+        public virtual string LabelInBrackets => CurStage?.label;
+        public virtual string GetTooltip(Pawn pawn, bool debug) => string.Empty;
+        public virtual void ExposeData() => Scribe_Values.Look(ref severity, "severity", 0f);
+    }
+    public static class HediffMaker
+    {
+        public static Hediff MakeHediff(HediffDef def, Pawn pawn)
+        {
+            var result = (Hediff)Activator.CreateInstance(def.hediffClass ?? typeof(Hediff));
+            result.def = def; result.pawn = pawn; return result;
+        }
     }
     public class HediffSet
     {
@@ -96,6 +125,7 @@ namespace Verse
     {
         public HediffSet hediffSet = new HediffSet();
         public int Adds, Removes;
+        public int ChangeNotifications;
         public bool FailAdds;
         /// <summary>记录生产维护器的真实添加次数，并可模拟目标 Hediff 创建失败。</summary>
         public Hediff AddHediff(HediffDef def)
@@ -106,6 +136,8 @@ namespace Verse
             Adds++;
             return hediff;
         }
+        public void AddHediff(Hediff hediff) { if (FailAdds) return; hediffSet.hediffs.Add(hediff); Adds++; }
+        public void Notify_HediffChanged(Hediff hediff) => ChangeNotifications++;
         /// <summary>供真实解绑服务移除锁链。</summary>
         public void RemoveHediff(Hediff hediff)
         {
@@ -316,7 +348,13 @@ namespace SexSlaveCraft
     }
     public static class SSCDefOf
     {
-        public static object SexSlaveTrait = new object(), ChainOfSexSlave = new object(), BridleOfSexSlave = new object(), SSC_BasicTraining = new object();
+        public static object SexSlaveTrait = new object(), SSC_BasicTraining = new object();
+        public static HediffDef ChainOfSexSlave = new HediffDef(), BridleOfSexSlave = new HediffDef();
+        public static HediffDef SSC_Hediff_MasterProgression = new HediffDef
+        {
+            defName = "SSC_Hediff_MasterProgression", hediffClass = typeof(Hediff_MasterProgression), maxSeverity = 100f,
+            stages = new List<HediffStage> { new HediffStage { minSeverity = 0 }, new HediffStage { minSeverity = 12 }, new HediffStage { minSeverity = 40 }, new HediffStage { minSeverity = 100 } }
+        };
         public static object SSC_RES_TrainerOfficer = new object();
         public static HediffDef SSC_PersonalityExcreted_Done = new HediffDef();
         // 三个不同对象模拟已解析的普通、有效终极与禁用终极 Def。

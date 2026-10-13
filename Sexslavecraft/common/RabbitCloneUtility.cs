@@ -371,6 +371,9 @@ namespace SexSlaveCraft
                 cloneTraining.rabbitReproductionMode = sourceTraining.rabbitReproductionMode;
             }
 
+            // PawnDuplicator 已复制身体，且上方又写入来源身份，因此须在两者之后、生成到地图前
+            // 清继承成长并将主人身份改为未选择；普通凝胶 CopyFrom 不调用此克隆清理入口。
+            SSCMasterProgressionUtility.InitializeNewClone(clone);
             SyncTraits(source, clone);
         }
 
@@ -449,6 +452,10 @@ namespace SexSlaveCraft
         private static bool ShouldKeepSscHediff(HediffDef def)
         {
             if (def == null) return false;
+
+            // 初生清理与成熟复制共用此过滤，须先排除主人阶段，再判断宽泛的 SSC 前缀。
+            // 成熟只跳过来源记录，不删除克隆后来自行获得的身份或成长。
+            if (SSCMasterProgressionUtility.IsProgressionDef(def)) return false;
 
             string defName = def.defName ?? string.Empty;
             if (defName.StartsWith("SSC_", StringComparison.Ordinal)) return true;

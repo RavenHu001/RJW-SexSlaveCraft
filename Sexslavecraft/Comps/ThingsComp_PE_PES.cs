@@ -67,7 +67,7 @@ namespace SexSlaveCraft
     // =========================================================
     // 3. 主组件逻辑
     // =========================================================
-    public class CompPersonalityStore : ThingComp
+    public partial class CompPersonalityStore : ThingComp
     {
         // --- 基础信息 ---
         public string firstName;
@@ -130,6 +130,8 @@ namespace SexSlaveCraft
             Scribe_Values.Look(ref sscIdentity, "sscIdentity", PawnIdentity.Slave);
             Scribe_Values.Look(ref masterQualificationUnlocked, "masterQualificationUnlocked", false);
             Scribe_Values.Look(ref masterQualificationVersion, "masterQualificationVersion", 0);
+            // 独立保存成长标量与格式版本；身份已读入，成长模块在 PostLoadInit 解释旧凝胶。
+            ExposeMasterProgressionSnapshot();
             Scribe_Values.Look(ref corruptionLevel, "corruptionLevel", -1f);
             Scribe_Values.Look(ref highestCorruptionLevel, "highestCorruptionLevel", -1f);
             Scribe_Values.Look(ref specializationType, "specializationType", SexSlaveSpecializationType.None);
@@ -223,6 +225,8 @@ namespace SexSlaveCraft
             this.sscIdentity = other.sscIdentity;
             this.masterQualificationUnlocked = other.masterQualificationUnlocked;
             this.masterQualificationVersion = other.masterQualificationVersion;
+            // 所有普通复制和加工经过此入口，保留经验及旧格式版本，不共享健康实例。
+            CopyMasterProgressionSnapshot(other);
             this.corruptionLevel = other.corruptionLevel;
             this.highestCorruptionLevel = other.highestCorruptionLevel;
             this.specializationType = other.specializationType;
@@ -410,6 +414,8 @@ namespace SexSlaveCraft
             // 每次采集覆盖旧值，缺少组件也不能保留这份凝胶上一次的资格。
             masterQualificationUnlocked = trainingComp?.masterQualificationUnlocked ?? false;
             masterQualificationVersion = CompSexSlaveTraining.CurrentMasterQualificationVersion;
+            // 抽取清源前采集成长，即使当前已退出主人也保存其暂停记录；无记录覆盖旧快照。
+            CaptureMasterProgression(p);
             specializationProgressByType = trainingComp?.ExportSpecializationProgress()
                 ?? new Dictionary<string, float>();
             petCatComfortCooldownEndTick = PetCatAbilityUtility.CaptureCooldownDeadline(p);
