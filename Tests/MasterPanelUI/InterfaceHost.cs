@@ -85,6 +85,7 @@ namespace Verse
     {
         public bool Destroyed, Discarded, Dead, Downed;
         public string LabelShortCap = "Pawn";
+        public string LabelShort = "Pawn";
         public RimWorld.Faction Faction = RimWorld.Faction.OfPlayer;
         public RaceProperties RaceProps = new RaceProperties();
         public Health health = new Health();
@@ -94,12 +95,12 @@ namespace Verse
     public class RaceProperties { public bool Humanlike = true; }
     public class HediffDef
     {
-        public string defName;
+        public string defName, label, description, extraTooltip;
         public Type hediffClass;
         public float maxSeverity = 100;
         public List<HediffStage> stages = new List<HediffStage>();
     }
-    public class HediffStage { public string label; public float minSeverity; }
+    public class HediffStage { public string label, extraTooltip; public float minSeverity; }
     public struct DamageInfo { }
     public class Gizmo { }
     public class Hediff
@@ -108,7 +109,18 @@ namespace Verse
         public Pawn pawn;
         private float severity;
         public int TooltipReads;
-        public float Severity { get => severity; set => severity = Math.Clamp(value, 0, def.maxSeverity); }
+        // 模拟已取证的跨阶段健康通知，供用例在 setter 返回前替换人格记录。
+        public float Severity
+        {
+            get => severity;
+            set
+            {
+                int before = CurStageIndex;
+                severity = Math.Clamp(value, 0, def.maxSeverity);
+                if (before != CurStageIndex && pawn?.health.hediffSet.hediffs.Contains(this) == true)
+                    pawn.health.Notify_HediffChanged(this);
+            }
+        }
         public int CurStageIndex => Math.Max(0, def.stages.FindLastIndex(s => severity >= s.minSeverity));
         public virtual HediffStage CurStage => def.stages.Count == 0 ? null : def.stages[CurStageIndex];
         public virtual bool ShouldRemove => severity <= 0;
@@ -117,7 +129,12 @@ namespace Verse
         public virtual string LabelBase => "Bridle";
         public virtual string Description => "";
         public virtual string TipStringExtra => "";
-        public virtual string GetTooltip(Pawn pawn, bool debug) { TooltipReads++; return "Native stage detail: " + CurStage?.label; }
+        // 仅模拟已核验的原版悬停组合边界；实际属性、日志和排版仍由游戏验收。
+        public virtual string GetTooltip(Pawn pawn, bool debug)
+        {
+            TooltipReads++;
+            return "Native stage detail: " + CurStage?.label + "\n" + def.description + "\n" + def.extraTooltip + "\n" + CurStage?.extraTooltip;
+        }
         public virtual void ExposeData() { }
         public virtual IEnumerable<Gizmo> GetGizmos() { yield return NativeGizmo; }
         public static readonly Gizmo NativeGizmo = new Gizmo();
@@ -132,7 +149,8 @@ namespace Verse
         public int Adds, Removes, Notifications;
         public void AddHediff(Hediff record) { hediffSet.hediffs.Add(record); Adds++; }
         public void RemoveHediff(Hediff record) { hediffSet.hediffs.Remove(record); Removes++; }
-        public void Notify_HediffChanged(Hediff record) => Notifications++;
+        public Action OnChanged;
+        public void Notify_HediffChanged(Hediff record) { Notifications++; OnChanged?.Invoke(); }
     }
     public class HediffSet
     {
@@ -164,7 +182,22 @@ namespace Verse
         public static void Look<T>(ref List<T> values, string key, LookMode mode) { }
     }
 }
-namespace RimWorld { public class Faction { public static Faction OfPlayer = new Faction(); } }
+namespace Verse
+{
+    // 只观察原版消息的参数，不重写生产升阶资格，也不模拟屏幕或消息档案。
+    public static class Messages
+    {
+        public record Entry(string Text, Pawn Target, object Type, bool Historical);
+        public static readonly List<Entry> Received = new List<Entry>();
+        public static void Message(string text, Pawn target, object type, bool historical = true)
+            => Received.Add(new Entry(text, target, type, historical));
+    }
+}
+namespace RimWorld
+{
+    public class Faction { public static Faction OfPlayer = new Faction(); }
+    public static class MessageTypeDefOf { public static readonly object PositiveEvent = new object(); }
+}
 
 namespace SexSlaveCraft
 {

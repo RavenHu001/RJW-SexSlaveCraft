@@ -9,7 +9,7 @@ namespace Verse
 {
     public class Def
     {
-        public string defName;
+        public string defName, label;
         public string LabelCap => defName;
     }
 
@@ -366,9 +366,11 @@ namespace Verse
 
     public static class Messages
     {
+        public static int StageNotifications;
         /// <summary>提供游戏提示接口的空实现，避免测试依赖界面系统。</summary>
         public static void Message(string s, Thing t, object d, bool historical = true)
         {
+            if (s.StartsWith("SSC_MasterProgression_StageAdvanced", StringComparison.Ordinal)) StageNotifications++;
         }
     }
 

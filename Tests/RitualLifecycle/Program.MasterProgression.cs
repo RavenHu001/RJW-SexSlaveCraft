@@ -1,5 +1,6 @@
 // AI 辅助生成
 using System;
+using System.Linq;
 using SexSlaveCraft;
 using Verse;
 using Verse.AI;
@@ -33,6 +34,10 @@ internal static partial class Program
                 Equal(12f, Growth(f.driver.pawn), "daily +1, including reentrant callbacks");
                 Equal(1, SSCMasterProgressionUtility.GetRecord(f.driver.pawn).CurStageIndex, "daily threshold stage");
                 Equal(1, TestWorld.DailyOutcomes, "single formal outcome");
+                // 消息观察的是生产经验入口输出；重入及第二次调用不能重复报升阶。
+                var message = Messages.Received.Single(m => m.Text == "SSC_MasterProgression_StageAdvanced");
+                Require(message.Targets.Pawns.Single() == f.driver.pawn &&
+                    message.Type == RimWorld.MessageTypeDefOf.PositiveEvent && !message.Historical, "level-up target and message type");
             });
         Check("full specialization and zero score still provide Master daily practice", () =>
         {
@@ -123,6 +128,7 @@ internal static partial class Program
                 {
                     var f = new RitualFixture(); actor = f.Master; SetGrowth(actor, 98); Advance(f, 6);
                     ApplyFeedbackOutcome(FeedbackOutcome(), f);
+                    ApplyFeedbackOutcome(FeedbackOutcome(), f);
                 }
                 else
                 {
@@ -131,6 +137,8 @@ internal static partial class Program
                 Equal(100f, Growth(actor), "highest stage cap");
                 Equal(3, SSCMasterProgressionUtility.GetRecord(actor).CurStageIndex, "highest stage index");
                 Equal(0f, SSCMasterProgressionUtility.TryAddExperience(actor, 1), "full record remains capped");
+                Equal(1, Messages.Received.Count(m => m.Text == "SSC_MasterProgression_StageAdvanced"),
+                    "one level-up across cap and repeated whole/daily rewards");
             });
         Check("six real ritual stages grant +3 only at whole outcome, including poor outcomes", () =>
         {

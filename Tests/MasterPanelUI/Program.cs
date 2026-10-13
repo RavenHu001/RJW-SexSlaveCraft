@@ -6,7 +6,7 @@ using SexSlaveCraft;
 using UnityEngine;
 using Verse;
 
-internal static class Program
+internal static partial class Program
 {
     private static int passed, failed;
     private static string repo;
@@ -28,8 +28,11 @@ internal static class Program
             Run($"{language}: 无记录不补建", MissingRecord);
             Run($"{language}: 空壳保存阶段但停用加成", Hollow);
             Run($"{language}: 四语键/参数与镜像", () => Localization(language));
+            Run($"{language}: 阶段短句与原版悬停组合", StageDescriptions);
+            Run($"{language}: 升阶消息名称参数与定位", StageFeedback);
         }
         LoadLanguage("ChineseSimplified");
+        RunFeedbackTests();
         Run("阶段 2 经验 16 使用 4/28 区间", () => Assert(Near(Tab().Read(Grown(16)).Fraction, 4f / 28f)));
         Run("最高阶段进度为 1且不显示下一阶段", () => { var view = Tab().Read(Grown(100)); Assert(view.Fraction == 1 && view.Progress == Key("MaxStage")); });
         Run("零经验是有效基础阶段", () => Assert(Tab().Read(Grown(0)).Experience != null));
@@ -65,6 +68,7 @@ internal static class Program
         Widgets.Click = Widgets.Throw = false; Widgets.BeforeCheckbox = null;
         GUI.enabled = true; GUI.color = Color.white; Text.Font = GameFont.Small; Text.Anchor = TextAnchor.UpperLeft; Text.WordWrap = true;
         Scribe.mode = LoadSaveMode.Inactive; Scribe_Values.Data.Clear();
+        Messages.Received.Clear();
         try { test(); passed++; Console.WriteLine("PASS " + name); }
         catch (Exception ex) { failed++; Console.WriteLine("FAIL " + name + ": " + ex.Message); }
     }
@@ -85,8 +89,15 @@ internal static class Program
         foreach (string name in new[] { "SSC_MasterProgression.xml", "SSC_Keys.xml" })
             foreach (var node in XDocument.Load(Path.Combine(repo, "Languages", language, "Keyed", name)).Root.Elements()) Translation.Entries[node.Name.LocalName] = node.Value;
         var injected = XDocument.Load(Path.Combine(repo, "Languages", language, "DefInjected/HediffDef/SSC_MasterProgression.xml")).Root;
+        var definition = SSCDefOf.SSC_Hediff_MasterProgression;
+        definition.label = injected.Element("SSC_Hediff_MasterProgression.label").Value;
+        definition.description = injected.Element("SSC_Hediff_MasterProgression.description").Value;
+        definition.extraTooltip = injected.Element("SSC_Hediff_MasterProgression.extraTooltip").Value;
         for (int i = 0; i < SSCDefOf.SSC_Hediff_MasterProgression.stages.Count; i++)
+        {
             SSCDefOf.SSC_Hediff_MasterProgression.stages[i].label = injected.Element($"SSC_Hediff_MasterProgression.stages.{i}.label").Value;
+            definition.stages[i].extraTooltip = injected.Element($"SSC_Hediff_MasterProgression.stages.{i}.extraTooltip").Value;
+        }
     }
 
     /// <summary>执行真实面板绘制，检查文本行容纳、区块底部及重复查询不改变健康数据。</summary>

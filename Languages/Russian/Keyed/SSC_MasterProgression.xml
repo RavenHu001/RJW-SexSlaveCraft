@@ -9,8 +9,9 @@
   <SSC_MasterProgression_Benefits>Бонусы к сознанию, манипуляции и общению; на высоких ступенях — к естественному заживлению.</SSC_MasterProgression_Benefits>
   <SSC_MasterProgression_BenefitsInactive>Бонусы ступени не действуют.</SSC_MasterProgression_BenefitsInactive>
   <SSC_MasterProgression_MaxStage>Высшая ступень достигнута</SSC_MasterProgression_MaxStage>
-  <SSC_MasterProgression_NextStage>До следующей ступени: {0} опыта</SSC_MasterProgression_NextStage>
+  <SSC_MasterProgression_NextStage>До ступени «{0}» осталось {1} опыта</SSC_MasterProgression_NextStage>
   <SSC_MasterProgression_PracticeTip>Личное завершение повседневной дрессировки даёт +1, всего ритуала привязки — +3. Работа дрессировщика не приносит опыт господину.</SSC_MasterProgression_PracticeTip>
   <SSC_MasterProgression_ShareNoBond>Нет привязанных секс-рабов.</SSC_MasterProgression_ShareNoBond>
   <SSC_MasterProgression_ShareReadOnly>Изменять настройку можно только у господина игрока.</SSC_MasterProgression_ShareReadOnly>
+  <SSC_MasterProgression_StageAdvanced>{0}: {1} — достигнута ступень «{2}».</SSC_MasterProgression_StageAdvanced>
 </LanguageData>

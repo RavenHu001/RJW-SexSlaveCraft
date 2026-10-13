@@ -12,14 +12,18 @@ namespace Verse
     public class LookTargets
     {
         /// <summary>提供提示目标签名，不模拟镜头跳转。</summary>
-        public LookTargets(params Pawn[] pawns) { }
+        public Pawn[] Pawns;
+        public LookTargets(params Pawn[] pawns) { Pawns = pawns; }
         /// <summary>保留原版 Pawn 提示目标的隐式转换，不实现消息显示逻辑。</summary>
         public static implicit operator LookTargets(Pawn pawn) => new LookTargets(pawn);
     }
     public static class Messages
     {
         /// <summary>接收生产取消提示，不在测试中显示界面。</summary>
-        public static void Message(string reason, LookTargets targets, object type, bool historical = true) { }
+        public record Entry(string Text, LookTargets Targets, object Type, bool Historical);
+        public static readonly List<Entry> Received = new List<Entry>();
+        public static void Message(string reason, LookTargets targets, object type, bool historical = true)
+            => Received.Add(new Entry(reason, targets, type, historical));
     }
 }
 namespace Verse.AI
@@ -31,7 +35,7 @@ namespace Verse.AI
         public static void Is(string reason) { LastReason = reason; }
     }
 }
-namespace RimWorld { public static class MessageTypeDefOf { public static object RejectInput = new object(), NeutralEvent = new object(); } }
+namespace RimWorld { public class Faction { public static readonly Faction OfPlayer = new Faction(); } public static class MessageTypeDefOf { public static object RejectInput = new object(), NeutralEvent = new object(), PositiveEvent = new object(); } }
 namespace SexSlaveCraft
 {
     public enum PawnIdentity { Unset, Slave, Master }

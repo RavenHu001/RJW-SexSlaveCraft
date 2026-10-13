@@ -103,6 +103,8 @@ The pawn's identity section always shows `Master qualification: acquired / not a
 
 Becoming a Master creates a four-stage progression record. Personally completing daily training grants **1 experience**; a complete binding ritual grants **3**. Interruptions grant none, and Trainer Officer work gives no proxy experience to its owner. Fully trained targets still provide practice. Hover over the health entry to see experience; provisional thresholds are 0/12/40/100. Growth transfers with personality gel. Leaving Master identity preserves growth and suspends bonuses.
 
+The health entry is named “Symbiosis of Desire”, with Budding, Awakening, Command and Ascendance stages. Hover for the stage text and bonuses. The Master panel names the next stage. Crossing a threshold through practice or debug experience produces a message targeting the Master; loading, personality insertion and returning to the Master role do not report level-ups.
+
 Bonuses apply only while the current SSC identity is Master. At the provisional highest stage, the progression itself adds 40 percentage points of Consciousness and 30 of Manipulation. Seed use does not create or reset progression. Clones inherit neither the Master role nor growth; gel implantation replaces the host record exactly.
 
 Rewards are claimed once per completed session; previously settled jobs receive no historical experience. The current cap is 100. An authorized different Master earns its own practice, while a Trainer Officer in the ritual host role grants no proxy experience. The +10 debug command requires developer mode and SSC debug Gizmos and never creates a missing growth record. See the [batch 2 test guide (Chinese)](Docs/Development/主人阶段第二批测试说明.md).

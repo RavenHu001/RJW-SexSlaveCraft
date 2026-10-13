@@ -65,7 +65,9 @@ namespace SexSlaveCraft
                         float start = stages[index].minSeverity;
                         float next = stages[index + 1].minSeverity;
                         view.ProgressFraction = next > start ? Mathf.Clamp01((experience - start) / (next - start)) : 0f;
-                        view.Progress = "SSC_MasterProgression_NextStage".Translate(Mathf.Max(0f, next - experience).ToString("0"));
+                        // 阶段名称与剩余经验共用 Def，四语改名无需在面板再维护一份名称表。
+                        view.Progress = "SSC_MasterProgression_NextStage".Translate(
+                            stages[index + 1].label, Mathf.Max(0f, next - experience).ToString("0"));
                     }
                 }
             }

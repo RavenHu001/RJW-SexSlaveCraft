@@ -22,6 +22,8 @@ This continuation builds on upstream **2.2.8**, the baseline when upstream devel
 
 - **主人面板第三批 / Master panel, batch 3:** 主人调教页显示阶段、累计经验、下一阶段区间进度及加成摘要，详细数值复用健康悬停。伤害分担开关迁入面板，移除原 Gizmo；仍写缰绳原字段，保留默认值和存档规则，不新增成长门槛。四语动态布局及专项自动检查通过，2026-10-13 维护者确认主人面板和伤害分担开关符合预期并批准提交。The Master training tab shows stage, experience, progress toward the next stage and a bonus summary with the existing health tooltip. Damage sharing moves from its Gizmo to the tab while keeping the bridle field, default and save rules. Four-language layout and focused automated checks pass. On 2026-10-13, the maintainer confirmed that the Master panel and damage-sharing toggle work as expected and approved committing batch 3.
 
+- **主人成长第四批 / Master progression, batch 4:** 成长条目定名“欲望共生”，四阶段为萌芽／觉醒／掌控／升华；原版悬停显示阶段短句，主人面板标明下一阶段。本人实践或调试跨阶时发可定位提示，读档、人格恢复与身份返回不误报；四语同步，保存格式和数值不变。相关五套专项 535/535 和本机依赖构建通过，待实机确认。The health entry is now “Symbiosis of Desire”, with Budding, Awakening, Command and Ascendance stages. Native tooltips show stage descriptions and the panel names the next stage. Practice/debug level-ups produce a targeted message; loading, personality restoration and role re-entry remain silent. Four languages are updated; saves and values are unchanged. All 535 focused cases and the local dependency build passed; in-game confirmation is pending.
+
 ## [2.3.9] — 2026-10-10 — 统一受训身份与训导官反馈 / Unified receiver identity and Trainer Officer feedback
 
 本版归并 `v2.3.8`（`fd60efa`）之后至 `7564173` 的全部 **12 项开发提交**：统一受训身份门槛与旧档恢复、训导官职责心情与主人评价、训导官独立弱化记忆套、训导官文案基调重写与去性别化，以及训导官对实际主人的反向信任。2.3.8 发布结果归档与两次 PR 合并不重复计为开发增量。版本元数据与运行 DLL 已同步为 **2.3.9／2.3.9.0**；构建、自动回归与实机验收范围见[2.3.9 版本验证](Docs/Releases/2.3.9/2.3.9版本验证.md)，玩家内容见[中英发布说明](Docs/Releases/2.3.9/2.3.9发布说明.md)。

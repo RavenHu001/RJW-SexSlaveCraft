@@ -10,9 +10,10 @@ using SexSlaveCraft;
 // 只提供原版健康和严重度边界；经验资格、截断、记录写入与身份启停均编译生产代码。
 namespace Verse
 {
-    public partial class Pawn { public bool Discarded; }
+    public partial class Pawn { public bool Discarded; public RimWorld.Faction Faction = RimWorld.Faction.OfPlayer; }
     public partial class HediffDef
     {
+        public string label;
         public Type hediffClass;
         public float maxSeverity = float.MaxValue;
         public List<HediffStage> stages = new List<HediffStage>();
@@ -75,6 +76,7 @@ namespace SexSlaveCraft
             return new Verse.HediffDef
             {
                 defName = source.Element("defName").Value,
+                label = source.Element("label").Value,
                 hediffClass = typeof(Hediff_MasterProgression),
                 maxSeverity = float.Parse(source.Element("maxSeverity").Value, CultureInfo.InvariantCulture),
                 stages = source.Element("stages").Elements("li").Select(s => new Verse.HediffStage

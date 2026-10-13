@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-  <SSC_Hediff_MasterProgression.label>Развитие господина</SSC_Hediff_MasterProgression.label>
-  <SSC_Hediff_MasterProgression.description>Развитие господина сохраняется вместе с личностью. Бонусы действуют только в роли господина.</SSC_Hediff_MasterProgression.description>
-  <SSC_Hediff_MasterProgression.stages.0.label>Ступень 1</SSC_Hediff_MasterProgression.stages.0.label>
-  <SSC_Hediff_MasterProgression.stages.1.label>Ступень 2</SSC_Hediff_MasterProgression.stages.1.label>
-  <SSC_Hediff_MasterProgression.stages.2.label>Ступень 3</SSC_Hediff_MasterProgression.stages.2.label>
-  <SSC_Hediff_MasterProgression.stages.3.label>Ступень 4</SSC_Hediff_MasterProgression.stages.3.label>
+  <SSC_Hediff_MasterProgression.label>Симбиоз желания</SSC_Hediff_MasterProgression.label>
+  <SSC_Hediff_MasterProgression.description>Шёпот далёкой воли постепенно становится интуицией, и скрытые микромашины откликаются.</SSC_Hediff_MasterProgression.description>
+  <SSC_Hediff_MasterProgression.extraTooltip>Развитие сохраняется вместе с личностью. Бонусы действуют только в роли господина.</SSC_Hediff_MasterProgression.extraTooltip>
+  <SSC_Hediff_MasterProgression.stages.0.label>Зарождение</SSC_Hediff_MasterProgression.stages.0.label>
+  <SSC_Hediff_MasterProgression.stages.0.extraTooltip>Незнакомая интуиция незаметно пробуждается.</SSC_Hediff_MasterProgression.stages.0.extraTooltip>
+  <SSC_Hediff_MasterProgression.stages.1.label>Пробуждение</SSC_Hediff_MasterProgression.stages.1.label>
+  <SSC_Hediff_MasterProgression.stages.1.extraTooltip>Прежде неясный шёпот постепенно обретает смысл.</SSC_Hediff_MasterProgression.stages.1.extraTooltip>
+  <SSC_Hediff_MasterProgression.stages.2.label>Власть</SSC_Hediff_MasterProgression.stages.2.label>
+  <SSC_Hediff_MasterProgression.stages.2.extraTooltip>Микромашины привыкают к воле носителя.</SSC_Hediff_MasterProgression.stages.2.extraTooltip>
+  <SSC_Hediff_MasterProgression.stages.3.label>Вознесение</SSC_Hediff_MasterProgression.stages.3.label>
+  <SSC_Hediff_MasterProgression.stages.3.extraTooltip>Некогда чуждый дар становится почти инстинктом.</SSC_Hediff_MasterProgression.stages.3.extraTooltip>
 </LanguageData>

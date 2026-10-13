@@ -15,6 +15,17 @@ internal static partial class Program
         SSCDefOf.SSC_Hediff_MasterProgression.stages = definition.Element("stages").Elements("li")
             .Select(s => new HediffStage { label = s.Element("label").Value, minSeverity = (float)s.Element("minSeverity"),
                 capMods = s.Element("capMods").Elements().Select(_ => new object()).ToList() }).ToList();
+        Run("真实旧档迁移、来源恢复和退出后返回不触发升阶消息", () =>
+        {
+            Messages.Count = 0;
+            Pawn pawn = Pawn(PawnIdentity.Master); pawn.Training.masterProgressionVersion = 0;
+            SSCMasterProgressionMigration.MigratePawn(pawn);
+            Assert(SSCMasterProgressionUtility.RestoreRecord(pawn, 100));
+            Assert(SSCIdentityUtility.TrySetIdentity(pawn, PawnIdentity.Unset));
+            Assert(SSCIdentityUtility.TrySetIdentity(pawn, PawnIdentity.Master));
+            SSCMasterProgressionMigration.MigratePawn(pawn);
+            Assert(Messages.Count == 0 && SSCMasterProgressionUtility.GetExperience(pawn) == 100);
+        });
         Run("首次选择主人建立零经验，零严重度阶段不移除且不写永久资格", () =>
         {
             Pawn pawn = Pawn(); Assert(SSCIdentityUtility.TrySetIdentity(pawn, PawnIdentity.Master));

@@ -17,6 +17,7 @@ internal static partial class Program
     {
         cases++;
         TestWorld.Reset();
+        Messages.Received.Clear();
         try
         {
             test();

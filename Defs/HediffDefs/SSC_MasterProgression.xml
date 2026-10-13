@@ -3,8 +3,10 @@
   <!-- 第二步第一批测试初值：严重度即累计经验，零经验也保留；各阶段是总加成。 -->
   <HediffDef>
     <defName>SSC_Hediff_MasterProgression</defName>
-    <label>主人阶段</label>
-    <description>与人格一同积累的主人成长。仅在主人身份下提供加成。</description>
+    <label>欲望共生</label>
+    <description>某个遥远意志的低语逐渐成为直觉，潜藏的微械也随之回应。</description>
+    <!-- 共通规则与阶段短句使用原版悬停字段；数值由原版健康说明生成。 -->
+    <extraTooltip>成长随人格保留，仅在主人身份下生效。</extraTooltip>
     <hediffClass>SexSlaveCraft.Hediff_MasterProgression</hediffClass>
     <isBad>false</isBad>
     <tendable>false</tendable>
@@ -16,7 +18,8 @@
     <stages>
       <!-- 每个 minSeverity 是累计经验阈值；属性是本阶段总值，不叠加前面的阶段。 -->
       <li>
-        <label>第 1 阶段</label>
+        <label>萌芽</label>
+        <extraTooltip>陌生的直觉悄然萌发。</extraTooltip>
         <minSeverity>0</minSeverity>
         <capMods>
           <!-- 意识与操控使用百分点偏移；社交采用乘法，自然愈合沿用原版伤口恢复机制。 -->
@@ -27,7 +30,8 @@
         <naturalHealingFactor>1.00</naturalHealingFactor>
       </li>
       <li>
-        <label>第 2 阶段</label>
+        <label>觉醒</label>
+        <extraTooltip>原本模糊的低语，渐渐有了含义。</extraTooltip>
         <minSeverity>12</minSeverity>
         <capMods>
           <li><capacity>Consciousness</capacity><offset>0.20</offset></li>
@@ -37,7 +41,8 @@
         <naturalHealingFactor>1.10</naturalHealingFactor>
       </li>
       <li>
-        <label>第 3 阶段</label>
+        <label>掌控</label>
+        <extraTooltip>微械开始熟悉宿主的意志。</extraTooltip>
         <minSeverity>40</minSeverity>
         <capMods>
           <li><capacity>Consciousness</capacity><offset>0.30</offset></li>
@@ -48,7 +53,8 @@
       </li>
       <!-- 最终意识和操控自身超过性奴锁链对应加成，不依赖绑定共振补足。 -->
       <li>
-        <label>第 4 阶段</label>
+        <label>升华</label>
+        <extraTooltip>曾经陌生的馈赠，已近乎本能。</extraTooltip>
         <minSeverity>100</minSeverity>
         <capMods>
           <li><capacity>Consciousness</capacity><offset>0.40</offset></li>

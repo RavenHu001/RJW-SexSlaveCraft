@@ -9,8 +9,9 @@
   <SSC_MasterProgression_Benefits>意识、操控、社交加成；高阶加快自然愈合。</SSC_MasterProgression_Benefits>
   <SSC_MasterProgression_BenefitsInactive>阶段加成未生效。</SSC_MasterProgression_BenefitsInactive>
   <SSC_MasterProgression_MaxStage>已达最高阶段</SSC_MasterProgression_MaxStage>
-  <SSC_MasterProgression_NextStage>距下一阶段还需 {0} 经验</SSC_MasterProgression_NextStage>
+  <SSC_MasterProgression_NextStage>距“{0}”还需 {1} 经验</SSC_MasterProgression_NextStage>
   <SSC_MasterProgression_PracticeTip>本人完成日常调教 +1，整场绑定仪式 +3。训导官代劳不增加主人经验。</SSC_MasterProgression_PracticeTip>
   <SSC_MasterProgression_ShareNoBond>尚未绑定性奴。</SSC_MasterProgression_ShareNoBond>
   <SSC_MasterProgression_ShareReadOnly>仅可修改玩家主人的开关。</SSC_MasterProgression_ShareReadOnly>
+  <SSC_MasterProgression_StageAdvanced>{0}的{1}已进入“{2}”阶段。</SSC_MasterProgression_StageAdvanced>
 </LanguageData>

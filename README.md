@@ -18,6 +18,8 @@ RimWorld 1.6 的 RimJobWorld（RJW）扩展模组，基于上游 **2.2.8** 继�
 
 主人调教页现可查看阶段、经验和距下一阶段的进度，并操作原缰绳的伤害分担开关；详细加成可悬停查看。The Master training tab now shows growth and hosts the bridle’s existing damage-sharing toggle. See [第三批测试说明](Docs/Development/主人阶段第三批测试说明.md).
 
+主人成长现称“欲望共生”：萌芽 → 觉醒 → 掌控 → 升华，提供四语阶段说明和升阶提示。The “Symbiosis of Desire” progression now has named stages, localized descriptions and level-up messages. See [第四批测试说明](Docs/Development/主人阶段第四批测试说明.md).
+
 上述内容尚未包含于正式 2.3.9 下载；实施、验收与同步状态见[开发记录索引](Docs/Development/README.md)。
 
 ## 项目概况

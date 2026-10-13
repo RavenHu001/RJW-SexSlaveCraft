@@ -1,5 +1,6 @@
 // AI 辅助生成
 using System.Linq;
+using RimWorld;
 using Verse;
 
 namespace SexSlaveCraft
@@ -138,8 +139,30 @@ namespace SexSlaveCraft
             // 原生严重度写入负责跨阶段通知，最大值由 Def 截断；返回实际增量，
             // 满级时为零，调用者不需要再保存或直接修改一份重复等级。
             float previous = NormalizeExperience(record.Severity);
+            int previousStage = record.CurStageIndex;
             record.Severity = NormalizeExperience(previous + amount);
-            return record.Severity - previous;
+            float added = record.Severity - previous;
+            // 提示只由实践／调试增加入口派发；恢复、迁移与身份刷新虽会写严重度，
+            // 但不会进入这里，因此无需保存“已经通知过的阶段”或重放历史升阶。
+            if (added > 0f) NotifyStageAdvanced(pawn, record, previousStage);
+            return added;
+        }
+
+        /// <summary>只反馈玩家主人本次实际跨阶；原版健康回调后重新核对人格记录。</summary>
+        private static void NotifyStageAdvanced(Pawn pawn, Hediff_MasterProgression record, int previousStage)
+        {
+            // Severity setter 会刷新健康并调用外部代码；人格可能已被移走、替换或退出身份。
+            // 不向旧实例发提示，也不因非玩家主人获得经验而干扰玩家的消息列表。
+            if (pawn.Dead || !CanCarryRecord(pawn) || !IsActive(pawn) || GetRecord(pawn) != record ||
+                Faction.OfPlayer == null || pawn.Faction != Faction.OfPlayer) return;
+
+            int stage = record.CurStageIndex;
+            if (stage <= previousStage || record.def.stages == null || stage < 0 || stage >= record.def.stages.Count) return;
+            // 一次跨过多个阈值只报告最终阶段；名称从当前已翻译 Def 读取，
+            // 定位沿用原版消息目标，轻量提示不另发信件或写入历史档案。
+            Messages.Message("SSC_MasterProgression_StageAdvanced".Translate(
+                pawn.LabelShort, record.def.label, record.def.stages[stage].label),
+                pawn, MessageTypeDefOf.PositiveEvent, historical: false);
         }
     }
 }

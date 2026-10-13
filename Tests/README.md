@@ -22,6 +22,7 @@ pwsh -File Scripts/Test-All.ps1 -HarmonyAssemblyPath 'C:\Dependencies\Harmony\ne
 - [主人阶段第二批测试说明](../Docs/Development/主人阶段第二批测试说明.md)：实践经验联通真实日常 Job、整场仪式 Apply 和成长工具；441/441 专项用例通过，2026-10-13 维护者确认实机测试有效。
 
 - [MasterPanelUI](MasterPanelUI/README.md)：第三批真实主人面板、阶段区间、四语布局及原缰绳开关回归；2026-10-13 维护者确认面板和开关符合预期，实机步骤见[第三批测试说明](../Docs/Development/主人阶段第三批测试说明.md)。
+- [主人阶段第四批测试说明](../Docs/Development/主人阶段第四批测试说明.md)：现有五套专项 535/535，覆盖命名、提示去重、人格恢复静默和四语悬停字段。
 
 ## 身份、训导官与自我调教
 

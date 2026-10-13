@@ -15,6 +15,7 @@ namespace Verse
         public Verse.AI.Group.Lord GetLord() => lord;
         public bool Dead, Downed, Discarded, Spawned = true, IsColonist = true, IsPrisonerOfColony, IsSlave, IsClone;
         public string LabelShort = "Pawn";
+        public Faction Faction = Faction.OfPlayer;
         public CompSexSlaveTraining Training = new CompSexSlaveTraining();
         public WorkSettings workSettings = new WorkSettings();
         public Health health = new Health();
@@ -77,7 +78,7 @@ namespace Verse
     // 只保留 Def 对象身份；状态是否存在仍由生产资格代码调用 HediffSet 查询。
     public class HediffDef
     {
-        public string defName;
+        public string defName, label;
         public Type hediffClass;
         public float maxSeverity = 100f;
         public List<HediffStage> stages = new List<HediffStage>();
@@ -220,9 +221,19 @@ namespace Verse.AI
         public static void Is(string reason) => Last = reason;
     }
 }
+namespace Verse
+{
+    public static class Messages
+    {
+        public static int Count;
+        public static void Message(string text, Pawn target, object type, bool historical = true) => Count++;
+    }
+}
 namespace RimWorld
 {
     using Verse;
+    public class Faction { public static readonly Faction OfPlayer = new Faction(); }
+    public static class MessageTypeDefOf { public static readonly object PositiveEvent = new object(); }
     public class WorkTypeDef { }
     public class JobDef { }
     public class Trait { public object def; public bool Suppressed; }

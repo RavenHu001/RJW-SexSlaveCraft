@@ -11,6 +11,7 @@ internal static partial class Program
             Pawn source = Body("Source"); MasterTraining(source, PawnIdentity.Master, false);
             Assert(SSCMasterProgressionUtility.EnsureInitialRecord(source), "Record must be created.");
             SSCMasterProgressionUtility.TryAddExperience(source, 45);
+            Messages.StageNotifications = 0; // 忽略准备阶段，观察真实抽取、凝胶读写和植入。
             var gel = Excrete(source);
             Assert(gel.masterGrowthPoints == 45 && SSCMasterProgressionUtility.GetExperience(source) == -1 &&
                 source.TryGetComp<CompSexSlaveTraining>().masterProgressionVersion == 1, "Extraction must capture before clearing source.");
@@ -26,6 +27,7 @@ internal static partial class Program
                 "Source value must replace the host exactly.");
             SSCMasterProgressionMigration.MigratePawn(source);
             Assert(SSCMasterProgressionUtility.GetExperience(source) == -1, "The hollow must not recreate transferred growth.");
+            Assert(Messages.StageNotifications == 0, "Personality transfer and restore must not report a level-up.");
         });
         Run("基础零经验快照与无记录在存档和植入后仍不同", () =>
         {
