@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <SSC_Hediff_MasterProgression.label>Симбиоз желания</SSC_Hediff_MasterProgression.label>
-  <SSC_Hediff_MasterProgression.description>Шёпот далёкой воли постепенно становится интуицией, и скрытые микромашины откликаются.</SSC_Hediff_MasterProgression.description>
+  <SSC_Hediff_MasterProgression.description>Далёкое просветление постепенно становится интуицией, и скрытые микромашины откликаются.</SSC_Hediff_MasterProgression.description>
   <SSC_Hediff_MasterProgression.extraTooltip>Развитие сохраняется вместе с личностью. Бонусы действуют только в роли господина.</SSC_Hediff_MasterProgression.extraTooltip>
   <SSC_Hediff_MasterProgression.stages.0.label>Зарождение</SSC_Hediff_MasterProgression.stages.0.label>
   <SSC_Hediff_MasterProgression.stages.0.extraTooltip>Незнакомая интуиция незаметно пробуждается.</SSC_Hediff_MasterProgression.stages.0.extraTooltip>
   <SSC_Hediff_MasterProgression.stages.1.label>Пробуждение</SSC_Hediff_MasterProgression.stages.1.label>
   <SSC_Hediff_MasterProgression.stages.1.extraTooltip>Прежде неясный шёпот постепенно обретает смысл.</SSC_Hediff_MasterProgression.stages.1.extraTooltip>
   <SSC_Hediff_MasterProgression.stages.2.label>Власть</SSC_Hediff_MasterProgression.stages.2.label>
-  <SSC_Hediff_MasterProgression.stages.2.extraTooltip>Микромашины привыкают к воле носителя.</SSC_Hediff_MasterProgression.stages.2.extraTooltip>
+  <SSC_Hediff_MasterProgression.stages.2.extraTooltip>Микромашины начинают покоряться воле.</SSC_Hediff_MasterProgression.stages.2.extraTooltip>
   <SSC_Hediff_MasterProgression.stages.3.label>Вознесение</SSC_Hediff_MasterProgression.stages.3.label>
-  <SSC_Hediff_MasterProgression.stages.3.extraTooltip>Некогда чуждый дар становится почти инстинктом.</SSC_Hediff_MasterProgression.stages.3.extraTooltip>
+  <SSC_Hediff_MasterProgression.stages.3.extraTooltip>Дар желания стал инстинктом.</SSC_Hediff_MasterProgression.stages.3.extraTooltip>
 </LanguageData>

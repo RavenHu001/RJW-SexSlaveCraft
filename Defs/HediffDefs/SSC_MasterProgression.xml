@@ -4,7 +4,7 @@
   <HediffDef>
     <defName>SSC_Hediff_MasterProgression</defName>
     <label>欲望共生</label>
-    <description>某个遥远意志的低语逐渐成为直觉，潜藏的微械也随之回应。</description>
+    <description>遥远的启迪逐渐成为直觉，潜藏的微械也随之回应。</description>
     <!-- 共通规则与阶段短句使用原版悬停字段；数值由原版健康说明生成。 -->
     <extraTooltip>成长随人格保留，仅在主人身份下生效。</extraTooltip>
     <hediffClass>SexSlaveCraft.Hediff_MasterProgression</hediffClass>
@@ -42,7 +42,7 @@
       </li>
       <li>
         <label>掌控</label>
-        <extraTooltip>微械开始熟悉宿主的意志。</extraTooltip>
+        <extraTooltip>微械开始顺从意志。</extraTooltip>
         <minSeverity>40</minSeverity>
         <capMods>
           <li><capacity>Consciousness</capacity><offset>0.30</offset></li>
@@ -54,7 +54,7 @@
       <!-- 最终意识和操控自身超过性奴锁链对应加成，不依赖绑定共振补足。 -->
       <li>
         <label>升华</label>
-        <extraTooltip>曾经陌生的馈赠，已近乎本能。</extraTooltip>
+        <extraTooltip>情欲的馈赠已成为本能。</extraTooltip>
         <minSeverity>100</minSeverity>
         <capMods>
           <li><capacity>Consciousness</capacity><offset>0.40</offset></li>
