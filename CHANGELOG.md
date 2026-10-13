@@ -26,6 +26,8 @@ This continuation builds on upstream **2.2.8**, the baseline when upstream devel
 
 - **主人成长加成调整 / Master progression bonuses:** 欲望共生改为意识、视觉、听觉、社交影响及伤口愈合五项，最高分别为 +40／+30／+30 个百分点、×1.20／×1.50。伤口愈合因子替换自然愈合因子，覆盖自然与治疗后的恢复；移除阶段直接操控加成。面板四语摘要同步，保存与经验规则不变，2026-10-13 维护者实机确认五项加成及文案显示符合预期并批准提交。Symbiosis of Desire now boosts Consciousness, Sight, Hearing, Social Impact and Injury Healing, reaching +40/+30/+30 percentage points, ×1.20 and ×1.50. Injury Healing replaces the natural-healing factor and affects both natural and tended recovery; direct Manipulation bonuses are removed. Four-language summaries are updated; saves and experience rules are unchanged. On 2026-10-13, the maintainer confirmed that the five bonuses and text display work as expected in-game and approved committing the adjustment.
 
+- **健康悬停精简 / Health tooltip cleanup:** 去掉欲望共生悬停的成长经验行，保留设定、阶段及加成；经验和进度仅在主人面板显示。显示精简已提交为 `66b9a13`，尚未同步游戏目录或获实机确认。Symbiosis of Desire tooltips retain descriptions, stages and bonuses without an experience line. Experience and progress remain in the Master panel. Committed as `66b9a13`; local game synchronization and in-game confirmation are pending.
+
 ## [2.3.9] — 2026-10-10 — 统一受训身份与训导官反馈 / Unified receiver identity and Trainer Officer feedback
 
 本版归并 `v2.3.8`（`fd60efa`）之后至 `7564173` 的全部 **12 项开发提交**：统一受训身份门槛与旧档恢复、训导官职责心情与主人评价、训导官独立弱化记忆套、训导官文案基调重写与去性别化，以及训导官对实际主人的反向信任。2.3.8 发布结果归档与两次 PR 合并不重复计为开发增量。版本元数据与运行 DLL 已同步为 **2.3.9／2.3.9.0**；构建、自动回归与实机验收范围见[2.3.9 版本验证](Docs/Releases/2.3.9/2.3.9版本验证.md)，玩家内容见[中英发布说明](Docs/Releases/2.3.9/2.3.9发布说明.md)。
