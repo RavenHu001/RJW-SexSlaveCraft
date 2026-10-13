@@ -4,9 +4,9 @@
   <SSC_MasterProgression_Experience>Опыт развития: {0} / {1}</SSC_MasterProgression_Experience>
   <SSC_MasterProgression_DebugAdd>Отладка: опыт господина +{0}</SSC_MasterProgression_DebugAdd>
   <SSC_MasterProgression_DebugAddTip>Добавляет опыт господину до высшей ступени.</SSC_MasterProgression_DebugAddTip>
-  <SSC_MasterProgression_PanelHeader>Развитие господина</SSC_MasterProgression_PanelHeader>
+  <SSC_MasterProgression_PanelHeader>Развитие господина (сохраняется с личностью)</SSC_MasterProgression_PanelHeader>
   <SSC_MasterProgression_NoRecord>Нет записи о развитии</SSC_MasterProgression_NoRecord>
-  <SSC_MasterProgression_Benefits>Бонусы к сознанию, манипуляции и общению; на высоких ступенях — к естественному заживлению.</SSC_MasterProgression_Benefits>
+  <SSC_MasterProgression_Benefits>Бонусы к сознанию, зрению, слуху, социальному влиянию и заживлению ран.</SSC_MasterProgression_Benefits>
   <SSC_MasterProgression_BenefitsInactive>Бонусы ступени не действуют.</SSC_MasterProgression_BenefitsInactive>
   <SSC_MasterProgression_MaxStage>Высшая ступень достигнута</SSC_MasterProgression_MaxStage>
   <SSC_MasterProgression_NextStage>До ступени «{0}» осталось {1} опыта</SSC_MasterProgression_NextStage>

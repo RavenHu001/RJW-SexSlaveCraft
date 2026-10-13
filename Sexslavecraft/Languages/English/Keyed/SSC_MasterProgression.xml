@@ -4,9 +4,9 @@
   <SSC_MasterProgression_Experience>Growth experience: {0} / {1}</SSC_MasterProgression_Experience>
   <SSC_MasterProgression_DebugAdd>Debug: Master experience +{0}</SSC_MasterProgression_DebugAdd>
   <SSC_MasterProgression_DebugAddTip>Adds Master experience, capped at the highest stage.</SSC_MasterProgression_DebugAddTip>
-  <SSC_MasterProgression_PanelHeader>Master growth</SSC_MasterProgression_PanelHeader>
+  <SSC_MasterProgression_PanelHeader>Master growth (retained with personality)</SSC_MasterProgression_PanelHeader>
   <SSC_MasterProgression_NoRecord>No growth record</SSC_MasterProgression_NoRecord>
-  <SSC_MasterProgression_Benefits>Consciousness, manipulation and social bonuses; faster natural healing at higher stages.</SSC_MasterProgression_Benefits>
+  <SSC_MasterProgression_Benefits>Bonuses to consciousness, sight, hearing, social impact and injury healing.</SSC_MasterProgression_Benefits>
   <SSC_MasterProgression_BenefitsInactive>Stage bonuses are inactive.</SSC_MasterProgression_BenefitsInactive>
   <SSC_MasterProgression_MaxStage>Highest stage reached</SSC_MasterProgression_MaxStage>
   <SSC_MasterProgression_NextStage>{1} experience to “{0}”</SSC_MasterProgression_NextStage>

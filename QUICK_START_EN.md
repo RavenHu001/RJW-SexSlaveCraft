@@ -46,6 +46,8 @@ Becoming a Master creates a four-stage progression record. Personally completing
 
 The health entry is named “Symbiosis of Desire”, with Budding, Awakening, Command and Ascendance stages. Hover for the stage text and bonuses. The Master panel names the next stage. Crossing a threshold through practice or debug experience produces a message targeting the Master; loading, personality insertion and returning to the Master role do not report level-ups.
 
+The bonuses are Consciousness, Sight, Hearing, Social Impact and Injury Healing. The highest stage grants +40/+30/+30 percentage points, ×1.20 and ×1.50 respectively. Injury Healing accelerates both natural and tended wound recovery.
+
 The Master training tab shows stage, total experience and progress toward the next stage. Hover over the bonus summary for values. Damage sharing is configured here and remains saved in the bridle: without a bridle the toggle is disabled, but a temporary lack of eligible recipients does not prevent changing the preference. The former damage-sharing Gizmo is removed.
 
 ### Step 1: Research Training

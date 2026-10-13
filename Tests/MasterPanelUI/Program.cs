@@ -92,7 +92,7 @@ internal static partial class Program
         var definition = SSCDefOf.SSC_Hediff_MasterProgression;
         definition.label = injected.Element("SSC_Hediff_MasterProgression.label").Value;
         definition.description = injected.Element("SSC_Hediff_MasterProgression.description").Value;
-        definition.extraTooltip = injected.Element("SSC_Hediff_MasterProgression.extraTooltip").Value;
+        definition.extraTooltip = injected.Element("SSC_Hediff_MasterProgression.extraTooltip")?.Value;
         for (int i = 0; i < SSCDefOf.SSC_Hediff_MasterProgression.stages.Count; i++)
         {
             SSCDefOf.SSC_Hediff_MasterProgression.stages[i].label = injected.Element($"SSC_Hediff_MasterProgression.stages.{i}.label").Value;

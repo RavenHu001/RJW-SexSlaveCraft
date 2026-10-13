@@ -87,8 +87,9 @@ internal static partial class Program
             {
                 string relative = "DefInjected/HediffDef/SSC_MasterProgression.xml";
                 var entries = XDocument.Load(Path.Combine(repo, "Languages", language, relative)).Root;
-                Assert(entries.Elements().Count() == 11);
-                foreach (string field in new[] { "label", "description", "extraTooltip" })
+                Assert(entries.Elements().Count() == 10);
+                Assert(entries.Element("SSC_Hediff_MasterProgression.extraTooltip") == null && def.Element("extraTooltip") == null);
+                foreach (string field in new[] { "label", "description" })
                 {
                     string value = entries.Element("SSC_Hediff_MasterProgression." + field)?.Value;
                     Assert(!string.IsNullOrWhiteSpace(value));
@@ -129,7 +130,7 @@ internal static partial class Program
             var pawn = Grown(def.stages[i].minSeverity);
             var record = SSCMasterProgressionUtility.GetRecord(pawn);
             string tooltip = record.GetTooltip(pawn, false);
-            Assert(tooltip.Contains(def.description) && tooltip.Contains(def.extraTooltip) && tooltip.Contains(def.stages[i].extraTooltip));
+            Assert(tooltip.Contains(def.description) && tooltip.Contains(def.stages[i].extraTooltip));
             var view = Tab().Read(pawn);
             Assert(view.Stage == def.stages[i].label);
             if (i + 1 < def.stages.Count)

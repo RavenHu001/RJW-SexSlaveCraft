@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Defs>
-  <!-- 第二步第一批测试初值：严重度即累计经验，零经验也保留；各阶段是总加成。 -->
+  <!-- 五项加成方案：严重度即累计经验，零经验也保留；各阶段是总加成。 -->
   <HediffDef>
     <defName>SSC_Hediff_MasterProgression</defName>
     <label>欲望共生</label>
     <description>遥远的启迪逐渐成为直觉，潜藏的微械也随之回应。</description>
-    <!-- 共通规则与阶段短句使用原版悬停字段；数值由原版健康说明生成。 -->
-    <extraTooltip>成长随人格保留，仅在主人身份下生效。</extraTooltip>
+    <!-- 阶段短句使用原版悬停字段；数值由原版健康说明生成。 -->
     <hediffClass>SexSlaveCraft.Hediff_MasterProgression</hediffClass>
     <isBad>false</isBad>
     <tendable>false</tendable>
@@ -22,12 +21,16 @@
         <extraTooltip>陌生的直觉悄然萌发。</extraTooltip>
         <minSeverity>0</minSeverity>
         <capMods>
-          <!-- 意识与操控使用百分点偏移；社交采用乘法，自然愈合沿用原版伤口恢复机制。 -->
+          <!-- 意识、视觉和听觉使用百分点偏移；社交与伤口愈合使用原版属性因子。 -->
           <li><capacity>Consciousness</capacity><offset>0.10</offset></li>
-          <li><capacity>Manipulation</capacity><offset>0.05</offset></li>
+          <li><capacity>Sight</capacity><offset>0.05</offset></li>
+          <li><capacity>Hearing</capacity><offset>0.05</offset></li>
         </capMods>
-        <statFactors><SocialImpact>1.05</SocialImpact></statFactors>
-        <naturalHealingFactor>1.00</naturalHealingFactor>
+        <!-- InjuryHealingFactor 同时作用于自然和治疗后愈合；不再叠加 naturalHealingFactor。 -->
+        <statFactors>
+          <SocialImpact>1.05</SocialImpact>
+          <InjuryHealingFactor>1.10</InjuryHealingFactor>
+        </statFactors>
       </li>
       <li>
         <label>觉醒</label>
@@ -35,10 +38,14 @@
         <minSeverity>12</minSeverity>
         <capMods>
           <li><capacity>Consciousness</capacity><offset>0.20</offset></li>
-          <li><capacity>Manipulation</capacity><offset>0.10</offset></li>
+          <li><capacity>Sight</capacity><offset>0.10</offset></li>
+          <li><capacity>Hearing</capacity><offset>0.10</offset></li>
         </capMods>
-        <statFactors><SocialImpact>1.10</SocialImpact></statFactors>
-        <naturalHealingFactor>1.10</naturalHealingFactor>
+        <!-- InjuryHealingFactor 同时作用于自然和治疗后愈合；不再叠加 naturalHealingFactor。 -->
+        <statFactors>
+          <SocialImpact>1.10</SocialImpact>
+          <InjuryHealingFactor>1.20</InjuryHealingFactor>
+        </statFactors>
       </li>
       <li>
         <label>掌控</label>
@@ -46,22 +53,30 @@
         <minSeverity>40</minSeverity>
         <capMods>
           <li><capacity>Consciousness</capacity><offset>0.30</offset></li>
-          <li><capacity>Manipulation</capacity><offset>0.20</offset></li>
+          <li><capacity>Sight</capacity><offset>0.20</offset></li>
+          <li><capacity>Hearing</capacity><offset>0.20</offset></li>
         </capMods>
-        <statFactors><SocialImpact>1.15</SocialImpact></statFactors>
-        <naturalHealingFactor>1.20</naturalHealingFactor>
+        <!-- InjuryHealingFactor 同时作用于自然和治疗后愈合；不再叠加 naturalHealingFactor。 -->
+        <statFactors>
+          <SocialImpact>1.15</SocialImpact>
+          <InjuryHealingFactor>1.35</InjuryHealingFactor>
+        </statFactors>
       </li>
-      <!-- 最终意识和操控自身超过性奴锁链对应加成，不依赖绑定共振补足。 -->
+      <!-- 最终意识自身超过性奴锁链；操控直接加成继续由既有共振承担。 -->
       <li>
         <label>升华</label>
         <extraTooltip>情欲的馈赠已成为本能。</extraTooltip>
         <minSeverity>100</minSeverity>
         <capMods>
           <li><capacity>Consciousness</capacity><offset>0.40</offset></li>
-          <li><capacity>Manipulation</capacity><offset>0.30</offset></li>
+          <li><capacity>Sight</capacity><offset>0.30</offset></li>
+          <li><capacity>Hearing</capacity><offset>0.30</offset></li>
         </capMods>
-        <statFactors><SocialImpact>1.20</SocialImpact></statFactors>
-        <naturalHealingFactor>1.30</naturalHealingFactor>
+        <!-- InjuryHealingFactor 同时作用于自然和治疗后愈合；不再叠加 naturalHealingFactor。 -->
+        <statFactors>
+          <SocialImpact>1.20</SocialImpact>
+          <InjuryHealingFactor>1.50</InjuryHealingFactor>
+        </statFactors>
       </li>
     </stages>
   </HediffDef>

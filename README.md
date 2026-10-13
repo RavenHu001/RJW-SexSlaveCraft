@@ -20,6 +20,8 @@ RimWorld 1.6 的 RimJobWorld（RJW）扩展模组，基于上游 **2.2.8** 继�
 
 主人成长现称“欲望共生”：萌芽 → 觉醒 → 掌控 → 升华，提供四语阶段说明和升阶提示。The “Symbiosis of Desire” progression now has named stages, localized descriptions and level-up messages. See [第四批测试说明](Docs/Development/主人阶段第四批测试说明.md).
 
+当前阶段加成调整为意识、视觉、听觉、社交影响及伤口愈合，最高阶段为 +40／+30／+30 个百分点、×1.20／×1.50；2026-10-13 维护者实机确认五项加成及文案显示符合预期。Progression now boosts Consciousness, Sight, Hearing, Social Impact and Injury Healing; highest-stage values are +40/+30/+30 percentage points, ×1.20 and ×1.50. On 2026-10-13, the maintainer confirmed that the five bonuses and text display work as expected in-game.
+
 上述内容尚未包含于正式 2.3.9 下载；实施、验收与同步状态见[开发记录索引](Docs/Development/README.md)。
 
 ## 项目概况
