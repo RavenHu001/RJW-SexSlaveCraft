@@ -19,4 +19,6 @@ dotnet run --project Tests/PnaLoad/PnaLoad.csproj -c Release `
 
 P2 增加未满不随机成瘾、满值与截断、重复输入不重复创建、再次服药加深已有成瘾、复发与通知、回调失效、需求生成／补充、多份实际摄入和修正一次、原版无额外门槛恢复与 200-tick 调度、旧速率字段校正、重复旧依赖与非法值、枪械传播去重／同 tick 独立命中／重入、抗性／偏转／实际链以及来源 XML 断言。另覆盖高负荷／满满足度仍恢复、已有成瘾直接调用原版服药增量、体型修正后的需求不重复补充，以及其他成瘾组件不被修改。人格最小身体归属适配由 PersonalityTraits 运行实际采集／植入代码核验。
 
-引擎替身只模拟接口、调度、字段读写和回调边界。真实 Harmony 注册执行于这些目标替身上；不证明游戏中第三方补丁排序、完整能力和属性计算、Unity 界面、地图／旅队 AI、真实伤害传播或 Scribe 全对象恢复。克隆／完整空壳规则及第三方任意外部来源仍未宣称完成。P2 首版结果位于 `.builds/pna-p2/validation/summary.json`，原版恢复调整的最新结果位于 `.builds/pna-p2-native-recovery/validation/summary.json`，不复用上方 P1 历史通过数。
+引擎替身只模拟接口、调度、字段读写和回调边界。真实 Harmony 注册执行于这些目标替身上；不证明游戏中第三方补丁排序、完整能力和属性计算、Unity 界面、地图／旅队 AI、真实伤害传播或 Scribe 全对象恢复。克隆／完整空壳规则及第三方任意外部来源仍未宣称完成。P2 首版结果位于 `.builds/pna-p2/validation/summary.json`，最终无门槛原版恢复调整的结果位于 `.builds/pna-p2-vanilla/validation/summary.json`（132/132 专项、1932/1932 全量），不复用上方 P1 历史通过数。
+
+单份与零营养摄入批仅修改 XML，未重跑代码回归或重编 DLL；维护者已确认每次一份且服药正常，见[数量配置修正](../../Docs/Development/Verification/PNA摄入数量配置修正.md)。

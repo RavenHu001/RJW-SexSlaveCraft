@@ -6,6 +6,8 @@ This continuation builds on upstream **2.2.8**, the baseline when upstream devel
 
 ## [未发布 / Unreleased]
 
+- **PNA 单次摄入数量 / PNA ingestion quantity:** 普通液和浓缩液补齐原版药物的默认／最大摄入数量，每次一份，修复手动一次吃多份立即拉满负荷；移除营养值，沿用原版无营养药物摄入，仅 XML 修改；维护者确认单份与零营养服药正常。Both PNA items now default to and cap each ingestion at one unit, fixing unintended multi-unit manual ingestion. Removes nutrition using vanilla support for non-nutritious drugs. XML-only change.
+
 - **PNA 原版成瘾恢复 / Vanilla PNA addiction recovery:** 按维护者反馈撤销专用恢复组件，使用原版恢复组件、计时、进度／天数显示及依赖移除，取消额外恢复门槛，并恢复再次服药加深已有成瘾的原版行为；移除普通档“依赖”标签与冗长恢复悬停。Restores vanilla addiction recovery components and displays, without additional recovery eligibility checks, including vanilla strengthening of existing addiction on ingestion. See [recovery adjustment](Docs/Development/Verification/PNA成瘾原版恢复调整.md).
 
 - **PNA 重置 P2 测试批 / PNA reset P2 test batch:** 有效输入达满建立单份依赖，沿用原版需求条；普通／浓缩每份 +20%／+70%，低阶枪原始基数 0.15，来源统一补充需求。依赖两档 ×1.25，恢复及再次服药加深成瘾沿用原版，戒断心情 -18；读档保留合法进度，PNA 状态只随身体，不增加自动补给限制。Adds deterministic full-load dependence, vanilla chemical needs, per-unit ingestion, weapon inputs and vanilla addiction recovery. In-game verification pending; see [P2 testing notes](Docs/Development/Verification/PNA机制重置P2实现与测试.md).
