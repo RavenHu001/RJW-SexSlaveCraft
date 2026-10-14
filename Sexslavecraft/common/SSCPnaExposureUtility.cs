@@ -229,25 +229,64 @@ namespace SexSlaveCraft
                     bool rooted = IsRooted(pawn);
                     if (rooted)
                     {
-                        // 有效链直接清除普通依赖，需求撤销仍遵循原版准入刷新。
-                        var addictions = pawn.health.hediffSet.hediffs.Where(h => IsAddictionDef(h?.def)).ToList();
-                        foreach (Hediff addiction in addictions)
-                            pawn.health.RemoveHediff(addiction);
-                        // 稳态健康更新不反复重建全部需求；绑定／初始化强制刷新，清依赖后即时撤销需求。
-                        if (addictions.Count > 0 || forceRefresh) pawn.needs?.AddOrRemoveNeedsAsAppropriate();
+                        // 无依赖或单份依赖不建临时列表；多份时在移除前按原顺序收集其余实例。
+                        // 清理触发同步健康回调，因此不能边枚举健康列表边删除。
+                        Hediff firstAddiction = null;
+                        List<Hediff> otherAddictions = null;
+                        foreach (Hediff hediff in pawn.health.hediffSet.hediffs)
+                        {
+                            if (!IsAddictionDef(hediff?.def)) continue;
+                            if (firstAddiction == null) firstAddiction = hediff;
+                            else
+                            {
+                                if (otherAddictions == null) otherAddictions = new List<Hediff>();
+                                otherAddictions.Add(hediff);
+                            }
+                        }
+                        if (firstAddiction != null)
+                        {
+                            pawn.health.RemoveHediff(firstAddiction);
+                            if (otherAddictions != null)
+                                foreach (Hediff addiction in otherAddictions) pawn.health.RemoveHediff(addiction);
+                            // 每次移除都由既有 RemoveHediff 补丁即时刷新需求，外层不再重复刷新。
+                        }
+                        // 未移除依赖时仍保留绑定／初始化的强制刷新，覆盖孤立旧需求。
+                        else if (forceRefresh) pawn.needs?.AddOrRemoveNeedsAsAppropriate();
                     }
-                    // 两种负荷形态一起去重；移除极低／非法负荷后才确定应保留的形态。
-                    var records = pawn.health.hediffSet.hediffs.Where(h => IsBodyLoadDef(h?.def)).ToList();
-                    if (records.Count == 0) return;
-                    // 重复身体记录只取最大合法单份，不相加。两种 Def 均使用同一类和同一清除组件。
-                    Hediff keep = records.OrderByDescending(h => SSCPnaMath.NormalizeSeverity(h.Severity)).First();
-                    foreach (Hediff duplicate in records.Where(h => h != keep)) pawn.health.RemoveHediff(duplicate);
+                    // 一次遍历选择最大合法负荷，同值保留首实例；单份稳态不分配临时集合。
+                    // 发现第二份才按原顺序建立清理快照，不能按候选更换顺序删除。
+                    Hediff keep = null;
+                    float maximumSeverity = 0f;
+                    List<Hediff> records = null;
+                    foreach (Hediff hediff in pawn.health.hediffSet.hediffs)
+                    {
+                        if (!IsBodyLoadDef(hediff?.def)) continue;
+                        float candidateSeverity = SSCPnaMath.NormalizeSeverity(hediff.Severity);
+                        if (keep == null)
+                        {
+                            keep = hediff;
+                            maximumSeverity = candidateSeverity;
+                            continue;
+                        }
+                        if (records == null) records = new List<Hediff> { keep };
+                        records.Add(hediff);
+                        if (candidateSeverity > maximumSeverity)
+                        {
+                            keep = hediff;
+                            maximumSeverity = candidateSeverity;
+                        }
+                    }
+                    if (keep == null) return;
+                    if (records != null)
+                        foreach (Hediff duplicate in records)
+                            if (duplicate != keep) pawn.health.RemoveHediff(duplicate);
+                    // 删除回调可能修改保留实例；归一化必须读取回调后的当前值。
                     float severity = SSCPnaMath.NormalizeSeverity(keep.Severity);
                     if (severity <= SSCPnaMath.RemovalSeverity) { pawn.health.RemoveHediff(keep); return; }
                     rooted = IsRooted(pawn);
                     HediffDef desired = rooted ? SSCDefOf.SSC_PnaRootedLoad : SSCDefOf.SSC_PnaLoad;
                     if (desired == null || !pawn.health.hediffSet.hediffs.Contains(keep)) return;
-                    bool changed = keep.def != desired || keep.Severity != severity || records.Count > 1;
+                    bool changed = keep.def != desired || keep.Severity != severity || records != null;
                     // 原位换 Def 保留 loadID、组件和未结算时间；不先移除再创建，不增加隐藏初值。
                     keep.def = desired;
                     keep.Severity = severity;

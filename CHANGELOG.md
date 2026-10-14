@@ -6,6 +6,8 @@ This continuation builds on upstream **2.2.8**, the baseline when upstream devel
 
 ## [未发布 / Unreleased]
 
+- **PNA 状态刷新优化 / PNA state refresh optimization:** 稳态刷新改为一次遍历，发现重复记录才分配清理快照；清依赖不再额外重复刷新需求。保留原回调核对及即时移除通知，无新缓存、补丁或机制改动；维护者已确认服药与绑定／解绑正常。Reduces temporary allocations and redundant need refreshes while preserving callback checks and immediate removal notifications. Ingestion and binding/unbinding were confirmed working in game.
+
 - **PNA 单次摄入数量 / PNA ingestion quantity:** 普通液和浓缩液补齐原版药物的默认／最大摄入数量，每次一份，修复手动一次吃多份立即拉满负荷；移除营养值，沿用原版无营养药物摄入，仅 XML 修改；维护者确认单份与零营养服药正常。Both PNA items now default to and cap each ingestion at one unit, fixing unintended multi-unit manual ingestion. Removes nutrition using vanilla support for non-nutritious drugs. XML-only change.
 
 - **PNA 原版成瘾恢复 / Vanilla PNA addiction recovery:** 按维护者反馈撤销专用恢复组件，使用原版恢复组件、计时、进度／天数显示及依赖移除，取消额外恢复门槛，并恢复再次服药加深已有成瘾的原版行为；移除普通档“依赖”标签与冗长恢复悬停。Restores vanilla addiction recovery components and displays, without additional recovery eligibility checks, including vanilla strengthening of existing addiction on ingestion. See [recovery adjustment](Docs/Development/Verification/PNA成瘾原版恢复调整.md).

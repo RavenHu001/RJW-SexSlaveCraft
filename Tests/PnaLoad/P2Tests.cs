@@ -71,6 +71,71 @@ internal static partial class Program
         Run("其他成瘾组件保持原版速率",()=>{var p=NewPawn();var h=new HediffWithComps{pawn=p,def=new HediffDef{defName="OtherAddiction"}};var c=new HediffComp_SeverityPerDay{parent=h,severityPerDay=-.0333f};Near(-.0333,c.SeverityChangePerDay());});
         Run("PNA大步长也沿用原版200tick调度",()=>{var p=NewPawn();AddOldAddiction(p,1);p.needs.PnaNeed=0;for(int t=0;t<60000;t+=250)Tick(p,250);Near(.9,SSCPnaExposureUtility.GetAddiction(p).Severity,.00002);});
         Run("真实摄入与枪械来源参数XML",SourceDefinitions);
+        RunRefreshOptimizationTests();
+        MeasureSteadyRefreshAllocations();
+    }
+
+    // 验证刷新次数、原始清理顺序和同步回调，避免优化改变健康状态更新语义。
+    private static void RunRefreshOptimizationTests()
+    {
+        Run("强制协调清单份依赖只刷新需求一次",()=>
+        {
+            var p=NewPawn();AddOldAddiction(p,.4f);p.needs.PnaNeed=.3f;
+            p.health.hediffSet.hediffs.Add(new Hediff_ChainOfSexSlave{pawn=p,def=ChainDef,LinkedPawn=NewPawn()});
+            int before=p.needs.Refreshes;
+            SSCPnaExposureUtility.RefreshBodyState(p,true);
+            Equal(1,p.needs.Refreshes-before);
+            Assert(SSCPnaExposureUtility.GetAddiction(p)==null && p.needs.PnaNeed==null,"依赖与需求清除");
+        });
+        Run("重复依赖每次移除仍即时刷新但外层不重复",()=>
+        {
+            var p=NewPawn();AddOldAddiction(p,.3f);p.needs.PnaNeed=.3f;
+            var second=HediffMaker.MakeHediff(AddictionDef,p);second.Severity=.6f;p.health.hediffSet.hediffs.Add(second);
+            p.health.hediffSet.hediffs.Add(new Hediff_ChainOfSexSlave{pawn=p,def=ChainDef,LinkedPawn=NewPawn()});
+            int before=p.needs.Refreshes,callbacks=0;
+            p.health.OnRemoved=h=>{if(SSCPnaExposureUtility.IsAddictionDef(h.def)){callbacks++;Assert(p.needs.PnaNeed!=null,"移除回调前的需求时序保留");}};
+            SSCPnaExposureUtility.RefreshBodyState(p,true);
+            Equal(2,callbacks);Equal(2,p.needs.Refreshes-before);
+            Assert(p.needs.PnaNeed==null,"最后一份移除后撤销需求");
+        });
+        Run("独立移除依赖仍由原补丁即时撤销需求",()=>
+        {
+            var p=NewPawn();var addiction=AddOldAddiction(p,.4f);p.needs.PnaNeed=.3f;int before=p.needs.Refreshes;
+            p.health.RemoveHediff(addiction);
+            Equal(1,p.needs.Refreshes-before);Assert(p.needs.PnaNeed==null,"没有延迟刷新");
+        });
+        Run("无依赖的有链强制协调仍清孤立需求",()=>
+        {
+            var p=NewPawn();p.needs.PnaNeed=.2f;
+            p.health.hediffSet.hediffs.Add(new Hediff_ChainOfSexSlave{pawn=p,def=ChainDef,LinkedPawn=NewPawn()});
+            int before=p.needs.Refreshes;SSCPnaExposureUtility.RefreshBodyState(p,true);
+            Equal(1,p.needs.Refreshes-before);Assert(p.needs.PnaNeed==null,"强制准入刷新保留");
+        });
+        Run("重复负荷清理保留原顺序及回调修改的严重度",()=>
+        {
+            var p=NewPawn();var a=Raw(p,.4f);var b=Raw(p,.2f);var keep=Raw(p,1.2f);
+            var removed=new System.Collections.Generic.List<Hediff>();
+            p.health.OnRemoved=h=>{removed.Add(h);if(h==a)keep.Severity=1.4f;};
+            SSCPnaExposureUtility.RefreshBodyState(p);
+            Equal(2,removed.Count);Assert(removed[0]==a && removed[1]==b,"原始移除顺序");
+            Assert(Record(p)==keep,"原实例保留");Near(1.4,keep.Severity);
+        });
+        Run("同最大严重度保留首实例与组件时间",()=>
+        {
+            var p=NewPawn();var first=Raw(p,.8f);Tick(p,50);Raw(p,.8f);
+            var comp=Comp(p);SSCPnaExposureUtility.RefreshBodyState(p);
+            Assert(Record(p)==first && Comp(p)==comp,"稳定选择首实例");Equal(50,comp.PendingTicks);
+        });
+    }
+
+    // 仅比较宿主中同一生产方法的临时分配，不将结果当作游戏帧率或Unity实测。
+    private static void MeasureSteadyRefreshAllocations()
+    {
+        var p=NewPawn();Raw(p,.8f);
+        for(int i=0;i<100;i++)SSCPnaExposureUtility.RefreshBodyState(p);
+        long before=GC.GetAllocatedBytesForCurrentThread();
+        for(int i=0;i<1000;i++)SSCPnaExposureUtility.RefreshBodyState(p);
+        Console.WriteLine("诊断：单份稳态刷新1000次分配 "+(GC.GetAllocatedBytesForCurrentThread()-before)+" 字节（含宿主边界）");
     }
 
     // 运行原版组件的正常健康更新节奏，不用一次超大 delta 代替一天的 tick。
