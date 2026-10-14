@@ -7,9 +7,9 @@ using Verse;
 
 internal static partial class Program
 {
-    // 测试直接取得生产恢复组件，验证实际 D 更新而非另写一套恢复算法。
-    private static HediffComp_SSCPnaRecovery Recovery(Pawn pawn)
-        => (SSCPnaExposureUtility.GetAddiction(pawn) as HediffWithComps)?.GetComp<HediffComp_SSCPnaRecovery>();
+    // 取得原版组件的宿主边界替身，核对生产接入；游戏调度仍需实机验证。
+    private static HediffComp_SeverityPerDay Recovery(Pawn pawn)
+        => (SSCPnaExposureUtility.GetAddiction(pawn) as HediffWithComps)?.GetComp<HediffComp_SeverityPerDay>();
 
     /// <summary>按依赖、来源、恢复、旧档和武器执行范围组织 P2 回归。</summary>
     private static void RunP2Tests()
@@ -37,18 +37,22 @@ internal static partial class Program
         Run("已适配普通PNA关闭旧成瘾并保留其他药物",()=>{var p=NewPawn();var d=Drug(new IngestionOutcomeDoer_SSCPna{severity=.4f});d.PrePostIngested(p);Equal(0,d.OriginalCalls);d.Props.chemical.addictionHediff=new HediffDef{defName="Other"};d.PrePostIngested(p);Equal(1,d.OriginalCalls);});
         Run("第三方未适配PNA保留旧入口",()=>{var d=Drug(null);d.PrePostIngested(NewPawn());Equal(1,d.OriginalCalls);});
         Run("摄入为已有需求补满但不重置依赖",()=>{var p=NewPawn();AddOldAddiction(p,.3f);p.needs.PnaNeed=.1f;new IngestionOutcomeDoer_SSCPna{severity=.4f}.DoIngestionOutcome(p,new Thing(),1);Near(1,p.needs.PnaNeed.Value);Near(.3,SSCPnaExposureUtility.GetAddiction(p).Severity);});
+        Run("已有依赖摄入直接走原版且需求不重复补充",()=>{var p=NewPawn();p.BodySize=2;AddOldAddiction(p,.3f);p.needs.PnaNeed=.1f;var d=Drug(new IngestionOutcomeDoer_SSCPna{severity=.4f});d.PrePostIngested(p);d.parent.def.ingestible.outcomeDoers[0].DoIngestionOutcome(p,d.parent,3);Equal(1,d.OriginalCalls);Near(.4,SSCPnaExposureUtility.GetAddiction(p).Severity);Near(.6,p.needs.PnaNeed.Value);Near(.6,SSCPnaExposureUtility.GetLoad(p));});
+        Run("原版服药已有成瘾增加受Def上限限制",()=>{var p=NewPawn();AddOldAddiction(p,.98f);var d=Drug(new IngestionOutcomeDoer_SSCPna{severity=.4f});d.PrePostIngested(p);Near(1,SSCPnaExposureUtility.GetAddiction(p).Severity);});
+        Run("原版服药读取物品已有成瘾增量而非自定义常量",()=>{var p=NewPawn();AddOldAddiction(p,.3f);var d=Drug(new IngestionOutcomeDoer_SSCPna{severity=.4f});d.Props.existingAddictionSeverityOffset=.2f;d.PrePostIngested(p);Near(.5,SSCPnaExposureUtility.GetAddiction(p).Severity);});
+        Run("高负荷满需求也会持续恢复",()=>{var p=NewPawn();Input(p,1);p.needs.PnaNeed=1;NativeRecoveryDay(p);Near(.875,SSCPnaExposureUtility.GetAddiction(p).Severity,.00002);});
         Run("锁链对象药物只输入性奴负荷",()=>{var p=NewPawn();Hediff_ChainOfSexSlave.AddToPawn(p,NewPawn());var d=Drug(new IngestionOutcomeDoer_SSCPna{severity=1.4f});d.PrePostIngested(p);d.parent.def.ingestible.outcomeDoers[0].DoIngestionOutcome(p,d.parent,2);Near(1,SSCPnaExposureUtility.GetLoad(p));Assert(Record(p)==null && p.needs.PnaNeed==null && SSCPnaExposureUtility.GetAddiction(p)==null,"受保护");});
-        // 条件恢复：低负荷与原版戒断同时满足，暂停和不同有效 delta 不改变计时口径。
-        foreach(float need in new[]{.01f,0f})Run("低负荷戒断按日恢复 "+need,()=>{var p=NewPawn();AddOldAddiction(p,1);p.needs.PnaNeed=need;Raw(p,.4f);Tick(p,60000);Near(.875,SSCPnaExposureUtility.GetAddiction(p).Severity);});
-        Run("低负荷但仍未戒断不恢复",()=>{var p=NewPawn();AddOldAddiction(p,1);p.needs.PnaNeed=.011f;Tick(p,60000);Near(1,SSCPnaExposureUtility.GetAddiction(p).Severity);});
-        Run("高负荷戒断仍暂停恢复",()=>{var p=NewPawn();Raw(p,1.8f);AddOldAddiction(p,.4f);p.needs.PnaNeed=0;Tick(p,150);Near(.4,SSCPnaExposureUtility.GetAddiction(p).Severity);});
-        Run("缺合法需求低负荷可恢复",()=>{var p=NewPawn();p.needs.AllowPnaNeed=false;AddOldAddiction(p,1);Tick(p,60000);Near(.875,SSCPnaExposureUtility.GetAddiction(p).Severity);});
-        Run("暂停与非正健康delta不恢复",()=>{var p=NewPawn();AddOldAddiction(p,1);p.needs.PnaNeed=0;p.Suspended=true;Tick(p,60000);p.Suspended=false;Tick(p,0);Tick(p,-1);Near(1,SSCPnaExposureUtility.GetAddiction(p).Severity);});
-        Run("八个有效恢复日撤销依赖与需求",()=>{var p=NewPawn();AddOldAddiction(p,1);p.needs.PnaNeed=0;for(int i=0;i<8;i++)Tick(p,60000);Assert(SSCPnaExposureUtility.GetAddiction(p)==null && p.needs.PnaNeed==null,"完全解除");Assert(Input(p,1).AddictionCreated,"再次达满复发");Near(1,SSCPnaExposureUtility.GetAddiction(p).Severity);});
-        foreach(int delta in new[]{1,15,150,250})Run("恢复使用有效delta "+delta,()=>{var p=NewPawn();AddOldAddiction(p,1);p.needs.PnaNeed=0;for(int t=0;t<60000;t+=delta)Tick(p,Math.Min(delta,60000-t));Near(.875,SSCPnaExposureUtility.GetAddiction(p).Severity,.002);});
+        // 原版恢复不受身体负荷或戒断门槛限制，暂停仍由健康更新调度控制。
+        foreach(float need in new[]{.01f,0f})Run("低负荷戒断按日恢复 "+need,()=>{var p=NewPawn();AddOldAddiction(p,1);p.needs.PnaNeed=need;Raw(p,.4f);NativeRecoveryDay(p);Near(.875,SSCPnaExposureUtility.GetAddiction(p).Severity,.00002);});
+        Run("未戒断也按原版恢复",()=>{var p=NewPawn();AddOldAddiction(p,1);p.needs.PnaNeed=.011f;NativeRecoveryDay(p);Near(.875,SSCPnaExposureUtility.GetAddiction(p).Severity,.00002);});
+        Run("高负荷戒断也按原版恢复",()=>{var p=NewPawn();Raw(p,1.8f);AddOldAddiction(p,.4f);p.needs.PnaNeed=0;NativeRecoveryDay(p);Near(.275,SSCPnaExposureUtility.GetAddiction(p).Severity,.00002);});
+        Run("缺合法需求低负荷可恢复",()=>{var p=NewPawn();p.needs.AllowPnaNeed=false;AddOldAddiction(p,1);NativeRecoveryDay(p);Near(.875,SSCPnaExposureUtility.GetAddiction(p).Severity,.00002);});
+        Run("暂停与非正健康delta不恢复",()=>{var p=NewPawn();AddOldAddiction(p,1);p.needs.PnaNeed=0;p.Suspended=true;NativeRecoveryDay(p);p.Suspended=false;Tick(p,0);Tick(p,-1);Near(1,SSCPnaExposureUtility.GetAddiction(p).Severity);});
+        Run("八个有效恢复日撤销依赖与需求",()=>{var p=NewPawn();AddOldAddiction(p,1);p.needs.PnaNeed=0;for(int i=0;i<8;i++)NativeRecoveryDay(p);Tick(p,200);Assert(SSCPnaExposureUtility.GetAddiction(p)==null && p.needs.PnaNeed==null,"完全解除");Assert(Input(p,1).AddictionCreated,"再次达满复发");Near(1,SSCPnaExposureUtility.GetAddiction(p).Severity);});
+        foreach(int delta in new[]{1,15,150,200})Run("原版恢复调度步长 "+delta,()=>{var p=NewPawn();AddOldAddiction(p,1);p.needs.PnaNeed=0;for(int t=0;t<60000;t+=delta)Tick(p,Math.Min(delta,60000-t));Near(.875,SSCPnaExposureUtility.GetAddiction(p).Severity,.002);});
         // 保存兼容与只读显示：旧速率不参与新恢复，旧进度去重但不相加或重置。
-        Run("旧恢复速率字段不再驱动PNA",()=>{var p=NewPawn();AddOldAddiction(p,1);p.needs.PnaNeed=0;Scribe.Data["severityPerDay"]=-.066f;Scribe.mode=LoadSaveMode.LoadingVars;Recovery(p).CompExposeData();Scribe.mode=LoadSaveMode.Inactive;Tick(p,60000);Near(.875,SSCPnaExposureUtility.GetAddiction(p).Severity);});
-        Run("恢复悬停只读且区分暂停",()=>{var p=NewPawn();AddOldAddiction(p,.4f);p.needs.PnaNeed=0;Assert(Recovery(p).CompTipStringExtra.Contains("SSC_Pna_RecoveryActive"),"有效日");p.needs.PnaNeed=1;Assert(Recovery(p).CompTipStringExtra.Contains("SSC_Pna_RecoveryPaused"),"暂停");Near(.4,SSCPnaExposureUtility.GetAddiction(p).Severity);});
+        Run("旧恢复速率字段不再驱动PNA",()=>{var p=NewPawn();AddOldAddiction(p,1);p.needs.PnaNeed=0;Scribe.Data["severityPerDay"]=-.066f;Scribe.mode=LoadSaveMode.LoadingVars;Recovery(p).CompExposeData();Scribe.mode=LoadSaveMode.Inactive;SSCPnaGameComponent.NormalizePawn(p);NativeRecoveryDay(p);Near(.875,SSCPnaExposureUtility.GetAddiction(p).Severity,.00002);});
+        Run("原版恢复悬停只读且不受满足度限制",()=>{var p=NewPawn();AddOldAddiction(p,.4f);p.needs.PnaNeed=0;Assert(Recovery(p).CompTipStringExtra=="DaysToRecover","原版天数显示");p.needs.PnaNeed=1;Assert(Recovery(p).CompTipStringExtra=="DaysToRecover","满满足度仍显示原版倒计时");Near(.4,SSCPnaExposureUtility.GetAddiction(p).Severity);});
         Run("重复旧依赖取最大单份且旧需求不灌满",()=>{var p=NewPawn();var a=HediffMaker.MakeHediff(AddictionDef,p);a.Severity=.3f;var b=HediffMaker.MakeHediff(AddictionDef,p);b.Severity=.4f;p.health.hediffSet.hediffs.Add(a);p.health.hediffSet.hediffs.Add(b);p.needs.PnaNeed=.27f;SSCPnaGameComponent.NormalizePawn(p);Near(.4,SSCPnaExposureUtility.GetAddiction(p).Severity);Near(.27,p.needs.PnaNeed.Value);Equal(1,p.health.hediffSet.hediffs.Count);});
         Run("非法旧依赖和需求值清理",()=>{var p=NewPawn();var a=HediffMaker.MakeHediff(AddictionDef,p);a.RawSeverity=float.NaN;p.health.hediffSet.hediffs.Add(a);p.needs.PnaNeed=float.NaN;SSCPnaGameComponent.NormalizePawn(p);Assert(SSCPnaExposureUtility.GetAddiction(p)==null && p.needs.PnaNeed==null,"清理非法");});
         Run("依赖体状态识别覆盖两种负荷且不扩大范围",()=>{foreach(string name in new[]{"Hediff_PNA_Debuff","SSC_Hediff_PnaRootedLoad","PNA_Addiction"})Assert(SSCPnaExposureUtility.IsBodyStateDef(new HediffDef{defName=name}),"身体记录");Assert(!SSCPnaExposureUtility.IsBodyStateDef(new HediffDef{defName="Other"}),"其他不受影响");});
@@ -63,13 +67,23 @@ internal static partial class Program
         Run("有效链枪械保留治疗强化且不成瘾",()=>{var p=NewPawn();Hediff_ChainOfSexSlave.AddToPawn(p,NewPawn());var injury=new Hediff_Injury{pawn=p,def=new HediffDef{defName="Injury"}};p.health.hediffSet.hediffs.Add(injury);var w=new DamageWorker_LowTier();w.Apply(Shot(),p);Near(5,injury.Healed);Assert(p.health.hediffSet.hediffs.Any(h=>h.def.defName=="Combat"),"强化");Assert(Record(p)==null && SSCPnaExposureUtility.GetAddiction(p)==null,"无普通影响");Equal(0,w.InjuryCalls);});
         Run("高阶现有固定剂量也接共享工具",()=>{var p=NewPawn();var s=Shot();((PNA_DWExtension)s.Def.Extension).fixedSeverity=.5f;new DamageWorker_HighTier().Apply(s,p);Near(.25,SSCPnaExposureUtility.GetLoad(p));});
         Run("武器重入不吞掉外层和内层独立暴露",()=>{var outer=NewPawn();var inner=NewPawn();var w=new DamageWorker_LowTier();w.BeforePart=p=>{w.BeforePart=null;w.Apply(Shot(),inner);};w.Apply(Shot(),outer);Near(.075,SSCPnaExposureUtility.GetLoad(outer));Near(.075,SSCPnaExposureUtility.GetLoad(inner));});
+        Run("截图约6%满足度不再阻止原版恢复",()=>{var p=NewPawn();AddOldAddiction(p,1);p.needs.PnaNeed=.0567000248f;NativeRecoveryDay(p);Near(.875,SSCPnaExposureUtility.GetAddiction(p).Severity,.00002);p.needs.PnaNeed=0;NativeRecoveryDay(p);Near(.75,SSCPnaExposureUtility.GetAddiction(p).Severity,.00002);});
+        Run("其他成瘾组件保持原版速率",()=>{var p=NewPawn();var h=new HediffWithComps{pawn=p,def=new HediffDef{defName="OtherAddiction"}};var c=new HediffComp_SeverityPerDay{parent=h,severityPerDay=-.0333f};Near(-.0333,c.SeverityChangePerDay());});
+        Run("PNA大步长也沿用原版200tick调度",()=>{var p=NewPawn();AddOldAddiction(p,1);p.needs.PnaNeed=0;for(int t=0;t<60000;t+=250)Tick(p,250);Near(.9,SSCPnaExposureUtility.GetAddiction(p).Severity,.00002);});
         Run("真实摄入与枪械来源参数XML",SourceDefinitions);
+    }
+
+    // 运行原版组件的正常健康更新节奏，不用一次超大 delta 代替一天的 tick。
+    private static void NativeRecoveryDay(Pawn pawn)
+    {
+        for(int tick=0;tick<60000;tick+=150)Tick(pawn,150);
     }
 
     // 构造已适配或未适配 PNA 物品，仅隔离原版组件边界；补丁运行生产实现。
     private static CompDrug Drug(IngestionOutcomeDoer_SSCPna doer)
     {
         var result=new CompDrug{Props=new CompProperties_Drug{chemical=new ChemicalDef{addictionHediff=AddictionDef}}};
+        result.parent.Comp=result;
         if(doer!=null)result.parent.def.ingestible.outcomeDoers.Add(doer);
         return result;
     }

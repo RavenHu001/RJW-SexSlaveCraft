@@ -25,8 +25,14 @@ namespace SexSlaveCraft
             // 乘实际摄入份数后换成归一化负荷；用 double 中间值防止批量计算溢出。
             double dose = effect * (double)ingestedCount / SSCPnaMath.MaximumSeverity;
             if (double.IsNaN(dose) || double.IsInfinity(dose) || dose <= 0d) return;
-            // 负荷上限、锁链分流、满值依赖及需求补充统一交给共享入口处理。
-            SSCPnaExposureUtility.ApplyExposure(pawn, (float)System.Math.Min(dose, float.MaxValue), SSCPnaExposureSource.Ingestion);
+            // PrePostIngested 先于 Doer；已有依赖的成瘾品已经由原版增加严重度并补充需求。
+            // 只判断当前摄入组件，不增加缓存或另写服药算法；首次建立仍交给共享入口。
+            CompDrug drug = ingested?.TryGetComp<CompDrug>();
+            bool nativeRefill = drug?.Props.Addictive == true &&
+                SSCPnaExposureUtility.IsAddictionDef(drug.Props.chemical?.addictionHediff) &&
+                SSCPnaExposureUtility.GetAddiction(pawn) != null;
+            SSCPnaExposureUtility.ApplyExposure(pawn, (float)System.Math.Min(dose, float.MaxValue),
+                SSCPnaExposureSource.Ingestion, refillIngestionNeed: !nativeRefill);
         }
     }
 }

@@ -79,7 +79,7 @@ internal static partial class Program
         Run("性奴满值无普通负面阶段", RootedDefinitionContract);
         Run("调试四个加量动作均走共享入口", DebugActions);
         Run("真实 Def 五档、初值、能力与心情停用", DefinitionContract);
-        Run("原依赖类、两档固定催情与条件恢复 XML", AddictionContract);
+        Run("原依赖类、两档固定催情与原版恢复 XML", AddictionContract);
         foreach(string language in new[]{"ChineseSimplified","ChineseTraditional","English","Russian"})
             Run("四语 PNA 标签与占位符 " + language, () => Localization(language));
         RunP2Tests();
@@ -108,13 +108,16 @@ internal static partial class Program
     private static Hediff AddOldAddiction(Pawn p,float severity) { var h=HediffMaker.MakeHediff(AddictionDef,p); h.Severity=severity; p.health.AddHediff(h); return h; }
     private static void Tick(Pawn p,int delta)
     {
+        // 宿主模拟原版暂停身体不调度健康更新，而不是在恢复组件中另加限制。
+        if(p.Suspended || delta<=0)return;
+        p.NativeTicks+=delta;
         foreach(var h in p.health.hediffSet.hediffs.OfType<HediffWithComps>().ToArray())
         {
             float adjustment=0;
             foreach(var c in h.comps.ToArray()) c.CompPostTickInterval(ref adjustment,delta);
             if(!p.health.hediffSet.hediffs.Contains(h))continue;
             if(adjustment!=0)h.Severity+=adjustment;
-            if(h.comps.Any(c=>c.CompShouldRemove))p.health.RemoveHediff(h);
+            if(h.Severity<=0f || h.comps.Any(c=>c.CompShouldRemove))p.health.RemoveHediff(h);
         }
     }
     private static void InvalidPawn(string kind)
@@ -303,7 +306,8 @@ internal static partial class Program
     {
         var def=LoadDef("Defs/HediffDefs/HediffOfAddiction.xml","PNA_Addiction");Equal("Hediff_Addiction",def.Element("hediffClass").Value);Equal(2,def.Element("stages").Elements().Count());
         Near(1,Number(def.Element("initialSeverity")));
-        var comp=def.Element("comps").Element("li");Near(-.125,Number(comp.Element("severityPerDay")));Equal("SexSlaveCraft.HediffCompProperties_SSCPnaRecovery",(string)comp.Attribute("Class"));
+        var comp=def.Element("comps").Element("li");Near(-.125,Number(comp.Element("severityPerDay")));Equal("HediffCompProperties_SeverityPerDay",(string)comp.Attribute("Class"));
+        Assert(def.Element("stages").Elements().First().Element("label")==null,"普通档沿用原版无标签");
         foreach(var stage in def.Element("stages").Elements())Near(1.25,Number(stage.Element("statFactors").Element("SexFrequency")));
         Near(-18,Number(LoadDef("Defs/HediffDefs/HediffOfAddiction.xml","PNA_Withdrawal_Thought").Element("stages").Elements().Last().Element("baseMoodEffect")));
     }
@@ -312,10 +316,12 @@ internal static partial class Program
         string lang=Path.Combine(root,"Languages",language);var buff=XDocument.Load(Path.Combine(lang,"DefInjected/HediffDef/HediffOfBuff.xml")).Root;
         for(int i=0;i<5;i++) Assert(!string.IsNullOrWhiteSpace(buff.Element($"Hediff_PNA_Debuff.stages.{i}.label")?.Value),"阶段标签 "+i);
         var addiction=XDocument.Load(Path.Combine(lang,"DefInjected/HediffDef/HediffOfAddiction.xml")).Root;
-        for(int i=0;i<2;i++) Assert(addiction.Element($"PNA_Addiction.stages.{i}.label")!=null,"依赖档 "+i);
+        Assert(addiction.Element("PNA_Addiction.stages.0.label")==null,"普通档不重新注入标签");
+        Assert(addiction.Element("PNA_Addiction.stages.1.label")!=null,"戒断标签");
         Assert(buff.Element("SSC_Hediff_PnaRootedLoad.label")!=null,"性奴载体标签");
-        var keyed=XDocument.Load(Path.Combine(lang,"Keyed/SSC_Pna.xml")).Root;Equal(9,keyed.Elements().Count());Assert(keyed.Element("SSC_Pna_LoadTooltip").Value.Contains("{0}"),"负荷参数");Assert(keyed.Element("SSC_Pna_DebugResult").Value.Contains("{0}"),"调试参数");Assert(keyed.Element("SSC_Pna_RootedLoadTooltip").Value.Contains("{0}"),"性奴负荷参数");
-        Assert(keyed.Element("SSC_Pna_NewDependence").Value.Contains("{0}"),"依赖通知");Assert(keyed.Element("SSC_Pna_RecoveryActive").Value.Contains("{0}"),"有效恢复日");Assert(!string.IsNullOrWhiteSpace(keyed.Element("SSC_Pna_RecoveryPaused").Value),"恢复暂停");
+        var keyed=XDocument.Load(Path.Combine(lang,"Keyed/SSC_Pna.xml")).Root;Equal(7,keyed.Elements().Count());Assert(keyed.Element("SSC_Pna_LoadTooltip").Value.Contains("{0}"),"负荷参数");Assert(keyed.Element("SSC_Pna_DebugResult").Value.Contains("{0}"),"调试参数");Assert(keyed.Element("SSC_Pna_RootedLoadTooltip").Value.Contains("{0}"),"性奴负荷参数");
+        Assert(keyed.Element("SSC_Pna_NewDependence").Value.Contains("{0}"),"依赖通知");
+        Assert(keyed.Element("SSC_Pna_RecoveryActive")==null && keyed.Element("SSC_Pna_RecoveryPaused")==null,"恢复显示由原版提供");
         foreach(string file in new[]{"DefInjected/HediffDef/HediffOfBuff.xml","DefInjected/HediffDef/HediffOfAddiction.xml","Keyed/SSC_Pna.xml"}) Equal(File.ReadAllText(Path.Combine(lang,file)),File.ReadAllText(Path.Combine(root,"Sexslavecraft/Languages",language,file)),"语言镜像");
     }
     private static void Assert(bool value,string message) { if(!value)throw new Exception(message); }

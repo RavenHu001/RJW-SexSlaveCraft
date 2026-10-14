@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-  <PNA_Addiction.stages.0.label>依赖</PNA_Addiction.stages.0.label>
   <PNA_Addiction.stages.1.label>戒断中</PNA_Addiction.stages.1.label>
-  <PNA_Addiction.description>身体在 PNA 负荷达到满值后形成的依赖，持续增强性欲。停止补给，待负荷降至 20% 以下且进入戒断后，逐渐消除依赖；完整依赖需要 8 个有效恢复日。再次补给不会重置已有恢复进度。</PNA_Addiction.description>
+  <PNA_Addiction.description>身体对紫色纳米流体形成了依赖，性欲持续增强。依赖会随时间逐渐消退；再次服用会加深依赖，并缓解戒断。</PNA_Addiction.description>
 </LanguageData>

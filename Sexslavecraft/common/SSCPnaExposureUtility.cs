@@ -80,7 +80,7 @@ namespace SexSlaveCraft
                pawn.RaceProps?.IsFlesh == true && pawn.health?.hediffSet != null;
 
         /// <summary>各来源自行认领事件后调用；同 tick 的两个独立输入不会被合并或丢弃。</summary>
-        public static SSCPnaExposureResult ApplyExposure(Pawn pawn, float dose, SSCPnaExposureSource source)
+        public static SSCPnaExposureResult ApplyExposure(Pawn pawn, float dose, SSCPnaExposureSource source, bool refillIngestionNeed = true)
         {
             // 1. 校验真实正剂量、身体与来源；存读档阶段不能把恢复过程当成新暴露。
             var result = new SSCPnaExposureResult();
@@ -127,7 +127,7 @@ namespace SexSlaveCraft
             result.Rooted = IsRootedLoadDef(record.def);
             Hediff createdAddiction = null;
 
-            // 5. 只有普通身体的满值正输入可以新建依赖；已有实例的 D 完全不重置。
+            // 5. 只有普通身体的满值正输入可以新建依赖；已有实例不重复创建，服药增加由原版 CompDrug 处理。
             // 原版依赖需要需求管理器，但不要求一定具备合法的 PNA 需求条。
             if (!result.Rooted)
             {
@@ -155,9 +155,10 @@ namespace SexSlaveCraft
                         if (previousNeed == null && createdNeed != null) createdNeed.CurLevel = createdNeed.MaxLevel;
                     }
                 }
-                // 6. 补充现有合法需求：摄入 +1、普通侵蚀 +0.12，调试不额外补充。
+                // 6. 原版服药已补充需求时不再重复加量；首次摄入与独立来源仍在这里补充。
+                // 摄入 +1、普通侵蚀 +0.12，调试不额外补充。
                 // 枪械按钳制后的实际增量补充；满值输入可建依赖，但不虚构负荷增量。
-                float refill = source == SSCPnaExposureSource.Ingestion ? 1f :
+                float refill = source == SSCPnaExposureSource.Ingestion ? (refillIngestionNeed ? 1f : 0f) :
                     source == SSCPnaExposureSource.OrdinaryExposure ? .12f :
                     source == SSCPnaExposureSource.Weapon ? result.AddedLoad * 2f : 0f;
                 Need_Chemical need = GetNeed(pawn);
@@ -199,6 +200,11 @@ namespace SexSlaveCraft
             float value = NormalizeDependency(keep.Severity);
             if (value <= 0f) pawn.health.RemoveHediff(keep);
             else keep.Severity = value;
+            // 原版组件会保存速率；迁移只校正到当前 XML 速率，不改变已经恢复的 D。
+            var recovery = (keep as HediffWithComps)?.GetComp<HediffComp_SeverityPerDay>();
+            var recoveryProps = keep.def.CompProps<HediffCompProperties_SeverityPerDay>();
+            if (value > 0f && recovery != null && recoveryProps != null)
+                recovery.severityPerDay = recoveryProps.severityPerDay;
             // 交给原版更新需求存在性；已有满足度只做范围清理，不重置到新依赖初值。
             pawn.needs?.AddOrRemoveNeedsAsAppropriate();
             Need_Chemical need = GetNeed(pawn);
@@ -253,10 +259,10 @@ namespace SexSlaveCraft
             finally { protecting.Remove(pawn); }
         }
 
-        /// <summary>调试清负荷不会清普通对象已有依赖，条件恢复仍根据实际需求判断。</summary>
+        /// <summary>调试清负荷不会清普通对象已有依赖，依赖继续按原版组件恢复。</summary>
         public static void ClearLoad(Pawn pawn)
         {
-            // 同时覆盖普通／性奴形态，只移除身体负荷；依赖通过自己的条件恢复退出。
+            // 同时覆盖普通／性奴形态，只移除身体负荷；依赖通过原版严重度衰减退出。
             if (Scribe.mode != LoadSaveMode.Inactive || pawn?.health?.hediffSet == null) return;
             foreach (Hediff record in pawn.health.hediffSet.hediffs.Where(h => IsBodyLoadDef(h?.def)).ToList())
                 pawn.health.RemoveHediff(record);

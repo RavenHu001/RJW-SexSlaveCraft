@@ -9,7 +9,6 @@
     <Compile Include="$(SscSourceRoot)/common/SSCPnaExposureUtility.cs" Link="Production/SSCPnaExposureUtility.cs" />
     <Compile Include="$(SscSourceRoot)/common/SSCPnaGameComponent.cs" Link="Production/SSCPnaGameComponent.cs" />
     <Compile Include="$(SscSourceRoot)/Hediff/HediffComp_SSCPnaLoad.cs" Link="Production/HediffComp_SSCPnaLoad.cs" />
-    <Compile Include="$(SscSourceRoot)/Hediff/HediffComp_SSCPnaRecovery.cs" Link="Production/HediffComp_SSCPnaRecovery.cs" />
     <Compile Include="$(SscSourceRoot)/common/IngestionOutcomeDoer_SSCPna.cs" Link="Production/IngestionOutcomeDoer_SSCPna.cs" />
     <Compile Include="$(SscSourceRoot)/DamageWorker/DamageWorker_PNA.cs" Link="Production/DamageWorker_PNA.cs" />
     <Compile Include="$(SscSourceRoot)/ThePatches/Harmony_SSCPna.cs" Link="Production/Harmony_SSCPna.cs" />

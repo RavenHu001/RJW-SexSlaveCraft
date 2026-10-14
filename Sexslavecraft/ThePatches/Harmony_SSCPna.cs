@@ -68,7 +68,7 @@ namespace SexSlaveCraft
         }
     }
 
-    // 只替换旧 PNA 的成瘾／补充分支，摄入 Doer 与原版 PostIngested 继续执行。
+    // 未成瘾的适配物品由满负荷规则建立依赖；已有成瘾直接走原版服药行为。
     [HarmonyPatch(typeof(CompDrug), nameof(CompDrug.PrePostIngested))]
     internal static class SSCPnaRootedDrugPatch
     {
@@ -78,10 +78,12 @@ namespace SexSlaveCraft
             if (!SSCPnaExposureUtility.IsAddictionDef(__instance.Props.chemical?.addictionHediff)) return true;
             bool rooted = SSCPnaExposureUtility.IsRooted(ingester);
             if (rooted) SSCPnaExposureUtility.RefreshBodyState(ingester);
-            // 已接入专用 Doer 的普通 PNA 跳过旧随机成瘾、D 增加和需求补充。
+            // 已有依赖放行原版严重度增加及化学需求补充，不再保护已有恢复进度。
             // 第三方未适配来源仍走旧入口，不据此宣称完成所有 PNA 来源替换。
-            return !rooted && (__instance.parent.def.ingestible?.outcomeDoers == null ||
+            return !rooted && (SSCPnaExposureUtility.GetAddiction(ingester) != null ||
+                __instance.parent.def.ingestible?.outcomeDoers == null ||
                 !__instance.parent.def.ingestible.outcomeDoers.Exists(doer => doer is IngestionOutcomeDoer_SSCPna));
         }
     }
+
 }

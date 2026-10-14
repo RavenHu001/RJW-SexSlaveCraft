@@ -7,6 +7,4 @@
   <SSC_Pna_DebugResult>PNA P2 測試：目前負荷 {0}%。普通身體有效達滿時建立依賴，已有恢復進度不重置。</SSC_Pna_DebugResult>
   <SSC_Pna_RootedLoadTooltip>性奴 PNA 負荷：{0}%。綁定與解綁保留負荷和未結算時間；目前無普通負荷的能力懲罰，完整正面效果仍待開發。</SSC_Pna_RootedLoadTooltip>
   <SSC_Pna_NewDependence>{0} 的 PNA 負荷已滿，身體形成了奈米流體依賴。</SSC_Pna_NewDependence>
-  <SSC_Pna_RecoveryActive>PNA 依賴正在恢復：還需約 {0} 個有效恢復日。負荷不高於 20% 且處於戒斷時才推進恢復；再次補給可能暫停恢復。</SSC_Pna_RecoveryActive>
-  <SSC_Pna_RecoveryPaused>PNA 依賴恢復已暫停。需要負荷不高於 20% 且處於戒斷；缺少合法化學需求時只判斷低負荷。暫停健康更新的時間不計入恢復。</SSC_Pna_RecoveryPaused>
 </LanguageData>

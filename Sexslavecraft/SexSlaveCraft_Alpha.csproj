@@ -85,7 +85,6 @@
     <Compile Include="common\SSCPnaMath.cs" />
     <Compile Include="common\SSCPnaExposureUtility.cs" />
     <Compile Include="common\IngestionOutcomeDoer_SSCPna.cs" />
-    <Compile Include="Hediff\HediffComp_SSCPnaRecovery.cs" />
     <Compile Include="common\SSCPnaGameComponent.cs" />
     <Compile Include="common\DebugActions_SSCPna.cs" />
     <Compile Include="Hediff\HediffComp_SSCPnaLoad.cs" />

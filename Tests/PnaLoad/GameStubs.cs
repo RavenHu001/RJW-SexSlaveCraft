@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 // 仅模拟健康接口、组件调度、字段保存与 Harmony 目标；不替代 Unity 能力计算或真实 Scribe。
 namespace Verse
 {
-    public class Thing { public bool Destroyed, Discarded; public ThingDef def; }
+    public class Thing { public bool Destroyed, Discarded; public ThingDef def; public object Comp; public T TryGetComp<T>() where T : class => Comp as T; }
     public class ThingDef { public IngestibleProperties ingestible = new IngestibleProperties(); }
     public class IngestibleProperties { public List<RimWorld.IngestionOutcomeDoer> outcomeDoers = new List<RimWorld.IngestionOutcomeDoer>(); }
     public class Pawn : Thing
@@ -16,6 +16,8 @@ namespace Verse
         public bool IsMaster;
         public string LabelShort => "Test pawn";
         public bool NotifyPlayer;
+        public int NativeTicks;
+        public bool IsHashIntervalTick(int interval,int delta)=>NativeTicks%interval<delta;
         public float BodySize = 1f, ChemicalEffectFactor = 1f;
         public object DrawPos => null;
         public object Map => null;
@@ -33,6 +35,8 @@ namespace Verse
         public bool HasPnaComp;
         public bool HasRecoveryComp;
         public RimWorld.NeedDef chemicalNeed;
+        public T CompProps<T>() where T : HediffCompProperties
+            => HasRecoveryComp ? new HediffCompProperties_SeverityPerDay{severityPerDay=-.125f,showDaysToRecover=true} as T : null;
     }
     public class BodyPartRecord { }
     public struct DamageInfo
@@ -154,7 +158,13 @@ namespace Verse
     public class HediffComp_SeverityPerDay : HediffComp
     {
         public float severityPerDay;
-        public virtual float SeverityChangePerDay()=>severityPerDay;
+        [MethodImpl(MethodImplOptions.NoInlining)] public virtual float SeverityChangePerDay()=>severityPerDay;
+        // 隔离原版 200-tick 组件调度和显示边界；生产代码不再补丁恢复速率。
+        public override void CompPostTickInterval(ref float adjustment,int delta)
+        {
+            if(delta>0 && Pawn.IsHashIntervalTick(200,delta))adjustment+=SeverityChangePerDay()*(200f/60000f);
+        }
+        public override string CompTipStringExtra=>SeverityChangePerDay()<0f ? "DaysToRecover" : null;
         public override void CompExposeData()=>Scribe_Values.Look(ref severityPerDay,"severityPerDay",0f);
     }
     public static class HediffMaker
@@ -163,7 +173,7 @@ namespace Verse
         {
             var record = new HediffWithComps { def = def, pawn = pawn, RawSeverity = def.initialSeverity };
             if (def.HasPnaComp) record.comps.Add(new SexSlaveCraft.HediffComp_SSCPnaLoad { parent = record, props = new SexSlaveCraft.HediffCompProperties_SSCPnaLoad() });
-            if (def.HasRecoveryComp) record.comps.Add(new SexSlaveCraft.HediffComp_SSCPnaRecovery { parent = record, props = new SexSlaveCraft.HediffCompProperties_SSCPnaRecovery() });
+            if (def.HasRecoveryComp) record.comps.Add(new HediffComp_SeverityPerDay { parent = record, props = def.CompProps<HediffCompProperties_SeverityPerDay>(),severityPerDay=-.125f });
             return record;
         }
     }
@@ -242,13 +252,27 @@ namespace RimWorld
     public static class PawnUtility { public static bool ShouldSendNotificationAbout(Verse.Pawn pawn)=>pawn.NotifyPlayer; }
     public static class PawnCapacityDefOf { public static Verse.PawnCapacityDef Consciousness=new Verse.PawnCapacityDef(); }
     public class ChemicalDef { public Verse.HediffDef addictionHediff; }
-    public class CompProperties_Drug { public ChemicalDef chemical; }
+    public class CompProperties_Drug { public ChemicalDef chemical; public bool Addictive = true; public float existingAddictionSeverityOffset = .1f, needLevelOffset = 1f; }
     public class CompDrug
     {
         public CompProperties_Drug Props;
         public int OriginalCalls;
         public Verse.Thing parent = new Verse.Thing{def=new Verse.ThingDef()};
-        [MethodImpl(MethodImplOptions.NoInlining)] public void PrePostIngested(Verse.Pawn ingester) { OriginalCalls++; }
+        // 原版边界替身仅模拟已有成瘾的属性增加和需求修正；不实现随机成瘾或游戏宿主。
+        [MethodImpl(MethodImplOptions.NoInlining)] public void PrePostIngested(Verse.Pawn ingester)
+        {
+            OriginalCalls++;
+            if(!Props.Addictive || !ingester.RaceProps.IsFlesh)return;
+            var addiction=SexSlaveCraft.SSCPnaExposureUtility.GetAddiction(ingester);
+            if(addiction!=null)addiction.Severity+=Props.existingAddictionSeverityOffset;
+            var need=ingester.needs.TryGetNeed(Props.chemical.addictionHediff.chemicalNeed);
+            if(need!=null)
+            {
+                float effect=Props.needLevelOffset;
+                AddictionUtility.ModifyChemicalEffectForToleranceAndBodySize(ingester,Props.chemical,ref effect,false);
+                need.CurLevel=Math.Min(need.MaxLevel,need.CurLevel+effect);
+            }
+        }
     }
     public class MessageTypeDef { }
     public static class MessageTypeDefOf { public static MessageTypeDef RejectInput = new MessageTypeDef(), NeutralEvent = new MessageTypeDef(), NegativeHealthEvent = new MessageTypeDef(); }

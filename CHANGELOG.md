@@ -6,7 +6,9 @@ This continuation builds on upstream **2.2.8**, the baseline when upstream devel
 
 ## [未发布 / Unreleased]
 
-- **PNA 重置 P2 测试批 / PNA reset P2 test batch:** 有效输入达满建立单份依赖，沿用原版需求条；普通／浓缩每份 +20%／+70%，低阶枪原始基数 0.15，来源统一补充需求。依赖两档 ×1.25，低负荷且戒断时恢复，戒断心情 -18；已有恢复进度保留，PNA 状态只随身体，不增加自动补给限制。Adds deterministic full-load dependence, vanilla chemical needs, per-unit ingestion, weapon inputs and conditional recovery. In-game verification pending; see [P2 testing notes](Docs/Development/Verification/PNA机制重置P2实现与测试.md).
+- **PNA 原版成瘾恢复 / Vanilla PNA addiction recovery:** 按维护者反馈撤销专用恢复组件，使用原版恢复组件、计时、进度／天数显示及依赖移除，取消额外恢复门槛，并恢复再次服药加深已有成瘾的原版行为；移除普通档“依赖”标签与冗长恢复悬停。Restores vanilla addiction recovery components and displays, without additional recovery eligibility checks, including vanilla strengthening of existing addiction on ingestion. See [recovery adjustment](Docs/Development/Verification/PNA成瘾原版恢复调整.md).
+
+- **PNA 重置 P2 测试批 / PNA reset P2 test batch:** 有效输入达满建立单份依赖，沿用原版需求条；普通／浓缩每份 +20%／+70%，低阶枪原始基数 0.15，来源统一补充需求。依赖两档 ×1.25，恢复及再次服药加深成瘾沿用原版，戒断心情 -18；读档保留合法进度，PNA 状态只随身体，不增加自动补给限制。Adds deterministic full-load dependence, vanilla chemical needs, per-unit ingestion, weapon inputs and vanilla addiction recovery. In-game verification pending; see [P2 testing notes](Docs/Development/Verification/PNA机制重置P2实现与测试.md).
 
 - **普通 PNA 五档数值测试 / Ordinary PNA stage balance test:** 仅调整 XML 固定五档：催情因子 ×1.5／×2／×2.5／×3.25／×4，操控、移动及意识从微量开始逐档受抑；第三档起视听下降模拟幻视幻听，末期保留 10% 意识上限与高潮晕倒。该数值批撤回动态插值、缓存和补丁，未改 P1 代码／DLL；后续 P2 扩展另见上条。The XML-only balance batch retained P1 code and DLL; subsequent P2 work is listed above. In-game balance verification pending; see [testing notes](Docs/Development/Verification/普通PNA五档效果调整.md).
 
