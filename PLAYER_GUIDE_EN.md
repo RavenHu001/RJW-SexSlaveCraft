@@ -4,7 +4,7 @@
 
 > For **RimWorld 1.6 · SSC 2.4.0**. Use this reference for full conditions, formulas and values; first-time players should begin with the [quick start](QUICK_START_EN.md).
 >
-> For problems, start with [Troubleshooting](#24-troubleshooting) and [Current Limitations](#22-current-limitations-and-known-differences), then read the relevant system. Version changes are in the [2.4.0 notes](Docs/Releases/2.4.0/2.4.0发布说明.md#english).
+> For problems, start with [Troubleshooting](#24-troubleshooting) and [pending verification](Docs/Development/Verification/README.md), then read the relevant system. Version changes are in the [2.4.0 notes](Docs/Releases/2.4.0/2.4.0发布说明.md#english).
 >
 > This guide follows current C# and XML behavior; historical differences are identified in the relevant sections. The base audit began on 2026-06-30 and the guide is updated through 2.4.0 (2026-10-13). Earlier section version numbers identify introductions; see the [release index](Docs/Releases/README.md) for history.
 
@@ -15,7 +15,7 @@ SexSlaveCraft, abbreviated SSC below, is built around this progression loop:
 1. Set a humanlike pawn’s `Pawn Identity` to `Master` or `Sex Slave`.
 2. Use ordinary `Training` to raise Corruption, opinion, and body-part experience while reducing Will.
 3. Use the `Binding Ritual` to establish the master–slave bond, deepen the `Sex Slave Chain` health stage, and attempt slave conversion.
-4. Develop `Public Use`, `Cow`, or `Training Officer` specialization.
+4. Choose one of six specializations: `Public Use`, `Cow`, `Training Officer`, `Pet Cat`, `Pet Dog` or `Combatant`.
 5. Use `Personality Excretion` to store a personality in `Personality Gel`, implant it into a Hollow, or edit it into a final specialization.
 6. Use `Semi-gelatinization Surgery` and `Full Gelatinization Surgery` for high-risk body transformation.
 
@@ -24,7 +24,7 @@ Hard dependencies:
 - Harmony
 - RimJobWorld (RJW)
 
-The `Binding Ritual` uses RimWorld’s ideology ritual system, so normal use generally requires Ideology. Rimworld Animations, RJW Onahole, Human Cattle, Equal Milking, RJW-PE, Humanoid Alien Races, and Sized Apparel are soft integrations rather than hard dependencies.
+Binding Rituals and their stage-progression route require the Ideology ritual system. Royalty is optional; when installed, basic Training research requires a techprint supplied by a Seed of Desire or the separate vanilla Training techprint. Rimworld Animations, RJW Onahole, Human Cattle, Equal Milking, RJW-PE, Humanoid Alien Races, and Sized Apparel are soft integrations rather than hard dependencies.
 
 At startup, SSC injects its Training component, Training tab, and related surgeries into all Humanlike races. `Ninetailfox` and `Ninetailfoxwt` are also explicitly whitelisted.
 
@@ -32,8 +32,8 @@ At startup, SSC injects its Training component, Training tab, and related surger
 
 ### 2.1 Minimum Playable Route
 
-1. Research `Training` for 500 research points.
-2. Set at least one free colonist to Master and enable `Training` work. A Sex Slave can later qualify through Training Officer specialization.
+1. Research `Training` for 500 research points. With Royalty, supply any missing techprint first; direct Master selection does not bypass this research requirement.
+2. Set at least one free colonist to Master and enable `Training` work. If direct Master selection is disabled, acquire permanent qualification first. A Sex Slave can later qualify through Training Officer specialization.
 3. Select a target and open the `Training` tab.
 4. Set `Pawn Identity` to `Sex Slave` and enable `Allow Training`.
 5. Choose an `Assigned Pose`; set an `Assigned Trainer` if a specific pawn must perform it.
@@ -43,6 +43,9 @@ At startup, SSC injects its Training component, Training tab, and related surger
 
 ### 2.2 Mid- and Late-game Routes
 
+- Master route: acquire qualification when required → select Master → personally complete Training and Rituals → view Symbiosis of Desire growth and damage sharing in the Master panel.
+- Pet route: complete Cat/Dog research → ordinary training → gel processing and implantation → Soothing Resonance or Directed Taming.
+- Combatant route: ordinary Training and direct kills → gel finalization → Combat Overdrive.
 - General route: `Training` → `Body-part Training` → `Personality Excretion` → semi/full gelatinization.
 - Social and trade route: `Personality Editing` → `Public Use` → `Public Use Specialization` → extract at 100% → edit into `Final Public Use Specialization` gel → implant.
 - Milk route: raise Breasts to 70% → gain `Permanent Lactation Phase` → research `Milking Specialization` → `Cow Specialization` → edit into `Final Cow Specialization` gel.
@@ -72,7 +75,18 @@ Candidate hints, selection, startup, ongoing execution and outcomes recheck rece
 
 On upgrade, the old Sex Slave trainer toggle is turned off once, including for previously assigned trainers. Assignment records remain but are inactive until the pawn qualifies and the player turns the toggle on again. Unset trainers are not promoted to Master. Later loads preserve the new choice.
 
-**Trainer Officer feedback in 2.3.9.** An active Officer completing daily Training or a whole Ritual gains +3 mood for one day. Different receivers share one memory, and further completions refresh it without stacking. Ordinary Officers at 100% and active final Officers training another specialization still qualify independently of experience gains. Cancellation, failure, individual ritual stages, self-training and receiving Training grant no duty memory. An existing memory expires naturally after appointment is disabled or qualification is lost. The actual SSC Master has a conditional +5 opinion of their bound, actively appointed Officer, and that same condition gives the Officer +5 reverse opinion and a +3 steady mood toward that Master. All of these are conditional thoughts rather than memories: no duration, no capacity, nothing written into memory lists or personality gel, and disabling appointment, switching direction, regressing a Chain, unbinding or suspending the final effect removes them immediately and restores them without accumulation. Temporary downing, work suspension or travel does not remove them. Social display follows the vanilla query cache of about 100 ticks. This feature adds no extra receiver opinion. Receiver memories granted through an Officer use a separate weakened set (K=0.5, mood -5/+1/+4/+8) that never overwrites the owner's set.
+**Training Officer duty and trust (introduced in 2.3.9, retained in 2.4.0).**
+
+| Effect | Recipient and value | Type and expiry |
+| --- | --- | --- |
+| Completed duty | Active Officer: +3 mood for one day | Timed memory; shared across receivers, refreshed by later completions, and expires naturally after appointment or eligibility ends |
+| Master's appraisal | Actual Master's opinion of their bound, active Officer: +5 | Conditional social thought; disappears when the bond or appointment conditions fail |
+| Reverse trust | Officer's opinion of the actual Master: +5 | Conditional social thought; disappears when the bond or appointment conditions fail |
+| Steady trust mood | Officer: +3 mood | Conditional mood thought; disappears when the bond or appointment conditions fail |
+
+Duty memory requires successful daily Training or a whole Binding Ritual. Ordinary completion and an active final Officer training another direction still qualify when experience gained is zero. Cancellation, failure, individual ritual stages, self-training and receiving Training grant no duty memory.
+
+The last three effects are **conditional thoughts, not memories**: they have no memory duration, capacity or accumulating instances and are not stored in personality gel. Disabling appointment, losing continuing eligibility or unbinding removes them; restoring conditions restores them. Temporary work suspension, downing or travel does not remove them. Social display follows the vanilla query cache of about 100 ticks. Daily receiver memories use a separate weakened set; see section 5.5. Implementation and acceptance records: [duty feedback](Docs/Development/Completed/训导官职责反馈实现与测试记录.md) and [reverse trust](Docs/Development/Completed/训导官任职信任实现与测试记录.md).
 
 ### 3.1.1 Permanent Master qualification (2.4.0)
 
@@ -100,11 +114,20 @@ The pawn's identity section always shows `Master qualification: acquired / not a
 
 ### 3.1.2 Master progression and practice (2.4.0)
 
-Becoming a Master creates a four-stage progression record. Personally completing daily training grants **1 experience**; a complete binding ritual grants **3**. Interruptions grant none, and Trainer Officer work gives no proxy experience to its owner. Fully trained targets still provide practice. View experience in the Master panel; the health tooltip shows descriptions and bonuses. Provisional thresholds are 0/12/40/100. Growth transfers with personality gel. Leaving the Master role preserves experience and suspends bonuses while hiding the entry from the normal health tab. Returning to the role displays the original stage.
+Becoming a Master creates a four-stage progression record. Personally completing daily training grants **1 experience**; a complete binding ritual grants **3**. Interruptions grant none, and Trainer Officer work gives no proxy experience to its owner. Fully trained targets still provide practice. View experience in the Master panel; the health tooltip shows descriptions and bonuses. The 2.4.0 thresholds are 0/12/40/100 total experience. Growth transfers with personality gel. Leaving the Master role preserves experience and suspends bonuses while hiding the entry from the normal health tab. Returning to the role displays the original stage.
 
 The health entry is named “Symbiosis of Desire”, with Budding, Awakening, Command and Ascendance stages. Hover for the stage text and bonuses. The Master panel names the next stage. Crossing a threshold through practice or debug experience produces a message targeting the Master; loading, personality insertion and returning to the Master role do not report level-ups.
 
 Bonuses apply only while the current SSC identity is Master. The five bonuses are Consciousness, Sight, Hearing, Social Impact and Injury Healing. At the highest stage they are +40/+30/+30 percentage points, ×1.20 and ×1.50. Injury Healing accelerates both natural and tended healing; progression no longer directly adds Manipulation or stacks a natural-healing factor. Seed use does not create or reset progression. Clones inherit neither the Master role nor growth; gel implantation replaces the host record exactly.
+
+| Symbiosis of Desire stage | Total XP | Consciousness | Sight | Hearing | Social Impact | Injury Healing |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Budding | 0 | +10 pp | +5 pp | +5 pp | ×1.05 | ×1.10 |
+| Awakening | 12 | +20 pp | +10 pp | +10 pp | ×1.10 | ×1.20 |
+| Command | 40 | +30 pp | +20 pp | +20 pp | ×1.15 | ×1.35 |
+| Ascendance | 100 | +40 pp | +30 pp | +30 pp | ×1.20 | ×1.50 |
+
+These are each stage's total 2.4.0 bonuses, not additions stacked on earlier stages. Thresholds and values come from `SSC_Hediff_MasterProgression`. Capacity offsets use percentage points (pp); stat factors are multipliers. Resonance and other sources still contribute separately to the final pawn attributes.
 
 Rewards are claimed once per completed session; previously settled jobs receive no historical experience. The current cap is 100. An authorized different Master earns its own practice, while a Trainer Officer in the ritual host role grants no proxy experience. The +10 debug command requires developer mode and SSC debug Gizmos and never creates a missing growth record. See the [batch 2 test guide (Chinese)](Docs/Development/Completed/主人阶段第二批测试说明.md).
 
@@ -118,7 +141,7 @@ Enabling it immediately runs an RJW receiver-eligibility check. A failed check d
 
 ### 3.3 Behavior Restrictions
 
-Six individual permissions replace Allow Others; see section 18.6. Public Use affects two reception defaults/overrides. An effective Training Officer forces permission for initiating consensual or forced sex as soon as the direction is selected; the 20% threshold governs trainer duty only. An active final record continues to apply after switching directions, while an invalid record is suspended. Global controls and source priority still apply. Specialization changes do not rewrite saved personal choices.
+Seven individual permissions replace Allow Others: the original six behavior rules plus independent self-training permission, introduced in 2.3.5 and retained in 2.4.0; see section 18.6. Public Use affects two reception defaults/overrides. An effective Training Officer forces permission for initiating consensual or forced sex as soon as the direction is selected; the 20% threshold governs trainer duty only. An active final record continues to apply after switching directions, while an invalid record is suspended. Global controls and source priority still apply. Specialization changes do not rewrite saved personal choices.
 
 ### 3.4 Assigned Pose
 
@@ -1212,7 +1235,7 @@ Under the old score system only, the four field tiers multiply Training Corrupti
 
 ### 18.2 Damage Sharing
 
-`Sex Slave Bridle` gives the master a toggle, enabled by default:
+Configure the toggle in the Master growth panel on the Training tab. It remains stored in `Sex Slave Bridle` and defaults to enabled. Without a bridle it is disabled; a temporary lack of eligible recipients does not prevent saving the preference. The old standalone Gizmo is removed:
 
 - the master keeps 30% of incoming damage;
 - 70% is distributed among valid bonded Sex Slaves;
@@ -1290,13 +1313,14 @@ With restrictions enabled, only pawns with an actual owner bond are affected. Id
 | Individual rule | Factory default for new pawns |
 | --- | --- |
 | Solo masturbation | Deny |
+| Self-training | Allow; SSC Sex Slave identity and a Chain are still required |
 | Consensual initiation | Enabled, owner only |
 | Forced initiation | Deny |
 | Consensual reception from non-owners | Deny |
 | Forced reception from non-owners | Deny |
 | Training from non-owners | Deny |
 
-Ordinary pair jobs check both initiation and reception; Training and rituals use the separate Training rule. Equipment overrides take priority over enabled specialization overrides, then saved choices. Public Use defaults and forces its two reception permissions, without opening initiation or Training. Protective apparel denies forced reception from non-owners. Overrides never overwrite saved choices.
+Self-training and ordinary solo activity use separate permissions; new pawns and saves without the self-training field default to allowing it. Ordinary pair jobs check both initiation and reception; Training and rituals use the separate Training rule. Equipment overrides take priority over enabled specialization overrides, then saved choices. Public Use defaults and forces its two reception permissions, without opening initiation or Training. Protective apparel denies forced reception from non-owners. Overrides never overwrite saved choices.
 
 The Training ITab expands a right-side rule panel. Its entry is disabled when inactive; forced entries display effective values and are locked. Defaults have their own mod-settings window; editing them leaves existing pawns intact, while batch application requires confirmation.
 
@@ -1368,6 +1392,7 @@ The operation currently does not reference `Sex Reassignment Surgery (Male to Fe
 
 | Setting | Default | Effect |
 |---|---:|---|
+| Allow direct Master selection | On | Bypass personal qualification for new Master choices; grants no permanent qualification and does not bypass research |
 | Enable behavior restrictions | On | Controls unified restrictions and overrides; off retains configurations |
 | Enable specialization overrides | On | Controls profile overrides only; equipment remains active |
 | Default behavior rules | See section 18.6 | Used for initialization; explicit batch overwrite requires confirmation |
@@ -1381,6 +1406,7 @@ The operation currently does not reference `Sex Reassignment Surgery (Male to Fe
 | Enable Corruption decay | On | Off stops natural loss; apparel floors and Chain caps remain active |
 | Base Corruption decay per day | 2% | Adjustable from 0% to 20% per day in 0.5% steps |
 | Use old scoring | Off | Switches to old score, memories, and no natural Corruption decay |
+| Spawn Seed of Desire / trigger claim quest | Action buttons | In the settings debug area; create an item or a free quest, without directly granting personal qualification |
 
 ### 20.1 Old Score System
 
@@ -1508,10 +1534,10 @@ This section records the audited code behavior and known limitations.
 3. **Erotic Word has no normal acquisition path.** The ability and grant component exist, but the Mouth Hediff XML does not attach the component.
 4. **Several research nodes are technology-tree placeholders.** `Basic PNA Application`, `Basic PNA Launcher`, and `Femboy Conversion` do not unlock a complete matching system. Version 2.3.7 implements ordinary Cat/Dog training, pet exclusivity, gel finalization, final active abilities and visible affection; the adult consensual follow-up is implemented and awaits in-game acceptance. Rabbit selection remains disabled. `Combatant` supports ordinary training, experience, gel finalization, and the final Combat Overdrive ability. `Personality Editing` acts as the parent node for specialization research.
 5. **Basic PNA Launcher checks vanilla Machining only.** Its recipe does not reference SSC’s launcher research.
-6. **Sex Reassignment Surgery is not research-locked.** Its operation exists without a `researchPrerequisite`. Its companion ThoughtDef XML also contains a duplicate `defName`, which may cause a load issue for the success memory.
+6. **Sex Reassignment Surgery is not research-locked.** Its operation exists without a `researchPrerequisite`. The duplicate definition for its surgery memory was fixed in 2.2.13; the current independent memory definition is not a remaining duplicate-load issue.
 7. **Personality trait transfer and the gel UI have been fixed.** The maintainer has confirmed this round of fixes is effective. Ordinary personality traits are now restored from the gel snapshot while preserving the receiving body's genes and their traits. Legacy entries are restored as personality traits because their source was not recorded; new gels save only traits without a gene source. The Sex Slave trait is still rebuilt separately from restored highest-ever Corruption. See the [fix record (Chinese)](Docs/Development/Completed/人格普通特质迁移修复.md) for details.
 8. **Public Use progress now uses the saved component.** Version 2.3.6 routes daily base Training progress through the shared component entry; trade rewards also update component progress and synchronize the ordinary Hediff. Final recipes continue to check saved progress.
-9. **Switching directly between Public Use and Cow preserves progress and the other family’s Hediff.** Only selecting no specialization resets progress. This permits coexistence and may also carry progress across types.
+9. **Ordinary specialization progress is saved separately for each direction.** Switching directions or selecting None pauses the previous path and removes inactive ordinary states. Returning restores that direction's own progress rather than carrying another path's progress across. Final achievements remain subject to their own continuing eligibility rules.
 10. **Final Cow does not cause full gelatinization.** Old notes mention this linkage, but current Defs and C# do not add the completed state.
 11. **Apparel decay multipliers run in the opposite direction from their descriptions.** Values 1.1 and 1.5 are multiplied into decay and therefore accelerate it. Their 30%/100% floors activate only after that pawn has historically reached the matching value.
 12. **The RJW-original age/eligibility setting is wired in reverse.** On uses `LegacyCanBeFucked` and additionally requires RJW `rape_enabled`; off directly calls `xxx.can_be_fucked`. Toggle it when an apparently valid target cannot be trained.
@@ -1530,7 +1556,7 @@ Ordinary affection automatically discovers the actual bound master within about 
 
 | Research | Cost | Prerequisite | Current gameplay function |
 |---|---:|---|---|
-| Training | 500 | None | Training tab features and WorkGiver |
+| Training | 500 | No research prerequisite; requires a techprint with Royalty | Training tab features and WorkGiver |
 | Body-part Training | 800 | Training | Six body-part experience tracks |
 | Basic PNA Application | 800 | Training | No direct current reference |
 | Sex Reassignment Surgery (Male to Female) | 1,000 | Basic PNA Application | Node does not actually lock the operation |
@@ -1538,7 +1564,7 @@ Ordinary affection automatically discovers the actual bound master within about 
 | Basic PNA Launcher | 1,000 | Basic PNA Application, Precision Rifling | Launcher recipe does not reference it |
 | PNA Concentration Technology | 1,200 | Basic PNA Application | Converts normal PNA to PNA Plus |
 | Personality Excretion | 1,500 | PNA Concentration Technology | Preparation operation and gel extraction |
-| Personality Editing | 1,500 | Body-part Training, Personality Excretion | Parent node for Public Use and Cow |
+| Personality Editing | 1,500 | Body-part Training, Personality Excretion | Parent node for specialization research |
 | Milking Specialization | 1,200 | Personality Editing | Cow Specialization and Final Cow recipe |
 | Public Use | 1,200 | Personality Editing | Public Use Specialization and final recipe |
 | Pet: Cat | 1,200 | Personality Editing | Ordinary training, shared experience, affection progress, gel finalization and Soothing Resonance; completion tooltip |
@@ -1549,6 +1575,22 @@ Ordinary affection automatically discovers the actual bound master within about 
 | Full-body Gelatinization | 3,000 | Partial Gelatinization | Full Gelatinization Surgery |
 
 ## 24. Troubleshooting
+
+### How do qualification, Master identity and growth differ after upgrading to 2.4.0?
+
+They are separate records: qualification is permanent personal eligibility, identity says whether the pawn is currently a Master, and Symbiosis of Desire stores total experience. Default direct selection can bypass qualification but does not grant it. Seeds do not change identity or reset growth. Eligible legacy Masters and legacy Master gels receive one-time qualification and zero-experience baseline growth migrations, without retrospective credit for old Training. Later loads do not continually infer these records.
+
+### Why is there no seed quest, or why did a seed not complete research?
+
+The initial automatic quest requires unfinished Training research, no valid current player SSC Master, and no previous successful initial-quest creation in the save. The manual quest button bypasses these conditions but cannot duplicate an unfinished claim quest. With Royalty, a seed supplies missing techprints without research progress or Intellectual experience; without Royalty it still grants personal qualification. Natural reward frequency and balance remain listed under [pending verification](Docs/Development/Verification/README.md).
+
+### Why did the growth health entry disappear, and where is damage sharing?
+
+Leaving Master identity or becoming a Hollow hides Symbiosis of Desire from the normal health tab and suspends its bonuses while retaining experience. Returning restores the saved stage. Experience and damage sharing are in the Master's Training tab; the old Gizmo is removed. A bridle is required to use the toggle, but a temporary lack of recipients does not prevent saving the preference.
+
+### Does Personality Gel merge Master qualification and experience from both bodies?
+
+No. Gel copying and processing preserve the source records; implantation replaces the host's qualification and growth exactly, rather than taking the higher values. A source without records also clears the host's old records. New clones inherit neither Master identity, qualification nor growth. See [qualification](#311-permanent-master-qualification-240) and [progression](#312-master-progression-and-practice-240).
 
 ### No Training option appears
 

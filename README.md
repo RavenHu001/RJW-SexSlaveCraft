@@ -22,11 +22,12 @@ SSC 提供角色培养、主从绑定、特化发展、人格转移和身体改�
 | 游戏版本 | RimWorld 1.6 |
 | 必需模组 | Harmony、RimJobWorld（RJW），均加载在 SSC 之前 |
 | 契约仪式与阶段进阶 | 需要 Ideology（文化）DLC 的仪式系统 |
+| Royalty（皇权，可选） | 安装时调教研究需要蓝图；种子或原版独立蓝图可补齐，之后仍需研究 |
 
 1. 从 [v2.4.0 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.0) 下载安装 ZIP 和 SHA-256 校验文件。
 2. 退出游戏，将 ZIP 内的模组文件夹解压到 `RimWorld/Mods/`。
 3. 更新时先将旧模组文件夹移出 `Mods`，再放入新版本，避免残留文件。
-4. 启用依赖与本模组，按上表加载，再阅读[中文快速入门](读我，玩法介绍.md)或 [English quick start](QUICK_START_EN.md)。
+4. 启用依赖与本模组，按上表加载。2.4.0 的个人资格、当前主人身份和研究分别管理，再阅读[中文快速入门](读我，玩法介绍.md)或 [English quick start](QUICK_START_EN.md)。
 
 安装包包含已编译 DLL。宠物兔选择入口尚未开放，旧 RimTalk 对接暂停；其他限制与兼容说明见玩家指南。
 

@@ -15,8 +15,8 @@ SexSlaveCraft (SSC) is built around this progression:
 1. Designate Masters and sex slaves.
 2. Use ordinary Training to raise Corruption and develop body parts.
 3. Perform the Binding Ritual to establish a bond and advance the `Sex Slave Chain` health stage.
-4. Develop a specialization such as Public Use, Cow, Training Officer or Combatant.
-5. extract a pawn's personality into Personality Gel, edit it, or implant it into a Hollow.
+4. Choose one of six specializations: Public Use, Cow, Training Officer, Pet Cat, Pet Dog or Combatant.
+5. Extract a pawn's personality into Personality Gel, edit it, or implant it into a Hollow.
 6. Attempt Semi-gelatinization or Full Gelatinization.
 
 Required mods:
@@ -24,7 +24,7 @@ Required mods:
 - Harmony
 - RimJobWorld (RJW)
 
-The Binding Ritual also requires the ideology ritual system to be available.
+Binding Rituals and their stage-progression route require Ideology. Royalty is optional; when installed, basic Training research requires a techprint supplied by a Seed of Desire or the separate vanilla Training techprint.
 
 ## 2. Getting Started
 
@@ -32,7 +32,7 @@ The Binding Ritual also requires the ideology ritual system to be available.
 
 This section covers the Seed of Desire, personal qualification and Master progression released in 2.4.0.
 
-On the first eligible load, if `Training` is unfinished and the player has no living, non-Hollow SSC Master, a free quest offers **1 Seed of Desire**. Accept it for delivery by drop pod to a home map. Reloading does not repeatedly grant the automatic quest. Later seeds come from quest and ancient ruin rewards; caravans, settlements and orbital traders do not stock seeds for purchase.
+On an eligible load, if the save has never successfully created its initial quest, `Training` is unfinished and the player has no living, non-Hollow SSC Master, a free quest offers **1 Seed of Desire**. Accept it for delivery by drop pod to a home map. Reloading does not repeatedly grant the automatic quest. Later seeds come from quest and ancient ruin rewards; caravans, settlements and orbital traders do not stock seeds for purchase.
 
 Have a pawn who is not an SSC Sex Slave and has not acquired permanent qualification use the seed. Success consumes one and permanently unlocks Master selection for that personality; **it does not change the current identity**. With Royalty, it also supplies missing techprints for `Training`, which still requires normal research. Without Royalty it grants personal qualification only. The separate vanilla research techprint remains usable, but does not grant personal Master qualification.
 
@@ -40,7 +40,9 @@ Direct Master selection is enabled by default. It permits selection without perm
 
 Settings offer two testing/recovery buttons: spawn one seed, or trigger the initial free quest. Spawning places an item directly; the quest button creates a claim quest and cannot duplicate another unfinished claim quest.
 
-Becoming a Master creates a four-stage progression record. Personally completing daily training grants **1 experience**; a complete binding ritual grants **3**. Interruptions grant none, and Trainer Officer work gives no proxy experience to its owner. Fully trained targets still provide practice. View experience in the Master panel; the health tooltip shows descriptions and bonuses. Provisional thresholds are 0/12/40/100. Growth transfers with personality gel. Leaving the Master role preserves experience and suspends bonuses while hiding the entry from the normal health tab. Returning to the role displays the original stage.
+### Master growth and panel (2.4.0)
+
+Becoming a Master creates a four-stage progression record. Personally completing daily training grants **1 experience**; a complete binding ritual grants **3**. Interruptions grant none, and Trainer Officer work gives no proxy experience to its owner. Fully trained targets still provide practice. View experience in the Master panel; the health tooltip shows descriptions and bonuses. The 2.4.0 thresholds are 0/12/40/100 total experience. Growth transfers with personality gel. Leaving the Master role preserves experience and suspends bonuses while hiding the entry from the normal health tab. Returning to the role displays the original stage.
 
 The health entry is named “Symbiosis of Desire”, with Budding, Awakening, Command and Ascendance stages. Hover for the stage text and bonuses. The Master panel names the next stage. Crossing a threshold through practice or debug experience produces a message targeting the Master; loading, personality insertion and returning to the Master role do not report level-ups.
 
@@ -50,13 +52,17 @@ The Master training tab shows stage, total experience and progress toward the ne
 
 ### Step 1: Research Training
 
-`Training` is the entry point for the mod. Complete it before trying to configure pawns.
+`Training` is the entry point for the mod. Complete it before trying to configure pawns. With Royalty, supply any missing techprint using a Seed of Desire or the vanilla Training techprint first. Direct Master selection bypasses personal qualification, not research or techprint requirements.
 
 ### Step 2: Assign a Trainer
 
 Give at least one free colonist the `Master` identity and enable `Training` work. Masters always qualify as trainers. A Sex Slave can turn on `Is a trainer` after researching Training Officer Specialization, becoming a free colonist with a valid Master bond and Chain stage 3 or higher, selecting Training Officer, and reaching 20% progress. An active Final Training Officer also qualifies after switching specialization. Unset pawns never qualify.
 
-2.3.9 adds Trainer Officer feedback. Completing daily Training or a whole Ritual grants an active Officer +3 mood for one day; further completions refresh one memory. Their actual Master has +5 opinion of them while they remain bound and actively appointed, and the Officer holds +5 reverse opinion plus a +3 steady mood toward that Master. Ordinary completion and active final Officers training another direction also qualify. All of these are conditional thoughts rather than memories, and receiver memories granted through an Officer use a separate weakened set (K=0.5).
+Training Officer feedback has three parts (introduced in 2.3.9 and retained in 2.4.0):
+
+- **Duty memory:** an active Officer completing daily Training or a whole Ritual gains +3 mood for one day. Further completions refresh one memory. Disabling appointment or losing eligibility does not immediately remove an earned memory; it expires naturally.
+- **Appointment and trust:** the actual Master has +5 opinion of their bound, active Officer, while the Officer has +5 opinion and +3 steady mood toward that Master. These three effects are conditional thoughts, not memories. They disappear when conditions fail, return without accumulating, and are not stored in personality gel. Temporary work suspension, downing or travel does not cancel appointment.
+- **Receiver feedback:** Training performed by an active Officer grants a separate weakened memory set (K=0.5); the Master's original set remains unchanged.
 
 A good trainer generally has:
 
@@ -379,7 +385,7 @@ Successful implantation:
 
 - consumes the gel;
 - restores the stored identity data;
-- restores Corruption, bond, skills, memories, and specialization;
+- restores Corruption, bond, skills, memories, specialization, and any Master qualification/growth stored with the personality;
 - applies `Personality Implantation Adaptation Syndrome` for about one day.
 
 Implantation replaces ordinary personality traits with the gel's snapshot, including when returning to the original body. The receiving body's genes and their traits remain intact; the Sex Slave trait is rebuilt separately from highest-ever Corruption. New gels exclude gene-granted traits, while older gels restore saved entries without knowing their original sources. A missing trait snapshot rejects implantation and preserves the gel. See the full guide for details.
@@ -430,6 +436,8 @@ If Severity wins, the pawn is erased completely and leaves no recoverable corpse
 
 ## 15. Benefits for the Master
 
+Masters have [four-stage Symbiosis of Desire growth](#master-growth-and-panel-240), bond-based Libidinal Resonance Field bonuses, and configurable damage sharing. These provide personal progression, bond benefits and damage redistribution respectively.
+
 ### Libidinal Resonance Field
 
 The field becomes stronger as the Master binds more sex slaves and their average Corruption rises.
@@ -445,7 +453,7 @@ It improves:
 
 ### Damage Sharing
 
-`Sex Slave Bridle` provides a `Damage Sharing` toggle.
+Configure `Damage Sharing` in the Master growth panel on the Training tab. Its preference remains stored in `Sex Slave Bridle` and defaults to enabled; the old standalone Gizmo is removed.
 
 When enabled, eligible bound sex slaves on the same map absorb most incoming damage for the Master. Higher-Corruption slaves carry more weight.
 
@@ -461,7 +469,7 @@ A pawn with Sex Slave Chain:
 - permanently loses vanilla disabled-work and slave work-speed penalties once historical maximum Corruption exceeds zero;
 - gains increasingly positive rape memories at high Corruption.
 
-Bound pawns use six individual initiation, reception and Training permissions. Default consensual initiation is owner-only; Public Use opens only its two reception rules. Actual owner initiation is immediately allowed by the unified policy. See the [2.3.1 notes](Docs/Releases/2.3.1/2.3.1发布说明.md).
+There are seven individual permissions: the original six initiation, reception and Training rules, plus separate self-training permission. Default consensual initiation is owner-only; Public Use opens only its two reception rules. Actual owner initiation is immediately allowed by the unified policy. See the [2.3.1 notes](Docs/Releases/2.3.1/2.3.1发布说明.md).
 
 At more than 0.1% Corruption, an SSC Sex Slave may share an ordinary multi-person bed with the bonded Master and active Assigned Trainer. For a vanilla slave, assign the Master or trainer first, then the slave. Vanilla lovers/spouses remain unaffected; medical rest and deathrest take priority.
 
@@ -493,6 +501,7 @@ The current decay-multiplier direction does not match the item descriptions. Min
 
 For a first game, keep defaults and review:
 
+- `Allow direct Master selection` (on by default; disable it to require personal qualification for new choices);
 - `Enable behavior restrictions`;
 - `Enable specialization overrides`;
 - Default behavior rules (separate window; batch overwrite requires confirmation);
@@ -527,7 +536,6 @@ The following entries exist as research, defs, or placeholder code but do not cu
 
 - Fine Training and sensitivity discovery;
 - Pet Rabbit selection, clone and reproduction gameplay (selection remains disabled);
-- Combat Unit;
 - Femboy Conversion;
 - high-tier PNA weapon;
 - automatic granting of `Erotic Word`;
@@ -538,11 +546,24 @@ Also note:
 - `Basic PNA Launcher` research does not currently gate the weapon;
 - Sex Reassignment Surgery is not gated by its SSC research;
 - Final Cow Specialization does not automatically grant Full Gelatinization Complete;
-- trade-based Public Use growth and tab specialization progress can become desynchronized.
+- Public Use trade and daily Training rewards now share saved specialization progress;
+- Desire Infestation, the PNA redesign, new Master active abilities and multi-trainer restructuring remain planned.
 
 -->
 
 ## 21. Quick Troubleshooting
+
+### Why did no Seed of Desire quest appear?
+
+The automatic quest is created on an eligible load only when Training is unfinished, no living non-Hollow player SSC Master exists, and the save has never successfully created its initial quest. An older save with a Master or completed research may therefore receive no automatic quest. Later quest/ruin rewards and the settings recovery buttons remain available; another unfinished claim quest prevents duplication.
+
+### Why can an unqualified pawn still select Master?
+
+`Allow direct Master selection` is on by default. It permits the current identity choice without granting permanent qualification or research techprints. A Seed of Desire grants personal qualification. Disabling direct selection restricts new choices and preserves existing identities.
+
+### Where are Master growth and damage sharing?
+
+Select a Master and open the Training tab; see [Master growth and panel](#master-growth-and-panel-240). Experience is shown in the panel, while the health tab shows Symbiosis of Desire stages and bonuses. Damage sharing is configured in the same panel. It is disabled without a bridle; a temporary lack of eligible recipients does not prevent saving the preference.
 
 ### No Training option
 

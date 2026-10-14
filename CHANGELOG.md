@@ -6,6 +6,8 @@ This continuation builds on upstream **2.2.8**, the baseline when upstream devel
 
 ## [未发布 / Unreleased]
 
+- **2.4.0 文档核对 / Documentation alignment:** 同步中英文指南中的主人资格、四阶段数值、七项许可、人格迁移、设置与伤害分担入口；修正训导官职责记忆和条件性反馈混写，以及隐藏审计中的已修复状态。新增开局／升级常见问题并更新玩家导航和发布维护说明。本条为发布后的文档维护，不增加 2.4.0 玩法，也不改写已发布附件。Aligns both languages with 2.4.0 qualification, stage values, seven permissions, personality transfer, settings and damage-sharing controls; corrects duty-memory versus conditional-feedback wording and obsolete hidden audit entries. Adds onboarding/upgrade FAQ and updates player navigation and maintenance instructions. This is post-release documentation maintenance, not new gameplay or a replacement release package.
+
 ## [2.4.0] — 2026-10-13 — 欲望之种与主人成长 / Seed of Desire and Master progression
 
 本版归并正式 2.3.9 之后已实现的主人资格入口、欲望之种、初次获取任务、人格流转、主人成长和专属面板。安装 ZIP 与 SHA-256 校验文件见 [v2.4.0 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.0)，玩家内容见[中英发布说明](Docs/Releases/2.4.0/2.4.0发布说明.md)，当次构建、自动检查与实机验收范围见[版本验证](Docs/Releases/2.4.0/2.4.0版本验证.md)。
