@@ -1,13 +1,12 @@
 # RJW-SexSlaveCraft Complete Player Guide
 
-> For RimWorld 1.6 and SexSlaveCraft 2.4.0, based on the current repository code and Defs.\
-> Base audit: 2026-06-30; self-training and handoff fixes updated for 2.3.5, shared progress for 2.3.6 on 2026-10-02, Cat/Dog features for 2.3.7 on 2026-10-06, ritual quality/selection hints for 2.3.8 on 2026-10-08, unified receiver identity plus Trainer Officer feedback for 2.3.9 on 2026-10-10, and Master qualification/progression for 2.4.0 on 2026-10-13.\
-> Based on upstream 2.2.8; version 2.2.9 includes the specialization and ritual progression fixes, and 2.2.10 fixes stale training locks after interrupted rituals. See `CHANGELOG.md`.\
-> This version retains the 2.3.8 Binding Ritual spectator fixes and selection hints, 2.3.7 Cat/Dog specializations, 2.3.6 shared daily Training/full Binding Ritual specialization progress and 2.3.5 self-training/handoff fixes. Download the installation ZIP and SHA-256 checksum from [v2.4.0 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.0). Legacy RimTalk remains suspended.\
-> Version 2.4.0 content (2026-10-13): Seed of Desire and personal Master qualification, a first free quest, personality transfer, four-stage Symbiosis of Desire with five bonuses, and the Master panel with damage sharing. Direct Master selection remains enabled by default. Qualification and growth follow the personality and are not inherited by clones. Rabbit selection remains disabled.\
-> This guide describes the behavior implemented by the current C# and XML. Where an old changelog or description disagrees with the code, the discrepancy is listed under “Current Limitations and Known Differences.”
+[Project home](README.md) · [Player reading order](Docs/Players/README.md#english-reading-order) · [Quick start](QUICK_START_EN.md) · [中文机制详解](机制详解.md)
 
-> See the [2.4.0 notes](Docs/Releases/2.4.0/2.4.0发布说明.md) for this version and the [2.3.9](Docs/Releases/2.3.9/2.3.9发布说明.md), [2.3.8](Docs/Releases/2.3.8/2.3.8发布说明.md), [2.3.7](Docs/Releases/2.3.7/2.3.7发布说明.md), [2.3.6](Docs/Releases/2.3.6/2.3.6发布说明.md) and [2.3.5](Docs/Releases/2.3.5/2.3.5发布说明.md) notes for retained features.
+> For **RimWorld 1.6 · SSC 2.4.0**. Use this reference for full conditions, formulas and values; first-time players should begin with the [quick start](QUICK_START_EN.md).
+>
+> For problems, start with [Troubleshooting](#24-troubleshooting) and [Current Limitations](#22-current-limitations-and-known-differences), then read the relevant system. Version changes are in the [2.4.0 notes](Docs/Releases/2.4.0/2.4.0发布说明.md#english).
+>
+> This guide follows current C# and XML behavior; historical differences are identified in the relevant sections. The base audit began on 2026-06-30 and the guide is updated through 2.4.0 (2026-10-13). Earlier section version numbers identify introductions; see the [release index](Docs/Releases/README.md) for history.
 
 ## 1. Scope and Dependencies
 
@@ -107,9 +106,9 @@ The health entry is named “Symbiosis of Desire”, with Budding, Awakening, Co
 
 Bonuses apply only while the current SSC identity is Master. The five bonuses are Consciousness, Sight, Hearing, Social Impact and Injury Healing. At the highest stage they are +40/+30/+30 percentage points, ×1.20 and ×1.50. Injury Healing accelerates both natural and tended healing; progression no longer directly adds Manipulation or stacks a natural-healing factor. Seed use does not create or reset progression. Clones inherit neither the Master role nor growth; gel implantation replaces the host record exactly.
 
-Rewards are claimed once per completed session; previously settled jobs receive no historical experience. The current cap is 100. An authorized different Master earns its own practice, while a Trainer Officer in the ritual host role grants no proxy experience. The +10 debug command requires developer mode and SSC debug Gizmos and never creates a missing growth record. See the [batch 2 test guide (Chinese)](Docs/Development/主人阶段第二批测试说明.md).
+Rewards are claimed once per completed session; previously settled jobs receive no historical experience. The current cap is 100. An authorized different Master earns its own practice, while a Trainer Officer in the ritual host role grants no proxy experience. The +10 debug command requires developer mode and SSC debug Gizmos and never creates a missing growth record. See the [batch 2 test guide (Chinese)](Docs/Development/Completed/主人阶段第二批测试说明.md).
 
-The Master training tab shows stage, total experience and progress toward the next stage. Hover over the bonus summary for values. Damage sharing is configured here and remains saved in the bridle: without a bridle the toggle is disabled, but a temporary lack of eligible recipients does not prevent changing the preference. The former damage-sharing Gizmo is removed. Thresholds and the cap come from the Def; the highest stage shows a full bar. Viewing a missing record never creates one. The maintainer confirmed the batch 3 panel and toggle work as expected on 2026-10-13; see the [test guide (Chinese)](Docs/Development/主人阶段第三批测试说明.md).
+The Master training tab shows stage, total experience and progress toward the next stage. Hover over the bonus summary for values. Damage sharing is configured here and remains saved in the bridle: without a bridle the toggle is disabled, but a temporary lack of eligible recipients does not prevent changing the preference. The former damage-sharing Gizmo is removed. Thresholds and the cap come from the Def; the highest stage shows a full bar. Viewing a missing record never creates one. The maintainer confirmed the batch 3 panel and toggle work as expected on 2026-10-13; see the [test guide (Chinese)](Docs/Development/Completed/主人阶段第三批测试说明.md).
 
 ### 3.2 Allow Training
 
@@ -493,7 +492,7 @@ Quality is the sum of the following terms, clamped to 0–100%:
 
 The spectator bonus interpolates linearly between these points: three give +10%, and four give +12.5%. The master and ritual target are excluded. The setup preview estimates the assigned audience; the final outcome requires attendance for at least half the ritual's actual elapsed time. Brief visits do not count, while spectators who leave after meeting the threshold retain their contribution. Result letters also show the factor when no spectators qualify.
 
-Version 2.3.8 includes the actual-time correction for full attendance being counted as zero, as well as protagonist exclusion in the preview and final outcome. The maintainer confirmed the spectator fix works in game. Historical 2.3.7 packages do not contain it; see the [development record (Chinese)](Docs/Development/绑定仪式观众助兴修复.md).
+Version 2.3.8 includes the actual-time correction for full attendance being counted as zero, as well as protagonist exclusion in the preview and final outcome. The maintainer confirmed the spectator fix works in game. Historical 2.3.7 packages do not contain it; see the [development record (Chinese)](Docs/Development/Completed/绑定仪式观众助兴修复.md).
 
 Ritual genital compatibility is not fully connected and stays at its lowest bracket. Ordinary Training size scoring is unaffected.
 
@@ -1038,7 +1037,7 @@ Implantation:
 
 Returning a personality to its original body also restores the extraction-time trait snapshot. A valid empty list clears the body's ordinary traits; a missing snapshot rejects implantation and leaves both the receiving pawn and gel unchanged.
 
-Older gels did not record gene sources. Their saved entries are restored as personality traits because traits granted by the original body's genes can no longer be identified; the receiving body's genes are still preserved. See section 19 and the [fix details (Chinese)](Docs/Development/人格普通特质迁移修复.md).
+Older gels did not record gene sources. Their saved entries are restored as personality traits because traits granted by the original body's genes can no longer be identified; the receiving body's genes are still preserved. See section 19 and the [fix details (Chinese)](Docs/Development/Completed/人格普通特质迁移修复.md).
 
 ## 16. Semi-gelatinization Surgery
 
@@ -1510,7 +1509,7 @@ This section records the audited code behavior and known limitations.
 4. **Several research nodes are technology-tree placeholders.** `Basic PNA Application`, `Basic PNA Launcher`, and `Femboy Conversion` do not unlock a complete matching system. Version 2.3.7 implements ordinary Cat/Dog training, pet exclusivity, gel finalization, final active abilities and visible affection; the adult consensual follow-up is implemented and awaits in-game acceptance. Rabbit selection remains disabled. `Combatant` supports ordinary training, experience, gel finalization, and the final Combat Overdrive ability. `Personality Editing` acts as the parent node for specialization research.
 5. **Basic PNA Launcher checks vanilla Machining only.** Its recipe does not reference SSC’s launcher research.
 6. **Sex Reassignment Surgery is not research-locked.** Its operation exists without a `researchPrerequisite`. Its companion ThoughtDef XML also contains a duplicate `defName`, which may cause a load issue for the success memory.
-7. **Personality trait transfer and the gel UI have been fixed.** The maintainer has confirmed this round of fixes is effective. Ordinary personality traits are now restored from the gel snapshot while preserving the receiving body's genes and their traits. Legacy entries are restored as personality traits because their source was not recorded; new gels save only traits without a gene source. The Sex Slave trait is still rebuilt separately from restored highest-ever Corruption. See the [fix record (Chinese)](Docs/Development/人格普通特质迁移修复.md) for details.
+7. **Personality trait transfer and the gel UI have been fixed.** The maintainer has confirmed this round of fixes is effective. Ordinary personality traits are now restored from the gel snapshot while preserving the receiving body's genes and their traits. Legacy entries are restored as personality traits because their source was not recorded; new gels save only traits without a gene source. The Sex Slave trait is still rebuilt separately from restored highest-ever Corruption. See the [fix record (Chinese)](Docs/Development/Completed/人格普通特质迁移修复.md) for details.
 8. **Public Use progress now uses the saved component.** Version 2.3.6 routes daily base Training progress through the shared component entry; trade rewards also update component progress and synchronize the ordinary Hediff. Final recipes continue to check saved progress.
 9. **Switching directly between Public Use and Cow preserves progress and the other family’s Hediff.** Only selecting no specialization resets progress. This permits coexistence and may also carry progress across types.
 10. **Final Cow does not cause full gelatinization.** Old notes mention this linkage, but current Defs and C# do not add the completed state.

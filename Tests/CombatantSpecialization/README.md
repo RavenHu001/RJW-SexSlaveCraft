@@ -30,4 +30,4 @@ pwsh -NoProfile -File Scripts/Test-CombatantGameResources.ps1 -GameRoot '<RimWor
 
 脚本读取仓库发布 XML、四语翻译、本机 Core 定义和游戏程序集，以及仓库已编译的 DLL；改动 C# 后须先重新构建。检查能力、健康状态、研究、配方、八种凝胶和属性引用，实际构造效果、授予与消失组件，并调用原版 `AbilityComp.Initialize` 和 `GenTicks.SecondsToTicks`。缺失组件类型、翻译或原版属性时返回失败，JSON 报告包含输入哈希与失败原因，默认保存到 `.builds/combatant-stage5/game-resource-audit.json`。
 
-本检查需要已安装的游戏，不加入无游戏依赖的 `Test-All.ps1`；它是独立的本机验收步骤，不下载或分发游戏程序集。它不运行完整游戏 XML 加载、完整技能初始化、施法、战斗或 Scribe。维护者对完整玩法及数值的验收记录见[阶段五](../../Docs/Development/战斗员特化阶段五.md)。
+本检查需要已安装的游戏，不加入无游戏依赖的 `Test-All.ps1`；它是独立的本机验收步骤，不下载或分发游戏程序集。它不运行完整游戏 XML 加载、完整技能初始化、施法、战斗或 Scribe。维护者对完整玩法及数值的验收记录见[阶段五](../../Docs/Development/Completed/战斗员特化阶段五.md)。

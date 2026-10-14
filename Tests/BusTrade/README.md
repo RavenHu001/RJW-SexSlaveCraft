@@ -16,6 +16,6 @@ dotnet run --project Tests/BusTrade/BusTrade.csproj
 
 训练时序检查显式调用真实 `TryTrain` 工厂 Postfix 包装 `Toil.initAction`，并将最小互动宿主的 bool 返回值交给真实互动 Postfix；不自动安装 Harmony 补丁，也不复刻原版训练成功率算法。训练作用域的嵌套、异常及身份边界由 PetSpecialization 专项套件验证。
 
-历史交易修复的 30 项基线及 2026-09-16 实机反馈属于旧版本记录；本批阶段 3C 维护者基础实机测试未发现问题并授权提交，此反馈不代表全部边界场景均已逐项验收。详情见[阶段 3C](../../Docs/Development/新限制系统阶段3C.md)。
+历史交易修复的 30 项基线及 2026-09-16 实机反馈属于旧版本记录；本批阶段 3C 维护者基础实机测试未发现问题并授权提交，此反馈不代表全部边界场景均已逐项验收。详情见[阶段 3C](../../Docs/Development/Completed/新限制系统阶段3C.md)。
 
 绑定门槛修订增加未绑定身份-only 对象不受事件限制的回归；原受限角色夹具改为明确绑定。

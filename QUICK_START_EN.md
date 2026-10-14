@@ -1,14 +1,12 @@
 # RJW-SexSlaveCraft Quick Start Guide
 
-[Project home](README.md) · [Documentation index / 文档索引](Docs/README.md) · [中文快速入门](读我，玩法介绍.md) · [Changelog](CHANGELOG.md)
+[Project home](README.md) · [Player reading order](Docs/Players/README.md#english-reading-order) · [中文快速入门](读我，玩法介绍.md) · [Complete guide](PLAYER_GUIDE_EN.md)
 
-> For RimWorld 1.6 and SexSlaveCraft 2.4.0.\
-> This continuation is based on upstream 2.2.8. See `CHANGELOG.md` for release history.\
-> This version retains the 2.3.8 Binding Ritual spectator fixes and selection hints, 2.3.7 Cat/Dog specializations, 2.3.6 shared daily Training/full Binding Ritual specialization progress and 2.3.5 self-training/handoff fixes. Download the installation ZIP and SHA-256 checksum from [v2.4.0 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.0). Legacy RimTalk remains suspended.\
-> Version 2.4.0 content (2026-10-13): Seed of Desire and personal Master qualification, a first free quest, personality transfer, four-stage Symbiosis of Desire with five bonuses, and the Master panel with damage sharing. Direct Master selection remains enabled by default. Qualification and growth follow the personality and are not inherited by clones. Rabbit selection remains disabled.\
-> In-game names follow the mod's official English localization. For exact formulas, thresholds, and implementation notes, see `PLAYER_GUIDE_EN.md`.
-
-> See the [2.4.0 notes](Docs/Releases/2.4.0/2.4.0发布说明.md) for this version and the [2.3.9](Docs/Releases/2.3.9/2.3.9发布说明.md), [2.3.8](Docs/Releases/2.3.8/2.3.8发布说明.md), [2.3.7](Docs/Releases/2.3.7/2.3.7发布说明.md), [2.3.6](Docs/Releases/2.3.6/2.3.6发布说明.md) and [2.3.5](Docs/Releases/2.3.5/2.3.5发布说明.md) notes for retained features.
+> For **RimWorld 1.6 · SSC 2.4.0**. This guide covers controls and progression; use the [Complete Player Guide](PLAYER_GUIDE_EN.md) for exact conditions and values.
+>
+> New players: read [Getting Started](#2-getting-started), [Corruption and the Bond](#4-corruption-and-the-bond), then [Binding Ritual](#5-binding-ritual). Upgrading? Start with the [2.4.0 notes](Docs/Releases/2.4.0/2.4.0发布说明.md#english).
+>
+> [Download 2.4.0](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.0). Earlier version numbers within sections identify feature introductions; historical changes are indexed in [Releases](Docs/Releases/README.md).
 
 ## 1. What the Mod Does
 
