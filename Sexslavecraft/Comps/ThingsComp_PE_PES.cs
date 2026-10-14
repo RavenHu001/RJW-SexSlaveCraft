@@ -465,10 +465,11 @@ namespace SexSlaveCraft
             if (this.hediffTags == null) this.hediffTags = new Dictionary<HediffDef, float>();
             this.hediffTags.Clear();
 
-            // 遍历所有 XML 中定义的特化配方
+            // 遍历特化配方，但排除两种 PNA 负荷及依赖；这些记录留在原身体。
+            // Need_PNA 的满足度不进入此标签字典，也不新增人格侧的需求快照。
             foreach (var recipe in DefDatabase<RecipeDef>.AllDefs.OfType<RecipeDef_PSTag>())
             {
-                if (recipe.hediffToAdd != null)
+                if (recipe.hediffToAdd != null && !SSCPnaExposureUtility.IsBodyStateDef(recipe.hediffToAdd))
                 {
                     // 在角色身上查找配方对应的健康状态。
                     Hediff existingTag = p.health.hediffSet.GetFirstHediffOfDef(recipe.hediffToAdd);

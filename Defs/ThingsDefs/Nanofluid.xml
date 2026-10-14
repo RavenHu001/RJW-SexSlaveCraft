@@ -35,9 +35,9 @@
       <optimalityOffsetHumanlikes>10</optimalityOffsetHumanlikes>
 
       <outcomeDoers>
-        <li Class="IngestionOutcomeDoer_GiveHediff">
-          <hediffDef>Hediff_PNA_Debuff</hediffDef>
-          <severity>0.3</severity> </li>
+        <li Class="SexSlaveCraft.IngestionOutcomeDoer_SSCPna">
+          <!-- PNA P2：每份原始剂量，对应 20% 负荷；实际份数由 Doer 计算。 -->
+          <severity>0.4</severity> </li>
       </outcomeDoers>
     </ingestible>
 
@@ -88,9 +88,9 @@
       <optimalityOffsetHumanlikes>10</optimalityOffsetHumanlikes>
 
       <outcomeDoers>
-        <li Class="IngestionOutcomeDoer_GiveHediff">
-          <hediffDef>Hediff_PNA_Debuff</hediffDef>
-          <severity>1</severity> </li>
+        <li Class="SexSlaveCraft.IngestionOutcomeDoer_SSCPna">
+          <!-- PNA P2：每份原始剂量，对应 70% 负荷。 -->
+          <severity>1.4</severity> </li>
       </outcomeDoers>
     </ingestible>
 

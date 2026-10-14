@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
   <PNA_Addiction.label>PNA Dependence</PNA_Addiction.label>
-  <PNA_Addiction.description>Physical dependence on nanofluid. After a period without intake, the body self-regulates and clears the dependence.</PNA_Addiction.description>
+  <PNA_Addiction.description>Physical dependence formed after PNA load reaches its maximum, maintaining increased sex drive. After supply stops, recovery advances at no more than 20% load while in withdrawal. Full dependence takes 8 effective recovery days to clear. Further supply does not reset completed progress.</PNA_Addiction.description>
   <PNA_Addiction.stages.0.label>Dependent</PNA_Addiction.stages.0.label>
   <PNA_Addiction.stages.1.label>Withdrawal</PNA_Addiction.stages.1.label>
 </LanguageData>

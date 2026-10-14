@@ -34,7 +34,7 @@
         <healAmount>5</healAmount>            
         <trueDamageAmount>1</trueDamageAmount>    
         <recordHediff>Hediff_PNA_Consciousness_Record</recordHediff>
-        <baseSeverity>0.125</baseSeverity>    
+        <baseSeverity>0.15</baseSeverity>
       </li>
     </modExtensions>
   </DamageDef>

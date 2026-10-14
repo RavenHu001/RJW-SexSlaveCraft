@@ -272,6 +272,9 @@ namespace SexSlaveCraft
                     {
                         HediffDef hediffDef = tag.Key;
                         float severity = tag.Value;
+                        // PNA 负荷与依赖只属于身体，历史／外部凝胶中的同类标签也不恢复。
+                        // 宿主原有记录及 Need_PNA 值由身体保留，不参与下方最大值合并。
+                        if (SSCPnaExposureUtility.IsBodyStateDef(hediffDef)) continue;
 
                         // 主人经验已由专用标量恢复；跳过历史或外部加入的同名标签，
                         // 防止下方通用最大值合并把无记录或低经验再次替换为宿主旧高经验。

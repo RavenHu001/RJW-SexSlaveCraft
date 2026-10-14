@@ -3,7 +3,10 @@
   <SSC_Pna_LoadTooltip>目前 PNA 負荷：{0}%。強烈催情，操控、移動和意識從微量開始受影響，逐檔加重；末期可因高潮暈倒。負荷隨有效健康更新逐漸清除。</SSC_Pna_LoadTooltip>
   <SSC_Pna_SelectPawn>請先選擇一個角色。</SSC_Pna_SelectPawn>
   <SSC_Pna_InvalidTarget>該角色目前不能接受 PNA 測試輸入。</SSC_Pna_InvalidTarget>
-  <SSC_Pna_Rooted>PNA P1 測試：性奴負荷 {0}%，不建立普通 PNA 依賴。</SSC_Pna_Rooted>
-  <SSC_Pna_DebugResult>PNA P1 測試：目前負荷 {0}%。本批調試輸入不建立新依賴。</SSC_Pna_DebugResult>
+  <SSC_Pna_Rooted>PNA P2 測試：性奴負荷 {0}%，不建立普通 PNA 依賴。</SSC_Pna_Rooted>
+  <SSC_Pna_DebugResult>PNA P2 測試：目前負荷 {0}%。普通身體有效達滿時建立依賴，已有恢復進度不重置。</SSC_Pna_DebugResult>
   <SSC_Pna_RootedLoadTooltip>性奴 PNA 負荷：{0}%。綁定與解綁保留負荷和未結算時間；目前無普通負荷的能力懲罰，完整正面效果仍待開發。</SSC_Pna_RootedLoadTooltip>
+  <SSC_Pna_NewDependence>{0} 的 PNA 負荷已滿，身體形成了奈米流體依賴。</SSC_Pna_NewDependence>
+  <SSC_Pna_RecoveryActive>PNA 依賴正在恢復：還需約 {0} 個有效恢復日。負荷不高於 20% 且處於戒斷時才推進恢復；再次補給可能暫停恢復。</SSC_Pna_RecoveryActive>
+  <SSC_Pna_RecoveryPaused>PNA 依賴恢復已暫停。需要負荷不高於 20% 且處於戒斷；缺少合法化學需求時只判斷低負荷。暫停健康更新的時間不計入恢復。</SSC_Pna_RecoveryPaused>
 </LanguageData>

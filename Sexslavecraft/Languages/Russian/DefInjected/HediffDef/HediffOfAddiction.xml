@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
   <PNA_Addiction.label>Зависимость от PNA</PNA_Addiction.label>
-  <PNA_Addiction.description>Физическая зависимость от наножидкости. Через некоторое время без приёма тело саморегулируется и снимает зависимость.</PNA_Addiction.description>
+  <PNA_Addiction.description>Физическая зависимость после достижения полной нагрузки PNA, поддерживающая повышенное половое влечение. После прекращения приёма восстановление идёт при нагрузке не выше 20% и абстиненции. Полная зависимость проходит за 8 эффективных дней восстановления. Новые дозы не обнуляют достигнутый прогресс.</PNA_Addiction.description>
   <PNA_Addiction.stages.0.label>Зависимость</PNA_Addiction.stages.0.label>
   <PNA_Addiction.stages.1.label>Абстиненция</PNA_Addiction.stages.1.label>
 </LanguageData>

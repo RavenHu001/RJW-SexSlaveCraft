@@ -2,14 +2,14 @@
 <HediffDef ParentName="AddictionBase">
     <defName>PNA_Addiction</defName>
     <label>紫色纳米液体依赖</label>
-    <description>身体对纳米流体的依赖。停止摄入一段时间后，身体会自我调节并清除这种依赖。</description>
+    <description>身体在 PNA 负荷达到满值后形成的依赖，持续增强性欲。停止补给，待负荷降至 20% 以下且进入戒断后，逐渐消除依赖；完整依赖需要 8 个有效恢复日。再次补给不会重置已有恢复进度。</description>
     <hediffClass>Hediff_Addiction</hediffClass>
     <tendable>false</tendable>
     <everCurableByItem>false</everCurableByItem>
     <chemicalNeed>Need_PNA</chemicalNeed>
-    <initialSeverity>0.5</initialSeverity> <comps>
-      <li Class="HediffCompProperties_SeverityPerDay">
-        <severityPerDay>-0.066</severityPerDay>
+    <initialSeverity>1</initialSeverity> <comps>
+      <li Class="SexSlaveCraft.HediffCompProperties_SSCPnaRecovery">
+        <severityPerDay>-0.125</severityPerDay>
         <showDaysToRecover>true</showDaysToRecover>
       </li>
     </comps>
@@ -17,9 +17,15 @@
     <stages>
       <li>
         <label>依赖</label>
+        <statFactors>
+          <SexFrequency>1.25</SexFrequency>
+        </statFactors>
       </li>
       <li>
         <label>戒断中</label>
+        <statFactors>
+          <SexFrequency>1.25</SexFrequency>
+        </statFactors>
       </li>
     </stages>
     
@@ -38,7 +44,7 @@
       <li>
         <label>纳米流体戒断</label>
         <description>这种空虚感快把我逼疯了！给我那个紫色的水！</description>
-        <baseMoodEffect>-25</baseMoodEffect>
+        <baseMoodEffect>-18</baseMoodEffect>
       </li>
     </stages>
   </ThoughtDef>

@@ -6,7 +6,9 @@ This continuation builds on upstream **2.2.8**, the baseline when upstream devel
 
 ## [未发布 / Unreleased]
 
-- **普通 PNA 五档数值测试 / Ordinary PNA stage balance test:** 仅调整 XML 固定五档：催情因子 ×1.5／×2／×2.5／×3.25／×4，操控、移动及意识从微量开始逐档受抑；第三档起视听下降模拟幻视幻听，末期保留 10% 意识上限与高潮晕倒。撤回新增动态插值、缓存和补丁，生产代码与 DLL 保持已确认 P1。XML-only balance changes retain the confirmed P1 code and DLL. In-game balance verification pending; see [testing notes](Docs/Development/Verification/普通PNA五档效果调整.md).
+- **PNA 重置 P2 测试批 / PNA reset P2 test batch:** 有效输入达满建立单份依赖，沿用原版需求条；普通／浓缩每份 +20%／+70%，低阶枪原始基数 0.15，来源统一补充需求。依赖两档 ×1.25，低负荷且戒断时恢复，戒断心情 -18；已有恢复进度保留，PNA 状态只随身体，不增加自动补给限制。Adds deterministic full-load dependence, vanilla chemical needs, per-unit ingestion, weapon inputs and conditional recovery. In-game verification pending; see [P2 testing notes](Docs/Development/Verification/PNA机制重置P2实现与测试.md).
+
+- **普通 PNA 五档数值测试 / Ordinary PNA stage balance test:** 仅调整 XML 固定五档：催情因子 ×1.5／×2／×2.5／×3.25／×4，操控、移动及意识从微量开始逐档受抑；第三档起视听下降模拟幻视幻听，末期保留 10% 意识上限与高潮晕倒。该数值批撤回动态插值、缓存和补丁，未改 P1 代码／DLL；后续 P2 扩展另见上条。The XML-only balance batch retained P1 code and DLL; subsequent P2 work is listed above. In-game balance verification pending; see [testing notes](Docs/Development/Verification/普通PNA五档效果调整.md).
 
 - **PNA 重置 P1 测试批 / PNA reset P1 test batch:** 实现五档普通负荷、分段清除、共享测试输入、实际锁链保护、负荷旧档规范化和四语调试；移除旧普通负荷持续心情，修复旧依赖两档结构；绑定仅清依赖，普通／性奴负荷按同严重度双向转换，保留未结算时间。满值确定性依赖、来源剂量与补给过滤仍待 P2；2026-10-14 维护者确认 P1 实机有效并批准提交。Adds five load stages, piecewise clearance, shared test inputs, effective-chain protection, load save normalization and localized feedback. Deterministic addiction, source doses and supply filtering remain for P2; P1 was confirmed effective in game on 2026-10-14; subsequent balance changes require separate verification. See [P1 implementation and testing](Docs/Development/Completed/PNA机制重置P1实现与测试.md).
 

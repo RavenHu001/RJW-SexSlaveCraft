@@ -6,12 +6,19 @@ using System.Runtime.CompilerServices;
 // 仅模拟健康接口、组件调度、字段保存与 Harmony 目标；不替代 Unity 能力计算或真实 Scribe。
 namespace Verse
 {
-    public class Thing { public bool Destroyed, Discarded; }
+    public class Thing { public bool Destroyed, Discarded; public ThingDef def; }
+    public class ThingDef { public IngestibleProperties ingestible = new IngestibleProperties(); }
+    public class IngestibleProperties { public List<RimWorld.IngestionOutcomeDoer> outcomeDoers = new List<RimWorld.IngestionOutcomeDoer>(); }
     public class Pawn : Thing
     {
         public bool Dead, Suspended, IsSlave;
         public float Corruption;
         public bool IsMaster;
+        public string LabelShort => "Test pawn";
+        public bool NotifyPlayer;
+        public float BodySize = 1f, ChemicalEffectFactor = 1f;
+        public object DrawPos => null;
+        public object Map => null;
         public RaceProperties RaceProps = new RaceProperties();
         public Pawn_HealthTracker health;
         public RimWorld.Pawn_NeedsTracker needs;
@@ -24,10 +31,48 @@ namespace Verse
         public float initialSeverity = 0.01f, maxSeverity = 2f;
         public float[] thresholds = new[] { 0f };
         public bool HasPnaComp;
+        public bool HasRecoveryComp;
+        public RimWorld.NeedDef chemicalNeed;
     }
     public class BodyPartRecord { }
-    public struct DamageInfo { }
+    public struct DamageInfo
+    {
+        public DamageDef Def;
+        public float Amount;
+        public int Parts;
+        public bool Deflected;
+        public DamageInfo(DamageInfo other) { this=other; }
+        public void SetAmount(float value) { Amount = value; }
+        public void SetIgnoreArmor(bool value) { }
+    }
+    public class DefModExtension { }
+    public class DamageDef
+    {
+        public DefModExtension Extension;
+        public T GetModExtension<T>() where T : DefModExtension => Extension as T;
+    }
     public class DamageWorker { public class DamageResult { } }
+    public class DamageWorker_AddInjury : DamageWorker
+    {
+        public Action<Pawn> BeforePart;
+        public int InjuryCalls;
+        public virtual DamageResult Apply(DamageInfo info, Thing target)
+        {
+            var result = new DamageResult();
+            if (target is Pawn pawn && info.Amount > 0 && !info.Deflected)
+                for (int i=0;i<Math.Max(1,info.Parts);i++) { BeforePart?.Invoke(pawn); ApplySpecialEffectsToPart(pawn,info.Amount,info,result); }
+            return result;
+        }
+        protected virtual void ApplySpecialEffectsToPart(Pawn pawn,float totalDamage,DamageInfo info,DamageResult result) { InjuryCalls++; }
+    }
+    public class Hediff_Injury : Hediff
+    {
+        public float Healed;
+        public bool CanHealNaturally() => true;
+        public void Heal(float amount) { Healed += amount; }
+    }
+    public class PawnCapacityDef { }
+    public class PawnCapacitiesHandler { public float Consciousness=1f; public float GetLevel(PawnCapacityDef def)=>Consciousness; }
     public class Hediff
     {
         public Pawn pawn;
@@ -51,15 +96,17 @@ namespace Verse
         public List<HediffComp> comps = new List<HediffComp>();
         public T GetComp<T>() where T : HediffComp => comps.OfType<T>().FirstOrDefault();
     }
-    public class HediffSet { public List<Hediff> hediffs = new List<Hediff>(); }
+    public class HediffSet { public List<Hediff> hediffs = new List<Hediff>(); public Hediff GetFirstHediffOfDef(HediffDef def)=>hediffs.FirstOrDefault(h=>h.def==def); }
     public class Pawn_HealthTracker
     {
         public readonly Pawn Pawn;
         public readonly HediffSet hediffSet = new HediffSet();
         public Action<Hediff> OnChanged, OnAdded, OnRemoved;
         public int Notifications;
+        public PawnCapacitiesHandler capacities = new PawnCapacitiesHandler();
         public Pawn_HealthTracker(Pawn pawn) { Pawn = pawn; }
         public void AddHediff(Hediff hediff) => AddHediff(hediff, null, null, null);
+        public Hediff AddHediff(HediffDef def) { var h=HediffMaker.MakeHediff(def,Pawn);AddHediff(h);return h; }
         [MethodImpl(MethodImplOptions.NoInlining)]
         public void AddHediff(Hediff hediff, BodyPartRecord part, DamageInfo? dinfo, DamageWorker.DamageResult result)
         {
@@ -76,6 +123,16 @@ namespace Verse
         }
         public void Notify_HediffChanged(Hediff hediff) { Notifications++; OnChanged?.Invoke(hediff); }
     }
+    public static class HealthUtility
+    {
+        public static void AdjustSeverity(Pawn pawn,HediffDef def,float value)
+        {
+            var existing=pawn.health.hediffSet.hediffs.FirstOrDefault(h=>h.def==def);
+            if(existing!=null)existing.Severity+=value;
+            else { var h=HediffMaker.MakeHediff(def,pawn);h.Severity=value;pawn.health.AddHediff(h); }
+        }
+    }
+    public static class MoteMaker { public static void ThrowText(object pos,string text,float time) { } public static void ThrowText(object pos,object map,string text,float time) { } }
     public class HediffCompProperties { public Type compClass; }
     public class HediffComp
     {
@@ -89,12 +146,24 @@ namespace Verse
         public virtual string CompTipStringExtra => null;
         public virtual string CompDebugString() => null;
     }
+    public class HediffCompProperties_SeverityPerDay : HediffCompProperties
+    {
+        public float severityPerDay;
+        public bool showDaysToRecover;
+    }
+    public class HediffComp_SeverityPerDay : HediffComp
+    {
+        public float severityPerDay;
+        public virtual float SeverityChangePerDay()=>severityPerDay;
+        public override void CompExposeData()=>Scribe_Values.Look(ref severityPerDay,"severityPerDay",0f);
+    }
     public static class HediffMaker
     {
         public static Hediff MakeHediff(HediffDef def, Pawn pawn)
         {
             var record = new HediffWithComps { def = def, pawn = pawn, RawSeverity = def.initialSeverity };
             if (def.HasPnaComp) record.comps.Add(new SexSlaveCraft.HediffComp_SSCPnaLoad { parent = record, props = new SexSlaveCraft.HediffCompProperties_SSCPnaLoad() });
+            if (def.HasRecoveryComp) record.comps.Add(new SexSlaveCraft.HediffComp_SSCPnaRecovery { parent = record, props = new SexSlaveCraft.HediffCompProperties_SSCPnaRecovery() });
             return record;
         }
     }
@@ -122,6 +191,7 @@ namespace Verse
     {
         public static string Translate(this string text, params object[] args) => text + string.Join(",", args);
         public static string ToStringPercent(this float value) => (value * 100).ToString("F0") + "%";
+        public static T RandomElement<T>(this IEnumerable<T> values)=>values.First();
     }
 }
 namespace RimWorld
@@ -129,25 +199,59 @@ namespace RimWorld
     public class Pawn_NeedsTracker
     {
         private readonly Verse.Pawn pawn;
-        public float? PnaNeed;
+        public bool AllowPnaNeed = true;
+        private Need_Chemical chemicalNeed;
+        public float? PnaNeed
+        {
+            get=>chemicalNeed?.CurLevel;
+            set { chemicalNeed=value.HasValue ? new Need_Chemical{CurLevel=value.Value}:null; }
+        }
+        public Need_Chemical TryGetNeed(NeedDef def)=>chemicalNeed;
         public int Refreshes;
         public Pawn_NeedsTracker(Verse.Pawn pawn) { this.pawn = pawn; }
         public void AddOrRemoveNeedsAsAppropriate()
         {
             Refreshes++;
             if (!pawn.health.hediffSet.hediffs.Any(h => SexSlaveCraft.SSCPnaExposureUtility.IsAddictionDef(h.def))) PnaNeed = null;
+            else if(AllowPnaNeed && chemicalNeed==null) chemicalNeed=new Need_Chemical{CurLevel=.8f};
         }
     }
+    public class NeedDef { public string defName; }
+    public enum DrugDesireCategory { Satisfied, Desire, Withdrawal }
+    public class Need_Chemical
+    {
+        public float CurLevel;
+        public float MaxLevel=>1f;
+        public DrugDesireCategory CurCategory=>CurLevel>.1f?DrugDesireCategory.Satisfied:CurLevel>.01f?DrugDesireCategory.Desire:DrugDesireCategory.Withdrawal;
+    }
+    public abstract class IngestionOutcomeDoer
+    {
+        public void DoIngestionOutcome(Verse.Pawn pawn,Verse.Thing ingested,int count)=>DoIngestionOutcomeSpecial(pawn,ingested,count);
+        protected abstract void DoIngestionOutcomeSpecial(Verse.Pawn pawn,Verse.Thing ingested,int count);
+    }
+    public static class AddictionUtility
+    {
+        public static int ModifierCalls;
+        public static void ModifyChemicalEffectForToleranceAndBodySize(Verse.Pawn pawn,ChemicalDef chemical,ref float effect,bool applyGeneToleranceFactor,bool divideByBodySize=true)
+        {
+            ModifierCalls++;
+            if(chemical!=null)effect*=pawn.ChemicalEffectFactor;
+            if(divideByBodySize)effect/=pawn.BodySize;
+        }
+    }
+    public static class PawnUtility { public static bool ShouldSendNotificationAbout(Verse.Pawn pawn)=>pawn.NotifyPlayer; }
+    public static class PawnCapacityDefOf { public static Verse.PawnCapacityDef Consciousness=new Verse.PawnCapacityDef(); }
     public class ChemicalDef { public Verse.HediffDef addictionHediff; }
     public class CompProperties_Drug { public ChemicalDef chemical; }
     public class CompDrug
     {
         public CompProperties_Drug Props;
         public int OriginalCalls;
+        public Verse.Thing parent = new Verse.Thing{def=new Verse.ThingDef()};
         [MethodImpl(MethodImplOptions.NoInlining)] public void PrePostIngested(Verse.Pawn ingester) { OriginalCalls++; }
     }
     public class MessageTypeDef { }
-    public static class MessageTypeDefOf { public static MessageTypeDef RejectInput = new MessageTypeDef(), NeutralEvent = new MessageTypeDef(); }
+    public static class MessageTypeDefOf { public static MessageTypeDef RejectInput = new MessageTypeDef(), NeutralEvent = new MessageTypeDef(), NegativeHealthEvent = new MessageTypeDef(); }
 }
 namespace LudeonTK
 {
@@ -160,7 +264,7 @@ namespace LudeonTK
 }
 namespace SexSlaveCraft
 {
-    public static class SSCDefOf { public static Verse.HediffDef SSC_PnaLoad, SSC_PnaRootedLoad; }
+    public static class SSCDefOf { public static Verse.HediffDef SSC_PnaLoad, SSC_PnaRootedLoad, SSC_PnaAddiction; public static RimWorld.NeedDef SSC_PnaNeed; }
     public class Hediff_ChainOfSexSlave : Verse.Hediff
     {
         public Verse.Pawn LinkedPawn;
@@ -182,4 +286,8 @@ namespace SexSlaveCraft
         public static List<Verse.Pawn> Pawns = new List<Verse.Pawn>();
         public static List<Verse.Pawn> AllPawns() => Pawns.ToList();
     }
+}
+namespace UnityEngine
+{
+    public static class Mathf { public static float Max(float first,float second)=>Math.Max(first,second); }
 }

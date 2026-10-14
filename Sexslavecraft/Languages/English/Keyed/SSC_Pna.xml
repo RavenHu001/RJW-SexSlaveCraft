@@ -3,7 +3,10 @@
   <SSC_Pna_LoadTooltip>Current PNA load: {0}%. Strong aphrodisiac effects; manipulation, movement and consciousness are impaired from the trace stage, worsening at each stage. Terminal overload can cause an orgasm-induced collapse. Effective health updates gradually clear the load.</SSC_Pna_LoadTooltip>
   <SSC_Pna_SelectPawn>Select a pawn first.</SSC_Pna_SelectPawn>
   <SSC_Pna_InvalidTarget>This pawn cannot currently receive a PNA test dose.</SSC_Pna_InvalidTarget>
-  <SSC_Pna_Rooted>PNA P1 test: rooted load {0}%. No ordinary PNA addiction is created.</SSC_Pna_Rooted>
-  <SSC_Pna_DebugResult>PNA P1 test: current load {0}%. This test input does not create a new addiction.</SSC_Pna_DebugResult>
+  <SSC_Pna_Rooted>PNA P2 test: rooted load {0}%. No ordinary PNA dependence is created.</SSC_Pna_Rooted>
+  <SSC_Pna_DebugResult>PNA P2 test: current load {0}%. An effective dose at full ordinary load creates dependence; existing recovery progress is preserved.</SSC_Pna_DebugResult>
   <SSC_Pna_RootedLoadTooltip>Rooted PNA load: {0}%. Binding and unbinding preserve the load and pending time. Ordinary capacity penalties do not apply; full positive effects remain in development.</SSC_Pna_RootedLoadTooltip>
+  <SSC_Pna_NewDependence>{0} has reached full PNA load and developed nanofluid dependence.</SSC_Pna_NewDependence>
+  <SSC_Pna_RecoveryActive>PNA dependence is recovering: about {0} effective recovery days remain. Recovery advances only at no more than 20% load while in withdrawal; further supply may pause it.</SSC_Pna_RecoveryActive>
+  <SSC_Pna_RecoveryPaused>PNA dependence recovery is paused. Load must be no more than 20% and chemical withdrawal must be active. Without an eligible chemical need, only low load is required. Suspended health updates do not advance recovery.</SSC_Pna_RecoveryPaused>
 </LanguageData>

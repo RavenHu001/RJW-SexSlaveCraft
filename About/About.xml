@@ -6,7 +6,10 @@
 		<li>1.6</li>
 	</supportedVersions>
 	<packageId>rjw.sexslavecraft.TieJinVer</packageId>
-    <description>SexSlaveCraft 2.4.0 (TieJin Modify)
+    <description>开发测试版：PNA P2 渴求、来源与恢复；尚待实机验收，未正式发布。
+Development test build: PNA P2 dependence, exposure and recovery; in-game verification pending.
+
+SexSlaveCraft 2.4.0 (TieJin Modify)
 欲望之种与主人成长：新增个人主人资格、一次性免费领取任务及任务／遗迹稀有来源。默认允许直接手动选择主人；关闭该设置后须先取得资格。欲望之种赋予永久资格，不自动改变身份；有 Royalty 时同时补齐“调教”的研究蓝图，研究仍需正常完成，原版蓝图保留为独立研究来源。
 主人首次取得身份时建立“欲望共生”，本人完成日常调教获得 +1 经验、整场绑定仪式获得 +3，训导官代劳不转记。萌芽、觉醒、掌控、升华四阶段提供意识、视觉、听觉、社交影响与伤口愈合加成。主人面板显示阶段与经验，并接管原缰绳伤害分担开关。
 资格与成长随人格凝胶转移，克隆不继承主人身份、资格或成长。退出主人身份时隐藏成长条目并停用加成，重新成为主人后恢复原阶段和经验。补齐四语文案、道具贴图、领取任务叙事与投放通知。

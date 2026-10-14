@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <LanguageData>
   <PNA_Addiction.label>紫色奈米液體依賴</PNA_Addiction.label>
-  <PNA_Addiction.description>身體對奈米流體的依賴。停止攝入一段時間後，身體會自我調節並清除這種依賴。</PNA_Addiction.description>
+  <PNA_Addiction.description>身體在 PNA 負荷達到滿值後形成的依賴，持續增強性慾。停止補給，待負荷降至 20% 以下且進入戒斷後，逐漸消除依賴；完整依賴需要 8 個有效恢復日。再次補給不會重置已有恢復進度。</PNA_Addiction.description>
   <PNA_Addiction.stages.0.label>依賴</PNA_Addiction.stages.0.label>
   <PNA_Addiction.stages.1.label>戒斷中</PNA_Addiction.stages.1.label>
 </LanguageData>
