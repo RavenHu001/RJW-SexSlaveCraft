@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -219,6 +219,8 @@ namespace SexSlaveCraft
             Scribe_Values.Look(ref pawnIdentity, "pawnIdentity", PawnIdentity.Unset);
             ExposeTrainerIdentity();
             ExposeMasterQualification();
+            // 成长经验在 Hediff 原生存档中；组件仅保存旧档迁移版本，避免重复权威值。
+            ExposeMasterProgression();
 
             Scribe_Values.Look(ref mode, "mode", TrainingMode.Disabled);
             Scribe_Values.Look(ref selectedMode, "selectedMode", TrainingActType.Auto);
@@ -376,6 +378,25 @@ namespace SexSlaveCraft
             }
 
             if (pawn.Faction != Faction.OfPlayer) yield break;
+
+            // 第一批先提供独立调试入口；实际训练经验在下一批接入同一个增加方法。
+            // 上方已要求开发模式、SSC 调试开关与玩家阵营；这里只展示已有成长的非空壳主人。
+            if (SSCIdentityUtility.IsMaster(pawn) && SSCMasterProgressionUtility.GetRecord(pawn) != null &&
+                !SSCMasterProgressionUtility.IsHollow(pawn))
+            {
+                yield return new Command_Action
+                {
+                    defaultLabel = "SSC_MasterProgression_DebugAdd".Translate(SSCMasterProgressionUtility.DebugExperience),
+                    defaultDesc = "SSC_MasterProgression_DebugAddTip".Translate(),
+                    action = delegate
+                    {
+                        // 开关或阵营可能在按钮生成后变化，点击时复查；统一增加入口
+                        // 再检查身份、空壳、死亡及现有记录，并按最高阶段截断经验。
+                        if (!Prefs.DevMode || SSCMod.settings?.enableDebugGizmos != true || pawn.Faction != Faction.OfPlayer) return;
+                        SSCMasterProgressionUtility.TryAddExperience(pawn, SSCMasterProgressionUtility.DebugExperience);
+                    }
+                };
+            }
 
             yield return new Command_Action
             {

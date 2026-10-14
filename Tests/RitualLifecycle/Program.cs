@@ -17,6 +17,7 @@ internal static partial class Program
     {
         cases++;
         TestWorld.Reset();
+        Messages.Received.Clear();
         try
         {
             test();
@@ -72,6 +73,7 @@ internal static partial class Program
         RunEducationCompatibilityTests();
         RunTrainingIdentityTests();
         RunTrainerOfficerFeedbackTests();
+        RunMasterProgressionTests();
         Check("cancelling while walking cleans state without executing the future scene finish", () =>
         {
             var ritual = new RitualFixture();

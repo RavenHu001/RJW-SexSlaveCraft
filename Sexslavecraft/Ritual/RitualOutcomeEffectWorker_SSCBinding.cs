@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -209,6 +209,13 @@ namespace SexSlaveCraft
             if (!canContinue()) return;
             // 复用整场一次性认领，不从六个阶段或经验增量派发职责记忆。
             TrainerOfficerFeedback.NotifyTrainingCompleted(master, slave);
+            if (!canContinue()) return;
+
+            // 本场六阶段和原有结算已经完成，固定主人经验只领取一次，不依赖质量或对象增量。
+            // master 是主持角色名，也可由训导官担任；统一入口核对真实 SSC 主人身份，
+            // 不把代劳经验转给绑定主人，也不为现代无成长记录的主持者补建 Hediff。
+            SSCMasterProgressionUtility.TryAddExperience(master, SSCMasterProgressionUtility.BindingRitualExperience);
+            // 升阶刷新健康可能使任务或仪式被外部替换；后续关系、文化收益和信件仍复查本场归属。
             if (!canContinue()) return;
             bool relationAdded = false;
 

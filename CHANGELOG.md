@@ -4,7 +4,7 @@
 
 This continuation builds on upstream **2.2.8**, the baseline when upstream development stopped in July, and retains its version numbering. Entries are listed newest first. Technical details are in the [development log (Chinese)](Docs/Development/开发更新记录.md).
 
-## [未发布 / Unreleased] — 主人资格入口 / Master qualification entry
+## [未发布 / Unreleased] — 主人资格与成长 / Master qualification and progression
 
 当前开发分支新增内容，尚未包含于正式 2.3.9 下载；版本号暂未递增。Current development branch additions, not included in the released 2.3.9 download; version metadata is unchanged.
 
@@ -14,7 +14,21 @@ This continuation builds on upstream **2.2.8**, the baseline when upstream devel
 
 - **叙事与投放通知 / Narrative and delivery letter:** 欲望之种描述与初次任务正文采用新的四语叙事，简中任务名为“SSC：一份来历不明的感应”。原版生成运输舱时发送“答复”投放信，可定位投放处；不改变领取、奖励和去重规则。The seed description and initial quest use new four-language narrative text. Vanilla drop-pod generation sends a custom “Reply” letter with a delivery location target; claim, reward and deduplication rules are unchanged.
 
+- **主人成长第一批 / Master progression, batch 1:** 首次成为主人建立四阶段常驻成长；退出身份保留经验并停用加成。成长随人格凝胶精确转移，抽取后空壳不保留；新克隆不复制主人身份及成长。旧主人和旧主人凝胶仅一次补基础阶段，开发按钮可加 10 经验。2026-10-13 维护者测试确认未发现问题；当前数值仍为初值；主人面板见下方第三批。Becoming a Master creates a four-stage progression record. Leaving the role suspends bonuses while retaining experience. Personality gel transfers the record exactly and clears the extracted body; new clones inherit neither the Master role nor its progression. Legacy Masters and Master gels receive a one-time baseline migration. A debug command adds 10 experience. The maintainer reported no issues after in-game testing on 2026-10-13. Values remain provisional; the panel is covered by batch 3 below.
+
+- **主人成长第二批 / Master progression, batch 2:** 本人完整日常调教 +1、整场绑定仪式 +3，复用存档结算认领；对象已满进度仍可提供经验，训导官代劳不转记，取消和重复结算不发放。相关四套回归 441/441 通过，2026-10-13 维护者确认实机有效。Personally completing daily training grants +1 experience; a whole binding ritual grants +3, using existing saved outcome claims. Fully trained targets still provide practice, Trainer Officer work gives no proxy credit, and cancelled or replayed outcomes grant none. All 441 cases in four related suites passed. The maintainer confirmed the feature works in-game on 2026-10-13.
+
 首批资格、第二批道具与研究、3A 初次任务已获维护者实机反馈；第 4 批展示与指南已获维护者有效确认，3B 自然来源及平衡仍保留实机验收边界，自动检查范围见[开发记录](Docs/Development/开发更新记录.md)。Earlier qualification, item/research and initial-quest batches received maintainer in-game feedback. The maintainer confirmed the stage 4 displays and guides work; natural 3B sources and balance retain their in-game acceptance scope.
+
+- **主人面板第三批 / Master panel, batch 3:** 主人调教页显示阶段、累计经验、下一阶段区间进度及加成摘要，详细数值复用健康悬停。伤害分担开关迁入面板，移除原 Gizmo；仍写缰绳原字段，保留默认值和存档规则，不新增成长门槛。四语动态布局及专项自动检查通过，2026-10-13 维护者确认主人面板和伤害分担开关符合预期并批准提交。The Master training tab shows stage, experience, progress toward the next stage and a bonus summary with the existing health tooltip. Damage sharing moves from its Gizmo to the tab while keeping the bridle field, default and save rules. Four-language layout and focused automated checks pass. On 2026-10-13, the maintainer confirmed that the Master panel and damage-sharing toggle work as expected and approved committing batch 3.
+
+- **主人成长第四批 / Master progression, batch 4:** 成长条目定名“欲望共生”，四阶段为萌芽／觉醒／掌控／升华；原版悬停显示阶段短句，主人面板标明下一阶段。本人实践或调试跨阶时发可定位提示，读档、人格恢复与身份返回不误报；四语同步，保存格式和数值不变。相关五套专项 535/535 和本机依赖构建通过，2026-10-13 维护者实机测试反馈未发现问题并批准提交。The health entry is now “Symbiosis of Desire”, with Budding, Awakening, Command and Ascendance stages. Native tooltips show stage descriptions and the panel names the next stage. Practice/debug level-ups produce a targeted message; loading, personality restoration and role re-entry remain silent. Four languages are updated; saves and values are unchanged. All 535 focused cases and the local dependency build passed. On 2026-10-13, the maintainer reported no issues after in-game testing and approved committing batch 4.
+
+- **主人成长加成调整 / Master progression bonuses:** 欲望共生改为意识、视觉、听觉、社交影响及伤口愈合五项，最高分别为 +40／+30／+30 个百分点、×1.20／×1.50。伤口愈合因子替换自然愈合因子，覆盖自然与治疗后的恢复；移除阶段直接操控加成。面板四语摘要同步，保存与经验规则不变，2026-10-13 维护者实机确认五项加成及文案显示符合预期并批准提交。Symbiosis of Desire now boosts Consciousness, Sight, Hearing, Social Impact and Injury Healing, reaching +40/+30/+30 percentage points, ×1.20 and ×1.50. Injury Healing replaces the natural-healing factor and affects both natural and tended recovery; direct Manipulation bonuses are removed. Four-language summaries are updated; saves and experience rules are unchanged. On 2026-10-13, the maintainer confirmed that the five bonuses and text display work as expected in-game and approved committing the adjustment.
+
+- **健康悬停精简 / Health tooltip cleanup:** 去掉欲望共生悬停的成长经验行，保留设定、阶段及加成；经验和进度仅在主人面板显示。显示精简已提交为 `66b9a13`，已随本轮退出身份隐藏版本同步。Symbiosis of Desire tooltips retain descriptions, stages and bonuses without an experience line. Experience and progress remain in the Master panel. Committed as `66b9a13` and synchronized with the inactive-entry hiding update.
+
+- **退出身份隐藏 / Hide inactive progression:** 退出主人身份后，从普通健康页隐藏欲望共生并停用加成，保留经验载体；返回主人显示原阶段，经验与人格迁移规则不变。相关五套专项 536/536，2026-10-13 维护者确认隐藏与恢复原阶段、经验符合预期并批准提交，实现为 `018752d`。Leaving the Master role hides Symbiosis of Desire from the normal health tab and suspends bonuses while retaining the record. Returning displays the original stage; experience and personality transfer rules are unchanged. All 536 focused cases passed. The maintainer confirmed hiding and restoration of the original stage and experience on 2026-10-13; committed as `018752d`.
 
 ## [2.3.9] — 2026-10-10 — 统一受训身份与训导官反馈 / Unified receiver identity and Trainer Officer feedback
 

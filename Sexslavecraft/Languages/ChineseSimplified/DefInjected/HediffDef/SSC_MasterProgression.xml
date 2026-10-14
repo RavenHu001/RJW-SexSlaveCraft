@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_Hediff_MasterProgression.label>欲望共生</SSC_Hediff_MasterProgression.label>
+  <SSC_Hediff_MasterProgression.description>遥远的启迪逐渐成为直觉，潜藏的微械也随之回应。</SSC_Hediff_MasterProgression.description>
+  <SSC_Hediff_MasterProgression.stages.0.label>萌芽</SSC_Hediff_MasterProgression.stages.0.label>
+  <SSC_Hediff_MasterProgression.stages.0.extraTooltip>陌生的直觉悄然萌发。</SSC_Hediff_MasterProgression.stages.0.extraTooltip>
+  <SSC_Hediff_MasterProgression.stages.1.label>觉醒</SSC_Hediff_MasterProgression.stages.1.label>
+  <SSC_Hediff_MasterProgression.stages.1.extraTooltip>原本模糊的低语，渐渐有了含义。</SSC_Hediff_MasterProgression.stages.1.extraTooltip>
+  <SSC_Hediff_MasterProgression.stages.2.label>掌控</SSC_Hediff_MasterProgression.stages.2.label>
+  <SSC_Hediff_MasterProgression.stages.2.extraTooltip>微械开始顺从意志。</SSC_Hediff_MasterProgression.stages.2.extraTooltip>
+  <SSC_Hediff_MasterProgression.stages.3.label>升华</SSC_Hediff_MasterProgression.stages.3.label>
+  <SSC_Hediff_MasterProgression.stages.3.extraTooltip>情欲的馈赠已成为本能。</SSC_Hediff_MasterProgression.stages.3.extraTooltip>
+</LanguageData>

@@ -42,6 +42,14 @@ Direct Master selection is enabled by default. It permits selection without perm
 
 Settings offer two testing/recovery buttons: spawn one seed, or trigger the initial free quest. Spawning places an item directly; the quest button creates a claim quest and cannot duplicate another unfinished claim quest.
 
+Becoming a Master creates a four-stage progression record. Personally completing daily training grants **1 experience**; a complete binding ritual grants **3**. Interruptions grant none, and Trainer Officer work gives no proxy experience to its owner. Fully trained targets still provide practice. View experience in the Master panel; the health tooltip shows descriptions and bonuses. Provisional thresholds are 0/12/40/100. Growth transfers with personality gel. Leaving the Master role preserves experience and suspends bonuses while hiding the entry from the normal health tab. Returning to the role displays the original stage.
+
+The health entry is named “Symbiosis of Desire”, with Budding, Awakening, Command and Ascendance stages. Hover for the stage text and bonuses. The Master panel names the next stage. Crossing a threshold through practice or debug experience produces a message targeting the Master; loading, personality insertion and returning to the Master role do not report level-ups.
+
+The bonuses are Consciousness, Sight, Hearing, Social Impact and Injury Healing. The highest stage grants +40/+30/+30 percentage points, ×1.20 and ×1.50 respectively. Injury Healing accelerates both natural and tended wound recovery.
+
+The Master training tab shows stage, total experience and progress toward the next stage. Hover over the bonus summary for values. Damage sharing is configured here and remains saved in the bridle: without a bridle the toggle is disabled, but a temporary lack of eligible recipients does not prevent changing the preference. The former damage-sharing Gizmo is removed.
+
 ### Step 1: Research Training
 
 `Training` is the entry point for the mod. Complete it before trying to configure pawns.

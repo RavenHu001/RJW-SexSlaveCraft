@@ -524,6 +524,7 @@ internal static class TestWorld
     public static bool ReceiverSucceeds = true, SynchronizeSucceeds = true, Animating = true;
     public static int CombatantProgressAwards, ScoreCalls;
     public static float OutcomeScore, BodyScore, CombatantScore;
+    public static float? DailyScoreOverride;
     public static Action OnDailyOutcome, OnProcessSex;
     public static Action OnTrainerProgress, OnTrainerFeedback;
     public static int RitualOutcomes, RitualLetters;
@@ -544,6 +545,7 @@ internal static class TestWorld
         ProcessSexCalls = DailyOutcomes = DailyCooldowns = TrainerProgressAwards = TrainerFeedbackAwards = 0;
         CombatantProgressAwards = ScoreCalls = 0;
         OutcomeScore = BodyScore = CombatantScore = 0;
+        DailyScoreOverride = null;
         OnDailyOutcome = OnProcessSex = null;
         OnTrainerProgress = OnTrainerFeedback = null;
         RitualOutcomes = RitualLetters = 0;

@@ -26,15 +26,15 @@ namespace Verse
     }
     public partial class Map { public T GetComponent<T>() where T : new() => new T(); }
     public class RaceProperties { public bool Humanlike = true; }
-    public class HediffDef : Def { }
-    public class Hediff { public HediffDef def; public float Severity; }
+    public partial class HediffDef : Def { }
+    public partial class Hediff { public HediffDef def; }
     public class HediffSet
     {
         public List<Hediff> hediffs = new List<Hediff>();
         public Hediff GetFirstHediffOfDef(HediffDef def) => hediffs.FirstOrDefault(h => h.def == def);
         public bool HasHediff(HediffDef def) => GetFirstHediffOfDef(def) != null;
     }
-    public class PawnHealth
+    public partial class PawnHealth
     {
         public HediffSet hediffSet = new HediffSet();
         public void RemoveHediff(Hediff hediff) => hediffSet.hediffs.Remove(hediff);
@@ -110,10 +110,12 @@ namespace SexSlaveCraft
     {
         public Pawn Stored;
         public bool MasterQualificationUnlocked;
+        public float MasterGrowthPoints;
         public void StorePawnData(Pawn pawn)
         {
             Stored = pawn;
             MasterQualificationUnlocked = pawn.TryGetComp<CompSexSlaveTraining>()?.masterQualificationUnlocked == true;
+            MasterGrowthPoints = SSCMasterProgressionUtility.GetExperience(pawn);
             PetExtractionBoundary.Calls.Add("store");
         }
     }

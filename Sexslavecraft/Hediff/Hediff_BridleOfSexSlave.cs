@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,9 +8,9 @@ using RimWorld;
 using Verse;
 
 // EN: This hediff is the master-side handle of the slave bond.
-// EN: It stores the master's bound sex slaves, exposes the share-damage toggle, and keeps the master's resonance field in sync.
+// EN: It stores the master's bound sex slaves and share-damage preference, and keeps the master's resonance field in sync.
 // CN: 这个 Hediff 就是主从绑定里“主人这一侧”的握柄。
-// CN: 它保存主人已经绑定的性奴列表、提供伤害分担开关，并负责让主人的“灵欲共振场”保持同步。
+// CN: 它保存主人已经绑定的性奴列表与伤害分担偏好，并负责让主人的“灵欲共振场”保持同步。
 namespace SexSlaveCraft
 {
     public class Hediff_BridleOfSexSlave : HediffWithComps
@@ -126,19 +126,8 @@ namespace SexSlaveCraft
                 yield return gizmo;
             }
 
-            if (pawn?.Faction != Faction.OfPlayer) yield break;
-
-            yield return new Command_Toggle
-            {
-                defaultLabel = "SSC_MasterShareDamage_Label".Translate(),
-                defaultDesc = "SSC_MasterShareDamage_Desc".Translate(SSCMasterBondUtility.DamageShareRatio.ToStringPercent()),
-                icon = ContentFinder<Texture2D>.Get("UI/Icons/Toggle/Icon_Enabled", true),
-                isActive = () => shareDamageEnabled,
-                toggleAction = delegate
-                {
-                    shareDamageEnabled = !shareDamageEnabled;
-                }
-            };
+            // 伤害分担操作已迁入主人 ITab；保留基类 Gizmo，不再生成第二个开关入口。
+            // shareDamageEnabled 仍由本缰绳按原键保存，ITab 直接读写同一字段。
         }
 
         // EN: Create or reuse the master-side bridle, then attach all provided sex slaves to it.

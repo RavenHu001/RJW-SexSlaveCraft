@@ -27,6 +27,10 @@
     <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCSelfTrainingEligibility.cs" Link="Production/SSCSelfTrainingEligibility.cs" />
     <Compile Include="../TrainerIdentity/RestrictionStubs.cs" Link="RestrictionStubs.cs" />
     <Compile Include="$(SscSourceRoot)/Comps/Comp_Train.MasterQualification.cs" Link="Production/Comp_Train.MasterQualification.cs" />
+    <!-- 完成事件直接写入真实成长 Hediff；不以奖励通知计数替代经验与阶段断言。 -->
+    <Compile Include="$(SscSourceRoot)/Comps/Comp_Train.MasterProgression.cs" Link="Production/Comp_Train.MasterProgression.cs" />
+    <Compile Include="$(SscSourceRoot)/Hediff/Hediff_MasterProgression.cs" Link="Production/Hediff_MasterProgression.cs" />
+    <Compile Include="$(SscSourceRoot)/common/SSCMasterProgressionUtility.cs" Link="Production/SSCMasterProgressionUtility.cs" />
     <Compile Include="$(SscSourceRoot)/common/SSCMasterQualificationUtility.cs" Link="Production/SSCMasterQualificationUtility.cs" />
     <Compile Include="$(SscSourceRoot)/JobDriver/JobDriver_Train.cs" Link="Production/JobDriver_Train.cs" />
     <Compile Include="$(SscSourceRoot)/common/ProgressionEducationCompatibility.cs" Link="Production/ProgressionEducationCompatibility.cs" />

@@ -28,8 +28,13 @@ namespace SexSlaveCraft
             }
 
             GenSpawn.Spawn(slime, victim.Position, victim.Map);
-            // 资格已经进入成功生成的凝胶；空壳不能继续保留同一人格的资格。
-            if (comp != null) SSCMasterQualificationUtility.ClearPersonalityQualification(victim);
+            // 资格与成长已进入成功生成的凝胶，再清原身体并写当前成长版本。
+            // 空壳即使保留主人身份，也不能在以后读档时补回转走的记录。
+            if (comp != null)
+            {
+                SSCMasterQualificationUtility.ClearPersonalityQualification(victim);
+                SSCMasterProgressionUtility.ClearPersonalityRecord(victim);
+            }
             // 步骤 3：剥离社交身份，让身体真正进入空壳状态。
             if (victim.relations != null) victim.relations.ClearAllRelations();
 
@@ -58,7 +63,10 @@ namespace SexSlaveCraft
         public static void CleanConsumerData(Pawn consumer)
         {
             if (consumer == null) return;
+            // 清宿主时同时封住旧档补建，且必须早于下面的普通身份清理；
+            // 后续若来源没有成长，空记录就是植入的最终结果。
             SSCMasterQualificationUtility.ClearPersonalityQualification(consumer);
+            SSCMasterProgressionUtility.ClearPersonalityRecord(consumer);
             // 清理准备接收人格的身体，移除残留恶堕、性奴特质和锁链状态。
             if (consumer.needs != null)
             {
@@ -128,9 +136,18 @@ namespace SexSlaveCraft
                 return false;
             }
             data.NormalizeMasterQualification();
+            // 植入和旧凝胶加工副本都可能尚未经过读档，修改宿主前先解释独立成长版本。
+            data.NormalizeMasterProgressionSnapshot();
             if (data.masterQualificationUnlocked && consumer.TryGetComp<CompSexSlaveTraining>() == null)
             {
                 Log.Error("[SSC] Personality insertion cannot preserve Master qualification without an SSC training component.");
+                return false;
+            }
+
+            // 手动主人可能没有永久资格但有成长，必须在清空身体前独立预检。
+            if (data.masterGrowthPoints >= 0f && !SSCMasterProgressionUtility.CanCarryRecord(consumer))
+            {
+                Log.Error("[SSC] Personality insertion cannot preserve Master progression in this body.");
                 return false;
             }
 
@@ -203,6 +220,13 @@ namespace SexSlaveCraft
                         return false;
                     }
                 }
+                // 身份恢复成功后再重建来源成长；同为主人也不能跳过此步骤。
+                // 无记录来源保持清空，退出主人后的来源则恢复暂停记录；通用标签不能取最大值覆盖它。
+                if (!SSCMasterProgressionUtility.RestoreRecord(consumer, data.masterGrowthPoints))
+                {
+                    Log.Error("[SSC] Personality insertion could not restore the saved Master progression.");
+                    return false;
+                }
                 // 步骤 6：重建锁链，让主从系统继续知道当前绑定的主人。
                 if (data.chainHediffData?.masterPawn != null && consumer.health != null &&
                     SSCBondUtility.Bind(data.chainHediffData.masterPawn, consumer, true))
@@ -248,6 +272,10 @@ namespace SexSlaveCraft
                     {
                         HediffDef hediffDef = tag.Key;
                         float severity = tag.Value;
+
+                        // 主人经验已由专用标量恢复；跳过历史或外部加入的同名标签，
+                        // 防止下方通用最大值合并把无记录或低经验再次替换为宿主旧高经验。
+                        if (SSCMasterProgressionUtility.IsProgressionDef(hediffDef)) continue;
 
                         if (hediffDef == SSCDefOf.SSC_Hediff_Bus || hediffDef == SSCDefOf.SSC_Hediff_Bus_Final)
                         {

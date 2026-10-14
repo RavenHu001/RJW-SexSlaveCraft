@@ -142,7 +142,11 @@ namespace SexSlaveCraft
             float contentWidth = trainingRect.width - 18f;
             TrainerIdentityView identityView = BuildTrainerIdentityView(pawn, comp, contentWidth);
             float specializationHeight = GetSpecializationSectionHeight(pawn, comp, contentWidth);
-            float contentHeight = CalculateContentHeight(pawn, comp, identityView.SectionHeight, specializationHeight, contentWidth);
+            // 主人信息同样只测量本次事件一次；绘制和滚动高度共用快照，界面不补建成长或缰绳。
+            MasterPanelView masterView = comp.pawnIdentity == PawnIdentity.Master
+                ? BuildMasterPanelView(pawn, comp, contentWidth) : default(MasterPanelView);
+            float contentHeight = CalculateContentHeight(pawn, comp, identityView.SectionHeight, specializationHeight,
+                contentWidth, masterView.SectionHeight);
             Rect viewRect = trainingRect;
             Rect contentRect = new Rect(0f, 0f, contentWidth, contentHeight);
 
@@ -164,7 +168,7 @@ namespace SexSlaveCraft
 
                 if (comp.pawnIdentity == PawnIdentity.Master)
                 {
-                    DrawMessageSection(new Rect(0f, curY, contentRect.width, 78f), Strings.ITab_AlreadyMaster, Color.cyan);
+                    DrawMasterPanel(new Rect(0f, curY, contentRect.width, masterView.SectionHeight), masterView);
                 }
                 else if (comp.pawnIdentity == PawnIdentity.Unset)
                 {
@@ -199,12 +203,15 @@ namespace SexSlaveCraft
         }
 
         /// <summary>为身份、限制展开入口及当前可见各节累计滚动高度，保持按钮和后续内容均可滚动访问。</summary>
-        private static float CalculateContentHeight(Pawn pawn, CompSexSlaveTraining comp, float identityHeight, float specializationHeight, float width)
+        private static float CalculateContentHeight(Pawn pawn, CompSexSlaveTraining comp, float identityHeight,
+            float specializationHeight, float width, float masterHeight)
         {
             float height = identityHeight + RestrictionToggleHeight + RestrictionToggleSpacing
                 + SectionSpacing + specializationHeight;
 
-            if (comp.pawnIdentity == PawnIdentity.Master || comp.pawnIdentity == PawnIdentity.Unset)
+            // 主人分支使用实际测量，未选择身份仍保留原来的恢复入口及高度。
+            if (comp.pawnIdentity == PawnIdentity.Master) return height + masterHeight + 6f;
+            if (comp.pawnIdentity == PawnIdentity.Unset)
             {
                 if (SSCIdentityUtility.CanRestoreLegacySlaveIdentity(pawn))
                     return height + GetLegacyIdentityRecoveryHeight(width) + 6f;

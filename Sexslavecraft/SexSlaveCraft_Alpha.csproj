@@ -91,6 +91,13 @@
     <Compile Include="common\Restrictions\SSCRestrictionUI.cs" />
     <Compile Include="Comps\Comp_Train.TrainerIdentity.cs" />
     <Compile Include="Comps\Comp_Train.MasterQualification.cs" />
+    <!-- 主人第二步第一批：单值成长、身份启停、人格快照与一次性迁移。 -->
+    <Compile Include="Comps\Comp_Train.MasterProgression.cs" />
+    <Compile Include="Comps\CompPersonalityStore.MasterProgression.cs" />
+    <Compile Include="Hediff\Hediff_MasterProgression.cs" />
+    <Compile Include="common\SSCMasterProgressionUtility.cs" />
+    <Compile Include="common\SSCMasterProgressionMigration.cs" />
+    <Compile Include="common\SSCMasterProgressionGameComponent.cs" />
     <Compile Include="common\SSCSettings.MasterQualification.cs" />
     <Compile Include="common\SSCMasterQualificationUtility.cs" />
     <Compile Include="common\SSCMasterQualificationDisplay.cs" />
@@ -207,6 +214,7 @@
     <Compile Include="ITab\ITab_PES.cs" />
     <Compile Include="ITab\ITab_SexSlaveTraining.cs" />
     <Compile Include="ITab\ITab_SexSlaveTraining.SpecializationDisplay.cs" />
+    <Compile Include="ITab\ITab_SexSlaveTraining.MasterPanel.cs" />
     <Compile Include="JobDriver\JobDriver_PE.cs" />
     <Compile Include="Recipe\Recipe_PEMake.cs" />
     <Compile Include="ThePatches\Harmony_CorruptionRapeThoughts.cs" />

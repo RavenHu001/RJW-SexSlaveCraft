@@ -33,7 +33,7 @@ namespace SexSlaveCraft
             Scribe_Values.Look(ref hasSceneRecord, "sscDailySceneRecord", false);
             Scribe_Values.Look(ref sceneStarted, "sscDailySceneStarted", false);
             // 沿用旧特化奖励存档键。现统一认领整次日常结算，避免重复 ProcessSex、
-            // 评分或特化发奖；旧档中已领取的任务也不会在升级后补发战斗员经验。
+            // 评分或特化发奖；旧档中已领取的任务也不会在升级后补发主人等新增经验。
             Scribe_Values.Look(ref dailyOutcomeClaimed, "sscTrainerProgressAwarded", false);
             // 行走中的存档可能已经停在 Goto toil，却没有活动寻路。
             // 保留有限重试次数，读档后继续修复而不会无限挂在同一任务。
@@ -371,6 +371,13 @@ namespace SexSlaveCraft
             if (!ValidateTargetIdentityOrAbort(context, target)) return;
             // 职责反馈独立于普通经验：满进度及有效终极训导官也能获得完成记忆。
             TrainerOfficerFeedback.NotifyTrainingCompleted(pawn, target);
+            if (!ValidateTargetIdentityOrAbort(context, target)) return;
+
+            // 本次评分与原有收益已完成，再给实际执行者固定主人经验，避免升阶影响本次评分。
+            // 不读取受训者经验增量，满进度对象仍可提供实践；训导官代劳不会转记给绑定主人。
+            // 整次认领沿用 dailyOutcomeClaimed，统一入口只奖励已有记录的当前有效主人。
+            SSCMasterProgressionUtility.TryAddExperience(pawn, SSCMasterProgressionUtility.DailyTrainingExperience);
+            // 跨阶段会通知健康并可能触发外部回调；旧任务不可继续操作替换后的任务或目标。
             if (!ValidateTargetIdentityOrAbort(context, target)) return;
 
             string finalSexType = props != null ? props.sexType.ToString() : "null";
