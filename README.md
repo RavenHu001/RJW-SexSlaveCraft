@@ -22,7 +22,9 @@ RimWorld 1.6 的 RimJobWorld（RJW）扩展模组，基于上游 **2.2.8** 继�
 
 当前阶段加成调整为意识、视觉、听觉、社交影响及伤口愈合，最高阶段为 +40／+30／+30 个百分点、×1.20／×1.50；2026-10-13 维护者实机确认五项加成及文案显示符合预期。Progression now boosts Consciousness, Sight, Hearing, Social Impact and Injury Healing; highest-stage values are +40/+30/+30 percentage points, ×1.20 and ×1.50. On 2026-10-13, the maintainer confirmed that the five bonuses and text display work as expected in-game.
 
-健康悬停仅显示设定、阶段短句及加成；成长经验和区间进度只在主人面板显示。此显示精简已提交为 `66b9a13`，尚未同步本机游戏目录或获实机确认。此前五项加成及文案已在 `84a0079` 获确认并提交。 Health tooltips show descriptions, stage text and bonuses; experience and progress appear only in the Master panel. This display cleanup is committed as `66b9a13` and awaits local game synchronization and in-game confirmation. The five-bonus adjustment was previously confirmed and committed as `84a0079`.
+健康悬停仅显示设定、阶段短句及加成；成长经验和区间进度只在主人面板显示。此显示精简已提交为 `66b9a13`，已与本轮退出身份隐藏版本一同同步游戏目录。此前五项加成及文案已在 `84a0079` 获确认并提交。 Health tooltips show descriptions, stage text and bonuses; experience and progress appear only in the Master panel. This display cleanup is committed as `66b9a13` and was synchronized with the inactive-entry hiding update. The five-bonus adjustment was previously confirmed and committed as `84a0079`.
+
+退出主人身份后，普通健康页隐藏欲望共生，重新成为主人时显示原阶段与经验。2026-10-13 维护者实机确认符合预期，提交为 `018752d`。Leaving the Master role hides Symbiosis of Desire from the normal health tab; returning restores the original stage and experience. The maintainer confirmed this behavior on 2026-10-13; committed as `018752d`.
 
 上述内容尚未包含于正式 2.3.9 下载；实施、验收与同步状态见[开发记录索引](Docs/Development/README.md)。
 
