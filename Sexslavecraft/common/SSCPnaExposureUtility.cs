@@ -40,7 +40,24 @@ namespace SexSlaveCraft
         public static bool IsRootedLoadDef(HediffDef def) => def != null && def.defName == RootedLoadDefName;
         public static bool IsBodyLoadDef(HediffDef def) => IsLoadDef(def) || IsRootedLoadDef(def);
         public static bool IsAddictionDef(HediffDef def) => def != null && def.defName == AddictionDefName;
-        public static bool IsBodyStateDef(HediffDef def) => IsBodyLoadDef(def) || IsAddictionDef(def);
+        /// <summary>人格与 SSC 克隆共用的身体排除清单；不改变负荷输入或成瘾分类。</summary>
+        public static bool IsBodyStateDef(HediffDef def)
+        {
+            if (IsBodyLoadDef(def) || IsAddictionDef(def)) return true;
+            // 临时强化、抗性快照和产出进度也留在当前身体，不随人格或来源复制。
+            // 使用明确 DefName，避免把描述中提到纳米机械的人格专精一并排除。
+            switch (def?.defName)
+            {
+                case "Hediff_PNA_Combat_Buff":
+                case "Hediff_PNA_Combat_Buff_Plus":
+                case "Hediff_PNA_Consciousness_Record":
+                case "SSC_Purple_HyperLactation":
+                case "SSC_Hediff_RabbitCloneLowPNA":
+                    return true;
+                default:
+                    return false;
+            }
+        }
 
         // 以下查询只读取当前健康／需求实例，不补算清除、不创建需求或依赖。
         public static Hediff GetAddiction(Pawn pawn)

@@ -349,7 +349,7 @@
   <HediffDef>
     <defName>SSC_Purple_HyperLactation</defName> 
     <label>催情纳米液产出(阴道)</label>
-    <description>该生物的全身腺体正在活跃地分泌特殊的紫色纳米液，经血液传输后达到阴道处。</description>
+    <description>该生物的全身腺体正在活跃地分泌特殊的紫色纳米液，经血液传输后达到阴道处。该状态仅属于当前身体，不随人格迁移，也不由克隆体继承。</description>
     <hediffClass>HediffWithComps</hediffClass>
     <tendable>false</tendable>
     <everCurableByItem>false</everCurableByItem>

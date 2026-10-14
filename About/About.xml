@@ -6,8 +6,8 @@
 		<li>1.6</li>
 	</supportedVersions>
 	<packageId>rjw.sexslavecraft.TieJinVer</packageId>
-    <description>开发测试版：PNA P2 渴求、来源与恢复；尚待实机验收，未正式发布。
-Development test build: PNA P2 dependence, exposure and recovery; in-game verification pending.
+    <description>开发测试版：PNA P3 身体归属、人格与克隆兼容；本批已获实机有效确认，未正式发布。
+Development test build: PNA P3 body ownership, personality and clone compatibility; this batch was confirmed working in game and remains unpublished.
 
 SexSlaveCraft 2.4.0 (TieJin Modify)
 欲望之种与主人成长：新增个人主人资格、一次性免费领取任务及任务／遗迹稀有来源。默认允许直接手动选择主人；关闭该设置后须先取得资格。欲望之种赋予永久资格，不自动改变身份；有 Royalty 时同时补齐“调教”的研究蓝图，研究仍需正常完成，原版蓝图保留为独立研究来源。

@@ -6,10 +6,10 @@ using System.Runtime.CompilerServices;
 // 仅模拟健康接口、组件调度、字段保存与 Harmony 目标；不替代 Unity 能力计算或真实 Scribe。
 namespace Verse
 {
-    public class Thing { public bool Destroyed, Discarded; public ThingDef def; public object Comp; public T TryGetComp<T>() where T : class => Comp as T; }
-    public class ThingDef { public IngestibleProperties ingestible = new IngestibleProperties(); }
+    public partial class Thing { public bool Destroyed, Discarded; public ThingDef def; public object Comp; public T TryGetComp<T>() where T : class => Comp as T; }
+    public class ThingDef { public string defName, label; public IngestibleProperties ingestible = new IngestibleProperties(); }
     public class IngestibleProperties { public List<RimWorld.IngestionOutcomeDoer> outcomeDoers = new List<RimWorld.IngestionOutcomeDoer>(); }
-    public class Pawn : Thing
+    public partial class Pawn : Thing
     {
         public bool Dead, Suspended, IsSlave;
         public float Corruption;
@@ -20,14 +20,14 @@ namespace Verse
         public bool IsHashIntervalTick(int interval,int delta)=>NativeTicks%interval<delta;
         public float BodySize = 1f, ChemicalEffectFactor = 1f;
         public object DrawPos => null;
-        public object Map => null;
+        public Map Map;
         public RaceProperties RaceProps = new RaceProperties();
         public Pawn_HealthTracker health;
         public RimWorld.Pawn_NeedsTracker needs;
         public Pawn() { health = new Pawn_HealthTracker(this); needs = new RimWorld.Pawn_NeedsTracker(this); }
     }
-    public class RaceProperties { public bool IsFlesh = true; }
-    public class HediffDef
+    public class RaceProperties { public bool IsFlesh = true, Humanlike = true; }
+    public partial class HediffDef
     {
         public string defName;
         public float initialSeverity = 0.01f, maxSeverity = 2f;
@@ -80,6 +80,7 @@ namespace Verse
     public class Hediff
     {
         public Pawn pawn;
+        public BodyPartRecord Part;
         public HediffDef def;
         public float RawSeverity;
         public virtual int CurStageIndex => Array.FindLastIndex(def.thresholds, threshold => RawSeverity >= threshold);
@@ -99,8 +100,9 @@ namespace Verse
     {
         public List<HediffComp> comps = new List<HediffComp>();
         public T GetComp<T>() where T : HediffComp => comps.OfType<T>().FirstOrDefault();
+        public T TryGetComp<T>() where T : HediffComp => GetComp<T>();
     }
-    public class HediffSet { public List<Hediff> hediffs = new List<Hediff>(); public Hediff GetFirstHediffOfDef(HediffDef def)=>hediffs.FirstOrDefault(h=>h.def==def); }
+    public class HediffSet { public List<Hediff> hediffs = new List<Hediff>(); public Hediff GetFirstHediffOfDef(HediffDef def)=>hediffs.FirstOrDefault(h=>h.def==def); public bool HasHediff(HediffDef def)=>GetFirstHediffOfDef(def)!=null; }
     public class Pawn_HealthTracker
     {
         public readonly Pawn Pawn;
@@ -111,6 +113,7 @@ namespace Verse
         public Pawn_HealthTracker(Pawn pawn) { Pawn = pawn; }
         public void AddHediff(Hediff hediff) => AddHediff(hediff, null, null, null);
         public Hediff AddHediff(HediffDef def) { var h=HediffMaker.MakeHediff(def,Pawn);AddHediff(h);return h; }
+        public Hediff AddHediff(HediffDef def, BodyPartRecord part) { var h=HediffMaker.MakeHediff(def,Pawn);h.Part=part;AddHediff(h);return h; }
         [MethodImpl(MethodImplOptions.NoInlining)]
         public void AddHediff(Hediff hediff, BodyPartRecord part, DamageInfo? dinfo, DamageWorker.DamageResult result)
         {
@@ -174,6 +177,7 @@ namespace Verse
             var record = new HediffWithComps { def = def, pawn = pawn, RawSeverity = def.initialSeverity };
             if (def.HasPnaComp) record.comps.Add(new SexSlaveCraft.HediffComp_SSCPnaLoad { parent = record, props = new SexSlaveCraft.HediffCompProperties_SSCPnaLoad() });
             if (def.HasRecoveryComp) record.comps.Add(new HediffComp_SeverityPerDay { parent = record, props = def.CompProps<HediffCompProperties_SeverityPerDay>(),severityPerDay=-.1f });
+            if (def.defName == "SSC_Hediff_RabbitCloneLink") record.comps.Add(new SexSlaveCraft.HediffComp_RabbitCloneLink { parent = record });
             return record;
         }
     }
@@ -189,7 +193,7 @@ namespace Verse
     }
     public class Game { }
     public class GameComponent { public GameComponent() { } public virtual void FinalizeInit() { } }
-    public static class Find { public static Selector Selector = new Selector(); }
+    public static partial class Find { public static Selector Selector = new Selector(); }
     public class Selector { public Thing SingleSelectedThing; }
     public static class Messages
     {
@@ -206,10 +210,12 @@ namespace Verse
 }
 namespace RimWorld
 {
-    public class Pawn_NeedsTracker
+    public partial class Pawn_NeedsTracker
     {
         private readonly Verse.Pawn pawn;
         public bool AllowPnaNeed = true;
+        // 模拟除成瘾外的合法需求来源，用于验证新生不沿用复制值，而成熟保留自身合法值。
+        public bool OtherPnaNeedSource;
         private Need_Chemical chemicalNeed;
         public float? PnaNeed
         {
@@ -222,16 +228,17 @@ namespace RimWorld
         public void AddOrRemoveNeedsAsAppropriate()
         {
             Refreshes++;
-            if (!pawn.health.hediffSet.hediffs.Any(h => SexSlaveCraft.SSCPnaExposureUtility.IsAddictionDef(h.def))) PnaNeed = null;
-            else if(AllowPnaNeed && chemicalNeed==null) chemicalNeed=new Need_Chemical{CurLevel=.8f};
+            if (!AllowPnaNeed || !OtherPnaNeedSource && !pawn.health.hediffSet.hediffs.Any(h => SexSlaveCraft.SSCPnaExposureUtility.IsAddictionDef(h.def))) PnaNeed = null;
+            else if(chemicalNeed==null) chemicalNeed=new Need_Chemical{CurLevel=.8f};
         }
     }
     public class NeedDef { public string defName; }
     public enum DrugDesireCategory { Satisfied, Desire, Withdrawal }
-    public class Need_Chemical
+    public class Need_Chemical : Need
     {
-        public float CurLevel;
-        public float MaxLevel=>1f;
+        public int Initializations;
+        // 原版随机 80%～100% 的固定边界值，测试不复刻随机分布。
+        public void SetInitialLevel() { Initializations++; CurLevel=.8f; }
         public DrugDesireCategory CurCategory=>CurLevel>.1f?DrugDesireCategory.Satisfied:CurLevel>.01f?DrugDesireCategory.Desire:DrugDesireCategory.Withdrawal;
     }
     public abstract class IngestionOutcomeDoer
@@ -275,7 +282,7 @@ namespace RimWorld
         }
     }
     public class MessageTypeDef { }
-    public static class MessageTypeDefOf { public static MessageTypeDef RejectInput = new MessageTypeDef(), NeutralEvent = new MessageTypeDef(), NegativeHealthEvent = new MessageTypeDef(); }
+    public static class MessageTypeDefOf { public static MessageTypeDef RejectInput = new MessageTypeDef(), NeutralEvent = new MessageTypeDef(), NegativeHealthEvent = new MessageTypeDef(), PositiveEvent = new MessageTypeDef(); }
 }
 namespace LudeonTK
 {
@@ -288,7 +295,7 @@ namespace LudeonTK
 }
 namespace SexSlaveCraft
 {
-    public static class SSCDefOf { public static Verse.HediffDef SSC_PnaLoad, SSC_PnaRootedLoad, SSC_PnaAddiction; public static RimWorld.NeedDef SSC_PnaNeed; }
+    public static class SSCDefOf { public static Verse.HediffDef SSC_PnaLoad, SSC_PnaRootedLoad, SSC_PnaAddiction, SSC_PersonalityExcreting, SSC_PersonalityExcreted_Done; public static RimWorld.NeedDef SSC_PnaNeed; public static RimWorld.TraitDef SexSlaveTrait; }
     public class Hediff_ChainOfSexSlave : Verse.Hediff
     {
         public Verse.Pawn LinkedPawn;
@@ -313,5 +320,5 @@ namespace SexSlaveCraft
 }
 namespace UnityEngine
 {
-    public static class Mathf { public static float Max(float first,float second)=>Math.Max(first,second); }
+    public static class Mathf { public static float Max(float first,float second)=>Math.Max(first,second); public static float Clamp01(float value)=>Math.Clamp(value,0f,1f); }
 }

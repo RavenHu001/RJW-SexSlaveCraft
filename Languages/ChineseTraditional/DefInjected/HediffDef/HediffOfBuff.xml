@@ -7,15 +7,15 @@
   <SSC_MasterBondEmpowerment.stages.2.label>霧狀</SSC_MasterBondEmpowerment.stages.2.label>
   <SSC_MasterBondEmpowerment.stages.3.label>無形</SSC_MasterBondEmpowerment.stages.3.label>
   <Hediff_PNA_Combat_Buff.label>戰鬥催情強化</Hediff_PNA_Combat_Buff.label>
-  <Hediff_PNA_Combat_Buff.description>在紫色奈米機械的催情下，性奴體內的細胞開始活躍，躁動，增加其戰鬥能力。</Hediff_PNA_Combat_Buff.description>
+  <Hediff_PNA_Combat_Buff.description>在紫色奈米機械的催情下，性奴體內的細胞開始活躍，躁動，增加其戰鬥能力。此狀態僅屬於目前身體，不隨人格遷移，也不由複製體繼承。</Hediff_PNA_Combat_Buff.description>
   <Hediff_PNA_Combat_Buff_Plus.label>戰鬥催情強化（濃縮）</Hediff_PNA_Combat_Buff_Plus.label>
-  <Hediff_PNA_Combat_Buff_Plus.description>在濃縮紫色奈米機械的強力催情下，性奴體內的潛能被大幅激發。</Hediff_PNA_Combat_Buff_Plus.description>
+  <Hediff_PNA_Combat_Buff_Plus.description>在濃縮紫色奈米機械的強力催情下，性奴體內的潛能被大幅激發。此狀態僅屬於目前身體，不隨人格遷移，也不由複製體繼承。</Hediff_PNA_Combat_Buff_Plus.description>
   <Hediff_PNA_Debuff.label>PNA 負荷</Hediff_PNA_Debuff.label>
-  <Hediff_PNA_Debuff.description>體內紫色奈米機械會強烈催情。從微量開始即干擾操控、移動與意識，隨負荷階段逐檔加重，同時抑制疼痛；侵蝕階段開始出現感官失真，以視覺與聽覺能力下降模擬幻視、幻聽。末期因強烈高潮導致意識受限、暈倒。停止補充後負荷隨有效健康更新逐漸清除，冷凍和暫停時間不補算。</Hediff_PNA_Debuff.description>
+  <Hediff_PNA_Debuff.description>體內紫色奈米機械會強烈催情。從微量開始即干擾操控、移動與意識，隨負荷階段逐檔加重，同時抑制疼痛；侵蝕階段開始出現感官失真，以視覺與聽覺能力下降模擬幻視、幻聽。末期因強烈高潮導致意識受限、暈倒。停止補充後負荷隨有效健康更新逐漸清除，冷凍和暫停時間不補算。此狀態僅屬於目前身體，不隨人格遷移，也不由複製體繼承。</Hediff_PNA_Debuff.description>
   <Hediff_PNA_Debuff.stages.0.label>微量</Hediff_PNA_Debuff.stages.0.label>
   <Hediff_PNA_Debuff.stages.1.label>活躍</Hediff_PNA_Debuff.stages.1.label>
   <Hediff_PNA_Consciousness_Record.label>抗性快照</Hediff_PNA_Consciousness_Record.label>
-  <Hediff_PNA_Consciousness_Record.description>用於記錄目標面對激素時的最高意識水平（你大抵應該不可能一定必須看到這個）。</Hediff_PNA_Consciousness_Record.description>
+  <Hediff_PNA_Consciousness_Record.description>用於記錄目標面對激素時的最高意識水平（你大抵應該不可能一定必須看到這個）。此狀態僅屬於目前身體，不隨人格遷移，也不由複製體繼承。</Hediff_PNA_Consciousness_Record.description>
   <SSC_PostExcretionComa.label>人格排洩適應症</SSC_PostExcretionComa.label>
   <SSC_PostExcretionComa.description>由於人格被強行抽出，大腦和神經系統正在經歷嚴重的重組與空白期，初始人格正在接手身體控制權。</SSC_PostExcretionComa.description>
   <SSC_PostExcretionComa.stages.0.label>深度宕機</SSC_PostExcretionComa.stages.0.label>
@@ -26,6 +26,6 @@
   <Hediff_PNA_Debuff.stages.3.label>深度影響</Hediff_PNA_Debuff.stages.3.label>
   <Hediff_PNA_Debuff.stages.4.label>末期過載</Hediff_PNA_Debuff.stages.4.label>
   <SSC_Hediff_PnaRootedLoad.label>性奴 PNA 負荷</SSC_Hediff_PnaRootedLoad.label>
-  <SSC_Hediff_PnaRootedLoad.description>已紮根身體的紫色奈米機械負荷。綁定與解綁保留同一負荷數值；綁定清除普通 PNA 依賴。目前不施加普通負荷的能力懲罰，完整正面效果仍待後續開發。</SSC_Hediff_PnaRootedLoad.description>
+  <SSC_Hediff_PnaRootedLoad.description>已紮根身體的紫色奈米機械負荷。綁定與解綁保留同一負荷數值；綁定清除普通 PNA 成癮。目前不施加普通負荷的能力懲罰，完整正面效果仍待後續開發。此狀態僅屬於目前身體，不隨人格遷移，也不由複製體繼承。</SSC_Hediff_PnaRootedLoad.description>
   <SSC_Hediff_PnaRootedLoad.stages.0.label>紮根</SSC_Hediff_PnaRootedLoad.stages.0.label>
 </LanguageData>

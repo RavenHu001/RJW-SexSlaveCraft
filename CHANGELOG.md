@@ -6,6 +6,8 @@ This continuation builds on upstream **2.2.8**, the baseline when upstream devel
 
 ## [未发布 / Unreleased]
 
+- **PNA P3 身体归属测试批 / PNA P3 body ownership test batch:** PNA 负荷、成瘾、临时强化、抗性快照及产出状态仅属于当前身体；人格不搬迁，SSC 新生克隆不继承来源状态，成熟保留自身状态与满足度，并按最终有效链协调。沿用原版需求准入与空壳更新；不新增缓存、计时器、保存字段或补丁。维护者已确认本批实机有效并批准提交；后续玩法效果仍待补全。PNA states remain with their physical body through personality transfer and SSC cloning; native needs and existing chain protection are retained. This batch was confirmed working in game; broader gameplay effects remain pending; see [P3 testing notes](Docs/Development/Verification/PNA机制重置P3实现与测试.md).
+
 - **PNA 成瘾与末期强化 / PNA addiction and terminal reinforcement:** 玩家名称改为成瘾，完整断供恢复约 10 天。普通／浓缩基础成瘾增量 +0.1／+0.2，已有成瘾在真实末期输入后额外 +0.2；调试和首次建立除外。原版恢复与服药继续复用，不增加缓存或补丁；维护者已确认有效并批准提交。Uses addiction terminology, a ten-day recovery cycle, and stronger reinforcement from terminal-load exposure.
 
 - **PNA 状态刷新优化 / PNA state refresh optimization:** 稳态刷新改为一次遍历，发现重复记录才分配清理快照；清依赖不再额外重复刷新需求。保留原回调核对及即时移除通知，无新缓存、补丁或机制改动；维护者已确认服药与绑定／解绑正常。Reduces temporary allocations and redundant need refreshes while preserving callback checks and immediate removal notifications. Ingestion and binding/unbinding were confirmed working in game.

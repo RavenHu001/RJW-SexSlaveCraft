@@ -87,7 +87,7 @@
   <HediffDef>
     <defName>Hediff_PNA_Combat_Buff</defName>
     <label>战斗催情强化</label>
-    <description>在紫色纳米机械的催情下，性奴体内的细胞开始活跃，躁动，增加其战斗能力。</description>
+    <description>在紫色纳米机械的催情下，性奴体内的细胞开始活跃，躁动，增加其战斗能力。该状态仅属于当前身体，不随人格迁移，也不由克隆体继承。</description>
     
     <hediffClass>HediffWithComps</hediffClass>
     <tendable>false</tendable>
@@ -122,7 +122,7 @@
   <HediffDef>
     <defName>Hediff_PNA_Combat_Buff_Plus</defName>
     <label>战斗催情强化（浓缩）</label>
-    <description>在浓缩紫色纳米机械的强力催情下，性奴体内的潜能被大幅激发。</description>
+    <description>在浓缩紫色纳米机械的强力催情下，性奴体内的潜能被大幅激发。该状态仅属于当前身体，不随人格迁移，也不由克隆体继承。</description>
     
     <hediffClass>HediffWithComps</hediffClass>
     <tendable>false</tendable>
@@ -157,7 +157,7 @@
   <HediffDef>
     <defName>Hediff_PNA_Debuff</defName>
     <label>PNA 负荷</label>
-    <description>体内紫色纳米机械会强烈催情。从微量开始即干扰操控、移动与意识，随负荷阶段逐档加重，同时抑制疼痛；侵蚀阶段开始出现感官失真，以视觉与听觉能力下降模拟幻视、幻听。末期因强烈高潮导致意识受限、晕倒。停止补充后负荷随有效健康更新逐渐清除，冷冻和暂停时间不补算。</description>
+    <description>体内紫色纳米机械会强烈催情。从微量开始即干扰操控、移动与意识，随负荷阶段逐档加重，同时抑制疼痛；侵蚀阶段开始出现感官失真，以视觉与听觉能力下降模拟幻视、幻听。末期因强烈高潮导致意识受限、晕倒。停止补充后负荷随有效健康更新逐渐清除，冷冻和暂停时间不补算。该状态仅属于当前身体，不随人格迁移，也不由克隆体继承。</description>
     <hediffClass>HediffWithComps</hediffClass>
     <tendable>false</tendable>
     <everCurableByItem>false</everCurableByItem>
@@ -241,7 +241,7 @@
   <HediffDef>
     <defName>SSC_Hediff_PnaRootedLoad</defName>
     <label>性奴 PNA 负荷</label>
-    <description>已扎根身体的紫色纳米机械负荷。绑定与解绑保留同一负荷数值；绑定清除普通 PNA 依赖。当前不施加普通负荷的能力惩罚，完整正面效果仍待后续开发。</description>
+    <description>已扎根身体的紫色纳米机械负荷。绑定与解绑保留同一负荷数值；绑定清除普通 PNA 成瘾。当前不施加普通负荷的能力惩罚，完整正面效果仍待后续开发。该状态仅属于当前身体，不随人格迁移，也不由克隆体继承。</description>
     <hediffClass>HediffWithComps</hediffClass>
     <tendable>false</tendable>
     <everCurableByItem>false</everCurableByItem>
@@ -279,7 +279,7 @@
   <HediffDef>
     <defName>Hediff_PNA_Consciousness_Record</defName>
     <label>抗性快照</label>
-    <description>用于记录目标面对激素时的最高意识水平（你大抵应该不可能一定必须看到这个）。</description>
+    <description>用于记录目标面对激素时的最高意识水平（你大抵应该不可能一定必须看到这个）。该状态仅属于当前身体，不随人格迁移，也不由克隆体继承。</description>
     <isBad>false</isBad>
     <tendable>false</tendable>
     <everCurableByItem>false</everCurableByItem>

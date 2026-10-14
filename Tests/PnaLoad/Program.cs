@@ -83,6 +83,7 @@ internal static partial class Program
         foreach(string language in new[]{"ChineseSimplified","ChineseTraditional","English","Russian"})
             Run("四语 PNA 标签与占位符 " + language, () => Localization(language));
         RunP2Tests();
+        RunP3Tests();
         Console.WriteLine($"结果：{passed}/{passed+failed} 项通过。");
         return failed==0 ? 0:1;
     }

@@ -272,7 +272,7 @@ namespace SexSlaveCraft
                     {
                         HediffDef hediffDef = tag.Key;
                         float severity = tag.Value;
-                        // PNA 负荷与依赖只属于身体，历史／外部凝胶中的同类标签也不恢复。
+                        // 全部 PNA 身体状态留在宿主，历史／外部凝胶中的同类标签也不恢复。
                         // 宿主原有记录及 Need_PNA 值由身体保留，不参与下方最大值合并。
                         if (SSCPnaExposureUtility.IsBodyStateDef(hediffDef)) continue;
 
@@ -353,6 +353,11 @@ namespace SexSlaveCraft
                 // 只携带绝对结束时间，不复制原身体的 Ability 实例或临时激励。
                 PetCatAbilityUtility.RestoreCooldown(consumer, data.petCatComfortCooldownEndTick);
                 PetDogAbilityUtility.RestoreCooldown(consumer, data.petDogTameCooldownEndTick);
+
+                // 身份、锁链、专精及其健康回调全部完成后，按当前身体的最终有效链核对 PNA。
+                // 不从凝胶恢复负荷／成瘾或补充需求；仍合法存在的需求保留宿主自己的满足度。
+                SSCPnaExposureUtility.RefreshBodyState(consumer);
+                consumer.needs?.AddOrRemoveNeedsAsAppropriate();
 
                 Messages.Message(Strings.Message_PersonalityFusionComplete(consumer.LabelShort, data.nickName), consumer, MessageTypeDefOf.NeutralEvent);
 

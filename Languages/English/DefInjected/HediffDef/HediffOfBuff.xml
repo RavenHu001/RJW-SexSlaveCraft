@@ -7,15 +7,15 @@
   <SSC_MasterBondEmpowerment.stages.2.label>Diffuse</SSC_MasterBondEmpowerment.stages.2.label>
   <SSC_MasterBondEmpowerment.stages.3.label>Formless</SSC_MasterBondEmpowerment.stages.3.label>
   <Hediff_PNA_Combat_Buff.label>PNA Combat Enhancement</Hediff_PNA_Combat_Buff.label>
-  <Hediff_PNA_Combat_Buff.description>Under purple nanomachine aphrodisiac stimulation, a sex slave's cells become active and agitated, increasing combat capability.</Hediff_PNA_Combat_Buff.description>
+  <Hediff_PNA_Combat_Buff.description>Under purple nanomachine aphrodisiac stimulation, a sex slave's cells become active and agitated, increasing combat capability. This state belongs to the current body; it does not transfer with a personality or pass to a clone.</Hediff_PNA_Combat_Buff.description>
   <Hediff_PNA_Combat_Buff_Plus.label>PNA Combat Enhancement (Concentrated)</Hediff_PNA_Combat_Buff_Plus.label>
-  <Hediff_PNA_Combat_Buff_Plus.description>Under concentrated purple nanomachine stimulation, a sex slave's potential is greatly unleashed.</Hediff_PNA_Combat_Buff_Plus.description>
+  <Hediff_PNA_Combat_Buff_Plus.description>Under concentrated purple nanomachine stimulation, a sex slave's potential is greatly unleashed. This state belongs to the current body; it does not transfer with a personality or pass to a clone.</Hediff_PNA_Combat_Buff_Plus.description>
   <Hediff_PNA_Debuff.label>PNA Load</Hediff_PNA_Debuff.label>
-  <Hediff_PNA_Debuff.description>Purple nanomachines strongly stimulate sex drive. Even trace loads impair manipulation, movement and consciousness, with stronger impairments and pain suppression at each stage. From the erosion stage, reduced sight and hearing represent sensory distortions and hallucinations. Terminal overload limits consciousness and causes an orgasm-induced collapse. Effective health updates gradually clear the load after exposure stops; suspended and paused time is not charged on resumption.</Hediff_PNA_Debuff.description>
+  <Hediff_PNA_Debuff.description>Purple nanomachines strongly stimulate sex drive. Even trace loads impair manipulation, movement and consciousness, with stronger impairments and pain suppression at each stage. From the erosion stage, reduced sight and hearing represent sensory distortions and hallucinations. Terminal overload limits consciousness and causes an orgasm-induced collapse. Effective health updates gradually clear the load after exposure stops; suspended and paused time is not charged on resumption. This state belongs to the current body; it does not transfer with a personality or pass to a clone.</Hediff_PNA_Debuff.description>
   <Hediff_PNA_Debuff.stages.0.label>Trace</Hediff_PNA_Debuff.stages.0.label>
   <Hediff_PNA_Debuff.stages.1.label>Active</Hediff_PNA_Debuff.stages.1.label>
   <Hediff_PNA_Consciousness_Record.label>Consciousness Snapshot</Hediff_PNA_Consciousness_Record.label>
-  <Hediff_PNA_Consciousness_Record.description>Used to record the target's peak consciousness while exposed to hormones (normally not intended to be seen).</Hediff_PNA_Consciousness_Record.description>
+  <Hediff_PNA_Consciousness_Record.description>Used to record the target's peak consciousness while exposed to hormones (normally not intended to be seen). This state belongs to the current body; it does not transfer with a personality or pass to a clone.</Hediff_PNA_Consciousness_Record.description>
   <SSC_PostExcretionComa.label>Personality Excretion Adaptation Syndrome</SSC_PostExcretionComa.label>
   <SSC_PostExcretionComa.description>After forced personality extraction, the brain and nervous system enter severe restructuring and blanking; the initial personality is taking control.</SSC_PostExcretionComa.description>
   <SSC_PostExcretionComa.stages.0.label>Deep Shutdown</SSC_PostExcretionComa.stages.0.label>
@@ -26,6 +26,6 @@
   <Hediff_PNA_Debuff.stages.3.label>Deep influence</Hediff_PNA_Debuff.stages.3.label>
   <Hediff_PNA_Debuff.stages.4.label>Acute overload</Hediff_PNA_Debuff.stages.4.label>
   <SSC_Hediff_PnaRootedLoad.label>Rooted PNA Load</SSC_Hediff_PnaRootedLoad.label>
-  <SSC_Hediff_PnaRootedLoad.description>Purple nanomachine load in a rooted body. Binding and unbinding preserve the load value; binding clears ordinary PNA addiction. Ordinary load capacity penalties do not apply. Full positive effects remain for later development.</SSC_Hediff_PnaRootedLoad.description>
+  <SSC_Hediff_PnaRootedLoad.description>Purple nanomachine load in a rooted body. Binding and unbinding preserve the load value; binding clears ordinary PNA addiction. Ordinary load capacity penalties do not apply. Full positive effects remain for later development. This state belongs to the current body; it does not transfer with a personality or pass to a clone.</SSC_Hediff_PnaRootedLoad.description>
   <SSC_Hediff_PnaRootedLoad.stages.0.label>Rooted</SSC_Hediff_PnaRootedLoad.stages.0.label>
 </LanguageData>
