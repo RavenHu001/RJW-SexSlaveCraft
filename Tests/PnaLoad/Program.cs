@@ -275,13 +275,20 @@ internal static class Program
         Equal("HediffWithComps",def.Element("hediffClass").Value);Near(2,Number(def.Element("maxSeverity")));
         Equal("SexSlaveCraft.HediffCompProperties_SSCPnaLoad",(string)def.Element("comps").Elements().Single().Attribute("Class"));
         var stages=def.Element("stages").Elements().ToArray();Equal(5,stages.Length);
-        double[] thresholds={0,.30,.80,1.40,1.94},factors={1.05,1.15,1.25,1.40,1.50};
+        double[] thresholds={0,.30,.80,1.40,1.94},factors={1.5,2,2.5,3.25,4};
         for(int i=0;i<5;i++){Near(thresholds[i],Number(stages[i].Element("minSeverity")));Near(factors[i],Number(stages[i].Element("statFactors").Element("SexFrequency")));}
-        Assert(stages[0].Element("capMods")==null && stages[1].Element("capMods")==null,"微量/活跃无能力惩罚");
-        Equal(2,stages[2].Element("capMods").Elements().Count());foreach(var mod in stages[2].Element("capMods").Elements()) Near(-.05,Number(mod.Element("offset")));
-        Equal(3,stages[3].Element("capMods").Elements().Count());Assert(!stages[3].Descendants("setMax").Any(),"深度不封意识");
-        foreach(var mod in stages[3].Element("capMods").Elements())Near(-.10,Number(mod.Element("offset")));
-        Near(.10,Number(stages[4].Element("capMods").Element("li").Element("setMax")));Near(0,Number(stages[4].Element("painFactor")));
+        double[] movement={-.02,-.05,-.10,-.20,-.30},consciousness={-.01,-.03,-.06,-.12,-.20},pain={.90,.75,.50,.25,0};
+        for(int i=0;i<5;i++)
+        {
+            var mods=stages[i].Element("capMods").Elements().ToArray();Equal(i<2?3:5,mods.Length,"各档保留能力影响");
+            foreach(string capacity in new[]{"Manipulation","Moving","Consciousness"})
+                Near(capacity=="Consciousness"?consciousness[i]:movement[i],Number(mods.Single(m=>(string)m.Element("capacity")==capacity).Element("offset")));
+            if(i>=2)foreach(string capacity in new[]{"Sight","Hearing"})
+                Near(new[]{-.05,-.15,-.30}[i-2],Number(mods.Single(m=>(string)m.Element("capacity")==capacity).Element("offset")));
+            Near(pain[i],Number(stages[i].Element("painFactor")));
+            if(i<4)Assert(!stages[i].Descendants("setMax").Any(),"末期前不封意识");
+        }
+        Near(.10,Number(stages[4].Element("capMods").Elements().Single(m=>(string)m.Element("capacity")=="Consciousness").Element("setMax")));
         var thought=LoadDef("Defs/HediffDefs/HediffOfBuff.xml","PNA_Debuff_Thought");foreach(var stage in thought.Element("stages").Elements()){Equal("false",stage.Element("visible").Value);Near(0,Number(stage.Element("baseMoodEffect")));}
         foreach(float severity in new[]{.16f,.30f,.80f,1.40f,1.94f,2f}) { var p=NewPawn();Raw(p,severity);Equal(Array.FindLastIndex(SSCDefOf.SSC_PnaLoad.thresholds,t=>severity>=t),Record(p).CurStageIndex); }
     }

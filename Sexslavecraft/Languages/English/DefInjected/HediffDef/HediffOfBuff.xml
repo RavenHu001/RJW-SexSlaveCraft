@@ -11,7 +11,7 @@
   <Hediff_PNA_Combat_Buff_Plus.label>PNA Combat Enhancement (Concentrated)</Hediff_PNA_Combat_Buff_Plus.label>
   <Hediff_PNA_Combat_Buff_Plus.description>Under concentrated purple nanomachine stimulation, a sex slave's potential is greatly unleashed.</Hediff_PNA_Combat_Buff_Plus.description>
   <Hediff_PNA_Debuff.label>PNA Load</Hediff_PNA_Debuff.label>
-  <Hediff_PNA_Debuff.description>Current purple nanomachine load in the body. Infrequent doses can sustain chronic effects; concentrated exposure can cause acute overload. Without further exposure, effective health updates gradually clear the load. Suspended and paused time is not charged on resumption.</Hediff_PNA_Debuff.description>
+  <Hediff_PNA_Debuff.description>Purple nanomachines strongly stimulate sex drive. Even trace loads impair manipulation, movement and consciousness, with stronger impairments and pain suppression at each stage. From the erosion stage, reduced sight and hearing represent sensory distortions and hallucinations. Terminal overload limits consciousness and causes an orgasm-induced collapse. Effective health updates gradually clear the load after exposure stops; suspended and paused time is not charged on resumption.</Hediff_PNA_Debuff.description>
   <Hediff_PNA_Debuff.stages.0.label>Trace</Hediff_PNA_Debuff.stages.0.label>
   <Hediff_PNA_Debuff.stages.1.label>Active</Hediff_PNA_Debuff.stages.1.label>
   <Hediff_PNA_Consciousness_Record.label>Consciousness Snapshot</Hediff_PNA_Consciousness_Record.label>

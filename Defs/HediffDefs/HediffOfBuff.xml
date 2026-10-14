@@ -157,7 +157,7 @@
   <HediffDef>
     <defName>Hediff_PNA_Debuff</defName>
     <label>PNA 负荷</label>
-    <description>体内紫色纳米机械的当前负荷。低频补充可维持慢性影响，密集输入会造成急性过载；停止补充后，负荷随有效健康更新逐渐清除。冷冻和游戏暂停不补算清除时间。</description>
+    <description>体内紫色纳米机械会强烈催情。从微量开始即干扰操控、移动与意识，随负荷阶段逐档加重，同时抑制疼痛；侵蚀阶段开始出现感官失真，以视觉与听觉能力下降模拟幻视、幻听。末期因强烈高潮导致意识受限、晕倒。停止补充后负荷随有效健康更新逐渐清除，冷冻和暂停时间不补算。</description>
     <hediffClass>HediffWithComps</hediffClass>
     <tendable>false</tendable>
     <everCurableByItem>false</everCurableByItem>
@@ -170,47 +170,69 @@
       <li Class="SexSlaveCraft.HediffCompProperties_SSCPnaLoad" />
     </comps>
 
+    <!-- 原生五档固定效果：每档完整列出修饰，不叠加，不使用动态插值；末期保留高潮晕倒。 -->
     <stages>
       <li>
         <label>微量</label>
         <minSeverity>0</minSeverity>
-        <statFactors><SexFrequency>1.05</SexFrequency></statFactors>
+        <statFactors><SexFrequency>1.5</SexFrequency></statFactors>
+        <painFactor>0.90</painFactor>
+        <capMods>
+          <li><capacity>Manipulation</capacity><offset>-0.02</offset></li>
+          <li><capacity>Moving</capacity><offset>-0.02</offset></li>
+          <li><capacity>Consciousness</capacity><offset>-0.01</offset></li>
+        </capMods>
       </li>
       <li>
         <label>活跃</label>
         <minSeverity>0.30</minSeverity>
-        <statFactors><SexFrequency>1.15</SexFrequency></statFactors>
+        <statFactors><SexFrequency>2</SexFrequency></statFactors>
+        <painFactor>0.75</painFactor>
+        <capMods>
+          <li><capacity>Manipulation</capacity><offset>-0.05</offset></li>
+          <li><capacity>Moving</capacity><offset>-0.05</offset></li>
+          <li><capacity>Consciousness</capacity><offset>-0.03</offset></li>
+        </capMods>
       </li>
       <li>
         <label>侵蚀</label>
         <minSeverity>0.80</minSeverity>
-        <statFactors><SexFrequency>1.25</SexFrequency></statFactors>
+        <statFactors><SexFrequency>2.5</SexFrequency></statFactors>
+        <painFactor>0.50</painFactor>
         <capMods>
-          <li><capacity>Manipulation</capacity><offset>-0.05</offset></li>
-          <li><capacity>Moving</capacity><offset>-0.05</offset></li>
+          <li><capacity>Manipulation</capacity><offset>-0.10</offset></li>
+          <li><capacity>Moving</capacity><offset>-0.10</offset></li>
+          <li><capacity>Consciousness</capacity><offset>-0.06</offset></li>
+          <li><capacity>Sight</capacity><offset>-0.05</offset></li>
+          <li><capacity>Hearing</capacity><offset>-0.05</offset></li>
         </capMods>
       </li>
       <li>
         <label>深度影响</label>
         <minSeverity>1.40</minSeverity>
-        <statFactors><SexFrequency>1.40</SexFrequency></statFactors>
+        <statFactors><SexFrequency>3.25</SexFrequency></statFactors>
+        <painFactor>0.25</painFactor>
         <capMods>
-          <li><capacity>Manipulation</capacity><offset>-0.10</offset></li>
-          <li><capacity>Moving</capacity><offset>-0.10</offset></li>
-          <li><capacity>Consciousness</capacity><offset>-0.10</offset></li>
+          <li><capacity>Manipulation</capacity><offset>-0.20</offset></li>
+          <li><capacity>Moving</capacity><offset>-0.20</offset></li>
+          <li><capacity>Consciousness</capacity><offset>-0.12</offset></li>
+          <li><capacity>Sight</capacity><offset>-0.15</offset></li>
+          <li><capacity>Hearing</capacity><offset>-0.15</offset></li>
         </capMods>
       </li>
       <li>
         <label>末期过载</label>
         <minSeverity>1.94</minSeverity>
-        <statFactors><SexFrequency>1.50</SexFrequency></statFactors>
-        <lifeThreatening>false</lifeThreatening>
-        <painFactor>0</painFactor> <capMods>
-          <li>
-            <capacity>Consciousness</capacity>
-            <setMax>0.1</setMax> 
-          </li>
+        <statFactors><SexFrequency>4</SexFrequency></statFactors>
+        <painFactor>0</painFactor>
+        <capMods>
+          <li><capacity>Manipulation</capacity><offset>-0.30</offset></li>
+          <li><capacity>Moving</capacity><offset>-0.30</offset></li>
+          <li><capacity>Consciousness</capacity><offset>-0.20</offset><setMax>0.1</setMax></li>
+          <li><capacity>Sight</capacity><offset>-0.30</offset></li>
+          <li><capacity>Hearing</capacity><offset>-0.30</offset></li>
         </capMods>
+        <lifeThreatening>false</lifeThreatening>
       </li>
     </stages>
   </HediffDef>

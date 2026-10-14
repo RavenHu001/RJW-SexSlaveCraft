@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-  <SSC_Pna_LoadTooltip>Current PNA load: {0}%. Effective health updates gradually clear it; infrequent doses can sustain chronic effects.</SSC_Pna_LoadTooltip>
+  <SSC_Pna_LoadTooltip>Current PNA load: {0}%. Strong aphrodisiac effects; manipulation, movement and consciousness are impaired from the trace stage, worsening at each stage. Terminal overload can cause an orgasm-induced collapse. Effective health updates gradually clear the load.</SSC_Pna_LoadTooltip>
   <SSC_Pna_SelectPawn>Select a pawn first.</SSC_Pna_SelectPawn>
   <SSC_Pna_InvalidTarget>This pawn cannot currently receive a PNA test dose.</SSC_Pna_InvalidTarget>
   <SSC_Pna_Rooted>PNA P1 test: rooted load {0}%. No ordinary PNA addiction is created.</SSC_Pna_Rooted>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <Hediff_PNA_Debuff.label>PNA 负荷</Hediff_PNA_Debuff.label>
-  <Hediff_PNA_Debuff.description>体内紫色纳米机械的当前负荷。低频补充可维持慢性影响，密集输入会造成急性过载；停止补充后，负荷随有效健康更新逐渐清除。冷冻和游戏暂停不补算清除时间。</Hediff_PNA_Debuff.description>
+  <Hediff_PNA_Debuff.description>体内紫色纳米机械会强烈催情。从微量开始即干扰操控、移动与意识，随负荷阶段逐档加重，同时抑制疼痛；侵蚀阶段开始出现感官失真，以视觉与听觉能力下降模拟幻视、幻听。末期因强烈高潮导致意识受限、晕倒。停止补充后负荷随有效健康更新逐渐清除，冷冻和暂停时间不补算。</Hediff_PNA_Debuff.description>
   <Hediff_PNA_Debuff.stages.0.label>微量</Hediff_PNA_Debuff.stages.0.label>
   <Hediff_PNA_Debuff.stages.1.label>活跃</Hediff_PNA_Debuff.stages.1.label>
   <Hediff_PNA_Debuff.stages.2.label>侵蚀</Hediff_PNA_Debuff.stages.2.label>
