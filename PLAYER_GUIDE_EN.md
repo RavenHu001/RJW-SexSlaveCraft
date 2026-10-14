@@ -1,13 +1,13 @@
 # RJW-SexSlaveCraft Complete Player Guide
 
-> For RimWorld 1.6 and SexSlaveCraft 2.3.9, based on the current repository code and Defs.\
-> Base audit: 2026-06-30; self-training and handoff fixes updated for 2.3.5, shared progress for 2.3.6 on 2026-10-02, Cat/Dog features for 2.3.7 on 2026-10-06, ritual quality/selection hints for 2.3.8 on 2026-10-08, and unified receiver identity plus Trainer Officer feedback for 2.3.9 on 2026-10-10.\
+> For RimWorld 1.6 and SexSlaveCraft 2.4.0, based on the current repository code and Defs.\
+> Base audit: 2026-06-30; self-training and handoff fixes updated for 2.3.5, shared progress for 2.3.6 on 2026-10-02, Cat/Dog features for 2.3.7 on 2026-10-06, ritual quality/selection hints for 2.3.8 on 2026-10-08, unified receiver identity plus Trainer Officer feedback for 2.3.9 on 2026-10-10, and Master qualification/progression for 2.4.0 on 2026-10-13.\
 > Based on upstream 2.2.8; version 2.2.9 includes the specialization and ritual progression fixes, and 2.2.10 fixes stale training locks after interrupted rituals. See `CHANGELOG.md`.\
-> This version retains the 2.3.8 Binding Ritual spectator fixes and selection hints, 2.3.7 Cat/Dog specializations, 2.3.6 shared daily Training/full Binding Ritual specialization progress and 2.3.5 self-training/handoff fixes. Download the installation ZIP and SHA-256 checksum from [v2.3.9 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.9). Legacy RimTalk remains suspended.\
-> Version 2.3.9 content (2026-10-10): unified receiver identity, Trainer Officer duty mood and owner appraisal, the Officer's reverse trust in the actual Master, the Officer's separate weakened memory set (K=0.5), and a rewritten gender-neutral Officer text. Rabbit selection remains disabled.\
+> This version retains the 2.3.8 Binding Ritual spectator fixes and selection hints, 2.3.7 Cat/Dog specializations, 2.3.6 shared daily Training/full Binding Ritual specialization progress and 2.3.5 self-training/handoff fixes. Download the installation ZIP and SHA-256 checksum from [v2.4.0 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.0). Legacy RimTalk remains suspended.\
+> Version 2.4.0 content (2026-10-13): Seed of Desire and personal Master qualification, a first free quest, personality transfer, four-stage Symbiosis of Desire with five bonuses, and the Master panel with damage sharing. Direct Master selection remains enabled by default. Qualification and growth follow the personality and are not inherited by clones. Rabbit selection remains disabled.\
 > This guide describes the behavior implemented by the current C# and XML. Where an old changelog or description disagrees with the code, the discrepancy is listed under “Current Limitations and Known Differences.”
 
-> See the [2.3.9 notes](Docs/Releases/2.3.9/2.3.9发布说明.md) for this version and the [2.3.8](Docs/Releases/2.3.8/2.3.8发布说明.md), [2.3.7](Docs/Releases/2.3.7/2.3.7发布说明.md), [2.3.6](Docs/Releases/2.3.6/2.3.6发布说明.md) and [2.3.5](Docs/Releases/2.3.5/2.3.5发布说明.md) notes for retained features.
+> See the [2.4.0 notes](Docs/Releases/2.4.0/2.4.0发布说明.md) for this version and the [2.3.9](Docs/Releases/2.3.9/2.3.9发布说明.md), [2.3.8](Docs/Releases/2.3.8/2.3.8发布说明.md), [2.3.7](Docs/Releases/2.3.7/2.3.7发布说明.md), [2.3.6](Docs/Releases/2.3.6/2.3.6发布说明.md) and [2.3.5](Docs/Releases/2.3.5/2.3.5发布说明.md) notes for retained features.
 
 ## 1. Scope and Dependencies
 
@@ -75,9 +75,9 @@ On upgrade, the old Sex Slave trainer toggle is turned off once, including for p
 
 **Trainer Officer feedback in 2.3.9.** An active Officer completing daily Training or a whole Ritual gains +3 mood for one day. Different receivers share one memory, and further completions refresh it without stacking. Ordinary Officers at 100% and active final Officers training another specialization still qualify independently of experience gains. Cancellation, failure, individual ritual stages, self-training and receiving Training grant no duty memory. An existing memory expires naturally after appointment is disabled or qualification is lost. The actual SSC Master has a conditional +5 opinion of their bound, actively appointed Officer, and that same condition gives the Officer +5 reverse opinion and a +3 steady mood toward that Master. All of these are conditional thoughts rather than memories: no duration, no capacity, nothing written into memory lists or personality gel, and disabling appointment, switching direction, regressing a Chain, unbinding or suspending the final effect removes them immediately and restores them without accumulation. Temporary downing, work suspension or travel does not remove them. Social display follows the vanilla query cache of about 100 ticks. This feature adds no extra receiver opinion. Receiver memories granted through an Officer use a separate weakened set (K=0.5, mood -5/+1/+4/+8) that never overwrites the owner's set.
 
-### 3.1.1 Development branch: permanent Master qualification
+### 3.1.1 Permanent Master qualification (2.4.0)
 
-This section applies to the current Master qualification development branch and is not included in the released 2.3.9 download. The unchanged version number does not mean these additions have been released.
+Master qualification and progression are included in 2.4.0. Historical 2.3.9 packages do not contain these additions.
 
 | State | Ownership and purpose |
 | --- | --- |
@@ -99,7 +99,7 @@ The pawn's identity section always shows `Master qualification: acquired / not a
 
 **Later sources and settings.** Seeds enter standard quest rewards and ancient ruin loot pools using artifact references; they remain obtainable after research is complete. With Ideology, enhanced rooms and ancient security crates are also included. Seeds are rare, and group weights are not per-item probabilities. Caravans, settlements and orbital traders do not stock them for purchase; players may sell existing seeds. No crafting recipe is provided. Settings can spawn one seed directly on the current map or trigger the initial free quest. The quest button bypasses research, existing-Master and past-grant conditions but cannot duplicate another unfinished claim quest. Neither button grants qualification directly; missing maps or other unavailable conditions disable buttons with an explanation.
 
-### 3.1.2 Development branch: Master progression and practice
+### 3.1.2 Master progression and practice (2.4.0)
 
 Becoming a Master creates a four-stage progression record. Personally completing daily training grants **1 experience**; a complete binding ritual grants **3**. Interruptions grant none, and Trainer Officer work gives no proxy experience to its owner. Fully trained targets still provide practice. View experience in the Master panel; the health tooltip shows descriptions and bonuses. Provisional thresholds are 0/12/40/100. Growth transfers with personality gel. Leaving the Master role preserves experience and suspends bonuses while hiding the entry from the normal health tab. Returning to the role displays the original stage.
 

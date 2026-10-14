@@ -1,38 +1,26 @@
 # RJW-SexSlaveCraft · TieJin Modify
 
-RimWorld 1.6 的 RimJobWorld（RJW）扩展模组，基于上游 **2.2.8** 继续维护。此仓库包含模组源码、游戏资源、回归测试及中英文文档，当前仓库版本为 **2.3.9**。
+RimWorld 1.6 的 RimJobWorld（RJW）扩展模组，基于上游 **2.2.8** 继续维护。此仓库包含模组源码、游戏资源、回归测试及中英文文档，当前仓库版本为 **2.4.0**。
 
-[2.3.9 更新说明](Docs/Releases/2.3.9/2.3.9发布说明.md) · [下载安装包](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.9) · [更新日志](CHANGELOG.md) · [文档索引](Docs/README.md) · [English quick start](QUICK_START_EN.md)
+[2.4.0 更新说明](Docs/Releases/2.4.0/2.4.0发布说明.md) · [下载安装包](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.0) · [更新日志](CHANGELOG.md) · [文档索引](Docs/README.md) · [English quick start](QUICK_START_EN.md)
 
-2.3.9 已正式发布，归并 2.3.8 之后的全部 12 项开发提交。本版的实际改动：日常自动与手动调教、绑定仪式和调教员指派统一要求目标为 SSC 性奴，原版奴隶身份和强制命令不能豁免，候选、选入、执行与结算都会复查；训导官完成一次日常调教或整场仪式获得 +3 职责心情一天，实际主人对其有 +5 评价，训导官反向获得 +5 好感与 +3 常驻心情；训导官执行时改用独立的弱化记忆套（K=0.5）；训导官文案整体重写并去除性别指向。安装 ZIP 与 SHA-256 校验文件见 [v2.3.9 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.9)，构建、发布门禁及验收范围见[2.3.9 版本验证](Docs/Releases/2.3.9/2.3.9版本验证.md)。
+2.4.0 归并 2.3.9 之后的主人身份拓展：欲望之种、个人永久资格、首次免费任务、人格流转、欲望共生四阶段成长及主人专属面板。安装与验证见[2.4.0 发布说明](Docs/Releases/2.4.0/2.4.0发布说明.md)和[版本验证](Docs/Releases/2.4.0/2.4.0版本验证.md)。
 
-2.3.8 汇总 2.3.7 发布后的绑定仪式修复与选人提示，功能基线为 `88a8b87`。观众助兴排除两名主角，并按实际仪式时长结算出席；准备界面以鞭子表示主持、项圈表示性奴，提供候选状态与拒绝原因。历史 2.3.7 ZIP 不包含该轮仪式改进。
+## 2.4.0：欲望之种与主人成长
 
-2.3.7 包含猫狗普通培养、宠物互斥、凝胶终极化及主动技能：终极猫使用“安抚共鸣”，终极狗使用“定向驯导”。附近空闲的宠物会接近实际绑定主人，完成两秒可见亲昵；当前普通猫额外获得 1 个百分点，完成后冷却一天。成年猫狗在双方自愿条件与许可允许时，以 20% 概率向实际主人发起后续互动；该后续已实现，待实机验收。猫狗进度区分普通完成与终极成果，普通完成后悬停可查看凝胶终极化步骤。兔入口仍禁用。
+- **主人资格**：欲望之种赋予永久资格；默认仍允许直接手动选择主人，关闭该设置后须先取得资格。有 Royalty 时种子同时补齐“调教”研究蓝图，研究仍需正常完成；原版蓝图保留为独立研究来源。
+- **道具获取**：满足条件时提供一次免费领取任务，按存档去重；后续种子来自稀有任务与遗迹奖励，商人库存暂不出售。设置内可生成道具或手动创建领取任务。
+- **欲望共生**：萌芽 → 觉醒 → 掌控 → 升华，本人完成日常调教 +1 经验、整场绑定仪式 +3，训导官代劳不转记。提供意识、视觉、听觉、社交影响和伤口愈合五项加成。
+- **主人面板与人格保存**：面板显示阶段、经验及进度，并操作原缰绳的伤害分担开关。资格与成长随人格凝胶迁移，克隆不继承主人身份、资格或成长。退出主人身份时隐藏成长条目并停用加成，返回后恢复原阶段与经验。
+- **文案与资源**：欲望之种独立贴图、四语说明、任务叙事和投放通知，以及精简后的角色与凝胶资格展示。
 
-## 当前开发分支（尚未发布）
-
-欲望之种解锁个人永久资格，角色身份栏与人格凝胶页分开显示该记录；资格随人格转移，克隆不继承。免费任务按存档去重，后续种子来自任务／遗迹，贸易库存暂停。默认仍允许直接手动选择主人；有 Royalty 时种子也补齐基础研究蓝图，原版独立蓝图保留。用法见[中文快速入门](读我，玩法介绍.md#开发分支补充主人资格入口)与[English quick start](QUICK_START_EN.md#development-branch-master-qualification-entry)。The unreleased branch adds personal Master qualification, visible on pawns and personality gels, with free/rare reward sources. Qualification transfers with personality gel but is not inherited by clones; research techprints remain separate.
-
-主人成长已接入本人日常调教 +1、整场仪式 +3；训导官代劳不转记，成长随人格凝胶保存。Master progression now grants +1 for personally completed daily training and +3 for a whole binding ritual; Trainer Officer work gives no proxy credit. See [第二批测试说明](Docs/Development/主人阶段第二批测试说明.md).
-
-主人调教页现可查看阶段、经验和距下一阶段的进度，并操作原缰绳的伤害分担开关；详细加成可悬停查看。The Master training tab now shows growth and hosts the bridle’s existing damage-sharing toggle. See [第三批测试说明](Docs/Development/主人阶段第三批测试说明.md).
-
-主人成长现称“欲望共生”：萌芽 → 觉醒 → 掌控 → 升华，提供四语阶段说明和升阶提示。The “Symbiosis of Desire” progression now has named stages, localized descriptions and level-up messages. See [第四批测试说明](Docs/Development/主人阶段第四批测试说明.md).
-
-当前阶段加成调整为意识、视觉、听觉、社交影响及伤口愈合，最高阶段为 +40／+30／+30 个百分点、×1.20／×1.50；2026-10-13 维护者实机确认五项加成及文案显示符合预期。Progression now boosts Consciousness, Sight, Hearing, Social Impact and Injury Healing; highest-stage values are +40/+30/+30 percentage points, ×1.20 and ×1.50. On 2026-10-13, the maintainer confirmed that the five bonuses and text display work as expected in-game.
-
-健康悬停仅显示设定、阶段短句及加成；成长经验和区间进度只在主人面板显示。此显示精简已提交为 `66b9a13`，已与本轮退出身份隐藏版本一同同步游戏目录。此前五项加成及文案已在 `84a0079` 获确认并提交。 Health tooltips show descriptions, stage text and bonuses; experience and progress appear only in the Master panel. This display cleanup is committed as `66b9a13` and was synchronized with the inactive-entry hiding update. The five-bonus adjustment was previously confirmed and committed as `84a0079`.
-
-退出主人身份后，普通健康页隐藏欲望共生，重新成为主人时显示原阶段与经验。2026-10-13 维护者实机确认符合预期，提交为 `018752d`。Leaving the Master role hides Symbiosis of Desire from the normal health tab; returning restores the original stage and experience. The maintainer confirmed this behavior on 2026-10-13; committed as `018752d`.
-
-上述内容尚未包含于正式 2.3.9 下载；实施、验收与同步状态见[开发记录索引](Docs/Development/README.md)。
+用法见[中文快速入门](读我，玩法介绍.md#主人资格入口240)和[English quick start](QUICK_START_EN.md#master-qualification-entry-240)。PNA 重置与欲望侵染仍为后续规划；实机验收边界与自动回归结果以版本验证记录为准。
 
 ## 项目概况
 
 SexSlaveCraft（SSC）围绕角色培养、身份与绑定关系、特化发展、人格转移及身体改造提供一套玩法系统。本接续版在原有内容基础上维护游戏兼容性、修复问题，并完善交互界面与本地化。
 
-2.3.9 相对 2.3.8 的更新：
+继承 2.3.9 的更新：
 
 - **统一受训身份**：日常自动与手动调教、绑定仪式和调教员指派统一要求目标为 SSC 性奴。原版奴隶身份、关闭行为限制开关和强制命令都不能豁免；候选、实际选入、执行与结算都会复查，并保留各入口原有的身体、许可与通行条件。读档不改写已有身份与成长，不合资格的旧任务停止；未设身份但保留有效历史锁链者可在面板明确恢复身份。
 - **训导官职责反馈**：有效任职的训导官正常完成一次日常调教或整场仪式后获得“履行训导职责”+3 心情一天，重复完成只刷新一份记忆；实际主人对其有 +5“受委任的训导官”评价，训导官同时对这位主人获得 +5 反向好感和 +3 常驻心情。后两条是条件性想法而不是记忆，随任职、绑定与资格实时生效或消失，不写记忆列表、不进人格凝胶。
@@ -52,7 +40,7 @@ SexSlaveCraft（SSC）围绕角色培养、身份与绑定关系、特化发展�
 
 本版继承 2.3.6 的统一日常调教／完整绑定仪式基础特化经验，以及 2.3.5 的自我调教和任务交接修复；这些既有功能不重复计为本轮新增。
 
-完整变更见 [2.3.9 中英发布说明](Docs/Releases/2.3.9/2.3.9发布说明.md)，构建与验证见[版本验证](Docs/Releases/2.3.9/2.3.9版本验证.md)。历史发布说明见 [2.3.8](Docs/Releases/2.3.8/2.3.8发布说明.md)、[2.3.7](Docs/Releases/2.3.7/2.3.7发布说明.md)、[2.3.6](Docs/Releases/2.3.6/2.3.6发布说明.md)、[2.3.5](Docs/Releases/2.3.5/2.3.5发布说明.md)。
+2.3.9 的完整变更见 [2.3.9 中英发布说明](Docs/Releases/2.3.9/2.3.9发布说明.md)，构建与验证见[版本验证](Docs/Releases/2.3.9/2.3.9版本验证.md)。历史发布说明见 [2.3.8](Docs/Releases/2.3.8/2.3.8发布说明.md)、[2.3.7](Docs/Releases/2.3.7/2.3.7发布说明.md)、[2.3.6](Docs/Releases/2.3.6/2.3.6发布说明.md)、[2.3.5](Docs/Releases/2.3.5/2.3.5发布说明.md)。
 
 ## 安装
 
@@ -63,7 +51,7 @@ SexSlaveCraft（SSC）围绕角色培养、身份与绑定关系、特化发展�
 | 加载顺序 | Harmony、RimWorld 本体及 RJW 位于本模组之前 |
 | 绑定仪式 | 需要可用的 Ideology 仪式系统 |
 
-1. 从 [v2.3.9 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.9) 下载 2.3.9 安装 ZIP 和 SHA-256 校验文件。
+1. 从 [v2.4.0 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.0) 下载 2.4.0 安装 ZIP 和 SHA-256 校验文件。
 2. 退出游戏，将 ZIP 内的 `RJW-SexSlaveCraft-TieJin-Modify` 文件夹解压到 `RimWorld/Mods/`。
 3. 更新已有安装时，先将旧模组文件夹移出 `Mods`，再放入新版本，以免残留已删除的文件。
 4. 在游戏中启用依赖与本模组，按上述顺序加载。
@@ -90,7 +78,7 @@ SexSlaveCraft（SSC）围绕角色培养、身份与绑定关系、特化发展�
 
 主工程为 `Sexslavecraft/SexSlaveCraft_Alpha.csproj`，目标框架为 **.NET Framework 4.7.2**。源码编译需要 Visual Studio MSBuild、对应开发组件，以及本机 RimWorld 和模组依赖程序集。工程引用需按本机环境配置，具体方式见 [发布与打包](Docs/Maintenance/发布与打包.md)。
 
-统一验证需要 PowerShell 7、.NET SDK 9（或更新 SDK）、.NET 9 运行时，以及适用于 net9.0 的本地 Harmony DLL。先设置路径（示例路径需替换为本机位置），再运行当前全部 28 套回归（正式 2.3.9 发布时为 25 套）：
+统一验证需要 PowerShell 7、.NET SDK 9（或更新 SDK）、.NET 9 运行时，以及适用于 net9.0 的本地 Harmony DLL。先设置路径（示例路径需替换为本机位置），再运行当前全部 28 套回归（2.3.9 发布时为 25 套）：
 
 ```powershell
 $env:SSC_TEST_HARMONY_PATH = 'C:\Dependencies\Harmony\net9.0\0Harmony.dll'
@@ -123,14 +111,18 @@ pwsh -File Scripts/New-Release.ps1 -Build
 
 ## English overview
 
-This repository continues RJW-SexSlaveCraft from upstream **2.2.8** for **RimWorld 1.6**. The repository version is **2.3.9**. Harmony and RimJobWorld are required and must load before this mod.
+This repository continues RJW-SexSlaveCraft from upstream **2.2.8** for **RimWorld 1.6**. The repository version is **2.4.0**. Harmony and RimJobWorld are required and must load before this mod.
 
-Version 2.3.9 is released and consolidates all 12 development commits after 2.3.8. Automatic and forced Training, Binding Rituals and trainer assignment now uniformly require SSC Sex Slave identity at candidacy, selection, execution and outcome, with no waiver from vanilla slave status or forced commands; loads never rewrite saved identity or growth, and pawns with a valid historical Chain can explicitly restore the role. An actively appointed Trainer Officer gains a one-day +3 duty mood, while the actual Master holds a +5 appraisal and the Officer holds +5 reverse opinion plus a +3 steady mood toward that Master. Memories granted through an Officer use a separate weakened set (K=0.5, mood -5/+1/+4/+8) that never overwrites the owner's set, with weak values rounded half away from zero and a minimum non-zero magnitude of 1. Officer mood, appraisal, weakened-memory and shared-bed text was rewritten to match the owner's register and made entirely gender-neutral. Download the 2.3.9 ZIP and SHA-256 checksum from [v2.3.9 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.3.9).
+Version 2.4.0 adds the Seed of Desire, permanent personal Master qualification, a one-time free claim quest, rare quest/ancient ruin rewards and personality transfer. Direct Master selection remains enabled by default. With Royalty, seeds also supply missing Training techprints; the vanilla techprint remains a separate research source.
+
+Symbiosis of Desire grows through personally completed daily Training (+1 experience) and whole Binding Rituals (+3), with four named stages and bonuses to Consciousness, Sight, Hearing, Social Impact and Injury Healing. The Master panel shows growth and hosts the existing damage-sharing toggle. Qualification and growth transfer with Personality Gel; clones inherit neither Master identity nor qualification or growth. Leaving the role hides the growth entry and suspends bonuses, while returning restores the saved stage and experience. Four-language text, item art and delivery notifications are included. Download the ZIP and SHA-256 checksum from [v2.4.0 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.0).
+
+Version 2.3.9 receiver identity rules and Trainer Officer feedback are retained. PNA rework and Desire Infusion remain future plans.
 
 Version 2.3.8 consolidates Binding Ritual fixes and selection hints developed after 2.3.7 through feature baseline `88a8b87`. Both protagonists are excluded from the audience; final spectator quality counts eligible attendance for at least half the ritual's actual elapsed time and reports the factor even at zero. Gold whip and purple collar icons identify host and sex slave candidates, with assignment checks, unavailable slashes and hover reasons.
 
 Version 2.3.7 consolidates all development after released 2.3.6 through feature commit `a24562e`. It includes Cat/Dog training, pet exclusivity, protected gel finalization, Soothing Resonance for final Cats and Directed Taming for final Dogs. Both abilities use map-wide targeting, a two-second interaction on the target cell and their own one-day cooldowns. Dog work progress follows actual training interactions. Idle pets near their actual master approach for visible affection; a current ordinary Cat gains 1 percentage point, with a one-day affection cooldown. Eligible adult Cats/Dogs have a 20% chance to initiate a consensual follow-up with that master; this follow-up awaits in-game acceptance. Progress distinguishes ordinary completion from finalization and offers gel-processing tooltips. Rabbit selection remains disabled.
 
-The 2.3.9 publication gate passed all 25 suites and 1512/1512 cases. The current development test entry registers 28 suites, adding Master qualification item, entry and panel checks; see the [test index](Tests/README.md). See the [2.3.9 bilingual notes](Docs/Releases/2.3.9/2.3.9发布说明.md) and [validation record](Docs/Releases/2.3.9/2.3.9版本验证.md) for publication checks and acceptance boundaries. For the previous package, see the [2.3.8 notes](Docs/Releases/2.3.8/2.3.8发布说明.md) and [validation record](Docs/Releases/2.3.8/2.3.8版本验证.md). Historical 2.3.7 packages do not contain the ritual improvements; historical 2.3.6 packages do not contain the Cat/Dog additions. Shared base specialization progress from 2.3.6 and self-training/handoff fixes from 2.3.5 are retained.
+The publication gate runs all 28 registered suites, including Master qualification, quest entry and panel checks. See the [test index](Tests/README.md), [2.4.0 bilingual notes](Docs/Releases/2.4.0/2.4.0发布说明.md) and [validation record](Docs/Releases/2.4.0/2.4.0版本验证.md) for actual results and in-game acceptance boundaries. Earlier specialization, self-training and ritual improvements are retained.
 
 For gameplay, read the [English quick start](QUICK_START_EN.md) or [full guide](PLAYER_GUIDE_EN.md). See the [bilingual changelog](CHANGELOG.md) for release history. Legacy RimTalk integration remains suspended. When updating an installation, move the old mod folder out of `RimWorld/Mods/` before installing the replacement.

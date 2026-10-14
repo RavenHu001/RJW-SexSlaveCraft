@@ -2,7 +2,7 @@
 
 [文档总索引](../Docs/README.md) · [发布与打包](../Docs/Maintenance/发布与打包.md) · [开发记录](../Docs/Development/README.md)
 
-当前 `Scripts/Test-All.ps1` 登记 **28 套机制回归**；正式 2.3.9 发布时为 25 套，后续开发增加 `MasterQualificationItem`、`MasterEntry` 与 `MasterPanelUI`。下列专项 README 保留各自命令、覆盖范围和实机步骤，实际通过数量以当次报告为准。
+当前 **2.4.0** 的 `Scripts/Test-All.ps1` 登记 **28 套机制回归**；正式 2.3.9 发布时为 25 套，本版增加 `MasterQualificationItem`、`MasterEntry` 与 `MasterPanelUI`。下列专项 README 保留各自命令、覆盖范围和实机步骤，本版完整门禁与实际通过数量见[2.4.0 版本验证](../Docs/Releases/2.4.0/2.4.0版本验证.md)。
 
 ## 统一入口
 
@@ -14,7 +14,9 @@ pwsh -File Scripts/Test-All.ps1 -HarmonyAssemblyPath 'C:\Dependencies\Harmony\ne
 
 报告位于 `.builds/validation/`。测试桩与自动回归不能替代游戏内流程、动画及真实存档往返验收。
 
-## 主人资格（未发布开发内容）
+## 主人资格与成长（2.4.0）
+
+交付内容见[2.4.0 发布说明](../Docs/Releases/2.4.0/2.4.0发布说明.md)。下列分批结果保留原日期与专项范围，不代替本版完整门禁；3B 随机自然投放与平衡仍待专项实机确认。
 
 - [MasterQualificationItem](MasterQualificationItem/README.md)：主人资格道具与研究接入回归。
 - [MasterEntry](MasterEntry/README.md)：主人资格初次获取任务回归与实机测试。
