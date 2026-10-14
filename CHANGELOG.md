@@ -6,6 +6,8 @@ This continuation builds on upstream **2.2.8**, the baseline when upstream devel
 
 ## [未发布 / Unreleased]
 
+- **PNA 成瘾与末期强化 / PNA addiction and terminal reinforcement:** 玩家名称改为成瘾，完整断供恢复约 10 天。普通／浓缩基础成瘾增量 +0.1／+0.2，已有成瘾在真实末期输入后额外 +0.2；调试和首次建立除外。原版恢复与服药继续复用，不增加缓存或补丁；维护者已确认有效并批准提交。Uses addiction terminology, a ten-day recovery cycle, and stronger reinforcement from terminal-load exposure.
+
 - **PNA 状态刷新优化 / PNA state refresh optimization:** 稳态刷新改为一次遍历，发现重复记录才分配清理快照；清依赖不再额外重复刷新需求。保留原回调核对及即时移除通知，无新缓存、补丁或机制改动；维护者已确认服药与绑定／解绑正常。Reduces temporary allocations and redundant need refreshes while preserving callback checks and immediate removal notifications. Ingestion and binding/unbinding were confirmed working in game.
 
 - **PNA 单次摄入数量 / PNA ingestion quantity:** 普通液和浓缩液补齐原版药物的默认／最大摄入数量，每次一份，修复手动一次吃多份立即拉满负荷；移除营养值，沿用原版无营养药物摄入，仅 XML 修改；维护者确认单份与零营养服药正常。Both PNA items now default to and cap each ingestion at one unit, fixing unintended multi-unit manual ingestion. Removes nutrition using vanilla support for non-nutritious drugs. XML-only change.

@@ -103,6 +103,8 @@
         <chemical>PNA_Chemical</chemical>
         <addictiveness>0.5</addictiveness> <minToleranceToAddict>0.00</minToleranceToAddict>
         
+        <!-- 已有成瘾的原版服药增量；末期强化由共享输入另外处理一次。 -->
+        <existingAddictionSeverityOffset>0.2</existingAddictionSeverityOffset>
         <needLevelOffset>1.0</needLevelOffset> 
         
         <listOrder>1000</listOrder>

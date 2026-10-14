@@ -1,8 +1,8 @@
 <Defs>
 <HediffDef ParentName="AddictionBase">
     <defName>PNA_Addiction</defName>
-    <label>紫色纳米液体依赖</label>
-    <description>身体对紫色纳米流体形成了依赖，性欲持续增强。依赖会随时间逐渐消退；再次服用会加深依赖，并缓解戒断。</description>
+    <label>紫色纳米液体成瘾</label>
+    <description>身体对紫色纳米流体成瘾，性欲持续增强。成瘾随时间逐渐消退，完全停止输入后，完整戒除约需10天。再次服用会加深成瘾并缓解戒断；末期负荷下的输入会进一步加深已有成瘾。</description>
     <hediffClass>Hediff_Addiction</hediffClass>
     <tendable>false</tendable>
     <everCurableByItem>false</everCurableByItem>
@@ -11,7 +11,7 @@
     <comps>
       <!-- 完整沿用原版恢复组件、计时与进度显示，不设负荷或戒断恢复门槛。 -->
       <li Class="HediffCompProperties_SeverityPerDay">
-        <severityPerDay>-0.125</severityPerDay>
+        <severityPerDay>-0.1</severityPerDay>
         <showDaysToRecover>true</showDaysToRecover>
       </li>
     </comps>

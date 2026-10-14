@@ -36,7 +36,7 @@ namespace Verse
         public bool HasRecoveryComp;
         public RimWorld.NeedDef chemicalNeed;
         public T CompProps<T>() where T : HediffCompProperties
-            => HasRecoveryComp ? new HediffCompProperties_SeverityPerDay{severityPerDay=-.125f,showDaysToRecover=true} as T : null;
+            => HasRecoveryComp ? new HediffCompProperties_SeverityPerDay{severityPerDay=-.1f,showDaysToRecover=true} as T : null;
     }
     public class BodyPartRecord { }
     public struct DamageInfo
@@ -173,7 +173,7 @@ namespace Verse
         {
             var record = new HediffWithComps { def = def, pawn = pawn, RawSeverity = def.initialSeverity };
             if (def.HasPnaComp) record.comps.Add(new SexSlaveCraft.HediffComp_SSCPnaLoad { parent = record, props = new SexSlaveCraft.HediffCompProperties_SSCPnaLoad() });
-            if (def.HasRecoveryComp) record.comps.Add(new HediffComp_SeverityPerDay { parent = record, props = def.CompProps<HediffCompProperties_SeverityPerDay>(),severityPerDay=-.125f });
+            if (def.HasRecoveryComp) record.comps.Add(new HediffComp_SeverityPerDay { parent = record, props = def.CompProps<HediffCompProperties_SeverityPerDay>(),severityPerDay=-.1f });
             return record;
         }
     }

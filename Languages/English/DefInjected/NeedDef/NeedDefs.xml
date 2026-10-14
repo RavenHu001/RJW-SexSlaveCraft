@@ -3,5 +3,5 @@
   <Corruption.label>Corruption</Corruption.label>
   <Corruption.description>The pawn's corruption level.</Corruption.description>
   <Need_PNA.label>Nanofluid Craving</Need_PNA.label>
-  <Need_PNA.description>Nanofluid satisfaction caused by PNA dependence. It gradually falls and leads to withdrawal when depleted. PNA supply restores satisfaction while increasing body load. This need belongs to the body and does not transfer with personality.</Need_PNA.description>
+  <Need_PNA.description>Nanofluid satisfaction caused by PNA addiction. It gradually falls and leads to withdrawal when depleted. PNA supply restores satisfaction while increasing body load. This need belongs to the body and does not transfer with personality.</Need_PNA.description>
 </LanguageData>

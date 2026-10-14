@@ -306,7 +306,7 @@ internal static partial class Program
     {
         var def=LoadDef("Defs/HediffDefs/HediffOfAddiction.xml","PNA_Addiction");Equal("Hediff_Addiction",def.Element("hediffClass").Value);Equal(2,def.Element("stages").Elements().Count());
         Near(1,Number(def.Element("initialSeverity")));
-        var comp=def.Element("comps").Element("li");Near(-.125,Number(comp.Element("severityPerDay")));Equal("HediffCompProperties_SeverityPerDay",(string)comp.Attribute("Class"));
+        var comp=def.Element("comps").Element("li");Near(-.1,Number(comp.Element("severityPerDay")));Equal("HediffCompProperties_SeverityPerDay",(string)comp.Attribute("Class"));
         Assert(def.Element("stages").Elements().First().Element("label")==null,"普通档沿用原版无标签");
         foreach(var stage in def.Element("stages").Elements())Near(1.25,Number(stage.Element("statFactors").Element("SexFrequency")));
         Near(-18,Number(LoadDef("Defs/HediffDefs/HediffOfAddiction.xml","PNA_Withdrawal_Thought").Element("stages").Elements().Last().Element("baseMoodEffect")));

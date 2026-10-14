@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
-  <PNA_Addiction.label>PNA Dependence</PNA_Addiction.label>
-  <PNA_Addiction.description>Physical dependence on purple nanofluid keeps sex drive elevated. Dependence gradually fades over time. Taking another dose strengthens dependence and relieves withdrawal.</PNA_Addiction.description>
+  <PNA_Addiction.label>PNA Addiction</PNA_Addiction.label>
+  <PNA_Addiction.description>Addiction to purple nanofluid keeps sex drive elevated. Addiction gradually fades over time; full recovery takes about 10 days without further exposure. Another dose deepens addiction and relieves withdrawal. Exposure at terminal load deepens existing addiction further.</PNA_Addiction.description>
   <PNA_Addiction.stages.1.label>Withdrawal</PNA_Addiction.stages.1.label>
 </LanguageData>

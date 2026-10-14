@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <LanguageData>
-  <PNA_Addiction.label>紫色奈米液體依賴</PNA_Addiction.label>
-  <PNA_Addiction.description>身體對紫色奈米流體形成了依賴，性慾持續增強。依賴會隨時間逐漸消退；再次服用會加深依賴，並緩解戒斷。</PNA_Addiction.description>
+  <PNA_Addiction.label>紫色奈米液體成癮</PNA_Addiction.label>
+  <PNA_Addiction.description>身體對紫色奈米流體成癮，性慾持續增強。成癮隨時間逐漸消退，完全停止輸入後，完整戒除約需10天。再次服用會加深成癮並緩解戒斷；末期負荷下的輸入會進一步加深已有成癮。</PNA_Addiction.description>
   <PNA_Addiction.stages.1.label>戒斷中</PNA_Addiction.stages.1.label>
 </LanguageData>

@@ -100,6 +100,8 @@ namespace SexSlaveCraft
             record = GetBodyRecord(pawn);
 
             // 3. 在原始严重度尺度上加量并钳制；无记录时精确写入计算值。
+            // 只强化本次身体输入之前已有的成瘾，不把首次创建或回调新建算作已有实例。
+            Hediff existingAddiction = GetAddiction(pawn);
             float before = SSCPnaMath.NormalizeSeverity(record?.Severity ?? 0f);
             float after = SSCPnaMath.AddDose(before, dose);
             if (record == null)
@@ -164,6 +166,14 @@ namespace SexSlaveCraft
                 Need_Chemical need = GetNeed(pawn);
                 if (IsValidTarget(pawn) && !IsRooted(pawn) && need != null && refill > 0f)
                     need.CurLevel = System.Math.Min(need.MaxLevel, need.CurLevel + refill);
+
+                // 末期真实输入额外加深已有成瘾；原版服药增量仍由 CompDrug 单独执行。
+                // 调试不强化，初次成瘾不重复增加；满负荷实际增量为零也仍是真实暴露。
+                // Setter 沿用原版上限，随后统一核对链与健康回调，不新增计时器或缓存。
+                if (source != SSCPnaExposureSource.Debug && existingAddiction != null &&
+                    GetAddiction(pawn) == existingAddiction && IsValidTarget(pawn) && !IsRooted(pawn) &&
+                    GetBodyRecord(pawn) == record && record.Severity >= (float)(SSCPnaMath.HighLoadThreshold * SSCPnaMath.MaximumSeverity))
+                    existingAddiction.Severity += .2f;
             }
             // 7. 依赖和需求变更后再次核对身体；失效清理只撤销本次新依赖。
             // 有链依赖清除仍由协调方法处理，已执行的身体加量不在此回滚。
