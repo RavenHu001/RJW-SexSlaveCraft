@@ -156,8 +156,8 @@
 
   <HediffDef>
     <defName>Hediff_PNA_Debuff</defName>
-    <label>紫色纳米机械感染</label>
-    <description>在紫色纳米机械的感染下，人的感度持续上升，直到陷入持续性的高潮瘫痪。</description>
+    <label>PNA 负荷</label>
+    <description>体内紫色纳米机械的当前负荷。低频补充可维持慢性影响，密集输入会造成急性过载；停止补充后，负荷随有效健康更新逐渐清除。冷冻和游戏暂停不补算清除时间。</description>
     <hediffClass>HediffWithComps</hediffClass>
     <tendable>false</tendable>
     <everCurableByItem>false</everCurableByItem>
@@ -167,24 +167,43 @@
     <initialSeverity>0.01</initialSeverity>
     
     <comps>
-      <li Class="HediffCompProperties_SeverityPerDay">
-        <severityPerDay>-1.0</severityPerDay> 
-      </li>
+      <li Class="SexSlaveCraft.HediffCompProperties_SSCPnaLoad" />
     </comps>
 
     <stages>
       <li>
-        <label>潮红</label>
-        <minSeverity>0.1</minSeverity>
+        <label>微量</label>
+        <minSeverity>0</minSeverity>
+        <statFactors><SexFrequency>1.05</SexFrequency></statFactors>
+      </li>
+      <li>
+        <label>活跃</label>
+        <minSeverity>0.30</minSeverity>
+        <statFactors><SexFrequency>1.15</SexFrequency></statFactors>
+      </li>
+      <li>
+        <label>侵蚀</label>
+        <minSeverity>0.80</minSeverity>
+        <statFactors><SexFrequency>1.25</SexFrequency></statFactors>
         <capMods>
-          <li><capacity>Manipulation</capacity><offset>-0.2</offset></li>
-          <li><capacity>Moving</capacity><offset>-0.2</offset></li>
+          <li><capacity>Manipulation</capacity><offset>-0.05</offset></li>
+          <li><capacity>Moving</capacity><offset>-0.05</offset></li>
         </capMods>
       </li>
-
       <li>
-        <label>持续高潮</label>
-        <minSeverity>1.0</minSeverity>
+        <label>深度影响</label>
+        <minSeverity>1.40</minSeverity>
+        <statFactors><SexFrequency>1.40</SexFrequency></statFactors>
+        <capMods>
+          <li><capacity>Manipulation</capacity><offset>-0.10</offset></li>
+          <li><capacity>Moving</capacity><offset>-0.10</offset></li>
+          <li><capacity>Consciousness</capacity><offset>-0.10</offset></li>
+        </capMods>
+      </li>
+      <li>
+        <label>末期过载</label>
+        <minSeverity>1.94</minSeverity>
+        <statFactors><SexFrequency>1.50</SexFrequency></statFactors>
         <lifeThreatening>false</lifeThreatening>
         <painFactor>0</painFactor> <capMods>
           <li>
@@ -194,6 +213,21 @@
         </capMods>
       </li>
     </stages>
+  </HediffDef>
+
+  <!-- P1 同严重度转换载体：清除机制共用，普通对象的负面阶段不作用于性奴。完整正面阶段另行设计。 -->
+  <HediffDef>
+    <defName>SSC_Hediff_PnaRootedLoad</defName>
+    <label>性奴 PNA 负荷</label>
+    <description>已扎根身体的紫色纳米机械负荷。绑定与解绑保留同一负荷数值；绑定清除普通 PNA 依赖。当前不施加普通负荷的能力惩罚，完整正面效果仍待后续开发。</description>
+    <hediffClass>HediffWithComps</hediffClass>
+    <tendable>false</tendable>
+    <everCurableByItem>false</everCurableByItem>
+    <defaultLabelColor>(1.0, 0.4, 0.8)</defaultLabelColor>
+    <maxSeverity>2.0</maxSeverity>
+    <initialSeverity>0.01</initialSeverity>
+    <comps><li Class="SexSlaveCraft.HediffCompProperties_SSCPnaLoad" /></comps>
+    <stages><li><label>扎根</label><minSeverity>0</minSeverity></li></stages>
   </HediffDef>
 
   <ThoughtDef>
@@ -206,13 +240,15 @@
       <li>
         <label>有点感觉</label>
         <description>呼...哈...哈，好热...下面好痒。</description>
-        <baseMoodEffect>5</baseMoodEffect>
+        <visible>false</visible>
+        <baseMoodEffect>0</baseMoodEffect>
       </li>
       
       <li>
         <label>持续高潮</label>
         <description>哦齁齁齁！！！为什么...是这个时候...哦齁！哦齁！大脑一片空白了...</description>
-        <baseMoodEffect>8</baseMoodEffect>
+        <visible>false</visible>
+        <baseMoodEffect>0</baseMoodEffect>
       </li>
     </stages>
   </ThoughtDef>

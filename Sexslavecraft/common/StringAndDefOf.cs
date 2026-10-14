@@ -128,6 +128,9 @@ namespace SexSlaveCraft
         public static HediffDef SSC_HumanCattleLactationBridge;
         public static HediffDef SSC_Hediff_RabbitCloneLink;
         public static HediffDef SSC_Hediff_RabbitCloneLowPNA;
+        // PNA P1：保留旧 DefName；负荷记录不依赖调教组件或主人身份。
+        public static HediffDef SSC_PnaLoad;
+        public static HediffDef SSC_PnaRootedLoad;
 
         // 🔥【新增】人格排泄后的深度宕机状态
         public static HediffDef SSC_PostExcretionComa;
@@ -302,6 +305,8 @@ namespace SexSlaveCraft
             SSC_HumanCattleLactationBridge = DefDatabase<HediffDef>.GetNamedSilentFail("SSC_HumanCattleLactationBridge");
             SSC_Hediff_RabbitCloneLink = GetDef<HediffDef>("SSC_Hediff_RabbitCloneLink");
             SSC_Hediff_RabbitCloneLowPNA = GetDef<HediffDef>("SSC_Hediff_RabbitCloneLowPNA");
+            SSC_PnaLoad = GetDef<HediffDef>(SSCPnaExposureUtility.LoadDefName);
+            SSC_PnaRootedLoad = GetDef<HediffDef>(SSCPnaExposureUtility.RootedLoadDefName);
 
             // 🔥【新增】获取排泄后的宕机状态
             SSC_PostExcretionComa = GetDef<HediffDef>("SSC_PostExcretionComa");

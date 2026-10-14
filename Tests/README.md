@@ -2,7 +2,7 @@
 
 [文档总索引](../Docs/README.md) · [发布与打包](../Docs/Maintenance/发布与打包.md) · [开发记录](../Docs/Development/README.md)
 
-当前 **2.4.0** 的 `Scripts/Test-All.ps1` 登记 **28 套机制回归**；正式 2.3.9 发布时为 25 套，本版增加 `MasterQualificationItem`、`MasterEntry` 与 `MasterPanelUI`。下列专项 README 保留各自命令、覆盖范围和实机步骤，本版完整门禁与实际通过数量见[2.4.0 版本验证](../Docs/Releases/2.4.0/2.4.0版本验证.md)。
+正式 **2.4.0** 登记 28 套机制回归；当前未发布 PNA P1 增加 `PnaLoad`，`Scripts/Test-All.ps1` 登记 **29 套**。正式 2.3.9 发布时为 25 套，2.4.0 增加 `MasterQualificationItem`、`MasterEntry` 与 `MasterPanelUI`。历史正式门禁见[2.4.0 版本验证](../Docs/Releases/2.4.0/2.4.0版本验证.md)，本批结果见[P1 测试说明](../Docs/Development/Completed/PNA机制重置P1实现与测试.md)。
 
 ## 统一入口
 
@@ -29,6 +29,8 @@ pwsh -File Scripts/Test-All.ps1 -HarmonyAssemblyPath 'C:\Dependencies\Harmony\ne
 - 退出身份隐藏功能已于 2026-10-13 获维护者实机确认并提交为 `018752d`，返回主人恢复原阶段和经验；相关五套专项 536/536。
 
 ## 身份、训导官与自我调教
+
+- [PnaLoad](PnaLoad/README.md)：未发布 PNA P1 负荷基础、锁链保护、输入与旧档专项；满值依赖和物品来源完整接入仍待 P2。
 
 - [TrainerIdentity](TrainerIdentity/README.md)：调教员身份回归。
 - [TrainerIntegration](TrainerIntegration/README.md)：训导官人格恢复集成回归。

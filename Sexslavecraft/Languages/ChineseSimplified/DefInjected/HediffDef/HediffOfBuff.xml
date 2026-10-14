@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <Hediff_PNA_Debuff.label>PNA 负荷</Hediff_PNA_Debuff.label>
+  <Hediff_PNA_Debuff.description>体内紫色纳米机械的当前负荷。低频补充可维持慢性影响，密集输入会造成急性过载；停止补充后，负荷随有效健康更新逐渐清除。冷冻和游戏暂停不补算清除时间。</Hediff_PNA_Debuff.description>
+  <Hediff_PNA_Debuff.stages.0.label>微量</Hediff_PNA_Debuff.stages.0.label>
+  <Hediff_PNA_Debuff.stages.1.label>活跃</Hediff_PNA_Debuff.stages.1.label>
+  <Hediff_PNA_Debuff.stages.2.label>侵蚀</Hediff_PNA_Debuff.stages.2.label>
+  <Hediff_PNA_Debuff.stages.3.label>深度影响</Hediff_PNA_Debuff.stages.3.label>
+  <Hediff_PNA_Debuff.stages.4.label>末期过载</Hediff_PNA_Debuff.stages.4.label>
+  <SSC_Hediff_PnaRootedLoad.label>性奴 PNA 负荷</SSC_Hediff_PnaRootedLoad.label>
+  <SSC_Hediff_PnaRootedLoad.description>已扎根身体的紫色纳米机械负荷。绑定与解绑保留同一负荷数值；绑定清除普通 PNA 依赖。当前不施加普通负荷的能力惩罚，完整正面效果仍待后续开发。</SSC_Hediff_PnaRootedLoad.description>
+  <SSC_Hediff_PnaRootedLoad.stages.0.label>扎根</SSC_Hediff_PnaRootedLoad.stages.0.label>
+</LanguageData>

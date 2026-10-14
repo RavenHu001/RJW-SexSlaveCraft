@@ -3,4 +3,5 @@
   <PNA_Addiction.label>PNA Dependence</PNA_Addiction.label>
   <PNA_Addiction.description>Physical dependence on nanofluid. After a period without intake, the body self-regulates and clears the dependence.</PNA_Addiction.description>
   <PNA_Addiction.stages.0.label>Dependent</PNA_Addiction.stages.0.label>
+  <PNA_Addiction.stages.1.label>Withdrawal</PNA_Addiction.stages.1.label>
 </LanguageData>

@@ -6,6 +6,8 @@ This continuation builds on upstream **2.2.8**, the baseline when upstream devel
 
 ## [未发布 / Unreleased]
 
+- **PNA 重置 P1 测试批 / PNA reset P1 test batch:** 实现五档普通负荷、分段清除、共享测试输入、实际锁链保护、负荷旧档规范化和四语调试；移除旧普通负荷持续心情，修复旧依赖两档结构；绑定仅清依赖，普通／性奴负荷按同严重度双向转换，保留未结算时间。满值确定性依赖、来源剂量与补给过滤仍待 P2；2026-10-14 维护者确认 P1 实机有效并批准提交。Adds five load stages, piecewise clearance, shared test inputs, effective-chain protection, load save normalization and localized feedback. Deterministic addiction, source doses and supply filtering remain for P2; P1 was confirmed effective in game on 2026-10-14; subsequent balance changes require separate verification. See [P1 implementation and testing](Docs/Development/Completed/PNA机制重置P1实现与测试.md).
+
 - **2.4.0 文档核对 / Documentation alignment:** 同步中英文指南中的主人资格、四阶段数值、七项许可、人格迁移、设置与伤害分担入口；修正训导官职责记忆和条件性反馈混写，以及隐藏审计中的已修复状态。新增开局／升级常见问题并更新玩家导航和发布维护说明。本条为发布后的文档维护，不增加 2.4.0 玩法，也不改写已发布附件。Aligns both languages with 2.4.0 qualification, stage values, seven permissions, personality transfer, settings and damage-sharing controls; corrects duty-memory versus conditional-feedback wording and obsolete hidden audit entries. Adds onboarding/upgrade FAQ and updates player navigation and maintenance instructions. This is post-release documentation maintenance, not new gameplay or a replacement release package.
 
 ## [2.4.0] — 2026-10-13 — 欲望之种与主人成长 / Seed of Desire and Master progression

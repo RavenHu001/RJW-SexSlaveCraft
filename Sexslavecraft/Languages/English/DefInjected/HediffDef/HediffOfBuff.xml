@@ -10,10 +10,10 @@
   <Hediff_PNA_Combat_Buff.description>Under purple nanomachine aphrodisiac stimulation, a sex slave's cells become active and agitated, increasing combat capability.</Hediff_PNA_Combat_Buff.description>
   <Hediff_PNA_Combat_Buff_Plus.label>PNA Combat Enhancement (Concentrated)</Hediff_PNA_Combat_Buff_Plus.label>
   <Hediff_PNA_Combat_Buff_Plus.description>Under concentrated purple nanomachine stimulation, a sex slave's potential is greatly unleashed.</Hediff_PNA_Combat_Buff_Plus.description>
-  <Hediff_PNA_Debuff.label>PNA Infection</Hediff_PNA_Debuff.label>
-  <Hediff_PNA_Debuff.description>Under purple nanomachine infection, sensitivity rises continuously until entering continuous-climax paralysis.</Hediff_PNA_Debuff.description>
-  <Hediff_PNA_Debuff.stages.0.label>Flushed</Hediff_PNA_Debuff.stages.0.label>
-  <Hediff_PNA_Debuff.stages.1.label>Continuous Climax</Hediff_PNA_Debuff.stages.1.label>
+  <Hediff_PNA_Debuff.label>PNA Load</Hediff_PNA_Debuff.label>
+  <Hediff_PNA_Debuff.description>Current purple nanomachine load in the body. Infrequent doses can sustain chronic effects; concentrated exposure can cause acute overload. Without further exposure, effective health updates gradually clear the load. Suspended and paused time is not charged on resumption.</Hediff_PNA_Debuff.description>
+  <Hediff_PNA_Debuff.stages.0.label>Trace</Hediff_PNA_Debuff.stages.0.label>
+  <Hediff_PNA_Debuff.stages.1.label>Active</Hediff_PNA_Debuff.stages.1.label>
   <Hediff_PNA_Consciousness_Record.label>Consciousness Snapshot</Hediff_PNA_Consciousness_Record.label>
   <Hediff_PNA_Consciousness_Record.description>Used to record the target's peak consciousness while exposed to hormones (normally not intended to be seen).</Hediff_PNA_Consciousness_Record.description>
   <SSC_PostExcretionComa.label>Personality Excretion Adaptation Syndrome</SSC_PostExcretionComa.label>
@@ -22,4 +22,10 @@
   <SSC_PostInsertionComa.label>Personality Implantation Adaptation Syndrome</SSC_PostInsertionComa.label>
   <SSC_PostInsertionComa.description>After forced insertion of an external personality into a hollow body, the brain and nervous system need time to adapt and recover.</SSC_PostInsertionComa.description>
   <SSC_PostInsertionComa.stages.0.label>Deep Shutdown</SSC_PostInsertionComa.stages.0.label>
+  <Hediff_PNA_Debuff.stages.2.label>Erosion</Hediff_PNA_Debuff.stages.2.label>
+  <Hediff_PNA_Debuff.stages.3.label>Deep influence</Hediff_PNA_Debuff.stages.3.label>
+  <Hediff_PNA_Debuff.stages.4.label>Acute overload</Hediff_PNA_Debuff.stages.4.label>
+  <SSC_Hediff_PnaRootedLoad.label>Rooted PNA Load</SSC_Hediff_PnaRootedLoad.label>
+  <SSC_Hediff_PnaRootedLoad.description>Purple nanomachine load in a rooted body. Binding and unbinding preserve the load value; binding clears ordinary PNA addiction. Ordinary load capacity penalties do not apply. Full positive effects remain for later development.</SSC_Hediff_PnaRootedLoad.description>
+  <SSC_Hediff_PnaRootedLoad.stages.0.label>Rooted</SSC_Hediff_PnaRootedLoad.stages.0.label>
 </LanguageData>

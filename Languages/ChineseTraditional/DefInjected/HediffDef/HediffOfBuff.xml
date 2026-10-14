@@ -10,10 +10,10 @@
   <Hediff_PNA_Combat_Buff.description>在紫色奈米機械的催情下，性奴體內的細胞開始活躍，躁動，增加其戰鬥能力。</Hediff_PNA_Combat_Buff.description>
   <Hediff_PNA_Combat_Buff_Plus.label>戰鬥催情強化（濃縮）</Hediff_PNA_Combat_Buff_Plus.label>
   <Hediff_PNA_Combat_Buff_Plus.description>在濃縮紫色奈米機械的強力催情下，性奴體內的潛能被大幅激發。</Hediff_PNA_Combat_Buff_Plus.description>
-  <Hediff_PNA_Debuff.label>紫色奈米機械感染</Hediff_PNA_Debuff.label>
-  <Hediff_PNA_Debuff.description>在紫色奈米機械的感染下，人的感度持續上升，直到陷入持續性的高潮癱瘓。</Hediff_PNA_Debuff.description>
-  <Hediff_PNA_Debuff.stages.0.label>潮紅</Hediff_PNA_Debuff.stages.0.label>
-  <Hediff_PNA_Debuff.stages.1.label>持續高潮</Hediff_PNA_Debuff.stages.1.label>
+  <Hediff_PNA_Debuff.label>PNA 負荷</Hediff_PNA_Debuff.label>
+  <Hediff_PNA_Debuff.description>體內紫色奈米機械的目前負荷。低頻補充可維持慢性影響，密集輸入會造成急性過載；停止補充後，負荷隨有效健康更新逐漸清除。冷凍和遊戲暫停不補算清除時間。</Hediff_PNA_Debuff.description>
+  <Hediff_PNA_Debuff.stages.0.label>微量</Hediff_PNA_Debuff.stages.0.label>
+  <Hediff_PNA_Debuff.stages.1.label>活躍</Hediff_PNA_Debuff.stages.1.label>
   <Hediff_PNA_Consciousness_Record.label>抗性快照</Hediff_PNA_Consciousness_Record.label>
   <Hediff_PNA_Consciousness_Record.description>用於記錄目標面對激素時的最高意識水平（你大抵應該不可能一定必須看到這個）。</Hediff_PNA_Consciousness_Record.description>
   <SSC_PostExcretionComa.label>人格排洩適應症</SSC_PostExcretionComa.label>
@@ -22,4 +22,10 @@
   <SSC_PostInsertionComa.label>人格植入適應症</SSC_PostInsertionComa.label>
   <SSC_PostInsertionComa.description>外來人格被強行塞入空殼軀體，大腦和神經系統正在重新適應新的人格，需要時間恢復。</SSC_PostInsertionComa.description>
   <SSC_PostInsertionComa.stages.0.label>深度宕機</SSC_PostInsertionComa.stages.0.label>
+  <Hediff_PNA_Debuff.stages.2.label>侵蝕</Hediff_PNA_Debuff.stages.2.label>
+  <Hediff_PNA_Debuff.stages.3.label>深度影響</Hediff_PNA_Debuff.stages.3.label>
+  <Hediff_PNA_Debuff.stages.4.label>末期過載</Hediff_PNA_Debuff.stages.4.label>
+  <SSC_Hediff_PnaRootedLoad.label>性奴 PNA 負荷</SSC_Hediff_PnaRootedLoad.label>
+  <SSC_Hediff_PnaRootedLoad.description>已紮根身體的紫色奈米機械負荷。綁定與解綁保留同一負荷數值；綁定清除普通 PNA 依賴。目前不施加普通負荷的能力懲罰，完整正面效果仍待後續開發。</SSC_Hediff_PnaRootedLoad.description>
+  <SSC_Hediff_PnaRootedLoad.stages.0.label>紮根</SSC_Hediff_PnaRootedLoad.stages.0.label>
 </LanguageData>

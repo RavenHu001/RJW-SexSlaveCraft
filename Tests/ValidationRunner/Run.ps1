@@ -20,8 +20,8 @@ $savedHarmony = $env:SSC_TEST_HARMONY_PATH
 $savedMode = $env:SSC_VALIDATION_FIXTURE_MODE
 $checks = 0
 $suiteCount = @(Get-ChildItem -LiteralPath (Join-Path $repo 'Tests') -Recurse -Filter '*.csproj').Count
-# These four suites require the net9.0 Harmony build; ordinary PetAffectionFollowup directly executes its hook boundary.
-$harmonySuiteCount = 4
+# Five suites require the net9.0 Harmony build, including PnaLoad's real patch registration.
+$harmonySuiteCount = 5
 
 <#
 .SYNOPSIS

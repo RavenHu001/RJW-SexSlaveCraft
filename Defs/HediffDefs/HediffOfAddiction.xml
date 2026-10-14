@@ -16,6 +16,9 @@
 
     <stages>
       <li>
+        <label>依赖</label>
+      </li>
+      <li>
         <label>戒断中</label>
       </li>
     </stages>

@@ -3,4 +3,5 @@
   <PNA_Addiction.label>Зависимость от PNA</PNA_Addiction.label>
   <PNA_Addiction.description>Физическая зависимость от наножидкости. Через некоторое время без приёма тело саморегулируется и снимает зависимость.</PNA_Addiction.description>
   <PNA_Addiction.stages.0.label>Зависимость</PNA_Addiction.stages.0.label>
+  <PNA_Addiction.stages.1.label>Абстиненция</PNA_Addiction.stages.1.label>
 </LanguageData>

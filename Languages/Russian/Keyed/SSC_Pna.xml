@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_Pna_LoadTooltip>Текущая нагрузка PNA: {0}%. Активные обновления здоровья постепенно снижают её; редкие дозы могут поддерживать хроническое воздействие.</SSC_Pna_LoadTooltip>
+  <SSC_Pna_SelectPawn>Сначала выберите персонажа.</SSC_Pna_SelectPawn>
+  <SSC_Pna_InvalidTarget>Этот персонаж сейчас не может получить тестовую дозу PNA.</SSC_Pna_InvalidTarget>
+  <SSC_Pna_Rooted>Тест PNA P1: укоренившаяся нагрузка {0}%. Обычная зависимость PNA не создаётся.</SSC_Pna_Rooted>
+  <SSC_Pna_DebugResult>Тест PNA P1: текущая нагрузка {0}%. Этот тестовый ввод не создаёт новую зависимость.</SSC_Pna_DebugResult>
+  <SSC_Pna_RootedLoadTooltip>Укоренившаяся нагрузка PNA: {0}%. Привязка и отвязка сохраняют нагрузку и неучтённое активное время. Обычные штрафы не действуют; полные положительные эффекты ещё разрабатываются.</SSC_Pna_RootedLoadTooltip>
+</LanguageData>
