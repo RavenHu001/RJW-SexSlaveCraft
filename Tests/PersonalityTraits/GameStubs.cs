@@ -123,6 +123,12 @@ namespace Verse
         /// <summary>提供深层对象读写接口的空实现；本测试不验证真实对象序列化。</summary>
         public static void Look<T>(ref T x, string s)
         {
+            if (typeof(T) != typeof(SexSlaveCraft.SSCAbilityToggleState)) return;
+            if (Scribe.mode == LoadSaveMode.Saving)
+                Scribe.Values[s] = (x as SexSlaveCraft.SSCAbilityToggleState)?.Copy();
+            if (Scribe.mode == LoadSaveMode.LoadingVars)
+                x = Scribe.Values.TryGetValue(s, out var saved) ?
+                    (T)(object)(saved as SexSlaveCraft.SSCAbilityToggleState)?.Copy() : default;
         }
     }
 
@@ -359,9 +365,11 @@ namespace Verse
     public static class GenSpawn
     {
         public static Thing LastSpawned;
+        public static bool FailSpawn;
         /// <summary>记录最近生成的测试物品，供用例读取凝胶；不模拟地图放置行为。</summary>
         public static void Spawn(Thing t, object p, Map m)
         {
+            if (FailSpawn) throw new InvalidOperationException("test spawn failure");
             LastSpawned = t;
         }
     }

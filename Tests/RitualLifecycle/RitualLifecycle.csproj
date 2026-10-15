@@ -36,4 +36,5 @@
     <Compile Include="$(SscSourceRoot)/common/ProgressionEducationCompatibility.cs" Link="Production/ProgressionEducationCompatibility.cs" />
     <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionConfigurationBuilder.cs" Link="Production/SSCRestrictionConfigurationBuilder.cs" />
   </ItemGroup>
+  <Import Project="../Shared/AbilityToggleProduction.targets" />
 </Project>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <HediffDef>
+    <defName>SSC_Hediff_MasterDesireInfestation</defName>
+    <label>欲望侵染已开启</label>
+    <description>这位主人已开启欲望侵染。偏好随人格保存，只在当前人格具备主人身份时生效。</description>
+    <hediffClass>SexSlaveCraft.Hediff_SSCToggleAbilityMarker</hediffClass>
+    <isBad>false</isBad>
+    <tendable>false</tendable>
+    <everCurableByItem>false</everCurableByItem>
+    <initialSeverity>1</initialSeverity>
+    <maxSeverity>1</maxSeverity>
+  </HediffDef>
+</Defs>

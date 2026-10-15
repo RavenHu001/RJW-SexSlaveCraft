@@ -1,0 +1,101 @@
+// AI 辅助生成
+using System.Collections.Generic;
+using UnityEngine;
+using Verse;
+
+namespace SexSlaveCraft
+{
+    public partial class ITab_SexSlaveTraining
+    {
+        private const float AbilityToggleRowGap = 12f;
+        // 测量与绘制共用本次 GUI 快照；保存原 Pawn/组件/token，提交时拒绝迟到点击。
+        private sealed class AbilityToggleRow
+        {
+            public Pawn Pawn;
+            public CompSexSlaveTraining Comp;
+            public object PersonalityToken;
+            public string Id, Label, Tip;
+            public bool Enabled, CanEdit;
+            public float Height;
+        }
+
+        /// <summary>主人与性奴面板可共用；只形成当前 GUI 事件的只读视图。</summary>
+        private static List<AbilityToggleRow> BuildAbilityToggleRows(Pawn pawn, CompSexSlaveTraining comp,
+            SSCAbilityToggleGroup group, float innerWidth)
+        {
+            var rows = new List<AbilityToggleRow>();
+            GameFont oldFont = Text.Font;
+            bool oldWrap = Text.WordWrap;
+            try
+            {
+                Text.Font = GameFont.Small;
+                Text.WordWrap = true;
+                // 按组复用同一行模板，并给复选框留宽度；只读测量不创建成长或默认配置。
+                foreach (SSCAbilityToggleDefinition definition in SSCAbilityToggleUtility.Definitions)
+                {
+                    if (definition.Group != group) continue;
+                    string label = definition.LabelKey.Translate();
+                    rows.Add(new AbilityToggleRow
+                    {
+                        Pawn = pawn, Comp = comp, PersonalityToken = SSCPersonalityRuntimeUtility.Capture(pawn),
+                        Id = definition.Id, Label = label, Tip = definition.TipKey.Translate(),
+                        Enabled = SSCAbilityToggleUtility.GetEnabled(pawn, definition.Id),
+                        CanEdit = SSCAbilityToggleUtility.CanEdit(pawn, definition.Id),
+                        Height = Mathf.Max(24f, Text.CalcHeight(label, Mathf.Max(1f, innerWidth - 24f)))
+                    });
+                }
+            }
+            finally { Text.Font = oldFont; Text.WordWrap = oldWrap; }
+            return rows;
+        }
+
+        private static float AbilityToggleSectionHeight(List<AbilityToggleRow> rows)
+        {
+            // 当前没有 Slave 能力时高度为零，保留原性奴面板的布局与滚动范围。
+            if (rows == null || rows.Count == 0) return 0f;
+            float height = SectionPadding * 2f;
+            foreach (AbilityToggleRow row in rows) height += AbilityToggleRowGap + row.Height;
+            return height;
+        }
+
+        private void DrawAbilityToggleSection(Rect rect, List<AbilityToggleRow> rows)
+        {
+            GameFont oldFont = Text.Font;
+            TextAnchor oldAnchor = Text.Anchor;
+            bool oldWrap = Text.WordWrap, oldEnabled = GUI.enabled;
+            Color oldColor = GUI.color;
+            try
+            {
+                Text.Font = GameFont.Small; Text.Anchor = TextAnchor.UpperLeft; Text.WordWrap = true;
+                Widgets.DrawMenuSection(rect);
+                Rect inner = rect.ContractedBy(SectionPadding);
+                float y = inner.y;
+                DrawAbilityToggleRows(inner, ref y, rows, oldEnabled);
+            }
+            finally
+            {
+                // 公共绘制器必须归还全部 GUI 状态，避免后续原面板继承禁用、颜色或换行设置。
+                Text.Font = oldFont; Text.Anchor = oldAnchor; Text.WordWrap = oldWrap;
+                GUI.enabled = oldEnabled; GUI.color = oldColor;
+            }
+        }
+
+        private void DrawAbilityToggleRows(Rect inner, ref float y, List<AbilityToggleRow> rows, bool outerEnabled)
+        {
+            if (rows == null) return;
+            foreach (AbilityToggleRow row in rows)
+            {
+                y += AbilityToggleRowGap;
+                Rect rect = new Rect(inner.x, y, inner.width, row.Height);
+                bool enabled = row.Enabled;
+                GUI.enabled = outerEnabled && row.CanEdit;
+                Widgets.CheckboxLabeled(rect, row.Label, ref enabled, !GUI.enabled);
+                TooltipHandler.TipRegion(rect, row.Tip);
+                // 行快照仅用于显示；真正提交交给通用入口再查当前权限与人格归属。
+                if (GUI.enabled && enabled != row.Enabled && SelPawn == row.Pawn)
+                    SSCAbilityToggleUtility.TrySetEnabled(row.Pawn, row.Id, enabled, row.Comp, row.PersonalityToken);
+                y += row.Height;
+            }
+        }
+    }
+}

@@ -58,6 +58,7 @@ internal static partial class Program
         Run("原缰绳字段存读档保留关闭值", BridleRoundTrip);
         Run("旧档缺开关字段仍默认开启", OldSaveDefault);
         Run("主文件接入同一面板高度且保留未选择分支", Integration);
+        RunAbilityToggleTests();
         Console.WriteLine($"{passed}/{passed + failed} passed (production Master panel/bridle; approximate game interface model).");
         return failed == 0 ? 0 : 1;
     }
@@ -86,7 +87,7 @@ internal static partial class Program
     private static void LoadLanguage(string language)
     {
         Translation.Entries.Clear();
-        foreach (string name in new[] { "SSC_MasterProgression.xml", "SSC_Keys.xml" })
+        foreach (string name in new[] { "SSC_MasterProgression.xml", "SSC_Keys.xml", "SSC_AbilityToggles.xml" })
             foreach (var node in XDocument.Load(Path.Combine(repo, "Languages", language, "Keyed", name)).Root.Elements()) Translation.Entries[node.Name.LocalName] = node.Value;
         var injected = XDocument.Load(Path.Combine(repo, "Languages", language, "DefInjected/HediffDef/SSC_MasterProgression.xml")).Root;
         var definition = SSCDefOf.SSC_Hediff_MasterProgression;
@@ -169,17 +170,17 @@ internal static partial class Program
     private static void MissingBridle()
     {
         Pawn pawn = Grown(12); int adds = pawn.health.Adds; Widgets.Click = true; Tab().Draw(pawn);
-        Assert(Widgets.Items.Single(i => i.Kind == "checkbox").Disabled && SSCBondUtility.GetBridle(pawn) == null && pawn.health.Adds == adds);
+        Assert(Widgets.Items.First(i => i.Kind == "checkbox").Disabled && SSCBondUtility.GetBridle(pawn) == null && pawn.health.Adds == adds);
     }
     private static void NonPlayer()
     {
         Pawn pawn = Grown(12); var bridle = Bind(pawn); pawn.Faction = new Faction(); Widgets.Click = true; Tab().Draw(pawn);
-        Assert(Widgets.Items.Single(i => i.Kind == "checkbox").Disabled && bridle.shareDamageEnabled);
+        Assert(Widgets.Items.First(i => i.Kind == "checkbox").Disabled && bridle.shareDamageEnabled);
     }
     private static void DisabledGUI()
     {
         Pawn pawn = Grown(12); var bridle = Bind(pawn); GUI.enabled = false; Widgets.Click = true; Tab().Draw(pawn);
-        Assert(!GUI.enabled && bridle.shareDamageEnabled && Widgets.Items.Single(i => i.Kind == "checkbox").Disabled);
+        Assert(!GUI.enabled && bridle.shareDamageEnabled && Widgets.Items.All(i => i.Kind != "checkbox" || i.Disabled));
     }
     private static void Late(Action<ITab_SexSlaveTraining, Pawn, Hediff_BridleOfSexSlave> change)
     {

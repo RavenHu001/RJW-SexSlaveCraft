@@ -135,3 +135,7 @@ CombatantSpecialization suite. The Scribe dictionary model is not a real game sa
 仪式修正后 179/179：原生解析不到部位也能完成固定六阶段；真正定义初始化失败、外部回调替换及原经验保护保持。 日志位于 `.builds/pna-effects-step5-ritual-fix/`。
 
 2026-10-15：维护者已确认第五步仪式及性交增加成瘾均正常，批准提交；本次只补实机验收记录，不重复运行回归。
+
+## 欲望侵染第一批通用开关回归（2026-10-15）
+
+本宿主已链接真实通用开关／人格凭据代码，新增本领域的状态闭环回归；范围、实际本批结果与实机边界见[第一批记录](../../Docs/Development/Completed/欲望侵染第一批通用开关框架实现与测试.md)。历史计数保留原批次语境。

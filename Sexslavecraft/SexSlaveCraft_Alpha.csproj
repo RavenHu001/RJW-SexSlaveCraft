@@ -82,6 +82,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="common\AddCorruption.cs" />
+    <Compile Include="common\SSCAbilityToggleState.cs" />
+    <Compile Include="common\SSCAbilityToggleUtility.cs" />
+    <Compile Include="common\SSCPersonalityRuntimeUtility.cs" />
+    <Compile Include="common\SSCAbilityToggleGameComponent.cs" />
+    <Compile Include="Comps\Comp_AbilityToggles.cs" />
+    <Compile Include="Hediff\Hediff_SSCToggleAbilityMarker.cs" />
+    <Compile Include="ThePatches\Harmony_SSCAbilityToggles.cs" />
+    <Compile Include="ITab\ITab_SexSlaveTraining.AbilityToggles.cs" />
     <Compile Include="common\SSCPnaMath.cs" />
     <Compile Include="common\SSCPnaExposureUtility.cs" />
     <Compile Include="common\SSCPnaSourceUtility.cs" />

@@ -107,7 +107,7 @@ namespace SexSlaveCraft
     }
     // 只记录生产任务调用的先后顺序；宠物清理及人格快照算法由各自专项直接执行生产代码。
     public static class PetExtractionBoundary { public static readonly List<string> Calls = new List<string>(); }
-    public class CompPersonalityStore : ThingComp
+    public partial class CompPersonalityStore : ThingComp
     {
         public Pawn Stored;
         public bool MasterQualificationUnlocked;
@@ -115,6 +115,7 @@ namespace SexSlaveCraft
         public void StorePawnData(Pawn pawn)
         {
             Stored = pawn;
+            CaptureAbilityToggles(pawn);
             MasterQualificationUnlocked = pawn.TryGetComp<CompSexSlaveTraining>()?.masterQualificationUnlocked == true;
             MasterGrowthPoints = SSCMasterProgressionUtility.GetExperience(pawn);
             PetExtractionBoundary.Calls.Add("store");

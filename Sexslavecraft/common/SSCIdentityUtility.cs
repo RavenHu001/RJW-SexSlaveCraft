@@ -135,6 +135,8 @@ namespace SexSlaveCraft
         {
             CompSexSlaveTraining comp = pawn?.TryGetComp<CompSexSlaveTraining>();
             if (comp == null) return false;
+            // 身份回调可能原地替换人格且沿用同一 Comp；跨回调同时核对组件和 token。
+            object personalityToken = SSCPersonalityRuntimeUtility.Capture(pawn);
             if (identity != PawnIdentity.Unset && identity != PawnIdentity.Slave && identity != PawnIdentity.Master)
                 return false;
             // 重复设置不属于身份切换，绑定结算也会重复写入性奴身份。
@@ -144,8 +146,11 @@ namespace SexSlaveCraft
                 // 同身份请求只刷新现有成长，不补零经验。Master→Master 人格植入
                 // 仍由恢复核心替换来源记录，不能靠“身份变化”通知完成流转。
                 SSCMasterProgressionUtility.RefreshActivation(pawn);
+                if (!SSCPersonalityRuntimeUtility.IsCurrent(pawn, personalityToken) || pawn.TryGetComp<CompSexSlaveTraining>() != comp) return false;
                 // 同身份的人格恢复也可能换入带药效的身体，仍须执行主人免疫核对。
                 SSCPnaExposureUtility.RefreshBodyState(pawn, true);
+                if (!SSCPersonalityRuntimeUtility.IsCurrent(pawn, personalityToken) || pawn.TryGetComp<CompSexSlaveTraining>() != comp) return false;
+                SSCAbilityToggleUtility.SyncMarkers(pawn);
                 return true;
             }
             if (!restoredQualification.HasValue && identity == PawnIdentity.Master &&
@@ -159,7 +164,7 @@ namespace SexSlaveCraft
             if (!CancelBindingRitualBeforeIdentityChange(pawn, comp)) return false;
             // Cancel 可经外部回调替换组件、改身份或建立新绑定；原切换不得覆盖新状态。
             if (pawn.TryGetComp<CompSexSlaveTraining>() != comp || comp.pawnIdentity != previousIdentity ||
-                IsIdentityLocked(pawn)) return false;
+                !SSCPersonalityRuntimeUtility.IsCurrent(pawn, personalityToken) || IsIdentityLocked(pawn)) return false;
             // 取消回调可能改变设置或换入另一个人格，旧请求不得覆盖其最新资格。
             if (restoredQualification.HasValue)
             {
@@ -181,11 +186,16 @@ namespace SexSlaveCraft
             // 成功写入身份之后再建立或启停成长。普通选择允许首次建立；
             // 人格恢复不补基础阶段，恢复核心随后精确应用来源，包括明确没有记录的主人。
             SSCMasterProgressionUtility.NotifyIdentityChanged(pawn, !restoredQualification.HasValue);
+            if (!SSCPersonalityRuntimeUtility.IsCurrent(pawn, personalityToken) || pawn.TryGetComp<CompSexSlaveTraining>() != comp) return false;
             // 仅在身份成功写入后协调；成为主人清受药状态，退出主人不恢复已清记录。
             SSCPnaExposureUtility.RefreshBodyState(pawn, true);
+            if (!SSCPersonalityRuntimeUtility.IsCurrent(pawn, personalityToken) || pawn.TryGetComp<CompSexSlaveTraining>() != comp) return false;
             // 身份真正变化后通知训导官生命周期。绑定事务会暂缓这次检查，
             // 待主人锁链和身份全部就绪后统一判断持续条件。
             TrainerSpecializationLifecycle.Notify(pawn);
+
+            if (!SSCPersonalityRuntimeUtility.IsCurrent(pawn, personalityToken) || pawn.TryGetComp<CompSexSlaveTraining>() != comp) return false;
+            SSCAbilityToggleUtility.SyncMarkers(pawn);
 
             return true;
         }
@@ -211,6 +221,7 @@ namespace SexSlaveCraft
             // 普通切换仍被历史锁链锁定。此定向修复只接受 Unset，不泛化为 Master 转换。
             // 不立即运行可能重算成长或协调指派的生命周期；正常资格查询读取恢复后的身份。
             pawn.TryGetComp<CompSexSlaveTraining>().pawnIdentity = PawnIdentity.Slave;
+            SSCAbilityToggleUtility.SyncMarkers(pawn);
             return true;
         }
 

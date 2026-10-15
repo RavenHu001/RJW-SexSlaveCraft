@@ -16,6 +16,7 @@ internal static partial class Program
         RegisterPetDefinitions();
         RunMasterQualificationCases();
         RunMasterProgressionCases();
+        RunAbilityToggleTransferCases();
         Run("Cross-body insertion replaces ordinary traits and consumes gel", CrossBodyInsertion);
         Run("Same-body insertion restores an earlier trait snapshot", SameBodySnapshot);
         Run("Same TraitDef with a different degree is replaced", SameDefDifferentDegree);

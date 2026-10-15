@@ -36,4 +36,5 @@
     <Compile Include="$(SscSourceRoot)/common/PersonalityGelUtility.cs" Link="Production/PersonalityGelUtility.cs" />
     <Compile Include="$(SscSourceRoot)/ThePatches/Harmony_RecipeMaterial.cs" Link="Production/Harmony_RecipeMaterial.cs" />
   </ItemGroup>
+  <Import Project="../Shared/AbilityToggleProduction.targets" />
 </Project>

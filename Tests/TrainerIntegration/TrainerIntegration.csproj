@@ -40,4 +40,5 @@
     <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionTrainerAssignment.cs" Link="Production/SSCRestrictionTrainerAssignment.cs" />
     <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionConfigurationBuilder.cs" Link="Production/SSCRestrictionConfigurationBuilder.cs" />
   </ItemGroup>
+  <Import Project="../Shared/AbilityToggleProduction.targets" />
 </Project>

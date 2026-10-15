@@ -4,6 +4,11 @@ using SexSlaveCraft;
 
 namespace Verse
 {
+    public enum LookMode { Value }
+    public static class Scribe_Collections
+    {
+        public static void Look<K,V>(ref Dictionary<K,V> value,string key,LookMode keys,LookMode values) { }
+    }
     public interface IExposable
     {
         /// <summary>提供配置序列化签名；实际序列化另由核心套件覆盖。</summary>

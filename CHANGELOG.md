@@ -6,7 +6,7 @@ This continuation builds on upstream **2.2.8**, the baseline when upstream devel
 
 ## [未发布 / Unreleased]
 
-暂无超出下列 2.4.0.5 登记范围的新批次。No additional changes beyond the milestone below are recorded here.
+- **欲望侵染第一批 / Desire infestation, batch 1:** 新增随人格保存的通用个人能力开关框架，首项为主人欲望侵染；接入主／奴分组面板、主人标记、人格凝胶与克隆保护。自动结果和实机步骤见[第一批记录](Docs/Development/Completed/欲望侵染第一批通用开关框架实现与测试.md)。关键代码块注释已补齐，维护者实机测试未发现问题并批准提交；实际性交侵染收益及来源偏好扩展尚未接通，未发布。Adds shared personality-owned toggles, Master UI and marker, gel transfer and clone safeguards. The maintainer reported no issues in game and approved this batch; gameplay infestation effects remain future work.
 
 ## [2.4.0.5] — 2026-10-15 — PNA 重置与玩法补全 / PNA redesign and gameplay additions
 

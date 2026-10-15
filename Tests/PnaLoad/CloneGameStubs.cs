@@ -67,7 +67,7 @@ namespace Verse.AI
 namespace RimWorld
 {
     public static class GenDate { public const int TicksPerDay=60000, TicksPerYear=3600000; }
-    public class Faction { }
+    public class Faction { public static Faction OfPlayer = new Faction(); }
     public class TraitDef { }
     public class Trait { public TraitDef def; public int Degree; public bool ScenForced; public Trait(TraitDef def,int degree,bool forced) { this.def=def;Degree=degree;ScenForced=forced; } }
     public static class MentalStateDefOf { public static object Wander_Psychotic = new object(); }
@@ -82,14 +82,16 @@ namespace SexSlaveCraft
 {
     public enum RabbitReproductionMode { Normal, Clone }
     public enum SexSlaveSpecializationType { PetRabbit }
-    public class CompSexSlaveTraining
+    public enum PawnIdentity { Unset, Slave, Master }
+    public partial class CompSexSlaveTraining
     {
         public bool IsPetRabbitSpecialized=true, slaveTrainerEnabled, trainerIdentityInitialized;
         public RabbitReproductionMode rabbitReproductionMode;
         public SexSlaveSpecializationType specializationType;
         public float specializationProgress;
         public Pawn selectedTrainer;
-        public int pawnIdentity, trainerOfficerMigrationVersion;
+        public PawnIdentity pawnIdentity;
+        public int trainerOfficerMigrationVersion;
         public const int CurrentTrainerOfficerMigrationVersion=1;
     }
     public class HediffComp_RabbitCloneSource : HediffComp
@@ -120,6 +122,7 @@ namespace SexSlaveCraft
     public static class SSCMasterQualificationUtility { public static void InitializeNewClone(Pawn pawn) { } }
     public static class SSCMasterProgressionUtility
     {
+        public static bool IsHollow(Pawn pawn) => pawn.health.hediffSet.hediffs.Any(h => h.def.defName == "Hediff_SSC_PersonalityExcreted_Done");
         public static void InitializeNewClone(Pawn pawn) { }
         public static bool IsProgressionDef(HediffDef def)=>def?.defName=="SSC_Hediff_MasterProgression";
     }

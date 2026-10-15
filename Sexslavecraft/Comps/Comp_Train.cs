@@ -221,6 +221,8 @@ namespace SexSlaveCraft
             ExposeMasterQualification();
             // 成长经验在 Hediff 原生存档中；组件仅保存旧档迁移版本，避免重复权威值。
             ExposeMasterProgression();
+            // 独立节点保存人格能力偏好；旧档缺失按定义默认关闭，不从健康标记反推。
+            ExposeAbilityToggles();
 
             Scribe_Values.Look(ref mode, "mode", TrainingMode.Disabled);
             Scribe_Values.Look(ref selectedMode, "selectedMode", TrainingActType.Auto);

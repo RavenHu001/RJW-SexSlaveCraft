@@ -149,8 +149,9 @@ namespace Verse
     {
         public HediffSet hediffSet = new HediffSet();
         public int Adds, Removes, Notifications;
-        public void AddHediff(Hediff record) { hediffSet.hediffs.Add(record); Adds++; }
-        public void RemoveHediff(Hediff record) { hediffSet.hediffs.Remove(record); Removes++; }
+        public Action<Hediff> OnAdded, OnRemoved;
+        public void AddHediff(Hediff record) { hediffSet.hediffs.Add(record); Adds++; OnAdded?.Invoke(record); }
+        public void RemoveHediff(Hediff record) { hediffSet.hediffs.Remove(record); Removes++; OnRemoved?.Invoke(record); }
         public Action OnChanged;
         public void Notify_HediffChanged(Hediff record) { Notifications++; OnChanged?.Invoke(); }
     }
@@ -178,8 +179,8 @@ namespace Verse
             else Data[key] = value;
         }
     }
-    public enum LookMode { Reference }
-    public static class Scribe_Collections
+    public enum LookMode { Reference, Value }
+    public static partial class Scribe_Collections
     {
         public static void Look<T>(ref List<T> values, string key, LookMode mode) { }
     }
@@ -204,7 +205,7 @@ namespace RimWorld
 namespace SexSlaveCraft
 {
     public enum PawnIdentity { Unset, Master, Slave }
-    public class CompSexSlaveTraining { public PawnIdentity pawnIdentity = PawnIdentity.Master; public int masterProgressionVersion = 1; }
+    public partial class CompSexSlaveTraining { public PawnIdentity pawnIdentity = PawnIdentity.Master; public int masterProgressionVersion = 1; }
     public static class SSCIdentityUtility { public static bool IsMaster(Pawn pawn) => pawn?.Training?.pawnIdentity == PawnIdentity.Master; }
     public static class SSCBondUtility
     {
@@ -255,6 +256,14 @@ namespace SexSlaveCraft
             SelPawn = pawn;
             var view = BuildMasterPanelView(pawn, pawn.Training, 322);
             return value => TrySetMasterDamageSharing(view, value);
+        }
+        public float DrawToggleGroup(Pawn pawn, SSCAbilityToggleGroup group, float width)
+        {
+            SelPawn=pawn;Widgets.Items.Clear();
+            var rows=BuildAbilityToggleRows(pawn,pawn.Training,group,width-SectionPadding*2);
+            float height=AbilityToggleSectionHeight(rows);
+            if(height>0)DrawAbilityToggleSection(new Rect(0,0,width,height),rows);
+            return height;
         }
     }
 }

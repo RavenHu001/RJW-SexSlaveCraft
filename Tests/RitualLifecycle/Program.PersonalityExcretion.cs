@@ -46,6 +46,17 @@ internal static partial class Program
 
     private static void RunPersonalityExcretionTests()
     {
+        Check("PE 通用能力快照保存后清源，旧人格凭据失效", () =>
+        {
+            var execution=new PEExecution();var comp=execution.Target.TryGetComp<CompSexSlaveTraining>();
+            comp.abilityToggles.Set(SSCAbilityToggleUtility.MasterDesireInfestation,true);
+            object token=SSCPersonalityRuntimeUtility.Capture(execution.Target);
+            execution.Start();execution.Toils[3].initAction();
+            var store=GenSpawn.Spawned.Last().TryGetComp<CompPersonalityStore>();
+            Require(store.abilityToggles.Get(SSCAbilityToggleUtility.MasterDesireInfestation),"snapshot lost preference");
+            Require(!comp.abilityToggles.HasEntries && !SSCPersonalityRuntimeUtility.IsCurrent(execution.Target,token),"source not cleared");
+            Require(!SSCPersonalityRuntimeUtility.IsMutating(execution.Target),"scope leaked");
+        });
         Check("PE scene snapshots Master qualification before clearing the original body", () =>
         {
             var execution = new PEExecution();
@@ -64,15 +75,19 @@ internal static partial class Program
         Check("PE cancellation or missing personality storage cannot clear Master qualification", () =>
         {
             var cancelled = new PEExecution(); var comp = cancelled.Target.TryGetComp<CompSexSlaveTraining>();
+            comp.abilityToggles.Set(SSCAbilityToggleUtility.MasterDesireInfestation,true);
             comp.ReplaceMasterQualification(true); cancelled.Start();
             cancelled.Toils[2].Finish(); cancelled.EngineCleanup();
             Require(comp.masterQualificationUnlocked, "cancelled scene cleared qualification");
+            Require(comp.abilityToggles.Get(SSCAbilityToggleUtility.MasterDesireInfestation),"cancelled scene cleared ability preference");
             var missing = new PEExecution(); var missingComp = missing.Target.TryGetComp<CompSexSlaveTraining>();
+            missingComp.abilityToggles.Set(SSCAbilityToggleUtility.MasterDesireInfestation,true);
             missingComp.ReplaceMasterQualification(true); missing.Start();
             ThingMaker.IncludePersonalityStore = false;
             try { missing.Toils[3].initAction(); }
             finally { ThingMaker.IncludePersonalityStore = true; }
             Require(missingComp.masterQualificationUnlocked, "missing storage cleared qualification without preserving it");
+            Require(missingComp.abilityToggles.Get(SSCAbilityToggleUtility.MasterDesireInfestation),"missing storage cleared ability preference");
         });
         Check("PE handoff retains its reservation and repeated handoff preserves the receiver", () =>
         {

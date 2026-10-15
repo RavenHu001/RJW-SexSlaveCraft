@@ -11,4 +11,6 @@
     <Compile Include="../../Sexslavecraft/Hediff/Hediff_MasterProgression.cs" Link="Production/MasterProgression.cs" />
     <Compile Include="../../Sexslavecraft/Hediff/Hediff_BridleOfSexSlave.cs" Link="Production/Bridle.cs" />
   </ItemGroup>
+  <ItemGroup><Compile Include="../../Sexslavecraft/ITab/ITab_SexSlaveTraining.AbilityToggles.cs" Link="Production/AbilityToggleRows.cs" /></ItemGroup>
+  <Import Project="../Shared/AbilityToggleProduction.targets" />
 </Project>
