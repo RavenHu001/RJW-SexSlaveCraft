@@ -832,7 +832,7 @@ The enabled low-tier launcher:
 
 - costs 60 steel, 3 industrial components, and 10 normal PNA;
 - crafting skill 4;
-- requires vanilla Machining, but does not check SSC’s `Basic PNA Launcher` research;
+- the development branch requires SSC’s `Basic PNA Launcher` research, retaining `Basic PNA Applications` and vanilla Precision Rifling as its prerequisites; this was confirmed working in game;
 - range 22.9;
 - warmup 0.5 seconds;
 - cooldown 3 seconds;
@@ -851,7 +851,7 @@ Raw severity added = min(0.15 / resistance divisor, 1.0)
 Normalized load added = raw severity added / 2
 ```
 
-Without a saved resistance record, the divisor normally uses Consciousness with a floor of 0.2. Consciousness above 2.0 retains the existing resistance-record mechanism. At Consciousness 1, the dose is +7.5 percentage points, capped at +50 load points per hit. Existing need refill is twice the actual added load; full load does not invent extra weapon refill. Unchained targets retain the original injury and 1-point armor-ignoring damage handling. Masters reject drug effects, while physical damage follows the original branch.
+Without a saved resistance record, the divisor normally uses Consciousness with a floor of 0.2. Consciousness above 2.0 retains the existing resistance-record mechanism. At Consciousness 1, the dose is +7.5 percentage points, capped at +50 load points per hit. The development branch adds D+0.01 to existing addiction per effective weapon input, plus D+0.20 at terminal load (total +0.21), without appending it to newly created addiction; this was confirmed working in game. Existing need refill is twice the actual added load; full load does not invent extra weapon refill. Unchained targets retain the original injury and 1-point armor-ignoring damage handling. Masters reject drug effects, while physical damage follows the original branch.
 
 The high-tier gun and ammunition remain disabled.
 

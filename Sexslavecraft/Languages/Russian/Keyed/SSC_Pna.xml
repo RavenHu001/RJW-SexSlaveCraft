@@ -3,11 +3,15 @@
   <SSC_Pna_LoadTooltip>Воздействие наножидкости-афродизиака: {0}%</SSC_Pna_LoadTooltip>
   <SSC_Pna_SelectPawn>Сначала выберите персонажа.</SSC_Pna_SelectPawn>
   <SSC_Pna_InvalidTarget>Этот персонаж сейчас не может получить тестовую дозу PNA.</SSC_Pna_InvalidTarget>
-  <SSC_Pna_Rooted>Отладка: нагрузка активации раба с действующей цепью {0}%. Обычная зависимость не возникает.</SSC_Pna_Rooted>
-  <SSC_Pna_DebugResult>Отладка: текущая нагрузка {0}%. Полная выраженность у обычного тела вызывает зависимость; достигнутое восстановление сохраняется.</SSC_Pna_DebugResult>
+  <SSC_Pna_Rooted>Отладка: нагрузка активации секс-раба {0}%. Обычная зависимость не возникает.</SSC_Pna_Rooted>
+  <SSC_Pna_DebugResult>Отладка: текущая нагрузка {0}%. Полная нагрузка может вызвать зависимость в обычном теле; отладочное увеличение не усиливает уже имеющуюся зависимость.</SSC_Pna_DebugResult>
   <SSC_Pna_RootedLoadTooltip>Активация наножидкостью-афродизиаком: {0}%</SSC_Pna_RootedLoadTooltip>
   <SSC_Pna_NewDependence>{0} больше не может обходиться без наножидкости-афродизиака.</SSC_Pna_NewDependence>
   <SSC_Pna_WeaponHealed>Раны затягиваются</SSC_Pna_WeaponHealed>
   <SSC_Pna_WeaponActivated>Активация</SSC_Pna_WeaponActivated>
   <SSC_Pna_AttractionExplanation>Тяга к наножидкости-афродизиаку цели: ×{0} ⇒ {1}</SSC_Pna_AttractionExplanation>
+  <SSC_Pna_InfoLoadPerDose>Нагрузка от одной дозы</SSC_Pna_InfoLoadPerDose>
+  <SSC_Pna_InfoLoadPerDoseDesc>Базовая нагрузка PNA от одной дозы в процентах от полной нагрузки. При приёме применяются соответствующие поправки на тело и толерантность. Хозяева невосприимчивы к действию вещества; персонажи с действующей Цепью получают активацию.</SSC_Pna_InfoLoadPerDoseDesc>
+  <SSC_Pna_InfoAddictionThreshold>Нагрузка для возникновения зависимости</SSC_Pna_InfoAddictionThreshold>
+  <SSC_Pna_InfoAddictionThresholdDesc>В обычном теле зависимость возникает, когда реальное поступление PNA доводит нагрузку до полной. Если зависимость уже есть, а нагрузка после поступления составляет не менее {0}, её тяжесть дополнительно увеличивается на {1} сверх базового прироста. У хозяев и персонажей с действующей Цепью обычная зависимость не возникает.</SSC_Pna_InfoAddictionThresholdDesc>
 </LanguageData>

@@ -7,23 +7,23 @@ namespace SexSlaveCraft
 {
     internal static class DebugActions_SSCPna
     {
-        // 加量动作复用同一个 Debug 来源入口；达满按 P2 建依赖，但不额外补旧需求。
-        [DebugAction("SSC", "PNA P1: add ordinary dose (+8%)", allowedGameStates = AllowedGameStates.PlayingOnMap)]
+        // 调试加量复用共享入口；普通身体达满可建成瘾，但不加深已有成瘾或补充旧需求。
+        [DebugAction("SSC", "PNA: add 8% load", allowedGameStates = AllowedGameStates.PlayingOnMap)]
         private static void AddOrdinary() => Add(SSCPnaMath.OrdinaryExposureDose);
 
-        [DebugAction("SSC", "PNA P1: add 20% test dose", allowedGameStates = AllowedGameStates.PlayingOnMap)]
+        [DebugAction("SSC", "PNA: add 20% load", allowedGameStates = AllowedGameStates.PlayingOnMap)]
         private static void AddTwenty() => Add(0.20f);
 
-        [DebugAction("SSC", "PNA P1: add 70% test dose", allowedGameStates = AllowedGameStates.PlayingOnMap)]
+        [DebugAction("SSC", "PNA: add 70% load", allowedGameStates = AllowedGameStates.PlayingOnMap)]
         private static void AddSeventy() => Add(0.70f);
 
-        [DebugAction("SSC", "PNA P2: fill load (can create dependence)", allowedGameStates = AllowedGameStates.PlayingOnMap)]
+        [DebugAction("SSC", "PNA: fill load (can create addiction)", allowedGameStates = AllowedGameStates.PlayingOnMap)]
         private static void Fill() => Add(1f);
 
-        [DebugAction("SSC", "PNA P1: clear load", allowedGameStates = AllowedGameStates.PlayingOnMap)]
+        [DebugAction("SSC", "PNA: clear load (keep addiction)", allowedGameStates = AllowedGameStates.PlayingOnMap)]
         private static void Clear()
         {
-            // 清除负荷只用于隔离恢复条件，保留依赖以便继续观察戒断／恢复。
+            // 仅清除身体负荷，保留成瘾以便继续观察原版戒断／恢复。
             Pawn pawn = Selected();
             if (pawn != null) SSCPnaExposureUtility.ClearLoad(pawn);
         }

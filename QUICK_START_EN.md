@@ -545,7 +545,7 @@ The following entries exist as research, defs, or placeholder code but do not cu
 
 Also note:
 
-- `Basic PNA Launcher` research does not currently gate the weapon;
+- The development branch gates the launcher behind `Basic PNA Launcher`, retaining its research prerequisites; this was confirmed working in game;
 - Sex Reassignment Surgery is not gated by its SSC research;
 - Final Cow Specialization does not automatically grant Full Gelatinization Complete;
 - Public Use trade and daily Training rewards now share saved specialization progress;

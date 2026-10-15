@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 namespace Verse
 {
     public partial class Thing { public bool Destroyed, Discarded; public ThingDef def; public object Comp; public T TryGetComp<T>() where T : class => Comp as T; }
-    public class ThingDef { public string defName, label; public IngestibleProperties ingestible = new IngestibleProperties(); }
+    public partial class ThingDef { public string defName, label; public IngestibleProperties ingestible = new IngestibleProperties(); }
     public class IngestibleProperties { public List<RimWorld.IngestionOutcomeDoer> outcomeDoers = new List<RimWorld.IngestionOutcomeDoer>(); }
     public partial class Pawn : Thing
     {
@@ -213,6 +213,7 @@ namespace Verse
     {
         public static string Translate(this string text, params object[] args) => text + string.Join(",", args);
         public static string ToStringPercent(this float value) => (value * 100).ToString("F0") + "%";
+        public static string CapitalizeFirst(this string value) => string.IsNullOrEmpty(value) ? value : char.ToUpperInvariant(value[0]) + value.Substring(1);
         public static T RandomElement<T>(this IEnumerable<T> values)=>values.First();
     }
 }

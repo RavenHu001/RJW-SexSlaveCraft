@@ -15,6 +15,8 @@ namespace SexSlaveCraft
         // 性交来源使用归一化负荷；产出者已接普通完成事件，主人侵染仅预留参数、尚未接通。
         public const float MasterInfestationDose = 0.08f;
         public const float ProducerSexDose = 0.02f;
+        // 真实输入后已处于末期时对已有成瘾的额外增量；信息展示也读取同一数值。
+        public const float TerminalAddictionIncrease = 0.2f;
 
         public static bool IsFinite(float value) => !float.IsNaN(value) && !float.IsInfinity(value);
 

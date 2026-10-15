@@ -199,16 +199,18 @@ namespace SexSlaveCraft
                 if (IsValidTarget(pawn) && !SSCIdentityUtility.IsMaster(pawn) && !IsRooted(pawn) && need != null && refill > 0f)
                     need.CurLevel = System.Math.Min(need.MaxLevel, need.CurLevel + refill);
 
-                // 产出者性交是真实摄入，已有成瘾每次基础 +0.01；所有真实来源末期仍额外 +0.2。
-                // 服药基础增量由原版 CompDrug 执行，不在此重复；其他来源不新增基础增量。
+                // 产出者性交与枪械有效输入均对已有成瘾基础 +0.01，末期再额外 +0.2。
+                // 枪械沿用一次 Apply 的输入认领，不因部位传播重复加深；服药基础增量仍由原版处理。
+                // 主人侵染的基础增量继续留待专项，不将尚未接通的预留来源按弱来源处理。
                 // 初次成瘾仍只由满负荷建立，调试不强化；满负荷实际增量为零也仍是真实暴露。
                 if (source != SSCPnaExposureSource.Debug && existingAddiction != null &&
                     GetAddiction(pawn) == existingAddiction && IsValidTarget(pawn) && !SSCIdentityUtility.IsMaster(pawn) && !IsRooted(pawn) &&
                     GetBodyRecord(pawn) == record)
                 {
-                    float addictionIncrease = source == SSCPnaExposureSource.ProducerSex ? .01f : 0f;
+                    float addictionIncrease = source == SSCPnaExposureSource.ProducerSex || source == SSCPnaExposureSource.Weapon
+                        ? .01f : 0f;
                     if (record.Severity >= (float)(SSCPnaMath.HighLoadThreshold * SSCPnaMath.MaximumSeverity))
-                        addictionIncrease += .2f;
+                        addictionIncrease += SSCPnaMath.TerminalAddictionIncrease;
                     // 合并为一次写入，沿原版上限钳制；后续统一核对身份、链及健康回调。
                     if (addictionIncrease > 0f) existingAddiction.Severity += addictionIncrease;
                 }

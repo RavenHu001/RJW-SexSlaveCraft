@@ -1,5 +1,6 @@
 <Defs>
-  <ThingDef ParentName="ResourceBase">
+  <!-- 仅适配原生信息栏，摄入仍使用原版药物组件与现有 PNA Doer。 -->
+  <ThingDef Class="SexSlaveCraft.ThingDef_SSCPna" ParentName="ResourceBase">
     <defName>Purple_Aphrodisiac_Nanofluid</defName>
     <label>紫色纳米催情液</label>
     <description>悬浮着活性紫色微械的紫色液体，能强烈唤起情欲。它也是配制浓缩品的原料。</description>
@@ -54,7 +55,7 @@
       </li>
     </comps>
   </ThingDef>
-    <ThingDef ParentName="ResourceBase">
+    <ThingDef Class="SexSlaveCraft.ThingDef_SSCPna" ParentName="ResourceBase">
     <defName>Purple_Aphrodisiac_Nanofluid_Plus</defName>
     <label>浓缩紫色纳米催情液</label>
     <description>经减压蒸去多余液体制成的浓缩品，单位体积内的紫色微械更多，作用也更强、更快。对普通人而言，过量摄入足以让人在连续高潮中失去意识。</description>
