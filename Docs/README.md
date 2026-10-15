@@ -12,6 +12,7 @@
 | 安装和游玩 | [玩家阅读入口](Players/README.md) | 模组介绍 → 快速入门 → 按需查机制与常见问题 |
 | 查看版本交付 | [发布与验证索引](Releases/README.md) | 当前版发布说明 → 验证；跨版本查[更新日志](../CHANGELOG.md) |
 | 继续设计新功能 | [当前规划索引](Design/README.md) | 总体状态 → 当前专项 → 相关历史设计 |
+| 接手 PNA 游戏文案 | [PNA 文案重写交接](Design/PNA文案重写交接.md) | 设定与术语 → 文件范围 → 文风与落地约束；不含具体文案稿 |
 | 查已完成实现与修复 | [已交付开发记录](Development/Completed/README.md) | 主题完成记录 → 对应阶段与修复 |
 | 查尚未关闭的实机事项 | [待验收事项](Development/Verification/README.md) | 已知缺口 → 关联实现 → 测试步骤 |
 | 理解旧代码与设计取舍 | [代码与机制复盘](Development/Reviews/README.md) | 先看基线，再看复盘与后续实现 |
