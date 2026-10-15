@@ -48,20 +48,26 @@ internal static partial class Program
             Equal(AttractionMode.Physical, preference.Mode); Equal(FactorOperation.Multiply, preference.Operation);
             float factor = 2f; preference.Evaluate(ref request, ref factor); Near(2.5, factor);
         });
-        foreach (AttractionPurpose purpose in new[] { AttractionPurpose.ForFucking, AttractionPurpose.ForRape })
+        foreach (AttractionPurpose purpose in new[] { AttractionPurpose.General, AttractionPurpose.ForFucking, AttractionPurpose.ForRape })
             foreach (float need in new[] { .8f, .05f, .01f, 0f })
-                Run($"第四步性行为目的及原版阶段 {purpose}/{need}", () =>
+                Run($"第四步各评价目的及原版阶段 {purpose}/{need}", () =>
                 {
                     var observer = PnaAddict(need); var target = NewPawn(); AddPnaProducer(target);
                     Near(need <= .01f ? 1.5 : 1.25, PnaAttraction(observer, target, purpose));
                 });
-        Run("第四步一般评价及未知目的不注册偏好", () =>
+        Run("第四步三个目的均保留来源判断及主人锁链保护", () =>
         {
-            var observer = PnaAddict(0); var target = NewPawn(); AddPnaProducer(target);
-            foreach (AttractionPurpose purpose in new[] { AttractionPurpose.General, (AttractionPurpose)99 })
+            foreach (AttractionPurpose purpose in new[] { AttractionPurpose.General, AttractionPurpose.ForFucking, AttractionPurpose.ForRape })
             {
-                var request = new AttractionRequest(purpose, observer, target); AttractionPreference_SSCPna.ApplyTo(ref request);
-                Equal(0, request.PreferenceCount);
+                var observer = PnaAddict(0); var target = NewPawn(); var producer = AddPnaProducer(target);
+                Near(1.5, PnaAttraction(observer, target, purpose));
+                observer.IsMaster = true; Near(1, PnaAttraction(observer, target, purpose)); observer.IsMaster = false;
+                var chain = new Hediff_ChainOfSexSlave { pawn = observer, def = ChainDef, LinkedPawn = NewPawn() };
+                observer.health.hediffSet.hediffs.Add(chain); Near(1, PnaAttraction(observer, target, purpose));
+                observer.health.hediffSet.hediffs.Remove(chain); target.IsMaster = true;
+                Near(1.5, PnaAttraction(observer, target, purpose));
+                target.health.hediffSet.hediffs.Remove(producer); Near(1, PnaAttraction(observer, target, purpose));
+                target.health.hediffSet.hediffs.Add(producer); Near(1, PnaAttraction(NewPawn(), target, purpose));
             }
         });
         Run("第四步未成瘾和非来源对象均无额外吸引", () =>
@@ -134,11 +140,14 @@ internal static partial class Program
         Run("第四步解释翻译使用真实倍率且只乘一次零分保持零", () =>
         {
             var observer = PnaAddict(0); var target = NewPawn(); AddPnaProducer(target);
-            var request = new AttractionRequest(AttractionPurpose.ForFucking, observer, target); AttractionPreference_SSCPna.ApplyTo(ref request);
-            var preference = request.GetPreference(AttractionPreference_SSCPna.PreferenceKey); float factor = 2;
-            string explanation = preference.Explain(ref request, ref factor).ToString(); Near(3, factor);
-            Assert(explanation.Contains("SSC_Pna_AttractionExplanation") && explanation.Contains("1.5,3"), "翻译键和真实参数");
-            factor = 0; preference.Evaluate(ref request, ref factor); Near(0, factor);
+            foreach (AttractionPurpose purpose in new[] { AttractionPurpose.General, AttractionPurpose.ForFucking, AttractionPurpose.ForRape })
+            {
+                var request = new AttractionRequest(purpose, observer, target); AttractionPreference_SSCPna.ApplyTo(ref request);
+                var preference = request.GetPreference(AttractionPreference_SSCPna.PreferenceKey); float factor = 2;
+                string explanation = preference.Explain(ref request, ref factor).ToString(); Near(3, factor);
+                Assert(explanation.Contains("SSC_Pna_AttractionExplanation") && explanation.Contains("1.5,3"), "翻译键和真实参数");
+                factor = 0; preference.Evaluate(ref request, ref factor); Near(0, factor);
+            }
         });
         Run("第四步反复评价与解释不结算健康时间需求生产或清旧状态", () =>
         {
@@ -150,7 +159,8 @@ internal static partial class Program
             float beforeBody = body.Severity, beforeAddiction = addiction.Severity;
             for (int i = 0; i < 20; i++)
             {
-                var request = new AttractionRequest(AttractionPurpose.ForFucking, observer, target); AttractionPreference_SSCPna.ApplyTo(ref request);
+                var purpose = new[] { AttractionPurpose.General, AttractionPurpose.ForFucking, AttractionPurpose.ForRape }[i % 3];
+                var request = new AttractionRequest(purpose, observer, target); AttractionPreference_SSCPna.ApplyTo(ref request);
                 float factor = 1; request.GetPreference(AttractionPreference_SSCPna.PreferenceKey).Explain(ref request, ref factor); Near(1.5, factor);
             }
             Near(beforeBody, body.Severity, 0); Near(beforeAddiction, addiction.Severity, 0); Equal(50, Comp(observer).PendingTicks);

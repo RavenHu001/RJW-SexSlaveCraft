@@ -22,10 +22,9 @@ namespace SexSlaveCraft
 
         private static float GetMultiplier(ref AttractionRequest request)
         {
-            // 只影响性行为评价；所有资格、接受及最终选取仍交给 RJW。
+            // 不区分评价目的，General、ForFucking、ForRape 共用同一来源偏好。
+            // 各调用入口原有的资格、接受及最终选取仍交给 RJW。
             // 评价只读身体状态，不能通过悬停或择偶扫描清药、补需求或结算积累时间。
-            if (request.Purpose != AttractionPurpose.ForFucking && request.Purpose != AttractionPurpose.ForRape)
-                return 1f;
             Pawn observer = request.Pawn;
             if (observer == request.Target || !SSCPnaExposureUtility.IsValidTarget(observer) || observer.needs == null ||
                 SSCIdentityUtility.IsMaster(observer) || SSCPnaExposureUtility.IsRooted(observer)) return 1f;
