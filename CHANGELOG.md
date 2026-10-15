@@ -6,11 +6,21 @@ This continuation builds on upstream **2.2.8**, the baseline when upstream devel
 
 ## [未发布 / Unreleased]
 
+暂无超出下列 2.4.0.5 登记范围的新批次。No additional changes beyond the milestone below are recorded here.
+
+## [2.4.0.5] — 2026-10-15 — PNA 重置与玩法补全 / PNA redesign and gameplay additions
+
+**开发里程碑，尚未打包或对外发布。** 归并正式 2.4.0 之后截至 `2ec5cb6` 的开发；P1～P3、玩法五步、四项后续修正、文案与心情标签均获分批实机确认。最新代码修正 `ea448b0`，最新标签与验收 `2ec5cb6`。本次只改 `VERSION` 和文档，保留 DLL／About 旧元数据与全部历史发布产物，未生成新安装包。当前范围见[版本说明](Docs/Releases/2.4.0.5/2.4.0.5版本说明.md)，测试批次及四段版本打包边界见[版本验证](Docs/Releases/2.4.0.5/2.4.0.5版本验证.md)。
+
+**Development milestone; no package or public release.** Consolidates accepted development through `2ec5cb6`. This registration changes documentation and VERSION only; the DLL, in-game About metadata and existing 2.4.0 packages are unchanged. See the linked notes for delivered scope and verification boundaries.
+
+- **文案与标签 / Wording and mood labels:** 定稿已落地到源 Def、四语及镜像并获显示验收；普通心情使用“催情侵蚀”，性奴使用“催情活化”。Accepted localized wording and distinct ordinary/activation mood labels are included.
+
 - **PNA 后续修正验收 / PNA follow-up fixes accepted:** 药液使用局部信息栏适配显示负荷与满值成瘾，保留原版服药组件；低阶发射器接 SSC 研究并保留其前置，枪击已有成瘾基础 +0.01、末期合计 +0.21，清理调试旧称。构建 0 警告／0 错误，PNA 专项 288/288；维护者已确认实机测试没有问题并批准提交，未发布。维护者决定专项存读档／旅队及长期平衡暂不安排，主人侵染与主动补给继续后置。Adds local PNA info-card rules, SSC research gating, +0.01 base weapon addiction reinforcement and current debug wording. The maintainer confirmed this follow-up working in game and approved the commit; it remains unreleased. See [implementation and checks](Docs/Development/Verification/PNA信息栏研究门槛与枪击成瘾修正.md).
 
-- **PNA 当前完成状态 / Current PNA status:** P1～P3 及玩法五步均已实现并获实机确认，最新实现 `286ff72`：主人免疫、五档普通／性奴效果与心情、戒断操控 ×0.85／Vulnerability +0.30、链枪输入与旧 Buff 废弃、三目的 ×1.25／×1.50 来源偏好、普通产出者性交负荷 +2%／需求 +10%／已有成瘾基础 +0.01（末期合计 +0.21）。原版十天恢复及身体归属保持。主人侵染本体、其新增基础成瘾量和可选主动补给未实现；侵染成瘾增量已确认要有，数值待定。PNA foundation and all five gameplay steps are accepted, including Master immunity, staged activation/mood, withdrawal effects, chain-weapon exposure, all-purpose source attraction and producer sex supply. Master Infestation and optional personal automatic supply remain unimplemented. See [current values and scope](Docs/Design/PNA玩法效果与性交补给补全分析.md).
+- **PNA 当前完成状态 / Current PNA status:** P1～P3 及玩法五步均已实现并获实机确认，第五步 `286ff72` 及后续代码修正 `ea448b0`、标签验收 `2ec5cb6`：主人免疫、五档普通／性奴效果与心情、戒断操控 ×0.85／Vulnerability +0.30、链枪输入与旧 Buff 废弃、三目的 ×1.25／×1.50 来源偏好、普通产出者性交负荷 +2%／需求 +10%／已有成瘾基础 +0.01（末期合计 +0.21）。原版十天恢复及身体归属保持。主人侵染本体、其新增基础成瘾量和可选主动补给未实现；侵染成瘾增量已确认要有，数值待定。PNA foundation and all five gameplay steps are accepted, including Master immunity, staged activation/mood, withdrawal effects, chain-weapon exposure, all-purpose source attraction and producer sex supply. Master Infestation and optional personal automatic supply remain unimplemented. See [current values and scope](Docs/Design/PNA玩法效果与性交补给补全分析.md).
 
-以下 PNA 分批条目保留各次实现时的历史边界，当前数值与完成状态以上条为准；既有 2.4.0 发布档案和附件保持原范围。 / The following PNA entries preserve their historical batch boundaries; the current scope is above. Existing 2.4.0 release archives and packages are unchanged.
+以下 PNA 分批条目保留各次实现时的历史边界，当前数值与完成状态以本节汇总及 2.4.0.5 版本说明为准；既有 2.4.0 发布档案和附件保持原范围。 / The following PNA entries preserve their historical batch boundaries; the current scope is above. Existing 2.4.0 release archives and packages are unchanged.
 
 - **PNA P3 身体归属测试批 / PNA P3 body ownership test batch:** PNA 负荷、成瘾、临时强化、抗性快照及产出状态仅属于当前身体；人格不搬迁，SSC 新生克隆不继承来源状态，成熟保留自身状态与满足度，并按最终有效链协调。沿用原版需求准入与空壳更新；不新增缓存、计时器、保存字段或补丁。维护者已确认 P3 实机有效；当时尚缺的玩法五步现已随后完成并验收。PNA states remain with their physical body through personality transfer and SSC cloning; native needs and existing chain protection are retained. This P3 batch was confirmed working in game; the later five gameplay steps are now also accepted; see [P3 testing notes](Docs/Development/Verification/PNA机制重置P3实现与测试.md).
 

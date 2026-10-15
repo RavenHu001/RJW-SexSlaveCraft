@@ -2,11 +2,11 @@
 
 [Project home](README.md) · [Player reading order](Docs/Players/README.md#english-reading-order) · [Quick start](QUICK_START_EN.md) · [中文机制详解](机制详解.md)
 
-> Based on **RimWorld 1.6 · SSC 2.4.0**. PNA sections 7/11 reflect the accepted, unreleased `codex/pna-reset` development branch as of 2026-10-15; these changes are not in the existing 2.4.0 download. Use this reference for full conditions, formulas and values; first-time players should begin with the [quick start](QUICK_START_EN.md).
+> Applies to **RimWorld 1.6 · SSC 2.4.0.5 development milestone** (2026-10-15), including the accepted PNA redesign and gameplay additions. No 2.4.0.5 package has been published; the latest existing 2.4.0 download does not contain these changes. Use this reference for full conditions, formulas and values; first-time players should begin with the [quick start](QUICK_START_EN.md).
 >
-> For problems, start with [Troubleshooting](#24-troubleshooting) and [pending verification](Docs/Development/Verification/README.md), then read the relevant system. Version changes are in the [2.4.0 notes](Docs/Releases/2.4.0/2.4.0发布说明.md#english).
+> For problems, start with [Troubleshooting](#24-troubleshooting) and [pending verification](Docs/Development/Verification/README.md), then read the relevant system. Version changes are in the [2.4.0.5 milestone notes](Docs/Releases/2.4.0.5/2.4.0.5版本说明.md#english).
 >
-> This guide follows current C# and XML behavior; historical differences are identified in the relevant sections. The base audit began on 2026-06-30 and the base guide covers 2.4.0 (2026-10-13), with PNA separately updated through development commit `286ff72` (2026-10-15). Earlier section version numbers identify introductions; see the [release index](Docs/Releases/README.md) for history.
+> This guide follows current C# and XML behavior. The base audit began on 2026-06-30; current development is consolidated as 2.4.0.5 (2026-10-15). PNA step five `286ff72`, subsequent code `ea448b0`, localized wording `54f51db` and latest mood-label acceptance `2ec5cb6` retain their separate records. Earlier section versions identify feature introductions; see the [version index](Docs/Releases/README.md) for scope.
 
 ## 1. Scope and Dependencies
 
@@ -774,7 +774,7 @@ The ability and grant component exist, but the current Mouth Hediff XML does not
 
 ### 11.1 Ingestion
 
-This section describes the accepted, unreleased PNA redesign. Load L is raw severity divided by 2, ranging from 0 to 100%. The former +0.3/+1.0 infection doses, 25%/50% random addiction chances and linear daily clearance no longer describe this branch.
+This section describes the accepted PNA redesign in the 2.4.0.5 development milestone, which has not been packaged for release. Load L is raw severity divided by 2, ranging from 0 to 100%. The former +0.3/+1.0 infection doses, 25%/50% random addiction chances and linear daily clearance no longer describe this branch.
 
 | Source | Load added | Existing legal PNA need refill | Base increase to existing addiction |
 | --- | ---: | ---: | ---: |
@@ -832,7 +832,7 @@ The enabled low-tier launcher:
 
 - costs 60 steel, 3 industrial components, and 10 normal PNA;
 - crafting skill 4;
-- the development branch requires SSC’s `Basic PNA Launcher` research, retaining `Basic PNA Applications` and vanilla Precision Rifling as its prerequisites; this was confirmed working in game;
+- version 2.4.0.5 requires SSC’s `Basic PNA Launcher` research, retaining `Basic PNA Applications` and vanilla Precision Rifling as its prerequisites; this was confirmed working in game;
 - range 22.9;
 - warmup 0.5 seconds;
 - cooldown 3 seconds;
@@ -1565,8 +1565,8 @@ This section records the audited code behavior and known limitations.
 1. **Fine Training is not implemented.** The body-part detection, sensitivity, reward, and progress methods in `FineTrainingUtility` still return placeholders. The Training tab fields are reserved only.
 2. **Binding Ritual genital compatibility is fixed at the worst bracket.** The ritual calls a size-difference method that currently returns `0`, producing `-20%`. Ordinary Training size scoring works separately.
 3. **Erotic Word has no normal acquisition path.** The ability and grant component exist, but the Mouth Hediff XML does not attach the component.
-4. **Several research nodes are technology-tree placeholders.** `Basic PNA Application`, `Basic PNA Launcher`, and `Femboy Conversion` do not unlock a complete matching system. Version 2.3.7 implements ordinary Cat/Dog training, pet exclusivity, gel finalization, final active abilities and visible affection; the adult consensual follow-up is implemented and awaits in-game acceptance. Rabbit selection remains disabled. `Combatant` supports ordinary training, experience, gel finalization, and the final Combat Overdrive ability. `Personality Editing` acts as the parent node for specialization research.
-5. **Basic PNA Launcher checks vanilla Machining only.** Its recipe does not reference SSC’s launcher research.
+4. **Several research nodes are technology-tree placeholders.** `Femboy Conversion` still lacks a complete matching system. Basic PNA Application is a prerequisite for later PNA research, and the launcher recipe now uses SSC launcher research. Version 2.3.7 implements ordinary Cat/Dog training, pet exclusivity, gel finalization, final active abilities and visible affection; the adult consensual follow-up is implemented and awaits in-game acceptance. Rabbit selection remains disabled. `Combatant` supports ordinary training, experience, gel finalization, and the final Combat Overdrive ability. `Personality Editing` acts as the parent node for specialization research.
+5. **Basic PNA Launcher uses SSC research.** In 2.4.0.5, its recipe references Basic PNA Launcher research, retaining Basic PNA Application and vanilla Precision Rifling prerequisites.
 6. **Sex Reassignment Surgery is not research-locked.** Its operation exists without a `researchPrerequisite`. The duplicate definition for its surgery memory was fixed in 2.2.13; the current independent memory definition is not a remaining duplicate-load issue.
 7. **Personality trait transfer and the gel UI have been fixed.** The maintainer has confirmed this round of fixes is effective. Ordinary personality traits are now restored from the gel snapshot while preserving the receiving body's genes and their traits. Legacy entries are restored as personality traits because their source was not recorded; new gels save only traits without a gene source. The Sex Slave trait is still rebuilt separately from restored highest-ever Corruption. See the [fix record (Chinese)](Docs/Development/Completed/人格普通特质迁移修复.md) for details.
 8. **Public Use progress now uses the saved component.** Version 2.3.6 routes daily base Training progress through the shared component entry; trade rewards also update component progress and synchronize the ordinary Hediff. Final recipes continue to check saved progress.
@@ -1591,10 +1591,10 @@ Ordinary affection automatically discovers the actual bound master within about 
 |---|---:|---|---|
 | Training | 500 | No research prerequisite; requires a techprint with Royalty | Training tab features and WorkGiver |
 | Body-part Training | 800 | Training | Six body-part experience tracks |
-| Basic PNA Application | 800 | Training | No direct current reference |
+| Basic PNA Application | 800 | Training | Prerequisite for launcher, concentration and later PNA research |
 | Sex Reassignment Surgery (Male to Female) | 1,000 | Basic PNA Application | Node does not actually lock the operation |
 | Femboy Conversion | 1,200 | Sex Reassignment Surgery | Not fully implemented |
-| Basic PNA Launcher | 1,000 | Basic PNA Application, Precision Rifling | Launcher recipe does not reference it |
+| Basic PNA Launcher | 1,000 | Basic PNA Application, Precision Rifling | Unlocks the basic launcher recipe |
 | PNA Concentration Technology | 1,200 | Basic PNA Application | Converts normal PNA to PNA Plus |
 | Personality Excretion | 1,500 | PNA Concentration Technology | Preparation operation and gel extraction |
 | Personality Editing | 1,500 | Body-part Training, Personality Excretion | Parent node for specialization research |

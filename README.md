@@ -1,8 +1,8 @@
 # RJW-SexSlaveCraft · TieJin Modify
 
-面向 RimWorld 1.6 的成人向 RimJobWorld（RJW）扩展模组，基于上游 **2.2.8** 继续维护。当前正式版：**2.4.0 — 欲望之种与主人成长**。
+面向 RimWorld 1.6 的成人向 RimJobWorld（RJW）扩展模组，基于上游 **2.2.8** 继续维护。当前仓库开发版本：**2.4.0.5 — PNA 重置与玩法补全**（2026-10-15，已完成约定范围开发与分批实机验收，尚未打包发布）。最近正式下载版仍为 **2.4.0**。
 
-[下载 2.4.0](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.0) · [模组介绍 / Mod overview](Docs/模组介绍.md) · [玩家阅读入口 / Player documentation](Docs/Players/README.md) · [文档总索引](Docs/README.md) · [English overview](#english-overview)
+[2.4.0.5 版本说明](Docs/Releases/2.4.0.5/2.4.0.5版本说明.md) · [最近正式版下载 2.4.0](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.0) · [模组介绍 / Mod overview](Docs/模组介绍.md) · [玩家阅读入口 / Player documentation](Docs/Players/README.md) · [文档总索引](Docs/README.md) · [English overview](#english-overview)
 
 ## 项目概况
 
@@ -11,9 +11,10 @@ SSC 提供角色培养、主从绑定、特化发展、人格转移和身体改�
 - 日常调教、自我调教与契约仪式，连接恶堕、锁链和六项部位成长。
 - 公交车、奶牛、训导官、宠物猫、宠物狗、战斗员六种特化。
 - 人格凝胶与终极特化，以及局部和全身凝胶化改造。
-- **2.4.0 新增**欲望之种、个人主人资格、欲望共生四阶段成长与主人面板；资格与成长随人格保留，克隆不继承。
+- **2.4.0 引入**欲望之种、个人主人资格、欲望共生四阶段成长与主人面板；资格与成长随人格保留，克隆不继承。
+- **2.4.0.5 归并**PNA 五档负荷与性奴活化、原版十天成瘾恢复、主人免疫、身体归属、来源性吸引、产出者性交补给及后续信息栏／研究／枪击成瘾修正。
 
-完整功能概述见[模组介绍](Docs/模组介绍.md)。当前版本交付内容见[2.4.0 发布说明](Docs/Releases/2.4.0/2.4.0发布说明.md)，构建结果和实机验收范围见[版本验证](Docs/Releases/2.4.0/2.4.0版本验证.md)。
+完整功能概述见[模组介绍](Docs/模组介绍.md)。当前开发版本范围见[2.4.0.5 版本说明](Docs/Releases/2.4.0.5/2.4.0.5版本说明.md)，既有测试与本次文档检查边界见[版本验证](Docs/Releases/2.4.0.5/2.4.0.5版本验证.md)。历史 2.4.0 下载包不包含后续 PNA 重置。
 
 ## 安装
 
@@ -29,7 +30,7 @@ SSC 提供角色培养、主从绑定、特化发展、人格转移和身体改�
 3. 更新时先将旧模组文件夹移出 `Mods`，再放入新版本，避免残留文件。
 4. 启用依赖与本模组，按上表加载。2.4.0 的个人资格、当前主人身份和研究分别管理，再阅读[中文快速入门](读我，玩法介绍.md)或 [English quick start](QUICK_START_EN.md)。
 
-安装包包含已编译 DLL。宠物兔选择入口尚未开放，旧 RimTalk 对接暂停；其他限制与兼容说明见玩家指南。
+既有 2.4.0 安装包包含已编译 DLL；2.4.0.5 目前只登记仓库开发版本，没有对应 ZIP 或下载标签。宠物兔选择入口尚未开放，旧 RimTalk 对接暂停；其他限制与兼容说明见玩家指南。
 
 ## 文档导航
 
@@ -59,8 +60,8 @@ SSC 提供角色培养、主从绑定、特化发展、人格转移和身体改�
 
 ## English overview
 
-SexSlaveCraft (SSC) is an adult RimJobWorld expansion for **RimWorld 1.6**, continuing from upstream **2.2.8**. The current release is **2.4.0**. Harmony and RJW must load before SSC; Binding Rituals and their progression route require Ideology.
+SexSlaveCraft (SSC) is an adult RimJobWorld expansion for **RimWorld 1.6**, continuing from upstream **2.2.8**. The current repository development milestone is **2.4.0.5**, covering the accepted PNA redesign and gameplay additions. It has not been packaged or publicly released; the latest existing download remains **2.4.0**. Harmony and RJW must load before SSC; Binding Rituals and their progression route require Ideology.
 
-Start with the [mod overview](Docs/模组介绍.md#english), then follow [the player reading order](Docs/Players/README.md#english-reading-order). Version 2.4.0 adds the Seed of Desire, personal Master qualification, four-stage Master progression and a dedicated panel. See the [release notes](Docs/Releases/2.4.0/2.4.0发布说明.md#english) and [validation record](Docs/Releases/2.4.0/2.4.0版本验证.md) for delivered features and verification scope.
+Start with the [mod overview](Docs/模组介绍.md#english), then follow [the player reading order](Docs/Players/README.md#english-reading-order). The Seed of Desire and Master progression introduced in 2.4.0 remain included. For current PNA features, scope and verification boundaries, read the [2.4.0.5 notes](Docs/Releases/2.4.0.5/2.4.0.5版本说明.md#english) and [validation record](Docs/Releases/2.4.0.5/2.4.0.5版本验证.md).
 
-[Download 2.4.0](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.0) · [Quick start](QUICK_START_EN.md) · [Full guide](PLAYER_GUIDE_EN.md) · [Documentation index](Docs/README.md)
+[Latest public download: 2.4.0](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.0) · [Quick start](QUICK_START_EN.md) · [Full guide](PLAYER_GUIDE_EN.md) · [Documentation index](Docs/README.md)

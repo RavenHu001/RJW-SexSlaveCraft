@@ -2,7 +2,7 @@
 
 [文档总索引](../Docs/README.md) · [发布与打包](../Docs/Maintenance/发布与打包.md) · [开发记录](../Docs/Development/README.md)
 
-正式 **2.4.0** 登记 28 套机制回归；当前未发布 PNA P1 增加 `PnaLoad`，第五步新增 `ForcedSexProps`，`Scripts/Test-All.ps1` 现登记 **30 套**。正式 2.3.9 发布时为 25 套，2.4.0 增加 `MasterQualificationItem`、`MasterEntry` 与 `MasterPanelUI`。历史正式门禁见[2.4.0 版本验证](../Docs/Releases/2.4.0/2.4.0版本验证.md)，本批结果见[P1 测试说明](../Docs/Development/Completed/PNA机制重置P1实现与测试.md)。
+当前仓库为 **2.4.0.5 开发里程碑**，`Scripts/Test-All.ps1` 登记 **30 套**。PNA 基础新增 `PnaLoad`，第五步新增 `ForcedSexProps`；最近 PNA 专项为 **288/288**，该修正未重复全量。本次版本登记只检查文档及标记，不运行代码测试。原始记录与完整验证边界见[2.4.0.5 版本验证](../Docs/Releases/2.4.0.5/2.4.0.5版本验证.md)。历史正式 2.4.0 为 28 套，2.3.9 为 25 套；当次结果见[2.4.0 版本验证](../Docs/Releases/2.4.0/2.4.0版本验证.md)，不回写历史计数。
 
 ## 统一入口
 
@@ -30,7 +30,7 @@ pwsh -File Scripts/Test-All.ps1 -HarmonyAssemblyPath 'C:\Dependencies\Harmony\ne
 
 ## 身份、训导官与自我调教
 
-- [PnaLoad](PnaLoad/README.md)：未发布 PNA P1/P2 负荷、成瘾、来源和旧档回归；P3 直接执行 SSC 新生／成熟复制及身体归属过滤，详见[P3 测试记录](../Docs/Development/Verification/PNA机制重置P3实现与测试.md)。
+- [PnaLoad](PnaLoad/README.md)：2.4.0.5 的 PNA 负荷、成瘾、来源、信息栏与旧档回归；P3 直接执行 SSC 新生／成熟复制及身体归属过滤，详见[P3 测试记录](../Docs/Development/Verification/PNA机制重置P3实现与测试.md)。
 
 - [TrainerIdentity](TrainerIdentity/README.md)：调教员身份回归。
 - [TrainerIntegration](TrainerIntegration/README.md)：训导官人格恢复集成回归。
