@@ -15,6 +15,16 @@ internal static class Program
     /// <summary>执行链接生产代码的备用启动回归，返回失败退出码供自动检查使用。</summary>
     private static int Main()
     {
+        Run("六个固定阶段均允许无可解析部位，保留原仪式准入", () =>
+        {
+            var scene = CreateScene();
+            for (int phase = 0; phase < 6; phase++)
+            {
+                RJWSexPropsUtility.LastAllowEmptyParts = false;
+                Require(RitualTrainingUtility.ApplyPhaseToSexProps(new SexProps(), scene.initiator, scene.receiver, phase), "阶段初始化失败");
+                Require(RJWSexPropsUtility.LastAllowEmptyParts, "固定阶段新增了解剖门槛");
+            }
+        });
 #if SSC_TEST_WITH_ANIMATIONS
         Run("从派生定义库筛选并启动，保留角色顺序、床锚点和时长", TypedCandidateStarts);
         Run("零优先级候选仍可备用启动，接收者不重复加入", ZeroPriorityStarts);

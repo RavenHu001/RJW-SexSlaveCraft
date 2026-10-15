@@ -64,9 +64,11 @@ namespace SexSlaveCraft
 {
     public static class RJWSexPropsUtility
     {
+        public static bool LastAllowEmptyParts;
         /// <summary>阶段数据适配占位；本套件仅执行备用动画入口。</summary>
-        public static void ApplySexType(rjw.SexProps props, Verse.Pawn initiator, Verse.Pawn receiver,
-            rjw.xxx.rjwSextype type, string interaction) { }
+        public static bool ApplySexType(rjw.SexProps props, Verse.Pawn initiator, Verse.Pawn receiver,
+            rjw.xxx.rjwSextype type, string interaction, bool allowEmptyParts = false)
+        { LastAllowEmptyParts = allowEmptyParts; return allowEmptyParts; }
     }
 
     public static class SSCLog

@@ -223,7 +223,7 @@ namespace rjw
         public Verse.Pawn initiator => isReceiver ? partner : pawn;
         /// <summary>在最小行为数据模型中，将 partner 作为接受者返回。</summary>
         public Verse.Pawn recipient => isReceiver ? pawn : partner;
-        public bool isReceiver, isRevese, isRape, usedCondom;
+        public bool isReceiver, isRevese, isRape, usedCondom, isCoreLovin;
     }
     public static class SexUtility
     {
@@ -428,6 +428,7 @@ namespace SexSlaveCraft
     {
         public static int InitiatedSexAwards;
         public static Verse.Pawn LastInitiator, LastRecipient;
+        public static Action OnAward;
 
         /// <summary>记录通过生产任务守卫后的经验通知，验证事件来源、实际发起方向和去重。</summary>
         public static float NotifyInitiatedSexCompleted(Verse.Pawn initiator, Verse.Pawn recipient)
@@ -435,8 +436,17 @@ namespace SexSlaveCraft
             InitiatedSexAwards++;
             LastInitiator = initiator;
             LastRecipient = recipient;
+            OnAward?.Invoke();
             return 0.01f;
         }
+    }
+    // 这里只记录完成后缀的分发方向；真实来源与身体写入由 PnaLoad 直接编译生产工具验证。
+    public static class SSCPnaSexSupplyUtility
+    {
+        public static readonly List<(Verse.Pawn Source, Verse.Pawn Recipient)> Calls = new();
+        public static Action OnSupply;
+        public static void ApplyFromProducer(Verse.Pawn source, Verse.Pawn recipient)
+        { Calls.Add((source, recipient)); OnSupply?.Invoke(); }
     }
     public static class SSCIdentityUtility
     {

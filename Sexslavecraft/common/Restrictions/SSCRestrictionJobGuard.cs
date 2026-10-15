@@ -173,7 +173,7 @@ namespace SexSlaveCraft
             return true;
         }
 
-        /// <summary>为一次已开始的普通 RJW 双人任务认领完成经验，返回实际发起方向。</summary>
+        /// <summary>为一次已开始的普通 RJW 双人任务认领整次完成分发，返回实际发起方向。</summary>
         public static bool TryClaimOrdinarySexOutcome(SexProps props, out Pawn initiator, out Pawn recipient)
         {
             initiator = null;
@@ -195,8 +195,8 @@ namespace SexSlaveCraft
             if (driver.ticks_left > 0) return false;
 
             // Start 成功后才有凭据；准备、预约、拒绝及接收任务的调用都不能领。
-            // 用同一个持久化任务状态先消费本次奖励，即使奖励者当前失格也
-            // 不允许后续重复调用 ProcessSex 时补领旧场景经验。
+            // 沿用原经验的持久化字段与存档键，先消费整次完成，再由同一后缀分发经验及 PNA。
+            // 即使无经验资格或无产出者，也不能在以后重放旧场景补领；旧档已领取者不回填。
             SceneState state = State(driver);
             if (!state.Started || state.Rejected || state.TrainerProgressClaimed ||
                 state.Initiator != request.Initiator || state.Receiver != request.Receiver ||

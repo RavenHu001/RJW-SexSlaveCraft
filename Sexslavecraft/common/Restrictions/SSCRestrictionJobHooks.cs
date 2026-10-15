@@ -43,7 +43,7 @@ namespace SexSlaveCraft
     [HarmonyPatch(typeof(SexUtility), nameof(SexUtility.ProcessSex))]
     internal static class SSCTrainerInitiatedSexProgressHook
     {
-        /// <summary>只在 RJW 正常结算返回后领取普通双人行为经验；任务归属和次数由场景守卫核实。</summary>
+        /// <summary>普通双人完成只认领一次，再分发原经验与 PNA；不新增补丁或第二套去重状态。</summary>
         public static void Postfix(SexProps props, bool __runOriginal)
         {
             // 其他补丁可能跳过 RJW 原结算；Harmony 此时仍会调用后缀。
@@ -51,9 +51,24 @@ namespace SexSlaveCraft
             if (!__runOriginal) return;
 
             // 日常调教、绑定仪式和人格排泄虽也调用 ProcessSex，仍各走自己
-            // 的专用结算路径。此处仅转发通过普通任务认领的实际发起者。
-            if (SSCRestrictionJobGuard.TryClaimOrdinarySexOutcome(props, out Pawn initiator, out Pawn recipient))
-                TrainerSpecializationProgressUtility.NotifyInitiatedSexCompleted(initiator, recipient);
+            // 的专用结算路径。普通场景无论当前是否有供给者都消费完成凭据，不能以后重放。
+            if (!SSCRestrictionJobGuard.TryClaimOrdinarySexOutcome(props, out Pawn initiator, out Pawn recipient)) return;
+            var driver = initiator.jobs?.curDriver as JobDriver_SexBaseInitiator;
+            Job completedJob = driver?.job;
+            int completedJobId = completedJob?.loadID ?? -1;
+            // 短期局部引用仅服务本次调用。奖励和健康通知可能换任务或复用 Job，逐次核对原归属。
+            bool IsCurrentScene() => driver != null && completedJob != null && initiator.jobs?.curDriver == driver &&
+                ReferenceEquals(driver.job, completedJob) && ReferenceEquals(initiator.CurJob, completedJob) &&
+                completedJob.loadID == completedJobId &&
+                driver.Partner == recipient && driver.Sexprops == props &&
+                props.initiator == initiator && props.recipient == recipient;
+
+            TrainerSpecializationProgressUtility.NotifyInitiatedSexCompleted(initiator, recipient);
+            if (props.isCoreLovin || !IsCurrentScene()) return;
+            // 每个真实双人完成逐对处理；两名产出者可互相供给，不遍历同场动画名单或按高潮累加。
+            SSCPnaSexSupplyUtility.ApplyFromProducer(initiator, recipient);
+            if (!IsCurrentScene()) return;
+            SSCPnaSexSupplyUtility.ApplyFromProducer(recipient, initiator);
         }
     }
 

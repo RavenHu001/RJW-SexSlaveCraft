@@ -187,25 +187,31 @@ namespace SexSlaveCraft
                     }
                 }
                 // 6. 原版服药已补充需求时不再重复加量；首次摄入与独立来源仍在这里补充。
-                // 保留旧普通侵蚀 +0.12；产出者性交补 +0.30，主人侵染直接补满。
+                // 保留旧普通侵蚀 +0.12；产出者性交补 +0.10，主人侵染直接补满。
                 // 新来源仍只补已有合法需求，首次新需求初始化继续使用上方原版准入。
                 // 枪械按钳制后的实际增量补充；满值输入可建依赖，但不虚构负荷增量。
                 Need_Chemical need = GetNeed(pawn);
                 float refill = source == SSCPnaExposureSource.Ingestion ? (refillIngestionNeed ? 1f : 0f) :
                     source == SSCPnaExposureSource.OrdinaryExposure ? .12f :
-                    source == SSCPnaExposureSource.ProducerSex ? .30f :
+                    source == SSCPnaExposureSource.ProducerSex ? .10f :
                     source == SSCPnaExposureSource.MasterInfestation ? (need?.MaxLevel ?? 0f) :
                     source == SSCPnaExposureSource.Weapon ? result.AddedLoad * 2f : 0f;
                 if (IsValidTarget(pawn) && !SSCIdentityUtility.IsMaster(pawn) && !IsRooted(pawn) && need != null && refill > 0f)
                     need.CurLevel = System.Math.Min(need.MaxLevel, need.CurLevel + refill);
 
-                // 末期真实输入额外加深已有成瘾；原版服药增量仍由 CompDrug 单独执行。
-                // 调试不强化，初次成瘾不重复增加；满负荷实际增量为零也仍是真实暴露。
-                // Setter 沿用原版上限，随后统一核对链与健康回调，不新增计时器或缓存。
+                // 产出者性交是真实摄入，已有成瘾每次基础 +0.01；所有真实来源末期仍额外 +0.2。
+                // 服药基础增量由原版 CompDrug 执行，不在此重复；其他来源不新增基础增量。
+                // 初次成瘾仍只由满负荷建立，调试不强化；满负荷实际增量为零也仍是真实暴露。
                 if (source != SSCPnaExposureSource.Debug && existingAddiction != null &&
                     GetAddiction(pawn) == existingAddiction && IsValidTarget(pawn) && !SSCIdentityUtility.IsMaster(pawn) && !IsRooted(pawn) &&
-                    GetBodyRecord(pawn) == record && record.Severity >= (float)(SSCPnaMath.HighLoadThreshold * SSCPnaMath.MaximumSeverity))
-                    existingAddiction.Severity += .2f;
+                    GetBodyRecord(pawn) == record)
+                {
+                    float addictionIncrease = source == SSCPnaExposureSource.ProducerSex ? .01f : 0f;
+                    if (record.Severity >= (float)(SSCPnaMath.HighLoadThreshold * SSCPnaMath.MaximumSeverity))
+                        addictionIncrease += .2f;
+                    // 合并为一次写入，沿原版上限钳制；后续统一核对身份、链及健康回调。
+                    if (addictionIncrease > 0f) existingAddiction.Severity += addictionIncrease;
+                }
             }
             // 7. 依赖和需求变更后再次核对身体；失效清理只撤销本次新依赖。
             // 有链依赖清除仍由协调方法处理，已执行的身体加量不在此回滚。

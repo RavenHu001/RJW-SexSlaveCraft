@@ -72,11 +72,11 @@ namespace SexSlaveCraft
             => context.IsCurrent && context.Target.Thing == Slave;
 
         /// <summary>根据从零开始的阶段索引设置当前场景动作；不推进仪式阶段计数。</summary>
-        private void SwitchSexPhase(int phaseIndex)
+        private bool SwitchSexPhase(int phaseIndex)
         {
             // EN: Each ritualPhase maps to one fixed act in the Binding Ritual sequence.
             // CN: 绑定仪式里的每个 ritualPhase，都对应一段固定的性交姿势顺序。
-            RitualTrainingUtility.ApplyPhaseToSexProps(Sexprops, pawn, Slave, phaseIndex);
+            return RitualTrainingUtility.ApplyPhaseToSexProps(Sexprops, pawn, Slave, phaseIndex);
         }
 
         /// <summary>构造移动、准备及执行阶段的 Toil，并注册有效性检查与覆盖整份 Job 的收尾回调。</summary>
@@ -144,7 +144,15 @@ namespace SexSlaveCraft
                 TrainingJobUtility.MarkTrainingStarted(slave, true);
                 var trainingComp = slave.TryGetComp<CompSexSlaveTraining>();
                 int phase = trainingComp?.ritualPhase ?? 0;  // 保持当前阶段
-                SwitchSexPhase(phase);
+                bool applied = SwitchSexPhase(phase);
+                // 固定阶段允许无可解析部位，仍重建当前动作记录；仅定义等初始化失败才走拒绝清理。
+                if (!IsCurrentPhase(context) || !HasActiveRitual()) return;
+                if (!applied)
+                {
+                    AbortForRestriction("SSC_Training_ActUnavailable".Translate());
+                    if (IsCurrentPhase(context)) pawn.jobs.EndCurrentJob(JobCondition.Incompletable);
+                    return;
+                }
 
                 SSCLog.Verbose($"[SSC_RITUAL] Prepare phase: master={pawn.LabelShort}, slave={slave.LabelShort}, ritualPhase={phase}, ritualSpot={spot}");
 

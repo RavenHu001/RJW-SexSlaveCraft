@@ -95,7 +95,15 @@ namespace SexSlaveCraft
                     Sexprops = SexUtility.SelectSextype(pawn, Partner, false, false);
                     // 外部动作选择结束后确认归属，再应用本次场景固定的动作参数。
                     if (!context.IsCurrent) return;
-                    RJWSexPropsUtility.ApplySexType(Sexprops, pawn, Partner, xxx.rjwSextype.Anal, "Sex_Anal");
+                    bool applied = RJWSexPropsUtility.ApplySexType(Sexprops, pawn, Partner, xxx.rjwSextype.Anal, "Sex_Anal");
+                    // 固定动作必须在 Start 前完成解析；解析回调换任务后不清理新工作。
+                    if (!context.IsCurrent || context.Target.Thing != Partner) return;
+                    if (!applied)
+                    {
+                        TrainingJobUtility.MarkValidationFailure(Partner, "SSC_PE_ACT");
+                        pawn.jobs.EndCurrentJob(JobCondition.Incompletable);
+                        return;
+                    }
                 }
 
                 if (!TrainingJobUtility.TryValidateStartOrAbort(pawn, Partner, "SSC_PE"))

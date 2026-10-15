@@ -20,13 +20,16 @@ namespace SexSlaveCraft
         private static readonly MethodInfo StartGroupAnimationMethod = FindStartGroupAnimationMethod();
         private static readonly MethodInfo GetAnimationLengthMethod = FindGetAnimationLengthMethod();
 
-        public static void ApplyPhaseToSexProps(SexProps sexProps, Pawn initiator, Pawn slave, int phaseIndex)
+        public static bool ApplyPhaseToSexProps(SexProps sexProps, Pawn initiator, Pawn slave, int phaseIndex)
         {
-            if (sexProps == null || initiator == null || slave == null) return;
+            if (sexProps == null || initiator == null || slave == null) return false;
 
             (xxx.rjwSextype sexType, string interactionDefName) phaseData = GetPhaseData(phaseIndex);
-            RJWSexPropsUtility.ApplySexType(sexProps, initiator, slave, phaseData.sexType, phaseData.interactionDefName);
+            // 固定仪式不因缺少某阶段的可解析部位而中断；仍清除旧结果且不编造插入接触。
+            if (!RJWSexPropsUtility.ApplySexType(sexProps, initiator, slave, phaseData.sexType,
+                phaseData.interactionDefName, allowEmptyParts: true)) return false;
             Log.Message($"[SSC Ritual] 仪式进入阶段 {phaseIndex + 1}，当前体位已切换为：{phaseData.interactionDefName}");
+            return true;
         }
 
         /// <summary>从动画框架的定义库筛选可用动画并备用启动，成功后回传动画时长；框架缺省或无匹配项时返回 false。</summary>

@@ -29,3 +29,9 @@ dotnet run --project Tests/InteractionProtection -p:NoLifeForce=true -p:HarmonyA
 本机依据、覆盖范围和待实机步骤见[阶段 3C](../../Docs/Development/Completed/新限制系统阶段3C.md)。
 
 本轮职责整理新增 8 项：可选入口缺席/签名变化与去重、匹配签名、Lovin 回调布局诊断、事件 Job 池化、取消待交接事件、原保存键以及准备对象更换的精确清理。准备/事件助手直接编译生产文件；失效模拟不等于完整实机兼容验证。
+
+第五步扩展原完成后缀的回归：一次认领后保留原经验并逐方向分发 PNA，覆盖普通／强迫／反向／避孕套、存档防重、经验重入、任务复用与目标变更、独立双人任务及排除流程。此宿主仅记录供给边界，真实身体写入由 PnaLoad 编译生产工具验证。
+
+本批最终 InteractionProtection 189/189，完整 30 套／2110 项通过；最终汇总 `.builds/pna-effects-step5/validation-final/summary.json`，仍待游戏验收。
+
+2026-10-15：维护者已确认第五步仪式及性交增加成瘾均正常，批准提交；本次只补实机验收记录，不重复运行回归。

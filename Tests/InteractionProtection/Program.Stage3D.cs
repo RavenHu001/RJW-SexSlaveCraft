@@ -26,6 +26,9 @@ internal static partial class Program
         TrainerSpecializationProgressUtility.InitiatedSexAwards = 0;
         TrainerSpecializationProgressUtility.LastInitiator = null;
         TrainerSpecializationProgressUtility.LastRecipient = null;
+        TrainerSpecializationProgressUtility.OnAward = null;
+        SSCPnaSexSupplyUtility.Calls.Clear();
+        SSCPnaSexSupplyUtility.OnSupply = null;
     }
 
     /// <summary>正常双人任务成功 Start 后由 RJW 结算；重复处理同一 SexProps 不再发奖。</summary>

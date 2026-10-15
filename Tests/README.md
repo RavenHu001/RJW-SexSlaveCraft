@@ -2,7 +2,7 @@
 
 [文档总索引](../Docs/README.md) · [发布与打包](../Docs/Maintenance/发布与打包.md) · [开发记录](../Docs/Development/README.md)
 
-正式 **2.4.0** 登记 28 套机制回归；当前未发布 PNA P1 增加 `PnaLoad`，`Scripts/Test-All.ps1` 登记 **29 套**。正式 2.3.9 发布时为 25 套，2.4.0 增加 `MasterQualificationItem`、`MasterEntry` 与 `MasterPanelUI`。历史正式门禁见[2.4.0 版本验证](../Docs/Releases/2.4.0/2.4.0版本验证.md)，本批结果见[P1 测试说明](../Docs/Development/Completed/PNA机制重置P1实现与测试.md)。
+正式 **2.4.0** 登记 28 套机制回归；当前未发布 PNA P1 增加 `PnaLoad`，第五步新增 `ForcedSexProps`，`Scripts/Test-All.ps1` 现登记 **30 套**。正式 2.3.9 发布时为 25 套，2.4.0 增加 `MasterQualificationItem`、`MasterEntry` 与 `MasterPanelUI`。历史正式门禁见[2.4.0 版本验证](../Docs/Releases/2.4.0/2.4.0版本验证.md)，本批结果见[P1 测试说明](../Docs/Development/Completed/PNA机制重置P1实现与测试.md)。
 
 ## 统一入口
 
@@ -58,7 +58,8 @@ pwsh -File Scripts/Test-All.ps1 -HarmonyAssemblyPath 'C:\Dependencies\Harmony\ne
 ## 限制、行为保护与同床
 
 - [RestrictionCore](RestrictionCore/README.md)：新限制系统核心与生命周期回归。
-- [InteractionProtection](InteractionProtection/README.md)：任务限制与兼容生命周期回归。
+- [InteractionProtection](InteractionProtection/README.md)：任务限制与兼容生命周期、PNA 完成分发回归。
+- [ForcedSexProps](ForcedSexProps/README.md)：强制动作解析、旧部位清理、方向及 Owner 核对回归。
 - [SharedBed](SharedBed/README.md)：主奴同床回归。
 - [BusTrade](BusTrade/README.md)：交易与宠物事件限制回归。
 

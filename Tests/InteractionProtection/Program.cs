@@ -53,6 +53,7 @@ internal static partial class Program
         RunTrainingIdentityTests();
         RunStage3CTests();
         RunStage3DTests();
+        RunPnaSupplyDispatchTests();
         RunJobRefactorTests();
         RunPersonalityExcretionProtectionTests();
         RunPetAffectionEventTests();

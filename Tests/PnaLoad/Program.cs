@@ -87,6 +87,7 @@ internal static partial class Program
         RunEffectsStep1Tests();
         RunEffectsStep3Tests();
         RunEffectsStep4Tests();
+        RunEffectsStep5Tests();
         Console.WriteLine($"结果：{passed}/{passed+failed} 项通过。");
         return failed==0 ? 0:1;
     }

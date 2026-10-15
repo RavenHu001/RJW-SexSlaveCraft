@@ -66,12 +66,13 @@ namespace rjw
 }
 namespace SexSlaveCraft
 {
-    public enum TrainingActType { Auto }
+    public enum TrainingActType { Auto, Vaginal }
     public partial class CompSexSlaveTraining { public TrainingActType selectedMode; }
     public static partial class RJWSexPropsUtility
     {
         /// <summary>测试不锁定特定动作，只提供生产方法签名。</summary>
-        public static void ApplyTrainingAct(rjw.SexProps props, Pawn actor, Pawn target, TrainingActType mode) { }
+        public static bool ApplyTrainingAct(rjw.SexProps props, Pawn actor, Pawn target, TrainingActType mode)
+        { TestWorld.OnResolveAct?.Invoke(); return TestWorld.ResolveActSucceeds; }
     }
     public static partial class ConditioningUtility
     {

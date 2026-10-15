@@ -202,7 +202,16 @@ namespace SexSlaveCraft
                     {
                         // EN: The selected training act only overrides RJW when the player explicitly locked a training mode.
                         // CN: 只有玩家手动锁定调教模式时，才会覆写 RJW 自动选择的姿势。
-                        RJWSexPropsUtility.ApplyTrainingAct(Sexprops, pawn, target, mode);
+                        bool applied = RJWSexPropsUtility.ApplyTrainingAct(Sexprops, pawn, target, mode);
+                        // 原生解析可能触发外部逻辑；失败只终止仍属于此回调的旧任务。
+                        if (!ValidateTargetIdentityOrAbort(context, target)) return;
+                        if (!applied)
+                        {
+                            TrainingJobUtility.MarkValidationFailure(target, "SSC_TRAIN_ACT");
+                            TrainingJobUtility.NotifyTrainingAborted(target);
+                            if (IsCurrentTarget(context, target)) pawn.jobs.EndCurrentJob(JobCondition.Incompletable);
+                            return;
+                        }
                     }
                 }
 
