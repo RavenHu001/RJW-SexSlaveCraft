@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <LanguageData>
-  <PNA_Addiction.label>紫色奈米液體成癮</PNA_Addiction.label>
-  <PNA_Addiction.description>神經系統已對紫色奈米流體產生依賴，性慾持續增強。戒斷時催情更強，操控能力下降，性脆弱度上升，並產生強烈的負面情緒。成癮隨時間逐漸消退，完全停止輸入後，完整戒除約需10天。再次服用會加深成癮並緩解戒斷；末期負荷下的輸入會進一步加深已有成癮。此狀態僅屬於目前身體，不隨人格遷移，也不由複製體繼承。</PNA_Addiction.description>
+  <PNA_Addiction.label>奈米催情液成癮</PNA_Addiction.label>
+  <PNA_Addiction.description>神經系統已經習慣奈米催情液帶來的刺激，於是持續向身體索要它。供給一旦中斷，就會出現空虛、煩躁與說不清的身體不適，情慾反而更難平息。再次取得可以暫時壓下渴求，但依賴會隨之加深；長期不再接觸才能恢復。</PNA_Addiction.description>
   <PNA_Addiction.stages.1.label>戒斷中</PNA_Addiction.stages.1.label>
 </LanguageData>

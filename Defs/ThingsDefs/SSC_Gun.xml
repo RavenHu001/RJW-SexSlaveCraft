@@ -66,7 +66,7 @@
 
   <ThingDef ParentName="BaseBullet">
     <defName>Bullet_PNA_Low</defName>
-    <label>普通纳米机械子弹</label>
+    <label>PNA 弹丸</label>
     <graphicData>
       <texPath>Things/Projectile/ChargeLanceShot</texPath>
       <graphicClass>Graphic_Single</graphicClass>
@@ -81,8 +81,8 @@
 
   <ThingDef ParentName="BaseHumanMakeableGun">
     <defName>Gun_PNA_Low</defName>
-    <label>简易PNA发射器</label>
-    <description>有效命中会向目标输入 PNA，负荷过高会导致普通身体昏迷。具有有效锁链的性奴会获得阶段活化并治疗可自然恢复的伤口，不产生枪伤。主人免疫 PNA 药效。</description>
+    <label>PNA 发射器</label>
+    <description>用气压把纳米催情液弹丸射向目标。普通人被连续命中会失去意识；身体已经与紫色微械共存的性奴则会被活化，同时伤口自行收拢。催情作用对主人无效。</description>
     <graphicData>
       <texPath>Things/Item/Equipment/Gun_PNA_Low</texPath>
       <graphicClass>Graphic_Single</graphicClass>

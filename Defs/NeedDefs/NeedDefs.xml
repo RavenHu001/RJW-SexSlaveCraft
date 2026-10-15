@@ -17,8 +17,8 @@
   <NeedDef ParentName="DrugAddictionNeedBase">
     <defName>Need_PNA</defName>
     <needClass>Need_Chemical</needClass>
-    <label>纳米流体渴望</label>
-    <description>PNA 成瘾产生的纳米流体满足度，逐渐下降；耗尽后进入戒断。补充 PNA 可恢复满足度，但同时增加身体负荷。该需求属于身体，不随人格搬迁。</description>
+    <label>纳米催情液渴求</label>
+    <description>依赖纳米催情液带来的刺激之后，身体会持续索要它。满足度随时间下降，见底即进入戒断；取得纳米催情液可以补回，但也让依赖更深。</description>
     <listPriority>50</listPriority> 
     <fallPerDay>0.333</fallPerDay> 
   </NeedDef>

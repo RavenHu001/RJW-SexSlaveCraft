@@ -1,8 +1,8 @@
 <Defs>
 <HediffDef ParentName="AddictionBase">
     <defName>PNA_Addiction</defName>
-    <label>紫色纳米液体成瘾</label>
-    <description>神经系统已对紫色纳米流体产生依赖，性欲持续增强。戒断时催情更强，操控能力下降，性脆弱度上升，并产生强烈的负面情绪。成瘾随时间逐渐消退，完全停止输入后，完整戒除约需10天。再次服用会加深成瘾并缓解戒断；末期负荷下的输入会进一步加深已有成瘾。该状态仅属于当前身体，不随人格迁移，也不由克隆体继承。</description>
+    <label>纳米催情液成瘾</label>
+    <description>神经系统已经习惯纳米催情液带来的刺激，于是持续向身体索要它。供给一旦中断，就会出现空虚、烦躁与说不清的身体不适，情欲反而更难平息。再次取得可以暂时压下渴求，但依赖会随之加深；长期不再接触才能恢复。</description>
     <hediffClass>Hediff_Addiction</hediffClass>
     <tendable>false</tendable>
     <everCurableByItem>false</everCurableByItem>
@@ -49,8 +49,8 @@
       </li>
       
       <li>
-        <label>纳米流体戒断</label>
-        <description>这种空虚感快把我逼疯了！给我那个紫色的水！</description>
+        <label>戒断</label>
+        <description>身体一直在索要它。这种空缺让我烦躁又难受，什么心思都提不起来。</description>
         <baseMoodEffect>-18</baseMoodEffect>
       </li>
     </stages>

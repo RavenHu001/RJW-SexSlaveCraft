@@ -39,6 +39,6 @@
   <SSC_Lactating_SubState.label>Permanent Lactation Phase</SSC_Lactating_SubState.label>
   <SSC_Lactating_SubState.description>Under deep nanomachine intervention, lactation is locked in an always-active state. Like a parasite, it continuously draws food from the host's stomach to synthesize milk.</SSC_Lactating_SubState.description>
   <SSC_Lactating_SubState.comps.0.labelInBrackets>Milk fullness {CHARGEFACTOR_percentage}</SSC_Lactating_SubState.comps.0.labelInBrackets>
-  <SSC_Purple_HyperLactation.label>Aphrodisiac Nanofluid Output (Vagina)</SSC_Purple_HyperLactation.label>
-  <SSC_Purple_HyperLactation.description>The body's glands actively secrete a special purple nanofluid, which is transported through the bloodstream to the vagina. This state belongs to the current body; it does not transfer with a personality or pass to a clone.</SSC_Purple_HyperLactation.description>
+  <SSC_Purple_HyperLactation.label>Nano-Aphrodisiac Secretion</SSC_Purple_HyperLactation.label>
+  <SSC_Purple_HyperLactation.description>Under the influence of purple nanomachines, glands throughout the body continually produce aphrodisiac nanofluid and carry it to the skin and bodily fluids. Secretions during sex allow a partner to take in a small amount as well.</SSC_Purple_HyperLactation.description>
 </LanguageData>

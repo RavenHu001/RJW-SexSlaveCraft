@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <LanguageData>
-  <Bullet_PNA_Low.label>普通奈米機械子彈</Bullet_PNA_Low.label>
-  <Gun_PNA_Low.label>簡易PNA發射器</Gun_PNA_Low.label>
-  <Gun_PNA_Low.description>有效命中會向目標輸入 PNA，負荷過高會導致普通身體昏迷。具有有效鎖鏈的性奴會獲得階段活化並治療可自然恢復的傷口，不產生槍傷。主人免疫 PNA 藥效。</Gun_PNA_Low.description>
+  <Bullet_PNA_Low.label>PNA 彈丸</Bullet_PNA_Low.label>
+  <Gun_PNA_Low.label>PNA 發射器</Gun_PNA_Low.label>
+  <Gun_PNA_Low.description>用氣壓把奈米催情液彈丸射向目標。普通人被連續命中會失去意識；身體已經與紫色微械共存的性奴則會被活化，同時傷口自行收攏。催情作用對主人無效。</Gun_PNA_Low.description>
 </LanguageData>

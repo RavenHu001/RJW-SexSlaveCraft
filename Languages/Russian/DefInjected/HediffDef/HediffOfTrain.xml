@@ -39,6 +39,6 @@
   <SSC_Lactating_SubState.label>Фаза постоянной лактации</SSC_Lactating_SubState.label>
   <SSC_Lactating_SubState.description>Под глубоким вмешательством наномашин лактация зафиксирована в постоянно активном состоянии. Как паразит, она непрерывно забирает пищу из желудка носителя для синтеза молока.</SSC_Lactating_SubState.description>
   <SSC_Lactating_SubState.comps.0.labelInBrackets>Наполненность молоком {CHARGEFACTOR_percentage}</SSC_Lactating_SubState.comps.0.labelInBrackets>
-  <SSC_Purple_HyperLactation.label>Выделение афродизиачной наножидкости (вагина)</SSC_Purple_HyperLactation.label>
-  <SSC_Purple_HyperLactation.description>Железы тела активно выделяют особую фиолетовую наножидкость, которая через кровоток транспортируется во влагалище. Это состояние принадлежит текущему телу: оно не переносится с личностью и не наследуется клоном.</SSC_Purple_HyperLactation.description>
+  <SSC_Purple_HyperLactation.label>Выделение наножидкости-афродизиака</SSC_Purple_HyperLactation.label>
+  <SSC_Purple_HyperLactation.description>Под действием фиолетовых наномашин железы по всему телу непрерывно вырабатывают наножидкость-афродизиак и доставляют её к поверхности кожи и в телесные жидкости. Выделения во время секса позволяют партнёру тоже получить небольшое количество.</SSC_Purple_HyperLactation.description>
 </LanguageData>

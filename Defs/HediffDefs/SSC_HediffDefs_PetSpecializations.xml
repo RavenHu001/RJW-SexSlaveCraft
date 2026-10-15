@@ -221,7 +221,7 @@
   <HediffDef>
     <defName>SSC_Hediff_RabbitCloneLowPNA</defName>
     <label>兔分身 PNA 产出</label>
-    <description>兔分身成熟后形成的低效 PNA 产出状态。该状态仅属于当前身体，不随人格迁移，也不由克隆体继承。</description>
+    <description>兔分身成熟后形成的低效 PNA 产出状态。</description>
     <hediffClass>HediffWithComps</hediffClass>
     <isBad>false</isBad>
     <initialSeverity>0.01</initialSeverity>

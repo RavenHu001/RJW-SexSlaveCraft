@@ -27,5 +27,5 @@
   <SSC_Hediff_RabbitCloneLink.stages.0.label>成型中</SSC_Hediff_RabbitCloneLink.stages.0.label>
   <SSC_Hediff_RabbitCloneLink.stages.1.label>成熟</SSC_Hediff_RabbitCloneLink.stages.1.label>
   <SSC_Hediff_RabbitCloneLowPNA.label>兔分身 PNA 產出</SSC_Hediff_RabbitCloneLowPNA.label>
-  <SSC_Hediff_RabbitCloneLowPNA.description>兔分身成熟後形成的低效 PNA 產出狀態。此狀態僅屬於目前身體，不隨人格遷移，也不由複製體繼承。</SSC_Hediff_RabbitCloneLowPNA.description>
+  <SSC_Hediff_RabbitCloneLowPNA.description>兔分身成熟後形成的低效 PNA 產出狀態。</SSC_Hediff_RabbitCloneLowPNA.description>
 </LanguageData>

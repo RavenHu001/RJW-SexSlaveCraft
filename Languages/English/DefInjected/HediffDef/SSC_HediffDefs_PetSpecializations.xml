@@ -34,5 +34,5 @@
   <SSC_Hediff_RabbitCloneLink.stages.1.label>mature</SSC_Hediff_RabbitCloneLink.stages.1.label>
 
   <SSC_Hediff_RabbitCloneLowPNA.label>rabbit clone PNA production</SSC_Hediff_RabbitCloneLowPNA.label>
-  <SSC_Hediff_RabbitCloneLowPNA.description>A low-efficiency PNA output state stabilized after a rabbit clone reaches maturity. This state belongs to the current body; it does not transfer with a personality or pass to a clone.</SSC_Hediff_RabbitCloneLowPNA.description>
+  <SSC_Hediff_RabbitCloneLowPNA.description>A low-efficiency PNA output state stabilized after a rabbit clone reaches maturity.</SSC_Hediff_RabbitCloneLowPNA.description>
 </LanguageData>

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-  <SSC_Pna_LoadTooltip>Текущая нагрузка PNA: {0}%. Сильное возбуждение с ростом сексуального удовлетворения и удовольствия. Манипуляция, подвижность и сознание ухудшаются с первой стадии; предельная перегрузка может вызвать обморок от оргазма. Без новых поступлений нагрузка постепенно снижается.</SSC_Pna_LoadTooltip>
+  <SSC_Pna_LoadTooltip>Воздействие наножидкости-афродизиака: {0}%</SSC_Pna_LoadTooltip>
   <SSC_Pna_SelectPawn>Сначала выберите персонажа.</SSC_Pna_SelectPawn>
   <SSC_Pna_InvalidTarget>Этот персонаж сейчас не может получить тестовую дозу PNA.</SSC_Pna_InvalidTarget>
-  <SSC_Pna_Rooted>Тест PNA P2: укоренённая нагрузка {0}%. Обычная зависимость от PNA не создаётся.</SSC_Pna_Rooted>
-  <SSC_Pna_DebugResult>Тест PNA P2: текущая нагрузка {0}%. Действительная доза при полной обычной нагрузке создаёт зависимость; прогресс восстановления сохраняется.</SSC_Pna_DebugResult>
-  <SSC_Pna_RootedLoadTooltip>Укоренившаяся нагрузка PNA: {0}%. Стадии повышают сознание, манипуляцию, подвижность, половое влечение, сексуальное удовлетворение и настроение, подавляя боль. Более сильная активация спадает быстрее. Привязка и отвязка сохраняют нагрузку. Обычные штрафы и обморок не действуют.</SSC_Pna_RootedLoadTooltip>
-  <SSC_Pna_NewDependence>{0} достиг полной нагрузки PNA и приобрёл зависимость от наножидкости.</SSC_Pna_NewDependence>
-  <SSC_Pna_WeaponHealed>Исцеление</SSC_Pna_WeaponHealed>
-  <SSC_Pna_WeaponActivated>Активация PNA</SSC_Pna_WeaponActivated>
-  <SSC_Pna_AttractionExplanation>Влечение к источнику PNA: ×{0} ⇒ {1}</SSC_Pna_AttractionExplanation>
+  <SSC_Pna_Rooted>Отладка: нагрузка активации раба с действующей цепью {0}%. Обычная зависимость не возникает.</SSC_Pna_Rooted>
+  <SSC_Pna_DebugResult>Отладка: текущая нагрузка {0}%. Полная выраженность у обычного тела вызывает зависимость; достигнутое восстановление сохраняется.</SSC_Pna_DebugResult>
+  <SSC_Pna_RootedLoadTooltip>Активация наножидкостью-афродизиаком: {0}%</SSC_Pna_RootedLoadTooltip>
+  <SSC_Pna_NewDependence>{0} больше не может обходиться без наножидкости-афродизиака.</SSC_Pna_NewDependence>
+  <SSC_Pna_WeaponHealed>Раны затягиваются</SSC_Pna_WeaponHealed>
+  <SSC_Pna_WeaponActivated>Активация</SSC_Pna_WeaponActivated>
+  <SSC_Pna_AttractionExplanation>Тяга к наножидкости-афродизиаку цели: ×{0} ⇒ {1}</SSC_Pna_AttractionExplanation>
 </LanguageData>

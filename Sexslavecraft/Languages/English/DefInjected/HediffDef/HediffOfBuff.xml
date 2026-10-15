@@ -7,29 +7,29 @@
   <SSC_MasterBondEmpowerment.stages.2.label>Diffuse</SSC_MasterBondEmpowerment.stages.2.label>
   <SSC_MasterBondEmpowerment.stages.3.label>Formless</SSC_MasterBondEmpowerment.stages.3.label>
   <Hediff_PNA_Combat_Buff.label>PNA Combat Enhancement</Hediff_PNA_Combat_Buff.label>
-  <Hediff_PNA_Combat_Buff.description>Under purple nanomachine aphrodisiac stimulation, a sex slave's cells become active and agitated, increasing combat capability. This state belongs to the current body; it does not transfer with a personality or pass to a clone.</Hediff_PNA_Combat_Buff.description>
+  <Hediff_PNA_Combat_Buff.description>Under purple nanomachine aphrodisiac stimulation, a sex slave's cells become active and agitated, increasing combat capability.</Hediff_PNA_Combat_Buff.description>
   <Hediff_PNA_Combat_Buff_Plus.label>PNA Combat Enhancement (Concentrated)</Hediff_PNA_Combat_Buff_Plus.label>
-  <Hediff_PNA_Combat_Buff_Plus.description>Under concentrated purple nanomachine stimulation, a sex slave's potential is greatly unleashed. This state belongs to the current body; it does not transfer with a personality or pass to a clone.</Hediff_PNA_Combat_Buff_Plus.description>
-  <Hediff_PNA_Debuff.label>PNA Load</Hediff_PNA_Debuff.label>
-  <Hediff_PNA_Debuff.description>Purple nanomachines strongly stimulate sex drive, increasing satisfaction from sex and pleasure at each stage. Even trace loads impair manipulation, movement and consciousness, with stronger impairments and pain suppression at each stage. From the erosion stage, reduced sight and hearing represent sensory distortions and hallucinations. Terminal overload limits consciousness and causes an orgasm-induced collapse. Effective health updates gradually clear the load after exposure stops; suspended and paused time is not charged on resumption. This state belongs to the current body; it does not transfer with a personality or pass to a clone.</Hediff_PNA_Debuff.description>
-  <Hediff_PNA_Debuff.stages.0.label>Trace</Hediff_PNA_Debuff.stages.0.label>
-  <Hediff_PNA_Debuff.stages.1.label>Active</Hediff_PNA_Debuff.stages.1.label>
+  <Hediff_PNA_Combat_Buff_Plus.description>Under concentrated purple nanomachine stimulation, a sex slave's potential is greatly unleashed.</Hediff_PNA_Combat_Buff_Plus.description>
+  <Hediff_PNA_Debuff.label>Nano-Aphrodisiac Corrosion</Hediff_PNA_Debuff.label>
+  <Hediff_PNA_Debuff.description>Purple aphrodisiac nanofluid is stimulating nerves throughout the body. Desire is harder to suppress and pain grows dull. As its effects deepen, movement and attention slip out of control, and sights and sounds appear where nothing exists. At its peak, the body undergoes involuntary, repeated orgasms until consciousness gives way.</Hediff_PNA_Debuff.description>
+  <Hediff_PNA_Debuff.stages.0.label>First Stir</Hediff_PNA_Debuff.stages.0.label>
+  <Hediff_PNA_Debuff.stages.1.label>Rising</Hediff_PNA_Debuff.stages.1.label>
   <Hediff_PNA_Consciousness_Record.label>Consciousness Snapshot</Hediff_PNA_Consciousness_Record.label>
-  <Hediff_PNA_Consciousness_Record.description>Used to record the target's peak consciousness while exposed to hormones (normally not intended to be seen). This state belongs to the current body; it does not transfer with a personality or pass to a clone.</Hediff_PNA_Consciousness_Record.description>
+  <Hediff_PNA_Consciousness_Record.description>Stores a high-consciousness target's resistance record for subsequent PNA hit calculations.</Hediff_PNA_Consciousness_Record.description>
   <SSC_PostExcretionComa.label>Personality Excretion Adaptation Syndrome</SSC_PostExcretionComa.label>
   <SSC_PostExcretionComa.description>After forced personality extraction, the brain and nervous system enter severe restructuring and blanking; the initial personality is taking control.</SSC_PostExcretionComa.description>
   <SSC_PostExcretionComa.stages.0.label>Deep Shutdown</SSC_PostExcretionComa.stages.0.label>
   <SSC_PostInsertionComa.label>Personality Implantation Adaptation Syndrome</SSC_PostInsertionComa.label>
   <SSC_PostInsertionComa.description>After forced insertion of an external personality into a hollow body, the brain and nervous system need time to adapt and recover.</SSC_PostInsertionComa.description>
   <SSC_PostInsertionComa.stages.0.label>Deep Shutdown</SSC_PostInsertionComa.stages.0.label>
-  <Hediff_PNA_Debuff.stages.2.label>Erosion</Hediff_PNA_Debuff.stages.2.label>
-  <Hediff_PNA_Debuff.stages.3.label>Deep influence</Hediff_PNA_Debuff.stages.3.label>
-  <Hediff_PNA_Debuff.stages.4.label>Acute overload</Hediff_PNA_Debuff.stages.4.label>
-  <SSC_Hediff_PnaRootedLoad.label>Rooted PNA Load</SSC_Hediff_PnaRootedLoad.label>
-  <SSC_Hediff_PnaRootedLoad.description>External PNA activates a sex slave's nervous system and internal purple nanomachines. Each stage strengthens consciousness, manipulation and movement, suppresses pain, and improves sex drive, sexual satisfaction and mood. Stronger activation fades faster. Binding and unbinding preserve the load; binding clears ordinary PNA addiction. Ordinary load penalties and terminal collapse do not apply. This state belongs to the current body; it does not transfer with a personality or pass to a clone.</SSC_Hediff_PnaRootedLoad.description>
-  <SSC_Hediff_PnaRootedLoad.stages.0.label>Faint activation</SSC_Hediff_PnaRootedLoad.stages.0.label>
-  <SSC_Hediff_PnaRootedLoad.stages.1.label>Steady activation</SSC_Hediff_PnaRootedLoad.stages.1.label>
-  <SSC_Hediff_PnaRootedLoad.stages.2.label>Deep activation</SSC_Hediff_PnaRootedLoad.stages.2.label>
-  <SSC_Hediff_PnaRootedLoad.stages.3.label>Strong activation</SSC_Hediff_PnaRootedLoad.stages.3.label>
-  <SSC_Hediff_PnaRootedLoad.stages.4.label>Peak activation</SSC_Hediff_PnaRootedLoad.stages.4.label>
+  <Hediff_PNA_Debuff.stages.2.label>Unmoored</Hediff_PNA_Debuff.stages.2.label>
+  <Hediff_PNA_Debuff.stages.3.label>Undone</Hediff_PNA_Debuff.stages.3.label>
+  <Hediff_PNA_Debuff.stages.4.label>Blackout</Hediff_PNA_Debuff.stages.4.label>
+  <SSC_Hediff_PnaRootedLoad.label>Nano-Aphrodisiac Activation</SSC_Hediff_PnaRootedLoad.label>
+  <SSC_Hediff_PnaRootedLoad.description>Fresh aphrodisiac nanofluid further kindles a body already living alongside purple nanomachines. Awareness sharpens, movements become more coordinated and powerful, and pain recedes as desire and energy rise together. The stronger the activation, the faster it fades.</SSC_Hediff_PnaRootedLoad.description>
+  <SSC_Hediff_PnaRootedLoad.stages.0.label>First Light</SSC_Hediff_PnaRootedLoad.stages.0.label>
+  <SSC_Hediff_PnaRootedLoad.stages.1.label>Quickened</SSC_Hediff_PnaRootedLoad.stages.1.label>
+  <SSC_Hediff_PnaRootedLoad.stages.2.label>Filling</SSC_Hediff_PnaRootedLoad.stages.2.label>
+  <SSC_Hediff_PnaRootedLoad.stages.3.label>Surging</SSC_Hediff_PnaRootedLoad.stages.3.label>
+  <SSC_Hediff_PnaRootedLoad.stages.4.label>Overload</SSC_Hediff_PnaRootedLoad.stages.4.label>
 </LanguageData>

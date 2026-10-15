@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-  <PNA_Debuff_Thought.stages.0.label>微熱的愉悅</PNA_Debuff_Thought.stages.0.label>
-  <PNA_Debuff_Thought.stages.0.description>體內泛起暖意，身體感到一絲愉悅。</PNA_Debuff_Thought.stages.0.description>
-  <PNA_Debuff_Thought.stages.1.label>慾望升溫</PNA_Debuff_Thought.stages.1.label>
-  <PNA_Debuff_Thought.stages.1.description>溫熱的感覺和持續的慾望讓我沉浸其中。</PNA_Debuff_Thought.stages.1.description>
-  <PNA_Debuff_Thought.stages.2.label>感官沉醉</PNA_Debuff_Thought.stages.2.label>
-  <PNA_Debuff_Thought.stages.2.description>感官逐漸模糊，強烈的快感讓我暫時忘記煩惱。</PNA_Debuff_Thought.stages.2.description>
-  <PNA_Debuff_Thought.stages.3.label>強烈陶醉</PNA_Debuff_Thought.stages.3.label>
-  <PNA_Debuff_Thought.stages.3.description>洶湧的慾望佔據了注意力，我幾乎無法思考其他事情。</PNA_Debuff_Thought.stages.3.description>
-  <PNA_Debuff_Thought.stages.4.label>過載的愉悅</PNA_Debuff_Thought.stages.4.label>
-  <PNA_Debuff_Thought.stages.4.description>過量的刺激淹沒了意識，身體只剩下難以承受的愉悅。</PNA_Debuff_Thought.stages.4.description>
-  <SSC_PnaRootedLoad_Thought.stages.0.label>輕盈的暖意</SSC_PnaRootedLoad_Thought.stages.0.label>
-  <SSC_PnaRootedLoad_Thought.stages.0.description>奈米機械開始活躍，身體輕快而溫暖。</SSC_PnaRootedLoad_Thought.stages.0.description>
-  <SSC_PnaRootedLoad_Thought.stages.1.label>活化的喜悅</SSC_PnaRootedLoad_Thought.stages.1.label>
-  <SSC_PnaRootedLoad_Thought.stages.1.description>身體中的活力逐漸充盈，讓我感到愉快而清醒。</SSC_PnaRootedLoad_Thought.stages.1.description>
-  <SSC_PnaRootedLoad_Thought.stages.2.label>充盈的活力</SSC_PnaRootedLoad_Thought.stages.2.label>
-  <SSC_PnaRootedLoad_Thought.stages.2.description>神經與奈米機械一同活躍，身體充滿力量與愉悅。</SSC_PnaRootedLoad_Thought.stages.2.description>
-  <SSC_PnaRootedLoad_Thought.stages.3.label>共鳴的愉悅</SSC_PnaRootedLoad_Thought.stages.3.label>
-  <SSC_PnaRootedLoad_Thought.stages.3.description>強烈的活化讓身體與奈米機械共鳴，行動也變得格外輕快。</SSC_PnaRootedLoad_Thought.stages.3.description>
-  <SSC_PnaRootedLoad_Thought.stages.4.label>極限活化的滿足</SSC_PnaRootedLoad_Thought.stages.4.label>
-  <SSC_PnaRootedLoad_Thought.stages.4.description>身體被活力與快感充滿，我正處於最強烈的活化狀態。</SSC_PnaRootedLoad_Thought.stages.4.description>
+  <PNA_Debuff_Thought.stages.0.label>微微發熱</PNA_Debuff_Thought.stages.0.label>
+  <PNA_Debuff_Thought.stages.0.description>一股暖意從體內泛起來，我有點想要，但還能按住。</PNA_Debuff_Thought.stages.0.description>
+  <PNA_Debuff_Thought.stages.1.label>心浮氣躁</PNA_Debuff_Thought.stages.1.label>
+  <PNA_Debuff_Thought.stages.1.description>那股熱度散到全身，我總在想著這件事，很難專心。</PNA_Debuff_Thought.stages.1.description>
+  <PNA_Debuff_Thought.stages.2.label>目眩神迷</PNA_Debuff_Thought.stages.2.label>
+  <PNA_Debuff_Thought.stages.2.description>眼前的東西開始發虛，耳邊有聲音在響，我說不清那是真是假。</PNA_Debuff_Thought.stages.2.description>
+  <PNA_Debuff_Thought.stages.3.label>難以自持</PNA_Debuff_Thought.stages.3.label>
+  <PNA_Debuff_Thought.stages.3.description>慾望壓過了我。我不管自己在做什麼，也管不住自己。</PNA_Debuff_Thought.stages.3.description>
+  <PNA_Debuff_Thought.stages.4.label>一片空白</PNA_Debuff_Thought.stages.4.label>
+  <PNA_Debuff_Thought.stages.4.description>我幾乎撐不住了，腦子裡只剩下快感，別的什麼都沒有。</PNA_Debuff_Thought.stages.4.description>
+  <SSC_PnaRootedLoad_Thought.stages.0.label>甦醒</SSC_PnaRootedLoad_Thought.stages.0.label>
+  <SSC_PnaRootedLoad_Thought.stages.0.description>身體像被點亮了一樣，我的感覺一下子清楚了。</SSC_PnaRootedLoad_Thought.stages.0.description>
+  <SSC_PnaRootedLoad_Thought.stages.1.label>活絡</SSC_PnaRootedLoad_Thought.stages.1.label>
+  <SSC_PnaRootedLoad_Thought.stages.1.description>手腳輕快，動作跟得上念頭，身體比平時聽話。</SSC_PnaRootedLoad_Thought.stages.1.description>
+  <SSC_PnaRootedLoad_Thought.stages.2.label>充盈</SSC_PnaRootedLoad_Thought.stages.2.label>
+  <SSC_PnaRootedLoad_Thought.stages.2.description>力量和慾望一起漲上來，我既興奮又清醒。</SSC_PnaRootedLoad_Thought.stages.2.description>
+  <SSC_PnaRootedLoad_Thought.stages.3.label>激昂</SSC_PnaRootedLoad_Thought.stages.3.label>
+  <SSC_PnaRootedLoad_Thought.stages.3.description>身體在發燙，我比任何時候都有力，也停不下來了。</SSC_PnaRootedLoad_Thought.stages.3.description>
+  <SSC_PnaRootedLoad_Thought.stages.4.label>過載</SSC_PnaRootedLoad_Thought.stages.4.label>
+  <SSC_PnaRootedLoad_Thought.stages.4.description>我快被這股力量撐滿了，痛快得只想一直這樣下去。</SSC_PnaRootedLoad_Thought.stages.4.description>
 </LanguageData>

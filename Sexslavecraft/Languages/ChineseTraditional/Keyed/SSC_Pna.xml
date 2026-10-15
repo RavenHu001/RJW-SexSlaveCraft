@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-  <SSC_Pna_LoadTooltip>目前 PNA 負荷：{0}%。強烈催情，逐檔增加性滿足收益與愉悅；操控、移動和意識從微量開始受影響，逐檔加重，末期可因高潮暈倒。停止補給後負荷逐漸清除。</SSC_Pna_LoadTooltip>
+  <SSC_Pna_LoadTooltip>奈米催情液侵蝕：{0}%</SSC_Pna_LoadTooltip>
   <SSC_Pna_SelectPawn>請先選擇一個角色。</SSC_Pna_SelectPawn>
   <SSC_Pna_InvalidTarget>該角色目前不能接受 PNA 測試輸入。</SSC_Pna_InvalidTarget>
-  <SSC_Pna_Rooted>PNA P2 測試：性奴負荷 {0}%，不建立普通 PNA 成癮。</SSC_Pna_Rooted>
-  <SSC_Pna_DebugResult>PNA P2 測試：目前負荷 {0}%。普通身體有效達滿時建立成癮，已有恢復進度不重置。</SSC_Pna_DebugResult>
-  <SSC_Pna_RootedLoadTooltip>性奴 PNA 負荷：{0}%。逐檔提高意識、操控、移動、性慾、性滿足收益與心情，減輕疼痛；活化越強消退越快。綁定與解綁保留負荷，性奴不承受普通負荷的能力懲罰或末期暈倒。</SSC_Pna_RootedLoadTooltip>
-  <SSC_Pna_NewDependence>{0} 的 PNA 負荷已滿，已對奈米流體成癮。</SSC_Pna_NewDependence>
-  <SSC_Pna_WeaponHealed>治療</SSC_Pna_WeaponHealed>
-  <SSC_Pna_WeaponActivated>PNA 活化</SSC_Pna_WeaponActivated>
-  <SSC_Pna_AttractionExplanation>渴求 PNA 來源：×{0} ⇒ {1}</SSC_Pna_AttractionExplanation>
+  <SSC_Pna_Rooted>除錯：性奴活化負荷 {0}%，不建立普通依賴。</SSC_Pna_Rooted>
+  <SSC_Pna_DebugResult>除錯：目前負荷 {0}%。普通身體作用達滿時形成依賴，既有恢復進度不重設。</SSC_Pna_DebugResult>
+  <SSC_Pna_RootedLoadTooltip>奈米催情液活化：{0}%</SSC_Pna_RootedLoadTooltip>
+  <SSC_Pna_NewDependence>{0} 已經離不開奈米催情液了。</SSC_Pna_NewDependence>
+  <SSC_Pna_WeaponHealed>傷口收攏</SSC_Pna_WeaponHealed>
+  <SSC_Pna_WeaponActivated>活化</SSC_Pna_WeaponActivated>
+  <SSC_Pna_AttractionExplanation>渴求對方分泌的奈米催情液：×{0} ⇒ {1}</SSC_Pna_AttractionExplanation>
 </LanguageData>
