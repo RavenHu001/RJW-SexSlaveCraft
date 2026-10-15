@@ -1,7 +1,23 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-  <PNA_Debuff_Thought.stages.0.label>有點感覺</PNA_Debuff_Thought.stages.0.label>
-  <PNA_Debuff_Thought.stages.0.description>呼...哈...哈，好熱...下面好癢。</PNA_Debuff_Thought.stages.0.description>
-  <PNA_Debuff_Thought.stages.1.label>持續高潮</PNA_Debuff_Thought.stages.1.label>
-  <PNA_Debuff_Thought.stages.1.description>哦齁齁齁！！！為什麼...是這個時候...哦齁！哦齁！大腦一片空白了...</PNA_Debuff_Thought.stages.1.description>
+  <PNA_Debuff_Thought.stages.0.label>微熱的愉悅</PNA_Debuff_Thought.stages.0.label>
+  <PNA_Debuff_Thought.stages.0.description>體內泛起暖意，身體感到一絲愉悅。</PNA_Debuff_Thought.stages.0.description>
+  <PNA_Debuff_Thought.stages.1.label>慾望升溫</PNA_Debuff_Thought.stages.1.label>
+  <PNA_Debuff_Thought.stages.1.description>溫熱的感覺和持續的慾望讓我沉浸其中。</PNA_Debuff_Thought.stages.1.description>
+  <PNA_Debuff_Thought.stages.2.label>感官沉醉</PNA_Debuff_Thought.stages.2.label>
+  <PNA_Debuff_Thought.stages.2.description>感官逐漸模糊，強烈的快感讓我暫時忘記煩惱。</PNA_Debuff_Thought.stages.2.description>
+  <PNA_Debuff_Thought.stages.3.label>強烈陶醉</PNA_Debuff_Thought.stages.3.label>
+  <PNA_Debuff_Thought.stages.3.description>洶湧的慾望佔據了注意力，我幾乎無法思考其他事情。</PNA_Debuff_Thought.stages.3.description>
+  <PNA_Debuff_Thought.stages.4.label>過載的愉悅</PNA_Debuff_Thought.stages.4.label>
+  <PNA_Debuff_Thought.stages.4.description>過量的刺激淹沒了意識，身體只剩下難以承受的愉悅。</PNA_Debuff_Thought.stages.4.description>
+  <SSC_PnaRootedLoad_Thought.stages.0.label>輕盈的暖意</SSC_PnaRootedLoad_Thought.stages.0.label>
+  <SSC_PnaRootedLoad_Thought.stages.0.description>奈米機械開始活躍，身體輕快而溫暖。</SSC_PnaRootedLoad_Thought.stages.0.description>
+  <SSC_PnaRootedLoad_Thought.stages.1.label>活化的喜悅</SSC_PnaRootedLoad_Thought.stages.1.label>
+  <SSC_PnaRootedLoad_Thought.stages.1.description>身體中的活力逐漸充盈，讓我感到愉快而清醒。</SSC_PnaRootedLoad_Thought.stages.1.description>
+  <SSC_PnaRootedLoad_Thought.stages.2.label>充盈的活力</SSC_PnaRootedLoad_Thought.stages.2.label>
+  <SSC_PnaRootedLoad_Thought.stages.2.description>神經與奈米機械一同活躍，身體充滿力量與愉悅。</SSC_PnaRootedLoad_Thought.stages.2.description>
+  <SSC_PnaRootedLoad_Thought.stages.3.label>共鳴的愉悅</SSC_PnaRootedLoad_Thought.stages.3.label>
+  <SSC_PnaRootedLoad_Thought.stages.3.description>強烈的活化讓身體與奈米機械共鳴，行動也變得格外輕快。</SSC_PnaRootedLoad_Thought.stages.3.description>
+  <SSC_PnaRootedLoad_Thought.stages.4.label>極限活化的滿足</SSC_PnaRootedLoad_Thought.stages.4.label>
+  <SSC_PnaRootedLoad_Thought.stages.4.description>身體被活力與快感充滿，我正處於最強烈的活化狀態。</SSC_PnaRootedLoad_Thought.stages.4.description>
 </LanguageData>

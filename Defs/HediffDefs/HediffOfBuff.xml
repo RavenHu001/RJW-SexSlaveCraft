@@ -157,7 +157,7 @@
   <HediffDef>
     <defName>Hediff_PNA_Debuff</defName>
     <label>PNA 负荷</label>
-    <description>体内紫色纳米机械会强烈催情。从微量开始即干扰操控、移动与意识，随负荷阶段逐档加重，同时抑制疼痛；侵蚀阶段开始出现感官失真，以视觉与听觉能力下降模拟幻视、幻听。末期因强烈高潮导致意识受限、晕倒。停止补充后负荷随有效健康更新逐渐清除，冷冻和暂停时间不补算。该状态仅属于当前身体，不随人格迁移，也不由克隆体继承。</description>
+    <description>体内紫色纳米机械会强烈催情，逐档提高性满足收益并带来愉悦。从微量开始即干扰操控、移动与意识，随负荷阶段逐档加重，同时抑制疼痛；侵蚀阶段开始出现感官失真，以视觉与听觉能力下降模拟幻视、幻听。末期因强烈高潮导致意识受限、晕倒。停止补充后负荷随有效健康更新逐渐清除，冷冻和暂停时间不补算。该状态仅属于当前身体，不随人格迁移，也不由克隆体继承。</description>
     <hediffClass>HediffWithComps</hediffClass>
     <tendable>false</tendable>
     <everCurableByItem>false</everCurableByItem>
@@ -175,7 +175,7 @@
       <li>
         <label>微量</label>
         <minSeverity>0</minSeverity>
-        <statFactors><SexFrequency>1.5</SexFrequency></statFactors>
+        <statFactors><SexFrequency>1.5</SexFrequency><SexSatisfaction>1.10</SexSatisfaction></statFactors>
         <painFactor>0.90</painFactor>
         <capMods>
           <li><capacity>Manipulation</capacity><offset>-0.02</offset></li>
@@ -186,7 +186,7 @@
       <li>
         <label>活跃</label>
         <minSeverity>0.30</minSeverity>
-        <statFactors><SexFrequency>2</SexFrequency></statFactors>
+        <statFactors><SexFrequency>2</SexFrequency><SexSatisfaction>1.20</SexSatisfaction></statFactors>
         <painFactor>0.75</painFactor>
         <capMods>
           <li><capacity>Manipulation</capacity><offset>-0.05</offset></li>
@@ -197,7 +197,7 @@
       <li>
         <label>侵蚀</label>
         <minSeverity>0.80</minSeverity>
-        <statFactors><SexFrequency>2.5</SexFrequency></statFactors>
+        <statFactors><SexFrequency>2.5</SexFrequency><SexSatisfaction>1.35</SexSatisfaction></statFactors>
         <painFactor>0.50</painFactor>
         <capMods>
           <li><capacity>Manipulation</capacity><offset>-0.10</offset></li>
@@ -210,7 +210,7 @@
       <li>
         <label>深度影响</label>
         <minSeverity>1.40</minSeverity>
-        <statFactors><SexFrequency>3.25</SexFrequency></statFactors>
+        <statFactors><SexFrequency>3.25</SexFrequency><SexSatisfaction>1.50</SexSatisfaction></statFactors>
         <painFactor>0.25</painFactor>
         <capMods>
           <li><capacity>Manipulation</capacity><offset>-0.20</offset></li>
@@ -223,7 +223,7 @@
       <li>
         <label>末期过载</label>
         <minSeverity>1.94</minSeverity>
-        <statFactors><SexFrequency>4</SexFrequency></statFactors>
+        <statFactors><SexFrequency>4</SexFrequency><SexSatisfaction>1.75</SexSatisfaction></statFactors>
         <painFactor>0</painFactor>
         <capMods>
           <li><capacity>Manipulation</capacity><offset>-0.30</offset></li>
@@ -237,40 +237,147 @@
     </stages>
   </HediffDef>
 
-  <!-- P1 同严重度转换载体：清除机制共用，普通对象的负面阶段不作用于性奴。完整正面阶段另行设计。 -->
+  <!-- 与普通负荷共用严重度和清除组件；五档活化为完整正面效果，不继承普通能力惩罚或末期意识上限。 -->
   <HediffDef>
     <defName>SSC_Hediff_PnaRootedLoad</defName>
     <label>性奴 PNA 负荷</label>
-    <description>已扎根身体的紫色纳米机械负荷。绑定与解绑保留同一负荷数值；绑定清除普通 PNA 成瘾。当前不施加普通负荷的能力惩罚，完整正面效果仍待后续开发。该状态仅属于当前身体，不随人格迁移，也不由克隆体继承。</description>
+    <description>外源 PNA 活化性奴的神经系统与体内紫色纳米机械，逐档增强意识、操控和移动，减轻疼痛，并提高性欲、性满足收益与心情。活化越强，消退越快。绑定与解绑保留同一负荷数值；绑定清除普通 PNA 成瘾。性奴不承受普通负荷的能力惩罚或末期晕倒。该状态仅属于当前身体，不随人格迁移，也不由克隆体继承。</description>
     <hediffClass>HediffWithComps</hediffClass>
     <tendable>false</tendable>
     <everCurableByItem>false</everCurableByItem>
+    <isBad>false</isBad>
     <defaultLabelColor>(1.0, 0.4, 0.8)</defaultLabelColor>
     <maxSeverity>2.0</maxSeverity>
     <initialSeverity>0.01</initialSeverity>
     <comps><li Class="SexSlaveCraft.HediffCompProperties_SSCPnaLoad" /></comps>
-    <stages><li><label>扎根</label><minSeverity>0</minSeverity></li></stages>
+    <stages>
+      <li>
+        <label>微弱活化</label>
+        <minSeverity>0</minSeverity>
+        <statFactors><SexFrequency>1.5</SexFrequency><SexSatisfaction>1.10</SexSatisfaction></statFactors>
+        <painFactor>0.95</painFactor>
+        <capMods>
+          <li><capacity>Consciousness</capacity><offset>0.02</offset></li>
+          <li><capacity>Manipulation</capacity><offset>0.03</offset></li>
+          <li><capacity>Moving</capacity><offset>0.03</offset></li>
+        </capMods>
+      </li>
+      <li>
+        <label>稳定活化</label>
+        <minSeverity>0.30</minSeverity>
+        <statFactors><SexFrequency>2</SexFrequency><SexSatisfaction>1.20</SexSatisfaction></statFactors>
+        <painFactor>0.90</painFactor>
+        <capMods>
+          <li><capacity>Consciousness</capacity><offset>0.04</offset></li>
+          <li><capacity>Manipulation</capacity><offset>0.06</offset></li>
+          <li><capacity>Moving</capacity><offset>0.06</offset></li>
+        </capMods>
+      </li>
+      <li>
+        <label>深度活化</label>
+        <minSeverity>0.80</minSeverity>
+        <statFactors><SexFrequency>2.5</SexFrequency><SexSatisfaction>1.35</SexSatisfaction></statFactors>
+        <painFactor>0.80</painFactor>
+        <capMods>
+          <li><capacity>Consciousness</capacity><offset>0.06</offset></li>
+          <li><capacity>Manipulation</capacity><offset>0.10</offset></li>
+          <li><capacity>Moving</capacity><offset>0.10</offset></li>
+        </capMods>
+      </li>
+      <li>
+        <label>强烈活化</label>
+        <minSeverity>1.40</minSeverity>
+        <statFactors><SexFrequency>3.25</SexFrequency><SexSatisfaction>1.50</SexSatisfaction></statFactors>
+        <painFactor>0.70</painFactor>
+        <capMods>
+          <li><capacity>Consciousness</capacity><offset>0.08</offset></li>
+          <li><capacity>Manipulation</capacity><offset>0.15</offset></li>
+          <li><capacity>Moving</capacity><offset>0.15</offset></li>
+        </capMods>
+      </li>
+      <li>
+        <label>极限活化</label>
+        <minSeverity>1.94</minSeverity>
+        <statFactors><SexFrequency>4</SexFrequency><SexSatisfaction>1.75</SexSatisfaction></statFactors>
+        <painFactor>0.60</painFactor>
+        <capMods>
+          <li><capacity>Consciousness</capacity><offset>0.10</offset></li>
+          <li><capacity>Manipulation</capacity><offset>0.20</offset></li>
+          <li><capacity>Moving</capacity><offset>0.20</offset></li>
+        </capMods>
+      </li>
+    </stages>
   </HediffDef>
 
   <ThoughtDef>
     <defName>PNA_Debuff_Thought</defName>
+    <thoughtClass>Thought_Situational</thoughtClass>
     <workerClass>ThoughtWorker_Hediff</workerClass>
     <hediff>Hediff_PNA_Debuff</hediff>
     <validWhileDespawned>true</validWhileDespawned>
     
     <stages>
       <li>
-        <label>有点感觉</label>
-        <description>呼...哈...哈，好热...下面好痒。</description>
-        <visible>false</visible>
-        <baseMoodEffect>0</baseMoodEffect>
+        <label>微热的愉悦</label>
+        <description>体内泛起暖意，身体感到一丝愉悦。</description>
+        <baseMoodEffect>1</baseMoodEffect>
       </li>
       
       <li>
-        <label>持续高潮</label>
-        <description>哦齁齁齁！！！为什么...是这个时候...哦齁！哦齁！大脑一片空白了...</description>
-        <visible>false</visible>
-        <baseMoodEffect>0</baseMoodEffect>
+        <label>欲望升温</label>
+        <description>温热的感觉和持续的欲望让我沉浸其中。</description>
+        <baseMoodEffect>2</baseMoodEffect>
+      </li>
+      <li>
+        <label>感官沉醉</label>
+        <description>感官逐渐模糊，强烈的快感让我暂时忘记烦恼。</description>
+        <baseMoodEffect>4</baseMoodEffect>
+      </li>
+      <li>
+        <label>强烈陶醉</label>
+        <description>汹涌的欲望占据了注意力，我几乎无法思考其他事情。</description>
+        <baseMoodEffect>6</baseMoodEffect>
+      </li>
+      <li>
+        <label>过载的愉悦</label>
+        <description>过量的刺激淹没了意识，身体只剩下难以承受的愉悦。</description>
+        <baseMoodEffect>8</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+  <!-- 普通／性奴思绪各自跟随对应 Hediff 五档，由原版即时查询；不生成记忆或独立计时。 -->
+  <ThoughtDef>
+    <defName>SSC_PnaRootedLoad_Thought</defName>
+    <thoughtClass>Thought_Situational</thoughtClass>
+    <workerClass>ThoughtWorker_Hediff</workerClass>
+    <hediff>SSC_Hediff_PnaRootedLoad</hediff>
+    <validWhileDespawned>true</validWhileDespawned>
+    <stages>
+      <li>
+        <label>轻盈的暖意</label>
+        <description>纳米机械开始活跃，身体轻快而温暖。</description>
+        <baseMoodEffect>2</baseMoodEffect>
+      </li>
+      <li>
+        <label>活化的喜悦</label>
+        <description>身体中的活力逐渐充盈，让我感到愉快而清醒。</description>
+        <baseMoodEffect>4</baseMoodEffect>
+      </li>
+      <li>
+        <label>充盈的活力</label>
+        <description>神经与纳米机械一同活跃，身体充满力量与愉悦。</description>
+        <baseMoodEffect>6</baseMoodEffect>
+      </li>
+      <li>
+        <label>共鸣的愉悦</label>
+        <description>强烈的活化让身体与纳米机械共鸣，行动也变得格外轻快。</description>
+        <baseMoodEffect>8</baseMoodEffect>
+      </li>
+      <li>
+        <label>极限活化的满足</label>
+        <description>身体被活力与快感充满，我正处于最强烈的活化状态。</description>
+        <baseMoodEffect>10</baseMoodEffect>
       </li>
     </stages>
   </ThoughtDef>

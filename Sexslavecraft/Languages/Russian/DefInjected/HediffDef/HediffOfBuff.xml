@@ -11,7 +11,7 @@
   <Hediff_PNA_Combat_Buff_Plus.label>PNA-боевая усиление (концентрированное)</Hediff_PNA_Combat_Buff_Plus.label>
   <Hediff_PNA_Combat_Buff_Plus.description>Под концентрированным воздействием фиолетовых наномашин потенциал секс-раба значительно раскрывается. Это состояние принадлежит текущему телу: оно не переносится с личностью и не наследуется клоном.</Hediff_PNA_Combat_Buff_Plus.description>
   <Hediff_PNA_Debuff.label>Нагрузка PNA</Hediff_PNA_Debuff.label>
-  <Hediff_PNA_Debuff.description>Фиолетовые наномашины сильно повышают половое влечение. Даже малая нагрузка снижает манипуляцию, подвижность и сознание; нарушения и подавление боли усиливаются на каждой стадии. Со стадии эрозии снижение зрения и слуха отражает искажение восприятия и галлюцинации. Конечная перегрузка ограничивает сознание и вызывает обморок от оргазма. После прекращения воздействия нагрузка постепенно снижается при активном обновлении здоровья; время заморозки и паузы не учитывается. Это состояние принадлежит текущему телу: оно не переносится с личностью и не наследуется клоном.</Hediff_PNA_Debuff.description>
+  <Hediff_PNA_Debuff.description>Фиолетовые наномашины сильно повышают половое влечение, усиливая удовлетворение от секса и удовольствие с каждой стадией. Даже малая нагрузка снижает манипуляцию, подвижность и сознание; нарушения и подавление боли усиливаются на каждой стадии. Со стадии эрозии снижение зрения и слуха отражает искажение восприятия и галлюцинации. Конечная перегрузка ограничивает сознание и вызывает обморок от оргазма. После прекращения воздействия нагрузка постепенно снижается при активном обновлении здоровья; время заморозки и паузы не учитывается. Это состояние принадлежит текущему телу: оно не переносится с личностью и не наследуется клоном.</Hediff_PNA_Debuff.description>
   <Hediff_PNA_Debuff.stages.0.label>Следы</Hediff_PNA_Debuff.stages.0.label>
   <Hediff_PNA_Debuff.stages.1.label>Активность</Hediff_PNA_Debuff.stages.1.label>
   <Hediff_PNA_Consciousness_Record.label>Снимок сознания</Hediff_PNA_Consciousness_Record.label>
@@ -26,6 +26,10 @@
   <Hediff_PNA_Debuff.stages.3.label>Глубокое воздействие</Hediff_PNA_Debuff.stages.3.label>
   <Hediff_PNA_Debuff.stages.4.label>Острое перенасыщение</Hediff_PNA_Debuff.stages.4.label>
   <SSC_Hediff_PnaRootedLoad.label>Укоренившаяся нагрузка PNA</SSC_Hediff_PnaRootedLoad.label>
-  <SSC_Hediff_PnaRootedLoad.description>Нагрузка фиолетовых наномашин в укоренившемся организме. Привязка и отвязка сохраняют её значение; привязка устраняет обычную зависимость PNA. Штрафы обычной нагрузки не действуют. Полные положительные эффекты будут разработаны позже. Это состояние принадлежит текущему телу: оно не переносится с личностью и не наследуется клоном.</SSC_Hediff_PnaRootedLoad.description>
-  <SSC_Hediff_PnaRootedLoad.stages.0.label>Укоренение</SSC_Hediff_PnaRootedLoad.stages.0.label>
+  <SSC_Hediff_PnaRootedLoad.description>Внешняя PNA активирует нервную систему секс-раба и фиолетовые наномашины в его теле. Каждая стадия повышает сознание, манипуляцию и подвижность, подавляет боль и усиливает половое влечение, сексуальное удовлетворение и настроение. Более сильная активация спадает быстрее. Привязка и отвязка сохраняют нагрузку; привязка устраняет обычную зависимость PNA. Штрафы обычной нагрузки и обморок на последней стадии не действуют. Это состояние принадлежит текущему телу: оно не переносится с личностью и не наследуется клоном.</SSC_Hediff_PnaRootedLoad.description>
+  <SSC_Hediff_PnaRootedLoad.stages.0.label>Слабая активация</SSC_Hediff_PnaRootedLoad.stages.0.label>
+  <SSC_Hediff_PnaRootedLoad.stages.1.label>Устойчивая активация</SSC_Hediff_PnaRootedLoad.stages.1.label>
+  <SSC_Hediff_PnaRootedLoad.stages.2.label>Глубокая активация</SSC_Hediff_PnaRootedLoad.stages.2.label>
+  <SSC_Hediff_PnaRootedLoad.stages.3.label>Сильная активация</SSC_Hediff_PnaRootedLoad.stages.3.label>
+  <SSC_Hediff_PnaRootedLoad.stages.4.label>Предельная активация</SSC_Hediff_PnaRootedLoad.stages.4.label>
 </LanguageData>

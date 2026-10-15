@@ -1,7 +1,23 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-  <PNA_Debuff_Thought.stages.0.label>Aphrodisiac Surge</PNA_Debuff_Thought.stages.0.label>
-  <PNA_Debuff_Thought.stages.0.description>Hah... ah... so hot... down there is so itchy.</PNA_Debuff_Thought.stages.0.description>
-  <PNA_Debuff_Thought.stages.1.label>Continuous Climax</PNA_Debuff_Thought.stages.1.label>
-  <PNA_Debuff_Thought.stages.1.description>Ahhh! Why... right now... ahh! ahh! My mind is going blank...</PNA_Debuff_Thought.stages.1.description>
+  <PNA_Debuff_Thought.stages.0.label>Warm pleasure</PNA_Debuff_Thought.stages.0.label>
+  <PNA_Debuff_Thought.stages.0.description>A gentle warmth spreads through my body, bringing a little pleasure.</PNA_Debuff_Thought.stages.0.description>
+  <PNA_Debuff_Thought.stages.1.label>Rising desire</PNA_Debuff_Thought.stages.1.label>
+  <PNA_Debuff_Thought.stages.1.description>The warmth and persistent desire draw me in.</PNA_Debuff_Thought.stages.1.description>
+  <PNA_Debuff_Thought.stages.2.label>Sensory bliss</PNA_Debuff_Thought.stages.2.label>
+  <PNA_Debuff_Thought.stages.2.description>My senses blur as intense pleasure briefly washes away my worries.</PNA_Debuff_Thought.stages.2.description>
+  <PNA_Debuff_Thought.stages.3.label>Intense euphoria</PNA_Debuff_Thought.stages.3.label>
+  <PNA_Debuff_Thought.stages.3.description>Surging desire fills my attention. It is hard to think about anything else.</PNA_Debuff_Thought.stages.3.description>
+  <PNA_Debuff_Thought.stages.4.label>Overwhelming pleasure</PNA_Debuff_Thought.stages.4.label>
+  <PNA_Debuff_Thought.stages.4.description>The stimulation overwhelms my awareness, leaving only unbearable pleasure.</PNA_Debuff_Thought.stages.4.description>
+  <SSC_PnaRootedLoad_Thought.stages.0.label>Light warmth</SSC_PnaRootedLoad_Thought.stages.0.label>
+  <SSC_PnaRootedLoad_Thought.stages.0.description>The nanomachines are stirring. My body feels light and warm.</SSC_PnaRootedLoad_Thought.stages.0.description>
+  <SSC_PnaRootedLoad_Thought.stages.1.label>Joy of activation</SSC_PnaRootedLoad_Thought.stages.1.label>
+  <SSC_PnaRootedLoad_Thought.stages.1.description>Growing vitality leaves me cheerful and clear-headed.</SSC_PnaRootedLoad_Thought.stages.1.description>
+  <SSC_PnaRootedLoad_Thought.stages.2.label>Brimming vitality</SSC_PnaRootedLoad_Thought.stages.2.label>
+  <SSC_PnaRootedLoad_Thought.stages.2.description>My nerves and nanomachines are active together, filling my body with strength and pleasure.</SSC_PnaRootedLoad_Thought.stages.2.description>
+  <SSC_PnaRootedLoad_Thought.stages.3.label>Resonant pleasure</SSC_PnaRootedLoad_Thought.stages.3.label>
+  <SSC_PnaRootedLoad_Thought.stages.3.description>Strong activation brings my body and nanomachines into resonance. Every movement feels lighter.</SSC_PnaRootedLoad_Thought.stages.3.description>
+  <SSC_PnaRootedLoad_Thought.stages.4.label>Peak activation</SSC_PnaRootedLoad_Thought.stages.4.label>
+  <SSC_PnaRootedLoad_Thought.stages.4.description>Vitality and pleasure fill my body. My activation is at its peak.</SSC_PnaRootedLoad_Thought.stages.4.description>
 </LanguageData>

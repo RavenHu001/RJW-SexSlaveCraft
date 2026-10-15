@@ -1,7 +1,23 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-  <PNA_Debuff_Thought.stages.0.label>Афродизиачный прилив</PNA_Debuff_Thought.stages.0.label>
-  <PNA_Debuff_Thought.stages.0.description>Хах... ах... так жарко... там внизу так зудит.</PNA_Debuff_Thought.stages.0.description>
-  <PNA_Debuff_Thought.stages.1.label>Непрерывный оргазм</PNA_Debuff_Thought.stages.1.label>
-  <PNA_Debuff_Thought.stages.1.description>Ааах! Почему... прямо сейчас... ах! ах! Разум пустеет...</PNA_Debuff_Thought.stages.1.description>
+  <PNA_Debuff_Thought.stages.0.label>Приятное тепло</PNA_Debuff_Thought.stages.0.label>
+  <PNA_Debuff_Thought.stages.0.description>По телу разливается мягкое тепло, принося лёгкое удовольствие.</PNA_Debuff_Thought.stages.0.description>
+  <PNA_Debuff_Thought.stages.1.label>Нарастающее желание</PNA_Debuff_Thought.stages.1.label>
+  <PNA_Debuff_Thought.stages.1.description>Тепло и непрерывное желание постепенно захватывают меня.</PNA_Debuff_Thought.stages.1.description>
+  <PNA_Debuff_Thought.stages.2.label>Чувственное блаженство</PNA_Debuff_Thought.stages.2.label>
+  <PNA_Debuff_Thought.stages.2.description>Ощущения расплываются, а сильное удовольствие ненадолго смывает тревоги.</PNA_Debuff_Thought.stages.2.description>
+  <PNA_Debuff_Thought.stages.3.label>Сильная эйфория</PNA_Debuff_Thought.stages.3.label>
+  <PNA_Debuff_Thought.stages.3.description>Нахлынувшее желание занимает всё внимание. Думать о другом почти невозможно.</PNA_Debuff_Thought.stages.3.description>
+  <PNA_Debuff_Thought.stages.4.label>Непосильное удовольствие</PNA_Debuff_Thought.stages.4.label>
+  <PNA_Debuff_Thought.stages.4.description>Стимуляция затмевает сознание, оставляя лишь невыносимое удовольствие.</PNA_Debuff_Thought.stages.4.description>
+  <SSC_PnaRootedLoad_Thought.stages.0.label>Лёгкое тепло</SSC_PnaRootedLoad_Thought.stages.0.label>
+  <SSC_PnaRootedLoad_Thought.stages.0.description>Наномашины пробуждаются. Тело становится лёгким и тёплым.</SSC_PnaRootedLoad_Thought.stages.0.description>
+  <SSC_PnaRootedLoad_Thought.stages.1.label>Радость активации</SSC_PnaRootedLoad_Thought.stages.1.label>
+  <SSC_PnaRootedLoad_Thought.stages.1.description>Растущий прилив сил приносит радость и ясность мысли.</SSC_PnaRootedLoad_Thought.stages.1.description>
+  <SSC_PnaRootedLoad_Thought.stages.2.label>Переполняющая энергия</SSC_PnaRootedLoad_Thought.stages.2.label>
+  <SSC_PnaRootedLoad_Thought.stages.2.description>Нервы и наномашины действуют вместе, наполняя тело силой и удовольствием.</SSC_PnaRootedLoad_Thought.stages.2.description>
+  <SSC_PnaRootedLoad_Thought.stages.3.label>Удовольствие резонанса</SSC_PnaRootedLoad_Thought.stages.3.label>
+  <SSC_PnaRootedLoad_Thought.stages.3.description>Сильная активация приводит тело и наномашины в резонанс. Движения становятся легче.</SSC_PnaRootedLoad_Thought.stages.3.description>
+  <SSC_PnaRootedLoad_Thought.stages.4.label>Пик активации</SSC_PnaRootedLoad_Thought.stages.4.label>
+  <SSC_PnaRootedLoad_Thought.stages.4.description>Силы и удовольствие переполняют тело. Активация достигла предела.</SSC_PnaRootedLoad_Thought.stages.4.description>
 </LanguageData>

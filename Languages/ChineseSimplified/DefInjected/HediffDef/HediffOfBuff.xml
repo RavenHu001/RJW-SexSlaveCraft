@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <Hediff_PNA_Debuff.label>PNA 负荷</Hediff_PNA_Debuff.label>
-  <Hediff_PNA_Debuff.description>体内紫色纳米机械会强烈催情。从微量开始即干扰操控、移动与意识，随负荷阶段逐档加重，同时抑制疼痛；侵蚀阶段开始出现感官失真，以视觉与听觉能力下降模拟幻视、幻听。末期因强烈高潮导致意识受限、晕倒。停止补充后负荷随有效健康更新逐渐清除，冷冻和暂停时间不补算。该状态仅属于当前身体，不随人格迁移，也不由克隆体继承。</Hediff_PNA_Debuff.description>
+  <Hediff_PNA_Debuff.description>体内紫色纳米机械会强烈催情，逐档提高性满足收益并带来愉悦。从微量开始即干扰操控、移动与意识，随负荷阶段逐档加重，同时抑制疼痛；侵蚀阶段开始出现感官失真，以视觉与听觉能力下降模拟幻视、幻听。末期因强烈高潮导致意识受限、晕倒。停止补充后负荷随有效健康更新逐渐清除，冷冻和暂停时间不补算。该状态仅属于当前身体，不随人格迁移，也不由克隆体继承。</Hediff_PNA_Debuff.description>
   <Hediff_PNA_Debuff.stages.0.label>微量</Hediff_PNA_Debuff.stages.0.label>
   <Hediff_PNA_Debuff.stages.1.label>活跃</Hediff_PNA_Debuff.stages.1.label>
   <Hediff_PNA_Debuff.stages.2.label>侵蚀</Hediff_PNA_Debuff.stages.2.label>
   <Hediff_PNA_Debuff.stages.3.label>深度影响</Hediff_PNA_Debuff.stages.3.label>
   <Hediff_PNA_Debuff.stages.4.label>末期过载</Hediff_PNA_Debuff.stages.4.label>
   <SSC_Hediff_PnaRootedLoad.label>性奴 PNA 负荷</SSC_Hediff_PnaRootedLoad.label>
-  <SSC_Hediff_PnaRootedLoad.description>已扎根身体的紫色纳米机械负荷。绑定与解绑保留同一负荷数值；绑定清除普通 PNA 成瘾。当前不施加普通负荷的能力惩罚，完整正面效果仍待后续开发。该状态仅属于当前身体，不随人格迁移，也不由克隆体继承。</SSC_Hediff_PnaRootedLoad.description>
-  <SSC_Hediff_PnaRootedLoad.stages.0.label>扎根</SSC_Hediff_PnaRootedLoad.stages.0.label>
+  <SSC_Hediff_PnaRootedLoad.description>外源 PNA 活化性奴的神经系统与体内紫色纳米机械，逐档增强意识、操控和移动，减轻疼痛，并提高性欲、性满足收益与心情。活化越强，消退越快。绑定与解绑保留同一负荷数值；绑定清除普通 PNA 成瘾。性奴不承受普通负荷的能力惩罚或末期晕倒。该状态仅属于当前身体，不随人格迁移，也不由克隆体继承。</SSC_Hediff_PnaRootedLoad.description>
+  <SSC_Hediff_PnaRootedLoad.stages.0.label>微弱活化</SSC_Hediff_PnaRootedLoad.stages.0.label>
+  <SSC_Hediff_PnaRootedLoad.stages.1.label>稳定活化</SSC_Hediff_PnaRootedLoad.stages.1.label>
+  <SSC_Hediff_PnaRootedLoad.stages.2.label>深度活化</SSC_Hediff_PnaRootedLoad.stages.2.label>
+  <SSC_Hediff_PnaRootedLoad.stages.3.label>强烈活化</SSC_Hediff_PnaRootedLoad.stages.3.label>
+  <SSC_Hediff_PnaRootedLoad.stages.4.label>极限活化</SSC_Hediff_PnaRootedLoad.stages.4.label>
 </LanguageData>
