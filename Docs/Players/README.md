@@ -2,7 +2,7 @@
 
 [项目首页](../../README.md) · [文档总索引](../README.md) · [模组介绍 / Overview](../模组介绍.md)
 
-适用版本 / Current release：**RimWorld 1.6 · SSC 2.4.0**。
+正式版本 / Current release：**RimWorld 1.6 · SSC 2.4.0**。玩家指南的 PNA 章节另同步已验收、尚未发布的 `codex/pna-reset` 分支；现有 2.4.0 下载附件不包含这些调整。 / PNA guide sections additionally cover the accepted, unreleased development branch, not the existing 2.4.0 package.
 
 ## 中文阅读顺序
 
@@ -41,12 +41,12 @@ Upgrading from an older version? Start with the [2.4.0 release notes](../Release
 - **资格、身份与研究分别管理。** 默认可直接选择主人，但不会取得永久资格；种子不自动切身份，研究蓝图也不等于完成研究。
 - **成长看主人面板。** 本人完成日常调教 +1、整场契约仪式 +3；伤害分担也迁入此面板。退出主人保留经验，返回恢复原阶段。
 - **人格凝胶按来源替换。** 资格和成长随来源人格迁移，不与宿主旧值取高；克隆不继承。
-- **后续规划另查。** 欲望侵染、PNA 重置和新增主人主动技能尚未实现，见[当前规划](../Design/README.md)；自然奖励和平衡、亲昵后续实机事项见[待验收](../Development/Verification/README.md)。
+- **开发与发布分开。** PNA 重置和玩法五步已在开发分支完成并验收，尚未发布；欲望侵染、新增主人主动技能及可选性奴主动补给仍待开发／设计，见[当前规划](../Design/README.md)。专项存读档、旅队补给和长期平衡见[待验收](../Development/Verification/README.md)。
 
 Qualification, current identity and research are separate. Direct Master selection grants no permanent qualification; seeds grant no instant research completion. Use the Master panel for growth and damage sharing. Gel implantation replaces records with the source personality's records; clones do not inherit them. Future features and pending in-game checks are listed separately in the linked planning and verification indexes.
 
 ## 版本与资料用途 / Versions and document roles
 
-当前指南描述 2.4.0；正文中的较早版本号通常表示功能引入时间。查旧版本请从[发布索引](../Releases/README.md)进入对应记录。开发方案与历史复盘另收在[开发资料](../Development/README.md)和[当前规划](../Design/README.md)。
+当前指南以 2.4.0 为基础，PNA 章节明确标注未发布分支的最新规则；正文中的较早版本号通常表示功能引入时间。查旧版本请从[发布索引](../Releases/README.md)进入对应记录。开发方案与历史复盘另收在[开发资料](../Development/README.md)和[当前规划](../Design/README.md)。
 
-The guides describe 2.4.0. Earlier version numbers in individual sections usually identify when a feature was introduced. Use the [release index](../Releases/README.md) for historical versions.
+The guides use 2.4.0 as their base; PNA sections explicitly describe the accepted, unreleased branch. Earlier version numbers in individual sections usually identify when a feature was introduced. Use the [release index](../Releases/README.md) for historical versions.

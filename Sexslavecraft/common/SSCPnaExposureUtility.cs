@@ -6,7 +6,7 @@ using Verse;
 
 namespace SexSlaveCraft
 {
-    // 来源只决定需求补充规则；事件认领由调用方完成，核心不读取来源任务。
+    // 来源决定需求补充及已有成瘾的基础增量；事件认领由调用方完成，核心不读取来源任务。
     // 保留旧来源序号与 OrdinaryExposure 的兼容行为，新性交来源各自声明补充规则。
     public enum SSCPnaExposureSource { Debug, OrdinaryExposure, Ingestion, Weapon, ProducerSex, MasterInfestation }
 

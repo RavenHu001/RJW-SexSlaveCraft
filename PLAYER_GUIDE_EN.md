@@ -2,11 +2,11 @@
 
 [Project home](README.md) · [Player reading order](Docs/Players/README.md#english-reading-order) · [Quick start](QUICK_START_EN.md) · [中文机制详解](机制详解.md)
 
-> For **RimWorld 1.6 · SSC 2.4.0**. Use this reference for full conditions, formulas and values; first-time players should begin with the [quick start](QUICK_START_EN.md).
+> Based on **RimWorld 1.6 · SSC 2.4.0**. PNA sections 7/11 reflect the accepted, unreleased `codex/pna-reset` development branch as of 2026-10-15; these changes are not in the existing 2.4.0 download. Use this reference for full conditions, formulas and values; first-time players should begin with the [quick start](QUICK_START_EN.md).
 >
 > For problems, start with [Troubleshooting](#24-troubleshooting) and [pending verification](Docs/Development/Verification/README.md), then read the relevant system. Version changes are in the [2.4.0 notes](Docs/Releases/2.4.0/2.4.0发布说明.md#english).
 >
-> This guide follows current C# and XML behavior; historical differences are identified in the relevant sections. The base audit began on 2026-06-30 and the guide is updated through 2.4.0 (2026-10-13). Earlier section version numbers identify introductions; see the [release index](Docs/Releases/README.md) for history.
+> This guide follows current C# and XML behavior; historical differences are identified in the relevant sections. The base audit began on 2026-06-30 and the base guide covers 2.4.0 (2026-10-13), with PNA separately updated through development commit `286ff72` (2026-10-15). Earlier section version numbers identify introductions; see the [release index](Docs/Releases/README.md) for history.
 
 ## 1. Scope and Dependencies
 
@@ -774,24 +774,48 @@ The ability and grant component exist, but the current Mouth Hediff XML does not
 
 ### 11.1 Ingestion
 
-| Item | `PNA Infection` | Addiction chance |
-|---|---:|---:|
-| Purple Aphrodisiac Nanofluid | +0.3 | 25% |
-| Purple Aphrodisiac Nanofluid Plus | +1.0 | 50% |
+This section describes the accepted, unreleased PNA redesign. Load L is raw severity divided by 2, ranging from 0 to 100%. The former +0.3/+1.0 infection doses, 25%/50% random addiction chances and linear daily clearance no longer describe this branch.
 
-`PNA Infection`:
+| Source | Load added | Existing legal PNA need refill | Base increase to existing addiction |
+| --- | ---: | ---: | ---: |
+| One normal PNA | +20 percentage points | Base +100 points, capped | D+0.10 |
+| One PNA Plus | +70 percentage points | Base +100 points, capped | D+0.20 |
 
-- at 0.1: Manipulation -0.2 and Moving -0.2;
-- at 1.0: Consciousness is capped at 10% and the pawn enters continuous orgasm;
-- naturally decays by 1.0 per day.
+Both drugs are taken one unit at a time and provide no nutrition. Actual quantities and existing body-size/tolerance modifiers use the ingestion mechanism once.
 
-`PNA Dependence`:
+Ordinary bodies use five fixed stages. Capacity changes are percentage points; each row is the complete stage value rather than an addition to earlier rows.
 
-- begins at severity 0.5;
-- decays by 0.066 per day, disappearing naturally in about 7.6 days;
-- its need falls by 0.333 per day;
-- withdrawal mood can reach -25;
-- any pawn with a Sex Slave Chain is immune.
+| Load | Sex drive | Consciousness | Manipulation / Moving, each | Sight / Hearing, each | Pain factor | Mood |
+| --- | ---: | --- | ---: | ---: | ---: | ---: |
+| Present, below 15% | ×1.50 | -1 | -2 | 0 | ×0.90 | +1 |
+| 15% to <40% | ×2.00 | -3 | -5 | 0 | ×0.75 | +2 |
+| 40% to <70% | ×2.50 | -6 | -10 | -5 | ×0.50 | +4 |
+| 70% to <97% | ×3.25 | -12 | -20 | -15 | ×0.25 | +6 |
+| 97% to 100% | ×4.00 | -20, capped at 10% | -30 | -30 | ×0 | +8 |
+
+Pawns with an actual effective Chain use positive activation stages instead, without ordinary penalties, terminal collapse or ordinary PNA addiction:
+
+| Load | Sex drive | Consciousness | Manipulation / Moving, each | Pain factor | Mood |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Present, below 15% | ×1.50 | +2 | +3 | ×0.95 | +2 |
+| 15% to <40% | ×2.00 | +4 | +6 | ×0.90 | +4 |
+| 40% to <70% | ×2.50 | +6 | +10 | ×0.80 | +6 |
+| 70% to <97% | ×3.25 | +8 | +15 | ×0.70 | +8 |
+| 97% to 100% | ×4.00 | +10 | +20 | ×0.60 | +10 |
+
+Both bodies receive SexSatisfaction ×1.10/×1.20/×1.35/×1.50/×1.75 across the five stages. This increases satisfaction awarded, not orgasm frequency. The ordinary terminal stage retains collapse through its Consciousness cap; no periodic orgasm events or animations were added.
+
+For L≤0.97, clearance is `0.03+0.20L` per day; above that, it is 0.25 per day. The load entry is removed at 0.5%. From full load without new input, leaving the terminal stage takes about 2.88 game hours, and complete clearance about 10.01 days. Ordinary and chained bodies share this curve.
+
+Addiction and its need are separate:
+
+- A positive input leaving an ordinary body at 100% load creates one addiction with D=1. Reaching the 97% terminal stage alone does not create it. Loading an old full-load record does not create addiction.
+- Vanilla recovery reduces D by 0.10 per effective health day, without load or withdrawal gates. D=1 takes about ten days without further exposure. The bracketed health percentage means recovery already completed; stronger addiction lowers that displayed percentage.
+- Non-withdrawal sex drive is ×1.25. Withdrawal gives ×1.75, Manipulation ×0.85, Vulnerability +0.30 and mood -18. These multiply with load, producing ×5/×7 sex drive at terminal ordinary load.
+- The need falls by 0.333 per day; ≤1% means withdrawal. A newly created legal need starts full. Existing needs are not reset and illegal needs are not forced onto pawns.
+- Real inputs ending at terminal load add D+0.20 to existing addiction: normal/PNA Plus total +0.30/+0.40. Initial addiction and debug inputs get no extra increase; D is capped at 1.
+- Binding clears addiction and converts load at the same severity; unbinding converts it back without restoring addiction. Current Masters are immune to PNA drug effects. Becoming a Master clears existing drug effects while retaining bodily production; leaving does not restore them. This does not grant immunity to every weapon injury.
+- PNA load, addiction, need level and production belong to the current body. They are not carried by personality transfer or inherited from SSC clone sources. Automatic ingestion keeps existing drug policies, without a PNA safety threshold or normal-drug preference.
 
 ### 11.2 PNA Concentration Technology
 
@@ -806,7 +830,7 @@ Both recipes require `PNA Concentration Technology`.
 
 The enabled low-tier launcher:
 
-- costs 50 steel, 2 components, and 20 normal PNA;
+- costs 60 steel, 3 industrial components, and 10 normal PNA;
 - crafting skill 4;
 - requires vanilla Machining, but does not check SSC’s `Basic PNA Launcher` research;
 - range 22.9;
@@ -814,23 +838,32 @@ The enabled low-tier launcher:
 - cooldown 3 seconds;
 - base projectile damage 2.
 
-When it hits a pawn with a Sex Slave Chain:
+On an effective hit against a pawn with an actual effective Chain:
 
-- heals a random naturally healable injury by 15;
-- applies `PNA Combat Enhancement (Concentrated)`: Moving +0.5 and Manipulation +0.5;
-- does not add the PNA debuff or extra direct damage.
+- It inputs activation load once per damage Apply, retaining the original per-part treatment callbacks; treatment heals a random naturally healable injury by 5.
+- Purple projectile effects, treatment and activation feedback remain, without gunshot injury.
+- The old PNA Combat Enhancement buffs are no longer issued; existing instances are cleared through the coordination mechanism, without converting them into load.
 
-The enhancement is added at severity 1.0 and decays by 2.0 per day, lasting about half a day.
-
-Against an unchained target:
+Chained and unchained targets use the same dose, calculated from the existing resistance before this hit's activation or treatment:
 
 ```text
-PNA debuff gain = min(0.125 / resistance divisor, 1.0)
+Raw severity added = min(0.15 / resistance divisor, 1.0)
+Normalized load added = raw severity added / 2
 ```
 
-The resistance divisor normally uses Consciousness with a floor of 0.2. Consciousness above 2.0 creates a resistance mote. The hit also deals 1 armor-ignoring damage.
+Without a saved resistance record, the divisor normally uses Consciousness with a floor of 0.2. Consciousness above 2.0 retains the existing resistance-record mechanism. At Consciousness 1, the dose is +7.5 percentage points, capped at +50 load points per hit. Existing need refill is twice the actual added load; full load does not invent extra weapon refill. Unchained targets retain the original injury and 1-point armor-ignoring damage handling. Masters reject drug effects, while physical damage follows the original branch.
 
-The high-tier PNA gun and ammunition XML are commented out and do not normally appear.
+The high-tier gun and ammunition remain disabled.
+
+### 11.4 Producer Sex Supply and Source Preference
+
+A pawn with the normal `SSC_Purple_HyperLactation` production Hediff supplies its partner after a genuinely completed ordinary RJW paired act: +2 load points and +10 points to an existing legal PNA need. Existing addiction gains base D+0.01; terminal input adds another +0.20, totaling +0.21, capped at 1. Initial addiction still requires full load and receives no extra increase.
+
+Positions, genital selection and condoms do not filter this supply. Two producers supply each other; multi-participant scenes count independently completed pairs, not orgasm count or animation lists. Solo acts, SSC daily training, binding rituals, personality excretion and vanilla Lovin are excluded. Master recipients remain immune; effective-Chain recipients receive activation. Load, addiction or Master identity alone does not make a source. Rabbit clone production is excluded. Supply adds no production-progress or nutrition cost; existing sex-related production logic remains.
+
+For an addicted observer evaluating a normal producer, RJW's independent attraction multiplier is ×1.25 outside withdrawal and ×1.50 in withdrawal, otherwise ×1. It applies to General, ForFucking and ForRape. Master and effective-Chain observers receive no addiction preference; existing permissions and selection rules remain.
+
+Master Infestation is not implemented: only +8% load/full-need refill is prepared. It must also increase addiction, but its base increment is undecided. Personal automatic activation maintenance remains a candidate. See the [current PNA plan](Docs/Design/PNA玩法效果与性交补给补全分析.md) for the full contract and development history.
 
 ## 12. Public Use Specialization
 

@@ -2,7 +2,7 @@
 
 [Project home](README.md) · [Player reading order](Docs/Players/README.md#english-reading-order) · [中文快速入门](读我，玩法介绍.md) · [Complete guide](PLAYER_GUIDE_EN.md)
 
-> For **RimWorld 1.6 · SSC 2.4.0**. This guide covers controls and progression; use the [Complete Player Guide](PLAYER_GUIDE_EN.md) for exact conditions and values.
+> Based on **RimWorld 1.6 · SSC 2.4.0**. PNA sections 7/11 reflect the accepted, unreleased `codex/pna-reset` development branch as of 2026-10-15; these changes are not in the existing 2.4.0 download. This guide covers controls and progression; use the [Complete Player Guide](PLAYER_GUIDE_EN.md) for exact conditions and values.
 >
 > New players: read [Getting Started](#2-getting-started), [Corruption and the Bond](#4-corruption-and-the-bond), then [Binding Ritual](#5-binding-ritual). Upgrading? Start with the [2.4.0 notes](Docs/Releases/2.4.0/2.4.0发布说明.md#english).
 >
@@ -222,7 +222,9 @@ It is used for:
 - Personality Excretion;
 - Full Gelatinization Surgery.
 
-Ingestion causes `PNA Infection` and may cause `PNA Dependence`. Pawns with Sex Slave Chain are immune to PNA Dependence.
+Current development-branch rules: normal/PNA Plus ingestion uses one unit, adding 20/70 load points without nutrition. Ordinary bodies have five escalating stages, with collapse from 97%. Positive input reaching full load first creates addiction; vanilla recovery takes about ten days without new input, and withdrawal mood is -18.
+
+Effective-Chain pawns instead receive five positive activation/mood stages without ordinary addiction. Masters are immune to drug effects. Binding/unbinding preserves load; PNA states remain with the body. Completing an ordinary RJW paired act with a normal producer adds +2% load, +10% to an existing need and base +0.01 existing addiction (+0.21 at terminal load). SSC training, rituals, personality excretion, solo acts and vanilla Lovin are excluded. See the [full PNA rules](PLAYER_GUIDE_EN.md#11-pna-items-and-basic-pna-launcher).
 
 ### Permanent Lactation
 
@@ -547,7 +549,7 @@ Also note:
 - Sex Reassignment Surgery is not gated by its SSC research;
 - Final Cow Specialization does not automatically grant Full Gelatinization Complete;
 - Public Use trade and daily Training rewards now share saved specialization progress;
-- Desire Infestation, the PNA redesign, new Master active abilities and multi-trainer restructuring remain planned.
+- Desire Infestation, new Master active abilities and multi-trainer restructuring remain planned. The PNA redesign and five gameplay steps are accepted on the development branch, but unreleased.
 
 -->
 

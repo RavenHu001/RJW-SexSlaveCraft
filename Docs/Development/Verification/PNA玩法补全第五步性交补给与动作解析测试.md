@@ -1,6 +1,6 @@
 # PNA 玩法补全第五步：性交补给与强制动作解析
 
-日期：2026-10-15。分支：`codex/pna-reset`。基线：`6a8d670`。状态：**已获维护者实机确认，仪式及性交加深成瘾均正常，批准提交；未发布。**
+日期：2026-10-15。分支：`codex/pna-reset`。基线：`6a8d670`。状态：**已获维护者实机确认，仪式及性交加深成瘾均正常，已提交 `286ff72`；未发布。**
 
 [设计与数值](../../Design/PNA玩法效果与性交补给补全分析.md) · [待验收事项](README.md)
 
@@ -52,7 +52,7 @@ RJW API 依据本机 DLL MVID `7b8e295db88844a594b111ed6bcc94aa`。没有运行�
 
 修正构建 0 警告／0 错误，相关四套回归 **485/485**：ForcedSexProps 28、RitualLifecycle 179、RitualAnimationFallback 7、PnaLoad 271。新增六阶段空解析完成及成瘾门槛／满值钳制验证；未重复全量 30 套。上文 2110 项为首版历史结果，该修正版日志在 `.builds/pna-effects-step5-ritual-fix/`；维护者现已确认仪式正常。
 
-当前 DLL SHA256 `ED97C4519B0452959BC445AE75B4C568971AA265B65B9B498445143F7B2B7631`，MVID `ae294512-edf6-4099-bfb5-6f90f4af0873`，602624 字节。已备份并同步本地测试版 DLL／匹配 PDB，两个文件哈希一致，备份 `.builds/pna-effects-step5-ritual-fix/installed-backup-20261015-070323-bc8f581f`。复测重点只需重新完成一次原先被卡住的完整仪式，确认六阶段及原奖励正常。
+该次仪式修正版 DLL SHA256 `ED97C4519B0452959BC445AE75B4C568971AA265B65B9B498445143F7B2B7631`，MVID `ae294512-edf6-4099-bfb5-6f90f4af0873`，602624 字节。已备份并同步本地测试版 DLL／匹配 PDB，两个文件哈希一致，备份 `.builds/pna-effects-step5-ritual-fix/installed-backup-20261015-070323-bc8f581f`。该次复测要求为重新完成原先被卡住的完整仪式；维护者随后已确认六阶段及原奖励正常，最终版本见上方实机验收节。
 
 ## 产出者性交基础成瘾增量（2026-10-15）
 
