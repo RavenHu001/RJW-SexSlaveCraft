@@ -84,6 +84,8 @@
     <Compile Include="common\AddCorruption.cs" />
     <Compile Include="common\SSCPnaMath.cs" />
     <Compile Include="common\SSCPnaExposureUtility.cs" />
+    <Compile Include="common\SSCPnaSourceUtility.cs" />
+    <Compile Include="common\AttractionPreference_SSCPna.cs" />
     <Compile Include="common\IngestionOutcomeDoer_SSCPna.cs" />
     <Compile Include="common\SSCPnaGameComponent.cs" />
     <Compile Include="common\DebugActions_SSCPna.cs" />

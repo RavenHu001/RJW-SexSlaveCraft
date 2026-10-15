@@ -181,7 +181,8 @@ namespace Verse
     {
         public static Hediff MakeHediff(HediffDef def, Pawn pawn)
         {
-            var record = new HediffWithComps { def = def, pawn = pawn, RawSeverity = def.initialSeverity };
+            HediffWithComps record = def.defName == "PNA_Addiction" ? new RimWorld.Hediff_Addiction() : new HediffWithComps();
+            record.def = def; record.pawn = pawn; record.RawSeverity = def.initialSeverity;
             if (def.HasPnaComp) record.comps.Add(new SexSlaveCraft.HediffComp_SSCPnaLoad { parent = record, props = new SexSlaveCraft.HediffCompProperties_SSCPnaLoad() });
             if (def.HasRecoveryComp) record.comps.Add(new HediffComp_SeverityPerDay { parent = record, props = def.CompProps<HediffCompProperties_SeverityPerDay>(),severityPerDay=-.1f });
             if (def.defName == "SSC_Hediff_RabbitCloneLink") record.comps.Add(new SexSlaveCraft.HediffComp_RabbitCloneLink { parent = record });
@@ -217,6 +218,11 @@ namespace Verse
 }
 namespace RimWorld
 {
+    // 原版成瘾只依据合法需求类别返回 0／1；用于检查生产偏好直接读取此虚属性。
+    public class Hediff_Addiction : Verse.HediffWithComps
+    {
+        public override int CurStageIndex => pawn?.needs?.TryGetNeed(def.chemicalNeed)?.CurCategory == DrugDesireCategory.Withdrawal ? 1 : 0;
+    }
     public partial class Pawn_NeedsTracker
     {
         private readonly Verse.Pawn pawn;

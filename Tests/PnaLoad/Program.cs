@@ -86,6 +86,7 @@ internal static partial class Program
         RunP3Tests();
         RunEffectsStep1Tests();
         RunEffectsStep3Tests();
+        RunEffectsStep4Tests();
         Console.WriteLine($"结果：{passed}/{passed+failed} 项通过。");
         return failed==0 ? 0:1;
     }
@@ -359,7 +360,7 @@ internal static partial class Program
         Assert(addiction.Element("PNA_Addiction.stages.0.label")==null,"普通档不重新注入标签");
         Assert(addiction.Element("PNA_Addiction.stages.1.label")!=null,"戒断标签");
         Assert(buff.Element("SSC_Hediff_PnaRootedLoad.label")!=null,"性奴载体标签");
-        var keyed=XDocument.Load(Path.Combine(lang,"Keyed/SSC_Pna.xml")).Root;Equal(9,keyed.Elements().Count());Assert(keyed.Element("SSC_Pna_LoadTooltip").Value.Contains("{0}"),"负荷参数");Assert(keyed.Element("SSC_Pna_DebugResult").Value.Contains("{0}"),"调试参数");Assert(keyed.Element("SSC_Pna_RootedLoadTooltip").Value.Contains("{0}"),"性奴负荷参数");
+        var keyed=XDocument.Load(Path.Combine(lang,"Keyed/SSC_Pna.xml")).Root;Equal(10,keyed.Elements().Count());Assert(keyed.Element("SSC_Pna_LoadTooltip").Value.Contains("{0}"),"负荷参数");Assert(keyed.Element("SSC_Pna_DebugResult").Value.Contains("{0}"),"调试参数");Assert(keyed.Element("SSC_Pna_RootedLoadTooltip").Value.Contains("{0}"),"性奴负荷参数");
         Assert(keyed.Element("SSC_Pna_NewDependence").Value.Contains("{0}"),"依赖通知");
         foreach(string key in new[]{"SSC_Pna_WeaponHealed","SSC_Pna_WeaponActivated"})
             Assert(!string.IsNullOrWhiteSpace(keyed.Element(key)?.Value),"枪械反馈翻译");

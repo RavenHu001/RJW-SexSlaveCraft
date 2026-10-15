@@ -9,4 +9,5 @@
   <SSC_Pna_NewDependence>{0} достиг полной нагрузки PNA и приобрёл зависимость от наножидкости.</SSC_Pna_NewDependence>
   <SSC_Pna_WeaponHealed>Исцеление</SSC_Pna_WeaponHealed>
   <SSC_Pna_WeaponActivated>Активация PNA</SSC_Pna_WeaponActivated>
+  <SSC_Pna_AttractionExplanation>Влечение к источнику PNA: ×{0} ⇒ {1}</SSC_Pna_AttractionExplanation>
 </LanguageData>

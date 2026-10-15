@@ -9,4 +9,5 @@
   <SSC_Pna_NewDependence>{0} 的 PNA 负荷已满，已对纳米流体成瘾。</SSC_Pna_NewDependence>
   <SSC_Pna_WeaponHealed>治疗</SSC_Pna_WeaponHealed>
   <SSC_Pna_WeaponActivated>PNA 活化</SSC_Pna_WeaponActivated>
+  <SSC_Pna_AttractionExplanation>渴求 PNA 来源：×{0} ⇒ {1}</SSC_Pna_AttractionExplanation>
 </LanguageData>

@@ -9,4 +9,5 @@
   <SSC_Pna_NewDependence>{0} has reached full PNA load and developed nanofluid addiction.</SSC_Pna_NewDependence>
   <SSC_Pna_WeaponHealed>Healed</SSC_Pna_WeaponHealed>
   <SSC_Pna_WeaponActivated>PNA activated</SSC_Pna_WeaponActivated>
+  <SSC_Pna_AttractionExplanation>Craving a PNA source: ×{0} ⇒ {1}</SSC_Pna_AttractionExplanation>
 </LanguageData>
