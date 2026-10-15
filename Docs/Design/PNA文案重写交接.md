@@ -1,6 +1,6 @@
 # PNA 文案重写交接
 
-日期：2026-10-15。核查基线：`codex/pna-reset`，`cf47f75`。本文交接文件范围、修改方向和设定参考，不包含具体文案稿，也不授权改变现有机制或数值。
+日期：2026-10-15，2026-10-16 复核修订。核查基线：`codex/pna-reset`，`94d8ff3`（复核时 HEAD；初版所记 `cf47f75` 为其祖先，差一个文档提交，结论不受影响）。本文交接文件范围、修改方向和设定参考，不包含具体文案稿，也不授权改变现有机制或数值。
 
 [当前规划索引](README.md) · [PNA 机制规划](PNA机制重置开发规划.md) · [现行数值与范围](PNA玩法效果与性交补给补全分析.md)
 
@@ -45,7 +45,7 @@ PNA 缩写可在适合的短名称或技术信息中保留。不要再把“纳�
 | 物品和健康状态描述 | 交代是什么、如何影响身体、主要后果及风险。用世界内因果解释，减少属性名罗列和实现术语。 |
 | 五档阶段名 | 简短、递进，沿同一条身体表现或作用强度轴命名；避免剂量、活性、永久病变和病程词混杂。 |
 | 思绪标题与描述 | 以角色当下的身体感受和情绪为主，采用第一人称体验。普通高档突出迷离，性奴高档突出清醒与活力，戒断突出缺失与渴求。 |
-| 附加悬停 | 保留当前百分比和简短状态提示，不再复述整段健康说明。 |
+| 附加悬停 | 保留当前百分比和简短状态提示，不再复述整段健康说明。两种负荷附加悬停（四语均有）现均重复罗列效果，属必须收敛项。 |
 | 成瘾通知、命中飘字 | 简短、容易识别；通知点明变化，飘字不承担长篇设定。 |
 | 性吸引解释 | 点明观察者渴求对方的纳米催情液，同时保留原有数值解释字段。 |
 | 配方、研究与工作提示 | 使用正式名称，说明材料处理、技术用途或正在进行的工作，不写占位名，不虚构解锁内容。 |
@@ -62,11 +62,12 @@ PNA 缩写可在适合的短名称或技术信息中保留。不要再把“纳�
 
 ## 4 中文基础文案文件清单
 
-共 10 个源 Def 文件。文件中混有其他系统，修改范围以“涉及条目”列为准，不应整文件重写。
+共 10 个源 Def 文件；其中仍在使用的隐藏抗性记录与同文件其他条目分行列明，不增加文件总数。文件中混有其他系统，修改范围以“涉及条目”列为准，不应整文件重写。
 
 | 文件 | 涉及条目 | 为什么要改、方向是什么 |
 | --- | --- | --- |
-| [Defs/HediffDefs/HediffOfBuff.xml](../../Defs/HediffDefs/HediffOfBuff.xml) | `Hediff_PNA_Debuff`、`SSC_Hediff_PnaRootedLoad`、`PNA_Debuff_Thought`、`SSC_PnaRootedLoad_Thought` | 两种药效名称、说明、各五档阶段，以及十档心情。开发说明和属性清单较多，按普通催情／性奴活化分别建立递进与体验。 |
+| [Defs/HediffDefs/HediffOfBuff.xml](../../Defs/HediffDefs/HediffOfBuff.xml) | `Hediff_PNA_Debuff`、`SSC_Hediff_PnaRootedLoad`、`PNA_Debuff_Thought`、`SSC_PnaRootedLoad_Thought` | 两种药效名称、说明、各五档阶段，以及十档心情。开发说明和属性清单较多，按普通催情／性奴活化分别建立递进与体验。普通五档现为“微量／活跃／侵蚀／深度影响／末期过载”，剂量、病程与实现词混用，须沿同一条强度轴重排。 |
+| [Defs/HediffDefs/HediffOfBuff.xml：隐藏抗性记录](../../Defs/HediffDefs/HediffOfBuff.xml) | `Hediff_PNA_Consciousness_Record`（仍在使用的隐藏内部记录） | 低阶枪在无既有记录且目标意识高于 200% 时创建，后续命中读取记录值作为剂量抗性除数；不是废弃兼容状态，也不是持续更新的历史最高值。其描述含编写者口气，名称和描述应简短、准确地清理，不需要沉浸式长文案，不改变隐藏属性或用途。简中无该记录的翻译覆盖，直接使用源 Def。 |
 | [Defs/HediffDefs/HediffOfAddiction.xml](../../Defs/HediffDefs/HediffOfAddiction.xml) | `PNA_Addiction`、`PNA_Withdrawal_Thought` | 重写成瘾、戒断说明与思绪，突出神经适应和停供反应，减少输入、负荷及迁移术语。 |
 | [Defs/HediffDefs/HediffOfTrain.xml](../../Defs/HediffDefs/HediffOfTrain.xml) | `SSC_Purple_HyperLactation` | 名称像生产状态，描述混入身体继承说明；应解释分泌能力及性交中的少量摄入，不让部位名称误导供给范围。 |
 | [Defs/NeedDefs/NeedDefs.xml](../../Defs/NeedDefs/NeedDefs.xml) | `Need_PNA` | 统一需求名称与称呼，以身体渴求解释需求；读者应能理解条越满代表越得到满足，而非越渴求。 |
@@ -83,7 +84,7 @@ PNA 缩写可在适合的短名称或技术信息中保留。不要再把“纳�
 
 | 语言目录内路径 | ChineseSimplified | ChineseTraditional | English | Russian | 对应内容 |
 | --- | --- | --- | --- | --- | --- |
-| [DefInjected/HediffDef/HediffOfBuff.xml](../../Languages/English/DefInjected/HediffDef/HediffOfBuff.xml) | 有 | 有 | 有 | 有 | 两种药效、阶段名称 |
+| [DefInjected/HediffDef/HediffOfBuff.xml](../../Languages/English/DefInjected/HediffDef/HediffOfBuff.xml) | 有（隐藏记录回退源 Def） | 有 | 有 | 有 | 两种药效、阶段名称及单列的隐藏抗性记录 |
 | [DefInjected/ThoughtDef/HediffOfBuff.xml](../../Languages/English/DefInjected/ThoughtDef/HediffOfBuff.xml) | 有 | 有 | 有 | 有 | 十档药效心情 |
 | [DefInjected/HediffDef/HediffOfAddiction.xml](../../Languages/English/DefInjected/HediffDef/HediffOfAddiction.xml) | 有 | 有 | 有 | 有 | 成瘾与戒断 |
 | [DefInjected/ThoughtDef/HediffOfAddiction.xml](../../Languages/English/DefInjected/ThoughtDef/HediffOfAddiction.xml) | 无 | 有 | 有 | 有 | 戒断心情 |
@@ -97,9 +98,16 @@ PNA 缩写可在适合的短名称或技术信息中保留。不要再把“纳�
 | [DefInjected/ResearchProjectDef/ResearchProjectDef.xml](../../Languages/English/DefInjected/ResearchProjectDef/ResearchProjectDef.xml) | 无 | 有 | 有 | 有 | 三项 PNA 研究 |
 | [Keyed/SSC_Pna.xml](../../Languages/English/Keyed/SSC_Pna.xml) | 有 | 有 | 有 | 有 | 悬停、通知、飘字、吸引解释与调试反馈 |
 
-按当前文件结构，简中 5 个、繁中／英文／俄文各 13 个，共 44 个根语言文件；[Sexslavecraft/Languages](../../Sexslavecraft/Languages) 下有同路径的 44 个镜像文件。源 Def 中文、简中已有覆盖和另外三语须一起对齐，不能只改其中一层。
+按本次文件核对，上表 13 项中简中 5 项，繁中、英文、俄文各 13 项，共 44 个根语言文件；四语 [Keyed/SSC_Keys.xml](../../Languages/ChineseSimplified/Keyed/SSC_Keys.xml)（第 6.2 节）另计 4 个，合计 48 个。上表在 [Sexslavecraft/Languages](../../Sexslavecraft/Languages) 下对应 44 个镜像文件，含共享提示则为 48 个；整个 Languages 目录的 326 个源文件／326 个镜像是另一统计范围。本次已逐文件确认全目录路径集合与内容一致。镜像脚本需 PowerShell 7；后续落地仍应检查源 Def、简中已有覆盖和另外三语，不能只改其中一层。
 
-已发现的外语问题包括浓缩品仍使用 Plus，浓缩配方使用 Make Super Drug，以及把四份写成 Forth／第四个。具体改写与翻译由文案负责人决定，但不得为修正玩家文字而重命名历史 DefName。
+覆盖与计数说明：
+
+- 简中 `HediffOfBuff.xml` 没有 `Hediff_PNA_Consciousness_Record` 的名称和描述覆盖，中文会回退源 Def；直接修改源 Def 即可更新该记录的简中文案，无需强制新增翻译键。繁中、英文、俄文均已有对应覆盖，届时须同步其文字与镜像。
+- 简中覆盖有意稀疏，上表多项文本直接取源 Def，不能把某一条未单独翻译说成“简中唯一缺失的 PNA 词条”。无需为文件或键的对称性强行补齐覆盖。
+- 俄文 [DefInjected/ThoughtDef/HediffOfAddiction.xml](../../Languages/Russian/DefInjected/ThoughtDef/HediffOfAddiction.xml) 实际存在，含戒断思绪名称和描述；俄文在上表的 13 项均完整，不是 12 项。
+- 俄文另外没有 `SSC_Schedule.xml`、`SSC_Settings.xml`、`SSC_TrainingOpinionMemory.xml` 三个 Keyed 文件，这是其他模块的既有覆盖情况，不在上表统计范围，不能据此扣减 PNA 文件数，也不扩入本次文案任务。
+
+已发现的外语问题包括浓缩品仍使用 Plus，浓缩配方使用 Make Super Drug，以及把四份写成 Forth／第四个（俄文 `(четвёртый)` 把“4 份”误作序数“第四个”，是本地化误译而非原意）。具体改写与翻译由文案负责人决定，但不得为修正玩家文字而重命名历史 DefName。
 
 ## 6 短提示、共享文本与调试文件
 
@@ -115,6 +123,8 @@ PNA 缩写可在适合的短名称或技术信息中保留。不要再把“纳�
 | `SSC_Pna_AttractionExplanation` | RJW 吸引解释 | 体现成瘾者渴求对方供给；`{0}` 是本项乘数，`{1}` 是本项运算后 factor，不是概率或总吸引值。 |
 | `SSC_Pna_SelectPawn`、`SSC_Pna_InvalidTarget`、`SSC_Pna_Rooted`、`SSC_Pna_DebugResult` | 仅调试动作反馈 | 使用清楚准确的技术语言，清除 P1／P2 旧称；Debug 来源不加深已有成瘾，不能将调试反馈当作正常摄入规则。 |
 
+复核确认：P1／P2 旧称在调试相关文本中共 13 处（此数不含镜像重复），其中四语根目录 `Keyed/SSC_Pna.xml` 的 `SSC_Pna_Rooted`、`SSC_Pna_DebugResult` 各 4 处（共 8 处），以及第 6.2 节 C# 调试菜单名称 5 处。语言文件 8 处可修改 XML 并同步镜像，C# 5 处须重编译；这些不属于普通玩家的常规提示。
+
 ### 6.2 其他单列文件
 
 | 文件范围 | 处理内容 |
@@ -129,8 +139,9 @@ PNA 缩写可在适合的短名称或技术信息中保留。不要再把“纳�
 - 普通高浓度的高潮昏厥是既定设定；不要进一步承诺独立周期高潮事件、动画、真正更容易触发 RJW 高潮或专属精神状态。
 - 性奴强化与实际有效锁链对应，不应泛化成只选性奴身份就一定产生；普通药效与供给者偏好也不意味着忠于某位主人。
 - 主人侵染属于另一个专项，不在药液、成瘾或分泌说明中写成所有主人已经拥有的能力；不为兔分身增加当前性交供给承诺。
-- `HediffOfBuff.xml` 内旧两种战斗 Buff 和隐藏抗性记录、`SSC_Gun.xml` 内注释禁用的高阶武器，保留兼容／历史用途即可，不作为当前玩法宣传。隐藏记录若清理措辞，保持简短准确。
-- 锁链、主人共生、战斗员特化、人格排泄和其他手术不因提到 PNA 就整套重写；只对直接相关的称呼或事实冲突做必要核对。
+- `HediffOfBuff.xml` 内旧两种战斗 Buff、`SSC_Gun.xml` 内注释禁用的高阶武器，保留兼容／历史用途即可，不作为当前玩法宣传。
+- `Hediff_PNA_Consciousness_Record` 是低阶枪仍在使用的隐藏内部记录，已在第 4 节单列，不归入废弃兼容内容。其 label／description 只做简短准确的说明清理，不改变可见性、记录值或剂量算法；简中沿用源 Def，其他三语沿用已有覆盖并同步镜像。
+- 锁链、主人共生、战斗员特化、人格排泄和其他手术不因提到 PNA 就整套重写；只对直接相关的称呼或事实冲突做必要核对。复核已定位的 PNA 散落引用点，供判断是否属“必要核对”：`HediffOfPE.xml`、`RecipeDef_Surgery_PE.xml`、`RecipeDef_Surgery_DCMtF.xml`、`Trait_PE.xml`、`EroticWord.xml`、`SSC_HediffDefs_PetSpecializations.xml`（兔分身产出）。其中 `HediffOfPE.xml` 写“从肛门注射的 PNA 开始发挥作用”，与“不能把供给写成只有特定姿势、生殖器接触或插入行为才可能发生”的边界相邻，建议优先核对。
 - [玩家指南](../../机制详解.md)、[英文指南](../../PLAYER_GUIDE_EN.md)及历史验收文档继续承担规则与追溯职责，本交接不要求将其改成设定叙事，也不回写历史测试、版本或 DLL 记录。
 
 后续落地人员应检查 XML 格式、翻译键与占位符、源 Def／语言覆盖的一致性，并通过[语言镜像脚本](../../Scripts/Sync-LanguagesMirror.ps1)检查或同步镜像。文案作者无需改动核心 C#；除了明确单列的调试菜单名称，其余正常玩家文本均可在 XML／语言资源中处理。
