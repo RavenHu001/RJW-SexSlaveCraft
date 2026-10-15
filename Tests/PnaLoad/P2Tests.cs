@@ -64,7 +64,7 @@ internal static partial class Program
         // 原武器分支兼容：抗性、有效链治疗／强化和高阶参数仍保持原职责。
         Run("高意识快照抗性与低意识保底保留",()=>{var high=NewPawn();high.health.capacities.Consciousness=3;var s=Shot();new DamageWorker_LowTier().Apply(s,high);Near(.025,SSCPnaExposureUtility.GetLoad(high));var low=NewPawn();low.health.capacities.Consciousness=.1f;new DamageWorker_LowTier().Apply(s,low);Near(.375,SSCPnaExposureUtility.GetLoad(low));});
         Run("无效残链不触发枪械治疗保护",()=>{var p=NewPawn();p.health.hediffSet.hediffs.Add(new Hediff_ChainOfSexSlave{pawn=p,def=ChainDef});var w=new DamageWorker_LowTier();w.Apply(Shot(),p);Near(.075,SSCPnaExposureUtility.GetLoad(p));Equal(1,w.InjuryCalls);});
-        Run("有效链枪械保留治疗强化且不成瘾",()=>{var p=NewPawn();Hediff_ChainOfSexSlave.AddToPawn(p,NewPawn());var injury=new Hediff_Injury{pawn=p,def=new HediffDef{defName="Injury"}};p.health.hediffSet.hediffs.Add(injury);var w=new DamageWorker_LowTier();w.Apply(Shot(),p);Near(5,injury.Healed);Assert(p.health.hediffSet.hediffs.Any(h=>h.def.defName=="Combat"),"强化");Assert(Record(p)==null && SSCPnaExposureUtility.GetAddiction(p)==null,"无普通影响");Equal(0,w.InjuryCalls);});
+        Run("有效链枪械保留治疗并输入性奴负荷且不成瘾",()=>{var p=NewPawn();Hediff_ChainOfSexSlave.AddToPawn(p,NewPawn());var injury=new Hediff_Injury{pawn=p,def=new HediffDef{defName="Injury"}};p.health.hediffSet.hediffs.Add(injury);var w=new DamageWorker_LowTier();w.Apply(Shot(),p);Near(5,injury.Healed);Near(.075,SSCPnaExposureUtility.GetLoad(p));Assert(RootedRecord(p)!=null,"性奴载体");Assert(Record(p)==null && SSCPnaExposureUtility.GetAddiction(p)==null,"无普通影响");Equal(0,w.InjuryCalls);});
         Run("高阶现有固定剂量也接共享工具",()=>{var p=NewPawn();var s=Shot();((PNA_DWExtension)s.Def.Extension).fixedSeverity=.5f;new DamageWorker_HighTier().Apply(s,p);Near(.25,SSCPnaExposureUtility.GetLoad(p));});
         Run("武器重入不吞掉外层和内层独立暴露",()=>{var outer=NewPawn();var inner=NewPawn();var w=new DamageWorker_LowTier();w.BeforePart=p=>{w.BeforePart=null;w.Apply(Shot(),inner);};w.Apply(Shot(),outer);Near(.075,SSCPnaExposureUtility.GetLoad(outer));Near(.075,SSCPnaExposureUtility.GetLoad(inner));});
         Run("截图约6%满足度不再阻止原版恢复",()=>{var p=NewPawn();AddOldAddiction(p,1);p.needs.PnaNeed=.0567000248f;NativeRecoveryDay(p);Near(.9,SSCPnaExposureUtility.GetAddiction(p).Severity,.00002);p.needs.PnaNeed=0;NativeRecoveryDay(p);Near(.8,SSCPnaExposureUtility.GetAddiction(p).Severity,.00002);});
@@ -164,7 +164,7 @@ internal static partial class Program
     private static DamageInfo Shot()=>new DamageInfo
     {
         Amount=1,Parts=1,Def=new DamageDef{Extension=new PNA_DWExtension
-        {baseSeverity=.15f,trueDamageAmount=1,healAmount=5,recordHediff=new HediffDef{defName="Resistance",maxSeverity=100},combatBuff=new HediffDef{defName="Combat"},adapterHediff=ChainDef}}
+        {baseSeverity=.15f,trueDamageAmount=1,healAmount=5,recordHediff=new HediffDef{defName="Resistance",maxSeverity=100},combatBuff=new HediffDef{defName="Hediff_PNA_Combat_Buff_Plus"},adapterHediff=ChainDef}}
     };
     // 读取实际作者 XML，确认测试执行的剂量与运行资源一致且不存在并行旧 Doer。
     private static void SourceDefinitions()

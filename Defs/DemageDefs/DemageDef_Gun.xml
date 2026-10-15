@@ -9,7 +9,6 @@
     <modExtensions>
       <li Class="SexSlaveCraft.PNA_DWExtension">
         <adapterHediff>Hediff_ChainOfSexSlave</adapterHediff>
-        <combatBuff>Hediff_PNA_Combat_Buff</combatBuff>
         <debuff>Hediff_PNA_Debuff</debuff>
         <healAmount>15</healAmount>           
         <trueDamageAmount>10</trueDamageAmount>   
@@ -28,7 +27,6 @@
     <modExtensions>
       <li Class="SexSlaveCraft.PNA_DWExtension">
         <adapterHediff>Hediff_ChainOfSexSlave</adapterHediff>
-        <combatBuff>Hediff_PNA_Combat_Buff_Plus</combatBuff>
         <debuff>Hediff_PNA_Debuff</debuff>
         
         <healAmount>5</healAmount>            

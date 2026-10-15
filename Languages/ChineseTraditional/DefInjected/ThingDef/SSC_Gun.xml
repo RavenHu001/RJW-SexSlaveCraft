@@ -2,5 +2,5 @@
 <LanguageData>
   <Bullet_PNA_Low.label>普通奈米機械子彈</Bullet_PNA_Low.label>
   <Gun_PNA_Low.label>簡易PNA發射器</Gun_PNA_Low.label>
-  <Gun_PNA_Low.description>一把PNA發射器，發射的PNA會侵入敵軍的裝甲，滲透到敵軍體內，命中一定次數使其持續高潮而倒地，如果發射的物件是性奴那麼就會有增益的效果。</Gun_PNA_Low.description>
+  <Gun_PNA_Low.description>有效命中會向目標輸入 PNA，負荷過高會導致普通身體昏迷。具有有效鎖鏈的性奴會獲得階段活化並治療可自然恢復的傷口，不產生槍傷。主人免疫 PNA 藥效。</Gun_PNA_Low.description>
 </LanguageData>

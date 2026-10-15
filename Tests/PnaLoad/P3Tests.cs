@@ -68,7 +68,8 @@ internal static partial class Program
             var own=clone.health.hediffSet.hediffs.ToArray();var need=SSCPnaExposureUtility.GetNeed(clone);
             var marker=SscDef("SSC_MaturityMarker");source.health.AddHediff(marker).Severity=.76f;
             RabbitCloneUtility.MatureRabbitClone(clone,source,CloneLink(clone,source));
-            foreach(var record in own) Assert(clone.health.hediffSet.hediffs.Contains(record),"保留自身实例");
+            foreach(var record in own)
+                Assert(clone.health.hediffSet.hediffs.Contains(record) != SSCPnaExposureUtility.IsLegacyCombatBuffDef(record.def),"保留合法自身实例，废弃旧强化");
             Near(.4,SSCPnaExposureUtility.GetLoad(clone));Near(.35,SSCPnaExposureUtility.GetAddiction(clone).Severity);
             Assert(SSCPnaExposureUtility.GetNeed(clone)==need,"保留自身需求实例");Near(.27,need.CurLevel);Equal(0,need.Initializations);
             Equal(50,BodyComp(clone).PendingTicks);

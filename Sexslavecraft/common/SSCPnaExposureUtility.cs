@@ -268,6 +268,19 @@ namespace SexSlaveCraft
                 // 健康通知可能再次改链；有限重评估避免简单回调使最终形态错配或无限递归。
                 for (int attempt = 0; attempt < 3; attempt++)
                 {
+                    // 废弃旧枪械强化：读档、直接协调及健康入口都在这里清理，不折算成负荷。
+                    // 稳态无旧 Buff 时不分配集合；移除前收集快照，避免回调修改正在遍历的健康列表。
+                    List<Hediff> legacyBuffs = null;
+                    foreach (Hediff hediff in pawn.health.hediffSet.hediffs)
+                        if (IsLegacyCombatBuffDef(hediff?.def))
+                        {
+                            if (legacyBuffs == null) legacyBuffs = new List<Hediff>();
+                            legacyBuffs.Add(hediff);
+                        }
+                    if (legacyBuffs != null)
+                        foreach (Hediff legacy in legacyBuffs)
+                            if (pawn.health.hediffSet.hediffs.Contains(legacy)) pawn.health.RemoveHediff(legacy);
+                    // 清理回调可改变身份／锁链，后续始终读取当前状态，不沿用移除前的判断。
                     if (SSCIdentityUtility.IsMaster(pawn))
                     {
                         // 只移除受药状态；产出能力和生产进度继续属于当前身体。

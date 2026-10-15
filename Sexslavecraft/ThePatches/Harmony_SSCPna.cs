@@ -28,9 +28,9 @@ namespace SexSlaveCraft
                 Scribe.mode != LoadSaveMode.Inactive) return true;
             // 先协调当前身体状态，再判断依赖保护；直接添加不承担满值成瘾判定。
             SSCPnaExposureUtility.RefreshBodyState(hediff.pawn);
-            if (SSCIdentityUtility.IsMaster(hediff.pawn)) return false;
+            if (SSCPnaExposureUtility.IsLegacyCombatBuffDef(hediff.def) || SSCIdentityUtility.IsMaster(hediff.pawn)) return false;
             if (SSCPnaExposureUtility.IsAddictionDef(hediff.def)) return !SSCPnaExposureUtility.IsRooted(hediff.pawn);
-            // 非主人仍沿用原枪械强化／抗性快照；废弃枪械 Buff 属于后续接通批次。
+            // 废弃 Buff 对所有身体拒绝；非主人抗性快照仍沿用原机制，不新增补丁入口。
             if (!SSCPnaExposureUtility.IsBodyLoadDef(hediff.def)) return true;
             // 来件合并前结算旧载体的半批有效时间，并选择当前应使用的负荷 Def。
             (SSCPnaExposureUtility.GetBodyRecord(hediff.pawn) as HediffWithComps)

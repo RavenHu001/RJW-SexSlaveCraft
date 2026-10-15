@@ -7,4 +7,6 @@
   <SSC_Pna_DebugResult>PNA P2 测试：当前负荷 {0}%。普通身体有效达满时建立成瘾，已有恢复进度不重置。</SSC_Pna_DebugResult>
   <SSC_Pna_RootedLoadTooltip>性奴 PNA 负荷：{0}%。逐档提高意识、操控、移动、性欲、性满足收益与心情，减轻疼痛；活化越强消退越快。绑定与解绑保留负荷，性奴不承受普通负荷的能力惩罚或末期晕倒。</SSC_Pna_RootedLoadTooltip>
   <SSC_Pna_NewDependence>{0} 的 PNA 负荷已满，已对纳米流体成瘾。</SSC_Pna_NewDependence>
+  <SSC_Pna_WeaponHealed>治疗</SSC_Pna_WeaponHealed>
+  <SSC_Pna_WeaponActivated>PNA 活化</SSC_Pna_WeaponActivated>
 </LanguageData>

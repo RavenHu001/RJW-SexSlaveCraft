@@ -7,4 +7,6 @@
   <SSC_Pna_DebugResult>PNA P2 test: current load {0}%. An effective dose at full ordinary load creates addiction; existing recovery progress is preserved.</SSC_Pna_DebugResult>
   <SSC_Pna_RootedLoadTooltip>Rooted PNA load: {0}%. Each stage improves consciousness, manipulation, movement, sex drive, sexual satisfaction and mood while suppressing pain. Stronger activation fades faster. Binding and unbinding preserve the load. Ordinary load penalties and terminal collapse do not apply.</SSC_Pna_RootedLoadTooltip>
   <SSC_Pna_NewDependence>{0} has reached full PNA load and developed nanofluid addiction.</SSC_Pna_NewDependence>
+  <SSC_Pna_WeaponHealed>Healed</SSC_Pna_WeaponHealed>
+  <SSC_Pna_WeaponActivated>PNA activated</SSC_Pna_WeaponActivated>
 </LanguageData>

@@ -82,7 +82,7 @@
   <ThingDef ParentName="BaseHumanMakeableGun">
     <defName>Gun_PNA_Low</defName>
     <label>简易PNA发射器</label>
-    <description>一把PNA发射器，发射的PNA会侵入敌军的装甲，渗透到敌军体内，命中一定次数使其持续高潮而倒地，如果发射的对象是性奴那么就会有增益的效果。</description>
+    <description>有效命中会向目标输入 PNA，负荷过高会导致普通身体昏迷。具有有效锁链的性奴会获得阶段活化并治疗可自然恢复的伤口，不产生枪伤。主人免疫 PNA 药效。</description>
     <graphicData>
       <texPath>Things/Item/Equipment/Gun_PNA_Low</texPath>
       <graphicClass>Graphic_Single</graphicClass>

@@ -85,13 +85,14 @@ internal static partial class Program
         RunP2Tests();
         RunP3Tests();
         RunEffectsStep1Tests();
+        RunEffectsStep3Tests();
         Console.WriteLine($"结果：{passed}/{passed+failed} 项通过。");
         return failed==0 ? 0:1;
     }
 
     private static void Run(string name,Action test)
     {
-        Scribe.mode=LoadSaveMode.Inactive; Scribe.Data.Clear(); SSCRestrictionGameComponent.Pawns.Clear(); Messages.Sent.Clear();
+        Scribe.mode=LoadSaveMode.Inactive; Scribe.Data.Clear(); SSCRestrictionGameComponent.Pawns.Clear(); Messages.Sent.Clear(); MoteMaker.Sent.Clear();
         SSCDefOf.SSC_PnaLoad=new HediffDef { defName=SSCPnaExposureUtility.LoadDefName, HasPnaComp=true, thresholds=new[]{0f,.30f,.80f,1.40f,1.94f} };
         SSCDefOf.SSC_PnaRootedLoad=new HediffDef { defName=SSCPnaExposureUtility.RootedLoadDefName, HasPnaComp=true, thresholds=new[]{0f,.30f,.80f,1.40f,1.94f} };
         SSCDefOf.SSC_PnaAddiction=AddictionDef;
@@ -358,8 +359,10 @@ internal static partial class Program
         Assert(addiction.Element("PNA_Addiction.stages.0.label")==null,"普通档不重新注入标签");
         Assert(addiction.Element("PNA_Addiction.stages.1.label")!=null,"戒断标签");
         Assert(buff.Element("SSC_Hediff_PnaRootedLoad.label")!=null,"性奴载体标签");
-        var keyed=XDocument.Load(Path.Combine(lang,"Keyed/SSC_Pna.xml")).Root;Equal(7,keyed.Elements().Count());Assert(keyed.Element("SSC_Pna_LoadTooltip").Value.Contains("{0}"),"负荷参数");Assert(keyed.Element("SSC_Pna_DebugResult").Value.Contains("{0}"),"调试参数");Assert(keyed.Element("SSC_Pna_RootedLoadTooltip").Value.Contains("{0}"),"性奴负荷参数");
+        var keyed=XDocument.Load(Path.Combine(lang,"Keyed/SSC_Pna.xml")).Root;Equal(9,keyed.Elements().Count());Assert(keyed.Element("SSC_Pna_LoadTooltip").Value.Contains("{0}"),"负荷参数");Assert(keyed.Element("SSC_Pna_DebugResult").Value.Contains("{0}"),"调试参数");Assert(keyed.Element("SSC_Pna_RootedLoadTooltip").Value.Contains("{0}"),"性奴负荷参数");
         Assert(keyed.Element("SSC_Pna_NewDependence").Value.Contains("{0}"),"依赖通知");
+        foreach(string key in new[]{"SSC_Pna_WeaponHealed","SSC_Pna_WeaponActivated"})
+            Assert(!string.IsNullOrWhiteSpace(keyed.Element(key)?.Value),"枪械反馈翻译");
         Assert(keyed.Element("SSC_Pna_RecoveryActive")==null && keyed.Element("SSC_Pna_RecoveryPaused")==null,"恢复显示由原版提供");
         foreach(string file in new[]{"DefInjected/HediffDef/HediffOfBuff.xml","DefInjected/HediffDef/HediffOfAddiction.xml","DefInjected/ThoughtDef/HediffOfBuff.xml","Keyed/SSC_Pna.xml"}) Equal(File.ReadAllText(Path.Combine(lang,file)),File.ReadAllText(Path.Combine(root,"Sexslavecraft/Languages",language,file)),"语言镜像");
     }

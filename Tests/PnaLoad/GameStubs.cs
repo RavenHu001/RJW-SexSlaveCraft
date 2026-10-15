@@ -73,7 +73,8 @@ namespace Verse
     {
         public float Healed;
         public bool CanHealNaturally() => true;
-        public void Heal(float amount) { Healed += amount; }
+        public Action OnHeal;
+        public void Heal(float amount) { Healed += amount; OnHeal?.Invoke(); }
     }
     public class PawnCapacityDef { }
     public class PawnCapacitiesHandler { public float Consciousness=1f; public float GetLevel(PawnCapacityDef def)=>Consciousness; }
@@ -139,7 +140,13 @@ namespace Verse
             else { var h=HediffMaker.MakeHediff(def,pawn);h.Severity=value;pawn.health.AddHediff(h); }
         }
     }
-    public static class MoteMaker { public static void ThrowText(object pos,string text,float time) { } public static void ThrowText(object pos,object map,string text,float time) { } }
+    public static class MoteMaker
+    {
+        // 记录显示边界，验证有效输入与真实治疗才显示；不模拟 Unity 绘制。
+        public static readonly List<string> Sent = new List<string>();
+        public static void ThrowText(object pos,string text,float time) => Sent.Add(text);
+        public static void ThrowText(object pos,object map,string text,float time) => Sent.Add(text);
+    }
     public class HediffCompProperties { public Type compClass; }
     public class HediffComp
     {
