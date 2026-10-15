@@ -82,6 +82,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="common\AddCorruption.cs" />
+    <Compile Include="common\SSCPnaMath.cs" />
+    <Compile Include="common\SSCPnaExposureUtility.cs" />
+    <Compile Include="common\SSCPnaSourceUtility.cs" />
+    <Compile Include="common\SSCPnaSexSupplyUtility.cs" />
+    <Compile Include="common\AttractionPreference_SSCPna.cs" />
+    <Compile Include="common\IngestionOutcomeDoer_SSCPna.cs" />
+    <Compile Include="common\ThingDef_SSCPna.cs" />
+    <Compile Include="common\SSCPnaGameComponent.cs" />
+    <Compile Include="common\DebugActions_SSCPna.cs" />
+    <Compile Include="Hediff\HediffComp_SSCPnaLoad.cs" />
+    <Compile Include="ThePatches\Harmony_SSCPna.cs" />
     <Compile Include="common\SSCIdentityUtility.Trainer.cs" />
     <Compile Include="common\SSCTrainerIdentityMigration.cs" />
     <Compile Include="common\Restrictions\SSCRestrictionMigration.cs" />

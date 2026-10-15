@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_Pna_LoadTooltip>Nano-Aphrodisiac Corrosion: {0}%</SSC_Pna_LoadTooltip>
+  <SSC_Pna_SelectPawn>Select a pawn first.</SSC_Pna_SelectPawn>
+  <SSC_Pna_InvalidTarget>This pawn cannot currently receive a PNA test dose.</SSC_Pna_InvalidTarget>
+  <SSC_Pna_Rooted>Debug: chained activation load {0}%. No ordinary addiction is created.</SSC_Pna_Rooted>
+  <SSC_Pna_DebugResult>Debug: current load {0}%. Full load can create addiction in an ordinary body; debug inputs do not strengthen existing addiction.</SSC_Pna_DebugResult>
+  <SSC_Pna_RootedLoadTooltip>Nano-Aphrodisiac Activation: {0}%</SSC_Pna_RootedLoadTooltip>
+  <SSC_Pna_NewDependence>{0} can no longer do without aphrodisiac nanofluid.</SSC_Pna_NewDependence>
+  <SSC_Pna_WeaponHealed>Wounds closing</SSC_Pna_WeaponHealed>
+  <SSC_Pna_WeaponActivated>Activated</SSC_Pna_WeaponActivated>
+  <SSC_Pna_AttractionExplanation>Craving the target's aphrodisiac nanofluid: ×{0} ⇒ {1}</SSC_Pna_AttractionExplanation>
+  <SSC_Pna_InfoLoadPerDose>Load per dose</SSC_Pna_InfoLoadPerDose>
+  <SSC_Pna_InfoLoadPerDoseDesc>Base PNA load provided by one dose, as a percentage of full load. Applicable body and tolerance modifiers are applied on ingestion. Masters are immune to drug effects; pawns with an effective Chain receive activation.</SSC_Pna_InfoLoadPerDoseDesc>
+  <SSC_Pna_InfoAddictionThreshold>Load required for initial addiction</SSC_Pna_InfoAddictionThreshold>
+  <SSC_Pna_InfoAddictionThresholdDesc>An ordinary body develops addiction when a real input brings its load to full. If the recipient is already addicted and the load after input is at least {0}, addiction severity increases by an additional {1} on top of the base increase. Masters and pawns with an effective Chain do not develop ordinary addiction.</SSC_Pna_InfoAddictionThresholdDesc>
+</LanguageData>

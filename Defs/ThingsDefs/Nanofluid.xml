@@ -1,8 +1,9 @@
 <Defs>
-  <ThingDef ParentName="ResourceBase">
+  <!-- 仅适配原生信息栏，摄入仍使用原版药物组件与现有 PNA Doer。 -->
+  <ThingDef Class="SexSlaveCraft.ThingDef_SSCPna" ParentName="ResourceBase">
     <defName>Purple_Aphrodisiac_Nanofluid</defName>
     <label>紫色纳米催情液</label>
-    <description>充满纳米机械的紫色液体，强效催情剂，可用来制造有强效强化剂的盔甲以及媚药步枪。</description>
+    <description>悬浮着活性紫色微械的紫色液体，能强烈唤起情欲。它也是配制浓缩品的原料。</description>
     
     <graphicData>
       <texPath>Things/Item/PNA</texPath> <graphicClass>Graphic_StackCount</graphicClass>
@@ -18,7 +19,6 @@
       <Mass>0.005</Mass>
       <Flammability>0.2</Flammability>
       <DeteriorationRate>2.0</DeteriorationRate>
-      <Nutrition>0.05</Nutrition>
     </statBases>
 
     <thingCategories>
@@ -27,6 +27,9 @@
 
     <ingestible>
       <preferability>NeverForNutrition</preferability>
+      <!-- 与原版药物一致：手动默认取一份，每次实际摄入最多一份。 -->
+      <defaultNumToIngestAtOnce>1</defaultNumToIngestAtOnce>
+      <maxNumToIngestAtOnce>1</maxNumToIngestAtOnce>
       <foodType>Processed, Fluid</foodType>
       <joyKind>Chemical</joyKind>
       <joy>0.8</joy>
@@ -35,9 +38,9 @@
       <optimalityOffsetHumanlikes>10</optimalityOffsetHumanlikes>
 
       <outcomeDoers>
-        <li Class="IngestionOutcomeDoer_GiveHediff">
-          <hediffDef>Hediff_PNA_Debuff</hediffDef>
-          <severity>0.3</severity> </li>
+        <li Class="SexSlaveCraft.IngestionOutcomeDoer_SSCPna">
+          <!-- PNA P2：每份原始剂量，对应 20% 负荷；实际份数由 Doer 计算。 -->
+          <severity>0.4</severity> </li>
       </outcomeDoers>
     </ingestible>
 
@@ -52,10 +55,10 @@
       </li>
     </comps>
   </ThingDef>
-    <ThingDef ParentName="ResourceBase">
+    <ThingDef Class="SexSlaveCraft.ThingDef_SSCPna" ParentName="ResourceBase">
     <defName>Purple_Aphrodisiac_Nanofluid_Plus</defName>
     <label>浓缩紫色纳米催情液</label>
-    <description>浓缩的紫色纳米催情液，只需一滴就可让人高潮到死去活来。</description>
+    <description>经减压蒸去多余液体制成的浓缩品，单位体积内的紫色微械更多，作用也更强、更快。对普通人而言，过量摄入足以让人在连续高潮中失去意识。</description>
     
     <graphicData>
       <texPath>Things/Item/PNA_PLUS</texPath> <graphicClass>Graphic_StackCount</graphicClass>
@@ -71,7 +74,6 @@
       <Mass>0.01</Mass>
       <Flammability>0.2</Flammability>
       <DeteriorationRate>2.0</DeteriorationRate>
-      <Nutrition>0.05</Nutrition>
     </statBases>
 
     <thingCategories>
@@ -80,6 +82,9 @@
 
     <ingestible>
       <preferability>NeverForNutrition</preferability>
+      <!-- 与原版药物一致：手动默认取一份，每次实际摄入最多一份。 -->
+      <defaultNumToIngestAtOnce>1</defaultNumToIngestAtOnce>
+      <maxNumToIngestAtOnce>1</maxNumToIngestAtOnce>
       <foodType>Processed, Fluid</foodType>
       <joyKind>Chemical</joyKind>
       <joy>0.8</joy>
@@ -88,9 +93,9 @@
       <optimalityOffsetHumanlikes>10</optimalityOffsetHumanlikes>
 
       <outcomeDoers>
-        <li Class="IngestionOutcomeDoer_GiveHediff">
-          <hediffDef>Hediff_PNA_Debuff</hediffDef>
-          <severity>1</severity> </li>
+        <li Class="SexSlaveCraft.IngestionOutcomeDoer_SSCPna">
+          <!-- PNA P2：每份原始剂量，对应 70% 负荷。 -->
+          <severity>1.4</severity> </li>
       </outcomeDoers>
     </ingestible>
 
@@ -99,6 +104,8 @@
         <chemical>PNA_Chemical</chemical>
         <addictiveness>0.5</addictiveness> <minToleranceToAddict>0.00</minToleranceToAddict>
         
+        <!-- 已有成瘾的原版服药增量；末期强化由共享输入另外处理一次。 -->
+        <existingAddictionSeverityOffset>0.2</existingAddictionSeverityOffset>
         <needLevelOffset>1.0</needLevelOffset> 
         
         <listOrder>1000</listOrder>

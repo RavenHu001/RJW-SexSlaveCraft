@@ -9,7 +9,6 @@
     <modExtensions>
       <li Class="SexSlaveCraft.PNA_DWExtension">
         <adapterHediff>Hediff_ChainOfSexSlave</adapterHediff>
-        <combatBuff>Hediff_PNA_Combat_Buff</combatBuff>
         <debuff>Hediff_PNA_Debuff</debuff>
         <healAmount>15</healAmount>           
         <trueDamageAmount>10</trueDamageAmount>   
@@ -20,7 +19,7 @@
 
   <DamageDef>
     <defName>Damage_PNA_Damage_LowTier</defName>
-    <label>普通纳米机械子弹</label>
+    <label>低强度 PNA 作用</label>
     <workerClass>SexSlaveCraft.DamageWorker_LowTier</workerClass>
     <externalViolence>true</externalViolence>
     <defaultDamage>1</defaultDamage>
@@ -28,13 +27,12 @@
     <modExtensions>
       <li Class="SexSlaveCraft.PNA_DWExtension">
         <adapterHediff>Hediff_ChainOfSexSlave</adapterHediff>
-        <combatBuff>Hediff_PNA_Combat_Buff_Plus</combatBuff>
         <debuff>Hediff_PNA_Debuff</debuff>
         
         <healAmount>5</healAmount>            
         <trueDamageAmount>1</trueDamageAmount>    
         <recordHediff>Hediff_PNA_Consciousness_Record</recordHediff>
-        <baseSeverity>0.125</baseSeverity>    
+        <baseSeverity>0.15</baseSeverity>
       </li>
     </modExtensions>
   </DamageDef>

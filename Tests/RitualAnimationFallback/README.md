@@ -27,3 +27,7 @@ dotnet run --project Tests/RitualAnimationFallback/RitualAnimationFallback.cspro
 在有框架且存在适用动画的环境中测试仪式备用播放；资源确实缺失或不匹配时，
 原有警告和计时行为保持不变。本修复不增加动画包依赖，不修改动画资源、
 UAP 兼容逻辑或框架原有的匹配结果。
+
+仪式修正后 7/7：直接验证生产阶段工具对六个动作都启用空解析兼容，不新增解剖准入。 日志位于 `.builds/pna-effects-step5-ritual-fix/`。
+
+2026-10-15：维护者已确认第五步仪式及性交增加成瘾均正常，批准提交；本次只补实机验收记录，不重复运行回归。

@@ -1,7 +1,7 @@
 <Defs>
 <ChemicalDef>
     <defName>PNA_Chemical</defName>
-    <label>紫色纳米流体</label>
+    <label>紫色纳米催情液</label>
     <addictionHediff>PNA_Addiction</addictionHediff>
     <canBinge>true</canBinge>
   </ChemicalDef>

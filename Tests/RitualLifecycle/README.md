@@ -127,3 +127,11 @@ and unfinished jobs through their actual ExposeData keys; interruptions; separat
 jobs; and exclusion of ritual phases. Outcome calculations and the base award
 are observable boundary stubs here; the formula and direction rules run in the
 CombatantSpecialization suite. The Scribe dictionary model is not a real game save.
+
+2026-10-15 第五步新增日常、仪式、人格排泄的强制动作失败及解析回调换任务六项边界回归。此处只控制解析返回，真实工具的旧部位清理及 Owner 校验由 [ForcedSexProps](../ForcedSexProps/README.md) 直接编译生产源码验证。
+
+本批最终 RitualLifecycle 178/178，完整 30 套／2110 项通过；最终汇总 `.builds/pna-effects-step5/validation-final/summary.json`，仍待游戏验收。
+
+仪式修正后 179/179：原生解析不到部位也能完成固定六阶段；真正定义初始化失败、外部回调替换及原经验保护保持。 日志位于 `.builds/pna-effects-step5-ritual-fix/`。
+
+2026-10-15：维护者已确认第五步仪式及性交增加成瘾均正常，批准提交；本次只补实机验收记录，不重复运行回归。

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
-  <Bullet_PNA_Low.label>PNA Bullet (Basic)</Bullet_PNA_Low.label>
-  <Gun_PNA_Low.label>Basic PNA Launcher</Gun_PNA_Low.label>
-  <Gun_PNA_Low.description>A PNA launcher. PNA penetrates armor and infiltrates the body; after enough hits, targets collapse in continuous climax. If the target is a sex slave, beneficial effects apply instead.</Gun_PNA_Low.description>
+  <Bullet_PNA_Low.label>PNA Projectile</Bullet_PNA_Low.label>
+  <Gun_PNA_Low.label>PNA Launcher</Gun_PNA_Low.label>
+  <Gun_PNA_Low.description>Uses compressed air to fire aphrodisiac nanofluid projectiles. Repeated hits can render an ordinary person unconscious. A sex slave whose body already coexists with purple nanomachines instead becomes activated as wounds draw closed. Its aphrodisiac effect does not affect Masters.</Gun_PNA_Low.description>
 </LanguageData>

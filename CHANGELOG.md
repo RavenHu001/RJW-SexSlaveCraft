@@ -6,6 +6,38 @@ This continuation builds on upstream **2.2.8**, the baseline when upstream devel
 
 ## [未发布 / Unreleased]
 
+暂无超出下列 2.4.0.5 登记范围的新批次。No additional changes beyond the milestone below are recorded here.
+
+## [2.4.0.5] — 2026-10-15 — PNA 重置与玩法补全 / PNA redesign and gameplay additions
+
+**开发里程碑，尚未打包或对外发布。** 归并正式 2.4.0 之后截至 `2ec5cb6` 的开发；P1～P3、玩法五步、四项后续修正、文案与心情标签均获分批实机确认。最新代码修正 `ea448b0`，最新标签与验收 `2ec5cb6`。本次只改 `VERSION` 和文档，保留 DLL／About 旧元数据与全部历史发布产物，未生成新安装包。当前范围见[版本说明](Docs/Releases/2.4.0.5/2.4.0.5版本说明.md)，测试批次及四段版本打包边界见[版本验证](Docs/Releases/2.4.0.5/2.4.0.5版本验证.md)。
+
+**Development milestone; no package or public release.** Consolidates accepted development through `2ec5cb6`. This registration changes documentation and VERSION only; the DLL, in-game About metadata and existing 2.4.0 packages are unchanged. See the linked notes for delivered scope and verification boundaries.
+
+- **文案与标签 / Wording and mood labels:** 定稿已落地到源 Def、四语及镜像并获显示验收；普通心情使用“催情侵蚀”，性奴使用“催情活化”。Accepted localized wording and distinct ordinary/activation mood labels are included.
+
+- **PNA 后续修正验收 / PNA follow-up fixes accepted:** 药液使用局部信息栏适配显示负荷与满值成瘾，保留原版服药组件；低阶发射器接 SSC 研究并保留其前置，枪击已有成瘾基础 +0.01、末期合计 +0.21，清理调试旧称。构建 0 警告／0 错误，PNA 专项 288/288；维护者已确认实机测试没有问题并批准提交，未发布。维护者决定专项存读档／旅队及长期平衡暂不安排，主人侵染与主动补给继续后置。Adds local PNA info-card rules, SSC research gating, +0.01 base weapon addiction reinforcement and current debug wording. The maintainer confirmed this follow-up working in game and approved the commit; it remains unreleased. See [implementation and checks](Docs/Development/Verification/PNA信息栏研究门槛与枪击成瘾修正.md).
+
+- **PNA 当前完成状态 / Current PNA status:** P1～P3 及玩法五步均已实现并获实机确认，第五步 `286ff72` 及后续代码修正 `ea448b0`、标签验收 `2ec5cb6`：主人免疫、五档普通／性奴效果与心情、戒断操控 ×0.85／Vulnerability +0.30、链枪输入与旧 Buff 废弃、三目的 ×1.25／×1.50 来源偏好、普通产出者性交负荷 +2%／需求 +10%／已有成瘾基础 +0.01（末期合计 +0.21）。原版十天恢复及身体归属保持。主人侵染本体、其新增基础成瘾量和可选主动补给未实现；侵染成瘾增量已确认要有，数值待定。PNA foundation and all five gameplay steps are accepted, including Master immunity, staged activation/mood, withdrawal effects, chain-weapon exposure, all-purpose source attraction and producer sex supply. Master Infestation and optional personal automatic supply remain unimplemented. See [current values and scope](Docs/Design/PNA玩法效果与性交补给补全分析.md).
+
+以下 PNA 分批条目保留各次实现时的历史边界，当前数值与完成状态以本节汇总及 2.4.0.5 版本说明为准；既有 2.4.0 发布档案和附件保持原范围。 / The following PNA entries preserve their historical batch boundaries; the current scope is above. Existing 2.4.0 release archives and packages are unchanged.
+
+- **PNA P3 身体归属测试批 / PNA P3 body ownership test batch:** PNA 负荷、成瘾、临时强化、抗性快照及产出状态仅属于当前身体；人格不搬迁，SSC 新生克隆不继承来源状态，成熟保留自身状态与满足度，并按最终有效链协调。沿用原版需求准入与空壳更新；不新增缓存、计时器、保存字段或补丁。维护者已确认 P3 实机有效；当时尚缺的玩法五步现已随后完成并验收。PNA states remain with their physical body through personality transfer and SSC cloning; native needs and existing chain protection are retained. This P3 batch was confirmed working in game; the later five gameplay steps are now also accepted; see [P3 testing notes](Docs/Development/Verification/PNA机制重置P3实现与测试.md).
+
+- **PNA 成瘾与末期强化 / PNA addiction and terminal reinforcement:** 玩家名称改为成瘾，完整断供恢复约 10 天。普通／浓缩基础成瘾增量 +0.1／+0.2，已有成瘾在真实末期输入后额外 +0.2；调试和首次建立除外。原版恢复与服药继续复用，不增加缓存或补丁；维护者已确认有效并批准提交。Uses addiction terminology, a ten-day recovery cycle, and stronger reinforcement from terminal-load exposure.
+
+- **PNA 状态刷新优化 / PNA state refresh optimization:** 稳态刷新改为一次遍历，发现重复记录才分配清理快照；清依赖不再额外重复刷新需求。保留原回调核对及即时移除通知，无新缓存、补丁或机制改动；维护者已确认服药与绑定／解绑正常。Reduces temporary allocations and redundant need refreshes while preserving callback checks and immediate removal notifications. Ingestion and binding/unbinding were confirmed working in game.
+
+- **PNA 单次摄入数量 / PNA ingestion quantity:** 普通液和浓缩液补齐原版药物的默认／最大摄入数量，每次一份，修复手动一次吃多份立即拉满负荷；移除营养值，沿用原版无营养药物摄入，仅 XML 修改；维护者确认单份与零营养服药正常。Both PNA items now default to and cap each ingestion at one unit, fixing unintended multi-unit manual ingestion. Removes nutrition using vanilla support for non-nutritious drugs. XML-only change.
+
+- **PNA 原版成瘾恢复 / Vanilla PNA addiction recovery:** 按维护者反馈撤销专用恢复组件，使用原版恢复组件、计时、进度／天数显示及依赖移除，取消额外恢复门槛，并恢复再次服药加深已有成瘾的原版行为；移除普通档“依赖”标签与冗长恢复悬停。Restores vanilla addiction recovery components and displays, without additional recovery eligibility checks, including vanilla strengthening of existing addiction on ingestion. See [recovery adjustment](Docs/Development/Verification/PNA成瘾原版恢复调整.md).
+
+- **PNA 重置 P2 测试批 / PNA reset P2 test batch:** 有效输入达满建立单份依赖，沿用原版需求条；普通／浓缩每份 +20%／+70%，低阶枪原始基数 0.15，来源统一补充需求。P2 当时两档 ×1.25，后续第二步已将戒断档改为 ×1.75；恢复及再次服药加深成瘾沿用原版，戒断心情 -18；读档保留合法进度，PNA 状态只随身体，不增加自动补给限制。Adds deterministic full-load dependence, vanilla chemical needs, per-unit ingestion, weapon inputs and vanilla addiction recovery. Core behavior was subsequently confirmed in game; remaining targeted checks are tracked in the [P2 testing notes](Docs/Development/Verification/PNA机制重置P2实现与测试.md).
+
+- **普通 PNA 五档数值测试 / Ordinary PNA stage balance test:** 仅调整 XML 固定五档：催情因子 ×1.5／×2／×2.5／×3.25／×4，操控、移动及意识从微量开始逐档受抑；第三档起视听下降模拟幻视幻听，末期保留 10% 意识上限与高潮晕倒。该数值批撤回动态插值、缓存和补丁，未改 P1 代码／DLL；后续 P2 扩展另见上条。The XML-only balance batch retained P1 code and DLL; subsequent P2 work is listed above. In-game balance verification pending; see [testing notes](Docs/Development/Verification/普通PNA五档效果调整.md).
+
+- **PNA 重置 P1 测试批 / PNA reset P1 test batch:** 实现五档普通负荷、分段清除、共享测试输入、实际锁链保护、负荷旧档规范化和四语调试；移除旧普通负荷持续心情，修复旧依赖两档结构；绑定仅清依赖，普通／性奴负荷按同严重度双向转换，保留未结算时间。P1 当时将满值成瘾与来源剂量留给 P2，现已完成；后续已明确不做补给过滤；2026-10-14 维护者确认 P1 实机有效并批准提交。Adds five load stages, piecewise clearance, shared test inputs, effective-chain protection, load save normalization and localized feedback. Deterministic addiction and source doses were deferred to P2 and are now implemented; supply filtering was later explicitly excluded; P1 was confirmed effective in game on 2026-10-14; subsequent balance changes require separate verification. See [P1 implementation and testing](Docs/Development/Completed/PNA机制重置P1实现与测试.md).
+
 - **2.4.0 文档核对 / Documentation alignment:** 同步中英文指南中的主人资格、四阶段数值、七项许可、人格迁移、设置与伤害分担入口；修正训导官职责记忆和条件性反馈混写，以及隐藏审计中的已修复状态。新增开局／升级常见问题并更新玩家导航和发布维护说明。本条为发布后的文档维护，不增加 2.4.0 玩法，也不改写已发布附件。Aligns both languages with 2.4.0 qualification, stage values, seven permissions, personality transfer, settings and damage-sharing controls; corrects duty-memory versus conditional-feedback wording and obsolete hidden audit entries. Adds onboarding/upgrade FAQ and updates player navigation and maintenance instructions. This is post-release documentation maintenance, not new gameplay or a replacement release package.
 
 ## [2.4.0] — 2026-10-13 — 欲望之种与主人成长 / Seed of Desire and Master progression

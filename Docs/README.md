@@ -2,16 +2,17 @@
 
 [项目首页](../README.md) · [玩家阅读入口](Players/README.md) · [当前规划](Design/README.md) · [开发资料](Development/README.md)
 
-整理日期：2026-10-14。当前正式版为 **2.4.0**；具体交付与验收范围分别见[发布说明](Releases/2.4.0/2.4.0发布说明.md)和[版本验证](Releases/2.4.0/2.4.0版本验证.md)。
+整理日期：2026-10-15。当前仓库开发版本为 **2.4.0.5**，PNA 重置与玩法补全已完成约定范围并获分批实机确认；尚未打包发布。范围和验证边界见[版本说明](Releases/2.4.0.5/2.4.0.5版本说明.md)与[版本验证](Releases/2.4.0.5/2.4.0.5版本验证.md)。最近正式下载版仍为 2.4.0，历史附件和记录保持原样。
 
 ## 按用途选择入口
 
 | 用途 | 入口 | 推荐阅读顺序 |
 | --- | --- | --- |
-| 了解功能、准备发布页面 | [中英双语模组介绍](模组介绍.md) | English 在前，中文在后；介绍当前正式版 |
+| 了解功能、准备发布页面 | [中英双语模组介绍](模组介绍.md) | English 在前，中文在后；区分当前开发版本与正式下载版 |
 | 安装和游玩 | [玩家阅读入口](Players/README.md) | 模组介绍 → 快速入门 → 按需查机制与常见问题 |
 | 查看版本交付 | [发布与验证索引](Releases/README.md) | 当前版发布说明 → 验证；跨版本查[更新日志](../CHANGELOG.md) |
 | 继续设计新功能 | [当前规划索引](Design/README.md) | 总体状态 → 当前专项 → 相关历史设计 |
+| 接手 PNA 游戏文案 | [PNA 文案重写交接](Design/PNA文案重写交接.md) | 历史设定与文件范围 → 两份定稿 → 已完成的 XML 与标签验收 |
 | 查已完成实现与修复 | [已交付开发记录](Development/Completed/README.md) | 主题完成记录 → 对应阶段与修复 |
 | 查尚未关闭的实机事项 | [待验收事项](Development/Verification/README.md) | 已知缺口 → 关联实现 → 测试步骤 |
 | 理解旧代码与设计取舍 | [代码与机制复盘](Development/Reviews/README.md) | 先看基线，再看复盘与后续实现 |
@@ -22,14 +23,14 @@
 ## 三条阅读路线
 
 - **新玩家**：[模组介绍](模组介绍.md) → [快速入门](../读我，玩法介绍.md) → [机制详解](../机制详解.md)。英文路线见 [Player documentation](Players/README.md#english-reading-order)。
-- **接手开发**：[当前版本说明](Releases/2.4.0/2.4.0发布说明.md) → [待验收事项](Development/Verification/README.md) → [对应已交付记录](Development/Completed/README.md) → [当前规划](Design/README.md)。
+- **接手开发**：[当前版本说明](Releases/2.4.0.5/2.4.0.5版本说明.md) → [待验收事项](Development/Verification/README.md) → [对应已交付记录](Development/Completed/README.md) → [当前规划](Design/README.md)。
 - **准备发布**：[发布与打包](Maintenance/发布与打包.md) → [测试说明](../Tests/README.md) → [版本文档](Releases/README.md)。
 
 ## 目录与边界
 
 ```text
 Docs/
-  模组介绍.md                 当前正式版的对外双语简介
+  模组介绍.md                 区分开发版本与正式下载版的双语简介
   Players/                    玩家入口与阅读顺序
   Design/                     当前专项方案与总体规划
     Archive/                  已交付范围的历史设计

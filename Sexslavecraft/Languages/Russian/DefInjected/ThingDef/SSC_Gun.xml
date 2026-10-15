@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
-  <Bullet_PNA_Low.label>PNA-пуля (базовая)</Bullet_PNA_Low.label>
-  <Gun_PNA_Low.label>Базовый PNA-лаунчер</Gun_PNA_Low.label>
-  <Gun_PNA_Low.description>PNA-лаунчер. PNA пробивает броню и проникает в тело; после достаточного числа попаданий цели впадают в непрерывный оргазм. Если цель — секс-раб, вместо этого применяются полезные эффекты.</Gun_PNA_Low.description>
+  <Bullet_PNA_Low.label>Снаряд PNA</Bullet_PNA_Low.label>
+  <Gun_PNA_Low.label>Пускатель PNA</Gun_PNA_Low.label>
+  <Gun_PNA_Low.description>Сжатым воздухом выпускает снаряды с наножидкостью-афродизиаком. Повторные попадания могут лишить обычного человека сознания. Секс-раб, чьё тело уже сосуществует с фиолетовыми наномашинами, вместо этого получает активацию, а раны затягиваются. Возбуждающее действие не влияет на Хозяев.</Gun_PNA_Low.description>
 </LanguageData>

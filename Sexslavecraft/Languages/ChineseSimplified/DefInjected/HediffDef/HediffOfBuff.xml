@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <Hediff_PNA_Debuff.label>纳米催情液侵蚀</Hediff_PNA_Debuff.label>
+  <Hediff_PNA_Debuff.description>紫色纳米催情液正在刺激全身的神经。情欲比平时更难压住，痛觉变得迟钝；随着作用加深，动作和注意力开始不受控制，眼前与耳边出现并不存在的东西。作用到极点时，身体会不由自主地连续高潮，直到意识中断。</Hediff_PNA_Debuff.description>
+  <Hediff_PNA_Debuff.stages.0.label>初起</Hediff_PNA_Debuff.stages.0.label>
+  <Hediff_PNA_Debuff.stages.1.label>渐深</Hediff_PNA_Debuff.stages.1.label>
+  <Hediff_PNA_Debuff.stages.2.label>失控</Hediff_PNA_Debuff.stages.2.label>
+  <Hediff_PNA_Debuff.stages.3.label>沉溺</Hediff_PNA_Debuff.stages.3.label>
+  <Hediff_PNA_Debuff.stages.4.label>强制高潮</Hediff_PNA_Debuff.stages.4.label>
+  <SSC_Hediff_PnaRootedLoad.label>纳米催情液活化</SSC_Hediff_PnaRootedLoad.label>
+  <SSC_Hediff_PnaRootedLoad.description>外源纳米催情液把已经与紫色微械共存的身体进一步点燃。人会变得更清醒、更协调、更有力，痛觉明显退去，情欲与精力同时上涌。活化越强，退去也越快。</SSC_Hediff_PnaRootedLoad.description>
+  <SSC_Hediff_PnaRootedLoad.stages.0.label>初醒</SSC_Hediff_PnaRootedLoad.stages.0.label>
+  <SSC_Hediff_PnaRootedLoad.stages.1.label>活络</SSC_Hediff_PnaRootedLoad.stages.1.label>
+  <SSC_Hediff_PnaRootedLoad.stages.2.label>充盈</SSC_Hediff_PnaRootedLoad.stages.2.label>
+  <SSC_Hediff_PnaRootedLoad.stages.3.label>激昂</SSC_Hediff_PnaRootedLoad.stages.3.label>
+  <SSC_Hediff_PnaRootedLoad.stages.4.label>过载</SSC_Hediff_PnaRootedLoad.stages.4.label>
+</LanguageData>

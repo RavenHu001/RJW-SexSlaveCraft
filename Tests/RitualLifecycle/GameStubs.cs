@@ -454,7 +454,12 @@ namespace SexSlaveCraft
     public static class RitualTrainingUtility
     {
         /// <summary>提供动作切换占位；阶段计数由生产状态管理器验证，宿主不选择真实动作。</summary>
-        public static void ApplyPhaseToSexProps(rjw.SexProps props, Pawn master, Pawn slave, int phase) { }
+        public static bool ApplyPhaseToSexProps(rjw.SexProps props, Pawn master, Pawn slave, int phase)
+        {
+            TestWorld.OnResolveAct?.Invoke();
+            // 固定阶段允许原生解析为空；真正的动作工具由 ForcedSexProps 执行验证。
+            return TestWorld.RitualActSetupSucceeds;
+        }
         /// <summary>固定返回已有动画，避免生命周期用例启动动画回退分支。</summary>
         public static bool IsAnimating(Pawn pawn) => TestWorld.Animating;
         /// <summary>提供回退动画占位；不播放动画，也不调用时长设置回调。</summary>
@@ -522,6 +527,9 @@ internal static class TestWorld
     public static Map Map;
     public static int ProcessSexCalls, DailyOutcomes, DailyCooldowns, TrainerProgressAwards, TrainerFeedbackAwards;
     public static bool ReceiverSucceeds = true, SynchronizeSucceeds = true, Animating = true;
+    public static bool ResolveActSucceeds = true;
+    public static bool RitualActSetupSucceeds = true;
+    public static Action OnResolveAct;
     public static int CombatantProgressAwards, ScoreCalls;
     public static float OutcomeScore, BodyScore, CombatantScore;
     public static float? DailyScoreOverride;
@@ -557,6 +565,9 @@ internal static class TestWorld
         Scribe.mode = LoadSaveMode.Inactive;
         Scribe_Values.Saved.Clear();
         ReceiverSucceeds = SynchronizeSucceeds = true;
+        ResolveActSucceeds = true;
+        RitualActSetupSucceeds = true;
+        OnResolveAct = null;
         RjwEndCalls = 0;
         LastGotoThingMode = PathEndMode.OnCell;
         OnGotoInit = null;

@@ -7,4 +7,5 @@
   <SSC_Identity_LegacyRecoveryConfirm>У {0} сохранилась старая цепь к {1}, но роль SSC не выбрана. Восстановить роль секс-раба SSC?\n\nБудет восстановлена только роль. Развитие цепи, развращение, специализация, режим обучения, назначенный инструктор и принадлежность сохранятся. Сохранённые настройки обучения снова вступят в силу.</SSC_Identity_LegacyRecoveryConfirm>
   <SSC_Identity_LegacyRecoveryRejected>Роль или старая связь изменились. Восстановление невозможно. Проверьте текущее состояние персонажа.</SSC_Identity_LegacyRecoveryRejected>
   <SSC_Identity_LegacyRecoveryCompleted>Роль секс-раба SSC для {0} восстановлена. Настройки обучения и данные развития сохранены.</SSC_Identity_LegacyRecoveryCompleted>
+  <SSC_Training_ActUnavailable>Для выбранного действия не удалось определить подходящие части тела.</SSC_Training_ActUnavailable>
 </LanguageData>

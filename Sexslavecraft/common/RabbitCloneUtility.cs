@@ -283,6 +283,11 @@ namespace SexSlaveCraft
                 link.parent.Severity = 1f;
             }
 
+            // 成熟只跳过来源 PNA，不重建或清空克隆自己获得的身体记录。
+            // 年龄与全部复制回调结束后按最终有效链协调，需求继续服从原版准入并保留合法现值。
+            SSCPnaExposureUtility.RefreshBodyState(clone);
+            clone.needs?.AddOrRemoveNeedsAsAppropriate();
+
             clone.Drawer?.renderer?.SetAllGraphicsDirty();
             Messages.Message($"[SSC] {clone.LabelShort} 的兔分身已经成熟。", clone, MessageTypeDefOf.PositiveEvent, false);
         }
@@ -375,6 +380,13 @@ namespace SexSlaveCraft
             // 清继承成长并将主人身份改为未选择；普通凝胶 CopyFrom 不调用此克隆清理入口。
             SSCMasterProgressionUtility.InitializeNewClone(clone);
             SyncTraits(source, clone);
+
+            // 原版 Duplicate 还会复制每个需求的当前值；新身体不能继承来源 PNA 满足度。
+            // 待年龄、特质和健康状态全部就位后交还原版准入；若仍有合法 PNA 需求，
+            // 仅在这个新生入口用原版初值初始化，成熟与人格植入均不调用这段重置。
+            SSCPnaExposureUtility.RefreshBodyState(clone);
+            clone.needs?.AddOrRemoveNeedsAsAppropriate();
+            SSCPnaExposureUtility.GetNeed(clone)?.SetInitialLevel();
         }
 
         /// <summary>根据本体年龄计算分身初始年龄，保证至少一刻且不超过既定幼体上限。</summary>
@@ -453,9 +465,10 @@ namespace SexSlaveCraft
         {
             if (def == null) return false;
 
-            // 初生清理与成熟复制共用此过滤，须先排除主人阶段，再判断宽泛的 SSC 前缀。
-            // 成熟只跳过来源记录，不删除克隆后来自行获得的身份或成长。
-            if (SSCMasterProgressionUtility.IsProgressionDef(def)) return false;
+            // 初生清理与成熟复制共用此过滤，先排除身体 PNA 与主人阶段，
+            // 再判断宽泛的 SSC 前缀。成熟只跳过来源，不删除克隆自身后来获得的状态。
+            if (SSCPnaExposureUtility.IsBodyStateDef(def) ||
+                SSCMasterProgressionUtility.IsProgressionDef(def)) return false;
 
             string defName = def.defName ?? string.Empty;
             if (defName.StartsWith("SSC_", StringComparison.Ordinal)) return true;

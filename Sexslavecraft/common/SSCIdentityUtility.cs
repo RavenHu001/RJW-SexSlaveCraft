@@ -144,6 +144,8 @@ namespace SexSlaveCraft
                 // 同身份请求只刷新现有成长，不补零经验。Master→Master 人格植入
                 // 仍由恢复核心替换来源记录，不能靠“身份变化”通知完成流转。
                 SSCMasterProgressionUtility.RefreshActivation(pawn);
+                // 同身份的人格恢复也可能换入带药效的身体，仍须执行主人免疫核对。
+                SSCPnaExposureUtility.RefreshBodyState(pawn, true);
                 return true;
             }
             if (!restoredQualification.HasValue && identity == PawnIdentity.Master &&
@@ -179,6 +181,8 @@ namespace SexSlaveCraft
             // 成功写入身份之后再建立或启停成长。普通选择允许首次建立；
             // 人格恢复不补基础阶段，恢复核心随后精确应用来源，包括明确没有记录的主人。
             SSCMasterProgressionUtility.NotifyIdentityChanged(pawn, !restoredQualification.HasValue);
+            // 仅在身份成功写入后协调；成为主人清受药状态，退出主人不恢复已清记录。
+            SSCPnaExposureUtility.RefreshBodyState(pawn, true);
             // 身份真正变化后通知训导官生命周期。绑定事务会暂缓这次检查，
             // 待主人锁链和身份全部就绪后统一判断持续条件。
             TrainerSpecializationLifecycle.Notify(pawn);

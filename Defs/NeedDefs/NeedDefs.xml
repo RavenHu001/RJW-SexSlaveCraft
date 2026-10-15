@@ -17,8 +17,8 @@
   <NeedDef ParentName="DrugAddictionNeedBase">
     <defName>Need_PNA</defName>
     <needClass>Need_Chemical</needClass>
-    <label>纳米流体渴望</label>
-    <description>由于体内已经被紫色纳米机械改造，身体持续渴望新的纳米流体补充，否则将产生强烈的心理空虚。</description>
+    <label>纳米催情液渴求</label>
+    <description>依赖纳米催情液带来的刺激之后，身体会持续索要它。满足度随时间下降，见底即进入戒断；取得纳米催情液可以补回，但也让依赖更深。</description>
     <listPriority>50</listPriority> 
     <fallPerDay>0.333</fallPerDay> 
   </NeedDef>

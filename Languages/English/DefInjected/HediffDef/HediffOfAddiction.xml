@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
-  <PNA_Addiction.label>PNA Dependence</PNA_Addiction.label>
-  <PNA_Addiction.description>Physical dependence on nanofluid. After a period without intake, the body self-regulates and clears the dependence.</PNA_Addiction.description>
-  <PNA_Addiction.stages.0.label>Dependent</PNA_Addiction.stages.0.label>
+  <PNA_Addiction.label>Nano-Aphrodisiac Addiction</PNA_Addiction.label>
+  <PNA_Addiction.description>The nervous system has grown accustomed to aphrodisiac nanofluid and keeps demanding its stimulation. When the supply stops, emptiness, irritability and an indistinct physical discomfort set in, while desire becomes harder to quiet. Obtaining more briefly suppresses the craving but deepens dependence; recovery requires staying away from it.</PNA_Addiction.description>
+  <PNA_Addiction.stages.1.label>Withdrawal</PNA_Addiction.stages.1.label>
 </LanguageData>

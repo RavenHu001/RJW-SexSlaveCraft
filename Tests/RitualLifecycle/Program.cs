@@ -74,6 +74,7 @@ internal static partial class Program
         RunTrainingIdentityTests();
         RunTrainerOfficerFeedbackTests();
         RunMasterProgressionTests();
+        RunForcedActBoundaryTests();
         Check("cancelling while walking cleans state without executing the future scene finish", () =>
         {
             var ritual = new RitualFixture();

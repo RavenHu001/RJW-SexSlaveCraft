@@ -128,6 +128,12 @@ namespace SexSlaveCraft
         public static HediffDef SSC_HumanCattleLactationBridge;
         public static HediffDef SSC_Hediff_RabbitCloneLink;
         public static HediffDef SSC_Hediff_RabbitCloneLowPNA;
+        // PNA：保留旧 DefName；普通身体无需调教组件，实际主人身份另由共享入口提供药效免疫。
+        public static HediffDef SSC_PnaLoad;
+        public static HediffDef SSC_PnaRootedLoad;
+        // P2 复用原版依赖／化学需求类，这里只集中保存它们的 Def 引用。
+        public static HediffDef SSC_PnaAddiction;
+        public static NeedDef SSC_PnaNeed;
 
         // 🔥【新增】人格排泄后的深度宕机状态
         public static HediffDef SSC_PostExcretionComa;
@@ -302,6 +308,11 @@ namespace SexSlaveCraft
             SSC_HumanCattleLactationBridge = DefDatabase<HediffDef>.GetNamedSilentFail("SSC_HumanCattleLactationBridge");
             SSC_Hediff_RabbitCloneLink = GetDef<HediffDef>("SSC_Hediff_RabbitCloneLink");
             SSC_Hediff_RabbitCloneLowPNA = GetDef<HediffDef>("SSC_Hediff_RabbitCloneLowPNA");
+            SSC_PnaLoad = GetDef<HediffDef>(SSCPnaExposureUtility.LoadDefName);
+            SSC_PnaRootedLoad = GetDef<HediffDef>(SSCPnaExposureUtility.RootedLoadDefName);
+            // 在现有 Def 初始化流程解析依赖与需求，输入入口无需反复按名称检索。
+            SSC_PnaAddiction = GetDef<HediffDef>(SSCPnaExposureUtility.AddictionDefName);
+            SSC_PnaNeed = GetDef<NeedDef>(SSCPnaExposureUtility.NeedDefName);
 
             // 🔥【新增】获取排泄后的宕机状态
             SSC_PostExcretionComa = GetDef<HediffDef>("SSC_PostExcretionComa");

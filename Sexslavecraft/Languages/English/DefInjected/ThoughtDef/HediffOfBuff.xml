@@ -1,7 +1,23 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-  <PNA_Debuff_Thought.stages.0.label>Aphrodisiac Surge</PNA_Debuff_Thought.stages.0.label>
-  <PNA_Debuff_Thought.stages.0.description>Hah... ah... so hot... down there is so itchy.</PNA_Debuff_Thought.stages.0.description>
-  <PNA_Debuff_Thought.stages.1.label>Continuous Climax</PNA_Debuff_Thought.stages.1.label>
-  <PNA_Debuff_Thought.stages.1.description>Ahhh! Why... right now... ahh! ahh! My mind is going blank...</PNA_Debuff_Thought.stages.1.description>
+  <PNA_Debuff_Thought.stages.0.label>Aphrodisiac Corrosion: Warmth</PNA_Debuff_Thought.stages.0.label>
+  <PNA_Debuff_Thought.stages.0.description>A warmth is spreading from within. I want a little more, but I can still hold it back.</PNA_Debuff_Thought.stages.0.description>
+  <PNA_Debuff_Thought.stages.1.label>Aphrodisiac Corrosion: Arousal</PNA_Debuff_Thought.stages.1.label>
+  <PNA_Debuff_Thought.stages.1.description>The heat has spread through my whole body. I keep thinking about it, and concentrating is difficult.</PNA_Debuff_Thought.stages.1.description>
+  <PNA_Debuff_Thought.stages.2.label>Aphrodisiac Corrosion: Intoxication</PNA_Debuff_Thought.stages.2.label>
+  <PNA_Debuff_Thought.stages.2.description>Things in front of me are blurring and sounds are ringing in my ears. I cannot tell what is real.</PNA_Debuff_Thought.stages.2.description>
+  <PNA_Debuff_Thought.stages.3.label>Aphrodisiac Corrosion: Indulgence</PNA_Debuff_Thought.stages.3.label>
+  <PNA_Debuff_Thought.stages.3.description>Desire has overwhelmed me. I no longer care what I am doing, and I cannot control myself.</PNA_Debuff_Thought.stages.3.description>
+  <PNA_Debuff_Thought.stages.4.label>Aphrodisiac Corrosion: Bliss</PNA_Debuff_Thought.stages.4.label>
+  <PNA_Debuff_Thought.stages.4.description>I can barely hold on. There is only pleasure left in my head, and nothing else.</PNA_Debuff_Thought.stages.4.description>
+  <SSC_PnaRootedLoad_Thought.stages.0.label>Aphrodisiac Activation: Clarity</SSC_PnaRootedLoad_Thought.stages.0.label>
+  <SSC_PnaRootedLoad_Thought.stages.0.description>It is as if my body has lit up. Suddenly, everything feels clear.</SSC_PnaRootedLoad_Thought.stages.0.description>
+  <SSC_PnaRootedLoad_Thought.stages.1.label>Aphrodisiac Activation: Lightness</SSC_PnaRootedLoad_Thought.stages.1.label>
+  <SSC_PnaRootedLoad_Thought.stages.1.description>My limbs feel light and my movements keep pace with my thoughts. My body obeys me better than usual.</SSC_PnaRootedLoad_Thought.stages.1.description>
+  <SSC_PnaRootedLoad_Thought.stages.2.label>Aphrodisiac Activation: Vitality</SSC_PnaRootedLoad_Thought.stages.2.label>
+  <SSC_PnaRootedLoad_Thought.stages.2.description>Strength and desire are rising together. I feel excited and clear-headed.</SSC_PnaRootedLoad_Thought.stages.2.description>
+  <SSC_PnaRootedLoad_Thought.stages.3.label>Aphrodisiac Activation: Exhilaration</SSC_PnaRootedLoad_Thought.stages.3.label>
+  <SSC_PnaRootedLoad_Thought.stages.3.description>My body is burning. I feel stronger than ever, and I cannot stop.</SSC_PnaRootedLoad_Thought.stages.3.description>
+  <SSC_PnaRootedLoad_Thought.stages.4.label>Aphrodisiac Activation: Euphoria</SSC_PnaRootedLoad_Thought.stages.4.label>
+  <SSC_PnaRootedLoad_Thought.stages.4.description>This strength is almost more than I can contain. It feels so good that I want it to last forever.</SSC_PnaRootedLoad_Thought.stages.4.description>
 </LanguageData>

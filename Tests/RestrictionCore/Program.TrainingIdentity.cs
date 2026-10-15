@@ -58,7 +58,7 @@ internal static partial class Program
         {
             string[] keys = { "SSC_Training_TargetIdentityRequired", "SSC_Identity_RitualRoleChanged",
                 "SSC_Identity_LegacyRecoveryHint", "SSC_Identity_LegacyRecoveryButton", "SSC_Identity_LegacyRecoveryConfirm",
-                "SSC_Identity_LegacyRecoveryRejected", "SSC_Identity_LegacyRecoveryCompleted" };
+                "SSC_Identity_LegacyRecoveryRejected", "SSC_Identity_LegacyRecoveryCompleted", "SSC_Training_ActUnavailable" };
             foreach (string language in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" })
             {
                 string relative = Path.Combine("Languages", language, "Keyed", "SSC_TrainingIdentity.xml");

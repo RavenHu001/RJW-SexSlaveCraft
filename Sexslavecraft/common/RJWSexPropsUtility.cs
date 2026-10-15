@@ -1,6 +1,9 @@
+using System;
+using System.Collections.Generic;
 using System.Reflection;
 using RimWorld;
 using rjw;
+using rjw.Modules.Interactions;
 using Verse;
 
 // EN: This file rewrites RJW SexProps for SSC scenes.
@@ -17,41 +20,65 @@ namespace SexSlaveCraft
             ?? typeof(SexProps).GetField("sexType", InstanceFlags)
             ?? typeof(SexProps).GetField("<sexType>k__BackingField", InstanceFlags);
 
-        private static readonly FieldInfo InteractionField = typeof(SexProps).GetField("_interaction", BindingFlags.NonPublic | BindingFlags.Instance);
-
-        public static void ApplyTrainingAct(SexProps sexProps, Pawn initiator, Pawn partner, TrainingActType actType)
+        public static bool ApplyTrainingAct(SexProps sexProps, Pawn initiator, Pawn partner, TrainingActType actType)
         {
             // EN: Convert SSC's training-mode selection into the RJW sex type + interaction pair for this scene.
             // CN: 把 SSC 的调教姿势选择换算成这次场景要用的 RJW sex type 和 interaction 组合。
-            ApplySexType(sexProps, initiator, partner, ConvertToRJWType(actType), ConvertToInteractionDefName(actType));
+            return ApplySexType(sexProps, initiator, partner, ConvertToRJWType(actType), ConvertToInteractionDefName(actType));
         }
 
-        public static void ApplySexType(SexProps sexProps, Pawn initiator, Pawn partner, xxx.rjwSextype sexType, string interactionDefName)
+        /// <summary>开始前同步强制动作及部位；固定仪式可保留空接触结果，不增加解剖准入条件。</summary>
+        public static bool ApplySexType(SexProps sexProps, Pawn initiator, Pawn partner, xxx.rjwSextype sexType,
+            string interactionDefName, bool allowEmptyParts = false)
         {
-            if (sexProps == null) return;
+            // 缺少指定 Def 或不支持的字段布局时不冒用原选择；先验证再改写。
+            if (sexProps == null || initiator == null || partner == null || initiator == partner ||
+                SexTypeField == null || string.IsNullOrEmpty(interactionDefName)) return false;
+            InteractionDef def = DefDatabase<InteractionDef>.GetNamedSilentFail(interactionDefName);
+            if (def == null) return false;
+            var interaction = new SexInteraction(def);
+            // SSC 的口交模式沿用 Oral 总类，本机 Sex_Fellatio 使用更细的 Fellatio 类型。
+            // 保留既有结算分类，同时只允许这一对已核对的兼容映射。
+            if (interaction.Sextype != sexType &&
+                !(sexType == xxx.rjwSextype.Oral && interaction.Sextype == xxx.rjwSextype.Fellatio)) return false;
 
             sexProps.pawn = initiator;
             sexProps.partner = partner;
+            sexProps.isReceiver = false;
+            sexProps.isRevese = interaction.HasInteractionTag(SexInteractionTag.Reverse);
+            // RJW 的 interaction setter 不清旧 resolved，且预置 SexProps 的 Start 不重设反向标记。
+            // 显式同步其已有字段，不另建缓存；原强迫、避孕套等场景标记继续保留。
+            sexProps.resolved = null;
+            sexProps.interaction = interaction;
+            SexTypeField.SetValue(sexProps, (xxx.rjwSextype?)sexType);
 
-            // EN: Compatibility path: RJW changed the sexType backing field across versions, so all fallback names live here.
-            // CN: 兼容分支：RJW 不同版本会改 sexType 背后的字段名，所以所有回退字段名统一收在这里。
-            if (SexTypeField != null)
-            {
-                SexTypeField.SetValue(sexProps, (xxx.rjwSextype?)sexType);
-            }
-
-            if (!string.IsNullOrEmpty(interactionDefName))
-            {
-                // EN: The dictionaryKey must follow the forced act, or RJW may rebuild the wrong interaction later.
-                // CN: dictionaryKey 必须跟着强制姿势一起改，不然 RJW 后面可能会重建出错误的 interaction。
-                InteractionDef interaction = DefDatabase<InteractionDef>.GetNamedSilentFail(interactionDefName);
-                if (interaction != null)
+            // 只解析指定交互，不重新随机挑动作；不得在结束阶段临时选部位充当接触证据。
+            SexInteractionResolved resolved = SexInteractionHelper.ResolveInteraction(sexProps);
+            // 仪式原本按固定六阶段运行，不要求每种动作都满足 RJW 的选性交部位条件。
+            // 解析不到时保留当前动作和双方，明确记录无可确认接触；不能沿用上个随机动作的部位。
+            // 这里只填写 RJW 已有解析载体，空列表让按真实插入遍历的怀孕／体液逻辑自然跳过。
+            if (resolved == null && allowEmptyParts)
+                resolved = new SexInteractionResolved
                 {
-                    sexProps.dictionaryKey = interaction;
-                }
-            }
-
-            InteractionField?.SetValue(sexProps, null);
+                    Initiator = initiator,
+                    Recipient = partner,
+                    Interaction = interaction,
+                    InitiatorParts = new List<ILewdablePart>(),
+                    RecipientParts = new List<ILewdablePart>(),
+                    Penetrations = new List<Tuple<ILewdablePart, ILewdablePart>>()
+                };
+            if (sexProps.initiator != initiator || sexProps.recipient != partner || sexProps.dictionaryKey != def ||
+                resolved?.Interaction?.Def != def || resolved.Initiator != initiator || resolved.Recipient != partner ||
+                resolved.InitiatorParts == null || resolved.RecipientParts == null || resolved.Penetrations == null) return false;
+            foreach (ILewdablePart part in resolved.InitiatorParts)
+                if (part == null || part.Owner != initiator) return false;
+            foreach (ILewdablePart part in resolved.RecipientParts)
+                if (part == null || part.Owner != partner) return false;
+            foreach (var contact in resolved.Penetrations)
+                if (contact == null || !((contact.Item1?.Owner == initiator && contact.Item2?.Owner == partner) ||
+                    (contact.Item1?.Owner == partner && contact.Item2?.Owner == initiator))) return false;
+            sexProps.resolved = resolved;
+            return true;
         }
 
         public static xxx.rjwSextype ConvertToRJWType(TrainingActType actType)

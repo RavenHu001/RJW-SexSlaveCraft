@@ -2,7 +2,7 @@
 
 [文档总索引](../Docs/README.md) · [发布与打包](../Docs/Maintenance/发布与打包.md) · [开发记录](../Docs/Development/README.md)
 
-当前 **2.4.0** 的 `Scripts/Test-All.ps1` 登记 **28 套机制回归**；正式 2.3.9 发布时为 25 套，本版增加 `MasterQualificationItem`、`MasterEntry` 与 `MasterPanelUI`。下列专项 README 保留各自命令、覆盖范围和实机步骤，本版完整门禁与实际通过数量见[2.4.0 版本验证](../Docs/Releases/2.4.0/2.4.0版本验证.md)。
+当前仓库为 **2.4.0.5 开发里程碑**，`Scripts/Test-All.ps1` 登记 **30 套**。PNA 基础新增 `PnaLoad`，第五步新增 `ForcedSexProps`；最近 PNA 专项为 **288/288**，该修正未重复全量。本次版本登记只检查文档及标记，不运行代码测试。原始记录与完整验证边界见[2.4.0.5 版本验证](../Docs/Releases/2.4.0.5/2.4.0.5版本验证.md)。历史正式 2.4.0 为 28 套，2.3.9 为 25 套；当次结果见[2.4.0 版本验证](../Docs/Releases/2.4.0/2.4.0版本验证.md)，不回写历史计数。
 
 ## 统一入口
 
@@ -30,6 +30,8 @@ pwsh -File Scripts/Test-All.ps1 -HarmonyAssemblyPath 'C:\Dependencies\Harmony\ne
 
 ## 身份、训导官与自我调教
 
+- [PnaLoad](PnaLoad/README.md)：2.4.0.5 的 PNA 负荷、成瘾、来源、信息栏与旧档回归；P3 直接执行 SSC 新生／成熟复制及身体归属过滤，详见[P3 测试记录](../Docs/Development/Verification/PNA机制重置P3实现与测试.md)。
+
 - [TrainerIdentity](TrainerIdentity/README.md)：调教员身份回归。
 - [TrainerIntegration](TrainerIntegration/README.md)：训导官人格恢复集成回归。
 - [TrainerTrainingMemories](TrainerTrainingMemories/TrainerTrainingMemories.csproj)：弱化记忆套生产源码宿主；覆盖与验收见[实现与测试记录](../Docs/Development/Completed/训导官弱化记忆套实现与测试记录.md)，尚无独立 README。
@@ -56,7 +58,8 @@ pwsh -File Scripts/Test-All.ps1 -HarmonyAssemblyPath 'C:\Dependencies\Harmony\ne
 ## 限制、行为保护与同床
 
 - [RestrictionCore](RestrictionCore/README.md)：新限制系统核心与生命周期回归。
-- [InteractionProtection](InteractionProtection/README.md)：任务限制与兼容生命周期回归。
+- [InteractionProtection](InteractionProtection/README.md)：任务限制与兼容生命周期、PNA 完成分发回归。
+- [ForcedSexProps](ForcedSexProps/README.md)：强制动作解析、旧部位清理、方向及 Owner 核对回归。
 - [SharedBed](SharedBed/README.md)：主奴同床回归。
 - [BusTrade](BusTrade/README.md)：交易与宠物事件限制回归。
 
