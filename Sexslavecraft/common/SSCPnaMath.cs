@@ -12,6 +12,9 @@ namespace SexSlaveCraft
         public const int TicksPerDay = 60000;
         public const int UpdateInterval = 150;
         public const float OrdinaryExposureDose = 0.08f;
+        // 性交来源使用归一化负荷；本批只准备输入参数，实际完成事件在后续接入。
+        public const float MasterInfestationDose = 0.08f;
+        public const float ProducerSexDose = 0.02f;
 
         public static bool IsFinite(float value) => !float.IsNaN(value) && !float.IsInfinity(value);
 

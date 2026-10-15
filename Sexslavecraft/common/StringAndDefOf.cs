@@ -128,7 +128,7 @@ namespace SexSlaveCraft
         public static HediffDef SSC_HumanCattleLactationBridge;
         public static HediffDef SSC_Hediff_RabbitCloneLink;
         public static HediffDef SSC_Hediff_RabbitCloneLowPNA;
-        // PNA：保留旧 DefName；身体负荷和依赖不依赖调教组件或主人身份。
+        // PNA：保留旧 DefName；普通身体无需调教组件，实际主人身份另由共享入口提供药效免疫。
         public static HediffDef SSC_PnaLoad;
         public static HediffDef SSC_PnaRootedLoad;
         // P2 复用原版依赖／化学需求类，这里只集中保存它们的 Def 引用。

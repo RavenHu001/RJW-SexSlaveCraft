@@ -123,6 +123,11 @@ namespace SexSlaveCraft
         public static void InitializeNewClone(Pawn pawn) { }
         public static bool IsProgressionDef(HediffDef def)=>def?.defName=="SSC_Hediff_MasterProgression";
     }
-    public static class SSCIdentityUtility { public static void SyncSexSlaveTraitFromHighestCorruption(Pawn pawn) { } }
+    public static class SSCIdentityUtility
+    {
+        // 本宿主只提供当前身份；实际身份提交的协调调用另由 TrainerIdentity 覆盖。
+        public static bool IsMaster(Pawn pawn)=>pawn?.IsMaster==true;
+        public static void SyncSexSlaveTraitFromHighestCorruption(Pawn pawn) { }
+    }
     public static class Strings { public static string Message_RabbitCloneBirth(string source,string clone)=>source+clone; }
 }

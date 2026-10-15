@@ -287,6 +287,12 @@ namespace RimWorld
 namespace SexSlaveCraft
 {
     using Verse;
+    // 本套件只观察身份提交是否通知真实 PNA 协调入口；健康清药规则由 PnaLoad 执行生产代码。
+    public static class SSCPnaExposureUtility
+    {
+        public static System.Action<Pawn, bool> OnRefresh;
+        public static void RefreshBodyState(Pawn pawn, bool forceRefresh = false) => OnRefresh?.Invoke(pawn, forceRefresh);
+    }
     public enum PawnIdentity { Unset, Slave, Master }
     public enum TrainingMode { Disabled, Enabled }
     public enum RabbitReproductionMode { Offspring, Clone }

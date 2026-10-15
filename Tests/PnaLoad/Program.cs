@@ -29,7 +29,7 @@ internal static partial class Program
         Run("保存加载阶段不能制造输入", () => { var pawn = NewPawn(); Scribe.mode = LoadSaveMode.PostLoadInit; Assert(!Input(pawn, .08f).Accepted, "读档输入拒绝"); });
         Run("新实例准确写 .16，不带 .01 隐藏初值", () => { var pawn = NewPawn(); var r = Input(pawn, .08f); Near(.16, Record(pawn).Severity); Near(.08, r.AddedLoad); });
         Run("普通输入不要求调教组件、身份或恶堕", () => { var pawn = NewPawn(); pawn.IsSlave = true; pawn.Corruption = .12f; Assert(Input(pawn, .08f).Accepted, "输入"); Near(.08, SSCPnaExposureUtility.GetLoad(pawn)); });
-        Run("主人身份不获得通用 PNA 免疫", () => { var pawn = NewPawn(); pawn.IsMaster = true; Assert(!Input(pawn, .08f).Rooted, "无通用免疫"); Near(.08, SSCPnaExposureUtility.GetLoad(pawn)); });
+        Run("主人身份免疫共享 PNA 输入", () => { var pawn = NewPawn(); pawn.IsMaster = true; Assert(!Input(pawn, .08f).Accepted, "免疫拒绝"); Near(0, SSCPnaExposureUtility.GetLoad(pawn)); });
         Run("五份同 tick .20 满值且只有一个负荷实例", () => { var pawn = NewPawn(); for (int i=0;i<5;i++) Input(pawn,.20f); Near(1, SSCPnaExposureUtility.GetLoad(pawn)); Equal(1, pawn.health.hediffSet.hediffs.Count(h=>SSCPnaExposureUtility.IsBodyLoadDef(h.def))); });
         Run("满值真实暴露和零增加量分开", () => { var pawn=NewPawn(); Input(pawn,1); var r=Input(pawn,.08f); Assert(r.Accepted && r.IsFull, "真实输入仍满"); Near(.08,r.RequestedDose); Near(0,r.AddedLoad); });
         Run("P2 满值建立单份依赖并将首次需求设满", () => { var pawn=NewPawn(); Assert(Input(pawn,1).AddictionCreated,"创建结果"); Near(1,SSCPnaExposureUtility.GetAddiction(pawn).Severity); Near(1,pawn.needs.PnaNeed.Value); });
@@ -84,6 +84,7 @@ internal static partial class Program
             Run("四语 PNA 标签与占位符 " + language, () => Localization(language));
         RunP2Tests();
         RunP3Tests();
+        RunEffectsStep1Tests();
         Console.WriteLine($"结果：{passed}/{passed+failed} 项通过。");
         return failed==0 ? 0:1;
     }
