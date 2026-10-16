@@ -217,20 +217,9 @@ namespace SexSlaveCraft
             SSCMasterProgressionUtility.TryAddExperience(master, SSCMasterProgressionUtility.BindingRitualExperience);
             // 升阶刷新健康可能使任务或仪式被外部替换；后续关系、文化收益和信件仍复查本场归属。
             if (!canContinue()) return;
-            bool relationAdded = false;
-
-            // 仅判定性奴对主人的好感 >= 80，添加缺陷恋人关系
-            if (slave.relations.OpinionOf(master) >= 80)
-            {
-                if (!canContinue()) return;
-                if (!master.relations.DirectRelationExists(SSCDefOf.SSC_FlawedLovers, slave))
-                {
-                    if (!canContinue()) return;
-                    master.relations.AddDirectRelation(SSCDefOf.SSC_FlawedLovers, slave);
-                    if (!canContinue()) return;
-                    relationAdded = true;
-                }
-            }
+            // 主持者也可以是第三方调教员；只有锁链实际主人能领取原有的 80 好感关系奖励。
+            bool relationAdded = SSCBondRelationUtility.TryCreateAfterRitual(master, slave, canContinue);
+            if (!canContinue()) return;
 
             // 4. 处理原版的文化点数和附魔事件
             string extraOutcomeDesc = null;

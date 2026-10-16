@@ -5,6 +5,8 @@
     <SscSourceRoot Condition="'$(SscSourceRoot)' == ''">../../Sexslavecraft</SscSourceRoot>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(SscSourceRoot)/common/SSCBondRelationRules.cs" Link="Production/SSCBondRelationRules.cs" />
+    <Compile Include="$(SscSourceRoot)/common/SSCBondRelationUtility.cs" Link="Production/SSCBondRelationUtility.cs" />
     <Compile Include="$(SscSourceRoot)/common/ExcretionUtility.cs" Link="Production/ExcretionUtility.cs" />
     <Compile Include="$(SscSourceRoot)/Comps/Comp_Train.MasterQualification.cs" Link="Production/Comp_Train.MasterQualification.cs" />
     <Compile Include="$(SscSourceRoot)/Comps/Comp_Train.MasterProgression.cs" Link="Production/Comp_Train.MasterProgression.cs" />

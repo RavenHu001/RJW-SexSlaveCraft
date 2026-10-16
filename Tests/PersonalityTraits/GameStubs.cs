@@ -770,7 +770,11 @@ namespace RimWorld
 
     public class RelationsTracker
     {
+        // 人格宿主只保存可观察的直接关系；生产过滤规则由真实植入和关系服务执行。
         public List<DirectRelation> DirectRelations = new List<DirectRelation>();
+        public int OpinionOf(Pawn other) => 0;
+        public bool DirectRelationExists(PawnRelationDef def, Pawn other) => DirectRelations.Any(r => r.def == def && r.otherPawn == other);
+        public bool TryRemoveDirectRelation(PawnRelationDef def, Pawn other) => DirectRelations.RemoveAll(r => r.def == def && r.otherPawn == other) > 0;
         /// <summary>清空测试角色的直接关系，供人格提取及植入入口使用。</summary>
         public void ClearAllRelations()
         {
@@ -852,6 +856,7 @@ namespace SexSlaveCraft
 
     public class Hediff_ChainOfSexSlave : Hediff
     {
+        public Pawn LinkedPawn;
     }
 
     public partial class CompSexSlaveTraining : ThingComp
@@ -886,6 +891,7 @@ namespace SexSlaveCraft
     public static class ResearchUtils { public static bool IsResearchFinished(object def) => def != null; }
     public static partial class SSCDefOf
     {
+        public static PawnRelationDef SSC_FlawedLovers = new PawnRelationDef();
         public static HediffDef SSC_Hediff_MasterProgression = new HediffDef
         {
             defName = "SSC_Hediff_MasterProgression", hediffClass = typeof(Hediff_MasterProgression), maxSeverity = 100f,
@@ -927,15 +933,21 @@ namespace SexSlaveCraft
 
     public static partial class SSCBondUtility
     {
-        /// <summary>提供解除绑定接口的空实现；人格特质测试不运行锁链系统。</summary>
-        public static void Unbind(Pawn p)
-        {
-        }
+        // 仅为人格场景提供恢复成功/失败的引擎边界；真实 Bind、解绑和锁链回调另由 BondRelations 验证。
+        public static readonly Dictionary<Pawn, Pawn> TestBoundMasters = new Dictionary<Pawn, Pawn>();
+        public static bool AllowBondRestore;
+        public static Pawn GetBoundMaster(Pawn pawn) => pawn != null && TestBoundMasters.TryGetValue(pawn, out var master) ? master : null;
+        /// <summary>清除测试身体的绑定引用；实际锁链生命周期由 BondRelations 执行生产源码。</summary>
+        public static void Unbind(Pawn p) { TestBoundMasters.Remove(p); }
 
-        /// <summary>返回绑定失败以跳过锁链恢复分支，明确该系统不在本测试替身的验证范围内。</summary>
-        public static bool Bind(Pawn m, Pawn p, bool b) => false;
-        /// <summary>返回空锁链实例，与测试环境不建立真实绑定的设定一致。</summary>
-        public static Hediff_ChainOfSexSlave GetChain(Pawn p) => null;
+        /// <summary>由场景决定绑定恢复成功或失败，供真实人格入口验证后续关系过滤。</summary>
+        public static bool Bind(Pawn m, Pawn p, bool b)
+        {
+            if (!AllowBondRestore) return false;
+            TestBoundMasters[p] = m; return true;
+        }
+        /// <summary>提供边界绑定状态，不模拟生产锁链严重度及生命周期。</summary>
+        public static Hediff_ChainOfSexSlave GetChain(Pawn p) => GetBoundMaster(p) is Pawn master ? new Hediff_ChainOfSexSlave { LinkedPawn = master } : null;
     }
 
     public static class SSCIdentityUtility

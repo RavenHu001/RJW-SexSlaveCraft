@@ -5,6 +5,7 @@
     <SscSourceRoot Condition="'$(SscSourceRoot)' == ''">../../Sexslavecraft</SscSourceRoot>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="../Shared/BondRelationMaintenanceBoundary.cs" Link="Shared/BondRelationMaintenanceBoundary.cs" />
     <!-- 同时编译真实特化组件和只读资格入口，测试不重写业务判定。 -->
     <Compile Include="$(SscSourceRoot)/common/SSCIdentityUtility.cs" Link="Production/SSCIdentityUtility.cs" />
     <Compile Include="$(SscSourceRoot)/Comps/Comp_Train.MasterQualification.cs" Link="Production/Comp_Train.MasterQualification.cs" />

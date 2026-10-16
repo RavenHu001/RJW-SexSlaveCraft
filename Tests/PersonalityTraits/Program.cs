@@ -17,6 +17,7 @@ internal static partial class Program
         RunMasterQualificationCases();
         RunMasterProgressionCases();
         RunAbilityToggleTransferCases();
+        RunBondRelationTransferCases();
         Run("Cross-body insertion replaces ordinary traits and consumes gel", CrossBodyInsertion);
         Run("Same-body insertion restores an earlier trait snapshot", SameBodySnapshot);
         Run("Same TraitDef with a different degree is replaced", SameDefDifferentDegree);
@@ -61,6 +62,8 @@ internal static partial class Program
     /// <summary>隔离单个用例的日志和存档模拟状态，捕获断言异常，并检查生产代码是否记录了意外错误。</summary>
     private static void Run(string name, Action test)
     {
+        SSCBondUtility.TestBoundMasters.Clear();
+        SSCBondUtility.AllowBondRestore = false;
         Log.Errors.Clear();
         Scribe.mode = LoadSaveMode.Inactive;
         Scribe.Values.Clear();
@@ -74,7 +77,7 @@ internal static partial class Program
         catch (Exception e)
         {
             failed++;
-            Console.WriteLine("FAIL: " + name + "\n" + e.Message);
+            Console.WriteLine("FAIL: " + name + "\n" + e);
         }
     }
 

@@ -293,6 +293,9 @@ namespace SexSlaveCraft
                         {
                             if (relData.otherPawn != null && !relData.otherPawn.Destroyed && relData.otherPawn != consumer)
                             {
+                                // 旧凝胶可能存有第三方或旧主人关系；实际锁链恢复失败时也不能回放奖励关系。
+                                if (relData.def == SSCDefOf.SSC_FlawedLovers &&
+                                    !SSCBondRelationUtility.IsValidPair(consumer, relData.otherPawn)) continue;
                                 consumer.relations.AddDirectRelation(relData.def, relData.otherPawn);
                             }
                         }
@@ -396,6 +399,9 @@ namespace SexSlaveCraft
                     // 完整恢复成功后精确替换，明确关闭及未知能力键均保留；作用域结束才重新启用能力。
                     SSCAbilityToggleUtility.RestorePreference(consumer, toggleSnapshot);
 
+                    // 健康、专精及能力恢复可能触发后续回调，成功出口再按最终锁链核对一次。
+                    // 此处只清理失效关系，不把凝胶里的旧社会历史解释为一次新的仪式奖励。
+                    SSCBondRelationUtility.RemoveInvalidRelations(consumer);
                     Messages.Message(Strings.Message_PersonalityFusionComplete(consumer.LabelShort, data.nickName), consumer, MessageTypeDefOf.NeutralEvent);
 
                     if (data.parent != null && !data.parent.Destroyed)

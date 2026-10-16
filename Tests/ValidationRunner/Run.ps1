@@ -20,8 +20,8 @@ $savedHarmony = $env:SSC_TEST_HARMONY_PATH
 $savedMode = $env:SSC_VALIDATION_FIXTURE_MODE
 $checks = 0
 $suiteCount = @(Get-ChildItem -LiteralPath (Join-Path $repo 'Tests') -Recurse -Filter '*.csproj').Count
-# Five suites require the net9.0 Harmony build, including PnaLoad's real patch registration.
-$harmonySuiteCount = 5
+# Six suites require net9.0 Harmony, including the actual bond-relation label patches.
+$harmonySuiteCount = 6
 
 <#
 .SYNOPSIS

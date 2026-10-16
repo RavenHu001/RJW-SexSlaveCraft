@@ -59,6 +59,8 @@ namespace SexSlaveCraft
             Pawn formerMaster = LinkedPawn;
             base.PostRemoved();
             SSCBondUtility.GetBridle(formerMaster)?.RemoveTarget(pawn);
+            // 覆盖开发模式和外部模组直接删锁链的入口，不依赖它们调用统一 Unbind 服务。
+            SSCBondRelationUtility.RemoveInvalidRelations(pawn);
             // 包含外部模组直接移除锁链的路径；Unbind 内的事务会延迟本次维护。
             TrainerSpecializationLifecycle.Notify(pawn);
             SSCSelfTrainingFeedback.NotifyStatusChanged(pawn);
@@ -91,6 +93,8 @@ namespace SexSlaveCraft
                 ModLog.Message($"[ChainOfSexSlave] Updated existing link: {SexSlave} ↔ {Master}");
             }
 
+            // 新建或改写 target 后，以当前实际锁链清除过期主人关系，不创建新的奖励关系。
+            SSCBondRelationUtility.RemoveInvalidRelations(SexSlave);
             return hediff;
         }
 
