@@ -2,7 +2,7 @@
 
 [文档总索引](../Docs/README.md) · [发布与打包](../Docs/Maintenance/发布与打包.md) · [开发记录](../Docs/Development/README.md)
 
-当前仓库以 **2.4.0.5 开发里程碑**为基线，`Scripts/Test-All.ps1` 登记 **32 套**。PNA 基础新增 `PnaLoad`，第五步新增 `ForcedSexProps`；该里程碑最近 PNA 专项为 **288/288**，该修正未重复全量；当时的版本登记只检查文档及标记，不运行代码测试。原始记录与完整验证边界见[2.4.0.5 版本验证](../Docs/Releases/2.4.0.5/2.4.0.5版本验证.md)。历史正式 2.4.0 为 28 套，2.3.9 为 25 套；当次结果见[2.4.0 版本验证](../Docs/Releases/2.4.0/2.4.0版本验证.md)，不回写历史计数。
+当前仓库以 **2.4.0.5 开发里程碑**为基线，`Scripts/Test-All.ps1` 登记 **33 套**。PNA 基础新增 `PnaLoad`，第五步新增 `ForcedSexProps`；该里程碑最近 PNA 专项为 **288/288**，该修正未重复全量；当时的版本登记只检查文档及标记，不运行代码测试。原始记录与完整验证边界见[2.4.0.5 版本验证](../Docs/Releases/2.4.0.5/2.4.0.5版本验证.md)。历史正式 2.4.0 为 28 套，2.3.9 为 25 套；当次结果见[2.4.0 版本验证](../Docs/Releases/2.4.0/2.4.0版本验证.md)，不回写历史计数。
 
 当前另有 2.4.0.5 基线后的未发布[欲望侵染第一批](../Docs/Development/Completed/欲望侵染第一批通用开关框架实现与测试.md)：通用状态框架与首个能力已获维护者实机确认，实际性交收益在当时未接通。本批最终统一回归 **30/30 套、2176/2176 项通过**，PnaLoad 为 **297/297**；在该记录独立登记，不覆盖上面的历史 PNA 288/288。
 
@@ -20,7 +20,9 @@
 pwsh -File Scripts/Test-All.ps1 -HarmonyAssemblyPath 'C:\Dependencies\Harmony\net9.0\0Harmony.dll'
 ```
 
-报告位于 `.builds/validation/`。测试桩与自动回归不能替代游戏内流程、动画及真实存档往返验收。
+统一入口先执行只读 Def 镜像检查：遍历 `Sexslavecraft/Defs` 中现有文件，要求根目录 `Defs` 的对应源存在、文件 SHA-256 一致且 XML 可解析。根目录独有文件不要求新增镜像；目录缺失或镜像集合为空也会失败。任一失败会阻止机制套件执行及后续打包，报告中的套件标为 `NotRun`，不会自动同步文件。
+
+可单独执行 `pwsh -File Scripts/Test-DefMirrors.ps1`；`-RepositoryRoot` 支持检查其他工作区，`-PassThru` 返回通过后的结构化结果。统一报告位于 `.builds/validation/`，新增独立的 `DefMirrors.log` 和 `summary.json` 中的 `Checks`、`CheckCount`、`PassedChecks`、`FailedChecks`，镜像检查不计入机制套件或用例数。测试桩与自动回归不能替代游戏内流程、动画及真实存档往返验收。
 
 ## 主人资格与成长（2.4.0）
 
@@ -81,6 +83,6 @@ pwsh -File Scripts/Test-All.ps1 -HarmonyAssemblyPath 'C:\Dependencies\Harmony\ne
 
 ## 编排与打包流程回归
 
-- [ValidationRunner](ValidationRunner/README.md)：验证统一脚本的状态汇总、依赖预检与打包阻断；独立流程检查，不计入上述 28 套机制回归。
+- [ValidationRunner](ValidationRunner/README.md)：验证统一脚本的状态汇总、依赖预检与打包阻断；独立流程检查，不计入机制回归套件数。
 
 第二批新增普通完成快照与侵染来源专项，真实生产上下文、PNA 输入和任务适配器分别执行；当前结果与游戏边界见[第二批实现记录](../Docs/Development/Completed/欲望侵染第二批普通完成与来源择强实现与测试.md)。历史计数保留各次实际运行范围。

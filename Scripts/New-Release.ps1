@@ -172,6 +172,7 @@ Game and third-party mod DLLs are not included. See CHANGELOG.md for release not
             suiteCount = $validation.SuiteCount
             passedCases = $validation.PassedCases
             totalCases = $validation.TotalCases
+            checks = @($validation.Checks | Select-Object Name, Status, CheckedFiles)
         }
         files = $manifestFiles
     } | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $modRoot 'RELEASE-MANIFEST.json') -Encoding utf8NoBOM

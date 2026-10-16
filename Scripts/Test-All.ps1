@@ -1,7 +1,7 @@
 #requires -Version 7.0
 <#
 .SYNOPSIS
-运行全部回归套件，生成逐套件日志及 JSON 汇总；任何失败或未执行均返回失败。
+检查现有 Def 镜像并运行全部回归套件，生成日志及 JSON 汇总；任何失败或未执行均返回失败。
 .DESCRIPTION
 需要 .NET SDK 9（或更新 SDK）及 .NET 9 运行时。SharedBed、InteractionProtection、RitualSelection、CombatantSpecialization、PnaLoad 和 BondRelations 需要 net9.0 的 0Harmony.dll，
 通过 -HarmonyAssemblyPath 或 SSC_TEST_HARMONY_PATH 提供，不自动下载、不使用游戏的 Harmony。
@@ -124,6 +124,28 @@ function Invoke-DotnetStep {
 }
 
 $globalProblems = [Collections.Generic.List[string]]::new()
+# 资源前置检查独立登记，不伪装成机制套件或用例；失败时所有套件标为 NotRun。
+# 单独入口与发布打包共用此处，保留逐检查日志和失败原因，缺少检查脚本也不能放行。
+$checks = [Collections.Generic.List[object]]::new()
+$defCheck = [pscustomobject][ordered]@{
+    Name = 'DefMirrors'; Status = 'Failed'; CheckedFiles = $null
+    Reason = ''; LogPath = (Join-Path $reportRoot 'DefMirrors.log')
+}
+Set-Content -LiteralPath $defCheck.LogPath -Value 'Check: DefMirrors' -Encoding utf8
+try {
+    $defResult = & (Join-Path $PSScriptRoot 'Test-DefMirrors.ps1') -RepositoryRoot $repoRoot -PassThru 6>> $defCheck.LogPath
+    if ($null -eq $defResult -or -not $defResult.Success -or $defResult.CheckedFiles -le 0) {
+        throw 'Def mirror check returned no complete successful result.'
+    }
+    $defCheck.Status = 'Passed'
+    $defCheck.CheckedFiles = $defResult.CheckedFiles
+}
+catch {
+    $defCheck.Reason = $_.Exception.Message
+    Add-Content -LiteralPath $defCheck.LogPath -Value $defCheck.Reason -Encoding utf8
+    $globalProblems.Add("DefMirrors failed: $($defCheck.Reason) See $($defCheck.LogPath)")
+}
+$checks.Add($defCheck)
 $dotnetPath = $null
 try {
     $dotnetPath = (Get-Command dotnet -CommandType Application -ErrorAction Stop | Select-Object -First 1).Source
@@ -205,17 +227,21 @@ foreach ($suite in $suites) {
 $passed = @($results | Where-Object Status -eq 'Passed').Count
 $failed = @($results | Where-Object Status -eq 'Failed').Count
 $notRun = @($results | Where-Object Status -eq 'NotRun').Count
+$passedChecks = @($checks | Where-Object Status -eq 'Passed').Count
+$failedChecks = @($checks | Where-Object Status -ne 'Passed').Count
 $report = [pscustomobject][ordered]@{
     StartedAtUtc = $startedAt.ToString('o'); FinishedAtUtc = [DateTime]::UtcNow.ToString('o')
-    Success = ($passed -eq $suites.Count); SuiteCount = $suites.Count
+    Success = ($passed -eq $suites.Count -and $failedChecks -eq 0); SuiteCount = $suites.Count
     PassedSuites = $passed; FailedSuites = $failed; NotRunSuites = $notRun
     PassedCases = [int](($results | Measure-Object PassedCases -Sum).Sum)
     TotalCases = [int](($results | Measure-Object TotalCases -Sum).Sum)
-    HarmonyAssemblyPath = $HarmonyAssemblyPath; Results = $results.ToArray()
+    CheckCount = $checks.Count; PassedChecks = $passedChecks; FailedChecks = $failedChecks
+    Checks = $checks.ToArray(); HarmonyAssemblyPath = $HarmonyAssemblyPath; Results = $results.ToArray()
 }
 $report | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $reportRoot 'summary.json') -Encoding utf8
 $results | Select-Object Name, Status, PassedCases, TotalCases, Reason | Format-Table -AutoSize -Wrap | Out-Host
 Write-Host "Suites: $passed passed, $failed failed, $notRun not run. Reported cases: $($report.PassedCases)/$($report.TotalCases)."
+Write-Host "Resource checks: $passedChecks passed, $failedChecks failed."
 Write-Host "Summary: $(Join-Path $reportRoot 'summary.json')"
 if (-not $report.Success) { throw 'Validation failed or incomplete. Release packaging must stop; see summary.json and suite logs.' }
 # Only the structured successful result goes to the success stream for New-Release.ps1.
