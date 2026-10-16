@@ -41,11 +41,6 @@ namespace Verse
     public class HediffWithComps : Hediff { }
     public class HediffWithTarget : HediffWithComps { public Thing target; }
     public class Gizmo { }
-    public static class Log
-    {
-        public static readonly List<string> Warnings = new List<string>();
-        public static void Warning(string message) => Warnings.Add(message);
-    }
     public enum LoadSaveMode { Inactive, PostLoadInit }
     public enum LookMode { Reference }
     public static class Scribe { public static LoadSaveMode mode; }
@@ -84,22 +79,6 @@ namespace Verse
 namespace RimWorld
 {
     using Verse;
-    // 只保留实际死亡回调的空引用前提和合法反应计数；保护逻辑由生产 Harmony 前缀运行。
-    public sealed class CreepJoinerAggressiveDef { }
-    public sealed class Pawn_CreepJoinerTracker
-    {
-        public Pawn Pawn = new Pawn();
-        public bool Disabled;
-        public CreepJoinerAggressiveDef aggressive;
-        public int Reactions;
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        public void Notify_CreepJoinerKilled()
-        {
-            if (Disabled) return;
-            if (aggressive == null) throw new NullReferenceException("aggressive.workerType");
-            Reactions++;
-        }
-    }
     public class PawnRelationDef
     {
         public string label = "Master", labelFemale = "完美性奴";

@@ -225,24 +225,6 @@ internal static class Program
         var harmony = new Harmony("ssc.tests.bond-relations");
         harmony.CreateClassProcessor(typeof(Harmony_BondRelationLabels)).Patch();
         harmony.CreateClassProcessor(typeof(Harmony_BondRelationOpinionLabels)).Patch();
-        harmony.CreateClassProcessor(typeof(Harmony_CreepJoinerDeathGuard)).Patch();
-        // 坏记录仅跳过无定义的反应；实际安装前缀后确认完整反应及原有 Disabled 分支不受影响。
-        Check("missing creep aggressive definition no longer interrupts death callback", () =>
-        {
-            Log.Warnings.Clear(); var tracker = new Pawn_CreepJoinerTracker();
-            tracker.Notify_CreepJoinerKilled();
-            Require(tracker.Reactions == 0 && Log.Warnings.Count == 1 && tracker.aggressive == null);
-        });
-        Check("valid creep joiner still performs its native death reaction", () =>
-        {
-            Log.Warnings.Clear(); var tracker = new Pawn_CreepJoinerTracker { aggressive = new CreepJoinerAggressiveDef() };
-            tracker.Notify_CreepJoinerKilled(); Require(tracker.Reactions == 1 && Log.Warnings.Count == 0);
-        });
-        Check("disabled malformed creep tracker remains quiet", () =>
-        {
-            Log.Warnings.Clear(); var tracker = new Pawn_CreepJoinerTracker { Disabled = true };
-            tracker.Notify_CreepJoinerKilled(); Require(tracker.Reactions == 0 && Log.Warnings.Count == 0);
-        });
         // 四语及主从双方的性别组合共用实际翻译；同时检查列表、悬停和混合关系中的普通名称分支。
         foreach (string lang in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" })
             foreach (Gender masterGender in new[] { Gender.Male, Gender.Female })

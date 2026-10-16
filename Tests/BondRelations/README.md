@@ -1,6 +1,6 @@
 # 主从社交关系一致性回归
 
-直接编译生产关系规则、仪式奖励入口、绑定服务、性奴锁链、主人缰绳、旧档清理 GameComponent、称谓服务、两处 Harmony 显示补丁及神秘加入者死亡回调保护。原生接口模型依据本机 RimWorld 1.6 程序集反编译建立；双向关系、健康删除顺序和缓存通知为引擎边界，测试不运行 Unity 或实际存档。
+直接编译生产关系规则、仪式奖励入口、绑定服务、性奴锁链、主人缰绳、旧档清理 GameComponent、称谓服务及两处 Harmony 显示补丁。原生接口模型依据本机 RimWorld 1.6 程序集反编译建立；双向关系、健康删除顺序和缓存通知为引擎边界，测试不运行 Unity 或实际存档。
 
 ```powershell
 dotnet run --project Tests/BondRelations/BondRelations.csproj --configuration Release `
@@ -20,12 +20,11 @@ dotnet run --project Tests/BondRelations/BondRelations.csproj --configuration Re
 
 全部回归由 `Scripts/Test-All.ps1` 统一运行，本套件需要本地 net9.0 Harmony，不下载依赖。
 
-本批死亡与绑定生命周期补充：
+绑定生命周期补充：
 
 - 暂停中手动删最后一条性奴锁链后，即刻移除主人空缰绳和派生共振场；随后死亡不依赖健康 Tick 清理。
 - 删除一条锁链保留同一主人的其他有效性奴；反向列表中的陈旧条目不能解绑已属于其他主人的角色。
 - 正常 AddToPawn 换绑立即清旧关系；外部直接写公开 target 时，在该锁链的下一次 Tick 清旧关系并整理双方索引，不自动授予新奖励。
 - 已移除旧实例的迟到 Tick 不得替换新缰绳或重置伤害分担偏好；读档同时清理死亡主人上不再对应锁链的缰绳。
-- 缺失 aggressive 的神秘加入者只跳过无法执行的死亡反应并记录警告，不补造随机定义；完整反应保留原逻辑，Disabled 的坏记录不额外报警。
 
-死亡保护使用实际 Harmony 安装生产前缀，宿主仅模拟已核验的原版死亡回调条件；不运行完整 Pawn.Kill、其他模组死亡补丁或 Unity。原测试存档保持只读，没有修改其缺失字段。
+原版 Anomaly 或其他模组自身的死亡机制异常不在 SSC 修复范围内；不添加跳过这些死亡回调的补丁。
