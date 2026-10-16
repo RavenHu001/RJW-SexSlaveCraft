@@ -133,12 +133,53 @@ try {
     }
     [IO.Directory]::CreateDirectory((Join-Path $modRoot 'Assemblies')) | Out-Null
     Copy-Item -LiteralPath $dllPath -Destination (Join-Path $modRoot 'Assemblies/Sexslavecraft.dll')
-    foreach ($document in @('VERSION', 'CHANGELOG.md', 'README.md', 'QUICK_START_EN.md', '读我，玩法介绍.md', '机制详解.md', 'PLAYER_GUIDE_EN.md')) {
-        Copy-Item -LiteralPath (Join-Path $repoRoot $document) -Destination $modRoot
+    # 文档按文件白名单收集，不能递归复制 Docs（包括被 Git 忽略的本地美术备份）。
+    $documents = @(
+        'VERSION', 'CHANGELOG.md', 'README.md', 'QUICK_START_EN.md',
+        '读我，玩法介绍.md', '机制详解.md', 'PLAYER_GUIDE_EN.md',
+        'Docs/模组介绍.md', 'Docs/Players/README.md',
+        "Docs/Releases/$version/${version}发布说明.md"
+    )
+    foreach ($document in $documents) {
+        $destination = Join-Path $modRoot $document
+        [IO.Directory]::CreateDirectory([IO.Path]::GetDirectoryName($destination)) | Out-Null
+        Copy-Item -LiteralPath (Join-Path $repoRoot $document) -Destination $destination
     }
-    Copy-Item -LiteralPath (Join-Path $repoRoot 'Docs') -Destination (Join-Path $modRoot 'Docs') -Recurse
     $loadFolders = Join-Path $repoRoot 'LoadFolders.xml'
     if (Test-Path -LiteralPath $loadFolders) { Copy-Item -LiteralPath $loadFolders -Destination $modRoot }
+
+    # 仅改写随包副本：随包文件仍用相对链接，其余资料指向对应版本的源码仓库。
+    # 保留锚点、查询参数、标题及尖括号；中文和空格逐路径段进行 URL 编码。
+    foreach ($document in $documents | Where-Object { $_ -like '*.md' }) {
+        $documentPath = Join-Path $modRoot $document
+        $documentDirectory = [IO.Path]::GetDirectoryName($documentPath)
+        $rewriteLink = [Text.RegularExpressions.MatchEvaluator]{
+            param($match)
+            $target = $match.Groups['target'].Value
+            $angleWrapped = $target.StartsWith('<')
+            if ($angleWrapped) { $target = $target.Substring(1, $target.Length - 2) }
+            if ($target -match '^(?:[a-zA-Z][a-zA-Z0-9+.-]*:|//|#|\?)') { return $match.Value }
+            $parts = [regex]::Match($target, '^(?<path>[^?#]+)(?<fragment>[?#].*)?$')
+            if (-not $parts.Success) { return $match.Value }
+            $path = [Uri]::UnescapeDataString($parts.Groups['path'].Value)
+            $localPath = [IO.Path]::GetFullPath((Join-Path $documentDirectory $path))
+            $relativePath = [IO.Path]::GetRelativePath($modRoot, $localPath).Replace('\', '/')
+            if ($relativePath -eq '..' -or $relativePath.StartsWith('../') -or [IO.Path]::IsPathRooted($relativePath)) {
+                throw "Documentation link escapes the mod directory: $document -> $target"
+            }
+            if (Test-Path -LiteralPath $localPath -PathType Leaf) { return $match.Value }
+            $view = if (Test-Path -LiteralPath (Join-Path $repoRoot $relativePath) -PathType Container) { 'tree' } else { 'blob' }
+            $encodedPath = ($relativePath.Split('/') | ForEach-Object { [Uri]::EscapeDataString($_) }) -join '/'
+            $url = "https://github.com/RavenHu001/RJW-SexSlaveCraft/$view/v$version/$encodedPath" + $parts.Groups['fragment'].Value
+            if ($angleWrapped) { $url = "<$url>" }
+            return $match.Groups['prefix'].Value + $url + $match.Groups['suffix'].Value
+        }
+        $content = Get-Content -LiteralPath $documentPath -Raw
+        # 内联链接（含图片）与引用式链接；允许目标中的成对括号和可选标题。
+        $content = [regex]::Replace($content, '(?<prefix>\]\([ \t]*)(?<target><[^>\r\n]+>|(?:\\.|[^\\\s()]|\([^()\r\n]*\))+)(?<suffix>[ \t]*(?:"[^"\r\n]*"|''[^''\r\n]*'')?[ \t]*\))', $rewriteLink)
+        $content = [regex]::Replace($content, '(?m)^(?<prefix>[ \t]{0,3}\[[^\]\r\n]+\]:[ \t]*)(?<target><[^>\r\n]+>|[^\s]+)(?<suffix>)', $rewriteLink)
+        [IO.File]::WriteAllText($documentPath, $content, [Text.UTF8Encoding]::new($false))
+    }
     @"
 SexSlaveCraft $version (TieJin Modify) / RimWorld 1.6
 

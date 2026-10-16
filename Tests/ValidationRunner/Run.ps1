@@ -63,9 +63,30 @@ try {
     }
     foreach ($file in @('Scripts/Test-All.ps1', 'Scripts/Test-DefMirrors.ps1', 'Scripts/New-Release.ps1', 'Scripts/Sync-LanguagesMirror.ps1', 'Scripts/Test-RestrictionLocalization.ps1', 'Tests/NuGet.Config', 'VERSION', 'CHANGELOG.md',
         'About/About.xml', 'Assemblies/Sexslavecraft.dll', 'Sexslavecraft/Properties/AssemblyInfo.cs', 'README.md',
-        'QUICK_START_EN.md', '读我，玩法介绍.md', '机制详解.md', 'PLAYER_GUIDE_EN.md')) {
-        Copy-Item -LiteralPath (Join-Path $repo $file) -Destination (Join-Path $fixture $file)
+        'QUICK_START_EN.md', '读我，玩法介绍.md', '机制详解.md', 'PLAYER_GUIDE_EN.md',
+        'Docs/模组介绍.md', 'Docs/Players/README.md',
+        ('Docs/Releases/{0}/{0}发布说明.md' -f (Get-Content -LiteralPath (Join-Path $repo 'VERSION') -Raw).Trim()))) {
+        $destination = Join-Path $fixture $file
+        [IO.Directory]::CreateDirectory([IO.Path]::GetDirectoryName($destination)) | Out-Null
+        Copy-Item -LiteralPath (Join-Path $repo $file) -Destination $destination
     }
+    # 非白名单文件（包括未跟踪备份）不得进入 ZIP；链接转换只作用于随包副本。
+    foreach ($file in @('Docs/Art/Backups/local.png', 'Docs/Development/开发 记录.md', 'Docs/Releases/old/验证.md')) {
+        $destination = Join-Path $fixture $file
+        [IO.Directory]::CreateDirectory([IO.Path]::GetDirectoryName($destination)) | Out-Null
+        [IO.File]::WriteAllText($destination, 'Not for players')
+    }
+    @'
+
+[Fixture local guide](QUICK_START_EN.md#2-getting-started "Local title")
+[Fixture development](<Docs/Development/开发 记录.md#核对> "Dev title")
+[Fixture reference][fixture-dev]
+[fixture-dev]: <Docs/Development/开发 记录.md#核对> "Reference title"
+[Fixture directory](Docs/Development/)
+[Fixture external](https://example.com/keep?q=1#anchor)
+[Fixture anchor](#fixture-anchor)
+'@ | Add-Content -LiteralPath (Join-Path $fixture 'README.md') -Encoding utf8
+    $readmeHash = (Get-FileHash -LiteralPath (Join-Path $fixture 'README.md')).Hash
     # 小型真实 XML 镜像覆盖路径含中文的场景；无需复制所有运行 Def 或启动游戏。
     $defSource = Join-Path $fixture 'Defs/夹具目录/Example.xml'
     $defMirror = Join-Path $fixture 'Sexslavecraft/Defs/夹具目录/Example.xml'
@@ -277,6 +298,17 @@ exit 0
             Assert ($manifest.validation.checks.Count -eq 2 -and $manifest.validation.checks[0].Name -eq 'DefMirrors' -and $manifest.validation.checks[0].Status -eq 'Passed' -and $manifest.validation.checks[0].CheckedFiles -eq 1) 'Package manifest records the successful Def mirror gate separately.'
             Assert ($manifest.validation.checks[1].Name -eq 'LanguagesMirrors' -and $manifest.validation.checks[1].Status -eq 'Passed' -and $manifest.validation.checks[1].CheckedFiles -eq $languageFileCount) 'Package manifest records the successful Languages mirror gate separately.'
             Assert (@($zip.Entries | Where-Object { $_.FullName -like '*0Harmony.dll' -or $_.FullName -like '*/Tests/*' }).Count -eq 0) 'Test dependencies and test sources are not packaged.'
+            $packageRoot = 'RJW-SexSlaveCraft-TieJin-Modify/'
+            $docs = @($zip.Entries | Where-Object FullName -like "$packageRoot`Docs/*" | ForEach-Object { $_.FullName.Substring($packageRoot.Length) })
+            $expectedDocs = @('Docs/模组介绍.md', 'Docs/Players/README.md', "Docs/Releases/$fixtureVersion/${fixtureVersion}发布说明.md")
+            Assert ($docs.Count -eq 3 -and @(Compare-Object $expectedDocs $docs).Count -eq 0) 'Only the three player documentation files enter Docs; development, backups and old verification are excluded.'
+            $reader = [IO.StreamReader]::new($zip.GetEntry($packageRoot + 'README.md').Open())
+            try { $packagedReadme = $reader.ReadToEnd() } finally { $reader.Dispose() }
+            $devUrl = "https://github.com/RavenHu001/RJW-SexSlaveCraft/blob/v$fixtureVersion/Docs/Development/" + [Uri]::EscapeDataString('开发 记录.md') + '#核对'
+            Assert ($packagedReadme.Contains("[Fixture development](<$devUrl> `"Dev title`")") -and $packagedReadme.Contains("[fixture-dev]: <$devUrl> `"Reference title`"")) 'Inline and reference links to excluded files use versioned repository URLs, preserving Chinese anchors, spaces and titles.'
+            Assert ($packagedReadme.Contains("[Fixture directory](https://github.com/RavenHu001/RJW-SexSlaveCraft/tree/v$fixtureVersion/Docs/Development/)")) 'Excluded directory links use the repository tree view.'
+            Assert ($packagedReadme.Contains('[Fixture local guide](QUICK_START_EN.md#2-getting-started "Local title")') -and $packagedReadme.Contains('[Fixture external](https://example.com/keep?q=1#anchor)') -and $packagedReadme.Contains('[Fixture anchor](#fixture-anchor)')) 'Packaged guide links, external URLs and local anchors stay unchanged.'
+            Assert ((Get-FileHash -LiteralPath (Join-Path $fixture 'README.md')).Hash -eq $readmeHash) 'Packaging never rewrites source documentation.'
         }
         finally { $zip.Dispose() }
     }
