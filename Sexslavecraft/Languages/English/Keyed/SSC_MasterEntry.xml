@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-  <SSC_MasterEntry_QuestName>The Call of Desire</SSC_MasterEntry_QuestName>
+  <SSC_MasterEntry_QuestName>SSC：The Call of Desire</SSC_MasterEntry_QuestName>
   <SSC_MasterEntry_QuestDescription>A psychic signal from a transcendent being calls to the colonists, stirring waves of desire in their thoughts. It seems to be waiting for a response.</SSC_MasterEntry_QuestDescription>
   <SSC_MasterEntry_DebugRequest>Debug: create Seed of Desire quest</SSC_MasterEntry_DebugRequest>
   <SSC_MasterEntry_DebugRequestTip>Create a quest for 1 free seed, regardless of research or previous grants. Another unfinished claim quest blocks duplicates.</SSC_MasterEntry_DebugRequestTip>
