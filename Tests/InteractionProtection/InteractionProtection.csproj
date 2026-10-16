@@ -31,4 +31,10 @@
       <HintPath>$(HarmonyAssemblyPath)</HintPath>
     </Reference>
   </ItemGroup>
+  <ItemGroup>
+    <Compile Include="../../Sexslavecraft/common/SSCDesireInfestationUtility.cs" Link="Production/SSCDesireInfestationUtility.cs" />
+    <Compile Include="../../Sexslavecraft/common/SSCOrdinarySexOutcomeUtility.cs" Link="Production/SSCOrdinarySexOutcomeUtility.cs" />
+    <Compile Include="../../Sexslavecraft/common/SSCPersonalityRuntimeUtility.cs" Link="Production/SSCPersonalityRuntimeUtility.cs" />
+    <Compile Include="../../Sexslavecraft/common/SSCPnaMath.cs" Link="Production/SSCPnaMath.cs" />
+  </ItemGroup>
 </Project>

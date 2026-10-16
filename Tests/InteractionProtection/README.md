@@ -35,3 +35,5 @@ dotnet run --project Tests/InteractionProtection -p:NoLifeForce=true -p:HarmonyA
 本批最终 InteractionProtection 189/189，完整 30 套／2110 项通过；最终汇总 `.builds/pna-effects-step5/validation-final/summary.json`，仍待游戏验收。
 
 2026-10-15：维护者已确认第五步仪式及性交增加成瘾均正常，批准提交；本次只补实机验收记录，不重复运行回归。
+
+第二批新增普通完成快照与侵染来源专项，真实生产上下文、PNA 输入和任务适配器分别执行；当前结果与游戏边界见[第二批实现记录](../../Docs/Development/Completed/欲望侵染第二批普通完成与来源择强实现与测试.md)。历史计数保留各次实际运行范围。

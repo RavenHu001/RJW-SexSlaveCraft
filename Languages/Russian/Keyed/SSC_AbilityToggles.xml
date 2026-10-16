@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <SSC_AbilityToggle_MasterDesireInfestation_Label>Вторжение желания</SSC_AbilityToggle_MasterDesireInfestation_Label>
-  <SSC_AbilityToggle_MasterDesireInfestation_Tip>Сохранить настройку вторжения желания этого Хозяина. Она приостанавливается вне роли Хозяина и возобновляется при возвращении личности к этой роли.</SSC_AbilityToggle_MasterDesireInfestation_Tip>
+  <SSC_AbilityToggle_MasterDesireInfestation_Tip>После завершения обычного парного контакта или Lovin подходящий партнёр получает немного PNA и развращения. Тренировки, ритуалы и извлечение личности не вызывают этот эффект. Настройка переносится с личностью и приостанавливается вне роли Хозяина.</SSC_AbilityToggle_MasterDesireInfestation_Tip>
 </LanguageData>

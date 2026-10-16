@@ -20,11 +20,12 @@ namespace Verse.AI
         public void Cleanup(JobCondition condition)
         {
 #if !REAL_HARMONY
-            SSCRestrictionJobCleanupHook.Prefix(this, ref condition);
+            SSCRestrictionJobCleanupHook.Prefix(this, ref condition, out var context);
 #endif
             if (condition == JobCondition.Succeeded) SuccessfulCleanup++;
 #if !REAL_HARMONY
-            SSCRestrictionJobCleanupHook.Postfix(this);
+            SSCRestrictionJobCleanupHook.Postfix(this, condition, true, context);
+            SSCRestrictionJobCleanupHook.Finalizer(context);
 #endif
         }
     }
@@ -36,6 +37,7 @@ namespace RimWorld
     public class JobDriver_Lovin : JobDriver
     {
         private int ticksLeft;
+        public void FinishTimer() { ticksLeft=0; }
         public bool RejectReceiver;
         public int Initializations;
         /// <summary>模拟原版自身声明的预约方法，真实Harmony模式验证生产前缀安装。</summary>
@@ -160,6 +162,7 @@ namespace HarmonyLib
         /// <summary>提供直接调用模式所需的优先级特性，真实顺序由Harmony模式验证。</summary>
         public HarmonyPriority(int value) { }
     }
+    public class HarmonyBefore : Attribute { public HarmonyBefore(params string[] owners) { } }
     public static class Priority { public const int First = 800; }
     public static class AccessTools
     {
@@ -183,7 +186,13 @@ internal static class NativeLovinCleanupProbe
     /// <summary>模拟RJW正常优先级的成功结算前缀，验证SSC必须在其他前缀运行前修正结束条件。</summary>
     public static void Prefix(JobDriver __instance, JobCondition condition)
     {
-        if (__instance is JobDriver_Lovin && condition == JobCondition.Succeeded) __instance.SuccessfulCleanupPrefix++;
+        if (__instance is JobDriver_Lovin && condition == JobCondition.Succeeded)
+        {
+            __instance.SuccessfulCleanupPrefix++;
+            // 重现本机 RJW Cleanup 前缀的转接，确保普通 ProcessSex 不会重复领取 Lovin。
+            rjw.SexUtility.ProcessSex(new rjw.SexProps { pawn=__instance.pawn,
+                partner=__instance.job.targetA.Pawn, isCoreLovin=true });
+        }
     }
 }
 #endif

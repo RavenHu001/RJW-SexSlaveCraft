@@ -6,6 +6,8 @@ This continuation builds on upstream **2.2.8**, the baseline when upstream devel
 
 ## [未发布 / Unreleased]
 
+- **欲望侵染第二批 / Desire infestation, batch 2:** 普通 RJW／Lovin 完成接入，原结算前人格快照和统一认领；每方向 PNA 来源择强，侵染负荷 +8%、已有需求补满、已有成瘾基础 +0.02／末期合计 +0.22，恶堕额外 +1 个百分点并遵守原阶段上限。既有来源偏好可识别有效侵染者，双来源不叠乘。维护者确认实机测试未发现问题并批准提交，部位开发和侵染记忆留后续；见[本批记录](Docs/Development/Completed/欲望侵染第二批普通完成与来源择强实现与测试.md)。Connects guarded ordinary completion, strongest-source PNA supply, corruption and source attraction; the maintainer reported no issues in game and approved this batch.
+
 - **欲望侵染第一批 / Desire infestation, batch 1:** 新增随人格保存的通用个人能力开关框架，首项为主人欲望侵染；接入主／奴分组面板、主人标记、人格凝胶与克隆保护。自动结果和实机步骤见[第一批记录](Docs/Development/Completed/欲望侵染第一批通用开关框架实现与测试.md)。关键代码块注释已补齐，维护者实机测试未发现问题并批准提交；实际性交侵染收益及来源偏好扩展尚未接通，未发布。Adds shared personality-owned toggles, Master UI and marker, gel transfer and clone safeguards. The maintainer reported no issues in game and approved this batch; gameplay infestation effects remain future work.
 
 ## [2.4.0.5] — 2026-10-15 — PNA 重置与玩法补全 / PNA redesign and gameplay additions

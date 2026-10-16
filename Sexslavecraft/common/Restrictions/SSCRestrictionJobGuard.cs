@@ -26,6 +26,8 @@ namespace SexSlaveCraft
             public SSCInteractionKind Kind;
             public bool LegacyProgress;
             public bool TrainerProgressClaimed;
+            // 仅本次 ProcessSex 调用栈拥有；异常/跳过原方法后释放，不写入存档。
+            public bool OutcomeInFlight;
             // 准备归属和事件交接各自封装；场景只决定何时可登记、通知及清理。
             public readonly SSCRestrictionJobPreparation Preparation = new SSCRestrictionJobPreparation();
             public readonly SSCRestrictionJobEvents Events = new SSCRestrictionJobEvents();
@@ -173,8 +175,8 @@ namespace SexSlaveCraft
             return true;
         }
 
-        /// <summary>为一次已开始的普通 RJW 双人任务认领整次完成分发，返回实际发起方向。</summary>
-        public static bool TryClaimOrdinarySexOutcome(SexProps props, out Pawn initiator, out Pawn recipient)
+        /// <summary>只读验证已开始的普通 RJW 完成候选，供原结算前快照与返回后的认领共用。</summary>
+        private static bool TryReadOrdinarySexOutcome(SexProps props, out Pawn initiator, out Pawn recipient)
         {
             initiator = null;
             recipient = null;
@@ -201,10 +203,44 @@ namespace SexSlaveCraft
             if (!state.Started || state.Rejected || state.TrainerProgressClaimed ||
                 state.Initiator != request.Initiator || state.Receiver != request.Receiver ||
                 state.Kind != request.Kind) return false;
-            state.TrainerProgressClaimed = true;
             initiator = request.Initiator;
             recipient = request.Receiver;
             return true;
+        }
+
+        public static bool TryClaimOrdinarySexOutcome(SexProps props, out Pawn initiator, out Pawn recipient)
+        {
+            if (!TryReadOrdinarySexOutcome(props, out initiator, out recipient)) return false;
+            State((JobDriver_SexBaseInitiator)initiator.jobs.curDriver).TrainerProgressClaimed = true;
+            return true;
+        }
+
+        /// <summary>原结算前只占用临时凭据；持久化认领等原方法正常返回后再消费。</summary>
+        public static SSCOrdinarySexOutcomeUtility.Context PrepareOrdinaryOutcome(SexProps props)
+        {
+            if (Scribe.mode != LoadSaveMode.Inactive || props?.isCoreLovin == true ||
+                !TryReadOrdinarySexOutcome(props, out Pawn initiator, out Pawn recipient)) return null;
+            var driver = (JobDriver_SexBaseInitiator)initiator.jobs.curDriver;
+            SceneState state = State(driver);
+            if (state.OutcomeInFlight) return null;
+            Job job = driver.job;
+            int jobId = job.loadID;
+            bool Current() => initiator.jobs?.curDriver == driver && ReferenceEquals(driver.job, job) &&
+                ReferenceEquals(initiator.CurJob, job) && job.loadID == jobId && driver.Partner == recipient &&
+                driver.Sexprops == props && props.initiator == initiator && props.recipient == recipient;
+            state.OutcomeInFlight = true;
+            try
+            {
+                return SSCOrdinarySexOutcomeUtility.Capture(initiator, recipient, true, Current, () =>
+                {
+                    bool valid = Current() && TryReadOrdinarySexOutcome(props, out Pawn a, out Pawn b) &&
+                        a == initiator && b == recipient && State(driver) == state;
+                    // 只写捕获的旧场状态；人格或参与者被回调改变后也不能让旧场补领。
+                    state.TrainerProgressClaimed = true;
+                    return valid;
+                }, () => state.OutcomeInFlight = false);
+            }
+            catch { state.OutcomeInFlight = false; throw; }
         }
 
         /// <summary>只撤销当前请求准备的接收关联，再结束本驱动；保留其他参与者和后来替换的新任务。</summary>

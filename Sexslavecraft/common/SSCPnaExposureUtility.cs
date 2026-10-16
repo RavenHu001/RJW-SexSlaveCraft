@@ -107,16 +107,26 @@ namespace SexSlaveCraft
 
         /// <summary>各来源自行认领事件后调用；同 tick 的两个独立输入不会被合并或丢弃。</summary>
         public static SSCPnaExposureResult ApplyExposure(Pawn pawn, float dose, SSCPnaExposureSource source, bool refillIngestionNeed = true)
+            => ApplyExposure(pawn, dose, source, null, refillIngestionNeed);
+
+        // 保留原四参数签名；事件调用方通过重载传入局部继续条件，物品/武器无需知道事件结构。
+        public static SSCPnaExposureResult ApplyExposure(Pawn pawn, float dose, SSCPnaExposureSource source,
+            System.Func<bool> continuationGuard, bool refillIngestionNeed = true)
         {
             // 1. 校验真实正剂量、身体与来源；存读档阶段不能把恢复过程当成新暴露。
             var result = new SSCPnaExposureResult();
+            bool Continue() => continuationGuard == null || continuationGuard();
+            // 健康通知可能原地更换人格；中止余下写入，不回滚已合法加入的身体负荷。
+            if (!Continue()) return result;
             if (Scribe.mode != LoadSaveMode.Inactive || !IsValidTarget(pawn) || !SSCPnaMath.IsFinite(dose) || dose <= 0f ||
                 source < SSCPnaExposureSource.Debug || source > SSCPnaExposureSource.MasterInfestation) return result;
             result.RequestedDose = dose;
 
             // 2. 先协调普通／性奴形态并结算已累计的有效健康时间，再处理本次剂量。
             // 不用全局 tick 追补暂停时间，也不让新剂量承担输入前那段清除。
+            if (!Continue()) { result.Accepted = false; return result; }
             RefreshBodyState(pawn);
+            if (!Continue()) { result.Accepted = false; return result; }
             // 主人先清理遗留受药状态，再拒绝新输入；免疫优先于有效链分流。
             if (!IsValidTarget(pawn) || SSCIdentityUtility.IsMaster(pawn)) return result;
             result.Accepted = true;
@@ -124,10 +134,13 @@ namespace SexSlaveCraft
             (record as HediffWithComps)?.GetComp<HediffComp_SSCPnaLoad>()?.SettlePending();
             // 健康回调可能移走旧实例或建立锁链；必须重新取得真实载体。
             if (!IsValidTarget(pawn)) { result.Accepted = false; return result; }
+            if (!Continue()) { result.Accepted = false; return result; }
             RefreshBodyState(pawn);
+            if (!Continue()) { result.Accepted = false; return result; }
             if (!IsValidTarget(pawn) || SSCIdentityUtility.IsMaster(pawn)) { result.Accepted = false; return result; }
             record = GetBodyRecord(pawn);
 
+            if (!Continue()) { result.Accepted = false; return result; }
             // 3. 在原始严重度尺度上加量并钳制；无记录时精确写入计算值。
             // 只强化本次身体输入之前已有的成瘾，不把首次创建或回调新建算作已有实例。
             Hediff existingAddiction = GetAddiction(pawn);
@@ -145,7 +158,9 @@ namespace SexSlaveCraft
             else record.Severity = after;
 
             // 4. 严重度写入可能触发健康通知，重新确认载体仍存在且链分流一致。
+            if (!Continue()) { result.Accepted = false; return result; }
             RefreshBodyState(pawn);
+            if (!Continue()) { result.Accepted = false; return result; }
             if (!IsValidTarget(pawn) || SSCIdentityUtility.IsMaster(pawn) || GetBodyRecord(pawn) != record ||
                 IsRootedLoadDef(record.def) != IsRooted(pawn))
             {
@@ -170,7 +185,9 @@ namespace SexSlaveCraft
                     addiction.Severity = 1f;
                     pawn.health.AddHediff(addiction);
                     // AddHediff 的第三方回调可能同时绑定或移走记录，不能保留无效的新依赖。
+                    if (!Continue()) { result.Accepted = false; return result; }
                     RefreshBodyState(pawn);
+                    if (!Continue()) { result.Accepted = false; return result; }
                     if (!IsValidTarget(pawn) || SSCIdentityUtility.IsMaster(pawn) || IsRooted(pawn) || GetBodyRecord(pawn) != record ||
                         record.Severity < SSCPnaMath.MaximumSeverity)
                     {
@@ -182,6 +199,7 @@ namespace SexSlaveCraft
                         // 由原版重新评估需求准入，只将本次首次生成的需求设满。
                         // 已有需求值留给下方来源补充处理，不能因新依赖而额外灌满。
                         pawn.needs?.AddOrRemoveNeedsAsAppropriate();
+                        if (!Continue()) { result.Accepted = false; return result; }
                         Need_Chemical createdNeed = GetNeed(pawn);
                         if (previousNeed == null && createdNeed != null) createdNeed.CurLevel = createdNeed.MaxLevel;
                     }
@@ -190,6 +208,7 @@ namespace SexSlaveCraft
                 // 保留旧普通侵蚀 +0.12；产出者性交补 +0.10，主人侵染直接补满。
                 // 新来源仍只补已有合法需求，首次新需求初始化继续使用上方原版准入。
                 // 枪械按钳制后的实际增量补充；满值输入可建依赖，但不虚构负荷增量。
+                if (!Continue()) { result.Accepted = false; return result; }
                 Need_Chemical need = GetNeed(pawn);
                 float refill = source == SSCPnaExposureSource.Ingestion ? (refillIngestionNeed ? 1f : 0f) :
                     source == SSCPnaExposureSource.OrdinaryExposure ? .12f :
@@ -201,14 +220,15 @@ namespace SexSlaveCraft
 
                 // 产出者性交与枪械有效输入均对已有成瘾基础 +0.01，末期再额外 +0.2。
                 // 枪械沿用一次 Apply 的输入认领，不因部位传播重复加深；服药基础增量仍由原版处理。
-                // 主人侵染的基础增量继续留待专项，不将尚未接通的预留来源按弱来源处理。
+                // 主人侵染对已有成瘾基础 +0.02；同场择强只从调用方进入一次。
                 // 初次成瘾仍只由满负荷建立，调试不强化；满负荷实际增量为零也仍是真实暴露。
+                if (!Continue()) { result.Accepted = false; return result; }
                 if (source != SSCPnaExposureSource.Debug && existingAddiction != null &&
                     GetAddiction(pawn) == existingAddiction && IsValidTarget(pawn) && !SSCIdentityUtility.IsMaster(pawn) && !IsRooted(pawn) &&
                     GetBodyRecord(pawn) == record)
                 {
                     float addictionIncrease = source == SSCPnaExposureSource.ProducerSex || source == SSCPnaExposureSource.Weapon
-                        ? .01f : 0f;
+                        ? .01f : source == SSCPnaExposureSource.MasterInfestation ? .02f : 0f;
                     if (record.Severity >= (float)(SSCPnaMath.HighLoadThreshold * SSCPnaMath.MaximumSeverity))
                         addictionIncrease += SSCPnaMath.TerminalAddictionIncrease;
                     // 合并为一次写入，沿原版上限钳制；后续统一核对身份、链及健康回调。
@@ -217,7 +237,9 @@ namespace SexSlaveCraft
             }
             // 7. 依赖和需求变更后再次核对身体；失效清理只撤销本次新依赖。
             // 有链依赖清除仍由协调方法处理，已执行的身体加量不在此回滚。
+            if (!Continue()) { result.Accepted = false; return result; }
             RefreshBodyState(pawn);
+            if (!Continue()) { result.Accepted = false; return result; }
             if (!IsValidTarget(pawn) || SSCIdentityUtility.IsMaster(pawn) || GetBodyRecord(pawn) != record ||
                 IsRootedLoadDef(record.def) != IsRooted(pawn))
             {
