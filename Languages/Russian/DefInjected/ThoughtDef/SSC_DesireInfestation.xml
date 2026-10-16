@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-  <SSC_DesireInfestation_Mood.stages.0.label>Разъедающее блаженство: неожиданный подъём настроения</SSC_DesireInfestation_Mood.stages.0.label>
+  <SSC_DesireInfestation_Mood.stages.0.label>Разъедающее блаженство: полегчало</SSC_DesireInfestation_Mood.stages.0.label>
   <SSC_DesireInfestation_Mood.stages.0.description>Заражение оставило тёплое послевкусие. Человек, подаривший это чувство, мне не неприятен.</SSC_DesireInfestation_Mood.stages.0.description>
-  <SSC_DesireInfestation_Mood.stages.1.label>Разъедающее блаженство: неотступное беспокойство</SSC_DesireInfestation_Mood.stages.1.label>
+  <SSC_DesireInfestation_Mood.stages.1.label>Разъедающее блаженство: стыдно</SSC_DesireInfestation_Mood.stages.1.label>
   <SSC_DesireInfestation_Mood.stages.1.description>Оставшееся после заражения чувство тревожит меня. Этот человек мне неприятен, и я не хочу такого влияния.</SSC_DesireInfestation_Mood.stages.1.description>
-  <SSC_DesireInfestation_Mood.stages.2.label>Разъедающее блаженство: переполняющая радость</SSC_DesireInfestation_Mood.stages.2.label>
+  <SSC_DesireInfestation_Mood.stages.2.label>Разъедающее блаженство: хочется ещё</SSC_DesireInfestation_Mood.stages.2.label>
   <SSC_DesireInfestation_Mood.stages.2.description>Мне знакомо удовольствие от этого заражения. Мысли о человеке, оставившем это послевкусие, всё ещё радуют меня.</SSC_DesireInfestation_Mood.stages.2.description>
-  <SSC_DesireInfestation_Mood.stages.3.label>Разъедающее блаженство: облегчение без примирения</SSC_DesireInfestation_Mood.stages.3.label>
+  <SSC_DesireInfestation_Mood.stages.3.label>Разъедающее блаженство: не могу смириться</SSC_DesireInfestation_Mood.stages.3.label>
   <SSC_DesireInfestation_Mood.stages.3.description>Тело наслаждается оставшимся удовольствием, но этот человек мне всё ещё неприятен. Одно не исключает другого.</SSC_DesireInfestation_Mood.stages.3.description>
   <SSC_DesireInfestation_Opinion.stages.0.label>близость после заражения</SSC_DesireInfestation_Opinion.stages.0.label>
   <SSC_DesireInfestation_Opinion.stages.0.description>Заражение во время близости усилило мою симпатию к этому человеку.</SSC_DesireInfestation_Opinion.stages.0.description>
