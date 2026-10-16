@@ -2,7 +2,7 @@
 
 [Project home](README.md) · [Player reading order](Docs/Players/README.md#english-reading-order) · [中文快速入门](读我，玩法介绍.md) · [Complete guide](PLAYER_GUIDE_EN.md)
 
-> Applies to **RimWorld 1.6 · SSC 2.4.1 (unreleased)** (2026-10-16). The former 2.4.0.5 development milestone and all subsequent work are consolidated into 2.4.1, including the PNA redesign, Bestow Bliss and bond/localization maintenance. No 2.4.1 package has been published; the latest existing download remains 2.4.0. This guide covers controls and progression; use the [Complete Player Guide](PLAYER_GUIDE_EN.md) for exact conditions and values.
+> Applies to **RimWorld 1.6 · SSC 2.4.1 ** (2026-10-16). The former 2.4.0.5 development milestone and all subsequent work are consolidated into 2.4.1, including the PNA redesign, Bestow Bliss and bond/localization maintenance. The release package is available as v2.4.1. This guide covers controls and progression; use the [Complete Player Guide](PLAYER_GUIDE_EN.md) for exact conditions and values.
 
 ## 1. What the Mod Does
 
@@ -220,7 +220,7 @@ It is used for:
 - Personality Excretion;
 - Full Gelatinization Surgery.
 
-Current 2.4.1 development rules: normal/PNA Plus ingestion uses one unit, adding 20/70 load points without nutrition. Ordinary bodies have five escalating stages, with collapse from 97%. Positive input reaching full load first creates addiction; vanilla recovery takes about ten days without new input, and withdrawal mood is -18.
+Current 2.4.1 rules: normal/PNA Plus ingestion uses one unit, adding 20/70 load points without nutrition. Ordinary bodies have five escalating stages, with collapse from 97%. Positive input reaching full load first creates addiction; vanilla recovery takes about ten days without new input, and withdrawal mood is -18.
 
 Effective-Chain pawns instead receive five positive activation/mood stages without ordinary addiction. Masters are immune to drug effects. Binding/unbinding preserves load; PNA states remain with the body. Completing an ordinary RJW paired act with a normal producer adds +2% load, +10% to an existing need and base +0.01 existing addiction (+0.21 at terminal load). SSC training, rituals, personality excretion, solo acts and vanilla Lovin are excluded. See the [full PNA rules](PLAYER_GUIDE_EN.md#11-pna-items-and-basic-pna-launcher).
 
@@ -465,7 +465,7 @@ Execution, surgery, EMP, and most toxic damage are not redirected.
 
 Combine sexual skill with actively controlled aphrodisiac nanomachines to bestow unparalleled bliss during intimacy, gradually increasing Corruption and reshaping the recipient's body to become more sensitive to sexual stimulation.
 
-All four batches are implemented and accepted in game on the current unreleased development branch. The public 2.4.0 download does not include this feature.
+All four batches are implemented and accepted in game on the 2.4.1 release. The public 2.4.0 download does not include this feature.
 
 1. Select a current player-faction Master, open the Training tab, and enable **Bestow Bliss** in personal abilities. It starts off and requires no additional Master level, bond count or bridle.
 2. Complete an ordinary paired encounter or Lovin with an eligible humanlike partner. The Master may occupy either role. Unbound partners and Sex Slaves bonded to another Master can receive effects; existing encounter permissions still apply.
@@ -566,7 +566,7 @@ Also note:
 - Sex Reassignment Surgery is not gated by its SSC research;
 - Final Cow Specialization does not automatically grant Full Gelatinization Complete;
 - Public Use trade and daily Training rewards now share saved specialization progress;
-- Bestow Bliss is implemented and accepted in all four batches on the unreleased development branch; see the [completion audit](Docs/Development/Completed/主人欲望侵染完成核对.md). New Master active abilities and multi-trainer restructuring remain planned. The accepted PNA milestone and current development have no new public package.
+- Bestow Bliss is implemented and accepted in all four batches in version 2.4.1; see the [completion audit](Docs/Development/Completed/主人欲望侵染完成核对.md). New Master active abilities and multi-trainer restructuring remain planned. The accepted PNA milestone is included in the 2.4.1 package.
 
 -->
 

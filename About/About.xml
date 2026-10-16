@@ -6,20 +6,19 @@
 		<li>1.6</li>
 	</supportedVersions>
 	<packageId>rjw.sexslavecraft.TieJinVer</packageId>
-    <description>开发分支：欢愉恩赐。主人主动操控随分泌与代谢排出的催情微械，配合自身性技强化接触对象的欢愉，并逐步推动恶堕与身体改造。首版四批机制已获维护者实机确认，当前尚未发布。保留现有 PNA、研究和部位开发规则；原版 Lovin 有反馈、无部位开发。
-Development branch: Bestow Bliss. Masters actively control aphrodisiac nanomachines released through secretions and metabolism, combining them with sexual skill to intensify a partner's pleasure and gradually increase Corruption and reshape the body. All four gameplay batches were verified in game by the maintainer; this feature remains unreleased. Existing PNA, research and part-development rules remain; native Lovin grants feedback without part development.
+    <description>SexSlaveCraft 2.4.1 (TieJin Modify)
+PNA 重置、欢愉恩赐与绑定维护。
+PNA 使用五档负荷与锁链保护下的正面活化，沿用原版成瘾恢复；主人免疫。普通产出者与开启欢愉恩赐的主人可在合格接触后提供补给，并成为成瘾者的来源吸引对象。
+主人可在“调教”页开启“欢愉恩赐”，获得“欢愉侵蚀施予者”标记，向合格对象提供 PNA、少量恶堕、身体开发及独立心情与好感反馈；原版 Lovin 不含部位开发。
+默认关闭无条件直接选择主人；先使用欲望之种取得永久资格，再在“调教”页选择主人身份。种子可补齐皇权扩展的调教研究蓝图，研究仍需正常完成；载入地图后可在本模组设置手动生成种子。明确保存的直接选择设置继续保留。
+修复主从奖励关系与实际锁链归属、解绑与 Character Editor 删除时的清理，补齐四语文本与资源镜像检查。
+保留欲望共生四阶段成长、六种特化、调教仪式、自我调教、人格凝胶与身体改造。支持 RimWorld 1.6，基于上游 2.2.8 继续维护。兔入口仍禁用，旧 RimTalk 对接暂停。内容与验证范围见 CHANGELOG.md 和 Docs/Releases/2.4.1/。
 
-SexSlaveCraft 2.4.0 (TieJin Modify)
-欲望之种与主人成长：新增个人主人资格、一次性免费领取任务及任务／遗迹稀有来源。默认允许直接手动选择主人；关闭该设置后须先取得资格。欲望之种赋予永久资格，不自动改变身份；有 Royalty 时同时补齐“调教”的研究蓝图，研究仍需正常完成，原版蓝图保留为独立研究来源。
-主人首次取得身份时建立“欲望共生”，本人完成日常调教获得 +1 经验、整场绑定仪式获得 +3，训导官代劳不转记。萌芽、觉醒、掌控、升华四阶段提供意识、视觉、听觉、社交影响与伤口愈合加成。主人面板显示阶段与经验，并接管原缰绳伤害分担开关。
-资格与成长随人格凝胶转移，克隆不继承主人身份、资格或成长。退出主人身份时隐藏成长条目并停用加成，重新成为主人后恢复原阶段和经验。补齐四语文案、道具贴图、领取任务叙事与投放通知。
-保留 2.3.9 的统一受训身份与训导官反馈，以及更早的仪式、猫狗特化、自我调教和人格系统。支持 RimWorld 1.6，基于上游 2.2.8 继续维护。兔入口仍禁用，旧 RimTalk 兼容继续暂停。内容与验证范围见 CHANGELOG.md 和 Docs/Releases/2.4.0/。
-
-Version 2.4.0 — Seed of Desire and Master progression.
-Adds permanent personal Master qualification, a one-time free claim quest and rare quest/ancient ruin rewards. Direct Master selection remains enabled by default; disable it to require qualification. A seed grants qualification without changing identity. With Royalty it also supplies missing Training techprints; normal research is still required and vanilla techprints remain an independent research source.
-A pawn first becoming a Master gains Symbiosis of Desire. Personally completed daily Training grants +1 experience and a whole Binding Ritual grants +3; Officer work gives no proxy credit. Budding, Awakening, Command and Ascendance boost Consciousness, Sight, Hearing, Social Impact and Injury Healing. The Master panel shows growth and hosts the bridle's existing damage-sharing toggle.
-Qualification and growth transfer with Personality Gel. Clones inherit neither Master identity nor qualification or growth. Leaving the Master role hides the growth entry and suspends its bonuses; returning restores the saved stage and experience. Includes four-language text, item artwork, quest narrative and delivery notifications.
-Retains 2.3.9 receiver identity and Officer feedback, plus earlier rituals, Cat/Dog specializations, self-training and personality mechanics. For RimWorld 1.6, continuing from upstream 2.2.8. Rabbit selection remains disabled and legacy RimTalk remains suspended. See CHANGELOG.md and Docs/Releases/2.4.0/ for content and validation scope.
+Version 2.4.1 — PNA redesign, Bestow Bliss and bond maintenance.
+Five-stage PNA load and Chain-protected activation use vanilla addiction recovery; Masters are immune. Eligible encounters with ordinary producers or enabled Masters supply PNA and are recognized by addicted observers as supply sources.
+Enable Bestow Bliss on a Master's Training tab to apply PNA, a small Corruption gain, body-part development and separate mood/opinion feedback to eligible partners. Native Lovin does not grant part development.
+Direct Master selection now defaults off. Use a Seed of Desire for permanent qualification, then select the Master identity on the Training tab. With Royalty, seeds supply missing Training techprints without completing research. More seeds can be spawned in SSC settings while a map is loaded. Explicitly saved direct-selection settings remain respected.
+Includes actual-bond reward cleanup, Character Editor removal handling, four-language text and resource mirror validation. Retains Symbiosis of Desire progression, six specializations, Training and Binding Rituals, self-training, Personality Gel and body modification. RimWorld 1.6; continues upstream 2.2.8. Rabbit selection remains disabled and legacy RimTalk remains suspended. See CHANGELOG.md and Docs/Releases/2.4.1/ for scope and verification limits.
 
 [AI 辅助生成 / Partly AI-assisted]</description>
 	<modDependencies>

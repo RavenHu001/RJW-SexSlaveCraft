@@ -16,6 +16,8 @@ dotnet run --project Tests/TrainerIntegration/TrainerIntegration.csproj --config
 
 用例覆盖临时无绑定、最后仍失格时归档源进度、宿主高进度及终极标签清理、两种源终极记录与两种宿主资格的四种组合、零进度、空源标签、嵌套和重复释放，以及异常退出后的继续维护。嵌套用例用健康状态增删计数和最终通知计数检验只在最外层转换一次。
 
+主人夹具先通过生产组件取得永久主人资格，再使用生产身份 setter；不依赖无条件手动选择主人的默认设置。本套件保持恢复事务范围，默认关闭与显式保存值由 TrainerIdentity 专项覆盖。
+
 ## 验证边界
 
 共用 `Tests/TrainerIdentity` 的游戏接口模型；凝胶替身仅提供字段和字典容器，状态算法直接编译生产源码。恢复序列采用 `ExcretionUtility.InheritEverything` 中训导官方向对应的顺序，但没有执行整个植入方法、特质/记忆迁移或人格植入 Job。健康添加的 Harmony 后缀由用例显式调用生产通知模拟；实际 Harmony 安装和真实 Scribe 跨引用恢复仍由其他检查及实机验证覆盖。

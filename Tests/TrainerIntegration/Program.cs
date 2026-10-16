@@ -33,6 +33,9 @@ internal static class Program
     {
         var pawn = new Pawn();
         pawn.Training.parent = pawn;
+        // 此套件验证人格恢复事务；主人夹具先取得永久资格，遵守默认关闭的身份门槛。
+        if (identity == PawnIdentity.Master)
+            pawn.Training.ReplaceMasterQualification(true);
         Assert(SSCIdentityUtility.TrySetIdentity(pawn, identity), "准备对象身份失败");
         return pawn;
     }

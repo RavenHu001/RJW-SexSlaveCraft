@@ -6,13 +6,13 @@ This continuation builds on upstream **2.2.8**, the baseline when upstream devel
 
 ## [未发布 / Unreleased]
 
-截至 `6b8094f` 的全部已实现开发已归入下方 **2.4.1（未发布）**；未来构想继续在规划台账维护。 / Implemented development through `6b8094f` is assigned to unreleased 2.4.1; future designs remain in the backlog.
+本次交付范围见下方 **2.4.1**；未来构想继续在规划台账维护。 / This delivery is listed under **2.4.1**; future designs remain in the backlog.
 
-## [2.4.1] — 未发布 / Unreleased — PNA 重置、欢愉恩赐与绑定维护
+## [2.4.1] — 2026-10-16 — PNA 重置、欢愉恩赐与绑定维护
 
-2026-10-16 本批验收：主人直接选择默认关闭、种子用途／使用／设置生成提示和最终换行已获维护者实机确认，连同版本归并提交；沿用已执行的 303 项相关回归，本次收尾不重跑机制测试。The maintainer accepted the default-setting and Seed of Desire instructions/layout changes in game; see the [acceptance record](Docs/Development/Completed/主人资格默认关闭与欲望之种说明验收.md). This is not a public release.
+2026-10-16 本批验收：主人直接选择默认关闭、种子用途／使用／设置生成提示和最终换行已获维护者实机确认，连同版本归并提交；沿用已执行的 303 项相关回归，本次收尾不重跑机制测试。The maintainer accepted the default-setting and Seed of Desire instructions/layout changes in game; see the [acceptance record](Docs/Development/Completed/主人资格默认关闭与欲望之种说明验收.md). This acceptance preceded the release preparation.
 
-2026-10-16 版本归并：原 **2.4.0.5 仅为开发版本**，其全部内容与后续开发统一纳入 2.4.1，不单独正式发布。本次更新文档与 `VERSION`；尚未重编版本元数据、打包或创建远端 Release，最近实际下载仍为 2.4.0。 / Consolidates the former 2.4.0.5 development milestone and subsequent work. This registration updates documentation and VERSION only; no 2.4.1 public package exists. See [release scope](Docs/Releases/2.4.1/2.4.1发布说明.md) and [validation boundaries](Docs/Releases/2.4.1/2.4.1版本验证.md).
+2026-10-16 版本归并：原 **2.4.0.5 仅为开发版本**，其全部内容与后续开发统一纳入 2.4.1，不单独正式发布。归并时仅更新文档与 `VERSION`；本次正式发布同步 About、文件版本 2.4.1.0 与产品版本 2.4.1，并重编 DLL。 / Consolidates the former 2.4.0.5 development milestone and subsequent work. The formal release aligns About and assembly metadata, rebuilds the DLL and packages the consolidated version. See [release scope](Docs/Releases/2.4.1/2.4.1发布说明.md) and [validation boundaries](Docs/Releases/2.4.1/2.4.1版本验证.md).
 
 - **主人资格入口 / Master qualification:** “允许直接选择主人”默认关闭，新设置和缺字段配置要求资格，已有明确保存值保留。欲望之种以括号补充用途、右键使用及 SSC 设置手动生成入口，补齐四语与镜像。Direct Master selection now defaults to off; seed descriptions include practical use and manual-spawn guidance.
 - **PNA 重置与补全 / PNA redesign:** 五档普通负荷与性奴活化、原版十天恢复、主人免疫、身体归属、普通产出者完成补给、来源吸引、低阶枪械及信息栏／研究／成瘾修正、四语文案均纳入。Includes staged effects, body-only persistence, producer supply, source attraction and weapon/research/info-card fixes; see [PNA audit](Docs/Development/Completed/PNA重置与玩法补全完成核对.md).

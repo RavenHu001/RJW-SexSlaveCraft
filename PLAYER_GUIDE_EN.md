@@ -2,7 +2,7 @@
 
 [Project home](README.md) · [Player reading order](Docs/Players/README.md#english-reading-order) · [Quick start](QUICK_START_EN.md) · [中文机制详解](机制详解.md)
 
-> Applies to **RimWorld 1.6 · SSC 2.4.1 (unreleased)** (2026-10-16). The former 2.4.0.5 development milestone and all subsequent work are consolidated into 2.4.1, including the PNA redesign, Bestow Bliss and bond/localization maintenance. No 2.4.1 package has been published; the latest existing download remains 2.4.0. Use this reference for full conditions, formulas and values; first-time players should begin with the [quick start](QUICK_START_EN.md).
+> Applies to **RimWorld 1.6 · SSC 2.4.1 ** (2026-10-16). The former 2.4.0.5 development milestone and all subsequent work are consolidated into 2.4.1, including the PNA redesign, Bestow Bliss and bond/localization maintenance. The release package is available as v2.4.1. Use this reference for full conditions, formulas and values; first-time players should begin with the [quick start](QUICK_START_EN.md).
 
 ## 1. Scope and Dependencies
 
@@ -772,7 +772,7 @@ The ability and grant component exist, but the current Mouth Hediff XML does not
 
 ### 11.1 Ingestion
 
-This section describes the accepted PNA redesign in the 2.4.1 development milestone, which has not been packaged for release. Load L is raw severity divided by 2, ranging from 0 to 100%. The former +0.3/+1.0 infection doses, 25%/50% random addiction chances and linear daily clearance no longer describe this branch.
+This section describes the accepted PNA redesign in the 2.4.1 release. Load L is raw severity divided by 2, ranging from 0 to 100%. The former +0.3/+1.0 infection doses, 25%/50% random addiction chances and linear daily clearance no longer describe this branch.
 
 | Source | Load added | Existing legal PNA need refill | Base increase to existing addiction |
 | --- | ---: | ---: | ---: |
@@ -869,7 +869,7 @@ Bestow Bliss is implemented and accepted in all four batches: +8% load/full exis
 
 Combine sexual skill with actively controlled aphrodisiac nanomachines to bestow unparalleled bliss during intimacy, gradually increasing Corruption and reshaping the recipient's body to become more sensitive to sexual stimulation.
 
-The first implementation is complete and accepted across all four batches; it remains unreleased development content. Select a current player-faction SSC Master and enable **Bestow Bliss** under personal abilities on the Training tab. It defaults off. Actual effects require no additional player-faction condition, permanent qualification, Master level, bond count or bridle.
+The first implementation is complete and accepted across all four batches; it remains part of version 2.4.1. Select a current player-faction SSC Master and enable **Bestow Bliss** under personal abilities on the Training tab. It defaults off. Actual effects require no additional player-faction condition, permanent qualification, Master level, bond count or bridle.
 
 Recipients must be living, valid flesh humanlikes with an actual Corruption need and SSC personality component, neither Hollow nor currently a Master. Missing needs are not created. A recipient may be unbound or bonded to another Master. Ordinary RJW paired encounters and native Lovin qualify with the Master in either role. Mutual masturbation with genuine paired participation can qualify; solo acts cannot. Training, ritual stages, self-training and personality excretion are excluded. Preparation, rejection, interruption and cancellation grant nothing. Each completion pays once, independent of orgasm count or animation participants.
 
