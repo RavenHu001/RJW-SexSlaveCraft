@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Linq;
@@ -18,13 +18,13 @@ namespace Verse
         public IntVec3 Cell;
         public Pawn Pawn => Thing as Pawn;
     }
-    public static class Rand
+    public static partial class Rand
     {
         public static float NextValue;
         public static int Calls;
         public static float Value { get { Calls++; return NextValue; } }
     }
-    public class Pawn : Thing
+    public partial class Pawn : Thing
     {
         public string LabelShort;
         public int thingIDNumber;
@@ -219,7 +219,7 @@ namespace Verse.AI
 }
 namespace rjw
 {
-    public class SexProps
+    public partial class SexProps
     {
         public Verse.Pawn pawn, partner;
         /// <summary>在最小行为数据模型中，将 pawn 作为发起者返回。</summary>
@@ -380,7 +380,7 @@ namespace rjw
     public class JobDriver_Masturbate : JobDriver_SexBaseInitiator { }
     public class JobGiver_Masturbate : Verse.AI.ThinkNode_JobGiver { }
 #pragma warning disable CS8981 // Mirror RJW's actual lowercase type name.
-    public static class xxx
+    public static partial class xxx
     {
         public static readonly Verse.JobDef Masturbate = new Verse.JobDef
             { defName = "Masturbate", driverClass = typeof(JobDriver_Masturbate) };
@@ -529,7 +529,7 @@ namespace SexSlaveCraft
         /// <summary>提供宠物事件翻译边界，实际开始时才会调用。</summary>
         public static string Message_DogAnimalInteractionTriggered(string actor, string target) => "DogStarted";
     }
-    public static class SSCDefOf
+    public static partial class SSCDefOf
     {
         public static readonly Verse.JobDef SelfTraining = new Verse.JobDef
             { defName = "SSC_SelfTraining", driverClass = typeof(JobDriver_SelfTraining) };

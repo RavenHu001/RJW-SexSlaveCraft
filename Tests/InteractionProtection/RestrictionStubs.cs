@@ -70,14 +70,29 @@ namespace Verse
     public static class DefDatabase<T> where T : Def
     {
         public static List<T> AllDefsListForReading = new List<T>();
+        public static T GetNamedSilentFail(string name)=>AllDefsListForReading.FirstOrDefault(d=>d.defName==name);
+        public static T GetNamed(string name)=>GetNamedSilentFail(name) ?? throw new Exception(name);
     }
 
-    public enum LookMode { Value }
+    public enum LookMode { Value, Deep }
     public static class Scribe_Collections
     {
         /// <summary>复制值列表模拟任务编号的存读档，避免测试保存节点与运行对象共享集合。</summary>
         public static void Look<T>(ref List<T> values, string key, LookMode mode)
         {
+            if(mode==LookMode.Deep) {
+                var parent=Scribe.node;
+                try {
+                    if(Scribe.mode==LoadSaveMode.Saving) {
+                        var nodes=values?.Select(v=>{Scribe.node=new Dictionary<string,object>();((IExposable)v).ExposeData();return Scribe.node;}).ToList();
+                        parent[key]=nodes;
+                    } else if(Scribe.mode==LoadSaveMode.LoadingVars) {
+                        values=parent.TryGetValue(key,out var saved) && saved!=null ? ((List<Dictionary<string,object>>)saved).Select(n=>{
+                            Scribe.node=n;var item=Activator.CreateInstance<T>();((IExposable)item).ExposeData();return item;}).ToList() : null;
+                    }
+                } finally { Scribe.node=parent; }
+                return;
+            }
             if (Scribe.mode == LoadSaveMode.Saving) Scribe.node[key] = values?.ToList();
             else if (Scribe.mode == LoadSaveMode.LoadingVars)
                 values = Scribe.node.TryGetValue(key, out object value) ? ((List<T>)value)?.ToList() : null;

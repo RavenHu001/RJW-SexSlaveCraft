@@ -23,3 +23,14 @@ namespace SexSlaveCraft
     public static class TrainingOutcomeUtility { public static float GetChainCap(Pawn pawn)=>pawn.InfestationCap; }
 }
 namespace Verse { public partial class Pawn { public float InfestationCap=.12f; } }
+
+// 身体分量的完整生产实现由 TrainingExperience 与 InteractionProtection 执行；本宿主专测 PNA。
+namespace SexSlaveCraft
+{
+    public sealed class SSCOrdinarySexPartsSnapshot { }
+    public static class SSCDesireInfestationBodyUtility
+    {
+        public sealed class Plan { public void Apply(Func<bool> current) { } }
+        public static Plan Capture(Pawn source,Pawn target,SSCOrdinarySexPartsSnapshot parts)=>null;
+    }
+}

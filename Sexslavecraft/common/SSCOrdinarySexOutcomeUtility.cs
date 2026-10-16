@@ -19,7 +19,7 @@ namespace SexSlaveCraft
             private bool disposed, attempted, claimed, dispatched;
 
             internal Context(Pawn initiator, Pawn recipient, bool allowProducer, Func<bool> sceneCurrent,
-                Func<bool> claim, Action release)
+                Func<bool> claim, Action release, SSCOrdinarySexPartsSnapshot parts, Func<bool> partsCurrent)
             {
                 Initiator = initiator; Recipient = recipient;
                 this.sceneCurrent = sceneCurrent; this.claim = claim; this.release = release;
@@ -30,8 +30,8 @@ namespace SexSlaveCraft
                 initiatorToken = SSCPersonalityRuntimeUtility.Capture(initiator);
                 recipientToken = SSCPersonalityRuntimeUtility.Capture(recipient);
                 // 原结算前记录两个方向的资格；原结算或第一方向回调新增的能力不能补领本场。
-                forward = new Direction(initiator, recipient, allowProducer);
-                reverse = new Direction(recipient, initiator, allowProducer);
+                forward = new Direction(initiator, recipient, allowProducer, parts, partsCurrent);
+                reverse = new Direction(recipient, initiator, allowProducer, parts, partsCurrent);
             }
 
             public bool IsCurrent => !disposed && Scribe.mode == LoadSaveMode.Inactive && sceneCurrent() &&
@@ -74,12 +74,18 @@ namespace SexSlaveCraft
             private readonly Pawn source, target;
             private readonly bool infestation, producer;
             private readonly Need_Corruption need;
-            public Direction(Pawn source, Pawn target, bool allowProducer)
+            private readonly SSCDesireInfestationBodyUtility.Plan bodyPlan;
+            private readonly Func<bool> partsCurrent;
+            public Direction(Pawn source, Pawn target, bool allowProducer, SSCOrdinarySexPartsSnapshot parts, Func<bool> partsCurrent)
             {
                 this.source = source; this.target = target;
                 infestation = SSCDesireInfestationUtility.CanAffect(source, target);
                 producer = allowProducer && SSCPnaSourceUtility.IsPnaProducer(source);
                 need = target?.needs?.TryGetNeed<Need_Corruption>();
+                this.partsCurrent = partsCurrent;
+                // 与 PNA/C 同一原结算前边界冻结评分、倍率和候选；无可靠部位只留下空开发计划。
+                if (infestation && partsCurrent?.Invoke() == true)
+                    bodyPlan = SSCDesireInfestationBodyUtility.Capture(source, target, parts);
             }
             public void Apply(Func<bool> contextCurrent)
             {
@@ -92,6 +98,9 @@ namespace SexSlaveCraft
                     SSCPnaSexSupplyUtility.ApplyInfestation(source, target, StrongCurrent);
                     // PNA 分量未产生效果不等于侵染失效；人格与资格仍有效时独立结算恶堕。
                     if (StrongCurrent()) SSCDesireInfestationUtility.ApplyCorruption(source, target, need, StrongCurrent);
+                    // 恶堕达到上限仍可开发；每条身体写入复查人格、需求和原部位凭据。
+                    if (StrongCurrent() && bodyPlan != null)
+                        bodyPlan.Apply(() => StrongCurrent() && partsCurrent?.Invoke() == true);
                 }
                 else if (producer && SSCPnaSourceUtility.IsPnaProducer(source))
                     SSCPnaSexSupplyUtility.ApplyFromProducer(source, target,
@@ -101,6 +110,12 @@ namespace SexSlaveCraft
 
         public static Context Capture(Pawn initiator, Pawn recipient, bool allowProducer,
             Func<bool> sceneCurrent, Func<bool> claim, Action release = null)
-            => new Context(initiator, recipient, allowProducer, sceneCurrent, claim, release);
+            // 保留第二批已公开的六参数签名，原版 Lovin 和既有调用不需要身体凭据。
+            => Capture(initiator, recipient, allowProducer, sceneCurrent, claim, release, null, null);
+
+        public static Context Capture(Pawn initiator, Pawn recipient, bool allowProducer,
+            Func<bool> sceneCurrent, Func<bool> claim, Action release,
+            SSCOrdinarySexPartsSnapshot parts, Func<bool> partsCurrent)
+            => new Context(initiator, recipient, allowProducer, sceneCurrent, claim, release, parts, partsCurrent);
     }
 }

@@ -31,6 +31,7 @@ $suites = @(
     @{ Name = 'RitualProgression'; Arguments = @((Join-Path $repoRoot 'Defs/HediffDefs/HediffOfSexSlave.xml')) },
     @{ Name = 'RitualLifecycle'; Arguments = @() },
     @{ Name = 'ForcedSexProps'; Arguments = @() },
+    @{ Name = 'TrainingExperience'; Arguments = @() },
     @{ Name = 'RitualSelection'; Arguments = @($repoRoot) },
     @{ Name = 'PersonalityTraits'; Arguments = @() },
     @{ Name = 'PersonalityInsertion'; Arguments = @() },

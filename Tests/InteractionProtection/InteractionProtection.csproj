@@ -37,4 +37,12 @@
     <Compile Include="../../Sexslavecraft/common/SSCPersonalityRuntimeUtility.cs" Link="Production/SSCPersonalityRuntimeUtility.cs" />
     <Compile Include="../../Sexslavecraft/common/SSCPnaMath.cs" Link="Production/SSCPnaMath.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Include="../Shared/OrdinarySexPartsBoundary.cs" Link="Boundary/OrdinarySexParts.cs" />
+    <Compile Include="../../Sexslavecraft/common/SSCOrdinarySexPartsSnapshot.cs" Link="Production/SSCOrdinarySexPartsSnapshot.cs" />
+    <Compile Include="../../Sexslavecraft/common/SSCOrdinarySexPartsUtility.cs" Link="Production/SSCOrdinarySexPartsUtility.cs" />
+    <Compile Include="../../Sexslavecraft/common/SSCDesireInfestationBodyUtility.cs" Link="Production/SSCDesireInfestationBodyUtility.cs" />
+    <Compile Include="../../Sexslavecraft/common/TrainingExpUtility.cs" Link="Production/TrainingExpUtility.cs" />
+    <Compile Include="../../Sexslavecraft/common/ResearchUtils.cs" Link="Production/ResearchUtils.cs" />
+  </ItemGroup>
 </Project>

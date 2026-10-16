@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <SSC_AbilityToggle_MasterDesireInfestation_Label>Вторжение желания</SSC_AbilityToggle_MasterDesireInfestation_Label>
-  <SSC_AbilityToggle_MasterDesireInfestation_Tip>После завершения обычного парного контакта или Lovin подходящий партнёр получает немного PNA и развращения. Тренировки, ритуалы и извлечение личности не вызывают этот эффект. Настройка переносится с личностью и приостанавливается вне роли Хозяина.</SSC_AbilityToggle_MasterDesireInfestation_Tip>
+  <SSC_AbilityToggle_MasterDesireInfestation_Tip>После завершения обычного парного контакта или Lovin подходящий партнёр получает немного PNA и развращения. Обычный контакт RJW также слабо развивает реально участвовавшие части тела при наличии достоверных данных и завершённого исследования тренировки частей тела; Lovin их не развивает. Тренировки, ритуалы и извлечение личности не вызывают этот эффект. Настройка переносится с личностью и приостанавливается вне роли Хозяина.</SSC_AbilityToggle_MasterDesireInfestation_Tip>
 </LanguageData>

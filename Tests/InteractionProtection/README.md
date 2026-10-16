@@ -37,3 +37,5 @@ dotnet run --project Tests/InteractionProtection -p:NoLifeForce=true -p:HarmonyA
 2026-10-15：维护者已确认第五步仪式及性交增加成瘾均正常，批准提交；本次只补实机验收记录，不重复运行回归。
 
 第二批新增普通完成快照与侵染来源专项，真实生产上下文、PNA 输入和任务适配器分别执行；当前结果与游戏边界见[第二批实现记录](../../Docs/Development/Completed/欲望侵染第二批普通完成与来源择强实现与测试.md)。历史计数保留各次实际运行范围。
+
+第三批另链接真实部位快照、20% 计划和精确写入，覆盖首次 Start、重复 Start、无开始缓存、进行中／已认领／缺字段存档、任务复用、原方法重入／跳过／异常、健康通知重入、人格替换和 Lovin 分流。见[第三批记录](../../Docs/Development/Completed/欲望侵染第三批真实部位与弱开发实现与测试.md)；引擎与 Scribe 为边界模型。

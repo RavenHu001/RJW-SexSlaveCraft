@@ -6,6 +6,8 @@ This continuation builds on upstream **2.2.8**, the baseline when upstream devel
 
 ## [未发布 / Unreleased]
 
+- **欲望侵染第三批 / Desire infestation, batch 3:** 普通 RJW 开始时保存实际部位凭据，完成前冻结评分与倍率，按去重后实际部位均分 20% 总预算；精确写入遵守研究和原开发上限，已满份额不转移。保留原日常／仪式分配与第二批分量，旧档缺凭据及原版 Lovin 跳过身体开发。补齐代码块注释与四语悬停，维护者确认“经测试都符合预期”并批准提交，未发布；见[实现与测试](Docs/Development/Completed/欲望侵染第三批真实部位与弱开发实现与测试.md)。Adds saved actual-part evidence, a shared development budget and guarded precise writes; the maintainer confirmed expected in-game behavior and approved the commit.
+
 - **欲望侵染第二批 / Desire infestation, batch 2:** 普通 RJW／Lovin 完成接入，原结算前人格快照和统一认领；每方向 PNA 来源择强，侵染负荷 +8%、已有需求补满、已有成瘾基础 +0.02／末期合计 +0.22，恶堕额外 +1 个百分点并遵守原阶段上限。既有来源偏好可识别有效侵染者，双来源不叠乘。维护者确认实机测试未发现问题并批准提交，部位开发和侵染记忆留后续；见[本批记录](Docs/Development/Completed/欲望侵染第二批普通完成与来源择强实现与测试.md)。Connects guarded ordinary completion, strongest-source PNA supply, corruption and source attraction; the maintainer reported no issues in game and approved this batch.
 
 - **欲望侵染第一批 / Desire infestation, batch 1:** 新增随人格保存的通用个人能力开关框架，首项为主人欲望侵染；接入主／奴分组面板、主人标记、人格凝胶与克隆保护。自动结果和实机步骤见[第一批记录](Docs/Development/Completed/欲望侵染第一批通用开关框架实现与测试.md)。关键代码块注释已补齐，维护者实机测试未发现问题并批准提交；实际性交侵染收益及来源偏好扩展尚未接通，未发布。Adds shared personality-owned toggles, Master UI and marker, gel transfer and clone safeguards. The maintainer reported no issues in game and approved this batch; gameplay infestation effects remain future work.

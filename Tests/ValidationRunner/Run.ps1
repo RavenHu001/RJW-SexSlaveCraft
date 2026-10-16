@@ -66,6 +66,11 @@ try {
         'QUICK_START_EN.md', '读我，玩法介绍.md', '机制详解.md', 'PLAYER_GUIDE_EN.md')) {
         Copy-Item -LiteralPath (Join-Path $repo $file) -Destination (Join-Path $fixture $file)
     }
+    # 开发里程碑可使用四段 VERSION，正式打包仍要求三段；夹具按复制 DLL 的真实正式元数据隔离测试。
+    # 只改隔离目录，不能为了测试打包编排而改写当前仓库版本或重写生产 DLL 元数据。
+    $fixtureVersion = [Diagnostics.FileVersionInfo]::GetVersionInfo((Join-Path $fixture 'Assemblies/Sexslavecraft.dll')).ProductVersion
+    if ($fixtureVersion -notmatch '^\d+\.\d+\.\d+$') { throw 'Fixture requires a DLL with three-part release product metadata.' }
+    [IO.File]::WriteAllText((Join-Path $fixture 'VERSION'), $fixtureVersion, [Text.UTF8Encoding]::new($false))
     # New-Release checks localization and its mirror before invoking validation. Supply those real prerequisites in the fixture.
     foreach ($language in @('English', 'ChineseSimplified', 'ChineseTraditional', 'Russian')) {
         $relative = "Languages/$language/Keyed/SSC_Restrictions.xml"
