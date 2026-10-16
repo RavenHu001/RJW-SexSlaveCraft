@@ -83,6 +83,7 @@ namespace Verse
     }
     public class Pawn
     {
+        public Pawn BoundMaster;
         public bool Destroyed, Discarded, Dead, Downed;
         public string LabelShortCap = "Pawn";
         public string LabelShort = "Pawn";
@@ -209,6 +210,8 @@ namespace SexSlaveCraft
     public static class SSCIdentityUtility { public static bool IsMaster(Pawn pawn) => pawn?.Training?.pawnIdentity == PawnIdentity.Master; }
     public static class SSCBondUtility
     {
+        // 面板宿主只提供实际归属引用，缰绳的有效性和空状态清理由生产类判断。
+        public static Pawn GetBoundMaster(Pawn pawn) => pawn?.BoundMaster;
         // 绑定查询作为外部接口，仅返回已有缰绳；不在测试中重写面板编辑准入。
         public static Hediff_BridleOfSexSlave GetBridle(Pawn pawn) => pawn?.health?.hediffSet?.GetFirstHediffOfDef(SSCDefOf.BridleOfSexSlave) as Hediff_BridleOfSexSlave;
     }

@@ -18,7 +18,9 @@ namespace SexSlaveCraft
         public List<Pawn> targets = new List<Pawn>();
         public bool shareDamageEnabled = true;
 
-        public IEnumerable<Pawn> ValidTargets => (targets ?? Enumerable.Empty<Pawn>()).Where(p => p != null && !p.DestroyedOrNull());
+        // 缰绳只提供反向索引，实际归属始终由性奴锁链决定，不能让旧条目冒充有效绑定。
+        public IEnumerable<Pawn> ValidTargets => (targets ?? Enumerable.Empty<Pawn>()).Where(p =>
+            p != null && !p.DestroyedOrNull() && SSCBondUtility.GetBoundMaster(p) == pawn);
 
         public void AddTarget(Pawn pawn)
         {
@@ -36,10 +38,25 @@ namespace SexSlaveCraft
             if (pawn != null)
             {
                 targets.Remove(pawn);
-                // EN: Removing a bound sex slave also changes the resonance field, so refresh it here too.
-                // CN: 移除已绑定性奴后，“灵欲共振场”也会变化，所以这里同样要刷新。
-                SSCMasterBondUtility.RefreshMasterEmpowerment(this.pawn);
+                // 最后一条锁链解除时立即移除空缰绳，不能等待暂停或死亡后不再运行的健康 Tick。
+                PruneInvalidTargets();
             }
+        }
+
+        /// <summary>按实际锁链清除旧反向引用，并即时移除空缰绳及其派生收益。</summary>
+        public void PruneInvalidTargets()
+        {
+            if (targets == null) targets = new List<Pawn>();
+            targets.RemoveAll(target => target == null || target.DestroyedOrNull() ||
+                SSCBondUtility.GetBoundMaster(target) != pawn);
+            if (pawn?.health?.hediffSet == null) return;
+            if (targets.Count == 0)
+            {
+                // 只删除仍挂在身体上的本实例，允许解绑和加载清理重复调用。
+                if (pawn.health.hediffSet.hediffs.Contains(this)) pawn.health.RemoveHediff(this);
+                return;
+            }
+            SSCMasterBondUtility.RefreshMasterEmpowerment(pawn);
         }
 
         public override void PostAdd(DamageInfo? dinfo)

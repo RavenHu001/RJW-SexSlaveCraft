@@ -10,13 +10,31 @@ namespace SexSlaveCraft
 {
     public class Hediff_ChainOfSexSlave : HediffWithTarget
     {
+        // 仅缓存上次观察的引用，不保存新归属；加载后的真实 target 仍由基类恢复。
+        private Pawn observedMaster;
         public Pawn LinkedPawn => target as Pawn;
 
         public override void PostAdd(DamageInfo? dinfo)
         {
             base.PostAdd(dinfo);
+            observedMaster = LinkedPawn;
             SSCSelfTrainingFeedback.NotifyStatusChanged(pawn);
             ModLog.Message($"[ChainOfSexSlave] Added to {pawn}, linked with {LinkedPawn ?? target}");
+        }
+
+        /// <summary>兼容外部直接改写公开 target 的路径，在下一次锁链 Tick 整理旧关系及反向索引。</summary>
+        public override void Tick()
+        {
+            base.Tick();
+            // 健康组件回调可能已替换这条锁链，旧实例不能继续整理新绑定或重建缰绳。
+            if (pawn?.health?.hediffSet == null || !pawn.health.hediffSet.hediffs.Contains(this)) return;
+            Pawn currentMaster = LinkedPawn;
+            if (observedMaster == currentMaster) return;
+            Pawn previousMaster = observedMaster;
+            observedMaster = currentMaster;
+            SSCBondUtility.GetBridle(previousMaster)?.RemoveTarget(pawn);
+            SSCBondRelationUtility.RemoveInvalidRelations(pawn);
+            SSCBondUtility.RepairReciprocalLink(pawn);
         }
 
         public override string LabelBase
@@ -59,6 +77,8 @@ namespace SexSlaveCraft
             Pawn formerMaster = LinkedPawn;
             base.PostRemoved();
             SSCBondUtility.GetBridle(formerMaster)?.RemoveTarget(pawn);
+            // 外部先改 target 再同帧删除时，两任主人的反向引用都需要整理。
+            if (observedMaster != formerMaster) SSCBondUtility.GetBridle(observedMaster)?.RemoveTarget(pawn);
             // 覆盖开发模式和外部模组直接删锁链的入口，不依赖它们调用统一 Unbind 服务。
             SSCBondRelationUtility.RemoveInvalidRelations(pawn);
             // 包含外部模组直接移除锁链的路径；Unbind 内的事务会延迟本次维护。
@@ -89,7 +109,11 @@ namespace SexSlaveCraft
             }
             else
             {
+                Pawn previousMaster = hediff.LinkedPawn;
                 hediff.target = Master;
+                hediff.observedMaster = Master;
+                // AddToPawn 也可能被绕过 Bind 直接调用，换主时仍须清除旧主人的反向引用。
+                if (previousMaster != Master) SSCBondUtility.GetBridle(previousMaster)?.RemoveTarget(SexSlave);
                 ModLog.Message($"[ChainOfSexSlave] Updated existing link: {SexSlave} ↔ {Master}");
             }
 

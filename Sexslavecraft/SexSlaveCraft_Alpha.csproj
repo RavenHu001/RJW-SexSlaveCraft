@@ -87,6 +87,7 @@
     <Compile Include="common\SSCBondRelationGameComponent.cs" />
     <Compile Include="common\SSCBondRelationLabels.cs" />
     <Compile Include="ThePatches\Harmony_BondRelationLabels.cs" />
+    <Compile Include="ThePatches\Harmony_CreepJoinerDeathGuard.cs" />
     <Compile Include="common\SSCAbilityToggleState.cs" />
     <Compile Include="common\SSCAbilityToggleUtility.cs" />
     <Compile Include="common\SSCPersonalityRuntimeUtility.cs" />

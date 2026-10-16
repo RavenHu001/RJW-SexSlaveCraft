@@ -81,7 +81,12 @@ internal static partial class Program
     {
         var pawn = new Pawn(); Assert(SSCMasterProgressionUtility.RestoreRecord(pawn, experience)); return pawn;
     }
-    private static Hediff_BridleOfSexSlave Bind(Pawn pawn) => Hediff_BridleOfSexSlave.AddToPawn(pawn, new Pawn());
+    private static Hediff_BridleOfSexSlave Bind(Pawn pawn)
+    {
+        // 主人面板必须使用有反向锁链归属的场景，避免用孤立缰绳条目冒充真实绑定。
+        var slave = new Pawn { BoundMaster = pawn };
+        return Hediff_BridleOfSexSlave.AddToPawn(pawn, slave);
+    }
 
     /// <summary>四语标签来自真实注入文件；没有人工复制一套面板文本。</summary>
     private static void LoadLanguage(string language)

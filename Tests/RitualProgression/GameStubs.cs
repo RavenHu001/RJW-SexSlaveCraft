@@ -94,6 +94,7 @@ namespace Verse
         public virtual bool ShouldRemove => false;
         public virtual void PostAdd(DamageInfo? info) { }
         public virtual void PostRemoved() { }
+        public virtual void Tick() { }
     }
     public class HediffWithComps : Hediff { public List<HediffComp> comps = new List<HediffComp>(); }
     public class HediffWithTarget : HediffWithComps { public Thing target; }
@@ -215,6 +216,7 @@ namespace SexSlaveCraft
         public static Hediff_ChainOfSexSlave GetChain(Pawn pawn) =>
             pawn?.health.hediffSet.GetFirstHediffOfDef(SSCDefOf.ChainOfSexSlave) as Hediff_ChainOfSexSlave;
         public static Hediff_BridleOfSexSlave GetBridle(Pawn pawn) => null;
+        public static void RepairReciprocalLink(Pawn pawn) { }
         public static bool Bind(Pawn master, Pawn slave) => Hediff_ChainOfSexSlave.AddToPawn(slave, master) != null;
     }
     // 评分、转奴概率、日志和本地化不是本次待测逻辑，仅提供无外部副作用的占位接口。

@@ -32,8 +32,25 @@ namespace Verse
         public virtual bool ShouldRemove => false;
         public virtual void PostAdd(DamageInfo? info) { }
         public virtual void PostRemoved() { }
+        public virtual void Tick() { }
+        public virtual void ExposeData() { }
+        public virtual string Description => "";
+        public virtual string TipStringExtra => "";
+        public virtual IEnumerable<Gizmo> GetGizmos() => Array.Empty<Gizmo>();
     }
-    public class HediffWithTarget : Hediff { public Thing target; }
+    public class HediffWithComps : Hediff { }
+    public class HediffWithTarget : HediffWithComps { public Thing target; }
+    public class Gizmo { }
+    public static class Log
+    {
+        public static readonly List<string> Warnings = new List<string>();
+        public static void Warning(string message) => Warnings.Add(message);
+    }
+    public enum LoadSaveMode { Inactive, PostLoadInit }
+    public enum LookMode { Reference }
+    public static class Scribe { public static LoadSaveMode mode; }
+    public static class Scribe_Collections { public static void Look<T>(ref List<T> list, string key, LookMode mode) { } }
+    public static class Scribe_Values { public static void Look(ref bool value, string key, bool defaultValue) { } }
     public class HediffSet
     {
         public readonly List<Hediff> hediffs = new List<Hediff>();
@@ -55,6 +72,7 @@ namespace Verse
     }
     public static class Extensions
     {
+        public static bool IsHashIntervalTick(this Pawn pawn, int interval) => false;
         public static bool DestroyedOrNull(this Thing thing) => thing == null || thing.Destroyed;
         public static string CapitalizeFirst(this string value) => string.IsNullOrEmpty(value) ? value : char.ToUpper(value[0]) + value.Substring(1);
         public static string Translate(this string key) => Translations[key];
@@ -66,6 +84,22 @@ namespace Verse
 namespace RimWorld
 {
     using Verse;
+    // 只保留实际死亡回调的空引用前提和合法反应计数；保护逻辑由生产 Harmony 前缀运行。
+    public sealed class CreepJoinerAggressiveDef { }
+    public sealed class Pawn_CreepJoinerTracker
+    {
+        public Pawn Pawn = new Pawn();
+        public bool Disabled;
+        public CreepJoinerAggressiveDef aggressive;
+        public int Reactions;
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public void Notify_CreepJoinerKilled()
+        {
+            if (Disabled) return;
+            if (aggressive == null) throw new NullReferenceException("aggressive.workerType");
+            Reactions++;
+        }
+    }
     public class PawnRelationDef
     {
         public string label = "Master", labelFemale = "完美性奴";
@@ -144,20 +178,14 @@ namespace SexSlaveCraft
     {
         public static HediffDef ChainOfSexSlave = new HediffDef { hediffClass = typeof(Hediff_ChainOfSexSlave) };
         public static HediffDef BridleOfSexSlave = new HediffDef { hediffClass = typeof(Hediff_BridleOfSexSlave) };
+        public static HediffDef SSC_MasterBondEmpowerment = new HediffDef();
         public static PawnRelationDef SSC_FlawedLovers = new PawnRelationDef();
     }
-    public class Hediff_BridleOfSexSlave : Hediff
+    // 共振场数值不在本组重算；实际锁链和缰绳生命周期均编译生产源码。
+    public static class SSCMasterBondUtility
     {
-        public readonly List<Pawn> targets = new List<Pawn>();
-        public IEnumerable<Pawn> ValidTargets => targets;
-        public void RemoveTarget(Pawn pawn) => targets.Remove(pawn);
-        public static Hediff_BridleOfSexSlave AddToPawn(Pawn master, Pawn slave)
-        {
-            var bridle = SSCBondUtility.GetBridle(master);
-            if (bridle == null) { bridle = new Hediff_BridleOfSexSlave { def = SSCDefOf.BridleOfSexSlave }; master.health.AddHediff(bridle); }
-            if (!bridle.targets.Contains(slave)) bridle.targets.Add(slave);
-            return bridle;
-        }
+        public static void RefreshMasterEmpowerment(Pawn pawn) { }
+        public static string GetEmpowermentSummary(Pawn pawn) => "empowerment";
     }
     public static class SSCIdentityUtility
     {
@@ -190,5 +218,10 @@ namespace SexSlaveCraft
     }
     public static class SSCSelfTrainingFeedback { public static void NotifyStatusChanged(Pawn pawn) { } }
     public static class ModLog { public static void Message(string message) { } }
-    public static class Strings { public static string Chain_LabelWithPawn(string label, string name) => label + name; }
+    public static class Strings
+    {
+        public static string Chain_LabelWithPawn(string label, string name) => label + name;
+        public static string Bridle_LabelWithNames(string label, string names) => label + names;
+        public static string Bridle_DescSlaves(string names) => names;
+    }
 }

@@ -13,7 +13,11 @@ namespace SexSlaveCraft
             // 等所有 Pawn 引用和 Hediff 完整恢复后，再按最终锁链清理旧档。
             // 复用现有世界快照覆盖离图角色；每次加载维护一次，不增加逐 Tick 扫描或自动补发奖励。
             foreach (Pawn pawn in SSCRestrictionGameComponent.AllPawns())
+            {
                 SSCBondRelationUtility.RemoveInvalidRelations(pawn);
+                // 死亡或暂停角色不依赖 Tick：同次加载顺便清理只剩陈旧条目的主人缰绳。
+                SSCBondUtility.GetBridle(pawn)?.PruneInvalidTargets();
+            }
         }
     }
 }

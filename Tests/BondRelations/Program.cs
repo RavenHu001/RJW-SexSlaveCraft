@@ -101,7 +101,7 @@ internal static class Program
             Require(SSCBondUtility.Bind(next, f.slave, true));
             Require(!Has(f.master, f.slave) && !Has(next, f.slave));
             Require(SSCBondUtility.GetBoundMaster(f.slave) == next);
-            Require(!SSCBondUtility.GetBridle(f.master).targets.Contains(f.slave));
+            Require(SSCBondUtility.GetBridle(f.master) == null);
         });
         Check("rejected takeover preserves valid existing reward", () =>
         { var f = Bound(); Award(f.master, f.slave); Require(!SSCBondUtility.Bind(Master(), f.slave)); Require(Has(f.master, f.slave)); });
@@ -109,6 +109,78 @@ internal static class Program
         { var f = Bound(); Award(f.master, f.slave); f.slave.health.RemoveHediff(SSCBondUtility.GetChain(f.slave)); Require(!Has(f.master, f.slave) && !Has(f.slave, f.master)); });
         Check("direct chain replacement also cleans prior reward", () =>
         { var f = Bound(); Award(f.master, f.slave); Hediff_ChainOfSexSlave.AddToPawn(f.slave, Master()); Require(!Has(f.master, f.slave)); });
+        // 实机反馈路径：暂停中先手动删性奴锁链，再杀主人，清理不得依赖后续健康 Tick。
+        Check("manual last-chain deletion immediately removes dead master's bridle and empowerment", () =>
+        {
+            var f = Bound(); Award(f.master, f.slave);
+            f.master.health.AddHediff(new Hediff { def = SSCDefOf.SSC_MasterBondEmpowerment });
+            f.slave.health.RemoveHediff(SSCBondUtility.GetChain(f.slave));
+            f.master.Dead = true;
+            Require(SSCBondUtility.GetBridle(f.master) == null, "empty bridle survived without a tick");
+            Require(f.master.health.hediffSet.GetFirstHediffOfDef(SSCDefOf.SSC_MasterBondEmpowerment) == null);
+            Require(!Has(f.master, f.slave) && !Has(f.slave, f.master));
+        });
+        Check("removing one slave's chain retains the master's other real bond", () =>
+        {
+            var f = Bound(); var second = new Pawn(); Require(SSCBondUtility.Bind(f.master, second));
+            Award(f.master, f.slave); Award(f.master, second);
+            f.slave.health.RemoveHediff(SSCBondUtility.GetChain(f.slave));
+            Require(SSCBondUtility.GetBridle(f.master).ValidTargets.SequenceEqual(new[] { second }));
+            Require(!Has(f.master, f.slave) && Has(f.master, second));
+        });
+        // 公开字段被外部直接改写时，生产锁链的 Tick 必须清旧关系并补齐新反向索引，不能授予新奖励。
+        Check("direct target mutation follows the new chain on its next tick", () =>
+        {
+            var f = Bound(); Award(f.master, f.slave); var next = Master(); var chain = SSCBondUtility.GetChain(f.slave);
+            chain.target = next; chain.Tick();
+            Require(SSCBondUtility.GetBridle(f.master) == null && !Has(f.master, f.slave));
+            Require(SSCBondUtility.GetBridle(next).ValidTargets.Single() == f.slave && !Has(next, f.slave));
+            int notifications = f.slave.relations.CacheNotifications; chain.Tick();
+            Require(f.slave.relations.CacheNotifications == notifications, "stable tick repeated relation writes");
+        });
+        Check("clearing chain target removes social reward and old bridle", () =>
+        {
+            var f = Bound(); Award(f.master, f.slave); var chain = SSCBondUtility.GetChain(f.slave);
+            chain.target = null; chain.Tick();
+            Require(SSCBondUtility.GetBridle(f.master) == null && !Has(f.master, f.slave));
+        });
+        Check("target mutation followed by same-frame removal cleans both old indices", () =>
+        {
+            var f = Bound(); Award(f.master, f.slave); var chain = SSCBondUtility.GetChain(f.slave); var next = Master();
+            chain.target = next; f.slave.health.RemoveHediff(chain);
+            Require(SSCBondUtility.GetBridle(f.master) == null && !Has(f.master, f.slave));
+        });
+        Check("direct AddToPawn replacement immediately removes old master bridle", () =>
+        {
+            var f = Bound(); Award(f.master, f.slave);
+            Hediff_ChainOfSexSlave.AddToPawn(f.slave, Master());
+            Require(SSCBondUtility.GetBridle(f.master) == null && !Has(f.master, f.slave));
+        });
+        Check("detached old chain tick cannot replace a new bridle or reset its preference", () =>
+        {
+            var f = Bound(); var old = SSCBondUtility.GetChain(f.slave);
+            f.slave.health.RemoveHediff(old); Require(SSCBondUtility.Bind(f.master, f.slave));
+            var current = SSCBondUtility.GetBridle(f.master); current.shareDamageEnabled = false;
+            old.target = Master(); old.Tick();
+            Require(SSCBondUtility.GetBridle(f.master) == current && !current.shareDamageEnabled);
+        });
+        Check("stale bridle cannot unbind a slave belonging to another master", () =>
+        {
+            var f = Bound(); var staleMaster = Master();
+            var staleBridle = Hediff_BridleOfSexSlave.AddToPawn(staleMaster, f.slave);
+            Require(!staleBridle.ValidTargets.Any());
+            Require(SSCBondUtility.UnbindAllFromMaster(staleMaster) == 0);
+            Require(SSCBondUtility.GetBoundMaster(f.slave) == f.master);
+        });
+        Check("load prunes dead owner's stale bridle without waiting for a tick", () =>
+        {
+            var f = Bound(); var staleMaster = Master(); staleMaster.Dead = true;
+            Hediff_BridleOfSexSlave.AddToPawn(staleMaster, f.slave);
+            SSCRestrictionGameComponent.Pawns.AddRange(new[] { staleMaster, f.master, f.slave });
+            new SSCBondRelationGameComponent(new Game()).FinalizeInit();
+            Require(SSCBondUtility.GetBridle(staleMaster) == null && SSCBondUtility.GetBridle(f.master) != null);
+            Require(SSCBondUtility.GetBoundMaster(f.slave) == f.master);
+        });
         // 模拟加载后的混合历史：正确主人、错误主人、无链关系及普通朋友同时存在。
         // 直接执行生产 GameComponent，确认清理顺序、重复执行及反向记录删除均安全。
         Check("old save migration removes false masters from either endpoint, including off-map and dead pawns", () =>
@@ -153,6 +225,24 @@ internal static class Program
         var harmony = new Harmony("ssc.tests.bond-relations");
         harmony.CreateClassProcessor(typeof(Harmony_BondRelationLabels)).Patch();
         harmony.CreateClassProcessor(typeof(Harmony_BondRelationOpinionLabels)).Patch();
+        harmony.CreateClassProcessor(typeof(Harmony_CreepJoinerDeathGuard)).Patch();
+        // 坏记录仅跳过无定义的反应；实际安装前缀后确认完整反应及原有 Disabled 分支不受影响。
+        Check("missing creep aggressive definition no longer interrupts death callback", () =>
+        {
+            Log.Warnings.Clear(); var tracker = new Pawn_CreepJoinerTracker();
+            tracker.Notify_CreepJoinerKilled();
+            Require(tracker.Reactions == 0 && Log.Warnings.Count == 1 && tracker.aggressive == null);
+        });
+        Check("valid creep joiner still performs its native death reaction", () =>
+        {
+            Log.Warnings.Clear(); var tracker = new Pawn_CreepJoinerTracker { aggressive = new CreepJoinerAggressiveDef() };
+            tracker.Notify_CreepJoinerKilled(); Require(tracker.Reactions == 1 && Log.Warnings.Count == 0);
+        });
+        Check("disabled malformed creep tracker remains quiet", () =>
+        {
+            Log.Warnings.Clear(); var tracker = new Pawn_CreepJoinerTracker { Disabled = true };
+            tracker.Notify_CreepJoinerKilled(); Require(tracker.Reactions == 0 && Log.Warnings.Count == 0);
+        });
         // 四语及主从双方的性别组合共用实际翻译；同时检查列表、悬停和混合关系中的普通名称分支。
         foreach (string lang in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" })
             foreach (Gender masterGender in new[] { Gender.Male, Gender.Female })
