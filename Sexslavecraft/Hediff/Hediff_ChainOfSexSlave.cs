@@ -74,11 +74,22 @@ namespace SexSlaveCraft
 
         public override void PostRemoved()
         {
-            Pawn formerMaster = LinkedPawn;
             base.PostRemoved();
-            SSCBondUtility.GetBridle(formerMaster)?.RemoveTarget(pawn);
+            ReconcileRemoval();
+        }
+
+        /// <summary>只在本锁链已离体时维护归属，兼容 CE 跳过 PostRemoved 后发送健康变化通知的删除入口。</summary>
+        internal void ReconcileRemoval()
+        {
+            // 正常严重度变化也会发出通知；仍在身体上的锁链不触发解绑维护。
+            if (pawn?.health?.hediffSet == null || pawn.health.hediffSet.hediffs.Contains(this)) return;
+            Pawn formerMaster = LinkedPawn;
+            Pawn currentMaster = SSCBondUtility.GetBoundMaster(pawn);
+            // 删除旧实例后可能已经有新锁链；仍由新链指向的主人应保留反向索引和仪式奖励。
+            if (formerMaster != currentMaster) SSCBondUtility.GetBridle(formerMaster)?.RemoveTarget(pawn);
             // 外部先改 target 再同帧删除时，两任主人的反向引用都需要整理。
-            if (observedMaster != formerMaster) SSCBondUtility.GetBridle(observedMaster)?.RemoveTarget(pawn);
+            if (observedMaster != formerMaster && observedMaster != currentMaster)
+                SSCBondUtility.GetBridle(observedMaster)?.RemoveTarget(pawn);
             // 覆盖开发模式和外部模组直接删锁链的入口，不依赖它们调用统一 Unbind 服务。
             SSCBondRelationUtility.RemoveInvalidRelations(pawn);
             // 包含外部模组直接移除锁链的路径；Unbind 内的事务会延迟本次维护。

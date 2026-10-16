@@ -351,6 +351,7 @@
     <Compile Include="ThePatches\Harmony_SlaveWorkRestrictions.cs" />
     <Compile Include="Hediff\Hediff_BridleOfSexSlave.cs" />
     <Compile Include="Hediff\Hediff_ChainOfSexSlave.cs" />
+    <Compile Include="ThePatches\Harmony_BondHealthChanges.cs" />
     <Compile Include="ThePatches\Harmony_SlaveWorkSpeed.cs" />
     <Compile Include="JobDriver\JobDriver_RitualTraining.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

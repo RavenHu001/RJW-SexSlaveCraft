@@ -55,6 +55,9 @@ internal static class Program
     static int Main(string[] args)
     {
         string root = args.Length > 0 ? args[0] : Path.GetFullPath("../..", AppContext.BaseDirectory);
+        // 健康通知经实际 Harmony 生产补丁进入离体维护，CE 兼容测试不直接调用清理方法。
+        var harmony = new Harmony("ssc.tests.bond-relations");
+        harmony.CreateClassProcessor(typeof(SSCBondHealthChanged)).Patch();
         // 先验证授予规则：实际主人仍需达到原门槛，第三方主持资格不能变成所有权。
         foreach (int opinion in new[] { 79, 80, 100 })
             Check("bound master ritual threshold " + opinion, () =>
@@ -107,6 +110,73 @@ internal static class Program
         { var f = Bound(); Award(f.master, f.slave); Require(!SSCBondUtility.Bind(Master(), f.slave)); Require(Has(f.master, f.slave)); });
         Check("external removal of real chain cleans relations through PostRemoved", () =>
         { var f = Bound(); Award(f.master, f.slave); f.slave.health.RemoveHediff(SSCBondUtility.GetChain(f.slave)); Require(!Has(f.master, f.slave) && !Has(f.slave, f.master)); });
+        // 本机 CE 1.6 的 HealthTool.RemoveHediff 直接删集合后通知，完全不调用 PostRemoved。
+        Check("CE removal without PostRemoved immediately revokes both social records", () =>
+        {
+            var f = Bound(); Award(f.master, f.slave); var chain = SSCBondUtility.GetChain(f.slave);
+            f.master.health.AddHediff(new Hediff { def = SSCDefOf.SSC_MasterBondEmpowerment });
+            f.slave.relations.BaseOpinion = -20;
+            Require(f.slave.relations.OpinionOf(f.master) == 80);
+            f.slave.health.hediffSet.hediffs.Remove(chain);
+            f.slave.health.Notify_HediffChanged(chain);
+            Require(!Has(f.master, f.slave) && !Has(f.slave, f.master), "CE left stored relations after deleting chain");
+            Require(SSCBondUtility.GetBridle(f.master) == null, "CE left empty bridle");
+            Require(f.master.health.hediffSet.GetFirstHediffOfDef(SSCDefOf.SSC_MasterBondEmpowerment) == null);
+            Require(f.slave.relations.OpinionOf(f.master) == -20, "removed relation still contributes opinion");
+            int notifications = f.slave.relations.CacheNotifications;
+            f.slave.health.Notify_HediffChanged(chain);
+            Require(f.slave.relations.CacheNotifications == notifications, "repeat notification removed twice");
+        });
+        Check("CE removal preserves other slaves and ordinary social relations", () =>
+        {
+            var f = Bound(); Award(f.master, f.slave); var second = new Pawn();
+            Require(SSCBondUtility.Bind(f.master, second)); Award(f.master, second);
+            var friend = new PawnRelationDef { label = "friend", opinionOffset = 5 };
+            f.master.relations.AddDirectRelation(friend, f.slave);
+            var chain = SSCBondUtility.GetChain(f.slave);
+            f.slave.health.hediffSet.hediffs.Remove(chain);
+            f.slave.health.Notify_HediffChanged(chain);
+            Require(!Has(f.master, f.slave) && !Has(f.slave, f.master));
+            Require(Has(f.master, second) && Has(second, f.master));
+            Require(SSCBondUtility.GetBridle(f.master).ValidTargets.SequenceEqual(new[] { second }));
+            Require(f.master.relations.DirectRelationExists(friend, f.slave) && f.slave.relations.DirectRelationExists(friend, f.master));
+        });
+        Check("CE severity notifications preserve an attached chain and its reward", () =>
+        {
+            var f = Bound(); Award(f.master, f.slave); var chain = SSCBondUtility.GetChain(f.slave);
+            int notifications = f.slave.relations.CacheNotifications;
+            chain.Severity = 0.7f; f.slave.health.Notify_HediffChanged(chain);
+            Require(Has(f.master, f.slave) && Has(f.slave, f.master));
+            Require(SSCBondUtility.GetBridle(f.master).ValidTargets.Single() == f.slave);
+            Require(f.slave.relations.CacheNotifications == notifications);
+        });
+        Check("unrelated health notifications do not run SSC bond maintenance", () =>
+        {
+            var f = Bound(); Award(f.master, f.slave);
+            f.slave.health.hediffSet.hediffs.Remove(SSCBondUtility.GetChain(f.slave));
+            f.slave.health.Notify_HediffChanged(new Hediff { pawn = f.slave });
+            f.slave.health.Notify_HediffChanged(null);
+            Require(Has(f.master, f.slave), "unrelated hediff triggered bond cleanup");
+        });
+        Check("CE removal notification also cleans a dead master's empty bridle", () =>
+        {
+            var f = Bound(); Award(f.master, f.slave); f.master.Dead = true;
+            var chain = SSCBondUtility.GetChain(f.slave);
+            f.slave.health.hediffSet.hediffs.Remove(chain);
+            f.slave.health.Notify_HediffChanged(chain);
+            Require(SSCBondUtility.GetBridle(f.master) == null && !Has(f.master, f.slave) && !Has(f.slave, f.master));
+        });
+        Check("late removal notification preserves a replacement chain to the same master", () =>
+        {
+            var f = Bound(); Award(f.master, f.slave); var oldChain = SSCBondUtility.GetChain(f.slave);
+            var bridle = SSCBondUtility.GetBridle(f.master); bridle.shareDamageEnabled = false;
+            f.slave.health.hediffSet.hediffs.Remove(oldChain);
+            var replacement = Hediff_ChainOfSexSlave.AddToPawn(f.slave, f.master);
+            f.slave.health.Notify_HediffChanged(oldChain);
+            Require(SSCBondUtility.GetChain(f.slave) == replacement && Has(f.master, f.slave));
+            Require(SSCBondUtility.GetBridle(f.master) == bridle && !bridle.shareDamageEnabled);
+            Require(bridle.ValidTargets.Single() == f.slave);
+        });
         Check("direct chain replacement also cleans prior reward", () =>
         { var f = Bound(); Award(f.master, f.slave); Hediff_ChainOfSexSlave.AddToPawn(f.slave, Master()); Require(!Has(f.master, f.slave)); });
         // 实机反馈路径：暂停中先手动删性奴锁链，再杀主人，清理不得依赖后续健康 Tick。
@@ -222,7 +292,6 @@ internal static class Program
         { var pawn = Master(); Require(!SSCBondRelationUtility.IsValidPair(null, pawn) && !SSCBondRelationUtility.IsValidPair(pawn, pawn)); Require(!SSCBondRelationUtility.TryCreateAfterRitual(null, pawn)); });
 
         // 安装生产显示补丁后再查询名称，确保验证真实 IL 参数装载而非直接调用包装器。
-        var harmony = new Harmony("ssc.tests.bond-relations");
         harmony.CreateClassProcessor(typeof(Harmony_BondRelationLabels)).Patch();
         harmony.CreateClassProcessor(typeof(Harmony_BondRelationOpinionLabels)).Patch();
         // 四语及主从双方的性别组合共用实际翻译；同时检查列表、悬停和混合关系中的普通名称分支。

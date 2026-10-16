@@ -17,10 +17,10 @@ namespace Verse
         public Gender gender;
         public string LabelShort = "Pawn";
         public string LabelShortCap => LabelShort;
-        public readonly Health health;
+        public readonly Pawn_HealthTracker health;
         public readonly Pawn_RelationsTracker relations;
         public readonly CompSexSlaveTraining Training = new CompSexSlaveTraining();
-        public Pawn() { health = new Health(this); relations = new Pawn_RelationsTracker(this); }
+        public Pawn() { health = new Pawn_HealthTracker(this); relations = new Pawn_RelationsTracker(this); }
         public T TryGetComp<T>() where T : class => Training as T;
     }
     public class HediffDef { public float maxSeverity = 1f; public Type hediffClass; }
@@ -51,14 +51,17 @@ namespace Verse
         public readonly List<Hediff> hediffs = new List<Hediff>();
         public Hediff GetFirstHediffOfDef(HediffDef def) => hediffs.FirstOrDefault(h => h.def == def);
     }
-    public class Health
+    public class Pawn_HealthTracker
     {
         // 原版先把 Hediff 从集合移除，再调用 PostRemoved；生产清理器因此能看到已解除的锁链。
         readonly Pawn owner;
         public readonly HediffSet hediffSet = new HediffSet();
-        public Health(Pawn owner) { this.owner = owner; }
+        public Pawn_HealthTracker(Pawn owner) { this.owner = owner; }
         public void AddHediff(Hediff hediff) { hediff.pawn = owner; hediffSet.hediffs.Add(hediff); hediff.PostAdd(null); }
         public void RemoveHediff(Hediff hediff) { if (hediffSet.hediffs.Remove(hediff)) hediff.PostRemoved(); }
+        // 保留真实通知入口供生产 Harmony 补丁拦截；引擎边界自身不执行 SSC 关系维护。
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public void Notify_HediffChanged(Hediff hediff) { }
     }
     public static class HediffMaker
     {

@@ -215,6 +215,7 @@ namespace SexSlaveCraft
     {
         public static Hediff_ChainOfSexSlave GetChain(Pawn pawn) =>
             pawn?.health.hediffSet.GetFirstHediffOfDef(SSCDefOf.ChainOfSexSlave) as Hediff_ChainOfSexSlave;
+        public static Pawn GetBoundMaster(Pawn pawn) => GetChain(pawn)?.LinkedPawn;
         public static Hediff_BridleOfSexSlave GetBridle(Pawn pawn) => null;
         public static void RepairReciprocalLink(Pawn pawn) { }
         public static bool Bind(Pawn master, Pawn slave) => Hediff_ChainOfSexSlave.AddToPawn(slave, master) != null;

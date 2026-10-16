@@ -26,5 +26,9 @@ dotnet run --project Tests/BondRelations/BondRelations.csproj --configuration Re
 - 删除一条锁链保留同一主人的其他有效性奴；反向列表中的陈旧条目不能解绑已属于其他主人的角色。
 - 正常 AddToPawn 换绑立即清旧关系；外部直接写公开 target 时，在该锁链的下一次 Tick 清旧关系并整理双方索引，不自动授予新奖励。
 - 已移除旧实例的迟到 Tick 不得替换新缰绳或重置伤害分担偏好；读档同时清理死亡主人上不再对应锁链的缰绳。
+- CE 1.6 直接删健康列表、跳过 `PostRemoved` 后发送 `Notify_HediffChanged` 的路径也必须立即清除双方关系、100 好感奖励、空缰绳和共振场，不等待 Tick 或读档；保留其他性奴及普通关系。
+- 该兼容测试安装真实生产 Harmony 通知补丁；仍在身体上的锁链严重度变化、无关健康通知、重复通知和同主新链替换不误删有效关系或伤害分担偏好。
+
+CE 边界依据本机 `1874644848/v1.6/Assemblies/CharacterEditor.dll` 的 `CharacterEditor.HealthTool.RemoveHediff` 反编译（MVID `3db27871e2d8425d98d1a758fe85d3bd`）；只模拟其直接移除集合并通知的行为，不模拟 Unity 界面。
 
 原版 Anomaly 或其他模组自身的死亡机制异常不在 SSC 修复范围内；不添加跳过这些死亡回调的补丁。
