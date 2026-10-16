@@ -17,8 +17,11 @@ namespace SexSlaveCraft
         
         private int ticksSinceLastScan = 0;
         
+        /// <summary>累计有效过程的实际经过时间，每达到配置间隔推进一次局部适应。</summary>
         public override void CompPostTickInterval(ref float severityAdjustment, int delta)
         {
+            // parent.pawn 在移除状态后仍存在，以健康列表中的对象身份判断是否还能推进。
+            if (!GelatinizationProcessUtility.IsActive(parent)) return;
             ticksSinceLastScan += delta;
             
             if (ticksSinceLastScan >= Props.scanInterval)
@@ -28,6 +31,7 @@ namespace SexSlaveCraft
             }
         }
         
+        /// <summary>沿用腐化度决定的适应概率和增长区间，适应度满值时进入成功结算。</summary>
         private void DoScan()
         {
             var gelHediff = parent as Hediff_GelatinizationTemporary;
@@ -37,6 +41,7 @@ namespace SexSlaveCraft
             
             if (corruptionLevel >= 0.7f)
             {
+                // 高腐化角色每次都取得一次区间增长；低腐化角色仍须通过下方概率判断。
                 float adaptGain = Props.adaptGainRange.RandomInRange;
                 gelHediff.adaptation += adaptGain;
             }
@@ -53,6 +58,7 @@ namespace SexSlaveCraft
                 }
             }
             
+            // 百分比只保留 0..1；本组件不直接添加永久结果，统一交给带终结检查的成功入口。
             gelHediff.adaptation = Mathf.Clamp01(gelHediff.adaptation);
             
             if (gelHediff.adaptation >= 1f)
@@ -63,24 +69,23 @@ namespace SexSlaveCraft
             }
         }
         
+        /// <summary>先结束临时过程，再按仍有效的肢体类型添加永久结果。</summary>
         private void CompleteSuccessfully()
         {
-            if (parent.pawn.Dead) return;
+            // 此处也会被开发按钮调用，必须独立检查终结资格，不能只依赖扫描入口的检查。
+            if (!GelatinizationProcessUtility.TryComplete(parent)) return;
             
+            // 无部位或部位已缺失时，过程已清理完毕，不再为无效部位制造义肢或追加缺肢状态。
             BodyPartRecord part = parent.Part;
             if (part == null)
             {
-                parent.pawn.health.RemoveHediff(parent);
                 return;
             }
 
             if (parent.pawn.health.hediffSet.PartIsMissing(part))
             {
-                parent.pawn.health.RemoveHediff(parent);
                 return;
             }
-            
-            parent.pawn.health.RemoveHediff(parent);
             
             // EN: Resolve the permanent result by limb type so arms and legs get different end states.
             // CN: 按肢体类型决定永久结果，让手臂和腿走不同的终态 Hediff。
@@ -94,6 +99,7 @@ namespace SexSlaveCraft
             }
             else
             {
+                // 定义缺失时保留既有缺肢兜底；共享终结检查仍保证该兜底不会重复执行。
                 Log.Warning($"[SSC] {targetHediffDefName} not found, using MissingBodyPart as fallback");
                 var missingPartDef = DefDatabase<HediffDef>.GetNamedSilentFail("MissingBodyPart");
                 if (missingPartDef != null)
@@ -109,19 +115,22 @@ namespace SexSlaveCraft
             }
         }
 
+        /// <summary>为当前有效过程强制适应成功，旧界面保留的按钮不能重新结算。</summary>
         public void DebugForceCompleteSuccess()
         {
             var gelHediff = parent as Hediff_GelatinizationTemporary;
-            if (gelHediff == null || parent?.pawn == null || parent.pawn.Dead)
+            if (gelHediff == null || !GelatinizationProcessUtility.IsActive(parent))
             {
                 return;
             }
 
             gelHediff.adaptation = 1f;
             CompleteSuccessfully();
+            // 结算完成后通知健康界面刷新；移除状态不依赖清空 parent.pawn。
             parent.pawn.health.Notify_HediffChanged(parent);
         }
         
+        /// <summary>使用原版肢体标签区分臂和腿，其余情况沿用原来的手臂定义兜底。</summary>
         private string GetGelatinizedHediffDefNameForPart(BodyPartRecord part)
         {
             if (part.def.tags.Contains(BodyPartTagDefOf.ManipulationLimbCore))
@@ -136,12 +145,14 @@ namespace SexSlaveCraft
             return "Hediff_GelatinizedArm"; // fallback
         }
         
+        /// <summary>只读输出开发用适应度与腐化度，不在查看提示时推进过程。</summary>
         public override string CompDebugString()
         {
             var gelHediff = parent as Hediff_GelatinizationTemporary;
             return $"Adaptation: {gelHediff?.adaptation.ToStringPercent()} (Corruption: {gelHediff?.CorruptionLevel.ToStringPercent()})";
         }
 
+        /// <summary>为普通健康提示提供当前进度，类型不匹配时不增加额外提示。</summary>
         public override string CompTipStringExtra
         {
             get

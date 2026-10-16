@@ -1,6 +1,6 @@
 # RJW-SexSlaveCraft Quick Start Guide
 
-> Version directories: 1.6 retains the 2.4.1 baseline; 1.7 is the development target awaiting in-game compatibility verification. Shared textures are in Common/Textures. Existing v2.4.1 downloads remain the original 1.6 release.
+> Version directories: 1.6 retains the 2.4.1 baseline; The maintainer tested the current 1.7 development batch and reported no issues. Shared textures are in Common/Textures. Existing v2.4.1 downloads remain the original 1.6 release.
 
 [Project home](README.md) · [Player reading order](Docs/Players/README.md#english-reading-order) · [中文快速入门](读我，玩法介绍.md) · [Complete guide](PLAYER_GUIDE_EN.md)
 

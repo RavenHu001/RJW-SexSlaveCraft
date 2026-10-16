@@ -127,15 +127,35 @@ function Get-FieldTypeName {
 #>
 function Test-PatchSignature {
     param([string]$PatchType, [string]$PatchMethod, [string]$TargetType, [string]$TargetMethod)
+    # 分别定位补丁和原目标；下方只读取 Cecil 元数据，不执行游戏方法或安装 Harmony 补丁。
     $patch = Get-DeclaredMethod -TypeName ('SexSlaveCraft.' + $PatchType) -MethodName $PatchMethod
     $original = Get-DeclaredMethod -TypeName $TargetType -MethodName $TargetMethod
     if (-not $patch.IsStatic) { throw "补丁必须为静态方法：$($patch.FullName)" }
     foreach ($parameter in $patch.Parameters) {
+        # Cecil 用末尾 & 表示按引用传参；比较去除引用修饰后的参数类型，使 out/ref 状态可与按值消费者配对。
         $actual = $parameter.ParameterType.FullName.TrimEnd('&')
         $expected = $null
         if ($parameter.Name -eq '__instance') {
             if ($original.IsStatic) { throw "静态原方法不能注入 __instance：$($original.FullName)" }
             if (Test-Inheritance -TypeName $TargetType -ExpectedBase $actual) { $expected = $actual }
+        }
+        elseif ($parameter.Name -eq '__state') {
+            # __state 属于同一补丁类的 Prefix/Postfix/Finalizer，不是原方法参数。
+            # 既支持约定名称 Prefix，也支持使用 HarmonyPrefix 特性且另有名字的生产方法。
+            # 只在当前 DeclaringType 查找，不能借用其他补丁类的同名状态来消除错误。
+            $producers = @($patch.DeclaringType.Methods | Where-Object {
+                ($_.Name -eq 'Prefix' -or @($_.CustomAttributes | Where-Object {
+                    $_.AttributeType.FullName -eq 'HarmonyLib.HarmonyPrefix'
+                }).Count -gt 0) -and @($_.Parameters | Where-Object Name -eq '__state').Count -gt 0
+            })
+            # 缺失、歧义或非静态的生产者都不能确立唯一状态类型，须明确拒绝而非猜测通过。
+            if ($producers.Count -ne 1 -or -not $producers[0].IsStatic) {
+                throw "__state 缺少唯一的同类静态 Prefix：$($patch.FullName)"
+            }
+            # 从已确认的生产者提取唯一声明；消费者仍进入末尾的公共类型一致性检查。
+            $stateParameters = @($producers[0].Parameters | Where-Object Name -eq '__state')
+            if ($stateParameters.Count -ne 1) { throw "Prefix 的 __state 声明不唯一：$($patch.FullName)" }
+            $expected = $stateParameters[0].ParameterType.FullName.TrimEnd('&')
         }
         elseif ($parameter.Name -eq '__result') { $expected = $original.ReturnType.FullName }
         elseif ($parameter.Name -eq '__runOriginal') { $expected = 'System.Boolean' }
@@ -143,9 +163,11 @@ function Test-PatchSignature {
             $expected = Get-FieldTypeName -TypeName $TargetType -FieldName $parameter.Name.Substring(3)
         }
         else {
+            # 普通参数继续按原方法的名称及类型核对；新增 __state 规则不放宽其他签名检查。
             $matches = @($original.Parameters | Where-Object Name -eq $parameter.Name)
             if ($matches.Count -eq 1) { $expected = $matches[0].ParameterType.FullName.TrimEnd('&') }
         }
+        # 特殊参数与普通参数都必须得到确定且匹配的类型，避免把未知参数当作兼容。
         if (-not $expected -or $actual -ne $expected) {
             throw "注入参数不匹配：$($patch.FullName)，$($parameter.Name)，实际=$actual，预期=$expected，目标=$($original.FullName)"
         }

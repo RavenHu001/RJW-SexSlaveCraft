@@ -8,8 +8,8 @@
 	</supportedVersions>
 	<packageId>rjw.sexslavecraft.TieJinVer</packageId>
     <description>SexSlaveCraft 2.4.1 (TieJin Modify)
-版本目录：1.6 保留 2.4.1 基线；1.7 为开发测试目录，尚未完成游戏内兼容性验收。两版自动选择各自运行文件，共享基础贴图。
-Versioned layout: 1.6 retains the 2.4.1 baseline; 1.7 is a development target awaiting in-game compatibility verification. Each game version loads its own content and shares baseline textures.
+版本目录：1.6 保留 2.4.1 基线；1.7 为后续开发目录，本批重布局与兼容修复经维护者测试未发现问题。两版自动选择各自运行文件，共享基础贴图。
+Versioned layout: 1.6 retains the 2.4.1 baseline; the maintainer tested the current 1.7 layout and compatibility-fix batch and reported no issues. Each game version loads its own content and shares baseline textures.
 PNA 重置、欢愉恩赐与绑定维护。
 PNA 使用五档负荷与锁链保护下的正面活化，沿用原版成瘾恢复；主人免疫。普通产出者与开启欢愉恩赐的主人可在合格接触后提供补给，并成为成瘾者的来源吸引对象。
 主人可在“调教”页开启“欢愉恩赐”，获得“欢愉侵蚀施予者”标记，向合格对象提供 PNA、少量恶堕、身体开发及独立心情与好感反馈；原版 Lovin 不含部位开发。

@@ -52,6 +52,9 @@ $suites = @(
     @{ Name = 'GenderChangeMemory'; Arguments = @($repoRoot) },
     @{ Name = 'RitualAnimationFallback'; Arguments = @() },
     @{ Name = 'PermanentLactation'; Arguments = @($repoRoot) },
+    # 链接真实胶化组件及染色补丁，并在套件内运行验证器的 10 项 __state 断言。
+    # 此套件使用模型边界而无额外 Harmony DLL；1.6 模式在下方清空套件表，不会回归新源码。
+    @{ Name = 'Gelatinization'; Arguments = @($repoRoot) },
     @{ Name = 'PnaLoad'; Arguments = @($repoRoot) },
     @{ Name = 'PersonalityMemories'; Arguments = @() },
     @{ Name = 'PersonalitySpecializations'; Arguments = @() },

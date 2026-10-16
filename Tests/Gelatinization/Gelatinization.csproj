@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <!-- 与统一门禁保持 net9.0 测试宿主；1.7 的 net10.0 实际游戏引用构建另行验证。 -->
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net9.0</TargetFramework>
+    <!-- 可指向隔离的修复前快照验证测试能捕获旧缺陷，默认始终链接当前生产源码。 -->
+    <SscSourceRoot Condition="'$(SscSourceRoot)' == ''">../../Sexslavecraft</SscSourceRoot>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- 过程类、四个组件、属性和终结检查均使用生产实现；只在 Stubs.cs 替代游戏边界。 -->
+    <Compile Include="$(SscSourceRoot)/common/GelatinizationProcessUtility.cs" Link="Production/GelatinizationProcessUtility.cs" />
+    <Compile Include="$(SscSourceRoot)/Hediff/Hediff_GelatinizationTemporary.cs" Link="Production/Hediff_GelatinizationTemporary.cs" />
+    <Compile Include="$(SscSourceRoot)/Hediff/Hediff_FullGelatinizationTemporary.cs" Link="Production/Hediff_FullGelatinizationTemporary.cs" />
+    <Compile Include="$(SscSourceRoot)/Hediff/HediffComp_GelatinizationAdaptation.cs" Link="Production/HediffComp_GelatinizationAdaptation.cs" />
+    <Compile Include="$(SscSourceRoot)/Hediff/HediffComp_GelatinizationSeverity.cs" Link="Production/HediffComp_GelatinizationSeverity.cs" />
+    <Compile Include="$(SscSourceRoot)/Hediff/HediffComp_FullGelatinizationAdaptation.cs" Link="Production/HediffComp_FullGelatinizationAdaptation.cs" />
+    <Compile Include="$(SscSourceRoot)/Hediff/HediffComp_FullGelatinizationSeverity.cs" Link="Production/HediffComp_FullGelatinizationSeverity.cs" />
+    <Compile Include="$(SscSourceRoot)/Hediff/HediffCompProperties_GelatinizationAdaptation.cs" Link="Production/HediffCompProperties_GelatinizationAdaptation.cs" />
+    <Compile Include="$(SscSourceRoot)/Hediff/HediffCompProperties_GelatinizationSeverity.cs" Link="Production/HediffCompProperties_GelatinizationSeverity.cs" />
+    <Compile Include="$(SscSourceRoot)/Hediff/HediffCompProperties_FullGelatinizationAdaptation.cs" Link="Production/HediffCompProperties_FullGelatinizationAdaptation.cs" />
+    <Compile Include="$(SscSourceRoot)/Hediff/HediffCompProperties_FullGelatinizationSeverity.cs" Link="Production/HediffCompProperties_FullGelatinizationSeverity.cs" />
+    <!-- 身体与 SizedApparel 两条入口使用同一个实际补丁，避免在测试内重写染色判断。 -->
+    <Compile Include="$(SscSourceRoot)/ThePatches/Harmony_FullGelatinizationBodyTint.cs" Link="Production/Harmony_FullGelatinizationBodyTint.cs" />
+  </ItemGroup>
+</Project>

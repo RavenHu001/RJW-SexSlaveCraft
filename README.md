@@ -4,7 +4,7 @@
 
 [2.4.1 版本说明](Docs/Releases/2.4.1/2.4.1发布说明.md) · [正式版下载 2.4.1](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.1) · [模组介绍 / Mod overview](Docs/模组介绍.md) · [玩家阅读入口 / Player documentation](Docs/Players/README.md) · [文档总索引](Docs/README.md) · [English overview](#english-overview)
 
-当前工作区已采用双版本目录：`1.6/` 保留 **2.4.1** 运行基线，`1.7/` 用于后续开发，`Common/Textures/` 共享基础贴图。1.7 为开发测试目标，尚未完成游戏内兼容性验收；下方公开下载仍为原 1.6 正式版。构建和目录规则见[维护说明](https://github.com/RavenHu001/RJW-SexSlaveCraft/blob/main/Docs/Maintenance/%E5%8F%91%E5%B8%83%E4%B8%8E%E6%89%93%E5%8C%85.md)。
+当前工作区已采用双版本目录：`1.6/` 保留 **2.4.1** 运行基线，`1.7/` 用于后续开发，`Common/Textures/` 共享基础贴图。1.7 本批重布局及兼容修复已获维护者确认测试未发现问题，见[验收记录](Docs/Development/Completed/双版本重布局与1.7兼容修复验收.md)；下方公开下载仍为原 1.6 正式版。构建和目录规则见[维护说明](https://github.com/RavenHu001/RJW-SexSlaveCraft/blob/main/Docs/Maintenance/%E5%8F%91%E5%B8%83%E4%B8%8E%E6%89%93%E5%8C%85.md)。
 
 ## 项目概况
 
@@ -64,7 +64,7 @@ SSC 提供角色培养、主从绑定、特化发展、人格转移和身体改�
 
 ## English overview
 
-The current checkout has separate `1.6/` and `1.7/` runtime directories with shared textures in `Common/Textures/`. The 1.6 content is frozen at 2.4.1; 1.7 is the development target and awaits in-game compatibility verification. The public 2.4.1 download below remains the original 1.6 release.
+The current checkout has separate `1.6/` and `1.7/` runtime directories with shared textures in `Common/Textures/`. The 1.6 content is frozen at 2.4.1; the maintainer tested the current 1.7 layout and compatibility-fix batch and reported no issues. The public 2.4.1 download below remains the original 1.6 release.
 
 SexSlaveCraft (SSC) is an adult RimJobWorld expansion for **RimWorld 1.6**, continuing from upstream **2.2.8**. Version **2.4.1** consolidates the former 2.4.0.5 development milestone and subsequent PNA, Bestow Bliss, bond-maintenance, localization and validation work. The stable download is **2.4.1**. Harmony and RJW must load before SSC; Binding Rituals and their progression route require Ideology.
 

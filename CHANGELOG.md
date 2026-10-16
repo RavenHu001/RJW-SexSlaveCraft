@@ -6,6 +6,7 @@ This continuation builds on upstream **2.2.8**, the baseline when upstream devel
 
 ## [未发布 / Unreleased]
 
+- **1.7 兼容修复 / Compatibility fixes:** 凝胶化移除临时状态后停止其余组件和旧调试按钮再次结算，修复同轮先成功后失败；全胶染色明确使用内置透明 Shader，SizedApparel 从渲染树读取角色；专项验证器识别 Harmony `__state` 配对。新增 33 项针对性回归及内嵌 10 项状态签名检查，接入统一门禁。1.6 的 2.4.1 成品与共享冻结贴图保持不变；维护者确认“经测试没有发现问题”，本批验收关闭；重布局、修复、代码块注释及验证依据见[验收记录](Docs/Development/Completed/双版本重布局与1.7兼容修复验收.md)。Prevents duplicate gelatinization outcomes, uses a built-in 1.7 tint shader, repairs the SizedApparel pawn lookup and validates Harmony state pairs; adds focused regression coverage without changing the frozen 1.6 runtime. The maintainer tested this batch and reported no issues; it remains unreleased.
 - **双版本开发目录 / Versioned development layout:** 保留 1.6 的 2.4.1 运行基线及哈希，后续开发转入 1.7，基础贴图放入 Common 共享；显式加载列表隔离两版 DLL、Defs、语言及补丁。Retains the frozen 1.6/2.4.1 runtime while developing 1.7 separately with shared baseline textures.
 - **构建、测试与打包 / Build, tests and packaging:** 新增独立的 .NET 10 构建入口，回归读取所选版本资源，发布按双版本白名单收集并记录各版二进制来源。1.7 的游戏加载、功能及存读档验收另行记录，历史 v2.4.1 下载不因此变成双版本包。Adds version-aware build, validation and packaging; in-game compatibility remains a separate acceptance step.
 

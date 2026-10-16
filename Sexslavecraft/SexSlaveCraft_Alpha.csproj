@@ -185,6 +185,9 @@
     <Compile Include="common\PersonalityMemoryUtility.cs" />
     <Compile Include="common\FineTrainingUtility.cs" />
     <Compile Include="common\FullGelatinizationUtility.cs" />
+    <!-- 此项目的 Compile 列表同时作为 1.7 项目的唯一源码清单。
+         登记共享结算检查仅影响后续源码构建，不会重编或改写冻结的 1.6 成品。 -->
+    <Compile Include="common\GelatinizationProcessUtility.cs" />
     <Compile Include="common\GelatinizationHealthSanitizer.cs" />
     <Compile Include="common\HumanCattleBridgeUtility.cs" />
     <Compile Include="common\ICorruptionModifierSource.cs" />
