@@ -19,7 +19,7 @@
 | 想了解什么 | 入门说明 | 深入参考 |
 | --- | --- | --- |
 | 主人资格、研究与开局 | [主人资格入口](../../读我，玩法介绍.md#主人资格入口240) | [身份与调教面板](../../机制详解.md#3-调教-itab-与身份) |
-| 主人欲望侵染 | [开启与使用](../../读我，玩法介绍.md#欲望侵染) | [数值与规则](../../机制详解.md#115-主人欲望侵染) · [完成核对](../Development/Completed/主人欲望侵染完成核对.md) |
+| 欢愉恩赐 | [开启与使用](../../读我，玩法介绍.md#欲望侵染) | [数值与规则](../../机制详解.md#115-主人欲望侵染) · [完成核对](../Development/Completed/主人欲望侵染完成核对.md) |
 | 主人成长、经验与伤害分担 | [主人成长与面板](../../读我，玩法介绍.md#主人成长与面板240) | [四阶段完整数值](../../机制详解.md#312-主人阶段与实践经验240) |
 | 培养与阶段进阶 | [恶堕与锁链](../../读我，玩法介绍.md#4-恶堕与锁链) | [恶堕、衰减与锁链](../../机制详解.md#6-恶堕需求衰减与锁链) |
 | 六种特化的用途 | [模组介绍](../模组介绍.md#中文) | [研究树速查](../../机制详解.md#23-研究树速查) |
@@ -37,7 +37,7 @@
 
 Upgrading from an older version? Start with the [2.4.0.5 milestone notes](../Releases/2.4.0.5/2.4.0.5版本说明.md#english). Master qualification is covered in the [quick start](../../QUICK_START_EN.md#master-qualification-entry-240); see [Master growth and panel](../../QUICK_START_EN.md#master-growth-and-panel-240) for controls or [the full stage table](../../PLAYER_GUIDE_EN.md#312-master-progression-and-practice-240) for values. The [FAQ](../../QUICK_START_EN.md#21-quick-troubleshooting) covers missing quests, qualification and the moved damage-sharing control.
 
-The current unreleased branch also includes accepted [Desire Infestation](../../QUICK_START_EN.md#desire-infestation); full values are in [Master Desire Infestation](../../PLAYER_GUIDE_EN.md#115-master-desire-infestation).
+The current unreleased branch also includes accepted [Bestow Bliss](../../QUICK_START_EN.md#desire-infestation); full values are in [Bestow Bliss](../../PLAYER_GUIDE_EN.md#115-master-desire-infestation).
 
 ## 2.4.0.5 升级要点 / Upgrade essentials
 

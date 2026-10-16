@@ -863,11 +863,15 @@ Positions, genital selection and condoms do not filter this supply. Two producer
 
 For an addicted observer evaluating a normal producer or an enabled Master who can legally infest that observer (without stacking dual-source multipliers), RJW's independent attraction multiplier is ×1.25 outside withdrawal and ×1.50 in withdrawal, otherwise ×1. It applies to General, ForFucking and ForRape. Master and effective-Chain observers receive no addiction preference; existing permissions and selection rules remain.
 
-Master Desire Infestation is implemented and accepted in all four batches: +8% load/full existing-need refill, base +0.02 existing addiction or +0.22 after terminal input, additional Corruption, actual-part development and independent feedback. See [the next section](#115-master-desire-infestation). Personal automatic activation maintenance remains existing future work.
+Bestow Bliss is implemented and accepted in all four batches: +8% load/full existing-need refill, base +0.02 existing addiction or +0.22 after terminal input, additional Corruption, actual-part development and independent feedback. See [the next section](#115-master-desire-infestation). Personal automatic activation maintenance remains existing future work.
 
-### 11.5 Master Desire Infestation
+<a id="115-master-desire-infestation"></a>
 
-The first implementation is complete and accepted across all four batches; it remains unreleased development content. Select a current player-faction SSC Master and enable **Desire infestation** under personal abilities on the Training tab. It defaults off. Actual effects require no additional player-faction condition, permanent qualification, Master level, bond count or bridle.
+### 11.5 Bestow Bliss
+
+Combine sexual skill with actively controlled aphrodisiac nanomachines to bestow unparalleled bliss during intimacy, gradually increasing Corruption and reshaping the recipient's body to become more sensitive to sexual stimulation.
+
+The first implementation is complete and accepted across all four batches; it remains unreleased development content. Select a current player-faction SSC Master and enable **Bestow Bliss** under personal abilities on the Training tab. It defaults off. Actual effects require no additional player-faction condition, permanent qualification, Master level, bond count or bridle.
 
 Recipients must be living, valid flesh humanlikes with an actual Corruption need and SSC personality component, neither Hollow nor currently a Master. Missing needs are not created. A recipient may be unbound or bonded to another Master. Ordinary RJW paired encounters and native Lovin qualify with the Master in either role. Mutual masturbation with genuine paired participation can qualify; solo acts cannot. Training, ritual stages, self-training and personality excretion are excluded. Preparation, rejection, interruption and cancellation grant nothing. Each completion pays once, independent of orgasm count or animation participants.
 

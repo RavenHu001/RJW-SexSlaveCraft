@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-  <SSC_AbilityToggle_MasterDesireInfestation_Label>Desire infestation</SSC_AbilityToggle_MasterDesireInfestation_Label>
-  <SSC_AbilityToggle_MasterDesireInfestation_Tip>When enabled, a completed ordinary paired encounter or Lovin supplies a small amount of PNA and slightly raises a valid partner's corruption. Ordinary RJW encounters also weakly develop the parts actually used when reliable part evidence and body-part training research are available; Lovin has no part development. Training, rituals and personality extraction do not trigger it. The preference follows the personality and pauses outside the Master role. It also leaves separate mood and opinion memories based on current corruption and opinion of the source; repeated contact replaces and refreshes them rather than accumulating without limit.</SSC_AbilityToggle_MasterDesireInfestation_Tip>
+  <SSC_AbilityToggle_MasterDesireInfestation_Label>Bestow Bliss</SSC_AbilityToggle_MasterDesireInfestation_Label>
+  <SSC_AbilityToggle_MasterDesireInfestation_Tip>Combine sexual skill with actively controlled aphrodisiac nanomachines to bestow unparalleled bliss during intimacy, gradually increasing Corruption and reshaping the recipient's body to become more sensitive to sexual stimulation.</SSC_AbilityToggle_MasterDesireInfestation_Tip>
 </LanguageData>

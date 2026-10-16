@@ -6,6 +6,8 @@ This continuation builds on upstream **2.2.8**, the baseline when upstream devel
 
 ## [未发布 / Unreleased]
 
+- **欢愉恩赐 / Bestow Bliss:** 主人欲望侵染采用新能力名、施予者健康标记及四档心情名称，补齐四语和镜像，更新当前指南；维护者确认本批实机显示符合预期并批准提交。心情／好感描述作为纯废案暂留，四个心情名称冒号后缀也待重写，固定前缀保留，见[交接](Docs/Design/欢愉恩赐反馈描述替换交接.md)。机制与内部标识保持。Updates the ability name, tooltip, source marker and mood labels in four languages; the maintainer confirmed expected in-game display and approved the commit. The four mood-name suffixes and eight feedback descriptions remain pending replacement.
+
 - **侵染文档收口 / Infestation documentation closeout:** 新增[首版完成核对](Docs/Development/Completed/主人欲望侵染完成核对.md)，补齐中英文操作与机制说明，统一当前规划和索引；输入条件扩展归未来第 22 项，RimTalk 归第 9 项，主动补给／绑定主人吸引沿用第 25／26 项。同步验收后的说明文件，代码、资源和已测 DLL 保持。Adds the completion audit and bilingual player instructions, reconciles current status and existing future items, and synchronizes accepted documentation without changing gameplay.
 
 - **欲望侵染第四批 / Desire infestation, batch 4:** 原结算前冻结当前恶堕与对实际主人的好感，新增四档独立心情／社交记忆；跨档替换、零偏移清旧记录，心情一天一份，社交三天每主人一份、最多三人，末段自然衰减。复用原完成认领与人格记忆格式，补齐代码块注释、四语和回归；维护者确认“实机测试都符合预期”，批准更新验收文档并提交，未发布。见[实现与测试](Docs/Development/Completed/欲望侵染第四批独立反馈实现与测试.md)。Adds snapshot-based independent mood/opinion feedback with guarded replacement, native expiry and personality persistence; the maintainer confirmed expected in-game behavior and approved the commit.

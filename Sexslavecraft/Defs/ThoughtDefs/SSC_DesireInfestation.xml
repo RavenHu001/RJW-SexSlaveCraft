@@ -10,22 +10,22 @@
     <stagesStack>false</stagesStack>
     <stages>
       <li>
-        <label>侵染后的亲近余韵</label>
+        <label>欢愉侵蚀：意外的好心情</label>
         <description>那股侵染留下了温热的余韵。我并不讨厌带来这种感觉的人。</description>
         <baseMoodEffect>4</baseMoodEffect>
       </li>
       <li>
-        <label>抗拒侵染的余韵</label>
+        <label>欢愉侵蚀：挥不去的烦扰</label>
         <description>侵染留下的感觉让我不自在。我不喜欢那个人，也不想接受这种影响。</description>
         <baseMoodEffect>-4</baseMoodEffect>
       </li>
       <li>
-        <label>沉浸于侵染余韵</label>
+        <label>欢愉侵蚀：满心欢欣</label>
         <description>我已经熟悉这股侵染带来的愉悦。想到带来这份余韵的人，我仍感到满足。</description>
         <baseMoodEffect>8</baseMoodEffect>
       </li>
       <li>
-        <label>享受侵染却仍反感</label>
+        <label>欢愉侵蚀：舒畅却未释怀</label>
         <description>身体享受着侵染留下的愉悦，但我依然不喜欢那个人。这是两回事。</description>
         <baseMoodEffect>4</baseMoodEffect>
       </li>
