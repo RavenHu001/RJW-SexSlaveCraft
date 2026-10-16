@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <!-- Map selection and same-cell warmup serve direct wild taming and one complete owned-animal training project. -->
+  <SSC_PetDogTame.label>定向驯导</SSC_PetDogTame.label>
+  <SSC_PetDogTame.description>终极宠物狗可选择同地图上存活、有意识、没有精神状态的无阵营或玩家阵营动物，走到其所在格后进行 2 秒训导，期间显示读条、训导气泡和连续说话波纹，目标暂停行动。普通睡眠可被唤醒，意识合格的倒地动物也可选择，树精除外。无阵营动物须符合原版可驯服条件，完成后直接驯服为玩家阵营。玩家动物须有已勾选、满足原版前置及种族/体型条件且仍需训练的项目；完成时按原版优先级选择一个项目并补至完成，已学项目衰减后也可补满，不改变动物主人。不需要食物、额外材料或成功率判定，不受普通训练间隔限制。两个分支共用 1 游戏内天冷却；取消、目标失效或没有有效训练项目不消耗新冷却。征召与未征召时均可使用，不增加动物技能或特化经验，也不触发工作后事件。</SSC_PetDogTame.description>
+</LanguageData>

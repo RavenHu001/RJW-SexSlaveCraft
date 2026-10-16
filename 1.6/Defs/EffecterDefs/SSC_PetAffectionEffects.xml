@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <!-- 普通亲昵仅在两秒贴近互动期间喷出爱心；特效本身不结算奖励或冷却。
+       使用原版 Core Heart，每 30 tick 一颗、首次不延迟，120 tick 约四颗。
+       右上偏移和轻微抬高沿用猫终极技能的可见位置，避免遮住互动人物。
+       Job toil 结束或中断后停止喷射，已产生的粒子按原版生命周期淡出。 -->
+  <EffecterDef>
+    <defName>SSC_PetAffectionInteraction</defName>
+    <children>
+      <li>
+        <subEffecterClass>SubEffecter_SprayerContinuous</subEffecterClass>
+        <fleckDef>Heart</fleckDef>
+        <spawnLocType>OnTarget</spawnLocType>
+        <positionOffset>(0.35, 0, 0.6)</positionOffset>
+        <ticksBetweenMotes>30</ticksBetweenMotes>
+        <initialDelayTicks>0</initialDelayTicks>
+        <makeMoteOnSubtrigger>false</makeMoteOnSubtrigger>
+        <maxMoteCount>5</maxMoteCount>
+        <burstCount>1</burstCount>
+        <scale>1.2</scale>
+        <rotation>0</rotation>
+        <rotationRate>0</rotationRate>
+        <speed>0.42</speed>
+        <angle>30~60</angle>
+        <fleckUsesAngleForVelocity>true</fleckUsesAngleForVelocity>
+        <absoluteAngle>true</absoluteAngle>
+      </li>
+    </children>
+  </EffecterDef>
+</Defs>

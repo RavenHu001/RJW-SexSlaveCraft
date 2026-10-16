@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+<JobDef>
+	<defName>SSC_Training_SexSlave</defName>
+	<driverClass>SexSlaveCraft.JobDriver_Training</driverClass>
+	<reportString>调教 TargetA</reportString>
+	<casualInterruptible>false</casualInterruptible>
+	<checkOverrideOnDamage>Never</checkOverrideOnDamage>
+	<playerInterruptible>true</playerInterruptible>
+</JobDef>
+</Defs>

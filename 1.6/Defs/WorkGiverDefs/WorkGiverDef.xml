@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+<WorkGiverDef>
+  <defName>SSC_WorkGiver_TrainSexSlave</defName>
+  <label>调教</label>
+  <giverClass>SexSlaveCraft.WorkGiver_Training</giverClass>
+  <workType>TrainSexSlave</workType>
+  <priorityInType>999</priorityInType>
+  <verb>调教</verb>
+  <gerund>调教</gerund>
+  <requiredCapacities>
+    <li>Talking</li>
+    <li>Manipulation</li>
+  </requiredCapacities>
+  <scanThings>true</scanThings>
+  <scanCells>false</scanCells>
+  <directOrderable>true</directOrderable>
+</WorkGiverDef>
+
+<WorkGiverDef>
+    <defName>SSC_WorkGiver_PE</defName>
+    <label>执行人格排泄</label>
+    <giverClass>SexSlaveCraft.WorkGiver_PE</giverClass>
+    
+    <workType>TrainSexSlave</workType> 
+    <priorityInType>80</priorityInType>
+    
+    <verb>通过肛交完成人格排泄</verb>
+    <gerund>通过肛交完成人格排泄</gerund>
+    <requiredCapacities>
+      <li>Manipulation</li>
+    </requiredCapacities>
+</WorkGiverDef>
+
+<WorkGiverDef>
+  <defName>SSC_WorkGiver_InsertPersonality</defName>
+  <label>塞入人格凝胶</label>
+  <giverClass>SexSlaveCraft.WorkGiver_InsertPersonality</giverClass>
+  <workType>TrainSexSlave</workType>
+  <priorityInType>70</priorityInType>
+  <verb>塞入人格凝胶</verb>
+  <gerund>塞入人格凝胶</gerund>
+  <requiredCapacities>
+    <li>Manipulation</li>
+  </requiredCapacities>
+  <scanThings>true</scanThings>
+  <scanCells>false</scanCells>
+  <directOrderable>true</directOrderable>
+</WorkGiverDef>
+
+</Defs>

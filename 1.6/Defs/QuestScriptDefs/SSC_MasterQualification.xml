@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <!-- 由 SSC 存档组件或手动按钮创建，不参与故事讲述者的随机任务池，也不依赖 DLC。 -->
+  <QuestScriptDef>
+    <defName>SSC_InitialMasterQualification</defName>
+    <root Class="SexSlaveCraft.QuestNode_Root_MasterQualification" />
+    <isRootSpecial>true</isRootSpecial>
+    <randomlySelectable>false</randomlySelectable>
+    <autoAccept>false</autoAccept>
+    <defaultHidden>false</defaultHidden>
+    <defaultChallengeRating>0</defaultChallengeRating>
+    <expireDaysRange>-1</expireDaysRange>
+    <endOnColonyMove>false</endOnColonyMove>
+    <neverPossibleInSpace>true</neverPossibleInSpace>
+    <questAvailableLetterTextIsDescription>true</questAvailableLetterTextIsDescription>
+  </QuestScriptDef>
+</Defs>

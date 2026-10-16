@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_DEV_CompleteSpecialization>DEV：當前特化 100%</SSC_DEV_CompleteSpecialization>
+  <SSC_DEV_CompleteSpecialization_Desc>將當前已選擇的特化培養進度設為 100%，儲存本方向進度並立即同步普通培養狀態。不自動終極化，也不直接授予終極能力。</SSC_DEV_CompleteSpecialization_Desc>
+</LanguageData>

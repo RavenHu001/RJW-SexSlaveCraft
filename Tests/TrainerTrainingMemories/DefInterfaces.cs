@@ -117,7 +117,7 @@ namespace TrainerTrainingMemories
         /// <summary>解析一个 ThoughtDef 文件里的全部定义并登记到类型化索引。</summary>
         public static List<ThoughtDef> LoadFile(string repoRoot, string relativePath)
         {
-            string fullPath = System.IO.Path.Combine(repoRoot, relativePath.Replace('/', System.IO.Path.DirectorySeparatorChar));
+            string fullPath = SscTestPaths.Combine(repoRoot, relativePath.Replace('/', System.IO.Path.DirectorySeparatorChar));
             var document = XDocument.Load(fullPath);
             var loaded = new List<ThoughtDef>();
             foreach (XElement element in document.Root.Elements("ThoughtDef"))

@@ -94,7 +94,7 @@ internal static partial class Program
 
             foreach (string language in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" })
             {
-                var xml = XDocument.Load(Path.Combine(repo, "Languages", language, "Keyed", "SSC_TrainerIdentity.xml"));
+                var xml = XDocument.Load(SscTestPaths.Combine(repo, "Languages", language, "Keyed", "SSC_TrainerIdentity.xml"));
                 string[] names = xml.Root.Elements().Select(element => element.Name.LocalName).ToArray();
                 Assert(names.Length == names.Distinct().Count());
                 Assert(required.All(names.Contains));
@@ -107,7 +107,7 @@ internal static partial class Program
         {
             // 从实际 Def 提取健康页会显示的字段。阶段索引来自 XML 顺序，
             // 后续增删阶段时不必手写第二份键列表，也不会只检查菜单 Keyed 文本。
-            var definitions = XDocument.Load(Path.Combine(repo, "Defs", "HediffDefs",
+            var definitions = XDocument.Load(SscTestPaths.Combine(repo, "Defs", "HediffDefs",
                 "SSC_HediffDefs_TrainerSpecialization.xml"));
             var required = new HashSet<string>();
             foreach (XElement definition in definitions.Root.Elements("HediffDef"))
@@ -131,7 +131,7 @@ internal static partial class Program
             Assert(definitions.Root.Elements("HediffDef").Count() == 3 && required.Count > 0);
             foreach (string language in new[] { "ChineseTraditional", "English", "Russian" })
             {
-                string directory = Path.Combine(repo, "Languages", language, "DefInjected", "HediffDef");
+                string directory = SscTestPaths.Combine(repo, "Languages", language, "DefInjected", "HediffDef");
                 var translations = Directory.GetFiles(directory, "*.xml")
                     .SelectMany(path => XDocument.Load(path).Root.Elements())
                     .Where(element => required.Contains(element.Name.LocalName))

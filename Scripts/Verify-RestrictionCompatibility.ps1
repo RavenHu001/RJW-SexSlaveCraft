@@ -3,13 +3,16 @@
 .SYNOPSIS
 只读核验限制系统编译产物与指定游戏、RJW 及可选模组的接口，并生成 JSON 报告。
 .DESCRIPTION
-需要调用者显式提供模组、游戏、RJW、Mono.Cecil 及报告路径。Genes、Onahole 未提供时会明确记录未检查，
+默认读取所选版本的模组 DLL；需要调用者显式提供游戏、RJW、Mono.Cecil 及报告路径。Genes、Onahole 未提供时会明确记录未检查，
 不会把本机缺少的可选 DLL 当成已核验成功。只加载 Cecil 工具库，游戏和模组 DLL 全部只读取元数据，
 不执行它们的代码，不启动 Unity，不安装 Harmony 补丁，也不代替实际游戏兼容测试。
 #>
 [CmdletBinding()]
 param(
-    [Parameter(Mandatory)][string]$ModAssembly,
+    [string]$ModAssembly,
+    [string]$RepositoryRoot = (Join-Path $PSScriptRoot '..'),
+    [ValidateSet('1.6', '1.7')][string]$GameVersion = '1.7',
+    [string]$RuntimeRoot,
     [Parameter(Mandatory)][string]$GameAssembly,
     [Parameter(Mandatory)][string]$RjwAssembly,
     [string]$GenesAssembly,
@@ -20,6 +23,10 @@ param(
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
+$repoRoot = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($RepositoryRoot)
+if (-not $RuntimeRoot) { $RuntimeRoot = Join-Path $repoRoot $GameVersion }
+$RuntimeRoot = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($RuntimeRoot)
+if (-not $ModAssembly) { $ModAssembly = Join-Path $RuntimeRoot 'Assemblies/Sexslavecraft.dll' }
 $startedAt = [DateTime]::UtcNow
 $reportFile = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($ReportPath)
 $checks = [Collections.Generic.List[object]]::new()
@@ -299,6 +306,7 @@ finally {
     $report = [ordered]@{
         StartedUtc = $startedAt.ToString('o'); FinishedUtc = [DateTime]::UtcNow.ToString('o')
         Success = $failed.Count -eq 0
+        GameVersion = $GameVersion; RuntimeRoot = $RuntimeRoot
         Scope = 'Metadata only; no game code, Harmony patch installation, Unity or live-game execution.'
         Inputs = $inputs.ToArray()
         Summary = [ordered]@{

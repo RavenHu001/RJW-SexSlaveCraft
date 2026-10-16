@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+  <!-- 固定配对的自愿后续事件；派生驱动复用 RJW Quickie 的地点选择、互动及正常结算。 -->
+  <JobDef>
+    <defName>SSC_Job_PetAffectionFollowup</defName>
+    <driverClass>SexSlaveCraft.JobDriver_PetAffectionFollowup</driverClass>
+    <reportString>正在与 TargetA 继续亲密互动。</reportString>
+    <casualInterruptible>false</casualInterruptible>
+  </JobDef>
+</Defs>

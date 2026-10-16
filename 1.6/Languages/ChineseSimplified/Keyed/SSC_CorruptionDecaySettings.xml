@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <SSC_Setting_EnableCorruptionDecay>启用恶堕衰减</SSC_Setting_EnableCorruptionDecay>
+  <SSC_Setting_EnableCorruptionDecay_Desc>关闭后，恶堕不会自然下降；装备最低值与性奴锁链阶段上限仍然生效。</SSC_Setting_EnableCorruptionDecay_Desc>
+  <SSC_Setting_CorruptionDecayPerDay>每日基础恶堕衰减：{0}%</SSC_Setting_CorruptionDecayPerDay>
+  <SSC_Setting_CorruptionDecayPerDay_Desc>设置应用性需求、近期调教评分、好感、锁链阶段、部位开发、装备和健康状态修正前，每天损失的基础恶堕量。默认值：2%。</SSC_Setting_CorruptionDecayPerDay_Desc>
+</LanguageData>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+  <JobDef>
+    <defName>SSC_Job_InsertPersonality</defName>
+    <driverClass>SexSlaveCraft.JobDriver_InsertPersonality</driverClass>
+    <reportString>正在将人格凝胶塞入TargetB体内。</reportString>
+    <casualInterruptible>false</casualInterruptible>
+    <allowOpportunisticPrefix>true</allowOpportunisticPrefix>
+  </JobDef>
+</Defs>

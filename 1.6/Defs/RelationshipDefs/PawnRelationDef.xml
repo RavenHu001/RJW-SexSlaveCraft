@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+  <PawnRelationDef>
+    <defName>SSC_FlawedLovers</defName>
+    <label>主人</label>
+    <labelFemale>完美性奴</labelFemale>
+    <importance>999</importance>
+    <opinionOffset>100</opinionOffset> 
+    <generationChanceFactor>0</generationChanceFactor>
+    <reflexive>true</reflexive> 
+  </PawnRelationDef>
+</Defs>

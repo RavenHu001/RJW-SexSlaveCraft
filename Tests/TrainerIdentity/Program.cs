@@ -14,8 +14,8 @@ internal static partial class Program
     /// <summary>运行真实身份、指派、工作、仪式及迁移代码；只替代游戏外部接口。</summary>
     private static int Main(string[] args)
     {
-        string repo = Path.GetFullPath(args.Length == 0 ? "../.." : args[0]);
-        var xml = XDocument.Load(Path.Combine(repo, "Languages/ChineseSimplified/Keyed/SSC_TrainerIdentity.xml"));
+        string repo = SscTestPaths.RepositoryRoot(args.Length > 0 ? args[0] : null);
+        var xml = XDocument.Load(SscTestPaths.Combine(repo, "Languages/ChineseSimplified/Keyed/SSC_TrainerIdentity.xml"));
         foreach (var key in xml.Root.Elements()) Verse.Extensions.Translations[key.Name.LocalName] = key.Value;
         RunEducationCompatibilityTests();
         RunMasterQualificationTests(repo);
@@ -400,10 +400,10 @@ internal static partial class Program
             var expected = xml.Root.Elements().Select(e => e.Name.LocalName).Order().ToArray();
             foreach (string language in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" })
             {
-                var entries = XDocument.Load(Path.Combine(repo, "Languages", language, "Keyed/SSC_TrainerIdentity.xml")).Root.Elements().ToList();
+                var entries = XDocument.Load(SscTestPaths.Combine(repo, "Languages", language, "Keyed/SSC_TrainerIdentity.xml")).Root.Elements().ToList();
                 Assert(entries.Select(e => e.Name.LocalName).Order().SequenceEqual(expected));
                 foreach (var entry in entries) Assert(!string.IsNullOrWhiteSpace(string.Format(entry.Value, "Test")));
-                var identityXml = XDocument.Load(Path.Combine(repo, "Languages", language, "Keyed/SSC_Identity.xml"));
+                var identityXml = XDocument.Load(SscTestPaths.Combine(repo, "Languages", language, "Keyed/SSC_Identity.xml"));
                 Assert(!string.IsNullOrWhiteSpace(identityXml.Root.Element("SSC_Identity_BoundTip")?.Value));
             }
         });

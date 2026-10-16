@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <Corruption.label>Развращение</Corruption.label>
+  <Corruption.description>Уровень развращения персонажа.</Corruption.description>
+  <Need_PNA.label>Тяга к наножидкости-афродизиаку</Need_PNA.label>
+  <Need_PNA.description>Привыкнув к стимуляции наножидкостью-афродизиаком, тело продолжает требовать её. Удовлетворённость постепенно снижается, а при её истощении начинается абстиненция. Новое поступление восполняет её, но усиливает зависимость.</Need_PNA.description>
+</LanguageData>

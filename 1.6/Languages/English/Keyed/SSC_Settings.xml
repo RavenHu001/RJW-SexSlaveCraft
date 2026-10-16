@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <SSC_Setting_Category>SexSlaveCraft settings</SSC_Setting_Category>
+
+  <SSC_Setting_EnableSexSlaveProtectionRules>Enable sex-slave behavior restrictions</SSC_Setting_EnableSexSlaveProtectionRules>
+  <SSC_Setting_EnableSexSlaveProtectionRules_Desc>Controls the unified permissions for sex and training, including individual rules and equipment/specialization overrides. Disabling pauses these restrictions while retaining configurations. Identity, designated trainers, shared sleep and normal job requirements keep their own rules. An actual owner initiating toward their bound slave always passes this system.</SSC_Setting_EnableSexSlaveProtectionRules_Desc>
+
+  <SSC_Setting_EnableLogs>Enable SSC logging</SSC_Setting_EnableLogs>
+  <SSC_Setting_EnableLogs_Desc>Master switch for normal SSC logs. Error logs are always shown.</SSC_Setting_EnableLogs_Desc>
+  <SSC_Setting_EnableVerboseLogs>Enable verbose SSC logs</SSC_Setting_EnableVerboseLogs>
+  <SSC_Setting_EnableVerboseLogs_Desc>Logs high-frequency debugging details for training flow, ritual phases, and protection rules. Enable this only when troubleshooting.</SSC_Setting_EnableVerboseLogs_Desc>
+  <SSC_Setting_EnableImportantLogs>Enable important SSC logs</SSC_Setting_EnableImportantLogs>
+  <SSC_Setting_EnableImportantLogs_Desc>Logs infrequent but important state changes and warnings, such as ritual enslavement and compatibility fallbacks.</SSC_Setting_EnableImportantLogs_Desc>
+
+  <SSC_Setting_UseRJWOriginalEligibility>Use SSC's relaxed training filter</SSC_Setting_UseRJWOriginalEligibility>
+  <SSC_Setting_UseRJWOriginalEligibility_Desc>When enabled, SSC uses its own relaxed target filter without an age restriction, but RJW rape must be enabled. When disabled, SSC directly uses RJW's original eligibility check.</SSC_Setting_UseRJWOriginalEligibility_Desc>
+  <SSC_Setting_EnableDebugGizmos>Enable SSC debug gizmos</SSC_Setting_EnableDebugGizmos>
+  <SSC_Setting_EnableDebugGizmos_Desc>Shows SSC-specific debug gizmos while developer mode is active. Disabled by default.</SSC_Setting_EnableDebugGizmos_Desc>
+
+  <SSC_Setting_EnableFullGelTint>Enable full-gelatinization body tint</SSC_Setting_EnableFullGelTint>
+  <SSC_Setting_EnableFullGelTint_Desc>When enabled, pawns with Completed Full Gelatinization have a translucent purple body while retaining their original head color.</SSC_Setting_EnableFullGelTint_Desc>
+  <SSC_Setting_EnableRitualEnslavement>Allow Binding Ritual enslavement</SSC_Setting_EnableRitualEnslavement>
+  <SSC_Setting_EnableRitualEnslavement_Desc>When enabled, a Binding Ritual that meets the Corruption, score, and will requirements may convert its target into a vanilla slave. Disabling this only skips the enslavement roll; other ritual rewards are unaffected.</SSC_Setting_EnableRitualEnslavement_Desc>
+  <SSC_Setting_EnableRimTalkSexDialogue>Trigger RimTalk dialogue for SSC sex scenes</SSC_Setting_EnableRimTalkSexDialogue>
+  <SSC_Setting_EnableRimTalkSexDialogue_Desc>When RimTalk is active, SSC daily training, Binding Ritual phases, personality-extraction scenes, and public-use trade sex events queue AI dialogue when the scene starts and the current game speed permits it. Disable this to avoid the additional AI requests.</SSC_Setting_EnableRimTalkSexDialogue_Desc>
+  <SSC_Setting_RimTalkMaxSpeed>Maximum speed for RimTalk training requests: {0}</SSC_Setting_RimTalkMaxSpeed>
+  <SSC_Setting_RimTalkMaxSpeed_Desc>SSC always respects RimTalk's own “Pause AI at speed” setting. “Follow RimTalk” adds no extra restriction; a selected speed sends requests only at or below that speed. Scheduled training waits while its Job remains valid, while one-shot events above the limit are skipped.</SSC_Setting_RimTalkMaxSpeed_Desc>
+  <SSC_Setting_RimTalkMaxSpeed_Follow>Follow RimTalk</SSC_Setting_RimTalkMaxSpeed_Follow>
+  <SSC_Setting_RimTalkMaxSpeed_Value>up to {0}x</SSC_Setting_RimTalkMaxSpeed_Value>
+  <SSC_Setting_RimTalkInterruptTemplate>Scheduled-training interruption line</SSC_Setting_RimTalkInterruptTemplate>
+  <SSC_Setting_RimTalkInterruptTemplate_Desc>The local line spoken as soon as a training Job is claimed. Supports {MASTER}, {SLAVE}, {ACT}, and {TARGET}; the line is also included in the single AI request that generates the training exchange.</SSC_Setting_RimTalkInterruptTemplate_Desc>
+
+  <SSC_Setting_UseOldScoring>Use the legacy scoring system</SSC_Setting_UseOldScoring>
+  <SSC_Setting_UseOldScoring_Desc>Restores legacy Training scores, tiered memories, trait bonuses, random variation, size and Chain multipliers, and disables natural Corruption decay. Disabled by default.</SSC_Setting_UseOldScoring_Desc>
+</LanguageData>

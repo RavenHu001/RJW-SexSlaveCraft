@@ -12,7 +12,7 @@ internal static partial class Program
     private static void RunTrainerOfficerFeedbackTests(string repo)
     {
         string relativeDef = "Defs/ThoughtDefs/SSC_TrainerOfficerThoughts.xml";
-        var xml = XDocument.Load(Path.Combine(repo, relativeDef));
+        var xml = XDocument.Load(SscTestPaths.Combine(repo, relativeDef));
         var duty = xml.Root.Elements("ThoughtDef").Single(d => (string)d.Element("defName") == "SSC_TrainerOfficer_DutyFulfilled");
         SSCDefOf.SSC_TrainerOfficer_DutyFulfilled = new ThoughtDef
         {
@@ -36,11 +36,11 @@ internal static partial class Program
                 && (string)appraisal.Element("workerClass") == typeof(ThoughtWorker_TrainerOfficerAppraisal).FullName
                 && (int)appraisal.Element("stages").Element("li").Element("baseOpinionOffset") == 5
                 && appraisal.Element("durationDays") == null && appraisal.Element("stackLimit") == null);
-            Assert(XNode.DeepEquals(xml, XDocument.Load(Path.Combine(repo, "Sexslavecraft", relativeDef))));
+            Assert(XNode.DeepEquals(xml, XDocument.Load(SscTestPaths.Combine(repo, "Sexslavecraft", relativeDef))));
             foreach (string language in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" })
             {
                 string relativeLanguage = $"Languages/{language}/DefInjected/ThoughtDef/SSC_TrainerOfficerThoughts.xml";
-                var translated = XDocument.Load(Path.Combine(repo, relativeLanguage));
+                var translated = XDocument.Load(SscTestPaths.Combine(repo, relativeLanguage));
                 string[] keys = { "SSC_TrainerOfficer_DutyFulfilled.stages.0.label", "SSC_TrainerOfficer_DutyFulfilled.stages.0.description",
                     "SSC_TrainerOfficer_Appraisal.stages.0.label", "SSC_TrainerOfficer_Appraisal.stages.0.description",
                     // 第 10 节新增两条也必须在该文件里有四语文案。
@@ -48,7 +48,7 @@ internal static partial class Program
                     "SSC_TrainerOfficer_TrustedByOwnerMood.stages.0.label", "SSC_TrainerOfficer_TrustedByOwnerMood.stages.0.description" };
                 Assert(translated.Root.Elements().Select(e => e.Name.LocalName).Distinct().Count() == keys.Length
                     && keys.All(key => !string.IsNullOrWhiteSpace((string)translated.Root.Element(key))));
-                Assert(XNode.DeepEquals(translated, XDocument.Load(Path.Combine(repo, "Sexslavecraft", relativeLanguage))));
+                Assert(XNode.DeepEquals(translated, XDocument.Load(SscTestPaths.Combine(repo, "Sexslavecraft", relativeLanguage))));
             }
         });
 

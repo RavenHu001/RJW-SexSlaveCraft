@@ -1,5 +1,7 @@
 # 玩家阅读入口 / Player documentation
 
+> 游戏版本目录：1.6 保留 2.4.1 基线，1.7 为待游戏内验收的开发版本，基础贴图由 Common/Textures 共享。已有 v2.4.1 下载仍为原 1.6 正式版。
+
 [项目首页](../../README.md) · [文档总索引](../README.md) · [模组介绍 / Overview](../模组介绍.md)
 
 当前版本归属 / Current version scope：**RimWorld 1.6 · SSC 2.4.1**。原 2.4.0.5 开发版及后续开发统一纳入，包含 PNA、欢愉恩赐和绑定维护；正式下载版为 2.4.1。 / Version 2.4.1 consolidates the former 2.4.0.5 milestone and subsequent work. The matching release package is v2.4.1.

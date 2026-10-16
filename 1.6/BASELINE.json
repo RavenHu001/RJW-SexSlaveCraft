@@ -1,0 +1,2674 @@
+{
+  "schemaVersion": 1,
+  "gameVersion": "1.6",
+  "version": "2.4.1",
+  "sourceCommit": "f9fe097bf728ee6c55974c8734d35bbf0f37b3a8",
+  "assemblyPath": "1.6/Assemblies/Sexslavecraft.dll",
+  "policy": "Frozen 2.4.1 runtime baseline; hashes include shared texture files. No 1.6 runtime test was performed during this layout migration.",
+  "files": [
+    {
+      "path": "1.6/Defs/AbilityDefs/EroticWord.xml",
+      "bytes": 1194,
+      "sha256": "969ec63ff0e0b374f75107c1ec113aaf5dec793b45ec00514b1d8384ec6cfcbe"
+    },
+    {
+      "path": "1.6/Defs/AbilityDefs/SSC_CombatOverdrive.xml",
+      "bytes": 1989,
+      "sha256": "f5f2e5a498353bfd958aa2b55aa16da243001491dc1d85283000e36b8102b077"
+    },
+    {
+      "path": "1.6/Defs/AbilityDefs/SSC_PetCatComfort.xml",
+      "bytes": 2960,
+      "sha256": "e50930f97e020f72a087645e7c75eadc8367193b15b9c43cd81ceb4fac458f41"
+    },
+    {
+      "path": "1.6/Defs/AbilityDefs/SSC_PetDogTame.xml",
+      "bytes": 3216,
+      "sha256": "d399accdbfff9c0dfd3a2a8d7d0d8a410551bf9b285cb6e42b643c22ff84e72e"
+    },
+    {
+      "path": "1.6/Defs/ChemicalDefs/ChemicalDef.xml",
+      "bytes": 212,
+      "sha256": "051c246eafa7c30afcfa2f188f3e40a5fe77e7a85e14b87228c9344d21694bcb"
+    },
+    {
+      "path": "1.6/Defs/DemageDefs/DemageDef_Gun.xml",
+      "bytes": 1412,
+      "sha256": "bbeaf46c60069a199dba0077824e259a664c933ef66557100765f187ef0c39c5"
+    },
+    {
+      "path": "1.6/Defs/DutyDefs/DutyDef.xml",
+      "bytes": 510,
+      "sha256": "2ff0ce9be72097f53fffd12cde21ba7b0b90092a7b865189a139c28dd036ef94"
+    },
+    {
+      "path": "1.6/Defs/EffecterDefs/SSC_PetAffectionEffects.xml",
+      "bytes": 1333,
+      "sha256": "7b46b7c9f3c63fdd5e1604acb7ff2cb6d8165dc6ddedd55f71d9b1a9725b5916"
+    },
+    {
+      "path": "1.6/Defs/EffecterDefs/SSC_PetCatComfortEffects.xml",
+      "bytes": 1339,
+      "sha256": "487a56d566a626c4a3e25aab51dc979e1d075c124df1b7f6c02be290e7cf9632"
+    },
+    {
+      "path": "1.6/Defs/EffecterDefs/SSC_PetDogTameEffects.xml",
+      "bytes": 1135,
+      "sha256": "a8e586711164446ee471da55be2aadd9566f119b7c5509c4ff37a64822b9cbb5"
+    },
+    {
+      "path": "1.6/Defs/HediffDefs/HediffOfAddiction.xml",
+      "bytes": 2413,
+      "sha256": "583e9c5422e8c9eb64a79eff32bcd69a93a12a857dd3e6931cc80da11206167e"
+    },
+    {
+      "path": "1.6/Defs/HediffDefs/HediffOfBuff.xml",
+      "bytes": 17616,
+      "sha256": "08c8b0eeb6d92d50068b8a80522081b070a141e688419beeb7c38d193f5089fb"
+    },
+    {
+      "path": "1.6/Defs/HediffDefs/HediffOfPE.xml",
+      "bytes": 4040,
+      "sha256": "7987b18b52ac35d7a7d097faac1aebf3588ac144035db17cc959ad1a01c94416"
+    },
+    {
+      "path": "1.6/Defs/HediffDefs/HediffOfPSEdited.xml",
+      "bytes": 5843,
+      "sha256": "d832f1a13e7e04b3a1c066573cd06f86bd20e741b58670ed88c655b1bc4a397a"
+    },
+    {
+      "path": "1.6/Defs/HediffDefs/HediffOfSexSlave.xml",
+      "bytes": 5327,
+      "sha256": "d3a3106cb4cfddb3d5795f1349872d22bd6a49d3ffed3266077a3cc00bb19bab"
+    },
+    {
+      "path": "1.6/Defs/HediffDefs/HediffOfTrain.xml",
+      "bytes": 13429,
+      "sha256": "85dc1b2823b78754122d0d57bdcb0df7dcd1a72dd8aa976d4197f32403e98e52"
+    },
+    {
+      "path": "1.6/Defs/HediffDefs/Hediffs_Gelatinization.xml",
+      "bytes": 6119,
+      "sha256": "c9a347e850e6f7bcb0cffa4cacf2e954a4b27e4b3f6053bd0f78f788dde18667"
+    },
+    {
+      "path": "1.6/Defs/HediffDefs/SSC_AbilityToggleMarkers.xml",
+      "bytes": 719,
+      "sha256": "04ae867f32dbfea93c78b582c3c2d3161d255e6275a902cc3b7bbcb3fcbe0d9d"
+    },
+    {
+      "path": "1.6/Defs/HediffDefs/SSC_HediffDefs_CombatantSpecialization.xml",
+      "bytes": 4971,
+      "sha256": "e71c4e6ddadf38e8b97c14579c6ec0ca46f4cf570fdd492178b81d56d5428f05"
+    },
+    {
+      "path": "1.6/Defs/HediffDefs/SSC_HediffDefs_Compatibility.xml",
+      "bytes": 713,
+      "sha256": "ad7d0b89ae1aebbbda1590423180ef002a4d9b137702b84e604a91999264525c"
+    },
+    {
+      "path": "1.6/Defs/HediffDefs/SSC_HediffDefs_PetCatComfort.xml",
+      "bytes": 1104,
+      "sha256": "1101026f99a2e49eac482f3d0f2953a85fa338ab74e0b6b6d54c9bad32a19951"
+    },
+    {
+      "path": "1.6/Defs/HediffDefs/SSC_HediffDefs_PetSpecializations.xml",
+      "bytes": 8290,
+      "sha256": "0157144601bbbf406c107a9e830e2d8d798c03c55bfc1d0ac8199179787da017"
+    },
+    {
+      "path": "1.6/Defs/HediffDefs/SSC_HediffDefs_TrainerSpecialization.xml",
+      "bytes": 4452,
+      "sha256": "270072adea5c38150a7327d73ec675de7b804611467e65dbe4ccd868fae6db4b"
+    },
+    {
+      "path": "1.6/Defs/HediffDefs/SSC_MasterProgression.xml",
+      "bytes": 4005,
+      "sha256": "4baa99f42b4fc138df94b2ebc751c6688895004ed7eb849a1c28f28722152d21"
+    },
+    {
+      "path": "1.6/Defs/JobDef/JobDef_InsertPersonality.xml",
+      "bytes": 392,
+      "sha256": "dd624cf1c48d7650e81af3d6e03093103714aaef4ca59e8664bfb5d46c8a2b3f"
+    },
+    {
+      "path": "1.6/Defs/JobDef/JobDriver_PE.xml",
+      "bytes": 329,
+      "sha256": "b11732daf73b8267ae2382ac6a0faa56517030a09b63f04021a3ab0f5c96e49a"
+    },
+    {
+      "path": "1.6/Defs/JobDef/JobDriver_RitualTraining.xml",
+      "bytes": 331,
+      "sha256": "ad89a1d03d5474feb84179d58925616978f09ce0b8f58582805c2b0d45b8fc05"
+    },
+    {
+      "path": "1.6/Defs/JobDef/JobDriver_SelfTraining.xml",
+      "bytes": 349,
+      "sha256": "44a1a893ba923d0443fb4b53da01c2d4dc17c6452dcb0f8874b3bdede89b5a17"
+    },
+    {
+      "path": "1.6/Defs/JobDef/JobDriver_Training.xml",
+      "bytes": 389,
+      "sha256": "59ca5e8d9e31a36043046e5f7d160237f61e52cff460c47ad79949395e4838fd"
+    },
+    {
+      "path": "1.6/Defs/JobDef/JobDriver_TrainingReceiver.xml",
+      "bytes": 387,
+      "sha256": "48c852b69f5face2922da0b7f362f786945e5c54211d7732f6cf3616f69a7aed"
+    },
+    {
+      "path": "1.6/Defs/JobDefs/SSC_PetAffectionFollowupJobDefs.xml",
+      "bytes": 463,
+      "sha256": "8a71c15c39a907e483adabf5dc805ae32cd9bb6046a73c4411c92be15682c594"
+    },
+    {
+      "path": "1.6/Defs/JobDefs/SSC_PetAffectionJobDefs.xml",
+      "bytes": 312,
+      "sha256": "c5b3ab8bd0a9e71b6234d459a812b7568065f433e44dbdbfd4f88de258f2d5e4"
+    },
+    {
+      "path": "1.6/Defs/JobDefs/SSC_PetCatComfortJobDefs.xml",
+      "bytes": 647,
+      "sha256": "20b59c1b8d2ae023edaf76c65c042bf31effdf82625f467b34e2d50c4c9618d2"
+    },
+    {
+      "path": "1.6/Defs/JobDefs/SSC_PetDogTameJobDefs.xml",
+      "bytes": 1062,
+      "sha256": "d82a97d049f5a26a460de4b08e809c8227fb763037cc037a415991b164b4cb11"
+    },
+    {
+      "path": "1.6/Defs/NeedDefs/NeedDefs.xml",
+      "bytes": 1067,
+      "sha256": "4adb553da45cc2fb7a39a196a0f360a54b5743c9bc59b437346c3b7bd548c238"
+    },
+    {
+      "path": "1.6/Defs/PreceptDefs/Precepts_Ritual.xml",
+      "bytes": 1024,
+      "sha256": "3428ae4e66eb2833d19a7f1e152764824d1cb579ad4678e9b6605f6d93a96d32"
+    },
+    {
+      "path": "1.6/Defs/QuestScriptDefs/SSC_MasterQualification.xml",
+      "bytes": 805,
+      "sha256": "0e20a8268894fd3c12aa4a0e093f984bb95caf4c2e105f5a17d48a364272a09e"
+    },
+    {
+      "path": "1.6/Defs/RecipeDefs/Recipe_Gelatinization.xml",
+      "bytes": 3424,
+      "sha256": "e65c9ffebe72d8b016b8ec977d7140554de389e6d5140a46595d2314b9683b4d"
+    },
+    {
+      "path": "1.6/Defs/RecipeDefs/RecipeDef_PNA_PLUS.xml",
+      "bytes": 2395,
+      "sha256": "3dd96f0eb126444261707c041608e649d916b2888c23131065caf1788d550d53"
+    },
+    {
+      "path": "1.6/Defs/RecipeDefs/RecipeDef_PSEdit.xml",
+      "bytes": 17748,
+      "sha256": "130e89d05c2d1f8a13811103119dd5ec0cfaaa83d2d40f2de8e3f4d69280f9e2"
+    },
+    {
+      "path": "1.6/Defs/RecipeDefs/RecipeDef_Surgery_DCMtF.xml",
+      "bytes": 1932,
+      "sha256": "174d83d6dffa6ef0d7916a8121906c6f2f5053234decd5841cee6e11cb725585"
+    },
+    {
+      "path": "1.6/Defs/RecipeDefs/RecipeDef_Surgery_PE.xml",
+      "bytes": 1474,
+      "sha256": "e75cd276e3eedbddee4f64f6b318194c558699840bfeaeeb98e68e24bd763086"
+    },
+    {
+      "path": "1.6/Defs/RelationshipDefs/PawnRelationDef.xml",
+      "bytes": 377,
+      "sha256": "ed7b193cd6fe382cc8f76af50357f2b5b6ea0116ef4c11520103200d10e2dedf"
+    },
+    {
+      "path": "1.6/Defs/ResearchDefs/ResearchProjectDef.xml",
+      "bytes": 14113,
+      "sha256": "06c7932a6bd9035152832e356c9f14211f8238b7f7ce20cf8841dc3a0147ea03"
+    },
+    {
+      "path": "1.6/Defs/ResearchDefs/ResearchTabDef.xml",
+      "bytes": 133,
+      "sha256": "938622ffe4b8096afdbf4dc8071cd61098bbd2c5b96678912c5277979ea49dba"
+    },
+    {
+      "path": "1.6/Defs/RitualDefs/Ritual_Behavior.xml",
+      "bytes": 2207,
+      "sha256": "fe53f5de66bd254a3cc783ea16189991ca44787eec7f60d68c19f36c589a66e5"
+    },
+    {
+      "path": "1.6/Defs/RitualDefs/Ritual_Outcome.xml",
+      "bytes": 3257,
+      "sha256": "bc92ea61021b13e1c9889b6d0bc81b3d8267a93ac4373454321ea29a12310d60"
+    },
+    {
+      "path": "1.6/Defs/RitualDefs/Ritual_Targets.xml",
+      "bytes": 213,
+      "sha256": "5f2dc0cb82f25c5387881a7178b7f52bb3dc3eb50bd93e85700dda16985730fe"
+    },
+    {
+      "path": "1.6/Defs/RitualPatternDefs/RitualPatternDef.xml",
+      "bytes": 856,
+      "sha256": "ec7fa8ccd4180a21368acb88f0355daf6c97fdc812134ad26b188bba12dbc759"
+    },
+    {
+      "path": "1.6/Defs/ShaderTypeDefs/SSC_FullGelBody.xml",
+      "bytes": 190,
+      "sha256": "3f9013615b80747e8fa04adc081bf94c42867b72feb482e66b9e2570780326fc"
+    },
+    {
+      "path": "1.6/Defs/SSCRestrictionProfiles.xml",
+      "bytes": 820,
+      "sha256": "cce7aef7eadfc5fcb971e0b4f67329d506b0a42be7b581ffcf03a8892ee45392"
+    },
+    {
+      "path": "1.6/Defs/ThingsDefs/Nanofluid.xml",
+      "bytes": 4563,
+      "sha256": "29378c780722f086b9f3e0ee3661e135e6189dd835f77a3f4f3cacd235145c49"
+    },
+    {
+      "path": "1.6/Defs/ThingsDefs/SexSlave_EvilFallOutfit.xml",
+      "bytes": 3597,
+      "sha256": "bded3bdf4f06520c00a2b95edecd580231894d8593e04c992f0911e2f6bb9c99"
+    },
+    {
+      "path": "1.6/Defs/ThingsDefs/SexSlaveCloth.xml",
+      "bytes": 2800,
+      "sha256": "215111f257fff25fcde15e04752d7ba0e44ff2fdc5757d22933071cb242eb555"
+    },
+    {
+      "path": "1.6/Defs/ThingsDefs/SSC_Gun.xml",
+      "bytes": 4814,
+      "sha256": "704e4ac8eb4f5431d09bf461581aabb81874e247148e23ce469b1c3727e99a8f"
+    },
+    {
+      "path": "1.6/Defs/ThingsDefs/SSC_MasterQualificationItem.xml",
+      "bytes": 3208,
+      "sha256": "a0f6f7a971f87bed05414537c9d3d02195c4b8c223279fba6c3851bdbb718d61"
+    },
+    {
+      "path": "1.6/Defs/ThingsDefs/SSC_PS.xml",
+      "bytes": 4636,
+      "sha256": "45a8869850d9d7ac5a0708c2bf1ae57782e68006195c07e2f58e256a80b0e263"
+    },
+    {
+      "path": "1.6/Defs/ThoughtDefs/SSC_DesireInfestation.xml",
+      "bytes": 3588,
+      "sha256": "60dd053da058adf40c5c79395f5092d06c85f20387c6f18deecfac24c33f735a"
+    },
+    {
+      "path": "1.6/Defs/ThoughtDefs/SSC_PetAffectionThoughts.xml",
+      "bytes": 433,
+      "sha256": "89aed552138b3e4401fc1283104327fe386f8241554349cbdd134f6ae304227f"
+    },
+    {
+      "path": "1.6/Defs/ThoughtDefs/SSC_PetCatComfortThoughts.xml",
+      "bytes": 602,
+      "sha256": "d760a3beb367cd170bb6c69af8c06ad64238bf264e811b2bd8d911c37d6ce962"
+    },
+    {
+      "path": "1.6/Defs/ThoughtDefs/SSC_SelfTrainingFeedback.xml",
+      "bytes": 7296,
+      "sha256": "9e542be472a1f8f252e2940c0213456fb5769a34b78f14b2ef42d48dd4379eaa"
+    },
+    {
+      "path": "1.6/Defs/ThoughtDefs/SSC_TrainerOfficerThoughts.xml",
+      "bytes": 2610,
+      "sha256": "56e8a227e242d6193537af5b6e149da28c38caa557c62b77710cc44d260cac1f"
+    },
+    {
+      "path": "1.6/Defs/ThoughtDefs/SSC_TrainerTrainingMemories.xml",
+      "bytes": 6988,
+      "sha256": "605e527b33dff459074dfd233a04a0a37ed1b5e3c0d3064f4fb2903685540809"
+    },
+    {
+      "path": "1.6/Defs/ThoughtDefs/SSC_TrainingOpinionMemory.xml",
+      "bytes": 1811,
+      "sha256": "6330e25cfc8fe02f7bc60fc5f2e7c4a975c21e6988af9f90542c1d8d7a178c74"
+    },
+    {
+      "path": "1.6/Defs/ThoughtDefs/Thought_CorruptionRape.xml",
+      "bytes": 2888,
+      "sha256": "3e3499d2bddf6121853cf7183a0d668701ddc842bf06bf76aff9b789b2f2d534"
+    },
+    {
+      "path": "1.6/Defs/ThoughtDefs/Thought_Ritual.xml",
+      "bytes": 1592,
+      "sha256": "3cb783d7772a9eaf711edc5a528f38929221ddbc67142a36b42b9a9784bf8702"
+    },
+    {
+      "path": "1.6/Defs/ThoughtDefs/Thought_SharedBed.xml",
+      "bytes": 3843,
+      "sha256": "8ed9b55fcb93f1dcddcc64e9a235408d5c89076a16544252310b9411b5c9af00"
+    },
+    {
+      "path": "1.6/Defs/ThoughtDefs/Thought_Training.xml",
+      "bytes": 4740,
+      "sha256": "3820bd2d52261cf9680fc0441248d1614e36f18feaed68edb712116399763789"
+    },
+    {
+      "path": "1.6/Defs/TraitDefs/Trait_PE.xml",
+      "bytes": 521,
+      "sha256": "94f683852b336183d2e51e1aa899f18ab35cb8eb74f4321116f68f394366911a"
+    },
+    {
+      "path": "1.6/Defs/TraitDefs/Trait_SexSlave.xml",
+      "bytes": 925,
+      "sha256": "03dffa9bf94acb72ba2be095e9e20548c70031fd8cb0542280157c0f6da096cd"
+    },
+    {
+      "path": "1.6/Defs/WorkGiverDefs/WorkGiverDef.xml",
+      "bytes": 1527,
+      "sha256": "1fee62d2ae228e853b21cebc86b2c452964234b29df7c59149cc4fbb5cc54131"
+    },
+    {
+      "path": "1.6/Defs/WorkTypeDefs/WorkTypes.xml",
+      "bytes": 514,
+      "sha256": "309406e83fca975bd6a2872c7c719f77d3e467d7695dacd1611b97185bbe0256"
+    },
+    {
+      "path": "1.6/Languages/ChineseSimplified/DefInjected/AbilityDef/SSC_PetCatComfort.xml",
+      "bytes": 879,
+      "sha256": "46913d27f899cba44ec6fbb8b3a3ebd4fba3998740f82130f2e142975d63aba5"
+    },
+    {
+      "path": "1.6/Languages/ChineseSimplified/DefInjected/AbilityDef/SSC_PetDogTame.xml",
+      "bytes": 1237,
+      "sha256": "4a9a376f593fc2e52dcadee7e5e1aaa5a84b5c063ff209b503a418f5db95b7de"
+    },
+    {
+      "path": "1.6/Languages/ChineseSimplified/DefInjected/HediffDef/HediffOfAddiction.xml",
+      "bytes": 500,
+      "sha256": "c47d2f124dfecb23759cda1653c43017d9fb2f48c008778171693c19fd78b1bc"
+    },
+    {
+      "path": "1.6/Languages/ChineseSimplified/DefInjected/HediffDef/HediffOfBuff.xml",
+      "bytes": 1751,
+      "sha256": "680883a4d5b03e1b59713ca400d943aee8e99d6d5af76f8717460f1910ac4ad0"
+    },
+    {
+      "path": "1.6/Languages/ChineseSimplified/DefInjected/HediffDef/HediffOfPSEdited.xml",
+      "bytes": 1567,
+      "sha256": "8664808bac94dfe3c65a9e56b62350495695da7d5f68c576dc5376763628babf"
+    },
+    {
+      "path": "1.6/Languages/ChineseSimplified/DefInjected/HediffDef/SSC_AbilityToggles.xml",
+      "bytes": 521,
+      "sha256": "e40930eeadf8ee1931abe5e0d96ddaaae449bb2385fdd1d25ac3c834a6f46d8b"
+    },
+    {
+      "path": "1.6/Languages/ChineseSimplified/DefInjected/HediffDef/SSC_MasterProgression.xml",
+      "bytes": 1295,
+      "sha256": "17f2eb6f91e0cd5ef1b3d1a220eba7f9a3ac810eaaf191891c13171fdb3675c6"
+    },
+    {
+      "path": "1.6/Languages/ChineseSimplified/DefInjected/HediffDef/SSC_PetCatComfort.xml",
+      "bytes": 812,
+      "sha256": "fbb81db276be3d53adf9a7c5b6f9646712d82b9964e58a7963ad39019ecc0f09"
+    },
+    {
+      "path": "1.6/Languages/ChineseSimplified/DefInjected/HediffDef/SSC_PetDogTame.xml",
+      "bytes": 596,
+      "sha256": "3a200543c533624ea28b818aa05653233aa85db053fb5d2f1c96e87b7742377c"
+    },
+    {
+      "path": "1.6/Languages/ChineseSimplified/DefInjected/JobDef/JobDriver_SelfTraining.xml",
+      "bytes": 162,
+      "sha256": "31b5de4ef25fa1b9a27f3a6131e45508110ccf869cd930f98b434f80ee20ce07"
+    },
+    {
+      "path": "1.6/Languages/ChineseSimplified/DefInjected/JobDef/SSC_PetAffectionFollowupJobDefs.xml",
+      "bytes": 204,
+      "sha256": "7c7c9c8df04629315e9b814dbf9725c8124c218b960859142a4a1a0a177a2171"
+    },
+    {
+      "path": "1.6/Languages/ChineseSimplified/DefInjected/JobDef/SSC_PetAffectionJobDefs.xml",
+      "bytes": 175,
+      "sha256": "2a99cccc97a0040444c97e29106d55a9121e525d12d63a47e891dd1be3a2bc0c"
+    },
+    {
+      "path": "1.6/Languages/ChineseSimplified/DefInjected/JobDef/SSC_PetCatComfortJobDefs.xml",
+      "bytes": 281,
+      "sha256": "e905650f41794e2c1074a5c99f6e25a82c8ed5d4350d9d60e46d09f61b6e571a"
+    },
+    {
+      "path": "1.6/Languages/ChineseSimplified/DefInjected/JobDef/SSC_PetDogTameJobDefs.xml",
+      "bytes": 321,
+      "sha256": "6a5c7d99e53a685b5aa34951005ac749db7da1ca41beded7cc6649ddd830f5f3"
+    },
+    {
+      "path": "1.6/Languages/ChineseSimplified/DefInjected/ThingDef/SSC_Gun.xml",
+      "bytes": 391,
+      "sha256": "442566682550ae577164fe9f35821591200b16ae8d4c64294485c36770e677cb"
+    },
+    {
+      "path": "1.6/Languages/ChineseSimplified/DefInjected/ThingDef/SSC_MasterQualificationItem.xml",
+      "bytes": 1010,
+      "sha256": "2ec91e8d71e54b5b80cd1255c04c46a482be3bcf93beec2583e3b6285d379079"
+    },
+    {
+      "path": "1.6/Languages/ChineseSimplified/DefInjected/ThoughtDef/HediffOfBuff.xml",
+      "bytes": 2733,
+      "sha256": "f799fb6fbc17100a953be7707d9ce7d0cd0db9e26df3a144abb7dffa6ba7d58b"
+    },
+    {
+      "path": "1.6/Languages/ChineseSimplified/DefInjected/ThoughtDef/SSC_DesireInfestation.xml",
+      "bytes": 3164,
+      "sha256": "a400a94c22c93dbcc5a72fdaedf279424229d166850c3725c5189ceb0dc81857"
+    },
+    {
+      "path": "1.6/Languages/ChineseSimplified/DefInjected/ThoughtDef/SSC_PetCatComfortThoughts.xml",
+      "bytes": 356,
+      "sha256": "c90f4e0694777090258a7bed19ba3486a1f92b64f82d672cacc42c9c0e8bc022"
+    },
+    {
+      "path": "1.6/Languages/ChineseSimplified/DefInjected/ThoughtDef/SSC_SelfTrainingFeedback.xml",
+      "bytes": 5540,
+      "sha256": "bac7b07cb4be38abb6a7f9928a36b13716a7d169eca4086d18a0e41fd6addb1d"
+    },
+    {
+      "path": "1.6/Languages/ChineseSimplified/DefInjected/ThoughtDef/SSC_TrainerOfficerThoughts.xml",
+      "bytes": 1571,
+      "sha256": "88e9890a51d2bfe98a757c958d602a46719f42c6286ee5ae9ab7f605a917ecc2"
+    },
+    {
+      "path": "1.6/Languages/ChineseSimplified/DefInjected/ThoughtDef/SSC_TrainerTrainingMemories.xml",
+      "bytes": 5500,
+      "sha256": "b7f954eea66b387a8ddc2d26874e3f1eb76355a2b8005653f5de2454f79d1ba7"
+    },
+    {
+      "path": "1.6/Languages/ChineseSimplified/DefInjected/ThoughtDef/SSC_TrainingOpinionMemory.xml",
+      "bytes": 1337,
+      "sha256": "e889791f57b05cfa0ec9fedb01aa78c37a90a8125f6e26bfb6af2b32db07c119"
+    },
+    {
+      "path": "1.6/Languages/ChineseSimplified/DefInjected/ThoughtDef/Thought_SharedBedWithTrainer.xml",
+      "bytes": 2069,
+      "sha256": "7a6bd342a2dadcfd5605aa8234ee8a5b6ae36278d1b140d23ee131167be0ca97"
+    },
+    {
+      "path": "1.6/Languages/ChineseSimplified/Keyed/SSC_AbilityToggles.xml",
+      "bytes": 452,
+      "sha256": "8ddcb6194c981f5b751e8cc78b4862626736082c43558dbc6b69d3cbe94c40e8"
+    },
+    {
+      "path": "1.6/Languages/ChineseSimplified/Keyed/SSC_BondRelations.xml",
+      "bytes": 349,
+      "sha256": "adb041e51efa13d20d88310648532f85beae95b6d80f827a15ab0cb11f8324e8"
+    },
+    {
+      "path": "1.6/Languages/ChineseSimplified/Keyed/SSC_CombatantSpecialization.xml",
+      "bytes": 824,
+      "sha256": "703f32af4c262d473315459734b8f4a0a068ec8e719628d27db73aa923acc8e7"
+    },
+    {
+      "path": "1.6/Languages/ChineseSimplified/Keyed/SSC_CombatOverdrive.xml",
+      "bytes": 180,
+      "sha256": "706b280f15fd2892edefff97c2043287af2b9960fd058f58a4ef2f8316aaaaf3"
+    },
+    {
+      "path": "1.6/Languages/ChineseSimplified/Keyed/SSC_CorruptionDecaySettings.xml",
+      "bytes": 706,
+      "sha256": "dbc3f73a133d92d6fafc8b55b30369dfb9ea9622dc60a82b8452ee25228182cd"
+    },
+    {
+      "path": "1.6/Languages/ChineseSimplified/Keyed/SSC_Debug.xml",
+      "bytes": 408,
+      "sha256": "9bddaba669b930277268106d64b53b019fd3bca9f5c0cccd3296c21e0f136817"
+    },
+    {
+      "path": "1.6/Languages/ChineseSimplified/Keyed/SSC_Diagnostics.xml",
+      "bytes": 1834,
+      "sha256": "b548463a0887f215e98d3dc9645f982fa0d32cf8fd518b5abac7f51a85921561"
+    },
+    {
+      "path": "1.6/Languages/ChineseSimplified/Keyed/SSC_Identity.xml",
+      "bytes": 867,
+      "sha256": "117ebdb628a98a76138ff7c6360a841f5de35d36d97a2998427e04e760d008c9"
+    },
+    {
+      "path": "1.6/Languages/ChineseSimplified/Keyed/SSC_Keys.xml",
+      "bytes": 23380,
+      "sha256": "91a0ae5c24718d741a35b3e5a70b27e00709bb4ee10eca553d93914c98654ccd"
+    },
+    {
+      "path": "1.6/Languages/ChineseSimplified/Keyed/SSC_MasterEntry.xml",
+      "bytes": 1434,
+      "sha256": "ecf00caa2a946ca7ce9f1b2dbf99fef42ba78357d750ccc63c4d6f3b2a627f1e"
+    },
+    {
+      "path": "1.6/Languages/ChineseSimplified/Keyed/SSC_MasterProgression.xml",
+      "bytes": 1599,
+      "sha256": "e8fbf08482f667f4c412295310014de8286450372ab2da10aeb5f0eb50a27f3e"
+    },
+    {
+      "path": "1.6/Languages/ChineseSimplified/Keyed/SSC_MasterQualification.xml",
+      "bytes": 2310,
+      "sha256": "95332806a076fdc1ecd196380597fbcadfbdb04c73c45d4784a30da6b29e9b9b"
+    },
+    {
+      "path": "1.6/Languages/ChineseSimplified/Keyed/SSC_PetAffectionFollowup.xml",
+      "bytes": 212,
+      "sha256": "e04b663e09139c40dfd709da03dd8f4878d574ead5319d9aa6017c72f2eea0bb"
+    },
+    {
+      "path": "1.6/Languages/ChineseSimplified/Keyed/SSC_PetCatComfort.xml",
+      "bytes": 1182,
+      "sha256": "4ba8d31f8001cdd2d4c8dc6b6c3658e4356926081dc0aef9d1a73638fa73a8ad"
+    },
+    {
+      "path": "1.6/Languages/ChineseSimplified/Keyed/SSC_PetDogTame.xml",
+      "bytes": 1525,
+      "sha256": "6bbc19a4bdce2e3a5d53f3be1580653216c7c0d3526db1eff37a33b1f2906537"
+    },
+    {
+      "path": "1.6/Languages/ChineseSimplified/Keyed/SSC_Pna.xml",
+      "bytes": 1683,
+      "sha256": "8d20017ea0a0893f801b1438d38aabb98c12e435e21acb3f29b93ca0abb90fa3"
+    },
+    {
+      "path": "1.6/Languages/ChineseSimplified/Keyed/SSC_Restrictions.xml",
+      "bytes": 14853,
+      "sha256": "eb3f0d992749a1fead488a8aca9c9de437c9b90f59d9674c4b82ecfe5a0e54ee"
+    },
+    {
+      "path": "1.6/Languages/ChineseSimplified/Keyed/SSC_RimTalkStatus.xml",
+      "bytes": 165,
+      "sha256": "37d7fdd598db7e0621bcfdf2a8b15eef09b550c98a1a1e6f3e95196d93fd2b38"
+    },
+    {
+      "path": "1.6/Languages/ChineseSimplified/Keyed/SSC_RitualSelection.xml",
+      "bytes": 1416,
+      "sha256": "572a927041e5f2ba5c1ade719eb944e632e69b9de678ad3c1bfccbde20fa9f70"
+    },
+    {
+      "path": "1.6/Languages/ChineseSimplified/Keyed/SSC_Schedule.xml",
+      "bytes": 1295,
+      "sha256": "2adc573507a8d8ee451e3844c2a4de960a371fe29f428a65f16da54a1c35bd5f"
+    },
+    {
+      "path": "1.6/Languages/ChineseSimplified/Keyed/SSC_SelfTraining.xml",
+      "bytes": 1153,
+      "sha256": "cc10a600f80c5e2be00165a2cd1124a6f3c42e92ca7708cacfb9be5457396c02"
+    },
+    {
+      "path": "1.6/Languages/ChineseSimplified/Keyed/SSC_SelfTrainingFeedback.xml",
+      "bytes": 2111,
+      "sha256": "c37fd978521d641b73f2b5d7635e42bb9c46ba2d30caa876d434057c6214020f"
+    },
+    {
+      "path": "1.6/Languages/ChineseSimplified/Keyed/SSC_Settings.xml",
+      "bytes": 4400,
+      "sha256": "d63f8a9b1e20968b44a48f84d15f029d7a95dabf0a33781bd0780b699b5fec21"
+    },
+    {
+      "path": "1.6/Languages/ChineseSimplified/Keyed/SSC_SharedBed.xml",
+      "bytes": 1731,
+      "sha256": "708b0d0cbf2669978441622fa1d1bd5c42456dde779c1dfd85fa7cf49858e915"
+    },
+    {
+      "path": "1.6/Languages/ChineseSimplified/Keyed/SSC_Specialization.xml",
+      "bytes": 3233,
+      "sha256": "a52623ccd9b622b992658108743e52468a0a1ad3c29aa53e326d3027161c79da"
+    },
+    {
+      "path": "1.6/Languages/ChineseSimplified/Keyed/SSC_TrainerIdentity.xml",
+      "bytes": 4064,
+      "sha256": "7e69e1d928b64ec1bad675c50d868c62d19f95a3768a48c22e10cde84b27ce75"
+    },
+    {
+      "path": "1.6/Languages/ChineseSimplified/Keyed/SSC_TrainerTrainingMemory.xml",
+      "bytes": 1634,
+      "sha256": "90e13990ab01ee6958079f014162b2bd352c01ee6ab319da49820b65d2248276"
+    },
+    {
+      "path": "1.6/Languages/ChineseSimplified/Keyed/SSC_TrainingIdentity.xml",
+      "bytes": 1432,
+      "sha256": "b064af3755ec9660f4cf0a130bb6836e18015059c02c2cbc47073bac439500ba"
+    },
+    {
+      "path": "1.6/Languages/ChineseSimplified/Keyed/SSC_TrainingOpinionMemory.xml",
+      "bytes": 1238,
+      "sha256": "0c28d2ab3c6bf0e21cc32361854fa684b6ade478e8933996d32161d805cbca44"
+    },
+    {
+      "path": "1.6/Languages/ChineseSimplified/Keyed/SSC_TrainingOutcome.xml",
+      "bytes": 172,
+      "sha256": "43a0ca89a1e0121119b86e8176497894bf1e20cdfa4ff9479635bfc4f5ea20ad"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/DefInjected/AbilityDef/EroticWord.xml",
+      "bytes": 316,
+      "sha256": "834dae60da6cde305825fe5cbd8a9f9ef7321e128b215db56e92e4a464698a38"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/DefInjected/AbilityDef/SSC_CombatOverdrive.xml",
+      "bytes": 392,
+      "sha256": "2a990348ad504cc2a01e0a7e606ddadeff4fd2ab98e7944e92da5bb9cb6f97b5"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/DefInjected/AbilityDef/SSC_PetCatComfort.xml",
+      "bytes": 879,
+      "sha256": "4e5dccf4dc9f77854467eece883420259980e8a081d961b783f1c0ff19c8f249"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/DefInjected/AbilityDef/SSC_PetDogTame.xml",
+      "bytes": 1240,
+      "sha256": "82cfcb4ebc8298913549f4c004a1342a46919b04da09394652cb818401c5662a"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/DefInjected/ChemicalDef/ChemicalDef.xml",
+      "bytes": 137,
+      "sha256": "b6c4a9be0a880bc9dc4aecc8ca0fc9e4f87dbf245018fc106afca6f1b3bec274"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/DefInjected/DamageDef/DemageDef_Gun.xml",
+      "bytes": 245,
+      "sha256": "82723941e5ae940dd91173eb16404df458cc0328f34bdf7dfa10f23bff884b0a"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/DefInjected/HediffDef/HediffOfAddiction.xml",
+      "bytes": 566,
+      "sha256": "3ae08d4bf82c3a17e5f2c98085ee1112110b94b3e38d197a3ffeadabc160bd92"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/DefInjected/HediffDef/HediffOfBuff.xml",
+      "bytes": 4051,
+      "sha256": "5a0f1e325c5c6633185314a60a0b11f041415b07e4e983a14327c7f5c4d9cb0d"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/DefInjected/HediffDef/HediffOfPE.xml",
+      "bytes": 1212,
+      "sha256": "946739ec5b0e19943e40dbd75b4723aa8ccd84ef18319540a3887064daf8d910"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/DefInjected/HediffDef/HediffOfPSEdited.xml",
+      "bytes": 1564,
+      "sha256": "4c2905e5bdd2a693109c4797468be35f3ea866548dc9a4e596ad5f78c5f31277"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/DefInjected/HediffDef/HediffOfSexSlave.xml",
+      "bytes": 1000,
+      "sha256": "de9f84d476d12522a3c38cac5bb3b7272fa2bccb6d04e960bcd13c287cd31c49"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/DefInjected/HediffDef/HediffOfTrain.xml",
+      "bytes": 4586,
+      "sha256": "c7d87ad4ac9d5b927c43625eda4d3ac2efb5fa3bb8b9a148e091be98de89781b"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/DefInjected/HediffDef/Hediffs_Gelatinization.xml",
+      "bytes": 2187,
+      "sha256": "37611c77bb46a01e1a568b6ac244d3670bb603b94da8757fcc316f7d2a341a4b"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/DefInjected/HediffDef/SSC_AbilityToggles.xml",
+      "bytes": 521,
+      "sha256": "5384baca2ca74f2c37f14f3fe7fc8bde64c5157716015a98ec5dbbabf09f62ee"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/DefInjected/HediffDef/SSC_HediffDefs_CombatantSpecialization.xml",
+      "bytes": 1644,
+      "sha256": "f2ee35ddc30e04b862fb7f3e2a214d132c330e0db720c64e0f515e0b25b1e39c"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/DefInjected/HediffDef/SSC_HediffDefs_PetSpecializations.xml",
+      "bytes": 3504,
+      "sha256": "0c6b61eda1ad452b9f689fb91aa9ca694af4de92ae97193fb2b1dd01c4db403e"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/DefInjected/HediffDef/SSC_HediffDefs_TrainerSpecialization.xml",
+      "bytes": 1422,
+      "sha256": "5ec5a23da3661e3b0e26813571798ba5eb398eccd8027b2f0e6cb2563219ad25"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/DefInjected/HediffDef/SSC_MasterProgression.xml",
+      "bytes": 1295,
+      "sha256": "61c7b77efdcad2132a531f643aab14ca186b7ef5f2a24aa9350699b66ff4042b"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/DefInjected/HediffDef/SSC_PetCatComfort.xml",
+      "bytes": 417,
+      "sha256": "92acd50c4a699e8ee2b5db39b78b9da94572edd6b9ec20b3711e2951643071ea"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/DefInjected/JobDef/JobDef_InsertPersonality.xml",
+      "bytes": 199,
+      "sha256": "0ef0f3f7c7f4f99dbe4291ef87aceea7246d781c2bf4abe3627d27b5a7c57af6"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/DefInjected/JobDef/JobDriver_PE.xml",
+      "bytes": 169,
+      "sha256": "42073942d12f6b08a3da2d76838b912cf02978daebebbce9d87f879f799d8db5"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/DefInjected/JobDef/JobDriver_RitualTraining.xml",
+      "bytes": 167,
+      "sha256": "9f081f087184693c1db1da9ccc7682e93c8ffc31bd9d7ce461d86ba4e4e3d791"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/DefInjected/JobDef/JobDriver_SelfTraining.xml",
+      "bytes": 162,
+      "sha256": "45e3becf32ca03bb390ab0dfe93ff016f6bdd03c800d174297cf5ea53ebe4bce"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/DefInjected/JobDef/JobDriver_Training.xml",
+      "bytes": 162,
+      "sha256": "f1121a5bcfaeee9169d6793356f774c8731280dfacff334d27df42b5fc63153f"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/DefInjected/JobDef/JobDriver_TrainingReceiver.xml",
+      "bytes": 155,
+      "sha256": "8d8c260ff729437ccb4c177fe624ce8372ff21fbe27b3f5356caf99f9f80f41a"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/DefInjected/JobDef/SSC_PetAffectionFollowupJobDefs.xml",
+      "bytes": 204,
+      "sha256": "ca4c4b55bf7a6511d621d4169294f0adeafafe59d1f90b62c93e1e9abe231fc4"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/DefInjected/JobDef/SSC_PetAffectionJobDefs.xml",
+      "bytes": 175,
+      "sha256": "71d28a756d2f0cb7c2d9006bdf349a7186202f45ed79d73e7f98b5979f83b915"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/DefInjected/JobDef/SSC_PetCatComfortJobDefs.xml",
+      "bytes": 278,
+      "sha256": "fd3e71643f7bb6399d908b19ab427d1a53820533a007adb41b32a07f4fd5a8a0"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/DefInjected/JobDef/SSC_PetDogTameJobDefs.xml",
+      "bytes": 321,
+      "sha256": "6e5b3a257a21e48cd9ec94b7947dc65f3921dbe53bc8eb4c542853e5a9fc8fee"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/DefInjected/NeedDef/NeedDefs.xml",
+      "bytes": 485,
+      "sha256": "a4eef38fa4981eda60d17fce95baf061136e633ddf837fa48316791d2713b528"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/DefInjected/PawnRelationDef/PawnRelationDef.xml",
+      "bytes": 130,
+      "sha256": "9a1c96a42fb81882e58e89b287610953812297bc21617670b50cbff5645c0dbf"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/DefInjected/PreceptDef/Precepts_Ritual.xml",
+      "bytes": 350,
+      "sha256": "5e2ae22d3e27a4f5506dedd9509af903add84aa274d95c9150973fea68226e07"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/DefInjected/RecipeDef/Recipe_Gelatinization.xml",
+      "bytes": 1040,
+      "sha256": "2a13853b61543308306a5d5e22937f6d72c4d0303e85088400a4657d1019a39b"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/DefInjected/RecipeDef/RecipeDef_PNA_PLUS.xml",
+      "bytes": 758,
+      "sha256": "32eab347a63a03abdd3a484a340c60930bc68691fda4101e5432b8928947c6db"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/DefInjected/RecipeDef/RecipeDef_PSEdit.xml",
+      "bytes": 3701,
+      "sha256": "0a3bc4377f10ec79d382a0abd21cdd22fb5cf8a926615d8215523441021b899d"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/DefInjected/RecipeDef/RecipeDef_Surgery_DCMtF.xml",
+      "bytes": 460,
+      "sha256": "82232c18fb13a9aa2b73e68eaa639dc14eb881d2d643c2fafbd32eefb7557f4d"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/DefInjected/RecipeDef/RecipeDef_Surgery_PE.xml",
+      "bytes": 415,
+      "sha256": "4c6397111dbb236ed439d8fd612e703e0e60bffbba2fae8ac47a24ace039f29c"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/DefInjected/ResearchProjectDef/ResearchProjectDef.xml",
+      "bytes": 8445,
+      "sha256": "3b7bd6254900ebda42d4c5e42e2c126c165b3a6c99d992bf64135f11ef305e69"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/DefInjected/ResearchTabDef/ResearchTabDef.xml",
+      "bytes": 140,
+      "sha256": "fa4470148c570ac8bc984c7d3d2de83a53f64363ba758e00c74142c92b4868e5"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/DefInjected/RitualBehaviorDef/Ritual_Behavior.xml",
+      "bytes": 260,
+      "sha256": "c6b8a8809c4e31a7f863067ace25c1c03705f3398fcab1af0614446224b5be5d"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/DefInjected/RitualOutcomeEffectDef/Ritual_Outcome.xml",
+      "bytes": 1934,
+      "sha256": "6a217dc96a9b9241745ad82d331be98abae5ade2465ffb2b7f4a356c846a7daa"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/DefInjected/ThingDef/Nanofluid.xml",
+      "bytes": 768,
+      "sha256": "e8ec67ede6838e7f0c3abc274576f95764fcb6fb375cedf7bcb7bfd9622e4706"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/DefInjected/ThingDef/SexSlave_EvilFallOutfit.xml",
+      "bytes": 550,
+      "sha256": "c63d3818413456841accc7ff47e0850644ba8320b4f7d2e990bb7f0b5c5eeb50"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/DefInjected/ThingDef/SexSlaveCloth.xml",
+      "bytes": 355,
+      "sha256": "d0762c4847099d2169dc9a83f07c10f672054ec451c1adcfc3efd907bff031c8"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/DefInjected/ThingDef/SSC_Gun.xml",
+      "bytes": 448,
+      "sha256": "f0876c1af5bf800a000c1ad38597f847b20aef47500e2fc1d319e07531626bd0"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/DefInjected/ThingDef/SSC_MasterQualificationItem.xml",
+      "bytes": 1004,
+      "sha256": "adea2ddced228e238f5d1a4b3f0e761cc0a0dafd1a19a97883eff0ed4a96b459"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/DefInjected/ThingDef/SSC_PS.xml",
+      "bytes": 2769,
+      "sha256": "8e6d983ae465c98577f6951dcf94a496093b7818e6e6cdfeaa0edfab47c39804"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/DefInjected/ThoughtDef/HediffOfAddiction.xml",
+      "bytes": 348,
+      "sha256": "71ebc280eccfbf420906decc895204d3aada5614f752a17f477c0074f295c2ab"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/DefInjected/ThoughtDef/HediffOfBuff.xml",
+      "bytes": 2733,
+      "sha256": "6a26ffb74b3734e665570f06354eaaf54f25d857e12b91299b4fc319585515e0"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/DefInjected/ThoughtDef/HediffOfPE.xml",
+      "bytes": 1474,
+      "sha256": "c71221d306c973b71c24e4f0726b67c3079c3f7e481fb4ac2cc0187a5743b4e4"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/DefInjected/ThoughtDef/HediffOfSexSlave.xml",
+      "bytes": 1934,
+      "sha256": "6a49486dbccd434b46cd2bc8cfebaed19fe5572358e4cf48d20579d29315bbfb"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/DefInjected/ThoughtDef/RecipeDef_Surgery_DCMtF.xml",
+      "bytes": 372,
+      "sha256": "6bdfa4e3b731e9b7438abe71064e58ba1197f9381185c9c81163a0ab68f17e84"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/DefInjected/ThoughtDef/SSC_DesireInfestation.xml",
+      "bytes": 3164,
+      "sha256": "6bbfb69f5163365b36d7a28cb2c391fcb89400a11576613daa7f3af31d2cf6b0"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/DefInjected/ThoughtDef/SSC_PetAffectionThoughts.xml",
+      "bytes": 326,
+      "sha256": "f1ff4d4f6f1b899b12bea6d6970543e7d642423a55c90d92011f6cb237e314bd"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/DefInjected/ThoughtDef/SSC_PetCatComfortThoughts.xml",
+      "bytes": 356,
+      "sha256": "53321e8c386a151045b9e1c9b1ab6d71be0bf6861d47436823864024a84e4715"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/DefInjected/ThoughtDef/SSC_SelfTrainingFeedback.xml",
+      "bytes": 5537,
+      "sha256": "34ddf3e4a019b07e9ef0f2ed48cbc8c031f0bc6f4954f2071cf76b5e4cf38dc2"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/DefInjected/ThoughtDef/SSC_TrainerOfficerThoughts.xml",
+      "bytes": 1571,
+      "sha256": "74c0aac12de63ce0aaf44cf2c89ed05ee263540b0312c5f733d203e01d189b19"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/DefInjected/ThoughtDef/SSC_TrainerTrainingMemories.xml",
+      "bytes": 5503,
+      "sha256": "8a0d3ab6fbe1aab1d2178bee3b82ef5382b9e2fba21ea77df48b6261ac18a89d"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/DefInjected/ThoughtDef/SSC_TrainingOpinionMemory.xml",
+      "bytes": 1336,
+      "sha256": "2e02f0793851ef5ead2412f56417a5ddc786a4a40270f061be7cac0ba4c58094"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/DefInjected/ThoughtDef/Thought_CorruptionRape.xml",
+      "bytes": 1508,
+      "sha256": "ed42afae5e2e0a72fc545649be82e9dfb4d2d686af5ad87ec8b238025bd2b9f8"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/DefInjected/ThoughtDef/Thought_Ritual.xml",
+      "bytes": 1013,
+      "sha256": "afb434c90222ee77dbfbe6b218bc1a28b328004acf94a927692686f58d3c194b"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/DefInjected/ThoughtDef/Thought_SharedBed.xml",
+      "bytes": 2066,
+      "sha256": "06d832d731de0926362273023458e2af4637c87078212ce939d6f87f733cac83"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/DefInjected/ThoughtDef/Thought_SharedBedWithTrainer.xml",
+      "bytes": 1942,
+      "sha256": "776ccc556723cf4c40fde6ea05cf16d92efa839c927bb2e53501bfb275981c07"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/DefInjected/ThoughtDef/Thought_Training.xml",
+      "bytes": 2897,
+      "sha256": "cc0b2c45c528c520a69175b07f1953160f854b786446c6f9b0d3eb56af190bec"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/DefInjected/TraitDef/Trait_PE.xml",
+      "bytes": 403,
+      "sha256": "d7dc7cccef47d5eb5543e891cbf712432f6f849a5b30db6ba01082893676aa4f"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/DefInjected/TraitDef/Trait_SexSlave.xml",
+      "bytes": 1242,
+      "sha256": "b3265aa76bd5f46b92ed10c1f0c311c3d4d9047072961a01c40180c34c738294"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/DefInjected/WorkGiverDef/WorkGiverDef.xml",
+      "bytes": 854,
+      "sha256": "b52f98d1bf6949f3b253e94a58ec0f3a8cfb93d148d9dda6f017239f79e34cc2"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/DefInjected/WorkTypeDef/WorkTypes.xml",
+      "bytes": 205,
+      "sha256": "1ff37b796635f7abdc58defbf1c1c3161f94b6e7581b6e753b18577de3272844"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/Keyed/SSC_AbilityToggles.xml",
+      "bytes": 452,
+      "sha256": "232f0f93958754062abba73240baf693fa61f03c1b850847230e509838b2a4c1"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/Keyed/SSC_BondRelations.xml",
+      "bytes": 349,
+      "sha256": "adb041e51efa13d20d88310648532f85beae95b6d80f827a15ab0cb11f8324e8"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/Keyed/SSC_CombatantSpecialization.xml",
+      "bytes": 824,
+      "sha256": "de5371fd0b0ef83fe1ef8d6ddcc139a28964b1523cff92cd1ce5e8453297d4f4"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/Keyed/SSC_CombatOverdrive.xml",
+      "bytes": 180,
+      "sha256": "d0e91f8e6832574bb01fbda9e654bc894fd1fd37de51a90060515c75e5286554"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/Keyed/SSC_CorruptionDecaySettings.xml",
+      "bytes": 706,
+      "sha256": "87ee70912da58945a60a663bf8de8d05a8fb94e51fbdb3e3a4d55ae239056768"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/Keyed/SSC_Debug.xml",
+      "bytes": 408,
+      "sha256": "0e82a6d1504d458bae36f6348e7a07b02551df7650f0ac825f2d8af5438744ce"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/Keyed/SSC_Diagnostics.xml",
+      "bytes": 1831,
+      "sha256": "ed7085840466b665794e6ef689190d897b2a634d8d3a049f52a1dd1095805450"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/Keyed/SSC_Identity.xml",
+      "bytes": 867,
+      "sha256": "77cb96b20a912666933b5dfc05214b9d5c403678bbc599c4dbc78ecae049824b"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/Keyed/SSC_Keys.xml",
+      "bytes": 22368,
+      "sha256": "389622b79c2985011ce73bdfb62f01619fca4f8658e6d27394f82049f11c7af2"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/Keyed/SSC_MasterEntry.xml",
+      "bytes": 1431,
+      "sha256": "b708098ad711fef2a44e6e03a0a8d1770de7f7d05f62ceb089cf8442d3cd15f3"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/Keyed/SSC_MasterProgression.xml",
+      "bytes": 1599,
+      "sha256": "8b2b04e77a11569b27663e4f4de2482773ae75a3da3b26339621bbeb515f1541"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/Keyed/SSC_MasterQualification.xml",
+      "bytes": 2316,
+      "sha256": "4b8fda70f1d8e6ed2cb857b8b40ae20460413525a4293ee5e8bf286379f6b09f"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/Keyed/SSC_PetAffectionFollowup.xml",
+      "bytes": 212,
+      "sha256": "0f08adebefbea7eedae221499c0d6cd8977989e5893c7e0d6c5c447d40ec7af1"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/Keyed/SSC_PetCatComfort.xml",
+      "bytes": 1182,
+      "sha256": "ef193dc96669d6d0016a04617b0cd0993e94a944865adc92d2c9dcc8c98c4443"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/Keyed/SSC_PetDogTame.xml",
+      "bytes": 1525,
+      "sha256": "0c2b267e0b4903ebfb65c64dc0a9122884d50146f8b04c11c2edc38c07e8c567"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/Keyed/SSC_Pna.xml",
+      "bytes": 1683,
+      "sha256": "b6c5f762caa838e2ca8aa06387d17b596694d243e2894a2d6eab7599518cba3d"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/Keyed/SSC_Restrictions.xml",
+      "bytes": 14853,
+      "sha256": "85dbe31e7035d7500904ce02a9a04398990449647a0a0200c9e47b77269ac560"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/Keyed/SSC_RimTalkStatus.xml",
+      "bytes": 171,
+      "sha256": "3fc040d4c232bb00ea00e8dccc0ad375e1c326c2b73552f1f3212e9221dd7b19"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/Keyed/SSC_RitualSelection.xml",
+      "bytes": 1416,
+      "sha256": "ed1fcb7df9e2d2df237e49c418ccc7335c05e7bf349dc7a5c3b503c6485201b4"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/Keyed/SSC_Schedule.xml",
+      "bytes": 1308,
+      "sha256": "d885c3b70ba8ca1beb3a9098b881a4b02a116d7611f61c2bee0ae6f852d6acbd"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/Keyed/SSC_SelfTraining.xml",
+      "bytes": 1150,
+      "sha256": "6ae51469affd2b8c36ada7d4136058014d24e716e61621b03cd85a7dd7ef1d5b"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/Keyed/SSC_SelfTrainingFeedback.xml",
+      "bytes": 2111,
+      "sha256": "ee1eb7505a564307894921f1839ed3d27ec9ac277840813e9472c1fb2f38c8f4"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/Keyed/SSC_Settings.xml",
+      "bytes": 4387,
+      "sha256": "7223902a0b2caa2f97ae1267bcb1344a1fd657671a89ca2739bbe5777f6f1a9c"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/Keyed/SSC_SharedBed.xml",
+      "bytes": 1731,
+      "sha256": "c3a52048b98e70f8b12131ee03f6d07be53d224a4aee7587b9fbd532fbecaa32"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/Keyed/SSC_Specialization.xml",
+      "bytes": 3224,
+      "sha256": "c20749b5aa59f4f8ce4f38ca3caecbded25b88def1f5812f9f2d0825270ae380"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/Keyed/SSC_TrainerIdentity.xml",
+      "bytes": 4067,
+      "sha256": "daa979cfe0d4b182dae607c8459c3cca19c20f62cfaf8713328e4c3a76e87647"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/Keyed/SSC_TrainerTrainingMemory.xml",
+      "bytes": 1634,
+      "sha256": "dbf504ef1bd91b9a0a201a8bf1df0630c737e3c93edd53d6b9ffced3982627db"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/Keyed/SSC_TrainingIdentity.xml",
+      "bytes": 1432,
+      "sha256": "582598fec08dc7dc8fea9d0c56134eed6a8b531d7c958b447afad892b437c16b"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/Keyed/SSC_TrainingOpinionMemory.xml",
+      "bytes": 1247,
+      "sha256": "7c53a81cfe6ce5f61529143b4120663abdc2a8f3e0bb9d02905c337e93db5c26"
+    },
+    {
+      "path": "1.6/Languages/ChineseTraditional/Keyed/SSC_TrainingOutcome.xml",
+      "bytes": 173,
+      "sha256": "db0416544fd342cd64ec501d5182339b94a62811c51f9cbdaf9267e4af9fd177"
+    },
+    {
+      "path": "1.6/Languages/English/DefInjected/AbilityDef/EroticWord.xml",
+      "bytes": 323,
+      "sha256": "bc4b416e877561965fa031e41a67781ca2c50769356d4011a59fce6dceca8116"
+    },
+    {
+      "path": "1.6/Languages/English/DefInjected/AbilityDef/SSC_CombatOverdrive.xml",
+      "bytes": 417,
+      "sha256": "315f87c55a8bdb6b3a6ab69cd689fb66048431073e4ca4ca433aee87944208e2"
+    },
+    {
+      "path": "1.6/Languages/English/DefInjected/AbilityDef/SSC_PetCatComfort.xml",
+      "bytes": 972,
+      "sha256": "c0d4fc09ac844b785084a52e78561c3b8212b592737e5e50b324ca49fa3ab11f"
+    },
+    {
+      "path": "1.6/Languages/English/DefInjected/AbilityDef/SSC_PetDogTame.xml",
+      "bytes": 1533,
+      "sha256": "3cf94c10fc3efe4f4acc1be67e11bd7da89e29c03c44ddbbc30ca9605dcc7942"
+    },
+    {
+      "path": "1.6/Languages/English/DefInjected/ChemicalDef/ChemicalDef.xml",
+      "bytes": 145,
+      "sha256": "ea12cdd8eda6b682d74631db8cd976e6d3e1da36bfca05561090e0e41374b171"
+    },
+    {
+      "path": "1.6/Languages/English/DefInjected/DamageDef/DemageDef_Gun.xml",
+      "bytes": 246,
+      "sha256": "7fdeed05b1c8e2f48b37aa08b97f45824f7f4b36b274826dc5f78da343c397b9"
+    },
+    {
+      "path": "1.6/Languages/English/DefInjected/HediffDef/HediffOfAddiction.xml",
+      "bytes": 621,
+      "sha256": "fac2b25a1f4812ab77a7c246013bab1513b7d81d468ef7c3c90b48c441874f97"
+    },
+    {
+      "path": "1.6/Languages/English/DefInjected/HediffDef/HediffOfBuff.xml",
+      "bytes": 4384,
+      "sha256": "5153cc5074ad8b5ba2a6deaa8774b74cd2c67181dbcbb2032d516a06d42d9e18"
+    },
+    {
+      "path": "1.6/Languages/English/DefInjected/HediffDef/HediffOfPE.xml",
+      "bytes": 1339,
+      "sha256": "edcc421f72a7cbaaa080f21a7102aea18e77902caf5ffa0c3ec283d783218270"
+    },
+    {
+      "path": "1.6/Languages/English/DefInjected/HediffDef/HediffOfPSEdited.xml",
+      "bytes": 1698,
+      "sha256": "9c3ceee3a47b58c63ca3a6cffb17c8b3535fc3f7b282a914eb3f36df6500de53"
+    },
+    {
+      "path": "1.6/Languages/English/DefInjected/HediffDef/HediffOfSexSlave.xml",
+      "bytes": 1038,
+      "sha256": "a843e9f56d025c6f1f003342214dbe0cf45f0e5388e6aee436d4c11bed48c8e0"
+    },
+    {
+      "path": "1.6/Languages/English/DefInjected/HediffDef/HediffOfTrain.xml",
+      "bytes": 4860,
+      "sha256": "4adc7abd7a37d6a350c27fe758120d5d41f8a3b55c4a332c6c372a552e528c3c"
+    },
+    {
+      "path": "1.6/Languages/English/DefInjected/HediffDef/Hediffs_Gelatinization.xml",
+      "bytes": 2366,
+      "sha256": "eceae389fa0e67f4045ffd0e876f2c5c611fd226bf0cdec44f5514893d3aa224"
+    },
+    {
+      "path": "1.6/Languages/English/DefInjected/HediffDef/SSC_AbilityToggles.xml",
+      "bytes": 597,
+      "sha256": "bd768719eb6a593c54b214920e8203968c275ceeca700ebce000f432e1ae38ee"
+    },
+    {
+      "path": "1.6/Languages/English/DefInjected/HediffDef/SSC_HediffDefs_CombatantSpecialization.xml",
+      "bytes": 1809,
+      "sha256": "ea6cad31f43389add29339d1c361fd7b50602659c4dff947d9586aa8571756e4"
+    },
+    {
+      "path": "1.6/Languages/English/DefInjected/HediffDef/SSC_HediffDefs_PetSpecializations.xml",
+      "bytes": 3790,
+      "sha256": "572de5b3e3afeba3e85ebe2b47cd5571e5c2a673c19e4aebb7b2b71432c3355e"
+    },
+    {
+      "path": "1.6/Languages/English/DefInjected/HediffDef/SSC_HediffDefs_TrainerSpecialization.xml",
+      "bytes": 1621,
+      "sha256": "4ce007ae986b6725dc23264b61ec9e0db7aa580cbadc6ce55175425d5478722d"
+    },
+    {
+      "path": "1.6/Languages/English/DefInjected/HediffDef/SSC_MasterProgression.xml",
+      "bytes": 1370,
+      "sha256": "3a443116ee1fb30998a999b0147a0020e1323353f4486bcf85801d6a3f193661"
+    },
+    {
+      "path": "1.6/Languages/English/DefInjected/HediffDef/SSC_PetCatComfort.xml",
+      "bytes": 426,
+      "sha256": "446cb738dde810a13943ecf4ce22cc8ae87083dbc207fd6023fb8e88879830a6"
+    },
+    {
+      "path": "1.6/Languages/English/DefInjected/JobDef/JobDef_InsertPersonality.xml",
+      "bytes": 196,
+      "sha256": "d5f0c671bc644039e7782eeece012d29fb7d65f79a5c98f69df4934ec9d50db4"
+    },
+    {
+      "path": "1.6/Languages/English/DefInjected/JobDef/JobDriver_PE.xml",
+      "bytes": 171,
+      "sha256": "49440a512ff6bf8bdb05eceeac8d0e87b417f92d06e5aa44a15edcdf570067e9"
+    },
+    {
+      "path": "1.6/Languages/English/DefInjected/JobDef/JobDriver_RitualTraining.xml",
+      "bytes": 162,
+      "sha256": "705464c87ccd57b9f5a4612076aaa261d0cd1392e1c1be591d3be7bef96e7bcc"
+    },
+    {
+      "path": "1.6/Languages/English/DefInjected/JobDef/JobDriver_Training.xml",
+      "bytes": 165,
+      "sha256": "493f5ddaab3f389ac4ec581fe50f5cf4503fdb22bb4bd618780c607a83529153"
+    },
+    {
+      "path": "1.6/Languages/English/DefInjected/JobDef/JobDriver_TrainingReceiver.xml",
+      "bytes": 177,
+      "sha256": "cc8a89d181b646d1af5c49c1eb6eaba67738b896988e6adfebe3bf85800fb70a"
+    },
+    {
+      "path": "1.6/Languages/English/DefInjected/JobDef/SSC_PetAffectionFollowupJobDefs.xml",
+      "bytes": 203,
+      "sha256": "b8820628324b62e5a8b7d43d4d351194abddfd5e55a6069153d8d157b4053c90"
+    },
+    {
+      "path": "1.6/Languages/English/DefInjected/JobDef/SSC_PetAffectionJobDefs.xml",
+      "bytes": 189,
+      "sha256": "98622e93013c67f3b83690c3ab94d5d1438f05332eabada30a646e0f89c7eeaf"
+    },
+    {
+      "path": "1.6/Languages/English/DefInjected/JobDef/SSC_PetCatComfortJobDefs.xml",
+      "bytes": 263,
+      "sha256": "841369878e62f9d481dfae42a2fb5c1bc26b656cfec54a9e625d0169365b12a6"
+    },
+    {
+      "path": "1.6/Languages/English/DefInjected/JobDef/SSC_PetDogTameJobDefs.xml",
+      "bytes": 308,
+      "sha256": "49bf5cbd665c6ef9c13e35cc2382517659076f3a2aecb78053640db4e6fcc55d"
+    },
+    {
+      "path": "1.6/Languages/English/DefInjected/NeedDef/NeedDefs.xml",
+      "bytes": 527,
+      "sha256": "8be29222ffa9e06f3131c3de38c7d36e17995231c6451b4eb14d9c288dbfb0c2"
+    },
+    {
+      "path": "1.6/Languages/English/DefInjected/PawnRelationDef/PawnRelationDef.xml",
+      "bytes": 131,
+      "sha256": "4a81cb67164d78621176db4f13b621390300a4e35356e3350398b8f71d4724d2"
+    },
+    {
+      "path": "1.6/Languages/English/DefInjected/PreceptDef/Precepts_Ritual.xml",
+      "bytes": 350,
+      "sha256": "a18aa3d612810a829fcd45de5cfa2a6511865eab693641de01e85704dfc74f28"
+    },
+    {
+      "path": "1.6/Languages/English/DefInjected/RecipeDef/Recipe_Gelatinization.xml",
+      "bytes": 1106,
+      "sha256": "4062a95d7833986d740b8620afe980aaacbd5b995bbebddebf9dd973115f6f56"
+    },
+    {
+      "path": "1.6/Languages/English/DefInjected/RecipeDef/RecipeDef_PNA_PLUS.xml",
+      "bytes": 894,
+      "sha256": "d5162a212ed13482135110a6e39c52457b72713ba721d55d384bcebb67e8dfcf"
+    },
+    {
+      "path": "1.6/Languages/English/DefInjected/RecipeDef/RecipeDef_PSEdit.xml",
+      "bytes": 4044,
+      "sha256": "777ef17848e922ac79c0673e12192a2122e981e9469aa670ce9615a1478afc12"
+    },
+    {
+      "path": "1.6/Languages/English/DefInjected/RecipeDef/RecipeDef_Surgery_DCMtF.xml",
+      "bytes": 485,
+      "sha256": "abbed0cf7b9b443438859ea794ffdd18f9b7db2d83a984880c31328b841d947d"
+    },
+    {
+      "path": "1.6/Languages/English/DefInjected/RecipeDef/RecipeDef_Surgery_PE.xml",
+      "bytes": 423,
+      "sha256": "b33937d84905969b71475a748e8c8344d7fc7c30030d062d74cdc700590ddf91"
+    },
+    {
+      "path": "1.6/Languages/English/DefInjected/ResearchProjectDef/ResearchProjectDef.xml",
+      "bytes": 9436,
+      "sha256": "983b2ede713d26960645fe6d45e66064077799c437ac26997eef5272205c571a"
+    },
+    {
+      "path": "1.6/Languages/English/DefInjected/ResearchTabDef/ResearchTabDef.xml",
+      "bytes": 147,
+      "sha256": "61113d424e743b9f1e753f4dd93d2bed807972a331e413957e85e2884943fab3"
+    },
+    {
+      "path": "1.6/Languages/English/DefInjected/RitualBehaviorDef/Ritual_Behavior.xml",
+      "bytes": 264,
+      "sha256": "3f98112d9519aa8b0203d068fd76e53c4ea132f02904998b921053a353ed0ede"
+    },
+    {
+      "path": "1.6/Languages/English/DefInjected/RitualOutcomeEffectDef/Ritual_Outcome.xml",
+      "bytes": 2012,
+      "sha256": "7d7326b5eb19ed6da2f89467f0519ffc2c0a7786ac15328cfd83306f13cd9b48"
+    },
+    {
+      "path": "1.6/Languages/English/DefInjected/ThingDef/Nanofluid.xml",
+      "bytes": 900,
+      "sha256": "e3c372d041bb0bf0d942eafa477e8c9a64dd7e7bcb0cfd8c75e6e83ac799cc2a"
+    },
+    {
+      "path": "1.6/Languages/English/DefInjected/ThingDef/SexSlave_EvilFallOutfit.xml",
+      "bytes": 438,
+      "sha256": "74cd5e93fca72c7a9ad769c9a39a0ce457ef0726678c360d557f7f98df19950f"
+    },
+    {
+      "path": "1.6/Languages/English/DefInjected/ThingDef/SexSlaveCloth.xml",
+      "bytes": 360,
+      "sha256": "15c4413f7e3ef101d04503e7cb7b82c167e2d432656a4cdcac05cccd9b53e814"
+    },
+    {
+      "path": "1.6/Languages/English/DefInjected/ThingDef/SSC_Gun.xml",
+      "bytes": 526,
+      "sha256": "423281d3751221ef3f92854e2d41ec1de8629dca9389a56107acf2c0fbe55595"
+    },
+    {
+      "path": "1.6/Languages/English/DefInjected/ThingDef/SSC_MasterQualificationItem.xml",
+      "bytes": 1046,
+      "sha256": "bd1c8afe97b3d78254b7bb0f81176304608ef7423434ff9accc6f52b2080c2cf"
+    },
+    {
+      "path": "1.6/Languages/English/DefInjected/ThingDef/SSC_PS.xml",
+      "bytes": 3049,
+      "sha256": "4916b4cb0ffa8bbe301f17a3a1a000923ed8d2cfa6dbd952aa48c4c5fe38f5f2"
+    },
+    {
+      "path": "1.6/Languages/English/DefInjected/ThoughtDef/HediffOfAddiction.xml",
+      "bytes": 362,
+      "sha256": "0bc57047f3944f83ff08c0bbbaa0ada121526b21295bfc6fa8d15be98de79d0c"
+    },
+    {
+      "path": "1.6/Languages/English/DefInjected/ThoughtDef/HediffOfBuff.xml",
+      "bytes": 3003,
+      "sha256": "96f780557ad109a0a793a4f5cd86a982e8a12608bcdad0fa6f252ca7b8e17ffb"
+    },
+    {
+      "path": "1.6/Languages/English/DefInjected/ThoughtDef/HediffOfPE.xml",
+      "bytes": 1469,
+      "sha256": "bf15e453f2dc719ba401689a3139da599e4eab244c0e48d24b30d5a0b023e963"
+    },
+    {
+      "path": "1.6/Languages/English/DefInjected/ThoughtDef/HediffOfSexSlave.xml",
+      "bytes": 1794,
+      "sha256": "04caa97c84a913a747bc0cb01145c2596789b6fa50f13a61b2bc013cf0dc4daf"
+    },
+    {
+      "path": "1.6/Languages/English/DefInjected/ThoughtDef/RecipeDef_Surgery_DCMtF.xml",
+      "bytes": 372,
+      "sha256": "5ce05bc29d5d314118e370ddcb044296f92006a3680019704bdd28da63196b80"
+    },
+    {
+      "path": "1.6/Languages/English/DefInjected/ThoughtDef/SSC_DesireInfestation.xml",
+      "bytes": 3431,
+      "sha256": "2ef6d394f31889d44fb0638115dae35868e01563c8f325ea1ec492aa7dd69ee2"
+    },
+    {
+      "path": "1.6/Languages/English/DefInjected/ThoughtDef/SSC_PetAffectionThoughts.xml",
+      "bytes": 301,
+      "sha256": "75c9a8856a5b1351c11e9a579cc53f28ebdf89593f45da289f446ddd6ba847be"
+    },
+    {
+      "path": "1.6/Languages/English/DefInjected/ThoughtDef/SSC_PetCatComfortThoughts.xml",
+      "bytes": 371,
+      "sha256": "27f5201aadff2f3f8bed40140d9d2fa7cdb9a70e7658a3891a1ce7165a63cbff"
+    },
+    {
+      "path": "1.6/Languages/English/DefInjected/ThoughtDef/SSC_SelfTrainingFeedback.xml",
+      "bytes": 5891,
+      "sha256": "91739402a5b5357bc9866fe2e66d407718eedef3a4228333ef80b529240b9062"
+    },
+    {
+      "path": "1.6/Languages/English/DefInjected/ThoughtDef/SSC_TrainerOfficerThoughts.xml",
+      "bytes": 1643,
+      "sha256": "f3515d51984b7f5dfbd6212a96c8ba352c8e8033dbac940a29914a008cb4360b"
+    },
+    {
+      "path": "1.6/Languages/English/DefInjected/ThoughtDef/SSC_TrainerTrainingMemories.xml",
+      "bytes": 5903,
+      "sha256": "99d9030a41d5271d11378b38531c1a769f749e79ce9b7d8820f112b2be7a1aae"
+    },
+    {
+      "path": "1.6/Languages/English/DefInjected/ThoughtDef/Thought_CorruptionRape.xml",
+      "bytes": 1599,
+      "sha256": "f8ee656a33e5577808ff41902d1928515b2b300575cc9cdf704988add3bc47bd"
+    },
+    {
+      "path": "1.6/Languages/English/DefInjected/ThoughtDef/Thought_Ritual.xml",
+      "bytes": 1038,
+      "sha256": "a4f42eea7b8947d6dd5ccacf5e3a2e15f62993628328336cc08ec1ff21f949ec"
+    },
+    {
+      "path": "1.6/Languages/English/DefInjected/ThoughtDef/Thought_SharedBed.xml",
+      "bytes": 2213,
+      "sha256": "2fd76317937e7b511efc8c1cc4d97d940aae7d40bd7b3cf2e8188853697d8c51"
+    },
+    {
+      "path": "1.6/Languages/English/DefInjected/ThoughtDef/Thought_SharedBedWithTrainer.xml",
+      "bytes": 1826,
+      "sha256": "169c1c88d50a78751dbb634db123b21a440cfd4bfa9e397a4f4ad6422fec22f5"
+    },
+    {
+      "path": "1.6/Languages/English/DefInjected/ThoughtDef/Thought_Training.xml",
+      "bytes": 2896,
+      "sha256": "53b823d95fc2812ceec730c18763a689437b06c0b920ce7bb9651ea4e6f47afb"
+    },
+    {
+      "path": "1.6/Languages/English/DefInjected/TraitDef/Trait_PE.xml",
+      "bytes": 412,
+      "sha256": "0e2ab136859a9421e66bdb22bcadaaeb7601fbc2d0016e32424f6f692e10e19a"
+    },
+    {
+      "path": "1.6/Languages/English/DefInjected/TraitDef/Trait_SexSlave.xml",
+      "bytes": 1278,
+      "sha256": "481ba3739bc9aa3864f9ba27ebc94f54b8256256ee53067ed80fb1583e2ea947"
+    },
+    {
+      "path": "1.6/Languages/English/DefInjected/WorkGiverDef/WorkGiverDef.xml",
+      "bytes": 936,
+      "sha256": "093ab49b5cffe7e5981b1b247aabeb4faeec4626bbbe2d88e665a6f1d6136508"
+    },
+    {
+      "path": "1.6/Languages/English/DefInjected/WorkTypeDef/WorkTypes.xml",
+      "bytes": 224,
+      "sha256": "ea34ac36e0271c076bbef93853c5b15b4fa5b441733f610901f8b50ba7f06818"
+    },
+    {
+      "path": "1.6/Languages/English/Keyed/SSC_AbilityToggles.xml",
+      "bytes": 518,
+      "sha256": "0801f738297323643366b413671845eb76d9799c6db78d16990c6c9444cde13b"
+    },
+    {
+      "path": "1.6/Languages/English/Keyed/SSC_BondRelations.xml",
+      "bytes": 359,
+      "sha256": "5d4f021e0de4502444bf3a2493d5cee826d2312ec062f4244b487a0d44422cdb"
+    },
+    {
+      "path": "1.6/Languages/English/Keyed/SSC_CombatantSpecialization.xml",
+      "bytes": 870,
+      "sha256": "6a9f3171fc59e59284c6c673832cf9f3e28e119fb7362879b99c1fc62cbeb113"
+    },
+    {
+      "path": "1.6/Languages/English/Keyed/SSC_CombatOverdrive.xml",
+      "bytes": 178,
+      "sha256": "adec81533254245e083aa99419f5082da0a58d9a0d36b6a975fa335ce61031ce"
+    },
+    {
+      "path": "1.6/Languages/English/Keyed/SSC_CorruptionDecaySettings.xml",
+      "bytes": 747,
+      "sha256": "c8101592b8c099bf5f9db31c6e3c4adfbae48e78a13c5705f213328f0d0b42ca"
+    },
+    {
+      "path": "1.6/Languages/English/Keyed/SSC_Debug.xml",
+      "bytes": 459,
+      "sha256": "a0b1a95a67c147415471acb04e49e6eddf334d338707493ccdafc3fb79f74946"
+    },
+    {
+      "path": "1.6/Languages/English/Keyed/SSC_Diagnostics.xml",
+      "bytes": 1918,
+      "sha256": "4c9b20f26428bfb10b2f9e48a1382a8bff64685e3e3372839bc2caa20c35c431"
+    },
+    {
+      "path": "1.6/Languages/English/Keyed/SSC_Identity.xml",
+      "bytes": 908,
+      "sha256": "1f24d106a010e543180ce53b30b1535aacb459685302495b707e27908312a223"
+    },
+    {
+      "path": "1.6/Languages/English/Keyed/SSC_Keys.xml",
+      "bytes": 22982,
+      "sha256": "dabe619503f7488c4f46e7226c3b8eec80d30ccf59c08c26140cec499ea1650b"
+    },
+    {
+      "path": "1.6/Languages/English/Keyed/SSC_MasterEntry.xml",
+      "bytes": 1453,
+      "sha256": "45abb168235eabb55724b8c9ef11c6c9e9ac717cbe7769748868012d250a6d6e"
+    },
+    {
+      "path": "1.6/Languages/English/Keyed/SSC_MasterProgression.xml",
+      "bytes": 1682,
+      "sha256": "d57817d16271dd91419fbe27ef3cab067cc12e0c4f2dba654ea67d5a7ea3e175"
+    },
+    {
+      "path": "1.6/Languages/English/Keyed/SSC_MasterQualification.xml",
+      "bytes": 2413,
+      "sha256": "5a8c371ea5ff08d47f2692da37ef714e2f71ca369a2b238d0541045580e26cf4"
+    },
+    {
+      "path": "1.6/Languages/English/Keyed/SSC_PetAffectionFollowup.xml",
+      "bytes": 241,
+      "sha256": "9b36964a430b5c9e600d11d7d046a7e320d39cac0aafce4efc1e4ab30e3b4473"
+    },
+    {
+      "path": "1.6/Languages/English/Keyed/SSC_PetCatComfort.xml",
+      "bytes": 1175,
+      "sha256": "e5cf8b4908c9cc2a59b747a81465acdb6778dc748f084beee707e9a150905e12"
+    },
+    {
+      "path": "1.6/Languages/English/Keyed/SSC_PetDogTame.xml",
+      "bytes": 1651,
+      "sha256": "b8298a8bcedcbc8a361e8ff773e0a10c494ee182c313020bf74b1709029c8366"
+    },
+    {
+      "path": "1.6/Languages/English/Keyed/SSC_Pna.xml",
+      "bytes": 1888,
+      "sha256": "a54d0e283979f4cbe3e56571f1b079f11582de7e931646c1733dec0abc2d22c2"
+    },
+    {
+      "path": "1.6/Languages/English/Keyed/SSC_Restrictions.xml",
+      "bytes": 15902,
+      "sha256": "8cebe0f0f39f8f84ccef829b9d4361647a52558003c3e7394d555773346f7cb3"
+    },
+    {
+      "path": "1.6/Languages/English/Keyed/SSC_RimTalkStatus.xml",
+      "bytes": 170,
+      "sha256": "53fce1341455cab7fad6ba43c66858bf182933288897ba6c2b41969797494954"
+    },
+    {
+      "path": "1.6/Languages/English/Keyed/SSC_RitualSelection.xml",
+      "bytes": 1458,
+      "sha256": "57ea3a68df80bb5ed0da08420c64a17380523185ca2afb9b0124a654d83691dd"
+    },
+    {
+      "path": "1.6/Languages/English/Keyed/SSC_Schedule.xml",
+      "bytes": 1386,
+      "sha256": "d4bc4d220348bd7ebd03f481f5ece477e0a2556a40eae78b3b9bfa1e8bccb8d0"
+    },
+    {
+      "path": "1.6/Languages/English/Keyed/SSC_SelfTraining.xml",
+      "bytes": 1202,
+      "sha256": "ef23793d75be2575f09416e6e5c7a7f78013765e1d1d320ad85950771a50fc73"
+    },
+    {
+      "path": "1.6/Languages/English/Keyed/SSC_SelfTrainingFeedback.xml",
+      "bytes": 2220,
+      "sha256": "5a6dddf2d12504824cb937ec4d6716d34e01d5072453bbc6358705b68fc12e45"
+    },
+    {
+      "path": "1.6/Languages/English/Keyed/SSC_Settings.xml",
+      "bytes": 4739,
+      "sha256": "0bcd59f0dc1d1cdae2290cd442c26b6b5ce95ab3cc8d8b579c095ab73e028e67"
+    },
+    {
+      "path": "1.6/Languages/English/Keyed/SSC_SharedBed.xml",
+      "bytes": 1804,
+      "sha256": "ecb91ad991f6c6e56f4105abc16a5aad0e0828536b1dde4c48c2638b6aa930b9"
+    },
+    {
+      "path": "1.6/Languages/English/Keyed/SSC_Specialization.xml",
+      "bytes": 3507,
+      "sha256": "f5cf4b757e24e597a080d63b9cf63e3b028d8eaafc0aac1c3133727249837e75"
+    },
+    {
+      "path": "1.6/Languages/English/Keyed/SSC_TrainerIdentity.xml",
+      "bytes": 4333,
+      "sha256": "b8fe652722760ac2c7e522fc7b293c4a25f358932b6ed1fb3299e000ce39d523"
+    },
+    {
+      "path": "1.6/Languages/English/Keyed/SSC_TrainerTrainingMemory.xml",
+      "bytes": 1787,
+      "sha256": "02cc5f2cf1c09f0b64777a3ad1652c55b47e060acd9ff00e067e7b64522fefcb"
+    },
+    {
+      "path": "1.6/Languages/English/Keyed/SSC_TrainingIdentity.xml",
+      "bytes": 1551,
+      "sha256": "c22798e5af6c5e9b49bb7fb3ab55806c8294950d84db0dad844edef7da3299c1"
+    },
+    {
+      "path": "1.6/Languages/English/Keyed/SSC_TrainingOpinionMemory.xml",
+      "bytes": 1105,
+      "sha256": "052a249b96c3f95ab2cdc8bb50e92191afd27cd2743797489d08a5d3a7c74c86"
+    },
+    {
+      "path": "1.6/Languages/English/Keyed/SSC_TrainingOutcome.xml",
+      "bytes": 175,
+      "sha256": "7dae6cef08615139bb3a93340c09964a9727d332e25493bc04567b4413e30877"
+    },
+    {
+      "path": "1.6/Languages/Russian/DefInjected/AbilityDef/EroticWord.xml",
+      "bytes": 437,
+      "sha256": "cc0cdb9ff77b324c8096d252e7e117282cddf77e974bf48d963c8983c4db2701"
+    },
+    {
+      "path": "1.6/Languages/Russian/DefInjected/AbilityDef/SSC_CombatOverdrive.xml",
+      "bytes": 586,
+      "sha256": "98f2b4532da3e57f3740b0a6ecd901688c6387bcd9e86172315925d61a0d333e"
+    },
+    {
+      "path": "1.6/Languages/Russian/DefInjected/AbilityDef/SSC_PetCatComfort.xml",
+      "bytes": 1854,
+      "sha256": "829e84ad582824cb38436f1ca941094eafbace66963aa8e77b5ec713401a3c32"
+    },
+    {
+      "path": "1.6/Languages/Russian/DefInjected/AbilityDef/SSC_PetDogTame.xml",
+      "bytes": 2863,
+      "sha256": "1f89f34d48b6ad64097963611d80f1e6ed8c45cc812f9f0ab44aa5954caab39f"
+    },
+    {
+      "path": "1.6/Languages/Russian/DefInjected/ChemicalDef/ChemicalDef.xml",
+      "bytes": 185,
+      "sha256": "ee341f41c2e6f32a495d7e176671a83926a5b240a75365493c5e8d71c2ed2360"
+    },
+    {
+      "path": "1.6/Languages/Russian/DefInjected/DamageDef/DemageDef_Gun.xml",
+      "bytes": 285,
+      "sha256": "555e0e61fe44bd4c66b9d270dff3ee5bb54767c436d5ce319de34467e2f0110c"
+    },
+    {
+      "path": "1.6/Languages/Russian/DefInjected/HediffDef/HediffOfAddiction.xml",
+      "bytes": 1005,
+      "sha256": "8aa2d26e3bb2d430b474aab9dd9d88cf0addb969bf737e6914e17e34f1a0a732"
+    },
+    {
+      "path": "1.6/Languages/Russian/DefInjected/HediffDef/HediffOfBuff.xml",
+      "bytes": 6149,
+      "sha256": "f42ade8e78a51b7c334222da4fa36ddde220a5b00b0b82e6eb31cbebb1e45300"
+    },
+    {
+      "path": "1.6/Languages/Russian/DefInjected/HediffDef/HediffOfPE.xml",
+      "bytes": 1681,
+      "sha256": "3062b097ba4cae73b83fe3c0e304b05943cf9b3fd3ae292abc645d473e825475"
+    },
+    {
+      "path": "1.6/Languages/Russian/DefInjected/HediffDef/HediffOfPSEdited.xml",
+      "bytes": 2409,
+      "sha256": "9706bfd5ee32f7f42911098001b91375fc56a47883b46c0abf2af065f2c3d37c"
+    },
+    {
+      "path": "1.6/Languages/Russian/DefInjected/HediffDef/HediffOfSexSlave.xml",
+      "bytes": 1300,
+      "sha256": "91e62a45a343e3aa73b534e17f1418745f6b1ff892dda1bf533314c5742f94d8"
+    },
+    {
+      "path": "1.6/Languages/Russian/DefInjected/HediffDef/HediffOfTrain.xml",
+      "bytes": 6912,
+      "sha256": "d9480210b1758eb3c80832215a97eb48bdb5eb6e6d9bb46804031d239e454111"
+    },
+    {
+      "path": "1.6/Languages/Russian/DefInjected/HediffDef/Hediffs_Gelatinization.xml",
+      "bytes": 3316,
+      "sha256": "6bf0b6a85edf296f43461487df6b5c0a98da052643881475321f820d571626ca"
+    },
+    {
+      "path": "1.6/Languages/Russian/DefInjected/HediffDef/SSC_AbilityToggles.xml",
+      "bytes": 854,
+      "sha256": "a8e65a04d19a38a75dc9283e1d8802d99da5379b5c0dee089b461d04cbfe89d1"
+    },
+    {
+      "path": "1.6/Languages/Russian/DefInjected/HediffDef/SSC_HediffDefs_CombatantSpecialization.xml",
+      "bytes": 2552,
+      "sha256": "fb08a6c90bbff09cc6b43195c23ed6d12efaf4a82aa20d497c3d670df3b5724f"
+    },
+    {
+      "path": "1.6/Languages/Russian/DefInjected/HediffDef/SSC_HediffDefs_PetSpecializations.xml",
+      "bytes": 417,
+      "sha256": "d1d0a4d35f50270e6bb135587bfebd3f72842bb35fca83c8ed61c4246732a098"
+    },
+    {
+      "path": "1.6/Languages/Russian/DefInjected/HediffDef/SSC_HediffDefs_TrainerSpecialization.xml",
+      "bytes": 2201,
+      "sha256": "b9795cb8a185195be4dba9fa5c3dbd14ff77b625177eb4f4ba4c9946db9ed882"
+    },
+    {
+      "path": "1.6/Languages/Russian/DefInjected/HediffDef/SSC_MasterProgression.xml",
+      "bytes": 1616,
+      "sha256": "817d8e349878026fd49c287876e7edc3cbc69081c9fc0bffe105f97dd96f9b34"
+    },
+    {
+      "path": "1.6/Languages/Russian/DefInjected/HediffDef/SSC_PetCatComfort.xml",
+      "bytes": 1312,
+      "sha256": "bcfa6df466a7a5deba12909181c32191ee7adf0d8cccf7e4a47bd4287b5d4a3d"
+    },
+    {
+      "path": "1.6/Languages/Russian/DefInjected/HediffDef/SSC_PetDogTame.xml",
+      "bytes": 1005,
+      "sha256": "0b022bebb69b915b5c9f2c1e6d12280f49afa5703ab3014b09a285faa8979a85"
+    },
+    {
+      "path": "1.6/Languages/Russian/DefInjected/JobDef/JobDef_InsertPersonality.xml",
+      "bytes": 215,
+      "sha256": "153835246d25da99bcec28150e1e2d93a4614de2163027ce5dc2f0860a656b5e"
+    },
+    {
+      "path": "1.6/Languages/Russian/DefInjected/JobDef/JobDriver_PE.xml",
+      "bytes": 193,
+      "sha256": "2c3a641da69c2cd9cf995f8f69d8cd5ad8c78581e94133a6150b621861497f2e"
+    },
+    {
+      "path": "1.6/Languages/Russian/DefInjected/JobDef/JobDriver_RitualTraining.xml",
+      "bytes": 176,
+      "sha256": "070dc7ee4036c34df8977295dc2c751ea838d9768bac86c1e1120be56c2ccf75"
+    },
+    {
+      "path": "1.6/Languages/Russian/DefInjected/JobDef/JobDriver_SelfTraining.xml",
+      "bytes": 195,
+      "sha256": "d8f1484233dca5dcef5081abe928d6919fd57e2ad44d25b2623068b86bdb0919"
+    },
+    {
+      "path": "1.6/Languages/Russian/DefInjected/JobDef/JobDriver_Training.xml",
+      "bytes": 179,
+      "sha256": "91aad7e8c9d02c80d4bca96964f0a3a2b4dd66e4940344fd871f36db28300491"
+    },
+    {
+      "path": "1.6/Languages/Russian/DefInjected/JobDef/JobDriver_TrainingReceiver.xml",
+      "bytes": 190,
+      "sha256": "1e32b6313835d814f11e6242bff88ebcc26c402e6ac009d54ac2483d72a50899"
+    },
+    {
+      "path": "1.6/Languages/Russian/DefInjected/JobDef/SSC_PetAffectionFollowupJobDefs.xml",
+      "bytes": 227,
+      "sha256": "ec86c6d0fe768a0849c81f4da73d69ace02c18fc9403c7de7d6532ff9efed2d8"
+    },
+    {
+      "path": "1.6/Languages/Russian/DefInjected/JobDef/SSC_PetAffectionJobDefs.xml",
+      "bytes": 195,
+      "sha256": "d9a57a87f0233b11b9e66dadf73c0e1e190ef243069796eab00d2dfd7ffb188d"
+    },
+    {
+      "path": "1.6/Languages/Russian/DefInjected/JobDef/SSC_PetCatComfortJobDefs.xml",
+      "bytes": 302,
+      "sha256": "3697ac5903d0b72ae0d9f56910eb86c54bcc570e53df9e03e4cd647c8735da28"
+    },
+    {
+      "path": "1.6/Languages/Russian/DefInjected/JobDef/SSC_PetDogTameJobDefs.xml",
+      "bytes": 333,
+      "sha256": "7609d44f3877f9f7431387b9da509371b63c276fa2f362801eaa28cd05de6a2b"
+    },
+    {
+      "path": "1.6/Languages/Russian/DefInjected/NeedDef/NeedDefs.xml",
+      "bytes": 806,
+      "sha256": "d2f33faf17a3ee989bbfabb02d8379509f8802e42d4479fa4cbfbcad3b84f85e"
+    },
+    {
+      "path": "1.6/Languages/Russian/DefInjected/PawnRelationDef/PawnRelationDef.xml",
+      "bytes": 143,
+      "sha256": "43fe0adde6ec00a638bd2b5e0a427a5947ff4a051b8c17267cdb3469b85bfa96"
+    },
+    {
+      "path": "1.6/Languages/Russian/DefInjected/PreceptDef/Precepts_Ritual.xml",
+      "bytes": 447,
+      "sha256": "546181536e9ca665d80fce1d063d8c589e641dd33706fa0056163b95b028f206"
+    },
+    {
+      "path": "1.6/Languages/Russian/DefInjected/RecipeDef/Recipe_Gelatinization.xml",
+      "bytes": 1598,
+      "sha256": "f51e2afe60cb86347cd172a63f2634a95a9ba5aa707f6ed4960d9ec63be51717"
+    },
+    {
+      "path": "1.6/Languages/Russian/DefInjected/RecipeDef/RecipeDef_PNA_PLUS.xml",
+      "bytes": 1277,
+      "sha256": "7f32da32a101b5bc6d587488b55d4a56d499c30e20f7b370c874e81aa5358d34"
+    },
+    {
+      "path": "1.6/Languages/Russian/DefInjected/RecipeDef/RecipeDef_PSEdit.xml",
+      "bytes": 3648,
+      "sha256": "054b42a05db08e532012c94947f2b78fd0088f2769fc9eb85d2e8f55d60b4898"
+    },
+    {
+      "path": "1.6/Languages/Russian/DefInjected/RecipeDef/RecipeDef_Surgery_DCMtF.xml",
+      "bytes": 639,
+      "sha256": "36e7ec7927f34f31158976efead3788165ac07661e4fb81b2a3aee007800c9f8"
+    },
+    {
+      "path": "1.6/Languages/Russian/DefInjected/RecipeDef/RecipeDef_Surgery_PE.xml",
+      "bytes": 503,
+      "sha256": "be455299e8882fe7293e36c040060495218f4b191d2fcfca10b567d71ab692ea"
+    },
+    {
+      "path": "1.6/Languages/Russian/DefInjected/ResearchProjectDef/ResearchProjectDef.xml",
+      "bytes": 16025,
+      "sha256": "3127178f37033c1a7657efb245464e85620f64d80413ee473f82efd45d1fa8bf"
+    },
+    {
+      "path": "1.6/Languages/Russian/DefInjected/ResearchTabDef/ResearchTabDef.xml",
+      "bytes": 144,
+      "sha256": "8ec01a3a9635d089fb058a646d1dc242b813ed3b53fbbf0b471aa7978f6ac3f7"
+    },
+    {
+      "path": "1.6/Languages/Russian/DefInjected/RitualBehaviorDef/Ritual_Behavior.xml",
+      "bytes": 277,
+      "sha256": "98fa9ddbfbcc3744d3553a59fd57e9be796a507a653a43069382a61a98e7e98e"
+    },
+    {
+      "path": "1.6/Languages/Russian/DefInjected/RitualOutcomeEffectDef/Ritual_Outcome.xml",
+      "bytes": 2565,
+      "sha256": "24f7e75baeaad73749d1815296479b623de1005600367c7d549343ed2236da7e"
+    },
+    {
+      "path": "1.6/Languages/Russian/DefInjected/ThingDef/Nanofluid.xml",
+      "bytes": 1372,
+      "sha256": "e49c31bc8dfc23b4dfbed8eaf30cfa7acad798cc3bd1c32ef7b5e70d13094e42"
+    },
+    {
+      "path": "1.6/Languages/Russian/DefInjected/ThingDef/SexSlave_EvilFallOutfit.xml",
+      "bytes": 700,
+      "sha256": "d14dd5d752997324981bdf576332827ea34e78ae5fb1188809dd717c7c4e0ff2"
+    },
+    {
+      "path": "1.6/Languages/Russian/DefInjected/ThingDef/SexSlaveCloth.xml",
+      "bytes": 404,
+      "sha256": "e41bd274f07313cd623f06cd40a142cabd0c2655ae8a7ff4eeae6cf1c9338106"
+    },
+    {
+      "path": "1.6/Languages/Russian/DefInjected/ThingDef/SSC_Gun.xml",
+      "bytes": 787,
+      "sha256": "e885b3325656b43eab3a86d4a367afd013834e2d47642f47db1fa105f840fbe6"
+    },
+    {
+      "path": "1.6/Languages/Russian/DefInjected/ThingDef/SSC_MasterQualificationItem.xml",
+      "bytes": 1755,
+      "sha256": "1e6df67f0c861ba206210fb783733f2d9912b3a055afa25a78c40f411933d56a"
+    },
+    {
+      "path": "1.6/Languages/Russian/DefInjected/ThingDef/SSC_PS.xml",
+      "bytes": 4521,
+      "sha256": "a0076eb695684fbc498ebc24e86a7e67d3a569c0bdc363d52ed59363e69fa32a"
+    },
+    {
+      "path": "1.6/Languages/Russian/DefInjected/ThoughtDef/HediffOfAddiction.xml",
+      "bytes": 472,
+      "sha256": "2604ccec69df6de037b845ce4767a2d357823ba67fc6c4993b88ce4f50fdc0d4"
+    },
+    {
+      "path": "1.6/Languages/Russian/DefInjected/ThoughtDef/HediffOfBuff.xml",
+      "bytes": 3875,
+      "sha256": "13071509bc8b139954400c0002aec0e650bd5aa3408f82b5538dad23b76ba359"
+    },
+    {
+      "path": "1.6/Languages/Russian/DefInjected/ThoughtDef/HediffOfPE.xml",
+      "bytes": 1848,
+      "sha256": "4675ce70a74a88d0865e893836b8ff41ff6da7803d662cd79c374e30d853a360"
+    },
+    {
+      "path": "1.6/Languages/Russian/DefInjected/ThoughtDef/HediffOfSexSlave.xml",
+      "bytes": 2401,
+      "sha256": "5dfbc43900c72e55d750c03ebe6f7fcc997b50e4740388d742350356edb010b2"
+    },
+    {
+      "path": "1.6/Languages/Russian/DefInjected/ThoughtDef/RecipeDef_Surgery_DCMtF.xml",
+      "bytes": 435,
+      "sha256": "e9fa86a8ed9c66218685c45fca248bad927350036c55ac43a7b8f42f763fa567"
+    },
+    {
+      "path": "1.6/Languages/Russian/DefInjected/ThoughtDef/SSC_DesireInfestation.xml",
+      "bytes": 4989,
+      "sha256": "f807b8833801094813ed2f8138688f2f32ff69a49d9e8e52bd459447137269b4"
+    },
+    {
+      "path": "1.6/Languages/Russian/DefInjected/ThoughtDef/SSC_PetCatComfortThoughts.xml",
+      "bytes": 441,
+      "sha256": "5ccf8cbe6fb4ddf9fcec7a7ae56fa4716ff70d83b78e42e6a5726ae35a1604e9"
+    },
+    {
+      "path": "1.6/Languages/Russian/DefInjected/ThoughtDef/SSC_SelfTrainingFeedback.xml",
+      "bytes": 8157,
+      "sha256": "a7ddb480942145bcfdf5d40d37d09982b57bced8b43dcd2829611c8909e23a24"
+    },
+    {
+      "path": "1.6/Languages/Russian/DefInjected/ThoughtDef/SSC_TrainerOfficerThoughts.xml",
+      "bytes": 2172,
+      "sha256": "725cb5e730809cad253edd9fd09f25beedc2d9919efc21647bf26a29ae54524e"
+    },
+    {
+      "path": "1.6/Languages/Russian/DefInjected/ThoughtDef/SSC_TrainerTrainingMemories.xml",
+      "bytes": 8445,
+      "sha256": "439bcca880e76fe765cdf7e76edbef22e53791cde12dcaaa289dd4936fbf506b"
+    },
+    {
+      "path": "1.6/Languages/Russian/DefInjected/ThoughtDef/Thought_CorruptionRape.xml",
+      "bytes": 2013,
+      "sha256": "63ec7cf298769764afb8913c6cb95ff576f2a9be3f5563bdab26262acfbcee72"
+    },
+    {
+      "path": "1.6/Languages/Russian/DefInjected/ThoughtDef/Thought_Ritual.xml",
+      "bytes": 1301,
+      "sha256": "21a9c77a82d41cc2cb4e26036ee3d71554774d2a15723637b0f6a755a32774bf"
+    },
+    {
+      "path": "1.6/Languages/Russian/DefInjected/ThoughtDef/Thought_SharedBed.xml",
+      "bytes": 3102,
+      "sha256": "cb7f344f5fd597739431e3b5b63b4e9d86e059c7827d1d35afd36a391db24689"
+    },
+    {
+      "path": "1.6/Languages/Russian/DefInjected/ThoughtDef/Thought_SharedBedWithTrainer.xml",
+      "bytes": 2834,
+      "sha256": "ebec48ae447c6ba199cdc785ecf9834154c6e5a912d5541e82d20e3a0b3669cf"
+    },
+    {
+      "path": "1.6/Languages/Russian/DefInjected/ThoughtDef/Thought_Training.xml",
+      "bytes": 3750,
+      "sha256": "bd2c8c8521dc27690a8a0270d74417edd30186ca59889fd32a6b1e0fbdbc6c37"
+    },
+    {
+      "path": "1.6/Languages/Russian/DefInjected/TraitDef/Trait_PE.xml",
+      "bytes": 567,
+      "sha256": "4d939e7fa4e9c497da652a385ce29038a29744bc8937e2359891ebc5f5f962f8"
+    },
+    {
+      "path": "1.6/Languages/Russian/DefInjected/TraitDef/Trait_SexSlave.xml",
+      "bytes": 1538,
+      "sha256": "ea5788e7975aaaafa6a06a7fcd07ce93907f8e51d222ee83b64f5c4d76e0b679"
+    },
+    {
+      "path": "1.6/Languages/Russian/DefInjected/WorkGiverDef/WorkGiverDef.xml",
+      "bytes": 1116,
+      "sha256": "807440079f36c65e4895632d836e8f65e06326002ce9f8d5e88f4334c039fe9f"
+    },
+    {
+      "path": "1.6/Languages/Russian/DefInjected/WorkTypeDef/WorkTypes.xml",
+      "bytes": 294,
+      "sha256": "dcacf886b276f917dbc895640fd39d1295d0ef4365ba2fcfd27472cdb76b621f"
+    },
+    {
+      "path": "1.6/Languages/Russian/Keyed/SSC_AbilityToggles.xml",
+      "bytes": 750,
+      "sha256": "22f471ff38bdd62c80bcd3a84c3063dfd9c55fd98b11b1d4ae2224c85145b950"
+    },
+    {
+      "path": "1.6/Languages/Russian/Keyed/SSC_BondRelations.xml",
+      "bytes": 417,
+      "sha256": "194dc9f1f2c223192d86ce64db34dc0fe1ce21c7ca301294e2b103fc295ce137"
+    },
+    {
+      "path": "1.6/Languages/Russian/Keyed/SSC_CombatantSpecialization.xml",
+      "bytes": 1122,
+      "sha256": "2aba925361f92356b94e778d7adfecba120afef81c86a7dbf50e2f1bc5106b0c"
+    },
+    {
+      "path": "1.6/Languages/Russian/Keyed/SSC_CombatOverdrive.xml",
+      "bytes": 221,
+      "sha256": "8106aa7fdc9072c368ac3dd24ee8d997ad9779b744e0f4981d53254e216c2745"
+    },
+    {
+      "path": "1.6/Languages/Russian/Keyed/SSC_CorruptionDecaySettings.xml",
+      "bytes": 1180,
+      "sha256": "2dd34d54ea642745443acd7155da7870af302c854f92126ebab480e489154e50"
+    },
+    {
+      "path": "1.6/Languages/Russian/Keyed/SSC_Debug.xml",
+      "bytes": 616,
+      "sha256": "c04686f05b34eeceaa0ced0629f35d9d33b245c2df771020fe2e900c7ed95b79"
+    },
+    {
+      "path": "1.6/Languages/Russian/Keyed/SSC_Diagnostics.xml",
+      "bytes": 2600,
+      "sha256": "38eed83eb080acc13f46e10ba4ff5b9aac047eb892ba1c34c50dec6698bd032c"
+    },
+    {
+      "path": "1.6/Languages/Russian/Keyed/SSC_Identity.xml",
+      "bytes": 1364,
+      "sha256": "de597e98e418a8b320590838b712d1a9a68c6f22ef844849216417b1d084b5f2"
+    },
+    {
+      "path": "1.6/Languages/Russian/Keyed/SSC_Keys.xml",
+      "bytes": 33798,
+      "sha256": "1d937cb5ae1a91a55c6907cbac0ce4666407ae31aff4a1b8dce1baea24caf94f"
+    },
+    {
+      "path": "1.6/Languages/Russian/Keyed/SSC_MasterEntry.xml",
+      "bytes": 2069,
+      "sha256": "127843c2333f95ecd5008e89574c77d49fb4b0a4780ca1bf88578eeda73827e3"
+    },
+    {
+      "path": "1.6/Languages/Russian/Keyed/SSC_MasterProgression.xml",
+      "bytes": 2150,
+      "sha256": "2736fa224252bdb3a6038906b4b3354f7b6696c3c7134910b71544842cce3efb"
+    },
+    {
+      "path": "1.6/Languages/Russian/Keyed/SSC_MasterQualification.xml",
+      "bytes": 3173,
+      "sha256": "a4a05af1e1a810176be955356fda786f7ade15b04a74be7c8e35faecb84968b9"
+    },
+    {
+      "path": "1.6/Languages/Russian/Keyed/SSC_PetAffectionFollowup.xml",
+      "bytes": 287,
+      "sha256": "f5cf565049c96645d23eb6263d8e2e6e5637677504b3fab953150bc4b18fdf87"
+    },
+    {
+      "path": "1.6/Languages/Russian/Keyed/SSC_PetCatComfort.xml",
+      "bytes": 1788,
+      "sha256": "a5145d021e0227d7fa250b62eacbc499239a63971f70ba11ee1f5bbb2518bd36"
+    },
+    {
+      "path": "1.6/Languages/Russian/Keyed/SSC_PetDogTame.xml",
+      "bytes": 2378,
+      "sha256": "581e83f8c19af27a1461b73ccfeef83316829452a41578df9b028ddeff8c7249"
+    },
+    {
+      "path": "1.6/Languages/Russian/Keyed/SSC_Pna.xml",
+      "bytes": 2939,
+      "sha256": "7a6a3e1f703c1bd950b46ff58a5a7e56fa2cee898543bc585388d60d6dda77d9"
+    },
+    {
+      "path": "1.6/Languages/Russian/Keyed/SSC_Restrictions.xml",
+      "bytes": 23377,
+      "sha256": "4d42c5550a27b9ce76808afabc490222b901d339537d41d620e0b3a111b14975"
+    },
+    {
+      "path": "1.6/Languages/Russian/Keyed/SSC_RimTalkStatus.xml",
+      "bytes": 207,
+      "sha256": "1b195698e39d0c42cbd2535ff5107958a4e9618e44dfd228ce421f35220916bf"
+    },
+    {
+      "path": "1.6/Languages/Russian/Keyed/SSC_RitualSelection.xml",
+      "bytes": 1847,
+      "sha256": "706f1bfd5ecb46a6b87dd687b5df7992fa6bdacbcd9db9a045fb02d10f3842f8"
+    },
+    {
+      "path": "1.6/Languages/Russian/Keyed/SSC_SelfTraining.xml",
+      "bytes": 1584,
+      "sha256": "4223c14c05db23bfff715701c9d95a05c7fe86aff1d47e9d913c338d5ddba905"
+    },
+    {
+      "path": "1.6/Languages/Russian/Keyed/SSC_SelfTrainingFeedback.xml",
+      "bytes": 3018,
+      "sha256": "be05ac7e727db5176f346e2b6ea90ffe347a160cf9fd530f7006d26471fc83b8"
+    },
+    {
+      "path": "1.6/Languages/Russian/Keyed/SSC_SharedBed.xml",
+      "bytes": 2351,
+      "sha256": "43b2af871627bd10d6c4d1d4937acfbc0d202a503c3d948db9abcd47186c6195"
+    },
+    {
+      "path": "1.6/Languages/Russian/Keyed/SSC_Specialization.xml",
+      "bytes": 2201,
+      "sha256": "bfca33f4c1f67c3a368cf292d788af54a368005db4d51e2229e3d867e5e5e12d"
+    },
+    {
+      "path": "1.6/Languages/Russian/Keyed/SSC_TrainerIdentity.xml",
+      "bytes": 5757,
+      "sha256": "a2de81a79c27f163baa4f0b8d504353371a75e631569283f0d1bde9b17dc00ad"
+    },
+    {
+      "path": "1.6/Languages/Russian/Keyed/SSC_TrainerTrainingMemory.xml",
+      "bytes": 2409,
+      "sha256": "a0c344d631c2d246d06ca44073187d5ce08dcfa8b0f2b79e4afeb65a9df9c8b6"
+    },
+    {
+      "path": "1.6/Languages/Russian/Keyed/SSC_TrainingIdentity.xml",
+      "bytes": 2234,
+      "sha256": "a7b668358e380dfae89cb0faf4ef15f4b9bcce1372b76d17df282efb53eed65b"
+    },
+    {
+      "path": "1.6/Languages/Russian/Keyed/SSC_TrainingOutcome.xml",
+      "bytes": 223,
+      "sha256": "0b01fcd911b5fb81f2c21e0e1cd720b05bf5ea85ee5fb0de6401df7bfbf54cf8"
+    },
+    {
+      "path": "1.6/Patches/SSC_MasterQualificationSources.xml",
+      "bytes": 3033,
+      "sha256": "e7df50d3ef7d7816fa8318b104e289085e60ccecb52d1e6c594b7c39a433192c"
+    },
+    {
+      "path": "1.6/Resources/Materials/Sexslavecraft/SSC_FullGelBody.shader",
+      "bytes": 1522,
+      "sha256": "b48d39777914382bd711a94c6bba6462d83d60519c6a6122c64b97506f0c6498"
+    },
+    {
+      "path": "1.6/Assemblies/Sexslavecraft.dll",
+      "bytes": 636928,
+      "sha256": "00bce59d769e48a33035e609a1ba0a819d503b9b07eb4035a496ae8eedd226c3"
+    },
+    {
+      "path": "Common/Textures/Things/Apparel/SexSlaveClothes/base_Thin_east - .dds.zstd",
+      "bytes": 24533,
+      "sha256": "12a3141c9922281e5f06abbdeada9dfd7cadb040a2853c6508791b9d1b319bba"
+    },
+    {
+      "path": "Common/Textures/Things/Apparel/SexSlaveClothes/base_Thin_east - .png",
+      "bytes": 28116,
+      "sha256": "c9906344a67ea9231404b097433fc57c6db8878848a133060649d905bf80719d"
+    },
+    {
+      "path": "Common/Textures/Things/Apparel/SexSlaveClothes/base_Thin_east.dds.zstd",
+      "bytes": 24533,
+      "sha256": "12a3141c9922281e5f06abbdeada9dfd7cadb040a2853c6508791b9d1b319bba"
+    },
+    {
+      "path": "Common/Textures/Things/Apparel/SexSlaveClothes/base_Thin_east.png",
+      "bytes": 28116,
+      "sha256": "c9906344a67ea9231404b097433fc57c6db8878848a133060649d905bf80719d"
+    },
+    {
+      "path": "Common/Textures/Things/Apparel/SexSlaveClothes/base_Thin_north - .dds.zstd",
+      "bytes": 32637,
+      "sha256": "56ddc3e7e1479c5eb05fcf766f33149b2c34596b30562764d7df36c0d7e609b6"
+    },
+    {
+      "path": "Common/Textures/Things/Apparel/SexSlaveClothes/base_Thin_north - .png",
+      "bytes": 32602,
+      "sha256": "65fd61908a3a5ed6d8d5b3d5ad157fc8eef0d06533831c7f32d246bb320936ef"
+    },
+    {
+      "path": "Common/Textures/Things/Apparel/SexSlaveClothes/base_Thin_north.dds.zstd",
+      "bytes": 32637,
+      "sha256": "56ddc3e7e1479c5eb05fcf766f33149b2c34596b30562764d7df36c0d7e609b6"
+    },
+    {
+      "path": "Common/Textures/Things/Apparel/SexSlaveClothes/base_Thin_north.png",
+      "bytes": 32602,
+      "sha256": "65fd61908a3a5ed6d8d5b3d5ad157fc8eef0d06533831c7f32d246bb320936ef"
+    },
+    {
+      "path": "Common/Textures/Things/Apparel/SexSlaveClothes/base_Thin_south - .dds.zstd",
+      "bytes": 34357,
+      "sha256": "72cd7a5e866087d372664195be5d541fdc6b7b2d0612bdf2b38adda7842e8384"
+    },
+    {
+      "path": "Common/Textures/Things/Apparel/SexSlaveClothes/base_Thin_south - .png",
+      "bytes": 37491,
+      "sha256": "0a65c4b1a6f5e41dcf5c179cfe5867ab34b3f1ce1860ab7f39272c0559a8470a"
+    },
+    {
+      "path": "Common/Textures/Things/Apparel/SexSlaveClothes/base_Thin_south.dds.zstd",
+      "bytes": 34357,
+      "sha256": "72cd7a5e866087d372664195be5d541fdc6b7b2d0612bdf2b38adda7842e8384"
+    },
+    {
+      "path": "Common/Textures/Things/Apparel/SexSlaveClothes/base_Thin_south.png",
+      "bytes": 37491,
+      "sha256": "0a65c4b1a6f5e41dcf5c179cfe5867ab34b3f1ce1860ab7f39272c0559a8470a"
+    },
+    {
+      "path": "Common/Textures/Things/Apparel/SexSlaveClothes/base_Thin_west - .dds.zstd",
+      "bytes": 25105,
+      "sha256": "459b11dd7bff934263347fb29e53b57548557f5c346dc41f1b3fa3b3b31fcb07"
+    },
+    {
+      "path": "Common/Textures/Things/Apparel/SexSlaveClothes/base_Thin_west - .png",
+      "bytes": 29552,
+      "sha256": "1a05ada75053895c5e9a5f9a60151199ba9e3a6c1f3f3aae400e777d0be52c97"
+    },
+    {
+      "path": "Common/Textures/Things/Apparel/SexSlaveClothes/base_Thin_west.dds.zstd",
+      "bytes": 25105,
+      "sha256": "459b11dd7bff934263347fb29e53b57548557f5c346dc41f1b3fa3b3b31fcb07"
+    },
+    {
+      "path": "Common/Textures/Things/Apparel/SexSlaveClothes/base_Thin_west.png",
+      "bytes": 29552,
+      "sha256": "1a05ada75053895c5e9a5f9a60151199ba9e3a6c1f3f3aae400e777d0be52c97"
+    },
+    {
+      "path": "Common/Textures/Things/Apparel/SexSlaveClothes/base_Thin.dds.zstd",
+      "bytes": 34357,
+      "sha256": "72cd7a5e866087d372664195be5d541fdc6b7b2d0612bdf2b38adda7842e8384"
+    },
+    {
+      "path": "Common/Textures/Things/Apparel/SexSlaveClothes/base_Thin.png",
+      "bytes": 37491,
+      "sha256": "0a65c4b1a6f5e41dcf5c179cfe5867ab34b3f1ce1860ab7f39272c0559a8470a"
+    },
+    {
+      "path": "Common/Textures/Things/Apparel/SexSlaveClothes/base.dds.zstd",
+      "bytes": 34357,
+      "sha256": "72cd7a5e866087d372664195be5d541fdc6b7b2d0612bdf2b38adda7842e8384"
+    },
+    {
+      "path": "Common/Textures/Things/Apparel/SexSlaveClothes/base.png",
+      "bytes": 37491,
+      "sha256": "0a65c4b1a6f5e41dcf5c179cfe5867ab34b3f1ce1860ab7f39272c0559a8470a"
+    },
+    {
+      "path": "Common/Textures/Things/Apparel/SexSlaveClothes/EFOutfit_Female_east_Glow.dds.zstd",
+      "bytes": 59942,
+      "sha256": "5b36798c8fc3efd59fe3901208f2e39996bb2b374df8a53c9fbc6496e2dfeb30"
+    },
+    {
+      "path": "Common/Textures/Things/Apparel/SexSlaveClothes/EFOutfit_Female_east_Glow.png",
+      "bytes": 85565,
+      "sha256": "c2a27a6181227b7bd3b65be1959044b54d67de007b51cb8c1482adcf106e8d24"
+    },
+    {
+      "path": "Common/Textures/Things/Apparel/SexSlaveClothes/EFOutfit_Female_east.dds.zstd",
+      "bytes": 25849,
+      "sha256": "a26a7bebe9187b4350a3d2752ae328d5b455067c96d3d79041e1d36f9ae6ff08"
+    },
+    {
+      "path": "Common/Textures/Things/Apparel/SexSlaveClothes/EFOutfit_Female_east.png",
+      "bytes": 50406,
+      "sha256": "31b8b002885b9fa035662e8d92ed921be29aec43cc113c2509619974261d6160"
+    },
+    {
+      "path": "Common/Textures/Things/Apparel/SexSlaveClothes/EFOutfit_Female_north_Glow.dds.zstd",
+      "bytes": 77775,
+      "sha256": "4482bcdea9cf6847b40f7dd5d413746a88b333c77ab074056f9dac4661414ce9"
+    },
+    {
+      "path": "Common/Textures/Things/Apparel/SexSlaveClothes/EFOutfit_Female_north_Glow.png",
+      "bytes": 112153,
+      "sha256": "b6aa2199025881e4c2fed405eafc016af35af6ce9056301d24ae37f1a1d7babb"
+    },
+    {
+      "path": "Common/Textures/Things/Apparel/SexSlaveClothes/EFOutfit_Female_north.dds.zstd",
+      "bytes": 35731,
+      "sha256": "af4c0a0f87c0cc99529ea426b13240c551f1f56e17c7fc8edf29a84d849b5482"
+    },
+    {
+      "path": "Common/Textures/Things/Apparel/SexSlaveClothes/EFOutfit_Female_north.png",
+      "bytes": 73946,
+      "sha256": "a6cf088955e6ac681ea169d51a7e56b98c83d89b72a348bd164e1a4f4a5eb601"
+    },
+    {
+      "path": "Common/Textures/Things/Apparel/SexSlaveClothes/EFOutfit_Female_south_Glow.dds.zstd",
+      "bytes": 95160,
+      "sha256": "df5767d28940c8ede0844fbfcaf8dcb3a144ecc6fa7fc60e1d472f0f0e5e94aa"
+    },
+    {
+      "path": "Common/Textures/Things/Apparel/SexSlaveClothes/EFOutfit_Female_south_Glow.png",
+      "bytes": 133702,
+      "sha256": "432b34dc1e2e26298be41e20e3b2eccfb7537544d2901bf8c8b03210bca6f241"
+    },
+    {
+      "path": "Common/Textures/Things/Apparel/SexSlaveClothes/EFOutfit_Female_south.dds.zstd",
+      "bytes": 41303,
+      "sha256": "5ffba92224a2c1c2ac17c3f36f8bb38f412ed3d1059e131b6270070555a3fc61"
+    },
+    {
+      "path": "Common/Textures/Things/Apparel/SexSlaveClothes/EFOutfit_Female_south.png",
+      "bytes": 80275,
+      "sha256": "5cce05d348bbdc11efd909ea88e662d72751b7d4abc7cc6b8ccca66ac8c171c1"
+    },
+    {
+      "path": "Common/Textures/Things/Apparel/SexSlaveClothes/EFOutfit_Female.dds.zstd",
+      "bytes": 41303,
+      "sha256": "5ffba92224a2c1c2ac17c3f36f8bb38f412ed3d1059e131b6270070555a3fc61"
+    },
+    {
+      "path": "Common/Textures/Things/Apparel/SexSlaveClothes/EFOutfit_Female.png",
+      "bytes": 80275,
+      "sha256": "5cce05d348bbdc11efd909ea88e662d72751b7d4abc7cc6b8ccca66ac8c171c1"
+    },
+    {
+      "path": "Common/Textures/Things/Apparel/SexSlaveClothes/EFOutfit_Glow.dds.zstd",
+      "bytes": 95160,
+      "sha256": "df5767d28940c8ede0844fbfcaf8dcb3a144ecc6fa7fc60e1d472f0f0e5e94aa"
+    },
+    {
+      "path": "Common/Textures/Things/Apparel/SexSlaveClothes/EFOutfit_Glow.png",
+      "bytes": 133702,
+      "sha256": "432b34dc1e2e26298be41e20e3b2eccfb7537544d2901bf8c8b03210bca6f241"
+    },
+    {
+      "path": "Common/Textures/Things/Apparel/SexSlaveClothes/EFOutfit_Thin_east.dds.zstd",
+      "bytes": 25849,
+      "sha256": "a26a7bebe9187b4350a3d2752ae328d5b455067c96d3d79041e1d36f9ae6ff08"
+    },
+    {
+      "path": "Common/Textures/Things/Apparel/SexSlaveClothes/EFOutfit_Thin_east.png",
+      "bytes": 50406,
+      "sha256": "31b8b002885b9fa035662e8d92ed921be29aec43cc113c2509619974261d6160"
+    },
+    {
+      "path": "Common/Textures/Things/Apparel/SexSlaveClothes/EFOutfit_Thin_north.dds.zstd",
+      "bytes": 35731,
+      "sha256": "af4c0a0f87c0cc99529ea426b13240c551f1f56e17c7fc8edf29a84d849b5482"
+    },
+    {
+      "path": "Common/Textures/Things/Apparel/SexSlaveClothes/EFOutfit_Thin_north.png",
+      "bytes": 73946,
+      "sha256": "a6cf088955e6ac681ea169d51a7e56b98c83d89b72a348bd164e1a4f4a5eb601"
+    },
+    {
+      "path": "Common/Textures/Things/Apparel/SexSlaveClothes/EFOutfit_Thin_south.dds.zstd",
+      "bytes": 41303,
+      "sha256": "5ffba92224a2c1c2ac17c3f36f8bb38f412ed3d1059e131b6270070555a3fc61"
+    },
+    {
+      "path": "Common/Textures/Things/Apparel/SexSlaveClothes/EFOutfit_Thin_south.png",
+      "bytes": 80275,
+      "sha256": "5cce05d348bbdc11efd909ea88e662d72751b7d4abc7cc6b8ccca66ac8c171c1"
+    },
+    {
+      "path": "Common/Textures/Things/Apparel/SexSlaveClothes/EFOutfit_Thin.dds.zstd",
+      "bytes": 41303,
+      "sha256": "5ffba92224a2c1c2ac17c3f36f8bb38f412ed3d1059e131b6270070555a3fc61"
+    },
+    {
+      "path": "Common/Textures/Things/Apparel/SexSlaveClothes/EFOutfit_Thin.png",
+      "bytes": 80275,
+      "sha256": "5cce05d348bbdc11efd909ea88e662d72751b7d4abc7cc6b8ccca66ac8c171c1"
+    },
+    {
+      "path": "Common/Textures/Things/Apparel/SexSlaveClothes/EFOutfit.dds.zstd",
+      "bytes": 41303,
+      "sha256": "5ffba92224a2c1c2ac17c3f36f8bb38f412ed3d1059e131b6270070555a3fc61"
+    },
+    {
+      "path": "Common/Textures/Things/Apparel/SexSlaveClothes/EFOutfit.png",
+      "bytes": 80275,
+      "sha256": "5cce05d348bbdc11efd909ea88e662d72751b7d4abc7cc6b8ccca66ac8c171c1"
+    },
+    {
+      "path": "Common/Textures/Things/Item/Equipment/Gun_PNA_Low.dds.zstd",
+      "bytes": 43337,
+      "sha256": "bfc564bc72dcb17ccc2931cee9f56ef6560bb91b9762a82add5448871963aceb"
+    },
+    {
+      "path": "Common/Textures/Things/Item/Equipment/Gun_PNA_Low.png",
+      "bytes": 53757,
+      "sha256": "7e2676afb69c0c7238323674c355b64b63088f28b28866912d5eb2485913af58"
+    },
+    {
+      "path": "Common/Textures/Things/Item/PersonalitySlime_Edited.dds.zstd",
+      "bytes": 85572,
+      "sha256": "5a15df2dc111cb2693b5f23ff4a41b1d7622a80110508ffb07a7a40b3476cb40"
+    },
+    {
+      "path": "Common/Textures/Things/Item/PersonalitySlime_Edited.png",
+      "bytes": 138897,
+      "sha256": "f46774ac0760b7e28504e5528900f426c987f73b9efa8e35cd80bc9387008fc8"
+    },
+    {
+      "path": "Common/Textures/Things/Item/PersonalitySlime_PLUS_Edited.dds.zstd",
+      "bytes": 86064,
+      "sha256": "5b91042f98018381689fc2ec4e89d2674e62aa627e398bd9c84974e764e5d4a7"
+    },
+    {
+      "path": "Common/Textures/Things/Item/PersonalitySlime_PLUS_Edited.png",
+      "bytes": 137516,
+      "sha256": "27a6927f0c92ff41a492a7a7e5ec12bab49d6984e52126fb81713c368e437530"
+    },
+    {
+      "path": "Common/Textures/Things/Item/PersonalitySlime_PLUS_ULTRA_Edited.dds.zstd",
+      "bytes": 91710,
+      "sha256": "3a1c342409ad87769dfe31803f7b6784cc9eecdec0027b68b646fb2b94a8cbc1"
+    },
+    {
+      "path": "Common/Textures/Things/Item/PersonalitySlime_PLUS_ULTRA_Edited.png",
+      "bytes": 144893,
+      "sha256": "61add2d9efc7dfe3d75cfd578c4b38a84855280bd485bff6e478cb37442f7f61"
+    },
+    {
+      "path": "Common/Textures/Things/Item/PersonalitySlime_PLUS_ULTRA.dds.zstd",
+      "bytes": 166521,
+      "sha256": "919097009748ac83a679e237cbf36d7ec7ac94cd0fa6dbf340de4af5c4b57914"
+    },
+    {
+      "path": "Common/Textures/Things/Item/PersonalitySlime_PLUS_ULTRA.png",
+      "bytes": 196658,
+      "sha256": "be91a4d1e201df4d3ad9a082301238c00ffe89bce25b1088d0969fa8a705489d"
+    },
+    {
+      "path": "Common/Textures/Things/Item/PersonalitySlime_PLUS.dds.zstd",
+      "bytes": 163220,
+      "sha256": "aa22a0108863751bd9ca5a062f0808ebf62bc7423323a6cb5d0b84befa6fb700"
+    },
+    {
+      "path": "Common/Textures/Things/Item/PersonalitySlime_PLUS.png",
+      "bytes": 191241,
+      "sha256": "2df03cebadff739efb8aec05c3682992b144e39a1dd4bae08fa3cbb902deecd9"
+    },
+    {
+      "path": "Common/Textures/Things/Item/PersonalitySlime_ULTRA_Edited.dds.zstd",
+      "bytes": 91733,
+      "sha256": "82200333993cc0dd8d7794a3ebfbf55a482d281fba9af6602a149aed0bb28543"
+    },
+    {
+      "path": "Common/Textures/Things/Item/PersonalitySlime_ULTRA_Edited.png",
+      "bytes": 143681,
+      "sha256": "45444a3bdd66e0fb3f278898ea6a755cce58d7b084c674522d8534ae129616ce"
+    },
+    {
+      "path": "Common/Textures/Things/Item/PersonalitySlime_ULTRA.dds.zstd",
+      "bytes": 165372,
+      "sha256": "97df023166072cd443c50fabc69a6253e05c00f29aba33722a0978cf718346df"
+    },
+    {
+      "path": "Common/Textures/Things/Item/PersonalitySlime_ULTRA.png",
+      "bytes": 193035,
+      "sha256": "bc9bde0d0bca2e821be9dd358912d2f3ab6bc16adf474671edeb9cee22f5fd0c"
+    },
+    {
+      "path": "Common/Textures/Things/Item/PersonalitySlime.dds.zstd",
+      "bytes": 161048,
+      "sha256": "34a7c36414447b6df9cc918d8052ffd363096a922971f64c0f1307bf1f781bb9"
+    },
+    {
+      "path": "Common/Textures/Things/Item/PersonalitySlime.png",
+      "bytes": 187044,
+      "sha256": "a194c22082c906d7255a2540f5215397202e89ab0d10d0b55171103b096e9c4a"
+    },
+    {
+      "path": "Common/Textures/Things/Item/PNA_PLUS/PNA_PLUS_a.dds.zstd",
+      "bytes": 47205,
+      "sha256": "0419bbeaa1f902114e3da151e779e1d87457c8664668b390f95cf39a82a4f269"
+    },
+    {
+      "path": "Common/Textures/Things/Item/PNA_PLUS/PNA_PLUS_a.png",
+      "bytes": 59168,
+      "sha256": "f4381c7b7ccb65e43efb0dd886992f35c6951f9563c4d41fde7a5f4e73524a0d"
+    },
+    {
+      "path": "Common/Textures/Things/Item/PNA_PLUS/PNA_PLUS_b.dds.zstd",
+      "bytes": 70270,
+      "sha256": "dc2301368cb3ef3cd84aa679f57ac43803e4f177ba11f14c5f1f4828e3d833e3"
+    },
+    {
+      "path": "Common/Textures/Things/Item/PNA_PLUS/PNA_PLUS_b.png",
+      "bytes": 89096,
+      "sha256": "faa80a8ba529dbbd28ff66e4069d5fde5e9a772b08d7996b912fe6c4dfaf69ba"
+    },
+    {
+      "path": "Common/Textures/Things/Item/PNA_PLUS/PNA_PLUS_c.dds.zstd",
+      "bytes": 98207,
+      "sha256": "b9c54ac2cf97b14691ada64404fe213d43c058854ff50b64243946aec867d17f"
+    },
+    {
+      "path": "Common/Textures/Things/Item/PNA_PLUS/PNA_PLUS_c.png",
+      "bytes": 111785,
+      "sha256": "c7354c895acf9a6dde878159dd442ded68917f4c4dea2d953b0e85421fb23771"
+    },
+    {
+      "path": "Common/Textures/Things/Item/PNA_PLUS/PNA_PLUS.dds.zstd",
+      "bytes": 98207,
+      "sha256": "b9c54ac2cf97b14691ada64404fe213d43c058854ff50b64243946aec867d17f"
+    },
+    {
+      "path": "Common/Textures/Things/Item/PNA_PLUS/PNA_PLUS.png",
+      "bytes": 111785,
+      "sha256": "c7354c895acf9a6dde878159dd442ded68917f4c4dea2d953b0e85421fb23771"
+    },
+    {
+      "path": "Common/Textures/Things/Item/PNA/PNA_a.dds.zstd",
+      "bytes": 59369,
+      "sha256": "e5021f9ddd6feded89701db0314b76de149f5ea1c047a0f28dc1fe4ee58ff920"
+    },
+    {
+      "path": "Common/Textures/Things/Item/PNA/PNA_a.png",
+      "bytes": 69513,
+      "sha256": "caf4a084ed989db64a8a31c1b2781cf42e75b69676ae5300490436e1c6208475"
+    },
+    {
+      "path": "Common/Textures/Things/Item/PNA/PNA_b.dds.zstd",
+      "bytes": 87373,
+      "sha256": "f48bc657700942e0a376c6b41564c53eeeb7d84458ecf6cb0dfb7ee7b2cf07aa"
+    },
+    {
+      "path": "Common/Textures/Things/Item/PNA/PNA_b.png",
+      "bytes": 104920,
+      "sha256": "50623266a75634def215c54a8c648e87ce2e42850f040111f95220b98dfdc5d8"
+    },
+    {
+      "path": "Common/Textures/Things/Item/PNA/PNA_c.dds.zstd",
+      "bytes": 115425,
+      "sha256": "f13f3eb18ace6ebab1e4434a29673d84bcb1d2941eae9d72100bc81ea7390a40"
+    },
+    {
+      "path": "Common/Textures/Things/Item/PNA/PNA_c.png",
+      "bytes": 125518,
+      "sha256": "6be8b7f4045734cadcebef4a7b48ab86f3bf77e2de50d6643c798e8f8281c154"
+    },
+    {
+      "path": "Common/Textures/Things/Item/PNA/PNA.dds.zstd",
+      "bytes": 115425,
+      "sha256": "f13f3eb18ace6ebab1e4434a29673d84bcb1d2941eae9d72100bc81ea7390a40"
+    },
+    {
+      "path": "Common/Textures/Things/Item/PNA/PNA.png",
+      "bytes": 125518,
+      "sha256": "6be8b7f4045734cadcebef4a7b48ab86f3bf77e2de50d6643c798e8f8281c154"
+    },
+    {
+      "path": "Common/Textures/Things/Item/SSC_DesireSeed.png",
+      "bytes": 946728,
+      "sha256": "fd383470b53f0039ca83140548da058539381b93b699c2ef189ab3e048e947ac"
+    },
+    {
+      "path": "Common/Textures/Things/Pawn/Hediff/yinwen_east.dds.zstd",
+      "bytes": 1797,
+      "sha256": "f6f0eaba9e124b388506a49b90d62d5e500eb2999b0f194811f70bec39d4c8a0"
+    },
+    {
+      "path": "Common/Textures/Things/Pawn/Hediff/yinwen_east.png",
+      "bytes": 5357,
+      "sha256": "4ee858a82ed222402b0f5d6ea2dc6a3cafee09504c2c9a2a5fd604e5e5d62e30"
+    },
+    {
+      "path": "Common/Textures/Things/Pawn/Hediff/yinwen_north.dds.zstd",
+      "bytes": 127,
+      "sha256": "26348831156e59671a2d2ec791d6a32a8b0c97ed32a000e4762e78d575731312"
+    },
+    {
+      "path": "Common/Textures/Things/Pawn/Hediff/yinwen_north.png",
+      "bytes": 2219,
+      "sha256": "f652b4e313410325828f574c87de3c9ae3ca0c1d0ae3493485e11b4e2e540506"
+    },
+    {
+      "path": "Common/Textures/Things/Pawn/Hediff/yinwen_south.dds.zstd",
+      "bytes": 2117,
+      "sha256": "221943875c87ac23b7a33026a786954916d9109613d87fc271a189773c4cc84c"
+    },
+    {
+      "path": "Common/Textures/Things/Pawn/Hediff/yinwen_south.png",
+      "bytes": 6511,
+      "sha256": "c0c0ae37745c9cca627145b9879729eac8ccd4c2b79edac35cdcffd285aaf530"
+    },
+    {
+      "path": "Common/Textures/Things/Pawn/Hediff/yinwen.dds.zstd",
+      "bytes": 2117,
+      "sha256": "221943875c87ac23b7a33026a786954916d9109613d87fc271a189773c4cc84c"
+    },
+    {
+      "path": "Common/Textures/Things/Pawn/Hediff/yinwen.png",
+      "bytes": 6511,
+      "sha256": "c0c0ae37745c9cca627145b9879729eac8ccd4c2b79edac35cdcffd285aaf530"
+    },
+    {
+      "path": "Common/Textures/UI/common.dds.zstd",
+      "bytes": 11059,
+      "sha256": "b3ee4bafe729dc5dc57885374aa51ad8e99edf1c62cb8befd3582f1e6cc2eb59"
+    },
+    {
+      "path": "Common/Textures/UI/common.png",
+      "bytes": 14515,
+      "sha256": "e81d1bafa9b926a2491dc8b5c35588c094799b099460aa0f86b90cd10d142a45"
+    },
+    {
+      "path": "Common/Textures/UI/Icons/Abilities/SSC_CombatOverdrive.png",
+      "bytes": 1029689,
+      "sha256": "cadf710277da476b4deba33315e65ddfbb41b0a53999946d6afdf20652781003"
+    },
+    {
+      "path": "Common/Textures/UI/Icons/Ritual.dds.zstd",
+      "bytes": 11059,
+      "sha256": "b3ee4bafe729dc5dc57885374aa51ad8e99edf1c62cb8befd3582f1e6cc2eb59"
+    },
+    {
+      "path": "Common/Textures/UI/Icons/Ritual.png",
+      "bytes": 14515,
+      "sha256": "e81d1bafa9b926a2491dc8b5c35588c094799b099460aa0f86b90cd10d142a45"
+    },
+    {
+      "path": "Common/Textures/UI/Icons/RitualRole_Host.png",
+      "bytes": 4489,
+      "sha256": "91457daf4ae6328416dbf23cda37e52991807704b6c7b55ee202fc5226b67dce"
+    },
+    {
+      "path": "Common/Textures/UI/Icons/RitualRole_Target.png",
+      "bytes": 4333,
+      "sha256": "fbe70b74d24bde42d552ba3986bac0781ccb762c3fd10f8865af18cc3bed10a9"
+    },
+    {
+      "path": "Common/Textures/UI/Icons/Toggle/Icon_Disabled.dds.zstd",
+      "bytes": 11397,
+      "sha256": "2c38fc6ded27db1c88a3feb710bdc357f326dec09d70d21b4a541a5eca51e329"
+    },
+    {
+      "path": "Common/Textures/UI/Icons/Toggle/Icon_Disabled.png",
+      "bytes": 9699,
+      "sha256": "7f3011c2436ff2cfc0eea6c8f60d8060dc2656b82ccf56a2ee99b28cfbd017e2"
+    },
+    {
+      "path": "Common/Textures/UI/Icons/Toggle/Icon_Enabled.dds.zstd",
+      "bytes": 8438,
+      "sha256": "01b83352f4a08508de810ce396f82455063ed15ecd415bfcbe88a3ab4f654c95"
+    },
+    {
+      "path": "Common/Textures/UI/Icons/Toggle/Icon_Enabled.png",
+      "bytes": 7313,
+      "sha256": "68cb1a5ede8ac3a819476c8e5638219ae43256daa7016b558014620203036878"
+    },
+    {
+      "path": "Common/Textures/UI/Icons/Training/Icon_Anal.dds.zstd",
+      "bytes": 76916,
+      "sha256": "6fdec3744f617f03555cb89afbe62d6522f958f5a7c18147f4531b4e57213bf5"
+    },
+    {
+      "path": "Common/Textures/UI/Icons/Training/Icon_Anal.png",
+      "bytes": 50203,
+      "sha256": "87f11c462399a487ae9a214f2076b40046e5fc5f62cf6da8777cd6a21332c586"
+    },
+    {
+      "path": "Common/Textures/UI/Icons/Training/Icon_Auto.dds.zstd",
+      "bytes": 11059,
+      "sha256": "b3ee4bafe729dc5dc57885374aa51ad8e99edf1c62cb8befd3582f1e6cc2eb59"
+    },
+    {
+      "path": "Common/Textures/UI/Icons/Training/Icon_Auto.png",
+      "bytes": 14515,
+      "sha256": "e81d1bafa9b926a2491dc8b5c35588c094799b099460aa0f86b90cd10d142a45"
+    },
+    {
+      "path": "Common/Textures/UI/Icons/Training/Icon_Breasts.dds.zstd",
+      "bytes": 76099,
+      "sha256": "b8f39e8361ae0868e731f452fc15e9fe74ecd370b32b2311327d87ecf4a92576"
+    },
+    {
+      "path": "Common/Textures/UI/Icons/Training/Icon_Breasts.png",
+      "bytes": 66914,
+      "sha256": "0f705fbc716c3c8c3eb64148ef168b3fe71182130ebd7b3f6219bd5cb7388f05"
+    },
+    {
+      "path": "Common/Textures/UI/Icons/Training/Icon_Foot.dds.zstd",
+      "bytes": 80789,
+      "sha256": "edcf3ffe57ae6a728edea88c573e1cfaa1f05f7ab1b2709723b0ebee86bc3259"
+    },
+    {
+      "path": "Common/Textures/UI/Icons/Training/Icon_Foot.png",
+      "bytes": 41495,
+      "sha256": "4427d0c9e0e56e962c249bb4eb847bd7728f3458cfa4f01a5b066233111dfeea"
+    },
+    {
+      "path": "Common/Textures/UI/Icons/Training/Icon_Hand.dds.zstd",
+      "bytes": 7304,
+      "sha256": "b0d481edbca3c878a8832c5ddbf6a8d159f79601f651973a00df310b2ff7be3e"
+    },
+    {
+      "path": "Common/Textures/UI/Icons/Training/Icon_Hand.png",
+      "bytes": 7977,
+      "sha256": "75c543747b1a5100f5699987fe4fd7457fb0d1fa559953d321b0b229d5a5fd85"
+    },
+    {
+      "path": "Common/Textures/UI/Icons/Training/Icon_Oral.dds.zstd",
+      "bytes": 5998,
+      "sha256": "46c4c947d3f656918336aaa58f20c4bed060f5fa7c6a874426b0056dc143ae63"
+    },
+    {
+      "path": "Common/Textures/UI/Icons/Training/Icon_Oral.png",
+      "bytes": 4626,
+      "sha256": "e8162e55dce6978ce1547bddf727ab487fdfd5bce6b2256d7edd248e802bdc6c"
+    },
+    {
+      "path": "Common/Textures/UI/Icons/Training/Icon_Vaginal.dds.zstd",
+      "bytes": 75960,
+      "sha256": "fed02be9a7962afd190b96f4272b0fda8891995d81aa8837d77fee6dfbe44fb0"
+    },
+    {
+      "path": "Common/Textures/UI/Icons/Training/Icon_Vaginal.png",
+      "bytes": 44659,
+      "sha256": "8ff48e9e0ae951dba31d0ec28e9117f0416018cf18ffb0de26be4a60ae48b5d9"
+    }
+  ],
+  "excludedDevelopmentAssets": [
+    {
+      "originalPath": "Textures/Things/Item/未标题-1.psd",
+      "sourcePath": "Source/Art/Textures/Things/Item/未标题-1.psd",
+      "bytes": 371924,
+      "sha256": "27b0cfbb2e00814d60eb323f078e2a68d3b168f81ed72289e47129a60bf5ca9f",
+      "reason": "Photoshop source asset, excluded from runtime and release ZIP."
+    }
+  ]
+}

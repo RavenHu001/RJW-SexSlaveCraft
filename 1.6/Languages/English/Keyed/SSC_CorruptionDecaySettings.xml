@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <SSC_Setting_EnableCorruptionDecay>Enable Corruption decay</SSC_Setting_EnableCorruptionDecay>
+  <SSC_Setting_EnableCorruptionDecay_Desc>When disabled, Corruption does not naturally decrease. Apparel floors and Sex Slave Chain caps still apply.</SSC_Setting_EnableCorruptionDecay_Desc>
+  <SSC_Setting_CorruptionDecayPerDay>Base Corruption decay per day: {0}%</SSC_Setting_CorruptionDecayPerDay>
+  <SSC_Setting_CorruptionDecayPerDay_Desc>Sets the base amount of Corruption lost per day before Sex need, recent Training score, opinion, Chain stage, body-part development, apparel, and health modifiers are applied. Default: 2%.</SSC_Setting_CorruptionDecayPerDay_Desc>
+</LanguageData>

@@ -217,9 +217,9 @@ internal static partial class Program
             foreach (string language in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" })
             {
                 string relative = $"Languages/{language}/Keyed/SSC_Identity.xml";
-                var xml = XDocument.Load(Path.Combine(repo, relative));
+                var xml = XDocument.Load(SscTestPaths.Combine(repo, relative));
                 foreach (string key in keys) Assert(!string.IsNullOrWhiteSpace(xml.Root.Element(key)?.Value));
-                Assert(File.ReadAllText(Path.Combine(repo, relative)) == File.ReadAllText(Path.Combine(repo, "Sexslavecraft", relative)));
+                Assert(File.ReadAllText(SscTestPaths.Combine(repo, relative)) == File.ReadAllText(SscTestPaths.Combine(repo, "Sexslavecraft", relative)));
             }
         });
     }

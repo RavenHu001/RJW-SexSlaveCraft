@@ -17,12 +17,16 @@
 从仓库根目录执行，替换本机 net9.0 Harmony 路径；需要 PowerShell 7、.NET SDK 9（或更新 SDK）及 .NET 9 运行时：
 
 ```powershell
-pwsh -File Scripts/Test-All.ps1 -HarmonyAssemblyPath 'C:\Dependencies\Harmony\net9.0\0Harmony.dll'
+pwsh -File Scripts/Test-All.ps1 -GameVersion 1.7 -HarmonyAssemblyPath 'C:\Dependencies\Harmony\net9.0\0Harmony.dll'
 ```
 
-统一入口先分别执行只读 Def 和 Languages 镜像检查。Def 检查遍历 `Sexslavecraft/Defs` 中现有文件，要求根目录对应源存在、SHA-256 一致且 XML 可解析；根目录独有文件不要求新增镜像，目录缺失或镜像集合为空也会失败。Languages 检查要求根目录与 `Sexslavecraft/Languages` 的完整文件集合和哈希一致，拒绝缺失、差异、镜像独有文件、缺目录及空源集合。两个检查始终分别执行和记录；任一失败会将机制套件标为 `NotRun` 并阻止打包，不自动同步文件。
+统一入口先运行 `Test-ModLayout.ps1`，核对 `LoadFolders.xml`、两版运行目录及冻结的 2.4.1 文件哈希，再分别执行只读 Def 和 Languages 镜像检查。默认 `GameVersion` 为 `1.7`。Def 检查遍历 `Sexslavecraft/Defs` 中现有文件，要求 `1.7/Defs` 对应源存在、SHA-256 一致且 XML 可解析；运行目录独有文件不要求新增镜像，目录缺失或镜像集合为空也会失败。Languages 检查要求 `1.7/Languages` 与 `Sexslavecraft/Languages` 的完整文件集合和哈希一致，拒绝缺失、差异、镜像独有文件、缺目录及空源集合。两个检查始终分别执行和记录；布局或资源检查失败会将机制套件标为 `NotRun` 并阻止打包，不自动同步文件。
 
-可单独执行 `pwsh -File Scripts/Test-DefMirrors.ps1` 或 `pwsh -File Scripts/Sync-LanguagesMirror.ps1`。两者均支持 `-RepositoryRoot` 与 `-PassThru`；语言同步仍须显式加 `-Sync`。统一报告位于 `.builds/validation/`，分别生成 `DefMirrors.log`、`LanguagesMirrors.log`，并在 `summary.json` 的 `Checks` 中按 `DefMirrors`／`LanguagesMirrors` 登记状态、文件数、原因和日志路径，合计字段为 `CheckCount`、`PassedChecks`、`FailedChecks`。镜像检查不计入机制套件或用例数。测试桩与自动回归不能替代游戏内流程、动画及真实存档往返验收。
+可单独执行 `pwsh -File Scripts/Test-DefMirrors.ps1` 或 `pwsh -File Scripts/Sync-LanguagesMirror.ps1`。两者均支持 `-RepositoryRoot`、`-GameVersion`、`-RuntimeRoot` 与 `-PassThru`；语言同步仍须显式加 `-Sync`，且仅允许以 `1.7/Languages` 为源，不能同步冻结的 1.6 内容。统一报告位于 `.builds/validation/`，分别生成 `DefMirrors.log`、`LanguagesMirrors.log`，并在 `summary.json` 的 `Checks` 中按 `DefMirrors`／`LanguagesMirrors` 登记状态、文件数、原因和日志路径，合计字段为 `CheckCount`、`PassedChecks`、`FailedChecks`。布局结果另记在 `LayoutValidation`，不计入两项资源检查。
+
+`pwsh -File Scripts/Test-All.ps1 -GameVersion 1.6` 只验证冻结文件哈希与该版 Def／Languages XML，不比较当前源码镜像、不编译或运行当前源码套件，报告 `SuiteCount = 0`。`SourceValidationScope` 明确区分这项资源检查与 1.7 的 33 套当前源码模型回归；都不能替代游戏内流程、动画及真实存档往返验收。
+
+单套测试传入的目录参数仍为仓库根目录。`Tests/Shared/TestPaths.cs` 将源码解析到 `Sexslavecraft/`，运行资源默认解析到 `1.7/`，贴图解析到 `Common/Textures/` 并优先使用版本目录中的同名覆盖。需要独立资源夹具时可设置 `SSC_TEST_REPOSITORY_ROOT`、`SSC_TEST_RUNTIME_ROOT`、`SSC_TEST_COMMON_ROOT`；统一入口仅在本次调用期间设置这些进程环境变量，结束或失败后恢复原值。`RitualProgression` 保留显式 XML 文件参数。
 
 ## 主人资格与成长（2.4.0）
 

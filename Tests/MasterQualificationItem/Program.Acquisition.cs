@@ -16,7 +16,7 @@ internal static partial class Program
     private static void RunAcquisitionDefinitions()
     {
         Run("模块仅由奖励获取，停用商人库存且不受研究或 DLC 控制", () => {
-            var item = XDocument.Load(Path.Combine(root, "Defs/ThingsDefs/SSC_MasterQualificationItem.xml")).Root.Element("ThingDef");
+            var item = XDocument.Load(SscTestPaths.Combine(root, "Defs/ThingsDefs/SSC_MasterQualificationItem.xml")).Root.Element("ThingDef");
             Check((string)item.Element("tradeability") == "Sellable" && item.Element("tradeTags") == null);
             Check(item.Element("thingSetMakerTags").Elements("li").Select(x => x.Value).SequenceEqual(new[] { "RewardStandardHighFreq" }));
             Check((int)item.Element("minRewardCount") == 1 && (int)item.Element("stackLimit") == 10);
@@ -63,7 +63,7 @@ internal static partial class Program
             ApplySources(defs);
             Check(untouched.SequenceEqual(defs.SelectNodes("/Defs/*[defName='OtherLoot' or defName='SSC_RES_BasicTraining' or defName='Techprint_SSC_RES_BasicTraining']")
                 .Cast<XmlNode>().Select(x => x.OuterXml)));
-            var patch = XDocument.Load(Path.Combine(root, "Patches/SSC_MasterQualificationSources.xml"));
+            var patch = XDocument.Load(SscTestPaths.Combine(root, "Patches/SSC_MasterQualificationSources.xml"));
             Check(!patch.Descendants().Attributes().Any(x => x.Name == "MayRequire"));
             Check(patch.Descendants("value").Descendants("li").Where(x => !x.HasElements).All(x => x.Value == ModuleName));
         });
@@ -114,7 +114,7 @@ internal static partial class Program
         Check(option.SelectNodes("thingSetMaker/fixedParams/filter/thingDefs/li").Count == 1);
     }
     private static XmlDocument LoadPatch()
-    { var doc = new XmlDocument(); doc.Load(Path.Combine(root, "Patches/SSC_MasterQualificationSources.xml")); return doc; }
+    { var doc = new XmlDocument(); doc.Load(SscTestPaths.Combine(root, "Patches/SSC_MasterQualificationSources.xml")); return doc; }
     private static void ApplySources(XmlDocument defs) => Check(ApplyPatch(LoadPatch().SelectSingleNode("/Patch/Operation"), defs));
 
     /// <summary>仅实现本文件使用的 XML 操作子集，核对 XPath 和追加语义；原版 Apply 另由实库审计执行。</summary>

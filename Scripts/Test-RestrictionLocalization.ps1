@@ -4,17 +4,22 @@
 检查四种语言的行为限制文本完整性和格式参数。
 #>
 [CmdletBinding()]
-param()
+param(
+    [string]$RepositoryRoot = (Join-Path $PSScriptRoot '..'),
+    [ValidateSet('1.6', '1.7')][string]$GameVersion = '1.7',
+    [string]$RuntimeRoot
+)
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
-$repoRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
+$repoRoot = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($RepositoryRoot)
+if (-not $RuntimeRoot) { $RuntimeRoot = Join-Path $repoRoot $GameVersion }
 $languages = @('English', 'ChineseSimplified', 'ChineseTraditional', 'Russian')
 $reference = $null
 
 foreach ($language in $languages) {
-    $path = Join-Path $repoRoot "Languages/$language/Keyed/SSC_Restrictions.xml"
+    $path = Join-Path $RuntimeRoot "Languages/$language/Keyed/SSC_Restrictions.xml"
     if (-not (Test-Path -LiteralPath $path -PathType Leaf)) {
         throw "Missing $language restriction translation: $path"
     }

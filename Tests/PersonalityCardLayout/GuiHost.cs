@@ -242,7 +242,7 @@ namespace SexSlaveCraft
         public static void Load(string root, string language)
         {
             translations = new[] { "SSC_Keys.xml", "SSC_MasterQualification.xml" }
-                .SelectMany(file => XDocument.Load(Path.Combine(root, "Languages", language, "Keyed", file)).Root.Elements())
+                .SelectMany(file => XDocument.Load(SscTestPaths.Combine(root, "Languages", language, "Keyed", file)).Root.Elements())
                 .GroupBy(element => element.Name.LocalName).ToDictionary(group => group.Key, group => group.First().Value);
         }
         public static string TranslateKey(string key) => translations[key];

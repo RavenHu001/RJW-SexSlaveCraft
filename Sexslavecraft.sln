@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
 VisualStudioVersion = 18.1.11312.151 d18.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SexSlaveCraft_Alpha", "Sexslavecraft\SexSlaveCraft_Alpha.csproj", "{A976764E-5D38-4008-9E0C-591491B4B33B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SexSlaveCraft_1.6_Historical", "Sexslavecraft\SexSlaveCraft_Alpha.csproj", "{A976764E-5D38-4008-9E0C-591491B4B33B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SexSlaveCraft_1.7", "Sexslavecraft\SexSlaveCraft_1.7.csproj", "{130B060C-C698-45FA-A936-541ED4D98DBE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -12,9 +14,11 @@ Global
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{A976764E-5D38-4008-9E0C-591491B4B33B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A976764E-5D38-4008-9E0C-591491B4B33B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A976764E-5D38-4008-9E0C-591491B4B33B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A976764E-5D38-4008-9E0C-591491B4B33B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{130B060C-C698-45FA-A936-541ED4D98DBE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{130B060C-C698-45FA-A936-541ED4D98DBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{130B060C-C698-45FA-A936-541ED4D98DBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{130B060C-C698-45FA-A936-541ED4D98DBE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

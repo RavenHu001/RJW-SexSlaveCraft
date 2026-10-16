@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Patch>
+  <!-- 神器参照方案：只追加模块候选，保留原版组概率/权重；个人入口不按研究或蓝图状态过滤。 -->
+  <Operation Class="PatchOperationSequence">
+    <operations>
+      <!-- Core 神殿并入既有高价值组（含复活液/人格核心等），删除旧方案的独立 35% 模块分支。 -->
+      <li Class="PatchOperationAdd">
+        <xpath>Defs/ThingSetMakerDef[defName="MapGen_AncientTempleContents"]/root[@Class="ThingSetMaker_Sum"]/options/li[thingSetMaker/fixedParams/filter/thingDefs/li="MechSerumResurrector"]/thingSetMaker/fixedParams/filter/thingDefs</xpath>
+        <value><li>SSC_MasterQualificationItem</li></value>
+      </li>
+      <!-- Core 普通房间没有心灵枪组，用 0.05/23≈0.002 的单件神器权重保留跨 DLC 稀有入口。 -->
+      <li Class="PatchOperationAdd">
+        <xpath>Defs/ThingSetMakerDef[defName="MapGen_AncientComplexRoomLoot_Default"]/root[@Class="ThingSetMaker_RandomOption"]/options</xpath>
+        <value>
+          <li>
+            <weight>0.002</weight>
+            <thingSetMaker Class="ThingSetMaker_StackCount">
+              <fixedParams>
+                <filter><thingDefs><li>SSC_MasterQualificationItem</li></thingDefs></filter>
+                <countRange>1</countRange>
+              </fixedParams>
+            </thingSetMaker>
+          </li>
+        </value>
+      </li>
+      <!-- Ideology 增强房间并入原版心灵枪组：组权重仍为 0.05，模块与有效候选共同抽取一个。 -->
+      <li Class="PatchOperationConditional">
+        <xpath>Defs/ThingSetMakerDef[defName="MapGen_AncientComplexRoomLoot_Better"]/root/options/li[thingSetMaker/fixedParams/filter/thingDefs/li="Apparel_PsychicShockLance"]/thingSetMaker/fixedParams/filter/thingDefs</xpath>
+        <match Class="PatchOperationAdd">
+          <xpath>Defs/ThingSetMakerDef[defName="MapGen_AncientComplexRoomLoot_Better"]/root/options/li[thingSetMaker/fixedParams/filter/thingDefs/li="Apparel_PsychicShockLance"]/thingSetMaker/fixedParams/filter/thingDefs</xpath>
+          <value><li>SSC_MasterQualificationItem</li></value>
+        </match>
+      </li>
+      <!-- Ideology 安全箱同样并入心灵枪组，保留其较高的组权重 0.5，不单独增加模块分支。 -->
+      <li Class="PatchOperationConditional">
+        <xpath>Defs/ThingSetMakerDef[defName="MapGen_AncientComplex_SecurityCrate"]/root/options/li[thingSetMaker/fixedParams/filter/thingDefs/li="Apparel_PsychicShockLance"]/thingSetMaker/fixedParams/filter/thingDefs</xpath>
+        <match Class="PatchOperationAdd">
+          <xpath>Defs/ThingSetMakerDef[defName="MapGen_AncientComplex_SecurityCrate"]/root/options/li[thingSetMaker/fixedParams/filter/thingDefs/li="Apparel_PsychicShockLance"]/thingSetMaker/fixedParams/filter/thingDefs</xpath>
+          <value><li>SSC_MasterQualificationItem</li></value>
+        </match>
+      </li>
+    </operations>
+  </Operation>
+</Patch>

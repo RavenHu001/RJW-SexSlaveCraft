@@ -15,8 +15,8 @@ internal static class Program
     /// <summary>使用实际 XML 参数验证生产组件，覆盖调用分段、停产和存档边界。</summary>
     private static int Main(string[] args)
     {
-        string root = args.Length == 0 ? Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../../../")) : Path.GetFullPath(args[0]);
-        XElement definition = XDocument.Load(Path.Combine(root, "Defs/HediffDefs/HediffOfTrain.xml")).Root.Elements("HediffDef")
+        string root = SscTestPaths.RepositoryRoot(args.Length > 0 ? args[0] : null);
+        XElement definition = XDocument.Load(SscTestPaths.Combine(root, "Defs/HediffDefs/HediffOfTrain.xml")).Root.Elements("HediffDef")
             .Single(def => (string)def.Element("defName") == "SSC_Lactating_SubState");
         XElement config = definition.Element("comps").Elements("li").Single(comp => (string)comp.Attribute("Class") == "SexSlaveCraft.HediffCompProperties_PermanentLactating");
         properties = new HediffCompProperties_PermanentLactating

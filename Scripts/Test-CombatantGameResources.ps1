@@ -4,26 +4,36 @@
 核对战斗员发布资源、四语和本机 RimWorld 组件构造。
 .DESCRIPTION
 在独立 pwsh 进程运行。GameRoot 指向已安装的 RimWorld，不下载或复制游戏程序集。
-读取根目录发布 XML 与已编译的模组 DLL；报告包含输入哈希、通过项和失败原因。
+读取所选版本发布 XML 与已编译的模组 DLL；报告包含输入哈希、通过项和失败原因。
+执行原版构造器需要兼容对应游戏运行时的 PowerShell 宿主；目录迁移本身不证明 1.7 API 兼容。
 只执行独立构造及 AbilityComp.Initialize，不运行完整 XML 加载、施法、战斗或 Scribe。
 #>
 [CmdletBinding()]
 param(
     [Parameter(Mandatory)][string]$GameRoot,
     [string]$RepositoryRoot = (Join-Path $PSScriptRoot '..'),
+    [ValidateSet('1.6', '1.7')][string]$GameVersion = '1.7',
+    [string]$RuntimeRoot,
+    [string]$GameAssemblyPath,
     [string]$ModAssemblyPath,
     [string]$ReportPath
 )
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 $repo = (Resolve-Path -LiteralPath $RepositoryRoot).Path
+if (-not $RuntimeRoot) { $RuntimeRoot = Join-Path $repo $GameVersion }
+$runtime = (Resolve-Path -LiteralPath $RuntimeRoot).Path
 $gameRootPath = (Resolve-Path -LiteralPath $GameRoot).Path
-if (!$ModAssemblyPath) { $ModAssemblyPath = Join-Path $repo 'Assemblies/Sexslavecraft.dll' }
+if (!$ModAssemblyPath) { $ModAssemblyPath = Join-Path $runtime 'Assemblies/Sexslavecraft.dll' }
 if (!$ReportPath) { $ReportPath = Join-Path $repo '.builds/combatant-stage5/game-resource-audit.json' }
 $reportFile = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($ReportPath)
-$gameDll = Join-Path $gameRootPath 'RimWorldWin64_Data/Managed/Assembly-CSharp.dll'
+if (-not $GameAssemblyPath) {
+    $GameAssemblyPath = Join-Path $gameRootPath $(if ($GameVersion -eq '1.7') { 'Assembly-CSharp.dll' } else { 'RimWorldWin64_Data/Managed/Assembly-CSharp.dll' })
+}
+$gameDll = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($GameAssemblyPath)
 $report = [ordered]@{
     StartedAtUtc = [DateTime]::UtcNow.ToString('o'); Success = $false
+    GameVersion = $GameVersion; RuntimeRoot = $runtime
     Scope = 'Production XML and real constructors / AbilityComp.Initialize. Not full game XML loading, Ability.Initialize, effect application, combat or Scribe.'
     Inputs = [ordered]@{}; Checks = [Collections.Generic.List[string]]::new(); Error = $null
 }
@@ -47,8 +57,9 @@ try {
     $languageDocs = @{}
     $xmlCount = 0
     foreach ($folder in @('About','Defs','Languages','Patches')) {
-        if ($folder -eq 'Patches' -and !(Test-Path -LiteralPath (Join-Path $repo $folder))) { continue }
-        foreach ($file in Get-ChildItem -LiteralPath (Join-Path $repo $folder) -Filter '*.xml' -Recurse -File) {
+        $folderRoot = Join-Path $(if ($folder -eq 'About') { $repo } else { $runtime }) $folder
+        if ($folder -eq 'Patches' -and !(Test-Path -LiteralPath $folderRoot)) { continue }
+        foreach ($file in Get-ChildItem -LiteralPath $folderRoot -Filter '*.xml' -Recurse -File) {
             $doc = Read-Xml $file.FullName
             $report.Inputs[$file.FullName] = (Get-FileHash -LiteralPath $file.FullName -Algorithm SHA256).Hash
             $xmlCount++
@@ -70,9 +81,13 @@ try {
     }
     $ability = SourceDef 'SSC_CombatOverdrive'
     # ContentFinder resolves iconPath relative to Textures, without the extension.
-    $textureRoot = [IO.Path]::GetFullPath((Join-Path $repo 'Textures'))
+    $textureRoot = [IO.Path]::GetFullPath((Join-Path $repo 'Common/Textures'))
     $iconFile = [IO.Path]::GetFullPath((Join-Path $textureRoot ((NodeText $ability 'iconPath') + '.png')))
     Require ($iconFile.StartsWith($textureRoot + [IO.Path]::DirectorySeparatorChar, [StringComparison]::OrdinalIgnoreCase)) 'Icon path escapes Textures'
+    $overrideRoot = [IO.Path]::GetFullPath((Join-Path $runtime 'Textures'))
+    $overrideIcon = [IO.Path]::GetFullPath((Join-Path $overrideRoot ((NodeText $ability 'iconPath') + '.png')))
+    Require ($overrideIcon.StartsWith($overrideRoot + [IO.Path]::DirectorySeparatorChar, [StringComparison]::OrdinalIgnoreCase)) 'Icon path escapes version Textures'
+    if (Test-Path -LiteralPath $overrideIcon -PathType Leaf) { $iconFile = $overrideIcon }
     Require (Test-Path -LiteralPath $iconFile -PathType Leaf) 'Missing Combat Overdrive icon'
     $report.Inputs[$iconFile] = (Get-FileHash -LiteralPath $iconFile -Algorithm SHA256).Hash
     Record 'Combat Overdrive texture reference'
@@ -120,7 +135,7 @@ try {
     $requiredKeys = @('SSC_ITab_SpecializationCombatant','SSC_ITab_SelectSpecializationCombatant','SSC_ITab_SpecializationCombatantDisabledIdentity','SSC_ITab_SpecializationCombatantDisabledResearch','SSC_ITab_SpecializationOrdinaryComplete','SSC_ITab_CombatantFinalizationTip','SSC_CombatOverdriveRequiresDrafted')
     foreach ($lang in @('ChineseSimplified','ChineseTraditional','English','Russian')) {
         $keys = @{}
-        foreach ($file in Get-ChildItem -LiteralPath (Join-Path $repo "Languages/$lang/Keyed") -Filter '*.xml' -Recurse -File) {
+        foreach ($file in Get-ChildItem -LiteralPath (Join-Path $runtime "Languages/$lang/Keyed") -Filter '*.xml' -Recurse -File) {
             foreach ($node in $languageDocs[$file.FullName].SelectNodes('/LanguageData/*')) {
                 Require (!$keys.ContainsKey($node.LocalName)) "Duplicate Keyed entry: $lang / $($node.LocalName)"
                 $keys[$node.LocalName] = $node.InnerText
@@ -130,7 +145,7 @@ try {
         if ($lang -eq 'ChineseSimplified') { continue }
         foreach ($kind in $translations.Keys) {
             $entries = @{}
-            foreach ($file in Get-ChildItem -LiteralPath (Join-Path $repo "Languages/$lang/DefInjected/$kind") -Filter '*.xml' -Recurse -File) {
+            foreach ($file in Get-ChildItem -LiteralPath (Join-Path $runtime "Languages/$lang/DefInjected/$kind") -Filter '*.xml' -Recurse -File) {
                 foreach ($node in $languageDocs[$file.FullName].SelectNodes('/LanguageData/*')) {
                     if ($node.LocalName -notin $translations[$kind]) { continue }
                     Require (!$entries.ContainsKey($node.LocalName)) "Duplicate combatant translation: $lang / $($node.LocalName)"

@@ -39,7 +39,7 @@ internal static class Program
     }
     private static int Main(string[] args)
     {
-        root=Path.GetFullPath(args.Length>0?args[0]:Path.Combine(AppContext.BaseDirectory,"../../../../.."));
+        root=SscTestPaths.RepositoryRoot(args.Length > 0 ? args[0] : null);
         foreach(float c in new[]{.29999f,.30f,.30001f})foreach(int o in new[]{-1,0,1})foreach(bool reverse in new[]{false,true})
             Run($"边界 C={c} O={o} reverse={reverse}",()=>{
                 var s=Scene(c,o);Complete(s.m,s.t,reverse:reverse);
@@ -173,18 +173,18 @@ internal static class Program
         Check(Mood.stages.Count==4&&Social.stages.Count==4);Near(Mood.durationDays,1);Near(Social.durationDays,3);
         Check(Mood.stackLimit==1&&Social.stackLimit==3&&Mood.stackLimitForSameOtherPawn==1&&Social.stackLimitForSameOtherPawn==1);
         Check(Mood.stages.Select(x=>x.baseMoodEffect).SequenceEqual(new float[]{4,-4,8,4}));Check(Social.stages.Select(x=>x.baseOpinionOffset).SequenceEqual(new float[]{5,-5,10,0}));
-        var source=File.ReadAllText(Path.Combine(root,"Sexslavecraft/common/StringAndDefOf.cs"));
+        var source=File.ReadAllText(SscTestPaths.Combine(root,"Sexslavecraft/common/StringAndDefOf.cs"));
         foreach(var name in new[]{Mood.defName,Social.defName})Check(source.Contains(name+" = GetDef<ThoughtDef>(\""+name+"\")"),"缺少显式静态初始化");
     }
     private static void Localization()
     {
-        string relative="Defs/ThoughtDefs/SSC_DesireInfestation.xml";Check(File.ReadAllBytes(Path.Combine(root,relative)).SequenceEqual(File.ReadAllBytes(Path.Combine(root,"Sexslavecraft",relative))));
+        string relative="Defs/ThoughtDefs/SSC_DesireInfestation.xml";Check(File.ReadAllBytes(SscTestPaths.Combine(root,relative)).SequenceEqual(File.ReadAllBytes(SscTestPaths.Combine(root,"Sexslavecraft",relative))));
         var reference=new HashSet<string>();foreach(var def in new[]{Mood,Social})for(int i=0;i<4;i++)foreach(var field in new[]{"label","description"})reference.Add(def.defName+".stages."+i+"."+field);
         foreach(var lang in new[]{"ChineseSimplified","ChineseTraditional","English","Russian"})
         {
             relative=$"Languages/{lang}/DefInjected/ThoughtDef/SSC_DesireInfestation.xml";
-            var doc=XDocument.Load(Path.Combine(root,relative));Check(reference.SetEquals(doc.Root.Elements().Select(x=>x.Name.LocalName)));Check(doc.Root.Elements().All(x=>!string.IsNullOrWhiteSpace(x.Value)));
-            Check(File.ReadAllBytes(Path.Combine(root,relative)).SequenceEqual(File.ReadAllBytes(Path.Combine(root,"Sexslavecraft",relative))));
+            var doc=XDocument.Load(SscTestPaths.Combine(root,relative));Check(reference.SetEquals(doc.Root.Elements().Select(x=>x.Name.LocalName)));Check(doc.Root.Elements().All(x=>!string.IsNullOrWhiteSpace(x.Value)));
+            Check(File.ReadAllBytes(SscTestPaths.Combine(root,relative)).SequenceEqual(File.ReadAllBytes(SscTestPaths.Combine(root,"Sexslavecraft",relative))));
         }
     }
 }

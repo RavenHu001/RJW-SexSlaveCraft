@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+  <HediffDef>
+    <defName>Hediff_GelatinizationTemporary</defName>
+    <label>半凝胶化处理中</label>
+    <labelNoun>半凝胶化处理</labelNoun>
+    <description>肢体正在进行半凝胶化改造。适应度和严重度在进行竞赛，适应度先达到 100% 则成功改造为凝胶义肢，严重度先达到 100% 则肢体毁坏。</description>
+    <hediffClass>SexSlaveCraft.Hediff_GelatinizationTemporary</hediffClass>
+    <defaultLabelColor>(0.2, 0.8, 0.5)</defaultLabelColor>
+    <isBad>true</isBad>
+    <initialSeverity>0.01</initialSeverity>
+    <maxSeverity>1</maxSeverity>
+    <tendable>false</tendable>
+    <everCurableByItem>false</everCurableByItem>
+    <comps>
+      <li Class="SexSlaveCraft.HediffCompProperties_GelatinizationAdaptation">
+        <baseAdaptChance>0.5</baseAdaptChance>
+        <adaptGainRange>0.005~0.01</adaptGainRange>
+        <corruptionBonusMultiplier>0.4</corruptionBonusMultiplier>
+        <scanInterval>600</scanInterval>
+      </li>
+      <li Class="SexSlaveCraft.HediffCompProperties_GelatinizationSeverity">
+        <severityGainRange>0.003~0.006</severityGainRange>
+        <scanInterval>600</scanInterval>
+      </li>
+    </comps>
+  </HediffDef>
+
+  <HediffDef>
+    <defName>Hediff_GelatinizedArm</defName>
+    <label>凝胶化手臂</label>
+    <labelNoun>凝胶化手臂</labelNoun>
+    <description>手臂已被改造为半凝胶化义肢，提供额外的力量和灵活性。</description>
+    <hediffClass>SexSlaveCraft.Hediff_GelatinizedArm</hediffClass>
+    <defaultLabelColor>(0.2, 0.9, 0.6)</defaultLabelColor>
+    <isBad>false</isBad>
+    <tendable>false</tendable>
+    <everCurableByItem>false</everCurableByItem>
+    <comps>
+      <li Class="SexSlaveCraft.HediffCompProperties_GelatinizedArmRegen">
+        <healIntervalTicks>600</healIntervalTicks>
+        <healAmount>0.4</healAmount>
+        <healAllInjuries>false</healAllInjuries>
+      </li>
+    </comps>
+    <addedPartProps>
+      <betterThanNatural>true</betterThanNatural>
+      <solid>true</solid>
+    </addedPartProps>
+    <stages>
+      <li>
+        <capMods>
+          <li>
+            <capacity>Manipulation</capacity>
+            <offset>0.2</offset>
+          </li>
+        </capMods>
+        <statOffsets>
+          <ArmorRating_Blunt>0.3</ArmorRating_Blunt>
+          <ArmorRating_Sharp>0.2</ArmorRating_Sharp>
+        </statOffsets>
+      </li>
+    </stages>
+  </HediffDef>
+
+  <HediffDef>
+    <defName>Hediff_GelatinizedLeg</defName>
+    <label>凝胶化腿部</label>
+    <labelNoun>凝胶化腿部</labelNoun>
+    <description>腿部已被改造为半凝胶化义肢，提供额外的移动速度和防御力。</description>
+    <hediffClass>SexSlaveCraft.Hediff_GelatinizedLeg</hediffClass>
+    <defaultLabelColor>(0.2, 0.9, 0.6)</defaultLabelColor>
+    <isBad>false</isBad>
+    <tendable>false</tendable>
+    <everCurableByItem>false</everCurableByItem>
+    <addedPartProps>
+      <betterThanNatural>true</betterThanNatural>
+      <solid>true</solid>
+    </addedPartProps>
+    <stages>
+      <li>
+        <capMods>
+          <li>
+            <capacity>Moving</capacity>
+            <offset>0.25</offset>
+          </li>
+        </capMods>
+        <statOffsets>
+          <ArmorRating_Blunt>0.3</ArmorRating_Blunt>
+          <ArmorRating_Sharp>0.2</ArmorRating_Sharp>
+        </statOffsets>
+      </li>
+    </stages>
+  </HediffDef>
+
+  <HediffDef>
+    <defName>SSC_FullGelatinizationTemporary</defName>
+    <label>全凝胶化处理中</label>
+    <labelNoun>全凝胶化</labelNoun>
+    <description>全身正在进行凝胶化重构。适应度与严重度会持续竞赛：适应度先达到 100% 则彻底完成，全身将被凝胶化；严重度先达到 100% 则身体直接崩毁。</description>
+    <hediffClass>SexSlaveCraft.Hediff_FullGelatinizationTemporary</hediffClass>
+    <defaultLabelColor>(0.72, 0.38, 0.95)</defaultLabelColor>
+    <isBad>true</isBad>
+    <initialSeverity>0.01</initialSeverity>
+    <maxSeverity>1</maxSeverity>
+    <tendable>false</tendable>
+    <everCurableByItem>false</everCurableByItem>
+    <comps>
+      <li Class="SexSlaveCraft.HediffCompProperties_FullGelatinizationAdaptation">
+        <scanInterval>600</scanInterval>
+        <baseGainRange>0.01~0.04</baseGainRange>
+        <guaranteedGainRange>0.30~0.45</guaranteedGainRange>
+      </li>
+      <li Class="SexSlaveCraft.HediffCompProperties_FullGelatinizationSeverity">
+        <scanInterval>600</scanInterval>
+        <severityGainRange>0.02~0.08</severityGainRange>
+      </li>
+    </comps>
+  </HediffDef>
+
+  <HediffDef>
+    <defName>SSC_FullGelatinizedBody</defName>
+    <label>全凝胶化完成</label>
+    <labelNoun>全凝胶化躯体</labelNoun>
+    <description>这具身体已经完成全凝胶化重构。除了 RJW 器官状态外，其他旧有生理损耗都被清洗，只留下凝胶化后的稳定形态。</description>
+    <hediffClass>HediffWithComps</hediffClass>
+    <defaultLabelColor>(0.72, 0.38, 0.95)</defaultLabelColor>
+    <forceRenderTreeRecache>true</forceRenderTreeRecache>
+    <isBad>false</isBad>
+    <tendable>false</tendable>
+    <everCurableByItem>false</everCurableByItem>
+    <initialSeverity>1.0</initialSeverity>
+    <comps>
+      <li Class="SexSlaveCraft.HediffCompProperties_FullGelatinizedRegen">
+        <healIntervalTicks>300</healIntervalTicks>
+        <healAmount>1.2</healAmount>
+      </li>
+    </comps>
+    <stages>
+      <li>
+        <label>凝胶躯壳</label>
+        <capMods>
+          <li>
+            <capacity>Manipulation</capacity>
+            <offset>0.8</offset>
+          </li>
+          <li>
+            <capacity>Moving</capacity>
+            <offset>0.5</offset>
+          </li>
+          <li>
+            <capacity>Consciousness</capacity>
+            <offset>0.5</offset>
+          </li>
+        </capMods>
+        <statOffsets>
+          <ArmorRating_Blunt>1.2</ArmorRating_Blunt>
+          <ArmorRating_Sharp>0.8</ArmorRating_Sharp>
+          <PainShockThreshold>0.2</PainShockThreshold>
+        </statOffsets>
+      </li>
+    </stages>
+  </HediffDef>
+</Defs>

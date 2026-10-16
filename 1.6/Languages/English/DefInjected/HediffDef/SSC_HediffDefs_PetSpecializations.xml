@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <SSC_Hediff_PetCat.label>pet cat specialization</SSC_Hediff_PetCat.label>
+  <SSC_Hediff_PetCat.description>A developing pet-cat specialization. It emphasizes agility, evasion, and affectionate attachment to the master.</SSC_Hediff_PetCat.description>
+  <SSC_Hediff_PetCat.stages.0.label>forming</SSC_Hediff_PetCat.stages.0.label>
+  <SSC_Hediff_PetCat.stages.1.label>agile</SSC_Hediff_PetCat.stages.1.label>
+  <SSC_Hediff_PetCat.stages.2.label>elusive</SSC_Hediff_PetCat.stages.2.label>
+
+  <SSC_Hediff_PetCat_Final.label>final pet cat specialization</SSC_Hediff_PetCat_Final.label>
+  <SSC_Hediff_PetCat_Final.description>A final Pet Cat specialization stored through personality gel. Retains movement, dodge and affection bonuses and grants Soothing Resonance: recover another player-faction humanlike pawn from a mental state, or briefly encourage its mood and work speed.</SSC_Hediff_PetCat_Final.description>
+
+  <SSC_Hediff_PetDog.label>pet dog specialization</SSC_Hediff_PetDog.label>
+  <SSC_Hediff_PetDog.description>A developing pet-dog specialization. It emphasizes animal handling, obedience, and animal-training interactions.</SSC_Hediff_PetDog.description>
+  <SSC_Hediff_PetDog.stages.0.label>forming</SSC_Hediff_PetDog.stages.0.label>
+  <SSC_Hediff_PetDog.stages.1.label>obedient</SSC_Hediff_PetDog.stages.1.label>
+  <SSC_Hediff_PetDog.stages.2.label>kennel-trained</SSC_Hediff_PetDog.stages.2.label>
+  <SSC_Hediff_PetDog.stages.3.label>pack leader</SSC_Hediff_PetDog.stages.3.label>
+
+  <SSC_Hediff_PetDog_Final.label>final pet dog specialization</SSC_Hediff_PetDog_Final.label>
+  <SSC_Hediff_PetDog_Final.description>A final Pet Dog specialization stored through personality gel. Retains animal handling and training bonuses and grants Directed Taming: approach an eligible animal on the same map, then directly tame a wild animal or fully complete one enabled training project for an owned animal after brief guidance in its cell.</SSC_Hediff_PetDog_Final.description>
+
+  <SSC_Hediff_PetRabbit.label>pet rabbit specialization</SSC_Hediff_PetRabbit.label>
+  <SSC_Hediff_PetRabbit.description>A developing pet-rabbit specialization. It emphasizes PNA-linked growth, reproductive modes, affectionate attachment, and light agility.</SSC_Hediff_PetRabbit.description>
+  <SSC_Hediff_PetRabbit.stages.0.label>forming</SSC_Hediff_PetRabbit.stages.0.label>
+  <SSC_Hediff_PetRabbit.stages.1.label>quickened</SSC_Hediff_PetRabbit.stages.1.label>
+  <SSC_Hediff_PetRabbit.stages.2.label>soft-bred</SSC_Hediff_PetRabbit.stages.2.label>
+
+  <SSC_Hediff_PetRabbit_Final.label>final pet rabbit specialization</SSC_Hediff_PetRabbit_Final.label>
+  <SSC_Hediff_PetRabbit_Final.description>A completed pet-rabbit specialization stored through personality gel. The pawn is stabilized for PNA-linked growth, reproductive modes, recovery, and light agility.</SSC_Hediff_PetRabbit_Final.description>
+
+  <SSC_Hediff_RabbitCloneLink.label>rabbit clone</SSC_Hediff_RabbitCloneLink.label>
+  <SSC_Hediff_RabbitCloneLink.description>This pawn is a clone split from a pet-rabbit specialist. It shares rest and mood with the source, matures rapidly, and cannot undergo personality excretion.</SSC_Hediff_RabbitCloneLink.description>
+  <SSC_Hediff_RabbitCloneLink.stages.0.label>forming</SSC_Hediff_RabbitCloneLink.stages.0.label>
+  <SSC_Hediff_RabbitCloneLink.stages.1.label>mature</SSC_Hediff_RabbitCloneLink.stages.1.label>
+
+  <SSC_Hediff_RabbitCloneLowPNA.label>rabbit clone PNA production</SSC_Hediff_RabbitCloneLowPNA.label>
+  <SSC_Hediff_RabbitCloneLowPNA.description>A low-efficiency PNA output state stabilized after a rabbit clone reaches maturity.</SSC_Hediff_RabbitCloneLowPNA.description>
+</LanguageData>

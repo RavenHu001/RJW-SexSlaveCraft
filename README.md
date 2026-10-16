@@ -4,6 +4,8 @@
 
 [2.4.1 版本说明](Docs/Releases/2.4.1/2.4.1发布说明.md) · [正式版下载 2.4.1](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.1) · [模组介绍 / Mod overview](Docs/模组介绍.md) · [玩家阅读入口 / Player documentation](Docs/Players/README.md) · [文档总索引](Docs/README.md) · [English overview](#english-overview)
 
+当前工作区已采用双版本目录：`1.6/` 保留 **2.4.1** 运行基线，`1.7/` 用于后续开发，`Common/Textures/` 共享基础贴图。1.7 为开发测试目标，尚未完成游戏内兼容性验收；下方公开下载仍为原 1.6 正式版。构建和目录规则见[维护说明](https://github.com/RavenHu001/RJW-SexSlaveCraft/blob/main/Docs/Maintenance/%E5%8F%91%E5%B8%83%E4%B8%8E%E6%89%93%E5%8C%85.md)。
+
 ## 项目概况
 
 SSC 提供角色培养、主从绑定、特化发展、人格转移和身体改造玩法：
@@ -50,7 +52,7 @@ SSC 提供角色培养、主从绑定、特化发展、人格转移和身体改�
 
 ## 开发与验证
 
-主工程为 `Sexslavecraft/SexSlaveCraft_Alpha.csproj`，目标框架为 .NET Framework 4.7.2。环境、构建、自动回归和本地打包命令统一见[发布与打包](Docs/Maintenance/发布与打包.md)，专项步骤见[测试说明](Tests/README.md)。
+1.7 开发工程为 `Sexslavecraft/SexSlaveCraft_1.7.csproj`，目标框架为 .NET 10，输出至 `1.7/Assemblies/`。1.6 的现有 2.4.1 DLL 按哈希冻结，旧工程保留源码清单但不用于覆盖基线。环境、构建、自动回归和本地打包命令统一见[发布与打包](Docs/Maintenance/发布与打包.md)，专项步骤见[测试说明](Tests/README.md)。
 
 准备新功能先查[当前规划](Docs/Design/README.md)；接手已有功能先查[开发资料入口](Docs/Development/README.md)。已交付设计单独保存在[设计归档](Docs/Design/Archive/README.md)，文档新增与移动遵循[维护约定](Docs/Maintenance/文档维护约定.md)。
 
@@ -61,6 +63,8 @@ SSC 提供角色培养、主从绑定、特化发展、人格转移和身体改�
 项目署名：Someone、Hajimi、TieJin。感谢上游作者及参与修复、翻译和验证的贡献者。
 
 ## English overview
+
+The current checkout has separate `1.6/` and `1.7/` runtime directories with shared textures in `Common/Textures/`. The 1.6 content is frozen at 2.4.1; 1.7 is the development target and awaits in-game compatibility verification. The public 2.4.1 download below remains the original 1.6 release.
 
 SexSlaveCraft (SSC) is an adult RimJobWorld expansion for **RimWorld 1.6**, continuing from upstream **2.2.8**. Version **2.4.1** consolidates the former 2.4.0.5 development milestone and subsequent PNA, Bestow Bliss, bond-maintenance, localization and validation work. The stable download is **2.4.1**. Harmony and RJW must load before SSC; Binding Rituals and their progression route require Ideology.
 

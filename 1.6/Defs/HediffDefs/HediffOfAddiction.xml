@@ -1,0 +1,58 @@
+<Defs>
+<HediffDef ParentName="AddictionBase">
+    <defName>PNA_Addiction</defName>
+    <label>纳米催情液成瘾</label>
+    <description>神经系统已经习惯纳米催情液带来的刺激，于是持续向身体索要它。供给一旦中断，就会出现空虚、烦躁与说不清的身体不适，情欲反而更难平息。再次取得可以暂时压下渴求，但依赖会随之加深；长期不再接触才能恢复。</description>
+    <hediffClass>Hediff_Addiction</hediffClass>
+    <tendable>false</tendable>
+    <everCurableByItem>false</everCurableByItem>
+    <chemicalNeed>Need_PNA</chemicalNeed>
+    <initialSeverity>1</initialSeverity>
+    <comps>
+      <!-- 完整沿用原版恢复组件、计时与进度显示，不设负荷或戒断恢复门槛。 -->
+      <li Class="HediffCompProperties_SeverityPerDay">
+        <severityPerDay>-0.1</severityPerDay>
+        <showDaysToRecover>true</showDaysToRecover>
+      </li>
+    </comps>
+
+    <stages>
+      <li>
+        <!-- 与原版成瘾一样，普通档不加阶段标签，括号百分比是已恢复进度。 -->
+        <statFactors>
+          <SexFrequency>1.25</SexFrequency>
+        </statFactors>
+      </li>
+      <li>
+        <label>戒断中</label>
+        <!-- 戒断沿原版化学需求选档；性脆弱度为 RJW 属性偏移，不改变战斗承伤。 -->
+        <statFactors>
+          <SexFrequency>1.75</SexFrequency>
+        </statFactors>
+        <!-- 使用原版能力乘算，随其他来源正常叠加；仅戒断档降低操控。 -->
+        <capMods><li><capacity>Manipulation</capacity><postFactor>0.85</postFactor></li></capMods>
+        <statOffsets><Vulnerability>0.30</Vulnerability></statOffsets>
+      </li>
+    </stages>
+    
+  </HediffDef>
+<ThoughtDef>
+    <defName>PNA_Withdrawal_Thought</defName>
+    <thoughtClass>Thought_Situational</thoughtClass>
+    <workerClass>ThoughtWorker_Hediff</workerClass>
+    <hediff>PNA_Addiction</hediff>
+    <validWhileDespawned>true</validWhileDespawned>
+    
+    <stages>
+      <li>
+        <visible>false</visible>
+      </li>
+      
+      <li>
+        <label>戒断</label>
+        <description>身体一直在索要它。这种空缺让我烦躁又难受，什么心思都提不起来。</description>
+        <baseMoodEffect>-18</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+</Defs>

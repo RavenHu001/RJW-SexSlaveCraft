@@ -142,16 +142,16 @@ internal static partial class Program
         });
         Run("第三步枪械XML停用旧强化引用但保留兼容定义和高阶禁用", () =>
         {
-            var defs = XDocument.Load(System.IO.Path.Combine(root, "Defs/DemageDefs/DemageDef_Gun.xml"));
+            var defs = XDocument.Load(SscTestPaths.Combine(root, "Defs/DemageDefs/DemageDef_Gun.xml"));
             Assert(!defs.Descendants("combatBuff").Any(), "不再配置旧强化");
             foreach (string name in new[] { "Hediff_PNA_Combat_Buff", "Hediff_PNA_Combat_Buff_Plus" }) LoadDef("Defs/HediffDefs/HediffOfBuff.xml", name);
-            var guns = XDocument.Load(System.IO.Path.Combine(root, "Defs/ThingsDefs/SSC_Gun.xml"));
+            var guns = XDocument.Load(SscTestPaths.Combine(root, "Defs/ThingsDefs/SSC_Gun.xml"));
             Assert(!guns.Root.Elements().Any(d => (string)d.Element("defName") == "Gun_PNA_High" || (string)d.Element("defName") == "Bullet_PNA_High"), "高阶未开放");
             foreach (string lang in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" })
             {
                 string relative = "DefInjected/ThingDef/SSC_Gun.xml";
-                string source = System.IO.File.ReadAllText(System.IO.Path.Combine(root, "Languages", lang, relative));
-                Equal(source, System.IO.File.ReadAllText(System.IO.Path.Combine(root, "Sexslavecraft/Languages", lang, relative)), "枪械镜像");
+                string source = System.IO.File.ReadAllText(SscTestPaths.Combine(root, "Languages", lang, relative));
+                Equal(source, System.IO.File.ReadAllText(SscTestPaths.Combine(root, "Sexslavecraft/Languages", lang, relative)), "枪械镜像");
                 Assert(!string.IsNullOrWhiteSpace(XDocument.Parse(source).Root.Element("Gun_PNA_Low.description")?.Value), "四语枪械说明");
             }
         });

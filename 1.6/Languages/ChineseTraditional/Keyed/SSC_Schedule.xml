@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='utf-8'?>
+<LanguageData>
+  <SSC_Schedule_Header>定時調教排班</SSC_Schedule_Header>
+  <SSC_Schedule_Enable>啟用定時調教</SSC_Schedule_Enable>
+  <SSC_Schedule_HourButton>執行時段：{0}:00–{1}:00</SSC_Schedule_HourButton>
+  <SSC_Schedule_HourOption>{0}:00–{1}:00</SSC_Schedule_HourOption>
+  <SSC_Schedule_IntervalButton>執行頻率：每 {0} 天</SSC_Schedule_IntervalButton>
+  <SSC_Schedule_IntervalOption>每 {0} 天</SSC_Schedule_IntervalOption>
+  <SSC_Schedule_StatusNow>當前處於排班時段，等待指定調教師領取工作。</SSC_Schedule_StatusNow>
+  <SSC_Schedule_StatusWaiting>尚未到排班日期或時段。玩家強制命令不受時段限制。</SSC_Schedule_StatusWaiting>
+  <SSC_Schedule_StatusAnytime>未啟用排班：冷卻結束後可隨時自動調教。</SSC_Schedule_StatusAnytime>
+  <SSC_Schedule_Inspect>排班 {0}:00–{1}:00 / 每 {2} 天</SSC_Schedule_Inspect>
+  <SSC_Train_Reason_ScheduleDay>尚未到每 {0} 天一次的調教日期。</SSC_Train_Reason_ScheduleDay>
+  <SSC_Train_Reason_OutsideSchedule>定時調教安排在 {0}:00–{1}:00。</SSC_Train_Reason_OutsideSchedule>
+  <SSC_RimTalk_DefaultInterrupt>（{MASTER}打斷了談話）到調教時間了。</SSC_RimTalk_DefaultInterrupt>
+</LanguageData>

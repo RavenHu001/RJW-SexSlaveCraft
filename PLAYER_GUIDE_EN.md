@@ -1,5 +1,7 @@
 # RJW-SexSlaveCraft Complete Player Guide
 
+> Version directories: 1.6 retains the 2.4.1 baseline; 1.7 is the development target awaiting in-game compatibility verification. Shared textures are in Common/Textures. Existing v2.4.1 downloads remain the original 1.6 release.
+
 [Project home](README.md) · [Player reading order](Docs/Players/README.md#english-reading-order) · [Quick start](QUICK_START_EN.md) · [中文机制详解](机制详解.md)
 
 > Applies to **RimWorld 1.6 · SSC 2.4.1 ** (2026-10-16). The former 2.4.0.5 development milestone and all subsequent work are consolidated into 2.4.1, including the PNA redesign, Bestow Bliss and bond/localization maintenance. The release package is available as v2.4.1. Use this reference for full conditions, formulas and values; first-time players should begin with the [quick start](QUICK_START_EN.md).

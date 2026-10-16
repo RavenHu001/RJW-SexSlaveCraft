@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='utf-8'?>
+<LanguageData>
+  <SSC_Setting_Category>SexSlaveCraft 設定</SSC_Setting_Category>
+  <SSC_Setting_EnableSexSlaveProtectionRules>啟用性奴行為限制規則</SSC_Setting_EnableSexSlaveProtectionRules>
+  <SSC_Setting_EnableSexSlaveProtectionRules_Desc>統一控制性愛與調教的行為許可，包括個體規則及裝備、特化強制值。關閉後暫停這些限制並保留設定；身分、指定調教員、同床和正常任務條件仍按各自規則處理。實際主人向自己的性奴發起行為始終直接通過本系統。</SSC_Setting_EnableSexSlaveProtectionRules_Desc>
+  <SSC_Setting_EnableLogs>啟用 SSC 日誌</SSC_Setting_EnableLogs>
+  <SSC_Setting_EnableLogs_Desc>SSC 普通日誌的總開關。錯誤日誌不受此項影響。</SSC_Setting_EnableLogs_Desc>
+  <SSC_Setting_EnableVerboseLogs>啟用 SSC 詳細日誌</SSC_Setting_EnableVerboseLogs>
+  <SSC_Setting_EnableVerboseLogs_Desc>輸出調教流程、儀式階段和保護規則等高頻除錯資訊。排查問題時再開啟。</SSC_Setting_EnableVerboseLogs_Desc>
+  <SSC_Setting_EnableImportantLogs>啟用 SSC 重要日誌</SSC_Setting_EnableImportantLogs>
+  <SSC_Setting_EnableImportantLogs_Desc>輸出儀式轉奴、相容回退等低頻但重要的狀態變化和警告。</SSC_Setting_EnableImportantLogs_Desc>
+  <SSC_Setting_UseRJWOriginalEligibility>使用 SSC 寬鬆調教篩選</SSC_Setting_UseRJWOriginalEligibility>
+  <SSC_Setting_UseRJWOriginalEligibility_Desc>開啟後使用 SSC 自己較寬鬆的調教目標篩選，不受年齡限制，但要求 RJW 已啟用強暴；關閉後直接使用 RJW 原始判定。</SSC_Setting_UseRJWOriginalEligibility_Desc>
+  <SSC_Setting_EnableDebugGizmos>啟用 SSC 除錯指令</SSC_Setting_EnableDebugGizmos>
+  <SSC_Setting_EnableDebugGizmos_Desc>僅在開發者模式下額外顯示 SSC 自己的除錯 gizmo。預設關閉。</SSC_Setting_EnableDebugGizmos_Desc>
+  <SSC_Setting_EnableFullGelTint>啟用全凝膠化身體染色</SSC_Setting_EnableFullGelTint>
+  <SSC_Setting_EnableFullGelTint_Desc>開啟後，處於“全凝膠化完成”狀態的角色身體會顯示為紫色半透明；頭部保留原色。</SSC_Setting_EnableFullGelTint_Desc>
+  <SSC_Setting_EnableRitualEnslavement>允許繫結儀式轉化為奴隸</SSC_Setting_EnableRitualEnslavement>
+  <SSC_Setting_EnableRitualEnslavement_Desc>開啟後，滿足惡墮、評分與意志條件的繫結儀式可將目標轉化為原版奴隸。關閉只會禁用轉奴判定，不影響儀式的其他收益。</SSC_Setting_EnableRitualEnslavement_Desc>
+  <SSC_Setting_EnableRimTalkSexDialogue>為 SSC 性行為觸發 RimTalk 對話</SSC_Setting_EnableRimTalkSexDialogue>
+  <SSC_Setting_EnableRimTalkSexDialogue_Desc>安裝並啟用 RimTalk 後，SSC 日常調教、繫結儀式階段、人格排洩或公交車交易性行為會在場景開始且當前倍速允許時，為參與者加入 AI 對話請求。關閉後可避免這些額外的 AI 呼叫。</SSC_Setting_EnableRimTalkSexDialogue_Desc>
+  <SSC_Setting_RimTalkMaxSpeed>RimTalk 調教對話最高傳送倍速：{0}</SSC_Setting_RimTalkMaxSpeed>
+  <SSC_Setting_RimTalkMaxSpeed_Desc>SSC 始終服從 RimTalk 自己的“高速暫停 AI”設定。“跟隨 RimTalk”不增加額外限制；選擇倍速後，僅在當前速度不高於該值時傳送。排班調教會在 Job 仍有效時等待降速，其他一次性場景超過門檻時會跳過請求。</SSC_Setting_RimTalkMaxSpeed_Desc>
+  <SSC_Setting_RimTalkMaxSpeed_Follow>跟隨 RimTalk</SSC_Setting_RimTalkMaxSpeed_Follow>
+  <SSC_Setting_RimTalkMaxSpeed_Value>最高 {0}x</SSC_Setting_RimTalkMaxSpeed_Value>
+  <SSC_Setting_RimTalkInterruptTemplate>定時調教打斷句</SSC_Setting_RimTalkInterruptTemplate>
+  <SSC_Setting_RimTalkInterruptTemplate_Desc>調教 Job 被領取時由主人立即說出的本地臺詞。支援 {MASTER}、{SLAVE}、{ACT} 和 {TARGET} 佔位符；這句話會寫入隨後唯一一次調教 AI 請求的上下文。</SSC_Setting_RimTalkInterruptTemplate_Desc>
+  <SSC_Setting_UseOldScoring>使用舊版評分系統</SSC_Setting_UseOldScoring>
+  <SSC_Setting_UseOldScoring_Desc>恢復舊版調教評分、等級制記憶、特質加分、隨機波動、尺寸與鎖鏈倍率，並關閉惡墮的自然衰減。預設關閉。</SSC_Setting_UseOldScoring_Desc>
+</LanguageData>

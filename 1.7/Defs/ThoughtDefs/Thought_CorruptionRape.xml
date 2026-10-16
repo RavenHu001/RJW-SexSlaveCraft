@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <!-- 堕落阶段 1：0.2 ≤ Corruption < 0.5 -->
+  <ThoughtDef>
+    <defName>SSC_CorruptionRape_Stage1</defName>
+    <thoughtClass>Thought_Memory</thoughtClass>
+    <durationDays>10.0</durationDays>
+    <stackLimit>100</stackLimit>
+    <stackedEffectMultiplier>0.4</stackedEffectMultiplier>
+    <stages>
+      <li>
+        <label>被强暴 (初堕)</label>
+        <description>虽然被强迫了，但内心却有一丝异样的感觉...</description>
+        <baseMoodEffect>1</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+  <!-- 堕落阶段 2：0.5 ≤ Corruption < 0.7 -->
+  <ThoughtDef>
+    <defName>SSC_CorruptionRape_Stage2</defName>
+    <thoughtClass>Thought_Memory</thoughtClass>
+    <durationDays>10.0</durationDays>
+    <stackLimit>100</stackLimit>
+    <stackedEffectMultiplier>0.4</stackedEffectMultiplier>
+    <stages>
+      <li>
+        <label>被强暴 (沉溺)</label>
+        <description>身体不由自主地迎合着，这种被支配的感觉...似乎不错。</description>
+        <baseMoodEffect>3</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+  <!-- 堕落阶段 3：0.7 ≤ Corruption < 0.9 -->
+  <ThoughtDef>
+    <defName>SSC_CorruptionRape_Stage3</defName>
+    <thoughtClass>Thought_Memory</thoughtClass>
+    <durationDays>10.0</durationDays>
+    <stackLimit>100</stackLimit>
+    <stackedEffectMultiplier>0.4</stackedEffectMultiplier>
+    <stages>
+      <li>
+        <label>被强暴 (渴求)</label>
+        <description>还不够...还想要更多...让我彻底沉沦吧...</description>
+        <baseMoodEffect>5</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+  <!-- 堕落阶段 4：0.9 ≤ Corruption ≤ 1.0 -->
+  <ThoughtDef>
+    <defName>SSC_CorruptionRape_Stage4</defName>
+    <thoughtClass>Thought_Memory</thoughtClass>
+    <durationDays>10.0</durationDays>
+    <stackLimit>100</stackLimit>
+    <stackedEffectMultiplier>0.4</stackedEffectMultiplier>
+    <stages>
+      <li>
+        <label>被强暴 (崩坏)</label>
+        <description>啊哈哈...已经坏掉了...就这样一直...继续...</description>
+        <baseMoodEffect>8</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+  <!-- 高堕落受害者对旁观者的正面记忆 -->
+  <ThoughtDef>
+    <defName>SSC_CorruptionRape_VictimToBystanderPositive</defName>
+    <thoughtClass>Thought_MemorySocial</thoughtClass>
+    <durationDays>10.0</durationDays>
+    <stackLimit>300</stackLimit>
+    <stackLimitForSameOtherPawn>3</stackLimitForSameOtherPawn>
+    <stackedEffectMultiplier>0.4</stackedEffectMultiplier>
+    <stages>
+      <li>
+        <label>目睹我被强暴</label>
+        <description>看到{0}在场目睹我被强暴的样子...让我感到莫名的兴奋。</description>
+        <baseOpinionOffset>5</baseOpinionOffset>
+      </li>
+    </stages>
+  </ThoughtDef>
+</Defs>

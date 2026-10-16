@@ -18,7 +18,7 @@ internal static partial class Program
     /// <summary>运行真实资格、能力类、效果组件与授予组件；宿主只记录原版边界的进入和副作用。</summary>
     private static int Main(string[] args)
     {
-        root = Path.GetFullPath(args.Length > 0 ? args[0] : ".");
+        root = SscTestPaths.RepositoryRoot(args.Length > 0 ? args[0] : null);
         Run("猫技能XML只有单一效果与一天冷却，地图选择并接近同格原版读条", Definitions);
         Run("猫激励使用定时状态与工作倍率，猫终极挂真实能力授予组件", EffectDefinitions);
         Run("猫鼓舞心情为Hediff即时思绪，状态存续时提供8点且不另发长期记忆", MoodDefinition);
@@ -110,7 +110,7 @@ internal static partial class Program
         Check(p.ability.Activate(p.target, default), "valid cast rejected");
         Check(p.ability.ActivationCalls == 1 && p.ability.CooldownTicksRemaining == 60000, "valid cast did not enter original cooldown once");
     }
-    private static XElement Definition(string path, string name) => XDocument.Load(Path.Combine(root, path)).Root.Elements().Single(e => (string)e.Element("defName") == name);
+    private static XElement Definition(string path, string name) => XDocument.Load(SscTestPaths.Combine(root, path)).Root.Elements().Single(e => (string)e.Element("defName") == name);
 
     /// <summary>验证XML实际连接与单一组件，防止定义误挂两个分支或遗漏未征召入口。</summary>
     private static void Definitions()
@@ -139,7 +139,7 @@ internal static partial class Program
         Equal(1.2f, float.Parse((string)hearts.Element("scale"))); Equal(.42f, float.Parse((string)hearts.Element("speed")));
         Check(def.Descendants("showCastingProgressBar").Any(e => (string)e == "true"), "native casting progress not enabled");
         Check((string)def.Element("jobDef") == "SSC_Job_PetCatComfort", "ability did not use approach driver");
-        var job = Directory.EnumerateFiles(Path.Combine(root, "Defs/JobDefs"), "*.xml")
+        var job = Directory.EnumerateFiles(SscTestPaths.Combine(root, "Defs/JobDefs"), "*.xml")
             .SelectMany(path => XDocument.Load(path).Root.Elements())
             .Single(e => (string)e.Element("defName") == "SSC_Job_PetCatComfort");
         Check((string)job.Element("driverClass") == typeof(JobDriver_PetCatComfort).FullName && (string)job.Element("abilityCasting") == "false" &&
@@ -178,25 +178,25 @@ internal static partial class Program
     {
         foreach (string language in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" })
         {
-            var keyed = XDocument.Load(Path.Combine(root, "Languages", language, "Keyed/SSC_PetCatComfort.xml"));
+            var keyed = XDocument.Load(SscTestPaths.Combine(root, "Languages", language, "Keyed/SSC_PetCatComfort.xml"));
             foreach (string key in new[] { "RequiresFinal", "InvalidCaster", "InvalidTarget", "MissingEffect", "UnconsciousTarget", "UnreachableTarget" })
                 Check(!string.IsNullOrWhiteSpace((string)keyed.Root.Element("SSC_PetCatComfort" + key)), "missing reason translation " + language + "/" + key);
             string hint = (string)keyed.Root.Element("SSC_PetCatComfortTargetHint");
             Check(!string.IsNullOrWhiteSpace(hint) && hint.Contains("{0}"), "missing target name hint or placeholder " + language);
-            Check(XNode.DeepEquals(keyed.Root, XDocument.Load(Path.Combine(root, "Sexslavecraft/Languages", language, "Keyed/SSC_PetCatComfort.xml")).Root), "source reason mirror mismatch " + language);
+            Check(XNode.DeepEquals(keyed.Root, XDocument.Load(SscTestPaths.Combine(root, "Sexslavecraft/Languages", language, "Keyed/SSC_PetCatComfort.xml")).Root), "source reason mirror mismatch " + language);
             string jobPath = Path.Combine("Languages", language, "DefInjected/JobDef/SSC_PetCatComfortJobDefs.xml");
-            var translatedJob = XDocument.Load(Path.Combine(root, jobPath));
+            var translatedJob = XDocument.Load(SscTestPaths.Combine(root, jobPath));
             Check(!string.IsNullOrWhiteSpace((string)translatedJob.Root.Element("SSC_Job_PetCatComfort.reportString")) &&
-                XNode.DeepEquals(translatedJob.Root, XDocument.Load(Path.Combine(root, "Sexslavecraft", jobPath)).Root), "job translation or mirror missing " + language);
+                XNode.DeepEquals(translatedJob.Root, XDocument.Load(SscTestPaths.Combine(root, "Sexslavecraft", jobPath)).Root), "job translation or mirror missing " + language);
             foreach (var resource in new[] {
                 ("DefInjected/AbilityDef/SSC_PetCatComfort.xml", "SSC_PetCatComfort.label", "SSC_PetCatComfort.description"),
                 ("DefInjected/HediffDef/SSC_PetCatComfort.xml", "SSC_Hediff_PetCatEncouragement.label", "SSC_Hediff_PetCatEncouragement.description"),
                 ("DefInjected/ThoughtDef/SSC_PetCatComfortThoughts.xml", "SSC_PetCatEncouragement_Mood.stages.0.label", "SSC_PetCatEncouragement_Mood.stages.0.description") })
             {
                 string path = Path.Combine("Languages", language, resource.Item1);
-                var definition = XDocument.Load(Path.Combine(root, path));
+                var definition = XDocument.Load(SscTestPaths.Combine(root, path));
                 Check(!string.IsNullOrWhiteSpace((string)definition.Root.Element(resource.Item2)) && !string.IsNullOrWhiteSpace((string)definition.Root.Element(resource.Item3)), "missing definition translation " + path);
-                var mirror = XDocument.Load(Path.Combine(root, "Sexslavecraft", path));
+                var mirror = XDocument.Load(SscTestPaths.Combine(root, "Sexslavecraft", path));
                 Check(XNode.DeepEquals(definition.Root, mirror.Root), "source language mirror mismatch " + path);
             }
         }

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <!-- 由鼓舞状态实时产生心情，不另发记忆；状态到期后，心情加成随之消失。 -->
+  <ThoughtDef>
+    <defName>SSC_PetCatEncouragement_Mood</defName>
+    <workerClass>ThoughtWorker_Hediff</workerClass>
+    <hediff>SSC_Hediff_PetCatEncouragement</hediff>
+    <stages>
+      <li>
+        <label>被猫咪鼓舞</label>
+        <description>温柔的陪伴让我重新振作，接下来也能好好工作。</description>
+        <baseMoodEffect>8</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+</Defs>

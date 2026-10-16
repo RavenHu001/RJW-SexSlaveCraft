@@ -17,7 +17,7 @@ internal static partial class Program
 
     private static int Main(string[] args)
     {
-        root = args.Length == 0 ? Path.GetFullPath("../../") : Path.GetFullPath(args[0]);
+        root = SscTestPaths.RepositoryRoot(args.Length > 0 ? args[0] : null);
         var harmony = new Harmony("ssc.tests.pna-load");
         harmony.PatchAll(Assembly.GetExecutingAssembly());
         Run("真实 Harmony 注册五个 PNA 目标及两个能力生死目标", () => Equal(7, harmony.GetPatchedMethods().Count(), "补丁目标数"));
@@ -300,7 +300,7 @@ internal static partial class Program
         Near(1,SSCPnaExposureUtility.GetLoad(p));Assert(SSCPnaExposureUtility.GetAddiction(p)!=null,"P2 调试满值建立依赖");Equal(4,Messages.Sent.Count);
         typeof(DebugActions_SSCPna).GetMethod("Clear",BindingFlags.NonPublic|BindingFlags.Static).Invoke(null,null);Assert(Record(p)==null,"清除");Assert(SSCPnaExposureUtility.GetAddiction(p)!=null,"清负荷保留依赖");
     }
-    private static XElement LoadDef(string file,string name)=>XDocument.Load(Path.Combine(root,file)).Root.Elements().Single(e=>(string)e.Element("defName")==name);
+    private static XElement LoadDef(string file,string name)=>XDocument.Load(SscTestPaths.Combine(root,file)).Root.Elements().Single(e=>(string)e.Element("defName")==name);
     private static double Number(XElement node)=>double.Parse(node.Value,CultureInfo.InvariantCulture);
     private static void DefinitionContract()
     {
@@ -353,7 +353,7 @@ internal static partial class Program
     }
     private static void Localization(string language)
     {
-        string lang=Path.Combine(root,"Languages",language);var buff=XDocument.Load(Path.Combine(lang,"DefInjected/HediffDef/HediffOfBuff.xml")).Root;
+        string lang=SscTestPaths.Combine(root,"Languages",language);var buff=XDocument.Load(Path.Combine(lang,"DefInjected/HediffDef/HediffOfBuff.xml")).Root;
         for(int i=0;i<5;i++) Assert(!string.IsNullOrWhiteSpace(buff.Element($"Hediff_PNA_Debuff.stages.{i}.label")?.Value),"阶段标签 "+i);
         for(int i=0;i<5;i++) Assert(!string.IsNullOrWhiteSpace(buff.Element($"SSC_Hediff_PnaRootedLoad.stages.{i}.label")?.Value),"活化标签 "+i);
         var thoughts=XDocument.Load(Path.Combine(lang,"DefInjected/ThoughtDef/HediffOfBuff.xml")).Root;
@@ -372,7 +372,7 @@ internal static partial class Program
         foreach(string key in new[]{"SSC_Pna_WeaponHealed","SSC_Pna_WeaponActivated"})
             Assert(!string.IsNullOrWhiteSpace(keyed.Element(key)?.Value),"枪械反馈翻译");
         Assert(keyed.Element("SSC_Pna_RecoveryActive")==null && keyed.Element("SSC_Pna_RecoveryPaused")==null,"恢复显示由原版提供");
-        foreach(string file in new[]{"DefInjected/HediffDef/HediffOfBuff.xml","DefInjected/HediffDef/HediffOfAddiction.xml","DefInjected/ThoughtDef/HediffOfBuff.xml","Keyed/SSC_Pna.xml"}) Equal(File.ReadAllText(Path.Combine(lang,file)),File.ReadAllText(Path.Combine(root,"Sexslavecraft/Languages",language,file)),"语言镜像");
+        foreach(string file in new[]{"DefInjected/HediffDef/HediffOfBuff.xml","DefInjected/HediffDef/HediffOfAddiction.xml","DefInjected/ThoughtDef/HediffOfBuff.xml","Keyed/SSC_Pna.xml"}) Equal(File.ReadAllText(Path.Combine(lang,file)),File.ReadAllText(SscTestPaths.Combine(root,"Sexslavecraft/Languages",language,file)),"语言镜像");
     }
     private static void Assert(bool value,string message) { if(!value)throw new Exception(message); }
     private static void Equal<T>(T expected,T actual,string message="值不同") { if(!Equals(expected,actual))throw new Exception($"{message}: {expected} != {actual}"); }

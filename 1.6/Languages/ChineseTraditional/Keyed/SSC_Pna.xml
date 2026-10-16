@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_Pna_LoadTooltip>奈米催情液侵蝕：{0}%</SSC_Pna_LoadTooltip>
+  <SSC_Pna_SelectPawn>請先選擇一個角色。</SSC_Pna_SelectPawn>
+  <SSC_Pna_InvalidTarget>該角色目前不能接受 PNA 測試輸入。</SSC_Pna_InvalidTarget>
+  <SSC_Pna_Rooted>除錯：性奴活化負荷 {0}%，不建立普通成癮。</SSC_Pna_Rooted>
+  <SSC_Pna_DebugResult>除錯：目前負荷 {0}%。普通身體滿負荷可形成成癮；除錯加量不加深既有成癮。</SSC_Pna_DebugResult>
+  <SSC_Pna_RootedLoadTooltip>奈米催情液活化：{0}%</SSC_Pna_RootedLoadTooltip>
+  <SSC_Pna_NewDependence>{0} 已經離不開奈米催情液了。</SSC_Pna_NewDependence>
+  <SSC_Pna_WeaponHealed>傷口收攏</SSC_Pna_WeaponHealed>
+  <SSC_Pna_WeaponActivated>活化</SSC_Pna_WeaponActivated>
+  <SSC_Pna_AttractionExplanation>渴求對方分泌的奈米催情液：×{0} ⇒ {1}</SSC_Pna_AttractionExplanation>
+  <SSC_Pna_InfoLoadPerDose>每份負荷增量</SSC_Pna_InfoLoadPerDose>
+  <SSC_Pna_InfoLoadPerDoseDesc>每份藥液提供的基礎 PNA 負荷，以滿負荷的百分比表示。實際攝入仍按適用的身體與耐受修正結算。主人免疫藥效；有效鎖鏈對象獲得活化。</SSC_Pna_InfoLoadPerDoseDesc>
+  <SSC_Pna_InfoAddictionThreshold>首次成癮負荷</SSC_Pna_InfoAddictionThreshold>
+  <SSC_Pna_InfoAddictionThresholdDesc>普通身體在真實輸入後達到滿負荷時形成成癮。既有成癮在輸入後負荷不低於 {0} 時，除本次基礎增量外再增加 {1} 成癮度。主人和有效鎖鏈對象不形成普通成癮。</SSC_Pna_InfoAddictionThresholdDesc>
+</LanguageData>

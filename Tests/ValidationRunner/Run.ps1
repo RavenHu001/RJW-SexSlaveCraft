@@ -53,16 +53,17 @@ function Run-Case([string]$Name, [string]$Mode, [string]$Harmony, [bool]$Package
     $output = @(& $pwsh -NoProfile -File $scriptPath @arguments 2>&1)
     $code = $LASTEXITCODE
     $output | Set-Content -LiteralPath (Join-Path $fixture "$Name.console.log") -Encoding utf8
-    $report = Get-Content -LiteralPath (Join-Path $reportDir 'summary.json') -Raw | ConvertFrom-Json
-    return [pscustomobject]@{ Code=$code; Report=$report; OutputDir=$outputDir }
+    $reportPath = Join-Path $reportDir 'summary.json'
+    $report = if (Test-Path -LiteralPath $reportPath) { Get-Content -LiteralPath $reportPath -Raw | ConvertFrom-Json } else { $null }
+    return [pscustomobject]@{ Code=$code; Report=$report; OutputDir=$outputDir; Console=($output -join "`n") }
 }
 
 try {
-    foreach ($dir in @('Scripts', 'Tests', 'shim', 'About', 'Assemblies', 'Sexslavecraft/Properties', 'Sexslavecraft/Languages', 'Sexslavecraft/Defs/夹具目录', 'Defs/夹具目录', 'Languages', 'Textures', 'Resources', 'Docs')) {
+    foreach ($dir in @('Scripts', 'Tests', 'shim', 'About', '1.7/Assemblies', 'Sexslavecraft/Properties', 'Sexslavecraft/Languages', 'Sexslavecraft/Defs/夹具目录', '1.7/Defs/夹具目录', '1.7/Languages', '1.7/Resources', 'Docs')) {
         [IO.Directory]::CreateDirectory((Join-Path $fixture $dir)) | Out-Null
     }
-    foreach ($file in @('Scripts/Test-All.ps1', 'Scripts/Test-DefMirrors.ps1', 'Scripts/New-Release.ps1', 'Scripts/Sync-LanguagesMirror.ps1', 'Scripts/Test-RestrictionLocalization.ps1', 'Tests/NuGet.Config', 'VERSION', 'CHANGELOG.md',
-        'About/About.xml', 'Assemblies/Sexslavecraft.dll', 'Sexslavecraft/Properties/AssemblyInfo.cs', 'README.md',
+    foreach ($file in @('Scripts/Test-All.ps1', 'Scripts/Test-DefMirrors.ps1', 'Scripts/New-Release.ps1', 'Scripts/Test-ModLayout.ps1', 'Scripts/ModLayout.ps1', 'Scripts/Sync-LanguagesMirror.ps1', 'Scripts/Test-RestrictionLocalization.ps1', 'Tests/NuGet.Config', 'VERSION', 'CHANGELOG.md', 'LoadFolders.xml',
+        'About/About.xml', '1.7/Assemblies/Sexslavecraft.dll', '1.7/BUILD-INFO.json', 'Sexslavecraft/Properties/AssemblyInfo.cs', 'README.md',
         'QUICK_START_EN.md', '读我，玩法介绍.md', '机制详解.md', 'PLAYER_GUIDE_EN.md',
         'Docs/模组介绍.md', 'Docs/Players/README.md',
         ('Docs/Releases/{0}/{0}发布说明.md' -f (Get-Content -LiteralPath (Join-Path $repo 'VERSION') -Raw).Trim()))) {
@@ -70,8 +71,19 @@ try {
         [IO.Directory]::CreateDirectory([IO.Path]::GetDirectoryName($destination)) | Out-Null
         Copy-Item -LiteralPath (Join-Path $repo $file) -Destination $destination
     }
+    # 使用完整的真实冻结基线与共享贴图，生产布局／哈希验证不能被测试替身代替。
+    foreach ($directory in @('1.6', 'Common')) {
+        Copy-Item -LiteralPath (Join-Path $repo $directory) -Destination (Join-Path $fixture $directory) -Recurse
+    }
+    foreach ($directory in @('1.7/Resources', '1.7/Patches')) {
+        foreach ($file in Get-ChildItem -LiteralPath (Join-Path $repo $directory) -Recurse -File) {
+            $destination = Join-Path $fixture ([IO.Path]::GetRelativePath($repo, $file.FullName))
+            [IO.Directory]::CreateDirectory([IO.Path]::GetDirectoryName($destination)) | Out-Null
+            Copy-Item -LiteralPath $file.FullName -Destination $destination
+        }
+    }
     # 非白名单文件（包括未跟踪备份）不得进入 ZIP；链接转换只作用于随包副本。
-    foreach ($file in @('Docs/Art/Backups/local.png', 'Docs/Development/开发 记录.md', 'Docs/Releases/old/验证.md')) {
+    foreach ($file in @('Docs/Art/Backups/local.png', 'Docs/Development/开发 记录.md', 'Docs/Releases/old/验证.md', '1.7/DeveloperNotes.md', '1.7/Tools/fixture.cs')) {
         $destination = Join-Path $fixture $file
         [IO.Directory]::CreateDirectory([IO.Path]::GetDirectoryName($destination)) | Out-Null
         [IO.File]::WriteAllText($destination, 'Not for players')
@@ -88,20 +100,20 @@ try {
 '@ | Add-Content -LiteralPath (Join-Path $fixture 'README.md') -Encoding utf8
     $readmeHash = (Get-FileHash -LiteralPath (Join-Path $fixture 'README.md')).Hash
     # 小型真实 XML 镜像覆盖路径含中文的场景；无需复制所有运行 Def 或启动游戏。
-    $defSource = Join-Path $fixture 'Defs/夹具目录/Example.xml'
+    $defSource = Join-Path $fixture '1.7/Defs/夹具目录/Example.xml'
     $defMirror = Join-Path $fixture 'Sexslavecraft/Defs/夹具目录/Example.xml'
     $defText = '<Defs><ThingDef><defName>Fixture</defName></ThingDef></Defs>'
     [IO.File]::WriteAllText($defSource, $defText, [Text.UTF8Encoding]::new($false))
     Copy-Item -LiteralPath $defSource -Destination $defMirror
     # 开发里程碑可使用四段 VERSION，正式打包仍要求三段；夹具按复制 DLL 的真实正式元数据隔离测试。
     # 只改隔离目录，不能为了测试打包编排而改写当前仓库版本或重写生产 DLL 元数据。
-    $fixtureVersion = [Diagnostics.FileVersionInfo]::GetVersionInfo((Join-Path $fixture 'Assemblies/Sexslavecraft.dll')).ProductVersion
+    $fixtureVersion = [Diagnostics.FileVersionInfo]::GetVersionInfo((Join-Path $fixture '1.7/Assemblies/Sexslavecraft.dll')).ProductVersion
     if ($fixtureVersion -notmatch '^\d+\.\d+\.\d+$') { throw 'Fixture requires a DLL with three-part release product metadata.' }
     [IO.File]::WriteAllText((Join-Path $fixture 'VERSION'), $fixtureVersion, [Text.UTF8Encoding]::new($false))
     # 发布前检查限制翻译，统一入口再检查完整语言镜像；夹具提供真实的四语前置文件。
     foreach ($language in @('English', 'ChineseSimplified', 'ChineseTraditional', 'Russian')) {
         $relative = "Languages/$language/Keyed/SSC_Restrictions.xml"
-        foreach ($prefix in @('', 'Sexslavecraft/')) {
+        foreach ($prefix in @('1.7/', 'Sexslavecraft/')) {
             $destination = Join-Path $fixture ($prefix + $relative)
             [IO.Directory]::CreateDirectory([IO.Path]::GetDirectoryName($destination)) | Out-Null
             Copy-Item -LiteralPath (Join-Path $repo ($prefix + $relative)) -Destination $destination
@@ -109,7 +121,7 @@ try {
     }
     # 语言镜像要求完整对应，另加含中文文件名的词条用于差异、缺失与手动同步场景。
     $languageRelative = 'Languages/ChineseSimplified/Keyed/夹具词条.xml'
-    $languageSource = Join-Path $fixture $languageRelative
+    $languageSource = Join-Path $fixture ('1.7/' + $languageRelative)
     $languageMirror = Join-Path $fixture ('Sexslavecraft/' + $languageRelative)
     $languageText = '<LanguageData><Fixture>夹具</Fixture></LanguageData>'
     foreach ($path in @($languageSource, $languageMirror)) {
@@ -160,13 +172,44 @@ exit 0
     # Run outside both repositories to check independence from the caller's working directory.
     Push-Location $shim
     try {
+        # 布局失败应先于打包输出；每次只污染隔离副本并逐字节恢复。
+        $frozenFile = @(Get-ChildItem -LiteralPath (Join-Path $fixture '1.6/Defs') -Recurse -File)[0].FullName
+        $frozenBytes = [IO.File]::ReadAllBytes($frozenFile)
+        [IO.File]::AppendAllText($frozenFile, '<!-- changed frozen baseline -->')
+        $run = Run-Case 'frozen-baseline-changed' 'pass' $HarmonyAssemblyPath $true
+        Assert ($run.Code -ne 0 -and -not (Test-Path -LiteralPath $run.OutputDir)) 'Changing a frozen 1.6 runtime file blocks packaging before ZIP creation.'
+        [IO.File]::WriteAllBytes($frozenFile, $frozenBytes)
+
+        $sharedFile = @(Get-ChildItem -LiteralPath (Join-Path $fixture 'Common/Textures') -Recurse -File)[0].FullName
+        $sharedBytes = [IO.File]::ReadAllBytes($sharedFile)
+        [IO.File]::WriteAllBytes($sharedFile, [byte[]]@(1, 2, 3))
+        $run = Run-Case 'shared-baseline-changed' 'pass' $HarmonyAssemblyPath $true
+        Assert ($run.Code -ne 0 -and -not (Test-Path -LiteralPath $run.OutputDir)) 'Changing a shared baseline texture blocks packaging and protects 1.6 assets.'
+        [IO.File]::WriteAllBytes($sharedFile, $sharedBytes)
+
+        $loadFoldersPath = Join-Path $fixture 'LoadFolders.xml'
+        $loadFoldersBytes = [IO.File]::ReadAllBytes($loadFoldersPath)
+        [IO.File]::WriteAllText($loadFoldersPath, '<loadFolders><v1.6><li>Common</li><li>1.6</li></v1.6><v1.7><li>Common</li><li>1.6</li></v1.7></loadFolders>')
+        $run = Run-Case 'mixed-version-load-folders' 'pass' $HarmonyAssemblyPath $true
+        Assert ($run.Code -ne 0 -and -not (Test-Path -LiteralPath $run.OutputDir)) 'LoadFolders cannot select 1.6 runtime files for 1.7.'
+        [IO.File]::WriteAllBytes($loadFoldersPath, $loadFoldersBytes)
+
+        $buildInfoPath = Join-Path $fixture '1.7/BUILD-INFO.json'
+        $buildInfoBytes = [IO.File]::ReadAllBytes($buildInfoPath)
+        $wrongBuildInfo = [Text.Encoding]::UTF8.GetString($buildInfoBytes) | ConvertFrom-Json
+        $wrongBuildInfo.sha256 = '0' * 64
+        $wrongBuildInfo | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath $buildInfoPath -Encoding utf8NoBOM
+        $run = Run-Case 'untracked-1.7-binary' 'pass' $HarmonyAssemblyPath $true
+        Assert ($run.Code -ne 0 -and -not (Test-Path -LiteralPath $run.OutputDir)) 'A 1.7 DLL whose hash disagrees with BUILD-INFO cannot be packaged.'
+        [IO.File]::WriteAllBytes($buildInfoPath, $buildInfoBytes)
+
         $run = Run-Case 'success' 'pass' $HarmonyAssemblyPath
         Assert ($run.Code -eq 0 -and $run.Report.PassedSuites -eq $suiteCount -and $run.Report.TotalCases -eq $suiteCount) 'All suites execute; counts come from actual summaries (not hard-coded 390).'
         Assert ($run.Report.CheckCount -eq 2 -and $run.Report.PassedChecks -eq 2 -and $run.Report.Checks[0].Name -eq 'DefMirrors' -and $run.Report.Checks[0].CheckedFiles -eq 1) 'Def mirrors have a separate successful report; mechanism counts stay unchanged.'
         Assert ($run.Report.Checks[1].Name -eq 'LanguagesMirrors' -and $run.Report.Checks[1].Status -eq 'Passed' -and $run.Report.Checks[1].CheckedFiles -eq $languageFileCount) 'Languages mirrors have their own successful report and file count.'
 
         # 故意未建镜像的根目录文件可以存在，检查只能读取已有镜像集合。
-        $rootOnly = Join-Path $fixture 'Defs/RootOnly.xml'
+        $rootOnly = Join-Path $fixture '1.7/Defs/RootOnly.xml'
         [IO.File]::WriteAllText($rootOnly, $defText, [Text.UTF8Encoding]::new($false))
         $standalone = & (Join-Path $fixture 'Scripts/Test-DefMirrors.ps1') -RepositoryRoot $fixture -PassThru
         Assert ($standalone.Success -and $standalone.CheckedFiles -eq 1) 'A root-only Def does not require a new project mirror.'
@@ -201,7 +244,7 @@ exit 0
         catch { $missingRootRejected = $_.Exception.Message -match 'Required Def directory is missing' }
         Assert $missingRootRejected 'Missing Def directories cannot silently pass.'
         $emptyRoot = Join-Path $fixture 'empty repository'
-        foreach ($dir in @('Defs', 'Sexslavecraft/Defs')) { [IO.Directory]::CreateDirectory((Join-Path $emptyRoot $dir)) | Out-Null }
+        foreach ($dir in @('1.7/Defs', 'Sexslavecraft/Defs')) { [IO.Directory]::CreateDirectory((Join-Path $emptyRoot $dir)) | Out-Null }
         $emptyRejected = $false
         try { & (Join-Path $fixture 'Scripts/Test-DefMirrors.ps1') -RepositoryRoot $emptyRoot }
         catch { $emptyRejected = $_.Exception.Message -match 'Def mirror collection is empty' }
@@ -253,10 +296,10 @@ exit 0
 
         $missingLanguageDirectoryRejected = $false
         try { & (Join-Path $fixture 'Scripts/Sync-LanguagesMirror.ps1') -RepositoryRoot (Join-Path $fixture 'missing language directories') }
-        catch { $missingLanguageDirectoryRejected = $_.Exception.Message -match 'Both Languages and Sexslavecraft/Languages must exist' }
+        catch { $missingLanguageDirectoryRejected = $_.Exception.Message -match 'Both the selected runtime Languages and Sexslavecraft/Languages must exist' }
         Assert $missingLanguageDirectoryRejected 'Missing Languages directories cannot silently pass.'
         $emptyLanguageRoot = Join-Path $fixture 'empty languages repository'
-        foreach ($dir in @('Languages', 'Sexslavecraft/Languages')) { [IO.Directory]::CreateDirectory((Join-Path $emptyLanguageRoot $dir)) | Out-Null }
+        foreach ($dir in @('1.7/Languages', 'Sexslavecraft/Languages')) { [IO.Directory]::CreateDirectory((Join-Path $emptyLanguageRoot $dir)) | Out-Null }
         $emptyLanguagesRejected = $false
         try { & (Join-Path $fixture 'Scripts/Sync-LanguagesMirror.ps1') -RepositoryRoot $emptyLanguageRoot }
         catch { $emptyLanguagesRejected = $_.Exception.Message -match 'Root Languages collection is empty' }
@@ -297,16 +340,37 @@ exit 0
             Assert ($manifest.validation.suiteCount -eq $suiteCount -and $manifest.validation.passedCases -eq $suiteCount) 'Package manifest includes completed validation counts.'
             Assert ($manifest.validation.checks.Count -eq 2 -and $manifest.validation.checks[0].Name -eq 'DefMirrors' -and $manifest.validation.checks[0].Status -eq 'Passed' -and $manifest.validation.checks[0].CheckedFiles -eq 1) 'Package manifest records the successful Def mirror gate separately.'
             Assert ($manifest.validation.checks[1].Name -eq 'LanguagesMirrors' -and $manifest.validation.checks[1].Status -eq 'Passed' -and $manifest.validation.checks[1].CheckedFiles -eq $languageFileCount) 'Package manifest records the successful Languages mirror gate separately.'
+            Assert ($manifest.layoutValidation.status -eq 'Passed' -and $manifest.layoutValidation.name -eq 'ModLayout' -and $manifest.layoutValidation.checkedFiles -gt 0) 'Package manifest records the real versioned layout and frozen baseline gate.'
+            Assert ($manifest.gameVersions.'1.6'.baselineVersion -eq '2.4.1' -and $manifest.gameVersions.'1.6'.productVersion -eq '2.4.1' -and $manifest.gameVersions.'1.7'.productVersion -eq $fixtureVersion) 'Each game version records its own DLL metadata; 1.6 retains the 2.4.1 baseline.'
+            Assert ($manifest.gameValidation.status -eq 'NotRun' -and $manifest.validation.gameVersion -eq '1.7' -and $manifest.validation.testRuntime -eq '.NET 9') 'Regression results explicitly identify 1.7 resources and .NET 9 without claiming game runtime verification.'
+            Assert ($manifest.repositoryRef -eq 'main') 'Development packages default documentation links to main and record the selected ref.'
             Assert (@($zip.Entries | Where-Object { $_.FullName -like '*0Harmony.dll' -or $_.FullName -like '*/Tests/*' }).Count -eq 0) 'Test dependencies and test sources are not packaged.'
             $packageRoot = 'RJW-SexSlaveCraft-TieJin-Modify/'
+            $dllEntries = @($zip.Entries | Where-Object FullName -like '*.dll' | ForEach-Object { $_.FullName.Substring($packageRoot.Length) })
+            Assert ($dllEntries.Count -eq 2 -and @(Compare-Object @('1.6/Assemblies/Sexslavecraft.dll', '1.7/Assemblies/Sexslavecraft.dll') $dllEntries).Count -eq 0) 'The ZIP contains exactly one mod DLL for each game version.'
+            Assert ($null -ne $zip.GetEntry($packageRoot + 'LoadFolders.xml') -and $null -ne $zip.GetEntry($packageRoot + '1.6/BASELINE.json') -and $null -ne $zip.GetEntry($packageRoot + '1.7/BUILD-INFO.json')) 'LoadFolders and both version provenance files are included explicitly.'
+            $reader = [IO.StreamReader]::new($zip.GetEntry($packageRoot + '1.6/BASELINE.json').Open())
+            try { $packagedBaseline = $reader.ReadToEnd() | ConvertFrom-Json } finally { $reader.Dispose() }
+            $allFrozenFilesMatch = $true
+            foreach ($file in $packagedBaseline.files) {
+                $entry = $zip.GetEntry($packageRoot + $file.path)
+                if ($null -eq $entry -or $entry.Length -ne $file.bytes) { $allFrozenFilesMatch = $false; break }
+                $stream = $entry.Open()
+                try { $hash = [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($stream)).ToLowerInvariant() }
+                finally { $stream.Dispose() }
+                if ($hash -cne $file.sha256) { $allFrozenFilesMatch = $false; break }
+            }
+            Assert ($allFrozenFilesMatch -and $packagedBaseline.files.Count -gt 0) 'Every frozen 1.6 file and original shared texture is present in the ZIP with its baseline bytes and hash.'
+            Assert (@($zip.Entries | Where-Object { $_.FullName -match '/(?:Defs|Languages|Textures|Resources|Assemblies)/' -and $_.FullName -notmatch '/(?:Common|1\.6|1\.7)/' }).Count -eq 0) 'Runtime files are stored only below Common or the selected version directories.'
+            Assert (@($zip.Entries | Where-Object { $_.FullName -like '*/DeveloperNotes.md' -or $_.FullName -like '*/Tools/*' }).Count -eq 0) 'Version folders use runtime subdirectory whitelists and exclude development files.'
             $docs = @($zip.Entries | Where-Object FullName -like "$packageRoot`Docs/*" | ForEach-Object { $_.FullName.Substring($packageRoot.Length) })
             $expectedDocs = @('Docs/模组介绍.md', 'Docs/Players/README.md', "Docs/Releases/$fixtureVersion/${fixtureVersion}发布说明.md")
             Assert ($docs.Count -eq 3 -and @(Compare-Object $expectedDocs $docs).Count -eq 0) 'Only the three player documentation files enter Docs; development, backups and old verification are excluded.'
             $reader = [IO.StreamReader]::new($zip.GetEntry($packageRoot + 'README.md').Open())
             try { $packagedReadme = $reader.ReadToEnd() } finally { $reader.Dispose() }
-            $devUrl = "https://github.com/RavenHu001/RJW-SexSlaveCraft/blob/v$fixtureVersion/Docs/Development/" + [Uri]::EscapeDataString('开发 记录.md') + '#核对'
-            Assert ($packagedReadme.Contains("[Fixture development](<$devUrl> `"Dev title`")") -and $packagedReadme.Contains("[fixture-dev]: <$devUrl> `"Reference title`"")) 'Inline and reference links to excluded files use versioned repository URLs, preserving Chinese anchors, spaces and titles.'
-            Assert ($packagedReadme.Contains("[Fixture directory](https://github.com/RavenHu001/RJW-SexSlaveCraft/tree/v$fixtureVersion/Docs/Development/)")) 'Excluded directory links use the repository tree view.'
+            $devUrl = 'https://github.com/RavenHu001/RJW-SexSlaveCraft/blob/main/Docs/Development/' + [Uri]::EscapeDataString('开发 记录.md') + '#核对'
+            Assert ($packagedReadme.Contains("[Fixture development](<$devUrl> `"Dev title`")") -and $packagedReadme.Contains("[fixture-dev]: <$devUrl> `"Reference title`"")) 'Inline and reference links use the selected repository ref, preserving Chinese anchors, spaces and titles.'
+            Assert ($packagedReadme.Contains('[Fixture directory](https://github.com/RavenHu001/RJW-SexSlaveCraft/tree/main/Docs/Development/)')) 'Excluded directory links use the selected repository ref and tree view.'
             Assert ($packagedReadme.Contains('[Fixture local guide](QUICK_START_EN.md#2-getting-started "Local title")') -and $packagedReadme.Contains('[Fixture external](https://example.com/keep?q=1#anchor)') -and $packagedReadme.Contains('[Fixture anchor](#fixture-anchor)')) 'Packaged guide links, external URLs and local anchors stay unchanged.'
             Assert ((Get-FileHash -LiteralPath (Join-Path $fixture 'README.md')).Hash -eq $readmeHash) 'Packaging never rewrites source documentation.'
         }

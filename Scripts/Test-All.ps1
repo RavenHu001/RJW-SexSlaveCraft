@@ -6,11 +6,14 @@
 需要 .NET SDK 9（或更新 SDK）及 .NET 9 运行时。SharedBed、InteractionProtection、RitualSelection、CombatantSpecialization、PnaLoad 和 BondRelations 需要 net9.0 的 0Harmony.dll，
 通过 -HarmonyAssemblyPath 或 SSC_TEST_HARMONY_PATH 提供，不自动下载、不使用游戏的 Harmony。
 默认将报告保存在 .builds/validation/<本次运行目录>；不编译或安装游戏模组。
+默认检查 1.7 运行资源并回归当前源码；-GameVersion 1.6 只核验冻结基线和 XML，不能证明旧版源码或游戏兼容性。
 #>
 [CmdletBinding()]
 param(
     [string]$HarmonyAssemblyPath = $env:SSC_TEST_HARMONY_PATH,
     [string]$ReportDirectory,
+    [ValidateSet('1.6', '1.7')][string]$GameVersion = '1.7',
+    [string]$RuntimeRoot,
     [switch]$PassThru
 )
 
@@ -19,16 +22,26 @@ $ErrorActionPreference = 'Stop'
 # Native exit codes are checked explicitly so one failed suite does not hide the remaining results.
 $PSNativeCommandUseErrorActionPreference = $false
 $repoRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
+if (-not $RuntimeRoot) { $RuntimeRoot = Join-Path $repoRoot $GameVersion }
+$runtimeRootPath = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($RuntimeRoot)
 $startedAt = [DateTime]::UtcNow
 if (-not $ReportDirectory) {
     $ReportDirectory = Join-Path $repoRoot ('.builds/validation/' + $startedAt.ToString('yyyyMMdd-HHmmss') + '-' + [guid]::NewGuid().ToString('N').Substring(0, 8))
 }
 $reportRoot = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($ReportDirectory)
 [IO.Directory]::CreateDirectory($reportRoot) | Out-Null
+$savedTestEnvironment = @{}
+foreach ($name in @('SSC_TEST_REPOSITORY_ROOT', 'SSC_TEST_RUNTIME_ROOT', 'SSC_TEST_COMMON_ROOT')) {
+    $savedTestEnvironment[$name] = [Environment]::GetEnvironmentVariable($name, 'Process')
+}
+try {
+$env:SSC_TEST_REPOSITORY_ROOT = $repoRoot
+$env:SSC_TEST_RUNTIME_ROOT = $runtimeRootPath
+$env:SSC_TEST_COMMON_ROOT = Join-Path $repoRoot 'Common'
 
 # The single suite list used by standalone checks and release packaging. Arguments are absolute.
 $suites = @(
-    @{ Name = 'RitualProgression'; Arguments = @((Join-Path $repoRoot 'Defs/HediffDefs/HediffOfSexSlave.xml')) },
+    @{ Name = 'RitualProgression'; Arguments = @((Join-Path $runtimeRootPath 'Defs/HediffDefs/HediffOfSexSlave.xml')) },
     @{ Name = 'RitualLifecycle'; Arguments = @() },
     @{ Name = 'ForcedSexProps'; Arguments = @() },
     @{ Name = 'TrainingExperience'; Arguments = @() },
@@ -62,6 +75,7 @@ $suites = @(
     @{ Name = 'SharedBed'; Arguments = @($repoRoot) },
     @{ Name = 'BondRelations'; Arguments = @($repoRoot) }
 )
+if ($GameVersion -eq '1.6') { $suites = @() }
 
 <#
 .SYNOPSIS
@@ -124,6 +138,17 @@ function Invoke-DotnetStep {
 }
 
 $globalProblems = [Collections.Generic.List[string]]::new()
+$layoutValidation = $null
+try {
+    $layoutValidation = & (Join-Path $PSScriptRoot 'Test-ModLayout.ps1') -RepositoryRoot $repoRoot -PassThru
+    if ($null -eq $layoutValidation -or -not $layoutValidation.Success -or $layoutValidation.Name -ne 'ModLayout') {
+        throw 'Mod layout and frozen baseline validation returned no complete successful result.'
+    }
+}
+catch {
+    $layoutValidation = [pscustomobject]@{ Name = 'ModLayout'; Success = $false; Reason = $_.Exception.Message }
+    $globalProblems.Add("Mod layout / frozen baseline validation failed: $($_.Exception.Message)")
+}
 # 资源前置检查分别登记，机制套件和用例计数保持不变；失败时所有套件标为 NotRun。
 # 单独入口与发布打包共用此处，保留逐检查日志和失败原因，缺少检查脚本也不能放行。
 $checks = [Collections.Generic.List[object]]::new()
@@ -139,7 +164,7 @@ foreach ($definition in $resourceChecks) {
     Set-Content -LiteralPath $check.LogPath -Value ("Check: " + $check.Name) -Encoding utf8
     try {
         # 不传 -Sync；一个检查失败后仍执行其余检查，分别保留诊断信息。
-        $checkResult = & (Join-Path $PSScriptRoot $definition.Script) -RepositoryRoot $repoRoot -PassThru 6>> $check.LogPath
+        $checkResult = & (Join-Path $PSScriptRoot $definition.Script) -RepositoryRoot $repoRoot -GameVersion $GameVersion -RuntimeRoot $runtimeRootPath -PassThru 6>> $check.LogPath
         if ($null -eq $checkResult -or -not $checkResult.Success -or
             $checkResult.Name -ne $check.Name -or $checkResult.CheckedFiles -le 0) {
             throw "$($check.Name) returned no complete successful result."
@@ -155,6 +180,7 @@ foreach ($definition in $resourceChecks) {
     $checks.Add($check)
 }
 $dotnetPath = $null
+if ($GameVersion -eq '1.7') {
 try {
     $dotnetPath = (Get-Command dotnet -CommandType Application -ErrorAction Stop | Select-Object -First 1).Source
     $sdk = @(& $dotnetPath --version 2>&1)
@@ -185,6 +211,7 @@ try {
     $harmonyProblem = Get-HarmonyProblem $HarmonyAssemblyPath
 }
 catch { $harmonyProblem = "Cannot resolve Harmony path: $($_.Exception.Message)" }
+}
 
 $results = [Collections.Generic.List[object]]::new()
 Write-Host "Validation reports: $reportRoot"
@@ -239,10 +266,13 @@ $passedChecks = @($checks | Where-Object Status -eq 'Passed').Count
 $failedChecks = @($checks | Where-Object Status -ne 'Passed').Count
 $report = [pscustomobject][ordered]@{
     StartedAtUtc = $startedAt.ToString('o'); FinishedAtUtc = [DateTime]::UtcNow.ToString('o')
-    Success = ($passed -eq $suites.Count -and $failedChecks -eq 0); SuiteCount = $suites.Count
+    Success = ($passed -eq $suites.Count -and $failedChecks -eq 0 -and $globalProblems.Count -eq 0); SuiteCount = $suites.Count
+    GameVersion = $GameVersion; RepositoryRoot = $repoRoot; RuntimeRoot = $runtimeRootPath
+    SourceValidationScope = $(if ($GameVersion -eq '1.7') { 'Current development source with selected 1.7 runtime resources; model regression, not in-game compatibility.' } else { 'Frozen 2.4.1 artifacts and 1.6 XML only; no 1.6 source rebuild or source regression.' })
+    LayoutValidation = $layoutValidation; GlobalProblems = $globalProblems.ToArray()
     PassedSuites = $passed; FailedSuites = $failed; NotRunSuites = $notRun
-    PassedCases = [int](($results | Measure-Object PassedCases -Sum).Sum)
-    TotalCases = [int](($results | Measure-Object TotalCases -Sum).Sum)
+    PassedCases = $(if ($results.Count) { [int](($results | Measure-Object PassedCases -Sum).Sum) } else { 0 })
+    TotalCases = $(if ($results.Count) { [int](($results | Measure-Object TotalCases -Sum).Sum) } else { 0 })
     CheckCount = $checks.Count; PassedChecks = $passedChecks; FailedChecks = $failedChecks
     Checks = $checks.ToArray(); HarmonyAssemblyPath = $HarmonyAssemblyPath; Results = $results.ToArray()
 }
@@ -254,3 +284,9 @@ Write-Host "Summary: $(Join-Path $reportRoot 'summary.json')"
 if (-not $report.Success) { throw 'Validation failed or incomplete. Release packaging must stop; see summary.json and suite logs.' }
 # Only the structured successful result goes to the success stream for New-Release.ps1.
 if ($PassThru) { return $report }
+}
+finally {
+    foreach ($name in $savedTestEnvironment.Keys) {
+        [Environment]::SetEnvironmentVariable($name, $savedTestEnvironment[$name], 'Process')
+    }
+}

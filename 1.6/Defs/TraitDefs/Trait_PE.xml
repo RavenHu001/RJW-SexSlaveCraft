@@ -1,0 +1,17 @@
+<Defs>
+  <TraitDef>
+    <defName>SSC_Trait_PE</defName>
+    <commonality>0</commonality>
+    
+    <degreeDatas>
+      <li>
+        <label>人格排泄（完成）</label>
+        <description>这个人已经完成了人格排泄，虽然包含所有记忆，现在还存在人体的只是一个PNA制造的用于听取命令的初始人格。</description>
+        <statOffsets>
+            <SocialImpact>-1.0</SocialImpact>
+        </statOffsets>
+      </li>
+    </degreeDatas>
+    
+  </TraitDef>
+</Defs>

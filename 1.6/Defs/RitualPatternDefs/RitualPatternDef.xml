@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+  <RitualPatternDef ParentName="CelebrationPartyChat">
+    <defName>SSC_BindingRitualPattern</defName>
+    
+    <ritualBehavior>SSC_BindingRitualBehavior</ritualBehavior>
+    <ritualOutcomeEffect>SSC_BindingRitualOutcome</ritualOutcomeEffect>
+    
+    <canStartAnytime>true</canStartAnytime>
+    <ritualObligationTargetFilter>RitualSpotOrAltar</ritualObligationTargetFilter>
+    <shortDescOverride>链接仪式</shortDescOverride>
+    <descOverride>一场利用炒饭智能力量的仪式，可以提高恶堕率的获取，以及升级调教等级和锁链等级。</descOverride>
+    <iconPathOverride>UI/Icons/Ritual</iconPathOverride>
+    <ritualOnlyForIdeoMembers>false</ritualOnlyForIdeoMembers>
+    
+    <tags>
+      <li>SSC_Binding</li>
+    </tags>
+  </RitualPatternDef>
+
+</Defs>

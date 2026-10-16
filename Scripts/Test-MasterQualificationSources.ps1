@@ -10,22 +10,31 @@
 param(
     [Parameter(Mandatory)][string]$GameRoot,
     [string]$RepositoryRoot = (Join-Path $PSScriptRoot '..'),
+    [ValidateSet('1.6', '1.7')][string]$GameVersion = '1.7',
+    [string]$RuntimeRoot,
+    [string]$GameAssemblyPath,
     [string]$ReportPath
 )
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 $repo = (Resolve-Path -LiteralPath $RepositoryRoot).Path
+if (-not $RuntimeRoot) { $RuntimeRoot = Join-Path $repo $GameVersion }
+$runtime = (Resolve-Path -LiteralPath $RuntimeRoot).Path
 $gameRootPath = (Resolve-Path -LiteralPath $GameRoot).Path
 if (!$ReportPath) { $ReportPath = Join-Path $repo '.builds/master-sources-3b/native-source-audit.json' }
 $reportFile = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($ReportPath)
-$gameDll = Join-Path $gameRootPath 'RimWorldWin64_Data/Managed/Assembly-CSharp.dll'
-$patchPath = Join-Path $repo 'Patches/SSC_MasterQualificationSources.xml'
-$itemPath = Join-Path $repo 'Defs/ThingsDefs/SSC_MasterQualificationItem.xml'
+if (-not $GameAssemblyPath) {
+    $GameAssemblyPath = Join-Path $gameRootPath $(if ($GameVersion -eq '1.7') { 'Assembly-CSharp.dll' } else { 'RimWorldWin64_Data/Managed/Assembly-CSharp.dll' })
+}
+$gameDll = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($GameAssemblyPath)
+$patchPath = Join-Path $runtime 'Patches/SSC_MasterQualificationSources.xml'
+$itemPath = Join-Path $runtime 'Defs/ThingsDefs/SSC_MasterQualificationItem.xml'
 $coreLootPath = Join-Path $gameRootPath 'Data/Core/Defs/ThingSetMakerDefs/ThingSetMakers_MapGen.xml'
 $betterLootPath = Join-Path $gameRootPath 'Data/Ideology/Defs/ThingSetMakerDefs/ThingSetMakers_MapGen.xml'
 $coreRewardPath = Join-Path $gameRootPath 'Data/Core/Defs/ThingSetMakerDefs/ThingSetMakers_Reward.xml'
 $report = [ordered]@{
     StartedAtUtc = [DateTime]::UtcNow.ToString('o'); Success = $false
+    GameVersion = $GameVersion; RuntimeRoot = $runtime
     Scope = 'Real PatchOperation.Apply on native Core/Ideology XML; native trade exclusion and artifact reward tag connection. Not full game XML deserialization, Def loading, reward rolls or gameplay.'
     Inputs = [ordered]@{}; Checks = [Collections.Generic.List[string]]::new(); Error = $null
 }

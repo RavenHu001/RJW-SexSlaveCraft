@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <!-- Core SpeechLines 是原版说话波纹，生命周期约 0.25 秒，不依赖 DLC 或新增贴图。
+       只在原版两秒预热中每 15 tick 发出一次，正常约八次；放大并移到目标右上方避免同格遮挡。
+       原版停止维护预热 Effecter 时停止生成，已发出的波纹按原版生命周期淡出。 -->
+  <EffecterDef>
+    <defName>SSC_PetDogTameWarmup</defName>
+    <children>
+      <li>
+        <subEffecterClass>SubEffecter_SprayerContinuous</subEffecterClass>
+        <fleckDef>SpeechLines</fleckDef>
+        <spawnLocType>OnTarget</spawnLocType>
+        <positionOffset>(0.35, 0, 0.6)</positionOffset>
+        <ticksBetweenMotes>15</ticksBetweenMotes>
+        <initialDelayTicks>0</initialDelayTicks>
+        <makeMoteOnSubtrigger>false</makeMoteOnSubtrigger>
+        <maxMoteCount>10</maxMoteCount>
+        <burstCount>1</burstCount>
+        <scale>1.7</scale>
+        <rotation>0</rotation>
+        <rotationRate>0</rotationRate>
+        <speed>0</speed>
+      </li>
+    </children>
+  </EffecterDef>
+</Defs>

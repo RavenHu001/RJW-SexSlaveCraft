@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <!-- Target hints and success messages use {0} for the animal; training uses {1} for the project. -->
+  <SSC_PetDogTameRequiresFinal>需要终极宠物狗专精。</SSC_PetDogTameRequiresFinal>
+  <SSC_PetDogTameInvalidCaster>施放者必须属于玩家阵营、存活、已生成、未倒地且没有精神状态。</SSC_PetDogTameInvalidCaster>
+  <SSC_PetDogTameInvalidTarget>目标必须是同地图上存活、已生成、没有精神状态的无阵营或玩家阵营动物，且不能是树精。</SSC_PetDogTameInvalidTarget>
+  <SSC_PetDogTameUnconsciousTarget>目标意识不足，无法接受训导。</SSC_PetDogTameUnconsciousTarget>
+  <SSC_PetDogTameUntamableTarget>目标不符合原版可驯服条件。</SSC_PetDogTameUntamableTarget>
+  <SSC_PetDogTameUnreachableTarget>无法到达目标所在格。</SSC_PetDogTameUnreachableTarget>
+  <SSC_PetDogTameMissingEffect>定向驯导效果当前不可用。</SSC_PetDogTameMissingEffect>
+  <SSC_PetDogTameTargetHint>训导 {0}（走至同格后直接驯服）</SSC_PetDogTameTargetHint>
+  <SSC_PetDogTameTrainingTargetHint>训练 {0}：{1}（走至同格后完整完成该项目）</SSC_PetDogTameTrainingTargetHint>
+  <SSC_PetDogTameNoTrainingTarget>目标没有已勾选、满足原版前置及种族/体型条件且仍需训练的项目。</SSC_PetDogTameNoTrainingTarget>
+  <SSC_PetDogTameTrainingSuccess>已完成 {0} 的训练项目：{1}。</SSC_PetDogTameTrainingSuccess>
+</LanguageData>

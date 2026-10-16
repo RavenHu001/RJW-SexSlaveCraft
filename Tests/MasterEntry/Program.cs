@@ -91,7 +91,7 @@ internal static class Program
     }
     private static int Main(string[] args)
     {
-        rootPath = Path.GetFullPath(args.Length > 0 ? args[0] : ".");
+        rootPath = SscTestPaths.RepositoryRoot(args.Length > 0 ? args[0] : null);
         // 自动触发用当前 SSC 身份及研究完成状态；永久资格不替代身份，部分研究仍可触发。
         Run("零进度新游戏生成一个免费任务和通知，不直接发物品", () => {
             Init(); Check(QuestGen.Calls == 1 && QuestUtility.Letters == 1);
@@ -331,7 +331,7 @@ internal static class Program
             }; Draw(); Check(QuestGen.Calls == 1 && Messages.Text.Single() == "SSC_MasterEntry_AlreadyPending");
         });
         Run("XML 使用生产节点，始终加载且不进入随机任务池", () => {
-            var def = XDocument.Load(Path.Combine(rootPath, "Defs/QuestScriptDefs/SSC_MasterQualification.xml")).Root.Element("QuestScriptDef");
+            var def = XDocument.Load(SscTestPaths.Combine(rootPath, "Defs/QuestScriptDefs/SSC_MasterQualification.xml")).Root.Element("QuestScriptDef");
             Check((string)def.Element("defName") == SSCMasterEntryUtility.QuestDefName && !def.Attributes().Any());
             Check((string)def.Element("root").Attribute("Class") == typeof(QuestNode_Root_MasterQualification).FullName);
             Check((string)def.Element("randomlySelectable") == "false" && (string)def.Element("autoAccept") == "false");
@@ -339,19 +339,19 @@ internal static class Program
             Check((string)def.Element("defaultHidden") == "false" && (string)def.Element("neverPossibleInSpace") == "true");
         });
         Run("注册任务 Def、全部生产文件和设置入口", () => {
-            var project = XDocument.Load(Path.Combine(rootPath, "Sexslavecraft/SexSlaveCraft_Alpha.csproj"));
+            var project = XDocument.Load(SscTestPaths.Combine(rootPath, "Sexslavecraft/SexSlaveCraft_Alpha.csproj"));
             var files = project.Descendants().Where(e => e.Name.LocalName == "Compile").Select(e => (string)e.Attribute("Include")).ToHashSet();
             foreach (var file in new[] { "common\\SSCMasterEntryUtility.cs", "common\\SSCMasterEntryGameComponent.cs", "common\\SSCMod.MasterEntry.cs", "Quest\\QuestNode_Root_MasterQualification.cs", "Quest\\QuestPart_MasterQualificationDelivery.cs" }) Check(files.Contains(file));
-            Check(File.ReadAllText(Path.Combine(rootPath, "Sexslavecraft/common/StringAndDefOf.cs")).Contains("GetDef<QuestScriptDef>(\"SSC_InitialMasterQualification\")"));
-            Check(File.ReadAllText(Path.Combine(rootPath, "Sexslavecraft/common/Settings.cs")).Contains("DrawMasterEntryDebugEntry(listingStandard);"));
+            Check(File.ReadAllText(SscTestPaths.Combine(rootPath, "Sexslavecraft/common/StringAndDefOf.cs")).Contains("GetDef<QuestScriptDef>(\"SSC_InitialMasterQualification\")"));
+            Check(File.ReadAllText(SscTestPaths.Combine(rootPath, "Sexslavecraft/common/Settings.cs")).Contains("DrawMasterEntryDebugEntry(listingStandard);"));
         });
         Run("四语任务按钮与拒绝文案齐全，语言镜像一致", () => {
             string[] keys = { "QuestName", "QuestDescription", "DebugRequest", "DebugRequestTip", "Unavailable", "AlreadyPending", "NoMap", "CreateFailed", "Created", "DeliveryLetterLabel", "DeliveryLetterText" };
             foreach (var language in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" }) {
-                var path = Path.Combine("Languages", language, "Keyed/SSC_MasterEntry.xml"); var full = Path.Combine(rootPath, path);
+                var path = Path.Combine("Languages", language, "Keyed/SSC_MasterEntry.xml"); var full = SscTestPaths.Combine(rootPath, path);
                 var xml = XDocument.Load(full); foreach (var key in keys) Check(!string.IsNullOrWhiteSpace((string)xml.Root.Element("SSC_MasterEntry_" + key)));
                 Check(xml.Root.Elements().Count() == keys.Length);
-                Check(File.ReadAllBytes(full).SequenceEqual(File.ReadAllBytes(Path.Combine(rootPath, "Sexslavecraft", path))));
+                Check(File.ReadAllBytes(full).SequenceEqual(File.ReadAllBytes(SscTestPaths.Combine(rootPath, "Sexslavecraft", path))));
             }
         });
         // 汇总格式由统一门禁读取；任何单组失败都让进程返回非零，不以日志存在代替通过。

@@ -27,7 +27,7 @@ internal static partial class Program
 
     private static void OverdriveDefinitions()
     {
-        var ability = XDocument.Load(Path.Combine(root, "Defs/AbilityDefs/SSC_CombatOverdrive.xml")).Root.Element("AbilityDef");
+        var ability = XDocument.Load(SscTestPaths.Combine(root, "Defs/AbilityDefs/SSC_CombatOverdrive.xml")).Root.Element("AbilityDef");
         Check((string)ability.Element("abilityClass") == typeof(Ability_CombatOverdrive).FullName, "未使用执行保护");
         Check((string)ability.Element("targetRequired") == "false" &&
             (string)ability.Element("showWhenDrafted") == "true" &&
@@ -44,7 +44,7 @@ internal static partial class Program
         // 与已核对原版 GenTicks.SecondsToTicks 的乘 60 并四舍五入规则一致。
         Check(MathF.Round(Value(effect, "durationSecondsOverride") * 60f) == 2500 &&
             MathF.Round(Value(ability.Element("statBases"), "Ability_Duration") * 60f) == 2500, "时长覆盖或显示不符");
-        var defs = XDocument.Load(Path.Combine(root, "Defs/HediffDefs/SSC_HediffDefs_CombatantSpecialization.xml")).Root.Elements();
+        var defs = XDocument.Load(SscTestPaths.Combine(root, "Defs/HediffDefs/SSC_HediffDefs_CombatantSpecialization.xml")).Root.Elements();
         var final = defs.Single(e => (string)e.Element("defName") == "SSC_Hediff_Combatant_Final");
         var buff = defs.Single(e => (string)e.Element("defName") == "SSC_Hediff_CombatOverdrive");
         Check((string)final.Element("hediffClass") == "HediffWithComps" && (string)buff.Element("hediffClass") == "HediffWithComps", "组件无法运行");
@@ -62,13 +62,13 @@ internal static partial class Program
     {
         foreach (string lang in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" })
         {
-            var keyed = XDocument.Load(Path.Combine(root, "Languages", lang, "Keyed/SSC_CombatOverdrive.xml"));
+            var keyed = XDocument.Load(SscTestPaths.Combine(root, "Languages", lang, "Keyed/SSC_CombatOverdrive.xml"));
             Check(!string.IsNullOrWhiteSpace((string)keyed.Root.Element("SSC_CombatOverdriveRequiresDrafted")), "缺少征召原因");
             if (lang == "ChineseSimplified") continue; // 简中使用根 Def 文本。
             foreach (var item in new[] { ("AbilityDef/SSC_CombatOverdrive.xml", "SSC_CombatOverdrive"),
                 ("HediffDef/SSC_HediffDefs_CombatantSpecialization.xml", "SSC_Hediff_CombatOverdrive") })
             {
-                var text = XDocument.Load(Path.Combine(root, "Languages", lang, "DefInjected", item.Item1));
+                var text = XDocument.Load(SscTestPaths.Combine(root, "Languages", lang, "DefInjected", item.Item1));
                 foreach (string field in new[] { "label", "description" })
                     Check(!string.IsNullOrWhiteSpace((string)text.Root.Element(item.Item2 + "." + field)), "缺少能力/状态译文");
             }

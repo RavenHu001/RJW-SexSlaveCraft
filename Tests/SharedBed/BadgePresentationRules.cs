@@ -111,7 +111,7 @@ internal static partial class Program
             {
                 foreach (string language in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" })
                 {
-                    foreach (var key in XDocument.Load(Path.Combine(repo, "Languages", language, "Keyed/SSC_SharedBed.xml")).Root.Elements())
+                    foreach (var key in XDocument.Load(SscTestPaths.Combine(repo, "Languages", language, "Keyed/SSC_SharedBed.xml")).Root.Elements())
                         Translation.Keys[key.Name.LocalName] = key.Value;
                     foreach (bool mint in new[] { false, true })
                     foreach (bool assigned in new[] { false, true })

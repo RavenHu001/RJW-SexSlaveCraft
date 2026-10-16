@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+  <RecipeDef>
+    <defName>SSC_Make_SuperDrug</defName>
+    
+    <label>浓缩纳米催情液</label>
+    
+    <description>把 5 份纳米催情液减压蒸去多余液体，得到 1 份浓缩品。</description>
+    
+    <jobString>正在浓缩纳米催情液。</jobString>
+    
+    <workAmount>450</workAmount>
+    
+    <workSpeedStat>DrugSynthesisSpeed</workSpeedStat>
+
+    <soundWorking>Recipe_Drug</soundWorking>
+    
+    <recipeUsers>
+      <li>DrugLab</li> 
+    </recipeUsers>
+    
+    <ingredients>
+      <li>
+        <filter>
+          <thingDefs>
+            <li>Purple_Aphrodisiac_Nanofluid</li> 
+        </thingDefs>
+        </filter>
+        <count>5</count> 
+      </li>
+      </ingredients>
+    
+    <fixedIngredientFilter>
+      <thingDefs>
+        <li>Purple_Aphrodisiac_Nanofluid</li>
+      </thingDefs>
+    </fixedIngredientFilter>
+    
+    <products>
+      <Purple_Aphrodisiac_Nanofluid_Plus>1</Purple_Aphrodisiac_Nanofluid_Plus>
+    </products>
+    
+    <workSkill>Intellectual</workSkill> 
+    <researchPrerequisite>SSC_RES_PNAConcentration</researchPrerequisite> 
+    
+  </RecipeDef>
+    <RecipeDef>
+    <defName>SSC_Make_SuperDrug_forth</defName>
+    
+    <label>浓缩纳米催情液 ×4</label>
+    
+    <description>把 20 份纳米催情液减压蒸去多余液体，一次得到 4 份浓缩品。</description>
+    
+    <jobString>正在批量浓缩纳米催情液。</jobString>
+    
+    <workAmount>1350</workAmount>
+    <workSpeedStat>DrugSynthesisSpeed</workSpeedStat>
+    
+
+    <soundWorking>Recipe_Drug</soundWorking>
+    
+    <recipeUsers>
+      <li>DrugLab</li> 
+    </recipeUsers>
+    
+    <ingredients>
+      <li>
+        <filter>
+          <thingDefs>
+            <li>Purple_Aphrodisiac_Nanofluid</li> 
+        </thingDefs>
+        </filter>
+        <count>20</count> 
+      </li>
+      </ingredients>
+    
+    <fixedIngredientFilter>
+      <thingDefs>
+        <li>Purple_Aphrodisiac_Nanofluid</li>
+      </thingDefs>
+    </fixedIngredientFilter>
+    
+    <products>
+      <Purple_Aphrodisiac_Nanofluid_Plus>4</Purple_Aphrodisiac_Nanofluid_Plus>
+    </products>
+    
+    <workSkill>Intellectual</workSkill> 
+    <researchPrerequisite>SSC_RES_PNAConcentration</researchPrerequisite> 
+    
+  </RecipeDef>
+
+
+</Defs>

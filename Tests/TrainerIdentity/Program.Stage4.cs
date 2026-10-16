@@ -14,7 +14,7 @@ internal static partial class Program
         {
             // 检查实际随 Mod 加载的 XML，而不只构造测试 Profile；
             // 目标接收项和调教项必须维持未声明状态。
-            var xml = XDocument.Load(Path.Combine(repo, "Defs/SSCRestrictionProfiles.xml"));
+            var xml = XDocument.Load(SscTestPaths.Combine(repo, "Defs/SSCRestrictionProfiles.xml"));
             var profile = xml.Root.Elements().Single(element =>
                 (string)element.Element("defName") == "SSC_Restriction_TrainerOfficer");
             Assert((string)profile.Element("specialization") == "TrainerOfficer");

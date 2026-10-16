@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_Hediff_PetCatEncouragement.label>кошачья поддержка</SSC_Hediff_PetCatEncouragement.label>
+  <SSC_Hediff_PetCatEncouragement.description>Мягкая поддержка финальной кошки: +8 к настроению и ×1,10 к общей скорости работы на 12 игровых часов. Повторная поддержка обновляет длительность без суммирования.</SSC_Hediff_PetCatEncouragement.description>
+  <SSC_Hediff_PetCat_Final.label>финальная специализация кошки</SSC_Hediff_PetCat_Final.label>
+  <SSC_Hediff_PetCat_Final.description>Финальная специализация кошки, закреплённая гелем личности. Сохраняет бонусы скорости, уклонения и ласку и даёт «Успокаивающий резонанс»: восстановить другого человекоподобного персонажа фракции игрока из психического состояния либо ненадолго поддержать его настроение и скорость работы.</SSC_Hediff_PetCat_Final.description>
+</LanguageData>

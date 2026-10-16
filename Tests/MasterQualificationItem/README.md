@@ -27,7 +27,7 @@ dotnet run --project Tests/MasterQualificationItem/MasterQualificationItem.cspro
 在独立 PowerShell 7 进程中运行：
 
 ```powershell
-pwsh -NoProfile -File Scripts/Test-MasterQualificationSources.ps1 -GameRoot 'D:\STEAM\steamapps\common\RimWorld'
+pwsh -NoProfile -File Scripts/Test-MasterQualificationSources.ps1 -GameVersion 1.7 -GameRoot 'D:\STEAM\steamapps\common\RimWorld'
 ```
 
 脚本只读本机游戏文件，用真实 `PatchOperationSequence/Add/Conditional.Apply` 对实际 Core XML 执行补丁，分别核对不含可选池及含 Ideology 增强房间/安全箱两种输入；删除种子追加后原定义须完全一致。随后用原版 `StockGenerator_Tag.HandlesThingDef` 与 `TradeabilityUtility.TraderCanSell` 验证贸易排除，并核对实际心灵枪和种子共用的任务奖励标签。报告保存到 `.builds/master-sources-3b/native-source-audit.json`，包含输入哈希及验证边界。
@@ -99,3 +99,5 @@ pwsh -NoProfile -File Scripts/Test-MasterQualificationSources.ps1 -GameRoot 'D:\
 - 每次点击只增加一个，已有同类堆叠时可能合堆；提示应指向实际物品。不同放置位置的数量按所有堆叠总数核对。
 - 第二批尚无初次免费任务或长期投放，实机测试使用设置生成按钮。
 - 反馈可按“场景／操作／实际结果／预期结果”记录；如有红字，附首次出现的完整错误及堆栈。优先确认核心流程，再分别确认 Royalty、旧档兼容和独立原版蓝图。
+
+当前目录迁移后，本机检查默认读取 `1.7/Patches` 和 `1.7/Defs`；`-GameVersion 1.6` 须配套独立旧版游戏目录。`-RuntimeRoot` 与 `-GameAssemblyPath` 可显式选择输入；构造原版补丁需要兼容对应游戏运行时的 PowerShell 宿主。文中的历史执行结果不代表 1.7 已验收。

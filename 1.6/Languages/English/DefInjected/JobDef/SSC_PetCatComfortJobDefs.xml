@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <!-- The custom comfort job uses the native ability report; the game replaces TargetA. -->
+  <SSC_Job_PetCatComfort.reportString>Comforting TargetA.</SSC_Job_PetCatComfort.reportString>
+</LanguageData>

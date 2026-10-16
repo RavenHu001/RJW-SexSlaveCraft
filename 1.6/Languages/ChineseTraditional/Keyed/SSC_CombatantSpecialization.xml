@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_ITab_SpecializationCombatant>戰鬥員</SSC_ITab_SpecializationCombatant>
+  <SSC_ITab_SelectSpecializationCombatant>選擇戰鬥員</SSC_ITab_SelectSpecializationCombatant>
+  <SSC_ITab_SpecializationCombatantDisabledIdentity>需為 SSC 性奴身分</SSC_ITab_SpecializationCombatantDisabledIdentity>
+  <SSC_ITab_SpecializationCombatantDisabledResearch>需完成戰鬥員研究</SSC_ITab_SpecializationCombatantDisabledResearch>
+  <SSC_ITab_SpecializationOrdinaryComplete>培養完成，待終極化</SSC_ITab_SpecializationOrdinaryComplete>
+  <SSC_ITab_CombatantFinalizationTip>抽取人格凝膠，在雕刻台加工為終極戰鬥員後重新植入，即可獲得終極效果和「戰鬥超頻」。</SSC_ITab_CombatantFinalizationTip>
+</LanguageData>

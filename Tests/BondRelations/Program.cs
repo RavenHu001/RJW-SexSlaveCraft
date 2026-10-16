@@ -48,13 +48,13 @@ internal static class Program
     static void LoadLanguage(string root, string lang)
     {
         Extensions.Translations.Clear();
-        var xml = XDocument.Load(Path.Combine(root, "Languages", lang, "Keyed/SSC_BondRelations.xml"));
+        var xml = XDocument.Load(SscTestPaths.Combine(root, "Languages", lang, "Keyed/SSC_BondRelations.xml"));
         foreach (var e in xml.Root.Elements()) Extensions.Translations[e.Name.LocalName] = e.Value;
     }
     /// <summary>运行关系授予、生命周期、旧档清理及真实 Harmony 显示回归。</summary>
     static int Main(string[] args)
     {
-        string root = args.Length > 0 ? args[0] : Path.GetFullPath("../..", AppContext.BaseDirectory);
+        string root = SscTestPaths.RepositoryRoot(args.Length > 0 ? args[0] : null);
         // 健康通知经实际 Harmony 生产补丁进入离体维护，CE 兼容测试不直接调用清理方法。
         var harmony = new Harmony("ssc.tests.bond-relations");
         harmony.CreateClassProcessor(typeof(SSCBondHealthChanged)).Patch();
@@ -312,8 +312,8 @@ internal static class Program
                         var friend = new PawnRelationDef { label = "friend", labelFemale = "friend" };
                         Require(SocialCardUtility.Render(f.slave, f.master, friend, def) == "Friend, " + m, "secondary uncapitalized relation");
                         Require(SocialCardUtility.Render(f.slave, f.master, friend) == "Friend", "other relation unchanged");
-                        Require(File.ReadAllBytes(Path.Combine(root, "Languages", lang, "Keyed/SSC_BondRelations.xml"))
-                            .SequenceEqual(File.ReadAllBytes(Path.Combine(root, "Sexslavecraft/Languages", lang, "Keyed/SSC_BondRelations.xml"))), "language mirror");
+                        Require(File.ReadAllBytes(SscTestPaths.Combine(root, "Languages", lang, "Keyed/SSC_BondRelations.xml"))
+                            .SequenceEqual(File.ReadAllBytes(SscTestPaths.Combine(root, "Sexslavecraft/Languages", lang, "Keyed/SSC_BondRelations.xml"))), "language mirror");
                     });
         // 再叠加一个第三方补丁，防止 SSC 包装器绕开其他关系原有的大写入口。
         Check("other relationship retains a third-party Cap postfix", () =>

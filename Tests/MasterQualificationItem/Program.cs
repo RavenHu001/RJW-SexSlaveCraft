@@ -62,7 +62,7 @@ internal static partial class Program
     /// <summary>验证道具、研究边界、最终复查、调试按钮及定义/翻译；原版引擎专项留待实机。</summary>
     private static int Main(string[] args)
     {
-        root = Path.GetFullPath(args.Length > 0 ? args[0] : ".");
+        root = SscTestPaths.RepositoryRoot(args.Length > 0 ? args[0] : null);
         // 基础授予与准入：身份设置不能代替永久资格，重复及无效使用不能消耗物品。
         Run("首次使用授资格补原版蓝图只消耗一个，身份研究进度保持", () => {
             var pawn = Pawn(); var item = Item(4);
@@ -212,7 +212,7 @@ internal static partial class Program
     /// <summary>检查实际道具定义的任务、唯一结算效果、原版分类及注册/设置接入。</summary>
     private static void ItemDefinition()
     {
-        var def = XDocument.Load(Path.Combine(root, "Defs/ThingsDefs/SSC_MasterQualificationItem.xml")).Root.Element("ThingDef");
+        var def = XDocument.Load(SscTestPaths.Combine(root, "Defs/ThingsDefs/SSC_MasterQualificationItem.xml")).Root.Element("ThingDef");
         Check(def.Attribute("MayRequire") == null && (string)def.Element("thingClass") == "ThingWithComps");
         var comps = def.Element("comps").Elements("li").ToArray();
         Check(comps.Length == 3 && comps[0].Attribute("Class").Value == "CompProperties_Usable");
@@ -222,20 +222,20 @@ internal static partial class Program
         Check(!def.ToString().Contains("DestroySelf") && !def.ToString().Contains("CompProperties_Techprint"));
         Check((int)def.Element("stackLimit") > 1 && (float)def.Element("statBases").Element("MarketValue") > 0);
         Check((string)def.Element("thingCategories").Element("li") == "ItemsMisc", "invalid core item category");
-        var source = File.ReadAllText(Path.Combine(root, "Sexslavecraft/common/StringAndDefOf.cs"));
+        var source = File.ReadAllText(SscTestPaths.Combine(root, "Sexslavecraft/common/StringAndDefOf.cs"));
         Check(source.Contains("SSC_MasterQualificationItem = GetDef<ThingDef>(\"SSC_MasterQualificationItem\")"));
-        Check(File.ReadAllText(Path.Combine(root, "Sexslavecraft/common/Settings.cs")).Contains("DrawMasterQualificationDebugEntry(listingStandard)"));
+        Check(File.ReadAllText(SscTestPaths.Combine(root, "Sexslavecraft/common/Settings.cs")).Contains("DrawMasterQualificationDebugEntry(listingStandard)"));
     }
     /// <summary>检查 Royalty 条件字段，确保 SSC 没有定向替换暂时保留的原版自动蓝图。</summary>
     private static void ResearchDefinition()
     {
-        var def = XDocument.Load(Path.Combine(root, "Defs/ResearchDefs/ResearchProjectDef.xml")).Root.Elements("ResearchProjectDef")
+        var def = XDocument.Load(SscTestPaths.Combine(root, "Defs/ResearchDefs/ResearchProjectDef.xml")).Root.Elements("ResearchProjectDef")
             .Single(x => (string)x.Element("defName") == "SSC_RES_BasicTraining");
         var count = def.Element("techprintCount");
         Check((int)count == 1 && (string)count.Attribute("MayRequire") == "Ludeon.RimWorld.Royalty");
         Check((float)def.Element("baseCost") == 500);
         Check(def.Element("heldByFactionCategoryTags").Elements("li").Select(x => x.Value).SequenceEqual(new[] { "Empire", "Outlander" }));
-        foreach (string file in Directory.GetFiles(Path.Combine(root, "Sexslavecraft"), "*.cs", SearchOption.AllDirectories))
+        foreach (string file in Directory.GetFiles(SscTestPaths.Combine(root, "Sexslavecraft"), "*.cs", SearchOption.AllDirectories))
             if (!file.Contains(Path.DirectorySeparatorChar + "obj" + Path.DirectorySeparatorChar))
                 Check(!File.ReadAllText(file).Contains("Techprint_SSC_RES_BasicTraining"), "generated vanilla blueprint was adapted");
     }
@@ -246,14 +246,14 @@ internal static partial class Program
         foreach (string language in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" }) {
             string keyed = $"Languages/{language}/Keyed/SSC_MasterQualification.xml";
             string injected = $"Languages/{language}/DefInjected/ThingDef/SSC_MasterQualificationItem.xml";
-            var keyData = XDocument.Load(Path.Combine(root, keyed)).Root;
+            var keyData = XDocument.Load(SscTestPaths.Combine(root, keyed)).Root;
             foreach (string key in keys) Check(!string.IsNullOrWhiteSpace(keyData.Element("SSC_MasterQualification_" + key)?.Value));
             Check(keyData.Element("SSC_MasterQualification_Granted").Value.Contains("{0}"));
-            var itemData = XDocument.Load(Path.Combine(root, injected)).Root;
+            var itemData = XDocument.Load(SscTestPaths.Combine(root, injected)).Root;
             foreach (string key in new[] { "label", "description", "comps.0.useLabel" })
                 Check(!string.IsNullOrWhiteSpace(itemData.Element("SSC_MasterQualificationItem." + key)?.Value));
             foreach (string relative in new[] { keyed, injected })
-                Check(File.ReadAllText(Path.Combine(root, relative)) == File.ReadAllText(Path.Combine(root, "Sexslavecraft", relative)));
+                Check(File.ReadAllText(SscTestPaths.Combine(root, relative)) == File.ReadAllText(SscTestPaths.Combine(root, "Sexslavecraft", relative)));
         }
     }
 }

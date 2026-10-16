@@ -3,7 +3,7 @@
 Run from the repository root with .NET SDK 9:
 
 ```powershell
-dotnet run --project Tests/RitualProgression/RitualProgression.csproj -- Defs/HediffDefs/HediffOfSexSlave.xml
+dotnet run --project Tests/RitualProgression/RitualProgression.csproj -- 1.7/Defs/HediffDefs/HediffOfSexSlave.xml
 ```
 
 No NuGet packages or game installation are needed. The project links production

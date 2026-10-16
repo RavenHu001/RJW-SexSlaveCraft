@@ -10,7 +10,7 @@ internal static class InfestationDefLoader
 {
     public static void Load(string root)
     {
-        var defs=XDocument.Load(Path.Combine(root,"Defs/ThoughtDefs/SSC_DesireInfestation.xml")).Root.Elements("ThoughtDef")
+        var defs=XDocument.Load(SscTestPaths.Combine(root,"Defs/ThoughtDefs/SSC_DesireInfestation.xml")).Root.Elements("ThoughtDef")
             .Select(node=>new ThoughtDef {
                 defName=(string)node.Element("defName"),
                 thoughtClass=(string)node.Element("thoughtClass")=="Thought_MemorySocial"?typeof(Thought_MemorySocial):typeof(Thought_Memory),

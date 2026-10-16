@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='utf-8'?>
+<LanguageData>
+  <SSC_MasterBondEmpowerment.label>靈慾共振場</SSC_MasterBondEmpowerment.label>
+  <SSC_MasterBondEmpowerment.description>由紫色奈米機械立場與靈能耦合形成的欲效能場。隨著繫結性奴數量與惡墮程度提升，這片共振場會不斷強化主人的肉體、戰鬥本能與支配力。</SSC_MasterBondEmpowerment.description>
+  <SSC_MasterBondEmpowerment.stages.0.label>微薄</SSC_MasterBondEmpowerment.stages.0.label>
+  <SSC_MasterBondEmpowerment.stages.1.label>淺顯</SSC_MasterBondEmpowerment.stages.1.label>
+  <SSC_MasterBondEmpowerment.stages.2.label>霧狀</SSC_MasterBondEmpowerment.stages.2.label>
+  <SSC_MasterBondEmpowerment.stages.3.label>無形</SSC_MasterBondEmpowerment.stages.3.label>
+  <Hediff_PNA_Combat_Buff.label>戰鬥催情強化</Hediff_PNA_Combat_Buff.label>
+  <Hediff_PNA_Combat_Buff.description>在紫色奈米機械的催情下，性奴體內的細胞開始活躍，躁動，增加其戰鬥能力。</Hediff_PNA_Combat_Buff.description>
+  <Hediff_PNA_Combat_Buff_Plus.label>戰鬥催情強化（濃縮）</Hediff_PNA_Combat_Buff_Plus.label>
+  <Hediff_PNA_Combat_Buff_Plus.description>在濃縮紫色奈米機械的強力催情下，性奴體內的潛能被大幅激發。</Hediff_PNA_Combat_Buff_Plus.description>
+  <Hediff_PNA_Debuff.label>奈米催情液侵蝕</Hediff_PNA_Debuff.label>
+  <Hediff_PNA_Debuff.description>紫色奈米催情液正在刺激全身的神經。情慾比平時更難壓住，痛覺變得遲鈍；隨著作用加深，動作和注意力開始不受控制，眼前與耳邊出現並不存在的東西。作用到極點時，身體會不由自主地連續高潮，直到意識中斷。</Hediff_PNA_Debuff.description>
+  <Hediff_PNA_Debuff.stages.0.label>初起</Hediff_PNA_Debuff.stages.0.label>
+  <Hediff_PNA_Debuff.stages.1.label>漸深</Hediff_PNA_Debuff.stages.1.label>
+  <Hediff_PNA_Consciousness_Record.label>抗性快照</Hediff_PNA_Consciousness_Record.label>
+  <Hediff_PNA_Consciousness_Record.description>保存高意識目標的抗性記錄，供後續 PNA 命中計算使用。</Hediff_PNA_Consciousness_Record.description>
+  <SSC_PostExcretionComa.label>人格排洩適應症</SSC_PostExcretionComa.label>
+  <SSC_PostExcretionComa.description>由於人格被強行抽出，大腦和神經系統正在經歷嚴重的重組與空白期，初始人格正在接手身體控制權。</SSC_PostExcretionComa.description>
+  <SSC_PostExcretionComa.stages.0.label>深度宕機</SSC_PostExcretionComa.stages.0.label>
+  <SSC_PostInsertionComa.label>人格植入適應症</SSC_PostInsertionComa.label>
+  <SSC_PostInsertionComa.description>外來人格被強行塞入空殼軀體，大腦和神經系統正在重新適應新的人格，需要時間恢復。</SSC_PostInsertionComa.description>
+  <SSC_PostInsertionComa.stages.0.label>深度宕機</SSC_PostInsertionComa.stages.0.label>
+  <Hediff_PNA_Debuff.stages.2.label>失控</Hediff_PNA_Debuff.stages.2.label>
+  <Hediff_PNA_Debuff.stages.3.label>沉溺</Hediff_PNA_Debuff.stages.3.label>
+  <Hediff_PNA_Debuff.stages.4.label>強制高潮</Hediff_PNA_Debuff.stages.4.label>
+  <SSC_Hediff_PnaRootedLoad.label>奈米催情液活化</SSC_Hediff_PnaRootedLoad.label>
+  <SSC_Hediff_PnaRootedLoad.description>外源奈米催情液把已經與紫色微械共存的身體進一步點燃。人會變得更清醒、更協調、更有力，痛覺明顯退去，情慾與精力同時上湧。活化越強，退去也越快。</SSC_Hediff_PnaRootedLoad.description>
+  <SSC_Hediff_PnaRootedLoad.stages.0.label>初醒</SSC_Hediff_PnaRootedLoad.stages.0.label>
+  <SSC_Hediff_PnaRootedLoad.stages.1.label>活絡</SSC_Hediff_PnaRootedLoad.stages.1.label>
+  <SSC_Hediff_PnaRootedLoad.stages.2.label>充盈</SSC_Hediff_PnaRootedLoad.stages.2.label>
+  <SSC_Hediff_PnaRootedLoad.stages.3.label>激昂</SSC_Hediff_PnaRootedLoad.stages.3.label>
+  <SSC_Hediff_PnaRootedLoad.stages.4.label>過載</SSC_Hediff_PnaRootedLoad.stages.4.label>
+</LanguageData>

@@ -1,7 +1,7 @@
 #requires -Version 7.0
 <#
 .SYNOPSIS
-同步或检查根目录 Languages 与源码项目中的 Sexslavecraft/Languages。
+同步或检查 1.7/Languages 与源码项目中的 Sexslavecraft/Languages。
 .DESCRIPTION
 默认只读检查，-Sync 仅复制缺失或内容不同的文件；遇到镜像独有文件时停止，
 避免自动删除仍需人工确认的资源。
@@ -10,6 +10,8 @@
 param(
     [switch]$Sync,
     [string]$RepositoryRoot = (Join-Path $PSScriptRoot '..'),
+    [ValidateSet('1.6', '1.7')][string]$GameVersion = '1.7',
+    [string]$RuntimeRoot,
     [switch]$PassThru
 )
 
@@ -17,11 +19,24 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
 $repoRoot = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($RepositoryRoot)
-$sourceRoot = Join-Path $repoRoot 'Languages'
+if (-not $RuntimeRoot) { $RuntimeRoot = Join-Path $repoRoot $GameVersion }
+$RuntimeRoot = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($RuntimeRoot)
+if ($Sync -and ($GameVersion -ne '1.7' -or $RuntimeRoot -ne [IO.Path]::GetFullPath((Join-Path $repoRoot '1.7')))) {
+    throw 'Language synchronization is restricted to the active 1.7 runtime; the 1.6 baseline is read-only.'
+}
+$sourceRoot = Join-Path $RuntimeRoot 'Languages'
 $mirrorRoot = Join-Path $repoRoot 'Sexslavecraft/Languages'
+if ($GameVersion -eq '1.6') {
+    $files = @(Get-ChildItem -LiteralPath $sourceRoot -Recurse -File -Filter '*.xml')
+    if ($files.Count -eq 0) { throw "Frozen Languages collection is empty: $sourceRoot" }
+    foreach ($file in $files) { $document = [xml]::new(); $document.Load($file.FullName) }
+    Write-Host "Frozen 1.6 language XML: $($files.Count) checked; current source mirrors are outside this check."
+    if ($PassThru) { [pscustomobject]@{ Name = 'LanguagesMirrors'; Success = $true; CheckedFiles = $files.Count; CopiedFiles = 0; GameVersion = $GameVersion; Scope = 'FrozenRuntimeXml' } }
+    return
+}
 if (-not (Test-Path -LiteralPath $sourceRoot -PathType Container) -or
     -not (Test-Path -LiteralPath $mirrorRoot -PathType Container)) {
-    throw 'Both Languages and Sexslavecraft/Languages must exist.'
+    throw 'Both the selected runtime Languages and Sexslavecraft/Languages must exist.'
 }
 
 $sourceFiles = @(Get-ChildItem -LiteralPath $sourceRoot -Recurse -File | Sort-Object FullName)

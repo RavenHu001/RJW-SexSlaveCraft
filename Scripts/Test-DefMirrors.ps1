@@ -1,7 +1,7 @@
 #requires -Version 7.0
 <#
 .SYNOPSIS
-只读检查 Sexslavecraft/Defs 中的现有镜像与根目录 Defs 是否逐字节一致。
+只读检查 Sexslavecraft/Defs 中的现有镜像与 1.7/Defs 是否逐字节一致。
 .DESCRIPTION
 Def 镜像是部分集合：不要求为根目录独有文件创建镜像。镜像缺少根源文件、
 内容不同、XML 无法解析、必要目录缺失或镜像集合为空时失败；不自动覆盖或删除文件。
@@ -9,14 +9,26 @@ Def 镜像是部分集合：不要求为根目录独有文件创建镜像。镜�
 [CmdletBinding()]
 param(
     [string]$RepositoryRoot = (Join-Path $PSScriptRoot '..'),
+    [ValidateSet('1.6', '1.7')][string]$GameVersion = '1.7',
+    [string]$RuntimeRoot,
     [switch]$PassThru
 )
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 $repoRoot = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($RepositoryRoot)
-$sourceRoot = Join-Path $repoRoot 'Defs'
+if (-not $RuntimeRoot) { $RuntimeRoot = Join-Path $repoRoot $GameVersion }
+$RuntimeRoot = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($RuntimeRoot)
+$sourceRoot = Join-Path $RuntimeRoot 'Defs'
 $mirrorRoot = Join-Path $repoRoot 'Sexslavecraft/Defs'
+if ($GameVersion -eq '1.6') {
+    $files = @(Get-ChildItem -LiteralPath $sourceRoot -Recurse -File -Filter '*.xml')
+    if ($files.Count -eq 0) { throw "Frozen Def collection is empty: $sourceRoot" }
+    foreach ($file in $files) { $document = [xml]::new(); $document.Load($file.FullName) }
+    Write-Host "Frozen 1.6 Def XML: $($files.Count) checked; current source mirrors are outside this check."
+    if ($PassThru) { [pscustomobject]@{ Name = 'DefMirrors'; Success = $true; CheckedFiles = $files.Count; GameVersion = $GameVersion; Scope = 'FrozenRuntimeXml' } }
+    return
+}
 foreach ($directory in @($sourceRoot, $mirrorRoot)) {
     if (-not (Test-Path -LiteralPath $directory -PathType Container)) {
         throw "Required Def directory is missing: $directory"
@@ -25,7 +37,7 @@ foreach ($directory in @($sourceRoot, $mirrorRoot)) {
 $mirrors = @(Get-ChildItem -LiteralPath $mirrorRoot -Recurse -File | Sort-Object FullName)
 if ($mirrors.Count -eq 0) { throw "Def mirror collection is empty: $mirrorRoot" }
 
-# 根目录是唯一源；枚举镜像端，避免把有意未建立镜像的根目录资源误报为缺失。
+# 所选 1.7 运行目录是唯一源；只枚举已有源码镜像，不补建部分集合之外的文件。
 $problems = [Collections.Generic.List[string]]::new()
 $matched = 0
 foreach ($mirror in $mirrors) {

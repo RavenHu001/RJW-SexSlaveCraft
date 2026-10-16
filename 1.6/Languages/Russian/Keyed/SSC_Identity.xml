@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_Identity_BoundTip>Существующая связь господина и секс-раба не позволяет сменить роль. Привязанные секс-рабы и господа с привязанными секс-рабами должны сохранять текущую роль.</SSC_Identity_BoundTip>
+  <SSC_Identity_MasterQualificationRequired>Требуется право стать господином</SSC_Identity_MasterQualificationRequired>
+  <SSC_Identity_SelectionUnavailable>Сейчас нельзя выбрать роль господина. Проверьте право на эту роль и существующие связи.</SSC_Identity_SelectionUnavailable>
+  <SSC_Setting_AllowDirectMasterSelection>Разрешить прямой выбор господина</SSC_Setting_AllowDirectMasterSelection>
+  <SSC_Setting_AllowDirectMasterSelection_Desc>По умолчанию выключено: требуется постоянное право стать господином. Включение позволяет выбрать роль без права, но не выдаёт его. Текущие роли и ограничения связи сохраняются.</SSC_Setting_AllowDirectMasterSelection_Desc>
+</LanguageData>

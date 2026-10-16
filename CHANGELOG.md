@@ -6,7 +6,8 @@ This continuation builds on upstream **2.2.8**, the baseline when upstream devel
 
 ## [未发布 / Unreleased]
 
-本次交付范围见下方 **2.4.1**；未来构想继续在规划台账维护。 / This delivery is listed under **2.4.1**; future designs remain in the backlog.
+- **双版本开发目录 / Versioned development layout:** 保留 1.6 的 2.4.1 运行基线及哈希，后续开发转入 1.7，基础贴图放入 Common 共享；显式加载列表隔离两版 DLL、Defs、语言及补丁。Retains the frozen 1.6/2.4.1 runtime while developing 1.7 separately with shared baseline textures.
+- **构建、测试与打包 / Build, tests and packaging:** 新增独立的 .NET 10 构建入口，回归读取所选版本资源，发布按双版本白名单收集并记录各版二进制来源。1.7 的游戏加载、功能及存读档验收另行记录，历史 v2.4.1 下载不因此变成双版本包。Adds version-aware build, validation and packaging; in-game compatibility remains a separate acceptance step.
 
 ## [2.4.1] — 2026-10-16 — PNA 重置、欢愉恩赐与绑定维护
 

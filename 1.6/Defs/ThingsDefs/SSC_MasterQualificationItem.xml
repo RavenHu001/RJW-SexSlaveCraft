@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <!-- 始终加载的个人资格道具；有无 Royalty 都能使用，研究蓝图计数由原版负责。 -->
+  <ThingDef>
+    <defName>SSC_MasterQualificationItem</defName>
+    <label>欲望之种</label>
+    <description>一枚泛着幽紫光泽的超凡造物，触感温热，像是在等一个愿意接纳它的人。\n\n它会以未知的方式融进宿主的身体，而后慢慢显出它要的是什么样的主人。\n\n（用途：永久解锁主人资格。\n启用“皇权”扩展时，还会补齐“调教”研究蓝图；研究仍需正常完成。\n\n用法：选中尚无主人资格、且不是本模组性奴的角色，右键种子，选择“使用欲望之种”。随后在“调教”页选择主人身份。\n\n额外获取：若迟迟刷不到更多种子，载入地图后打开本模组设置，点击“调试：生成欲望之种”。）</description>
+    <thingClass>ThingWithComps</thingClass>
+    <category>Item</category>
+    <altitudeLayer>Item</altitudeLayer>
+    <drawerType>MapMeshOnly</drawerType>
+    <!-- 欲望之种独立贴图自行包含紫色与深紫色，白色 tint 保留原色；不依赖 DLC 图像。 -->
+    <graphicData>
+      <texPath>Things/Item/SSC_DesireSeed</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+      <color>(1, 1, 1)</color>
+      <drawSize>0.7</drawSize>
+    </graphicData>
+    <selectable>true</selectable>
+    <rotatable>false</rotatable>
+    <alwaysHaulable>true</alwaysHaulable>
+    <drawGUIOverlay>true</drawGUIOverlay>
+    <pathCost>14</pathCost>
+    <stackLimit>10</stackLimit>
+    <tickerType>Never</tickerType>
+    <useHitPoints>true</useHitPoints>
+    <techLevel>Spacer</techLevel>
+    <!-- 个人资格模块按高价值稀有品投放，数量沿用各原版来源规则，价格平衡可后续调整。 -->
+    <statBases>
+      <MaxHitPoints>100</MaxHitPoints>
+      <MarketValue>1000</MarketValue>
+      <Mass>0.1</Mass>
+      <Flammability>0.5</Flammability>
+      <DeteriorationRate>0</DeteriorationRate>
+    </statBases>
+    <thingCategories><li>ItemsMisc</li></thingCategories>
+    <!-- 暂停所有商人出售库存，包括商队、城镇与商船；保留玩家卖出已有模块的能力。 -->
+    <tradeability>Sellable</tradeability>
+    <!-- 与原版心灵冲击枪/狂暴枪共用任务奖励标签；数量和机会由原版预算及候选池决定。 -->
+    <thingSetMakerTags><li>RewardStandardHighFreq</li></thingSetMakerTags>
+    <minRewardCount>1</minRewardCount>
+    <!-- 原版负责预约、接触与读条，单一 SSC 效果负责最终授予和成功消耗。 -->
+    <comps>
+      <li Class="CompProperties_Usable">
+        <useJob>UseItem</useJob>
+        <useLabel>使用欲望之种</useLabel>
+        <useDuration>600</useDuration>
+      </li>
+      <li Class="CompProperties_UseEffect">
+        <compClass>SexSlaveCraft.CompUseEffect_MasterQualification</compClass>
+      </li>
+      <!-- 允许正常禁用物品；不添加独立销毁效果，避免授予失败仍消耗。 -->
+      <li Class="CompProperties_Forbiddable" />
+    </comps>
+  </ThingDef>
+</Defs>

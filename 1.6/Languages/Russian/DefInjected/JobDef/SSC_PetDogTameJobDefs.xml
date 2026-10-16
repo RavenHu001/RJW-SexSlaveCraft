@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <!-- TargetA is replaced by the native job report. -->
+  <SSC_Job_PetDogTame.reportString>Наставляет TargetA.</SSC_Job_PetDogTame.reportString>
+  <SSC_Job_PetDogTrain.reportString>Дрессирует TargetA.</SSC_Job_PetDogTrain.reportString>
+</LanguageData>

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_DEV_CompleteSpecialization>DEV: Специализация 100%</SSC_DEV_CompleteSpecialization>
+  <SSC_DEV_CompleteSpecialization_Desc>Установить прогресс обучения текущей выбранной специализации на 100%, сохранить его и сразу обновить обычные эффекты обучения. Не выполняет финализацию и не выдаёт финальные способности напрямую.</SSC_DEV_CompleteSpecialization_Desc>
+</LanguageData>

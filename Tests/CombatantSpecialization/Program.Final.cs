@@ -72,7 +72,7 @@ internal static partial class Program
 
     private static void FinalDefinitions()
     {
-        var def = XDocument.Load(Path.Combine(root, "Defs/HediffDefs/SSC_HediffDefs_CombatantSpecialization.xml"))
+        var def = XDocument.Load(SscTestPaths.Combine(root, "Defs/HediffDefs/SSC_HediffDefs_CombatantSpecialization.xml"))
             .Root.Elements().Single(e => (string)e.Element("defName") == "SSC_Hediff_Combatant_Final");
         var stage = def.Element("stages").Elements("li").Single();
         var offsets = stage.Element("statOffsets"); var factors = stage.Element("statFactors");
@@ -81,7 +81,7 @@ internal static partial class Program
         Equal(0.85f, Value(factors, "AimingDelayFactor")); Equal(0.85f, Value(factors, "MeleeCooldownFactor"));
         Equal(0.8f, Value(factors, "IncomingDamageFactor"));
         Check(def.Element("comps").Descendants("abilityDef").Single().Value == "SSC_CombatOverdrive", "终极能力未接入");
-        var recipe = XDocument.Load(Path.Combine(root, "Defs/RecipeDefs/RecipeDef_PSEdit.xml"))
+        var recipe = XDocument.Load(SscTestPaths.Combine(root, "Defs/RecipeDefs/RecipeDef_PSEdit.xml"))
             .Root.Elements().Single(e => (string)e.Element("defName") == "SSC_PSEdit_Combatant_Final");
         Equal(3500f, Value(recipe, "workAmount"));
         Check((string)recipe.Element("workSpeedStat") == "GeneralLaborSpeed" &&
@@ -97,7 +97,7 @@ internal static partial class Program
             recipe.Element("fixedIngredientFilter").Element("thingDefs").Elements().Select(e => e.Value)), "八种凝胶白名单不一致");
         foreach (var lang in new[] { "English", "ChineseTraditional", "Russian" })
         {
-            var text = XDocument.Load(Path.Combine(root, "Languages", lang, "DefInjected/RecipeDef/RecipeDef_PSEdit.xml"));
+            var text = XDocument.Load(SscTestPaths.Combine(root, "Languages", lang, "DefInjected/RecipeDef/RecipeDef_PSEdit.xml"));
             foreach (var suffix in new[] { "label", "description", "jobString" })
                 Check(!string.IsNullOrWhiteSpace((string)text.Root.Element("SSC_PSEdit_Combatant_Final." + suffix)), "缺少配方翻译");
         }

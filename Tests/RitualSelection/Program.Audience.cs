@@ -11,7 +11,7 @@ internal static partial class Program
 {
     private static RitualOutcomeComp_BindingSpectatorCount AudienceComp(string root)
     {
-        var xml = XDocument.Load(Path.Combine(root, "Defs", "RitualDefs", "Ritual_Outcome.xml"));
+        var xml = XDocument.Load(SscTestPaths.Combine(root, "Defs", "RitualDefs", "Ritual_Outcome.xml"));
         var comp = xml.Descendants("comps").Elements("li").First();
         Assert((string)comp.Attribute("Class") == typeof(RitualOutcomeComp_BindingSpectatorCount).FullName);
         return new RitualOutcomeComp_BindingSpectatorCount
@@ -30,7 +30,7 @@ internal static partial class Program
 
     private static void RunAudienceTests(string root)
     {
-        root ??= Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../../.."));
+        root = SscTestPaths.RepositoryRoot(root);
         RunAudienceCollectorTests(root);
         Run("实机回归：阶段进度始终为零，四名全程观众仍贡献 12.5%", () =>
         {

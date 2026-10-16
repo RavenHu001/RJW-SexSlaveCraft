@@ -1,27 +1,36 @@
 #requires -Version 7.0
 <#
 .SYNOPSIS
-校验并打包当前模组；传入 -Build 时先重新编译运行时 DLL。
+校验并打包双版本模组；传入 -Build 时只重新编译 1.7 DLL。
 .DESCRIPTION
-默认使用仓库中的预编译 DLL，因此没有游戏依赖的机器也能重复打包。
-改动 C# 后必须先编译，或使用 -Build。所有模式均运行回归测试和版本检查。
-ReferenceTargetsPath 可指向本机的 MSBuild 引用覆盖文件，避免把个人安装路径写入项目。
+默认保留 1.6 的 2.4.1 冻结成品，并使用 1.7 中的预编译 DLL。
+改动 C# 后必须先编译，或使用 -Build。所有模式均检查冻结基线、布局及当前 1.7 回归。
+1.7 直接引用游戏程序集的构建通过 Build-Mod.ps1 完成，需要匹配的 .NET SDK。
 全部回归统一由 Test-All.ps1 执行；HarmonyAssemblyPath 或 SSC_TEST_HARMONY_PATH
 必须指向测试使用的 net9.0 Harmony，ValidationReportDirectory 可指定验证报告目录。
+RepositoryRef 默认 main，开发包资料链接随主分支更新；正式发布可显式传入对应 tag。
 #>
 [CmdletBinding()]
 param(
     [switch]$Build,
     [string]$ReferenceTargetsPath,
     [string]$MSBuildPath,
+    [string]$GameRoot,
+    [string]$RjwAssemblyPath,
+    [string]$AnimationsAssemblyPath,
+    [string]$GameHarmonyAssemblyPath,
+    [string]$DotnetPath,
     [string]$HarmonyAssemblyPath = $env:SSC_TEST_HARMONY_PATH,
     [string]$ValidationReportDirectory,
     [string]$OutputDirectory,
+    [ValidateNotNullOrEmpty()][string]$RepositoryRef = 'main',
     [switch]$Force
 )
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
+if ($RepositoryRef -match '[\x00-\x20\x7f]') { throw 'RepositoryRef must not contain whitespace or control characters.' }
+$encodedRepositoryRef = [Uri]::EscapeDataString($RepositoryRef)
 $repoRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 $version = (Get-Content -LiteralPath (Join-Path $repoRoot 'VERSION') -Raw).Trim()
 if ($version -notmatch '^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$') {
@@ -43,17 +52,17 @@ if ($changelog -notmatch ('(?m)^## \[' + [regex]::Escape($version) + '\] — \d{
 if ($about.ModMetaData.description -notmatch ('SexSlaveCraft ' + [regex]::Escape($version) + '(?![\d.])')) {
     throw 'About/About.xml description does not match VERSION.'
 }
-if (-not $Build -and ($ReferenceTargetsPath -or $MSBuildPath)) {
+if ($ReferenceTargetsPath -or $MSBuildPath) {
+    throw 'New-Release -Build builds only 1.7 and does not accept legacy MSBuild options. Maintain 1.6 in a separate checkout of the original 2.4.1 source; this workspace preserves its frozen release artifacts.'
+}
+if (-not $Build -and ($GameRoot -or $RjwAssemblyPath -or $AnimationsAssemblyPath -or $GameHarmonyAssemblyPath -or $DotnetPath)) {
     throw 'Build options require -Build.'
 }
-foreach ($requiredDirectory in @('Defs', 'Languages', 'Textures', 'Resources')) {
+foreach ($requiredDirectory in @('Common/Textures', '1.6/Defs', '1.6/Languages', '1.7/Defs', '1.7/Languages')) {
     if (-not (Test-Path -LiteralPath (Join-Path $repoRoot $requiredDirectory) -PathType Container)) {
         throw "Required runtime directory is missing: $requiredDirectory"
     }
 }
-# 镜像一致性由 Test-All.ps1 统一执行并记录；此处保留发布专用的翻译键／参数检查。
-& (Join-Path $PSScriptRoot 'Test-RestrictionLocalization.ps1')
-
 if (-not $OutputDirectory) { $OutputDirectory = Join-Path $repoRoot 'Releases' }
 $outputRoot = [IO.Path]::GetFullPath($OutputDirectory)
 $packageName = "RJW-SexSlaveCraft-TieJin-Modify-$version"
@@ -64,48 +73,36 @@ if (-not $Force -and ((Test-Path -LiteralPath $zipPath) -or (Test-Path -LiteralP
 }
 
 if ($Build) {
-    if (-not $IsWindows) { throw '-Build requires Windows and Visual Studio MSBuild.' }
-    # 旧式 .NET Framework 项目使用 Visual Studio MSBuild。先检查 PATH，再通过
-    # vswhere 找到实际安装目录，不假定 Visual Studio 安装在系统盘。
-    if (-not $MSBuildPath) {
-        $msbuildCommand = Get-Command MSBuild.exe -ErrorAction SilentlyContinue
-        if ($msbuildCommand) { $MSBuildPath = $msbuildCommand.Source }
-        else {
-            $vswhere = Join-Path ${env:ProgramFiles(x86)} 'Microsoft Visual Studio/Installer/vswhere.exe'
-            if (Test-Path -LiteralPath $vswhere) {
-                # 先等待 vswhere 完整退出再取第一项；管道直接 Select-Object -First 1
-                # 会提前截断原生命令，导致严格模式下 LASTEXITCODE 尚未设置。
-                $msbuildCandidates = @(& $vswhere -latest -products '*' -requires Microsoft.Component.MSBuild -find 'MSBuild\**\Bin\MSBuild.exe')
-                if ($LASTEXITCODE -ne 0) { throw 'vswhere failed.' }
-                if ($msbuildCandidates.Count -gt 0) { $MSBuildPath = $msbuildCandidates[0] }
-            }
-        }
+    $buildOptions = @{ GameVersion = '1.7' }
+    foreach ($parameter in @('GameRoot', 'RjwAssemblyPath', 'AnimationsAssemblyPath', 'GameHarmonyAssemblyPath', 'DotnetPath')) {
+        $value = Get-Variable -Name $parameter -ValueOnly
+        if ($value) { $buildOptions[$parameter] = $value }
     }
-    if (-not $MSBuildPath -or -not (Test-Path -LiteralPath $MSBuildPath -PathType Leaf)) {
-        throw 'Visual Studio MSBuild was not found. Supply -MSBuildPath.'
-    }
-    $buildArguments = @(
-        (Join-Path $repoRoot 'Sexslavecraft/SexSlaveCraft_Alpha.csproj'),
-        '/t:Rebuild', '/p:Configuration=Release', '/nologo', '/verbosity:minimal'
-    )
-    if ($ReferenceTargetsPath) {
-        $targetsPath = (Resolve-Path -LiteralPath $ReferenceTargetsPath).Path
-        $buildArguments += "/p:CustomAfterMicrosoftCommonTargets=$targetsPath"
-    }
-    & $MSBuildPath @buildArguments
-    if ($LASTEXITCODE -ne 0) { throw "Release build failed ($LASTEXITCODE)." }
+    & (Join-Path $PSScriptRoot 'Build-Mod.ps1') @buildOptions
+}
+
+# 布局检查验证 LoadFolders、两版隔离、冻结文件哈希及 1.7 二进制来源；不能被测试替身绕过。
+$layoutValidation = & (Join-Path $PSScriptRoot 'Test-ModLayout.ps1') -RepositoryRoot $repoRoot -PassThru
+if (-not $layoutValidation.Success) { throw 'Mod layout validation failed.' }
+$baseline = Get-Content -LiteralPath (Join-Path $repoRoot '1.6/BASELINE.json') -Raw | ConvertFrom-Json
+$buildInfo = Get-Content -LiteralPath (Join-Path $repoRoot '1.7/BUILD-INFO.json') -Raw | ConvertFrom-Json
+$baselineDll = Join-Path $repoRoot '1.6/Assemblies/Sexslavecraft.dll'
+$baselineDllVersion = [Diagnostics.FileVersionInfo]::GetVersionInfo($baselineDll)
+if ($baselineDllVersion.FileVersion -ne "$($baseline.version).0" -or $baselineDllVersion.ProductVersion -ne $baseline.version) {
+    throw 'Frozen 1.6 DLL version does not match BASELINE.json.'
 }
 
 # 检查真正要交付的二进制；仅改 AssemblyInfo 而未重新编译会在这里被拒绝。
 # 版本相同不能证明源码和 DLL 完全一致，故源码改动后的正式发布应使用 -Build。
-$dllPath = Join-Path $repoRoot 'Assemblies/Sexslavecraft.dll'
+$dllPath = Join-Path $repoRoot '1.7/Assemblies/Sexslavecraft.dll'
 $dllVersion = [Diagnostics.FileVersionInfo]::GetVersionInfo($dllPath)
 if ($dllVersion.FileVersion -ne $fileVersion -or $dllVersion.ProductVersion -ne $version) {
     throw "DLL version does not match $version. Rebuild before packaging."
 }
 
-# A single required validation entry; throws on failure or any unexecuted suite before staging.
-$validation = & (Join-Path $PSScriptRoot 'Test-All.ps1') -HarmonyAssemblyPath $HarmonyAssemblyPath -ReportDirectory $ValidationReportDirectory -PassThru
+# 镜像一致性统一执行并记录；发布另检查 1.7 翻译键／参数。不启动任何游戏版本。
+& (Join-Path $PSScriptRoot 'Test-RestrictionLocalization.ps1') -GameVersion '1.7'
+$validation = & (Join-Path $PSScriptRoot 'Test-All.ps1') -GameVersion '1.7' -HarmonyAssemblyPath $HarmonyAssemblyPath -ReportDirectory $ValidationReportDirectory -PassThru
 
 $baseCommit = (& git -C $repoRoot rev-parse HEAD).Trim()
 if ($LASTEXITCODE -ne 0) { throw 'Cannot read the base Git commit.' }
@@ -119,7 +116,13 @@ $stageRoot = Join-Path $outputRoot ('.staging-' + [guid]::NewGuid().ToString('N'
 $modRoot = Join-Path $stageRoot 'RJW-SexSlaveCraft-TieJin-Modify'
 [IO.Directory]::CreateDirectory($modRoot) | Out-Null
 try {
-    foreach ($directory in @('About', 'Defs', 'Languages', 'Textures', 'Resources', 'Sounds', 'Patches')) {
+    $runtimeDirectories = @('About', 'Common/Textures')
+    foreach ($gameVersion in @('1.6', '1.7')) {
+        foreach ($directory in @('Defs', 'Languages', 'Textures', 'Resources', 'Sounds', 'Patches')) {
+            $runtimeDirectories += "$gameVersion/$directory"
+        }
+    }
+    foreach ($directory in $runtimeDirectories) {
         $sourceRoot = Join-Path $repoRoot $directory
         if (-not (Test-Path -LiteralPath $sourceRoot)) { continue }
         foreach ($file in Get-ChildItem -LiteralPath $sourceRoot -Recurse -File) {
@@ -131,8 +134,13 @@ try {
             Copy-Item -LiteralPath $file.FullName -Destination $destination
         }
     }
-    [IO.Directory]::CreateDirectory((Join-Path $modRoot 'Assemblies')) | Out-Null
-    Copy-Item -LiteralPath $dllPath -Destination (Join-Path $modRoot 'Assemblies/Sexslavecraft.dll')
+    foreach ($gameVersion in @('1.6', '1.7')) {
+        [IO.Directory]::CreateDirectory((Join-Path $modRoot "$gameVersion/Assemblies")) | Out-Null
+        Copy-Item -LiteralPath (Join-Path $repoRoot "$gameVersion/Assemblies/Sexslavecraft.dll") -Destination (Join-Path $modRoot "$gameVersion/Assemblies/Sexslavecraft.dll")
+    }
+    foreach ($metadata in @('LoadFolders.xml', '1.6/BASELINE.json', '1.7/BUILD-INFO.json')) {
+        Copy-Item -LiteralPath (Join-Path $repoRoot $metadata) -Destination (Join-Path $modRoot $metadata)
+    }
     # 文档按文件白名单收集，不能递归复制 Docs（包括被 Git 忽略的本地美术备份）。
     $documents = @(
         'VERSION', 'CHANGELOG.md', 'README.md', 'QUICK_START_EN.md',
@@ -145,10 +153,7 @@ try {
         [IO.Directory]::CreateDirectory([IO.Path]::GetDirectoryName($destination)) | Out-Null
         Copy-Item -LiteralPath (Join-Path $repoRoot $document) -Destination $destination
     }
-    $loadFolders = Join-Path $repoRoot 'LoadFolders.xml'
-    if (Test-Path -LiteralPath $loadFolders) { Copy-Item -LiteralPath $loadFolders -Destination $modRoot }
-
-    # 仅改写随包副本：随包文件仍用相对链接，其余资料指向对应版本的源码仓库。
+    # 仅改写随包副本：随包文件仍用相对链接，其余资料指向指定分支或标签的源码仓库。
     # 保留锚点、查询参数、标题及尖括号；中文和空格逐路径段进行 URL 编码。
     foreach ($document in $documents | Where-Object { $_ -like '*.md' }) {
         $documentPath = Join-Path $modRoot $document
@@ -170,7 +175,7 @@ try {
             if (Test-Path -LiteralPath $localPath -PathType Leaf) { return $match.Value }
             $view = if (Test-Path -LiteralPath (Join-Path $repoRoot $relativePath) -PathType Container) { 'tree' } else { 'blob' }
             $encodedPath = ($relativePath.Split('/') | ForEach-Object { [Uri]::EscapeDataString($_) }) -join '/'
-            $url = "https://github.com/RavenHu001/RJW-SexSlaveCraft/$view/v$version/$encodedPath" + $parts.Groups['fragment'].Value
+            $url = "https://github.com/RavenHu001/RJW-SexSlaveCraft/$view/$encodedRepositoryRef/$encodedPath" + $parts.Groups['fragment'].Value
             if ($angleWrapped) { $url = "<$url>" }
             return $match.Groups['prefix'].Value + $url + $match.Groups['suffix'].Value
         }
@@ -181,7 +186,11 @@ try {
         [IO.File]::WriteAllText($documentPath, $content, [Text.UTF8Encoding]::new($false))
     }
     @"
-SexSlaveCraft $version (TieJin Modify) / RimWorld 1.6
+SexSlaveCraft $version (TieJin Modify) / RimWorld 1.6 + 1.7 development
+
+1.6 使用冻结的 $($baseline.version) 基线；1.7 当前二进制来源：$($buildInfo.binaryOrigin)。
+游戏按 LoadFolders.xml 选择 Common 和对应版本目录，不要合并两个版本文件夹。
+本包通过目录、哈希及 .NET 9 机制回归；1.7 游戏内加载、功能及存读档验证尚未完成。
 
 安装：退出游戏，将 ZIP 中的 RJW-SexSlaveCraft-TieJin-Modify 文件夹放入 RimWorld/Mods。
 更新旧版时先将旧模组文件夹移出 Mods，再放入本版，避免遗留已删除的文件。
@@ -192,6 +201,9 @@ Install: close the game and extract the enclosed mod folder into RimWorld/Mods.
 When upgrading, move the old mod folder out of Mods before installing this version.
 Enable Harmony, RimJobWorld and this mod; see the included guides for compatibility.
 Game and third-party mod DLLs are not included. See CHANGELOG.md for release notes.
+RimWorld selects Common and the matching version folder via LoadFolders.xml; keep them separate.
+1.6 retains the frozen $($baseline.version) baseline. 1.7 binary origin: $($buildInfo.binaryOrigin).
+The .NET 9 regression suite does not establish in-game 1.7 compatibility; in-game validation is pending.
 "@ | Set-Content -LiteralPath (Join-Path $modRoot 'INSTALL.txt') -Encoding utf8NoBOM
 
     # 每个有效载荷文件均记录大小和哈希，便于定位缺失/损坏资源。清单不计算自身哈希。
@@ -205,11 +217,44 @@ Game and third-party mod DLLs are not included. See CHANGELOG.md for release not
     })
     [ordered]@{
         version = $version
+        repositoryRef = $RepositoryRef
         builtAtUtc = [DateTime]::UtcNow.ToString('o')
         baseCommit = $baseCommit
         workingTreeDirty = [bool]$workingTreeStatus
         assemblyRebuilt = [bool]$Build
+        gameVersions = [ordered]@{
+            '1.6' = [ordered]@{
+                baselineVersion = $baseline.version
+                sourceCommit = $baseline.sourceCommit
+                assemblyPath = '1.6/Assemblies/Sexslavecraft.dll'
+                fileVersion = $baselineDllVersion.FileVersion
+                productVersion = $baselineDllVersion.ProductVersion
+                sha256 = (Get-FileHash -LiteralPath $baselineDll -Algorithm SHA256).Hash.ToLowerInvariant()
+                validationScope = 'Frozen baseline files and hashes; no 1.6 game session executed.'
+            }
+            '1.7' = [ordered]@{
+                binaryOrigin = $buildInfo.binaryOrigin
+                sourceVersion = $buildInfo.sourceVersion
+                sourceCommit = $buildInfo.sourceCommit
+                assemblyPath = '1.7/Assemblies/Sexslavecraft.dll'
+                fileVersion = $dllVersion.FileVersion
+                productVersion = $dllVersion.ProductVersion
+                sha256 = (Get-FileHash -LiteralPath $dllPath -Algorithm SHA256).Hash.ToLowerInvariant()
+                validationScope = 'Layout, resource checks and .NET 9 regression suite; no 1.7 game session executed.'
+            }
+        }
+        gameValidation = [ordered]@{
+            status = 'NotRun'
+            reason = 'Packaging does not launch either game version. .NET 9 regression results do not establish RimWorld 1.7 runtime compatibility.'
+        }
+        layoutValidation = [ordered]@{
+            name = $layoutValidation.Name
+            status = 'Passed'
+            checkedFiles = $layoutValidation.CheckedFiles
+        }
         validation = [ordered]@{
+            gameVersion = '1.7'
+            testRuntime = '.NET 9'
             suiteCount = $validation.SuiteCount
             passedCases = $validation.PassedCases
             totalCases = $validation.TotalCases

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_MasterQualificationItem.label>欲望之种</SSC_MasterQualificationItem.label>
+  <SSC_MasterQualificationItem.description>一枚泛着幽紫光泽的超凡造物，触感温热，像是在等一个愿意接纳它的人。\n\n它会以未知的方式融进宿主的身体，而后慢慢显出它要的是什么样的主人。\n\n（用途：永久解锁主人资格。\n启用“皇权”扩展时，还会补齐“调教”研究蓝图；研究仍需正常完成。\n\n用法：选中尚无主人资格、且不是本模组性奴的角色，右键种子，选择“使用欲望之种”。随后在“调教”页选择主人身份。\n\n额外获取：若迟迟刷不到更多种子，载入地图后打开本模组设置，点击“调试：生成欲望之种”。）</SSC_MasterQualificationItem.description>
+  <SSC_MasterQualificationItem.comps.0.useLabel>使用欲望之种</SSC_MasterQualificationItem.comps.0.useLabel>
+</LanguageData>

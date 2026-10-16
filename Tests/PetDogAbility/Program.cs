@@ -17,7 +17,7 @@ internal static partial class Program
     /// <summary>资格、接近、效果和冷却迁移直接执行生产源码，原版边界只记录输入及副作用。</summary>
     private static int Main(string[] args)
     {
-        root = Path.GetFullPath(args.Length > 0 ? args[0] : ".");
+        root = SscTestPaths.RepositoryRoot(args.Length > 0 ? args[0] : null);
         Run("狗技能XML为单一驯服效果、两秒预热和一天冷却", Definitions);
         Run("技能、任务和拒绝原因四语及镜像完整", Translations);
         Run("普通狗和其他终极不授予，狗终极严重度达标才授予", FinalQualification);
@@ -94,7 +94,7 @@ internal static partial class Program
         float adjustment = 0;
         foreach (Hediff h in pawn.health.hediffSet.hediffs.ToArray()) h.Grant?.CompPostTick(ref adjustment);
     }
-    private static XElement Definition(string path, string name) => XDocument.Load(Path.Combine(root, path)).Root.Elements().Single(e => (string)e.Element("defName") == name);
+    private static XElement Definition(string path, string name) => XDocument.Load(SscTestPaths.Combine(root, path)).Root.Elements().Single(e => (string)e.Element("defName") == name);
     private static void NoSettlement((Pawn caster, Pawn target, Ability_PetDogTame ability) p)
     {
         Check(p.ability.ActivationCalls == 0 && p.ability.CooldownStartCalls == 0 && InteractionWorker_RecruitAttempt.Requests.Count == 0 && (p.target.training == null || p.target.training.Requests.Count == 0),
@@ -120,9 +120,9 @@ internal static partial class Program
             Check((string)verb.Element("targetParams").Element(field) == "false", "wrong target XML " + field);
         Check((string)def.Element("warmupMoteSocialSymbol") == "Things/Mote/SpeechSymbols/TrainAttempt" && (string)def.Element("iconPath") == "UI/Icons/Trainables/Tameness", "native train icon/social symbol missing");
         Check((string)def.Element("comps").Elements().Single().Attribute("Class") == typeof(CompProperties_AbilityPetDogTame).FullName, "single recruit effect missing");
-        var job = Directory.EnumerateFiles(Path.Combine(root, "Defs/JobDefs"), "*.xml").SelectMany(path => XDocument.Load(path).Root.Elements()).Single(e => (string)e.Element("defName") == "SSC_Job_PetDogTame");
+        var job = Directory.EnumerateFiles(SscTestPaths.Combine(root, "Defs/JobDefs"), "*.xml").SelectMany(path => XDocument.Load(path).Root.Elements()).Single(e => (string)e.Element("defName") == "SSC_Job_PetDogTame");
         Check((string)job.Element("driverClass") == typeof(JobDriver_PetDogTame).FullName && (string)job.Element("abilityCasting") == "false" && (string)job.Element("collideWithPawns") == "false", "approach driver casts early or collides");
-        var effects = Directory.EnumerateFiles(Path.Combine(root, "Defs/EffecterDefs"), "*.xml").SelectMany(path => XDocument.Load(path).Root.Elements());
+        var effects = Directory.EnumerateFiles(SscTestPaths.Combine(root, "Defs/EffecterDefs"), "*.xml").SelectMany(path => XDocument.Load(path).Root.Elements());
         Check(def.Element("warmupEffecter") != null && effects.Any(e => (string)e.Element("defName") == (string)def.Element("warmupEffecter")), "warmup effect not wired");
         var speech = effects.Single(e => (string)e.Element("defName") == (string)def.Element("warmupEffecter")).Element("children").Elements().Single();
         Check((string)speech.Element("subEffecterClass") == "SubEffecter_SprayerContinuous" && (string)speech.Element("fleckDef") == "SpeechLines" && (string)speech.Element("spawnLocType") == "OnTarget", "native continuous speech warmup missing");
@@ -137,12 +137,12 @@ internal static partial class Program
         {
             foreach (string area in new[] { "DefInjected/AbilityDef", "DefInjected/JobDef", "Keyed" })
             {
-                string directory = Path.Combine(root, "Languages", lang, area);
+                string directory = SscTestPaths.Combine(root, "Languages", lang, area);
                 var files = Directory.EnumerateFiles(directory, "*.xml").Where(path => XDocument.Load(path).Descendants().Any(e => e.Name.LocalName.StartsWith("SSC_PetDogTame") || e.Name.LocalName.StartsWith("SSC_Job_PetDogTame"))).ToArray();
                 Check(files.Length > 0, "dog text missing " + lang + "/" + area);
                 foreach (string file in files)
                 {
-                    string mirror = Path.Combine(root, "Sexslavecraft", Path.GetRelativePath(root, file));
+                    string mirror = SscTestPaths.Combine(root, "Sexslavecraft", SscTestPaths.ResourceRelativePath(root, file));
                     Check(File.Exists(mirror) && File.ReadAllBytes(file).SequenceEqual(File.ReadAllBytes(mirror)), "language mirror differs " + file);
                 }
                 if (area == "Keyed")

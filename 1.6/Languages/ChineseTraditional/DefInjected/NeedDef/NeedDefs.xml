@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<LanguageData>
+  <Corruption.label>惡墮率</Corruption.label>
+  <Corruption.description>角色的墮落程度</Corruption.description>
+  <Need_PNA.label>奈米催情液渴求</Need_PNA.label>
+  <Need_PNA.description>依賴奈米催情液帶來的刺激之後，身體會持續索要它。滿足度隨時間下降，見底即進入戒斷；取得奈米催情液可以補回，但也讓依賴更深。</Need_PNA.description>
+</LanguageData>

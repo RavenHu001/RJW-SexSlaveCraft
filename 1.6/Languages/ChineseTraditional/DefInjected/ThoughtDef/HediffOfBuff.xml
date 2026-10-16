@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <PNA_Debuff_Thought.stages.0.label>催情侵蝕：微熱</PNA_Debuff_Thought.stages.0.label>
+  <PNA_Debuff_Thought.stages.0.description>一股暖意從體內泛起來，我有點想要，但還能按住。</PNA_Debuff_Thought.stages.0.description>
+  <PNA_Debuff_Thought.stages.1.label>催情侵蝕：情動</PNA_Debuff_Thought.stages.1.label>
+  <PNA_Debuff_Thought.stages.1.description>那股熱度散到全身，我總在想著這件事，很難專心。</PNA_Debuff_Thought.stages.1.description>
+  <PNA_Debuff_Thought.stages.2.label>催情侵蝕：迷醉</PNA_Debuff_Thought.stages.2.label>
+  <PNA_Debuff_Thought.stages.2.description>眼前的東西開始發虛，耳邊有聲音在響，我說不清那是真是假。</PNA_Debuff_Thought.stages.2.description>
+  <PNA_Debuff_Thought.stages.3.label>催情侵蝕：沉溺</PNA_Debuff_Thought.stages.3.label>
+  <PNA_Debuff_Thought.stages.3.description>慾望壓過了我。我不管自己在做什麼，也管不住自己。</PNA_Debuff_Thought.stages.3.description>
+  <PNA_Debuff_Thought.stages.4.label>催情侵蝕：極樂</PNA_Debuff_Thought.stages.4.label>
+  <PNA_Debuff_Thought.stages.4.description>我幾乎撐不住了，腦子裡只剩下快感，別的什麼都沒有。</PNA_Debuff_Thought.stages.4.description>
+  <SSC_PnaRootedLoad_Thought.stages.0.label>催情活化：清明</SSC_PnaRootedLoad_Thought.stages.0.label>
+  <SSC_PnaRootedLoad_Thought.stages.0.description>身體像被點亮了一樣，我的感覺一下子清楚了。</SSC_PnaRootedLoad_Thought.stages.0.description>
+  <SSC_PnaRootedLoad_Thought.stages.1.label>催情活化：輕快</SSC_PnaRootedLoad_Thought.stages.1.label>
+  <SSC_PnaRootedLoad_Thought.stages.1.description>手腳輕快，動作跟得上念頭，身體比平時聽話。</SSC_PnaRootedLoad_Thought.stages.1.description>
+  <SSC_PnaRootedLoad_Thought.stages.2.label>催情活化：充沛</SSC_PnaRootedLoad_Thought.stages.2.label>
+  <SSC_PnaRootedLoad_Thought.stages.2.description>力量和慾望一起漲上來，我既興奮又清醒。</SSC_PnaRootedLoad_Thought.stages.2.description>
+  <SSC_PnaRootedLoad_Thought.stages.3.label>催情活化：亢奮</SSC_PnaRootedLoad_Thought.stages.3.label>
+  <SSC_PnaRootedLoad_Thought.stages.3.description>身體在發燙，我比任何時候都有力，也停不下來了。</SSC_PnaRootedLoad_Thought.stages.3.description>
+  <SSC_PnaRootedLoad_Thought.stages.4.label>催情活化：酣暢</SSC_PnaRootedLoad_Thought.stages.4.label>
+  <SSC_PnaRootedLoad_Thought.stages.4.description>我快被這股力量撐滿了，痛快得只想一直這樣下去。</SSC_PnaRootedLoad_Thought.stages.4.description>
+</LanguageData>

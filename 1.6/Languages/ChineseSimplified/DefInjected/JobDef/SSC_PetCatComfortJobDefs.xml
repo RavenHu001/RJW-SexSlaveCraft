@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <!-- 自定义安抚任务沿用原版技能任务报告，TargetA 由游戏替换为目标名字。 -->
+  <SSC_Job_PetCatComfort.reportString>正在安抚 TargetA。</SSC_Job_PetCatComfort.reportString>
+</LanguageData>

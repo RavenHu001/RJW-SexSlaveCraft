@@ -15,8 +15,8 @@ internal static partial class Program
     /// <summary>运行真实生产面板及开关写入，四语文本和阶段阈值均从仓库读取。</summary>
     private static int Main(string[] args)
     {
-        repo = Path.GetFullPath(args.Length > 0 ? args[0] : ".");
-        var def = XDocument.Load(Path.Combine(repo, "Defs/HediffDefs/SSC_MasterProgression.xml")).Root.Element("HediffDef");
+        repo = SscTestPaths.RepositoryRoot(args.Length > 0 ? args[0] : null);
+        var def = XDocument.Load(SscTestPaths.Combine(repo, "Defs/HediffDefs/SSC_MasterProgression.xml")).Root.Element("HediffDef");
         SSCDefOf.SSC_Hediff_MasterProgression.maxSeverity = float.Parse(def.Element("maxSeverity").Value, System.Globalization.CultureInfo.InvariantCulture);
         SSCDefOf.SSC_Hediff_MasterProgression.stages = def.Element("stages").Elements("li")
             .Select(e => new HediffStage { minSeverity = float.Parse(e.Element("minSeverity").Value, System.Globalization.CultureInfo.InvariantCulture) }).ToList();
@@ -93,8 +93,8 @@ internal static partial class Program
     {
         Translation.Entries.Clear();
         foreach (string name in new[] { "SSC_MasterProgression.xml", "SSC_Keys.xml", "SSC_AbilityToggles.xml" })
-            foreach (var node in XDocument.Load(Path.Combine(repo, "Languages", language, "Keyed", name)).Root.Elements()) Translation.Entries[node.Name.LocalName] = node.Value;
-        var injected = XDocument.Load(Path.Combine(repo, "Languages", language, "DefInjected/HediffDef/SSC_MasterProgression.xml")).Root;
+            foreach (var node in XDocument.Load(SscTestPaths.Combine(repo, "Languages", language, "Keyed", name)).Root.Elements()) Translation.Entries[node.Name.LocalName] = node.Value;
+        var injected = XDocument.Load(SscTestPaths.Combine(repo, "Languages", language, "DefInjected/HediffDef/SSC_MasterProgression.xml")).Root;
         var definition = SSCDefOf.SSC_Hediff_MasterProgression;
         definition.label = injected.Element("SSC_Hediff_MasterProgression.label").Value;
         definition.description = injected.Element("SSC_Hediff_MasterProgression.description").Value;
@@ -224,20 +224,20 @@ internal static partial class Program
     private static void Localization(string language)
     {
         string relative = "Keyed/SSC_MasterProgression.xml";
-        var source = XDocument.Load(Path.Combine(repo, "Languages", language, relative)).Root.Elements().ToDictionary(e => e.Name.LocalName, e => e.Value);
-        var english = XDocument.Load(Path.Combine(repo, "Languages/English", relative)).Root.Elements().ToDictionary(e => e.Name.LocalName, e => e.Value);
+        var source = XDocument.Load(SscTestPaths.Combine(repo, "Languages", language, relative)).Root.Elements().ToDictionary(e => e.Name.LocalName, e => e.Value);
+        var english = XDocument.Load(SscTestPaths.Combine(repo, "Languages/English", relative)).Root.Elements().ToDictionary(e => e.Name.LocalName, e => e.Value);
         Assert(source.Keys.Order().SequenceEqual(english.Keys.Order()));
         foreach (var key in english.Keys)
         {
             Assert(!string.IsNullOrWhiteSpace(source[key]));
             Assert(Regex.Matches(source[key], @"\{\d+\}").Select(m => m.Value).Order().SequenceEqual(Regex.Matches(english[key], @"\{\d+\}").Select(m => m.Value).Order()), "Placeholder mismatch: " + key);
         }
-        Assert(File.ReadAllBytes(Path.Combine(repo, "Languages", language, relative)).SequenceEqual(File.ReadAllBytes(Path.Combine(repo, "Sexslavecraft/Languages", language, relative))));
+        Assert(File.ReadAllBytes(SscTestPaths.Combine(repo, "Languages", language, relative)).SequenceEqual(File.ReadAllBytes(SscTestPaths.Combine(repo, "Sexslavecraft/Languages", language, relative))));
     }
     /// <summary>宿主不执行完整旧页签；额外检查接入点和固定几何，真实外层滚动留待实机。</summary>
     private static void Integration()
     {
-        string source = File.ReadAllText(Path.Combine(repo, "Sexslavecraft/ITab/ITab_SexSlaveTraining.cs"));
+        string source = File.ReadAllText(SscTestPaths.Combine(repo, "Sexslavecraft/ITab/ITab_SexSlaveTraining.cs"));
         Assert(source.Contains("private const float SectionPadding = 12f;") && source.Contains("private const float SectionTitleHeight = 28f;"));
         Assert(source.Contains("contentWidth, masterView.SectionHeight") && source.Contains("return height + masterHeight + 6f;") && source.Contains("DrawMasterPanel(new Rect"));
         Assert(source.Contains("if (comp.pawnIdentity == PawnIdentity.Unset)"));

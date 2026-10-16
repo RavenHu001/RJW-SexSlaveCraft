@@ -61,3 +61,6 @@
 #*.PDF   diff=astextplain
 #*.rtf   diff=astextplain
 #*.RTF   diff=astextplain
+# Preserve frozen runtime bytes, including historical line endings and whitespace.
+# Integrity is enforced by the baseline hashes rather than reformatting these files.
+/1.6/** -text -whitespace

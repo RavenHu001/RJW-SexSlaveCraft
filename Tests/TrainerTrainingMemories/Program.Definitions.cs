@@ -112,8 +112,8 @@ internal static partial class Program
     private static void LocalizationParity()
     {
         // Def 文件镜像必须逐字节一致，避免发布包与源码目录出现两套数值。
-        string rootDef = Path.Combine(repoRoot, "Defs/ThoughtDefs/SSC_TrainerTrainingMemories.xml");
-        string mirrorDef = Path.Combine(repoRoot, "Sexslavecraft/Defs/ThoughtDefs/SSC_TrainerTrainingMemories.xml");
+        string rootDef = SscTestPaths.Combine(repoRoot, "Defs/ThoughtDefs/SSC_TrainerTrainingMemories.xml");
+        string mirrorDef = SscTestPaths.Combine(repoRoot, "Sexslavecraft/Defs/ThoughtDefs/SSC_TrainerTrainingMemories.xml");
         Assert(File.Exists(mirrorDef), "源码目录必须保留 Def 镜像");
         Equal(File.ReadAllText(rootDef), File.ReadAllText(mirrorDef), "Def 镜像内容");
 
@@ -143,10 +143,10 @@ internal static partial class Program
 
             // 镜像目录同步。
             string mirrorRelative = $"Sexslavecraft/{relative}";
-            Assert(File.Exists(Path.Combine(repoRoot, mirrorRelative.Replace('/', Path.DirectorySeparatorChar))),
+            Assert(File.Exists(SscTestPaths.Combine(repoRoot, mirrorRelative.Replace('/', Path.DirectorySeparatorChar))),
                 $"{language} 的 DefInjected 必须存在源码镜像");
-            Equal(File.ReadAllText(Path.Combine(repoRoot, relative.Replace('/', Path.DirectorySeparatorChar))),
-                File.ReadAllText(Path.Combine(repoRoot, mirrorRelative.Replace('/', Path.DirectorySeparatorChar))),
+            Equal(File.ReadAllText(SscTestPaths.Combine(repoRoot, relative.Replace('/', Path.DirectorySeparatorChar))),
+                File.ReadAllText(SscTestPaths.Combine(repoRoot, mirrorRelative.Replace('/', Path.DirectorySeparatorChar))),
                 $"{language} 的 DefInjected 镜像内容");
         }
 
@@ -179,10 +179,10 @@ internal static partial class Program
             }
 
             string mirrorRelative = $"Sexslavecraft/{relative}";
-            Assert(File.Exists(Path.Combine(repoRoot, mirrorRelative.Replace('/', Path.DirectorySeparatorChar))),
+            Assert(File.Exists(SscTestPaths.Combine(repoRoot, mirrorRelative.Replace('/', Path.DirectorySeparatorChar))),
                 $"{language} 的 Keyed 必须存在源码镜像");
-            Equal(File.ReadAllText(Path.Combine(repoRoot, relative.Replace('/', Path.DirectorySeparatorChar))),
-                File.ReadAllText(Path.Combine(repoRoot, mirrorRelative.Replace('/', Path.DirectorySeparatorChar))),
+            Equal(File.ReadAllText(SscTestPaths.Combine(repoRoot, relative.Replace('/', Path.DirectorySeparatorChar))),
+                File.ReadAllText(SscTestPaths.Combine(repoRoot, mirrorRelative.Replace('/', Path.DirectorySeparatorChar))),
                 $"{language} 的 Keyed 镜像内容");
         }
 
@@ -202,7 +202,7 @@ internal static partial class Program
     /// <summary>保持 XML 文档顺序读取键值，便于比较键集。</summary>
     private static List<KeyValuePair<string, string>> LoadEntries(string repoRootPath, string relative)
     {
-        var document = XDocument.Load(Path.Combine(repoRootPath, relative.Replace('/', Path.DirectorySeparatorChar)));
+        var document = XDocument.Load(SscTestPaths.Combine(repoRootPath, relative.Replace('/', Path.DirectorySeparatorChar)));
         return document.Root.Elements()
             .Select(e => new KeyValuePair<string, string>(e.Name.LocalName, e.Value))
             .ToList();

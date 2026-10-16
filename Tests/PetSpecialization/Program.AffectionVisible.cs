@@ -435,11 +435,8 @@ internal static partial class Program
 
     private static void AffectionResourceContracts()
     {
-        DirectoryInfo location = new DirectoryInfo(AppContext.BaseDirectory);
-        while (location != null && !File.Exists(Path.Combine(location.FullName, "Sexslavecraft/SexSlaveCraft_Alpha.csproj"))) location = location.Parent;
-        Assert(location != null, "repository root unavailable");
-        string root = location.FullName;
-        XElement effect = XDocument.Load(Path.Combine(root, "Defs/EffecterDefs/SSC_PetAffectionEffects.xml")).Root.Elements()
+        string root = SscTestPaths.RepositoryRoot();
+        XElement effect = XDocument.Load(SscTestPaths.Combine(root, "Defs/EffecterDefs/SSC_PetAffectionEffects.xml")).Root.Elements()
             .Single(e => (string)e.Element("defName") == "SSC_PetAffectionInteraction");
         XElement child = effect.Element("children").Elements("li").Single();
         Assert((string)child.Element("subEffecterClass") == "SubEffecter_SprayerContinuous" &&
@@ -447,7 +444,7 @@ internal static partial class Program
             (int)child.Element("ticksBetweenMotes") == 30 && (int)child.Element("initialDelayTicks") == 0 &&
             (int)child.Element("maxMoteCount") == 5 && (bool)child.Element("makeMoteOnSubtrigger") == false,
             "continuous Core Heart timing/spawn contract incorrect");
-        XElement job = XDocument.Load(Path.Combine(root, "Defs/JobDefs/SSC_PetAffectionJobDefs.xml")).Root.Elements().Single();
+        XElement job = XDocument.Load(SscTestPaths.Combine(root, "Defs/JobDefs/SSC_PetAffectionJobDefs.xml")).Root.Elements().Single();
         Assert((string)job.Element("defName") == "SSC_Job_PetAffection" &&
             (string)job.Element("driverClass") == typeof(JobDriver_PetAffection).FullName &&
             (bool)job.Element("casualInterruptible") && !string.IsNullOrWhiteSpace((string)job.Element("reportString")),
@@ -455,9 +452,9 @@ internal static partial class Program
         foreach (string language in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" })
         {
             string relative = "Languages/" + language + "/DefInjected/JobDef/SSC_PetAffectionJobDefs.xml";
-            byte[] main = File.ReadAllBytes(Path.Combine(root, relative));
-            Assert(main.SequenceEqual(File.ReadAllBytes(Path.Combine(root, "Sexslavecraft", relative))), "job mirror differs " + language);
-            XElement text = XDocument.Load(Path.Combine(root, relative)).Root.Element("SSC_Job_PetAffection.reportString");
+            byte[] main = File.ReadAllBytes(SscTestPaths.Combine(root, relative));
+            Assert(main.SequenceEqual(File.ReadAllBytes(SscTestPaths.Combine(root, "Sexslavecraft", relative))), "job mirror differs " + language);
+            XElement text = XDocument.Load(SscTestPaths.Combine(root, relative)).Root.Element("SSC_Job_PetAffection.reportString");
             Assert(text != null && !string.IsNullOrWhiteSpace(text.Value) && text.Value.Contains("TargetA"), "localized job report missing target " + language);
         }
     }

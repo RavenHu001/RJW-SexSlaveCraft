@@ -1,0 +1,87 @@
+<Project>
+  <!-- Set intermediate paths before importing the SDK so the legacy project and
+       the 1.7 project never share NuGet assets or generated source files. -->
+  <PropertyGroup>
+    <BaseIntermediateOutputPath>../.builds/build/1.7/obj/</BaseIntermediateOutputPath>
+    <MSBuildProjectExtensionsPath>$(BaseIntermediateOutputPath)</MSBuildProjectExtensionsPath>
+  </PropertyGroup>
+  <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Sexslavecraft</RootNamespace>
+    <AssemblyName>Sexslavecraft</AssemblyName>
+    <OutputPath>../1.7/Assemblies/</OutputPath>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <EnableDefaultItems>false</EnableDefaultItems>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <Deterministic>true</Deterministic>
+    <DebugType>portable</DebugType>
+    <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
+    <GenerateDependencyFile>false</GenerateDependencyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>$(GameRoot)/Assembly-CSharp.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityStubs">
+      <HintPath>$(GameRoot)/UnityStubs.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Waylith">
+      <HintPath>$(GameRoot)/Waylith.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Waylith.UnityCompat">
+      <HintPath>$(GameRoot)/Waylith.UnityCompat.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Brutal.Core.Maths">
+      <HintPath>$(GameRoot)/Brutal.Core.Maths.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Brutal.Core.Numerics">
+      <HintPath>$(GameRoot)/Brutal.Core.Numerics.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="RJW">
+      <HintPath>$(RjwAssemblyPath)</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Rimworld-Animations">
+      <HintPath>$(AnimationsAssemblyPath)</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="0Harmony">
+      <HintPath>$(GameHarmonyAssemblyPath)</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+  <!-- Keep one authoritative source list. Inactive legacy files stay inactive;
+       adding a Compile item to the existing project includes it in this build. -->
+  <Target Name="LoadLegacySourceItems" BeforeTargets="PrepareForBuild">
+    <XmlPeek XmlInputPath="$(MSBuildProjectDirectory)/SexSlaveCraft_Alpha.csproj"
+             Query="/*[local-name()='Project']/*[local-name()='ItemGroup']/*[local-name()='Compile']/@Include">
+      <Output TaskParameter="Result" ItemName="Compile" />
+    </XmlPeek>
+    <Error Condition="'@(Compile)' == ''" Text="The shared legacy source list is empty." />
+  </Target>
+  <Target Name="ValidateGameReferences" BeforeTargets="PrepareForBuild">
+    <Error Condition="'$(GameRoot)' == '' or !Exists('$(GameRoot)/Assembly-CSharp.dll')"
+           Text="Set GameRoot to a RimWorld 1.7 installation containing Assembly-CSharp.dll at its root." />
+    <Error Condition="!Exists('$(GameRoot)/UnityStubs.dll') or !Exists('$(GameRoot)/Waylith.dll')"
+           Text="GameRoot must contain the RimWorld 1.7 Waylith reference assemblies." />
+    <Error Condition="'$(RjwAssemblyPath)' == '' or !Exists('$(RjwAssemblyPath)')"
+           Text="Set RjwAssemblyPath to the RJW DLL used by the target game environment." />
+    <Error Condition="'$(AnimationsAssemblyPath)' == '' or !Exists('$(AnimationsAssemblyPath)')"
+           Text="Set AnimationsAssemblyPath to the Rimworld-Animations DLL used by the target game environment." />
+    <Error Condition="'$(GameHarmonyAssemblyPath)' == '' or !Exists('$(GameHarmonyAssemblyPath)')"
+           Text="Set GameHarmonyAssemblyPath to the Harmony DLL used by the target game environment." />
+  </Target>
+  <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
+</Project>

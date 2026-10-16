@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <PNA_Debuff_Thought.stages.0.label>Афродизиачная эрозия: тепло</PNA_Debuff_Thought.stages.0.label>
+  <PNA_Debuff_Thought.stages.0.description>Изнутри разливается тепло. Мне немного хочется, но я ещё могу сдержаться.</PNA_Debuff_Thought.stages.0.description>
+  <PNA_Debuff_Thought.stages.1.label>Афродизиачная эрозия: влечение</PNA_Debuff_Thought.stages.1.label>
+  <PNA_Debuff_Thought.stages.1.description>Жар разошёлся по всему телу. Я постоянно думаю об этом, и сосредоточиться трудно.</PNA_Debuff_Thought.stages.1.description>
+  <PNA_Debuff_Thought.stages.2.label>Афродизиачная эрозия: опьянение</PNA_Debuff_Thought.stages.2.label>
+  <PNA_Debuff_Thought.stages.2.description>Всё перед глазами расплывается, в ушах звучат голоса. Я не могу понять, что из этого настоящее.</PNA_Debuff_Thought.stages.2.description>
+  <PNA_Debuff_Thought.stages.3.label>Афродизиачная эрозия: погружение</PNA_Debuff_Thought.stages.3.label>
+  <PNA_Debuff_Thought.stages.3.description>Желание захлестнуло меня. Мне уже всё равно, что я делаю, и я не могу собой управлять.</PNA_Debuff_Thought.stages.3.description>
+  <PNA_Debuff_Thought.stages.4.label>Афродизиачная эрозия: блаженство</PNA_Debuff_Thought.stages.4.label>
+  <PNA_Debuff_Thought.stages.4.description>Я едва держусь. В голове осталось только удовольствие, и больше ничего.</PNA_Debuff_Thought.stages.4.description>
+  <SSC_PnaRootedLoad_Thought.stages.0.label>Афродизиачная активация: ясность</SSC_PnaRootedLoad_Thought.stages.0.label>
+  <SSC_PnaRootedLoad_Thought.stages.0.description>Будто моё тело осветилось изнутри. Все ощущения вдруг стали ясными.</SSC_PnaRootedLoad_Thought.stages.0.description>
+  <SSC_PnaRootedLoad_Thought.stages.1.label>Афродизиачная активация: лёгкость</SSC_PnaRootedLoad_Thought.stages.1.label>
+  <SSC_PnaRootedLoad_Thought.stages.1.description>Руки и ноги лёгкие, движения поспевают за мыслями. Тело слушается лучше обычного.</SSC_PnaRootedLoad_Thought.stages.1.description>
+  <SSC_PnaRootedLoad_Thought.stages.2.label>Афродизиачная активация: полнота сил</SSC_PnaRootedLoad_Thought.stages.2.label>
+  <SSC_PnaRootedLoad_Thought.stages.2.description>Сила и желание нарастают вместе. Я чувствую возбуждение и ясность.</SSC_PnaRootedLoad_Thought.stages.2.description>
+  <SSC_PnaRootedLoad_Thought.stages.3.label>Афродизиачная активация: возбуждение</SSC_PnaRootedLoad_Thought.stages.3.label>
+  <SSC_PnaRootedLoad_Thought.stages.3.description>Тело пылает. Во мне больше силы, чем когда-либо, и я уже не могу остановиться.</SSC_PnaRootedLoad_Thought.stages.3.description>
+  <SSC_PnaRootedLoad_Thought.stages.4.label>Афродизиачная активация: эйфория</SSC_PnaRootedLoad_Thought.stages.4.label>
+  <SSC_PnaRootedLoad_Thought.stages.4.description>Эта сила почти переполняет меня. Так хорошо, что хочется оставаться в этом состоянии всегда.</SSC_PnaRootedLoad_Thought.stages.4.description>
+</LanguageData>

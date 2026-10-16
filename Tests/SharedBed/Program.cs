@@ -18,8 +18,8 @@ internal static partial class Program
     /// <remarks>此入口执行最小生命周期和绘制模型，不启动游戏或验证真实 Unity 布局。</remarks>
     private static int Main(string[] args)
     {
-        repo = Path.GetFullPath(args[0]);
-        foreach (var key in XDocument.Load(Path.Combine(repo, "Languages/ChineseSimplified/Keyed/SSC_SharedBed.xml")).Root.Elements())
+        repo = SscTestPaths.RepositoryRoot(args[0]);
+        foreach (var key in XDocument.Load(SscTestPaths.Combine(repo, "Languages/ChineseSimplified/Keyed/SSC_SharedBed.xml")).Root.Elements())
             Translation.Keys[key.Name.LocalName] = key.Value;
         new Harmony("ssc.tests.shared-bed").PatchAll(Assembly.GetExecutingAssembly());
 
@@ -182,7 +182,7 @@ internal static partial class Program
         RunBadgePresentationRules();
         Run("XML 记忆持续一天、不叠加并保留六档数值", CheckDefs);
         Run("四种界面翻译键完整且参数匹配", CheckLanguages);
-        Run("共同睡眠记录接入现有 Pawn 存档", () => { string source = File.ReadAllText(Path.Combine(repo, "Sexslavecraft/Comps/Comp_Train.cs")); Assert(source.Contains("Scribe_Deep.Look(ref sharedSleep, \"sharedSleep\")")); });
+        Run("共同睡眠记录接入现有 Pawn 存档", () => { string source = File.ReadAllText(SscTestPaths.Combine(repo, "Sexslavecraft/Comps/Comp_Train.cs")); Assert(source.Contains("Scribe_Deep.Look(ref sharedSleep, \"sharedSleep\")")); });
 
         Console.WriteLine($"{passed}/{passed + failed} passed (actual Harmony + lifecycle model; no live game).");
         return failed == 0 ? 0 : 1;
@@ -230,7 +230,7 @@ internal static partial class Program
     /// <summary>检查两种同床 XML 定义均为一天、不叠加的记忆，并保留约定的六档心情数值。</summary>
     private static void CheckDefs()
     {
-        var defs = XDocument.Load(Path.Combine(repo, "Defs/ThoughtDefs/Thought_SharedBed.xml")).Root.Elements().ToList();
+        var defs = XDocument.Load(SscTestPaths.Combine(repo, "Defs/ThoughtDefs/Thought_SharedBed.xml")).Root.Elements().ToList();
         Assert(defs.Count == 2);
         foreach (var def in defs)
         {
@@ -245,7 +245,7 @@ internal static partial class Program
         string[] expected = Translation.Keys.Keys.OrderBy(x => x).ToArray();
         foreach (string language in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" })
         {
-            var keys = XDocument.Load(Path.Combine(repo, "Languages", language, "Keyed/SSC_SharedBed.xml")).Root.Elements().ToList();
+            var keys = XDocument.Load(SscTestPaths.Combine(repo, "Languages", language, "Keyed/SSC_SharedBed.xml")).Root.Elements().ToList();
             Assert(keys.Select(x => x.Name.LocalName).OrderBy(x => x).SequenceEqual(expected));
             foreach (var key in keys) string.Format(key.Value, "Partner", "Threshold");
         }

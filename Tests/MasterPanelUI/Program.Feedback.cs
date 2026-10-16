@@ -82,11 +82,11 @@ internal static partial class Program
             });
         Run("默认 Def 与简中注入一致且四语悬停字段镜像完整", () =>
         {
-            var def = XDocument.Load(Path.Combine(repo, "Defs/HediffDefs/SSC_MasterProgression.xml")).Root.Element("HediffDef");
+            var def = XDocument.Load(SscTestPaths.Combine(repo, "Defs/HediffDefs/SSC_MasterProgression.xml")).Root.Element("HediffDef");
             foreach (string language in Languages)
             {
                 string relative = "DefInjected/HediffDef/SSC_MasterProgression.xml";
-                var entries = XDocument.Load(Path.Combine(repo, "Languages", language, relative)).Root;
+                var entries = XDocument.Load(SscTestPaths.Combine(repo, "Languages", language, relative)).Root;
                 Assert(entries.Elements().Count() == 10);
                 Assert(entries.Element("SSC_Hediff_MasterProgression.extraTooltip") == null && def.Element("extraTooltip") == null);
                 foreach (string field in new[] { "label", "description" })
@@ -102,8 +102,8 @@ internal static partial class Program
                         Assert(!string.IsNullOrWhiteSpace(value));
                         if (language == "ChineseSimplified") Assert(value == def.Element("stages").Elements().ElementAt(i).Element(field).Value);
                     }
-                Assert(File.ReadAllBytes(Path.Combine(repo, "Languages", language, relative)).SequenceEqual(
-                    File.ReadAllBytes(Path.Combine(repo, "Sexslavecraft/Languages", language, relative))));
+                Assert(File.ReadAllBytes(SscTestPaths.Combine(repo, "Languages", language, relative)).SequenceEqual(
+                    File.ReadAllBytes(SscTestPaths.Combine(repo, "Sexslavecraft/Languages", language, relative))));
             }
         });
     }

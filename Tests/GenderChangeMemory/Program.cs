@@ -17,7 +17,7 @@ internal static class Program
     /// <summary>运行定义一致性和生产手术回归，接收仓库根目录并返回测试退出码。</summary>
     private static int Main(string[] args)
     {
-        root = Path.GetFullPath(args.Length > 0 ? args[0] : ".");
+        root = SscTestPaths.RepositoryRoot(args.Length > 0 ? args[0] : null);
         // 定义校验回调：阻止同一个 ThoughtDef 再次出现多个名称或被错误改名。
         Run("术后记忆只定义一个规范名称", () =>
         {
@@ -90,7 +90,7 @@ internal static class Program
             Run(language + " 术后记忆翻译指向有效定义", () =>
             {
                 LoadDefinition();
-                XDocument translation = XDocument.Load(Path.Combine(root, "Languages", language,
+                XDocument translation = XDocument.Load(SscTestPaths.Combine(root, "Languages", language,
                     "DefInjected", "ThoughtDef", "RecipeDef_Surgery_DCMtF.xml"));
                 foreach (string suffix in new[] { ".stages.0.label", ".stages.0.description" })
                 {
@@ -105,7 +105,7 @@ internal static class Program
     }
 
     /// <summary>读取实际手术 XML 中唯一的术后记忆节点。</summary>
-    private static XElement ReadThought() => XDocument.Load(Path.Combine(root, "Defs", "RecipeDefs",
+    private static XElement ReadThought() => XDocument.Load(SscTestPaths.Combine(root, "Defs", "RecipeDefs",
         "RecipeDef_Surgery_DCMtF.xml")).Root.Elements("ThoughtDef").Single();
 
     /// <summary>按 XML 子节点顺序读取名称，模拟游戏对重复字段后值覆盖前值的行为。</summary>

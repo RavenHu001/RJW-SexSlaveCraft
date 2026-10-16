@@ -16,7 +16,7 @@ internal static partial class Program
     private static int Main(string[] args)
     {
         CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
-        root = Path.GetFullPath(args.Length == 0 ? "." : args[0]);
+        root = SscTestPaths.RepositoryRoot(args.Length > 0 ? args[0] : null);
         Run("旧枚举编号不变", EnumCompatibility);
         Run("选择要求 SSC 性奴及战斗员研究，兼容三种原版身份", SelectionMatrix);
         Run("缺失研究、组件或不支持的对象不会开放入口", InvalidSelection);
@@ -148,7 +148,7 @@ internal static partial class Program
     {
         var p = Pawn(); Train(p, 1);
         Check(p.health.hediffSet.hediffs.Count == 1 && Ordinary(p) != null, "普通完成生成额外状态");
-        var xml = XDocument.Load(Path.Combine(root, "Defs/HediffDefs/SSC_HediffDefs_CombatantSpecialization.xml"));
+        var xml = XDocument.Load(SscTestPaths.Combine(root, "Defs/HediffDefs/SSC_HediffDefs_CombatantSpecialization.xml"));
         var ordinary = xml.Root.Elements().Single(e => (string)e.Element("defName") == "SSC_Hediff_Combatant");
         Check(ordinary.Element("comps") == null, "普通定义授予能力组件");
     }
@@ -332,21 +332,21 @@ internal static partial class Program
         foreach (string language in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" })
         {
             string relative = Path.Combine(language, "Keyed", "SSC_Specialization.xml");
-            string source = Path.Combine(root, "Languages", relative);
-            var keys = Directory.EnumerateFiles(Path.Combine(root, "Languages", language, "Keyed"), "*.xml")
+            string source = SscTestPaths.Combine(root, "Languages", relative);
+            var keys = Directory.EnumerateFiles(SscTestPaths.Combine(root, "Languages", language, "Keyed"), "*.xml")
                 .SelectMany(path => XDocument.Load(path).Root.Elements()).ToArray();
             foreach (string key in new[] { "SSC_ITab_PetCatFinalizationTip", "SSC_ITab_PetDogFinalizationTip" })
             {
                 var values = keys.Where(e => e.Name.LocalName == key).ToArray();
                 Check(values.Length == 1 && !string.IsNullOrWhiteSpace(values[0].Value), "引导翻译缺失、为空或重复：" + language + "/" + key);
             }
-            Check(File.ReadAllBytes(source).SequenceEqual(File.ReadAllBytes(Path.Combine(root, "Sexslavecraft", "Languages", relative))), "引导语言镜像不一致：" + language);
+            Check(File.ReadAllBytes(source).SequenceEqual(File.ReadAllBytes(SscTestPaths.Combine(root, "Sexslavecraft", "Languages", relative))), "引导语言镜像不一致：" + language);
         }
     }
     private static float Value(XElement e, string path) => float.Parse(e.Element(path).Value, CultureInfo.InvariantCulture);
     private static void StageDefinitions()
     {
-        var stages = XDocument.Load(Path.Combine(root, "Defs/HediffDefs/SSC_HediffDefs_CombatantSpecialization.xml"))
+        var stages = XDocument.Load(SscTestPaths.Combine(root, "Defs/HediffDefs/SSC_HediffDefs_CombatantSpecialization.xml"))
             .Root.Elements("HediffDef").Single(e => (string)e.Element("defName") == "SSC_Hediff_Combatant")
             .Element("stages").Elements("li").ToArray();
         Check(stages.Length == 3, "普通阶段数量错误");
@@ -369,19 +369,19 @@ internal static partial class Program
     }
     private static void Resources()
     {
-        var research = XDocument.Load(Path.Combine(root, "Defs/ResearchDefs/ResearchProjectDef.xml"))
+        var research = XDocument.Load(SscTestPaths.Combine(root, "Defs/ResearchDefs/ResearchProjectDef.xml"))
             .Root.Elements().Single(e => (string)e.Element("defName") == "SSC_RES_Combatant");
         Equal(1200, Value(research, "baseCost"));
         Check(research.Element("prerequisites").Elements().Single().Value == "SSC_RES_SlaveSpecialization", "研究前置改变");
         foreach (var lang in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" })
         {
-            var keyed = XDocument.Load(Path.Combine(root, "Languages", lang, "Keyed/SSC_CombatantSpecialization.xml"));
+            var keyed = XDocument.Load(SscTestPaths.Combine(root, "Languages", lang, "Keyed/SSC_CombatantSpecialization.xml"));
             foreach (string key in new[] { "SSC_ITab_SpecializationCombatant", "SSC_ITab_SelectSpecializationCombatant",
                 "SSC_ITab_SpecializationCombatantDisabledIdentity", "SSC_ITab_SpecializationCombatantDisabledResearch",
                 "SSC_ITab_SpecializationOrdinaryComplete", "SSC_ITab_CombatantFinalizationTip" })
                 Check(!string.IsNullOrWhiteSpace((string)keyed.Root.Element(key)), "缺少界面翻译：" + key);
             if (lang == "ChineseSimplified") continue;
-            var defs = XDocument.Load(Path.Combine(root, "Languages", lang, "DefInjected/HediffDef/SSC_HediffDefs_CombatantSpecialization.xml"));
+            var defs = XDocument.Load(SscTestPaths.Combine(root, "Languages", lang, "DefInjected/HediffDef/SSC_HediffDefs_CombatantSpecialization.xml"));
             foreach (string key in new[] { "SSC_Hediff_Combatant.label", "SSC_Hediff_Combatant.description",
                 "SSC_Hediff_Combatant.stages.0.label", "SSC_Hediff_Combatant.stages.1.label", "SSC_Hediff_Combatant.stages.2.label",
                 "SSC_Hediff_Combatant_Final.label", "SSC_Hediff_Combatant_Final.description" })

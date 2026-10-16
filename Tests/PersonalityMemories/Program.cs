@@ -15,7 +15,7 @@ internal static class Program
     /// <summary>执行真实生产记忆工具的独立回归用例，并通过退出码报告失败。</summary>
     private static int Main(string[] args)
     {
-        string repo = Path.GetFullPath(args.Length > 0 ? args[0] : Path.Combine(AppContext.BaseDirectory, "../../../../.."));
+        string repo = SscTestPaths.RepositoryRoot(args.Length > 0 ? args[0] : null);
         Run("所有心情阶段与非零偏移、年龄、倍率完整恢复", MoodStages);
         Run("社交默认值及正负零小数自定义值完整恢复", SocialValues);
         Run("普通记忆的关联人物通过引擎显式参数保留", OrdinaryOtherPawn);
@@ -311,7 +311,7 @@ internal static class Program
     /// <summary>以实际职责定义验证人格复制与迁移，不重置已消耗的记忆年龄或增加关联对象。</summary>
     private static void TrainerOfficerDutyMemory(string repo)
     {
-        var definition = XDocument.Load(Path.Combine(repo, "Defs/ThoughtDefs/SSC_TrainerOfficerThoughts.xml"))
+        var definition = XDocument.Load(SscTestPaths.Combine(repo, "Defs/ThoughtDefs/SSC_TrainerOfficerThoughts.xml"))
             .Root.Elements("ThoughtDef").Single(d => (string)d.Element("defName") == "SSC_TrainerOfficer_DutyFulfilled");
         var def = new ThoughtDef
         {

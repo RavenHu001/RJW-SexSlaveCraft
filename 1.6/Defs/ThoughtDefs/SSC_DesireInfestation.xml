@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <!-- AI 辅助生成：欢愉恩赐的独立反馈；阶段仅由原结算前 C/O 决定，跨档唯一由发放工具保证。 -->
+  <ThoughtDef>
+    <defName>SSC_DesireInfestation_Mood</defName>
+    <thoughtClass>Thought_Memory</thoughtClass>
+    <durationDays>1</durationDays>
+    <stackLimit>1</stackLimit>
+    <stackLimitForSameOtherPawn>1</stackLimitForSameOtherPawn>
+    <stagesStack>false</stagesStack>
+    <stages>
+      <li>
+        <label>欢愉侵蚀：舒坦了</label>
+        <description>他的体液渗进来以后，原本只是普通的舒服，忽然就变得受不住。每一寸都被放大，我几乎是抖着结束的，事后身体还热着，回味一阵阵地往上翻。</description>
+        <baseMoodEffect>4</baseMoodEffect>
+      </li>
+      <li>
+        <label>欢愉侵蚀：难堪</label>
+        <description>我分明不情愿，他留在我身体里的体液却把快感一层层放大。咬着牙也没压住，最后还是湿得一塌糊涂。爽是真的，可我一想到自己是因为他的东西才变成这样，就觉得难堪。</description>
+        <baseMoodEffect>-4</baseMoodEffect>
+      </li>
+      <li>
+        <label>欢愉侵蚀：馋得慌</label>
+        <description>他一次又一次把体液留在我身体里，把我养得越来越贪。现在光是想起那种被放大的滋味，下面就开始发软发潮。他给的一次比一次烈，我却一次比一次更不容易满足。</description>
+        <baseMoodEffect>8</baseMoodEffect>
+      </li>
+      <li>
+        <label>欢愉侵蚀：不甘心</label>
+        <description>体液照样把快感放大，我照样被送上高潮，事后整个人都是软的。爽是爽了，可我一想到这是从他身上来的，心里就堵着，怎么都不甘心。</description>
+        <baseMoodEffect>4</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+  <ThoughtDef>
+    <defName>SSC_DesireInfestation_Opinion</defName>
+    <thoughtClass>Thought_MemorySocial</thoughtClass>
+    <durationDays>3</durationDays>
+    <stackLimit>3</stackLimit>
+    <stackLimitForSameOtherPawn>1</stackLimitForSameOtherPawn>
+    <stagesStack>false</stagesStack>
+    <!-- 沿用原版：三天期限的最后 30% 好感逐渐衰减。 -->
+    <lerpOpinionToZeroAfterDurationPct>0.7</lerpOpinionToZeroAfterDurationPct>
+    <stages>
+      <li>
+        <label>侵染带来的亲近</label>
+        <description>他把这种东西用在我身上，让我舒服成那样。我记着他的好，也愿意再靠近他一些。</description>
+        <baseOpinionOffset>5</baseOpinionOffset>
+      </li>
+      <li>
+        <label>反感对方的侵染</label>
+        <description>他用这种手段把我弄得那么狼狈，我实在没法感激他。身体受了用，不代表我就认了这份人情，我更不想再让他近身。</description>
+        <baseOpinionOffset>-5</baseOpinionOffset>
+      </li>
+      <li>
+        <label>眷恋对方的侵染</label>
+        <description>我的身体已经只认他体液带来的那种强度，别人给不了。越是被他这样一点点调深，我就越想要他再来。</description>
+        <baseOpinionOffset>10</baseOpinionOffset>
+      </li>
+      <li>
+        <label>愉悦没有改变反感</label>
+        <description>身体再爽也改不了我对他的看法，该怎么想还是怎么想。</description>
+        <baseOpinionOffset>0</baseOpinionOffset>
+      </li>
+    </stages>
+  </ThoughtDef>
+</Defs>

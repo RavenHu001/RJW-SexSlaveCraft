@@ -422,7 +422,7 @@ internal static partial class Program
                 "Candidate", "PairReady", "Assigned", "Allowed", "CannotAssign", "PairBlocked", "Legend" };
             foreach (string language in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" })
             {
-                var doc = XDocument.Load(Path.Combine(args[0], "Languages", language, "Keyed", "SSC_RitualSelection.xml"));
+                var doc = XDocument.Load(SscTestPaths.Combine(SscTestPaths.RepositoryRoot(args[0]), "Languages", language, "Keyed", "SSC_RitualSelection.xml"));
                 Assert(doc.Root.Elements().Select(x => x.Name.LocalName).OrderBy(x => x)
                     .SequenceEqual(expected.Select(x => "SSC_RitualSelection_" + x).OrderBy(x => x)));
                 Assert(doc.Root.Elements().All(x => !string.IsNullOrWhiteSpace(x.Value)));

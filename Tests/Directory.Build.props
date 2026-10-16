@@ -1,0 +1,5 @@
+<Project>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Shared/TestPaths.cs" Link="Boundary/TestPaths.cs" />
+  </ItemGroup>
+</Project>

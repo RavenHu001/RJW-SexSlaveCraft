@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+  <RecipeDef ParentName="SurgeryFlesh">
+    <defName>SSC_InducePersonalityExcretion</defName>
+    <label>注射浓缩PNA诱导人格排泄</label>
+    <description>诱导人格排泄。</description>
+    
+    <workerClass>Recipe_AddHediff</workerClass>
+    <jobString>正在诱导人格排泄。</jobString>
+    
+    <workAmount>1000</workAmount>
+    
+    <hideBodyPartNames>true</hideBodyPartNames>
+    <targetsBodyPart>false</targetsBodyPart>
+    <surgeryOutcomeEffect IsNull="True" />
+    
+
+    <researchPrerequisite>SSC_RES_PE</researchPrerequisite>
+
+    <recipeUsers>
+      <li>Human</li>
+    </recipeUsers>
+
+    <ingredients>
+      <li>
+        <filter>
+          <categories>
+            <li>Medicine</li> 
+          </categories>
+        </filter>
+        <count>5</count>
+      </li>
+      <li>
+        <filter>
+          <thingDefs>
+            <li>Purple_Aphrodisiac_Nanofluid_Plus</li>
+          </thingDefs>
+        </filter>
+        <count>15</count>
+      </li>
+    </ingredients>
+    
+    <fixedIngredientFilter>
+      <categories>
+        <li>Medicine</li>
+      </categories>
+      <thingDefs>
+        <li>Purple_Aphrodisiac_Nanofluid_Plus</li> 
+      </thingDefs>
+    </fixedIngredientFilter>
+    <addsHediff>Hediff_SSC_PersonalityExcreting</addsHediff>
+    <appliedOnFixedBodyParts>
+      <li>Torso</li> 
+    </appliedOnFixedBodyParts>
+</RecipeDef>
+</Defs>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <Corruption.label>Corruption</Corruption.label>
+  <Corruption.description>The pawn's corruption level.</Corruption.description>
+  <Need_PNA.label>Nano-Aphrodisiac Craving</Need_PNA.label>
+  <Need_PNA.description>Once accustomed to the stimulation of aphrodisiac nanofluid, the body keeps demanding it. Satisfaction falls over time, leading to withdrawal when it runs out. Obtaining more replenishes it but deepens dependence.</Need_PNA.description>
+</LanguageData>

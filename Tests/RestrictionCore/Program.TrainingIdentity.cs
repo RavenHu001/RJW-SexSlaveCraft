@@ -62,14 +62,14 @@ internal static partial class Program
             foreach (string language in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" })
             {
                 string relative = Path.Combine("Languages", language, "Keyed", "SSC_TrainingIdentity.xml");
-                string contents = File.ReadAllText(Path.Combine(root, relative));
+                string contents = File.ReadAllText(SscTestPaths.Combine(root, relative));
                 var values = XDocument.Parse(contents).Root.Elements().ToDictionary(e => e.Name.LocalName, e => e.Value);
                 Equal(true, keys.ToHashSet().SetEquals(values.Keys));
                 foreach (string key in keys) Equal(false, string.IsNullOrWhiteSpace(values[key]));
                 Equal(true, values["SSC_Identity_LegacyRecoveryConfirm"].Contains("{0}"));
                 Equal(true, values["SSC_Identity_LegacyRecoveryConfirm"].Contains("{1}"));
                 Equal(true, values["SSC_Identity_LegacyRecoveryCompleted"].Contains("{0}"));
-                Equal(contents, File.ReadAllText(Path.Combine(root, "Sexslavecraft", relative)));
+                Equal(contents, File.ReadAllText(SscTestPaths.Combine(root, "Sexslavecraft", relative)));
             }
         });
     }

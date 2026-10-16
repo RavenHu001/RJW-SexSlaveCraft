@@ -4,6 +4,12 @@
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
 # User-specific files
+# Versioned mod outputs keep only the distributable SSC assemblies in Git.
+/1.6/Assemblies/*
+!/1.6/Assemblies/Sexslavecraft.dll
+/1.7/Assemblies/*
+!/1.7/Assemblies/Sexslavecraft.dll
+
 *.rsuser
 *.suo
 *.user

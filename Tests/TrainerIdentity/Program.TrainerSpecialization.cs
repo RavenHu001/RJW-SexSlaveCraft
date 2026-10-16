@@ -17,7 +17,7 @@ internal static partial class Program
             Assert((int)SexSlaveSpecializationType.TrainerOfficer == 6);
 
             // 编译 C# 不会加载游戏 XML，所以单独解析实际定义并核对三种状态的名称。
-            var xml = XDocument.Load(Path.Combine(repo, "Defs/HediffDefs/SSC_HediffDefs_TrainerSpecialization.xml"));
+            var xml = XDocument.Load(SscTestPaths.Combine(repo, "Defs/HediffDefs/SSC_HediffDefs_TrainerSpecialization.xml"));
             string[] names = xml.Root.Elements("HediffDef")
                 .Select(def => (string)def.Element("defName")).ToArray();
             Assert(names.Length == 3 && names.Distinct().Count() == 3);

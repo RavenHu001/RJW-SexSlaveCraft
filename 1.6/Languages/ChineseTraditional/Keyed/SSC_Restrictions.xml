@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <SSC_Restrictions_Open>行為限制：設置與測試</SSC_Restrictions_Open>
+  <SSC_Restrictions_SettingsTip>打開後可在窗口中選擇配置角色和測試雙方，無需預先選中角色。</SSC_Restrictions_SettingsTip>
+  <SSC_Restrictions_SettingsUnavailable>請載入存檔並進入有可配置角色的地圖後使用。</SSC_Restrictions_SettingsUnavailable>
+  <SSC_Restrictions_Title>行為限制：設置與測試</SSC_Restrictions_Title>
+  <SSC_Restrictions_EditTab>個體規則</SSC_Restrictions_EditTab>
+  <SSC_Restrictions_TestTab>許可測試</SSC_Restrictions_TestTab>
+  <SSC_Restrictions_TestNotice>普通雙人、單人、人格排泄、日常調教與儀式、交易和寵物事件、原版 Lovin 及已支持的 LifeForce 入口已使用新規則。</SSC_Restrictions_TestNotice>
+  <SSC_Restrictions_OwnerNotice>實際主人對自己的綁定對象發起任何行為，新系統均直接允許，裝備和個體限制不能否決。</SSC_Restrictions_OwnerNotice>
+  <SSC_Restrictions_SystemSwitch>啟用行為限制</SSC_Restrictions_SystemSwitch>
+  <SSC_Restrictions_SystemSwitchTip>全局啟停行為限制及裝備、特化覆蓋；關閉不清空個人配置。</SSC_Restrictions_SystemSwitchTip>
+  <SSC_Restrictions_ProfileSwitch>啟用特化強制規則</SSC_Restrictions_ProfileSwitch>
+  <SSC_Restrictions_ProfileSwitchTip>控制特化的條目覆蓋，不影響裝備強制或個人保存值。</SSC_Restrictions_ProfileSwitchTip>
+  <SSC_Restrictions_EditPawn>配置角色：{0}</SSC_Restrictions_EditPawn>
+  <SSC_Restrictions_NotApplicable>尚未綁定主人，行為限制未啟用；已有配置保留，僅供查看。</SSC_Restrictions_NotApplicable>
+  <SSC_Restrictions_Uninitialized>尚無配置，請等待遷移；初始化失敗時可重試。</SSC_Restrictions_Uninitialized>
+  <SSC_Restrictions_Initialize>重試建立默認配置</SSC_Restrictions_Initialize>
+  <SSC_Restrictions_InvalidConfig>配置版本或數據異常（版本 {0}），暫不可編輯；已保留原始配置。</SSC_Restrictions_InvalidConfig>
+  <SSC_Restrictions_SaveNotice>點擊勾叉修改個人設置，隨遊戲存檔保存。強制項顯示生效值且不可修改；原個人選擇保留，覆蓋解除後恢復。</SSC_Restrictions_SaveNotice>
+  <SSC_Restrictions_EditFailed>無法修改：角色適用狀態或配置已變化，請重新檢查。</SSC_Restrictions_EditFailed>
+  <SSC_Restrictions_InitializeFailed>無法建立配置：規則“{0}”的默認值無效。來源：{1}。角色尚未寫入新配置。</SSC_Restrictions_InitializeFailed>
+  <SSC_Restrictions_Rule_Masturbation>主動 · 單人自慰</SSC_Restrictions_Rule_Masturbation>
+  <SSC_Restrictions_Rule_ConsensualInitiation>主動 · 發起雙人自願行為</SSC_Restrictions_Rule_ConsensualInitiation>
+  <SSC_Restrictions_Rule_ForcedInitiation>主動 · 發起強制行為</SSC_Restrictions_Rule_ForcedInitiation>
+  <SSC_Restrictions_Rule_ReceiveConsensual>被動 · 接受非主人自願行為</SSC_Restrictions_Rule_ReceiveConsensual>
+  <SSC_Restrictions_Rule_ReceiveForced>被動 · 接受非主人強制行為</SSC_Restrictions_Rule_ReceiveForced>
+  <SSC_Restrictions_Rule_ReceiveTraining>調教 · 接受非主人調教</SSC_Restrictions_Rule_ReceiveTraining>
+  <SSC_Restrictions_Rule_SelfTraining>調教 · 自我調教</SSC_Restrictions_Rule_SelfTraining>
+  <SSC_Restrictions_SavedValue>保存值：{0}（點擊修改）</SSC_Restrictions_SavedValue>
+  <SSC_Restrictions_EffectiveValue>當前生效：{0}；來源：{1}</SSC_Restrictions_EffectiveValue>
+  <SSC_Restrictions_InvalidValue>配置無效</SSC_Restrictions_InvalidValue>
+  <SSC_Restrictions_Value_Deny>禁止</SSC_Restrictions_Value_Deny>
+  <SSC_Restrictions_Value_OwnerOnly>僅限主人</SSC_Restrictions_Value_OwnerOnly>
+  <SSC_Restrictions_Value_Allow>允許</SSC_Restrictions_Value_Allow>
+  <SSC_Restrictions_Source_Saved>個體保存值</SSC_Restrictions_Source_Saved>
+  <SSC_Restrictions_Source_Specialization>特化強制</SSC_Restrictions_Source_Specialization>
+  <SSC_Restrictions_Source_Equipment>裝備強制</SSC_Restrictions_Source_Equipment>
+  <SSC_Restrictions_Source_SystemDisabled>總開關已關閉</SSC_Restrictions_Source_SystemDisabled>
+  <SSC_Restrictions_Source_DefaultTemplate>全局默認模板</SSC_Restrictions_Source_DefaultTemplate>
+  <SSC_Restrictions_Source_SpecializationDefault>特化默認</SSC_Restrictions_Source_SpecializationDefault>
+  <SSC_Restrictions_TestAsReceiver>以此角色為接收者進行測試</SSC_Restrictions_TestAsReceiver>
+  <SSC_Restrictions_Initiator>發起者：{0}</SSC_Restrictions_Initiator>
+  <SSC_Restrictions_Receiver>接收者：{0}</SSC_Restrictions_Receiver>
+  <SSC_Restrictions_Swap>交換發起者與接收者</SSC_Restrictions_Swap>
+  <SSC_Restrictions_Kind>行為用途：{0}</SSC_Restrictions_Kind>
+  <SSC_Restrictions_Kind_Masturbation>單人自慰</SSC_Restrictions_Kind_Masturbation>
+  <SSC_Restrictions_Kind_Consensual>雙人自願行為</SSC_Restrictions_Kind_Consensual>
+  <SSC_Restrictions_Kind_Forced>強制行為</SSC_Restrictions_Kind_Forced>
+  <SSC_Restrictions_Kind_DailyTraining>日常調教</SSC_Restrictions_Kind_DailyTraining>
+  <SSC_Restrictions_Kind_RitualTraining>儀式調教</SSC_Restrictions_Kind_RitualTraining>
+  <SSC_Restrictions_Kind_PersonalityExcretion>人格專用任務</SSC_Restrictions_Kind_PersonalityExcretion>
+  <SSC_Restrictions_Kind_BindingPreparation>首次綁定準備</SSC_Restrictions_Kind_BindingPreparation>
+  <SSC_Restrictions_Kind_SelfTraining>自我調教</SSC_Restrictions_Kind_SelfTraining>
+  <SSC_Restrictions_SoloTip>結果實時使用已保存配置；不會啟動任務。單人用途只檢查發起者，此時忽略接收者選擇。</SSC_Restrictions_SoloTip>
+  <SSC_Restrictions_Result>測試結果：{0}\n原因：{1}</SSC_Restrictions_Result>
+  <SSC_Restrictions_Subject>相關角色：{0}</SSC_Restrictions_Subject>
+  <SSC_Restrictions_ResultEntry>規則：{0}\n來源：{1}</SSC_Restrictions_ResultEntry>
+  <SSC_Restrictions_Reason_BoundOwner>實際主人直接放行</SSC_Restrictions_Reason_BoundOwner>
+  <SSC_Restrictions_Reason_SystemDisabled>限制系統已關閉</SSC_Restrictions_Reason_SystemDisabled>
+  <SSC_Restrictions_Reason_NotApplicable>相關角色不受此系統管理</SSC_Restrictions_Reason_NotApplicable>
+  <SSC_Restrictions_Reason_Allowed>所需許可已滿足</SSC_Restrictions_Reason_Allowed>
+  <SSC_Restrictions_Reason_IncompleteContext>參與者、方向或用途不完整</SSC_Restrictions_Reason_IncompleteContext>
+  <SSC_Restrictions_Reason_ConfigurationMissing>相關角色尚未建立新配置；請在個體規則頁初始化</SSC_Restrictions_Reason_ConfigurationMissing>
+  <SSC_Restrictions_Reason_ConfigurationInvalid>配置版本、條目或文件覆蓋無效</SSC_Restrictions_Reason_ConfigurationInvalid>
+  <SSC_Restrictions_Reason_RuleDenied>當前生效規則禁止此行為</SSC_Restrictions_Reason_RuleDenied>
+  <SSC_Restrictions_Reason_OwnerOnly>主動行為僅限該角色的實際主人</SSC_Restrictions_Reason_OwnerOnly>
+  <SSC_Restrictions_Reason_InvalidBindingPreparation>不符合首次綁定準備的身份或指定關系</SSC_Restrictions_Reason_InvalidBindingPreparation>
+  <SSC_Restrictions_Reason_SelfTrainingIneligible>需要持有鎖鏈的 SSC 性奴身份</SSC_Restrictions_Reason_SelfTrainingIneligible>
+  <SSC_Restrictions_EditInitiator>編輯發起者規則</SSC_Restrictions_EditInitiator>
+  <SSC_Restrictions_EditReceiver>編輯接收者規則</SSC_Restrictions_EditReceiver>
+  <SSC_Restrictions_None>未選擇</SSC_Restrictions_None>
+  <SSC_Restrictions_Error>配置檢查失敗：{0}</SSC_Restrictions_Error>
+  <SSC_Restrictions_DefaultsTitle>行為規則默認配置</SSC_Restrictions_DefaultsTitle>
+  <SSC_Restrictions_DefaultsTip>默認配置只影響之後首次適用的角色。已有角色保持各自選擇；公交車首次取得時會應用其兩項被動默認。</SSC_Restrictions_DefaultsTip>
+  <SSC_Restrictions_InvalidDefaults>默認模板數據異常，請檢查配置文件；已有角色配置保持不變。</SSC_Restrictions_InvalidDefaults>
+  <SSC_Restrictions_ApplyAll>! 應用默認配置並覆蓋全部適用角色…</SSC_Restrictions_ApplyAll>
+  <SSC_Restrictions_ApplyConfirm>這會覆蓋當前存檔內全部適用角色的個體選擇，包括其他地圖、商隊、運輸中及世界角色。按當前模板和各自特化默認重設，不把裝備強制寫入保存值。是否繼續？</SSC_Restrictions_ApplyConfirm>
+  <SSC_Restrictions_ApplyResult>默認配置應用完成：成功 {0}，跳過 {1}，失敗 {2}。</SSC_Restrictions_ApplyResult>
+  <SSC_Restrictions_GlobalState>全局狀態：限制系統 {0}；特化強制 {1}。</SSC_Restrictions_GlobalState>
+  <SSC_Restrictions_Enabled>開啟</SSC_Restrictions_Enabled>
+  <SSC_Restrictions_Disabled>關閉</SSC_Restrictions_Disabled>
+  <SSC_Restrictions_Group_Masturbation>主動行為</SSC_Restrictions_Group_Masturbation>
+  <SSC_Restrictions_Group_ReceiveConsensual>被動行為</SSC_Restrictions_Group_ReceiveConsensual>
+  <SSC_Restrictions_Group_ReceiveTraining>調教</SSC_Restrictions_Group_ReceiveTraining>
+  <SSC_Restrictions_TrainerLocked>當前僅允許實際主人調教：{0}。另選調教員會嘗試開啟調教許可；裝備或特化強制禁止時仍不可指定。</SSC_Restrictions_TrainerLocked>
+  <SSC_Restrictions_Expand>▶ 展開行為限制</SSC_Restrictions_Expand>
+  <SSC_Restrictions_Collapse>◀ 收起行為限制</SSC_Restrictions_Collapse>
+  <SSC_Restrictions_JobRejected>行為被限制規則拒絕：{0}。</SSC_Restrictions_JobRejected>
+  <SSC_Restrictions_CommandRejected>當前行為限制不允許這條命令。請在角色限制欄查看主動、被動許可及強制來源。</SSC_Restrictions_CommandRejected>
+  <SSC_Restrictions_TrainingTargetInvalid>該目標沒有有效調教數據，或當前身份不能接受調教。</SSC_Restrictions_TrainingTargetInvalid>
+  <SSC_Restrictions_BindingMasterRequired>首次綁定準備必須由指定且具主人身份的角色主持。</SSC_Restrictions_BindingMasterRequired>
+  <SSC_Restrictions_TrainingAssignmentRequired>調教任務需要有效的指定調教員；自動工作不會由其他人接替。</SSC_Restrictions_TrainingAssignmentRequired>
+  <SSC_Restrictions_RitualCancelled>當前儀式階段無法開始，儀式已取消：{0}</SSC_Restrictions_RitualCancelled>
+  <SSC_Restrictions_PawnTitle>行為限制 · {0}</SSC_Restrictions_PawnTitle>
+  <SSC_Restrictions_CompactNotice>勾表示允許；強制項已鎖定。實際主人發起始終允許。</SSC_Restrictions_CompactNotice>
+  <SSC_Restrictions_Paused>限制已停用，個人設置仍保留。</SSC_Restrictions_Paused>
+  <SSC_Restrictions_DefaultsShort>編輯模板不會自動覆蓋已有角色。</SSC_Restrictions_DefaultsShort>
+  <SSC_Restrictions_AnyTarget>不限對象</SSC_Restrictions_AnyTarget>
+  <SSC_Restrictions_EquipmentBadge>裝備{0}</SSC_Restrictions_EquipmentBadge>
+  <SSC_Restrictions_ProfileBadge>特化{0}</SSC_Restrictions_ProfileBadge>
+  <SSC_Restrictions_OverrideTip>個人設置：{0}；當前生效：{1}。\n來源：{2}。個人選擇保留，覆蓋解除後使用。</SSC_Restrictions_OverrideTip>
+  <SSC_Restrictions_TargetOwnerTip>自願發起僅限實際綁定主人。關閉主項後保留此選擇。</SSC_Restrictions_TargetOwnerTip>
+  <SSC_Restrictions_TargetAnyTip>自願發起不限對象；對方仍需允許接受。關閉主項後保留此選擇。</SSC_Restrictions_TargetAnyTip>
+  <SSC_Restrictions_Option_Masturbation>單人自慰</SSC_Restrictions_Option_Masturbation>
+  <SSC_Restrictions_Option_ConsensualInitiation>發起自願性行為</SSC_Restrictions_Option_ConsensualInitiation>
+  <SSC_Restrictions_Option_ForcedInitiation>發起強制行為</SSC_Restrictions_Option_ForcedInitiation>
+  <SSC_Restrictions_Option_ReceiveConsensual>接受非主人自願行為</SSC_Restrictions_Option_ReceiveConsensual>
+  <SSC_Restrictions_Option_ReceiveForced>接受非主人強制行為</SSC_Restrictions_Option_ReceiveForced>
+  <SSC_Restrictions_Option_ReceiveTraining>接受非主人調教</SSC_Restrictions_Option_ReceiveTraining>
+  <SSC_Restrictions_Option_SelfTraining>允許自我調教</SSC_Restrictions_Option_SelfTraining>
+  <SSC_Restrictions_Tip_Masturbation>允許主動進行單人自慰。</SSC_Restrictions_Tip_Masturbation>
+  <SSC_Restrictions_Tip_ConsensualInitiation>允許發起雙人自願性行為，對象範圍由下方選擇。對方仍需允許接受。</SSC_Restrictions_Tip_ConsensualInitiation>
+  <SSC_Restrictions_Tip_ForcedInitiation>允許主動發起強制行為；目標的接收許可仍需通過。</SSC_Restrictions_Tip_ForcedInitiation>
+  <SSC_Restrictions_Tip_ReceiveConsensual>允許接受非主人的自願性行為；對方仍需具備發起許可。</SSC_Restrictions_Tip_ReceiveConsensual>
+  <SSC_Restrictions_Tip_ReceiveForced>允許接受非主人的強制行為；裝備可強制禁止此項。</SSC_Restrictions_Tip_ReceiveForced>
+  <SSC_Restrictions_Tip_ReceiveTraining>允許非主人進行日常或儀式調教，仍需滿足調教員資格與指派要求。</SSC_Restrictions_Tip_ReceiveTraining>
+  <SSC_Restrictions_Tip_SelfTraining>允許持有鎖鏈的 SSC 性奴進行自我調教；與普通自慰許可獨立。行為還需滿足 RJW 的能力與地點條件。</SSC_Restrictions_Tip_SelfTraining>
+  <SSC_Restrictions_AssignAuthorizesSuffix>（同時允許調教）</SSC_Restrictions_AssignAuthorizesSuffix>
+  <SSC_Restrictions_AssignAuthorizesTip>選擇非主人調教員時，同步開啟接受非主人調教。普通互動仍按各自條目檢查；裝備或特化的強制禁止仍然有效。</SSC_Restrictions_AssignAuthorizesTip>
+  <SSC_Restrictions_AssignFailed>無法完成指派：資格或限制狀態已改變，或強制規則不允許調教。原指派及個人選擇保持不變。</SSC_Restrictions_AssignFailed>
+  <SSC_Restrictions_DefaultsOpen>編輯行為規則默認配置…</SSC_Restrictions_DefaultsOpen>
+  <SSC_Restrictions_ForcedLocked>此項由強制規則控制，暫不可修改；解除覆蓋後恢復個人選擇。</SSC_Restrictions_ForcedLocked>
+  <SSC_Restrictions_PanelDisabled>行為限制總開關已關閉。可在 Mod 設置中啟用。</SSC_Restrictions_PanelDisabled>
+  <SSC_Restrictions_PanelUnavailable>此角色尚未綁定主人，不受行為限制系統影響。</SSC_Restrictions_PanelUnavailable>
+  <SSC_Restrictions_ApplyAllTip>警告：將覆蓋當前存檔中全部適用角色的個人配置。點擊後需確認；僅載入存檔且模板有效時可用。</SSC_Restrictions_ApplyAllTip>
+</LanguageData>

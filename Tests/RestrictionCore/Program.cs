@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -14,7 +14,7 @@ internal static partial class Program
     /// <summary>以指定仓库目录运行阶段1规则、覆盖及序列化回归用例，汇总结果并用退出码报告失败。</summary>
     private static int Main(string[] args)
     {
-        root = Path.GetFullPath(args.Length > 0 ? args[0] : ".");
+        root = SscTestPaths.RepositoryRoot(args.Length > 0 ? args[0] : null);
         Run("Factory defaults include independent self-training", () =>
         {
             var rules = new SSCRestrictionRules();
@@ -547,9 +547,9 @@ internal static partial class Program
             foreach (var profile in DefDatabase<SSCRestrictionProfileDef>.AllDefsListForReading)
                 Equal(0, profile.ConfigErrors().Count());
             Equal(0, new SSCRestrictionEquipmentExtension { forced = ReadEquipment() }.ConfigErrors().Count());
-            foreach (string path in ProfileXmlFiles().Select(path => Path.GetRelativePath(root, path))
+            foreach (string path in ProfileXmlFiles().Select(path => SscTestPaths.ResourceRelativePath(root, path))
                 .Concat(new[] { "Defs/ThingsDefs/SexSlave_EvilFallOutfit.xml" }))
-                Equal(File.ReadAllText(Path.Combine(root, path)), File.ReadAllText(Path.Combine(root, "Sexslavecraft", path)));
+                Equal(File.ReadAllText(SscTestPaths.Combine(root, path)), File.ReadAllText(SscTestPaths.Combine(root, "Sexslavecraft", path)));
         });
         Run("Explicit editor initialization owns defaults and never replaces an existing config", () =>
         {
@@ -655,7 +655,7 @@ internal static partial class Program
             foreach (string source in new[] { "common/Restrictions/Dialog_SSCRestrictions.cs", "common/Restrictions/SSCRestrictionUI.cs",
                 "common/Settings.cs", "ITab/ITab_SexSlaveTraining.cs" })
                 foreach (System.Text.RegularExpressions.Match match in System.Text.RegularExpressions.Regex.Matches(
-                    File.ReadAllText(Path.Combine(root, "Sexslavecraft", source)), "\"(SSC_Restrictions_[A-Za-z]+)\""))
+                    File.ReadAllText(SscTestPaths.Combine(root, "Sexslavecraft", source)), "\"(SSC_Restrictions_[A-Za-z]+)\""))
                     keys.Add(match.Groups[1].Value);
             foreach (string group in new[] { "Masturbation", "ReceiveConsensual", "ReceiveTraining" })
                 keys.Add("SSC_Restrictions_Group_" + group);
@@ -672,9 +672,9 @@ internal static partial class Program
             foreach (string language in new[] { "English", "ChineseSimplified" })
             {
                 string path = Path.Combine("Languages", language, "Keyed/SSC_Restrictions.xml");
-                var translations = XDocument.Load(Path.Combine(root, path)).Root.Elements().ToDictionary(e => e.Name.LocalName, e => e.Value);
+                var translations = XDocument.Load(SscTestPaths.Combine(root, path)).Root.Elements().ToDictionary(e => e.Name.LocalName, e => e.Value);
                 foreach (string key in keys) Equal(true, translations.ContainsKey(key) && !string.IsNullOrWhiteSpace(translations[key]));
-                Equal(File.ReadAllText(Path.Combine(root, path)), File.ReadAllText(Path.Combine(root, "Sexslavecraft", path)));
+                Equal(File.ReadAllText(SscTestPaths.Combine(root, path)), File.ReadAllText(SscTestPaths.Combine(root, "Sexslavecraft", path)));
             }
         });
         RunLifecycleTests();
@@ -734,7 +734,7 @@ internal static partial class Program
     /// <summary>读取实际装备 XML 中的新系统扩展，确保测试使用随模组发布的强制条目。</summary>
     private static SSCRestrictionOverrides ReadEquipment()
     {
-        return ReadOverrides(XDocument.Load(Path.Combine(root, "Defs/ThingsDefs/SexSlave_EvilFallOutfit.xml"))
+        return ReadOverrides(XDocument.Load(SscTestPaths.Combine(root, "Defs/ThingsDefs/SexSlave_EvilFallOutfit.xml"))
             .Descendants("li").Single(e => (string)e.Attribute("Class") == "SexSlaveCraft.SSCRestrictionEquipmentExtension").Element("forced"));
     }
     /// <summary>将 XML 节点的已声明字段映射为稀疏覆盖；缺失节点返回 null，未声明字段保持 Unspecified。</summary>
@@ -749,7 +749,7 @@ internal static partial class Program
     /// <summary>枚举实际 Defs 目录中的所有特化规则文件，支持多个文件和一个文件内的多份定义。</summary>
     private static IEnumerable<string> ProfileXmlFiles()
     {
-        return Directory.EnumerateFiles(Path.Combine(root, "Defs"), "*.xml", SearchOption.AllDirectories)
+        return Directory.EnumerateFiles(SscTestPaths.Combine(root, "Defs"), "*.xml", SearchOption.AllDirectories)
             .Where(path => XDocument.Load(path).Root.Elements("SexSlaveCraft.SSCRestrictionProfileDef").Any())
             .OrderBy(path => path, StringComparer.Ordinal);
     }

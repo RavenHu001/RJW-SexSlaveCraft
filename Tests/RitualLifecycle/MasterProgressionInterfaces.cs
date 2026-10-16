@@ -70,11 +70,7 @@ namespace SexSlaveCraft
         // 测试读取本仓库 Def 的真实阈值和上限，避免在宿主再维护一套成长数值。
         private static Verse.HediffDef LoadProgressionDef()
         {
-            var directory = new DirectoryInfo(AppContext.BaseDirectory);
-            while (directory != null && !File.Exists(Path.Combine(directory.FullName, "Defs/HediffDefs/SSC_MasterProgression.xml")))
-                directory = directory.Parent;
-            if (directory == null) throw new InvalidOperationException("Master progression Def not found.");
-            XElement source = XDocument.Load(Path.Combine(directory.FullName, "Defs/HediffDefs/SSC_MasterProgression.xml")).Root.Element("HediffDef");
+            XElement source = XDocument.Load(SscTestPaths.Combine(SscTestPaths.RepositoryRoot(), "Defs/HediffDefs/SSC_MasterProgression.xml")).Root.Element("HediffDef");
             return new Verse.HediffDef
             {
                 defName = source.Element("defName").Value,

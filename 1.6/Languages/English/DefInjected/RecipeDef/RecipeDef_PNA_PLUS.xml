@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <SSC_Make_SuperDrug.label>Concentrate Aphrodisiac Nanofluid</SSC_Make_SuperDrug.label>
+  <SSC_Make_SuperDrug.description>Evaporate excess liquid from 5 units of aphrodisiac nanofluid under reduced pressure to produce 1 unit of concentrate.</SSC_Make_SuperDrug.description>
+  <SSC_Make_SuperDrug.jobString>Concentrating aphrodisiac nanofluid.</SSC_Make_SuperDrug.jobString>
+  <SSC_Make_SuperDrug_forth.label>Concentrate Aphrodisiac Nanofluid ×4</SSC_Make_SuperDrug_forth.label>
+  <SSC_Make_SuperDrug_forth.description>Evaporate excess liquid from 20 units of aphrodisiac nanofluid under reduced pressure to produce 4 units of concentrate in one batch.</SSC_Make_SuperDrug_forth.description>
+  <SSC_Make_SuperDrug_forth.jobString>Concentrating a batch of aphrodisiac nanofluid.</SSC_Make_SuperDrug_forth.jobString>
+</LanguageData>

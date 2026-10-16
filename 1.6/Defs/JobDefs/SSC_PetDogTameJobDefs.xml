@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <!-- 接近动物时不标记原版施放状态，不提前暂停或显示预热特效。
+       允许进入同格而不推开目标；普通工作不打断，玩家仍可取消训导。 -->
+  <JobDef>
+    <defName>SSC_Job_PetDogTame</defName>
+    <driverClass>SexSlaveCraft.JobDriver_PetDogTame</driverClass>
+    <reportString>正在训导 TargetA。</reportString>
+    <abilityCasting>false</abilityCasting>
+    <collideWithPawns>false</collideWithPawns>
+    <casualInterruptible>false</casualInterruptible>
+  </JobDef>
+  <!-- 己方动物训练与野生驯服共用接近和预热流程；独立任务定义固定本次施放的目标分支。 -->
+  <JobDef>
+    <defName>SSC_Job_PetDogTrain</defName>
+    <driverClass>SexSlaveCraft.JobDriver_PetDogTame</driverClass>
+    <reportString>正在训练 TargetA。</reportString>
+    <abilityCasting>false</abilityCasting>
+    <collideWithPawns>false</collideWithPawns>
+    <casualInterruptible>false</casualInterruptible>
+  </JobDef>
+</Defs>

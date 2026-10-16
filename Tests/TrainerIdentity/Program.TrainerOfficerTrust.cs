@@ -15,7 +15,7 @@ internal static partial class Program
     private static void RunTrainerOfficerTrustTests(string repo)
     {
         string relativeDef = "Defs/ThoughtDefs/SSC_TrainerOfficerThoughts.xml";
-        var xml = XDocument.Load(Path.Combine(repo, relativeDef));
+        var xml = XDocument.Load(SscTestPaths.Combine(repo, relativeDef));
 
         Run("任职信任定义与四语文案完整：条件性心情显式声明 Thought_Situational", () =>
         {
@@ -40,11 +40,11 @@ internal static partial class Program
             }
 
             // 源码目录镜像与四语文案键集一致。
-            Assert(XNode.DeepEquals(xml, XDocument.Load(Path.Combine(repo, "Sexslavecraft", relativeDef))));
+            Assert(XNode.DeepEquals(xml, XDocument.Load(SscTestPaths.Combine(repo, "Sexslavecraft", relativeDef))));
             foreach (string language in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" })
             {
                 string relativeLanguage = $"Languages/{language}/DefInjected/ThoughtDef/SSC_TrainerOfficerThoughts.xml";
-                var translated = XDocument.Load(Path.Combine(repo, relativeLanguage));
+                var translated = XDocument.Load(SscTestPaths.Combine(repo, relativeLanguage));
                 string[] keys =
                 {
                     "SSC_TrainerOfficer_DutyFulfilled.stages.0.label",
@@ -58,7 +58,7 @@ internal static partial class Program
                 };
                 Assert(translated.Root.Elements().Select(e => e.Name.LocalName).Distinct().Count() == keys.Length
                     && keys.All(key => !string.IsNullOrWhiteSpace((string)translated.Root.Element(key))));
-                Assert(XNode.DeepEquals(translated, XDocument.Load(Path.Combine(repo, "Sexslavecraft", relativeLanguage))));
+                Assert(XNode.DeepEquals(translated, XDocument.Load(SscTestPaths.Combine(repo, "Sexslavecraft", relativeLanguage))));
             }
         });
 

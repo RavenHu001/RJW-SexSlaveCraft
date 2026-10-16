@@ -23,7 +23,7 @@ internal static class Program
     /// <summary>验证四语、多种特质数量及永久资格，并检查独立滚动、数据缺失和分配交互。</summary>
     private static int Main(string[] args)
     {
-        repo = Path.GetFullPath(args.Length > 0 ? args[0] : ".");
+        repo = SscTestPaths.RepositoryRoot(args.Length > 0 ? args[0] : null);
         foreach (string language in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" })
             foreach (int count in new[] { 0, 3, 15, 30 })
                 Run($"{language} / {count} traits: fixed information stays visible", () => Layout(language, count));

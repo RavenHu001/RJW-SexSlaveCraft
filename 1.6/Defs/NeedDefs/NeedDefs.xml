@@ -1,0 +1,25 @@
+<Defs>
+  <NeedDef>
+    <defName>Corruption</defName>
+    <needClass>SexSlaveCraft.Need_Corruption</needClass>
+    <label>恶堕率</label>
+    <description>角色的堕落程度</description>
+    <baseLevel>0.00</baseLevel>
+    <fallPerDay>0.00</fallPerDay>
+    <showOnNeedList>true</showOnNeedList>
+    <listPriority>50</listPriority>
+    <major>false</major>
+    <freezeWhileSleeping>false</freezeWhileSleeping>
+    <minIntelligence>Humanlike</minIntelligence>
+    <colonistsOnly>false</colonistsOnly>
+    <showForCaravanMembers>false</showForCaravanMembers>
+  </NeedDef>
+  <NeedDef ParentName="DrugAddictionNeedBase">
+    <defName>Need_PNA</defName>
+    <needClass>Need_Chemical</needClass>
+    <label>纳米催情液渴求</label>
+    <description>依赖纳米催情液带来的刺激之后，身体会持续索要它。满足度随时间下降，见底即进入戒断；取得纳米催情液可以补回，但也让依赖更深。</description>
+    <listPriority>50</listPriority> 
+    <fallPerDay>0.333</fallPerDay> 
+  </NeedDef>
+</Defs>

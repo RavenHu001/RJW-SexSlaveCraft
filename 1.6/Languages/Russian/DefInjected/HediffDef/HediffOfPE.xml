@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <Hediff_SSC_PersonalityExcreting.label>Подготовка к экскреции личности</Hediff_SSC_PersonalityExcreting.label>
+  <Hediff_SSC_PersonalityExcreting.description>PNA, введённая через анус, начинает действовать, собирая личность (душу) цели и готовя экскрецию.</Hediff_SSC_PersonalityExcreting.description>
+  <Hediff_SSC_PersonalityExcreting.stages.0.label>Начальная инъекция</Hediff_SSC_PersonalityExcreting.stages.0.label>
+  <Hediff_SSC_PersonalityExcreting.stages.1.label>Сбор личности</Hediff_SSC_PersonalityExcreting.stages.1.label>
+  <Hediff_SSC_PersonalityExcreting.stages.2.label>Порог экскреции</Hediff_SSC_PersonalityExcreting.stages.2.label>
+  <Hediff_SSC_PersonalityExcreting.stages.3.label>Экскреция</Hediff_SSC_PersonalityExcreting.stages.3.label>
+  <Hediff_SSC_PersonalityExcreted_Done.label>Экскреция личности (завершена)</Hediff_SSC_PersonalityExcreted_Done.label>
+  <Hediff_SSC_PersonalityExcreted_Done.description>Личность опустошена при сохранении всех воспоминаний (без влияния на текущую первичную личность). PNA-созданная первичная личность теперь управляет жизнедеятельностью, а оригинальный гель личности по-прежнему разделяет ощущения с телом.</Hediff_SSC_PersonalityExcreted_Done.description>
+</LanguageData>

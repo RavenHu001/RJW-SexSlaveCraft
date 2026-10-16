@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+  <PreceptDef>
+    <defName>SSC_BindingRitualPrecept</defName>
+    <label>契约仪式</label>
+    <description>一场利用炒饭智能力量的仪式，可以提高恶堕率的获取，以及升级调教等级和锁链等级。</description>
+    
+    <issue>Ritual</issue>
+    <impact>Medium</impact>
+    <iconPath>UI/Icons/Ritual</iconPath>
+    <preceptClass>Precept_Ritual</preceptClass>
+    
+    <ritualPatternBase>SSC_BindingRitualPattern</ritualPatternBase>
+    
+    <allowDuplicates>true</allowDuplicates>
+    <countsTowardsPreceptLimit>false</countsTowardsPreceptLimit>
+    <selectionWeight>1.0</selectionWeight>
+    <displayOrderInImpact>100</displayOrderInImpact>
+    <ignoreLimitsInEditMode>false</ignoreLimitsInEditMode>
+    <canGenerateAsSpecialPrecept>false</canGenerateAsSpecialPrecept>
+    <receivesExpectationsQualityOffset>false</receivesExpectationsQualityOffset>
+    <useRepeatPenalty>true</useRepeatPenalty>
+  </PreceptDef>
+
+</Defs>

@@ -14,7 +14,7 @@ internal static partial class Program
     {
         ResetSexAwards();InfestationHealth.OnAdded=null;Hediff.OnSeverity=null;
         ThoughtMaker.OnMade=null;ThoughtUtility.OnCheck=null;MemoryThoughtHandler.OnRemoved=null;MemoryThoughtHandler.OnGained=null;
-        InfestationDefLoader.Load(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,"../../../../..")));
+        InfestationDefLoader.Load(SscTestPaths.RepositoryRoot());
     }
     private static (JobDriver_SexBaseInitiator d,Pawn master,Pawn target) FeedbackScene(bool reverse=false,bool forced=false)
     {

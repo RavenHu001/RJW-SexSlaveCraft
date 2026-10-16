@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_TrainingOpinionMemory_Resentment>Resentment after training</SSC_TrainingOpinionMemory_Resentment>
+  <SSC_TrainingOpinionMemory_Wavering>Wavering after training</SSC_TrainingOpinionMemory_Wavering>
+  <SSC_TrainingOpinionMemory_Adaptation>Adaptation after training</SSC_TrainingOpinionMemory_Adaptation>
+  <SSC_TrainingOpinionMemory_Submission>Submission after training</SSC_TrainingOpinionMemory_Submission>
+  <SSC_TrainingOpinionMemory_ResentmentDesc>This training made me resent {0}, changing my opinion by {1}.</SSC_TrainingOpinionMemory_ResentmentDesc>
+  <SSC_TrainingOpinionMemory_WaveringDesc>This training made me waver toward {0}, changing my opinion by {1}.</SSC_TrainingOpinionMemory_WaveringDesc>
+  <SSC_TrainingOpinionMemory_AdaptationDesc>This training made me grow accustomed to {0}, changing my opinion by {1}.</SSC_TrainingOpinionMemory_AdaptationDesc>
+  <SSC_TrainingOpinionMemory_SubmissionDesc>This training made me submit further to {0}, changing my opinion by {1}.</SSC_TrainingOpinionMemory_SubmissionDesc>
+</LanguageData>

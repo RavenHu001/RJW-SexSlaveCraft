@@ -242,16 +242,16 @@ internal static partial class Program
         Check((string)job.Element("driverClass") == typeof(JobDriver_PetDogTame).FullName && (string)job.Element("abilityCasting") == "false" && (string)job.Element("collideWithPawns") == "false", "owned job lost same driver/native-cooldown safeguards");
         foreach (string language in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" })
         {
-            string keyed = Path.Combine(root, "Languages", language, "Keyed"); var files = Directory.EnumerateFiles(keyed, "*.xml").Where(f => XDocument.Load(f).Descendants().Any(e => e.Name.LocalName == "SSC_PetDogTameTrainingTargetHint")).ToArray();
+            string keyed = SscTestPaths.Combine(root, "Languages", language, "Keyed"); var files = Directory.EnumerateFiles(keyed, "*.xml").Where(f => XDocument.Load(f).Descendants().Any(e => e.Name.LocalName == "SSC_PetDogTameTrainingTargetHint")).ToArray();
             var keys = files.SelectMany(f => XDocument.Load(f).Root.Elements()).ToArray();
             foreach (string suffix in new[] { "NoTrainingTarget", "TrainingTargetHint", "TrainingSuccess" })
             {
                 var value = keys.Single(e => e.Name.LocalName == "SSC_PetDogTame" + suffix).Value; Check(!string.IsNullOrWhiteSpace(value), "empty training key " + language + suffix);
                 if (suffix != "NoTrainingTarget") Check(value.Contains("{0}") && value.Contains("{1}"), "training animal/project placeholders missing " + language + suffix);
             }
-            var jobs = Directory.EnumerateFiles(Path.Combine(root, "Languages", language, "DefInjected/JobDef"), "*.xml").Where(f => XDocument.Load(f).Descendants().Any(e => e.Name.LocalName == "SSC_Job_PetDogTrain.reportString")).ToArray();
+            var jobs = Directory.EnumerateFiles(SscTestPaths.Combine(root, "Languages", language, "DefInjected/JobDef"), "*.xml").Where(f => XDocument.Load(f).Descendants().Any(e => e.Name.LocalName == "SSC_Job_PetDogTrain.reportString")).ToArray();
             Check(jobs.Length == 1 && !string.IsNullOrWhiteSpace(XDocument.Load(jobs.Single()).Descendants("SSC_Job_PetDogTrain.reportString").Single().Value), "training job report missing " + language);
-            foreach (string file in files.Concat(jobs)) Check(File.ReadAllBytes(file).SequenceEqual(File.ReadAllBytes(Path.Combine(root, "Sexslavecraft", Path.GetRelativePath(root, file)))), "training language mirror differs " + file);
+            foreach (string file in files.Concat(jobs)) Check(File.ReadAllBytes(file).SequenceEqual(File.ReadAllBytes(SscTestPaths.Combine(root, "Sexslavecraft", SscTestPaths.ResourceRelativePath(root, file)))), "training language mirror differs " + file);
         }
     }
     private static void NativeTrainingPostconditions()

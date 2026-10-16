@@ -17,7 +17,7 @@ internal static partial class Program
 
     private static int Main(string[] args)
     {
-        repoRoot = Path.GetFullPath(args.Length > 0 ? args[0] : Path.Combine(AppContext.BaseDirectory, "../../../../.."));
+        repoRoot = SscTestPaths.RepositoryRoot(args.Length > 0 ? args[0] : null);
         LoadProductionDefs();
         LoadTranslations();
 
@@ -71,7 +71,7 @@ internal static partial class Program
                          $"Languages/{language}/DefInjected/ThoughtDef/SSC_TrainerTrainingMemories.xml"
                      })
             {
-                var document = XDocument.Load(Path.Combine(repoRoot, relative.Replace('/', Path.DirectorySeparatorChar)));
+                var document = XDocument.Load(SscTestPaths.Combine(repoRoot, relative.Replace('/', Path.DirectorySeparatorChar)));
                 foreach (XElement entry in document.Root.Elements())
                 {
                     Verse.Extensions.Translations[entry.Name.LocalName] = entry.Value;

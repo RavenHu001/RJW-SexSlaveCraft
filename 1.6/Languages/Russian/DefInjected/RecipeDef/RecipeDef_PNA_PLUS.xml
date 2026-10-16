@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <SSC_Make_SuperDrug.label>Концентрировать наножидкость-афродизиак</SSC_Make_SuperDrug.label>
+  <SSC_Make_SuperDrug.description>Испарить лишнюю жидкость из 5 единиц наножидкости-афродизиака при пониженном давлении, получив 1 единицу концентрата.</SSC_Make_SuperDrug.description>
+  <SSC_Make_SuperDrug.jobString>Концентрирование наножидкости-афродизиака.</SSC_Make_SuperDrug.jobString>
+  <SSC_Make_SuperDrug_forth.label>Концентрировать наножидкость-афродизиак ×4</SSC_Make_SuperDrug_forth.label>
+  <SSC_Make_SuperDrug_forth.description>Испарить лишнюю жидкость из 20 единиц наножидкости-афродизиака при пониженном давлении, получив 4 единицы концентрата за один раз.</SSC_Make_SuperDrug_forth.description>
+  <SSC_Make_SuperDrug_forth.jobString>Концентрирование партии наножидкости-афродизиака.</SSC_Make_SuperDrug_forth.jobString>
+</LanguageData>

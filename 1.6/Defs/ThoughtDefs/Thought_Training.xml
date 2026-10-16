@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <ThoughtDef>
+    <defName>SSC_Training_Mood_Lvl1</defName>
+    <durationDays>1</durationDays>
+    <stackLimit>3</stackLimit>
+    <stages>
+      <li>
+        <label>调教余韵 (厌恶)</label>
+        <description>刚刚发生的那些事让我感到反胃，那种不适感挥之不去。</description>
+        <baseMoodEffect>-10</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+  <ThoughtDef>
+    <defName>SSC_Training_Mood_Lvl2</defName>
+    <durationDays>1</durationDays>
+    <stackLimit>3</stackLimit>
+    <stages>
+      <li>
+        <label>调教余韵 (迷茫)</label>
+        <description>虽然不想承认，但刚才的感觉似乎并没有那么糟糕...</description>
+        <baseMoodEffect>2</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+  <ThoughtDef>
+    <defName>SSC_Training_Mood_Lvl3</defName>
+    <durationDays>1</durationDays>
+    <stackLimit>3</stackLimit>
+    <stages>
+      <li>
+        <label>调教余韵 (极乐)</label>
+        <description>哦哦哦齁齁齁齁齁齁......大脑已经一片空白了......</description>
+        <baseMoodEffect>15</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+  <ThoughtDef>
+    <defName>SSC_Training_Social_Lvl1</defName>
+    <thoughtClass>Thought_MemorySocial</thoughtClass>
+    <durationDays>15</durationDays> <stackLimit>3</stackLimit>   <stages>
+      <li>
+        <label>调教记忆 (反感)</label>
+        <description>那个色狼猥亵了我，我这辈子都不会忘记。</description>
+        <baseOpinionOffset>-20</baseOpinionOffset>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+  <ThoughtDef>
+    <defName>SSC_Training_Social_Lvl2</defName>
+    <thoughtClass>Thought_MemorySocial</thoughtClass>
+    <durationDays>15</durationDays>
+    <stackLimit>10</stackLimit>
+    <stages>
+      <li>
+        <label>调教记忆 (适应)</label>
+        <description>不，不是这样的...</description>
+        <baseOpinionOffset>10</baseOpinionOffset>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+  <ThoughtDef>
+    <defName>SSC_Training_Social_Lvl3</defName>
+    <thoughtClass>Thought_MemorySocial</thoughtClass>
+    <durationDays>30</durationDays> <stackLimit>10</stackLimit>
+    <stages>
+      <li>
+        <label>调教记忆 (沉沦)</label>
+        <description>我已经完全离不开主人了......</description>
+        <baseOpinionOffset>40</baseOpinionOffset>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+  <ThoughtDef>
+    <defName>SSC_Ritual_Euphoria_1</defName>
+    <thoughtClass>Thought_MemorySocial</thoughtClass>
+    <durationDays>30</durationDays> <stackLimit>10</stackLimit>
+    <stages>
+      <li>
+        <label>被进行性奴链接仪式（羞辱）</label>
+        <description>不要......那么多人都在看着......明明觉得羞耻，身体却还是被迫记住了这种感觉......</description>
+        <baseOpinionOffset>-20</baseOpinionOffset>
+        <baseMoodEffect>-15</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+  <ThoughtDef>
+    <defName>SSC_Ritual_Euphoria_2</defName>
+    <thoughtClass>Thought_MemorySocial</thoughtClass>
+    <durationDays>30</durationDays> <stackLimit>10</stackLimit>
+    <stages>
+      <li>
+        <label>被进行性奴链接仪式（动摇）</label>
+        <description>呜......不行......明明不想这样......可身体还是在众目睽睽之下慢慢软下来了......</description>
+        <baseOpinionOffset>-5</baseOpinionOffset>
+        <baseMoodEffect>-5</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+  <ThoughtDef>
+    <defName>SSC_Ritual_Euphoria_3</defName>
+    <thoughtClass>Thought_MemorySocial</thoughtClass>
+    <durationDays>30</durationDays> <stackLimit>10</stackLimit>
+    <stages>
+      <li>
+        <label>被进行性奴链接仪式（愉悦）</label>
+        <description>啊！不行！不要看啊！哦哦哦......身体自己热起来了......停不下来......</description>
+        <baseOpinionOffset>10</baseOpinionOffset>
+        <baseMoodEffect>5</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+  <ThoughtDef>
+    <defName>SSC_Ritual_Euphoria_4</defName>
+    <thoughtClass>Thought_MemorySocial</thoughtClass>
+    <durationDays>30</durationDays> <stackLimit>10</stackLimit>
+    <stages>
+      <li>
+        <label>被进行性奴链接仪式（沉浸）</label>
+        <description>啊啊！不行！大家都在看......哦哦哦齁齁齁齁齁齁......去了......屈服于主人的肉棒了......</description>
+        <baseOpinionOffset>15</baseOpinionOffset>
+        <baseMoodEffect>8</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+</Defs>
