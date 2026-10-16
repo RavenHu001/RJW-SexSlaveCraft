@@ -33,4 +33,10 @@ namespace SexSlaveCraft
         public sealed class Plan { public void Apply(Func<bool> current) { } }
         public static Plan Capture(Pawn source,Pawn target,SSCOrdinarySexPartsSnapshot parts)=>null;
     }
+    // 反馈业务由独立专项与真实 Harmony 集成覆盖；PNA 宿主保留无心情的合法对象边界。
+    public static class SSCDesireInfestationFeedbackUtility
+    {
+        public sealed class Plan { public void Apply(Func<bool> current) { } }
+        public static Plan Capture(Pawn source,Pawn target,Need_Corruption need)=>null;
+    }
 }

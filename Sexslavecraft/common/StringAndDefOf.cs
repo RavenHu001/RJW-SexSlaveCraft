@@ -55,6 +55,9 @@ namespace SexSlaveCraft
         public static ThoughtDef SSC_Training_Mood_Lvl2;
         public static ThoughtDef SSC_Training_Mood_Lvl3;
         public static ThoughtDef SSC_Training_MoodDynamic;
+        // 普通完成的侵染独立反馈；标准四档记忆不复用调教专有实例类。
+        public static ThoughtDef SSC_DesireInfestation_Mood;
+        public static ThoughtDef SSC_DesireInfestation_Opinion;
         public static ThoughtDef SSC_SelfTraining_Completed;
         public static ThoughtDef SSC_TrainerOfficer_DutyFulfilled;
         // 反向任职信任：条件性社交好感与条件性心情，都不是记忆。
@@ -242,6 +245,9 @@ namespace SexSlaveCraft
             SSC_Training_Mood_Lvl2 = GetDef<ThoughtDef>("SSC_Training_Mood_Lvl2");
             SSC_Training_Mood_Lvl3 = GetDef<ThoughtDef>("SSC_Training_Mood_Lvl3");
             SSC_Training_MoodDynamic = GetDef<ThoughtDef>("SSC_Training_MoodDynamic");
+            // 显式解析独立侵染记忆；本类使用手动初始化，声明字段本身不会加载 Def。
+            SSC_DesireInfestation_Mood = GetDef<ThoughtDef>("SSC_DesireInfestation_Mood");
+            SSC_DesireInfestation_Opinion = GetDef<ThoughtDef>("SSC_DesireInfestation_Opinion");
             SSC_SelfTraining_Completed = GetDef<ThoughtDef>("SSC_SelfTraining_Completed");
             SSC_TrainerOfficer_DutyFulfilled = GetDef<ThoughtDef>("SSC_TrainerOfficer_DutyFulfilled");
             SSC_TrainerOfficer_TrustedByOwnerSocial = GetDef<ThoughtDef>("SSC_TrainerOfficer_TrustedByOwnerSocial");

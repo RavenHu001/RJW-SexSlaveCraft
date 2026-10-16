@@ -8,13 +8,19 @@ namespace Verse
     public class RaceProperties { public bool Humanlike=true, IsFlesh=true; public BodyDef body=new(); }
     public class InfestationNeeds
     {
+        // 旧保护用例无需心情；反馈集成用例显式建立带 owner 的真实边界容器。
+        public RimWorld.Need_Mood mood;
         public SexSlaveCraft.Need_Corruption corruption = new SexSlaveCraft.Need_Corruption();
         public T TryGetNeed<T>() where T : class => corruption as T;
     }
 }
 namespace SexSlaveCraft
 {
-    public static partial class SSCDefOf { public static ResearchProjectDef SSC_BodyPartTraining=new(); }
+    public static partial class SSCDefOf
+    {
+        public static ResearchProjectDef SSC_BodyPartTraining=new();
+        public static RimWorld.ThoughtDef SSC_DesireInfestation_Mood,SSC_DesireInfestation_Opinion;
+    }
     public class Need_Corruption
     { public float CurLevel; public float MaxLevel=>1f; public float CurLevelPercentage=>CurLevel; }
     public static class CorruptionUtility { public static void AddCorruption(Pawn pawn,float gain)=>pawn.needs.corruption.CurLevel+=gain; }

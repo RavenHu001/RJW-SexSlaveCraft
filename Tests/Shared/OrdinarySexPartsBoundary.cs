@@ -51,7 +51,12 @@ namespace Verse
     }
     public class SkillRecord { public int Level=20; }
     public class SkillTracker { public SkillRecord Social=new(); public SkillRecord GetSkill(object def)=>Social; }
-    public class RelationTracker { public int Opinion; public int OpinionOf(Pawn pawn)=>Opinion; }
+    public class RelationTracker
+    {
+        public int Opinion;
+        public Func<Pawn,int> Query;
+        public int OpinionOf(Pawn pawn)=>Query!=null?Query(pawn):Opinion;
+    }
     public class GuestTracker { public bool IsSlave; }
     public static partial class Rand
     {

@@ -53,6 +53,12 @@ namespace rjw
 }
 namespace SexSlaveCraft
 {
+    // 完整记忆业务在反馈专项及完成集成执行；本宿主聚焦原评分、部位和健康回调。
+    public static class SSCDesireInfestationFeedbackUtility
+    {
+        public sealed class Plan { public void Apply(Func<bool> current) { } }
+        public static Plan Capture(Verse.Pawn source,Verse.Pawn target,Need_Corruption need)=>null;
+    }
     public enum PawnIdentity {Unset,Master,SexSlave}
     public class CompSexSlaveTraining {public PawnIdentity pawnIdentity;}
     public class Need_Corruption {public float CurLevel;public float CurLevelPercentage=>CurLevel; public float MaxLevel=>1;}

@@ -99,6 +99,7 @@
     <Compile Include="common\SSCOrdinarySexPartsSnapshot.cs" />
     <Compile Include="common\SSCOrdinarySexPartsUtility.cs" />
     <Compile Include="common\SSCDesireInfestationBodyUtility.cs" />
+    <Compile Include="common\SSCDesireInfestationFeedbackUtility.cs" />
     <Compile Include="common\AttractionPreference_SSCPna.cs" />
     <Compile Include="common\IngestionOutcomeDoer_SSCPna.cs" />
     <Compile Include="common\ThingDef_SSCPna.cs" />

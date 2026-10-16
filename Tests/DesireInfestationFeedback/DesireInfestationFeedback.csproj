@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- 直接链接反馈、完成分发、人格凭据与人格记忆生产代码；引擎/RJW 为最小边界。 -->
+  <PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net9.0</TargetFramework></PropertyGroup>
+  <ItemGroup>
+    <Compile Include="../Shared/InfestationMemoryBoundary.cs" Link="Boundary/Memories.cs" />
+    <Compile Include="../Shared/InfestationDefLoader.cs" Link="Boundary/Definitions.cs" />
+    <Compile Include="../../Sexslavecraft/common/SSCDesireInfestationFeedbackUtility.cs" Link="Production/Feedback.cs" />
+    <Compile Include="../../Sexslavecraft/common/SSCOrdinarySexOutcomeUtility.cs" Link="Production/Outcome.cs" />
+    <Compile Include="../../Sexslavecraft/common/SSCDesireInfestationUtility.cs" Link="Production/Infestation.cs" />
+    <Compile Include="../../Sexslavecraft/common/SSCPersonalityRuntimeUtility.cs" Link="Production/Personality.cs" />
+    <Compile Include="../../Sexslavecraft/common/SSCPnaMath.cs" Link="Production/PnaMath.cs" />
+    <Compile Include="../../Sexslavecraft/common/PersonalityMemoryUtility.cs" Link="Production/MemoryPersistence.cs" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_DesireInfestation_Mood.stages.0.label>侵染后的亲近余韵</SSC_DesireInfestation_Mood.stages.0.label>
+  <SSC_DesireInfestation_Mood.stages.0.description>那股侵染留下了温热的余韵。我并不讨厌带来这种感觉的人。</SSC_DesireInfestation_Mood.stages.0.description>
+  <SSC_DesireInfestation_Mood.stages.1.label>抗拒侵染的余韵</SSC_DesireInfestation_Mood.stages.1.label>
+  <SSC_DesireInfestation_Mood.stages.1.description>侵染留下的感觉让我不自在。我不喜欢那个人，也不想接受这种影响。</SSC_DesireInfestation_Mood.stages.1.description>
+  <SSC_DesireInfestation_Mood.stages.2.label>沉浸于侵染余韵</SSC_DesireInfestation_Mood.stages.2.label>
+  <SSC_DesireInfestation_Mood.stages.2.description>我已经熟悉这股侵染带来的愉悦。想到带来这份余韵的人，我仍感到满足。</SSC_DesireInfestation_Mood.stages.2.description>
+  <SSC_DesireInfestation_Mood.stages.3.label>享受侵染却仍反感</SSC_DesireInfestation_Mood.stages.3.label>
+  <SSC_DesireInfestation_Mood.stages.3.description>身体享受着侵染留下的愉悦，但我依然不喜欢那个人。这是两回事。</SSC_DesireInfestation_Mood.stages.3.description>
+  <SSC_DesireInfestation_Opinion.stages.0.label>侵染带来的亲近</SSC_DesireInfestation_Opinion.stages.0.label>
+  <SSC_DesireInfestation_Opinion.stages.0.description>这次亲密接触中的侵染，让我更愿意亲近对方。</SSC_DesireInfestation_Opinion.stages.0.description>
+  <SSC_DesireInfestation_Opinion.stages.1.label>反感对方的侵染</SSC_DesireInfestation_Opinion.stages.1.label>
+  <SSC_DesireInfestation_Opinion.stages.1.description>对方留下的侵染让我不快，我更不愿意接近了。</SSC_DesireInfestation_Opinion.stages.1.description>
+  <SSC_DesireInfestation_Opinion.stages.2.label>眷恋对方的侵染</SSC_DesireInfestation_Opinion.stages.2.label>
+  <SSC_DesireInfestation_Opinion.stages.2.description>这次侵染的余韵让我更眷恋对方。</SSC_DesireInfestation_Opinion.stages.2.description>
+  <SSC_DesireInfestation_Opinion.stages.3.label>愉悦没有改变反感</SSC_DesireInfestation_Opinion.stages.3.label>
+  <SSC_DesireInfestation_Opinion.stages.3.description>身体的愉悦并不代表我更喜欢对方。此档不产生好感记忆。</SSC_DesireInfestation_Opinion.stages.3.description>
+</LanguageData>

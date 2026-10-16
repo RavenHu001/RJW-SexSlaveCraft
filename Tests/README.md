@@ -2,11 +2,13 @@
 
 [文档总索引](../Docs/README.md) · [发布与打包](../Docs/Maintenance/发布与打包.md) · [开发记录](../Docs/Development/README.md)
 
-当前仓库以 **2.4.0.5 开发里程碑**为基线，`Scripts/Test-All.ps1` 登记 **31 套**。PNA 基础新增 `PnaLoad`，第五步新增 `ForcedSexProps`；该里程碑最近 PNA 专项为 **288/288**，该修正未重复全量；当时的版本登记只检查文档及标记，不运行代码测试。原始记录与完整验证边界见[2.4.0.5 版本验证](../Docs/Releases/2.4.0.5/2.4.0.5版本验证.md)。历史正式 2.4.0 为 28 套，2.3.9 为 25 套；当次结果见[2.4.0 版本验证](../Docs/Releases/2.4.0/2.4.0版本验证.md)，不回写历史计数。
+当前仓库以 **2.4.0.5 开发里程碑**为基线，`Scripts/Test-All.ps1` 登记 **32 套**。PNA 基础新增 `PnaLoad`，第五步新增 `ForcedSexProps`；该里程碑最近 PNA 专项为 **288/288**，该修正未重复全量；当时的版本登记只检查文档及标记，不运行代码测试。原始记录与完整验证边界见[2.4.0.5 版本验证](../Docs/Releases/2.4.0.5/2.4.0.5版本验证.md)。历史正式 2.4.0 为 28 套，2.3.9 为 25 套；当次结果见[2.4.0 版本验证](../Docs/Releases/2.4.0/2.4.0版本验证.md)，不回写历史计数。
 
 当前另有 2.4.0.5 基线后的未发布[欲望侵染第一批](../Docs/Development/Completed/欲望侵染第一批通用开关框架实现与测试.md)：通用状态框架与首个能力已获维护者实机确认，实际性交收益在当时未接通。本批最终统一回归 **30/30 套、2176/2176 项通过**，PnaLoad 为 **297/297**；在该记录独立登记，不覆盖上面的历史 PNA 288/288。
 
 第三批新增 [TrainingExperience](TrainingExperience/README.md) 生产源码专项，并扩展真实 Harmony 完成／存档集成；维护者已确认本批符合预期，结果及验收边界见[第三批记录](../Docs/Development/Completed/欲望侵染第三批真实部位与弱开发实现与测试.md)。
+
+第四批新增 [DesireInfestationFeedback](DesireInfestationFeedback/README.md)，链接反馈、完成分发与人格记忆生产代码，并扩展真实 Harmony 完成集成；维护者已确认本批符合预期，实际结果与验收范围见[第四批记录](../Docs/Development/Completed/欲望侵染第四批独立反馈实现与测试.md)。
 
 ## 统一入口
 

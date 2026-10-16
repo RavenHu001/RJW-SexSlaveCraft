@@ -6,8 +6,8 @@
 		<li>1.6</li>
 	</supportedVersions>
 	<packageId>rjw.sexslavecraft.TieJinVer</packageId>
-    <description>开发测试版：欲望侵染第三批加入普通 RJW 真实部位凭据保存、20% 总预算弱开发及精确部位写入，保留研究门槛和既有 PNA／恶堕规则。前三批均已获维护者实机确认；原版 Lovin 无部位开发，独立侵染记忆留第四批。
-Development test build: desire infestation batch 3 adds saved evidence of actual RJW parts, a shared 20% development budget and precise part writes. Research gates and existing PNA/corruption rules are retained. Batches 1–3 were verified in game by the maintainer. Native Lovin has no part development; independent infestation memories remain batch 4.
+    <description>开发测试版：欲望侵染第四批加入按当前恶堕与对实际主人好感分档的独立心情／社交记忆，跨档替换并刷新期限，同一主人不无限叠加。四批均已获维护者实机确认。保留 PNA、恶堕、研究和 20% 真实部位开发规则；原版 Lovin 有反馈、无部位开发。
+Development test build: desire infestation batch 4 adds independent mood/opinion memories based on current corruption and opinion of the actual source. New reactions replace and refresh old ones with bounded capacity. Batches 1–4 were verified in game by the maintainer. Existing PNA, corruption, research and 20% actual-part development rules remain. Native Lovin gains feedback without part development.
 
 SexSlaveCraft 2.4.0 (TieJin Modify)
 欲望之种与主人成长：新增个人主人资格、一次性免费领取任务及任务／遗迹稀有来源。默认允许直接手动选择主人；关闭该设置后须先取得资格。欲望之种赋予永久资格，不自动改变身份；有 Royalty 时同时补齐“调教”的研究蓝图，研究仍需正常完成，原版蓝图保留为独立研究来源。

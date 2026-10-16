@@ -32,6 +32,7 @@ $suites = @(
     @{ Name = 'RitualLifecycle'; Arguments = @() },
     @{ Name = 'ForcedSexProps'; Arguments = @() },
     @{ Name = 'TrainingExperience'; Arguments = @() },
+    @{ Name = 'DesireInfestationFeedback'; Arguments = @($repoRoot) },
     @{ Name = 'RitualSelection'; Arguments = @($repoRoot) },
     @{ Name = 'PersonalityTraits'; Arguments = @() },
     @{ Name = 'PersonalityInsertion'; Arguments = @() },

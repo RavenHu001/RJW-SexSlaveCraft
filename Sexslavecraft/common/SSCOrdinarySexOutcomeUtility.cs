@@ -75,6 +75,7 @@ namespace SexSlaveCraft
             private readonly bool infestation, producer;
             private readonly Need_Corruption need;
             private readonly SSCDesireInfestationBodyUtility.Plan bodyPlan;
+            private readonly SSCDesireInfestationFeedbackUtility.Plan feedbackPlan;
             private readonly Func<bool> partsCurrent;
             public Direction(Pawn source, Pawn target, bool allowProducer, SSCOrdinarySexPartsSnapshot parts, Func<bool> partsCurrent)
             {
@@ -82,6 +83,8 @@ namespace SexSlaveCraft
                 infestation = SSCDesireInfestationUtility.CanAffect(source, target);
                 producer = allowProducer && SSCPnaSourceUtility.IsPnaProducer(source);
                 need = target?.needs?.TryGetNeed<Need_Corruption>();
+                // 反馈先冻结当前 C/O；后续评分查询、RJW 新记忆及本场侵染增量不重判本档。
+                if (infestation) feedbackPlan = SSCDesireInfestationFeedbackUtility.Capture(source, target, need);
                 this.partsCurrent = partsCurrent;
                 // 与 PNA/C 同一原结算前边界冻结评分、倍率和候选；无可靠部位只留下空开发计划。
                 if (infestation && partsCurrent?.Invoke() == true)
@@ -101,6 +104,8 @@ namespace SexSlaveCraft
                     // 恶堕达到上限仍可开发；每条身体写入复查人格、需求和原部位凭据。
                     if (StrongCurrent() && bodyPlan != null)
                         bodyPlan.Apply(() => StrongCurrent() && partsCurrent?.Invoke() == true);
+                    // 无研究、无可靠部位或开发已满均不取消反馈；原版 Lovin 也走同一独立分量。
+                    if (StrongCurrent() && feedbackPlan != null) feedbackPlan.Apply(StrongCurrent);
                 }
                 else if (producer && SSCPnaSourceUtility.IsPnaProducer(source))
                     SSCPnaSexSupplyUtility.ApplyFromProducer(source, target,

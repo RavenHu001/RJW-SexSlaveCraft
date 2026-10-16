@@ -56,6 +56,7 @@ internal static partial class Program
         RunPnaSupplyDispatchTests();
         RunInfestationCompletionTests();
         RunInfestationBodyTests();
+        RunInfestationFeedbackTests();
         RunJobRefactorTests();
         RunPersonalityExcretionProtectionTests();
         RunPetAffectionEventTests();

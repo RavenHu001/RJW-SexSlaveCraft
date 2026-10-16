@@ -6,6 +6,8 @@ This continuation builds on upstream **2.2.8**, the baseline when upstream devel
 
 ## [未发布 / Unreleased]
 
+- **欲望侵染第四批 / Desire infestation, batch 4:** 原结算前冻结当前恶堕与对实际主人的好感，新增四档独立心情／社交记忆；跨档替换、零偏移清旧记录，心情一天一份，社交三天每主人一份、最多三人，末段自然衰减。复用原完成认领与人格记忆格式，补齐代码块注释、四语和回归；维护者确认“实机测试都符合预期”，批准更新验收文档并提交，未发布。见[实现与测试](Docs/Development/Completed/欲望侵染第四批独立反馈实现与测试.md)。Adds snapshot-based independent mood/opinion feedback with guarded replacement, native expiry and personality persistence; the maintainer confirmed expected in-game behavior and approved the commit.
+
 - **欲望侵染第三批 / Desire infestation, batch 3:** 普通 RJW 开始时保存实际部位凭据，完成前冻结评分与倍率，按去重后实际部位均分 20% 总预算；精确写入遵守研究和原开发上限，已满份额不转移。保留原日常／仪式分配与第二批分量，旧档缺凭据及原版 Lovin 跳过身体开发。补齐代码块注释与四语悬停，维护者确认“经测试都符合预期”并批准提交，未发布；见[实现与测试](Docs/Development/Completed/欲望侵染第三批真实部位与弱开发实现与测试.md)。Adds saved actual-part evidence, a shared development budget and guarded precise writes; the maintainer confirmed expected in-game behavior and approved the commit.
 
 - **欲望侵染第二批 / Desire infestation, batch 2:** 普通 RJW／Lovin 完成接入，原结算前人格快照和统一认领；每方向 PNA 来源择强，侵染负荷 +8%、已有需求补满、已有成瘾基础 +0.02／末期合计 +0.22，恶堕额外 +1 个百分点并遵守原阶段上限。既有来源偏好可识别有效侵染者，双来源不叠乘。维护者确认实机测试未发现问题并批准提交，部位开发和侵染记忆留后续；见[本批记录](Docs/Development/Completed/欲望侵染第二批普通完成与来源择强实现与测试.md)。Connects guarded ordinary completion, strongest-source PNA supply, corruption and source attraction; the maintainer reported no issues in game and approved this batch.

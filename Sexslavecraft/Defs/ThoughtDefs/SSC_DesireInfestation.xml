@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <!-- AI 辅助生成：独立侵染反馈；阶段仅由原结算前 C/O 决定，跨档唯一由发放工具保证。 -->
+  <ThoughtDef>
+    <defName>SSC_DesireInfestation_Mood</defName>
+    <thoughtClass>Thought_Memory</thoughtClass>
+    <durationDays>1</durationDays>
+    <stackLimit>1</stackLimit>
+    <stackLimitForSameOtherPawn>1</stackLimitForSameOtherPawn>
+    <stagesStack>false</stagesStack>
+    <stages>
+      <li>
+        <label>侵染后的亲近余韵</label>
+        <description>那股侵染留下了温热的余韵。我并不讨厌带来这种感觉的人。</description>
+        <baseMoodEffect>4</baseMoodEffect>
+      </li>
+      <li>
+        <label>抗拒侵染的余韵</label>
+        <description>侵染留下的感觉让我不自在。我不喜欢那个人，也不想接受这种影响。</description>
+        <baseMoodEffect>-4</baseMoodEffect>
+      </li>
+      <li>
+        <label>沉浸于侵染余韵</label>
+        <description>我已经熟悉这股侵染带来的愉悦。想到带来这份余韵的人，我仍感到满足。</description>
+        <baseMoodEffect>8</baseMoodEffect>
+      </li>
+      <li>
+        <label>享受侵染却仍反感</label>
+        <description>身体享受着侵染留下的愉悦，但我依然不喜欢那个人。这是两回事。</description>
+        <baseMoodEffect>4</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+  <ThoughtDef>
+    <defName>SSC_DesireInfestation_Opinion</defName>
+    <thoughtClass>Thought_MemorySocial</thoughtClass>
+    <durationDays>3</durationDays>
+    <stackLimit>3</stackLimit>
+    <stackLimitForSameOtherPawn>1</stackLimitForSameOtherPawn>
+    <stagesStack>false</stagesStack>
+    <!-- 沿用原版：三天期限的最后 30% 好感逐渐衰减。 -->
+    <lerpOpinionToZeroAfterDurationPct>0.7</lerpOpinionToZeroAfterDurationPct>
+    <stages>
+      <li>
+        <label>侵染带来的亲近</label>
+        <description>这次亲密接触中的侵染，让我更愿意亲近对方。</description>
+        <baseOpinionOffset>5</baseOpinionOffset>
+      </li>
+      <li>
+        <label>反感对方的侵染</label>
+        <description>对方留下的侵染让我不快，我更不愿意接近了。</description>
+        <baseOpinionOffset>-5</baseOpinionOffset>
+      </li>
+      <li>
+        <label>眷恋对方的侵染</label>
+        <description>这次侵染的余韵让我更眷恋对方。</description>
+        <baseOpinionOffset>10</baseOpinionOffset>
+      </li>
+      <li>
+        <label>愉悦没有改变反感</label>
+        <description>身体的愉悦并不代表我更喜欢对方。此档不产生好感记忆。</description>
+        <baseOpinionOffset>0</baseOpinionOffset>
+      </li>
+    </stages>
+  </ThoughtDef>
+</Defs>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_DesireInfestation_Mood.stages.0.label>warmth after desire infestation</SSC_DesireInfestation_Mood.stages.0.label>
+  <SSC_DesireInfestation_Mood.stages.0.description>The infestation left a warm afterglow. I do not dislike the person who brought me that feeling.</SSC_DesireInfestation_Mood.stages.0.description>
+  <SSC_DesireInfestation_Mood.stages.1.label>resisting the infestation afterglow</SSC_DesireInfestation_Mood.stages.1.label>
+  <SSC_DesireInfestation_Mood.stages.1.description>The lingering infestation makes me uneasy. I dislike that person and do not welcome this influence.</SSC_DesireInfestation_Mood.stages.1.description>
+  <SSC_DesireInfestation_Mood.stages.2.label>immersed in the infestation afterglow</SSC_DesireInfestation_Mood.stages.2.label>
+  <SSC_DesireInfestation_Mood.stages.2.description>I know the pleasure this infestation brings. Thinking of the person behind this afterglow still leaves me content.</SSC_DesireInfestation_Mood.stages.2.description>
+  <SSC_DesireInfestation_Mood.stages.3.label>pleased by infestation, still resentful</SSC_DesireInfestation_Mood.stages.3.label>
+  <SSC_DesireInfestation_Mood.stages.3.description>My body enjoys the lingering pleasure, but I still dislike that person. Those feelings can coexist.</SSC_DesireInfestation_Mood.stages.3.description>
+  <SSC_DesireInfestation_Opinion.stages.0.label>closeness after infestation</SSC_DesireInfestation_Opinion.stages.0.label>
+  <SSC_DesireInfestation_Opinion.stages.0.description>The infestation during our intimacy made me feel closer to this person.</SSC_DesireInfestation_Opinion.stages.0.description>
+  <SSC_DesireInfestation_Opinion.stages.1.label>resented their infestation</SSC_DesireInfestation_Opinion.stages.1.label>
+  <SSC_DesireInfestation_Opinion.stages.1.description>Their lingering infestation upset me and made me want more distance.</SSC_DesireInfestation_Opinion.stages.1.description>
+  <SSC_DesireInfestation_Opinion.stages.2.label>fond of their infestation</SSC_DesireInfestation_Opinion.stages.2.label>
+  <SSC_DesireInfestation_Opinion.stages.2.description>The afterglow of this infestation made me feel more fond of this person.</SSC_DesireInfestation_Opinion.stages.2.description>
+  <SSC_DesireInfestation_Opinion.stages.3.label>pleasure without affection</SSC_DesireInfestation_Opinion.stages.3.label>
+  <SSC_DesireInfestation_Opinion.stages.3.description>Physical pleasure does not mean greater affection. This stage creates no opinion memory.</SSC_DesireInfestation_Opinion.stages.3.description>
+</LanguageData>
