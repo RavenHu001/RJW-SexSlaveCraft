@@ -20,9 +20,9 @@
 pwsh -File Scripts/Test-All.ps1 -HarmonyAssemblyPath 'C:\Dependencies\Harmony\net9.0\0Harmony.dll'
 ```
 
-统一入口先执行只读 Def 镜像检查：遍历 `Sexslavecraft/Defs` 中现有文件，要求根目录 `Defs` 的对应源存在、文件 SHA-256 一致且 XML 可解析。根目录独有文件不要求新增镜像；目录缺失或镜像集合为空也会失败。任一失败会阻止机制套件执行及后续打包，报告中的套件标为 `NotRun`，不会自动同步文件。
+统一入口先分别执行只读 Def 和 Languages 镜像检查。Def 检查遍历 `Sexslavecraft/Defs` 中现有文件，要求根目录对应源存在、SHA-256 一致且 XML 可解析；根目录独有文件不要求新增镜像，目录缺失或镜像集合为空也会失败。Languages 检查要求根目录与 `Sexslavecraft/Languages` 的完整文件集合和哈希一致，拒绝缺失、差异、镜像独有文件、缺目录及空源集合。两个检查始终分别执行和记录；任一失败会将机制套件标为 `NotRun` 并阻止打包，不自动同步文件。
 
-可单独执行 `pwsh -File Scripts/Test-DefMirrors.ps1`；`-RepositoryRoot` 支持检查其他工作区，`-PassThru` 返回通过后的结构化结果。统一报告位于 `.builds/validation/`，新增独立的 `DefMirrors.log` 和 `summary.json` 中的 `Checks`、`CheckCount`、`PassedChecks`、`FailedChecks`，镜像检查不计入机制套件或用例数。测试桩与自动回归不能替代游戏内流程、动画及真实存档往返验收。
+可单独执行 `pwsh -File Scripts/Test-DefMirrors.ps1` 或 `pwsh -File Scripts/Sync-LanguagesMirror.ps1`。两者均支持 `-RepositoryRoot` 与 `-PassThru`；语言同步仍须显式加 `-Sync`。统一报告位于 `.builds/validation/`，分别生成 `DefMirrors.log`、`LanguagesMirrors.log`，并在 `summary.json` 的 `Checks` 中按 `DefMirrors`／`LanguagesMirrors` 登记状态、文件数、原因和日志路径，合计字段为 `CheckCount`、`PassedChecks`、`FailedChecks`。镜像检查不计入机制套件或用例数。测试桩与自动回归不能替代游戏内流程、动画及真实存档往返验收。
 
 ## 主人资格与成长（2.4.0）
 

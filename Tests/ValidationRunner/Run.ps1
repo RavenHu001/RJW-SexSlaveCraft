@@ -77,7 +77,7 @@ try {
     $fixtureVersion = [Diagnostics.FileVersionInfo]::GetVersionInfo((Join-Path $fixture 'Assemblies/Sexslavecraft.dll')).ProductVersion
     if ($fixtureVersion -notmatch '^\d+\.\d+\.\d+$') { throw 'Fixture requires a DLL with three-part release product metadata.' }
     [IO.File]::WriteAllText((Join-Path $fixture 'VERSION'), $fixtureVersion, [Text.UTF8Encoding]::new($false))
-    # New-Release checks localization and its mirror before invoking validation. Supply those real prerequisites in the fixture.
+    # 发布前检查限制翻译，统一入口再检查完整语言镜像；夹具提供真实的四语前置文件。
     foreach ($language in @('English', 'ChineseSimplified', 'ChineseTraditional', 'Russian')) {
         $relative = "Languages/$language/Keyed/SSC_Restrictions.xml"
         foreach ($prefix in @('', 'Sexslavecraft/')) {
@@ -86,6 +86,15 @@ try {
             Copy-Item -LiteralPath (Join-Path $repo ($prefix + $relative)) -Destination $destination
         }
     }
+    # 语言镜像要求完整对应，另加含中文文件名的词条用于差异、缺失与手动同步场景。
+    $languageRelative = 'Languages/ChineseSimplified/Keyed/夹具词条.xml'
+    $languageSource = Join-Path $fixture $languageRelative
+    $languageMirror = Join-Path $fixture ('Sexslavecraft/' + $languageRelative)
+    $languageText = '<LanguageData><Fixture>夹具</Fixture></LanguageData>'
+    foreach ($path in @($languageSource, $languageMirror)) {
+        [IO.File]::WriteAllText($path, $languageText, [Text.UTF8Encoding]::new($false))
+    }
+    $languageFileCount = 5
     # Use each real project name, but no production code or game runtime in this fixture.
     foreach ($project in Get-ChildItem -LiteralPath (Join-Path $repo 'Tests') -Recurse -Filter '*.csproj') {
         $relative = [IO.Path]::GetRelativePath($repo, $project.FullName)
@@ -132,7 +141,8 @@ exit 0
     try {
         $run = Run-Case 'success' 'pass' $HarmonyAssemblyPath
         Assert ($run.Code -eq 0 -and $run.Report.PassedSuites -eq $suiteCount -and $run.Report.TotalCases -eq $suiteCount) 'All suites execute; counts come from actual summaries (not hard-coded 390).'
-        Assert ($run.Report.CheckCount -eq 1 -and $run.Report.PassedChecks -eq 1 -and $run.Report.Checks[0].Name -eq 'DefMirrors' -and $run.Report.Checks[0].CheckedFiles -eq 1) 'Def mirrors have a separate successful report; mechanism counts stay unchanged.'
+        Assert ($run.Report.CheckCount -eq 2 -and $run.Report.PassedChecks -eq 2 -and $run.Report.Checks[0].Name -eq 'DefMirrors' -and $run.Report.Checks[0].CheckedFiles -eq 1) 'Def mirrors have a separate successful report; mechanism counts stay unchanged.'
+        Assert ($run.Report.Checks[1].Name -eq 'LanguagesMirrors' -and $run.Report.Checks[1].Status -eq 'Passed' -and $run.Report.Checks[1].CheckedFiles -eq $languageFileCount) 'Languages mirrors have their own successful report and file count.'
 
         # 故意未建镜像的根目录文件可以存在，检查只能读取已有镜像集合。
         $rootOnly = Join-Path $fixture 'Defs/RootOnly.xml'
@@ -182,6 +192,61 @@ exit 0
         Assert ($run.Code -ne 0 -and $run.Report.FailedChecks -eq 1 -and $run.Report.NotRunSuites -eq $suiteCount -and $run.Report.Checks[0].Reason -match 'Test-DefMirrors.ps1') 'A missing checker is recorded as a failed check, not skipped.'
         Copy-Item -LiteralPath (Join-Path $repo 'Scripts/Test-DefMirrors.ps1') -Destination $defScript
 
+        # 所有语言失败场景都经过真实的检查脚本和统一报告；资源错误不得触发自动同步。
+        $staleLanguageText = $languageText + '<!-- stale -->'
+        [IO.File]::WriteAllText($languageMirror, $staleLanguageText, [Text.UTF8Encoding]::new($false))
+        $staleLanguageHash = (Get-FileHash -LiteralPath $languageMirror).Hash
+        $languageSourceHash = (Get-FileHash -LiteralPath $languageSource).Hash
+        $run = Run-Case 'languages-different' 'pass' $HarmonyAssemblyPath
+        $languageCheck = @($run.Report.Checks | Where-Object Name -eq 'LanguagesMirrors')[0]
+        Assert ($run.Code -ne 0 -and $run.Report.FailedChecks -eq 1 -and $run.Report.Checks[0].Status -eq 'Passed' -and $run.Report.NotRunSuites -eq $suiteCount -and $languageCheck.Reason -match 'Language content differs: Languages/ChineseSimplified/Keyed/夹具词条.xml') 'A stale Languages mirror fails independently with a relative path and no mechanism execution.'
+        Assert ((Get-FileHash -LiteralPath $languageMirror).Hash -eq $staleLanguageHash -and (Get-FileHash -LiteralPath $languageSource).Hash -eq $languageSourceHash) 'Unified Languages validation leaves both source and mirror unchanged.'
+        $run = Run-Case 'languages-blocked-package' 'pass' $HarmonyAssemblyPath $true
+        Assert ($run.Code -ne 0 -and $run.Report.CheckCount -eq 2 -and $run.Report.FailedChecks -eq 1 -and $run.Report.Checks[1].Name -eq 'LanguagesMirrors' -and -not (Test-Path -LiteralPath $run.OutputDir)) 'A stale Languages mirror is recorded by unified validation and blocks ZIP creation.'
+
+        [IO.File]::WriteAllText($defMirror, $defText.Replace('Fixture', 'Stale'), [Text.UTF8Encoding]::new($false))
+        $run = Run-Case 'both-mirrors-different' 'pass' $HarmonyAssemblyPath
+        Assert ($run.Code -ne 0 -and $run.Report.CheckCount -eq 2 -and $run.Report.FailedChecks -eq 2 -and $run.Report.NotRunSuites -eq $suiteCount -and @($run.Report.Checks | Where-Object Status -eq 'Failed').Count -eq 2) 'Both mirror failures are reported; the first failure cannot hide the second check.'
+        Copy-Item -LiteralPath $defSource -Destination $defMirror
+        Copy-Item -LiteralPath $languageSource -Destination $languageMirror
+
+        Remove-Item -LiteralPath $languageMirror
+        $run = Run-Case 'languages-missing-mirror' 'pass' $HarmonyAssemblyPath
+        Assert ($run.Code -ne 0 -and $run.Report.FailedChecks -eq 1 -and $run.Report.Checks[1].Reason -match 'Language mirror is missing: Sexslavecraft/Languages/ChineseSimplified/Keyed/夹具词条.xml' -and -not (Test-Path -LiteralPath $languageMirror)) 'A missing Languages counterpart fails and is not silently recreated.'
+        Copy-Item -LiteralPath $languageSource -Destination $languageMirror
+
+        $extraLanguage = Join-Path $fixture 'Sexslavecraft/Languages/Orphan.xml'
+        [IO.File]::WriteAllText($extraLanguage, $languageText, [Text.UTF8Encoding]::new($false))
+        $run = Run-Case 'languages-extra-mirror' 'pass' $HarmonyAssemblyPath
+        Assert ($run.Code -ne 0 -and $run.Report.FailedChecks -eq 1 -and $run.Report.Checks[1].Reason -match 'absent from root Languages: Sexslavecraft/Languages/Orphan.xml') 'An extra Languages mirror with no root source fails.'
+        [IO.File]::WriteAllText($languageMirror, $staleLanguageText, [Text.UTF8Encoding]::new($false))
+        $extraRejected = $false
+        try { & (Join-Path $fixture 'Scripts/Sync-LanguagesMirror.ps1') -RepositoryRoot $fixture -Sync }
+        catch { $extraRejected = $_.Exception.Message -match 'absent from root Languages' }
+        Assert ($extraRejected -and (Test-Path -LiteralPath $extraLanguage) -and (Get-FileHash -LiteralPath $languageMirror).Hash -eq $staleLanguageHash) 'Manual synchronization refuses orphan files before copying or deleting anything.'
+        Remove-Item -LiteralPath $extraLanguage
+        $missingLanguage = Join-Path $fixture 'Sexslavecraft/Languages/Russian/Keyed/SSC_Restrictions.xml'
+        Remove-Item -LiteralPath $missingLanguage
+        $synchronized = & (Join-Path $fixture 'Scripts/Sync-LanguagesMirror.ps1') -RepositoryRoot $fixture -Sync -PassThru
+        Assert ($synchronized.Success -and $synchronized.CheckedFiles -eq $languageFileCount -and $synchronized.CopiedFiles -eq 2 -and (Test-Path -LiteralPath $missingLanguage) -and (Get-FileHash -LiteralPath $languageMirror).Hash -eq $languageSourceHash) 'Explicit manual synchronization still repairs missing and stale files.'
+
+        $missingLanguageDirectoryRejected = $false
+        try { & (Join-Path $fixture 'Scripts/Sync-LanguagesMirror.ps1') -RepositoryRoot (Join-Path $fixture 'missing language directories') }
+        catch { $missingLanguageDirectoryRejected = $_.Exception.Message -match 'Both Languages and Sexslavecraft/Languages must exist' }
+        Assert $missingLanguageDirectoryRejected 'Missing Languages directories cannot silently pass.'
+        $emptyLanguageRoot = Join-Path $fixture 'empty languages repository'
+        foreach ($dir in @('Languages', 'Sexslavecraft/Languages')) { [IO.Directory]::CreateDirectory((Join-Path $emptyLanguageRoot $dir)) | Out-Null }
+        $emptyLanguagesRejected = $false
+        try { & (Join-Path $fixture 'Scripts/Sync-LanguagesMirror.ps1') -RepositoryRoot $emptyLanguageRoot }
+        catch { $emptyLanguagesRejected = $_.Exception.Message -match 'Root Languages collection is empty' }
+        Assert $emptyLanguagesRejected 'An empty Languages source collection cannot silently pass.'
+
+        $languageScript = Join-Path $fixture 'Scripts/Sync-LanguagesMirror.ps1'
+        Remove-Item -LiteralPath $languageScript
+        $run = Run-Case 'languages-missing-checker' 'pass' $HarmonyAssemblyPath
+        Assert ($run.Code -ne 0 -and $run.Report.FailedChecks -eq 1 -and $run.Report.Checks[0].Status -eq 'Passed' -and $run.Report.NotRunSuites -eq $suiteCount -and $run.Report.Checks[1].Reason -match 'Sync-LanguagesMirror.ps1') 'A missing Languages checker is recorded independently and blocks validation.'
+        Copy-Item -LiteralPath (Join-Path $repo 'Scripts/Sync-LanguagesMirror.ps1') -Destination $languageScript
+
         $run = Run-Case 'missing-harmony' 'pass' ''
         Assert ($run.Code -ne 0 -and $run.Report.PassedSuites -eq ($suiteCount - $harmonySuiteCount) -and $run.Report.NotRunSuites -eq $harmonySuiteCount) 'Missing Harmony is NotRun and fails the overall check.'
         $run = Run-Case 'wrong-harmony' 'pass' $FrameworkHarmonyAssemblyPath
@@ -209,7 +274,8 @@ exit 0
             $reader = [IO.StreamReader]::new($entry.Open())
             try { $manifest = $reader.ReadToEnd() | ConvertFrom-Json } finally { $reader.Dispose() }
             Assert ($manifest.validation.suiteCount -eq $suiteCount -and $manifest.validation.passedCases -eq $suiteCount) 'Package manifest includes completed validation counts.'
-            Assert ($manifest.validation.checks.Count -eq 1 -and $manifest.validation.checks[0].Name -eq 'DefMirrors' -and $manifest.validation.checks[0].Status -eq 'Passed' -and $manifest.validation.checks[0].CheckedFiles -eq 1) 'Package manifest records the successful Def mirror gate separately.'
+            Assert ($manifest.validation.checks.Count -eq 2 -and $manifest.validation.checks[0].Name -eq 'DefMirrors' -and $manifest.validation.checks[0].Status -eq 'Passed' -and $manifest.validation.checks[0].CheckedFiles -eq 1) 'Package manifest records the successful Def mirror gate separately.'
+            Assert ($manifest.validation.checks[1].Name -eq 'LanguagesMirrors' -and $manifest.validation.checks[1].Status -eq 'Passed' -and $manifest.validation.checks[1].CheckedFiles -eq $languageFileCount) 'Package manifest records the successful Languages mirror gate separately.'
             Assert (@($zip.Entries | Where-Object { $_.FullName -like '*0Harmony.dll' -or $_.FullName -like '*/Tests/*' }).Count -eq 0) 'Test dependencies and test sources are not packaged.'
         }
         finally { $zip.Dispose() }

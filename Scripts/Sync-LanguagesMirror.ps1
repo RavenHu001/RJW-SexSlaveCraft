@@ -7,12 +7,16 @@
 避免自动删除仍需人工确认的资源。
 #>
 [CmdletBinding()]
-param([switch]$Sync)
+param(
+    [switch]$Sync,
+    [string]$RepositoryRoot = (Join-Path $PSScriptRoot '..'),
+    [switch]$PassThru
+)
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
-$repoRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
+$repoRoot = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($RepositoryRoot)
 $sourceRoot = Join-Path $repoRoot 'Languages'
 $mirrorRoot = Join-Path $repoRoot 'Sexslavecraft/Languages'
 if (-not (Test-Path -LiteralPath $sourceRoot -PathType Container) -or
@@ -20,8 +24,9 @@ if (-not (Test-Path -LiteralPath $sourceRoot -PathType Container) -or
     throw 'Both Languages and Sexslavecraft/Languages must exist.'
 }
 
-$sourceFiles = @(Get-ChildItem -LiteralPath $sourceRoot -Recurse -File)
+$sourceFiles = @(Get-ChildItem -LiteralPath $sourceRoot -Recurse -File | Sort-Object FullName)
 $mirrorFiles = @(Get-ChildItem -LiteralPath $mirrorRoot -Recurse -File)
+if ($sourceFiles.Count -eq 0) { throw "Root Languages collection is empty: $sourceRoot" }
 $sourceRelative = [Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
 foreach ($file in $sourceFiles) {
     [void]$sourceRelative.Add([IO.Path]::GetRelativePath($sourceRoot, $file.FullName))
@@ -30,19 +35,28 @@ $extra = @($mirrorFiles | Where-Object {
     -not $sourceRelative.Contains([IO.Path]::GetRelativePath($mirrorRoot, $_.FullName))
 })
 if ($extra.Count -gt 0) {
-    throw "Mirror contains $($extra.Count) file(s) absent from root Languages: $($extra[0].FullName)"
+    $relativeExtra = [IO.Path]::GetRelativePath($mirrorRoot, $extra[0].FullName).Replace('\', '/')
+    throw "Language mirror contains $($extra.Count) file(s) absent from root Languages: Sexslavecraft/Languages/$relativeExtra"
 }
 
 $missing = 0
 $different = 0
 $copied = 0
+$problems = [Collections.Generic.List[string]]::new()
 foreach ($file in $sourceFiles) {
     $relative = [IO.Path]::GetRelativePath($sourceRoot, $file.FullName)
+    $displayRelative = $relative.Replace('\', '/')
     $target = Join-Path $mirrorRoot $relative
     $exists = Test-Path -LiteralPath $target -PathType Leaf
-    if (-not $exists) { $missing++ }
+    if (-not $exists) {
+        $missing++
+        $problems.Add("Language mirror is missing: Sexslavecraft/Languages/$displayRelative")
+    }
     elseif ((Get-FileHash -LiteralPath $file.FullName -Algorithm SHA256).Hash -ne
-            (Get-FileHash -LiteralPath $target -Algorithm SHA256).Hash) { $different++ }
+            (Get-FileHash -LiteralPath $target -Algorithm SHA256).Hash) {
+        $different++
+        $problems.Add("Language content differs: Languages/$displayRelative <> Sexslavecraft/Languages/$displayRelative")
+    }
     else { continue }
 
     if ($Sync) {
@@ -64,5 +78,11 @@ if ($Sync) {
     }
 } else {
     Write-Host "Languages mirror: $($sourceFiles.Count) source files, $missing missing, $different different, $($extra.Count) extra."
-    if ($missing -gt 0 -or $different -gt 0) { throw 'Languages mirror is out of date. Run Scripts/Sync-LanguagesMirror.ps1 -Sync.' }
+    if ($missing -gt 0 -or $different -gt 0) {
+        throw ("Languages mirror is out of date:`n" + ($problems -join "`n") + "`nRun Scripts/Sync-LanguagesMirror.ps1 -Sync after reviewing root sources.")
+    }
+}
+# 统一入口只使用默认只读模式；手动 -Sync 完成后的结果也可供维护脚本读取。
+if ($PassThru) {
+    [pscustomobject][ordered]@{ Name = 'LanguagesMirrors'; Success = $true; CheckedFiles = $sourceFiles.Count; CopiedFiles = $copied }
 }
