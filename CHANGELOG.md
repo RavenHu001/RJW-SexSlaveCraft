@@ -6,19 +6,25 @@ This continuation builds on upstream **2.2.8**, the baseline when upstream devel
 
 ## [未发布 / Unreleased]
 
-- **欢愉恩赐 / Bestow Bliss:** 主人欲望侵染采用新能力名、施予者健康标记及四档心情名称，补齐四语和镜像，更新当前指南；维护者确认本批实机显示符合预期并批准提交。心情／好感描述作为纯废案暂留，四个心情名称冒号后缀也待重写，固定前缀保留，见[交接](Docs/Design/欢愉恩赐反馈描述替换交接.md)。机制与内部标识保持。Updates the ability name, tooltip, source marker and mood labels in four languages; the maintainer confirmed expected in-game display and approved the commit. The four mood-name suffixes and eight feedback descriptions remain pending replacement.
+截至 `6b8094f` 的全部已实现开发已归入下方 **2.4.1（未发布）**；未来构想继续在规划台账维护。 / Implemented development through `6b8094f` is assigned to unreleased 2.4.1; future designs remain in the backlog.
 
-- **侵染文档收口 / Infestation documentation closeout:** 新增[首版完成核对](Docs/Development/Completed/主人欲望侵染完成核对.md)，补齐中英文操作与机制说明，统一当前规划和索引；输入条件扩展归未来第 22 项，RimTalk 归第 9 项，主动补给／绑定主人吸引沿用第 25／26 项。同步验收后的说明文件，代码、资源和已测 DLL 保持。Adds the completion audit and bilingual player instructions, reconciles current status and existing future items, and synchronizes accepted documentation without changing gameplay.
+## [2.4.1] — 未发布 / Unreleased — PNA 重置、欢愉恩赐与绑定维护
 
-- **欲望侵染第四批 / Desire infestation, batch 4:** 原结算前冻结当前恶堕与对实际主人的好感，新增四档独立心情／社交记忆；跨档替换、零偏移清旧记录，心情一天一份，社交三天每主人一份、最多三人，末段自然衰减。复用原完成认领与人格记忆格式，补齐代码块注释、四语和回归；维护者确认“实机测试都符合预期”，批准更新验收文档并提交，未发布。见[实现与测试](Docs/Development/Completed/欲望侵染第四批独立反馈实现与测试.md)。Adds snapshot-based independent mood/opinion feedback with guarded replacement, native expiry and personality persistence; the maintainer confirmed expected in-game behavior and approved the commit.
+2026-10-16 本批验收：主人直接选择默认关闭、种子用途／使用／设置生成提示和最终换行已获维护者实机确认，连同版本归并提交；沿用已执行的 303 项相关回归，本次收尾不重跑机制测试。The maintainer accepted the default-setting and Seed of Desire instructions/layout changes in game; see the [acceptance record](Docs/Development/Completed/主人资格默认关闭与欲望之种说明验收.md). This is not a public release.
 
-- **欲望侵染第三批 / Desire infestation, batch 3:** 普通 RJW 开始时保存实际部位凭据，完成前冻结评分与倍率，按去重后实际部位均分 20% 总预算；精确写入遵守研究和原开发上限，已满份额不转移。保留原日常／仪式分配与第二批分量，旧档缺凭据及原版 Lovin 跳过身体开发。补齐代码块注释与四语悬停，维护者确认“经测试都符合预期”并批准提交，未发布；见[实现与测试](Docs/Development/Completed/欲望侵染第三批真实部位与弱开发实现与测试.md)。Adds saved actual-part evidence, a shared development budget and guarded precise writes; the maintainer confirmed expected in-game behavior and approved the commit.
+2026-10-16 版本归并：原 **2.4.0.5 仅为开发版本**，其全部内容与后续开发统一纳入 2.4.1，不单独正式发布。本次更新文档与 `VERSION`；尚未重编版本元数据、打包或创建远端 Release，最近实际下载仍为 2.4.0。 / Consolidates the former 2.4.0.5 development milestone and subsequent work. This registration updates documentation and VERSION only; no 2.4.1 public package exists. See [release scope](Docs/Releases/2.4.1/2.4.1发布说明.md) and [validation boundaries](Docs/Releases/2.4.1/2.4.1版本验证.md).
 
-- **欲望侵染第二批 / Desire infestation, batch 2:** 普通 RJW／Lovin 完成接入，原结算前人格快照和统一认领；每方向 PNA 来源择强，侵染负荷 +8%、已有需求补满、已有成瘾基础 +0.02／末期合计 +0.22，恶堕额外 +1 个百分点并遵守原阶段上限。既有来源偏好可识别有效侵染者，双来源不叠乘。维护者确认实机测试未发现问题并批准提交，部位开发和侵染记忆留后续；见[本批记录](Docs/Development/Completed/欲望侵染第二批普通完成与来源择强实现与测试.md)。Connects guarded ordinary completion, strongest-source PNA supply, corruption and source attraction; the maintainer reported no issues in game and approved this batch.
+- **主人资格入口 / Master qualification:** “允许直接选择主人”默认关闭，新设置和缺字段配置要求资格，已有明确保存值保留。欲望之种以括号补充用途、右键使用及 SSC 设置手动生成入口，补齐四语与镜像。Direct Master selection now defaults to off; seed descriptions include practical use and manual-spawn guidance.
+- **PNA 重置与补全 / PNA redesign:** 五档普通负荷与性奴活化、原版十天恢复、主人免疫、身体归属、普通产出者完成补给、来源吸引、低阶枪械及信息栏／研究／成瘾修正、四语文案均纳入。Includes staged effects, body-only persistence, producer supply, source attraction and weapon/research/info-card fixes; see [PNA audit](Docs/Development/Completed/PNA重置与玩法补全完成核对.md).
+- **欢愉恩赐 / Bestow Bliss:** 通用个人开关、人格／克隆保护、普通 RJW／Lovin 完成、来源择强、PNA／恶堕、实际部位弱开发和四档独立反馈已完成四批并获分批实机确认。Includes all four accepted gameplay batches; see [completion audit](Docs/Development/Completed/主人欲望侵染完成核对.md).
+- **四语文案 / Localization:** 能力名、说明、施予者标记、四个心情后缀及八段描述已落地，旧“等待替换稿”不再是当前待办。任务文案更新四语并保留 SSC 标题前缀。Applied ability/feedback wording and localized quest updates; later text commits retain their own verification scope.
+- **主从关系与 CE / Bonds and Character Editor:** 奖励关系按实际锁链归属，解绑、换主、加载及 CE 直接删链时清理；空缰绳／共振场即时清除，其他绑定保留，完整仪式和好感门槛保持。Maintains actual bond ownership and immediate cleanup without granting missing reward relations; see [accepted fixes](Docs/Development/Completed/主从社交关系绑定一致性修复与验收.md).
+- **镜像与统一门禁 / Mirror gates:** 修复两份宠物 Def 镜像；Def／Languages 各自记录日志及 JSON，任一失败阻止统一检查通过和打包，默认只读。Repairs resource mirrors and adds independent read-only validation and packaging gates.
+- **验证与后续 / Verification and follow-up:** RJW 实际选择和双向评价列[专项待验收](Docs/Development/Verification/欢愉恩赐PNA来源偏好专项核验.md)；放宽恶堕需求门槛及区分来源偏好倍率暂缓，归未来第 22 项，不改变当前机制。Actual selection remains a targeted verification item; eligibility and source-strength changes are deferred.
 
-- **欲望侵染第一批 / Desire infestation, batch 1:** 新增随人格保存的通用个人能力开关框架，首项为主人欲望侵染；接入主／奴分组面板、主人标记、人格凝胶与克隆保护。自动结果和实机步骤见[第一批记录](Docs/Development/Completed/欲望侵染第一批通用开关框架实现与测试.md)。关键代码块注释已补齐，维护者实机测试未发现问题并批准提交；实际性交侵染收益及来源偏好扩展尚未接通，未发布。Adds shared personality-owned toggles, Master UI and marker, gel transfer and clone safeguards. The maintainer reported no issues in game and approved this batch; gameplay infestation effects remain future work.
+### 开发历史：2.4.0.5 — 2026-10-15 / Former development milestone
 
-## [2.4.0.5] — 2026-10-15 — PNA 重置与玩法补全 / PNA redesign and gameplay additions
+以下保留 2026-10-15 当时的开发登记及分批边界；现已统一归入 2.4.1，不作为独立正式版本。下文“当前／未实现”按原日期阅读，现行范围以上方 2.4.1 汇总为准。 / Historical development notes; all content is now part of 2.4.1. Statements about pending features refer to that date.
 
 **开发里程碑，尚未打包或对外发布。** 归并正式 2.4.0 之后截至 `2ec5cb6` 的开发；P1～P3、玩法五步、四项后续修正、文案与心情标签均获分批实机确认。最新代码修正 `ea448b0`，最新标签与验收 `2ec5cb6`。本次只改 `VERSION` 和文档，保留 DLL／About 旧元数据与全部历史发布产物，未生成新安装包。当前范围见[版本说明](Docs/Releases/2.4.0.5/2.4.0.5版本说明.md)，测试批次及四段版本打包边界见[版本验证](Docs/Releases/2.4.0.5/2.4.0.5版本验证.md)。
 

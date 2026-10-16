@@ -2,11 +2,7 @@
 
 [Project home](README.md) · [Player reading order](Docs/Players/README.md#english-reading-order) · [中文快速入门](读我，玩法介绍.md) · [Complete guide](PLAYER_GUIDE_EN.md)
 
-> Applies to **RimWorld 1.6 · SSC 2.4.0.5 development milestone** (2026-10-15), including the accepted PNA redesign and gameplay additions. No 2.4.0.5 package has been published; the latest existing 2.4.0 download does not contain these changes. This branch also includes accepted [Bestow Bliss](#desire-infestation). This guide covers controls and progression; use the [Complete Player Guide](PLAYER_GUIDE_EN.md) for exact conditions and values.
->
-> New players: read [Getting Started](#2-getting-started), [Corruption and the Bond](#4-corruption-and-the-bond), then [Binding Ritual](#5-binding-ritual). Upgrading? Start with the [2.4.0.5 milestone notes](Docs/Releases/2.4.0.5/2.4.0.5版本说明.md#english); Master qualification and progression retain their [2.4.0 introduction record](Docs/Releases/2.4.0/2.4.0发布说明.md#english).
->
-> [Download 2.4.0](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.0). Earlier version numbers within sections identify feature introductions; historical changes are indexed in [Releases](Docs/Releases/README.md).
+> Applies to **RimWorld 1.6 · SSC 2.4.1 (unreleased)** (2026-10-16). The former 2.4.0.5 development milestone and all subsequent work are consolidated into 2.4.1, including the PNA redesign, Bestow Bliss and bond/localization maintenance. No 2.4.1 package has been published; the latest existing download remains 2.4.0. This guide covers controls and progression; use the [Complete Player Guide](PLAYER_GUIDE_EN.md) for exact conditions and values.
 
 ## 1. What the Mod Does
 
@@ -36,7 +32,9 @@ On an eligible load, if the save has never successfully created its initial ques
 
 Have a pawn who is not an SSC Sex Slave and has not acquired permanent qualification use the seed. Success consumes one and permanently unlocks Master selection for that personality; **it does not change the current identity**. With Royalty, it also supplies missing techprints for `Training`, which still requires normal research. Without Royalty it grants personal qualification only. The separate vanilla research techprint remains usable, but does not grant personal Master qualification.
 
-Direct Master selection is enabled by default. It permits selection without permanent qualification, but supplies neither permanent qualification nor research techprints. Disable it to require a seed first. The pawn's Training tab and personality gel card both show **“Master qualification: acquired / not acquired”**, with tooltips explaining the distinction. Qualification transfers with personality gel; clones do not inherit it. Existing bond restrictions still apply to identity changes.
+Direct Master selection is disabled by default. When enabled, it permits selection without permanent qualification, but supplies neither permanent qualification nor research techprints. Use a seed first, or explicitly enable direct selection to bypass the qualification requirement. The pawn's Training tab and personality gel card both show **“Master qualification: acquired / not acquired”**, with tooltips explaining the distinction. Qualification transfers with personality gel; clones do not inherit it. Existing bond restrictions still apply to identity changes.
+
+The item description includes practical instructions in parentheses: select an unqualified pawn who is not an SSC Sex Slave, right-click the seed, choose "Use Seed of Desire", then select Master in the Training tab. If additional seeds are difficult to obtain, load a map and click "Debug: spawn Seed of Desire" in SSC mod settings; the pawn debug Gizmo switch is not required. New or missing settings default to direct selection off; explicitly saved choices are preserved.
 
 Settings offer two testing/recovery buttons: spawn one seed, or trigger the initial free quest. Spawning places an item directly; the quest button creates a claim quest and cannot duplicate another unfinished claim quest.
 
@@ -222,7 +220,7 @@ It is used for:
 - Personality Excretion;
 - Full Gelatinization Surgery.
 
-Current 2.4.0.5 development rules: normal/PNA Plus ingestion uses one unit, adding 20/70 load points without nutrition. Ordinary bodies have five escalating stages, with collapse from 97%. Positive input reaching full load first creates addiction; vanilla recovery takes about ten days without new input, and withdrawal mood is -18.
+Current 2.4.1 development rules: normal/PNA Plus ingestion uses one unit, adding 20/70 load points without nutrition. Ordinary bodies have five escalating stages, with collapse from 97%. Positive input reaching full load first creates addiction; vanilla recovery takes about ten days without new input, and withdrawal mood is -18.
 
 Effective-Chain pawns instead receive five positive activation/mood stages without ordinary addiction. Masters are immune to drug effects. Binding/unbinding preserves load; PNA states remain with the body. Completing an ordinary RJW paired act with a normal producer adds +2% load, +10% to an existing need and base +0.01 existing addiction (+0.21 at terminal load). SSC training, rituals, personality excretion, solo acts and vanilla Lovin are excluded. See the [full PNA rules](PLAYER_GUIDE_EN.md#11-pna-items-and-basic-pna-launcher).
 
@@ -522,7 +520,7 @@ The current decay-multiplier direction does not match the item descriptions. Min
 
 For a first game, keep defaults and review:
 
-- `Allow direct Master selection` (on by default; disable it to require personal qualification for new choices);
+- `Allow direct Master selection` (off by default; enable it to bypass personal qualification for new choices);
 - `Enable behavior restrictions`;
 - `Enable specialization overrides`;
 - Default behavior rules (separate window; batch overwrite requires confirmation);
@@ -564,7 +562,7 @@ The following entries exist as research, defs, or placeholder code but do not cu
 
 Also note:
 
-- Version 2.4.0.5 gates the launcher behind `Basic PNA Launcher`, retaining its research prerequisites; this was confirmed working in game;
+- Version 2.4.1 gates the launcher behind `Basic PNA Launcher`, retaining its research prerequisites; this was confirmed working in game;
 - Sex Reassignment Surgery is not gated by its SSC research;
 - Final Cow Specialization does not automatically grant Full Gelatinization Complete;
 - Public Use trade and daily Training rewards now share saved specialization progress;
@@ -580,7 +578,7 @@ The automatic quest is created on an eligible load only when Training is unfinis
 
 ### Why can an unqualified pawn still select Master?
 
-`Allow direct Master selection` is on by default. It permits the current identity choice without granting permanent qualification or research techprints. A Seed of Desire grants personal qualification. Disabling direct selection restricts new choices and preserves existing identities.
+`Allow direct Master selection` is off by default. When enabled, it permits the current identity choice without granting permanent qualification or research techprints. A Seed of Desire grants personal qualification. Disabling direct selection restricts new choices and preserves existing identities.
 
 ### Where are Master growth and damage sharing?
 

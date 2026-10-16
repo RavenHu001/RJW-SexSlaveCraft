@@ -288,10 +288,10 @@ namespace SexSlaveCraft
             string status = isSlave ? (comp.IsEnabled ? Strings.ITab_StatusReady : Strings.ITab_StatusDisabled) : null;
 
             // 永久资格来自人格保存字段；当前 Master 身份、绑定及手动选择设置都不能替代它。
-            // 只在本次绘制共享文案和测量，不迁移或写回角色数据。
+            // 只在本次绘制共享文案和测量，不迁移或写回角色数据；缺设置时按默认关闭展示。
             string masterQualificationLabel = SSCMasterQualificationDisplay.GetLabel(comp.masterQualificationUnlocked);
             string masterQualificationTooltip = SSCMasterQualificationDisplay.GetPawnTooltip(
-                SSCMod.settings?.allowDirectMasterSelection ?? true);
+                SSCMod.settings?.allowDirectMasterSelection ?? false);
 
             // 绘制节框会使用 Small 字体；测量时使用相同字体并恢复原设置。
             // 复选框右侧占 24 像素，标签须扣掉这段宽度再测量，以免文本被勾选框遮挡。

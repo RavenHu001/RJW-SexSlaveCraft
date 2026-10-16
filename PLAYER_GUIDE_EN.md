@@ -2,11 +2,7 @@
 
 [Project home](README.md) · [Player reading order](Docs/Players/README.md#english-reading-order) · [Quick start](QUICK_START_EN.md) · [中文机制详解](机制详解.md)
 
-> Applies to **RimWorld 1.6 · SSC 2.4.0.5 development milestone** (2026-10-15), including the accepted PNA redesign and gameplay additions. No 2.4.0.5 package has been published; the latest existing 2.4.0 download does not contain these changes. Use this reference for full conditions, formulas and values; first-time players should begin with the [quick start](QUICK_START_EN.md).
->
-> For problems, start with [Troubleshooting](#24-troubleshooting) and [pending verification](Docs/Development/Verification/README.md), then read the relevant system. Version changes are in the [2.4.0.5 milestone notes](Docs/Releases/2.4.0.5/2.4.0.5版本说明.md#english).
->
-> This guide follows current C# and XML behavior. The base audit began on 2026-06-30; current development is consolidated as 2.4.0.5 (2026-10-15). PNA step five `286ff72`, subsequent code `ea448b0`, localized wording `54f51db` and latest mood-label acceptance `2ec5cb6` retain their separate records. Earlier section versions identify feature introductions; see the [version index](Docs/Releases/README.md) for scope.
+> Applies to **RimWorld 1.6 · SSC 2.4.1 (unreleased)** (2026-10-16). The former 2.4.0.5 development milestone and all subsequent work are consolidated into 2.4.1, including the PNA redesign, Bestow Bliss and bond/localization maintenance. No 2.4.1 package has been published; the latest existing download remains 2.4.0. Use this reference for full conditions, formulas and values; first-time players should begin with the [quick start](QUICK_START_EN.md).
 
 ## 1. Scope and Dependencies
 
@@ -104,7 +100,9 @@ The pawn's identity section always shows `Master qualification: acquired / not a
 
 **Research.** With Royalty, `Training` requires one vanilla techprint. The seed supplies only the missing techprint count, adding neither research progress nor Intellectual experience and never completing research directly. The separate vanilla Training techprint remains an independent research source, grants no personal qualification and retains its vanilla effects. Without Royalty there is no added techprint gate, while the seed still grants personal qualification. Vanilla loading compatibility supplies newly required techprints for old projects that are complete or have any research progress; projects at zero progress retain the gate. Existing progress is not reset.
 
-**Manual selection.** Direct Master selection is enabled by default and bypasses only the personal qualification requirement. Turning it off prevents unqualified pawns from newly selecting Master, without removing an existing identity or qualification. It supplies no research techprints. Pawns holding a Chain and Masters with valid bound targets remain subject to existing identity locks.
+New settings and missing configuration fields default to off. Explicitly saved on/off choices and existing Master identities are preserved.
+
+**Manual selection.** Direct Master selection is disabled by default; enabling it bypasses only the personal qualification requirement. Turning it off prevents unqualified pawns from newly selecting Master, without removing an existing identity or qualification. It supplies no research techprints. Pawns holding a Chain and Masters with valid bound targets remain subject to existing identity locks.
 
 **Personality transfer.** Extraction, saving, copying or processing gel and implantation preserve the record. Implantation replaces the host's previous qualification with the source personality's value, including replacing acquired with not acquired. Extracting a personality clears its qualification from the empty original body. Clones are independent personalities and do not inherit source qualification. On first upgrade, old Masters and old Master gels receive qualification once. Later loads do not infer qualification from Master identity, so new unqualified clones remain unqualified.
 
@@ -774,7 +772,7 @@ The ability and grant component exist, but the current Mouth Hediff XML does not
 
 ### 11.1 Ingestion
 
-This section describes the accepted PNA redesign in the 2.4.0.5 development milestone, which has not been packaged for release. Load L is raw severity divided by 2, ranging from 0 to 100%. The former +0.3/+1.0 infection doses, 25%/50% random addiction chances and linear daily clearance no longer describe this branch.
+This section describes the accepted PNA redesign in the 2.4.1 development milestone, which has not been packaged for release. Load L is raw severity divided by 2, ranging from 0 to 100%. The former +0.3/+1.0 infection doses, 25%/50% random addiction chances and linear daily clearance no longer describe this branch.
 
 | Source | Load added | Existing legal PNA need refill | Base increase to existing addiction |
 | --- | ---: | ---: | ---: |
@@ -832,7 +830,7 @@ The enabled low-tier launcher:
 
 - costs 60 steel, 3 industrial components, and 10 normal PNA;
 - crafting skill 4;
-- version 2.4.0.5 requires SSC’s `Basic PNA Launcher` research, retaining `Basic PNA Applications` and vanilla Precision Rifling as its prerequisites; this was confirmed working in game;
+- version 2.4.1 requires SSC’s `Basic PNA Launcher` research, retaining `Basic PNA Applications` and vanilla Precision Rifling as its prerequisites; this was confirmed working in game;
 - range 22.9;
 - warmup 0.5 seconds;
 - cooldown 3 seconds;
@@ -1464,7 +1462,7 @@ The operation currently does not reference `Sex Reassignment Surgery (Male to Fe
 
 | Setting | Default | Effect |
 |---|---:|---|
-| Allow direct Master selection | On | Bypass personal qualification for new Master choices; grants no permanent qualification and does not bypass research |
+| Allow direct Master selection | Off | Bypass personal qualification for new Master choices; grants no permanent qualification and does not bypass research |
 | Enable behavior restrictions | On | Controls unified restrictions and overrides; off retains configurations |
 | Enable specialization overrides | On | Controls profile overrides only; equipment remains active |
 | Default behavior rules | See section 18.6 | Used for initialization; explicit batch overwrite requires confirmation |
@@ -1605,7 +1603,7 @@ This section records the audited code behavior and known limitations.
 2. **Binding Ritual genital compatibility is fixed at the worst bracket.** The ritual calls a size-difference method that currently returns `0`, producing `-20%`. Ordinary Training size scoring works separately.
 3. **Erotic Word has no normal acquisition path.** The ability and grant component exist, but the Mouth Hediff XML does not attach the component.
 4. **Several research nodes are technology-tree placeholders.** `Femboy Conversion` still lacks a complete matching system. Basic PNA Application is a prerequisite for later PNA research, and the launcher recipe now uses SSC launcher research. Version 2.3.7 implements ordinary Cat/Dog training, pet exclusivity, gel finalization, final active abilities and visible affection; the adult consensual follow-up is implemented and awaits in-game acceptance. Rabbit selection remains disabled. `Combatant` supports ordinary training, experience, gel finalization, and the final Combat Overdrive ability. `Personality Editing` acts as the parent node for specialization research.
-5. **Basic PNA Launcher uses SSC research.** In 2.4.0.5, its recipe references Basic PNA Launcher research, retaining Basic PNA Application and vanilla Precision Rifling prerequisites.
+5. **Basic PNA Launcher uses SSC research.** In 2.4.1, its recipe references Basic PNA Launcher research, retaining Basic PNA Application and vanilla Precision Rifling prerequisites.
 6. **Sex Reassignment Surgery is not research-locked.** Its operation exists without a `researchPrerequisite`. The duplicate definition for its surgery memory was fixed in 2.2.13; the current independent memory definition is not a remaining duplicate-load issue.
 7. **Personality trait transfer and the gel UI have been fixed.** The maintainer has confirmed this round of fixes is effective. Ordinary personality traits are now restored from the gel snapshot while preserving the receiving body's genes and their traits. Legacy entries are restored as personality traits because their source was not recorded; new gels save only traits without a gene source. The Sex Slave trait is still rebuilt separately from restored highest-ever Corruption. See the [fix record (Chinese)](Docs/Development/Completed/人格普通特质迁移修复.md) for details.
 8. **Public Use progress now uses the saved component.** Version 2.3.6 routes daily base Training progress through the shared component entry; trade rewards also update component progress and synchronize the ordinary Hediff. Final recipes continue to check saved progress.

@@ -2,9 +2,9 @@
 
 [文档总索引](../Docs/README.md) · [发布与打包](../Docs/Maintenance/发布与打包.md) · [开发记录](../Docs/Development/README.md)
 
-当前仓库以 **2.4.0.5 开发里程碑**为基线，`Scripts/Test-All.ps1` 登记 **33 套**。PNA 基础新增 `PnaLoad`，第五步新增 `ForcedSexProps`；该里程碑最近 PNA 专项为 **288/288**，该修正未重复全量；当时的版本登记只检查文档及标记，不运行代码测试。原始记录与完整验证边界见[2.4.0.5 版本验证](../Docs/Releases/2.4.0.5/2.4.0.5版本验证.md)。历史正式 2.4.0 为 28 套，2.3.9 为 25 套；当次结果见[2.4.0 版本验证](../Docs/Releases/2.4.0/2.4.0版本验证.md)，不回写历史计数。
+当前版本归属为 **2.4.1（未发布）**，原 2.4.0.5 开发里程碑及后续开发统一纳入。`Scripts/Test-All.ps1` 登记 **33 套**，另有 Def／Languages 独立资源门禁；最近完整检查为 33/33 套、2516/2516 项及两项资源检查通过，发布编排夹具 35/35。已有结果与本轮仅做文档检查的边界见[2.4.1 版本验证](../Docs/Releases/2.4.1/2.4.1版本验证.md)。历史 2.4.0 的 28 套及 2.3.9 的 25 套保留原计数，不回写。
 
-当前另有 2.4.0.5 基线后的未发布[欲望侵染第一批](../Docs/Development/Completed/欲望侵染第一批通用开关框架实现与测试.md)：通用状态框架与首个能力已获维护者实机确认，实际性交收益在当时未接通。本批最终统一回归 **30/30 套、2176/2176 项通过**，PnaLoad 为 **297/297**；在该记录独立登记，不覆盖上面的历史 PNA 288/288。
+以下保留现已归入 2.4.1 的原 2.4.0.5 基线后分批记录：[欲望侵染第一批](../Docs/Development/Completed/欲望侵染第一批通用开关框架实现与测试.md)：通用状态框架与首个能力已获维护者实机确认，实际性交收益在当时未接通。本批最终统一回归 **30/30 套、2176/2176 项通过**，PnaLoad 为 **297/297**；在该记录独立登记，不覆盖原 PNA 里程碑的 288/288。
 
 第三批新增 [TrainingExperience](TrainingExperience/README.md) 生产源码专项，并扩展真实 Harmony 完成／存档集成；维护者已确认本批符合预期，结果及验收边界见[第三批记录](../Docs/Development/Completed/欲望侵染第三批真实部位与弱开发实现与测试.md)。
 
@@ -40,7 +40,7 @@ pwsh -File Scripts/Test-All.ps1 -HarmonyAssemblyPath 'C:\Dependencies\Harmony\ne
 
 ## 身份、训导官与自我调教
 
-- [PnaLoad](PnaLoad/README.md)：2.4.0.5 的 PNA 负荷、成瘾、来源、信息栏与旧档回归；P3 直接执行 SSC 新生／成熟复制及身体归属过滤，详见[P3 测试记录](../Docs/Development/Verification/PNA机制重置P3实现与测试.md)。
+- [PnaLoad](PnaLoad/README.md)：2.4.1 的 PNA 负荷、成瘾、来源、信息栏与旧档回归；P3 直接执行 SSC 新生／成熟复制及身体归属过滤，详见[P3 测试记录](../Docs/Development/Verification/PNA机制重置P3实现与测试.md)。
 
 - [TrainerIdentity](TrainerIdentity/README.md)：调教员身份回归。
 - [TrainerIntegration](TrainerIntegration/README.md)：训导官人格恢复集成回归。
@@ -86,3 +86,7 @@ pwsh -File Scripts/Test-All.ps1 -HarmonyAssemblyPath 'C:\Dependencies\Harmony\ne
 - [ValidationRunner](ValidationRunner/README.md)：验证统一脚本的状态汇总、依赖预检与打包阻断；独立流程检查，不计入机制回归套件数。
 
 第二批新增普通完成快照与侵染来源专项，真实生产上下文、PNA 输入和任务适配器分别执行；当前结果与游戏边界见[第二批实现记录](../Docs/Development/Completed/欲望侵染第二批普通完成与来源择强实现与测试.md)。历史计数保留各次实际运行范围。
+
+## 恩赐与 PNA 实际选择专项
+
+PNA 输入与来源偏好已经接通；实际 RJW 候选选择及双向评价仍需按[专项清单](../Docs/Development/Verification/欢愉恩赐PNA来源偏好专项核验.md)核验，不以宿主通过数代替实机结果。恶堕资格放宽与来源倍率差异暂缓，见未来第 22 项。

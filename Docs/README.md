@@ -2,7 +2,7 @@
 
 [项目首页](../README.md) · [玩家阅读入口](Players/README.md) · [当前规划](Design/README.md) · [开发资料](Development/README.md)
 
-整理日期：2026-10-15。当前仓库开发版本为 **2.4.0.5**，PNA 重置与玩法补全已完成约定范围并获分批实机确认；尚未打包发布。范围和验证边界见[版本说明](Releases/2.4.0.5/2.4.0.5版本说明.md)与[版本验证](Releases/2.4.0.5/2.4.0.5版本验证.md)。最近正式下载版仍为 2.4.0，历史附件和记录保持原样。
+整理日期：2026-10-16。当前版本归属为 **2.4.1（未发布）**，统一包含原 2.4.0.5 开发里程碑及其后全部开发；PNA、欢愉恩赐、绑定维护、四语文案和验证流程见 [本版说明](Releases/2.4.1/2.4.1发布说明.md)。尚未正式打包发布，最近正式下载版仍为 **2.4.0**。
 
 欢愉恩赐首版四批均已完成并获实机确认，范围和后续归属见[完成核对](Development/Completed/主人欲望侵染完成核对.md)；操作与数值从[玩家入口](Players/README.md)进入。
 
@@ -25,7 +25,7 @@
 ## 三条阅读路线
 
 - **新玩家**：[模组介绍](模组介绍.md) → [快速入门](../读我，玩法介绍.md) → [机制详解](../机制详解.md)。英文路线见 [Player documentation](Players/README.md#english-reading-order)。
-- **接手开发**：[当前版本说明](Releases/2.4.0.5/2.4.0.5版本说明.md) → [待验收事项](Development/Verification/README.md) → [对应已交付记录](Development/Completed/README.md) → [当前规划](Design/README.md)。
+- **接手开发**：[当前版本说明](Releases/2.4.1/2.4.1发布说明.md) → [待验收事项](Development/Verification/README.md) → [对应已交付记录](Development/Completed/README.md) → [当前规划](Design/README.md)。
 - **准备发布**：[发布与打包](Maintenance/发布与打包.md) → [测试说明](../Tests/README.md) → [版本文档](Releases/README.md)。
 
 ## 目录与边界

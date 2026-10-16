@@ -4,5 +4,5 @@
   <SSC_Identity_MasterQualificationRequired>需要主人资格</SSC_Identity_MasterQualificationRequired>
   <SSC_Identity_SelectionUnavailable>当前无法切换为主人，请检查主人资格与绑定状态。</SSC_Identity_SelectionUnavailable>
   <SSC_Setting_AllowDirectMasterSelection>允许直接选择主人</SSC_Setting_AllowDirectMasterSelection>
-  <SSC_Setting_AllowDirectMasterSelection_Desc>默认开启，选择身份不授予永久资格。关闭后需取得资格；已有身份保留，绑定锁定不变。</SSC_Setting_AllowDirectMasterSelection_Desc>
+  <SSC_Setting_AllowDirectMasterSelection_Desc>默认关闭，需先取得永久主人资格。开启后可绕过资格门槛，但选择身份不授予永久资格；已有身份保留，绑定锁定不变。</SSC_Setting_AllowDirectMasterSelection_Desc>
 </LanguageData>
