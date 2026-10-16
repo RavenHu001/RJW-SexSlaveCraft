@@ -32,3 +32,9 @@ dotnet run --project Tests/BondRelations/BondRelations.csproj --configuration Re
 CE 边界依据本机 `1874644848/v1.6/Assemblies/CharacterEditor.dll` 的 `CharacterEditor.HealthTool.RemoveHediff` 反编译（MVID `3db27871e2d8425d98d1a758fe85d3bd`）；只模拟其直接移除集合并通知的行为，不模拟 Unity 界面。
 
 原版 Anomaly 或其他模组自身的死亡机制异常不在 SSC 修复范围内；不添加跳过这些死亡回调的补丁。
+
+## 2026-10-16 实机验收
+
+代码基线 `4d2e046`。维护者确认：旧错误主人关系清理符合预期；CE 删除锁链后即时清关系及空缰绳／共振场、保留其他性奴、换主不自动给新主人奖励、第三方主持仪式不产生错误主人关系均有效。男女主从组合专项由维护者决定本轮不安排，不记为实机通过；本页所列四语与性别组合仍仅代表自动覆盖。
+
+关系专项 54/54，完整测试范围、首次失败复验及游戏目录同步记录见[修复与验收](../../Docs/Development/Completed/主从社交关系绑定一致性修复与验收.md)。
