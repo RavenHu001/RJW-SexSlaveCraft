@@ -3,7 +3,11 @@ using Verse;
 
 namespace Verse
 {
-    public static class DefDatabase<T> where T : Def { public static List<T> AllDefsListForReading = new List<T>(); }
+    public static class DefDatabase<T> where T : Def
+    {
+        public static List<T> AllDefsListForReading = new List<T>();
+        public static T GetNamedSilentFail(string name) => AllDefsListForReading.Find(d => d.defName == name);
+    }
     public static class Translation
     {
         /// <summary>无界面测试保留提示键，不加载语言系统。</summary>

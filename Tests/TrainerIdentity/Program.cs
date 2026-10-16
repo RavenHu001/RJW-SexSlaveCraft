@@ -21,6 +21,7 @@ internal static partial class Program
         RunMasterQualificationTests(repo);
         RunMasterProgressionTests(repo);
         RunPnaIdentityCoordinationTests();
+        RunAbilityToggleIdentityTests();
         // 训导官只读资格、生命周期和任职入口均使用生产源码验证；
         // 下方身份用例按阶段 4 的“资格与个人选择同时成立”运行。
         RunTrainerSpecializationTests(repo);
@@ -109,6 +110,8 @@ internal static partial class Program
         });
         Run("无绑定身份可自由切换并保留离开性奴时的训练清理", () =>
         {
+            // 本场景验证身份切换的清理；显式开放直接选择，资格门槛由独立场景覆盖。
+            SSCMod.settings.allowDirectMasterSelection = true;
             foreach (PawnIdentity source in Enum.GetValues<PawnIdentity>())
             foreach (PawnIdentity target in Enum.GetValues<PawnIdentity>())
             {
@@ -465,7 +468,9 @@ internal static partial class Program
     /// <summary>运行独立场景并在失败后继续报告其余场景。</summary>
     private static void Run(string name, Action test)
     {
-        SSCMod.settings = new Settings();
+        // 通用身份／成长夹具显式允许直接选择，避免把资格门槛混入各自的生命周期断言。
+        // 默认关闭、缺字段及空设置的准入由主人资格专项使用新设置独立验证。
+        SSCMod.settings = new Settings { allowDirectMasterSelection = true };
         try { test(); passed++; Console.WriteLine("PASS " + name); }
         catch (Exception ex) { failed++; Console.WriteLine("FAIL " + name + ": " + ex); }
     }

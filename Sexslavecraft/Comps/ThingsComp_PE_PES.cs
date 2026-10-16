@@ -132,6 +132,7 @@ namespace SexSlaveCraft
             Scribe_Values.Look(ref masterQualificationVersion, "masterQualificationVersion", 0);
             // 独立保存成长标量与格式版本；身份已读入，成长模块在 PostLoadInit 解释旧凝胶。
             ExposeMasterProgressionSnapshot();
+            ExposeAbilityToggleSnapshot();
             Scribe_Values.Look(ref corruptionLevel, "corruptionLevel", -1f);
             Scribe_Values.Look(ref highestCorruptionLevel, "highestCorruptionLevel", -1f);
             Scribe_Values.Look(ref specializationType, "specializationType", SexSlaveSpecializationType.None);
@@ -227,6 +228,8 @@ namespace SexSlaveCraft
             this.masterQualificationVersion = other.masterQualificationVersion;
             // 所有普通复制和加工经过此入口，保留经验及旧格式版本，不共享健康实例。
             CopyMasterProgressionSnapshot(other);
+            // 普通复制和配方加工共享该入口，但各凝胶必须持有独立的原始开关字典。
+            CopyAbilityToggleSnapshot(other);
             this.corruptionLevel = other.corruptionLevel;
             this.highestCorruptionLevel = other.highestCorruptionLevel;
             this.specializationType = other.specializationType;
@@ -294,6 +297,8 @@ namespace SexSlaveCraft
             {
                 foreach (var pair in other.hediffTags)
                 {
+                    // 能力标记不是人格标签；由独立偏好与接收身体的最终身份重新派生。
+                    if (SSCAbilityToggleUtility.IsMarkerDef(pair.Key)) continue;
                     this.hediffTags.Add(pair.Key, pair.Value);
                 }
             }
@@ -416,6 +421,8 @@ namespace SexSlaveCraft
             masterQualificationVersion = CompSexSlaveTraining.CurrentMasterQualificationVersion;
             // 抽取清源前采集成长，即使当前已退出主人也保存其暂停记录；无记录覆盖旧快照。
             CaptureMasterProgression(p);
+            // 暂停/退出身份的开启值同样要迁移，不能只采集当前显示的标记。
+            CaptureAbilityToggles(p);
             specializationProgressByType = trainingComp?.ExportSpecializationProgress()
                 ?? new Dictionary<string, float>();
             petCatComfortCooldownEndTick = PetCatAbilityUtility.CaptureCooldownDeadline(p);
@@ -469,7 +476,8 @@ namespace SexSlaveCraft
             // Need_PNA 的满足度不进入此标签字典，也不新增人格侧的需求快照。
             foreach (var recipe in DefDatabase<RecipeDef>.AllDefs.OfType<RecipeDef_PSTag>())
             {
-                if (recipe.hediffToAdd != null && !SSCPnaExposureUtility.IsBodyStateDef(recipe.hediffToAdd))
+                if (recipe.hediffToAdd != null && !SSCPnaExposureUtility.IsBodyStateDef(recipe.hediffToAdd) &&
+                    !SSCAbilityToggleUtility.IsMarkerDef(recipe.hediffToAdd))
                 {
                     // 在角色身上查找配方对应的健康状态。
                     Hediff existingTag = p.health.hediffSet.GetFirstHediffOfDef(recipe.hediffToAdd);

@@ -177,37 +177,50 @@ namespace SexSlaveCraft
         private void CompletePersonalityExtraction()
         {
             Pawn victim = Partner;
+            // RJW 原结算可触发外部回调；只继续处理原参与者的同一人格，不能提取后来换入的人格。
+            CompSexSlaveTraining originalComp = victim?.TryGetComp<CompSexSlaveTraining>();
+            object originalPersonality = SSCPersonalityRuntimeUtility.Capture(victim);
             SexUtility.ProcessSex(Sexprops);
-
-            // EN: Step 1: create the personality gel and store the victim's personality payload inside it.
-            // CN: 步骤 1：生成人格凝胶，并把受害者的人格载荷写进去。
-            Thing product = CreateStoredPersonalityProduct(victim);
-            if (product.TryGetComp<CompPersonalityStore>() != null)
+            if (Partner != victim || victim?.TryGetComp<CompSexSlaveTraining>() != originalComp ||
+                !SSCPersonalityRuntimeUtility.IsCurrent(victim, originalPersonality) ||
+                !SSCPersonalityRuntimeUtility.TryBeginMutation(victim, out var mutation)) return;
+            using (mutation)
             {
-                // 两条抽取入口都在成功保存快照后清源成果，避免场景抽取留下猫狗技能或历史。
-                PetCatAbilityUtility.DetachAfterExtraction(victim);
-                PetDogAbilityUtility.DetachAfterExtraction(victim);
-                CombatantSpecializationGelUtility.DetachAfterExtraction(victim);
-            }
+                // 生成、快照与清源共用人格作用域；缺存储组件先退出，成功生成后才清开关偏好。
 
-            // EN: Step 2: strip the victim into a hollow pawn and swap the personality-excretion state hediff.
-            // CN: 步骤 2：把受害者剥离成空壳 Pawn，并切换人格排泄状态 Hediff。
-            StripVictimPersonality(victim);
-            ReplaceExcretionHediff(victim);
-            GenSpawn.Spawn(product, victim.Position, victim.Map);
-            // 场景抽取是另一条独立入口，也必须等快照保存及凝胶生成后再清资格与成长。
-            // 成长清理同时写当前迁移版本，防止残留主人身份在读档时补回零经验。
-            if (product.TryGetComp<CompPersonalityStore>() != null)
-            {
-                SSCMasterQualificationUtility.ClearPersonalityQualification(victim);
-                SSCMasterProgressionUtility.ClearPersonalityRecord(victim);
-            }
+                // EN: Step 1: create the personality gel and store the victim's personality payload inside it.
+                // CN: 步骤 1：生成人格凝胶，并把受害者的人格载荷写进去。
+                Thing product = CreateStoredPersonalityProduct(victim);
+                if (product.TryGetComp<CompPersonalityStore>() == null || !mutation.IsCurrent ||
+                    victim.TryGetComp<CompSexSlaveTraining>() != originalComp) return;
+                if (product.TryGetComp<CompPersonalityStore>() != null)
+                {
+                    // 两条抽取入口都在成功保存快照后清源成果，避免场景抽取留下猫狗技能或历史。
+                    PetCatAbilityUtility.DetachAfterExtraction(victim);
+                    PetDogAbilityUtility.DetachAfterExtraction(victim);
+                    CombatantSpecializationGelUtility.DetachAfterExtraction(victim);
+                }
 
-            // EN: Step 3: add the post-excretion coma so personality insertion cannot happen immediately.
-            // CN: 步骤 3：补上人格排泄适应症，避免立刻继续做人格植入流程。
-            Messages.Message(Strings.Message_PersonalityExcretionComplete(victim.LabelShort), victim, MessageTypeDefOf.NeutralEvent);
-            AddPostExcretionComa(victim);
-            SSCLog.Important($"[SSC_PE] Personality excretion completed: victim={victim.LabelShort}, product={product.def.defName}, hollowState={victim.health.hediffSet.HasHediff(SSCDefOf.SSC_PersonalityExcreted_Done)}");
+                // EN: Step 2: strip the victim into a hollow pawn and swap the personality-excretion state hediff.
+                // CN: 步骤 2：把受害者剥离成空壳 Pawn，并切换人格排泄状态 Hediff。
+                StripVictimPersonality(victim);
+                ReplaceExcretionHediff(victim);
+                GenSpawn.Spawn(product, victim.Position, victim.Map);
+                // 场景抽取是另一条独立入口，也必须等快照保存及凝胶生成后再清资格与成长。
+                // 成长清理同时写当前迁移版本，防止残留主人身份在读档时补回零经验。
+                if (product.TryGetComp<CompPersonalityStore>() != null)
+                {
+                    SSCAbilityToggleUtility.ClearPersonalityState(victim);
+                    SSCMasterQualificationUtility.ClearPersonalityQualification(victim);
+                    SSCMasterProgressionUtility.ClearPersonalityRecord(victim);
+                }
+
+                // EN: Step 3: add the post-excretion coma so personality insertion cannot happen immediately.
+                // CN: 步骤 3：补上人格排泄适应症，避免立刻继续做人格植入流程。
+                Messages.Message(Strings.Message_PersonalityExcretionComplete(victim.LabelShort), victim, MessageTypeDefOf.NeutralEvent);
+                AddPostExcretionComa(victim);
+                SSCLog.Important($"[SSC_PE] Personality excretion completed: victim={victim.LabelShort}, product={product.def.defName}, hollowState={victim.health.hediffSet.HasHediff(SSCDefOf.SSC_PersonalityExcreted_Done)}");
+            }
         }
 
         /// <summary>创建适合目标的人格凝胶并写入快照；物品缺少存储组件时记录错误，仍返回已创建物品。</summary>

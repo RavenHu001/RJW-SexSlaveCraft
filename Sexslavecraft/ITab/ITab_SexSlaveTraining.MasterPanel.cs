@@ -1,5 +1,6 @@
 // AI 辅助生成
 using UnityEngine;
+using System.Collections.Generic;
 using Verse;
 using RimWorld;
 
@@ -19,6 +20,8 @@ namespace SexSlaveCraft
             public CompSexSlaveTraining Comp;
             public Hediff_BridleOfSexSlave Bridle;
             public Hediff_MasterProgression Record;
+            public object PersonalityToken;
+            public List<AbilityToggleRow> AbilityRows;
             public string Header, Stage, Experience, Progress, Benefits, PracticeTip;
             public string ShareLabel, ShareTip;
             public bool CanEditShare, ShareEnabled, ShowProgress;
@@ -36,6 +39,7 @@ namespace SexSlaveCraft
             var view = new MasterPanelView
             {
                 Pawn = pawn, Comp = comp, Bridle = bridle, Record = record,
+                PersonalityToken = SSCPersonalityRuntimeUtility.Capture(pawn),
                 Header = "SSC_MasterProgression_PanelHeader".Translate(),
                 Stage = record == null ? "SSC_MasterProgression_NoRecord".Translate().ToString() : record.LabelInBrackets,
                 ShareLabel = "SSC_MasterShareDamage_Label".Translate(),
@@ -94,6 +98,9 @@ namespace SexSlaveCraft
                 view.SectionHeight = SectionPadding * 2f + view.HeaderHeight + view.StageHeight + MasterControlGap + view.ShareHeight;
                 if (record != null) view.SectionHeight += MasterRowGap + view.ExperienceHeight + MasterRowGap + view.BenefitsHeight;
                 if (view.ShowProgress) view.SectionHeight += MasterRowGap + MasterBarHeight + MasterBarTextGap + view.ProgressHeight;
+                // 能力行和成长/伤害分担共用本次测量快照，长翻译直接计入滚动高度。
+                view.AbilityRows = BuildAbilityToggleRows(pawn, comp, SSCAbilityToggleGroup.Master, innerWidth);
+                foreach (AbilityToggleRow row in view.AbilityRows) view.SectionHeight += AbilityToggleRowGap + row.Height;
             }
             finally { Text.Font = oldFont; Text.WordWrap = oldWrap; }
             return view;
@@ -110,7 +117,10 @@ namespace SexSlaveCraft
         /// <summary>迟到点击复查原角色与缰绳；只写原保存字段，不创建关系或修改成长。</summary>
         private bool TrySetMasterDamageSharing(MasterPanelView view, bool enabled)
         {
-            if (SelPawn != view.Pawn || !CanEditMasterDamageSharing(view.Pawn, view.Comp, view.Bridle)) return false;
+            // 旧伤害分担入口也要拒绝同组件换人格后的点击；不改变其原有缰绳保存字段。
+            if (SelPawn != view.Pawn || !SSCPersonalityRuntimeUtility.IsCurrent(view.Pawn, view.PersonalityToken) ||
+                SSCPersonalityRuntimeUtility.IsMutating(view.Pawn) ||
+                !CanEditMasterDamageSharing(view.Pawn, view.Comp, view.Bridle)) return false;
             view.Bridle.shareDamageEnabled = enabled;
             return true;
         }
@@ -159,6 +169,8 @@ namespace SexSlaveCraft
                 Widgets.CheckboxLabeled(shareRect, view.ShareLabel, ref enabled, !GUI.enabled);
                 TooltipHandler.TipRegion(shareRect, view.ShareTip);
                 if (GUI.enabled && enabled != view.ShareEnabled) TrySetMasterDamageSharing(view, enabled);
+                y += view.ShareHeight;
+                DrawAbilityToggleRows(inner, ref y, view.AbilityRows, oldEnabled);
             }
             finally
             {

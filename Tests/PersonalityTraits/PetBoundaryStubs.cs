@@ -134,8 +134,7 @@ namespace SexSlaveCraft
     }
     public static partial class SSCBondUtility
     {
-        // 迁移套件不执行亲昵；实际绑定查询及对象变更由宠物专项观察验证。
-        public static Pawn GetBoundMaster(Pawn pawn) => null;
+        // 迁移套件不执行亲昵；绑定引用由 GameStubs 的场景边界提供。
         public static Pawn GetResolvedMaster(Pawn pawn) => null;
     }
     public static partial class Strings

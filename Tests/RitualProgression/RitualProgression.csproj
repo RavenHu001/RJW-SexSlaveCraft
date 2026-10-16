@@ -7,6 +7,7 @@
     <SscSourceRoot Condition="'$(SscSourceRoot)' == ''">../../Sexslavecraft</SscSourceRoot>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="../Shared/BondRelationMaintenanceBoundary.cs" Link="Shared/BondRelationMaintenanceBoundary.cs" />
     <!-- 编译实际生产文件，避免把待测算法复制到测试里后出现“测试通过、产品未修复”。
          其余宿主类型由本目录的 GameStubs.cs 提供；Link 只定义 IDE 中的显示路径。 -->
     <Compile Include="$(SscSourceRoot)/common/Need_Corruption.cs" Link="Production/Need_Corruption.cs" />

@@ -51,7 +51,7 @@ foreach ($requiredDirectory in @('Defs', 'Languages', 'Textures', 'Resources')) 
         throw "Required runtime directory is missing: $requiredDirectory"
     }
 }
-& (Join-Path $PSScriptRoot 'Sync-LanguagesMirror.ps1')
+# 镜像一致性由 Test-All.ps1 统一执行并记录；此处保留发布专用的翻译键／参数检查。
 & (Join-Path $PSScriptRoot 'Test-RestrictionLocalization.ps1')
 
 if (-not $OutputDirectory) { $OutputDirectory = Join-Path $repoRoot 'Releases' }
@@ -172,6 +172,7 @@ Game and third-party mod DLLs are not included. See CHANGELOG.md for release not
             suiteCount = $validation.SuiteCount
             passedCases = $validation.PassedCases
             totalCases = $validation.TotalCases
+            checks = @($validation.Checks | Select-Object Name, Status, CheckedFiles)
         }
         files = $manifestFiles
     } | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $modRoot 'RELEASE-MANIFEST.json') -Encoding utf8NoBOM

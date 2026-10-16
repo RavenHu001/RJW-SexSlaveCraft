@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Linq;
@@ -18,23 +18,26 @@ namespace Verse
         public IntVec3 Cell;
         public Pawn Pawn => Thing as Pawn;
     }
-    public static class Rand
+    public static partial class Rand
     {
         public static float NextValue;
         public static int Calls;
         public static float Value { get { Calls++; return NextValue; } }
     }
-    public class Pawn : Thing
+    public partial class Pawn : Thing
     {
         public string LabelShort;
         public int thingIDNumber;
-        public bool Dead, Destroyed, Downed, IsSlave, IsPrisonerOfColony;
+        public bool Dead, Destroyed, Discarded, Hollow, Downed, IsSlave, IsPrisonerOfColony;
+        public bool Producer=true;
+        public RaceProperties RaceProps=new RaceProperties();
+        public InfestationNeeds needs=new InfestationNeeds();
         public bool IsColonist = true;
         public bool Spawned = true, Drafted, InMentalState;
         public bool CanSelfTrain = true;
         public float AutoSelfTrainingChance = 0.30f;
         public object Map;
-        public object health = new object();
+        public InfestationHealth health = new InfestationHealth();
         public ApparelTracker apparel = new ApparelTracker();
         public Verse.AI.Pawn_JobTracker jobs = new Verse.AI.Pawn_JobTracker();
         /// <summary>从模拟任务跟踪器读取角色的当前任务定义，供生产角色判定逻辑使用。</summary>
@@ -216,7 +219,7 @@ namespace Verse.AI
 }
 namespace rjw
 {
-    public class SexProps
+    public partial class SexProps
     {
         public Verse.Pawn pawn, partner;
         /// <summary>在最小行为数据模型中，将 pawn 作为发起者返回。</summary>
@@ -227,12 +230,17 @@ namespace rjw
     }
     public static class SexUtility
     {
+        public static Action OnProcess;
         /// <summary>模拟 RJW 的结算入口；无 Harmony 模式显式调用生产后缀，真实模式由补丁注入。</summary>
         [MethodImpl(MethodImplOptions.NoInlining)]
         public static void ProcessSex(SexProps props)
         {
 #if !REAL_HARMONY
-            SSCTrainerInitiatedSexProgressHook.Postfix(props, true);
+            SSCTrainerInitiatedSexProgressHook.Prefix(props, out var context);
+            try { OnProcess?.Invoke(); SSCTrainerInitiatedSexProgressHook.Postfix(props, true, context); }
+            finally { SSCTrainerInitiatedSexProgressHook.Finalizer(context); }
+#else
+            OnProcess?.Invoke();
 #endif
         }
     }
@@ -372,7 +380,7 @@ namespace rjw
     public class JobDriver_Masturbate : JobDriver_SexBaseInitiator { }
     public class JobGiver_Masturbate : Verse.AI.ThinkNode_JobGiver { }
 #pragma warning disable CS8981 // Mirror RJW's actual lowercase type name.
-    public static class xxx
+    public static partial class xxx
     {
         public static readonly Verse.JobDef Masturbate = new Verse.JobDef
             { defName = "Masturbate", driverClass = typeof(JobDriver_Masturbate) };
@@ -445,8 +453,11 @@ namespace SexSlaveCraft
     {
         public static readonly List<(Verse.Pawn Source, Verse.Pawn Recipient)> Calls = new();
         public static Action OnSupply;
-        public static void ApplyFromProducer(Verse.Pawn source, Verse.Pawn recipient)
-        { Calls.Add((source, recipient)); OnSupply?.Invoke(); }
+        public static int StrongCalls;
+        public static void ApplyFromProducer(Verse.Pawn source, Verse.Pawn recipient, Func<bool> guard=null)
+        { if(guard!=null && !guard())return;Calls.Add((source, recipient)); OnSupply?.Invoke(); }
+        public static void ApplyInfestation(Verse.Pawn source, Verse.Pawn recipient, Func<bool> guard)
+        { if(!guard())return;StrongCalls++;OnSupply?.Invoke(); }
     }
     public static class SSCIdentityUtility
     {
@@ -471,11 +482,12 @@ namespace SexSlaveCraft
         public SexSlaveSpecializationType specializationType;
         public SSCRestrictionConfig restrictionConfig = new SSCRestrictionConfig();
         public Verse.Pawn selectedTrainer;
-        public bool AllowsOthersForTrainingOrSex, slaveTrainerEnabled;
+        public bool AllowsOthersForTrainingOrSex, slaveTrainerEnabled, Infestation;
     }
     public class Settings
     {
         public bool enableSexSlaveProtectionRules = true;
+        public bool useOldScoring;
         public bool enableSpecializationRestrictionOverrides = true;
         public SSCRestrictionRules restrictionDefaults = new SSCRestrictionRules();
         public bool allowSexSlaveRape;
@@ -517,7 +529,7 @@ namespace SexSlaveCraft
         /// <summary>提供宠物事件翻译边界，实际开始时才会调用。</summary>
         public static string Message_DogAnimalInteractionTriggered(string actor, string target) => "DogStarted";
     }
-    public static class SSCDefOf
+    public static partial class SSCDefOf
     {
         public static readonly Verse.JobDef SelfTraining = new Verse.JobDef
             { defName = "SSC_SelfTraining", driverClass = typeof(JobDriver_SelfTraining) };
@@ -563,7 +575,7 @@ namespace HarmonyLib
         /// <summary>记录后续要读取的属性名，并返回当前适配器以支持链式调用。</summary>
         public Traverse Property(string name) { member = name; return this; }
         /// <summary>读取指定名称的公开字段或属性并转换为请求类型，仅模拟生产补丁实际使用的查询。</summary>
-        public T GetValue<T>() => (T)(instance.GetType().GetField(member)?.GetValue(instance)
+        public T GetValue<T>() => (T)(instance.GetType().GetField(member, BindingFlags.Public|BindingFlags.NonPublic|BindingFlags.Instance)?.GetValue(instance)
             ?? instance.GetType().GetProperty(member)?.GetValue(instance));
     }
 }

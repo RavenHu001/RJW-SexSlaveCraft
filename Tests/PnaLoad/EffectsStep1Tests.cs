@@ -30,7 +30,7 @@ internal static partial class Program
                 Assert(result.Accepted && !result.AddictionCreated, "有效来源");
                 Near(.2 + (source == SSCPnaExposureSource.ProducerSex ? .02 : .08), result.FinalLoad);
                 Near(source == SSCPnaExposureSource.ProducerSex ? .3 : 1, need.CurLevel);
-                Near(source == SSCPnaExposureSource.ProducerSex ? .41 : .4, SSCPnaExposureUtility.GetAddiction(p).Severity);
+                Near(source == SSCPnaExposureSource.ProducerSex ? .41 : .42, SSCPnaExposureUtility.GetAddiction(p).Severity);
                 Assert(ReferenceEquals(need, SSCPnaExposureUtility.GetNeed(p)), "保留已有需求实例");
             });
             Run(source + " 首次满值仍建立完整成瘾并初始化需求", () =>
@@ -46,7 +46,7 @@ internal static partial class Program
                 var p = NewPawn(); Raw(p, 2); AddOldAddiction(p, .4f); p.needs.PnaNeed = .9f;
                 var result = SSCPnaExposureUtility.ApplyExposure(p, dose, source);
                 Assert(result.Accepted && !result.AddictionCreated, "已有成瘾"); Near(0, result.AddedLoad);
-                Near(source == SSCPnaExposureSource.ProducerSex ? .61 : .6, SSCPnaExposureUtility.GetAddiction(p).Severity);
+                Near(source == SSCPnaExposureSource.ProducerSex ? .61 : .62, SSCPnaExposureUtility.GetAddiction(p).Severity);
                 Near(1, SSCPnaExposureUtility.GetNeed(p).CurLevel);
             });
             Run(source + " 不强行建立不合法的需求", () =>

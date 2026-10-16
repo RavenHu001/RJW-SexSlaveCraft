@@ -7,6 +7,10 @@ namespace SexSlaveCraft
     {
         public const string ProducerDefName = "SSC_Purple_HyperLactation";
 
+        // 保留身体产出查询的原义；侵染须同时核对观察者能否合法接收，评价过程始终只读。
+        public static bool CanSupplyTo(Pawn source, Pawn observer)
+            => IsPnaProducer(source) || SSCDesireInfestationUtility.CanAffect(source, observer);
+
         /// <summary>供吸引评价及后续接触结算共用；查询不结算负荷或推进生产。</summary>
         public static bool IsPnaProducer(Pawn pawn)
         {

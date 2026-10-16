@@ -82,10 +82,29 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="common\AddCorruption.cs" />
+    <Compile Include="common\SSCBondRelationRules.cs" />
+    <Compile Include="common\SSCBondRelationUtility.cs" />
+    <Compile Include="common\SSCBondRelationGameComponent.cs" />
+    <Compile Include="common\SSCBondRelationLabels.cs" />
+    <Compile Include="ThePatches\Harmony_BondRelationLabels.cs" />
+    <Compile Include="common\SSCAbilityToggleState.cs" />
+    <Compile Include="common\SSCAbilityToggleUtility.cs" />
+    <Compile Include="common\SSCPersonalityRuntimeUtility.cs" />
+    <Compile Include="common\SSCAbilityToggleGameComponent.cs" />
+    <Compile Include="Comps\Comp_AbilityToggles.cs" />
+    <Compile Include="Hediff\Hediff_SSCToggleAbilityMarker.cs" />
+    <Compile Include="ThePatches\Harmony_SSCAbilityToggles.cs" />
+    <Compile Include="ITab\ITab_SexSlaveTraining.AbilityToggles.cs" />
     <Compile Include="common\SSCPnaMath.cs" />
     <Compile Include="common\SSCPnaExposureUtility.cs" />
     <Compile Include="common\SSCPnaSourceUtility.cs" />
     <Compile Include="common\SSCPnaSexSupplyUtility.cs" />
+    <Compile Include="common\SSCDesireInfestationUtility.cs" />
+    <Compile Include="common\SSCOrdinarySexOutcomeUtility.cs" />
+    <Compile Include="common\SSCOrdinarySexPartsSnapshot.cs" />
+    <Compile Include="common\SSCOrdinarySexPartsUtility.cs" />
+    <Compile Include="common\SSCDesireInfestationBodyUtility.cs" />
+    <Compile Include="common\SSCDesireInfestationFeedbackUtility.cs" />
     <Compile Include="common\AttractionPreference_SSCPna.cs" />
     <Compile Include="common\IngestionOutcomeDoer_SSCPna.cs" />
     <Compile Include="common\ThingDef_SSCPna.cs" />
@@ -332,6 +351,7 @@
     <Compile Include="ThePatches\Harmony_SlaveWorkRestrictions.cs" />
     <Compile Include="Hediff\Hediff_BridleOfSexSlave.cs" />
     <Compile Include="Hediff\Hediff_ChainOfSexSlave.cs" />
+    <Compile Include="ThePatches\Harmony_BondHealthChanges.cs" />
     <Compile Include="ThePatches\Harmony_SlaveWorkSpeed.cs" />
     <Compile Include="JobDriver\JobDriver_RitualTraining.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

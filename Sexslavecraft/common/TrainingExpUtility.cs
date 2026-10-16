@@ -1,4 +1,5 @@
-﻿using System;
+﻿// AI 辅助生成
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -32,9 +33,8 @@ namespace SexSlaveCraft
             // ==========================================================
             // 【公式】 经验 = (分数 / 1000) * 倍率
             // ==========================================================
-            float severityAmount = (rawScore / 1000f) * multiplier;
-            severityAmount *= GetCorruptionStageMultiplier(pawn);
-            severityAmount *= TrainingOutcomeUtility.GetChainStageMult(pawn);
+            float severityAmount = CalculateExperienceBudget(rawScore, multiplier,
+                GetCorruptionStageMultiplier(pawn), TrainingOutcomeUtility.GetChainStageMult(pawn));
 
             // 如果算出来是 0 或负数，就不加了
             if (severityAmount <= 0) return;
@@ -45,8 +45,6 @@ namespace SexSlaveCraft
 
             switch (sexType)
             {
-                // ... (中间的 switch 逻辑保持不变，为了节省篇幅省略) ...
-
                 // 1. 手部
                 case xxx.rjwSextype.Handjob:
                 case xxx.rjwSextype.MutualMasturbation:
@@ -112,10 +110,23 @@ namespace SexSlaveCraft
             }
         }
 
-        private static float GetCorruptionStageMultiplier(Pawn pawn)
+        /// <summary>按明确的快照输入计算额度；不读写角色，供日常及按真实部位分配的能力共用。</summary>
+        public static float CalculateExperienceBudget(float score, float multiplier, float corruptionMultiplier, float chainMultiplier)
+        {
+            if (!IsFinite(score) || !IsFinite(multiplier) || !IsFinite(corruptionMultiplier) || !IsFinite(chainMultiplier) ||
+                score <= 0f || multiplier <= 0f || corruptionMultiplier <= 0f || chainMultiplier <= 0f) return 0f;
+            // 保留既有乘法顺序；侵染把 0.20 作为自身倍率，日常/仪式继续传入原倍率。
+            float amount = (score / 1000f) * multiplier;
+            amount *= corruptionMultiplier;
+            amount *= chainMultiplier;
+            return IsFinite(amount) && amount > 0f ? amount : 0f;
+        }
+
+        public static float GetCorruptionStageMultiplier(Pawn pawn)
         {
             Need_Corruption corruptionNeed = pawn?.needs?.TryGetNeed<Need_Corruption>();
             float corruption = corruptionNeed?.CurLevelPercentage ?? 0f;
+            if (!IsFinite(corruption)) return 0f;
 
             if (corruption >= 0.75f) return 2.0f;
             if (corruption >= 0.5f) return 1.8f;
@@ -124,81 +135,50 @@ namespace SexSlaveCraft
             return 1.0f;
         }
 
+        private static bool IsFinite(float value) => !float.IsNaN(value) && !float.IsInfinity(value);
+
+        internal static bool IsPresentPart(Pawn pawn, BodyPartRecord part) => pawn != null && !pawn.Dead &&
+            !pawn.Destroyed && !pawn.Discarded && part != null && pawn.health?.hediffSet != null &&
+            pawn.RaceProps?.body?.AllParts.Contains(part) == true && !pawn.health.hediffSet.PartIsMissing(part);
+
+        /// <summary>精确部位入口不按名称寻找替代部位；调用方决定分配，接口只验证当前身体并限制单条进度。</summary>
+        public static bool TryApplyExperienceToPart(Pawn pawn, BodyPartRecord part, HediffDef def, float amount,
+            Func<bool> isCurrent = null)
+        {
+            bool CanWrite() => Scribe.mode == LoadSaveMode.Inactive && IsPresentPart(pawn, part) &&
+                ResearchUtils.IsResearchFinished(SSCDefOf.SSC_BodyPartTraining) && (isCurrent == null || isCurrent());
+            if (!IsFinite(amount) || amount <= 0f || def == null || !CanWrite()) return false;
+            Hediff existing = pawn.health.hediffSet.hediffs.Find(h => h.def == def && h.Part == part);
+            float current = existing?.Severity ?? 0f, cap = def.maxSeverity;
+            if (!IsFinite(current) || !IsFinite(cap)) return false;
+            float gain = Math.Max(0f, Math.Min(amount, cap - current));
+            if (gain <= 0f) return false;
+            if (existing != null) existing.Severity = current + gain;
+            else
+            {
+                // 新记录先覆盖 XML initialSeverity，微小奖励不能被默认 1% 抬高。
+                Hediff created = HediffMaker.MakeHediff(def, pawn, part);
+                if (!CanWrite()) return false;
+                created.Severity = gain;
+                // MakeHediff 和初始 Severity 都可能触发外部健康回调，失效的记录不能再加入新人格身体。
+                if (!CanWrite()) return false;
+                pawn.health.AddHediff(created, part, null);
+            }
+            return true;
+        }
+
+        /// <summary>保留日常/仪式按动作名称匹配全部部位的分配方式，写入与能力入口共用。</summary>
         private static void AddHediffToPart(Pawn pawn, string partDefName, HediffDef hediffDef, float amount)
         {
-            // 获取小人所有身体部位
-            System.Collections.Generic.IEnumerable<BodyPartRecord> parts = pawn.RaceProps.body.AllParts;
-
-            foreach (BodyPartRecord part in parts)
-            {
-                // 1. 检查部位名称是否匹配 (例如 "Hand" 匹配 "LeftHand", "RightHand")
+            // 同动作的双手/双足仍分别领取完整原额度；只有侵染调用方负责 20% 和均分。
+            foreach (BodyPartRecord part in pawn.RaceProps.body.AllParts)
                 if (part.def.defName.Contains(partDefName))
-                {
-                    // 2. 确保部位没有缺失 (没被切掉)
-                    if (!pawn.health.hediffSet.PartIsMissing(part))
-                    {
-                        // ==========================================================
-                        // 【修复核心】 精确查找当前部位上的 Hediff
-                        // ==========================================================
-
-                        Hediff targetHediff = null;
-
-                        // 遍历该小人所有的 Hediff，找到 Def 匹配 且 部位也匹配 的那个
-                        foreach (Hediff h in pawn.health.hediffSet.hediffs)
-                        {
-                            if (h.def == hediffDef && h.Part == part)
-                            {
-                                targetHediff = h;
-                                break; // 找到了就停止
-                            }
-                        }
-
-                        // ==========================================================
-                        // 3. 执行添加或增加逻辑
-                        // ==========================================================
-
-                        if (targetHediff != null)
-                        {
-                            // A. 如果已经有了，直接增加严重度 (Severity)
-                            targetHediff.Severity += amount;
-                        }
-                        else
-                        {
-                            // B. 如果没有，创建一个新的
-                            Hediff newHediff = HediffMaker.MakeHediff(hediffDef, pawn, part);
-                            newHediff.Severity = amount; // 设置初始值
-                            pawn.health.AddHediff(newHediff, part, null);
-                        }
-                    }
-                }
-            }
+                    AddHediffToSpecificPart(pawn, part, hediffDef, amount);
         }
 
         private static void AddHediffToSpecificPart(Pawn pawn, BodyPartRecord part, HediffDef hediffDef, float amount)
         {
-            if (pawn == null || part == null || hediffDef == null) return;
-            if (pawn.health.hediffSet.PartIsMissing(part)) return;
-
-            Hediff targetHediff = null;
-            foreach (Hediff h in pawn.health.hediffSet.hediffs)
-            {
-                if (h.def == hediffDef && h.Part == part)
-                {
-                    targetHediff = h;
-                    break;
-                }
-            }
-
-            if (targetHediff != null)
-            {
-                targetHediff.Severity += amount;
-            }
-            else
-            {
-                Hediff newHediff = HediffMaker.MakeHediff(hediffDef, pawn, part);
-                newHediff.Severity = amount;
-                pawn.health.AddHediff(newHediff, part, null);
-            }
+            TryApplyExperienceToPart(pawn, part, hediffDef, amount);
         }
     }
 }

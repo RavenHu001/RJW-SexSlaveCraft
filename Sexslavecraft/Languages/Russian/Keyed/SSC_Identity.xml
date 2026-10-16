@@ -4,5 +4,5 @@
   <SSC_Identity_MasterQualificationRequired>Требуется право стать господином</SSC_Identity_MasterQualificationRequired>
   <SSC_Identity_SelectionUnavailable>Сейчас нельзя выбрать роль господина. Проверьте право на эту роль и существующие связи.</SSC_Identity_SelectionUnavailable>
   <SSC_Setting_AllowDirectMasterSelection>Разрешить прямой выбор господина</SSC_Setting_AllowDirectMasterSelection>
-  <SSC_Setting_AllowDirectMasterSelection_Desc>Включено по умолчанию. Выбор роли не выдаёт постоянное право на неё. При отключении право требуется. Текущие роли и ограничения связи сохраняются.</SSC_Setting_AllowDirectMasterSelection_Desc>
+  <SSC_Setting_AllowDirectMasterSelection_Desc>По умолчанию выключено: требуется постоянное право стать господином. Включение позволяет выбрать роль без права, но не выдаёт его. Текущие роли и ограничения связи сохраняются.</SSC_Setting_AllowDirectMasterSelection_Desc>
 </LanguageData>

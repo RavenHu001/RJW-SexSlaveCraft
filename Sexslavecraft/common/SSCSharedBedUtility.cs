@@ -161,7 +161,9 @@ namespace SexSlaveCraft
         public static int GetSharedBedThoughtStage(Pawn pawn, Pawn partner)
         {
             if (pawn == null || partner == null) return -1;
-            if (SSCDefOf.SSC_FlawedLovers != null
+            // 残留的社交记录不能冒充实际主从关系，尤其是获准同床的第三方调教员。
+            // 通过锁链校验后才保留原有奖励关系的最高档；其他情况继续使用原来的恶堕与好感档位。
+            if (SSCDefOf.SSC_FlawedLovers != null && SSCBondRelationUtility.IsValidPair(pawn, partner)
                 && pawn.relations.DirectRelationExists(SSCDefOf.SSC_FlawedLovers, partner)) return 5;
             float corruption = GetCorruption(pawn);
             if (corruption >= 0.5f) return 4;

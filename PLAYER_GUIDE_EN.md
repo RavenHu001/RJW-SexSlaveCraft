@@ -2,11 +2,7 @@
 
 [Project home](README.md) · [Player reading order](Docs/Players/README.md#english-reading-order) · [Quick start](QUICK_START_EN.md) · [中文机制详解](机制详解.md)
 
-> Applies to **RimWorld 1.6 · SSC 2.4.0.5 development milestone** (2026-10-15), including the accepted PNA redesign and gameplay additions. No 2.4.0.5 package has been published; the latest existing 2.4.0 download does not contain these changes. Use this reference for full conditions, formulas and values; first-time players should begin with the [quick start](QUICK_START_EN.md).
->
-> For problems, start with [Troubleshooting](#24-troubleshooting) and [pending verification](Docs/Development/Verification/README.md), then read the relevant system. Version changes are in the [2.4.0.5 milestone notes](Docs/Releases/2.4.0.5/2.4.0.5版本说明.md#english).
->
-> This guide follows current C# and XML behavior. The base audit began on 2026-06-30; current development is consolidated as 2.4.0.5 (2026-10-15). PNA step five `286ff72`, subsequent code `ea448b0`, localized wording `54f51db` and latest mood-label acceptance `2ec5cb6` retain their separate records. Earlier section versions identify feature introductions; see the [version index](Docs/Releases/README.md) for scope.
+> Applies to **RimWorld 1.6 · SSC 2.4.1 (unreleased)** (2026-10-16). The former 2.4.0.5 development milestone and all subsequent work are consolidated into 2.4.1, including the PNA redesign, Bestow Bliss and bond/localization maintenance. No 2.4.1 package has been published; the latest existing download remains 2.4.0. Use this reference for full conditions, formulas and values; first-time players should begin with the [quick start](QUICK_START_EN.md).
 
 ## 1. Scope and Dependencies
 
@@ -104,7 +100,9 @@ The pawn's identity section always shows `Master qualification: acquired / not a
 
 **Research.** With Royalty, `Training` requires one vanilla techprint. The seed supplies only the missing techprint count, adding neither research progress nor Intellectual experience and never completing research directly. The separate vanilla Training techprint remains an independent research source, grants no personal qualification and retains its vanilla effects. Without Royalty there is no added techprint gate, while the seed still grants personal qualification. Vanilla loading compatibility supplies newly required techprints for old projects that are complete or have any research progress; projects at zero progress retain the gate. Existing progress is not reset.
 
-**Manual selection.** Direct Master selection is enabled by default and bypasses only the personal qualification requirement. Turning it off prevents unqualified pawns from newly selecting Master, without removing an existing identity or qualification. It supplies no research techprints. Pawns holding a Chain and Masters with valid bound targets remain subject to existing identity locks.
+New settings and missing configuration fields default to off. Explicitly saved on/off choices and existing Master identities are preserved.
+
+**Manual selection.** Direct Master selection is disabled by default; enabling it bypasses only the personal qualification requirement. Turning it off prevents unqualified pawns from newly selecting Master, without removing an existing identity or qualification. It supplies no research techprints. Pawns holding a Chain and Masters with valid bound targets remain subject to existing identity locks.
 
 **Personality transfer.** Extraction, saving, copying or processing gel and implantation preserve the record. Implantation replaces the host's previous qualification with the source personality's value, including replacing acquired with not acquired. Extracting a personality clears its qualification from the empty original body. Clones are independent personalities and do not inherit source qualification. On first upgrade, old Masters and old Master gels receive qualification once. Later loads do not infer qualification from Master identity, so new unqualified clones remain unqualified.
 
@@ -774,7 +772,7 @@ The ability and grant component exist, but the current Mouth Hediff XML does not
 
 ### 11.1 Ingestion
 
-This section describes the accepted PNA redesign in the 2.4.0.5 development milestone, which has not been packaged for release. Load L is raw severity divided by 2, ranging from 0 to 100%. The former +0.3/+1.0 infection doses, 25%/50% random addiction chances and linear daily clearance no longer describe this branch.
+This section describes the accepted PNA redesign in the 2.4.1 development milestone, which has not been packaged for release. Load L is raw severity divided by 2, ranging from 0 to 100%. The former +0.3/+1.0 infection doses, 25%/50% random addiction chances and linear daily clearance no longer describe this branch.
 
 | Source | Load added | Existing legal PNA need refill | Base increase to existing addiction |
 | --- | ---: | ---: | ---: |
@@ -832,7 +830,7 @@ The enabled low-tier launcher:
 
 - costs 60 steel, 3 industrial components, and 10 normal PNA;
 - crafting skill 4;
-- version 2.4.0.5 requires SSC’s `Basic PNA Launcher` research, retaining `Basic PNA Applications` and vanilla Precision Rifling as its prerequisites; this was confirmed working in game;
+- version 2.4.1 requires SSC’s `Basic PNA Launcher` research, retaining `Basic PNA Applications` and vanilla Precision Rifling as its prerequisites; this was confirmed working in game;
 - range 22.9;
 - warmup 0.5 seconds;
 - cooldown 3 seconds;
@@ -861,9 +859,48 @@ A pawn with the normal `SSC_Purple_HyperLactation` production Hediff supplies it
 
 Positions, genital selection and condoms do not filter this supply. Two producers supply each other; multi-participant scenes count independently completed pairs, not orgasm count or animation lists. Solo acts, SSC daily training, binding rituals, personality excretion and vanilla Lovin are excluded. Master recipients remain immune; effective-Chain recipients receive activation. Load, addiction or Master identity alone does not make a source. Rabbit clone production is excluded. Supply adds no production-progress or nutrition cost; existing sex-related production logic remains.
 
-For an addicted observer evaluating a normal producer, RJW's independent attraction multiplier is ×1.25 outside withdrawal and ×1.50 in withdrawal, otherwise ×1. It applies to General, ForFucking and ForRape. Master and effective-Chain observers receive no addiction preference; existing permissions and selection rules remain.
+For an addicted observer evaluating a normal producer or an enabled Master who can legally infest that observer (without stacking dual-source multipliers), RJW's independent attraction multiplier is ×1.25 outside withdrawal and ×1.50 in withdrawal, otherwise ×1. It applies to General, ForFucking and ForRape. Master and effective-Chain observers receive no addiction preference; existing permissions and selection rules remain.
 
-Master Infestation is not implemented: only +8% load/full-need refill is prepared. It must also increase addiction, but its base increment is undecided. Personal automatic activation maintenance remains a candidate. See the [current PNA plan](Docs/Design/PNA玩法效果与性交补给补全分析.md) for the full contract and development history.
+Bestow Bliss is implemented and accepted in all four batches: +8% load/full existing-need refill, base +0.02 existing addiction or +0.22 after terminal input, additional Corruption, actual-part development and independent feedback. See [the next section](#115-master-desire-infestation). Personal automatic activation maintenance remains existing future work.
+
+<a id="115-master-desire-infestation"></a>
+
+### 11.5 Bestow Bliss
+
+Combine sexual skill with actively controlled aphrodisiac nanomachines to bestow unparalleled bliss during intimacy, gradually increasing Corruption and reshaping the recipient's body to become more sensitive to sexual stimulation.
+
+The first implementation is complete and accepted across all four batches; it remains unreleased development content. Select a current player-faction SSC Master and enable **Bestow Bliss** under personal abilities on the Training tab. It defaults off. Actual effects require no additional player-faction condition, permanent qualification, Master level, bond count or bridle.
+
+Recipients must be living, valid flesh humanlikes with an actual Corruption need and SSC personality component, neither Hollow nor currently a Master. Missing needs are not created. A recipient may be unbound or bonded to another Master. Ordinary RJW paired encounters and native Lovin qualify with the Master in either role. Mutual masturbation with genuine paired participation can qualify; solo acts cannot. Training, ritual stages, self-training and personality excretion are excluded. Preparation, rejection, interruption and cancellation grant nothing. Each completion pays once, independent of orgasm count or animation participants.
+
+| Component | Current rule |
+| --- | --- |
+| PNA input | +8 load percentage points; fill an existing legal PNA need |
+| Existing ordinary addiction | Base D+0.02; add 0.20 if input ends terminal, totaling +0.22, capped at 1 |
+| Initial addiction | Still requires full load; receives no extra existing-addiction reinforcement |
+| Corruption | Up to +1 additional percentage point; new scoring caps unchained recipients at 12% and chained recipients by their current stage; old scoring retains the need's original cap. Existing over-cap values are not reduced |
+| Part development | A shared 20% budget under the same base conditions, divided across distinct actual recipient part/development-type pairs; Body-part Training research and individual caps apply |
+
+Effective-Chain recipients receive positive PNA activation without ordinary addiction. Master recipients are immune to the entire infestation. A saturated component does not block other valid components. When the source is both a normal producer and an active infestation source in the same direction, only the stronger infestation input is applied.
+
+Part development uses pre-infestation score, Corruption and Chain multipliers. Shares assigned to saturated or later-invalid parts are not redistributed. Actual hand, foot, mouth/tongue/beak, breast, genital and anal participation determines mapping. An ongoing old scene lacking reliable evidence skips development only. Native Lovin lacks whole-scene part evidence and grants no development; Lovin replaced by an ordinary RJW driver follows the RJW path.
+
+Feedback uses only pre-infestation current Corruption C and the recipient's current opinion O of the actual source. O retains its sign and includes existing memories; C is not historical maximum Corruption. Coercion, participant roles and orgasm count do not change this table. Existing RJW feedback remains independent.
+
+| Pre-infestation state | Initial mood | Initial opinion of actual source |
+| --- | ---: | ---: |
+| C < 30%, O >= 0 | +4 | +5 |
+| C < 30%, O < 0 | -4 | -5 |
+| C >= 30%, O >= 0 | +8 | +10 |
+| C >= 30%, O < 0 | +4 | 0; remove this source's old infestation opinion without adding a zero record |
+
+C=30% and O=0 enter the high-Corruption and nonnegative-opinion branches. Crossing a boundary during settlement affects the next encounter. Mood lasts one day, globally limited to one infestation memory. Opinion lasts three days, one per actual Master, at most three Masters. New reactions replace across stages and refresh duration; a fourth source displaces the oldest record. Opinion stays at its initial value for approximately 2.1 days and fades over the final approximately 0.9 day. Missing mood carriers skip memories without blocking other valid components.
+
+Disabling the ability leaves existing memories to expire. The preference follows personality storage and implantation, pauses outside the Master role, and resumes on return. New clones do not inherit it. Feedback memories retain stage, actual source and remaining duration through the existing personality-memory path; PNA remains with the body. Infestation creates or transfers no bond, grants no Master experience and advances no Chain stage.
+
+Addicted observers apply the existing source preference to an enabled Master who can legally infest them: ×1.25 outside withdrawal or ×1.50 in withdrawal, without multiplying twice for dual sources. This does not guarantee invitation acceptance or add preference for non-addicted observers. Actual fluid quantity, condoms and specific organs currently do not gate PNA input; they are future work under [item 22](Docs/Design/未来内容开发规划.md#22-主人身份的功能与数值拓展). Personal activation maintenance remains under existing [item 25](Docs/Design/未来内容开发规划.md#25-新版-pna-的性奴正面效果与主动补给). Dedicated RimTalk adaptation is deferred.
+
+See the [completion audit (Chinese)](Docs/Development/Completed/主人欲望侵染完成核对.md) for acceptance and compatibility boundaries.
 
 ## 12. Public Use Specialization
 
@@ -1425,7 +1462,7 @@ The operation currently does not reference `Sex Reassignment Surgery (Male to Fe
 
 | Setting | Default | Effect |
 |---|---:|---|
-| Allow direct Master selection | On | Bypass personal qualification for new Master choices; grants no permanent qualification and does not bypass research |
+| Allow direct Master selection | Off | Bypass personal qualification for new Master choices; grants no permanent qualification and does not bypass research |
 | Enable behavior restrictions | On | Controls unified restrictions and overrides; off retains configurations |
 | Enable specialization overrides | On | Controls profile overrides only; equipment remains active |
 | Default behavior rules | See section 18.6 | Used for initialization; explicit batch overwrite requires confirmation |
@@ -1566,7 +1603,7 @@ This section records the audited code behavior and known limitations.
 2. **Binding Ritual genital compatibility is fixed at the worst bracket.** The ritual calls a size-difference method that currently returns `0`, producing `-20%`. Ordinary Training size scoring works separately.
 3. **Erotic Word has no normal acquisition path.** The ability and grant component exist, but the Mouth Hediff XML does not attach the component.
 4. **Several research nodes are technology-tree placeholders.** `Femboy Conversion` still lacks a complete matching system. Basic PNA Application is a prerequisite for later PNA research, and the launcher recipe now uses SSC launcher research. Version 2.3.7 implements ordinary Cat/Dog training, pet exclusivity, gel finalization, final active abilities and visible affection; the adult consensual follow-up is implemented and awaits in-game acceptance. Rabbit selection remains disabled. `Combatant` supports ordinary training, experience, gel finalization, and the final Combat Overdrive ability. `Personality Editing` acts as the parent node for specialization research.
-5. **Basic PNA Launcher uses SSC research.** In 2.4.0.5, its recipe references Basic PNA Launcher research, retaining Basic PNA Application and vanilla Precision Rifling prerequisites.
+5. **Basic PNA Launcher uses SSC research.** In 2.4.1, its recipe references Basic PNA Launcher research, retaining Basic PNA Application and vanilla Precision Rifling prerequisites.
 6. **Sex Reassignment Surgery is not research-locked.** Its operation exists without a `researchPrerequisite`. The duplicate definition for its surgery memory was fixed in 2.2.13; the current independent memory definition is not a remaining duplicate-load issue.
 7. **Personality trait transfer and the gel UI have been fixed.** The maintainer has confirmed this round of fixes is effective. Ordinary personality traits are now restored from the gel snapshot while preserving the receiving body's genes and their traits. Legacy entries are restored as personality traits because their source was not recorded; new gels save only traits without a gene source. The Sex Slave trait is still rebuilt separately from restored highest-ever Corruption. See the [fix record (Chinese)](Docs/Development/Completed/人格普通特质迁移修复.md) for details.
 8. **Public Use progress now uses the saved component.** Version 2.3.6 routes daily base Training progress through the shared component entry; trade rewards also update component progress and synchronize the ordinary Hediff. Final recipes continue to check saved progress.

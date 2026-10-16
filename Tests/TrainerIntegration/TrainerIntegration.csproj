@@ -5,6 +5,7 @@
     <SscSourceRoot Condition="'$(SscSourceRoot)' == ''">../../Sexslavecraft</SscSourceRoot>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="../Shared/BondRelationMaintenanceBoundary.cs" Link="Shared/BondRelationMaintenanceBoundary.cs" />
     <!-- 共用游戏对象的最小接口模型；不复制身份、绑定、标签或维护算法。 -->
     <Compile Include="../TrainerIdentity/GameStubs.cs" Link="Shared/GameStubs.cs" />
     <Compile Include="../TrainerIdentity/FeedbackInterfaces.cs" Link="Shared/FeedbackInterfaces.cs" />
@@ -40,4 +41,5 @@
     <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionTrainerAssignment.cs" Link="Production/SSCRestrictionTrainerAssignment.cs" />
     <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionConfigurationBuilder.cs" Link="Production/SSCRestrictionConfigurationBuilder.cs" />
   </ItemGroup>
+  <Import Project="../Shared/AbilityToggleProduction.targets" />
 </Project>

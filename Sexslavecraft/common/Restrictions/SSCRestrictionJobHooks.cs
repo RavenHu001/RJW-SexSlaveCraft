@@ -43,33 +43,22 @@ namespace SexSlaveCraft
     [HarmonyPatch(typeof(SexUtility), nameof(SexUtility.ProcessSex))]
     internal static class SSCTrainerInitiatedSexProgressHook
     {
-        /// <summary>普通双人完成只认领一次，再分发原经验与 PNA；不新增补丁或第二套去重状态。</summary>
-        public static void Postfix(SexProps props, bool __runOriginal)
+        /// <summary>原结算前冻结参与者与人格，只占用本场临时重入凭据，不提前发奖。</summary>
+        [HarmonyPriority(Priority.First)]
+        public static void Prefix(SexProps props, out SSCOrdinarySexOutcomeUtility.Context __state)
+            => __state = SSCRestrictionJobGuard.PrepareOrdinaryOutcome(props);
+
+        /// <summary>同一持久化认领先分发既有经验，再按每方向来源规则结算一次。</summary>
+        public static void Postfix(SexProps props, bool __runOriginal, SSCOrdinarySexOutcomeUtility.Context __state = null)
         {
-            // 其他补丁可能跳过 RJW 原结算；Harmony 此时仍会调用后缀。
-            // 未执行原方法就没有完成事件，不能凭旧的开始凭据领奖。
-            if (!__runOriginal) return;
-
-            // 日常调教、绑定仪式和人格排泄虽也调用 ProcessSex，仍各走自己
-            // 的专用结算路径。普通场景无论当前是否有供给者都消费完成凭据，不能以后重放。
-            if (!SSCRestrictionJobGuard.TryClaimOrdinarySexOutcome(props, out Pawn initiator, out Pawn recipient)) return;
-            var driver = initiator.jobs?.curDriver as JobDriver_SexBaseInitiator;
-            Job completedJob = driver?.job;
-            int completedJobId = completedJob?.loadID ?? -1;
-            // 短期局部引用仅服务本次调用。奖励和健康通知可能换任务或复用 Job，逐次核对原归属。
-            bool IsCurrentScene() => driver != null && completedJob != null && initiator.jobs?.curDriver == driver &&
-                ReferenceEquals(driver.job, completedJob) && ReferenceEquals(initiator.CurJob, completedJob) &&
-                completedJob.loadID == completedJobId &&
-                driver.Partner == recipient && driver.Sexprops == props &&
-                props.initiator == initiator && props.recipient == recipient;
-
-            TrainerSpecializationProgressUtility.NotifyInitiatedSexCompleted(initiator, recipient);
-            if (props.isCoreLovin || !IsCurrentScene()) return;
-            // 每个真实双人完成逐对处理；两名产出者可互相供给，不遍历同场动画名单或按高潮累加。
-            SSCPnaSexSupplyUtility.ApplyFromProducer(initiator, recipient);
-            if (!IsCurrentScene()) return;
-            SSCPnaSexSupplyUtility.ApplyFromProducer(recipient, initiator);
+            if (!__runOriginal || __state == null || !__state.TryClaim()) return;
+            TrainerSpecializationProgressUtility.NotifyInitiatedSexCompleted(__state.Initiator, __state.Recipient);
+            if (__state.IsCurrent) __state.Dispatch();
         }
+
+        // Finalizer 在原方法/后缀抛异常时也释放占用；不接管或吞掉 RJW/第三方异常。
+        public static void Finalizer(SSCOrdinarySexOutcomeUtility.Context __state) => __state?.Dispose();
+
     }
 
     [HarmonyPatch]

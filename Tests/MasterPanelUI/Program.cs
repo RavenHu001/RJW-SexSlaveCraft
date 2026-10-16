@@ -58,6 +58,7 @@ internal static partial class Program
         Run("原缰绳字段存读档保留关闭值", BridleRoundTrip);
         Run("旧档缺开关字段仍默认开启", OldSaveDefault);
         Run("主文件接入同一面板高度且保留未选择分支", Integration);
+        RunAbilityToggleTests();
         Console.WriteLine($"{passed}/{passed + failed} passed (production Master panel/bridle; approximate game interface model).");
         return failed == 0 ? 0 : 1;
     }
@@ -80,13 +81,18 @@ internal static partial class Program
     {
         var pawn = new Pawn(); Assert(SSCMasterProgressionUtility.RestoreRecord(pawn, experience)); return pawn;
     }
-    private static Hediff_BridleOfSexSlave Bind(Pawn pawn) => Hediff_BridleOfSexSlave.AddToPawn(pawn, new Pawn());
+    private static Hediff_BridleOfSexSlave Bind(Pawn pawn)
+    {
+        // 主人面板必须使用有反向锁链归属的场景，避免用孤立缰绳条目冒充真实绑定。
+        var slave = new Pawn { BoundMaster = pawn };
+        return Hediff_BridleOfSexSlave.AddToPawn(pawn, slave);
+    }
 
     /// <summary>四语标签来自真实注入文件；没有人工复制一套面板文本。</summary>
     private static void LoadLanguage(string language)
     {
         Translation.Entries.Clear();
-        foreach (string name in new[] { "SSC_MasterProgression.xml", "SSC_Keys.xml" })
+        foreach (string name in new[] { "SSC_MasterProgression.xml", "SSC_Keys.xml", "SSC_AbilityToggles.xml" })
             foreach (var node in XDocument.Load(Path.Combine(repo, "Languages", language, "Keyed", name)).Root.Elements()) Translation.Entries[node.Name.LocalName] = node.Value;
         var injected = XDocument.Load(Path.Combine(repo, "Languages", language, "DefInjected/HediffDef/SSC_MasterProgression.xml")).Root;
         var definition = SSCDefOf.SSC_Hediff_MasterProgression;
@@ -169,17 +175,17 @@ internal static partial class Program
     private static void MissingBridle()
     {
         Pawn pawn = Grown(12); int adds = pawn.health.Adds; Widgets.Click = true; Tab().Draw(pawn);
-        Assert(Widgets.Items.Single(i => i.Kind == "checkbox").Disabled && SSCBondUtility.GetBridle(pawn) == null && pawn.health.Adds == adds);
+        Assert(Widgets.Items.First(i => i.Kind == "checkbox").Disabled && SSCBondUtility.GetBridle(pawn) == null && pawn.health.Adds == adds);
     }
     private static void NonPlayer()
     {
         Pawn pawn = Grown(12); var bridle = Bind(pawn); pawn.Faction = new Faction(); Widgets.Click = true; Tab().Draw(pawn);
-        Assert(Widgets.Items.Single(i => i.Kind == "checkbox").Disabled && bridle.shareDamageEnabled);
+        Assert(Widgets.Items.First(i => i.Kind == "checkbox").Disabled && bridle.shareDamageEnabled);
     }
     private static void DisabledGUI()
     {
         Pawn pawn = Grown(12); var bridle = Bind(pawn); GUI.enabled = false; Widgets.Click = true; Tab().Draw(pawn);
-        Assert(!GUI.enabled && bridle.shareDamageEnabled && Widgets.Items.Single(i => i.Kind == "checkbox").Disabled);
+        Assert(!GUI.enabled && bridle.shareDamageEnabled && Widgets.Items.All(i => i.Kind != "checkbox" || i.Disabled));
     }
     private static void Late(Action<ITab_SexSlaveTraining, Pawn, Hediff_BridleOfSexSlave> change)
     {

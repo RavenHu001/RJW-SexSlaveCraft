@@ -23,7 +23,7 @@ namespace Verse
     public class MapPawns { public List<Pawn> SlavesOfColonySpawned = new List<Pawn>(); public List<Pawn> FreeColonists = new List<Pawn>(); }
     public class Pawn : Thing
     {
-        public bool Dead, Deathresting, Sleeping, MedicalRest;
+        public bool Discarded, Dead, Deathresting, Sleeping, MedicalRest;
         public float BodySize = 1f;
         public string LabelShortCap = "Pawn";
         public GuestStatus? GuestStatus;
@@ -380,6 +380,7 @@ namespace SexSlaveCraft
     }
     public static class SSCBondUtility
     {
+        public static Pawn GetBoundMaster(Pawn pawn) => pawn?.Chain?.LinkedPawn;
         /// <summary>返回用例预置的锁链，包括可用于验证损坏引用的空主人锁链。</summary>
         public static Hediff_ChainOfSexSlave GetChain(Pawn pawn) => pawn?.Chain;
     }

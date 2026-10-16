@@ -12,10 +12,14 @@ internal static partial class Program
 {
     private static void RunMasterQualificationTests(string repo)
     {
-        Run("主人手动赋予默认开启，但选择和查询都不写永久资格", () =>
+        Run("主人手动赋予默认关闭，明确开启后不写永久资格且关闭不撤销已有身份", () =>
         {
+            SSCMod.settings = new Settings();
             Pawn pawn = Pawn();
-            Assert(new SSCSettings().allowDirectMasterSelection && SSCMod.settings.allowDirectMasterSelection);
+            Assert(!new SSCSettings().allowDirectMasterSelection && !SSCMod.settings.allowDirectMasterSelection);
+            Assert(!SSCMasterQualificationUtility.CanSelectMaster(pawn));
+            Assert(!SSCIdentityUtility.TrySetIdentity(pawn, PawnIdentity.Master));
+            SSCMod.settings.allowDirectMasterSelection = true;
             Assert(SSCMasterQualificationUtility.CanSelectMaster(pawn));
             Assert(SSCIdentityUtility.TrySetIdentity(pawn, PawnIdentity.Master));
             Assert(!SSCMasterQualificationUtility.HasQualification(pawn));
@@ -171,19 +175,24 @@ internal static partial class Program
             }
             finally { Scribe_Values.Loading = false; Scribe_Values.Data.Clear(); }
         });
-        Run("手动赋予设置保存关闭值，旧设置缺字段默认开启", () =>
+        Run("手动赋予设置保留明确开关值，旧设置缺字段默认关闭", () =>
         {
             try
             {
-                var settings = new SSCSettings { allowDirectMasterSelection = false };
-                Scribe_Values.Data.Clear(); Scribe_Values.Loading = false; settings.ExposeMasterQualificationSettings();
-                settings.allowDirectMasterSelection = true; Scribe_Values.Loading = true; settings.ExposeMasterQualificationSettings();
-                Assert(!settings.allowDirectMasterSelection);
-                Scribe_Values.Data.Clear(); settings.ExposeMasterQualificationSettings(); Assert(settings.allowDirectMasterSelection);
+                foreach (bool enabled in new[] { false, true })
+                {
+                    var settings = new SSCSettings { allowDirectMasterSelection = enabled };
+                    Scribe_Values.Data.Clear(); Scribe_Values.Loading = false; settings.ExposeMasterQualificationSettings();
+                    settings.allowDirectMasterSelection = !enabled;
+                    Scribe_Values.Loading = true; settings.ExposeMasterQualificationSettings();
+                    Assert(settings.allowDirectMasterSelection == enabled);
+                    Scribe_Values.Data.Clear(); settings.allowDirectMasterSelection = true;
+                    settings.ExposeMasterQualificationSettings(); Assert(!settings.allowDirectMasterSelection);
+                }
             }
             finally { Scribe_Values.Loading = false; Scribe_Values.Data.Clear(); }
         });
-        Run("空输入不授予资格，资格查询不根据当前主人身份推导或迁移", () =>
+        Run("缺少设置时仍要求资格，不根据当前身份推导或迁移", () =>
         {
             Assert(!SSCMasterQualificationUtility.HasQualification(null) && !SSCMasterQualificationUtility.CanSelectMaster(null));
             SSCMasterQualificationMigration.Migrate(null); SSCMasterQualificationUtility.InitializeNewClone(null);
@@ -191,6 +200,15 @@ internal static partial class Program
             SSCMod.settings.allowDirectMasterSelection = false;
             for (int i = 0; i < 3; i++) Assert(!SSCMasterQualificationUtility.HasQualification(pawn) && !SSCMasterQualificationUtility.CanSelectMaster(pawn));
             Assert(pawn.Training.masterQualificationVersion == 0);
+            var previousSettings = SSCMod.settings;
+            try
+            {
+                SSCMod.settings = null;
+                Assert(!SSCMasterQualificationUtility.CanSelectMaster(pawn));
+                pawn.Training.ReplaceMasterQualification(true);
+                Assert(SSCMasterQualificationUtility.CanSelectMaster(pawn));
+            }
+            finally { SSCMod.settings = previousSettings; }
         });
         Run("主人准入和设置提示四语完整，根目录与源码镜像一致", () =>
         {

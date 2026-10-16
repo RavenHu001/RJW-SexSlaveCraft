@@ -20,6 +20,9 @@ namespace SexSlaveCraft
             public Pawn Actor, Target;
             public int PeerJobId;
             public bool Started, Rejected;
+            public bool OutcomeClaimed;
+            // 仅 Cleanup 调用期间占用，持久化字段只保存最终认领。
+            public bool OutcomeInFlight;
             // 只在原版同步创建另一端的调用栈中有效；不是可保存的许可或“已开始”标记。
             public bool CreatingReceiver;
         }
@@ -165,6 +168,7 @@ namespace SexSlaveCraft
             Scene state = State(driver);
             Scribe_Values.Look(ref state.HasRecord, "sscLovinRecord", false);
             Scribe_Values.Look(ref state.Started, "sscLovinStarted", false);
+            Scribe_Values.Look(ref state.OutcomeClaimed, "sscLovinOutcomeClaimed", false);
             Scribe_Values.Look(ref state.PeerJobId, "sscLovinPeerJob", 0);
             Scribe_References.Look(ref state.Actor, "sscLovinActor");
             Scribe_References.Look(ref state.Target, "sscLovinTarget");
@@ -182,6 +186,41 @@ namespace SexSlaveCraft
                 }
             }
             state.HasRecord = true;
+        }
+
+        /// <summary>只有原发起端成功且倒计时结束才捕获；接收端或替换后的旧驱动不得借用。</summary>
+        public static SSCOrdinarySexOutcomeUtility.Context PrepareOutcome(JobDriver_Lovin driver, JobCondition condition)
+        {
+            if (Scribe.mode != LoadSaveMode.Inactive || condition != JobCondition.Succeeded ||
+                driver.pawn?.jobs?.curDriver != driver) return null;
+            Scene state = State(driver);
+            JobDriver_Lovin peer = Peer(driver);
+            Scene other = peer == null ? null : State(peer);
+            if (!state.Started || state.Rejected || state.OutcomeClaimed || state.OutcomeInFlight ||
+                state.Actor != driver.pawn || state.Target != Partner(driver) || peer == null ||
+                !other.Started || other.Rejected || other.OutcomeClaimed ||
+                other.Actor != state.Actor || other.Target != state.Target ||
+                peer.job.loadID != state.PeerJobId || other.PeerJobId != driver.job.loadID ||
+                Traverse.Create(driver).Field("ticksLeft").GetValue<int>() > 0) return null;
+            Pawn actor = state.Actor, target = state.Target;
+            Job job = driver.job, peerJob = peer.job;
+            int jobId = job.loadID, peerId = peerJob.loadID;
+            bool Current() => actor.jobs?.curDriver == driver && ReferenceEquals(driver.job, job) &&
+                job.loadID == jobId && Partner(driver) == target && ReferenceEquals(peer.job, peerJob) &&
+                peerJob.loadID == peerId && Partner(peer) == actor &&
+                (target.jobs?.curDriver == peer || target.jobs?.curDriver == null);
+            state.OutcomeInFlight = true;
+            try
+            {
+                // 原版 Lovin 只引入侵染，不扩大普通产出者的旧补给范围。
+                return SSCOrdinarySexOutcomeUtility.Capture(actor, target, false, Current, () =>
+                {
+                    bool valid = !state.OutcomeClaimed && !other.OutcomeClaimed && Current();
+                    state.OutcomeClaimed = other.OutcomeClaimed = true;
+                    return valid;
+                }, () => state.OutcomeInFlight = false);
+            }
+            catch { state.OutcomeInFlight = false; throw; }
         }
 
         /// <summary>未真正开始的 Lovin 不允许以成功条件进入 Cleanup，防止 RJW 的成功前缀为被拒绝任务结算。</summary>
@@ -226,15 +265,26 @@ namespace SexSlaveCraft
     {
         /// <summary>先于 RJW 成功结算前缀修正未开始的 Lovin 结束条件，仍执行原生资源清理。</summary>
         [HarmonyPriority(Priority.First)]
-        public static void Prefix(JobDriver __instance, ref JobCondition condition)
+        [HarmonyBefore("rjw")]
+        public static void Prefix(JobDriver __instance, ref JobCondition condition, out SSCOrdinarySexOutcomeUtility.Context __state)
         {
-            if (__instance is JobDriver_Lovin lovin) SSCRestrictionLovinGuard.BeforeCleanup(lovin, ref condition);
+            __state = null;
+            if (__instance is JobDriver_Lovin lovin)
+            {
+                SSCRestrictionLovinGuard.BeforeCleanup(lovin, ref condition);
+                __state = SSCRestrictionLovinGuard.PrepareOutcome(lovin, condition);
+            }
         }
 
         /// <summary>任何原因结束准备中的 RJW 事件任务时撤销自身等待，覆盖寻路失败和外部取消。</summary>
-        public static void Postfix(JobDriver __instance)
+        public static void Postfix(JobDriver __instance, JobCondition condition, bool __runOriginal,
+            SSCOrdinarySexOutcomeUtility.Context __state)
         {
+            // RJW 的 isCoreLovin ProcessSex 只运行原结算；本适配器在成功 Cleanup 后唯一领取。
+            if (__runOriginal && condition == JobCondition.Succeeded && __state?.TryClaim() == true) __state.Dispatch();
             if (__instance is rjw.JobDriver_Sex sex) SSCRestrictionJobGuard.CleanupAbortedPreparation(sex);
         }
+
+        public static void Finalizer(SSCOrdinarySexOutcomeUtility.Context __state) => __state?.Dispose();
     }
 }

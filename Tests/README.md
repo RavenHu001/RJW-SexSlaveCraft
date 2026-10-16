@@ -2,7 +2,15 @@
 
 [文档总索引](../Docs/README.md) · [发布与打包](../Docs/Maintenance/发布与打包.md) · [开发记录](../Docs/Development/README.md)
 
-当前仓库为 **2.4.0.5 开发里程碑**，`Scripts/Test-All.ps1` 登记 **30 套**。PNA 基础新增 `PnaLoad`，第五步新增 `ForcedSexProps`；最近 PNA 专项为 **288/288**，该修正未重复全量。本次版本登记只检查文档及标记，不运行代码测试。原始记录与完整验证边界见[2.4.0.5 版本验证](../Docs/Releases/2.4.0.5/2.4.0.5版本验证.md)。历史正式 2.4.0 为 28 套，2.3.9 为 25 套；当次结果见[2.4.0 版本验证](../Docs/Releases/2.4.0/2.4.0版本验证.md)，不回写历史计数。
+当前版本归属为 **2.4.1（未发布）**，原 2.4.0.5 开发里程碑及后续开发统一纳入。`Scripts/Test-All.ps1` 登记 **33 套**，另有 Def／Languages 独立资源门禁；最近完整检查为 33/33 套、2516/2516 项及两项资源检查通过，发布编排夹具 35/35。已有结果与本轮仅做文档检查的边界见[2.4.1 版本验证](../Docs/Releases/2.4.1/2.4.1版本验证.md)。历史 2.4.0 的 28 套及 2.3.9 的 25 套保留原计数，不回写。
+
+以下保留现已归入 2.4.1 的原 2.4.0.5 基线后分批记录：[欲望侵染第一批](../Docs/Development/Completed/欲望侵染第一批通用开关框架实现与测试.md)：通用状态框架与首个能力已获维护者实机确认，实际性交收益在当时未接通。本批最终统一回归 **30/30 套、2176/2176 项通过**，PnaLoad 为 **297/297**；在该记录独立登记，不覆盖原 PNA 里程碑的 288/288。
+
+第三批新增 [TrainingExperience](TrainingExperience/README.md) 生产源码专项，并扩展真实 Harmony 完成／存档集成；维护者已确认本批符合预期，结果及验收边界见[第三批记录](../Docs/Development/Completed/欲望侵染第三批真实部位与弱开发实现与测试.md)。
+
+第四批新增 [DesireInfestationFeedback](DesireInfestationFeedback/README.md)，链接反馈、完成分发与人格记忆生产代码，并扩展真实 Harmony 完成集成；维护者已确认本批符合预期，实际结果与验收范围见[第四批记录](../Docs/Development/Completed/欲望侵染第四批独立反馈实现与测试.md)。
+
+四批参数、提交与实际验收汇总见[主人欲望侵染完成核对](../Docs/Development/Completed/主人欲望侵染完成核对.md)；本轮文档收口只做静态与哈希检查，机制计数保留原执行日期。
 
 ## 统一入口
 
@@ -12,7 +20,9 @@
 pwsh -File Scripts/Test-All.ps1 -HarmonyAssemblyPath 'C:\Dependencies\Harmony\net9.0\0Harmony.dll'
 ```
 
-报告位于 `.builds/validation/`。测试桩与自动回归不能替代游戏内流程、动画及真实存档往返验收。
+统一入口先分别执行只读 Def 和 Languages 镜像检查。Def 检查遍历 `Sexslavecraft/Defs` 中现有文件，要求根目录对应源存在、SHA-256 一致且 XML 可解析；根目录独有文件不要求新增镜像，目录缺失或镜像集合为空也会失败。Languages 检查要求根目录与 `Sexslavecraft/Languages` 的完整文件集合和哈希一致，拒绝缺失、差异、镜像独有文件、缺目录及空源集合。两个检查始终分别执行和记录；任一失败会将机制套件标为 `NotRun` 并阻止打包，不自动同步文件。
+
+可单独执行 `pwsh -File Scripts/Test-DefMirrors.ps1` 或 `pwsh -File Scripts/Sync-LanguagesMirror.ps1`。两者均支持 `-RepositoryRoot` 与 `-PassThru`；语言同步仍须显式加 `-Sync`。统一报告位于 `.builds/validation/`，分别生成 `DefMirrors.log`、`LanguagesMirrors.log`，并在 `summary.json` 的 `Checks` 中按 `DefMirrors`／`LanguagesMirrors` 登记状态、文件数、原因和日志路径，合计字段为 `CheckCount`、`PassedChecks`、`FailedChecks`。镜像检查不计入机制套件或用例数。测试桩与自动回归不能替代游戏内流程、动画及真实存档往返验收。
 
 ## 主人资格与成长（2.4.0）
 
@@ -30,7 +40,7 @@ pwsh -File Scripts/Test-All.ps1 -HarmonyAssemblyPath 'C:\Dependencies\Harmony\ne
 
 ## 身份、训导官与自我调教
 
-- [PnaLoad](PnaLoad/README.md)：2.4.0.5 的 PNA 负荷、成瘾、来源、信息栏与旧档回归；P3 直接执行 SSC 新生／成熟复制及身体归属过滤，详见[P3 测试记录](../Docs/Development/Verification/PNA机制重置P3实现与测试.md)。
+- [PnaLoad](PnaLoad/README.md)：2.4.1 的 PNA 负荷、成瘾、来源、信息栏与旧档回归；P3 直接执行 SSC 新生／成熟复制及身体归属过滤，详见[P3 测试记录](../Docs/Development/Verification/PNA机制重置P3实现与测试.md)。
 
 - [TrainerIdentity](TrainerIdentity/README.md)：调教员身份回归。
 - [TrainerIntegration](TrainerIntegration/README.md)：训导官人格恢复集成回归。
@@ -73,4 +83,10 @@ pwsh -File Scripts/Test-All.ps1 -HarmonyAssemblyPath 'C:\Dependencies\Harmony\ne
 
 ## 编排与打包流程回归
 
-- [ValidationRunner](ValidationRunner/README.md)：验证统一脚本的状态汇总、依赖预检与打包阻断；独立流程检查，不计入上述 28 套机制回归。
+- [ValidationRunner](ValidationRunner/README.md)：验证统一脚本的状态汇总、依赖预检与打包阻断；独立流程检查，不计入机制回归套件数。
+
+第二批新增普通完成快照与侵染来源专项，真实生产上下文、PNA 输入和任务适配器分别执行；当前结果与游戏边界见[第二批实现记录](../Docs/Development/Completed/欲望侵染第二批普通完成与来源择强实现与测试.md)。历史计数保留各次实际运行范围。
+
+## 恩赐与 PNA 实际选择专项
+
+PNA 输入与来源偏好已经接通；实际 RJW 候选选择及双向评价仍需按[专项清单](../Docs/Development/Verification/欢愉恩赐PNA来源偏好专项核验.md)核验，不以宿主通过数代替实机结果。恶堕资格放宽与来源倍率差异暂缓，见未来第 22 项。

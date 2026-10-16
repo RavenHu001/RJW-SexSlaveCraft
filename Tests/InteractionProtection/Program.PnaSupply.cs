@@ -72,11 +72,11 @@ internal static partial class Program
                 "独立任务应分别完成");
             Assert(SSCPnaSexSupplyUtility.Calls[2] == (p.c, p.b) && SSCPnaSexSupplyUtility.Calls[3] == (p.b, p.c), "同场串对");
         });
-        Run("PNA 原版 Lovin 标记不分发且不改变原经验路径", () =>
+        Run("PNA 原版 Lovin 标记交给独立适配器且普通后缀不分发", () =>
         {
             ResetSexAwards(); var p = People(); var d = Driver(p.a, p.b, rape: false); Begin(d); d.ticks_left = 0;
             d.Sexprops.isCoreLovin = true; SexUtility.ProcessSex(d.Sexprops);
-            Assert(SSCPnaSexSupplyUtility.Calls.Count == 0 && TrainerSpecializationProgressUtility.InitiatedSexAwards == 1, "原版来源不得发 PNA");
+            Assert(SSCPnaSexSupplyUtility.Calls.Count == 0 && TrainerSpecializationProgressUtility.InitiatedSexAwards == 0, "原版来源不得由普通适配器认领");
         });
         Run("PNA SSC 专用任务和单人任务不分发", () =>
         {

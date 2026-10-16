@@ -157,7 +157,8 @@ namespace Verse
     {
         public static List<T> AllDefsListForReading = new List<T>();
         /// <summary>测试仅请求调教工作定义。</summary>
-        public static T GetNamedSilentFail(string name) => new T();
+        public static T GetNamedSilentFail(string name) => typeof(T) == typeof(HediffDef)
+            ? AllDefsListForReading.FirstOrDefault(d => ((HediffDef)(object)d).defName == name) : new T();
     }
     public static class Find { public static TickManager TickManager = new TickManager(); }
     public class TickManager { public int TicksGame = 100000; }

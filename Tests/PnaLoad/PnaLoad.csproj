@@ -24,4 +24,15 @@
   <Target Name="RequireHarmony" BeforeTargets="ResolveReferences" Condition="!Exists('$(HarmonyAssemblyPath)')">
     <Error Text="Supply -p:HarmonyAssemblyPath with the local net9.0 0Harmony.dll." />
   </Target>
+  <Import Project="../Shared/AbilityToggleProduction.targets" />
+  <ItemGroup>
+    <Compile Include="../../Sexslavecraft/ThePatches/Harmony_SSCAbilityToggles.cs" Link="Production/Harmony_SSCAbilityToggles.cs" />
+    <Compile Include="../../Sexslavecraft/common/SSCAbilityToggleGameComponent.cs" Link="Production/SSCAbilityToggleGameComponent.cs" />
+  </ItemGroup>
+  <ItemGroup><Compile Include="../Shared/AbilityToggleScribeStubs.cs" Link="Boundary/AbilityToggleScribe.cs" /></ItemGroup>
+  <ItemGroup>
+    <Compile Include="../../Sexslavecraft/common/SSCDesireInfestationUtility.cs" Link="Production/SSCDesireInfestationUtility.cs" />
+    <Compile Include="../../Sexslavecraft/common/SSCOrdinarySexOutcomeUtility.cs" Link="Production/SSCOrdinarySexOutcomeUtility.cs" />
+    <Compile Include="../../Sexslavecraft/common/AddCorruption.cs" Link="Production/AddCorruption.cs" />
+  </ItemGroup>
 </Project>

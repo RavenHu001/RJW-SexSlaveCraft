@@ -20,7 +20,7 @@ internal static partial class Program
         root = args.Length == 0 ? Path.GetFullPath("../../") : Path.GetFullPath(args[0]);
         var harmony = new Harmony("ssc.tests.pna-load");
         harmony.PatchAll(Assembly.GetExecutingAssembly());
-        Run("真实 Harmony 注册五个 PNA 补丁", () => Equal(5, harmony.GetPatchedMethods().Count(), "补丁数"));
+        Run("真实 Harmony 注册五个 PNA 目标及两个能力生死目标", () => Equal(7, harmony.GetPatchedMethods().Count(), "补丁目标数"));
         foreach (float invalid in new[] { 0f, -1f, float.NaN, float.PositiveInfinity, float.NegativeInfinity })
             Run("拒绝异常剂量 " + invalid, () => { var pawn = NewPawn(); var r = Input(pawn, invalid); Assert(!r.Accepted && Record(pawn) == null, "拒绝且不创建"); });
         Run("拒绝空目标和非法来源", () => { Assert(!Input(null, .08f).Accepted, "空目标"); Assert(!SSCPnaExposureUtility.ApplyExposure(NewPawn(), .08f, (SSCPnaExposureSource)99).Accepted, "非法来源"); });
@@ -88,6 +88,8 @@ internal static partial class Program
         RunEffectsStep3Tests();
         RunEffectsStep4Tests();
         RunEffectsStep5Tests();
+        RunAbilityToggleLifecycleTests();
+        RunInfestationTests();
         RunRefinementTests();
         Console.WriteLine($"结果：{passed}/{passed+failed} 项通过。");
         return failed==0 ? 0:1;

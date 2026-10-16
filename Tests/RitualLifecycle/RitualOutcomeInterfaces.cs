@@ -54,11 +54,29 @@ namespace Verse
     }
     public sealed class MindState { public Duty duty; }
     public sealed class Duty { public Def def; public object focus; }
+    public sealed class BondDirectRelation { public object def; public Pawn otherPawn; }
     public partial class RelationTracker
     {
-        public int OpinionOf(Pawn other) => 0;
-        public bool DirectRelationExists(object relation, Pawn other) => false;
-        public void AddDirectRelation(object relation, Pawn other) { }
+        // 替换原先固定 0 好感和空写入的边界，记录真实 Apply 对原生社交接口的操作。
+        // 只模拟记录和回调，是否准许授予关系仍由编译进来的生产服务判断。
+        public int Opinion;
+        public Pawn Owner;
+        public System.Action OnAdd, OnOpinion;
+        public readonly List<BondDirectRelation> DirectRelations = new List<BondDirectRelation>();
+        public int OpinionOf(Pawn other) { OnOpinion?.Invoke(); return Opinion; }
+        public bool DirectRelationExists(object relation, Pawn other) => DirectRelations.Any(r => r.def == relation && r.otherPawn == other);
+        public void AddDirectRelation(object relation, Pawn other)
+        {
+            // Owner 在关系专项场景中显式配置，以观察两个方向及写入回调。
+            DirectRelations.Add(new BondDirectRelation { def = relation, otherPawn = other });
+            if (Owner != null) other.relations.DirectRelations.Add(new BondDirectRelation { def = relation, otherPawn = Owner });
+            OnAdd?.Invoke();
+        }
+        public bool TryRemoveDirectRelation(object relation, Pawn other)
+        {
+            if (Owner != null) other?.relations.DirectRelations.RemoveAll(r => r.def == relation && r.otherPawn == Owner);
+            return DirectRelations.RemoveAll(r => r.def == relation && r.otherPawn == other) > 0;
+        }
     }
 }
 namespace RimWorld

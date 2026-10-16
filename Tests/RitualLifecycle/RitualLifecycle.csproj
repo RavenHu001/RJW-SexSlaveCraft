@@ -8,6 +8,8 @@
     <DefineConstants Condition="'$(EnableUapTestStub)' == 'true'">$(DefineConstants);SSC_TEST_WITH_UAP</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(SscSourceRoot)/common/SSCBondRelationRules.cs" Link="Production/SSCBondRelationRules.cs" />
+    <Compile Include="$(SscSourceRoot)/common/SSCBondRelationUtility.cs" Link="Production/SSCBondRelationUtility.cs" />
     <Compile Include="$(SscSourceRoot)/JobDriver/JobDriver_PE.cs" Link="Production/JobDriver_PE.cs" />
     <Compile Include="$(SscSourceRoot)/common/WorkGiverTargetUtility.cs" Link="Production/WorkGiverTargetUtility.cs" />
     <Compile Include="$(SscSourceRoot)/WorkGiver/WorkGiver_PE.cs" Link="Production/WorkGiver_PE.cs" />
@@ -36,4 +38,5 @@
     <Compile Include="$(SscSourceRoot)/common/ProgressionEducationCompatibility.cs" Link="Production/ProgressionEducationCompatibility.cs" />
     <Compile Include="$(SscSourceRoot)/common/Restrictions/SSCRestrictionConfigurationBuilder.cs" Link="Production/SSCRestrictionConfigurationBuilder.cs" />
   </ItemGroup>
+  <Import Project="../Shared/AbilityToggleProduction.targets" />
 </Project>

@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net9.0</TargetFramework></PropertyGroup>
+  <ItemGroup>
+    <Compile Include="../Shared/OrdinarySexPartsBoundary.cs" Link="Boundary/OrdinarySexParts.cs" />
+    <Compile Include="../InteractionProtection/RestrictionStubs.cs" Link="Boundary/Scribe.cs" />
+    <Compile Include="../../Sexslavecraft/common/TrainingExpUtility.cs" Link="Production/TrainingExpUtility.cs" />
+    <Compile Include="../../Sexslavecraft/common/TrainingOutcomeUtility.cs" Link="Production/TrainingOutcomeUtility.cs" />
+    <Compile Include="../../Sexslavecraft/common/LegacyTrainingUtility.cs" Link="Production/LegacyTrainingUtility.cs" />
+    <Compile Include="../../Sexslavecraft/common/ResearchUtils.cs" Link="Production/ResearchUtils.cs" />
+    <Compile Include="../../Sexslavecraft/common/SSCOrdinarySexPartsSnapshot.cs" Link="Production/SSCOrdinarySexPartsSnapshot.cs" />
+    <Compile Include="../../Sexslavecraft/common/SSCOrdinarySexPartsUtility.cs" Link="Production/SSCOrdinarySexPartsUtility.cs" />
+    <Compile Include="../../Sexslavecraft/common/SSCDesireInfestationBodyUtility.cs" Link="Production/SSCDesireInfestationBodyUtility.cs" />
+    <Compile Include="../../Sexslavecraft/common/SSCOrdinarySexOutcomeUtility.cs" Link="Production/SSCOrdinarySexOutcomeUtility.cs" />
+    <Compile Include="../../Sexslavecraft/common/SSCDesireInfestationUtility.cs" Link="Production/SSCDesireInfestationUtility.cs" />
+    <Compile Include="../../Sexslavecraft/common/SSCPersonalityRuntimeUtility.cs" Link="Production/SSCPersonalityRuntimeUtility.cs" />
+  </ItemGroup>
+</Project>

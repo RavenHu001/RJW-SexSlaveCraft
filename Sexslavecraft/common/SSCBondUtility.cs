@@ -77,6 +77,9 @@ namespace SexSlaveCraft
                 Hediff_BridleOfSexSlave bridle = Hediff_BridleOfSexSlave.AddToPawn(master, sexSlave);
                 if (chain == null || bridle == null) return false;
 
+                // 完成锁链与缰绳写入后清理旧主人关系；换绑不能把原仪式奖励转赠给新主人。
+                SSCBondRelationUtility.RemoveInvalidRelations(sexSlave);
+
                 // 限制系统沿用原有事务通知；训导官维护在作用域释放时运行。
                 SSCRestrictionGameComponent.Notify(sexSlave);
                 return true;
@@ -119,6 +122,8 @@ namespace SexSlaveCraft
                     }
                 }
 
+                // 即使锁链原先已缺失，也清除旧档残留的社交奖励；原生接口同时处理另一端。
+                SSCBondRelationUtility.RemoveInvalidRelations(sexSlave);
                 return changed;
             }
         }

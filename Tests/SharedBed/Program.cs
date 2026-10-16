@@ -118,7 +118,15 @@ internal static partial class Program
             var f = Setup(); var cases = new[] { (.2f, 29, 0), (.2f, 30, 1), (.2f, 50, 2), (.3f, -100, 3), (.5f, -100, 4) };
             foreach (var item in cases) { f.slave.needs.Corruption.CurLevelPercentage = item.Item1; f.slave.relations.Opinion = item.Item2; Assert(SSCSharedBedUtility.GetSharedBedThoughtStage(f.slave, f.partner) == item.Item3); }
             f.slave.relations.FlawedLovers.Add(f.partner); f.slave.needs.Corruption.CurLevelPercentage = .01f;
+            Assert(SSCSharedBedUtility.GetSharedBedThoughtStage(f.slave, f.partner) != 5);
+            f.slave.Chain = new Hediff_ChainOfSexSlave { LinkedPawn = f.partner };
             Assert(SSCSharedBedUtility.GetSharedBedThoughtStage(f.slave, f.partner) == 5);
+        });
+        Run("第三方调教员的旧主人关系不授予最高同床心情", () =>
+        {
+            var f = Setup(); f.slave.Chain = new Hediff_ChainOfSexSlave { LinkedPawn = new Pawn() };
+            f.slave.relations.FlawedLovers.Add(f.partner);
+            Assert(SSCSharedBedUtility.GetSharedBedThoughtStage(f.slave, f.partner) != 5);
         });
         Run("已分配与未分配行均有性奴标记和说明", () =>
         {

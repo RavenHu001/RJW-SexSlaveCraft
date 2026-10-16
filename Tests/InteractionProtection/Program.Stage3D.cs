@@ -28,6 +28,8 @@ internal static partial class Program
         TrainerSpecializationProgressUtility.LastRecipient = null;
         TrainerSpecializationProgressUtility.OnAward = null;
         SSCPnaSexSupplyUtility.Calls.Clear();
+        SSCPnaSexSupplyUtility.StrongCalls = 0;
+        SexUtility.OnProcess = null;
         SSCPnaSexSupplyUtility.OnSupply = null;
     }
 

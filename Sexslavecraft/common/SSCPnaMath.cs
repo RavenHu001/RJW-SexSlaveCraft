@@ -12,7 +12,7 @@ namespace SexSlaveCraft
         public const int TicksPerDay = 60000;
         public const int UpdateInterval = 150;
         public const float OrdinaryExposureDose = 0.08f;
-        // 性交来源使用归一化负荷；产出者已接普通完成事件，主人侵染仅预留参数、尚未接通。
+        // 两种性交来源共用归一化负荷；调用方先择强，同一方向只进入一次共享输入。
         public const float MasterInfestationDose = 0.08f;
         public const float ProducerSexDose = 0.02f;
         // 真实输入后已处于末期时对已有成瘾的额外增量；信息展示也读取同一数值。

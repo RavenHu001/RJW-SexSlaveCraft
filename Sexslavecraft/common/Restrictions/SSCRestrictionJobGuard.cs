@@ -1,3 +1,4 @@
+// AI 辅助生成
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
@@ -26,6 +27,10 @@ namespace SexSlaveCraft
             public SSCInteractionKind Kind;
             public bool LegacyProgress;
             public bool TrainerProgressClaimed;
+            // 仅本次 ProcessSex 调用栈拥有；异常/跳过原方法后释放，不写入存档。
+            public bool OutcomeInFlight;
+            // 只由发起任务在首次真实 Start 建立；空值同时表示旧档或无可靠解析，不在收尾补造。
+            public SSCOrdinarySexPartsSnapshot Parts;
             // 准备归属和事件交接各自封装；场景只决定何时可登记、通知及清理。
             public readonly SSCRestrictionJobPreparation Preparation = new SSCRestrictionJobPreparation();
             public readonly SSCRestrictionJobEvents Events = new SSCRestrictionJobEvents();
@@ -146,10 +151,13 @@ namespace SexSlaveCraft
             if (!ranOriginal || driver.pawn?.jobs?.curDriver != driver) return true;
             SceneState state = State(driver);
             if (state.Rejected) return true;
+            bool firstStart = !state.Started;
             state.Started = true;
             state.Initiator = request.Initiator;
             state.Receiver = request.Receiver;
             state.Kind = SceneKind(driver, request);
+            if (firstStart && (state.Kind == SSCInteractionKind.Consensual || state.Kind == SSCInteractionKind.Forced))
+                state.Parts = SSCOrdinarySexPartsUtility.Capture(driver.Sexprops);
             var receiver = request.Receiver?.jobs?.curDriver as JobDriver_SexBaseReciever;
             if (receiver != null && receiver.Partner == request.Initiator)
             {
@@ -173,8 +181,8 @@ namespace SexSlaveCraft
             return true;
         }
 
-        /// <summary>为一次已开始的普通 RJW 双人任务认领整次完成分发，返回实际发起方向。</summary>
-        public static bool TryClaimOrdinarySexOutcome(SexProps props, out Pawn initiator, out Pawn recipient)
+        /// <summary>只读验证已开始的普通 RJW 完成候选，供原结算前快照与返回后的认领共用。</summary>
+        private static bool TryReadOrdinarySexOutcome(SexProps props, out Pawn initiator, out Pawn recipient)
         {
             initiator = null;
             recipient = null;
@@ -201,10 +209,46 @@ namespace SexSlaveCraft
             if (!state.Started || state.Rejected || state.TrainerProgressClaimed ||
                 state.Initiator != request.Initiator || state.Receiver != request.Receiver ||
                 state.Kind != request.Kind) return false;
-            state.TrainerProgressClaimed = true;
             initiator = request.Initiator;
             recipient = request.Receiver;
             return true;
+        }
+
+        public static bool TryClaimOrdinarySexOutcome(SexProps props, out Pawn initiator, out Pawn recipient)
+        {
+            if (!TryReadOrdinarySexOutcome(props, out initiator, out recipient)) return false;
+            State((JobDriver_SexBaseInitiator)initiator.jobs.curDriver).TrainerProgressClaimed = true;
+            return true;
+        }
+
+        /// <summary>原结算前只占用临时凭据；持久化认领等原方法正常返回后再消费。</summary>
+        public static SSCOrdinarySexOutcomeUtility.Context PrepareOrdinaryOutcome(SexProps props)
+        {
+            if (Scribe.mode != LoadSaveMode.Inactive || props?.isCoreLovin == true ||
+                !TryReadOrdinarySexOutcome(props, out Pawn initiator, out Pawn recipient)) return null;
+            var driver = (JobDriver_SexBaseInitiator)initiator.jobs.curDriver;
+            SceneState state = State(driver);
+            if (state.OutcomeInFlight) return null;
+            Job job = driver.job;
+            int jobId = job.loadID;
+            SSCOrdinarySexPartsSnapshot parts = state.Parts;
+            bool Current() => initiator.jobs?.curDriver == driver && ReferenceEquals(driver.job, job) &&
+                ReferenceEquals(initiator.CurJob, job) && job.loadID == jobId && driver.Partner == recipient &&
+                driver.Sexprops == props && props.initiator == initiator && props.recipient == recipient;
+            state.OutcomeInFlight = true;
+            try
+            {
+                return SSCOrdinarySexOutcomeUtility.Capture(initiator, recipient, true, Current, () =>
+                {
+                    bool valid = Current() && TryReadOrdinarySexOutcome(props, out Pawn a, out Pawn b) &&
+                        a == initiator && b == recipient && State(driver) == state;
+                    // 只写捕获的旧场状态；人格或参与者被回调改变后也不能让旧场补领。
+                    state.TrainerProgressClaimed = true;
+                    return valid;
+                }, () => state.OutcomeInFlight = false, parts,
+                    () => Current() && state.Parts == parts && parts?.Matches(props) == true);
+            }
+            catch { state.OutcomeInFlight = false; throw; }
         }
 
         /// <summary>只撤销当前请求准备的接收关联，再结束本驱动；保留其他参与者和后来替换的新任务。</summary>
@@ -257,6 +301,7 @@ namespace SexSlaveCraft
             Scribe_Values.Look(ref state.TrainerProgressClaimed, "sscTrainerSexProgressClaimed", false);
             Scribe_References.Look(ref state.Initiator, "sscRestrictionSceneInitiator");
             Scribe_References.Look(ref state.Receiver, "sscRestrictionSceneReceiver");
+            Scribe_Deep.Look(ref state.Parts, "sscOrdinarySexParts");
             state.Preparation.ExposeData();
             state.Events.ExposeData();
             // 原版 PostLoadInit 的 SetupToils 会重建 RJW 计时；必须先在 LoadingVars 捕获旧存档进度。
@@ -264,6 +309,8 @@ namespace SexSlaveCraft
                 state.LegacyProgress = driver.Sexprops != null &&
                     (driver.orgasms > 0 || (driver.duration > 0 && driver.ticks_left < driver.duration));
             if (Scribe.mode != LoadSaveMode.PostLoadInit) return;
+            // 引用解析后仅绑定已加载的 SexProps；不读取 resolved getter，不为旧档创建凭据。
+            state.Parts?.Bind(driver.Sexprops);
             if (state.LegacyProgress && driver is JobDriver_SexBaseInitiator &&
                 SSCRestrictionJobContext.TryCreate(driver, out SSCRestrictionRequest request) && request.DirectionKnown &&
                 (!state.HasRecord || (!state.HasTrainingRecord && SSCRestrictionTrainingUtility.IsTraining(request)) ||

@@ -1,0 +1,9 @@
+<Project>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)../../Sexslavecraft/common/SSCAbilityToggleState.cs" Link="Production/SSCAbilityToggleState.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)../../Sexslavecraft/common/SSCAbilityToggleUtility.cs" Link="Production/SSCAbilityToggleUtility.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)../../Sexslavecraft/common/SSCPersonalityRuntimeUtility.cs" Link="Production/SSCPersonalityRuntimeUtility.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)../../Sexslavecraft/Comps/Comp_AbilityToggles.cs" Link="Production/Comp_AbilityToggles.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)../../Sexslavecraft/Hediff/Hediff_SSCToggleAbilityMarker.cs" Link="Production/Hediff_SSCToggleAbilityMarker.cs" />
+  </ItemGroup>
+</Project>

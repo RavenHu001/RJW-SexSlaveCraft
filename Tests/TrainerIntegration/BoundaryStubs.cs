@@ -27,7 +27,7 @@ namespace SexSlaveCraft
     }
 
     /// <summary>仅承载凝胶数据和字典读写；状态选择、清理与恢复均执行生产 GelUtility。</summary>
-    public class CompPersonalityStore
+    public partial class CompPersonalityStore
     {
         public SexSlaveSpecializationType specializationType;
         public float specializationProgress;

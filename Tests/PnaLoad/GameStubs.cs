@@ -29,6 +29,7 @@ namespace Verse
     public class RaceProperties { public bool IsFlesh = true, Humanlike = true; }
     public partial class HediffDef
     {
+        public Type hediffClass;
         public string defName;
         public float initialSeverity = 0.01f, maxSeverity = 2f;
         public float[] thresholds = new[] { 0f };
@@ -80,6 +81,8 @@ namespace Verse
     public class PawnCapacitiesHandler { public float Consciousness=1f; public float GetLevel(PawnCapacityDef def)=>Consciousness; }
     public class Hediff
     {
+        public virtual bool Visible => true;
+        public virtual bool ShouldRemove => false;
         public Pawn pawn;
         public BodyPartRecord Part;
         public HediffDef def;
@@ -181,6 +184,8 @@ namespace Verse
     {
         public static Hediff MakeHediff(HediffDef def, Pawn pawn)
         {
+            if (def.hediffClass == typeof(SexSlaveCraft.Hediff_SSCToggleAbilityMarker))
+                return new SexSlaveCraft.Hediff_SSCToggleAbilityMarker { def = def, pawn = pawn };
             HediffWithComps record = def.defName == "PNA_Addiction" ? new RimWorld.Hediff_Addiction() : new HediffWithComps();
             record.def = def; record.pawn = pawn; record.RawSeverity = def.initialSeverity;
             if (def.HasPnaComp) record.comps.Add(new SexSlaveCraft.HediffComp_SSCPnaLoad { parent = record, props = new SexSlaveCraft.HediffCompProperties_SSCPnaLoad() });

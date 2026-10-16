@@ -6,9 +6,25 @@ This continuation builds on upstream **2.2.8**, the baseline when upstream devel
 
 ## [未发布 / Unreleased]
 
-暂无超出下列 2.4.0.5 登记范围的新批次。No additional changes beyond the milestone below are recorded here.
+截至 `6b8094f` 的全部已实现开发已归入下方 **2.4.1（未发布）**；未来构想继续在规划台账维护。 / Implemented development through `6b8094f` is assigned to unreleased 2.4.1; future designs remain in the backlog.
 
-## [2.4.0.5] — 2026-10-15 — PNA 重置与玩法补全 / PNA redesign and gameplay additions
+## [2.4.1] — 未发布 / Unreleased — PNA 重置、欢愉恩赐与绑定维护
+
+2026-10-16 本批验收：主人直接选择默认关闭、种子用途／使用／设置生成提示和最终换行已获维护者实机确认，连同版本归并提交；沿用已执行的 303 项相关回归，本次收尾不重跑机制测试。The maintainer accepted the default-setting and Seed of Desire instructions/layout changes in game; see the [acceptance record](Docs/Development/Completed/主人资格默认关闭与欲望之种说明验收.md). This is not a public release.
+
+2026-10-16 版本归并：原 **2.4.0.5 仅为开发版本**，其全部内容与后续开发统一纳入 2.4.1，不单独正式发布。本次更新文档与 `VERSION`；尚未重编版本元数据、打包或创建远端 Release，最近实际下载仍为 2.4.0。 / Consolidates the former 2.4.0.5 development milestone and subsequent work. This registration updates documentation and VERSION only; no 2.4.1 public package exists. See [release scope](Docs/Releases/2.4.1/2.4.1发布说明.md) and [validation boundaries](Docs/Releases/2.4.1/2.4.1版本验证.md).
+
+- **主人资格入口 / Master qualification:** “允许直接选择主人”默认关闭，新设置和缺字段配置要求资格，已有明确保存值保留。欲望之种以括号补充用途、右键使用及 SSC 设置手动生成入口，补齐四语与镜像。Direct Master selection now defaults to off; seed descriptions include practical use and manual-spawn guidance.
+- **PNA 重置与补全 / PNA redesign:** 五档普通负荷与性奴活化、原版十天恢复、主人免疫、身体归属、普通产出者完成补给、来源吸引、低阶枪械及信息栏／研究／成瘾修正、四语文案均纳入。Includes staged effects, body-only persistence, producer supply, source attraction and weapon/research/info-card fixes; see [PNA audit](Docs/Development/Completed/PNA重置与玩法补全完成核对.md).
+- **欢愉恩赐 / Bestow Bliss:** 通用个人开关、人格／克隆保护、普通 RJW／Lovin 完成、来源择强、PNA／恶堕、实际部位弱开发和四档独立反馈已完成四批并获分批实机确认。Includes all four accepted gameplay batches; see [completion audit](Docs/Development/Completed/主人欲望侵染完成核对.md).
+- **四语文案 / Localization:** 能力名、说明、施予者标记、四个心情后缀及八段描述已落地，旧“等待替换稿”不再是当前待办。任务文案更新四语并保留 SSC 标题前缀。Applied ability/feedback wording and localized quest updates; later text commits retain their own verification scope.
+- **主从关系与 CE / Bonds and Character Editor:** 奖励关系按实际锁链归属，解绑、换主、加载及 CE 直接删链时清理；空缰绳／共振场即时清除，其他绑定保留，完整仪式和好感门槛保持。Maintains actual bond ownership and immediate cleanup without granting missing reward relations; see [accepted fixes](Docs/Development/Completed/主从社交关系绑定一致性修复与验收.md).
+- **镜像与统一门禁 / Mirror gates:** 修复两份宠物 Def 镜像；Def／Languages 各自记录日志及 JSON，任一失败阻止统一检查通过和打包，默认只读。Repairs resource mirrors and adds independent read-only validation and packaging gates.
+- **验证与后续 / Verification and follow-up:** RJW 实际选择和双向评价列[专项待验收](Docs/Development/Verification/欢愉恩赐PNA来源偏好专项核验.md)；放宽恶堕需求门槛及区分来源偏好倍率暂缓，归未来第 22 项，不改变当前机制。Actual selection remains a targeted verification item; eligibility and source-strength changes are deferred.
+
+### 开发历史：2.4.0.5 — 2026-10-15 / Former development milestone
+
+以下保留 2026-10-15 当时的开发登记及分批边界；现已统一归入 2.4.1，不作为独立正式版本。下文“当前／未实现”按原日期阅读，现行范围以上方 2.4.1 汇总为准。 / Historical development notes; all content is now part of 2.4.1. Statements about pending features refer to that date.
 
 **开发里程碑，尚未打包或对外发布。** 归并正式 2.4.0 之后截至 `2ec5cb6` 的开发；P1～P3、玩法五步、四项后续修正、文案与心情标签均获分批实机确认。最新代码修正 `ea448b0`，最新标签与验收 `2ec5cb6`。本次只改 `VERSION` 和文档，保留 DLL／About 旧元数据与全部历史发布产物，未生成新安装包。当前范围见[版本说明](Docs/Releases/2.4.0.5/2.4.0.5版本说明.md)，测试批次及四段版本打包边界见[版本验证](Docs/Releases/2.4.0.5/2.4.0.5版本验证.md)。
 

@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net9.0</TargetFramework><SscSourceRoot Condition="'$(SscSourceRoot)' == ''">../../Sexslavecraft</SscSourceRoot></PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(SscSourceRoot)/common/SSCBondRelationRules.cs" Link="Production/SSCBondRelationRules.cs" />
+    <Compile Include="$(SscSourceRoot)/common/SSCBondRelationUtility.cs" Link="Production/SSCBondRelationUtility.cs" />
+    <Compile Include="$(SscSourceRoot)/common/SSCBondRelationGameComponent.cs" Link="Production/SSCBondRelationGameComponent.cs" />
+    <Compile Include="$(SscSourceRoot)/common/SSCBondRelationLabels.cs" Link="Production/SSCBondRelationLabels.cs" />
+    <Compile Include="$(SscSourceRoot)/common/SSCBondUtility.cs" Link="Production/SSCBondUtility.cs" />
+    <Compile Include="$(SscSourceRoot)/Hediff/Hediff_ChainOfSexSlave.cs" Link="Production/Hediff_ChainOfSexSlave.cs" />
+    <Compile Include="$(SscSourceRoot)/ThePatches/Harmony_BondHealthChanges.cs" Link="Production/Harmony_BondHealthChanges.cs" />
+    <Compile Include="$(SscSourceRoot)/ThePatches/Harmony_BondRelationLabels.cs" Link="Production/Harmony_BondRelationLabels.cs" />
+    <Compile Include="$(SscSourceRoot)/Hediff/Hediff_BridleOfSexSlave.cs" Link="Production/Hediff_BridleOfSexSlave.cs" />
+    <Reference Include="0Harmony"><HintPath>$(HarmonyAssemblyPath)</HintPath></Reference>
+  </ItemGroup>
+  <Target Name="RequireHarmony" BeforeTargets="ResolveReferences" Condition="!Exists('$(HarmonyAssemblyPath)')"><Error Text="Supply the local net9.0 HarmonyAssemblyPath." /></Target>
+</Project>

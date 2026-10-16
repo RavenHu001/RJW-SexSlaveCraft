@@ -34,11 +34,19 @@
 
   <HediffDef>
     <defName>SSC_Hediff_PetCat_Final</defName>
+    <hediffClass>HediffWithComps</hediffClass>
     <label>终极宠物猫专精</label>
-    <description>通过人格凝胶完成的终极宠物猫专精。该个体拥有高度闪避能力，并与主人亲昵行为高度适配。</description>
+    <description>通过人格凝胶完成的终极宠物猫专精。保留移动、闪避和亲昵效果，并获得“安抚共鸣”：使其他玩家阵营人形角色从精神状态中恢复，或给予短暂的心情与工作速度鼓舞。</description>
     <isBad>false</isBad>
     <initialSeverity>1</initialSeverity>
     <maxSeverity>1</maxSeverity>
+    <!-- 终极成果授予技能，与当前普通培养方向无关；移除成果时由既有组件回收技能。 -->
+    <comps>
+      <li Class="SexSlaveCraft.HediffCompProperties_GiveAbility">
+        <abilityDef>SSC_PetCatComfort</abilityDef>
+        <minSeverity>0.01</minSeverity>
+      </li>
+    </comps>
     <stages>
       <li>
         <minSeverity>0</minSeverity>
@@ -91,11 +99,19 @@
 
   <HediffDef>
     <defName>SSC_Hediff_PetDog_Final</defName>
+    <hediffClass>HediffWithComps</hediffClass>
     <label>终极宠物狗专精</label>
-    <description>通过人格凝胶完成的终极宠物狗专精。该个体高度适配动物处理和动物训练互动。</description>
+    <description>通过人格凝胶完成的终极宠物狗专精。保留动物处理和训练属性，并获得“定向驯导”：走到同地图上符合条件的动物所在格，完成短暂训导后直接驯服野生动物，或完整完成己方动物的一个已勾选训练项目。</description>
     <isBad>false</isBad>
     <initialSeverity>1</initialSeverity>
     <maxSeverity>1</maxSeverity>
+    <!-- 新终极状态使用组件授予技能；已保存的普通 Hediff 实例由代码兼容授予，保留原实例。 -->
+    <comps>
+      <li Class="SexSlaveCraft.HediffCompProperties_GiveAbility">
+        <abilityDef>SSC_PetDogTame</abilityDef>
+        <minSeverity>0.01</minSeverity>
+      </li>
+    </comps>
     <stages>
       <li>
         <minSeverity>0</minSeverity>

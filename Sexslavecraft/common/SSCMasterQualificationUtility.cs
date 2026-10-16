@@ -12,8 +12,9 @@ namespace SexSlaveCraft
 
         public static bool CanSelectMaster(Pawn pawn)
         {
+            // 设置尚未可用时也沿用默认关闭，不能从后台绕过个人资格门槛。
             return pawn?.TryGetComp<CompSexSlaveTraining>() != null &&
-                ((SSCMod.settings?.allowDirectMasterSelection ?? true) || HasQualification(pawn));
+                ((SSCMod.settings?.allowDirectMasterSelection ?? false) || HasQualification(pawn));
         }
 
         /// <summary>清空身体上的旧人格资格，同时封住旧档补发；不改身份、绑定或成长。</summary>

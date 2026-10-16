@@ -187,7 +187,7 @@ namespace SexSlaveCraft
     // SSC 外围契约存根；资格字段、道具使用服务及效果由项目链接的生产文件提供。
     public enum PawnIdentity { Unset, Slave, Master }
     public partial class CompSexSlaveTraining { public PawnIdentity pawnIdentity; }
-    public class SSCSettings { public bool allowDirectMasterSelection = true; }
+    public class SSCSettings { public bool allowDirectMasterSelection = false; }
     public partial class SSCMod { public static SSCSettings settings = new SSCSettings(); }
     public static class SSCDefOf
     {

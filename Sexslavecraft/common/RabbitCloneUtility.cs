@@ -288,6 +288,9 @@ namespace SexSlaveCraft
             SSCPnaExposureUtility.RefreshBodyState(clone);
             clone.needs?.AddOrRemoveNeedsAsAppropriate();
 
+            // 成熟只协调自身配置；不能把来源偏好复制过来，也不能重置克隆后来独立开启的能力。
+            SSCAbilityToggleUtility.SyncMarkers(clone);
+
             clone.Drawer?.renderer?.SetAllGraphicsDirty();
             Messages.Message($"[SSC] {clone.LabelShort} 的兔分身已经成熟。", clone, MessageTypeDefOf.PositiveEvent, false);
         }
@@ -345,48 +348,57 @@ namespace SexSlaveCraft
         private static void PrepareFreshRabbitCloneBody(Pawn source, Pawn clone)
         {
             if (source == null || clone == null) return;
-
-            clone.SetFaction(source.Faction);
-
-            long initialAgeTicks = GetInitialCloneAgeTicks(source);
-            if (clone.ageTracker != null)
+            if (!SSCPersonalityRuntimeUtility.TryBeginMutation(clone, out var mutation)) return;
+            using (mutation)
             {
-                clone.ageTracker.AgeBiologicalTicks = initialAgeTicks;
+
+                // 新身体使用默认个人偏好；成熟路径不会调用此入口或覆盖自身后来取得的设置。
+                SSCAbilityToggleUtility.ClearPersonalityState(clone);
+
+                clone.SetFaction(source.Faction);
+
+                long initialAgeTicks = GetInitialCloneAgeTicks(source);
+                if (clone.ageTracker != null)
+                {
+                    clone.ageTracker.AgeBiologicalTicks = initialAgeTicks;
+                }
+
+                RemoveNonSscHediffs(clone);
+                ClearCopiedCloneSourceLists(clone);
+                RemoveExistingCloneLinks(clone);
+                RemovePersonalityExcretionStates(clone);
+
+                CompSexSlaveTraining sourceTraining = source.TryGetComp<CompSexSlaveTraining>();
+                CompSexSlaveTraining cloneTraining = clone.TryGetComp<CompSexSlaveTraining>();
+                SSCMasterQualificationUtility.InitializeNewClone(clone);
+                if (sourceTraining != null && cloneTraining != null)
+                {
+                    cloneTraining.specializationType = sourceTraining.specializationType;
+                    cloneTraining.specializationProgress = sourceTraining.specializationProgress;
+                    cloneTraining.selectedTrainer = sourceTraining.selectedTrainer;
+                    cloneTraining.pawnIdentity = sourceTraining.pawnIdentity;
+                    cloneTraining.slaveTrainerEnabled = false;
+                    cloneTraining.trainerIdentityInitialized = true;
+                    // 克隆是新角色，不继承本体可能尚未完成的旧档迁移版本。
+                    cloneTraining.trainerOfficerMigrationVersion = CompSexSlaveTraining.CurrentTrainerOfficerMigrationVersion;
+                    // 新克隆的限制由准备完成后的 ResetNewClone 独立初始化，不复制旧例外或新配置。
+                    cloneTraining.rabbitReproductionMode = sourceTraining.rabbitReproductionMode;
+                }
+
+                // PawnDuplicator 已复制身体，且上方又写入来源身份，因此须在两者之后、生成到地图前
+                // 清继承成长并将主人身份改为未选择；普通凝胶 CopyFrom 不调用此克隆清理入口。
+                SSCMasterProgressionUtility.InitializeNewClone(clone);
+                SyncTraits(source, clone);
+
+                // 原版 Duplicate 还会复制每个需求的当前值；新身体不能继承来源 PNA 满足度。
+                // 待年龄、特质和健康状态全部就位后交还原版准入；若仍有合法 PNA 需求，
+                // 仅在这个新生入口用原版初值初始化，成熟与人格植入均不调用这段重置。
+                SSCPnaExposureUtility.RefreshBodyState(clone);
+                clone.needs?.AddOrRemoveNeedsAsAppropriate();
+                SSCPnaExposureUtility.GetNeed(clone)?.SetInitialLevel();
+                // 原生复制与特质/健康通知已完成，再清一次，确保任何复制回调都不能带入来源偏好。
+                SSCAbilityToggleUtility.ClearPersonalityState(clone);
             }
-
-            RemoveNonSscHediffs(clone);
-            ClearCopiedCloneSourceLists(clone);
-            RemoveExistingCloneLinks(clone);
-            RemovePersonalityExcretionStates(clone);
-
-            CompSexSlaveTraining sourceTraining = source.TryGetComp<CompSexSlaveTraining>();
-            CompSexSlaveTraining cloneTraining = clone.TryGetComp<CompSexSlaveTraining>();
-            SSCMasterQualificationUtility.InitializeNewClone(clone);
-            if (sourceTraining != null && cloneTraining != null)
-            {
-                cloneTraining.specializationType = sourceTraining.specializationType;
-                cloneTraining.specializationProgress = sourceTraining.specializationProgress;
-                cloneTraining.selectedTrainer = sourceTraining.selectedTrainer;
-                cloneTraining.pawnIdentity = sourceTraining.pawnIdentity;
-                cloneTraining.slaveTrainerEnabled = false;
-                cloneTraining.trainerIdentityInitialized = true;
-                // 克隆是新角色，不继承本体可能尚未完成的旧档迁移版本。
-                cloneTraining.trainerOfficerMigrationVersion = CompSexSlaveTraining.CurrentTrainerOfficerMigrationVersion;
-                // 新克隆的限制由准备完成后的 ResetNewClone 独立初始化，不复制旧例外或新配置。
-                cloneTraining.rabbitReproductionMode = sourceTraining.rabbitReproductionMode;
-            }
-
-            // PawnDuplicator 已复制身体，且上方又写入来源身份，因此须在两者之后、生成到地图前
-            // 清继承成长并将主人身份改为未选择；普通凝胶 CopyFrom 不调用此克隆清理入口。
-            SSCMasterProgressionUtility.InitializeNewClone(clone);
-            SyncTraits(source, clone);
-
-            // 原版 Duplicate 还会复制每个需求的当前值；新身体不能继承来源 PNA 满足度。
-            // 待年龄、特质和健康状态全部就位后交还原版准入；若仍有合法 PNA 需求，
-            // 仅在这个新生入口用原版初值初始化，成熟与人格植入均不调用这段重置。
-            SSCPnaExposureUtility.RefreshBodyState(clone);
-            clone.needs?.AddOrRemoveNeedsAsAppropriate();
-            SSCPnaExposureUtility.GetNeed(clone)?.SetInitialLevel();
         }
 
         /// <summary>根据本体年龄计算分身初始年龄，保证至少一刻且不超过既定幼体上限。</summary>
@@ -468,6 +480,7 @@ namespace SexSlaveCraft
             // 初生清理与成熟复制共用此过滤，先排除身体 PNA 与主人阶段，
             // 再判断宽泛的 SSC 前缀。成熟只跳过来源，不删除克隆自身后来获得的状态。
             if (SSCPnaExposureUtility.IsBodyStateDef(def) ||
+                SSCAbilityToggleUtility.IsMarkerDef(def) ||
                 SSCMasterProgressionUtility.IsProgressionDef(def)) return false;
 
             string defName = def.defName ?? string.Empty;

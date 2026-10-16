@@ -30,7 +30,7 @@ namespace SexSlaveCraft
                 SSCIdentityUtility.IsMaster(observer) || SSCPnaExposureUtility.IsRooted(observer)) return 1f;
 
             Hediff addiction = SSCPnaExposureUtility.GetAddiction(observer);
-            if (addiction == null || !SSCPnaSourceUtility.IsPnaProducer(request.Target)) return 1f;
+            if (addiction == null || !SSCPnaSourceUtility.CanSupplyTo(request.Target, observer)) return 1f;
             // 原版阶段 1 表示戒断；不重写需求阈值，不把剩余成瘾严重度当作渴望强度。
             // 无合法化学需求时原版返回普通档，直接沿用该结果。
             return addiction.CurStageIndex == 1 ? 1.5f : 1.25f;

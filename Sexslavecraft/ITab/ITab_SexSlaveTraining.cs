@@ -145,8 +145,12 @@ namespace SexSlaveCraft
             // 主人信息同样只测量本次事件一次；绘制和滚动高度共用快照，界面不补建成长或缰绳。
             MasterPanelView masterView = comp.pawnIdentity == PawnIdentity.Master
                 ? BuildMasterPanelView(pawn, comp, contentWidth) : default(MasterPanelView);
+            // 预留通用 Slave 分组；注册表为空时不画空框、不增加原面板高度。
+            var slaveAbilityRows = comp.pawnIdentity == PawnIdentity.Slave
+                ? BuildAbilityToggleRows(pawn, comp, SSCAbilityToggleGroup.Slave, contentWidth - SectionPadding * 2f) : null;
+            float slaveAbilityHeight = AbilityToggleSectionHeight(slaveAbilityRows);
             float contentHeight = CalculateContentHeight(pawn, comp, identityView.SectionHeight, specializationHeight,
-                contentWidth, masterView.SectionHeight);
+                contentWidth, masterView.SectionHeight) + (slaveAbilityHeight > 0f ? slaveAbilityHeight + SectionSpacing : 0f);
             Rect viewRect = trainingRect;
             Rect contentRect = new Rect(0f, 0f, contentWidth, contentHeight);
 
@@ -164,6 +168,12 @@ namespace SexSlaveCraft
                 {
                     curY = DrawSpecializationSection(new Rect(0f, curY, contentRect.width,
                         specializationHeight), pawn, comp) + SectionSpacing;
+                }
+
+                if (slaveAbilityHeight > 0f)
+                {
+                    DrawAbilityToggleSection(new Rect(0f, curY, contentRect.width, slaveAbilityHeight), slaveAbilityRows);
+                    curY += slaveAbilityHeight + SectionSpacing;
                 }
 
                 if (comp.pawnIdentity == PawnIdentity.Master)
@@ -278,10 +288,10 @@ namespace SexSlaveCraft
             string status = isSlave ? (comp.IsEnabled ? Strings.ITab_StatusReady : Strings.ITab_StatusDisabled) : null;
 
             // 永久资格来自人格保存字段；当前 Master 身份、绑定及手动选择设置都不能替代它。
-            // 只在本次绘制共享文案和测量，不迁移或写回角色数据。
+            // 只在本次绘制共享文案和测量，不迁移或写回角色数据；缺设置时按默认关闭展示。
             string masterQualificationLabel = SSCMasterQualificationDisplay.GetLabel(comp.masterQualificationUnlocked);
             string masterQualificationTooltip = SSCMasterQualificationDisplay.GetPawnTooltip(
-                SSCMod.settings?.allowDirectMasterSelection ?? true);
+                SSCMod.settings?.allowDirectMasterSelection ?? false);
 
             // 绘制节框会使用 Small 字体；测量时使用相同字体并恢复原设置。
             // 复选框右侧占 24 像素，标签须扣掉这段宽度再测量，以免文本被勾选框遮挡。
