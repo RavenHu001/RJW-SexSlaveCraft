@@ -6,6 +6,8 @@ This continuation builds on upstream **2.2.8**, the baseline when upstream devel
 
 ## [未发布 / Unreleased]
 
+- **侵染文档收口 / Infestation documentation closeout:** 新增[首版完成核对](Docs/Development/Completed/主人欲望侵染完成核对.md)，补齐中英文操作与机制说明，统一当前规划和索引；输入条件扩展归未来第 22 项，RimTalk 归第 9 项，主动补给／绑定主人吸引沿用第 25／26 项。同步验收后的说明文件，代码、资源和已测 DLL 保持。Adds the completion audit and bilingual player instructions, reconciles current status and existing future items, and synchronizes accepted documentation without changing gameplay.
+
 - **欲望侵染第四批 / Desire infestation, batch 4:** 原结算前冻结当前恶堕与对实际主人的好感，新增四档独立心情／社交记忆；跨档替换、零偏移清旧记录，心情一天一份，社交三天每主人一份、最多三人，末段自然衰减。复用原完成认领与人格记忆格式，补齐代码块注释、四语和回归；维护者确认“实机测试都符合预期”，批准更新验收文档并提交，未发布。见[实现与测试](Docs/Development/Completed/欲望侵染第四批独立反馈实现与测试.md)。Adds snapshot-based independent mood/opinion feedback with guarded replacement, native expiry and personality persistence; the maintainer confirmed expected in-game behavior and approved the commit.
 
 - **欲望侵染第三批 / Desire infestation, batch 3:** 普通 RJW 开始时保存实际部位凭据，完成前冻结评分与倍率，按去重后实际部位均分 20% 总预算；精确写入遵守研究和原开发上限，已满份额不转移。保留原日常／仪式分配与第二批分量，旧档缺凭据及原版 Lovin 跳过身体开发。补齐代码块注释与四语悬停，维护者确认“经测试都符合预期”并批准提交，未发布；见[实现与测试](Docs/Development/Completed/欲望侵染第三批真实部位与弱开发实现与测试.md)。Adds saved actual-part evidence, a shared development budget and guarded precise writes; the maintainer confirmed expected in-game behavior and approved the commit.

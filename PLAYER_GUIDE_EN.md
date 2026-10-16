@@ -861,9 +861,44 @@ A pawn with the normal `SSC_Purple_HyperLactation` production Hediff supplies it
 
 Positions, genital selection and condoms do not filter this supply. Two producers supply each other; multi-participant scenes count independently completed pairs, not orgasm count or animation lists. Solo acts, SSC daily training, binding rituals, personality excretion and vanilla Lovin are excluded. Master recipients remain immune; effective-Chain recipients receive activation. Load, addiction or Master identity alone does not make a source. Rabbit clone production is excluded. Supply adds no production-progress or nutrition cost; existing sex-related production logic remains.
 
-For an addicted observer evaluating a normal producer, RJW's independent attraction multiplier is ×1.25 outside withdrawal and ×1.50 in withdrawal, otherwise ×1. It applies to General, ForFucking and ForRape. Master and effective-Chain observers receive no addiction preference; existing permissions and selection rules remain.
+For an addicted observer evaluating a normal producer or an enabled Master who can legally infest that observer (without stacking dual-source multipliers), RJW's independent attraction multiplier is ×1.25 outside withdrawal and ×1.50 in withdrawal, otherwise ×1. It applies to General, ForFucking and ForRape. Master and effective-Chain observers receive no addiction preference; existing permissions and selection rules remain.
 
-Master Infestation is not implemented: only +8% load/full-need refill is prepared. It must also increase addiction, but its base increment is undecided. Personal automatic activation maintenance remains a candidate. See the [current PNA plan](Docs/Design/PNA玩法效果与性交补给补全分析.md) for the full contract and development history.
+Master Desire Infestation is implemented and accepted in all four batches: +8% load/full existing-need refill, base +0.02 existing addiction or +0.22 after terminal input, additional Corruption, actual-part development and independent feedback. See [the next section](#115-master-desire-infestation). Personal automatic activation maintenance remains existing future work.
+
+### 11.5 Master Desire Infestation
+
+The first implementation is complete and accepted across all four batches; it remains unreleased development content. Select a current player-faction SSC Master and enable **Desire infestation** under personal abilities on the Training tab. It defaults off. Actual effects require no additional player-faction condition, permanent qualification, Master level, bond count or bridle.
+
+Recipients must be living, valid flesh humanlikes with an actual Corruption need and SSC personality component, neither Hollow nor currently a Master. Missing needs are not created. A recipient may be unbound or bonded to another Master. Ordinary RJW paired encounters and native Lovin qualify with the Master in either role. Mutual masturbation with genuine paired participation can qualify; solo acts cannot. Training, ritual stages, self-training and personality excretion are excluded. Preparation, rejection, interruption and cancellation grant nothing. Each completion pays once, independent of orgasm count or animation participants.
+
+| Component | Current rule |
+| --- | --- |
+| PNA input | +8 load percentage points; fill an existing legal PNA need |
+| Existing ordinary addiction | Base D+0.02; add 0.20 if input ends terminal, totaling +0.22, capped at 1 |
+| Initial addiction | Still requires full load; receives no extra existing-addiction reinforcement |
+| Corruption | Up to +1 additional percentage point; new scoring caps unchained recipients at 12% and chained recipients by their current stage; old scoring retains the need's original cap. Existing over-cap values are not reduced |
+| Part development | A shared 20% budget under the same base conditions, divided across distinct actual recipient part/development-type pairs; Body-part Training research and individual caps apply |
+
+Effective-Chain recipients receive positive PNA activation without ordinary addiction. Master recipients are immune to the entire infestation. A saturated component does not block other valid components. When the source is both a normal producer and an active infestation source in the same direction, only the stronger infestation input is applied.
+
+Part development uses pre-infestation score, Corruption and Chain multipliers. Shares assigned to saturated or later-invalid parts are not redistributed. Actual hand, foot, mouth/tongue/beak, breast, genital and anal participation determines mapping. An ongoing old scene lacking reliable evidence skips development only. Native Lovin lacks whole-scene part evidence and grants no development; Lovin replaced by an ordinary RJW driver follows the RJW path.
+
+Feedback uses only pre-infestation current Corruption C and the recipient's current opinion O of the actual source. O retains its sign and includes existing memories; C is not historical maximum Corruption. Coercion, participant roles and orgasm count do not change this table. Existing RJW feedback remains independent.
+
+| Pre-infestation state | Initial mood | Initial opinion of actual source |
+| --- | ---: | ---: |
+| C < 30%, O >= 0 | +4 | +5 |
+| C < 30%, O < 0 | -4 | -5 |
+| C >= 30%, O >= 0 | +8 | +10 |
+| C >= 30%, O < 0 | +4 | 0; remove this source's old infestation opinion without adding a zero record |
+
+C=30% and O=0 enter the high-Corruption and nonnegative-opinion branches. Crossing a boundary during settlement affects the next encounter. Mood lasts one day, globally limited to one infestation memory. Opinion lasts three days, one per actual Master, at most three Masters. New reactions replace across stages and refresh duration; a fourth source displaces the oldest record. Opinion stays at its initial value for approximately 2.1 days and fades over the final approximately 0.9 day. Missing mood carriers skip memories without blocking other valid components.
+
+Disabling the ability leaves existing memories to expire. The preference follows personality storage and implantation, pauses outside the Master role, and resumes on return. New clones do not inherit it. Feedback memories retain stage, actual source and remaining duration through the existing personality-memory path; PNA remains with the body. Infestation creates or transfers no bond, grants no Master experience and advances no Chain stage.
+
+Addicted observers apply the existing source preference to an enabled Master who can legally infest them: ×1.25 outside withdrawal or ×1.50 in withdrawal, without multiplying twice for dual sources. This does not guarantee invitation acceptance or add preference for non-addicted observers. Actual fluid quantity, condoms and specific organs currently do not gate PNA input; they are future work under [item 22](Docs/Design/未来内容开发规划.md#22-主人身份的功能与数值拓展). Personal activation maintenance remains under existing [item 25](Docs/Design/未来内容开发规划.md#25-新版-pna-的性奴正面效果与主动补给). Dedicated RimTalk adaptation is deferred.
+
+See the [completion audit (Chinese)](Docs/Development/Completed/主人欲望侵染完成核对.md) for acceptance and compatibility boundaries.
 
 ## 12. Public Use Specialization
 

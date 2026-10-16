@@ -2,7 +2,7 @@
 
 [Project home](README.md) · [Player reading order](Docs/Players/README.md#english-reading-order) · [中文快速入门](读我，玩法介绍.md) · [Complete guide](PLAYER_GUIDE_EN.md)
 
-> Applies to **RimWorld 1.6 · SSC 2.4.0.5 development milestone** (2026-10-15), including the accepted PNA redesign and gameplay additions. No 2.4.0.5 package has been published; the latest existing 2.4.0 download does not contain these changes. This guide covers controls and progression; use the [Complete Player Guide](PLAYER_GUIDE_EN.md) for exact conditions and values.
+> Applies to **RimWorld 1.6 · SSC 2.4.0.5 development milestone** (2026-10-15), including the accepted PNA redesign and gameplay additions. No 2.4.0.5 package has been published; the latest existing 2.4.0 download does not contain these changes. This branch also includes accepted [Desire Infestation](#desire-infestation). This guide covers controls and progression; use the [Complete Player Guide](PLAYER_GUIDE_EN.md) for exact conditions and values.
 >
 > New players: read [Getting Started](#2-getting-started), [Corruption and the Bond](#4-corruption-and-the-bond), then [Binding Ritual](#5-binding-ritual). Upgrading? Start with the [2.4.0.5 milestone notes](Docs/Releases/2.4.0.5/2.4.0.5版本说明.md#english); Master qualification and progression retain their [2.4.0 introduction record](Docs/Releases/2.4.0/2.4.0发布说明.md#english).
 >
@@ -461,6 +461,21 @@ When enabled, eligible bound sex slaves on the same map absorb most incoming dam
 
 Execution, surgery, EMP, and most toxic damage are not redirected.
 
+### Desire Infestation
+
+All four batches are implemented and accepted in game on the current unreleased development branch. The public 2.4.0 download does not include this feature.
+
+1. Select a current player-faction Master, open the Training tab, and enable **Desire infestation** in personal abilities. It starts off and requires no additional Master level, bond count or bridle.
+2. Complete an ordinary paired encounter or Lovin with an eligible humanlike partner. The Master may occupy either role. Unbound partners and Sex Slaves bonded to another Master can receive effects; existing encounter permissions still apply.
+3. Each completion supplies +8 percentage points of PNA load, fills an existing legal PNA need, and adds up to 1 Corruption point. Existing addiction gains base +0.02, totaling +0.22 if input ends in the terminal stage. Initial addiction still requires full load.
+4. Ordinary RJW encounters grant a shared 20% body-development budget when Body-part Training research is complete and actual participating parts are known. Native Lovin grants no part development.
+
+Separate mood and opinion memories depend on pre-infestation current Corruption and current opinion of the actual source. Mood lasts one day with one global record. Opinion lasts three days with one record per Master, at most three Masters, fading over the final approximately 0.9 day. Repeated contact replaces and refreshes these memories.
+
+Master recipients are immune. Training, rituals, self-training, personality excretion and solo acts do not trigger infestation. Disabling it stops future gains while old memories expire normally. The preference follows Personality Gel; clones do not inherit it, and PNA remains with the body. Infestation creates no bond or Chain advancement.
+
+See [Master Desire Infestation](PLAYER_GUIDE_EN.md#115-master-desire-infestation) for values, caps and persistence, or the [completion audit (Chinese)](Docs/Development/Completed/主人欲望侵染完成核对.md) for development and acceptance scope.
+
 ## 16. Other Effects on Bound Sex Slaves
 
 A pawn with Sex Slave Chain:
@@ -549,7 +564,7 @@ Also note:
 - Sex Reassignment Surgery is not gated by its SSC research;
 - Final Cow Specialization does not automatically grant Full Gelatinization Complete;
 - Public Use trade and daily Training rewards now share saved specialization progress;
-- Desire Infestation, new Master active abilities and multi-trainer restructuring remain planned. The agreed PNA scope is complete and accepted in the 2.4.0.5 development milestone, without a new downloadable package.
+- Desire Infestation is implemented and accepted in all four batches on the unreleased development branch; see the [completion audit](Docs/Development/Completed/主人欲望侵染完成核对.md). New Master active abilities and multi-trainer restructuring remain planned. The accepted PNA milestone and current development have no new public package.
 
 -->
 

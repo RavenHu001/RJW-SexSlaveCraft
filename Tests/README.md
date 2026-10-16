@@ -10,6 +10,8 @@
 
 第四批新增 [DesireInfestationFeedback](DesireInfestationFeedback/README.md)，链接反馈、完成分发与人格记忆生产代码，并扩展真实 Harmony 完成集成；维护者已确认本批符合预期，实际结果与验收范围见[第四批记录](../Docs/Development/Completed/欲望侵染第四批独立反馈实现与测试.md)。
 
+四批参数、提交与实际验收汇总见[主人欲望侵染完成核对](../Docs/Development/Completed/主人欲望侵染完成核对.md)；本轮文档收口只做静态与哈希检查，机制计数保留原执行日期。
+
 ## 统一入口
 
 从仓库根目录执行，替换本机 net9.0 Harmony 路径；需要 PowerShell 7、.NET SDK 9（或更新 SDK）及 .NET 9 运行时：
