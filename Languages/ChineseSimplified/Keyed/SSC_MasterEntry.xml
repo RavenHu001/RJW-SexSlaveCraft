@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-  <SSC_MasterEntry_QuestName>SSC：一份来历不明的感应</SSC_MasterEntry_QuestName>
-  <SSC_MasterEntry_QuestDescription>某位超凡智能的心理信号落在殖民者的意识里，带着一股撩拨情欲的意味。\n\n祂似乎只是在等一个答复。</SSC_MasterEntry_QuestDescription>
+  <SSC_MasterEntry_QuestName>情欲的呼唤</SSC_MasterEntry_QuestName>
+  <SSC_MasterEntry_QuestDescription>某位超凡存在的心灵信号呼唤着殖民者，于他们的思绪中掀起阵阵情欲的浪花。 祂似乎在等待一个答复。</SSC_MasterEntry_QuestDescription>
   <SSC_MasterEntry_DebugRequest>调试：创建主人资格领取任务</SSC_MasterEntry_DebugRequest>
   <SSC_MasterEntry_DebugRequestTip>创建免费领取 1 枚种子的任务，不受研究和既往发放限制。已有同类未结束任务时不可重复创建。</SSC_MasterEntry_DebugRequestTip>
   <SSC_MasterEntry_Unavailable>游戏或领取任务暂不可用。</SSC_MasterEntry_Unavailable>
@@ -9,6 +9,6 @@
   <SSC_MasterEntry_NoMap>需要可接收空投的玩家基地。</SSC_MasterEntry_NoMap>
   <SSC_MasterEntry_CreateFailed>任务创建失败，稍后自动重试。</SSC_MasterEntry_CreateFailed>
   <SSC_MasterEntry_Created>领取任务已创建，请在任务列表接受。</SSC_MasterEntry_Created>
-  <SSC_MasterEntry_DeliveryLetterLabel>答复</SSC_MasterEntry_DeliveryLetterLabel>
+  <SSC_MasterEntry_DeliveryLetterLabel>回应</SSC_MasterEntry_DeliveryLetterLabel>
   <SSC_MasterEntry_DeliveryLetterText>一枚超凡造物落进了基地——没有署名，也没有留下任何说明。</SSC_MasterEntry_DeliveryLetterText>
 </LanguageData>

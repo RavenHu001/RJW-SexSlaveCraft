@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-  <SSC_MasterEntry_QuestName>SSC：Ощущение неведомого происхождения</SSC_MasterEntry_QuestName>
-  <SSC_MasterEntry_QuestDescription>Психический сигнал от некоего архотехнического разума проникает в сознание колонистов, неся в себе намёк на пробуждение желания.\n\nКажется, этот разум лишь ждёт ответа.</SSC_MasterEntry_QuestDescription>
+  <SSC_MasterEntry_QuestName>Зов желания</SSC_MasterEntry_QuestName>
+  <SSC_MasterEntry_QuestDescription>Психический сигнал от некоего трансцендентного существа взывает к колонистам, поднимая в их мыслях волны желания. Кажется, это существо ждёт ответа.</SSC_MasterEntry_QuestDescription>
   <SSC_MasterEntry_DebugRequest>Отладка: задание на семя желания</SSC_MasterEntry_DebugRequest>
   <SSC_MasterEntry_DebugRequestTip>Создать задание с 1 бесплатным семенем независимо от исследований и прошлых выдач. Незавершённое задание на получение блокирует повторное создание.</SSC_MasterEntry_DebugRequestTip>
   <SSC_MasterEntry_Unavailable>Игра или задание на получение недоступны.</SSC_MasterEntry_Unavailable>
