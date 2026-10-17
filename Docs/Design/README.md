@@ -1,5 +1,7 @@
 # 当前规划索引
 
+当前开发归属：**2.4.2（未发布）**。v2.4.1发布后的双版本重布局、1.7兼容及凝胶渲染/外观/UI开发统一纳入；1.6/Common冻结仍属于2.4.1。历史日期、产物版本与测试计数保留原阶段，见[本版登记](../Releases/2.4.2/2.4.2发布说明.md)。
+
 [文档总索引](../README.md) · [已交付开发记录](../Development/Completed/README.md) · [待验收事项](../Development/Verification/README.md) · [历史设计](Archive/README.md)
 
 这里是后续需求和未完成专项的入口。PNA 约定范围已作为 **2.4.1**完成，先读[完成核对](../Development/Completed/PNA重置与玩法补全完成核对.md)；本目录保留现行参数与未来扩展边界。当前玩法见玩家指南，已交付设计与实施过程分别放入[设计归档](Archive/README.md)和[开发记录](../Development/Completed/README.md)。

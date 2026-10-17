@@ -1,10 +1,12 @@
 # 玩家阅读入口 / Player documentation
 
-> 游戏版本目录：1.6 保留 2.4.1 基线，1.7 开发批次已获维护者确认测试未发现问题，基础贴图由 Common/Textures 共享。已有 v2.4.1 下载仍为原 1.6 正式版。
+2.4.2 新增：全凝胶化后，在“调教”ITab 的“凝胶外观”区设置个人渲染、颜色和不透明度，默认深紫／S90／85%；命令栏无重复调色按钮。旧全局设置在旧档首次读取时迁入个人值。详见[当前开发说明](../Releases/2.4.2/2.4.2发布说明.md)。
+
+> 游戏版本目录：2.4.2 为当前未发布开发版本，1.7承载新功能，1.6保留2.4.1冻结基线，基础贴图由Common/Textures共享。现有v2.4.1下载仍是原1.6正式版。
 
 [项目首页](../../README.md) · [文档总索引](../README.md) · [模组介绍 / Overview](../模组介绍.md)
 
-当前版本归属 / Current version scope：**RimWorld 1.6 · SSC 2.4.1**。原 2.4.0.5 开发版及后续开发统一纳入，包含 PNA、欢愉恩赐和绑定维护；正式下载版为 2.4.1。 / Version 2.4.1 consolidates the former 2.4.0.5 milestone and subsequent work. The matching release package is v2.4.1.
+当前开发归属 / Development scope：**SSC 2.4.2（未发布）**，1.7为新功能开发目标，1.6保留2.4.1冻结内容；正式下载仍为2.4.1。 / All work after the published v2.4.1 tag belongs to 2.4.2 development; the existing public download remains v2.4.1. See [2.4.2说明](../Releases/2.4.2/2.4.2发布说明.md).
 
 ## 中文阅读顺序
 
@@ -52,6 +54,6 @@ Qualification, current identity and research are separate. Direct Master selecti
 
 ## 版本与资料用途 / Versions and document roles
 
-当前指南适用 2.4.1；正文较早的版本号表示功能引入时间，主人资格与成长仍保留 2.4.0 的章节名和锚点。历史下载与记录从[版本索引](../Releases/README.md)进入；设计和代码沿革见[开发资料](../Development/README.md)及[当前规划](../Design/README.md)。
+当前指南适用2.4.2开发工作区，新增凝胶外观功能仅在1.7生效；1.6冻结2.4.1内容，正文较早版本号继续表示功能引入时间。正式下载和历史记录从[版本索引](../Releases/README.md)进入；本次尚未发布2.4.2。
 
-The guides cover version 2.4.1, including the former 2.4.0.5 milestone and subsequent work. Earlier section versions identify introductions; Master qualification and growth retain their 2.4.0 section names and anchors. The latest public download is 2.4.1. Deferred PNA checks are not current tasks or claimed passes; use the [version index](../Releases/README.md) for historical records.
+The guides cover the unreleased 2.4.2 checkout, with new visual features on 1.7 and the frozen 2.4.1 runtime on 1.6. Earlier section versions identify introductions. The existing public download remains 2.4.1; development registration does not create a new package or new test results.

@@ -4,7 +4,9 @@
 
 This continuation builds on upstream **2.2.8**, the baseline when upstream development stopped in July, and retains its version numbering. Entries are listed newest first. Technical details are in the [development log (Chinese)](Docs/Development/开发更新记录.md).
 
-## [未发布 / Unreleased]
+## [2.4.2] — 开发中 / In development
+
+归属登记：2026-10-17。以下为 `v2.4.1` 发布后的全部开发，统一归入2.4.2，尚未打包或发布；正式下载仍为2.4.1。本次仅更新文档与VERSION，旧产物的2.4.1元数据和历史验证保持原意，见[本版说明](Docs/Releases/2.4.2/2.4.2发布说明.md)及[版本登记边界](Docs/Releases/2.4.2/2.4.2版本验证.md)。
 
 - **1.7 凝胶 UI 与个人开关 / Gel UI and per-pawn rendering:** 重排调色弹窗，修复身份/任职控件禁用显示与输入，移除重复训练状态；ITab 仅在全凝胶化完成时显示个人渲染开关、颜色预览和调色入口，移除命令栏重复调色按钮。旧档兼容原全局设置，关闭保留配色，默认深紫／S90／85%。维护者确认 UI、个人开关、旧档迁移、五官动画与遮挡正常；1.6冻结不变，暂不打包，见[验收记录](Docs/Development/Completed/1.7凝胶外观UI与个人开关验收.md)。Moves gel appearance controls into the pawn tab, adds persistent per-pawn rendering with legacy preference migration, and fixes disabled identity controls.
 
@@ -20,6 +22,7 @@ This continuation builds on upstream **2.2.8**, the baseline when upstream devel
 
 - **1.7 凝胶身体视觉 / Gel body rendering:** 新增 Waylith 原生 GLSL，将粗黑描边柔化为深紫、保留明暗细节并增加少量亮部，维护者确认黑边改善良好，首次试色偏淡后恢复原紫色，再改用已获确认的深紫色 RGB (0.46, 0.20, 0.68)，不透明度经 0.8、0.85、0.9 对比后调回 0.85；仅处理身体和现有 SizedApparel 入口，头部暂不调整，1.6/Common 冻结基线不变。按实际注册表选择材质，缺失时明确回退并警告。专项回归扩展至 44 项，另提供[实际引擎 Shader 编译检查](Tools/GelatinizationShader/README.md)；维护者已确认最终效果，保留深紫色与 0.85 不透明度，详见[视觉验收记录](Docs/Development/Completed/1.7全身凝胶化身体视觉调整与验收.md)；本批暂不打包。Adds a native Waylith body shader with softer purple outlines and restrained highlights. The maintainer accepted dark purple at 0.85 opacity; head rendering is unchanged and no package was created.
 - **1.7 兼容修复 / Compatibility fixes:** 凝胶化移除临时状态后停止其余组件和旧调试按钮再次结算，修复同轮先成功后失败；全胶染色明确使用内置透明 Shader，SizedApparel 从渲染树读取角色；专项验证器识别 Harmony `__state` 配对。新增 33 项针对性回归及内嵌 10 项状态签名检查，接入统一门禁。1.6 的 2.4.1 成品与共享冻结贴图保持不变；维护者确认“经测试没有发现问题”，本批验收关闭；重布局、修复、代码块注释及验证依据见[验收记录](Docs/Development/Completed/双版本重布局与1.7兼容修复验收.md)。Prevents duplicate gelatinization outcomes, uses a built-in 1.7 tint shader, repairs the SizedApparel pawn lookup and validates Harmony state pairs; adds focused regression coverage without changing the frozen 1.6 runtime. The maintainer tested this batch and reported no issues; it remains unreleased.
+- **欢愉侵蚀后缀 / Blissful Erosion mood labels:** 1.7四档后缀调整为极乐／难堪／沉溺／不甘并同步四语，维护者确认显示正常；1.6冻结不变，见[验收记录](Docs/Development/Completed/欢愉侵蚀心情后缀调整与验收.md)。
 - **双版本开发目录 / Versioned development layout:** 保留 1.6 的 2.4.1 运行基线及哈希，后续开发转入 1.7，基础贴图放入 Common 共享；显式加载列表隔离两版 DLL、Defs、语言及补丁。Retains the frozen 1.6/2.4.1 runtime while developing 1.7 separately with shared baseline textures.
 - **构建、测试与打包 / Build, tests and packaging:** 新增独立的 .NET 10 构建入口，回归读取所选版本资源，发布按双版本白名单收集并记录各版二进制来源。1.7 的游戏加载、功能及存读档验收另行记录，历史 v2.4.1 下载不因此变成双版本包。Adds version-aware build, validation and packaging; in-game compatibility remains a separate acceptance step.
 
@@ -27,7 +30,7 @@ This continuation builds on upstream **2.2.8**, the baseline when upstream devel
 
 2026-10-16 本批验收：主人直接选择默认关闭、种子用途／使用／设置生成提示和最终换行已获维护者实机确认，连同版本归并提交；沿用已执行的 303 项相关回归，本次收尾不重跑机制测试。The maintainer accepted the default-setting and Seed of Desire instructions/layout changes in game; see the [acceptance record](Docs/Development/Completed/主人资格默认关闭与欲望之种说明验收.md). This acceptance preceded the release preparation.
 
-2026-10-16 版本归并：原 **2.4.0.5 仅为开发版本**，其全部内容与后续开发统一纳入 2.4.1，不单独正式发布。归并时仅更新文档与 `VERSION`；本次正式发布同步 About、文件版本 2.4.1.0 与产品版本 2.4.1，并重编 DLL。 / Consolidates the former 2.4.0.5 development milestone and subsequent work. The formal release aligns About and assembly metadata, rebuilds the DLL and packages the consolidated version. See [release scope](Docs/Releases/2.4.1/2.4.1发布说明.md) and [validation boundaries](Docs/Releases/2.4.1/2.4.1版本验证.md).
+2026-10-16 版本归并：原 **2.4.0.5 仅为开发版本**，其全部内容与截至该次正式发布的开发统一纳入2.4.1，不单独正式发布。归并时仅更新文档与 `VERSION`；本次正式发布同步 About、文件版本 2.4.1.0 与产品版本 2.4.1，并重编 DLL。 / Consolidates the former 2.4.0.5 development milestone and subsequent work. The formal release aligns About and assembly metadata, rebuilds the DLL and packages the consolidated version. See [release scope](Docs/Releases/2.4.1/2.4.1发布说明.md) and [validation boundaries](Docs/Releases/2.4.1/2.4.1版本验证.md).
 
 - **主人资格入口 / Master qualification:** “允许直接选择主人”默认关闭，新设置和缺字段配置要求资格，已有明确保存值保留。欲望之种以括号补充用途、右键使用及 SSC 设置手动生成入口，补齐四语与镜像。Direct Master selection now defaults to off; seed descriptions include practical use and manual-spawn guidance.
 - **PNA 重置与补全 / PNA redesign:** 五档普通负荷与性奴活化、原版十天恢复、主人免疫、身体归属、普通产出者完成补给、来源吸引、低阶枪械及信息栏／研究／成瘾修正、四语文案均纳入。Includes staged effects, body-only persistence, producer supply, source attraction and weapon/research/info-card fixes; see [PNA audit](Docs/Development/Completed/PNA重置与玩法补全完成核对.md).
@@ -39,7 +42,7 @@ This continuation builds on upstream **2.2.8**, the baseline when upstream devel
 
 ### 开发历史：2.4.0.5 — 2026-10-15 / Former development milestone
 
-以下保留 2026-10-15 当时的开发登记及分批边界；现已统一归入 2.4.1，不作为独立正式版本。下文“当前／未实现”按原日期阅读，现行范围以上方 2.4.1 汇总为准。 / Historical development notes; all content is now part of 2.4.1. Statements about pending features refer to that date.
+以下保留 2026-10-15 当时的开发登记及分批边界；现已统一归入 2.4.1，不作为独立正式版本。下文“当前／未实现”按原日期阅读，本里程碑的归并范围以上方2.4.1汇总为准，之后开发见2.4.2。 / Historical development notes; all content is now part of 2.4.1. Statements about pending features refer to that date.
 
 **开发里程碑，尚未打包或对外发布。** 归并正式 2.4.0 之后截至 `2ec5cb6` 的开发；P1～P3、玩法五步、四项后续修正、文案与心情标签均获分批实机确认。最新代码修正 `ea448b0`，最新标签与验收 `2ec5cb6`。本次只改 `VERSION` 和文档，保留 DLL／About 旧元数据与全部历史发布产物，未生成新安装包。当前范围见[版本说明](Docs/Releases/2.4.0.5/2.4.0.5版本说明.md)，测试批次及四段版本打包边界见[版本验证](Docs/Releases/2.4.0.5/2.4.0.5版本验证.md)。
 

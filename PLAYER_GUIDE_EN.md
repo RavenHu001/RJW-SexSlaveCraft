@@ -1,10 +1,10 @@
 # RJW-SexSlaveCraft Complete Player Guide
 
-> Version directories: 1.6 retains the 2.4.1 baseline; The maintainer tested the current 1.7 development batch and reported no issues. Shared textures are in Common/Textures. Existing v2.4.1 downloads remain the original 1.6 release.
+> Version scope: 2.4.2 is the current unreleased development version. New features target 1.7; 1.6 retains the frozen 2.4.1 runtime, with shared textures in Common/Textures. Existing v2.4.1 downloads remain the original 1.6 release.
 
 [Project home](README.md) · [Player reading order](Docs/Players/README.md#english-reading-order) · [Quick start](QUICK_START_EN.md) · [中文机制详解](机制详解.md)
 
-> Applies to **RimWorld 1.6 · SSC 2.4.1 ** (2026-10-16). The former 2.4.0.5 development milestone and all subsequent work are consolidated into 2.4.1, including the PNA redesign, Bestow Bliss and bond/localization maintenance. The release package is available as v2.4.1. Use this reference for full conditions, formulas and values; first-time players should begin with the [quick start](QUICK_START_EN.md).
+> This checkout documents **SSC 2.4.2 development (2026-10-17, unreleased)**, including new 1.7 features; 1.6 remains frozen at 2.4.1. The existing public download is v2.4.1. See the [2.4.2 scope](Docs/Releases/2.4.2/2.4.2发布说明.md#english) and [version-registration limits](Docs/Releases/2.4.2/2.4.2版本验证.md). Earlier section versions identify when features were introduced.
 
 ## 1. Scope and Dependencies
 
@@ -1276,6 +1276,10 @@ Success:
 
 Failure removes the pawn completely from both the map and world-pawn list. No corpse or recoverable body remains.
 
+### 17.6 Gel appearance (2.4.2 / 1.7 only)
+
+After full gelatinization, use Gel Appearance on the Training tab to enable per-pawn rendering, view the swatch/opacity and open the color wheel, RGB/HSV pages, HEX and opacity controls. Defaults are dark purple, 90% HSV saturation and 85% opacity. Resetting appearance does not change the rendering switch; cancel discards edits. Disabling rendering retains saved colors and gameplay effects. Vanilla eyes and FA animation/occlusion remain preserved. Missing per-pawn fields inherit the legacy global preference once. The pawn-gizmo color button was removed. The frozen 1.6 runtime keeps its original global body-tint behavior.
+
 ## 18. Master–Slave Linkages
 
 ### 18.1 Libidinal Resonance Field
@@ -1473,7 +1477,7 @@ The operation currently does not reference `Sex Reassignment Surgery (Male to Fe
 | Low-frequency key logging | On | Onahole, ritual conversion, and important fallbacks |
 | Use RJW original eligibility for training age checks | On | Current code branch is reversed relative to the displayed explanation |
 | Debug Gizmos | Off | Quick-test buttons in developer mode |
-| Full-gelatinization body coloring | On | Purple translucent body while preserving original head color |
+| Per-pawn gel rendering (2.4.2 / 1.7) | On for new bodies; legacy preference for old saves | On the Training tab; controls body/head/SA rendering while retaining saved colors when off. The frozen 1.6 runtime keeps its global body tint |
 | Allow ritual conversion into slavery | On | Disables only ritual slave conversion, not other ritual rewards |
 | Enable Corruption decay | On | Off stops natural loss; apparel floors and Chain caps remain active |
 | Base Corruption decay per day | 2% | Adjustable from 0% to 20% per day in 0.5% steps |
