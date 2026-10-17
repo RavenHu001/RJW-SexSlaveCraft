@@ -41,8 +41,8 @@ internal static partial class Program
             Require(!SSCBondOverviewUtility.BuildLocal(p,p.Map,unavailable).CoverageComplete);
             var s=new SSCBondOverviewSession(Current.Game,()=>0);s.ObserveCard(p,p.Map,0);
             Widgets.CapturedLabels=new();Paint(new Gizmo_SSCBondOverview(s));
-            Require(!s.Card.Snapshot.CoverageComplete&&s.Card.Display.SlaveHeading=="Known slaves: 0");
-            Require(Widgets.CapturedLabels.Any(i=>i.value==SSCBondOverviewText.T("SupplementPending"))&&
+            Require(!s.Card.Snapshot.CoverageComplete&&s.Card.Display.SlaveHeading=="Known sex slaves: 0");
+            Require(Widgets.CapturedLabels.Any(i=>i.value.StartsWith("Checking"))&&
                 !Widgets.CapturedLabels.Any(i=>i.value==SSCBondOverviewText.T("EmptySlaves")));
             s.Update(0,true,p.Map);Require(s.Card.Snapshot.CoverageComplete);
         });
@@ -116,19 +116,19 @@ internal static partial class Program
             var location=trainer?s.Card.Snapshot.AssignedTrainerLocation:s.Card.Snapshot.Slaves[0].Location;
             Require(location.Kind==SSCBondOverviewLocationKind.Unknown&&ship.Things.Enumerations==0);
             var g=new Gizmo_SSCBondOverview(s,trainer?SSCBondOverviewPanel.Trainer:SSCBondOverviewPanel.Slaves);
-            var result=Click(g,20,45);Require(result.State==GizmoState.Interacted);g.ProcessInput(result.InteractEvent);
+            var result=Click(g,65,45);Require(result.State==GizmoState.Interacted);g.ProcessInput(result.InteractEvent);
             Require(CameraJumper.Last.WorldObject==ship&&CameraJumper.Jumps==1&&ship.Things.Enumerations==1);
         });
         Check("direct: unknown location and changed relation still reject click safely",()=>{
             var f=Fixture();f.slave.Spawned=false;var s=new SSCBondOverviewSession(Current.Game,()=>0);s.ObserveCard(f.master,f.map,0);
-            var g=new Gizmo_SSCBondOverview(s);var result=Click(g,20,45);g.ProcessInput(result.InteractEvent);Require(CameraJumper.Jumps==0);
-            result=Click(g,20,45);SSCBondUtility.GetChain(f.slave).target=Master();g.ProcessInput(result.InteractEvent);Require(CameraJumper.Jumps==0);
+            var g=new Gizmo_SSCBondOverview(s);var result=Click(g,65,45);g.ProcessInput(result.InteractEvent);Require(CameraJumper.Jumps==0);
+            result=Click(g,65,45);SSCBondUtility.GetChain(f.slave).target=Master();g.ProcessInput(result.InteractEvent);Require(CameraJumper.Jumps==0);
         });
         foreach(var panel in new[]{SSCBondOverviewPanel.Master,SSCBondOverviewPanel.Trainer,SSCBondOverviewPanel.Slaves})
             Check("native card: independent width and standard background "+panel,()=>{
                 var f=Fixture();var s=Ready(f.master,f.map);var g=new Gizmo_SSCBondOverview(s,panel);
-                float expected=panel==SSCBondOverviewPanel.Master?180:panel==SSCBondOverviewPanel.Trainer?220:300;
-                Require(g.GetWidth(400)==expected&&g.GetWidth(120)==120);Paint(g);
+                float expected=panel==SSCBondOverviewPanel.Master?75:130;
+                Require(g.GetWidth(400)==expected&&g.GetWidth(120)==Math.Min(expected,120));Paint(g);
                 Require(GenUI.LastRect.width==expected&&GenUI.LastTexture==Command.BGTex&&GenUI.LastMaterial==null);
             });
         Check("native card: shrunk low-light disabled and caller color are respected",()=>{
@@ -139,12 +139,12 @@ internal static partial class Program
             g.Disabled=true;Paint(g);Require(GenUI.LastMaterial==TexUI.GrayscaleGUI&&GenUI.LastColor.Equals(Color.white)&&GUI.color.r==.2f);
         });
         foreach(var panel in new[]{SSCBondOverviewPanel.Master,SSCBondOverviewPanel.Trainer})
-            Check("native card: portrait name and actions fit narrow panel "+panel,()=>{
+            Check("native card: portrait and actions fit native panel without names "+panel,()=>{
                 var f=Fixture();f.slave.Training.selectedTrainer=f.master;Find.Selector.Objects.Clear();Find.Selector.Objects.Add(f.slave);
                 var s=new SSCBondOverviewSession(Current.Game,()=>0);s.ObserveCard(f.slave,f.map,0);
                 Widgets.CapturedLabels=new();var g=new Gizmo_SSCBondOverview(s,panel);Paint(g);
                 Require(Widgets.CapturedLabels.All(i=>i.rect.x>=0&&i.rect.xMax<=g.GetWidth(300)));
-                var name=Widgets.CapturedLabels.Single(i=>i.rect.x==54);Require(name.rect.xMax<=(panel==SSCBondOverviewPanel.Trainer?144:180));
+                Require(!Widgets.CapturedLabels.Any(i=>i.value==f.master.LabelShort));
             });
     }
 }

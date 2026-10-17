@@ -4,8 +4,8 @@
   <SSC_BondOverview_Title>主從關係概覽</SSC_BondOverview_Title>
   <SSC_BondOverview_TitleSource>主從關係：{0}</SSC_BondOverview_TitleSource>
   <SSC_BondOverview_Counts>綁定：存活 {0} / 總計 {1}</SSC_BondOverview_Counts>
-  <SSC_BondOverview_Master>實際主人</SSC_BondOverview_Master>
-  <SSC_BondOverview_Slave>綁定性奴</SSC_BondOverview_Slave>
+  <SSC_BondOverview_Master>主人</SSC_BondOverview_Master>
+  <SSC_BondOverview_Slave>性奴</SSC_BondOverview_Slave>
   <SSC_BondOverview_LivingSlaves>存活的綁定性奴</SSC_BondOverview_LivingSlaves>
   <SSC_BondOverview_DeadSlaves>死亡的綁定性奴</SSC_BondOverview_DeadSlaves>
   <SSC_BondOverview_ViewAll>查看全部</SSC_BondOverview_ViewAll>
@@ -45,10 +45,11 @@
   <SSC_BondOverview_Failure_Unknown>無法確定該角色目前的位置。</SSC_BondOverview_Failure_Unknown>
   <SSC_BondOverview_Failure_CannotJump>目前所在位置無法由鏡頭定位。</SSC_BondOverview_Failure_CannotJump>
   <SSC_BondOverview_BothCounts>主人 + 性奴 {0}/{1}</SSC_BondOverview_BothCounts>
-  <SSC_BondOverview_ShortCount>綁定性奴 {0}</SSC_BondOverview_ShortCount>
-  <SSC_BondOverview_TrainerPanel>指定調教員</SSC_BondOverview_TrainerPanel>
-  <SSC_BondOverview_ChangeTrainer>更換</SSC_BondOverview_ChangeTrainer>
-  <SSC_BondOverview_KnownCount>已知從屬：{0}</SSC_BondOverview_KnownCount>
+  <SSC_BondOverview_ShortCount>性奴 {0}</SSC_BondOverview_ShortCount>
+  <SSC_BondOverview_TrainerPanel>調教員</SSC_BondOverview_TrainerPanel>
+  <SSC_BondOverview_ChangeTrainer>更換調教員</SSC_BondOverview_ChangeTrainer>
+  <SSC_BondOverview_KnownCount>已知性奴：{0}</SSC_BondOverview_KnownCount>
   <SSC_BondOverview_SupplementPending>正在補查其他綁定從屬…</SSC_BondOverview_SupplementPending>
   <SSC_BondOverview_ResolveOnClick>點擊後複查目前位置。</SSC_BondOverview_ResolveOnClick>
+  <SSC_BondOverview_OwnedCount>擁有性奴：{0}</SSC_BondOverview_OwnedCount>
 </LanguageData>

@@ -73,7 +73,7 @@ namespace SexSlaveCraft
     internal sealed class SSCBondOverviewDisplay
     {
         internal readonly SSCBondOverviewSnapshot Snapshot;
-        internal readonly string Title, Count, Trainer, CardHeading, WaitingCount, SlaveHeading, TrainerName, TrainerDetails;
+        internal readonly string Title, Count, Trainer, CardHeading, WaitingCount, SlaveHeading, CardCount, OwnedHeading, OwnedDetails, TrainerName, TrainerDetails;
         private int pageNumber = -1, pageTotal;
         private string pageLabel;
         internal string PageLabel(int page, int total)
@@ -101,6 +101,10 @@ namespace SexSlaveCraft
             Count = snapshot.CoverageComplete ? SSCBondOverviewText.Format("Counts", snapshot.LivingSlaveCount, snapshot.TotalSlaveCount)
                 : SSCBondOverviewText.Format("KnownCount", snapshot.TotalSlaveCount);
             SlaveHeading = SSCBondOverviewText.Format(snapshot.CoverageComplete ? "ShortCount" : "KnownCount", snapshot.TotalSlaveCount);
+            // 卡片数量随快照／语言一并缓存，重绘不反复执行 ToString 和未补漏后缀拼接。
+            CardCount = snapshot.TotalSlaveCount.ToString() + (snapshot.CoverageComplete ? "" : "+");
+            OwnedHeading = SSCBondOverviewText.Format("OwnedCount", CardCount);
+            OwnedDetails = OwnedHeading + "\n" + Count;
             WaitingCount = Count + " · " + SSCBondOverviewText.T("Waiting");
             CardHeading = snapshot.Master == null ? Count : snapshot.TotalSlaveCount == 0 ? SSCBondOverviewText.T("Master")
                 : SSCBondOverviewText.Format("BothCounts", snapshot.LivingSlaveCount, snapshot.TotalSlaveCount);
@@ -158,11 +162,29 @@ namespace SexSlaveCraft
             first = Math.Max(0, Math.Min(count, (int)Math.Floor((scroll - start) / RowHeight) - 1));
             end = Math.Max(first, Math.Min(count, (int)Math.Ceiling((scroll + height - start) / RowHeight) + 1));
         }
-        internal static int CardCapacity(float width) => Math.Max(0, Math.Min(5, (int)((width - 12) / 44)));
+        // 原版宽度保留最多两个固定 40 头像；有分页时为左右按钮各留 22，不缩小肖像。
+        internal static int CardCapacity(float width, bool paging = false)
+            => Math.Max(0, Math.Min(2, (int)((width - (paging ? 44 : 12) + 4) / 44)));
     }
 
     internal static class SSCBondOverviewWidgets
     {
+        /// <summary>原版按钮底框配共享图标；操作仍由宿主延后分派，悬停文字不常驻占位。</summary>
+        internal static bool IconButton(Rect rect, Texture2D icon, string tooltip, bool available = true)
+        {
+            // 本机 1.7 GUI.Button 在按下时捕获、松开时返回 true；必须在调用前记录松开事件，
+            // 否则事件被原版 Use 后无法判断，或与 mouseDown 条件互斥而丢弃所有点击。
+            bool left = GUI.enabled && available && Event.current.type == EventType.mouseUp && Event.current.button == 0;
+            bool clicked = SSCUIWidgets.Button(rect, string.Empty, available);
+            using var scope = new GuiScope(false);
+            GUI.color = GUI.enabled && available ? Color.white : new Color(.45f, .45f, .45f);
+            float inset = Math.Min(4, Math.Min(rect.width, rect.height) * .2f);
+            float side = Math.Max(0, Math.Min(rect.width, rect.height) - inset * 2);
+            GUI.DrawTexture(new Rect(rect.x + (rect.width - side) * .5f, rect.y + (rect.height - side) * .5f, side, side), icon);
+            TooltipHandler.TipRegion(rect, tooltip);
+            return left && clicked;
+        }
+
         /// <summary>保存并恢复调用者 GUI 状态，包括异常退出。</summary>
         internal readonly struct GuiScope : IDisposable
         {
@@ -199,20 +221,21 @@ namespace SexSlaveCraft
         }
 
         internal static bool Avatar(Rect rect, SSCBondOverviewSnapshot snapshot, SSCBondOverviewEntry entry,
-            SSCBondOverviewSession session, SSCBondOverviewView view, bool nameBelow = false)
+            SSCBondOverviewSession session, SSCBondOverviewView view, bool nameBelow = false, Rect? interactionRect = null)
         {
             bool current = SSCBondOverviewUtility.IsCurrent(snapshot, entry);
             if (!current) session.RequestRefresh(view);
             Portrait(rect, entry, current); Badge(rect, entry.Location, current);
             // 缩略图只在总览显示姓名，阶段、特化和具体位置留给悬停；离屏对象不格式化。
             if (nameBelow) Widgets.Label(new Rect(rect.x, rect.yMax, rect.width + 16, 20), view.Truncate(view.Display.Row(entry).Name, rect.width + 16));
-            if (!Mouse.IsOver(rect)) return false;
-            if (!current) { TooltipHandler.TipRegion(rect, SSCBondOverviewText.T("RelationChanged")); return false; }
+            Rect hit = interactionRect ?? rect;
+            if (!Mouse.IsOver(hit)) return false;
+            if (!current) { TooltipHandler.TipRegion(hit, SSCBondOverviewText.T("RelationChanged")); return false; }
             SSCBondOverviewRowText text = view.Display.Row(entry);
-            Hover(rect, entry, text.Name, text.Details);
+            Hover(hit, entry, text.Name, text.Details);
             bool available = SSCBondOverviewNavigation.CanPreview(entry.Location, out _);
             // 首屏未建立飞船索引并不代表无法定位；点击沿原导航路径重新解析位置并复查关系。
-            if (!available) TooltipHandler.TipRegion(rect, SSCBondOverviewText.T("ResolveOnClick"));
+            if (!available) TooltipHandler.TipRegion(hit, SSCBondOverviewText.T("ResolveOnClick"));
             return GUI.enabled && Event.current.type == EventType.mouseDown && Event.current.button == 0;
         }
 

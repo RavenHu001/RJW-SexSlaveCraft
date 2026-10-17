@@ -5,6 +5,7 @@ using RimWorld.Planet;
 
 namespace UnityEngine
 {
+    public class Texture2D { }
     public struct Vector2 { public float x, y; public Vector2(float x, float y) { this.x=x; this.y=y; } public static Vector2 zero => default; }
     public struct Rect
     {
@@ -15,10 +16,12 @@ namespace UnityEngine
     }
     public struct Color { public float r,g,b,a; public static Color white=>new(1,1,1); public Color(float r,float g,float b,float a=1){this.r=r;this.g=g;this.b=b;this.a=a;} }
     public enum TextAnchor { UpperLeft, MiddleCenter }
-    public enum EventType { layout, repaint, mouseDown, used }
+    public enum EventType { layout, repaint, mouseDown, mouseUp, used }
     public class Event { public static Event current = new(); public EventType type; public int button; public Vector2 mousePosition; public void Use()=>type=EventType.used; }
     public static class Time { public static float realtimeSinceStartup; public static int frameCount; }
-    public static class GUI { public static Color color=new(1,1,1); public static bool enabled=true; public static void DrawTexture(Rect rect, object image){} }
+    public static class GUI { public static Color color=new(1,1,1); public static bool enabled=true;
+        public static List<(Rect rect,object image)> CapturedTextures;
+        public static void DrawTexture(Rect rect, object image){CapturedTextures?.Add((rect,image));} }
     public static partial class Mathf { public static float Min(float x,float y)=>Math.Min(x,y); }
 }
 namespace Verse
@@ -48,6 +51,7 @@ namespace Verse
     public struct GizmoRenderParms { public bool lowLight,shrunk; }
     public static class Command { public static readonly object BGTex=new(),BGTexShrunk=new();public static readonly Color LowLightBgColor=new(.5f,.5f,.5f); }
     public static class TexUI { public static readonly object GrayscaleGUI=new(); }
+    public static class TexButton { public static readonly Texture2D Search=new(),Rename=new(); }
     public static class GenUI
     {
         public static object LastTexture,LastMaterial;public static Color LastColor;public static Rect LastRect;
@@ -91,11 +95,25 @@ namespace Verse
         public static int Labels, ScrollDepth; public static float? NextScroll;
         public static bool ThrowLabel; public static int ThrowAt;
         public static List<(Rect rect,string value)> CapturedLabels;
+        public static List<(Rect rect,string label,bool active)> CapturedButtons;
+        private static Rect downRect;
+        private static int downButton;
+        private static bool downActive;
+        public static void ResetButtonCapture() { downActive=false; }
         public static void DrawBoxSolid(Rect rect,Color color){}
         public static void DrawHighlight(Rect rect){}
         public static void Label(Rect rect,string value){Labels++;CapturedLabels?.Add((rect,value)); if(ThrowLabel||ThrowAt>0&&Labels==ThrowAt)throw new InvalidOperationException("GUI fixture");}
         public static bool ButtonText(Rect rect,string label,bool active=true)
-        { if(active&&GUI.enabled&&Event.current.type==EventType.mouseDown&&Event.current.button==0&&Mouse.IsOver(rect)){Event.current.Use();return true;}return false; }
+        {
+            // 1.7.4981 UnityStubs.GUI.ButtonImpl 的引擎边界：按下只捕获，匹配矩形和按键的松开才成功。
+            // 仍用实际 GUI 开关／active 模拟调用准入；不在这里判断 SSC 动作、来源或权限。
+            CapturedButtons?.Add((rect,label,active));if(!active||!GUI.enabled)return false;
+            if(Event.current.type==EventType.mouseDown&&Mouse.IsOver(rect))
+            { downRect=rect;downButton=Event.current.button;downActive=true;Event.current.Use();return false; }
+            if(Event.current.type==EventType.mouseUp&&downActive&&Event.current.button==downButton&&Mouse.IsOver(rect)&&rect.Equals(downRect))
+            { downActive=false;Event.current.Use();return true; }
+            return false;
+        }
         public static void CheckboxLabeled(Rect rect,string label,ref bool value,bool disabled=false){}
         public static void BeginScrollView(Rect rect,ref Vector2 scroll,Rect content){ScrollDepth++;if(NextScroll.HasValue){scroll.y=NextScroll.Value;NextScroll=null;}}
         public static void EndScrollView(){ScrollDepth--;}

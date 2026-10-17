@@ -30,7 +30,7 @@ internal static partial class Program
         CameraJumper.Jumps=CameraJumper.Selects=CameraJumper.Checks=0;CameraJumper.Allow=true;
         PortraitsCache.Calls=0;PortraitsCache.Requests.Clear();TargetHighlighter.Calls=0;
         Widgets.Labels=Widgets.ScrollDepth=Widgets.ThrowAt=0;Widgets.NextScroll=null;Widgets.ThrowLabel=false;
-        Widgets.CapturedLabels=null;
+        Widgets.CapturedLabels=null;Widgets.CapturedButtons=null;GUI.CapturedTextures=null;Widgets.ResetButtonCapture();
         Time.frameCount=0;Time.realtimeSinceStartup=0;LanguageDatabase.activeLanguage=new();Log.Errors=0;
         GUI.enabled=true;GUI.color=new(1,1,1);Text.Font=GameFont.Small;Text.Anchor=TextAnchor.UpperLeft;Text.WordWrap=false;
         Prefs.UIScale=1;UIExtensions.Truncations=0;
@@ -53,14 +53,19 @@ internal static partial class Program
     {var session=new SSCBondOverviewSession(Current.Game,()=>Time.realtimeSinceStartup);session.ObserveCard(source,map,0);session.Update(0,true,map);return session;}
     static void Paint(Gizmo gizmo,float width=300)=>gizmo.GizmoOnGUI(new(0,0),width,default);
     static GizmoResult Click(Gizmo gizmo,float x,float y,int button=0)
-    {Event.current=new(){type=EventType.mouseDown,button=button,mousePosition=new(x,y)};return gizmo.GizmoOnGUI(new(0,0),300,default);}
+    {
+        Event.current=new(){type=EventType.mouseDown,button=button,mousePosition=new(x,y)};
+        var down=gizmo.GizmoOnGUI(new(0,0),300,default);if(down.State==GizmoState.Interacted)return down;
+        Event.current=new(){type=EventType.mouseUp,button=button,mousePosition=new(x,y)};
+        return gizmo.GizmoOnGUI(new(0,0),300,default);
+    }
 
     static int Main(string[] args)
     {
         root=SscTestPaths.RepositoryRoot(args.FirstOrDefault());
         foreach(var path in Directory.GetFiles(SscTestPaths.Combine(root,"Languages/English/Keyed"),"*.xml"))
             foreach(var e in XDocument.Load(path).Root.Elements())english[e.Name.LocalName]=e.Value;
-        SessionTests();NavigationTests();GuiTests();CacheTests();RevisionTests();DirectReadTests();ResourceTests();
+        SessionTests();NavigationTests();GuiTests();CacheTests();RevisionTests();DirectReadTests();IconButtonTests();ResourceTests();
         Console.WriteLine($"{cases-failures}/{cases} passed");return failures==0?0:1;
     }
 
@@ -225,17 +230,17 @@ internal static partial class Program
             Require(ship.Things.Enumerations==0&&ThingOwnerUtility.MapQueryCount==maps);
         });
         Check("gizmo: left click dispatches once and consumes stored action",()=>{
-            var f=Fixture();var s=Ready(f.master,f.map);var g=new Gizmo_SSCBondOverview(s);var result=Click(g,20,45);Require(result.State==GizmoState.Interacted);
+            var f=Fixture();var s=Ready(f.master,f.map);var g=new Gizmo_SSCBondOverview(s);var result=Click(g,65,45);Require(result.State==GizmoState.Interacted);
             g.ProcessInput(result.InteractEvent);g.ProcessInput(result.InteractEvent);Require(CameraJumper.Jumps==1);
         });
         foreach(string state in new[]{"right","disabled","multi","revision","rebound"})Check("gizmo blocks stale or non-left action "+state,()=>{
             var f=Fixture();var s=Ready(f.master,f.map);var g=new Gizmo_SSCBondOverview(s);if(state=="disabled")GUI.enabled=false;
-            var result=Click(g,20,45,state=="right"?1:0);
+            var result=Click(g,65,45,state=="right"?1:0);
             if(state=="multi")Find.Selector.Objects.Add(new Thing());if(state=="revision")s.Card.Changed();if(state=="rebound")SSCBondUtility.GetChain(f.slave).target=Master();
             g.ProcessInput(result.InteractEvent);Require(CameraJumper.Jumps==0);
         });
         Check("gizmo: view-all is separate from portrait and reuses same window",()=>{
-            var f=Fixture();var s=Ready(f.master,f.map);var g=new Gizmo_SSCBondOverview(s);var result=Click(g,250,10);g.ProcessInput(result.InteractEvent);
+            var f=Fixture();var s=Ready(f.master,f.map);var g=new Gizmo_SSCBondOverview(s);var result=Click(g,114,14);g.ProcessInput(result.InteractEvent);
             var window=Find.WindowStack.WindowOfType<Dialog_SSCBondOverview>();Require(window?.Source==f.master&&CameraJumper.Jumps==0);
             Dialog_SSCBondOverview.Open(s,f.master);Require(Find.WindowStack.WindowOfType<Dialog_SSCBondOverview>()==window);window.Close();Require(s.Details==null);
         });
@@ -281,7 +286,7 @@ internal static partial class Program
             var f=Fixture();for(int i=0;i<8;i++)Place(Slave(f.master,i.ToString()),f.map);
             // 正常 Bind 不制造双向异常；直接构造旧档式锁链，验证界面仍保留两侧事实。
             f.master.health.AddHediff(new Hediff_ChainOfSexSlave{def=SSCDefOf.ChainOfSexSlave,target=Master()});
-            var s=Ready(f.master,f.map);var g=new Gizmo_SSCBondOverview(s);Paint(g);Require(PortraitsCache.Calls==5&&PortraitsCache.Requests.All(r=>r.size.x==40&&r.size.y==40));
+            var s=Ready(f.master,f.map);var g=new Gizmo_SSCBondOverview(s);Paint(g);Require(PortraitsCache.Calls==2&&PortraitsCache.Requests.All(r=>r.size.x==40&&r.size.y==40));
             Require(!g.GroupsWith(g)&&!g.InheritInteractionsFrom(g));
         });
         Check("hover: cycle after container moved is safe and never scans ship",()=>{
@@ -325,7 +330,7 @@ internal static partial class Program
             Require(display.RowCount>0&&display.RowCount<=64&&display.Snapshot.TotalSlaveCount==1001);
         });
         Check("cache: hovered card formats only the hovered row",()=>{
-            var f=Fixture();var s=Ready(f.master,f.map);Event.current.mousePosition=new(20,50);Paint(new Gizmo_SSCBondOverview(s));
+            var f=Fixture();var s=Ready(f.master,f.map);Event.current.mousePosition=new(65,50);Paint(new Gizmo_SSCBondOverview(s));
             Require(s.Card.Display.RowCount==1&&ThingOwnerUtility.MapQueryCount==1);
         });
         Check("cache: row text matches full immutable snapshot fields and reuses object",()=>{
@@ -418,27 +423,27 @@ internal static partial class Program
         Check("paging: every member is reachable with fixed portraits and zero additional queries",()=>{
             var f=Fixture();for(int i=0;i<16;i++)Place(Slave(f.master,"P"+i.ToString("D2")),f.map);
             var s=Ready(f.master,f.map);var g=new Gizmo_SSCBondOverview(s);var seen=new HashSet<Pawn>();int maps=ThingOwnerUtility.MapQueryCount;
-            for(int page=0;page<4;page++){
+            for(int page=0;page<9;page++){
                 Event.current=new(){type=EventType.repaint,mousePosition=new(-100,-100)};PortraitsCache.Requests.Clear();Paint(g);
                 foreach(var request in PortraitsCache.Requests){seen.Add(request.pawn);Require(request.size.x==40);}
-                var result=Click(g,280,40);g.ProcessInput(result.InteractEvent);
+                var result=Click(g,118,48);g.ProcessInput(result.InteractEvent);
             }
-            Require(seen.SetEquals(s.Card.Snapshot.Slaves.Select(e=>e.Pawn))&&ThingOwnerUtility.MapQueryCount==maps&&s.Card.Page==3);
+            Require(seen.SetEquals(s.Card.Snapshot.Slaves.Select(e=>e.Pawn))&&ThingOwnerUtility.MapQueryCount==maps&&s.Card.Page==8);
         });
         Check("paging: previous next bounds navigation and refresh are independent",()=>{
             var f=Fixture();for(int i=0;i<11;i++)Place(Slave(f.master,"P"+i),f.map);var s=Ready(f.master,f.map);var g=new Gizmo_SSCBondOverview(s);
-            var next=Click(g,280,40);g.ProcessInput(next.InteractEvent);Require(s.Card.Page==1&&CameraJumper.Jumps==0);
+            var next=Click(g,118,48);g.ProcessInput(next.InteractEvent);Require(s.Card.Page==1&&CameraJumper.Jumps==0);
             Event.current=new(){type=EventType.repaint,mousePosition=new(-100,-100)};s.Card.Changed();Paint(g);Require(s.Card.Page==1);
-            var previous=Click(g,250,40);g.ProcessInput(previous.InteractEvent);Require(s.Card.Page==0);
-            var first=Click(g,250,40);g.ProcessInput(first.InteractEvent);Require(s.Card.Page==0);
-            s.Card.Page=100;Event.current.type=EventType.repaint;Paint(g);Require(s.Card.Page==2);
+            var previous=Click(g,12,48);g.ProcessInput(previous.InteractEvent);Require(s.Card.Page==0);
+            var first=Click(g,12,48);g.ProcessInput(first.InteractEvent);Require(s.Card.Page==0);
+            s.Card.Page=100;Event.current.type=EventType.repaint;Paint(g);Require(s.Card.Page==5);
             foreach(var e in s.Card.Snapshot.Slaves.Skip(1))SSCBondUtility.GetChain(e.Pawn).target=null;
             Time.realtimeSinceStartup=2;s.ObserveCard(f.master,f.map,1);s.Update(1,true,f.map);Paint(g);Require(s.Card.Page==0);
         });
         Check("paging: page click never consumes portrait navigation",()=>{
             var f=Fixture();for(int i=0;i<7;i++)Place(Slave(f.master,"P"+i),f.map);var s=Ready(f.master,f.map);var g=new Gizmo_SSCBondOverview(s);
-            var next=Click(g,280,40);g.ProcessInput(next.InteractEvent);var expected=s.Card.Snapshot.Slaves[5].Pawn;
-            var result=Click(g,20,45);g.ProcessInput(result.InteractEvent);Require(CameraJumper.Jumps==1&&CameraJumper.Last.Thing==expected);
+            var next=Click(g,118,48);g.ProcessInput(next.InteractEvent);var expected=s.Card.Snapshot.Slaves[2].Pawn;
+            var result=Click(g,43,45);g.ProcessInput(result.InteractEvent);Require(CameraJumper.Jumps==1&&CameraJumper.Last.Thing==expected);
             s.ObserveCard(Master(),f.map,1);Require(s.Card.Page==0);
         });
         Check("panels: master and assigned trainer are separate even when same person",()=>{
@@ -490,7 +495,7 @@ internal static partial class Program
             var f=Fixture();Find.Selector.Objects.Clear();Find.Selector.Objects.Add(f.slave);TrainerAssignmentUtility.Candidates.Add(f.master);
             var s=Ready(f.slave,f.map);var g=new Gizmo_SSCBondOverview(s,SSCBondOverviewPanel.Trainer);
             for(int i=0;i<100;i++)Paint(g);Require(TrainerAssignmentUtility.CandidateQueries==0&&f.slave.Training.selectedTrainer==null);
-            var result=Click(g,180,45);g.ProcessInput(result.InteractEvent);g.ProcessInput(result.InteractEvent);
+            var result=Click(g,86,14);g.ProcessInput(result.InteractEvent);g.ProcessInput(result.InteractEvent);
             Require(Find.WindowStack.WindowOfType<FloatMenu>()!=null&&TrainerAssignmentUtility.CandidateQueries==1&&f.slave.Training.selectedTrainer==null);
         });
         Check("trainer menu: commit uses shared backend preserves master and queues refresh",()=>{
@@ -520,7 +525,7 @@ internal static partial class Program
         });
         Check("UI labels: master overview has only short count names and no empty directions or row details",()=>{
             var f=Fixture();var s=Ready(f.master,f.map);Widgets.CapturedLabels=new();Paint(new Gizmo_SSCBondOverview(s));
-            Require(Widgets.CapturedLabels.Count==2&&Widgets.CapturedLabels[0].value==s.Card.Display.SlaveHeading);
+            Require(Widgets.CapturedLabels.Count==1&&Widgets.CapturedLabels[0].value==s.Card.Display.OwnedHeading);
             Widgets.CapturedLabels.Clear();Dialog_SSCBondOverview.Open(s,f.master);Find.WindowStack.WindowOfType<Dialog_SSCBondOverview>().DoWindowContents(new(0,0,760,500));
             Require(Widgets.CapturedLabels.Count==2&&Widgets.CapturedLabels[0].value==s.Card.Display.SlaveHeading&&Widgets.CapturedLabels[1].value==f.slave.LabelShort);
         });
@@ -528,13 +533,13 @@ internal static partial class Program
             var f=Fixture();Find.Selector.Objects.Clear();Find.Selector.Objects.Add(f.slave);var s=Ready(f.slave,f.map);
             Widgets.CapturedLabels=new();Dialog_SSCBondOverview.Open(s,f.slave);Find.WindowStack.WindowOfType<Dialog_SSCBondOverview>().DoWindowContents(new(0,0,220,500));
             var label=Widgets.CapturedLabels.Single(i=>i.value.StartsWith("Assigned")||i.rect.y==108&&i.rect.x==0);
-            Require(label.rect.xMax<=100);
+            Require(label.rect.xMax<=160);
         });
         Check("trainer avatar: explicit click navigates trainer while master avatar navigates owner",()=>{
             var f=Fixture();var trainer=Master();Place(trainer,f.map);f.slave.Training.selectedTrainer=trainer;Find.Selector.Objects.Clear();Find.Selector.Objects.Add(f.slave);
-            var s=Ready(f.slave,f.map);var g=new Gizmo_SSCBondOverview(s,SSCBondOverviewPanel.Trainer);var click=Click(g,20,45);g.ProcessInput(click.InteractEvent);
+            var s=Ready(f.slave,f.map);var g=new Gizmo_SSCBondOverview(s,SSCBondOverviewPanel.Trainer);var click=Click(g,65,45);g.ProcessInput(click.InteractEvent);
             Require(CameraJumper.Last.Thing==trainer&&CameraJumper.Jumps==1);
-            g=new Gizmo_SSCBondOverview(s,SSCBondOverviewPanel.Master);click=Click(g,20,45);g.ProcessInput(click.InteractEvent);Require(CameraJumper.Last.Thing==f.master&&CameraJumper.Jumps==2);
+            g=new Gizmo_SSCBondOverview(s,SSCBondOverviewPanel.Master);click=Click(g,65,45);g.ProcessInput(click.InteractEvent);Require(CameraJumper.Last.Thing==f.master&&CameraJumper.Jumps==2);
         });
         Check("trainer menu: own change rereads direct relationships and retains refresh deadline",()=>{
             var f=Fixture();Find.Selector.Objects.Clear();Find.Selector.Objects.Add(f.slave);TrainerAssignmentUtility.Candidates.Add(f.master);

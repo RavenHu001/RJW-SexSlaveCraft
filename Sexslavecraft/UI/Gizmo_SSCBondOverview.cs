@@ -14,23 +14,27 @@ namespace SexSlaveCraft
         private SSCBondOverviewSnapshot pendingSnapshot;
         private SSCBondOverviewEntry pendingEntry;
         private int pendingRevision, pendingAction, pendingCapacity;
+        // 跨按下／松开只保存动作和当前游戏内的角色 ID，不额外持有来源 Pawn 或旧视图。
+        private int pressedAction, pressedSourceId;
         internal Gizmo_SSCBondOverview(SSCBondOverviewSession session, SSCBondOverviewPanel panel = SSCBondOverviewPanel.Slaves)
         { this.session = session; Panel = panel; }
         public override float GetWidth(float maxWidth) => Math.Min(
-            Panel == SSCBondOverviewPanel.Master ? 180 : Panel == SSCBondOverviewPanel.Trainer ? 220 : 300, Math.Max(1, maxWidth));
+            Panel == SSCBondOverviewPanel.Master ? 75 : 130, Math.Max(1, maxWidth));
         public override bool GroupsWith(Gizmo other) => false;
         public override bool InheritInteractionsFrom(Gizmo other) => false;
         internal void ClearPending() { pendingView = null; pendingSnapshot = null; pendingEntry = null; pendingAction = 0; }
-        internal void Clear() => ClearPending();
+        internal void Clear() { ClearPending(); pressedAction = pressedSourceId = 0; }
 
         public override GizmoResult GizmoOnGUI(Vector2 topLeft, float maxWidth, GizmoRenderParms parms)
         {
             ClearPending();
+            if (Event.current.type == EventType.mouseDown) pressedAction = pressedSourceId = 0;
+            bool released = Event.current.type == EventType.mouseUp;
             SSCBondOverviewView view = session.Card;
             if (!ReferenceEquals(session.Owner, Current.Game) || !SSCBondOverviewAccess.IsCardSource(view?.Source) || !view.ShowCard)
                 return new GizmoResult(GizmoState.Clear);
             using var scope = new SSCBondOverviewWidgets.GuiScope(true);
-            Rect rect = new Rect(topLeft.x, topLeft.y, GetWidth(maxWidth), 75);
+            Rect rect = new Rect(topLeft.x, topLeft.y, GetWidth(maxWidth), Panel == SSCBondOverviewPanel.Master ? GetWidth(maxWidth) : 75);
             // 与原版机械师从属卡片共用命令背景纹理、边框及低亮度材质；不另画实心底框。
             Color oldColor = GUI.color;
             GUI.color = parms.lowLight ? Command.LowLightBgColor : Color.white;
@@ -38,71 +42,104 @@ namespace SexSlaveCraft
                 Disabled || parms.lowLight ? TexUI.GrayscaleGUI : null);
             GUI.color = oldColor;
             bool left = GUI.enabled && !Disabled && Event.current.type == EventType.mouseDown && Event.current.button == 0;
-            if (rect.width < 100)
-            {
-                float inset = Math.Min(1, rect.width * .1f);
-                Rect compact = new Rect(rect.x + inset, rect.y + 4, Math.Max(0, rect.width - 2 * inset), 65);
-                Button(compact, SSCBondOverviewText.T("ViewAll"), 1);
-                return Result();
-            }
             SSCBondOverviewSnapshot snapshot = view.Snapshot;
             SSCBondOverviewDisplay display = view.Display;
-            Rect all = new Rect(rect.xMax - 88, rect.y + 4, 84, 22);
-            string heading = Panel == SSCBondOverviewPanel.Master ? SSCBondOverviewText.T("Master")
-                : Panel == SSCBondOverviewPanel.Trainer ? SSCBondOverviewText.T("TrainerPanel")
-                : display?.SlaveHeading ?? SSCBondOverviewText.T("Slave");
-            Rect title = new Rect(rect.x + 6, rect.y + 4, Math.Max(1, all.x - rect.x - 12), 22);
-            Widgets.Label(title, view.Truncate(heading, title.width));
-            if (display != null && Mouse.IsOver(title)) TooltipHandler.TipRegion(title,
-                Panel == SSCBondOverviewPanel.Slaves ? display.Count : heading);
-            Button(all, SSCBondOverviewText.T("ViewAll"), 1);
+            if (Panel == SSCBondOverviewPanel.Master)
+            {
+                // 唯一主人改为方形头像命令；整块矩形共享头像的现时关系校验和定位／选中。
+                // 不显示姓名，不添加总览或改主入口，完整姓名与位置仍可悬停查看。
+                Text.Anchor = TextAnchor.MiddleCenter;
+                Widgets.Label(new Rect(rect.x + 3, rect.y + 3, Math.Max(1, rect.width - 6), 20),
+                    view.Truncate(SSCBondOverviewText.T("Master"), Math.Max(1, rect.width - 6)));
+                Text.Anchor = TextAnchor.UpperLeft;
+                if (snapshot?.Master != null)
+                {
+                    if (rect.height >= 68)
+                    {
+                        if (SSCBondOverviewWidgets.Avatar(new Rect(rect.x + (rect.width - 40) * .5f, rect.y + 27, 40, 40),
+                            snapshot, snapshot.Master, session, view, interactionRect: rect) && left) Remember(4, snapshot.Master);
+                    }
+                    else
+                    {
+                        // 极窄方块只显示方向，不生成第三档肖像；仍保留整块悬停与安全导航。
+                        bool current = SSCBondOverviewUtility.IsCurrent(snapshot, snapshot.Master);
+                        if (!current) session.RequestRefresh(view);
+                        if (current && Mouse.IsOver(rect))
+                        {
+                            var text = display.Row(snapshot.Master);
+                            SSCBondOverviewWidgets.Hover(rect, snapshot.Master, text.Name, text.Details);
+                            if (left) Remember(4, snapshot.Master);
+                        }
+                    }
+                }
+                else
+                {
+                    Widgets.Label(new Rect(rect.x + 4, rect.y + 27, Math.Max(1, rect.width - 8), 24), "!");
+                    TooltipHandler.TipRegion(rect, SSCBondOverviewText.T(snapshot == null ? "Waiting" : "InvalidMaster"));
+                }
+                return Result();
+            }
+            if (rect.width < 100)
+            {
+                float size = Math.Max(0, Math.Min(28, rect.width - 2));
+                Icon(new Rect(rect.x + 1, rect.y + 4, size, 28), TexButton.Search, "ViewAll", 1);
+                if (Panel == SSCBondOverviewPanel.Trainer)
+                    Icon(new Rect(rect.x + 1, rect.y + 39, size, 28), TexButton.Rename, "ChangeTrainer", 6, SSCIdentityUtility.IsSexSlave(view.Source));
+                return Result();
+            }
 
-            if (Panel == SSCBondOverviewPanel.Slaves)
+            Rect all = new Rect(rect.xMax - 28, rect.y + 4, 24, 24);
+            bool slaves = Panel == SSCBondOverviewPanel.Slaves;
+            string heading = slaves ? display?.OwnedHeading ?? SSCBondOverviewText.Format("OwnedCount", "?")
+                : SSCBondOverviewText.T("TrainerPanel");
+            // 数量与“拥有性奴”合成完整顶部文案；小字体为原版宽度内的图标入口留出空间。
+            Text.Font = slaves ? GameFont.Tiny : GameFont.Small;
+            Rect title = new Rect(rect.x + 6, rect.y + 4, Math.Max(1, rect.width - (slaves ? 38 : 66)), 22);
+            Widgets.Label(title, view.Truncate(heading, title.width));
+            Text.Font = GameFont.Small;
+            if (Mouse.IsOver(title)) TooltipHandler.TipRegion(title, slaves ? display?.OwnedDetails ?? heading : heading);
+            if (!slaves) Icon(new Rect(rect.xMax - 56, rect.y + 4, 24, 24), TexButton.Rename, "ChangeTrainer", 6,
+                SSCIdentityUtility.IsSexSlave(view.Source));
+            Icon(all, TexButton.Search, "ViewAll", 1);
+
+            if (slaves)
             {
                 int count = snapshot?.TotalSlaveCount ?? 0;
                 int capacity = SSCBondOverviewLayout.CardCapacity(rect.width);
-                if (count > capacity) capacity = SSCBondOverviewLayout.CardCapacity(Math.Max(0, rect.width - 64));
+                if (count > capacity) capacity = SSCBondOverviewLayout.CardCapacity(rect.width, true);
                 int last = SSCBondOverviewLayout.LastPage(count, capacity);
-                // 页号属于来源视图，不属于快照代次；刷新保留页，数量减少或窄栏改变时仅夹到有效页。
                 view.Page = Math.Max(0, Math.Min(view.Page, last));
                 if (last > 0)
                 {
                     pendingCapacity = capacity;
-                    Button(new Rect(rect.xMax - 62, rect.y + 30, 26, 20), "‹", 2, view.Page > 0);
-                    Button(new Rect(rect.xMax - 30, rect.y + 30, 26, 20), "›", 3, view.Page < last);
-                    Widgets.Label(new Rect(rect.xMax - 62, rect.y + 52, 58, 18), display.PageLabel(view.Page, last + 1));
+                    Rect previous = new Rect(rect.x + 2, rect.y + 36, 20, 28);
+                    Rect next = new Rect(rect.xMax - 22, rect.y + 36, 20, 28);
+                    Button(previous, "‹", 2, view.Page > 0);
+                    Button(next, "›", 3, view.Page < last);
+                    // 页码移到箭头悬停，避免 75 高卡片内覆盖头像；完整名单仍逐页可达。
+                    string page = display.PageLabel(view.Page, last + 1);
+                    TooltipHandler.TipRegion(previous, page); TooltipHandler.TipRegion(next, page);
                 }
-                int start = view.Page * capacity;
-                for (int i = 0; i < capacity && start + i < count; i++)
+                int start = view.Page * capacity, shown = Math.Min(capacity, count - start);
+                float first = rect.x + (rect.width - (shown * 40 + Math.Max(0, shown - 1) * 4)) * .5f;
+                for (int i = 0; i < shown; i++)
                 {
                     SSCBondOverviewEntry entry = snapshot.Slaves[start + i];
-                    if (SSCBondOverviewWidgets.Avatar(new Rect(rect.x + 6 + i * 44, rect.y + 29, 40, 40), snapshot, entry, session, view) && left)
-                        Remember(4, entry);
+                    if (SSCBondOverviewWidgets.Avatar(new Rect(first + i * 44, rect.y + 29, 40, 40),
+                        snapshot, entry, session, view) && left) Remember(4, entry);
                 }
                 if (count == 0 || capacity == 0) Status(snapshot == null ? "Waiting" : count > 0 ? "ViewAll"
                     : snapshot.CoverageComplete ? "EmptySlaves" : "SupplementPending");
             }
             else
             {
-                SSCBondOverviewEntry master = snapshot?.Master;
-                Pawn trainer = snapshot?.AssignedTrainer;
-                bool hasPerson = Panel == SSCBondOverviewPanel.Master ? master != null : trainer != null;
-                if (hasPerson)
+                // 单个调教员与原版少量机械体一样居中排列，不在头像旁常驻姓名。
+                if (snapshot?.AssignedTrainer != null)
                 {
-                    Rect portrait = new Rect(rect.x + 6, rect.y + 29, 40, 40);
-                    bool clicked = Panel == SSCBondOverviewPanel.Master
-                        ? SSCBondOverviewWidgets.Avatar(portrait, snapshot, master, session, view)
-                        : SSCBondOverviewWidgets.TrainerAvatar(portrait, snapshot, session, view);
-                    if (clicked && left) Remember(Panel == SSCBondOverviewPanel.Master ? 4 : 5, master);
-                    float width = Math.Max(1, rect.width - (Panel == SSCBondOverviewPanel.Trainer ? 136 : 62));
-                    string name = Panel == SSCBondOverviewPanel.Master ? display.Row(master).Name : display.TrainerName;
-                    Widgets.Label(new Rect(rect.x + 54, rect.y + 38, width, 24), view.Truncate(name, width));
+                    if (SSCBondOverviewWidgets.TrainerAvatar(new Rect(rect.x + (rect.width - 40) * .5f, rect.y + 29, 40, 40),
+                        snapshot, session, view) && left) Remember(5);
                 }
-                else Status(snapshot == null ? "Waiting" : Panel == SSCBondOverviewPanel.Trainer ? "None"
-                    : snapshot.MasterState == SSCBondOverviewMasterState.InvalidTarget ? "InvalidMaster" : "NoMaster");
-                if (Panel == SSCBondOverviewPanel.Trainer)
-                    Button(new Rect(rect.xMax - 76, rect.y + 36, 70, 28), SSCBondOverviewText.T("ChangeTrainer"), 6,
-                        SSCIdentityUtility.IsSexSlave(view.Source));
+                else Status(snapshot == null ? "Waiting" : "None");
             }
             if (Panel == SSCBondOverviewPanel.Slaves)
             {
@@ -115,19 +152,33 @@ namespace SexSlaveCraft
             { pendingView = view; pendingRevision = view.Revision; pendingSnapshot = view.Snapshot; pendingEntry = entry; pendingAction = action; }
             void Button(Rect area, string text, int action, bool enabled = true)
             {
-                Color old = GUI.color;
-                if (!enabled) GUI.color = new Color(.5f, .5f, .5f);
-                Widgets.Label(area, view.Truncate(text, area.width));
-                GUI.color = old;
-                if (enabled && Mouse.IsOver(area)) { Widgets.DrawHighlight(area); if (left) Remember(action); }
+                // 分页箭头使用原版按钮底框；不再把箭头作为无边界文本命中区。
+                Press(area, action, enabled);
+                bool leftUp = GUI.enabled && Event.current.type == EventType.mouseUp && Event.current.button == 0;
+                if (SSCUIWidgets.Button(area, text, enabled && !Disabled) && leftUp && SamePress(action)) Remember(action);
             }
+            void Icon(Rect area, Texture2D texture, string tip, int action, bool enabled = true)
+            {
+                Press(area, action, enabled);
+                if (SSCBondOverviewWidgets.IconButton(area, texture, SSCBondOverviewText.T(tip), enabled && !Disabled) && SamePress(action)) Remember(action);
+            }
+            void Press(Rect area, int action, bool enabled)
+            { if (left && enabled && Mouse.IsOver(area)) { pressedAction = action; pressedSourceId = view.Source.thingIDNumber; } }
+            // 原版热按钮只认矩形；换人后即使新卡片出现在同一位置，也不能接收旧来源的松开。
+            bool SamePress(int action) => pressedAction == action && pressedSourceId == view.Source.thingIDNumber;
             void Status(string key)
             {
-                float width = Math.Max(1, rect.width - (Panel == SSCBondOverviewPanel.Trainer ? 90 : 12));
+                float width = Math.Max(1, rect.width - 12);
+                Text.Anchor = TextAnchor.MiddleCenter;
                 Widgets.Label(new Rect(rect.x + 6, rect.y + 36, width, 28), view.Truncate(SSCBondOverviewText.T(key), width));
+                Text.Anchor = TextAnchor.UpperLeft;
             }
-            GizmoResult Result() => pendingView != null ? new GizmoResult(GizmoState.Interacted, Event.current)
-                : new GizmoResult(Mouse.IsOver(rect) ? GizmoState.Mouseover : GizmoState.Clear);
+            GizmoResult Result()
+            {
+                if (released) pressedAction = pressedSourceId = 0;
+                return pendingView != null ? new GizmoResult(GizmoState.Interacted, Event.current)
+                    : new GizmoResult(Mouse.IsOver(rect) ? GizmoState.Mouseover : GizmoState.Clear);
+            }
         }
 
         public override void ProcessInput(Event ev)

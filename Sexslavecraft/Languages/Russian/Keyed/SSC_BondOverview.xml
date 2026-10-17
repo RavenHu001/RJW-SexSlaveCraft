@@ -4,8 +4,8 @@
   <SSC_BondOverview_Title>Обзор связей</SSC_BondOverview_Title>
   <SSC_BondOverview_TitleSource>Связи: {0}</SSC_BondOverview_TitleSource>
   <SSC_BondOverview_Counts>Связаны: {0} живых / {1} всего</SSC_BondOverview_Counts>
-  <SSC_BondOverview_Master>Фактический хозяин</SSC_BondOverview_Master>
-  <SSC_BondOverview_Slave>Связанный секс-раб</SSC_BondOverview_Slave>
+  <SSC_BondOverview_Master>Хозяин</SSC_BondOverview_Master>
+  <SSC_BondOverview_Slave>Секс-рабы</SSC_BondOverview_Slave>
   <SSC_BondOverview_LivingSlaves>Живые связанные секс-рабы</SSC_BondOverview_LivingSlaves>
   <SSC_BondOverview_DeadSlaves>Умершие связанные секс-рабы</SSC_BondOverview_DeadSlaves>
   <SSC_BondOverview_ViewAll>Подробнее</SSC_BondOverview_ViewAll>
@@ -45,10 +45,11 @@
   <SSC_BondOverview_Failure_Unknown>Не удалось определить текущее местоположение.</SSC_BondOverview_Failure_Unknown>
   <SSC_BondOverview_Failure_CannotJump>Камера не может перейти к текущему местоположению.</SSC_BondOverview_Failure_CannotJump>
   <SSC_BondOverview_BothCounts>Хозяин + рабы {0}/{1}</SSC_BondOverview_BothCounts>
-  <SSC_BondOverview_ShortCount>Связанные рабы: {0}</SSC_BondOverview_ShortCount>
-  <SSC_BondOverview_TrainerPanel>Назначенный наставник</SSC_BondOverview_TrainerPanel>
-  <SSC_BondOverview_ChangeTrainer>Сменить</SSC_BondOverview_ChangeTrainer>
-  <SSC_BondOverview_KnownCount>Известных подчинённых: {0}</SSC_BondOverview_KnownCount>
+  <SSC_BondOverview_ShortCount>Секс-рабы: {0}</SSC_BondOverview_ShortCount>
+  <SSC_BondOverview_TrainerPanel>Тренер</SSC_BondOverview_TrainerPanel>
+  <SSC_BondOverview_ChangeTrainer>Сменить тренера</SSC_BondOverview_ChangeTrainer>
+  <SSC_BondOverview_KnownCount>Известных секс-рабов: {0}</SSC_BondOverview_KnownCount>
   <SSC_BondOverview_SupplementPending>Поиск остальных связанных подчинённых…</SSC_BondOverview_SupplementPending>
   <SSC_BondOverview_ResolveOnClick>Нажмите для проверки текущего местоположения.</SSC_BondOverview_ResolveOnClick>
+  <SSC_BondOverview_OwnedCount>Секс-рабы: {0}</SSC_BondOverview_OwnedCount>
 </LanguageData>

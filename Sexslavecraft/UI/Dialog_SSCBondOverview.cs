@@ -92,9 +92,9 @@ namespace SexSlaveCraft
                 }
                 if (trainer)
                 {
-                    Label(trainerHeader, SSCBondOverviewText.T("TrainerPanel"), Math.Max(1, width - Math.Min(width, 100) - 8));
-                    if (Visible(trainerHeader, header) && SSCUIWidgets.Button(new Rect(Math.Max(0, width - 100), trainerHeader, Math.Min(width, 100), 24),
-                        SSCBondOverviewText.T("ChangeTrainer"), SSCIdentityUtility.IsSexSlave(Source))) changeTrainer = true;
+                    Label(trainerHeader, SSCBondOverviewText.T("TrainerPanel"), Math.Max(1, width - Math.Min(width, 32) - 8));
+                    if (Visible(trainerHeader, header) && SSCBondOverviewWidgets.IconButton(new Rect(Math.Max(0, width - 32), trainerHeader, Math.Min(width, 32), 24),
+                        TexButton.Rename, SSCBondOverviewText.T("ChangeTrainer"), SSCIdentityUtility.IsSexSlave(Source))) changeTrainer = true;
                     if (Visible(trainerStart, row))
                     {
                         if (snapshot.AssignedTrainer != null)
