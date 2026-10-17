@@ -9,9 +9,9 @@ using SexSlaveCraft;
 
 namespace Verse
 {
-    public class Thing { public bool Destroyed; }
+    public partial class Thing { public bool Destroyed; }
     public enum Gender { None, Male, Female }
-    public class Pawn : Thing
+    public partial class Pawn : Thing
     {
         public bool Dead, Discarded;
         public Gender gender;
@@ -19,7 +19,7 @@ namespace Verse
         public string LabelShortCap => LabelShort;
         public readonly Pawn_HealthTracker health;
         public readonly Pawn_RelationsTracker relations;
-        public readonly CompSexSlaveTraining Training = new CompSexSlaveTraining();
+        public CompSexSlaveTraining Training = new CompSexSlaveTraining();
         public Pawn() { health = new Pawn_HealthTracker(this); relations = new Pawn_RelationsTracker(this); }
         public T TryGetComp<T>() where T : class => Training as T;
     }
@@ -155,7 +155,7 @@ namespace SexSlaveCraft
 {
     using Verse;
     public enum PawnIdentity { Unset, Slave, Master }
-    public class CompSexSlaveTraining { public PawnIdentity pawnIdentity; public Pawn selectedTrainer; }
+    public partial class CompSexSlaveTraining { public PawnIdentity pawnIdentity; public Pawn selectedTrainer; }
     public static class SSCDefOf
     {
         public static HediffDef ChainOfSexSlave = new HediffDef { hediffClass = typeof(Hediff_ChainOfSexSlave) };
@@ -179,7 +179,8 @@ namespace SexSlaveCraft
     {
         // 快照来源是外部边界；全地图/世界/商队的枚举由原有限制系统测试负责。
         public static readonly List<Pawn> Pawns = new List<Pawn>();
-        public static List<Pawn> AllPawns() => Pawns.ToList();
+        public static int QueryCount;
+        public static List<Pawn> AllPawns() { QueryCount++; return Pawns.ToList(); }
         public static void Notify(Pawn pawn) { }
     }
     public static class SSCRestrictionTrainerAssignment
@@ -188,7 +189,11 @@ namespace SexSlaveCraft
     }
     public static class TrainerAssignmentUtility
     {
-        public static Pawn GetActiveAssignedTrainer(Pawn pawn) => pawn.Training.selectedTrainer;
+        public static Pawn GetActiveAssignedTrainer(Pawn pawn)
+        {
+            Pawn trainer = pawn?.Training?.selectedTrainer;
+            return trainer != null && trainer != pawn && !trainer.Dead && !trainer.Destroyed && trainer.Training?.TrainerActive != false ? trainer : null;
+        }
         public static bool CanAssignTrainerTo(Pawn slave, Pawn trainer) => true;
     }
     public static class TrainerSpecializationLifecycle

@@ -9,7 +9,7 @@ using SexSlaveCraft;
 using Verse;
 using Extensions = Verse.Extensions;
 
-internal static class Program
+internal static partial class Program
 {
     static int cases, failures;
     static PawnRelationDef customCapRelation;
@@ -24,6 +24,7 @@ internal static class Program
     static void Check(string name, Action action)
     {
         cases++; SSCRestrictionGameComponent.Pawns.Clear();
+        ResetOverviewWorld();
         try { action(); Console.WriteLine("PASS " + name); }
         catch (Exception ex) { failures++; Console.WriteLine("FAIL " + name + ": " + ex); }
     }
@@ -323,6 +324,7 @@ internal static class Program
                 postfix: new HarmonyMethod(typeof(Program), nameof(CustomCap)));
             Require(SocialCardUtility.Render(new Pawn(), new Pawn(), customCapRelation) == "custom: Friend");
         });
+        RunBondOverviewTests();
         Console.WriteLine($"{cases - failures}/{cases} passed");
         return failures == 0 ? 0 : 1;
     }
