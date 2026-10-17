@@ -10,5 +10,12 @@
   <SSC_GelAppearance_Old>Old color</SSC_GelAppearance_Old>
   <SSC_GelAppearance_New>New color</SSC_GelAppearance_New>
   <SSC_GelAppearance_SkinOnly>Affects gel skin only. Eyes, facial features and hair keep their appearance.</SSC_GelAppearance_SkinOnly>
-  <SSC_GelAppearance_Reset>Restore defaults</SSC_GelAppearance_Reset>
+  <SSC_GelAppearance_Reset>Reset appearance</SSC_GelAppearance_Reset>
+  <SSC_GelAppearance_RenderEnabled>Enable gel rendering</SSC_GelAppearance_RenderEnabled>
+  <SSC_GelAppearance_RenderTip>Controls only this pawn’s gel appearance, without changing gel effects. Saved colors are kept when disabled.</SSC_GelAppearance_RenderTip>
+  <SSC_GelAppearance_Current>Current gel appearance</SSC_GelAppearance_Current>
+  <SSC_GelAppearance_Edit>Edit appearance</SSC_GelAppearance_Edit>
+  <SSC_GelAppearance_Brightness>Brightness</SSC_GelAppearance_Brightness>
+  <SSC_GelAppearance_Preview>Appearance swatch preview</SSC_GelAppearance_Preview>
+  <SSC_GelAppearance_Presets>Color presets</SSC_GelAppearance_Presets>
 </LanguageData>

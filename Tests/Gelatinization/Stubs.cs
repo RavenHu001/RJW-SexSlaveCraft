@@ -8,7 +8,23 @@ using System.Reflection;
 // 仅保留颜色、Shader 身份与数学计算；没有 GPU 资源或真实材质创建。
 namespace UnityEngine
 {
-    public struct Color { public float r, g, b, a; public Color(float r, float g, float b, float a) { this.r = r; this.g = g; this.b = b; this.a = a; } }
+    public struct Color
+    {
+        public float r,g,b,a;
+        public Color(float r,float g,float b,float a){this.r=r;this.g=g;this.b=b;this.a=a;}
+        public static void RGBToHSV(Color c,out float h,out float s,out float v)
+        {
+            v=Math.Max(c.r,Math.Max(c.g,c.b));float min=Math.Min(c.r,Math.Min(c.g,c.b)),d=v-min;
+            s=v==0?0:d/v; h=d==0?0:(v==c.r?(c.g-c.b)/d:v==c.g?(c.b-c.r)/d+2:(c.r-c.g)/d+4)/6;
+            if(h<0)h+=1;
+        }
+        public static Color HSVToRGB(float h,float s,float v)
+        {
+            float c=v*s,x=c*(1-Math.Abs(h*6%2-1)),m=v-c;
+            var p=(int)(h*6)%6;
+            return p==0?new Color(c+m,x+m,m,1):p==1?new Color(x+m,c+m,m,1):p==2?new Color(m,c+m,x+m,1):p==3?new Color(m,x+m,c+m,1):p==4?new Color(x+m,m,c+m,1):new Color(c+m,m,x+m,1);
+        }
+    }
     public class Shader
     {
         public string name; public bool isSupported = true;
@@ -79,6 +95,7 @@ namespace UnityEngine
         public static float Lerp(float a, float b, float t) => a + (b - a) * Clamp01(t);
         public static float Min(float a, float b) => Math.Min(a,b);
         public static float Max(float a, float b) => Math.Max(a,b);
+        public static int RoundToInt(float value) => (int)Math.Round(value);
     }
 }
 namespace HarmonyLib
@@ -116,9 +133,22 @@ namespace RimWorld
 namespace Verse
 {
     // 每个角色拥有独立健康列表和事件账本；FullGel、Destroyed、Guaranteed 只表示测试服务状态。
-    public class Pawn
+    public partial class Pawn
     {
-        public bool Dead, FullGel, Destroyed, Guaranteed, Invisible;
+        public bool Dead, Destroyed, Guaranteed, Invisible;
+        // 夹具便捷标记也创建真实完成Hediff/生产组件；准入判断直接运行生产实现。
+        public bool FullGel
+        {
+            get => health.hediffSet.GetFirstHediffOfDef(SexSlaveCraft.SSCDefOf.SSC_FullGelatinizedBody) != null;
+            set
+            {
+                var current=health.hediffSet.GetFirstHediffOfDef(SexSlaveCraft.SSCDefOf.SSC_FullGelatinizedBody);
+                if(!value){if(current!=null)health.RemoveHediff(current);return;}
+                if(current!=null)return;
+                var h=new HediffWithComps{pawn=this,def=SexSlaveCraft.SSCDefOf.SSC_FullGelatinizedBody};
+                h.comps.Add(new SexSlaveCraft.HediffComp_FullGelAppearance{parent=h});health.hediffSet.hediffs.Add(h);
+            }
+        }
         public Faction Faction = Faction.OfPlayer;
         public Pawn_NeedsTracker needs = new Pawn_NeedsTracker();
         public Pawn_HealthTracker health;
@@ -203,7 +233,7 @@ namespace Verse
         public static int Mode;
         public static Dictionary<string,object> Data = new Dictionary<string,object>();
         public static void Look(ref float v,string key,float fallback) { if(Mode==1) Data[key]=v; if(Mode==2) v=Data.TryGetValue(key,out var saved)?(float)saved:fallback; }
-        public static void Look(ref bool v,string key,bool fallback) { if(Mode==1) Data[key]=v; if(Mode==2) v=Data.TryGetValue(key,out var saved)?(bool)saved:fallback; }
+        public static void Look(ref bool v,string key,bool fallback,bool forceSave=false) { if(Mode==1){if(forceSave||v!=fallback)Data[key]=v;else Data.Remove(key);} if(Mode==2) v=Data.TryGetValue(key,out var saved)?(bool)saved:fallback; }
     }
     // 每次增长都验证抽取值位于 XML 上下界内，防止用不可能的数值制造双阈值故障。
     public struct FloatRange
@@ -380,7 +410,7 @@ namespace SexSlaveCraft
     {
         // Model only the helper boundary. All four components are production code;
         // the original helper's formula/ranges and 1.7 traversal were audited separately.
-        public static bool ShouldTintFullGelGraphic(Verse.Pawn pawn) => pawn?.FullGel == true && SSCMod.settings?.enableFullGelatinizedBodyTint == true;
+        public static bool ShouldTintFullGelGraphic(Verse.Pawn pawn) => FullGelAppearanceUtility.ShouldRender(pawn);
         // 固定为合法的非必定成功权重 0.95；完整准备度计算已在先前实际源码审查中独立核对。
         public static float GetSmoothedSuccessWeight(Verse.Pawn pawn) => .95f;
         // 保留生产工具的区间选择及插值公式，使自然竞赛中的确定性增量仍属于合法输入。

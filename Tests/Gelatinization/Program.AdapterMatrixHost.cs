@@ -57,9 +57,8 @@ internal static class AdapterMatrixHost
             Ensure(result.shader == ShaderDef.Native && SkinColor(result).a == .85f, "SA入口独立染色");
 #endif
             // 同样的配置功能必须能在可选程序集真正不存在的四个宿主里运行。
-            var owner = new HediffWithComps {pawn=pawn,def=SSCDefOf.SSC_FullGelatinizedBody};
-            var appearance = new HediffComp_FullGelAppearance {parent=owner};
-            owner.comps.Add(appearance);pawn.health.hediffSet.hediffs.Add(owner);
+            var owner = FullGelAppearanceUtility.GetOwner(pawn);
+            var appearance = owner.TryGetComp<HediffComp_FullGelAppearance>();
             appearance.Set(new FullGelAppearance(new Color(1,0,0,1),.2f),false);
             result=source;Harmony_FullGelatinizationHeadTint.MaterialPostfix(node,parms,ref result);
             Ensure(SkinColor(result).r==1&&SkinColor(result).g==0&&SkinColor(result).a==.2f&&result.color.a==1,"个体纯色与眼部调制分离");
@@ -74,9 +73,22 @@ internal static class AdapterMatrixHost
             result=source;Harmony_FullGelatinizationBodyTint.SizedApparelMaterialPostfix(new SizedApparel.SizedApparelRenderNodeWorker(),new PawnRenderNode {tree=new PawnRenderTree {pawn=pawn}},parms,ref result);
             Ensure(SkinColor(result).r==1&&SkinColor(result).a==.2f,"SA独立读取个体参数");
 #endif
-            SSCMod.settings.enableFullGelatinizedBodyTint = false;
+            appearance.SetRenderingEnabled(false);
             result = source; Harmony_FullGelatinizationHeadTint.MaterialPostfix(node,parms,ref result);
             Ensure(result == source, "关闭开关恢复原材质");
+            result=source;Harmony_FullGelatinizationHeadTint.MaterialPostfix(bodyNode,parms,ref result);
+            Ensure(result==source,"关闭个人渲染同时恢复身体");
+#if !SSC_WITHOUT_FA
+            result=source;Harmony_FullGelatinizationHeadTint.MaterialPostfix(fa,parms,ref result);
+            Ensure(result==source&&result.renderQueue==2000,"关闭恢复FA五官原阶段");
+#endif
+#if !SSC_WITHOUT_SA
+            result=source;Harmony_FullGelatinizationBodyTint.SizedApparelMaterialPostfix(new SizedApparel.SizedApparelRenderNodeWorker(),new PawnRenderNode {tree=new PawnRenderTree {pawn=pawn}},parms,ref result);
+            Ensure(result==source,"关闭恢复SA原来源");
+#endif
+            appearance.SetRenderingEnabled(true);
+            result=source;Harmony_FullGelatinizationHeadTint.MaterialPostfix(node,parms,ref result);
+            Ensure(SkinColor(result).r==1&&SkinColor(result).a==.2f,"重新开启保留保存的颜色及透明度");
             Console.WriteLine($"PASS isolated FA={hasFa} SA={hasSa}");
             return 0;
         }

@@ -48,17 +48,16 @@ internal static partial class Program
     }
     private static void HeadGroupGate(bool full, bool enabled)
     {
-        SSCMod.settings.enableFullGelatinizedBodyTint = enabled;
         foreach (PawnRenderNode node in new PawnRenderNode[] { new PawnRenderNode_Head(), Feature(), new PawnRenderNode_Hair(), new PawnRenderNode_Apparel { parent = new PawnRenderNode_Head() } })
         {
-            var rig = new HeadRig(); rig.parms.pawn.FullGel = full; var result = rig.Apply(node);
+            var rig = new HeadRig(); rig.parms.pawn.FullGel = full; if(full) FullGelAppearanceUtility.GetOwner(rig.parms.pawn).TryGetComp<HediffComp_FullGelAppearance>().SetRenderingEnabled(enabled); var result = rig.Apply(node);
             Check((result != rig.source) == (full && enabled), "仅同时满足状态和开关时移动阶段");
             Check(rig.source.renderQueue == 2000 && rig.source.color.a == 1, "所有分支原材质保持不变");
         }
     }
     private static void FeatureToggle()
     {
-        var rig = new HeadRig(); rig.Apply(Feature()); SSCMod.settings.enableFullGelatinizedBodyTint = false;
+        var rig = new HeadRig(); rig.Apply(Feature()); FullGelAppearanceUtility.GetOwner(rig.parms.pawn).TryGetComp<HediffComp_FullGelAppearance>().SetRenderingEnabled(false);
         Check(rig.Apply(Feature()) == rig.source && rig.source.renderQueue == 2000, "关闭不残留后光照队列");
     }
     private static void SharedFeatureNormal()

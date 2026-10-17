@@ -38,6 +38,10 @@
     <Compile Include="$(SscSourceRoot)/common/FullGelAppearanceUtility.cs" Link="Production/FullGelAppearanceUtility.cs" />
     <Compile Include="$(SscSourceRoot)/common/FullGelAppearanceDraft.cs" Link="Production/FullGelAppearanceDraft.cs" />
     <Compile Include="$(SscSourceRoot)/common/Dialog_FullGelAppearance.cs" Link="Production/Dialog_FullGelAppearance.cs" />
+    <Compile Include="$(SscSourceRoot)/common/SSCUIWidgets.cs" Link="Production/SSCUIWidgets.cs" />
+    <Compile Include="$(SscSourceRoot)/ITab/ITab_SexSlaveTraining.GelAppearance.cs" Link="Production/ITab_GelAppearance.cs" />
+    <Compile Include="$(SscSourceRoot)/ITab/ITab_SexSlaveTraining.IdentityControls.cs" Link="Production/ITab_IdentityControls.cs" />
+    <Compile Include="$(SscSourceRoot)/common/SSCIdentityUtility.Trainer.cs" Link="Production/TrainerIdentity.cs" />
     <Compile Include="$(SscSourceRoot)/Hediff/HediffComp_FullGelAppearance.cs" Link="Production/HediffComp_FullGelAppearance.cs" />
   </ItemGroup>
 </Project>

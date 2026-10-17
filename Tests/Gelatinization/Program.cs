@@ -73,6 +73,7 @@ internal static partial class Program
         PerfTests(root);
         AutoAdapterTests(root);
         AppearanceTests(root);
+        PersonalRenderingTests(root);
         // 最后一项启动独立 PowerShell，必须完成正反两类共 10 项签名断言才算通过。
         Run("兼容验证器接受合法state并拒绝错误配对", () => StateValidator(root));
         Console.WriteLine($"结果：{passed}/{passed + failed} 项通过。");
@@ -407,9 +408,10 @@ internal static partial class Program
     /// <summary>分别关闭个人状态条件或全局设置，验证准入规则不被 Shader 修复绕过。</summary>
     private static void BodyGuard(bool full, bool enabled)
     {
-        SSCMod.settings.enableFullGelatinizedBodyTint = enabled;
         Graphic graphic = Original(), original = graphic;
-        Harmony_FullGelatinizationBodyTint.Postfix(new Pawn { FullGel = full }, ref graphic);
+        var pawn = new Pawn { FullGel = full };
+        if(full) FullGelAppearanceUtility.GetOwner(pawn).TryGetComp<HediffComp_FullGelAppearance>().SetRenderingEnabled(enabled);
+        Harmony_FullGelatinizationBodyTint.Postfix(pawn, ref graphic);
         Check(graphic == original, "不满足染色条件应保持原样");
     }
     /// <summary>验证服装变体同样取得透明染色版本，并保留原服装来源。</summary>

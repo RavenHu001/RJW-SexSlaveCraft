@@ -19,9 +19,7 @@ internal static partial class Program
     private static HediffComp_FullGelAppearance AppearanceOwner(Pawn pawn)
     {
         pawn.FullGel=true;
-        var owner=new HediffWithComps {def=SSCDefOf.SSC_FullGelatinizedBody,pawn=pawn};
-        var comp=new HediffComp_FullGelAppearance {parent=owner,props=new HediffCompProperties_FullGelAppearance()};
-        owner.comps.Add(comp);pawn.health.hediffSet.hediffs.Add(owner);return comp;
+        return FullGelAppearanceUtility.GetOwner(pawn).TryGetComp<HediffComp_FullGelAppearance>();
     }
     /// <summary>经生产最终材质入口渲染原版身体，模型不请求Graphic数据库。</summary>
     private static Material AppearanceBody(Pawn pawn,Material source)
@@ -59,15 +57,24 @@ internal static partial class Program
         Run("缺字段的旧档恢复当前默认配置",()=>{var c=AppearanceOwner(new Pawn());c.Set(AppearanceValue(),false);Scribe_Values.Data.Clear();Scribe_Values.Mode=2;try{c.CompExposeData();}finally{Scribe_Values.Mode=0;}Check(!c.Custom&&c.Appearance.Same(FullGelAppearanceUtility.Default),"缺字段默认");});
         Run("移除状态后原组件不再提供指令",()=>{var p=new Pawn();var c=AppearanceOwner(p);p.health.RemoveHediff(c.parent);Check(!c.CompGetGizmos().Any(),"移除即失效");});
         Run("重新获得状态使用独立默认外观",()=>{var p=new Pawn();var c=AppearanceOwner(p);c.Set(AppearanceValue(),false);p.health.RemoveHediff(c.parent);Check(AppearanceOwner(p).Appearance.Same(FullGelAppearanceUtility.Default),"新身体不继承旧值");});
-        Run("普通模式提供凝胶外观指令",()=>{var c=AppearanceOwner(new Pawn());bool dev=Prefs.DevMode;Prefs.DevMode=false;try{Check(c.CompGetGizmos().OfType<Command_Action>().Single().defaultLabel=="SSC_GelAppearance_Title","不要求开发模式或训练身份");}finally{Prefs.DevMode=dev;}});
-        Run("指令打开独立弹窗且检查失效身体",()=>{var p=new Pawn();var c=AppearanceOwner(p);var command=c.CompGetGizmos().OfType<Command_Action>().Single();int n=Find.WindowStack.Windows.Count;command.action();Check(Find.WindowStack.Windows.Count==n+1&&Find.WindowStack.Windows.Last() is Dialog_FullGelAppearance,"打开弹窗");p.health.RemoveHediff(c.parent);command.action();Check(Find.WindowStack.Windows.Count==n+1,"旧命令不打开失效对象");});
-        Run("关闭总渲染仍能保存个体外观",()=>{var p=new Pawn();var c=AppearanceOwner(p);SSCMod.settings.enableFullGelatinizedBodyTint=false;Check(FullGelAppearanceUtility.Apply(p,c.parent,AppearanceValue(),false)&&c.Custom,"关闭不删除配置");Check(AppearanceBody(p,AppearanceSource()).shader.name=="Body-original","关闭不渲染");});
+        Run("普通与开发模式均不提供额外命令栏调色按钮",()=>
+        {
+            var c=AppearanceOwner(new Pawn());bool previous=Prefs.DevMode;
+            try{foreach(bool dev in new[]{false,true}){Prefs.DevMode=dev;Check(!c.CompGetGizmos().Any(),"不添加重复调色指令");}}
+            finally{Prefs.DevMode=previous;}
+        });
+        Run("个人渲染关闭后仍不提供命令栏调色按钮",()=>
+        {
+            var c=AppearanceOwner(new Pawn());c.SetRenderingEnabled(false);
+            Check(!c.CompGetGizmos().Any(),"关闭状态同样只保留ITab外观入口");
+        });
+        Run("关闭个人渲染仍能保存个体外观",()=>{var p=new Pawn();var c=AppearanceOwner(p);c.SetRenderingEnabled(false);Check(FullGelAppearanceUtility.Apply(p,c.parent,AppearanceValue(),false)&&c.Custom,"关闭不删除配置");Check(AppearanceBody(p,AppearanceSource()).shader.name=="Body-original","关闭不渲染");});
         Run("旧窗口不能写入替换后的身体",()=>{var p=new Pawn();var c=AppearanceOwner(p);p.health.RemoveHediff(c.parent);var next=AppearanceOwner(p);Check(!FullGelAppearanceUtility.Apply(p,c.parent,AppearanceValue(),false)&&!next.Custom,"精确身体身份");});
         Run("应用真实变化只刷新地图头像一次",()=>{var p=new Pawn();var c=AppearanceOwner(p);int dirty=RimWorld.PortraitsCache.Dirty;Check(FullGelAppearanceUtility.Apply(p,c.parent,AppearanceValue(),false),"应用成功");Check(p.Drawer.renderer.Dirty==1&&RimWorld.PortraitsCache.Dirty==dirty+1,"地图与肖像刷新");FullGelAppearanceUtility.Apply(p,c.parent,AppearanceValue(),false);Check(p.Drawer.renderer.Dirty==1,"同值不重建");});
         Run("应用恢复默认清除自定义并恢复85%",()=>{var p=new Pawn();var c=AppearanceOwner(p);c.Set(AppearanceValue(),false);FullGelAppearanceUtility.Apply(p,c.parent,AppearanceValue(),true);Check(!c.Custom&&c.Appearance.Same(FullGelAppearanceUtility.Default),"默认精确还原");});
         Run("配置应用只允许主线程",()=>{var p=new Pawn();var c=AppearanceOwner(p);UnityData.IsInMainThread=false;try{Check(!FullGelAppearanceUtility.Apply(p,c.parent,AppearanceValue(),false)&&!c.Custom,"工作线程不写配置");}finally{UnityData.IsInMainThread=true;}});
         Run("克隆外观按值复制后独立编辑",()=>{var a=AppearanceOwner(new Pawn());var b=AppearanceOwner(new Pawn());a.Set(AppearanceValue(),false);FullGelAppearanceUtility.Copy(a.parent,b.parent);Check(b.Custom&&b.Appearance.Same(a.Appearance),"复制数值");b.Set(AppearanceValue(1,0,0,1),false);Check(a.Appearance.Color.r==.1f,"不共享可变对象");});
-        Run("全局开关刷新只影响拥有完成状态的角色",()=>{var a=new Pawn();AppearanceOwner(a);var normal=new Pawn();RimWorld.PawnsFinder.AllMapsWorldAndTemporary_AliveOrDead.Clear();RimWorld.PawnsFinder.AllMapsWorldAndTemporary_AliveOrDead.AddRange(new[]{a,normal});FullGelAppearanceUtility.RefreshAll();Check(a.Drawer.renderer.Dirty==1&&normal.Drawer.renderer.Dirty==0,"限定状态");RimWorld.PawnsFinder.AllMapsWorldAndTemporary_AliveOrDead.Clear();});
+
         // UI模型只替代原版控件边界；草稿、按钮及Apply路径均链接生产类。
         Run("草稿颜色控件重设Alpha不改变不透明度",()=>{var d=new FullGelAppearanceDraft(FullGelAppearanceUtility.Default);d.Rgb=new Color(1,0,0,1);Check(d.Value.Color.a==.85f,"Alpha独立");});
         Run("HEX只接受六位RGB且不改变透明度",()=>{var d=new FullGelAppearanceDraft(FullGelAppearanceUtility.Default);Check(d.SetHex("#00FF00")&&d.Value.Color.g==1&&d.Value.Color.a==.85f,"合法颜色");foreach(string s in new[]{"bad","#ABC","#FF000080","#GGGGGG",""})Check(!d.SetHex(s),"拒绝非法/混入Alpha");});
@@ -106,7 +113,7 @@ internal static partial class Program
     {
         var p=new Pawn();var c=AppearanceOwner(p);int wheel=Widgets.Wheels,fields=Widgets.Fields,selector=Widgets.Selectors,slider=Widgets.Sliders;
         var w=new Dialog_FullGelAppearance(p,c.parent);w.DoWindowContents(new Rect(0,0,640,580));
-        Check(Widgets.Wheels==wheel+1&&Widgets.Fields==fields+1&&Widgets.Selectors==selector+1&&Widgets.Sliders==slider+1,"实际调用原版边界");Check(!c.Custom&&p.Drawer.renderer.Dirty==0,"只看窗口不写存档/刷新图形");
+        Check(Widgets.Wheels==wheel+1&&Widgets.Fields==fields+1&&Widgets.Selectors==selector+1&&Widgets.Sliders==slider+2,"实际调用原版边界");Check(!c.Custom&&p.Drawer.renderer.Dirty==0,"只看窗口不写存档/刷新图形");
     }
     /// <summary>以脚本化控件输入走生产窗口两轮GUI事件，检查取消与延迟确认。</summary>
     private static void AppearanceWindow(string button)
@@ -199,7 +206,7 @@ internal static partial class Program
         var body=defs.Root.Elements().Single(e=>(string)e.Element("defName")=="SSC_FullGelatinizedBody");
         Check(body.Element("comps").Elements().Count(e=>(string)e.Attribute("Class")=="SexSlaveCraft.HediffCompProperties_FullGelAppearance")==1,"只给完成状态挂组件");
         foreach(string lang in new[]{"ChineseSimplified","ChineseTraditional","English","Russian"})
-        {string rel=$"Languages/{lang}/Keyed/SSC_GelAppearance.xml";Check(File.ReadAllBytes(Path.Combine(root,"1.7",rel)).SequenceEqual(File.ReadAllBytes(Path.Combine(root,"Sexslavecraft",rel))),"四语镜像一致");Check(XDocument.Load(Path.Combine(root,"1.7",rel)).Root.Elements().Count()==11,"文案完整");}
+        {string rel=$"Languages/{lang}/Keyed/SSC_GelAppearance.xml";Check(File.ReadAllBytes(Path.Combine(root,"1.7",rel)).SequenceEqual(File.ReadAllBytes(Path.Combine(root,"Sexslavecraft",rel))),"四语镜像一致");Check(XDocument.Load(Path.Combine(root,"1.7",rel)).Root.Elements().Count()==18,"文案完整");}
         foreach(string p in Directory.GetFiles(Path.Combine(root,"1.7/Shaders/SSC"),"*.frag.glsl"))
         {string s=File.ReadAllText(p);Check(s.Contains("_GelColor")&&!s.Contains("_EyeGelBaseColor"),"原生参数独立");Check(s.Contains("vec4(0.3995, 0.068, 0.68, 0.85)"),"六种程序缺省参数一致为S90");if(p.Contains("Depth"))Check(s.Contains("alpha <= 0.0")&&s.Contains("sscGelWritesDepth"),"零Alpha丢弃和原覆盖阈值保留");}
     }

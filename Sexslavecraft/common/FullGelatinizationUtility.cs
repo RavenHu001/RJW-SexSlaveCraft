@@ -194,11 +194,7 @@ namespace SexSlaveCraft
 
         public static bool ShouldTintFullGelGraphic(Pawn pawn)
         {
-            return pawn != null
-                && SSCMod.settings != null
-                && SSCMod.settings.enableFullGelatinizedBodyTint
-                && FullGelatinizedBodyDef != null
-                && pawn.health?.hediffSet?.GetFirstHediffOfDef(FullGelatinizedBodyDef) != null;
+            return FullGelAppearanceUtility.ShouldRender(pawn);
         }
 
         public static bool ShouldTintBody(Pawn pawn)

@@ -110,9 +110,9 @@ internal static partial class Program
         rig.parms.pawn.FullGel = false; Check(rig.Apply(node) == rig.source, "普通角色保留原图");
         Check(((Texture2D)rig.source.mainTexture).Reads == 0, "普通角色不分析像素");
         rig.parms.pawn.FullGel = true; Check(rig.Apply(node) != rig.source, "完全凝胶且开启后生效");
-        SSCMod.settings.enableFullGelatinizedBodyTint = false; Check(rig.Apply(node) == rig.source, "关闭开关立即恢复");
-        var sr = new SaRig(); Check(sr.Apply() == sr.source, "关闭同时恢复SA");
-        SSCMod.settings.enableFullGelatinizedBodyTint = true; rig.parms.pawn.FullGel = false;
+        FullGelAppearanceUtility.GetOwner(rig.parms.pawn).TryGetComp<HediffComp_FullGelAppearance>().SetRenderingEnabled(false); Check(rig.Apply(node) == rig.source, "关闭开关立即恢复");
+        var sr = new SaRig {pawn=rig.parms.pawn}; Check(sr.Apply() == sr.source, "同一角色关闭同时恢复SA");
+        rig.parms.pawn.FullGel = false;
         Check(rig.Apply(node) == rig.source, "移除状态不使用缓存结果");
     }
     private static void EyeMaskGeometry()

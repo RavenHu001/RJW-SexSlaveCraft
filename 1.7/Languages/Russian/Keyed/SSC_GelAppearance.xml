@@ -10,5 +10,12 @@
   <SSC_GelAppearance_Old>Прежний цвет</SSC_GelAppearance_Old>
   <SSC_GelAppearance_New>Новый цвет</SSC_GelAppearance_New>
   <SSC_GelAppearance_SkinOnly>Меняется только гелевая кожа. Глаза, черты лица и волосы сохраняют свой вид.</SSC_GelAppearance_SkinOnly>
-  <SSC_GelAppearance_Reset>По умолчанию</SSC_GelAppearance_Reset>
+  <SSC_GelAppearance_Reset>Сбросить облик</SSC_GelAppearance_Reset>
+  <SSC_GelAppearance_RenderEnabled>Включить гелевый облик</SSC_GelAppearance_RenderEnabled>
+  <SSC_GelAppearance_RenderTip>Меняет только облик этого персонажа, не эффекты гелеобразования. При отключении цвета сохраняются.</SSC_GelAppearance_RenderTip>
+  <SSC_GelAppearance_Current>Текущий гелевый облик</SSC_GelAppearance_Current>
+  <SSC_GelAppearance_Edit>Изменить облик</SSC_GelAppearance_Edit>
+  <SSC_GelAppearance_Brightness>Яркость</SSC_GelAppearance_Brightness>
+  <SSC_GelAppearance_Preview>Предпросмотр цвета</SSC_GelAppearance_Preview>
+  <SSC_GelAppearance_Presets>Набор цветов</SSC_GelAppearance_Presets>
 </LanguageData>

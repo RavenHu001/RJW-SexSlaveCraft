@@ -40,6 +40,23 @@ namespace SexSlaveCraft
         internal static FullGelAppearance Read(HediffWithComps owner)
             => owner?.TryGetComp<HediffComp_FullGelAppearance>()?.Appearance ?? Default;
 
+        /// <summary>所有身体、头部、SA及五官阶段共用个人准入；缺组件的边界对象沿用默认开启。</summary>
+        internal static bool ShouldRender(Pawn pawn)
+        {
+            var owner = GetOwner(pawn);
+            return owner != null && (owner.TryGetComp<HediffComp_FullGelAppearance>()?.RenderingEnabled ?? true);
+        }
+
+        /// <summary>点击时重新核对身体；只刷新目标角色，旧面板不能操作新获得的凝胶身体。</summary>
+        internal static bool SetRenderingEnabled(Pawn pawn, HediffWithComps expected, bool enabled)
+        {
+            if (!UnityData.IsInMainThread || expected == null || !ReferenceEquals(GetOwner(pawn), expected)) return false;
+            var comp = expected.TryGetComp<HediffComp_FullGelAppearance>();
+            if (comp == null) return false;
+            if (comp.SetRenderingEnabled(enabled)) Refresh(pawn);
+            return true;
+        }
+
         /// <summary>确认时精确匹配原身体状态；窗口打开后移除/替换状态不能把草稿写到新身体。</summary>
         internal static bool Apply(Pawn pawn, HediffWithComps expected, FullGelAppearance appearance, bool reset)
         {
@@ -58,20 +75,17 @@ namespace SexSlaveCraft
             if (pawn != null) PortraitsCache.SetDirty(pawn);
         }
 
-        /// <summary>总开关变化时清理旧身体/服装预缓存；仅遍历拥有完成状态的角色。</summary>
-        internal static void RefreshAll()
-        {
-            foreach (Pawn pawn in PawnsFinder.AllMapsWorldAndTemporary_AliveOrDead)
-                if (GetOwner(pawn) != null) Refresh(pawn);
-        }
-
         /// <summary>克隆复制身体外观的值；不向人格凝胶记录写入身体配色。</summary>
         internal static void Copy(Hediff source, Hediff target)
         {
             // 仅在两端都有外观组件时复制；其他SSC健康状态经过此入口时安全跳过。
             var from = (source as HediffWithComps)?.TryGetComp<HediffComp_FullGelAppearance>();
             var to = (target as HediffWithComps)?.TryGetComp<HediffComp_FullGelAppearance>();
-            if (from != null && to != null) to.Set(from.Appearance, !from.Custom);
+            if (from != null && to != null)
+            {
+                to.Set(from.Appearance, !from.Custom);
+                to.SetRenderingEnabled(from.RenderingEnabled);
+            }
         }
     }
 }

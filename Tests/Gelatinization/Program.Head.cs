@@ -143,7 +143,7 @@ internal static partial class Program
         var rig = new HeadRig(); Check(rig.Apply(new PawnRenderNode_Head()) != rig.source, "先产生凝胶材质");
         rig.parms.pawn.FullGel = false; Check(rig.Apply(new PawnRenderNode_Head()) == rig.source, "相同源材质被普通角色使用时保持原样");
     }
-    private static void HeadDisabled() { var rig = new HeadRig(); rig.Apply(new PawnRenderNode_Head()); SSCMod.settings.enableFullGelatinizedBodyTint = false; Check(rig.Apply(new PawnRenderNode_Head()) == rig.source, "关闭后不返回凝胶缓存"); }
+    private static void HeadDisabled() { var rig = new HeadRig(); rig.Apply(new PawnRenderNode_Head()); FullGelAppearanceUtility.GetOwner(rig.parms.pawn).TryGetComp<HediffComp_FullGelAppearance>().SetRenderingEnabled(false); Check(rig.Apply(new PawnRenderNode_Head()) == rig.source, "关闭后不返回凝胶缓存"); }
     // 用可变引用容器修改值类型 PawnDrawParms，避免测试误改了结构副本。
     private sealed class HeadParams
     {

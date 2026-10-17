@@ -136,7 +136,7 @@ internal static partial class Program
         var sa = new SaRig { source = head.source }; var saResult = sa.Apply();
         Check(headResult != saResult && headResult.renderQueue == 3150 && saResult.renderQueue == 3150, "按用途隔离缓存，保持共同光照阶段");
     }
-    private static void SaDisabled() { var rig = new SaRig(); rig.Apply(); SSCMod.settings.enableFullGelatinizedBodyTint = false; Check(rig.Apply() == rig.source, "关闭立即回到原材质"); }
+    private static void SaDisabled() { var rig = new SaRig(); rig.Apply(); FullGelAppearanceUtility.GetOwner(rig.pawn).TryGetComp<HediffComp_FullGelAppearance>().SetRenderingEnabled(false); Check(rig.Apply() == rig.source, "关闭立即回到原材质"); }
     private static void SaNull() { var rig = new SaRig { source = null }; Check(rig.Apply() == null, "空材质保持空"); }
     private static void SaWrongPawn() { var rig = new SaRig(); Check(rig.Apply(other: new Pawn { FullGel = true }) == rig.source, "不能拿另一个角色的状态染色"); }
     private static void GraphicWorker()

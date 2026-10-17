@@ -188,6 +188,9 @@
     <Compile Include="common\FullGelAppearanceUtility.cs" />
     <Compile Include="common\FullGelAppearanceDraft.cs" />
     <Compile Include="common\Dialog_FullGelAppearance.cs" />
+    <Compile Include="common\SSCUIWidgets.cs" />
+    <Compile Include="ITab\ITab_SexSlaveTraining.GelAppearance.cs" />
+    <Compile Include="ITab\ITab_SexSlaveTraining.IdentityControls.cs" />
     <Compile Include="Hediff\HediffComp_FullGelAppearance.cs" />
     <!-- 此项目的 Compile 列表同时作为 1.7 项目的唯一源码清单。
          登记共享结算检查仅影响后续源码构建，不会重编或改写冻结的 1.6 成品。 -->

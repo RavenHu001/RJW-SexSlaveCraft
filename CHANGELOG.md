@@ -6,7 +6,9 @@ This continuation builds on upstream **2.2.8**, the baseline when upstream devel
 
 ## [未发布 / Unreleased]
 
-- **1.7 个体凝胶外观 / Individual gel appearance:** 完全凝胶化角色通过普通指令打开原版控件组合弹窗，独立调整RGB／HSV／HEX和0%—100%不透明度，支持取消、确认及恢复默认深紫（HSV饱和度90%）／85%。配置保存于当前身体，原版眼睛及FA五官保留原色与动画，皮肤材质按个体隔离；1.6冻结不变。维护者确认颜色／不透明度、恢复默认、五官动画及遮挡正常；本次补齐代码块注释并仅将默认S调整为90，保留已存自定义值。先前258项／2777项验证保留原阶段，本次新增默认值回归，暂不打包，见[实现与测试](Docs/Development/Completed/1.7个体凝胶外观设置与验收.md)。Adds per-body color and opacity settings with native game controls, isolated material variants and a restore-defaults action.
+- **1.7 凝胶 UI 与个人开关 / Gel UI and per-pawn rendering:** 重排调色弹窗，修复身份/任职控件禁用显示与输入，移除重复训练状态；ITab 仅在全凝胶化完成时显示个人渲染开关、颜色预览和调色入口，移除命令栏重复调色按钮。旧档兼容原全局设置，关闭保留配色，默认深紫／S90／85%。维护者确认 UI、个人开关、旧档迁移、五官动画与遮挡正常；1.6冻结不变，暂不打包，见[验收记录](Docs/Development/Completed/1.7凝胶外观UI与个人开关验收.md)。Moves gel appearance controls into the pawn tab, adds persistent per-pawn rendering with legacy preference migration, and fixes disabled identity controls.
+
+- **1.7 个体凝胶外观 / Individual gel appearance:** 完全凝胶化角色通过ITab外观入口打开原版控件组合弹窗，独立调整RGB／HSV／HEX和0%—100%不透明度，支持取消、确认及恢复默认深紫（HSV饱和度90%）／85%。配置保存于当前身体，原版眼睛及FA五官保留原色与动画，皮肤材质按个体隔离；1.6冻结不变。维护者确认颜色／不透明度、恢复默认、五官动画及遮挡正常；本次补齐代码块注释并仅将默认S调整为90，保留已存自定义值。先前258项／2777项验证保留原阶段，本次新增默认值回归，暂不打包，见[实现与测试](Docs/Development/Completed/1.7个体凝胶外观设置与验收.md)。Adds per-body color and opacity settings with native game controls, isolated material variants and a restore-defaults action.
 
 - **1.7 原版／FA自动适配 / Vanilla and FA gel rendering:** 按实际头部节点适配，原版保留头图结构并用缓存遮罩保护眼睛原色／Alpha，FA沿用分层皮肤与五官动画；深紫色、皮肤0.85及光照后响应保持。新增41项回归，专项205/205，四种FA／SA类型组合隔离验证；1.6冻结基线不变，维护者确认原版眼部／转向及FA眨眼／遮挡正常，见[适配验收](Docs/Development/Completed/1.7原版与FA凝胶渲染自动适配与验收.md)。暂不打包。Preserves baked vanilla eyes while retaining layered FA rendering, without making FA or SA mandatory.
 

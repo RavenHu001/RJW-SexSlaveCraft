@@ -5,9 +5,9 @@ using Verse;
 using HarmonyLib;
 
 // EN: This patch paints the body of pawns in the `全凝胶化完成` state.
-// EN: It replaces the returned graphic only when SSC's full-gel tint setting is enabled; RimWorld owns graphic/material reuse.
+// EN: It replaces the returned graphic only when the pawn's gel rendering is enabled; RimWorld owns graphic/material reuse.
 // CN: 这个补丁负责给处于“全凝胶化完成”状态的 Pawn 身体上色。
-// CN: 它只会在 SSC 的完全胶化染色设置开启时替换返回图形，图形与材质的复用由游戏自身负责。
+// CN: 它只会在 该角色的凝胶渲染开启时替换返回图形，图形与材质的复用由游戏自身负责。
 namespace SexSlaveCraft
 {
     public static class Harmony_FullGelatinizationBodyTint
@@ -71,7 +71,7 @@ namespace SexSlaveCraft
         /// <summary>统一检查设置与全胶状态，取得染色图形并通过 ref 替换当前调用结果。</summary>
         private static void TryApplyFullGelTint(Pawn pawn, ref Graphic graphic)
         {
-            // 所有渲染入口共用同一准入条件，关闭设置、无角色或未完全胶化时保留原图形。
+            // 所有渲染入口共用同一准入条件，关闭个人渲染、无角色或未完全胶化时保留原图形。
             if (graphic == null || !UnityData.IsInMainThread || !FullGelatinizationUtility.ShouldTintFullGelGraphic(pawn)) return;
 
             // 不直接改共享 Graphic 的颜色或材质，交由游戏 API 获取对应的染色版本。

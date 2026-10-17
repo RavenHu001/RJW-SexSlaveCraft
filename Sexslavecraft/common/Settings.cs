@@ -7,9 +7,9 @@ using UnityEngine;
 using Verse;
 
 // EN: This file stores SSC's mod settings and draws the settings window.
-// EN: It groups the switches for sex-slave protection, logging, eligibility, full-gel visuals, and Binding Ritual conversion.
+// EN: It groups the switches for sex-slave protection, logging, eligibility, and Binding Ritual conversion; legacy gel preferences are retained only for save migration.
 // CN: 这个文件负责保存 SSC 的模组设置，并绘制设置窗口。
-// CN: 它把性奴保护、日志、资格判定、完全胶化外观和绑定仪式转奴这些开关统一放在这里。
+// CN: 它保存性奴保护、日志、资格判定与仪式设置；旧凝胶渲染键仅供存档迁移。
 namespace SexSlaveCraft
 {
     public partial class SSCSettings : ModSettings
@@ -21,6 +21,7 @@ namespace SexSlaveCraft
         public bool enableSSCImportantLogs = true;
         public bool useRJWOriginalEligibility = true;
         public bool enableDebugGizmos = false;
+        // 保留旧键用于一次性旧档迁移；不再作为渲染准入或设置页面开关。
         public bool enableFullGelatinizedBodyTint = true;
         public bool enableRitualEnslavement = true;
         // EN: Legacy preferences are retained for migration only; the RimTalk runtime is archived.
@@ -198,18 +199,7 @@ namespace SexSlaveCraft
             DrawMasterEntryDebugEntry(listingStandard);
 
             listingStandard.GapLine();
-            // EN: Step 5: expose the full-gel body tint option for the `全凝胶化完成` visual style.
-            // CN: 步骤 5：显示“全凝胶化完成”的身体染色选项，用来控制完全胶化后的外观风格。
-            // 总开关只控制实际渲染，不清除个体保存值；变化后刷新旧身体/服装预缓存。
-            bool previousGelRendering = settings.enableFullGelatinizedBodyTint;
-            listingStandard.CheckboxLabeled(
-                "SSC_Setting_EnableFullGelTint".Translate(),
-                ref settings.enableFullGelatinizedBodyTint,
-                "SSC_Setting_EnableFullGelTint_Desc".Translate()
-            );
-            if (previousGelRendering != settings.enableFullGelatinizedBodyTint) FullGelAppearanceUtility.RefreshAll();
-
-            listingStandard.GapLine();
+            // 完全凝胶化渲染已改为个人开关；旧字段仅供缺少个人字段的旧档迁移。
             // EN: Step 6: expose whether the Binding Ritual may convert the target into a vanilla slave.
             // CN: 步骤 6：显示绑定仪式是否允许把目标正式转化为原版奴隶。
             listingStandard.CheckboxLabeled(

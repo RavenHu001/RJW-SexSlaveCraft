@@ -10,5 +10,12 @@
   <SSC_GelAppearance_Old>原颜色</SSC_GelAppearance_Old>
   <SSC_GelAppearance_New>新颜色</SSC_GelAppearance_New>
   <SSC_GelAppearance_SkinOnly>只调整凝胶皮肤；眼睛、五官和头发保留原外观。</SSC_GelAppearance_SkinOnly>
-  <SSC_GelAppearance_Reset>恢复默认</SSC_GelAppearance_Reset>
+  <SSC_GelAppearance_Reset>恢复默认配色</SSC_GelAppearance_Reset>
+  <SSC_GelAppearance_RenderEnabled>启用凝胶渲染</SSC_GelAppearance_RenderEnabled>
+  <SSC_GelAppearance_RenderTip>只控制此角色的凝胶外观，不影响凝胶化效果；关闭后保留配色。</SSC_GelAppearance_RenderTip>
+  <SSC_GelAppearance_Current>当前凝胶外观</SSC_GelAppearance_Current>
+  <SSC_GelAppearance_Edit>调整外观</SSC_GelAppearance_Edit>
+  <SSC_GelAppearance_Brightness>明度</SSC_GelAppearance_Brightness>
+  <SSC_GelAppearance_Preview>外观色块预览</SSC_GelAppearance_Preview>
+  <SSC_GelAppearance_Presets>预设颜色</SSC_GelAppearance_Presets>
 </LanguageData>
