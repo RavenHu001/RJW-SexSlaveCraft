@@ -1,4 +1,5 @@
 // AI 辅助生成
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using RimWorld.Planet;
@@ -53,6 +54,8 @@ namespace SexSlaveCraft
             Direction = direction;
             Slave = direction == SSCBondOverviewDirection.Master ? source : related;
             Master = direction == SSCBondOverviewDirection.Master ? related : source;
+            // 显示字段在构建时捕获，排序和绘制无需重复读取角色状态；两端引用仅用于后续复查。
+            // 这不是实时对象代理，角色改名、死亡或移动后的显示更新需要重新构建快照。
             Name = related.LabelShort ?? string.Empty;
             StableId = related.thingIDNumber;
             ChainStage = SSCIdentityUtility.GetSexSlaveStageFromChain(chain);
@@ -90,6 +93,8 @@ namespace SexSlaveCraft
             Identity = source?.TryGetComp<CompSexSlaveTraining>()?.pawnIdentity ?? PawnIdentity.Unset;
             MasterState = masterState;
             Master = master;
+            // 指派状态是独立的次级信息：保留原始指定者，再用既有只读规则判定是否生效。
+            // 指定者失效时不清空字段，也不将其当成锁链主人，更不在查询中整理身份或指派。
             AssignedTrainer = source?.TryGetComp<CompSexSlaveTraining>()?.selectedTrainer;
             AssignedTrainerState = state != SSCBondOverviewQueryState.Ready ? SSCBondOverviewTrainerState.Unavailable
                 : AssignedTrainer == null ? SSCBondOverviewTrainerState.None
@@ -97,14 +102,21 @@ namespace SexSlaveCraft
                     ? SSCBondOverviewTrainerState.InvalidTarget
                     : ReferenceEquals(TrainerAssignmentUtility.GetActiveAssignedTrainer(source), AssignedTrainer)
                         ? SSCBondOverviewTrainerState.Active : SSCBondOverviewTrainerState.Inactive;
-            // 对私有副本加只读包装，调用者不能通过集合接口改写本次人数或顺序。
-            Slaves = new ReadOnlyCollection<SSCBondOverviewEntry>(new List<SSCBondOverviewEntry>(slaves));
+            // 接收查询器新建列表的所有权；外部只取得包装，不再复制同一份行引用。
+            // 调用方交出列表后不得继续改写；列表不属于可复用上下文，下一次查询也不会清空它。
+            // 空结果无需行索引；非空结果的引用集合只用于成员校验，不跨快照复用。
+            if (slaves == null || slaves.Count == 0)
+            {
+                Slaves = Array.Empty<SSCBondOverviewEntry>();
+                return;
+            }
+            Slaves = new ReadOnlyCollection<SSCBondOverviewEntry>(slaves);
             slaveEntries = new HashSet<SSCBondOverviewEntry>(slaves, SSCBondOverviewReferenceComparer<SSCBondOverviewEntry>.Instance);
             foreach (SSCBondOverviewEntry entry in Slaves)
                 if (!entry.IsDead) LivingSlaveCount++;
         }
 
         // 行复查不扫描整份列表，避免逐行绘制时形成二次复杂度。
-        internal bool Contains(SSCBondOverviewEntry entry) => ReferenceEquals(Master, entry) || slaveEntries.Contains(entry);
+        internal bool Contains(SSCBondOverviewEntry entry) => ReferenceEquals(Master, entry) || slaveEntries?.Contains(entry) == true;
     }
 }

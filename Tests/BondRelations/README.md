@@ -1,6 +1,6 @@
 # 主从社交关系一致性回归
 
-2026-10-17 新增主从关系概览第一批，直接链接 `SSCBondOverviewModel`、`SSCBondOverviewUtility` 和 `SSCBondOverviewWorld`。新增 40 项，当前专项 **94/94**；阶段与指派资格继续复用既有接口替身，集合／持有／位置接口以实际 1.7.4981 rev136 核对。生产候选编排、归属筛选、位置分类、快照与行复查均实际执行，真实容器与存档覆盖仍待实机核验，见[实现记录](../../Docs/Development/Verification/主从关系概览第一批只读数据实现与测试.md)。
+2026-10-17 新增主从关系概览第一批，直接链接 `SSCBondOverviewModel`、`SSCBondOverviewUtility` 和 `SSCBondOverviewWorld`。初批新增 40 项、94/94；后续性能优化新增 16 项，当前专项 **110/110**，见[当前优化与对比](../../Docs/Development/Verification/主从关系概览第一批性能优化与对比.md)。阶段与指派资格继续复用既有接口替身，集合／持有／位置接口以实际 1.7.4981 rev136 核对；生产候选、归属、位置、快照及行复查均实际执行，真实容器与存档仍待实机核验，原结果保留在[首次实现记录](../../Docs/Development/Verification/主从关系概览第一批只读数据实现与测试.md)。
 
 直接编译生产关系规则、仪式奖励入口、绑定服务、性奴锁链、主人缰绳、旧档清理 GameComponent、称谓服务及两处 Harmony 显示补丁。原生接口模型依据本机 RimWorld 1.6 程序集反编译建立；双向关系、健康删除顺序和缓存通知为引擎边界，测试不运行 Unity 或实际存档。
 
@@ -31,6 +31,27 @@ dotnet run --project Tests/BondRelations/BondRelations.csproj --configuration Re
 - 连续读取逐项对照健康对象、严重度、锁链 target、缰绳列表引用及顺序、身份、指派、特化、社交通知和承伤偏好；160 条绑定加重复及 500 名无关角色仅枚举一次候选输入。
 
 `OverviewWorldStubs.cs` 只提供原版对象树和集合边界，不运行真实游戏递归器。实际 1.7 引用编译证明接口可用，模型通过证明生产查询在这些输入下正确；两者均不等于实机候选覆盖、UI、导航或真实存档往返已通过。历史 54 项关系专项结果保留其原阶段。
+
+## 性能优化回归与基准
+
+`Program.BondOverviewPerformance.cs` 验证世界存活／死亡、临时角色、运输成员、地图已生成及容器 Pawn／Corpse、组件子持有者、重叠持有树、飞船成员独占来源、位置优先级和查询间刷新。遍历计数验证货物扫描不随关联人数相乘；成功／异常路径通过 Pawn 弱引用回收检查缓冲已清空。暂存容器容量有界复用，不保存绑定或游戏对象。
+
+当前源码单侧基准（不计入机制用例数）：
+
+```powershell
+dotnet run --project Tests/BondRelations/BondRelations.csproj --configuration Release `
+  -p:HarmonyAssemblyPath="本机/net9.0/0Harmony.dll" -- --benchmark
+```
+
+与第一批提交进行相同边界的前后比较：
+
+```powershell
+python Tests/BondRelations/compare_overview_performance.py --baseline d8b354d `
+  --harmony-path "本机/net9.0/0Harmony.dll" --runs 3 `
+  --output .builds/bond-overview-opt/performance
+```
+
+脚本提取基线三个生产文件，与当前文件共用边界和 `BondOverviewBenchmark.cs`，分别构建并交替运行。每场景预热 16 次、采样 31 次；记录耗时、当前线程分配和结构访问计数，校验候选、顺序与状态摘要，保存源码及边界哈希。原版引擎临时缓冲的替身复用空间，避免把替身的重复分配冒充生产优化；它仍不是实际引擎，也不测试 Waylith 的真实 FPS／TPS。首次分配、容量扩张、真实任务临时角色和存档覆盖仍需目标环境验证。
 
 绑定生命周期补充：
 

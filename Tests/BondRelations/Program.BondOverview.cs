@@ -16,9 +16,15 @@ internal static partial class Program
         Find.Maps.Clear();
         Find.World = new object();
         Find.WorldObjects = new WorldObjectsHolder();
+        Find.WorldPawns = new WorldPawns();
         Find.CurrentGravship = null;
+        RimWorld.PawnsFinder.TemporaryPawns.Clear();
+        RimWorld.PawnsFinder.TransportMembers.Clear();
+        RimWorld.PawnsFinder.TemporaryQueries = RimWorld.PawnsFinder.TransportQueries = 0;
         SSCRestrictionGameComponent.QueryCount = 0;
         ThingOwnerUtility.MapQueryCount = ThingOwnerUtility.HolderQueryCount = 0;
+        ThingOwnerUtility.HolderVisitCount = 0;
+        ThingOwnerUtility.Visits.Clear();
     }
 
     static Pawn NewOverviewSlave(Pawn master, string name = "Pawn")
@@ -233,7 +239,8 @@ internal static partial class Program
             var view = SSCBondOverviewUtility.Build(f.master, map);
             Require(SSCRestrictionGameComponent.Pawns.Count == 0 && view.TotalSlaveCount == 1 && view.LivingSlaveCount == 0);
             Require(view.Slaves[0].Location.Kind == SSCBondOverviewLocationKind.Map && view.Slaves[0].Location.Subject == corpse);
-            Require(ThingOwnerUtility.MapQueryCount == 1 && SSCRestrictionGameComponent.QueryCount == 1);
+            Require(ThingOwnerUtility.MapQueryCount == 1 && SSCRestrictionGameComponent.QueryCount == 0);
+            Require(RimWorld.PawnsFinder.TemporaryQueries == 1 && RimWorld.PawnsFinder.TransportQueries == 1);
             Require(SSCBondUtility.GetBridle(f.master).targets.Count == 0);
         });
         Check("overview: nested map container corpse is collected and classified", () =>

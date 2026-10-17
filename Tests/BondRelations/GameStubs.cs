@@ -49,7 +49,12 @@ namespace Verse
     public class HediffSet
     {
         public readonly List<Hediff> hediffs = new List<Hediff>();
-        public Hediff GetFirstHediffOfDef(HediffDef def) => hediffs.FirstOrDefault(h => h.def == def);
+        public Hediff GetFirstHediffOfDef(HediffDef def)
+        {
+            // 对齐已核对的实际引擎线性查找边界，不为模型额外创建 LINQ 闭包。
+            foreach (Hediff hediff in hediffs) if (hediff.def == def) return hediff;
+            return null;
+        }
     }
     public class Pawn_HealthTracker
     {
@@ -180,7 +185,7 @@ namespace SexSlaveCraft
         // 快照来源是外部边界；全地图/世界/商队的枚举由原有限制系统测试负责。
         public static readonly List<Pawn> Pawns = new List<Pawn>();
         public static int QueryCount;
-        public static List<Pawn> AllPawns() { QueryCount++; return Pawns.ToList(); }
+        public static List<Pawn> AllPawns() { QueryCount++; return OverviewWorldBoundary.AllPawns(); }
         public static void Notify(Pawn pawn) { }
     }
     public static class SSCRestrictionTrainerAssignment
