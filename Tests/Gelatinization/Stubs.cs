@@ -17,6 +17,23 @@ namespace UnityEngine
         public Shader(string name) { this.name = name; }
     }
     public class Texture { public string name; public Texture(string name) { this.name = name; } }
+    public struct Color32
+    {
+        public byte r, g, b, a;
+        public Color32(byte r, byte g, byte b, byte a) { this.r = r; this.g = g; this.b = b; this.a = a; }
+    }
+    public enum TextureFormat { RGBA32 }
+    public enum TextureWrapMode { Clamp }
+    public enum FilterMode { Bilinear }
+    public class Texture2D : Texture
+    {
+        public int width, height, Reads; public bool ThrowRead; public Color32[] pixels;
+        public TextureWrapMode wrapMode; public FilterMode filterMode;
+        public Texture2D(int w, int h, TextureFormat format, bool mipmaps, bool linear) : base("TestHead") { width = w; height = h; }
+        public Color32[] GetPixels32() { Reads++; if (ThrowRead) throw new InvalidOperationException("Unreadable"); return (Color32[])pixels.Clone(); }
+        public void SetPixels32(Color32[] data) { pixels = (Color32[])data.Clone(); }
+        public void Apply(bool mipmaps, bool unreadable) { }
+    }
     public class Material
     {
         public static int Created, Copies;
@@ -24,6 +41,7 @@ namespace UnityEngine
         private Shader shaderValue; private Texture textureValue; private Color colorValue; private int queueValue = 2000; private bool maskSlot;
         private Dictionary<string, Texture> textures = new Dictionary<string, Texture>();
         private Dictionary<string, float> floats = new Dictionary<string, float>();
+        private Dictionary<string, Color> colors = new Dictionary<string, Color>();
         private string[] keywords = Array.Empty<string>();
         // 仅模型材质变更通知：与实机公开 Version 一样，同值写入不变、属性变化递增。
         public Shader shader { get => shaderValue; set { if (shaderValue != value) { shaderValue = value; engineMaterial.Touch(); } } }
@@ -43,12 +61,14 @@ namespace UnityEngine
         {
             Copies++;
             mainTexture = source.mainTexture; color = source.color; HasMaskSlot = source.HasMaskSlot;
-            textures = new Dictionary<string, Texture>(source.textures); floats = new Dictionary<string, float>(source.floats);
+            textures = new Dictionary<string, Texture>(source.textures); floats = new Dictionary<string, float>(source.floats); colors = new Dictionary<string, Color>(source.colors);
             // 原Copy仅添加关键词；生产更新路径需显式同步删除。
             keywords = keywords.Union(source.keywords).ToArray(); engineMaterial.Touch();
         }
         public bool HasProperty(string name) => name == "_MaskTex" && HasMaskSlot;
         public Texture GetTexture(string name) => textures.TryGetValue(name, out var texture) ? texture : null;
+        public void SetColor(string name, Color value) { colors[name] = value; engineMaterial.Touch(); }
+        public Color GetColor(string name) => colors.TryGetValue(name, out var value) ? value : default;
         public void SetTexture(string name, Texture texture) { if (!textures.TryGetValue(name, out var old) || old != texture) { textures[name] = texture; engineMaterial.Touch(); } }
         public void SetFloat(string name, float value) { if (!floats.TryGetValue(name, out var old) || old != value) { floats[name] = value; engineMaterial.Touch(); } }
         public float GetFloat(string name) => floats.TryGetValue(name, out var value) ? value : 0;
@@ -64,8 +84,8 @@ namespace HarmonyLib
     // Kept for the pre-fix source mutation check: actual 1.7 nodes have no pawn field.
     public static class AccessTools
     {
-        public static bool DisableFa, BadFaShape;
-        public static Type TypeByName(string name) => name.StartsWith("FacialAnimation.") && DisableFa ? null :
+        public static bool DisableFa, DisableSa, BadFaShape;
+        public static Type TypeByName(string name) => (name.StartsWith("FacialAnimation.") && DisableFa) || (name.StartsWith("SizedApparel.") && DisableSa) ? null :
             BadFaShape && name == "FacialAnimation.NLFacialAnimationPartNode" ? typeof(BadFaNode) : typeof(AccessTools).Assembly.GetType(name);
         public static MethodInfo Method(Type type, string name, Type[] parameters) => type?.GetMethod(name, parameters);
         public static FieldInfo Field(Type type, string name) => type?.GetField(name, BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
@@ -243,7 +263,19 @@ namespace Verse
     }
     public enum RotDrawMode { Fresh, Rotting, Dessicated }
     [Flags] public enum PawnRenderFlags { None = 0, Invisible = 1 }
-    public struct PawnDrawParms { public Pawn pawn; public RotDrawMode rotDrawMode; public bool Statue, Portrait; public PawnRenderFlags flags; }
+    public readonly struct Rot4 : IEquatable<Rot4>
+    {
+        private readonly int value;
+        private Rot4(int value) { this.value = value; }
+        public static readonly Rot4 North = new Rot4(0), East = new Rot4(1), South = new Rot4(2), West = new Rot4(3);
+        public Rot4 Opposite => new Rot4((value + 2) % 4);
+        public bool Equals(Rot4 other) => value == other.value;
+        public override bool Equals(object other) => other is Rot4 r && Equals(r);
+        public override int GetHashCode() => value;
+        public static bool operator ==(Rot4 a, Rot4 b) => a.Equals(b);
+        public static bool operator !=(Rot4 a, Rot4 b) => !a.Equals(b);
+    }
+    public struct PawnDrawParms { public Pawn pawn; public RotDrawMode rotDrawMode; public bool Statue, Portrait, flipHead; public PawnRenderFlags flags; public Rot4 facing; }
     public class PawnRenderTree { public Pawn pawn; }
     public static class UnityData { public static bool IsInMainThread = true; }
     // Deliberately non-null and supported, matching the audited Waylith late-bound contract.
@@ -258,17 +290,21 @@ namespace Verse
         public static readonly UnityEngine.Shader Masked = new UnityEngine.Shader("SSC_FullGelHeadMasked17");
         public static readonly UnityEngine.Shader Depth = new UnityEngine.Shader("SSC_FullGelHeadDepth17") { EngineShader = new Waylith.Rendering.Shader { DepthWrite = true } };
         public static readonly UnityEngine.Shader MaskedDepth = new UnityEngine.Shader("SSC_FullGelHeadMaskedDepth17") { EngineShader = new Waylith.Rendering.Shader { DepthWrite = true } };
+        public static readonly UnityEngine.Shader Vanilla = new UnityEngine.Shader("SSC_FullGelVanillaHead17");
+        public static readonly UnityEngine.Shader VanillaDepth = new UnityEngine.Shader("SSC_FullGelVanillaHeadDepth17") { EngineShader = new Waylith.Rendering.Shader { DepthWrite = true } };
         // 实际DefDatabase返回稳定定义，不能让边界替身每次new掩盖生产热路径分配。
         private static readonly Dictionary<string, ShaderDef> definitions = new Dictionary<string, ShaderDef>
         {
             ["SSC_FullGelBody17"] = new ShaderDef { defName = "SSC_FullGelBody17" },
             ["SSC_FullGelHeadMasked17"] = new ShaderDef { defName = "SSC_FullGelHeadMasked17" },
             ["SSC_FullGelHeadDepth17"] = new ShaderDef { defName = "SSC_FullGelHeadDepth17" },
-            ["SSC_FullGelHeadMaskedDepth17"] = new ShaderDef { defName = "SSC_FullGelHeadMaskedDepth17" }
+            ["SSC_FullGelHeadMaskedDepth17"] = new ShaderDef { defName = "SSC_FullGelHeadMaskedDepth17" },
+            ["SSC_FullGelVanillaHead17"] = new ShaderDef { defName = "SSC_FullGelVanillaHead17" },
+            ["SSC_FullGelVanillaHeadDepth17"] = new ShaderDef { defName = "SSC_FullGelVanillaHeadDepth17" }
         };
         public static ShaderDef Find(string name) => definitions.TryGetValue(name, out var def) ? def : null;
         public string defName;
-        public UnityEngine.Shader Shader => defName == "SSC_FullGelHeadDepth17" ? Depth : defName == "SSC_FullGelHeadMaskedDepth17" ? MaskedDepth : defName == "SSC_FullGelHeadMasked17" ? Masked : Native;
+        public UnityEngine.Shader Shader => defName == "SSC_FullGelVanillaHead17" ? Vanilla : defName == "SSC_FullGelVanillaHeadDepth17" ? VanillaDepth : defName == "SSC_FullGelHeadDepth17" ? Depth : defName == "SSC_FullGelHeadMaskedDepth17" ? MaskedDepth : defName == "SSC_FullGelHeadMasked17" ? Masked : Native;
     }
     // 内置透明 Shader 使用稳定对象身份，使断言能区分预期 Shader 与伪成功的自定义对象。
     public static class ShaderDatabase { public static readonly UnityEngine.Shader TransparentPostLight = new UnityEngine.Shader("TransparentPostLight"); }
@@ -293,11 +329,12 @@ namespace Waylith.Rendering
         public static bool TryResolve(string name, out object shader)
         {
             shader = ReturnDefault ? Default : Native;
-            return name == "SSC_FullGelBody17" ? Registered : (name == "SSC_FullGelHeadDepth17" || name == "SSC_FullGelHeadMaskedDepth17") ? Registered : name == "SSC_FullGelHeadMasked17" && MaskedRegistered;
+            return name == "SSC_FullGelBody17" || name.StartsWith("SSC_FullGelVanillaHead") ? Registered : (name == "SSC_FullGelHeadDepth17" || name == "SSC_FullGelHeadMaskedDepth17") ? Registered : name == "SSC_FullGelHeadMasked17" && MaskedRegistered;
         }
     }
 }
 // 只保留实际 FA 节点公开字段与控制器身份。动画仍由用例切换材质/遮罩模拟，不复制 FA 实现。
+#if !SSC_WITHOUT_FA
 namespace FacialAnimation
 {
     public enum NLFacialAnimationLayerType { Basic, Cover, Highlight, Bottom, L_Basic, R_Basic, L_Option, R_Option }
@@ -316,6 +353,7 @@ namespace FacialAnimation
         public static Verse.Graphic dummyGraphic = new Verse.Graphic { MatSingle = new UnityEngine.Material(new UnityEngine.Shader("Dummy")) };
     }
 }
+#endif
 namespace SexSlaveCraft
 {
     // 设置及日志是最小服务边界，测试只核对染色是否执行，不核对真实设置持久化和日志界面。
@@ -356,6 +394,7 @@ namespace SexSlaveCraft
 }
 
 // 实际 SA worker 继承原版最终材质方法；GetGraphic 故意抛异常捕获染色补丁的重复调用。
+#if !SSC_WITHOUT_SA
 namespace SizedApparel
 {
     public class SizedApparelRenderNodeWorker : Verse.PawnRenderNodeWorker
@@ -364,3 +403,4 @@ namespace SizedApparel
     }
     public class DerivedWorker : SizedApparelRenderNodeWorker { }
 }
+#endif

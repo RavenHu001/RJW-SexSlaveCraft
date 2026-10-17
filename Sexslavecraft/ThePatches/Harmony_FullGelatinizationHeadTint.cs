@@ -16,6 +16,8 @@ namespace SexSlaveCraft
         internal const string MaskedShaderDefName = "SSC_FullGelHeadMasked17";
         internal const string DepthShaderDefName = "SSC_FullGelHeadDepth17";
         internal const string MaskedDepthShaderDefName = "SSC_FullGelHeadMaskedDepth17";
+        internal const string VanillaShaderDefName = "SSC_FullGelVanillaHead17";
+        internal const string VanillaDepthShaderDefName = "SSC_FullGelVanillaHeadDepth17";
         private static Type faNodeType, faHeadType, faSkinType, faLidType;
         // 仅在启动时反射并生成访问器；绘制时直接调用，不装箱 FA 的 layer 枚举。
         private static Func<PawnRenderNode, object> readController;
@@ -41,7 +43,7 @@ namespace SexSlaveCraft
             public Waylith.Rendering.Material sourceEngine, outputEngine;
             public int sourceVersion, outputVersion, queue;
             public Shader sourceShader, targetShader;
-            public Texture mainTexture, mask;
+            public Texture mainTexture, mask, eyes;
             public bool initialized;
         }
 
@@ -159,6 +161,18 @@ namespace SexSlaveCraft
             // 1.7公开的原生材质入口包含真实Shader状态，不再通过internal属性反射读取。
             bool? depthWrite = source.shader == null ? null : source.engineMaterial.Shader?.DepthWrite;
             if (!depthWrite.HasValue) return;
+            // 按实际节点选适配器，不能因FA已加载便禁用仍使用原版头部的角色。
+            // 北向没有烘焙眼睛；其余方向在同一头图上用独立遮罩保留眼睛原色/Alpha。
+            // 原版worker在flipHead时先取相反朝向的材质，Postfix拿到的parms仍是原值。
+            // 按实际取图朝向判断，否则翻头时会把正面当背面，漏掉眼部保护。
+            Rot4 headFacing = parms.flipHead ? parms.facing.Opposite : parms.facing;
+            if (node is PawnRenderNode_Head && headFacing != Rot4.North)
+            {
+                int count = headFacing == Rot4.South ? 2 : 1;
+                if (!FullGelVanillaEyeMask.TryGet(source.mainTexture, count, out Texture eyes)) return;
+                ApplyMaterial(ref __result, depthWrite.Value ? VanillaDepthShaderDefName : VanillaShaderDefName, true, mask, eyes);
+                return;
+            }
             string defName = depthWrite.Value
                 ? (mask == null ? DepthShaderDefName : MaskedDepthShaderDefName)
                 : (mask == null ? Harmony_FullGelatinizationBodyTint.NativeShaderDefName : MaskedShaderDefName);
@@ -166,7 +180,7 @@ namespace SexSlaveCraft
         }
 
         /// <summary>头部与 SA 共用材质副本缓存；此处只操作已选出的材质，不进入 GraphicDatabase。</summary>
-        internal static void ApplyMaterial(ref Material result, string defName, bool headLayer, Texture mask = null)
+        internal static void ApplyMaterial(ref Material result, string defName, bool headLayer, Texture mask = null, Texture eyes = null)
         {
             if (result == null || result.mainTexture == null || generated.TryGetValue(result, out _)) return;
             Material source = result;
@@ -181,7 +195,7 @@ namespace SexSlaveCraft
             }
 
             int queue = headLayer ? PostLightQueue(source.renderQueue) : Harmony_FullGelatinizationBodyTint.PostLightRenderQueue;
-            UpdateVariant(ref result, (defName, headLayer), shader, queue, mask, true);
+            UpdateVariant(ref result, (defName, headLayer), shader, queue, mask, true, eyes);
         }
 
         internal static int PostLightQueue(int originalQueue) => Math.Max(originalQueue, Harmony_FullGelatinizationBodyTint.PostLightRenderQueue);
@@ -196,7 +210,7 @@ namespace SexSlaveCraft
 
         /// <summary>原生版本跟踪贴图、UV、颜色、关键词和Shader变化；静态帧不重复复制和写属性。</summary>
         private static void UpdateVariant(ref Material result, (string shader, bool head) key,
-            Shader shader, int queue, Texture mask, bool tint)
+            Shader shader, int queue, Texture mask, bool tint, Texture eyes = null)
         {
             Material source = result;
             Variant entry = variants.GetValue(source, _ => new Variant());
@@ -215,7 +229,7 @@ namespace SexSlaveCraft
                 if (state.initialized && output != null && ReferenceEquals(sourceEngine, state.sourceEngine)
                     && version == state.sourceVersion && ReferenceEquals(source.shader, state.sourceShader)
                     && ReferenceEquals(shader, state.targetShader) && ReferenceEquals(mainTexture, state.mainTexture)
-                    && ReferenceEquals(mask, state.mask) && queue == state.queue
+                    && ReferenceEquals(mask, state.mask) && ReferenceEquals(eyes, state.eyes) && queue == state.queue
                     && ReferenceEquals(output.engineMaterial, state.outputEngine)
                     && output.engineMaterial.Version == state.outputVersion)
                 {
@@ -240,12 +254,21 @@ namespace SexSlaveCraft
                     Color color = Harmony_FullGelatinizationBodyTint.FullGelColor;
                     color.a *= source.color.a;
                     output.color = color;
+                    if (eyes != null)
+                    {
+                        // 同一次绘制混合皮肤和原眼睛，不增加眼球节点，也不影响头发/帽子的深度关系。
+                        output.SetTexture("_EyeMask", eyes);
+                        output.SetColor("_EyeSourceColor", source.color);
+                        // 区分基础凝胶色与每次绘制的parms.tint，眼睛同样保留游戏的淡入淡出/临时色调。
+                        output.SetColor("_EyeGelBaseColor", color);
+                        output.SetFloat("_UseSkinMask", mask == null ? 0 : 1);
+                    }
                 }
                 output.renderQueue = queue;
                 // 记录复制前读到的源版本；源在复制过程中变化时，下一次调用会再次刷新，不吞更新。
                 state.sourceEngine = sourceEngine; state.sourceVersion = version;
                 state.sourceShader = source.shader; state.targetShader = shader;
-                state.mainTexture = mainTexture; state.mask = mask; state.queue = queue;
+                state.mainTexture = mainTexture; state.mask = mask; state.eyes = eyes; state.queue = queue;
                 state.outputEngine = output.engineMaterial; state.outputVersion = state.outputEngine.Version;
                 state.initialized = true;
                 result = output;

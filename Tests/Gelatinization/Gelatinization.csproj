@@ -6,7 +6,16 @@
     <DefineConstants>$(DefineConstants);SSC_CSHARP</DefineConstants>
     <!-- 可指向隔离的修复前快照验证测试能捕获旧缺陷，默认始终链接当前生产源码。 -->
     <SscSourceRoot Condition="'$(SscSourceRoot)' == ''">../../Sexslavecraft</SscSourceRoot>
+    <!-- 四组合宿主从编译结果中真正移除可选类型，避免仅关闭查找开关掩盖硬依赖。 -->
+    <DefaultItemExcludes>$(DefaultItemExcludes);bin/**;obj/**</DefaultItemExcludes>
+    <DefineConstants Condition="'$(SscAdapterMatrixOnly)' == 'true'">$(DefineConstants);SSC_ADAPTER_MATRIX</DefineConstants>
+    <DefineConstants Condition="'$(SscMatrixFa)' == 'false'">$(DefineConstants);SSC_WITHOUT_FA</DefineConstants>
+    <DefineConstants Condition="'$(SscMatrixSa)' == 'false'">$(DefineConstants);SSC_WITHOUT_SA</DefineConstants>
   </PropertyGroup>
+  <ItemGroup Condition="'$(SscAdapterMatrixOnly)' == 'true'">
+    <Compile Remove="Program*.cs" />
+    <Compile Include="Program.AdapterMatrixHost.cs" />
+  </ItemGroup>
   <ItemGroup>
     <!-- 直接编译原生 Shader 的标量函数体；预处理仅提供 C# 类型外壳和 clamp 边界。 -->
     <Compile Include="../../1.7/Shaders/SSC/FullGelMath.glsl" Link="Production/FullGelMath.cs" />
@@ -25,5 +34,6 @@
     <!-- 身体与 SizedApparel 两条入口使用同一个实际补丁，避免在测试内重写染色判断。 -->
     <Compile Include="$(SscSourceRoot)/ThePatches/Harmony_FullGelatinizationBodyTint.cs" Link="Production/Harmony_FullGelatinizationBodyTint.cs" />
     <Compile Include="$(SscSourceRoot)/ThePatches/Harmony_FullGelatinizationHeadTint.cs" Link="Production/Harmony_FullGelatinizationHeadTint.cs" />
+    <Compile Include="$(SscSourceRoot)/ThePatches/FullGelVanillaEyeMask.cs" Link="Production/FullGelVanillaEyeMask.cs" />
   </ItemGroup>
 </Project>

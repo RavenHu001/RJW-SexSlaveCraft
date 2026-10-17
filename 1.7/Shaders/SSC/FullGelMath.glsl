@@ -42,6 +42,23 @@ bool sscGelWritesDepth(float coverage)
 {
     return coverage >= 0.1f;
 }
+// 原版眼睛仍在原头图上采样。眼睛遮罩只选择原色/原Alpha，皮肤沿用既有凝胶函数。
+#if SSC_CSHARP
+    public static
+#endif
+float sscGelEyeBlend(float gel, float original, float eye)
+{
+    float weight = clamp(eye, 0.0f, 1.0f);
+    return gel * (1.0f - weight) + original * weight;
+}
+// 从本帧颜色/材质基础色还原parms.tint；眼睛绕过凝胶色，却仍响应游戏的临时色调与淡出。
+#if SSC_CSHARP
+    public static
+#endif
+float sscGelEyeModulation(float draw, float gelBase)
+{
+    return gelBase > 0.0f ? draw / gelBase : 0.0f;
+}
 #if SSC_CSHARP
 }
 #endif

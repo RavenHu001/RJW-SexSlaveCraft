@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <!-- AI 辅助生成。原版头图中皮肤凝胶化，眼部按运行时遮罩保留原色与覆盖；FA不用此程序。 -->
+  <ShaderDef>
+    <defName>SSC_FullGelVanillaHeadDepth17</defName>
+    <shaderProgram>
+      <vertexShaderFileName>Mote.vert.glsl</vertexShaderFileName>
+      <fragmentShaderFileName>SSC/FullGelVanillaHeadDepth.frag.glsl</fragmentShaderFileName>
+      <transparent>true</transparent>
+      <depthWrite>true</depthWrite>
+      <cullMode>None</cullMode>
+      <renderQueue>3150</renderQueue>
+    </shaderProgram>
+  </ShaderDef>
+</Defs>

@@ -4,11 +4,13 @@
 
 [文档总索引](../Docs/README.md) · [发布与打包](../Docs/Maintenance/发布与打包.md) · [开发记录](../Docs/Development/README.md)
 
+当前原版／FA自动适配新增41项眼部与四组合检查，凝胶套件205/205；原版眼睛保留原色及Alpha，FA保留当前分层动画，维护者确认原版眼部／转向及FA眨眼／遮挡正常，见[适配验收](../Docs/Development/Completed/1.7原版与FA凝胶渲染自动适配与验收.md)。
+
 当前缓存性能优化新增22项回归及稳定调用分配/复制检查，保留配色、光照、动画和遮挡，维护者实机测试未发现问题，见[性能验收](../Docs/Development/Completed/1.7凝胶化渲染性能优化与验收.md)。
 
 光照后统一另补23项状态／开关和头部组回归，维护者确认配色一致性改善、眨眼和遮挡正常，见[本轮验收](../Docs/Development/Completed/1.7凝胶化光照阶段统一与验收.md)。
 
-当前 1.7 开发入口登记 **34 套**，[凝胶化与 1.7 兼容回归](Gelatinization/README.md)已扩展到 164 项机制、材质选择、像素函数及头部分层用例，并内嵌 10 项 Harmony 状态参数检查。[原生 Shader 编译工具](../Tools/GelatinizationShader/README.md)独立使用实际游戏的 .NET 10／Waylith 编译器验证普通和实例绘制，不计入 net9 模型套件数。1.6 继续只检查冻结成品，不执行新源码回归；最终深紫色＋0.85 不透明度已获维护者实机确认，见[视觉验收记录](../Docs/Development/Completed/1.7全身凝胶化身体视觉调整与验收.md)。早期全量 34 套／2560 项与最终参数专项 44/44 的执行阶段分别保留。新头部分层、FA 遮罩与动画保留已有 54 项模型回归，实机遮挡反馈后又补充 21 项深度／SA 工作线程回归；维护者确认头部遮挡和眨眼正常，见[验收记录](../Docs/Development/Completed/1.7头部凝胶化与深度线程修复验收.md)。
+当前 1.7 开发入口登记 **34 套**，[凝胶化与 1.7 兼容回归](Gelatinization/README.md)已扩展到 205 项机制、材质选择、像素函数及头部分层用例，并内嵌 10 项 Harmony 状态参数检查。[原生 Shader 编译工具](../Tools/GelatinizationShader/README.md)独立使用实际游戏的 .NET 10／Waylith 编译器验证普通和实例绘制，不计入 net9 模型套件数。1.6 继续只检查冻结成品，不执行新源码回归；最终深紫色＋0.85 不透明度已获维护者实机确认，见[视觉验收记录](../Docs/Development/Completed/1.7全身凝胶化身体视觉调整与验收.md)。早期全量 34 套／2560 项与最终参数专项 44/44 的执行阶段分别保留。新头部分层、FA 遮罩与动画保留已有 54 项模型回归，实机遮挡反馈后又补充 21 项深度／SA 工作线程回归；维护者确认头部遮挡和眨眼正常，见[验收记录](../Docs/Development/Completed/1.7头部凝胶化与深度线程修复验收.md)。
 
 正式 **2.4.1** 发布时登记 33 套，原 2.4.0.5 开发里程碑及后续开发统一纳入，另有 Def／Languages 独立资源门禁；发布准备检查发现 TrainerIntegration 夹具依赖旧默认值，改为先取得主人资格后专项 10/10；随后从干净提交重跑正式门禁，**33/33 套、2516/2516 项**及两项资源检查通过，结果见版本验证。此前 33 套／2516 项和 35/35 编排夹具保留为历史结果。当次正式门禁及历史结果的区别见[2.4.1 版本验证](../Docs/Releases/2.4.1/2.4.1版本验证.md)。历史 2.4.0 的 28 套及 2.3.9 的 25 套保留原计数，不回写。
 
@@ -32,7 +34,7 @@ pwsh -File Scripts/Test-All.ps1 -GameVersion 1.7 -HarmonyAssemblyPath 'C:\Depend
 
 可单独执行 `pwsh -File Scripts/Test-DefMirrors.ps1` 或 `pwsh -File Scripts/Sync-LanguagesMirror.ps1`。两者均支持 `-RepositoryRoot`、`-GameVersion`、`-RuntimeRoot` 与 `-PassThru`；语言同步仍须显式加 `-Sync`，且仅允许以 `1.7/Languages` 为源，不能同步冻结的 1.6 内容。统一报告位于 `.builds/validation/`，分别生成 `DefMirrors.log`、`LanguagesMirrors.log`，并在 `summary.json` 的 `Checks` 中按 `DefMirrors`／`LanguagesMirrors` 登记状态、文件数、原因和日志路径，合计字段为 `CheckCount`、`PassedChecks`、`FailedChecks`。布局结果另记在 `LayoutValidation`，不计入两项资源检查。
 
-`pwsh -File Scripts/Test-All.ps1 -GameVersion 1.6` 只验证冻结文件哈希与该版 Def／Languages XML，不比较当前源码镜像、不编译或运行当前源码套件，报告 `SuiteCount = 0`。`SourceValidationScope` 明确区分这项资源检查与 1.7 的 33 套当前源码模型回归；都不能替代游戏内流程、动画及真实存档往返验收。
+`pwsh -File Scripts/Test-All.ps1 -GameVersion 1.6` 只验证冻结文件哈希与该版 Def／Languages XML，不比较当前源码镜像、不编译或运行当前源码套件，报告 `SuiteCount = 0`。`SourceValidationScope` 明确区分这项资源检查与 1.7 的 34 套当前源码模型回归；都不能替代游戏内流程、动画及真实存档往返验收。
 
 单套测试传入的目录参数仍为仓库根目录。`Tests/Shared/TestPaths.cs` 将源码解析到 `Sexslavecraft/`，运行资源默认解析到 `1.7/`，贴图解析到 `Common/Textures/` 并优先使用版本目录中的同名覆盖。需要独立资源夹具时可设置 `SSC_TEST_REPOSITORY_ROOT`、`SSC_TEST_RUNTIME_ROOT`、`SSC_TEST_COMMON_ROOT`；统一入口仅在本次调用期间设置这些进程环境变量，结束或失败后恢复原值。`RitualProgression` 保留显式 XML 文件参数。
 
