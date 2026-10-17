@@ -1,6 +1,7 @@
 // AI 辅助生成。仅扩展 1.7 开发源码；1.6 冻结 DLL 不重新编译。
 using System;
 using System.Reflection;
+using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using HarmonyLib;
 using RimWorld;
@@ -15,13 +16,12 @@ namespace SexSlaveCraft
         internal const string MaskedShaderDefName = "SSC_FullGelHeadMasked17";
         internal const string DepthShaderDefName = "SSC_FullGelHeadDepth17";
         internal const string MaskedDepthShaderDefName = "SSC_FullGelHeadMaskedDepth17";
-        // UnityStubs 的 EngineShader 是 internal；缓存真实 getter，读取已解析程序的深度状态，
-        // 不根据名字猜 Cutout，也不把所有 Cover 层强制写深度。未知边界保留原材质。
-        private static readonly PropertyInfo engineShaderProperty = typeof(Shader).GetProperty("EngineShader",
-            BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
         private static Type faNodeType, faHeadType, faSkinType, faLidType;
-        private static FieldInfo controllerField, layerField, dummyField;
-        private static object basicLayer, coverLayer;
+        // 仅在启动时反射并生成访问器；绘制时直接调用，不装箱 FA 的 layer 枚举。
+        private static Func<PawnRenderNode, object> readController;
+        private static Func<PawnRenderNode, int> readLayer;
+        private static Func<Graphic> readDummy;
+        private static int basicLayer, coverLayer;
         private static bool warnedMissingShader;
 
         // 弱键随原材质释放。每种 Shader/用途复用一个副本，不持有 Pawn、不每帧 new Material。
@@ -31,7 +31,18 @@ namespace SexSlaveCraft
         private sealed class Variant
         {
             // 染色副本与五官的仅移队列副本隔离，避免共享源材质的不同用途串色。
-            public readonly System.Collections.Generic.Dictionary<string, Material> materials = new System.Collections.Generic.Dictionary<string, Material>();
+            // 值元组不会像拼接字符串那样在每次缓存命中时分配对象；null名称代表仅移队列。
+            public readonly System.Collections.Generic.Dictionary<(string shader, bool head), CachedMaterial> materials =
+                new System.Collections.Generic.Dictionary<(string shader, bool head), CachedMaterial>();
+        }
+        private sealed class CachedMaterial
+        {
+            public Material material;
+            public Waylith.Rendering.Material sourceEngine, outputEngine;
+            public int sourceVersion, outputVersion, queue;
+            public Shader sourceShader, targetShader;
+            public Texture mainTexture, mask;
+            public bool initialized;
         }
 
         /// <summary>仅给最终材质入口挂一次补丁；FA 的头部 worker 也调用这个基类方法。</summary>
@@ -52,20 +63,40 @@ namespace SexSlaveCraft
             faHeadType = AccessTools.TypeByName("FacialAnimation.HeadControllerComp");
             faSkinType = AccessTools.TypeByName("FacialAnimation.SkinControllerComp");
             faLidType = AccessTools.TypeByName("FacialAnimation.LidControllerComp");
-            controllerField = faNodeType == null ? null : AccessTools.Field(faNodeType, "controller");
-            layerField = faNodeType == null ? null : AccessTools.Field(faNodeType, "layerType");
+            readController = null; readLayer = null; readDummy = null;
+            FieldInfo controllerField = faNodeType == null ? null : AccessTools.Field(faNodeType, "controller");
+            FieldInfo layerField = faNodeType == null ? null : AccessTools.Field(faNodeType, "layerType");
             Type poolType = AccessTools.TypeByName("FacialAnimation.GraphicPool");
-            dummyField = poolType == null ? null : AccessTools.Field(poolType, "dummyGraphic");
+            FieldInfo dummyField = poolType == null ? null : AccessTools.Field(poolType, "dummyGraphic");
             if (controllerField == null || layerField == null || !layerField.FieldType.IsEnum
                 || faHeadType == null || faSkinType == null || faLidType == null || dummyField == null
+                || controllerField.IsStatic || layerField.IsStatic || !dummyField.IsStatic
+                || !typeof(PawnRenderNode).IsAssignableFrom(faNodeType)
                 || !Enum.IsDefined(layerField.FieldType, "Basic") || !Enum.IsDefined(layerField.FieldType, "Cover"))
             {
                 if (faNodeType != null) SSCLog.WarningImportant("[SSC FullGel] FA adapter shape differs; leaving FA materials unchanged.");
                 faNodeType = null;
                 return;
             }
-            basicLayer = Enum.Parse(layerField.FieldType, "Basic");
-            coverLayer = Enum.Parse(layerField.FieldType, "Cover");
+            try
+            {
+                var node = Expression.Parameter(typeof(PawnRenderNode), "node");
+                var converted = Expression.Convert(node, faNodeType);
+                readController = Expression.Lambda<Func<PawnRenderNode, object>>(
+                    Expression.Convert(Expression.Field(converted, controllerField), typeof(object)), node).Compile();
+                readLayer = Expression.Lambda<Func<PawnRenderNode, int>>(
+                    Expression.Convert(Expression.Field(converted, layerField), typeof(int)), node).Compile();
+                readDummy = Expression.Lambda<Func<Graphic>>(
+                    Expression.Convert(Expression.Field(null, dummyField), typeof(Graphic))).Compile();
+                basicLayer = Convert.ToInt32(Enum.Parse(layerField.FieldType, "Basic"));
+                coverLayer = Convert.ToInt32(Enum.Parse(layerField.FieldType, "Cover"));
+            }
+            catch (Exception ex)
+            {
+                // 未知 FA 形状只禁用适配，不把初始化异常带入每帧绘制。
+                faNodeType = null; readController = null; readLayer = null; readDummy = null;
+                SSCLog.WarningImportant("[SSC FullGel] FA accessor unavailable; preserving FA materials: " + ex.GetType().Name);
+            }
         }
 
         /// <summary>白名单按控制器和层判断，不按纹理名、肤色相似度或 Head 父节点批量染五官。</summary>
@@ -74,13 +105,14 @@ namespace SexSlaveCraft
             requiresMask = false;
             if (node is PawnRenderNode_Head) return true;
             if (faNodeType == null || node == null || !faNodeType.IsInstanceOfType(node)) return false;
-            object controller = controllerField.GetValue(node), layer = layerField.GetValue(node);
+            object controller = readController(node);
+            int layer = readLayer(node);
             if (controller == null) return false;
             if (faHeadType.IsInstanceOfType(controller))
-                return Equals(layer, basicLayer) || Equals(layer, coverLayer);
-            if (faSkinType.IsInstanceOfType(controller)) return Equals(layer, basicLayer);
+                return layer == basicLayer || layer == coverLayer;
+            if (faSkinType.IsInstanceOfType(controller)) return layer == basicLayer;
             // Lid.Basic 是发色睫毛，Bottom 是眼部底层，均保留；只处理带皮肤遮罩的 Cover。
-            requiresMask = faLidType.IsInstanceOfType(controller) && Equals(layer, coverLayer);
+            requiresMask = faLidType.IsInstanceOfType(controller) && layer == coverLayer;
             return requiresMask;
         }
 
@@ -109,7 +141,7 @@ namespace SexSlaveCraft
             if (generated.TryGetValue(__result, out _)) return;
 
             // FA 缺失/隐藏帧使用 dummy，头部 worker 会依赖该材质身份返回 null；必须原样保留。
-            Graphic dummy = dummyField?.GetValue(null) as Graphic;
+            Graphic dummy = readDummy?.Invoke();
             if (dummy != null && ReferenceEquals(__result, dummy.MatSingle)) return;
             if (!IsSkinNode(node, out bool requiresMask))
             {
@@ -124,20 +156,13 @@ namespace SexSlaveCraft
             Texture mask = hasMaskSlot ? source.GetTexture("_MaskTex") : null;
             // 已声明遮罩却没绑定纹理时也不降级，避免把整张头皮肤画到眼睛上。
             if ((requiresMask || hasMaskSlot) && mask == null) return;
-            bool? depthWrite = OriginalDepthWrite(source.shader);
+            // 1.7公开的原生材质入口包含真实Shader状态，不再通过internal属性反射读取。
+            bool? depthWrite = source.shader == null ? null : source.engineMaterial.Shader?.DepthWrite;
             if (!depthWrite.HasValue) return;
             string defName = depthWrite.Value
                 ? (mask == null ? DepthShaderDefName : MaskedDepthShaderDefName)
                 : (mask == null ? Harmony_FullGelatinizationBodyTint.NativeShaderDefName : MaskedShaderDefName);
             ApplyMaterial(ref __result, defName, true, mask);
-        }
-
-        /// <summary>真实程序的深度写入状态决定皮肤 Shader 变体；解析失败时不冒险改绘制行为。</summary>
-        private static bool? OriginalDepthWrite(Shader shader)
-        {
-            if (shader == null || engineShaderProperty == null) return null;
-            try { return (engineShaderProperty.GetValue(shader) as Waylith.Rendering.Shader)?.DepthWrite; }
-            catch (TargetInvocationException) { return null; }
         }
 
         /// <summary>头部与 SA 共用材质副本缓存；此处只操作已选出的材质，不进入 GraphicDatabase。</summary>
@@ -155,29 +180,8 @@ namespace SexSlaveCraft
                 return;
             }
 
-            Variant entry = variants.GetValue(source, _ => new Variant());
-            lock (entry)
-            {
-                string key = defName + (headLayer ? ":headPostLight" : ":bodyQueue");
-                if (!entry.materials.TryGetValue(key, out Material tinted))
-                {
-                    tinted = new Material(source);
-                    entry.materials.Add(key, tinted);
-                    generated.Add(tinted, generatedMarker);
-                }
-                // 同一原材质可能动态切换眨眼/腮红贴图；每次复制当前属性，缓存只复用对象。
-                tinted.CopyPropertiesFromMaterial(source);
-                tinted.shader = shader;
-                tinted.mainTexture = source.mainTexture;
-                tinted.SetTexture("_MaskTex", mask);
-                Color color = Harmony_FullGelatinizationBodyTint.FullGelColor;
-                color.a *= source.color.a;
-                tinted.color = color;
-                // 原版/FA常规头部2900统一进入3150，交给原绘制请求次序和深度维持层级。
-                // 已经在更晚队列的高光保持原队列；保留原Shader的深度写入，不恢复旧遮挡缺陷。
-                tinted.renderQueue = headLayer ? PostLightQueue(source.renderQueue) : Harmony_FullGelatinizationBodyTint.PostLightRenderQueue;
-                result = tinted;
-            }
+            int queue = headLayer ? PostLightQueue(source.renderQueue) : Harmony_FullGelatinizationBodyTint.PostLightRenderQueue;
+            UpdateVariant(ref result, (defName, headLayer), shader, queue, mask, true);
         }
 
         internal static int PostLightQueue(int originalQueue) => Math.Max(originalQueue, Harmony_FullGelatinizationBodyTint.PostLightRenderQueue);
@@ -187,20 +191,64 @@ namespace SexSlaveCraft
         {
             Material source = result;
             if (source.mainTexture == null || source.renderQueue >= Harmony_FullGelatinizationBodyTint.PostLightRenderQueue) return;
+            UpdateVariant(ref result, (null, true), source.shader, PostLightQueue(source.renderQueue), null, false);
+        }
+
+        /// <summary>原生版本跟踪贴图、UV、颜色、关键词和Shader变化；静态帧不重复复制和写属性。</summary>
+        private static void UpdateVariant(ref Material result, (string shader, bool head) key,
+            Shader shader, int queue, Texture mask, bool tint)
+        {
+            Material source = result;
             Variant entry = variants.GetValue(source, _ => new Variant());
             lock (entry)
             {
-                const string key = "originalHeadPostLight";
-                if (!entry.materials.TryGetValue(key, out Material moved))
+                var sourceEngine = source.engineMaterial;
+                int version = sourceEngine.Version;
+                Texture mainTexture = source.mainTexture;
+                if (!entry.materials.TryGetValue(key, out CachedMaterial state))
                 {
-                    moved = new Material(source);
-                    entry.materials.Add(key, moved);
-                    generated.Add(moved, generatedMarker);
+                    state = new CachedMaterial();
+                    entry.materials.Add(key, state);
                 }
-                moved.CopyPropertiesFromMaterial(source);
-                moved.shader = source.shader;
-                moved.renderQueue = PostLightQueue(source.renderQueue);
-                result = moved;
+                Material output = state.material;
+                // 同时核对原生对象身份、目标绑定和输出版本，保护延迟材质重绑定及其他模组的改写。
+                if (state.initialized && output != null && ReferenceEquals(sourceEngine, state.sourceEngine)
+                    && version == state.sourceVersion && ReferenceEquals(source.shader, state.sourceShader)
+                    && ReferenceEquals(shader, state.targetShader) && ReferenceEquals(mainTexture, state.mainTexture)
+                    && ReferenceEquals(mask, state.mask) && queue == state.queue
+                    && ReferenceEquals(output.engineMaterial, state.outputEngine)
+                    && output.engineMaterial.Version == state.outputVersion)
+                {
+                    result = output;
+                    return;
+                }
+                if (output == null)
+                {
+                    output = new Material(source);
+                    state.material = output;
+                    generated.Add(output, generatedMarker);
+                }
+                else output.CopyPropertiesFromMaterial(source);
+                // CopyPropertiesFromMaterial只添加关键词；源关闭关键词时也需同步删除旧值。
+                // 该数组仅在源变化时获取，稳定帧不会走这里。
+                output.shaderKeywords = source.shaderKeywords;
+                output.shader = shader;
+                if (tint)
+                {
+                    output.mainTexture = mainTexture;
+                    output.SetTexture("_MaskTex", mask);
+                    Color color = Harmony_FullGelatinizationBodyTint.FullGelColor;
+                    color.a *= source.color.a;
+                    output.color = color;
+                }
+                output.renderQueue = queue;
+                // 记录复制前读到的源版本；源在复制过程中变化时，下一次调用会再次刷新，不吞更新。
+                state.sourceEngine = sourceEngine; state.sourceVersion = version;
+                state.sourceShader = source.shader; state.targetShader = shader;
+                state.mainTexture = mainTexture; state.mask = mask; state.queue = queue;
+                state.outputEngine = output.engineMaterial; state.outputVersion = state.outputEngine.Version;
+                state.initialized = true;
+                result = output;
             }
         }
     }

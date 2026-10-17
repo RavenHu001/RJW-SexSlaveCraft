@@ -70,6 +70,7 @@ internal static partial class Program
         HeadTests(root);
         RenderFixTests(root);
         PostLightTests(root);
+        PerfTests(root);
         // 最后一项启动独立 PowerShell，必须完成正反两类共 10 项签名断言才算通过。
         Run("兼容验证器接受合法state并拒绝错误配对", () => StateValidator(root));
         Console.WriteLine($"结果：{passed}/{passed + failed} 项通过。");

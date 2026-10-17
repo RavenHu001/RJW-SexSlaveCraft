@@ -6,6 +6,8 @@ This continuation builds on upstream **2.2.8**, the baseline when upstream devel
 
 ## [未发布 / Unreleased]
 
+- **1.7 凝胶渲染缓存 / Gel material cache:** 按原生材质版本复用稳定副本，去除绘制路径的缓存键拼接、FA字段反射及枚举装箱，源变化时继续刷新纹理、遮罩、UV和五官颜色；保留深紫色、0.85、光照后阶段及遮挡。新增22项回归，专项164/164；仅完全凝胶化且渲染开启时生效，1.6冻结基线不变，维护者实机测试未发现问题，见[性能验收](Docs/Development/Completed/1.7凝胶化渲染性能优化与验收.md)。暂不打包。Reuses unchanged material variants and compiled FA accessors while preserving dynamic frames and the accepted visual profile. Model allocation checks do not establish in-game FPS gains.
+
 - **1.7 凝胶光照阶段 / Post-light gel rendering:** 仅完全凝胶化且开启渲染时，将头部皮肤与保留原色的五官、毛发及头饰组共同移到身体／SizedApparel所用的光照后阶段；保留深紫色、0.85、原深度写入与动画，普通角色和关闭开关时不改材质。新增23项回归，专项142/142，维护者确认地图／预览配色更一致、眨眼和遮挡正常，见[验收记录](Docs/Development/Completed/1.7凝胶化光照阶段统一与验收.md)。1.6冻结基线不变，暂不打包。Moves the eligible pawn's head group after map lighting alongside its gel body and SA parts, preserving facial colors and animation. The maintainer confirmed improved map/preview color consistency with normal blinking and occlusion.
 
 - **1.7 头部凝胶化 / Gel head rendering:** 原版及当前 FA 皮肤层复用深紫色和 0.85 不透明度；最终材质阶段保留原队列、贴图、遮罩与动画帧，独立眼睛、睫毛、眉毛、嘴部、头发和头饰保持原绘制。新增遮罩与写深度 Shader；根据实机覆盖反馈恢复原头皮深度写入，SizedApparel 改在最终材质染色，避免并行预绘制请求新 Graphic。头部 54 项及后续深度／线程 21 项回归使凝胶套件合计 119 项；身体的原有实机验收保留，维护者确认头部遮挡和眨眼正常，本批验收关闭，见[测试说明](Docs/Development/Completed/1.7头部凝胶化与深度线程修复验收.md)。1.6 冻结基线不变，本批不打包。Adds layered head skin tinting for vanilla and the installed FA layout, preserving facial features, animation frames, masks and draw queues. The maintainer confirmed correct head occlusion and blinking after the depth and SizedApparel thread fixes.

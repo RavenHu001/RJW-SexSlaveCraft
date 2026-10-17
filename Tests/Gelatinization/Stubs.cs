@@ -19,24 +19,38 @@ namespace UnityEngine
     public class Texture { public string name; public Texture(string name) { this.name = name; } }
     public class Material
     {
-        public static int Created;
-        public Shader shader; public Texture mainTexture; public Color color;
-        public int renderQueue = 2000;
-        public bool HasMaskSlot;
+        public static int Created, Copies;
+        public Waylith.Rendering.Material engineMaterial { get; private set; }
+        private Shader shaderValue; private Texture textureValue; private Color colorValue; private int queueValue = 2000; private bool maskSlot;
         private Dictionary<string, Texture> textures = new Dictionary<string, Texture>();
         private Dictionary<string, float> floats = new Dictionary<string, float>();
-        public Material(Shader shader) { Created++; this.shader = shader; color = new Color(1, 1, 1, 1); }
+        private string[] keywords = Array.Empty<string>();
+        // 仅模型材质变更通知：与实机公开 Version 一样，同值写入不变、属性变化递增。
+        public Shader shader { get => shaderValue; set { if (shaderValue != value) { shaderValue = value; engineMaterial.Touch(); } } }
+        public Texture mainTexture { get => textureValue; set { if (textureValue != value) { textureValue = value; engineMaterial.Touch(); } } }
+        public Color color { get => colorValue; set { if (colorValue.r != value.r || colorValue.g != value.g || colorValue.b != value.b || colorValue.a != value.a) { colorValue = value; engineMaterial.Touch(); } } }
+        public int renderQueue { get => queueValue; set { if (queueValue != value) { queueValue = value; engineMaterial.Touch(); } } }
+        public bool HasMaskSlot { get => maskSlot; set { if (maskSlot != value) { maskSlot = value; engineMaterial.Touch(); } } }
+        public string[] shaderKeywords
+        {
+            get => (string[])keywords.Clone();
+            set { if (!keywords.SequenceEqual(value)) { keywords = (string[])value.Clone(); engineMaterial.Touch(); } }
+        }
+        public void ReplaceEngineBacking() { int version = engineMaterial.Version; engineMaterial = new Waylith.Rendering.Material(this); engineMaterial.SetVersion(version); }
+        public Material(Shader shader) { Created++; engineMaterial = new Waylith.Rendering.Material(this); this.shader = shader; color = new Color(1,1,1,1); }
         public Material(Material source) : this(source.shader) { CopyPropertiesFromMaterial(source); renderQueue = source.renderQueue; }
-        // 与真实边界一样只复制属性，不靠此方法代替 shader/队列选择。
         public void CopyPropertiesFromMaterial(Material source)
         {
+            Copies++;
             mainTexture = source.mainTexture; color = source.color; HasMaskSlot = source.HasMaskSlot;
             textures = new Dictionary<string, Texture>(source.textures); floats = new Dictionary<string, float>(source.floats);
+            // 原Copy仅添加关键词；生产更新路径需显式同步删除。
+            keywords = keywords.Union(source.keywords).ToArray(); engineMaterial.Touch();
         }
         public bool HasProperty(string name) => name == "_MaskTex" && HasMaskSlot;
         public Texture GetTexture(string name) => textures.TryGetValue(name, out var texture) ? texture : null;
-        public void SetTexture(string name, Texture texture) { textures[name] = texture; }
-        public void SetFloat(string name, float value) { floats[name] = value; }
+        public void SetTexture(string name, Texture texture) { if (!textures.TryGetValue(name, out var old) || old != texture) { textures[name] = texture; engineMaterial.Touch(); } }
+        public void SetFloat(string name, float value) { if (!floats.TryGetValue(name, out var old) || old != value) { floats[name] = value; engineMaterial.Touch(); } }
         public float GetFloat(string name) => floats.TryGetValue(name, out var value) ? value : 0;
     }
     public static class Mathf
@@ -185,7 +199,7 @@ namespace Verse
     {
         public static T GetNamedSilentFail(string name) =>
             (typeof(T) == typeof(ShaderTypeDef) ? (object)new ShaderTypeDef() :
-             typeof(T) == typeof(ShaderDef) ? ShaderDef.Available && (name != "SSC_FullGelHeadMasked17" || ShaderDef.MaskedAvailable) && (!name.Contains("Depth17") || ShaderDef.DepthAvailable) ? new ShaderDef { defName = name } : null : new HediffDef(name)) as T;
+             typeof(T) == typeof(ShaderDef) ? ShaderDef.Available && (name != "SSC_FullGelHeadMasked17" || ShaderDef.MaskedAvailable) && (!name.Contains("Depth17") || ShaderDef.DepthAvailable) ? ShaderDef.Find(name) : null : new HediffDef(name)) as T;
     }
     public static class HediffMaker
     {
@@ -244,6 +258,15 @@ namespace Verse
         public static readonly UnityEngine.Shader Masked = new UnityEngine.Shader("SSC_FullGelHeadMasked17");
         public static readonly UnityEngine.Shader Depth = new UnityEngine.Shader("SSC_FullGelHeadDepth17") { EngineShader = new Waylith.Rendering.Shader { DepthWrite = true } };
         public static readonly UnityEngine.Shader MaskedDepth = new UnityEngine.Shader("SSC_FullGelHeadMaskedDepth17") { EngineShader = new Waylith.Rendering.Shader { DepthWrite = true } };
+        // 实际DefDatabase返回稳定定义，不能让边界替身每次new掩盖生产热路径分配。
+        private static readonly Dictionary<string, ShaderDef> definitions = new Dictionary<string, ShaderDef>
+        {
+            ["SSC_FullGelBody17"] = new ShaderDef { defName = "SSC_FullGelBody17" },
+            ["SSC_FullGelHeadMasked17"] = new ShaderDef { defName = "SSC_FullGelHeadMasked17" },
+            ["SSC_FullGelHeadDepth17"] = new ShaderDef { defName = "SSC_FullGelHeadDepth17" },
+            ["SSC_FullGelHeadMaskedDepth17"] = new ShaderDef { defName = "SSC_FullGelHeadMaskedDepth17" }
+        };
+        public static ShaderDef Find(string name) => definitions.TryGetValue(name, out var def) ? def : null;
         public string defName;
         public UnityEngine.Shader Shader => defName == "SSC_FullGelHeadDepth17" ? Depth : defName == "SSC_FullGelHeadMaskedDepth17" ? MaskedDepth : defName == "SSC_FullGelHeadMasked17" ? Masked : Native;
     }
@@ -253,6 +276,15 @@ namespace Verse
 namespace Waylith.Rendering
 {
     public class Shader { public bool DepthWrite; }
+    public class Material
+    {
+        private readonly UnityEngine.Material owner;
+        public int Version { get; private set; }
+        public Shader Shader => owner.shader?.EngineShader;
+        public Material(UnityEngine.Material owner) { this.owner = owner; }
+        public void Touch() { Version++; }
+        public void SetVersion(int value) { Version = value; }
+    }
     public static class ShaderRegistry
     {
         public static readonly object Default = new object();
