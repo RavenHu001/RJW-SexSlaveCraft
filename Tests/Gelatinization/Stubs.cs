@@ -77,6 +77,8 @@ namespace UnityEngine
     {
         public static float Clamp01(float v) => Math.Clamp(v, 0, 1);
         public static float Lerp(float a, float b, float t) => a + (b - a) * Clamp01(t);
+        public static float Min(float a, float b) => Math.Min(a,b);
+        public static float Max(float a, float b) => Math.Max(a,b);
     }
 }
 namespace HarmonyLib
@@ -120,6 +122,8 @@ namespace Verse
         public Faction Faction = Faction.OfPlayer;
         public Pawn_NeedsTracker needs = new Pawn_NeedsTracker();
         public Pawn_HealthTracker health;
+        public string LabelShort = "Test pawn";
+        public Pawn_DrawTracker Drawer = new Pawn_DrawTracker();
         public List<string> Events = new List<string>();
         public Pawn() { health = new Pawn_HealthTracker(this); }
     }
@@ -150,6 +154,7 @@ namespace Verse
         public List<Hediff> hediffs = new List<Hediff>();
         public bool Missing;
         public bool HasHead = true;
+        public Hediff GetFirstHediffOfDef(HediffDef def) { foreach(var h in hediffs) if(h.def == def) return h; return null; }
         public bool PartIsMissing(BodyPartRecord part) => Missing || hediffs.Any(h => h is Hediff_MissingPart && h.Part == part);
     }
     // 保留生产临时类需要的虚方法和数据引用；存档方法仅供链接，不实施序列化测试。
@@ -164,6 +169,7 @@ namespace Verse
     public class HediffWithComps : Hediff
     {
         public List<HediffComp> comps = new List<HediffComp>();
+        public T TryGetComp<T>() where T : HediffComp { foreach(var c in comps) if(c is T match) return match; return null; }
         // 按顺序遍历同一 comps 列表，绝不因父状态已从健康列表移除而提前退出。
         // 若模型自行跳过剩余组件，会掩盖生产实现缺少有效性检查的原始故障。
         public void PostTickInterval(int delta)
@@ -180,17 +186,25 @@ namespace Verse
     public class HediffCompProperties { public Type compClass; }
     public class HediffComp
     {
-        public Hediff parent; public HediffCompProperties props;
+        public HediffWithComps parent; public HediffCompProperties props;
+        public virtual void CompExposeData() { }
+        public virtual IEnumerable<Gizmo> CompGetGizmos() { yield break; }
         public virtual void CompPostTickInterval(ref float adjustment, int delta) { }
         public virtual string CompDebugString() => "";
         public virtual string CompTipStringExtra => "";
     }
     public class Gizmo { }
-    public class Command_Action : Gizmo { public string defaultLabel, defaultDesc; public Action action; }
+    public class Command_Action : Gizmo { public string defaultLabel, defaultDesc; public Action action; public UnityEngine.Texture icon; public UnityEngine.Color defaultIconColor; }
     public class Faction { public static readonly Faction OfPlayer = new Faction(); }
     public static class Prefs { public static bool DevMode = true; }
     public struct DamageInfo { }
-    public static class Scribe_Values { public static void Look(ref float v, string key, float defaultValue) { } }
+    public static class Scribe_Values
+    {
+        public static int Mode;
+        public static Dictionary<string,object> Data = new Dictionary<string,object>();
+        public static void Look(ref float v,string key,float fallback) { if(Mode==1) Data[key]=v; if(Mode==2) v=Data.TryGetValue(key,out var saved)?(float)saved:fallback; }
+        public static void Look(ref bool v,string key,bool fallback) { if(Mode==1) Data[key]=v; if(Mode==2) v=Data.TryGetValue(key,out var saved)?(bool)saved:fallback; }
+    }
     // 每次增长都验证抽取值位于 XML 上下界内，防止用不可能的数值制造双阈值故障。
     public struct FloatRange
     {
@@ -241,7 +255,8 @@ namespace Verse
     public class Graphic
     {
         public UnityEngine.Material MatSingle;
-        public string path; public UnityEngine.Shader shader; public UnityEngine.Color color;
+        public string path; public UnityEngine.Shader shader; public UnityEngine.Color color = new UnityEngine.Color(1,1,1,1);
+        public UnityEngine.Color Color => color;
         public static int ColoredRequests; public static bool ReturnNull;
         public Graphic GetColoredVersion(UnityEngine.Shader shader, UnityEngine.Color one, UnityEngine.Color two)
         {
@@ -254,6 +269,7 @@ namespace Verse
     // 按实际 1.7 形状只在树上设置 pawn，节点不增加方便测试但真实不存在的同名字段。
     public class PawnRenderNode { public PawnRenderTree tree; public PawnRenderNode parent; }
     public class PawnRenderNode_Head : PawnRenderNode { }
+    public class PawnRenderNode_Body : PawnRenderNode { }
     public class PawnRenderNode_Hair : PawnRenderNode { }
     public class PawnRenderNode_Beard : PawnRenderNode { }
     public class PawnRenderNode_Apparel : PawnRenderNode { }

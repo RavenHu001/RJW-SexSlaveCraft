@@ -93,8 +93,8 @@ internal static partial class Program
         if (masked) { rig.source.HasMaskSlot = true; rig.source.SetTexture("_MaskTex", new Texture("LidMask")); }
         Material result = rig.Apply(node);
         Check(result != rig.source && result.shader == (masked ? ShaderDef.Masked : ShaderDef.Native), "皮肤必须取得合适的独立材质");
-        Color color = result.color;
-        Check(color.r == .46f && color.g == .20f && color.b == .68f && Math.Abs(color.a - .85f * sourceAlpha) < 1e-6f, "与身体共享配色，保留原层Alpha");
+        Color color = GelTint(result);
+        Check(color.r == FullGelAppearanceUtility.DefaultRed && color.g == FullGelAppearanceUtility.DefaultGreen && color.b == .68f && Math.Abs(color.a - .85f * sourceAlpha) < 1e-6f, "与身体共享配色，保留原层Alpha");
         Check(result.renderQueue == 3150 && result.mainTexture == rig.source.mainTexture, "统一光照后队列并保留当前原图");
         Check(rig.source.shader.name == "OriginalHead" && rig.source.color.r == .9f && rig.source.color.a == sourceAlpha, "不得改写原共享材质");
         if (masked) Check(result.GetTexture("_MaskTex") == rig.source.GetTexture("_MaskTex"), "保留遮罩对象");
@@ -184,7 +184,7 @@ internal static partial class Program
     {
         var rig = new HeadRig(); var node = new PawnRenderNode_Head(); Material first = rig.Apply(node), second = first;
         Harmony_FullGelatinizationHeadTint.MaterialPostfix(node, rig.parms, ref second);
-        Check(second == first && second.color.a == .85f, "同一结果不能再次乘0.85");
+        Check(second == first && GelTint(second).a == .85f, "同一结果不能再次乘0.85");
     }
     private static void HeadPortrait() { var rig = new HeadRig(); rig.parms.Portrait = true; Check(rig.Apply(Fa(new HeadControllerComp())) != rig.source, "头像不能漏掉皮肤染色"); }
     private static void HeadMaskHole() { Check(GelShaderMath.sscGelMaskedAlpha(1, 0, .85f, 1) == 0 && GelShaderMath.sscGelMaskedAlpha(0, 1, .85f, 1) == 0, "遮罩孔洞与透明背景不填色"); }
@@ -201,6 +201,6 @@ internal static partial class Program
         var def = XDocument.Load(Path.Combine(runtime, "Defs/ShaderDefs/SSC_FullGelHeadMasked17.xml")).Root.Element("ShaderDef");
         Check((string)def.Element("defName") == Harmony_FullGelatinizationHeadTint.MaskedShaderDefName, "资源名称与实际选择器一致");
         string code = File.ReadAllText(Path.Combine(runtime, "Shaders", (string)def.Element("shaderProgram").Element("fragmentShaderFileName")));
-        Check(code.Contains("uniform sampler2D _MaskTex") && code.Contains("sscGelMaskedAlpha(source.a, mask.a, tint.a, vColor.a)"), "必须使用实际遮罩采样和生产Alpha函数");
+        Check(code.Contains("uniform sampler2D _MaskTex") && code.Contains("sscGelMaskedAlpha(source.a, mask.a, tint.a * uMaterial._GelColor.a, vColor.a)"), "必须使用实际遮罩采样和生产Alpha函数");
     }
 }

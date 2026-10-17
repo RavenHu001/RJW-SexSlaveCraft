@@ -364,6 +364,13 @@ namespace SexSlaveCraft
                 }
 
                 RemoveNonSscHediffs(clone);
+                // 初生身体复制已经完成：显式复制已有凝胶身体的外观值，不共享配置对象。
+                // 成熟时不再覆盖这份选择，避免本体后来改色影响克隆自身的配色。
+                foreach (Hediff sourceHediff in source.health.hediffSet.hediffs)
+                {
+                    Hediff copied = clone.health.hediffSet.GetFirstHediffOfDef(sourceHediff.def);
+                    if (copied != null) FullGelAppearanceUtility.Copy(sourceHediff, copied);
+                }
                 ClearCopiedCloneSourceLists(clone);
                 RemoveExistingCloneLinks(clone);
                 RemovePersonalityExcretionStates(clone);
@@ -516,6 +523,8 @@ namespace SexSlaveCraft
                 if (existing == null)
                 {
                     existing = clone.health.AddHediff(sourceHediff.def, sourceHediff.Part);
+                    // 成熟时新获得的状态可以初始化来源外观；既有凝胶身体保留自己的选择。
+                    if (existing != null) FullGelAppearanceUtility.Copy(sourceHediff, existing);
                 }
 
                 if (existing != null)

@@ -93,9 +93,9 @@ internal static partial class Program
     {
         SetAdapters(fa, sa);
         var rig = EyeRig(); var material = rig.Apply(new PawnRenderNode_Head());
-        Check(material.shader == ShaderDef.VanillaDepth && material.color.a == .85f && material.renderQueue == 3150, "原版节点不依赖FA加载状态");
+        Check(material.shader == ShaderDef.VanillaDepth && GelTint(material).a == .85f && material.renderQueue == 3150, "原版节点不依赖FA加载状态");
         Graphic body = new Graphic { path = "Naked" }; Harmony_FullGelatinizationBodyTint.Postfix(rig.parms.pawn, ref body);
-        Check(body.shader == ShaderDef.Native && body.color.r == .46f && body.color.a == .85f, "无SA时身体仍凝胶化");
+        Check(body.shader == ShaderDef.Native && body.color.r == 1 && body.color.a == 1, "无SA时身体仍凝胶化");
         if (fa)
         {
             Check(new HeadRig().Apply(Fa(new HeadControllerComp())).shader == ShaderDef.Native, "FA皮肤仍使用原分层程序");
@@ -151,25 +151,23 @@ internal static partial class Program
     }
     private static void EyeChannels()
     {
-        Check(GelShaderMath.sscGelEyeBlend(.46f,0,1)==0 && GelShaderMath.sscGelEyeBlend(.85f,1,1)==1,"眼部黑色与Alpha不染色或透明化");
-        Check(GelShaderMath.sscGelEyeBlend(.46f,.9f,0)==.46f && GelShaderMath.sscGelEyeBlend(.85f,1,0)==.85f,"皮肤保留当前参数");
+        Check(GelShaderMath.sscGelEyeBlend(FullGelAppearanceUtility.DefaultRed,0,1)==0 && GelShaderMath.sscGelEyeBlend(.85f,1,1)==1,"眼部黑色与Alpha不染色或透明化");
+        Check(GelShaderMath.sscGelEyeBlend(FullGelAppearanceUtility.DefaultRed,.9f,0)==FullGelAppearanceUtility.DefaultRed && GelShaderMath.sscGelEyeBlend(.85f,1,0)==.85f,"皮肤保留当前参数");
     }
     private static void EyeAntialias() { Check(Math.Abs(GelShaderMath.sscGelEyeBlend(.4f,.8f,.5f)-.6f)<1e-6f,"半覆盖连续混合"); Check(GelShaderMath.sscGelEyeBlend(0,0,1)==0,"背景Alpha不能被眼睛填充"); }
     private static void EyeDrawTint()
     {
         var r = EyeRig(); var m = r.Apply(new PawnRenderNode_Head());
-        Check(m.GetColor("_EyeGelBaseColor").a == .85f && m.GetColor("_EyeGelBaseColor").r == .46f,"缓存基础凝胶色供本帧调制还原");
+        Check(m.GetColor("_GelColor").a == .85f && m.color.r == 1 && m.color.a == 1,"凝胶参数与原绘制色独立");
         foreach (float modulation in new[] { 0f, .25f, 1f, 1.5f })
         {
-            float a = GelShaderMath.sscGelEyeModulation(.85f * modulation, .85f);
-            float color = GelShaderMath.sscGelEyeModulation(.46f * modulation, .46f);
-            Check(Math.Abs(a-modulation)<1e-6f && Math.Abs(color-modulation)<1e-6f,"眼睛同样跟随parms.tint而不固定发光/不淡出");
+            float channel = GelShaderMath.sscGelOriginalChannel(.8f,.5f,modulation);
+            Check(Math.Abs(channel-.4f*modulation)<1e-6f,"眼睛直接跟随parms.tint而不受凝胶零通道影响");
         }
-        Check(GelShaderMath.sscGelEyeModulation(0,0)==0,"零Alpha不能除零或残留眼睛");
     }
     private static void EyeDepthChoice() { foreach(bool d in new[]{false,true}) {var r=EyeRig(d);Check(r.Apply(new PawnRenderNode_Head()).shader==(d?ShaderDef.VanillaDepth:ShaderDef.Vanilla),"继承原深度状态");} }
     private static void EyeProperties() {var r=EyeRig();r.source.SetFloat("UV",.3f);r.source.shaderKeywords=new[]{"ANIM"};var m=r.Apply(new PawnRenderNode_Head());Check(m.mainTexture==r.source.mainTexture&&m.GetFloat("UV")==.3f&&Array.IndexOf(m.shaderKeywords,"ANIM")>=0,"同图同UV同关键词");Check(r.source.GetTexture("_EyeMask")==null,"共享原材质不变");}
-    private static void EyeColorRefresh() {var r=EyeRig();var n=new PawnRenderNode_Head();var m=r.Apply(n);r.source.color=new Color(.2f,.3f,.4f,.6f);Check(r.Apply(n)==m&&m.GetColor("_EyeSourceColor").r==.2f&&m.GetColor("_EyeSourceColor").a==.6f&&Math.Abs(m.color.a-.51f)<1e-6f,"眼部原色和皮肤Alpha同步");}
+    private static void EyeColorRefresh() {var r=EyeRig();var n=new PawnRenderNode_Head();var m=r.Apply(n);r.source.color=new Color(.2f,.3f,.4f,.6f);Check(r.Apply(n)==m&&m.GetColor("_EyeSourceColor").r==.2f&&m.GetColor("_EyeSourceColor").a==.6f&&Math.Abs(GelTint(m).a-.51f)<1e-6f,"眼部原色和皮肤Alpha同步");}
     private static void EyeTextureSwap() {var r=EyeRig();var n=new PawnRenderNode_Head();var m=r.Apply(n);var mask=m.GetTexture("_EyeMask");r.source.mainTexture=EyeTexture();Check(r.Apply(n)==m&&m.GetTexture("_EyeMask")!=mask,"换图刷新遮罩");}
     private static void EyeWarm() {var r=EyeRig();var n=new PawnRenderNode_Head();StableCalls(()=>r.Apply(n));Check(((Texture2D)r.source.mainTexture).Reads==1,"只扫描一次");}
     private static void EyeSharedSource() {var r=EyeRig();r.Apply(new PawnRenderNode_Head());r.parms.pawn.FullGel=false;Check(r.Apply(new PawnRenderNode_Head())==r.source&&r.source.color.a==1,"普通角色不串材质");}
@@ -184,7 +182,7 @@ internal static partial class Program
     private static void EyeFaUnchanged() {var r=EyeRig();var m=r.Apply(Fa(new HeadControllerComp()));Check(m.shader==ShaderDef.Depth&&m.GetTexture("_EyeMask")==null&&((Texture2D)r.source.mainTexture).Reads==0,"FA头皮不触发原版分析");var e=r.Apply(Fa(new EyeballControllerComp()));Check(e.shader==r.source.shader&&e.color.a==1,"FA眼睛保留");}
     private static void EyeAttachments() {foreach(var n in new PawnRenderNode[]{new PawnRenderNode {parent=new PawnRenderNode_Head()},new PawnRenderNode_Hair(),new PawnRenderNode_Apparel {parent=new PawnRenderNode_Head()}}) {var r=EyeRig();var m=r.Apply(n);Check(m.shader==r.source.shader&&m.color.a==1&&m.renderQueue==3150,"附加眼睛和毛发不染色");}}
     private static void EyeSkinMask() {var r=EyeRig();r.source.HasMaskSlot=true;Check(r.Apply(new PawnRenderNode_Head())==r.source,"缺遮罩不漏皮肤");var mask=new Texture("Skin");r.source.SetTexture("_MaskTex",mask);var m=r.Apply(new PawnRenderNode_Head());Check(m.GetTexture("_MaskTex")==mask&&m.GetFloat("_UseSkinMask")==1,"已有皮肤遮罩继续生效");}
-    private static void EyeIdempotent() {var r=EyeRig();var n=new PawnRenderNode_Head();var m=r.Apply(n);var again=m;Harmony_FullGelatinizationHeadTint.MaterialPostfix(n,r.parms,ref again);Check(again==m&&m.color.a==.85f,"不能重复乘Alpha");}
+    private static void EyeIdempotent() {var r=EyeRig();var n=new PawnRenderNode_Head();var m=r.Apply(n);var again=m;Harmony_FullGelatinizationHeadTint.MaterialPostfix(n,r.parms,ref again);Check(again==m&&GelTint(m).a==.85f,"不能重复乘Alpha");}
     private static void EyeResources(string root)
     {
         foreach(var name in new[]{Harmony_FullGelatinizationHeadTint.VanillaShaderDefName,Harmony_FullGelatinizationHeadTint.VanillaDepthShaderDefName})

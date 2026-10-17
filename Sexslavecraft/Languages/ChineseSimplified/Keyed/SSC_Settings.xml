@@ -17,8 +17,8 @@
   <SSC_Setting_EnableDebugGizmos>启用 SSC 调试指令</SSC_Setting_EnableDebugGizmos>
   <SSC_Setting_EnableDebugGizmos_Desc>仅在开发者模式下额外显示 SSC 自己的调试 gizmo。默认关闭。</SSC_Setting_EnableDebugGizmos_Desc>
 
-  <SSC_Setting_EnableFullGelTint>启用全凝胶化身体染色</SSC_Setting_EnableFullGelTint>
-  <SSC_Setting_EnableFullGelTint_Desc>开启后，处于“全凝胶化完成”状态的角色身体会显示为紫色半透明；头部保留原色。</SSC_Setting_EnableFullGelTint_Desc>
+  <SSC_Setting_EnableFullGelTint>启用完全凝胶化外观</SSC_Setting_EnableFullGelTint>
+  <SSC_Setting_EnableFullGelTint_Desc>开启后，完全凝胶化角色的身体和头部皮肤使用凝胶外观。选中角色，通过“凝胶外观”指令设置个人颜色和不透明度；眼睛、五官与头发保持原外观。</SSC_Setting_EnableFullGelTint_Desc>
   <SSC_Setting_EnableRitualEnslavement>允许绑定仪式转化为奴隶</SSC_Setting_EnableRitualEnslavement>
   <SSC_Setting_EnableRitualEnslavement_Desc>开启后，满足恶堕、评分与意志条件的绑定仪式可将目标转化为原版奴隶。关闭只会禁用转奴判定，不影响仪式的其他收益。</SSC_Setting_EnableRitualEnslavement_Desc>
   <SSC_Setting_EnableRimTalkSexDialogue>为 SSC 性行为触发 RimTalk 对话</SSC_Setting_EnableRimTalkSexDialogue>

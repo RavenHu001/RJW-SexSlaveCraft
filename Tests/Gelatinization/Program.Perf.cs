@@ -64,7 +64,7 @@ internal static partial class Program
     {
         var rig = DepthRig(); var node = Fa(new HeadControllerComp()); var first = rig.Apply(node);
         rig.source.mainTexture = new Texture("New-face"); var next = rig.Apply(node);
-        Check(first == next && next.mainTexture == rig.source.mainTexture && next.color.a == .85f && next.color.b == .68f, "换帧刷新且不洗掉配色");
+        Check(first == next && next.mainTexture == rig.source.mainTexture && GelTint(next).a == .85f && GelTint(next).b == .68f, "换帧刷新且不洗掉配色");
     }
     private static void PerfMask()
     {
@@ -81,7 +81,7 @@ internal static partial class Program
     {
         var rig = DepthRig(); var node = new PawnRenderNode_Head(); var first = rig.Apply(node);
         rig.source.color = new Color(.3f,.4f,.5f,.4f); var next = rig.Apply(node);
-        Check(next == first && Math.Abs(next.color.a - .34f) < 1e-6f && next.color.r == .46f, "更新源覆盖率，不重复乘色或透明度");
+        Check(next == first && Math.Abs(GelTint(next).a - .34f) < 1e-6f && GelTint(next).r == FullGelAppearanceUtility.DefaultRed, "更新源覆盖率，不重复乘色或透明度");
     }
     private static void PerfFeatureColor()
     {
@@ -110,7 +110,7 @@ internal static partial class Program
     private static void PerfOutputEdit()
     {
         var rig = DepthRig(); var node = new PawnRenderNode_Head(); var first = rig.Apply(node); first.color = new Color(1,0,0,1);
-        Check(rig.Apply(node) == first && first.color.r == .46f && first.color.a == .85f, "外部修改副本后重新按源配置生成");
+        Check(rig.Apply(node) == first && first.color.r == 1 && GelTint(first).r == FullGelAppearanceUtility.DefaultRed && GelTint(first).a == .85f, "外部修改副本后重新按源配置生成");
     }
     private static void PerfOutputRebind()
     {

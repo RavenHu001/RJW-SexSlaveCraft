@@ -35,5 +35,9 @@
     <Compile Include="$(SscSourceRoot)/ThePatches/Harmony_FullGelatinizationBodyTint.cs" Link="Production/Harmony_FullGelatinizationBodyTint.cs" />
     <Compile Include="$(SscSourceRoot)/ThePatches/Harmony_FullGelatinizationHeadTint.cs" Link="Production/Harmony_FullGelatinizationHeadTint.cs" />
     <Compile Include="$(SscSourceRoot)/ThePatches/FullGelVanillaEyeMask.cs" Link="Production/FullGelVanillaEyeMask.cs" />
+    <Compile Include="$(SscSourceRoot)/common/FullGelAppearanceUtility.cs" Link="Production/FullGelAppearanceUtility.cs" />
+    <Compile Include="$(SscSourceRoot)/common/FullGelAppearanceDraft.cs" Link="Production/FullGelAppearanceDraft.cs" />
+    <Compile Include="$(SscSourceRoot)/common/Dialog_FullGelAppearance.cs" Link="Production/Dialog_FullGelAppearance.cs" />
+    <Compile Include="$(SscSourceRoot)/Hediff/HediffComp_FullGelAppearance.cs" Link="Production/HediffComp_FullGelAppearance.cs" />
   </ItemGroup>
 </Project>

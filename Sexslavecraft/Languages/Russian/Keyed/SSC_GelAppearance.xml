@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_GelAppearance_Title>Гелевый облик</SSC_GelAppearance_Title>
+  <SSC_GelAppearance_Description>Настройте цвет и непрозрачность гелевой кожи этого персонажа.</SSC_GelAppearance_Description>
+  <SSC_GelAppearance_Disabled>Гелевое отображение отключено. Сохранённый облик применится после включения.</SSC_GelAppearance_Disabled>
+  <SSC_GelAppearance_NoBody>Исходное гелевое тело больше не существует. Изменения нельзя применить.</SSC_GelAppearance_NoBody>
+  <SSC_GelAppearance_Hex>Цвет HEX</SSC_GelAppearance_Hex>
+  <SSC_GelAppearance_InvalidHex>Введите #RRGGBB</SSC_GelAppearance_InvalidHex>
+  <SSC_GelAppearance_Opacity>Непрозрачность</SSC_GelAppearance_Opacity>
+  <SSC_GelAppearance_Old>Прежний цвет</SSC_GelAppearance_Old>
+  <SSC_GelAppearance_New>Новый цвет</SSC_GelAppearance_New>
+  <SSC_GelAppearance_SkinOnly>Меняется только гелевая кожа. Глаза, черты лица и волосы сохраняют свой вид.</SSC_GelAppearance_SkinOnly>
+  <SSC_GelAppearance_Reset>По умолчанию</SSC_GelAppearance_Reset>
+</LanguageData>

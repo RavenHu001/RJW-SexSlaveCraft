@@ -28,6 +28,9 @@ namespace SexSlaveCraft
 
         // 弱键随原材质释放。每种 Shader/用途复用一个副本，不持有 Pawn、不每帧 new Material。
         private static readonly ConditionalWeakTable<Material, Variant> variants = new ConditionalWeakTable<Material, Variant>();
+        // 个体皮肤副本按当前身体弱引用隔离；同源贴图的不同角色不能互改本帧颜色。
+        private static readonly ConditionalWeakTable<HediffWithComps, ConditionalWeakTable<Material, Variant>> bodies =
+            new ConditionalWeakTable<HediffWithComps, ConditionalWeakTable<Material, Variant>>();
         private static readonly ConditionalWeakTable<Material, object> generated = new ConditionalWeakTable<Material, object>();
         private static readonly object generatedMarker = new object();
         private sealed class Variant
@@ -44,6 +47,7 @@ namespace SexSlaveCraft
             public int sourceVersion, outputVersion, queue;
             public Shader sourceShader, targetShader;
             public Texture mainTexture, mask, eyes;
+            public FullGelAppearance appearance;
             public bool initialized;
         }
 
@@ -135,12 +139,20 @@ namespace SexSlaveCraft
             Pawn pawn = parms.pawn;
             if (__result == null || pawn == null || parms.Statue || parms.rotDrawMode != RotDrawMode.Fresh
                 || (parms.flags & PawnRenderFlags.Invisible) != 0 || pawn.IsPsychologicallyInvisible()
-                || pawn.health?.hediffSet == null || !pawn.health.hediffSet.HasHead
-                || !FullGelatinizationUtility.ShouldTintFullGelGraphic(pawn)
-                || !IsHeadGroup(node)) return;
+                || pawn.health?.hediffSet == null
+                || !FullGelatinizationUtility.ShouldTintFullGelGraphic(pawn)) return;
 
             // 其他 worker 若再次经过同一基类入口，不能把 0.85 再乘成 0.7225。
             if (generated.TryGetValue(__result, out _)) return;
+
+            // 身体及旧 SA 服装预缓存只标记 Shader，实际个体参数在最终材质阶段写入。
+            // 普通服装不扩大处理；无头角色的身体仍可正常显示。
+            if (node is PawnRenderNode_Body || Harmony_FullGelatinizationBodyTint.IsManagedMaterial(__result))
+            {
+                ApplyMaterial(ref __result, Harmony_FullGelatinizationBodyTint.NativeShaderDefName, false, pawn: pawn);
+                return;
+            }
+            if (!pawn.health.hediffSet.HasHead || !IsHeadGroup(node)) return;
 
             // FA 缺失/隐藏帧使用 dummy，头部 worker 会依赖该材质身份返回 null；必须原样保留。
             Graphic dummy = readDummy?.Invoke();
@@ -170,17 +182,17 @@ namespace SexSlaveCraft
             {
                 int count = headFacing == Rot4.South ? 2 : 1;
                 if (!FullGelVanillaEyeMask.TryGet(source.mainTexture, count, out Texture eyes)) return;
-                ApplyMaterial(ref __result, depthWrite.Value ? VanillaDepthShaderDefName : VanillaShaderDefName, true, mask, eyes);
+                ApplyMaterial(ref __result, depthWrite.Value ? VanillaDepthShaderDefName : VanillaShaderDefName, true, mask, eyes, pawn);
                 return;
             }
             string defName = depthWrite.Value
                 ? (mask == null ? DepthShaderDefName : MaskedDepthShaderDefName)
                 : (mask == null ? Harmony_FullGelatinizationBodyTint.NativeShaderDefName : MaskedShaderDefName);
-            ApplyMaterial(ref __result, defName, true, mask);
+            ApplyMaterial(ref __result, defName, true, mask, pawn: pawn);
         }
 
         /// <summary>头部与 SA 共用材质副本缓存；此处只操作已选出的材质，不进入 GraphicDatabase。</summary>
-        internal static void ApplyMaterial(ref Material result, string defName, bool headLayer, Texture mask = null, Texture eyes = null)
+        internal static void ApplyMaterial(ref Material result, string defName, bool headLayer, Texture mask = null, Texture eyes = null, Pawn pawn = null)
         {
             if (result == null || result.mainTexture == null || generated.TryGetValue(result, out _)) return;
             Material source = result;
@@ -195,7 +207,9 @@ namespace SexSlaveCraft
             }
 
             int queue = headLayer ? PostLightQueue(source.renderQueue) : Harmony_FullGelatinizationBodyTint.PostLightRenderQueue;
-            UpdateVariant(ref result, (defName, headLayer), shader, queue, mask, true, eyes);
+            // 所有着色入口在这里绑定同一身体身份；五官的仅移队列副本不进入个体表。
+            var owner = FullGelAppearanceUtility.GetOwner(pawn);
+            UpdateVariant(ref result, (defName, headLayer), shader, queue, mask, true, eyes, owner);
         }
 
         internal static int PostLightQueue(int originalQueue) => Math.Max(originalQueue, Harmony_FullGelatinizationBodyTint.PostLightRenderQueue);
@@ -210,10 +224,15 @@ namespace SexSlaveCraft
 
         /// <summary>原生版本跟踪贴图、UV、颜色、关键词和Shader变化；静态帧不重复复制和写属性。</summary>
         private static void UpdateVariant(ref Material result, (string shader, bool head) key,
-            Shader shader, int queue, Texture mask, bool tint, Texture eyes = null)
+            Shader shader, int queue, Texture mask, bool tint, Texture eyes = null, HediffWithComps owner = null)
         {
             Material source = result;
-            Variant entry = variants.GetValue(source, _ => new Variant());
+            // 两级弱表不强持有Pawn/健康状态；按源材质与用途保留当前副本，不积累颜色历史。
+            var table = owner == null ? variants : bodies.GetValue(owner, _ => new ConditionalWeakTable<Material, Variant>());
+            Variant entry = table.GetValue(source, _ => new Variant());
+            // 原子发布的不可变快照保证本次更新使用一整套RGBA。
+            FullGelAppearance appearance = FullGelAppearanceUtility.Read(owner);
+            // 同一来源在并行预绘制中可能重入，序列化建材质和版本快照写入。
             lock (entry)
             {
                 var sourceEngine = source.engineMaterial;
@@ -230,12 +249,14 @@ namespace SexSlaveCraft
                     && version == state.sourceVersion && ReferenceEquals(source.shader, state.sourceShader)
                     && ReferenceEquals(shader, state.targetShader) && ReferenceEquals(mainTexture, state.mainTexture)
                     && ReferenceEquals(mask, state.mask) && ReferenceEquals(eyes, state.eyes) && queue == state.queue
+                    && (!tint || appearance.Same(state.appearance))
                     && ReferenceEquals(output.engineMaterial, state.outputEngine)
                     && output.engineMaterial.Version == state.outputVersion)
                 {
                     result = output;
                     return;
                 }
+                // 初次创建一次；变化时才复制。命中路径在上方返回，不改输出Version。
                 if (output == null)
                 {
                     output = new Material(source);
@@ -251,16 +272,14 @@ namespace SexSlaveCraft
                 {
                     output.mainTexture = mainTexture;
                     output.SetTexture("_MaskTex", mask);
-                    Color color = Harmony_FullGelatinizationBodyTint.FullGelColor;
-                    color.a *= source.color.a;
-                    output.color = color;
+                    // _Color 仅承载原覆盖率与游戏 parms.tint；凝胶参数独立，零通道不丢五官信息。
+                    output.color = new Color(1, 1, 1, source.color.a);
+                    output.SetColor("_GelColor", appearance.Color);
                     if (eyes != null)
                     {
                         // 同一次绘制混合皮肤和原眼睛，不增加眼球节点，也不影响头发/帽子的深度关系。
                         output.SetTexture("_EyeMask", eyes);
                         output.SetColor("_EyeSourceColor", source.color);
-                        // 区分基础凝胶色与每次绘制的parms.tint，眼睛同样保留游戏的淡入淡出/临时色调。
-                        output.SetColor("_EyeGelBaseColor", color);
                         output.SetFloat("_UseSkinMask", mask == null ? 0 : 1);
                     }
                 }
@@ -269,6 +288,8 @@ namespace SexSlaveCraft
                 state.sourceEngine = sourceEngine; state.sourceVersion = version;
                 state.sourceShader = source.shader; state.targetShader = shader;
                 state.mainTexture = mainTexture; state.mask = mask; state.eyes = eyes; state.queue = queue;
+                // 外观和源版本一起登记；只改变配色也能使下一轮更新，稳定帧继续复用。
+                state.appearance = appearance;
                 state.outputEngine = output.engineMaterial; state.outputVersion = state.outputEngine.Version;
                 state.initialized = true;
                 result = output;

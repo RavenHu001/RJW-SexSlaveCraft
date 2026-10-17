@@ -13,8 +13,8 @@
   <SSC_Setting_UseRJWOriginalEligibility_Desc>開啟後使用 SSC 自己較寬鬆的調教目標篩選，不受年齡限制，但要求 RJW 已啟用強暴；關閉後直接使用 RJW 原始判定。</SSC_Setting_UseRJWOriginalEligibility_Desc>
   <SSC_Setting_EnableDebugGizmos>啟用 SSC 除錯指令</SSC_Setting_EnableDebugGizmos>
   <SSC_Setting_EnableDebugGizmos_Desc>僅在開發者模式下額外顯示 SSC 自己的除錯 gizmo。預設關閉。</SSC_Setting_EnableDebugGizmos_Desc>
-  <SSC_Setting_EnableFullGelTint>啟用全凝膠化身體染色</SSC_Setting_EnableFullGelTint>
-  <SSC_Setting_EnableFullGelTint_Desc>開啟後，處於“全凝膠化完成”狀態的角色身體會顯示為紫色半透明；頭部保留原色。</SSC_Setting_EnableFullGelTint_Desc>
+  <SSC_Setting_EnableFullGelTint>啟用完全凝膠化外觀</SSC_Setting_EnableFullGelTint>
+  <SSC_Setting_EnableFullGelTint_Desc>開啟後，完全凝膠化角色的身體和頭部皮膚使用凝膠外觀。選取角色，透過「凝膠外觀」指令設定個人顏色和不透明度；眼睛、五官與頭髮保持原外觀。</SSC_Setting_EnableFullGelTint_Desc>
   <SSC_Setting_EnableRitualEnslavement>允許繫結儀式轉化為奴隸</SSC_Setting_EnableRitualEnslavement>
   <SSC_Setting_EnableRitualEnslavement_Desc>開啟後，滿足惡墮、評分與意志條件的繫結儀式可將目標轉化為原版奴隸。關閉只會禁用轉奴判定，不影響儀式的其他收益。</SSC_Setting_EnableRitualEnslavement_Desc>
   <SSC_Setting_EnableRimTalkSexDialogue>為 SSC 性行為觸發 RimTalk 對話</SSC_Setting_EnableRimTalkSexDialogue>

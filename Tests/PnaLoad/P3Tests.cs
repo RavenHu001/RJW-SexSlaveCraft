@@ -17,6 +17,26 @@ internal static partial class Program
     /// <summary>运行真实克隆入口及 PNA 协调，游戏复制器仅提供已复制的输入身体。</summary>
     private static void RunP3Tests()
     {
+        Run("克隆入口将凝胶身体配对交给外观值复制器",()=>
+        {
+            Pawn source=CloneSource();var def=SscDef("SSC_FullGelatinizedBody");var original=source.health.AddHediff(def);CopiedBody(source).health.AddHediff(def);
+            FullGelAppearanceUtility.Copies.Clear();
+            Assert(RabbitCloneUtility.TryCreateRabbitClone(source,out Pawn clone,false),"创建成功");
+            var target=clone.health.hediffSet.GetFirstHediffOfDef(def);
+            Assert(target!=null&&target!=original&&FullGelAppearanceUtility.Copies.Any(p=>p.source==original&&p.target==target),"复制明确的本体/克隆状态，不共享Hediff");
+        });
+        Run("成熟时新增凝胶身体初始化来源外观",()=>
+        {
+            var source=CloneSource();var def=SscDef("SSC_FullGelatinizedBody");var original=source.health.AddHediff(def);var clone=NewPawn();clone.Comp=new CompSexSlaveTraining();
+            FullGelAppearanceUtility.Copies.Clear();RabbitCloneUtility.MatureRabbitClone(clone,source,CloneLink(clone,source));
+            var target=clone.health.hediffSet.GetFirstHediffOfDef(def);Assert(target!=null&&FullGelAppearanceUtility.Copies.Any(p=>p.source==original&&p.target==target),"新状态初始化");
+        });
+        Run("成熟时既有凝胶身体保留克隆自己的外观",()=>
+        {
+            var source=CloneSource();var def=SscDef("SSC_FullGelatinizedBody");var original=source.health.AddHediff(def);var clone=NewPawn();clone.Comp=new CompSexSlaveTraining();var target=clone.health.AddHediff(def);
+            FullGelAppearanceUtility.Copies.Clear();RabbitCloneUtility.MatureRabbitClone(clone,source,CloneLink(clone,source));
+            Assert(!FullGelAppearanceUtility.Copies.Any(p=>p.source==original&&p.target==target),"既有状态不再跟随本体改色");
+        });
         Run("P3 身体清单明确覆盖八类且不吞专精",()=>
         {
             foreach(string name in PnaBodyNames) Assert(SSCPnaExposureUtility.IsBodyStateDef(new HediffDef{defName=name}),name);

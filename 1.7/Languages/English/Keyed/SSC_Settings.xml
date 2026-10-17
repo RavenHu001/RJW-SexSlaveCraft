@@ -17,8 +17,8 @@
   <SSC_Setting_EnableDebugGizmos>Enable SSC debug gizmos</SSC_Setting_EnableDebugGizmos>
   <SSC_Setting_EnableDebugGizmos_Desc>Shows SSC-specific debug gizmos while developer mode is active. Disabled by default.</SSC_Setting_EnableDebugGizmos_Desc>
 
-  <SSC_Setting_EnableFullGelTint>Enable full-gelatinization body tint</SSC_Setting_EnableFullGelTint>
-  <SSC_Setting_EnableFullGelTint_Desc>When enabled, pawns with Completed Full Gelatinization have a translucent purple body while retaining their original head color.</SSC_Setting_EnableFullGelTint_Desc>
+  <SSC_Setting_EnableFullGelTint>Enable fully gelatinized appearance</SSC_Setting_EnableFullGelTint>
+  <SSC_Setting_EnableFullGelTint_Desc>Applies gel appearance to the body and head skin of fully gelatinized characters. Select a character and use Gel appearance to set individual color and opacity. Eyes, facial features and hair keep their appearance.</SSC_Setting_EnableFullGelTint_Desc>
   <SSC_Setting_EnableRitualEnslavement>Allow Binding Ritual enslavement</SSC_Setting_EnableRitualEnslavement>
   <SSC_Setting_EnableRitualEnslavement_Desc>When enabled, a Binding Ritual that meets the Corruption, score, and will requirements may convert its target into a vanilla slave. Disabling this only skips the enslavement roll; other ritual rewards are unaffected.</SSC_Setting_EnableRitualEnslavement_Desc>
   <SSC_Setting_EnableRimTalkSexDialogue>Trigger RimTalk dialogue for SSC sex scenes</SSC_Setting_EnableRimTalkSexDialogue>

@@ -80,6 +80,12 @@ namespace rjw
 }
 namespace SexSlaveCraft
 {
+    // 外观值复制的生产实现由 Gelatinization 套件链接；此处只记录真实克隆入口的协调参数。
+    public static class FullGelAppearanceUtility
+    {
+        public static readonly List<(Hediff source,Hediff target)> Copies=new List<(Hediff,Hediff)>();
+        public static void Copy(Hediff source,Hediff target) { Copies.Add((source,target)); }
+    }
     public enum RabbitReproductionMode { Normal, Clone }
     public enum SexSlaveSpecializationType { PetRabbit }
     public enum PawnIdentity { Unset, Slave, Master }

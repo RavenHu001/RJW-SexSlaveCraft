@@ -72,6 +72,7 @@ internal static partial class Program
         PostLightTests(root);
         PerfTests(root);
         AutoAdapterTests(root);
+        AppearanceTests(root);
         // 最后一项启动独立 PowerShell，必须完成正反两类共 10 项签名断言才算通过。
         Run("兼容验证器接受合法state并拒绝错误配对", () => StateValidator(root));
         Console.WriteLine($"结果：{passed}/{passed + failed} 项通过。");
@@ -287,7 +288,7 @@ internal static partial class Program
     private static void Tinted(Graphic graphic, string path)
     {
         Check(graphic.path == path && graphic.shader == ShaderDef.Native, "必须使用已注册原生Shader且保留路径");
-        Check(graphic.color.r == .46f && graphic.color.g == .20f && graphic.color.b == .68f && graphic.color.a == .85f, "深紫色RGB并使用0.85不透明度");
+        Check(graphic.color.r == 1 && graphic.color.g == 1 && graphic.color.b == 1 && graphic.color.a == 1, "预缓存使用中性色，个体颜色在最终材质应用");
     }
     /// <summary>正常注册路径采用原生程序，并不改写共享原图。</summary>
     private static void BodyShader()
@@ -321,24 +322,26 @@ internal static partial class Program
 
     private static void GelDarkEdge()
     {
-        float r = GelShaderMath.sscGelChannel(0, .46f), g = GelShaderMath.sscGelChannel(0, .20f), b = GelShaderMath.sscGelChannel(0, .68f);
-        Check(g > .05f && b > r && r > g, "黑线应变成深紫色并保留目标色相");
+        float r = GelShaderMath.sscGelChannel(0, FullGelAppearanceUtility.DefaultRed), g = GelShaderMath.sscGelChannel(0, FullGelAppearanceUtility.DefaultGreen), b = GelShaderMath.sscGelChannel(0, .68f);
+        // S90允许绿色通道更低；用主通道亮度检查黑边柔化，不强迫所有RGB通道都偏灰。
+        Check(g > 0 && b > .15f && b > r && r > g, "黑线应变成深紫色并保留目标色相");
         Check(b < GelShaderMath.sscGelChannel(.5f, .68f) * .7f, "描边仍应区别于身体中间调");
     }
 
     private static void GelDetail()
     {
-        foreach (float tint in new[] { .20f, .46f, .68f })
+        foreach (float tint in new[] { FullGelAppearanceUtility.DefaultGreen, FullGelAppearanceUtility.DefaultRed, .68f })
             for (int i = 1; i <= 256; i++)
                 Check(GelShaderMath.sscGelChannel(i / 256f, tint) > GelShaderMath.sscGelChannel((i - 1) / 256f, tint), "灰度细节不得反转或被压平");
     }
 
     private static void GelHighlight()
     {
-        foreach (float tint in new[] { .20f, .46f, .68f })
+        foreach (float tint in new[] { FullGelAppearanceUtility.DefaultGreen, FullGelAppearanceUtility.DefaultRed, .68f })
         {
             float white = GelShaderMath.sscGelChannel(1, tint);
-            Check(white > tint && white - tint < .1f && white <= 1, "亮部只加克制光泽，不洗成白色");
+            // 高光上限仍为已验收的12%；S90低绿通道的绝对增量可超过旧配色下的0.1。
+            Check(white > tint && white - tint <= .12f && white <= 1, "亮部保持12%以内的克制光泽，不洗成白色");
         }
     }
 
@@ -379,7 +382,7 @@ internal static partial class Program
         var program = def.Element("shaderProgram");
         Check((string)program.Element("transparent") == "true" && (string)program.Element("depthWrite") == "false", "透明材质不能遮挡后续节点深度");
         string frag = Path.Combine(runtime, "Shaders", (string)program.Element("fragmentShaderFileName"));
-        Check(File.Exists(frag) && File.ReadAllText(frag).Contains("sscGelChannel(source.r, tint.r)") && File.ReadAllText(frag).Contains("sscGelAlpha(source.a, tint.a, vColor.a)"), "片元必须使用被数值回归的生产函数");
+        Check(File.Exists(frag) && File.ReadAllText(frag).Contains("sscGelChannel(source.r, tint.r * uMaterial._GelColor.r)") && File.ReadAllText(frag).Contains("sscGelAlpha(source.a, tint.a * uMaterial._GelColor.a, vColor.a)"), "片元必须使用被数值回归的生产函数");
         Check(File.ReadAllBytes(Path.Combine(runtime, "Shaders/SSC/FullGelMath.glsl")).SequenceEqual(File.ReadAllBytes(Path.Combine(root, "1.7/Shaders/SSC/FullGelMath.glsl"))), "所选运行资源必须与编译测试的数学函数一致");
         Check(File.ReadAllText(Path.Combine(root, "Sexslavecraft/ThePatches/HarmonyStartUp.cs")).Contains("Harmony_FullGelatinizationHeadTint.Register(harmony)"), "头部应挂接已测试的材质入口");
     }
@@ -391,7 +394,7 @@ internal static partial class Program
         var material = new Material(new Shader("SA")) { mainTexture = new Texture("Breast") };
         var parms = new PawnDrawParms { pawn = pawn };
         Harmony_FullGelatinizationBodyTint.SizedApparelMaterialPostfix(new global::SizedApparel.SizedApparelRenderNodeWorker(), node, parms, ref material);
-        Check(material.shader == ShaderDef.Native && material.color.a == .85f, "SA 最终材质沿用身体染色");
+        Check(material.shader == ShaderDef.Native && GelTint(material).a == .85f, "SA 最终材质沿用身体染色");
     }
     /// <summary>覆盖空节点、空树及无角色三种状态，均应保留原图形引用。</summary>
     private static void EmptyNode(PawnRenderNode node)

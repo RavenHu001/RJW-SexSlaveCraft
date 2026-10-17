@@ -13,13 +13,12 @@ namespace SexSlaveCraft
     public static class Harmony_FullGelatinizationBodyTint
     {
         // 颜色和透明度分开调节：暗部柔化由原生 Shader 完成，不依赖降低 Alpha 隐藏黑线。
-        // 深紫色已获实机确认，Alpha 经 0.9 对比后调回 0.85；保留黑边柔化与亮部逻辑。
-        private static readonly Color TintColor = new Color(0.46f, 0.20f, 0.68f, 0.85f);
+        // 原深紫/.85已获实机确认；本批仅把默认S设为90，颜色来源统一交给个体外观工具。
         internal const string NativeShaderDefName = "SSC_FullGelBody17";
         // 三处渲染共用光照后队列；只在 ShouldTintFullGelGraphic 已通过的分支中使用。
         internal const int PostLightRenderQueue = 3150;
         // 头部使用同一配置来源，后续调色无需维护第二份常量。
-        internal static Color FullGelColor => TintColor;
+        internal static Color FullGelColor => FullGelAppearanceUtility.Default.Color;
         private static bool loggedShaderChoice;
         private static bool loggedShaderFallback;
 
@@ -53,7 +52,7 @@ namespace SexSlaveCraft
                 || (parms.flags & PawnRenderFlags.Invisible) != 0 || parms.pawn.IsPsychologicallyInvisible()
                 || !FullGelatinizationUtility.ShouldTintFullGelGraphic(parms.pawn)) return;
             // 继续使用已验收的身体颜色程序和队列；不改变原 SA 的节点、贴图及动画帧选择。
-            Harmony_FullGelatinizationHeadTint.ApplyMaterial(ref __result, NativeShaderDefName, false);
+            Harmony_FullGelatinizationHeadTint.ApplyMaterial(ref __result, NativeShaderDefName, false, pawn: parms.pawn);
         }
 
         /// <summary>仅处理已成功生成的 SizedApparel 服装变体，保留图形记录对应的服装来源。</summary>
@@ -77,9 +76,19 @@ namespace SexSlaveCraft
 
             // 不直接改共享 Graphic 的颜色或材质，交由游戏 API 获取对应的染色版本。
             // 旧版服装软依赖入口及身体预缓存仅允许主线程调用 GraphicDatabase；失败保留原图。
-            Graphic tinted = graphic.GetColoredVersion(GetFullGelBodyShader(), TintColor, TintColor);
+            // 预缓存只标记受管原生程序，不按滑块历史值制造 Graphic 变体。
+            // 保留源 Alpha，最终材质阶段只乘一次个体凝胶 Alpha。
+            Shader shader = GetFullGelBodyShader();
+            Color neutral = new Color(1, 1, 1, graphic.Color.a);
+            Color color = shader == ShaderDatabase.TransparentPostLight ? FullGelAppearanceUtility.Read(FullGelAppearanceUtility.GetOwner(pawn)).Color : neutral;
+            if (shader == ShaderDatabase.TransparentPostLight) color.a *= graphic.Color.a;
+            Graphic tinted = graphic.GetColoredVersion(shader, color, color);
             if (tinted != null) graphic = tinted;
         }
+
+        /// <summary>仅识别本模组主动生成的身体/SA 图形，不按普通服装颜色猜测归属。</summary>
+        internal static bool IsManagedMaterial(Material material)
+            => material != null && TryGetNativeShader(NativeShaderDefName, out Shader shader) && ReferenceEquals(material.shader, shader);
 
         /// <summary>识别路径带 SizedApparel 的服装变体，避免给该角色全部普通服装统一染色。</summary>
         private static bool ShouldTintSizedApparelGraphic(Pawn pawn, Graphic graphic)

@@ -45,7 +45,7 @@ internal static partial class Program
     {
         var rig = DepthRig(masked); var result = rig.Apply(new PawnRenderNode_Head());
         Check(result.shader == (masked ? ShaderDef.MaskedDepth : ShaderDef.Depth), "需要对应的深度写入变体");
-        Check(result.renderQueue == 3150 && result.color.a == .85f, "统一光照后队列但保留85%混合");
+        Check(result.renderQueue == 3150 && GelTint(result).a == .85f, "统一光照后队列但保留85%混合");
     }
     private static void HeadUnknownDepth()
     {
@@ -72,7 +72,7 @@ internal static partial class Program
             .Root.Element("ShaderDef").Element("shaderProgram").Element("depthWrite").Value);
         float depth = 1, headDepth = .2f, bodyDepth = .4f;
         if (writes && GelShaderMath.sscGelWritesDepth(1)) depth = headDepth;
-        Check(bodyDepth > depth && head.color.a == .85f, "头皮仍半透明混合，但必须遮挡其后的身体");
+        Check(bodyDepth > depth && GelTint(head).a == .85f, "头皮仍半透明混合，但必须遮挡其后的身体");
         depth = 1;
         if (writes && GelShaderMath.sscGelWritesDepth(0)) depth = headDepth;
         Check(bodyDepth < depth, "透明孔洞不得阻挡后方图层");
@@ -89,7 +89,7 @@ internal static partial class Program
             var program = XDocument.Load(Path.Combine(SscTestPaths.RuntimeRoot(root), "Defs/ShaderDefs", name + ".xml")).Root.Element("ShaderDef").Element("shaderProgram");
             Check((string)program.Element("depthWrite") == "true", "深度变体必须启用写入");
             string fragment = File.ReadAllText(Path.Combine(SscTestPaths.RuntimeRoot(root), "Shaders", program.Element("fragmentShaderFileName").Value));
-            Check(fragment.Contains("if (!sscGelWritesDepth(") && fragment.Contains("sscGelChannel(source.r, tint.r)"), "片元使用共同裁剪与颜色函数");
+            Check(fragment.Contains("if (!sscGelWritesDepth(") && fragment.Contains("sscGelChannel(source.r, tint.r * uMaterial._GelColor.r)"), "片元使用共同裁剪与颜色函数");
         }
     }
     private static void SaRegistration()
@@ -114,7 +114,7 @@ internal static partial class Program
     private static void SaTint(PawnRenderNodeWorker worker)
     {
         var rig = new SaRig(); var result = rig.Apply(worker);
-        Check(result != rig.source && result.shader == ShaderDef.Native && result.color.a == .85f && result.renderQueue == 3150, "SA材质保持已验收程序、透明度及队列");
+        Check(result != rig.source && result.shader == ShaderDef.Native && GelTint(result).a == .85f && result.renderQueue == 3150, "SA材质保持已验收程序、透明度及队列");
     }
     private static void SaWorkerCold()
     {

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_GelAppearance_Title>凝膠外觀</SSC_GelAppearance_Title>
+  <SSC_GelAppearance_Description>設定此角色凝膠皮膚的顏色和不透明度。</SSC_GelAppearance_Description>
+  <SSC_GelAppearance_Disabled>凝膠渲染已關閉；儲存的外觀將在重新開啟後生效。</SSC_GelAppearance_Disabled>
+  <SSC_GelAppearance_NoBody>此角色已失去原來的凝膠化軀體，無法套用。</SSC_GelAppearance_NoBody>
+  <SSC_GelAppearance_Hex>顏色 HEX</SSC_GelAppearance_Hex>
+  <SSC_GelAppearance_InvalidHex>請輸入 #RRGGBB</SSC_GelAppearance_InvalidHex>
+  <SSC_GelAppearance_Opacity>不透明度</SSC_GelAppearance_Opacity>
+  <SSC_GelAppearance_Old>原顏色</SSC_GelAppearance_Old>
+  <SSC_GelAppearance_New>新顏色</SSC_GelAppearance_New>
+  <SSC_GelAppearance_SkinOnly>只調整凝膠皮膚；眼睛、五官和頭髮保留原外觀。</SSC_GelAppearance_SkinOnly>
+  <SSC_GelAppearance_Reset>恢復預設</SSC_GelAppearance_Reset>
+</LanguageData>

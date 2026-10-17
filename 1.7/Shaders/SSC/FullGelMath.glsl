@@ -51,13 +51,13 @@ float sscGelEyeBlend(float gel, float original, float eye)
     float weight = clamp(eye, 0.0f, 1.0f);
     return gel * (1.0f - weight) + original * weight;
 }
-// 从本帧颜色/材质基础色还原parms.tint；眼睛绕过凝胶色，却仍响应游戏的临时色调与淡出。
+// 原五官直接使用原色与本帧调制，凝胶参数独立；零通道/零Alpha也不需要做反除。
 #if SSC_CSHARP
     public static
 #endif
-float sscGelEyeModulation(float draw, float gelBase)
+float sscGelOriginalChannel(float source, float sourceTint, float drawTint)
 {
-    return gelBase > 0.0f ? draw / gelBase : 0.0f;
+    return source * sourceTint * drawTint;
 }
 #if SSC_CSHARP
 }

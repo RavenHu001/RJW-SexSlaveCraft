@@ -6,6 +6,8 @@ This continuation builds on upstream **2.2.8**, the baseline when upstream devel
 
 ## [未发布 / Unreleased]
 
+- **1.7 个体凝胶外观 / Individual gel appearance:** 完全凝胶化角色通过普通指令打开原版控件组合弹窗，独立调整RGB／HSV／HEX和0%—100%不透明度，支持取消、确认及恢复默认深紫（HSV饱和度90%）／85%。配置保存于当前身体，原版眼睛及FA五官保留原色与动画，皮肤材质按个体隔离；1.6冻结不变。维护者确认颜色／不透明度、恢复默认、五官动画及遮挡正常；本次补齐代码块注释并仅将默认S调整为90，保留已存自定义值。先前258项／2777项验证保留原阶段，本次新增默认值回归，暂不打包，见[实现与测试](Docs/Development/Completed/1.7个体凝胶外观设置与验收.md)。Adds per-body color and opacity settings with native game controls, isolated material variants and a restore-defaults action.
+
 - **1.7 原版／FA自动适配 / Vanilla and FA gel rendering:** 按实际头部节点适配，原版保留头图结构并用缓存遮罩保护眼睛原色／Alpha，FA沿用分层皮肤与五官动画；深紫色、皮肤0.85及光照后响应保持。新增41项回归，专项205/205，四种FA／SA类型组合隔离验证；1.6冻结基线不变，维护者确认原版眼部／转向及FA眨眼／遮挡正常，见[适配验收](Docs/Development/Completed/1.7原版与FA凝胶渲染自动适配与验收.md)。暂不打包。Preserves baked vanilla eyes while retaining layered FA rendering, without making FA or SA mandatory.
 
 - **1.7 凝胶渲染缓存 / Gel material cache:** 按原生材质版本复用稳定副本，去除绘制路径的缓存键拼接、FA字段反射及枚举装箱，源变化时继续刷新纹理、遮罩、UV和五官颜色；保留深紫色、0.85、光照后阶段及遮挡。新增22项回归，专项164/164；仅完全凝胶化且渲染开启时生效，1.6冻结基线不变，维护者实机测试未发现问题，见[性能验收](Docs/Development/Completed/1.7凝胶化渲染性能优化与验收.md)。暂不打包。Reuses unchanged material variants and compiled FA accessors while preserving dynamic frames and the accepted visual profile. Model allocation checks do not establish in-game FPS gains.

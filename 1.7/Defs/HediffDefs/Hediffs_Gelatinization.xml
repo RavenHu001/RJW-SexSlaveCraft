@@ -131,6 +131,8 @@
     <everCurableByItem>false</everCurableByItem>
     <initialSeverity>1.0</initialSeverity>
     <comps>
+      <!-- 1.7 个体外观归当前身体保存；旧档缺字段沿用深紫色与85%。 -->
+      <li Class="SexSlaveCraft.HediffCompProperties_FullGelAppearance" />
       <li Class="SexSlaveCraft.HediffCompProperties_FullGelatinizedRegen">
         <healIntervalTicks>300</healIntervalTicks>
         <healAmount>1.2</healAmount>

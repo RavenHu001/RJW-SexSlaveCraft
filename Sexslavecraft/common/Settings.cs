@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -200,11 +200,14 @@ namespace SexSlaveCraft
             listingStandard.GapLine();
             // EN: Step 5: expose the full-gel body tint option for the `全凝胶化完成` visual style.
             // CN: 步骤 5：显示“全凝胶化完成”的身体染色选项，用来控制完全胶化后的外观风格。
+            // 总开关只控制实际渲染，不清除个体保存值；变化后刷新旧身体/服装预缓存。
+            bool previousGelRendering = settings.enableFullGelatinizedBodyTint;
             listingStandard.CheckboxLabeled(
                 "SSC_Setting_EnableFullGelTint".Translate(),
                 ref settings.enableFullGelatinizedBodyTint,
                 "SSC_Setting_EnableFullGelTint_Desc".Translate()
             );
+            if (previousGelRendering != settings.enableFullGelatinizedBodyTint) FullGelAppearanceUtility.RefreshAll();
 
             listingStandard.GapLine();
             // EN: Step 6: expose whether the Binding Ritual may convert the target into a vanilla slave.

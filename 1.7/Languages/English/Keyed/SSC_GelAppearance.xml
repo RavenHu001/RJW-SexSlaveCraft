@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_GelAppearance_Title>Gel appearance</SSC_GelAppearance_Title>
+  <SSC_GelAppearance_Description>Set this character’s gel skin color and opacity.</SSC_GelAppearance_Description>
+  <SSC_GelAppearance_Disabled>Gel rendering is disabled. Saved appearance takes effect when enabled.</SSC_GelAppearance_Disabled>
+  <SSC_GelAppearance_NoBody>The original gelatinized body is no longer present. Changes cannot be applied.</SSC_GelAppearance_NoBody>
+  <SSC_GelAppearance_Hex>Color HEX</SSC_GelAppearance_Hex>
+  <SSC_GelAppearance_InvalidHex>Enter #RRGGBB</SSC_GelAppearance_InvalidHex>
+  <SSC_GelAppearance_Opacity>Opacity</SSC_GelAppearance_Opacity>
+  <SSC_GelAppearance_Old>Old color</SSC_GelAppearance_Old>
+  <SSC_GelAppearance_New>New color</SSC_GelAppearance_New>
+  <SSC_GelAppearance_SkinOnly>Affects gel skin only. Eyes, facial features and hair keep their appearance.</SSC_GelAppearance_SkinOnly>
+  <SSC_GelAppearance_Reset>Restore defaults</SSC_GelAppearance_Reset>
+</LanguageData>
