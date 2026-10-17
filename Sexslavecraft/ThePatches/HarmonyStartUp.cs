@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Reflection;
 using Verse;
 using HarmonyLib;
@@ -125,31 +125,21 @@ namespace SexSlaveCraft
                 var original = AccessTools.Method(bodyNodeType, "GraphicFor");
                 if (original != null)
                 {
-                    // EN: Full-gel tint now hooks the body-only render node so the head keeps the normal skin draw path.
-                    // CN: 全凝胶化染色现在只挂身体渲染节点，这样头部还能保持原本的皮肤绘制路径。
+                    // EN: This hook handles the body; the head is filtered separately at the final-material stage below.
+                    // CN: 此入口只处理身体；头部在下方单独按最终材质和皮肤层白名单处理。
                     harmony.Patch(original, postfix: new HarmonyMethod(typeof(Harmony_FullGelatinizationBodyTint), nameof(Harmony_FullGelatinizationBodyTint.Postfix)));
                     SSCLog.Important("[SSC FullGel] Patch 注册成功: PawnRenderNode_Body.GraphicFor");
                 }
             }
             catch (Exception ex) { Log.Error($"[SSC FullGel] PawnRenderNode_Body.GraphicFor 注册失败: {ex}"); }
 
-            try
-            {
-                Type sizedApparelWorkerType = AccessTools.TypeByName("SizedApparel.SizedApparelRenderNodeWorker");
-                var original = AccessTools.Method(sizedApparelWorkerType, "GetGraphic");
-                if (original != null)
-                {
-                    // EN: Sized Apparel breasts are rendered by their own worker, so full-gel tint needs a soft patch here too.
-                    // CN: Sized Apparel 的乳房使用独立 worker 渲染，因此全凝胶化也要在这里追加一个软依赖补丁。
-                    harmony.Patch(original, postfix: new HarmonyMethod(typeof(Harmony_FullGelatinizationBodyTint), nameof(Harmony_FullGelatinizationBodyTint.SizedApparelWorkerPostfix)));
-                    SSCLog.Important("[SSC FullGel] Patch 注册成功: SizedApparelRenderNodeWorker.GetGraphic");
-                }
-                else
-                {
-                    SSCLog.Important("[SSC FullGel] 未检测到 SizedApparelRenderNodeWorker.GetGraphic，跳过乳房染色软依赖补丁。");
-                }
-            }
-            catch (Exception ex) { Log.Error($"[SSC FullGel] SizedApparelRenderNodeWorker.GetGraphic 注册失败: {ex}"); }
+            // 头部在最终材质阶段只替换皮肤，保留 FA 本帧五官和原队列；FA 未安装时支持原版头部。
+            try { Harmony_FullGelatinizationHeadTint.Register(harmony); }
+            catch (Exception ex) { Log.Error($"[SSC FullGel] Head skin material hook 注册失败: {ex}"); }
+
+            // SA 的并行 GetGraphic 只取得原图；染色在最终材质阶段完成，避免工作线程访问 GraphicDatabase。
+            try { Harmony_FullGelatinizationBodyTint.RegisterSizedApparel(harmony); }
+            catch (Exception ex) { Log.Error($"[SSC FullGel] SizedApparel final material hook 注册失败: {ex}"); }
 
             try
             {

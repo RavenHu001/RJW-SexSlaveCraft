@@ -2,6 +2,7 @@ using System;
 using RimWorld;
 using UnityEngine;
 using Verse;
+using HarmonyLib;
 
 // EN: This patch paints the body of pawns in the `全凝胶化完成` state.
 // EN: It replaces the returned graphic only when SSC's full-gel tint setting is enabled; RimWorld owns graphic/material reuse.
@@ -14,7 +15,9 @@ namespace SexSlaveCraft
         // 颜色和透明度分开调节：暗部柔化由原生 Shader 完成，不依赖降低 Alpha 隐藏黑线。
         // 深紫色已获实机确认，Alpha 经 0.9 对比后调回 0.85；保留黑边柔化与亮部逻辑。
         private static readonly Color TintColor = new Color(0.46f, 0.20f, 0.68f, 0.85f);
-        private const string NativeShaderDefName = "SSC_FullGelBody17";
+        internal const string NativeShaderDefName = "SSC_FullGelBody17";
+        // 头部使用同一配置来源，后续调色无需维护第二份常量。
+        internal static Color FullGelColor => TintColor;
         private static bool loggedShaderChoice;
         private static bool loggedShaderFallback;
 
@@ -24,12 +27,31 @@ namespace SexSlaveCraft
             TryApplyFullGelTint(pawn, ref __result);
         }
 
-        /// <summary>从实际渲染树取得 SizedApparel 节点所属角色，再复用身体染色条件。</summary>
-        public static void SizedApparelWorkerPostfix(PawnRenderNode node, ref Graphic __result)
+        private static Type sizedApparelWorkerType;
+
+        /// <summary>SA GetGraphic 会在并行预绘制调用；只在最终材质入口追加染色，不再挂 GetGraphic。</summary>
+        public static void RegisterSizedApparel(Harmony harmony)
         {
-            // 1.7 的节点及本机 SA 派生节点没有 pawn 字段；角色保存在 node.tree.pawn。
-            // 节点、渲染树或角色缺失时传入 null，由共享入口安全跳过。
-            TryApplyFullGelTint(node?.tree?.pawn, ref __result);
+            sizedApparelWorkerType = AccessTools.TypeByName("SizedApparel.SizedApparelRenderNodeWorker");
+            if (sizedApparelWorkerType == null) return;
+            var original = AccessTools.Method(typeof(PawnRenderNodeWorker), "GetFinalizedMaterial",
+                new[] { typeof(PawnRenderNode), typeof(PawnDrawParms) });
+            if (original == null) throw new MissingMethodException("PawnRenderNodeWorker.GetFinalizedMaterial");
+            harmony.Patch(original, postfix: new HarmonyMethod(typeof(Harmony_FullGelatinizationBodyTint), nameof(SizedApparelMaterialPostfix)));
+            SSCLog.Important("[SSC FullGel] SizedApparel final material hook registered; no Graphic creation in draw workers.");
+        }
+
+        /// <summary>直接染色 SA 已提供的本帧材质；缓存未命中也不创建 Graphic，不改变节点位置。</summary>
+        public static void SizedApparelMaterialPostfix(PawnRenderNodeWorker __instance, PawnRenderNode node,
+            PawnDrawParms parms, ref Material __result)
+        {
+            if (sizedApparelWorkerType == null || !sizedApparelWorkerType.IsInstanceOfType(__instance)
+                || node?.tree?.pawn == null || !ReferenceEquals(node.tree.pawn, parms.pawn)
+                || parms.Statue || parms.rotDrawMode != RotDrawMode.Fresh
+                || (parms.flags & PawnRenderFlags.Invisible) != 0 || parms.pawn.IsPsychologicallyInvisible()
+                || !FullGelatinizationUtility.ShouldTintFullGelGraphic(parms.pawn)) return;
+            // 继续使用已验收的身体颜色程序和队列；不改变原 SA 的节点、贴图及动画帧选择。
+            Harmony_FullGelatinizationHeadTint.ApplyMaterial(ref __result, NativeShaderDefName, false);
         }
 
         /// <summary>仅处理已成功生成的 SizedApparel 服装变体，保留图形记录对应的服装来源。</summary>
@@ -49,10 +71,12 @@ namespace SexSlaveCraft
         private static void TryApplyFullGelTint(Pawn pawn, ref Graphic graphic)
         {
             // 所有渲染入口共用同一准入条件，关闭设置、无角色或未完全胶化时保留原图形。
-            if (graphic == null || !FullGelatinizationUtility.ShouldTintFullGelGraphic(pawn)) return;
+            if (graphic == null || !UnityData.IsInMainThread || !FullGelatinizationUtility.ShouldTintFullGelGraphic(pawn)) return;
 
             // 不直接改共享 Graphic 的颜色或材质，交由游戏 API 获取对应的染色版本。
-            graphic = graphic.GetColoredVersion(GetFullGelBodyShader(), TintColor, TintColor);
+            // 旧版服装软依赖入口及身体预缓存仅允许主线程调用 GraphicDatabase；失败保留原图。
+            Graphic tinted = graphic.GetColoredVersion(GetFullGelBodyShader(), TintColor, TintColor);
+            if (tinted != null) graphic = tinted;
         }
 
         /// <summary>识别路径带 SizedApparel 的服装变体，避免给该角色全部普通服装统一染色。</summary>
@@ -69,17 +93,14 @@ namespace SexSlaveCraft
         {
             // ShaderDef.Shader 非空、isSupported=true 均不能证明 Waylith 注册成功。
             // 每次从注册表确认，既不永久缓存早期失败，也不在静态字段持有 Unity 资源。
-            ShaderDef def = DefDatabase<ShaderDef>.GetNamedSilentFail(NativeShaderDefName);
-            if (def != null
-                && Waylith.Rendering.ShaderRegistry.TryResolve(NativeShaderDefName, out var registered)
-                && !ReferenceEquals(registered, Waylith.Rendering.ShaderRegistry.Default))
+            if (TryGetNativeShader(NativeShaderDefName, out Shader shader))
             {
                 if (!loggedShaderChoice)
                 {
                     loggedShaderChoice = true;
                     SSCLog.Important("[SSC FullGel] Using registered native shader: " + NativeShaderDefName);
                 }
-                return def.Shader;
+                return shader;
             }
 
             // 降级只保证可显示；不声称内置乘色 Shader 也能柔化黑边。警告每次启动最多一次。
@@ -89,6 +110,17 @@ namespace SexSlaveCraft
                 SSCLog.WarningImportant("[SSC FullGel] Native shader is unavailable; using TransparentPostLight. Gel edge softening is disabled.");
             }
             return ShaderDatabase.TransparentPostLight;
+        }
+
+        /// <summary>共用真实注册检查；遮罩头部不允许降级成忽略遮罩的普通 Shader。</summary>
+        internal static bool TryGetNativeShader(string defName, out Shader shader)
+        {
+            shader = null;
+            ShaderDef def = DefDatabase<ShaderDef>.GetNamedSilentFail(defName);
+            if (def == null || !Waylith.Rendering.ShaderRegistry.TryResolve(defName, out var registered)
+                || ReferenceEquals(registered, Waylith.Rendering.ShaderRegistry.Default)) return false;
+            shader = def.Shader;
+            return shader != null;
         }
     }
 }

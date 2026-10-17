@@ -9,7 +9,36 @@ using System.Reflection;
 namespace UnityEngine
 {
     public struct Color { public float r, g, b, a; public Color(float r, float g, float b, float a) { this.r = r; this.g = g; this.b = b; this.a = a; } }
-    public class Shader { public string name; public bool isSupported = true; public Shader(string name) { this.name = name; } }
+    public class Shader
+    {
+        public string name; public bool isSupported = true;
+        // 模拟实际 internal getter，仅提供已经解析的管线状态，不依赖 Shader 名字猜测。
+        internal Waylith.Rendering.Shader EngineShader { get; set; } = new Waylith.Rendering.Shader();
+        public Shader(string name) { this.name = name; }
+    }
+    public class Texture { public string name; public Texture(string name) { this.name = name; } }
+    public class Material
+    {
+        public static int Created;
+        public Shader shader; public Texture mainTexture; public Color color;
+        public int renderQueue = 2000;
+        public bool HasMaskSlot;
+        private Dictionary<string, Texture> textures = new Dictionary<string, Texture>();
+        private Dictionary<string, float> floats = new Dictionary<string, float>();
+        public Material(Shader shader) { Created++; this.shader = shader; color = new Color(1, 1, 1, 1); }
+        public Material(Material source) : this(source.shader) { CopyPropertiesFromMaterial(source); renderQueue = source.renderQueue; }
+        // 与真实边界一样只复制属性，不靠此方法代替 shader/队列选择。
+        public void CopyPropertiesFromMaterial(Material source)
+        {
+            mainTexture = source.mainTexture; color = source.color; HasMaskSlot = source.HasMaskSlot;
+            textures = new Dictionary<string, Texture>(source.textures); floats = new Dictionary<string, float>(source.floats);
+        }
+        public bool HasProperty(string name) => name == "_MaskTex" && HasMaskSlot;
+        public Texture GetTexture(string name) => textures.TryGetValue(name, out var texture) ? texture : null;
+        public void SetTexture(string name, Texture texture) { textures[name] = texture; }
+        public void SetFloat(string name, float value) { floats[name] = value; }
+        public float GetFloat(string name) => floats.TryGetValue(name, out var value) ? value : 0;
+    }
     public static class Mathf
     {
         public static float Clamp01(float v) => Math.Clamp(v, 0, 1);
@@ -21,7 +50,18 @@ namespace HarmonyLib
     // Kept for the pre-fix source mutation check: actual 1.7 nodes have no pawn field.
     public static class AccessTools
     {
+        public static bool DisableFa, BadFaShape;
+        public static Type TypeByName(string name) => name.StartsWith("FacialAnimation.") && DisableFa ? null :
+            BadFaShape && name == "FacialAnimation.NLFacialAnimationPartNode" ? typeof(BadFaNode) : typeof(AccessTools).Assembly.GetType(name);
+        public static MethodInfo Method(Type type, string name, Type[] parameters) => type?.GetMethod(name, parameters);
         public static FieldInfo Field(Type type, string name) => type?.GetField(name, BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
+    }
+    public class BadFaNode { public object controller; public string layerType; }
+    public class HarmonyMethod { public Type Type; public string Name; public HarmonyMethod(Type type, string name) { Type = type; Name = name; } }
+    public class Harmony
+    {
+        public List<MethodInfo> Patched = new List<MethodInfo>();
+        public void Patch(MethodInfo original, HarmonyMethod postfix) { Patched.Add(original); }
     }
 }
 // 原版标签仅用于区分臂与腿；服装记录按值保存图形及来源，供生产补丁验证重建行为。
@@ -30,6 +70,7 @@ namespace RimWorld
     public static class BodyPartTagDefOf { public static readonly object ManipulationLimbCore = new object(), MovingLimbCore = new object(); }
     public static class HediffDefOf { public static readonly Verse.HediffDef SurgicalCut = new Verse.HediffDef("SurgicalCut"); }
     public class Apparel { public Verse.Pawn Wearer; }
+    public static class InvisibilityUtility { public static bool IsPsychologicallyInvisible(this Verse.Pawn pawn) => pawn.Invisible; }
     public struct ApparelGraphicRecord
     {
         public Verse.Graphic graphic; public Apparel sourceApparel;
@@ -41,7 +82,7 @@ namespace Verse
     // 每个角色拥有独立健康列表和事件账本；FullGel、Destroyed、Guaranteed 只表示测试服务状态。
     public class Pawn
     {
-        public bool Dead, FullGel, Destroyed, Guaranteed;
+        public bool Dead, FullGel, Destroyed, Guaranteed, Invisible;
         public Faction Faction = Faction.OfPlayer;
         public Pawn_NeedsTracker needs = new Pawn_NeedsTracker();
         public Pawn_HealthTracker health;
@@ -74,6 +115,7 @@ namespace Verse
     {
         public List<Hediff> hediffs = new List<Hediff>();
         public bool Missing;
+        public bool HasHead = true;
         public bool PartIsMissing(BodyPartRecord part) => Missing || hediffs.Any(h => h is Hediff_MissingPart && h.Part == part);
     }
     // 保留生产临时类需要的虚方法和数据引用；存档方法仅供链接，不实施序列化测试。
@@ -143,7 +185,7 @@ namespace Verse
     {
         public static T GetNamedSilentFail(string name) =>
             (typeof(T) == typeof(ShaderTypeDef) ? (object)new ShaderTypeDef() :
-             typeof(T) == typeof(ShaderDef) ? ShaderDef.Available ? new ShaderDef { defName = name } : null : new HediffDef(name)) as T;
+             typeof(T) == typeof(ShaderDef) ? ShaderDef.Available && (name != "SSC_FullGelHeadMasked17" || ShaderDef.MaskedAvailable) && (!name.Contains("Depth17") || ShaderDef.DepthAvailable) ? new ShaderDef { defName = name } : null : new HediffDef(name)) as T;
     }
     public static class HediffMaker
     {
@@ -164,38 +206,82 @@ namespace Verse
     // 获取染色版本返回独立对象，便于断言原图未被改写；真实图形缓存和材质复用交由游戏验证。
     public class Graphic
     {
+        public UnityEngine.Material MatSingle;
         public string path; public UnityEngine.Shader shader; public UnityEngine.Color color;
-        public Graphic GetColoredVersion(UnityEngine.Shader shader, UnityEngine.Color one, UnityEngine.Color two) =>
-            new Graphic { path = path, shader = shader, color = one };
+        public static int ColoredRequests; public static bool ReturnNull;
+        public Graphic GetColoredVersion(UnityEngine.Shader shader, UnityEngine.Color one, UnityEngine.Color two)
+        {
+            ColoredRequests++;
+            // 真实 GraphicDatabase 在非主线程缓存未命中时记录错误并返回 null。
+            if (!UnityData.IsInMainThread) throw new InvalidOperationException("Graphic requested off main thread");
+            return ReturnNull ? null : new Graphic { path = path, shader = shader, color = one };
+        }
     }
     // 按实际 1.7 形状只在树上设置 pawn，节点不增加方便测试但真实不存在的同名字段。
     public class PawnRenderNode { public PawnRenderTree tree; }
+    public class PawnRenderNode_Head : PawnRenderNode { }
+    public class PawnRenderNode_Hair : PawnRenderNode { }
+    public class PawnRenderNode_Beard : PawnRenderNode { }
+    public class PawnRenderNode_Apparel : PawnRenderNode { }
+    public class PawnRenderNodeWorker
+    {
+        public UnityEngine.Material GetFinalizedMaterial(PawnRenderNode node, PawnDrawParms parms) => null;
+    }
+    public enum RotDrawMode { Fresh, Rotting, Dessicated }
+    [Flags] public enum PawnRenderFlags { None = 0, Invisible = 1 }
+    public struct PawnDrawParms { public Pawn pawn; public RotDrawMode rotDrawMode; public bool Statue, Portrait; public PawnRenderFlags flags; }
     public class PawnRenderTree { public Pawn pawn; }
+    public static class UnityData { public static bool IsInMainThread = true; }
     // Deliberately non-null and supported, matching the audited Waylith late-bound contract.
     public class ShaderTypeDef { public string defName = "SSC_FullGelBody", shaderPath = "Sexslavecraft/SSC_FullGelBody"; public UnityEngine.Shader Shader => new UnityEngine.Shader("UnregisteredDefault"); }
     // 与真实注册表区分：即使未注册，属性仍返回 supported 对象，用来捕获伪成功。
     public class ShaderDef
     {
         public static bool Available = true;
+        public static bool MaskedAvailable = true;
+        public static bool DepthAvailable = true;
         public static readonly UnityEngine.Shader Native = new UnityEngine.Shader("SSC_FullGelBody17");
+        public static readonly UnityEngine.Shader Masked = new UnityEngine.Shader("SSC_FullGelHeadMasked17");
+        public static readonly UnityEngine.Shader Depth = new UnityEngine.Shader("SSC_FullGelHeadDepth17") { EngineShader = new Waylith.Rendering.Shader { DepthWrite = true } };
+        public static readonly UnityEngine.Shader MaskedDepth = new UnityEngine.Shader("SSC_FullGelHeadMaskedDepth17") { EngineShader = new Waylith.Rendering.Shader { DepthWrite = true } };
         public string defName;
-        public UnityEngine.Shader Shader => Native;
+        public UnityEngine.Shader Shader => defName == "SSC_FullGelHeadDepth17" ? Depth : defName == "SSC_FullGelHeadMaskedDepth17" ? MaskedDepth : defName == "SSC_FullGelHeadMasked17" ? Masked : Native;
     }
     // 内置透明 Shader 使用稳定对象身份，使断言能区分预期 Shader 与伪成功的自定义对象。
     public static class ShaderDatabase { public static readonly UnityEngine.Shader TransparentPostLight = new UnityEngine.Shader("TransparentPostLight"); }
 }
 namespace Waylith.Rendering
 {
+    public class Shader { public bool DepthWrite; }
     public static class ShaderRegistry
     {
         public static readonly object Default = new object();
-        public static bool Registered = true, ReturnDefault;
+        public static bool Registered = true, MaskedRegistered = true, ReturnDefault;
         private static readonly object Native = new object();
         public static bool TryResolve(string name, out object shader)
         {
             shader = ReturnDefault ? Default : Native;
-            return Registered && name == "SSC_FullGelBody17";
+            return name == "SSC_FullGelBody17" ? Registered : (name == "SSC_FullGelHeadDepth17" || name == "SSC_FullGelHeadMaskedDepth17") ? Registered : name == "SSC_FullGelHeadMasked17" && MaskedRegistered;
         }
+    }
+}
+// 只保留实际 FA 节点公开字段与控制器身份。动画仍由用例切换材质/遮罩模拟，不复制 FA 实现。
+namespace FacialAnimation
+{
+    public enum NLFacialAnimationLayerType { Basic, Cover, Highlight, Bottom, L_Basic, R_Basic, L_Option, R_Option }
+    public class NLFacialAnimationPartNode : Verse.PawnRenderNode { public object controller; public NLFacialAnimationLayerType layerType; }
+    public class HeadControllerComp { }
+    public class SkinControllerComp { }
+    public class LidControllerComp { }
+    public class EyeballControllerComp { }
+    public class BrowControllerComp { }
+    public class MouthControllerComp { }
+    public class EmotionControllerComp { }
+    public class LidOptionControllerComp { }
+    public class RaceHeadControllerComp : HeadControllerComp { }
+    public static class GraphicPool
+    {
+        public static Verse.Graphic dummyGraphic = new Verse.Graphic { MatSingle = new UnityEngine.Material(new UnityEngine.Shader("Dummy")) };
     }
 }
 namespace SexSlaveCraft
@@ -235,4 +321,14 @@ namespace SexSlaveCraft
         // 用可观察标记替代真正的 DeSpawn/WorldPawns.Discard，避免测试执行不可逆游戏操作。
         public static void DestroyPawnCompletely(Verse.Pawn pawn) { pawn.Destroyed = true; pawn.Events.Add("failure"); }
     }
+}
+
+// 实际 SA worker 继承原版最终材质方法；GetGraphic 故意抛异常捕获染色补丁的重复调用。
+namespace SizedApparel
+{
+    public class SizedApparelRenderNodeWorker : Verse.PawnRenderNodeWorker
+    {
+        public Verse.Graphic GetGraphic() => throw new InvalidOperationException("Do not re-enter SA GetGraphic");
+    }
+    public class DerivedWorker : SizedApparelRenderNodeWorker { }
 }

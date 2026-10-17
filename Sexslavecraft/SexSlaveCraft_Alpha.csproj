@@ -259,6 +259,7 @@
     <Compile Include="ThePatches\Harmony_EqualMilkingCompatibility.cs" />
     <Compile Include="ThePatches\Harmony_FasterProduce.cs" />
     <Compile Include="ThePatches\Harmony_FullGelatinizationBodyTint.cs" />
+    <Compile Include="ThePatches\Harmony_FullGelatinizationHeadTint.cs" />
     <Compile Include="ThePatches\Harmony_HumanCattleCompatibility.cs" />
     <Compile Include="ThePatches\Harmony_PreventRitualTimeShow.cs" />
     <Compile Include="ThePatches\Harmony_RitualFix.cs" />

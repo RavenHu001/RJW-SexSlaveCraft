@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <!-- AI 辅助生成。只用于已绑定 _MaskTex 的头部皮肤层，颜色和 Alpha 与身体共享。 -->
+  <ShaderDef>
+    <defName>SSC_FullGelHeadMasked17</defName>
+    <shaderProgram>
+      <vertexShaderFileName>Mote.vert.glsl</vertexShaderFileName>
+      <fragmentShaderFileName>SSC/FullGelHeadMasked.frag.glsl</fragmentShaderFileName>
+      <transparent>true</transparent>
+      <depthWrite>false</depthWrite>
+      <cullMode>None</cullMode>
+      <!-- 每个头部材质会保留其原队列，避免透明皮肤盖过眼睛/头发。 -->
+      <renderQueue>3150</renderQueue>
+    </shaderProgram>
+  </ShaderDef>
+</Defs>

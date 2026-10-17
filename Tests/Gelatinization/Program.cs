@@ -10,7 +10,7 @@ using UnityEngine;
 using Verse;
 
 /// <summary>链接生产源码并读取发布 XML，验证过程互斥、染色及状态签名；引擎边界由 Stubs.cs 提供。</summary>
-internal static class Program
+internal static partial class Program
 {
     private static int passed, failed;
     private static XElement partialXml, fullXml;
@@ -57,7 +57,7 @@ internal static class Program
         Run("透明背景和孔洞始终透明", GelTransparent);
         Run("抗锯齿覆盖连续且不过度透明", GelCoverage);
         Run("异常颜色和Alpha输入被限制在合法区间", GelBounds);
-        Run("1.7原生Shader资源成套且不挂接头部", () => ShaderResources(root));
+        Run("1.7原生Shader资源成套且头部只注册材质入口", () => ShaderResources(root));
         Run("SizedApparel从渲染树角色染色", SizedApparel);
         Run("SizedApparel空节点安全跳过", () => EmptyNode(null));
         Run("SizedApparel空渲染树安全跳过", () => EmptyNode(new PawnRenderNode()));
@@ -67,6 +67,8 @@ internal static class Program
         Run("空图形安全跳过", () => { Graphic graphic = null; Harmony_FullGelatinizationBodyTint.Postfix(new Pawn { FullGel = true }, ref graphic); Check(graphic == null, "空图形应保留"); });
         Run("SizedApparel服装变体使用相同透明Shader", ApparelTint);
         Run("普通服装与未成功生成的图形保持原样", ApparelGuard);
+        HeadTests(root);
+        RenderFixTests(root);
         // 最后一项启动独立 PowerShell，必须完成正反两类共 10 项签名断言才算通过。
         Run("兼容验证器接受合法state并拒绝错误配对", () => StateValidator(root));
         Console.WriteLine($"结果：{passed}/{passed + failed} 项通过。");
@@ -84,8 +86,16 @@ internal static class Program
             Math.Abs(range.min - .003f) < 1e-6f ? .00551f : range.min == range.max ? range.min : .0392f;
         SSCMod.settings = new SSCSettings { enableFullGelatinizedBodyTint = true };
         ShaderDef.Available = true;
+        ShaderDef.MaskedAvailable = true;
+        ShaderDef.DepthAvailable = true;
+        UnityData.IsInMainThread = true; Graphic.ColoredRequests = 0; Graphic.ReturnNull = false;
+        Harmony_FullGelatinizationBodyTint.RegisterSizedApparel(new HarmonyLib.Harmony());
         Waylith.Rendering.ShaderRegistry.Registered = true;
+        Waylith.Rendering.ShaderRegistry.MaskedRegistered = true;
         Waylith.Rendering.ShaderRegistry.ReturnDefault = false;
+        HarmonyLib.AccessTools.DisableFa = false;
+        HarmonyLib.AccessTools.BadFaShape = false;
+        Harmony_FullGelatinizationHeadTint.InitializeFacialAnimation();
         try { test(); passed++; Console.WriteLine("PASS " + name); }
         catch (Exception e) { failed++; Console.WriteLine("FAIL " + name + ": " + e.Message); }
     }
@@ -367,22 +377,25 @@ internal static class Program
         string frag = Path.Combine(runtime, "Shaders", (string)program.Element("fragmentShaderFileName"));
         Check(File.Exists(frag) && File.ReadAllText(frag).Contains("sscGelChannel(source.r, tint.r)") && File.ReadAllText(frag).Contains("sscGelAlpha(source.a, tint.a, vColor.a)"), "片元必须使用被数值回归的生产函数");
         Check(File.ReadAllBytes(Path.Combine(runtime, "Shaders/SSC/FullGelMath.glsl")).SequenceEqual(File.ReadAllBytes(Path.Combine(root, "1.7/Shaders/SSC/FullGelMath.glsl"))), "所选运行资源必须与编译测试的数学函数一致");
-        Check(!File.ReadAllText(Path.Combine(root, "Sexslavecraft/ThePatches/HarmonyStartUp.cs")).Contains("\"Verse.PawnRenderNode_Head\""), "本轮不扩大头部染色范围");
+        Check(File.ReadAllText(Path.Combine(root, "Sexslavecraft/ThePatches/HarmonyStartUp.cs")).Contains("Harmony_FullGelatinizationHeadTint.Register(harmony)"), "头部应挂接已测试的材质入口");
     }
     /// <summary>节点没有 pawn 字段，只有渲染树持有角色；该形状能捕获旧反射读取失败。</summary>
     private static void SizedApparel()
     {
-        Graphic graphic = Original("SizedApparel/Breast");
-        var node = new PawnRenderNode { tree = new PawnRenderTree { pawn = new Pawn { FullGel = true } } };
-        Harmony_FullGelatinizationBodyTint.SizedApparelWorkerPostfix(node, ref graphic);
-        Tinted(graphic, "SizedApparel/Breast");
+        var pawn = new Pawn { FullGel = true };
+        var node = new PawnRenderNode { tree = new PawnRenderTree { pawn = pawn } };
+        var material = new Material(new Shader("SA")) { mainTexture = new Texture("Breast") };
+        var parms = new PawnDrawParms { pawn = pawn };
+        Harmony_FullGelatinizationBodyTint.SizedApparelMaterialPostfix(new global::SizedApparel.SizedApparelRenderNodeWorker(), node, parms, ref material);
+        Check(material.shader == ShaderDef.Native && material.color.a == .85f, "SA 最终材质沿用身体染色");
     }
     /// <summary>覆盖空节点、空树及无角色三种状态，均应保留原图形引用。</summary>
     private static void EmptyNode(PawnRenderNode node)
     {
-        Graphic graphic = Original(), original = graphic;
-        Harmony_FullGelatinizationBodyTint.SizedApparelWorkerPostfix(node, ref graphic);
-        Check(graphic == original, "空节点不应改动图形");
+        var material = new Material(new Shader("SA")) { mainTexture = new Texture("SA") }; var original = material;
+        var parms = new PawnDrawParms { pawn = new Pawn { FullGel = true } };
+        Harmony_FullGelatinizationBodyTint.SizedApparelMaterialPostfix(new global::SizedApparel.SizedApparelRenderNodeWorker(), node, parms, ref material);
+        Check(material == original, "空节点不应改动材质");
     }
     /// <summary>分别关闭个人状态条件或全局设置，验证准入规则不被 Shader 修复绕过。</summary>
     private static void BodyGuard(bool full, bool enabled)

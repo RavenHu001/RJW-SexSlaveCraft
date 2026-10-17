@@ -24,5 +24,6 @@
     <Compile Include="$(SscSourceRoot)/Hediff/HediffCompProperties_FullGelatinizationSeverity.cs" Link="Production/HediffCompProperties_FullGelatinizationSeverity.cs" />
     <!-- 身体与 SizedApparel 两条入口使用同一个实际补丁，避免在测试内重写染色判断。 -->
     <Compile Include="$(SscSourceRoot)/ThePatches/Harmony_FullGelatinizationBodyTint.cs" Link="Production/Harmony_FullGelatinizationBodyTint.cs" />
+    <Compile Include="$(SscSourceRoot)/ThePatches/Harmony_FullGelatinizationHeadTint.cs" Link="Production/Harmony_FullGelatinizationHeadTint.cs" />
   </ItemGroup>
 </Project>

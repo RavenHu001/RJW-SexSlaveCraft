@@ -25,6 +25,23 @@ float sscGelAlpha(float sourceAlpha, float tintAlpha, float vertexAlpha)
 {
     return clamp(sourceAlpha, 0.0f, 1.0f) * clamp(tintAlpha, 0.0f, 1.0f) * clamp(vertexAlpha, 0.0f, 1.0f);
 }
+// 遮罩在柔化 RGB 之外保留覆盖率；只有真实皮肤区域参与绘制，不填补眼部孔洞。
+#if SSC_CSHARP
+    public static
+#endif
+float sscGelMaskedAlpha(float sourceAlpha, float maskAlpha, float tintAlpha, float vertexAlpha)
+{
+    return sscGelAlpha(sourceAlpha, tintAlpha, vertexAlpha) * clamp(maskAlpha, 0.0f, 1.0f);
+}
+
+// 深度皮肤遵循原 CutoutSkin 的 0.1 覆盖阈值；与凝胶不透明度独立。
+#if SSC_CSHARP
+    public static
+#endif
+bool sscGelWritesDepth(float coverage)
+{
+    return coverage >= 0.1f;
+}
 #if SSC_CSHARP
 }
 #endif

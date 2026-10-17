@@ -1,5 +1,5 @@
 #version 450
-// AI 辅助生成。1.7 原生 GLSL；头部未挂接此材质，身体和 SA 附加节点共用相同变换。
+// AI 辅助生成。1.7 原生 GLSL；身体、基础头部皮肤和 SA 附加节点共用相同变换。
 #include "SSC/FullGelMath.glsl"
 
 layout(location = 0) in vec4 vColor;

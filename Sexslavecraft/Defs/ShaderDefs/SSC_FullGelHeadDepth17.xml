@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <!-- AI 辅助生成。保留原头皮的深度写入；五官及非写深度覆盖层不使用此变体。 -->
+  <ShaderDef>
+    <defName>SSC_FullGelHeadDepth17</defName>
+    <shaderProgram>
+      <vertexShaderFileName>Mote.vert.glsl</vertexShaderFileName>
+      <fragmentShaderFileName>SSC/FullGelHeadDepth.frag.glsl</fragmentShaderFileName>
+      <transparent>true</transparent>
+      <depthWrite>true</depthWrite>
+      <cullMode>None</cullMode>
+      <!-- 运行时恢复原材质队列，保持 FA 与头发、眼睛的相对层级。 -->
+      <renderQueue>2900</renderQueue>
+    </shaderProgram>
+  </ShaderDef>
+</Defs>

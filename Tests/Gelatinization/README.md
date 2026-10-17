@@ -1,14 +1,14 @@
 # 凝胶化与 1.7 兼容回归
 
-链接实际生产临时 Hediff、四个过程组件及属性、共享完成检查和身体染色补丁，读取 `1.7/Defs/HediffDefs/Hediffs_Gelatinization.xml` 的真实参数及组件顺序。使用 .NET 9 测试宿主，不依赖游戏或 Harmony DLL；PowerShell 状态签名检查需要 `pwsh`。
+链接实际生产临时 Hediff、四个过程组件及属性、共享完成检查、身体染色和头部材质补丁，读取 `1.7/Defs/HediffDefs/Hediffs_Gelatinization.xml` 的真实参数及组件顺序。使用 .NET 9 测试宿主，不依赖游戏或 Harmony DLL；PowerShell 状态签名检查需要 `pwsh`。
 
 ```powershell
 dotnet run --project Tests/Gelatinization/Gelatinization.csproj --configuration Release -- .
 ```
 
-44 项回归覆盖：从默认状态发生的双阈值竞赛、成功与失败互斥、外部移除、死亡、同角色新过程、旧调试按钮、正常扫描间隔及正常失败；覆盖已注册原生 Shader、未注册/Def 缺失/错误默认条目的明确回退、早期失败后恢复、SizedApparel 渲染树角色、空节点及染色条件。最后一项调用 `Test-HarmonyState.ps1` 的 10 个状态参数断言。
+119 项回归覆盖（原有 44 项＋54 项头部专项＋21 项深度/线程回归）：从默认状态发生的双阈值竞赛、成功与失败互斥、外部移除、死亡、同角色新过程、旧调试按钮、正常扫描间隔及正常失败；覆盖已注册原生 Shader、未注册/Def 缺失/错误默认条目的明确回退、早期失败后恢复、SizedApparel 渲染树角色、空节点及染色条件。最后一项调用 `Test-HarmonyState.ps1` 的 10 个状态参数断言。
 
-视觉回归直接将 `1.7/Shaders/SSC/FullGelMath.glsl` 作为 C# 源文件编译：条件预处理只提供类型外壳与 `clamp`，执行的标量函数体与 GLSL 相同。检查黑色变深紫色、256 级灰度单调、克制亮部、透明背景/孔洞、连续抗锯齿覆盖和输入范围。这些是像素函数性质检查，不代替 GPU 绘制与主观观感验收。头部没有新增染色补丁。
+视觉回归直接将 `1.7/Shaders/SSC/FullGelMath.glsl` 作为 C# 源文件编译：条件预处理只提供类型外壳与 `clamp`，执行的标量函数体与 GLSL 相同。检查黑色变深紫色、256 级灰度单调、克制亮部、透明背景/孔洞、连续抗锯齿覆盖和输入范围。这些是像素函数性质检查，不代替 GPU 绘制与主观观感验收。头部专项检查皮肤白名单、FA 软依赖/异常形状、dummy 空白帧、缺纹理/遮罩/Shader、原队列、原材质不变、动态眨眼帧与遮罩/UV 更新、缓存复用和回调幂等；五官/头发保持原材质身份。
 
 状态检查通过 PowerShell AST 加载 `Verify-RestrictionCompatibility.ps1` 的实际函数，使用元数据边界对象覆盖 Prefix/Postfix/Finalizer、按特性命名的 Prefix、引用类型参数、缺失/非静态/歧义生产者及类型不匹配，不执行发布脚本或游戏代码。完整元数据验证仍需另行向该脚本提供实际 DLL 和 Cecil。
 
@@ -18,4 +18,8 @@ dotnet run --project Tests/Gelatinization/Gelatinization.csproj --configuration 
 
 此套件已接入 `Scripts/Test-All.ps1` 和发布门禁。`SscSourceRoot` 可指向隔离源码快照验证旧实现确实失败；不要将快照输出写回冻结目录。
 
+当前头部实现、深度／线程修复及维护者确认见[验收记录](../../Docs/Development/Completed/1.7头部凝胶化与深度线程修复验收.md)。头部遮挡与眨眼已有独立实机反馈，保留此前身体验收范围。
+
 另用 [原生编译验证工具](../../Tools/GelatinizationShader/README.md) 检查目标游戏的真实 Waylith GLSL 编译器、材质布局与顶点/片元接口。它需要 .NET 10 和显式游戏目录，因此独立于不依赖游戏的 net9 模型门禁；它不会打包或启动游戏。
+
+本轮针对实机头颈覆盖反馈补充 21 项：按真实 Shader 深度状态选变体、缺资源/未知状态保留原图、从运行 XML 读取深度配置的头身交叠模型、原图孔洞和 0.1 裁剪阈值；SA 最终材质注册、实际 Task 工作线程首次使用、换帧复用、原材质与用途缓存隔离，以及主线程 Graphic 创建失败和旧服装入口的线程保护。SA 不再补 GetGraphic；这些检查仍不是 GPU 场景验收。

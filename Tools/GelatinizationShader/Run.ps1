@@ -7,7 +7,8 @@
 param(
     [Parameter(Mandatory)][string]$GameRoot,
     [string]$DotnetPath = $env:SSC_DOTNET_PATH,
-    [string]$ReportDirectory
+    [string]$ReportDirectory,
+    [string]$FaAssemblyPath
 )
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
@@ -32,6 +33,7 @@ try {
     $arguments = @('run', '--project', (Join-Path $PSScriptRoot 'GelatinizationShader.csproj'),
         '--configuration', 'Release', "-p:GameRoot=$GameRoot",
         "-p:RestoreConfigFile=$(Join-Path $repoRoot 'Tests/NuGet.Config')", '--', $repoRoot, $GameRoot, $ReportDirectory)
+    if ($FaAssemblyPath) { $arguments += (Resolve-Path -LiteralPath $FaAssemblyPath).Path }
     & $DotnetPath @arguments
     if ($LASTEXITCODE -ne 0) { throw "Native shader verification failed: $LASTEXITCODE" }
 }
