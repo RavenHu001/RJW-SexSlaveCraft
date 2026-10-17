@@ -236,7 +236,7 @@ namespace RimWorld
 {
     using Verse;
     public class Faction { public static readonly Faction OfPlayer = new Faction(); }
-    public static class MessageTypeDefOf { public static readonly object PositiveEvent = new object(); }
+    public static class MessageTypeDefOf { public static readonly object PositiveEvent = new object(), RejectInput = new object(); }
     public class WorkTypeDef { }
     public class JobDef { }
     public class Trait { public object def; public bool Suppressed; }

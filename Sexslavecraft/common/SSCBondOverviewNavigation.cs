@@ -9,6 +9,28 @@ namespace SexSlaveCraft
 
     internal static class SSCBondOverviewNavigation
     {
+        internal static bool IsTrainerCurrent(SSCBondOverviewSnapshot snapshot)
+            => snapshot != null && snapshot.State == SSCBondOverviewQueryState.Ready && ReferenceEquals(snapshot.Game, Current.Game) &&
+                Current.ProgramState == ProgramState.Playing && Scribe.mode == LoadSaveMode.Inactive &&
+                SSCBondOverviewUtility.IsValidPawn(snapshot.Source) && SSCBondOverviewUtility.IsValidPawn(snapshot.AssignedTrainer) &&
+                !ReferenceEquals(snapshot.Source, snapshot.AssignedTrainer) &&
+                ReferenceEquals(snapshot.Source.TryGetComp<CompSexSlaveTraining>()?.selectedTrainer, snapshot.AssignedTrainer);
+
+        internal static bool TryNavigateTrainer(SSCBondOverviewSnapshot snapshot, out SSCBondOverviewNavigationFailure failure)
+        {
+            failure = SSCBondOverviewNavigationFailure.RelationChanged;
+            if (!IsTrainerCurrent(snapshot)) return false;
+            // 调教员不是锁链条目；复查指定引用后，只重解这一人的位置，不伪造绑定或使用旧船。
+            SSCBondOverviewLocation location;
+            using (var world = SSCBondOverviewWorld.Rent())
+            { world.AddLocationRequest(snapshot.AssignedTrainer); world.IndexShipLocations(); location = world.GetLocation(snapshot.AssignedTrainer); }
+            if (!TryTarget(location, out GlobalTargetInfo target)) { failure = SSCBondOverviewNavigationFailure.Unknown; return false; }
+            if (!CameraJumper.CanJump(target)) { failure = SSCBondOverviewNavigationFailure.CannotJump; return false; }
+            if (!IsTrainerCurrent(snapshot)) return false;
+            if (CanSelect(target)) CameraJumper.TryJumpAndSelect(target); else CameraJumper.TryJump(target);
+            failure = SSCBondOverviewNavigationFailure.None; return true;
+        }
+
         internal static bool TryNavigate(SSCBondOverviewSnapshot snapshot, SSCBondOverviewEntry entry,
             out SSCBondOverviewNavigationFailure failure)
         {

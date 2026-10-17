@@ -45,4 +45,10 @@
   <SSC_BondOverview_Failure_Unknown>無法確定該角色目前的位置。</SSC_BondOverview_Failure_Unknown>
   <SSC_BondOverview_Failure_CannotJump>目前所在位置無法由鏡頭定位。</SSC_BondOverview_Failure_CannotJump>
   <SSC_BondOverview_BothCounts>主人 + 性奴 {0}/{1}</SSC_BondOverview_BothCounts>
+  <SSC_BondOverview_ShortCount>綁定性奴 {0}</SSC_BondOverview_ShortCount>
+  <SSC_BondOverview_TrainerPanel>指定調教員</SSC_BondOverview_TrainerPanel>
+  <SSC_BondOverview_ChangeTrainer>更換</SSC_BondOverview_ChangeTrainer>
+  <SSC_BondOverview_KnownCount>已知從屬：{0}</SSC_BondOverview_KnownCount>
+  <SSC_BondOverview_SupplementPending>正在補查其他綁定從屬…</SSC_BondOverview_SupplementPending>
+  <SSC_BondOverview_ResolveOnClick>點擊後複查目前位置。</SSC_BondOverview_ResolveOnClick>
 </LanguageData>

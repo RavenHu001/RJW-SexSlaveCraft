@@ -45,4 +45,10 @@
   <SSC_BondOverview_Failure_Unknown>The pawn's current location cannot be determined.</SSC_BondOverview_Failure_Unknown>
   <SSC_BondOverview_Failure_CannotJump>The current location cannot be reached by the camera.</SSC_BondOverview_Failure_CannotJump>
   <SSC_BondOverview_BothCounts>Master + slaves {0}/{1}</SSC_BondOverview_BothCounts>
+  <SSC_BondOverview_ShortCount>Bound slaves: {0}</SSC_BondOverview_ShortCount>
+  <SSC_BondOverview_TrainerPanel>Assigned trainer</SSC_BondOverview_TrainerPanel>
+  <SSC_BondOverview_ChangeTrainer>Change</SSC_BondOverview_ChangeTrainer>
+  <SSC_BondOverview_KnownCount>Known slaves: {0}</SSC_BondOverview_KnownCount>
+  <SSC_BondOverview_SupplementPending>Checking for other bound slaves…</SSC_BondOverview_SupplementPending>
+  <SSC_BondOverview_ResolveOnClick>Click to check the current location.</SSC_BondOverview_ResolveOnClick>
 </LanguageData>

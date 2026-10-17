@@ -1,4 +1,4 @@
-// AI 辅助生成。固定来源的只读窗口，按可见索引绘制，点击结束后统一执行导航。
+// AI 辅助生成。紧凑头像总览；只绘制可见网格，结束遍历后再导航或打开显式指派菜单。
 using System;
 using UnityEngine;
 using Verse;
@@ -10,112 +10,134 @@ namespace SexSlaveCraft
         private readonly SSCBondOverviewSession session;
         internal Pawn Source { get; private set; }
         private Vector2 scroll;
-        private string failureMessage;
-        public override Vector2 InitialSize => new Vector2(Math.Max(1, Math.Min(880, UI.screenWidth - 32)),
-            Math.Max(1, Math.Min(640, UI.screenHeight - 32)));
-
+        public override Vector2 InitialSize
+        {
+            get
+            {
+                SSCBondOverviewSnapshot snapshot = session.Card?.Snapshot;
+                int rows = (snapshot?.TotalSlaveCount ?? 0) + 6;
+                float height = 150 + Math.Min(4, rows / 7) * SSCBondOverviewLayout.RowHeight;
+                if (snapshot?.Master != null) height += 108;
+                if (ShowTrainer(snapshot)) height += 108;
+                return new Vector2(Math.Max(1, Math.Min(680, UI.screenWidth - 32)),
+                    Math.Max(1, Math.Min(Math.Max(240, height), UI.screenHeight - 32)));
+            }
+        }
         internal Dialog_SSCBondOverview(SSCBondOverviewSession session, Pawn source)
         {
             this.session = session; Source = source;
-            optionalTitle = SSCBondOverviewText.T("Title");
+            optionalTitle = SSCBondOverviewText.Format("TitleSource", source.LabelShort);
             forcePause = false; doCloseX = true; doCloseButton = true; absorbInputAroundWindow = true; closeOnAccept = false;
         }
-
         internal static void Open(SSCBondOverviewSession session, Pawn source)
         {
+            if (!SSCBondOverviewAccess.IsCardSource(source)) return;
             var previous = Find.WindowStack.WindowOfType<Dialog_SSCBondOverview>();
             if (previous != null && ReferenceEquals(previous.session, session) && ReferenceEquals(previous.Source, source)) return;
             Find.WindowStack.Add(new Dialog_SSCBondOverview(session, source));
         }
-
-        public override void PostOpen()
-        { base.PostOpen(); session.OpenDetails(Source, Find.CurrentMap); }
+        public override void PostOpen() { base.PostOpen(); session.OpenDetails(Source, Find.CurrentMap); }
         public override void PostClose()
         {
-            // 按来源退订，不能让被替换旧窗口的 PostClose 清掉后来打开的异源窗口。
-            session.ReleaseDetails(Source); Source = null; failureMessage = null; scroll = Vector2.zero;
+            session.ReleaseDetails(Source); Source = null; scroll = Vector2.zero;
             base.PostClose();
         }
         public override void WindowUpdate()
         {
             base.WindowUpdate();
             if (!ReferenceEquals(session.Owner, Current.Game)) { session.Clear(); Close(); return; }
-            if (SSCBondOverviewUtility.IsValidPawn(Source)) session.OpenDetails(Source, Find.CurrentMap);
+            // 总览跟随当前单选上下文；切换来源或来源失效就关闭，不再保留异源固定浏览器。
+            if (!SSCBondOverviewAccess.IsCardSource(Source)) { Close(); return; }
+            session.OpenDetails(Source, Find.CurrentMap);
         }
+        private bool ShowTrainer(SSCBondOverviewSnapshot snapshot)
+            => snapshot?.AssignedTrainer != null || SSCIdentityUtility.IsSexSlave(Source);
 
         public override void DoWindowContents(Rect inRect)
         {
             using var scope = new SSCBondOverviewWidgets.GuiScope(true);
-            if (!ReferenceEquals(session.Owner, Current.Game) || Source == null) { session.Clear(); Close(); return; }
+            if (!ReferenceEquals(session.Owner, Current.Game)) { session.Clear(); Close(); return; }
+            if (!SSCBondOverviewAccess.IsCardSource(Source)) { Close(); return; }
             SSCBondOverviewView view = session.Details;
             if (!ReferenceEquals(view?.Source, Source)) return;
             SSCBondOverviewDisplay display = view.Display;
-            SSCBondOverviewSnapshot snapshot = display?.Snapshot;
-            float refreshWidth = Math.Min(110, Math.Max(1, inRect.width * .24f));
-            Rect refresh = new Rect(inRect.xMax - refreshWidth, inRect.y, refreshWidth, 30);
-            string title = display?.Title ?? SSCBondOverviewText.Format("TitleSource", Source.LabelShort);
-            Widgets.Label(new Rect(inRect.x, inRect.y, Math.Max(1, refresh.x - inRect.x - 8), 30), title);
-            if (SSCUIWidgets.Button(refresh, SSCBondOverviewText.T("Refresh"), SSCBondOverviewUtility.IsValidPawn(Source)))
-            { session.RequestRefresh(view); failureMessage = null; }
-            string status = failureMessage ?? (!SSCBondOverviewUtility.IsValidPawn(Source) ? SSCBondOverviewText.T("Failure_SourceInvalid")
-                : view.Failed ? SSCBondOverviewText.T("QueryFailed") : snapshot == null || snapshot.State != SSCBondOverviewQueryState.Ready
-                    ? SSCBondOverviewText.T("Waiting") : view.Pending ? display.WaitingCount : display.Count);
-            Rect statusRect = new Rect(inRect.x, inRect.y + 34, inRect.width, 26);
-            Widgets.Label(statusRect, view.Truncate(status, statusRect.width));
-            if (Mouse.IsOver(statusRect)) TooltipHandler.TipRegion(statusRect, status);
-            if (!SSCBondOverviewUtility.IsValidPawn(Source) || snapshot == null || snapshot.State != SSCBondOverviewQueryState.Ready) return;
-
-            Rect viewport = new Rect(inRect.x, inRect.y + 66, inRect.width, Math.Max(1, inRect.height - 118));
+            SSCBondOverviewSnapshot snapshot = view.Snapshot;
+            if (snapshot == null || snapshot.State != SSCBondOverviewQueryState.Ready)
+            { Widgets.Label(inRect, SSCBondOverviewText.T(view.Failed ? "QueryFailed" : "Waiting")); return; }
+            Rect viewport = new Rect(inRect.x, inRect.y, inRect.width, Math.Max(1, inRect.height - 44));
             float width = Math.Max(1, viewport.width - 20);
-            const float row = SSCBondOverviewLayout.RowHeight, header = SSCBondOverviewLayout.HeaderHeight;
-            float masterStart = header, trainerY = masterStart + (snapshot.Master == null ? header : row);
-            float aliveHeader = trainerY + header, aliveStart = aliveHeader + header;
-            int living = snapshot.LivingSlaveCount, dead = snapshot.TotalSlaveCount - living;
-            float deadHeader = aliveStart + living * row + (snapshot.TotalSlaveCount == 0 ? header : 0), deadStart = deadHeader + header;
-            float total = dead > 0 ? deadStart + dead * row : deadHeader;
+            const float header = SSCBondOverviewLayout.HeaderHeight, row = SSCBondOverviewLayout.RowHeight;
+            bool master = snapshot.Master != null || snapshot.MasterState == SSCBondOverviewMasterState.InvalidTarget;
+            bool trainer = ShowTrainer(snapshot), slaves = snapshot.TotalSlaveCount > 0 || snapshot.Identity == PawnIdentity.Master;
+            float masterStart = header, trainerHeader = master ? header + row : 0;
+            float trainerStart = trainerHeader + header;
+            float slavesHeader = trainerHeader + (trainer ? header + row : 0), slavesStart = slavesHeader + header;
+            int columns = SSCBondOverviewLayout.Columns(width);
+            int rows = (snapshot.TotalSlaveCount + columns - 1) / columns;
+            float total = slaves ? slavesStart + Math.Max(header, rows * row) : slavesHeader;
             scroll.y = Math.Max(0, Math.Min(scroll.y, Math.Max(0, total - viewport.height)));
             SSCBondOverviewEntry clicked = null;
-            Widgets.BeginScrollView(viewport, ref scroll, new Rect(0, 0, width, Math.Max(viewport.height, total)));
+            bool clickedTrainer = false, changeTrainer = false;
+            Widgets.BeginScrollView(viewport, ref scroll, new Rect(0, 0, width, Math.Max(total, viewport.height)));
             try
             {
-                Label(0, SSCBondOverviewText.T("Master"));
-                if (snapshot.Master != null)
+                if (master)
                 {
-                    if (Visible(masterStart, row) && SSCBondOverviewWidgets.Row(new Rect(0, masterStart, width, row), snapshot,
-                        snapshot.Master, display, session, view)) clicked = snapshot.Master;
+                    Label(0, SSCBondOverviewText.T("Master"));
+                    if (snapshot.Master != null && Visible(masterStart, row))
+                    {
+                        if (SSCBondOverviewWidgets.Avatar(new Rect(4, masterStart, 56, 56), snapshot, snapshot.Master, session, view, true)) clicked = snapshot.Master;
+                    }
+                    else if (snapshot.Master == null) Label(masterStart, SSCBondOverviewText.T("InvalidMaster"));
                 }
-                else Label(masterStart, SSCBondOverviewText.T(snapshot.MasterState == SSCBondOverviewMasterState.InvalidTarget ? "InvalidMaster" : "NoMaster"));
-                Label(trainerY, display.Trainer);
-                Label(aliveHeader, SSCBondOverviewText.T("LivingSlaves"));
-                if (snapshot.TotalSlaveCount == 0) Label(aliveStart, SSCBondOverviewText.T("EmptySlaves"));
-                DrawGroup(0, living, aliveStart);
-                if (dead > 0) { Label(deadHeader, SSCBondOverviewText.T("DeadSlaves")); DrawGroup(living, dead, deadStart); }
+                if (trainer)
+                {
+                    Label(trainerHeader, SSCBondOverviewText.T("TrainerPanel"), Math.Max(1, width - Math.Min(width, 100) - 8));
+                    if (Visible(trainerHeader, header) && SSCUIWidgets.Button(new Rect(Math.Max(0, width - 100), trainerHeader, Math.Min(width, 100), 24),
+                        SSCBondOverviewText.T("ChangeTrainer"), SSCIdentityUtility.IsSexSlave(Source))) changeTrainer = true;
+                    if (Visible(trainerStart, row))
+                    {
+                        if (snapshot.AssignedTrainer != null)
+                            clickedTrainer = SSCBondOverviewWidgets.TrainerAvatar(new Rect(4, trainerStart, 56, 56), snapshot, session, view, true);
+                        else Label(trainerStart, SSCBondOverviewText.T("None"));
+                    }
+                }
+                if (slaves)
+                {
+                    Label(slavesHeader, display.SlaveHeading);
+                    if (snapshot.TotalSlaveCount == 0) Label(slavesStart,
+                        SSCBondOverviewText.T(snapshot.CoverageComplete ? "EmptySlaves" : "SupplementPending"));
+                    // 先算可见网格行，再直接索引完整快照；不枚举或格式化离屏头像。
+                    SSCBondOverviewLayout.VisibleRange(rows, slavesStart, scroll.y, viewport.height, out int first, out int end);
+                    for (int r = first; r < end; r++)
+                        for (int c = 0; c < columns; c++)
+                        {
+                            int index = r * columns + c;
+                            if (index >= snapshot.TotalSlaveCount) break;
+                            SSCBondOverviewEntry entry = snapshot.Slaves[index];
+                            if (SSCBondOverviewWidgets.Avatar(new Rect(4 + c * SSCBondOverviewLayout.CellWidth, slavesStart + r * row, 56, 56),
+                                snapshot, entry, session, view, true)) clicked = entry;
+                        }
+                }
             }
             finally { Widgets.EndScrollView(); }
-
-            // 结束滚动区后才跳转或关闭，避免重入、切图或销毁窗口打断行遍历。
-            if (clicked != null)
+            if (changeTrainer) Gizmo_SSCBondOverview.OpenTrainerMenu(session, view);
+            else if (clicked != null || clickedTrainer)
             {
-                if (SSCBondOverviewNavigation.TryNavigate(snapshot, clicked, out SSCBondOverviewNavigationFailure failure)) Close();
-                else { failureMessage = SSCBondOverviewText.T("Failure_" + failure); session.RequestRefresh(view); }
+                SSCBondOverviewNavigationFailure failure;
+                bool success = clickedTrainer ? SSCBondOverviewNavigation.TryNavigateTrainer(snapshot, out failure)
+                    : SSCBondOverviewNavigation.TryNavigate(snapshot, clicked, out failure);
+                if (success) Close();
+                else { session.RequestRefresh(view); Messages.Message(SSCBondOverviewText.T("Failure_" + failure), RimWorld.MessageTypeDefOf.RejectInput, false); }
             }
             bool Visible(float y, float height) => y + height >= scroll.y && y <= scroll.y + viewport.height;
-            void Label(float y, string text)
+            void Label(float y, string text, float labelWidth = -1)
             {
                 if (!Visible(y, header)) return;
-                Rect rect = new Rect(0, y, width, header);
-                Widgets.Label(rect, view.Truncate(text, width));
-                if (Mouse.IsOver(rect)) TooltipHandler.TipRegion(rect, text);
-            }
-            void DrawGroup(int offset, int count, float start)
-            {
-                SSCBondOverviewLayout.VisibleRange(count, start, scroll.y, viewport.height, out int first, out int end);
-                for (int i = first; i < end; i++)
-                {
-                    int index = offset + i;
-                    if (SSCBondOverviewWidgets.Row(new Rect(0, start + i * row, width, row), snapshot,
-                        snapshot.Slaves[index], display, session, view)) clicked = snapshot.Slaves[index];
-                }
+                float available = labelWidth < 0 ? width : labelWidth;
+                Rect rect = new Rect(0, y, available, header);
+                Widgets.Label(rect, view.Truncate(text, available));
+                if (Mouse.IsOver(rect)) TooltipHandler.TipRegion(rect, y == slavesHeader && slaves ? display.Count : text);
             }
         }
     }

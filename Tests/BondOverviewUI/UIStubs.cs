@@ -13,7 +13,7 @@ namespace UnityEngine
         public Rect(float x,float y,float width,float height) { this.x=x;this.y=y;this.width=width;this.height=height; }
         public bool Contains(Vector2 p) => p.x>=x && p.x<xMax && p.y>=y && p.y<yMax;
     }
-    public struct Color { public float r,g,b,a; public Color(float r,float g,float b,float a=1){this.r=r;this.g=g;this.b=b;this.a=a;} }
+    public struct Color { public float r,g,b,a; public static Color white=>new(1,1,1); public Color(float r,float g,float b,float a=1){this.r=r;this.g=g;this.b=b;this.a=a;} }
     public enum TextAnchor { UpperLeft, MiddleCenter }
     public enum EventType { layout, repaint, mouseDown, used }
     public class Event { public static Event current = new(); public EventType type; public int button; public Vector2 mousePosition; public void Use()=>type=EventType.used; }
@@ -31,7 +31,7 @@ namespace Verse
     public static class TooltipHandler { public static int Calls; public static void TipRegion(Rect rect,string text){Calls++;} }
     public static class LanguageDatabase { public static object activeLanguage = new(); }
     public static class Log { public static int Errors; public static void Error(string text){Errors++;} }
-    public static class Messages { public static int Calls; public static void Message(string text,object def,bool historical){Calls++;} }
+    public static class Messages { public static int Calls; public static void Message(string text,object def,bool historical){Calls++;} public static void Message(string text,Pawn pawn,object def,bool historical){Calls++;} }
     public readonly struct Rot4 { public static Rot4 South=>default; }
     public class ThingDef { public bool selectable=true; }
     public partial class Thing { public ThingDef def=new(); public string LabelShort=>"Container"; }
@@ -45,7 +45,15 @@ namespace Verse
     public abstract partial class GameComponent { public virtual void GameComponentUpdate(){} }
     public static partial class Find { public static Map CurrentMap; public static RimWorld.Selector Selector=new(); public static WindowStack WindowStack=new(); }
     public enum GizmoState { Clear,Mouseover,Interacted }
-    public struct GizmoRenderParms { }
+    public struct GizmoRenderParms { public bool lowLight,shrunk; }
+    public static class Command { public static readonly object BGTex=new(),BGTexShrunk=new();public static readonly Color LowLightBgColor=new(.5f,.5f,.5f); }
+    public static class TexUI { public static readonly object GrayscaleGUI=new(); }
+    public static class GenUI
+    {
+        public static object LastTexture,LastMaterial;public static Color LastColor;public static Rect LastRect;
+        public static void DrawTextureWithMaterial(Rect rect,object texture,object material)
+        { LastRect=rect;LastTexture=texture;LastMaterial=material;LastColor=GUI.color; }
+    }
     public readonly struct GizmoResult
     { public readonly GizmoState State; public readonly Event InteractEvent; public GizmoResult(GizmoState state,Event ev=null){State=state;InteractEvent=ev;} }
     public partial class Gizmo
@@ -68,6 +76,8 @@ namespace Verse
         public abstract void DoWindowContents(Rect rect);
         public void Close()=>Find.WindowStack.Remove(this);
     }
+    public class FloatMenuOption { public readonly string Label; public readonly Action action; public FloatMenuOption(string label,Action action){Label=label;this.action=action;} }
+    public class FloatMenu : Window { public readonly List<FloatMenuOption> options; public FloatMenu(List<FloatMenuOption> options){this.options=options;} public override void DoWindowContents(Rect rect){} }
     public class WindowStack
     {
         readonly List<Window> windows=new();
@@ -80,9 +90,10 @@ namespace Verse
     {
         public static int Labels, ScrollDepth; public static float? NextScroll;
         public static bool ThrowLabel; public static int ThrowAt;
+        public static List<(Rect rect,string value)> CapturedLabels;
         public static void DrawBoxSolid(Rect rect,Color color){}
         public static void DrawHighlight(Rect rect){}
-        public static void Label(Rect rect,string value){Labels++; if(ThrowLabel||ThrowAt>0&&Labels==ThrowAt)throw new InvalidOperationException("GUI fixture");}
+        public static void Label(Rect rect,string value){Labels++;CapturedLabels?.Add((rect,value)); if(ThrowLabel||ThrowAt>0&&Labels==ThrowAt)throw new InvalidOperationException("GUI fixture");}
         public static bool ButtonText(Rect rect,string label,bool active=true)
         { if(active&&GUI.enabled&&Event.current.type==EventType.mouseDown&&Event.current.button==0&&Mouse.IsOver(rect)){Event.current.Use();return true;}return false; }
         public static void CheckboxLabeled(Rect rect,string label,ref bool value,bool disabled=false){}
@@ -118,8 +129,19 @@ namespace RimWorld
     { public readonly List<object> Objects=new(); public int NumSelected=>Objects.Count; public Thing SingleSelectedThing=>NumSelected==1?Objects[0]as Thing:null; }
     public static class MessageTypeDefOf { public static object RejectInput=new(); }
     public static class PortraitsCache
-    { public static int Calls; public static readonly List<(Pawn pawn,Vector2 size)> Requests=new(); public static object Get(Pawn pawn,Vector2 size,Rot4 rot){Calls++;Requests.Add((pawn,size));return null;} }
+    { public static int Calls; public static float LastZoom; public static readonly List<(Pawn pawn,Vector2 size)> Requests=new(); public static object Get(Pawn pawn,Vector2 size,Rot4 rot,float cameraZoom=1){Calls++;LastZoom=cameraZoom;Requests.Add((pawn,size));return null;} }
     public static class TargetHighlighter { public static int Calls; public static void Highlight(GlobalTargetInfo target,bool arrow,bool colonistBar){Calls++;} }
+}
+namespace SexSlaveCraft
+{
+    // 菜单宿主只模拟既有候选和事务返回值；完整资格、限制和授权由 TrainerIdentity 等生产专项验证。
+    public static partial class SSCIdentityUtility { public static bool IsSexSlave(Pawn pawn)=>pawn?.Training?.pawnIdentity==PawnIdentity.Slave; }
+    public partial class CompSexSlaveTraining { public SSCRestrictionConfig restrictionConfig=new(); }
+    public class SSCRestrictionConfig { public bool Valid=true;public SSCRestrictionRules rules=new();public bool IsValid()=>Valid; }
+    public class SSCRestrictionRules { public bool receiveTraining=true; }
+    public static partial class SSCRestrictionTrainerAssignment { public static bool AllowClear=true;public static bool CanAssign(Pawn pawn,Pawn trainer)=>trainer!=null||AllowClear; }
+    public static partial class TrainerAssignmentUtility
+    { public static readonly List<Pawn> Candidates=new();public static int CandidateQueries;public static IEnumerable<Pawn> GetTrainerCandidates(Pawn source){CandidateQueries++;return Candidates.Where(p=>CanAssignTrainerTo(source,p));} }
 }
 namespace RimWorld.Planet
 {

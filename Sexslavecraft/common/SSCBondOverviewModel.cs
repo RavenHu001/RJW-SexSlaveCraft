@@ -76,26 +76,32 @@ namespace SexSlaveCraft
         public SSCBondOverviewMasterState MasterState { get; }
         public SSCBondOverviewEntry Master { get; }
         public Pawn AssignedTrainer { get; }
+        public SSCBondOverviewLocation AssignedTrainerLocation { get; }
         public SSCBondOverviewTrainerState AssignedTrainerState { get; }
         public IReadOnlyList<SSCBondOverviewEntry> Slaves { get; }
         public int LivingSlaveCount { get; }
         public int TotalSlaveCount => Slaves.Count;
+        // 表示本视图曾完成全局补漏，不承诺关系永久不变；导航仍逐次实时复查。
+        public bool CoverageComplete { get; }
         private readonly HashSet<SSCBondOverviewEntry> slaveEntries;
 
         internal SSCBondOverviewSnapshot(Game game, Pawn source, Map viewedMap,
             SSCBondOverviewQueryState state, SSCBondOverviewMasterState masterState,
-            SSCBondOverviewEntry master, List<SSCBondOverviewEntry> slaves)
+            SSCBondOverviewEntry master, List<SSCBondOverviewEntry> slaves, SSCBondOverviewLocation trainerLocation = null,
+            bool coverageComplete = true)
         {
             Game = game;
             Source = source;
             ViewedMap = viewedMap;
             State = state;
+            CoverageComplete = coverageComplete;
             Identity = source?.TryGetComp<CompSexSlaveTraining>()?.pawnIdentity ?? PawnIdentity.Unset;
             MasterState = masterState;
             Master = master;
             // 指派状态是独立的次级信息：保留原始指定者，再用既有只读规则判定是否生效。
             // 指定者失效时不清空字段，也不将其当成锁链主人，更不在查询中整理身份或指派。
             AssignedTrainer = source?.TryGetComp<CompSexSlaveTraining>()?.selectedTrainer;
+            AssignedTrainerLocation = trainerLocation;
             AssignedTrainerState = state != SSCBondOverviewQueryState.Ready ? SSCBondOverviewTrainerState.Unavailable
                 : AssignedTrainer == null ? SSCBondOverviewTrainerState.None
                 : !SSCBondOverviewUtility.IsValidPawn(AssignedTrainer) || ReferenceEquals(source, AssignedTrainer)

@@ -45,4 +45,10 @@
   <SSC_BondOverview_Failure_Unknown>Не удалось определить текущее местоположение.</SSC_BondOverview_Failure_Unknown>
   <SSC_BondOverview_Failure_CannotJump>Камера не может перейти к текущему местоположению.</SSC_BondOverview_Failure_CannotJump>
   <SSC_BondOverview_BothCounts>Хозяин + рабы {0}/{1}</SSC_BondOverview_BothCounts>
+  <SSC_BondOverview_ShortCount>Связанные рабы: {0}</SSC_BondOverview_ShortCount>
+  <SSC_BondOverview_TrainerPanel>Назначенный наставник</SSC_BondOverview_TrainerPanel>
+  <SSC_BondOverview_ChangeTrainer>Сменить</SSC_BondOverview_ChangeTrainer>
+  <SSC_BondOverview_KnownCount>Известных подчинённых: {0}</SSC_BondOverview_KnownCount>
+  <SSC_BondOverview_SupplementPending>Поиск остальных связанных подчинённых…</SSC_BondOverview_SupplementPending>
+  <SSC_BondOverview_ResolveOnClick>Нажмите для проверки текущего местоположения.</SSC_BondOverview_ResolveOnClick>
 </LanguageData>

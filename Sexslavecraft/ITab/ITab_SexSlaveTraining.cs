@@ -708,52 +708,7 @@ namespace SexSlaveCraft
 
         /// <summary>列出合格且可完成调教授权的对象；普通互动不随指派开放，强制来源禁止时不能换人。</summary>
         private List<FloatMenuOption> GetTrainerOptions(Pawn slave)
-        {
-            List<FloatMenuOption> list = new List<FloatMenuOption>();
-            List<Pawn> candidates = TrainerAssignmentUtility.GetTrainerCandidates(slave).ToList();
-            Pawn owner = SSCBondUtility.GetBoundMaster(slave);
-            CompSexSlaveTraining comp = slave.TryGetComp<CompSexSlaveTraining>();
-            SSCRestrictionConfig config = comp?.restrictionConfig;
-
-            if (candidates.Count == 0)
-            {
-                list.Add(new FloatMenuOption(Strings.ITab_NoTrainerAvailable, null));
-            }
-
-            foreach (Pawn candidate in candidates)
-            {
-                string label = candidate.LabelShort;
-                Action action;
-
-                if (owner != null && candidate == owner)
-                {
-                    label += Strings.ITab_TrainerMasterSuffix;
-                }
-                else if (owner != null && config?.IsValid() == true && !config.rules.receiveTraining)
-                    label += "SSC_Restrictions_AssignAuthorizesSuffix".Translate();
-
-                action = delegate { AssignTrainer(slave, candidate, comp); };
-                list.Add(new FloatMenuOption(label, action));
-            }
-
-            list.Add(new FloatMenuOption(Strings.ITab_ClearTrainer,
-                SSCRestrictionTrainerAssignment.CanAssign(slave, null) ? (Action)(() => AssignTrainer(slave, null, comp)) : null));
-            return list;
-        }
-
-        /// <summary>点击时重新验证规则及候选状态；菜单打开后的状态变化造成失败时给出提示，保留原指派。</summary>
-        private static void AssignTrainer(Pawn slave, Pawn trainer, CompSexSlaveTraining expectedComp)
-        {
-            // 菜单中的选择和清空都属于原组件；迟到菜单不能改写外部恢复安装的新配置。
-            if (expectedComp == null || slave?.TryGetComp<CompSexSlaveTraining>() != expectedComp)
-            {
-                Messages.Message("SSC_Restrictions_AssignFailed".Translate(), slave, MessageTypeDefOf.RejectInput, false);
-                return;
-            }
-            if (trainer != null && !CanEditTrainingConfiguration(slave, expectedComp)) return;
-            if (!SSCBondUtility.TryAssignTrainer(slave, trainer))
-                Messages.Message("SSC_Restrictions_AssignFailed".Translate(), slave, MessageTypeDefOf.RejectInput, false);
-        }
+            => SSCTrainerAssignmentMenu.Options(slave);
 
         /// <summary>切换日常训练状态并清除当前训练占用；启用时显示现有资格校验结果。</summary>
         private static void DrawTrainingToggle(Listing_Standard listing, Pawn pawn, CompSexSlaveTraining comp)

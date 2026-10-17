@@ -1,7 +1,8 @@
 """Compare real production GUI/session code with identical deterministic game boundaries.
 
 Run from repository: python Tests/BondOverviewUI/Performance/Compare.py
-Outputs stay in .builds/bond-overview-ui-opt/performance; no game process is used.
+Defaults freeze the two performance-phase commits and write to .builds/bond-overview-ui-opt/reproduction.
+No game process is used; later UI layouts intentionally draw a different amount of visible work.
 """
 from pathlib import Path
 import argparse
@@ -13,14 +14,17 @@ import xml.etree.ElementTree as ET
 root = Path(__file__).resolve().parents[3]
 parser = argparse.ArgumentParser()
 parser.add_argument('--baseline', default='98b3ce6d59415651a6b480ea521eaf0de575b534')
+parser.add_argument('--optimized', default='67bb3919aa3d548481693f1ad364927cf0a587bb')
 parser.add_argument('--rounds', type=int, default=3)
+parser.add_argument('--output', default='.builds/bond-overview-ui-opt/reproduction')
 args = parser.parse_args()
 baseline = subprocess.check_output(['git', 'rev-parse', args.baseline], cwd=root, text=True).strip()
-out = root / '.builds/bond-overview-ui-opt/performance'
+optimized = subprocess.check_output(['git', 'rev-parse', args.optimized], cwd=root, text=True).strip()
+out = root / args.output
 out.mkdir(parents=True, exist_ok=True)
 host = root / 'Tests/BondOverviewUI'
-def historical(path):
-    return subprocess.check_output(['git', 'show', baseline+':'+path], cwd=root)
+def historical(path, revision=baseline):
+    return subprocess.check_output(['git', 'show', revision+':'+path], cwd=root)
 def digest(data):
     return hashlib.sha256(data).hexdigest()
 
@@ -42,10 +46,13 @@ for mode in ('baseline', 'optimized'):
         ET.SubElement(props, k).text = v
     group = ET.SubElement(project, 'ItemGroup')
     hashes[mode] = {}
-    for i, item in enumerate(ET.parse(host/'BondOverviewUI.csproj').getroot().findall('ItemGroup/Compile')):
+    revision = baseline if mode=='baseline' else optimized
+    # Freeze the two performance-phase revisions: later UI grids intentionally draw different visible work.
+    inputs = ET.fromstring(historical('Tests/BondOverviewUI/BondOverviewUI.csproj', revision))
+    for i, item in enumerate(inputs.findall('ItemGroup/Compile')):
         src = (host/item.attrib['Include']).resolve()
         rel = src.relative_to(root).as_posix()
-        data = historical(rel) if mode=='baseline' and rel.startswith('Sexslavecraft/') else src.read_bytes()
+        data = historical(rel, revision) if rel.startswith('Sexslavecraft/') else src.read_bytes()
         path = folder/(str(i)+'-'+src.name)
         path.write_bytes(data)
         hashes[mode][rel] = digest(data.replace(b'\r\n', b'\n'))
@@ -82,7 +89,7 @@ for round_index in range(args.rounds):
         if name.startswith('warm-window') or name.startswith('warm-gizmo'):
             assert item['truncations'] == 0, name
 
-result = {'baseline':baseline, 'head':subprocess.check_output(['git','rev-parse','HEAD'],cwd=root,text=True).strip(),
+result = {'baseline':baseline, 'optimized':optimized, 'head':subprocess.check_output(['git','rev-parse','HEAD'],cwd=root,text=True).strip(),
           'sdk':subprocess.check_output(['dotnet','--version'],text=True).strip(), 'rounds':args.rounds,
           'boundaryHashes':{k:digest(v) for k,v in boundaries.items()}, 'sourceHashes':hashes, 'runs':runs,
           'limitations':'net9 deterministic GUI boundaries; no real font/portrait rendering or in-game FPS measurement'}

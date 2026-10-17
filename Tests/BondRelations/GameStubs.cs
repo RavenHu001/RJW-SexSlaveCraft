@@ -174,7 +174,7 @@ namespace SexSlaveCraft
         public static void RefreshMasterEmpowerment(Pawn pawn) { }
         public static string GetEmpowermentSummary(Pawn pawn) => "empowerment";
     }
-    public static class SSCIdentityUtility
+    public static partial class SSCIdentityUtility
     {
         public static bool IsMaster(Pawn pawn) => pawn?.Training.pawnIdentity == PawnIdentity.Master;
         public static bool TrySetIdentity(Pawn pawn, PawnIdentity id) { pawn.Training.pawnIdentity = id; return true; }
@@ -188,18 +188,20 @@ namespace SexSlaveCraft
         public static List<Pawn> AllPawns() { QueryCount++; return OverviewWorldBoundary.AllPawns(); }
         public static void Notify(Pawn pawn) { }
     }
-    public static class SSCRestrictionTrainerAssignment
+    public static partial class SSCRestrictionTrainerAssignment
     {
-        public static bool TryAssign(Pawn slave, Pawn trainer) { slave.Training.selectedTrainer = trainer; return true; }
+        public static bool AllowAssign = true;
+        public static bool TryAssign(Pawn slave, Pawn trainer) { if (!AllowAssign) return false; slave.Training.selectedTrainer = trainer; return true; }
     }
-    public static class TrainerAssignmentUtility
+    public static partial class TrainerAssignmentUtility
     {
         public static Pawn GetActiveAssignedTrainer(Pawn pawn)
         {
             Pawn trainer = pawn?.Training?.selectedTrainer;
             return trainer != null && trainer != pawn && !trainer.Dead && !trainer.Destroyed && trainer.Training?.TrainerActive != false ? trainer : null;
         }
-        public static bool CanAssignTrainerTo(Pawn slave, Pawn trainer) => true;
+        public static Func<Pawn, Pawn, bool> AssignmentCheck = (slave, trainer) => true;
+        public static bool CanAssignTrainerTo(Pawn slave, Pawn trainer) => AssignmentCheck(slave, trainer);
     }
     public static class TrainerSpecializationLifecycle
     {

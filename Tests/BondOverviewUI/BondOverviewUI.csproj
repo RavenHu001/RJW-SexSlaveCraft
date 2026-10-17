@@ -21,6 +21,7 @@
     <Compile Include="../../Sexslavecraft/common/SSCBondRelationGameComponent.BondOverview.cs" />
     <Compile Include="../../Sexslavecraft/Comps/Comp_Train.BondOverview.cs" />
     <Compile Include="../../Sexslavecraft/UI/SSCBondOverviewWidgets.cs" />
+    <Compile Include="../../Sexslavecraft/UI/SSCTrainerAssignmentMenu.cs" />
     <Compile Include="../../Sexslavecraft/UI/Gizmo_SSCBondOverview.cs" />
     <Compile Include="../../Sexslavecraft/UI/Dialog_SSCBondOverview.cs" />
     <Compile Include="../../Sexslavecraft/common/SSCUIWidgets.cs" />

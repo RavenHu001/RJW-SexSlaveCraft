@@ -35,7 +35,7 @@ namespace SexSlaveCraft
             get
             {
                 CheckLanguage();
-                if (Snapshot == null) return null;
+                if (Snapshot == null || !ReferenceEquals(Snapshot.ViewedMap, Map)) return null;
                 if (display == null) display = new SSCBondOverviewDisplay(Snapshot);
                 return display;
             }
@@ -73,7 +73,15 @@ namespace SexSlaveCraft
     internal sealed class SSCBondOverviewDisplay
     {
         internal readonly SSCBondOverviewSnapshot Snapshot;
-        internal readonly string Title, Count, Trainer, CardHeading, WaitingCount;
+        internal readonly string Title, Count, Trainer, CardHeading, WaitingCount, SlaveHeading, TrainerName, TrainerDetails;
+        private int pageNumber = -1, pageTotal;
+        private string pageLabel;
+        internal string PageLabel(int page, int total)
+        {
+            if (pageNumber != page || pageTotal != total)
+            { pageNumber = page; pageTotal = total; pageLabel = (page + 1) + "/" + total; }
+            return pageLabel;
+        }
         private SSCBondOverviewCache<SSCBondOverviewEntry, SSCBondOverviewRowText> rows;
         internal int RowCount => rows?.Count ?? 0;
         internal SSCBondOverviewRowText Row(SSCBondOverviewEntry entry)
@@ -90,12 +98,16 @@ namespace SexSlaveCraft
             Snapshot = snapshot;
             Title = SSCBondOverviewText.Format("TitleSource", snapshot.Source.Dead
                 ? SSCBondOverviewText.Format("DeadName", snapshot.Source.LabelShort) : snapshot.Source.LabelShort);
-            Count = SSCBondOverviewText.Format("Counts", snapshot.LivingSlaveCount, snapshot.TotalSlaveCount);
+            Count = snapshot.CoverageComplete ? SSCBondOverviewText.Format("Counts", snapshot.LivingSlaveCount, snapshot.TotalSlaveCount)
+                : SSCBondOverviewText.Format("KnownCount", snapshot.TotalSlaveCount);
+            SlaveHeading = SSCBondOverviewText.Format(snapshot.CoverageComplete ? "ShortCount" : "KnownCount", snapshot.TotalSlaveCount);
             WaitingCount = Count + " · " + SSCBondOverviewText.T("Waiting");
             CardHeading = snapshot.Master == null ? Count : snapshot.TotalSlaveCount == 0 ? SSCBondOverviewText.T("Master")
                 : SSCBondOverviewText.Format("BothCounts", snapshot.LivingSlaveCount, snapshot.TotalSlaveCount);
             Trainer = SSCBondOverviewText.Format("Trainer", snapshot.AssignedTrainer?.LabelShort ?? SSCBondOverviewText.T("None"),
                 SSCBondOverviewText.T("Trainer_" + snapshot.AssignedTrainerState));
+            TrainerName = snapshot.AssignedTrainer?.LabelShort ?? SSCBondOverviewText.T("None");
+            TrainerDetails = Trainer + (snapshot.AssignedTrainerLocation == null ? "" : "\n" + SSCBondOverviewText.Location(snapshot.AssignedTrainerLocation));
         }
     }
 
@@ -138,7 +150,9 @@ namespace SexSlaveCraft
     /// <summary>完整高度含组头；以算术索引裁剪，不先枚举全名单再跳过离屏行。</summary>
     internal static class SSCBondOverviewLayout
     {
-        internal const float RowHeight = 64, HeaderHeight = 28;
+        internal const float RowHeight = 80, HeaderHeight = 28, CellWidth = 80;
+        internal static int Columns(float width) => Math.Max(1, (int)(width / CellWidth));
+        internal static int LastPage(int count, int capacity) => capacity <= 0 ? 0 : Math.Max(0, (count - 1) / capacity);
         internal static void VisibleRange(int count, float start, float scroll, float height, out int first, out int end)
         {
             first = Math.Max(0, Math.Min(count, (int)Math.Floor((scroll - start) / RowHeight) - 1));
@@ -166,11 +180,14 @@ namespace SexSlaveCraft
         }
 
         internal static void Portrait(Rect rect, SSCBondOverviewEntry entry, bool current)
+            => Portrait(rect, entry.Pawn, entry.IsDead, current);
+
+        internal static void Portrait(Rect rect, Pawn pawn, bool dead, bool current)
         {
             if (Event.current.type != EventType.repaint || !current) return;
             // 原版缓存拥有纹理；这里只请求两个固定档位，不强制 SetDirty 或自行销毁。
-            GUI.DrawTexture(rect, PortraitsCache.Get(entry.Pawn, new Vector2(rect.width, rect.height), Rot4.South));
-            if (entry.IsDead) Widgets.Label(new Rect(rect.x, rect.yMax - 18, rect.width, 18), SSCBondOverviewText.T("Dead"));
+            GUI.DrawTexture(rect, PortraitsCache.Get(pawn, new Vector2(rect.width, rect.height), Rot4.South, cameraZoom: 1.5f));
+            if (dead) Widgets.Label(new Rect(rect.x, rect.yMax - 18, rect.width, 18), SSCBondOverviewText.T("Dead"));
         }
 
         internal static void Hover(Rect rect, SSCBondOverviewEntry entry, string name, string details)
@@ -181,26 +198,49 @@ namespace SexSlaveCraft
             SSCBondOverviewNavigation.Highlight(entry.Location);
         }
 
-        internal static bool Row(Rect rect, SSCBondOverviewSnapshot snapshot, SSCBondOverviewEntry entry,
-            SSCBondOverviewDisplay display, SSCBondOverviewSession session, SSCBondOverviewView view)
+        internal static bool Avatar(Rect rect, SSCBondOverviewSnapshot snapshot, SSCBondOverviewEntry entry,
+            SSCBondOverviewSession session, SSCBondOverviewView view, bool nameBelow = false)
         {
-            SSCBondOverviewRowText text = display.Row(entry);
-            string name = text.Name, details = text.Details;
             bool current = SSCBondOverviewUtility.IsCurrent(snapshot, entry);
             if (!current) session.RequestRefresh(view);
-            Portrait(new Rect(rect.x, rect.y + 8, 48, 48), entry, current);
-            float buttonWidth = Math.Min(110, Math.Max(46, rect.width * .23f));
-            Rect button = new Rect(rect.xMax - buttonWidth, rect.y + 16, buttonWidth, 30);
-            float textWidth = Math.Max(1, button.x - rect.x - 68);
-            Widgets.Label(new Rect(rect.x + 56, rect.y + 7, textWidth, 24), view.Truncate(name, textWidth));
-            Widgets.Label(new Rect(rect.x + 56, rect.y + 32, textWidth, 24),
-                view.Truncate(current ? details : SSCBondOverviewText.T("RelationChanged"), textWidth));
-            if (current) Hover(new Rect(rect.x, rect.y, Math.Max(1, button.x - rect.x - 4), rect.height), entry, name, details);
-            bool select = false;
-            bool available = current && SSCBondOverviewNavigation.CanPreview(entry.Location, out select);
-            if (Mouse.IsOver(button) && !available) TooltipHandler.TipRegion(button,
-                SSCBondOverviewText.T(current ? "CannotJump" : "RelationChanged"));
-            return SSCUIWidgets.Button(button, SSCBondOverviewText.T(select ? "JumpSelect" : "Jump"), available);
+            Portrait(rect, entry, current); Badge(rect, entry.Location, current);
+            // 缩略图只在总览显示姓名，阶段、特化和具体位置留给悬停；离屏对象不格式化。
+            if (nameBelow) Widgets.Label(new Rect(rect.x, rect.yMax, rect.width + 16, 20), view.Truncate(view.Display.Row(entry).Name, rect.width + 16));
+            if (!Mouse.IsOver(rect)) return false;
+            if (!current) { TooltipHandler.TipRegion(rect, SSCBondOverviewText.T("RelationChanged")); return false; }
+            SSCBondOverviewRowText text = view.Display.Row(entry);
+            Hover(rect, entry, text.Name, text.Details);
+            bool available = SSCBondOverviewNavigation.CanPreview(entry.Location, out _);
+            // 首屏未建立飞船索引并不代表无法定位；点击沿原导航路径重新解析位置并复查关系。
+            if (!available) TooltipHandler.TipRegion(rect, SSCBondOverviewText.T("ResolveOnClick"));
+            return GUI.enabled && Event.current.type == EventType.mouseDown && Event.current.button == 0;
+        }
+
+        internal static bool TrainerAvatar(Rect rect, SSCBondOverviewSnapshot snapshot, SSCBondOverviewSession session,
+            SSCBondOverviewView view, bool nameBelow = false)
+        {
+            bool current = SSCBondOverviewNavigation.IsTrainerCurrent(snapshot);
+            if (!current) session.RequestRefresh(view);
+            Portrait(rect, snapshot.AssignedTrainer, snapshot.AssignedTrainer?.Dead == true, current);
+            Badge(rect, snapshot.AssignedTrainerLocation, current);
+            if (nameBelow) Widgets.Label(new Rect(rect.x, rect.yMax, rect.width + 16, 20), view.Truncate(view.Display.TrainerName, rect.width + 16));
+            if (!Mouse.IsOver(rect)) return false;
+            if (!current) { TooltipHandler.TipRegion(rect, SSCBondOverviewText.T("RelationChanged")); return false; }
+            Widgets.DrawHighlight(rect);
+            TooltipHandler.TipRegion(rect, view.Display.TrainerName + "\n" + view.Display.TrainerDetails);
+            SSCBondOverviewNavigation.Highlight(snapshot.AssignedTrainerLocation);
+            bool available = SSCBondOverviewNavigation.CanPreview(snapshot.AssignedTrainerLocation, out _);
+            if (!available) TooltipHandler.TipRegion(rect, SSCBondOverviewText.T("ResolveOnClick"));
+            return GUI.enabled && Event.current.type == EventType.mouseDown && Event.current.button == 0;
+        }
+
+        private static void Badge(Rect rect, SSCBondOverviewLocation location, bool current)
+        {
+            // 正常同图不加说明；只用小标记提示异常、容器或异地，全文放在悬停中。
+            string marker = !current ? "!" : location == null || location.Kind == SSCBondOverviewLocationKind.Unknown ? "?"
+                : location.Kind == SSCBondOverviewLocationKind.MapContainer ? "□"
+                : !ReferenceEquals(location.Map, Find.CurrentMap) ? "↗" : null;
+            if (marker != null) Widgets.Label(new Rect(rect.xMax - 12, rect.y, 12, 18), marker);
         }
     }
 }

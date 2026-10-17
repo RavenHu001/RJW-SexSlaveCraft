@@ -303,6 +303,7 @@
     <Compile Include="common\SSCBondRelationGameComponent.BondOverview.cs" />
     <Compile Include="Comps\Comp_Train.BondOverview.cs" />
     <Compile Include="UI\SSCBondOverviewWidgets.cs" />
+    <Compile Include="UI\SSCTrainerAssignmentMenu.cs" />
     <Compile Include="UI\Gizmo_SSCBondOverview.cs" />
     <Compile Include="UI\Dialog_SSCBondOverview.cs" />
     <Compile Include="common\SSCIdentityUtility.cs" />
