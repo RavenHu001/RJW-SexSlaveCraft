@@ -218,7 +218,7 @@ namespace Verse
         }
     }
     // 按实际 1.7 形状只在树上设置 pawn，节点不增加方便测试但真实不存在的同名字段。
-    public class PawnRenderNode { public PawnRenderTree tree; }
+    public class PawnRenderNode { public PawnRenderTree tree; public PawnRenderNode parent; }
     public class PawnRenderNode_Head : PawnRenderNode { }
     public class PawnRenderNode_Hair : PawnRenderNode { }
     public class PawnRenderNode_Beard : PawnRenderNode { }

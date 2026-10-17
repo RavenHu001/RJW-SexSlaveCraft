@@ -16,6 +16,8 @@ namespace SexSlaveCraft
         // 深紫色已获实机确认，Alpha 经 0.9 对比后调回 0.85；保留黑边柔化与亮部逻辑。
         private static readonly Color TintColor = new Color(0.46f, 0.20f, 0.68f, 0.85f);
         internal const string NativeShaderDefName = "SSC_FullGelBody17";
+        // 三处渲染共用光照后队列；只在 ShouldTintFullGelGraphic 已通过的分支中使用。
+        internal const int PostLightRenderQueue = 3150;
         // 头部使用同一配置来源，后续调色无需维护第二份常量。
         internal static Color FullGelColor => TintColor;
         private static bool loggedShaderChoice;

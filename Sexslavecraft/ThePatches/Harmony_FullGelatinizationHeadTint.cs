@@ -9,7 +9,7 @@ using Verse;
 
 namespace SexSlaveCraft
 {
-    /// <summary>在原版/FA 已选出本帧材质后，只替换皮肤层；不修改五官控制器或共享材质。</summary>
+    /// <summary>在原版/FA 选出本帧材质后染皮肤，并将目标角色的头部组移到光照后；不修改共享材质。</summary>
     public static class Harmony_FullGelatinizationHeadTint
     {
         internal const string MaskedShaderDefName = "SSC_FullGelHeadMasked17";
@@ -30,7 +30,7 @@ namespace SexSlaveCraft
         private static readonly object generatedMarker = new object();
         private sealed class Variant
         {
-            // 同一原材质若被不同节点复用，头部原队列与 SA 的 3150 版本不能互相改写。
+            // 染色副本与五官的仅移队列副本隔离，避免共享源材质的不同用途串色。
             public readonly System.Collections.Generic.Dictionary<string, Material> materials = new System.Collections.Generic.Dictionary<string, Material>();
         }
 
@@ -84,7 +84,18 @@ namespace SexSlaveCraft
             return requiresMask;
         }
 
-        /// <summary>保留动画帧、遮罩、UV 和原绘制队列；原版头部与 FA 走同一安全入口。</summary>
+        /// <summary>按头部实际树归属处理五官、头饰及种族附加节点，不将全身所有节点一并移动。</summary>
+        internal static bool IsHeadGroup(PawnRenderNode node)
+        {
+            // FA 节点及原版毛发可直接识别；其余附加部件从 parent 链确认属于头部。
+            // 有界遍历防止其他模组构造异常循环树时卡住绘制线程。
+            for (int depth = 0; node != null && depth < 64; depth++, node = node.parent)
+                if (node is PawnRenderNode_Head || node is PawnRenderNode_Hair || node is PawnRenderNode_Beard
+                    || (faNodeType != null && faNodeType.IsInstanceOfType(node))) return true;
+            return false;
+        }
+
+        /// <summary>准入条件先于全部材质/队列操作；保留动画、遮罩、原深度及头部内部绘制关系。</summary>
         public static void MaterialPostfix(PawnRenderNode node, PawnDrawParms parms, ref Material __result)
         {
             Pawn pawn = parms.pawn;
@@ -92,7 +103,7 @@ namespace SexSlaveCraft
                 || (parms.flags & PawnRenderFlags.Invisible) != 0 || pawn.IsPsychologicallyInvisible()
                 || pawn.health?.hediffSet == null || !pawn.health.hediffSet.HasHead
                 || !FullGelatinizationUtility.ShouldTintFullGelGraphic(pawn)
-                || !IsSkinNode(node, out bool requiresMask)) return;
+                || !IsHeadGroup(node)) return;
 
             // 其他 worker 若再次经过同一基类入口，不能把 0.85 再乘成 0.7225。
             if (generated.TryGetValue(__result, out _)) return;
@@ -100,6 +111,13 @@ namespace SexSlaveCraft
             // FA 缺失/隐藏帧使用 dummy，头部 worker 会依赖该材质身份返回 null；必须原样保留。
             Graphic dummy = dummyField?.GetValue(null) as Graphic;
             if (dummy != null && ReferenceEquals(__result, dummy.MatSingle)) return;
+            if (!IsSkinNode(node, out bool requiresMask))
+            {
+                // 只移动皮肤会让晚画的头皮盖住早画的透明嘴型/眼睑；五官等跟随整个头部组。
+                // 此分支不染紫、不乘0.85，不替换原Shader或动画，只复制本帧属性与调整队列。
+                MoveOriginalHeadMaterial(ref __result);
+                return;
+            }
             Material source = __result;
             if (source.mainTexture == null) return;
             bool hasMaskSlot = source.HasProperty("_MaskTex");
@@ -123,7 +141,7 @@ namespace SexSlaveCraft
         }
 
         /// <summary>头部与 SA 共用材质副本缓存；此处只操作已选出的材质，不进入 GraphicDatabase。</summary>
-        internal static void ApplyMaterial(ref Material result, string defName, bool preserveQueue, Texture mask = null)
+        internal static void ApplyMaterial(ref Material result, string defName, bool headLayer, Texture mask = null)
         {
             if (result == null || result.mainTexture == null || generated.TryGetValue(result, out _)) return;
             Material source = result;
@@ -140,7 +158,7 @@ namespace SexSlaveCraft
             Variant entry = variants.GetValue(source, _ => new Variant());
             lock (entry)
             {
-                string key = defName + (preserveQueue ? ":sourceQueue" : ":bodyQueue");
+                string key = defName + (headLayer ? ":headPostLight" : ":bodyQueue");
                 if (!entry.materials.TryGetValue(key, out Material tinted))
                 {
                     tinted = new Material(source);
@@ -155,9 +173,34 @@ namespace SexSlaveCraft
                 Color color = Harmony_FullGelatinizationBodyTint.FullGelColor;
                 color.a *= source.color.a;
                 tinted.color = color;
-                // 头部保留原队列且按原程序恢复深度写入；SA 延续此前身体的后光照队列。
-                tinted.renderQueue = preserveQueue ? source.renderQueue : 3150;
+                // 原版/FA常规头部2900统一进入3150，交给原绘制请求次序和深度维持层级。
+                // 已经在更晚队列的高光保持原队列；保留原Shader的深度写入，不恢复旧遮挡缺陷。
+                tinted.renderQueue = headLayer ? PostLightQueue(source.renderQueue) : Harmony_FullGelatinizationBodyTint.PostLightRenderQueue;
                 result = tinted;
+            }
+        }
+
+        internal static int PostLightQueue(int originalQueue) => Math.Max(originalQueue, Harmony_FullGelatinizationBodyTint.PostLightRenderQueue);
+
+        /// <summary>五官/毛发/头饰仅调整阶段。缓存按原材质弱引用，不持有Pawn、不请求Graphic。</summary>
+        private static void MoveOriginalHeadMaterial(ref Material result)
+        {
+            Material source = result;
+            if (source.mainTexture == null || source.renderQueue >= Harmony_FullGelatinizationBodyTint.PostLightRenderQueue) return;
+            Variant entry = variants.GetValue(source, _ => new Variant());
+            lock (entry)
+            {
+                const string key = "originalHeadPostLight";
+                if (!entry.materials.TryGetValue(key, out Material moved))
+                {
+                    moved = new Material(source);
+                    entry.materials.Add(key, moved);
+                    generated.Add(moved, generatedMarker);
+                }
+                moved.CopyPropertiesFromMaterial(source);
+                moved.shader = source.shader;
+                moved.renderQueue = PostLightQueue(source.renderQueue);
+                result = moved;
             }
         }
     }

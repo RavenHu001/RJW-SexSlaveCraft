@@ -16,7 +16,7 @@ internal static partial class Program
         Run("没有FA仍可渲染原版凝胶头部", HeadWithoutFa);
         Run("FA形状不匹配时保留FA且不阻断原版", HeadBadFaShape);
         Run("原版头皮与身体共用深紫和0.85", () => SkinMaterial(new PawnRenderNode_Head()));
-        Run("FA头部Basic采用同色且保留原队列", () => SkinMaterial(Fa(new HeadControllerComp())));
+        Run("FA头部Basic采用同色且进入光照后队列", () => SkinMaterial(Fa(new HeadControllerComp())));
         Run("FA头部Cover保留腮红帧覆盖率", () => SkinMaterial(Fa(new HeadControllerComp(), NLFacialAnimationLayerType.Cover), .3f));
         Run("FA皮肤Basic保留面部贴图与细节", () => SkinMaterial(Fa(new SkinControllerComp())));
         Run("FA派生种族头部控制器同样识别", () => SkinMaterial(Fa(new RaceHeadControllerComp())));
@@ -40,9 +40,9 @@ internal static partial class Program
             ("原头部高光", new HeadControllerComp(), NLFacialAnimationLayerType.Highlight),
             ("未知皮肤层", new SkinControllerComp(), NLFacialAnimationLayerType.Cover),
             ("缺失控制器", null, NLFacialAnimationLayerType.Basic)
-        }) Run("保留FA" + part.name, () => KeepHeadMaterial(Fa(part.controller, part.layer)));
-        Run("保留头发", () => KeepHeadMaterial(new PawnRenderNode_Hair()));
-        Run("保留胡须", () => KeepHeadMaterial(new PawnRenderNode_Beard()));
+        }) Run("保留FA" + part.name, () => KeepHeadMaterial(Fa(part.controller, part.layer), true));
+        Run("保留头发", () => KeepHeadMaterial(new PawnRenderNode_Hair(), true));
+        Run("保留胡须", () => KeepHeadMaterial(new PawnRenderNode_Beard(), true));
         Run("保留头饰", () => KeepHeadMaterial(new PawnRenderNode_Apparel()));
         Run("不处理其他普通节点", () => KeepHeadMaterial(new PawnRenderNode()));
         Run("FA空白帧保持dummy身份", HeadDummy);
@@ -95,15 +95,19 @@ internal static partial class Program
         Check(result != rig.source && result.shader == (masked ? ShaderDef.Masked : ShaderDef.Native), "皮肤必须取得合适的独立材质");
         Color color = result.color;
         Check(color.r == .46f && color.g == .20f && color.b == .68f && Math.Abs(color.a - .85f * sourceAlpha) < 1e-6f, "与身体共享配色，保留原层Alpha");
-        Check(result.renderQueue == 2000 && result.mainTexture == rig.source.mainTexture, "保留原绘制队列与当前原图");
+        Check(result.renderQueue == 3150 && result.mainTexture == rig.source.mainTexture, "统一光照后队列并保留当前原图");
         Check(rig.source.shader.name == "OriginalHead" && rig.source.color.r == .9f && rig.source.color.a == sourceAlpha, "不得改写原共享材质");
         if (masked) Check(result.GetTexture("_MaskTex") == rig.source.GetTexture("_MaskTex"), "保留遮罩对象");
     }
 
-    private static void KeepHeadMaterial(PawnRenderNode node)
+    private static void KeepHeadMaterial(PawnRenderNode node, bool moveQueue = false)
     {
         var rig = new HeadRig();
-        Check(rig.Apply(node) == rig.source, "非皮肤图层必须保持原材质身份");
+        var result = rig.Apply(node);
+        if (!moveQueue) Check(result == rig.source, "头部组之外保持原材质身份");
+        else Check(result != rig.source && result.shader == rig.source.shader && result.color.r == rig.source.color.r
+            && result.color.a == rig.source.color.a && result.renderQueue == 3150 && rig.source.renderQueue == 2000,
+            "五官毛发仅移阶段，保持原色/Alpha/Shader且不污染共享原材质");
     }
 
     private static void HeadRegistration()
@@ -173,7 +177,7 @@ internal static partial class Program
         Material second = rig.Apply(node);
         Check(ReferenceEquals(first, second) && Material.Created == created, "下一帧不新建材质");
         Check(second.mainTexture.name == "Face-closed" && second.GetTexture("_MaskTex") == closedMask
-            && second.GetFloat("UVScale") == .7f && second.renderQueue == 2900, "复用对象但必须更新本帧纹理、遮罩、UV与队列");
+            && second.GetFloat("UVScale") == .7f && second.renderQueue == 3150, "复用对象但必须更新本帧纹理、遮罩、UV与队列");
         Check(rig.source.color.r == .9f && rig.source.shader.name == "OriginalHead", "动画原材质不被污染");
     }
     private static void HeadIdempotent()

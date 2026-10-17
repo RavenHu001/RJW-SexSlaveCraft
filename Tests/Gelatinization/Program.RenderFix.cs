@@ -45,7 +45,7 @@ internal static partial class Program
     {
         var rig = DepthRig(masked); var result = rig.Apply(new PawnRenderNode_Head());
         Check(result.shader == (masked ? ShaderDef.MaskedDepth : ShaderDef.Depth), "需要对应的深度写入变体");
-        Check(result.renderQueue == rig.source.renderQueue && result.color.a == .85f, "保持头部原队列和85%混合");
+        Check(result.renderQueue == 3150 && result.color.a == .85f, "统一光照后队列但保留85%混合");
     }
     private static void HeadUnknownDepth()
     {
@@ -134,7 +134,7 @@ internal static partial class Program
     {
         var head = new HeadRig(); var headResult = head.Apply(new PawnRenderNode_Head());
         var sa = new SaRig { source = head.source }; var saResult = sa.Apply();
-        Check(headResult != saResult && headResult.renderQueue == 2000 && saResult.renderQueue == 3150, "按用途隔离缓存，不能串队列");
+        Check(headResult != saResult && headResult.renderQueue == 3150 && saResult.renderQueue == 3150, "按用途隔离缓存，保持共同光照阶段");
     }
     private static void SaDisabled() { var rig = new SaRig(); rig.Apply(); SSCMod.settings.enableFullGelatinizedBodyTint = false; Check(rig.Apply() == rig.source, "关闭立即回到原材质"); }
     private static void SaNull() { var rig = new SaRig { source = null }; Check(rig.Apply() == null, "空材质保持空"); }
