@@ -1,12 +1,12 @@
 # 玩家阅读入口 / Player documentation
 
-2.4.2 新增：全凝胶化后，在“调教”ITab 的“凝胶外观”区设置个人渲染、颜色和不透明度，默认深紫／S90／85%；命令栏无重复调色按钮。旧全局设置在旧档首次读取时迁入个人值。详见[当前开发说明](../Releases/2.4.2/2.4.2发布说明.md)。
+2.4.2 新增：全凝胶化后，在“调教”ITab 的“凝胶外观”区设置个人渲染、颜色和不透明度，默认深紫／S90／85%；命令栏无重复调色按钮。旧全局设置在旧档首次读取时迁入个人值。详见[当前版本说明](../Releases/2.4.2/2.4.2发布说明.md)。
 
-> 游戏版本目录：2.4.2 为当前未发布开发版本，1.7承载新功能，1.6保留2.4.1冻结基线，基础贴图由Common/Textures共享。现有v2.4.1下载仍是原1.6正式版。
+> 游戏版本目录：2.4.2为当前版本，1.7承载新功能，1.6保留2.4.1冻结基线，基础贴图由Common/Textures共享。当前公开下载为2.4.2双版本包。
 
 [项目首页](../../README.md) · [文档总索引](../README.md) · [模组介绍 / Overview](../模组介绍.md)
 
-当前开发归属 / Development scope：**SSC 2.4.2（未发布）**，1.7为新功能开发目标，1.6保留2.4.1冻结内容；正式下载仍为2.4.1。 / All work after the published v2.4.1 tag belongs to 2.4.2 development; the existing public download remains v2.4.1. See [2.4.2说明](../Releases/2.4.2/2.4.2发布说明.md).
+当前版本 / Current release：**SSC 2.4.2**，1.7为新功能开发目标，1.6保留2.4.1冻结内容；正式下载为2.4.2。 / All work after the published v2.4.1 tag belongs to 2.4.2; the current download is v2.4.2. See [2.4.2说明](../Releases/2.4.2/2.4.2发布说明.md).
 
 ## 中文阅读顺序
 
@@ -54,6 +54,6 @@ Qualification, current identity and research are separate. Direct Master selecti
 
 ## 版本与资料用途 / Versions and document roles
 
-当前指南适用2.4.2开发工作区，新增凝胶外观功能仅在1.7生效；1.6冻结2.4.1内容，正文较早版本号继续表示功能引入时间。正式下载和历史记录从[版本索引](../Releases/README.md)进入；本次尚未发布2.4.2。
+当前指南适用2.4.2安装包，新增凝胶外观功能仅在1.7生效；1.6冻结2.4.1内容，正文较早版本号继续表示功能引入时间。正式下载和历史记录从[版本索引](../Releases/README.md)进入；2.4.2采用双版本安装包。
 
-The guides cover the unreleased 2.4.2 checkout, with new visual features on 1.7 and the frozen 2.4.1 runtime on 1.6. Earlier section versions identify introductions. The existing public download remains 2.4.1; development registration does not create a new package or new test results.
+The guides cover release 2.4.2, with new visual features on 1.7 and the frozen 2.4.1 runtime on 1.6. Earlier section versions identify introductions. The current release is 2.4.2. Earlier validation counts retain their original execution stages.

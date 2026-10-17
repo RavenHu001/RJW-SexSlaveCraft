@@ -1,6 +1,6 @@
 # 1.7 凝胶 Shader 原生编译验证
 
-当前开发归属：**2.4.2（未发布）**。v2.4.1发布后的双版本重布局、1.7兼容及凝胶渲染/外观/UI开发统一纳入；1.6/Common冻结仍属于2.4.1。历史日期、产物版本与测试计数保留原阶段，见[本版登记](../../Docs/Releases/2.4.2/2.4.2发布说明.md)。
+当前版本：**2.4.2**。v2.4.1发布后的双版本重布局、1.7兼容及凝胶渲染/外观/UI开发统一纳入；1.6/Common冻结仍属于2.4.1。历史日期、产物版本与测试计数保留原阶段，见[本版登记](../../Docs/Releases/2.4.2/2.4.2发布说明.md)。
 
 ```powershell
 pwsh -File Tools/GelatinizationShader/Run.ps1 -GameRoot 'D:\STEAM\steamapps\common\RimWorld'

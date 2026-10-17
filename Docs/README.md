@@ -2,7 +2,7 @@
 
 [项目首页](../README.md) · [玩家阅读入口](Players/README.md) · [当前规划](Design/README.md) · [开发资料](Development/README.md)
 
-整理日期：2026-10-17。当前开发归属为 **2.4.2（未发布）**，统一纳入v2.4.1发布后的打包规则、双版本重布局、1.7迁移与凝胶外观/UI开发，见[本版说明](Releases/2.4.2/2.4.2发布说明.md)和[版本登记边界](Releases/2.4.2/2.4.2版本验证.md)。正式下载仍为 **2.4.1**；原2.4.0.5及截至旧版发布的PNA、恩赐和绑定维护保留原归属。
+整理日期：2026-10-17。当前版本为 **2.4.2**，统一纳入v2.4.1发布后的打包规则、双版本重布局、1.7迁移与凝胶外观/UI开发，见[本版说明](Releases/2.4.2/2.4.2发布说明.md)和[版本登记边界](Releases/2.4.2/2.4.2版本验证.md)。正式下载为 **2.4.2**；原2.4.0.5及截至旧版发布的PNA、恩赐和绑定维护保留原归属。
 
 欢愉恩赐首版四批均已完成并获实机确认，范围和后续归属见[完成核对](Development/Completed/主人欲望侵染完成核对.md)；操作与数值从[玩家入口](Players/README.md)进入。
 
@@ -10,7 +10,7 @@
 
 | 用途 | 入口 | 推荐阅读顺序 |
 | --- | --- | --- |
-| 了解功能、准备发布页面 | [中英双语模组介绍](模组介绍.md) | English 在前，中文在后；区分当前开发版本与正式下载版 |
+| 了解功能、准备发布页面 | [中英双语模组介绍](模组介绍.md) | English在前，中文在后；说明当前正式版及版本目录 |
 | 安装和游玩 | [玩家阅读入口](Players/README.md) | 模组介绍 → 快速入门 → 按需查机制与常见问题 |
 | 查看版本交付 | [发布与验证索引](Releases/README.md) | 当前版发布说明 → 验证；跨版本查[更新日志](../CHANGELOG.md) |
 | 继续设计新功能 | [当前规划索引](Design/README.md) | 总体状态 → 当前专项 → 相关历史设计 |
@@ -25,14 +25,14 @@
 ## 三条阅读路线
 
 - **新玩家**：[模组介绍](模组介绍.md) → [快速入门](../读我，玩法介绍.md) → [机制详解](../机制详解.md)。英文路线见 [Player documentation](Players/README.md#english-reading-order)。
-- **接手开发**：[当前开发说明](Releases/2.4.2/2.4.2发布说明.md) → [待验收事项](Development/Verification/README.md) → [对应已交付记录](Development/Completed/README.md) → [当前规划](Design/README.md)。
+- **接手开发**：[当前版本说明](Releases/2.4.2/2.4.2发布说明.md) → [待验收事项](Development/Verification/README.md) → [对应已交付记录](Development/Completed/README.md) → [当前规划](Design/README.md)。
 - **准备发布**：[发布与打包](Maintenance/发布与打包.md) → [测试说明](../Tests/README.md) → [版本文档](Releases/README.md)。
 
 ## 目录与边界
 
 ```text
 Docs/
-  模组介绍.md                 区分开发版本与正式下载版的双语简介
+  模组介绍.md                 说明正式版及版本目录的双语简介
   Players/                    玩家入口与阅读顺序
   Design/                     当前专项方案与总体规划
     Archive/                  已交付范围的历史设计

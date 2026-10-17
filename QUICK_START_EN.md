@@ -1,10 +1,10 @@
 # RJW-SexSlaveCraft Quick Start Guide
 
-> Version scope: 2.4.2 is the current unreleased development version. New features target 1.7; 1.6 retains the frozen 2.4.1 runtime, with shared textures in Common/Textures. Existing v2.4.1 downloads remain the original 1.6 release.
+> Version scope: 2.4.2 is the current release. New features target 1.7; 1.6 retains the frozen 2.4.1 runtime, with shared textures in Common/Textures. Existing v2.4.1 downloads remain the original 1.6 release.
 
 [Project home](README.md) · [Player reading order](Docs/Players/README.md#english-reading-order) · [中文快速入门](读我，玩法介绍.md) · [Complete guide](PLAYER_GUIDE_EN.md)
 
-> This checkout documents **SSC 2.4.2 development (2026-10-17, unreleased)**, including new 1.7 features; 1.6 remains frozen at 2.4.1. The existing public download is v2.4.1. See the [2.4.2 scope](Docs/Releases/2.4.2/2.4.2发布说明.md#english) and [version-registration limits](Docs/Releases/2.4.2/2.4.2版本验证.md). Earlier section versions identify when features were introduced.
+> This checkout documents **SSC 2.4.2 (2026-10-17)**, including new 1.7 features; 1.6 remains frozen at 2.4.1. The current release package is v2.4.2. See the [2.4.2 scope](Docs/Releases/2.4.2/2.4.2发布说明.md#english) and [version-registration limits](Docs/Releases/2.4.2/2.4.2版本验证.md). Earlier section versions identify when features were introduced.
 
 ## 1. What the Mod Does
 

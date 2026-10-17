@@ -1,10 +1,10 @@
 # RJW-SexSlaveCraft · TieJin Modify
 
-面向 RimWorld 的成人向 RimJobWorld（RJW）扩展模组，基于上游 **2.2.8** 继续维护。当前开发归属：**2.4.2 — 双版本目录、1.7 迁移与个体凝胶外观**（2026-10-17，未打包／未发布）。`v2.4.1` 发布后的开发全部纳入 2.4.2；现有正式下载仍为 **2.4.1**。
+面向RimWorld的成人向RimJobWorld（RJW）扩展模组，基于上游 **2.2.8** 继续维护。当前版本：**2.4.2 — 双版本目录、1.7迁移与个体凝胶外观**（2026-10-17）。v2.4.1发布后的开发统一纳入本版；1.6运行内容继续冻结在2.4.1。
 
-[2.4.2 开发说明](Docs/Releases/2.4.2/2.4.2发布说明.md) · [正式版下载 2.4.1](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.1) · [模组介绍 / Mod overview](Docs/模组介绍.md) · [玩家阅读入口 / Player documentation](Docs/Players/README.md) · [文档总索引](Docs/README.md) · [English overview](#english-overview)
+[2.4.2 版本说明](Docs/Releases/2.4.2/2.4.2发布说明.md) · [正式版下载 2.4.2](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.2) · [模组介绍 / Mod overview](Docs/模组介绍.md) · [玩家阅读入口 / Player documentation](Docs/Players/README.md) · [文档总索引](Docs/README.md) · [English overview](#english-overview)
 
-当前工作区采用双版本目录：`1.6/` 保留 **2.4.1** 冻结运行基线，`1.7/` 承载 **2.4.2** 的后续开发，`Common/Textures/` 共享基线贴图。双版本重布局、1.7兼容修复及凝胶渲染／外观／个人开关均归入2.4.2；功能与实机反馈见[本版范围](Docs/Releases/2.4.2/2.4.2发布说明.md)，各批保留原始验证日期。现有公开下载仍是原1.6正式版，构建与版本对齐要求见[维护说明](https://github.com/RavenHu001/RJW-SexSlaveCraft/blob/main/Docs/Maintenance/%E5%8F%91%E5%B8%83%E4%B8%8E%E6%89%93%E5%8C%85.md)。
+当前工作区采用双版本目录：`1.6/` 保留 **2.4.1** 冻结运行基线，`1.7/` 承载 **2.4.2** 的后续开发，`Common/Textures/` 共享基线贴图。双版本重布局、1.7兼容修复及凝胶渲染／外观／个人开关均归入2.4.2；功能与实机反馈见[本版范围](Docs/Releases/2.4.2/2.4.2发布说明.md)，各批保留原始验证日期。当前公开下载为2.4.2双版本包，构建与版本对齐要求见[维护说明](https://github.com/RavenHu001/RJW-SexSlaveCraft/blob/main/Docs/Maintenance/%E5%8F%91%E5%B8%83%E4%B8%8E%E6%89%93%E5%8C%85.md)。
 
 ## 项目概况
 
@@ -18,23 +18,23 @@ SSC 提供角色培养、主从绑定、特化发展、人格转移和身体改�
 
 2.4.1 同时包含已完成四批实机验收的[欢愉恩赐首版](Docs/Development/Completed/主人欲望侵染完成核对.md)及其后续四语文案、主从绑定关系和 CE 删除修复、任务文本与两类镜像统一检查；中英文使用说明见玩家入口。
 
-完整功能概述见[模组介绍](Docs/模组介绍.md)。当前开发范围见[2.4.2说明](Docs/Releases/2.4.2/2.4.2发布说明.md)与[版本登记/验证边界](Docs/Releases/2.4.2/2.4.2版本验证.md)；已发布PNA等基础内容保留[2.4.1说明](Docs/Releases/2.4.1/2.4.1发布说明.md)。历史2.4.0下载包不包含后续PNA重置。
+完整功能概述见[模组介绍](Docs/模组介绍.md)。当前版本范围见[2.4.2说明](Docs/Releases/2.4.2/2.4.2发布说明.md)与[版本登记/验证边界](Docs/Releases/2.4.2/2.4.2版本验证.md)；已发布PNA等基础内容保留[2.4.1说明](Docs/Releases/2.4.1/2.4.1发布说明.md)。历史2.4.0下载包不包含后续PNA重置。
 
 ## 安装
 
 | 项目 | 要求 |
 | --- | --- |
-| 游戏版本 | 公开2.4.1包：RimWorld 1.6；2.4.2开发：1.7，另保留1.6冻结内容 |
+| 游戏版本 | RimWorld 1.6／1.7；1.6冻结2.4.1，新功能在1.7 |
 | 必需模组 | Harmony、RimJobWorld（RJW），均加载在 SSC 之前 |
 | 契约仪式与阶段进阶 | 需要 Ideology（文化）DLC 的仪式系统 |
 | Royalty（皇权，可选） | 安装时调教研究需要蓝图；种子或原版独立蓝图可补齐，之后仍需研究 |
 
-1. 从 [v2.4.1 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.1) 下载安装 ZIP 和 SHA-256 校验文件。
+1. 从 [v2.4.2 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.2) 下载安装 ZIP 和 SHA-256 校验文件。
 2. 退出游戏，将 ZIP 内的模组文件夹解压到 `RimWorld/Mods/`。
 3. 更新时先将旧模组文件夹移出 `Mods`，再放入新版本，避免残留文件。
 4. 启用依赖与本模组，按上表加载。2.4.0 的个人资格、当前主人身份和研究分别管理，再阅读[中文快速入门](读我，玩法介绍.md)或 [English quick start](QUICK_START_EN.md)。
 
-2.4.1 安装包包含已编译的正式 DLL。宠物兔选择入口尚未开放，旧 RimTalk 对接暂停；其他限制与兼容说明见玩家指南。
+2.4.2安装包包含两版DLL与显式加载配置：1.6保留2.4.1，1.7使用2.4.2。宠物兔选择入口尚未开放，旧 RimTalk 对接暂停；其他限制与兼容说明见玩家指南。
 
 ## 文档导航
 
@@ -64,10 +64,10 @@ SSC 提供角色培养、主从绑定、特化发展、人格转移和身体改�
 
 ## English overview
 
-The current checkout has separate `1.6/` and `1.7/` runtime directories with shared textures in `Common/Textures/`. The 1.6 content is frozen at 2.4.1; the maintainer tested the current 1.7 layout and compatibility-fix batch and reported no issues. The public 2.4.1 download below remains the original 1.6 release.
+The current checkout has separate `1.6/` and `1.7/` runtime directories with shared textures in `Common/Textures/`. The 1.6 content is frozen at 2.4.1; the maintainer tested the current 1.7 layout and compatibility-fix batch and reported no issues. The current 2.4.2 package includes both version directories.
 
-SexSlaveCraft (SSC) is an adult RimJobWorld expansion for **RimWorld** (1.7 development and the frozen 1.6 runtime), continuing from upstream **2.2.8**. The current development scope is **2.4.2**, covering all work after the published v2.4.1 tag, including the versioned layout and 1.7 gel rendering/UI. The former 2.4.0.5 milestone and work completed through the v2.4.1 release remain part of 2.4.1. The stable download is **2.4.1**. Harmony and RJW must load before SSC; Binding Rituals and their progression route require Ideology.
+SexSlaveCraft (SSC) is an adult RimJobWorld expansion for **RimWorld** (1.7 and the frozen 1.6 runtime), continuing from upstream **2.2.8**. The current release is **2.4.2**, covering all work after the published v2.4.1 tag, including the versioned layout and 1.7 gel rendering/UI. The former 2.4.0.5 milestone and work completed through the v2.4.1 release remain part of 2.4.1. The release package is **2.4.2**. Harmony and RJW must load before SSC; Binding Rituals and their progression route require Ideology.
 
-Start with the [mod overview](Docs/模组介绍.md#english), then follow [the player reading order](Docs/Players/README.md#english-reading-order). The Seed of Desire and Master progression introduced in 2.4.0 remain included. For the current development scope, read the [2.4.2 notes](Docs/Releases/2.4.2/2.4.2发布说明.md#english) and [version-registration limits](Docs/Releases/2.4.2/2.4.2版本验证.md). For the published base, read the [2.4.1 notes](Docs/Releases/2.4.1/2.4.1发布说明.md#english) and [validation record](Docs/Releases/2.4.1/2.4.1版本验证.md).
+Start with the [mod overview](Docs/模组介绍.md#english), then follow [the player reading order](Docs/Players/README.md#english-reading-order). The Seed of Desire and Master progression introduced in 2.4.0 remain included. For the current release scope, read the [2.4.2 notes](Docs/Releases/2.4.2/2.4.2发布说明.md#english) and [version-registration limits](Docs/Releases/2.4.2/2.4.2版本验证.md). For the published base, read the [2.4.1 notes](Docs/Releases/2.4.1/2.4.1发布说明.md#english) and [validation record](Docs/Releases/2.4.1/2.4.1版本验证.md).
 
-[Latest public download: 2.4.1](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.1) · [Quick start](QUICK_START_EN.md) · [Full guide](PLAYER_GUIDE_EN.md) · [Documentation index](Docs/README.md)
+[Download 2.4.2](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.2) · [Quick start](QUICK_START_EN.md) · [Full guide](PLAYER_GUIDE_EN.md) · [Documentation index](Docs/README.md)
