@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <!-- AI 辅助生成。仅用于 1.7 Waylith；旧 ShaderTypeDef 和 1.6 冻结资源不参与本程序。 -->
+  <ShaderDef>
+    <defName>SSC_FullGelBody17</defName>
+    <shaderProgram>
+      <!-- 复用引擎顶点接口，支持普通与 INSTANCED 绘制；模组只提供原创片元程序。 -->
+      <vertexShaderFileName>Mote.vert.glsl</vertexShaderFileName>
+      <fragmentShaderFileName>SSC/FullGelBody.frag.glsl</fragmentShaderFileName>
+      <transparent>true</transparent>
+      <depthWrite>false</depthWrite>
+      <cullMode>None</cullMode>
+      <renderQueue>3150</renderQueue>
+    </shaderProgram>
+  </ShaderDef>
+</Defs>

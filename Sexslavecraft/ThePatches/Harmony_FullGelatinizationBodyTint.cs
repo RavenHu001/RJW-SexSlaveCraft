@@ -11,9 +11,12 @@ namespace SexSlaveCraft
 {
     public static class Harmony_FullGelatinizationBodyTint
     {
-        // 主、次颜色使用同一紫色及透明度；日志标记只抑制重复输出，不缓存角色或绘制状态。
-        private static readonly Color TintColor = new Color(0.72f, 0.38f, 0.95f, 0.82f);
+        // 颜色和透明度分开调节：暗部柔化由原生 Shader 完成，不依赖降低 Alpha 隐藏黑线。
+        // 深紫色已获实机确认，Alpha 经 0.9 对比后调回 0.85；保留黑边柔化与亮部逻辑。
+        private static readonly Color TintColor = new Color(0.46f, 0.20f, 0.68f, 0.85f);
+        private const string NativeShaderDefName = "SSC_FullGelBody17";
         private static bool loggedShaderChoice;
+        private static bool loggedShaderFallback;
 
         /// <summary>身体渲染节点的后缀，只替换本次返回的身体图形，头部仍走自身绘制路径。</summary>
         public static void Postfix(Pawn pawn, ref Graphic __result)
@@ -61,19 +64,30 @@ namespace SexSlaveCraft
                 && graphic.path.IndexOf("SizedApparel", StringComparison.OrdinalIgnoreCase) >= 0;
         }
 
-        /// <summary>1.7 明确使用内置透明 Shader，并只记录一次实际选用的方案。</summary>
+        /// <summary>仅使用已注册的 1.7 原生程序；资源缺失时明确回退，不接受 late-bound 假成功。</summary>
         private static Shader GetFullGelBodyShader()
         {
-            // 1.7 的未注册自定义 Shader 也会返回非空 late-bound 对象。
-            // 旧 ShaderLab 源码尚未移植，明确使用内置透明材质，避免误用引擎默认 Shader。
-            // isSupported 在该 late-bound 对象上也可为 true，故不能将它补作加载成功判据。
-            if (!loggedShaderChoice)
+            // ShaderDef.Shader 非空、isSupported=true 均不能证明 Waylith 注册成功。
+            // 每次从注册表确认，既不永久缓存早期失败，也不在静态字段持有 Unity 资源。
+            ShaderDef def = DefDatabase<ShaderDef>.GetNamedSilentFail(NativeShaderDefName);
+            if (def != null
+                && Waylith.Rendering.ShaderRegistry.TryResolve(NativeShaderDefName, out var registered)
+                && !ReferenceEquals(registered, Waylith.Rendering.ShaderRegistry.Default))
             {
-                loggedShaderChoice = true;
-                SSCLog.Important("[SSC FullGel] Using built-in TransparentPostLight for RimWorld 1.7.");
+                if (!loggedShaderChoice)
+                {
+                    loggedShaderChoice = true;
+                    SSCLog.Important("[SSC FullGel] Using registered native shader: " + NativeShaderDefName);
+                }
+                return def.Shader;
             }
 
-            // 内置 Shader 的生命周期由 ShaderDatabase 管理，此补丁不另持有可失效的自定义缓存。
+            // 降级只保证可显示；不声称内置乘色 Shader 也能柔化黑边。警告每次启动最多一次。
+            if (!loggedShaderFallback)
+            {
+                loggedShaderFallback = true;
+                SSCLog.WarningImportant("[SSC FullGel] Native shader is unavailable; using TransparentPostLight. Gel edge softening is disabled.");
+            }
             return ShaderDatabase.TransparentPostLight;
         }
     }

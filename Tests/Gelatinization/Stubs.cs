@@ -142,7 +142,8 @@ namespace Verse
     public static class DefDatabase<T> where T : class
     {
         public static T GetNamedSilentFail(string name) =>
-            (typeof(T) == typeof(ShaderTypeDef) ? (object)new ShaderTypeDef() : new HediffDef(name)) as T;
+            (typeof(T) == typeof(ShaderTypeDef) ? (object)new ShaderTypeDef() :
+             typeof(T) == typeof(ShaderDef) ? ShaderDef.Available ? new ShaderDef { defName = name } : null : new HediffDef(name)) as T;
     }
     public static class HediffMaker
     {
@@ -172,8 +173,30 @@ namespace Verse
     public class PawnRenderTree { public Pawn pawn; }
     // Deliberately non-null and supported, matching the audited Waylith late-bound contract.
     public class ShaderTypeDef { public string defName = "SSC_FullGelBody", shaderPath = "Sexslavecraft/SSC_FullGelBody"; public UnityEngine.Shader Shader => new UnityEngine.Shader("UnregisteredDefault"); }
+    // 与真实注册表区分：即使未注册，属性仍返回 supported 对象，用来捕获伪成功。
+    public class ShaderDef
+    {
+        public static bool Available = true;
+        public static readonly UnityEngine.Shader Native = new UnityEngine.Shader("SSC_FullGelBody17");
+        public string defName;
+        public UnityEngine.Shader Shader => Native;
+    }
     // 内置透明 Shader 使用稳定对象身份，使断言能区分预期 Shader 与伪成功的自定义对象。
     public static class ShaderDatabase { public static readonly UnityEngine.Shader TransparentPostLight = new UnityEngine.Shader("TransparentPostLight"); }
+}
+namespace Waylith.Rendering
+{
+    public static class ShaderRegistry
+    {
+        public static readonly object Default = new object();
+        public static bool Registered = true, ReturnDefault;
+        private static readonly object Native = new object();
+        public static bool TryResolve(string name, out object shader)
+        {
+            shader = ReturnDefault ? Default : Native;
+            return Registered && name == "SSC_FullGelBody17";
+        }
+    }
 }
 namespace SexSlaveCraft
 {

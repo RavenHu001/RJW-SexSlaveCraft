@@ -6,10 +6,16 @@
 dotnet run --project Tests/Gelatinization/Gelatinization.csproj --configuration Release -- .
 ```
 
-33 项回归覆盖：从默认状态发生的双阈值竞赛、成功与失败互斥、外部移除、死亡、同角色新过程、旧调试按钮、正常扫描间隔及正常失败；覆盖内置透明 Shader、SizedApparel 渲染树角色、空节点及染色条件。最后一项调用 `Test-HarmonyState.ps1` 的 10 个状态参数断言。
+44 项回归覆盖：从默认状态发生的双阈值竞赛、成功与失败互斥、外部移除、死亡、同角色新过程、旧调试按钮、正常扫描间隔及正常失败；覆盖已注册原生 Shader、未注册/Def 缺失/错误默认条目的明确回退、早期失败后恢复、SizedApparel 渲染树角色、空节点及染色条件。最后一项调用 `Test-HarmonyState.ps1` 的 10 个状态参数断言。
+
+视觉回归直接将 `1.7/Shaders/SSC/FullGelMath.glsl` 作为 C# 源文件编译：条件预处理只提供类型外壳与 `clamp`，执行的标量函数体与 GLSL 相同。检查黑色变深紫色、256 级灰度单调、克制亮部、透明背景/孔洞、连续抗锯齿覆盖和输入范围。这些是像素函数性质检查，不代替 GPU 绘制与主观观感验收。头部没有新增染色补丁。
 
 状态检查通过 PowerShell AST 加载 `Verify-RestrictionCompatibility.ps1` 的实际函数，使用元数据边界对象覆盖 Prefix/Postfix/Finalizer、按特性命名的 Prefix、引用类型参数、缺失/非静态/歧义生产者及类型不匹配，不执行发布脚本或游戏代码。完整元数据验证仍需另行向该脚本提供实际 DLL 和 Cecil。
 
 `Stubs.cs` 只替代游戏边界，保留 1.7 移除 Hediff 后仍继续遍历组件、不清空 `parent.pawn` 的契约，以及未注册 Shader 仍非空的契约。完全胶化工具的数值和结果服务使用模型；测试不执行 GPU、存读档或完整游戏生命周期。实际 1.7 DLL 构建、静态元数据检查与游戏验收分别记录。
 
+最终深紫色 RGB `(0.46, 0.20, 0.68)` 与不透明度 `0.85` 的专项 44/44 已通过，维护者确认身体视觉可保留，见[验收记录](../../Docs/Development/Completed/1.7全身凝胶化身体视觉调整与验收.md)。原生实现阶段的全量 34 套／2560 项属于当时试色参数；最终参数未重复执行全量。
+
 此套件已接入 `Scripts/Test-All.ps1` 和发布门禁。`SscSourceRoot` 可指向隔离源码快照验证旧实现确实失败；不要将快照输出写回冻结目录。
+
+另用 [原生编译验证工具](../../Tools/GelatinizationShader/README.md) 检查目标游戏的真实 Waylith GLSL 编译器、材质布局与顶点/片元接口。它需要 .NET 10 和显式游戏目录，因此独立于不依赖游戏的 net9 模型门禁；它不会打包或启动游戏。

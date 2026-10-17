@@ -45,7 +45,19 @@ internal static class Program
         Run("全胶必定成功配置仍正常完成", Guaranteed);
         Run("组件缺少父状态或角色时安全跳过", MissingOwner);
         // 渲染测试同时覆盖应染色与应保留原图的分支，防止简单禁用染色也能通过检查。
-        Run("1.7忽略伪成功自定义Shader并选择内置透明Shader", BodyShader);
+        Run("1.7选择已注册原生凝胶Shader", BodyShader);
+        Run("缺少原生Def时安全回退", () => ShaderFallback(false, true, false));
+        Run("非空supported但未注册时安全回退", () => ShaderFallback(true, false, false));
+        Run("注册表返回引擎默认时安全回退", () => ShaderFallback(true, true, true));
+        Run("早期回退不会永久缓存失败", ShaderRecovery);
+        // 直接执行生产 GLSL 函数体，验证像素性质；不以相同公式的另一份拷贝作为断言。
+        Run("黑描边映射为可辨认深紫而非黑色", GelDarkEdge);
+        Run("灰度顺序与内部细节保持单调", GelDetail);
+        Run("亮部有适量光泽且不溢出", GelHighlight);
+        Run("透明背景和孔洞始终透明", GelTransparent);
+        Run("抗锯齿覆盖连续且不过度透明", GelCoverage);
+        Run("异常颜色和Alpha输入被限制在合法区间", GelBounds);
+        Run("1.7原生Shader资源成套且不挂接头部", () => ShaderResources(root));
         Run("SizedApparel从渲染树角色染色", SizedApparel);
         Run("SizedApparel空节点安全跳过", () => EmptyNode(null));
         Run("SizedApparel空渲染树安全跳过", () => EmptyNode(new PawnRenderNode()));
@@ -71,6 +83,9 @@ internal static class Program
         Rand.RangeDraw = range => Math.Abs(range.min - .005f) < 1e-6f ? .00556f :
             Math.Abs(range.min - .003f) < 1e-6f ? .00551f : range.min == range.max ? range.min : .0392f;
         SSCMod.settings = new SSCSettings { enableFullGelatinizedBodyTint = true };
+        ShaderDef.Available = true;
+        Waylith.Rendering.ShaderRegistry.Registered = true;
+        Waylith.Rendering.ShaderRegistry.ReturnDefault = false;
         try { test(); passed++; Console.WriteLine("PASS " + name); }
         catch (Exception e) { failed++; Console.WriteLine("FAIL " + name + ": " + e.Message); }
     }
@@ -257,16 +272,102 @@ internal static class Program
     /// <summary>核对 Shader 身份、原路径及实际颜色参数；模型不验证 GPU 混合效果。</summary>
     private static void Tinted(Graphic graphic, string path)
     {
-        Check(graphic.path == path && graphic.shader == ShaderDatabase.TransparentPostLight, "必须使用1.7内置透明Shader且保留路径");
-        Check(graphic.color.r == .72f && graphic.color.a == .82f, "保留预期染色与透明度参数");
+        Check(graphic.path == path && graphic.shader == ShaderDef.Native, "必须使用已注册原生Shader且保留路径");
+        Check(graphic.color.r == .46f && graphic.color.g == .20f && graphic.color.b == .68f && graphic.color.a == .85f, "深紫色RGB并使用0.85不透明度");
     }
-    /// <summary>刻意提供非空且 supported 的错误自定义 Shader，确保补丁仍选择内置透明 Shader。</summary>
+    /// <summary>正常注册路径采用原生程序，并不改写共享原图。</summary>
     private static void BodyShader()
     {
-        Check(DefDatabase<ShaderTypeDef>.GetNamedSilentFail("SSC_FullGelBody").Shader.isSupported, "边界模拟1.7未注册Shader仍伪成功");
+        Graphic graphic = Original(), original = graphic;
+        Harmony_FullGelatinizationBodyTint.Postfix(new Pawn { FullGel = true }, ref graphic);
+        Tinted(graphic, "Body");
+        Check(original.shader.name == "Original" && graphic != original, "不应污染共享原图");
+    }
+
+    /// <summary>分别模拟 Def 缺失、未注册和错误默认条目；不能仅凭 supported 认定成功。</summary>
+    private static void ShaderFallback(bool available, bool registered, bool defaultEntry)
+    {
+        ShaderDef.Available = available;
+        Waylith.Rendering.ShaderRegistry.Registered = registered;
+        Waylith.Rendering.ShaderRegistry.ReturnDefault = defaultEntry;
+        Check(new ShaderDef().Shader.isSupported, "边界保留late-bound假成功");
+        Graphic graphic = Original();
+        Harmony_FullGelatinizationBodyTint.Postfix(new Pawn { FullGel = true }, ref graphic);
+        Check(graphic.shader == ShaderDatabase.TransparentPostLight && graphic.path == "Body", "缺失原生资源时应明确回退");
+    }
+
+    private static void ShaderRecovery()
+    {
+        ShaderFallback(true, false, false);
+        Waylith.Rendering.ShaderRegistry.Registered = true;
         Graphic graphic = Original();
         Harmony_FullGelatinizationBodyTint.Postfix(new Pawn { FullGel = true }, ref graphic);
         Tinted(graphic, "Body");
+    }
+
+    private static void GelDarkEdge()
+    {
+        float r = GelShaderMath.sscGelChannel(0, .46f), g = GelShaderMath.sscGelChannel(0, .20f), b = GelShaderMath.sscGelChannel(0, .68f);
+        Check(g > .05f && b > r && r > g, "黑线应变成深紫色并保留目标色相");
+        Check(b < GelShaderMath.sscGelChannel(.5f, .68f) * .7f, "描边仍应区别于身体中间调");
+    }
+
+    private static void GelDetail()
+    {
+        foreach (float tint in new[] { .20f, .46f, .68f })
+            for (int i = 1; i <= 256; i++)
+                Check(GelShaderMath.sscGelChannel(i / 256f, tint) > GelShaderMath.sscGelChannel((i - 1) / 256f, tint), "灰度细节不得反转或被压平");
+    }
+
+    private static void GelHighlight()
+    {
+        foreach (float tint in new[] { .20f, .46f, .68f })
+        {
+            float white = GelShaderMath.sscGelChannel(1, tint);
+            Check(white > tint && white - tint < .1f && white <= 1, "亮部只加克制光泽，不洗成白色");
+        }
+    }
+
+    private static void GelTransparent()
+    {
+        Check(GelShaderMath.sscGelAlpha(0, .85f, 1) == 0, "透明背景和内部孔洞不能被填满");
+        Check(GelShaderMath.sscGelAlpha(1, 0, 1) == 0 && GelShaderMath.sscGelAlpha(1, 1, 0) == 0, "材质与顶点淡出均须生效");
+    }
+
+    private static void GelCoverage()
+    {
+        float opaque = GelShaderMath.sscGelAlpha(1, .85f, 1);
+        Check(Math.Abs(opaque - .85f) < 1e-6f && opaque < 1, "主体必须保留指定的85%不透明度");
+        for (int i = 1; i <= 256; i++)
+        {
+            float a = GelShaderMath.sscGelAlpha(i / 256f, .85f, 1);
+            Check(a > GelShaderMath.sscGelAlpha((i - 1) / 256f, .85f, 1) && a <= opaque, "边缘Alpha必须连续保留覆盖率");
+        }
+        Check(Math.Abs(GelShaderMath.sscGelAlpha(.5f, .85f, .5f) - opaque * .25f) < 1e-6f, "保留抗锯齿与顶点透明叠乘");
+    }
+
+    private static void GelBounds()
+    {
+        foreach (float a in new[] { -1f, 0f, .5f, 1f, 2f })
+            foreach (float b in new[] { -1f, 0f, .5f, 1f, 2f })
+            {
+                float color = GelShaderMath.sscGelChannel(a, b), alpha = GelShaderMath.sscGelAlpha(a, b, 1);
+                Check(float.IsFinite(color) && color >= 0 && color <= 1 && alpha >= 0 && alpha <= 1, "有界输入不得产生非法输出");
+            }
+    }
+
+    /// <summary>核对真正随版本加载的定义、片元及 include，防止只编译DLL却遗漏运行资源。</summary>
+    private static void ShaderResources(string root)
+    {
+        string runtime = SscTestPaths.RuntimeRoot(root);
+        var def = XDocument.Load(Path.Combine(runtime, "Defs/ShaderDefs/SSC_FullGelBody17.xml")).Root.Element("ShaderDef");
+        Check((string)def.Element("defName") == "SSC_FullGelBody17", "原生定义名称必须匹配生产选择器");
+        var program = def.Element("shaderProgram");
+        Check((string)program.Element("transparent") == "true" && (string)program.Element("depthWrite") == "false", "透明材质不能遮挡后续节点深度");
+        string frag = Path.Combine(runtime, "Shaders", (string)program.Element("fragmentShaderFileName"));
+        Check(File.Exists(frag) && File.ReadAllText(frag).Contains("sscGelChannel(source.r, tint.r)") && File.ReadAllText(frag).Contains("sscGelAlpha(source.a, tint.a, vColor.a)"), "片元必须使用被数值回归的生产函数");
+        Check(File.ReadAllBytes(Path.Combine(runtime, "Shaders/SSC/FullGelMath.glsl")).SequenceEqual(File.ReadAllBytes(Path.Combine(root, "1.7/Shaders/SSC/FullGelMath.glsl"))), "所选运行资源必须与编译测试的数学函数一致");
+        Check(!File.ReadAllText(Path.Combine(root, "Sexslavecraft/ThePatches/HarmonyStartUp.cs")).Contains("\"Verse.PawnRenderNode_Head\""), "本轮不扩大头部染色范围");
     }
     /// <summary>节点没有 pawn 字段，只有渲染树持有角色；该形状能捕获旧反射读取失败。</summary>
     private static void SizedApparel()

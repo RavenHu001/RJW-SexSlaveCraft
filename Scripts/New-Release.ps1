@@ -118,7 +118,8 @@ $modRoot = Join-Path $stageRoot 'RJW-SexSlaveCraft-TieJin-Modify'
 try {
     $runtimeDirectories = @('About', 'Common/Textures')
     foreach ($gameVersion in @('1.6', '1.7')) {
-        foreach ($directory in @('Defs', 'Languages', 'Textures', 'Resources', 'Sounds', 'Patches')) {
+        # Waylith 的原生 GLSL 是运行资源，必须与 ShaderDef 一起保留；这不会触发打包或发布。
+        foreach ($directory in @('Defs', 'Languages', 'Textures', 'Resources', 'Sounds', 'Patches', 'Shaders')) {
             $runtimeDirectories += "$gameVersion/$directory"
         }
     }
