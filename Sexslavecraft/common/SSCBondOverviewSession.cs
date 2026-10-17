@@ -125,11 +125,15 @@ namespace SexSlaveCraft
             double finished = clock();
             if (finished < started) finished = started;
             double baseline = ReferenceEquals(view, Details) || view.ShowCard || view.Failed ? 2 : 5;
-            view.NextRefresh = finished + Math.Min(30, Math.Max(baseline, (finished - started) * 10));
-            nextBuild = finished + .25;
+            // 所有入口共用预算：手动、旧行请求、换来源、开窗口都只排队，不能绕过慢查询退避。
+            // 从完成时刻起至少间隔 2 秒，耗时按十倍退避并封顶 30 秒；空摘要自身仍等 5 秒。
+            // 预算留在会话，关闭重开也不重置；候选扫描和点击导航的实时复查保持原路径。
+            double budget = Math.Min(30, Math.Max(2, (finished - started) * 10));
+            view.NextRefresh = finished + Math.Max(baseline, budget);
+            nextBuild = finished + budget;
         }
 
         private static bool Due(SSCBondOverviewView view, double now)
-            => view != null && SSCBondOverviewUtility.IsValidPawn(view.Source) && (view.Pending || now >= view.NextRefresh);
+            => view != null && SSCBondOverviewUtility.IsValidPawn(view.Source) && now >= view.NextRefresh;
     }
 }

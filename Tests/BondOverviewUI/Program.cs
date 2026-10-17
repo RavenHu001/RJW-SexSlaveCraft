@@ -32,6 +32,7 @@ internal static class Program
         Widgets.Labels=Widgets.ScrollDepth=Widgets.ThrowAt=0;Widgets.NextScroll=null;Widgets.ThrowLabel=false;
         Time.frameCount=0;Time.realtimeSinceStartup=0;LanguageDatabase.activeLanguage=new();Log.Errors=0;
         GUI.enabled=true;GUI.color=new(1,1,1);Text.Font=GameFont.Small;Text.Anchor=TextAnchor.UpperLeft;Text.WordWrap=false;
+        Prefs.UIScale=1;UIExtensions.Truncations=0;
         Event.current=new(){type=EventType.repaint,mousePosition=new(-100,-100)};
         Verse.Extensions.Translations.Clear();foreach(var pair in english)Verse.Extensions.Translations[pair.Key]=pair.Value;
     }
@@ -56,7 +57,7 @@ internal static class Program
         root=SscTestPaths.RepositoryRoot(args.FirstOrDefault());
         foreach(var path in Directory.GetFiles(SscTestPaths.Combine(root,"Languages/English/Keyed"),"*.xml"))
             foreach(var e in XDocument.Load(path).Root.Elements())english[e.Name.LocalName]=e.Value;
-        SessionTests();NavigationTests();GuiTests();ResourceTests();
+        SessionTests();NavigationTests();GuiTests();CacheTests();ResourceTests();
         Console.WriteLine($"{cases-failures}/{cases} passed");return failures==0?0:1;
     }
 
@@ -98,11 +99,11 @@ internal static class Program
         Check("session: manual requests merge and respect global cooldown",()=>{
             double now=0;int builds=0;var p=Master();var s=new SSCBondOverviewSession(Current.Game,()=>now,(a,m)=>{builds++;return View(a);});
             s.ObserveCard(p,null,0);s.Update(0,true,null);for(int i=0;i<20;i++)s.RequestRefresh(s.Card);
-            now=.2;s.ObserveCard(p,null,1);s.Update(1,true,null);Require(builds==1);now=.25;s.ObserveCard(p,null,2);s.Update(2,true,null);Require(builds==2);
+            now=1.99;s.ObserveCard(p,null,1);s.Update(1,true,null);Require(builds==1&&s.Card.Pending);now=2;s.ObserveCard(p,null,2);s.Update(2,true,null);Require(builds==2&&!s.Card.Pending);
         });
         Check("session: two sources alternate without duplicate frame builds",()=>{
             double now=0;var order=new List<Pawn>();var a=Master();var b=Master();var s=new SSCBondOverviewSession(Current.Game,()=>now,(p,m)=>{order.Add(p);return View(p);});
-            s.ObserveCard(a,null,0);s.OpenDetails(b,null);s.Update(0,true,null);now=.25;s.ObserveCard(a,null,1);s.Update(1,true,null);
+            s.ObserveCard(a,null,0);s.OpenDetails(b,null);s.Update(0,true,null);now=2;s.ObserveCard(a,null,1);s.Update(1,true,null);
             Require(order.Count==2&&order.Distinct().Count()==2);
         });
         Check("session: slow query backs off without catch-up",()=>{
@@ -305,6 +306,105 @@ internal static class Program
             var w=Find.WindowStack.WindowOfType<Dialog_SSCBondOverview>();w.DoWindowContents(new(0,0,760,500));w.Close();
             Require(SSCBondUtility.GetChain(f.slave)==chain&&chain.target==f.master&&original.SequenceEqual(bridle.targets)&&
                 identity==f.slave.Training.pawnIdentity&&trainer==f.slave.Training.selectedTrainer&&relations==f.slave.relations.CacheNotifications);
+        });
+    }
+
+    // 验证展示缓存的结果、工作量、容量及失效边界，并用受控时钟检查所有刷新原因。
+    static void CacheTests()
+    {
+        Check("cache: cold display keeps every candidate without formatting rows",()=>{
+            var f=Fixture();for(int i=0;i<1000;i++){var p=Slave(f.master,"Extra"+i);Place(p,f.map);}
+            var s=Ready(f.master,f.map);var display=s.Card.Display;
+            Require(display.Snapshot.TotalSlaveCount==1001&&display.RowCount==0);
+            Paint(new Gizmo_SSCBondOverview(s));Require(display.RowCount==0);
+            Dialog_SSCBondOverview.Open(s,f.master);Find.WindowStack.WindowOfType<Dialog_SSCBondOverview>().DoWindowContents(new(0,0,760,500));
+            Require(display.RowCount>0&&display.RowCount<12&&display.Snapshot.TotalSlaveCount==1001);
+        });
+        Check("cache: hovered card formats only the hovered row",()=>{
+            var f=Fixture();var s=Ready(f.master,f.map);Event.current.mousePosition=new(20,50);Paint(new Gizmo_SSCBondOverview(s));
+            Require(s.Card.Display.RowCount==1&&ThingOwnerUtility.MapQueryCount==1);
+        });
+        Check("cache: row text matches full immutable snapshot fields and reuses object",()=>{
+            var f=Fixture();f.slave.Dead=true;var s=Ready(f.master,f.map);var entry=s.Card.Snapshot.Slaves[0];var d=s.Card.Display;var text=d.Row(entry);
+            Require(text.Name==SSCBondOverviewText.Format("DeadName",entry.Name));
+            Require(text.Details==SSCBondOverviewText.Format("RowDetails",entry.ChainStage,SSCBondOverviewText.Specialization(entry.Specialization),SSCBondOverviewText.Location(entry.Location)));
+            Require(ReferenceEquals(text,d.Row(entry)));
+        });
+        Check("cache: row FIFO stays bounded and evicted rows regenerate",()=>{
+            var f=Fixture();for(int i=0;i<100;i++){var p=Slave(f.master,"Extra"+i);Place(p,f.map);}
+            var s=Ready(f.master,f.map);var d=s.Card.Display;var first=d.Row(d.Snapshot.Slaves[0]);
+            foreach(var e in d.Snapshot.Slaves)d.Row(e);
+            Require(d.RowCount==64&&!ReferenceEquals(first,d.Row(d.Snapshot.Slaves[0]))&&d.RowCount==64);
+        });
+        Check("cache: truncation hits retain native result including narrow widths",()=>{
+            var f=Fixture();var view=Ready(f.master,f.map).Card;string name=new('X',160);
+            foreach(float width in new[]{1f,40f,200f,2000f}){
+                string expected=name.Truncate(width);int calls=UIExtensions.Truncations;
+                Require(view.Truncate(name,width)==expected&&UIExtensions.Truncations==calls+1);
+                Require(view.Truncate(name,width)==expected&&UIExtensions.Truncations==calls+1);
+            }
+        });
+        Check("cache: width font scale and language distinguish truncation keys",()=>{
+            var f=Fixture();var view=Ready(f.master,f.map).Card;string name=new('X',160);
+            view.Truncate(name,40);view.Truncate(name,80);Text.Font=GameFont.Tiny;view.Truncate(name,80);
+            Prefs.UIScale=1.25f;view.Truncate(name,80);Require(UIExtensions.Truncations==4&&view.TruncatedCount==4);
+            view.Truncate(name,80);Require(UIExtensions.Truncations==4);
+            LanguageDatabase.activeLanguage=new();view.Truncate(name,80);Require(UIExtensions.Truncations==5&&view.TruncatedCount==1);
+        });
+        Check("cache: arbitrary widths remain bounded",()=>{
+            var f=Fixture();var view=Ready(f.master,f.map).Card;string name=new('X',160);
+            for(int i=0;i<1000;i++)view.Truncate(name,i+1);
+            int calls=UIExtensions.Truncations;Require(view.TruncatedCount==256);
+            view.Truncate(name,1);Require(UIExtensions.Truncations==calls+1&&view.TruncatedCount==256);
+        });
+        foreach(string change in new[]{"revision","map","source","release"})Check("cache: clears presentation on "+change,()=>{
+            var f=Fixture();var s=Ready(f.master,f.map);var v=s.Card;var d=v.Display;d.Row(v.Snapshot.Slaves[0]);v.Truncate("Name",20);
+            if(change=="revision")v.Changed();else if(change=="map")v.SetMap(new());else if(change=="source")s.ObserveCard(Master(),f.map,1);else s.Clear();
+            Require(v.TruncatedCount==0&&(change=="revision"?v.Display!=d&&v.Display.RowCount==0:v.Display==null));
+        });
+        Check("cache: language switch renews templates and row text",()=>{
+            var f=Fixture();var v=Ready(f.master,f.map).Card;var d=v.Display;string old=d.Count;d.Row(v.Snapshot.Slaves[0]);
+            Verse.Extensions.Translations["SSC_BondOverview_Counts"]="Translated {0}/{1}";LanguageDatabase.activeLanguage=new();
+            Require(v.Display!=d&&v.Display.RowCount==0&&v.Display.Count!=old&&v.Display.Count.StartsWith("Translated"));
+        });
+        Check("cache: warm window never repeats native truncation",()=>{
+            var f=Fixture();var s=Ready(f.master,f.map);Dialog_SSCBondOverview.Open(s,f.master);var w=Find.WindowStack.WindowOfType<Dialog_SSCBondOverview>();
+            w.DoWindowContents(new(0,0,760,500));int calls=UIExtensions.Truncations;
+            for(int i=0;i<100;i++)w.DoWindowContents(new(0,0,760,500));Require(UIExtensions.Truncations==calls);
+            w.DoWindowContents(new(0,0,360,500));Require(UIExtensions.Truncations>calls);
+        });
+        foreach(string reason in new[]{"manual","source","reopen","map"})Check("budget: repeated "+reason+" cannot bypass shared deadline",()=>{
+            double now=0;int builds=0;var p=Master();var s=new SSCBondOverviewSession(Current.Game,()=>now,(a,m)=>{builds++;return View(a);});
+            for(int frame=0;frame<=500;frame++){
+                now=frame*.01;
+                if(reason=="source")p=Master();if(reason=="reopen")s.Clear();
+                s.ObserveCard(p,reason=="map"?new Map():null,frame);if(reason=="manual")s.RequestRefresh(s.Card);
+                s.Update(frame,true,s.Card.Map);
+            }
+            Require(builds==3);
+        });
+        Check("budget: pending negative result respects five second interval",()=>{
+            double now=0;int builds=0;var p=new Pawn();var s=new SSCBondOverviewSession(Current.Game,()=>now,(a,m)=>{builds++;return View(a);});
+            s.ObserveCard(p,null,0);s.Update(0,true,null);s.RequestRefresh(s.Card);now=2;s.ObserveCard(p,null,1);s.Update(1,true,null);Require(builds==1&&s.Card.Pending);
+            now=5;s.ObserveCard(p,null,2);s.Update(2,true,null);Require(builds==2&&!s.Card.Pending);
+        });
+        foreach(bool fail in new[]{false,true})Check("budget: slow "+(fail?"failure":"query")+" also gates new source and caps backoff",()=>{
+            double now=0;int builds=0;var p=Master();var s=new SSCBondOverviewSession(Current.Game,()=>now,(a,m)=>{builds++;now+=4;if(fail)throw new Exception();return View(a);});
+            s.ObserveCard(p,null,0);s.Update(0,true,null);Require(s.Card.NextRefresh==34);
+            p=Master();now=33.99;s.ObserveCard(p,null,1);s.RequestRefresh(s.Card);s.Update(1,true,null);Require(builds==1&&s.Card.Snapshot==null);
+            now=34;s.ObserveCard(p,null,2);s.Update(2,true,null);Require(builds==2);
+        });
+        Check("budget: two pending sources remain fair under sustained requests",()=>{
+            double now=0;var order=new List<Pawn>();var a=Master();var b=Master();var s=new SSCBondOverviewSession(Current.Game,()=>now,(p,m)=>{order.Add(p);return View(p);});
+            s.OpenDetails(b,null);for(int frame=0;frame<=600;frame++){
+                now=frame*.01;s.ObserveCard(a,null,frame);s.RequestRefresh(s.Card);s.RequestRefresh(s.Details);s.Update(frame,true,null);s.Update(frame,true,null);
+            }
+            Require(order.SequenceEqual(new[]{a,b,a,b}));
+        });
+        Check("budget: stale cached row requests refresh but still rejects rebound navigation",()=>{
+            var f=Fixture();var s=Ready(f.master,f.map);var snap=s.Card.Snapshot;s.Card.Display.Row(snap.Slaves[0]);
+            SSCBondUtility.GetChain(f.slave).target=Master();s.RequestRefresh(s.Card);
+            Require(!SSCBondOverviewNavigation.TryNavigate(snap,snap.Slaves[0],out _)&&CameraJumper.Jumps==0&&s.Card.Pending);
         });
     }
 

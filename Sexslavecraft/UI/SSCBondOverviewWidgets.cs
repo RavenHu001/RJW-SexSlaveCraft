@@ -1,5 +1,6 @@
 // AI 辅助生成。只读展示、固定肖像档位和可见范围；不调用世界候选查询或绑定维护。
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using Verse;
 using RimWorld;
@@ -10,50 +11,106 @@ namespace SexSlaveCraft
     {
         private SSCBondOverviewDisplay display;
         private object displayLanguage;
-        partial void ResetPresentation() { display = null; displayLanguage = null; }
+        private SSCBondOverviewCache<(string, float, GameFont, float), string> truncated;
+        partial void ResetPresentation() { display = null; displayLanguage = null; truncated = null; }
+        private void CheckLanguage()
+        {
+            if (ReferenceEquals(displayLanguage, LanguageDatabase.activeLanguage)) return;
+            ResetPresentation(); displayLanguage = LanguageDatabase.activeLanguage;
+        }
+        internal int TruncatedCount => truncated?.Count ?? 0;
+        internal string Truncate(string text, float width)
+        {
+            CheckLanguage();
+            // 原版可选字典只按文字索引，不能跨宽度共用；这里同时区分字体与缩放。
+            // 缓存属于当前视图，限制条目数，滚动、缩放或窗口尺寸变化不会无限保留旧结果。
+            var key = (text, width, Text.Font, Prefs.UIScale);
+            if (truncated != null && truncated.TryGet(key, out string result)) return result;
+            result = text.Truncate(width);
+            (truncated ??= new SSCBondOverviewCache<(string, float, GameFont, float), string>(256)).Add(key, result);
+            return result;
+        }
         internal SSCBondOverviewDisplay Display
         {
             get
             {
+                CheckLanguage();
                 if (Snapshot == null) return null;
-                if (display == null || !ReferenceEquals(displayLanguage, LanguageDatabase.activeLanguage))
-                { display = new SSCBondOverviewDisplay(Snapshot); displayLanguage = LanguageDatabase.activeLanguage; }
+                if (display == null) display = new SSCBondOverviewDisplay(Snapshot);
                 return display;
             }
+        }
+    }
+
+    /// <summary>小型 FIFO：命中不分配、不更新链表；容量与名单总长度无关。</summary>
+    internal sealed class SSCBondOverviewCache<TKey, TValue>
+    {
+        private readonly int capacity;
+        private readonly Dictionary<TKey, TValue> values = new Dictionary<TKey, TValue>();
+        private readonly Queue<TKey> order = new Queue<TKey>();
+        internal SSCBondOverviewCache(int capacity) { this.capacity = capacity; }
+        internal int Count => values.Count;
+        internal bool TryGet(TKey key, out TValue value) => values.TryGetValue(key, out value);
+        internal void Add(TKey key, TValue value)
+        {
+            if (values.ContainsKey(key)) return;
+            if (values.Count == capacity) values.Remove(order.Dequeue());
+            values.Add(key, value); order.Enqueue(key);
+        }
+    }
+
+    internal sealed class SSCBondOverviewRowText
+    {
+        internal readonly string Name, Details;
+        internal SSCBondOverviewRowText(SSCBondOverviewEntry entry)
+        {
+            Name = entry.IsDead ? SSCBondOverviewText.Format("DeadName", entry.Name) : entry.Name;
+            Details = SSCBondOverviewText.Format("RowDetails", entry.ChainStage,
+                SSCBondOverviewText.Specialization(entry.Specialization), SSCBondOverviewText.Location(entry.Location));
         }
     }
 
     internal sealed class SSCBondOverviewDisplay
     {
         internal readonly SSCBondOverviewSnapshot Snapshot;
-        internal readonly string Title, Count, Trainer;
-        internal readonly string[] Names, Details;
-        internal readonly string MasterName, MasterDetails;
+        internal readonly string Title, Count, Trainer, CardHeading, WaitingCount;
+        private SSCBondOverviewCache<SSCBondOverviewEntry, SSCBondOverviewRowText> rows;
+        internal int RowCount => rows?.Count ?? 0;
+        internal SSCBondOverviewRowText Row(SSCBondOverviewEntry entry)
+        {
+            // 完整候选与排序仍在只读快照中；只有可见行、主人文字或悬停才生成展示文字。
+            // 不为全名单分配数组，最多保留 64 行；移出视区后可淘汰，重新进入再生成。
+            if (rows != null && rows.TryGet(entry, out SSCBondOverviewRowText text)) return text;
+            text = new SSCBondOverviewRowText(entry);
+            (rows ??= new SSCBondOverviewCache<SSCBondOverviewEntry, SSCBondOverviewRowText>(64)).Add(entry, text);
+            return text;
+        }
         internal SSCBondOverviewDisplay(SSCBondOverviewSnapshot snapshot)
         {
             Snapshot = snapshot;
             Title = SSCBondOverviewText.Format("TitleSource", snapshot.Source.Dead
                 ? SSCBondOverviewText.Format("DeadName", snapshot.Source.LabelShort) : snapshot.Source.LabelShort);
             Count = SSCBondOverviewText.Format("Counts", snapshot.LivingSlaveCount, snapshot.TotalSlaveCount);
+            WaitingCount = Count + " · " + SSCBondOverviewText.T("Waiting");
+            CardHeading = snapshot.Master == null ? Count : snapshot.TotalSlaveCount == 0 ? SSCBondOverviewText.T("Master")
+                : SSCBondOverviewText.Format("BothCounts", snapshot.LivingSlaveCount, snapshot.TotalSlaveCount);
             Trainer = SSCBondOverviewText.Format("Trainer", snapshot.AssignedTrainer?.LabelShort ?? SSCBondOverviewText.T("None"),
                 SSCBondOverviewText.T("Trainer_" + snapshot.AssignedTrainerState));
-            if (snapshot.Master != null)
-            { MasterName = Name(snapshot.Master); MasterDetails = Detail(snapshot.Master); }
-            Names = new string[snapshot.TotalSlaveCount]; Details = new string[snapshot.TotalSlaveCount];
-            // 仅换快照或换语言时生成文字；GUI 不再对全名单排序、复制或格式化。
-            for (int i = 0; i < Names.Length; i++)
-            { Names[i] = Name(snapshot.Slaves[i]); Details[i] = Detail(snapshot.Slaves[i]); }
         }
-        private static string Name(SSCBondOverviewEntry entry)
-            => entry.IsDead ? SSCBondOverviewText.Format("DeadName", entry.Name) : entry.Name;
-        private static string Detail(SSCBondOverviewEntry entry)
-            => SSCBondOverviewText.Format("RowDetails", entry.ChainStage, SSCBondOverviewText.Specialization(entry.Specialization),
-                SSCBondOverviewText.Location(entry.Location));
     }
 
     internal static class SSCBondOverviewText
     {
-        internal static string T(string key) => ("SSC_BondOverview_" + key).Translate();
+        private static object language;
+        private static SSCBondOverviewCache<string, string> translations;
+        internal static string T(string key)
+        {
+            // 仅缓存有限的翻译模板，不保存角色或世界引用；切换语言时整批失效。
+            if (translations == null || !ReferenceEquals(language, LanguageDatabase.activeLanguage))
+            { translations = new SSCBondOverviewCache<string, string>(128); language = LanguageDatabase.activeLanguage; }
+            if (translations.TryGet(key, out string text)) return text;
+            text = ("SSC_BondOverview_" + key).Translate(); translations.Add(key, text); return text;
+        }
         internal static string Format(string key, params object[] args) => string.Format(T(key), args);
         internal static string Specialization(SexSlaveSpecializationType? type)
         {
@@ -125,17 +182,19 @@ namespace SexSlaveCraft
         }
 
         internal static bool Row(Rect rect, SSCBondOverviewSnapshot snapshot, SSCBondOverviewEntry entry,
-            string name, string details, SSCBondOverviewSession session, SSCBondOverviewView view)
+            SSCBondOverviewDisplay display, SSCBondOverviewSession session, SSCBondOverviewView view)
         {
+            SSCBondOverviewRowText text = display.Row(entry);
+            string name = text.Name, details = text.Details;
             bool current = SSCBondOverviewUtility.IsCurrent(snapshot, entry);
             if (!current) session.RequestRefresh(view);
             Portrait(new Rect(rect.x, rect.y + 8, 48, 48), entry, current);
             float buttonWidth = Math.Min(110, Math.Max(46, rect.width * .23f));
             Rect button = new Rect(rect.xMax - buttonWidth, rect.y + 16, buttonWidth, 30);
             float textWidth = Math.Max(1, button.x - rect.x - 68);
-            Widgets.Label(new Rect(rect.x + 56, rect.y + 7, textWidth, 24), name.Truncate(textWidth));
+            Widgets.Label(new Rect(rect.x + 56, rect.y + 7, textWidth, 24), view.Truncate(name, textWidth));
             Widgets.Label(new Rect(rect.x + 56, rect.y + 32, textWidth, 24),
-                (current ? details : SSCBondOverviewText.T("RelationChanged")).Truncate(textWidth));
+                view.Truncate(current ? details : SSCBondOverviewText.T("RelationChanged"), textWidth));
             if (current) Hover(new Rect(rect.x, rect.y, Math.Max(1, button.x - rect.x - 4), rect.height), entry, name, details);
             bool select = false;
             bool available = current && SSCBondOverviewNavigation.CanPreview(entry.Location, out select);

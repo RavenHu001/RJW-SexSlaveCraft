@@ -1,0 +1,89 @@
+// AI 辅助生成。编译生产代码；替身边界只统计、确定性量字宽，不将模型耗时称作游戏帧率。
+using System.Diagnostics;
+using System.Reflection;
+using System.Text.Json;
+using System.Xml.Linq;
+using RimWorld;
+using RimWorld.Planet;
+using SexSlaveCraft;
+using UnityEngine;
+using Verse;
+
+internal static class PerfEntry
+{
+    static object sink;
+    static readonly MethodInfo reset=typeof(Program).GetMethod("Reset",BindingFlags.Static|BindingFlags.NonPublic);
+    static (Pawn owner,Pawn[] slaves,Map map,SSCBondOverviewSession session) Setup(int count,int nameLength=10)
+    {
+        reset.Invoke(null,null);Prefs.UIScale=1;UIExtensions.Truncations=0;
+        foreach(var path in Directory.GetFiles(SscTestPaths.Combine(null,"Languages/English/Keyed"),"*.xml"))
+            foreach(var node in XDocument.Load(path).Root.Elements())Verse.Extensions.Translations[node.Name.LocalName]=node.Value;
+        var owner=new Pawn{Training={pawnIdentity=PawnIdentity.Master}};
+        var map=new Map();Find.CurrentMap=map;Find.Maps.Add(map);owner.Spawned=true;owner.Map=map;map.Things.Add(owner);Find.Selector.Objects.Add(owner);
+        var slaves=new Pawn[count];
+        for(int i=0;i<count;i++)
+        {
+            var pawn=new Pawn{LabelShort=new string('N',nameLength)+i.ToString("D5"),Spawned=true,Map=map};
+            pawn.health.AddHediff(new Hediff_ChainOfSexSlave{def=SSCDefOf.ChainOfSexSlave,target=owner});
+            map.Things.Add(pawn);slaves[i]=pawn;
+        }
+        var session=new SSCBondOverviewSession(Current.Game,()=>Time.realtimeSinceStartup);
+        session.ObserveCard(owner,map,0);session.Update(0,true,map);
+        if(session.Card.Snapshot.TotalSlaveCount!=count)throw new Exception("Candidate coverage changed");
+        return(owner,slaves,map,session);
+    }
+    static void Measure(string name,Action action,int batch=1,Action before=null)
+    {
+        for(int i=0;i<16;i++){before?.Invoke();action();PortraitsCache.Requests.Clear();}
+        var ms=new double[31];var bytes=new long[31];
+        int maps=ThingOwnerUtility.MapQueryCount, portraits=PortraitsCache.Calls, checks=CameraJumper.Checks,truncations=UIExtensions.Truncations;
+        for(int sample=0;sample<31;sample++)
+        {
+            before?.Invoke();
+            long allocated=GC.GetAllocatedBytesForCurrentThread();long tick=Stopwatch.GetTimestamp();
+            for(int i=0;i<batch;i++){action();PortraitsCache.Requests.Clear();}
+            ms[sample]=Stopwatch.GetElapsedTime(tick).TotalMilliseconds/batch;
+            bytes[sample]=(GC.GetAllocatedBytesForCurrentThread()-allocated)/batch;
+        }
+        Array.Sort(ms);Array.Sort(bytes);
+        Console.WriteLine(JsonSerializer.Serialize(new{name,medianMs=ms[15],medianBytes=bytes[15],batch,
+            mapQueries=ThingOwnerUtility.MapQueryCount-maps,portraitRequests=PortraitsCache.Calls-portraits,
+            canJumpChecks=CameraJumper.Checks-checks,truncations=UIExtensions.Truncations-truncations}));
+    }
+    static void Main()
+    {
+        var idle=Setup(0);idle.session.Clear();int frame=0;
+        Measure("idle-update",()=>idle.session.Update(++frame,false,idle.map),10000);
+        foreach(int n in new[]{10,500,5000})
+        {
+            var f=Setup(n);
+            Measure("cold-display-"+n,()=>sink=f.session.Card.Display,before:()=>f.session.Card.Changed());
+            var gizmo=new Gizmo_SSCBondOverview(f.session);
+            Measure("cold-gizmo-"+n,()=>gizmo.GizmoOnGUI(new(0,0),300,default),before:()=>f.session.Card.Changed());
+            Measure("warm-gizmo-"+n,()=>gizmo.GizmoOnGUI(new(0,0),300,default),128);
+            Dialog_SSCBondOverview.Open(f.session,f.owner);var window=Find.WindowStack.WindowOfType<Dialog_SSCBondOverview>();
+            Measure("cold-window-"+n,()=>window.DoWindowContents(new(0,0,760,500)),before:()=>f.session.Card.Changed());
+            Measure("warm-window-"+n,()=>window.DoWindowContents(new(0,0,760,500)),64);
+            window.Close();
+        }
+        var longNames=Setup(500,160);
+        Dialog_SSCBondOverview.Open(longNames.session,longNames.owner);var longWindow=Find.WindowStack.WindowOfType<Dialog_SSCBondOverview>();
+        Measure("cold-window-long-names",()=>longWindow.DoWindowContents(new(0,0,760,500)),before:()=>longNames.session.Card.Changed());
+        Measure("warm-window-long-names",()=>longWindow.DoWindowContents(new(0,0,760,500)),32);
+        var nav=Setup(1);var snapshot=nav.session.Card.Snapshot;var entry=snapshot.Slaves[0];
+        Measure("map-navigation",()=>{if(!SSCBondOverviewNavigation.TryNavigate(snapshot,entry,out _))throw new Exception("navigation");},64);
+        var ship=new Gravship();ship.Pawns.Add(nav.slaves[0]);Find.CurrentGravship=ship;nav.slaves[0].Spawned=false;
+        for(int i=0;i<20000;i++)ship.Things.Add(new Thing());
+        Measure("ship-navigation-20000",()=>{if(!SSCBondOverviewNavigation.TryNavigate(snapshot,entry,out _))throw new Exception("ship navigation");});
+        foreach(string reason in new[]{"automatic","manual","source","slow-manual","slow-source"})
+        {
+            Setup(0);double now=0;int builds=0;var p=new Pawn{Training={pawnIdentity=PawnIdentity.Master}};
+            var session=new SSCBondOverviewSession(Current.Game,()=>now,(a,m)=>{builds++;if(reason.StartsWith("slow"))now+=.5;return SSCBondOverviewUtility.BuildFromCandidates(a,m,null);});
+            int i=0;
+            while(now<=5){session.ObserveCard(p,null,i);if(reason.EndsWith("manual"))session.RequestRefresh(session.Card);
+                session.Update(i++,true,null);if(reason.EndsWith("source"))p=new Pawn{Training={pawnIdentity=PawnIdentity.Master}};now+=.01;}
+            Console.WriteLine(JsonSerializer.Serialize(new{name="five-second-refresh-count",reason,builds}));
+        }
+        GC.KeepAlive(sink);
+    }
+}

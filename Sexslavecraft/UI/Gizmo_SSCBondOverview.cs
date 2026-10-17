@@ -35,7 +35,7 @@ namespace SexSlaveCraft
                 // 极窄命令栏只保留详情入口；命中区域仍完全位于卡片内。
                 float inset = Math.Min(4, rect.width * .1f);
                 Rect compact = new Rect(rect.x + inset, rect.y + 4, Math.Max(1, rect.width - 2 * inset), 65);
-                Widgets.Label(compact, SSCBondOverviewText.T("ViewAll").Truncate(compact.width));
+                Widgets.Label(compact, view.Truncate(SSCBondOverviewText.T("ViewAll"), compact.width));
                 if (leftClick && Mouse.IsOver(compact)) Remember(view, null, true);
                 return pendingSource != null ? new GizmoResult(GizmoState.Interacted, Event.current)
                     : new GizmoResult(Mouse.IsOver(rect) ? GizmoState.Mouseover : GizmoState.Clear);
@@ -44,13 +44,11 @@ namespace SexSlaveCraft
             SSCBondOverviewDisplay display = view.Display;
             float detailsWidth = Math.Min(88, Math.Max(1, rect.width * .34f));
             Rect detailsButton = new Rect(rect.xMax - detailsWidth - 4, rect.y + 4, detailsWidth, 22);
-            string heading = snapshot?.Master != null ? snapshot.TotalSlaveCount == 0 ? SSCBondOverviewText.T("Master")
-                : SSCBondOverviewText.Format("BothCounts", snapshot.LivingSlaveCount, snapshot.TotalSlaveCount)
-                : display?.Count ?? SSCBondOverviewText.T("Title");
+            string heading = display?.CardHeading ?? SSCBondOverviewText.T("Title");
             float headingWidth = Math.Max(1, detailsButton.x - rect.x - 10);
-            Widgets.Label(new Rect(rect.x + 6, rect.y + 4, headingWidth, 22), heading.Truncate(headingWidth));
+            Widgets.Label(new Rect(rect.x + 6, rect.y + 4, headingWidth, 22), view.Truncate(heading, headingWidth));
             Widgets.DrawHighlight(detailsButton);
-            Widgets.Label(detailsButton, SSCBondOverviewText.T("ViewAll").Truncate(detailsButton.width));
+            Widgets.Label(detailsButton, view.Truncate(SSCBondOverviewText.T("ViewAll"), detailsButton.width));
             if (leftClick && Mouse.IsOver(detailsButton)) Remember(view, null, true);
 
             // 头像固定尺寸并限制数量；窄卡片减少预览，不产生超出自身区域的命中框。
@@ -68,18 +66,18 @@ namespace SexSlaveCraft
                 Widgets.Label(new Rect(portrait.x, portrait.y, 12, 16), master ? "↑" : "↓");
                 if (current && Mouse.IsOver(portrait))
                 {
-                    string name = master ? display.MasterName : display.Names[index];
-                    string info = master ? display.MasterDetails : display.Details[index];
+                    SSCBondOverviewRowText text = display.Row(entry);
                     SSCBondOverviewWidgets.Hover(portrait, entry,
-                        SSCBondOverviewText.T(master ? "Master" : "Slave") + ": " + name, info);
+                        SSCBondOverviewText.T(master ? "Master" : "Slave") + ": " + text.Name, text.Details);
                     if (SSCBondOverviewNavigation.CanPreview(entry.Location, out _) && leftClick) Remember(view, entry, false);
                 }
             }
             if (capacity > 0 && snapshot?.Master != null && snapshot.TotalSlaveCount == 0)
             {
                 float textWidth = Math.Max(1, rect.width - 62);
-                Widgets.Label(new Rect(rect.x + 54, rect.y + 29, textWidth, 20), display.MasterName.Truncate(textWidth));
-                Widgets.Label(new Rect(rect.x + 54, rect.y + 49, textWidth, 20), display.MasterDetails.Truncate(textWidth));
+                SSCBondOverviewRowText text = display.Row(snapshot.Master);
+                Widgets.Label(new Rect(rect.x + 54, rect.y + 29, textWidth, 20), view.Truncate(text.Name, textWidth));
+                Widgets.Label(new Rect(rect.x + 54, rect.y + 49, textWidth, 20), view.Truncate(text.Details, textWidth));
             }
             if (count == 0 || capacity == 0)
             {
@@ -87,7 +85,7 @@ namespace SexSlaveCraft
                     : snapshot.MasterState == SSCBondOverviewMasterState.InvalidTarget ? "InvalidMaster"
                     : snapshot.Identity == PawnIdentity.Master ? "EmptySlaves" : "NoMaster";
                 Widgets.Label(new Rect(rect.x + 6, rect.y + 32, Math.Max(1, rect.width - 12), 36),
-                    SSCBondOverviewText.T(status).Truncate(Math.Max(1, rect.width - 12)));
+                    view.Truncate(SSCBondOverviewText.T(status), Math.Max(1, rect.width - 12)));
             }
             if (view.Pending) TooltipHandler.TipRegion(rect, SSCBondOverviewText.T("Waiting"));
             if (pendingSource != null) return new GizmoResult(GizmoState.Interacted, Event.current);

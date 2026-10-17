@@ -26,6 +26,7 @@ namespace Verse
     public enum GameFont { Tiny, Small }
     public static class Text { public static GameFont Font; public static TextAnchor Anchor; public static bool WordWrap; }
     public static class UI { public static int screenWidth=1200,screenHeight=900; }
+    public static class Prefs { public static float UIScale=1; }
     public static class Mouse { public static bool IsOver(Rect rect)=>rect.Contains(Event.current.mousePosition); }
     public static class TooltipHandler { public static int Calls; public static void TipRegion(Rect rect,string text){Calls++;} }
     public static class LanguageDatabase { public static object activeLanguage = new(); }
@@ -88,7 +89,21 @@ namespace Verse
         public static void BeginScrollView(Rect rect,ref Vector2 scroll,Rect content){ScrollDepth++;if(NextScroll.HasValue){scroll.y=NextScroll.Value;NextScroll=null;}}
         public static void EndScrollView(){ScrollDepth--;}
     }
-    public static class UIExtensions { public static string Truncate(this string text,float width)=>text; }
+    public static class UIExtensions
+    {
+        public static int Truncations;
+        // 原版逐字缩短的调用形状；确定性字符宽度仅供缓存回归与分配对比，不代表实际字体耗时。
+        public static string Truncate(this string text,float width)
+        {
+            Truncations++;
+            float unit=Text.Font==GameFont.Tiny?5:7;
+            if(text.Length*unit<=width)return text;
+            string value=text;
+            do { value=value.Substring(0,value.Length-1); }
+            while(value.Length>0&&(value+"...").Length*unit>width);
+            return value+"...";
+        }
+    }
     public static class CameraJumper
     {
         public static int Jumps,Selects,Checks; public static bool Allow=true; public static GlobalTargetInfo Last;

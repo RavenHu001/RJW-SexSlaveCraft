@@ -1,6 +1,8 @@
 # 测试说明索引
 
-主从关系概览第二批新增 [BondOverviewUI](BondOverviewUI/README.md)，当前 **78/78**，直接链接生产会话、导航、卡片与窗口；原 [BondRelations](BondRelations/README.md) **110/110** 保持。本批全量 **35/35 套、2953/2953 项及 2/2 资源检查通过**，本机同步与实机边界见[第二批记录](../Docs/Development/Verification/主从关系概览第二批界面与导航实现与测试.md)，以下第一批数字保留为历史阶段。
+主从关系概览第二批性能优化已扩展 [BondOverviewUI](BondOverviewUI/README.md) 至 **100/100**，新增缓存隔离、容量、失效与统一预算回归；本轮全量 **35/35 套、2975/2975 项、2/2 资源检查通过**，前后同边界模型与现行预算见[本轮记录](../Docs/Development/Verification/主从关系概览第二批性能优化与对比.md)。以下第二批实现 78 项及第一批数字保留历史阶段。
+
+第二批首次实现新增 [BondOverviewUI](BondOverviewUI/README.md)，当时 **78/78**，直接链接生产会话、导航、卡片与窗口；原 [BondRelations](BondRelations/README.md) **110/110** 保持。当批全量 **35/35 套、2953/2953 项及 2/2 资源检查通过**，本机同步与实机边界见[第二批记录](../Docs/Development/Verification/主从关系概览第二批界面与导航实现与测试.md)，以下第一批数字保留为历史阶段。
 
 主从关系概览第一批及性能优化扩展现有 [BondRelations](BondRelations/README.md)，当前专项 110/110，本批全量 34/34 套、2875/2875 项及 2/2 资源检查通过，未增加套件数。新增遍历计数、候选覆盖、缓冲释放与同机基准对比，实际 1.7 编译通过，见[当前性能记录](../Docs/Development/Verification/主从关系概览第一批性能优化与对比.md)。初批 94 项及全量 2859 项保留为[历史结果](../Docs/Development/Verification/主从关系概览第一批只读数据实现与测试.md)，真实容器与性能仍待实机核验。
 

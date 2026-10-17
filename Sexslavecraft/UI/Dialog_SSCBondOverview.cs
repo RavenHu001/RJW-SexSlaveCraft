@@ -59,9 +59,9 @@ namespace SexSlaveCraft
             { session.RequestRefresh(view); failureMessage = null; }
             string status = failureMessage ?? (!SSCBondOverviewUtility.IsValidPawn(Source) ? SSCBondOverviewText.T("Failure_SourceInvalid")
                 : view.Failed ? SSCBondOverviewText.T("QueryFailed") : snapshot == null || snapshot.State != SSCBondOverviewQueryState.Ready
-                    ? SSCBondOverviewText.T("Waiting") : display.Count + (view.Pending ? " · " + SSCBondOverviewText.T("Waiting") : ""));
+                    ? SSCBondOverviewText.T("Waiting") : view.Pending ? display.WaitingCount : display.Count);
             Rect statusRect = new Rect(inRect.x, inRect.y + 34, inRect.width, 26);
-            Widgets.Label(statusRect, status.Truncate(statusRect.width));
+            Widgets.Label(statusRect, view.Truncate(status, statusRect.width));
             if (Mouse.IsOver(statusRect)) TooltipHandler.TipRegion(statusRect, status);
             if (!SSCBondOverviewUtility.IsValidPawn(Source) || snapshot == null || snapshot.State != SSCBondOverviewQueryState.Ready) return;
 
@@ -82,7 +82,7 @@ namespace SexSlaveCraft
                 if (snapshot.Master != null)
                 {
                     if (Visible(masterStart, row) && SSCBondOverviewWidgets.Row(new Rect(0, masterStart, width, row), snapshot,
-                        snapshot.Master, display.MasterName, display.MasterDetails, session, view)) clicked = snapshot.Master;
+                        snapshot.Master, display, session, view)) clicked = snapshot.Master;
                 }
                 else Label(masterStart, SSCBondOverviewText.T(snapshot.MasterState == SSCBondOverviewMasterState.InvalidTarget ? "InvalidMaster" : "NoMaster"));
                 Label(trainerY, display.Trainer);
@@ -104,7 +104,7 @@ namespace SexSlaveCraft
             {
                 if (!Visible(y, header)) return;
                 Rect rect = new Rect(0, y, width, header);
-                Widgets.Label(rect, text.Truncate(width));
+                Widgets.Label(rect, view.Truncate(text, width));
                 if (Mouse.IsOver(rect)) TooltipHandler.TipRegion(rect, text);
             }
             void DrawGroup(int offset, int count, float start)
@@ -114,7 +114,7 @@ namespace SexSlaveCraft
                 {
                     int index = offset + i;
                     if (SSCBondOverviewWidgets.Row(new Rect(0, start + i * row, width, row), snapshot,
-                        snapshot.Slaves[index], display.Names[index], display.Details[index], session, view)) clicked = snapshot.Slaves[index];
+                        snapshot.Slaves[index], display, session, view)) clicked = snapshot.Slaves[index];
                 }
             }
         }
