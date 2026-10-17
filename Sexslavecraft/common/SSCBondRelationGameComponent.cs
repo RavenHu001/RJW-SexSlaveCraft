@@ -4,9 +4,10 @@ using Verse;
 namespace SexSlaveCraft
 {
     /// <summary>所有存档引用恢复后清理历史错误关系，涵盖地图、世界、商队及临时容器角色。</summary>
-    public sealed class SSCBondRelationGameComponent : GameComponent
+    public sealed partial class SSCBondRelationGameComponent : GameComponent
     {
-        public SSCBondRelationGameComponent(Game game) { }
+        public SSCBondRelationGameComponent(Game game) { InitializeOverview(game); }
+        partial void InitializeOverview(Game game);
         public override void FinalizeInit()
         {
             base.FinalizeInit();

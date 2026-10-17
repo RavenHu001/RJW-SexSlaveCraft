@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType><TargetFramework>net9.0</TargetFramework><ImplicitUsings>enable</ImplicitUsings>
+    <!-- Pawn 替身的姓名字段覆盖补充的 Thing 显示属性；不影响生产编译。 -->
+    <NoWarn>$(NoWarn);CS0108</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="../BondRelations/GameStubs.cs" Link="Boundary/GameStubs.cs" />
+    <Compile Include="../BondRelations/OverviewWorldStubs.cs" Link="Boundary/OverviewWorldStubs.cs" />
+    <Compile Include="../../Sexslavecraft/common/SSCBondRelationRules.cs" />
+    <Compile Include="../../Sexslavecraft/common/SSCBondRelationUtility.cs" />
+    <Compile Include="../../Sexslavecraft/common/SSCBondRelationGameComponent.cs" />
+    <Compile Include="../../Sexslavecraft/common/SSCBondUtility.cs" />
+    <Compile Include="../../Sexslavecraft/Hediff/Hediff_ChainOfSexSlave.cs" />
+    <Compile Include="../../Sexslavecraft/Hediff/Hediff_BridleOfSexSlave.cs" />
+    <Compile Include="../../Sexslavecraft/common/SSCBondOverviewModel.cs" />
+    <Compile Include="../../Sexslavecraft/common/SSCBondOverviewUtility.cs" />
+    <Compile Include="../../Sexslavecraft/common/SSCBondOverviewWorld.cs" />
+    <Compile Include="../../Sexslavecraft/common/SSCBondOverviewSession.cs" />
+    <Compile Include="../../Sexslavecraft/common/SSCBondOverviewNavigation.cs" />
+    <Compile Include="../../Sexslavecraft/common/SSCBondRelationGameComponent.BondOverview.cs" />
+    <Compile Include="../../Sexslavecraft/Comps/Comp_Train.BondOverview.cs" />
+    <Compile Include="../../Sexslavecraft/UI/SSCBondOverviewWidgets.cs" />
+    <Compile Include="../../Sexslavecraft/UI/Gizmo_SSCBondOverview.cs" />
+    <Compile Include="../../Sexslavecraft/UI/Dialog_SSCBondOverview.cs" />
+    <Compile Include="../../Sexslavecraft/common/SSCUIWidgets.cs" />
+  </ItemGroup>
+</Project>

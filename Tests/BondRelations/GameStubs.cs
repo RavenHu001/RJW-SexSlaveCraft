@@ -40,7 +40,7 @@ namespace Verse
     }
     public class HediffWithComps : Hediff { }
     public class HediffWithTarget : HediffWithComps { public Thing target; }
-    public class Gizmo { }
+    public partial class Gizmo { }
     public enum LoadSaveMode { Inactive, PostLoadInit }
     public enum LookMode { Reference }
     public static class Scribe { public static LoadSaveMode mode; }
@@ -81,8 +81,8 @@ namespace Verse
         public static string Translate(this string key) => Translations[key];
         public static readonly Dictionary<string, string> Translations = new Dictionary<string, string>();
     }
-    public class Game { }
-    public abstract class GameComponent { public virtual void FinalizeInit() { } }
+    public partial class Game { }
+    public abstract partial class GameComponent { public virtual void FinalizeInit() { } }
 }
 namespace RimWorld
 {
@@ -155,7 +155,7 @@ namespace RimWorld
             => GetRelationsString(new CachedSocialTabEntry { otherPawn = other, relations = defs.ToList() }, observer);
     }
 }
-namespace UnityEngine { public static class Mathf { public static float Clamp(float v, float min, float max) => Math.Clamp(v, min, max); } }
+namespace UnityEngine { public static partial class Mathf { public static float Clamp(float v, float min, float max) => Math.Clamp(v, min, max); } }
 namespace SexSlaveCraft
 {
     using Verse;

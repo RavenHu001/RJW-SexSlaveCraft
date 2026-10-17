@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成。第二批只读概览、刷新、导航及失败说明。 -->
+<LanguageData>
+  <SSC_BondOverview_Title>Bond overview</SSC_BondOverview_Title>
+  <SSC_BondOverview_TitleSource>Bonds: {0}</SSC_BondOverview_TitleSource>
+  <SSC_BondOverview_Counts>Bound: {0} living / {1} total</SSC_BondOverview_Counts>
+  <SSC_BondOverview_Master>Actual master</SSC_BondOverview_Master>
+  <SSC_BondOverview_Slave>Bound slave</SSC_BondOverview_Slave>
+  <SSC_BondOverview_LivingSlaves>Living bound slaves</SSC_BondOverview_LivingSlaves>
+  <SSC_BondOverview_DeadSlaves>Deceased bound slaves</SSC_BondOverview_DeadSlaves>
+  <SSC_BondOverview_ViewAll>View all</SSC_BondOverview_ViewAll>
+  <SSC_BondOverview_Refresh>Refresh</SSC_BondOverview_Refresh>
+  <SSC_BondOverview_None>None</SSC_BondOverview_None>
+  <SSC_BondOverview_Dead>Dead</SSC_BondOverview_Dead>
+  <SSC_BondOverview_DeadName>{0} (dead)</SSC_BondOverview_DeadName>
+  <SSC_BondOverview_NoMaster>No bound master.</SSC_BondOverview_NoMaster>
+  <SSC_BondOverview_InvalidMaster>The chain's target is invalid.</SSC_BondOverview_InvalidMaster>
+  <SSC_BondOverview_EmptySlaves>No bound slaves.</SSC_BondOverview_EmptySlaves>
+  <SSC_BondOverview_Waiting>Waiting for refresh…</SSC_BondOverview_Waiting>
+  <SSC_BondOverview_QueryFailed>The overview could not be refreshed. It will retry.</SSC_BondOverview_QueryFailed>
+  <SSC_BondOverview_RelationChanged>This binding has changed. Refreshing…</SSC_BondOverview_RelationChanged>
+  <SSC_BondOverview_NoTrainingComponent>No training component</SSC_BondOverview_NoTrainingComponent>
+  <SSC_BondOverview_RowDetails>Stage {0} · {1} · {2}</SSC_BondOverview_RowDetails>
+  <SSC_BondOverview_Trainer>Assigned trainer: {0} ({1})</SSC_BondOverview_Trainer>
+  <SSC_BondOverview_Trainer_Unavailable>unavailable</SSC_BondOverview_Trainer_Unavailable>
+  <SSC_BondOverview_Trainer_None>not assigned</SSC_BondOverview_Trainer_None>
+  <SSC_BondOverview_Trainer_Active>active</SSC_BondOverview_Trainer_Active>
+  <SSC_BondOverview_Trainer_Inactive>inactive</SSC_BondOverview_Trainer_Inactive>
+  <SSC_BondOverview_Trainer_InvalidTarget>invalid target</SSC_BondOverview_Trainer_InvalidTarget>
+  <SSC_BondOverview_Location_Unknown>Location unknown</SSC_BondOverview_Location_Unknown>
+  <SSC_BondOverview_Location_Map>On map</SSC_BondOverview_Location_Map>
+  <SSC_BondOverview_Location_MapContainer>Inside a map container</SSC_BondOverview_Location_MapContainer>
+  <SSC_BondOverview_Location_Caravan>In a caravan</SSC_BondOverview_Location_Caravan>
+  <SSC_BondOverview_Location_Transport>In transport</SSC_BondOverview_Location_Transport>
+  <SSC_BondOverview_Location_WorldObject>At a world object</SSC_BondOverview_Location_WorldObject>
+  <SSC_BondOverview_Location_WorldTile>World tile</SSC_BondOverview_Location_WorldTile>
+  <SSC_BondOverview_LocationName>{0}: {1}</SSC_BondOverview_LocationName>
+  <SSC_BondOverview_JumpSelect>Locate / select</SSC_BondOverview_JumpSelect>
+  <SSC_BondOverview_Jump>Locate</SSC_BondOverview_Jump>
+  <SSC_BondOverview_CannotJump>No reachable target. The relationship is retained.</SSC_BondOverview_CannotJump>
+  <SSC_BondOverview_Failure_None>Navigation dispatched.</SSC_BondOverview_Failure_None>
+  <SSC_BondOverview_Failure_Unavailable>The game is not ready for navigation.</SSC_BondOverview_Failure_Unavailable>
+  <SSC_BondOverview_Failure_SourceInvalid>The source pawn is no longer available.</SSC_BondOverview_Failure_SourceInvalid>
+  <SSC_BondOverview_Failure_RelationChanged>This binding changed. Refresh the overview.</SSC_BondOverview_Failure_RelationChanged>
+  <SSC_BondOverview_Failure_Unknown>The pawn's current location cannot be determined.</SSC_BondOverview_Failure_Unknown>
+  <SSC_BondOverview_Failure_CannotJump>The current location cannot be reached by the camera.</SSC_BondOverview_Failure_CannotJump>
+  <SSC_BondOverview_BothCounts>Master + slaves {0}/{1}</SSC_BondOverview_BothCounts>
+</LanguageData>

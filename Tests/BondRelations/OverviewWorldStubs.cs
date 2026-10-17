@@ -10,7 +10,7 @@ namespace Verse
 {
     public enum ProgramState { Entry, Playing }
     public static class Current { public static Game Game; public static ProgramState ProgramState; }
-    public static class Find
+    public static partial class Find
     {
         public static readonly List<Map> Maps = new List<Map>();
         public static object World;
@@ -48,7 +48,7 @@ namespace Verse
         public IThingHolder ParentHolder { get; set; }
         public PlanetTile Tile;
     }
-    public class Map
+    public partial class Map
     {
         public readonly List<Thing> Things = new List<Thing>();
         public readonly MapPawns mapPawns;
@@ -172,7 +172,7 @@ namespace RimWorld.Planet
         public List<Pawn> AllPawnsAlive => SexSlaveCraft.SSCRestrictionGameComponent.Pawns;
         public readonly HashSet<Pawn> AllPawnsDead = new HashSet<Pawn>();
     }
-    public class WorldObject { public bool Spawned = true; }
+    public partial class WorldObject { public bool Spawned = true; }
     public class WorldObjectsHolder { public readonly List<WorldObject> AllWorldObjects = new List<WorldObject>(); }
     public class Caravan : WorldObject, IThingHolder
     {

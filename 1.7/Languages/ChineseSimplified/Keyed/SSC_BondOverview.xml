@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成。第二批只读概览、刷新、导航及失败说明。 -->
+<LanguageData>
+  <SSC_BondOverview_Title>主从关系概览</SSC_BondOverview_Title>
+  <SSC_BondOverview_TitleSource>主从关系：{0}</SSC_BondOverview_TitleSource>
+  <SSC_BondOverview_Counts>绑定：存活 {0} / 总计 {1}</SSC_BondOverview_Counts>
+  <SSC_BondOverview_Master>实际主人</SSC_BondOverview_Master>
+  <SSC_BondOverview_Slave>绑定性奴</SSC_BondOverview_Slave>
+  <SSC_BondOverview_LivingSlaves>存活的绑定性奴</SSC_BondOverview_LivingSlaves>
+  <SSC_BondOverview_DeadSlaves>死亡的绑定性奴</SSC_BondOverview_DeadSlaves>
+  <SSC_BondOverview_ViewAll>查看全部</SSC_BondOverview_ViewAll>
+  <SSC_BondOverview_Refresh>刷新</SSC_BondOverview_Refresh>
+  <SSC_BondOverview_None>无</SSC_BondOverview_None>
+  <SSC_BondOverview_Dead>死亡</SSC_BondOverview_Dead>
+  <SSC_BondOverview_DeadName>{0}（死亡）</SSC_BondOverview_DeadName>
+  <SSC_BondOverview_NoMaster>未绑定主人。</SSC_BondOverview_NoMaster>
+  <SSC_BondOverview_InvalidMaster>锁链绑定目标无效。</SSC_BondOverview_InvalidMaster>
+  <SSC_BondOverview_EmptySlaves>暂无绑定性奴。</SSC_BondOverview_EmptySlaves>
+  <SSC_BondOverview_Waiting>等待刷新……</SSC_BondOverview_Waiting>
+  <SSC_BondOverview_QueryFailed>概览刷新失败，将稍后重试。</SSC_BondOverview_QueryFailed>
+  <SSC_BondOverview_RelationChanged>绑定关系已变化，等待刷新……</SSC_BondOverview_RelationChanged>
+  <SSC_BondOverview_NoTrainingComponent>无调教组件</SSC_BondOverview_NoTrainingComponent>
+  <SSC_BondOverview_RowDetails>阶段 {0} · {1} · {2}</SSC_BondOverview_RowDetails>
+  <SSC_BondOverview_Trainer>指定调教员：{0}（{1}）</SSC_BondOverview_Trainer>
+  <SSC_BondOverview_Trainer_Unavailable>暂不可用</SSC_BondOverview_Trainer_Unavailable>
+  <SSC_BondOverview_Trainer_None>未指派</SSC_BondOverview_Trainer_None>
+  <SSC_BondOverview_Trainer_Active>生效</SSC_BondOverview_Trainer_Active>
+  <SSC_BondOverview_Trainer_Inactive>未生效</SSC_BondOverview_Trainer_Inactive>
+  <SSC_BondOverview_Trainer_InvalidTarget>目标无效</SSC_BondOverview_Trainer_InvalidTarget>
+  <SSC_BondOverview_Location_Unknown>位置不可用</SSC_BondOverview_Location_Unknown>
+  <SSC_BondOverview_Location_Map>位于地图</SSC_BondOverview_Location_Map>
+  <SSC_BondOverview_Location_MapContainer>地图容器内</SSC_BondOverview_Location_MapContainer>
+  <SSC_BondOverview_Location_Caravan>旅队中</SSC_BondOverview_Location_Caravan>
+  <SSC_BondOverview_Location_Transport>运输中</SSC_BondOverview_Location_Transport>
+  <SSC_BondOverview_Location_WorldObject>世界对象中</SSC_BondOverview_Location_WorldObject>
+  <SSC_BondOverview_Location_WorldTile>世界位置</SSC_BondOverview_Location_WorldTile>
+  <SSC_BondOverview_LocationName>{0}：{1}</SSC_BondOverview_LocationName>
+  <SSC_BondOverview_JumpSelect>定位并选中</SSC_BondOverview_JumpSelect>
+  <SSC_BondOverview_Jump>定位</SSC_BondOverview_Jump>
+  <SSC_BondOverview_CannotJump>暂无可定位目标，绑定关系仍保留。</SSC_BondOverview_CannotJump>
+  <SSC_BondOverview_Failure_None>已执行定位请求。</SSC_BondOverview_Failure_None>
+  <SSC_BondOverview_Failure_Unavailable>游戏尚未就绪，暂时无法定位。</SSC_BondOverview_Failure_Unavailable>
+  <SSC_BondOverview_Failure_SourceInvalid>来源角色已失效，无法继续操作。</SSC_BondOverview_Failure_SourceInvalid>
+  <SSC_BondOverview_Failure_RelationChanged>绑定关系已变化，请刷新概览。</SSC_BondOverview_Failure_RelationChanged>
+  <SSC_BondOverview_Failure_Unknown>无法确定该角色当前的位置。</SSC_BondOverview_Failure_Unknown>
+  <SSC_BondOverview_Failure_CannotJump>当前所在位置无法由镜头定位。</SSC_BondOverview_Failure_CannotJump>
+  <SSC_BondOverview_BothCounts>主人 + 性奴 {0}/{1}</SSC_BondOverview_BothCounts>
+</LanguageData>

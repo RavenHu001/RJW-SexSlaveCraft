@@ -76,7 +76,8 @@ $suites = @(
     @{ Name = 'RestrictionCore'; Arguments = @($repoRoot) },
     @{ Name = 'SelfTrainingManual'; Arguments = @() },
     @{ Name = 'SharedBed'; Arguments = @($repoRoot) },
-    @{ Name = 'BondRelations'; Arguments = @($repoRoot) }
+    @{ Name = 'BondRelations'; Arguments = @($repoRoot) },
+    @{ Name = 'BondOverviewUI'; Arguments = @($repoRoot) }
 )
 if ($GameVersion -eq '1.6') { $suites = @() }
 

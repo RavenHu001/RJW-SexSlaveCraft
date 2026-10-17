@@ -356,6 +356,10 @@ namespace SexSlaveCraft
                 yield break;
             }
 
+            // 关系概览供正常游玩使用；这里只登记会话访问，世界查询由游戏 Update 限频执行。
+            Gizmo overview = BondOverviewGizmo(pawn);
+            if (overview != null) yield return overview;
+
             if (!Prefs.DevMode || SSCMod.settings?.enableDebugGizmos != true)
             {
                 yield break;
