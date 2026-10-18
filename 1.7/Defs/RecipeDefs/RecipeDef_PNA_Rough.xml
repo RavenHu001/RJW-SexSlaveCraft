@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成；独立的高损耗加热工艺，药物台的高效配方保持原参数。 -->
+<Defs>
+  <RecipeDef>
+    <defName>SSC_Make_SuperDrug_Rough</defName>
+    <label>粗放浓缩紫色纳米催情液</label>
+    <description>直接加热纳米催情液，蒸去多余液体。高温和残渣会损失一部分活性微械，需要 10 份原液才能得到 1 份浓缩品；制成的浓缩品与药物台产品相同。</description>
+    <jobString>正在粗放浓缩PNA。</jobString>
+    <workAmount>600</workAmount>
+    <workSpeedStat>CookSpeed</workSpeedStat>
+    <workSkill>Cooking</workSkill>
+    <requiredGiverWorkType>Cooking</requiredGiverWorkType>
+    <effectWorking>Cook</effectWorking>
+    <soundWorking>Recipe_CookMeal</soundWorking>
+    <recipeUsers>
+      <li>Campfire</li>
+      <li>FueledStove</li>
+      <li>ElectricStove</li>
+    </recipeUsers>
+    <researchPrerequisite>SSC_RES_PNAConcentration</researchPrerequisite>
+    <ingredients>
+      <li>
+        <filter>
+          <thingDefs><li>Purple_Aphrodisiac_Nanofluid</li></thingDefs>
+        </filter>
+        <count>10</count>
+      </li>
+    </ingredients>
+    <fixedIngredientFilter>
+      <thingDefs><li>Purple_Aphrodisiac_Nanofluid</li></thingDefs>
+    </fixedIngredientFilter>
+    <defaultIngredientFilter>
+      <thingDefs><li>Purple_Aphrodisiac_Nanofluid</li></thingDefs>
+    </defaultIngredientFilter>
+    <products>
+      <Purple_Aphrodisiac_Nanofluid_Plus>1</Purple_Aphrodisiac_Nanofluid_Plus>
+    </products>
+  </RecipeDef>
+</Defs>

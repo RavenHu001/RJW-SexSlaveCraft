@@ -34,5 +34,5 @@
   <SSC_RES_GelatinizationFull.label>Полная gelatinизация тела</SSC_RES_GelatinizationFull.label>
   <SSC_RES_GelatinizationFull.description>Полная морфологическая трансформация.</SSC_RES_GelatinizationFull.description>
   <SSC_RES_PNASimpleLauncher.description>Изготовление снарядов с наножидкостью-афродизиаком. Недорогие и слабого действия, они подходят для подавления или активации целей вблизи.</SSC_RES_PNASimpleLauncher.description>
-  <SSC_RES_PNAConcentration.description>Испарение при пониженном давлении повышает содержание фиолетовых наномашин на единицу объёма, создавая концентрированную наножидкость-афродизиак с более сильным и быстрым действием.</SSC_RES_PNAConcentration.description>
+  <SSC_RES_PNAConcentration.description>Освоить концентрирование наножидкости-афродизиака на костре или плите с повышенными потерями. Обработка при пониженном давлении в лаборатории даёт такой же концентрат из меньшего количества исходной жидкости.</SSC_RES_PNAConcentration.description>
 </LanguageData>

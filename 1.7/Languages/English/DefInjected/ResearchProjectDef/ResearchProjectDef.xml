@@ -34,5 +34,5 @@
   <SSC_RES_GelatinizationFull.label>Full-body Gelatinization</SSC_RES_GelatinizationFull.label>
   <SSC_RES_GelatinizationFull.description>A complete morphological transformation.</SSC_RES_GelatinizationFull.description>
   <SSC_RES_PNASimpleLauncher.description>Form aphrodisiac nanofluid into projectiles. Inexpensive and low in intensity, they are suited to suppressing or activating targets at close range.</SSC_RES_PNASimpleLauncher.description>
-  <SSC_RES_PNAConcentration.description>Use reduced-pressure evaporation to increase the purple nanomachine content per unit volume, producing concentrated aphrodisiac nanofluid with stronger, faster effects.</SSC_RES_PNAConcentration.description>
+  <SSC_RES_PNAConcentration.description>Learn to concentrate aphrodisiac nanofluid over a campfire or stove, at the cost of greater losses. Reduced-pressure processing at a drug lab produces the same concentrate from less raw fluid.</SSC_RES_PNAConcentration.description>
 </LanguageData>

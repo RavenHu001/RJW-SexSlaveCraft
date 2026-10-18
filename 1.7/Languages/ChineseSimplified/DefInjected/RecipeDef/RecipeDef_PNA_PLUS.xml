@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_Make_SuperDrug.label>浓缩紫色纳米催情液</SSC_Make_SuperDrug.label>
+  <SSC_Make_SuperDrug_forth.label>批量浓缩紫色纳米催情液</SSC_Make_SuperDrug_forth.label>
+  <SSC_Make_SuperDrug_Rough.label>粗放浓缩紫色纳米催情液</SSC_Make_SuperDrug_Rough.label>
+  <SSC_Make_SuperDrug_Rough.description>直接加热纳米催情液，蒸去多余液体。高温和残渣会损失一部分活性微械，需要 10 份原液才能得到 1 份浓缩品；制成的浓缩品与药物台产品相同。</SSC_Make_SuperDrug_Rough.description>
+  <SSC_Make_SuperDrug_Rough.jobString>正在粗放浓缩PNA。</SSC_Make_SuperDrug_Rough.jobString>
+</LanguageData>
