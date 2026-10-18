@@ -67,6 +67,12 @@
   <ThingDef ParentName="BaseBullet">
     <defName>Bullet_PNA_Low</defName>
     <label>PNA 弹丸</label>
+    <thingClass>SexSlaveCraft.Projectile_SSCPnaTrail</thingClass>
+    <comps>
+      <li Class="SexSlaveCraft.CompProperties_SSCPnaTrail">
+        <fleckDef>SSC_PnaTrail</fleckDef>
+      </li>
+    </comps>
     <graphicData>
       <texPath>Things/Projectile/ChargeLanceShot</texPath>
       <graphicClass>Graphic_Single</graphicClass>

@@ -203,6 +203,12 @@
   <ThingDef ParentName="BaseProjectileNeolithic">
     <defName>SSC_Projectile_PnaDart</defName>
     <label>纳米催情液吹箭</label>
+    <thingClass>SexSlaveCraft.Projectile_SSCPnaTrail</thingClass>
+    <comps>
+      <li Class="SexSlaveCraft.CompProperties_SSCPnaTrail">
+        <fleckDef>SSC_PnaTrail</fleckDef>
+      </li>
+    </comps>
     <graphicData>
       <texPath>Things/Projectile/SSC_PnaDart</texPath>
       <graphicClass>Graphic_Single</graphicClass>
@@ -220,6 +226,12 @@
   <ThingDef ParentName="BaseProjectileNeolithic">
     <defName>SSC_Projectile_PnaBolt</defName>
     <label>纳米催情液弩矢</label>
+    <thingClass>SexSlaveCraft.Projectile_SSCPnaTrail</thingClass>
+    <comps>
+      <li Class="SexSlaveCraft.CompProperties_SSCPnaTrail">
+        <fleckDef>SSC_PnaTrail</fleckDef>
+      </li>
+    </comps>
     <graphicData>
       <texPath>Things/Projectile/SSC_PnaBolt</texPath>
       <graphicClass>Graphic_Single</graphicClass>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成；1.7.4982 视觉组件定向连接飞行片段，原版 Fleck 负责收细与淡出。
+     三种 PNA 投射物共用单层流星状尾迹；不参与命中或施药结算，待实机验证。 -->
+<Defs>
+  <FleckDef ParentName="FleckBase">
+    <defName>SSC_PnaTrail</defName>
+    <graphicData>
+      <!-- 直接引用 Core 原版资源；普通 Mote 着色器，不使用发光材质或灯光。 -->
+      <texPath>Things/Mote/BrightFlash</texPath>
+      <shaderType>Mote</shaderType>
+      <renderInstanced>true</renderInstanced>
+    </graphicData>
+    <altitudeLayer>MoteOverhead</altitudeLayer>
+    <useAttachLink>false</useAttachLink>
+    <realTime>false</realTime>
+    <fadeInTime>0</fadeInTime>
+    <solidTime>0.02</solidTime>
+    <fadeOutTime>0.12</fadeOutTime>
+    <growthRate>0</growthRate>
+    <!-- 原版曲线以 1+curve(x) 乘尺寸；只缩小横向宽度，纵向保持重叠以防断节。 -->
+    <scalers>
+      <li>
+        <scaleAmt>1</scaleAmt>
+        <scaleTime>0.14</scaleTime>
+        <axisMask>(1,0,0)</axisMask>
+        <curve>
+          <points>
+            <li>(0,0)</li>
+            <li>(0.15,-0.05)</li>
+            <li>(0.6,-0.5)</li>
+            <li>(1,-0.95)</li>
+          </points>
+        </curve>
+      </li>
+    </scalers>
+  </FleckDef>
+</Defs>
