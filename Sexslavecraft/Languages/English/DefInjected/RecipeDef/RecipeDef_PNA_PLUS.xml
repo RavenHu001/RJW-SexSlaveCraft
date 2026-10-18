@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
-  <SSC_Make_SuperDrug.label>PNA Concentration</SSC_Make_SuperDrug.label>
+  <SSC_Make_SuperDrug.label>Concentration of Purple Aphrodisiac Nanofluid</SSC_Make_SuperDrug.label>
   <SSC_Make_SuperDrug.description>Evaporate excess liquid from 5 units of aphrodisiac nanofluid under reduced pressure to produce 1 unit of concentrate.</SSC_Make_SuperDrug.description>
   <SSC_Make_SuperDrug.jobString>Concentrating aphrodisiac nanofluid.</SSC_Make_SuperDrug.jobString>
-  <SSC_Make_SuperDrug_forth.label>Bulk PNA Concentration</SSC_Make_SuperDrug_forth.label>
+  <SSC_Make_SuperDrug_forth.label>Bulk Concentration of Purple Aphrodisiac Nanofluid</SSC_Make_SuperDrug_forth.label>
   <SSC_Make_SuperDrug_forth.description>Evaporate excess liquid from 20 units of aphrodisiac nanofluid under reduced pressure to produce 4 units of concentrate in one batch.</SSC_Make_SuperDrug_forth.description>
   <SSC_Make_SuperDrug_forth.jobString>Concentrating a batch of aphrodisiac nanofluid.</SSC_Make_SuperDrug_forth.jobString>
-  <SSC_Make_SuperDrug_Rough.label>Rough PNA Concentration</SSC_Make_SuperDrug_Rough.label>
+  <SSC_Make_SuperDrug_Rough.label>Rough Concentration of Purple Aphrodisiac Nanofluid</SSC_Make_SuperDrug_Rough.label>
   <SSC_Make_SuperDrug_Rough.description>Heat aphrodisiac nanofluid directly to evaporate excess liquid. Heat and residue destroy or retain some active nanomachines, so 10 units of raw fluid are needed for 1 unit of concentrate. The product is identical to drug lab concentrate.</SSC_Make_SuperDrug_Rough.description>
   <SSC_Make_SuperDrug_Rough.jobString>Concentrating PNA over heat.</SSC_Make_SuperDrug_Rough.jobString>
 </LanguageData>

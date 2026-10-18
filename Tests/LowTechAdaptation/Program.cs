@@ -216,7 +216,7 @@ internal static class Program
     private static void CheckRoughRecipe()
     {
         XElement d = Def("Defs/RecipeDefs/RecipeDef_PNA_Rough.xml", "SSC_Make_SuperDrug_Rough");
-        Equal("PNA粗放浓缩", (string)d.Element("label"));
+        Equal("粗放浓缩紫色纳米催情液", (string)d.Element("label"));
         Equal(600, (int)d.Element("workAmount"));
         Equal("Cooking", (string)d.Element("workSkill"));
         Equal("Cooking", (string)d.Element("requiredGiverWorkType"));
@@ -236,7 +236,7 @@ internal static class Program
 
     private static void CheckEfficientRecipes()
     {
-        foreach (var row in new[] { ("SSC_Make_SuperDrug", 5, 1, 450, "PNA浓缩"), ("SSC_Make_SuperDrug_forth", 20, 4, 1350, "PNA批量浓缩") })
+        foreach (var row in new[] { ("SSC_Make_SuperDrug", 5, 1, 450, "浓缩紫色纳米催情液"), ("SSC_Make_SuperDrug_forth", 20, 4, 1350, "批量浓缩紫色纳米催情液") })
         {
             XElement d = Def("Defs/RecipeDefs/RecipeDef_PNA_PLUS.xml", row.Item1);
             Equal(row.Item5, (string)d.Element("label"));
@@ -259,9 +259,9 @@ internal static class Program
             Assert(!string.IsNullOrWhiteSpace((string)data.Element(name)), "原配方名称缺失");
         if (language == "ChineseSimplified")
         {
-            Equal("PNA粗放浓缩", (string)data.Element("SSC_Make_SuperDrug_Rough.label"));
-            Equal("PNA浓缩", (string)data.Element("SSC_Make_SuperDrug.label"));
-            Equal("PNA批量浓缩", (string)data.Element("SSC_Make_SuperDrug_forth.label"));
+            Equal("粗放浓缩紫色纳米催情液", (string)data.Element("SSC_Make_SuperDrug_Rough.label"));
+            Equal("浓缩紫色纳米催情液", (string)data.Element("SSC_Make_SuperDrug.label"));
+            Equal("批量浓缩紫色纳米催情液", (string)data.Element("SSC_Make_SuperDrug_forth.label"));
         }
     }
 }
