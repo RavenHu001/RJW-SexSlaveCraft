@@ -57,12 +57,10 @@ internal static partial class Program
             var w=Find.WindowStack.WindowOfType<Dialog_SSCBondOverview>();Require(w?.Source==f.master);
             w.Close();g.ProcessInput(up.InteractEvent);Require(Find.WindowStack.WindowOfType<Dialog_SSCBondOverview>()==null);
         });
-        Check("button release: paging occurs on release and preserves portraits and full candidates",()=>{
+        Check("auto grid: no page buttons remain and all portraits are present",()=>{
             var f=Fixture();for(int i=0;i<10;i++)Place(Slave(f.master,"Extra"+i),f.map);
-            var s=Ready(f.master,f.map);var g=new Gizmo_SSCBondOverview(s);var snapshot=s.Card.Snapshot;
-            var down=ButtonEvent(g,EventType.mouseDown,118,48);g.ProcessInput(down.InteractEvent);Require(s.Card.Page==0);
-            g.ClearPending();var up=ButtonEvent(g,EventType.mouseUp,118,48);g.ProcessInput(up.InteractEvent);
-            Require(s.Card.Page==1&&ReferenceEquals(snapshot,s.Card.Snapshot)&&snapshot.TotalSlaveCount==11&&CameraJumper.Jumps==0);
+            var s=Ready(f.master,f.map);Widgets.CapturedButtons=new();Paint(new Gizmo_SSCBondOverview(s));
+            Require(Widgets.CapturedButtons.Count==1&&PortraitsCache.Calls==11&&CameraJumper.Jumps==0);
         });
         Check("button release: release without a matching press does not open overview",()=>{
             var f=Fixture();var s=Ready(f.master,f.map);var g=new Gizmo_SSCBondOverview(s);
@@ -109,11 +107,11 @@ internal static partial class Program
             s.Update(0,true,f.map);Widgets.CapturedLabels.Clear();Paint(new Gizmo_SSCBondOverview(s));
             Require(Widgets.CapturedLabels.Single().value=="拥有性奴：3");
         });
-        Check("native layout: paging buttons and fixed portraits occupy separate rectangles",()=>{
+        Check("native layout: auto-sized portraits stay inside the card and outside header buttons",()=>{
             var f=Fixture();for(int i=0;i<4;i++)Place(Slave(f.master,"Extra"+i),f.map);
             var s=Ready(f.master,f.map);Widgets.CapturedButtons=new();GUI.CapturedTextures=new();Paint(new Gizmo_SSCBondOverview(s));
             var portraits=GUI.CapturedTextures.Where(t=>t.image==null).Select(t=>t.rect).ToArray();
-            Require(portraits.Length==2&&portraits.All(r=>r.width==40&&r.height==40&&r.x>=0&&r.xMax<=130&&r.yMax<=75));
+            Require(portraits.Length==5&&portraits.All(r=>r.width==r.height&&r.width<=33&&r.x>=0&&r.xMax<=130&&r.yMax<=75));
             foreach(var portrait in portraits)foreach(var button in Widgets.CapturedButtons)
                 Require(portrait.xMax<=button.rect.x||portrait.x>=button.rect.xMax||portrait.yMax<=button.rect.y||portrait.y>=button.rect.yMax);
         });

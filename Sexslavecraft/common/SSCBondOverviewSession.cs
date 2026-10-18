@@ -12,7 +12,6 @@ namespace SexSlaveCraft
         internal bool Pending = true, Failed;
         private bool localFailed;
         internal int Revision;
-        internal int Page;
         internal double NextRefresh;
         internal double NextLocalRefresh;
         internal bool LocalRetryDue(double now) => !localFailed || now >= NextLocalRefresh;

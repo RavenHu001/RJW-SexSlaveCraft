@@ -52,4 +52,8 @@
   <SSC_BondOverview_SupplementPending>Поиск остальных связанных подчинённых…</SSC_BondOverview_SupplementPending>
   <SSC_BondOverview_ResolveOnClick>Нажмите для проверки текущего местоположения.</SSC_BondOverview_ResolveOnClick>
   <SSC_BondOverview_OwnedCount>Секс-рабы: {0}</SSC_BondOverview_OwnedCount>
+  <SSC_BondOverview_SelectAllSlaves>Выбрать всех рабов</SSC_BondOverview_SelectAllSlaves>
+  <SSC_BondOverview_SelectAllSlavesDesc>Выбрать живых доступных секс-рабов на текущей карте, чьи цепи всё ещё указывают на этого хозяина, в пределах игрового лимита выбора. Остальные остаются в обзоре.</SSC_BondOverview_SelectAllSlavesDesc>
+  <SSC_BondOverview_NoSelectableSlaves>На текущей карте нет доступных связанных рабов.</SSC_BondOverview_NoSelectableSlaves>
+  <SSC_BondOverview_SelectMaster>Выбрать хозяина</SSC_BondOverview_SelectMaster>
 </LanguageData>

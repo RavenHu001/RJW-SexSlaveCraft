@@ -8,7 +8,7 @@ namespace SexSlaveCraft
     public sealed partial class SSCBondRelationGameComponent
     {
         internal SSCBondOverviewSession Overview { get; private set; }
-        private Gizmo_SSCBondOverview slavesGizmo, masterGizmo, trainerGizmo;
+        private Gizmo_SSCBondOverview slavesGizmo, selectAllGizmo, masterGizmo, trainerGizmo;
         partial void InitializeOverview(Game game)
         { Overview = new SSCBondOverviewSession(game, () => Time.realtimeSinceStartup, report: ex => Log.Error("[SSC] Bond overview query: " + ex)); }
         internal Gizmo GetOverviewGizmo(Pawn pawn)
@@ -22,7 +22,10 @@ namespace SexSlaveCraft
             CompSexSlaveTraining comp = pawn.TryGetComp<CompSexSlaveTraining>();
             // 空方向不占位置；异常双向数据分别呈现，调教员永远不混进绑定计数或主人头像。
             if (snapshot?.TotalSlaveCount > 0 || (snapshot?.Identity ?? comp.pawnIdentity) == PawnIdentity.Master)
+            {
                 yield return slavesGizmo ?? (slavesGizmo = new Gizmo_SSCBondOverview(Overview));
+                yield return selectAllGizmo ?? (selectAllGizmo = new Gizmo_SSCBondOverview(Overview, SSCBondOverviewPanel.SelectAll));
+            }
             if (snapshot?.Master != null || snapshot?.MasterState == SSCBondOverviewMasterState.InvalidTarget ||
                 snapshot == null && SSCBondUtility.GetChain(pawn) != null)
                 yield return masterGizmo ?? (masterGizmo = new Gizmo_SSCBondOverview(Overview, SSCBondOverviewPanel.Master));
@@ -31,12 +34,12 @@ namespace SexSlaveCraft
         }
         public override void GameComponentUpdate()
         {
-            slavesGizmo?.ClearPending(); masterGizmo?.ClearPending(); trainerGizmo?.ClearPending();
+            slavesGizmo?.ClearPending(); selectAllGizmo?.ClearPending(); masterGizmo?.ClearPending(); trainerGizmo?.ClearPending();
             Overview.Update(Time.frameCount, SSCBondOverviewAccess.IsCardSource(Overview.Card?.Source), Find.CurrentMap);
             if (Overview.Card == null)
             {
-                slavesGizmo?.Clear(); masterGizmo?.Clear(); trainerGizmo?.Clear();
-                slavesGizmo = masterGizmo = trainerGizmo = null;
+                slavesGizmo?.Clear(); selectAllGizmo?.Clear(); masterGizmo?.Clear(); trainerGizmo?.Clear();
+                slavesGizmo = selectAllGizmo = masterGizmo = trainerGizmo = null;
             }
         }
     }

@@ -52,4 +52,8 @@
   <SSC_BondOverview_SupplementPending>正在補查其他綁定從屬…</SSC_BondOverview_SupplementPending>
   <SSC_BondOverview_ResolveOnClick>點擊後複查目前位置。</SSC_BondOverview_ResolveOnClick>
   <SSC_BondOverview_OwnedCount>擁有性奴：{0}</SSC_BondOverview_OwnedCount>
+  <SSC_BondOverview_SelectAllSlaves>選擇所有性奴</SSC_BondOverview_SelectAllSlaves>
+  <SSC_BondOverview_SelectAllSlavesDesc>選擇目前地圖上存活、已生成且仍歸屬此主人的可選性奴，遵循原版選擇數量上限。異圖、容器內和死亡對象仍保留在總覽。</SSC_BondOverview_SelectAllSlavesDesc>
+  <SSC_BondOverview_NoSelectableSlaves>目前地圖沒有可選擇的綁定性奴。</SSC_BondOverview_NoSelectableSlaves>
+  <SSC_BondOverview_SelectMaster>選擇主人</SSC_BondOverview_SelectMaster>
 </LanguageData>

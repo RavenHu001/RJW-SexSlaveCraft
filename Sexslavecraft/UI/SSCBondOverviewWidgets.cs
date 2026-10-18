@@ -74,13 +74,13 @@ namespace SexSlaveCraft
     {
         internal readonly SSCBondOverviewSnapshot Snapshot;
         internal readonly string Title, Count, Trainer, CardHeading, WaitingCount, SlaveHeading, CardCount, OwnedHeading, OwnedDetails, TrainerName, TrainerDetails;
-        private int pageNumber = -1, pageTotal;
-        private string pageLabel;
-        internal string PageLabel(int page, int total)
+        private float gridWidth = -1, gridHeight = -1;
+        private SSCBondOverviewLayout.Grid grid;
+        internal SSCBondOverviewLayout.Grid Grid(float width, float height)
         {
-            if (pageNumber != page || pageTotal != total)
-            { pageNumber = page; pageTotal = total; pageLabel = (page + 1) + "/" + total; }
-            return pageLabel;
+            if (gridWidth != width || gridHeight != height)
+            { gridWidth = width; gridHeight = height; grid = SSCBondOverviewLayout.Fit(Snapshot.TotalSlaveCount, width, height); }
+            return grid;
         }
         private SSCBondOverviewCache<SSCBondOverviewEntry, SSCBondOverviewRowText> rows;
         internal int RowCount => rows?.Count ?? 0;
@@ -156,15 +156,31 @@ namespace SexSlaveCraft
     {
         internal const float RowHeight = 80, HeaderHeight = 28, CellWidth = 80;
         internal static int Columns(float width) => Math.Max(1, (int)(width / CellWidth));
-        internal static int LastPage(int count, int capacity) => capacity <= 0 ? 0 : Math.Max(0, (count - 1) / capacity);
         internal static void VisibleRange(int count, float start, float scroll, float height, out int first, out int end)
         {
             first = Math.Max(0, Math.Min(count, (int)Math.Floor((scroll - start) / RowHeight) - 1));
             end = Math.Max(first, Math.Min(count, (int)Math.Ceiling((scroll + height - start) / RowHeight) + 1));
         }
-        // 原版宽度保留最多两个固定 40 头像；有分页时为左右按钮各留 22，不缩小肖像。
-        internal static int CardCapacity(float width, bool paging = false)
-            => Math.Max(0, Math.Min(2, (int)((width - (paging ? 44 : 12) + 4) / 44)));
+        internal readonly struct Grid
+        {
+            internal readonly float Side;
+            internal readonly int Columns, Rows;
+            internal Grid(float side, int columns, int rows) { Side = side; Columns = columns; Rows = rows; }
+        }
+        internal static Grid Fit(int count, float width, float height)
+        {
+            if (count <= 0 || width <= 0 || height <= 0) return default;
+            // 与原版一样随人数收缩网格：在有限高度内寻找能容纳全部头像的最大整数边长。
+            // 极端数量仍可使用亚像素布局，肖像请求另有固定分辨率，不申请零尺寸纹理。
+            for (int side = (int)Math.Min(width, height); side >= 1; side--)
+            {
+                int columns = Math.Max(1, (int)(width / side)), rows = (int)Math.Ceiling((double)count / columns);
+                if (rows * (double)side <= height) return new Grid(side, Math.Min(count, columns), rows);
+            }
+            int smallColumns = Math.Max(1, (int)Math.Ceiling(Math.Sqrt(count * (double)width / height)));
+            int smallRows = (int)Math.Ceiling((double)count / smallColumns);
+            return new Grid(Math.Min(width / smallColumns, height / smallRows), smallColumns, smallRows);
+        }
     }
 
     internal static class SSCBondOverviewWidgets
@@ -208,8 +224,9 @@ namespace SexSlaveCraft
         {
             if (Event.current.type != EventType.repaint || !current) return;
             // 原版缓存拥有纹理；这里只请求两个固定档位，不强制 SetDirty 或自行销毁。
-            GUI.DrawTexture(rect, PortraitsCache.Get(pawn, new Vector2(rect.width, rect.height), Rot4.South, cameraZoom: 1.5f));
-            if (dead) Widgets.Label(new Rect(rect.x, rect.yMax - 18, rect.width, 18), SSCBondOverviewText.T("Dead"));
+            float capture = rect.width > 40 ? 56 : 40;
+            GUI.DrawTexture(rect, PortraitsCache.Get(pawn, new Vector2(capture, capture), Rot4.South, cameraZoom: 1.5f));
+            if (dead && rect.width >= 24) Widgets.Label(new Rect(rect.x, rect.yMax - 18, rect.width, 18), SSCBondOverviewText.T("Dead"));
         }
 
         internal static void Hover(Rect rect, SSCBondOverviewEntry entry, string name, string details)
@@ -259,6 +276,7 @@ namespace SexSlaveCraft
 
         private static void Badge(Rect rect, SSCBondOverviewLocation location, bool current)
         {
+            if (rect.width < 16) return; // 小网格不让固定字号标记溢出并遮挡相邻头像；详情仍在悬停。
             // 正常同图不加说明；只用小标记提示异常、容器或异地，全文放在悬停中。
             string marker = !current ? "!" : location == null || location.Kind == SSCBondOverviewLocationKind.Unknown ? "?"
                 : location.Kind == SSCBondOverviewLocationKind.MapContainer ? "□"

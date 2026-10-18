@@ -51,5 +51,9 @@
   <SSC_BondOverview_KnownCount>Known sex slaves: {0}</SSC_BondOverview_KnownCount>
   <SSC_BondOverview_SupplementPending>Checking for other bound slaves…</SSC_BondOverview_SupplementPending>
   <SSC_BondOverview_ResolveOnClick>Click to check the current location.</SSC_BondOverview_ResolveOnClick>
-  <SSC_BondOverview_OwnedCount>Owns slaves: {0}</SSC_BondOverview_OwnedCount>
+  <SSC_BondOverview_OwnedCount>Slaves: {0}</SSC_BondOverview_OwnedCount>
+  <SSC_BondOverview_SelectAllSlaves>Select all slaves</SSC_BondOverview_SelectAllSlaves>
+  <SSC_BondOverview_SelectAllSlavesDesc>Select living, spawned, selectable slaves on this map whose current chain points to this owner, within the base game selection limit. Other locations and deceased slaves remain in the overview.</SSC_BondOverview_SelectAllSlavesDesc>
+  <SSC_BondOverview_NoSelectableSlaves>No selectable bound slaves on this map.</SSC_BondOverview_NoSelectableSlaves>
+  <SSC_BondOverview_SelectMaster>Select master</SSC_BondOverview_SelectMaster>
 </LanguageData>

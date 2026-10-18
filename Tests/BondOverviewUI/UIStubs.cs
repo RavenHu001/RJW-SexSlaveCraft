@@ -51,7 +51,7 @@ namespace Verse
     public struct GizmoRenderParms { public bool lowLight,shrunk; }
     public static class Command { public static readonly object BGTex=new(),BGTexShrunk=new();public static readonly Color LowLightBgColor=new(.5f,.5f,.5f); }
     public static class TexUI { public static readonly object GrayscaleGUI=new(); }
-    public static class TexButton { public static readonly Texture2D Search=new(),Rename=new(); }
+    public static class TexButton { public static readonly Texture2D Search=new(),Rename=new(),SelectOverlappingNext=new(); }
     public static class GenUI
     {
         public static object LastTexture,LastMaterial;public static Color LastColor;public static Rect LastRect;
@@ -95,6 +95,7 @@ namespace Verse
         public static int Labels, ScrollDepth; public static float? NextScroll;
         public static bool ThrowLabel; public static int ThrowAt;
         public static List<(Rect rect,string value)> CapturedLabels;
+        public static List<GameFont> CapturedFonts;
         public static List<(Rect rect,string label,bool active)> CapturedButtons;
         private static Rect downRect;
         private static int downButton;
@@ -102,7 +103,8 @@ namespace Verse
         public static void ResetButtonCapture() { downActive=false; }
         public static void DrawBoxSolid(Rect rect,Color color){}
         public static void DrawHighlight(Rect rect){}
-        public static void Label(Rect rect,string value){Labels++;CapturedLabels?.Add((rect,value)); if(ThrowLabel||ThrowAt>0&&Labels==ThrowAt)throw new InvalidOperationException("GUI fixture");}
+        public static void Label(Rect rect,string value){Labels++;CapturedLabels?.Add((rect,value));CapturedFonts?.Add(Text.Font); if(ThrowLabel||ThrowAt>0&&Labels==ThrowAt)throw new InvalidOperationException("GUI fixture");}
+        public static bool ButtonInvisible(Rect rect,bool doMouseoverSound=true)=>ButtonText(rect,"",true);
         public static bool ButtonText(Rect rect,string label,bool active=true)
         {
             // 1.7.4981 UnityStubs.GUI.ButtonImpl 的引擎边界：按下只捕获，匹配矩形和按键的松开才成功。
@@ -144,7 +146,13 @@ namespace Verse
 namespace RimWorld
 {
     public class Selector
-    { public readonly List<object> Objects=new(); public int NumSelected=>Objects.Count; public Thing SingleSelectedThing=>NumSelected==1?Objects[0]as Thing:null; }
+    {
+        public readonly List<object> Objects=new(); public int NumSelected=>Objects.Count; public Thing SingleSelectedThing=>NumSelected==1?Objects[0]as Thing:null;
+        public Action<Pawn> OnSelected;
+        public void ClearSelection()=>Objects.Clear();
+        public void Select(object obj,bool playSound=true,bool forceDesignatorDeselect=true)
+        { if(Objects.Count<200&&!Objects.Contains(obj)){Objects.Add(obj);if(obj is Pawn pawn)OnSelected?.Invoke(pawn);} }
+    }
     public static class MessageTypeDefOf { public static object RejectInput=new(); }
     public static class PortraitsCache
     { public static int Calls; public static float LastZoom; public static readonly List<(Pawn pawn,Vector2 size)> Requests=new(); public static object Get(Pawn pawn,Vector2 size,Rot4 rot,float cameraZoom=1){Calls++;LastZoom=cameraZoom;Requests.Add((pawn,size));return null;} }

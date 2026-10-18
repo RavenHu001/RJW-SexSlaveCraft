@@ -116,13 +116,13 @@ internal static partial class Program
             var location=trainer?s.Card.Snapshot.AssignedTrainerLocation:s.Card.Snapshot.Slaves[0].Location;
             Require(location.Kind==SSCBondOverviewLocationKind.Unknown&&ship.Things.Enumerations==0);
             var g=new Gizmo_SSCBondOverview(s,trainer?SSCBondOverviewPanel.Trainer:SSCBondOverviewPanel.Slaves);
-            var result=Click(g,65,45);Require(result.State==GizmoState.Interacted);g.ProcessInput(result.InteractEvent);
+            var result=Click(g,65,50);Require(result.State==GizmoState.Interacted);g.ProcessInput(result.InteractEvent);
             Require(CameraJumper.Last.WorldObject==ship&&CameraJumper.Jumps==1&&ship.Things.Enumerations==1);
         });
         Check("direct: unknown location and changed relation still reject click safely",()=>{
             var f=Fixture();f.slave.Spawned=false;var s=new SSCBondOverviewSession(Current.Game,()=>0);s.ObserveCard(f.master,f.map,0);
-            var g=new Gizmo_SSCBondOverview(s);var result=Click(g,65,45);g.ProcessInput(result.InteractEvent);Require(CameraJumper.Jumps==0);
-            result=Click(g,65,45);SSCBondUtility.GetChain(f.slave).target=Master();g.ProcessInput(result.InteractEvent);Require(CameraJumper.Jumps==0);
+            var g=new Gizmo_SSCBondOverview(s);var result=Click(g,65,50);g.ProcessInput(result.InteractEvent);Require(CameraJumper.Jumps==0);
+            result=Click(g,65,50);SSCBondUtility.GetChain(f.slave).target=Master();g.ProcessInput(result.InteractEvent);Require(CameraJumper.Jumps==0);
         });
         foreach(var panel in new[]{SSCBondOverviewPanel.Master,SSCBondOverviewPanel.Trainer,SSCBondOverviewPanel.Slaves})
             Check("native card: independent width and standard background "+panel,()=>{
