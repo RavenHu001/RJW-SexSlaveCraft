@@ -1,6 +1,6 @@
 # 玩家阅读入口 / Player documentation
 
-开发中的 1.7 主从关系概览：主人卡片可定位，性奴卡片显示拥有数量与头像，放大镜打开总览，调教员卡片铅笔可更换指派，相邻按钮批选当前地图有效成员。名单以缰绳逐项核对锁链，不自动扫描全世界；异常索引遗漏仅由开发诊断报告。此项尚未登记为已发布版本内容，见[开发记录](../Development/Verification/主从关系概览取消自动补漏与开发诊断实现与测试.md)。
+1.7 开发分支的主从关系概览已按约定范围完成：选中主人查看拥有数量与性奴头像，相邻按钮批选当前地图有效成员；选中性奴时点击主人头像定位并选中主人。放大镜打开总览，调教员卡片的铅笔用于更换指派，详情可悬停查看。此内容尚未重新打包发布，见[完成核对](../Development/Completed/主从关系概览完成核对.md)。
 
 2.4.2 新增：全凝胶化后，在“调教”ITab 的“凝胶外观”区设置个人渲染、颜色和不透明度，默认深紫／S90／85%；命令栏无重复调色按钮。旧全局设置在旧档首次读取时迁入个人值。详见[当前版本说明](../Releases/2.4.2/2.4.2发布说明.md)。
 
@@ -34,6 +34,8 @@
 | 设置与兼容 | [重要设置](../../读我，玩法介绍.md#18-重要设置) · [主要兼容](../../读我，玩法介绍.md#19-主要兼容) | [已知待验收事项](../Development/Verification/README.md) |
 
 ## English reading order
+
+The bond overview is complete within the agreed scope on the 1.7 development branch. Select a master to see slave counts and portraits; the adjacent command selects available slaves on the current map. Select a slave and click the master portrait to locate and select the master. The magnifying glass opens the overview, the trainer pencil changes the assignment, and hover tips show details. These changes have not been repackaged into the published download. See the [completion record](../Development/Completed/主从关系概览完成核对.md).
 
 1. Read the [mod overview](../模组介绍.md#english) for features and colony roles.
 2. Follow [Getting Started](../../QUICK_START_EN.md#2-getting-started) to set up research, identities and trainers.

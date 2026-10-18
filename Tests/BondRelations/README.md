@@ -1,8 +1,8 @@
 # 主从社交关系一致性回归
 
-第二批界面、刷新会话与导航由新增 [BondOverviewUI](../BondOverviewUI/README.md)直接链接生产代码验证，当前 78/78；本组保留第一批 110 项，边界类型仅增加 partial 扩展能力，未替换生产查询或绑定规则。第二批完整结果见[当前记录](../../Docs/Development/Verification/主从关系概览第二批界面与导航实现与测试.md)。
+第二批界面、刷新会话与导航由新增 [BondOverviewUI](../BondOverviewUI/README.md)直接链接生产代码验证，当前 78/78；本组保留第一批 110 项，边界类型仅增加 partial 扩展能力，未替换生产查询或绑定规则。第二批完整结果见[当前记录](../../Docs/Development/Completed/主从关系概览第二批界面与导航实现与测试.md)。
 
-2026-10-17 新增主从关系概览第一批，直接链接 `SSCBondOverviewModel`、`SSCBondOverviewUtility` 和 `SSCBondOverviewWorld`。初批新增 40 项、94/94；后续性能优化新增 16 项，当前专项 **110/110**，见[当前优化与对比](../../Docs/Development/Verification/主从关系概览第一批性能优化与对比.md)。阶段与指派资格继续复用既有接口替身，集合／持有／位置接口以实际 1.7.4981 rev136 核对；生产候选、归属、位置、快照及行复查均实际执行，真实容器与存档仍待实机核验，原结果保留在[首次实现记录](../../Docs/Development/Verification/主从关系概览第一批只读数据实现与测试.md)。
+2026-10-17 新增主从关系概览第一批，直接链接 `SSCBondOverviewModel`、`SSCBondOverviewUtility` 和 `SSCBondOverviewWorld`。初批新增 40 项、94/94；后续性能优化新增 16 项，当前专项 **110/110**，见[当前优化与对比](../../Docs/Development/Completed/主从关系概览第一批性能优化与对比.md)。阶段与指派资格继续复用既有接口替身，集合／持有／位置接口以实际 1.7.4981 rev136 核对；生产候选、归属、位置、快照及行复查均实际执行，真实容器与存档仍待实机核验，原结果保留在[首次实现记录](../../Docs/Development/Completed/主从关系概览第一批只读数据实现与测试.md)。
 
 直接编译生产关系规则、仪式奖励入口、绑定服务、性奴锁链、主人缰绳、旧档清理 GameComponent、称谓服务及两处 Harmony 显示补丁。原生接口模型依据本机 RimWorld 1.6 程序集反编译建立；双向关系、健康删除顺序和缓存通知为引擎边界，测试不运行 Unity 或实际存档。
 
