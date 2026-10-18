@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成；1.7 首批涂覆武器。原版 texPath 仅供开发验证，正式资源另行制作。
+     固定材料、原版品质；只在制造时消耗 PNA，不添加充能或补液组件。 -->
+<Defs>
+  <ThingDef ParentName="BaseMeleeWeapon_Sharp_Quality">
+    <defName>SSC_Weapon_PnaSpikeStaff</defName>
+    <label>纳米催情液刺棍</label>
+    <description>一根加装短刺的手工木棍，工作部分浸覆紫色纳米催情液。使用者尝试以较浅的刺击造成伤口，让附着的药液进入目标体内。贴身接触能够送入较多药液，但粗糙的尖刺仍会造成真实创伤，不能保证目标存活。</description>
+    <techLevel>Medieval</techLevel>
+    <possessionCount>1</possessionCount>
+    <graphicData>
+      <texPath>Things/Item/Equipment/WeaponMelee/Club</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+      <color>(0.65, 0.35, 0.8)</color>
+    </graphicData>
+    <equippedAngleOffset>-65</equippedAngleOffset>
+    <statBases>
+      <WorkToMake>4000</WorkToMake>
+      <Mass>1.2</Mass>
+    </statBases>
+    <equippedStatOffsets>
+      <MeleeHitChance>2</MeleeHitChance>
+    </equippedStatOffsets>
+    <costList>
+      <WoodLog>30</WoodLog>
+      <Steel>15</Steel>
+      <Purple_Aphrodisiac_Nanofluid>10</Purple_Aphrodisiac_Nanofluid>
+    </costList>
+    <!-- 清除原版锐器配方对木材的默认禁用；配方仍由 costList 限定所需原料。 -->
+    <recipeMaker>
+      <defaultIngredientFilter Inherit="False">
+        <thingDefs>
+          <li>WoodLog</li>
+          <li>Steel</li>
+          <li>Purple_Aphrodisiac_Nanofluid</li>
+        </thingDefs>
+      </defaultIngredientFilter>
+      <recipeUsers Inherit="False">
+        <li>FueledSmithy</li>
+        <li>ElectricSmithy</li>
+      </recipeUsers>
+      <researchPrerequisite>SSC_RES_PNAPrimitiveWeapons</researchPrerequisite>
+      <skillRequirements><Crafting>3</Crafting></skillRequirements>
+      <displayPriority>405</displayPriority>
+    </recipeMaker>
+    <tools>
+      <li>
+        <label>尖刺</label>
+        <capacities><li>SSC_ToolCapacity_PnaStab</li></capacities>
+        <power>5</power>
+        <armorPenetration>0.12</armorPenetration>
+        <cooldownTime>1.8</cooldownTime>
+        <!-- 只提高原版动作选择权重，防止低创伤主攻击被普通拳击抢占；不加伤害或命中率。 -->
+        <chanceFactor>2</chanceFactor>
+      </li>
+      <li>
+        <label>棍柄</label>
+        <capacities><li>Blunt</li></capacities>
+        <power>2</power>
+        <armorPenetration>0</armorPenetration>
+        <cooldownTime>2</cooldownTime>
+      </li>
+    </tools>
+    <!-- 首批仅通过玩家制作获取；不继承贸易或 NPC 装备池标签。 -->
+    <weaponTags Inherit="False" />
+    <tradeTags Inherit="False" />
+    <tradeability>None</tradeability>
+    <relicChance>0</relicChance>
+    <smeltable>false</smeltable>
+  </ThingDef>
+
+  <ThingDef ParentName="BaseWeaponNeolithic">
+    <defName>SSC_Weapon_PnaBlowpipe</defName>
+    <label>纳米催情液吹箭筒</label>
+    <description>一支配用浸液轻箭的手工吹箭筒。细箭上的紫色纳米催情液可随伤口进入目标体内；轻箭的创伤较小，也很难穿过护甲。适合在中近距离连续尝试施加，距离增加后命中明显变差。</description>
+    <techLevel>Medieval</techLevel>
+    <possessionCount>1</possessionCount>
+    <graphicData>
+      <texPath>Things/Item/Equipment/WeaponRanged/Pilum</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+      <color>(0.65, 0.35, 0.8)</color>
+    </graphicData>
+    <soundInteract>Bow_Small</soundInteract>
+    <statBases>
+      <WorkToMake>2400</WorkToMake>
+      <Mass>0.5</Mass>
+      <AccuracyTouch>0.65</AccuracyTouch>
+      <AccuracyShort>0.45</AccuracyShort>
+      <AccuracyMedium>0.20</AccuracyMedium>
+      <AccuracyLong>0.10</AccuracyLong>
+      <RangedWeapon_Cooldown>1</RangedWeapon_Cooldown>
+    </statBases>
+    <costList>
+      <WoodLog>20</WoodLog>
+      <Steel>5</Steel>
+      <Purple_Aphrodisiac_Nanofluid>6</Purple_Aphrodisiac_Nanofluid>
+    </costList>
+    <recipeMaker>
+      <recipeUsers Inherit="False">
+        <li>CraftingSpot</li>
+        <li>FueledSmithy</li>
+        <li>ElectricSmithy</li>
+      </recipeUsers>
+      <researchPrerequisite>SSC_RES_PNAPrimitiveWeapons</researchPrerequisite>
+      <skillRequirements><Crafting>2</Crafting></skillRequirements>
+      <displayPriority>515</displayPriority>
+    </recipeMaker>
+    <verbs>
+      <li>
+        <verbClass>Verb_Shoot</verbClass>
+        <hasStandardCommand>true</hasStandardCommand>
+        <defaultProjectile>SSC_Projectile_PnaDart</defaultProjectile>
+        <warmupTime>0.5</warmupTime>
+        <range>17.9</range>
+        <burstShotCount>1</burstShotCount>
+        <soundCast>Bow_Small</soundCast>
+      </li>
+    </verbs>
+    <tools>
+      <li>
+        <label>筒身</label>
+        <capacities><li>Blunt</li></capacities>
+        <power>2</power>
+        <armorPenetration>0</armorPenetration>
+        <cooldownTime>2</cooldownTime>
+      </li>
+    </tools>
+    <weaponClasses Inherit="False"><li>Ranged</li><li>RangedLight</li></weaponClasses>
+    <weaponTags Inherit="False" />
+    <tradeTags Inherit="False" />
+    <tradeability>None</tradeability>
+    <relicChance>0</relicChance>
+    <rotateInShelves>false</rotateInShelves>
+  </ThingDef>
+
+  <ThingDef ParentName="BaseWeaponNeolithic">
+    <defName>SSC_Weapon_PnaLightCrossbow</defName>
+    <label>纳米催情液轻弩</label>
+    <description>一把配用携液弩矢的手工轻弩。弩矢浸覆紫色纳米催情液，尝试在较远距离通过伤口送入药液。比吹箭更准确，也能穿过部分轻甲，但装填瞄准更慢，弩矢造成的创伤也更重。</description>
+    <techLevel>Medieval</techLevel>
+    <possessionCount>1</possessionCount>
+    <graphicData>
+      <texPath>Things/Item/Equipment/WeaponRanged/BowRecurve</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+      <color>(0.65, 0.35, 0.8)</color>
+    </graphicData>
+    <soundInteract>Bow_Large</soundInteract>
+    <statBases>
+      <WorkToMake>8000</WorkToMake>
+      <Mass>2.2</Mass>
+      <AccuracyTouch>0.50</AccuracyTouch>
+      <AccuracyShort>0.80</AccuracyShort>
+      <AccuracyMedium>0.80</AccuracyMedium>
+      <AccuracyLong>0.60</AccuracyLong>
+      <RangedWeapon_Cooldown>2.5</RangedWeapon_Cooldown>
+    </statBases>
+    <costList>
+      <WoodLog>45</WoodLog>
+      <Steel>25</Steel>
+      <Purple_Aphrodisiac_Nanofluid>10</Purple_Aphrodisiac_Nanofluid>
+    </costList>
+    <recipeMaker>
+      <recipeUsers Inherit="False"><li>FueledSmithy</li><li>ElectricSmithy</li></recipeUsers>
+      <researchPrerequisite>SSC_RES_PNAPrimitiveWeapons</researchPrerequisite>
+      <skillRequirements><Crafting>4</Crafting></skillRequirements>
+      <displayPriority>525</displayPriority>
+    </recipeMaker>
+    <verbs>
+      <li>
+        <verbClass>Verb_Shoot</verbClass>
+        <hasStandardCommand>true</hasStandardCommand>
+        <defaultProjectile>SSC_Projectile_PnaBolt</defaultProjectile>
+        <warmupTime>1.5</warmupTime>
+        <range>30.9</range>
+        <burstShotCount>1</burstShotCount>
+        <soundCast>Bow_Large</soundCast>
+      </li>
+    </verbs>
+    <tools>
+      <li>
+        <label>弩身</label>
+        <capacities><li>Blunt</li></capacities>
+        <power>2</power>
+        <armorPenetration>0</armorPenetration>
+        <cooldownTime>2</cooldownTime>
+      </li>
+    </tools>
+    <weaponClasses Inherit="False"><li>Ranged</li><li>RangedLight</li></weaponClasses>
+    <weaponTags Inherit="False" />
+    <tradeTags Inherit="False" />
+    <tradeability>None</tradeability>
+    <relicChance>0</relicChance>
+    <rotateInShelves>false</rotateInShelves>
+  </ThingDef>
+
+  <ThingDef ParentName="BaseProjectileNeolithic">
+    <defName>SSC_Projectile_PnaDart</defName>
+    <label>纳米催情液吹箭</label>
+    <graphicData>
+      <texPath>Things/Projectile/Arrow_Small</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+      <color>(0.65, 0.35, 0.8)</color>
+    </graphicData>
+    <projectile>
+      <damageDef>SSC_Damage_PnaDartStab</damageDef>
+      <damageAmountBase>3</damageAmountBase>
+      <armorPenetrationBase>0.05</armorPenetrationBase>
+      <speed>35</speed>
+    </projectile>
+  </ThingDef>
+
+  <ThingDef ParentName="BaseProjectileNeolithic">
+    <defName>SSC_Projectile_PnaBolt</defName>
+    <label>纳米催情液弩矢</label>
+    <graphicData>
+      <texPath>Things/Projectile/Arrow_Small</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+      <color>(0.65, 0.35, 0.8)</color>
+    </graphicData>
+    <projectile>
+      <damageDef>SSC_Damage_PnaBolt</damageDef>
+      <damageAmountBase>7</damageAmountBase>
+      <armorPenetrationBase>0.18</armorPenetrationBase>
+      <speed>55</speed>
+    </projectile>
+  </ThingDef>
+</Defs>

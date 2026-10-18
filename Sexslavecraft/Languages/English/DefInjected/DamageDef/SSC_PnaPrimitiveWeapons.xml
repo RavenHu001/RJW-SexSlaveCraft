@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_Damage_PnaStaffStab.label>aphrodisiac nanofluid stab</SSC_Damage_PnaStaffStab.label>
+  <SSC_Damage_PnaStaffStab.deathMessage>{0} was stabbed to death with an aphrodisiac nanofluid spike club.</SSC_Damage_PnaStaffStab.deathMessage>
+  <SSC_Damage_PnaDartStab.label>aphrodisiac nanofluid dart</SSC_Damage_PnaDartStab.label>
+  <SSC_Damage_PnaDartStab.deathMessage>{0} was shot to death with an aphrodisiac nanofluid dart.</SSC_Damage_PnaDartStab.deathMessage>
+  <SSC_Damage_PnaBolt.label>aphrodisiac nanofluid bolt</SSC_Damage_PnaBolt.label>
+  <SSC_Damage_PnaBolt.deathMessage>{0} was shot to death with an aphrodisiac nanofluid bolt.</SSC_Damage_PnaBolt.deathMessage>
+</LanguageData>

@@ -176,6 +176,7 @@ internal static class Program
         {
             ("BasicTraining", 500, ""), ("BodyPartTraining", 800, "BasicTraining"),
             ("PNASimpleApp", 800, "BasicTraining"), ("SexChange", 1000, "PNASimpleApp"),
+            ("PNAPrimitiveWeapons", 800, "PNASimpleApp"),
             ("Femboy", 1200, "SexChange"), ("PNASimpleLauncher", 1000, "PNASimpleApp,PrecisionRifling"),
             ("PNAConcentration", 1200, "PNASimpleApp"), ("PE", 1500, "PNAConcentration"),
             ("SlaveSpecialization", 1500, "BodyPartTraining,PE"), ("CowTraining", 1200, "SlaveSpecialization"),
@@ -203,9 +204,9 @@ internal static class Program
         Run("研究总数分档与Royalty蓝图要求保留", () =>
         {
             XElement[] defs = XDocument.Load(Resource("Defs/ResearchDefs/ResearchProjectDef.xml")).Root.Elements().ToArray();
-            Equal(18, defs.Length);
+            Equal(19, defs.Length);
             Equal(2, defs.Count(d => (string)d.Element("techLevel") == "Neolithic"));
-            Equal(15, defs.Count(d => (string)d.Element("techLevel") == "Medieval"));
+            Equal(16, defs.Count(d => (string)d.Element("techLevel") == "Medieval"));
             Equal(1, defs.Count(d => (string)d.Element("techLevel") == "Industrial"));
             XElement basic = defs.Single(d => (string)d.Element("defName") == "SSC_RES_BasicTraining");
             Equal(1, (int)basic.Element("techprintCount"));
