@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_PnaWeaponPotency_Baseline>Base load increase: {0} at 100% consciousness with no resistance record. One dose per hit.</SSC_PnaWeaponPotency_Baseline>
+  <SSC_PnaWeaponPotency_Calculation>Input = base potency / resistance, capped at 50% per hit. Resistance is pre-hit consciousness, at least 20%. Hits above 200% consciousness record resistance for later use.</SSC_PnaWeaponPotency_Calculation>
+</LanguageData>

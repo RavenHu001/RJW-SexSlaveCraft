@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_PnaWeaponPotency_Baseline>基线负荷增量：{0}（意识 100%、无抗性记录）。每次命中只计一剂。</SSC_PnaWeaponPotency_Baseline>
+  <SSC_PnaWeaponPotency_Calculation>输入量 = 基础效力 ÷ 抗性，单次最高 50%。抗性取命中前意识，最低 20%；意识超过 200% 时建立记录，后续优先沿用。</SSC_PnaWeaponPotency_Calculation>
+</LanguageData>

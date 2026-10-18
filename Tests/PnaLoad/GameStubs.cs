@@ -62,6 +62,7 @@ namespace Verse
     public class DefModExtension { }
     public class DamageDef
     {
+        public Type workerClass = typeof(DamageWorker_AddInjury);
         public DefModExtension Extension;
         public T GetModExtension<T>() where T : DefModExtension => Extension as T;
     }

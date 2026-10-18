@@ -112,6 +112,8 @@
     <Compile Include="common\AttractionPreference_SSCPna.cs" />
     <Compile Include="common\IngestionOutcomeDoer_SSCPna.cs" />
     <Compile Include="common\ThingDef_SSCPna.cs" />
+    <Compile Include="common\SSCPnaWeaponPotencyUtility.cs" />
+    <Compile Include="common\StatWorker_SSCPnaWeaponPotency.cs" />
     <Compile Include="common\SSCPnaGameComponent.cs" />
     <Compile Include="common\DebugActions_SSCPna.cs" />
     <Compile Include="Hediff\HediffComp_SSCPnaLoad.cs" />

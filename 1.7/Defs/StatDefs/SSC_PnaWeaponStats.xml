@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成：原生武器信息属性；剂量读取实际伤害扩展，不在 statBases 复制药量。 -->
+<Defs>
+  <StatDef>
+    <defName>SSC_PnaWeaponPotency</defName>
+    <label>纳米催情液效力</label>
+    <description>每次造成肉体开放伤口时输入的基础纳米催情液负荷。护甲完全阻挡、挫伤和柄击不施药。主人免疫，有效锁链目标获得活化；伤口保留。</description>
+    <category>Weapon</category>
+    <workerClass>SexSlaveCraft.StatWorker_SSCPnaWeaponPotency</workerClass>
+    <forInformationOnly>true</forInformationOnly>
+    <showIfUndefined>true</showIfUndefined>
+    <toStringStyle>PercentZero</toStringStyle>
+    <displayPriorityInCategory>3500</displayPriorityInCategory>
+  </StatDef>
+</Defs>
