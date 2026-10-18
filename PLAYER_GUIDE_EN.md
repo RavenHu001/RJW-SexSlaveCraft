@@ -821,7 +821,7 @@ Addiction and its need are separate:
 
 ### 11.2 PNA Concentration Technology
 
-The 1.7 low-tech development build adds **Rough Concentration of Purple Aphrodisiac Nanofluid** at campfires and stoves: 10 normal PNA → 1 of the same PNA Plus, work 600, using Cooking. It requires PNA Concentration Technology; fuel, power and worktable speed follow the building. Modded worktables supporting vanilla simple meals or bulk simple meals receive this recipe after loading. This batch awaits in-game verification and is not included in the existing 2.4.2 release package. See the [implementation record](Docs/Development/Verification/低科技适配首批实现与测试.md).
+The 1.7 low-tech development build adds **Rough Concentration of Purple Aphrodisiac Nanofluid** at campfires and stoves: 10 normal PNA → 1 of the same PNA Plus, work 600, using Cooking. It requires PNA Concentration Technology; fuel, power and worktable speed follow the building. Modded worktables supporting vanilla simple meals or bulk simple meals receive this recipe after loading. On 2026-10-18, the maintainer confirmed that low-tech research and rough concentration work in game, closing acceptance for this batch. It is not included in the existing 2.4.2 release package. See the [implementation record](Docs/Development/Completed/低科技适配首批实现与测试.md).
 
 At a drug lab:
 

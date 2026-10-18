@@ -12,4 +12,4 @@ dotnet run --project Tests/LowTechAdaptation/LowTechAdaptation.csproj --configur
 
 资源检查固定 18 项研究的原点数及全部前置，确认 2 项 Neolithic／15 项 Medieval／1 项 Industrial；粗放配方 10→1、工作量 600、Cooking／CookSpeed、三个原版入口及研究门槛；药物台 5→1／450、20→4／1350 的参数和入口保持。
 
-模型通过不代表 XML 继承、全部第三方启动代码或真实烹饪任务已经运行。2026-10-18 另用本机 1.7.4981 实际程序集、编译后的生产 DLL 和三份 GloomyFurniture 作者 XML 样本完成 13 项独立检查；证据与实机步骤见[实现与测试记录](../../Docs/Development/Verification/低科技适配首批实现与测试.md)。
+模型通过不代表 XML 继承、全部第三方启动代码或真实烹饪任务已经运行。2026-10-18 另用本机 1.7.4981 实际程序集、编译后的生产 DLL 和三份 GloomyFurniture 作者 XML 样本完成 13 项独立检查；2026-10-18 维护者已确认低科技研究及粗放浓缩正常，首批验收关闭；历史证据、反馈范围与原实机步骤见[实现与测试记录](../../Docs/Development/Completed/低科技适配首批实现与测试.md)。
