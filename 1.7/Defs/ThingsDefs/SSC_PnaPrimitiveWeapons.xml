@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- AI 辅助生成；1.7 首批涂覆武器。短矛与吹箭筒使用专用透明贴图，轻弩仍用临时原版资源。
+<!-- AI 辅助生成；1.7 首批涂覆武器。三件武器与两类弹丸使用专用透明贴图。
      固定材料、原版品质；只在制造时消耗 PNA，不添加充能或补液组件。 -->
 <Defs>
   <ThingDef ParentName="BaseMeleeWeapon_Sharp_Quality">
@@ -146,10 +146,12 @@
     <techLevel>Medieval</techLevel>
     <possessionCount>1</possessionCount>
     <graphicData>
-      <texPath>Things/Item/Equipment/WeaponRanged/BowRecurve</texPath>
+      <texPath>Things/Item/Equipment/SSC_PnaLightCrossbow</texPath>
       <graphicClass>Graphic_Single</graphicClass>
-      <color>(0.65, 0.35, 0.8)</color>
+      <!-- 256×256 透明画布，弩床水平朝右；保留木材、绑带、尾羽和紫色箭头的原色。 -->
+      <drawSize>1</drawSize>
     </graphicData>
+    <equippedAngleOffset>0</equippedAngleOffset>
     <soundInteract>Bow_Large</soundInteract>
     <statBases>
       <WorkToMake>8000</WorkToMake>
@@ -220,9 +222,10 @@
     <defName>SSC_Projectile_PnaBolt</defName>
     <label>纳米催情液弩矢</label>
     <graphicData>
-      <texPath>Things/Projectile/Arrow_Small</texPath>
+      <texPath>Things/Projectile/SSC_PnaBolt</texPath>
       <graphicClass>Graphic_Single</graphicClass>
-      <color>(0.65, 0.35, 0.8)</color>
+      <!-- 128×128 透明图，紫色箭头朝上、普通浅色尾羽朝下；保留贴图自身颜色。 -->
+      <drawSize>(0.6,0.6)</drawSize>
     </graphicData>
     <projectile>
       <damageDef>SSC_Damage_PnaBolt</damageDef>
