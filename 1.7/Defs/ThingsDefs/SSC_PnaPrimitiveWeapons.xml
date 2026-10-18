@@ -207,7 +207,7 @@
       <texPath>Things/Projectile/SSC_PnaDart</texPath>
       <graphicClass>Graphic_Single</graphicClass>
       <!-- 128×128 透明图，箭头朝上、尾塞朝下；紫色箭头、木杆和浅米色尾塞使用原色。 -->
-      <drawSize>(0.6,0.6)</drawSize>
+      <drawSize>(0.5,0.5)</drawSize>
     </graphicData>
     <projectile>
       <damageDef>SSC_Damage_PnaDartStab</damageDef>
