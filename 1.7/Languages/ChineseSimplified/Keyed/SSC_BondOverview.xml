@@ -48,12 +48,14 @@
   <SSC_BondOverview_ShortCount>性奴 {0}</SSC_BondOverview_ShortCount>
   <SSC_BondOverview_TrainerPanel>调教员</SSC_BondOverview_TrainerPanel>
   <SSC_BondOverview_ChangeTrainer>更换调教员</SSC_BondOverview_ChangeTrainer>
-  <SSC_BondOverview_KnownCount>已知性奴：{0}</SSC_BondOverview_KnownCount>
-  <SSC_BondOverview_SupplementPending>正在补查其他绑定从属…</SSC_BondOverview_SupplementPending>
   <SSC_BondOverview_ResolveOnClick>点击后复查当前位置。</SSC_BondOverview_ResolveOnClick>
   <SSC_BondOverview_OwnedCount>拥有性奴：{0}</SSC_BondOverview_OwnedCount>
   <SSC_BondOverview_SelectAllSlaves>选择所有性奴</SSC_BondOverview_SelectAllSlaves>
   <SSC_BondOverview_SelectAllSlavesDesc>选择当前地图上存活、已生成且仍归属此主人的可选性奴，遵循原版选择数量上限。异图、容器内和死亡对象仍保留在总览。</SSC_BondOverview_SelectAllSlavesDesc>
   <SSC_BondOverview_NoSelectableSlaves>当前地图没有可选择的绑定性奴。</SSC_BondOverview_NoSelectableSlaves>
   <SSC_BondOverview_SelectMaster>选择主人</SSC_BondOverview_SelectMaster>
+  <SSC_BondOverview_DebugQuery>DEV: 全局关系诊断</SSC_BondOverview_DebugQuery>
+  <SSC_BondOverview_DebugQueryDesc>仅点击时扫描世界，比较缰绳名单与实际锁链；报告遗漏，不修复绑定或更新普通概览。</SSC_BondOverview_DebugQueryDesc>
+  <SSC_BondOverview_DebugQueryResult>缰绳有效：{0}；全局绑定：{1}；索引遗漏：{2}。仅诊断，未修复绑定。</SSC_BondOverview_DebugQueryResult>
+  <SSC_BondOverview_DebugQueryFailed>全局关系诊断失败，详见日志。</SSC_BondOverview_DebugQueryFailed>
 </LanguageData>

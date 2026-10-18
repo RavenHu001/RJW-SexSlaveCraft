@@ -356,13 +356,17 @@ namespace SexSlaveCraft
                 yield break;
             }
 
-            // 关系概览供正常游玩使用；这里只登记会话访问，世界查询由游戏 Update 限频执行。
+            // 关系概览供正常游玩使用；这里只读取直接关系，Update 仅刷新局部状态。
             foreach (Gizmo overview in BondOverviewGizmos(pawn)) yield return overview;
 
             if (!Prefs.DevMode || SSCMod.settings?.enableDebugGizmos != true)
             {
                 yield break;
             }
+
+            // 全局关系查询只在开发诊断按钮被显式点击时执行，不向普通会话写入结果。
+            Gizmo diagnostic = BondOverviewDiagnosticGizmo(pawn);
+            if (diagnostic != null) yield return diagnostic;
 
             // 特化页也支持殖民地囚犯；此测试入口沿用同一对象范围。
             if (SSCIdentityUtility.IsSupportedVanillaStatus(pawn) && specializationType != SexSlaveSpecializationType.None)

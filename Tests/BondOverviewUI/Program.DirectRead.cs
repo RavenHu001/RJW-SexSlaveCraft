@@ -1,4 +1,4 @@
-// AI 辅助生成。实际运行本地查询、补漏调度及点击；引擎替身只记录遍历和绘制边界。
+// AI 辅助生成。实际运行局部刷新及点击；普通查询不枚举全局候选。
 using RimWorld;
 using RimWorld.Planet;
 using SexSlaveCraft;
@@ -12,9 +12,9 @@ internal static partial class Program
         Check("direct: owner and trainer available before any global build",()=>{
             var f=Fixture();var trainer=Master();f.slave.Training.selectedTrainer=trainer;
             var ship=new Gravship();Find.CurrentGravship=ship;ship.Pawns.Add(trainer);
-            var s=new SSCBondOverviewSession(Current.Game,()=>0,(p,m)=>throw new Exception("must not build"));
+            var s=new SSCBondOverviewSession(Current.Game,()=>0);
             var v=s.ObserveCard(f.slave,f.map,0);
-            Require(v.Snapshot.Master.Pawn==f.master&&v.Snapshot.AssignedTrainer==trainer&&!v.Snapshot.CoverageComplete);
+            Require(v.Snapshot.Master.Pawn==f.master&&v.Snapshot.AssignedTrainer==trainer);
             Require(ThingOwnerUtility.MapQueryCount==0&&ship.Things.Enumerations==0&&ship.Pawns.Enumerations==0);
         });
         Check("direct: bridle candidates are deduplicated and chain checked without repair",()=>{
@@ -34,78 +34,36 @@ internal static partial class Program
             var snapshot=SSCBondOverviewUtility.BuildLocal(f.master,f.map);
             Require(snapshot.Slaves[0].Location.Container==box&&ThingOwnerUtility.MapQueryCount==0&&ThingOwnerUtility.Visits.Count==0);
         });
-        Check("direct: provisional zero says checking instead of no bound slaves",()=>{
+        Check("direct: zero is an ordinary empty count without provisional marker",()=>{
             var p=Master();Place(p,new Map());Find.CurrentMap=p.Map;Find.Selector.Objects.Add(p);
-            Current.ProgramState=ProgramState.Entry;var unavailable=SSCBondOverviewUtility.BuildLocal(p,p.Map);
-            Current.ProgramState=ProgramState.Playing;
-            Require(!SSCBondOverviewUtility.BuildLocal(p,p.Map,unavailable).CoverageComplete);
-            var s=new SSCBondOverviewSession(Current.Game,()=>0);s.ObserveCard(p,p.Map,0);
-            Widgets.CapturedLabels=new();Paint(new Gizmo_SSCBondOverview(s));
-            Require(!s.Card.Snapshot.CoverageComplete&&s.Card.Display.SlaveHeading=="Known sex slaves: 0");
-            Require(Widgets.CapturedLabels.Any(i=>i.value.StartsWith("Checking"))&&
-                !Widgets.CapturedLabels.Any(i=>i.value==SSCBondOverviewText.T("EmptySlaves")));
-            s.Update(0,true,p.Map);Require(s.Card.Snapshot.CoverageComplete);
+            var s=Ready(p,p.Map);Widgets.CapturedLabels=new();Paint(new Gizmo_SSCBondOverview(s));
+            Require(s.Card.Display.OwnedHeading=="Slaves: 0"&&s.Card.Display.SlaveHeading=="Sex slaves: 0");
+            Require(Widgets.CapturedLabels.Any(i=>i.value==SSCBondOverviewText.T("EmptySlaves"))&&
+                !Widgets.CapturedLabels.Any(i=>i.value.Contains("Checking")||i.value.Contains("+")));
         });
-        Check("direct: missing reverse index with unset identity still gets global supplement",()=>{
-            var f=Fixture();f.master.Training.pawnIdentity=PawnIdentity.Unset;SSCBondUtility.GetBridle(f.master).targets.Clear();
-            var s=new SSCBondOverviewSession(Current.Game,()=>0);var v=s.ObserveCard(f.master,f.map,0);
-            Require(!v.ShowCard&&v.Snapshot.TotalSlaveCount==0&&!v.Snapshot.CoverageComplete);
-            s.Update(0,true,f.map);Require(v.ShowCard&&v.Snapshot.TotalSlaveCount==1&&v.Snapshot.CoverageComplete);
-        });
-        Check("direct: known supplemental references survive local refresh but not rebinding",()=>{
+        Check("direct: global diagnostic results are not accepted as local candidates",()=>{
             var f=Fixture();SSCBondUtility.GetBridle(f.master).targets.Clear();var full=SSCBondOverviewUtility.Build(f.master,f.map);
-            f.slave.Spawned=false;f.map.Things.Remove(f.slave);
-            var local=SSCBondOverviewUtility.BuildLocal(f.master,f.map,full);
-            Require(local.CoverageComplete&&local.TotalSlaveCount==1&&ThingOwnerUtility.MapQueryCount==1);
-            var supplemented=SSCBondOverviewUtility.BuildWithKnown(f.master,f.map,local);Require(supplemented.TotalSlaveCount==1);
-            SSCBondUtility.GetChain(f.slave).target=Master();local=SSCBondOverviewUtility.BuildLocal(f.master,f.map,supplemented);
-            Require(local.TotalSlaveCount==0);
+            var local=SSCBondOverviewUtility.BuildLocal(f.master,f.map);Require(full.TotalSlaveCount==1&&local.TotalSlaveCount==0);
         });
-        foreach(bool game in new[]{false,true})Check("direct: rejects known references from another "+(game?"game":"source"),()=>{
-            var f=Fixture();var previous=SSCBondOverviewUtility.Build(f.master,f.map);SSCBondUtility.GetBridle(f.master).targets.Clear();
-            Pawn source=f.master;if(game)Current.Game=new();else source=Master();
-            var local=SSCBondOverviewUtility.BuildLocal(source,f.map,previous);Require(!local.CoverageComplete&&local.TotalSlaveCount==0);
-        });
-        Check("direct: source switching during global backoff does not delay owner or trainer",()=>{
-            var f=Fixture();double now=0;int builds=0;
-            var s=new SSCBondOverviewSession(Current.Game,()=>now,(p,m)=>{builds++;now+=3;return View(p,f.slave);});
-            s.ObserveCard(f.master,f.map,0);s.Update(0,true,f.map);Require(builds==1);
-            now=4;f.slave.Training.selectedTrainer=f.master;var v=s.ObserveCard(f.slave,f.map,1);s.OpenDetails(f.slave,f.map);s.Update(1,true,f.map);
-            Require(builds==1&&v.Snapshot.Master.Pawn==f.master&&v.Snapshot.AssignedTrainer==f.master&&!v.Snapshot.CoverageComplete);
-        });
-        Check("direct: same source changed owner trainer and bridle refreshes without global scan",()=>{
-            var f=Fixture();double now=0;int builds=0;
-            var s=new SSCBondOverviewSession(Current.Game,()=>now,(p,m)=>{builds++;now+=3;return View(p);});
-            var v=s.ObserveCard(f.slave,f.map,0);s.Update(0,true,f.map);now=4;
-            var master=Master();SSCBondUtility.GetChain(f.slave).target=master;f.slave.Training.selectedTrainer=master;
-            // 构造旧存档中身份与实际锁链不一致的关系；查询不得套用新绑定事务的资格限制。
+        Check("direct: changed master trainer and bridle are visible immediately",()=>{
+            var f=Fixture();var s=Ready(f.slave,f.map);var v=s.Card;var master=Master();
+            SSCBondUtility.GetChain(f.slave).target=master;f.slave.Training.selectedTrainer=master;
             var child=Slave(master);SSCBondUtility.GetChain(child).target=f.slave;
-            var bridle=new Hediff_BridleOfSexSlave{def=SSCDefOf.BridleOfSexSlave};bridle.targets.Add(child);
-            f.slave.health.AddHediff(bridle);s.ObserveCard(f.slave,f.map,1);
-            Require(builds==1&&v.Snapshot.Master.Pawn==master&&v.Snapshot.AssignedTrainer==master&&v.Snapshot.Slaves.Single().Pawn==child);
+            Hediff_BridleOfSexSlave.AddToPawn(f.slave,child);s.ObserveCard(f.slave,f.map,1);
+            Require(v.Snapshot.Master.Pawn==master&&v.Snapshot.AssignedTrainer==master&&v.Snapshot.Slaves.Single().Pawn==child&&ThingOwnerUtility.MapQueryCount==0);
         });
-        Check("direct: equal size in-place changes are picked up by local timer during backoff",()=>{
-            var f=Fixture();double now=0;int builds=0;
-            var s=new SSCBondOverviewSession(Current.Game,()=>now,(p,m)=>{builds++;now+=3;return View(p,f.slave);});
-            var v=s.ObserveCard(f.master,f.map,0);s.Update(0,true,f.map);var old=v.Snapshot;
-            var another=Slave(Master());SSCBondUtility.GetChain(another).target=f.master;
-            SSCBondUtility.GetBridle(f.master).targets[0]=another;
-            now=4;s.ObserveCard(f.master,f.map,1);s.Update(1,true,f.map);Require(ReferenceEquals(old,v.Snapshot));
-            now=5;s.ObserveCard(f.master,f.map,2);s.Update(2,true,f.map);
-            Require(builds==1&&v.Snapshot.Slaves.Any(e=>e.Pawn==another)&&v.Snapshot.Slaves.Any(e=>e.Pawn==f.slave));
+        Check("direct: equal-size replacement is re-read from current bridle on local timer",()=>{
+            var f=Fixture();double now=0;var s=new SSCBondOverviewSession(Current.Game,()=>now);var v=s.ObserveCard(f.master,f.map,0);var old=v.Snapshot;
+            var another=Slave(Master());SSCBondUtility.GetChain(another).target=f.master;SSCBondUtility.GetBridle(f.master).targets[0]=another;
+            now=1.99;s.ObserveCard(f.master,f.map,1);s.Update(1,true,f.map);Require(old==v.Snapshot);
+            now=2;s.ObserveCard(f.master,f.map,2);s.Update(2,true,f.map);
+            Require(v.Snapshot.Slaves.Single().Pawn==another&&ThingOwnerUtility.MapQueryCount==0);
         });
         Check("direct: repeated registration and paint reuse snapshot and text caches",()=>{
             var f=Fixture();var s=new SSCBondOverviewSession(Current.Game,()=>0);var v=s.ObserveCard(f.master,f.map,0);
             var first=v.Snapshot;var g=new Gizmo_SSCBondOverview(s);Paint(g);int revision=v.Revision,truncations=UIExtensions.Truncations;
             for(int i=0;i<200;i++){s.ObserveCard(f.master,f.map,0);Paint(g);}
             Require(ReferenceEquals(first,v.Snapshot)&&v.Revision==revision&&UIExtensions.Truncations==truncations&&ThingOwnerUtility.MapQueryCount==0);
-        });
-        Check("direct: failed supplement preserves verified direct facts and retry deadline",()=>{
-            var f=Fixture();double now=0;int builds=0;
-            var s=new SSCBondOverviewSession(Current.Game,()=>now,(p,m)=>{builds++;throw new Exception("supplement");});
-            var v=s.ObserveCard(f.master,f.map,0);s.Update(0,true,f.map);var old=v.Snapshot;
-            Require(v.Failed&&v.Snapshot.Slaves.Single().Pawn==f.slave&&!v.Snapshot.CoverageComplete);
-            now=1;s.ObserveCard(f.master,f.map,1);s.Update(1,true,f.map);Require(builds==1&&ReferenceEquals(old,v.Snapshot));
         });
         foreach(bool trainer in new[]{false,true})Check("direct: uncached ship location clicks resolve live "+(trainer?"trainer":"bond"),()=>{
             var f=Fixture();var ship=new Gravship();Find.CurrentGravship=ship;

@@ -29,12 +29,12 @@ namespace Verse
     public enum GameFont { Tiny, Small }
     public static class Text { public static GameFont Font; public static TextAnchor Anchor; public static bool WordWrap; }
     public static class UI { public static int screenWidth=1200,screenHeight=900; }
-    public static class Prefs { public static float UIScale=1; }
+    public static class Prefs { public static bool DevMode; public static float UIScale=1; }
     public static class Mouse { public static bool IsOver(Rect rect)=>rect.Contains(Event.current.mousePosition); }
     public static class TooltipHandler { public static int Calls; public static void TipRegion(Rect rect,string text){Calls++;} }
     public static class LanguageDatabase { public static object activeLanguage = new(); }
     public static class Log { public static int Errors; public static void Error(string text){Errors++;} }
-    public static class Messages { public static int Calls; public static void Message(string text,object def,bool historical){Calls++;} public static void Message(string text,Pawn pawn,object def,bool historical){Calls++;} }
+    public static class Messages { public static int Calls; public static string Last; public static void Message(string text,object def,bool historical){Calls++;Last=text;} public static void Message(string text,Pawn pawn,object def,bool historical){Calls++;Last=text;} }
     public readonly struct Rot4 { public static Rot4 South=>default; }
     public class ThingDef { public bool selectable=true; }
     public partial class Thing { public ThingDef def=new(); public string LabelShort=>"Container"; }
@@ -49,7 +49,8 @@ namespace Verse
     public static partial class Find { public static Map CurrentMap; public static RimWorld.Selector Selector=new(); public static WindowStack WindowStack=new(); }
     public enum GizmoState { Clear,Mouseover,Interacted }
     public struct GizmoRenderParms { public bool lowLight,shrunk; }
-    public static class Command { public static readonly object BGTex=new(),BGTexShrunk=new();public static readonly Color LowLightBgColor=new(.5f,.5f,.5f); }
+    public class Command : Gizmo { public static readonly object BGTex=new(),BGTexShrunk=new();public static readonly Color LowLightBgColor=new(.5f,.5f,.5f); }
+    public class Command_Action : Command { public string defaultLabel, defaultDesc; public Action action; }
     public static class TexUI { public static readonly object GrayscaleGUI=new(); }
     public static class TexButton { public static readonly Texture2D Search=new(),Rename=new(),SelectOverlappingNext=new(); }
     public static class GenUI
@@ -153,7 +154,7 @@ namespace RimWorld
         public void Select(object obj,bool playSound=true,bool forceDesignatorDeselect=true)
         { if(Objects.Count<200&&!Objects.Contains(obj)){Objects.Add(obj);if(obj is Pawn pawn)OnSelected?.Invoke(pawn);} }
     }
-    public static class MessageTypeDefOf { public static object RejectInput=new(); }
+    public static class MessageTypeDefOf { public static object RejectInput=new(), NeutralEvent=new(); }
     public static class PortraitsCache
     { public static int Calls; public static float LastZoom; public static readonly List<(Pawn pawn,Vector2 size)> Requests=new(); public static object Get(Pawn pawn,Vector2 size,Rot4 rot,float cameraZoom=1){Calls++;LastZoom=cameraZoom;Requests.Add((pawn,size));return null;} }
     public static class TargetHighlighter { public static int Calls; public static void Highlight(GlobalTargetInfo target,bool arrow,bool colonistBar){Calls++;} }
@@ -162,6 +163,8 @@ namespace SexSlaveCraft
 {
     // 菜单宿主只模拟既有候选和事务返回值；完整资格、限制和授权由 TrainerIdentity 等生产专项验证。
     public static partial class SSCIdentityUtility { public static bool IsSexSlave(Pawn pawn)=>pawn?.Training?.pawnIdentity==PawnIdentity.Slave; }
+    public class OverviewTestSettings { public bool enableDebugGizmos; }
+    public static class SSCMod { public static OverviewTestSettings settings=new(); }
     public partial class CompSexSlaveTraining { public SSCRestrictionConfig restrictionConfig=new(); }
     public class SSCRestrictionConfig { public bool Valid=true;public SSCRestrictionRules rules=new();public bool IsValid()=>Valid; }
     public class SSCRestrictionRules { public bool receiveTraining=true; }

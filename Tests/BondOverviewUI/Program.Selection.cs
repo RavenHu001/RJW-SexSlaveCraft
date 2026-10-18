@@ -24,8 +24,8 @@ internal static partial class Program
         });
         Check("bulk selection: local map supplements missing bridle before any global scan",()=>{
             var f=Fixture();SSCBondUtility.GetBridle(f.master).targets.Clear();int builds=0;
-            var s=new SSCBondOverviewSession(Current.Game,()=>0,(p,m)=>{builds++;throw new Exception("must not build");});
-            s.ObserveCard(f.master,f.map,0);Require(!s.Card.Snapshot.CoverageComplete&&s.Card.Snapshot.TotalSlaveCount==0);
+            var s=new SSCBondOverviewSession(Current.Game,()=>0);
+            s.ObserveCard(f.master,f.map,0);Require(s.Card.Snapshot.TotalSlaveCount==0);
             var g=new Gizmo_SSCBondOverview(s,SSCBondOverviewPanel.SelectAll);var result=Click(g,35,35);g.ProcessInput(result.InteractEvent);
             Require(builds==0&&ThingOwnerUtility.MapQueryCount==0&&Find.Selector.Objects.Single()==f.slave);
         });

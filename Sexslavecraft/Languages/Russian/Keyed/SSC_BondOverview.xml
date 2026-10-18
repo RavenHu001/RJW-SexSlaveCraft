@@ -48,12 +48,14 @@
   <SSC_BondOverview_ShortCount>Секс-рабы: {0}</SSC_BondOverview_ShortCount>
   <SSC_BondOverview_TrainerPanel>Тренер</SSC_BondOverview_TrainerPanel>
   <SSC_BondOverview_ChangeTrainer>Сменить тренера</SSC_BondOverview_ChangeTrainer>
-  <SSC_BondOverview_KnownCount>Известных секс-рабов: {0}</SSC_BondOverview_KnownCount>
-  <SSC_BondOverview_SupplementPending>Поиск остальных связанных подчинённых…</SSC_BondOverview_SupplementPending>
   <SSC_BondOverview_ResolveOnClick>Нажмите для проверки текущего местоположения.</SSC_BondOverview_ResolveOnClick>
   <SSC_BondOverview_OwnedCount>Секс-рабы: {0}</SSC_BondOverview_OwnedCount>
   <SSC_BondOverview_SelectAllSlaves>Выбрать всех рабов</SSC_BondOverview_SelectAllSlaves>
   <SSC_BondOverview_SelectAllSlavesDesc>Выбрать живых доступных секс-рабов на текущей карте, чьи цепи всё ещё указывают на этого хозяина, в пределах игрового лимита выбора. Остальные остаются в обзоре.</SSC_BondOverview_SelectAllSlavesDesc>
   <SSC_BondOverview_NoSelectableSlaves>На текущей карте нет доступных связанных рабов.</SSC_BondOverview_NoSelectableSlaves>
   <SSC_BondOverview_SelectMaster>Выбрать хозяина</SSC_BondOverview_SelectMaster>
+  <SSC_BondOverview_DebugQuery>DEV: Диагностика связей</SSC_BondOverview_DebugQuery>
+  <SSC_BondOverview_DebugQueryDesc>Только по нажатию проверить мир и сравнить список уздечки с цепями. Сообщает о пропусках, не исправляя связи и не обновляя обычный обзор.</SSC_BondOverview_DebugQueryDesc>
+  <SSC_BondOverview_DebugQueryResult>Связей в индексе: {0}; всего найдено: {1}; пропусков в индексе: {2}. Только диагностика; связи не изменены.</SSC_BondOverview_DebugQueryResult>
+  <SSC_BondOverview_DebugQueryFailed>Диагностика связей не удалась. См. журнал.</SSC_BondOverview_DebugQueryFailed>
 </LanguageData>

@@ -81,20 +81,16 @@ namespace SexSlaveCraft
         public IReadOnlyList<SSCBondOverviewEntry> Slaves { get; }
         public int LivingSlaveCount { get; }
         public int TotalSlaveCount => Slaves.Count;
-        // 表示本视图曾完成全局补漏，不承诺关系永久不变；导航仍逐次实时复查。
-        public bool CoverageComplete { get; }
         private readonly HashSet<SSCBondOverviewEntry> slaveEntries;
 
         internal SSCBondOverviewSnapshot(Game game, Pawn source, Map viewedMap,
             SSCBondOverviewQueryState state, SSCBondOverviewMasterState masterState,
-            SSCBondOverviewEntry master, List<SSCBondOverviewEntry> slaves, SSCBondOverviewLocation trainerLocation = null,
-            bool coverageComplete = true)
+            SSCBondOverviewEntry master, List<SSCBondOverviewEntry> slaves, SSCBondOverviewLocation trainerLocation = null)
         {
             Game = game;
             Source = source;
             ViewedMap = viewedMap;
             State = state;
-            CoverageComplete = coverageComplete;
             Identity = source?.TryGetComp<CompSexSlaveTraining>()?.pawnIdentity ?? PawnIdentity.Unset;
             MasterState = masterState;
             Master = master;

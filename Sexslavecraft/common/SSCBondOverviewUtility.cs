@@ -9,7 +9,7 @@ namespace SexSlaveCraft
     /// <summary>只读取直接锁链归属，不整理缰绳、身份、指派、奖励或特化。</summary>
     public static class SSCBondOverviewUtility
     {
-        /// <summary>显式构建一次独立快照；调用方负责刷新频率，不在绘制循环重复调用。</summary>
+        /// <summary>显式全局诊断查询；普通会话禁止调用，只在玩家触发开发诊断后枚举完整候选。</summary>
         public static SSCBondOverviewSnapshot Build(Pawn source, Map viewedMap)
         {
             SSCBondOverviewQueryState state = GetQueryState(source);
@@ -26,23 +26,12 @@ namespace SexSlaveCraft
             return BuildReady(source, viewedMap, candidates, false);
         }
 
-        /// <summary>只读直接关系和本视图已发现的引用；不枚举地图、世界候选或飞船货物。</summary>
-        internal static SSCBondOverviewSnapshot BuildLocal(Pawn source, Map map, SSCBondOverviewSnapshot previous = null)
-            => BuildKnown(source, map, previous, false);
-
-        /// <summary>受会话预算控制的补漏；保留已知引用，同时沿原路径覆盖全部候选来源。</summary>
-        internal static SSCBondOverviewSnapshot BuildWithKnown(Pawn source, Map map, SSCBondOverviewSnapshot previous)
-            => BuildKnown(source, map, previous, true);
-
-        private static SSCBondOverviewSnapshot BuildKnown(Pawn source, Map map, SSCBondOverviewSnapshot previous, bool supplement)
+        /// <summary>普通概览仅枚举缰绳并校验锁链；不扫描世界，不吸收历史诊断结果。</summary>
+        internal static SSCBondOverviewSnapshot BuildLocal(Pawn source, Map map)
         {
             var state = GetQueryState(source);
-            if (state != SSCBondOverviewQueryState.Ready) return Empty(source, map, state);
-            // 未就绪占位不代表曾完成补漏，不能把它的空结果升级为完整数量。
-            bool same = previous?.State == SSCBondOverviewQueryState.Ready &&
-                ReferenceEquals(previous.Source, source) && ReferenceEquals(previous.Game, Current.Game);
-            return BuildReady(source, map, null, supplement, supplement, same ? previous : null,
-                supplement || same && previous.CoverageComplete);
+            return state == SSCBondOverviewQueryState.Ready
+                ? BuildReady(source, map, null, false, false) : Empty(source, map, state);
         }
 
         private readonly struct BoundCandidate
@@ -53,7 +42,7 @@ namespace SexSlaveCraft
         }
 
         private static SSCBondOverviewSnapshot BuildReady(Pawn source, Map viewedMap, IEnumerable<Pawn> candidates, bool collectWorld,
-            bool indexShips = true, SSCBondOverviewSnapshot known = null, bool coverageComplete = true)
+            bool indexShips = true)
         {
             // 临时去重表和位置索引只服务本次构建；using 覆盖枚举、排序和构造快照的异常退出。
             // 返回的行与列表独立拥有数据，Dispose 清空缓冲不会影响已返回的快照。
@@ -78,15 +67,14 @@ namespace SexSlaveCraft
                 // 只暂存实际关系；全体候选的去重缓冲在查询结束时清空并有界复用。
                 matched.Add(new BoundCandidate(candidate, chain));
             }
-            // 本地首屏优先读取缰绳，仍逐个以锁链校验；历史补漏只保留候选引用，不信任旧关系。
-            // 即使缰绳漏项，曾发现的有效从属也不会在两次全局扫描之间消失；改绑立即被过滤。
+            // 普通概览只接受缰绳候选，逐项核链并去重；离图、容器及死亡对象的引用仍可直接读取。
+            // 反向索引遭外部破坏后允许遗漏，不能借普通刷新重新扫描世界或修复绑定。
             if (!indexShips)
             {
                 var bridle = SSCBondUtility.GetBridle(source);
                 if (bridle?.targets != null)
                     for (int i = 0; i < bridle.targets.Count; i++) Add(bridle.targets[i]);
             }
-            if (known != null) foreach (var entry in known.Slaves) Add(entry.Pawn);
             // 全局收集本身包含缰绳，不在完整补漏前额外再遍历一次同一列表。
             if (collectWorld) world.CollectCandidates(source, Add);
             else if (candidates != null) foreach (Pawn candidate in candidates) Add(candidate);
@@ -110,7 +98,7 @@ namespace SexSlaveCraft
                     candidate.Chain, world.GetLocation(candidate.Pawn)));
             slaves.Sort((left, right) => Compare(left, right, viewedMap));
             return new SSCBondOverviewSnapshot(Current.Game, source, viewedMap, SSCBondOverviewQueryState.Ready, masterState, masterEntry, slaves,
-                hasTrainer ? world.GetLocation(trainer) : null, coverageComplete);
+                hasTrainer ? world.GetLocation(trainer) : null);
         }
 
         /// <summary>轻量复查行所属游戏、来源与当前直接归属；同主的新链仍是同一关系。</summary>

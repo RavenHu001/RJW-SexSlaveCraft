@@ -99,11 +99,11 @@ internal static partial class Program
             var g=new Gizmo_SSCBondOverview(s,SSCBondOverviewPanel.Master);var result=Click(g,5,5);
             SSCBondUtility.GetChain(f.slave).target=Master();g.ProcessInput(result.InteractEvent);Require(CameraJumper.Jumps==0);
         });
-        Check("native layout: owned header includes count and provisional marker without a separate number",()=>{
+        Check("native layout: owned header includes count without provisional marker without a separate number",()=>{
             var f=Fixture();Place(Slave(f.master,"B"),f.map);Place(Slave(f.master,"C"),f.map);
             Verse.Extensions.Translations["SSC_BondOverview_OwnedCount"]="拥有性奴：{0}";LanguageDatabase.activeLanguage=new();
             var s=new SSCBondOverviewSession(Current.Game,()=>0);s.ObserveCard(f.master,f.map,0);Widgets.CapturedLabels=new();
-            Paint(new Gizmo_SSCBondOverview(s));Require(Widgets.CapturedLabels.Single().value=="拥有性奴：3+");
+            Paint(new Gizmo_SSCBondOverview(s));Require(Widgets.CapturedLabels.Single().value=="拥有性奴：3");
             s.Update(0,true,f.map);Widgets.CapturedLabels.Clear();Paint(new Gizmo_SSCBondOverview(s));
             Require(Widgets.CapturedLabels.Single().value=="拥有性奴：3");
         });

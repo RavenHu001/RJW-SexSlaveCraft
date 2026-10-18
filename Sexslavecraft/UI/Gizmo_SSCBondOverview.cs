@@ -131,7 +131,7 @@ namespace SexSlaveCraft
                     Rect portrait = new Rect(firstX + (i % grid.Columns) * grid.Side, firstY + (i / grid.Columns) * grid.Side, grid.Side, grid.Side);
                     if (SSCBondOverviewWidgets.Avatar(portrait, snapshot, entry, session, view) && left) Remember(4, entry);
                 }
-                if (count == 0) Status(snapshot == null ? "Waiting" : snapshot.CoverageComplete ? "EmptySlaves" : "SupplementPending");
+                if (count == 0) Status(snapshot == null ? "Waiting" : "EmptySlaves");
             }
             else
             {
@@ -146,7 +146,6 @@ namespace SexSlaveCraft
             if (Panel == SSCBondOverviewPanel.Slaves)
             {
                 if (view.Failed) TooltipHandler.TipRegion(rect, SSCBondOverviewText.T("QueryFailed"));
-                else if (view.Pending) TooltipHandler.TipRegion(rect, SSCBondOverviewText.T("SupplementPending"));
             }
             return Result();
 
@@ -230,7 +229,7 @@ namespace SexSlaveCraft
             if (!SSCBondOverviewAccess.IsCardSource(view.Source) || !SSCIdentityUtility.IsSexSlave(view.Source)) return;
             Find.WindowStack.Add(new FloatMenu(SSCTrainerAssignmentMenu.Options(view.Source, () =>
             {
-                // 显式指派后只重读直接字段，其他有效关系继续显示；全局补漏仍不能绕过共享预算。
+                // 显式指派后只重读直接字段，其他有效关系继续显示；只提交局部刷新请求，不枚举全局候选。
                 session.RefreshLocal(view, true); session.RequestRefresh(view);
             }, () => ReferenceEquals(session.Owner, Current.Game) && (ReferenceEquals(session.Card, view) || ReferenceEquals(session.Details, view)) &&
                 SSCBondOverviewAccess.IsCardSource(view.Source))));

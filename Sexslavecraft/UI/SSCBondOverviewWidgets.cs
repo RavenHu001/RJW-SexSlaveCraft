@@ -73,7 +73,7 @@ namespace SexSlaveCraft
     internal sealed class SSCBondOverviewDisplay
     {
         internal readonly SSCBondOverviewSnapshot Snapshot;
-        internal readonly string Title, Count, Trainer, CardHeading, WaitingCount, SlaveHeading, CardCount, OwnedHeading, OwnedDetails, TrainerName, TrainerDetails;
+        internal readonly string Title, Count, Trainer, SlaveHeading, OwnedHeading, OwnedDetails, TrainerName, TrainerDetails;
         private float gridWidth = -1, gridHeight = -1;
         private SSCBondOverviewLayout.Grid grid;
         internal SSCBondOverviewLayout.Grid Grid(float width, float height)
@@ -98,16 +98,11 @@ namespace SexSlaveCraft
             Snapshot = snapshot;
             Title = SSCBondOverviewText.Format("TitleSource", snapshot.Source.Dead
                 ? SSCBondOverviewText.Format("DeadName", snapshot.Source.LabelShort) : snapshot.Source.LabelShort);
-            Count = snapshot.CoverageComplete ? SSCBondOverviewText.Format("Counts", snapshot.LivingSlaveCount, snapshot.TotalSlaveCount)
-                : SSCBondOverviewText.Format("KnownCount", snapshot.TotalSlaveCount);
-            SlaveHeading = SSCBondOverviewText.Format(snapshot.CoverageComplete ? "ShortCount" : "KnownCount", snapshot.TotalSlaveCount);
-            // 卡片数量随快照／语言一并缓存，重绘不反复执行 ToString 和未补漏后缀拼接。
-            CardCount = snapshot.TotalSlaveCount.ToString() + (snapshot.CoverageComplete ? "" : "+");
-            OwnedHeading = SSCBondOverviewText.Format("OwnedCount", CardCount);
+            // 数量始终表示当前缰绳中经实际锁链校验的绑定，不再存在等待全局补查的数量状态。
+            Count = SSCBondOverviewText.Format("Counts", snapshot.LivingSlaveCount, snapshot.TotalSlaveCount);
+            SlaveHeading = SSCBondOverviewText.Format("ShortCount", snapshot.TotalSlaveCount);
+            OwnedHeading = SSCBondOverviewText.Format("OwnedCount", snapshot.TotalSlaveCount);
             OwnedDetails = OwnedHeading + "\n" + Count;
-            WaitingCount = Count + " · " + SSCBondOverviewText.T("Waiting");
-            CardHeading = snapshot.Master == null ? Count : snapshot.TotalSlaveCount == 0 ? SSCBondOverviewText.T("Master")
-                : SSCBondOverviewText.Format("BothCounts", snapshot.LivingSlaveCount, snapshot.TotalSlaveCount);
             Trainer = SSCBondOverviewText.Format("Trainer", snapshot.AssignedTrainer?.LabelShort ?? SSCBondOverviewText.T("None"),
                 SSCBondOverviewText.T("Trainer_" + snapshot.AssignedTrainerState));
             TrainerName = snapshot.AssignedTrainer?.LabelShort ?? SSCBondOverviewText.T("None");

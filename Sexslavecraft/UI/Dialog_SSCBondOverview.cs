@@ -106,7 +106,7 @@ namespace SexSlaveCraft
                 {
                     Label(slavesHeader, display.SlaveHeading);
                     if (snapshot.TotalSlaveCount == 0) Label(slavesStart,
-                        SSCBondOverviewText.T(snapshot.CoverageComplete ? "EmptySlaves" : "SupplementPending"));
+                        SSCBondOverviewText.T("EmptySlaves"));
                     // 先算可见网格行，再直接索引完整快照；不枚举或格式化离屏头像。
                     SSCBondOverviewLayout.VisibleRange(rows, slavesStart, scroll.y, viewport.height, out int first, out int end);
                     for (int r = first; r < end; r++)

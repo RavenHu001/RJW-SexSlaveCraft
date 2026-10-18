@@ -31,7 +31,7 @@ internal static partial class Program
         PortraitsCache.Calls=0;PortraitsCache.Requests.Clear();TargetHighlighter.Calls=0;
         Widgets.Labels=Widgets.ScrollDepth=Widgets.ThrowAt=0;Widgets.NextScroll=null;Widgets.ThrowLabel=false;
         Widgets.CapturedLabels=null;Widgets.CapturedFonts=null;Widgets.CapturedButtons=null;GUI.CapturedTextures=null;Widgets.ResetButtonCapture();
-        Time.frameCount=0;Time.realtimeSinceStartup=0;LanguageDatabase.activeLanguage=new();Log.Errors=0;
+        Prefs.DevMode=false;SSCMod.settings=new();Messages.Last=null;Time.frameCount=0;Time.realtimeSinceStartup=0;LanguageDatabase.activeLanguage=new();Log.Errors=0;
         GUI.enabled=true;GUI.color=new(1,1,1);Text.Font=GameFont.Small;Text.Anchor=TextAnchor.UpperLeft;Text.WordWrap=false;
         Prefs.UIScale=1;UIExtensions.Truncations=0;
         TrainerAssignmentUtility.Candidates.Clear();TrainerAssignmentUtility.CandidateQueries=0;TrainerAssignmentUtility.AssignmentCheck=(a,b)=>true;
@@ -65,76 +65,83 @@ internal static partial class Program
         root=SscTestPaths.RepositoryRoot(args.FirstOrDefault());
         foreach(var path in Directory.GetFiles(SscTestPaths.Combine(root,"Languages/English/Keyed"),"*.xml"))
             foreach(var e in XDocument.Load(path).Root.Elements())english[e.Name.LocalName]=e.Value;
-        SessionTests();NavigationTests();GuiTests();CacheTests();RevisionTests();DirectReadTests();IconButtonTests();SelectionTests();ResourceTests();
+        SessionTests();NavigationTests();GuiTests();CacheTests();RevisionTests();DirectReadTests();IconButtonTests();SelectionTests();DiagnosticTests();ResourceTests();
         Console.WriteLine($"{cases-failures}/{cases} passed");return failures==0?0:1;
     }
 
-    // 调度用测试时钟推进，断言实际构建次数，不以机器耗时阈值替代限频语义。
+    // 时钟只驱动局部事实刷新；地图/货物扫描计数用于证明普通入口没有偷偷兜底全局。
     static void SessionTests()
     {
-        Check("session: observe and repeat GUI never build",()=>{
-            int builds=0;var p=Master();var s=new SSCBondOverviewSession(Current.Game,()=>0,(a,m)=>{builds++;return View(a);});
-            for(int i=0;i<100;i++)s.ObserveCard(p,null,0);Require(builds==0);s.Update(0,true,null);Require(builds==1);
-            for(int i=0;i<100;i++){s.ObserveCard(p,null,0);s.Update(0,true,null);}Require(builds==1);
+        Check("session: first observation builds local once and repeated GUI/update reuse it",()=>{
+            var f=Fixture();int builds=0;var s=new SSCBondOverviewSession(Current.Game,()=>0,(p,m)=>{builds++;return SSCBondOverviewUtility.BuildLocal(p,m);});
+            for(int i=0;i<100;i++){s.ObserveCard(f.master,f.map,0);s.Update(0,true,f.map);}
+            Require(builds==1&&s.Card.Snapshot.TotalSlaveCount==1&&ThingOwnerUtility.MapQueryCount==0);
         });
-        Check("session: same source card and details share one query",()=>{
-            int builds=0;var p=Master();var s=new SSCBondOverviewSession(Current.Game,()=>0,(a,m)=>{builds++;return View(a);});
-            var card=s.ObserveCard(p,null,0);Require(ReferenceEquals(card,s.OpenDetails(p,null)));s.Update(0,true,null);Require(builds==1&&s.Card.Snapshot==s.Details.Snapshot);
+        Check("session: same source card and details share local timer",()=>{
+            var f=Fixture();double now=0;int builds=0;var s=new SSCBondOverviewSession(Current.Game,()=>now,(p,m)=>{builds++;return SSCBondOverviewUtility.BuildLocal(p,m);});
+            var card=s.ObserveCard(f.master,f.map,0);Require(ReferenceEquals(card,s.OpenDetails(f.master,f.map)));
+            now=2;s.ObserveCard(f.master,f.map,1);s.Update(1,true,f.map);Require(builds==2&&s.Card.Snapshot==s.Details.Snapshot);
         });
-        foreach(bool negative in new[]{false,true})Check("session: real-time interval "+(negative?5:2),()=>{
-            double now=0;int builds=0;var p=negative?new Pawn():Master();var s=new SSCBondOverviewSession(Current.Game,()=>now,(a,m)=>{builds++;return View(a);});
-            s.ObserveCard(p,null,0);s.Update(0,true,null);now=negative?4.99:1.99;s.ObserveCard(p,null,1);s.Update(1,true,null);Require(builds==1);
-            now=negative?5:2;s.ObserveCard(p,null,2);s.Update(2,true,null);Require(builds==2&&s.Card.ShowCard==!negative);
+        Check("session: two second real-time local refresh updates paused row facts",()=>{
+            var f=Fixture();double now=0;var s=new SSCBondOverviewSession(Current.Game,()=>now);var v=s.ObserveCard(f.master,f.map,0);var old=v.Snapshot;
+            f.slave.LabelShort="Renamed";f.slave.Dead=true;now=1.99;s.ObserveCard(f.master,f.map,1);s.Update(1,true,f.map);Require(v.Snapshot==old);
+            now=2;s.ObserveCard(f.master,f.map,2);s.Update(2,true,f.map);
+            Require(v.Snapshot.Slaves[0].Name=="Renamed"&&v.Snapshot.LivingSlaveCount==0&&ThingOwnerUtility.MapQueryCount==0);
         });
-        Check("session: empty identity missing reverse index is discovered",()=>{
+        Check("session: missing reverse index is not discovered by ordinary polling",()=>{
             var f=Fixture();f.master.Training.pawnIdentity=PawnIdentity.Unset;SSCBondUtility.GetBridle(f.master).targets.Clear();
-            var s=Ready(f.master,f.map);Require(s.Card.ShowCard&&s.Card.Snapshot.TotalSlaveCount==1);
+            double now=0;int builds=0;var s=new SSCBondOverviewSession(Current.Game,()=>now,(p,m)=>{builds++;return SSCBondOverviewUtility.BuildLocal(p,m);});
+            for(int frame=0;frame<100;frame++){now=frame*10;s.ObserveCard(f.master,f.map,frame);s.Update(frame,true,f.map);}
+            Require(!s.Card.ShowCard&&builds==1&&s.Card.Snapshot.TotalSlaveCount==0&&ThingOwnerUtility.MapQueryCount==0);
         });
-        Check("session: card disappearance releases cache while details stays pinned",()=>{
+        Check("session: no relationship polling still notices newly indexed binding",()=>{
+            var p=new Pawn();var map=new Map();var s=Ready(p,map);var child=Slave(Master());SSCBondUtility.GetChain(child).target=p;
+            Hediff_BridleOfSexSlave.AddToPawn(p,child);s.ObserveCard(p,map,1);Require(s.Card.ShowCard&&s.Card.Snapshot.TotalSlaveCount==1);
+        });
+        Check("session: local refresh requests merge before update",()=>{
+            var f=Fixture();int builds=0;var s=new SSCBondOverviewSession(Current.Game,()=>0,(p,m)=>{builds++;return SSCBondOverviewUtility.BuildLocal(p,m);});
+            s.ObserveCard(f.master,f.map,0);for(int i=0;i<20;i++)s.RequestRefresh(s.Card);s.Update(0,true,f.map);
+            Require(builds==2&&!s.Card.Pending&&ThingOwnerUtility.MapQueryCount==0);
+        });
+        Check("session: card disappears while independent details survives then releases",()=>{
             var f=Fixture();var s=Ready(f.master,f.map);var state=s.OpenDetails(f.master,f.map);s.Update(3,false,f.map);
-            Require(s.Card==null&&s.Details==state&&state.Snapshot!=null);s.ReleaseDetails();Require(s.Details==null&&state.Snapshot==null);
+            Require(s.Card==null&&s.Details==state&&state.Snapshot!=null);s.ReleaseDetails();Require(state.Snapshot==null);
         });
         Check("session: no heartbeat expires after two full frames",()=>{
             var p=Master();var s=Ready(p,null);var old=s.Card;s.Update(3,true,null);Require(s.Card==null&&old.Snapshot==null);
         });
-        Check("session: map change never serves old map snapshot",()=>{
-            var f=Fixture();var s=Ready(f.master,f.map);var state=s.Card;s.ObserveCard(f.master,new Map(),1);Require(state.Snapshot?.ViewedMap!=f.map&&state.Snapshot!=null&&state.Pending);
+        Check("session: map change immediately replaces old location context",()=>{
+            var f=Fixture();var s=Ready(f.master,f.map);var other=new Map();s.ObserveCard(f.master,other,1);
+            Require(s.Card.Snapshot.ViewedMap==other&&!s.Card.Pending&&ThingOwnerUtility.MapQueryCount==0);
         });
-        Check("session: source change drops old pending data",()=>{
-            var p=Master();var s=Ready(p,null);var previous=s.Card;var next=Master();s.ObserveCard(next,null,1);
-            Require(previous.Snapshot==null&&s.Card.Source==next&&s.Card.Snapshot?.Source==next);
+        Check("session: source change drops old references without shared backoff",()=>{
+            var f=Fixture();var s=Ready(f.master,f.map);var old=s.Card;s.ObserveCard(f.slave,f.map,1);
+            Require(old.Snapshot==null&&s.Card.Snapshot.Master.Pawn==f.master&&ThingOwnerUtility.MapQueryCount==0);
         });
-        Check("session: manual requests merge and respect global cooldown",()=>{
-            double now=0;int builds=0;var p=Master();var s=new SSCBondOverviewSession(Current.Game,()=>now,(a,m)=>{builds++;return View(a);});
-            s.ObserveCard(p,null,0);s.Update(0,true,null);for(int i=0;i<20;i++)s.RequestRefresh(s.Card);
-            now=1.99;s.ObserveCard(p,null,1);s.Update(1,true,null);Require(builds==1&&s.Card.Pending);now=2;s.ObserveCard(p,null,2);s.Update(2,true,null);Require(builds==2&&!s.Card.Pending);
+        Check("session: independent local sources both refresh without world scans",()=>{
+            var f=Fixture();double now=0;var order=new List<Pawn>();var s=new SSCBondOverviewSession(Current.Game,()=>now,(p,m)=>{order.Add(p);return SSCBondOverviewUtility.BuildLocal(p,m);});
+            s.ObserveCard(f.master,f.map,0);s.OpenDetails(f.slave,f.map);now=2;s.ObserveCard(f.master,f.map,1);s.Update(1,true,f.map);
+            Require(order.SequenceEqual(new[]{f.master,f.slave,f.master,f.slave})&&ThingOwnerUtility.MapQueryCount==0);
         });
-        Check("session: two sources alternate without duplicate frame builds",()=>{
-            double now=0;var order=new List<Pawn>();var a=Master();var b=Master();var s=new SSCBondOverviewSession(Current.Game,()=>now,(p,m)=>{order.Add(p);return View(p);});
-            s.ObserveCard(a,null,0);s.OpenDetails(b,null);s.Update(0,true,null);now=2;s.ObserveCard(a,null,1);s.Update(1,true,null);
-            Require(order.Count==2&&order.Distinct().Count()==2);
+        Check("session: clock rollback resumes local timer",()=>{
+            var f=Fixture();double now=100;int builds=0;var s=new SSCBondOverviewSession(Current.Game,()=>now,(p,m)=>{builds++;return SSCBondOverviewUtility.BuildLocal(p,m);});
+            s.ObserveCard(f.master,f.map,0);s.Update(0,true,f.map);now=1;s.ObserveCard(f.master,f.map,1);s.Update(1,true,f.map);Require(builds==2);
         });
-        Check("session: slow query backs off without catch-up",()=>{
-            double now=0;int builds=0;var p=Master();var s=new SSCBondOverviewSession(Current.Game,()=>now,(a,m)=>{builds++;now+=1;return View(a);});
-            s.ObserveCard(p,null,0);s.Update(0,true,null);Require(s.Card.NextRefresh==11);now=8;s.ObserveCard(p,null,1);s.Update(1,true,null);Require(builds==1);
-            now=40;s.ObserveCard(p,null,2);s.Update(2,true,null);Require(builds==2);
-        });
-        Check("session: clock rollback resets deadlines",()=>{
-            double now=100;int builds=0;var p=Master();var s=new SSCBondOverviewSession(Current.Game,()=>now,(a,m)=>{builds++;return View(a);});
-            s.ObserveCard(p,null,0);s.Update(0,true,null);now=1;s.ObserveCard(p,null,1);s.Update(1,true,null);Require(builds==2);
-        });
-        Check("session: supplement exceptions preserve local rows and throttle reports",()=>{
-            double now=0;int errors=0;var p=Master();var s=new SSCBondOverviewSession(Current.Game,()=>now,(a,m)=>throw new Exception("fixture"),e=>errors++);
-            s.ObserveCard(p,null,0);s.Update(0,true,null);Require(s.Card.Failed&&s.Card.Snapshot?.State==SSCBondOverviewQueryState.Ready&&errors==1);
-            now=2;s.ObserveCard(p,null,1);s.Update(1,true,null);Require(errors==1);
+        Check("session: local failures retain previous facts and throttle retries/logging",()=>{
+            var f=Fixture();double now=0;bool fail=false;int builds=0,errors=0;
+            var s=new SSCBondOverviewSession(Current.Game,()=>now,(p,m)=>{builds++;if(fail)throw new Exception("local");return SSCBondOverviewUtility.BuildLocal(p,m);},e=>errors++);
+            s.ObserveCard(f.master,f.map,0);var old=s.Card.Snapshot;fail=true;now=2;s.ObserveCard(f.master,f.map,1);s.Update(1,true,f.map);
+            Require(s.Card.Failed&&s.Card.Snapshot==old&&builds==2&&errors==1);
+            now=3;for(int i=0;i<50;i++){s.RequestRefresh(s.Card);s.ObserveCard(f.master,f.map,2);s.Update(2,true,f.map);}Require(builds==2);
+            now=4;s.Update(2,true,f.map);Require(builds==3&&errors==1);fail=false;now=6;s.Update(2,true,f.map);Require(!s.Card.Failed&&!s.Card.Pending);
         });
         foreach(bool loading in new[]{false,true})Check("session: clear on "+(loading?"loading":"cross game"),()=>{
             var p=Master();var s=Ready(p,null);var view=s.OpenDetails(p,null);if(loading)Scribe.mode=LoadSaveMode.PostLoadInit;else Current.Game=new();
             s.Update(1,true,null);Require(s.Card==null&&s.Details==null&&view.Snapshot==null);
         });
-        Check("session: destroyed window source does not block another card",()=>{
-            double now=0;int builds=0;var a=Master();var b=Master();var s=new SSCBondOverviewSession(Current.Game,()=>now,(p,m)=>{builds++;return View(p);});
-            s.ObserveCard(a,null,0);s.OpenDetails(b,null);b.Destroyed=true;s.Update(0,true,null);Require(builds==1&&s.Card.Snapshot!=null);
+        Check("session: destroyed details does not block local card refresh",()=>{
+            var f=Fixture();var s=Ready(f.master,f.map);var details=s.OpenDetails(f.slave,f.map);f.slave.Destroyed=true;s.Update(0,true,f.map);
+            Require(s.Card.Snapshot!=null&&details.Snapshot==null&&details.Failed);
         });
         Check("session: retained empty session does not retain released pawn",()=>{
             var pair=Released();GC.Collect();GC.WaitForPendingFinalizers();GC.Collect();Require(!pair.weak.IsAlive);GC.KeepAlive(pair.session);
@@ -331,7 +338,7 @@ internal static partial class Program
         });
         Check("cache: hovered card formats only the hovered row",()=>{
             var f=Fixture();var s=Ready(f.master,f.map);Event.current.mousePosition=new(65,50);Paint(new Gizmo_SSCBondOverview(s));
-            Require(s.Card.Display.RowCount==1&&ThingOwnerUtility.MapQueryCount==1);
+            Require(s.Card.Display.RowCount==1&&ThingOwnerUtility.MapQueryCount==0);
         });
         Check("cache: row text matches full immutable snapshot fields and reuses object",()=>{
             var f=Fixture();f.slave.Dead=true;var s=Ready(f.master,f.map);var entry=s.Card.Snapshot.Slaves[0];var d=s.Card.Display;var text=d.Row(entry);
@@ -382,33 +389,14 @@ internal static partial class Program
             for(int i=0;i<100;i++)w.DoWindowContents(new(0,0,760,500));Require(UIExtensions.Truncations==calls);
             w.DoWindowContents(new(0,0,360,500));Require(UIExtensions.Truncations>calls);
         });
-        foreach(string reason in new[]{"manual","source","reopen","map"})Check("budget: repeated "+reason+" cannot bypass shared deadline",()=>{
-            double now=0;int builds=0;var p=Master();var s=new SSCBondOverviewSession(Current.Game,()=>now,(a,m)=>{builds++;return View(a);});
-            for(int frame=0;frame<=500;frame++){
-                now=frame*.01;
-                if(reason=="source")p=Master();if(reason=="reopen")s.Clear();
-                s.ObserveCard(p,reason=="map"?new Map():null,frame);if(reason=="manual")s.RequestRefresh(s.Card);
+        foreach(string reason in new[]{"manual","source","reopen","map"})Check("local-only: repeated "+reason+" never scans candidates",()=>{
+            var f=Fixture();double now=0;var p=f.master;var s=new SSCBondOverviewSession(Current.Game,()=>now);
+            for(int frame=0;frame<100;frame++){
+                now=frame;if(reason=="source")p=frame%2==0?f.master:f.slave;if(reason=="reopen")s.Clear();
+                s.ObserveCard(p,reason=="map"?new Map():f.map,frame);if(reason=="manual")s.RequestRefresh(s.Card);
                 s.Update(frame,true,s.Card.Map);
             }
-            Require(builds==3);
-        });
-        Check("budget: pending negative result respects five second interval",()=>{
-            double now=0;int builds=0;var p=new Pawn();var s=new SSCBondOverviewSession(Current.Game,()=>now,(a,m)=>{builds++;return View(a);});
-            s.ObserveCard(p,null,0);s.Update(0,true,null);s.RequestRefresh(s.Card);now=2;s.ObserveCard(p,null,1);s.Update(1,true,null);Require(builds==1&&s.Card.Pending);
-            now=5;s.ObserveCard(p,null,2);s.Update(2,true,null);Require(builds==2&&!s.Card.Pending);
-        });
-        foreach(bool fail in new[]{false,true})Check("budget: slow "+(fail?"failure":"query")+" also gates new source and caps backoff",()=>{
-            double now=0;int builds=0;var p=Master();var s=new SSCBondOverviewSession(Current.Game,()=>now,(a,m)=>{builds++;now+=4;if(fail)throw new Exception();return View(a);});
-            s.ObserveCard(p,null,0);s.Update(0,true,null);Require(s.Card.NextRefresh==34);
-            p=Master();now=33.99;s.ObserveCard(p,null,1);s.RequestRefresh(s.Card);s.Update(1,true,null);Require(builds==1&&s.Card.Snapshot?.Source==p);
-            now=34;s.ObserveCard(p,null,2);s.Update(2,true,null);Require(builds==2);
-        });
-        Check("budget: two pending sources remain fair under sustained requests",()=>{
-            double now=0;var order=new List<Pawn>();var a=Master();var b=Master();var s=new SSCBondOverviewSession(Current.Game,()=>now,(p,m)=>{order.Add(p);return View(p);});
-            s.OpenDetails(b,null);for(int frame=0;frame<=600;frame++){
-                now=frame*.01;s.ObserveCard(a,null,frame);s.RequestRefresh(s.Card);s.RequestRefresh(s.Details);s.Update(frame,true,null);s.Update(frame,true,null);
-            }
-            Require(order.SequenceEqual(new[]{a,b,a,b}));
+            Require(ThingOwnerUtility.MapQueryCount==0&&ThingOwnerUtility.Visits.Count==0);
         });
         Check("budget: stale cached row requests refresh but still rejects rebound navigation",()=>{
             var f=Fixture();var s=Ready(f.master,f.map);var snap=s.Card.Snapshot;s.Card.Display.Row(snap.Slaves[0]);
@@ -534,8 +522,8 @@ internal static partial class Program
         });
         Check("trainer menu: own change rereads direct relationships and retains refresh deadline",()=>{
             var f=Fixture();Find.Selector.Objects.Clear();Find.Selector.Objects.Add(f.slave);TrainerAssignmentUtility.Candidates.Add(f.master);
-            var s=Ready(f.slave,f.map);double deadline=s.Card.NextRefresh;Gizmo_SSCBondOverview.OpenTrainerMenu(s,s.Card);
-            Find.WindowStack.WindowOfType<FloatMenu>().options[0].action();Require(s.Card.Snapshot?.AssignedTrainer==f.master&&s.Card.Snapshot.Master.Pawn==f.master&&s.Card.Pending&&s.Card.NextRefresh==deadline);
+            var s=Ready(f.slave,f.map);double deadline=s.Card.NextLocalRefresh;Gizmo_SSCBondOverview.OpenTrainerMenu(s,s.Card);
+            Find.WindowStack.WindowOfType<FloatMenu>().options[0].action();Require(s.Card.Snapshot?.AssignedTrainer==f.master&&s.Card.Snapshot.Master.Pawn==f.master&&s.Card.Pending&&s.Card.NextLocalRefresh==deadline);
         });
     }
 
