@@ -1,6 +1,5 @@
 ﻿// AI 辅助生成：PNA 枪械一次输入、性奴活化及有链无伤分流。
 using System.Linq;
-using UnityEngine; // 用于 Mathf.Max
 using Verse;
 using RimWorld;
 
@@ -132,27 +131,13 @@ namespace SexSlaveCraft
             if (firstExposure && Scribe.mode == LoadSaveMode.Inactive &&
                 SSCPnaExposureUtility.IsValidTarget(pawn) && !SSCIdentityUtility.IsMaster(pawn))
             {
-                float divisor = 1f;
-                Hediff record = pawn.health.hediffSet.GetFirstHediffOfDef(ext.recordHediff);
-                if (record != null) divisor = record.Severity;
-                else
-                {
-                    // 在本次活化、治疗之前读取意识，保留 >2 快照与 0.2 保底的现有算法。
-                    float consciousness = pawn.health.capacities.GetLevel(PawnCapacityDefOf.Consciousness);
-                    if (consciousness > 2f)
-                    {
-                        record = pawn.health.AddHediff(ext.recordHediff);
-                        record.Severity = consciousness;
-                        divisor = consciousness;
-                    }
-                    else divisor = Mathf.Max(consciousness, .2f);
-                }
-                // 非法旧快照沿用 1 的回退；原始单次上限仍为 1，除以 2 换算归一化负荷。
-                if (!SSCPnaMath.IsFinite(divisor) || divisor <= 0f) divisor = 1f;
-                float severity = ext.baseSeverity / divisor;
-                if (severity > 1f) severity = 1f;
+                // 在原来的部位回调时点取样、建快照与计算；兼容策略保留旧枪的
+                // AddHediff 初值回调、随后赋值顺序，不套用涂覆武器的伤口后提交规则。
+                var resistance = SSCPnaWeaponDoseUtility.Capture(pawn, ext.recordHediff,
+                    SSCPnaWeaponResistancePolicy.LauncherCompatibility);
+                SSCPnaWeaponDoseUtility.StoreSnapshot(pawn, ext.recordHediff, resistance);
                 exposure = SSCPnaExposureUtility.ApplyExposure(pawn,
-                    severity / SSCPnaMath.MaximumSeverity, SSCPnaExposureSource.Weapon);
+                    SSCPnaWeaponDoseUtility.FromSeverity(ext.baseSeverity, resistance), SSCPnaExposureSource.Weapon);
             }
             FinishHit(pawn, protectedAtHit, exposure, ext, dinfo, result, true);
         }

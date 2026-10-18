@@ -1,7 +1,5 @@
 // AI 辅助生成：通用涂覆伤害，先执行原物理流程，再按本次实际开放伤口投药。
-using System;
 using System.Collections.Generic;
-using RimWorld;
 using Verse;
 
 namespace SexSlaveCraft
@@ -32,7 +30,7 @@ namespace SexSlaveCraft
             var extension = dinfo.Def?.GetModExtension<SSCPnaCoatingExtension>();
             // 全部为本次调用的局部状态；工人复用、同 tick 与嵌套命中互不认领。
             float dose = 0f;
-            float newResistance = 0f;
+            SSCPnaWeaponResistanceSample resistance = default;
             HediffDef recordDef = extension?.recordHediff;
             HashSet<BodyPartRecord> organicParts = null;
             HashSet<Hediff> previousRecords = null;
@@ -42,26 +40,9 @@ namespace SexSlaveCraft
                 recordDef != null && extension != null &&
                 SSCPnaMath.IsFinite(extension.baseLoad) && extension.baseLoad > 0f)
             {
-                // 只读采样；失败命中不能写入快照或提前改变负荷／身份形态。
-                Hediff resistance = pawn.health.hediffSet.GetFirstHediffOfDef(recordDef);
-                float divisor;
-                // 已存在的快照优先，不用当前意识覆盖；无快照时锁定物理受伤前的意识，
-                // 防止同一击先降低意识、再立即放大自己的药量。
-                if (resistance != null) divisor = resistance.Severity;
-                else
-                {
-                    float consciousness = pawn.health.capacities.GetLevel(PawnCapacityDefOf.Consciousness);
-                    if (SSCPnaMath.IsFinite(consciousness))
-                    {
-                        divisor = Math.Max(consciousness, .2f);
-                        // 此时只保存创建意向；护甲挡住或没有开放伤口时不得留下快照。
-                        if (consciousness > 2f) newResistance = consciousness;
-                    }
-                    else divisor = 1f;
-                }
-                if (!SSCPnaMath.IsFinite(divisor) || divisor <= 0f) divisor = 1f;
-                // 旧枪原始严重度上限为 1、满值为 2；换算到归一化负荷就是单次最多 0.5。
-                dose = Math.Min(extension.baseLoad / divisor, .5f);
+                // 只读锁定物理受伤前的意识；共用算法不提前写入快照或改变身体形态。
+                resistance = SSCPnaWeaponDoseUtility.Capture(pawn, recordDef, SSCPnaWeaponResistancePolicy.Coating);
+                dose = SSCPnaWeaponDoseUtility.FromLoad(extension.baseLoad, resistance);
                 // 同时保存受伤前的部位性质与健康实例，既防人工部位被摧毁后误判，
                 // 也防把命中前的旧伤或旧缺失记录当成本次新开口。
                 organicParts = CaptureOrganicParts(pawn);
@@ -81,19 +62,16 @@ namespace SexSlaveCraft
                 HasOpenWound(pawn, result, organicParts, previousRecords);
             if (!CanContinue()) return result;
 
-            if (newResistance > 0f && pawn.health.hediffSet.GetFirstHediffOfDef(recordDef) == null)
+            Hediff record = SSCPnaWeaponDoseUtility.StoreSnapshot(pawn, recordDef, resistance);
+            if (record != null)
             {
                 // 健康回调看到的即为完整快照；不覆盖嵌套独立命中先建立的记录。
                 // 剂量仍使用外层命中前锁定的值，不因内层输入后的状态改变而重新计算。
-                Hediff record = HediffMaker.MakeHediff(recordDef, pawn);
-                record.Severity = newResistance;
-                pawn.health.AddHediff(record);
                 SSCPnaExposureUtility.RefreshBodyState(pawn);
                 if (!CanContinue() || !pawn.health.hediffSet.hediffs.Contains(record))
                 {
                     // 只清本次未能使用的新快照，不动既有或嵌套命中的记录。
-                    if (pawn.health?.hediffSet?.hediffs.Contains(record) == true)
-                        pawn.health.RemoveHediff(record);
+                    SSCPnaWeaponDoseUtility.RemoveUnusedSnapshot(pawn, record);
                     return result;
                 }
             }

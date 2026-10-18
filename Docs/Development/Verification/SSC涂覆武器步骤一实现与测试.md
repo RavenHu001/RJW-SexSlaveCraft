@@ -6,6 +6,8 @@
 
 [首批规划](../../Design/SSC武器拓展首批开发规划.md) · [待验收索引](README.md) · [测试入口](../../../Tests/PnaLoad/README.md)
 
+后续进展：本步及注释已提交为 `6908447`。意识抗性、剂量与快照随后提取为两种物理入口共用的工具，当前回归与基线对照各 449/449 通过，见[共用工具记录](PNA武器共用抗性与剂量工具实现与测试.md)；下文保留步骤一原实现与 417/417、3230/3230 的原批证据。
+
 ## 实现范围
 
 新增 [DamageWorker_SSCPnaCoated.cs](../../../Sexslavecraft/DamageWorker/DamageWorker_SSCPnaCoated.cs)，包含两个类型：

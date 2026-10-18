@@ -359,6 +359,7 @@
     <Compile Include="common\WillReductionUtility.cs" />
     <Compile Include="DamageWorker\DamageWorker_PNA.cs" />
     <Compile Include="DamageWorker\DamageWorker_SSCPnaCoated.cs" />
+    <Compile Include="common\SSCPnaWeaponDoseUtility.cs" />
     <Compile Include="Hediff\HediffComp_ProducePAN.cs" />
     <Compile Include="Hediff\HediffComp_Refresh_.cs" />
     <Compile Include="JobDriver\JobDriver_TrainingReciver.cs" />
