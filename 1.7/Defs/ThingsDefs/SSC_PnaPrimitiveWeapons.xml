@@ -119,7 +119,7 @@
         <warmupTime>0.5</warmupTime>
         <range>17.9</range>
         <burstShotCount>1</burstShotCount>
-        <soundCast>Bow_Small</soundCast>
+        <soundCast>SSC_PnaBlowpipe_Shot</soundCast>
       </li>
     </verbs>
     <tools>

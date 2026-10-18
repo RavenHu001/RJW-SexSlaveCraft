@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 吹箭筒单发音效；引用原版资源，不打包原版音频，不修改原 UI SoundDef。 -->
+<Defs>
+  <SoundDef>
+    <defName>SSC_PnaBlowpipe_Shot</defName>
+    <context>MapOnly</context>
+    <sustain>False</sustain>
+    <maxSimultaneous>4</maxSimultaneous>
+    <subSounds>
+      <li>
+        <!-- 使用地图空间声源，避免继承 DialogBoxAppear 的相机内播放设置。 -->
+        <onCamera>False</onCamera>
+        <grains>
+          <li Class="AudioGrain_Clip">
+            <clipPath>UI/FlickWhoosh</clipPath>
+          </li>
+        </grains>
+        <!-- 原版音量单位为百分数；初版过轻，按实机反馈提高并延后距离衰减。 -->
+        <volumeRange>65~75</volumeRange>
+        <pitchRange>0.95~1.05</pitchRange>
+        <distRange>10~45</distRange>
+        <sustainLoop>False</sustainLoop>
+      </li>
+    </subSounds>
+  </SoundDef>
+</Defs>
