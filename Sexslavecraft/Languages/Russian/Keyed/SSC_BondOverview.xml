@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成。第二批只读概览、刷新、导航及失败说明。 -->
+<LanguageData>
+  <SSC_BondOverview_Title>Обзор связей</SSC_BondOverview_Title>
+  <SSC_BondOverview_TitleSource>Связи: {0}</SSC_BondOverview_TitleSource>
+  <SSC_BondOverview_Counts>Связаны: {0} живых / {1} всего</SSC_BondOverview_Counts>
+  <SSC_BondOverview_Master>Хозяин</SSC_BondOverview_Master>
+  <SSC_BondOverview_Slave>Секс-рабы</SSC_BondOverview_Slave>
+  <SSC_BondOverview_LivingSlaves>Живые связанные секс-рабы</SSC_BondOverview_LivingSlaves>
+  <SSC_BondOverview_DeadSlaves>Умершие связанные секс-рабы</SSC_BondOverview_DeadSlaves>
+  <SSC_BondOverview_ViewAll>Подробнее</SSC_BondOverview_ViewAll>
+  <SSC_BondOverview_Refresh>Обновить</SSC_BondOverview_Refresh>
+  <SSC_BondOverview_None>Нет</SSC_BondOverview_None>
+  <SSC_BondOverview_Dead>Мёртв</SSC_BondOverview_Dead>
+  <SSC_BondOverview_DeadName>{0} (мёртв)</SSC_BondOverview_DeadName>
+  <SSC_BondOverview_NoMaster>Нет связанного хозяина.</SSC_BondOverview_NoMaster>
+  <SSC_BondOverview_InvalidMaster>Недействительная цель цепи.</SSC_BondOverview_InvalidMaster>
+  <SSC_BondOverview_EmptySlaves>Нет связанных секс-рабов.</SSC_BondOverview_EmptySlaves>
+  <SSC_BondOverview_Waiting>Ожидание обновления…</SSC_BondOverview_Waiting>
+  <SSC_BondOverview_QueryFailed>Не удалось обновить обзор. Будет повторная попытка.</SSC_BondOverview_QueryFailed>
+  <SSC_BondOverview_RelationChanged>Связь изменилась. Ожидание обновления…</SSC_BondOverview_RelationChanged>
+  <SSC_BondOverview_NoTrainingComponent>Сведения об обучении недоступны</SSC_BondOverview_NoTrainingComponent>
+  <SSC_BondOverview_RowDetails>Стадия {0} · {1} · {2}</SSC_BondOverview_RowDetails>
+  <SSC_BondOverview_Trainer>Назначенный тренер: {0} ({1})</SSC_BondOverview_Trainer>
+  <SSC_BondOverview_Trainer_Unavailable>недоступно</SSC_BondOverview_Trainer_Unavailable>
+  <SSC_BondOverview_Trainer_None>не назначен</SSC_BondOverview_Trainer_None>
+  <SSC_BondOverview_Trainer_Active>активен</SSC_BondOverview_Trainer_Active>
+  <SSC_BondOverview_Trainer_Inactive>неактивен</SSC_BondOverview_Trainer_Inactive>
+  <SSC_BondOverview_Trainer_InvalidTarget>недействительная цель</SSC_BondOverview_Trainer_InvalidTarget>
+  <SSC_BondOverview_Location_Unknown>Местоположение неизвестно</SSC_BondOverview_Location_Unknown>
+  <SSC_BondOverview_Location_Map>На карте</SSC_BondOverview_Location_Map>
+  <SSC_BondOverview_Location_MapContainer>В контейнере на карте</SSC_BondOverview_Location_MapContainer>
+  <SSC_BondOverview_Location_Caravan>В караване</SSC_BondOverview_Location_Caravan>
+  <SSC_BondOverview_Location_Transport>В пути</SSC_BondOverview_Location_Transport>
+  <SSC_BondOverview_Location_WorldObject>У объекта мира</SSC_BondOverview_Location_WorldObject>
+  <SSC_BondOverview_Location_WorldTile>Клетка мира</SSC_BondOverview_Location_WorldTile>
+  <SSC_BondOverview_LocationName>{0}: {1}</SSC_BondOverview_LocationName>
+  <SSC_BondOverview_JumpSelect>Найти / выбрать</SSC_BondOverview_JumpSelect>
+  <SSC_BondOverview_Jump>Найти</SSC_BondOverview_Jump>
+  <SSC_BondOverview_CannotJump>Нет доступной цели. Связь сохраняется.</SSC_BondOverview_CannotJump>
+  <SSC_BondOverview_Failure_None>Запрос перемещения отправлен.</SSC_BondOverview_Failure_None>
+  <SSC_BondOverview_Failure_Unavailable>Игра пока не готова к перемещению камеры.</SSC_BondOverview_Failure_Unavailable>
+  <SSC_BondOverview_Failure_SourceInvalid>Исходный персонаж больше недоступен.</SSC_BondOverview_Failure_SourceInvalid>
+  <SSC_BondOverview_Failure_RelationChanged>Связь изменилась. Обзор обновляется.</SSC_BondOverview_Failure_RelationChanged>
+  <SSC_BondOverview_Failure_Unknown>Не удалось определить текущее местоположение.</SSC_BondOverview_Failure_Unknown>
+  <SSC_BondOverview_Failure_CannotJump>Камера не может перейти к текущему местоположению.</SSC_BondOverview_Failure_CannotJump>
+  <SSC_BondOverview_BothCounts>Хозяин + рабы {0}/{1}</SSC_BondOverview_BothCounts>
+  <SSC_BondOverview_ShortCount>Секс-рабы: {0}</SSC_BondOverview_ShortCount>
+  <SSC_BondOverview_TrainerPanel>Тренер</SSC_BondOverview_TrainerPanel>
+  <SSC_BondOverview_ChangeTrainer>Сменить тренера</SSC_BondOverview_ChangeTrainer>
+  <SSC_BondOverview_ResolveOnClick>Нажмите для проверки текущего местоположения.</SSC_BondOverview_ResolveOnClick>
+  <SSC_BondOverview_OwnedCount>Секс-рабы: {0}</SSC_BondOverview_OwnedCount>
+  <SSC_BondOverview_SelectAllSlaves>Выбрать всех рабов</SSC_BondOverview_SelectAllSlaves>
+  <SSC_BondOverview_SelectAllSlavesDesc>Выбрать живых доступных секс-рабов на текущей карте, чьи цепи всё ещё указывают на этого хозяина, в пределах игрового лимита выбора. Остальные остаются в обзоре.</SSC_BondOverview_SelectAllSlavesDesc>
+  <SSC_BondOverview_NoSelectableSlaves>На текущей карте нет доступных связанных рабов.</SSC_BondOverview_NoSelectableSlaves>
+  <SSC_BondOverview_SelectMaster>Выбрать хозяина</SSC_BondOverview_SelectMaster>
+  <SSC_BondOverview_DebugQuery>DEV: Диагностика связей</SSC_BondOverview_DebugQuery>
+  <SSC_BondOverview_DebugQueryDesc>Только по нажатию проверить мир и сравнить список уздечки с цепями. Сообщает о пропусках, не исправляя связи и не обновляя обычный обзор.</SSC_BondOverview_DebugQueryDesc>
+  <SSC_BondOverview_DebugQueryResult>Связей в индексе: {0}; всего найдено: {1}; пропусков в индексе: {2}. Только диагностика; связи не изменены.</SSC_BondOverview_DebugQueryResult>
+  <SSC_BondOverview_DebugQueryFailed>Диагностика связей не удалась. См. журнал.</SSC_BondOverview_DebugQueryFailed>
+</LanguageData>

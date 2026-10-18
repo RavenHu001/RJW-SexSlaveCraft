@@ -1,5 +1,9 @@
 # 主从社交关系一致性回归
 
+第二批界面、刷新会话与导航由新增 [BondOverviewUI](../BondOverviewUI/README.md)直接链接生产代码验证，当前 78/78；本组保留第一批 110 项，边界类型仅增加 partial 扩展能力，未替换生产查询或绑定规则。第二批完整结果见[当前记录](../../Docs/Development/Completed/主从关系概览第二批界面与导航实现与测试.md)。
+
+2026-10-17 新增主从关系概览第一批，直接链接 `SSCBondOverviewModel`、`SSCBondOverviewUtility` 和 `SSCBondOverviewWorld`。初批新增 40 项、94/94；后续性能优化新增 16 项，当前专项 **110/110**，见[当前优化与对比](../../Docs/Development/Completed/主从关系概览第一批性能优化与对比.md)。阶段与指派资格继续复用既有接口替身，集合／持有／位置接口以实际 1.7.4981 rev136 核对；生产候选、归属、位置、快照及行复查均实际执行，真实容器与存档仍待实机核验，原结果保留在[首次实现记录](../../Docs/Development/Completed/主从关系概览第一批只读数据实现与测试.md)。
+
 直接编译生产关系规则、仪式奖励入口、绑定服务、性奴锁链、主人缰绳、旧档清理 GameComponent、称谓服务及两处 Harmony 显示补丁。原生接口模型依据本机 RimWorld 1.6 程序集反编译建立；双向关系、健康删除顺序和缓存通知为引擎边界，测试不运行 Unity 或实际存档。
 
 ```powershell
@@ -19,6 +23,37 @@ dotnet run --project Tests/BondRelations/BondRelations.csproj --configuration Re
 `RitualLifecycle` 另运行真实整场 `Apply`，验证六阶段完成、一次性认领、79/80/100 门槛、第三方合法主持及回调撤销完成资格。`PersonalityTraits` 运行完整人格植入，验证成功/失败绑定恢复、旧凝胶错误关系过滤及主人人格跨体植入。`SharedBed` 验证旧第三方关系不能提供最高同床心情。
 
 全部回归由 `Scripts/Test-All.ps1` 统一运行，本套件需要本地 net9.0 Harmony，不下载依赖。
+
+## 概览第一批覆盖
+
+- 两种直接方向、无仪式奖励、第三方指派、停用／死亡指定者、无身份／训练组件及坏链空状态。
+- 缰绳重复、陈旧和漏项，直接改 target 不执行 Tick、直接 AddToPawn 换主缺新缰绳；查询不修复原数据。
+- 地图和嵌套容器尸体、旅队成员行囊、运输容器、世界持有树、当前及世界飞船字典；候选不在 AllPawns／缰绳时仍从生产补充收集器进入。
+- 死亡／复活、未知位置、父持有链循环、同名排序、集合与捕获字段只读、旧行失效、同主新链、CE 删除、加载与跨存档。
+- 连续读取逐项对照健康对象、严重度、锁链 target、缰绳列表引用及顺序、身份、指派、特化、社交通知和承伤偏好；160 条绑定加重复及 500 名无关角色仅枚举一次候选输入。
+
+`OverviewWorldStubs.cs` 只提供原版对象树和集合边界，不运行真实游戏递归器。实际 1.7 引用编译证明接口可用，模型通过证明生产查询在这些输入下正确；两者均不等于实机候选覆盖、UI、导航或真实存档往返已通过。历史 54 项关系专项结果保留其原阶段。
+
+## 性能优化回归与基准
+
+`Program.BondOverviewPerformance.cs` 验证世界存活／死亡、临时角色、运输成员、地图已生成及容器 Pawn／Corpse、组件子持有者、重叠持有树、飞船成员独占来源、位置优先级和查询间刷新。遍历计数验证货物扫描不随关联人数相乘；成功／异常路径通过 Pawn 弱引用回收检查缓冲已清空。暂存容器容量有界复用，不保存绑定或游戏对象。
+
+当前源码单侧基准（不计入机制用例数）：
+
+```powershell
+dotnet run --project Tests/BondRelations/BondRelations.csproj --configuration Release `
+  -p:HarmonyAssemblyPath="本机/net9.0/0Harmony.dll" -- --benchmark
+```
+
+与第一批提交进行相同边界的前后比较：
+
+```powershell
+python Tests/BondRelations/compare_overview_performance.py --baseline d8b354d `
+  --harmony-path "本机/net9.0/0Harmony.dll" --runs 3 `
+  --output .builds/bond-overview-opt/performance
+```
+
+脚本提取基线三个生产文件，与当前文件共用边界和 `BondOverviewBenchmark.cs`，分别构建并交替运行。每场景预热 16 次、采样 31 次；记录耗时、当前线程分配和结构访问计数，校验候选、顺序与状态摘要，保存源码及边界哈希。原版引擎临时缓冲的替身复用空间，避免把替身的重复分配冒充生产优化；它仍不是实际引擎，也不测试 Waylith 的真实 FPS／TPS。首次分配、容量扩张、真实任务临时角色和存档覆盖仍需目标环境验证。
 
 绑定生命周期补充：
 

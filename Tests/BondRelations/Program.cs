@@ -9,7 +9,7 @@ using SexSlaveCraft;
 using Verse;
 using Extensions = Verse.Extensions;
 
-internal static class Program
+internal static partial class Program
 {
     static int cases, failures;
     static PawnRelationDef customCapRelation;
@@ -24,6 +24,7 @@ internal static class Program
     static void Check(string name, Action action)
     {
         cases++; SSCRestrictionGameComponent.Pawns.Clear();
+        ResetOverviewWorld();
         try { action(); Console.WriteLine("PASS " + name); }
         catch (Exception ex) { failures++; Console.WriteLine("FAIL " + name + ": " + ex); }
     }
@@ -54,6 +55,7 @@ internal static class Program
     /// <summary>运行关系授予、生命周期、旧档清理及真实 Harmony 显示回归。</summary>
     static int Main(string[] args)
     {
+        if (args.Contains("--benchmark")) return BondOverviewBenchmark.Run();
         string root = SscTestPaths.RepositoryRoot(args.Length > 0 ? args[0] : null);
         // 健康通知经实际 Harmony 生产补丁进入离体维护，CE 兼容测试不直接调用清理方法。
         var harmony = new Harmony("ssc.tests.bond-relations");
@@ -323,6 +325,8 @@ internal static class Program
                 postfix: new HarmonyMethod(typeof(Program), nameof(CustomCap)));
             Require(SocialCardUtility.Render(new Pawn(), new Pawn(), customCapRelation) == "custom: Friend");
         });
+        RunBondOverviewTests();
+        RunBondOverviewPerformanceTests();
         Console.WriteLine($"{cases - failures}/{cases} passed");
         return failures == 0 ? 0 : 1;
     }

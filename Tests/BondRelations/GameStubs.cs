@@ -9,17 +9,17 @@ using SexSlaveCraft;
 
 namespace Verse
 {
-    public class Thing { public bool Destroyed; }
+    public partial class Thing { public bool Destroyed; public virtual string LabelShort { get; set; } = "Container"; }
     public enum Gender { None, Male, Female }
-    public class Pawn : Thing
+    public partial class Pawn : Thing
     {
         public bool Dead, Discarded;
         public Gender gender;
-        public string LabelShort = "Pawn";
+        public override string LabelShort { get; set; } = "Pawn";
         public string LabelShortCap => LabelShort;
         public readonly Pawn_HealthTracker health;
         public readonly Pawn_RelationsTracker relations;
-        public readonly CompSexSlaveTraining Training = new CompSexSlaveTraining();
+        public CompSexSlaveTraining Training = new CompSexSlaveTraining();
         public Pawn() { health = new Pawn_HealthTracker(this); relations = new Pawn_RelationsTracker(this); }
         public T TryGetComp<T>() where T : class => Training as T;
     }
@@ -40,7 +40,7 @@ namespace Verse
     }
     public class HediffWithComps : Hediff { }
     public class HediffWithTarget : HediffWithComps { public Thing target; }
-    public class Gizmo { }
+    public partial class Gizmo { }
     public enum LoadSaveMode { Inactive, PostLoadInit }
     public enum LookMode { Reference }
     public static class Scribe { public static LoadSaveMode mode; }
@@ -49,7 +49,12 @@ namespace Verse
     public class HediffSet
     {
         public readonly List<Hediff> hediffs = new List<Hediff>();
-        public Hediff GetFirstHediffOfDef(HediffDef def) => hediffs.FirstOrDefault(h => h.def == def);
+        public Hediff GetFirstHediffOfDef(HediffDef def)
+        {
+            // 对齐已核对的实际引擎线性查找边界，不为模型额外创建 LINQ 闭包。
+            foreach (Hediff hediff in hediffs) if (hediff.def == def) return hediff;
+            return null;
+        }
     }
     public class Pawn_HealthTracker
     {
@@ -76,8 +81,8 @@ namespace Verse
         public static string Translate(this string key) => Translations[key];
         public static readonly Dictionary<string, string> Translations = new Dictionary<string, string>();
     }
-    public class Game { }
-    public abstract class GameComponent { public virtual void FinalizeInit() { } }
+    public partial class Game { }
+    public abstract partial class GameComponent { public virtual void FinalizeInit() { } }
 }
 namespace RimWorld
 {
@@ -150,12 +155,12 @@ namespace RimWorld
             => GetRelationsString(new CachedSocialTabEntry { otherPawn = other, relations = defs.ToList() }, observer);
     }
 }
-namespace UnityEngine { public static class Mathf { public static float Clamp(float v, float min, float max) => Math.Clamp(v, min, max); } }
+namespace UnityEngine { public static partial class Mathf { public static float Clamp(float v, float min, float max) => Math.Clamp(v, min, max); } }
 namespace SexSlaveCraft
 {
     using Verse;
     public enum PawnIdentity { Unset, Slave, Master }
-    public class CompSexSlaveTraining { public PawnIdentity pawnIdentity; public Pawn selectedTrainer; }
+    public partial class CompSexSlaveTraining { public PawnIdentity pawnIdentity; public Pawn selectedTrainer; }
     public static class SSCDefOf
     {
         public static HediffDef ChainOfSexSlave = new HediffDef { hediffClass = typeof(Hediff_ChainOfSexSlave) };
@@ -169,7 +174,7 @@ namespace SexSlaveCraft
         public static void RefreshMasterEmpowerment(Pawn pawn) { }
         public static string GetEmpowermentSummary(Pawn pawn) => "empowerment";
     }
-    public static class SSCIdentityUtility
+    public static partial class SSCIdentityUtility
     {
         public static bool IsMaster(Pawn pawn) => pawn?.Training.pawnIdentity == PawnIdentity.Master;
         public static bool TrySetIdentity(Pawn pawn, PawnIdentity id) { pawn.Training.pawnIdentity = id; return true; }
@@ -179,17 +184,24 @@ namespace SexSlaveCraft
     {
         // 快照来源是外部边界；全地图/世界/商队的枚举由原有限制系统测试负责。
         public static readonly List<Pawn> Pawns = new List<Pawn>();
-        public static List<Pawn> AllPawns() => Pawns.ToList();
+        public static int QueryCount;
+        public static List<Pawn> AllPawns() { QueryCount++; return OverviewWorldBoundary.AllPawns(); }
         public static void Notify(Pawn pawn) { }
     }
-    public static class SSCRestrictionTrainerAssignment
+    public static partial class SSCRestrictionTrainerAssignment
     {
-        public static bool TryAssign(Pawn slave, Pawn trainer) { slave.Training.selectedTrainer = trainer; return true; }
+        public static bool AllowAssign = true;
+        public static bool TryAssign(Pawn slave, Pawn trainer) { if (!AllowAssign) return false; slave.Training.selectedTrainer = trainer; return true; }
     }
-    public static class TrainerAssignmentUtility
+    public static partial class TrainerAssignmentUtility
     {
-        public static Pawn GetActiveAssignedTrainer(Pawn pawn) => pawn.Training.selectedTrainer;
-        public static bool CanAssignTrainerTo(Pawn slave, Pawn trainer) => true;
+        public static Pawn GetActiveAssignedTrainer(Pawn pawn)
+        {
+            Pawn trainer = pawn?.Training?.selectedTrainer;
+            return trainer != null && trainer != pawn && !trainer.Dead && !trainer.Destroyed && trainer.Training?.TrainerActive != false ? trainer : null;
+        }
+        public static Func<Pawn, Pawn, bool> AssignmentCheck = (slave, trainer) => true;
+        public static bool CanAssignTrainerTo(Pawn slave, Pawn trainer) => AssignmentCheck(slave, trainer);
     }
     public static class TrainerSpecializationLifecycle
     {

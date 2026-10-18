@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成。第二批只读概览、刷新、导航及失败说明。 -->
+<LanguageData>
+  <SSC_BondOverview_Title>主从关系概览</SSC_BondOverview_Title>
+  <SSC_BondOverview_TitleSource>主从关系：{0}</SSC_BondOverview_TitleSource>
+  <SSC_BondOverview_Counts>绑定：存活 {0} / 总计 {1}</SSC_BondOverview_Counts>
+  <SSC_BondOverview_Master>主人</SSC_BondOverview_Master>
+  <SSC_BondOverview_Slave>性奴</SSC_BondOverview_Slave>
+  <SSC_BondOverview_LivingSlaves>存活的绑定性奴</SSC_BondOverview_LivingSlaves>
+  <SSC_BondOverview_DeadSlaves>死亡的绑定性奴</SSC_BondOverview_DeadSlaves>
+  <SSC_BondOverview_ViewAll>查看全部</SSC_BondOverview_ViewAll>
+  <SSC_BondOverview_Refresh>刷新</SSC_BondOverview_Refresh>
+  <SSC_BondOverview_None>无</SSC_BondOverview_None>
+  <SSC_BondOverview_Dead>死亡</SSC_BondOverview_Dead>
+  <SSC_BondOverview_DeadName>{0}（死亡）</SSC_BondOverview_DeadName>
+  <SSC_BondOverview_NoMaster>未绑定主人。</SSC_BondOverview_NoMaster>
+  <SSC_BondOverview_InvalidMaster>锁链绑定目标无效。</SSC_BondOverview_InvalidMaster>
+  <SSC_BondOverview_EmptySlaves>暂无绑定性奴。</SSC_BondOverview_EmptySlaves>
+  <SSC_BondOverview_Waiting>等待刷新……</SSC_BondOverview_Waiting>
+  <SSC_BondOverview_QueryFailed>概览刷新失败，将稍后重试。</SSC_BondOverview_QueryFailed>
+  <SSC_BondOverview_RelationChanged>绑定关系已变化，等待刷新……</SSC_BondOverview_RelationChanged>
+  <SSC_BondOverview_NoTrainingComponent>调教信息不可用</SSC_BondOverview_NoTrainingComponent>
+  <SSC_BondOverview_RowDetails>阶段 {0} · {1} · {2}</SSC_BondOverview_RowDetails>
+  <SSC_BondOverview_Trainer>指定调教员：{0}（{1}）</SSC_BondOverview_Trainer>
+  <SSC_BondOverview_Trainer_Unavailable>暂不可用</SSC_BondOverview_Trainer_Unavailable>
+  <SSC_BondOverview_Trainer_None>未指派</SSC_BondOverview_Trainer_None>
+  <SSC_BondOverview_Trainer_Active>生效</SSC_BondOverview_Trainer_Active>
+  <SSC_BondOverview_Trainer_Inactive>未生效</SSC_BondOverview_Trainer_Inactive>
+  <SSC_BondOverview_Trainer_InvalidTarget>目标无效</SSC_BondOverview_Trainer_InvalidTarget>
+  <SSC_BondOverview_Location_Unknown>位置未知</SSC_BondOverview_Location_Unknown>
+  <SSC_BondOverview_Location_Map>位于地图</SSC_BondOverview_Location_Map>
+  <SSC_BondOverview_Location_MapContainer>地图容器内</SSC_BondOverview_Location_MapContainer>
+  <SSC_BondOverview_Location_Caravan>旅队中</SSC_BondOverview_Location_Caravan>
+  <SSC_BondOverview_Location_Transport>运输中</SSC_BondOverview_Location_Transport>
+  <SSC_BondOverview_Location_WorldObject>世界对象中</SSC_BondOverview_Location_WorldObject>
+  <SSC_BondOverview_Location_WorldTile>世界位置</SSC_BondOverview_Location_WorldTile>
+  <SSC_BondOverview_LocationName>{0}：{1}</SSC_BondOverview_LocationName>
+  <SSC_BondOverview_JumpSelect>定位并选中</SSC_BondOverview_JumpSelect>
+  <SSC_BondOverview_Jump>定位</SSC_BondOverview_Jump>
+  <SSC_BondOverview_CannotJump>暂无可定位目标，绑定关系仍保留。</SSC_BondOverview_CannotJump>
+  <SSC_BondOverview_Failure_None>已执行定位请求。</SSC_BondOverview_Failure_None>
+  <SSC_BondOverview_Failure_Unavailable>游戏尚未就绪，暂时无法定位。</SSC_BondOverview_Failure_Unavailable>
+  <SSC_BondOverview_Failure_SourceInvalid>来源角色已失效，无法继续操作。</SSC_BondOverview_Failure_SourceInvalid>
+  <SSC_BondOverview_Failure_RelationChanged>绑定关系已变化，正在更新概览。</SSC_BondOverview_Failure_RelationChanged>
+  <SSC_BondOverview_Failure_Unknown>无法确定该角色当前的位置。</SSC_BondOverview_Failure_Unknown>
+  <SSC_BondOverview_Failure_CannotJump>当前所在位置无法由镜头定位。</SSC_BondOverview_Failure_CannotJump>
+  <SSC_BondOverview_BothCounts>主人 + 性奴 {0}/{1}</SSC_BondOverview_BothCounts>
+  <SSC_BondOverview_ShortCount>性奴 {0}</SSC_BondOverview_ShortCount>
+  <SSC_BondOverview_TrainerPanel>调教员</SSC_BondOverview_TrainerPanel>
+  <SSC_BondOverview_ChangeTrainer>更换调教员</SSC_BondOverview_ChangeTrainer>
+  <SSC_BondOverview_ResolveOnClick>点击后复查当前位置。</SSC_BondOverview_ResolveOnClick>
+  <SSC_BondOverview_OwnedCount>拥有性奴：{0}</SSC_BondOverview_OwnedCount>
+  <SSC_BondOverview_SelectAllSlaves>选择所有性奴</SSC_BondOverview_SelectAllSlaves>
+  <SSC_BondOverview_SelectAllSlavesDesc>选择当前地图上存活、已生成且仍归属此主人的可选性奴，遵循原版选择数量上限。异图、容器内和死亡对象仍保留在总览。</SSC_BondOverview_SelectAllSlavesDesc>
+  <SSC_BondOverview_NoSelectableSlaves>当前地图没有可选择的绑定性奴。</SSC_BondOverview_NoSelectableSlaves>
+  <SSC_BondOverview_SelectMaster>选择主人</SSC_BondOverview_SelectMaster>
+  <SSC_BondOverview_DebugQuery>DEV: 全局关系诊断</SSC_BondOverview_DebugQuery>
+  <SSC_BondOverview_DebugQueryDesc>仅点击时扫描世界，比较缰绳名单与实际锁链；报告遗漏，不修复绑定或更新普通概览。</SSC_BondOverview_DebugQueryDesc>
+  <SSC_BondOverview_DebugQueryResult>缰绳有效：{0}；全局绑定：{1}；索引遗漏：{2}。仅诊断，未修复绑定。</SSC_BondOverview_DebugQueryResult>
+  <SSC_BondOverview_DebugQueryFailed>全局关系诊断失败，详见日志。</SSC_BondOverview_DebugQueryFailed>
+</LanguageData>

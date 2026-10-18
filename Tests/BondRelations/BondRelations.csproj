@@ -6,6 +6,9 @@
     <Compile Include="$(SscSourceRoot)/common/SSCBondRelationGameComponent.cs" Link="Production/SSCBondRelationGameComponent.cs" />
     <Compile Include="$(SscSourceRoot)/common/SSCBondRelationLabels.cs" Link="Production/SSCBondRelationLabels.cs" />
     <Compile Include="$(SscSourceRoot)/common/SSCBondUtility.cs" Link="Production/SSCBondUtility.cs" />
+    <Compile Include="$(SscSourceRoot)/common/SSCBondOverviewModel.cs" Link="Production/SSCBondOverviewModel.cs" />
+    <Compile Include="$(SscSourceRoot)/common/SSCBondOverviewUtility.cs" Link="Production/SSCBondOverviewUtility.cs" />
+    <Compile Include="$(SscSourceRoot)/common/SSCBondOverviewWorld.cs" Link="Production/SSCBondOverviewWorld.cs" />
     <Compile Include="$(SscSourceRoot)/Hediff/Hediff_ChainOfSexSlave.cs" Link="Production/Hediff_ChainOfSexSlave.cs" />
     <Compile Include="$(SscSourceRoot)/ThePatches/Harmony_BondHealthChanges.cs" Link="Production/Harmony_BondHealthChanges.cs" />
     <Compile Include="$(SscSourceRoot)/ThePatches/Harmony_BondRelationLabels.cs" Link="Production/Harmony_BondRelationLabels.cs" />
