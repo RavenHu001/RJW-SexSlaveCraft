@@ -5,18 +5,17 @@
   <ThingDef ParentName="BaseMeleeWeapon_Sharp_Quality">
     <defName>SSC_Weapon_PnaSpikeStaff</defName>
     <label>纳米催情液短矛</label>
-    <description>一柄以绳带固定金属矛头的手工短矛，矛刃浸覆紫色纳米催情液。使用者尝试以较浅的刺击造成伤口，让附着的药液进入目标体内。贴身接触能够送入较多药液，但锋利的矛头仍会造成真实创伤，不能保证目标存活。</description>
+    <description>一柄经淬毒工艺处理的手工短矛，阔刃矛头均匀浸润着紫色纳米催情液。近身刺击能可靠送入药液，但仍可能造成致命创伤。</description>
     <techLevel>Medieval</techLevel>
     <possessionCount>1</possessionCount>
     <graphicData>
       <texPath>Things/Item/Equipment/SSC_PnaShortSpear</texPath>
       <graphicClass>Graphic_Single</graphicClass>
       <!-- 贴图已自带颜色，不对木杆和绑绳重复施加紫色 tint。 -->
-      <!-- 256×256 透明画布，矛体沿左下至右上 45° 对角线，保持等比显示。 -->
+      <!-- 256×256 透明画布，矛体水平朝右，保持等比显示。 -->
       <drawSize>1</drawSize>
     </graphicData>
-    <!-- DrawEquipmentAiming 已扣 90°，此处用正 45° 抵消贴图自身的对角线朝向。 -->
-    <equippedAngleOffset>45</equippedAngleOffset>
+    <!-- 水平源图不再施加额外装备角度偏移，待命与瞄准使用原版绘制流程。 -->
     <statBases>
       <WorkToMake>4000</WorkToMake>
       <Mass>1.2</Mass>
@@ -75,7 +74,7 @@
   <ThingDef ParentName="BaseWeaponNeolithic">
     <defName>SSC_Weapon_PnaBlowpipe</defName>
     <label>纳米催情液吹箭筒</label>
-    <description>一支配用浸液轻箭的手工吹箭筒。细箭上的紫色纳米催情液可随伤口进入目标体内；轻箭的创伤较小，也很难穿过护甲。适合在中近距离连续尝试施加，距离增加后命中明显变差。</description>
+    <description>一支配用淬液细箭的手工吹箭筒，箭头以淬毒工艺浸润纳米催情液。适合中近距离连续施加，但难以穿甲，远射命中较差。</description>
     <techLevel>Medieval</techLevel>
     <possessionCount>1</possessionCount>
     <graphicData>
@@ -142,7 +141,7 @@
   <ThingDef ParentName="BaseWeaponNeolithic">
     <defName>SSC_Weapon_PnaLightCrossbow</defName>
     <label>纳米催情液轻弩</label>
-    <description>一把配用携液弩矢的手工轻弩。弩矢浸覆紫色纳米催情液，尝试在较远距离通过伤口送入药液。比吹箭更准确，也能穿过部分轻甲，但装填瞄准更慢，弩矢造成的创伤也更重。</description>
+    <description>一把配用淬液弩矢的手工轻弩，箭头以淬毒工艺浸润纳米催情液。射程、精度和穿甲优于吹箭筒，但装填更慢，创伤也更重。</description>
     <techLevel>Medieval</techLevel>
     <possessionCount>1</possessionCount>
     <graphicData>

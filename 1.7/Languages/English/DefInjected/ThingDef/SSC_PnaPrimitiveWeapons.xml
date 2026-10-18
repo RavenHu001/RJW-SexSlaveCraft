@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <SSC_Weapon_PnaSpikeStaff.label>aphrodisiac nanofluid short spear</SSC_Weapon_PnaSpikeStaff.label>
-  <SSC_Weapon_PnaSpikeStaff.description>A handmade short spear with a metal head lashed to a wooden shaft and coated in purple aphrodisiac nanofluid. Shallow thrusts are intended to carry the fluid into the target through wounds. Direct contact delivers more fluid, but the sharp spearhead still inflicts real injuries and can kill.</SSC_Weapon_PnaSpikeStaff.description>
+  <SSC_Weapon_PnaSpikeStaff.description>A handmade short spear treated using traditional weapon-poisoning techniques, its broad head evenly infused with purple aphrodisiac nanofluid. Close thrusts deliver the fluid reliably, but can still cause fatal injuries.</SSC_Weapon_PnaSpikeStaff.description>
   <SSC_Weapon_PnaBlowpipe.label>aphrodisiac nanofluid blowpipe</SSC_Weapon_PnaBlowpipe.label>
-  <SSC_Weapon_PnaBlowpipe.description>A handmade blowpipe using light darts soaked in purple aphrodisiac nanofluid. The fluid enters through the wound. Its light darts inflict less trauma but struggle against armor. It allows frequent attempts at close to medium range, with accuracy falling sharply at greater distances.</SSC_Weapon_PnaBlowpipe.description>
+  <SSC_Weapon_PnaBlowpipe.description>A handmade blowpipe with dart tips infused with aphrodisiac nanofluid using traditional weapon-poisoning techniques. Suited to repeated application at close to medium range, but poor against armor and inaccurate at distance.</SSC_Weapon_PnaBlowpipe.description>
   <SSC_Weapon_PnaLightCrossbow.label>aphrodisiac nanofluid light crossbow</SSC_Weapon_PnaLightCrossbow.label>
-  <SSC_Weapon_PnaLightCrossbow.description>A handmade light crossbow using bolts coated in purple aphrodisiac nanofluid to deliver fluid through wounds at greater range. It is more accurate than a blowpipe and can penetrate some light armor, but takes longer to load and aim, and inflicts more trauma.</SSC_Weapon_PnaLightCrossbow.description>
+  <SSC_Weapon_PnaLightCrossbow.description>A handmade light crossbow with bolt heads infused with aphrodisiac nanofluid using traditional weapon-poisoning techniques. Greater range, accuracy and armor penetration than a blowpipe, at the cost of slower loading and more trauma.</SSC_Weapon_PnaLightCrossbow.description>
   <SSC_Weapon_PnaSpikeStaff.tools.0.label>spearhead</SSC_Weapon_PnaSpikeStaff.tools.0.label>
   <SSC_Weapon_PnaSpikeStaff.tools.1.label>shaft</SSC_Weapon_PnaSpikeStaff.tools.1.label>
   <SSC_Weapon_PnaBlowpipe.tools.0.label>tube</SSC_Weapon_PnaBlowpipe.tools.0.label>
