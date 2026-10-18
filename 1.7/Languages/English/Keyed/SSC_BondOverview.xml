@@ -19,7 +19,7 @@
   <SSC_BondOverview_Waiting>Waiting for refresh…</SSC_BondOverview_Waiting>
   <SSC_BondOverview_QueryFailed>The overview could not be refreshed. It will retry.</SSC_BondOverview_QueryFailed>
   <SSC_BondOverview_RelationChanged>This binding has changed. Refreshing…</SSC_BondOverview_RelationChanged>
-  <SSC_BondOverview_NoTrainingComponent>No training component</SSC_BondOverview_NoTrainingComponent>
+  <SSC_BondOverview_NoTrainingComponent>Training information unavailable</SSC_BondOverview_NoTrainingComponent>
   <SSC_BondOverview_RowDetails>Stage {0} · {1} · {2}</SSC_BondOverview_RowDetails>
   <SSC_BondOverview_Trainer>Assigned trainer: {0} ({1})</SSC_BondOverview_Trainer>
   <SSC_BondOverview_Trainer_Unavailable>unavailable</SSC_BondOverview_Trainer_Unavailable>
@@ -41,7 +41,7 @@
   <SSC_BondOverview_Failure_None>Navigation dispatched.</SSC_BondOverview_Failure_None>
   <SSC_BondOverview_Failure_Unavailable>The game is not ready for navigation.</SSC_BondOverview_Failure_Unavailable>
   <SSC_BondOverview_Failure_SourceInvalid>The source pawn is no longer available.</SSC_BondOverview_Failure_SourceInvalid>
-  <SSC_BondOverview_Failure_RelationChanged>This binding changed. Refresh the overview.</SSC_BondOverview_Failure_RelationChanged>
+  <SSC_BondOverview_Failure_RelationChanged>This binding changed. Updating the overview.</SSC_BondOverview_Failure_RelationChanged>
   <SSC_BondOverview_Failure_Unknown>The pawn's current location cannot be determined.</SSC_BondOverview_Failure_Unknown>
   <SSC_BondOverview_Failure_CannotJump>The current location cannot be reached by the camera.</SSC_BondOverview_Failure_CannotJump>
   <SSC_BondOverview_BothCounts>Master + slaves {0}/{1}</SSC_BondOverview_BothCounts>

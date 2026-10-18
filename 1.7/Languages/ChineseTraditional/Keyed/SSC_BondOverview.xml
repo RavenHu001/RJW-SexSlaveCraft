@@ -19,7 +19,7 @@
   <SSC_BondOverview_Waiting>等待重新整理……</SSC_BondOverview_Waiting>
   <SSC_BondOverview_QueryFailed>概覽重新整理失敗，稍後將重試。</SSC_BondOverview_QueryFailed>
   <SSC_BondOverview_RelationChanged>綁定關係已變化，等待重新整理……</SSC_BondOverview_RelationChanged>
-  <SSC_BondOverview_NoTrainingComponent>無調教組件</SSC_BondOverview_NoTrainingComponent>
+  <SSC_BondOverview_NoTrainingComponent>調教資訊無法取得</SSC_BondOverview_NoTrainingComponent>
   <SSC_BondOverview_RowDetails>階段 {0} · {1} · {2}</SSC_BondOverview_RowDetails>
   <SSC_BondOverview_Trainer>指定調教員：{0}（{1}）</SSC_BondOverview_Trainer>
   <SSC_BondOverview_Trainer_Unavailable>暫不可用</SSC_BondOverview_Trainer_Unavailable>
@@ -27,7 +27,7 @@
   <SSC_BondOverview_Trainer_Active>生效</SSC_BondOverview_Trainer_Active>
   <SSC_BondOverview_Trainer_Inactive>未生效</SSC_BondOverview_Trainer_Inactive>
   <SSC_BondOverview_Trainer_InvalidTarget>目標無效</SSC_BondOverview_Trainer_InvalidTarget>
-  <SSC_BondOverview_Location_Unknown>位置不可用</SSC_BondOverview_Location_Unknown>
+  <SSC_BondOverview_Location_Unknown>位置未知</SSC_BondOverview_Location_Unknown>
   <SSC_BondOverview_Location_Map>位於地圖</SSC_BondOverview_Location_Map>
   <SSC_BondOverview_Location_MapContainer>地圖容器內</SSC_BondOverview_Location_MapContainer>
   <SSC_BondOverview_Location_Caravan>旅隊中</SSC_BondOverview_Location_Caravan>
@@ -41,7 +41,7 @@
   <SSC_BondOverview_Failure_None>已執行定位請求。</SSC_BondOverview_Failure_None>
   <SSC_BondOverview_Failure_Unavailable>遊戲尚未就緒，暫時無法定位。</SSC_BondOverview_Failure_Unavailable>
   <SSC_BondOverview_Failure_SourceInvalid>來源角色已失效，無法繼續操作。</SSC_BondOverview_Failure_SourceInvalid>
-  <SSC_BondOverview_Failure_RelationChanged>綁定關係已變化，請重新整理概覽。</SSC_BondOverview_Failure_RelationChanged>
+  <SSC_BondOverview_Failure_RelationChanged>綁定關係已變化，正在更新概覽。</SSC_BondOverview_Failure_RelationChanged>
   <SSC_BondOverview_Failure_Unknown>無法確定該角色目前的位置。</SSC_BondOverview_Failure_Unknown>
   <SSC_BondOverview_Failure_CannotJump>目前所在位置無法由鏡頭定位。</SSC_BondOverview_Failure_CannotJump>
   <SSC_BondOverview_BothCounts>主人 + 性奴 {0}/{1}</SSC_BondOverview_BothCounts>

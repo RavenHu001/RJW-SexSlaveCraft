@@ -19,7 +19,7 @@
   <SSC_BondOverview_Waiting>等待刷新……</SSC_BondOverview_Waiting>
   <SSC_BondOverview_QueryFailed>概览刷新失败，将稍后重试。</SSC_BondOverview_QueryFailed>
   <SSC_BondOverview_RelationChanged>绑定关系已变化，等待刷新……</SSC_BondOverview_RelationChanged>
-  <SSC_BondOverview_NoTrainingComponent>无调教组件</SSC_BondOverview_NoTrainingComponent>
+  <SSC_BondOverview_NoTrainingComponent>调教信息不可用</SSC_BondOverview_NoTrainingComponent>
   <SSC_BondOverview_RowDetails>阶段 {0} · {1} · {2}</SSC_BondOverview_RowDetails>
   <SSC_BondOverview_Trainer>指定调教员：{0}（{1}）</SSC_BondOverview_Trainer>
   <SSC_BondOverview_Trainer_Unavailable>暂不可用</SSC_BondOverview_Trainer_Unavailable>
@@ -27,7 +27,7 @@
   <SSC_BondOverview_Trainer_Active>生效</SSC_BondOverview_Trainer_Active>
   <SSC_BondOverview_Trainer_Inactive>未生效</SSC_BondOverview_Trainer_Inactive>
   <SSC_BondOverview_Trainer_InvalidTarget>目标无效</SSC_BondOverview_Trainer_InvalidTarget>
-  <SSC_BondOverview_Location_Unknown>位置不可用</SSC_BondOverview_Location_Unknown>
+  <SSC_BondOverview_Location_Unknown>位置未知</SSC_BondOverview_Location_Unknown>
   <SSC_BondOverview_Location_Map>位于地图</SSC_BondOverview_Location_Map>
   <SSC_BondOverview_Location_MapContainer>地图容器内</SSC_BondOverview_Location_MapContainer>
   <SSC_BondOverview_Location_Caravan>旅队中</SSC_BondOverview_Location_Caravan>
@@ -41,7 +41,7 @@
   <SSC_BondOverview_Failure_None>已执行定位请求。</SSC_BondOverview_Failure_None>
   <SSC_BondOverview_Failure_Unavailable>游戏尚未就绪，暂时无法定位。</SSC_BondOverview_Failure_Unavailable>
   <SSC_BondOverview_Failure_SourceInvalid>来源角色已失效，无法继续操作。</SSC_BondOverview_Failure_SourceInvalid>
-  <SSC_BondOverview_Failure_RelationChanged>绑定关系已变化，请刷新概览。</SSC_BondOverview_Failure_RelationChanged>
+  <SSC_BondOverview_Failure_RelationChanged>绑定关系已变化，正在更新概览。</SSC_BondOverview_Failure_RelationChanged>
   <SSC_BondOverview_Failure_Unknown>无法确定该角色当前的位置。</SSC_BondOverview_Failure_Unknown>
   <SSC_BondOverview_Failure_CannotJump>当前所在位置无法由镜头定位。</SSC_BondOverview_Failure_CannotJump>
   <SSC_BondOverview_BothCounts>主人 + 性奴 {0}/{1}</SSC_BondOverview_BothCounts>

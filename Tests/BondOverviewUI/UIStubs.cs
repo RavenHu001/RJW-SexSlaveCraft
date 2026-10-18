@@ -27,7 +27,12 @@ namespace UnityEngine
 namespace Verse
 {
     public enum GameFont { Tiny, Small }
-    public static class Text { public static GameFont Font; public static TextAnchor Anchor; public static bool WordWrap; }
+    public static class Text {
+        public static GameFont Font; public static TextAnchor Anchor; public static bool WordWrap;
+        public static int Measurements;
+        // 与截断替身共用确定性字符宽度，仅验证数量保留和缓存，不模拟真实字体。
+        public static Vector2 CalcSize(string text) { Measurements++; return new(text.Length*(Font==GameFont.Tiny?5:7),18); }
+    }
     public static class UI { public static int screenWidth=1200,screenHeight=900; }
     public static class Prefs { public static bool DevMode; public static float UIScale=1; }
     public static class Mouse { public static bool IsOver(Rect rect)=>rect.Contains(Event.current.mousePosition); }

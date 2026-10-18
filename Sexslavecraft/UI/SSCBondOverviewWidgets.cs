@@ -77,6 +77,25 @@ namespace SexSlaveCraft
     {
         internal readonly SSCBondOverviewSnapshot Snapshot;
         internal readonly string Title, Count, Trainer, SlaveHeading, OwnedHeading, OwnedDetails, TrainerName, TrainerDetails;
+        private readonly string ownedPrefix, ownedNumber;
+        private string ownedTitle;
+        private float ownedWidth = -1, ownedScale;
+        private GameFont ownedFont;
+        internal string OwnedTitle(SSCBondOverviewView view, float width)
+        {
+            // 数量是紧凑卡片的主要信息：完整标题放不下时只省略栏目文字，不截掉末尾数字。
+            // 每份展示仅缓存当前宽度／字体／缩放的结果；快照或语言变化由原展示失效路径处理。
+            if (ownedTitle != null && ownedWidth == width && ownedFont == Text.Font && ownedScale == Prefs.UIScale)
+                return ownedTitle;
+            ownedWidth = width; ownedFont = Text.Font; ownedScale = Prefs.UIScale;
+            ownedTitle = view.Truncate(OwnedHeading, width);
+            if (ownedTitle == OwnedHeading) return ownedTitle;
+            float prefixWidth = Math.Max(0, width - Text.CalcSize(ownedNumber).x);
+            string prefix = view.Truncate(ownedPrefix, prefixWidth);
+            // 原版省略号本身也可能放不下；此时优先只显示数量，完整栏目仍在悬停中。
+            if (Text.CalcSize(prefix).x > prefixWidth) prefix = string.Empty;
+            return ownedTitle = prefix + ownedNumber;
+        }
         private string trainerTooltip;
         internal string TrainerTooltip => trainerTooltip ?? (trainerTooltip = TrainerName + "\n" + TrainerDetails);
         private float gridWidth = -1, gridHeight = -1;
@@ -107,6 +126,8 @@ namespace SexSlaveCraft
             Count = SSCBondOverviewText.Format("Counts", snapshot.LivingSlaveCount, snapshot.TotalSlaveCount);
             SlaveHeading = SSCBondOverviewText.Format("ShortCount", snapshot.TotalSlaveCount);
             OwnedHeading = SSCBondOverviewText.Format("OwnedCount", snapshot.TotalSlaveCount);
+            ownedPrefix = SSCBondOverviewText.Format("OwnedCount", string.Empty);
+            ownedNumber = snapshot.TotalSlaveCount.ToString();
             OwnedDetails = OwnedHeading + "\n" + Count;
             Trainer = SSCBondOverviewText.Format("Trainer", snapshot.TrainerName ?? SSCBondOverviewText.T("None"),
                 SSCBondOverviewText.T("Trainer_" + snapshot.AssignedTrainerState));

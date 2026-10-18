@@ -19,7 +19,7 @@
   <SSC_BondOverview_Waiting>Ожидание обновления…</SSC_BondOverview_Waiting>
   <SSC_BondOverview_QueryFailed>Не удалось обновить обзор. Будет повторная попытка.</SSC_BondOverview_QueryFailed>
   <SSC_BondOverview_RelationChanged>Связь изменилась. Ожидание обновления…</SSC_BondOverview_RelationChanged>
-  <SSC_BondOverview_NoTrainingComponent>Нет компонента обучения</SSC_BondOverview_NoTrainingComponent>
+  <SSC_BondOverview_NoTrainingComponent>Сведения об обучении недоступны</SSC_BondOverview_NoTrainingComponent>
   <SSC_BondOverview_RowDetails>Стадия {0} · {1} · {2}</SSC_BondOverview_RowDetails>
   <SSC_BondOverview_Trainer>Назначенный тренер: {0} ({1})</SSC_BondOverview_Trainer>
   <SSC_BondOverview_Trainer_Unavailable>недоступно</SSC_BondOverview_Trainer_Unavailable>
@@ -41,7 +41,7 @@
   <SSC_BondOverview_Failure_None>Запрос перемещения отправлен.</SSC_BondOverview_Failure_None>
   <SSC_BondOverview_Failure_Unavailable>Игра пока не готова к перемещению камеры.</SSC_BondOverview_Failure_Unavailable>
   <SSC_BondOverview_Failure_SourceInvalid>Исходный персонаж больше недоступен.</SSC_BondOverview_Failure_SourceInvalid>
-  <SSC_BondOverview_Failure_RelationChanged>Связь изменилась. Обновите обзор.</SSC_BondOverview_Failure_RelationChanged>
+  <SSC_BondOverview_Failure_RelationChanged>Связь изменилась. Обзор обновляется.</SSC_BondOverview_Failure_RelationChanged>
   <SSC_BondOverview_Failure_Unknown>Не удалось определить текущее местоположение.</SSC_BondOverview_Failure_Unknown>
   <SSC_BondOverview_Failure_CannotJump>Камера не может перейти к текущему местоположению.</SSC_BondOverview_Failure_CannotJump>
   <SSC_BondOverview_BothCounts>Хозяин + рабы {0}/{1}</SSC_BondOverview_BothCounts>

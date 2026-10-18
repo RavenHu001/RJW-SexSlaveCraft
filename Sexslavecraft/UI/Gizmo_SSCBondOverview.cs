@@ -64,23 +64,10 @@ namespace SexSlaveCraft
                 // 不显示姓名，不添加总览或改主入口，完整姓名与位置仍可悬停查看。
                 if (snapshot?.Master != null)
                 {
-                    if (rect.height >= 68)
-                    {
-                        if (SSCBondOverviewWidgets.Avatar(new Rect(rect.x + (rect.width - 56) * .5f, rect.y + 5, 56, 56),
-                            snapshot, snapshot.Master, session, view, interactionRect: rect) && left) Remember(4, snapshot.Master);
-                    }
-                    else
-                    {
-                        // 极窄方块只显示方向，不生成第三档肖像；仍保留整块悬停与安全导航。
-                        bool current = SSCBondOverviewUtility.IsCurrent(snapshot, snapshot.Master);
-                        if (!current) session.RequestRefresh(view);
-                        if (current && Mouse.IsOver(rect))
-                        {
-                            var text = display.Row(snapshot.Master);
-                            SSCBondOverviewWidgets.Hover(rect, snapshot.Master, text.Tooltip);
-                            if (left) Remember(4, snapshot.Master);
-                        }
-                    }
+                    // 显示矩形与主人按钮等大，底部文字随后覆盖头像；纹理请求仍复用原 40／56 两档。
+                    // 绘制和输入共用原 Avatar 入口，缩窄时也保留现时锁链复查、完整提示与安全导航。
+                    if (SSCBondOverviewWidgets.Avatar(rect, snapshot, snapshot.Master, session, view) && left)
+                        Remember(4, snapshot.Master);
                 }
                 else
                 {
@@ -110,7 +97,7 @@ namespace SexSlaveCraft
             // 顶部与原版机械师一致使用 Small；完整内容保留在悬停，不再以更小字号换取空间。
             Text.Font = GameFont.Small;
             Rect title = new Rect(rect.x + 6, rect.y + 4, Math.Max(1, rect.width - (slaves ? 38 : 66)), 22);
-            Widgets.Label(title, view.Truncate(heading, title.width));
+            Widgets.Label(title, slaves && display != null ? display.OwnedTitle(view, title.width) : view.Truncate(heading, title.width));
             Text.Font = GameFont.Small;
             if (Mouse.IsOver(title)) TooltipHandler.TipRegion(title, slaves ? display?.OwnedDetails ?? heading : heading);
             if (!slaves) Icon(new Rect(rect.xMax - 56, rect.y + 4, 24, 24), TexButton.Rename, "ChangeTrainer", 6,

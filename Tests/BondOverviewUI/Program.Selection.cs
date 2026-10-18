@@ -71,7 +71,34 @@ internal static partial class Program
             var f=Fixture();Find.Selector.Objects.Clear();Find.Selector.Objects.Add(f.slave);var s=Ready(f.slave,f.map);
             Widgets.CapturedLabels=new();GUI.CapturedTextures=new();Paint(new Gizmo_SSCBondOverview(s,SSCBondOverviewPanel.Master));
             var image=GUI.CapturedTextures.Single(p=>p.image==null).rect;var label=Widgets.CapturedLabels.Single();
-            Require(image.width==56&&label.value==SSCBondOverviewText.T("SelectMaster")&&label.rect.y<image.yMax&&label.rect.yMax<=75);
+            Require(image.x==0&&image.y==0&&image.width==75&&image.height==75&&label.value==SSCBondOverviewText.T("SelectMaster")&&label.rect.y<image.yMax&&label.rect.yMax<=75);
+        });
+        Check("master button: narrowed square still fills its bounds with a cached portrait",()=>{
+            var f=Fixture();Find.Selector.Objects.Clear();Find.Selector.Objects.Add(f.slave);var s=Ready(f.slave,f.map);
+            GUI.CapturedTextures=new();new Gizmo_SSCBondOverview(s,SSCBondOverviewPanel.Master).GizmoOnGUI(new(10,20),50,default);
+            var image=GUI.CapturedTextures.Single(p=>p.image==null).rect;
+            Require(image.x==10&&image.y==20&&image.width==50&&image.height==50&&PortraitsCache.Requests.Single().size.x==56);
+        });
+        // 使用实际四语模板验证数量和按钮边界；字符宽度替身不代表实机字体或缩放验收。
+        foreach(string lang in new[]{"ChineseSimplified","ChineseTraditional","English","Russian"})
+            foreach(float width in new[]{100f,130f})Check("owned header: two-digit count survives "+lang+" width "+width,()=>{
+                var xml=System.Xml.Linq.XDocument.Load(SscTestPaths.Combine(root,"Languages",lang,"Keyed/SSC_BondOverview.xml"));
+                Verse.Extensions.Translations["SSC_BondOverview_OwnedCount"]=xml.Root.Element("SSC_BondOverview_OwnedCount").Value;
+                LanguageDatabase.activeLanguage=new();var f=Fixture();for(int i=0;i<11;i++)Place(Slave(f.master,"P"+i),f.map);
+                var s=Ready(f.master,f.map);Widgets.CapturedLabels=new();Widgets.CapturedFonts=new();
+                new Gizmo_SSCBondOverview(s).GizmoOnGUI(new(0,0),width,default);
+                var title=Widgets.CapturedLabels.Single();
+                Require(title.value.EndsWith("12")&&Text.CalcSize(title.value).x<=title.rect.width&&title.rect.xMax<=width-28);
+                Require(Widgets.CapturedFonts.Single()==GameFont.Small);
+            });
+        Check("owned header: long label truncates before count and warm repaint does not remeasure",()=>{
+            Verse.Extensions.Translations["SSC_BondOverview_OwnedCount"]=new string('L',80)+": {0}";
+            LanguageDatabase.activeLanguage=new();var f=Fixture();var s=Ready(f.master,f.map);var g=new Gizmo_SSCBondOverview(s);
+            Widgets.CapturedLabels=new();Paint(g);var title=Widgets.CapturedLabels.Single();
+            Require(title.value.EndsWith("1")&&title.value.Contains("...")&&Text.CalcSize(title.value).x<=title.rect.width);
+            int measurements=Text.Measurements,truncations=UIExtensions.Truncations;Widgets.CapturedLabels.Clear();
+            for(int i=0;i<10;i++)Paint(g);
+            Require(Text.Measurements==measurements&&UIExtensions.Truncations==truncations&&Widgets.CapturedLabels.All(i=>ReferenceEquals(i.value,title.value)));
         });
     }
 }
