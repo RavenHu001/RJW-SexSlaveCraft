@@ -21,6 +21,8 @@ namespace SexSlaveCraft
         public Thing Subject { get; }
         public Thing Container { get; }
         public WorldObject WorldObject { get; }
+        internal string Name { get; }
+        private readonly object worldTile;
 
         internal SSCBondOverviewLocation(SSCBondOverviewLocationKind kind, Thing subject,
             Map map = null, Thing container = null, WorldObject worldObject = null)
@@ -30,7 +32,16 @@ namespace SexSlaveCraft
             Map = map;
             Container = container;
             WorldObject = worldObject;
+            // 展示缓存可能跨多轮局部刷新保留，须捕获位置名称及世界格的值，不能比较同一对象的现时属性。
+            // 世界格仅用于显示事实比较；导航仍从目标重新解析，不把这个比较值当作跳转落点。
+            Name = container?.LabelShort ?? map?.Parent?.LabelCap ?? worldObject?.LabelCap;
+            worldTile = kind == SSCBondOverviewLocationKind.WorldTile && subject != null ? (object)subject.Tile : null;
         }
+
+        internal bool SamePresentation(SSCBondOverviewLocation other)
+            => other != null && Kind == other.Kind && ReferenceEquals(Subject, other.Subject) &&
+                ReferenceEquals(Map, other.Map) && ReferenceEquals(Container, other.Container) &&
+                ReferenceEquals(WorldObject, other.WorldObject) && Name == other.Name && Equals(worldTile, other.worldTile);
     }
 
     /// <summary>本次查询的一条直接绑定；保留两端引用，供后续界面在操作前复查。</summary>
@@ -81,6 +92,10 @@ namespace SexSlaveCraft
         public IReadOnlyList<SSCBondOverviewEntry> Slaves { get; }
         public int LivingSlaveCount { get; }
         public int TotalSlaveCount => Slaves.Count;
+        internal string SourceName { get; }
+        internal bool SourceDead { get; }
+        internal string TrainerName { get; }
+        internal bool TrainerDead { get; }
         private readonly HashSet<SSCBondOverviewEntry> slaveEntries;
 
         internal SSCBondOverviewSnapshot(Game game, Pawn source, Map viewedMap,
@@ -92,11 +107,15 @@ namespace SexSlaveCraft
             ViewedMap = viewedMap;
             State = state;
             Identity = source?.TryGetComp<CompSexSlaveTraining>()?.pawnIdentity ?? PawnIdentity.Unset;
+            SourceName = source?.LabelShort ?? string.Empty;
+            SourceDead = source?.Dead == true;
             MasterState = masterState;
             Master = master;
             // 指派状态是独立的次级信息：保留原始指定者，再用既有只读规则判定是否生效。
             // 指定者失效时不清空字段，也不将其当成锁链主人，更不在查询中整理身份或指派。
             AssignedTrainer = source?.TryGetComp<CompSexSlaveTraining>()?.selectedTrainer;
+            TrainerName = AssignedTrainer?.LabelShort;
+            TrainerDead = AssignedTrainer?.Dead == true;
             AssignedTrainerLocation = trainerLocation;
             AssignedTrainerState = state != SSCBondOverviewQueryState.Ready ? SSCBondOverviewTrainerState.Unavailable
                 : AssignedTrainer == null ? SSCBondOverviewTrainerState.None
@@ -120,5 +139,29 @@ namespace SexSlaveCraft
 
         // 行复查不扫描整份列表，避免逐行绘制时形成二次复杂度。
         internal bool Contains(SSCBondOverviewEntry entry) => ReferenceEquals(Master, entry) || slaveEntries?.Contains(entry) == true;
+
+        /// <summary>只有完整显示事实相同才复用旧快照；实时归属和导航守卫独立执行。</summary>
+        internal bool SamePresentation(SSCBondOverviewSnapshot other)
+        {
+            if (other == null || !ReferenceEquals(Game, other.Game) || !ReferenceEquals(Source, other.Source) ||
+                !ReferenceEquals(ViewedMap, other.ViewedMap) || State != other.State || Identity != other.Identity ||
+                SourceName != other.SourceName || SourceDead != other.SourceDead || MasterState != other.MasterState ||
+                !ReferenceEquals(AssignedTrainer, other.AssignedTrainer) || AssignedTrainerState != other.AssignedTrainerState ||
+                TrainerName != other.TrainerName || TrainerDead != other.TrainerDead ||
+                !SameLocation(AssignedTrainerLocation, other.AssignedTrainerLocation) ||
+                LivingSlaveCount != other.LivingSlaveCount || TotalSlaveCount != other.TotalSlaveCount || !SameEntry(Master, other.Master)) return false;
+            // 顺序也是显示事实；同名排序和位置分组变化不能被相同计数掩盖。
+            for (int i = 0; i < Slaves.Count; i++) if (!SameEntry(Slaves[i], other.Slaves[i])) return false;
+            return true;
+        }
+
+        private static bool SameLocation(SSCBondOverviewLocation left, SSCBondOverviewLocation right)
+            => ReferenceEquals(left, right) || left?.SamePresentation(right) == true;
+        private static bool SameEntry(SSCBondOverviewEntry left, SSCBondOverviewEntry right)
+            => ReferenceEquals(left, right) || left != null && right != null &&
+                ReferenceEquals(left.Pawn, right.Pawn) && ReferenceEquals(left.Slave, right.Slave) &&
+                ReferenceEquals(left.Master, right.Master) && left.Direction == right.Direction && left.Name == right.Name &&
+                left.StableId == right.StableId && left.ChainStage == right.ChainStage && left.IsDead == right.IsDead &&
+                left.Specialization == right.Specialization && SameLocation(left.Location, right.Location);
     }
 }

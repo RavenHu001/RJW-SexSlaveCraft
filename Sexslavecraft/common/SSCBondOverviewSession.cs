@@ -131,9 +131,13 @@ namespace SexSlaveCraft
                 if (!force && !view.Pending && !view.DirectChanged()) return;
                 // 每次只从当前缰绳重新取候选并核链，不保留诊断发现或历史漏索引引用。
                 // 成功后清除局部请求；主人、指派和缰绳引用变化不受周期刷新期限阻挡。
-                view.Snapshot = buildLocal(view.Source, view.Map);
+                var next = buildLocal(view.Source, view.Map);
+                // 仍按原周期读取全部本地事实；只有内容变化才替换快照、增加代次和清空文字／布局缓存。
+                // 保留整份旧快照也保留它的行引用及成员索引，不把新行混进旧展示缓存。
+                if (!next.SamePresentation(view.Snapshot))
+                { view.Snapshot = next; view.Changed(); }
                 view.Pending = view.Failed = false;
-                view.DirectChanged(true); view.NextLocalRefresh = clock() + 2; view.Changed();
+                view.DirectChanged(true); view.NextLocalRefresh = clock() + 2;
             }
             catch (Exception ex)
             {

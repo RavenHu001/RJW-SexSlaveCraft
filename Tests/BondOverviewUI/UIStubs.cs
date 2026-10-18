@@ -37,8 +37,7 @@ namespace Verse
     public static class Messages { public static int Calls; public static string Last; public static void Message(string text,object def,bool historical){Calls++;Last=text;} public static void Message(string text,Pawn pawn,object def,bool historical){Calls++;Last=text;} }
     public readonly struct Rot4 { public static Rot4 South=>default; }
     public class ThingDef { public bool selectable=true; }
-    public partial class Thing { public ThingDef def=new(); public string LabelShort=>"Container"; }
-    public partial class Map { public WorldObject Parent=new(); }
+    public partial class Thing { public ThingDef def=new(); }
     public partial class Game
     {
         readonly Dictionary<Type,object> components=new();
@@ -174,7 +173,7 @@ namespace SexSlaveCraft
 }
 namespace RimWorld.Planet
 {
-    public partial class WorldObject { public bool SelectableNow=true; public string LabelCap="World object"; }
+    public partial class WorldObject { public bool SelectableNow=true; }
     public readonly struct GlobalTargetInfo
     {
         public readonly Thing Thing; public readonly WorldObject WorldObject; public readonly PlanetTile Tile;

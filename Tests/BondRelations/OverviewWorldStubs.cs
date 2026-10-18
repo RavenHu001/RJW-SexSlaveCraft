@@ -21,7 +21,8 @@ namespace Verse
     public readonly struct PlanetTile
     {
         public readonly bool Valid;
-        public PlanetTile(bool valid) { Valid = valid; }
+        public readonly int Value;
+        public PlanetTile(bool valid, int value = 0) { Valid = valid; Value = value; }
     }
     public interface IThingHolder
     {
@@ -50,6 +51,7 @@ namespace Verse
     }
     public partial class Map
     {
+        public WorldObject Parent = new WorldObject();
         public readonly List<Thing> Things = new List<Thing>();
         public readonly MapPawns mapPawns;
         public readonly ListerThings listerThings;
@@ -172,7 +174,7 @@ namespace RimWorld.Planet
         public List<Pawn> AllPawnsAlive => SexSlaveCraft.SSCRestrictionGameComponent.Pawns;
         public readonly HashSet<Pawn> AllPawnsDead = new HashSet<Pawn>();
     }
-    public partial class WorldObject { public bool Spawned = true; }
+    public partial class WorldObject { public bool Spawned = true; public string LabelCap = "World object"; }
     public class WorldObjectsHolder { public readonly List<WorldObject> AllWorldObjects = new List<WorldObject>(); }
     public class Caravan : WorldObject, IThingHolder
     {

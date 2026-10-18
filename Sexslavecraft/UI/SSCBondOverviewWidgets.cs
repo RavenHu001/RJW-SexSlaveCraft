@@ -62,6 +62,9 @@ namespace SexSlaveCraft
     internal sealed class SSCBondOverviewRowText
     {
         internal readonly string Name, Details;
+        private string tooltip;
+        // 仅首次悬停时合并完整提示，后续 GUI 事件复用；仍受 64 行缓存和语言／快照失效约束。
+        internal string Tooltip => tooltip ?? (tooltip = Name + "\n" + Details);
         internal SSCBondOverviewRowText(SSCBondOverviewEntry entry)
         {
             Name = entry.IsDead ? SSCBondOverviewText.Format("DeadName", entry.Name) : entry.Name;
@@ -74,6 +77,8 @@ namespace SexSlaveCraft
     {
         internal readonly SSCBondOverviewSnapshot Snapshot;
         internal readonly string Title, Count, Trainer, SlaveHeading, OwnedHeading, OwnedDetails, TrainerName, TrainerDetails;
+        private string trainerTooltip;
+        internal string TrainerTooltip => trainerTooltip ?? (trainerTooltip = TrainerName + "\n" + TrainerDetails);
         private float gridWidth = -1, gridHeight = -1;
         private SSCBondOverviewLayout.Grid grid;
         internal SSCBondOverviewLayout.Grid Grid(float width, float height)
@@ -96,16 +101,16 @@ namespace SexSlaveCraft
         internal SSCBondOverviewDisplay(SSCBondOverviewSnapshot snapshot)
         {
             Snapshot = snapshot;
-            Title = SSCBondOverviewText.Format("TitleSource", snapshot.Source.Dead
-                ? SSCBondOverviewText.Format("DeadName", snapshot.Source.LabelShort) : snapshot.Source.LabelShort);
+            Title = SSCBondOverviewText.Format("TitleSource", snapshot.SourceDead
+                ? SSCBondOverviewText.Format("DeadName", snapshot.SourceName) : snapshot.SourceName);
             // 数量始终表示当前缰绳中经实际锁链校验的绑定，不再存在等待全局补查的数量状态。
             Count = SSCBondOverviewText.Format("Counts", snapshot.LivingSlaveCount, snapshot.TotalSlaveCount);
             SlaveHeading = SSCBondOverviewText.Format("ShortCount", snapshot.TotalSlaveCount);
             OwnedHeading = SSCBondOverviewText.Format("OwnedCount", snapshot.TotalSlaveCount);
             OwnedDetails = OwnedHeading + "\n" + Count;
-            Trainer = SSCBondOverviewText.Format("Trainer", snapshot.AssignedTrainer?.LabelShort ?? SSCBondOverviewText.T("None"),
+            Trainer = SSCBondOverviewText.Format("Trainer", snapshot.TrainerName ?? SSCBondOverviewText.T("None"),
                 SSCBondOverviewText.T("Trainer_" + snapshot.AssignedTrainerState));
-            TrainerName = snapshot.AssignedTrainer?.LabelShort ?? SSCBondOverviewText.T("None");
+            TrainerName = snapshot.TrainerName ?? SSCBondOverviewText.T("None");
             TrainerDetails = Trainer + (snapshot.AssignedTrainerLocation == null ? "" : "\n" + SSCBondOverviewText.Location(snapshot.AssignedTrainerLocation));
         }
     }
@@ -141,7 +146,7 @@ namespace SexSlaveCraft
         internal static string Location(SSCBondOverviewLocation location)
         {
             string kind = T("Location_" + location.Kind);
-            string name = location.Container?.LabelShort ?? location.Map?.Parent?.LabelCap ?? location.WorldObject?.LabelCap;
+            string name = location.Name;
             return string.IsNullOrEmpty(name) ? kind : Format("LocationName", kind, name);
         }
     }
@@ -224,11 +229,11 @@ namespace SexSlaveCraft
             if (dead && rect.width >= 24) Widgets.Label(new Rect(rect.x, rect.yMax - 18, rect.width, 18), SSCBondOverviewText.T("Dead"));
         }
 
-        internal static void Hover(Rect rect, SSCBondOverviewEntry entry, string name, string details)
+        internal static void Hover(Rect rect, SSCBondOverviewEntry entry, string tooltip)
         {
             if (!Mouse.IsOver(rect)) return;
             Widgets.DrawHighlight(rect);
-            TooltipHandler.TipRegion(rect, name + "\n" + details);
+            TooltipHandler.TipRegion(rect, tooltip);
             SSCBondOverviewNavigation.Highlight(entry.Location);
         }
 
@@ -244,7 +249,7 @@ namespace SexSlaveCraft
             if (!Mouse.IsOver(hit)) return false;
             if (!current) { TooltipHandler.TipRegion(hit, SSCBondOverviewText.T("RelationChanged")); return false; }
             SSCBondOverviewRowText text = view.Display.Row(entry);
-            Hover(hit, entry, text.Name, text.Details);
+            Hover(hit, entry, text.Tooltip);
             bool available = SSCBondOverviewNavigation.CanPreview(entry.Location, out _);
             // 首屏未建立飞船索引并不代表无法定位；点击沿原导航路径重新解析位置并复查关系。
             if (!available) TooltipHandler.TipRegion(hit, SSCBondOverviewText.T("ResolveOnClick"));
@@ -262,7 +267,7 @@ namespace SexSlaveCraft
             if (!Mouse.IsOver(rect)) return false;
             if (!current) { TooltipHandler.TipRegion(rect, SSCBondOverviewText.T("RelationChanged")); return false; }
             Widgets.DrawHighlight(rect);
-            TooltipHandler.TipRegion(rect, view.Display.TrainerName + "\n" + view.Display.TrainerDetails);
+            TooltipHandler.TipRegion(rect, view.Display.TrainerTooltip);
             SSCBondOverviewNavigation.Highlight(snapshot.AssignedTrainerLocation);
             bool available = SSCBondOverviewNavigation.CanPreview(snapshot.AssignedTrainerLocation, out _);
             if (!available) TooltipHandler.TipRegion(rect, SSCBondOverviewText.T("ResolveOnClick"));

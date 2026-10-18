@@ -77,7 +77,7 @@ namespace SexSlaveCraft
                         if (current && Mouse.IsOver(rect))
                         {
                             var text = display.Row(snapshot.Master);
-                            SSCBondOverviewWidgets.Hover(rect, snapshot.Master, text.Name, text.Details);
+                            SSCBondOverviewWidgets.Hover(rect, snapshot.Master, text.Tooltip);
                             if (left) Remember(4, snapshot.Master);
                         }
                     }

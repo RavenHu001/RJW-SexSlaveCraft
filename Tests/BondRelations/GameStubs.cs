@@ -9,13 +9,13 @@ using SexSlaveCraft;
 
 namespace Verse
 {
-    public partial class Thing { public bool Destroyed; }
+    public partial class Thing { public bool Destroyed; public virtual string LabelShort { get; set; } = "Container"; }
     public enum Gender { None, Male, Female }
     public partial class Pawn : Thing
     {
         public bool Dead, Discarded;
         public Gender gender;
-        public string LabelShort = "Pawn";
+        public override string LabelShort { get; set; } = "Pawn";
         public string LabelShortCap => LabelShort;
         public readonly Pawn_HealthTracker health;
         public readonly Pawn_RelationsTracker relations;

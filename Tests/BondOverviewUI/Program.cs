@@ -65,7 +65,7 @@ internal static partial class Program
         root=SscTestPaths.RepositoryRoot(args.FirstOrDefault());
         foreach(var path in Directory.GetFiles(SscTestPaths.Combine(root,"Languages/English/Keyed"),"*.xml"))
             foreach(var e in XDocument.Load(path).Root.Elements())english[e.Name.LocalName]=e.Value;
-        SessionTests();NavigationTests();GuiTests();CacheTests();RevisionTests();DirectReadTests();IconButtonTests();SelectionTests();DiagnosticTests();ResourceTests();
+        SessionTests();NavigationTests();GuiTests();CacheTests();RevisionTests();DirectReadTests();IconButtonTests();SelectionTests();DiagnosticTests();OptimizationTests();ResourceTests();
         Console.WriteLine($"{cases-failures}/{cases} passed");return failures==0?0:1;
     }
 

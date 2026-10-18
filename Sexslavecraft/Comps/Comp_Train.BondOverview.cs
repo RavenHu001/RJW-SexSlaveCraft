@@ -33,20 +33,15 @@ namespace SexSlaveCraft
                     if (!ReferenceEquals(game, Current.Game) || !CanDiagnose(pawn)) return;
                     try
                     {
-                        var local = SSCBondOverviewUtility.BuildLocal(pawn, Find.CurrentMap);
-                        var global = SSCBondOverviewUtility.Build(pawn, Find.CurrentMap);
-                        if (local.State != SSCBondOverviewQueryState.Ready || global.State != SSCBondOverviewQueryState.Ready)
+                        var result = SSCBondOverviewUtility.Diagnose(pawn);
+                        if (result.State != SSCBondOverviewQueryState.Ready)
                         {
                             Messages.Message(SSCBondOverviewText.T("DebugQueryFailed"), pawn, MessageTypeDefOf.RejectInput, false);
                             return;
                         }
-                        var indexed = new HashSet<Pawn>(SSCBondOverviewReferenceComparer<Pawn>.Instance);
-                        foreach (var entry in local.Slaves) indexed.Add(entry.Pawn);
-                        int missing = 0;
-                        foreach (var entry in global.Slaves) if (!indexed.Contains(entry.Pawn)) missing++;
                         // 仅报告反向索引与全局查询的差异；不修复缰绳，也不替换概览快照或保存名单。
-                        Messages.Message(SSCBondOverviewText.Format("DebugQueryResult", local.TotalSlaveCount,
-                            global.TotalSlaveCount, missing), pawn, MessageTypeDefOf.NeutralEvent, false);
+                        Messages.Message(SSCBondOverviewText.Format("DebugQueryResult", result.IndexedCount,
+                            result.GlobalCount, result.MissingCount), pawn, MessageTypeDefOf.NeutralEvent, false);
                     }
                     catch (Exception ex)
                     {

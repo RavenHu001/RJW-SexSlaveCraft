@@ -6,10 +6,20 @@ using Verse;
 
 namespace SexSlaveCraft
 {
+    // 诊断只报告计数，不保存角色、位置或展示条目；查询上下文退出后清空全部候选引用。
+    internal readonly struct SSCBondOverviewDiagnostic
+    {
+        internal readonly SSCBondOverviewQueryState State;
+        internal readonly int IndexedCount, GlobalCount;
+        internal int MissingCount => GlobalCount - IndexedCount;
+        internal SSCBondOverviewDiagnostic(SSCBondOverviewQueryState state, int indexed = 0, int global = 0)
+        { State = state; IndexedCount = indexed; GlobalCount = global; }
+    }
+
     /// <summary>只读取直接锁链归属，不整理缰绳、身份、指派、奖励或特化。</summary>
     public static class SSCBondOverviewUtility
     {
-        /// <summary>显式全局诊断查询；普通会话禁止调用，只在玩家触发开发诊断后枚举完整候选。</summary>
+        /// <summary>完整只读查询供取证和回归；普通会话不调用，开发计数诊断使用 Diagnose 避免展示构建。</summary>
         public static SSCBondOverviewSnapshot Build(Pawn source, Map viewedMap)
         {
             SSCBondOverviewQueryState state = GetQueryState(source);
@@ -32,6 +42,31 @@ namespace SexSlaveCraft
             var state = GetQueryState(source);
             return state == SSCBondOverviewQueryState.Ready
                 ? BuildReady(source, map, null, false, false) : Empty(source, map, state);
+        }
+
+        internal static SSCBondOverviewDiagnostic Diagnose(Pawn source)
+        {
+            var state = GetQueryState(source);
+            if (state != SSCBondOverviewQueryState.Ready) return new SSCBondOverviewDiagnostic(state);
+            using var world = SSCBondOverviewWorld.Rent();
+            int count = 0;
+            void Add(Pawn candidate) { if (BoundChain(source, candidate, world) != null) count++; }
+            // 全局候选本来就包含缰绳；先在同一个去重上下文消费缰绳，再收集其他来源。
+            // 已校验的索引成员不重复查链，不创建快照、行、排序、位置或第二套成员集合。
+            var bridle = SSCBondUtility.GetBridle(source);
+            if (bridle?.targets != null)
+                for (int i = 0; i < bridle.targets.Count; i++) Add(bridle.targets[i]);
+            int indexed = count;
+            world.CollectCandidates(source, Add);
+            return new SSCBondOverviewDiagnostic(state, indexed, count);
+        }
+
+        // 普通快照和计数诊断共用完全相同的候选有效性、引用去重及实际锁链过滤。
+        private static Hediff_ChainOfSexSlave BoundChain(Pawn source, Pawn candidate, SSCBondOverviewWorld world)
+        {
+            if (!IsValidPawn(candidate) || ReferenceEquals(source, candidate) || !world.VisitCandidate(candidate)) return null;
+            var chain = SSCBondUtility.GetChain(candidate);
+            return ReferenceEquals(chain?.LinkedPawn, source) ? chain : null;
         }
 
         private readonly struct BoundCandidate
@@ -61,9 +96,8 @@ namespace SexSlaveCraft
             {
                 // 先按引用去重，再查健康集合；多来源重复不会反复查链或生成重复行。
                 // 命中后保留同一链引用供行构造读取阶段，避免重新查找；不触发任何绑定维护。
-                if (!IsValidPawn(candidate) || ReferenceEquals(source, candidate) || !world.VisitCandidate(candidate)) return;
-                Hediff_ChainOfSexSlave chain = SSCBondUtility.GetChain(candidate);
-                if (!ReferenceEquals(chain?.LinkedPawn, source)) return;
+                Hediff_ChainOfSexSlave chain = BoundChain(source, candidate, world);
+                if (chain == null) return;
                 // 只暂存实际关系；全体候选的去重缓冲在查询结束时清空并有界复用。
                 matched.Add(new BoundCandidate(candidate, chain));
             }
@@ -86,19 +120,25 @@ namespace SexSlaveCraft
             bool hasTrainer = IsValidPawn(trainer) && !ReferenceEquals(source, trainer);
             if (indexShips)
             {
-                if (hasTrainer) world.AddLocationRequest(trainer);
-                foreach (BoundCandidate candidate in matched) world.AddLocationRequest(candidate.Pawn);
+                if (hasTrainer && !ReferenceEquals(trainer, master)) world.AddLocationRequest(trainer);
+                foreach (BoundCandidate candidate in matched)
+                    if (!ReferenceEquals(candidate.Pawn, master) && !ReferenceEquals(candidate.Pawn, trainer)) world.AddLocationRequest(candidate.Pawn);
                 world.IndexShipLocations();
             }
+            // 主人兼调教员、指定者同时是从属等情形复用本次位置结果，不引入跨查询位置缓存。
+            SSCBondOverviewLocation masterLocation = hasMaster ? world.GetLocation(master) : null;
+            SSCBondOverviewLocation trainerLocation = hasTrainer
+                ? ReferenceEquals(trainer, master) ? masterLocation : world.GetLocation(trainer) : null;
             SSCBondOverviewEntry masterEntry = hasMaster
-                ? new SSCBondOverviewEntry(source, master, SSCBondOverviewDirection.Master, ownChain, world.GetLocation(master)) : null;
+                ? new SSCBondOverviewEntry(source, master, SSCBondOverviewDirection.Master, ownChain, masterLocation) : null;
             var slaves = new List<SSCBondOverviewEntry>(matched.Count);
             foreach (BoundCandidate candidate in matched)
                 slaves.Add(new SSCBondOverviewEntry(source, candidate.Pawn, SSCBondOverviewDirection.Slave,
-                    candidate.Chain, world.GetLocation(candidate.Pawn)));
+                    candidate.Chain, ReferenceEquals(candidate.Pawn, master) ? masterLocation
+                        : ReferenceEquals(candidate.Pawn, trainer) ? trainerLocation : world.GetLocation(candidate.Pawn)));
             slaves.Sort((left, right) => Compare(left, right, viewedMap));
             return new SSCBondOverviewSnapshot(Current.Game, source, viewedMap, SSCBondOverviewQueryState.Ready, masterState, masterEntry, slaves,
-                hasTrainer ? world.GetLocation(trainer) : null);
+                trainerLocation);
         }
 
         /// <summary>轻量复查行所属游戏、来源与当前直接归属；同主的新链仍是同一关系。</summary>
