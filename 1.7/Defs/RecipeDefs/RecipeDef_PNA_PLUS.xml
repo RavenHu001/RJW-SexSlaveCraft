@@ -4,7 +4,7 @@
   <RecipeDef>
     <defName>SSC_Make_SuperDrug</defName>
     
-    <label>浓缩纳米催情液</label>
+    <label>PNA浓缩</label>
     
     <description>把 5 份纳米催情液减压蒸去多余液体，得到 1 份浓缩品。</description>
     
@@ -48,7 +48,7 @@
     <RecipeDef>
     <defName>SSC_Make_SuperDrug_forth</defName>
     
-    <label>浓缩纳米催情液 ×4</label>
+    <label>PNA批量浓缩</label>
     
     <description>把 20 份纳米催情液减压蒸去多余液体，一次得到 4 份浓缩品。</description>
     

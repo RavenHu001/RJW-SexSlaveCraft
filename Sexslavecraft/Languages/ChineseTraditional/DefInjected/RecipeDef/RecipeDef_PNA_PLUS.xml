@@ -1,9 +1,12 @@
 <?xml version='1.0' encoding='utf-8'?>
 <LanguageData>
-  <SSC_Make_SuperDrug.label>濃縮奈米催情液</SSC_Make_SuperDrug.label>
+  <SSC_Make_SuperDrug.label>PNA濃縮</SSC_Make_SuperDrug.label>
   <SSC_Make_SuperDrug.description>把 5 份奈米催情液減壓蒸去多餘液體，得到 1 份濃縮品。</SSC_Make_SuperDrug.description>
   <SSC_Make_SuperDrug.jobString>正在濃縮奈米催情液。</SSC_Make_SuperDrug.jobString>
-  <SSC_Make_SuperDrug_forth.label>濃縮奈米催情液 ×4</SSC_Make_SuperDrug_forth.label>
+  <SSC_Make_SuperDrug_forth.label>PNA批量濃縮</SSC_Make_SuperDrug_forth.label>
   <SSC_Make_SuperDrug_forth.description>把 20 份奈米催情液減壓蒸去多餘液體，一次得到 4 份濃縮品。</SSC_Make_SuperDrug_forth.description>
   <SSC_Make_SuperDrug_forth.jobString>正在批次濃縮奈米催情液。</SSC_Make_SuperDrug_forth.jobString>
+  <SSC_Make_SuperDrug_Rough.label>PNA粗放濃縮</SSC_Make_SuperDrug_Rough.label>
+  <SSC_Make_SuperDrug_Rough.description>直接加熱奈米催情液，蒸去多餘液體。高溫和殘渣會損失一部分活性微械，需要 10 份原液才能得到 1 份濃縮品；製成的濃縮品與藥物台產品相同。</SSC_Make_SuperDrug_Rough.description>
+  <SSC_Make_SuperDrug_Rough.jobString>正在粗放濃縮PNA。</SSC_Make_SuperDrug_Rough.jobString>
 </LanguageData>

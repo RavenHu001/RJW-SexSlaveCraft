@@ -56,6 +56,7 @@ $suites = @(
     # 此套件使用模型边界而无额外 Harmony DLL；1.6 模式在下方清空套件表，不会回归新源码。
     @{ Name = 'Gelatinization'; Arguments = @($repoRoot) },
     @{ Name = 'PnaLoad'; Arguments = @($repoRoot) },
+    @{ Name = 'LowTechAdaptation'; Arguments = @($repoRoot) },
     @{ Name = 'PersonalityMemories'; Arguments = @() },
     @{ Name = 'PersonalitySpecializations'; Arguments = @() },
     @{ Name = 'PetSpecialization'; Arguments = @() },
