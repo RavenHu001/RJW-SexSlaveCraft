@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- AI 辅助生成；1.7 首批涂覆武器。短矛使用维护者提供原图的透明底版本，远程武器仍用临时原版资源。
+<!-- AI 辅助生成；1.7 首批涂覆武器。短矛与吹箭筒使用专用透明贴图，轻弩仍用临时原版资源。
      固定材料、原版品质；只在制造时消耗 PNA，不添加充能或补液组件。 -->
 <Defs>
   <ThingDef ParentName="BaseMeleeWeapon_Sharp_Quality">
@@ -79,10 +79,13 @@
     <techLevel>Medieval</techLevel>
     <possessionCount>1</possessionCount>
     <graphicData>
-      <texPath>Things/Item/Equipment/WeaponRanged/Pilum</texPath>
+      <texPath>Things/Item/Equipment/SSC_PnaBlowpipe</texPath>
       <graphicClass>Graphic_Single</graphicClass>
-      <color>(0.65, 0.35, 0.8)</color>
+      <!-- 256×256 透明画布，筒身水平朝右；贴图自带木材、绑带和紫色浸染颜色。 -->
+      <drawSize>1</drawSize>
     </graphicData>
+    <!-- 水平朝右的贴图不需要额外装备角度修正，保留原版待命和瞄准流程。 -->
+    <equippedAngleOffset>0</equippedAngleOffset>
     <soundInteract>Bow_Small</soundInteract>
     <statBases>
       <WorkToMake>2400</WorkToMake>
@@ -200,9 +203,10 @@
     <defName>SSC_Projectile_PnaDart</defName>
     <label>纳米催情液吹箭</label>
     <graphicData>
-      <texPath>Things/Projectile/Arrow_Small</texPath>
+      <texPath>Things/Projectile/SSC_PnaDart</texPath>
       <graphicClass>Graphic_Single</graphicClass>
-      <color>(0.65, 0.35, 0.8)</color>
+      <!-- 128×128 透明图，箭头朝上、尾塞朝下；紫色箭头、木杆和浅米色尾塞使用原色。 -->
+      <drawSize>(0.6,0.6)</drawSize>
     </graphicData>
     <projectile>
       <damageDef>SSC_Damage_PnaDartStab</damageDef>
