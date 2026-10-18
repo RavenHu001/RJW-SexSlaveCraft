@@ -13,7 +13,7 @@
   <DamageDef ParentName="SSC_PnaCoatedStabBase">
     <defName>SSC_Damage_PnaStaffStab</defName>
     <label>纳米催情液刺击</label>
-    <deathMessage>{0}被纳米催情液刺棍刺死了。</deathMessage>
+    <deathMessage>{0}被纳米催情液短矛刺死了。</deathMessage>
     <modExtensions>
       <li Class="SexSlaveCraft.SSCPnaCoatingExtension">
         <baseLoad>0.15</baseLoad>

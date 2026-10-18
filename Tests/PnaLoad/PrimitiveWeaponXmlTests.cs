@@ -78,7 +78,7 @@ internal static partial class Program
             });
         }
 
-        Run("刺棍通过独立能力和动作接入主伤害", () =>
+        Run("短矛通过独立能力和动作接入主伤害", () =>
         {
             var staff = LoadDef(PrimitiveThings, weapons[0].Name);
             Near(2, Number(staff.Element("equippedStatOffsets").Element("MeleeHitChance")));

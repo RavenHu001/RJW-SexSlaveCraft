@@ -1,19 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- AI 辅助生成；1.7 首批涂覆武器。原版 texPath 仅供开发验证，正式资源另行制作。
+<!-- AI 辅助生成；1.7 首批涂覆武器。短矛使用维护者提供原图的透明底版本，远程武器仍用临时原版资源。
      固定材料、原版品质；只在制造时消耗 PNA，不添加充能或补液组件。 -->
 <Defs>
   <ThingDef ParentName="BaseMeleeWeapon_Sharp_Quality">
     <defName>SSC_Weapon_PnaSpikeStaff</defName>
-    <label>纳米催情液刺棍</label>
-    <description>一根加装短刺的手工木棍，工作部分浸覆紫色纳米催情液。使用者尝试以较浅的刺击造成伤口，让附着的药液进入目标体内。贴身接触能够送入较多药液，但粗糙的尖刺仍会造成真实创伤，不能保证目标存活。</description>
+    <label>纳米催情液短矛</label>
+    <description>一柄以绳带固定金属矛头的手工短矛，矛刃浸覆紫色纳米催情液。使用者尝试以较浅的刺击造成伤口，让附着的药液进入目标体内。贴身接触能够送入较多药液，但锋利的矛头仍会造成真实创伤，不能保证目标存活。</description>
     <techLevel>Medieval</techLevel>
     <possessionCount>1</possessionCount>
     <graphicData>
-      <texPath>Things/Item/Equipment/WeaponMelee/Club</texPath>
+      <texPath>Things/Item/Equipment/SSC_PnaShortSpear</texPath>
       <graphicClass>Graphic_Single</graphicClass>
-      <color>(0.65, 0.35, 0.8)</color>
+      <!-- 贴图已自带颜色，不对木杆和绑绳重复施加紫色 tint。 -->
+      <!-- 256×256 透明画布，矛体沿左下至右上 45° 对角线，保持等比显示。 -->
+      <drawSize>1</drawSize>
     </graphicData>
-    <equippedAngleOffset>-65</equippedAngleOffset>
+    <!-- DrawEquipmentAiming 已扣 90°，此处用正 45° 抵消贴图自身的对角线朝向。 -->
+    <equippedAngleOffset>45</equippedAngleOffset>
     <statBases>
       <WorkToMake>4000</WorkToMake>
       <Mass>1.2</Mass>
@@ -45,7 +48,7 @@
     </recipeMaker>
     <tools>
       <li>
-        <label>尖刺</label>
+        <label>矛尖</label>
         <capacities><li>SSC_ToolCapacity_PnaStab</li></capacities>
         <power>5</power>
         <armorPenetration>0.12</armorPenetration>
@@ -54,7 +57,7 @@
         <chanceFactor>2</chanceFactor>
       </li>
       <li>
-        <label>棍柄</label>
+        <label>矛柄</label>
         <capacities><li>Blunt</li></capacities>
         <power>2</power>
         <armorPenetration>0</armorPenetration>

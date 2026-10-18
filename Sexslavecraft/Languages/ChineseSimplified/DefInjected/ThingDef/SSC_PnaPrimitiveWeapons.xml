@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-  <SSC_Weapon_PnaSpikeStaff.label>纳米催情液刺棍</SSC_Weapon_PnaSpikeStaff.label>
-  <SSC_Weapon_PnaSpikeStaff.description>一根加装短刺的手工木棍，工作部分浸覆紫色纳米催情液。使用者尝试以较浅的刺击造成伤口，让附着的药液进入目标体内。贴身接触能够送入较多药液，但粗糙的尖刺仍会造成真实创伤，不能保证目标存活。</SSC_Weapon_PnaSpikeStaff.description>
+  <SSC_Weapon_PnaSpikeStaff.label>纳米催情液短矛</SSC_Weapon_PnaSpikeStaff.label>
+  <SSC_Weapon_PnaSpikeStaff.description>一柄以绳带固定金属矛头的手工短矛，矛刃浸覆紫色纳米催情液。使用者尝试以较浅的刺击造成伤口，让附着的药液进入目标体内。贴身接触能够送入较多药液，但锋利的矛头仍会造成真实创伤，不能保证目标存活。</SSC_Weapon_PnaSpikeStaff.description>
   <SSC_Weapon_PnaBlowpipe.label>纳米催情液吹箭筒</SSC_Weapon_PnaBlowpipe.label>
   <SSC_Weapon_PnaBlowpipe.description>一支配用浸液轻箭的手工吹箭筒。细箭上的紫色纳米催情液可随伤口进入目标体内；轻箭的创伤较小，也很难穿过护甲。适合在中近距离连续尝试施加，距离增加后命中明显变差。</SSC_Weapon_PnaBlowpipe.description>
   <SSC_Weapon_PnaLightCrossbow.label>纳米催情液轻弩</SSC_Weapon_PnaLightCrossbow.label>
   <SSC_Weapon_PnaLightCrossbow.description>一把配用携液弩矢的手工轻弩。弩矢浸覆紫色纳米催情液，尝试在较远距离通过伤口送入药液。比吹箭更准确，也能穿过部分轻甲，但装填瞄准更慢，弩矢造成的创伤也更重。</SSC_Weapon_PnaLightCrossbow.description>
-  <SSC_Weapon_PnaSpikeStaff.tools.0.label>尖刺</SSC_Weapon_PnaSpikeStaff.tools.0.label>
-  <SSC_Weapon_PnaSpikeStaff.tools.1.label>棍柄</SSC_Weapon_PnaSpikeStaff.tools.1.label>
+  <SSC_Weapon_PnaSpikeStaff.tools.0.label>矛尖</SSC_Weapon_PnaSpikeStaff.tools.0.label>
+  <SSC_Weapon_PnaSpikeStaff.tools.1.label>矛柄</SSC_Weapon_PnaSpikeStaff.tools.1.label>
   <SSC_Weapon_PnaBlowpipe.tools.0.label>筒身</SSC_Weapon_PnaBlowpipe.tools.0.label>
   <SSC_Weapon_PnaLightCrossbow.tools.0.label>弩身</SSC_Weapon_PnaLightCrossbow.tools.0.label>
   <SSC_Projectile_PnaDart.label>纳米催情液吹箭</SSC_Projectile_PnaDart.label>

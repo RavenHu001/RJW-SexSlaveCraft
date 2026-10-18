@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-  <SSC_Weapon_PnaSpikeStaff.label>шипастая дубинка с возбуждающей наножидкостью</SSC_Weapon_PnaSpikeStaff.label>
-  <SSC_Weapon_PnaSpikeStaff.description>Деревянная дубинка ручной работы с короткими шипами, покрытыми фиолетовой возбуждающей наножидкостью. Неглубокие проколы должны доставлять жидкость в тело цели. Прямой контакт позволяет ввести больше жидкости, но грубые шипы всё ещё наносят настоящие раны и могут убить.</SSC_Weapon_PnaSpikeStaff.description>
+  <SSC_Weapon_PnaSpikeStaff.label>короткое копьё с возбуждающей наножидкостью</SSC_Weapon_PnaSpikeStaff.label>
+  <SSC_Weapon_PnaSpikeStaff.description>Короткое копьё ручной работы с металлическим наконечником, примотанным к деревянному древку. Лезвие покрыто фиолетовой возбуждающей наножидкостью. Неглубокие уколы должны доставлять жидкость в тело через раны. Прямой контакт позволяет ввести больше жидкости, но острый наконечник всё ещё наносит настоящие раны и может убить.</SSC_Weapon_PnaSpikeStaff.description>
   <SSC_Weapon_PnaBlowpipe.label>духовая трубка с возбуждающей наножидкостью</SSC_Weapon_PnaBlowpipe.label>
   <SSC_Weapon_PnaBlowpipe.description>Духовая трубка ручной работы для лёгких дротиков, пропитанных фиолетовой возбуждающей наножидкостью. Жидкость попадает в тело через рану. Дротики наносят меньшие повреждения, но плохо пробивают броню. Позволяет часто стрелять на ближней и средней дистанции; с расстоянием точность резко падает.</SSC_Weapon_PnaBlowpipe.description>
   <SSC_Weapon_PnaLightCrossbow.label>лёгкий арбалет с возбуждающей наножидкостью</SSC_Weapon_PnaLightCrossbow.label>
   <SSC_Weapon_PnaLightCrossbow.description>Лёгкий арбалет ручной работы с болтами, покрытыми фиолетовой возбуждающей наножидкостью. Доставляет жидкость через раны на большей дистанции. Точнее духовой трубки и пробивает часть лёгкой брони, но медленнее заряжается и наводится, а болты наносят более тяжёлые раны.</SSC_Weapon_PnaLightCrossbow.description>
-  <SSC_Weapon_PnaSpikeStaff.tools.0.label>шипы</SSC_Weapon_PnaSpikeStaff.tools.0.label>
-  <SSC_Weapon_PnaSpikeStaff.tools.1.label>рукоять</SSC_Weapon_PnaSpikeStaff.tools.1.label>
+  <SSC_Weapon_PnaSpikeStaff.tools.0.label>наконечник</SSC_Weapon_PnaSpikeStaff.tools.0.label>
+  <SSC_Weapon_PnaSpikeStaff.tools.1.label>древко</SSC_Weapon_PnaSpikeStaff.tools.1.label>
   <SSC_Weapon_PnaBlowpipe.tools.0.label>трубка</SSC_Weapon_PnaBlowpipe.tools.0.label>
   <SSC_Weapon_PnaLightCrossbow.tools.0.label>ложе</SSC_Weapon_PnaLightCrossbow.tools.0.label>
   <SSC_Projectile_PnaDart.label>дротик с возбуждающей наножидкостью</SSC_Projectile_PnaDart.label>
