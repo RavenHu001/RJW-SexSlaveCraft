@@ -6,7 +6,12 @@
   <ItemGroup>
     <Compile Include="../../Sexslavecraft/common/SSCPnaMath.cs" Link="Production/SSCPnaMath.cs" />
     <Compile Include="../../Sexslavecraft/common/SSCPnaWeaponEffectsUtility.cs" Link="Production/SSCPnaWeaponEffectsUtility.cs" />
-    <Compile Include="../../Sexslavecraft/Comps/Mote_SSCPnaStab.cs" Link="Production/Mote_SSCPnaStab.cs" />
+    <Compile Include="../../Sexslavecraft/common/SSCPnaSpearGlowUtility.cs" Link="Production/SSCPnaSpearGlowUtility.cs" />
+    <Compile Include="../../Sexslavecraft/ThePatches/Harmony_SSCPnaSpearGlow.cs" Link="Production/Harmony_SSCPnaSpearGlow.cs" />
     <Compile Include="../../Sexslavecraft/DamageWorker/Verb_MeleeAttackSSCPna.cs" Link="Production/Verb_MeleeAttackSSCPna.cs" />
   </ItemGroup>
+  <ItemGroup><Reference Include="0Harmony"><HintPath>$(HarmonyAssemblyPath)</HintPath></Reference></ItemGroup>
+  <Target Name="RequireHarmony" BeforeTargets="ResolveReferences" Condition="!Exists('$(HarmonyAssemblyPath)')">
+    <Error Text="Supply -p:HarmonyAssemblyPath with the local net9.0 0Harmony.dll." />
+  </Target>
 </Project>

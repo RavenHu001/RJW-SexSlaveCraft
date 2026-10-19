@@ -9,13 +9,12 @@ namespace SexSlaveCraft
     [DefOf]
     public static class SSCPnaWeaponEffectDefOf
     {
-        public static ThingDef SSC_Mote_PnaStabSpindle;
         public static FleckDef SSC_PnaAbsorptionHeart;
 
         static SSCPnaWeaponEffectDefOf() => DefOfHelper.EnsureInitializedInCtor(typeof(SSCPnaWeaponEffectDefOf));
     }
 
-    /// <summary>每次事件最多提交一个视觉对象：刺击用专用 Mote，受药用原版 Fleck 系统。</summary>
+    /// <summary>每次接受武器施药只提交一个爱心 Fleck；矛尖泛光由独立绘制工具管理。</summary>
     internal static class SSCPnaWeaponEffectsUtility
     {
         /// <summary>仅由两种武器入口在最终 exposure.Accepted 为 true 时调用，满负荷仍可反馈。</summary>
@@ -37,26 +36,6 @@ namespace SexSlaveCraft
             data.rotation = 180f;
             data.velocity = new Vector3(0f, 0f, .22f);
             map.flecks.CreateFleck(data);
-        }
-
-        /// <summary>使用攻击前快照，避免命中摧毁目标后失去坐标；刺空与闪避也有攻击纹。</summary>
-        internal static void ShowStab(Map map, Vector3 from, Vector3 to)
-        {
-            if (Scribe.mode != LoadSaveMode.Inactive || !Finite(from) || !Finite(to)) return;
-            double dx = to.x - from.x, dz = to.z - from.z;
-            double distance = Math.Sqrt(dx * dx + dz * dz);
-            if (distance < .001 || distance > 4d) return;
-            // 固定尾部在攻击者前方，由单个 Mote 自行向前伸长和收细，不再生成静止软光斑。
-            float offset = (float)Math.Min(.25d, distance * .25d);
-            var position = new Vector3(from.x + (float)(dx / distance) * offset, from.y,
-                from.z + (float)(dz / distance) * offset);
-            ThingDef def = SSCPnaWeaponEffectDefOf.SSC_Mote_PnaStabSpindle;
-            if (def == null || !IsVisible(position, map)) return;
-            float angle = (float)(Math.Atan2(dx, dz) * (180d / Math.PI));
-            // 原版入口同时遵守地图 Mote 数量上限；饱和时不补发、不建立额外队列。
-            var mote = MoteMaker.MakeStaticMote(position, map, def) as Mote_SSCPnaStab;
-            mote?.Initialize(position, new Vector3((float)(dx / distance), 0f, (float)(dz / distance)),
-                (float)Math.Min(1.6d, distance * 1.5d), angle);
         }
 
         private static bool CanDraw(Vector3 position, Map map, FleckDef def)

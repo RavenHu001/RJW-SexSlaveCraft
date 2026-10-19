@@ -1,11 +1,11 @@
 # PNA 武器攻击与受药视觉专项
 
-直接编译生产 `SSCPnaWeaponEffectsUtility`、`Verb_MeleeAttackSSCPna`、`Mote_SSCPnaStab` 及纯数学工具，使用 .NET 9 宿主隔离原版攻击入口和 Fleck／Mote 输出。运行：
+直接编译生产受药工具、专用刺击 Verb、矛尖泛光计时及绘制补丁，使用 .NET 9 与真实 Harmony 2.4.2 执行两处补丁，隔离原版视觉 tick 与 GPU 绘制边界。运行：
 
 ```powershell
-dotnet run --project Tests/PnaWeaponEffects/PnaWeaponEffects.csproj -- <仓库绝对路径>
+dotnet run --project Tests/PnaWeaponEffects/PnaWeaponEffects.csproj -p:HarmonyAssemblyPath=<net9.0的0Harmony.dll> -- <仓库绝对路径>
 ```
 
-36 项覆盖攻击成功／刺空、忙碌／离图、原返回值与异常传播、目标销毁后的坐标快照、各方向与非法坐标、刺芒前伸及固定尾部、后期收细、Mote 饱和与销毁边界、心形尺寸／位置／上浮、显示门槛、独立调用及 XML 接线。边界不模拟原版命中概率、GPU、着色器或真实地图生命周期；实际颜色、观感和性能须由真实 1.7 游戏验证。
+61 项覆盖命中／刺空、忙碌与持有状态、原返回值和异常、护甲与药效免疫分离、18 tick 满亮与 30 tick 淡出、收回后持续、无原偏移也能计时、再次命中重启、超大／负数批次、批量视觉 tick／暂停、外力不延长或重新点亮、地图切换、同格与多持有者、最终绘制矩阵及翻面、矛尖 UV 裁切、光晕以矛头为中心的 4.5 倍范围、两层共享淡出、独立材质、显式白色顶点色、同帧亮度提交隔离、资源初始化标记、未知 IL／网格、旧尖梭撤除及爱心参数。边界不模拟原版命中概率、GPU、着色器或真实地图生命周期；实际泛光亮度与轮廓须由真实 1.7 游戏验证。
 
 药效是否成功、满负荷有效输入、锁链活化、主人免疫、多部位传播及嵌套去重由 `Tests/PnaLoad/WeaponEffectTests.cs` 直接执行生产伤害与药效代码验证；该宿主只替换显示函数为请求记录器，不复制施药判断。

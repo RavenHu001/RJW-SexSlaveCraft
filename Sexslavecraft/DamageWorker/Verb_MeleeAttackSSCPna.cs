@@ -1,6 +1,5 @@
-// AI 辅助生成：只给专用携液刺击动作增加攻击纹，完整保留原版命中与伤害流程。
+// AI 辅助生成：专用携液刺击命中后启动矛尖泛光，完整保留原版动作与伤害流程。
 using RimWorld;
-using UnityEngine;
 using Verse;
 
 namespace SexSlaveCraft
@@ -15,11 +14,11 @@ namespace SexSlaveCraft
             // 因此不能把父类返回值当作“是否出手”。额外地图检查只限制视觉，不拦截父类。
             bool attempted = pawn != null && pawn.Spawned && !pawn.stances.FullBodyBusy &&
                 target != null && target.Spawned && target.Map == pawn.Map;
-            Map map = attempted ? pawn.Map : null;
-            Vector3 from = attempted ? pawn.DrawPos : default;
-            Vector3 to = attempted ? target.DrawPos : default;
+            Thing weapon = EquipmentSource;
+            if (attempted) SSCPnaSpearGlowUtility.Clear(weapon);
             bool result = base.TryCastShot();
-            if (attempted) SSCPnaWeaponEffectsUtility.ShowStab(map, from, to);
+            // 原版 true 表示命中，包含护甲完全阻挡；miss／dodge 均不亮，不依赖施药成功。
+            if (attempted && result) SSCPnaSpearGlowUtility.Begin(weapon, pawn);
             return result;
         }
     }

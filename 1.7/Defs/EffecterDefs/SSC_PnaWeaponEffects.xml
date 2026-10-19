@@ -1,25 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- AI 辅助生成；仅攻击纹与成功受药反馈，不追加接触闪光、声音或灯光。 -->
+<!-- AI 辅助生成；仅保留成功受药爱心。命中矛尖泛光由武器绘制工具处理，不生成粒子。 -->
 <Defs>
-  <ThingDef ParentName="MoteBase">
-    <defName>SSC_Mote_PnaStabSpindle</defName>
-    <thingClass>SexSlaveCraft.Mote_SSCPnaStab</thingClass>
-    <graphicData>
-      <texPath>Things/Mote/SSC_PnaStabSpindle</texPath>
-      <graphicClass>Graphic_Mote</graphicClass>
-      <shaderType>Mote</shaderType>
-      <!-- 原图保留透明留白；只补偿横向显示比例，不修改生成图的像素或 alpha。 -->
-      <drawSize>(5,1)</drawSize>
-    </graphicData>
-    <altitudeLayer>MetaOverlays</altitudeLayer>
-    <mote>
-      <realTime>false</realTime>
-      <fadeInTime>0.02</fadeInTime>
-      <solidTime>0.10</solidTime>
-      <fadeOutTime>0.30</fadeOutTime>
-      <growthRate>0</growthRate>
-    </mote>
-  </ThingDef>
   <FleckDef ParentName="FleckBase_Thrown">
     <defName>SSC_PnaAbsorptionHeart</defName>
     <graphicData>

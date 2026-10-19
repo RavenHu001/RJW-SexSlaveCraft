@@ -364,7 +364,8 @@
     <Compile Include="DamageWorker\DamageWorker_SSCPnaCoated.cs" />
     <Compile Include="common\SSCPnaWeaponDoseUtility.cs" />
     <Compile Include="common\SSCPnaWeaponEffectsUtility.cs" />
-    <Compile Include="Comps\Mote_SSCPnaStab.cs" />
+    <Compile Include="common\SSCPnaSpearGlowUtility.cs" />
+    <Compile Include="ThePatches\Harmony_SSCPnaSpearGlow.cs" />
     <Compile Include="DamageWorker\Verb_MeleeAttackSSCPna.cs" />
     <Compile Include="Hediff\HediffComp_ProducePAN.cs" />
     <Compile Include="Hediff\HediffComp_Refresh_.cs" />
