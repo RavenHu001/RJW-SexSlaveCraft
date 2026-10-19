@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- AI 辅助生成；工业首批定义。短鞭使用专用透明贴图，针枪仍引用原版占位图，射针暂用现有 PNA 箭图。
+<!-- AI 辅助生成；工业首批定义。短鞭与速射针枪使用专用透明贴图，精确针枪仍引用原版占位图，射针暂用现有 PNA 箭图。
      固定配方中的化合燃料用于聚合物制造，不增加运行燃料、弹药或补液管理。 -->
 <Defs>
   <ThingDef ParentName="BaseMeleeWeapon_Sharp_Quality">
@@ -45,7 +45,7 @@
     <label>纳米催情液速射针枪</label>
     <description>一把气动速射针枪，以三发短点射投送载药射针。适合中近距离连续施加纳米催情液，远距离精度较差。</description>
     <techLevel>Industrial</techLevel><possessionCount>1</possessionCount>
-    <graphicData><texPath>Things/Item/Equipment/WeaponRanged/MachinePistol</texPath><graphicClass>Graphic_Single</graphicClass><drawSize>1</drawSize></graphicData>
+    <graphicData><texPath>Things/Item/Equipment/SSC_PnaNeedleRepeater</texPath><graphicClass>Graphic_Single</graphicClass><drawSize>1</drawSize></graphicData>
     <soundInteract>Interact_SMG</soundInteract>
     <statBases>
       <WorkToMake>14000</WorkToMake><Mass>2</Mass><MaxHitPoints>100</MaxHitPoints>

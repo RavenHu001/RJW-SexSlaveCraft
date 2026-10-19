@@ -15,3 +15,7 @@
 | [游戏使用的欲望之种贴图](../../Common/Textures/Things/Item/SSC_DesireSeed.png) | 运行资源；对应恢复记录见开发日志 |
 
 短鞭新增[紫色弧形命中特效](../Development/Completed/SSC短鞭紫色弧形命中特效实现与测试.md)，当前改为复用 Core 柔边纹理的宽半弧网格；旧 128px 小弧痕撤下并归档，最终上半弧加宽提亮版已实机验收。
+
+工业速射针枪[256px 导出与接入](../Development/Completed/SSC工业速射针枪贴图接入与测试.md)已完成并同步；[原图及导出参数](SSC_PnaNeedleRepeater/export.json)保留，最终重绘版已获认可并授权提交。
+
+速射针枪现行原图已替换为认可的描边平涂重绘版，等比 240×100、256×256 透明导出并再次同步；现有 XML 引用和 drawSize=1 保持，最终重绘版已获维护者认可。

@@ -6,6 +6,7 @@
 
 | 资源 | 画布与方向 | 游戏参数 | 说明 |
 | --- | --- | --- | --- |
+| [工业速射针枪](../../1.7/Textures/Things/Item/Equipment/SSC_PnaNeedleRepeater.png) | 256×256，水平朝右；枪体 240×100 | drawSize=1，既有握持配置 | 描边平涂重绘版，工程塑料枪身、枪托储气罐及侧开夹具、压力表与横放载药圆管，见[接入记录](../Development/Completed/SSC工业速射针枪贴图接入与测试.md)；最终重绘版已获认可并授权提交 |
 | [工业短鞭](../../1.7/Textures/Things/Item/Equipment/SSC_PnaShortWhip.png) | 256×256，握柄在左、三股鞭束向右 | drawSize=1，沿用现有装备角度 | 当前为新版物品图，另接待机／挥击／回落；柄部共同标定，见[本轮实现](../Development/Completed/SSC短鞭四姿态接入与测试.md)，已获本轮实机认可；[旧单图验收](../Development/Completed/SSC工业短鞭贴图接入与测试.md)保留原范围 |
 | [短矛](../../1.7/Textures/Things/Item/Equipment/SSC_PnaShortSpear.png) | 256×256，水平朝右 | drawSize=1，无额外装备角度 | 紫色金属阔刃、小圆形尾端、暖木杆、深色绑带；最初参考图由维护者提供，后续横置、构型与粗细调整保留历史来源 |
 | [吹箭筒](../../1.7/Textures/Things/Item/Equipment/SSC_PnaBlowpipe.png) | 256×256，水平朝右 | drawSize=1，角度 0 | 紧凑木筒、浸紫直筒口，两支备用箭为紫色金属箭头与浅米色纤维尾塞 |
