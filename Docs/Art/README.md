@@ -19,3 +19,5 @@
 工业速射针枪[256px 导出与接入](../Development/Completed/SSC工业速射针枪贴图接入与测试.md)已完成并同步；[原图及导出参数](SSC_PnaNeedleRepeater/export.json)保留，最终重绘版已获认可并授权提交。
 
 速射针枪现行原图已替换为认可的描边平涂重绘版，等比 240×100、256×256 透明导出并再次同步；现有 XML 引用和 drawSize=1 保持，最终重绘版已获维护者认可。
+
+两种工业针弹的[原图与统一倍率导出](SSC_PnaNeedles/export.json)已保存；[128px接入与检查](../Development/Completed/SSC工业针弹贴图接入与测试.md)完成并同步，drawSize=0.4，已获维护者认可并授权提交。

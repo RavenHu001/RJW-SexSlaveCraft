@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- AI 辅助生成；工业首批定义。短鞭与速射针枪使用专用透明贴图，精确针枪仍引用原版占位图，射针暂用现有 PNA 箭图。
+<!-- AI 辅助生成；工业首批定义。短鞭、速射针枪与工业射针使用专用透明贴图，精确针枪仍引用原版占位图。
      固定配方中的化合燃料用于聚合物制造，不增加运行燃料、弹药或补液管理。 -->
 <Defs>
   <ThingDef ParentName="BaseMeleeWeapon_Sharp_Quality">
@@ -104,14 +104,14 @@
     <defName>SSC_Projectile_PnaRepeaterNeedle</defName><label>纳米催情液速射针</label>
     <thingClass>SexSlaveCraft.Projectile_SSCPnaTrail</thingClass>
     <comps><li Class="SexSlaveCraft.CompProperties_SSCPnaTrail"><fleckDef>SSC_PnaTrail</fleckDef></li></comps>
-    <graphicData><texPath>Things/Projectile/SSC_PnaDart</texPath><graphicClass>Graphic_Single</graphicClass><drawSize>(0.4,0.4)</drawSize></graphicData>
+    <graphicData><texPath>Things/Projectile/SSC_PnaRepeaterNeedle</texPath><graphicClass>Graphic_Single</graphicClass><drawSize>(0.4,0.4)</drawSize></graphicData>
     <projectile><damageDef>SSC_Damage_PnaRepeaterNeedle</damageDef><damageAmountBase>2</damageAmountBase><armorPenetrationBase>0.30</armorPenetrationBase><speed>70</speed></projectile>
   </ThingDef>
   <ThingDef ParentName="BaseBullet">
     <defName>SSC_Projectile_PnaRifleNeedle</defName><label>纳米催情液精确针</label>
     <thingClass>SexSlaveCraft.Projectile_SSCPnaTrail</thingClass>
     <comps><li Class="SexSlaveCraft.CompProperties_SSCPnaTrail"><fleckDef>SSC_PnaTrail</fleckDef></li></comps>
-    <graphicData><texPath>Things/Projectile/SSC_PnaBolt</texPath><graphicClass>Graphic_Single</graphicClass><drawSize>(0.4,0.4)</drawSize></graphicData>
+    <graphicData><texPath>Things/Projectile/SSC_PnaRifleNeedle</texPath><graphicClass>Graphic_Single</graphicClass><drawSize>(0.4,0.4)</drawSize></graphicData>
     <projectile><damageDef>SSC_Damage_PnaRifleNeedle</damageDef><damageAmountBase>4</damageAmountBase><armorPenetrationBase>0.40</armorPenetrationBase><speed>90</speed></projectile>
   </ThingDef>
 </Defs>
