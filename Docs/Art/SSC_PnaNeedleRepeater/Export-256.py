@@ -5,7 +5,7 @@ import json
 from PIL import Image
 root = Path(__file__).resolve().parents[3]
 folder = Path(__file__).resolve().parent
-source = folder / "SSC_PnaNeedleRepeater_Redraw.png"
+source = folder / "SSC_PnaNeedleRepeater_WhipStyleHeavy.png"
 image = Image.open(source).convert("RGBA")
 bounds = image.getchannel("A").point(lambda value: 255 if value > 1 else 0).getbbox()
 if bounds is None:

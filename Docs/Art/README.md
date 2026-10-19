@@ -1,10 +1,8 @@
 # 美术资源与提示词索引
 
-两把工业气枪回选首轮重绘图已获维护者实机正常确认并授权提交，256px透明画布、drawSize=1.05／1.25；当前来源为 `*_Redraw.png`，见[验收与选图](../Development/Completed/SSC工业气枪粗描边重绘与缩放测试.md)。后续风格试验另作预览，不替换已验收运行图。
-
 [文档总索引](../README.md) · [开发日志](../Development/开发更新记录.md)
 
-精确针枪[256px 导出与接入](../Development/Completed/SSC工业精确针枪贴图接入与测试.md)已同步待实机，drawSize=1；[原图及参数](SSC_PnaNeedleRifle/export.json)已保存，已授权先提交。
+两把工业气枪当前采用已认可的短鞭画风重描边版，源图为各自目录的 `*_WhipStyleHeavy.png`，256×256透明画布；drawSize=速射1.05／精确1.25。维护者已认可游戏效果并授权提交，见[速射针枪验收](../Development/Completed/SSC速射针枪短鞭画风贴图接入与测试.md)和[精确针枪验收](../Development/Completed/SSC精确针枪短鞭画风重描边贴图接入与测试.md)。旧Approved／Redraw与非重描边WhipStyle保留作阶段来源。
 
 此目录保存生成提示词、资源说明与版本备份；当前运行纹理位于 `1.7/Textures/`（版本覆盖）与 `Common/Textures/`（共享冻结基线），当前选定版本以开发日志中的最新决定为准。
 
@@ -17,11 +15,3 @@
 | [欲望之种平面化提示词](欲望之种贴图平面化提示词.txt) | 历史画风尝试，保留追溯；当前使用恢复后的首版 |
 | [欲望之种首版备份](SSC_DesireSeed_v1.png) | 原始首版图像备份 |
 | [游戏使用的欲望之种贴图](../../Common/Textures/Things/Item/SSC_DesireSeed.png) | 运行资源；对应恢复记录见开发日志 |
-
-短鞭新增[紫色弧形命中特效](../Development/Completed/SSC短鞭紫色弧形命中特效实现与测试.md)，当前改为复用 Core 柔边纹理的宽半弧网格；旧 128px 小弧痕撤下并归档，最终上半弧加宽提亮版已实机验收。
-
-工业速射针枪[256px 导出与接入](../Development/Completed/SSC工业速射针枪贴图接入与测试.md)已完成并同步；[原图及导出参数](SSC_PnaNeedleRepeater/export.json)保留，最终重绘版已获认可并授权提交。
-
-速射针枪现行原图已替换为认可的描边平涂重绘版，等比 240×100、256×256 透明导出并再次同步；现有 XML 引用和 drawSize=1 保持，最终重绘版已获维护者认可。
-
-两种工业针弹的[原图与统一倍率导出](SSC_PnaNeedles/export.json)已保存；[128px接入与检查](../Development/Completed/SSC工业针弹贴图接入与测试.md)完成并同步，drawSize=0.4，已获维护者认可并授权提交。

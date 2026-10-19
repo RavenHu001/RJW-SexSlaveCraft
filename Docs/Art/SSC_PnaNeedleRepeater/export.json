@@ -1,31 +1,31 @@
 {
-  "source": "SSC_PnaNeedleRepeater_Redraw.png",
+  "source": "SSC_PnaNeedleRepeater_WhipStyleHeavy.png",
   "sourceSize": [
     1774,
     887
   ],
-  "sourceSha256": "ae283feaf938307073e83d8f67207c0dbc92924c688313e91e05a75969940dba",
+  "sourceSha256": "fb12781d991fd254d116b88d65f333545dfa85ffce63ad45e83609094e199580",
   "alphaThreshold": 1,
   "sourcePadding": 2,
   "crop": [
-    12,
-    138,
+    11,
+    115,
     1774,
-    882
+    885
   ],
   "resampling": "premultiplied-alpha Lanczos",
   "fittedSize": [
     240,
-    101
+    105
   ],
   "offset": [
     8,
-    77
+    75
   ],
   "outputSize": [
     256,
     256
   ],
   "output": "1.7/Textures/Things/Item/Equipment/SSC_PnaNeedleRepeater.png",
-  "outputSha256": "a1148e2e908d3adeada61a8be1964fe4fbaf89c5beb7dbd80f757b74a20bfb81"
+  "outputSha256": "3c50288910b6558604667c63e3f2da97cf34a2d03527cb74d89b914c5e2031c6"
 }
