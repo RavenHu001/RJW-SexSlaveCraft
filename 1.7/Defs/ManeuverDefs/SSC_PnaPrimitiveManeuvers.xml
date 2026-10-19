@@ -9,7 +9,7 @@
     <defName>SSC_Maneuver_PnaStab</defName>
     <requiredCapacity>SSC_ToolCapacity_PnaStab</requiredCapacity>
     <verb>
-      <verbClass>Verb_MeleeAttackDamage</verbClass>
+      <verbClass>SexSlaveCraft.Verb_MeleeAttackSSCPna</verbClass>
       <meleeDamageDef>SSC_Damage_PnaStaffStab</meleeDamageDef>
     </verb>
     <logEntryDef>MeleeAttack</logEntryDef>

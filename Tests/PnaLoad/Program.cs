@@ -95,6 +95,7 @@ internal static partial class Program
         RunWeaponDoseUtilityTests();
         RunPrimitiveWeaponXmlTests();
         RunWeaponPotencyTests();
+        RunWeaponEffectTests();
         Console.WriteLine($"结果：{passed}/{passed+failed} 项通过。");
         return failed==0 ? 0:1;
     }
@@ -102,6 +103,7 @@ internal static partial class Program
     private static void Run(string name,Action test)
     {
         Scribe.mode=LoadSaveMode.Inactive; Scribe.Data.Clear(); SSCRestrictionGameComponent.Pawns.Clear(); Messages.Sent.Clear(); MoteMaker.Sent.Clear();
+        SSCPnaWeaponEffectsUtility.Absorptions.Clear();
         SSCDefOf.SSC_PnaLoad=new HediffDef { defName=SSCPnaExposureUtility.LoadDefName, HasPnaComp=true, thresholds=new[]{0f,.30f,.80f,1.40f,1.94f} };
         SSCDefOf.SSC_PnaRootedLoad=new HediffDef { defName=SSCPnaExposureUtility.RootedLoadDefName, HasPnaComp=true, thresholds=new[]{0f,.30f,.80f,1.40f,1.94f} };
         SSCDefOf.SSC_PnaAddiction=AddictionDef;

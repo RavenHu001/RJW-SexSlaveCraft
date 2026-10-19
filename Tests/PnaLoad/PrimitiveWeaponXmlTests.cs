@@ -91,7 +91,7 @@ internal static partial class Program
             Equal("SSC_ToolCapacity_PnaStab", LoadDef(PrimitiveManeuvers, capacity).Element("defName").Value);
             var maneuver = LoadDef(PrimitiveManeuvers, "SSC_Maneuver_PnaStab");
             Equal(capacity, maneuver.Element("requiredCapacity").Value);
-            Equal("Verb_MeleeAttackDamage", maneuver.Element("verb").Element("verbClass").Value);
+            Equal("SexSlaveCraft.Verb_MeleeAttackSSCPna", maneuver.Element("verb").Element("verbClass").Value);
             Equal("SSC_Damage_PnaStaffStab", maneuver.Element("verb").Element("meleeDamageDef").Value);
             var filter = staff.Element("recipeMaker").Element("defaultIngredientFilter");
             Equal("False", filter.Attribute("Inherit").Value);

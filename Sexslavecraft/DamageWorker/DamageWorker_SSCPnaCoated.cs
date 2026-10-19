@@ -79,7 +79,9 @@ namespace SexSlaveCraft
             // 成瘾、需求、负荷上限和普通／活化载体全部复用共享规则。
             // 继续条件会在共享工具的回调边界复查；它中止后续写入，不负责回滚已合法
             // 加入的身体负荷。物理伤害已完成，不因药效结果重伤一次或替目标治疗。
-            SSCPnaExposureUtility.ApplyExposure(pawn, dose, SSCPnaExposureSource.Weapon, CanContinue);
+            var exposure = SSCPnaExposureUtility.ApplyExposure(pawn, dose, SSCPnaExposureSource.Weapon, CanContinue);
+            // 反馈一次已被接受的真实投送；满负荷时 AddedLoad 为零也应显示，传播伤口不逐个冒心。
+            if (exposure.Accepted) SSCPnaWeaponEffectsUtility.ShowAbsorption(pawn);
             return result;
         }
 

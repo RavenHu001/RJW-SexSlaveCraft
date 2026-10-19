@@ -140,6 +140,9 @@ namespace SexSlaveCraft
                     SSCPnaWeaponDoseUtility.FromSeverity(ext.baseSeverity, resistance), SSCPnaExposureSource.Weapon);
             }
             FinishHit(pawn, protectedAtHit, exposure, ext, dinfo, result, true);
+            // ClaimExposure 已隔离同次伤害的部位传播；后续回调没有 Accepted，不重复反馈。
+            // 保留旧枪原伤害、治疗及飘字；这里只在完成原流程后增加受药符号。
+            if (exposure.Accepted) SSCPnaWeaponEffectsUtility.ShowAbsorption(pawn);
         }
     }
 }
