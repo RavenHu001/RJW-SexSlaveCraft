@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成；独立能力防止影响原版 Cut／短矛专用泛光。 -->
+<Defs>
+  <ToolCapacityDef><defName>SSC_ToolCapacity_PnaWhip</defName><label>纳米催情液鞭击</label></ToolCapacityDef>
+  <ManeuverDef>
+    <defName>SSC_Maneuver_PnaWhip</defName><requiredCapacity>SSC_ToolCapacity_PnaWhip</requiredCapacity>
+    <verb><verbClass>Verb_MeleeAttackDamage</verbClass><meleeDamageDef>SSC_Damage_PnaWhipCut</meleeDamageDef></verb>
+    <logEntryDef>MeleeAttack</logEntryDef>
+    <combatLogRulesHit>Maneuver_Slash_MeleeHit</combatLogRulesHit><combatLogRulesDeflect>Maneuver_Slash_MeleeDeflect</combatLogRulesDeflect>
+    <combatLogRulesMiss>Maneuver_Slash_MeleeMiss</combatLogRulesMiss><combatLogRulesDodge>Maneuver_Slash_MeleeDodge</combatLogRulesDodge>
+  </ManeuverDef>
+</Defs>

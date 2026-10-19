@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_Weapon_PnaShortWhip.label>奈米催情液短鞭</SSC_Weapon_PnaShortWhip.label>
+  <SSC_Weapon_PnaShortWhip.description>一柄用於鎮壓的多股短鞭。聚合物鞭束經改進淬毒工藝處理，內部藥液通道使奈米催情液能隨抽擊造成的淺表切口進入身體。</SSC_Weapon_PnaShortWhip.description>
+  <SSC_Weapon_PnaNeedleRepeater.label>奈米催情液速射針槍</SSC_Weapon_PnaNeedleRepeater.label>
+  <SSC_Weapon_PnaNeedleRepeater.description>一把氣動速射針槍，以三發短點射投送載藥射針。適合中近距離連續施加奈米催情液，遠距離精度較差。</SSC_Weapon_PnaNeedleRepeater.description>
+  <SSC_Weapon_PnaNeedleRifle.label>奈米催情液精確針槍</SSC_Weapon_PnaNeedleRifle.label>
+  <SSC_Weapon_PnaNeedleRifle.description>一把單發氣動針槍，以較長瞄準間隔換取遠距離精確投送。專用射針攜帶較高劑量的奈米催情液。</SSC_Weapon_PnaNeedleRifle.description>
+  <SSC_Projectile_PnaRepeaterNeedle.label>奈米催情液速射針</SSC_Projectile_PnaRepeaterNeedle.label>
+  <SSC_Projectile_PnaRifleNeedle.label>奈米催情液精確針</SSC_Projectile_PnaRifleNeedle.label>
+  <SSC_Weapon_PnaShortWhip.tools.0.label>鞭束</SSC_Weapon_PnaShortWhip.tools.0.label>
+  <SSC_Weapon_PnaShortWhip.tools.1.label>握柄</SSC_Weapon_PnaShortWhip.tools.1.label>
+  <SSC_Weapon_PnaNeedleRepeater.tools.0.label>槍身</SSC_Weapon_PnaNeedleRepeater.tools.0.label>
+  <SSC_Weapon_PnaNeedleRifle.tools.0.label>槍托</SSC_Weapon_PnaNeedleRifle.tools.0.label>
+</LanguageData>

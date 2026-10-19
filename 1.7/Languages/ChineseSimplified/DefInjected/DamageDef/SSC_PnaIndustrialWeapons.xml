@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_Damage_PnaWhipCut.label>纳米催情液鞭击</SSC_Damage_PnaWhipCut.label>
+  <SSC_Damage_PnaWhipCut.deathMessage>{0}被纳米催情液短鞭抽死了。</SSC_Damage_PnaWhipCut.deathMessage>
+  <SSC_Damage_PnaRepeaterNeedle.label>纳米催情液速射针</SSC_Damage_PnaRepeaterNeedle.label>
+  <SSC_Damage_PnaRepeaterNeedle.deathMessage>{0}被纳米催情液速射针射死了。</SSC_Damage_PnaRepeaterNeedle.deathMessage>
+  <SSC_Damage_PnaRifleNeedle.label>纳米催情液精确针</SSC_Damage_PnaRifleNeedle.label>
+  <SSC_Damage_PnaRifleNeedle.deathMessage>{0}被纳米催情液精确针射死了。</SSC_Damage_PnaRifleNeedle.deathMessage>
+</LanguageData>

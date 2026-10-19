@@ -94,6 +94,7 @@ internal static partial class Program
         RunCoatedWeaponTests();
         RunWeaponDoseUtilityTests();
         RunPrimitiveWeaponXmlTests();
+        RunIndustrialWeaponXmlTests();
         RunWeaponPotencyTests();
         RunWeaponEffectTests();
         Console.WriteLine($"结果：{passed}/{passed+failed} 项通过。");

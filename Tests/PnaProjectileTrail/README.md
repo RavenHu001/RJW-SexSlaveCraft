@@ -1,5 +1,7 @@
 # PNA 投射物流星尾迹专项回归
 
+2026-10-19：本专项已登记到 `scripts/Test-All.ps1`，工业步骤一再次执行，结果见[本批记录](../../Docs/Development/Completed/SSC工业武器步骤一实现与测试.md)。
+
 当前首批 **30/30** 已通过，三类弹丸尾迹与箭尾避让已获维护者实机认可，见[实现与验收](../../Docs/Development/Completed/SSC投射物紫色拖尾实现与测试.md)。此数为该批实际执行结果，本次文档整理未重跑；未量化实机 FPS。
 
 运行：`dotnet run --project Tests/PnaProjectileTrail/PnaProjectileTrail.csproj -- <仓库绝对路径>`。

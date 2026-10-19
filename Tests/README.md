@@ -1,8 +1,8 @@
 # 测试说明索引
 
-当前武器首批已交付：最终短矛泛光专项 [PnaWeaponEffects](PnaWeaponEffects/README.md) **61/61**，最近 1.7 编译零警告零错误，维护者已确认最终实机正常。药效 [PnaLoad](PnaLoad/README.md) **511/511** 和尾迹 [PnaProjectileTrail](PnaProjectileTrail/README.md) **30/30** 为未变范围的既有结果；分批证据见[完成核对](../Docs/Development/Completed/SSC武器拓展首批完成核对.md)。下方门禁总数是各历史阶段，不能把新增专项数量相加称为本次重跑结果。
+中世纪武器首批历史交付：最终短矛泛光专项 [PnaWeaponEffects](PnaWeaponEffects/README.md) **61/61**，最近 1.7 编译零警告零错误，维护者已确认最终实机正常。药效 [PnaLoad](PnaLoad/README.md) **511/511** 和尾迹 [PnaProjectileTrail](PnaProjectileTrail/README.md) **30/30** 为未变范围的既有结果；分批证据见[完成核对](../Docs/Development/Completed/SSC武器拓展首批完成核对.md)。下方门禁总数是各历史阶段，不能把新增专项数量相加称为本次重跑结果。
 
-PnaWeaponEffects 和 PnaProjectileTrail 当前需按各自 README 单独运行，尚未登记进 scripts/Test-All.ps1；PnaLoad 已在统一入口。
+2026-10-19 工业武器步骤一全量 **39/39 套、3466/3466 项、2/2 资源检查**通过。新增 [PnaMeleeQuality](PnaMeleeQuality/README.md)，直接运行本机 1.7 品质组件及生产补丁；[PnaLoad](PnaLoad/README.md) 增加工业 XML 接线与剂量回归。PnaMeleeQuality、PnaWeaponEffects、PnaProjectileTrail 均已登记进 `scripts/Test-All.ps1`：品质专项使用 .NET 10 和本机游戏引用，其余宿主保持 .NET 9；完整结果见[步骤一记录](../Docs/Development/Completed/SSC工业武器步骤一实现与测试.md)。
 
 2026-10-18：SSC 原始 PNA 武器第二步 XML 接入在 [PnaLoad](PnaLoad/README.md) 新增 21 项后 **470/470**，低科技研究更新后 **39/39**；全量 **36/36 套、3284/3284 项、2/2 资源检查**通过。实际 1.7 XML 继承／API 独立检查 **52/52**、289 个字段通过；生产 C#／DLL 不变，正式贴图与效力显示未实现，维护者已确认本轮实机测试正常，XML 验收关闭，见[第二步记录](../Docs/Development/Completed/SSC武器拓展步骤二XML实现与测试.md)。下方保留历史计数。
 

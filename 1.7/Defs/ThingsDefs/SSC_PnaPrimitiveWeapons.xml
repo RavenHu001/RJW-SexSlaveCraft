@@ -23,6 +23,8 @@
     <equippedStatOffsets>
       <MeleeHitChance>2</MeleeHitChance>
     </equippedStatOffsets>
+    <!-- 保留品质，仅在伤害倍率中跳过品质系数。 -->
+    <modExtensions><li Class="SexSlaveCraft.SSCPnaFixedMeleeDamageExtension" /></modExtensions>
     <costList>
       <WoodLog>30</WoodLog>
       <Steel>15</Steel>
@@ -125,8 +127,8 @@
       <li>
         <label>筒身</label>
         <capacities><li>Blunt</li></capacities>
-        <power>2</power>
-        <armorPenetration>0</armorPenetration>
+        <!-- 普通防身攻击，穿甲留给原版按实际伤害计算，不施药。 -->
+        <power>9</power>
         <cooldownTime>2</cooldownTime>
       </li>
     </tools>
@@ -187,8 +189,8 @@
       <li>
         <label>弩身</label>
         <capacities><li>Blunt</li></capacities>
-        <power>2</power>
-        <armorPenetration>0</armorPenetration>
+        <!-- 普通防身攻击，穿甲留给原版按实际伤害计算，不施药。 -->
+        <power>9</power>
         <cooldownTime>2</cooldownTime>
       </li>
     </tools>

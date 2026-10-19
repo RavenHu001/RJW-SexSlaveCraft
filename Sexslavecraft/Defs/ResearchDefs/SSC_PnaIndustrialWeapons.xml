@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成；独立工业研究，不使用废案简易发射器前置。 -->
+<Defs>
+  <ResearchProjectDef>
+    <defName>SSC_RES_PNAIndustrialWeapons</defName><label>工业纳米催情液武器</label>
+    <description>以工业加工制造专用载药鞭束与气动射针机构，使纳米催情液武器从传统淬毒改造走向专业投送。</description>
+    <baseCost>1600</baseCost><techLevel>Industrial</techLevel><tab>SSC_ResearchTabDef</tab>
+    <prerequisites><li>SSC_RES_PNAPrimitiveWeapons</li><li>SSC_RES_PNAConcentration</li><li>Machining</li></prerequisites>
+    <researchViewX>3</researchViewX><researchViewY>4.5</researchViewY>
+  </ResearchProjectDef>
+</Defs>

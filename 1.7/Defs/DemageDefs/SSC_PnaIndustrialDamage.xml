@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成；所有剂量共用既有通用涂覆处理器，不接原版主动内部刺伤或劈砍工人。 -->
+<Defs>
+  <DamageDef>
+    <defName>SSC_Damage_PnaWhipCut</defName><label>纳米催情液鞭击</label>
+    <workerClass>SexSlaveCraft.DamageWorker_SSCPnaCoated</workerClass><externalViolence>true</externalViolence>
+    <hediff>Cut</hediff><hediffSkin>Cut</hediffSkin><hediffSolid>Crack</hediffSolid>
+    <impactSoundType>Slice</impactSoundType><armorCategory>Sharp</armorCategory>
+    <overkillPctToDestroyPart>0.4~1.0</overkillPctToDestroyPart>
+    <deathMessage>{0}被纳米催情液短鞭抽死了。</deathMessage>
+    <modExtensions><li Class="SexSlaveCraft.SSCPnaCoatingExtension"><baseLoad>0.18</baseLoad><recordHediff>Hediff_PNA_Consciousness_Record</recordHediff></li></modExtensions>
+  </DamageDef>
+  <DamageDef ParentName="SSC_PnaCoatedStabBase">
+    <defName>SSC_Damage_PnaRepeaterNeedle</defName><label>纳米催情液速射针</label>
+    <isRanged>true</isRanged><makesAnimalsFlee>true</makesAnimalsFlee>
+    <deathMessage>{0}被纳米催情液速射针射死了。</deathMessage>
+    <modExtensions><li Class="SexSlaveCraft.SSCPnaCoatingExtension"><baseLoad>0.08</baseLoad><recordHediff>Hediff_PNA_Consciousness_Record</recordHediff></li></modExtensions>
+  </DamageDef>
+  <DamageDef ParentName="SSC_PnaCoatedStabBase">
+    <defName>SSC_Damage_PnaRifleNeedle</defName><label>纳米催情液精确针</label>
+    <isRanged>true</isRanged><makesAnimalsFlee>true</makesAnimalsFlee>
+    <deathMessage>{0}被纳米催情液精确针射死了。</deathMessage>
+    <modExtensions><li Class="SexSlaveCraft.SSCPnaCoatingExtension"><baseLoad>0.20</baseLoad><recordHediff>Hediff_PNA_Consciousness_Record</recordHediff></li></modExtensions>
+  </DamageDef>
+</Defs>

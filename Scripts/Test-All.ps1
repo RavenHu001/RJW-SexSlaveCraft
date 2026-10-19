@@ -6,12 +6,17 @@
 需要 .NET SDK 9（或更新 SDK）及 .NET 9 运行时。SharedBed、InteractionProtection、RitualSelection、CombatantSpecialization、PnaLoad 和 BondRelations 需要 net9.0 的 0Harmony.dll，
 通过 -HarmonyAssemblyPath 或 SSC_TEST_HARMONY_PATH 提供，不自动下载、不使用游戏的 Harmony。
 默认将报告保存在 .builds/validation/<本次运行目录>；不编译或安装游戏模组。
-默认检查 1.7 运行资源并回归当前源码；-GameVersion 1.6 只核验冻结基线和 XML，不能证明旧版源码或游戏兼容性。
+默认检查 1.7 运行资源并回归当前源码；PnaMeleeQuality 另需当前游戏程序集和 .NET 10，
+可用 -NativeGameRoot / -NativeDotnetPath 指定，默认读取 BUILD-INFO 和仓库便携 SDK。
+-GameVersion 1.6 只核验冻结基线和 XML，不能证明旧版源码或游戏兼容性。
 #>
 [CmdletBinding()]
 param(
     [string]$HarmonyAssemblyPath = $env:SSC_TEST_HARMONY_PATH,
     [string]$ReportDirectory,
+    # 原生品质专项需要本机 1.7 与 .NET 10；其余边界宿主继续使用 .NET 9。
+    [string]$NativeGameRoot = $env:SSC_GAME_ROOT,
+    [string]$NativeDotnetPath = $env:SSC_DOTNET_PATH,
     [ValidateSet('1.6', '1.7')][string]$GameVersion = '1.7',
     [string]$RuntimeRoot,
     [switch]$PassThru
@@ -56,6 +61,9 @@ $suites = @(
     # 此套件使用模型边界而无额外 Harmony DLL；1.6 模式在下方清空套件表，不会回归新源码。
     @{ Name = 'Gelatinization'; Arguments = @($repoRoot) },
     @{ Name = 'PnaLoad'; Arguments = @($repoRoot) },
+    @{ Name = 'PnaProjectileTrail'; Arguments = @($repoRoot) },
+    @{ Name = 'PnaWeaponEffects'; Arguments = @($repoRoot) },
+    @{ Name = 'PnaMeleeQuality'; Arguments = @(); Framework = 'net10.0' },
     @{ Name = 'LowTechAdaptation'; Arguments = @($repoRoot) },
     @{ Name = 'PersonalityMemories'; Arguments = @() },
     @{ Name = 'PersonalitySpecializations'; Arguments = @() },
@@ -132,9 +140,9 @@ function Get-HarmonyProblem {
 非零退出码会抛出带日志路径的异常，由套件级调用方记录失败并继续其他套件。
 #>
 function Invoke-DotnetStep {
-    param([string[]]$CommandArguments, [string]$Stage, [string]$LogPath)
+    param([string[]]$CommandArguments, [string]$Stage, [string]$LogPath, [string]$Executable = $dotnetPath)
     Add-Content -LiteralPath $LogPath -Value "`n[$Stage]" -Encoding utf8
-    $lines = @(& $dotnetPath @CommandArguments 2>&1)
+    $lines = @(& $Executable @CommandArguments 2>&1)
     $code = $LASTEXITCODE
     $output = ($lines | ForEach-Object { $_.ToString() }) -join [Environment]::NewLine
     Add-Content -LiteralPath $LogPath -Value $output -Encoding utf8
@@ -216,6 +224,21 @@ try {
     $harmonyProblem = Get-HarmonyProblem $HarmonyAssemblyPath
 }
 catch { $harmonyProblem = "Cannot resolve Harmony path: $($_.Exception.Message)" }
+
+# 将原生项目明确登记进门禁，不以排除未登记项目的方式跳过专项。
+try {
+    if (-not $NativeGameRoot) {
+        $buildInfo = Get-Content -LiteralPath (Join-Path $repoRoot '1.7/BUILD-INFO.json') -Raw | ConvertFrom-Json
+        $NativeGameRoot = Split-Path -Parent $buildInfo.gameAssemblyPath
+    }
+    $NativeGameRoot = [IO.Path]::GetFullPath($NativeGameRoot)
+    if (-not (Test-Path -LiteralPath (Join-Path $NativeGameRoot 'Assembly-CSharp.dll'))) { throw 'NativeGameRoot must contain the local 1.7 Assembly-CSharp.dll.' }
+    if (-not $NativeDotnetPath) { $NativeDotnetPath = Join-Path $repoRoot '.builds/version-layout/sdk/dotnet/dotnet.exe' }
+    $NativeDotnetPath = (Get-Command $NativeDotnetPath -ErrorAction Stop).Source
+    $nativeVersion = @(& $NativeDotnetPath --version)
+    if ($LASTEXITCODE -ne 0 -or ($nativeVersion -join '') -notmatch '^(\d+)\.' -or [int]$Matches[1] -lt 10) { throw 'PnaMeleeQuality requires a .NET 10 SDK; supply -NativeDotnetPath.' }
+}
+catch { $globalProblems.Add('Native quality prerequisites: ' + $_.Exception.Message) }
 }
 
 $results = [Collections.Generic.List[object]]::new()
@@ -230,7 +253,7 @@ foreach ($suite in $suites) {
     }
     $problems = @($globalProblems.ToArray())
     if (-not (Test-Path -LiteralPath $project -PathType Leaf)) { $problems += "Project missing: $project" }
-    if ($name -in @('SharedBed', 'InteractionProtection', 'RitualSelection', 'CombatantSpecialization', 'PnaLoad', 'BondRelations') -and $harmonyProblem) { $problems += $harmonyProblem }
+    if ($name -in @('SharedBed', 'InteractionProtection', 'RitualSelection', 'CombatantSpecialization', 'PnaLoad', 'BondRelations', 'PnaWeaponEffects', 'PnaMeleeQuality') -and $harmonyProblem) { $problems += $harmonyProblem }
     if ($problems.Count -gt 0) {
         $result.Reason = $problems -join ' '
         Set-Content -LiteralPath $logPath -Value $result.Reason -Encoding utf8
@@ -240,12 +263,20 @@ foreach ($suite in $suites) {
         Set-Content -LiteralPath $logPath -Value "Suite: $name" -Encoding utf8
         try {
             $properties = @()
-            if ($name -in @('SharedBed', 'InteractionProtection', 'RitualSelection', 'CombatantSpecialization', 'PnaLoad', 'BondRelations')) { $properties += "-p:HarmonyAssemblyPath=$HarmonyAssemblyPath" }
-            $null = Invoke-DotnetStep -CommandArguments (@('restore', $project, '--configfile', $configPath, '--verbosity', 'quiet') + $properties) -Stage 'restore' -LogPath $logPath
+            $suiteDotnet = $dotnetPath
+            $framework = 'net9.0'
+            $testArguments = $suite.Arguments
+            if ($name -in @('SharedBed', 'InteractionProtection', 'RitualSelection', 'CombatantSpecialization', 'PnaLoad', 'BondRelations', 'PnaWeaponEffects', 'PnaMeleeQuality')) { $properties += "-p:HarmonyAssemblyPath=$HarmonyAssemblyPath" }
+            if ($name -eq 'PnaMeleeQuality') {
+                $suiteDotnet = $NativeDotnetPath; $framework = $suite.Framework
+                $properties += "-p:GameRoot=$NativeGameRoot"
+                $testArguments = @($repoRoot, $NativeGameRoot)
+            }
+            $null = Invoke-DotnetStep -CommandArguments (@('restore', $project, '--configfile', $configPath, '--verbosity', 'quiet') + $properties) -Stage 'restore' -LogPath $logPath -Executable $suiteDotnet
             # Rebuild prevents a changed Harmony reference from reusing a previous test binary.
-            $null = Invoke-DotnetStep -CommandArguments (@('build', $project, '--configuration', 'Release', '--no-restore', '--target:Rebuild', '--verbosity', 'quiet') + $properties) -Stage 'build' -LogPath $logPath
-            $testDll = Join-Path $repoRoot "Tests/$name/bin/Release/net9.0/$name.dll"
-            $output = Invoke-DotnetStep -CommandArguments (@($testDll) + $suite.Arguments) -Stage 'tests' -LogPath $logPath
+            $null = Invoke-DotnetStep -CommandArguments (@('build', $project, '--configuration', 'Release', '--no-restore', '--target:Rebuild', '--verbosity', 'quiet') + $properties) -Stage 'build' -LogPath $logPath -Executable $suiteDotnet
+            $testDll = Join-Path $repoRoot "Tests/$name/bin/Release/$framework/$name.dll"
+            $output = Invoke-DotnetStep -CommandArguments (@($testDll) + $testArguments) -Stage 'tests' -LogPath $logPath -Executable $suiteDotnet
             # Counts come from the suite, not a hard-coded historical total of 390.
             $summary = [regex]::Matches($output, '(?m)^(?:结果：|RESULT:\s*)?(\d+)/(\d+) (?:项通过。|(?:cases |lifecycle tests )?passed\b[^\r\n]*)\s*$')
             if ($summary.Count -ne 1) { throw 'Missing or ambiguous case summary; cannot confirm complete execution.' }
@@ -273,7 +304,7 @@ $report = [pscustomobject][ordered]@{
     StartedAtUtc = $startedAt.ToString('o'); FinishedAtUtc = [DateTime]::UtcNow.ToString('o')
     Success = ($passed -eq $suites.Count -and $failedChecks -eq 0 -and $globalProblems.Count -eq 0); SuiteCount = $suites.Count
     GameVersion = $GameVersion; RepositoryRoot = $repoRoot; RuntimeRoot = $runtimeRootPath
-    SourceValidationScope = $(if ($GameVersion -eq '1.7') { 'Current development source with selected 1.7 runtime resources; model regression, not in-game compatibility.' } else { 'Frozen 2.4.1 artifacts and 1.6 XML only; no 1.6 source rebuild or source regression.' })
+    SourceValidationScope = $(if ($GameVersion -eq '1.7') { 'Current source with selected 1.7 resources; model regression and native quality calculation, not in-game compatibility.' } else { 'Frozen 2.4.1 artifacts and 1.6 XML only; no 1.6 source rebuild or source regression.' })
     LayoutValidation = $layoutValidation; GlobalProblems = $globalProblems.ToArray()
     PassedSuites = $passed; FailedSuites = $failed; NotRunSuites = $notRun
     PassedCases = $(if ($results.Count) { [int](($results | Measure-Object PassedCases -Sum).Sum) } else { 0 })

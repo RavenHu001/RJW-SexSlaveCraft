@@ -69,8 +69,9 @@ internal static partial class Program
             {
                 var tools = LoadDef(PrimitiveThings, weapon.Name).Element("tools").Elements();
                 var blunt = tools.Single(t => t.Element("capacities").Elements().Any(c => c.Value == "Blunt"));
-                Near(2, Number(blunt.Element("power")));
-                Near(0, Number(blunt.Element("armorPenetration")));
+                Near(weapon.Name == "SSC_Weapon_PnaSpikeStaff" ? 2 : 9, Number(blunt.Element("power")));
+                if (weapon.Name == "SSC_Weapon_PnaSpikeStaff") Near(0, Number(blunt.Element("armorPenetration")));
+                else Assert(blunt.Element("armorPenetration") == null, "远程防身攻击保留原版自动穿甲");
                 Near(2, Number(blunt.Element("cooldownTime")));
                 Assert(blunt.Element("capacities").Elements().Select(e => e.Value).SequenceEqual(new[] { "Blunt" }),
                     "柄击不使用涂覆能力或原版 Poke 的内部刺击");
@@ -165,7 +166,7 @@ internal static partial class Program
                 .SelectMany(f => XDocument.Load(f).Root.Elements()).ToArray();
             foreach (var weapon in weapons)
                 Assert(!defs.Any(d => (string)d.Element("defName") == "Make_"+weapon.Name), "避免配方重复注册");
-            Equal(3, defs.Count(d => d.Name == "DamageDef" && ((string)d.Element("defName"))?.StartsWith("SSC_Damage_Pna") == true));
+            Equal(3, defs.Count(d => d.Name == "DamageDef" && new[] { "SSC_Damage_PnaStaffStab", "SSC_Damage_PnaDartStab", "SSC_Damage_PnaBolt" }.Contains((string)d.Element("defName"))));
             Equal(1, defs.Count(d => d.Name == "ManeuverDef" && (string)d.Element("requiredCapacity") == "SSC_ToolCapacity_PnaStab"));
             Assert(!defs.Any(d => d.Name == "ManeuverDef" && (string)d.Element("requiredCapacity") == "Stab"), "不改原版刺击能力");
         });
