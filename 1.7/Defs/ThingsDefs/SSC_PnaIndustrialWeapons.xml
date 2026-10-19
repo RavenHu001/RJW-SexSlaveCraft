@@ -63,7 +63,7 @@
       <verbClass>Verb_Shoot</verbClass><hasStandardCommand>true</hasStandardCommand>
       <defaultProjectile>SSC_Projectile_PnaRepeaterNeedle</defaultProjectile>
       <warmupTime>0.5</warmupTime><range>22.9</range><burstShotCount>3</burstShotCount><ticksBetweenBurstShots>6</ticksBetweenBurstShots>
-      <soundCast>SSC_PnaBlowpipe_Shot</soundCast><muzzleFlashScale>0</muzzleFlashScale>
+      <soundCast>SSC_PnaNeedleRepeater_Shot</soundCast><muzzleFlashScale>0</muzzleFlashScale>
     </li></verbs>
     <tools><li><label>枪身</label><capacities><li>Blunt</li></capacities><power>9</power><cooldownTime>2</cooldownTime></li></tools>
     <weaponClasses Inherit="False"><li>Ranged</li><li>RangedLight</li></weaponClasses>
@@ -93,7 +93,7 @@
       <verbClass>Verb_Shoot</verbClass><hasStandardCommand>true</hasStandardCommand>
       <defaultProjectile>SSC_Projectile_PnaRifleNeedle</defaultProjectile>
       <warmupTime>1.5</warmupTime><range>36.9</range><burstShotCount>1</burstShotCount>
-      <soundCast>SSC_PnaBlowpipe_Shot</soundCast><muzzleFlashScale>0</muzzleFlashScale>
+      <soundCast>SSC_PnaNeedleRifle_Shot</soundCast><muzzleFlashScale>0</muzzleFlashScale>
     </li></verbs>
     <tools><li><label>枪托</label><capacities><li>Blunt</li></capacities><power>9</power><cooldownTime>2</cooldownTime></li></tools>
     <weaponClasses Inherit="False"><li>Ranged</li><li>LongShots</li></weaponClasses>
