@@ -2,7 +2,7 @@
 
 当前资源核对：2026-10-19，仅用于 1.7 开发分支；1.6／Common 基线不变。所有下表 PNG 均为真实透明 RGBA。原始图、生成提示词、导出脚本与阶段备份的具体记录见对应实现文档，不将本机 `.builds/` 临时文件视为发布资源。
 
-[首批完成核对](../Development/Completed/SSC武器拓展首批完成核对.md) · [美术索引](README.md)
+[工业完成核对](../Development/Completed/SSC工业时代纳米催情液武器完成核对.md) · [首批完成核对](../Development/Completed/SSC武器拓展首批完成核对.md) · [美术索引](README.md)
 
 | 资源 | 画布与方向 | 游戏参数 | 说明 |
 | --- | --- | --- | --- |
@@ -11,6 +11,9 @@
 | [工业精确针](../../1.7/Textures/Things/Projectile/SSC_PnaRifleNeedle.png) | 128×128，针尖朝上；图形26×112 | drawSize=0.4 | 同系列较长载药段，统一缩放倍率，见[接入记录](../Development/Completed/SSC工业针弹贴图接入与测试.md)；已获维护者认可并授权提交 |
 | [工业速射针枪](../../1.7/Textures/Things/Item/Equipment/SSC_PnaNeedleRepeater.png) | 256×256，水平朝右；枪体240×105 | drawSize=1.05，既有握持配置 | 当前为短鞭画风重描边版：深灰紫枪身、黑色描边、银灰高光；见[本轮接入](../Development/Completed/SSC速射针枪短鞭画风贴图接入与测试.md)，已获维护者认可并授权提交 |
 | [工业短鞭](../../1.7/Textures/Things/Item/Equipment/SSC_PnaShortWhip.png) | 256×256，握柄在左、三股鞭束向右 | drawSize=1，沿用现有装备角度 | 当前为新版物品图，另接待机／挥击／回落；柄部共同标定，见[本轮实现](../Development/Completed/SSC短鞭四姿态接入与测试.md)，已获本轮实机认可；[旧单图验收](../Development/Completed/SSC工业短鞭贴图接入与测试.md)保留原范围 |
+| [短鞭待机](../../1.7/Textures/Things/Item/Equipment/SSC_PnaShortWhip_Idle.png) | 256×256，统一柄部标定 | drawSize=1，待机柄尾向下斜 45° | 手持待机图，允许鞭束回垂交叠 |
+| [短鞭挥击](../../1.7/Textures/Things/Item/Equipment/SSC_PnaShortWhip_Attack.png) | 256×256，统一柄部标定 | 挥击 6 tick | 每次实际近战出手播放，包括打空；姿态不决定施药 |
+| [短鞭回落](../../1.7/Textures/Things/Item/Equipment/SSC_PnaShortWhip_Recovery.png) | 256×256，统一柄部标定 | 回落 12 tick | 随后恢复待机，命中残影共享该时钟 |
 | [短矛](../../1.7/Textures/Things/Item/Equipment/SSC_PnaShortSpear.png) | 256×256，水平朝右 | drawSize=1，无额外装备角度 | 紫色金属阔刃、小圆形尾端、暖木杆、深色绑带；最初参考图由维护者提供，后续横置、构型与粗细调整保留历史来源 |
 | [吹箭筒](../../1.7/Textures/Things/Item/Equipment/SSC_PnaBlowpipe.png) | 256×256，水平朝右 | drawSize=1，角度 0 | 紧凑木筒、浸紫直筒口，两支备用箭为紫色金属箭头与浅米色纤维尾塞 |
 | [轻弩](../../1.7/Textures/Things/Item/Equipment/SSC_PnaLightCrossbow.png) | 256×256，水平朝右 | drawSize=1，角度 0 | 紧凑木质弩床，清楚弩臂／弦，装填箭保留普通尾羽与紫色金属箭头 |
@@ -25,12 +28,14 @@
 
 ## 特效与音效
 
-- 三类远程弹丸尾迹复用 Core `Things/Mote/BrightFlash`，使用普通 Mote 材质、不创建地图灯光；不随模组复制原版图。
+- 中世纪吹箭／弩矢及两种工业射针均已接入紫色尾迹；保留的旧发射器实现仍可复用该入口。尾迹复用 Core `Things/Mote/BrightFlash`，使用普通 Mote 材质、不创建地图灯光；不随模组复制原版图。
 - 短鞭命中改为束根为轴的 180° 上半弧向下抽落残影，宽 0.60、峰值不透明度 0.95，复用 Core BrightFlash 和普通 Mote，跟随武器最终矩阵、随回落在 18 tick 内淡出；无新增运行 PNG。原目标前方 128px 弧痕已撤下，原图只作否决试验归档，见[实现记录](../Development/Completed/SSC短鞭紫色弧形命中特效实现与测试.md)，最终上半弧加宽提亮版已获实机正常确认。
 - 受药反馈复用 Core `Things/Mote/Heart`，旋转 180°，持续 1.2 秒；没有新增爱心 PNG。
 - 短矛命中采用原矛头纹理的刃部遮罩＋Core BrightFlash 柔边光晕。光晕长宽为矛头的 4.5 倍，峰值不透明度 0.8，18 tick 满亮＋30 tick 淡出；仅材质叠画，不增加原版动作或地图灯光。
 - 旧尖梭 `SSC_PnaStabSpindle.png` 和对应 Mote 已撤下；它们是历史试验，不应重新打入运行目录。
 - 吹箭发射引用原版 `UI/FlickWhoosh`；独立 SoundDef 为 MapOnly，音量 65～75、音调 0.95～1.05、距离 10～45；不复制原版音频、不更改原 UI SoundDef。
+
+- 两把工业气枪引用 Core `Misc/Hiss/HissSmall`，各有独立 SoundDef。速射枪音量 55～65、音调 1.15～1.25、0.12 秒淡出；精确枪音量 65～75、音调 0.85～0.95、0.22 秒淡出。均 MapOnly 空间单发，距离 10～45、maxVoices=12、maxSimultaneous=8，纯 XML、单层、不叠机械辅声；[声音已实机验收](../Development/Completed/SSC工业气动针枪射击音效接入与测试.md)。
 
 ## 来源与阶段记录
 

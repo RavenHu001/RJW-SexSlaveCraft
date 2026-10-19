@@ -1,6 +1,6 @@
 # RJW-SexSlaveCraft · TieJin Modify
 
-> 当前分支进展（2026-10-18）：1.7 的低科技适配、主从关系概览和首批 PNA 武器已交付。三件武器、专用贴图、效力显示、紫色尾迹、受药倒置紫心与短矛命中泛光均已完成；最终短矛泛光已实机确认并提交。见[首批完成核对](Docs/Development/Completed/SSC武器拓展首批完成核对.md)和[未发布开发增量](CHANGELOG.md#未发布开发增量--unreleased-development)。这些增量尚未重新打包进现有 2.4.2 下载，1.6／Common 冻结不变。
+> 当前分支进展（2026-10-19）：1.7 的低科技适配、关系概览、中世纪与工业 PNA 三武器已交付。工业短鞭／两枪机制、正式图稿、效力、姿态／特效及枪声均已分批验收，见[工业完成核对](Docs/Development/Completed/SSC工业时代纳米催情液武器完成核对.md)、[中世纪完成核对](Docs/Development/Completed/SSC武器拓展首批完成核对.md)及[未发布增量](CHANGELOG.md#未发布开发增量--unreleased-development)。尚未重新打包进既有 2.4.2 下载，1.6／Common 冻结不变。
 
 面向RimWorld的成人向RimJobWorld（RJW）扩展模组，基于上游 **2.2.8** 继续维护。当前版本：**2.4.2 — 双版本目录、1.7迁移与个体凝胶外观**（2026-10-17）。v2.4.1发布后的开发统一纳入本版；1.6运行内容继续冻结在2.4.1。
 
