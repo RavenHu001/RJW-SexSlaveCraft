@@ -4,6 +4,16 @@
 
 This continuation builds on upstream **2.2.8**, the baseline when upstream development stopped in July, and retains its version numbering. Entries are listed newest first. Technical details are in the [development log (Chinese)](Docs/Development/开发更新记录.md).
 
+## 未发布开发增量 / Unreleased development
+
+2026-10-18 核对。仓库版本仍为 2.4.2；本节记录当前 1.7 开发分支在既有下载之后的成果，未替换发布附件，1.6／Common 冻结不变。以下实机反馈按各批范围登记，不表示本次重跑发布门禁。
+
+- **低科技与关系界面：** 低科技研究、10→1 粗放浓缩及[主从关系概览](Docs/Development/Completed/主从关系概览完成核对.md)已交付，详见[低科技验收](Docs/Development/Completed/低科技适配首批实现与测试.md)。
+- **原始 PNA 武器：** 短矛、吹箭筒和轻弩共用涂覆伤口处理器，新增 800 点 Medieval 研究与自动配方；制造时耗普通原液，无补液或独立弹药。三件武器基线效力 15%／6%／10%，保留真实伤口和误杀风险，旧发射器行为保留。
+- **美术与反馈：** 三张 256×256 武器图、两张 128×128 弹丸图、金属紫色箭头和吹箭短破空音效；三武器原生效力属性及精简四语报告；吹箭／弩矢／简易发射器紫色流星尾迹，成功受药后倒置紫心；短矛命中矛尖提亮＋4.5 倍光晕，0.3 秒满亮＋0.5 秒淡出。最终泛光实机已确认，提交 `8217a37`。完整范围及测试边界见[首批完成核对](Docs/Development/Completed/SSC武器拓展首批完成核对.md)。
+
+The 1.7 branch now includes accepted low-tech adaptation, the bond overview, and three medieval PNA-coated weapons with dedicated artwork, a potency stat, purple projectile trails, absorption hearts and a spearhead hit glow. Crafting consumes normal PNA; weapon wounds remain, and the old launcher retains its physical behavior. The accepted spear glow lasts 0.8 seconds at normal speed. These changes are not a replacement release package.
+
 ## [2.4.2] — 2026-10-17 — 双版本目录与个体凝胶外观
 
 v2.4.1发布后的打包、双版本重布局、1.7兼容及全部凝胶渲染／外观／UI开发统一纳入本版。安装包保留1.6的2.4.1冻结内容，1.7使用2.4.2重编DLL；见[发布说明](Docs/Releases/2.4.2/2.4.2发布说明.md)及[验证记录](Docs/Releases/2.4.2/2.4.2版本验证.md)。

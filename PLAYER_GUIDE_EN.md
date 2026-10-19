@@ -1,5 +1,7 @@
 # RJW-SexSlaveCraft Complete Player Guide
 
+> 1.7 branch update (2026-10-18): three medieval PNA-coated weapons, dedicated artwork, a potency stat, purple trails, inverted absorption hearts and a spearhead hit glow are implemented. The version remains 2.4.2; these branch changes have not been repackaged into the existing download and are not added to 1.6. See the [completion audit](Docs/Development/Completed/SSC武器拓展首批完成核对.md).
+
 The bond overview is complete within the agreed scope on the 1.7 development branch. Select a master to see slave counts and portraits; the adjacent command selects available slaves on the current map. Select a slave and click the master portrait to locate and select the master. The magnifying glass opens the overview, the trainer pencil changes the assignment, and hover tips show details. These changes have not been repackaged into the published download. See the [completion record](Docs/Development/Completed/主从关系概览完成核对.md).
 
 > Version scope: 2.4.2 is the current release. New features target 1.7; 1.6 retains the frozen 2.4.1 runtime, with shared textures in Common/Textures. Existing v2.4.1 downloads remain the original 1.6 release.
@@ -871,6 +873,8 @@ Bestow Bliss is implemented and accepted in all four batches: +8% load/full exis
 
 <a id="115-master-desire-infestation"></a>
 
+<a id="115-master-desire-infestation"></a>
+
 ### 11.5 Bestow Bliss
 
 Combine sexual skill with actively controlled aphrodisiac nanomachines to bestow unparalleled bliss during intimacy, gradually increasing Corruption and reshaping the recipient's body to become more sensitive to sexual stimulation.
@@ -907,6 +911,30 @@ Disabling the ability leaves existing memories to expire. The preference follows
 Addicted observers apply the existing source preference to an enabled Master who can legally infest them: ×1.25 outside withdrawal or ×1.50 in withdrawal, without multiplying twice for dual sources. This does not guarantee invitation acceptance or add preference for non-addicted observers. Actual fluid quantity, condoms and specific organs currently do not gate PNA input; they are future work under [item 22](Docs/Design/未来内容开发规划.md#22-主人身份的功能与数值拓展). Personal activation maintenance remains under existing [item 25](Docs/Design/未来内容开发规划.md#25-新版-pna-的性奴正面效果与主动补给). Dedicated RimTalk adaptation is deferred.
 
 See the [completion audit (Chinese)](Docs/Development/Completed/主人欲望侵染完成核对.md) for acceptance and compatibility boundaries.
+
+### 11.6 Medieval PNA Weapons and Visual Feedback
+
+These are implemented on the current 1.7 development branch and have not been repackaged into the existing 2.4.2 download. Primitive PNA Weapons is Medieval research costing 800 points, requiring Basic PNA Application rather than concentration research. The weapons use traditional weapon-poisoning techniques to infuse their metal heads with ordinary purple nanofluid.
+
+| Base parameter | Short spear | Blowpipe | Light crossbow |
+| --- | --- | --- | --- |
+| Main damage / armor penetration | 5 / 12% | 3 / 5% | 7 / 18% |
+| Range | Melee | 17.9 tiles | 30.9 tiles |
+| Warmup / cooldown | 1.8-second cooldown | 0.5 / 1 second | 1.5 / 2.5 seconds |
+| PNA load per qualifying hit | +15 percentage points | +6 points | +10 points |
+| Hit profile | Melee hit rating +2 | Touch/short/medium/long accuracy 65/45/20/10% | 50/80/80/60% |
+| Wood / steel / normal PNA cost | 30 / 15 / 10 | 20 / 5 / 6 | 45 / 25 / 10 |
+| WorkToMake / Crafting skill | 4000 / 3 | 2400 / 2 | 8000 / 4 |
+
+These are base values before applicable pawn/quality effects; listed accuracy is not the final hit chance. Fueled/electric smithies make all three, and crafting spots also make blowpipes. Materials are fixed. PNA is consumed during crafting, with no later refilling, per-shot fluid use or separate ammunition item. Secondary shaft/stock strikes deal 2 blunt damage, have zero penetration and a 2-second cooldown, and do not apply PNA.
+
+One dose is applied only after that hit creates a qualifying fresh open wound in flesh. Full armor blocks, bruises, secondary blunt strikes and old wounds do not qualify. Multi-part injury propagation still gives one dose. Actual load equals baseline potency divided by pre-hit Consciousness or an existing high-Consciousness resistance record; without a record the divisor has a 20% floor, and a hit adds at most 50 load points. Masters reject the drug and effective-Chain recipients receive activation, but these weapons retain injuries and do not heal. The old launcher's separate no-gunshot/treatment branch is unchanged. Reduced trauma does not guarantee a nonfatal hit.
+
+The info-card potency stat remains **15% / 6% / 10%**, representing a qualifying hit at 100% Consciousness without a resistance record. It is not accuracy, concentration, remaining fluid or a damage multiplier, and does not change with the selected target. Hover text and the detailed report explain the correction and identity rules. This stat is not added to the old launcher.
+
+Darts, bolts and the old basic launcher leave purple meteor-like trails behind their projectile tails. A successful dedicated spear thrust lights the spearhead with a **4.5×** soft halo for **0.8 seconds** at normal speed: 0.3 seconds held bright, then 0.5 seconds fading. It may remain after native retraction without extending the attack animation. A fully armor-blocked contact can glow; misses, dodges and blunt strikes do not. Accepted PNA input produces a rising inverted purple heart lasting 1.2 seconds, including valid full-load input; immune Masters produce no heart. Contact glow and absorption hearts signal different outcomes.
+
+Weapon PNGs use 256×256 canvases; dart/bolt PNGs use 128×128 and drawSize 0.5/0.6. The blowpipe uses a short vanilla whoosh firing sound. See the [completion audit](Docs/Development/Completed/SSC武器拓展首批完成核对.md) for current assets and per-batch validation limits.
 
 ## 12. Public Use Specialization
 
@@ -1641,6 +1669,7 @@ Ordinary affection automatically discovers the actual bound master within about 
 | Basic PNA Application | 800 | Training | Prerequisite for launcher, concentration and later PNA research |
 | Sex Reassignment Surgery (Male to Female) | 1,000 | Basic PNA Application | Node does not actually lock the operation |
 | Femboy Conversion | 1,200 | Sex Reassignment Surgery | Not fully implemented |
+| Primitive PNA Weapons (1.7 branch) | 800 | Basic PNA Application | Short spear, blowpipe and light crossbow; no concentration requirement |
 | Basic PNA Launcher | 1,000 | Basic PNA Application, Precision Rifling | Unlocks the basic launcher recipe |
 | PNA Concentration Technology | 1,200 | Basic PNA Application | Converts normal PNA to PNA Plus |
 | Personality Excretion | 1,500 | PNA Concentration Technology | Preparation operation and gel extraction |

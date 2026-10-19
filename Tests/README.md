@@ -1,10 +1,14 @@
 # 测试说明索引
 
-2026-10-18：SSC 原始 PNA 武器第二步 XML 接入在 [PnaLoad](PnaLoad/README.md) 新增 21 项后 **470/470**，低科技研究更新后 **39/39**；全量 **36/36 套、3284/3284 项、2/2 资源检查**通过。实际 1.7 XML 继承／API 独立检查 **52/52**、289 个字段通过；生产 C#／DLL 不变，正式贴图与效力显示未实现，维护者已确认本轮实机测试正常，XML 验收关闭，见[第二步记录](../Docs/Development/Verification/SSC武器拓展步骤二XML实现与测试.md)。下方保留历史计数。
+当前武器首批已交付：最终短矛泛光专项 [PnaWeaponEffects](PnaWeaponEffects/README.md) **61/61**，最近 1.7 编译零警告零错误，维护者已确认最终实机正常。药效 [PnaLoad](PnaLoad/README.md) **511/511** 和尾迹 [PnaProjectileTrail](PnaProjectileTrail/README.md) **30/30** 为未变范围的既有结果；分批证据见[完成核对](../Docs/Development/Completed/SSC武器拓展首批完成核对.md)。下方门禁总数是各历史阶段，不能把新增专项数量相加称为本次重跑结果。
 
-2026-10-18：PNA 共用意识抗性／剂量／快照工具新增 32 项，当前 [PnaLoad](PnaLoad/README.md) 与提交 `6908447` 的原处理器对照各 **449/449**，全量 **36/36 套、3262/3262 项、2/2 资源检查**通过，实际 1.7 编译零警告／零错误。两种物理入口及旧枪行为保留，XML／贴图未改，见[共用工具记录](../Docs/Development/Verification/PNA武器共用抗性与剂量工具实现与测试.md)。下方计数保留原批次。
+PnaWeaponEffects 和 PnaProjectileTrail 当前需按各自 README 单独运行，尚未登记进 scripts/Test-All.ps1；PnaLoad 已在统一入口。
 
-2026-10-18：SSC 涂覆武器步骤一在 [PnaLoad](PnaLoad/README.md) 新增 72 项，专项 **417/417**、完整门禁 **36/36 套、3230/3230 项、2/2 资源检查**通过，实际 1.7 编译零警告／零错误；物理结果由宿主边界提供，真实护甲与成品实测随第二步 XML 接入，见[实现记录](../Docs/Development/Verification/SSC涂覆武器步骤一实现与测试.md)。下方计数保留原阶段。
+2026-10-18：SSC 原始 PNA 武器第二步 XML 接入在 [PnaLoad](PnaLoad/README.md) 新增 21 项后 **470/470**，低科技研究更新后 **39/39**；全量 **36/36 套、3284/3284 项、2/2 资源检查**通过。实际 1.7 XML 继承／API 独立检查 **52/52**、289 个字段通过；生产 C#／DLL 不变，正式贴图与效力显示未实现，维护者已确认本轮实机测试正常，XML 验收关闭，见[第二步记录](../Docs/Development/Completed/SSC武器拓展步骤二XML实现与测试.md)。下方保留历史计数。
+
+2026-10-18：PNA 共用意识抗性／剂量／快照工具新增 32 项，当前 [PnaLoad](PnaLoad/README.md) 与提交 `6908447` 的原处理器对照各 **449/449**，全量 **36/36 套、3262/3262 项、2/2 资源检查**通过，实际 1.7 编译零警告／零错误。两种物理入口及旧枪行为保留，XML／贴图未改，见[共用工具记录](../Docs/Development/Completed/PNA武器共用抗性与剂量工具实现与测试.md)。下方计数保留原批次。
+
+2026-10-18：SSC 涂覆武器步骤一在 [PnaLoad](PnaLoad/README.md) 新增 72 项，专项 **417/417**、完整门禁 **36/36 套、3230/3230 项、2/2 资源检查**通过，实际 1.7 编译零警告／零错误；物理结果由宿主边界提供，真实护甲与成品实测随第二步 XML 接入，见[实现记录](../Docs/Development/Completed/SSC涂覆武器步骤一实现与测试.md)。下方计数保留原阶段。
 
 2026-10-18 新增 [LowTechAdaptation](LowTechAdaptation/README.md) 38 项，检查研究发展线、粗放浓缩资源与模组灶台接入；另有实际 1.7 API 13 项独立检查。全量门禁 36/36 套、3158/3158 项、2/2 资源检查通过；维护者已确认低科技研究与粗放浓缩正常，首批验收关闭，见[实现与验收](../Docs/Development/Completed/低科技适配首批实现与测试.md)。下方原阶段计数保留历史范围。
 
@@ -68,7 +72,7 @@ pwsh -File Scripts/Test-All.ps1 -GameVersion 1.7 -HarmonyAssemblyPath 'C:\Depend
 
 可单独执行 `pwsh -File Scripts/Test-DefMirrors.ps1` 或 `pwsh -File Scripts/Sync-LanguagesMirror.ps1`。两者均支持 `-RepositoryRoot`、`-GameVersion`、`-RuntimeRoot` 与 `-PassThru`；语言同步仍须显式加 `-Sync`，且仅允许以 `1.7/Languages` 为源，不能同步冻结的 1.6 内容。统一报告位于 `.builds/validation/`，分别生成 `DefMirrors.log`、`LanguagesMirrors.log`，并在 `summary.json` 的 `Checks` 中按 `DefMirrors`／`LanguagesMirrors` 登记状态、文件数、原因和日志路径，合计字段为 `CheckCount`、`PassedChecks`、`FailedChecks`。布局结果另记在 `LayoutValidation`，不计入两项资源检查。
 
-`pwsh -File Scripts/Test-All.ps1 -GameVersion 1.6` 只验证冻结文件哈希与该版 Def／Languages XML，不比较当前源码镜像、不编译或运行当前源码套件，报告 `SuiteCount = 0`。`SourceValidationScope` 明确区分这项资源检查与 1.7 的 34 套当前源码模型回归；都不能替代游戏内流程、动画及真实存档往返验收。
+`pwsh -File Scripts/Test-All.ps1 -GameVersion 1.6` 只验证冻结文件哈希与该版 Def／Languages XML，不比较当前源码镜像、不编译或运行当前源码套件，报告 `SuiteCount = 0`。`SourceValidationScope` 明确区分这项资源检查与 1.7 统一入口登记的 36 套当前源码模型回归；都不能替代游戏内流程、动画及真实存档往返验收。
 
 单套测试传入的目录参数仍为仓库根目录。`Tests/Shared/TestPaths.cs` 将源码解析到 `Sexslavecraft/`，运行资源默认解析到 `1.7/`，贴图解析到 `Common/Textures/` 并优先使用版本目录中的同名覆盖。需要独立资源夹具时可设置 `SSC_TEST_REPOSITORY_ROOT`、`SSC_TEST_RUNTIME_ROOT`、`SSC_TEST_COMMON_ROOT`；统一入口仅在本次调用期间设置这些进程环境变量，结束或失败后恢复原值。`RitualProgression` 保留显式 XML 文件参数。
 

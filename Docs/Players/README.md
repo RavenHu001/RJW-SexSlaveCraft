@@ -1,5 +1,7 @@
 # 玩家阅读入口 / Player documentation
 
+当前 1.7 开发分支的 PNA 三武器及美术、效力显示、尾迹、爱心和最终短矛命中泛光已交付；这些增量尚未重新打包进既有 2.4.2 下载。先读[武器入门](../../读我，玩法介绍.md#原始纳米催情液武器17-开发分支)或[完整机制](../../机制详解.md#116-原始纳米催情液武器与视觉反馈)，验收范围见[完成核对](../Development/Completed/SSC武器拓展首批完成核对.md)。
+
 1.7 开发分支的主从关系概览已按约定范围完成：选中主人查看拥有数量与性奴头像，相邻按钮批选当前地图有效成员；选中性奴时点击主人头像定位并选中主人。放大镜打开总览，调教员卡片的铅笔用于更换指派，详情可悬停查看。此内容尚未重新打包发布，见[完成核对](../Development/Completed/主从关系概览完成核对.md)。
 
 2.4.2 新增：全凝胶化后，在“调教”ITab 的“凝胶外观”区设置个人渲染、颜色和不透明度，默认深紫／S90／85%；命令栏无重复调色按钮。旧全局设置在旧档首次读取时迁入个人值。详见[当前版本说明](../Releases/2.4.2/2.4.2发布说明.md)。
@@ -25,6 +27,7 @@
 | 想了解什么 | 入门说明 | 深入参考 |
 | --- | --- | --- |
 | 主人资格、研究与开局 | [主人资格入口](../../读我，玩法介绍.md#主人资格入口240) | [身份与调教面板](../../机制详解.md#3-调教-itab-与身份) |
+| 原始 PNA 三武器与反馈（1.7 分支） | [获取与用途](../../读我，玩法介绍.md#原始纳米催情液武器17-开发分支) | [配方、伤口／剂量与视觉](../../机制详解.md#116-原始纳米催情液武器与视觉反馈) |
 | 欢愉恩赐 | [开启与使用](../../读我，玩法介绍.md#欲望侵染) | [数值与规则](../../机制详解.md#115-主人欲望侵染) · [完成核对](../Development/Completed/主人欲望侵染完成核对.md) |
 | 主人成长、经验与伤害分担 | [主人成长与面板](../../读我，玩法介绍.md#主人成长与面板240) | [四阶段完整数值](../../机制详解.md#312-主人阶段与实践经验240) |
 | 培养与阶段进阶 | [恶堕与锁链](../../读我，玩法介绍.md#4-恶堕与锁链) | [恶堕、衰减与锁链](../../机制详解.md#6-恶堕需求衰减与锁链) |
@@ -34,6 +37,8 @@
 | 设置与兼容 | [重要设置](../../读我，玩法介绍.md#18-重要设置) · [主要兼容](../../读我，玩法介绍.md#19-主要兼容) | [已知待验收事项](../Development/Verification/README.md) |
 
 ## English reading order
+
+The 1.7 branch also has three medieval PNA weapons, dedicated art, potency displays and visual feedback. They are not included in the existing release download. See [weapon quick start](../../QUICK_START_EN.md#medieval-pna-weapons-17-development-branch), [full rules](../../PLAYER_GUIDE_EN.md#116-medieval-pna-weapons-and-visual-feedback) and the [completion audit](../Development/Completed/SSC武器拓展首批完成核对.md).
 
 The bond overview is complete within the agreed scope on the 1.7 development branch. Select a master to see slave counts and portraits; the adjacent command selects available slaves on the current map. Select a slave and click the master portrait to locate and select the master. The magnifying glass opens the overview, the trainer pencil changes the assignment, and hover tips show details. These changes have not been repackaged into the published download. See the [completion record](../Development/Completed/主从关系概览完成核对.md).
 
@@ -58,6 +63,6 @@ Qualification, current identity and research are separate. Direct Master selecti
 
 ## 版本与资料用途 / Versions and document roles
 
-当前指南适用2.4.2安装包，新增凝胶外观功能仅在1.7生效；1.6冻结2.4.1内容，正文较早版本号继续表示功能引入时间。正式下载和历史记录从[版本索引](../Releases/README.md)进入；2.4.2采用双版本安装包。
+当前指南说明2.4.2基础功能，并明确标记后续1.7分支内容；新增武器等分支增量尚未重新打包，凝胶外观功能仅在1.7生效；1.6冻结2.4.1内容，正文较早版本号继续表示功能引入时间。正式下载和历史记录从[版本索引](../Releases/README.md)进入；2.4.2采用双版本安装包。
 
-The guides cover release 2.4.2, with new visual features on 1.7 and the frozen 2.4.1 runtime on 1.6. Earlier section versions identify introductions. The current release is 2.4.2. Earlier validation counts retain their original execution stages.
+The guides cover release 2.4.2 plus clearly marked later 1.7 branch additions that have not been repackaged; 1.6 retains the frozen 2.4.1 runtime. Earlier section versions identify introductions. The current release is 2.4.2. Earlier validation counts retain their original execution stages.

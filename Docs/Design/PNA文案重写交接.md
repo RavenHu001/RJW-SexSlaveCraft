@@ -58,10 +58,10 @@ PNA 相关状态在健康面板中的数值只是**受纳米催情液影响的�
 
 文风参照，不属于本次整套重写目标：
 
-- [欲望共生](../../Defs/HediffDefs/SSC_MasterProgression.xml)：短句与微械回应的设定表达。
-- [战斗员与战斗超频](../../Defs/HediffDefs/SSC_HediffDefs_CombatantSpecialization.xml)：微械、神经、身体表现之间的因果。
-- [锁链说明与思绪](../../Defs/HediffDefs/HediffOfSexSlave.xml)：客观说明与主观体验的区别。
-- [自我调教反馈](../../Languages/ChineseSimplified/DefInjected/ThoughtDef/SSC_SelfTrainingFeedback.xml)：角色视角的思绪写法。
+- [欲望共生](../../1.7/Defs/HediffDefs/SSC_MasterProgression.xml)：短句与微械回应的设定表达。
+- [战斗员与战斗超频](../../1.7/Defs/HediffDefs/SSC_HediffDefs_CombatantSpecialization.xml)：微械、神经、身体表现之间的因果。
+- [锁链说明与思绪](../../1.7/Defs/HediffDefs/HediffOfSexSlave.xml)：客观说明与主观体验的区别。
+- [自我调教反馈](../../1.7/Languages/ChineseSimplified/DefInjected/ThoughtDef/SSC_SelfTrainingFeedback.xml)：角色视角的思绪写法。
 
 人格流转、克隆、冻结、来源排除及详细数值放在玩家指南或机制资料中，不必在每个健康描述里重复；身体归属声明同理，游戏内文本一律不写。关键使用风险仍应让玩家读得明白。
 
@@ -71,45 +71,45 @@ PNA 相关状态在健康面板中的数值只是**受纳米催情液影响的�
 
 | 文件 | 涉及条目 | 为什么要改、方向是什么 |
 | --- | --- | --- |
-| [Defs/HediffDefs/HediffOfBuff.xml](../../Defs/HediffDefs/HediffOfBuff.xml) | `Hediff_PNA_Debuff`、`SSC_Hediff_PnaRootedLoad`、`PNA_Debuff_Thought`、`SSC_PnaRootedLoad_Thought` | 两种药效名称、说明、各五档阶段，以及十档心情。开发说明和属性清单较多，按普通催情／性奴活化分别建立递进与体验。普通五档现为“微量／活跃／侵蚀／深度影响／末期过载”，剂量、病程与实现词混用，须沿同一条强度轴重排。 |
-| [Defs/HediffDefs/HediffOfBuff.xml：隐藏抗性记录](../../Defs/HediffDefs/HediffOfBuff.xml) | `Hediff_PNA_Consciousness_Record`（仍在使用的隐藏内部记录） | 低阶枪在无既有记录且目标意识高于 200% 时创建，后续命中读取记录值作为剂量抗性除数；不是废弃兼容状态，也不是持续更新的历史最高值。其描述含编写者口气，名称和描述应简短、准确地清理，不需要沉浸式长文案，不改变隐藏属性或用途。简中无该记录的翻译覆盖，直接使用源 Def。 |
-| [Defs/HediffDefs/HediffOfAddiction.xml](../../Defs/HediffDefs/HediffOfAddiction.xml) | `PNA_Addiction`、`PNA_Withdrawal_Thought` | 重写成瘾、戒断说明与思绪，突出神经适应和停供反应，减少输入、负荷及迁移术语。 |
-| [Defs/HediffDefs/HediffOfTrain.xml](../../Defs/HediffDefs/HediffOfTrain.xml) | `SSC_Purple_HyperLactation` | 名称像生产状态，描述混入身体继承说明；应解释分泌能力及性交中的少量摄入，不让部位名称误导供给范围。 |
-| [Defs/NeedDefs/NeedDefs.xml](../../Defs/NeedDefs/NeedDefs.xml) | `Need_PNA` | 统一需求名称与称呼，以身体渴求解释需求；读者应能理解条越满代表越得到满足，而非越渴求。 |
-| [Defs/ChemicalDefs/ChemicalDef.xml](../../Defs/ChemicalDefs/ChemicalDef.xml) | `PNA_Chemical` | 化学品名称与药液、成瘾和需求术语对齐，避免暴露实现名称。 |
-| [Defs/ThingsDefs/Nanofluid.xml](../../Defs/ThingsDefs/Nanofluid.xml) | `Purple_Aphrodisiac_Nanofluid`、`Purple_Aphrodisiac_Nanofluid_Plus` | 解释物质特性、普通／浓缩差别及风险；删除旧强化盔甲等缺乏对应内容的用途承诺。 |
-| [Defs/ThingsDefs/SSC_Gun.xml](../../Defs/ThingsDefs/SSC_Gun.xml) | `Gun_PNA_Low`、`Bullet_PNA_Low` | 从分支判断说明改为武器工作方式和用途；准确表达普通对象的危险与有效锁链对象的活化、治疗。 |
-| [Defs/DemageDefs/DemageDef_Gun.xml](../../Defs/DemageDefs/DemageDef_Gun.xml) | `Damage_PNA_Damage_LowTier` | 统一低阶弹丸伤害名称，避免直接展示 Low-tier PNA Damage 一类实现名称。目录拼写沿用现状。 |
-| [Defs/RecipeDefs/RecipeDef_PNA_PLUS.xml](../../Defs/RecipeDefs/RecipeDef_PNA_PLUS.xml) | `SSC_Make_SuperDrug`、`SSC_Make_SuperDrug_forth` | 两份配方的 label、description、jobString 均需核对；说明浓缩工作，统一单份／四份命名，纠正外语占位和误译。 |
-| [Defs/ResearchDefs/ResearchProjectDef.xml](../../Defs/ResearchDefs/ResearchProjectDef.xml) | `SSC_RES_PNASimpleApp`、`SSC_RES_PNASimpleLauncher`、`SSC_RES_PNAConcentration` | 研究描述简陋或缺失，应补技术背景和真实用途；不把研究节点名称等同于已经实际锁定某个配方。 |
+| [Defs/HediffDefs/HediffOfBuff.xml](../../1.7/Defs/HediffDefs/HediffOfBuff.xml) | `Hediff_PNA_Debuff`、`SSC_Hediff_PnaRootedLoad`、`PNA_Debuff_Thought`、`SSC_PnaRootedLoad_Thought` | 两种药效名称、说明、各五档阶段，以及十档心情。开发说明和属性清单较多，按普通催情／性奴活化分别建立递进与体验。普通五档现为“微量／活跃／侵蚀／深度影响／末期过载”，剂量、病程与实现词混用，须沿同一条强度轴重排。 |
+| [Defs/HediffDefs/HediffOfBuff.xml：隐藏抗性记录](../../1.7/Defs/HediffDefs/HediffOfBuff.xml) | `Hediff_PNA_Consciousness_Record`（仍在使用的隐藏内部记录） | 低阶枪在无既有记录且目标意识高于 200% 时创建，后续命中读取记录值作为剂量抗性除数；不是废弃兼容状态，也不是持续更新的历史最高值。其描述含编写者口气，名称和描述应简短、准确地清理，不需要沉浸式长文案，不改变隐藏属性或用途。简中无该记录的翻译覆盖，直接使用源 Def。 |
+| [Defs/HediffDefs/HediffOfAddiction.xml](../../1.7/Defs/HediffDefs/HediffOfAddiction.xml) | `PNA_Addiction`、`PNA_Withdrawal_Thought` | 重写成瘾、戒断说明与思绪，突出神经适应和停供反应，减少输入、负荷及迁移术语。 |
+| [Defs/HediffDefs/HediffOfTrain.xml](../../1.7/Defs/HediffDefs/HediffOfTrain.xml) | `SSC_Purple_HyperLactation` | 名称像生产状态，描述混入身体继承说明；应解释分泌能力及性交中的少量摄入，不让部位名称误导供给范围。 |
+| [Defs/NeedDefs/NeedDefs.xml](../../1.7/Defs/NeedDefs/NeedDefs.xml) | `Need_PNA` | 统一需求名称与称呼，以身体渴求解释需求；读者应能理解条越满代表越得到满足，而非越渴求。 |
+| [Defs/ChemicalDefs/ChemicalDef.xml](../../1.7/Defs/ChemicalDefs/ChemicalDef.xml) | `PNA_Chemical` | 化学品名称与药液、成瘾和需求术语对齐，避免暴露实现名称。 |
+| [Defs/ThingsDefs/Nanofluid.xml](../../1.7/Defs/ThingsDefs/Nanofluid.xml) | `Purple_Aphrodisiac_Nanofluid`、`Purple_Aphrodisiac_Nanofluid_Plus` | 解释物质特性、普通／浓缩差别及风险；删除旧强化盔甲等缺乏对应内容的用途承诺。 |
+| [Defs/ThingsDefs/SSC_Gun.xml](../../1.7/Defs/ThingsDefs/SSC_Gun.xml) | `Gun_PNA_Low`、`Bullet_PNA_Low` | 从分支判断说明改为武器工作方式和用途；准确表达普通对象的危险与有效锁链对象的活化、治疗。 |
+| [Defs/DemageDefs/DemageDef_Gun.xml](../../1.7/Defs/DemageDefs/DemageDef_Gun.xml) | `Damage_PNA_Damage_LowTier` | 统一低阶弹丸伤害名称，避免直接展示 Low-tier PNA Damage 一类实现名称。目录拼写沿用现状。 |
+| [Defs/RecipeDefs/RecipeDef_PNA_PLUS.xml](../../1.7/Defs/RecipeDefs/RecipeDef_PNA_PLUS.xml) | `SSC_Make_SuperDrug`、`SSC_Make_SuperDrug_forth` | 两份配方的 label、description、jobString 均需核对；说明浓缩工作，统一单份／四份命名，纠正外语占位和误译。 |
+| [Defs/ResearchDefs/ResearchProjectDef.xml](../../1.7/Defs/ResearchDefs/ResearchProjectDef.xml) | `SSC_RES_PNASimpleApp`、`SSC_RES_PNASimpleLauncher`、`SSC_RES_PNAConcentration` | 研究描述简陋或缺失，应补技术背景和真实用途；不把研究节点名称等同于已经实际锁定某个配方。 |
 
 ## 5 现有翻译文件与镜像
 
-根语言目录为 [Languages](../../Languages)。下表路径位于四个语言目录内，文件链接以英文为入口；“无”表示简中当前回退源 Def，不是漏列，也不要求为对称而新增文件。
+根语言目录为 [Languages](../../1.7/Languages)。下表路径位于四个语言目录内，文件链接以英文为入口；“无”表示简中当前回退源 Def，不是漏列，也不要求为对称而新增文件。
 
 | 语言目录内路径 | ChineseSimplified | ChineseTraditional | English | Russian | 对应内容 |
 | --- | --- | --- | --- | --- | --- |
-| [DefInjected/HediffDef/HediffOfBuff.xml](../../Languages/English/DefInjected/HediffDef/HediffOfBuff.xml) | 有（隐藏记录回退源 Def） | 有 | 有 | 有 | 两种药效、阶段名称及单列的隐藏抗性记录 |
-| [DefInjected/ThoughtDef/HediffOfBuff.xml](../../Languages/English/DefInjected/ThoughtDef/HediffOfBuff.xml) | 有 | 有 | 有 | 有 | 十档药效心情 |
-| [DefInjected/HediffDef/HediffOfAddiction.xml](../../Languages/English/DefInjected/HediffDef/HediffOfAddiction.xml) | 有 | 有 | 有 | 有 | 成瘾与戒断 |
-| [DefInjected/ThoughtDef/HediffOfAddiction.xml](../../Languages/English/DefInjected/ThoughtDef/HediffOfAddiction.xml) | 无 | 有 | 有 | 有 | 戒断心情 |
-| [DefInjected/HediffDef/HediffOfTrain.xml](../../Languages/English/DefInjected/HediffDef/HediffOfTrain.xml) | 无 | 有 | 有 | 有 | 分泌状态 |
-| [DefInjected/NeedDef/NeedDefs.xml](../../Languages/English/DefInjected/NeedDef/NeedDefs.xml) | 无 | 有 | 有 | 有 | 渴求需求 |
-| [DefInjected/ChemicalDef/ChemicalDef.xml](../../Languages/English/DefInjected/ChemicalDef/ChemicalDef.xml) | 无 | 有 | 有 | 有 | 化学品名称 |
-| [DefInjected/ThingDef/Nanofluid.xml](../../Languages/English/DefInjected/ThingDef/Nanofluid.xml) | 无 | 有 | 有 | 有 | 两种药液 |
-| [DefInjected/ThingDef/SSC_Gun.xml](../../Languages/English/DefInjected/ThingDef/SSC_Gun.xml) | 有 | 有 | 有 | 有 | 发射器与弹丸 |
-| [DefInjected/DamageDef/DemageDef_Gun.xml](../../Languages/English/DefInjected/DamageDef/DemageDef_Gun.xml) | 无 | 有 | 有 | 有 | 伤害名称 |
-| [DefInjected/RecipeDef/RecipeDef_PNA_PLUS.xml](../../Languages/English/DefInjected/RecipeDef/RecipeDef_PNA_PLUS.xml) | 无 | 有 | 有 | 有 | 两份浓缩配方与工作提示 |
-| [DefInjected/ResearchProjectDef/ResearchProjectDef.xml](../../Languages/English/DefInjected/ResearchProjectDef/ResearchProjectDef.xml) | 无 | 有 | 有 | 有 | 三项 PNA 研究 |
-| [Keyed/SSC_Pna.xml](../../Languages/English/Keyed/SSC_Pna.xml) | 有 | 有 | 有 | 有 | 悬停、通知、飘字、吸引解释与调试反馈 |
+| [DefInjected/HediffDef/HediffOfBuff.xml](../../1.7/Languages/English/DefInjected/HediffDef/HediffOfBuff.xml) | 有（隐藏记录回退源 Def） | 有 | 有 | 有 | 两种药效、阶段名称及单列的隐藏抗性记录 |
+| [DefInjected/ThoughtDef/HediffOfBuff.xml](../../1.7/Languages/English/DefInjected/ThoughtDef/HediffOfBuff.xml) | 有 | 有 | 有 | 有 | 十档药效心情 |
+| [DefInjected/HediffDef/HediffOfAddiction.xml](../../1.7/Languages/English/DefInjected/HediffDef/HediffOfAddiction.xml) | 有 | 有 | 有 | 有 | 成瘾与戒断 |
+| [DefInjected/ThoughtDef/HediffOfAddiction.xml](../../1.7/Languages/English/DefInjected/ThoughtDef/HediffOfAddiction.xml) | 无 | 有 | 有 | 有 | 戒断心情 |
+| [DefInjected/HediffDef/HediffOfTrain.xml](../../1.7/Languages/English/DefInjected/HediffDef/HediffOfTrain.xml) | 无 | 有 | 有 | 有 | 分泌状态 |
+| [DefInjected/NeedDef/NeedDefs.xml](../../1.7/Languages/English/DefInjected/NeedDef/NeedDefs.xml) | 无 | 有 | 有 | 有 | 渴求需求 |
+| [DefInjected/ChemicalDef/ChemicalDef.xml](../../1.7/Languages/English/DefInjected/ChemicalDef/ChemicalDef.xml) | 无 | 有 | 有 | 有 | 化学品名称 |
+| [DefInjected/ThingDef/Nanofluid.xml](../../1.7/Languages/English/DefInjected/ThingDef/Nanofluid.xml) | 无 | 有 | 有 | 有 | 两种药液 |
+| [DefInjected/ThingDef/SSC_Gun.xml](../../1.7/Languages/English/DefInjected/ThingDef/SSC_Gun.xml) | 有 | 有 | 有 | 有 | 发射器与弹丸 |
+| [DefInjected/DamageDef/DemageDef_Gun.xml](../../1.7/Languages/English/DefInjected/DamageDef/DemageDef_Gun.xml) | 无 | 有 | 有 | 有 | 伤害名称 |
+| [DefInjected/RecipeDef/RecipeDef_PNA_PLUS.xml](../../1.7/Languages/English/DefInjected/RecipeDef/RecipeDef_PNA_PLUS.xml) | 无 | 有 | 有 | 有 | 两份浓缩配方与工作提示 |
+| [DefInjected/ResearchProjectDef/ResearchProjectDef.xml](../../1.7/Languages/English/DefInjected/ResearchProjectDef/ResearchProjectDef.xml) | 无 | 有 | 有 | 有 | 三项 PNA 研究 |
+| [Keyed/SSC_Pna.xml](../../1.7/Languages/English/Keyed/SSC_Pna.xml) | 有 | 有 | 有 | 有 | 悬停、通知、飘字、吸引解释与调试反馈 |
 
-按本次文件核对，上表 13 项中简中 5 项，繁中、英文、俄文各 13 项，共 44 个根语言文件；四语 [Keyed/SSC_Keys.xml](../../Languages/ChineseSimplified/Keyed/SSC_Keys.xml)（第 6.2 节）另计 4 个，合计 48 个。上表在 [Sexslavecraft/Languages](../../Sexslavecraft/Languages) 下对应 44 个镜像文件，含共享提示则为 48 个；整个 Languages 目录的 326 个源文件／326 个镜像是另一统计范围。本次已逐文件确认全目录路径集合与内容一致。镜像脚本需 PowerShell 7；后续落地仍应检查源 Def、简中已有覆盖和另外三语，不能只改其中一层。
+按本次文件核对，上表 13 项中简中 5 项，繁中、英文、俄文各 13 项，共 44 个根语言文件；四语 [Keyed/SSC_Keys.xml](../../1.7/Languages/ChineseSimplified/Keyed/SSC_Keys.xml)（第 6.2 节）另计 4 个，合计 48 个。上表在 [Sexslavecraft/Languages](../../Sexslavecraft/Languages) 下对应 44 个镜像文件，含共享提示则为 48 个；整个 Languages 目录的 326 个源文件／326 个镜像是另一统计范围。本次已逐文件确认全目录路径集合与内容一致。镜像脚本需 PowerShell 7；后续落地仍应检查源 Def、简中已有覆盖和另外三语，不能只改其中一层。
 
 覆盖与计数说明：
 
 - 简中 `HediffOfBuff.xml` 没有 `Hediff_PNA_Consciousness_Record` 的名称和描述覆盖，中文会回退源 Def；直接修改源 Def 即可更新该记录的简中文案，无需强制新增翻译键。繁中、英文、俄文均已有对应覆盖，届时须同步其文字与镜像。
 - 简中覆盖有意稀疏，上表多项文本直接取源 Def，不能把某一条未单独翻译说成“简中唯一缺失的 PNA 词条”。无需为文件或键的对称性强行补齐覆盖。
-- 俄文 [DefInjected/ThoughtDef/HediffOfAddiction.xml](../../Languages/Russian/DefInjected/ThoughtDef/HediffOfAddiction.xml) 实际存在，含戒断思绪名称和描述；俄文在上表的 13 项均完整，不是 12 项。
+- 俄文 [DefInjected/ThoughtDef/HediffOfAddiction.xml](../../1.7/Languages/Russian/DefInjected/ThoughtDef/HediffOfAddiction.xml) 实际存在，含戒断思绪名称和描述；俄文在上表的 13 项均完整，不是 12 项。
 - 俄文另外没有 `SSC_Schedule.xml`、`SSC_Settings.xml`、`SSC_TrainingOpinionMemory.xml` 三个 Keyed 文件，这是其他模块的既有覆盖情况，不在上表统计范围，不能据此扣减 PNA 文件数，也不扩入本次文案任务。
 
 已发现的外语问题包括浓缩品仍使用 Plus，浓缩配方使用 Make Super Drug，以及把四份写成 Forth／第四个（俄文 `(четвёртый)` 把“4 份”误作序数“第四个”，是本地化误译而非原意）。具体改写与翻译由文案负责人决定，但不得为修正玩家文字而重命名历史 DefName。
@@ -134,7 +134,7 @@ PNA 相关状态在健康面板中的数值只是**受纳米催情液影响的�
 
 | 文件范围 | 处理内容 |
 | --- | --- |
-| 四语 [Keyed/SSC_Keys.xml](../../Languages/ChineseSimplified/Keyed/SSC_Keys.xml) 及对应镜像 | 仅检查 `SSC_Produce_Progress`、`SSC_Produce_ProgressStalled` 两键，共 4 个根文件和 4 个镜像。它们也被其他产出逻辑复用，不宜改为 PNA 专属叙述。 |
+| 四语 [Keyed/SSC_Keys.xml](../../1.7/Languages/ChineseSimplified/Keyed/SSC_Keys.xml) 及对应镜像 | 仅检查 `SSC_Produce_Progress`、`SSC_Produce_ProgressStalled` 两键，共 4 个根文件和 4 个镜像。它们也被其他产出逻辑复用，不宜改为 PNA 专属叙述。 |
 | [Sexslavecraft/common/DebugActions_SSCPna.cs](../../Sexslavecraft/common/DebugActions_SSCPna.cs) | 五个开发菜单名称写在 C# 属性字符串中，仍有 P1／P2。若一并整理，只改名称字符串；这部分需要负责落地的开发者重编，单改翻译 XML 无法覆盖。 |
 
 ## 7 不应扩大的范围与落地约束
