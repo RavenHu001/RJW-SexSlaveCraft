@@ -1,31 +1,31 @@
 {
-  "source": "SSC_PnaNeedleRepeater_Approved.png",
+  "source": "SSC_PnaNeedleRepeater_Redraw.png",
   "sourceSize": [
     1774,
     887
   ],
-  "sourceSha256": "d4147bf60395caa6d788577a39a98b9ecb2942eff53e69eb4a1c2c3e36f48096",
+  "sourceSha256": "ae283feaf938307073e83d8f67207c0dbc92924c688313e91e05a75969940dba",
   "alphaThreshold": 1,
   "sourcePadding": 2,
   "crop": [
-    32,
-    154,
-    1771,
-    878
+    12,
+    138,
+    1774,
+    882
   ],
   "resampling": "premultiplied-alpha Lanczos",
   "fittedSize": [
     240,
-    100
+    101
   ],
   "offset": [
     8,
-    78
+    77
   ],
   "outputSize": [
     256,
     256
   ],
   "output": "1.7/Textures/Things/Item/Equipment/SSC_PnaNeedleRepeater.png",
-  "outputSha256": "20a5382518f42087e8112ac00067da7c1a9cd2541b92e138dbcebb0a15394ac4"
+  "outputSha256": "a1148e2e908d3adeada61a8be1964fe4fbaf89c5beb7dbd80f757b74a20bfb81"
 }

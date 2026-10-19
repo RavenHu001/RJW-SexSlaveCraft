@@ -6,10 +6,10 @@
 
 | 资源 | 画布与方向 | 游戏参数 | 说明 |
 | --- | --- | --- | --- |
-| [工业精确针枪](../../1.7/Textures/Things/Item/Equipment/SSC_PnaNeedleRifle.png) | 256×256，水平朝右；枪体 240×64 | drawSize=1，既有握持配置 | 低矮机匣、同轴拉柄槽／单针观察窗／枪管、枪托气罐与低矮瞄准镜，见[接入记录](../Development/Verification/SSC工业精确针枪贴图接入与测试.md)；已同步待实机，暂不提交 |
+| [工业精确针枪](../../1.7/Textures/Things/Item/Equipment/SSC_PnaNeedleRifle.png) | 256×256，水平朝右；枪体240×68 | drawSize=1.25，既有握持配置 | 首轮重绘回选版，同轴拉柄／单针观察窗／枪管，见[本轮检查](../Development/Completed/SSC工业气枪粗描边重绘与缩放测试.md)；已获维护者实机正常确认并授权提交 |
 | [工业速射针](../../1.7/Textures/Things/Projectile/SSC_PnaRepeaterNeedle.png) | 128×128，针尖朝上；图形24×106 | drawSize=0.4 | 银灰针尖、紫色载药管、深灰硬质尾翼，见[接入记录](../Development/Completed/SSC工业针弹贴图接入与测试.md)；已获维护者认可并授权提交 |
 | [工业精确针](../../1.7/Textures/Things/Projectile/SSC_PnaRifleNeedle.png) | 128×128，针尖朝上；图形26×112 | drawSize=0.4 | 同系列较长载药段，统一缩放倍率，见[接入记录](../Development/Completed/SSC工业针弹贴图接入与测试.md)；已获维护者认可并授权提交 |
-| [工业速射针枪](../../1.7/Textures/Things/Item/Equipment/SSC_PnaNeedleRepeater.png) | 256×256，水平朝右；枪体 240×100 | drawSize=1，既有握持配置 | 描边平涂重绘版，工程塑料枪身、枪托储气罐及侧开夹具、压力表与横放载药圆管，见[接入记录](../Development/Completed/SSC工业速射针枪贴图接入与测试.md)；最终重绘版已获认可并授权提交 |
+| [工业速射针枪](../../1.7/Textures/Things/Item/Equipment/SSC_PnaNeedleRepeater.png) | 256×256，水平朝右；枪体240×101 | drawSize=1.05，既有握持配置 | 首轮重绘回选版，枪托储气罐／侧开夹具／压力表／横排载药管保留，见[本轮检查](../Development/Completed/SSC工业气枪粗描边重绘与缩放测试.md)；已获维护者实机正常确认并授权提交 |
 | [工业短鞭](../../1.7/Textures/Things/Item/Equipment/SSC_PnaShortWhip.png) | 256×256，握柄在左、三股鞭束向右 | drawSize=1，沿用现有装备角度 | 当前为新版物品图，另接待机／挥击／回落；柄部共同标定，见[本轮实现](../Development/Completed/SSC短鞭四姿态接入与测试.md)，已获本轮实机认可；[旧单图验收](../Development/Completed/SSC工业短鞭贴图接入与测试.md)保留原范围 |
 | [短矛](../../1.7/Textures/Things/Item/Equipment/SSC_PnaShortSpear.png) | 256×256，水平朝右 | drawSize=1，无额外装备角度 | 紫色金属阔刃、小圆形尾端、暖木杆、深色绑带；最初参考图由维护者提供，后续横置、构型与粗细调整保留历史来源 |
 | [吹箭筒](../../1.7/Textures/Things/Item/Equipment/SSC_PnaBlowpipe.png) | 256×256，水平朝右 | drawSize=1，角度 0 | 紧凑木筒、浸紫直筒口，两支备用箭为紫色金属箭头与浅米色纤维尾塞 |

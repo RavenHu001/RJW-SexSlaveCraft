@@ -45,7 +45,7 @@
     <label>纳米催情液速射针枪</label>
     <description>一把气动速射针枪，以三发短点射投送载药射针。适合中近距离连续施加纳米催情液，远距离精度较差。</description>
     <techLevel>Industrial</techLevel><possessionCount>1</possessionCount>
-    <graphicData><texPath>Things/Item/Equipment/SSC_PnaNeedleRepeater</texPath><graphicClass>Graphic_Single</graphicClass><drawSize>1</drawSize></graphicData>
+    <graphicData><texPath>Things/Item/Equipment/SSC_PnaNeedleRepeater</texPath><graphicClass>Graphic_Single</graphicClass><drawSize>1.05</drawSize></graphicData>
     <soundInteract>Interact_SMG</soundInteract>
     <statBases>
       <WorkToMake>14000</WorkToMake><Mass>2</Mass><MaxHitPoints>100</MaxHitPoints>
@@ -75,7 +75,7 @@
     <label>纳米催情液精确针枪</label>
     <description>一把单发气动针枪，以较长瞄准间隔换取远距离精确投送。专用射针携带较高剂量的纳米催情液。</description>
     <techLevel>Industrial</techLevel><possessionCount>1</possessionCount>
-    <graphicData><texPath>Things/Item/Equipment/SSC_PnaNeedleRifle</texPath><graphicClass>Graphic_Single</graphicClass><drawSize>1</drawSize></graphicData>
+    <graphicData><texPath>Things/Item/Equipment/SSC_PnaNeedleRifle</texPath><graphicClass>Graphic_Single</graphicClass><drawSize>1.25</drawSize></graphicData>
     <soundInteract>Interact_Rifle</soundInteract>
     <statBases>
       <WorkToMake>18000</WorkToMake><Mass>3</Mass><MaxHitPoints>100</MaxHitPoints>

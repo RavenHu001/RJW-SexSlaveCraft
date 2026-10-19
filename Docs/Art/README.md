@@ -1,8 +1,10 @@
 # 美术资源与提示词索引
 
+两把工业气枪回选首轮重绘图已获维护者实机正常确认并授权提交，256px透明画布、drawSize=1.05／1.25；当前来源为 `*_Redraw.png`，见[验收与选图](../Development/Completed/SSC工业气枪粗描边重绘与缩放测试.md)。后续风格试验另作预览，不替换已验收运行图。
+
 [文档总索引](../README.md) · [开发日志](../Development/开发更新记录.md)
 
-精确针枪[256px 导出与接入](../Development/Verification/SSC工业精确针枪贴图接入与测试.md)已同步待实机，drawSize=1；[原图及参数](SSC_PnaNeedleRifle/export.json)已保存，已授权先提交。
+精确针枪[256px 导出与接入](../Development/Completed/SSC工业精确针枪贴图接入与测试.md)已同步待实机，drawSize=1；[原图及参数](SSC_PnaNeedleRifle/export.json)已保存，已授权先提交。
 
 此目录保存生成提示词、资源说明与版本备份；当前运行纹理位于 `1.7/Textures/`（版本覆盖）与 `Common/Textures/`（共享冻结基线），当前选定版本以开发日志中的最新决定为准。
 
