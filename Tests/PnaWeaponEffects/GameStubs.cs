@@ -9,7 +9,7 @@ namespace UnityEngine {
  public struct Color {public float r,g,b,a;public Color(float r,float g,float b,float a){this.r=r;this.g=g;this.b=b;this.a=a;}}
  public struct Matrix4x4 {public float m00,m02,m03,m11,m13,m20,m22,m23,m33;}
  public class Texture {} public class Texture2D:Texture {public string Path;} public class Shader {}
- public class Material {public string name;public Texture mainTexture;public Shader shader;public Color color;public Material(){}public Material(Shader s){shader=s;}}
+ public class Material {public string name;public Texture mainTexture;public Shader shader;public Color color;public Material(){}public Material(Shader s){shader=s;}public Material(Material m){mainTexture=m.mainTexture;shader=m.shader;color=m.color;}}
  public class MaterialPropertyBlock {public Color Color;public void SetColor(int p,Color c)=>Color=c;}
  public class Mesh {public string name;public Vector3[] vertices;public Vector2[] uv;public Color[] colors;public int[] triangles;public void SetTriangles(int[] t,int i)=>triangles=t;public void RecalculateNormals(){}public void RecalculateBounds(){}}
  public static class Graphics {
@@ -22,10 +22,11 @@ namespace UnityEngine {
 namespace Verse {
  public struct IntVec3 {public int x,z;public IntVec3(int x,int z){this.x=x;this.z=z;}public static bool operator ==(IntVec3 a,IntVec3 b)=>a.x==b.x&&a.z==b.z;public static bool operator !=(IntVec3 a,IntVec3 b)=>!(a==b);public override bool Equals(object o)=>o is IntVec3 b&&this==b;public override int GetHashCode()=>HashCode.Combine(x,z);}
  public class Thing {public bool Spawned=true,Destroyed;public Map Map,MapHeld;public Vector3 DrawPos;public IntVec3 Position;public ThingDef def;}
+ public class ThingWithComps:Thing {}
  public class ThingDef {public string defName;}
  public class Pawn:Thing {public bool Valid=true,Master,Dead;public Pawn_StanceTracker stances=new Pawn_StanceTracker();public Pawn_EquipmentTracker equipment=new Pawn_EquipmentTracker();public Pawn_DrawTracker Drawer;public Pawn(){Drawer=new Pawn_DrawTracker(this);}}
  public class Pawn_StanceTracker {public bool FullBodyBusy;}
- public class Pawn_EquipmentTracker {public Thing Primary;}
+ public class Pawn_EquipmentTracker {public Thing Primary;public int RemoveCalls;[MethodImpl(MethodImplOptions.NoInlining)]public void Notify_EquipmentRemoved(ThingWithComps eq){RemoveCalls++;}}
  public class Pawn_DrawTracker {
   private readonly JitterHandler jitterer=new JitterHandler();private readonly Pawn pawn;
   public JitterHandler Handler=>jitterer;public Pawn_DrawTracker(Pawn p){pawn=p;}
@@ -56,12 +57,14 @@ namespace Verse {
  public class FleckManager {public readonly List<FleckCreationData> Sent=new List<FleckCreationData>();public void CreateFleck(FleckCreationData d)=>Sent.Add(d);}
  public struct FleckCreationData {public FleckDef def;public Vector3 spawnPosition;public Vector3? exactScale,velocity;public Color? instanceColor;public float rotation,scale;public int ageTicksOverride;}
  public static class GenView {public static bool ShouldSpawnMotesAt(this Vector3 p,Map m,bool drawOffscreen=true)=>m.Visible;}
- public static class Find {public static Map CurrentMap;}
+ public class TickManager {public int TicksGame;}
+ public static class Find {public static Map CurrentMap;public static TickManager TickManager=new TickManager();}
  public enum LoadSaveMode {Inactive,Saving,LoadingVars,PostLoadInit}public static class Scribe {public static LoadSaveMode mode;}
 }
 namespace RimWorld {
  public class DefOfAttribute:Attribute {}public static class DefOfHelper {public static void EnsureInitializedInCtor(Type t){}}
- public class Verb_MeleeAttackDamage {public Verse.Pawn CasterPawn;public Verse.Thing EquipmentSource;protected Verse.LocalTargetInfo currentTarget;public int BaseCalls;public Func<bool> NativeCast;public void SetTarget(Verse.Thing t)=>currentTarget=new Verse.LocalTargetInfo{Thing=t};protected virtual bool TryCastShot(){BaseCalls++;return NativeCast();}}
+ public class Verb_MeleeAttack {public Verse.Pawn CasterPawn;public Verse.Thing EquipmentSource;protected Verse.LocalTargetInfo currentTarget;public int BaseCalls;public Func<bool> NativeCast;public void SetTarget(Verse.Thing t)=>currentTarget=new Verse.LocalTargetInfo{Thing=t};[MethodImpl(MethodImplOptions.NoInlining)] protected virtual bool TryCastShot(){BaseCalls++;return NativeCast();}}
+ public class Verb_MeleeAttackDamage:Verb_MeleeAttack {}
  public static class FleckMaker {public static Verse.FleckCreationData GetDataStatic(Vector3 p,Verse.Map m,Verse.FleckDef d,float scale=1f)=>new Verse.FleckCreationData{def=d,spawnPosition=p,scale=scale,ageTicksOverride=-1};}
 }
 namespace SexSlaveCraft {

@@ -1,10 +1,12 @@
 # PNA 武器攻击与受药视觉专项
 
+2026-10-19 短鞭四姿态角度／触发修正后 **119/119**：保留以下 61 项短矛／爱心回归，扩展短鞭出手、6／18 tick 边界、暂停／加速、异常与失效状态、卸装、镜像与完整矩阵、缓存材质隔离及 XML 接线检查，并核对待机正常／镜像 45°、柄心位置和缩放不变，以及柄击／拳击／打空均播放、灭火通知不触发。直接链接生产短鞭工具与绘制器，真实 Harmony 执行四处补丁。实际游戏 DLL 三处补丁与待机锚点的 .NET 10 原生探针、编译与同步状态见[本轮记录](../../Docs/Development/Completed/SSC短鞭四姿态接入与测试.md)；维护者已认可最终实际效果，未逐项报告的 GPU／朝向组合不另记为专项实测。下方 61 项为旧单图功能的历史验收范围。
+
 2026-10-19：本专项已登记到 `scripts/Test-All.ps1`，工业步骤一再次执行，结果见[本批记录](../../Docs/Development/Completed/SSC工业武器步骤一实现与测试.md)。
 
 最终 4.5 倍光晕／48 tick 寿命版 **61/61** 通过，维护者已于 2026-10-18 确认实机正常并提交 `8217a37`；验收见[完成记录](../../Docs/Development/Completed/SSC短矛命中泛光实现与测试.md)。
 
-直接编译生产受药工具、专用刺击 Verb、矛尖泛光计时及绘制补丁，使用 .NET 9 与真实 Harmony 2.4.2 执行两处补丁，隔离原版视觉 tick 与 GPU 绘制边界。运行：
+直接编译生产受药工具、专用刺击 Verb、原版共用近战出手补丁、矛尖泛光／短鞭姿态计时及绘制补丁，使用 .NET 9 与真实 Harmony 2.4.2 执行四处补丁，隔离原版视觉 tick 与 GPU 绘制边界。运行：
 
 ```powershell
 dotnet run --project Tests/PnaWeaponEffects/PnaWeaponEffects.csproj -p:HarmonyAssemblyPath=<net9.0的0Harmony.dll> -- <仓库绝对路径>

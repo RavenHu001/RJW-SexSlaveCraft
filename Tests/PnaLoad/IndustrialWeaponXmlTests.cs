@@ -56,7 +56,7 @@ internal static partial class Program
             foreach (var row in new[] { (Name:"SuppressionPower", Value:.20), (Name:"TerrorSource", Value:15.0) })
             { Near(row.Value, Number(offsets.Element(row.Name))); Equal("Ludeon.RimWorld.Ideology", offsets.Element(row.Name).Attribute("MayRequire").Value); }
             var maneuver = LoadDef("Defs/ManeuverDefs/SSC_PnaIndustrialManeuvers.xml", "SSC_Maneuver_PnaWhip");
-            Equal("Verb_MeleeAttackDamage", maneuver.Element("verb").Element("verbClass").Value);
+            Equal("SexSlaveCraft.Verb_MeleeAttackSSCPnaWhip", maneuver.Element("verb").Element("verbClass").Value);
             Equal("SSC_Damage_PnaWhipCut", maneuver.Element("verb").Element("meleeDamageDef").Value);
             var handle = d.Element("tools").Elements().Last(); Near(2, Number(handle.Element("power")));
             Near(0, Number(handle.Element("armorPenetration"))); Equal("Blunt", handle.Element("capacities").Elements().Single().Value);

@@ -1,5 +1,7 @@
 # 测试说明索引
 
+2026-10-19 短鞭四姿态角度／触发修正：[PnaWeaponEffects](PnaWeaponEffects/README.md)为 119/119 项；共用出手／角度修正完整回归 39/39 套、3524/3524 项及 2/2 资源检查通过。随后保留初版存档 Verb 类型为空继承类，最终视觉 119/119、PnaLoad 530/530 和实际游戏 DLL 探针再次通过，1.7 构建零警告零错误。分次执行证据与修正版实机验收状态见[本轮记录](../Docs/Development/Completed/SSC短鞭四姿态接入与测试.md)。
+
 中世纪武器首批历史交付：最终短矛泛光专项 [PnaWeaponEffects](PnaWeaponEffects/README.md) **61/61**，最近 1.7 编译零警告零错误，维护者已确认最终实机正常。药效 [PnaLoad](PnaLoad/README.md) **511/511** 和尾迹 [PnaProjectileTrail](PnaProjectileTrail/README.md) **30/30** 为未变范围的既有结果；分批证据见[完成核对](../Docs/Development/Completed/SSC武器拓展首批完成核对.md)。下方门禁总数是各历史阶段，不能把新增专项数量相加称为本次重跑结果。
 
 2026-10-19 工业武器步骤一全量 **39/39 套、3466/3466 项、2/2 资源检查**通过。新增 [PnaMeleeQuality](PnaMeleeQuality/README.md)，直接运行本机 1.7 品质组件及生产补丁；[PnaLoad](PnaLoad/README.md) 增加工业 XML 接线与剂量回归。PnaMeleeQuality、PnaWeaponEffects、PnaProjectileTrail 均已登记进 `scripts/Test-All.ps1`：品质专项使用 .NET 10 和本机游戏引用，其余宿主保持 .NET 9；完整结果见[步骤一记录](../Docs/Development/Completed/SSC工业武器步骤一实现与测试.md)。

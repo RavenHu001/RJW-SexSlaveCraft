@@ -9,7 +9,7 @@
     <techLevel>Industrial</techLevel>
     <possessionCount>1</possessionCount>
     <graphicData>
-      <!-- 256×256 透明图：柄左鞭束右，原图颜色，不额外旋转或染色。 -->
+      <!-- 256×256 物品图；手持时由专用绘制入口切换待机／挥击／回落，柄部标定一致。 -->
       <texPath>Things/Item/Equipment/SSC_PnaShortWhip</texPath>
       <graphicClass>Graphic_Single</graphicClass>
       <drawSize>1</drawSize>

@@ -39,7 +39,9 @@ namespace SexSlaveCraft
 
         internal static void DrawWeapon(Mesh mesh, Matrix4x4 matrix, Material material, int layer, Thing weapon)
         {
-            // 原武器绘制完整执行一次，所有武器原有材质、翻面、缩放和姿势保持不变。
+            // 短鞭复用同一绘制入口，仅切换自身姿态材质，避免第二份全局绘制补丁。
+            if (SSCPnaWhipRenderer.TryDraw(weapon, mesh, matrix, material, layer)) return;
+            // 其余武器原绘制完整执行一次；短矛既有叠画逻辑保持。
             Graphics.DrawMesh(mesh, matrix, material, layer);
             SSCPnaSpearGlowRenderer.Draw(weapon, mesh, matrix, material, layer);
         }

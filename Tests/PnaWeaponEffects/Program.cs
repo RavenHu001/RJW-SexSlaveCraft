@@ -41,7 +41,7 @@ internal static class Program
  private static int Main(string[] args)
  {
   var harmony=new Harmony("ssc.tests.pna-weapon-effects");harmony.PatchAll(Assembly.GetExecutingAssembly());
-  Run("真实Harmony注册绘制替换和回位后缀",()=>Near(2,harmony.GetPatchedMethods().Count()));
+  Run("真实Harmony注册绘制、回位、卸装与近战出手补丁",()=>Near(4,harmony.GetPatchedMethods().Count()));
   foreach(bool hit in new[]{true,false})Run("仅命中泛光且原返回值保持 hit="+hit,()=>
   {
    var f=new Fixture();f.Verb.NativeCast=()=>{f.Caster.Drawer.Notify_MeleeAttackOn(f.Target);return hit;};
@@ -160,6 +160,7 @@ internal static class Program
   string root=Path.GetFullPath(args.Length>0?args[0]:".");
   Run("尖梭定义和贴图撤下，爱心XML参数保留",()=>{var d=XDocument.Load(Path.Combine(root,"1.7/Defs/EffecterDefs/SSC_PnaWeaponEffects.xml")).Root.Elements().ToArray();Near(1,d.Length);Check(d[0].Name=="FleckDef","仅爱心");Near(.06,(double)d[0].Element("fadeInTime"));Near(.64,(double)d[0].Element("solidTime"));Near(.5,(double)d[0].Element("fadeOutTime"));Check(!File.Exists(Path.Combine(root,"1.7/Textures/Things/Mote/SSC_PnaStabSpindle.png")),"旧资源撤下");});
   Run("专用动作仍接原伤害，普通柄击不接泛光",()=>{var d=XDocument.Load(Path.Combine(root,"1.7/Defs/ManeuverDefs/SSC_PnaPrimitiveManeuvers.xml"));Check(d.Descendants("verbClass").Single().Value=="SexSlaveCraft.Verb_MeleeAttackSSCPna","专用动作");Check(d.Descendants("meleeDamageDef").Single().Value=="SSC_Damage_PnaStaffStab","伤害不变");});
+  WhipPoseTests.Register(Run,root);
   Console.WriteLine($"结果：{passed}/{passed+failed} 项通过。");return failed==0?0:1;
  }
 }

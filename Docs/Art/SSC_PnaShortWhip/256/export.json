@@ -1,0 +1,200 @@
+{
+  "canvas_size": [
+    256,
+    256
+  ],
+  "mode": "RGBA",
+  "target_handle_width_px": 80,
+  "target_handle_center_px": [
+    50,
+    128
+  ],
+  "method": "Whole-pose proportional premultiplied-alpha Lanczos; shared handle landmarks; no redraw or rotation.",
+  "runtime_integrated": false,
+  "poses": [
+    {
+      "pose": "Item",
+      "source": "SSC_PnaShortWhip_Item_Approved.png",
+      "source_sha256": "b3340419cab16291fe6d2bd4275b988e60d3df8ed9cd0baf9c18967c10e87c55",
+      "source_size": [
+        1774,
+        887
+      ],
+      "crop_bbox": [
+        29,
+        114,
+        1746,
+        837
+      ],
+      "source_handle_landmarks": {
+        "butt_left_x": 31,
+        "collar_mouth_x": 744,
+        "grip_axis_y": 480
+      },
+      "nominal_scale": 0.11220196353436185,
+      "scaled_size": [
+        193,
+        81
+      ],
+      "offset": [
+        10,
+        87
+      ],
+      "handle_width_px": 80.14502038439139,
+      "handle_center_px": [
+        50.297320908561446,
+        128.00414937759336
+      ],
+      "output": "SSC_PnaShortWhip_Item.png",
+      "output_sha256": "73335be8cc073cbc8a67ded75b56efb1a0cb00ef8befd43a09c19e34c66ded54",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "visible_bbox": [
+        10,
+        87,
+        203,
+        168
+      ]
+    },
+    {
+      "pose": "Idle",
+      "source": "SSC_PnaShortWhip_Idle_Approved.png",
+      "source_sha256": "e03309d810569fc1d3248a774096344e88b80ca05df9a134ef04f57704073bc7",
+      "source_size": [
+        1774,
+        887
+      ],
+      "crop_bbox": [
+        204,
+        266,
+        1516,
+        795
+      ],
+      "source_handle_landmarks": {
+        "butt_left_x": 206,
+        "collar_mouth_x": 1089,
+        "grip_axis_y": 385.5
+      },
+      "nominal_scale": 0.09060022650056625,
+      "scaled_size": [
+        119,
+        48
+      ],
+      "offset": [
+        10,
+        117
+      ],
+      "handle_width_px": 80.0891768292683,
+      "handle_center_px": [
+        50.22599085365854,
+        127.84310018903592
+      ],
+      "output": "SSC_PnaShortWhip_Idle.png",
+      "output_sha256": "f5bb1b258ee775c068bb97d89c52d07b458881d097c023012a3d3348773ca8e6",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "visible_bbox": [
+        10,
+        117,
+        129,
+        165
+      ]
+    },
+    {
+      "pose": "Attack",
+      "source": "SSC_PnaShortWhip_Attack_Approved.png",
+      "source_sha256": "8afc9fe5c66c224c9b6a6eaf97bc9ee3330942620aab8ad751f7a8d683d0fa33",
+      "source_size": [
+        2172,
+        724
+      ],
+      "crop_bbox": [
+        18,
+        162,
+        1990,
+        632
+      ],
+      "source_handle_landmarks": {
+        "butt_left_x": 20,
+        "collar_mouth_x": 719,
+        "grip_axis_y": 367
+      },
+      "nominal_scale": 0.11444921316165951,
+      "scaled_size": [
+        226,
+        54
+      ],
+      "offset": [
+        10,
+        104
+      ],
+      "handle_width_px": 80.10851926977688,
+      "handle_center_px": [
+        50.28346855983773,
+        127.5531914893617
+      ],
+      "output": "SSC_PnaShortWhip_Attack.png",
+      "output_sha256": "229de5ccfc082944a37f241844635d4a9ac9c137fa3b273a59ffa75c0bc42d0d",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "visible_bbox": [
+        10,
+        104,
+        236,
+        158
+      ]
+    },
+    {
+      "pose": "Recovery",
+      "source": "SSC_PnaShortWhip_Recovery_Approved.png",
+      "source_sha256": "082e755d0d1466f5abc6b062519c9ae17b61490fcb64532e83cfb34ac0fd2203",
+      "source_size": [
+        2172,
+        724
+      ],
+      "crop_bbox": [
+        22,
+        26,
+        2117,
+        701
+      ],
+      "source_handle_landmarks": {
+        "butt_left_x": 24,
+        "collar_mouth_x": 768,
+        "grip_axis_y": 204
+      },
+      "nominal_scale": 0.10752688172043011,
+      "scaled_size": [
+        225,
+        73
+      ],
+      "offset": [
+        10,
+        109
+      ],
+      "handle_width_px": 79.90453460620525,
+      "handle_center_px": [
+        50.16706443914081,
+        128.25037037037038
+      ],
+      "output": "SSC_PnaShortWhip_Recovery.png",
+      "output_sha256": "7c357b3f8bb6537e88069081482c212bf4f3b6589deb3f50283bf1e1617a0e41",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "visible_bbox": [
+        10,
+        109,
+        235,
+        182
+      ]
+    }
+  ]
+}
