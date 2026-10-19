@@ -42,7 +42,7 @@ namespace Verse {
   [MethodImpl(MethodImplOptions.NoInlining)] public static void DrawEquipmentAiming(Thing eq,Vector3 loc,float angle){Graphics.DrawMesh(NextMesh,NextMatrix,NextMaterial,4);}
  }
  public static class MeshPool {public static Mesh plane10=new Mesh(),plane10Flip=new Mesh();}
- public static class ShaderDatabase {public static Shader MoteGlow=new Shader();}
+ public static class ShaderDatabase {public static Shader MoteGlow=new Shader();public static Shader Mote=new Shader();}
  public class StaticConstructorOnStartupAttribute:Attribute {}
  public static class ContentFinder<T> where T:class {private static readonly Dictionary<string,T> Cache=new Dictionary<string,T>();public static T Get(string path){if(!Cache.TryGetValue(path,out var value))Cache[path]=value=(new Texture2D{Path=path} as T);return value;}}
  public static class ShaderPropertyIDs {public const int Color=1;}
@@ -63,7 +63,7 @@ namespace Verse {
 }
 namespace RimWorld {
  public class DefOfAttribute:Attribute {}public static class DefOfHelper {public static void EnsureInitializedInCtor(Type t){}}
- public class Verb_MeleeAttack {public Verse.Pawn CasterPawn;public Verse.Thing EquipmentSource;protected Verse.LocalTargetInfo currentTarget;public int BaseCalls;public Func<bool> NativeCast;public void SetTarget(Verse.Thing t)=>currentTarget=new Verse.LocalTargetInfo{Thing=t};[MethodImpl(MethodImplOptions.NoInlining)] protected virtual bool TryCastShot(){BaseCalls++;return NativeCast();}}
+ public class Verb_MeleeAttack {public Verse.Pawn CasterPawn;public Verse.Thing EquipmentSource;protected Verse.LocalTargetInfo currentTarget;public Verse.LocalTargetInfo CurrentTarget=>currentTarget;public int BaseCalls;public Func<bool> NativeCast;public void SetTarget(Verse.Thing t)=>currentTarget=new Verse.LocalTargetInfo{Thing=t};[MethodImpl(MethodImplOptions.NoInlining)] protected virtual bool TryCastShot(){BaseCalls++;return NativeCast();}}
  public class Verb_MeleeAttackDamage:Verb_MeleeAttack {}
  public static class FleckMaker {public static Verse.FleckCreationData GetDataStatic(Vector3 p,Verse.Map m,Verse.FleckDef d,float scale=1f)=>new Verse.FleckCreationData{def=d,spawnPosition=p,scale=scale,ageTicksOverride=-1};}
 }

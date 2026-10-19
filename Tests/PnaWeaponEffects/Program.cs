@@ -158,9 +158,10 @@ internal static class Program
    var f=new Fixture();switch(gate){case "invalid":f.Target.Valid=false;break;case "master":f.Target.Master=true;break;case "despawned":f.Target.Spawned=false;break;case "other-map":Find.CurrentMap=new Map();break;case "offscreen":f.Map.Visible=false;break;case "no-def":SSCPnaWeaponEffectDefOf.SSC_PnaAbsorptionHeart=null;break;case "saving":Scribe.mode=LoadSaveMode.Saving;break;}SSCPnaWeaponEffectsUtility.ShowAbsorption(f.Target);Near(0,f.Map.flecks.Sent.Count);
   });
   string root=Path.GetFullPath(args.Length>0?args[0]:".");
-  Run("尖梭定义和贴图撤下，爱心XML参数保留",()=>{var d=XDocument.Load(Path.Combine(root,"1.7/Defs/EffecterDefs/SSC_PnaWeaponEffects.xml")).Root.Elements().ToArray();Near(1,d.Length);Check(d[0].Name=="FleckDef","仅爱心");Near(.06,(double)d[0].Element("fadeInTime"));Near(.64,(double)d[0].Element("solidTime"));Near(.5,(double)d[0].Element("fadeOutTime"));Check(!File.Exists(Path.Combine(root,"1.7/Textures/Things/Mote/SSC_PnaStabSpindle.png")),"旧资源撤下");});
+  Run("尖梭定义和贴图撤下，爱心XML参数保留",()=>{var d=XDocument.Load(Path.Combine(root,"1.7/Defs/EffecterDefs/SSC_PnaWeaponEffects.xml")).Root.Elements().ToArray();Near(1,d.Length);Check((string)d[0].Element("defName")=="SSC_PnaAbsorptionHeart","爱心保留");Near(.06,(double)d[0].Element("fadeInTime"));Near(.64,(double)d[0].Element("solidTime"));Near(.5,(double)d[0].Element("fadeOutTime"));Check(!File.Exists(Path.Combine(root,"1.7/Textures/Things/Mote/SSC_PnaStabSpindle.png")),"旧资源撤下");});
   Run("专用动作仍接原伤害，普通柄击不接泛光",()=>{var d=XDocument.Load(Path.Combine(root,"1.7/Defs/ManeuverDefs/SSC_PnaPrimitiveManeuvers.xml"));Check(d.Descendants("verbClass").Single().Value=="SexSlaveCraft.Verb_MeleeAttackSSCPna","专用动作");Check(d.Descendants("meleeDamageDef").Single().Value=="SSC_Damage_PnaStaffStab","伤害不变");});
   WhipPoseTests.Register(Run,root);
+  WhipHitTests.Register(Run,root);
   Console.WriteLine($"结果：{passed}/{passed+failed} 项通过。");return failed==0?0:1;
  }
 }

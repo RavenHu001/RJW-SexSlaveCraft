@@ -366,6 +366,7 @@
     <Compile Include="common\SSCPnaWeaponEffectsUtility.cs" />
     <Compile Include="common\SSCPnaSpearGlowUtility.cs" />
     <Compile Include="common\SSCPnaWhipPoseUtility.cs" />
+    <Compile Include="common\SSCPnaWhipHitUtility.cs" />
     <Compile Include="DamageWorker\Verb_MeleeAttackSSCPnaWhip.cs" />
     <Compile Include="ThePatches\Harmony_SSCPnaWhip.cs" />
     <Compile Include="ThePatches\Harmony_SSCPnaSpearGlow.cs" />

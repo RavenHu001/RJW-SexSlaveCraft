@@ -34,7 +34,8 @@ internal static class WhipPoseTests
             Owner.Map = Target.Map = Weapon.MapHeld = Map;
             Owner.equipment.Primary = Weapon;
             Verb.CasterPawn = Owner; Verb.EquipmentSource = Weapon; Verb.SetTarget(Target);
-            Verb.NativeCast = () => true;
+            // 姿态专项默认打空，以单独检查实体姿态绘制；命中光带由 WhipHitTests 覆盖。
+            Verb.NativeCast = () => false;
             Graphics.Sent.Clear();
             PawnRenderUtility.NextMaterial = Original;
             PawnRenderUtility.NextMesh = MeshPool.plane10;

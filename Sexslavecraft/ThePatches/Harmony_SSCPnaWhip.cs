@@ -15,7 +15,7 @@ namespace SexSlaveCraft
         // 不挂 Notify_MeleeAttackOn：该通知亦被灭火／点火动作使用。
         private static void Prefix(Verb_MeleeAttack __instance, out Thing __state)
         {
-            __state = null;
+            __state = default;
             Pawn pawn = __instance.CasterPawn;
             Thing weapon = pawn?.equipment?.Primary;
             // 对齐原版的两个提前退出条件；不修改原方法或它的返回值。
@@ -26,10 +26,11 @@ namespace SexSlaveCraft
             }
         }
 
-        private static void Postfix(Verb_MeleeAttack __instance, Thing __state)
+        private static void Postfix(Verb_MeleeAttack __instance, Thing __state, bool __result)
         {
             // 普通 Postfix 不在父类异常时执行。命中、打空、闪避的正常返回都播放。
-            if (__state != null) SSCPnaWhipPoseUtility.Begin(__state, __instance.CasterPawn);
+            // 返回值只读：命中（含完全挡伤）标记残影，打空／闪避仍播放武器姿态。
+            if (__state != null) SSCPnaWhipPoseUtility.Begin(__state, __instance.CasterPawn, __result);
         }
     }
 
@@ -73,6 +74,8 @@ namespace SexSlaveCraft
             }
             // 仅待机姿态固定为柄尾朝下的 45°；挥击与回落继续跟随原版目标方向。
             if (pose == SSCPnaWhipPose.Idle) matrix = IdleMatrix(matrix, mesh == MeshPool.plane10Flip);
+            // 残影先画在鞭束下方；共用最终矩阵，不另外驱动武器旋转或插入动作。
+            SSCPnaWhipHitUtility.Draw(weapon, mesh, matrix, layer);
             Graphics.DrawMesh(mesh, matrix, poses[(int)pose], layer);
             return true;
         }

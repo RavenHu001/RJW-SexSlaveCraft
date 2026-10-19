@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- AI 辅助生成；仅保留成功受药爱心。命中矛尖泛光由武器绘制工具处理，不生成粒子。 -->
+<!-- AI 辅助生成；成功受药爱心。短鞭宽半弧残影由武器绘制器叠画，不生成 Fleck。命中矛尖泛光由武器绘制工具处理，不生成粒子。 -->
 <Defs>
   <FleckDef ParentName="FleckBase_Thrown">
     <defName>SSC_PnaAbsorptionHeart</defName>

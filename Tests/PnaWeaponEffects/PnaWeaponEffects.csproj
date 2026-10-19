@@ -8,6 +8,7 @@
     <Compile Include="../../Sexslavecraft/common/SSCPnaWeaponEffectsUtility.cs" Link="Production/SSCPnaWeaponEffectsUtility.cs" />
     <Compile Include="../../Sexslavecraft/common/SSCPnaSpearGlowUtility.cs" Link="Production/SSCPnaSpearGlowUtility.cs" />
     <Compile Include="../../Sexslavecraft/common/SSCPnaWhipPoseUtility.cs" Link="Production/SSCPnaWhipPoseUtility.cs" />
+    <Compile Include="../../Sexslavecraft/common/SSCPnaWhipHitUtility.cs" Link="Production/SSCPnaWhipHitUtility.cs" />
     <Compile Include="../../Sexslavecraft/DamageWorker/Verb_MeleeAttackSSCPnaWhip.cs" Link="Production/Verb_MeleeAttackSSCPnaWhip.cs" />
     <Compile Include="../../Sexslavecraft/ThePatches/Harmony_SSCPnaWhip.cs" Link="Production/Harmony_SSCPnaWhip.cs" />
     <Compile Include="../../Sexslavecraft/ThePatches/Harmony_SSCPnaSpearGlow.cs" Link="Production/Harmony_SSCPnaSpearGlow.cs" />
