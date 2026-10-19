@@ -1,0 +1,31 @@
+{
+  "source": "SSC_PnaNeedleRifle_Approved.png",
+  "sourceSize": [
+    2170,
+    725
+  ],
+  "sourceSha256": "fd93bc463426bb5c92fa6156d7ae885dbe787cd96ef7e3e3ecf71e9e1c168c65",
+  "alphaThreshold": 1,
+  "sourcePadding": 2,
+  "crop": [
+    37,
+    99,
+    2133,
+    655
+  ],
+  "resampling": "premultiplied-alpha Lanczos",
+  "fittedSize": [
+    240,
+    64
+  ],
+  "offset": [
+    8,
+    96
+  ],
+  "outputSize": [
+    256,
+    256
+  ],
+  "output": "1.7/Textures/Things/Item/Equipment/SSC_PnaNeedleRifle.png",
+  "outputSha256": "ac3b11eb0fb376f2b45ff11f6becff6418285a88e909f19684a0a73a3fa73374"
+}

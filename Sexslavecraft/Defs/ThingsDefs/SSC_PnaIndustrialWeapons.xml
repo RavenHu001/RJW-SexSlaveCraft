@@ -75,7 +75,7 @@
     <label>纳米催情液精确针枪</label>
     <description>一把单发气动针枪，以较长瞄准间隔换取远距离精确投送。专用射针携带较高剂量的纳米催情液。</description>
     <techLevel>Industrial</techLevel><possessionCount>1</possessionCount>
-    <graphicData><texPath>Things/Item/Equipment/WeaponRanged/BoltActionRifle</texPath><graphicClass>Graphic_Single</graphicClass><drawSize>1</drawSize></graphicData>
+    <graphicData><texPath>Things/Item/Equipment/SSC_PnaNeedleRifle</texPath><graphicClass>Graphic_Single</graphicClass><drawSize>1</drawSize></graphicData>
     <soundInteract>Interact_Rifle</soundInteract>
     <statBases>
       <WorkToMake>18000</WorkToMake><Mass>3</Mass><MaxHitPoints>100</MaxHitPoints>

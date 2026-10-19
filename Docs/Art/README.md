@@ -2,6 +2,8 @@
 
 [文档总索引](../README.md) · [开发日志](../Development/开发更新记录.md)
 
+精确针枪[256px 导出与接入](../Development/Verification/SSC工业精确针枪贴图接入与测试.md)已同步待实机，drawSize=1；[原图及参数](SSC_PnaNeedleRifle/export.json)已保存，已授权先提交。
+
 此目录保存生成提示词、资源说明与版本备份；当前运行纹理位于 `1.7/Textures/`（版本覆盖）与 `Common/Textures/`（共享冻结基线），当前选定版本以开发日志中的最新决定为准。
 
 | 文档或资源 | 用途与状态 |
