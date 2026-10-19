@@ -2,7 +2,7 @@
 
 当前 1.7 分支的 SSC 武器首批已交付：先读[完成核对](Development/Completed/SSC武器拓展首批完成核对.md)，玩家规则见[武器机制](../机制详解.md#116-原始纳米催情液武器与视觉反馈)，图像与声音见[资源表](Art/SSC纳米催情液武器资源.md)。开发分支成果与既有 2.4.2 下载分开登记，未重新发布安装包。
 
-[工业时代 PNA 三武器](Design/SSC工业时代纳米催情液武器开发规划.md)步骤一已实现，使用占位图：短鞭与两把气动针枪、品质伤害适配和远程防身调整已获实机认可，见[实现与验收](Development/Completed/SSC工业武器步骤一实现与测试.md)。正式贴图、声音选型及发布不在本批范围。
+[工业时代 PNA 三武器](Design/SSC工业时代纳米催情液武器开发规划.md)步骤一已实现：短鞭与两把气动针枪、品质伤害适配和远程防身调整已获实机认可，见[实现与验收](Development/Completed/SSC工业武器步骤一实现与测试.md)。短鞭正式贴图已[实机验收](Development/Completed/SSC工业短鞭贴图接入与测试.md)，两把针枪及射针正式贴图尚未开始；未打包发布。
 
 [项目首页](../README.md) · [玩家阅读入口](Players/README.md) · [当前规划](Design/README.md) · [开发资料](Development/README.md)
 

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- AI 辅助生成；工业首批测试定义。武器引用原版占位图，射针暂用现有 PNA 箭图。
+<!-- AI 辅助生成；工业首批定义。短鞭使用专用透明贴图，针枪仍引用原版占位图，射针暂用现有 PNA 箭图。
      固定配方中的化合燃料用于聚合物制造，不增加运行燃料、弹药或补液管理。 -->
 <Defs>
   <ThingDef ParentName="BaseMeleeWeapon_Sharp_Quality">
@@ -9,7 +9,8 @@
     <techLevel>Industrial</techLevel>
     <possessionCount>1</possessionCount>
     <graphicData>
-      <texPath>Things/Item/Equipment/WeaponMelee/Club</texPath>
+      <!-- 256×256 透明图：柄左鞭束右，原图颜色，不额外旋转或染色。 -->
+      <texPath>Things/Item/Equipment/SSC_PnaShortWhip</texPath>
       <graphicClass>Graphic_Single</graphicClass>
       <drawSize>1</drawSize>
     </graphicData>
