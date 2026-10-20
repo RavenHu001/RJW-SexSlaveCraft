@@ -5,6 +5,7 @@
     <SscSourceRoot Condition="'$(SscSourceRoot)' == ''">../../Sexslavecraft</SscSourceRoot>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(SscSourceRoot)/common/SSCPnaDamageShareUtility.cs" Link="Production/SSCPnaDamageShareUtility.cs" />
     <Compile Include="$(SscSourceRoot)/common/SSCPnaMath.cs" Link="Production/SSCPnaMath.cs" />
     <Compile Include="$(SscSourceRoot)/common/SSCPnaExposureUtility.cs" Link="Production/SSCPnaExposureUtility.cs" />
     <Compile Include="$(SscSourceRoot)/common/SSCPnaSourceUtility.cs" Link="Production/SSCPnaSourceUtility.cs" />

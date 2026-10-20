@@ -19,7 +19,4 @@ namespace SexSlaveCraft
     }
     // 不生成地图视觉；原有真实紫心工具继续由武器特效专项验证。
     internal static class SSCPnaWeaponEffectsUtility { public static void ShowAbsorption(Pawn pawn) { } }
-    // 仅供真实解析器识别旧入口；真实旧入口及其暴露已由 PnaLoad 宿主执行。
-    public class DamageWorker_SSCPnaCoated : DamageWorker_AddInjury { }
-    public class SSCPnaCoatingExtension : DefModExtension { public float baseLoad; public HediffDef recordHediff; }
 }

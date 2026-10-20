@@ -283,6 +283,7 @@ namespace SexSlaveCraft
         {
             if (master == null || master.Dead || IsRedirectingDamage) return false;
             if (dinfo.Def == null || dinfo.Amount <= 0f || !dinfo.Def.harmsHealth) return false;
+            if (!SSCPnaDamageShareUtility.CanRedirect(master, dinfo.Def)) return false;
             if (master.MapHeld == null) return false;
             if (ShouldBlockDamageDef(dinfo.Def)) return false;
 

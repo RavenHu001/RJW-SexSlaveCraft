@@ -26,6 +26,9 @@ namespace SexSlaveCraft
         /// <remarks>药效配置或目标不合格时仍执行父类，并原样返回其结果，保留原战斗日志与伤势。</remarks>
         public override DamageResult Apply(DamageInfo dinfo, Thing thing)
         {
+            // 转移的是物理损伤，不是一次新的药液接触。仍执行同一 AddInjury 流程，
+            // 但在任何意识取样、快照、负荷或受药反馈之前结束携液分支。
+            if (SSCPnaDamageShareUtility.IsRedirectedHit(thing)) return base.Apply(dinfo, thing);
             Pawn pawn = thing as Pawn;
             var extension = dinfo.Def?.GetModExtension<SSCPnaCoatingExtension>();
             // 全部为本次调用的局部状态；工人复用、同 tick 与嵌套命中互不认领。

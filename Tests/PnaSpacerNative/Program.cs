@@ -19,7 +19,7 @@ internal static class Entry
     }
 }
 
-internal static class Program
+internal static partial class Program
 {
     internal static readonly HashSet<Pawn> Valid=new(),Rooted=new(),Masters=new();
     internal static readonly List<float> Doses=new();
@@ -69,6 +69,7 @@ internal static class Program
         harmony.CreateClassProcessor(typeof(Harmony_SSCPnaSpacerExplicitMelee)).Patch();
         try
         {
+            RunDamageShareChecks(harmony);
             // 实际游戏护甲算法与生产处理器组合验证；固定种子使随机分支可重复。
             Check("无甲目标判甲一次并按基线投送",()=>{var p=Pawn();Hit(p,.7f);Near(1,lastInjury);Equal(1,injuryCalls);Equal(1,armorCalls);Near(.2f,Doses.Single());});
             Check("有效链满甲不进入护甲或衣甲磨损",()=>{var p=Pawn(3);Rooted.Add(p);Wear(p,3);Hit(p,.6f);Equal(0,armorCalls);Equal(0,wearCalls);Equal(0,injuryCalls);Near(.2f,Doses.Single());});
@@ -119,9 +120,10 @@ internal static class Program
     private static Pawn Pawn(float armor=0)
     {
         var p=new Pawn();
-        var part=new BodyPartRecord{def=new BodyPartDef(),groups=new List<BodyPartGroupDef>()};var body=new BodyDef();Set(body,"cachedAllParts",new List<BodyPartRecord>{part});body.corePart=part;
+        var part=new BodyPartRecord{def=new BodyPartDef{tags=new List<BodyPartTagDef>()},groups=new List<BodyPartGroupDef>()};var body=new BodyDef();Set(body,"cachedAllParts",new List<BodyPartRecord>{part});body.corePart=part;
         p.def=new ThingDef{race=new RaceProperties{body=body}};Set(p.def.race,"fleshType",new FleshTypeDef());
         p.health=(Pawn_HealthTracker)RuntimeHelpers.GetUninitializedObject(typeof(Pawn_HealthTracker));
+        Set(p.health,"healthState",PawnHealthState.Mobile);Set(p.health,"pawn",p);
         p.health.hediffSet=new HediffSet(p);p.health.capacities=(PawnCapacitiesHandler)RuntimeHelpers.GetUninitializedObject(typeof(PawnCapacitiesHandler));
         Valid.Add(p);Ratings[p]=armor;return p;
     }
@@ -157,13 +159,13 @@ internal static class Program
     private static bool Stat(Thing thing,StatDef stat,ref float __result){__result=stat==StatDefOf.IncomingDamageFactor||stat==StatDefOf.MeleeWeapon_DamageMultiplier?1:Ratings.GetValueOrDefault(thing,1);return false;}
     private static bool NativeStat(Thing thing,StatDef ___stat,ref float __result)=>Stat(thing,___stat,ref __result);
     private static bool Capacity(ref float __result){__result=1;return false;}
-    private static bool External(ref bool __result){__result=true;return false;}
+    private static bool External(ref bool __result){__result=!nativeShare;return false;}
     private static bool Injury(Pawn pawn,float totalDamage,DamageInfo dinfo,DamageWorker.DamageResult result,ref float __result)
     {injuryCalls++;lastInjury=totalDamage;lastType=dinfo.Def;result.wounded=true;result.totalDamageDealt=totalDamage;__result=totalDamage;return false;}
     private static bool Take(Thing __instance,DamageInfo dinfo,ref DamageWorker.DamageResult __result)
     {if(__instance is Apparel){wearCalls++;__result=new();return false;}if(interceptPawnHit&&__instance is Pawn){takeCalls++;lastShot=dinfo;__result=new();return false;}return true;}
     private static bool Worn(Pawn_ApparelTracker __instance,ref List<Apparel> __result){var p=(Pawn)AccessTools.Field(typeof(Pawn_ApparelTracker),"pawn").GetValue(__instance);__result=Clothes[p];return false;}
-    private static bool PreDamage(out bool absorbed){absorbed=shield;return !shield;}
+    private static bool PreDamage(out bool absorbed){absorbed=shield;return !shield&&!nativeShare;}
     private static bool Usable(Verb __instance,ref bool __result){__result=__instance is TestVerb v&&v.Enabled;return false;}
     private static bool Fallback(ref Verb __result){fallbackCalls++;__result=fallback;return false;}
 }

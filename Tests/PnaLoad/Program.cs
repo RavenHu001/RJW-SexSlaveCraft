@@ -93,6 +93,7 @@ internal static partial class Program
         RunRefinementTests();
         RunCoatedWeaponTests();
         RunSpacerWeaponTests();
+        RunPnaDamageShareTests();
         RunWeaponDoseUtilityTests();
         RunPrimitiveWeaponXmlTests();
         RunIndustrialWeaponXmlTests();

@@ -1,6 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net10.0</TargetFramework><ImplicitUsings>enable</ImplicitUsings><Nullable>disable</Nullable></PropertyGroup>
   <ItemGroup>
+    <Compile Include="../../Sexslavecraft/DamageWorker/DamageWorker_SSCPnaCoated.cs" Link="Production/DamageWorker_SSCPnaCoated.cs" />
+    <Compile Include="../../Sexslavecraft/common/SSCMasterBondUtility.cs" Link="Production/SSCMasterBondUtility.cs" />
+    <Compile Include="../../Sexslavecraft/ThePatches/Harmony_MasterDamageShare.cs" Link="Production/Harmony_MasterDamageShare.cs" />
+    <Compile Include="../../Sexslavecraft/ThePatches/Harmony_SSCPnaDamageShare.cs" Link="Production/Harmony_SSCPnaDamageShare.cs" />
+    <Compile Include="../../Sexslavecraft/common/SSCPnaDamageShareUtility.cs" Link="Production/SSCPnaDamageShareUtility.cs" />
     <Compile Include="../../Sexslavecraft/DamageWorker/DamageWorker_SSCPnaSpacer.cs" Link="Production/DamageWorker_SSCPnaSpacer.cs" />
     <Compile Include="../../Sexslavecraft/DamageWorker/Verb_MeleeAttackSSCPnaSpacer.cs" Link="Production/Verb_MeleeAttackSSCPnaSpacer.cs" />
     <Compile Include="../../Sexslavecraft/ThePatches/Harmony_SSCPnaSpacerMelee.cs" Link="Production/Harmony_SSCPnaSpacerMelee.cs" />

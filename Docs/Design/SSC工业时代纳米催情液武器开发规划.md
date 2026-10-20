@@ -213,6 +213,8 @@ PNA 只作为制造材料消耗，成品不增加逐击耗液、单独射针物�
 
 效力显示继续从实际 DamageDef 扩展读取，通过现有 `SSC_PnaWeaponPotency` 展示 18%／8%／20%；速射枪显示单针基线，不把三发合计写成单次效力。共享工具见[剂量与快照](../../Sexslavecraft/common/SSCPnaWeaponDoseUtility.cs)和[效力解析](../../Sexslavecraft/common/SSCPnaWeaponPotencyUtility.cs)。
 
+主人伤害分摊仅转移物理损伤，不转移药液。六把中世纪／工业武器共用的涂覆入口现已识别单次分摊上下文，只执行原物理伤害，不采样抗性、不建立快照、不增加负荷或显示受药反馈；直接命中继续正常施药。九武器统一规则、太空主人免分摊及本轮实现／验收依据见[分摊与投送隔离修复](../Development/Completed/SSCPNA武器伤害分摊与投送隔离修复.md)。
+
 ## 7. 已实现 Def 与资源范围
 
 以下机制对象已在步骤一创建，声音在后续批次补齐。每种载体独立配置剂量，继续共用现有处理器。

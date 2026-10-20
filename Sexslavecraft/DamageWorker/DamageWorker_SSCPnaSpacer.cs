@@ -30,6 +30,9 @@ namespace SexSlaveCraft
         {
             // 准入只针对新工作端：不合格目标与配置返回空结果，不委托旧物理入口。
             var result = new DamageResult();
+            // 正常主人入口已禁止分摊；防御性拒绝其他调用者转移来的纳米接触，
+            // 不把未被实际命中的身体当成无伤吸收／修复对象。
+            if (SSCPnaDamageShareUtility.IsRedirectedHit(thing)) return result;
             var pawn = thing as Pawn;
             var config = dinfo.Def?.GetModExtension<SSCPnaSpacerExtension>();
             // 损坏的新配置安全退出，不能回退成会伤及受保护身体的普通伤害。
