@@ -21,7 +21,6 @@
       <SuppressionPower MayRequire="Ludeon.RimWorld.Ideology">0.20</SuppressionPower>
       <TerrorSource MayRequire="Ludeon.RimWorld.Ideology">15</TerrorSource>
     </equippedStatOffsets>
-    <modExtensions><li Class="SexSlaveCraft.SSCPnaFixedMeleeDamageExtension" /></modExtensions>
     <costList><Steel>20</Steel><Chemfuel>20</Chemfuel><ComponentIndustrial>1</ComponentIndustrial><Purple_Aphrodisiac_Nanofluid_Plus>6</Purple_Aphrodisiac_Nanofluid_Plus></costList>
     <recipeMaker>
       <defaultIngredientFilter Inherit="False"><thingDefs><li>Steel</li><li>Chemfuel</li><li>ComponentIndustrial</li><li>Purple_Aphrodisiac_Nanofluid_Plus</li></thingDefs></defaultIngredientFilter>

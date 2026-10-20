@@ -23,8 +23,6 @@
     <equippedStatOffsets>
       <MeleeHitChance>2</MeleeHitChance>
     </equippedStatOffsets>
-    <!-- 保留品质，仅在伤害倍率中跳过品质系数。 -->
-    <modExtensions><li Class="SexSlaveCraft.SSCPnaFixedMeleeDamageExtension" /></modExtensions>
     <costList>
       <WoodLog>30</WoodLog>
       <Steel>15</Steel>

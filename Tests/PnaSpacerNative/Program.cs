@@ -107,8 +107,9 @@ internal static class Program
                 var other=new DamageDef{workerClass=typeof(DamageWorker_SSCPnaSpacer),modExtensions=new List<DefModExtension>{new SSCPnaSpacerExtension{baseLoad=.1f,recordHediff=new HediffDef()}}};
                 Set(weapon,"verbs",new List<VerbProperties>{new(){defaultProjectile=new ThingDef{projectile=new ProjectileProperties{damageDef=nano}}},new(){defaultProjectile=new ThingDef{projectile=new ProjectileProperties{damageDef=other}}}});
                 Assert(!SSCPnaWeaponPotencyUtility.TryGetBaseline(weapon,out _));});
-            Check("丝鞭接入现有品质例外及普通枪械排除",()=>{var p=Pawn();var v=Equip(p);var part=new StatPart_Quality();StatDefOf.MeleeWeapon_DamageMultiplier=new StatDef();part.parentStat=StatDefOf.MeleeWeapon_DamageMultiplier;
-                Assert(SSCPnaMeleeQualityUtility.SkipQuality(part,StatRequest.For(v.EquipmentSource)));Assert(!SSCPnaMeleeQualityUtility.SkipQuality(part,StatRequest.For(Gun(nano),null)));});
+            Check("丝鞭无需品质标记即可识别，远程装备排除",()=>{var p=Pawn();var v=Equip(p);Assert(v.EquipmentSource.def.modExtensions == null);
+                Assert(SSCPnaSpacerMeleeUtility.Preferred(p,Pawn())==v);Set(v.EquipmentSource.def,"verbs",new List<VerbProperties>{new(){verbClass=typeof(Verb_Shoot)}});
+                Assert(!SSCPnaSpacerMeleeUtility.IsWorkingEnd(v));Assert(SSCPnaSpacerMeleeUtility.Preferred(p,Pawn())==null);});
         }
         finally{harmony.UnpatchAll(harmony.Id);}
         Console.WriteLine($"结果：{passed}/{passed+failed} 项通过。");return failed==0?0:1;
@@ -137,7 +138,7 @@ internal static class Program
     // 内存中建立真实装备、CompEquippable 和 VerbTracker 关联，保留生产代码的归属查询。
     private static TestVerb Equip(Pawn pawn)
     {
-        var weapon=new ThingWithComps{def=new ThingDef{category=ThingCategory.Item,equipmentType=EquipmentType.Primary,tools=new List<Tool>{new(){power=1}},modExtensions=new List<DefModExtension>{new SSCPnaFixedMeleeDamageExtension()}}};
+        var weapon=new ThingWithComps{def=new ThingDef{category=ThingCategory.Item,equipmentType=EquipmentType.Primary,tools=new List<Tool>{new(){power=1}}}};
         var comp=new CompEquippable{parent=weapon};Set(weapon,"comps",new List<ThingComp>{comp});
         var tracker=new VerbTracker(comp);Set(comp,"verbTracker",tracker);
         var verb=new TestVerb{caster=pawn,verbTracker=tracker,verbProps=new VerbProperties{meleeDamageDef=nano,meleeDamageBaseAmount=1},tool=new Tool{power=1,armorPenetration=.6f,cooldownTime=1.2f}};

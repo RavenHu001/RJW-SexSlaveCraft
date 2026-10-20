@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成；独立工作端使用已实现的专用近战入口，不继承工业短鞭动画或动作权重补偿。 -->
+<Defs>
+  <ToolCapacityDef>
+    <defName>SSC_ToolCapacity_PnaSilkWhip</defName>
+    <label>纳米催情液丝鞭穿刺</label>
+  </ToolCapacityDef>
+  <ManeuverDef>
+    <defName>SSC_Maneuver_PnaSilkWhip</defName>
+    <requiredCapacity>SSC_ToolCapacity_PnaSilkWhip</requiredCapacity>
+    <verb>
+      <verbClass>SexSlaveCraft.Verb_MeleeAttackSSCPnaSpacer</verbClass>
+      <meleeDamageDef>SSC_Damage_PnaSilkWhip</meleeDamageDef>
+    </verb>
+    <logEntryDef>MeleeAttack</logEntryDef>
+    <combatLogRulesHit>Maneuver_Slash_MeleeHit</combatLogRulesHit>
+    <combatLogRulesDeflect>Maneuver_Slash_MeleeDeflect</combatLogRulesDeflect>
+    <combatLogRulesMiss>Maneuver_Slash_MeleeMiss</combatLogRulesMiss>
+    <combatLogRulesDodge>Maneuver_Slash_MeleeDodge</combatLogRulesDodge>
+  </ManeuverDef>
+</Defs>

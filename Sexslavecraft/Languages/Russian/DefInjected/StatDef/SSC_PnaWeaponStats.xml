@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <SSC_PnaWeaponPotency.label>Эффективность наножидкости</SSC_PnaWeaponPotency.label>
-  <SSC_PnaWeaponPotency.description>Базовая нагрузка PNA при попадании, открывающем рану в органической плоти. Блокированные удары, ушибы и удары древком не вводят PNA. Хозяева невосприимчивы; цели с действующей цепью получают активацию. Раны сохраняются.</SSC_PnaWeaponPotency.description>
+  <SSC_PnaWeaponPotency.description>Базовая нагрузка PNA за успешную доставку с учётом сопротивления сознания. Оружию с покрытием нужна открытая рана; космическое оружие безвредно поглощается целями с действующей цепью и восстанавливает травмы. Хозяева невосприимчивы. Обычные удары рукоятью не вводят PNA.</SSC_PnaWeaponPotency.description>
 </LanguageData>

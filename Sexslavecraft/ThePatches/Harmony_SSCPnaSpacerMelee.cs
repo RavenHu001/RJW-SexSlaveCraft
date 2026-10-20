@@ -7,11 +7,10 @@ namespace SexSlaveCraft
 {
     internal static class SSCPnaSpacerMeleeUtility
     {
-        // 同时核对专用 Verb、近战装备标记、处理器类型和有效剂量配置；不能仅凭名称
-        // 或品质标记认定纳米工作端，已交付短矛／短鞭也使用同一品质标记。
+        // 同时核对专用 Verb、近战装备、处理器类型和有效剂量配置；不依赖武器名称
+        // 或已经废弃的品质标记。品质完全走原版属性，工作端识别只关心投送机制。
         internal static bool IsWorkingEnd(Verb verb) => verb is Verb_MeleeAttackSSCPnaSpacer &&
             verb.EquipmentSource != null && verb.EquipmentSource.def.IsMeleeWeapon &&
-            verb.EquipmentSource.def.GetModExtension<SSCPnaFixedMeleeDamageExtension>() != null &&
             verb.verbProps?.meleeDamageDef?.workerClass != null &&
             typeof(DamageWorker_SSCPnaSpacer).IsAssignableFrom(verb.verbProps.meleeDamageDef.workerClass) &&
             verb.verbProps.meleeDamageDef.GetModExtension<SSCPnaSpacerExtension>()?.IsValid == true;
@@ -21,7 +20,7 @@ namespace SexSlaveCraft
             if (Scribe.mode != LoadSaveMode.Inactive || !SSCPnaExposureUtility.IsValidTarget(target as Pawn)) return null;
             // 只检查当前主手，不持久缓存动作或武器；卸装、换武器和失效配置即时放行原版。
             var weapon = pawn?.equipment?.Primary;
-            if (weapon?.def.GetModExtension<SSCPnaFixedMeleeDamageExtension>() == null) return null;
+            if (weapon?.def.IsMeleeWeapon != true) return null;
             var verbs = weapon.TryGetComp<CompEquippable>()?.AllVerbs;
             if (verbs == null) return null;
             // 原版可用性和目标准入仍有效；工作端不可用时不强行制造一个可执行动作。

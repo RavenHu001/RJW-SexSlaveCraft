@@ -373,7 +373,6 @@
     <Compile Include="DamageWorker\Verb_MeleeAttackSSCPnaWhip.cs" />
     <Compile Include="ThePatches\Harmony_SSCPnaWhip.cs" />
     <Compile Include="ThePatches\Harmony_SSCPnaSpearGlow.cs" />
-    <Compile Include="ThePatches\Harmony_SSCPnaMeleeQuality.cs" />
     <Compile Include="DamageWorker\Verb_MeleeAttackSSCPna.cs" />
     <Compile Include="Hediff\HediffComp_ProducePAN.cs" />
     <Compile Include="Hediff\HediffComp_Refresh_.cs" />

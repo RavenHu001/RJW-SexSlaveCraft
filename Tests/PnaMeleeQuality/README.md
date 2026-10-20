@@ -1,10 +1,10 @@
-# PNA 近战品质伤害回归
+# PNA 武器原版品质回归
 
-2026-10-19 太空步骤一：增加隔离丝鞭标记的七档品质请求，当前 **38/38**；原运行 XML 标记仍仅短矛／工业短鞭，未创建正式太空武器 XML。见[本批记录](../../Docs/Development/Verification/SSC太空武器步骤一实现与测试.md)。
+2026-10-19 维护者决定全部武器恢复原版品质规则。当前 **103/103**，直接调用本机 1.7 的 `StatPart_Quality`、`StatWorker.FinalizeValue`、`VerbProperties`、信息卡穿甲入口和 `ProjectileProperties`，不加载已废弃的品质适配。
 
-直接链接生产 [品质补丁](../../Sexslavecraft/ThePatches/Harmony_SSCPnaMeleeQuality.cs)，使用本机 1.7 的真实 `StatPart_Quality`、`StatRequest`、`ThingDef` 和测试用 Harmony；不模拟原版品质曲线。当前 **38/38**（原两武器批次为 31/31）。
+覆盖三近战×七档品质的伤害与穿甲、抽象／实物请求、外部倍率、零穿甲与自动穿甲、信息卡加权数值与详细说明；六远程×七档品质的弹丸伤害／穿甲／精度及普通防身伤害。另验证废案源码有用途说明，活动源码、XML 标记、生产和测试编译入口均已清理。信息卡检查调用真实说明入口，不启动完整游戏 UI 或地图；属性基础输入／缓存仍由边界提供。
 
-覆盖七种品质、短矛／短鞭标记、抽象／实物请求、其他输入倍率保留、普通近战及射针枪防身品质放行、其他属性的品质修正、空请求与 XML 标记范围。信息卡通过真实说明入口核对，不启动游戏 UI 或完整 Def 加载；维护者已确认本轮实机正常，未逐项报告的场景不补记为专项实测。
+旧套件 104 项中的“品质例外空请求放行”已随补丁撤下，不再验证废弃接口；其余断言改为原版品质预期。历史批次计数和 SHA 保留在[旧适配记录](../../Docs/Development/Verification/SSC近战品质穿甲修正与远程品质核对.md)，当前构建、同步及待实机范围见[恢复记录](../../Docs/Development/Verification/SSC武器恢复原版品质规则与测试.md)。废案源码见[归档说明](../../Archive/PnaMeleeQuality/README.md)。
 
 已登记进 [Test-All](../../scripts/Test-All.ps1)。该项目需要 .NET 10 SDK 与当前游戏程序集，其他边界宿主继续使用 .NET 9。统一入口可以从 `1.7/BUILD-INFO.json` 推导游戏目录、从 `.builds/version-layout/sdk/dotnet/dotnet.exe` 找本机 SDK；也可传 `-NativeGameRoot`／`-NativeDotnetPath`。
 

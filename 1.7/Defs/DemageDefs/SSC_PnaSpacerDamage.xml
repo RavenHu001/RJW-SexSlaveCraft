@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成；独立太空投送入口，不继承旧涂覆伤口门槛。有效链普通护甲分流在处理器内进行，修复统一由 baseLoad × 5 推导。 -->
+<Defs>
+  <DamageDef>
+    <defName>SSC_Damage_PnaSilkWhip</defName>
+    <label>纳米催情液丝鞭穿刺</label>
+    <workerClass>SexSlaveCraft.DamageWorker_SSCPnaSpacer</workerClass>
+    <externalViolence>true</externalViolence>
+    <hediff>Stab</hediff>
+    <hediffSolid>Crack</hediffSolid>
+    <impactSoundType>Slice</impactSoundType>
+    <armorCategory>Sharp</armorCategory>
+    <overkillPctToDestroyPart>0.4~1.0</overkillPctToDestroyPart>
+    <deathMessage>{0}被纳米催情液丝鞭刺死了。</deathMessage>
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCPnaSpacerExtension">
+        <baseLoad>0.2</baseLoad>
+        <recordHediff>Hediff_PNA_Consciousness_Record</recordHediff>
+      </li>
+    </modExtensions>
+  </DamageDef>
+  <DamageDef>
+    <defName>SSC_Damage_PnaPulse</defName>
+    <label>纳米催情液脉冲穿刺</label>
+    <workerClass>SexSlaveCraft.DamageWorker_SSCPnaSpacer</workerClass>
+    <externalViolence>true</externalViolence>
+    <hediff>Stab</hediff>
+    <hediffSolid>Crack</hediffSolid>
+    <impactSoundType>Slice</impactSoundType>
+    <armorCategory>Sharp</armorCategory>
+    <overkillPctToDestroyPart>0.4~1.0</overkillPctToDestroyPart>
+    <deathMessage>{0}被纳米催情液脉冲集群刺死了。</deathMessage>
+    <isRanged>true</isRanged>
+    <makesAnimalsFlee>true</makesAnimalsFlee>
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCPnaSpacerExtension">
+        <baseLoad>0.1</baseLoad>
+        <recordHediff>Hediff_PNA_Consciousness_Record</recordHediff>
+      </li>
+    </modExtensions>
+  </DamageDef>
+  <DamageDef>
+    <defName>SSC_Damage_PnaProjection</defName>
+    <label>纳米催情液集群穿刺</label>
+    <workerClass>SexSlaveCraft.DamageWorker_SSCPnaSpacer</workerClass>
+    <externalViolence>true</externalViolence>
+    <hediff>Stab</hediff>
+    <hediffSolid>Crack</hediffSolid>
+    <impactSoundType>Slice</impactSoundType>
+    <armorCategory>Sharp</armorCategory>
+    <overkillPctToDestroyPart>0.4~1.0</overkillPctToDestroyPart>
+    <deathMessage>{0}被纳米催情液投射集群刺死了。</deathMessage>
+    <isRanged>true</isRanged>
+    <makesAnimalsFlee>true</makesAnimalsFlee>
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCPnaSpacerExtension">
+        <baseLoad>0.25</baseLoad>
+        <recordHediff>Hediff_PNA_Consciousness_Record</recordHediff>
+      </li>
+    </modExtensions>
+  </DamageDef>
+</Defs>

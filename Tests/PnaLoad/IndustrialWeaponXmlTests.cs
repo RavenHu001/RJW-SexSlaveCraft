@@ -61,13 +61,13 @@ internal static partial class Program
             var handle = d.Element("tools").Elements().Last(); Near(2, Number(handle.Element("power")));
             Near(0, Number(handle.Element("armorPenetration"))); Equal("Blunt", handle.Element("capacities").Elements().Single().Value);
         });
-        Run("只有短矛短鞭接入品质伤害例外", () =>
+        Run("所有武器不再声明品质伤害例外", () =>
         {
             var marked = Directory.GetFiles(SscTestPaths.Combine(root, "Defs"), "*.xml", SearchOption.AllDirectories)
                 .SelectMany(f => XDocument.Load(f).Root.Elements()).Where(d => d.Element("modExtensions")?.Elements()
                     .Any(e => (string)e.Attribute("Class") == "SexSlaveCraft.SSCPnaFixedMeleeDamageExtension") == true)
                 .Select(d => d.Element("defName").Value).OrderBy(n => n).ToArray();
-            Assert(marked.SequenceEqual(new[] { "SSC_Weapon_PnaShortWhip", "SSC_Weapon_PnaSpikeStaff" }.OrderBy(n => n)), "显式隔离两件武器");
+            Assert(marked.Length == 0, "品质完全交由原版处理");
         });
         foreach (var row in new[] {
             (Name:"SSC_Weapon_PnaNeedleRepeater", Projectile:"SSC_Projectile_PnaRepeaterNeedle", Damage:"SSC_Damage_PnaRepeaterNeedle", Power:2.0, Ap:.3, Speed:70, Range:22.9, Warmup:.5, Cooldown:1.3, Count:3, Accuracy:new[]{.85,.70,.35,.20}),

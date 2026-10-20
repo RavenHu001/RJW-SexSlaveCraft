@@ -1,5 +1,7 @@
 # SSC 工业武器步骤一实现与测试
 
+> 后续修订（2026-10-19）：维护者决定全部武器恢复原版品质规则，伤害与穿甲正常受品质影响；品质适配及 XML 标记已撤下，丝鞭工作端独立识别。以下保留当批实现与验证证据，品质例外不再生效，当前规则见[恢复原版品质记录](../Verification/SSC武器恢复原版品质规则与测试.md)。
+
 当前状态（2026-10-19）：工业三武器的机制、正式美术与两枪声音均已分批完成，统一见[完成核对](SSC工业时代纳米催情液武器完成核对.md)。下文保留本批实施时点；其中占位图、待绘制、临时参数及测试数字不代表当前缺项。
 
 日期：2026-10-19。目标：本机 **1.7.4982 rev1280**，分支 `codex/ssc-weapon-expansion`，起点提交 `5c47741`。**状态：步骤一已完成，维护者于 2026-10-19 确认“实机测试正常”，本轮约定范围验收关闭并授权提交。仍使用占位图，正式贴图尚未开始，不打包发布。**
@@ -28,7 +30,7 @@
 
 ## 品质及防身攻击
 
-[生产品质补丁](../../../Sexslavecraft/ThePatches/Harmony_SSCPnaMeleeQuality.cs)由现有 `PatchAll` 安装。短矛与短鞭在 ThingDef 上显式声明 `SSCPnaFixedMeleeDamageExtension`。仅在这些近战武器计算 `MeleeWeapon_DamageMultiplier` 时，跳过 `StatPart_Quality` 的数值与说明入口，不把最终倍率强制重置为 1。
+[生产品质补丁](../../../Archive/PnaMeleeQuality/Harmony_SSCPnaMeleeQuality.cs)由现有 `PatchAll` 安装。短矛与短鞭在 ThingDef 上显式声明 `SSCPnaFixedMeleeDamageExtension`。仅在这些近战武器计算 `MeleeWeapon_DamageMultiplier` 时，跳过 `StatPart_Quality` 的数值与说明入口，不把最终倍率强制重置为 1。
 
 因此短矛／短鞭的基础主攻击保持 5／3，各品质不额外增减；人物自身、护甲、部位和其他属性修正仍参与最终结果。普通柄击同样不叠品质伤害系数；耐久、价值等其他属性与普通武器的品质逻辑不变。显式近战穿甲复用同一伤害倍率，纳入本批核对。适配不写存档、不增添持久化状态，不改全局品质曲线。
 

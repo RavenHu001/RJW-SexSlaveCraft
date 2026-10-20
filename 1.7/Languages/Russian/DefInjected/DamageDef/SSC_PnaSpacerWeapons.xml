@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_Damage_PnaSilkWhip.label>нитевой прокол наножидкостью</SSC_Damage_PnaSilkWhip.label>
+  <SSC_Damage_PnaSilkWhip.deathMessage>{0} погибает от нитевидной плети с наножидкостью.</SSC_Damage_PnaSilkWhip.deathMessage>
+  <SSC_Damage_PnaPulse.label>импульсный прокол наножидкостью</SSC_Damage_PnaPulse.label>
+  <SSC_Damage_PnaPulse.deathMessage>{0} погибает от импульсного роя наножидкости.</SSC_Damage_PnaPulse.deathMessage>
+  <SSC_Damage_PnaProjection.label>прокол роем наножидкости</SSC_Damage_PnaProjection.label>
+  <SSC_Damage_PnaProjection.deathMessage>{0} погибает от дальнобойного роя наножидкости.</SSC_Damage_PnaProjection.deathMessage>
+
+</LanguageData>

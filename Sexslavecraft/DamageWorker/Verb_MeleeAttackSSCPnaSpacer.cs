@@ -12,7 +12,7 @@ namespace SexSlaveCraft
             // 不另做一次命中判定，也不在这里施药，实际输入仍只属于伤害处理器。
             if (target.Thing == null || target.ThingDestroyed ||
                 !SSCPnaSpacerMeleeUtility.IsWorkingEnd(this)) return new DamageWorker.DamageResult();
-            // 复用调整后的武器伤害和穿甲，品质例外由现有标记负责。保留正常随机浮动，
+            // 复用原版调整后的武器伤害和穿甲，两者正常受品质及其他属性影响。保留随机浮动，
             // 但不执行原版“小于 1 就改为 Blunt”的转换；护甲真实转钝留到处理器中完成。
             Pawn attacker = CasterPawn;
             float amount = verbProps.AdjustedMeleeDamageAmount(this, attacker) * Rand.Range(.8f, 1.2f);
