@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- AI 辅助生成；独立工作端使用已实现的专用近战入口，不继承工业短鞭动画或动作权重补偿。 -->
+<!-- AI 辅助生成；独立工作端使用已实现的专用近战入口，视觉已复用工业短鞭姿态与残影，战斗入口及动作选择保持独立。 -->
 <Defs>
   <ToolCapacityDef>
     <defName>SSC_ToolCapacity_PnaSilkWhip</defName>

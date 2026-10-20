@@ -374,6 +374,7 @@
     <Compile Include="common\SSCPnaWhipHitUtility.cs" />
     <Compile Include="DamageWorker\Verb_MeleeAttackSSCPnaWhip.cs" />
     <Compile Include="ThePatches\Harmony_SSCPnaWhip.cs" />
+    <Compile Include="ThePatches\Harmony_SSCPnaWhipCooperation.cs" />
     <Compile Include="ThePatches\Harmony_SSCPnaSpearGlow.cs" />
     <Compile Include="DamageWorker\Verb_MeleeAttackSSCPna.cs" />
     <Compile Include="Hediff\HediffComp_ProducePAN.cs" />

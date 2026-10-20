@@ -189,7 +189,7 @@ internal static class WhipPoseTests
             Near(1, Graphics.Sent.Count); Check(ReferenceEquals(Graphics.Sent.Single().Material, f.Original), "fallback");
             Check(Graphics.Sent.Single().Matrix.Equals(PawnRenderUtility.NextMatrix), "unknown mesh position unchanged");
         });
-        foreach (string name in new[] { "Other", "SSC_Weapon_PnaSilkWhip" })
+        foreach (string name in new[] { "Other", "SSC_Weapon_PnaPulseGun" })
             run("其他武器不替换或移动，不触发额外绘制 " + name, () => {
                 var f = new Fixture(); f.Weapon.def.defName = name; f.Draw();
                 Near(1, Graphics.Sent.Count); Check(ReferenceEquals(Graphics.Sent.Single().Material, f.Original), "untouched");

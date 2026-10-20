@@ -9,6 +9,8 @@
     <Compile Include="../../Sexslavecraft/DamageWorker/DamageWorker_SSCPnaSpacer.cs" Link="Production/DamageWorker_SSCPnaSpacer.cs" />
     <Compile Include="../../Sexslavecraft/DamageWorker/Verb_MeleeAttackSSCPnaSpacer.cs" Link="Production/Verb_MeleeAttackSSCPnaSpacer.cs" />
     <Compile Include="../../Sexslavecraft/ThePatches/Harmony_SSCPnaSpacerMelee.cs" Link="Production/Harmony_SSCPnaSpacerMelee.cs" />
+    <Compile Include="../../Sexslavecraft/DamageWorker/Verb_MeleeAttackSSCPnaWhip.cs" Link="Production/Verb_MeleeAttackSSCPnaWhip.cs" />
+    <Compile Include="../../Sexslavecraft/ThePatches/Harmony_SSCPnaWhipCooperation.cs" Link="Production/Harmony_SSCPnaWhipCooperation.cs" />
     <Compile Include="../../Sexslavecraft/common/SSCPnaWeaponPotencyUtility.cs" Link="Production/SSCPnaWeaponPotencyUtility.cs" />
     <Compile Include="../../Sexslavecraft/common/SSCPnaWeaponDoseUtility.cs" Link="Production/SSCPnaWeaponDoseUtility.cs" />
     <Compile Include="../../Sexslavecraft/common/SSCPnaMath.cs" Link="Production/SSCPnaMath.cs" />

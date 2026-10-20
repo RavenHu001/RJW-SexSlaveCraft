@@ -162,6 +162,7 @@ internal static class Program
   Run("专用动作仍接原伤害，普通柄击不接泛光",()=>{var d=XDocument.Load(Path.Combine(root,"1.7/Defs/ManeuverDefs/SSC_PnaPrimitiveManeuvers.xml"));Check(d.Descendants("verbClass").Single().Value=="SexSlaveCraft.Verb_MeleeAttackSSCPna","专用动作");Check(d.Descendants("meleeDamageDef").Single().Value=="SSC_Damage_PnaStaffStab","伤害不变");});
   WhipPoseTests.Register(Run,root);
   WhipHitTests.Register(Run,root);
+  SilkWhipPoseTests.Register(Run,root);
   Console.WriteLine($"结果：{passed}/{passed+failed} 项通过。");return failed==0?0:1;
  }
 }

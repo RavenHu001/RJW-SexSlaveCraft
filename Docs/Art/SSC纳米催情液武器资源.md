@@ -1,12 +1,15 @@
 # SSC 纳米催情液武器资源
 
-当前资源核对：2026-10-19，仅用于 1.7 开发分支；1.6／Common 基线不变。所有下表 PNG 均为真实透明 RGBA。原始图、生成提示词、导出脚本与阶段备份的具体记录见对应实现文档，不将本机 `.builds/` 临时文件视为发布资源。
+当前资源核对：2026-10-20，仅用于 1.7 开发分支；1.6／Common 基线不变。所有下表 PNG 均为真实透明 RGBA。原始图、生成提示词、导出脚本与阶段备份的具体记录见对应实现文档，不将本机 `.builds/` 临时文件视为发布资源。
 
 [工业完成核对](../Development/Completed/SSC工业时代纳米催情液武器完成核对.md) · [首批完成核对](../Development/Completed/SSC武器拓展首批完成核对.md) · [美术索引](README.md)
 
 | 资源 | 画布与方向 | 游戏参数 | 说明 |
 | --- | --- | --- | --- |
-| [太空丝鞭关机物品图](../../1.7/Textures/Things/Item/Equipment/SSC_PnaSilkWhip.png) | 256×256，水平朝右；内容240×66 | drawSize=0.75，当前为静态单图 | v2加强黑边并缩小显示，已获实机认可并授权提交；见[图稿与接入](SSC_PnaSilkWhip/README.md)，三个动作姿态尚未绘制 |
+| [太空丝鞭待机](../../1.7/Textures/Things/Item/Equipment/SSC_PnaSilkWhip_Idle.png) | 256×256，柄长64.16px | 手持1.75，待机45° | 三姿态共用柄心(50,128)，已获实机认可并授权提交，见[接入记录](../Development/Completed/SSC太空丝鞭三姿态接入与测试.md) |
+| [太空丝鞭挥击](../../1.7/Textures/Things/Item/Equipment/SSC_PnaSilkWhip_Attack.png) | 256×256，柄长63.99px | 手持1.75，6tick挥击 | 维护者回选exec-5d89847e，命中／打空均播放；命中复用工业残影 |
+| [太空丝鞭回落](../../1.7/Textures/Things/Item/Equipment/SSC_PnaSilkWhip_Recovery.png) | 256×256，柄长63.88px | 手持1.75，12tick回落 | 共用姿态清理与残影时钟，随后恢复待机 |
+| [太空丝鞭关机物品图](../../1.7/Textures/Things/Item/Equipment/SSC_PnaSilkWhip.png) | 256×256，水平朝右；内容240×66 | 物品drawSize=0.75，手持另用三姿态1.75 | v2加强黑边并缩小显示，已获实机认可并授权提交；见[图稿与接入](SSC_PnaSilkWhip/README.md)，三个动作姿态已按指定原稿导出并接入，已获实机认可并授权提交 |
 | [工业精确针枪](../../1.7/Textures/Things/Item/Equipment/SSC_PnaNeedleRifle.png) | 256×256，水平朝右；枪体240×67 | drawSize=1.25，既有握持配置 | 当前为回选构型的短鞭画风重描边版，局部护木、灰紫枪身及银灰高光；[本轮接入](../Development/Completed/SSC精确针枪短鞭画风重描边贴图接入与测试.md)，已获维护者认可并授权提交 |
 | [工业速射针](../../1.7/Textures/Things/Projectile/SSC_PnaRepeaterNeedle.png) | 128×128，针尖朝上；图形24×106 | drawSize=0.4 | 银灰针尖、紫色载药管、深灰硬质尾翼，见[接入记录](../Development/Completed/SSC工业针弹贴图接入与测试.md)；已获维护者认可并授权提交 |
 | [工业精确针](../../1.7/Textures/Things/Projectile/SSC_PnaRifleNeedle.png) | 128×128，针尖朝上；图形26×112 | drawSize=0.4 | 同系列较长载药段，统一缩放倍率，见[接入记录](../Development/Completed/SSC工业针弹贴图接入与测试.md)；已获维护者认可并授权提交 |

@@ -9,6 +9,7 @@ namespace SexSlaveCraft
     internal static class SSCPnaWhipPoseUtility
     {
         internal const string WeaponDefName = "SSC_Weapon_PnaShortWhip";
+        internal const string SilkWeaponDefName = "SSC_Weapon_PnaSilkWhip";
         internal const int AttackTicks = 6;
         internal const int RecoveryTicks = 12;
         internal const int LifetimeTicks = AttackTicks + RecoveryTicks;
@@ -24,7 +25,9 @@ namespace SexSlaveCraft
         // 状态不写入存档，弱键和弱引用不使掉落武器、角色或旧地图常驻内存。
         private static readonly ConditionalWeakTable<Thing, Swing> Swings = new ConditionalWeakTable<Thing, Swing>();
 
-        internal static bool IsWhip(Thing weapon) => weapon?.def?.defName == WeaponDefName;
+        // 两代鞭子只共享视觉入口；不以此替代各自的伤害／投送类型识别。
+        internal static bool IsSilkWhip(Thing weapon) => weapon?.def?.defName == SilkWeaponDefName;
+        internal static bool IsWhip(Thing weapon) => weapon?.def?.defName == WeaponDefName || IsSilkWhip(weapon);
 
         internal static void Clear(Thing weapon)
         {

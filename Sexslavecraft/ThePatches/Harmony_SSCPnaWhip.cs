@@ -45,10 +45,14 @@ namespace SexSlaveCraft
     internal static class SSCPnaWhipRenderer
     {
         internal const string TexturePrefix = "Things/Item/Equipment/SSC_PnaShortWhip_";
+        internal const string SilkTexturePrefix = "Things/Item/Equipment/SSC_PnaSilkWhip_";
+        // 丝鞭三姿态柄长64px，工业短鞭80px：1.4 × 80 / 64 = 1.75，统一世界柄长。
+        internal const float SilkHeldDrawSize = 1.75f;
         // 三张手持图共同的柄心标定；不可按各姿态外包围框分别居中。
         internal const float HandleU = 50f / 256f;
         private static readonly string[] Names = { "Idle", "Attack", "Recovery" };
-        private static readonly Dictionary<Material, Material[]> Materials = new Dictionary<Material, Material[]>();
+        // 原材质可能被两件武器共享；缓存键包含武器系列，避免把工业图用于太空丝鞭。
+        private static readonly Dictionary<(Material, bool), Material[]> Materials = new Dictionary<(Material, bool), Material[]>();
 
         /// <summary>
         /// 从既有 DrawEquipmentAiming 的唯一绘制分支调用，成功时恰好绘制一次。
@@ -61,20 +65,25 @@ namespace SexSlaveCraft
                 (mesh != MeshPool.plane10 && mesh != MeshPool.plane10Flip)) return false;
 
             SSCPnaWhipPose pose = SSCPnaWhipPoseUtility.GetPose(weapon);
-            if (!Materials.TryGetValue(original, out Material[] poses))
+            bool silk = SSCPnaWhipPoseUtility.IsSilkWhip(weapon);
+            var key = (original, silk);
+            if (!Materials.TryGetValue(key, out Material[] poses))
             {
                 poses = new Material[Names.Length];
                 for (int i = 0; i < poses.Length; i++)
                 {
                     // 独立副本保留原着色器和颜色；不修改共享原材质，亦不使用泛光着色器。
                     poses[i] = new Material(original) {
-                        name = "SSC PNA whip " + Names[i],
-                        mainTexture = ContentFinder<Texture2D>.Get(TexturePrefix + Names[i])
+                        name = "SSC PNA " + (silk ? "silk whip " : "whip ") + Names[i],
+                        mainTexture = ContentFinder<Texture2D>.Get((silk ? SilkTexturePrefix : TexturePrefix) + Names[i])
                     };
                 }
-                Materials.Add(original, poses);
+                Materials.Add(key, poses);
             }
             bool flip = mesh == MeshPool.plane10Flip;
+            // 丝鞭物品态仍为0.75；三张手持姿态统一1.75，以补偿画布中的柄长差。
+            // 按实际Graphic尺寸补倍率，保留原版或其他绘制入口附加的矩阵变化。
+            if (silk) matrix = SilkHeldMatrix(weapon, matrix);
             // 原版传入位置是画布中心。先把实际柄心移到该位置，让放大、镜像及姿态切换
             // 都围绕同一个握持点；保留原版角色朝向、体型距离和出手位移，不另取 Pawn.DrawPos。
             matrix = GripMatrix(matrix, flip);
@@ -84,6 +93,20 @@ namespace SexSlaveCraft
             SSCPnaWhipHitUtility.Draw(weapon, mesh, matrix, layer);
             Graphics.DrawMesh(mesh, matrix, poses[(int)pose], layer);
             return true;
+        }
+
+        /// <summary>只改变丝鞭手持平面尺寸，不写Graphic或Def，也不改变原版握持位置。</summary>
+        internal static Matrix4x4 SilkHeldMatrix(Thing weapon, Matrix4x4 matrix)
+        {
+            Vector2 size = weapon.Graphic.drawSize;
+            if (!(size.x > 0f) || !(size.y > 0f)) return matrix;
+            float x = SilkHeldDrawSize / size.x;
+            float z = SilkHeldDrawSize / size.y;
+            matrix.m00 *= x;
+            matrix.m20 *= x;
+            matrix.m02 *= z;
+            matrix.m22 *= z;
+            return matrix;
         }
 
         /// <summary>

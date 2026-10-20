@@ -48,7 +48,8 @@ namespace SexSlaveCraft
     internal static class Harmony_SSCPnaSpacerMeleeSelection
     {
         // 在原版缓存和随机选择前给出本次专用结果；不把拳击缓存改写为全局优先级。
-        // 有合格工作端才短路原版；打空、闪避、冷却与真正伤害仍由返回的 Verb 执行。
+        // 有合格工作端才短路原版；打空、冷却与真正伤害仍由返回的 Verb 执行。
+        // 非敌对有效链目标的工作端免闪避由独立 Cooperation 补丁处理，其他目标沿用原版闪避。
         internal static bool Prefix(Pawn_MeleeVerbs __instance, Thing target, ref Verb __result)
         {
             Verb preferred = SSCPnaSpacerMeleeUtility.Preferred(__instance.Pawn, target);

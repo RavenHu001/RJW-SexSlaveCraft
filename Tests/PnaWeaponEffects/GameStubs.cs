@@ -21,7 +21,8 @@ namespace UnityEngine {
 }
 namespace Verse {
  public struct IntVec3 {public int x,z;public IntVec3(int x,int z){this.x=x;this.z=z;}public static bool operator ==(IntVec3 a,IntVec3 b)=>a.x==b.x&&a.z==b.z;public static bool operator !=(IntVec3 a,IntVec3 b)=>!(a==b);public override bool Equals(object o)=>o is IntVec3 b&&this==b;public override int GetHashCode()=>HashCode.Combine(x,z);}
- public class Thing {public bool Spawned=true,Destroyed;public Map Map,MapHeld;public Vector3 DrawPos;public IntVec3 Position;public ThingDef def;}
+ public class Graphic {public Vector2 drawSize=new Vector2(1,1);}
+ public class Thing {public bool Spawned=true,Destroyed;public Map Map,MapHeld;public Vector3 DrawPos;public IntVec3 Position;public ThingDef def;public Graphic Graphic=new Graphic();}
  public class ThingWithComps:Thing {}
  public class ThingDef {public string defName;}
  public class Pawn:Thing {public bool Valid=true,Master,Dead;public Pawn_StanceTracker stances=new Pawn_StanceTracker();public Pawn_EquipmentTracker equipment=new Pawn_EquipmentTracker();public Pawn_DrawTracker Drawer;public Pawn(){Drawer=new Pawn_DrawTracker(this);}}
