@@ -111,10 +111,10 @@ internal static class Program
         Run("缺少粒子定义时仍执行原版移动",()=>
         {var f=new Fixture();f.Props.fleckDef=null;f.Projectile.Move(new Vector3(1,0,0));Check(f.Projectile.BaseCalls==1 && f.Map.flecks.Sent.Count==0,"只关闭视觉");});
         Run("错误挂载不抛异常",()=>{new CompSSCPnaTrail{parent=new Thing(),props=new CompProperties_SSCPnaTrail()}.NotifyPosition();});
-        Run("XML 三种弹丸共享新入口且无双重喷射",()=>
+        Run("XML 现役六种弹丸共享尾迹入口且无双重喷射",()=>
         {
             string root=args.Length>0?args[0]:Directory.GetCurrentDirectory();
-            foreach(var row in new[]{("SSC_PnaPrimitiveWeapons.xml","SSC_Projectile_PnaDart"),("SSC_PnaPrimitiveWeapons.xml","SSC_Projectile_PnaBolt"),("SSC_Gun.xml","Bullet_PNA_Low")})
+            foreach(var row in new[]{("SSC_PnaPrimitiveWeapons.xml","SSC_Projectile_PnaDart"),("SSC_PnaPrimitiveWeapons.xml","SSC_Projectile_PnaBolt"),("SSC_PnaIndustrialWeapons.xml","SSC_Projectile_PnaRepeaterNeedle"),("SSC_PnaIndustrialWeapons.xml","SSC_Projectile_PnaRifleNeedle"),("SSC_PnaSpacerWeapons.xml","SSC_Projectile_PnaPulse"),("SSC_PnaSpacerWeapons.xml","SSC_Projectile_PnaProjection")})
             {
                 var def=XDocument.Load(Path.Combine(root,"1.7/Defs/ThingsDefs",row.Item1)).Root.Elements().Single(d=>(string)d.Element("defName")==row.Item2);
                 Check(def.Element("thingClass").Value==typeof(Projectile_SSCPnaTrail).FullName,"视觉弹丸类型");

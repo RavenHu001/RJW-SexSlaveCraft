@@ -66,9 +66,9 @@ internal static partial class Program
                 Equal(string.Empty, worker.GetExplanationUnfinalized(req, ToStringNumberSense.Absolute));
             }
         });
-        Run("效力旧发射器和其他处理器不误用涂覆说明", () =>
+        Run("效力其他处理器不误用涂覆说明", () =>
         {
-            foreach (var type in new[] { typeof(DamageWorker_AddInjury), typeof(DamageWorker_LowTier), typeof(DamageWorker_HighTier) })
+            foreach (var type in new[] { typeof(DamageWorker_AddInjury) })
             {
                 var damage = PotencyDamage(.15f); damage.workerClass = type;
                 Assert(!SSCPnaWeaponPotencyUtility.TryGetBaseline(PotencyRanged(damage), out _), "限定涂覆处理器");

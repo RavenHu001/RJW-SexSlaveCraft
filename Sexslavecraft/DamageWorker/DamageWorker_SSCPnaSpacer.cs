@@ -75,8 +75,7 @@ namespace SexSlaveCraft
             result.AddPart(pawn, part);
             bool organicAtHit = SSCPnaSpacerBodyUtility.IsOrganic(pawn, part);
             // 固定命中前意识，即使普通微创伤或衣甲回调改变了后续意识也不重新取样。
-            var resistance = SSCPnaWeaponDoseUtility.Capture(pawn, config.recordHediff,
-                SSCPnaWeaponResistancePolicy.Coating);
+            var resistance = SSCPnaWeaponDoseUtility.Capture(pawn, config.recordHediff);
             float dose = SSCPnaWeaponDoseUtility.FromLoad(config.baseLoad, resistance);
             // 后续药效／修复共用继续条件；只读检查实际身体和部位，不要求伤口或负荷增量。
             // 已保护身体必须仍有有效链才能继续吸收，主人免疫始终优先。

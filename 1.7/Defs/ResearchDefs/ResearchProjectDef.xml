@@ -46,7 +46,7 @@
     <researchViewY>3.50</researchViewY>
   </ResearchProjectDef>
 
-  <!-- 原液的低技术战斗应用探索，与浓缩技术并列；不改既有发射器前置。 -->
+  <!-- 原液的低技术战斗应用探索，与浓缩技术并列；废案简易发射器及专属研究已移除。 -->
   <ResearchProjectDef>
     <defName>SSC_RES_PNAPrimitiveWeapons</defName>
     <label>原始纳米催情液武器</label>
@@ -85,21 +85,6 @@
     </prerequisites>
     <researchViewX>3.00</researchViewX>
     <researchViewY>3.00</researchViewY>
-  </ResearchProjectDef>
-
-  <ResearchProjectDef>
-    <defName>SSC_RES_PNASimpleLauncher</defName>
-    <label>PNA 简易发射器</label>
-    <description>把纳米催情液做成可发射的弹丸。低成本、低强度，适合在近处压制或活化目标。</description>
-    <baseCost>1000</baseCost>
-    <techLevel>Industrial</techLevel>
-    <tab>SSC_ResearchTabDef</tab>
-    <prerequisites>
-      <li>SSC_RES_PNASimpleApp</li> 
-      <li>PrecisionRifling</li>
-    </prerequisites>
-    <researchViewX>2.00</researchViewX>
-    <researchViewY>3.50</researchViewY>
   </ResearchProjectDef>
 
   <ResearchProjectDef>

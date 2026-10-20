@@ -44,7 +44,7 @@ namespace SexSlaveCraft
                 SSCPnaMath.IsFinite(extension.baseLoad) && extension.baseLoad > 0f)
             {
                 // 只读锁定物理受伤前的意识；共用算法不提前写入快照或改变身体形态。
-                resistance = SSCPnaWeaponDoseUtility.Capture(pawn, recordDef, SSCPnaWeaponResistancePolicy.Coating);
+                resistance = SSCPnaWeaponDoseUtility.Capture(pawn, recordDef);
                 dose = SSCPnaWeaponDoseUtility.FromLoad(extension.baseLoad, resistance);
                 // 同时保存受伤前的部位性质与健康实例，既防人工部位被摧毁后误判，
                 // 也防把命中前的旧伤或旧缺失记录当成本次新开口。

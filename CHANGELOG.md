@@ -6,15 +6,17 @@ This continuation builds on upstream **2.2.8**, the baseline when upstream devel
 
 ## 未发布开发增量 / Unreleased development
 
+- **2026-10-20 旧 PNA 发射器退役：** 从 1.7 移除简易发射器、弹丸、配方、专属研究及高低阶伤害定义，专用 C#／旧兼容时序测试移入废案；公共剂量工具清理旧枪分支。现役九武器及简易应用／浓缩研究保留；不兼容包含旧定义的存档，1.6／Common 冻结不变。见[实施与验证](Docs/Development/Completed/SSC旧简易PNA发射器移除与归档.md)。 Removed the old launcher and dedicated research from 1.7 without save migration; specialized code is archived and current weapon behavior is preserved.
+
 2026-10-19 核对。仓库版本仍为 2.4.2；本节记录当前 1.7 开发分支在既有下载之后的成果，未替换发布附件，1.6／Common 冻结不变。以下实机反馈按各批范围登记，不表示本次重跑发布门禁。
 
 - **低科技与关系界面：** 低科技研究、10→1 粗放浓缩及[主从关系概览](Docs/Development/Completed/主从关系概览完成核对.md)已交付，详见[低科技验收](Docs/Development/Completed/低科技适配首批实现与测试.md)。
-- **原始 PNA 武器：** 短矛、吹箭筒和轻弩共用涂覆伤口处理器，新增 800 点 Medieval 研究与自动配方；制造时耗普通原液，无补液或独立弹药。三件武器基线效力 15%／6%／10%，保留真实伤口和误杀风险，旧发射器行为保留。
-- **美术与反馈：** 三张 256×256 武器图、两张 128×128 弹丸图、金属紫色箭头和吹箭短破空音效；三武器原生效力属性及精简四语报告；吹箭／弩矢／简易发射器紫色流星尾迹，成功受药后倒置紫心；短矛命中矛尖提亮＋4.5 倍光晕，0.3 秒满亮＋0.5 秒淡出。最终泛光实机已确认，提交 `8217a37`。完整范围及测试边界见[首批完成核对](Docs/Development/Completed/SSC武器拓展首批完成核对.md)。
+- **原始 PNA 武器：** 短矛、吹箭筒和轻弩共用涂覆伤口处理器，新增 800 点 Medieval 研究与自动配方；制造时耗普通原液，无补液或独立弹药。三件武器基线效力 15%／6%／10%，保留真实伤口和误杀风险，旧发射器已在后续清理中移除。
+- **美术与反馈：** 三张 256×256 武器图、两张 128×128 弹丸图、金属紫色箭头和吹箭短破空音效；三武器原生效力属性及精简四语报告；现役远程投射物紫色流星尾迹，成功受药后倒置紫心；短矛命中矛尖提亮＋4.5 倍光晕，0.3 秒满亮＋0.5 秒淡出。最终泛光实机已确认，提交 `8217a37`。完整范围及测试边界见[首批完成核对](Docs/Development/Completed/SSC武器拓展首批完成核对.md)。
 
 - **工业 PNA 武器：** 短鞭、速射针枪和精确针枪，1600 点 Industrial 研究及三份自动配方，浓缩 PNA／化合燃料固定材料；基线 18%／单针 8%／20%，复用伤口送药、抗性／快照与效力显示。后续恢复全部武器的原版品质伤害／穿甲规则，旧固定伤害适配移入废案；四把远程武器保留基础钝伤 9 的防身能力。短鞭四姿态、45°待机与命中上半弧，两枪最终重描边贴图、两种独立针弹、尾迹／受药心及纯 XML 气流枪声均已获分批认可。当前配置、提交与证据见[工业完成核对](Docs/Development/Completed/SSC工业时代纳米催情液武器完成核对.md)。
 
-The 1.7 branch now includes accepted low-tech adaptation, the bond overview, and three medieval PNA-coated weapons with dedicated artwork, a potency stat, purple projectile trails, absorption hearts and a spearhead hit glow. Crafting consumes normal PNA; weapon wounds remain, and the old launcher retains its physical behavior. The accepted spear glow lasts 0.8 seconds at normal speed. These changes are not a replacement release package.
+The 1.7 branch now includes accepted low-tech adaptation, the bond overview, and three medieval PNA-coated weapons with dedicated artwork, a potency stat, purple projectile trails, absorption hearts and a spearhead hit glow. Crafting consumes normal PNA; weapon wounds remain, and the old launcher has since been removed from 1.7. The accepted spear glow lasts 0.8 seconds at normal speed. These changes are not a replacement release package.
 
 The industrial PNA short whip, repeating needle gun and precision needle rifle are also implemented and accepted, with dedicated sprites, needle projectiles, potency displays, whip poses and a hit afterimage, shared trails/hearts, and XML-only pneumatic firing sounds. Their baseline loads are 18%, 8% per repeating needle and 20% per precision needle. Crafting uses concentrated PNA and chemfuel for polymer parts; no ammunition, refill or gas management is required. All weapons now use native quality scaling for damage and armor penetration; the former fixed melee damage adapter is archived. All four ranged PNA weapons retain ordinary defensive melee attacks. These additions remain unreleased; the frozen 1.6/Common content is unchanged.
 

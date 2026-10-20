@@ -56,17 +56,7 @@ internal static partial class Program
         Run("重复旧依赖取最大单份且旧需求不灌满",()=>{var p=NewPawn();var a=HediffMaker.MakeHediff(AddictionDef,p);a.Severity=.3f;var b=HediffMaker.MakeHediff(AddictionDef,p);b.Severity=.4f;p.health.hediffSet.hediffs.Add(a);p.health.hediffSet.hediffs.Add(b);p.needs.PnaNeed=.27f;SSCPnaGameComponent.NormalizePawn(p);Near(.4,SSCPnaExposureUtility.GetAddiction(p).Severity);Near(.27,p.needs.PnaNeed.Value);Equal(1,p.health.hediffSet.hediffs.Count);});
         Run("非法旧依赖和需求值清理",()=>{var p=NewPawn();var a=HediffMaker.MakeHediff(AddictionDef,p);a.RawSeverity=float.NaN;p.health.hediffSet.hediffs.Add(a);p.needs.PnaNeed=float.NaN;SSCPnaGameComponent.NormalizePawn(p);Assert(SSCPnaExposureUtility.GetAddiction(p)==null && p.needs.PnaNeed==null,"清理非法");});
         Run("依赖体状态识别覆盖两种负荷且不扩大范围",()=>{foreach(string name in new[]{"Hediff_PNA_Debuff","SSC_Hediff_PnaRootedLoad","PNA_Addiction"})Assert(SSCPnaExposureUtility.IsBodyStateDef(new HediffDef{defName=name}),"身体记录");Assert(!SSCPnaExposureUtility.IsBodyStateDef(new HediffDef{defName="Other"}),"其他不受影响");});
-        // 武器执行范围：伤害传播、同 tick 独立命中和重入分别验证一次输入语义。
-        Run("低阶枪基数0.15一次输入7.5%",()=>{var p=NewPawn();var w=new DamageWorker_LowTier();w.Apply(Shot(),p);Near(.075,SSCPnaExposureUtility.GetLoad(p));Equal(1,w.InjuryCalls);});
-        Run("同次枪伤传播三部位只输入一次且保留伤害",()=>{var p=NewPawn();var w=new DamageWorker_LowTier();var shot=Shot();shot.Parts=3;w.Apply(shot,p);Near(.075,SSCPnaExposureUtility.GetLoad(p));Equal(3,w.InjuryCalls);});
-        Run("同tick两次独立命中均输入",()=>{var p=NewPawn();var w=new DamageWorker_LowTier();w.Apply(Shot(),p);w.Apply(Shot(),p);Near(.15,SSCPnaExposureUtility.GetLoad(p));});
-        Run("完整护甲偏转不输入PNA",()=>{var p=NewPawn();var s=Shot();s.Deflected=true;new DamageWorker_LowTier().Apply(s,p);Assert(Record(p)==null,"无暴露");});
-        // 原武器分支兼容：抗性、有效链治疗／强化和高阶参数仍保持原职责。
-        Run("高意识快照抗性与低意识保底保留",()=>{var high=NewPawn();high.health.capacities.Consciousness=3;var s=Shot();new DamageWorker_LowTier().Apply(s,high);Near(.025,SSCPnaExposureUtility.GetLoad(high));var low=NewPawn();low.health.capacities.Consciousness=.1f;new DamageWorker_LowTier().Apply(s,low);Near(.375,SSCPnaExposureUtility.GetLoad(low));});
-        Run("无效残链不触发枪械治疗保护",()=>{var p=NewPawn();p.health.hediffSet.hediffs.Add(new Hediff_ChainOfSexSlave{pawn=p,def=ChainDef});var w=new DamageWorker_LowTier();w.Apply(Shot(),p);Near(.075,SSCPnaExposureUtility.GetLoad(p));Equal(1,w.InjuryCalls);});
-        Run("有效链枪械保留治疗并输入性奴负荷且不成瘾",()=>{var p=NewPawn();Hediff_ChainOfSexSlave.AddToPawn(p,NewPawn());var injury=new Hediff_Injury{pawn=p,def=new HediffDef{defName="Injury"}};p.health.hediffSet.hediffs.Add(injury);var w=new DamageWorker_LowTier();w.Apply(Shot(),p);Near(5,injury.Healed);Near(.075,SSCPnaExposureUtility.GetLoad(p));Assert(RootedRecord(p)!=null,"性奴载体");Assert(Record(p)==null && SSCPnaExposureUtility.GetAddiction(p)==null,"无普通影响");Equal(0,w.InjuryCalls);});
-        Run("高阶现有固定剂量也接共享工具",()=>{var p=NewPawn();var s=Shot();((PNA_DWExtension)s.Def.Extension).fixedSeverity=.5f;new DamageWorker_HighTier().Apply(s,p);Near(.25,SSCPnaExposureUtility.GetLoad(p));});
-        Run("武器重入不吞掉外层和内层独立暴露",()=>{var outer=NewPawn();var inner=NewPawn();var w=new DamageWorker_LowTier();w.BeforePart=p=>{w.BeforePart=null;w.Apply(Shot(),inner);};w.Apply(Shot(),outer);Near(.075,SSCPnaExposureUtility.GetLoad(outer));Near(.075,SSCPnaExposureUtility.GetLoad(inner));});
+        // 武器传播、护甲与嵌套投送由现役涂覆／太空处理器专项覆盖。
         Run("截图约6%满足度不再阻止原版恢复",()=>{var p=NewPawn();AddOldAddiction(p,1);p.needs.PnaNeed=.0567000248f;NativeRecoveryDay(p);Near(.9,SSCPnaExposureUtility.GetAddiction(p).Severity,.00002);p.needs.PnaNeed=0;NativeRecoveryDay(p);Near(.8,SSCPnaExposureUtility.GetAddiction(p).Severity,.00002);});
         Run("其他成瘾组件保持原版速率",()=>{var p=NewPawn();var h=new HediffWithComps{pawn=p,def=new HediffDef{defName="OtherAddiction"}};var c=new HediffComp_SeverityPerDay{parent=h,severityPerDay=-.0333f};Near(-.0333,c.SeverityChangePerDay());});
         Run("PNA大步长也沿用原版200tick调度",()=>{var p=NewPawn();AddOldAddiction(p,1);p.needs.PnaNeed=0;for(int t=0;t<60000;t+=250)Tick(p,250);Near(.92,SSCPnaExposureUtility.GetAddiction(p).Severity,.00002);});
@@ -161,11 +151,6 @@ internal static partial class Program
         return result;
     }
     // 使用同一组确认后的低阶参数，让多部位／重入场景共享输入基准。
-    private static DamageInfo Shot()=>new DamageInfo
-    {
-        Amount=1,Parts=1,Def=new DamageDef{Extension=new PNA_DWExtension
-        {baseSeverity=.15f,trueDamageAmount=1,healAmount=5,recordHediff=new HediffDef{defName="Resistance",maxSeverity=100},combatBuff=new HediffDef{defName="Hediff_PNA_Combat_Buff_Plus"},adapterHediff=ChainDef}}
-    };
     // 读取实际作者 XML，确认测试执行的剂量与运行资源一致且不存在并行旧 Doer。
     private static void SourceDefinitions()
     {
@@ -178,6 +163,6 @@ internal static partial class Program
             var offset=def.Element("comps").Element("li").Element("existingAddictionSeverityOffset");
             Near(item.Item1.EndsWith("_Plus")?.2:.1,offset==null?.1:Number(offset));
         }
-        Near(.15,Number(LoadDef("Defs/DemageDefs/DemageDef_Gun.xml","Damage_PNA_Damage_LowTier").Element("modExtensions").Element("li").Element("baseSeverity")));
+        Near(.06,Number(LoadDef("Defs/DemageDefs/SSC_PnaPrimitiveDamage.xml","SSC_Damage_PnaDartStab").Element("modExtensions").Element("li").Element("baseLoad")));
     }
 }

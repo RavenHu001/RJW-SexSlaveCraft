@@ -171,13 +171,13 @@ internal static class Program
 
     private static void RunResearchChecks()
     {
-        // 记录原树的点数与前置，防止等级调整时顺带拆开材料／人格发展线。
+        // 保留原树的点数与前置；旧简易发射器研究已退役，不再计入分档。
         var expected = new[]
         {
             ("BasicTraining", 500, ""), ("BodyPartTraining", 800, "BasicTraining"),
             ("PNASimpleApp", 800, "BasicTraining"), ("SexChange", 1000, "PNASimpleApp"),
             ("PNAPrimitiveWeapons", 800, "PNASimpleApp"),
-            ("Femboy", 1200, "SexChange"), ("PNASimpleLauncher", 1000, "PNASimpleApp,PrecisionRifling"),
+            ("Femboy", 1200, "SexChange"),
             ("PNAConcentration", 1200, "PNASimpleApp"), ("PE", 1500, "PNAConcentration"),
             ("SlaveSpecialization", 1500, "BodyPartTraining,PE"), ("CowTraining", 1200, "SlaveSpecialization"),
             ("PublicUse", 1200, "SlaveSpecialization"), ("TrainerOfficer", 1200, "SlaveSpecialization"),
@@ -192,22 +192,22 @@ internal static class Program
             {
                 XElement d = Def("Defs/ResearchDefs/ResearchProjectDef.xml", "SSC_RES_" + current.Item1);
                 string tier = current.Item1 == "BasicTraining" || current.Item1 == "BodyPartTraining" ? "Neolithic" :
-                    current.Item1 == "PNASimpleLauncher" ? "Industrial" : "Medieval";
+                    "Medieval";
                 Equal(tier, (string)d.Element("techLevel"));
                 Equal(current.Item2, (int)d.Element("baseCost"));
                 string[] parents = d.Element("prerequisites")?.Elements().Select(e => e.Value).ToArray() ?? Array.Empty<string>();
                 string[] wanted = current.Item3.Split(',', StringSplitOptions.RemoveEmptyEntries)
-                    .Select(s => s == "PrecisionRifling" ? s : "SSC_RES_" + s).ToArray();
+                    .Select(s => "SSC_RES_" + s).ToArray();
                 Assert(parents.SequenceEqual(wanted), "现有研究顺序与前置必须保留");
             });
         }
         Run("研究总数分档与Royalty蓝图要求保留", () =>
         {
             XElement[] defs = XDocument.Load(Resource("Defs/ResearchDefs/ResearchProjectDef.xml")).Root.Elements().ToArray();
-            Equal(19, defs.Length);
+            Equal(18, defs.Length);
             Equal(2, defs.Count(d => (string)d.Element("techLevel") == "Neolithic"));
             Equal(16, defs.Count(d => (string)d.Element("techLevel") == "Medieval"));
-            Equal(1, defs.Count(d => (string)d.Element("techLevel") == "Industrial"));
+            Equal(0, defs.Count(d => (string)d.Element("techLevel") == "Industrial"));
             XElement basic = defs.Single(d => (string)d.Element("defName") == "SSC_RES_BasicTraining");
             Equal(1, (int)basic.Element("techprintCount"));
             Equal("Ludeon.RimWorld.Royalty", (string)basic.Element("techprintCount").Attribute("MayRequire"));

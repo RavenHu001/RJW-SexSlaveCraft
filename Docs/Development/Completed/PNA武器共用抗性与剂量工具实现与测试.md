@@ -23,7 +23,7 @@
 
 ## 旧发射器行为保留
 
-[DamageWorker_PNA.cs](../../../Sexslavecraft/DamageWorker/DamageWorker_PNA.cs) 仅替换低阶入口内部的抗性／剂量片段；一次输入认领、`FinishHit`、高阶兼容入口及各自物理分支保持原代码。
+[DamageWorker_PNA.cs](../../../Archive/PnaSimpleLauncher/DamageWorker_PNA.cs) 仅替换低阶入口内部的抗性／剂量片段；一次输入认领、`FinishHit`、高阶兼容入口及各自物理分支保持原代码。
 
 旧枪仍在原部位回调中认领一次输入，先刷新身体与检查主人免疫，再取样、保存快照、输入药效，最后进入固定创伤或有效链无伤／治疗分支。普通创伤、每部位治疗、活化反馈、同 tick 独立输入、传播与嵌套保护保持原有语义。
 

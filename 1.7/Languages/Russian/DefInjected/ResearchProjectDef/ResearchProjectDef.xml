@@ -10,7 +10,6 @@
   <SSC_RES_SexChange.description>Превращает мужчин в женщин (не реализовано; планируется включить косметическую хирургию).</SSC_RES_SexChange.description>
   <SSC_RES_Femboy.label>Превращение в femboy</SSC_RES_Femboy.label>
   <SSC_RES_Femboy.description>Превращает мужчин в femboy (не реализовано).</SSC_RES_Femboy.description>
-  <SSC_RES_PNASimpleLauncher.label>Простой пускатель PNA</SSC_RES_PNASimpleLauncher.label>
   <SSC_RES_PNAConcentration.label>Технология концентрирования PNA</SSC_RES_PNAConcentration.label>
   <SSC_RES_PE.label>Экскреция личности</SSC_RES_PE.label>
   <SSC_RES_SlaveSpecialization.label>Редактирование личности</SSC_RES_SlaveSpecialization.label>
@@ -33,6 +32,5 @@
   <SSC_RES_GelatinizationPartial.description>Предварительная gelatinизационная модификация.</SSC_RES_GelatinizationPartial.description>
   <SSC_RES_GelatinizationFull.label>Полная gelatinизация тела</SSC_RES_GelatinizationFull.label>
   <SSC_RES_GelatinizationFull.description>Полная морфологическая трансформация.</SSC_RES_GelatinizationFull.description>
-  <SSC_RES_PNASimpleLauncher.description>Изготовление снарядов с наножидкостью-афродизиаком. Недорогие и слабого действия, они подходят для подавления или активации целей вблизи.</SSC_RES_PNASimpleLauncher.description>
   <SSC_RES_PNAConcentration.description>Освоить концентрирование наножидкости-афродизиака на костре или плите с повышенными потерями. Обработка при пониженном давлении в лаборатории даёт такой же концентрат из меньшего количества исходной жидкости.</SSC_RES_PNAConcentration.description>
 </LanguageData>

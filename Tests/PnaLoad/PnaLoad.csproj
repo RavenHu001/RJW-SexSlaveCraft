@@ -17,7 +17,6 @@
     <Compile Include="$(SscSourceRoot)/common/ThingDef_SSCPna.cs" Link="Production/ThingDef_SSCPna.cs" />
     <Compile Include="$(SscSourceRoot)/common/SSCPnaWeaponPotencyUtility.cs" Link="Production/SSCPnaWeaponPotencyUtility.cs" />
     <Compile Include="$(SscSourceRoot)/common/StatWorker_SSCPnaWeaponPotency.cs" Link="Production/StatWorker_SSCPnaWeaponPotency.cs" />
-    <Compile Include="$(SscSourceRoot)/DamageWorker/DamageWorker_PNA.cs" Link="Production/DamageWorker_PNA.cs" />
     <Compile Include="$(SscSourceRoot)/DamageWorker/DamageWorker_SSCPnaCoated.cs" Link="Production/DamageWorker_SSCPnaCoated.cs" />
     <Compile Include="$(SscSourceRoot)/DamageWorker/DamageWorker_SSCPnaSpacer.cs" Link="Production/DamageWorker_SSCPnaSpacer.cs" />
     <Compile Include="$(SscSourceRoot)/common/SSCPnaWeaponDoseUtility.cs" Link="Production/SSCPnaWeaponDoseUtility.cs" />

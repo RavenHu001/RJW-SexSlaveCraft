@@ -324,6 +324,12 @@ internal static partial class Program
         });
     }
 
+    // 既存伤势用于验证涂覆武器保留物理伤口且不治疗；不依赖已归档的旧枪测试。
+    private static Hediff_Injury WeaponInjury(Pawn p)
+    {
+        var injury = new Hediff_Injury { pawn = p, def = new HediffDef { defName = "Injury" } };
+        p.health.hediffSet.hediffs.Add(injury); return injury;
+    }
     private static Pawn CoatedPawn()
     {var p=NewPawn();p.RaceProps.body.AllParts.Add(new BodyPartRecord());return p;}
     private static DamageInfo CoatedShot(float dose=.15f,float damage=5f)=>new DamageInfo

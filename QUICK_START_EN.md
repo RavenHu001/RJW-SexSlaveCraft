@@ -223,7 +223,7 @@ At maximum genital development, a pawn begins producing `Purple Aphrodisiac Nano
 It is used for:
 
 - direct ingestion;
-- crafting the `Basic PNA Launcher`;
+- crafting the current 1.7 PNA weapons; the old Basic PNA Launcher and its dedicated research are removed without save migration (frozen 1.6 is unchanged);
 - crafting the medieval PNA short spear, blowpipe and light crossbow on the current 1.7 branch;
 - producing `Purple Aphrodisiac Nanofluid Plus`;
 - Personality Excretion;

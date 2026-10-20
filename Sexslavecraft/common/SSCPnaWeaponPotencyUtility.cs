@@ -30,7 +30,7 @@ namespace SexSlaveCraft
 
             // 只构造固定除数样本，复用真实结算的合法化及单次上限；不调用 Capture/StoreSnapshot。
             load = SSCPnaWeaponDoseUtility.FromLoad(baseLoad,
-                new SSCPnaWeaponResistanceSample(1f, 0f, SSCPnaWeaponResistancePolicy.Coating));
+                new SSCPnaWeaponResistanceSample(1f, 0f));
             return true;
         }
 

@@ -123,7 +123,7 @@
 
 本轮前序取证核对了本机 `Data/Core/Defs/ThingDefs_Misc/Weapons/MeleeMedieval.xml`、`RangedNeolithic.xml`、相关 StatDef 与目标 DLL。游戏程序集 MVID 为 `f1e6382600a84191bbc6d8a184fd6b57`；这属于静态参照，不表示当前启用模组合并后的数值或新武器实机效果已经验证。
 
-SSC 参照：[发射器定义](../../../1.7/Defs/ThingsDefs/SSC_Gun.xml)、[伤害定义](../../../1.7/Defs/DemageDefs/DemageDef_Gun.xml)、[现有伤害处理](../../../Sexslavecraft/DamageWorker/DamageWorker_PNA.cs)。
+SSC 参照：[发射器定义](../../../Archive/PnaSimpleLauncher/Defs/SSC_Gun.xml)、[伤害定义](../../../Archive/PnaSimpleLauncher/Defs/DemageDef_Gun.xml)、[现有伤害处理](../../../Archive/PnaSimpleLauncher/DamageWorker_PNA.cs)。
 
 ## 5. PNA 结算规则
 
@@ -188,7 +188,7 @@ SSC 参照：[发射器定义](../../../1.7/Defs/ThingsDefs/SSC_Gun.xml)、[伤�
 | 原版 `HealthUtility.GetHediffDefFromDamage`／`HediffSet.AddDirect` | 实体部位可产生 `Crack`；部位摧毁会产生缺失记录；健康写入还可能触发同步回调 | 根据实际伤势及当前身体复核，不能把所有受伤、所有结果列表条目都当作开放伤口。 |
 | 原版 `Tool.Maneuvers`／`Verb_MeleeAttackDamage` | Tool 的能力决定可用 Maneuver，动作的 `meleeDamageDef` 决定主伤害；额外近战伤害是独立的伤害调用 | 短矛通过专用能力／动作接入，不使用额外伤害来模拟药液。 |
 
-源码参照：[现有枪械结算](../../../Sexslavecraft/DamageWorker/DamageWorker_PNA.cs)、[共享药效与身体协调](../../../Sexslavecraft/common/SSCPnaExposureUtility.cs)、[健康入口补丁](../../../Sexslavecraft/ThePatches/Harmony_SSCPna.cs)、[当前测试边界](../../../Tests/PnaLoad/README.md)。
+源码参照：[现有枪械结算](../../../Archive/PnaSimpleLauncher/DamageWorker_PNA.cs)、[共享药效与身体协调](../../../Sexslavecraft/common/SSCPnaExposureUtility.cs)、[健康入口补丁](../../../Sexslavecraft/ThePatches/Harmony_SSCPna.cs)、[当前测试边界](../../../Tests/PnaLoad/README.md)。
 
 ### 6.2 已实现的处理器结构
 

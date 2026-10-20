@@ -10,7 +10,6 @@
   <SSC_RES_SexChange.description>Turns men into women (not implemented, and planned to include cosmetic surgery).</SSC_RES_SexChange.description>
   <SSC_RES_Femboy.label>Femboy Conversion</SSC_RES_Femboy.label>
   <SSC_RES_Femboy.description>Turns men into femboys (not implemented).</SSC_RES_Femboy.description>
-  <SSC_RES_PNASimpleLauncher.label>Basic PNA Launcher</SSC_RES_PNASimpleLauncher.label>
   <SSC_RES_PNAConcentration.label>PNA Concentration Technology</SSC_RES_PNAConcentration.label>
   <SSC_RES_PE.label>Personality Excretion</SSC_RES_PE.label>
   <SSC_RES_SlaveSpecialization.label>Personality Editing</SSC_RES_SlaveSpecialization.label>
@@ -33,6 +32,5 @@
   <SSC_RES_GelatinizationPartial.description>Preliminary gelatinization modification.</SSC_RES_GelatinizationPartial.description>
   <SSC_RES_GelatinizationFull.label>Full-body Gelatinization</SSC_RES_GelatinizationFull.label>
   <SSC_RES_GelatinizationFull.description>A complete morphological transformation.</SSC_RES_GelatinizationFull.description>
-  <SSC_RES_PNASimpleLauncher.description>Form aphrodisiac nanofluid into projectiles. Inexpensive and low in intensity, they are suited to suppressing or activating targets at close range.</SSC_RES_PNASimpleLauncher.description>
   <SSC_RES_PNAConcentration.description>Learn to concentrate aphrodisiac nanofluid over a campfire or stove, at the cost of greater losses. Reduced-pressure processing at a drug lab produces the same concentrate from less raw fluid.</SSC_RES_PNAConcentration.description>
 </LanguageData>

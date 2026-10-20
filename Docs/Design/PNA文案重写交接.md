@@ -1,5 +1,7 @@
 # PNA 文案重写交接
 
+2026-10-20 后续状态：旧简易发射器、弹丸及专属研究已从 1.7 移除，以下有关旧枪文案和兼容处理的内容保留历史含义，不再作为实施任务；见[移除记录](../Development/Completed/SSC旧简易PNA发射器移除与归档.md)。
+
 > 当前完成状态（2026-10-16）：定稿、四语 XML、后续调试旧称及心情标签已落地并获分批实机确认，原 2.4.0.5 开发成果归入 **2.4.1**。下文保留交接与编写历史，不作为待执行任务；见[完成核对](../Development/Completed/PNA重置与玩法补全完成核对.md)及[本版说明](../Releases/2.4.1/2.4.1发布说明.md)。
 
 日期：2026-10-15，2026-10-16 复核修订。核查基线：`codex/pna-reset`，`94d8ff3`（复核时 HEAD；初版所记 `cf47f75` 为其祖先，差一个文档提交，结论不受影响）。本文交接文件范围、修改方向和设定参考，不包含具体文案稿，也不授权改变现有机制或数值。
@@ -78,8 +80,8 @@ PNA 相关状态在健康面板中的数值只是**受纳米催情液影响的�
 | [Defs/NeedDefs/NeedDefs.xml](../../1.7/Defs/NeedDefs/NeedDefs.xml) | `Need_PNA` | 统一需求名称与称呼，以身体渴求解释需求；读者应能理解条越满代表越得到满足，而非越渴求。 |
 | [Defs/ChemicalDefs/ChemicalDef.xml](../../1.7/Defs/ChemicalDefs/ChemicalDef.xml) | `PNA_Chemical` | 化学品名称与药液、成瘾和需求术语对齐，避免暴露实现名称。 |
 | [Defs/ThingsDefs/Nanofluid.xml](../../1.7/Defs/ThingsDefs/Nanofluid.xml) | `Purple_Aphrodisiac_Nanofluid`、`Purple_Aphrodisiac_Nanofluid_Plus` | 解释物质特性、普通／浓缩差别及风险；删除旧强化盔甲等缺乏对应内容的用途承诺。 |
-| [Defs/ThingsDefs/SSC_Gun.xml](../../1.7/Defs/ThingsDefs/SSC_Gun.xml) | `Gun_PNA_Low`、`Bullet_PNA_Low` | 从分支判断说明改为武器工作方式和用途；准确表达普通对象的危险与有效锁链对象的活化、治疗。 |
-| [Defs/DemageDefs/DemageDef_Gun.xml](../../1.7/Defs/DemageDefs/DemageDef_Gun.xml) | `Damage_PNA_Damage_LowTier` | 统一低阶弹丸伤害名称，避免直接展示 Low-tier PNA Damage 一类实现名称。目录拼写沿用现状。 |
+| [Defs/ThingsDefs/SSC_Gun.xml](../../Archive/PnaSimpleLauncher/Defs/SSC_Gun.xml) | `Gun_PNA_Low`、`Bullet_PNA_Low` | 从分支判断说明改为武器工作方式和用途；准确表达普通对象的危险与有效锁链对象的活化、治疗。 |
+| [Defs/DemageDefs/DemageDef_Gun.xml](../../Archive/PnaSimpleLauncher/Defs/DemageDef_Gun.xml) | `Damage_PNA_Damage_LowTier` | 统一低阶弹丸伤害名称，避免直接展示 Low-tier PNA Damage 一类实现名称。目录拼写沿用现状。 |
 | [Defs/RecipeDefs/RecipeDef_PNA_PLUS.xml](../../1.7/Defs/RecipeDefs/RecipeDef_PNA_PLUS.xml) | `SSC_Make_SuperDrug`、`SSC_Make_SuperDrug_forth` | 两份配方的 label、description、jobString 均需核对；说明浓缩工作，统一单份／四份命名，纠正外语占位和误译。 |
 | [Defs/ResearchDefs/ResearchProjectDef.xml](../../1.7/Defs/ResearchDefs/ResearchProjectDef.xml) | `SSC_RES_PNASimpleApp`、`SSC_RES_PNASimpleLauncher`、`SSC_RES_PNAConcentration` | 研究描述简陋或缺失，应补技术背景和真实用途；不把研究节点名称等同于已经实际锁定某个配方。 |
 
@@ -97,8 +99,8 @@ PNA 相关状态在健康面板中的数值只是**受纳米催情液影响的�
 | [DefInjected/NeedDef/NeedDefs.xml](../../1.7/Languages/English/DefInjected/NeedDef/NeedDefs.xml) | 无 | 有 | 有 | 有 | 渴求需求 |
 | [DefInjected/ChemicalDef/ChemicalDef.xml](../../1.7/Languages/English/DefInjected/ChemicalDef/ChemicalDef.xml) | 无 | 有 | 有 | 有 | 化学品名称 |
 | [DefInjected/ThingDef/Nanofluid.xml](../../1.7/Languages/English/DefInjected/ThingDef/Nanofluid.xml) | 无 | 有 | 有 | 有 | 两种药液 |
-| [DefInjected/ThingDef/SSC_Gun.xml](../../1.7/Languages/English/DefInjected/ThingDef/SSC_Gun.xml) | 有 | 有 | 有 | 有 | 发射器与弹丸 |
-| [DefInjected/DamageDef/DemageDef_Gun.xml](../../1.7/Languages/English/DefInjected/DamageDef/DemageDef_Gun.xml) | 无 | 有 | 有 | 有 | 伤害名称 |
+| [DefInjected/ThingDef/SSC_Gun.xml](../../Archive/PnaSimpleLauncher/Languages/English/DefInjected/ThingDef/SSC_Gun.xml) | 有 | 有 | 有 | 有 | 发射器与弹丸 |
+| [DefInjected/DamageDef/DemageDef_Gun.xml](../../Archive/PnaSimpleLauncher/Languages/English/DefInjected/DamageDef/DemageDef_Gun.xml) | 无 | 有 | 有 | 有 | 伤害名称 |
 | [DefInjected/RecipeDef/RecipeDef_PNA_PLUS.xml](../../1.7/Languages/English/DefInjected/RecipeDef/RecipeDef_PNA_PLUS.xml) | 无 | 有 | 有 | 有 | 两份浓缩配方与工作提示 |
 | [DefInjected/ResearchProjectDef/ResearchProjectDef.xml](../../1.7/Languages/English/DefInjected/ResearchProjectDef/ResearchProjectDef.xml) | 无 | 有 | 有 | 有 | 三项 PNA 研究 |
 | [Keyed/SSC_Pna.xml](../../1.7/Languages/English/Keyed/SSC_Pna.xml) | 有 | 有 | 有 | 有 | 悬停、通知、飘字、吸引解释与调试反馈 |

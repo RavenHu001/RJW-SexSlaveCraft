@@ -115,21 +115,17 @@ internal static partial class Program
             drug.Props.chemical = new ChemicalDef { addictionHediff = new HediffDef { defName = "OtherAddiction" } };
             drug.Props.Addictive = false; drug.PrePostIngested(p); Equal(1, drug.OriginalCalls);
         });
-        Run("主人枪伤保留原伤害但不创建抗性快照或负荷", () =>
+        Run("主人涂覆命中保留物理伤口但不创建药效或抗性快照", () =>
         {
-            var p = NewPawn(); p.IsMaster = true; p.health.capacities.Consciousness = 3;
-            var shot = Shot(); shot.Parts = 3;
-            ((PNA_DWExtension)shot.Def.Extension).recordHediff.defName = "Hediff_PNA_Consciousness_Record";
-            var worker = new DamageWorker_LowTier(); worker.Apply(shot, p);
-            Equal(3, worker.InjuryCalls); AssertNoMasterDrugState(p);
+            var p = CoatedPawn(); p.IsMaster = true; p.health.capacities.Consciousness = 3;
+            var result = CoatedWorker().Apply(CoatedShot(), p);
+            Near(5, result.totalDamageDealt); Equal(1, result.hediffs.Count); AssertNoMasterDrugState(p);
         });
-        Run("主人有链枪命中保留原治疗但拒绝旧强化", () =>
+        Run("主人太空命中即使有链也不治疗或创建药效", () =>
         {
-            var p = NewPawn(); Hediff_ChainOfSexSlave.AddToPawn(p, NewPawn()); p.IsMaster = true;
-            var injury = new Hediff_Injury { pawn = p, def = new HediffDef { defName = "Injury" } };
-            p.health.hediffSet.hediffs.Add(injury);
-            var shot = Shot(); ((PNA_DWExtension)shot.Def.Extension).combatBuff.defName = "Hediff_PNA_Combat_Buff";
-            new DamageWorker_LowTier().Apply(shot, p); Near(5, injury.Healed); AssertNoMasterDrugState(p);
+            var p = SpacerSlave(); var injury = SpacerInjury(p, 10); p.IsMaster = true;
+            var worker = new DamageWorker_SSCPnaSpacer(); worker.Apply(SpacerShot(), p);
+            Near(0, injury.Healed); Equal(0, worker.InjuryCalls); AssertNoMasterDrugState(p);
         });
         Run("主人没有负荷或成瘾时仍清孤立需求", () =>
         {

@@ -360,7 +360,6 @@
     <Compile Include="common\SSC_HealthSanitizerGameComponent.cs" />
     <Compile Include="common\TrainingJobUtility.cs" />
     <Compile Include="common\WillReductionUtility.cs" />
-    <Compile Include="DamageWorker\DamageWorker_PNA.cs" />
     <Compile Include="DamageWorker\DamageWorker_SSCPnaCoated.cs" />
     <Compile Include="DamageWorker\DamageWorker_SSCPnaSpacer.cs" />
     <Compile Include="DamageWorker\Verb_MeleeAttackSSCPnaSpacer.cs" />

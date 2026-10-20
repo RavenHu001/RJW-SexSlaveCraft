@@ -774,7 +774,9 @@ At 1% certainty or less, the target converts to the caster’s ideoligion and re
 
 The ability and grant component exist, but the current Mouth Hediff XML does not attach that grant component. It is therefore not normally acquired through gameplay.
 
-## 11. PNA Items and Basic PNA Launcher
+<a id="11-pna-items-and-basic-pna-launcher"></a>
+
+## 11. PNA Items and Weapons
 
 ### 11.1 Ingestion
 
@@ -832,34 +834,11 @@ At a drug lab:
 
 Both recipes require `PNA Concentration Technology`.
 
-### 11.3 Basic PNA Launcher
+### 11.3 Basic PNA Launcher (removed in 1.7)
 
-The enabled low-tier launcher:
+The current 1.7 development branch removes the old launcher, its projectile, crafting recipe and dedicated research. Its specialized code and definitions are archived. Saves referencing these old definitions are not supported; no replacement or research compensation is provided. The frozen 1.6 version is unchanged.
 
-- costs 60 steel, 3 industrial components, and 10 normal PNA;
-- crafting skill 4;
-- version 2.4.1 requires SSC’s `Basic PNA Launcher` research, retaining `Basic PNA Applications` and vanilla Precision Rifling as its prerequisites; this was confirmed working in game;
-- range 22.9;
-- warmup 0.5 seconds;
-- cooldown 3 seconds;
-- base projectile damage 2.
-
-On an effective hit against a pawn with an actual effective Chain:
-
-- It inputs activation load once per damage Apply, retaining the original per-part treatment callbacks; treatment heals a random naturally healable injury by 5.
-- Purple projectile effects, treatment and activation feedback remain, without gunshot injury.
-- The old PNA Combat Enhancement buffs are no longer issued; existing instances are cleared through the coordination mechanism, without converting them into load.
-
-Chained and unchained targets use the same dose, calculated from the existing resistance before this hit's activation or treatment:
-
-```text
-Raw severity added = min(0.15 / resistance divisor, 1.0)
-Normalized load added = raw severity added / 2
-```
-
-Without a saved resistance record, the divisor normally uses Consciousness with a floor of 0.2. Consciousness above 2.0 retains the existing resistance-record mechanism. At Consciousness 1, the dose is +7.5 percentage points, capped at +50 load points per hit. The development branch adds D+0.01 to existing addiction per effective weapon input, plus D+0.20 at terminal load (total +0.21), without appending it to newly created addiction; this was confirmed working in game. Existing need refill is twice the actual added load; full load does not invent extra weapon refill. Unchained targets retain the original injury and 1-point armor-ignoring damage handling. Masters reject drug effects, while physical damage follows the original branch.
-
-The high-tier gun and ammunition remain disabled.
+The nine current PNA weapons retain their coated-wound or spacer delivery paths, shared resistance, dosage and feedback. Basic PNA Applications, PNA Concentration and shared body states remain available. See the [removal record](Docs/Development/Completed/SSC旧简易PNA发射器移除与归档.md).
 
 ### 11.4 Producer Sex Supply and Source Preference
 
@@ -928,11 +907,11 @@ These are implemented on the current 1.7 development branch and have not been re
 
 These are base values before applicable pawn/quality effects; listed accuracy is not the final hit chance. Fueled/electric smithies make all three, and crafting spots also make blowpipes. Materials are fixed. PNA is consumed during crafting, with no later refilling, per-shot fluid use or separate ammunition item. Secondary shaft/stock strikes deal 2 blunt damage, have zero penetration and a 2-second cooldown, and do not apply PNA.
 
-One dose is applied only after that hit creates a qualifying fresh open wound in flesh. Full armor blocks, bruises, secondary blunt strikes and old wounds do not qualify. Multi-part injury propagation still gives one dose. Actual load equals baseline potency divided by pre-hit Consciousness or an existing high-Consciousness resistance record; without a record the divisor has a 20% floor, and a hit adds at most 50 load points. Masters reject the drug and effective-Chain recipients receive activation, but these weapons retain injuries and do not heal. The old launcher's separate no-gunshot/treatment branch is unchanged. Reduced trauma does not guarantee a nonfatal hit.
+One dose is applied only after that hit creates a qualifying fresh open wound in flesh. Full armor blocks, bruises, secondary blunt strikes and old wounds do not qualify. Multi-part injury propagation still gives one dose. Actual load equals baseline potency divided by pre-hit Consciousness or an existing high-Consciousness resistance record; without a record the divisor has a 20% floor, and a hit adds at most 50 load points. Masters reject the drug and effective-Chain recipients receive activation, but these weapons retain injuries and do not heal. The old launcher is removed from 1.7. Reduced trauma does not guarantee a nonfatal hit.
 
-The info-card potency stat remains **15% / 6% / 10%**, representing a qualifying hit at 100% Consciousness without a resistance record. It is not accuracy, concentration, remaining fluid or a damage multiplier, and does not change with the selected target. Hover text and the detailed report explain the correction and identity rules. This stat is not added to the old launcher.
+The info-card potency stat remains **15% / 6% / 10%**, representing a qualifying hit at 100% Consciousness without a resistance record. It is not accuracy, concentration, remaining fluid or a damage multiplier, and does not change with the selected target. Hover text and the detailed report explain the correction and identity rules.
 
-Darts, bolts and the old basic launcher leave purple meteor-like trails behind their projectile tails. A successful dedicated spear thrust lights the spearhead with a **4.5×** soft halo for **0.8 seconds** at normal speed: 0.3 seconds held bright, then 0.5 seconds fading. It may remain after native retraction without extending the attack animation. A fully armor-blocked contact can glow; misses, dodges and blunt strikes do not. Accepted PNA input produces a rising inverted purple heart lasting 1.2 seconds, including valid full-load input; immune Masters produce no heart. Contact glow and absorption hearts signal different outcomes.
+The six current ranged projectile types leave purple meteor-like trails behind their tails. A successful dedicated spear thrust lights the spearhead with a **4.5×** soft halo for **0.8 seconds** at normal speed: 0.3 seconds held bright, then 0.5 seconds fading. It may remain after native retraction without extending the attack animation. A fully armor-blocked contact can glow; misses, dodges and blunt strikes do not. Accepted PNA input produces a rising inverted purple heart lasting 1.2 seconds, including valid full-load input; immune Masters produce no heart. Contact glow and absorption hearts signal different outcomes.
 
 Weapon PNGs use 256×256 canvases; dart/bolt PNGs use 128×128 and drawSize 0.5/0.6. The blowpipe uses a short vanilla whoosh firing sound. See the [completion audit](Docs/Development/Completed/SSC武器拓展首批完成核对.md) for current assets and per-batch validation limits.
 
@@ -1640,8 +1619,8 @@ This section records the audited code behavior and known limitations.
 1. **Fine Training is not implemented.** The body-part detection, sensitivity, reward, and progress methods in `FineTrainingUtility` still return placeholders. The Training tab fields are reserved only.
 2. **Binding Ritual genital compatibility is fixed at the worst bracket.** The ritual calls a size-difference method that currently returns `0`, producing `-20%`. Ordinary Training size scoring works separately.
 3. **Erotic Word has no normal acquisition path.** The ability and grant component exist, but the Mouth Hediff XML does not attach the component.
-4. **Several research nodes are technology-tree placeholders.** `Femboy Conversion` still lacks a complete matching system. Basic PNA Application is a prerequisite for later PNA research, and the launcher recipe now uses SSC launcher research. Version 2.3.7 implements ordinary Cat/Dog training, pet exclusivity, gel finalization, final active abilities and visible affection; the adult consensual follow-up is implemented and awaits in-game acceptance. Rabbit selection remains disabled. `Combatant` supports ordinary training, experience, gel finalization, and the final Combat Overdrive ability. `Personality Editing` acts as the parent node for specialization research.
-5. **Basic PNA Launcher uses SSC research.** In 2.4.1, its recipe references Basic PNA Launcher research, retaining Basic PNA Application and vanilla Precision Rifling prerequisites.
+4. **Several research nodes are technology-tree placeholders.** `Femboy Conversion` still lacks a complete matching system. Basic PNA Application is a prerequisite for later PNA research, and the obsolete launcher research has been removed from 1.7. Version 2.3.7 implements ordinary Cat/Dog training, pet exclusivity, gel finalization, final active abilities and visible affection; the adult consensual follow-up is implemented and awaits in-game acceptance. Rabbit selection remains disabled. `Combatant` supports ordinary training, experience, gel finalization, and the final Combat Overdrive ability. `Personality Editing` acts as the parent node for specialization research.
+5. **The old Basic PNA Launcher is removed from 1.7.** Its dedicated recipe and research are also removed without save migration; frozen 1.6 content is unchanged.
 6. **Sex Reassignment Surgery is not research-locked.** Its operation exists without a `researchPrerequisite`. The duplicate definition for its surgery memory was fixed in 2.2.13; the current independent memory definition is not a remaining duplicate-load issue.
 7. **Personality trait transfer and the gel UI have been fixed.** The maintainer has confirmed this round of fixes is effective. Ordinary personality traits are now restored from the gel snapshot while preserving the receiving body's genes and their traits. Legacy entries are restored as personality traits because their source was not recorded; new gels save only traits without a gene source. The Sex Slave trait is still rebuilt separately from restored highest-ever Corruption. See the [fix record (Chinese)](Docs/Development/Completed/人格普通特质迁移修复.md) for details.
 8. **Public Use progress now uses the saved component.** Version 2.3.6 routes daily base Training progress through the shared component entry; trade rewards also update component progress and synchronize the ordinary Hediff. Final recipes continue to check saved progress.
@@ -1650,7 +1629,7 @@ This section records the audited code behavior and known limitations.
 11. **Apparel decay multipliers run in the opposite direction from their descriptions.** Values 1.1 and 1.5 are multiplied into decay and therefore accelerate it. Their 30%/100% floors activate only after that pawn has historically reached the matching value.
 12. **The RJW-original age/eligibility setting is wired in reverse.** On uses `LegacyCanBeFucked` and additionally requires RJW `rape_enabled`; off directly calls `xxx.can_be_fucked`. Toggle it when an apparently valid target cannot be trained.
 13. **Chain progression requires reaching the threshold, then resolving a ritual.** Chain starts at 20%, and the current stage brakes Corruption at 30%. After reaching 30%, another Binding Ritual resolution is needed to raise Chain severity. The Sex Slave trait is synchronized only from highest-ever Corruption. Minimum-Corruption effects such as Apparel Bulletproof Suit preserve only milestones already reached inside the current Chain interval; they do not skip stages.
-15. **The high-tier PNA gun is disabled.** Its XML is commented out; only the low-tier launcher is normally craftable.
+15. **The old high-tier PNA gun is archived.** Its commented-out gun/projectile configuration and remaining damage definition were removed together with the old launcher; 1.7 now uses the nine current weapons.
 
 -->
 
@@ -1666,11 +1645,10 @@ Ordinary affection automatically discovers the actual bound master within about 
 |---|---:|---|---|
 | Training | 500 | No research prerequisite; requires a techprint with Royalty | Training tab features and WorkGiver |
 | Body-part Training | 800 | Training | Six body-part experience tracks |
-| Basic PNA Application | 800 | Training | Prerequisite for launcher, concentration and later PNA research |
+| Basic PNA Application | 800 | Training | Prerequisite for primitive weapons, concentration and later PNA research |
 | Sex Reassignment Surgery (Male to Female) | 1,000 | Basic PNA Application | Node does not actually lock the operation |
 | Femboy Conversion | 1,200 | Sex Reassignment Surgery | Not fully implemented |
 | Primitive PNA Weapons (1.7 branch) | 800 | Basic PNA Application | Short spear, blowpipe and light crossbow; no concentration requirement |
-| Basic PNA Launcher | 1,000 | Basic PNA Application, Precision Rifling | Unlocks the basic launcher recipe |
 | PNA Concentration Technology | 1,200 | Basic PNA Application | Converts normal PNA to PNA Plus |
 | Personality Excretion | 1,500 | PNA Concentration Technology | Preparation operation and gel extraction |
 | Personality Editing | 1,500 | Body-part Training, Personality Excretion | Parent node for specialization research |
