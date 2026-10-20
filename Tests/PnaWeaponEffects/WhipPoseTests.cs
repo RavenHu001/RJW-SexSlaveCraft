@@ -53,12 +53,18 @@ internal static class WhipPoseTests
     private static void Near(double a, double b)
         => Check(Math.Abs(a - b) < .0001, $"{a} != {b}");
 
-    private static void CheckIdle(Matrix4x4 before, Matrix4x4 after, bool flip)
+    private static void CheckGrip(Matrix4x4 before, Matrix4x4 after, bool flip)
     {
         float anchor = (50f / 256f - .5f) * (flip ? -1f : 1f);
-        Near(before.m03 + before.m00 * anchor, after.m03 + after.m00 * anchor);
-        Near(before.m23 + before.m20 * anchor, after.m23 + after.m20 * anchor);
+        // 独立检查最终柄心落在原版传入位置，避免只复算生产补偿公式。
+        Near(before.m03, after.m03 + after.m00 * anchor);
+        Near(before.m23, after.m23 + after.m20 * anchor);
         Near(before.m13, after.m13); Near(before.m11, after.m11); Near(before.m33, after.m33);
+    }
+
+    private static void CheckIdle(Matrix4x4 before, Matrix4x4 after, bool flip)
+    {
+        CheckGrip(before, after, flip);
         Near(before.m00 * before.m00 + before.m20 * before.m20, after.m00 * after.m00 + after.m20 * after.m20);
         Near(before.m02 * before.m02 + before.m22 * before.m22, after.m02 * after.m02 + after.m22 * after.m22);
         Near(Math.Abs(after.m00), Math.Abs(after.m20));
@@ -166,7 +172,12 @@ internal static class WhipPoseTests
                     var r = Graphics.Sent.Single(); Check(!r.Overlay, "no additive glow");
                     Check(ReferenceEquals(r.Mesh, PawnRenderUtility.NextMesh), "original flip");
                     if (row.Item3 == "Idle") CheckIdle(PawnRenderUtility.NextMatrix, r.Matrix, flip);
-                    else Check(r.Matrix.Equals(PawnRenderUtility.NextMatrix), "attack/recovery retain original matrix");
+                    else {
+                        var before = PawnRenderUtility.NextMatrix;
+                        CheckGrip(before, r.Matrix, flip);
+                        Near(before.m00, r.Matrix.m00); Near(before.m02, r.Matrix.m02);
+                        Near(before.m20, r.Matrix.m20); Near(before.m22, r.Matrix.m22);
+                    }
                     Near(4, r.Layer);
                     Check(((Texture2D)r.Material.mainTexture).Path == SSCPnaWhipRenderer.TexturePrefix + row.Item3, "correct pose");
                     Check(ReferenceEquals(r.Material.shader, f.Original.shader), "native shader");
@@ -176,11 +187,14 @@ internal static class WhipPoseTests
         run("未知短鞭网格不猜测，保留原材质绘制", () => {
             var f = new Fixture(); PawnRenderUtility.NextMesh = new Mesh(); f.Draw();
             Near(1, Graphics.Sent.Count); Check(ReferenceEquals(Graphics.Sent.Single().Material, f.Original), "fallback");
+            Check(Graphics.Sent.Single().Matrix.Equals(PawnRenderUtility.NextMatrix), "unknown mesh position unchanged");
         });
-        run("普通武器不替换为短鞭，不触发额外绘制", () => {
-            var f = new Fixture(); f.Weapon.def.defName = "Other"; f.Draw();
-            Near(1, Graphics.Sent.Count); Check(ReferenceEquals(Graphics.Sent.Single().Material, f.Original), "untouched");
-        });
+        foreach (string name in new[] { "Other", "SSC_Weapon_PnaSilkWhip" })
+            run("其他武器不替换或移动，不触发额外绘制 " + name, () => {
+                var f = new Fixture(); f.Weapon.def.defName = name; f.Draw();
+                Near(1, Graphics.Sent.Count); Check(ReferenceEquals(Graphics.Sent.Single().Material, f.Original), "untouched");
+                Check(Graphics.Sent.Single().Matrix.Equals(PawnRenderUtility.NextMatrix), "other weapon position unchanged");
+            });
         run("短鞭不修改共享材质且不会串姿态", () => {
             var f = new Fixture(); f.Draw(); var idle = Graphics.Sent.Last().Material;
             f.Verb.Cast(); f.Draw(); var attack = Graphics.Sent.Last().Material;
@@ -218,6 +232,32 @@ internal static class WhipPoseTests
                     PawnRenderUtility.NextMatrix = source;
                     PawnRenderUtility.NextMesh = flip ? MeshPool.plane10Flip : MeshPool.plane10;
                     f.Draw(); Near(1, Graphics.Sent.Count); CheckIdle(source, Graphics.Sent.Single().Matrix, flip);
+                });
+        foreach (bool flip in new[] { false, true })
+            foreach (int angle in new[] { 0, 53, 90, 180, 270, 307 })
+                run($"短鞭缩放与三阶段保持原版握持点 {flip}/{angle}", () => {
+                    foreach (float scale in new[] { .75f, 1f, 1.4f, 2f }) {
+                        var f = new Fixture(); double r = angle * Math.PI / 180;
+                        var source = new Matrix4x4 { m00=(float)Math.Cos(r)*scale, m20=-(float)Math.Sin(r)*scale,
+                            m02=(float)Math.Sin(r)*scale, m22=(float)Math.Cos(r)*scale,
+                            m03=7, m23=9, m13=.05f, m33=1 };
+                        PawnRenderUtility.NextMesh = flip ? MeshPool.plane10Flip : MeshPool.plane10;
+                        PawnRenderUtility.NextMatrix = source;
+                        // 待机 -> 挥击 -> 回落 -> 待机；同一输入握持点在姿态切换时不漂移。
+                        foreach (int age in new[] { -1, 0, 6, 18 }) {
+                            if (age == 0) f.Verb.Cast();
+                            if (age >= 0) f.Clock.TicksGame = 1000 + age;
+                            Graphics.Sent.Clear(); f.Draw();
+                            var actual = Graphics.Sent.Single().Matrix;
+                            CheckGrip(source, actual, flip);
+                            Near(scale * scale, actual.m00*actual.m00+actual.m20*actual.m20);
+                            Near(scale * scale, actual.m02*actual.m02+actual.m22*actual.m22);
+                        }
+                        // 原版传入的走动／出手平移仍原样传递，不钉死到角色静态格心。
+                        source.m03 += .2f; source.m23 -= .15f;
+                        PawnRenderUtility.NextMatrix = source;
+                        Graphics.Sent.Clear(); f.Draw(); CheckGrip(source, Graphics.Sent.Single().Matrix, flip);
+                    }
                 });
         run("短鞭保留存档类型但继承原版出手且柄击仍为Blunt", () => {
             var maneuver = XDocument.Load(Path.Combine(root, "1.7/Defs/ManeuverDefs/SSC_PnaIndustrialManeuvers.xml"));

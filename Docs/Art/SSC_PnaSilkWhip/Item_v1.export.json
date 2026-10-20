@@ -1,0 +1,81 @@
+{
+  "status": "item-state image connected as static single graphic and synced to local game; in-game review pending; not committed",
+  "tool": "built-in image_gen",
+  "generatedSource": "C:\\Users\\24196\\.codex\\generated_images\\01a14d5a-bbd6-79f3-9356-75f2d8ad5113\\exec-b058ddb6-4daf-4d85-a7be-02e3b411184d.png",
+  "source": "Docs\\Art\\SSC_PnaSilkWhip\\SSC_PnaSilkWhip_Item_v1_Source.png",
+  "sourceSHA256": "290ece4c1b02d430cd2b5a148b9544e3c0e538025271081535a78a95edbe6dc2",
+  "sourceSize": [
+    2172,
+    724
+  ],
+  "sourceAlphaExtrema": [
+    0,
+    255
+  ],
+  "sourceVisibleBounds": [
+    46,
+    99,
+    2121,
+    627
+  ],
+  "crop": [
+    44,
+    97,
+    2123,
+    629
+  ],
+  "scale": 0.11544011544011544,
+  "output": "Docs\\Art\\SSC_PnaSilkWhip\\256\\SSC_PnaSilkWhip_Item_v1.png",
+  "outputSHA256": "c10f579c63bce305471ff8cd538e0f5950288cd28e059e84c8043bc85a9ecf2c",
+  "outputSize": [
+    256,
+    256
+  ],
+  "outputMode": "RGBA",
+  "outputAlphaExtrema": [
+    0,
+    255
+  ],
+  "outputVisibleBounds": [
+    8,
+    97,
+    248,
+    158
+  ],
+  "resizedContentSize": [
+    240,
+    61
+  ],
+  "offset": [
+    8,
+    97
+  ],
+  "method": "premultiplied-alpha Lanczos; 240px maximum content extent on transparent 256px canvas",
+  "prompt": "Item_v1.prompt.txt",
+  "references": [
+    {
+      "path": "C:/Users/24196/.codex/generated_images/01a14d5a-bbd6-79f3-9356-75f2d8ad5113/exec-0655925e-8b42-4d7e-8624-57057e938946.png",
+      "sha256": "e53f0c09aa1d38fdeca979789a409308491c8a01fe92d0c2501d67dbb44afc78",
+      "role": "approved design"
+    },
+    {
+      "path": "D:/STEAM/steamapps/workshop/content/294100/3048306872/Textures/Things/Item/Equipment/WeaponMelee/Monosword.png",
+      "sha256": "adac5528727fdfc50b2dd7a20aee30fb76f3fd49d7393acca944978bc4ae1ded",
+      "role": "style and detail density only"
+    },
+    {
+      "path": "D:/STEAM/steamapps/workshop/content/294100/3048306872/Textures/Things/Item/Equipment/WeaponRanged/ChargeRifle.png",
+      "sha256": "7014ab280529afe8502c50fee5781eb6c68ce17119d3a0bd2b5fa5ba1f28e51c",
+      "role": "style and detail density only"
+    },
+    {
+      "path": "D:/STEAM/steamapps/workshop/content/294100/3048306872/Textures/Things/Item/Equipment/WeaponRanged/HeavySMG.png",
+      "sha256": "48a8d2a91c7fd49580c2bb6e7a028905741df92179066ca13d86e6b2cafc5707",
+      "role": "style and detail density only"
+    }
+  ],
+  "runtimeTexture": "1.7\\Textures\\Things\\Item\\Equipment\\SSC_PnaSilkWhip.png",
+  "runtimeSHA256": "c10f579c63bce305471ff8cd538e0f5950288cd28e059e84c8043bc85a9ecf2c",
+  "drawSize": 1,
+  "syncReport": ".builds/pna-weapons/silk-whip-item/game-sync.json"
+}

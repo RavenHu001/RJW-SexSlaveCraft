@@ -1,4 +1,4 @@
-// AI 辅助生成：短鞭出手姿态与待机45°握持；复用原版绘制入口和正常／镜像网格。
+// AI 辅助生成：短鞭统一柄心握持与待机45°姿态；复用原版绘制入口和正常／镜像网格。
 using System;
 using System.Collections.Generic;
 using HarmonyLib;
@@ -45,6 +45,8 @@ namespace SexSlaveCraft
     internal static class SSCPnaWhipRenderer
     {
         internal const string TexturePrefix = "Things/Item/Equipment/SSC_PnaShortWhip_";
+        // 三张手持图共同的柄心标定；不可按各姿态外包围框分别居中。
+        internal const float HandleU = 50f / 256f;
         private static readonly string[] Names = { "Idle", "Attack", "Recovery" };
         private static readonly Dictionary<Material, Material[]> Materials = new Dictionary<Material, Material[]>();
 
@@ -72,20 +74,35 @@ namespace SexSlaveCraft
                 }
                 Materials.Add(original, poses);
             }
+            bool flip = mesh == MeshPool.plane10Flip;
+            // 原版传入位置是画布中心。先把实际柄心移到该位置，让放大、镜像及姿态切换
+            // 都围绕同一个握持点；保留原版角色朝向、体型距离和出手位移，不另取 Pawn.DrawPos。
+            matrix = GripMatrix(matrix, flip);
             // 仅待机姿态固定为柄尾朝下的 45°；挥击与回落继续跟随原版目标方向。
-            if (pose == SSCPnaWhipPose.Idle) matrix = IdleMatrix(matrix, mesh == MeshPool.plane10Flip);
+            if (pose == SSCPnaWhipPose.Idle) matrix = IdleMatrix(matrix, flip);
             // 残影先画在鞭束下方；共用最终矩阵，不另外驱动武器旋转或插入动作。
             SSCPnaWhipHitUtility.Draw(weapon, mesh, matrix, layer);
             Graphics.DrawMesh(mesh, matrix, poses[(int)pose], layer);
             return true;
         }
 
-        /// <summary>绕标定柄心旋转，保持其世界位置、缩放、绘制高度与镜像不变。</summary>
+        /// <summary>
+        /// 将标定柄心对齐到传入矩阵的原点。平移补偿沿已缩放、已旋转的局部横轴计算，
+        /// 镜像同时反转局部柄心；只改平面平移，不改大小、方向或绘制高度。
+        /// </summary>
+        internal static Matrix4x4 GripMatrix(Matrix4x4 matrix, bool flip)
+        {
+            float anchorX = (HandleU - .5f) * (flip ? -1f : 1f);
+            matrix.m03 -= matrix.m00 * anchorX;
+            matrix.m23 -= matrix.m20 * anchorX;
+            return matrix;
+        }
+
+        /// <summary>绕已校正的柄心旋转，保持其世界位置、缩放、绘制高度与镜像不变。</summary>
         internal static Matrix4x4 IdleMatrix(Matrix4x4 matrix, bool flip)
         {
             const float diagonal = .7071067812f;
-            const float handleU = 50f / 256f;
-            float anchorX = (handleU - .5f) * (flip ? -1f : 1f);
+            float anchorX = (HandleU - .5f) * (flip ? -1f : 1f);
             float scaleX = (float)Math.Sqrt(matrix.m00 * matrix.m00 + matrix.m20 * matrix.m20);
             float scaleZ = (float)Math.Sqrt(matrix.m02 * matrix.m02 + matrix.m22 * matrix.m22);
             // 原图柄尾朝左；正常图旋转 -45°、镜像图 +45°，两者柄尾的世界 z 均朝下。

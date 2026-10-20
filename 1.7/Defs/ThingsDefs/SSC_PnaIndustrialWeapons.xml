@@ -9,10 +9,10 @@
     <techLevel>Industrial</techLevel>
     <possessionCount>1</possessionCount>
     <graphicData>
-      <!-- 256×256 物品图；手持时由专用绘制入口切换待机／挥击／回落，柄部标定一致。 -->
+      <!-- 256×256 物品图；drawSize 统一缩放物品及手持待机／挥击／回落，姿态入口保留该缩放，残影共用最终矩阵。 -->
       <texPath>Things/Item/Equipment/SSC_PnaShortWhip</texPath>
       <graphicClass>Graphic_Single</graphicClass>
-      <drawSize>1</drawSize>
+      <drawSize>1.4</drawSize>
     </graphicData>
     <statBases><WorkToMake>8000</WorkToMake><Mass>0.8</Mass><MaxHitPoints>100</MaxHitPoints></statBases>
     <equippedStatOffsets>

@@ -50,6 +50,9 @@ internal static class WhipHitTests
                 Near(whip.Matrix.m00,trail.Matrix.m00);Near(whip.Matrix.m02,trail.Matrix.m02);
                 Near(whip.Matrix.m20,trail.Matrix.m20);Near(whip.Matrix.m22,trail.Matrix.m22);
                 Near(whip.Matrix.m03,trail.Matrix.m03);Near(whip.Matrix.m23,trail.Matrix.m23);
+                float grip=(50f/256f-.5f)*(flip?-1:1);
+                Near(7,whip.Matrix.m03+whip.Matrix.m00*grip);
+                Near(9,whip.Matrix.m23+whip.Matrix.m20*grip);
                 Near(whip.Matrix.m13-.0005,trail.Matrix.m13);Near(whip.Layer,trail.Layer);
                 Check(trail.Material.shader==ShaderDatabase.Mote,"normal alpha shader");
                 Check(((Texture2D)trail.Material.mainTexture).Path=="Things/Mote/BrightFlash","soft edge source");

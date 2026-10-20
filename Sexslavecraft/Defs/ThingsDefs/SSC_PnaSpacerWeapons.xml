@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- AI 辅助生成；太空步骤二占位接入。武器暂借工业图，集群借 Core Charge_Small 并染紫；不创建正式美术。制造时耗液；普通枪身撞击不接纳米投送。 -->
+<!-- AI 辅助生成；太空步骤二占位接入。丝鞭接入关机物品图；两枪暂借工业图，集群借 Core Charge_Small 并染紫。制造时耗液；普通枪身撞击不接纳米投送。 -->
 <Defs>
   <ThingDef ParentName="BaseMeleeWeapon_Sharp_Quality">
     <defName>SSC_Weapon_PnaSilkWhip</defName>
@@ -8,7 +8,7 @@
     <techLevel>Spacer</techLevel>
     <possessionCount>1</possessionCount>
     <graphicData>
-      <texPath>Things/Item/Equipment/SSC_PnaShortWhip</texPath>
+      <texPath>Things/Item/Equipment/SSC_PnaSilkWhip</texPath>
       <graphicClass>Graphic_Single</graphicClass>
       <drawSize>1</drawSize>
     </graphicData>
