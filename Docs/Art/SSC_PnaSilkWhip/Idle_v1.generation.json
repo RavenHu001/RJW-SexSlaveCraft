@@ -1,0 +1,35 @@
+{
+  "status": "first idle-pose candidate; awaiting user review; not exported, connected, synced or committed",
+  "tool": "built-in image_gen",
+  "source": "Docs\\Art\\SSC_PnaSilkWhip\\SSC_PnaSilkWhip_Idle_v1_Source.png",
+  "sourceSHA256": "bb1380ae56f8f0853f4c6e2bf172d6a0145a36a4f8c45bba012aaefc06eb0252",
+  "generatedSource": "C:\\Users\\24196\\.codex\\generated_images\\01a14d5a-bbd6-79f3-9356-75f2d8ad5113\\exec-6462dfbc-95eb-4100-91e0-f4510d40f543.png",
+  "size": [
+    2172,
+    724
+  ],
+  "mode": "RGBA",
+  "alphaExtrema": [
+    0,
+    255
+  ],
+  "visibleBounds": [
+    48,
+    90,
+    2146,
+    702
+  ],
+  "prompt": "Idle_v1.prompt.txt",
+  "references": [
+    {
+      "path": "E:\\Games\\RimWorld\\modDevelopment\\RJW-SexSlaveCraft-TieJin-Modify\\Docs\\Art\\SSC_PnaSilkWhip\\SSC_PnaSilkWhip_Item_v2_Source.png",
+      "role": "approved v2 handle and line style",
+      "SHA256": "6b77a755aab0653e783a13ce77c5370847cd471485d3ee3b836268f9b18426cd"
+    },
+    {
+      "path": "C:\\Users\\24196\\.codex\\generated_images\\01a14d5a-bbd6-79f3-9356-75f2d8ad5113\\exec-0655925e-8b42-4d7e-8624-57057e938946.png",
+      "role": "initial filament concept only",
+      "SHA256": "e53f0c09aa1d38fdeca979789a409308491c8a01fe92d0c2501d67dbb44afc78"
+    }
+  ]
+}

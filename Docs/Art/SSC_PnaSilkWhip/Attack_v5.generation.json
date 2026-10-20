@@ -1,0 +1,38 @@
+{
+  "status": "attack v5 candidate; pending user review; not exported, connected, synced or committed",
+  "tool": "built-in image_gen",
+  "source": "Docs\\Art\\SSC_PnaSilkWhip\\SSC_PnaSilkWhip_Attack_v5_Source.png",
+  "SHA256": "55a34166c20f01373a863e506eb7fb0842444a65011402d525d8c157baed8444",
+  "generatedSource": "C:\\Users\\24196\\.codex\\generated_images\\01a14d5a-bbd6-79f3-9356-75f2d8ad5113\\exec-c8f2b8a6-b9af-4546-b935-154559734ef0.png",
+  "size": [
+    2172,
+    724
+  ],
+  "mode": "RGBA",
+  "alphaExtrema": [
+    0,
+    255
+  ],
+  "visibleBounds": [
+    36,
+    23,
+    2166,
+    661
+  ],
+  "visibleBoundsTouchCanvasEdge": false,
+  "prompt": "Attack_v5.prompt.txt",
+  "references": [
+    {
+      "path": "Docs\\Art\\SSC_PnaSilkWhip\\SSC_PnaSilkWhip_Item_v2_Source.png",
+      "role": "approved handle and black outline",
+      "SHA256": "6b77a755aab0653e783a13ce77c5370847cd471485d3ee3b836268f9b18426cd"
+    },
+    {
+      "path": "Docs\\Art\\SSC_PnaSilkWhip\\SSC_PnaSilkWhip_Recovery_Approved.png",
+      "role": "approved recovery bundle appearance, thickness, filaments and terminal shaping",
+      "SHA256": "bb1380ae56f8f0853f4c6e2bf172d6a0145a36a4f8c45bba012aaefc06eb0252"
+    }
+  ],
+  "revisionReason": "User requests the item handle and recovery pose as the only two references; working-end state follows recovery and the free tip is clearly above the handle.",
+  "poseDescription": "Long rising attack arc with nearly level root and progressively upward outer half; no previous attack reference."
+}

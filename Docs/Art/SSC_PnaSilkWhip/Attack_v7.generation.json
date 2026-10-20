@@ -1,0 +1,32 @@
+{
+  "status": "attack v7 recovery-edit candidate; pending user review; not exported, connected, synced or committed",
+  "tool": "built-in image_gen",
+  "source": "Docs\\Art\\SSC_PnaSilkWhip\\SSC_PnaSilkWhip_Attack_v7_Source.png",
+  "SHA256": "b1c9c2afa4d4f8b48ceb8abf80ec6de788dffe2165f0a6d1069d674de38cb41c",
+  "generatedSource": "C:\\Users\\24196\\.codex\\generated_images\\01a14d5a-bbd6-79f3-9356-75f2d8ad5113\\exec-962aadc1-b5de-48bf-a7b4-b8a0495509cf.png",
+  "size": [
+    2172,
+    724
+  ],
+  "mode": "RGBA",
+  "alphaExtrema": [
+    0,
+    255
+  ],
+  "visibleBounds": [
+    48,
+    11,
+    2150,
+    651
+  ],
+  "prompt": "Attack_v7.prompt.txt",
+  "references": [
+    {
+      "path": "Docs\\Art\\SSC_PnaSilkWhip\\SSC_PnaSilkWhip_Recovery_Approved.png",
+      "role": "sole edit target: selected recovery image",
+      "SHA256": "bb1380ae56f8f0853f4c6e2bf172d6a0145a36a4f8c45bba012aaefc06eb0252"
+    }
+  ],
+  "requestedChange": "Edit recovery image directly; only require free end higher than handle. Preserve other visual features as closely as possible.",
+  "recoveryOriginalUnchanged": true
+}

@@ -1,0 +1,54 @@
+{
+  "status": "user selected these exact three source images; export and integration follow in separate phase",
+  "selectionDate": "2026-10-20",
+  "poses": [
+    {
+      "pose": "Idle",
+      "file": "SSC_PnaSilkWhip_Idle_v3_Source.png",
+      "original": "exec-ea492489-cd0d-4676-a899-01fae1460198.png",
+      "size": [
+        1774,
+        887
+      ],
+      "SHA256": "89dd3a456adca505917385ef2222be1b1eb4e5eb511f4f660517212853909eaa",
+      "bounds": [
+        55,
+        165,
+        1773,
+        845
+      ]
+    },
+    {
+      "pose": "Attack",
+      "file": "SSC_PnaSilkWhip_Attack_v2_Source.png",
+      "original": "exec-5d89847e-5c47-47f8-a162-e8bd28a26e14.png",
+      "size": [
+        2172,
+        724
+      ],
+      "SHA256": "bba3738e81d1639e3e57bd0441824487cc6edb5cf2db31b9636cc617b040df0f",
+      "bounds": [
+        40,
+        44,
+        2166,
+        633
+      ]
+    },
+    {
+      "pose": "Recovery",
+      "file": "SSC_PnaSilkWhip_Recovery_Approved.png",
+      "original": "exec-6462dfbc-95eb-4100-91e0-f4510d40f543.png",
+      "size": [
+        2172,
+        724
+      ],
+      "SHA256": "bb1380ae56f8f0853f4c6e2bf172d6a0145a36a4f8c45bba012aaefc06eb0252",
+      "bounds": [
+        48,
+        90,
+        2146,
+        702
+      ]
+    }
+  ]
+}
