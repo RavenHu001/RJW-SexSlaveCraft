@@ -1,0 +1,120 @@
+{
+  "recordDate": "2026-10-20",
+  "tool": "built-in imagegen",
+  "status": "source_art_approved_by_user; commit_authorized; not_exported_or_integrated",
+  "userConfirmation": "可以，就这版了，提交。",
+  "originalGeneratedFile": "exec-013bb4cf-3448-4a44-bd0b-dbd224864be7.png",
+  "selected": {
+    "path": "Docs/Art/SSC_PnaPulseGun/SSC_PnaPulseGun_Approved.png",
+    "sha256": "130004ce74644a34def7f0fade076881f8a3e89eba4ee0e26ca06cc3f46e3306",
+    "size": [
+      1983,
+      793
+    ],
+    "mode": "RGBA",
+    "alphaExtrema": [
+      0,
+      255
+    ],
+    "alphaBBox": [
+      33,
+      37,
+      1932,
+      771
+    ],
+    "cornersAlpha": [
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "references": [
+    {
+      "role": "approved_structure",
+      "originalGeneratedFile": "exec-4091e345-219e-4894-aad0-840d320558db.png",
+      "path": "Docs/Art/SSC_PnaPulseGun/SSC_PnaPulseGun_Structure_Reference.png",
+      "sha256": "e0579ee0226cd2a8f6f4b30c8e194468d6f642eb32ccfb4c10605c14a945fbe5",
+      "size": [
+        1983,
+        793
+      ],
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "alphaBBox": [
+        41,
+        23,
+        1965,
+        793
+      ],
+      "cornersAlpha": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "role": "industrial_game_art_style_only",
+      "path": "Docs/Art/SSC_PnaNeedleRepeater/SSC_PnaNeedleRepeater_WhipStyleHeavy.png",
+      "sha256": "fb12781d991fd254d116b88d65f333545dfa85ffce63ad45e83609094e199580",
+      "size": [
+        1774,
+        887
+      ],
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "alphaBBox": [
+        0,
+        102,
+        1774,
+        887
+      ],
+      "cornersAlpha": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "role": "spacer_materials_only",
+      "path": "Docs/Art/SSC_PnaSilkWhip/SSC_PnaSilkWhip_Item_v2_Source.png",
+      "sha256": "6b77a755aab0653e783a13ce77c5370847cd471485d3ee3b836268f9b18426cd",
+      "size": [
+        2172,
+        724
+      ],
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "alphaBBox": [
+        32,
+        75,
+        2131,
+        648
+      ],
+      "cornersAlpha": [
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  "prompt": "Redraw_Approved.prompt.txt",
+  "runtimeExport": null,
+  "gameSyncPerformed": false,
+  "notes": [
+    "Outline width in prompt is a requested target, not a measured or accepted in-game pixel width.",
+    "No weapon XML, runtime texture, C# or build output changes."
+  ]
+}

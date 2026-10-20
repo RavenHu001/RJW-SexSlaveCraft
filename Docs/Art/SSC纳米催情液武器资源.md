@@ -4,6 +4,8 @@
 
 [工业完成核对](../Development/Completed/SSC工业时代纳米催情液武器完成核对.md) · [首批完成核对](../Development/Completed/SSC武器拓展首批完成核对.md) · [美术索引](README.md)
 
+2026-10-20：太空脉冲枪已选定[1983×793高清透明原稿](SSC_PnaPulseGun/README.md)，厚黑描边、后置竖置液舱、深紫液窗与两道长侧开口。维护者已认可并授权提交原稿；尚未导出运行PNG或更改游戏引用，以下运行资源表不因此追加已接入项。投射枪正式贴图仍在设计分析阶段。
+
 | 资源 | 画布与方向 | 游戏参数 | 说明 |
 | --- | --- | --- | --- |
 | [太空丝鞭待机](../../1.7/Textures/Things/Item/Equipment/SSC_PnaSilkWhip_Idle.png) | 256×256，柄长64.16px | 手持1.75，待机45° | 三姿态共用柄心(50,128)，已获实机认可并授权提交，见[接入记录](../Development/Completed/SSC太空丝鞭三姿态接入与测试.md) |
