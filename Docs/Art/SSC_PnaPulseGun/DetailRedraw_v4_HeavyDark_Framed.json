@@ -1,0 +1,51 @@
+{
+  "date": "2026-10-20",
+  "status": "preview; not installed or committed",
+  "generationTool": "built-in imagegen",
+  "originalGeneratedFile": "exec-e82a6f4a-424d-44ad-bc71-5d4593f20e58.png",
+  "source": "SSC_PnaPulseGun_Detailed_v4_HeavyDark_Framed_Source.png",
+  "sourceSize": [
+    1983,
+    793
+  ],
+  "sourceSha256": "3494a4ff84955b1d75a9dc3d8c50a8c76b8b06b3d6df91d910a06c23e10fff25",
+  "sourceAlphaBounds": [
+    165,
+    112,
+    1894,
+    714
+  ],
+  "sourceTouchesEdge": false,
+  "sourceAlphaExtrema": [
+    0,
+    255
+  ],
+  "crop": [
+    163,
+    110,
+    1896,
+    716
+  ],
+  "preview": "SSC_PnaPulseGun_Detailed_v4_HeavyDark_Framed_256.png",
+  "previewSize": [
+    256,
+    256
+  ],
+  "previewSpriteSize": [
+    240,
+    84
+  ],
+  "previewOffset": [
+    8,
+    86
+  ],
+  "previewSha256": "426d4c816f9dcb99fda09e557ef0153dc1537e99f1e1c0f63e5eced8b8ea51fc",
+  "prompt": "DetailRedraw_v4_HeavyDark_Framed.prompt.txt",
+  "initialStylePrompt": "DetailRedraw_v4_HeavyDark.prompt.txt",
+  "references": [
+    "SSC_PnaPulseGun_Detailed_v4_HeavyDark_Source.png"
+  ],
+  "change": "heavier black outline and darker palette; add transparent framing around complete muzzle contour",
+  "runtimeChanged": false,
+  "gameRuntimeVerified": false
+}

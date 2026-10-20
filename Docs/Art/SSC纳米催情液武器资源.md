@@ -4,12 +4,12 @@
 
 [工业完成核对](../Development/Completed/SSC工业时代纳米催情液武器完成核对.md) · [首批完成核对](../Development/Completed/SSC武器拓展首批完成核对.md) · [美术索引](README.md)
 
-2026-10-20：维护者后续明确回选脉冲枪exec-36869d38和投射枪exec-a4365b18，已导出256px、接入并同步本机；维护者已认可当前效果并授权提交，见[接入检查](../Development/Completed/SSC太空两枪256px贴图接入与检查.md)。此前脉冲枪原稿提交独立保留；本批认可范围仅覆盖回选贴图，不扩写为专项组合实测。
+2026-10-20 后续：脉冲枪已明确回选 `exec-511d72eb` 的单槽分层、重描边暗色版，导出256px并同步本机，drawSize=1.05，本轮效果已获认可，授权提交；[检查记录](../Development/Completed/SSC脉冲枪单槽分层贴图接入与检查.md)。投射枪现已认可 `exec-c42a1a6e` 的长条光学舱重描边v4并导出256px同步本机，drawSize=1.25，本轮效果已获认可，授权提交；[检查记录](../Development/Completed/SSC投射枪长条瞄具重描边贴图接入与检查.md)。此前两枪验收见[历史记录](../Development/Completed/SSC太空两枪256px贴图接入与检查.md)。
 
 | 资源 | 画布与方向 | 游戏参数 | 说明 |
 | --- | --- | --- | --- |
-| [太空脉冲枪](../../1.7/Textures/Things/Item/Equipment/SSC_PnaPulseGun.png) | 256×256，水平朝右；内容240×90，偏移(8,83) | drawSize=1.05，既有装备配置 | 完全侧视重描边、上槽贯通／下槽封闭；[源图与参数](SSC_PnaPulseGun/README.md)，当前效果已认可，授权提交 |
-| [太空投射枪](../../1.7/Textures/Things/Item/Equipment/SSC_PnaProjectorGun.png) | 256×256，水平朝右；内容240×64，偏移(8,96) | drawSize=1.25，既有装备配置 | 传统瞄准镜、单条分段槽贯通枪口；[源图与参数](SSC_PnaProjectorGun/README.md)，未采用梯形瞄具试稿，当前效果已认可，授权提交 |
+| [太空脉冲枪](../../1.7/Textures/Things/Item/Equipment/SSC_PnaPulseGun.png) | 256×256，水平朝右；内容240×90，偏移(8,83) | drawSize=1.05，既有装备配置 | 完全侧视、单紫槽与下方分层嵌板、重黑边暗色版；[源图与参数](SSC_PnaPulseGun/README.md)，已同步，本轮效果已获认可，授权提交 |
+| [太空投射枪](../../1.7/Textures/Things/Item/Equipment/SSC_PnaProjectorGun.png) | 256×256，水平朝右；内容240×64，偏移(8,96) | drawSize=1.25，既有装备配置 | 长条光学舱融合上壳、单紫槽、局部护木分层及加重黑边；[源图与参数](SSC_PnaProjectorGun/README.md)，原稿已认可，已同步，本轮效果已获认可，授权提交 |
 | [太空丝鞭待机](../../1.7/Textures/Things/Item/Equipment/SSC_PnaSilkWhip_Idle.png) | 256×256，柄长64.16px | 手持1.75，待机45° | 三姿态共用柄心(50,128)，已获实机认可并授权提交，见[接入记录](../Development/Completed/SSC太空丝鞭三姿态接入与测试.md) |
 | [太空丝鞭挥击](../../1.7/Textures/Things/Item/Equipment/SSC_PnaSilkWhip_Attack.png) | 256×256，柄长63.99px | 手持1.75，6tick挥击 | 维护者回选exec-5d89847e，命中／打空均播放；命中复用工业残影 |
 | [太空丝鞭回落](../../1.7/Textures/Things/Item/Equipment/SSC_PnaSilkWhip_Recovery.png) | 256×256，柄长63.88px | 手持1.75，12tick回落 | 共用姿态清理与残影时钟，随后恢复待机 |
@@ -36,7 +36,7 @@
 
 ## 特效与音效
 
-- 中世纪吹箭／弩矢及两种工业射针均已接入紫色尾迹；保留的旧发射器实现仍可复用该入口。尾迹复用 Core `Things/Mote/BrightFlash`，使用普通 Mote 材质、不创建地图灯光；不随模组复制原版图。
+- 中世纪吹箭／弩矢、两种工业射针及太空两种投射物均已接入紫色尾迹；旧简易发射器已移除。尾迹复用 Core `Things/Mote/BrightFlash`，使用普通 Mote 材质、不创建地图灯光；不随模组复制原版图。
 - 短鞭命中改为束根为轴的 180° 上半弧向下抽落残影，宽 0.60、峰值不透明度 0.95，复用 Core BrightFlash 和普通 Mote，跟随武器最终矩阵、随回落在 18 tick 内淡出；无新增运行 PNG。原目标前方 128px 弧痕已撤下，原图只作否决试验归档，见[实现记录](../Development/Completed/SSC短鞭紫色弧形命中特效实现与测试.md)，最终上半弧加宽提亮版已获实机正常确认。
 - 受药反馈复用 Core `Things/Mote/Heart`，旋转 180°，持续 1.2 秒；没有新增爱心 PNG。
 - 短矛命中采用原矛头纹理的刃部遮罩＋Core BrightFlash 柔边光晕。光晕长宽为矛头的 4.5 倍，峰值不透明度 0.8，18 tick 满亮＋30 tick 淡出；仅材质叠画，不增加原版动作或地图灯光。

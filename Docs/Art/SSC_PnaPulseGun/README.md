@@ -1,6 +1,13 @@
 # 纳米催情液脉冲枪原稿选定记录
 
-## 当前接入：完全侧视重描边版
+## 当前接入：单槽分层、重描边暗色版
+
+2026-10-20，维护者明确指定 `exec-511d72eb-17c9-4617-9e2a-9fcc5483ccfe.png`；采用[指定原稿](SSC_PnaPulseGun_Detailed_v4_HeavyDark_Source.png)，不是后来的补留白版 `exec-e82a6f4a`。原稿与指定生成文件哈希一致，保留原有边缘情况，不补画或替换来源。
+
+通过[统一导出脚本](../Export-PnaSpacerGuns-256.py)导出256×256透明RGBA图，内容240×90、偏移(8,83)，drawSize保持1.05。仅替换运行PNG并备份同步本机，XML、装备角度、数值及DLL不变；维护者已认可本轮效果并授权提交，验收关闭。来源和哈希见[当前清单](RuntimeSelection.json)与[导出报告](export-256.json)，检查及同步见[记录](../../Development/Completed/SSC脉冲枪单槽分层贴图接入与检查.md)。
+
+
+## 此前接入：旧双槽侧视重描边版
 
 2026-10-20，维护者明确回选`exec-36869d38-822e-4bda-b3a8-a642ab1d605b.png`并要求导出256×256、接入mod及本机游戏。当前采用[侧视重描边原稿](SSC_PnaPulseGun_SideHeavy_Source.png)，1983×793 RGBA，SHA-256为`3ec5bf124502adefb3f62608e224b5da3e0b1e4e00df284e1dfa112bd3351848`；上槽贯通前端，下槽封闭，瞄具为完全侧视轮廓。没有采用后续外凸枪管试稿。
 

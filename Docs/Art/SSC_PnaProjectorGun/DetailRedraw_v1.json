@@ -1,0 +1,52 @@
+{
+  "date": "2026-10-20",
+  "status": "candidate preview only; not integrated or committed",
+  "originalGeneratedFile": "exec-1a872ee1-f1be-40c4-b7d9-591652ea75ed.png",
+  "generationTool": "built-in imagegen",
+  "source": "SSC_PnaProjectorGun_Detailed_v1_Source.png",
+  "sourceSha256": "f4b87d54929bd0cff848cefe6c167aac0a18e82f3cda49b625d578f70a2f4904",
+  "sourceSize": [
+    2172,
+    724
+  ],
+  "alphaExtrema": [
+    0,
+    255
+  ],
+  "sourceAlphaBounds": [
+    18,
+    78,
+    2154,
+    657
+  ],
+  "sourceTouchesEdge": false,
+  "crop": [
+    16,
+    76,
+    2156,
+    659
+  ],
+  "preview": "SSC_PnaProjectorGun_Detailed_v1_256.png",
+  "previewSize": [
+    256,
+    256
+  ],
+  "previewSpriteSize": [
+    240,
+    65
+  ],
+  "previewOffset": [
+    8,
+    95
+  ],
+  "previewSha256": "4e9d09428c230b4abf3e1ac99e8e4678fe2bfdab0e1189f615254b67605d4357",
+  "prompt": "DetailRedraw_v1.prompt.txt",
+  "references": [
+    "SSC_PnaProjectorGun_Source.png",
+    "../SSC_PnaPulseGun/SSC_PnaPulseGun_Detailed_v4_HeavyDark_Source.png",
+    "../SSC_PnaNeedleRepeater/SSC_PnaNeedleRepeater_WhipStyleHeavy.png",
+    "../SSC_PnaSilkWhip/SSC_PnaSilkWhip_Item_v2_Source.png"
+  ],
+  "runtimeChanged": false,
+  "gameRuntimeVerified": false
+}

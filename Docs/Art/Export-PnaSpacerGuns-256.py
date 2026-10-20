@@ -6,8 +6,8 @@ from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[2]
 SPECS = (
-    ("SSC_PnaPulseGun", "SSC_PnaPulseGun_SideHeavy_Source.png", "1.05"),
-    ("SSC_PnaProjectorGun", "SSC_PnaProjectorGun_Source.png", "1.25"),
+    ("SSC_PnaPulseGun", "SSC_PnaPulseGun_Detailed_v4_HeavyDark_Source.png", "1.05"),
+    ("SSC_PnaProjectorGun", "SSC_PnaProjectorGun_Detailed_v4_HeavyClean_Source.png", "1.25"),
 )
 
 
