@@ -4,10 +4,12 @@
 
 [工业完成核对](../Development/Completed/SSC工业时代纳米催情液武器完成核对.md) · [首批完成核对](../Development/Completed/SSC武器拓展首批完成核对.md) · [美术索引](README.md)
 
-2026-10-20：太空脉冲枪已选定[1983×793高清透明原稿](SSC_PnaPulseGun/README.md)，厚黑描边、后置竖置液舱、深紫液窗与两道长侧开口。维护者已认可并授权提交原稿；尚未导出运行PNG或更改游戏引用，以下运行资源表不因此追加已接入项。投射枪正式贴图仍在设计分析阶段。
+2026-10-20：维护者后续明确回选脉冲枪exec-36869d38和投射枪exec-a4365b18，已导出256px、接入并同步本机；维护者已认可当前效果并授权提交，见[接入检查](../Development/Completed/SSC太空两枪256px贴图接入与检查.md)。此前脉冲枪原稿提交独立保留；本批认可范围仅覆盖回选贴图，不扩写为专项组合实测。
 
 | 资源 | 画布与方向 | 游戏参数 | 说明 |
 | --- | --- | --- | --- |
+| [太空脉冲枪](../../1.7/Textures/Things/Item/Equipment/SSC_PnaPulseGun.png) | 256×256，水平朝右；内容240×90，偏移(8,83) | drawSize=1.05，既有装备配置 | 完全侧视重描边、上槽贯通／下槽封闭；[源图与参数](SSC_PnaPulseGun/README.md)，当前效果已认可，授权提交 |
+| [太空投射枪](../../1.7/Textures/Things/Item/Equipment/SSC_PnaProjectorGun.png) | 256×256，水平朝右；内容240×64，偏移(8,96) | drawSize=1.25，既有装备配置 | 传统瞄准镜、单条分段槽贯通枪口；[源图与参数](SSC_PnaProjectorGun/README.md)，未采用梯形瞄具试稿，当前效果已认可，授权提交 |
 | [太空丝鞭待机](../../1.7/Textures/Things/Item/Equipment/SSC_PnaSilkWhip_Idle.png) | 256×256，柄长64.16px | 手持1.75，待机45° | 三姿态共用柄心(50,128)，已获实机认可并授权提交，见[接入记录](../Development/Completed/SSC太空丝鞭三姿态接入与测试.md) |
 | [太空丝鞭挥击](../../1.7/Textures/Things/Item/Equipment/SSC_PnaSilkWhip_Attack.png) | 256×256，柄长63.99px | 手持1.75，6tick挥击 | 维护者回选exec-5d89847e，命中／打空均播放；命中复用工业残影 |
 | [太空丝鞭回落](../../1.7/Textures/Things/Item/Equipment/SSC_PnaSilkWhip_Recovery.png) | 256×256，柄长63.88px | 手持1.75，12tick回落 | 共用姿态清理与残影时钟，随后恢复待机 |

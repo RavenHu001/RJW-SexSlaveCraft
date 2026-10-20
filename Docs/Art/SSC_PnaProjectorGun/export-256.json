@@ -1,0 +1,50 @@
+{
+  "source": "Docs/Art/SSC_PnaProjectorGun/SSC_PnaProjectorGun_Source.png",
+  "originalGeneratedFile": "exec-a4365b18-2e50-4033-878e-9fee23c8cf03.png",
+  "sourceSha256": "1524ae1a344689809712507a05d67cc4476dc3ee07880f622a6a20097004392e",
+  "sourceSize": [
+    2172,
+    724
+  ],
+  "sourceAlphaExtrema": [
+    0,
+    255
+  ],
+  "sourceTouchesEdge": false,
+  "alphaThreshold": 1,
+  "sourcePadding": 2,
+  "crop": [
+    15,
+    83,
+    2151,
+    657
+  ],
+  "resampling": "premultiplied-alpha Lanczos",
+  "fittedSize": [
+    240,
+    64
+  ],
+  "offset": [
+    8,
+    96
+  ],
+  "outputSize": [
+    256,
+    256
+  ],
+  "outputAlphaBBox": [
+    8,
+    96,
+    248,
+    160
+  ],
+  "outputAlphaExtrema": [
+    0,
+    255
+  ],
+  "output": "1.7/Textures/Things/Item/Equipment/SSC_PnaProjectorGun.png",
+  "outputSha256": "41a5fd716bb992c5a7cee5120c1df1e05f9844bbcbf063dc08fbc00c177dd38e",
+  "archive": "Docs/Art/SSC_PnaProjectorGun/256/SSC_PnaProjectorGun.png",
+  "drawSize": "1.25",
+  "gameRuntimeVerified": false
+}

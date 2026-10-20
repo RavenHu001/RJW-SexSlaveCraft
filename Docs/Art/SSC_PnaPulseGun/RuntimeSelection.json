@@ -1,0 +1,13 @@
+{
+  "recordDate": "2026-10-20",
+  "originalGeneratedFile": "exec-36869d38-822e-4bda-b3a8-a642ab1d605b.png",
+  "source": "SSC_PnaPulseGun_SideHeavy_Source.png",
+  "sourceSha256": "3ec5bf124502adefb3f62608e224b5da3e0b1e4e00df284e1dfa112bd3351848",
+  "sourceSize": [
+    1983,
+    793
+  ],
+  "generationTool": "built-in imagegen",
+  "currentAuthorization": "export exact selected source to 256x256 and integrate/sync for game testing; no commit",
+  "gameRuntimeVerified": false
+}

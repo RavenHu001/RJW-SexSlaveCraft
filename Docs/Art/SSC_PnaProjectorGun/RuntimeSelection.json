@@ -1,0 +1,13 @@
+{
+  "recordDate": "2026-10-20",
+  "originalGeneratedFile": "exec-a4365b18-2e50-4033-878e-9fee23c8cf03.png",
+  "source": "SSC_PnaProjectorGun_Source.png",
+  "sourceSha256": "1524ae1a344689809712507a05d67cc4476dc3ee07880f622a6a20097004392e",
+  "sourceSize": [
+    2172,
+    724
+  ],
+  "generationTool": "built-in imagegen",
+  "currentAuthorization": "export exact selected source to 256x256 and integrate/sync for game testing; no commit",
+  "gameRuntimeVerified": false
+}
