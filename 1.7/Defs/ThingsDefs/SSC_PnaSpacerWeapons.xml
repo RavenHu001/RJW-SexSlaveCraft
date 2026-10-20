@@ -10,7 +10,7 @@
     <graphicData>
       <texPath>Things/Item/Equipment/SSC_PnaSilkWhip</texPath>
       <graphicClass>Graphic_Single</graphicClass>
-      <drawSize>1</drawSize>
+      <drawSize>0.75</drawSize>
     </graphicData>
     <statBases>
       <WorkToMake>24000</WorkToMake>

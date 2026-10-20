@@ -6,6 +6,7 @@
 
 | 资源 | 画布与方向 | 游戏参数 | 说明 |
 | --- | --- | --- | --- |
+| [太空丝鞭关机物品图](../../1.7/Textures/Things/Item/Equipment/SSC_PnaSilkWhip.png) | 256×256，水平朝右；内容240×66 | drawSize=0.75，当前为静态单图 | v2加强黑边并缩小显示，已获实机认可并授权提交；见[图稿与接入](SSC_PnaSilkWhip/README.md)，三个动作姿态尚未绘制 |
 | [工业精确针枪](../../1.7/Textures/Things/Item/Equipment/SSC_PnaNeedleRifle.png) | 256×256，水平朝右；枪体240×67 | drawSize=1.25，既有握持配置 | 当前为回选构型的短鞭画风重描边版，局部护木、灰紫枪身及银灰高光；[本轮接入](../Development/Completed/SSC精确针枪短鞭画风重描边贴图接入与测试.md)，已获维护者认可并授权提交 |
 | [工业速射针](../../1.7/Textures/Things/Projectile/SSC_PnaRepeaterNeedle.png) | 128×128，针尖朝上；图形24×106 | drawSize=0.4 | 银灰针尖、紫色载药管、深灰硬质尾翼，见[接入记录](../Development/Completed/SSC工业针弹贴图接入与测试.md)；已获维护者认可并授权提交 |
 | [工业精确针](../../1.7/Textures/Things/Projectile/SSC_PnaRifleNeedle.png) | 128×128，针尖朝上；图形26×112 | drawSize=0.4 | 同系列较长载药段，统一缩放倍率，见[接入记录](../Development/Completed/SSC工业针弹贴图接入与测试.md)；已获维护者认可并授权提交 |
