@@ -1,6 +1,8 @@
 # PNA 近战品质伤害回归
 
-直接链接生产 [品质补丁](../../Sexslavecraft/ThePatches/Harmony_SSCPnaMeleeQuality.cs)，使用本机 1.7 的真实 `StatPart_Quality`、`StatRequest`、`ThingDef` 和测试用 Harmony；不模拟原版品质曲线。当前 **31/31**。
+2026-10-19 太空步骤一：增加隔离丝鞭标记的七档品质请求，当前 **38/38**；原运行 XML 标记仍仅短矛／工业短鞭，未创建正式太空武器 XML。见[本批记录](../../Docs/Development/Verification/SSC太空武器步骤一实现与测试.md)。
+
+直接链接生产 [品质补丁](../../Sexslavecraft/ThePatches/Harmony_SSCPnaMeleeQuality.cs)，使用本机 1.7 的真实 `StatPart_Quality`、`StatRequest`、`ThingDef` 和测试用 Harmony；不模拟原版品质曲线。当前 **38/38**（原两武器批次为 31/31）。
 
 覆盖七种品质、短矛／短鞭标记、抽象／实物请求、其他输入倍率保留、普通近战及射针枪防身品质放行、其他属性的品质修正、空请求与 XML 标记范围。信息卡通过真实说明入口核对，不启动游戏 UI 或完整 Def 加载；维护者已确认本轮实机正常，未逐项报告的场景不补记为专项实测。
 

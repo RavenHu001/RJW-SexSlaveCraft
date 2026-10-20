@@ -41,7 +41,7 @@ internal static class Program
         harmony.CreateClassProcessor(typeof(Harmony_SSCPnaMeleeQualityExplanation)).Patch();
         try
         {
-            var fixedDefs = new[] { MakeWeapon("SSC_Weapon_PnaSpikeStaff", true), MakeWeapon("SSC_Weapon_PnaShortWhip", true) };
+            var fixedDefs = new[] { MakeWeapon("SSC_Weapon_PnaSpikeStaff", true), MakeWeapon("SSC_Weapon_PnaShortWhip", true), MakeWeapon("TestSpacerWhip", true) };
             var other = MakeWeapon("UnmarkedSword", false);
             float[] expected = { .8f, .9f, 1f, 1.1f, 1.2f, 1.45f, 1.65f };
             foreach (QualityCategory quality in Enum.GetValues<QualityCategory>())
@@ -87,7 +87,7 @@ internal static class Program
                     .SelectMany(f => XDocument.Load(f).Root.Elements()).Where(d => d.Element("modExtensions")?.Elements()
                         .Any(e => (string)e.Attribute("Class") == typeof(SSCPnaFixedMeleeDamageExtension).FullName) == true)
                     .Select(d => d.Element("defName").Value).OrderBy(n => n);
-                if (!marked.SequenceEqual(fixedDefs.Select(d => d.defName).OrderBy(n => n))) throw new Exception("XML标记范围不符");
+                if (!marked.SequenceEqual(fixedDefs.Take(2).Select(d => d.defName).OrderBy(n => n))) throw new Exception("XML标记范围不符");
             });
         }
         finally { harmony.UnpatchAll(harmony.Id); }

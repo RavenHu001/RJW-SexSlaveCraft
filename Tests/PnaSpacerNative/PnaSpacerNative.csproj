@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net10.0</TargetFramework><ImplicitUsings>enable</ImplicitUsings><Nullable>disable</Nullable></PropertyGroup>
+  <ItemGroup>
+    <Compile Include="../../Sexslavecraft/DamageWorker/DamageWorker_SSCPnaSpacer.cs" Link="Production/DamageWorker_SSCPnaSpacer.cs" />
+    <Compile Include="../../Sexslavecraft/DamageWorker/Verb_MeleeAttackSSCPnaSpacer.cs" Link="Production/Verb_MeleeAttackSSCPnaSpacer.cs" />
+    <Compile Include="../../Sexslavecraft/ThePatches/Harmony_SSCPnaSpacerMelee.cs" Link="Production/Harmony_SSCPnaSpacerMelee.cs" />
+    <Compile Include="../../Sexslavecraft/ThePatches/Harmony_SSCPnaMeleeQuality.cs" Link="Production/Harmony_SSCPnaMeleeQuality.cs" />
+    <Compile Include="../../Sexslavecraft/common/SSCPnaWeaponPotencyUtility.cs" Link="Production/SSCPnaWeaponPotencyUtility.cs" />
+    <Compile Include="../../Sexslavecraft/common/SSCPnaWeaponDoseUtility.cs" Link="Production/SSCPnaWeaponDoseUtility.cs" />
+    <Compile Include="../../Sexslavecraft/common/SSCPnaMath.cs" Link="Production/SSCPnaMath.cs" />
+    <Reference Include="Assembly-CSharp"><HintPath>$(GameRoot)/Assembly-CSharp.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityStubs"><HintPath>$(GameRoot)/UnityStubs.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="0Harmony"><HintPath>$(HarmonyAssemblyPath)</HintPath></Reference>
+  </ItemGroup>
+  <Target Name="RequireReferences" BeforeTargets="ResolveReferences">
+    <Error Condition="!Exists('$(GameRoot)/Assembly-CSharp.dll') or !Exists('$(HarmonyAssemblyPath)')" Text="Supply actual GameRoot and net9.0 test HarmonyAssemblyPath." />
+  </Target>
+</Project>

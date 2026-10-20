@@ -54,6 +54,8 @@ namespace Verse
         public int Parts;
         public bool Deflected;
         public float ArmorPenetrationInt;
+        public BodyPartRecord HitPart;
+        public void SetHitPart(BodyPartRecord value) { HitPart = value; }
         public bool IgnoreArmor, AllowDamagePropagation;
         public DamageInfo(DamageInfo other) { this=other; }
         public void SetAmount(float value) { Amount = value; }
@@ -62,6 +64,8 @@ namespace Verse
     public class DefModExtension { }
     public class DamageDef
     {
+        public string defName;
+        public bool ExternalViolenceFor(Pawn pawn) => true;
         public Type workerClass = typeof(DamageWorker_AddInjury);
         public DefModExtension Extension;
         public T GetModExtension<T>() where T : DefModExtension => Extension as T;
@@ -70,13 +74,28 @@ namespace Verse
     {
         public class DamageResult
         {
-            public bool wounded, deflected, diminished;
+            public bool wounded, deflected, diminished, diminishedByMetalArmor, deflectedByMetalArmor;
             public float totalDamageDealt;
             public List<Hediff> hediffs;
+            public List<BodyPartRecord> parts;
+            public void AddPart(Thing thing, BodyPartRecord part) { (parts ??= new()).Add(part); }
         }
     }
     public class DamageWorker_AddInjury : DamageWorker
     {
+        protected virtual BodyPartRecord ChooseHitPart(DamageInfo info, Pawn pawn) => pawn.RaceProps.body.AllParts.FirstOrDefault();
+        protected float ReduceDamageToPreserveOutsideParts(float amount, DamageInfo info, Pawn pawn) => amount;
+        protected float FinalizeAndAddInjury(Pawn pawn, float amount, DamageInfo info, DamageResult result)
+        {
+            InjuryCalls++;
+            if (pawn.SuppressInjury) return 0;
+            var injury = new Hediff_Injury { pawn=pawn, Part=info.HitPart,
+                def=new HediffDef { defName=info.Def.defName ?? "Stab", maxSeverity=100 }, Severity=amount };
+            pawn.health.AddHediff(injury);
+            (result.hediffs ??= new()).Add(injury);
+            result.totalDamageDealt+=amount; result.wounded=true;
+            return amount;
+        }
         public Action<Pawn> BeforePart;
         public int InjuryCalls;
         // 直接提供物理完成结果和同步回调边界，不模拟护甲随机数或复制原版伤害算法。
@@ -96,9 +115,10 @@ namespace Verse
     public class Hediff_Injury : Hediff
     {
         public float Healed;
-        public bool CanHealNaturally() => true;
+        public bool Permanent;
+        public bool CanHealNaturally() => !Permanent;
         public Action OnHeal;
-        public void Heal(float amount) { Healed += amount; OnHeal?.Invoke(); }
+        public void Heal(float amount) { Healed += amount; Severity=Math.Max(0, Severity-amount); OnHeal?.Invoke(); }
     }
     public class Hediff_AddedPart : Hediff { }
     public class Hediff_MissingPart : Hediff { public bool IsFresh; public HediffDef lastInjury; }

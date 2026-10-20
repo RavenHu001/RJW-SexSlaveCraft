@@ -92,6 +92,7 @@ internal static partial class Program
         RunInfestationTests();
         RunRefinementTests();
         RunCoatedWeaponTests();
+        RunSpacerWeaponTests();
         RunWeaponDoseUtilityTests();
         RunPrimitiveWeaponXmlTests();
         RunIndustrialWeaponXmlTests();
@@ -105,6 +106,8 @@ internal static partial class Program
     {
         Scribe.mode=LoadSaveMode.Inactive; Scribe.Data.Clear(); SSCRestrictionGameComponent.Pawns.Clear(); Messages.Sent.Clear(); MoteMaker.Sent.Clear();
         SSCPnaWeaponEffectsUtility.Absorptions.Clear();
+        ArmorUtility.Calls=0; ArmorUtility.Boundary=null;
+        DebugSettings.enablePlayerDamage=true;
         SSCDefOf.SSC_PnaLoad=new HediffDef { defName=SSCPnaExposureUtility.LoadDefName, HasPnaComp=true, thresholds=new[]{0f,.30f,.80f,1.40f,1.94f} };
         SSCDefOf.SSC_PnaRootedLoad=new HediffDef { defName=SSCPnaExposureUtility.RootedLoadDefName, HasPnaComp=true, thresholds=new[]{0f,.30f,.80f,1.40f,1.94f} };
         SSCDefOf.SSC_PnaAddiction=AddictionDef;

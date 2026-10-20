@@ -362,6 +362,9 @@
     <Compile Include="common\WillReductionUtility.cs" />
     <Compile Include="DamageWorker\DamageWorker_PNA.cs" />
     <Compile Include="DamageWorker\DamageWorker_SSCPnaCoated.cs" />
+    <Compile Include="DamageWorker\DamageWorker_SSCPnaSpacer.cs" />
+    <Compile Include="DamageWorker\Verb_MeleeAttackSSCPnaSpacer.cs" />
+    <Compile Include="ThePatches\Harmony_SSCPnaSpacerMelee.cs" />
     <Compile Include="common\SSCPnaWeaponDoseUtility.cs" />
     <Compile Include="common\SSCPnaWeaponEffectsUtility.cs" />
     <Compile Include="common\SSCPnaSpearGlowUtility.cs" />
