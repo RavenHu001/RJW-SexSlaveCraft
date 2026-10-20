@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Descriptions for implied Make_ recipes; products and crafting requirements remain unchanged. -->
+<LanguageData>
+  <Make_SSC_Weapon_PnaSpikeStaff.description>制作短矛，并以淬毒工艺将纳米催情液浸入矛头表层。</Make_SSC_Weapon_PnaSpikeStaff.description>
+  <Make_SSC_Weapon_PnaBlowpipe.description>制作吹箭筒及配用细箭，以纳米催情液淬染箭头。</Make_SSC_Weapon_PnaBlowpipe.description>
+  <Make_SSC_Weapon_PnaLightCrossbow.description>制作轻弩及配用弩矢，以纳米催情液淬染箭头。</Make_SSC_Weapon_PnaLightCrossbow.description>
+</LanguageData>

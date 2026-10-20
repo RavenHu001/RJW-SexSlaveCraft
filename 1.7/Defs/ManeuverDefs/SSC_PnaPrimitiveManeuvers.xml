@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成；专用能力隔离携液刺击，不向原版 Stab 动作或能力追加内容。 -->
+<Defs>
+  <ToolCapacityDef>
+    <defName>SSC_ToolCapacity_PnaStab</defName>
+    <label>纳米催情液刺击</label>
+  </ToolCapacityDef>
+  <ManeuverDef>
+    <defName>SSC_Maneuver_PnaStab</defName>
+    <requiredCapacity>SSC_ToolCapacity_PnaStab</requiredCapacity>
+    <verb>
+      <verbClass>SexSlaveCraft.Verb_MeleeAttackSSCPna</verbClass>
+      <meleeDamageDef>SSC_Damage_PnaStaffStab</meleeDamageDef>
+    </verb>
+    <logEntryDef>MeleeAttack</logEntryDef>
+    <combatLogRulesHit>Maneuver_Stab_MeleeHit</combatLogRulesHit>
+    <combatLogRulesDeflect>Maneuver_Stab_MeleeDeflect</combatLogRulesDeflect>
+    <combatLogRulesMiss>Maneuver_Stab_MeleeMiss</combatLogRulesMiss>
+    <combatLogRulesDodge>Maneuver_Stab_MeleeDodge</combatLogRulesDodge>
+  </ManeuverDef>
+</Defs>

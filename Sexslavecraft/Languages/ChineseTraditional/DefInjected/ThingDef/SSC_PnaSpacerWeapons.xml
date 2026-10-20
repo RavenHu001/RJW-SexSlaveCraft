@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_Weapon_PnaSilkWhip.label>奈米催情液絲鞭</SSC_Weapon_PnaSilkWhip.label>
+  <SSC_Weapon_PnaSilkWhip.description>以精密約束將奈米催情液形成纖絲的短鞭。接觸後釋放集群，以極小創傷完成投送，並可無傷活化、修復有效鎖鏈目標。</SSC_Weapon_PnaSilkWhip.description>
+  <SSC_Weapon_PnaPulseGun.label>奈米催情液脈衝槍</SSC_Weapon_PnaPulseGun.label>
+  <SSC_Weapon_PnaPulseGun.description>將奈米催情液約束成極細針束，以三發脈衝連續投送的專用武器。適合中近距離壓制，針束入體後迅速解體。</SSC_Weapon_PnaPulseGun.description>
+  <SSC_Weapon_PnaProjectorGun.label>奈米催情液投射槍</SSC_Weapon_PnaProjectorGun.label>
+  <SSC_Weapon_PnaProjectorGun.description>以精密約束維持奈米集群形態的遠程投送武器。單發射程遠、穿透強，集群入體後迅速解體，避免留下實體載體。</SSC_Weapon_PnaProjectorGun.description>
+  <SSC_Projectile_PnaPulse.label>奈米催情液脈衝集群</SSC_Projectile_PnaPulse.label>
+  <SSC_Projectile_PnaProjection.label>奈米催情液投射集群</SSC_Projectile_PnaProjection.label>
+  <SSC_Weapon_PnaSilkWhip.tools.0.label>奈米纖絲</SSC_Weapon_PnaSilkWhip.tools.0.label>
+  <SSC_Weapon_PnaPulseGun.tools.0.label>槍身</SSC_Weapon_PnaPulseGun.tools.0.label>
+  <SSC_Weapon_PnaProjectorGun.tools.0.label>槍托</SSC_Weapon_PnaProjectorGun.tools.0.label>
+
+</LanguageData>

@@ -1,5 +1,7 @@
 # PNA 机制重置开发规划
 
+2026-10-20 后续状态：旧简易发射器、弹丸及专属研究已从 1.7 移除，以下有关旧枪文案和兼容处理的内容保留历史含义，不再作为实施任务；见[移除记录](../Development/Completed/SSC旧简易PNA发射器移除与归档.md)。
+
 > 版本归属更新（2026-10-16）：本文已实现内容统一归入 [2.4.1](../Releases/2.4.1/2.4.1发布说明.md)，原 2.4.0.5 仅为开发标记。下文原日期、交付时版本、提交、产物和测试记录保留当时语境，不代表本轮重新执行。
 
 记录日期：2026-10-13。
@@ -55,8 +57,8 @@ PNA 核心不读取主人开关、当前性交 Job、来源记忆或调教评分
 
 `Need_PNA` 是本模组通过 XML 定义的需求项目，需求框架、条形界面与化学满足度行为来自原版，并非 SSC 新写了一套需求系统：
 
-- [NeedDefs.xml](../../Defs/NeedDefs/NeedDefs.xml) 继承原版 `DrugAddictionNeedBase`，实现类直接指定 `RimWorld.Need_Chemical`；本模组没有自定义 PNA Need 类。
-- [HediffOfAddiction.xml](../../Defs/HediffDefs/HediffOfAddiction.xml) 的 `PNA_Addiction` 使用原版 `Hediff_Addiction`，以 `chemicalNeed=Need_PNA` 关联需求；[ChemicalDef.xml](../../Defs/ChemicalDefs/ChemicalDef.xml) 将 PNA 化学物关联到该成瘾。
+- [NeedDefs.xml](../../1.7/Defs/NeedDefs/NeedDefs.xml) 继承原版 `DrugAddictionNeedBase`，实现类直接指定 `RimWorld.Need_Chemical`；本模组没有自定义 PNA Need 类。
+- [HediffOfAddiction.xml](../../1.7/Defs/HediffDefs/HediffOfAddiction.xml) 的 `PNA_Addiction` 使用原版 `Hediff_Addiction`，以 `chemicalNeed=Need_PNA` 关联需求；[ChemicalDef.xml](../../1.7/Defs/ChemicalDefs/ChemicalDef.xml) 将 PNA 化学物关联到该成瘾。
 - 原版 `DrugAddictionNeedBase` 设置 `onlyIfCausedByHediff=true`；`Pawn_NeedsTracker.ShouldHaveNeed` 检查健康状态是否启用需求及其他合法准入，`AddOrRemoveNeedsAsAppropriate` 负责生成／撤销，`AddNeed` 按 `needClass` 创建实例。
 - 原版 `Need_Chemical.NeedInterval` 按 Def 的每日下降值更新满足度，冻结时不下降；满足度 <=0.01 时判为戒断。新实例原版初值随机为 0.8～1，P2 才按已确认规则将首次新生成的 PNA 需求设满。
 - `Need_Chemical` 没有自定义绘制方法，继承原版 `Need.DrawOnGUI` 绘制需求条；SSC 的 P1 链保护只清除成瘾并调用原版需求刷新，不自行画条或强行创建需求。
@@ -271,11 +273,11 @@ P1 可以是调试可运行的基础测试批。P2 创建化学需求后原版�
 
 | 内容 | 当前路径 |
 | --- | --- |
-| 普通／浓缩物品与旧摄入 | [Nanofluid.xml](../../Defs/ThingsDefs/Nanofluid.xml) |
-| 原 PNA 负荷、心情和战斗效果 | [HediffOfBuff.xml](../../Defs/HediffDefs/HediffOfBuff.xml) |
-| 成瘾、化学与需求 | [HediffOfAddiction.xml](../../Defs/HediffDefs/HediffOfAddiction.xml) · [ChemicalDef.xml](../../Defs/ChemicalDefs/ChemicalDef.xml) · [NeedDefs.xml](../../Defs/NeedDefs/NeedDefs.xml) |
-| 锁链与实际查询 | [HediffOfSexSlave.xml](../../Defs/HediffDefs/HediffOfSexSlave.xml) · [SSCBondUtility.cs](../../Sexslavecraft/common/SSCBondUtility.cs) · [SSCIdentityUtility.cs](../../Sexslavecraft/common/SSCIdentityUtility.cs) |
-| 枪械及剂量 | [DamageWorker_PNA.cs](../../Sexslavecraft/DamageWorker/DamageWorker_PNA.cs) · [DemageDef_Gun.xml](../../Defs/DemageDefs/DemageDef_Gun.xml) · [SSC_Gun.xml](../../Defs/ThingsDefs/SSC_Gun.xml) |
+| 普通／浓缩物品与旧摄入 | [Nanofluid.xml](../../1.7/Defs/ThingsDefs/Nanofluid.xml) |
+| 原 PNA 负荷、心情和战斗效果 | [HediffOfBuff.xml](../../1.7/Defs/HediffDefs/HediffOfBuff.xml) |
+| 成瘾、化学与需求 | [HediffOfAddiction.xml](../../1.7/Defs/HediffDefs/HediffOfAddiction.xml) · [ChemicalDef.xml](../../1.7/Defs/ChemicalDefs/ChemicalDef.xml) · [NeedDefs.xml](../../1.7/Defs/NeedDefs/NeedDefs.xml) |
+| 锁链与实际查询 | [HediffOfSexSlave.xml](../../1.7/Defs/HediffDefs/HediffOfSexSlave.xml) · [SSCBondUtility.cs](../../Sexslavecraft/common/SSCBondUtility.cs) · [SSCIdentityUtility.cs](../../Sexslavecraft/common/SSCIdentityUtility.cs) |
+| 枪械及剂量 | [DamageWorker_PNA.cs](../../Archive/PnaSimpleLauncher/DamageWorker_PNA.cs) · [DemageDef_Gun.xml](../../Archive/PnaSimpleLauncher/Defs/DemageDef_Gun.xml) · [SSC_Gun.xml](../../Archive/PnaSimpleLauncher/Defs/SSC_Gun.xml) |
 | 人格快照／恢复／克隆 | [ThingsComp_PE_PES.cs](../../Sexslavecraft/Comps/ThingsComp_PE_PES.cs) · [ExcretionUtility.cs](../../Sexslavecraft/common/ExcretionUtility.cs) · [RabbitCloneUtility.cs](../../Sexslavecraft/common/RabbitCloneUtility.cs) |
 
 本机 RimWorld DLL MVID `61e4173561894da49d210260257b5097`、RJW DLL MVID `7b8e295db88844a594b111ed6bcc94aa`。已核对 Hediff 阶段、原版成瘾／药物补充、Need_Chemical、ImmunityHandler、地图与旅队觅药、RJW SexFrequency；普通 XML 仅说明作者定义，不证明运行时覆盖结果。本次数值时间表只做剂量数学核对，不等于游戏构建、完整回归或实机确认。

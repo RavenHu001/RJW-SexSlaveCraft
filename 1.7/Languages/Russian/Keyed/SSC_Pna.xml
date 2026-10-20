@@ -7,8 +7,6 @@
   <SSC_Pna_DebugResult>Отладка: текущая нагрузка {0}%. Полная нагрузка может вызвать зависимость в обычном теле; отладочное увеличение не усиливает уже имеющуюся зависимость.</SSC_Pna_DebugResult>
   <SSC_Pna_RootedLoadTooltip>Активация наножидкостью-афродизиаком: {0}%</SSC_Pna_RootedLoadTooltip>
   <SSC_Pna_NewDependence>{0} больше не может обходиться без наножидкости-афродизиака.</SSC_Pna_NewDependence>
-  <SSC_Pna_WeaponHealed>Раны затягиваются</SSC_Pna_WeaponHealed>
-  <SSC_Pna_WeaponActivated>Активация</SSC_Pna_WeaponActivated>
   <SSC_Pna_AttractionExplanation>Тяга к наножидкости-афродизиаку цели: ×{0} ⇒ {1}</SSC_Pna_AttractionExplanation>
   <SSC_Pna_InfoLoadPerDose>Нагрузка от одной дозы</SSC_Pna_InfoLoadPerDose>
   <SSC_Pna_InfoLoadPerDoseDesc>Базовая нагрузка PNA от одной дозы в процентах от полной нагрузки. При приёме применяются соответствующие поправки на тело и толерантность. Хозяева невосприимчивы к действию вещества; персонажи с действующей Цепью получают активацию.</SSC_Pna_InfoLoadPerDoseDesc>

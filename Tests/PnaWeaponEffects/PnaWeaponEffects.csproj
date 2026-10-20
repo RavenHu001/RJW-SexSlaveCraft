@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net9.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="../../Sexslavecraft/common/SSCPnaMath.cs" Link="Production/SSCPnaMath.cs" />
+    <Compile Include="../../Sexslavecraft/common/SSCPnaWeaponEffectsUtility.cs" Link="Production/SSCPnaWeaponEffectsUtility.cs" />
+    <Compile Include="../../Sexslavecraft/common/SSCPnaSpearGlowUtility.cs" Link="Production/SSCPnaSpearGlowUtility.cs" />
+    <Compile Include="../../Sexslavecraft/common/SSCPnaWhipPoseUtility.cs" Link="Production/SSCPnaWhipPoseUtility.cs" />
+    <Compile Include="../../Sexslavecraft/common/SSCPnaWhipHitUtility.cs" Link="Production/SSCPnaWhipHitUtility.cs" />
+    <Compile Include="../../Sexslavecraft/DamageWorker/Verb_MeleeAttackSSCPnaWhip.cs" Link="Production/Verb_MeleeAttackSSCPnaWhip.cs" />
+    <Compile Include="../../Sexslavecraft/ThePatches/Harmony_SSCPnaWhip.cs" Link="Production/Harmony_SSCPnaWhip.cs" />
+    <Compile Include="../../Sexslavecraft/ThePatches/Harmony_SSCPnaSpearGlow.cs" Link="Production/Harmony_SSCPnaSpearGlow.cs" />
+    <Compile Include="../../Sexslavecraft/DamageWorker/Verb_MeleeAttackSSCPna.cs" Link="Production/Verb_MeleeAttackSSCPna.cs" />
+  </ItemGroup>
+  <ItemGroup><Reference Include="0Harmony"><HintPath>$(HarmonyAssemblyPath)</HintPath></Reference></ItemGroup>
+  <Target Name="RequireHarmony" BeforeTargets="ResolveReferences" Condition="!Exists('$(HarmonyAssemblyPath)')">
+    <Error Text="Supply -p:HarmonyAssemblyPath with the local net9.0 0Harmony.dll." />
+  </Target>
+</Project>

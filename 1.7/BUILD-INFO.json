@@ -4,13 +4,13 @@
   "binaryOrigin": "rebuilt",
   "sourceVersion": "2.4.2",
   "modVersion": "2.4.2",
-  "sourceCommit": "c170d3c55f1007e12908c008fb1dc683a8bda0ce",
+  "sourceCommit": "d7f38cfccf289b9d3bf827bd169b32922aba31f4",
   "sourceWorkingTreeDirty": true,
   "assemblyPath": "1.7/Assemblies/Sexslavecraft.dll",
-  "sha256": "cddd8d89c456ae7ff3249e1adaa20f15eb2a01312eb72a96c8d929a7c6fa825f",
-  "gameBuild": "1.7.4981 rev136",
+  "sha256": "ecd871ddc4d748dd192726cd25cbf924b1bd5a2dd890bd914bc81eccadc0967a",
+  "gameBuild": "1.7.4982 rev1280",
   "gameAssemblyPath": "D:\\STEAM\\steamapps\\common\\RimWorld\\Assembly-CSharp.dll",
-  "gameAssemblySha256": "eb0826b85af430d13962e5c097ef53d869cf6a031656fb6a3673168a761c9f23",
+  "gameAssemblySha256": "69cf35594dcc55d1d77cae482887e880ec2d7c043e139d54d5c59b2dd2b940d4",
   "sdkVersion": "10.0.402",
   "references": [
     {

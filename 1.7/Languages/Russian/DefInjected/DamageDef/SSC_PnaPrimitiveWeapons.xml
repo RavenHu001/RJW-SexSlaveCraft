@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_Damage_PnaStaffStab.label>укол с возбуждающей наножидкостью</SSC_Damage_PnaStaffStab.label>
+  <SSC_Damage_PnaStaffStab.deathMessage>{0}: смерть от уколов коротким копьём с возбуждающей наножидкостью.</SSC_Damage_PnaStaffStab.deathMessage>
+  <SSC_Damage_PnaDartStab.label>дротик с возбуждающей наножидкостью</SSC_Damage_PnaDartStab.label>
+  <SSC_Damage_PnaDartStab.deathMessage>{0}: смерть от дротика с возбуждающей наножидкостью.</SSC_Damage_PnaDartStab.deathMessage>
+  <SSC_Damage_PnaBolt.label>болт с возбуждающей наножидкостью</SSC_Damage_PnaBolt.label>
+  <SSC_Damage_PnaBolt.deathMessage>{0}: смерть от болта с возбуждающей наножидкостью.</SSC_Damage_PnaBolt.deathMessage>
+</LanguageData>

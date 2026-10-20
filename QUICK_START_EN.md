@@ -1,5 +1,9 @@
 # RJW-SexSlaveCraft Quick Start Guide
 
+The current 1.7 development branch also includes three accepted industrial PNA weapons: a short whip, a three-shot repeating needle gun and a single-shot precision needle rifle. Research Industrial PNA Weapons (1600 points) after Primitive PNA Weapons, PNA Concentration and Machining, then craft them at a machining table. Baseline potency is 18% / 8% per needle / 20%; actual delivery still requires a qualifying wound and uses the shared resistance rules. Crafting consumes concentrated PNA; no separate ammunition, gas or fluid refills are needed. Dedicated art, whip poses/hit afterimage, projectile trails, absorption hearts and pneumatic shot sounds are complete. These branch additions have not been repackaged into the existing v2.4.2 download. See the [completion record (Chinese)](Docs/Development/Completed/SSC工业时代纳米催情液武器完成核对.md).
+
+> 1.7 branch update (2026-10-18): three medieval PNA-coated weapons, dedicated artwork, a potency stat, purple trails, inverted absorption hearts and a spearhead hit glow are implemented. The version remains 2.4.2; these branch changes have not been repackaged into the existing download and are not added to 1.6. See the [completion audit](Docs/Development/Completed/SSC武器拓展首批完成核对.md).
+
 The bond overview is complete within the agreed scope on the 1.7 development branch. Select a master to see slave counts and portraits; the adjacent command selects available slaves on the current map. Select a slave and click the master portrait to locate and select the master. The magnifying glass opens the overview, the trainer pencil changes the assignment, and hover tips show details. These changes have not been repackaged into the published download. See the [completion record](Docs/Development/Completed/主从关系概览完成核对.md).
 
 > Version scope: 2.4.2 is the current release. New features target 1.7; 1.6 retains the frozen 2.4.1 runtime, with shared textures in Common/Textures. Existing v2.4.1 downloads remain the original 1.6 release.
@@ -219,7 +223,8 @@ At maximum genital development, a pawn begins producing `Purple Aphrodisiac Nano
 It is used for:
 
 - direct ingestion;
-- crafting the `Basic PNA Launcher`;
+- crafting the current 1.7 PNA weapons; the old Basic PNA Launcher and its dedicated research are removed without save migration (frozen 1.6 is unchanged);
+- crafting the medieval PNA short spear, blowpipe and light crossbow on the current 1.7 branch;
 - producing `Purple Aphrodisiac Nanofluid Plus`;
 - Personality Excretion;
 - Full Gelatinization Surgery.
@@ -227,6 +232,14 @@ It is used for:
 Current 2.4.1 rules: normal/PNA Plus ingestion uses one unit, adding 20/70 load points without nutrition. Ordinary bodies have five escalating stages, with collapse from 97%. Positive input reaching full load first creates addiction; vanilla recovery takes about ten days without new input, and withdrawal mood is -18.
 
 Effective-Chain pawns instead receive five positive activation/mood stages without ordinary addiction. Masters are immune to drug effects. Binding/unbinding preserves load; PNA states remain with the body. Completing an ordinary RJW paired act with a normal producer adds +2% load, +10% to an existing need and base +0.01 existing addiction (+0.21 at terminal load). SSC training, rituals, personality excretion, solo acts and vanilla Lovin are excluded. See the [full PNA rules](PLAYER_GUIDE_EN.md#11-pna-items-and-basic-pna-launcher).
+
+### Medieval PNA Weapons (1.7 Development Branch)
+
+After Basic PNA Application, complete the 800-point Primitive PNA Weapons research. It does not require concentration research. Craft the short spear or light crossbow at a fueled/electric smithy; the blowpipe also supports a crafting spot.
+
+The spear delivers fluid at melee range, the blowpipe favors repeated close-to-medium-range shots, and the light crossbow favors longer, more accurate shots. Crafting consumes normal PNA; there is no refilling or separate ammunition item. A fresh qualifying open wound is required to apply the drug. Injuries remain and can still be fatal; Masters resist the drug, while effective-Chain targets receive activation. These weapons do not heal.
+
+The weapon info card shows baseline **PNA potency: 15% / 6% / 10%** with a hover explanation. Ranged projectiles leave purple trails; spearhead glow signals contact, including a fully blocked hit. An inverted purple heart signals accepted drug input. See [full weapon rules](PLAYER_GUIDE_EN.md#116-medieval-pna-weapons-and-visual-feedback).
 
 ### Permanent Lactation
 
@@ -462,6 +475,8 @@ Configure `Damage Sharing` in the Master growth panel on the Training tab. Its p
 When enabled, eligible bound sex slaves on the same map absorb most incoming damage for the Master. Higher-Corruption slaves carry more weight.
 
 Execution, surgery, EMP, and most toxic damage are not redirected.
+
+<a id="desire-infestation"></a>
 
 <a id="desire-infestation"></a>
 

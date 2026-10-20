@@ -25,7 +25,7 @@ namespace Verse
         public void SetFaction(RimWorld.Faction faction) { Faction=faction; }
     }
     public class AgeTracker { public long AgeBiologicalTicks=3600000; public void AgeTickMothballed(int ticks) { AgeBiologicalTicks+=ticks; } }
-    public class PawnDrawer { public PawnRenderer renderer = new PawnRenderer(); }
+    public partial class PawnDrawer { public PawnRenderer renderer = new PawnRenderer(); }
     public class PawnRenderer { public void SetAllGraphicsDirty() { } }
     public class StoryTracker { public TraitTracker traits = new TraitTracker(); }
     public class TraitTracker { public List<RimWorld.Trait> allTraits = new List<RimWorld.Trait>(); public void GainTrait(RimWorld.Trait trait) { allTraits.Add(trait); } }

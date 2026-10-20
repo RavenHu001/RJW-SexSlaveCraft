@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_Weapon_PnaShortWhip.label>aphrodisiac nanofluid short whip</SSC_Weapon_PnaShortWhip.label>
+  <SSC_Weapon_PnaShortWhip.description>A multi-lash short whip for suppression. Polymer braids use an improved poison treatment and internal fluid channels to deliver aphrodisiac nanofluid through shallow cuts.</SSC_Weapon_PnaShortWhip.description>
+  <SSC_Weapon_PnaNeedleRepeater.label>aphrodisiac nanofluid repeating needle gun</SSC_Weapon_PnaNeedleRepeater.label>
+  <SSC_Weapon_PnaNeedleRepeater.description>A pneumatic needle gun firing three-round bursts of fluid-bearing needles. Effective for repeated delivery at close to medium range, but inaccurate at long range.</SSC_Weapon_PnaNeedleRepeater.description>
+  <SSC_Weapon_PnaNeedleRifle.label>aphrodisiac nanofluid precision needle gun</SSC_Weapon_PnaNeedleRifle.label>
+  <SSC_Weapon_PnaNeedleRifle.description>A single-shot pneumatic needle gun for accurate long-range delivery. Its specialized needles carry a larger dose of aphrodisiac nanofluid, at the cost of slower aiming and firing.</SSC_Weapon_PnaNeedleRifle.description>
+  <SSC_Projectile_PnaRepeaterNeedle.label>aphrodisiac nanofluid repeater needle</SSC_Projectile_PnaRepeaterNeedle.label>
+  <SSC_Projectile_PnaRifleNeedle.label>aphrodisiac nanofluid precision needle</SSC_Projectile_PnaRifleNeedle.label>
+  <SSC_Weapon_PnaShortWhip.tools.0.label>lashes</SSC_Weapon_PnaShortWhip.tools.0.label>
+  <SSC_Weapon_PnaShortWhip.tools.1.label>grip</SSC_Weapon_PnaShortWhip.tools.1.label>
+  <SSC_Weapon_PnaNeedleRepeater.tools.0.label>gun body</SSC_Weapon_PnaNeedleRepeater.tools.0.label>
+  <SSC_Weapon_PnaNeedleRifle.tools.0.label>stock</SSC_Weapon_PnaNeedleRifle.tools.0.label>
+</LanguageData>

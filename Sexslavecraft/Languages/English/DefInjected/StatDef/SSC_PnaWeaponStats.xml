@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_PnaWeaponPotency.label>Nanofluid potency</SSC_PnaWeaponPotency.label>
+  <SSC_PnaWeaponPotency.description>Base PNA load per effective delivery, adjusted by consciousness resistance. Coated weapons require an open wound; spacer weapons allow harmless absorption and injury repair in valid chained targets. Masters are immune. Ordinary haft strikes deliver none.</SSC_PnaWeaponPotency.description>
+</LanguageData>

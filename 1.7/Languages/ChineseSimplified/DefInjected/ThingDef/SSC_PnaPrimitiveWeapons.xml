@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_Weapon_PnaSpikeStaff.label>纳米催情液短矛</SSC_Weapon_PnaSpikeStaff.label>
+  <SSC_Weapon_PnaSpikeStaff.description>一柄经淬毒工艺处理的手工短矛，阔刃矛头均匀浸润着紫色纳米催情液。近身刺击能可靠送入药液，但仍可能造成致命创伤。</SSC_Weapon_PnaSpikeStaff.description>
+  <SSC_Weapon_PnaBlowpipe.label>纳米催情液吹箭筒</SSC_Weapon_PnaBlowpipe.label>
+  <SSC_Weapon_PnaBlowpipe.description>一支配用淬液细箭的手工吹箭筒，箭头以淬毒工艺浸润纳米催情液。适合中近距离连续施加，但难以穿甲，远射命中较差。</SSC_Weapon_PnaBlowpipe.description>
+  <SSC_Weapon_PnaLightCrossbow.label>纳米催情液轻弩</SSC_Weapon_PnaLightCrossbow.label>
+  <SSC_Weapon_PnaLightCrossbow.description>一把配用淬液弩矢的手工轻弩，箭头以淬毒工艺浸润纳米催情液。射程、精度和穿甲优于吹箭筒，但装填更慢，创伤也更重。</SSC_Weapon_PnaLightCrossbow.description>
+  <SSC_Weapon_PnaSpikeStaff.tools.0.label>矛尖</SSC_Weapon_PnaSpikeStaff.tools.0.label>
+  <SSC_Weapon_PnaSpikeStaff.tools.1.label>矛柄</SSC_Weapon_PnaSpikeStaff.tools.1.label>
+  <SSC_Weapon_PnaBlowpipe.tools.0.label>筒身</SSC_Weapon_PnaBlowpipe.tools.0.label>
+  <SSC_Weapon_PnaLightCrossbow.tools.0.label>弩身</SSC_Weapon_PnaLightCrossbow.tools.0.label>
+  <SSC_Projectile_PnaDart.label>纳米催情液吹箭</SSC_Projectile_PnaDart.label>
+  <SSC_Projectile_PnaBolt.label>纳米催情液弩矢</SSC_Projectile_PnaBolt.label>
+</LanguageData>

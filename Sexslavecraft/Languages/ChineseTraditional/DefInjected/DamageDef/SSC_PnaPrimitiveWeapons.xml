@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_Damage_PnaStaffStab.label>奈米催情液刺擊</SSC_Damage_PnaStaffStab.label>
+  <SSC_Damage_PnaStaffStab.deathMessage>{0}被奈米催情液短矛刺死了。</SSC_Damage_PnaStaffStab.deathMessage>
+  <SSC_Damage_PnaDartStab.label>奈米催情液吹箭</SSC_Damage_PnaDartStab.label>
+  <SSC_Damage_PnaDartStab.deathMessage>{0}被奈米催情液吹箭射死了。</SSC_Damage_PnaDartStab.deathMessage>
+  <SSC_Damage_PnaBolt.label>奈米催情液弩矢</SSC_Damage_PnaBolt.label>
+  <SSC_Damage_PnaBolt.deathMessage>{0}被奈米催情液弩矢射死了。</SSC_Damage_PnaBolt.deathMessage>
+</LanguageData>

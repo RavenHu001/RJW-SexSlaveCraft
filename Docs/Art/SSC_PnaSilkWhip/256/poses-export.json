@@ -1,0 +1,172 @@
+{
+  "canvas_size": [
+    256,
+    256
+  ],
+  "mode": "RGBA",
+  "target_handle_width_px": 64,
+  "target_handle_center_px": [
+    50,
+    128
+  ],
+  "method": "Whole-pose premultiplied-alpha Lanczos; common handle landmarks; no redraw or rotation.",
+  "runtime_integrated": false,
+  "poses": [
+    {
+      "pose": "Idle",
+      "source": "SSC_PnaSilkWhip_Idle_v3_Source.png",
+      "source_sha256": "89dd3a456adca505917385ef2222be1b1eb4e5eb511f4f660517212853909eaa",
+      "source_size": [
+        1774,
+        887
+      ],
+      "source_visible_bbox": [
+        55,
+        165,
+        1773,
+        845
+      ],
+      "crop_bbox": [
+        53,
+        163,
+        1774,
+        847
+      ],
+      "source_handle_landmarks": {
+        "butt_left_x": 55,
+        "collar_mouth_x": 1087,
+        "grip_axis_y": 307
+      },
+      "nominal_scale": 0.06201550387596899,
+      "scaled_size": [
+        107,
+        42
+      ],
+      "offset": [
+        18,
+        119
+      ],
+      "handle_width_px": 64.16269610691458,
+      "handle_center_px": [
+        50.20569436374201,
+        127.84210526315789
+      ],
+      "output": "SSC_PnaSilkWhip_Idle.png",
+      "output_sha256": "bdfd84c63746da2abc5fce57e1a3693305074c81ba482efd619a177aca509c00",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "visible_bbox": [
+        18,
+        119,
+        125,
+        161
+      ]
+    },
+    {
+      "pose": "Attack",
+      "source": "SSC_PnaSilkWhip_Attack_v2_Source.png",
+      "source_sha256": "bba3738e81d1639e3e57bd0441824487cc6edb5cf2db31b9636cc617b040df0f",
+      "source_size": [
+        2172,
+        724
+      ],
+      "source_visible_bbox": [
+        40,
+        44,
+        2166,
+        633
+      ],
+      "crop_bbox": [
+        38,
+        42,
+        2168,
+        635
+      ],
+      "source_handle_landmarks": {
+        "butt_left_x": 40,
+        "collar_mouth_x": 625,
+        "grip_axis_y": 546
+      },
+      "nominal_scale": 0.1094017094017094,
+      "scaled_size": [
+        233,
+        65
+      ],
+      "offset": [
+        18,
+        73
+      ],
+      "handle_width_px": 63.99295774647887,
+      "handle_center_px": [
+        50.21525821596244,
+        128.24451939291737
+      ],
+      "output": "SSC_PnaSilkWhip_Attack.png",
+      "output_sha256": "ea2f659c8cd9fdb1679e2d8ce8271cf59d0aa664775878c6ce9bdc30906fc43d",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "visible_bbox": [
+        18,
+        74,
+        251,
+        138
+      ]
+    },
+    {
+      "pose": "Recovery",
+      "source": "SSC_PnaSilkWhip_Recovery_Approved.png",
+      "source_sha256": "bb1380ae56f8f0853f4c6e2bf172d6a0145a36a4f8c45bba012aaefc06eb0252",
+      "source_size": [
+        2172,
+        724
+      ],
+      "source_visible_bbox": [
+        48,
+        90,
+        2146,
+        702
+      ],
+      "crop_bbox": [
+        46,
+        88,
+        2148,
+        704
+      ],
+      "source_handle_landmarks": {
+        "butt_left_x": 48,
+        "collar_mouth_x": 766,
+        "grip_axis_y": 198
+      },
+      "nominal_scale": 0.08913649025069638,
+      "scaled_size": [
+        187,
+        55
+      ],
+      "offset": [
+        18,
+        118
+      ],
+      "handle_width_px": 63.875356803044724,
+      "handle_center_px": [
+        50.11560418648906,
+        127.82142857142857
+      ],
+      "output": "SSC_PnaSilkWhip_Recovery.png",
+      "output_sha256": "68ed16991bf662c1953c94bb01d1a452ca639bdf49659cae6b99590769087957",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "visible_bbox": [
+        18,
+        118,
+        205,
+        173
+      ]
+    }
+  ]
+}

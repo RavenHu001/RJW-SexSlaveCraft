@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_Damage_PnaWhipCut.label>удар плетью с наножидкостью</SSC_Damage_PnaWhipCut.label>
+  <SSC_Damage_PnaWhipCut.deathMessage>{0} погибает от ударов короткой плетью с наножидкостью.</SSC_Damage_PnaWhipCut.deathMessage>
+  <SSC_Damage_PnaRepeaterNeedle.label>игла скорострельного игломёта с наножидкостью</SSC_Damage_PnaRepeaterNeedle.label>
+  <SSC_Damage_PnaRepeaterNeedle.deathMessage>{0} погибает от иглы скорострельного игломёта с наножидкостью.</SSC_Damage_PnaRepeaterNeedle.deathMessage>
+  <SSC_Damage_PnaRifleNeedle.label>точная игла с наножидкостью</SSC_Damage_PnaRifleNeedle.label>
+  <SSC_Damage_PnaRifleNeedle.deathMessage>{0} погибает от точной иглы с наножидкостью.</SSC_Damage_PnaRifleNeedle.deathMessage>
+</LanguageData>

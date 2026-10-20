@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成；三份配置共用一个处理器，不复刻原版 Stab 的主动内部命中。 -->
+<Defs>
+  <DamageDef Name="SSC_PnaCoatedStabBase" Abstract="True">
+    <workerClass>SexSlaveCraft.DamageWorker_SSCPnaCoated</workerClass>
+    <externalViolence>true</externalViolence>
+    <hediff>Stab</hediff>
+    <hediffSolid>Crack</hediffSolid>
+    <impactSoundType>Slice</impactSoundType>
+    <armorCategory>Sharp</armorCategory>
+    <overkillPctToDestroyPart>0.4~1.0</overkillPctToDestroyPart>
+  </DamageDef>
+  <DamageDef ParentName="SSC_PnaCoatedStabBase">
+    <defName>SSC_Damage_PnaStaffStab</defName>
+    <label>纳米催情液刺击</label>
+    <deathMessage>{0}被纳米催情液短矛刺死了。</deathMessage>
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCPnaCoatingExtension">
+        <baseLoad>0.15</baseLoad>
+        <recordHediff>Hediff_PNA_Consciousness_Record</recordHediff>
+      </li>
+    </modExtensions>
+  </DamageDef>
+  <DamageDef ParentName="SSC_PnaCoatedStabBase">
+    <defName>SSC_Damage_PnaDartStab</defName>
+    <label>纳米催情液吹箭</label>
+    <deathMessage>{0}被纳米催情液吹箭射死了。</deathMessage>
+    <isRanged>true</isRanged>
+    <makesAnimalsFlee>true</makesAnimalsFlee>
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCPnaCoatingExtension">
+        <baseLoad>0.06</baseLoad>
+        <recordHediff>Hediff_PNA_Consciousness_Record</recordHediff>
+      </li>
+    </modExtensions>
+  </DamageDef>
+  <!-- Arrow 的具名 XML 基类保留普通箭伤传播；仅替换处理器、文案与剂量。 -->
+  <DamageDef ParentName="Arrow">
+    <defName>SSC_Damage_PnaBolt</defName>
+    <label>纳米催情液弩矢</label>
+    <workerClass>SexSlaveCraft.DamageWorker_SSCPnaCoated</workerClass>
+    <deathMessage>{0}被纳米催情液弩矢射死了。</deathMessage>
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCPnaCoatingExtension">
+        <baseLoad>0.10</baseLoad>
+        <recordHediff>Hediff_PNA_Consciousness_Record</recordHediff>
+      </li>
+    </modExtensions>
+  </DamageDef>
+</Defs>

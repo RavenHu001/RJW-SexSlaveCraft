@@ -1,0 +1,42 @@
+{
+  "status": "attack v2 upward trailing arc candidate; pending user review; not exported, connected, synced or committed",
+  "tool": "built-in image_gen",
+  "source": "Docs\\Art\\SSC_PnaSilkWhip\\SSC_PnaSilkWhip_Attack_v2_Source.png",
+  "SHA256": "bba3738e81d1639e3e57bd0441824487cc6edb5cf2db31b9636cc617b040df0f",
+  "generatedSource": "C:\\Users\\24196\\.codex\\generated_images\\01a14d5a-bbd6-79f3-9356-75f2d8ad5113\\exec-5d89847e-5c47-47f8-a162-e8bd28a26e14.png",
+  "size": [
+    2172,
+    724
+  ],
+  "mode": "RGBA",
+  "alphaExtrema": [
+    0,
+    255
+  ],
+  "visibleBounds": [
+    40,
+    44,
+    2166,
+    633
+  ],
+  "visibleBoundsTouchCanvasEdge": false,
+  "prompt": "Attack_v2.prompt.txt",
+  "inputMethod": "num_last_images_to_include=3: item handle, recovery filament, user sketch",
+  "references": [
+    {
+      "path": "Docs\\Art\\SSC_PnaSilkWhip\\SSC_PnaSilkWhip_Item_v2_Source.png",
+      "role": "approved item handle and outline",
+      "SHA256": "6b77a755aab0653e783a13ce77c5370847cd471485d3ee3b836268f9b18426cd"
+    },
+    {
+      "path": "Docs\\Art\\SSC_PnaSilkWhip\\SSC_PnaSilkWhip_Recovery_Approved.png",
+      "role": "approved recovery filament material and illustration style",
+      "SHA256": "bb1380ae56f8f0853f4c6e2bf172d6a0145a36a4f8c45bba012aaefc06eb0252"
+    },
+    {
+      "source": "inline user black-line sketch",
+      "role": "whole-strand centerline and upward trailing arc only; no local file supplied"
+    }
+  ],
+  "poseDescription": "Root extends right nearly level; outer half progressively rises, tip high above handle, representing the whip tip trailing above during a downward stroke. User sketch supersedes the preceding downward-hook interpretation."
+}

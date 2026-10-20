@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_PnaWeaponPotency.label>奈米催情液效力</SSC_PnaWeaponPotency.label>
+  <SSC_PnaWeaponPotency.description>每次有效投送的基礎奈米催情液負荷，實際輸入受意識抗性影響。塗覆武器須造成開放傷口；太空武器可被有效鎖鏈目標無傷吸收並修復傷勢。主人免疫，普通柄擊不施藥。</SSC_PnaWeaponPotency.description>
+</LanguageData>

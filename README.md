@@ -1,5 +1,7 @@
 # RJW-SexSlaveCraft · TieJin Modify
 
+> 当前分支进展（2026-10-19）：1.7 的低科技适配、关系概览、中世纪与工业 PNA 三武器已交付。工业短鞭／两枪机制、正式图稿、效力、姿态／特效及枪声均已分批验收，见[工业完成核对](Docs/Development/Completed/SSC工业时代纳米催情液武器完成核对.md)、[中世纪完成核对](Docs/Development/Completed/SSC武器拓展首批完成核对.md)及[未发布增量](CHANGELOG.md#未发布开发增量--unreleased-development)。尚未重新打包进既有 2.4.2 下载，1.6／Common 冻结不变。
+
 面向RimWorld的成人向RimJobWorld（RJW）扩展模组，基于上游 **2.2.8** 继续维护。当前版本：**2.4.2 — 双版本目录、1.7迁移与个体凝胶外观**（2026-10-17）。v2.4.1发布后的开发统一纳入本版；1.6运行内容继续冻结在2.4.1。
 
 [2.4.2 版本说明](Docs/Releases/2.4.2/2.4.2发布说明.md) · [正式版下载 2.4.2](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.2) · [模组介绍 / Mod overview](Docs/模组介绍.md) · [玩家阅读入口 / Player documentation](Docs/Players/README.md) · [文档总索引](Docs/README.md) · [English overview](#english-overview)
@@ -63,6 +65,8 @@ SSC 提供角色培养、主从绑定、特化发展、人格转移和身体改�
 项目署名：Someone、Hajimi、TieJin。感谢上游作者及参与修复、翻译和验证的贡献者。
 
 ## English overview
+
+The 1.7 development branch also includes accepted low-tech adaptation, the bond overview and three medieval PNA-coated weapons, with dedicated art, potency displays and visual feedback. These branch changes have not been repackaged into the existing 2.4.2 download. See the [completion audit](Docs/Development/Completed/SSC武器拓展首批完成核对.md).
 
 The current checkout has separate `1.6/` and `1.7/` runtime directories with shared textures in `Common/Textures/`. The 1.6 content is frozen at 2.4.1; the maintainer tested the current 1.7 layout and compatibility-fix batch and reported no issues. The current 2.4.2 package includes both version directories.
 

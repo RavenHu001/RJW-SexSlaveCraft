@@ -41,7 +41,7 @@ namespace SexSlaveCraft
                     if (share <= 0f) continue;
 
                     DamageInfo redirected = SSCMasterBondUtility.CreateRedirectedDamageInfo(dinfo, slave, share, out BodyPartRecord part);
-                    slave.TakeDamage(redirected);
+                    SSCPnaDamageShareUtility.ApplyRedirected(slave, redirected);
 
                     string partLabel = part?.LabelCap ?? "SSC_MasterShareDamage_PartFallback".Translate().ToString();
                     Log.Message("SSC_MasterShareDamage_Log".Translate(__instance.LabelShort, slave.LabelShort, share.ToString("F1"), partLabel).ToString());

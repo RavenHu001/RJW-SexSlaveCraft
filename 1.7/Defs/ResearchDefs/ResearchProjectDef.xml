@@ -46,6 +46,19 @@
     <researchViewY>3.50</researchViewY>
   </ResearchProjectDef>
 
+  <!-- 原液的低技术战斗应用探索，与浓缩技术并列；废案简易发射器及专属研究已移除。 -->
+  <ResearchProjectDef>
+    <defName>SSC_RES_PNAPrimitiveWeapons</defName>
+    <label>原始纳米催情液武器</label>
+    <description>借鉴传统淬毒工艺，对熟悉的武器和箭具做简单改造，尝试将纳米催情液用于压制敌人与奴隶。通过浸覆刃部和箭头，使紫色药液均匀浸润金属表层，再借刺击或射击造成的伤口送入目标体内。这仍是低技术条件下的初步探索，效果依赖实际命中，也难以避免投送过程中造成的伤害。</description>
+    <baseCost>800</baseCost>
+    <techLevel>Medieval</techLevel>
+    <tab>SSC_ResearchTabDef</tab>
+    <prerequisites><li>SSC_RES_PNASimpleApp</li></prerequisites>
+    <researchViewX>2.00</researchViewX>
+    <researchViewY>4.50</researchViewY>
+  </ResearchProjectDef>
+
   <ResearchProjectDef>
     <defName>SSC_RES_SexChange</defName>
     <label>变性手术（男变女）</label>
@@ -72,21 +85,6 @@
     </prerequisites>
     <researchViewX>3.00</researchViewX>
     <researchViewY>3.00</researchViewY>
-  </ResearchProjectDef>
-
-  <ResearchProjectDef>
-    <defName>SSC_RES_PNASimpleLauncher</defName>
-    <label>PNA 简易发射器</label>
-    <description>把纳米催情液做成可发射的弹丸。低成本、低强度，适合在近处压制或活化目标。</description>
-    <baseCost>1000</baseCost>
-    <techLevel>Industrial</techLevel>
-    <tab>SSC_ResearchTabDef</tab>
-    <prerequisites>
-      <li>SSC_RES_PNASimpleApp</li> 
-      <li>PrecisionRifling</li>
-    </prerequisites>
-    <researchViewX>2.00</researchViewX>
-    <researchViewY>3.50</researchViewY>
   </ResearchProjectDef>
 
   <ResearchProjectDef>

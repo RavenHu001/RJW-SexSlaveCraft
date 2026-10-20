@@ -7,8 +7,6 @@
   <SSC_Pna_DebugResult>除錯：目前負荷 {0}%。普通身體滿負荷可形成成癮；除錯加量不加深既有成癮。</SSC_Pna_DebugResult>
   <SSC_Pna_RootedLoadTooltip>奈米催情液活化：{0}%</SSC_Pna_RootedLoadTooltip>
   <SSC_Pna_NewDependence>{0} 已經離不開奈米催情液了。</SSC_Pna_NewDependence>
-  <SSC_Pna_WeaponHealed>傷口收攏</SSC_Pna_WeaponHealed>
-  <SSC_Pna_WeaponActivated>活化</SSC_Pna_WeaponActivated>
   <SSC_Pna_AttractionExplanation>渴求對方分泌的奈米催情液：×{0} ⇒ {1}</SSC_Pna_AttractionExplanation>
   <SSC_Pna_InfoLoadPerDose>每份負荷增量</SSC_Pna_InfoLoadPerDose>
   <SSC_Pna_InfoLoadPerDoseDesc>每份藥液提供的基礎 PNA 負荷，以滿負荷的百分比表示。實際攝入仍按適用的身體與耐受修正結算。主人免疫藥效；有效鎖鏈對象獲得活化。</SSC_Pna_InfoLoadPerDoseDesc>

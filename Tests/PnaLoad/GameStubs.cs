@@ -26,7 +26,7 @@ namespace Verse
         public RimWorld.Pawn_NeedsTracker needs;
         public Pawn() { health = new Pawn_HealthTracker(this); needs = new RimWorld.Pawn_NeedsTracker(this); }
     }
-    public class RaceProperties { public bool IsFlesh = true, Humanlike = true; }
+    public class RaceProperties { public bool IsFlesh = true, Humanlike = true; public BodyDef body = new BodyDef(); }
     public partial class HediffDef
     {
         public Type hediffClass;
@@ -35,34 +35,76 @@ namespace Verse
         public float[] thresholds = new[] { 0f };
         public bool HasPnaComp;
         public bool HasRecoveryComp;
+        public bool organicAddedBodypart;
         public RimWorld.NeedDef chemicalNeed;
         public T CompProps<T>() where T : HediffCompProperties
             => HasRecoveryComp ? new HediffCompProperties_SeverityPerDay{severityPerDay=-.1f,showDaysToRecover=true} as T : null;
     }
-    public class BodyPartRecord { }
+    public class BodyDef { public List<BodyPartRecord> AllParts = new List<BodyPartRecord>(); }
+    public class BodyPartDef
+    {
+        public bool Solid;
+        public bool IsSolid(BodyPartRecord part, List<Hediff> hediffs) => Solid;
+    }
+    public class BodyPartRecord { public BodyPartDef def = new BodyPartDef(); public BodyPartRecord parent; }
     public struct DamageInfo
     {
         public DamageDef Def;
         public float Amount;
         public int Parts;
         public bool Deflected;
+        public float ArmorPenetrationInt;
+        public BodyPartRecord HitPart;
+        public void SetHitPart(BodyPartRecord value) { HitPart = value; }
+        public bool IgnoreArmor, AllowDamagePropagation;
         public DamageInfo(DamageInfo other) { this=other; }
         public void SetAmount(float value) { Amount = value; }
-        public void SetIgnoreArmor(bool value) { }
+        public void SetIgnoreArmor(bool value) { IgnoreArmor = value; }
     }
     public class DefModExtension { }
     public class DamageDef
     {
+        public string defName;
+        public bool ExternalViolenceFor(Pawn pawn) => true;
+        public Type workerClass = typeof(DamageWorker_AddInjury);
         public DefModExtension Extension;
         public T GetModExtension<T>() where T : DefModExtension => Extension as T;
     }
-    public class DamageWorker { public class DamageResult { } }
+    public class DamageWorker
+    {
+        public class DamageResult
+        {
+            public bool wounded, deflected, diminished, diminishedByMetalArmor, deflectedByMetalArmor;
+            public float totalDamageDealt;
+            public List<Hediff> hediffs;
+            public List<BodyPartRecord> parts;
+            public void AddPart(Thing thing, BodyPartRecord part) { (parts ??= new()).Add(part); }
+        }
+    }
     public class DamageWorker_AddInjury : DamageWorker
     {
+        protected virtual BodyPartRecord ChooseHitPart(DamageInfo info, Pawn pawn) => pawn.RaceProps.body.AllParts.FirstOrDefault();
+        protected float ReduceDamageToPreserveOutsideParts(float amount, DamageInfo info, Pawn pawn) => amount;
+        protected float FinalizeAndAddInjury(Pawn pawn, float amount, DamageInfo info, DamageResult result)
+        {
+            InjuryCalls++;
+            if (pawn.SuppressInjury) return 0;
+            var injury = new Hediff_Injury { pawn=pawn, Part=info.HitPart,
+                def=new HediffDef { defName=info.Def.defName ?? "Stab", maxSeverity=100 }, Severity=amount };
+            pawn.health.AddHediff(injury);
+            (result.hediffs ??= new()).Add(injury);
+            result.totalDamageDealt+=amount; result.wounded=true;
+            return amount;
+        }
         public Action<Pawn> BeforePart;
         public int InjuryCalls;
+        // 直接提供物理完成结果和同步回调边界，不模拟护甲随机数或复制原版伤害算法。
+        public Func<DamageInfo, Thing, DamageResult> PhysicalApply;
+        public int ApplyCalls;
         public virtual DamageResult Apply(DamageInfo info, Thing target)
         {
+            ApplyCalls++;
+            if (PhysicalApply != null) return PhysicalApply(info, target);
             var result = new DamageResult();
             if (target is Pawn pawn && info.Amount > 0 && !info.Deflected)
                 for (int i=0;i<Math.Max(1,info.Parts);i++) { BeforePart?.Invoke(pawn); ApplySpecialEffectsToPart(pawn,info.Amount,info,result); }
@@ -73,10 +115,13 @@ namespace Verse
     public class Hediff_Injury : Hediff
     {
         public float Healed;
-        public bool CanHealNaturally() => true;
+        public bool Permanent;
+        public bool CanHealNaturally() => !Permanent;
         public Action OnHeal;
-        public void Heal(float amount) { Healed += amount; OnHeal?.Invoke(); }
+        public void Heal(float amount) { Healed += amount; Severity=Math.Max(0, Severity-amount); OnHeal?.Invoke(); }
     }
+    public class Hediff_AddedPart : Hediff { }
+    public class Hediff_MissingPart : Hediff { public bool IsFresh; public HediffDef lastInjury; }
     public class PawnCapacityDef { }
     public class PawnCapacitiesHandler { public float Consciousness=1f; public float GetLevel(PawnCapacityDef def)=>Consciousness; }
     public class Hediff
@@ -106,7 +151,19 @@ namespace Verse
         public T GetComp<T>() where T : HediffComp => comps.OfType<T>().FirstOrDefault();
         public T TryGetComp<T>() where T : HediffComp => GetComp<T>();
     }
-    public class HediffSet { public List<Hediff> hediffs = new List<Hediff>(); public Hediff GetFirstHediffOfDef(HediffDef def)=>hediffs.FirstOrDefault(h=>h.def==def); public bool HasHediff(HediffDef def)=>GetFirstHediffOfDef(def)!=null; }
+    public class HediffSet
+    {
+        public List<Hediff> hediffs = new List<Hediff>();
+        public Hediff GetFirstHediffOfDef(HediffDef def)=>hediffs.FirstOrDefault(h=>h.def==def);
+        public bool HasHediff(HediffDef def)=>GetFirstHediffOfDef(def)!=null;
+        public Hediff GetDirectlyAddedPartFor(BodyPartRecord part)=>hediffs.FirstOrDefault(h=>h.Part==part && h is Hediff_AddedPart);
+        public bool PartIsMissing(BodyPartRecord part)
+        {
+            for (var current=part;current!=null;current=current.parent)
+                if(hediffs.Any(h=>h is Hediff_MissingPart && h.Part==current)) return true;
+            return false;
+        }
+    }
     public class Pawn_HealthTracker
     {
         public readonly Pawn Pawn;
@@ -121,7 +178,9 @@ namespace Verse
         [MethodImpl(MethodImplOptions.NoInlining)]
         public void AddHediff(Hediff hediff, BodyPartRecord part, DamageInfo? dinfo, DamageWorker.DamageResult result)
         {
-            Hediff previous = hediffSet.hediffs.FirstOrDefault(h => h.def == hediff.def && h is not SexSlaveCraft.Hediff_ChainOfSexSlave);
+            if (part != null) hediff.Part = part;
+            Hediff previous = hediff is Hediff_Injury || hediff is Hediff_MissingPart ? null :
+                hediffSet.hediffs.FirstOrDefault(h => h.def == hediff.def && h is not SexSlaveCraft.Hediff_ChainOfSexSlave);
             if (previous != null) previous.Severity += hediff.Severity;
             else hediffSet.hediffs.Add(hediff);
             OnAdded?.Invoke(hediff);

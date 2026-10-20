@@ -1,0 +1,13 @@
+{
+  "state": "Recovery",
+  "status": "user selected former idle v1 image as recovery pose",
+  "file": "SSC_PnaSilkWhip_Recovery_Approved.png",
+  "SHA256": "bb1380ae56f8f0853f4c6e2bf172d6a0145a36a4f8c45bba012aaefc06eb0252",
+  "originalCandidate": "SSC_PnaSilkWhip_Idle_v1_Source.png",
+  "originalGenerationRecord": "Idle_v1.generation.json",
+  "originalGeneratedFilename": "exec-6462dfbc-95eb-4100-91e0-f4510d40f543.png",
+  "decision": "This image is unsuitable for idle but can serve as the recovery pose. Idle should have a large backward bend like the industrial whip.",
+  "exported": false,
+  "connected": false,
+  "committed": false
+}

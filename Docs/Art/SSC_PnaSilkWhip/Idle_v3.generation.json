@@ -1,0 +1,40 @@
+{
+  "status": "idle v3 candidate; pending user review; not exported, connected, synced or committed",
+  "tool": "built-in image_gen",
+  "source": "Docs\\Art\\SSC_PnaSilkWhip\\SSC_PnaSilkWhip_Idle_v3_Source.png",
+  "SHA256": "89dd3a456adca505917385ef2222be1b1eb4e5eb511f4f660517212853909eaa",
+  "generatedSource": "C:\\Users\\24196\\.codex\\generated_images\\01a14d5a-bbd6-79f3-9356-75f2d8ad5113\\exec-ea492489-cd0d-4676-a899-01fae1460198.png",
+  "size": [
+    1774,
+    887
+  ],
+  "mode": "RGBA",
+  "alphaExtrema": [
+    0,
+    255
+  ],
+  "visibleBounds": [
+    55,
+    165,
+    1773,
+    845
+  ],
+  "prompt": "Idle_v3.prompt.txt",
+  "references": [
+    {
+      "path": "Docs\\Art\\SSC_PnaSilkWhip\\SSC_PnaSilkWhip_Item_v2_Source.png",
+      "role": "approved item handle geometry, palette and bold outline",
+      "SHA256": "6b77a755aab0653e783a13ce77c5370847cd471485d3ee3b836268f9b18426cd"
+    },
+    {
+      "path": "Docs\\Art\\SSC_PnaSilkWhip\\SSC_PnaSilkWhip_Recovery_Approved.png",
+      "role": "approved recovery filament material and illustration style only",
+      "SHA256": "bb1380ae56f8f0853f4c6e2bf172d6a0145a36a4f8c45bba012aaefc06eb0252"
+    }
+  ],
+  "poseDescription": "Large downward return bend with free end pointing left beneath the handle; described entirely in text.",
+  "excludedReferences": [
+    "industrial short whip images",
+    "rejected Idle v2 image"
+  ]
+}

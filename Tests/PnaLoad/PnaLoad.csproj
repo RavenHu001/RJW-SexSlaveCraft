@@ -5,6 +5,7 @@
     <SscSourceRoot Condition="'$(SscSourceRoot)' == ''">../../Sexslavecraft</SscSourceRoot>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(SscSourceRoot)/common/SSCPnaDamageShareUtility.cs" Link="Production/SSCPnaDamageShareUtility.cs" />
     <Compile Include="$(SscSourceRoot)/common/SSCPnaMath.cs" Link="Production/SSCPnaMath.cs" />
     <Compile Include="$(SscSourceRoot)/common/SSCPnaExposureUtility.cs" Link="Production/SSCPnaExposureUtility.cs" />
     <Compile Include="$(SscSourceRoot)/common/SSCPnaSourceUtility.cs" Link="Production/SSCPnaSourceUtility.cs" />
@@ -14,7 +15,11 @@
     <Compile Include="$(SscSourceRoot)/Hediff/HediffComp_SSCPnaLoad.cs" Link="Production/HediffComp_SSCPnaLoad.cs" />
     <Compile Include="$(SscSourceRoot)/common/IngestionOutcomeDoer_SSCPna.cs" Link="Production/IngestionOutcomeDoer_SSCPna.cs" />
     <Compile Include="$(SscSourceRoot)/common/ThingDef_SSCPna.cs" Link="Production/ThingDef_SSCPna.cs" />
-    <Compile Include="$(SscSourceRoot)/DamageWorker/DamageWorker_PNA.cs" Link="Production/DamageWorker_PNA.cs" />
+    <Compile Include="$(SscSourceRoot)/common/SSCPnaWeaponPotencyUtility.cs" Link="Production/SSCPnaWeaponPotencyUtility.cs" />
+    <Compile Include="$(SscSourceRoot)/common/StatWorker_SSCPnaWeaponPotency.cs" Link="Production/StatWorker_SSCPnaWeaponPotency.cs" />
+    <Compile Include="$(SscSourceRoot)/DamageWorker/DamageWorker_SSCPnaCoated.cs" Link="Production/DamageWorker_SSCPnaCoated.cs" />
+    <Compile Include="$(SscSourceRoot)/DamageWorker/DamageWorker_SSCPnaSpacer.cs" Link="Production/DamageWorker_SSCPnaSpacer.cs" />
+    <Compile Include="$(SscSourceRoot)/common/SSCPnaWeaponDoseUtility.cs" Link="Production/SSCPnaWeaponDoseUtility.cs" />
     <Compile Include="$(SscSourceRoot)/ThePatches/Harmony_SSCPna.cs" Link="Production/Harmony_SSCPna.cs" />
     <Compile Include="$(SscSourceRoot)/common/DebugActions_SSCPna.cs" Link="Production/DebugActions_SSCPna.cs" />
     <!-- P3 直接执行 SSC 新生及成熟复制入口，身体协调继续使用同一份生产 PNA 工具。 -->

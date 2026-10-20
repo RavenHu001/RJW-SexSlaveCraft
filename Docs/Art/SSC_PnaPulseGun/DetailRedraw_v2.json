@@ -1,0 +1,50 @@
+{
+  "date": "2026-10-20",
+  "status": "preview; not installed or committed",
+  "generationTool": "built-in imagegen",
+  "originalGeneratedFile": "exec-7e5433f1-248d-4454-8c60-c037d6be9583.png",
+  "source": "SSC_PnaPulseGun_Detailed_v2_Source.png",
+  "sourceSize": [
+    1983,
+    793
+  ],
+  "sourceSha256": "017c5f6e323bbb747755b6346d90709110e19f90434dea013a8a6659e183d1d0",
+  "sourceAlphaBounds": [
+    37,
+    67,
+    1974,
+    773
+  ],
+  "sourceTouchesEdge": false,
+  "sourceAlphaExtrema": [
+    0,
+    255
+  ],
+  "crop": [
+    35,
+    65,
+    1976,
+    775
+  ],
+  "preview": "SSC_PnaPulseGun_Detailed_v2_256.png",
+  "previewSize": [
+    256,
+    256
+  ],
+  "previewSpriteSize": [
+    240,
+    88
+  ],
+  "previewOffset": [
+    8,
+    84
+  ],
+  "previewSha256": "2244649d9c71588c0ee7bc169278f1ea2533a94324ddb29a531852db198a93cd",
+  "prompt": "DetailRedraw_v2.prompt.txt",
+  "references": [
+    "SSC_PnaPulseGun_Detailed_v1_Source.png"
+  ],
+  "change": "retain upper open purple channel only; replace lower channel with recessed blue-grey panel, silver retaining ribs and stepped shell",
+  "runtimeChanged": false,
+  "gameRuntimeVerified": false
+}

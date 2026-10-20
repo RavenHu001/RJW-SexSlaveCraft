@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成；成功受药爱心。短鞭宽半弧残影由武器绘制器叠画，不生成 Fleck。命中矛尖泛光由武器绘制工具处理，不生成粒子。 -->
+<Defs>
+  <FleckDef ParentName="FleckBase_Thrown">
+    <defName>SSC_PnaAbsorptionHeart</defName>
+    <graphicData>
+      <texPath>Things/Mote/Heart</texPath>
+      <shaderType>Mote</shaderType>
+      <renderInstanced>true</renderInstanced>
+    </graphicData>
+    <altitudeLayer>MetaOverlays</altitudeLayer>
+    <useAttachLink>false</useAttachLink>
+    <realTime>false</realTime>
+    <fadeInTime>0.06</fadeInTime>
+    <solidTime>0.64</solidTime>
+    <fadeOutTime>0.50</fadeOutTime>
+    <growthRate>0</growthRate>
+    <collide>false</collide>
+  </FleckDef>
+</Defs>

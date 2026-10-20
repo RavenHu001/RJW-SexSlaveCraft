@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Descriptions for implied Make_ recipes; products and crafting requirements remain unchanged. -->
+<LanguageData>
+  <Make_SSC_Weapon_PnaSpikeStaff.description>Craft a short spear and infuse its head with aphrodisiac nanofluid using traditional weapon-poisoning techniques.</Make_SSC_Weapon_PnaSpikeStaff.description>
+  <Make_SSC_Weapon_PnaBlowpipe.description>Craft a blowpipe and matching darts, treating their tips with aphrodisiac nanofluid.</Make_SSC_Weapon_PnaBlowpipe.description>
+  <Make_SSC_Weapon_PnaLightCrossbow.description>Craft a light crossbow and matching bolts, treating their heads with aphrodisiac nanofluid.</Make_SSC_Weapon_PnaLightCrossbow.description>
+</LanguageData>

@@ -1,0 +1,27 @@
+{
+  "recordDate": "2026-10-20",
+  "originalGeneratedFile": "exec-c42a1a6e-c05c-48b2-bf0f-80f0fc20f9cf.png",
+  "source": "SSC_PnaProjectorGun_Detailed_v4_HeavyClean_Source.png",
+  "sourceSha256": "117a49473db11d56cab0554003dfdb24ef2e45dad59b5c30c162409aa15cfcc9",
+  "sourceSize": [
+    2172,
+    724
+  ],
+  "generationTool": "built-in imagegen",
+  "currentAuthorization": "selected source exported and integrated; maintenance owner accepted current visual result and authorized commit on 2026-10-20; no publication",
+  "previousSelection": {
+    "recordDate": "2026-10-20",
+    "originalGeneratedFile": "exec-a4365b18-2e50-4033-878e-9fee23c8cf03.png",
+    "source": "SSC_PnaProjectorGun_Source.png",
+    "sourceSha256": "1524ae1a344689809712507a05d67cc4476dc3ee07880f622a6a20097004392e",
+    "sourceSize": [
+      2172,
+      724
+    ],
+    "generationTool": "built-in imagegen",
+    "currentAuthorization": "export exact selected source to 256x256 and integrate/sync for game testing; no commit",
+    "gameRuntimeVerified": false
+  },
+  "gameRuntimeVerified": false,
+  "acceptanceNote": "Acceptance recorded after original automated export/sync reports; their gameRuntimeVerified=false remains historical."
+}

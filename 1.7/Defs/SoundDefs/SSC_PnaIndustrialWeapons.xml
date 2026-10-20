@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成；1.7 工业气动针枪单发音效，仅引用原版 Core 素材，不打包音频。 -->
+<Defs>
+  <SoundDef>
+    <defName>SSC_PnaNeedleRepeater_Shot</defName>
+    <context>MapOnly</context>
+    <sustain>False</sustain>
+    <!-- 原版逐针触发 soundCast；允许三连发及多名射手的短尾音有限重叠。 -->
+    <maxVoices>12</maxVoices>
+    <maxSimultaneous>8</maxSimultaneous>
+    <subSounds>
+      <li>
+        <onCamera>False</onCamera>
+        <grains>
+          <li Class="AudioGrain_Clip">
+            <clipPath>Misc/Hiss/HissSmall</clipPath>
+          </li>
+        </grains>
+        <!-- 音量采用原版百分数单位；音调较高，0.12 秒内淡出以保留点射节奏。 -->
+        <volumeRange>55~65</volumeRange>
+        <pitchRange>1.15~1.25</pitchRange>
+        <distRange>10~45</distRange>
+        <sustainLoop>False</sustainLoop>
+        <paramMappings>
+          <li>
+            <!-- 按单发样本的真实播放年龄收尾；暂停或游戏倍速不改变包络计时。 -->
+            <inParam Class="SoundParamSource_SourceAge"><timeType>RealtimeSeconds</timeType></inParam>
+            <outParam Class="SoundParamTarget_Volume" />
+            <paramUpdateMode>Constant</paramUpdateMode>
+            <curve>
+              <points>
+                <li>(0,0)</li>
+                <li>(0.005,1)</li>
+                <li>(0.04,1)</li>
+                <li>(0.08,0.4)</li>
+                <li>(0.12,0)</li>
+              </points>
+            </curve>
+          </li>
+        </paramMappings>
+      </li>
+    </subSounds>
+  </SoundDef>
+
+  <SoundDef>
+    <defName>SSC_PnaNeedleRifle_Shot</defName>
+    <context>MapOnly</context>
+    <sustain>False</sustain>
+    <maxVoices>12</maxVoices>
+    <maxSimultaneous>8</maxSimultaneous>
+    <subSounds>
+      <li>
+        <onCamera>False</onCamera>
+        <grains>
+          <li Class="AudioGrain_Clip">
+            <clipPath>Misc/Hiss/HissSmall</clipPath>
+          </li>
+        </grains>
+        <!-- 与速射针枪同源，降调并延长至 0.22 秒，表现较强的单发排气。 -->
+        <volumeRange>65~75</volumeRange>
+        <pitchRange>0.85~0.95</pitchRange>
+        <distRange>10~45</distRange>
+        <sustainLoop>False</sustainLoop>
+        <paramMappings>
+          <li>
+            <inParam Class="SoundParamSource_SourceAge"><timeType>RealtimeSeconds</timeType></inParam>
+            <outParam Class="SoundParamTarget_Volume" />
+            <paramUpdateMode>Constant</paramUpdateMode>
+            <curve>
+              <points>
+                <li>(0,0)</li>
+                <li>(0.008,1)</li>
+                <li>(0.08,1)</li>
+                <li>(0.15,0.5)</li>
+                <li>(0.22,0)</li>
+              </points>
+            </curve>
+          </li>
+        </paramMappings>
+      </li>
+    </subSounds>
+  </SoundDef>
+</Defs>

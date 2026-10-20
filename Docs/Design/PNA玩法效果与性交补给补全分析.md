@@ -237,7 +237,7 @@
 - 基础代码基线 `c9d7cb9`；`e483d28` 确认数值；`44dcbc6` 完成第一步 C#，构建与回归见对应记录。第二步只改运行 XML／四语及既有 XML 断言预期，未改生产 C#／DLL，不重编或运行代码回归；未接通性交事件。
 - RJW DLL MVID `7b8e295db88844a594b111ed6bcc94aa`：核对 `AttractionUtility..cctor`、`SetupRequest`、`AttractionPreference`、`StandardPreferenceAttribute`、`AttractionRequest.SetPreference`、`P_Vulnerability`、`xxx.get_vulnerability/can_get_raped`、`SexUtility.SatisfyPersonal`、`JobDriver_Sex.SetupOrgasmTicks` 和实际交互接口。
 - 游戏 DLL MVID `61e4173561894da49d210260257b5097`：核对模组类型发现、原版成瘾阶段、药物已有成瘾增量、需求准入与 Hediff 思绪映射。
-- SSC：[共享输入](../../Sexslavecraft/common/SSCPnaExposureUtility.cs)、[清除数学](../../Sexslavecraft/common/SSCPnaMath.cs)、[身份切换](../../Sexslavecraft/common/SSCIdentityUtility.cs)、[现有 PNA 补丁](../../Sexslavecraft/ThePatches/Harmony_SSCPna.cs)、[枪械](../../Sexslavecraft/DamageWorker/DamageWorker_PNA.cs)、[性交认领](../../Sexslavecraft/common/Restrictions/SSCRestrictionJobHooks.cs)、[原版 Lovin](../../Sexslavecraft/common/Restrictions/SSCRestrictionLovinGuard.cs)。
+- SSC：[共享输入](../../Sexslavecraft/common/SSCPnaExposureUtility.cs)、[清除数学](../../Sexslavecraft/common/SSCPnaMath.cs)、[身份切换](../../Sexslavecraft/common/SSCIdentityUtility.cs)、[现有 PNA 补丁](../../Sexslavecraft/ThePatches/Harmony_SSCPna.cs)、[枪械](../../Archive/PnaSimpleLauncher/DamageWorker_PNA.cs)、[性交认领](../../Sexslavecraft/common/Restrictions/SSCRestrictionJobHooks.cs)、[原版 Lovin](../../Sexslavecraft/common/Restrictions/SSCRestrictionLovinGuard.cs)。
 
 本项目没有可用的运行时合并 Def 快照；技术接口来自实际本机 DLL，作者与安装 XML 不替代最终加载环境。原生接口证据与实机验收分开记录；当前 SSC 条目已经构建并获实机确认，具体证据见各步验收记录。
 

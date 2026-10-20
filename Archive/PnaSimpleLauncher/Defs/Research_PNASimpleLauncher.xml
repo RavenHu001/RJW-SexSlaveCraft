@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <ResearchProjectDef>
+    <defName>SSC_RES_PNASimpleLauncher</defName>
+    <label>PNA 简易发射器</label>
+    <description>把纳米催情液做成可发射的弹丸。低成本、低强度，适合在近处压制或活化目标。</description>
+    <baseCost>1000</baseCost>
+    <techLevel>Industrial</techLevel>
+    <tab>SSC_ResearchTabDef</tab>
+    <prerequisites>
+      <li>SSC_RES_PNASimpleApp</li>
+      <li>PrecisionRifling</li>
+    </prerequisites>
+    <researchViewX>2.00</researchViewX>
+    <researchViewY>3.50</researchViewY>
+  </ResearchProjectDef>
+</Defs>

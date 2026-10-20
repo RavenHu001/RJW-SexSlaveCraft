@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_PnaWeaponPotency_Baseline>Базовый прирост нагрузки: {0} при сознании 100% и без записи сопротивления. Одна доза за попадание.</SSC_PnaWeaponPotency_Baseline>
+  <SSC_PnaWeaponPotency_Calculation>Доза = базовая эффективность / сопротивление, максимум 50% за попадание. Сопротивление равно сознанию до удара, но не ниже 20%. При сознании выше 200% значение записывается для последующих доз.</SSC_PnaWeaponPotency_Calculation>
+</LanguageData>

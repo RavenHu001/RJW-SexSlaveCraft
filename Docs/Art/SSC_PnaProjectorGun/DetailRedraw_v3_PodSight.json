@@ -1,0 +1,50 @@
+{
+  "date": "2026-10-20",
+  "status": "candidate preview only; not integrated or committed",
+  "generationTool": "built-in imagegen",
+  "originalGeneratedFile": "exec-97563abd-63b2-4c2c-81a3-345866d87c27.png",
+  "source": "SSC_PnaProjectorGun_Detailed_v3_PodSight_Source.png",
+  "sourceSize": [
+    2172,
+    724
+  ],
+  "sourceSha256": "c3793d1bc32b28dce2b6a977271929903b51da08b9cbff5b00c6312af7ac61bc",
+  "sourceAlphaBounds": [
+    18,
+    128,
+    2158,
+    659
+  ],
+  "sourceTouchesEdge": false,
+  "sourceAlphaExtrema": [
+    0,
+    255
+  ],
+  "crop": [
+    16,
+    126,
+    2160,
+    661
+  ],
+  "preview": "SSC_PnaProjectorGun_Detailed_v3_PodSight_256.png",
+  "previewSize": [
+    256,
+    256
+  ],
+  "previewSpriteSize": [
+    240,
+    60
+  ],
+  "previewOffset": [
+    8,
+    98
+  ],
+  "previewSha256": "9dff5d071b8801897e2caaa57c2c1d1248c3e8c3f44f28e404208c9ae5cbc6bb",
+  "prompt": "DetailRedraw_v3_PodSight.prompt.txt",
+  "references": [
+    "SSC_PnaProjectorGun_Detailed_v1_Source.png"
+  ],
+  "change": "alternative integrated sight: low elongated rounded rectangular sensor pod and small cyan side inset",
+  "runtimeChanged": false,
+  "gameRuntimeVerified": false
+}

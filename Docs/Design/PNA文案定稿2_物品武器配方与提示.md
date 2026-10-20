@@ -1,5 +1,7 @@
 # PNA 文案定稿 二 物品、武器、配方、研究与提示
 
+2026-10-20 后续状态：旧简易发射器、弹丸及专属研究已从 1.7 移除，以下有关旧枪文案和兼容处理的内容保留历史含义，不再作为实施任务；见[移除记录](../Development/Completed/SSC旧简易PNA发射器移除与归档.md)。
+
 > 当前完成状态（2026-10-16）：定稿、四语 XML、后续调试旧称及心情标签已落地并获分批实机确认，原 2.4.0.5 开发成果归入 **2.4.1**。下文保留交接与编写历史，不作为待执行任务；见[完成核对](../Development/Completed/PNA重置与玩法补全完成核对.md)及[本版说明](../Releases/2.4.1/2.4.1发布说明.md)。
 
 配套[交接文档](PNA文案重写交接.md)与[定稿一](PNA文案定稿1_药效与成瘾.md)。本稿覆盖余下全部玩家可见文本：分泌状态、需求、化学品、两种药液、发射器与弹丸、伤害名、两份配方、三项研究、短提示与调试反馈。
@@ -8,7 +10,7 @@
 
 ## 1 分泌状态
 
-`SSC_Purple_HyperLactation`（[HediffOfTrain.xml](../../Defs/HediffDefs/HediffOfTrain.xml)）
+`SSC_Purple_HyperLactation`（[HediffOfTrain.xml](../../1.7/Defs/HediffDefs/HediffOfTrain.xml)）
 
 - label：**纳米催情液分泌**
 - description：
@@ -18,7 +20,7 @@
 
 ## 2 需求
 
-`Need_PNA`（[NeedDefs.xml](../../Defs/NeedDefs/NeedDefs.xml)）
+`Need_PNA`（[NeedDefs.xml](../../1.7/Defs/NeedDefs/NeedDefs.xml)）
 
 - label：**纳米催情液渴求**
 - description：
@@ -28,7 +30,7 @@
 
 ## 3 化学品
 
-`PNA_Chemical`（[ChemicalDef.xml](../../Defs/ChemicalDefs/ChemicalDef.xml)）
+`PNA_Chemical`（[ChemicalDef.xml](../../1.7/Defs/ChemicalDefs/ChemicalDef.xml)）
 
 - label：**紫色纳米催情液**
 
@@ -36,7 +38,7 @@
 
 ## 4 两种药液
 
-`Purple_Aphrodisiac_Nanofluid`（[Nanofluid.xml](../../Defs/ThingsDefs/Nanofluid.xml)）
+`Purple_Aphrodisiac_Nanofluid`（[Nanofluid.xml](../../1.7/Defs/ThingsDefs/Nanofluid.xml)）
 
 - label：**紫色纳米催情液**
 - description：
@@ -54,7 +56,7 @@
 
 ## 5 发射器与弹丸
 
-`Gun_PNA_Low`（[SSC_Gun.xml](../../Defs/ThingsDefs/SSC_Gun.xml)）
+`Gun_PNA_Low`（[SSC_Gun.xml](../../Archive/PnaSimpleLauncher/Defs/SSC_Gun.xml)）
 
 - label：**PNA 发射器**
 - description：
@@ -64,7 +66,7 @@
 
 - label：**PNA 弹丸**
 
-`Damage_PNA_Damage_LowTier`（[DemageDef_Gun.xml](../../Defs/DemageDefs/DemageDef_Gun.xml)）
+`Damage_PNA_Damage_LowTier`（[DemageDef_Gun.xml](../../Archive/PnaSimpleLauncher/Defs/DemageDef_Gun.xml)）
 
 - label：**低强度 PNA 作用**
 
@@ -72,7 +74,7 @@
 
 ## 6 两份配方
 
-[RecipeDef_PNA_PLUS.xml](../../Defs/RecipeDefs/RecipeDef_PNA_PLUS.xml)，DefName 保持不变。
+[RecipeDef_PNA_PLUS.xml](../../1.7/Defs/RecipeDefs/RecipeDef_PNA_PLUS.xml)，DefName 保持不变。
 
 `SSC_Make_SuperDrug`
 
@@ -90,7 +92,7 @@
 
 ## 7 三项研究与一项顺带修正
 
-[ResearchProjectDef.xml](../../Defs/ResearchDefs/ResearchProjectDef.xml)
+[ResearchProjectDef.xml](../../1.7/Defs/ResearchDefs/ResearchProjectDef.xml)
 
 `SSC_RES_PNASimpleApp`
 

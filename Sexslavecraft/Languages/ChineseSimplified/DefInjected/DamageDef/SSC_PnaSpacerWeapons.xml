@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_Damage_PnaSilkWhip.label>纳米催情液丝鞭穿刺</SSC_Damage_PnaSilkWhip.label>
+  <SSC_Damage_PnaSilkWhip.deathMessage>{0}被纳米催情液丝鞭刺死了。</SSC_Damage_PnaSilkWhip.deathMessage>
+  <SSC_Damage_PnaPulse.label>纳米催情液脉冲穿刺</SSC_Damage_PnaPulse.label>
+  <SSC_Damage_PnaPulse.deathMessage>{0}被纳米催情液脉冲集群刺死了。</SSC_Damage_PnaPulse.deathMessage>
+  <SSC_Damage_PnaProjection.label>纳米催情液集群穿刺</SSC_Damage_PnaProjection.label>
+  <SSC_Damage_PnaProjection.deathMessage>{0}被纳米催情液投射集群刺死了。</SSC_Damage_PnaProjection.deathMessage>
+
+</LanguageData>

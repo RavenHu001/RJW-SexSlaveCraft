@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成；工业首批定义。短鞭、速射针枪与工业射针使用专用透明贴图，精确针枪仍引用原版占位图。
+     固定配方中的化合燃料用于聚合物制造，不增加运行燃料、弹药或补液管理。 -->
+<Defs>
+  <ThingDef ParentName="BaseMeleeWeapon_Sharp_Quality">
+    <defName>SSC_Weapon_PnaShortWhip</defName>
+    <label>纳米催情液短鞭</label>
+    <description>一柄用于镇压的多股短鞭。聚合物鞭束经改进淬毒工艺处理，内部药液通道使纳米催情液能随抽击造成的浅表切口进入身体。</description>
+    <techLevel>Industrial</techLevel>
+    <possessionCount>1</possessionCount>
+    <graphicData>
+      <!-- 256×256 物品图；drawSize 统一缩放物品及手持待机／挥击／回落，姿态入口保留该缩放，残影共用最终矩阵。 -->
+      <texPath>Things/Item/Equipment/SSC_PnaShortWhip</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+      <drawSize>1.4</drawSize>
+    </graphicData>
+    <statBases><WorkToMake>8000</WorkToMake><Mass>0.8</Mass><MaxHitPoints>100</MaxHitPoints></statBases>
+    <equippedStatOffsets>
+      <MeleeHitChance>3</MeleeHitChance>
+      <!-- 属性加给持鞭者，由文化原版镇压／观察流程读取。 -->
+      <SuppressionPower MayRequire="Ludeon.RimWorld.Ideology">0.20</SuppressionPower>
+      <TerrorSource MayRequire="Ludeon.RimWorld.Ideology">15</TerrorSource>
+    </equippedStatOffsets>
+    <costList><Steel>20</Steel><Chemfuel>20</Chemfuel><ComponentIndustrial>1</ComponentIndustrial><Purple_Aphrodisiac_Nanofluid_Plus>6</Purple_Aphrodisiac_Nanofluid_Plus></costList>
+    <recipeMaker>
+      <defaultIngredientFilter Inherit="False"><thingDefs><li>Steel</li><li>Chemfuel</li><li>ComponentIndustrial</li><li>Purple_Aphrodisiac_Nanofluid_Plus</li></thingDefs></defaultIngredientFilter>
+      <recipeUsers Inherit="False"><li>TableMachining</li></recipeUsers>
+      <researchPrerequisite>SSC_RES_PNAIndustrialWeapons</researchPrerequisite>
+      <skillRequirements><Crafting>4</Crafting></skillRequirements>
+      <displayPriority>430</displayPriority>
+    </recipeMaker>
+    <!-- 基础伤害为3时使用权重3，使原版普通人拳击落在较低选择分档；不修改命中或剂量。 -->
+    <tools>
+      <li><label>鞭束</label><capacities><li>SSC_ToolCapacity_PnaWhip</li></capacities><power>3</power><armorPenetration>0.20</armorPenetration><cooldownTime>1.4</cooldownTime><chanceFactor>3</chanceFactor></li>
+      <li><label>握柄</label><capacities><li>Blunt</li></capacities><power>2</power><armorPenetration>0</armorPenetration><cooldownTime>2</cooldownTime></li>
+    </tools>
+    <weaponClasses Inherit="False"><li>Melee</li></weaponClasses>
+    <weaponTags Inherit="False" /><tradeTags Inherit="False" /><tradeability>None</tradeability><relicChance>0</relicChance>
+    <smeltable>false</smeltable>
+  </ThingDef>
+
+  <ThingDef ParentName="BaseMakeableGun">
+    <defName>SSC_Weapon_PnaNeedleRepeater</defName>
+    <label>纳米催情液速射针枪</label>
+    <description>一把气动速射针枪，以三发短点射投送载药射针。适合中近距离连续施加纳米催情液，远距离精度较差。</description>
+    <techLevel>Industrial</techLevel><possessionCount>1</possessionCount>
+    <graphicData><texPath>Things/Item/Equipment/SSC_PnaNeedleRepeater</texPath><graphicClass>Graphic_Single</graphicClass><drawSize>1.05</drawSize></graphicData>
+    <soundInteract>Interact_SMG</soundInteract>
+    <statBases>
+      <WorkToMake>14000</WorkToMake><Mass>2</Mass><MaxHitPoints>100</MaxHitPoints>
+      <AccuracyTouch>0.85</AccuracyTouch><AccuracyShort>0.70</AccuracyShort><AccuracyMedium>0.35</AccuracyMedium><AccuracyLong>0.20</AccuracyLong>
+      <RangedWeapon_Cooldown>1.3</RangedWeapon_Cooldown>
+    </statBases>
+    <costList><Steel>45</Steel><Chemfuel>10</Chemfuel><ComponentIndustrial>3</ComponentIndustrial><Purple_Aphrodisiac_Nanofluid_Plus>8</Purple_Aphrodisiac_Nanofluid_Plus></costList>
+    <recipeMaker>
+      <defaultIngredientFilter Inherit="False"><thingDefs><li>Steel</li><li>Chemfuel</li><li>ComponentIndustrial</li><li>Purple_Aphrodisiac_Nanofluid_Plus</li></thingDefs></defaultIngredientFilter>
+      <recipeUsers Inherit="False"><li>TableMachining</li></recipeUsers>
+      <researchPrerequisite>SSC_RES_PNAIndustrialWeapons</researchPrerequisite>
+      <skillRequirements><Crafting>5</Crafting></skillRequirements><displayPriority>435</displayPriority>
+    </recipeMaker>
+    <verbs><li>
+      <verbClass>Verb_Shoot</verbClass><hasStandardCommand>true</hasStandardCommand>
+      <defaultProjectile>SSC_Projectile_PnaRepeaterNeedle</defaultProjectile>
+      <warmupTime>0.5</warmupTime><range>22.9</range><burstShotCount>3</burstShotCount><ticksBetweenBurstShots>6</ticksBetweenBurstShots>
+      <soundCast>SSC_PnaNeedleRepeater_Shot</soundCast><muzzleFlashScale>0</muzzleFlashScale>
+    </li></verbs>
+    <tools><li><label>枪身</label><capacities><li>Blunt</li></capacities><power>9</power><cooldownTime>2</cooldownTime></li></tools>
+    <weaponClasses Inherit="False"><li>Ranged</li><li>RangedLight</li></weaponClasses>
+    <weaponTags Inherit="False" /><tradeTags Inherit="False" /><tradeability>None</tradeability><relicChance>0</relicChance><rotateInShelves>false</rotateInShelves>
+  </ThingDef>
+
+  <ThingDef ParentName="BaseMakeableGun">
+    <defName>SSC_Weapon_PnaNeedleRifle</defName>
+    <label>纳米催情液精确针枪</label>
+    <description>一把单发气动针枪，以较长瞄准间隔换取远距离精确投送。专用射针携带较高剂量的纳米催情液。</description>
+    <techLevel>Industrial</techLevel><possessionCount>1</possessionCount>
+    <graphicData><texPath>Things/Item/Equipment/SSC_PnaNeedleRifle</texPath><graphicClass>Graphic_Single</graphicClass><drawSize>1.25</drawSize></graphicData>
+    <soundInteract>Interact_Rifle</soundInteract>
+    <statBases>
+      <WorkToMake>18000</WorkToMake><Mass>3</Mass><MaxHitPoints>100</MaxHitPoints>
+      <AccuracyTouch>0.55</AccuracyTouch><AccuracyShort>0.80</AccuracyShort><AccuracyMedium>0.90</AccuracyMedium><AccuracyLong>0.80</AccuracyLong>
+      <RangedWeapon_Cooldown>2.5</RangedWeapon_Cooldown>
+    </statBases>
+    <costList><Steel>65</Steel><Chemfuel>15</Chemfuel><ComponentIndustrial>4</ComponentIndustrial><Purple_Aphrodisiac_Nanofluid_Plus>10</Purple_Aphrodisiac_Nanofluid_Plus></costList>
+    <recipeMaker>
+      <defaultIngredientFilter Inherit="False"><thingDefs><li>Steel</li><li>Chemfuel</li><li>ComponentIndustrial</li><li>Purple_Aphrodisiac_Nanofluid_Plus</li></thingDefs></defaultIngredientFilter>
+      <recipeUsers Inherit="False"><li>TableMachining</li></recipeUsers>
+      <researchPrerequisite>SSC_RES_PNAIndustrialWeapons</researchPrerequisite>
+      <skillRequirements><Crafting>6</Crafting></skillRequirements><displayPriority>440</displayPriority>
+    </recipeMaker>
+    <verbs><li>
+      <verbClass>Verb_Shoot</verbClass><hasStandardCommand>true</hasStandardCommand>
+      <defaultProjectile>SSC_Projectile_PnaRifleNeedle</defaultProjectile>
+      <warmupTime>1.5</warmupTime><range>36.9</range><burstShotCount>1</burstShotCount>
+      <soundCast>SSC_PnaNeedleRifle_Shot</soundCast><muzzleFlashScale>0</muzzleFlashScale>
+    </li></verbs>
+    <tools><li><label>枪托</label><capacities><li>Blunt</li></capacities><power>9</power><cooldownTime>2</cooldownTime></li></tools>
+    <weaponClasses Inherit="False"><li>Ranged</li><li>LongShots</li></weaponClasses>
+    <weaponTags Inherit="False" /><tradeTags Inherit="False" /><tradeability>None</tradeability><relicChance>0</relicChance><rotateInShelves>false</rotateInShelves>
+  </ThingDef>
+
+  <ThingDef ParentName="BaseBullet">
+    <defName>SSC_Projectile_PnaRepeaterNeedle</defName><label>纳米催情液速射针</label>
+    <thingClass>SexSlaveCraft.Projectile_SSCPnaTrail</thingClass>
+    <comps><li Class="SexSlaveCraft.CompProperties_SSCPnaTrail"><fleckDef>SSC_PnaTrail</fleckDef></li></comps>
+    <graphicData><texPath>Things/Projectile/SSC_PnaRepeaterNeedle</texPath><graphicClass>Graphic_Single</graphicClass><drawSize>(0.4,0.4)</drawSize></graphicData>
+    <projectile><damageDef>SSC_Damage_PnaRepeaterNeedle</damageDef><damageAmountBase>2</damageAmountBase><armorPenetrationBase>0.30</armorPenetrationBase><speed>70</speed></projectile>
+  </ThingDef>
+  <ThingDef ParentName="BaseBullet">
+    <defName>SSC_Projectile_PnaRifleNeedle</defName><label>纳米催情液精确针</label>
+    <thingClass>SexSlaveCraft.Projectile_SSCPnaTrail</thingClass>
+    <comps><li Class="SexSlaveCraft.CompProperties_SSCPnaTrail"><fleckDef>SSC_PnaTrail</fleckDef></li></comps>
+    <graphicData><texPath>Things/Projectile/SSC_PnaRifleNeedle</texPath><graphicClass>Graphic_Single</graphicClass><drawSize>(0.4,0.4)</drawSize></graphicData>
+    <projectile><damageDef>SSC_Damage_PnaRifleNeedle</damageDef><damageAmountBase>4</damageAmountBase><armorPenetrationBase>0.40</armorPenetrationBase><speed>90</speed></projectile>
+  </ThingDef>
+</Defs>

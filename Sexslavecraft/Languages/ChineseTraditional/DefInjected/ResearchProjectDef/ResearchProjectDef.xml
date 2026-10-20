@@ -10,7 +10,6 @@
   <SSC_RES_SexChange.description>讓男人變女人（未開發，而且會包含整形手術）。</SSC_RES_SexChange.description>
   <SSC_RES_Femboy.label>小南梁</SSC_RES_Femboy.label>
   <SSC_RES_Femboy.description>把男人變成小南梁（未開發）</SSC_RES_Femboy.description>
-  <SSC_RES_PNASimpleLauncher.label>PNA 簡易發射器</SSC_RES_PNASimpleLauncher.label>
   <SSC_RES_PNAConcentration.label>PNA 濃縮技術</SSC_RES_PNAConcentration.label>
   <SSC_RES_PE.label>人格排洩</SSC_RES_PE.label>
   <SSC_RES_SlaveSpecialization.label>人格編輯</SSC_RES_SlaveSpecialization.label>
@@ -33,6 +32,5 @@
   <SSC_RES_GelatinizationPartial.description>初步的凝膠化改造。</SSC_RES_GelatinizationPartial.description>
   <SSC_RES_GelatinizationFull.label>凝膠化（全身）</SSC_RES_GelatinizationFull.label>
   <SSC_RES_GelatinizationFull.description>徹底的形態轉換。</SSC_RES_GelatinizationFull.description>
-  <SSC_RES_PNASimpleLauncher.description>把奈米催情液做成可發射的彈丸。低成本、低強度，適合在近處壓制或活化目標。</SSC_RES_PNASimpleLauncher.description>
   <SSC_RES_PNAConcentration.description>掌握奈米催情液的濃縮方法。可在篝火或爐灶上粗放濃縮，但會損失更多原液；藥物台的減壓工藝能以較少原液製成相同的濃縮品。</SSC_RES_PNAConcentration.description>
 </LanguageData>

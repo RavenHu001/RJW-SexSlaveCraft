@@ -1,0 +1,50 @@
+{
+  "date": "2026-10-20",
+  "status": "candidate preview only; not integrated or committed",
+  "originalGeneratedFile": "exec-377d5e43-b75a-4539-bc34-9ff322cd2571.png",
+  "generationTool": "built-in imagegen",
+  "source": "SSC_PnaProjectorGun_Detailed_v2_IntegratedSight_Source.png",
+  "sourceSha256": "4c2c8f97557b2f79cc0eb99a7ac0126fc3bc9ea894d2ab6a954fe96ba82c506c",
+  "sourceSize": [
+    2172,
+    724
+  ],
+  "alphaExtrema": [
+    0,
+    255
+  ],
+  "sourceAlphaBounds": [
+    19,
+    92,
+    2145,
+    658
+  ],
+  "sourceTouchesEdge": false,
+  "crop": [
+    17,
+    90,
+    2147,
+    660
+  ],
+  "preview": "SSC_PnaProjectorGun_Detailed_v2_IntegratedSight_256.png",
+  "previewSize": [
+    256,
+    256
+  ],
+  "previewSpriteSize": [
+    240,
+    64
+  ],
+  "previewOffset": [
+    8,
+    96
+  ],
+  "previewSha256": "372f4a1a8b90c273a8144f15a3888189cbc0476041da4ed44d34529e46bd19c2",
+  "prompt": "DetailRedraw_v2_IntegratedSight.prompt.txt",
+  "references": [
+    "SSC_PnaProjectorGun_Detailed_v1_Source.png"
+  ],
+  "change": "replace detached tubular telescope with low faceted sci-fi targeting module integrated into upper casing",
+  "runtimeChanged": false,
+  "gameRuntimeVerified": false
+}

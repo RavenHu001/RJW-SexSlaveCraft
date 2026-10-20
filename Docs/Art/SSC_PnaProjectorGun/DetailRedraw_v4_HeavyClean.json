@@ -1,0 +1,53 @@
+{
+  "date": "2026-10-20",
+  "status": "clean redraw candidate; not integrated or committed",
+  "generationTool": "built-in imagegen",
+  "originalGeneratedFile": "exec-c42a1a6e-c05c-48b2-bf0f-80f0fc20f9cf.png",
+  "source": "SSC_PnaProjectorGun_Detailed_v4_HeavyClean_Source.png",
+  "sourceSize": [
+    2172,
+    724
+  ],
+  "sourceSha256": "117a49473db11d56cab0554003dfdb24ef2e45dad59b5c30c162409aa15cfcc9",
+  "sourceAlphaBounds": [
+    9,
+    102,
+    2172,
+    675
+  ],
+  "sourceTouchesEdge": true,
+  "sourceAlphaExtrema": [
+    0,
+    255
+  ],
+  "crop": [
+    7,
+    100,
+    2172,
+    677
+  ],
+  "preview": "SSC_PnaProjectorGun_Detailed_v4_HeavyClean_256.png",
+  "previewSize": [
+    256,
+    256
+  ],
+  "previewSpriteSize": [
+    240,
+    64
+  ],
+  "previewOffset": [
+    8,
+    96
+  ],
+  "previewSha256": "866a92e04d1aa0081b0f0f118064662801778f9cc55508876f9243617a5c22ee",
+  "prompt": "DetailRedraw_v4_HeavyClean.prompt.txt",
+  "references": [
+    "SSC_PnaProjectorGun_Detailed_v3_PodSight_Source.png",
+    "../SSC_PnaPulseGun/SSC_PnaPulseGun_Detailed_v4_HeavyDark_Source.png",
+    "../SSC_PnaNeedleRepeater/SSC_PnaNeedleRepeater_WhipStyleHeavy.png",
+    "../SSC_PnaSilkWhip/SSC_PnaSilkWhip_Item_v2_Source.png"
+  ],
+  "change": "fresh redraw from selected low pod sight design and three style references with heavier black contours",
+  "runtimeChanged": false,
+  "gameRuntimeVerified": false
+}

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_Damage_PnaSilkWhip.label>aphrodisiac nanofluid filament puncture</SSC_Damage_PnaSilkWhip.label>
+  <SSC_Damage_PnaSilkWhip.deathMessage>{0} was killed by an aphrodisiac nanofluid filament whip.</SSC_Damage_PnaSilkWhip.deathMessage>
+  <SSC_Damage_PnaPulse.label>aphrodisiac nanofluid pulse puncture</SSC_Damage_PnaPulse.label>
+  <SSC_Damage_PnaPulse.deathMessage>{0} was killed by an aphrodisiac nanofluid pulse swarm.</SSC_Damage_PnaPulse.deathMessage>
+  <SSC_Damage_PnaProjection.label>aphrodisiac nanofluid swarm puncture</SSC_Damage_PnaProjection.label>
+  <SSC_Damage_PnaProjection.deathMessage>{0} was killed by an aphrodisiac nanofluid projection swarm.</SSC_Damage_PnaProjection.deathMessage>
+
+</LanguageData>

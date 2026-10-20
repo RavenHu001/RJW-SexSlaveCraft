@@ -1,0 +1,61 @@
+{
+  "status": "v2 item sprite and drawSize 0.75 connected; sync and in-game review pending; not committed",
+  "tool": "built-in image_gen",
+  "generatedSource": "C:\\Users\\24196\\.codex\\generated_images\\01a14d5a-bbd6-79f3-9356-75f2d8ad5113\\exec-5982baa6-a94e-4cd2-8c05-4df761b392fd.png",
+  "source": "Docs\\Art\\SSC_PnaSilkWhip\\SSC_PnaSilkWhip_Item_v2_Source.png",
+  "sourceSHA256": "6b77a755aab0653e783a13ce77c5370847cd471485d3ee3b836268f9b18426cd",
+  "sourceSize": [
+    2172,
+    724
+  ],
+  "sourceAlphaExtrema": [
+    0,
+    255
+  ],
+  "sourceVisibleBounds": [
+    32,
+    75,
+    2131,
+    648
+  ],
+  "crop": [
+    30,
+    73,
+    2133,
+    650
+  ],
+  "scale": 0.11412268188302425,
+  "resizedContentSize": [
+    240,
+    66
+  ],
+  "offset": [
+    8,
+    95
+  ],
+  "output": "Docs\\Art\\SSC_PnaSilkWhip\\256\\SSC_PnaSilkWhip_Item_v2.png",
+  "outputSize": [
+    256,
+    256
+  ],
+  "outputMode": "RGBA",
+  "outputAlphaExtrema": [
+    0,
+    255
+  ],
+  "outputVisibleBounds": [
+    8,
+    95,
+    248,
+    161
+  ],
+  "outputSHA256": "3ef6d0d4cf85c570b2eb1fac670986ad506f0378f61f0c76dc8ccf5e78b09466",
+  "runtimeSHA256": "3ef6d0d4cf85c570b2eb1fac670986ad506f0378f61f0c76dc8ccf5e78b09466",
+  "drawSize": 0.75,
+  "previousDrawSize": 1,
+  "method": "premultiplied-alpha Lanczos; 240px maximum content extent on transparent 256px canvas",
+  "prompt": "Item_v2.prompt.txt",
+  "reference": "SSC_PnaSilkWhip_Item_v1_Source.png",
+  "referenceSHA256": "290ece4c1b02d430cd2b5a148b9544e3c0e538025271081535a78a95edbe6dc2",
+  "outlineSpotChecks": "At 25%,40%,60% of source visible width, top black edge scans are about 4.3-4.6px at 240px export width, versus v1 2.3-2.4px; not a uniform whole-image thickness measurement."
+}

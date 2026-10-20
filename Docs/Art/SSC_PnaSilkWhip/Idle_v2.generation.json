@@ -1,0 +1,35 @@
+{
+  "status": "idle v2 large-return-bend candidate; pending user review; not exported, connected, synced or committed",
+  "tool": "built-in image_gen",
+  "source": "Docs\\Art\\SSC_PnaSilkWhip\\SSC_PnaSilkWhip_Idle_v2_Source.png",
+  "SHA256": "b606b50f9e01584f998748ffa8a7d415d36f2e81b7d579919e6406111f93dbcc",
+  "generatedSource": "C:\\Users\\24196\\.codex\\generated_images\\01a14d5a-bbd6-79f3-9356-75f2d8ad5113\\exec-49a974fa-0133-4bc0-856d-0204d6371967.png",
+  "size": [
+    1774,
+    887
+  ],
+  "mode": "RGBA",
+  "alphaExtrema": [
+    0,
+    255
+  ],
+  "visibleBounds": [
+    35,
+    168,
+    1760,
+    846
+  ],
+  "prompt": "Idle_v2.prompt.txt",
+  "references": [
+    {
+      "path": "Docs\\Art\\SSC_PnaSilkWhip\\SSC_PnaSilkWhip_Item_v2_Source.png",
+      "role": "approved v2 handle and bold outline",
+      "SHA256": "6b77a755aab0653e783a13ce77c5370847cd471485d3ee3b836268f9b18426cd"
+    },
+    {
+      "path": "Docs\\Art\\SSC_PnaShortWhip\\SSC_PnaShortWhip_Idle_Approved.png",
+      "role": "large backward bend pose only; no industrial material or three-cord construction",
+      "SHA256": "e03309d810569fc1d3248a774096344e88b80ca05df9a134ef04f57704073bc7"
+    }
+  ]
+}

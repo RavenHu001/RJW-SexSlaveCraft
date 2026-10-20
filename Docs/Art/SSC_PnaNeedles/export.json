@@ -1,0 +1,62 @@
+{
+  "canvas": [
+    128,
+    128
+  ],
+  "alphaThreshold": 1,
+  "sourcePadding": 2,
+  "sharedScale": 0.09833187006145742,
+  "resampling": "premultiplied-alpha Lanczos",
+  "items": [
+    {
+      "name": "SSC_PnaRepeaterNeedle",
+      "source": "SSC_PnaRepeaterNeedle_Approved.png",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceSha256": "1ec7fb8a75513d9fc037f64ca359eb6d9d9e657fa97cf82c24808a214a1d41d9",
+      "crop": [
+        503,
+        81,
+        752,
+        1154
+      ],
+      "fittedSize": [
+        24,
+        106
+      ],
+      "offset": [
+        52,
+        11
+      ],
+      "output": "1.7/Textures/Things/Projectile/SSC_PnaRepeaterNeedle.png",
+      "outputSha256": "49c0e3fe0953b7522571fc0584be26512688e06fe6e732141b962261b192e237"
+    },
+    {
+      "name": "SSC_PnaRifleNeedle",
+      "source": "SSC_PnaRifleNeedle_Approved.png",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceSha256": "cbf93c53ce30bb4b5c803d6c9d5190c259205aaaf814a92ed7a85eac5e078fc5",
+      "crop": [
+        496,
+        49,
+        758,
+        1188
+      ],
+      "fittedSize": [
+        26,
+        112
+      ],
+      "offset": [
+        51,
+        8
+      ],
+      "output": "1.7/Textures/Things/Projectile/SSC_PnaRifleNeedle.png",
+      "outputSha256": "647aa14cc36cb71a444ac9337062ae26a57741fc3a7bdb3dc20c396b76567b88"
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "source": "SSC_PnaNeedleRifle_WhipStyleHeavy.png",
+  "sourceSize": [
+    2168,
+    725
+  ],
+  "sourceSha256": "19c4bbf68979e50dfb451ea223c02f9dc63063a1e59eb7bcaafc0fb1126e887c",
+  "alphaThreshold": 1,
+  "sourcePadding": 2,
+  "crop": [
+    32,
+    76,
+    2151,
+    670
+  ],
+  "resampling": "premultiplied-alpha Lanczos",
+  "fittedSize": [
+    240,
+    67
+  ],
+  "offset": [
+    8,
+    94
+  ],
+  "outputSize": [
+    256,
+    256
+  ],
+  "output": "1.7/Textures/Things/Item/Equipment/SSC_PnaNeedleRifle.png",
+  "outputSha256": "10af69bf9497db0bf8026bdfaed090ecc9cc45b7358900bc11d3936f7c2be493"
+}

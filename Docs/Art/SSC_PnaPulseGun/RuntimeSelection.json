@@ -1,0 +1,28 @@
+{
+  "recordDate": "2026-10-20",
+  "originalGeneratedFile": "exec-511d72eb-17c9-4617-9e2a-9fcc5483ccfe.png",
+  "source": "SSC_PnaPulseGun_Detailed_v4_HeavyDark_Source.png",
+  "sourceSha256": "8cb15c0f99b667951bb32536a7504bca056e165bbba1ce78b2f75f49f7099b51",
+  "sourceSize": [
+    1983,
+    793
+  ],
+  "generationTool": "built-in imagegen",
+  "currentAuthorization": "selected source exported and integrated; maintenance owner accepted current visual result and authorized commit on 2026-10-20; no publication",
+  "selectionNote": "Explicit user selection of exec-511d72eb; do not substitute exec-e82a6f4a framing revision. Source edge condition retained as selected.",
+  "previousSelection": {
+    "recordDate": "2026-10-20",
+    "originalGeneratedFile": "exec-36869d38-822e-4bda-b3a8-a642ab1d605b.png",
+    "source": "SSC_PnaPulseGun_SideHeavy_Source.png",
+    "sourceSha256": "3ec5bf124502adefb3f62608e224b5da3e0b1e4e00df284e1dfa112bd3351848",
+    "sourceSize": [
+      1983,
+      793
+    ],
+    "generationTool": "built-in imagegen",
+    "currentAuthorization": "export exact selected source to 256x256 and integrate/sync for game testing; no commit",
+    "gameRuntimeVerified": false
+  },
+  "gameRuntimeVerified": false,
+  "acceptanceNote": "Acceptance recorded after original automated export/sync reports; their gameRuntimeVerified=false remains historical."
+}

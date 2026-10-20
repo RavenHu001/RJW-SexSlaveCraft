@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_Weapon_PnaSilkWhip.label>нитевидная плеть с наножидкостью</SSC_Weapon_PnaSilkWhip.label>
+  <SSC_Weapon_PnaSilkWhip.description>Короткая плеть, формирующая тонкие нити из возбуждающей наножидкости. При контакте рой высвобождается с минимальной травмой; цели с действующей цепью безвредно поглощают его для активации и небольшого восстановления.</SSC_Weapon_PnaSilkWhip.description>
+  <SSC_Weapon_PnaPulseGun.label>импульсный проектор наножидкости</SSC_Weapon_PnaPulseGun.label>
+  <SSC_Weapon_PnaPulseGun.description>Специализированное оружие, выпускающее возбуждающую наножидкость трёхимпульсными очередями в виде тонких игольчатых роёв. Подходит для ближней и средней дистанции. В теле иглы быстро распадаются.</SSC_Weapon_PnaPulseGun.description>
+  <SSC_Weapon_PnaProjectorGun.label>дальнобойный проектор наножидкости</SSC_Weapon_PnaProjectorGun.label>
+  <SSC_Weapon_PnaProjectorGun.description>Точный дальнобойный проектор, сохраняющий форму роя наномашин в полёте. Одиночные выстрелы обладают высокой пробивной способностью; в теле рой распадается, не оставляя отдельного носителя.</SSC_Weapon_PnaProjectorGun.description>
+  <SSC_Projectile_PnaPulse.label>импульсный рой наножидкости</SSC_Projectile_PnaPulse.label>
+  <SSC_Projectile_PnaProjection.label>дальнобойный рой наножидкости</SSC_Projectile_PnaProjection.label>
+  <SSC_Weapon_PnaSilkWhip.tools.0.label>нити наномашин</SSC_Weapon_PnaSilkWhip.tools.0.label>
+  <SSC_Weapon_PnaPulseGun.tools.0.label>корпус оружия</SSC_Weapon_PnaPulseGun.tools.0.label>
+  <SSC_Weapon_PnaProjectorGun.tools.0.label>приклад</SSC_Weapon_PnaProjectorGun.tools.0.label>
+
+</LanguageData>
