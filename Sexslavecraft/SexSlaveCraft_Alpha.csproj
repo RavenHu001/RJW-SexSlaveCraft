@@ -137,6 +137,7 @@
     <Compile Include="common\SSCMasterProgressionMigration.cs" />
     <Compile Include="common\SSCMasterProgressionGameComponent.cs" />
     <Compile Include="common\SSCSettings.MasterQualification.cs" />
+    <Compile Include="common\SSCSettings.RitualDevelopmentPoints.cs" />
     <Compile Include="common\SSCMasterQualificationUtility.cs" />
     <Compile Include="common\SSCMasterQualificationDisplay.cs" />
     <!-- 第二批：统一道具结算、设置生成按钮及原版使用效果适配。 -->
@@ -276,6 +277,7 @@
     <Compile Include="ThePatches\Harmony_HumanCattleCompatibility.cs" />
     <Compile Include="ThePatches\Harmony_PreventRitualTimeShow.cs" />
     <Compile Include="ThePatches\Harmony_RitualFix.cs" />
+    <Compile Include="ThePatches\Harmony_RitualDevelopmentPoints.cs" />
     <Compile Include="ThePatches\Harmony_BindingRitualLifecycle.cs" />
     <Compile Include="ThePatches\Harmony_BindingRitualSelection.cs" />
     <Compile Include="ThePatches\Harmony_ShowPAN.cs" />

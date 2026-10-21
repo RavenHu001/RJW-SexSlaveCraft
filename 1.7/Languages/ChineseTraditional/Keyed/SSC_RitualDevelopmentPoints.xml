@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <!-- 全域設定僅控制 SSC 契約儀式的文化收益；數值沿用原版隨時舉辦儀式曲線。 -->
+  <SSC_Setting_EnableRitualDevelopmentPoints>契約儀式獲得文化演化點</SSC_Setting_EnableRitualDevelopmentPoints>
+  <SSC_Setting_EnableRitualDevelopmentPoints_Desc>預設關閉。開啟後，SSC 契約儀式可為儀式所屬的流變文化獲得演化點：糟糕與平庸 +0，成功 +1，完美 +2。仍須滿足原版文化發展條件，並受改革點數上限限制。結算時讀取目前設定；關閉只停止這項收益，保留已有點數，不影響儀式其他效果。此設定由所有存檔共用。</SSC_Setting_EnableRitualDevelopmentPoints_Desc>
+</LanguageData>

@@ -2,6 +2,8 @@
 
 2.4.3 正式发布门禁：**40/40 套、3894/3894 项、2/2 资源检查通过**，发布编排 **53 项通过**；实际 1.7 构建和安装包审计通过。此次元数据重编未重新启动游戏，历史 3849 项与专项 1083 项保留各自阶段。见[完整发布验证](../Docs/Releases/2.4.3/2.4.3版本验证.md)。
 
+当前开发批次：1.7 仪式演化点开关新增原生专项，完整 **41/41 套、3940/3940 项、2/2 资源检查通过**，门禁／发布编排隔离夹具 **53 项通过**，生产构建零警告零错误。RitualLifecycle 为 **208/208**，RitualDevelopmentNative 为 **26/26**；2026-10-21 维护者确认开关与结算实机符合预期并授权提交，见[实现与验收](../Docs/Development/Completed/仪式演化点开关实现与测试.md)。本批尚未发布，不改写上述正式发布记录。
+
 当前对应 **2.4.3本**。最新全量历史结果为旧发射器退役时 **40 套／3849 项**，已包含此前鞭束改动；后续恩赐剂量只执行相关四套／1083 项。版本归并本身只做文档、链接与非文档文件哈希核对，不重跑机制回归。本轮产物对齐 2.4.3，新门禁与历史结果分别登记；[完整边界](../Docs/Releases/2.4.3/2.4.3版本验证.md)。
 
 ## 已执行批次记录
@@ -157,6 +159,7 @@ pwsh -File Scripts/Test-All.ps1 -GameVersion 1.7 -HarmonyAssemblyPath 'C:\Depend
 
 - [RitualProgression](RitualProgression/README.md)：Ritual progression regression tests。
 - [RitualLifecycle](RitualLifecycle/README.md)：Binding Ritual lifecycle regression tests。
+- [RitualDevelopmentNative](RitualDevelopmentNative/README.md)：真实 1.7 仪式演化点曲线、文化 tracker、来源列表与四语；使用 `Test-All.ps1` 的原生 SDK／游戏路径及测试 Harmony 参数。
 - [RitualSelection](RitualSelection/README.md)：仪式选人性能与提交边界回归。
 - [RitualAnimationFallback](RitualAnimationFallback/README.md)：仪式备用动画查找回归。
 - [RaceInjection](RaceInjection/README.md)：种族分页注入回归。

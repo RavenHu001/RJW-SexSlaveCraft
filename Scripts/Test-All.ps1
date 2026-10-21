@@ -6,7 +6,7 @@
 需要 .NET SDK 9（或更新 SDK）及 .NET 9 运行时。SharedBed、InteractionProtection、RitualSelection、CombatantSpecialization、PnaLoad 和 BondRelations 需要 net9.0 的 0Harmony.dll，
 通过 -HarmonyAssemblyPath 或 SSC_TEST_HARMONY_PATH 提供，不自动下载、不使用游戏的 Harmony。
 默认将报告保存在 .builds/validation/<本次运行目录>；不编译或安装游戏模组。
-默认检查 1.7 运行资源并回归当前源码；PnaMeleeQuality／PnaSpacerNative 另需当前游戏程序集和 .NET 10，
+默认检查 1.7 运行资源并回归当前源码；原生品质、太空武器及仪式演化点专项另需当前游戏程序集和 .NET 10，
 可用 -NativeGameRoot / -NativeDotnetPath 指定，默认读取 BUILD-INFO 和仓库便携 SDK。
 -GameVersion 1.6 只核验冻结基线和 XML，不能证明旧版源码或游戏兼容性。
 #>
@@ -65,6 +65,8 @@ $suites = @(
     @{ Name = 'PnaWeaponEffects'; Arguments = @($repoRoot) },
     @{ Name = 'PnaMeleeQuality'; Arguments = @(); Framework = 'net10.0' },
     @{ Name = 'PnaSpacerNative'; Arguments = @(); Framework = 'net10.0' },
+    # 真实 1.7 曲线和文化累计路径；与模型宿主的整场一次认领回归互补。
+    @{ Name = 'RitualDevelopmentNative'; Arguments = @(); Framework = 'net10.0' },
     @{ Name = 'LowTechAdaptation'; Arguments = @($repoRoot) },
     @{ Name = 'PersonalityMemories'; Arguments = @() },
     @{ Name = 'PersonalitySpecializations'; Arguments = @() },
@@ -254,7 +256,7 @@ foreach ($suite in $suites) {
     }
     $problems = @($globalProblems.ToArray())
     if (-not (Test-Path -LiteralPath $project -PathType Leaf)) { $problems += "Project missing: $project" }
-    if ($name -in @('SharedBed', 'InteractionProtection', 'RitualSelection', 'CombatantSpecialization', 'PnaLoad', 'BondRelations', 'PnaWeaponEffects', 'PnaMeleeQuality', 'PnaSpacerNative') -and $harmonyProblem) { $problems += $harmonyProblem }
+    if ($name -in @('SharedBed', 'InteractionProtection', 'RitualSelection', 'CombatantSpecialization', 'PnaLoad', 'BondRelations', 'PnaWeaponEffects', 'PnaMeleeQuality', 'PnaSpacerNative', 'RitualDevelopmentNative') -and $harmonyProblem) { $problems += $harmonyProblem }
     if ($problems.Count -gt 0) {
         $result.Reason = $problems -join ' '
         Set-Content -LiteralPath $logPath -Value $result.Reason -Encoding utf8
@@ -267,8 +269,8 @@ foreach ($suite in $suites) {
             $suiteDotnet = $dotnetPath
             $framework = 'net9.0'
             $testArguments = $suite.Arguments
-            if ($name -in @('SharedBed', 'InteractionProtection', 'RitualSelection', 'CombatantSpecialization', 'PnaLoad', 'BondRelations', 'PnaWeaponEffects', 'PnaMeleeQuality', 'PnaSpacerNative')) { $properties += "-p:HarmonyAssemblyPath=$HarmonyAssemblyPath" }
-            if ($name -in @('PnaMeleeQuality', 'PnaSpacerNative')) {
+            if ($name -in @('SharedBed', 'InteractionProtection', 'RitualSelection', 'CombatantSpecialization', 'PnaLoad', 'BondRelations', 'PnaWeaponEffects', 'PnaMeleeQuality', 'PnaSpacerNative', 'RitualDevelopmentNative')) { $properties += "-p:HarmonyAssemblyPath=$HarmonyAssemblyPath" }
+            if ($name -in @('PnaMeleeQuality', 'PnaSpacerNative', 'RitualDevelopmentNative')) {
                 $suiteDotnet = $NativeDotnetPath; $framework = $suite.Framework
                 $properties += "-p:GameRoot=$NativeGameRoot"
                 $testArguments = @($repoRoot, $NativeGameRoot)

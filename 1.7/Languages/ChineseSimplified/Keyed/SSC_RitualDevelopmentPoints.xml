@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <!-- 全局设置仅控制 SSC 契约仪式的文化收益；数值沿用原版随时举办仪式曲线。 -->
+  <SSC_Setting_EnableRitualDevelopmentPoints>契约仪式获得文化演化点</SSC_Setting_EnableRitualDevelopmentPoints>
+  <SSC_Setting_EnableRitualDevelopmentPoints_Desc>默认关闭。开启后，SSC 契约仪式可为仪式所属的流变文化获得演化点：糟糕与平庸 +0，成功 +1，完美 +2。仍须满足原版文化发展条件，并受改革点数上限限制。结算时读取当前设置；关闭只停止这项收益，保留已有点数，不影响仪式其他效果。此设置由所有存档共用。</SSC_Setting_EnableRitualDevelopmentPoints_Desc>
+</LanguageData>

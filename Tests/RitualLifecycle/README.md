@@ -1,8 +1,10 @@
 # Binding Ritual lifecycle regression tests
 
-The suite currently contains 188 cases, including ritual lifecycle, UAP compatibility,
+The suite currently contains 208 cases, including ritual lifecycle, UAP compatibility,
 daily training, Education interactions, receiver handoff/reservation regressions,
 and exclusive ownership during personality excretion.
+
+The ritual development toggle cases compile the production settings partial and whole outcome worker: defaults and missing keys, preference roundtrips, current setting at resolution, Def permission, culture eligibility, four outcome indices, actual capped letter values, cancellation, duplicate/reentrant callbacks and restored completion claims. Scribe and culture payout are observable model boundaries; the separate `RitualDevelopmentNative` suite exercises the real 1.7 curve/type gate and tracker. Neither suite is in-game acceptance.
 
 The bond-relation regression runs the production relation admission and complete ritual outcome worker with observable social storage. Eight cases cover 79/80/100 opinion, one award per completed ritual, authorized third-party Master/officer hosts, incomplete rituals, and identity invalidation during opinion lookup or relation creation. Binding maintenance and actual Harmony label installation are covered by `BondRelations`.
 The original lifecycle tests were committed with the lifecycle fix

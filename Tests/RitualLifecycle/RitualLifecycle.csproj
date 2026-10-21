@@ -8,6 +8,7 @@
     <DefineConstants Condition="'$(EnableUapTestStub)' == 'true'">$(DefineConstants);SSC_TEST_WITH_UAP</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(SscSourceRoot)/common/SSCSettings.RitualDevelopmentPoints.cs" Link="Production/SSCSettings.RitualDevelopmentPoints.cs" />
     <Compile Include="$(SscSourceRoot)/common/SSCBondRelationRules.cs" Link="Production/SSCBondRelationRules.cs" />
     <Compile Include="$(SscSourceRoot)/common/SSCBondRelationUtility.cs" Link="Production/SSCBondRelationUtility.cs" />
     <Compile Include="$(SscSourceRoot)/JobDriver/JobDriver_PE.cs" Link="Production/JobDriver_PE.cs" />

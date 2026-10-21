@@ -46,6 +46,8 @@ namespace SexSlaveCraft
             Scribe_Values.Look(ref enableDebugGizmos, "enableDebugGizmos", false);
             Scribe_Values.Look(ref enableFullGelatinizedBodyTint, "enableFullGelatinizedBodyTint", true);
             Scribe_Values.Look(ref enableRitualEnslavement, "enableRitualEnslavement", true);
+            // 仪式文化收益与转奴开关分别保存；新设置缺省关闭，不改变已有仪式其他结算。
+            ExposeRitualDevelopmentPointsSettings();
             Scribe_Values.Look(ref enableRimTalkSexDialogue, "enableRimTalkSexDialogue", true);
             Scribe_Values.Look(ref rimTalkMaxGenerationSpeed, "rimTalkMaxGenerationSpeed", 0);
             Scribe_Values.Look(ref rimTalkTrainingInterruptTemplate, "rimTalkTrainingInterruptTemplate", "");
@@ -206,6 +208,13 @@ namespace SexSlaveCraft
                 "SSC_Setting_EnableRitualEnslavement".Translate(),
                 ref settings.enableRitualEnslavement,
                 "SSC_Setting_EnableRitualEnslavement_Desc".Translate()
+            );
+
+            // 直接编辑全局偏好；预览与结算按需读取，不扫描角色、不重建现有仪式。
+            listingStandard.CheckboxLabeled(
+                "SSC_Setting_EnableRitualDevelopmentPoints".Translate(),
+                ref settings.enableRitualDevelopmentPoints,
+                "SSC_Setting_EnableRitualDevelopmentPoints_Desc".Translate()
             );
 
             listingStandard.GapLine();

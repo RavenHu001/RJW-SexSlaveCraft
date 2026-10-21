@@ -76,6 +76,8 @@ internal static partial class Program
         RunTrainerOfficerFeedbackTests();
         RunMasterProgressionTests();
         RunForcedActBoundaryTests();
+        // 运行真实整场 Apply 和生产设置序列化；原版曲线及类型门槛由原生专项独立覆盖。
+        RunRitualDevelopmentPointsTests();
         Check("cancelling while walking cleans state without executing the future scene finish", () =>
         {
             var ritual = new RitualFixture();

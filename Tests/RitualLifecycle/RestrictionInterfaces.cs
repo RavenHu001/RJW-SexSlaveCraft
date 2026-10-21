@@ -11,7 +11,10 @@ namespace Verse
     public static class Translation
     {
         /// <summary>无界面测试保留提示键，不加载语言系统。</summary>
-        public static string Translate(this string key, params object[] args) => key;
+        public static string Translate(this string key, params object[] args)
+            // 仅保留演化点奖励参数以验证上限截断后的实际增量；其他翻译边界沿用提示键。
+            => key == "RitualOutcomeExtraDesc_DevelopmentPointsAwarded"
+                ? key + "|" + string.Join("|", args) : key;
     }
     public class LookTargets
     {

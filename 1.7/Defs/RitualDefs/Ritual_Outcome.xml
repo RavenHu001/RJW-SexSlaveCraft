@@ -4,6 +4,8 @@
   <RitualOutcomeEffectDef>
     <defName>SSC_BindingRitualOutcome</defName>
     <workerClass>SexSlaveCraft.RitualOutcomeEffectWorker_SSCBinding</workerClass>
+    <!-- 支持演化点收益；实际启用仍取决于默认关闭的全局设置与原版文化发展条件。 -->
+    <givesDevelopmentPoints>true</givesDevelopmentPoints>
     
     <comps>
       

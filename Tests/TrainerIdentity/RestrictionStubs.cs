@@ -48,6 +48,8 @@ namespace SexSlaveCraft
     public class Settings
     {
         public bool allowDirectMasterSelection = false;
+        // 仪式宿主用此全局边界驱动生产处理器；真实设置字段及序列化另链接生产 partial 验证。
+        public bool enableRitualDevelopmentPoints = false;
         public bool enableSexSlaveProtectionRules = true, enableSpecializationRestrictionOverrides = true;
         public SSCRestrictionRules restrictionDefaults = new SSCRestrictionRules();
     }

@@ -536,6 +536,7 @@ internal static class TestWorld
     public static Action OnDailyOutcome, OnProcessSex;
     public static Action OnTrainerProgress, OnTrainerFeedback;
     public static int RitualOutcomes, RitualLetters;
+    public static readonly List<string> RitualLetterTexts = new List<string>();
     public static Action OnRitualOutcome;
     public static Pawn FeedbackTrainer, FeedbackReceiver;
     public static Action OnSexTick;
@@ -557,6 +558,7 @@ internal static class TestWorld
         OnDailyOutcome = OnProcessSex = null;
         OnTrainerProgress = OnTrainerFeedback = null;
         RitualOutcomes = RitualLetters = 0;
+        RitualLetterTexts.Clear();
         OnRitualOutcome = null;
         FeedbackTrainer = FeedbackReceiver = null;
         OnSexTick = null;

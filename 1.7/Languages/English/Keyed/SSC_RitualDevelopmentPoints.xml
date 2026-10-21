@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <!-- Global preference for SSC ritual development points; rewards follow the vanilla anytime ritual curve. -->
+  <SSC_Setting_EnableRitualDevelopmentPoints>Contract rituals award ideoligion development points</SSC_Setting_EnableRitualDevelopmentPoints>
+  <SSC_Setting_EnableRitualDevelopmentPoints_Desc>Disabled by default. When enabled, SSC contract rituals can award development points to the ritual's fluid ideoligion: terrible and boring +0, good +1, best +2. Vanilla development requirements and the reformation point cap still apply. The current setting is checked when the ritual resolves. Disabling it only stops this reward; existing points and other ritual effects are preserved. This setting is shared by all saves.</SSC_Setting_EnableRitualDevelopmentPoints_Desc>
+</LanguageData>

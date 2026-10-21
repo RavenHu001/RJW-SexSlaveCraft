@@ -22,8 +22,9 @@ $savedNativeDotnet = $env:SSC_DOTNET_PATH
 $savedNativeGameRoot = $env:SSC_GAME_ROOT
 $checks = 0
 $suiteCount = @(Get-ChildItem -LiteralPath (Join-Path $repo 'Tests') -Recurse -Filter '*.csproj').Count
-# Nine registered suites require the test Harmony, including both native 1.7 suites.
-$harmonySuiteCount = 9
+# Ten registered suites require the test Harmony, including all three native 1.7 suites.
+# 新增仪式原生专项也需要本地 Harmony；缺依赖时应全部记为 NotRun，不能漏掉新套件。
+$harmonySuiteCount = 10
 
 <#
 .SYNOPSIS

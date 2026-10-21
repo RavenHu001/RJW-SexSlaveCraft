@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- 用真实 1.7 游戏类型编译生产处理器与补丁，防止模型替身掩盖 FromQuality 类型门槛。 -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType><TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings><Nullable>disable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="../../Sexslavecraft/common/SSCSettings.RitualDevelopmentPoints.cs" Link="Production/SSCSettings.RitualDevelopmentPoints.cs" />
+    <Compile Include="../../Sexslavecraft/ThePatches/Harmony_RitualDevelopmentPoints.cs" Link="Production/Harmony_RitualDevelopmentPoints.cs" />
+    <Compile Include="../../Sexslavecraft/Ritual/RitualOutcomeEffectWorker_SSCBinding.cs" Link="Production/RitualOutcomeEffectWorker_SSCBinding.cs" />
+    <Compile Include="../../Sexslavecraft/Ritual/RitualOutcomeComp_BindingSpectatorCount.cs" Link="Production/RitualOutcomeComp_BindingSpectatorCount.cs" />
+    <Reference Include="Assembly-CSharp"><HintPath>$(GameRoot)/Assembly-CSharp.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityStubs"><HintPath>$(GameRoot)/UnityStubs.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="0Harmony"><HintPath>$(HarmonyAssemblyPath)</HintPath></Reference>
+  </ItemGroup>
+  <Target Name="RequireReferences" BeforeTargets="ResolveReferences">
+    <Error Condition="!Exists('$(GameRoot)/Assembly-CSharp.dll') or !Exists('$(HarmonyAssemblyPath)')" Text="Supply actual 1.7 GameRoot and net9.0 test HarmonyAssemblyPath." />
+  </Target>
+</Project>

@@ -20,7 +20,9 @@ namespace SexSlaveCraft
         // CN: 这里重新补回原版仪式流水线仍然会用到的一小部分字段 / 属性。
         public static FloatRange ProgressToQualityMapping = new FloatRange(0.25f, 1f);
         public override bool SupportsAttachableOutcomeEffect => def.allowAttachableOutcome;
-        public virtual bool GivesDevelopmentPoints => def.givesDevelopmentPoints;
+        // Def 声明该仪式支持文化收益，玩家偏好决定是否启用；初始化期间缺设置时保持关闭。
+        public virtual bool GivesDevelopmentPoints => def.givesDevelopmentPoints
+            && SSCMod.settings?.enableRitualDevelopmentPoints == true;
 
         public RitualOutcomeEffectWorker_SSCBinding() { }
         public RitualOutcomeEffectWorker_SSCBinding(RitualOutcomeEffectDef def) : base(def) { }
@@ -232,13 +234,20 @@ namespace SexSlaveCraft
             }
 
             string extraDevPointsText = null;
-            if (jobRitual.Ritual?.ideo != null && jobRitual.Ritual.ideo.Fluid)
+            // 只控制文化点数分支；关闭时不调用原版加点，也不生成“未获得点数”的奖励说明。
+            // 仍复用本场已消费的 TryClaimOutcome，不从六个阶段分别发点或新增领取存档字段。
+            if (GivesDevelopmentPoints && jobRitual.Ritual?.ideo?.Fluid == true)
             {
                 if (!canContinue()) return;
                 int num = def.outcomeChances.IndexOf(outcome);
-                if (num >= 0 && jobRitual.Ritual.ideo.development.TryGainDevelopmentPointsForRitualOutcome(jobRitual.Ritual, num, out var developmentPoints))
+                var development = jobRitual.Ritual.ideo.development;
+                int pointsBefore = development.Points;
+                if (num >= 0 && development.TryGainDevelopmentPointsForRitualOutcome(jobRitual.Ritual, num, out _))
                 {
-                    if (developmentPoints > 0) extraDevPointsText = "RitualOutcomeExtraDesc_DevelopmentPointsAwarded".Translate(jobRitual.Ritual.ideo.development.Points - developmentPoints, jobRitual.Ritual.ideo.development.Points, developmentPoints.ToStringWithSign());
+                    // 原版 out 值是曲线名义奖励，接近改革上限时可能大于实际增量；信件只报告真实前后值。
+                    int pointsAfter = development.Points;
+                    int gained = pointsAfter - pointsBefore;
+                    if (gained > 0) extraDevPointsText = "RitualOutcomeExtraDesc_DevelopmentPointsAwarded".Translate(pointsBefore, pointsAfter, gained.ToStringWithSign());
                     else extraDevPointsText = "RitualOutcomeExtraDesc_NoDevelopmentPointsAwarded".Translate();
                 }
             }

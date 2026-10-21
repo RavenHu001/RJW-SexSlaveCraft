@@ -43,7 +43,11 @@ namespace Verse
     public sealed class LetterStack
     {
         /// <summary>只记录结算信件的实际派发次数，便于检测重复与中途退出。</summary>
-        public void ReceiveLetter(string label, string text, object def, LookTargets targets) => TestWorld.RitualLetters++;
+        public void ReceiveLetter(string label, string text, object def, LookTargets targets)
+        {
+            TestWorld.RitualLetters++;
+            TestWorld.RitualLetterTexts.Add(text);
+        }
     }
     public partial class Pawn
     {
@@ -158,8 +162,18 @@ namespace RimWorld
     public sealed class OutcomeIdeo { public bool Fluid; public OutcomeDevelopment development = new OutcomeDevelopment(); }
     public sealed class OutcomeDevelopment
     {
-        public int Points;
-        public bool TryGainDevelopmentPointsForRitualOutcome(Precept_Ritual ritual, int outcome, out int points) { points = 0; return false; }
+        // 只提供可观察的原版调用边界；本宿主不复刻原版曲线或类型筛选。
+        public int Points, Calls, Reward = 2, Limit = 10, LastOutcome = -1;
+        public bool Eligible = true;
+        public Action OnGain;
+        public bool TryGainDevelopmentPointsForRitualOutcome(Precept_Ritual ritual, int outcome, out int points)
+        {
+            Calls++; LastOutcome = outcome; points = Reward;
+            if (!Eligible) return false;
+            Points = Math.Min(Points + Reward, Limit);
+            OnGain?.Invoke();
+            return true;
+        }
     }
     public static class GatheringsUtility { public static bool InGatheringArea(IntVec3 position, IntVec3 spot, Map map) => true; }
     public static class LetterDefOf { public static object RitualOutcomePositive, RitualOutcomeNegative; }
