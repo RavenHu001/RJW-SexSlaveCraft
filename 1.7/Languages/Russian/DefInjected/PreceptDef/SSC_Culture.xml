@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成；description 保留相同可检索交接标记。 -->
+<LanguageData>
+  <SSC_Precept_SexSlave_Hostile.label>враждебность</SSC_Precept_SexSlave_Hostile.label>
+  <SSC_Precept_SexSlave_Hostile.description>[TODO:SSC_Precept_SexSlave_Hostile.description]</SSC_Precept_SexSlave_Hostile.description>
+  <SSC_Precept_SexSlave_Revulsion.label>отвращение</SSC_Precept_SexSlave_Revulsion.label>
+  <SSC_Precept_SexSlave_Revulsion.description>[TODO:SSC_Precept_SexSlave_Revulsion.description]</SSC_Precept_SexSlave_Revulsion.description>
+  <SSC_Precept_SexSlave_Indifference.label>безразличие</SSC_Precept_SexSlave_Indifference.label>
+  <SSC_Precept_SexSlave_Indifference.description>[TODO:SSC_Precept_SexSlave_Indifference.description]</SSC_Precept_SexSlave_Indifference.description>
+  <SSC_Precept_SexSlave_Respect.label>уважение</SSC_Precept_SexSlave_Respect.label>
+  <SSC_Precept_SexSlave_Respect.description>[TODO:SSC_Precept_SexSlave_Respect.description]</SSC_Precept_SexSlave_Respect.description>
+  <SSC_Precept_SexSlave_Sacred.label>священность</SSC_Precept_SexSlave_Sacred.label>
+  <SSC_Precept_SexSlave_Sacred.description>[TODO:SSC_Precept_SexSlave_Sacred.description]</SSC_Precept_SexSlave_Sacred.description>
+  <SSC_Precept_SexSlave_Envy.label>зависть</SSC_Precept_SexSlave_Envy.label>
+  <SSC_Precept_SexSlave_Envy.description>[TODO:SSC_Precept_SexSlave_Envy.description]</SSC_Precept_SexSlave_Envy.description>
+  <SSC_Precept_Trainer_Hostile.label>враждебность</SSC_Precept_Trainer_Hostile.label>
+  <SSC_Precept_Trainer_Hostile.description>[TODO:SSC_Precept_Trainer_Hostile.description]</SSC_Precept_Trainer_Hostile.description>
+  <SSC_Precept_Trainer_Revulsion.label>отвращение</SSC_Precept_Trainer_Revulsion.label>
+  <SSC_Precept_Trainer_Revulsion.description>[TODO:SSC_Precept_Trainer_Revulsion.description]</SSC_Precept_Trainer_Revulsion.description>
+  <SSC_Precept_Trainer_Indifference.label>безразличие</SSC_Precept_Trainer_Indifference.label>
+  <SSC_Precept_Trainer_Indifference.description>[TODO:SSC_Precept_Trainer_Indifference.description]</SSC_Precept_Trainer_Indifference.description>
+  <SSC_Precept_Trainer_Reverence.label>почтение</SSC_Precept_Trainer_Reverence.label>
+  <SSC_Precept_Trainer_Reverence.description>[TODO:SSC_Precept_Trainer_Reverence.description]</SSC_Precept_Trainer_Reverence.description>
+  <SSC_Precept_Trainer_SacredOffice.label>священное служение</SSC_Precept_Trainer_SacredOffice.label>
+  <SSC_Precept_Trainer_SacredOffice.description>[TODO:SSC_Precept_Trainer_SacredOffice.description]</SSC_Precept_Trainer_SacredOffice.description>
+  <SSC_Precept_Master_Hostile.label>враждебность</SSC_Precept_Master_Hostile.label>
+  <SSC_Precept_Master_Hostile.description>[TODO:SSC_Precept_Master_Hostile.description]</SSC_Precept_Master_Hostile.description>
+  <SSC_Precept_Master_Revulsion.label>отвращение</SSC_Precept_Master_Revulsion.label>
+  <SSC_Precept_Master_Revulsion.description>[TODO:SSC_Precept_Master_Revulsion.description]</SSC_Precept_Master_Revulsion.description>
+  <SSC_Precept_Master_Indifference.label>безразличие</SSC_Precept_Master_Indifference.label>
+  <SSC_Precept_Master_Indifference.description>[TODO:SSC_Precept_Master_Indifference.description]</SSC_Precept_Master_Indifference.description>
+  <SSC_Precept_Master_Deference.label>почитание</SSC_Precept_Master_Deference.label>
+  <SSC_Precept_Master_Deference.description>[TODO:SSC_Precept_Master_Deference.description]</SSC_Precept_Master_Deference.description>
+  <SSC_Precept_Master_HolyMaster.label>священный хозяин</SSC_Precept_Master_HolyMaster.label>
+  <SSC_Precept_Master_HolyMaster.description>[TODO:SSC_Precept_Master_HolyMaster.description]</SSC_Precept_Master_HolyMaster.description>
+  <SSC_Precept_MasterCount_One.label>только один</SSC_Precept_MasterCount_One.label>
+  <SSC_Precept_MasterCount_One.description>[TODO:SSC_Precept_MasterCount_One.description]</SSC_Precept_MasterCount_One.description>
+  <SSC_Precept_MasterCount_Three.label>не более трёх</SSC_Precept_MasterCount_Three.label>
+  <SSC_Precept_MasterCount_Three.description>[TODO:SSC_Precept_MasterCount_Three.description]</SSC_Precept_MasterCount_Three.description>
+  <SSC_Precept_MasterCount_Unlimited.label>без ограничений</SSC_Precept_MasterCount_Unlimited.label>
+  <SSC_Precept_MasterCount_Unlimited.description>[TODO:SSC_Precept_MasterCount_Unlimited.description]</SSC_Precept_MasterCount_Unlimited.description>
+  <SSC_Precept_SlaveCount_One.label>только один</SSC_Precept_SlaveCount_One.label>
+  <SSC_Precept_SlaveCount_One.description>[TODO:SSC_Precept_SlaveCount_One.description]</SSC_Precept_SlaveCount_One.description>
+  <SSC_Precept_SlaveCount_Three.label>не более трёх</SSC_Precept_SlaveCount_Three.label>
+  <SSC_Precept_SlaveCount_Three.description>[TODO:SSC_Precept_SlaveCount_Three.description]</SSC_Precept_SlaveCount_Three.description>
+  <SSC_Precept_SlaveCount_Unlimited.label>без ограничений</SSC_Precept_SlaveCount_Unlimited.label>
+  <SSC_Precept_SlaveCount_Unlimited.description>[TODO:SSC_Precept_SlaveCount_Unlimited.description]</SSC_Precept_SlaveCount_Unlimited.description>
+</LanguageData>

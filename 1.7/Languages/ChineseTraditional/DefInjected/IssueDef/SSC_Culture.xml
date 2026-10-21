@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成；description 保留相同可检索交接标记。 -->
+<LanguageData>
+  <SSC_Issue_SexSlave.label>性奴</SSC_Issue_SexSlave.label>
+  <SSC_Issue_Trainer.label>訓導官</SSC_Issue_Trainer.label>
+  <SSC_Issue_Master.label>主人</SSC_Issue_Master.label>
+  <SSC_Issue_MasterCount.label>主人數量</SSC_Issue_MasterCount.label>
+  <SSC_Issue_SlaveCount.label>性奴數量</SSC_Issue_SlaveCount.label>
+</LanguageData>

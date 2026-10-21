@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成；1.7 步骤 1。两类权重显式配置；反馈 comps 随后续真实 workers 接入。
+     description 为交接占位，不是正式文案；不使用意愿/历史事件组件。 -->
+<Defs>
+  <!-- 同一议题仅允许一个档位；顶层 Ideology 门控避免未启用文化 DLC 时装载本组定义。 -->
+  <IssueDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Issue_Master</defName>
+    <label>主人</label>
+    <iconPath>UI/Issues/Slavery</iconPath>
+    <allowMultiplePrecepts>false</allowMultiplePrecepts>
+  </IssueDef>
+  <!-- 普通文化低档：defaultSelectionWeight=1；必选组抽取权重为零。与主模因冲突，加入主模因时由原版兼容性维护替换。 显示顺序和重要度不代替后续反馈机制。 -->
+  <PreceptDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Precept_Master_Hostile</defName>
+    <issue>SSC_Issue_Master</issue>
+    <label>敌视</label>
+    <description>[TODO:SSC_Precept_Master_Hostile.description]</description>
+    <impact>Low</impact>
+    <displayOrderInIssue>10</displayOrderInIssue>
+    <allowDuplicates>false</allowDuplicates>
+    <countsTowardsPreceptLimit>true</countsTowardsPreceptLimit>
+    <selectionWeight>0</selectionWeight>
+    <defaultSelectionWeight>1</defaultSelectionWeight>
+    <conflictingMemes><li>SSC_Meme_MasterSlaveOrder</li></conflictingMemes>
+  </PreceptDef>
+  <!-- 普通文化低档：defaultSelectionWeight=2；必选组抽取权重为零。与主模因冲突，加入主模因时由原版兼容性维护替换。 显示顺序和重要度不代替后续反馈机制。 -->
+  <PreceptDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Precept_Master_Revulsion</defName>
+    <issue>SSC_Issue_Master</issue>
+    <label>厌恶</label>
+    <description>[TODO:SSC_Precept_Master_Revulsion.description]</description>
+    <impact>Low</impact>
+    <displayOrderInIssue>20</displayOrderInIssue>
+    <allowDuplicates>false</allowDuplicates>
+    <countsTowardsPreceptLimit>true</countsTowardsPreceptLimit>
+    <selectionWeight>0</selectionWeight>
+    <defaultSelectionWeight>2</defaultSelectionWeight>
+    <conflictingMemes><li>SSC_Meme_MasterSlaveOrder</li></conflictingMemes>
+  </PreceptDef>
+  <!-- 普通文化低档：defaultSelectionWeight=7；必选组抽取权重为零。与主模因冲突，加入主模因时由原版兼容性维护替换。 显示顺序和重要度不代替后续反馈机制。 -->
+  <PreceptDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Precept_Master_Indifference</defName>
+    <issue>SSC_Issue_Master</issue>
+    <label>漠视</label>
+    <description>[TODO:SSC_Precept_Master_Indifference.description]</description>
+    <impact>Low</impact>
+    <displayOrderInIssue>30</displayOrderInIssue>
+    <allowDuplicates>false</allowDuplicates>
+    <countsTowardsPreceptLimit>true</countsTowardsPreceptLimit>
+    <selectionWeight>0</selectionWeight>
+    <defaultSelectionWeight>7</defaultSelectionWeight>
+    <conflictingMemes><li>SSC_Meme_MasterSlaveOrder</li></conflictingMemes>
+  </PreceptDef>
+  <!-- 两类生成权重均为零，仅供手选或保留已有合法选择；associatedMemes 仅关联，不作前置门槛。 显示顺序和重要度不代替后续反馈机制。 -->
+  <PreceptDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Precept_Master_Deference</defName>
+    <issue>SSC_Issue_Master</issue>
+    <label>尊奉</label>
+    <description>[TODO:SSC_Precept_Master_Deference.description]</description>
+    <impact>Medium</impact>
+    <displayOrderInIssue>40</displayOrderInIssue>
+    <allowDuplicates>false</allowDuplicates>
+    <countsTowardsPreceptLimit>true</countsTowardsPreceptLimit>
+    <selectionWeight>0</selectionWeight>
+    <defaultSelectionWeight>0</defaultSelectionWeight>
+    <associatedMemes><li>SSC_Meme_MasterSlaveOrder</li></associatedMemes>
+  </PreceptDef>
+  <!-- 主模因专属默认：必选组 selectionWeight=1，普通默认权重为零；requiredMemes 限定资格。 显示顺序和重要度不代替后续反馈机制。 -->
+  <PreceptDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Precept_Master_HolyMaster</defName>
+    <issue>SSC_Issue_Master</issue>
+    <label>圣主</label>
+    <description>[TODO:SSC_Precept_Master_HolyMaster.description]</description>
+    <impact>High</impact>
+    <displayOrderInIssue>50</displayOrderInIssue>
+    <allowDuplicates>false</allowDuplicates>
+    <countsTowardsPreceptLimit>true</countsTowardsPreceptLimit>
+    <selectionWeight>1</selectionWeight>
+    <defaultSelectionWeight>0</defaultSelectionWeight>
+    <requiredMemes><li>SSC_Meme_MasterSlaveOrder</li></requiredMemes>
+    <associatedMemes><li>SSC_Meme_MasterSlaveOrder</li></associatedMemes>
+  </PreceptDef>
+</Defs>

@@ -36,13 +36,23 @@ if (-not $ReportDirectory) {
 $reportRoot = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($ReportDirectory)
 [IO.Directory]::CreateDirectory($reportRoot) | Out-Null
 $savedTestEnvironment = @{}
-foreach ($name in @('SSC_TEST_REPOSITORY_ROOT', 'SSC_TEST_RUNTIME_ROOT', 'SSC_TEST_COMMON_ROOT')) {
+# 连同 SDK 首次初始化开关保存调用者环境；原生文化宿主编译生产工程也遵循同一隔离目录。
+foreach ($name in @('SSC_TEST_REPOSITORY_ROOT', 'SSC_TEST_RUNTIME_ROOT', 'SSC_TEST_COMMON_ROOT',
+    'DOTNET_CLI_HOME', 'DOTNET_GENERATE_ASPNET_CERTIFICATE', 'DOTNET_ADD_GLOBAL_TOOLS_TO_PATH')) {
     $savedTestEnvironment[$name] = [Environment]::GetEnvironmentVariable($name, 'Process')
 }
 try {
 $env:SSC_TEST_REPOSITORY_ROOT = $repoRoot
 $env:SSC_TEST_RUNTIME_ROOT = $runtimeRootPath
 $env:SSC_TEST_COMMON_ROOT = Join-Path $repoRoot 'Common'
+# 与生产构建一致，将首次 SDK 初始化写到仓库内；不要求测试写入受限的用户目录。
+# 保存并在 finally 恢复调用者环境，禁止 SDK 自动生成证书或修改全局工具 PATH。
+if (-not $env:DOTNET_CLI_HOME) {
+    $env:DOTNET_CLI_HOME = Join-Path $repoRoot '.builds/dotnet-cli-home'
+    [IO.Directory]::CreateDirectory($env:DOTNET_CLI_HOME) | Out-Null
+}
+$env:DOTNET_GENERATE_ASPNET_CERTIFICATE = 'false'
+$env:DOTNET_ADD_GLOBAL_TOOLS_TO_PATH = 'false'
 
 # The single suite list used by standalone checks and release packaging. Arguments are absolute.
 $suites = @(
@@ -67,6 +77,8 @@ $suites = @(
     @{ Name = 'PnaSpacerNative'; Arguments = @(); Framework = 'net10.0' },
     # 真实 1.7 曲线和文化累计路径；与模型宿主的整场一次认领回归互补。
     @{ Name = 'RitualDevelopmentNative'; Arguments = @(); Framework = 'net10.0' },
+    # 原生文化挂载/人口/职位/快照；通过 ProjectReference 实际编译当前 1.7 生产代码。
+    @{ Name = 'CultureNative'; Arguments = @(); Framework = 'net10.0' },
     @{ Name = 'LowTechAdaptation'; Arguments = @($repoRoot) },
     @{ Name = 'PersonalityMemories'; Arguments = @() },
     @{ Name = 'PersonalitySpecializations'; Arguments = @() },
@@ -256,7 +268,8 @@ foreach ($suite in $suites) {
     }
     $problems = @($globalProblems.ToArray())
     if (-not (Test-Path -LiteralPath $project -PathType Leaf)) { $problems += "Project missing: $project" }
-    if ($name -in @('SharedBed', 'InteractionProtection', 'RitualSelection', 'CombatantSpecialization', 'PnaLoad', 'BondRelations', 'PnaWeaponEffects', 'PnaMeleeQuality', 'PnaSpacerNative', 'RitualDevelopmentNative') -and $harmonyProblem) { $problems += $harmonyProblem }
+    # CultureNative 同样需要测试侧 Harmony；缺少合法依赖时标为 NotRun，不能当作已通过。
+    if ($name -in @('SharedBed', 'InteractionProtection', 'RitualSelection', 'CombatantSpecialization', 'PnaLoad', 'BondRelations', 'PnaWeaponEffects', 'PnaMeleeQuality', 'PnaSpacerNative', 'RitualDevelopmentNative', 'CultureNative') -and $harmonyProblem) { $problems += $harmonyProblem }
     if ($problems.Count -gt 0) {
         $result.Reason = $problems -join ' '
         Set-Content -LiteralPath $logPath -Value $result.Reason -Encoding utf8
@@ -269,11 +282,20 @@ foreach ($suite in $suites) {
             $suiteDotnet = $dotnetPath
             $framework = 'net9.0'
             $testArguments = $suite.Arguments
-            if ($name -in @('SharedBed', 'InteractionProtection', 'RitualSelection', 'CombatantSpecialization', 'PnaLoad', 'BondRelations', 'PnaWeaponEffects', 'PnaMeleeQuality', 'PnaSpacerNative', 'RitualDevelopmentNative')) { $properties += "-p:HarmonyAssemblyPath=$HarmonyAssemblyPath" }
-            if ($name -in @('PnaMeleeQuality', 'PnaSpacerNative', 'RitualDevelopmentNative')) {
+            if ($name -in @('SharedBed', 'InteractionProtection', 'RitualSelection', 'CombatantSpecialization', 'PnaLoad', 'BondRelations', 'PnaWeaponEffects', 'PnaMeleeQuality', 'PnaSpacerNative', 'RitualDevelopmentNative', 'CultureNative')) { $properties += "-p:HarmonyAssemblyPath=$HarmonyAssemblyPath" }
+            # 四个实际游戏专项共用本机 1.7 和 .NET 10，CultureNative 另外传递生产模组引用。
+            if ($name -in @('PnaMeleeQuality', 'PnaSpacerNative', 'RitualDevelopmentNative', 'CultureNative')) {
                 $suiteDotnet = $NativeDotnetPath; $framework = $suite.Framework
                 $properties += "-p:GameRoot=$NativeGameRoot"
                 $testArguments = @($repoRoot, $NativeGameRoot)
+            }
+            if ($name -eq 'CultureNative') {
+                # 生产工程仍使用本机实际 RJW/动画/游戏 Harmony 引用；测试 Harmony 单独传入。
+                # 路径来自既有构建记录，缺失时让原生产构建明确失败，不退回旧 DLL。
+                $cultureBuild = Get-Content -LiteralPath (Join-Path $repoRoot '1.7/BUILD-INFO.json') -Raw | ConvertFrom-Json
+                foreach ($reference in $cultureBuild.references) {
+                    $properties += "-p:$($reference.name)=$($reference.path)"
+                }
             }
             $null = Invoke-DotnetStep -CommandArguments (@('restore', $project, '--configfile', $configPath, '--verbosity', 'quiet') + $properties) -Stage 'restore' -LogPath $logPath -Executable $suiteDotnet
             # Rebuild prevents a changed Harmony reference from reusing a previous test binary.

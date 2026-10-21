@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成；1.7 步骤 1。图标暂复用原版，命名语法/美术待后续；不添加行为拦截。 -->
+<Defs>
+  <!-- 模因分组仅控制界面排布；各顶层定义独立门控，分组本身不建立模因互斥。 -->
+  <MemeGroupDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_MasterSlaveOrder</defName>
+    <drawOffset>(0.15, 0.57)</drawOffset>
+    <maxRows>1</maxRows>
+    <renderOrder>2600</renderOrder>
+  </MemeGroupDef>
+  <!-- 普通二级模因；随机因子是原版权重乘数，不表示固定生成概率，不新增 exclusionTags。 -->
+  <MemeDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Meme_MasterSlaveOrder</defName>
+    <label>主奴秩序</label>
+    <description>[TODO:SSC_Meme_MasterSlaveOrder.description]</description>
+    <iconPath>UI/Memes/PrimacyHuman</iconPath>
+    <groupDef>SSC_MasterSlaveOrder</groupDef>
+    <category>Normal</category>
+    <impact>2</impact>
+    <randomizationSelectionWeightFactor>1</randomizationSelectionWeightFactor>
+    <!-- 五个同 Issue 必选组同时约束生成与手选替代范围；不新增模因间排斥标签。 -->
+    <requireOne>
+      <!-- 性奴态度：允许尊重、神圣、艳羡，正权重默认来自神圣档。 -->
+      <li>
+        <li>SSC_Precept_SexSlave_Respect</li>
+        <li>SSC_Precept_SexSlave_Sacred</li>
+        <li>SSC_Precept_SexSlave_Envy</li>
+      </li>
+      <!-- 训导官态度：保留全部五档供手选，正权重默认来自神职档。 -->
+      <li>
+        <li>SSC_Precept_Trainer_Hostile</li>
+        <li>SSC_Precept_Trainer_Revulsion</li>
+        <li>SSC_Precept_Trainer_Indifference</li>
+        <li>SSC_Precept_Trainer_Reverence</li>
+        <li>SSC_Precept_Trainer_SacredOffice</li>
+      </li>
+      <!-- 主人态度：允许敬重与神圣主人，正权重默认来自神圣主人档。 -->
+      <li>
+        <li>SSC_Precept_Master_Deference</li>
+        <li>SSC_Precept_Master_HolyMaster</li>
+      </li>
+      <!-- 主人数量：三档均可替代，生成默认三主以内；不在定义层强制人口上限。 -->
+      <li>
+        <li>SSC_Precept_MasterCount_One</li>
+        <li>SSC_Precept_MasterCount_Three</li>
+        <li>SSC_Precept_MasterCount_Unlimited</li>
+      </li>
+      <!-- 个人性奴数量：三档均可替代，生成默认三奴以内；不拦截绑定或身份操作。 -->
+      <li>
+        <li>SSC_Precept_SlaveCount_One</li>
+        <li>SSC_Precept_SlaveCount_Three</li>
+        <li>SSC_Precept_SlaveCount_Unlimited</li>
+      </li>
+    </requireOne>
+  </MemeDef>
+</Defs>

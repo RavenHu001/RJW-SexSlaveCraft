@@ -19,6 +19,8 @@
 
 ## 资料用途与阅读顺序
 
+当前未提交开发：[文化拓展步骤 1](文化拓展步骤1实现与测试.md)已实现 1.7 挂载与只读查询层，反馈 workers 和文化实机验收尚未完成，不属于 2.4.3 已发布内容。
+
 1. 从版本说明确认当前规则，再读完成核对和[尚未关闭的专项](Verification/README.md)。
 2. 阶段实现、修复与原始证据在 [Completed](Completed/README.md)；历史设计在 [Design/Archive](../Design/Archive/README.md)。
 3. 尚未实现的需求回到[总体规划](../Design/未来内容开发规划.md)，不因版本归并变为已完成。

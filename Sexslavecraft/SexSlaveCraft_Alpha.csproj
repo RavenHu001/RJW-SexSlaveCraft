@@ -182,6 +182,11 @@
     <Compile Include="common\TrainerSpecializationGelUtility.cs" />
     <Compile Include="common\TrainerSpecializationProgressUtility.cs" />
     <Compile Include="common\TrainerOfficerFeedback.cs" />
+    <!-- 文化步骤 1 源码清单供 1.7 工程复用；不重建或修改冻结的 1.6 运行程序集。 -->
+    <Compile Include="common\Culture\SSCCultureStateUtility.cs" />
+    <Compile Include="common\Culture\SSCCulturePopulationUtility.cs" />
+    <Compile Include="common\Culture\SSCCultureLeaderUtility.cs" />
+    <Compile Include="common\Culture\SSCCultureGameComponent.cs" />
     <Compile Include="common\RabbitCloneUtility.cs" />
     <Compile Include="common\ConditioningUtility.cs" />
     <Compile Include="common\CorruptionProgressionUtility.cs" />

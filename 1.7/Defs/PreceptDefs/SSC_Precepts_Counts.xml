@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成；1.7 步骤 1。两类权重显式配置；反馈 comps 随后续真实 workers 接入。
+     description 为交接占位，不是正式文案；不使用意愿/历史事件组件。 -->
+<Defs>
+  <!-- 同一议题仅允许一个档位；顶层 Ideology 门控避免未启用文化 DLC 时装载本组定义。 -->
+  <IssueDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Issue_MasterCount</defName>
+    <label>主人数量</label>
+    <iconPath>UI/Issues/Slavery</iconPath>
+    <allowMultiplePrecepts>false</allowMultiplePrecepts>
+  </IssueDef>
+  <!-- 手选档，两类生成权重为零仍不限制手选资格；仅关联主模因，不要求持有该模因。 显示顺序和重要度不代替后续反馈机制。 -->
+  <PreceptDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Precept_MasterCount_One</defName>
+    <issue>SSC_Issue_MasterCount</issue>
+    <label>一主为限</label>
+    <description>[TODO:SSC_Precept_MasterCount_One.description]</description>
+    <impact>Medium</impact>
+    <displayOrderInIssue>20</displayOrderInIssue>
+    <allowDuplicates>false</allowDuplicates>
+    <countsTowardsPreceptLimit>true</countsTowardsPreceptLimit>
+    <selectionWeight>0</selectionWeight>
+    <defaultSelectionWeight>0</defaultSelectionWeight>
+    <associatedMemes><li>SSC_Meme_MasterSlaveOrder</li></associatedMemes>
+  </PreceptDef>
+  <!-- 主模因必选组的随机默认，普通默认不抽取此档；仅关联主模因，不要求持有该模因。 显示顺序和重要度不代替后续反馈机制。 -->
+  <PreceptDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Precept_MasterCount_Three</defName>
+    <issue>SSC_Issue_MasterCount</issue>
+    <label>三主以内</label>
+    <description>[TODO:SSC_Precept_MasterCount_Three.description]</description>
+    <impact>Medium</impact>
+    <displayOrderInIssue>30</displayOrderInIssue>
+    <allowDuplicates>false</allowDuplicates>
+    <countsTowardsPreceptLimit>true</countsTowardsPreceptLimit>
+    <selectionWeight>1</selectionWeight>
+    <defaultSelectionWeight>0</defaultSelectionWeight>
+    <associatedMemes><li>SSC_Meme_MasterSlaveOrder</li></associatedMemes>
+  </PreceptDef>
+  <!-- 普通文化默认，主模因必选组仍允许手动改选此档；仅关联主模因，不要求持有该模因。 显示顺序和重要度不代替后续反馈机制。 -->
+  <PreceptDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Precept_MasterCount_Unlimited</defName>
+    <issue>SSC_Issue_MasterCount</issue>
+    <label>主不厌多</label>
+    <description>[TODO:SSC_Precept_MasterCount_Unlimited.description]</description>
+    <impact>Medium</impact>
+    <displayOrderInIssue>40</displayOrderInIssue>
+    <allowDuplicates>false</allowDuplicates>
+    <countsTowardsPreceptLimit>true</countsTowardsPreceptLimit>
+    <selectionWeight>0</selectionWeight>
+    <defaultSelectionWeight>1</defaultSelectionWeight>
+    <associatedMemes><li>SSC_Meme_MasterSlaveOrder</li></associatedMemes>
+  </PreceptDef>
+  <!-- 同一议题仅允许一个档位；顶层 Ideology 门控避免未启用文化 DLC 时装载本组定义。 -->
+  <IssueDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Issue_SlaveCount</defName>
+    <label>性奴数量</label>
+    <iconPath>UI/Issues/Slavery</iconPath>
+    <allowMultiplePrecepts>false</allowMultiplePrecepts>
+  </IssueDef>
+  <!-- 手选档，两类生成权重为零仍不限制手选资格；仅关联主模因，不要求持有该模因。 显示顺序和重要度不代替后续反馈机制。 -->
+  <PreceptDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Precept_SlaveCount_One</defName>
+    <issue>SSC_Issue_SlaveCount</issue>
+    <label>一奴为限</label>
+    <description>[TODO:SSC_Precept_SlaveCount_One.description]</description>
+    <impact>Medium</impact>
+    <displayOrderInIssue>20</displayOrderInIssue>
+    <allowDuplicates>false</allowDuplicates>
+    <countsTowardsPreceptLimit>true</countsTowardsPreceptLimit>
+    <selectionWeight>0</selectionWeight>
+    <defaultSelectionWeight>0</defaultSelectionWeight>
+    <associatedMemes><li>SSC_Meme_MasterSlaveOrder</li></associatedMemes>
+  </PreceptDef>
+  <!-- 主模因必选组的随机默认，普通默认不抽取此档；仅关联主模因，不要求持有该模因。 显示顺序和重要度不代替后续反馈机制。 -->
+  <PreceptDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Precept_SlaveCount_Three</defName>
+    <issue>SSC_Issue_SlaveCount</issue>
+    <label>三奴以内</label>
+    <description>[TODO:SSC_Precept_SlaveCount_Three.description]</description>
+    <impact>Medium</impact>
+    <displayOrderInIssue>30</displayOrderInIssue>
+    <allowDuplicates>false</allowDuplicates>
+    <countsTowardsPreceptLimit>true</countsTowardsPreceptLimit>
+    <selectionWeight>1</selectionWeight>
+    <defaultSelectionWeight>0</defaultSelectionWeight>
+    <associatedMemes><li>SSC_Meme_MasterSlaveOrder</li></associatedMemes>
+  </PreceptDef>
+  <!-- 普通文化默认，主模因必选组仍允许手动改选此档；仅关联主模因，不要求持有该模因。 显示顺序和重要度不代替后续反馈机制。 -->
+  <PreceptDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Precept_SlaveCount_Unlimited</defName>
+    <issue>SSC_Issue_SlaveCount</issue>
+    <label>奴不厌多</label>
+    <description>[TODO:SSC_Precept_SlaveCount_Unlimited.description]</description>
+    <impact>Medium</impact>
+    <displayOrderInIssue>40</displayOrderInIssue>
+    <allowDuplicates>false</allowDuplicates>
+    <countsTowardsPreceptLimit>true</countsTowardsPreceptLimit>
+    <selectionWeight>0</selectionWeight>
+    <defaultSelectionWeight>1</defaultSelectionWeight>
+    <associatedMemes><li>SSC_Meme_MasterSlaveOrder</li></associatedMemes>
+  </PreceptDef>
+</Defs>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成；description 保留相同可检索交接标记。 -->
+<LanguageData>
+  <SSC_Issue_SexSlave.label>сексуальное рабство</SSC_Issue_SexSlave.label>
+  <SSC_Issue_Trainer.label>инструктор</SSC_Issue_Trainer.label>
+  <SSC_Issue_Master.label>хозяин</SSC_Issue_Master.label>
+  <SSC_Issue_MasterCount.label>число хозяев</SSC_Issue_MasterCount.label>
+  <SSC_Issue_SlaveCount.label>число сексуальных рабов</SSC_Issue_SlaveCount.label>
+</LanguageData>

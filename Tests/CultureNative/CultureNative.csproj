@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- 实际编译生产 1.7 工程；查询/身份/锁链不使用模型替身或预先复制的旧 DLL。 -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType><TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings><Nullable>disable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../Sexslavecraft/SexSlaveCraft_1.7.csproj" />
+    <Reference Include="Assembly-CSharp"><HintPath>$(GameRoot)/Assembly-CSharp.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityStubs"><HintPath>$(GameRoot)/UnityStubs.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="0Harmony"><HintPath>$(HarmonyAssemblyPath)</HintPath></Reference>
+  </ItemGroup>
+  <Target Name="RequireReferences" BeforeTargets="ResolveReferences">
+    <Error Condition="!Exists('$(GameRoot)/Assembly-CSharp.dll') or !Exists('$(HarmonyAssemblyPath)')" Text="Supply actual GameRoot, test HarmonyAssemblyPath and the three production mod reference paths used by Build-Mod.ps1." />
+  </Target>
+</Project>
