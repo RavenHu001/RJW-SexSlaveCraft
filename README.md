@@ -2,11 +2,11 @@
 
 面向 RimWorld 的成人向 RimJobWorld（RJW）扩展，基于上游 **2.2.8** 继续维护，提供角色培养、主从绑定、六种特化、人格转移和身体改造。
 
-**当前开发版本：2.4.3（2026-10-20 登记，未发布）。** `v2.4.2` 发布后截至 `dea5c78` 的开发统一归入本版；最新公开下载仍为 **2.4.2**。1.7 承载新增功能，1.6／Common 保留 **2.4.1** 冻结基线。当前 DLL 与 About 等产物元数据仍为 2.4.2，正式发布前须版本对齐重编，详见[验证与发布边界](Docs/Releases/2.4.3/2.4.3版本验证.md)。
+**当前正式版本：2.4.3（2026-10-20）。** `v2.4.2` 发布后截至 `dea5c78` 的开发统一纳入本版；1.7 使用 2.4.3 重编运行内容，1.6／Common 保留 **2.4.1** 冻结基线。文件／产品版本、About 与构建来源已对齐，验证与实机边界见[发布记录](Docs/Releases/2.4.3/2.4.3版本验证.md)。
 
-[2.4.3 版本范围](Docs/Releases/2.4.3/2.4.3发布说明.md) · [正式下载 2.4.2](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.2) · [双语模组介绍](Docs/模组介绍.md) · [玩家阅读入口](Docs/Players/README.md) · [文档总索引](Docs/README.md) · [English](#english-overview)
+[2.4.3 版本范围](Docs/Releases/2.4.3/2.4.3发布说明.md) · [正式下载 2.4.3](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.3) · [双语模组介绍](Docs/模组介绍.md) · [玩家阅读入口](Docs/Players/README.md) · [文档总索引](Docs/README.md) · [English](#english-overview)
 
-## 2.4.3 开发成果（仅 1.7）
+## 2.4.3 更新（仅 1.7）
 
 | 方向 | 当前交付 | 详细说明 |
 | --- | --- | --- |
@@ -16,7 +16,7 @@
 | 结算与清理 | 分摊伤害不传药、两代鞭束配合受药、旧品质适配归档与旧发射器退役 | [太空完成核对](Docs/Development/Completed/SSC太空时代纳米催情液武器完成核对.md) |
 | 欢愉恩赐 | 负荷按主人身体产液能力折算 3～100 点，参考产量 20 对应 8 点；其余结算沿用原规则 | [剂量验收](Docs/Development/Completed/欲望侵染体液产量与PNA剂量接入.md) |
 
-**升级注意：1.7 已移除旧简易 PNA 发射器、弹丸、配方与专属研究，不兼容引用这些旧定义的存档，不提供迁移或替代。** 1.6 冻结版保留原内容。上述开发增量尚未进入既有 2.4.2 下载附件。
+**升级注意：1.7 已移除旧简易 PNA 发射器、弹丸、配方与专属研究，不兼容引用这些旧定义的存档，不提供迁移或替代。** 1.6 冻结版保留原内容。这些更新纳入 2.4.3，历史 2.4.2 附件保留原内容。
 
 ## 核心玩法与版本沿革
 
@@ -37,7 +37,7 @@
 | 契约仪式与阶段进阶 | 需要 Ideology（文化）DLC |
 | Royalty（可选） | 安装时调教研究需要蓝图；种子或原版独立蓝图可补齐，之后仍需研究 |
 
-正式游玩从 [v2.4.2 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.2) 下载 ZIP 与 SHA-256。退出游戏，移出旧文件夹后完整解压新文件夹，保留加载配置及两套版本目录。该下载的具体功能范围见[2.4.2 发布说明](Docs/Releases/2.4.2/2.4.2发布说明.md)；当前仓库指南另含 2.4.3 开发内容。
+正式游玩从 [v2.4.3 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.3) 下载 ZIP 与 SHA-256。退出游戏，移出旧文件夹后完整解压新文件夹，保留加载配置及两套版本目录。该下载的功能范围见[2.4.3 发布说明](Docs/Releases/2.4.3/2.4.3发布说明.md)，历史说明与附件保留各自版本。
 
 宠物兔选择入口未开放，旧 RimTalk 对接暂停。受训目标须为 SSC 性奴身份，原版奴隶身份不能替代。
 
@@ -57,8 +57,8 @@
 
 ## English overview
 
-SexSlaveCraft is an adult RJW expansion for pawn development, bonds, six specializations, personality transfer and body modification. **The current development version is 2.4.3, registered on 2026-10-20 and not yet released. The public download remains 2.4.2.** New work targets 1.7; the 1.6/Common baseline stays frozen at 2.4.1.
+SexSlaveCraft is an adult RJW expansion for pawn development, bonds, six specializations, personality transfer and body modification. **The current release is 2.4.3 (2026-10-20).** New work targets 1.7; the 1.6/Common baseline stays frozen at 2.4.1.
 
-2.4.3 groups all post-v2.4.2 development through `dea5c78`: the bond overview, low-tech research and rough concentration, nine PNA weapons across three eras, dedicated art/feedback, native quality scaling, isolated damage sharing, cooperative whip hits, retirement of the old launcher, and Bestow Bliss doses based on body fluid output. **1.7 saves referencing the removed launcher definitions have no migration path.** Current binary/About metadata still says 2.4.2 and requires alignment before a 2.4.3 release.
+2.4.3 groups all post-v2.4.2 development through `dea5c78`: the bond overview, low-tech research and rough concentration, nine PNA weapons across three eras, dedicated art/feedback, native quality scaling, isolated damage sharing, cooperative whip hits, retirement of the old launcher, and Bestow Bliss doses based on body fluid output. **1.7 saves referencing the removed launcher definitions have no migration path.** The 1.7 binary and About metadata are aligned to 2.4.3; the 1.6 binary remains 2.4.1.
 
-Load Harmony and RJW before SSC; Binding Rituals require Ideology. Start with the [English mod overview](Docs/模组介绍.md#english), [player reading order](Docs/Players/README.md#english-reading-order), [quick start](QUICK_START_EN.md) and [full guide](PLAYER_GUIDE_EN.md). Read the [2.4.3 scope](Docs/Releases/2.4.3/2.4.3发布说明.md#english) for development changes, or the [2.4.2 notes](Docs/Releases/2.4.2/2.4.2发布说明.md#english) for the existing download.
+Load Harmony and RJW before SSC; Binding Rituals require Ideology. Start with the [English mod overview](Docs/模组介绍.md#english), [player reading order](Docs/Players/README.md#english-reading-order), [quick start](QUICK_START_EN.md) and [full guide](PLAYER_GUIDE_EN.md). Read the [2.4.3 scope](Docs/Releases/2.4.3/2.4.3发布说明.md#english) for this release, or the [2.4.2 notes](Docs/Releases/2.4.2/2.4.2发布说明.md#english) for the historical 2.4.2 download.

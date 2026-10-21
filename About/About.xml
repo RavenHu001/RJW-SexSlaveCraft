@@ -7,17 +7,20 @@
 		<li>1.7</li>
 	</supportedVersions>
 	<packageId>rjw.sexslavecraft.TieJinVer</packageId>
-    <description>SexSlaveCraft 2.4.2 (TieJin Modify)
-双版本目录与1.7凝胶外观更新：1.6保留2.4.1冻结基线，1.7独立加载本版内容，共享基础贴图。升级时完整替换旧模组文件夹，不要合并版本目录。
-1.7修复凝胶化过程重复结算、材质和线程兼容；原生Shader柔化黑边，统一身体、头部和SizedApparel的光照响应，稳定材质缓存减少重复工作。原版保护眼部，Facial Animation保留五官动画与遮挡。
-完全凝胶化角色在“调教”ITab的“凝胶外观”区设置个人渲染、颜色和透明度。默认深紫、HSV饱和度90%、不透明度85%，支持恢复默认配色；关闭保留设置，旧档一次继承原全局选择。不再添加重复的命令栏调色按钮。
-保留2.4.1的PNA重置、欢愉恩赐、主人资格与成长、绑定维护、六种特化及人格凝胶玩法。Harmony与RJW先于SSC加载，契约仪式需要Ideology。兔入口仍禁用，旧RimTalk对接暂停。
-版本与验收边界见CHANGELOG.md及Docs/Releases/2.4.2/。
+    <description>SexSlaveCraft 2.4.3 (TieJin Modify)
+关系概览、低科技适配与三代PNA武器：1.7加载2.4.3新内容，1.6保留2.4.1冻结基线。更新时完整替换旧模组目录，保留版本目录与加载配置。
+主从关系卡片支持头像定位、调教员指派及当前地图成员批选；低科技研究与篝火／灶台粗放浓缩连接原有PNA和人格路线。
+中世纪、工业与太空共九把PNA武器，配套研究、制作、效力说明、正式美术和紫色反馈。涂覆武器保留真实伤口；太空主攻击对主人保护，对有效锁链目标无伤吸收并即时修复。品质影响伤害和穿甲，不放大药效或修复；分摊伤害不传药。
+欢愉恩赐按主人当前身体产液能力决定负荷，其余结算沿用原规则。保留个体凝胶外观、六种特化、主人资格／成长、人格凝胶和身体改造。
+升级注意：1.7已移除旧简易PNA发射器、弹丸、配方及专属研究，不提供引用这些定义的存档迁移。1.6原内容保留。
+Harmony与RJW先于SSC加载，契约仪式需要Ideology。兔入口仍禁用，旧RimTalk对接暂停。版本及验证见CHANGELOG.md与Docs/Releases/2.4.3/。
 
-Version 2.4.2 — versioned runtime layout and 1.7 gel appearance.
-RimWorld 1.6 retains the frozen SSC 2.4.1 runtime; 1.7 loads the new content separately with shared baseline textures. Replace the old mod folder when upgrading; do not merge version directories.
-Native gel shaders soften dark outlines, align body/head/SA lighting and reuse stable material variants. Vanilla eyes are protected; FA facial animation and occlusion are preserved. Fully gelatinized pawns use the Training tab for per-pawn rendering, RGB/HSV/HEX colors and opacity. Defaults are dark purple, 90% HSV saturation and 85% opacity. Disabling rendering keeps saved colors; missing per-pawn switches inherit the legacy global setting once. The duplicate pawn-gizmo color button was removed.
-Retains PNA, Bestow Bliss, Master qualification/progression, bonds and specializations from 2.4.1. Load Harmony and RJW before SSC; Binding Rituals require Ideology. Rabbit selection and legacy RimTalk remain unavailable. See the release notes for verification boundaries.
+Version 2.4.3 — bond overview, low-tech progression and nine PNA weapons.
+New features target RimWorld 1.7; the 1.6 runtime stays frozen at SSC 2.4.1. Replace the old mod folder completely and keep both version directories and LoadFolders.xml intact.
+Relationship cards support portrait navigation, trainer assignment and selection of current-map members. Lower-tech research and campfire/stove rough concentration extend access to existing PNA and personality systems.
+Three weapon eras have dedicated research, crafting, potency displays, art and purple feedback. Coated weapons retain wounds; spacer main attacks protect Masters and allow valid Chain-bound bodies to absorb PNA without wounds and repair an eligible injury. Native quality scales damage and penetration, not potency or repair; shared damage carries no PNA.
+Bestow Bliss doses now use the Master's current body output. Retains gel appearance, six specializations, Master qualification/progression, personality gel and body modification.
+The old Basic PNA Launcher and its dedicated definitions are removed from 1.7 without save migration. Frozen 1.6 retains its original content. Load Harmony and RJW before SSC; Binding Rituals require Ideology. Rabbit selection and legacy RimTalk remain unavailable.
 
 [AI 辅助生成 / Partly AI-assisted]</description>
 	<modDependencies>

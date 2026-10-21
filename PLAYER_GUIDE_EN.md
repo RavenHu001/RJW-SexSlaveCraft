@@ -1,6 +1,6 @@
 # RJW-SexSlaveCraft Complete Player Guide
 
-> This guide covers **SSC 2.4.3 development (2026-10-20, unreleased)**: the bond overview, low-tech adaptation, nine PNA weapons and output-based Bestow Bliss doses on 1.7. The 1.6 runtime stays frozen at 2.4.1. The public download remains **2.4.2** and does not include these later additions. See the [2.4.3 scope](Docs/Releases/2.4.3/2.4.3发布说明.md#english). Earlier section versions identify introductions.
+> This guide covers **SSC 2.4.3 (2026-10-20)**. The 1.7 runtime includes the bond overview, low-tech adaptation, nine PNA weapons and output-based Bestow Bliss doses. The 1.6 runtime stays frozen at 2.4.1. See the [2.4.3 release scope and download](Docs/Releases/2.4.3/2.4.3发布说明.md#english). Earlier section versions identify introductions.
 
 [Project home](README.md) · [Player reading order](Docs/Players/README.md#english-reading-order) · [Quick start](QUICK_START_EN.md) · [中文机制详解](机制详解.md)
 
@@ -893,7 +893,7 @@ See the [completion audit (Chinese)](Docs/Development/Completed/主人欲望侵�
 
 ### 11.6 Medieval PNA Weapons and Visual Feedback
 
-These are 2.4.3 development features for 1.7 and are not included in the public 2.4.2 download. Primitive PNA Weapons is Medieval research costing 800 points, requiring Basic PNA Application rather than concentration research. The weapons use traditional weapon-poisoning techniques to infuse their metal heads with ordinary purple nanofluid.
+These features are included in the 2.4.3 package for 1.7; the historical 2.4.2 package lacks them. Primitive PNA Weapons is Medieval research costing 800 points, requiring Basic PNA Application rather than concentration research. The weapons use traditional weapon-poisoning techniques to infuse their metal heads with ordinary purple nanofluid.
 
 | Base parameter | Short spear | Blowpipe | Light crossbow |
 | --- | --- | --- | --- |
@@ -917,7 +917,7 @@ Weapon PNGs use 256×256 canvases; dart/bolt PNGs use 128×128 and drawSize 0.5/
 
 ### 11.7 Industrial PNA Weapons
 
-This is accepted 2.4.3 development content for 1.7. Research **Industrial PNA Weapons** (1600 points) after Primitive PNA Weapons, PNA Concentration and Machining; craft all three at a machining table.
+This is accepted 2.4.3 content for 1.7. Research **Industrial PNA Weapons** (1600 points) after Primitive PNA Weapons, PNA Concentration and Machining; craft all three at a machining table.
 
 | Parameter | Short whip | Repeating needle gun | Precision needle rifle |
 | --- | --- | --- | --- |

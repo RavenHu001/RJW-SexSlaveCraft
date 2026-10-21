@@ -1,6 +1,6 @@
 # RJW-SexSlaveCraft Quick Start Guide
 
-> This guide covers **SSC 2.4.3 development (2026-10-20, unreleased)**: the bond overview, low-tech adaptation, nine PNA weapons and output-based Bestow Bliss doses on 1.7. The 1.6 runtime stays frozen at 2.4.1. The public download remains **2.4.2** and does not include these later additions. See the [2.4.3 scope](Docs/Releases/2.4.3/2.4.3发布说明.md#english). Earlier section versions identify introductions.
+> This guide covers **SSC 2.4.3 (2026-10-20)**. The 1.7 runtime includes the bond overview, low-tech adaptation, nine PNA weapons and output-based Bestow Bliss doses. The 1.6 runtime stays frozen at 2.4.1. See the [2.4.3 release scope and download](Docs/Releases/2.4.3/2.4.3发布说明.md#english). Earlier section versions identify introductions.
 
 [Project home](README.md) · [Player reading order](Docs/Players/README.md#english-reading-order) · [中文快速入门](读我，玩法介绍.md) · [Complete guide](PLAYER_GUIDE_EN.md)
 

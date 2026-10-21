@@ -1,6 +1,6 @@
 # 玩家阅读入口 / Player documentation
 
-当前指南对应 **2.4.3 开发版本，未发布**；新增功能仅在 1.7，1.6 保留 2.4.1 冻结内容。公开下载仍为 [2.4.2](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.2)，不包含后续关系概览、低科技、三代九武器与恩赐剂量调整。见[本版范围](../Releases/2.4.3/2.4.3发布说明.md)。
+当前指南对应 **2.4.3**；新增功能仅在 1.7，1.6 保留 2.4.1 冻结内容。[公开下载 2.4.3](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.3)已纳入关系概览、低科技、三代九武器及恩赐剂量调整，见[本版范围](../Releases/2.4.3/2.4.3发布说明.md)。
 
 [项目首页](../../README.md) · [文档总索引](../README.md) · [双语模组介绍](../模组介绍.md) · [版本索引](../Releases/README.md)
 
@@ -27,7 +27,7 @@
 
 ## English reading order
 
-The guides cover **2.4.3 development, unreleased**, on 1.7, with the 1.6 runtime frozen at 2.4.1. The public download is still 2.4.2 and lacks the later additions. Start with the [2.4.3 scope](../Releases/2.4.3/2.4.3发布说明.md#english) when comparing versions.
+The guides cover **2.4.3** on 1.7, with 1.6 frozen at 2.4.1. The public 2.4.3 package includes these additions; start with the [release scope](../Releases/2.4.3/2.4.3发布说明.md#english) when comparing versions.
 
 1. Read the [mod overview](../模组介绍.md#english).
 2. Follow [Getting Started](../../QUICK_START_EN.md#2-getting-started) for research, qualification, identities and trainers.
@@ -48,6 +48,6 @@ Use [Bond Overview](../../QUICK_START_EN.md#bond-overview-243-17-only) for portr
 
 ## 版本与资料用途 / Versions and document roles
 
-开发指南以当前仓库内容为准，正式下载以对应标签的发布说明为准；当前 DLL／About 等版本仍待 2.4.3 发布准备时对齐，见[验证记录](../Releases/2.4.3/2.4.3版本验证.md)。已交付、专项待验收和未来规划分别登记，历史测试计数保留执行日期。
+当前指南与 2.4.3 安装包范围一致；历史标签资料保持各自版本，构建与发布结果见[验证记录](../Releases/2.4.3/2.4.3版本验证.md)。已交付、专项待验收与未来规划分别登记，测试计数保留实际执行日期。
 
-Current checkout guides describe development content; tagged release notes describe the download. Binary/About metadata alignment and a new full release gate are still required before publishing 2.4.3. Historical validation and acceptance retain their original scope.
+The 2.4.3 guides describe the release package. Historical validation and maintainer acceptance retain their original scope; new build, release-gate and package results are recorded separately.

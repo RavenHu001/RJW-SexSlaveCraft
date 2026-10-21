@@ -4,9 +4,9 @@
 
 This continuation builds on upstream **2.2.8**, the baseline when upstream development stopped in July, and retains its version numbering. Entries are listed newest first. Technical details are in the [development log (Chinese)](Docs/Development/开发更新记录.md).
 
-## [2.4.3] — 开发版本 / Unreleased
+## [2.4.3] — 2026-10-20 — 关系概览、低科技与三代 PNA 武器
 
-2026-10-20 登记：已发布 `v2.4.2` 之后截至 `dea5c78` 的全部开发归入本版。新功能仅在 1.7；1.6／Common 冻结于 2.4.1。公开下载仍为 2.4.2；当前 DLL／About 等产物元数据仍为 2.4.2，正式发布前须版本对齐重编与新门禁。见[双语说明](Docs/Releases/2.4.3/2.4.3发布说明.md)、[全部提交核对](Docs/Releases/2.4.3/2.4.3开发归并核对.md)与[验证边界](Docs/Releases/2.4.3/2.4.3版本验证.md)。
+2026-10-20 发布：`v2.4.2` 之后截至 `dea5c78` 的开发统一纳入本版。新功能仅在 1.7，1.6／Common 冻结于 2.4.1。1.7 DLL／BUILD-INFO、About 与源码产品版本对齐 2.4.3，保留 AssemblyVersion 1.0.0.0。见[双语说明](Docs/Releases/2.4.3/2.4.3发布说明.md)、[提交归并](Docs/Releases/2.4.3/2.4.3开发归并核对.md)与[本轮验证](Docs/Releases/2.4.3/2.4.3版本验证.md)。
 
 - **关系与低科技：** 关系概览、定位／批选、调教员指派和局部刷新；研究分级与篝火／灶台 10→1 粗放浓缩已完成约定验收。
 - **三代九武器：** 中世纪短矛／吹箭筒／轻弩，工业短鞭／速射针枪／精确针枪，太空丝鞭／脉冲枪／投射枪。研究分别为 800／1600／3000 点，制造耗液、成品不补液或管理独立弹药；基础负荷分别 15／6／10、18／8／20、20／10／25 点。
@@ -16,7 +16,7 @@ This continuation builds on upstream **2.2.8**, the baseline when upstream devel
 - **恩赐剂量：** 主人产液器官有效产量 7.5～250 对应 3～100 点负荷，参考 20 对应 8 点；普通产出者仍为 2 点，其余恩赐分量／规则保留。维护者确认本批符合预期。
 - **文档与验证：** 增补太空完成汇总，统一中英文指南、简介、研究表与分类阅读顺序；已交付设计／阶段归档，未来提案和专项缺口分开。旧枪退役全量 40 套／3849 项与后续恩赐四套／1083 项各保留执行时点，未冒充新发布门禁。
 
-All post-v2.4.2 development through `dea5c78` is assigned to **2.4.3**, not yet released. 1.7 gains the bond overview, low-tech research and 10→1 rough concentration, nine PNA weapons with dedicated art and feedback, normal quality scaling, spacer protection/repair, isolated damage sharing and cooperative whip hits. The old launcher and its dedicated definitions are removed **without save migration**. Bestow Bliss now derives 3–100 load points from current body output (20 output gives 8); normal producer supply remains 2 points. Whip sound trials were reverted and further work is deferred. The 1.6/Common baseline remains 2.4.1; the public download and current binary/About metadata remain 2.4.2 until release preparation. Historical batch results do not establish a new full 2.4.3 release gate.
+All post-v2.4.2 development through `dea5c78` is included in **2.4.3, released 2026-10-20**. 1.7 gains the bond overview, low-tech research and 10→1 rough concentration, nine PNA weapons with dedicated art and feedback, normal quality scaling, spacer protection/repair, isolated damage sharing and cooperative whip hits. The old launcher and its dedicated definitions are removed **without save migration**. Bestow Bliss now derives 3–100 load points from current body output (20 output gives 8); normal producer supply remains 2 points. Whip sound trials were reverted and further work is deferred. The 1.6/Common baseline remains 2.4.1; the public download and 1.7 binary/About metadata are aligned to 2.4.3. New build and release-gate evidence is recorded separately from historical batch results.
 
 ## [2.4.2] — 2026-10-17 — 双版本目录与个体凝胶外观
 
