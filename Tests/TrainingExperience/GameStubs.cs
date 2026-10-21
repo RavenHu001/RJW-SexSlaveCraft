@@ -85,7 +85,8 @@ namespace SexSlaveCraft
     {
         public static int Calls;
         public static Action OnApplied;
-        public static void ApplyInfestation(Verse.Pawn a,Verse.Pawn b,Func<bool> current) {Calls++;OnApplied?.Invoke();}
+        public static float CaptureInfestationDose(Verse.Pawn source)=>.08f;
+        public static void ApplyInfestation(Verse.Pawn a,Verse.Pawn b,float dose,Func<bool> current) {Calls++;OnApplied?.Invoke();}
         public static void ApplyFromProducer(Verse.Pawn a,Verse.Pawn b,Func<bool> current) { }
     }
     public static class SSCPnaMath {public static bool IsFinite(float f)=>float.IsFinite(f);}

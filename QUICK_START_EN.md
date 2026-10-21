@@ -486,9 +486,11 @@ Combine sexual skill with actively controlled aphrodisiac nanomachines to bestow
 
 All four batches are implemented and accepted in game on the 2.4.1 release. The public 2.4.0 download does not include this feature.
 
+The 2026-10-20 fluid-output dose change is a later 1.7 development increment accepted in-game on 2026-10-20; existing public packages were not rebuilt. See the [implementation record](Docs/Development/Completed/欲望侵染体液产量与PNA剂量接入.md).
+
 1. Select a current player-faction Master, open the Training tab, and enable **Bestow Bliss** in personal abilities. It starts off and requires no additional Master level, bond count or bridle.
 2. Complete an ordinary paired encounter or Lovin with an eligible humanlike partner. The Master may occupy either role. Unbound partners and Sex Slaves bonded to another Master can receive effects; existing encounter permissions still apply.
-3. Each completion supplies +8 percentage points of PNA load, fills an existing legal PNA need, and adds up to 1 Corruption point. Existing addiction gains base +0.02, totaling +0.22 if input ends in the terminal stage. Initial addiction still requires full load.
+3. In the later 1.7 development build, each completion scales PNA load with the Master’s genital fluid output: effective total output is bounded to 7.5–250, with 20 giving +8 load points and a range of +3 to +100. It fills an existing legal PNA need, and adds up to 1 Corruption point. Existing addiction gains base +0.02, totaling +0.22 if input ends in the terminal stage. Initial addiction still requires full load.
 4. Ordinary RJW encounters grant a shared 20% body-development budget when Body-part Training research is complete and actual participating parts are known. Native Lovin grants no part development.
 
 Separate mood and opinion memories depend on pre-infestation current Corruption and current opinion of the actual source. Mood lasts one day with one global record. Opinion lasts three days with one record per Master, at most three Masters, fading over the final approximately 0.9 day. Repeated contact replaces and refreshes these memories.

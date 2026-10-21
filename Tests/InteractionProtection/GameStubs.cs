@@ -452,12 +452,15 @@ namespace SexSlaveCraft
     public static class SSCPnaSexSupplyUtility
     {
         public static readonly List<(Verse.Pawn Source, Verse.Pawn Recipient)> Calls = new();
+        public static readonly List<float> StrongDoses = new();
+        public static Func<Verse.Pawn, float> FluidDoseReader;
+        public static float CaptureInfestationDose(Verse.Pawn source) => FluidDoseReader?.Invoke(source) ?? .08f;
         public static Action OnSupply;
         public static int StrongCalls;
         public static void ApplyFromProducer(Verse.Pawn source, Verse.Pawn recipient, Func<bool> guard=null)
         { if(guard!=null && !guard())return;Calls.Add((source, recipient)); OnSupply?.Invoke(); }
-        public static void ApplyInfestation(Verse.Pawn source, Verse.Pawn recipient, Func<bool> guard)
-        { if(!guard())return;StrongCalls++;OnSupply?.Invoke(); }
+        public static void ApplyInfestation(Verse.Pawn source, Verse.Pawn recipient, float dose, Func<bool> guard)
+        { if(!guard())return;StrongCalls++;StrongDoses.Add(dose);OnSupply?.Invoke(); }
     }
     public static class SSCIdentityUtility
     {

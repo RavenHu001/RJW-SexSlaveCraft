@@ -848,7 +848,7 @@ Positions, genital selection and condoms do not filter this supply. Two producer
 
 For an addicted observer evaluating a normal producer or an enabled Master who can legally infest that observer (without stacking dual-source multipliers), RJW's independent attraction multiplier is ×1.25 outside withdrawal and ×1.50 in withdrawal, otherwise ×1. It applies to General, ForFucking and ForRape. Master and effective-Chain observers receive no addiction preference; existing permissions and selection rules remain.
 
-Bestow Bliss is implemented and accepted in all four batches: +8% load/full existing-need refill, base +0.02 existing addiction or +0.22 after terminal input, additional Corruption, actual-part development and independent feedback. See [the next section](#115-master-desire-infestation). Personal automatic activation maintenance remains existing future work.
+Bestow Bliss is implemented and accepted in all four batches: the original +8% load/full existing-need refill (later 1.7 development scales load from 3% to 100% by fluid output; accepted in-game on 2026-10-20), base +0.02 existing addiction or +0.22 after terminal input, additional Corruption, actual-part development and independent feedback. See [the next section](#115-master-desire-infestation). Personal automatic activation maintenance remains existing future work.
 
 <a id="115-master-desire-infestation"></a>
 
@@ -864,7 +864,7 @@ Recipients must be living, valid flesh humanlikes with an actual Corruption need
 
 | Component | Current rule |
 | --- | --- |
-| PNA input | +8 load percentage points; fill an existing legal PNA need |
+| PNA input | Later 1.7 development: +3 to +100 load points from the Master’s genital fluid output; reference output 20 gives +8; fill an existing legal PNA need |
 | Existing ordinary addiction | Base D+0.02; add 0.20 if input ends terminal, totaling +0.22, capped at 1 |
 | Initial addiction | Still requires full load; receives no extra existing-addiction reinforcement |
 | Corruption | Up to +1 additional percentage point; new scoring caps unchained recipients at 12% and chained recipients by their current stage; old scoring retains the need's original cap. Existing over-cap values are not reduced |

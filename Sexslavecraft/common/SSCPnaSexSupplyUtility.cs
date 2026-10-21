@@ -20,11 +20,22 @@ namespace SexSlaveCraft
                 continuationGuard: continuationGuard);
         }
 
+        /// <summary>完成前只读捕获；与原版 Lovin 共用当前身体产量，不增加参与部位或避孕套门槛。</summary>
+        public static float CaptureInfestationDose(Pawn source) => SSCMasterInfestationFluidUtility.CaptureDose(source);
+
         public static SSCPnaExposureResult ApplyInfestation(Pawn source, Pawn recipient, Func<bool> continuationGuard)
         {
+            // 保留既有调用签名；独立调用同样先检查资格，再读取产量，不消费或生成体液。
+            if (continuationGuard?.Invoke() != true || !SSCDesireInfestationUtility.CanAffect(source, recipient)) return default;
+            return ApplyInfestation(source, recipient, CaptureInfestationDose(source), continuationGuard);
+        }
+
+        internal static SSCPnaExposureResult ApplyInfestation(Pawn source, Pawn recipient, float dose, Func<bool> continuationGuard)
+        {
             // 强来源复用共享输入的主人免疫、有效链与首次满值规则，不在此重复写需求或成瘾。
-            if (!continuationGuard() || !SSCDesireInfestationUtility.CanAffect(source, recipient)) return default;
-            return SSCPnaExposureUtility.ApplyExposure(recipient, SSCPnaMath.MasterInfestationDose,
+            // 动态量只传给负荷参数；需求补满、固定成瘾增量及末期判定仍由原来源规则处理。
+            if (continuationGuard?.Invoke() != true || !SSCDesireInfestationUtility.CanAffect(source, recipient)) return default;
+            return SSCPnaExposureUtility.ApplyExposure(recipient, dose,
                 SSCPnaExposureSource.MasterInfestation, continuationGuard: continuationGuard);
         }
     }
