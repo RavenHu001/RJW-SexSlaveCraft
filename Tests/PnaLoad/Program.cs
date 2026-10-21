@@ -90,6 +90,7 @@ internal static partial class Program
         RunEffectsStep5Tests();
         RunAbilityToggleLifecycleTests();
         RunInfestationTests();
+        RunFluidDoseTests();
         RunRefinementTests();
         RunCoatedWeaponTests();
         RunSpacerWeaponTests();

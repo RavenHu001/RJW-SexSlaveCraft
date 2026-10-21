@@ -12,6 +12,18 @@ internal static partial class Program
     private static void RunInfestationCompletionTests()
     {
         foreach(bool reverse in new[]{false,true})
+            Run("侵染动态剂量在原结算前冻结 reverse="+reverse,()=>
+            {
+                ResetSexAwards();var p=People();p.a.Training.pawnIdentity=PawnIdentity.Master;p.a.Training.Infestation=true;
+                float dose=.16f;int reads=0;
+                SSCPnaSexSupplyUtility.FluidDoseReader=_=>{reads++;return dose;};
+                var d=Driver(reverse?p.b:p.a,reverse?p.a:p.b,false);Begin(d);d.ticks_left=0;
+                SexUtility.OnProcess=()=>dose=1f;
+                SexUtility.ProcessSex(d.Sexprops);SexUtility.ProcessSex(d.Sexprops);
+                Assert(reads==1&&SSCPnaSexSupplyUtility.StrongDoses.Count==1&&
+                    Math.Abs(SSCPnaSexSupplyUtility.StrongDoses[0]-.16f)<.0001f,"只读一次且原结算不改快照");
+            });
+        foreach(bool reverse in new[]{false,true})
             Run("侵染完成双向主人和来源择强 reverse="+reverse,()=>
             {
                 ResetSexAwards();var p=People();p.a.Training.pawnIdentity=PawnIdentity.Master;p.a.Training.Infestation=true;
@@ -20,6 +32,17 @@ internal static partial class Program
                 Assert(SSCPnaSexSupplyUtility.StrongCalls==1&&TrainerSpecializationProgressUtility.InitiatedSexAwards==1,"唯一完成");
                 Assert(!SSCPnaSexSupplyUtility.Calls.Any(x=>x.Source==p.a),"强来源不再发弱来源");
                 Assert(Math.Abs(p.b.needs.corruption.CurLevel-.01f)<.0001f,"目标恶堕");
+            });
+        foreach(bool receiverMaster in new[]{false,true})
+            Run("侵染Lovin动态剂量冻结且只结算一次 receiverMaster="+receiverMaster,()=>
+            {
+                ResetSexAwards();var p=People();var source=receiverMaster?p.b:p.a;
+                source.Training.pawnIdentity=PawnIdentity.Master;source.Training.Infestation=true;
+                float dose=.03f;int reads=0;SSCPnaSexSupplyUtility.FluidDoseReader=_=>{reads++;return dose;};
+                var d=Lovin(p.a,p.b);BeginLovin(d);d.FinishTimer();SexUtility.OnProcess=()=>dose=1f;
+                d.Cleanup(JobCondition.Succeeded);d.Cleanup(JobCondition.Succeeded);
+                Assert(reads==1&&SSCPnaSexSupplyUtility.StrongDoses.Count==1&&
+                    Math.Abs(SSCPnaSexSupplyUtility.StrongDoses[0]-.03f)<.0001f,"Lovin同样使用冻结下限剂量");
             });
         Run("侵染原结算内重入只由外层认领",()=>
         {

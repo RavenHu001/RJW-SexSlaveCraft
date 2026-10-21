@@ -60,7 +60,8 @@ namespace SexSlaveCraft
     public static class SSCPnaSexSupplyUtility
     {
         public static int Calls;public static Action OnApply;
-        public static void ApplyInfestation(Pawn source,Pawn target,Func<bool> current){Calls++;OnApply?.Invoke();}
+        public static float CaptureInfestationDose(Pawn source)=>.08f;
+        public static void ApplyInfestation(Pawn source,Pawn target,float dose,Func<bool> current){Calls++;OnApply?.Invoke();}
         public static void ApplyFromProducer(Pawn source,Pawn target,Func<bool> current) { }
     }
     public static class TrainingOutcomeUtility {public static float GetChainCap(Pawn p)=>.12f;}

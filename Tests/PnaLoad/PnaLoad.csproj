@@ -10,6 +10,7 @@
     <Compile Include="$(SscSourceRoot)/common/SSCPnaExposureUtility.cs" Link="Production/SSCPnaExposureUtility.cs" />
     <Compile Include="$(SscSourceRoot)/common/SSCPnaSourceUtility.cs" Link="Production/SSCPnaSourceUtility.cs" />
     <Compile Include="$(SscSourceRoot)/common/SSCPnaSexSupplyUtility.cs" Link="Production/SSCPnaSexSupplyUtility.cs" />
+    <Compile Include="$(SscSourceRoot)/common/SSCMasterInfestationFluidUtility.cs" Link="Production/SSCMasterInfestationFluidUtility.cs" />
     <Compile Include="$(SscSourceRoot)/common/AttractionPreference_SSCPna.cs" Link="Production/AttractionPreference_SSCPna.cs" />
     <Compile Include="$(SscSourceRoot)/common/SSCPnaGameComponent.cs" Link="Production/SSCPnaGameComponent.cs" />
     <Compile Include="$(SscSourceRoot)/Hediff/HediffComp_SSCPnaLoad.cs" Link="Production/HediffComp_SSCPnaLoad.cs" />

@@ -73,6 +73,7 @@ namespace SexSlaveCraft
         {
             private readonly Pawn source, target;
             private readonly bool infestation, producer;
+            private readonly float infestationDose;
             private readonly Need_Corruption need;
             private readonly SSCDesireInfestationBodyUtility.Plan bodyPlan;
             private readonly SSCDesireInfestationFeedbackUtility.Plan feedbackPlan;
@@ -82,6 +83,8 @@ namespace SexSlaveCraft
                 this.source = source; this.target = target;
                 infestation = SSCDesireInfestationUtility.CanAffect(source, target);
                 producer = allowProducer && SSCPnaSourceUtility.IsPnaProducer(source);
+                // 与其他完成前快照一起冻结剂量；原结算及第一方向回调改写器官不能改变本次输入。
+                if (infestation) infestationDose = SSCPnaSexSupplyUtility.CaptureInfestationDose(source);
                 need = target?.needs?.TryGetNeed<Need_Corruption>();
                 // 反馈先冻结当前 C/O；后续评分查询、RJW 新记忆及本场侵染增量不重判本档。
                 if (infestation) feedbackPlan = SSCDesireInfestationFeedbackUtility.Capture(source, target, need);
@@ -98,7 +101,7 @@ namespace SexSlaveCraft
                 // 调用前选择一次完整来源规则；强来源处理后不回退再输入弱来源。
                 if (infestation && StrongCurrent())
                 {
-                    SSCPnaSexSupplyUtility.ApplyInfestation(source, target, StrongCurrent);
+                    SSCPnaSexSupplyUtility.ApplyInfestation(source, target, infestationDose, StrongCurrent);
                     // PNA 分量未产生效果不等于侵染失效；人格与资格仍有效时独立结算恶堕。
                     if (StrongCurrent()) SSCDesireInfestationUtility.ApplyCorruption(source, target, need, StrongCurrent);
                     // 恶堕达到上限仍可开发；每条身体写入复查人格、需求和原部位凭据。

@@ -1,5 +1,7 @@
 # 测试说明索引
 
+2026-10-20 欲望侵染产量剂量后续：PnaLoad 661、InteractionProtection 259、DesireInfestationFeedback 89、TrainingExperience 74，合计 **1083/1083**；本批未运行全量统一入口。Def 25 对、Languages 412 对及布局 538 项检查通过，见[本批记录](../Docs/Development/Completed/欲望侵染体液产量与PNA剂量接入.md)。
+
 2026-10-20 两代鞭束配合受药：PnaSpacerNative **86/86**（新增46项）、PnaLoad **645/645**、PnaWeaponEffects **197/197**及1.7编译通过；维护者确认本轮实机测试正常并授权提交。本轮未重跑完整40套全量回归，见[实现与验证范围](../Docs/Development/Completed/SSCPNA鞭束配合受药实现与测试.md)。
 
 2026-10-19 九武器分摊与投送隔离：PnaLoad **645/645**、原生串联／护甲／近战 **40/40**，完整回归 **40/40 套、3790/3790 项、2/2 资源检查**与 1.7 零警告零错误编译通过，已同步本机，维护者已确认代码实机运作正常并授权提交。具体上下文、嵌套／异常验证及物理边界见[修复记录](../Docs/Development/Completed/SSCPNA武器伤害分摊与投送隔离修复.md)；旧 25／623／3753 等计数保留原批次。

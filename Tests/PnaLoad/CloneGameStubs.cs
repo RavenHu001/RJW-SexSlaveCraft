@@ -42,7 +42,12 @@ namespace Verse
         public static List<T> AllDefs = new List<T>();
         public static T GetNamedSilentFail(string name)=>AllDefs.FirstOrDefault(d=>d is HediffDef h && h.defName==name);
     }
-    public static class Log { public static void Error(string text)=>Console.WriteLine(text); }
+    public static class Log
+    {
+        public static readonly List<string> Warnings = new();
+        public static void Warning(string message)=>Warnings.Add(message);
+        public static void Error(string text)=>Console.WriteLine(text);
+    }
     public static partial class Find
     {
         public static TickManager TickManager = new TickManager();

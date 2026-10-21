@@ -103,6 +103,7 @@
     <Compile Include="common\SSCPnaExposureUtility.cs" />
     <Compile Include="common\SSCPnaSourceUtility.cs" />
     <Compile Include="common\SSCPnaSexSupplyUtility.cs" />
+    <Compile Include="common\SSCMasterInfestationFluidUtility.cs" />
     <Compile Include="common\SSCDesireInfestationUtility.cs" />
     <Compile Include="common\SSCOrdinarySexOutcomeUtility.cs" />
     <Compile Include="common\SSCOrdinarySexPartsSnapshot.cs" />

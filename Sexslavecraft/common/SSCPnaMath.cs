@@ -13,6 +13,7 @@ namespace SexSlaveCraft
         public const int UpdateInterval = 150;
         public const float OrdinaryExposureDose = 0.08f;
         // 两种性交来源共用归一化负荷；调用方先择强，同一方向只进入一次共享输入。
+        // 主人产量为参考值 20 时的基础剂量；实际侵染按 7.5～250 产量范围折算为 3%～100%。
         public const float MasterInfestationDose = 0.08f;
         public const float ProducerSexDose = 0.02f;
         // 真实输入后已处于末期时对已有成瘾的额外增量；信息展示也读取同一数值。

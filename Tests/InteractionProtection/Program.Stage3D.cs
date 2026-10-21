@@ -29,6 +29,8 @@ internal static partial class Program
         TrainerSpecializationProgressUtility.OnAward = null;
         SSCPnaSexSupplyUtility.Calls.Clear();
         SSCPnaSexSupplyUtility.StrongCalls = 0;
+        SSCPnaSexSupplyUtility.StrongDoses.Clear();
+        SSCPnaSexSupplyUtility.FluidDoseReader = null;
         SexUtility.OnProcess = null;
         SSCPnaSexSupplyUtility.OnSupply = null;
     }

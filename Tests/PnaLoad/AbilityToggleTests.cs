@@ -45,7 +45,8 @@ internal static partial class Program
     {
         RegisterToggleMarker();var p=NewPawn();p.Comp=new CompSexSlaveTraining{pawnIdentity=PawnIdentity.Master};p.IsMaster=true;
         p.Faction=Faction.OfPlayer;((CompSexSlaveTraining)p.Comp).abilityToggles.Set(InfestationToggle,true);
-        SSCAbilityToggleUtility.SyncMarkers(p);return p;
+        // 旧侵染用例显式使用参考产量；无器官与零产量下限由独立产量用例覆盖。
+        AddFluidOrgan(p,20f);SSCAbilityToggleUtility.SyncMarkers(p);return p;
     }
     private static int ToggleMarkers(Pawn p)=>p.health.hediffSet.hediffs.Count(h=>SSCAbilityToggleUtility.IsMarkerDef(h.def));
     private static void RunAbilityToggleLifecycleTests()
