@@ -18,10 +18,12 @@ $pwsh = (Get-Process -Id $PID).Path
 $savedPath = $env:PATH
 $savedHarmony = $env:SSC_TEST_HARMONY_PATH
 $savedMode = $env:SSC_VALIDATION_FIXTURE_MODE
+$savedNativeDotnet = $env:SSC_DOTNET_PATH
+$savedNativeGameRoot = $env:SSC_GAME_ROOT
 $checks = 0
 $suiteCount = @(Get-ChildItem -LiteralPath (Join-Path $repo 'Tests') -Recurse -Filter '*.csproj').Count
-# Six suites require net9.0 Harmony, including the actual bond-relation label patches.
-$harmonySuiteCount = 6
+# Nine registered suites require the test Harmony, including both native 1.7 suites.
+$harmonySuiteCount = 9
 
 <#
 .SYNOPSIS
@@ -167,6 +169,23 @@ if ($mode -eq 'failures') {
 '1/1 passed'
 exit 0
 '@ | Set-Content -LiteralPath (Join-Path $shim 'Fake-Dotnet.ps1') -Encoding utf8
+    # Native suites use an explicit .NET 10 entry. Keep both SDKs simulated so this
+    # orchestration fixture never requires the portable SDK or executes game code.
+    @'
+@echo off
+"__PWSH__" -NoProfile -File "%~dp0Fake-NativeDotnet.ps1" %*
+exit /b %errorlevel%
+'@.Replace('__PWSH__', $pwsh) | Set-Content -LiteralPath (Join-Path $shim 'native-dotnet.cmd') -Encoding ascii
+    @'
+if ($args[0] -eq '--version') { '10.0.402'; exit 0 }
+& (Join-Path $PSScriptRoot 'Fake-Dotnet.ps1') @args
+exit $LASTEXITCODE
+'@ | Set-Content -LiteralPath (Join-Path $shim 'Fake-NativeDotnet.ps1') -Encoding utf8
+    $nativeGameRoot = Join-Path $fixture 'native-game'
+    [IO.Directory]::CreateDirectory($nativeGameRoot) | Out-Null
+    [IO.File]::WriteAllText((Join-Path $nativeGameRoot 'Assembly-CSharp.dll'), 'Fixture path sentinel; never loaded.')
+    $env:SSC_DOTNET_PATH = Join-Path $shim 'native-dotnet.cmd'
+    $env:SSC_GAME_ROOT = $nativeGameRoot
     $env:PATH = $shim + [IO.Path]::PathSeparator + $savedPath
     $env:SSC_TEST_HARMONY_PATH = $null
     # Run outside both repositories to check independence from the caller's working directory.
@@ -314,7 +333,8 @@ exit 0
         $run = Run-Case 'missing-harmony' 'pass' ''
         Assert ($run.Code -ne 0 -and $run.Report.PassedSuites -eq ($suiteCount - $harmonySuiteCount) -and $run.Report.NotRunSuites -eq $harmonySuiteCount) 'Missing Harmony is NotRun and fails the overall check.'
         $run = Run-Case 'wrong-harmony' 'pass' $FrameworkHarmonyAssemblyPath
-        Assert ($run.Code -ne 0 -and $run.Report.NotRunSuites -eq $harmonySuiteCount -and $run.Report.Results[-1].Reason -match 'net9.0') 'Framework Harmony is rejected before any Harmony suite runs.'
+        $frameworkRejections = @($run.Report.Results | Where-Object { $_.Status -eq 'NotRun' -and $_.Reason -match 'net9.0' })
+        Assert ($run.Code -ne 0 -and $run.Report.NotRunSuites -eq $harmonySuiteCount -and $frameworkRejections.Count -eq $harmonySuiteCount) 'Framework Harmony is rejected before any Harmony suite runs.'
         $run = Run-Case 'failures' 'failures' $HarmonyAssemblyPath
         Assert ($run.Code -ne 0 -and $run.Report.FailedSuites -eq 5 -and $run.Report.PassedSuites -eq ($suiteCount - 5)) 'Restore, build, test exit, missing summary and failed count all fail; later suites continue.'
         foreach ($mode in @('old-sdk', 'missing-runtime')) {
@@ -382,5 +402,7 @@ finally {
     $env:PATH = $savedPath
     $env:SSC_TEST_HARMONY_PATH = $savedHarmony
     $env:SSC_VALIDATION_FIXTURE_MODE = $savedMode
+    $env:SSC_DOTNET_PATH = $savedNativeDotnet
+    $env:SSC_GAME_ROOT = $savedNativeGameRoot
 }
 Write-Host "$checks orchestration checks passed. Fixture and logs: $fixture"
