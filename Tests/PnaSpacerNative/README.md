@@ -18,4 +18,4 @@
   -p:HarmonyAssemblyPath='<测试用 net9.0 0Harmony.dll>' -- '<仓库目录>' '<本机 RimWorld 1.7 目录>'
 ```
 
-构建／源码身份、执行结果与后续游戏验证边界见[步骤一记录](../../Docs/Development/Verification/SSC太空武器步骤一实现与测试.md)。本专项使用内存隔离定义，不创建正式游戏武器 XML。
+构建／源码身份、执行结果与后续游戏验证边界见[步骤一记录](../../Docs/Development/Completed/SSC太空武器步骤一实现与测试.md)。本专项使用内存隔离定义，不创建正式游戏武器 XML。

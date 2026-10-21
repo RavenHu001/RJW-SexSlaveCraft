@@ -4,4 +4,4 @@
 
 [历史源码](Harmony_SSCPnaMeleeQuality.cs) 原用于固定短矛、短鞭、丝鞭的伤害，并单独恢复品质穿甲。代码保留用途说明，已从生产与测试编译清单移除，相关 XML 标记和 Harmony 生效入口一并撤下，不进入游戏安装内容。
 
-丝鞭仍由专用 Verb、近战装备、纳米伤害处理器和有效剂量配置识别，不依赖旧品质标记。恢复原版品质后的验证见[当前记录](../../Docs/Development/Verification/SSC武器恢复原版品质规则与测试.md)。此前的[穿甲适配记录](../../Docs/Development/Verification/SSC近战品质穿甲修正与远程品质核对.md)仅保留历史证据，不能作为现行规则。
+丝鞭仍由专用 Verb、近战装备、纳米伤害处理器和有效剂量配置识别，不依赖旧品质标记。恢复原版品质后的验证见[当前记录](../../Docs/Development/Completed/SSC武器恢复原版品质规则与测试.md)。此前的[穿甲适配记录](../../Docs/Development/Verification/SSC近战品质穿甲修正与远程品质核对.md)仅保留历史证据，不能作为现行规则。

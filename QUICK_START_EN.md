@@ -1,16 +1,10 @@
 # RJW-SexSlaveCraft Quick Start Guide
 
-The current 1.7 development branch also includes three accepted industrial PNA weapons: a short whip, a three-shot repeating needle gun and a single-shot precision needle rifle. Research Industrial PNA Weapons (1600 points) after Primitive PNA Weapons, PNA Concentration and Machining, then craft them at a machining table. Baseline potency is 18% / 8% per needle / 20%; actual delivery still requires a qualifying wound and uses the shared resistance rules. Crafting consumes concentrated PNA; no separate ammunition, gas or fluid refills are needed. Dedicated art, whip poses/hit afterimage, projectile trails, absorption hearts and pneumatic shot sounds are complete. These branch additions have not been repackaged into the existing v2.4.2 download. See the [completion record (Chinese)](Docs/Development/Completed/SSC工业时代纳米催情液武器完成核对.md).
-
-> 1.7 branch update (2026-10-18): three medieval PNA-coated weapons, dedicated artwork, a potency stat, purple trails, inverted absorption hearts and a spearhead hit glow are implemented. The version remains 2.4.2; these branch changes have not been repackaged into the existing download and are not added to 1.6. See the [completion audit](Docs/Development/Completed/SSC武器拓展首批完成核对.md).
-
-The bond overview is complete within the agreed scope on the 1.7 development branch. Select a master to see slave counts and portraits; the adjacent command selects available slaves on the current map. Select a slave and click the master portrait to locate and select the master. The magnifying glass opens the overview, the trainer pencil changes the assignment, and hover tips show details. These changes have not been repackaged into the published download. See the [completion record](Docs/Development/Completed/主从关系概览完成核对.md).
-
-> Version scope: 2.4.2 is the current release. New features target 1.7; 1.6 retains the frozen 2.4.1 runtime, with shared textures in Common/Textures. Existing v2.4.1 downloads remain the original 1.6 release.
+> This guide covers **SSC 2.4.3 development (2026-10-20, unreleased)**: the bond overview, low-tech adaptation, nine PNA weapons and output-based Bestow Bliss doses on 1.7. The 1.6 runtime stays frozen at 2.4.1. The public download remains **2.4.2** and does not include these later additions. See the [2.4.3 scope](Docs/Releases/2.4.3/2.4.3发布说明.md#english). Earlier section versions identify introductions.
 
 [Project home](README.md) · [Player reading order](Docs/Players/README.md#english-reading-order) · [中文快速入门](读我，玩法介绍.md) · [Complete guide](PLAYER_GUIDE_EN.md)
 
-> This checkout documents **SSC 2.4.2 (2026-10-17)**, including new 1.7 features; 1.6 remains frozen at 2.4.1. The current release package is v2.4.2. See the [2.4.2 scope](Docs/Releases/2.4.2/2.4.2发布说明.md#english) and [version-registration limits](Docs/Releases/2.4.2/2.4.2版本验证.md). Earlier section versions identify when features were introduced.
+**Upgrade note:** 1.7 removes the old Basic PNA Launcher, its projectile, recipe and dedicated research. Saves referencing those definitions have no migration path. Replace the old mod folder completely when upgrading.
 
 ## 1. What the Mod Does
 
@@ -60,6 +54,8 @@ The Master training tab shows stage, total experience and progress toward the ne
 
 `Training` is the entry point for the mod. Complete it before trying to configure pawns. With Royalty, supply any missing techprint using a Seed of Desire or the vanilla Training techprint first. Direct Master selection bypasses personal qualification, not research or techprint requirements.
 
+The 2.4.3 low-tech route on 1.7 lowers existing research without industrial requirements while retaining material, skill, techprint and body conditions. After PNA Concentration, campfires/stoves can turn **10 normal PNA into 1 PNA Plus** (work 600, Cooking); compatible tables supporting vanilla simple meals receive the recipe automatically. Drug labs retain 5→1 and 20→4 efficiency.
+
 ### Step 2: Assign a Trainer
 
 Give at least one free colonist the `Master` identity and enable `Training` work. Masters always qualify as trainers. A Sex Slave can turn on `Is a trainer` after researching Training Officer Specialization, becoming a free colonist with a valid Master bond and Chain stage 3 or higher, selecting Training Officer, and reaching 20% progress. An active Final Training Officer also qualifies after switching specialization. Unset pawns never qualify.
@@ -99,6 +95,10 @@ After successful ordinary Training, the target enters a cooldown of roughly nine
 An SSC Sex Slave with a `Sex Slave Chain` has a separate `Allow Self-training` permission, enabled by default for new and existing saves. Select that pawn and right-click the pawn to choose an available solo act. Automatic self-training can branch only from an RJW automatic masturbation candidate: when both permissions are available, the four Chain stages select self-training at 30% / 55% / 80% / 50%. When ordinary masturbation is denied but self-training is allowed, the candidate becomes self-training.
 
 Completion grants Corruption and a dedicated one-day mood memory, subject to the current Chain cap. It does not start ordinary Training cooldown or create a bond. Denying ordinary masturbation produces different ongoing moods depending on whether self-training remains allowed. In this first version, genes that forbid masturbation also block self-training.
+
+### Bond Overview (2.4.3, 1.7 only)
+
+Select a Master and open Training to see member counts and portraits; the adjacent command selects available, valid bound members on the current map. A slave's Master portrait locates and selects the Master. The magnifying glass opens the compact overview, the trainer pencil changes the assignment, and hover tips show names and details. Normal viewing reads existing relationships without automatic global scans or repairs. See the [completion record](Docs/Development/Completed/主从关系概览完成核对.md).
 
 ## 3. What Training Provides
 
@@ -223,8 +223,7 @@ At maximum genital development, a pawn begins producing `Purple Aphrodisiac Nano
 It is used for:
 
 - direct ingestion;
-- crafting the current 1.7 PNA weapons; the old Basic PNA Launcher and its dedicated research are removed without save migration (frozen 1.6 is unchanged);
-- crafting the medieval PNA short spear, blowpipe and light crossbow on the current 1.7 branch;
+- crafting medieval PNA weapons, or concentrating it for industrial/spacer weapons; the old Basic PNA Launcher and its dedicated research are removed without save migration (frozen 1.6 is unchanged);
 - producing `Purple Aphrodisiac Nanofluid Plus`;
 - Personality Excretion;
 - Full Gelatinization Surgery.
@@ -233,13 +232,29 @@ Current 2.4.1 rules: normal/PNA Plus ingestion uses one unit, adding 20/70 load 
 
 Effective-Chain pawns instead receive five positive activation/mood stages without ordinary addiction. Masters are immune to drug effects. Binding/unbinding preserves load; PNA states remain with the body. Completing an ordinary RJW paired act with a normal producer adds +2% load, +10% to an existing need and base +0.01 existing addiction (+0.21 at terminal load). SSC training, rituals, personality excretion, solo acts and vanilla Lovin are excluded. See the [full PNA rules](PLAYER_GUIDE_EN.md#11-pna-items-and-basic-pna-launcher).
 
-### Medieval PNA Weapons (1.7 Development Branch)
+<a id="medieval-pna-weapons-17-development-branch"></a>
+
+### Medieval PNA Weapons (2.4.3, 1.7 only)
 
 After Basic PNA Application, complete the 800-point Primitive PNA Weapons research. It does not require concentration research. Craft the short spear or light crossbow at a fueled/electric smithy; the blowpipe also supports a crafting spot.
 
 The spear delivers fluid at melee range, the blowpipe favors repeated close-to-medium-range shots, and the light crossbow favors longer, more accurate shots. Crafting consumes normal PNA; there is no refilling or separate ammunition item. A fresh qualifying open wound is required to apply the drug. Injuries remain and can still be fatal; Masters resist the drug, while effective-Chain targets receive activation. These weapons do not heal.
 
 The weapon info card shows baseline **PNA potency: 15% / 6% / 10%** with a hover explanation. Ranged projectiles leave purple trails; spearhead glow signals contact, including a fully blocked hit. An inverted purple heart signals accepted drug input. See [full weapon rules](PLAYER_GUIDE_EN.md#116-medieval-pna-weapons-and-visual-feedback).
+
+### Industrial PNA Weapons (2.4.3, 1.7 only)
+
+After Primitive PNA Weapons, PNA Concentration and Machining, complete the 1600-point Industrial PNA Weapons research. Craft the **short whip, repeating needle gun and precision needle rifle** at a machining table, using concentrated PNA. Baseline potency is **18% / 8% per needle / 20%**; the repeater fires three needles. No separate ammunition, gas or fluid refills are needed.
+
+A qualifying fresh wound is still required; armor and consciousness resistance affect delivery, and wounds remain potentially fatal. The short whip has dedicated poses and a contact afterimage; accepted drug input shows an inverted heart. Both guns have dedicated needle art, purple trails and pneumatic sounds. See [industrial rules](PLAYER_GUIDE_EN.md#117-industrial-pna-weapons).
+
+### Spacer PNA Weapons (2.4.3, 1.7 only)
+
+After Industrial PNA Weapons and Fabrication, research **PNA Shape Control** for 3000 points at a high-tech research bench connected to a multi-analyzer. Craft the **silk whip, pulse gun and projector gun** at a fabrication bench using concentrated PNA. Baseline potency is **20% / 10% per pulse / 25%**; the pulse gun fires three shots. No refilling or separate ammunition is required.
+
+Spacer main attacks do not wound current Masters. Valid Chain-bound targets absorb the input without wounds or ordinary armor wear and can repair one eligible injury immediately, with budgets of **1 / 0.5 / 1.25 injury-severity points**. Shields and cover still intercept attacks. Ordinary targets retain normal armor resolution and low physical damage, which can still be fatal. Ordinary gun-butt attacks deliver no PNA and receive no spacer protection or repair.
+
+All weapons use normal quality scaling for damage and armor penetration; potency and repair budgets do not scale with quality. Industrial/spacer whip working ends bypass the dodge of non-hostile valid Chain-bound targets without adding a new melee threat; attackers can still miss, and industrial whip wounds remain. Shared physical damage does not carry PNA. See [spacer rules](PLAYER_GUIDE_EN.md#118-spacer-pna-weapons).
 
 ### Permanent Lactation
 
@@ -486,11 +501,11 @@ Combine sexual skill with actively controlled aphrodisiac nanomachines to bestow
 
 All four batches are implemented and accepted in game on the 2.4.1 release. The public 2.4.0 download does not include this feature.
 
-The 2026-10-20 fluid-output dose change is a later 1.7 development increment accepted in-game on 2026-10-20; existing public packages were not rebuilt. See the [implementation record](Docs/Development/Completed/欲望侵染体液产量与PNA剂量接入.md).
+The 2026-10-20 fluid-output dose change belongs to 2.4.3 development for 1.7 accepted in-game on 2026-10-20; existing public packages were not rebuilt. See the [implementation record](Docs/Development/Completed/欲望侵染体液产量与PNA剂量接入.md).
 
 1. Select a current player-faction Master, open the Training tab, and enable **Bestow Bliss** in personal abilities. It starts off and requires no additional Master level, bond count or bridle.
 2. Complete an ordinary paired encounter or Lovin with an eligible humanlike partner. The Master may occupy either role. Unbound partners and Sex Slaves bonded to another Master can receive effects; existing encounter permissions still apply.
-3. In the later 1.7 development build, each completion scales PNA load with the Master’s genital fluid output: effective total output is bounded to 7.5–250, with 20 giving +8 load points and a range of +3 to +100. It fills an existing legal PNA need, and adds up to 1 Corruption point. Existing addiction gains base +0.02, totaling +0.22 if input ends in the terminal stage. Initial addiction still requires full load.
+3. In 2.4.3 on 1.7, each completion scales PNA load with the Master’s genital fluid output: effective total output is bounded to 7.5–250, with 20 giving +8 load points and a range of +3 to +100. It fills an existing legal PNA need, and adds up to 1 Corruption point. Existing addiction gains base +0.02, totaling +0.22 if input ends in the terminal stage. Initial addiction still requires full load.
 4. Ordinary RJW encounters grant a shared 20% body-development budget when Body-part Training research is complete and actual participating parts are known. Native Lovin grants no part development.
 
 Separate mood and opinion memories depend on pre-infestation current Corruption and current opinion of the actual source. Mood lasts one day with one global record. Opinion lasts three days with one record per Master, at most three Masters, fading over the final approximately 0.9 day. Repeated contact replaces and refreshes these memories.

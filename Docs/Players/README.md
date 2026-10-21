@@ -1,68 +1,53 @@
 # 玩家阅读入口 / Player documentation
 
-当前 1.7 开发分支的中世纪与工业 PNA 三武器均已交付，机制、正式资源、效力与反馈齐备，工业两枪声音亦已获实机认可；尚未重新打包进既有 2.4.2 下载。入门：[原始武器](../../读我，玩法介绍.md#原始纳米催情液武器17-开发分支)／[工业武器](../../读我，玩法介绍.md#工业纳米催情液武器17-开发分支)；完整机制：[中世纪](../../机制详解.md#116-原始纳米催情液武器与视觉反馈)／[工业](../../机制详解.md#117-工业纳米催情液武器)。验收与后续范围见[工业完成核对](../Development/Completed/SSC工业时代纳米催情液武器完成核对.md)。
+当前指南对应 **2.4.3 开发版本，未发布**；新增功能仅在 1.7，1.6 保留 2.4.1 冻结内容。公开下载仍为 [2.4.2](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.2)，不包含后续关系概览、低科技、三代九武器与恩赐剂量调整。见[本版范围](../Releases/2.4.3/2.4.3发布说明.md)。
 
-1.7 开发分支的主从关系概览已按约定范围完成：选中主人查看拥有数量与性奴头像，相邻按钮批选当前地图有效成员；选中性奴时点击主人头像定位并选中主人。放大镜打开总览，调教员卡片的铅笔用于更换指派，详情可悬停查看。此内容尚未重新打包发布，见[完成核对](../Development/Completed/主从关系概览完成核对.md)。
-
-2.4.2 新增：全凝胶化后，在“调教”ITab 的“凝胶外观”区设置个人渲染、颜色和不透明度，默认深紫／S90／85%；命令栏无重复调色按钮。旧全局设置在旧档首次读取时迁入个人值。详见[当前版本说明](../Releases/2.4.2/2.4.2发布说明.md)。
-
-> 游戏版本目录：2.4.2为当前版本，1.7承载新功能，1.6保留2.4.1冻结基线，基础贴图由Common/Textures共享。当前公开下载为2.4.2双版本包。
-
-[项目首页](../../README.md) · [文档总索引](../README.md) · [模组介绍 / Overview](../模组介绍.md)
-
-当前版本 / Current release：**SSC 2.4.2**，1.7为新功能开发目标，1.6保留2.4.1冻结内容；正式下载为2.4.2。 / All work after the published v2.4.1 tag belongs to 2.4.2; the current download is v2.4.2. See [2.4.2说明](../Releases/2.4.2/2.4.2发布说明.md).
+[项目首页](../../README.md) · [文档总索引](../README.md) · [双语模组介绍](../模组介绍.md) · [版本索引](../Releases/README.md)
 
 ## 中文阅读顺序
 
-1. [模组介绍](../模组介绍.md#中文)：先了解培养、六种特化、人格凝胶与身体改造。
-2. [快速入门](../../读我，玩法介绍.md#2-第一次游玩怎么开始)：完成研究、选择身份、指派调教员，建立第一套培养流程。
-3. [恶堕与锁链](../../读我，玩法介绍.md#4-恶堕与锁链) → [契约仪式](../../读我，玩法介绍.md#5-绑定仪式)：理解日常积累与阶段进阶。
-4. 按殖民地需要选择特化，再读[终极特化](../../读我，玩法介绍.md#10-如何获得终极专精)、人格转移与凝胶化。
-5. 遇到问题先查[常见问题](../../读我，玩法介绍.md#21-常见问题速查)，需要数值和完整条件时再查[机制详解](../../机制详解.md)。
-
-从旧版升级可先读[2.4.1 版本说明](../Releases/2.4.1/2.4.1发布说明.md#中文)，了解 PNA 当前规则与验证边界；2.4.0 引入的欲望之种、主人资格和成长面板仍保留。遇到问题时可直接看[常见问题](../../读我，玩法介绍.md#21-常见问题速查)。
+1. [模组介绍](../模组介绍.md#中文)：先了解玩法与版本范围。
+2. [快速入门](../../读我，玩法介绍.md#2-第一次游玩怎么开始)：研究、主人资格、身份和调教员设置。
+3. [恶堕与锁链](../../读我，玩法介绍.md#4-恶堕与锁链) → [契约仪式](../../读我，玩法介绍.md#5-绑定仪式)：发展与阶段进阶。
+4. [PNA 与泌乳](../../读我，玩法介绍.md#7-pna-与泌乳)：三代武器及其伤口／修复规则。
+5. [人格与终极化](../../读我，玩法介绍.md#10-如何获得终极专精)，再按需查[完整机制](../../机制详解.md)与[常见问题](../../读我，玩法介绍.md#21-常见问题速查)。
 
 ## 按问题查找
 
-| 想了解什么 | 入门说明 | 深入参考 |
+| 问题 | 入门 | 完整规则 |
 | --- | --- | --- |
-| 主人资格、研究与开局 | [主人资格入口](../../读我，玩法介绍.md#主人资格入口240) | [身份与调教面板](../../机制详解.md#3-调教-itab-与身份) |
-| 原始 PNA 三武器与反馈（1.7 分支） | [获取与用途](../../读我，玩法介绍.md#原始纳米催情液武器17-开发分支) | [配方、伤口／剂量与视觉](../../机制详解.md#116-原始纳米催情液武器与视觉反馈) |
-| 欢愉恩赐 | [开启与使用](../../读我，玩法介绍.md#欲望侵染) | [数值与规则](../../机制详解.md#115-主人欲望侵染) · [完成核对](../Development/Completed/主人欲望侵染完成核对.md) |
-| 主人成长、经验与伤害分担 | [主人成长与面板](../../读我，玩法介绍.md#主人成长与面板240) | [四阶段完整数值](../../机制详解.md#312-主人阶段与实践经验240) |
-| 培养与阶段进阶 | [恶堕与锁链](../../读我，玩法介绍.md#4-恶堕与锁链) | [恶堕、衰减与锁链](../../机制详解.md#6-恶堕需求衰减与锁链) |
-| 六种特化的用途 | [模组介绍](../模组介绍.md#中文) | [研究树速查](../../机制详解.md#23-研究树速查) |
-| 人格凝胶与终极化 | [如何获得终极专精](../../读我，玩法介绍.md#10-如何获得终极专精) | [人格凝胶闭环](../../机制详解.md#14-终极专精与人格凝胶闭环) |
-| 身体改造 | [局部凝胶化](../../读我，玩法介绍.md#13-局部凝胶化) · [全身凝胶化](../../读我，玩法介绍.md#14-全身凝胶化) | [全身改造机制](../../机制详解.md#17-全身凝胶化) |
-| 设置与兼容 | [重要设置](../../读我，玩法介绍.md#18-重要设置) · [主要兼容](../../读我，玩法介绍.md#19-主要兼容) | [已知待验收事项](../Development/Verification/README.md) |
+| 主人资格与成长 | [资格](../../读我，玩法介绍.md#主人资格入口240) · [面板](../../读我，玩法介绍.md#主人成长与面板240) | [四阶段](../../机制详解.md#312-主人阶段与实践经验240) |
+| 关系概览、头像定位与批选 | [操作](../../读我，玩法介绍.md#主从关系概览243仅-17) | [完成核对](../Development/Completed/主从关系概览完成核对.md) |
+| 浓缩与低科技 | [PNA](../../读我，玩法介绍.md#7-pna-与泌乳) | [浓缩](../../机制详解.md#112-浓缩) |
+| 中世纪／工业武器 | [原始](../../读我，玩法介绍.md#原始纳米催情液武器17-开发分支) · [工业](../../读我，玩法介绍.md#工业纳米催情液武器17-开发分支) | [中世纪](../../机制详解.md#116-原始纳米催情液武器与视觉反馈) · [工业](../../机制详解.md#117-工业纳米催情液武器) |
+| 太空武器、无伤吸收与修复 | [操作](../../读我，玩法介绍.md#太空纳米催情液武器243仅-17) | [完整规则](../../机制详解.md#118-太空纳米催情液武器) |
+| 欢愉恩赐与产量剂量 | [开启](../../读我，玩法介绍.md#欲望侵染) | [数值](../../机制详解.md#115-主人欲望侵染) |
+| 凝胶外观 | [全身凝胶化](../../读我，玩法介绍.md#14-全身凝胶化) | [2.4.2 引入的外观设置](../../机制详解.md#176-凝胶外观242仅17) |
+| 验证与兼容 | [主要兼容](../../读我，玩法介绍.md#19-主要兼容) | [专项边界](../Development/Verification/README.md) |
 
 ## English reading order
 
-The 1.7 branch also has three medieval PNA weapons, dedicated art, potency displays and visual feedback. They are not included in the existing release download. See [weapon quick start](../../QUICK_START_EN.md#medieval-pna-weapons-17-development-branch), [full rules](../../PLAYER_GUIDE_EN.md#116-medieval-pna-weapons-and-visual-feedback) and the [completion audit](../Development/Completed/SSC武器拓展首批完成核对.md).
+The guides cover **2.4.3 development, unreleased**, on 1.7, with the 1.6 runtime frozen at 2.4.1. The public download is still 2.4.2 and lacks the later additions. Start with the [2.4.3 scope](../Releases/2.4.3/2.4.3发布说明.md#english) when comparing versions.
 
-The bond overview is complete within the agreed scope on the 1.7 development branch. Select a master to see slave counts and portraits; the adjacent command selects available slaves on the current map. Select a slave and click the master portrait to locate and select the master. The magnifying glass opens the overview, the trainer pencil changes the assignment, and hover tips show details. These changes have not been repackaged into the published download. See the [completion record](../Development/Completed/主从关系概览完成核对.md).
+1. Read the [mod overview](../模组介绍.md#english).
+2. Follow [Getting Started](../../QUICK_START_EN.md#2-getting-started) for research, qualification, identities and trainers.
+3. Read [Corruption and the Bond](../../QUICK_START_EN.md#4-corruption-and-the-bond), then [Binding Ritual](../../QUICK_START_EN.md#5-binding-ritual).
+4. Read [PNA and Lactation](../../QUICK_START_EN.md#7-pna-and-lactation) for all three weapon eras; [spacer rules](../../PLAYER_GUIDE_EN.md#118-spacer-pna-weapons) explain protection and repair.
+5. Continue to [Final Specializations](../../QUICK_START_EN.md#10-final-specializations), [troubleshooting](../../QUICK_START_EN.md#21-quick-troubleshooting) and the [full guide](../../PLAYER_GUIDE_EN.md).
 
-1. Read the [mod overview](../模组介绍.md#english) for features and colony roles.
-2. Follow [Getting Started](../../QUICK_START_EN.md#2-getting-started) to set up research, identities and trainers.
-3. Read [Corruption and the Bond](../../QUICK_START_EN.md#4-corruption-and-the-bond), then [Binding Ritual](../../QUICK_START_EN.md#5-binding-ritual) for stage progression.
-4. Choose a specialization, then read [Final Specializations](../../QUICK_START_EN.md#10-final-specializations) before personality transfer and body modification.
-5. Use [Quick Troubleshooting](../../QUICK_START_EN.md#21-quick-troubleshooting) for problems and the [Complete Player Guide](../../PLAYER_GUIDE_EN.md) for exact conditions and values.
+Use [Bond Overview](../../QUICK_START_EN.md#bond-overview-243-17-only) for portrait navigation and member selection; see [Bestow Bliss](../../PLAYER_GUIDE_EN.md#115-master-desire-infestation) for output-based doses. Industrial rules are in [11.7](../../PLAYER_GUIDE_EN.md#117-industrial-pna-weapons).
 
-Upgrading from an older version? Start with the [2.4.1 milestone notes](../Releases/2.4.1/2.4.1发布说明.md#english). Master qualification is covered in the [quick start](../../QUICK_START_EN.md#master-qualification-entry-240); see [Master growth and panel](../../QUICK_START_EN.md#master-growth-and-panel-240) for controls or [the full stage table](../../PLAYER_GUIDE_EN.md#312-master-progression-and-practice-240) for values. The [FAQ](../../QUICK_START_EN.md#21-quick-troubleshooting) covers missing quests, qualification and the moved damage-sharing control.
+## 2.4.3 升级要点 / Upgrade essentials
 
-Version 2.4.1 also includes accepted [Bestow Bliss](../../QUICK_START_EN.md#desire-infestation); full values are in [Bestow Bliss](../../PLAYER_GUIDE_EN.md#115-master-desire-infestation).
+- **旧枪移除：** 1.7 不再加载旧简易发射器、弹丸、配方及专属研究，不提供旧定义存档迁移；1.6 内容保留。
+- **武器规则：** 六把涂覆武器保留真实伤口；太空主攻击对有效链目标无伤吸收并修复，护盾／掩体仍拦截。原版品质影响伤害／穿甲，不放大药效／修复。
+- **恩赐剂量：** 身体产液能力折算 3～100 点，参考产量 20 对应 8 点，普通产出者仍为 2 点。
+- **继承功能：** 资格、当前身份、研究与成长仍分别管理；2.4.2 的凝胶外观继续保留，较早章节版本号不改为本版新增。
 
-## 2.4.1 升级要点 / Upgrade essentials
-
-- **资格、身份与研究分别管理。** 直接选择主人默认关闭，须先取得资格；手动开启绕过门槛也不会授予永久资格。种子不自动切身份，研究蓝图也不等于完成研究。
-- **成长看主人面板。** 本人完成日常调教 +1、整场契约仪式 +3；伤害分担也迁入此面板。退出主人保留经验，返回恢复原阶段。
-- **人格凝胶按来源替换。** 资格和成长随来源人格迁移，不与宿主旧值取高；克隆不继承。
-- **PNA 约定范围已完成。** 2.4.1 归并基础重置、五档效果、心情与戒断、链枪、来源性吸引、性交补给及后续修正；纳入 2.4.1 正式交付。本分支主人侵染首版四批已完成并获实机确认，见[完成核对](../Development/Completed/主人欲望侵染完成核对.md)；可选性奴主动补给仍留既有第 25 项；存读档、旅队、戒断压力及长期平衡按维护者决定本轮不安排，不列为本轮待办，也不记为测试通过。见[完成核对](../Development/Completed/PNA重置与玩法补全完成核对.md)。
-
-Qualification, current identity and research are separate. Direct Master selection grants no permanent qualification; seeds grant no instant research completion. Use the Master panel for growth and damage sharing. Gel implantation replaces records with the source personality's records; clones do not inherit them. Future features and pending in-game checks are listed separately in the linked planning and verification indexes.
+**1.7 saves referencing the removed launcher have no migration path.** Coated weapons retain wounds; spacer main attacks protect eligible bodies, while shields/cover still matter. Quality affects physical damage/penetration, not PNA or repair. Bestow Bliss now derives 3–100 load points from body output; normal producers still supply 2 points.
 
 ## 版本与资料用途 / Versions and document roles
 
-当前指南说明2.4.2基础功能，并明确标记后续1.7分支内容；新增武器等分支增量尚未重新打包，凝胶外观功能仅在1.7生效；1.6冻结2.4.1内容，正文较早版本号继续表示功能引入时间。正式下载和历史记录从[版本索引](../Releases/README.md)进入；2.4.2采用双版本安装包。
+开发指南以当前仓库内容为准，正式下载以对应标签的发布说明为准；当前 DLL／About 等版本仍待 2.4.3 发布准备时对齐，见[验证记录](../Releases/2.4.3/2.4.3版本验证.md)。已交付、专项待验收和未来规划分别登记，历史测试计数保留执行日期。
 
-The guides cover release 2.4.2 plus clearly marked later 1.7 branch additions that have not been repackaged; 1.6 retains the frozen 2.4.1 runtime. Earlier section versions identify introductions. The current release is 2.4.2. Earlier validation counts retain their original execution stages.
+Current checkout guides describe development content; tagged release notes describe the download. Binary/About metadata alignment and a new full release gate are still required before publishing 2.4.3. Historical validation and acceptance retain their original scope.

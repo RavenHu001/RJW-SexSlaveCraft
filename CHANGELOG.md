@@ -4,21 +4,19 @@
 
 This continuation builds on upstream **2.2.8**, the baseline when upstream development stopped in July, and retains its version numbering. Entries are listed newest first. Technical details are in the [development log (Chinese)](Docs/Development/开发更新记录.md).
 
-## 未发布开发增量 / Unreleased development
+## [2.4.3] — 开发版本 / Unreleased
 
-- **2026-10-20 旧 PNA 发射器退役：** 从 1.7 移除简易发射器、弹丸、配方、专属研究及高低阶伤害定义，专用 C#／旧兼容时序测试移入废案；公共剂量工具清理旧枪分支。现役九武器及简易应用／浓缩研究保留；不兼容包含旧定义的存档，1.6／Common 冻结不变。见[实施与验证](Docs/Development/Completed/SSC旧简易PNA发射器移除与归档.md)。 Removed the old launcher and dedicated research from 1.7 without save migration; specialized code is archived and current weapon behavior is preserved.
+2026-10-20 登记：已发布 `v2.4.2` 之后截至 `dea5c78` 的全部开发归入本版。新功能仅在 1.7；1.6／Common 冻结于 2.4.1。公开下载仍为 2.4.2；当前 DLL／About 等产物元数据仍为 2.4.2，正式发布前须版本对齐重编与新门禁。见[双语说明](Docs/Releases/2.4.3/2.4.3发布说明.md)、[全部提交核对](Docs/Releases/2.4.3/2.4.3开发归并核对.md)与[验证边界](Docs/Releases/2.4.3/2.4.3版本验证.md)。
 
-2026-10-19 核对。仓库版本仍为 2.4.2；本节记录当前 1.7 开发分支在既有下载之后的成果，未替换发布附件，1.6／Common 冻结不变。以下实机反馈按各批范围登记，不表示本次重跑发布门禁。
+- **关系与低科技：** 关系概览、定位／批选、调教员指派和局部刷新；研究分级与篝火／灶台 10→1 粗放浓缩已完成约定验收。
+- **三代九武器：** 中世纪短矛／吹箭筒／轻弩，工业短鞭／速射针枪／精确针枪，太空丝鞭／脉冲枪／投射枪。研究分别为 800／1600／3000 点，制造耗液、成品不补液或管理独立弹药；基础负荷分别 15／6／10、18／8／20、20／10／25 点。
+- **物理与修复：** 六把涂覆武器以合格开放伤口施药；太空主攻击对主人保护、有效链无伤吸收并以 1／0.5／1.25 点预算即时修复一处伤势。护盾／掩体仍拦截；品质正常影响伤害／穿甲，不放大药效／修复。分摊伤害不传药，两代鞭束对非敌对有效链配合受药。
+- **资源与反馈：** 九武器正式图、两代鞭子姿态／握持／残影、紫色尾迹、受药倒置紫心和短矛泛光；工业气流声与太空两枪现有原版声音获认可。两代鞭子出手声试验撤销，后续优化暂缓。
+- **清理与升级：** 旧固定伤害补丁归档；1.7 旧简易发射器、弹丸、配方和专属研究移除，**不提供引用旧定义的存档迁移**。1.6 保留原内容。
+- **恩赐剂量：** 主人产液器官有效产量 7.5～250 对应 3～100 点负荷，参考 20 对应 8 点；普通产出者仍为 2 点，其余恩赐分量／规则保留。维护者确认本批符合预期。
+- **文档与验证：** 增补太空完成汇总，统一中英文指南、简介、研究表与分类阅读顺序；已交付设计／阶段归档，未来提案和专项缺口分开。旧枪退役全量 40 套／3849 项与后续恩赐四套／1083 项各保留执行时点，未冒充新发布门禁。
 
-- **低科技与关系界面：** 低科技研究、10→1 粗放浓缩及[主从关系概览](Docs/Development/Completed/主从关系概览完成核对.md)已交付，详见[低科技验收](Docs/Development/Completed/低科技适配首批实现与测试.md)。
-- **原始 PNA 武器：** 短矛、吹箭筒和轻弩共用涂覆伤口处理器，新增 800 点 Medieval 研究与自动配方；制造时耗普通原液，无补液或独立弹药。三件武器基线效力 15%／6%／10%，保留真实伤口和误杀风险，旧发射器已在后续清理中移除。
-- **美术与反馈：** 三张 256×256 武器图、两张 128×128 弹丸图、金属紫色箭头和吹箭短破空音效；三武器原生效力属性及精简四语报告；现役远程投射物紫色流星尾迹，成功受药后倒置紫心；短矛命中矛尖提亮＋4.5 倍光晕，0.3 秒满亮＋0.5 秒淡出。最终泛光实机已确认，提交 `8217a37`。完整范围及测试边界见[首批完成核对](Docs/Development/Completed/SSC武器拓展首批完成核对.md)。
-
-- **工业 PNA 武器：** 短鞭、速射针枪和精确针枪，1600 点 Industrial 研究及三份自动配方，浓缩 PNA／化合燃料固定材料；基线 18%／单针 8%／20%，复用伤口送药、抗性／快照与效力显示。后续恢复全部武器的原版品质伤害／穿甲规则，旧固定伤害适配移入废案；四把远程武器保留基础钝伤 9 的防身能力。短鞭四姿态、45°待机与命中上半弧，两枪最终重描边贴图、两种独立针弹、尾迹／受药心及纯 XML 气流枪声均已获分批认可。当前配置、提交与证据见[工业完成核对](Docs/Development/Completed/SSC工业时代纳米催情液武器完成核对.md)。
-
-The 1.7 branch now includes accepted low-tech adaptation, the bond overview, and three medieval PNA-coated weapons with dedicated artwork, a potency stat, purple projectile trails, absorption hearts and a spearhead hit glow. Crafting consumes normal PNA; weapon wounds remain, and the old launcher has since been removed from 1.7. The accepted spear glow lasts 0.8 seconds at normal speed. These changes are not a replacement release package.
-
-The industrial PNA short whip, repeating needle gun and precision needle rifle are also implemented and accepted, with dedicated sprites, needle projectiles, potency displays, whip poses and a hit afterimage, shared trails/hearts, and XML-only pneumatic firing sounds. Their baseline loads are 18%, 8% per repeating needle and 20% per precision needle. Crafting uses concentrated PNA and chemfuel for polymer parts; no ammunition, refill or gas management is required. All weapons now use native quality scaling for damage and armor penetration; the former fixed melee damage adapter is archived. All four ranged PNA weapons retain ordinary defensive melee attacks. These additions remain unreleased; the frozen 1.6/Common content is unchanged.
+All post-v2.4.2 development through `dea5c78` is assigned to **2.4.3**, not yet released. 1.7 gains the bond overview, low-tech research and 10→1 rough concentration, nine PNA weapons with dedicated art and feedback, normal quality scaling, spacer protection/repair, isolated damage sharing and cooperative whip hits. The old launcher and its dedicated definitions are removed **without save migration**. Bestow Bliss now derives 3–100 load points from current body output (20 output gives 8); normal producer supply remains 2 points. Whip sound trials were reverted and further work is deferred. The 1.6/Common baseline remains 2.4.1; the public download and current binary/About metadata remain 2.4.2 until release preparation. Historical batch results do not establish a new full 2.4.3 release gate.
 
 ## [2.4.2] — 2026-10-17 — 双版本目录与个体凝胶外观
 

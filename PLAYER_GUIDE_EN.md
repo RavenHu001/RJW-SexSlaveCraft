@@ -1,14 +1,10 @@
 # RJW-SexSlaveCraft Complete Player Guide
 
-> 1.7 branch update (2026-10-18): three medieval PNA-coated weapons, dedicated artwork, a potency stat, purple trails, inverted absorption hearts and a spearhead hit glow are implemented. The version remains 2.4.2; these branch changes have not been repackaged into the existing download and are not added to 1.6. See the [completion audit](Docs/Development/Completed/SSC武器拓展首批完成核对.md).
-
-The bond overview is complete within the agreed scope on the 1.7 development branch. Select a master to see slave counts and portraits; the adjacent command selects available slaves on the current map. Select a slave and click the master portrait to locate and select the master. The magnifying glass opens the overview, the trainer pencil changes the assignment, and hover tips show details. These changes have not been repackaged into the published download. See the [completion record](Docs/Development/Completed/主从关系概览完成核对.md).
-
-> Version scope: 2.4.2 is the current release. New features target 1.7; 1.6 retains the frozen 2.4.1 runtime, with shared textures in Common/Textures. Existing v2.4.1 downloads remain the original 1.6 release.
+> This guide covers **SSC 2.4.3 development (2026-10-20, unreleased)**: the bond overview, low-tech adaptation, nine PNA weapons and output-based Bestow Bliss doses on 1.7. The 1.6 runtime stays frozen at 2.4.1. The public download remains **2.4.2** and does not include these later additions. See the [2.4.3 scope](Docs/Releases/2.4.3/2.4.3发布说明.md#english). Earlier section versions identify introductions.
 
 [Project home](README.md) · [Player reading order](Docs/Players/README.md#english-reading-order) · [Quick start](QUICK_START_EN.md) · [中文机制详解](机制详解.md)
 
-> This checkout documents **SSC 2.4.2 (2026-10-17)**, including new 1.7 features; 1.6 remains frozen at 2.4.1. The current release package is v2.4.2. See the [2.4.2 scope](Docs/Releases/2.4.2/2.4.2发布说明.md#english) and [version-registration limits](Docs/Releases/2.4.2/2.4.2版本验证.md). Earlier section versions identify when features were introduced.
+**Upgrade note:** 1.7 removes the old Basic PNA Launcher, its projectile, recipe and dedicated research. Saves referencing those definitions have no migration path. Replace the old mod folder completely when upgrading.
 
 ## 1. Scope and Dependencies
 
@@ -180,6 +176,10 @@ A candidate trainer must be:
 If non-owner Training is denied for a bound target, assignment is coordinated to the owner. Selecting an eligible non-owner trainer also grants Training permission unless a forced rule denies it. Ordinary interactions keep their own checks.
 
 Menus and direct assignments share eligibility and authorization checks. Automatic Training goes only to the active assigned trainer; the owner retains manual and ritual access. Disabling trainer status preserves the assignment as inactive; other trainers do not automatically take over. Temporary work or health restrictions do not erase the shared-bed relationship. Started scenes finish; preparation is checked again.
+
+### Bond Overview (2.4.3, 1.7 only)
+
+Select a Master and open Training to see member counts and portraits; the adjacent command selects available, valid bound members on the current map. A slave's Master portrait locates and selects the Master. The magnifying glass opens the compact overview, the trainer pencil changes the assignment, and hover tips show names and details. Normal viewing reads existing relationships without automatic global scans or repairs. See the [completion record](Docs/Development/Completed/主从关系概览完成核对.md).
 
 ## 4. Ordinary Training
 
@@ -776,6 +776,8 @@ The ability and grant component exist, but the current Mouth Hediff XML does not
 
 <a id="11-pna-items-and-basic-pna-launcher"></a>
 
+<a id="11-pna-items-and-basic-pna-launcher"></a>
+
 ## 11. PNA Items and Weapons
 
 ### 11.1 Ingestion
@@ -825,7 +827,7 @@ Addiction and its need are separate:
 
 ### 11.2 PNA Concentration Technology
 
-The 1.7 low-tech development build adds **Rough Concentration of Purple Aphrodisiac Nanofluid** at campfires and stoves: 10 normal PNA → 1 of the same PNA Plus, work 600, using Cooking. It requires PNA Concentration Technology; fuel, power and worktable speed follow the building. Modded worktables supporting vanilla simple meals or bulk simple meals receive this recipe after loading. On 2026-10-18, the maintainer confirmed that low-tech research and rough concentration work in game, closing acceptance for this batch. It is not included in the existing 2.4.2 release package. See the [implementation record](Docs/Development/Completed/低科技适配首批实现与测试.md).
+2.4.3 on 1.7 adds **Rough Concentration of Purple Aphrodisiac Nanofluid** at campfires and stoves: 10 normal PNA → 1 of the same PNA Plus, work 600, using Cooking. It requires PNA Concentration Technology; fuel, power and worktable speed follow the building. Modded worktables supporting vanilla simple meals or bulk simple meals receive this recipe after loading. On 2026-10-18, the maintainer confirmed that low-tech research and rough concentration work in game, closing acceptance for this batch. It is not included in the existing 2.4.2 release package. See the [implementation record](Docs/Development/Completed/低科技适配首批实现与测试.md).
 
 At a drug lab:
 
@@ -836,7 +838,7 @@ Both recipes require `PNA Concentration Technology`.
 
 ### 11.3 Basic PNA Launcher (removed in 1.7)
 
-The current 1.7 development branch removes the old launcher, its projectile, crafting recipe and dedicated research. Its specialized code and definitions are archived. Saves referencing these old definitions are not supported; no replacement or research compensation is provided. The frozen 1.6 version is unchanged.
+2.4.3 on 1.7 removes the old launcher, its projectile, crafting recipe and dedicated research. Its specialized code and definitions are archived. Saves referencing these old definitions are not supported; no replacement or research compensation is provided. The frozen 1.6 version is unchanged.
 
 The nine current PNA weapons retain their coated-wound or spacer delivery paths, shared resistance, dosage and feedback. Basic PNA Applications, PNA Concentration and shared body states remain available. See the [removal record](Docs/Development/Completed/SSC旧简易PNA发射器移除与归档.md).
 
@@ -848,9 +850,7 @@ Positions, genital selection and condoms do not filter this supply. Two producer
 
 For an addicted observer evaluating a normal producer or an enabled Master who can legally infest that observer (without stacking dual-source multipliers), RJW's independent attraction multiplier is ×1.25 outside withdrawal and ×1.50 in withdrawal, otherwise ×1. It applies to General, ForFucking and ForRape. Master and effective-Chain observers receive no addiction preference; existing permissions and selection rules remain.
 
-Bestow Bliss is implemented and accepted in all four batches: the original +8% load/full existing-need refill (later 1.7 development scales load from 3% to 100% by fluid output; accepted in-game on 2026-10-20), base +0.02 existing addiction or +0.22 after terminal input, additional Corruption, actual-part development and independent feedback. See [the next section](#115-master-desire-infestation). Personal automatic activation maintenance remains existing future work.
-
-<a id="115-master-desire-infestation"></a>
+Bestow Bliss is implemented and accepted in all four batches: the original +8% load/full existing-need refill (2.4.3 on 1.7 scales load from 3% to 100% by fluid output; accepted in-game on 2026-10-20), base +0.02 existing addiction or +0.22 after terminal input, additional Corruption, actual-part development and independent feedback. See [the next section](#115-master-desire-infestation). Personal automatic activation maintenance remains existing future work.
 
 <a id="115-master-desire-infestation"></a>
 
@@ -864,7 +864,7 @@ Recipients must be living, valid flesh humanlikes with an actual Corruption need
 
 | Component | Current rule |
 | --- | --- |
-| PNA input | Later 1.7 development: +3 to +100 load points from the Master’s genital fluid output; reference output 20 gives +8; fill an existing legal PNA need |
+| PNA input | 2.4.3 on 1.7: +3 to +100 load points from the Master’s genital fluid output; reference output 20 gives +8; fill an existing legal PNA need |
 | Existing ordinary addiction | Base D+0.02; add 0.20 if input ends terminal, totaling +0.22, capped at 1 |
 | Initial addiction | Still requires full load; receives no extra existing-addiction reinforcement |
 | Corruption | Up to +1 additional percentage point; new scoring caps unchained recipients at 12% and chained recipients by their current stage; old scoring retains the need's original cap. Existing over-cap values are not reduced |
@@ -887,13 +887,13 @@ C=30% and O=0 enter the high-Corruption and nonnegative-opinion branches. Crossi
 
 Disabling the ability leaves existing memories to expire. The preference follows personality storage and implantation, pauses outside the Master role, and resumes on return. New clones do not inherit it. Feedback memories retain stage, actual source and remaining duration through the existing personality-memory path; PNA remains with the body. Infestation creates or transfers no bond, grants no Master experience and advances no Chain stage.
 
-Addicted observers apply the existing source preference to an enabled Master who can legally infest them: ×1.25 outside withdrawal or ×1.50 in withdrawal, without multiplying twice for dual sources. This does not guarantee invitation acceptance or add preference for non-addicted observers. Actual fluid quantity, condoms and specific organs currently do not gate PNA input; they are future work under [item 22](Docs/Design/未来内容开发规划.md#22-主人身份的功能与数值拓展). Personal activation maintenance remains under existing [item 25](Docs/Design/未来内容开发规划.md#25-新版-pna-的性奴正面效果与主动补给). Dedicated RimTalk adaptation is deferred.
+Addicted observers apply the existing source preference to an enabled Master who can legally infest them: ×1.25 outside withdrawal or ×1.50 in withdrawal, without multiplying twice for dual sources. This does not guarantee invitation acceptance or add preference for non-addicted observers. In 2.4.3 on 1.7, load scales with the current body’s fluid-producing organs: effective output is clamped to 7.5–250, giving 3–100 load points; output 20 gives 8 points. Missing output retains the 3-point minimum. This measures output capacity, not actual encounter transfer; condoms and participating organs add no new entry requirements. Further input rules remain future work under [item 22](Docs/Design/未来内容开发规划.md#22-主人身份的功能与数值拓展). Personal activation maintenance remains under existing [item 25](Docs/Design/未来内容开发规划.md#25-新版-pna-的性奴正面效果与主动补给). Dedicated RimTalk adaptation is deferred.
 
 See the [completion audit (Chinese)](Docs/Development/Completed/主人欲望侵染完成核对.md) for acceptance and compatibility boundaries.
 
 ### 11.6 Medieval PNA Weapons and Visual Feedback
 
-These are implemented on the current 1.7 development branch and have not been repackaged into the existing 2.4.2 download. Primitive PNA Weapons is Medieval research costing 800 points, requiring Basic PNA Application rather than concentration research. The weapons use traditional weapon-poisoning techniques to infuse their metal heads with ordinary purple nanofluid.
+These are 2.4.3 development features for 1.7 and are not included in the public 2.4.2 download. Primitive PNA Weapons is Medieval research costing 800 points, requiring Basic PNA Application rather than concentration research. The weapons use traditional weapon-poisoning techniques to infuse their metal heads with ordinary purple nanofluid.
 
 | Base parameter | Short spear | Blowpipe | Light crossbow |
 | --- | --- | --- | --- |
@@ -914,6 +914,51 @@ The info-card potency stat remains **15% / 6% / 10%**, representing a qualifying
 The six current ranged projectile types leave purple meteor-like trails behind their tails. A successful dedicated spear thrust lights the spearhead with a **4.5×** soft halo for **0.8 seconds** at normal speed: 0.3 seconds held bright, then 0.5 seconds fading. It may remain after native retraction without extending the attack animation. A fully armor-blocked contact can glow; misses, dodges and blunt strikes do not. Accepted PNA input produces a rising inverted purple heart lasting 1.2 seconds, including valid full-load input; immune Masters produce no heart. Contact glow and absorption hearts signal different outcomes.
 
 Weapon PNGs use 256×256 canvases; dart/bolt PNGs use 128×128 and drawSize 0.5/0.6. The blowpipe uses a short vanilla whoosh firing sound. See the [completion audit](Docs/Development/Completed/SSC武器拓展首批完成核对.md) for current assets and per-batch validation limits.
+
+### 11.7 Industrial PNA Weapons
+
+This is accepted 2.4.3 development content for 1.7. Research **Industrial PNA Weapons** (1600 points) after Primitive PNA Weapons, PNA Concentration and Machining; craft all three at a machining table.
+
+| Parameter | Short whip | Repeating needle gun | Precision needle rifle |
+| --- | --- | --- | --- |
+| Base damage / armor penetration | 3 / 20% | 2 / 30% per needle | 4 / 40% |
+| Range | Adjacent melee | 22.9 | 36.9 |
+| Warmup / cooldown | — / 1.4 s | 0.5 / 1.3 s | 1.5 / 2.5 s |
+| Shots per attack | One | Three, 6 ticks apart | One |
+| Base PNA load | 18 points | 8 per needle | 20 points |
+| Steel / chemfuel / industrial components / PNA Plus | 20 / 20 / 1 / 6 | 45 / 10 / 3 / 8 | 65 / 15 / 4 / 10 |
+| Work / Crafting skill | 8000 / 4 | 14000 / 5 | 18000 / 6 |
+
+Crafting consumes PNA Plus and polymer materials; no separate needles, gas or refilling are required. The same fresh-organic-wound rule as medieval weapons applies, with one dose per hit and separate snapshots per needle. Damage and penetration use normal quality curves; PNA load does not. Both guns' ordinary defensive strikes deal base 9 blunt damage with a 2-second cooldown, using normal quality/automatic penetration and no PNA. The whip's ordinary handle strike is base 2 blunt, zero penetration and a 2-second cooldown, without PNA.
+
+The short whip has +3 melee hit score and, with Ideology, +0.20 suppression power and +15 terror source. Working-end attacks against non-hostile valid Chain-bound targets bypass target dodge without adding a new melee-threat entry; attackers can still miss, and normal wounds remain. Handle strikes and hostile targets retain their normal defense rules.
+
+Four 256px whip images cover item/idle/strike/recovery; its final draw size is 1.4 with aligned grip, a 45° idle angle and 6/12-tick strike/recovery timing. A purple upper-arc afterimage signals contact, even when armor blocks damage; misses do not show it. Accepted drug input alone produces the inverted heart. Dedicated gun/needle art, purple trails and pneumatic shot sounds are complete. See the [industrial completion audit](Docs/Development/Completed/SSC工业时代纳米催情液武器完成核对.md).
+
+### 11.8 Spacer PNA Weapons
+
+2.4.3 adds **PNA Shape Control** (3000 points, Spacer), requiring Industrial PNA Weapons and Fabrication plus a high-tech research bench connected to a multi-analyzer. All three weapons are crafted at a fabrication bench with fixed ingredients, consuming PNA Plus only during crafting.
+
+| Parameter | Silk whip | Pulse gun | Projector gun |
+| --- | --- | --- | --- |
+| Ordinary-quality base damage / penetration | 1 / 60% | 1 / 70% per pulse | 1 / 90% |
+| Range | Adjacent melee | 25.9 | 42.9 |
+| Warmup / cooldown | — / 1.2 s | 0.4 / 1.0 s | 1.3 / 2.1 s |
+| Shots per attack | One | Three, 5 ticks apart | One |
+| Base PNA load | 20 points | 10 per pulse | 25 points |
+| Repair budget per effective hit | 1 | 0.5 | 1.25 |
+| Steel / plasteel / chemfuel / advanced components / PNA Plus | 20 / 20 / 10 / 1 / 10 | 30 / 40 / 10 / 2 / 12 | 35 / 50 / 10 / 3 / 15 |
+| Work / Crafting skill | 24000 / 6 | 45000 / 7 | 60000 / 8 |
+
+These are baseline values before quality, users and other modifiers. Damage and penetration follow native quality; PNA and repair budgets do not. Finished weapons need no separate ammunition or refill. Pulse/projector guns retain ordinary defensive blunt strikes at base 9 damage and 2-second cooldown, with no PNA, spacer protection or repair. The silk whip has only its nanomachine working end, prioritised over other available melee actions for eligible flesh targets.
+
+**Targets and protection:** ordinary targets undergo one normal armor resolution; a blunt conversion retains physical damage but delivers no PNA or repair. Valid Chain-bound targets absorb effective main attacks without wounds or ordinary armor wear and receive activation/repair. Masters receive no PNA, new resistance record or main-attack wound. Shields, cover, misses and intercepted shots still prevent delivery. Non-organic artificial parts do not receive input or repair. Low damage does not guarantee survival for an ordinary injured target.
+
+**Dose and repair:** request load is baseline divided by pre-hit consciousness resistance, with a minimum divisor of 20% when no prior high-consciousness record applies and a single-hit cap of 50 load points. Repair uses baseline ×5, independent of resistance, quality and final added load. Each accepted input can repair the most severe eligible non-permanent natural injury, up to its remaining severity; overflow is discarded. Artificial parts, missing parts, diseases and permanent scars are excluded. Full-load targets can still be repaired. There is no shared pool, recovery timer or cumulative rate limit; independent shots/shooters resolve independently.
+
+**Sharing and whip cooperation:** PNA never travels with transferred Master damage. Medieval/industrial transfers retain physical wounds only; spacer main attacks on Masters create no transferred damage. As with the industrial working end, silk-whip attacks against non-hostile valid Chain-bound targets bypass dodge without registering a new melee threat, while attacker misses remain possible.
+
+**Resources:** the silk whip has its own item image (drawSize 0.75) and three aligned hand poses (1.75), with 45° idle, 6/12-tick timing and a hit afterimage. The final pulse/projector sprites are 256px at 1.05/1.25; purple charge-cluster projectiles use existing trails and accepted-input hearts. Accepted vanilla charge-weapon sounds remain. Further whip sound work is deferred after the trial was reverted. Completion and validation limits: [spacer audit](Docs/Development/Completed/SSC太空时代纳米催情液武器完成核对.md).
 
 ## 12. Public Use Specialization
 
@@ -1648,7 +1693,9 @@ Ordinary affection automatically discovers the actual bound master within about 
 | Basic PNA Application | 800 | Training | Prerequisite for primitive weapons, concentration and later PNA research |
 | Sex Reassignment Surgery (Male to Female) | 1,000 | Basic PNA Application | Node does not actually lock the operation |
 | Femboy Conversion | 1,200 | Sex Reassignment Surgery | Not fully implemented |
-| Primitive PNA Weapons (1.7 branch) | 800 | Basic PNA Application | Short spear, blowpipe and light crossbow; no concentration requirement |
+| Primitive PNA Weapons (2.4.3, 1.7) | 800 | Basic PNA Application | Short spear, blowpipe and light crossbow; no concentration requirement |
+| Industrial PNA Weapons (2.4.3, 1.7) | 1,600 | Primitive PNA Weapons, PNA Concentration, Machining | Short whip, repeating needle gun and precision needle rifle |
+| PNA Shape Control (2.4.3, 1.7) | 3,000 | Industrial PNA Weapons, Fabrication; high-tech bench + multi-analyzer | Silk whip, pulse gun and projector gun; fabrication bench |
 | PNA Concentration Technology | 1,200 | Basic PNA Application | Converts normal PNA to PNA Plus |
 | Personality Excretion | 1,500 | PNA Concentration Technology | Preparation operation and gel extraction |
 | Personality Editing | 1,500 | Body-part Training, Personality Excretion | Parent node for specialization research |
