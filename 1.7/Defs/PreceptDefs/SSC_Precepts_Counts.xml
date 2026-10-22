@@ -6,7 +6,8 @@
   <IssueDef MayRequire="Ludeon.RimWorld.Ideology">
     <defName>SSC_Issue_MasterCount</defName>
     <label>主人数量</label>
-    <iconPath>UI/Issues/Slavery</iconPath>
+    <!-- 1.7 专属透明图标：三组握链手与爱心、白色主体及厚黑描边；数量三档共用，不将图案数量作为上限。 -->
+    <iconPath>UI/Issues/SSC_MasterCount</iconPath>
     <allowMultiplePrecepts>false</allowMultiplePrecepts>
   </IssueDef>
   <!-- 手选档，两类生成权重为零仍不限制手选资格；仅关联主模因，不要求持有该模因。 显示顺序和重要度不代替后续反馈机制。 -->
@@ -73,7 +74,8 @@
   <IssueDef MayRequire="Ludeon.RimWorld.Ideology">
     <defName>SSC_Issue_SlaveCount</defName>
     <label>性奴数量</label>
-    <iconPath>UI/Issues/Slavery</iconPath>
+    <!-- 1.7 专属透明图标：三只爱心拉环项圈、白色主体及厚黑描边；数量三档共用，不将图案数量作为上限。 -->
+    <iconPath>UI/Issues/SSC_SlaveCount</iconPath>
     <allowMultiplePrecepts>false</allowMultiplePrecepts>
   </IssueDef>
   <!-- 手选档，两类生成权重为零仍不限制手选资格；仅关联主模因，不要求持有该模因。 显示顺序和重要度不代替后续反馈机制。 -->

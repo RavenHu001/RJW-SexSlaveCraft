@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- AI 辅助生成；1.7 步骤 1。图标暂复用原版，命名语法/美术待后续；不添加行为拦截。 -->
+<!-- AI 辅助生成；1.7 主奴秩序模因挂载与专属图标；命名语法待后续，不添加行为拦截。 -->
 <Defs>
   <!-- 模因分组仅控制界面排布；各顶层定义独立门控，分组本身不建立模因互斥。 -->
   <MemeGroupDef MayRequire="Ludeon.RimWorld.Ideology">
@@ -13,7 +13,8 @@
     <defName>SSC_Meme_MasterSlaveOrder</defName>
     <label>主奴秩序</label>
     <description>[TODO:SSC_Meme_MasterSlaveOrder.description]</description>
-    <iconPath>UI/Memes/PrimacyHuman</iconPath>
+    <!-- 1.7 专属透明图标：金色权杖、银灰短链、棕黑平涂项圈及深紫爱心拉环；沿用原版模因绘制。 -->
+    <iconPath>UI/Memes/SSC_MasterSlaveOrder</iconPath>
     <groupDef>SSC_MasterSlaveOrder</groupDef>
     <category>Normal</category>
     <impact>3</impact>
