@@ -15,11 +15,28 @@ namespace SexSlaveCraft
             switch (config.condition)
             {
                 case SSCCultureThoughtCondition.ChainedSelf:
-                    return SSCCultureStateUtility.HasChain(p);
+                    return SSCCultureStateUtility.HasChain(p) && (!config.requireAcceptedSlaveGender
+                        || SSCCultureGenderUtility.Accepts(SSCCultureGenderUtility.Policy(p), p.gender));
                 case SSCCultureThoughtCondition.EnvySelf:
                     // 一条 thought 切换阶段：链优先，+10 与 -6 不可能同时存在；资格和途径预选不参与。
+                    var policy = SSCCultureGenderUtility.Policy(p);
+                    if (!SSCCultureGenderUtility.Accepts(policy, p.gender)) return ThoughtState.Inactive;
                     if (SSCCultureStateUtility.HasChain(p)) return ThoughtState.ActiveAtStage(0);
-                    return SSCCultureStateUtility.IsMaster(p) ? ThoughtState.Inactive : ThoughtState.ActiveAtStage(1);
+                    // 新义务使用自身普通/艳羡互斥阶段，只有实际适用且入册时才替代旧愿望 -6。
+                    return SSCCultureStateUtility.IsMaster(p) || SSCCultureGenderUtility.HasUnfulfilledDuty(p, policy)
+                        ? ThoughtState.Inactive : ThoughtState.ActiveAtStage(1);
+                case SSCCultureThoughtCondition.GenderViolationSelf:
+                    return SSCCultureGenderUtility.IsViolation(p, SSCCultureGenderUtility.Policy(p));
+                case SSCCultureThoughtCondition.UnfulfilledDutySelf:
+                    // 同一个持续 thought 切换专属阶段及文案，普通义务、艳羡义务和旧愿望不会重复扣分。
+                    if (!SSCCultureGenderUtility.HasUnfulfilledDuty(p, SSCCultureGenderUtility.Policy(p)))
+                        return ThoughtState.Inactive;
+                    return ThoughtState.ActiveAtStage(config.enviousDutyStage >= 0 && SSCCultureGenderUtility.HasEnvy(p)
+                        ? config.enviousDutyStage : 0);
+                case SSCCultureThoughtCondition.GenderViolationEnvironment:
+                case SSCCultureThoughtCondition.UnfulfilledDutyEnvironment:
+                    return SSCCultureGenderUtility.TryEnvironmentCount(p,
+                        config.condition == SSCCultureThoughtCondition.UnfulfilledDutyEnvironment, out int offenders) && offenders > 0;
                 case SSCCultureThoughtCondition.OfficerSelf:
                     return SSCCultureStateUtility.IsActiveOfficer(p);
                 case SSCCultureThoughtCondition.MasterSelf:
@@ -28,7 +45,7 @@ namespace SexSlaveCraft
                     // 只认实际锁链指向的有效主人，不以指定调教员或永久主人资格兜底。
                     return SSCCultureStateUtility.TryGetActualMaster(p, out _);
                 case SSCCultureThoughtCondition.ManagedChainedEnvironment:
-                    return TryEnvironmentCount(p, out int count) && count > 0;
+                    return TryEnvironmentCount(p, config, out int count) && count > 0;
                 case SSCCultureThoughtCondition.MasterCountExcess:
                 case SSCCultureThoughtCondition.BoundSlaveCountExcess:
                     // 仅超额才创建数量项；激活和结算共用查询，不能把不可查询状态当成达标人数。
@@ -64,10 +81,18 @@ namespace SexSlaveCraft
             bool quantity = config?.condition == SSCCultureThoughtCondition.MasterCountExcess
                 || config?.condition == SSCCultureThoughtCondition.BoundSlaveCountExcess;
             // 固定个人反馈不查询组件；环境读取完整人数，不应用数量戒律的三人超额封顶。
-            if (!quantity && config?.condition != SSCCultureThoughtCondition.ManagedChainedEnvironment)
+            if (!quantity && config?.condition != SSCCultureThoughtCondition.ManagedChainedEnvironment && config?.IsGenderEnvironment != true)
                 return 1f;
             // 原版缓存可能尚未重算；再次核对挂载和本人链，避免改宗/取得链后继续给出旧环境效果。
             if (!ModsConfig.IdeologyActive || p?.Ideo == null || !p.Ideo.cachedPossibleSituationalThoughts.Contains(def)) return 0f;
+            if (config.IsGenderEnvironment)
+            {
+                // 先取已经排除本人的完整人数，再封顶三人；复用原版 SimpleCurve，基础负值由阶段保存。
+                if (!SSCCultureGenderUtility.TryEnvironmentCount(p,
+                    config.condition == SSCCultureThoughtCondition.UnfulfilledDutyEnvironment, out int offenders)) return 0f;
+                return config.environmentMoodCurve?.PointsCount > 0
+                    ? config.environmentMoodCurve.Evaluate(System.Math.Min(3, offenders)) : 0f;
+            }
             if (quantity)
             {
                 // 再核对适用资格与当前快照，防止旧 thought 在改宗、失去主人身份、加载中继续扣分。
@@ -76,14 +101,14 @@ namespace SexSlaveCraft
                 return config.condition == SSCCultureThoughtCondition.MasterCountExcess
                     ? n * (n + 3) / 2f : n * (n + 1) / 2f;
             }
-            if (!TryEnvironmentCount(p, out int count)) return 0f;
+            if (!TryEnvironmentCount(p, config, out int count)) return 0f;
             // 未配置曲线的敌视/厌恶仍按人数相乘；神圣复用原版 SimpleCurve 在末点自然封顶。
             // 仅改变反馈倍率，不截断共享管理人数，也不保存人物结果；空曲线安全归零并由配置检查报错。
             return config.environmentMoodCurve == null ? count
                 : config.environmentMoodCurve.PointsCount > 0 ? config.environmentMoodCurve.Evaluate(count) : 0f;
         }
 
-        private static bool TryEnvironmentCount(Pawn p, out int count)
+        private static bool TryEnvironmentCount(Pawn p, SSCCultureThoughtExtension config, out int count)
         {
             count = 0;
             // 先做个人短路：持链者只获本人项；无效/非玩家对象不触发人口收集。
@@ -91,8 +116,11 @@ namespace SexSlaveCraft
                 || SSCCultureStateUtility.HasChain(p)) return false;
             var cache = Current.Game?.GetComponent<SSCCultureGameComponent>();
             // 接收者用成员名册，计数对象用管理持链集合；后者包含囚犯，不能被前者替代。
-            return cache != null && cache.TryIsMember(p, out bool member) && member
-                && cache.TryGetManagedChainedCount(out count);
+            if (cache == null || !cache.TryIsMember(p, out bool member) || !member) return false;
+            // 只有神圣正向环境使用合规性别数；无规范老档直接复用原总数，不准备性别细分。
+            return config.filterAcceptedManagedGender
+                ? cache.TryGetAcceptedManagedChainedCount(SSCCultureGenderUtility.Policy(p), out count)
+                : cache.TryGetManagedChainedCount(out count);
         }
     }
 }

@@ -337,7 +337,7 @@ internal static partial class Program
             calls.Clear(); Equal(-9f,MoodSum(owner)); foreach(var p in observers) Equal(-15,Opinion(p,owner));
             for(int i=0;i<30;i++) { owner.needs.mood.thoughts.ThoughtInterval(); Equal(-9f,MoodSum(owner)); }
             Equal(1,CallCount("CollectMembers")); Equal(1,CallCount("CountBoundSlaves"));
-            Equal(0,CallCount("CountMasters")); Equal(0,CallCount("CountManagedChained")); Equal(0,CallCount("Query"));
+            Equal(0,CallCount("CountMasters")); Equal(0,CallCount("CollectManagedChained")); Equal(0,CallCount("Query"));
             tick+=100; owner.needs.mood.thoughts.ThoughtInterval(); foreach(var p in observers) Equal(-15,Opinion(p,owner));
             Equal(2,CallCount("CollectMembers")); Equal(2,CallCount("CountBoundSlaves"));
         });
@@ -356,7 +356,7 @@ internal static partial class Program
             MakeMap(observers); MakeMap(MakePawn(PawnIdentity.Master),MakePawn(PawnIdentity.Master));
             calls.Clear(); foreach(var p in observers) Equal(-6f,MoodSum(p));
             Equal(1,CallCount("CollectMembers")); Equal(1,CallCount("CountMasters")); Equal(0,CallCount("CountBoundSlaves"));
-            Equal(0,CallCount("CountManagedChained")); Equal(0,CallCount("Query"));
+            Equal(0,CallCount("CollectManagedChained")); Equal(0,CallCount("Query"));
         });
     }
 }

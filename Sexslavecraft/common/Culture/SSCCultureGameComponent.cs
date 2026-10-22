@@ -12,6 +12,12 @@ namespace SexSlaveCraft
         // 引用比较避免 Pawn 值语义影响去重；名册跨项目复用，scratch 仅作单次统计的工作集。
         private readonly HashSet<Pawn> members = new HashSet<Pawn>(SSCBondOverviewReferenceComparer<Pawn>.Instance);
         private readonly HashSet<Pawn> scratch = new HashSet<Pawn>(SSCBondOverviewReferenceComparer<Pawn>.Instance);
+        // 管理集合保留到本代结束，普通总数与性别细分共用一次物理来源收集；细分仍按需准备。
+        private readonly HashSet<Pawn> managed = new HashSet<Pawn>(SSCBondOverviewReferenceComparer<Pawn>.Instance);
+        private readonly SSCCultureGenderBuckets managedGender = new SSCCultureGenderBuckets();
+        private readonly SSCCultureGenderBuckets adultManagedGender = new SSCCultureGenderBuckets();
+        private readonly SSCCultureGenderBuckets dutyGender = new SSCCultureGenderBuckets();
+        private bool managedGenderReady, dutyGenderReady;
         // 仅缓存被请求主人的数量，包含有效的零；不为所有主人预建个人条目。
         private readonly Dictionary<Pawn, int> boundCounts = new Dictionary<Pawn, int>(SSCBondOverviewReferenceComparer<Pawn>.Instance);
         // ready 表示加载已完成，valid 表示已有当前代；各 Ready 分别标记已计算的项目，零值也可命中。
@@ -42,6 +48,9 @@ namespace SexSlaveCraft
             // ready 独立于代内缓存；正常过期只需重建结果，无须重新等待初始化回调。
             valid = membersReady = mastersReady = managedReady = leaderReady = false;
             members.Clear(); scratch.Clear(); boundCounts.Clear();
+            // 细分贡献与桶必须同步失效；旧 Game 或回退时不能留下可用于排除本人的上一批性别。
+            managed.Clear(); managedGender.Clear(); adultManagedGender.Clear(); dutyGender.Clear();
+            managedGenderReady = dutyGenderReady = false;
             leader = default;
             masterCount = managedCount = 0;
         }
@@ -112,12 +121,65 @@ namespace SexSlaveCraft
             if (!BeginRead()) return false;
             if (!managedReady)
             {
-                // 完成这一代唯一一次环境扫描后才置位；scratch 在收集器内释放 Pawn 引用。
-                managedCount = SSCCulturePopulationUtility.CountManagedChained(scratch);
+                // 完成这一代唯一一次环境扫描后才置位；保留完整集合，细分不再枚举世界来源。
+                SSCCulturePopulationUtility.CollectManagedChained(managed);
+                managedCount = managed.Count;
                 managedReady = true;
             }
             // 同代复用包括零人在内的结果，新增其他项目不会延长其有效期。
             count = managedCount;
+            return true;
+        }
+
+        private void BuildManagedGender()
+        {
+            // 正向神圣只过滤性别，保留旧集合其余条件；新负向环境单独收集成人桶。
+            // 两份桶和贡献均在同次准备中捕获，后续查询只做常量次枚举和引用字典查找。
+            foreach (Pawn pawn in managed)
+            {
+                managedGender.Add(pawn);
+                if (SSCCultureGenderUtility.IsAdult(pawn)) adultManagedGender.Add(pawn);
+            }
+            managedGenderReady = true;
+        }
+
+        private void BuildDutyGender()
+        {
+            // 原名册不被年龄/身份过滤覆盖，主人及正式领袖仍使用完整名册；义务桶不按文化拆分。
+            foreach (Pawn pawn in members)
+                if (SSCCultureGenderUtility.IsDutyCandidate(pawn)) dutyGender.Add(pawn);
+            dutyGenderReady = true;
+        }
+
+        public bool TryGetAcceptedManagedChainedCount(SSCCultureGenderPolicy policy, out int count)
+        {
+            // 默认不限或非主即奴直接走旧总数，避免无性别过滤时准备无关细分。
+            if (policy == SSCCultureGenderPolicy.Unrestricted || policy == SSCCultureGenderPolicy.NonMasterRequired)
+                return TryGetManagedChainedCount(out count);
+            count = 0;
+            if (!TryGetManagedChainedCount(out _)) return false;
+            if (!managedGenderReady) BuildManagedGender();
+            count = managedGender.Count(policy, SSCCultureGenderFilter.Accepted);
+            return true;
+        }
+
+        public bool TryGetGenderViolationCount(SSCCultureGenderPolicy policy, Pawn observer, out int count)
+        {
+            count = 0;
+            if (!TryGetManagedChainedCount(out _)) return false;
+            if (!managedGenderReady) BuildManagedGender();
+            // 返回排除本人后的完整值，三人计罚上限由反馈层处理，不改变其他人数查询。
+            count = adultManagedGender.Count(policy, SSCCultureGenderFilter.Rejected, observer);
+            return true;
+        }
+
+        public bool TryGetUnfulfilledDutyCount(SSCCultureGenderPolicy policy, Pawn observer, out int count)
+        {
+            count = 0;
+            if (!BeginRead()) return false;
+            EnsureMembers();
+            if (!dutyGenderReady) BuildDutyGender();
+            count = dutyGender.Count(policy, SSCCultureGenderFilter.Required, observer);
             return true;
         }
 

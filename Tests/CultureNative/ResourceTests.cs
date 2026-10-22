@@ -10,19 +10,20 @@ internal static partial class Program
 {
     // 固定期望来自已确认的设计，不从被测 XML 反推，防止配置写错后测试仍自洽通过。
     private const string MemeName = "SSC_Meme_MasterSlaveOrder";
-    private static readonly string[] groups = { "SexSlave", "Trainer", "Master", "MasterCount", "SlaveCount" };
+    private static readonly string[] groups = { "SexSlave", "Trainer", "Master", "MasterCount", "SlaveCount", "SlaveGender" };
     private static readonly string[][] suffixes = {
         new[] { "Hostile", "Revulsion", "Indifference", "Respect", "Sacred", "Envy" },
         new[] { "Hostile", "Revulsion", "Indifference", "Reverence", "SacredOffice" },
         new[] { "Hostile", "Revulsion", "Indifference", "Deference", "HolyMaster" },
-        new[] { "One", "Three", "Unlimited" }, new[] { "One", "Three", "Unlimited" }
+        new[] { "One", "Three", "Unlimited" }, new[] { "One", "Three", "Unlimited" },
+        new[] { "FemaleOnly", "MaleOnly", "Unrestricted", "FemaleRequired", "MaleRequired", "NonMasterRequired" }
     };
-    private static readonly int[][] selection = { new[] { 0, 0, 0, 0, 1, 0 }, new[] { 0, 0, 0, 0, 1 }, new[] { 0, 0, 0, 0, 1 }, new[] { 0, 1, 0 }, new[] { 0, 1, 0 } };
-    private static readonly int[][] defaults = { new[] { 1, 2, 7, 0, 0, 0 }, new[] { 1, 2, 7, 0, 0 }, new[] { 1, 2, 7, 0, 0 }, new[] { 0, 0, 1 }, new[] { 0, 0, 1 } };
+    private static readonly int[][] selection = { new[] { 0, 0, 0, 0, 1, 0 }, new[] { 0, 0, 0, 0, 1 }, new[] { 0, 0, 0, 0, 1 }, new[] { 0, 1, 0 }, new[] { 0, 1, 0 }, new[] { 0, 0, 1, 0, 0, 0 } };
+    private static readonly int[][] defaults = { new[] { 1, 2, 7, 0, 0, 0 }, new[] { 1, 2, 7, 0, 0 }, new[] { 1, 2, 7, 0, 0 }, new[] { 0, 0, 1 }, new[] { 0, 0, 1 }, new[] { 0, 0, 1, 0, 0, 0 } };
     private static MemeDef mainMeme;
     private static List<MemeDef> vanillaMemes = new();
     private static PreceptDef D(string name) => DefDatabase<PreceptDef>.GetNamed("SSC_Precept_" + name);
-    private static string[] FullDefaults = { "SexSlave_Sacred", "Trainer_SacredOffice", "Master_HolyMaster", "MasterCount_Three", "SlaveCount_Three" };
+    private static string[] FullDefaults = { "SexSlave_Sacred", "Trainer_SacredOffice", "Master_HolyMaster", "MasterCount_Three", "SlaveCount_Three", "SlaveGender_Unrestricted" };
 
     private static void ReadDef<T>(XElement element) where T : Def, new()
     {
@@ -43,7 +44,7 @@ internal static partial class Program
     // 无关武器偏好分支关闭；戒律仍由原版 maker 构造并经 AddPrecept 更新实际文化缓存。
     private static IdeoGenerationParms Parms() => new IdeoGenerationParms(null, forceNoWeaponPreference: true);
     private static void Add(Ideo ideo, string name) => ideo.AddPrecept(PreceptMaker.MakePrecept(D(name)));
-    private static void VerifyFive(Ideo ideo)
+    private static void VerifyGroups(Ideo ideo)
     {
         // 每组按 Issue 检查恰有一个且属于合法替代范围，不能只检查戒律总数为五。
         foreach (var options in mainMeme.requireOne)
@@ -78,7 +79,8 @@ internal static partial class Program
             var paths = new[] { "MemeDefs/SSC_Meme_MasterSlaveOrder.xml", "PreceptDefs/SSC_Precepts_SexSlave.xml",
                 "PreceptDefs/SSC_Precepts_Trainer.xml", "PreceptDefs/SSC_Precepts_Master.xml", "PreceptDefs/SSC_Precepts_Counts.xml",
                 "ThoughtDefs/SSC_CultureThoughts_SexSlave.xml", "ThoughtDefs/SSC_CultureThoughts_Trainer.xml", "ThoughtDefs/SSC_CultureThoughts_Master.xml",
-                "ThoughtDefs/SSC_CultureThoughts_Counts.xml" };
+                "ThoughtDefs/SSC_CultureThoughts_Counts.xml", "PreceptDefs/SSC_Precepts_SlaveGender.xml",
+                "ThoughtDefs/SSC_CultureThoughts_SlaveGender.xml" };
             foreach (string path in paths)
                 foreach (var node in XDocument.Load(Path.Combine(repo, "1.7/Defs", path)).Root.Elements())
                 {
@@ -96,23 +98,23 @@ internal static partial class Program
             // 跨引用解析后再断言挂载和数量；仅 XML 语法正确不足以证明原版成功识别字段。
             DirectXmlCrossRefLoader.ResolveAllWantedCrossReferences(FailMode.LogErrors);
             mainMeme = DefDatabase<MemeDef>.GetNamed(MemeName);
-            Equal(22, DefDatabase<PreceptDef>.AllDefs.Count()); Equal(5, DefDatabase<IssueDef>.AllDefs.Count());
+            Equal(28, DefDatabase<PreceptDef>.AllDefs.Count()); Equal(6, DefDatabase<IssueDef>.AllDefs.Count());
             // 实机调整：主奴秩序使用原版最高影响三级；Normal 是模因类别，不是影响档位。
             Equal(3, mainMeme.impact); Equal(MemeCategory.Normal, mainMeme.category);
             Equal(1f, mainMeme.randomizationSelectionWeightFactor); Require(mainMeme.exclusionTags.NullOrEmpty());
-            Equal(5, mainMeme.requireOne.Count);
-            Equal("3,5,2,3,3", string.Join(',', mainMeme.requireOne.Select(l => l.Count)));
+            Equal(6, mainMeme.requireOne.Count);
+            Equal("3,5,2,3,3,6", string.Join(',', mainMeme.requireOne.Select(l => l.Count)));
             Require(mainMeme.requireOne.All(l => l.All(p => p.issue == l[0].issue)));
             Require(DefDatabase<IssueDef>.AllDefs.All(d => !d.allowMultiplePrecepts));
             // 步骤 3 补有限数量反馈；两条不限及三条漠视无组件，不混入事件或意愿拦截。
             Require(DefDatabase<PreceptDef>.AllDefs.All(d => !d.allowDuplicates && d.countsTowardsPreceptLimit));
-            Equal(17, DefDatabase<PreceptDef>.AllDefs.Count(d => !d.comps.NullOrEmpty()));
-            Equal(44, DefDatabase<PreceptDef>.AllDefs.Sum(d => d.comps.Count));
+            Equal(22, DefDatabase<PreceptDef>.AllDefs.Count(d => !d.comps.NullOrEmpty()));
+            Equal(65, DefDatabase<PreceptDef>.AllDefs.Sum(d => d.comps.Count));
             Require(DefDatabase<PreceptDef>.AllDefs.SelectMany(d => d.comps).All(c => c is PreceptComp_SituationalThought));
-            Equal(44, DefDatabase<ThoughtDef>.AllDefs.Count());
+            Equal(56, DefDatabase<ThoughtDef>.AllDefs.Count());
             ThoughtUtility.Reset();
         });
-        Check("all 22 weights, ordering, prefix and 4/6/13 meme lists match the fixed contract", () =>
+        Check("all 28 weights, ordering, prefix and 7/6/19 meme lists match the fixed contract", () =>
         {
             // 逐档比对固定权重、顺序和占位描述；数量组顺序从 20 起，与已确认显示约定一致。
             int required = 0, conflicting = 0, associated = 0;
@@ -121,17 +123,17 @@ internal static partial class Program
                 {
                     var d = D(groups[g] + "_" + suffixes[g][i]);
                     Equal((float)selection[g][i], d.selectionWeight); Equal((float)defaults[g][i], d.defaultSelectionWeight);
-                    Equal((i + (g >= 3 ? 2 : 1)) * 10f, d.displayOrderInIssue);
+                    Equal((i + (g == 3 || g == 4 ? 2 : 1)) * 10f, d.displayOrderInIssue);
                     Require(d.description.Contains("[TODO:" + d.defName + ".description]"));
                     // 三种模因列表语义分别核对，不能把仅关联误写为前置要求或硬冲突。
-                    bool r = (g == 0 && i >= 4) || (g == 1 && i == 4) || (g == 2 && i == 4);
+                    bool r = (g == 0 && i >= 4) || (g == 1 && i == 4) || (g == 2 && i == 4) || (g == 5 && i >= 3);
                     bool c = (g == 0 || g == 2) && i < 3;
                     bool a = g >= 3 || (g == 0 && i >= 3) || ((g == 1 || g == 2) && i >= 3);
                     Equal(r, d.requiredMemes?.Contains(mainMeme) == true); Equal(c, d.conflictingMemes.Contains(mainMeme)); Equal(a, d.associatedMemes.Contains(mainMeme));
                     required += d.requiredMemes?.Count ?? 0; conflicting += d.conflictingMemes.Count; associated += d.associatedMemes.Count;
                 }
             // 总数是逐档断言之外的额外漏项检查，确保未额外挂载无关模因。
-            Equal(4, required); Equal(6, conflicting); Equal(13, associated);
+            Equal(7, required); Equal(6, conflicting); Equal(19, associated);
         });
         foreach (string language in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" })
             Check("four-language keys, nonempty placeholders and byte-identical mirror: " + language, () =>
@@ -143,7 +145,7 @@ internal static partial class Program
                     string path = Path.Combine(repo, "1.7", relative);
                     Require(File.ReadAllBytes(path).SequenceEqual(File.ReadAllBytes(Path.Combine(repo, "Sexslavecraft", relative))));
                     var entries = XDocument.Load(path).Root.Elements().ToArray();
-                    Equal(type == "MemeDef" ? 44 : type == "IssueDef" ? 5 : 63, entries.Length);
+                    Equal(type == "MemeDef" ? 44 : type == "IssueDef" ? 6 : 99, entries.Length);
                     Equal(entries.Length, entries.Select(x => x.Name).Distinct().Count());
                     Require(entries.All(x => !string.IsNullOrWhiteSpace(x.Value)));
                     // 描述交给后续文案阶段，当前必须保留可搜索的精确 TODO 标记及完整 label 键。
@@ -156,7 +158,7 @@ internal static partial class Program
             Check("native CanAdd and zero-weight manual replacement: meme=" + withMeme, () =>
             {
                 // 同一组候选在有/无主模因时合法数量不同；资格交给原版判断，不能用权重代替资格。
-                var expected = withMeme ? new[] { 3, 5, 2, 3, 3 } : new[] { 4, 4, 4, 3, 3 };
+                var expected = withMeme ? new[] { 3, 5, 2, 3, 3, 6 } : new[] { 4, 4, 4, 3, 3, 3 };
                 var ideo = Culture(withMeme ? new[] { mainMeme } : Array.Empty<MemeDef>());
                 for (int g = 0; g < groups.Length; g++)
                 {
@@ -173,15 +175,15 @@ internal static partial class Program
         bootstrap = true;
         PreceptDefOf.AnimalVenerated = new PreceptDef { maxCount = 0 };
         bootstrap = false;
-        Check("native full RandomizePrecepts produces the five fixed defaults (not requiredPreceptsOnly)", () =>
+        Check("native full RandomizePrecepts produces the six fixed defaults (not requiredPreceptsOnly)", () =>
         {
-            // 固定多个随机种子运行完整生成，验证普通补齐过程不会覆盖模因的五个默认结果。
+            // 固定多个随机种子运行完整生成，验证普通补齐过程不会覆盖模因的六个默认结果。
             for (int seed = 1; seed <= 8; seed++)
             {
                 Rand.PushState(seed);
                 try
                 {
-                    var ideo = Culture(mainMeme); ideo.foundation.RandomizePrecepts(false, Parms()); VerifyFive(ideo);
+                    var ideo = Culture(mainMeme); ideo.foundation.RandomizePrecepts(false, Parms()); VerifyGroups(ideo);
                     foreach (string d in FullDefaults) Require(ideo.HasPrecept(D(d)));
                 }
                 // 恢复原版随机状态，避免本例对后续生成和改革测试产生隐式种子依赖。
@@ -199,7 +201,7 @@ internal static partial class Program
         {
             // 同时布置合法零权重、冲突旧档和缺失组，一次实际改革验证保留、替换与补齐三个分支。
             var ideo = Culture(); Add(ideo, "SexSlave_Respect"); Add(ideo, "Trainer_Hostile"); Add(ideo, "Master_Hostile"); Add(ideo, "SlaveCount_One");
-            ideo.memes.Add(mainMeme); ideo.foundation.EnsurePreceptsCompatibleWithMemes(new(), ideo.memes.ToList(), Parms()); VerifyFive(ideo);
+            ideo.memes.Add(mainMeme); ideo.foundation.EnsurePreceptsCompatibleWithMemes(new(), ideo.memes.ToList(), Parms()); VerifyGroups(ideo);
             foreach (string d in new[] { "SexSlave_Respect", "Trainer_Hostile", "SlaveCount_One", "Master_HolyMaster", "MasterCount_Three" }) Require(ideo.HasPrecept(D(d)));
         });
         Check("native meme removal replaces exclusive choices but keeps common counts", () =>
@@ -209,7 +211,7 @@ internal static partial class Program
             ideo.memes.Clear(); ideo.foundation.EnsurePreceptsCompatibleWithMemes(new() { mainMeme }, new(), Parms());
             Require(ideo.PreceptsListForReading.All(p => p.def.requiredMemes.NullOrEmpty()));
             Require(ideo.HasPrecept(D("MasterCount_Three")) && ideo.HasPrecept(D("SlaveCount_Three")));
-            Equal(5, ideo.PreceptsListForReading.Count);
+            Equal(6, ideo.PreceptsListForReading.Count);
         });
         Check("feasibility detects zero positive eligible weight and distinguishes a retained legal choice", () =>
         {
@@ -227,10 +229,10 @@ internal static partial class Program
 
     private static void VanillaPairTests(string game)
     {
-        Check("all local vanilla normal meme exclusion contracts allow SSC pairings and five positive groups", () =>
+        Check("all local vanilla normal meme exclusion contracts allow SSC pairings and six positive groups", () =>
         {
             // 仅取本机原版 XML 的模因资格字段；不导入其仪式/建筑/美术等无关依赖。
-            // 这是原版 CanAdd 的 SSC 五组组合检查，不宣称完整原版 Def 集或整套文化已加载。
+            // 这是原版 CanAdd 的 SSC 六组组合检查，不宣称完整原版 Def 集或整套文化已加载。
             var nodes = new List<XmlNode>();
             XmlInheritance.Clear();
             foreach (string dir in Directory.EnumerateDirectories(Path.Combine(game, "Data"), "MemeDefs", SearchOption.AllDirectories))
@@ -255,7 +257,7 @@ internal static partial class Program
             }
             XmlInheritance.Clear();
             Require(vanillaMemes.Count > 10);
-            // 对每个本机普通模因调用原版组合资格，再检查 SSC 五组是否仍有可生成的必选项。
+            // 对每个本机普通模因调用原版组合资格，再检查 SSC 六组是否仍有可生成的必选项。
             foreach (var meme in vanillaMemes)
             {
                 Require(MemeCanAdd(mainMeme, new() { meme }), meme.defName);
@@ -267,7 +269,7 @@ internal static partial class Program
                 new() { vanillaMemes.Single(m => m.defName == "FemaleSupremacy") }));
             Console.WriteLine($"MATRIX {vanillaMemes.Count} vanilla normal meme contracts paired with SSC");
         });
-        Check("native legal multi-meme combinations keep five feasible groups and preserve reform choices in both orders", () =>
+        Check("native legal multi-meme combinations keep six feasible groups and preserve reform choices in both orders", () =>
         {
             // 先筛掉原版自身互斥的组合，再枚举 SSC 加两个原版模因，避免把无效基底算作 SSC 冲突。
             int tested = 0;
@@ -286,8 +288,9 @@ internal static partial class Program
                 var ideo = Culture(sscFirst ? mainMeme : other);
                 Add(ideo, "SexSlave_Respect"); Add(ideo, "Trainer_Hostile"); Add(ideo, "Master_Deference");
                 Add(ideo, "MasterCount_One"); Add(ideo, "SlaveCount_One");
+                Add(ideo, "SlaveGender_FemaleOnly");
                 var old = ideo.memes.ToList(); ideo.memes.Add(sscFirst ? other : mainMeme);
-                ideo.foundation.EnsurePreceptsCompatibleWithMemes(old, ideo.memes.ToList(), Parms()); VerifyFive(ideo);
+                ideo.foundation.EnsurePreceptsCompatibleWithMemes(old, ideo.memes.ToList(), Parms()); VerifyGroups(ideo);
                 Require(ideo.HasPrecept(D("Trainer_Hostile")) && ideo.HasPrecept(D("Master_Deference")) && ideo.HasPrecept(D("MasterCount_One")));
             }
         });
@@ -303,7 +306,7 @@ internal static partial class Program
             ideo.AddPrecept(PreceptMaker.MakePrecept(prohibition));
             // 先加入再移除主奴秩序，两次均经过原版兼容性维护，禁欲戒律必须始终保留。
             ideo.memes.Add(mainMeme); ideo.foundation.EnsurePreceptsCompatibleWithMemes(new(), ideo.memes.ToList(), Parms());
-            Require(ideo.HasPrecept(prohibition)); VerifyFive(ideo);
+            Require(ideo.HasPrecept(prohibition)); VerifyGroups(ideo);
             ideo.memes.Clear(); ideo.foundation.EnsurePreceptsCompatibleWithMemes(new() { mainMeme }, new(), Parms());
             Require(ideo.HasPrecept(prohibition));
         });

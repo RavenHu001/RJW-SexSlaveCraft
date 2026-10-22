@@ -226,6 +226,9 @@ $configPath = Join-Path $repoRoot 'Tests/NuGet.Config'
 if (-not (Test-Path -LiteralPath $configPath -PathType Leaf)) { $globalProblems.Add('Tests/NuGet.Config is missing.') }
 # A newly added project must be deliberately registered, including its required arguments.
 $expectedProjects = @($suites | ForEach-Object { "Tests/$($_.Name)/$($_.Name).csproj" })
+# CultureNative 的兼容类型转发是其 ProjectReference 类库，由该套件构建和使用；本身不是可执行测试。
+# 精确登记辅助工程，继续拒绝其他未登记项目，不将整个子目录排除在门禁外。
+$expectedProjects += 'Tests/CultureNative/UnityCoreShim/UnityCoreShim.csproj'
 $unlisted = @(if (Test-Path -LiteralPath (Join-Path $repoRoot 'Tests') -PathType Container) {
     Get-ChildItem -LiteralPath (Join-Path $repoRoot 'Tests') -Filter '*.csproj' -Recurse | ForEach-Object {
     [IO.Path]::GetRelativePath($repoRoot, $_.FullName).Replace('\', '/')

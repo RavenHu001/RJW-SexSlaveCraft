@@ -13,7 +13,7 @@ internal static partial class Program
             var sacred=T("SexSlave_Sacred_Environment"); var config=sacred.GetModExtension<SSCCultureThoughtExtension>();
             float[] values={0,1,3,6,10,15}; Equal(6,config.environmentMoodCurve.PointsCount);
             for(int i=0;i<values.Length;i++) { Equal((float)i,config.environmentMoodCurve[i].x); Equal(values[i],config.environmentMoodCurve[i].y); }
-            Require(DefDatabase<ThoughtDef>.AllDefs.Where(d=>d!=sacred)
+            Require(DefDatabase<ThoughtDef>.AllDefs.Where(d=>d!=sacred && !d.GetModExtension<SSCCultureThoughtExtension>().IsGenderEnvironment)
                 .All(d=>d.GetModExtension<SSCCultureThoughtExtension>().environmentMoodCurve==null));
             Require(new SSCCultureThoughtExtension {condition=SSCCultureThoughtCondition.ManagedChainedEnvironment,environmentMoodCurve=new SimpleCurve()}.ConfigErrors().Any());
             Require(new SSCCultureThoughtExtension {condition=SSCCultureThoughtCondition.MasterSelf,environmentMoodCurve=config.environmentMoodCurve}.ConfigErrors().Any());
@@ -60,7 +60,7 @@ internal static partial class Program
                 sacred.needs.mood.thoughts.ThoughtInterval(); hostile.needs.mood.thoughts.ThoughtInterval(); revulsion.needs.mood.thoughts.ThoughtInterval();
                 Equal(15f,MoodSum(sacred)); Equal(-24f,MoodSum(hostile)); Equal(-16f,MoodSum(revulsion));
             }
-            Equal(1,CallCount("CollectMembers")); Equal(1,CallCount("CountManagedChained"));
+            Equal(1,CallCount("CollectMembers")); Equal(1,CallCount("CollectManagedChained"));
             Equal(0,CallCount("CountMasters")); Equal(0,CallCount("CountBoundSlaves")); Equal(0,CallCount("Query"));
         });
     }

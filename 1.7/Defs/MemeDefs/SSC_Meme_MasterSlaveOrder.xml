@@ -127,6 +127,15 @@
         <li>SSC_Precept_SlaveCount_Three</li>
         <li>SSC_Precept_SlaveCount_Unlimited</li>
       </li>
+      <!-- 第六组独立议题：六档均可手选，仅性别不限有生成权重。 -->
+      <li>
+        <li>SSC_Precept_SlaveGender_FemaleOnly</li>
+        <li>SSC_Precept_SlaveGender_MaleOnly</li>
+        <li>SSC_Precept_SlaveGender_Unrestricted</li>
+        <li>SSC_Precept_SlaveGender_FemaleRequired</li>
+        <li>SSC_Precept_SlaveGender_MaleRequired</li>
+        <li>SSC_Precept_SlaveGender_NonMasterRequired</li>
+      </li>
     </requireOne>
   </MemeDef>
 </Defs>

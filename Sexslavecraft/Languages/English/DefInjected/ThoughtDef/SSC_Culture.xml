@@ -107,4 +107,34 @@
   <SSC_Culture_Master_HolyMaster_Leader.stages.2.description>[TODO:SSC_Culture_Master_HolyMaster_Leader.stages.2.description]</SSC_Culture_Master_HolyMaster_Leader.stages.2.description>
   <SSC_Culture_Master_HolyMaster_SexSlaveLeaderSocial.stages.0.label>[placeholder: holy master / opinion of sex-slave leader]</SSC_Culture_Master_HolyMaster_SexSlaveLeaderSocial.stages.0.label>
   <SSC_Culture_Master_HolyMaster_SexSlaveLeaderSocial.stages.0.description>[TODO:SSC_Culture_Master_HolyMaster_SexSlaveLeaderSocial.stages.0.description]</SSC_Culture_Master_HolyMaster_SexSlaveLeaderSocial.stages.0.description>
+  <!-- 1.7 六档性别规范：名称为功能标记，正式描述后续交接。 -->
+  <SSC_Culture_SlaveGender_LimitedViolation_Self.stages.0.label>[TODO:SSC_Culture_SlaveGender_LimitedViolation_Self.stages.0.label]</SSC_Culture_SlaveGender_LimitedViolation_Self.stages.0.label>
+  <SSC_Culture_SlaveGender_LimitedViolation_Self.stages.0.description>[TODO:SSC_Culture_SlaveGender_LimitedViolation_Self.stages.0.description]</SSC_Culture_SlaveGender_LimitedViolation_Self.stages.0.description>
+  <SSC_Culture_SlaveGender_LimitedViolation_Social.stages.0.label>[TODO:SSC_Culture_SlaveGender_LimitedViolation_Social.stages.0.label]</SSC_Culture_SlaveGender_LimitedViolation_Social.stages.0.label>
+  <SSC_Culture_SlaveGender_LimitedViolation_Social.stages.0.description>[TODO:SSC_Culture_SlaveGender_LimitedViolation_Social.stages.0.description]</SSC_Culture_SlaveGender_LimitedViolation_Social.stages.0.description>
+  <SSC_Culture_SlaveGender_LimitedViolation_Environment.stages.0.label>[TODO:SSC_Culture_SlaveGender_LimitedViolation_Environment.stages.0.label]</SSC_Culture_SlaveGender_LimitedViolation_Environment.stages.0.label>
+  <SSC_Culture_SlaveGender_LimitedViolation_Environment.stages.0.description>[TODO:SSC_Culture_SlaveGender_LimitedViolation_Environment.stages.0.description]</SSC_Culture_SlaveGender_LimitedViolation_Environment.stages.0.description>
+  <SSC_Culture_SlaveGender_RequiredViolation_Self.stages.0.label>[TODO:SSC_Culture_SlaveGender_RequiredViolation_Self.stages.0.label]</SSC_Culture_SlaveGender_RequiredViolation_Self.stages.0.label>
+  <SSC_Culture_SlaveGender_RequiredViolation_Self.stages.0.description>[TODO:SSC_Culture_SlaveGender_RequiredViolation_Self.stages.0.description]</SSC_Culture_SlaveGender_RequiredViolation_Self.stages.0.description>
+  <SSC_Culture_SlaveGender_RequiredViolation_Social.stages.0.label>[TODO:SSC_Culture_SlaveGender_RequiredViolation_Social.stages.0.label]</SSC_Culture_SlaveGender_RequiredViolation_Social.stages.0.label>
+  <SSC_Culture_SlaveGender_RequiredViolation_Social.stages.0.description>[TODO:SSC_Culture_SlaveGender_RequiredViolation_Social.stages.0.description]</SSC_Culture_SlaveGender_RequiredViolation_Social.stages.0.description>
+  <SSC_Culture_SlaveGender_RequiredViolation_Environment.stages.0.label>[TODO:SSC_Culture_SlaveGender_RequiredViolation_Environment.stages.0.label]</SSC_Culture_SlaveGender_RequiredViolation_Environment.stages.0.label>
+  <SSC_Culture_SlaveGender_RequiredViolation_Environment.stages.0.description>[TODO:SSC_Culture_SlaveGender_RequiredViolation_Environment.stages.0.description]</SSC_Culture_SlaveGender_RequiredViolation_Environment.stages.0.description>
+  <SSC_Culture_SlaveGender_RequiredDuty_Self.stages.0.label>[TODO:SSC_Culture_SlaveGender_RequiredDuty_Self.stages.0.label]</SSC_Culture_SlaveGender_RequiredDuty_Self.stages.0.label>
+  <SSC_Culture_SlaveGender_RequiredDuty_Self.stages.0.description>[TODO:SSC_Culture_SlaveGender_RequiredDuty_Self.stages.0.description]</SSC_Culture_SlaveGender_RequiredDuty_Self.stages.0.description>
+  <SSC_Culture_SlaveGender_RequiredDuty_Social.stages.0.label>[TODO:SSC_Culture_SlaveGender_RequiredDuty_Social.stages.0.label]</SSC_Culture_SlaveGender_RequiredDuty_Social.stages.0.label>
+  <SSC_Culture_SlaveGender_RequiredDuty_Social.stages.0.description>[TODO:SSC_Culture_SlaveGender_RequiredDuty_Social.stages.0.description]</SSC_Culture_SlaveGender_RequiredDuty_Social.stages.0.description>
+  <SSC_Culture_SlaveGender_RequiredDuty_Environment.stages.0.label>[TODO:SSC_Culture_SlaveGender_RequiredDuty_Environment.stages.0.label]</SSC_Culture_SlaveGender_RequiredDuty_Environment.stages.0.label>
+  <SSC_Culture_SlaveGender_RequiredDuty_Environment.stages.0.description>[TODO:SSC_Culture_SlaveGender_RequiredDuty_Environment.stages.0.description]</SSC_Culture_SlaveGender_RequiredDuty_Environment.stages.0.description>
+  <SSC_Culture_SlaveGender_NonMasterDuty_Self.stages.0.label>[TODO:SSC_Culture_SlaveGender_NonMasterDuty_Self.stages.0.label]</SSC_Culture_SlaveGender_NonMasterDuty_Self.stages.0.label>
+  <SSC_Culture_SlaveGender_NonMasterDuty_Self.stages.0.description>[TODO:SSC_Culture_SlaveGender_NonMasterDuty_Self.stages.0.description]</SSC_Culture_SlaveGender_NonMasterDuty_Self.stages.0.description>
+  <SSC_Culture_SlaveGender_NonMasterDuty_Social.stages.0.label>[TODO:SSC_Culture_SlaveGender_NonMasterDuty_Social.stages.0.label]</SSC_Culture_SlaveGender_NonMasterDuty_Social.stages.0.label>
+  <SSC_Culture_SlaveGender_NonMasterDuty_Social.stages.0.description>[TODO:SSC_Culture_SlaveGender_NonMasterDuty_Social.stages.0.description]</SSC_Culture_SlaveGender_NonMasterDuty_Social.stages.0.description>
+  <SSC_Culture_SlaveGender_NonMasterDuty_Environment.stages.0.label>[TODO:SSC_Culture_SlaveGender_NonMasterDuty_Environment.stages.0.label]</SSC_Culture_SlaveGender_NonMasterDuty_Environment.stages.0.label>
+  <SSC_Culture_SlaveGender_NonMasterDuty_Environment.stages.0.description>[TODO:SSC_Culture_SlaveGender_NonMasterDuty_Environment.stages.0.description]</SSC_Culture_SlaveGender_NonMasterDuty_Environment.stages.0.description>
+  <!-- 艳羡且有义务：专属阶段与独立占位文案，不与普通义务叠扣。 -->
+  <SSC_Culture_SlaveGender_RequiredDuty_Self.stages.1.label>[TODO:SSC_Culture_SlaveGender_RequiredDuty_Self.stages.1.label]</SSC_Culture_SlaveGender_RequiredDuty_Self.stages.1.label>
+  <SSC_Culture_SlaveGender_RequiredDuty_Self.stages.1.description>[TODO:SSC_Culture_SlaveGender_RequiredDuty_Self.stages.1.description]</SSC_Culture_SlaveGender_RequiredDuty_Self.stages.1.description>
+  <SSC_Culture_SlaveGender_NonMasterDuty_Self.stages.1.label>[TODO:SSC_Culture_SlaveGender_NonMasterDuty_Self.stages.1.label]</SSC_Culture_SlaveGender_NonMasterDuty_Self.stages.1.label>
+  <SSC_Culture_SlaveGender_NonMasterDuty_Self.stages.1.description>[TODO:SSC_Culture_SlaveGender_NonMasterDuty_Self.stages.1.description]</SSC_Culture_SlaveGender_NonMasterDuty_Self.stages.1.description>
 </LanguageData>

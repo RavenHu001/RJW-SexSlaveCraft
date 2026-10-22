@@ -86,7 +86,7 @@ internal static partial class Program
             for (int i = 0; i < 20; i++) { Require(cache.TryGetMasterCount(out n)); cache.TryGetLeader(out _); }
             Equal(1, CallCount("CollectMembers")); Equal(1, CallCount("CountMasters")); Equal(1, CallCount("Query"));
             // 起点为 1000：1099 仍命中，1100 首次请求才重建，覆盖有效期的闭开边界。
-            Equal(0, CallCount("CountManagedChained")); tick = 1099; cache.TryGetMasterCount(out _); Equal(1, CallCount("CollectMembers"));
+            Equal(0, CallCount("CollectManagedChained")); tick = 1099; cache.TryGetMasterCount(out _); Equal(1, CallCount("CollectMembers"));
             tick = 1100; cache.TryGetMasterCount(out _); Equal(2, CallCount("CollectMembers"));
         });
         Check("late feature does not extend generation; bound counts are per requested owner", () =>
@@ -97,9 +97,9 @@ internal static partial class Program
             cache.TryGetBoundSlaveCount(a, out var n); Equal(1, n); Equal(0, CallCount("CollectMembers"));
             cache.TryGetBoundSlaveCount(a, out _); Equal(1, CallCount("CountBoundSlaves"));
             // 环境与主人 b 直到后期才被请求，仍沿用 1000 的共同起点，1100 整代一起失效。
-            tick = 1090; cache.TryGetManagedChainedCount(out _); Equal(1, CallCount("CountManagedChained"));
+            tick = 1090; cache.TryGetManagedChainedCount(out _); Equal(1, CallCount("CollectManagedChained"));
             tick = 1099; cache.TryGetBoundSlaveCount(b, out n); Equal(0, n); Equal(2, CallCount("CountBoundSlaves"));
-            tick = 1100; cache.TryGetManagedChainedCount(out _); Equal(2, CallCount("CountManagedChained"));
+            tick = 1100; cache.TryGetManagedChainedCount(out _); Equal(2, CallCount("CollectManagedChained"));
             cache.TryGetBoundSlaveCount(a, out _); Equal(3, CallCount("CountBoundSlaves"));
         });
         Check("within-generation tick rollback clears all features", () =>
@@ -164,6 +164,7 @@ internal static partial class Program
             // 手动选择零生成权重的合法档位，并提供原版序列化必需的最小文化字段及唯一 ID。
             Context(); Ideo source = Culture(mainMeme); Add(source, "SexSlave_Envy"); Add(source, "Trainer_Hostile");
             Add(source, "Master_Deference"); Add(source, "MasterCount_One"); Add(source, "SlaveCount_Unlimited");
+            Add(source, "SlaveGender_FemaleRequired");
             source.culture = new CultureDef { defName = "FixtureCulture" }; DefDatabase<CultureDef>.Add(source.culture);
             source.description = "[TODO:FixtureCulture.description]"; source.memberName = "[TODO:member]";
             Set(source, "id", 1);
@@ -175,7 +176,7 @@ internal static partial class Program
                 Ideo loaded = null;
                 Scribe.loader.InitLoading(path); Scribe_Deep.Look(ref loaded, "ideo"); Scribe.loader.FinalizeLoading();
                 // 同时核对五组合法性与完整 Def 名集合，不能把读档后的自动重随机误判为保留成功。
-                VerifyFive(loaded);
+                VerifyGroups(loaded);
                 Equal(string.Join(',', source.PreceptsListForReading.Select(p => p.def.defName).Order()),
                     string.Join(',', loaded.PreceptsListForReading.Select(p => p.def.defName).Order()));
             }

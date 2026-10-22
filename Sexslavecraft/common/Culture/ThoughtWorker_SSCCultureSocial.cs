@@ -19,7 +19,21 @@ namespace SexSlaveCraft
                     // 艳羡额外限制作用于观察者；持链目标即使没有 Slave 途径预选也仍可被评价。
                     if (config.requireEnviousObserver && (SSCCultureStateUtility.HasChain(p) || SSCCultureStateUtility.IsMaster(p)))
                         return ThoughtState.Inactive;
+                    // 神圣过滤目标；艳羡另外过滤观察者。尊重 +5 及既有敌视/厌恶未启用此开关。
+                    if (config.requireAcceptedSlaveGender)
+                    {
+                        var policy = SSCCultureGenderUtility.Policy(p);
+                        if (!SSCCultureGenderUtility.Accepts(policy, otherPawn.gender)
+                            || config.requireEnviousObserver && !SSCCultureGenderUtility.Accepts(policy, p.gender))
+                            return ThoughtState.Inactive;
+                    }
                     return SSCCultureStateUtility.HasChain(otherPawn);
+                case SSCCultureThoughtCondition.GenderViolationOther:
+                    // 不要求目标入册，双方均需成年；主人或有链观察者同样可以产生新的规范评价。
+                    return SSCCultureGenderUtility.IsAdult(p)
+                        && SSCCultureGenderUtility.IsViolation(otherPawn, SSCCultureGenderUtility.Policy(p));
+                case SSCCultureThoughtCondition.UnfulfilledDutyOther:
+                    return SSCCultureGenderUtility.DutySocial(p, otherPawn, SSCCultureGenderUtility.Policy(p));
                 case SSCCultureThoughtCondition.OfficerOther:
                     // 复用有效任职，不把主人自带的调教能力或单独特化资格误认作训导官。
                     return SSCCultureStateUtility.IsActiveOfficer(otherPawn);

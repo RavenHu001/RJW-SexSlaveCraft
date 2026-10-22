@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成：1.7 六档性别规范的持续反馈，仅占位文案，不写关系或记忆。 -->
+<Defs>
+  <!-- LimitedViolation / Self：男女同数值档共用 Def，原版 sourcePrecept 保留实际戒律来源。 -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Culture_SlaveGender_LimitedViolation_Self</defName>
+    <thoughtClass>Thought_Situational</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCCultureMood</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <developmentalStageFilter>Adult</developmentalStageFilter>
+    <!-- worker 另核对成年生理年龄，不单独依赖原版 Adult 阶段。 -->
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
+        <condition>GenderViolationSelf</condition>
+      </li>
+    </modExtensions>
+    <stages><li>
+      <label>[TODO:SSC_Culture_SlaveGender_LimitedViolation_Self.stages.0.label]</label>
+      <description>[TODO:SSC_Culture_SlaveGender_LimitedViolation_Self.stages.0.description]</description>
+      <baseMoodEffect>-6</baseMoodEffect>
+    </li></stages>
+  </ThoughtDef>
+  <!-- LimitedViolation / Social：男女同数值档共用 Def，原版 sourcePrecept 保留实际戒律来源。 -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Culture_SlaveGender_LimitedViolation_Social</defName>
+    <thoughtClass>Thought_SituationalSocial</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCCultureSocial</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <developmentalStageFilter>Adult</developmentalStageFilter>
+    <socialTargetDevelopmentalStageFilter>Adult</socialTargetDevelopmentalStageFilter>
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
+        <condition>GenderViolationOther</condition>
+      </li>
+    </modExtensions>
+    <stages><li>
+      <label>[TODO:SSC_Culture_SlaveGender_LimitedViolation_Social.stages.0.label]</label>
+      <description>[TODO:SSC_Culture_SlaveGender_LimitedViolation_Social.stages.0.description]</description>
+      <baseOpinionOffset>-10</baseOpinionOffset>
+    </li></stages>
+  </ThoughtDef>
+  <!-- LimitedViolation / Environment：男女同数值档共用 Def，原版 sourcePrecept 保留实际戒律来源。 -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Culture_SlaveGender_LimitedViolation_Environment</defName>
+    <thoughtClass>Thought_Situational</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCCultureMood</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <developmentalStageFilter>Adult</developmentalStageFilter>
+    <!-- worker 另核对成年生理年龄，不单独依赖原版 Adult 阶段。 -->
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
+        <condition>GenderViolationEnvironment</condition>
+        <!-- 先由快照排除本人再最多计三人；原版曲线倍率为 0/1/3/6，基础负值见阶段。 -->
+        <environmentMoodCurve>
+          <points><li>(0, 0)</li><li>(1, 1)</li><li>(2, 3)</li><li>(3, 6)</li></points>
+        </environmentMoodCurve>
+      </li>
+    </modExtensions>
+    <stages><li>
+      <label>[TODO:SSC_Culture_SlaveGender_LimitedViolation_Environment.stages.0.label]</label>
+      <description>[TODO:SSC_Culture_SlaveGender_LimitedViolation_Environment.stages.0.description]</description>
+      <baseMoodEffect>-1</baseMoodEffect>
+    </li></stages>
+  </ThoughtDef>
+  <!-- RequiredViolation / Self：男女同数值档共用 Def，原版 sourcePrecept 保留实际戒律来源。 -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Culture_SlaveGender_RequiredViolation_Self</defName>
+    <thoughtClass>Thought_Situational</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCCultureMood</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <developmentalStageFilter>Adult</developmentalStageFilter>
+    <!-- worker 另核对成年生理年龄，不单独依赖原版 Adult 阶段。 -->
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
+        <condition>GenderViolationSelf</condition>
+      </li>
+    </modExtensions>
+    <stages><li>
+      <label>[TODO:SSC_Culture_SlaveGender_RequiredViolation_Self.stages.0.label]</label>
+      <description>[TODO:SSC_Culture_SlaveGender_RequiredViolation_Self.stages.0.description]</description>
+      <baseMoodEffect>-12</baseMoodEffect>
+    </li></stages>
+  </ThoughtDef>
+  <!-- RequiredViolation / Social：男女同数值档共用 Def，原版 sourcePrecept 保留实际戒律来源。 -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Culture_SlaveGender_RequiredViolation_Social</defName>
+    <thoughtClass>Thought_SituationalSocial</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCCultureSocial</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <developmentalStageFilter>Adult</developmentalStageFilter>
+    <socialTargetDevelopmentalStageFilter>Adult</socialTargetDevelopmentalStageFilter>
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
+        <condition>GenderViolationOther</condition>
+      </li>
+    </modExtensions>
+    <stages><li>
+      <label>[TODO:SSC_Culture_SlaveGender_RequiredViolation_Social.stages.0.label]</label>
+      <description>[TODO:SSC_Culture_SlaveGender_RequiredViolation_Social.stages.0.description]</description>
+      <baseOpinionOffset>-20</baseOpinionOffset>
+    </li></stages>
+  </ThoughtDef>
+  <!-- RequiredViolation / Environment：男女同数值档共用 Def，原版 sourcePrecept 保留实际戒律来源。 -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Culture_SlaveGender_RequiredViolation_Environment</defName>
+    <thoughtClass>Thought_Situational</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCCultureMood</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <developmentalStageFilter>Adult</developmentalStageFilter>
+    <!-- worker 另核对成年生理年龄，不单独依赖原版 Adult 阶段。 -->
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
+        <condition>GenderViolationEnvironment</condition>
+        <!-- 先由快照排除本人再最多计三人；原版曲线倍率为 0/1/3/6，基础负值见阶段。 -->
+        <environmentMoodCurve>
+          <points><li>(0, 0)</li><li>(1, 1)</li><li>(2, 3)</li><li>(3, 6)</li></points>
+        </environmentMoodCurve>
+      </li>
+    </modExtensions>
+    <stages><li>
+      <label>[TODO:SSC_Culture_SlaveGender_RequiredViolation_Environment.stages.0.label]</label>
+      <description>[TODO:SSC_Culture_SlaveGender_RequiredViolation_Environment.stages.0.description]</description>
+      <baseMoodEffect>-2</baseMoodEffect>
+    </li></stages>
+  </ThoughtDef>
+  <!-- RequiredDuty / Self：男女同数值档共用 Def，原版 sourcePrecept 保留实际戒律来源。 -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Culture_SlaveGender_RequiredDuty_Self</defName>
+    <thoughtClass>Thought_Situational</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCCultureMood</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <developmentalStageFilter>Adult</developmentalStageFilter>
+    <!-- worker 另核对成年生理年龄，不单独依赖原版 Adult 阶段。 -->
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
+        <condition>UnfulfilledDutySelf</condition>
+        <!-- 艳羡且尚未履行义务时使用独立阶段与文案，不另叠普通义务或旧愿望。 -->
+        <enviousDutyStage>1</enviousDutyStage>
+      </li>
+    </modExtensions>
+    <stages><li>
+      <label>[TODO:SSC_Culture_SlaveGender_RequiredDuty_Self.stages.0.label]</label>
+      <description>[TODO:SSC_Culture_SlaveGender_RequiredDuty_Self.stages.0.description]</description>
+      <baseMoodEffect>-8</baseMoodEffect>
+    </li><li>
+      <!-- 专属占位：与普通义务阶段分开交接，便于表达自我愿望和文化义务同时落空。 -->
+      <label>[TODO:SSC_Culture_SlaveGender_RequiredDuty_Self.stages.1.label]</label>
+      <description>[TODO:SSC_Culture_SlaveGender_RequiredDuty_Self.stages.1.description]</description>
+      <baseMoodEffect>-12</baseMoodEffect>
+    </li></stages>
+  </ThoughtDef>
+  <!-- RequiredDuty / Social：男女同数值档共用 Def，原版 sourcePrecept 保留实际戒律来源。 -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Culture_SlaveGender_RequiredDuty_Social</defName>
+    <thoughtClass>Thought_SituationalSocial</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCCultureSocial</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <developmentalStageFilter>Adult</developmentalStageFilter>
+    <socialTargetDevelopmentalStageFilter>Adult</socialTargetDevelopmentalStageFilter>
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
+        <condition>UnfulfilledDutyOther</condition>
+      </li>
+    </modExtensions>
+    <stages><li>
+      <label>[TODO:SSC_Culture_SlaveGender_RequiredDuty_Social.stages.0.label]</label>
+      <description>[TODO:SSC_Culture_SlaveGender_RequiredDuty_Social.stages.0.description]</description>
+      <baseOpinionOffset>-10</baseOpinionOffset>
+    </li></stages>
+  </ThoughtDef>
+  <!-- RequiredDuty / Environment：男女同数值档共用 Def，原版 sourcePrecept 保留实际戒律来源。 -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Culture_SlaveGender_RequiredDuty_Environment</defName>
+    <thoughtClass>Thought_Situational</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCCultureMood</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <developmentalStageFilter>Adult</developmentalStageFilter>
+    <!-- worker 另核对成年生理年龄，不单独依赖原版 Adult 阶段。 -->
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
+        <condition>UnfulfilledDutyEnvironment</condition>
+        <!-- 先由快照排除本人再最多计三人；原版曲线倍率为 0/1/3/6，基础负值见阶段。 -->
+        <environmentMoodCurve>
+          <points><li>(0, 0)</li><li>(1, 1)</li><li>(2, 3)</li><li>(3, 6)</li></points>
+        </environmentMoodCurve>
+      </li>
+    </modExtensions>
+    <stages><li>
+      <label>[TODO:SSC_Culture_SlaveGender_RequiredDuty_Environment.stages.0.label]</label>
+      <description>[TODO:SSC_Culture_SlaveGender_RequiredDuty_Environment.stages.0.description]</description>
+      <baseMoodEffect>-2</baseMoodEffect>
+    </li></stages>
+  </ThoughtDef>
+  <!-- NonMasterDuty / Self：男女同数值档共用 Def，原版 sourcePrecept 保留实际戒律来源。 -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Culture_SlaveGender_NonMasterDuty_Self</defName>
+    <thoughtClass>Thought_Situational</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCCultureMood</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <developmentalStageFilter>Adult</developmentalStageFilter>
+    <!-- worker 另核对成年生理年龄，不单独依赖原版 Adult 阶段。 -->
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
+        <condition>UnfulfilledDutySelf</condition>
+        <!-- 艳羡且尚未履行义务时使用独立阶段与文案，不另叠普通义务或旧愿望。 -->
+        <enviousDutyStage>1</enviousDutyStage>
+      </li>
+    </modExtensions>
+    <stages><li>
+      <label>[TODO:SSC_Culture_SlaveGender_NonMasterDuty_Self.stages.0.label]</label>
+      <description>[TODO:SSC_Culture_SlaveGender_NonMasterDuty_Self.stages.0.description]</description>
+      <baseMoodEffect>-12</baseMoodEffect>
+    </li><li>
+      <!-- 专属占位：与普通义务阶段分开交接，便于表达自我愿望和文化义务同时落空。 -->
+      <label>[TODO:SSC_Culture_SlaveGender_NonMasterDuty_Self.stages.1.label]</label>
+      <description>[TODO:SSC_Culture_SlaveGender_NonMasterDuty_Self.stages.1.description]</description>
+      <baseMoodEffect>-16</baseMoodEffect>
+    </li></stages>
+  </ThoughtDef>
+  <!-- NonMasterDuty / Social：男女同数值档共用 Def，原版 sourcePrecept 保留实际戒律来源。 -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Culture_SlaveGender_NonMasterDuty_Social</defName>
+    <thoughtClass>Thought_SituationalSocial</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCCultureSocial</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <developmentalStageFilter>Adult</developmentalStageFilter>
+    <socialTargetDevelopmentalStageFilter>Adult</socialTargetDevelopmentalStageFilter>
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
+        <condition>UnfulfilledDutyOther</condition>
+      </li>
+    </modExtensions>
+    <stages><li>
+      <label>[TODO:SSC_Culture_SlaveGender_NonMasterDuty_Social.stages.0.label]</label>
+      <description>[TODO:SSC_Culture_SlaveGender_NonMasterDuty_Social.stages.0.description]</description>
+      <baseOpinionOffset>-15</baseOpinionOffset>
+    </li></stages>
+  </ThoughtDef>
+  <!-- NonMasterDuty / Environment：男女同数值档共用 Def，原版 sourcePrecept 保留实际戒律来源。 -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Culture_SlaveGender_NonMasterDuty_Environment</defName>
+    <thoughtClass>Thought_Situational</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCCultureMood</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <developmentalStageFilter>Adult</developmentalStageFilter>
+    <!-- worker 另核对成年生理年龄，不单独依赖原版 Adult 阶段。 -->
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
+        <condition>UnfulfilledDutyEnvironment</condition>
+        <!-- 先由快照排除本人再最多计三人；原版曲线倍率为 0/1/3/6，基础负值见阶段。 -->
+        <environmentMoodCurve>
+          <points><li>(0, 0)</li><li>(1, 1)</li><li>(2, 3)</li><li>(3, 6)</li></points>
+        </environmentMoodCurve>
+      </li>
+    </modExtensions>
+    <stages><li>
+      <label>[TODO:SSC_Culture_SlaveGender_NonMasterDuty_Environment.stages.0.label]</label>
+      <description>[TODO:SSC_Culture_SlaveGender_NonMasterDuty_Environment.stages.0.description]</description>
+      <baseMoodEffect>-3</baseMoodEffect>
+    </li></stages>
+  </ThoughtDef>
+</Defs>

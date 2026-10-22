@@ -6,4 +6,6 @@
   <SSC_Issue_Master.label>master</SSC_Issue_Master.label>
   <SSC_Issue_MasterCount.label>master count</SSC_Issue_MasterCount.label>
   <SSC_Issue_SlaveCount.label>sex slave count</SSC_Issue_SlaveCount.label>
+  <!-- 1.7 六档性别规范：名称为功能标记，正式描述后续交接。 -->
+  <SSC_Issue_SlaveGender.label>Slave gender</SSC_Issue_SlaveGender.label>
 </LanguageData>

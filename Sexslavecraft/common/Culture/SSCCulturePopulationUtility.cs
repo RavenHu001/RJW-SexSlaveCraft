@@ -58,10 +58,19 @@ namespace SexSlaveCraft
 
         public static int CountManagedChained(HashSet<Pawn> scratch)
         {
-            // 临时集合只服务本次去重，不与人物栏名册共用内容；无玩家阵营也不能保留上次引用。
+            // 保留原有只计数入口；共享快照改用同一收集器保留本代成员，以按需准备性别细分。
+            CollectManagedChained(scratch);
+            int count = scratch.Count;
             scratch.Clear();
+            return count;
+        }
+
+        public static void CollectManagedChained(HashSet<Pawn> result)
+        {
+            // 输出为独立管理集合，不与人物栏名册或每主工作集混用；持有者负责快照到期释放引用。
+            result.Clear();
             Faction player = Faction.OfPlayer;
-            if (player == null) return 0;
+            if (player == null) return;
 
             // 环境人数允许管理中的囚犯、法律奴隶及运输来源，不能套用人物栏资格。
             // HostFaction 本身不足以表示玩家管理：访客/借住者排除，外方关押的玩家成员也不补入。
@@ -72,12 +81,8 @@ namespace SexSlaveCraft
                 bool managed = pawn.IsPrisonerOfColony || pawn.IsSlaveOfColony
                     || (pawn.Faction == player && !pawn.IsPrisoner
                         && (pawn.HostFaction == null || pawn.HostFaction == player));
-                if (managed && SSCBondUtility.GetChain(pawn) != null) scratch.Add(pawn);
+                if (managed && SSCBondUtility.GetChain(pawn) != null) result.Add(pawn);
             }
-            // 只返回计数，立即释放本次 Pawn 引用；保留集合容量供下个按需项目复用。
-            int count = scratch.Count;
-            scratch.Clear();
-            return count;
         }
 
         public static int CountBoundSlaves(Pawn master, HashSet<Pawn> scratch)

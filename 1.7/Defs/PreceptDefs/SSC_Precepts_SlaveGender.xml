@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成：1.7 性奴性别规范；新议题只表达文化反馈，全部正式描述使用占位。 -->
+<Defs>
+  <!-- 六档同组互斥，复用既有性奴议题图标，不引入本批未确认的新美术资产。 -->
+  <IssueDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Issue_SlaveGender</defName>
+    <label>性奴性别</label>
+    <iconPath>UI/Issues/SSC_SexSlave</iconPath>
+    <allowMultiplePrecepts>false</allowMultiplePrecepts>
+  </IssueDef>
+  <!-- FemaleOnly：两种生成权重分别配置；零权重仅限制生成，不限制普通手选或改革保留。 -->
+  <PreceptDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Precept_SlaveGender_FemaleOnly</defName>
+    <issue>SSC_Issue_SlaveGender</issue>
+    <label>女性限定</label>
+    <description>[TODO:SSC_Precept_SlaveGender_FemaleOnly.description]</description>
+    <impact>Medium</impact>
+    <displayOrderInIssue>10</displayOrderInIssue>
+    <allowDuplicates>false</allowDuplicates>
+    <countsTowardsPreceptLimit>true</countsTowardsPreceptLimit>
+    <selectionWeight>0</selectionWeight>
+    <defaultSelectionWeight>0</defaultSelectionWeight>
+    <!-- 普通限定与不限档不要求主奴秩序。 -->
+    <associatedMemes><li>SSC_Meme_MasterSlaveOrder</li></associatedMemes>
+    <!-- 反馈按当前文化与实际锁链判断；不添加意愿、历史事件、授职或身份转换组件。 -->
+    <comps>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_SlaveGender_LimitedViolation_Self</thought>
+        <thoughtStageDescriptions><li>[TODO:SSC_Precept_SlaveGender_FemaleOnly.comps.0.thoughtStageDescriptions.0]</li></thoughtStageDescriptions>
+      </li>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_SlaveGender_LimitedViolation_Social</thought>
+        <thoughtStageDescriptions><li>[TODO:SSC_Precept_SlaveGender_FemaleOnly.comps.1.thoughtStageDescriptions.0]</li></thoughtStageDescriptions>
+      </li>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_SlaveGender_LimitedViolation_Environment</thought>
+        <thoughtStageDescriptions><li>[TODO:SSC_Precept_SlaveGender_FemaleOnly.comps.2.thoughtStageDescriptions.0]</li></thoughtStageDescriptions>
+      </li>
+    </comps>
+  </PreceptDef>
+  <!-- MaleOnly：两种生成权重分别配置；零权重仅限制生成，不限制普通手选或改革保留。 -->
+  <PreceptDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Precept_SlaveGender_MaleOnly</defName>
+    <issue>SSC_Issue_SlaveGender</issue>
+    <label>男性限定</label>
+    <description>[TODO:SSC_Precept_SlaveGender_MaleOnly.description]</description>
+    <impact>Medium</impact>
+    <displayOrderInIssue>20</displayOrderInIssue>
+    <allowDuplicates>false</allowDuplicates>
+    <countsTowardsPreceptLimit>true</countsTowardsPreceptLimit>
+    <selectionWeight>0</selectionWeight>
+    <defaultSelectionWeight>0</defaultSelectionWeight>
+    <!-- 普通限定与不限档不要求主奴秩序。 -->
+    <associatedMemes><li>SSC_Meme_MasterSlaveOrder</li></associatedMemes>
+    <!-- 反馈按当前文化与实际锁链判断；不添加意愿、历史事件、授职或身份转换组件。 -->
+    <comps>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_SlaveGender_LimitedViolation_Self</thought>
+        <thoughtStageDescriptions><li>[TODO:SSC_Precept_SlaveGender_MaleOnly.comps.0.thoughtStageDescriptions.0]</li></thoughtStageDescriptions>
+      </li>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_SlaveGender_LimitedViolation_Social</thought>
+        <thoughtStageDescriptions><li>[TODO:SSC_Precept_SlaveGender_MaleOnly.comps.1.thoughtStageDescriptions.0]</li></thoughtStageDescriptions>
+      </li>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_SlaveGender_LimitedViolation_Environment</thought>
+        <thoughtStageDescriptions><li>[TODO:SSC_Precept_SlaveGender_MaleOnly.comps.2.thoughtStageDescriptions.0]</li></thoughtStageDescriptions>
+      </li>
+    </comps>
+  </PreceptDef>
+  <!-- Unrestricted：两种生成权重分别配置；零权重仅限制生成，不限制普通手选或改革保留。 -->
+  <PreceptDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Precept_SlaveGender_Unrestricted</defName>
+    <issue>SSC_Issue_SlaveGender</issue>
+    <label>性别不限</label>
+    <description>[TODO:SSC_Precept_SlaveGender_Unrestricted.description]</description>
+    <impact>Low</impact>
+    <displayOrderInIssue>30</displayOrderInIssue>
+    <allowDuplicates>false</allowDuplicates>
+    <countsTowardsPreceptLimit>true</countsTowardsPreceptLimit>
+    <selectionWeight>1</selectionWeight>
+    <defaultSelectionWeight>1</defaultSelectionWeight>
+    <!-- 普通限定与不限档不要求主奴秩序。 -->
+    <associatedMemes><li>SSC_Meme_MasterSlaveOrder</li></associatedMemes>
+    <!-- 反馈按当前文化与实际锁链判断；不添加意愿、历史事件、授职或身份转换组件。 -->
+    <comps>
+
+    </comps>
+  </PreceptDef>
+  <!-- FemaleRequired：两种生成权重分别配置；零权重仅限制生成，不限制普通手选或改革保留。 -->
+  <PreceptDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Precept_SlaveGender_FemaleRequired</defName>
+    <issue>SSC_Issue_SlaveGender</issue>
+    <label>女性必须</label>
+    <description>[TODO:SSC_Precept_SlaveGender_FemaleRequired.description]</description>
+    <impact>High</impact>
+    <displayOrderInIssue>40</displayOrderInIssue>
+    <allowDuplicates>false</allowDuplicates>
+    <countsTowardsPreceptLimit>true</countsTowardsPreceptLimit>
+    <selectionWeight>0</selectionWeight>
+    <defaultSelectionWeight>0</defaultSelectionWeight>
+    <requiredMemes><li>SSC_Meme_MasterSlaveOrder</li></requiredMemes>
+    <associatedMemes><li>SSC_Meme_MasterSlaveOrder</li></associatedMemes>
+    <!-- 反馈按当前文化与实际锁链判断；不添加意愿、历史事件、授职或身份转换组件。 -->
+    <comps>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_SlaveGender_RequiredViolation_Self</thought>
+        <thoughtStageDescriptions><li>[TODO:SSC_Precept_SlaveGender_FemaleRequired.comps.0.thoughtStageDescriptions.0]</li></thoughtStageDescriptions>
+      </li>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_SlaveGender_RequiredViolation_Social</thought>
+        <thoughtStageDescriptions><li>[TODO:SSC_Precept_SlaveGender_FemaleRequired.comps.1.thoughtStageDescriptions.0]</li></thoughtStageDescriptions>
+      </li>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_SlaveGender_RequiredViolation_Environment</thought>
+        <thoughtStageDescriptions><li>[TODO:SSC_Precept_SlaveGender_FemaleRequired.comps.2.thoughtStageDescriptions.0]</li></thoughtStageDescriptions>
+      </li>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_SlaveGender_RequiredDuty_Self</thought>
+        <!-- 阶段 0 普通义务，阶段 1 艳羡义务；两份说明分别占位。 -->
+        <thoughtStageDescriptions><li>[TODO:SSC_Precept_SlaveGender_FemaleRequired.comps.3.thoughtStageDescriptions.0]</li><li>[TODO:SSC_Precept_SlaveGender_FemaleRequired.comps.3.thoughtStageDescriptions.1]</li></thoughtStageDescriptions>
+      </li>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_SlaveGender_RequiredDuty_Social</thought>
+        <thoughtStageDescriptions><li>[TODO:SSC_Precept_SlaveGender_FemaleRequired.comps.4.thoughtStageDescriptions.0]</li></thoughtStageDescriptions>
+      </li>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_SlaveGender_RequiredDuty_Environment</thought>
+        <thoughtStageDescriptions><li>[TODO:SSC_Precept_SlaveGender_FemaleRequired.comps.5.thoughtStageDescriptions.0]</li></thoughtStageDescriptions>
+      </li>
+    </comps>
+  </PreceptDef>
+  <!-- MaleRequired：两种生成权重分别配置；零权重仅限制生成，不限制普通手选或改革保留。 -->
+  <PreceptDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Precept_SlaveGender_MaleRequired</defName>
+    <issue>SSC_Issue_SlaveGender</issue>
+    <label>男性必须</label>
+    <description>[TODO:SSC_Precept_SlaveGender_MaleRequired.description]</description>
+    <impact>High</impact>
+    <displayOrderInIssue>50</displayOrderInIssue>
+    <allowDuplicates>false</allowDuplicates>
+    <countsTowardsPreceptLimit>true</countsTowardsPreceptLimit>
+    <selectionWeight>0</selectionWeight>
+    <defaultSelectionWeight>0</defaultSelectionWeight>
+    <requiredMemes><li>SSC_Meme_MasterSlaveOrder</li></requiredMemes>
+    <associatedMemes><li>SSC_Meme_MasterSlaveOrder</li></associatedMemes>
+    <!-- 反馈按当前文化与实际锁链判断；不添加意愿、历史事件、授职或身份转换组件。 -->
+    <comps>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_SlaveGender_RequiredViolation_Self</thought>
+        <thoughtStageDescriptions><li>[TODO:SSC_Precept_SlaveGender_MaleRequired.comps.0.thoughtStageDescriptions.0]</li></thoughtStageDescriptions>
+      </li>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_SlaveGender_RequiredViolation_Social</thought>
+        <thoughtStageDescriptions><li>[TODO:SSC_Precept_SlaveGender_MaleRequired.comps.1.thoughtStageDescriptions.0]</li></thoughtStageDescriptions>
+      </li>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_SlaveGender_RequiredViolation_Environment</thought>
+        <thoughtStageDescriptions><li>[TODO:SSC_Precept_SlaveGender_MaleRequired.comps.2.thoughtStageDescriptions.0]</li></thoughtStageDescriptions>
+      </li>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_SlaveGender_RequiredDuty_Self</thought>
+        <!-- 阶段 0 普通义务，阶段 1 艳羡义务；两份说明分别占位。 -->
+        <thoughtStageDescriptions><li>[TODO:SSC_Precept_SlaveGender_MaleRequired.comps.3.thoughtStageDescriptions.0]</li><li>[TODO:SSC_Precept_SlaveGender_MaleRequired.comps.3.thoughtStageDescriptions.1]</li></thoughtStageDescriptions>
+      </li>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_SlaveGender_RequiredDuty_Social</thought>
+        <thoughtStageDescriptions><li>[TODO:SSC_Precept_SlaveGender_MaleRequired.comps.4.thoughtStageDescriptions.0]</li></thoughtStageDescriptions>
+      </li>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_SlaveGender_RequiredDuty_Environment</thought>
+        <thoughtStageDescriptions><li>[TODO:SSC_Precept_SlaveGender_MaleRequired.comps.5.thoughtStageDescriptions.0]</li></thoughtStageDescriptions>
+      </li>
+    </comps>
+  </PreceptDef>
+  <!-- NonMasterRequired：两种生成权重分别配置；零权重仅限制生成，不限制普通手选或改革保留。 -->
+  <PreceptDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Precept_SlaveGender_NonMasterRequired</defName>
+    <issue>SSC_Issue_SlaveGender</issue>
+    <label>非主即奴</label>
+    <description>[TODO:SSC_Precept_SlaveGender_NonMasterRequired.description]</description>
+    <impact>High</impact>
+    <displayOrderInIssue>60</displayOrderInIssue>
+    <allowDuplicates>false</allowDuplicates>
+    <countsTowardsPreceptLimit>true</countsTowardsPreceptLimit>
+    <selectionWeight>0</selectionWeight>
+    <defaultSelectionWeight>0</defaultSelectionWeight>
+    <requiredMemes><li>SSC_Meme_MasterSlaveOrder</li></requiredMemes>
+    <associatedMemes><li>SSC_Meme_MasterSlaveOrder</li></associatedMemes>
+    <!-- 反馈按当前文化与实际锁链判断；不添加意愿、历史事件、授职或身份转换组件。 -->
+    <comps>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_SlaveGender_NonMasterDuty_Self</thought>
+        <!-- 阶段 0 普通义务，阶段 1 艳羡义务；两份说明分别占位。 -->
+        <thoughtStageDescriptions><li>[TODO:SSC_Precept_SlaveGender_NonMasterRequired.comps.0.thoughtStageDescriptions.0]</li><li>[TODO:SSC_Precept_SlaveGender_NonMasterRequired.comps.0.thoughtStageDescriptions.1]</li></thoughtStageDescriptions>
+      </li>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_SlaveGender_NonMasterDuty_Social</thought>
+        <thoughtStageDescriptions><li>[TODO:SSC_Precept_SlaveGender_NonMasterRequired.comps.1.thoughtStageDescriptions.0]</li></thoughtStageDescriptions>
+      </li>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_SlaveGender_NonMasterDuty_Environment</thought>
+        <thoughtStageDescriptions><li>[TODO:SSC_Precept_SlaveGender_NonMasterRequired.comps.2.thoughtStageDescriptions.0]</li></thoughtStageDescriptions>
+      </li>
+    </comps>
+  </PreceptDef>
+</Defs>

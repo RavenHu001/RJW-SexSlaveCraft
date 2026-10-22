@@ -121,7 +121,7 @@ internal static partial class Program
                 var ideo = NamingIdeo(false); var role = Role(ideo, moralistDef); var ritual = Ritual(ideo, bindingPattern);
                 var old = ideo.memes.ToList(); ideo.memes.Add(mainMeme);
                 ideo.foundation.EnsurePreceptsCompatibleWithMemes(old, ideo.memes.ToList(), Parms());
-                VerifyFive(ideo); ideo.RegenerateAllPreceptNames();
+                VerifyGroups(ideo); ideo.RegenerateAllPreceptNames();
                 Require(ideo.PreceptsListForReading.Contains(role) && ideo.PreceptsListForReading.Contains(ritual));
                 Require(MoralistPool.Contains(role.Label) && RitualPool.Contains(ritual.Label));
                 old = ideo.memes.ToList(); ideo.memes.Remove(mainMeme);
@@ -160,7 +160,9 @@ internal static partial class Program
             try
             {
                 var root = new XElement("Defs", XDocument.Load(Path.Combine(repo, "1.7/Defs/MemeDefs/SSC_Meme_MasterSlaveOrder.xml")).Root.Elements(),
-                    XDocument.Load(Path.Combine(repo, "1.7/Defs/RulePackDefs/SSC_CultureNamers.xml")).Root.Elements());
+                    XDocument.Load(Path.Combine(repo, "1.7/Defs/RulePackDefs/SSC_CultureNamers.xml")).Root.Elements(),
+                    XDocument.Load(Path.Combine(repo, "1.7/Defs/PreceptDefs/SSC_Precepts_SlaveGender.xml")).Root.Elements(),
+                    XDocument.Load(Path.Combine(repo, "1.7/Defs/ThoughtDefs/SSC_CultureThoughts_SlaveGender.xml")).Root.Elements());
                 LoadedModManager.ParseAndProcessXML(Xml(root).OwnerDocument, new Dictionary<System.Xml.XmlNode, LoadableXmlAsset>());
                 var parsed = (IEnumerable<Def>)AccessTools.Field(typeof(LoadedModManager), "patchedDefs").GetValue(null);
                 Require(!parsed.Any());

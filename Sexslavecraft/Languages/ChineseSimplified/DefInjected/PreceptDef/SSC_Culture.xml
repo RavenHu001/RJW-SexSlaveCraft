@@ -64,4 +64,42 @@
   <SSC_Precept_SexSlave_Sacred.comps.1.thoughtStageDescriptions.0>[占位: 环境性奴人数 1/2/3/4/5+ / 心情 +1/+3/+6/+10/+15]</SSC_Precept_SexSlave_Sacred.comps.1.thoughtStageDescriptions.0>
   <SSC_Precept_Master_Deference.comps.3.thoughtStageDescriptions.2>[占位: 尊奉 / 领袖是性奴]</SSC_Precept_Master_Deference.comps.3.thoughtStageDescriptions.2>
   <SSC_Precept_Master_HolyMaster.comps.3.thoughtStageDescriptions.2>[占位: 圣主 / 领袖是性奴]</SSC_Precept_Master_HolyMaster.comps.3.thoughtStageDescriptions.2>
+  <!-- 1.7 六档性别规范：名称为功能标记，正式描述后续交接。 -->
+  <SSC_Precept_SlaveGender_FemaleOnly.label>女性限定</SSC_Precept_SlaveGender_FemaleOnly.label>
+  <SSC_Precept_SlaveGender_FemaleOnly.description>[TODO:SSC_Precept_SlaveGender_FemaleOnly.description]</SSC_Precept_SlaveGender_FemaleOnly.description>
+  <SSC_Precept_SlaveGender_FemaleOnly.comps.0.thoughtStageDescriptions.0>[TODO:SSC_Precept_SlaveGender_FemaleOnly.comps.0.thoughtStageDescriptions.0]</SSC_Precept_SlaveGender_FemaleOnly.comps.0.thoughtStageDescriptions.0>
+  <SSC_Precept_SlaveGender_FemaleOnly.comps.1.thoughtStageDescriptions.0>[TODO:SSC_Precept_SlaveGender_FemaleOnly.comps.1.thoughtStageDescriptions.0]</SSC_Precept_SlaveGender_FemaleOnly.comps.1.thoughtStageDescriptions.0>
+  <SSC_Precept_SlaveGender_FemaleOnly.comps.2.thoughtStageDescriptions.0>[TODO:SSC_Precept_SlaveGender_FemaleOnly.comps.2.thoughtStageDescriptions.0]</SSC_Precept_SlaveGender_FemaleOnly.comps.2.thoughtStageDescriptions.0>
+  <SSC_Precept_SlaveGender_MaleOnly.label>男性限定</SSC_Precept_SlaveGender_MaleOnly.label>
+  <SSC_Precept_SlaveGender_MaleOnly.description>[TODO:SSC_Precept_SlaveGender_MaleOnly.description]</SSC_Precept_SlaveGender_MaleOnly.description>
+  <SSC_Precept_SlaveGender_MaleOnly.comps.0.thoughtStageDescriptions.0>[TODO:SSC_Precept_SlaveGender_MaleOnly.comps.0.thoughtStageDescriptions.0]</SSC_Precept_SlaveGender_MaleOnly.comps.0.thoughtStageDescriptions.0>
+  <SSC_Precept_SlaveGender_MaleOnly.comps.1.thoughtStageDescriptions.0>[TODO:SSC_Precept_SlaveGender_MaleOnly.comps.1.thoughtStageDescriptions.0]</SSC_Precept_SlaveGender_MaleOnly.comps.1.thoughtStageDescriptions.0>
+  <SSC_Precept_SlaveGender_MaleOnly.comps.2.thoughtStageDescriptions.0>[TODO:SSC_Precept_SlaveGender_MaleOnly.comps.2.thoughtStageDescriptions.0]</SSC_Precept_SlaveGender_MaleOnly.comps.2.thoughtStageDescriptions.0>
+  <SSC_Precept_SlaveGender_Unrestricted.label>性别不限</SSC_Precept_SlaveGender_Unrestricted.label>
+  <SSC_Precept_SlaveGender_Unrestricted.description>[TODO:SSC_Precept_SlaveGender_Unrestricted.description]</SSC_Precept_SlaveGender_Unrestricted.description>
+  <SSC_Precept_SlaveGender_FemaleRequired.label>女性必须</SSC_Precept_SlaveGender_FemaleRequired.label>
+  <SSC_Precept_SlaveGender_FemaleRequired.description>[TODO:SSC_Precept_SlaveGender_FemaleRequired.description]</SSC_Precept_SlaveGender_FemaleRequired.description>
+  <SSC_Precept_SlaveGender_FemaleRequired.comps.0.thoughtStageDescriptions.0>[TODO:SSC_Precept_SlaveGender_FemaleRequired.comps.0.thoughtStageDescriptions.0]</SSC_Precept_SlaveGender_FemaleRequired.comps.0.thoughtStageDescriptions.0>
+  <SSC_Precept_SlaveGender_FemaleRequired.comps.1.thoughtStageDescriptions.0>[TODO:SSC_Precept_SlaveGender_FemaleRequired.comps.1.thoughtStageDescriptions.0]</SSC_Precept_SlaveGender_FemaleRequired.comps.1.thoughtStageDescriptions.0>
+  <SSC_Precept_SlaveGender_FemaleRequired.comps.2.thoughtStageDescriptions.0>[TODO:SSC_Precept_SlaveGender_FemaleRequired.comps.2.thoughtStageDescriptions.0]</SSC_Precept_SlaveGender_FemaleRequired.comps.2.thoughtStageDescriptions.0>
+  <SSC_Precept_SlaveGender_FemaleRequired.comps.3.thoughtStageDescriptions.0>[TODO:SSC_Precept_SlaveGender_FemaleRequired.comps.3.thoughtStageDescriptions.0]</SSC_Precept_SlaveGender_FemaleRequired.comps.3.thoughtStageDescriptions.0>
+  <SSC_Precept_SlaveGender_FemaleRequired.comps.4.thoughtStageDescriptions.0>[TODO:SSC_Precept_SlaveGender_FemaleRequired.comps.4.thoughtStageDescriptions.0]</SSC_Precept_SlaveGender_FemaleRequired.comps.4.thoughtStageDescriptions.0>
+  <SSC_Precept_SlaveGender_FemaleRequired.comps.5.thoughtStageDescriptions.0>[TODO:SSC_Precept_SlaveGender_FemaleRequired.comps.5.thoughtStageDescriptions.0]</SSC_Precept_SlaveGender_FemaleRequired.comps.5.thoughtStageDescriptions.0>
+  <SSC_Precept_SlaveGender_MaleRequired.label>男性必须</SSC_Precept_SlaveGender_MaleRequired.label>
+  <SSC_Precept_SlaveGender_MaleRequired.description>[TODO:SSC_Precept_SlaveGender_MaleRequired.description]</SSC_Precept_SlaveGender_MaleRequired.description>
+  <SSC_Precept_SlaveGender_MaleRequired.comps.0.thoughtStageDescriptions.0>[TODO:SSC_Precept_SlaveGender_MaleRequired.comps.0.thoughtStageDescriptions.0]</SSC_Precept_SlaveGender_MaleRequired.comps.0.thoughtStageDescriptions.0>
+  <SSC_Precept_SlaveGender_MaleRequired.comps.1.thoughtStageDescriptions.0>[TODO:SSC_Precept_SlaveGender_MaleRequired.comps.1.thoughtStageDescriptions.0]</SSC_Precept_SlaveGender_MaleRequired.comps.1.thoughtStageDescriptions.0>
+  <SSC_Precept_SlaveGender_MaleRequired.comps.2.thoughtStageDescriptions.0>[TODO:SSC_Precept_SlaveGender_MaleRequired.comps.2.thoughtStageDescriptions.0]</SSC_Precept_SlaveGender_MaleRequired.comps.2.thoughtStageDescriptions.0>
+  <SSC_Precept_SlaveGender_MaleRequired.comps.3.thoughtStageDescriptions.0>[TODO:SSC_Precept_SlaveGender_MaleRequired.comps.3.thoughtStageDescriptions.0]</SSC_Precept_SlaveGender_MaleRequired.comps.3.thoughtStageDescriptions.0>
+  <SSC_Precept_SlaveGender_MaleRequired.comps.4.thoughtStageDescriptions.0>[TODO:SSC_Precept_SlaveGender_MaleRequired.comps.4.thoughtStageDescriptions.0]</SSC_Precept_SlaveGender_MaleRequired.comps.4.thoughtStageDescriptions.0>
+  <SSC_Precept_SlaveGender_MaleRequired.comps.5.thoughtStageDescriptions.0>[TODO:SSC_Precept_SlaveGender_MaleRequired.comps.5.thoughtStageDescriptions.0]</SSC_Precept_SlaveGender_MaleRequired.comps.5.thoughtStageDescriptions.0>
+  <SSC_Precept_SlaveGender_NonMasterRequired.label>非主即奴</SSC_Precept_SlaveGender_NonMasterRequired.label>
+  <SSC_Precept_SlaveGender_NonMasterRequired.description>[TODO:SSC_Precept_SlaveGender_NonMasterRequired.description]</SSC_Precept_SlaveGender_NonMasterRequired.description>
+  <SSC_Precept_SlaveGender_NonMasterRequired.comps.0.thoughtStageDescriptions.0>[TODO:SSC_Precept_SlaveGender_NonMasterRequired.comps.0.thoughtStageDescriptions.0]</SSC_Precept_SlaveGender_NonMasterRequired.comps.0.thoughtStageDescriptions.0>
+  <SSC_Precept_SlaveGender_NonMasterRequired.comps.1.thoughtStageDescriptions.0>[TODO:SSC_Precept_SlaveGender_NonMasterRequired.comps.1.thoughtStageDescriptions.0]</SSC_Precept_SlaveGender_NonMasterRequired.comps.1.thoughtStageDescriptions.0>
+  <SSC_Precept_SlaveGender_NonMasterRequired.comps.2.thoughtStageDescriptions.0>[TODO:SSC_Precept_SlaveGender_NonMasterRequired.comps.2.thoughtStageDescriptions.0]</SSC_Precept_SlaveGender_NonMasterRequired.comps.2.thoughtStageDescriptions.0>
+  <!-- 艳羡且有义务：专属阶段与独立占位文案，不与普通义务叠扣。 -->
+  <SSC_Precept_SlaveGender_FemaleRequired.comps.3.thoughtStageDescriptions.1>[TODO:SSC_Precept_SlaveGender_FemaleRequired.comps.3.thoughtStageDescriptions.1]</SSC_Precept_SlaveGender_FemaleRequired.comps.3.thoughtStageDescriptions.1>
+  <SSC_Precept_SlaveGender_MaleRequired.comps.3.thoughtStageDescriptions.1>[TODO:SSC_Precept_SlaveGender_MaleRequired.comps.3.thoughtStageDescriptions.1]</SSC_Precept_SlaveGender_MaleRequired.comps.3.thoughtStageDescriptions.1>
+  <SSC_Precept_SlaveGender_NonMasterRequired.comps.0.thoughtStageDescriptions.1>[TODO:SSC_Precept_SlaveGender_NonMasterRequired.comps.0.thoughtStageDescriptions.1]</SSC_Precept_SlaveGender_NonMasterRequired.comps.0.thoughtStageDescriptions.1>
 </LanguageData>

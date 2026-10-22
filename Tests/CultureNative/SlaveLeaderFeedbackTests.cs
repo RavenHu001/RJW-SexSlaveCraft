@@ -129,7 +129,7 @@ internal static partial class Program
             foreach(var viewer in viewers) { Equal(-6f,MoodSum(viewer)); Equal(-10,Opinion(viewer,s.leader)); }
             for(int i=0;i<30;i++) { s.observer.needs.mood.thoughts.ThoughtInterval(); Equal(-12f,MoodSum(s.observer)); }
             Equal(1,CallCount("CollectMembers")); Equal(1,CallCount("Query"));
-            Equal(0,CallCount("CountMasters")); Equal(0,CallCount("CountBoundSlaves")); Equal(0,CallCount("CountManagedChained"));
+            Equal(0,CallCount("CountMasters")); Equal(0,CallCount("CountBoundSlaves")); Equal(0,CallCount("CollectManagedChained"));
             tick+=100; s.observer.needs.mood.thoughts.ThoughtInterval(); Equal(-20,Opinion(s.observer,s.leader));
             Equal(2,CallCount("CollectMembers")); Equal(2,CallCount("Query"));
         });

@@ -51,6 +51,8 @@
     <modExtensions>
       <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
         <condition>ChainedSelf</condition>
+        <!-- 性别规范联动只显式作用于本正向分支；默认无规范时保持旧行为。 -->
+        <requireAcceptedSlaveGender>true</requireAcceptedSlaveGender>
       </li>
     </modExtensions>
     <stages>
@@ -71,6 +73,8 @@
     <modExtensions>
       <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
         <condition>EnvySelf</condition>
+        <!-- 性别规范联动只显式作用于本正向分支；默认无规范时保持旧行为。 -->
+        <requireAcceptedSlaveGender>true</requireAcceptedSlaveGender>
       </li>
     </modExtensions>
     <stages>
@@ -136,6 +140,8 @@
     <modExtensions>
       <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
         <condition>ManagedChainedEnvironment</condition>
+        <!-- 性别规范联动只显式作用于本正向分支；默认无规范时保持旧行为。 -->
+        <filterAcceptedManagedGender>true</filterAcceptedManagedGender>
         <!-- 实机调整：原版曲线在 0～5 人逐点给倍率；5 人以上保持 +15，实际管理人数不截断。 -->
         <environmentMoodCurve>
           <points>
@@ -207,6 +213,8 @@
     <modExtensions>
       <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
         <condition>ChainedOther</condition>
+        <!-- 性别规范联动只显式作用于本正向分支；默认无规范时保持旧行为。 -->
+        <requireAcceptedSlaveGender>true</requireAcceptedSlaveGender>
       </li>
     </modExtensions>
     <stages>
@@ -227,6 +235,8 @@
     <modExtensions>
       <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
         <condition>ChainedOther</condition>
+        <!-- 性别规范联动只显式作用于本正向分支；默认无规范时保持旧行为。 -->
+        <requireAcceptedSlaveGender>true</requireAcceptedSlaveGender>
         <requireEnviousObserver>true</requireEnviousObserver>
       </li>
     </modExtensions>

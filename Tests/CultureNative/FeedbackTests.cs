@@ -24,10 +24,14 @@ internal static partial class Program
         // 只布置初始文化；后续改宗/改革用例走原版公开路径，不用直接字段赋值代替刷新。
         var p = MakePawn(identity, faction); p.thingIDNumber = ++feedbackPawnId; p.Name = new NameSingle("Fixture");
         p.kindDef = new PawnKindDef { defName = "FixtureColonist", race = p.def };
-        Set(p.def.race, "fleshType", new FleshTypeDef { defName = "FixtureFlesh", isOrganic = true });
+        // RJW 成年查询会先识别机械体；提供真实肉体/尸体类别，不能把其查询替换为固定成年。
+        var corpseCategory = Bare<ThingCategoryDef>(); corpseCategory.defName = "CorpsesHumanlike";
+        Set(p.def.race, "fleshType", new FleshTypeDef { defName = "FixtureFlesh", isOrganic = true,
+            corpseCategory = corpseCategory });
         p.def.race.lifeStageAges.Add(new LifeStageAge { minAge = 0, def = new LifeStageDef { defName = "FixtureAdult", developmentalStage = DevelopmentalStage.Adult } });
         // 夹具是已经进入成人阶段的人物；不在第一次读年龄时触发生长转场/全套身体能力初始化。
         Set(p.ageTracker, "cachedLifeStageIndex", 0); Set(p.ageTracker, "growth", 1f);
+        p.ageTracker.AgeBiologicalTicks = 30L * GenDate.TicksPerYear;
         p.story = new Pawn_StoryTracker(p); p.relations = new Pawn_RelationsTracker(p);
         p.ownership = new Pawn_Ownership(p);
         p.needs = new Pawn_NeedsTracker(p);
@@ -77,12 +81,12 @@ internal static partial class Program
 
     private static void FeedbackResourceTests(string repo)
     {
-        Check("44 native situational defs, condition configs and no memory/nullifier overrides", () =>
+        Check("56 native situational defs, condition configs and no memory/nullifier overrides", () =>
         {
             // 检查真实解析后的 Def/扩展，不只读取 XML 标签；保留原版年龄/亚人/最终系数默认。
-            var defs = DefDatabase<ThoughtDef>.AllDefs.ToArray(); Equal(44, defs.Length);
-            Equal(27, defs.Count(d => !d.IsSocial)); Equal(17, defs.Count(d => d.IsSocial));
-            Equal(53, defs.Sum(d => d.stages.Count));
+            var defs = DefDatabase<ThoughtDef>.AllDefs.ToArray(); Equal(56, defs.Length);
+            Equal(35, defs.Count(d => !d.IsSocial)); Equal(21, defs.Count(d => d.IsSocial));
+            Equal(67, defs.Sum(d => d.stages.Count));
             foreach (var d in defs)
             {
                 Require(!d.IsMemory && d.validWhileDespawned && d.producesMemoryThought == null);
@@ -91,7 +95,7 @@ internal static partial class Program
                 Require(d.effectMultiplyingStat == null && d.nullifyingHediffs.NullOrEmpty());
                 Require(d.ConfigErrors().Count() == 0, d.defName + ": " + string.Join(";", d.ConfigErrors()));
                 Require(d.GetModExtension<SSCCultureThoughtExtension>().ConfigErrors().Count() == 0);
-                Equal(1, DefDatabase<PreceptDef>.AllDefs.SelectMany(p => p.comps.OfType<PreceptComp_SituationalThought>()).Count(c => c.thought == d));
+                Equal(d.defName.StartsWith("SSC_Culture_SlaveGender_") && !d.defName.Contains("NonMasterDuty") ? 2 : 1, DefDatabase<PreceptDef>.AllDefs.SelectMany(p => p.comps.OfType<PreceptComp_SituationalThought>()).Count(c => c.thought == d));
             }
             // 无效配置必须被识别；不能把无条件默认枚举当作有效反馈。
             Require(new SSCCultureThoughtExtension().ConfigErrors().Any());
@@ -101,13 +105,13 @@ internal static partial class Program
             Require(new SSCCultureThoughtExtension { condition = SSCCultureThoughtCondition.MasterSelf, sexSlaveLeaderStage = 2 }.ConfigErrors().Any());
         });
         foreach (string language in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" })
-            Check("53 stages and nineteen effect descriptions include slave leaders and count curves: " + language, () =>
+            Check("67 stages and forty-three effect descriptions include slave leaders and count curves: " + language, () =>
             {
                 // 每个阶段都需 label/description；多阶段组件说明路径也必须指向实际原版字段。
                 string relative = $"Languages/{language}/DefInjected/ThoughtDef/SSC_Culture.xml";
                 Require(File.ReadAllBytes(Path.Combine(repo, "1.7", relative)).SequenceEqual(File.ReadAllBytes(Path.Combine(repo, "Sexslavecraft", relative))));
                 var entries = XDocument.Load(Path.Combine(repo, "1.7", relative)).Root.Elements().ToArray();
-                Equal(106, entries.Length); Equal(106, entries.Select(e => e.Name).Distinct().Count());
+                Equal(134, entries.Length); Equal(134, entries.Select(e => e.Name).Distinct().Count());
                 foreach (var d in DefDatabase<ThoughtDef>.AllDefs)
                     for (int i = 0; i < d.stages.Count; i++)
                     {
@@ -130,9 +134,9 @@ internal static partial class Program
                             Require(!string.IsNullOrWhiteSpace(pre.Element(d.defName + $".comps.{c}.thoughtStageDescriptions.{s}")?.Value)); count++;
                         }
                     }
-                Equal(19, count);
+                Equal(43, count);
             });
-        Check("all 22 precept component memberships and 53 literal stage values match the approved contract", () =>
+        Check("all 28 precept component memberships and 67 literal stage values match the approved contract", () =>
         {
             // 期望为独立字面量：任何一格 XML 数值或条件更改都不能从被测结果反推而蒙混通过。
             var expected = new Dictionary<string, (SSCCultureThoughtCondition kind, float[] values)>
@@ -401,10 +405,10 @@ internal static partial class Program
             FeedbackContext(); var p=Believer(new[] {"SexSlave_Sacred","Master_HolyMaster"}); var slave=MakePawn(); Chain(slave,MakePawn(PawnIdentity.Master)); MakeMap(p,slave);
             calls.Clear(); Equal(1f,MoodSum(p));
             for(int i=0;i<50;i++) { p.needs.mood.thoughts.ThoughtInterval(); Equal(1f,MoodSum(p)); }
-            Equal(1,CallCount("CollectMembers")); Equal(1,CallCount("CountManagedChained")); Equal(1,CallCount("Query"));
+            Equal(1,CallCount("CollectMembers")); Equal(1,CallCount("CollectManagedChained")); Equal(1,CallCount("Query"));
             Equal(0,CallCount("CountMasters")); Equal(0,CallCount("CountBoundSlaves"));
             int recursion=CallCount("get_AllPawnsUnspawned"); tick+=100; p.needs.mood.thoughts.ThoughtInterval();
-            Equal(2,CallCount("CollectMembers")); Equal(2,CallCount("CountManagedChained")); Require(CallCount("get_AllPawnsUnspawned")>recursion);
+            Equal(2,CallCount("CollectMembers")); Equal(2,CallCount("CollectManagedChained")); Require(CallCount("get_AllPawnsUnspawned")>recursion);
         });
         Check("indifference and chained environment short-circuit; shared workers do not leak pawn state", () =>
         {
