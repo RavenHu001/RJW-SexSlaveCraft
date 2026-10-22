@@ -37,7 +37,7 @@ internal static partial class Program
             Equal(7f,MoodSum(p));
             var added=MakePawn(); Chain(added,leader); MakeMap(added);
             leader.TryGetComp<CompSexSlaveTraining>().pawnIdentity=PawnIdentity.Unset;
-            AdvanceNeeds(p,250); Equal(-4f,MoodSum(p));
+            AdvanceNeeds(p,250); Equal(-3f,MoodSum(p));
             Equal(0,p.needs.mood.thoughts.memories.Memories.Count);
         });
         Check("actual owner mood follows retarget/self/dead owner without identity or bond writes", () =>

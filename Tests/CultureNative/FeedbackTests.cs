@@ -66,21 +66,23 @@ internal static partial class Program
         FeedbackResourceTests(repo);
         AttitudeTests();
         EnvironmentFeedbackTests();
+        SacredEnvironmentCurveTests();
         LeaderFeedbackTests();
         RefreshFeedbackTests(game);
         LifecycleFeedbackTests();
         FeedbackWorkTests();
         CountFeedbackTests(game);
+        SlaveLeaderFeedbackTests();
     }
 
     private static void FeedbackResourceTests(string repo)
     {
-        Check("41 native situational defs, condition configs and no memory/nullifier overrides", () =>
+        Check("44 native situational defs, condition configs and no memory/nullifier overrides", () =>
         {
             // 检查真实解析后的 Def/扩展，不只读取 XML 标签；保留原版年龄/亚人/最终系数默认。
-            var defs = DefDatabase<ThoughtDef>.AllDefs.ToArray(); Equal(41, defs.Length);
-            Equal(27, defs.Count(d => !d.IsSocial)); Equal(14, defs.Count(d => d.IsSocial));
-            Equal(48, defs.Sum(d => d.stages.Count));
+            var defs = DefDatabase<ThoughtDef>.AllDefs.ToArray(); Equal(44, defs.Length);
+            Equal(27, defs.Count(d => !d.IsSocial)); Equal(17, defs.Count(d => d.IsSocial));
+            Equal(53, defs.Sum(d => d.stages.Count));
             foreach (var d in defs)
             {
                 Require(!d.IsMemory && d.validWhileDespawned && d.producesMemoryThought == null);
@@ -95,15 +97,17 @@ internal static partial class Program
             Require(new SSCCultureThoughtExtension().ConfigErrors().Any());
             Require(new SSCCultureThoughtExtension { condition = SSCCultureThoughtCondition.MasterSelf, requireEnviousObserver = true }.ConfigErrors().Any());
             Require(new SSCCultureThoughtExtension { condition = SSCCultureThoughtCondition.Leader, nonMasterLeaderStage = 2 }.ConfigErrors().Any());
+            Require(new SSCCultureThoughtExtension { condition = SSCCultureThoughtCondition.Leader, sexSlaveLeaderStage = 1 }.ConfigErrors().Any());
+            Require(new SSCCultureThoughtExtension { condition = SSCCultureThoughtCondition.MasterSelf, sexSlaveLeaderStage = 2 }.ConfigErrors().Any());
         });
         foreach (string language in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" })
-            Check("48 stages and sixteen precept effect descriptions include cumulative single-stage descriptions: " + language, () =>
+            Check("53 stages and nineteen effect descriptions include slave leaders and count curves: " + language, () =>
             {
                 // 每个阶段都需 label/description；多阶段组件说明路径也必须指向实际原版字段。
                 string relative = $"Languages/{language}/DefInjected/ThoughtDef/SSC_Culture.xml";
                 Require(File.ReadAllBytes(Path.Combine(repo, "1.7", relative)).SequenceEqual(File.ReadAllBytes(Path.Combine(repo, "Sexslavecraft", relative))));
                 var entries = XDocument.Load(Path.Combine(repo, "1.7", relative)).Root.Elements().ToArray();
-                Equal(96, entries.Length); Equal(96, entries.Select(e => e.Name).Distinct().Count());
+                Equal(106, entries.Length); Equal(106, entries.Select(e => e.Name).Distinct().Count());
                 foreach (var d in DefDatabase<ThoughtDef>.AllDefs)
                     for (int i = 0; i < d.stages.Count; i++)
                     {
@@ -126,9 +130,9 @@ internal static partial class Program
                             Require(!string.IsNullOrWhiteSpace(pre.Element(d.defName + $".comps.{c}.thoughtStageDescriptions.{s}")?.Value)); count++;
                         }
                     }
-                Equal(16, count);
+                Equal(19, count);
             });
-        Check("all 22 precept component memberships and 48 literal stage values match the approved contract", () =>
+        Check("all 22 precept component memberships and 53 literal stage values match the approved contract", () =>
         {
             // 期望为独立字面量：任何一格 XML 数值或条件更改都不能从被测结果反推而蒙混通过。
             var expected = new Dictionary<string, (SSCCultureThoughtCondition kind, float[] values)>
@@ -138,6 +142,7 @@ internal static partial class Program
                 ["SexSlave_Sacred_Self"] = (SSCCultureThoughtCondition.ChainedSelf, new[] {10f}),
                 ["SexSlave_Envy_Self"] = (SSCCultureThoughtCondition.EnvySelf, new[] {10f,-6f}),
                 ["SexSlave_Hostile_Environment"] = (SSCCultureThoughtCondition.ManagedChainedEnvironment, new[] {-3f}),
+                ["SexSlave_Hostile_Social"] = (SSCCultureThoughtCondition.ChainedOther, new[] {-15f}),
                 ["SexSlave_Revulsion_Environment"] = (SSCCultureThoughtCondition.ManagedChainedEnvironment, new[] {-2f}),
                 ["SexSlave_Sacred_Environment"] = (SSCCultureThoughtCondition.ManagedChainedEnvironment, new[] {1f}),
                 ["SexSlave_Revulsion_Social"] = (SSCCultureThoughtCondition.ChainedOther, new[] {-5f}),
@@ -154,7 +159,7 @@ internal static partial class Program
             }
             tiers = new[] {"Hostile","Revulsion","Deference","HolyMaster"};
             int[] mm = {-12,-6,4,10}, am = {-8,-4,3,5}, ms = {-20,-10,10,20};
-            float[][] lm = {new[] {-6f},new[] {-3f},new[] {3f,-3f},new[] {6f,-6f}};
+            float[][] lm = {new[] {-6f},new[] {-3f},new[] {3f,-3f,-6f},new[] {6f,-6f,-12f}};
             for (int i = 0; i < tiers.Length; i++)
             {
                 expected["Master_" + tiers[i] + "_Self"] = (SSCCultureThoughtCondition.MasterSelf, new[] {(float)mm[i]});
@@ -162,6 +167,8 @@ internal static partial class Program
                 expected["Master_" + tiers[i] + "_Social"] = (SSCCultureThoughtCondition.MasterOther, new[] {(float)ms[i]});
                 expected["Master_" + tiers[i] + "_Leader"] = (SSCCultureThoughtCondition.Leader, lm[i]);
             }
+            expected["Master_Deference_SexSlaveLeaderSocial"] = (SSCCultureThoughtCondition.SexSlaveLeaderOther,new[] {-10f});
+            expected["Master_HolyMaster_SexSlaveLeaderSocial"] = (SSCCultureThoughtCondition.SexSlaveLeaderOther,new[] {-20f});
             // 数量心情在实际 MoodOffset 中另验曲线；XML 基础值 -3，社交必须是三个固定阶段。
             foreach (string tier in new[] {"One", "Three"})
             {
@@ -169,7 +176,7 @@ internal static partial class Program
                 expected["SlaveCount_"+tier+"_Self"] = (SSCCultureThoughtCondition.BoundSlaveCountExcess, new[] {-3f});
                 expected["SlaveCount_"+tier+"_Social"] = (SSCCultureThoughtCondition.OtherMasterBoundSlaveCountExcess, new[] {-5f,-15f,-30f});
             }
-            Equal(41, expected.Count);
+            Equal(44, expected.Count);
             foreach (var e in expected)
             {
                 var d = T(e.Key); var config = d.GetModExtension<SSCCultureThoughtExtension>();
@@ -177,6 +184,7 @@ internal static partial class Program
                 for (int i = 0; i < d.stages.Count; i++) Equal(e.Value.values[i], d.IsSocial ? d.stages[i].baseOpinionOffset : d.stages[i].baseMoodEffect);
                 Equal(e.Key == "SexSlave_Envy_Social", config.requireEnviousObserver);
                 Equal(e.Key is "Master_Deference_Leader" or "Master_HolyMaster_Leader" ? 1 : -1, config.nonMasterLeaderStage);
+                Equal(e.Key is "Master_Deference_Leader" or "Master_HolyMaster_Leader" ? 2 : -1, config.sexSlaveLeaderStage);
                 Equal(config.IsCountCondition ? (e.Key.Contains("_One_") ? 1 : 3) : 0, config.countLimit);
                 string precept = e.Key[..e.Key.LastIndexOf('_')];
                 Require(D(precept).comps.OfType<PreceptComp_SituationalThought>().Any(c => c.thought == d));
@@ -189,7 +197,7 @@ internal static partial class Program
     private static void AttitudeTests()
     {
         string[] sex = {"Hostile","Revulsion","Indifference","Respect","Sacred","Envy"};
-        int[] self = {-18,-6,0,0,10,10}, social = {0,-5,0,10,20,20};
+        int[] self = {-18,-6,0,0,10,10}, social = {-15,-5,0,10,20,20};
         for (int i = 0; i < sex.Length; i++)
         {
             string tier = sex[i]; int own = self[i], other = social[i];
@@ -253,7 +261,7 @@ internal static partial class Program
                 Equal(0f,MoodSum(slave)); Equal(0,Opinion(slave,target));
             });
         }
-        foreach (var sample in new[] {("Sacred","SacredOffice",35),("Sacred","Hostile",0),("Revulsion","SacredOffice",10)})
+        foreach (var sample in new[] {("Sacred","SacredOffice",35),("Sacred","Hostile",0),("Revulsion","SacredOffice",10),("Hostile","SacredOffice",0)})
             Check("native independent social groups fully add " + sample, () =>
             {
                 FeedbackContext(); var target=Officer(Array.Empty<string>());
@@ -281,7 +289,7 @@ internal static partial class Program
             {
                 FeedbackContext(); var p=Believer(new[] {"SexSlave_"+item.Item1}); var master=MakePawn(PawnIdentity.Master);
                 var a=MakePawn(); var b=MakePawn(); Chain(a,master); Chain(b,master); MakeMap(p,a,b);
-                Equal((float)(2*item.Item2),MoodSum(p)); Equal(1,Mood(p).Count);
+                Equal(item.Item1=="Sacred" ? 3f : 2*item.Item2,MoodSum(p)); Equal(1,Mood(p).Count);
                 var thought=Mood(p).Single(); Equal((float)item.Item2,thought.CurStage.baseMoodEffect);
                 // 尚未原版重算时倍率也应停止给持链本人环境效果；重算后只剩对应本人项。
                 Chain(p,master); Equal(0f,thought.MoodOffset()); p.needs.mood.thoughts.ThoughtInterval();
@@ -319,18 +327,35 @@ internal static partial class Program
                 Role(ideo,leader); Role(ideo,p); tick+=100; p.needs.mood.thoughts.ThoughtInterval(); Equal(0f,MoodSum(p));
             });
         }
-        Check("leader receiver scope, no faction-pointer substitute, and self/actual-owner/leader sum", () =>
+        Check("leader receiver scope and no master reward duplication; actual-owner and leader remain independent", () =>
         {
             FeedbackContext(); var p=Believer(new[] {"Master_HolyMaster"},PawnIdentity.Master); var owner=MakePawn(PawnIdentity.Master);
-            MakeMap(p,owner); Chain(p,owner); var ideo=Culture(); player.ideos.SetPrimary(ideo);
-            player.leader=owner; Equal(15f,MoodSum(p));
-            Role(ideo,owner); tick+=100; p.needs.mood.thoughts.ThoughtInterval(); Equal(21f,MoodSum(p));
+            var slave=Believer(new[] {"Master_HolyMaster"},PawnIdentity.Slave); Chain(slave,owner);
+            MakeMap(p,owner,slave); var ideo=Culture(); player.ideos.SetPrimary(ideo);
+            player.leader=owner; Equal(10f,MoodSum(p)); Equal(5f,MoodSum(slave));
+            Role(ideo,owner); tick+=100; p.needs.mood.thoughts.ThoughtInterval(); slave.needs.mood.thoughts.ThoughtInterval();
+            Equal(10f,MoodSum(p)); Equal(11f,MoodSum(slave));
             var hidden=Believer(new[] {"Master_HolyMaster"}); Equal(0f,MoodSum(hidden));
         });
     }
 
     private static void RefreshFeedbackTests(string game)
     {
+        Check("hostile slave opinion follows actual chains and native 99/100 cache without population work", () =>
+        {
+            FeedbackContext(); var observer=Believer(new[] {"SexSlave_Hostile"});
+            var target=Believer(Array.Empty<string>(),PawnIdentity.Slave);
+            // 途径预选无链不产生敌视；持链后即使目标被外部改成 Master 身份也仍是文化性奴。
+            calls.Clear(); Equal(0,Opinion(observer,target)); Chain(target,MakePawn(PawnIdentity.Master));
+            tick=1099; Equal(0,Opinion(observer,target)); tick=1100; Equal(-15,Opinion(observer,target));
+            target.TryGetComp<CompSexSlaveTraining>().pawnIdentity=PawnIdentity.Master;
+            tick+=100; Equal(-15,Opinion(observer,target)); Equal(-15,observer.relations.OpinionOf(target));
+            Equal(0,Opinion(target,observer)); Equal(0,Opinion(observer,observer));
+            Require(Social(observer,target).Cast<Thought>().All(t=>t.sourcePrecept==observer.Ideo.GetPrecept(D("SexSlave_Hostile"))));
+            target.health.hediffSet.hediffs.Clear(); tick+=99; Equal(-15,Opinion(observer,target));
+            tick++; Equal(0,Opinion(observer,target)); Equal(0,calls.Count);
+            Equal(0,observer.relations.DirectRelations.Count); Equal(0,observer.needs.mood.thoughts.memories.Memories.Count);
+        });
         // 刷新与最终原版资格另列，避免把直接调用 worker 的成功当作真实缓存已经收敛。
         Check("social cache keeps old state at 99 and recomputes at 100 without broadcast", () =>
         {

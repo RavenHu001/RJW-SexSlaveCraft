@@ -108,9 +108,14 @@
       <li Class="PreceptComp_SituationalThought">
         <thought>SSC_Culture_Master_Deference_Leader</thought>
         <thoughtStageDescriptions>
-          <li>[占位: 尊奉 / 领袖是主人]</li>
-          <li>[占位: 尊奉 / 领袖非主人]</li>
+          <li>[占位: 尊奉 / 领袖是主人／本人非主人]</li>
+          <li>[占位: 尊奉 / 普通非主人领袖]</li>
+          <li>[占位: 尊奉 / 领袖是性奴]</li>
         </thoughtStageDescriptions>
+      </li>
+      <!-- 独立社交由观察者的本戒律挂载，与性奴态度全额相加。 -->
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_Master_Deference_SexSlaveLeaderSocial</thought>
       </li>
     </comps>
   </PreceptDef>
@@ -142,9 +147,14 @@
       <li Class="PreceptComp_SituationalThought">
         <thought>SSC_Culture_Master_HolyMaster_Leader</thought>
         <thoughtStageDescriptions>
-          <li>[占位: 圣主 / 领袖是主人]</li>
-          <li>[占位: 圣主 / 领袖非主人]</li>
+          <li>[占位: 圣主 / 领袖是主人／本人非主人]</li>
+          <li>[占位: 圣主 / 普通非主人领袖]</li>
+          <li>[占位: 圣主 / 领袖是性奴]</li>
         </thoughtStageDescriptions>
+      </li>
+      <!-- 独立社交由观察者的本戒律挂载，与性奴态度全额相加。 -->
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_Master_HolyMaster_SexSlaveLeaderSocial</thought>
       </li>
     </comps>
   </PreceptDef>

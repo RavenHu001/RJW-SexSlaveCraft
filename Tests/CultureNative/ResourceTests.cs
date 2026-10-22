@@ -97,7 +97,8 @@ internal static partial class Program
             DirectXmlCrossRefLoader.ResolveAllWantedCrossReferences(FailMode.LogErrors);
             mainMeme = DefDatabase<MemeDef>.GetNamed(MemeName);
             Equal(22, DefDatabase<PreceptDef>.AllDefs.Count()); Equal(5, DefDatabase<IssueDef>.AllDefs.Count());
-            Equal(2, mainMeme.impact); Equal(MemeCategory.Normal, mainMeme.category);
+            // 实机调整：主奴秩序使用原版最高影响三级；Normal 是模因类别，不是影响档位。
+            Equal(3, mainMeme.impact); Equal(MemeCategory.Normal, mainMeme.category);
             Equal(1f, mainMeme.randomizationSelectionWeightFactor); Require(mainMeme.exclusionTags.NullOrEmpty());
             Equal(5, mainMeme.requireOne.Count);
             Equal("3,5,2,3,3", string.Join(',', mainMeme.requireOne.Select(l => l.Count)));
@@ -106,9 +107,9 @@ internal static partial class Program
             // 步骤 3 补有限数量反馈；两条不限及三条漠视无组件，不混入事件或意愿拦截。
             Require(DefDatabase<PreceptDef>.AllDefs.All(d => !d.allowDuplicates && d.countsTowardsPreceptLimit));
             Equal(17, DefDatabase<PreceptDef>.AllDefs.Count(d => !d.comps.NullOrEmpty()));
-            Equal(41, DefDatabase<PreceptDef>.AllDefs.Sum(d => d.comps.Count));
+            Equal(44, DefDatabase<PreceptDef>.AllDefs.Sum(d => d.comps.Count));
             Require(DefDatabase<PreceptDef>.AllDefs.SelectMany(d => d.comps).All(c => c is PreceptComp_SituationalThought));
-            Equal(41, DefDatabase<ThoughtDef>.AllDefs.Count());
+            Equal(44, DefDatabase<ThoughtDef>.AllDefs.Count());
             ThoughtUtility.Reset();
         });
         Check("all 22 weights, ordering, prefix and 4/6/13 meme lists match the fixed contract", () =>
@@ -142,7 +143,7 @@ internal static partial class Program
                     string path = Path.Combine(repo, "1.7", relative);
                     Require(File.ReadAllBytes(path).SequenceEqual(File.ReadAllBytes(Path.Combine(repo, "Sexslavecraft", relative))));
                     var entries = XDocument.Load(path).Root.Elements().ToArray();
-                    Equal(type == "MemeDef" ? 2 : type == "IssueDef" ? 5 : 60, entries.Length);
+                    Equal(type == "MemeDef" ? 2 : type == "IssueDef" ? 5 : 63, entries.Length);
                     Equal(entries.Length, entries.Select(x => x.Name).Distinct().Count());
                     Require(entries.All(x => !string.IsNullOrWhiteSpace(x.Value)));
                     // 描述交给后续文案阶段，当前必须保留可搜索的精确 TODO 标记及完整 label 键。

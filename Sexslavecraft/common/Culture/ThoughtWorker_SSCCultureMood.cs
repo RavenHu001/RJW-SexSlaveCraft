@@ -39,7 +39,18 @@ namespace SexSlaveCraft
                     if (cache == null || !cache.TryIsMember(p, out bool member) || !member
                         || !cache.TryGetLeader(out SSCCultureLeaderResult leader)) return ThoughtState.Inactive;
                     if (leader.Conflict || leader.State == SSCCultureLeaderState.None) return ThoughtState.Inactive;
-                    if (leader.State == SSCCultureLeaderState.Master) return ThoughtState.ActiveAtStage(0);
+                    if (leader.State == SSCCultureLeaderState.Master)
+                    {
+                        // 主人自身项已经反馈身份；只取消对当前主人的额外正向领袖奖励。
+                        // 敌视/厌恶的负向领袖项仍保留，主人也不能免除普通非主人或性奴领袖惩罚。
+                        if (SSCCultureStateUtility.IsMaster(p) && def.stages[0].baseMoodEffect > 0f)
+                            return ThoughtState.Inactive;
+                        return ThoughtState.ActiveAtStage(0);
+                    }
+                    // 性奴领袖用一个互斥阶段替代普通非主人项，不叠加两份领袖惩罚。
+                    // 领袖本人遵循同一负面反馈规则；对自身的社交仍由原版双人入口排除。
+                    if (leader.State == SSCCultureLeaderState.SexSlave && config.sexSlaveLeaderStage >= 0)
+                        return ThoughtState.ActiveAtStage(config.sexSlaveLeaderStage);
                     return config.nonMasterLeaderStage < 0 ? ThoughtState.Inactive
                         : ThoughtState.ActiveAtStage(config.nonMasterLeaderStage);
                 default:
@@ -52,7 +63,7 @@ namespace SexSlaveCraft
             var config = def.GetModExtension<SSCCultureThoughtExtension>();
             bool quantity = config?.condition == SSCCultureThoughtCondition.MasterCountExcess
                 || config?.condition == SSCCultureThoughtCondition.BoundSlaveCountExcess;
-            // 固定个人反馈不查询组件；环境仍按完整人数计算，不应用数量戒律的三人封顶。
+            // 固定个人反馈不查询组件；环境读取完整人数，不应用数量戒律的三人超额封顶。
             if (!quantity && config?.condition != SSCCultureThoughtCondition.ManagedChainedEnvironment)
                 return 1f;
             // 原版缓存可能尚未重算；再次核对挂载和本人链，避免改宗/取得链后继续给出旧环境效果。
@@ -65,7 +76,11 @@ namespace SexSlaveCraft
                 return config.condition == SSCCultureThoughtCondition.MasterCountExcess
                     ? n * (n + 3) / 2f : n * (n + 1) / 2f;
             }
-            return TryEnvironmentCount(p, out int count) ? count : 0f;
+            if (!TryEnvironmentCount(p, out int count)) return 0f;
+            // 未配置曲线的敌视/厌恶仍按人数相乘；神圣复用原版 SimpleCurve 在末点自然封顶。
+            // 仅改变反馈倍率，不截断共享管理人数，也不保存人物结果；空曲线安全归零并由配置检查报错。
+            return config.environmentMoodCurve == null ? count
+                : config.environmentMoodCurve.PointsCount > 0 ? config.environmentMoodCurve.Evaluate(count) : 0f;
         }
 
         private static bool TryEnvironmentCount(Pawn p, out int count)

@@ -232,18 +232,25 @@
       <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
         <condition>Leader</condition>
         <nonMasterLeaderStage>1</nonMasterLeaderStage>
+        <sexSlaveLeaderStage>2</sexSlaveLeaderStage>
       </li>
     </modExtensions>
     <stages>
       <li>
-        <label>[占位: 尊奉 / 领袖是主人]</label>
+        <label>[占位: 尊奉 / 领袖是主人／本人非主人]</label>
         <description>[TODO:SSC_Culture_Master_Deference_Leader.stages.0.description]</description>
         <baseMoodEffect>3</baseMoodEffect>
       </li>
       <li>
-        <label>[占位: 尊奉 / 领袖非主人]</label>
+        <label>[占位: 尊奉 / 普通非主人领袖]</label>
         <description>[TODO:SSC_Culture_Master_Deference_Leader.stages.1.description]</description>
         <baseMoodEffect>-3</baseMoodEffect>
+      </li>
+      <!-- 性奴领袖单独一档，与普通非主人阶段互斥；不改变实际主人或身份规则。 -->
+      <li>
+        <label>[占位: 尊奉 / 领袖是性奴]</label>
+        <description>[TODO:SSC_Culture_Master_Deference_Leader.stages.2.description]</description>
+        <baseMoodEffect>-6</baseMoodEffect>
       </li>
     </stages>
   </ThoughtDef>
@@ -318,18 +325,63 @@
       <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
         <condition>Leader</condition>
         <nonMasterLeaderStage>1</nonMasterLeaderStage>
+        <sexSlaveLeaderStage>2</sexSlaveLeaderStage>
       </li>
     </modExtensions>
     <stages>
       <li>
-        <label>[占位: 圣主 / 领袖是主人]</label>
+        <label>[占位: 圣主 / 领袖是主人／本人非主人]</label>
         <description>[TODO:SSC_Culture_Master_HolyMaster_Leader.stages.0.description]</description>
         <baseMoodEffect>6</baseMoodEffect>
       </li>
       <li>
-        <label>[占位: 圣主 / 领袖非主人]</label>
+        <label>[占位: 圣主 / 普通非主人领袖]</label>
         <description>[TODO:SSC_Culture_Master_HolyMaster_Leader.stages.1.description]</description>
         <baseMoodEffect>-6</baseMoodEffect>
+      </li>
+      <!-- 性奴领袖单独一档，与普通非主人阶段互斥；不改变实际主人或身份规则。 -->
+      <li>
+        <label>[占位: 圣主 / 领袖是性奴]</label>
+        <description>[TODO:SSC_Culture_Master_HolyMaster_Leader.stages.2.description]</description>
+        <baseMoodEffect>-12</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+  <!-- 仅评价有效正式性奴领袖；观察者戒律决定值，原版排除自身并维护来源与缓存。 -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Culture_Master_Deference_SexSlaveLeaderSocial</defName>
+    <thoughtClass>Thought_SituationalSocial</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCCultureSocial</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
+        <condition>SexSlaveLeaderOther</condition>
+      </li>
+    </modExtensions>
+    <stages>
+      <li>
+        <label>[占位: 尊奉 / 评价性奴领袖]</label>
+        <description>[TODO:SSC_Culture_Master_Deference_SexSlaveLeaderSocial.stages.0.description]</description>
+        <baseOpinionOffset>-10</baseOpinionOffset>
+      </li>
+    </stages>
+  </ThoughtDef>
+  <!-- 仅评价有效正式性奴领袖；观察者戒律决定值，原版排除自身并维护来源与缓存。 -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Culture_Master_HolyMaster_SexSlaveLeaderSocial</defName>
+    <thoughtClass>Thought_SituationalSocial</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCCultureSocial</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
+        <condition>SexSlaveLeaderOther</condition>
+      </li>
+    </modExtensions>
+    <stages>
+      <li>
+        <label>[占位: 圣主 / 评价性奴领袖]</label>
+        <description>[TODO:SSC_Culture_Master_HolyMaster_SexSlaveLeaderSocial.stages.0.description]</description>
+        <baseOpinionOffset>-20</baseOpinionOffset>
       </li>
     </stages>
   </ThoughtDef>

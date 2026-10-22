@@ -26,6 +26,14 @@ namespace SexSlaveCraft
                 case SSCCultureThoughtCondition.MasterOther:
                     // 评价任何另一名当前主人，不另叠“自己的主人”或“领袖”的文化社交奖励。
                     return SSCCultureStateUtility.IsMaster(otherPawn);
+                case SSCCultureThoughtCondition.SexSlaveLeaderOther:
+                    // 先排除无链目标，不为普通人物收集人口；实际职位及资格复用同一代正式领袖快照。
+                    // 评价由观察者戒律决定，沿用一般态度社交的观察者范围，不要求同文化或主人身份。
+                    if (!SSCCultureStateUtility.HasChain(otherPawn)) return ThoughtState.Inactive;
+                    var cache = Current.Game?.GetComponent<SSCCultureGameComponent>();
+                    return cache != null && cache.TryGetLeader(out SSCCultureLeaderResult leader)
+                        && !leader.Conflict && leader.State == SSCCultureLeaderState.SexSlave
+                        && ReferenceEquals(leader.Pawn, otherPawn);
                 case SSCCultureThoughtCondition.OtherMasterBoundSlaveCountExcess:
                     // 原版 OpinionOffset 不调用 MoodMultiplier；用三个固定阶段表达 -5/-15/-30。
                     // 双方名册限制只属于本分支，保留步骤 2 态度社交原有的接收范围。

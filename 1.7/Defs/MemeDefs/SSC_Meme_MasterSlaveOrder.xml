@@ -8,7 +8,7 @@
     <maxRows>1</maxRows>
     <renderOrder>2600</renderOrder>
   </MemeGroupDef>
-  <!-- 普通二级模因；随机因子是原版权重乘数，不表示固定生成概率，不新增 exclusionTags。 -->
+  <!-- 普通类别的最高影响三级模因；随机因子仍为原版权重乘数，不表示固定生成概率，不新增 exclusionTags。 -->
   <MemeDef MayRequire="Ludeon.RimWorld.Ideology">
     <defName>SSC_Meme_MasterSlaveOrder</defName>
     <label>主奴秩序</label>
@@ -16,7 +16,7 @@
     <iconPath>UI/Memes/PrimacyHuman</iconPath>
     <groupDef>SSC_MasterSlaveOrder</groupDef>
     <category>Normal</category>
-    <impact>2</impact>
+    <impact>3</impact>
     <randomizationSelectionWeightFactor>1</randomizationSelectionWeightFactor>
     <!-- 五个同 Issue 必选组同时约束生成与手选替代范围；不新增模因间排斥标签。 -->
     <requireOne>

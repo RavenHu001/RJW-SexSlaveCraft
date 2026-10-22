@@ -15,7 +15,7 @@
     </modExtensions>
     <stages>
       <li>
-        <label>[占位: 敌视 / 本人持链]</label>
+        <label>[占位: 敌视 / 本人是性奴]</label>
         <description>[TODO:SSC_Culture_SexSlave_Hostile_Self.stages.0.description]</description>
         <baseMoodEffect>-18</baseMoodEffect>
       </li>
@@ -35,7 +35,7 @@
     </modExtensions>
     <stages>
       <li>
-        <label>[占位: 厌恶 / 本人持链]</label>
+        <label>[占位: 厌恶 / 本人是性奴]</label>
         <description>[TODO:SSC_Culture_SexSlave_Revulsion_Self.stages.0.description]</description>
         <baseMoodEffect>-6</baseMoodEffect>
       </li>
@@ -55,7 +55,7 @@
     </modExtensions>
     <stages>
       <li>
-        <label>[占位: 神圣 / 本人持链]</label>
+        <label>[占位: 神圣 / 本人是性奴]</label>
         <description>[TODO:SSC_Culture_SexSlave_Sacred_Self.stages.0.description]</description>
         <baseMoodEffect>10</baseMoodEffect>
       </li>
@@ -75,12 +75,12 @@
     </modExtensions>
     <stages>
       <li>
-        <label>[占位: 艳羡 / 本人持链]</label>
+        <label>[占位: 艳羡 / 本人是性奴]</label>
         <description>[TODO:SSC_Culture_SexSlave_Envy_Self.stages.0.description]</description>
         <baseMoodEffect>10</baseMoodEffect>
       </li>
       <li>
-        <label>[占位: 艳羡 / 未持链且非主人]</label>
+        <label>[占位: 艳羡 / 既非性奴也非主人]</label>
         <description>[TODO:SSC_Culture_SexSlave_Envy_Self.stages.1.description]</description>
         <baseMoodEffect>-6</baseMoodEffect>
       </li>
@@ -136,11 +136,22 @@
     <modExtensions>
       <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
         <condition>ManagedChainedEnvironment</condition>
+        <!-- 实机调整：原版曲线在 0～5 人逐点给倍率；5 人以上保持 +15，实际管理人数不截断。 -->
+        <environmentMoodCurve>
+          <points>
+            <li>(0, 0)</li>
+            <li>(1, 1)</li>
+            <li>(2, 3)</li>
+            <li>(3, 6)</li>
+            <li>(4, 10)</li>
+            <li>(5, 15)</li>
+          </points>
+        </environmentMoodCurve>
       </li>
     </modExtensions>
     <stages>
       <li>
-        <label>[占位: 神圣 / 环境／每人]</label>
+        <label>[占位: 神圣 / 环境人数增益／五人封顶]</label>
         <description>[TODO:SSC_Culture_SexSlave_Sacred_Environment.stages.0.description]</description>
         <baseMoodEffect>1</baseMoodEffect>
       </li>
@@ -160,7 +171,7 @@
     </modExtensions>
     <stages>
       <li>
-        <label>[占位: 厌恶 / 评价持链者]</label>
+        <label>[占位: 厌恶 / 评价性奴]</label>
         <description>[TODO:SSC_Culture_SexSlave_Revulsion_Social.stages.0.description]</description>
         <baseOpinionOffset>-5</baseOpinionOffset>
       </li>
@@ -180,7 +191,7 @@
     </modExtensions>
     <stages>
       <li>
-        <label>[占位: 尊重 / 评价持链者]</label>
+        <label>[占位: 尊重 / 评价性奴]</label>
         <description>[TODO:SSC_Culture_SexSlave_Respect_Social.stages.0.description]</description>
         <baseOpinionOffset>10</baseOpinionOffset>
       </li>
@@ -200,7 +211,7 @@
     </modExtensions>
     <stages>
       <li>
-        <label>[占位: 神圣 / 评价持链者]</label>
+        <label>[占位: 神圣 / 评价性奴]</label>
         <description>[TODO:SSC_Culture_SexSlave_Sacred_Social.stages.0.description]</description>
         <baseOpinionOffset>20</baseOpinionOffset>
       </li>
@@ -221,9 +232,28 @@
     </modExtensions>
     <stages>
       <li>
-        <label>[占位: 艳羡 / 评价持链者]</label>
+        <label>[占位: 艳羡 / 评价性奴]</label>
         <description>[TODO:SSC_Culture_SexSlave_Envy_Social.stages.0.description]</description>
         <baseOpinionOffset>20</baseOpinionOffset>
+      </li>
+    </stages>
+  </ThoughtDef>
+  <!-- 实机反馈：敌视档也有持链者社交，沿用共享只读 worker 和原版缓存/资格，不生成永久关系。 -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Culture_SexSlave_Hostile_Social</defName>
+    <thoughtClass>Thought_SituationalSocial</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCCultureSocial</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
+        <condition>ChainedOther</condition>
+      </li>
+    </modExtensions>
+    <stages>
+      <li>
+        <label>[占位: 敌视 / 评价性奴]</label>
+        <description>[TODO:SSC_Culture_SexSlave_Hostile_Social.stages.0.description]</description>
+        <baseOpinionOffset>-15</baseOpinionOffset>
       </li>
     </stages>
   </ThoughtDef>

@@ -6,7 +6,7 @@ using Verse;
 namespace SexSlaveCraft
 {
     // None 同时覆盖空缺和无有效任职者；多名有效任职者另由 Conflict 标记，不能任意选一位。
-    public enum SSCCultureLeaderState { None, Master, NonMaster }
+    public enum SSCCultureLeaderState { None, Master, NonMaster, SexSlave }
 
     // 只读结果保留有效任职者及分类；default 表示无领袖且无冲突，不触发职位修复。
     public readonly struct SSCCultureLeaderResult
@@ -48,9 +48,12 @@ namespace SexSlaveCraft
                     found = pawn;
                 }
             }
-            // 通过任职资格后才读取 SSC 主人身份，避免把有效非主人误判为空缺。
-            return found == null ? default : new SSCCultureLeaderResult(found,
-                SSCIdentityUtility.IsMaster(found) ? SSCCultureLeaderState.Master : SSCCultureLeaderState.NonMaster);
+            // 先完成原版任职资格再分类；SSC 性奴以实际锁链为准，途径预选不改变领袖状态。
+            // 身份互斥：持链领袖单独归入性奴，不构造“性奴同时是 SSC 主人”的文化状态。
+            if (found == null) return default;
+            var state = SSCCultureStateUtility.HasChain(found) ? SSCCultureLeaderState.SexSlave
+                : SSCIdentityUtility.IsMaster(found) ? SSCCultureLeaderState.Master : SSCCultureLeaderState.NonMaster;
+            return new SSCCultureLeaderResult(found, state);
         }
     }
 }

@@ -11,7 +11,8 @@ namespace SexSlaveCraft
         Unspecified, ChainedSelf, EnvySelf, ManagedChainedEnvironment,
         OfficerSelf, MasterSelf, ActualMaster, Leader,
         ChainedOther, OfficerOther, MasterOther,
-        MasterCountExcess, BoundSlaveCountExcess, OtherMasterBoundSlaveCountExcess
+        MasterCountExcess, BoundSlaveCountExcess, OtherMasterBoundSlaveCountExcess,
+        SexSlaveLeaderOther
     }
 
     public sealed class SSCCultureThoughtExtension : DefModExtension
@@ -21,8 +22,12 @@ namespace SexSlaveCraft
         public bool requireEnviousObserver;
         // 领袖主人固定用阶段 0；非主人可显式配置阶段 1，-1 表示该分支没有反馈。
         public int nonMasterLeaderStage = -1;
+        // 尊奉/圣主的性奴领袖使用独立阶段 2，替代普通非主人阶段；缺省保持旧档位反馈。
+        public int sexSlaveLeaderStage = -1;
         // 数量条件显式配置有限上限；0 仅表示旧条件未配置，不能用它表达“不限”。不限戒律无组件。
         public int countLimit;
+        // 可选环境人数倍率曲线；缺省保留线性人数倍率，神圣由 XML 配置五人峰值。
+        public SimpleCurve environmentMoodCurve;
 
         public bool IsCountCondition => condition == SSCCultureThoughtCondition.MasterCountExcess
             || condition == SSCCultureThoughtCondition.BoundSlaveCountExcess
@@ -37,9 +42,21 @@ namespace SexSlaveCraft
                 yield return "SSC envy observer restriction is only valid for ChainedOther.";
             if (nonMasterLeaderStage != -1 && (condition != SSCCultureThoughtCondition.Leader || nonMasterLeaderStage != 1))
                 yield return "SSC non-master leader stage must be -1, or stage 1 on Leader.";
+            if (sexSlaveLeaderStage != -1 && (condition != SSCCultureThoughtCondition.Leader || sexSlaveLeaderStage != 2))
+                yield return "SSC sex-slave leader stage must be -1, or stage 2 on Leader.";
             // 有限档仅允许 1/3；旧条件带数量配置同样报错，避免拼错条件后静默套用另一套逻辑。
             if (IsCountCondition ? countLimit != 1 && countLimit != 3 : countLimit != 0)
                 yield return "SSC count limit must be 1 or 3 on a count condition, and 0 otherwise.";
+            // 曲线只服务环境反馈；复用原版排序检查，并补原版未报错的空曲线，避免运行时求值报错。
+            if (environmentMoodCurve != null)
+            {
+                if (condition != SSCCultureThoughtCondition.ManagedChainedEnvironment)
+                    yield return "SSC environment mood curve is only valid for ManagedChainedEnvironment.";
+                if (environmentMoodCurve.PointsCount == 0)
+                    yield return "SSC environment mood curve must contain points.";
+                foreach (string error in environmentMoodCurve.ConfigErrors("SSC environment mood curve"))
+                    yield return error;
+            }
         }
     }
 }
