@@ -1,140 +1,140 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-  <!-- 阶段名称仅作功能标记，描述正文待补；键和阶段号是机制契约。 -->
-  <SSC_Culture_SexSlave_Hostile_Self.stages.0.label>[佔位: 敵視 / 本人是性奴]</SSC_Culture_SexSlave_Hostile_Self.stages.0.label>
-  <SSC_Culture_SexSlave_Hostile_Self.stages.0.description>[TODO:SSC_Culture_SexSlave_Hostile_Self.stages.0.description]</SSC_Culture_SexSlave_Hostile_Self.stages.0.description>
-  <SSC_Culture_SexSlave_Revulsion_Self.stages.0.label>[佔位: 厭惡 / 本人是性奴]</SSC_Culture_SexSlave_Revulsion_Self.stages.0.label>
-  <SSC_Culture_SexSlave_Revulsion_Self.stages.0.description>[TODO:SSC_Culture_SexSlave_Revulsion_Self.stages.0.description]</SSC_Culture_SexSlave_Revulsion_Self.stages.0.description>
-  <SSC_Culture_SexSlave_Sacred_Self.stages.0.label>[佔位: 神聖 / 本人是性奴]</SSC_Culture_SexSlave_Sacred_Self.stages.0.label>
-  <SSC_Culture_SexSlave_Sacred_Self.stages.0.description>[TODO:SSC_Culture_SexSlave_Sacred_Self.stages.0.description]</SSC_Culture_SexSlave_Sacred_Self.stages.0.description>
-  <SSC_Culture_SexSlave_Envy_Self.stages.0.label>[佔位: 豔羨 / 本人是性奴]</SSC_Culture_SexSlave_Envy_Self.stages.0.label>
-  <SSC_Culture_SexSlave_Envy_Self.stages.0.description>[TODO:SSC_Culture_SexSlave_Envy_Self.stages.0.description]</SSC_Culture_SexSlave_Envy_Self.stages.0.description>
-  <SSC_Culture_SexSlave_Envy_Self.stages.1.label>[佔位: 豔羨 / 既非性奴也非主人]</SSC_Culture_SexSlave_Envy_Self.stages.1.label>
-  <SSC_Culture_SexSlave_Envy_Self.stages.1.description>[TODO:SSC_Culture_SexSlave_Envy_Self.stages.1.description]</SSC_Culture_SexSlave_Envy_Self.stages.1.description>
-  <SSC_Culture_SexSlave_Hostile_Environment.stages.0.label>[佔位: 敵視 / 環境／每人]</SSC_Culture_SexSlave_Hostile_Environment.stages.0.label>
-  <SSC_Culture_SexSlave_Hostile_Environment.stages.0.description>[TODO:SSC_Culture_SexSlave_Hostile_Environment.stages.0.description]</SSC_Culture_SexSlave_Hostile_Environment.stages.0.description>
-  <SSC_Culture_SexSlave_Revulsion_Environment.stages.0.label>[佔位: 厭惡 / 環境／每人]</SSC_Culture_SexSlave_Revulsion_Environment.stages.0.label>
-  <SSC_Culture_SexSlave_Revulsion_Environment.stages.0.description>[TODO:SSC_Culture_SexSlave_Revulsion_Environment.stages.0.description]</SSC_Culture_SexSlave_Revulsion_Environment.stages.0.description>
-  <SSC_Culture_SexSlave_Sacred_Environment.stages.0.label>[佔位: 神聖 / 環境人數增益／五人封頂]</SSC_Culture_SexSlave_Sacred_Environment.stages.0.label>
-  <SSC_Culture_SexSlave_Sacred_Environment.stages.0.description>[TODO:SSC_Culture_SexSlave_Sacred_Environment.stages.0.description]</SSC_Culture_SexSlave_Sacred_Environment.stages.0.description>
-  <SSC_Culture_SexSlave_Revulsion_Social.stages.0.label>[佔位: 厭惡 / 評價性奴]</SSC_Culture_SexSlave_Revulsion_Social.stages.0.label>
-  <SSC_Culture_SexSlave_Revulsion_Social.stages.0.description>[TODO:SSC_Culture_SexSlave_Revulsion_Social.stages.0.description]</SSC_Culture_SexSlave_Revulsion_Social.stages.0.description>
-  <SSC_Culture_SexSlave_Respect_Social.stages.0.label>[佔位: 尊重 / 評價性奴]</SSC_Culture_SexSlave_Respect_Social.stages.0.label>
-  <SSC_Culture_SexSlave_Respect_Social.stages.0.description>[TODO:SSC_Culture_SexSlave_Respect_Social.stages.0.description]</SSC_Culture_SexSlave_Respect_Social.stages.0.description>
-  <SSC_Culture_SexSlave_Sacred_Social.stages.0.label>[佔位: 神聖 / 評價性奴]</SSC_Culture_SexSlave_Sacred_Social.stages.0.label>
-  <SSC_Culture_SexSlave_Sacred_Social.stages.0.description>[TODO:SSC_Culture_SexSlave_Sacred_Social.stages.0.description]</SSC_Culture_SexSlave_Sacred_Social.stages.0.description>
-  <SSC_Culture_SexSlave_Envy_Social.stages.0.label>[佔位: 豔羨 / 評價性奴]</SSC_Culture_SexSlave_Envy_Social.stages.0.label>
-  <SSC_Culture_SexSlave_Envy_Social.stages.0.description>[TODO:SSC_Culture_SexSlave_Envy_Social.stages.0.description]</SSC_Culture_SexSlave_Envy_Social.stages.0.description>
-  <SSC_Culture_Trainer_Hostile_Self.stages.0.label>[佔位: 敵視 / 本人任職]</SSC_Culture_Trainer_Hostile_Self.stages.0.label>
-  <SSC_Culture_Trainer_Hostile_Self.stages.0.description>[TODO:SSC_Culture_Trainer_Hostile_Self.stages.0.description]</SSC_Culture_Trainer_Hostile_Self.stages.0.description>
-  <SSC_Culture_Trainer_Hostile_Social.stages.0.label>[佔位: 敵視 / 評價訓導官]</SSC_Culture_Trainer_Hostile_Social.stages.0.label>
-  <SSC_Culture_Trainer_Hostile_Social.stages.0.description>[TODO:SSC_Culture_Trainer_Hostile_Social.stages.0.description]</SSC_Culture_Trainer_Hostile_Social.stages.0.description>
-  <SSC_Culture_Trainer_Revulsion_Self.stages.0.label>[佔位: 厭惡 / 本人任職]</SSC_Culture_Trainer_Revulsion_Self.stages.0.label>
-  <SSC_Culture_Trainer_Revulsion_Self.stages.0.description>[TODO:SSC_Culture_Trainer_Revulsion_Self.stages.0.description]</SSC_Culture_Trainer_Revulsion_Self.stages.0.description>
-  <SSC_Culture_Trainer_Revulsion_Social.stages.0.label>[佔位: 厭惡 / 評價訓導官]</SSC_Culture_Trainer_Revulsion_Social.stages.0.label>
-  <SSC_Culture_Trainer_Revulsion_Social.stages.0.description>[TODO:SSC_Culture_Trainer_Revulsion_Social.stages.0.description]</SSC_Culture_Trainer_Revulsion_Social.stages.0.description>
-  <SSC_Culture_Trainer_Reverence_Self.stages.0.label>[佔位: 尊敬 / 本人任職]</SSC_Culture_Trainer_Reverence_Self.stages.0.label>
-  <SSC_Culture_Trainer_Reverence_Self.stages.0.description>[TODO:SSC_Culture_Trainer_Reverence_Self.stages.0.description]</SSC_Culture_Trainer_Reverence_Self.stages.0.description>
-  <SSC_Culture_Trainer_Reverence_Social.stages.0.label>[佔位: 尊敬 / 評價訓導官]</SSC_Culture_Trainer_Reverence_Social.stages.0.label>
-  <SSC_Culture_Trainer_Reverence_Social.stages.0.description>[TODO:SSC_Culture_Trainer_Reverence_Social.stages.0.description]</SSC_Culture_Trainer_Reverence_Social.stages.0.description>
-  <SSC_Culture_Trainer_SacredOffice_Self.stages.0.label>[佔位: 聖職 / 本人任職]</SSC_Culture_Trainer_SacredOffice_Self.stages.0.label>
-  <SSC_Culture_Trainer_SacredOffice_Self.stages.0.description>[TODO:SSC_Culture_Trainer_SacredOffice_Self.stages.0.description]</SSC_Culture_Trainer_SacredOffice_Self.stages.0.description>
-  <SSC_Culture_Trainer_SacredOffice_Social.stages.0.label>[佔位: 聖職 / 評價訓導官]</SSC_Culture_Trainer_SacredOffice_Social.stages.0.label>
-  <SSC_Culture_Trainer_SacredOffice_Social.stages.0.description>[TODO:SSC_Culture_Trainer_SacredOffice_Social.stages.0.description]</SSC_Culture_Trainer_SacredOffice_Social.stages.0.description>
-  <SSC_Culture_Master_Hostile_Self.stages.0.label>[佔位: 敵視 / 本人是主人]</SSC_Culture_Master_Hostile_Self.stages.0.label>
-  <SSC_Culture_Master_Hostile_Self.stages.0.description>[TODO:SSC_Culture_Master_Hostile_Self.stages.0.description]</SSC_Culture_Master_Hostile_Self.stages.0.description>
-  <SSC_Culture_Master_Hostile_ActualMaster.stages.0.label>[佔位: 敵視 / 擁有實際主人]</SSC_Culture_Master_Hostile_ActualMaster.stages.0.label>
-  <SSC_Culture_Master_Hostile_ActualMaster.stages.0.description>[TODO:SSC_Culture_Master_Hostile_ActualMaster.stages.0.description]</SSC_Culture_Master_Hostile_ActualMaster.stages.0.description>
-  <SSC_Culture_Master_Hostile_Social.stages.0.label>[佔位: 敵視 / 評價主人]</SSC_Culture_Master_Hostile_Social.stages.0.label>
-  <SSC_Culture_Master_Hostile_Social.stages.0.description>[TODO:SSC_Culture_Master_Hostile_Social.stages.0.description]</SSC_Culture_Master_Hostile_Social.stages.0.description>
-  <SSC_Culture_Master_Hostile_Leader.stages.0.label>[佔位: 敵視 / 領袖是主人]</SSC_Culture_Master_Hostile_Leader.stages.0.label>
-  <SSC_Culture_Master_Hostile_Leader.stages.0.description>[TODO:SSC_Culture_Master_Hostile_Leader.stages.0.description]</SSC_Culture_Master_Hostile_Leader.stages.0.description>
-  <SSC_Culture_Master_Revulsion_Self.stages.0.label>[佔位: 厭惡 / 本人是主人]</SSC_Culture_Master_Revulsion_Self.stages.0.label>
-  <SSC_Culture_Master_Revulsion_Self.stages.0.description>[TODO:SSC_Culture_Master_Revulsion_Self.stages.0.description]</SSC_Culture_Master_Revulsion_Self.stages.0.description>
-  <SSC_Culture_Master_Revulsion_ActualMaster.stages.0.label>[佔位: 厭惡 / 擁有實際主人]</SSC_Culture_Master_Revulsion_ActualMaster.stages.0.label>
-  <SSC_Culture_Master_Revulsion_ActualMaster.stages.0.description>[TODO:SSC_Culture_Master_Revulsion_ActualMaster.stages.0.description]</SSC_Culture_Master_Revulsion_ActualMaster.stages.0.description>
-  <SSC_Culture_Master_Revulsion_Social.stages.0.label>[佔位: 厭惡 / 評價主人]</SSC_Culture_Master_Revulsion_Social.stages.0.label>
-  <SSC_Culture_Master_Revulsion_Social.stages.0.description>[TODO:SSC_Culture_Master_Revulsion_Social.stages.0.description]</SSC_Culture_Master_Revulsion_Social.stages.0.description>
-  <SSC_Culture_Master_Revulsion_Leader.stages.0.label>[佔位: 厭惡 / 領袖是主人]</SSC_Culture_Master_Revulsion_Leader.stages.0.label>
-  <SSC_Culture_Master_Revulsion_Leader.stages.0.description>[TODO:SSC_Culture_Master_Revulsion_Leader.stages.0.description]</SSC_Culture_Master_Revulsion_Leader.stages.0.description>
-  <SSC_Culture_Master_Deference_Self.stages.0.label>[佔位: 尊奉 / 本人是主人]</SSC_Culture_Master_Deference_Self.stages.0.label>
-  <SSC_Culture_Master_Deference_Self.stages.0.description>[TODO:SSC_Culture_Master_Deference_Self.stages.0.description]</SSC_Culture_Master_Deference_Self.stages.0.description>
-  <SSC_Culture_Master_Deference_ActualMaster.stages.0.label>[佔位: 尊奉 / 擁有實際主人]</SSC_Culture_Master_Deference_ActualMaster.stages.0.label>
-  <SSC_Culture_Master_Deference_ActualMaster.stages.0.description>[TODO:SSC_Culture_Master_Deference_ActualMaster.stages.0.description]</SSC_Culture_Master_Deference_ActualMaster.stages.0.description>
-  <SSC_Culture_Master_Deference_Social.stages.0.label>[佔位: 尊奉 / 評價主人]</SSC_Culture_Master_Deference_Social.stages.0.label>
-  <SSC_Culture_Master_Deference_Social.stages.0.description>[TODO:SSC_Culture_Master_Deference_Social.stages.0.description]</SSC_Culture_Master_Deference_Social.stages.0.description>
-  <SSC_Culture_Master_Deference_Leader.stages.0.label>[佔位: 尊奉 / 領袖是主人／本人非主人]</SSC_Culture_Master_Deference_Leader.stages.0.label>
-  <SSC_Culture_Master_Deference_Leader.stages.0.description>[TODO:SSC_Culture_Master_Deference_Leader.stages.0.description]</SSC_Culture_Master_Deference_Leader.stages.0.description>
-  <SSC_Culture_Master_Deference_Leader.stages.1.label>[佔位: 尊奉 / 普通非主人領袖]</SSC_Culture_Master_Deference_Leader.stages.1.label>
-  <SSC_Culture_Master_Deference_Leader.stages.1.description>[TODO:SSC_Culture_Master_Deference_Leader.stages.1.description]</SSC_Culture_Master_Deference_Leader.stages.1.description>
-  <SSC_Culture_Master_HolyMaster_Self.stages.0.label>[佔位: 聖主 / 本人是主人]</SSC_Culture_Master_HolyMaster_Self.stages.0.label>
-  <SSC_Culture_Master_HolyMaster_Self.stages.0.description>[TODO:SSC_Culture_Master_HolyMaster_Self.stages.0.description]</SSC_Culture_Master_HolyMaster_Self.stages.0.description>
-  <SSC_Culture_Master_HolyMaster_ActualMaster.stages.0.label>[佔位: 聖主 / 擁有實際主人]</SSC_Culture_Master_HolyMaster_ActualMaster.stages.0.label>
-  <SSC_Culture_Master_HolyMaster_ActualMaster.stages.0.description>[TODO:SSC_Culture_Master_HolyMaster_ActualMaster.stages.0.description]</SSC_Culture_Master_HolyMaster_ActualMaster.stages.0.description>
-  <SSC_Culture_Master_HolyMaster_Social.stages.0.label>[佔位: 聖主 / 評價主人]</SSC_Culture_Master_HolyMaster_Social.stages.0.label>
-  <SSC_Culture_Master_HolyMaster_Social.stages.0.description>[TODO:SSC_Culture_Master_HolyMaster_Social.stages.0.description]</SSC_Culture_Master_HolyMaster_Social.stages.0.description>
-  <SSC_Culture_Master_HolyMaster_Leader.stages.0.label>[佔位: 聖主 / 領袖是主人／本人非主人]</SSC_Culture_Master_HolyMaster_Leader.stages.0.label>
-  <SSC_Culture_Master_HolyMaster_Leader.stages.0.description>[TODO:SSC_Culture_Master_HolyMaster_Leader.stages.0.description]</SSC_Culture_Master_HolyMaster_Leader.stages.0.description>
-  <SSC_Culture_Master_HolyMaster_Leader.stages.1.label>[佔位: 聖主 / 普通非主人領袖]</SSC_Culture_Master_HolyMaster_Leader.stages.1.label>
-  <SSC_Culture_Master_HolyMaster_Leader.stages.1.description>[TODO:SSC_Culture_Master_HolyMaster_Leader.stages.1.description]</SSC_Culture_Master_HolyMaster_Leader.stages.1.description>
-  <SSC_Culture_MasterCount_One_Self.stages.0.label>[佔位: 主人總數超額 / 上限 1]</SSC_Culture_MasterCount_One_Self.stages.0.label>
-  <SSC_Culture_MasterCount_One_Self.stages.0.description>[TODO:SSC_Culture_MasterCount_One_Self.stages.0.description]</SSC_Culture_MasterCount_One_Self.stages.0.description>
-  <SSC_Culture_MasterCount_Three_Self.stages.0.label>[佔位: 主人總數超額 / 上限 3]</SSC_Culture_MasterCount_Three_Self.stages.0.label>
-  <SSC_Culture_MasterCount_Three_Self.stages.0.description>[TODO:SSC_Culture_MasterCount_Three_Self.stages.0.description]</SSC_Culture_MasterCount_Three_Self.stages.0.description>
-  <SSC_Culture_SlaveCount_One_Self.stages.0.label>[佔位: 本人性奴數量超額 / 上限 1]</SSC_Culture_SlaveCount_One_Self.stages.0.label>
-  <SSC_Culture_SlaveCount_One_Self.stages.0.description>[TODO:SSC_Culture_SlaveCount_One_Self.stages.0.description]</SSC_Culture_SlaveCount_One_Self.stages.0.description>
-  <SSC_Culture_SlaveCount_Three_Self.stages.0.label>[佔位: 本人性奴數量超額 / 上限 3]</SSC_Culture_SlaveCount_Three_Self.stages.0.label>
-  <SSC_Culture_SlaveCount_Three_Self.stages.0.description>[TODO:SSC_Culture_SlaveCount_Three_Self.stages.0.description]</SSC_Culture_SlaveCount_Three_Self.stages.0.description>
-  <SSC_Culture_SlaveCount_One_Social.stages.0.label>[佔位: 目標主人性奴數量超額 / 上限 1 / 超額 1]</SSC_Culture_SlaveCount_One_Social.stages.0.label>
-  <SSC_Culture_SlaveCount_One_Social.stages.0.description>[TODO:SSC_Culture_SlaveCount_One_Social.stages.0.description]</SSC_Culture_SlaveCount_One_Social.stages.0.description>
-  <SSC_Culture_SlaveCount_One_Social.stages.1.label>[佔位: 目標主人性奴數量超額 / 上限 1 / 超額 2]</SSC_Culture_SlaveCount_One_Social.stages.1.label>
-  <SSC_Culture_SlaveCount_One_Social.stages.1.description>[TODO:SSC_Culture_SlaveCount_One_Social.stages.1.description]</SSC_Culture_SlaveCount_One_Social.stages.1.description>
-  <SSC_Culture_SlaveCount_One_Social.stages.2.label>[佔位: 目標主人性奴數量超額 / 上限 1 / 超額 3 及以上]</SSC_Culture_SlaveCount_One_Social.stages.2.label>
-  <SSC_Culture_SlaveCount_One_Social.stages.2.description>[TODO:SSC_Culture_SlaveCount_One_Social.stages.2.description]</SSC_Culture_SlaveCount_One_Social.stages.2.description>
-  <SSC_Culture_SlaveCount_Three_Social.stages.0.label>[佔位: 目標主人性奴數量超額 / 上限 3 / 超額 1]</SSC_Culture_SlaveCount_Three_Social.stages.0.label>
-  <SSC_Culture_SlaveCount_Three_Social.stages.0.description>[TODO:SSC_Culture_SlaveCount_Three_Social.stages.0.description]</SSC_Culture_SlaveCount_Three_Social.stages.0.description>
-  <SSC_Culture_SlaveCount_Three_Social.stages.1.label>[佔位: 目標主人性奴數量超額 / 上限 3 / 超額 2]</SSC_Culture_SlaveCount_Three_Social.stages.1.label>
-  <SSC_Culture_SlaveCount_Three_Social.stages.1.description>[TODO:SSC_Culture_SlaveCount_Three_Social.stages.1.description]</SSC_Culture_SlaveCount_Three_Social.stages.1.description>
-  <SSC_Culture_SlaveCount_Three_Social.stages.2.label>[佔位: 目標主人性奴數量超額 / 上限 3 / 超額 3 及以上]</SSC_Culture_SlaveCount_Three_Social.stages.2.label>
-  <SSC_Culture_SlaveCount_Three_Social.stages.2.description>[TODO:SSC_Culture_SlaveCount_Three_Social.stages.2.description]</SSC_Culture_SlaveCount_Three_Social.stages.2.description>
-  <SSC_Culture_SexSlave_Hostile_Social.stages.0.label>[佔位: 敵視 / 評價性奴]</SSC_Culture_SexSlave_Hostile_Social.stages.0.label>
-  <SSC_Culture_SexSlave_Hostile_Social.stages.0.description>[TODO:SSC_Culture_SexSlave_Hostile_Social.stages.0.description]</SSC_Culture_SexSlave_Hostile_Social.stages.0.description>
-  <SSC_Culture_Master_Deference_Leader.stages.2.label>[佔位: 尊奉 / 領袖是性奴]</SSC_Culture_Master_Deference_Leader.stages.2.label>
-  <SSC_Culture_Master_Deference_Leader.stages.2.description>[TODO:SSC_Culture_Master_Deference_Leader.stages.2.description]</SSC_Culture_Master_Deference_Leader.stages.2.description>
-  <SSC_Culture_Master_Deference_SexSlaveLeaderSocial.stages.0.label>[佔位: 尊奉 / 評價性奴領袖]</SSC_Culture_Master_Deference_SexSlaveLeaderSocial.stages.0.label>
-  <SSC_Culture_Master_Deference_SexSlaveLeaderSocial.stages.0.description>[TODO:SSC_Culture_Master_Deference_SexSlaveLeaderSocial.stages.0.description]</SSC_Culture_Master_Deference_SexSlaveLeaderSocial.stages.0.description>
-  <SSC_Culture_Master_HolyMaster_Leader.stages.2.label>[佔位: 聖主 / 領袖是性奴]</SSC_Culture_Master_HolyMaster_Leader.stages.2.label>
-  <SSC_Culture_Master_HolyMaster_Leader.stages.2.description>[TODO:SSC_Culture_Master_HolyMaster_Leader.stages.2.description]</SSC_Culture_Master_HolyMaster_Leader.stages.2.description>
-  <SSC_Culture_Master_HolyMaster_SexSlaveLeaderSocial.stages.0.label>[佔位: 聖主 / 評價性奴領袖]</SSC_Culture_Master_HolyMaster_SexSlaveLeaderSocial.stages.0.label>
-  <SSC_Culture_Master_HolyMaster_SexSlaveLeaderSocial.stages.0.description>[TODO:SSC_Culture_Master_HolyMaster_SexSlaveLeaderSocial.stages.0.description]</SSC_Culture_Master_HolyMaster_SexSlaveLeaderSocial.stages.0.description>
+  <!-- 阶段名称与描述已落实；键和阶段号是机制契约。 -->
+  <SSC_Culture_SexSlave_Hostile_Self.stages.0.label>身為性奴</SSC_Culture_SexSlave_Hostile_Self.stages.0.label>
+  <SSC_Culture_SexSlave_Hostile_Self.stages.0.description>我竟淪落至此，頸上鎖著恥辱的鏈子——這比死更令我難以忍受。</SSC_Culture_SexSlave_Hostile_Self.stages.0.description>
+  <SSC_Culture_SexSlave_Revulsion_Self.stages.0.label>身為性奴</SSC_Culture_SexSlave_Revulsion_Self.stages.0.label>
+  <SSC_Culture_SexSlave_Revulsion_Self.stages.0.description>這副軀體被鏈子束縛著，每次呼吸都令我心生厭惡。</SSC_Culture_SexSlave_Revulsion_Self.stages.0.description>
+  <SSC_Culture_SexSlave_Sacred_Self.stages.0.label>身為性奴</SSC_Culture_SexSlave_Sacred_Self.stages.0.label>
+  <SSC_Culture_SexSlave_Sacred_Self.stages.0.description>我赤身跪伏在主人腳下，任他抽送、鞭笞、填滿我的每一處，將高潮盡數奉獻——這聖潔的馴服令我渾身發軟，滿心虔誠。</SSC_Culture_SexSlave_Sacred_Self.stages.0.description>
+  <SSC_Culture_SexSlave_Envy_Self.stages.0.label>已成為性奴</SSC_Culture_SexSlave_Envy_Self.stages.0.label>
+  <SSC_Culture_SexSlave_Envy_Self.stages.0.description>我終於如願以償，頸上有了項圈，下身被主人反覆貫穿——這份被佔有、被肏弄的沉溺，正是我夢寐以求的極樂。</SSC_Culture_SexSlave_Envy_Self.stages.0.description>
+  <SSC_Culture_SexSlave_Envy_Self.stages.1.label>渴慕為奴</SSC_Culture_SexSlave_Envy_Self.stages.1.label>
+  <SSC_Culture_SexSlave_Envy_Self.stages.1.description>我既非主人也非性奴，下身搔癢、慾望無所歸依——多麼希望有人將鏈子套上我的頸、將肉棒插進我的身體。</SSC_Culture_SexSlave_Envy_Self.stages.1.description>
+  <SSC_Culture_SexSlave_Hostile_Environment.stages.0.label>周圍有性奴</SSC_Culture_SexSlave_Hostile_Environment.stages.0.label>
+  <SSC_Culture_SexSlave_Hostile_Environment.stages.0.description>有人被鎖鏈役使，我無法對此視而不見。</SSC_Culture_SexSlave_Hostile_Environment.stages.0.description>
+  <SSC_Culture_SexSlave_Revulsion_Environment.stages.0.label>周圍有性奴</SSC_Culture_SexSlave_Revulsion_Environment.stages.0.label>
+  <SSC_Culture_SexSlave_Revulsion_Environment.stages.0.description>附近有人俯首為奴，令我不適。</SSC_Culture_SexSlave_Revulsion_Environment.stages.0.description>
+  <SSC_Culture_SexSlave_Sacred_Environment.stages.0.label>性奴環繞</SSC_Culture_SexSlave_Sacred_Environment.stages.0.label>
+  <SSC_Culture_SexSlave_Sacred_Environment.stages.0.description>這些赤身跪伏、被調教得服服貼貼的性奴環繞四周，她們的呻吟與虔誠令此地更顯聖潔。</SSC_Culture_SexSlave_Sacred_Environment.stages.0.description>
+  <SSC_Culture_SexSlave_Revulsion_Social.stages.0.label>厭惡此性奴</SSC_Culture_SexSlave_Revulsion_Social.stages.0.label>
+  <SSC_Culture_SexSlave_Revulsion_Social.stages.0.description>此人身負鎖鏈、以身為奴，令我厭棄。</SSC_Culture_SexSlave_Revulsion_Social.stages.0.description>
+  <SSC_Culture_SexSlave_Respect_Social.stages.0.label>尊重此性奴</SSC_Culture_SexSlave_Respect_Social.stages.0.label>
+  <SSC_Culture_SexSlave_Respect_Social.stages.0.description>此人雖為奴，亦是人，我敬其人格。</SSC_Culture_SexSlave_Respect_Social.stages.0.description>
+  <SSC_Culture_SexSlave_Sacred_Social.stages.0.label>敬奉此性奴</SSC_Culture_SexSlave_Sacred_Social.stages.0.label>
+  <SSC_Culture_SexSlave_Sacred_Social.stages.0.description>此人將肉身與高潮盡數獻於主人，是被神選中的存在，我對其滿懷敬意。</SSC_Culture_SexSlave_Sacred_Social.stages.0.description>
+  <SSC_Culture_SexSlave_Envy_Social.stages.0.label>豔羨此性奴</SSC_Culture_SexSlave_Envy_Social.stages.0.label>
+  <SSC_Culture_SexSlave_Envy_Social.stages.0.description>此人已尋得歸宿，夜夜被主人佔有、肏弄到高潮，令我下身發癢、豔羨不已。</SSC_Culture_SexSlave_Envy_Social.stages.0.description>
+  <SSC_Culture_Trainer_Hostile_Self.stages.0.label>身為訓導官</SSC_Culture_Trainer_Hostile_Self.stages.0.label>
+  <SSC_Culture_Trainer_Hostile_Self.stages.0.description>我竟擔此褻瀆之職，橫在主人與奴之間，心中唯有羞恥。</SSC_Culture_Trainer_Hostile_Self.stages.0.description>
+  <SSC_Culture_Trainer_Hostile_Social.stages.0.label>敵視此訓導官</SSC_Culture_Trainer_Hostile_Social.stages.0.label>
+  <SSC_Culture_Trainer_Hostile_Social.stages.0.description>此人僭越主奴秩序，以調教為名褻瀆神聖，我深惡之。</SSC_Culture_Trainer_Hostile_Social.stages.0.description>
+  <SSC_Culture_Trainer_Revulsion_Self.stages.0.label>身為訓導官</SSC_Culture_Trainer_Revulsion_Self.stages.0.label>
+  <SSC_Culture_Trainer_Revulsion_Self.stages.0.description>做這份差事讓我渾身不自在。</SSC_Culture_Trainer_Revulsion_Self.stages.0.description>
+  <SSC_Culture_Trainer_Revulsion_Social.stages.0.label>厭惡此訓導官</SSC_Culture_Trainer_Revulsion_Social.stages.0.label>
+  <SSC_Culture_Trainer_Revulsion_Social.stages.0.description>見此人執鞭馴人，我便心生反感。</SSC_Culture_Trainer_Revulsion_Social.stages.0.description>
+  <SSC_Culture_Trainer_Reverence_Self.stages.0.label>身為訓導官</SSC_Culture_Trainer_Reverence_Self.stages.0.label>
+  <SSC_Culture_Trainer_Reverence_Self.stages.0.description>我能以鞭笞與操弄調教他人，使之成為俯首承歡的奴，這是份值得自豪的差事。</SSC_Culture_Trainer_Reverence_Self.stages.0.description>
+  <SSC_Culture_Trainer_Reverence_Social.stages.0.label>尊敬此訓導官</SSC_Culture_Trainer_Reverence_Social.stages.0.label>
+  <SSC_Culture_Trainer_Reverence_Social.stages.0.description>此人調教有方，能馴得再倔強的人也甘願撅臀承歡，我敬其本領。</SSC_Culture_Trainer_Reverence_Social.stages.0.description>
+  <SSC_Culture_Trainer_SacredOffice_Self.stages.0.label>司掌聖職</SSC_Culture_Trainer_SacredOffice_Self.stages.0.label>
+  <SSC_Culture_Trainer_SacredOffice_Self.stages.0.description>我以鞭為法器、以鏈為聖器，將野性之人抽打到翹臀紅腫、下身濕透，再調教成虔誠順從的奴——這神聖職務令我滿心莊嚴。</SSC_Culture_Trainer_SacredOffice_Self.stages.0.description>
+  <SSC_Culture_Trainer_SacredOffice_Social.stages.0.label>敬奉此訓導官</SSC_Culture_Trainer_SacredOffice_Social.stages.0.label>
+  <SSC_Culture_Trainer_SacredOffice_Social.stages.0.description>此人以鞭與鏈、以陽具與技藝代主調教眾奴，所司乃神聖職務，我對其滿懷敬意。</SSC_Culture_Trainer_SacredOffice_Social.stages.0.description>
+  <SSC_Culture_Master_Hostile_Self.stages.0.label>身為主人</SSC_Culture_Master_Hostile_Self.stages.0.label>
+  <SSC_Culture_Master_Hostile_Self.stages.0.description>我竟成了竊據他人身體的僭越者，這身分令我寢食難安。</SSC_Culture_Master_Hostile_Self.stages.0.description>
+  <SSC_Culture_Master_Hostile_ActualMaster.stages.0.label>受制於主人</SSC_Culture_Master_Hostile_ActualMaster.stages.0.label>
+  <SSC_Culture_Master_Hostile_ActualMaster.stages.0.description>我的鏈子握在他人手中，被人當作玩物支配——這屈辱難以忍受。</SSC_Culture_Master_Hostile_ActualMaster.stages.0.description>
+  <SSC_Culture_Master_Hostile_Social.stages.0.label>仇視此主人</SSC_Culture_Master_Hostile_Social.stages.0.label>
+  <SSC_Culture_Master_Hostile_Social.stages.0.description>此人以鎖鏈竊據他人肉身與意志，是可憎的暴君。</SSC_Culture_Master_Hostile_Social.stages.0.description>
+  <SSC_Culture_Master_Hostile_Leader.stages.0.label>領袖竟是主人</SSC_Culture_Master_Hostile_Leader.stages.0.label>
+  <SSC_Culture_Master_Hostile_Leader.stages.0.description>我們的領袖竟是個竊據者，這令我痛心。</SSC_Culture_Master_Hostile_Leader.stages.0.description>
+  <SSC_Culture_Master_Revulsion_Self.stages.0.label>身為主人</SSC_Culture_Master_Revulsion_Self.stages.0.label>
+  <SSC_Culture_Master_Revulsion_Self.stages.0.description>執鏈馭奴的身分令我心中不適。</SSC_Culture_Master_Revulsion_Self.stages.0.description>
+  <SSC_Culture_Master_Revulsion_ActualMaster.stages.0.label>受制於主人</SSC_Culture_Master_Revulsion_ActualMaster.stages.0.label>
+  <SSC_Culture_Master_Revulsion_ActualMaster.stages.0.description>有人握著我的鏈子，這讓我心生厭惡。</SSC_Culture_Master_Revulsion_ActualMaster.stages.0.description>
+  <SSC_Culture_Master_Revulsion_Social.stages.0.label>厭惡此主人</SSC_Culture_Master_Revulsion_Social.stages.0.label>
+  <SSC_Culture_Master_Revulsion_Social.stages.0.description>此人的主人做派令我反感。</SSC_Culture_Master_Revulsion_Social.stages.0.description>
+  <SSC_Culture_Master_Revulsion_Leader.stages.0.label>領袖竟是主人</SSC_Culture_Master_Revulsion_Leader.stages.0.label>
+  <SSC_Culture_Master_Revulsion_Leader.stages.0.description>領袖竟是這般身分，令我心中不快。</SSC_Culture_Master_Revulsion_Leader.stages.0.description>
+  <SSC_Culture_Master_Deference_Self.stages.0.label>身為主人</SSC_Culture_Master_Deference_Self.stages.0.label>
+  <SSC_Culture_Master_Deference_Self.stages.0.description>我執鏈馭奴、號令眾人，眾奴撅臀待我、任我馳騁，這主人之位令我自豪。</SSC_Culture_Master_Deference_Self.stages.0.description>
+  <SSC_Culture_Master_Deference_ActualMaster.stages.0.label>有主可依</SSC_Culture_Master_Deference_ActualMaster.stages.0.label>
+  <SSC_Culture_Master_Deference_ActualMaster.stages.0.description>我的鏈子握在主人手中，我的淫穴歸主人所有，這份被佔有的歸屬讓我安心。</SSC_Culture_Master_Deference_ActualMaster.stages.0.description>
+  <SSC_Culture_Master_Deference_Social.stages.0.label>敬奉此主人</SSC_Culture_Master_Deference_Social.stages.0.label>
+  <SSC_Culture_Master_Deference_Social.stages.0.description>此人執掌慾望、統御奴僕，眾奴拜服其胯下，我敬重其主人之威。</SSC_Culture_Master_Deference_Social.stages.0.description>
+  <SSC_Culture_Master_Deference_Leader.stages.0.label>領袖為主人</SSC_Culture_Master_Deference_Leader.stages.0.label>
+  <SSC_Culture_Master_Deference_Leader.stages.0.description>我們的領袖身為主人，統御有方，我由衷擁戴。</SSC_Culture_Master_Deference_Leader.stages.0.description>
+  <SSC_Culture_Master_Deference_Leader.stages.1.label>領袖非主人</SSC_Culture_Master_Deference_Leader.stages.1.label>
+  <SSC_Culture_Master_Deference_Leader.stages.1.description>領袖竟非主人，這樣的領袖如何統御慾望？</SSC_Culture_Master_Deference_Leader.stages.1.description>
+  <SSC_Culture_Master_HolyMaster_Self.stages.0.label>身為聖主</SSC_Culture_Master_HolyMaster_Self.stages.0.label>
+  <SSC_Culture_Master_HolyMaster_Self.stages.0.description>我乃被供奉的主人，眾奴以唇舌與肉身服侍於我，任我盡情馳騁、抽送到她們失聲浪叫——這神聖的身分令我如登極樂。</SSC_Culture_Master_HolyMaster_Self.stages.0.description>
+  <SSC_Culture_Master_HolyMaster_ActualMaster.stages.0.label>供奉主人</SSC_Culture_Master_HolyMaster_ActualMaster.stages.0.label>
+  <SSC_Culture_Master_HolyMaster_ActualMaster.stages.0.description>我的主人是神聖的存在，能以唇舌與淫穴侍奉於他、任他灌滿我的身體，我滿心感恩。</SSC_Culture_Master_HolyMaster_ActualMaster.stages.0.description>
+  <SSC_Culture_Master_HolyMaster_Social.stages.0.label>敬奉此聖主</SSC_Culture_Master_HolyMaster_Social.stages.0.label>
+  <SSC_Culture_Master_HolyMaster_Social.stages.0.description>此人是被供奉的主人，一言一行皆是神意，眾奴以高潮為祭、以肉身為香，我予以最高尊崇。</SSC_Culture_Master_HolyMaster_Social.stages.0.description>
+  <SSC_Culture_Master_HolyMaster_Leader.stages.0.label>聖主為領袖</SSC_Culture_Master_HolyMaster_Leader.stages.0.label>
+  <SSC_Culture_Master_HolyMaster_Leader.stages.0.description>我們的領袖乃神聖的主人，這是天降的恩典。</SSC_Culture_Master_HolyMaster_Leader.stages.0.description>
+  <SSC_Culture_Master_HolyMaster_Leader.stages.1.label>領袖非主人</SSC_Culture_Master_HolyMaster_Leader.stages.1.label>
+  <SSC_Culture_Master_HolyMaster_Leader.stages.1.description>領袖竟不是主人，這簡直是對神聖秩序的嘲弄。</SSC_Culture_Master_HolyMaster_Leader.stages.1.description>
+  <SSC_Culture_MasterCount_One_Self.stages.0.label>主人過多</SSC_Culture_MasterCount_One_Self.stages.0.label>
+  <SSC_Culture_MasterCount_One_Self.stages.0.description>殖民地的主人多於一人，慾望各執其鏈，秩序已然混亂。</SSC_Culture_MasterCount_One_Self.stages.0.description>
+  <SSC_Culture_MasterCount_Three_Self.stages.0.label>主人過多</SSC_Culture_MasterCount_Three_Self.stages.0.label>
+  <SSC_Culture_MasterCount_Three_Self.stages.0.description>殖民地的主人多於三人，眾多主人各立門戶，令我心生不安。</SSC_Culture_MasterCount_Three_Self.stages.0.description>
+  <SSC_Culture_SlaveCount_One_Self.stages.0.label>性奴過多</SSC_Culture_SlaveCount_One_Self.stages.0.label>
+  <SSC_Culture_SlaveCount_One_Self.stages.0.description>我名下的性奴多於一人，恩寵既分，淫穴與鏈環便難嚴絲合縫。</SSC_Culture_SlaveCount_One_Self.stages.0.description>
+  <SSC_Culture_SlaveCount_Three_Self.stages.0.label>性奴過多</SSC_Culture_SlaveCount_Three_Self.stages.0.label>
+  <SSC_Culture_SlaveCount_Three_Self.stages.0.description>我名下的性奴多於三人，陽具分身乏術、調教不周，令我愧疚。</SSC_Culture_SlaveCount_Three_Self.stages.0.description>
+  <SSC_Culture_SlaveCount_One_Social.stages.0.label>主人蓄奴過多</SSC_Culture_SlaveCount_One_Social.stages.0.label>
+  <SSC_Culture_SlaveCount_One_Social.stages.0.description>此主人名下性奴不止一人，令我側目。</SSC_Culture_SlaveCount_One_Social.stages.0.description>
+  <SSC_Culture_SlaveCount_One_Social.stages.1.label>主人蓄奴過多</SSC_Culture_SlaveCount_One_Social.stages.1.label>
+  <SSC_Culture_SlaveCount_One_Social.stages.1.description>此主人蓄奴無度，實屬放縱。</SSC_Culture_SlaveCount_One_Social.stages.1.description>
+  <SSC_Culture_SlaveCount_One_Social.stages.2.label>主人蓄奴過多</SSC_Culture_SlaveCount_One_Social.stages.2.label>
+  <SSC_Culture_SlaveCount_One_Social.stages.2.description>此主人貪得無厭、蓄奴成群，令我深惡。</SSC_Culture_SlaveCount_One_Social.stages.2.description>
+  <SSC_Culture_SlaveCount_Three_Social.stages.0.label>主人蓄奴過多</SSC_Culture_SlaveCount_Three_Social.stages.0.label>
+  <SSC_Culture_SlaveCount_Three_Social.stages.0.description>此主人名下性奴多於三人，令我側目。</SSC_Culture_SlaveCount_Three_Social.stages.0.description>
+  <SSC_Culture_SlaveCount_Three_Social.stages.1.label>主人蓄奴過多</SSC_Culture_SlaveCount_Three_Social.stages.1.label>
+  <SSC_Culture_SlaveCount_Three_Social.stages.1.description>此主人蓄奴無度，實屬放縱。</SSC_Culture_SlaveCount_Three_Social.stages.1.description>
+  <SSC_Culture_SlaveCount_Three_Social.stages.2.label>主人蓄奴過多</SSC_Culture_SlaveCount_Three_Social.stages.2.label>
+  <SSC_Culture_SlaveCount_Three_Social.stages.2.description>此主人貪得無厭、蓄奴成群，令我深惡。</SSC_Culture_SlaveCount_Three_Social.stages.2.description>
+  <SSC_Culture_SexSlave_Hostile_Social.stages.0.label>仇視此性奴</SSC_Culture_SexSlave_Hostile_Social.stages.0.label>
+  <SSC_Culture_SexSlave_Hostile_Social.stages.0.description>此人甘心為奴、自甘墮落，是可恥的幫兇。</SSC_Culture_SexSlave_Hostile_Social.stages.0.description>
+  <SSC_Culture_Master_Deference_Leader.stages.2.label>領袖竟是性奴</SSC_Culture_Master_Deference_Leader.stages.2.label>
+  <SSC_Culture_Master_Deference_Leader.stages.2.description>我們的領袖竟是個俯首為奴之人，這實在有辱秩序。</SSC_Culture_Master_Deference_Leader.stages.2.description>
+  <SSC_Culture_Master_Deference_SexSlaveLeaderSocial.stages.0.label>鄙夷此性奴領袖</SSC_Culture_Master_Deference_SexSlaveLeaderSocial.stages.0.label>
+  <SSC_Culture_Master_Deference_SexSlaveLeaderSocial.stages.0.description>此人身為性奴卻竊居領袖之位，有辱主奴秩序。</SSC_Culture_Master_Deference_SexSlaveLeaderSocial.stages.0.description>
+  <SSC_Culture_Master_HolyMaster_Leader.stages.2.label>領袖竟是性奴</SSC_Culture_Master_HolyMaster_Leader.stages.2.label>
+  <SSC_Culture_Master_HolyMaster_Leader.stages.2.description>神聖的領袖之位竟被一個性奴佔據，這是莫大的褻瀆。</SSC_Culture_Master_HolyMaster_Leader.stages.2.description>
+  <SSC_Culture_Master_HolyMaster_SexSlaveLeaderSocial.stages.0.label>痛恨此性奴領袖</SSC_Culture_Master_HolyMaster_SexSlaveLeaderSocial.stages.0.label>
+  <SSC_Culture_Master_HolyMaster_SexSlaveLeaderSocial.stages.0.description>一個性奴竟敢僭居神聖領袖之位，這是對秩序的褻瀆。</SSC_Culture_Master_HolyMaster_SexSlaveLeaderSocial.stages.0.description>
   <!-- 1.7 六档性别规范：名称为功能标记，正式描述后续交接。 -->
-  <SSC_Culture_SlaveGender_LimitedViolation_Self.stages.0.label>[TODO:SSC_Culture_SlaveGender_LimitedViolation_Self.stages.0.label]</SSC_Culture_SlaveGender_LimitedViolation_Self.stages.0.label>
-  <SSC_Culture_SlaveGender_LimitedViolation_Self.stages.0.description>[TODO:SSC_Culture_SlaveGender_LimitedViolation_Self.stages.0.description]</SSC_Culture_SlaveGender_LimitedViolation_Self.stages.0.description>
-  <SSC_Culture_SlaveGender_LimitedViolation_Social.stages.0.label>[TODO:SSC_Culture_SlaveGender_LimitedViolation_Social.stages.0.label]</SSC_Culture_SlaveGender_LimitedViolation_Social.stages.0.label>
-  <SSC_Culture_SlaveGender_LimitedViolation_Social.stages.0.description>[TODO:SSC_Culture_SlaveGender_LimitedViolation_Social.stages.0.description]</SSC_Culture_SlaveGender_LimitedViolation_Social.stages.0.description>
-  <SSC_Culture_SlaveGender_LimitedViolation_Environment.stages.0.label>[TODO:SSC_Culture_SlaveGender_LimitedViolation_Environment.stages.0.label]</SSC_Culture_SlaveGender_LimitedViolation_Environment.stages.0.label>
-  <SSC_Culture_SlaveGender_LimitedViolation_Environment.stages.0.description>[TODO:SSC_Culture_SlaveGender_LimitedViolation_Environment.stages.0.description]</SSC_Culture_SlaveGender_LimitedViolation_Environment.stages.0.description>
-  <SSC_Culture_SlaveGender_RequiredViolation_Self.stages.0.label>[TODO:SSC_Culture_SlaveGender_RequiredViolation_Self.stages.0.label]</SSC_Culture_SlaveGender_RequiredViolation_Self.stages.0.label>
-  <SSC_Culture_SlaveGender_RequiredViolation_Self.stages.0.description>[TODO:SSC_Culture_SlaveGender_RequiredViolation_Self.stages.0.description]</SSC_Culture_SlaveGender_RequiredViolation_Self.stages.0.description>
-  <SSC_Culture_SlaveGender_RequiredViolation_Social.stages.0.label>[TODO:SSC_Culture_SlaveGender_RequiredViolation_Social.stages.0.label]</SSC_Culture_SlaveGender_RequiredViolation_Social.stages.0.label>
-  <SSC_Culture_SlaveGender_RequiredViolation_Social.stages.0.description>[TODO:SSC_Culture_SlaveGender_RequiredViolation_Social.stages.0.description]</SSC_Culture_SlaveGender_RequiredViolation_Social.stages.0.description>
-  <SSC_Culture_SlaveGender_RequiredViolation_Environment.stages.0.label>[TODO:SSC_Culture_SlaveGender_RequiredViolation_Environment.stages.0.label]</SSC_Culture_SlaveGender_RequiredViolation_Environment.stages.0.label>
-  <SSC_Culture_SlaveGender_RequiredViolation_Environment.stages.0.description>[TODO:SSC_Culture_SlaveGender_RequiredViolation_Environment.stages.0.description]</SSC_Culture_SlaveGender_RequiredViolation_Environment.stages.0.description>
-  <SSC_Culture_SlaveGender_RequiredDuty_Self.stages.0.label>[TODO:SSC_Culture_SlaveGender_RequiredDuty_Self.stages.0.label]</SSC_Culture_SlaveGender_RequiredDuty_Self.stages.0.label>
-  <SSC_Culture_SlaveGender_RequiredDuty_Self.stages.0.description>[TODO:SSC_Culture_SlaveGender_RequiredDuty_Self.stages.0.description]</SSC_Culture_SlaveGender_RequiredDuty_Self.stages.0.description>
-  <SSC_Culture_SlaveGender_RequiredDuty_Social.stages.0.label>[TODO:SSC_Culture_SlaveGender_RequiredDuty_Social.stages.0.label]</SSC_Culture_SlaveGender_RequiredDuty_Social.stages.0.label>
-  <SSC_Culture_SlaveGender_RequiredDuty_Social.stages.0.description>[TODO:SSC_Culture_SlaveGender_RequiredDuty_Social.stages.0.description]</SSC_Culture_SlaveGender_RequiredDuty_Social.stages.0.description>
-  <SSC_Culture_SlaveGender_RequiredDuty_Environment.stages.0.label>[TODO:SSC_Culture_SlaveGender_RequiredDuty_Environment.stages.0.label]</SSC_Culture_SlaveGender_RequiredDuty_Environment.stages.0.label>
-  <SSC_Culture_SlaveGender_RequiredDuty_Environment.stages.0.description>[TODO:SSC_Culture_SlaveGender_RequiredDuty_Environment.stages.0.description]</SSC_Culture_SlaveGender_RequiredDuty_Environment.stages.0.description>
-  <SSC_Culture_SlaveGender_NonMasterDuty_Self.stages.0.label>[TODO:SSC_Culture_SlaveGender_NonMasterDuty_Self.stages.0.label]</SSC_Culture_SlaveGender_NonMasterDuty_Self.stages.0.label>
-  <SSC_Culture_SlaveGender_NonMasterDuty_Self.stages.0.description>[TODO:SSC_Culture_SlaveGender_NonMasterDuty_Self.stages.0.description]</SSC_Culture_SlaveGender_NonMasterDuty_Self.stages.0.description>
-  <SSC_Culture_SlaveGender_NonMasterDuty_Social.stages.0.label>[TODO:SSC_Culture_SlaveGender_NonMasterDuty_Social.stages.0.label]</SSC_Culture_SlaveGender_NonMasterDuty_Social.stages.0.label>
-  <SSC_Culture_SlaveGender_NonMasterDuty_Social.stages.0.description>[TODO:SSC_Culture_SlaveGender_NonMasterDuty_Social.stages.0.description]</SSC_Culture_SlaveGender_NonMasterDuty_Social.stages.0.description>
-  <SSC_Culture_SlaveGender_NonMasterDuty_Environment.stages.0.label>[TODO:SSC_Culture_SlaveGender_NonMasterDuty_Environment.stages.0.label]</SSC_Culture_SlaveGender_NonMasterDuty_Environment.stages.0.label>
-  <SSC_Culture_SlaveGender_NonMasterDuty_Environment.stages.0.description>[TODO:SSC_Culture_SlaveGender_NonMasterDuty_Environment.stages.0.description]</SSC_Culture_SlaveGender_NonMasterDuty_Environment.stages.0.description>
-  <!-- 艳羡且有义务：专属阶段与独立占位文案，不与普通义务叠扣。 -->
-  <SSC_Culture_SlaveGender_RequiredDuty_Self.stages.1.label>[TODO:SSC_Culture_SlaveGender_RequiredDuty_Self.stages.1.label]</SSC_Culture_SlaveGender_RequiredDuty_Self.stages.1.label>
-  <SSC_Culture_SlaveGender_RequiredDuty_Self.stages.1.description>[TODO:SSC_Culture_SlaveGender_RequiredDuty_Self.stages.1.description]</SSC_Culture_SlaveGender_RequiredDuty_Self.stages.1.description>
-  <SSC_Culture_SlaveGender_NonMasterDuty_Self.stages.1.label>[TODO:SSC_Culture_SlaveGender_NonMasterDuty_Self.stages.1.label]</SSC_Culture_SlaveGender_NonMasterDuty_Self.stages.1.label>
-  <SSC_Culture_SlaveGender_NonMasterDuty_Self.stages.1.description>[TODO:SSC_Culture_SlaveGender_NonMasterDuty_Self.stages.1.description]</SSC_Culture_SlaveGender_NonMasterDuty_Self.stages.1.description>
+  <SSC_Culture_SlaveGender_LimitedViolation_Self.stages.0.label>違規之奴</SSC_Culture_SlaveGender_LimitedViolation_Self.stages.0.label>
+  <SSC_Culture_SlaveGender_LimitedViolation_Self.stages.0.description>我以本文化所排斥的性別淪為鎖鏈下的性奴——這副身軀本不該跪伏於此，錯位令我痛苦。</SSC_Culture_SlaveGender_LimitedViolation_Self.stages.0.description>
+  <SSC_Culture_SlaveGender_LimitedViolation_Social.stages.0.label>鄙夷此違規性奴</SSC_Culture_SlaveGender_LimitedViolation_Social.stages.0.label>
+  <SSC_Culture_SlaveGender_LimitedViolation_Social.stages.0.description>此人以被排斥的性別為奴，玷污了主奴秩序，令我側目。</SSC_Culture_SlaveGender_LimitedViolation_Social.stages.0.description>
+  <SSC_Culture_SlaveGender_LimitedViolation_Environment.stages.0.label>身邊有違規性奴</SSC_Culture_SlaveGender_LimitedViolation_Environment.stages.0.label>
+  <SSC_Culture_SlaveGender_LimitedViolation_Environment.stages.0.description>附近有違規性別的性奴在俯首侍奉，令我難以心安。</SSC_Culture_SlaveGender_LimitedViolation_Environment.stages.0.description>
+  <SSC_Culture_SlaveGender_RequiredViolation_Self.stages.0.label>違規之奴</SSC_Culture_SlaveGender_RequiredViolation_Self.stages.0.label>
+  <SSC_Culture_SlaveGender_RequiredViolation_Self.stages.0.description>我以被排斥的性別淪為性奴，既違必須之規，也令這副肉身蒙羞，痛苦更甚。</SSC_Culture_SlaveGender_RequiredViolation_Self.stages.0.description>
+  <SSC_Culture_SlaveGender_RequiredViolation_Social.stages.0.label>深惡此違規性奴</SSC_Culture_SlaveGender_RequiredViolation_Social.stages.0.label>
+  <SSC_Culture_SlaveGender_RequiredViolation_Social.stages.0.description>此人以被排斥的性別為奴，公然踐踏必須之規，令我深惡痛絕。</SSC_Culture_SlaveGender_RequiredViolation_Social.stages.0.description>
+  <SSC_Culture_SlaveGender_RequiredViolation_Environment.stages.0.label>身邊有違規性奴</SSC_Culture_SlaveGender_RequiredViolation_Environment.stages.0.label>
+  <SSC_Culture_SlaveGender_RequiredViolation_Environment.stages.0.description>附近有違規性別的性奴在承歡侍奉，令我如鯁在喉。</SSC_Culture_SlaveGender_RequiredViolation_Environment.stages.0.description>
+  <SSC_Culture_SlaveGender_RequiredDuty_Self.stages.0.label>未盡為奴之責</SSC_Culture_SlaveGender_RequiredDuty_Self.stages.0.label>
+  <SSC_Culture_SlaveGender_RequiredDuty_Self.stages.0.description>我生來便該獻身於主人，卻仍游離於鎖鏈之外，尚未跪伏、尚未被佔有——這懸而未盡的義務令我焦灼。</SSC_Culture_SlaveGender_RequiredDuty_Self.stages.0.description>
+  <SSC_Culture_SlaveGender_RequiredDuty_Social.stages.0.label>輕鄙未盡責者</SSC_Culture_SlaveGender_RequiredDuty_Social.stages.0.label>
+  <SSC_Culture_SlaveGender_RequiredDuty_Social.stages.0.description>此人生來便該獻身為奴，卻遲遲不肯俯首，令我不齒。</SSC_Culture_SlaveGender_RequiredDuty_Social.stages.0.description>
+  <SSC_Culture_SlaveGender_RequiredDuty_Environment.stages.0.label>身邊有人未盡為奴之責</SSC_Culture_SlaveGender_RequiredDuty_Environment.stages.0.label>
+  <SSC_Culture_SlaveGender_RequiredDuty_Environment.stages.0.description>附近有生來該獻身卻尚未為奴之人，令我不安。</SSC_Culture_SlaveGender_RequiredDuty_Environment.stages.0.description>
+  <SSC_Culture_SlaveGender_NonMasterDuty_Self.stages.0.label>未盡為奴之責</SSC_Culture_SlaveGender_NonMasterDuty_Self.stages.0.label>
+  <SSC_Culture_SlaveGender_NonMasterDuty_Self.stages.0.description>我既非主人，便當為奴，卻仍游離於鎖鏈之外——這背棄身分的不安，令我坐立難安。</SSC_Culture_SlaveGender_NonMasterDuty_Self.stages.0.description>
+  <SSC_Culture_SlaveGender_NonMasterDuty_Social.stages.0.label>輕鄙游離者</SSC_Culture_SlaveGender_NonMasterDuty_Social.stages.0.label>
+  <SSC_Culture_SlaveGender_NonMasterDuty_Social.stages.0.description>此人既非主人又不肯為奴，游離於秩序之外，令我厭惡。</SSC_Culture_SlaveGender_NonMasterDuty_Social.stages.0.description>
+  <SSC_Culture_SlaveGender_NonMasterDuty_Environment.stages.0.label>身邊有游離者</SSC_Culture_SlaveGender_NonMasterDuty_Environment.stages.0.label>
+  <SSC_Culture_SlaveGender_NonMasterDuty_Environment.stages.0.description>附近有既非主人亦非性奴、游離於秩序之外的人，令我焦躁。</SSC_Culture_SlaveGender_NonMasterDuty_Environment.stages.0.description>
+  <!-- 艳羡且有义务：专属阶段与独立文案，不与普通义务叠扣。 -->
+  <SSC_Culture_SlaveGender_RequiredDuty_Self.stages.1.label>豔羨未償</SSC_Culture_SlaveGender_RequiredDuty_Self.stages.1.label>
+  <SSC_Culture_SlaveGender_RequiredDuty_Self.stages.1.description>我既豔羨那些被主人佔有、被貫穿到高潮的性奴，自己又生來便該獻身卻尚未為奴——慾望與義務雙雙落空，令我下身發癢、焦渴難耐。</SSC_Culture_SlaveGender_RequiredDuty_Self.stages.1.description>
+  <SSC_Culture_SlaveGender_NonMasterDuty_Self.stages.1.label>豔羨未償</SSC_Culture_SlaveGender_NonMasterDuty_Self.stages.1.label>
+  <SSC_Culture_SlaveGender_NonMasterDuty_Self.stages.1.description>我豔羨那些被鎖鏈佔有、被肏到高潮失禁的性奴，自己卻既非主人亦非性奴——慾望無處安放，責任又未了，令我渾身燥熱、痛苦不堪。</SSC_Culture_SlaveGender_NonMasterDuty_Self.stages.1.description>
 </LanguageData>

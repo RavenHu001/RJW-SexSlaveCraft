@@ -1,140 +1,140 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-  <!-- 阶段名称仅作功能标记，描述正文待补；键和阶段号是机制契约。 -->
-  <SSC_Culture_SexSlave_Hostile_Self.stages.0.label>[маркер: враждебность / сам персонаж — секс-раб]</SSC_Culture_SexSlave_Hostile_Self.stages.0.label>
-  <SSC_Culture_SexSlave_Hostile_Self.stages.0.description>[TODO:SSC_Culture_SexSlave_Hostile_Self.stages.0.description]</SSC_Culture_SexSlave_Hostile_Self.stages.0.description>
-  <SSC_Culture_SexSlave_Revulsion_Self.stages.0.label>[маркер: отвращение / сам персонаж — секс-раб]</SSC_Culture_SexSlave_Revulsion_Self.stages.0.label>
-  <SSC_Culture_SexSlave_Revulsion_Self.stages.0.description>[TODO:SSC_Culture_SexSlave_Revulsion_Self.stages.0.description]</SSC_Culture_SexSlave_Revulsion_Self.stages.0.description>
-  <SSC_Culture_SexSlave_Sacred_Self.stages.0.label>[маркер: священность / сам персонаж — секс-раб]</SSC_Culture_SexSlave_Sacred_Self.stages.0.label>
-  <SSC_Culture_SexSlave_Sacred_Self.stages.0.description>[TODO:SSC_Culture_SexSlave_Sacred_Self.stages.0.description]</SSC_Culture_SexSlave_Sacred_Self.stages.0.description>
-  <SSC_Culture_SexSlave_Envy_Self.stages.0.label>[маркер: зависть / сам персонаж — секс-раб]</SSC_Culture_SexSlave_Envy_Self.stages.0.label>
-  <SSC_Culture_SexSlave_Envy_Self.stages.0.description>[TODO:SSC_Culture_SexSlave_Envy_Self.stages.0.description]</SSC_Culture_SexSlave_Envy_Self.stages.0.description>
-  <SSC_Culture_SexSlave_Envy_Self.stages.1.label>[маркер: зависть / не секс-раб и не хозяин]</SSC_Culture_SexSlave_Envy_Self.stages.1.label>
-  <SSC_Culture_SexSlave_Envy_Self.stages.1.description>[TODO:SSC_Culture_SexSlave_Envy_Self.stages.1.description]</SSC_Culture_SexSlave_Envy_Self.stages.1.description>
-  <SSC_Culture_SexSlave_Hostile_Environment.stages.0.label>[маркер: враждебность / окружение за персонажа]</SSC_Culture_SexSlave_Hostile_Environment.stages.0.label>
-  <SSC_Culture_SexSlave_Hostile_Environment.stages.0.description>[TODO:SSC_Culture_SexSlave_Hostile_Environment.stages.0.description]</SSC_Culture_SexSlave_Hostile_Environment.stages.0.description>
-  <SSC_Culture_SexSlave_Revulsion_Environment.stages.0.label>[маркер: отвращение / окружение за персонажа]</SSC_Culture_SexSlave_Revulsion_Environment.stages.0.label>
-  <SSC_Culture_SexSlave_Revulsion_Environment.stages.0.description>[TODO:SSC_Culture_SexSlave_Revulsion_Environment.stages.0.description]</SSC_Culture_SexSlave_Revulsion_Environment.stages.0.description>
-  <SSC_Culture_SexSlave_Sacred_Environment.stages.0.label>[заглушка: святость / бонус за численность / максимум при пяти]</SSC_Culture_SexSlave_Sacred_Environment.stages.0.label>
-  <SSC_Culture_SexSlave_Sacred_Environment.stages.0.description>[TODO:SSC_Culture_SexSlave_Sacred_Environment.stages.0.description]</SSC_Culture_SexSlave_Sacred_Environment.stages.0.description>
-  <SSC_Culture_SexSlave_Revulsion_Social.stages.0.label>[маркер: отвращение / мнение о секс-рабе]</SSC_Culture_SexSlave_Revulsion_Social.stages.0.label>
-  <SSC_Culture_SexSlave_Revulsion_Social.stages.0.description>[TODO:SSC_Culture_SexSlave_Revulsion_Social.stages.0.description]</SSC_Culture_SexSlave_Revulsion_Social.stages.0.description>
-  <SSC_Culture_SexSlave_Respect_Social.stages.0.label>[маркер: уважение / мнение о секс-рабе]</SSC_Culture_SexSlave_Respect_Social.stages.0.label>
-  <SSC_Culture_SexSlave_Respect_Social.stages.0.description>[TODO:SSC_Culture_SexSlave_Respect_Social.stages.0.description]</SSC_Culture_SexSlave_Respect_Social.stages.0.description>
-  <SSC_Culture_SexSlave_Sacred_Social.stages.0.label>[маркер: священность / мнение о секс-рабе]</SSC_Culture_SexSlave_Sacred_Social.stages.0.label>
-  <SSC_Culture_SexSlave_Sacred_Social.stages.0.description>[TODO:SSC_Culture_SexSlave_Sacred_Social.stages.0.description]</SSC_Culture_SexSlave_Sacred_Social.stages.0.description>
-  <SSC_Culture_SexSlave_Envy_Social.stages.0.label>[маркер: зависть / мнение о секс-рабе]</SSC_Culture_SexSlave_Envy_Social.stages.0.label>
-  <SSC_Culture_SexSlave_Envy_Social.stages.0.description>[TODO:SSC_Culture_SexSlave_Envy_Social.stages.0.description]</SSC_Culture_SexSlave_Envy_Social.stages.0.description>
-  <SSC_Culture_Trainer_Hostile_Self.stages.0.label>[маркер: враждебность / собственная должность]</SSC_Culture_Trainer_Hostile_Self.stages.0.label>
-  <SSC_Culture_Trainer_Hostile_Self.stages.0.description>[TODO:SSC_Culture_Trainer_Hostile_Self.stages.0.description]</SSC_Culture_Trainer_Hostile_Self.stages.0.description>
-  <SSC_Culture_Trainer_Hostile_Social.stages.0.label>[маркер: враждебность / мнение о наставнике]</SSC_Culture_Trainer_Hostile_Social.stages.0.label>
-  <SSC_Culture_Trainer_Hostile_Social.stages.0.description>[TODO:SSC_Culture_Trainer_Hostile_Social.stages.0.description]</SSC_Culture_Trainer_Hostile_Social.stages.0.description>
-  <SSC_Culture_Trainer_Revulsion_Self.stages.0.label>[маркер: отвращение / собственная должность]</SSC_Culture_Trainer_Revulsion_Self.stages.0.label>
-  <SSC_Culture_Trainer_Revulsion_Self.stages.0.description>[TODO:SSC_Culture_Trainer_Revulsion_Self.stages.0.description]</SSC_Culture_Trainer_Revulsion_Self.stages.0.description>
-  <SSC_Culture_Trainer_Revulsion_Social.stages.0.label>[маркер: отвращение / мнение о наставнике]</SSC_Culture_Trainer_Revulsion_Social.stages.0.label>
-  <SSC_Culture_Trainer_Revulsion_Social.stages.0.description>[TODO:SSC_Culture_Trainer_Revulsion_Social.stages.0.description]</SSC_Culture_Trainer_Revulsion_Social.stages.0.description>
-  <SSC_Culture_Trainer_Reverence_Self.stages.0.label>[маркер: почтение / собственная должность]</SSC_Culture_Trainer_Reverence_Self.stages.0.label>
-  <SSC_Culture_Trainer_Reverence_Self.stages.0.description>[TODO:SSC_Culture_Trainer_Reverence_Self.stages.0.description]</SSC_Culture_Trainer_Reverence_Self.stages.0.description>
-  <SSC_Culture_Trainer_Reverence_Social.stages.0.label>[маркер: почтение / мнение о наставнике]</SSC_Culture_Trainer_Reverence_Social.stages.0.label>
-  <SSC_Culture_Trainer_Reverence_Social.stages.0.description>[TODO:SSC_Culture_Trainer_Reverence_Social.stages.0.description]</SSC_Culture_Trainer_Reverence_Social.stages.0.description>
-  <SSC_Culture_Trainer_SacredOffice_Self.stages.0.label>[маркер: священное служение / собственная должность]</SSC_Culture_Trainer_SacredOffice_Self.stages.0.label>
-  <SSC_Culture_Trainer_SacredOffice_Self.stages.0.description>[TODO:SSC_Culture_Trainer_SacredOffice_Self.stages.0.description]</SSC_Culture_Trainer_SacredOffice_Self.stages.0.description>
-  <SSC_Culture_Trainer_SacredOffice_Social.stages.0.label>[маркер: священное служение / мнение о наставнике]</SSC_Culture_Trainer_SacredOffice_Social.stages.0.label>
-  <SSC_Culture_Trainer_SacredOffice_Social.stages.0.description>[TODO:SSC_Culture_Trainer_SacredOffice_Social.stages.0.description]</SSC_Culture_Trainer_SacredOffice_Social.stages.0.description>
-  <SSC_Culture_Master_Hostile_Self.stages.0.label>[маркер: враждебность / сам хозяин]</SSC_Culture_Master_Hostile_Self.stages.0.label>
-  <SSC_Culture_Master_Hostile_Self.stages.0.description>[TODO:SSC_Culture_Master_Hostile_Self.stages.0.description]</SSC_Culture_Master_Hostile_Self.stages.0.description>
-  <SSC_Culture_Master_Hostile_ActualMaster.stages.0.label>[маркер: враждебность / есть фактический хозяин]</SSC_Culture_Master_Hostile_ActualMaster.stages.0.label>
-  <SSC_Culture_Master_Hostile_ActualMaster.stages.0.description>[TODO:SSC_Culture_Master_Hostile_ActualMaster.stages.0.description]</SSC_Culture_Master_Hostile_ActualMaster.stages.0.description>
-  <SSC_Culture_Master_Hostile_Social.stages.0.label>[маркер: враждебность / мнение о хозяине]</SSC_Culture_Master_Hostile_Social.stages.0.label>
-  <SSC_Culture_Master_Hostile_Social.stages.0.description>[TODO:SSC_Culture_Master_Hostile_Social.stages.0.description]</SSC_Culture_Master_Hostile_Social.stages.0.description>
-  <SSC_Culture_Master_Hostile_Leader.stages.0.label>[маркер: враждебность / лидер — хозяин]</SSC_Culture_Master_Hostile_Leader.stages.0.label>
-  <SSC_Culture_Master_Hostile_Leader.stages.0.description>[TODO:SSC_Culture_Master_Hostile_Leader.stages.0.description]</SSC_Culture_Master_Hostile_Leader.stages.0.description>
-  <SSC_Culture_Master_Revulsion_Self.stages.0.label>[маркер: отвращение / сам хозяин]</SSC_Culture_Master_Revulsion_Self.stages.0.label>
-  <SSC_Culture_Master_Revulsion_Self.stages.0.description>[TODO:SSC_Culture_Master_Revulsion_Self.stages.0.description]</SSC_Culture_Master_Revulsion_Self.stages.0.description>
-  <SSC_Culture_Master_Revulsion_ActualMaster.stages.0.label>[маркер: отвращение / есть фактический хозяин]</SSC_Culture_Master_Revulsion_ActualMaster.stages.0.label>
-  <SSC_Culture_Master_Revulsion_ActualMaster.stages.0.description>[TODO:SSC_Culture_Master_Revulsion_ActualMaster.stages.0.description]</SSC_Culture_Master_Revulsion_ActualMaster.stages.0.description>
-  <SSC_Culture_Master_Revulsion_Social.stages.0.label>[маркер: отвращение / мнение о хозяине]</SSC_Culture_Master_Revulsion_Social.stages.0.label>
-  <SSC_Culture_Master_Revulsion_Social.stages.0.description>[TODO:SSC_Culture_Master_Revulsion_Social.stages.0.description]</SSC_Culture_Master_Revulsion_Social.stages.0.description>
-  <SSC_Culture_Master_Revulsion_Leader.stages.0.label>[маркер: отвращение / лидер — хозяин]</SSC_Culture_Master_Revulsion_Leader.stages.0.label>
-  <SSC_Culture_Master_Revulsion_Leader.stages.0.description>[TODO:SSC_Culture_Master_Revulsion_Leader.stages.0.description]</SSC_Culture_Master_Revulsion_Leader.stages.0.description>
-  <SSC_Culture_Master_Deference_Self.stages.0.label>[маркер: почитание / сам хозяин]</SSC_Culture_Master_Deference_Self.stages.0.label>
-  <SSC_Culture_Master_Deference_Self.stages.0.description>[TODO:SSC_Culture_Master_Deference_Self.stages.0.description]</SSC_Culture_Master_Deference_Self.stages.0.description>
-  <SSC_Culture_Master_Deference_ActualMaster.stages.0.label>[маркер: почитание / есть фактический хозяин]</SSC_Culture_Master_Deference_ActualMaster.stages.0.label>
-  <SSC_Culture_Master_Deference_ActualMaster.stages.0.description>[TODO:SSC_Culture_Master_Deference_ActualMaster.stages.0.description]</SSC_Culture_Master_Deference_ActualMaster.stages.0.description>
-  <SSC_Culture_Master_Deference_Social.stages.0.label>[маркер: почитание / мнение о хозяине]</SSC_Culture_Master_Deference_Social.stages.0.label>
-  <SSC_Culture_Master_Deference_Social.stages.0.description>[TODO:SSC_Culture_Master_Deference_Social.stages.0.description]</SSC_Culture_Master_Deference_Social.stages.0.description>
-  <SSC_Culture_Master_Deference_Leader.stages.0.label>[заглушка: почтение / лидер-хозяин / наблюдатель не хозяин]</SSC_Culture_Master_Deference_Leader.stages.0.label>
-  <SSC_Culture_Master_Deference_Leader.stages.0.description>[TODO:SSC_Culture_Master_Deference_Leader.stages.0.description]</SSC_Culture_Master_Deference_Leader.stages.0.description>
-  <SSC_Culture_Master_Deference_Leader.stages.1.label>[заглушка: почтение / обычный лидер не хозяин]</SSC_Culture_Master_Deference_Leader.stages.1.label>
-  <SSC_Culture_Master_Deference_Leader.stages.1.description>[TODO:SSC_Culture_Master_Deference_Leader.stages.1.description]</SSC_Culture_Master_Deference_Leader.stages.1.description>
-  <SSC_Culture_Master_HolyMaster_Self.stages.0.label>[маркер: священный хозяин / сам хозяин]</SSC_Culture_Master_HolyMaster_Self.stages.0.label>
-  <SSC_Culture_Master_HolyMaster_Self.stages.0.description>[TODO:SSC_Culture_Master_HolyMaster_Self.stages.0.description]</SSC_Culture_Master_HolyMaster_Self.stages.0.description>
-  <SSC_Culture_Master_HolyMaster_ActualMaster.stages.0.label>[маркер: священный хозяин / есть фактический хозяин]</SSC_Culture_Master_HolyMaster_ActualMaster.stages.0.label>
-  <SSC_Culture_Master_HolyMaster_ActualMaster.stages.0.description>[TODO:SSC_Culture_Master_HolyMaster_ActualMaster.stages.0.description]</SSC_Culture_Master_HolyMaster_ActualMaster.stages.0.description>
-  <SSC_Culture_Master_HolyMaster_Social.stages.0.label>[маркер: священный хозяин / мнение о хозяине]</SSC_Culture_Master_HolyMaster_Social.stages.0.label>
-  <SSC_Culture_Master_HolyMaster_Social.stages.0.description>[TODO:SSC_Culture_Master_HolyMaster_Social.stages.0.description]</SSC_Culture_Master_HolyMaster_Social.stages.0.description>
-  <SSC_Culture_Master_HolyMaster_Leader.stages.0.label>[заглушка: святой хозяин / лидер-хозяин / наблюдатель не хозяин]</SSC_Culture_Master_HolyMaster_Leader.stages.0.label>
-  <SSC_Culture_Master_HolyMaster_Leader.stages.0.description>[TODO:SSC_Culture_Master_HolyMaster_Leader.stages.0.description]</SSC_Culture_Master_HolyMaster_Leader.stages.0.description>
-  <SSC_Culture_Master_HolyMaster_Leader.stages.1.label>[заглушка: святой хозяин / обычный лидер не хозяин]</SSC_Culture_Master_HolyMaster_Leader.stages.1.label>
-  <SSC_Culture_Master_HolyMaster_Leader.stages.1.description>[TODO:SSC_Culture_Master_HolyMaster_Leader.stages.1.description]</SSC_Culture_Master_HolyMaster_Leader.stages.1.description>
-  <SSC_Culture_MasterCount_One_Self.stages.0.label>[заглушка: избыток хозяев колонии / лимит 1]</SSC_Culture_MasterCount_One_Self.stages.0.label>
-  <SSC_Culture_MasterCount_One_Self.stages.0.description>[TODO:SSC_Culture_MasterCount_One_Self.stages.0.description]</SSC_Culture_MasterCount_One_Self.stages.0.description>
-  <SSC_Culture_MasterCount_Three_Self.stages.0.label>[заглушка: избыток хозяев колонии / лимит 3]</SSC_Culture_MasterCount_Three_Self.stages.0.label>
-  <SSC_Culture_MasterCount_Three_Self.stages.0.description>[TODO:SSC_Culture_MasterCount_Three_Self.stages.0.description]</SSC_Culture_MasterCount_Three_Self.stages.0.description>
-  <SSC_Culture_SlaveCount_One_Self.stages.0.label>[заглушка: избыток собственных секс-рабов / лимит 1]</SSC_Culture_SlaveCount_One_Self.stages.0.label>
-  <SSC_Culture_SlaveCount_One_Self.stages.0.description>[TODO:SSC_Culture_SlaveCount_One_Self.stages.0.description]</SSC_Culture_SlaveCount_One_Self.stages.0.description>
-  <SSC_Culture_SlaveCount_Three_Self.stages.0.label>[заглушка: избыток собственных секс-рабов / лимит 3]</SSC_Culture_SlaveCount_Three_Self.stages.0.label>
-  <SSC_Culture_SlaveCount_Three_Self.stages.0.description>[TODO:SSC_Culture_SlaveCount_Three_Self.stages.0.description]</SSC_Culture_SlaveCount_Three_Self.stages.0.description>
-  <SSC_Culture_SlaveCount_One_Social.stages.0.label>[заглушка: превышение лимита рабов у хозяина / лимит 1 / превышение 1]</SSC_Culture_SlaveCount_One_Social.stages.0.label>
-  <SSC_Culture_SlaveCount_One_Social.stages.0.description>[TODO:SSC_Culture_SlaveCount_One_Social.stages.0.description]</SSC_Culture_SlaveCount_One_Social.stages.0.description>
-  <SSC_Culture_SlaveCount_One_Social.stages.1.label>[заглушка: превышение лимита рабов у хозяина / лимит 1 / превышение 2]</SSC_Culture_SlaveCount_One_Social.stages.1.label>
-  <SSC_Culture_SlaveCount_One_Social.stages.1.description>[TODO:SSC_Culture_SlaveCount_One_Social.stages.1.description]</SSC_Culture_SlaveCount_One_Social.stages.1.description>
-  <SSC_Culture_SlaveCount_One_Social.stages.2.label>[заглушка: превышение лимита рабов у хозяина / лимит 1 / превышение 3 и более]</SSC_Culture_SlaveCount_One_Social.stages.2.label>
-  <SSC_Culture_SlaveCount_One_Social.stages.2.description>[TODO:SSC_Culture_SlaveCount_One_Social.stages.2.description]</SSC_Culture_SlaveCount_One_Social.stages.2.description>
-  <SSC_Culture_SlaveCount_Three_Social.stages.0.label>[заглушка: превышение лимита рабов у хозяина / лимит 3 / превышение 1]</SSC_Culture_SlaveCount_Three_Social.stages.0.label>
-  <SSC_Culture_SlaveCount_Three_Social.stages.0.description>[TODO:SSC_Culture_SlaveCount_Three_Social.stages.0.description]</SSC_Culture_SlaveCount_Three_Social.stages.0.description>
-  <SSC_Culture_SlaveCount_Three_Social.stages.1.label>[заглушка: превышение лимита рабов у хозяина / лимит 3 / превышение 2]</SSC_Culture_SlaveCount_Three_Social.stages.1.label>
-  <SSC_Culture_SlaveCount_Three_Social.stages.1.description>[TODO:SSC_Culture_SlaveCount_Three_Social.stages.1.description]</SSC_Culture_SlaveCount_Three_Social.stages.1.description>
-  <SSC_Culture_SlaveCount_Three_Social.stages.2.label>[заглушка: превышение лимита рабов у хозяина / лимит 3 / превышение 3 и более]</SSC_Culture_SlaveCount_Three_Social.stages.2.label>
-  <SSC_Culture_SlaveCount_Three_Social.stages.2.description>[TODO:SSC_Culture_SlaveCount_Three_Social.stages.2.description]</SSC_Culture_SlaveCount_Three_Social.stages.2.description>
-  <SSC_Culture_SexSlave_Hostile_Social.stages.0.label>[заглушка: враждебность / мнение о секс-рабе]</SSC_Culture_SexSlave_Hostile_Social.stages.0.label>
-  <SSC_Culture_SexSlave_Hostile_Social.stages.0.description>[TODO:SSC_Culture_SexSlave_Hostile_Social.stages.0.description]</SSC_Culture_SexSlave_Hostile_Social.stages.0.description>
-  <SSC_Culture_Master_Deference_Leader.stages.2.label>[заглушка: почтение / лидер — секс-раб]</SSC_Culture_Master_Deference_Leader.stages.2.label>
-  <SSC_Culture_Master_Deference_Leader.stages.2.description>[TODO:SSC_Culture_Master_Deference_Leader.stages.2.description]</SSC_Culture_Master_Deference_Leader.stages.2.description>
-  <SSC_Culture_Master_Deference_SexSlaveLeaderSocial.stages.0.label>[заглушка: почтение / мнение о лидере секс-рабе]</SSC_Culture_Master_Deference_SexSlaveLeaderSocial.stages.0.label>
-  <SSC_Culture_Master_Deference_SexSlaveLeaderSocial.stages.0.description>[TODO:SSC_Culture_Master_Deference_SexSlaveLeaderSocial.stages.0.description]</SSC_Culture_Master_Deference_SexSlaveLeaderSocial.stages.0.description>
-  <SSC_Culture_Master_HolyMaster_Leader.stages.2.label>[заглушка: святой хозяин / лидер — секс-раб]</SSC_Culture_Master_HolyMaster_Leader.stages.2.label>
-  <SSC_Culture_Master_HolyMaster_Leader.stages.2.description>[TODO:SSC_Culture_Master_HolyMaster_Leader.stages.2.description]</SSC_Culture_Master_HolyMaster_Leader.stages.2.description>
-  <SSC_Culture_Master_HolyMaster_SexSlaveLeaderSocial.stages.0.label>[заглушка: святой хозяин / мнение о лидере секс-рабе]</SSC_Culture_Master_HolyMaster_SexSlaveLeaderSocial.stages.0.label>
-  <SSC_Culture_Master_HolyMaster_SexSlaveLeaderSocial.stages.0.description>[TODO:SSC_Culture_Master_HolyMaster_SexSlaveLeaderSocial.stages.0.description]</SSC_Culture_Master_HolyMaster_SexSlaveLeaderSocial.stages.0.description>
+  <!-- 阶段名称与描述已落实；键和阶段号是机制契约。 -->
+  <SSC_Culture_SexSlave_Hostile_Self.stages.0.label>Секс-раб</SSC_Culture_SexSlave_Hostile_Self.stages.0.label>
+  <SSC_Culture_SexSlave_Hostile_Self.stages.0.description>Я пала так низко, что на шее у меня позорная цепь, — это невыносимее смерти.</SSC_Culture_SexSlave_Hostile_Self.stages.0.description>
+  <SSC_Culture_SexSlave_Revulsion_Self.stages.0.label>Секс-раб</SSC_Culture_SexSlave_Revulsion_Self.stages.0.label>
+  <SSC_Culture_SexSlave_Revulsion_Self.stages.0.description>Это тело сковано цепью, и каждый вдох вызывает во мне отвращение.</SSC_Culture_SexSlave_Revulsion_Self.stages.0.description>
+  <SSC_Culture_SexSlave_Sacred_Self.stages.0.label>Секс-раб</SSC_Culture_SexSlave_Sacred_Self.stages.0.label>
+  <SSC_Culture_SexSlave_Sacred_Self.stages.0.description>Я стою на коленях нагишом у ног хозяина, позволяю ему входить, сечь и заполнять каждое моё отверстие и отдаю все свои оргазмы: эта святая укрощённость расслабляет всё тело и наполняет меня благочестием.</SSC_Culture_SexSlave_Sacred_Self.stages.0.description>
+  <SSC_Culture_SexSlave_Envy_Self.stages.0.label>Уже секс-раб</SSC_Culture_SexSlave_Envy_Self.stages.0.label>
+  <SSC_Culture_SexSlave_Envy_Self.stages.0.description>Наконец желаемое сбылось: на шее ошейник, а хозяин снова и снова пронзает меня внизу. Быть взятой и выебанной — то самое погружение, о котором я мечтала.</SSC_Culture_SexSlave_Envy_Self.stages.0.description>
+  <SSC_Culture_SexSlave_Envy_Self.stages.1.label>Жаждет рабства</SSC_Culture_SexSlave_Envy_Self.stages.1.label>
+  <SSC_Culture_SexSlave_Envy_Self.stages.1.description>Я не хозяин и не секс-раб, внизу чешется, желанию некуда деться. Как я хочу, чтобы кто-нибудь надел цепь мне на шею и вставил член в моё тело.</SSC_Culture_SexSlave_Envy_Self.stages.1.description>
+  <SSC_Culture_SexSlave_Hostile_Environment.stages.0.label>Рядом секс-рабы</SSC_Culture_SexSlave_Hostile_Environment.stages.0.label>
+  <SSC_Culture_SexSlave_Hostile_Environment.stages.0.description>Кто-то живёт под цепью, и я не могу этого не замечать.</SSC_Culture_SexSlave_Hostile_Environment.stages.0.description>
+  <SSC_Culture_SexSlave_Revulsion_Environment.stages.0.label>Рядом секс-рабы</SSC_Culture_SexSlave_Revulsion_Environment.stages.0.label>
+  <SSC_Culture_SexSlave_Revulsion_Environment.stages.0.description>Рядом кто-то склонил голову в рабстве, и мне это неприятно.</SSC_Culture_SexSlave_Revulsion_Environment.stages.0.description>
+  <SSC_Culture_SexSlave_Sacred_Environment.stages.0.label>Секс-рабы вокруг</SSC_Culture_SexSlave_Sacred_Environment.stages.0.label>
+  <SSC_Culture_SexSlave_Sacred_Environment.stages.0.description>Вокруг нагие секс-рабыни, что стоят на коленях и выдрессированы до покорности: их стоны и благочестие делают это место ещё святее.</SSC_Culture_SexSlave_Sacred_Environment.stages.0.description>
+  <SSC_Culture_SexSlave_Revulsion_Social.stages.0.label>Отвращение к этому секс-рабу</SSC_Culture_SexSlave_Revulsion_Social.stages.0.label>
+  <SSC_Culture_SexSlave_Revulsion_Social.stages.0.description>Этот человек в цепях и живёт в рабстве телом — мне это омерзительно.</SSC_Culture_SexSlave_Revulsion_Social.stages.0.description>
+  <SSC_Culture_SexSlave_Respect_Social.stages.0.label>Уважение к этому секс-рабу</SSC_Culture_SexSlave_Respect_Social.stages.0.label>
+  <SSC_Culture_SexSlave_Respect_Social.stages.0.description>Он раб, но он человек, и я уважаю его достоинство.</SSC_Culture_SexSlave_Respect_Social.stages.0.description>
+  <SSC_Culture_SexSlave_Sacred_Social.stages.0.label>Почитание этого секс-раба</SSC_Culture_SexSlave_Sacred_Social.stages.0.label>
+  <SSC_Culture_SexSlave_Sacred_Social.stages.0.description>Он отдал хозяину и тело, и все свои оргазмы; он избран богами, и я полон почтения.</SSC_Culture_SexSlave_Sacred_Social.stages.0.description>
+  <SSC_Culture_SexSlave_Envy_Social.stages.0.label>Зависть к этому секс-рабу</SSC_Culture_SexSlave_Envy_Social.stages.0.label>
+  <SSC_Culture_SexSlave_Envy_Social.stages.0.description>Он нашёл свой дом: каждую ночь хозяин берёт его и трахает до оргазма, — от этого у меня чешется внизу и я невыносимо завидую.</SSC_Culture_SexSlave_Envy_Social.stages.0.description>
+  <SSC_Culture_Trainer_Hostile_Self.stages.0.label>Наставник</SSC_Culture_Trainer_Hostile_Self.stages.0.label>
+  <SSC_Culture_Trainer_Hostile_Self.stages.0.description>Я взял на себя это кощунственное дело и встал между хозяином и рабом — и мне от этого только стыдно.</SSC_Culture_Trainer_Hostile_Self.stages.0.description>
+  <SSC_Culture_Trainer_Hostile_Social.stages.0.label>Враждебность к этому наставнику</SSC_Culture_Trainer_Hostile_Social.stages.0.label>
+  <SSC_Culture_Trainer_Hostile_Social.stages.0.description>Он узурпирует порядок хозяев и рабов и под видом дрессировки оскверняет святыню — я его ненавижу.</SSC_Culture_Trainer_Hostile_Social.stages.0.description>
+  <SSC_Culture_Trainer_Revulsion_Self.stages.0.label>Наставник</SSC_Culture_Trainer_Revulsion_Self.stages.0.label>
+  <SSC_Culture_Trainer_Revulsion_Self.stages.0.description>От этой работы мне не по себе во всём теле.</SSC_Culture_Trainer_Revulsion_Self.stages.0.description>
+  <SSC_Culture_Trainer_Revulsion_Social.stages.0.label>Отвращение к этому наставнику</SSC_Culture_Trainer_Revulsion_Social.stages.0.label>
+  <SSC_Culture_Trainer_Revulsion_Social.stages.0.description>Когда я вижу, как он укрощает людей плетью, во мне поднимается неприязнь.</SSC_Culture_Trainer_Revulsion_Social.stages.0.description>
+  <SSC_Culture_Trainer_Reverence_Self.stages.0.label>Наставник</SSC_Culture_Trainer_Reverence_Self.stages.0.label>
+  <SSC_Culture_Trainer_Reverence_Self.stages.0.description>Я умею плетью и трахом выдрессировать другого в покорного раба, что склоняет голову и принимает ласку, — и этой работой можно гордиться.</SSC_Culture_Trainer_Reverence_Self.stages.0.description>
+  <SSC_Culture_Trainer_Reverence_Social.stages.0.label>Почтение к этому наставнику</SSC_Culture_Trainer_Reverence_Social.stages.0.label>
+  <SSC_Culture_Trainer_Reverence_Social.stages.0.description>Он умеет дрессировать: и самый упрямый у него сам подставляет зад. Я чту его умение.</SSC_Culture_Trainer_Reverence_Social.stages.0.description>
+  <SSC_Culture_Trainer_SacredOffice_Self.stages.0.label>Священное служение</SSC_Culture_Trainer_SacredOffice_Self.stages.0.label>
+  <SSC_Culture_Trainer_SacredOffice_Self.stages.0.description>Плеть для меня — священный сосуд, цепь — святыня: я стегаю дикого человека, пока зад не станет красным и мокрым внизу, и выдрессирую из него покорного и благочестивого раба. От этого священного служения я исполнен торжественности.</SSC_Culture_Trainer_SacredOffice_Self.stages.0.description>
+  <SSC_Culture_Trainer_SacredOffice_Social.stages.0.label>Почитание этого наставника</SSC_Culture_Trainer_SacredOffice_Social.stages.0.label>
+  <SSC_Culture_Trainer_SacredOffice_Social.stages.0.description>Он вместо хозяина дрессирует рабов плетью, цепью, членом и мастерством; его дело священно, и я полон почтения.</SSC_Culture_Trainer_SacredOffice_Social.stages.0.description>
+  <SSC_Culture_Master_Hostile_Self.stages.0.label>Хозяин</SSC_Culture_Master_Hostile_Self.stages.0.label>
+  <SSC_Culture_Master_Hostile_Self.stages.0.description>Я стал узурпатором, что завладел чужим телом, и это звание лишает меня сна и покоя.</SSC_Culture_Master_Hostile_Self.stages.0.description>
+  <SSC_Culture_Master_Hostile_ActualMaster.stages.0.label>Под властью хозяина</SSC_Culture_Master_Hostile_ActualMaster.stages.0.label>
+  <SSC_Culture_Master_Hostile_ActualMaster.stages.0.description>Моя цепь в чужих руках, мной распоряжаются как игрушкой, — этого унижения не вынести.</SSC_Culture_Master_Hostile_ActualMaster.stages.0.description>
+  <SSC_Culture_Master_Hostile_Social.stages.0.label>Ненависть к этому хозяину</SSC_Culture_Master_Hostile_Social.stages.0.label>
+  <SSC_Culture_Master_Hostile_Social.stages.0.description>Он цепью захватил чужую плоть и волю — он гнусный тиран.</SSC_Culture_Master_Hostile_Social.stages.0.description>
+  <SSC_Culture_Master_Hostile_Leader.stages.0.label>Лидер — хозяин</SSC_Culture_Master_Hostile_Leader.stages.0.label>
+  <SSC_Culture_Master_Hostile_Leader.stages.0.description>Наш лидер оказался узурпатором, и это больно ранит.</SSC_Culture_Master_Hostile_Leader.stages.0.description>
+  <SSC_Culture_Master_Revulsion_Self.stages.0.label>Хозяин</SSC_Culture_Master_Revulsion_Self.stages.0.label>
+  <SSC_Culture_Master_Revulsion_Self.stages.0.description>Звание того, кто держит цепь и правит рабами, мне неприятно.</SSC_Culture_Master_Revulsion_Self.stages.0.description>
+  <SSC_Culture_Master_Revulsion_ActualMaster.stages.0.label>Под властью хозяина</SSC_Culture_Master_Revulsion_ActualMaster.stages.0.label>
+  <SSC_Culture_Master_Revulsion_ActualMaster.stages.0.description>Кто-то держит мою цепь, и это вызывает у меня отвращение.</SSC_Culture_Master_Revulsion_ActualMaster.stages.0.description>
+  <SSC_Culture_Master_Revulsion_Social.stages.0.label>Отвращение к этому хозяину</SSC_Culture_Master_Revulsion_Social.stages.0.label>
+  <SSC_Culture_Master_Revulsion_Social.stages.0.description>Его хозяйские замашки мне омерзительны.</SSC_Culture_Master_Revulsion_Social.stages.0.description>
+  <SSC_Culture_Master_Revulsion_Leader.stages.0.label>Лидер — хозяин</SSC_Culture_Master_Revulsion_Leader.stages.0.label>
+  <SSC_Culture_Master_Revulsion_Leader.stages.0.description>Лидер оказался таким, и мне это неприятно.</SSC_Culture_Master_Revulsion_Leader.stages.0.description>
+  <SSC_Culture_Master_Deference_Self.stages.0.label>Хозяин</SSC_Culture_Master_Deference_Self.stages.0.label>
+  <SSC_Culture_Master_Deference_Self.stages.0.description>Я держу цепь и правлю рабами, они ждут меня, подставив зад, и дают мне скакать вволю: это место хозяина — моя гордость.</SSC_Culture_Master_Deference_Self.stages.0.description>
+  <SSC_Culture_Master_Deference_ActualMaster.stages.0.label>Есть хозяин</SSC_Culture_Master_Deference_ActualMaster.stages.0.label>
+  <SSC_Culture_Master_Deference_ActualMaster.stages.0.description>Моя цепь в руках хозяина, моя пизда принадлежит ему, и эта принадлежность успокаивает меня.</SSC_Culture_Master_Deference_ActualMaster.stages.0.description>
+  <SSC_Culture_Master_Deference_Social.stages.0.label>Почитание этого хозяина</SSC_Culture_Master_Deference_Social.stages.0.label>
+  <SSC_Culture_Master_Deference_Social.stages.0.description>Он правит желанием и властвует над рабами, и они склоняются под ним — я чту его хозяйскую мощь.</SSC_Culture_Master_Deference_Social.stages.0.description>
+  <SSC_Culture_Master_Deference_Leader.stages.0.label>Лидер — хозяин</SSC_Culture_Master_Deference_Leader.stages.0.label>
+  <SSC_Culture_Master_Deference_Leader.stages.0.description>Наш лидер — хозяин и правит умело, я его искренне поддерживаю.</SSC_Culture_Master_Deference_Leader.stages.0.description>
+  <SSC_Culture_Master_Deference_Leader.stages.1.label>Лидер не хозяин</SSC_Culture_Master_Deference_Leader.stages.1.label>
+  <SSC_Culture_Master_Deference_Leader.stages.1.description>Лидер вовсе не хозяин. Как такой лидер совладает с желанием?</SSC_Culture_Master_Deference_Leader.stages.1.description>
+  <SSC_Culture_Master_HolyMaster_Self.stages.0.label>Священный хозяин</SSC_Culture_Master_HolyMaster_Self.stages.0.label>
+  <SSC_Culture_Master_HolyMaster_Self.stages.0.description>Я — хозяин, которому возносят дары; рабы служат мне ртом, языком и телом, дают мне скакать вволю и входить в них, пока они не закричат в голос: от этого священного звания я будто в блаженстве.</SSC_Culture_Master_HolyMaster_Self.stages.0.description>
+  <SSC_Culture_Master_HolyMaster_ActualMaster.stages.0.label>Служение хозяину</SSC_Culture_Master_HolyMaster_ActualMaster.stages.0.label>
+  <SSC_Culture_Master_HolyMaster_ActualMaster.stages.0.description>Мой хозяин — священное существо; я могу служить ему ртом, языком и пиздой и позволять заливать моё тело до краёв — и я полон благодарности.</SSC_Culture_Master_HolyMaster_ActualMaster.stages.0.description>
+  <SSC_Culture_Master_HolyMaster_Social.stages.0.label>Почитание этого священного хозяина</SSC_Culture_Master_HolyMaster_Social.stages.0.label>
+  <SSC_Culture_Master_HolyMaster_Social.stages.0.description>Он — хозяин, которому возносят дары, каждое его слово и дело — воля богов, рабы приносят оргазм как жертву и тело как благовоние; я чту его превыше всего.</SSC_Culture_Master_HolyMaster_Social.stages.0.description>
+  <SSC_Culture_Master_HolyMaster_Leader.stages.0.label>Священный хозяин — лидер</SSC_Culture_Master_HolyMaster_Leader.stages.0.label>
+  <SSC_Culture_Master_HolyMaster_Leader.stages.0.description>Наш лидер — священный хозяин, и это благодать, ниспосланная свыше.</SSC_Culture_Master_HolyMaster_Leader.stages.0.description>
+  <SSC_Culture_Master_HolyMaster_Leader.stages.1.label>Лидер не хозяин</SSC_Culture_Master_HolyMaster_Leader.stages.1.label>
+  <SSC_Culture_Master_HolyMaster_Leader.stages.1.description>Лидер вовсе не хозяин — это просто издевательство над священным порядком.</SSC_Culture_Master_HolyMaster_Leader.stages.1.description>
+  <SSC_Culture_MasterCount_One_Self.stages.0.label>Слишком много хозяев</SSC_Culture_MasterCount_One_Self.stages.0.label>
+  <SSC_Culture_MasterCount_One_Self.stages.0.description>В колонии больше одного хозяина: каждое желание тянет свою цепь, и порядок уже сбит.</SSC_Culture_MasterCount_One_Self.stages.0.description>
+  <SSC_Culture_MasterCount_Three_Self.stages.0.label>Слишком много хозяев</SSC_Culture_MasterCount_Three_Self.stages.0.label>
+  <SSC_Culture_MasterCount_Three_Self.stages.0.description>В колонии больше трёх хозяев: у каждого свой дом, и это меня тревожит.</SSC_Culture_MasterCount_Three_Self.stages.0.description>
+  <SSC_Culture_SlaveCount_One_Self.stages.0.label>Слишком много секс-рабов</SSC_Culture_SlaveCount_One_Self.stages.0.label>
+  <SSC_Culture_SlaveCount_One_Self.stages.0.description>У меня больше одной секс-рабыни: милость разделена, и пизда с звеном цепи уже не смыкаются вплотную.</SSC_Culture_SlaveCount_One_Self.stages.0.description>
+  <SSC_Culture_SlaveCount_Three_Self.stages.0.label>Слишком много секс-рабов</SSC_Culture_SlaveCount_Three_Self.stages.0.label>
+  <SSC_Culture_SlaveCount_Three_Self.stages.0.description>У меня больше трёх секс-рабынь: член не поспевает везде, дрессировка хромает, и меня мучает совесть.</SSC_Culture_SlaveCount_Three_Self.stages.0.description>
+  <SSC_Culture_SlaveCount_One_Social.stages.0.label>Хозяин держит слишком много рабов</SSC_Culture_SlaveCount_One_Social.stages.0.label>
+  <SSC_Culture_SlaveCount_One_Social.stages.0.description>У этого хозяина не один секс-раб, и это вызывает у меня косой взгляд.</SSC_Culture_SlaveCount_One_Social.stages.0.description>
+  <SSC_Culture_SlaveCount_One_Social.stages.1.label>Хозяин держит слишком много рабов</SSC_Culture_SlaveCount_One_Social.stages.1.label>
+  <SSC_Culture_SlaveCount_One_Social.stages.1.description>Этот хозяин держит рабов без меры — сущее распутство.</SSC_Culture_SlaveCount_One_Social.stages.1.description>
+  <SSC_Culture_SlaveCount_One_Social.stages.2.label>Хозяин держит слишком много рабов</SSC_Culture_SlaveCount_One_Social.stages.2.label>
+  <SSC_Culture_SlaveCount_One_Social.stages.2.description>Этот хозяин ненасытен и держит рабов табунами — мне это глубоко омерзительно.</SSC_Culture_SlaveCount_One_Social.stages.2.description>
+  <SSC_Culture_SlaveCount_Three_Social.stages.0.label>Хозяин держит слишком много рабов</SSC_Culture_SlaveCount_Three_Social.stages.0.label>
+  <SSC_Culture_SlaveCount_Three_Social.stages.0.description>У этого хозяина больше трёх секс-рабов, и это вызывает у меня косой взгляд.</SSC_Culture_SlaveCount_Three_Social.stages.0.description>
+  <SSC_Culture_SlaveCount_Three_Social.stages.1.label>Хозяин держит слишком много рабов</SSC_Culture_SlaveCount_Three_Social.stages.1.label>
+  <SSC_Culture_SlaveCount_Three_Social.stages.1.description>Этот хозяин держит рабов без меры — сущее распутство.</SSC_Culture_SlaveCount_Three_Social.stages.1.description>
+  <SSC_Culture_SlaveCount_Three_Social.stages.2.label>Хозяин держит слишком много рабов</SSC_Culture_SlaveCount_Three_Social.stages.2.label>
+  <SSC_Culture_SlaveCount_Three_Social.stages.2.description>Этот хозяин ненасытен и держит рабов табунами — мне это глубоко омерзительно.</SSC_Culture_SlaveCount_Three_Social.stages.2.description>
+  <SSC_Culture_SexSlave_Hostile_Social.stages.0.label>Ненависть к этому секс-рабу</SSC_Culture_SexSlave_Hostile_Social.stages.0.label>
+  <SSC_Culture_SexSlave_Hostile_Social.stages.0.description>Он сам пожелал рабства и сам выбрал падение — он презренный пособник.</SSC_Culture_SexSlave_Hostile_Social.stages.0.description>
+  <SSC_Culture_Master_Deference_Leader.stages.2.label>Лидер — секс-раб</SSC_Culture_Master_Deference_Leader.stages.2.label>
+  <SSC_Culture_Master_Deference_Leader.stages.2.description>Наш лидер оказался тем, кто склонил голову в рабстве, — это позорит порядок.</SSC_Culture_Master_Deference_Leader.stages.2.description>
+  <SSC_Culture_Master_Deference_SexSlaveLeaderSocial.stages.0.label>Презрение к лидеру-секс-рабу</SSC_Culture_Master_Deference_SexSlaveLeaderSocial.stages.0.label>
+  <SSC_Culture_Master_Deference_SexSlaveLeaderSocial.stages.0.description>Он секс-раб, но узурпировал место лидера, и это позорит порядок хозяев и рабов.</SSC_Culture_Master_Deference_SexSlaveLeaderSocial.stages.0.description>
+  <SSC_Culture_Master_HolyMaster_Leader.stages.2.label>Лидер — секс-раб</SSC_Culture_Master_HolyMaster_Leader.stages.2.label>
+  <SSC_Culture_Master_HolyMaster_Leader.stages.2.description>Священное место лидера занял секс-раб — это великое кощунство.</SSC_Culture_Master_HolyMaster_Leader.stages.2.description>
+  <SSC_Culture_Master_HolyMaster_SexSlaveLeaderSocial.stages.0.label>Лютая ненависть к лидеру-секс-рабу</SSC_Culture_Master_HolyMaster_SexSlaveLeaderSocial.stages.0.label>
+  <SSC_Culture_Master_HolyMaster_SexSlaveLeaderSocial.stages.0.description>Секс-раб посмел узурпировать священное место лидера — это осквернение порядка.</SSC_Culture_Master_HolyMaster_SexSlaveLeaderSocial.stages.0.description>
   <!-- 1.7 六档性别规范：名称为功能标记，正式描述后续交接。 -->
-  <SSC_Culture_SlaveGender_LimitedViolation_Self.stages.0.label>[TODO:SSC_Culture_SlaveGender_LimitedViolation_Self.stages.0.label]</SSC_Culture_SlaveGender_LimitedViolation_Self.stages.0.label>
-  <SSC_Culture_SlaveGender_LimitedViolation_Self.stages.0.description>[TODO:SSC_Culture_SlaveGender_LimitedViolation_Self.stages.0.description]</SSC_Culture_SlaveGender_LimitedViolation_Self.stages.0.description>
-  <SSC_Culture_SlaveGender_LimitedViolation_Social.stages.0.label>[TODO:SSC_Culture_SlaveGender_LimitedViolation_Social.stages.0.label]</SSC_Culture_SlaveGender_LimitedViolation_Social.stages.0.label>
-  <SSC_Culture_SlaveGender_LimitedViolation_Social.stages.0.description>[TODO:SSC_Culture_SlaveGender_LimitedViolation_Social.stages.0.description]</SSC_Culture_SlaveGender_LimitedViolation_Social.stages.0.description>
-  <SSC_Culture_SlaveGender_LimitedViolation_Environment.stages.0.label>[TODO:SSC_Culture_SlaveGender_LimitedViolation_Environment.stages.0.label]</SSC_Culture_SlaveGender_LimitedViolation_Environment.stages.0.label>
-  <SSC_Culture_SlaveGender_LimitedViolation_Environment.stages.0.description>[TODO:SSC_Culture_SlaveGender_LimitedViolation_Environment.stages.0.description]</SSC_Culture_SlaveGender_LimitedViolation_Environment.stages.0.description>
-  <SSC_Culture_SlaveGender_RequiredViolation_Self.stages.0.label>[TODO:SSC_Culture_SlaveGender_RequiredViolation_Self.stages.0.label]</SSC_Culture_SlaveGender_RequiredViolation_Self.stages.0.label>
-  <SSC_Culture_SlaveGender_RequiredViolation_Self.stages.0.description>[TODO:SSC_Culture_SlaveGender_RequiredViolation_Self.stages.0.description]</SSC_Culture_SlaveGender_RequiredViolation_Self.stages.0.description>
-  <SSC_Culture_SlaveGender_RequiredViolation_Social.stages.0.label>[TODO:SSC_Culture_SlaveGender_RequiredViolation_Social.stages.0.label]</SSC_Culture_SlaveGender_RequiredViolation_Social.stages.0.label>
-  <SSC_Culture_SlaveGender_RequiredViolation_Social.stages.0.description>[TODO:SSC_Culture_SlaveGender_RequiredViolation_Social.stages.0.description]</SSC_Culture_SlaveGender_RequiredViolation_Social.stages.0.description>
-  <SSC_Culture_SlaveGender_RequiredViolation_Environment.stages.0.label>[TODO:SSC_Culture_SlaveGender_RequiredViolation_Environment.stages.0.label]</SSC_Culture_SlaveGender_RequiredViolation_Environment.stages.0.label>
-  <SSC_Culture_SlaveGender_RequiredViolation_Environment.stages.0.description>[TODO:SSC_Culture_SlaveGender_RequiredViolation_Environment.stages.0.description]</SSC_Culture_SlaveGender_RequiredViolation_Environment.stages.0.description>
-  <SSC_Culture_SlaveGender_RequiredDuty_Self.stages.0.label>[TODO:SSC_Culture_SlaveGender_RequiredDuty_Self.stages.0.label]</SSC_Culture_SlaveGender_RequiredDuty_Self.stages.0.label>
-  <SSC_Culture_SlaveGender_RequiredDuty_Self.stages.0.description>[TODO:SSC_Culture_SlaveGender_RequiredDuty_Self.stages.0.description]</SSC_Culture_SlaveGender_RequiredDuty_Self.stages.0.description>
-  <SSC_Culture_SlaveGender_RequiredDuty_Social.stages.0.label>[TODO:SSC_Culture_SlaveGender_RequiredDuty_Social.stages.0.label]</SSC_Culture_SlaveGender_RequiredDuty_Social.stages.0.label>
-  <SSC_Culture_SlaveGender_RequiredDuty_Social.stages.0.description>[TODO:SSC_Culture_SlaveGender_RequiredDuty_Social.stages.0.description]</SSC_Culture_SlaveGender_RequiredDuty_Social.stages.0.description>
-  <SSC_Culture_SlaveGender_RequiredDuty_Environment.stages.0.label>[TODO:SSC_Culture_SlaveGender_RequiredDuty_Environment.stages.0.label]</SSC_Culture_SlaveGender_RequiredDuty_Environment.stages.0.label>
-  <SSC_Culture_SlaveGender_RequiredDuty_Environment.stages.0.description>[TODO:SSC_Culture_SlaveGender_RequiredDuty_Environment.stages.0.description]</SSC_Culture_SlaveGender_RequiredDuty_Environment.stages.0.description>
-  <SSC_Culture_SlaveGender_NonMasterDuty_Self.stages.0.label>[TODO:SSC_Culture_SlaveGender_NonMasterDuty_Self.stages.0.label]</SSC_Culture_SlaveGender_NonMasterDuty_Self.stages.0.label>
-  <SSC_Culture_SlaveGender_NonMasterDuty_Self.stages.0.description>[TODO:SSC_Culture_SlaveGender_NonMasterDuty_Self.stages.0.description]</SSC_Culture_SlaveGender_NonMasterDuty_Self.stages.0.description>
-  <SSC_Culture_SlaveGender_NonMasterDuty_Social.stages.0.label>[TODO:SSC_Culture_SlaveGender_NonMasterDuty_Social.stages.0.label]</SSC_Culture_SlaveGender_NonMasterDuty_Social.stages.0.label>
-  <SSC_Culture_SlaveGender_NonMasterDuty_Social.stages.0.description>[TODO:SSC_Culture_SlaveGender_NonMasterDuty_Social.stages.0.description]</SSC_Culture_SlaveGender_NonMasterDuty_Social.stages.0.description>
-  <SSC_Culture_SlaveGender_NonMasterDuty_Environment.stages.0.label>[TODO:SSC_Culture_SlaveGender_NonMasterDuty_Environment.stages.0.label]</SSC_Culture_SlaveGender_NonMasterDuty_Environment.stages.0.label>
-  <SSC_Culture_SlaveGender_NonMasterDuty_Environment.stages.0.description>[TODO:SSC_Culture_SlaveGender_NonMasterDuty_Environment.stages.0.description]</SSC_Culture_SlaveGender_NonMasterDuty_Environment.stages.0.description>
-  <!-- 艳羡且有义务：专属阶段与独立占位文案，不与普通义务叠扣。 -->
-  <SSC_Culture_SlaveGender_RequiredDuty_Self.stages.1.label>[TODO:SSC_Culture_SlaveGender_RequiredDuty_Self.stages.1.label]</SSC_Culture_SlaveGender_RequiredDuty_Self.stages.1.label>
-  <SSC_Culture_SlaveGender_RequiredDuty_Self.stages.1.description>[TODO:SSC_Culture_SlaveGender_RequiredDuty_Self.stages.1.description]</SSC_Culture_SlaveGender_RequiredDuty_Self.stages.1.description>
-  <SSC_Culture_SlaveGender_NonMasterDuty_Self.stages.1.label>[TODO:SSC_Culture_SlaveGender_NonMasterDuty_Self.stages.1.label]</SSC_Culture_SlaveGender_NonMasterDuty_Self.stages.1.label>
-  <SSC_Culture_SlaveGender_NonMasterDuty_Self.stages.1.description>[TODO:SSC_Culture_SlaveGender_NonMasterDuty_Self.stages.1.description]</SSC_Culture_SlaveGender_NonMasterDuty_Self.stages.1.description>
+  <SSC_Culture_SlaveGender_LimitedViolation_Self.stages.0.label>Раб-нарушитель</SSC_Culture_SlaveGender_LimitedViolation_Self.stages.0.label>
+  <SSC_Culture_SlaveGender_LimitedViolation_Self.stages.0.description>Я стал секс-рабом под цепью в том поле, которое эта культура отвергает: этому телу не следовало стоять здесь на коленях, и это несоответствие меня мучает.</SSC_Culture_SlaveGender_LimitedViolation_Self.stages.0.description>
+  <SSC_Culture_SlaveGender_LimitedViolation_Social.stages.0.label>Презрение к этому рабу-нарушителю</SSC_Culture_SlaveGender_LimitedViolation_Social.stages.0.label>
+  <SSC_Culture_SlaveGender_LimitedViolation_Social.stages.0.description>Он раб того пола, что отвергнут, и он порочит порядок хозяев и рабов; я смотрю на него косо.</SSC_Culture_SlaveGender_LimitedViolation_Social.stages.0.description>
+  <SSC_Culture_SlaveGender_LimitedViolation_Environment.stages.0.label>Рядом раб-нарушитель</SSC_Culture_SlaveGender_LimitedViolation_Environment.stages.0.label>
+  <SSC_Culture_SlaveGender_LimitedViolation_Environment.stages.0.description>Рядом секс-раб отвергнутого пола склоняет голову и служит, и мне не найти покоя.</SSC_Culture_SlaveGender_LimitedViolation_Environment.stages.0.description>
+  <SSC_Culture_SlaveGender_RequiredViolation_Self.stages.0.label>Раб-нарушитель</SSC_Culture_SlaveGender_RequiredViolation_Self.stages.0.label>
+  <SSC_Culture_SlaveGender_RequiredViolation_Self.stages.0.description>Я стал секс-рабом в отвергнутом поле: это нарушает и обязательное правило, и позорит это тело, — и мука моя ещё сильнее.</SSC_Culture_SlaveGender_RequiredViolation_Self.stages.0.description>
+  <SSC_Culture_SlaveGender_RequiredViolation_Social.stages.0.label>Глубокое отвращение к этому рабу-нарушителю</SSC_Culture_SlaveGender_RequiredViolation_Social.stages.0.label>
+  <SSC_Culture_SlaveGender_RequiredViolation_Social.stages.0.description>Он раб отвергнутого пола и открыто попирает обязательное правило — это вызывает у меня лютую неприязнь.</SSC_Culture_SlaveGender_RequiredViolation_Social.stages.0.description>
+  <SSC_Culture_SlaveGender_RequiredViolation_Environment.stages.0.label>Рядом раб-нарушитель</SSC_Culture_SlaveGender_RequiredViolation_Environment.stages.0.label>
+  <SSC_Culture_SlaveGender_RequiredViolation_Environment.stages.0.description>Рядом секс-раб отвергнутого пола принимает ласку и служит, и у меня будто кость в горле.</SSC_Culture_SlaveGender_RequiredViolation_Environment.stages.0.description>
+  <SSC_Culture_SlaveGender_RequiredDuty_Self.stages.0.label>Долг раба не исполнен</SSC_Culture_SlaveGender_RequiredDuty_Self.stages.0.label>
+  <SSC_Culture_SlaveGender_RequiredDuty_Self.stages.0.description>Я рождён отдаться хозяину, но всё ещё вне цепи: не на коленях, не взятый. Эта неисполненная обязанность жжёт меня.</SSC_Culture_SlaveGender_RequiredDuty_Self.stages.0.description>
+  <SSC_Culture_SlaveGender_RequiredDuty_Social.stages.0.label>Презрение к неисполнившему долг</SSC_Culture_SlaveGender_RequiredDuty_Social.stages.0.label>
+  <SSC_Culture_SlaveGender_RequiredDuty_Social.stages.0.description>Он рождён отдаться в рабство, но упорно не склоняет голову — я его презираю.</SSC_Culture_SlaveGender_RequiredDuty_Social.stages.0.description>
+  <SSC_Culture_SlaveGender_RequiredDuty_Environment.stages.0.label>Рядом тот, кто не исполнил долг раба</SSC_Culture_SlaveGender_RequiredDuty_Environment.stages.0.label>
+  <SSC_Culture_SlaveGender_RequiredDuty_Environment.stages.0.description>Рядом тот, кто рождён отдаться, но ещё не в рабстве, и это меня тревожит.</SSC_Culture_SlaveGender_RequiredDuty_Environment.stages.0.description>
+  <SSC_Culture_SlaveGender_NonMasterDuty_Self.stages.0.label>Долг раба не исполнен</SSC_Culture_SlaveGender_NonMasterDuty_Self.stages.0.label>
+  <SSC_Culture_SlaveGender_NonMasterDuty_Self.stages.0.description>Я не хозяин, значит должен быть рабом, но всё ещё вне цепи. Эта измена собственному званию не даёт мне сидеть на месте.</SSC_Culture_SlaveGender_NonMasterDuty_Self.stages.0.description>
+  <SSC_Culture_SlaveGender_NonMasterDuty_Social.stages.0.label>Презрение к стоящему в стороне</SSC_Culture_SlaveGender_NonMasterDuty_Social.stages.0.label>
+  <SSC_Culture_SlaveGender_NonMasterDuty_Social.stages.0.description>Он не хозяин и не желает быть рабом, стоит вне порядка — и мне это омерзительно.</SSC_Culture_SlaveGender_NonMasterDuty_Social.stages.0.description>
+  <SSC_Culture_SlaveGender_NonMasterDuty_Environment.stages.0.label>Рядом тот, кто вне порядка</SSC_Culture_SlaveGender_NonMasterDuty_Environment.stages.0.label>
+  <SSC_Culture_SlaveGender_NonMasterDuty_Environment.stages.0.description>Рядом кто-то не хозяин и не секс-раб, он вне порядка, и это меня раздражает.</SSC_Culture_SlaveGender_NonMasterDuty_Environment.stages.0.description>
+  <!-- 艳羡且有义务：专属阶段与独立文案，不与普通义务叠扣。 -->
+  <SSC_Culture_SlaveGender_RequiredDuty_Self.stages.1.label>Неутолённая зависть</SSC_Culture_SlaveGender_RequiredDuty_Self.stages.1.label>
+  <SSC_Culture_SlaveGender_RequiredDuty_Self.stages.1.description>Я завидую тем секс-рабыням, кого хозяин берёт и пронзает до оргазма, а сам я рождён отдаться и всё ещё не в рабстве. Желание и долг разом обмануты — внизу чешется, и меня мучает жажда.</SSC_Culture_SlaveGender_RequiredDuty_Self.stages.1.description>
+  <SSC_Culture_SlaveGender_NonMasterDuty_Self.stages.1.label>Неутолённая зависть</SSC_Culture_SlaveGender_NonMasterDuty_Self.stages.1.label>
+  <SSC_Culture_SlaveGender_NonMasterDuty_Self.stages.1.description>Я завидую тем секс-рабам, кого цепь взяла и кого трахают до оргазма и потери контроля, а сам я не хозяин и не секс-раб. Желанию некуда деться, долг не исполнен — всё тело горит, и мука невыносима.</SSC_Culture_SlaveGender_NonMasterDuty_Self.stages.1.description>
 </LanguageData>
