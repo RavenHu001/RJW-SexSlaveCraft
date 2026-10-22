@@ -238,7 +238,17 @@ internal static partial class Program
             string value = entries.Single(e => e.Name.LocalName == prefix + $"descriptionMaker.rules.rulesStrings.{i}").Value;
             string head = DescriptionKeywords[i] + (i == 1 || i == 7 ? "(uses=1,tag=meme_SSC_MasterSlaveOrder)" : "(tag=meme_SSC_MasterSlaveOrder)");
             Require(value.StartsWith(head + "->", StringComparison.Ordinal));
-            string rhs = value[(head.Length + 2)..]; RequireFinalCopy(rhs); ValidGenerated(rhs);
+            string rhs = value[(head.Length + 2)..]; RequireFinalCopy(rhs);
+            // 段落源文允许已核对的原版子规则；方括号只在最终解析结果中禁止。
+            var allowed = new[] { "deity0_name", "memberNamePlural", "founderName", "founder_pronoun" };
+            foreach (System.Text.RegularExpressions.Match token in System.Text.RegularExpressions.Regex.Matches(rhs, @"\[([^\]]+)\]"))
+                Require(allowed.Contains(token.Groups[1].Value), token.Value);
+            if (i < 8) Require(rhs.Contains('['), "Missing dynamic story reference: " + i);
+            else ValidGenerated(rhs);
+            // 原版创始者故事的阶段合同：早期不预设先知，登场段及结局明确延续同一人物。
+            if (i is 2 or 3) Require(!rhs.Contains("[founderName]"));
+            if (i == 4) Require(rhs.Contains("[deity0_name]") && rhs.Contains("[founderName]"));
+            if (i is 5 or 6 or 7) Require(rhs.Contains("[founderName]"));
             Equal("meme_SSC_MasterSlaveOrder", rule.tag); Equal(rhs, rule.Generate());
             Equal((int?)(i == 1 || i == 7 ? 1 : null), rule.usesLimit);
         }

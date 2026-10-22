@@ -11,7 +11,14 @@ internal static partial class Program
     private static object DescriptionRequest(Ideo ideo, IdeoStoryPatternDef pattern)
     {
         // 原版接口为 internal，反射仅跨越可见性；创始者／信徒／地点／神祇规则均由实际方法构建。
-        return AccessTools.Method(DescriptionUtility, "BuildGrammarRequest").Invoke(null, new object[] { ideo, pattern, new Dictionary<string, string>() });
+        var tokens = new Dictionary<string, string>();
+        var evaluator = AccessTools.Method(DescriptionUtility, "BuildGrammarRequest").Invoke(null, new object[] { ideo, pattern, tokens });
+        // 与 ResolveDescription 相同，将后置模板 token 加入请求；此处直接解析片段，使用其真实值。
+        var field = AccessTools.Field(evaluator.GetType(), "request");
+        var request = (GrammarRequest)field.GetValue(evaluator);
+        foreach (var token in tokens) request.Rules.Add(new Rule_String(token.Key, token.Value));
+        field.SetValue(evaluator, request);
+        return evaluator;
     }
 
     private static void DescriptionTests(string language)
@@ -26,7 +33,9 @@ internal static partial class Program
                 string text = (string)AccessTools.Method(evaluator.GetType(), "NextSegment").Invoke(evaluator,
                     new object[] { DescriptionKeywords[i], "meme_SSC_MasterSlaveOrder", false });
                 ValidGenerated(text); RequireFinalCopy(text);
-                Require(string.Equals(mainMeme.descriptionMaker.rules.Rules[i].Generate(), text, StringComparison.OrdinalIgnoreCase), text);
+                if (i >= 8) Require(string.Equals(mainMeme.descriptionMaker.rules.Rules[i].Generate(), text, StringComparison.OrdinalIgnoreCase), text);
+                if (i is 0 or 1 or 2 or 4) Require(text.Contains("NAMINGDEITY"), text);
+                if (i == 3) Require(text.Contains("FIXTUREMEMBER", StringComparison.OrdinalIgnoreCase), text);
             }
         });
         foreach (string name in StoryNames)
@@ -38,12 +47,16 @@ internal static partial class Program
                 foreach (bool with in new[] { true, false })
                 {
                     var ideo = NamingIdeo(with, structure); AddNamingTokens(ideo);
+                    // 非有神框架不借用夹具预置神明，防止神名引用误入无神段落后仍被测试掩盖。
+                    if (!name.StartsWith("Theist", StringComparison.Ordinal))
+                        ((IdeoFoundation_Deity)ideo.foundation).SetDeities(new());
                     string text = Seeded(7, () => ((IdeoDescriptionResult)AccessTools.Method(DescriptionUtility, "ResolveDescription")
                         .Invoke(null, new object[] { ideo, pattern, true })).text);
                     ValidGenerated(text); RequireFinalCopy(text); Require(!text.Contains("%%"));
                 }
             });
 
+        DynamicDescriptionTests(language);
         // 替换只发生在测试对象，保留每条规则的实际关键词、tag 和 uses；finally 恢复正式规则。
         // 探针在有模因的正例中必须出现，因此无模因／移除后的“不出现”不可能因文案换掉而空泛通过。
         var saved = mainMeme.descriptionMaker.rules;

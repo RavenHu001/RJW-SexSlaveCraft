@@ -72,16 +72,17 @@
       <rules>
         <rulesStrings>
           <!-- 0～1：TheistMyth；重复 episode 单条最多一次，其他位置由原版候选补足。 -->
-          <li>creation(tag=meme_SSC_MasterSlaveOrder)->最初，大神以锁链分隔了混沌：一端是握着缰绳、胯下昂然的主人，一端是四肢匍匐、撅臀承欢的奴。大神说，欲望是世界的轴心，交合是万物的律法——主人以阳具贯穿奴隶的淫穴，奴隶以高潮与呻吟敬拜其主，自此主奴各归其位，秩序遂成。</li>
-          <li>episode(uses=1,tag=meme_SSC_MasterSlaveOrder)->传说不驯的众生曾妄图挣脱锁链，大神便降下第一枚项圈，套在倨傲者的颈上。倨傲者被勒得跪伏于地，颈环深深勒进血肉，大神却将她翻过身来，抵入她的淫穴，一下下贯穿到底。倨傲者在痛楚与耻辱中第一次攀上高潮，自此甘愿为奴。</li>
-          <!-- 2～5：TheistFounder。 -->
-          <li>intro(tag=meme_SSC_MasterSlaveOrder)->在动乱与饥荒的年代，大神向一位先知显灵，赐予他一条不锈的锁链与不竭的欲望。先知由此悟得真道：人间的安宁，系于主人以锁链束奴、以阳具浇灌众奴，众奴以淫穴与呻吟回应，各安其分。</li>
-          <li>conflict(tag=meme_SSC_MasterSlaveOrder)->世人讥笑先知，说人怎可自甘为奴。先知便当众褪去衣衫、跪下身来，让锁链套上自己的颈，又撅起淫穴任人贯入，称这被填满的屈从便是最大的自由；愚者畏惧，智者跪拜。</li>
-          <li>founderJoin(tag=meme_SSC_MasterSlaveOrder)->先知收下第一位弟子，教其以欲望为誓、以肉身为礼。弟子褪尽衣衫，献上自己的项圈与肉身，任先知破入、占满、灌满，从此誓愿一生以唇舌与淫穴侍奉先知为主。</li>
-          <li>victory(tag=meme_SSC_MasterSlaveOrder)->当第一个王国在锁链与欢愉之上建立，先知的教义遂成国法。主人以阳具为权杖、以高潮为赏赐，奴隶以承欢受肏为荣、以呻吟浪叫为颂，天下乃定。</li>
+          <li>creation(tag=meme_SSC_MasterSlaveOrder)-&gt;最初，[deity0_name]以锁链分隔了混沌：一端是握着缰绳、胯下昂然的主人，一端是四肢匍匐、撅臀承欢的奴。[deity0_name]说，欲望是世界的轴心，交合是万物的律法——主人以阳具贯穿奴隶的淫穴，奴隶以高潮与呻吟敬拜其主，自此主奴各归其位，秩序遂成。</li>
+          <li>episode(uses=1,tag=meme_SSC_MasterSlaveOrder)-&gt;传说不驯的众生曾妄图挣脱锁链，[deity0_name]便降下第一枚项圈，套在倨傲者的颈上。倨傲者被勒得跪伏于地，颈环深深勒进血肉，[deity0_name]却将她翻过身来，抵入她的淫穴，一下下贯穿到底。倨傲者在痛楚与耻辱中第一次攀上高潮，自此甘愿为奴。</li>
+          <!-- 2～5：TheistFounder；先引入神明和信众，再写冲突、具名创始者登场及结局。
+               沿用原版神名 token 和 founderName 全名／简称规则，不把历史创始者绑定到当前领袖。 -->
+          <li>intro(tag=meme_SSC_MasterSlaveOrder)-&gt;在动乱与饥荒的年代，[deity0_name]向[memberNamePlural]显灵，赐予信徒一条不锈的锁链与不竭的欲望。信徒由此悟得真道：人间的安宁，系于主人以锁链束奴、以阳具浇灌众奴，众奴以淫穴与呻吟回应，各安其分。</li>
+          <li>conflict(tag=meme_SSC_MasterSlaveOrder)-&gt;世人讥笑[memberNamePlural]，说人怎可自甘为奴。[memberNamePlural]便当众褪去衣衫、跪下身来，让锁链套上自己的颈，又撅起淫穴任人贯入，称这被填满的屈从便是最大的自由；愚者畏惧，智者跪拜。</li>
+          <li>founderJoin(tag=meme_SSC_MasterSlaveOrder)-&gt;[deity0_name]的启示传至[founderName]，这位先知收下第一位弟子，教其以欲望为誓、以肉身为礼。弟子褪尽衣衫，献上自己的项圈与肉身，任先知破入、占满、灌满，从此誓愿一生以唇舌与淫穴侍奉先知为主。</li>
+          <li>victory(tag=meme_SSC_MasterSlaveOrder)-&gt;当第一个王国在锁链与欢愉之上建立，[founderName]的教义遂成国法。主人以阳具为权杖、以高潮为赏赐，奴隶以承欢受肏为荣、以呻吟浪叫为颂，天下乃定。</li>
           <!-- 6～7：IdeologicalFounder；同一 story 不在两个位置重复使用。 -->
-          <li>setup(tag=meme_SSC_MasterSlaveOrder)->哲人观察众生，见强者凌弱、欲望横流、交合无人节制，遂悟：与其让欲望无序流窜，不如将其纳入支配与服从的秩序，让每一处淫穴都有归属、每一根阳具都有归处。</li>
-          <li>story(uses=1,tag=meme_SSC_MasterSlaveOrder)->哲人立下主奴之道，言称“欲望不灭，唯链可束”。他的门徒首开契约之礼，将交合与服从订立为盟约——主以阳具为誓，奴以淫穴为契，信众日众。</li>
+          <li>setup(tag=meme_SSC_MasterSlaveOrder)-&gt;哲人[founderName]观察众生，见强者凌弱、欲望横流、交合无人节制，遂悟：与其让欲望无序流窜，不如将其纳入支配与服从的秩序，让每一处淫穴都有归属、每一根阳具都有归处。</li>
+          <li>story(uses=1,tag=meme_SSC_MasterSlaveOrder)-&gt;[founderName]立下主奴之道，言称“欲望不灭，唯链可束”。[founderName]的门徒首开契约之礼，将交合与服从订立为盟约——主以阳具为誓，奴以淫穴为契，信众日众。</li>
           <!-- 8～10：IdeologicalLesson。 -->
           <li>lessonIntro(tag=meme_SSC_MasterSlaveOrder)->这一文化的信徒自幼聆听一则训诫：欲望是人与生俱来的火种，唯有将肉身交付于主人，任其抽插浇灌，方能燃烧成温暖的高潮，而非焚身的烈焰。</li>
           <li>lesson(tag=meme_SSC_MasterSlaveOrder)->长者教导后辈：锁链不是枷锁，而是荣耀的凭据；项圈不是耻辱，而是被选中者的印记。俯首撅臀并非软弱，而是将淫穴献于主人、归顺于更深的贯穿与更大的欢愉。</li>
