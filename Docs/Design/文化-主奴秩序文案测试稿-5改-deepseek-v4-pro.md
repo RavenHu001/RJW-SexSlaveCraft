@@ -11,6 +11,8 @@
 ## 修订说明
 
 > 本稿为「5版改」：在 v5 基础上按「露骨化」风格整体改写。凡叙事性文案（模因描述、文化生成背景段落、正向／主动立场的戒律与 Thought 描述）已改写得更直白露骨；结构性条目（命名包、称谓、通用组合词、阶段效果数值、label 短标题、负向立场描述、IssueDef／RulePackDef 校对项）保持与 v5 一致，不予更动。
+>
+> 本稿另按最新[交接清单](文化-主奴秩序文案交接清单.md)新增「性奴性别」议题整批文案：六档戒律 description 6 条、阶段效果说明 24 条、心情／社交／环境阶段 12 组（含 2 条艳羡义务独立阶段，共 14 阶段、28 文本值），随 v5改 一并交付；新增条目同样遵循上方的露骨化与术语约定。
 
 ---
 
@@ -19,7 +21,7 @@
 1. 本文为**中文（简体）文案测试稿**，供维护者审阅后落地到 `1.7/Languages/ChineseSimplified/DefInjected/` 下的 `MemeDef`、`PreceptDef`、`ThoughtDef` 三个 `SSC_Culture.xml`（及 `Sexslavecraft/Languages` 源码镜像）。
 2. 本稿**不改动任何 defName、翻译键、规则名、索引、`->`、priority、include、tag、uses**，仅替换右侧文案值。左侧与机制契约保持不变。
 3. 涉及 `IssueDef`（议题名称）与 `RulePackDef`（命名连接规则）的部分为**同步校对**，无需新编文学文本，本文已注明核对结论。
-4. 术语基准沿用既有约定：**性奴 / 主人 / 训导官 / 持链 / 锁链 / 项圈 / 调教 / 契约 / 欲望 / 沉溺 / 堕落 / 支配与服从**。文本一律以“性奴”直呼，不做委婉替换，且性奴默认女性（第三人称一律以“她／她们”指代）；露骨化改写中使用的直白性描写词（阳具／肉棒、淫穴／肉穴、抽送／贯穿／肏、高潮／失禁、呻吟／浪叫、撅臀／湿透等）为配合成人向主题的表述，不改变任何机制含义。
+4. 术语基准沿用既有约定：**性奴 / 主人 / 训导官 / 持链 / 锁链 / 项圈 / 调教 / 契约 / 欲望 / 沉溺 / 堕落 / 支配与服从**。文本一律以“性奴”直呼，不做委婉替换，且性奴默认女性（第三人称一律以“她／她们”指代）；露骨化改写中使用的直白性描写词（阳具／肉棒、淫穴／肉穴、抽送／贯穿／肏、高潮／失禁、呻吟／浪叫、撅臀／湿透等）为配合成人向主题的表述，不改变任何机制含义。新增「性奴性别」议题中，涉及男性性奴的条目以「他／他们」指代、女性性奴以「她／她们」指代、不限性别或非主即奴者以中性表述；「淫穴」仅用于女性性奴，男性性奴以「肉身／唇舌／撅臀」等中性词表述。
 5. 本文按 [文案交接清单](文化-主奴秩序文案交接清单.md) 的条目顺序编排，每条给出对应占位标识或翻译键，便于逐项回填。
 
 ---
@@ -144,6 +146,7 @@
 | SSC_Issue_Master | 主人 | 保持，无需修改 |
 | SSC_Issue_MasterCount | 主人数量 | 保持，无需修改 |
 | SSC_Issue_SlaveCount | 性奴数量 | 保持，无需修改 |
+| SSC_Issue_SlaveGender | 性奴性别 | 保持，无需修改 |
 
 ---
 
@@ -225,7 +228,29 @@
 - **`SSC_Precept_SlaveCount_Unlimited.description`**（奴不厌多）
 > 性奴多多益善，越多性奴，越多淫穴可供驰骋，主人越是荣光，欲望越是酣畅。
 
-### 3.6 阶段效果说明（thoughtStageDescriptions，共 19 条）
+### 3.6 性奴性别（`SSC_Issue_SlaveGender`，6 条）
+
+> 本议题为 1.7 新增的第六组戒律，六档同组互斥：前两档「仅限女性／仅限男性」决定可被收作性奴的性别；「性别不限」为普通默认；后三档「女性义务／男性义务／非主即奴」为「义务」与「非主即奴」，要求对应性别或全部非主人献身为奴（须持有主奴秩序模因，仅限手选）。
+
+- **`SSC_Precept_SlaveGender_FemaleOnly.description`**（仅限女性）
+> 唯有女子才配被收作性奴。锁链与项圈只属于阴柔之躯——主人只占有女子的淫穴，只让她们撅臀承欢、以乳房与唇舌侍奉、在贯穿与鞭笞中攀上高潮；男子即便屈身，也不得享此殊荣。
+
+- **`SSC_Precept_SlaveGender_MaleOnly.description`**（仅限男性）
+> 唯有男子才配被收作性奴。本文化将阳刚之躯缚上锁链、套上项圈，令其俯首于主人胯下，以唇舌与肉身侍奉、被贯穿到失神——女子的淫穴反而不入此道。
+
+- **`SSC_Precept_SlaveGender_Unrestricted.description`**（性别不限）
+> 不论男女，皆可被收作性奴。锁链与项圈不挑性别，只要肉体甘愿献出、可供主人占有驰骋，皆可跪伏于主人脚下，被调教到沉溺其中。
+
+- **`SSC_Precept_SlaveGender_FemaleRequired.description`**（女性义务）
+> 女子生来便当归顺。本文化要求每一个成年女子都献身于主人，以淫穴与乳房侍奉、被锁链束缚、被贯穿到高潮失禁——尚未履行此义务的女子，便是背弃了与生俱来的天命。
+
+- **`SSC_Precept_SlaveGender_MaleRequired.description`**（男性义务）
+> 男子生来便当归顺。本文化要求每一个成年男子都俯首于主人，以肉身与唇舌侍奉、被锁链束缚、被调教到甘愿撅臀承欢——尚未履行此义务的男子，便是违背了天命。
+
+- **`SSC_Precept_SlaveGender_NonMasterRequired.description`**（非主即奴）
+> 凡非主人者，皆须为奴。本文化不承认主人与奴之外的任何身份——每一个未执链之人都该被收作性奴、跪伏承欢、以肉身侍奉，直到被某位主人占有、贯穿、驯成只知高潮的玩物。
+
+### 3.7 阶段效果说明（thoughtStageDescriptions，共 43 条）
 
 > 此类为戒律预览里解释情绪／好感效果的功能说明，须与已确认数值逐格一致（参考设计文档第 3、5、6 节）。
 
@@ -274,6 +299,59 @@
 > 目标主人名下性奴超额 2 名：好感 -15。
 - **`SSC_Precept_SlaveCount_Three.comps.1.thoughtStageDescriptions.2`**
 > 目标主人名下性奴超额 3 名及以上：好感 -30。
+
+- **`SSC_Precept_SlaveGender_FemaleOnly.comps.0.thoughtStageDescriptions.0`**
+> 本人是违规性别性奴：心情 -6。
+- **`SSC_Precept_SlaveGender_FemaleOnly.comps.1.thoughtStageDescriptions.0`**
+> 对方是违规性别性奴：好感 -10。
+- **`SSC_Precept_SlaveGender_FemaleOnly.comps.2.thoughtStageDescriptions.0`**
+> 环境中有违规性别性奴时按人数计罚：1/2/3 名及以上，心情 -1/-3/-6。
+
+- **`SSC_Precept_SlaveGender_MaleOnly.comps.0.thoughtStageDescriptions.0`**
+> 本人是违规性别性奴：心情 -6。
+- **`SSC_Precept_SlaveGender_MaleOnly.comps.1.thoughtStageDescriptions.0`**
+> 对方是违规性别性奴：好感 -10。
+- **`SSC_Precept_SlaveGender_MaleOnly.comps.2.thoughtStageDescriptions.0`**
+> 环境中有违规性别性奴时按人数计罚：1/2/3 名及以上，心情 -1/-3/-6。
+
+- **`SSC_Precept_SlaveGender_FemaleRequired.comps.0.thoughtStageDescriptions.0`**
+> 本人是违规性别性奴：心情 -12。
+- **`SSC_Precept_SlaveGender_FemaleRequired.comps.1.thoughtStageDescriptions.0`**
+> 对方是违规性别性奴：好感 -20。
+- **`SSC_Precept_SlaveGender_FemaleRequired.comps.2.thoughtStageDescriptions.0`**
+> 环境中有违规性别性奴时按人数计罚：1/2/3 名及以上，心情 -2/-6/-12。
+- **`SSC_Precept_SlaveGender_FemaleRequired.comps.3.thoughtStageDescriptions.0`**
+> 本人身为须献身的性别却尚未为奴：心情 -8。
+- **`SSC_Precept_SlaveGender_FemaleRequired.comps.3.thoughtStageDescriptions.1`**
+> 本人艳羡性奴、身为须献身的性别却尚未为奴：心情 -12。
+- **`SSC_Precept_SlaveGender_FemaleRequired.comps.4.thoughtStageDescriptions.0`**
+> 对方身为须献身的性别却尚未为奴：好感 -10。
+- **`SSC_Precept_SlaveGender_FemaleRequired.comps.5.thoughtStageDescriptions.0`**
+> 环境中有须献身却尚未为奴者时按人数计罚：1/2/3 名及以上，心情 -2/-6/-12。
+
+- **`SSC_Precept_SlaveGender_MaleRequired.comps.0.thoughtStageDescriptions.0`**
+> 本人是违规性别性奴：心情 -12。
+- **`SSC_Precept_SlaveGender_MaleRequired.comps.1.thoughtStageDescriptions.0`**
+> 对方是违规性别性奴：好感 -20。
+- **`SSC_Precept_SlaveGender_MaleRequired.comps.2.thoughtStageDescriptions.0`**
+> 环境中有违规性别性奴时按人数计罚：1/2/3 名及以上，心情 -2/-6/-12。
+- **`SSC_Precept_SlaveGender_MaleRequired.comps.3.thoughtStageDescriptions.0`**
+> 本人身为须献身的性别却尚未为奴：心情 -8。
+- **`SSC_Precept_SlaveGender_MaleRequired.comps.3.thoughtStageDescriptions.1`**
+> 本人艳羡性奴、身为须献身的性别却尚未为奴：心情 -12。
+- **`SSC_Precept_SlaveGender_MaleRequired.comps.4.thoughtStageDescriptions.0`**
+> 对方身为须献身的性别却尚未为奴：好感 -10。
+- **`SSC_Precept_SlaveGender_MaleRequired.comps.5.thoughtStageDescriptions.0`**
+> 环境中有须献身却尚未为奴者时按人数计罚：1/2/3 名及以上，心情 -2/-6/-12。
+
+- **`SSC_Precept_SlaveGender_NonMasterRequired.comps.0.thoughtStageDescriptions.0`**
+> 本人既非主人亦非性奴、未履行义务：心情 -12。
+- **`SSC_Precept_SlaveGender_NonMasterRequired.comps.0.thoughtStageDescriptions.1`**
+> 本人艳羡性奴、既非主人亦非性奴、未履行义务：心情 -16。
+- **`SSC_Precept_SlaveGender_NonMasterRequired.comps.1.thoughtStageDescriptions.0`**
+> 对方既非主人亦非性奴、未履行义务：好感 -15。
+- **`SSC_Precept_SlaveGender_NonMasterRequired.comps.2.thoughtStageDescriptions.0`**
+> 环境中有既非主人亦非性奴、未履行义务者时按人数计罚：1/2/3 名及以上，心情 -3/-9/-18。
 
 ---
 
@@ -501,6 +579,66 @@
   - label：主人蓄奴过多
   - description：此主人贪得无厌、蓄奴成群，令我深恶。
 
+### 4.5 性奴性别（12 组／14 阶段）
+
+> 四类反馈：限定违规（仅限女性／仅限男性档）、必须违规（女性义务／男性义务档）、必须未履行义务（女性义务／男性义务档）、非主即奴未履行义务（非主即奴档）。「艳羡未偿」为艳羡且未履行义务时的独立阶段，替代普通义务阶段与旧艳羡心情、不叠扣。男女同数值档共用同一 ThoughtDef，故以下文案一律以中性表述（不提具体性别与生殖器官）。
+
+- **`SSC_Culture_SlaveGender_LimitedViolation_Self.stages.0`**
+  - label：违规之奴
+  - description：我以本文化所排斥的性别沦为锁链下的性奴——这副身躯本不该跪伏于此，错位令我痛苦。
+
+- **`SSC_Culture_SlaveGender_LimitedViolation_Social.stages.0`**
+  - label：鄙夷此违规性奴
+  - description：此人以被排斥的性别为奴，玷污了主奴秩序，令我侧目。
+
+- **`SSC_Culture_SlaveGender_LimitedViolation_Environment.stages.0`**
+  - label：身边有违规性奴
+  - description：附近有违规性别的性奴在俯首侍奉，令我难以心安。
+
+- **`SSC_Culture_SlaveGender_RequiredViolation_Self.stages.0`**
+  - label：违规之奴
+  - description：我以被排斥的性别沦为性奴，既违必须之规，也令这副肉身蒙羞，痛苦更甚。
+
+- **`SSC_Culture_SlaveGender_RequiredViolation_Social.stages.0`**
+  - label：深恶此违规性奴
+  - description：此人以被排斥的性别为奴，公然践踏必须之规，令我深恶痛绝。
+
+- **`SSC_Culture_SlaveGender_RequiredViolation_Environment.stages.0`**
+  - label：身边有违规性奴
+  - description：附近有违规性别的性奴在承欢侍奉，令我如鲠在喉。
+
+- **`SSC_Culture_SlaveGender_RequiredDuty_Self.stages.0`**
+  - label：未尽为奴之责
+  - description：我生来便该献身于主人，却仍游离于锁链之外，尚未跪伏、尚未被占有——这悬而未尽的义务令我焦灼。
+
+- **`SSC_Culture_SlaveGender_RequiredDuty_Self.stages.1`**
+  - label：艳羡未偿
+  - description：我既艳羡那些被主人占有、被贯穿到高潮的性奴，自己又生来便该献身却尚未为奴——欲望与义务双双落空，令我下身发痒、焦渴难耐。
+
+- **`SSC_Culture_SlaveGender_RequiredDuty_Social.stages.0`**
+  - label：轻鄙未尽责者
+  - description：此人生来便该献身为奴，却迟迟不肯俯首，令我不齿。
+
+- **`SSC_Culture_SlaveGender_RequiredDuty_Environment.stages.0`**
+  - label：身边有人未尽为奴之责
+  - description：附近有生来该献身却尚未为奴之人，令我不安。
+
+- **`SSC_Culture_SlaveGender_NonMasterDuty_Self.stages.0`**
+  - label：未尽为奴之责
+  - description：我既非主人，便当为奴，却仍游离于锁链之外——这背弃身份的不安，令我坐立难安。
+
+- **`SSC_Culture_SlaveGender_NonMasterDuty_Self.stages.1`**
+  - label：艳羡未偿
+  - description：我艳羡那些被锁链占有、被肏到高潮失禁的性奴，自己却既非主人亦非性奴——欲望无处安放，责任又未了，令我浑身燥热、痛苦不堪。
+
+- **`SSC_Culture_SlaveGender_NonMasterDuty_Social.stages.0`**
+  - label：轻鄙游离者
+  - description：此人既非主人又不肯为奴，游离于秩序之外，令我厌恶。
+
+- **`SSC_Culture_SlaveGender_NonMasterDuty_Environment.stages.0`**
+  - label：身边有游离者
+  - description：附近有既非主人亦非性奴、游离于秩序之外的人，令我焦躁。
+
 ---
 
 ## 五、命名连接规则 RulePackDef（同步校对，无文学文本）
@@ -525,12 +663,12 @@
 | 道德导师称谓 | 3 |
 | 契约仪式名称 | 3 |
 | 文化生成背景段落 | 17 |
-| 戒律 description | 22 |
-| 戒律阶段效果说明（thoughtStageDescriptions） | 19 |
-| 心情／社交阶段 label | 53 |
-| 心情／社交阶段 description | 53 |
-| **合计待编纂文本值（不含 IssueDef／RulePackDef 校对项）** | **189** |
+| 戒律 description | 28 |
+| 戒律阶段效果说明（thoughtStageDescriptions） | 43 |
+| 心情／社交阶段 label | 67 |
+| 心情／社交阶段 description | 67 |
+| **合计待编纂文本值（不含 IssueDef／RulePackDef 校对项）** | **247** |
 
-> 命名扩展（24 命名 + 17 描述段落 = 41 项）与设计文档第 13.6 节一致；心情／社交共 44 条 thought、53 阶段（每阶段 label／description 各 1 项）。
+> 命名扩展（24 命名 + 17 描述段落 = 41 项）与设计文档第 13.6 节一致；心情／社交共 56 条 thought、67 阶段（每阶段 label／description 各 1 项），其中「性奴性别」议题新增 12 条 thought、14 阶段。
 >
 > 本稿（v5改）相对 v5 的露骨化改写范围：模因描述 1、文化生成背景段落 17、戒律 description 9（正向／主动立场）、Thought description 18（正向／主动立场），共 45 处；其余条目与 v5 逐字一致。
