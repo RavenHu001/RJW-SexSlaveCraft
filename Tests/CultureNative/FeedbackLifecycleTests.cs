@@ -97,9 +97,9 @@ internal static partial class Program
             Check("actual SetIdeo clears old mood/social caches and adopts the new observer precepts", () =>
             {
                 FeedbackContext(); var p=Believer(new[] {"SexSlave_Envy"}); var target=Believer(Array.Empty<string>()); Chain(target,MakePawn(PawnIdentity.Master));
-                Equal(-6f,MoodSum(p)); Equal(20,Opinion(p,target));
+                Equal(-6f,MoodSum(p)); Equal(15,Opinion(p,target));
                 var next=Culture(); Add(next,"SexSlave_Respect"); player.ideos.SetPrimary(next);
-                p.ideo.SetIdeo(next); Equal(next,p.Ideo); Equal(0f,MoodSum(p)); Equal(10,Opinion(p,target));
+                p.ideo.SetIdeo(next); Equal(next,p.Ideo); Equal(0f,MoodSum(p)); Equal(5,Opinion(p,target));
                 Require(Social(p,target).Cast<Thought>().All(t=>t.sourcePrecept.ideo==next));
                 p.ideo.SetIdeo(Culture()); Equal(0f,MoodSum(p)); Equal(0,Opinion(p,target));
             });
@@ -107,7 +107,7 @@ internal static partial class Program
             {
                 FeedbackContext(); Current.Game.World.ideoManager=new IdeoManager {classicMode=true};
                 var p=Believer(new[] {"SexSlave_Envy"}); var target=Believer(Array.Empty<string>()); Chain(target,MakePawn(PawnIdentity.Master));
-                Equal(-6f,MoodSum(p)); Equal(20,Opinion(p,target));
+                Equal(-6f,MoodSum(p)); Equal(15,Opinion(p,target));
                 int oldId=p.Ideo.currentCacheId;
                 // 经原版移除模因兼容维护，艳羡须被合法普通档替换，而非测试直接清空 thought 缓存。
                 p.Ideo.memes.Clear(); p.Ideo.foundation.EnsurePreceptsCompatibleWithMemes(new() {mainMeme},new(),Parms());

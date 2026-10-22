@@ -193,7 +193,7 @@
       <li>
         <label>[占位: 尊重 / 评价性奴]</label>
         <description>[TODO:SSC_Culture_SexSlave_Respect_Social.stages.0.description]</description>
-        <baseOpinionOffset>10</baseOpinionOffset>
+        <baseOpinionOffset>5</baseOpinionOffset>
       </li>
     </stages>
   </ThoughtDef>
@@ -213,7 +213,7 @@
       <li>
         <label>[占位: 神圣 / 评价性奴]</label>
         <description>[TODO:SSC_Culture_SexSlave_Sacred_Social.stages.0.description]</description>
-        <baseOpinionOffset>20</baseOpinionOffset>
+        <baseOpinionOffset>15</baseOpinionOffset>
       </li>
     </stages>
   </ThoughtDef>
@@ -234,7 +234,7 @@
       <li>
         <label>[占位: 艳羡 / 评价性奴]</label>
         <description>[TODO:SSC_Culture_SexSlave_Envy_Social.stages.0.description]</description>
-        <baseOpinionOffset>20</baseOpinionOffset>
+        <baseOpinionOffset>15</baseOpinionOffset>
       </li>
     </stages>
   </ThoughtDef>

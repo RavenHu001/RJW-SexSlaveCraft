@@ -146,19 +146,19 @@ internal static partial class Program
                 ["SexSlave_Revulsion_Environment"] = (SSCCultureThoughtCondition.ManagedChainedEnvironment, new[] {-2f}),
                 ["SexSlave_Sacred_Environment"] = (SSCCultureThoughtCondition.ManagedChainedEnvironment, new[] {1f}),
                 ["SexSlave_Revulsion_Social"] = (SSCCultureThoughtCondition.ChainedOther, new[] {-5f}),
-                ["SexSlave_Respect_Social"] = (SSCCultureThoughtCondition.ChainedOther, new[] {10f}),
-                ["SexSlave_Sacred_Social"] = (SSCCultureThoughtCondition.ChainedOther, new[] {20f}),
-                ["SexSlave_Envy_Social"] = (SSCCultureThoughtCondition.ChainedOther, new[] {20f})
+                ["SexSlave_Respect_Social"] = (SSCCultureThoughtCondition.ChainedOther, new[] {5f}),
+                ["SexSlave_Sacred_Social"] = (SSCCultureThoughtCondition.ChainedOther, new[] {15f}),
+                ["SexSlave_Envy_Social"] = (SSCCultureThoughtCondition.ChainedOther, new[] {15f})
             };
             string[] tiers = { "Hostile", "Revulsion", "Reverence", "SacredOffice" };
-            int[] tm = {-8,-4,3,5}, ts = {-20,-10,10,15};
+            int[] tm = {-8,-4,3,5}, ts = {-20,-10,5,10};
             for (int i = 0; i < tiers.Length; i++)
             {
                 expected["Trainer_" + tiers[i] + "_Self"] = (SSCCultureThoughtCondition.OfficerSelf, new[] {(float)tm[i]});
                 expected["Trainer_" + tiers[i] + "_Social"] = (SSCCultureThoughtCondition.OfficerOther, new[] {(float)ts[i]});
             }
             tiers = new[] {"Hostile","Revulsion","Deference","HolyMaster"};
-            int[] mm = {-12,-6,4,10}, am = {-8,-4,3,5}, ms = {-20,-10,10,20};
+            int[] mm = {-12,-6,4,10}, am = {-8,-4,3,5}, ms = {-20,-10,5,15};
             float[][] lm = {new[] {-6f},new[] {-3f},new[] {3f,-3f,-6f},new[] {6f,-6f,-12f}};
             for (int i = 0; i < tiers.Length; i++)
             {
@@ -197,7 +197,7 @@ internal static partial class Program
     private static void AttitudeTests()
     {
         string[] sex = {"Hostile","Revulsion","Indifference","Respect","Sacred","Envy"};
-        int[] self = {-18,-6,0,0,10,10}, social = {-15,-5,0,10,20,20};
+        int[] self = {-18,-6,0,0,10,10}, social = {-15,-5,0,5,15,15};
         for (int i = 0; i < sex.Length; i++)
         {
             string tier = sex[i]; int own = self[i], other = social[i];
@@ -226,7 +226,7 @@ internal static partial class Program
             Equal(-6f,MoodSum(p)); Equal(1,Mood(p).Single().CurStageIndex);
         });
         string[] trainer = {"Hostile","Revulsion","Indifference","Reverence","SacredOffice"};
-        int[] tm = {-8,-4,0,3,5}, ts = {-20,-10,0,10,15};
+        int[] tm = {-8,-4,0,3,5}, ts = {-20,-10,0,5,10};
         for (int i = 0; i < trainer.Length; i++)
         {
             string tier = trainer[i]; int own=tm[i], other=ts[i];
@@ -245,7 +245,7 @@ internal static partial class Program
             });
         }
         string[] master = {"Hostile","Revulsion","Indifference","Deference","HolyMaster"};
-        int[] mm={-12,-6,0,4,10}, am={-8,-4,0,3,5}, ms={-20,-10,0,10,20};
+        int[] mm={-12,-6,0,4,10}, am={-8,-4,0,3,5}, ms={-20,-10,0,5,15};
         for (int i=0;i<master.Length;i++)
         {
             string tier=master[i]; int own=mm[i], actual=am[i], other=ms[i];
@@ -261,13 +261,13 @@ internal static partial class Program
                 Equal(0f,MoodSum(slave)); Equal(0,Opinion(slave,target));
             });
         }
-        foreach (var sample in new[] {("Sacred","SacredOffice",35),("Sacred","Hostile",0),("Revulsion","SacredOffice",10),("Hostile","SacredOffice",0)})
+        foreach (var sample in new[] {("Sacred","SacredOffice",25),("Sacred","Hostile",-5),("Revulsion","SacredOffice",5),("Hostile","SacredOffice",-5)})
             Check("native independent social groups fully add " + sample, () =>
             {
                 FeedbackContext(); var target=Officer(Array.Empty<string>());
                 var p=Believer(new[] {"SexSlave_"+sample.Item1,"Trainer_"+sample.Item2});
                 Equal(sample.Item3,Opinion(p,target)); Equal(2,Social(p,target).Count);
-                // 直接走最终关系入口，且相反符号抵消时两份条目不能互相覆盖。
+                // 直接走最终关系入口，且相反符号相加时两份条目不能互相覆盖。
                 Equal(sample.Item3,p.relations.OpinionOf(target));
                 for(int i=0;i<10;i++) Equal(sample.Item3,Opinion(p,target));
                 Equal(0,p.relations.DirectRelations.Count); Equal(0,p.needs.mood.thoughts.memories.Memories.Count);
@@ -361,20 +361,20 @@ internal static partial class Program
         {
             FeedbackContext(); var p=Believer(new[] {"SexSlave_Respect"}); var other=Believer(Array.Empty<string>());
             Equal(0,Opinion(p,other)); Chain(other,MakePawn(PawnIdentity.Master));
-            tick=1099; Equal(0,Opinion(p,other)); tick=1100; Equal(10,Opinion(p,other));
-            other.health.hediffSet.hediffs.Clear(); tick=1199; Equal(10,Opinion(p,other)); tick=1200; Equal(0,Opinion(p,other));
+            tick=1099; Equal(0,Opinion(p,other)); tick=1100; Equal(5,Opinion(p,other));
+            other.health.hediffSet.hediffs.Clear(); tick=1199; Equal(5,Opinion(p,other)); tick=1200; Equal(0,Opinion(p,other));
         });
         Check("native thought cache changes envy stage without creating memories or duplicate entries", () =>
         {
             FeedbackContext(); var p=Believer(new[] {"SexSlave_Envy"}); var target=Believer(Array.Empty<string>()); Chain(target,MakePawn(PawnIdentity.Master));
-            Equal(-6f,MoodSum(p)); Equal(20,Opinion(p,target)); Chain(p,MakePawn(PawnIdentity.Master));
+            Equal(-6f,MoodSum(p)); Equal(15,Opinion(p,target)); Chain(p,MakePawn(PawnIdentity.Master));
             tick+=150; p.needs.mood.thoughts.ThoughtInterval(); Equal(10f,MoodSum(p)); Equal(0,Opinion(p,target));
             Equal(1,Mood(p).Count); Equal(0,p.needs.mood.thoughts.memories.Memories.Count);
         });
         Check("native final opinion obeys actual Anomaly Inhumanized factor and restores after removal", () =>
         {
             FeedbackContext(); var p=Believer(new[] {"SexSlave_Sacred"}); var target=Believer(Array.Empty<string>()); Chain(target,MakePawn(PawnIdentity.Master));
-            Equal(20,Opinion(p,target)); Equal(20,p.relations.OpinionOf(target));
+            Equal(15,Opinion(p,target)); Equal(15,p.relations.OpinionOf(target));
             // 读取本机原版 Hediff 的真实阶段配置，不用测试替身将最终 OpinionOf 改成零。
             string path=Path.Combine(game,"Data/Anomaly/Defs/HediffDefs/Hediffs_Global_Misc.xml");
             var original=XDocument.Load(path).Root.Elements("HediffDef").Single(n=>(string)n.Element("defName")=="Inhumanized");
@@ -384,8 +384,8 @@ internal static partial class Program
                 foreach(var field in stage.Elements().Where(n=>n.Name.LocalName!="opinionOfOthersFactor" && n.Name.LocalName!="minSeverity").ToArray()) field.Remove();
             ReadDef<HediffDef>(projected); var def=DefDatabase<HediffDef>.GetNamed("Inhumanized");
             var hediff=new Hediff {pawn=p,def=def}; p.health.hediffSet.hediffs.Add(hediff);
-            Equal(20,Opinion(p,target)); Equal(0,p.relations.OpinionOf(target));
-            p.health.hediffSet.hediffs.Remove(hediff); Equal(20,p.relations.OpinionOf(target));
+            Equal(15,Opinion(p,target)); Equal(0,p.relations.OpinionOf(target));
+            p.health.hediffSet.hediffs.Remove(hediff); Equal(15,p.relations.OpinionOf(target));
         });
     }
 
@@ -394,7 +394,7 @@ internal static partial class Program
         Check("personal and social feedback prepare no population or bound-count snapshots", () =>
         {
             FeedbackContext(); var p=Believer(new[] {"SexSlave_Envy","Trainer_SacredOffice"}); var target=Officer(Array.Empty<string>());
-            calls.Clear(); Equal(-6f,MoodSum(p)); Equal(35,Opinion(p,target)); Equal(0,calls.Count);
+            calls.Clear(); Equal(-6f,MoodSum(p)); Equal(25,Opinion(p,target)); Equal(0,calls.Count);
         });
         Check("environment and leader feedback share one roster and environment count per generation", () =>
         {

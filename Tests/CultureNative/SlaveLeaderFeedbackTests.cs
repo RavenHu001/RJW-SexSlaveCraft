@@ -71,8 +71,8 @@ internal static partial class Program
             Check("slave leader social adds slave attitude and retains native final opinion factors: "+sample.tier, () =>
             {
                 var s=SlaveLeaderContext(sample.tier); Add(s.observer.Ideo,"SexSlave_Sacred");
-                Equal(20+sample.social,Opinion(s.observer,s.leader)); Equal(2,Social(s.observer,s.leader).Count);
-                Equal(20+sample.social,s.observer.relations.OpinionOf(s.leader));
+                Equal(15+sample.social,Opinion(s.observer,s.leader)); Equal(2,Social(s.observer,s.leader).Count);
+                Equal(15+sample.social,s.observer.relations.OpinionOf(s.leader));
                 // 使用本机前例装载的真实非人化阶段，最终好感仍经过原版系数。
                 var hediff=new Hediff {pawn=s.observer,def=DefDatabase<HediffDef>.GetNamed("Inhumanized")};
                 s.observer.health.hediffSet.hediffs.Add(hediff); Equal(0,s.observer.relations.OpinionOf(s.leader));

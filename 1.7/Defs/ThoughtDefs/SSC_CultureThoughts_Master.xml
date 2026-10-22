@@ -217,7 +217,7 @@
       <li>
         <label>[占位: 尊奉 / 评价主人]</label>
         <description>[TODO:SSC_Culture_Master_Deference_Social.stages.0.description]</description>
-        <baseOpinionOffset>10</baseOpinionOffset>
+        <baseOpinionOffset>5</baseOpinionOffset>
       </li>
     </stages>
   </ThoughtDef>
@@ -310,7 +310,7 @@
       <li>
         <label>[占位: 圣主 / 评价主人]</label>
         <description>[TODO:SSC_Culture_Master_HolyMaster_Social.stages.0.description]</description>
-        <baseOpinionOffset>20</baseOpinionOffset>
+        <baseOpinionOffset>15</baseOpinionOffset>
       </li>
     </stages>
   </ThoughtDef>

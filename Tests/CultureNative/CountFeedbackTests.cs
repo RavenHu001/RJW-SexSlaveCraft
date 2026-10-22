@@ -98,10 +98,10 @@ internal static partial class Program
             FeedbackContext(); var a=Believer(new[] {"SlaveCount_One","Master_HolyMaster"});
             var owner=Believer(Array.Empty<string>(),PawnIdentity.Master); BoundGroup(owner,4);
             var hidden=Believer(new[] {"SlaveCount_One"}); MakeMap(a);
-            Equal(20,Opinion(a,owner)); Equal(0,Opinion(hidden,owner));
-            MakeMap(owner); tick+=100; Equal(-10,Opinion(a,owner)); Equal(0,Opinion(hidden,owner));
+            Equal(15,Opinion(a,owner)); Equal(0,Opinion(hidden,owner));
+            MakeMap(owner); tick+=100; Equal(-15,Opinion(a,owner)); Equal(0,Opinion(hidden,owner));
             MakeMap(hidden); tick+=100; Equal(-30,Opinion(hidden,owner));
-            Set(owner.guest,"guestStatusInt",GuestStatus.Prisoner); tick+=100; Equal(20,Opinion(a,owner));
+            Set(owner.guest,"guestStatusInt",GuestStatus.Prisoner); tick+=100; Equal(15,Opinion(a,owner));
         });
         Check("master totals span maps/caravans and include receiver, not hidden/prisoner/qualification-only pawns", () =>
         {
@@ -148,11 +148,11 @@ internal static partial class Program
         {
             FeedbackContext(); var p=Believer(new[] {"SlaveCount_One","Master_HolyMaster"});
             var owner=Believer(Array.Empty<string>(),PawnIdentity.Master); MakeMap(p,owner); BoundGroup(owner,4);
-            Equal(-10,Opinion(p,owner)); Equal(-10,p.relations.OpinionOf(owner)); Equal(2,Social(p,owner).Count);
+            Equal(-15,Opinion(p,owner)); Equal(-15,p.relations.OpinionOf(owner)); Equal(2,Social(p,owner).Count);
             // 前面的原版取证用例已加载真实 Inhumanized 阶段配置；此处验证负向叠加仍经过最终系数。
             var h=new Hediff {pawn=p,def=DefDatabase<HediffDef>.GetNamed("Inhumanized")}; p.health.hediffSet.hediffs.Add(h);
-            Equal(-10,Opinion(p,owner)); Equal(0,p.relations.OpinionOf(owner));
-            p.health.hediffSet.hediffs.Remove(h); Equal(-10,p.relations.OpinionOf(owner));
+            Equal(-15,Opinion(p,owner)); Equal(0,p.relations.OpinionOf(owner));
+            p.health.hediffSet.hediffs.Remove(h); Equal(-15,p.relations.OpinionOf(owner));
             Equal(0,p.relations.DirectRelations.Count); Equal(0,p.needs.mood.thoughts.memories.Memories.Count);
         });
 

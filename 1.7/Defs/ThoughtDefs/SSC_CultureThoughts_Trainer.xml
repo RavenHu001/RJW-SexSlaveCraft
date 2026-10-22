@@ -117,7 +117,7 @@
       <li>
         <label>[占位: 尊敬 / 评价训导官]</label>
         <description>[TODO:SSC_Culture_Trainer_Reverence_Social.stages.0.description]</description>
-        <baseOpinionOffset>10</baseOpinionOffset>
+        <baseOpinionOffset>5</baseOpinionOffset>
       </li>
     </stages>
   </ThoughtDef>
@@ -157,7 +157,7 @@
       <li>
         <label>[占位: 圣职 / 评价训导官]</label>
         <description>[TODO:SSC_Culture_Trainer_SacredOffice_Social.stages.0.description]</description>
-        <baseOpinionOffset>15</baseOpinionOffset>
+        <baseOpinionOffset>10</baseOpinionOffset>
       </li>
     </stages>
   </ThoughtDef>
