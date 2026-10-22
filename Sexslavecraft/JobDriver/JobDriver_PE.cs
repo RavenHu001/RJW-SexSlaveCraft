@@ -95,7 +95,10 @@ namespace SexSlaveCraft
                     Sexprops = SexUtility.SelectSextype(pawn, Partner, false, false);
                     // 外部动作选择结束后确认归属，再应用本次场景固定的动作参数。
                     if (!context.IsCurrent) return;
-                    bool applied = RJWSexPropsUtility.ApplySexType(Sexprops, pawn, Partner, xxx.rjwSextype.Anal, "Sex_Anal");
+                    // 人格排泄沿用固定场景，不把该交互的部位要求追加为工作准入条件。
+                    // 缺少可解析匹配时复用仪式的空接触结果：保留当前动作和双方、清除旧部位，
+                    // 不伪造插入接触；有真实解析仍保留，定义错误或参与者／部位归属错误仍会失败。
+                    bool applied = RJWSexPropsUtility.ApplySexType(Sexprops, pawn, Partner, xxx.rjwSextype.Anal, "Sex_Anal", allowEmptyParts: true);
                     // 固定动作必须在 Start 前完成解析；解析回调换任务后不清理新工作。
                     if (!context.IsCurrent || context.Target.Thing != Partner) return;
                     if (!applied)

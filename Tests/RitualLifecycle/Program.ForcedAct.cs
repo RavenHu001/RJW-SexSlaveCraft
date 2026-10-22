@@ -55,13 +55,25 @@ internal static partial class Program
             Require(current != null && current.Comp.isRitualTraining, "new ritual occupancy lost");
             Equal(0, current.Job.CancelCalls, "new ritual cancellation"); Equal(2, current.Comp.ritualPhase, "new ritual progression");
         });
-        Check("PE fixed act failure stops before Start and extraction", () =>
+        Check("PE invalid fixed act setup still stops before Start and extraction", () =>
         {
             var e = new PEExecution(); e.Toils[1].initAction(); bool started = false;
-            TestWorld.OnRjwStart = _ => started = true; TestWorld.ResolveActSucceeds = false;
+            TestWorld.OnRjwStart = _ => started = true; TestWorld.PEActSetupSucceeds = false;
             e.Toils[2].initAction();
             Require(!started && e.Actor.jobs.EndCondition == JobCondition.Incompletable, "invalid PE act started");
             Equal(0, TestWorld.ProcessSexCalls, "invalid PE processing");
+        });
+        Check("PE without a matching fixed-act body setup can start and extract personality", () =>
+        {
+            // 模拟 RJW 无部位匹配，直接执行生产任务的接收、开始、收尾和提取；不替换任务驱动。
+            var e = new PEExecution(); TestWorld.ResolveActSucceeds = false;
+            int previousFailure = e.Target.TryGetComp<CompSexSlaveTraining>().lastFailedTrainingValidationTick;
+            bool started = false; TestWorld.OnRjwStart = _ => started = true;
+            e.Start(); Require(started, "empty contact prevented PE Start");
+            Equal(previousFailure, e.Target.TryGetComp<CompSexSlaveTraining>().lastFailedTrainingValidationTick, "unexpected validation cooldown");
+            e.Toils[2].Finish(); e.Toils[3].initAction();
+            Equal(1, TestWorld.ProcessSexCalls, "PE completion processing");
+            Require(e.Target.health.hediffSet.HasHediff(SSCDefOf.SSC_PersonalityExcreted_Done), "PE extraction did not complete");
         });
         Check("PE fixed act callback cannot end the replacement job", () =>
         {

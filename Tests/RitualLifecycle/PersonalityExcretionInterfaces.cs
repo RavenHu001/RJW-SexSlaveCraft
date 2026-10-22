@@ -102,8 +102,12 @@ namespace SexSlaveCraft
     public static partial class Strings { public static string Message_PersonalityExcretionComplete(string label) => label; }
     public static partial class RJWSexPropsUtility
     {
-        public static bool ApplySexType(rjw.SexProps props, Pawn actor, Pawn target, rjw.xxx.rjwSextype type, string interaction)
-        { TestWorld.OnResolveAct?.Invoke(); return TestWorld.ResolveActSucceeds; }
+        public static bool ApplySexType(rjw.SexProps props, Pawn actor, Pawn target, rjw.xxx.rjwSextype type, string interaction, bool allowEmptyParts = false)
+        {
+            // 区分“解析为空”和定义／结果错误；这里只控制 RJW 边界，真实空结果和归属验证由 ForcedSexProps 覆盖。
+            TestWorld.OnResolveAct?.Invoke();
+            return TestWorld.PEActSetupSucceeds && (TestWorld.ResolveActSucceeds || allowEmptyParts);
+        }
     }
     // 只记录生产任务调用的先后顺序；宠物清理及人格快照算法由各自专项直接执行生产代码。
     public static class PetExtractionBoundary { public static readonly List<string> Calls = new List<string>(); }
