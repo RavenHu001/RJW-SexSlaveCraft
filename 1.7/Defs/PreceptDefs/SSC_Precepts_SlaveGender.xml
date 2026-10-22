@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- AI 辅助生成：1.7 性奴性别规范；新议题只表达文化反馈，全部正式描述使用占位。 -->
 <Defs>
-  <!-- 六档同组互斥，复用既有性奴议题图标，不引入本批未确认的新美术资产。 -->
+  <!-- 六档同组互斥，共用性别符号与爱心项圈的专属议题图标；具体规范由各档名称说明。 -->
   <IssueDef MayRequire="Ludeon.RimWorld.Ideology">
     <defName>SSC_Issue_SlaveGender</defName>
     <label>性奴性别</label>
-    <iconPath>UI/Issues/SSC_SexSlave</iconPath>
+    <iconPath>UI/Issues/SSC_SlaveGender</iconPath>
     <allowMultiplePrecepts>false</allowMultiplePrecepts>
   </IssueDef>
   <!-- FemaleOnly：两种生成权重分别配置；零权重仅限制生成，不限制普通手选或改革保留。 -->
