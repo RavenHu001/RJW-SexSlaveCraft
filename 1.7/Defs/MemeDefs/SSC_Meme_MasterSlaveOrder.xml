@@ -61,6 +61,9 @@
         <li>SSC_BindingRitualPreset->缔约之礼</li>
         <li>SSC_BindingRitualPreset->项圈加冕</li>
         <li>SSC_BindingRitualPreset->沉沦圣仪</li>
+        <!-- 13：原版神明称谓只读取关联模因的规则，必须独立提供 memeConcept。
+             复用已定稿第一组 theme，不新增创作文案；追加索引以保留既有称谓和段落的四语键。 -->
+        <li>memeConcept->支配</li>
       </rulesStrings>
     </generalRules>
     <!-- 只提供当前模因的背景段落，不增加 patterns；继续由原版结构选择六类故事框架。

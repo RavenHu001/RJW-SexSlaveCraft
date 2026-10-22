@@ -19,6 +19,7 @@ internal static partial class Program
             { PrepareNaming(repo, game, language); Require(errors.Count == 0, string.Join("\n", errors)); ready = true; });
             if (!ready) continue;
             Check("naming fixed resource keys, grammar and localized final copy: " + language, () => NamingResourceContract(repo, language));
+            DeityGenerationTests(repo, language);
             Check("native symbols select SSC and ordinary sources without unresolved rules: " + language, () =>
             {
                 // 原版结构包与神祇仍参与选择；确定种子集合应能走到 SSC，但不要求每次结果来自 SSC。
@@ -155,7 +156,7 @@ internal static partial class Program
                 .Concat(XDocument.Load(Path.Combine(repo, "1.7/Defs/RulePackDefs/SSC_CultureNamers.xml")).Root.Elements());
             var parsed = nodes.Select(n => DirectXmlToObjectNew.DefFromNodeNew(Xml(n), null)).ToArray();
             DirectXmlCrossRefLoader.ResolveAllWantedCrossReferences(FailMode.LogErrors);
-            var meme = (MemeDef)parsed[0]; Equal(3, meme.symbolPacks.Count); Equal(13, meme.generalRules.Rules.Count);
+            var meme = (MemeDef)parsed[0]; Equal(3, meme.symbolPacks.Count); Equal(14, meme.generalRules.Rules.Count);
             Equal(17, meme.descriptionMaker.rules.Rules.Count); Require(meme.descriptionMaker.patterns.NullOrEmpty());
             Equal("SSC_NamerRoleMoralist", parsed[1].defName); Equal("SSC_NamerRitualBinding", parsed[2].defName);
         });
@@ -196,7 +197,7 @@ internal static partial class Program
         // 独立固定集合同时检查缺键、错索引和多余键；连接规则也必须保留完整左侧语法。
         string prefix = MemeName + "."; var expected = new HashSet<string> { prefix + "label", prefix + "description" };
         for (int i = 0; i < 3; i++) foreach (string field in new[] { "ideoName", "theme", "adjective", "member" }) expected.Add(prefix + $"symbolPacks.{i}.{field}");
-        for (int i = 0; i < 13; i++) expected.Add(prefix + $"generalRules.rulesStrings.{i}");
+        for (int i = 0; i < 14; i++) expected.Add(prefix + $"generalRules.rulesStrings.{i}");
         for (int i = 0; i < 17; i++) expected.Add(prefix + $"descriptionMaker.rules.rulesStrings.{i}");
         var entries = XDocument.Load(Path.Combine(repo, $"1.7/Languages/{language}/DefInjected/MemeDef/SSC_Culture.xml")).Root.Elements().ToArray();
         Require(expected.SetEquals(entries.Select(e => e.Name.LocalName))); Equal(expected.Count, entries.Length);
@@ -214,12 +215,12 @@ internal static partial class Program
                 RequireFinalCopy(expectedValue); ValidGenerated(expectedValue); Equal(expectedValue, values[f]);
             }
         }
-        var rules = mainMeme.generalRules.Rules; Equal(13, rules.Count);
+        var rules = mainMeme.generalRules.Rules; Equal(14, rules.Count);
         Require(rules.All(r => r.keyword != "r_roleName" && r.keyword != "r_ritualName"));
         // 固定左侧语法与连接根；逐条比对右侧注入结果，不能为通过文案测试而放宽挂载或 priority。
         string[] heads = { "memeAdjective", "memeCreed", "memeHyphenPrefix", "r_leaderTitle(priority=10)",
             "SSC_LeaderPreset", "SSC_LeaderPreset", "SSC_LeaderPreset", "SSC_MoralistPreset", "SSC_MoralistPreset", "SSC_MoralistPreset",
-            "SSC_BindingRitualPreset", "SSC_BindingRitualPreset", "SSC_BindingRitualPreset" };
+            "SSC_BindingRitualPreset", "SSC_BindingRitualPreset", "SSC_BindingRitualPreset", "memeConcept" };
         for (int i = 0; i < heads.Length; i++)
         {
             string value = entries.Single(e => e.Name.LocalName == prefix + $"generalRules.rulesStrings.{i}").Value;

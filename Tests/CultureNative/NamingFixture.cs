@@ -109,7 +109,8 @@ internal static partial class Program
         var cultures = XDocument.Load(Path.Combine(game, "Data/Core/Defs/CultureDefs/Cultures.xml")).Root.Elements("CultureDef");
         foreach (var node in cultures)
         {
-            var copy = Project(node, "defName", "label", "pawnNameMaker", "ideoNameMaker", "leaderTitleMaker", "festivalNameMaker");
+            // 神明随机按钮使用两套独立命名器；必须装载真实字段及其闭包，不能由预填神明替代生成覆盖。
+            var copy = Project(node, "defName", "label", "pawnNameMaker", "ideoNameMaker", "leaderTitleMaker", "festivalNameMaker", "deityNameMaker", "deityTypeMaker");
             foreach (var e in copy.Elements().Where(e => e.Name.LocalName.EndsWith("Maker"))) LoadRule(e.Value);
             ReadDef<CultureDef>(copy);
         }
@@ -139,7 +140,7 @@ internal static partial class Program
         }
         RulePackDefOf.GlobalUtility = DefDatabase<RulePackDef>.GetNamed("GlobalUtility");
         mainMeme.generalRules.PostLoad(); mainMeme.descriptionMaker.rules.PostLoad();
-        InjectNaming(repo, language, typeof(MemeDef), 44);
+        InjectNaming(repo, language, typeof(MemeDef), 45);
         InjectNaming(repo, language, typeof(RulePackDef), 2);
         // 提供原版人物语法所需的实际 PawnKind／种族字段，不生成完整场景人物。
         var human = Bare<ThingDef>(); human.defName = "NamingHuman"; human.label = "human";

@@ -46,4 +46,6 @@
   <SSC_Meme_MasterSlaveOrder.descriptionMaker.rules.rulesStrings.14>animistBasis(tag=meme_SSC_MasterSlaveOrder)-&gt;万物皆有灵，而欲望是其中最强的灵。信徒相信，唯有让欲望之灵被主人之手牵引、被阳具贯穿驯服，它才会安分守己，不再作乱。</SSC_Meme_MasterSlaveOrder.descriptionMaker.rules.rulesStrings.14>
   <SSC_Meme_MasterSlaveOrder.descriptionMaker.rules.rulesStrings.15>animistFact(tag=meme_SSC_MasterSlaveOrder)-&gt;传说锁链的铁环中栖居着“服从之灵”，项圈的皮革里沉睡着“沉溺之灵”，主人胯下的阳物里则住着“征服之灵”。当锁链扣上、阳物入穴，三灵合欢，便如猛兽归栏，狂躁的心得以安宁。</SSC_Meme_MasterSlaveOrder.descriptionMaker.rules.rulesStrings.15>
   <SSC_Meme_MasterSlaveOrder.descriptionMaker.rules.rulesStrings.16>animistProphecy(tag=meme_SSC_MasterSlaveOrder)-&gt;灵卜者言：终有一日，天地将化为一副巨大的缰绳，所有生灵各归其主——主人执链纵欲，奴隶撅臀承欢，在无尽的贯穿、高潮与欢愉中归于太初的秩序。</SSC_Meme_MasterSlaveOrder.descriptionMaker.rules.rulesStrings.16>
+  <!-- 原版随机神明所需概念；复用已定稿命名包主题。 -->
+  <SSC_Meme_MasterSlaveOrder.generalRules.rulesStrings.13>memeConcept-&gt;支配</SSC_Meme_MasterSlaveOrder.generalRules.rulesStrings.13>
 </LanguageData>

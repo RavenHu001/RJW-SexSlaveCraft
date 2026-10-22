@@ -46,4 +46,6 @@
   <SSC_Meme_MasterSlaveOrder.descriptionMaker.rules.rulesStrings.14>animistBasis(tag=meme_SSC_MasterSlaveOrder)-&gt;萬物皆有靈，而慾望是其中最強的靈。信徒相信，唯有讓慾望之靈被主人之手牽引、被陽具貫穿馴服，它才會安分守己，不再作亂。</SSC_Meme_MasterSlaveOrder.descriptionMaker.rules.rulesStrings.14>
   <SSC_Meme_MasterSlaveOrder.descriptionMaker.rules.rulesStrings.15>animistFact(tag=meme_SSC_MasterSlaveOrder)-&gt;傳說鎖鏈的鐵環中棲居著「服從之靈」，項圈的皮革裡沉睡著「沉溺之靈」，主人胯下的陽物裡則住著「征服之靈」。當鎖鏈扣上、陽物入穴，三靈合歡，便如猛獸歸欄，狂躁的心得以安寧。</SSC_Meme_MasterSlaveOrder.descriptionMaker.rules.rulesStrings.15>
   <SSC_Meme_MasterSlaveOrder.descriptionMaker.rules.rulesStrings.16>animistProphecy(tag=meme_SSC_MasterSlaveOrder)-&gt;靈卜者言：終有一日，天地將化為一副巨大的韁繩，所有生靈各歸其主——主人執鏈縱慾，奴隸撅臀承歡，在無盡的貫穿、高潮與歡愉中歸於太初的秩序。</SSC_Meme_MasterSlaveOrder.descriptionMaker.rules.rulesStrings.16>
+  <!-- 原版随机神明所需概念；复用已定稿命名包主题。 -->
+  <SSC_Meme_MasterSlaveOrder.generalRules.rulesStrings.13>memeConcept-&gt;支配</SSC_Meme_MasterSlaveOrder.generalRules.rulesStrings.13>
 </LanguageData>

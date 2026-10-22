@@ -52,7 +52,7 @@
 
 新增 NamingFixture／NamingTests／DescriptionTests，在原有反馈测试全部完成后装载命名依赖。真实执行原版 XML 补丁、父子继承、旧／当前默认新版反序列化器、交叉引用、GenerateTextSymbols、GenerateLeaderTitle、职位／仪式 GenerateNewName／RegenerateName、RitualPatternDef.Fill、文化描述请求／六类故事框架及 Scribe；不替换语法解析器或返回预设结果。
 
-四语逐语重建 RulePack 与 Def，使用 DefInjectionPackage.AddDataFromFile／InjectIntoDefs 读取交付文件，验证 44 个 MemeDef 键与 2 个 RulePackDef 键全部注入及源码镜像一致。额外内存注入探针证明生成结果确实读取了翻译字段。正式文本已落实；固定语法、字段索引及实际注入分别断言，不将正文绑定到旧 TODO 标记。
+四语逐语重建 RulePack 与 Def，使用 DefInjectionPackage.AddDataFromFile／InjectIntoDefs 读取交付文件，验证 45 个 MemeDef 键与 2 个 RulePackDef 键全部注入及源码镜像一致。额外内存注入探针证明生成结果确实读取了翻译字段。正式文本已落实；固定语法、字段索引及实际注入分别断言，不将正文绑定到旧 TODO 标记。
 
 命名专项使用当前安装的 Core／Ideology 规则 include 闭包、原版结构模因和地点、Corunan 人物命名器及原版英文通用词库／语言 worker；验证的是四语 SSC Def 注入，不是四套完整原版翻译或界面。实际人物命名器及人物规则生成提供创始者／信徒，不构造游戏场景。职位、文化仅投影命名需要的字段；仪式模式保留真实原版继承与命名字段，行为提供可初始化的原版空 Def，不执行完整仪式阶段或结算。原机制由既有文化及 RitualDevelopmentNative 等专项回归。
 
@@ -79,4 +79,8 @@ EnviousDutyTests 针对实机反馈验证独立阶段：必须档普通 -8／艳
 
 每语新增 1 项正式 17 段解析、6 项完整原版背景框架解析，共 28 项。原背景隔离／uses=1／移除模因／锁定保存测试改为仅在测试内存替换右侧的唯一探针，并在 finally 恢复正式规则；保留实际关键词、tag、uses，有模因必须见到探针，无模因及移除后不得见到，不再以“不包含旧 TODO”伪证隔离。道德导师注入探针按固定资源字段定位，验证真实生成结果消费变更，资源文件不被改写。
 
-当前 410／410 通过，构建零警告零错误；相关资源／布局检查及未同步边界见[本轮记录](../../Docs/Development/Verification/文化正式文案收尾与测试.md)。生产源码与机制不改，测试构建临时 DLL 验证后恢复原提交字节，不重写 BUILD-INFO，不向游戏目录同步。
+正式文案收尾阶段 410／410 通过，构建零警告零错误；相关资源／布局检查及未同步边界见[本轮记录](../../Docs/Development/Verification/文化正式文案收尾与测试.md)。生产源码与机制不改，测试构建临时 DLL 验证后恢复原提交字节，不重写 BUILD-INFO，不向游戏目录同步。
+
+## 随机神明回归（2026-10-22）
+
+实际神明生成此前不在预填神明的覆盖范围内。夹具现读取原版文化的 deityNameMaker／deityTypeMaker 及 include 闭包；DeityGenerationTests 新增四语共 24 项，真实执行两种有神结构与四类文化的 GenerateDeities、定向关联 SSC 的 FillDeity，并覆盖男女神明及内存缺词负例。修复前 414／434，修复后当前 **434／434**；MemeDef 每语 45 键、generalRules 14 条，原字段索引保留。详见[缺词修复与验证](../../Docs/Development/Verification/文化随机神明生成修复与测试.md)。

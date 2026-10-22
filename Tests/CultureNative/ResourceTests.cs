@@ -145,7 +145,7 @@ internal static partial class Program
                     string path = Path.Combine(repo, "1.7", relative);
                     Require(File.ReadAllBytes(path).SequenceEqual(File.ReadAllBytes(Path.Combine(repo, "Sexslavecraft", relative))));
                     var entries = XDocument.Load(path).Root.Elements().ToArray();
-                    Equal(type == "MemeDef" ? 44 : type == "IssueDef" ? 6 : 99, entries.Length);
+                    Equal(type == "MemeDef" ? 45 : type == "IssueDef" ? 6 : 99, entries.Length);
                     Equal(entries.Length, entries.Select(x => x.Name).Distinct().Count());
                     // 正式文案只验证完整、无交接标记；机制与键集合仍使用独立固定预期。
                     foreach (var e in entries) RequireFinalCopy(e.Value);
