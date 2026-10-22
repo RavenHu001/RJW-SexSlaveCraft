@@ -29,6 +29,10 @@ namespace SexSlaveCraft
                     return SSCCultureStateUtility.TryGetActualMaster(p, out _);
                 case SSCCultureThoughtCondition.ManagedChainedEnvironment:
                     return TryEnvironmentCount(p, out int count) && count > 0;
+                case SSCCultureThoughtCondition.MasterCountExcess:
+                case SSCCultureThoughtCondition.BoundSlaveCountExcess:
+                    // 仅超额才创建数量项；激活和结算共用查询，不能把不可查询状态当成达标人数。
+                    return SSCCultureCountUtility.TryGetMoodExcess(p, config, out int excess) && excess > 0;
                 case SSCCultureThoughtCondition.Leader:
                     // 接收者和任职者共用身份过滤前的成员名册；未就绪不能冒充有效空缺。
                     var cache = Current.Game?.GetComponent<SSCCultureGameComponent>();
@@ -45,11 +49,22 @@ namespace SexSlaveCraft
 
         public override float MoodMultiplier(Pawn p)
         {
-            // 固定个人反馈不查询组件。环境效果通过原版 MoodOffset 乘人数，不创建按人数增长的阶段。
-            if (def.GetModExtension<SSCCultureThoughtExtension>()?.condition != SSCCultureThoughtCondition.ManagedChainedEnvironment)
+            var config = def.GetModExtension<SSCCultureThoughtExtension>();
+            bool quantity = config?.condition == SSCCultureThoughtCondition.MasterCountExcess
+                || config?.condition == SSCCultureThoughtCondition.BoundSlaveCountExcess;
+            // 固定个人反馈不查询组件；环境仍按完整人数计算，不应用数量戒律的三人封顶。
+            if (!quantity && config?.condition != SSCCultureThoughtCondition.ManagedChainedEnvironment)
                 return 1f;
             // 原版缓存可能尚未重算；再次核对挂载和本人链，避免改宗/取得链后继续给出旧环境效果。
             if (!ModsConfig.IdeologyActive || p?.Ideo == null || !p.Ideo.cachedPossibleSituationalThoughts.Contains(def)) return 0f;
+            if (quantity)
+            {
+                // 再核对适用资格与当前快照，防止旧 thought 在改宗、失去主人身份、加载中继续扣分。
+                // 基础值 -3：主人总数倍率为 2/5/9，名下人数为 1/3/6；封顶只在超额查询中处理。
+                if (!SSCCultureCountUtility.TryGetMoodExcess(p, config, out int n)) return 0f;
+                return config.condition == SSCCultureThoughtCondition.MasterCountExcess
+                    ? n * (n + 3) / 2f : n * (n + 1) / 2f;
+            }
             return TryEnvironmentCount(p, out int count) ? count : 0f;
         }
 

@@ -1,4 +1,4 @@
-// AI 辅助生成：文化 thought 的只读配置；数值仍由原版 ThoughtStage 保存。
+// AI 辅助生成：文化 thought 的只读条件和有限上限；ThoughtStage 保存基础值，数量心情由原版倍率结算。
 using System;
 using System.Collections.Generic;
 using Verse;
@@ -10,7 +10,8 @@ namespace SexSlaveCraft
     {
         Unspecified, ChainedSelf, EnvySelf, ManagedChainedEnvironment,
         OfficerSelf, MasterSelf, ActualMaster, Leader,
-        ChainedOther, OfficerOther, MasterOther
+        ChainedOther, OfficerOther, MasterOther,
+        MasterCountExcess, BoundSlaveCountExcess, OtherMasterBoundSlaveCountExcess
     }
 
     public sealed class SSCCultureThoughtExtension : DefModExtension
@@ -20,6 +21,12 @@ namespace SexSlaveCraft
         public bool requireEnviousObserver;
         // 领袖主人固定用阶段 0；非主人可显式配置阶段 1，-1 表示该分支没有反馈。
         public int nonMasterLeaderStage = -1;
+        // 数量条件显式配置有限上限；0 仅表示旧条件未配置，不能用它表达“不限”。不限戒律无组件。
+        public int countLimit;
+
+        public bool IsCountCondition => condition == SSCCultureThoughtCondition.MasterCountExcess
+            || condition == SSCCultureThoughtCondition.BoundSlaveCountExcess
+            || condition == SSCCultureThoughtCondition.OtherMasterBoundSlaveCountExcess;
 
         public override IEnumerable<string> ConfigErrors()
         {
@@ -30,6 +37,9 @@ namespace SexSlaveCraft
                 yield return "SSC envy observer restriction is only valid for ChainedOther.";
             if (nonMasterLeaderStage != -1 && (condition != SSCCultureThoughtCondition.Leader || nonMasterLeaderStage != 1))
                 yield return "SSC non-master leader stage must be -1, or stage 1 on Leader.";
+            // 有限档仅允许 1/3；旧条件带数量配置同样报错，避免拼错条件后静默套用另一套逻辑。
+            if (IsCountCondition ? countLimit != 1 && countLimit != 3 : countLimit != 0)
+                yield return "SSC count limit must be 1 or 3 on a count condition, and 0 otherwise.";
         }
     }
 }

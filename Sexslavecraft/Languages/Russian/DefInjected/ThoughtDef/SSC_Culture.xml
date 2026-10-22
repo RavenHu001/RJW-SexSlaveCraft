@@ -77,4 +77,24 @@
   <SSC_Culture_Master_HolyMaster_Leader.stages.0.description>[TODO:SSC_Culture_Master_HolyMaster_Leader.stages.0.description]</SSC_Culture_Master_HolyMaster_Leader.stages.0.description>
   <SSC_Culture_Master_HolyMaster_Leader.stages.1.label>[маркер: священный хозяин / лидер не хозяин]</SSC_Culture_Master_HolyMaster_Leader.stages.1.label>
   <SSC_Culture_Master_HolyMaster_Leader.stages.1.description>[TODO:SSC_Culture_Master_HolyMaster_Leader.stages.1.description]</SSC_Culture_Master_HolyMaster_Leader.stages.1.description>
+  <SSC_Culture_MasterCount_One_Self.stages.0.label>[заглушка: избыток хозяев колонии / лимит 1]</SSC_Culture_MasterCount_One_Self.stages.0.label>
+  <SSC_Culture_MasterCount_One_Self.stages.0.description>[TODO:SSC_Culture_MasterCount_One_Self.stages.0.description]</SSC_Culture_MasterCount_One_Self.stages.0.description>
+  <SSC_Culture_MasterCount_Three_Self.stages.0.label>[заглушка: избыток хозяев колонии / лимит 3]</SSC_Culture_MasterCount_Three_Self.stages.0.label>
+  <SSC_Culture_MasterCount_Three_Self.stages.0.description>[TODO:SSC_Culture_MasterCount_Three_Self.stages.0.description]</SSC_Culture_MasterCount_Three_Self.stages.0.description>
+  <SSC_Culture_SlaveCount_One_Self.stages.0.label>[заглушка: избыток собственных секс-рабов / лимит 1]</SSC_Culture_SlaveCount_One_Self.stages.0.label>
+  <SSC_Culture_SlaveCount_One_Self.stages.0.description>[TODO:SSC_Culture_SlaveCount_One_Self.stages.0.description]</SSC_Culture_SlaveCount_One_Self.stages.0.description>
+  <SSC_Culture_SlaveCount_Three_Self.stages.0.label>[заглушка: избыток собственных секс-рабов / лимит 3]</SSC_Culture_SlaveCount_Three_Self.stages.0.label>
+  <SSC_Culture_SlaveCount_Three_Self.stages.0.description>[TODO:SSC_Culture_SlaveCount_Three_Self.stages.0.description]</SSC_Culture_SlaveCount_Three_Self.stages.0.description>
+  <SSC_Culture_SlaveCount_One_Social.stages.0.label>[заглушка: превышение лимита рабов у хозяина / лимит 1 / превышение 1]</SSC_Culture_SlaveCount_One_Social.stages.0.label>
+  <SSC_Culture_SlaveCount_One_Social.stages.0.description>[TODO:SSC_Culture_SlaveCount_One_Social.stages.0.description]</SSC_Culture_SlaveCount_One_Social.stages.0.description>
+  <SSC_Culture_SlaveCount_One_Social.stages.1.label>[заглушка: превышение лимита рабов у хозяина / лимит 1 / превышение 2]</SSC_Culture_SlaveCount_One_Social.stages.1.label>
+  <SSC_Culture_SlaveCount_One_Social.stages.1.description>[TODO:SSC_Culture_SlaveCount_One_Social.stages.1.description]</SSC_Culture_SlaveCount_One_Social.stages.1.description>
+  <SSC_Culture_SlaveCount_One_Social.stages.2.label>[заглушка: превышение лимита рабов у хозяина / лимит 1 / превышение 3 и более]</SSC_Culture_SlaveCount_One_Social.stages.2.label>
+  <SSC_Culture_SlaveCount_One_Social.stages.2.description>[TODO:SSC_Culture_SlaveCount_One_Social.stages.2.description]</SSC_Culture_SlaveCount_One_Social.stages.2.description>
+  <SSC_Culture_SlaveCount_Three_Social.stages.0.label>[заглушка: превышение лимита рабов у хозяина / лимит 3 / превышение 1]</SSC_Culture_SlaveCount_Three_Social.stages.0.label>
+  <SSC_Culture_SlaveCount_Three_Social.stages.0.description>[TODO:SSC_Culture_SlaveCount_Three_Social.stages.0.description]</SSC_Culture_SlaveCount_Three_Social.stages.0.description>
+  <SSC_Culture_SlaveCount_Three_Social.stages.1.label>[заглушка: превышение лимита рабов у хозяина / лимит 3 / превышение 2]</SSC_Culture_SlaveCount_Three_Social.stages.1.label>
+  <SSC_Culture_SlaveCount_Three_Social.stages.1.description>[TODO:SSC_Culture_SlaveCount_Three_Social.stages.1.description]</SSC_Culture_SlaveCount_Three_Social.stages.1.description>
+  <SSC_Culture_SlaveCount_Three_Social.stages.2.label>[заглушка: превышение лимита рабов у хозяина / лимит 3 / превышение 3 и более]</SSC_Culture_SlaveCount_Three_Social.stages.2.label>
+  <SSC_Culture_SlaveCount_Three_Social.stages.2.description>[TODO:SSC_Culture_SlaveCount_Three_Social.stages.2.description]</SSC_Culture_SlaveCount_Three_Social.stages.2.description>
 </LanguageData>

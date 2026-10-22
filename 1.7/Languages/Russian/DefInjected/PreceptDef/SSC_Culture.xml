@@ -51,4 +51,14 @@
   <SSC_Precept_Master_Deference.comps.3.thoughtStageDescriptions.1>[маркер: почитание / лидер не хозяин]</SSC_Precept_Master_Deference.comps.3.thoughtStageDescriptions.1>
   <SSC_Precept_Master_HolyMaster.comps.3.thoughtStageDescriptions.0>[маркер: священный хозяин / лидер — хозяин]</SSC_Precept_Master_HolyMaster.comps.3.thoughtStageDescriptions.0>
   <SSC_Precept_Master_HolyMaster.comps.3.thoughtStageDescriptions.1>[маркер: священный хозяин / лидер не хозяин]</SSC_Precept_Master_HolyMaster.comps.3.thoughtStageDescriptions.1>
+  <SSC_Precept_MasterCount_One.comps.0.thoughtStageDescriptions.0>[заглушка: избыток хозяев колонии / лимит 1 / превышение 1/2/3+ / настроение -6/-15/-27]</SSC_Precept_MasterCount_One.comps.0.thoughtStageDescriptions.0>
+  <SSC_Precept_MasterCount_Three.comps.0.thoughtStageDescriptions.0>[заглушка: избыток хозяев колонии / лимит 3 / превышение 1/2/3+ / настроение -6/-15/-27]</SSC_Precept_MasterCount_Three.comps.0.thoughtStageDescriptions.0>
+  <SSC_Precept_SlaveCount_One.comps.0.thoughtStageDescriptions.0>[заглушка: избыток собственных секс-рабов / лимит 1 / превышение 1/2/3+ / настроение -3/-9/-18]</SSC_Precept_SlaveCount_One.comps.0.thoughtStageDescriptions.0>
+  <SSC_Precept_SlaveCount_Three.comps.0.thoughtStageDescriptions.0>[заглушка: избыток собственных секс-рабов / лимит 3 / превышение 1/2/3+ / настроение -3/-9/-18]</SSC_Precept_SlaveCount_Three.comps.0.thoughtStageDescriptions.0>
+  <SSC_Precept_SlaveCount_One.comps.1.thoughtStageDescriptions.0>[заглушка: превышение лимита рабов у хозяина / лимит 1 / превышение 1 / мнение -5]</SSC_Precept_SlaveCount_One.comps.1.thoughtStageDescriptions.0>
+  <SSC_Precept_SlaveCount_One.comps.1.thoughtStageDescriptions.1>[заглушка: превышение лимита рабов у хозяина / лимит 1 / превышение 2 / мнение -15]</SSC_Precept_SlaveCount_One.comps.1.thoughtStageDescriptions.1>
+  <SSC_Precept_SlaveCount_One.comps.1.thoughtStageDescriptions.2>[заглушка: превышение лимита рабов у хозяина / лимит 1 / превышение 3 и более / мнение -30]</SSC_Precept_SlaveCount_One.comps.1.thoughtStageDescriptions.2>
+  <SSC_Precept_SlaveCount_Three.comps.1.thoughtStageDescriptions.0>[заглушка: превышение лимита рабов у хозяина / лимит 3 / превышение 1 / мнение -5]</SSC_Precept_SlaveCount_Three.comps.1.thoughtStageDescriptions.0>
+  <SSC_Precept_SlaveCount_Three.comps.1.thoughtStageDescriptions.1>[заглушка: превышение лимита рабов у хозяина / лимит 3 / превышение 2 / мнение -15]</SSC_Precept_SlaveCount_Three.comps.1.thoughtStageDescriptions.1>
+  <SSC_Precept_SlaveCount_Three.comps.1.thoughtStageDescriptions.2>[заглушка: превышение лимита рабов у хозяина / лимит 3 / превышение 3 и более / мнение -30]</SSC_Precept_SlaveCount_Three.comps.1.thoughtStageDescriptions.2>
 </LanguageData>

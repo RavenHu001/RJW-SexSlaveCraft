@@ -77,4 +77,24 @@
   <SSC_Culture_Master_HolyMaster_Leader.stages.0.description>[TODO:SSC_Culture_Master_HolyMaster_Leader.stages.0.description]</SSC_Culture_Master_HolyMaster_Leader.stages.0.description>
   <SSC_Culture_Master_HolyMaster_Leader.stages.1.label>[placeholder: holy master / leader is not master]</SSC_Culture_Master_HolyMaster_Leader.stages.1.label>
   <SSC_Culture_Master_HolyMaster_Leader.stages.1.description>[TODO:SSC_Culture_Master_HolyMaster_Leader.stages.1.description]</SSC_Culture_Master_HolyMaster_Leader.stages.1.description>
+  <SSC_Culture_MasterCount_One_Self.stages.0.label>[placeholder: excess colony masters / limit 1]</SSC_Culture_MasterCount_One_Self.stages.0.label>
+  <SSC_Culture_MasterCount_One_Self.stages.0.description>[TODO:SSC_Culture_MasterCount_One_Self.stages.0.description]</SSC_Culture_MasterCount_One_Self.stages.0.description>
+  <SSC_Culture_MasterCount_Three_Self.stages.0.label>[placeholder: excess colony masters / limit 3]</SSC_Culture_MasterCount_Three_Self.stages.0.label>
+  <SSC_Culture_MasterCount_Three_Self.stages.0.description>[TODO:SSC_Culture_MasterCount_Three_Self.stages.0.description]</SSC_Culture_MasterCount_Three_Self.stages.0.description>
+  <SSC_Culture_SlaveCount_One_Self.stages.0.label>[placeholder: excess own bound slaves / limit 1]</SSC_Culture_SlaveCount_One_Self.stages.0.label>
+  <SSC_Culture_SlaveCount_One_Self.stages.0.description>[TODO:SSC_Culture_SlaveCount_One_Self.stages.0.description]</SSC_Culture_SlaveCount_One_Self.stages.0.description>
+  <SSC_Culture_SlaveCount_Three_Self.stages.0.label>[placeholder: excess own bound slaves / limit 3]</SSC_Culture_SlaveCount_Three_Self.stages.0.label>
+  <SSC_Culture_SlaveCount_Three_Self.stages.0.description>[TODO:SSC_Culture_SlaveCount_Three_Self.stages.0.description]</SSC_Culture_SlaveCount_Three_Self.stages.0.description>
+  <SSC_Culture_SlaveCount_One_Social.stages.0.label>[placeholder: target master exceeds slave limit / limit 1 / excess 1]</SSC_Culture_SlaveCount_One_Social.stages.0.label>
+  <SSC_Culture_SlaveCount_One_Social.stages.0.description>[TODO:SSC_Culture_SlaveCount_One_Social.stages.0.description]</SSC_Culture_SlaveCount_One_Social.stages.0.description>
+  <SSC_Culture_SlaveCount_One_Social.stages.1.label>[placeholder: target master exceeds slave limit / limit 1 / excess 2]</SSC_Culture_SlaveCount_One_Social.stages.1.label>
+  <SSC_Culture_SlaveCount_One_Social.stages.1.description>[TODO:SSC_Culture_SlaveCount_One_Social.stages.1.description]</SSC_Culture_SlaveCount_One_Social.stages.1.description>
+  <SSC_Culture_SlaveCount_One_Social.stages.2.label>[placeholder: target master exceeds slave limit / limit 1 / excess 3 or more]</SSC_Culture_SlaveCount_One_Social.stages.2.label>
+  <SSC_Culture_SlaveCount_One_Social.stages.2.description>[TODO:SSC_Culture_SlaveCount_One_Social.stages.2.description]</SSC_Culture_SlaveCount_One_Social.stages.2.description>
+  <SSC_Culture_SlaveCount_Three_Social.stages.0.label>[placeholder: target master exceeds slave limit / limit 3 / excess 1]</SSC_Culture_SlaveCount_Three_Social.stages.0.label>
+  <SSC_Culture_SlaveCount_Three_Social.stages.0.description>[TODO:SSC_Culture_SlaveCount_Three_Social.stages.0.description]</SSC_Culture_SlaveCount_Three_Social.stages.0.description>
+  <SSC_Culture_SlaveCount_Three_Social.stages.1.label>[placeholder: target master exceeds slave limit / limit 3 / excess 2]</SSC_Culture_SlaveCount_Three_Social.stages.1.label>
+  <SSC_Culture_SlaveCount_Three_Social.stages.1.description>[TODO:SSC_Culture_SlaveCount_Three_Social.stages.1.description]</SSC_Culture_SlaveCount_Three_Social.stages.1.description>
+  <SSC_Culture_SlaveCount_Three_Social.stages.2.label>[placeholder: target master exceeds slave limit / limit 3 / excess 3 or more]</SSC_Culture_SlaveCount_Three_Social.stages.2.label>
+  <SSC_Culture_SlaveCount_Three_Social.stages.2.description>[TODO:SSC_Culture_SlaveCount_Three_Social.stages.2.description]</SSC_Culture_SlaveCount_Three_Social.stages.2.description>
 </LanguageData>

@@ -70,16 +70,17 @@ internal static partial class Program
         RefreshFeedbackTests(game);
         LifecycleFeedbackTests();
         FeedbackWorkTests();
+        CountFeedbackTests(game);
     }
 
     private static void FeedbackResourceTests(string repo)
     {
-        Check("35 native situational defs, condition configs and no memory/nullifier overrides", () =>
+        Check("41 native situational defs, condition configs and no memory/nullifier overrides", () =>
         {
             // 检查真实解析后的 Def/扩展，不只读取 XML 标签；保留原版年龄/亚人/最终系数默认。
-            var defs = DefDatabase<ThoughtDef>.AllDefs.ToArray(); Equal(35, defs.Length);
-            Equal(23, defs.Count(d => !d.IsSocial)); Equal(12, defs.Count(d => d.IsSocial));
-            Equal(38, defs.Sum(d => d.stages.Count));
+            var defs = DefDatabase<ThoughtDef>.AllDefs.ToArray(); Equal(41, defs.Length);
+            Equal(27, defs.Count(d => !d.IsSocial)); Equal(14, defs.Count(d => d.IsSocial));
+            Equal(48, defs.Sum(d => d.stages.Count));
             foreach (var d in defs)
             {
                 Require(!d.IsMemory && d.validWhileDespawned && d.producesMemoryThought == null);
@@ -96,13 +97,13 @@ internal static partial class Program
             Require(new SSCCultureThoughtExtension { condition = SSCCultureThoughtCondition.Leader, nonMasterLeaderStage = 2 }.ConfigErrors().Any());
         });
         foreach (string language in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" })
-            Check("38 stages and six precept effect descriptions have localized markers and exact mirrors: " + language, () =>
+            Check("48 stages and sixteen precept effect descriptions include cumulative single-stage descriptions: " + language, () =>
             {
                 // 每个阶段都需 label/description；多阶段组件说明路径也必须指向实际原版字段。
                 string relative = $"Languages/{language}/DefInjected/ThoughtDef/SSC_Culture.xml";
                 Require(File.ReadAllBytes(Path.Combine(repo, "1.7", relative)).SequenceEqual(File.ReadAllBytes(Path.Combine(repo, "Sexslavecraft", relative))));
                 var entries = XDocument.Load(Path.Combine(repo, "1.7", relative)).Root.Elements().ToArray();
-                Equal(76, entries.Length); Equal(76, entries.Select(e => e.Name).Distinct().Count());
+                Equal(96, entries.Length); Equal(96, entries.Select(e => e.Name).Distinct().Count());
                 foreach (var d in DefDatabase<ThoughtDef>.AllDefs)
                     for (int i = 0; i < d.stages.Count; i++)
                     {
@@ -116,16 +117,18 @@ internal static partial class Program
                     for (int c = 0; c < d.comps.Count; c++)
                     {
                         var comp = (PreceptComp_SituationalThought)d.comps[c];
-                        if (comp.thought.stages.Count < 2) continue;
+                        // 单阶段数量心情也必须显式说明累进/封顶，不能只检查多阶段组件。
+                        if (comp.thoughtStageDescriptions.NullOrEmpty())
+                        { Require(comp.thought.stages.Count == 1 && !comp.thought.GetModExtension<SSCCultureThoughtExtension>().IsCountCondition); continue; }
                         Equal(comp.thought.stages.Count, comp.thoughtStageDescriptions.Count);
                         for (int s = 0; s < comp.thoughtStageDescriptions.Count; s++)
                         {
                             Require(!string.IsNullOrWhiteSpace(pre.Element(d.defName + $".comps.{c}.thoughtStageDescriptions.{s}")?.Value)); count++;
                         }
                     }
-                Equal(6, count);
+                Equal(16, count);
             });
-        Check("all 22 precept component memberships and 38 literal stage values match the approved contract", () =>
+        Check("all 22 precept component memberships and 48 literal stage values match the approved contract", () =>
         {
             // 期望为独立字面量：任何一格 XML 数值或条件更改都不能从被测结果反推而蒙混通过。
             var expected = new Dictionary<string, (SSCCultureThoughtCondition kind, float[] values)>
@@ -159,7 +162,14 @@ internal static partial class Program
                 expected["Master_" + tiers[i] + "_Social"] = (SSCCultureThoughtCondition.MasterOther, new[] {(float)ms[i]});
                 expected["Master_" + tiers[i] + "_Leader"] = (SSCCultureThoughtCondition.Leader, lm[i]);
             }
-            Equal(35, expected.Count);
+            // 数量心情在实际 MoodOffset 中另验曲线；XML 基础值 -3，社交必须是三个固定阶段。
+            foreach (string tier in new[] {"One", "Three"})
+            {
+                expected["MasterCount_"+tier+"_Self"] = (SSCCultureThoughtCondition.MasterCountExcess, new[] {-3f});
+                expected["SlaveCount_"+tier+"_Self"] = (SSCCultureThoughtCondition.BoundSlaveCountExcess, new[] {-3f});
+                expected["SlaveCount_"+tier+"_Social"] = (SSCCultureThoughtCondition.OtherMasterBoundSlaveCountExcess, new[] {-5f,-15f,-30f});
+            }
+            Equal(41, expected.Count);
             foreach (var e in expected)
             {
                 var d = T(e.Key); var config = d.GetModExtension<SSCCultureThoughtExtension>();
@@ -167,10 +177,11 @@ internal static partial class Program
                 for (int i = 0; i < d.stages.Count; i++) Equal(e.Value.values[i], d.IsSocial ? d.stages[i].baseOpinionOffset : d.stages[i].baseMoodEffect);
                 Equal(e.Key == "SexSlave_Envy_Social", config.requireEnviousObserver);
                 Equal(e.Key is "Master_Deference_Leader" or "Master_HolyMaster_Leader" ? 1 : -1, config.nonMasterLeaderStage);
+                Equal(config.IsCountCondition ? (e.Key.Contains("_One_") ? 1 : 3) : 0, config.countLimit);
                 string precept = e.Key[..e.Key.LastIndexOf('_')];
                 Require(D(precept).comps.OfType<PreceptComp_SituationalThought>().Any(c => c.thought == d));
             }
-            foreach (string name in new[] {"SexSlave_Indifference","Trainer_Indifference","Master_Indifference","MasterCount_One","MasterCount_Three","MasterCount_Unlimited","SlaveCount_One","SlaveCount_Three","SlaveCount_Unlimited"})
+            foreach (string name in new[] {"SexSlave_Indifference","Trainer_Indifference","Master_Indifference","MasterCount_Unlimited","SlaveCount_Unlimited"})
                 Require(D(name).comps.Count == 0);
         });
     }

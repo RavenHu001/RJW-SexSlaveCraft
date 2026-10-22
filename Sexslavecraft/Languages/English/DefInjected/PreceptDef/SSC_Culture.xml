@@ -51,4 +51,14 @@
   <SSC_Precept_Master_Deference.comps.3.thoughtStageDescriptions.1>[placeholder: deference / leader is not master]</SSC_Precept_Master_Deference.comps.3.thoughtStageDescriptions.1>
   <SSC_Precept_Master_HolyMaster.comps.3.thoughtStageDescriptions.0>[placeholder: holy master / leader is master]</SSC_Precept_Master_HolyMaster.comps.3.thoughtStageDescriptions.0>
   <SSC_Precept_Master_HolyMaster.comps.3.thoughtStageDescriptions.1>[placeholder: holy master / leader is not master]</SSC_Precept_Master_HolyMaster.comps.3.thoughtStageDescriptions.1>
+  <SSC_Precept_MasterCount_One.comps.0.thoughtStageDescriptions.0>[placeholder: excess colony masters / limit 1 / excess 1/2/3+ / mood -6/-15/-27]</SSC_Precept_MasterCount_One.comps.0.thoughtStageDescriptions.0>
+  <SSC_Precept_MasterCount_Three.comps.0.thoughtStageDescriptions.0>[placeholder: excess colony masters / limit 3 / excess 1/2/3+ / mood -6/-15/-27]</SSC_Precept_MasterCount_Three.comps.0.thoughtStageDescriptions.0>
+  <SSC_Precept_SlaveCount_One.comps.0.thoughtStageDescriptions.0>[placeholder: excess own bound slaves / limit 1 / excess 1/2/3+ / mood -3/-9/-18]</SSC_Precept_SlaveCount_One.comps.0.thoughtStageDescriptions.0>
+  <SSC_Precept_SlaveCount_Three.comps.0.thoughtStageDescriptions.0>[placeholder: excess own bound slaves / limit 3 / excess 1/2/3+ / mood -3/-9/-18]</SSC_Precept_SlaveCount_Three.comps.0.thoughtStageDescriptions.0>
+  <SSC_Precept_SlaveCount_One.comps.1.thoughtStageDescriptions.0>[placeholder: target master exceeds slave limit / limit 1 / excess 1 / opinion -5]</SSC_Precept_SlaveCount_One.comps.1.thoughtStageDescriptions.0>
+  <SSC_Precept_SlaveCount_One.comps.1.thoughtStageDescriptions.1>[placeholder: target master exceeds slave limit / limit 1 / excess 2 / opinion -15]</SSC_Precept_SlaveCount_One.comps.1.thoughtStageDescriptions.1>
+  <SSC_Precept_SlaveCount_One.comps.1.thoughtStageDescriptions.2>[placeholder: target master exceeds slave limit / limit 1 / excess 3 or more / opinion -30]</SSC_Precept_SlaveCount_One.comps.1.thoughtStageDescriptions.2>
+  <SSC_Precept_SlaveCount_Three.comps.1.thoughtStageDescriptions.0>[placeholder: target master exceeds slave limit / limit 3 / excess 1 / opinion -5]</SSC_Precept_SlaveCount_Three.comps.1.thoughtStageDescriptions.0>
+  <SSC_Precept_SlaveCount_Three.comps.1.thoughtStageDescriptions.1>[placeholder: target master exceeds slave limit / limit 3 / excess 2 / opinion -15]</SSC_Precept_SlaveCount_Three.comps.1.thoughtStageDescriptions.1>
+  <SSC_Precept_SlaveCount_Three.comps.1.thoughtStageDescriptions.2>[placeholder: target master exceeds slave limit / limit 3 / excess 3 or more / opinion -30]</SSC_Precept_SlaveCount_Three.comps.1.thoughtStageDescriptions.2>
 </LanguageData>

@@ -51,4 +51,14 @@
   <SSC_Precept_Master_Deference.comps.3.thoughtStageDescriptions.1>[佔位: 尊奉 / 領袖非主人]</SSC_Precept_Master_Deference.comps.3.thoughtStageDescriptions.1>
   <SSC_Precept_Master_HolyMaster.comps.3.thoughtStageDescriptions.0>[佔位: 聖主 / 領袖是主人]</SSC_Precept_Master_HolyMaster.comps.3.thoughtStageDescriptions.0>
   <SSC_Precept_Master_HolyMaster.comps.3.thoughtStageDescriptions.1>[佔位: 聖主 / 領袖非主人]</SSC_Precept_Master_HolyMaster.comps.3.thoughtStageDescriptions.1>
+  <SSC_Precept_MasterCount_One.comps.0.thoughtStageDescriptions.0>[佔位: 主人總數超額 / 上限 1 / 超額 1/2/3+ / 心情 -6/-15/-27]</SSC_Precept_MasterCount_One.comps.0.thoughtStageDescriptions.0>
+  <SSC_Precept_MasterCount_Three.comps.0.thoughtStageDescriptions.0>[佔位: 主人總數超額 / 上限 3 / 超額 1/2/3+ / 心情 -6/-15/-27]</SSC_Precept_MasterCount_Three.comps.0.thoughtStageDescriptions.0>
+  <SSC_Precept_SlaveCount_One.comps.0.thoughtStageDescriptions.0>[佔位: 本人性奴數量超額 / 上限 1 / 超額 1/2/3+ / 心情 -3/-9/-18]</SSC_Precept_SlaveCount_One.comps.0.thoughtStageDescriptions.0>
+  <SSC_Precept_SlaveCount_Three.comps.0.thoughtStageDescriptions.0>[佔位: 本人性奴數量超額 / 上限 3 / 超額 1/2/3+ / 心情 -3/-9/-18]</SSC_Precept_SlaveCount_Three.comps.0.thoughtStageDescriptions.0>
+  <SSC_Precept_SlaveCount_One.comps.1.thoughtStageDescriptions.0>[佔位: 目標主人性奴數量超額 / 上限 1 / 超額 1 / 好感 -5]</SSC_Precept_SlaveCount_One.comps.1.thoughtStageDescriptions.0>
+  <SSC_Precept_SlaveCount_One.comps.1.thoughtStageDescriptions.1>[佔位: 目標主人性奴數量超額 / 上限 1 / 超額 2 / 好感 -15]</SSC_Precept_SlaveCount_One.comps.1.thoughtStageDescriptions.1>
+  <SSC_Precept_SlaveCount_One.comps.1.thoughtStageDescriptions.2>[佔位: 目標主人性奴數量超額 / 上限 1 / 超額 3 及以上 / 好感 -30]</SSC_Precept_SlaveCount_One.comps.1.thoughtStageDescriptions.2>
+  <SSC_Precept_SlaveCount_Three.comps.1.thoughtStageDescriptions.0>[佔位: 目標主人性奴數量超額 / 上限 3 / 超額 1 / 好感 -5]</SSC_Precept_SlaveCount_Three.comps.1.thoughtStageDescriptions.0>
+  <SSC_Precept_SlaveCount_Three.comps.1.thoughtStageDescriptions.1>[佔位: 目標主人性奴數量超額 / 上限 3 / 超額 2 / 好感 -15]</SSC_Precept_SlaveCount_Three.comps.1.thoughtStageDescriptions.1>
+  <SSC_Precept_SlaveCount_Three.comps.1.thoughtStageDescriptions.2>[佔位: 目標主人性奴數量超額 / 上限 3 / 超額 3 及以上 / 好感 -30]</SSC_Precept_SlaveCount_Three.comps.1.thoughtStageDescriptions.2>
 </LanguageData>

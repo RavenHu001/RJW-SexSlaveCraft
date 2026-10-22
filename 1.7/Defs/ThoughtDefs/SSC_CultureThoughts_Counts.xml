@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <!-- AI 辅助生成：1.7 步骤 3。实际人数不截断，仅计罚超额封顶 3；描述留给后续文案。 -->
+  <!-- 社交使用固定阶段；心情基础 -3 乘封顶累进倍率。不产生记忆或永久关系。 -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Culture_MasterCount_One_Self</defName>
+    <thoughtClass>Thought_Situational</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCCultureMood</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
+        <condition>MasterCountExcess</condition>
+        <countLimit>1</countLimit>
+      </li>
+    </modExtensions>
+    <stages>
+      <li>
+        <label>[占位: 主人总数超额 / 上限 1]</label>
+        <description>[TODO:SSC_Culture_MasterCount_One_Self.stages.0.description]</description>
+        <baseMoodEffect>-3</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+  <!-- 社交使用固定阶段；心情基础 -3 乘封顶累进倍率。不产生记忆或永久关系。 -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Culture_MasterCount_Three_Self</defName>
+    <thoughtClass>Thought_Situational</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCCultureMood</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
+        <condition>MasterCountExcess</condition>
+        <countLimit>3</countLimit>
+      </li>
+    </modExtensions>
+    <stages>
+      <li>
+        <label>[占位: 主人总数超额 / 上限 3]</label>
+        <description>[TODO:SSC_Culture_MasterCount_Three_Self.stages.0.description]</description>
+        <baseMoodEffect>-3</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+  <!-- 社交使用固定阶段；心情基础 -3 乘封顶累进倍率。不产生记忆或永久关系。 -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Culture_SlaveCount_One_Self</defName>
+    <thoughtClass>Thought_Situational</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCCultureMood</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
+        <condition>BoundSlaveCountExcess</condition>
+        <countLimit>1</countLimit>
+      </li>
+    </modExtensions>
+    <stages>
+      <li>
+        <label>[占位: 本人性奴数量超额 / 上限 1]</label>
+        <description>[TODO:SSC_Culture_SlaveCount_One_Self.stages.0.description]</description>
+        <baseMoodEffect>-3</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+  <!-- 社交使用固定阶段；心情基础 -3 乘封顶累进倍率。不产生记忆或永久关系。 -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Culture_SlaveCount_Three_Self</defName>
+    <thoughtClass>Thought_Situational</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCCultureMood</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
+        <condition>BoundSlaveCountExcess</condition>
+        <countLimit>3</countLimit>
+      </li>
+    </modExtensions>
+    <stages>
+      <li>
+        <label>[占位: 本人性奴数量超额 / 上限 3]</label>
+        <description>[TODO:SSC_Culture_SlaveCount_Three_Self.stages.0.description]</description>
+        <baseMoodEffect>-3</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+  <!-- 社交使用固定阶段；心情基础 -3 乘封顶累进倍率。不产生记忆或永久关系。 -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Culture_SlaveCount_One_Social</defName>
+    <thoughtClass>Thought_SituationalSocial</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCCultureSocial</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
+        <condition>OtherMasterBoundSlaveCountExcess</condition>
+        <countLimit>1</countLimit>
+      </li>
+    </modExtensions>
+    <stages>
+      <li>
+        <label>[占位: 目标主人性奴数量超额 / 上限 1 / 超额 1]</label>
+        <description>[TODO:SSC_Culture_SlaveCount_One_Social.stages.0.description]</description>
+        <baseOpinionOffset>-5</baseOpinionOffset>
+      </li>
+      <li>
+        <label>[占位: 目标主人性奴数量超额 / 上限 1 / 超额 2]</label>
+        <description>[TODO:SSC_Culture_SlaveCount_One_Social.stages.1.description]</description>
+        <baseOpinionOffset>-15</baseOpinionOffset>
+      </li>
+      <li>
+        <label>[占位: 目标主人性奴数量超额 / 上限 1 / 超额 3 及以上]</label>
+        <description>[TODO:SSC_Culture_SlaveCount_One_Social.stages.2.description]</description>
+        <baseOpinionOffset>-30</baseOpinionOffset>
+      </li>
+    </stages>
+  </ThoughtDef>
+  <!-- 社交使用固定阶段；心情基础 -3 乘封顶累进倍率。不产生记忆或永久关系。 -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Culture_SlaveCount_Three_Social</defName>
+    <thoughtClass>Thought_SituationalSocial</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCCultureSocial</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
+        <condition>OtherMasterBoundSlaveCountExcess</condition>
+        <countLimit>3</countLimit>
+      </li>
+    </modExtensions>
+    <stages>
+      <li>
+        <label>[占位: 目标主人性奴数量超额 / 上限 3 / 超额 1]</label>
+        <description>[TODO:SSC_Culture_SlaveCount_Three_Social.stages.0.description]</description>
+        <baseOpinionOffset>-5</baseOpinionOffset>
+      </li>
+      <li>
+        <label>[占位: 目标主人性奴数量超额 / 上限 3 / 超额 2]</label>
+        <description>[TODO:SSC_Culture_SlaveCount_Three_Social.stages.1.description]</description>
+        <baseOpinionOffset>-15</baseOpinionOffset>
+      </li>
+      <li>
+        <label>[占位: 目标主人性奴数量超额 / 上限 3 / 超额 3 及以上]</label>
+        <description>[TODO:SSC_Culture_SlaveCount_Three_Social.stages.2.description]</description>
+        <baseOpinionOffset>-30</baseOpinionOffset>
+      </li>
+    </stages>
+  </ThoughtDef>
+</Defs>
