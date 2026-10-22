@@ -11,7 +11,7 @@ using Verse.Grammar;
 
 internal static partial class Program
 {
-    // 固定合同独立于被测文件：索引、关键词与候选池不能由生成结果反推。
+    // 固定合同独立于被测文件：索引、关键词和候选数保持固定；正式文案从交付资源读取，不从生成结果反推。
     private static readonly string[] DescriptionKeywords = { "creation", "episode", "intro", "conflict", "founderJoin", "victory",
         "setup", "story", "lessonIntro", "lesson", "lessonReinforcement", "archistBasis", "archistFact", "archistProphecy",
         "animistBasis", "animistFact", "animistProphecy" };
@@ -254,5 +254,12 @@ internal static partial class Program
     {
         Require(!string.IsNullOrWhiteSpace(value), "Empty generated text");
         Require(!value.Contains('[') && !value.Contains(']') && !value.Contains("ERR") && !value.Contains("Errorism") && !value.Contains("Filestring"), value);
+    }
+
+    private static void RequireFinalCopy(string value)
+    {
+        // 文案可独立修订，但正式交付不能退回空值、旧 TODO 或中文占位标记；语法连接中的方括号另行检查。
+        Require(!string.IsNullOrWhiteSpace(value), "Empty final copy");
+        Require(!value.Contains("TODO", StringComparison.OrdinalIgnoreCase) && !value.Contains("[占位"), "Unfinished final copy");
     }
 }

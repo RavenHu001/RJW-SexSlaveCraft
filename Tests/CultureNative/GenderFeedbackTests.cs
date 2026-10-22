@@ -49,7 +49,9 @@ internal static partial class Program
                 InjectNaming(repo,language,typeof(ThoughtDef),134);
                 var entries=XDocument.Load(Path.Combine(repo,"1.7/Languages",language,"DefInjected/PreceptDef/SSC_Culture.xml")).Root;
                 Equal(entries.Element("SSC_Precept_SlaveGender_FemaleOnly.label").Value,D("SlaveGender_FemaleOnly").label);
-                Equal("[TODO:SSC_Culture_SlaveGender_RequiredDuty_Self.stages.0.description]",T("SlaveGender_RequiredDuty_Self").stages[0].description);
+                // 比较交付文件与实际注入字段，既允许正式文案修订，也能发现注入未生效。
+                var thoughts=XDocument.Load(Path.Combine(repo,"1.7/Languages",language,"DefInjected/ThoughtDef/SSC_Culture.xml")).Root;
+                Equal(thoughts.Element("SSC_Culture_SlaveGender_RequiredDuty_Self.stages.0.description").Value,T("SlaveGender_RequiredDuty_Self").stages[0].description);
             });
     }
 
@@ -123,14 +125,14 @@ internal static partial class Program
         });
 
         foreach(string language in new[]{"ChineseSimplified","ChineseTraditional","English","Russian"})
-            Check("gender all new descriptions remain explicit placeholders: "+language,()=>
+            Check("gender all localized fields contain final copy: "+language,()=>
             {
-                // 标签为功能名称；新说明逐键保留 TODO，镜像与全量键数由既有资源专项一并校验。
+                // 六档名称、说明与独立艳羡阶段都应已定稿；数值仍由上方固定合同逐项断言。
                 foreach(string type in new[]{"PreceptDef","ThoughtDef"})
                 {
                     var entries=XDocument.Load(Path.Combine(repo,"1.7/Languages",language,"DefInjected",type,"SSC_Culture.xml")).Root.Elements();
-                    foreach(var e in entries.Where(e=>e.Name.LocalName.Contains("SlaveGender") && !e.Name.LocalName.EndsWith(".label")))
-                        Equal("[TODO:"+e.Name.LocalName+"]",e.Value);
+                    foreach(var e in entries.Where(e=>e.Name.LocalName.Contains("SlaveGender")))
+                        RequireFinalCopy(e.Value);
                 }
             });
     }

@@ -1,5 +1,6 @@
 // AI 辅助生成：六种原版故事框架的实际请求、段落解析与描述生命周期。
 using System.Reflection;
+using System.Xml.Linq;
 using HarmonyLib;
 using RimWorld;
 using Verse;
@@ -14,6 +15,49 @@ internal static partial class Program
     }
 
     private static void DescriptionTests(string language)
+    {
+        Check("native final localized copy resolves all 17 segments: " + language, () =>
+        {
+            // 先解析交付的正式段落，确认文字能进入真实生成器；随后才安装只用于隔离判定的内存探针。
+            var ideo = NamingIdeo(true);
+            var evaluator = DescriptionRequest(ideo, DefDatabase<IdeoStoryPatternDef>.GetNamed("TheistMyth"));
+            for (int i = 0; i < DescriptionKeywords.Length; i++)
+            {
+                string text = (string)AccessTools.Method(evaluator.GetType(), "NextSegment").Invoke(evaluator,
+                    new object[] { DescriptionKeywords[i], "meme_SSC_MasterSlaveOrder", false });
+                ValidGenerated(text); RequireFinalCopy(text);
+                Require(string.Equals(mainMeme.descriptionMaker.rules.Rules[i].Generate(), text, StringComparison.OrdinalIgnoreCase), text);
+            }
+        });
+        foreach (string name in StoryNames)
+            Check("native full framework resolves final localized text " + name + ": " + language, () =>
+            {
+                // 实际正式长文与原版框架也须整体解析；来源隔离和 uses=1 另由探针给出无歧义判定。
+                var pattern = DefDatabase<IdeoStoryPatternDef>.GetNamed(name);
+                var structure = namingStructures.First(s => s.descriptionMaker?.patterns?.Any(p => p.def == pattern) == true);
+                foreach (bool with in new[] { true, false })
+                {
+                    var ideo = NamingIdeo(with, structure); AddNamingTokens(ideo);
+                    string text = Seeded(7, () => ((IdeoDescriptionResult)AccessTools.Method(DescriptionUtility, "ResolveDescription")
+                        .Invoke(null, new object[] { ideo, pattern, true })).text);
+                    ValidGenerated(text); RequireFinalCopy(text); Require(!text.Contains("%%"));
+                }
+            });
+
+        // 替换只发生在测试对象，保留每条规则的实际关键词、tag 和 uses；finally 恢复正式规则。
+        // 探针在有模因的正例中必须出现，因此无模因／移除后的“不出现”不可能因文案换掉而空泛通过。
+        var saved = mainMeme.descriptionMaker.rules;
+        try
+        {
+            var rules = new XElement("rulesStrings", saved.Rules.Select((r, i) => new XElement("li",
+                r.keyword + "(" + (r.usesLimit.HasValue ? $"uses={r.usesLimit.Value}," : "") + $"tag={r.tag})->SSCTESTDESC{i + 1:00}")));
+            mainMeme.descriptionMaker.rules = DirectXmlToObject.ObjectFromXml<RulePack>(Xml(new XElement("rules", rules)), false);
+            DescriptionProbeTests(language);
+        }
+        finally { mainMeme.descriptionMaker.rules = saved; }
+    }
+
+    private static void DescriptionProbeTests(string language)
     {
         Check("native description requests gate all 17 SSC rules by current meme: " + language, () =>
         {
@@ -32,7 +76,7 @@ internal static partial class Program
                     {
                         string text = (string)AccessTools.Method(evaluator.GetType(), "NextSegment").Invoke(evaluator,
                             new object[] { DescriptionKeywords[i], "meme_SSC_MasterSlaveOrder", false });
-                        Equal($"SSCDESCTODO{i + 1:00}", text);
+                        Equal($"SSCTESTDESC{i + 1:00}", text);
                     }
                 }
             }
@@ -56,10 +100,10 @@ internal static partial class Program
                             return result.text;
                         });
                         ValidGenerated(text); Require(!text.Contains("%%"));
-                        sawSSC |= text.Contains("SSCDESCTODO");
-                        if (!with) Require(!text.Contains("SSCDESCTODO"));
+                        sawSSC |= text.Contains("SSCTESTDESC");
+                        if (!with) Require(!text.Contains("SSCTESTDESC"));
                         // 重复位置必须遵守单条 uses=1，并允许框架的通用／其他模因内容补足。
-                        foreach (string marker in new[] { "SSCDESCTODO02", "SSCDESCTODO08" })
+                        foreach (string marker in new[] { "SSCTESTDESC02", "SSCTESTDESC08" })
                             Require(text.Split(marker).Length <= 2, text);
                     }
                     if (with) Require(sawSSC);
@@ -68,9 +112,16 @@ internal static partial class Program
             });
         Check("native description locks, templates, Scribe and meme removal: " + language, () =>
         {
-            var ideo = NamingIdeo(true); AddNamingTokens(ideo); ideo.RegenerateDescription(true);
+            var ideo = NamingIdeo(true); AddNamingTokens(ideo);
+            // 原版允许混合其他来源；固定种子中选一个确有 SSC 段落的正例，再验证锁定与移除后的消退。
+            for (int seed = 0; seed < 8; seed++)
+            {
+                Seeded(seed, () => { ideo.RegenerateDescription(true); return ideo.description; });
+                if (ideo.description.Contains("SSCTESTDESC")) break;
+            }
             string generated = ideo.description, template = ideo.descriptionTemplate;
             Require(!string.IsNullOrEmpty(template));
+            Require(generated.Contains("SSCTESTDESC"));
             // 未重新生成时保留历史文字；移除模因不清洗已保存模板。
             ideo.memes.Remove(mainMeme); Equal(generated, ideo.description);
             ideo.descriptionLocked = true; ideo.RegenerateDescription(true); Equal(generated, ideo.description);
@@ -81,7 +132,7 @@ internal static partial class Program
             loaded.RegenerateDescription(true); Equal(generated.Replace("\r\n", "\n"), loaded.description.Replace("\r\n", "\n"));
             // force 指重新抽取原版模板，不能越过锁；明确解锁后才能检查新候选已隔离。
             loaded.descriptionLocked = false; loaded.RegenerateDescription(true);
-            ValidGenerated(loaded.description); Require(!loaded.description.Contains("SSCDESCTODO"));
+            ValidGenerated(loaded.description); Require(!loaded.description.Contains("SSCTESTDESC"));
         });
     }
 

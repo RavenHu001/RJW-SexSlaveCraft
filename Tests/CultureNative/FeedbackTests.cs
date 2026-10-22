@@ -116,8 +116,8 @@ internal static partial class Program
                     for (int i = 0; i < d.stages.Count; i++)
                     {
                         string key = d.defName + ".stages." + i;
-                        Require(!string.IsNullOrWhiteSpace(entries.Single(e => e.Name == key + ".label").Value));
-                        Equal("[TODO:" + key + ".description]", entries.Single(e => e.Name == key + ".description").Value);
+                        RequireFinalCopy(entries.Single(e => e.Name == key + ".label").Value);
+                        RequireFinalCopy(entries.Single(e => e.Name == key + ".description").Value);
                     }
                 var pre = XDocument.Load(Path.Combine(repo, "1.7", $"Languages/{language}/DefInjected/PreceptDef/SSC_Culture.xml")).Root;
                 int count = 0;
@@ -131,7 +131,7 @@ internal static partial class Program
                         Equal(comp.thought.stages.Count, comp.thoughtStageDescriptions.Count);
                         for (int s = 0; s < comp.thoughtStageDescriptions.Count; s++)
                         {
-                            Require(!string.IsNullOrWhiteSpace(pre.Element(d.defName + $".comps.{c}.thoughtStageDescriptions.{s}")?.Value)); count++;
+                            RequireFinalCopy(pre.Element(d.defName + $".comps.{c}.thoughtStageDescriptions.{s}")?.Value); count++;
                         }
                     }
                 Equal(43, count);

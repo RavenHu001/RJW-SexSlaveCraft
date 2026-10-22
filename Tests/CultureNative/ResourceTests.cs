@@ -116,7 +116,7 @@ internal static partial class Program
         });
         Check("all 28 weights, ordering, prefix and 7/6/19 meme lists match the fixed contract", () =>
         {
-            // 逐档比对固定权重、顺序和占位描述；数量组顺序从 20 起，与已确认显示约定一致。
+            // 逐档比对固定权重、顺序和正式描述；数量组顺序从 20 起，与已确认显示约定一致。
             int required = 0, conflicting = 0, associated = 0;
             for (int g = 0; g < groups.Length; g++)
                 for (int i = 0; i < suffixes[g].Length; i++)
@@ -124,7 +124,7 @@ internal static partial class Program
                     var d = D(groups[g] + "_" + suffixes[g][i]);
                     Equal((float)selection[g][i], d.selectionWeight); Equal((float)defaults[g][i], d.defaultSelectionWeight);
                     Equal((i + (g == 3 || g == 4 ? 2 : 1)) * 10f, d.displayOrderInIssue);
-                    Require(d.description.Contains("[TODO:" + d.defName + ".description]"));
+                    RequireFinalCopy(d.description);
                     // 三种模因列表语义分别核对，不能把仅关联误写为前置要求或硬冲突。
                     bool r = (g == 0 && i >= 4) || (g == 1 && i == 4) || (g == 2 && i == 4) || (g == 5 && i >= 3);
                     bool c = (g == 0 || g == 2) && i < 3;
@@ -136,7 +136,7 @@ internal static partial class Program
             Equal(7, required); Equal(6, conflicting); Equal(19, associated);
         });
         foreach (string language in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" })
-            Check("four-language keys, nonempty placeholders and byte-identical mirror: " + language, () =>
+            Check("four-language keys, final copy and byte-identical mirror: " + language, () =>
             {
                 // 四语分别检查运行时文件与源镜像字节一致，再检查键唯一、数量完整及值非空。
                 foreach (string type in new[] { "MemeDef", "IssueDef", "PreceptDef" })
@@ -147,9 +147,8 @@ internal static partial class Program
                     var entries = XDocument.Load(path).Root.Elements().ToArray();
                     Equal(type == "MemeDef" ? 44 : type == "IssueDef" ? 6 : 99, entries.Length);
                     Equal(entries.Length, entries.Select(x => x.Name).Distinct().Count());
-                    Require(entries.All(x => !string.IsNullOrWhiteSpace(x.Value)));
-                    // 描述交给后续文案阶段，当前必须保留可搜索的精确 TODO 标记及完整 label 键。
-                    foreach (var e in entries.Where(e => e.Name.LocalName.EndsWith(".description"))) Equal("[TODO:" + e.Name.LocalName + "]", e.Value);
+                    // 正式文案只验证完整、无交接标记；机制与键集合仍使用独立固定预期。
+                    foreach (var e in entries) RequireFinalCopy(e.Value);
                     var names = type == "MemeDef" ? new[] { MemeName } : type == "IssueDef" ? groups.Select(g => "SSC_Issue_" + g) : DefDatabase<PreceptDef>.AllDefs.Select(d => d.defName);
                     foreach (var name in names) Require(entries.Any(e => e.Name.LocalName == name + ".label"));
                 }

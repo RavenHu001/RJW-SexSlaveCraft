@@ -18,7 +18,7 @@ internal static partial class Program
             Check("naming native dependency closure, real patch and language injection: " + language, () =>
             { PrepareNaming(repo, game, language); Require(errors.Count == 0, string.Join("\n", errors)); ready = true; });
             if (!ready) continue;
-            Check("naming fixed resource keys and placeholder grammar: " + language, () => NamingResourceContract(repo, language));
+            Check("naming fixed resource keys, grammar and localized final copy: " + language, () => NamingResourceContract(repo, language));
             Check("native symbols select SSC and ordinary sources without unresolved rules: " + language, () =>
             {
                 // 原版结构包与神祇仍参与选择；确定种子集合应能走到 SSC，但不要求每次结果来自 SSC。
@@ -28,12 +28,14 @@ internal static partial class Program
                     var ideo = NamingIdeo(true);
                     Seeded(seed, () => { ideo.foundation.GenerateTextSymbols(); return ideo.name; });
                     ValidGenerated(ideo.name); ValidGenerated(ideo.adjective); ValidGenerated(ideo.memberName);
-                    selectedSSC |= ideo.usedSymbolPacks.Any(s => s.StartsWith("SSCNAMETODO"));
-                    selectedOther |= !ideo.usedSymbolPacks.Any(s => s.StartsWith("SSCNAMETODO"));
+                    bool fromSSC = ideo.usedSymbolPacks.Any(s => mainMeme.symbolPacks.Any(p => p.PrimarySymbol == s));
+                    selectedSSC |= fromSSC;
+                    selectedOther |= !fromSSC;
                 }
                 Require(selectedSSC && selectedOther);
                 var plain = NamingIdeo(false); plain.foundation.GenerateTextSymbols();
-                ValidGenerated(plain.name); Require(!plain.name.Contains("SSCNAMETODO"));
+                ValidGenerated(plain.name);
+                Require(!plain.usedSymbolPacks.Any(s => mainMeme.symbolPacks.Any(p => p.PrimarySymbol == s)));
             });
             Check("native structure override and no-deity symbol source: " + language, () =>
             {
@@ -137,7 +139,11 @@ internal static partial class Program
                     "1.7/Defs/MemeDefs/SSC_Meme_MasterSlaveOrder.xml")).Root.Element("MemeDef").Element("generalRules")), false);
                 string path = Path.Combine(repo, $"1.7/Languages/{language}/DefInjected/MemeDef/SSC_Culture.xml");
                 var package = new DefInjectionPackage(typeof(MemeDef));
-                package.AddDataFromFile(new NamingFile(path), out bool error, File.ReadAllText(path).Replace("SSCMORALTODO", "INJECTIONPROBE"));
+                // 按固定字段索引替换三个候选，不依赖正式句子或已删除的 TODO 字串；探针从未写入资源文件。
+                var probe = XDocument.Load(path);
+                for (int i = 0; i < 3; i++)
+                    probe.Root.Element(MemeName + $".generalRules.rulesStrings.{7 + i}").Value = $"SSC_MoralistPreset->INJECTIONPROBE{i + 1:00}";
+                package.AddDataFromFile(new NamingFile(path), out bool error, probe.ToString());
                 Require(!error); package.InjectIntoDefs(true); Require(package.injections.Values.All(i => i.injected));
                 var role = Role(NamingIdeo(true), moralistDef); role.RegenerateName(); Require(role.Label.StartsWith("INJECTIONPROBE"), role.Label);
             });
@@ -177,9 +183,13 @@ internal static partial class Program
         });
     }
 
-    private static readonly string[] LeaderPool = { "SSCLEADERTODO01", "SSCLEADERTODO02", "SSCLEADERTODO03" };
-    private static readonly string[] MoralistPool = { "SSCMORALTODO01", "SSCMORALTODO02", "SSCMORALTODO03" };
-    private static readonly string[] RitualPool = { "SSCRITUALTODO01", "SSCRITUALTODO02", "SSCRITUALTODO03" };
+    // 候选取自注入后的规则，不从随机结果反推；原版命名器会处理大小写，候选归属只忽略大小写。
+    // 固定关键词、数量及原始字段对应仍在合同中逐项检查，不以归属集合代替资源校验。
+    private static HashSet<string> PresetPool(string keyword) => new(mainMeme.generalRules.Rules
+        .Where(r => r.keyword == keyword).Select(r => r.Generate()), StringComparer.OrdinalIgnoreCase);
+    private static HashSet<string> LeaderPool => PresetPool("SSC_LeaderPreset");
+    private static HashSet<string> MoralistPool => PresetPool("SSC_MoralistPreset");
+    private static HashSet<string> RitualPool => PresetPool("SSC_BindingRitualPreset");
 
     private static void NamingResourceContract(string repo, string language)
     {
@@ -194,23 +204,41 @@ internal static partial class Program
         Equal(3, mainMeme.symbolPacks.Select(p => p.PrimarySymbol).Distinct().Count());
         for (int i = 0; i < 3; i++)
         {
-            var pack = mainMeme.symbolPacks[i]; Equal($"SSCNAMETODO{i + 1:00}", pack.ideoName);
-            Equal($"SSCTHEMETODO{i + 1:00}", pack.theme); Equal($"SSCADJTODO{i + 1:00}", pack.adjective);
-            Equal($"SSCMEMBERTODO{i + 1:00}", pack.member);
+            // 验证四个原版字段确实消费本语资源；正文不属于机制合同，不固定为某句创作文案。
+            var pack = mainMeme.symbolPacks[i];
+            string[] values = { pack.ideoName, pack.theme, pack.adjective, pack.member };
+            string[] fields = { "ideoName", "theme", "adjective", "member" };
+            for (int f = 0; f < fields.Length; f++)
+            {
+                string expectedValue = entries.Single(e => e.Name.LocalName == prefix + $"symbolPacks.{i}.{fields[f]}").Value;
+                RequireFinalCopy(expectedValue); ValidGenerated(expectedValue); Equal(expectedValue, values[f]);
+            }
         }
         var rules = mainMeme.generalRules.Rules; Equal(13, rules.Count);
         Require(rules.All(r => r.keyword != "r_roleName" && r.keyword != "r_ritualName"));
-        // 全部连接／候选使用独立字面量检查，避免随机生成未选到某一条时漏掉错误或缺失候选。
-        var expectedRules = new[] { "memeAdjective->SSCADJTODO", "memeCreed->SSCCREEDTODO", "memeHyphenPrefix->SSCPREFIXTODO",
-            "r_leaderTitle(priority=10)->[SSC_LeaderPreset]" }.Concat(LeaderPool.Select(v => "SSC_LeaderPreset->" + v))
-            .Concat(MoralistPool.Select(v => "SSC_MoralistPreset->" + v)).Concat(RitualPool.Select(v => "SSC_BindingRitualPreset->" + v)).ToArray();
-        for (int i = 0; i < expectedRules.Length; i++)
-            Equal(expectedRules[i], entries.Single(e => e.Name.LocalName == prefix + $"generalRules.rulesStrings.{i}").Value);
+        // 固定左侧语法与连接根；逐条比对右侧注入结果，不能为通过文案测试而放宽挂载或 priority。
+        string[] heads = { "memeAdjective", "memeCreed", "memeHyphenPrefix", "r_leaderTitle(priority=10)",
+            "SSC_LeaderPreset", "SSC_LeaderPreset", "SSC_LeaderPreset", "SSC_MoralistPreset", "SSC_MoralistPreset", "SSC_MoralistPreset",
+            "SSC_BindingRitualPreset", "SSC_BindingRitualPreset", "SSC_BindingRitualPreset" };
+        for (int i = 0; i < heads.Length; i++)
+        {
+            string value = entries.Single(e => e.Name.LocalName == prefix + $"generalRules.rulesStrings.{i}").Value;
+            RequireFinalCopy(value); Require(value.StartsWith(heads[i] + "->", StringComparison.Ordinal));
+            string rhs = value[(heads[i].Length + 2)..];
+            Equal(i == 3 ? "r_leaderTitle" : heads[i], rules[i].keyword); Equal(rhs, rules[i].Generate());
+            if (i == 3) Equal("[SSC_LeaderPreset]", rhs); else ValidGenerated(rhs);
+        }
+        foreach (var pool in new[] { LeaderPool, MoralistPool, RitualPool })
+            Equal(3, pool.Count);
         Require(mainMeme.descriptionMaker.patterns.NullOrEmpty()); Equal(17, mainMeme.descriptionMaker.rules.Rules.Count);
         for (int i = 0; i < 17; i++)
         {
             var rule = mainMeme.descriptionMaker.rules.Rules[i]; Equal(DescriptionKeywords[i], rule.keyword);
-            Equal("meme_SSC_MasterSlaveOrder", rule.tag); Equal($"SSCDESCTODO{i + 1:00}", rule.Generate());
+            string value = entries.Single(e => e.Name.LocalName == prefix + $"descriptionMaker.rules.rulesStrings.{i}").Value;
+            string head = DescriptionKeywords[i] + (i == 1 || i == 7 ? "(uses=1,tag=meme_SSC_MasterSlaveOrder)" : "(tag=meme_SSC_MasterSlaveOrder)");
+            Require(value.StartsWith(head + "->", StringComparison.Ordinal));
+            string rhs = value[(head.Length + 2)..]; RequireFinalCopy(rhs); ValidGenerated(rhs);
+            Equal("meme_SSC_MasterSlaveOrder", rule.tag); Equal(rhs, rule.Generate());
             Equal((int?)(i == 1 || i == 7 ? 1 : null), rule.usesLimit);
         }
     }
