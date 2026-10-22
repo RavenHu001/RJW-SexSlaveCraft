@@ -6,6 +6,14 @@ using Verse.Grammar;
 
 internal static partial class Program
 {
+    private static bool ContainsAuthoredCreation(string template)
+    {
+        // 使用整条正式 creation 模板识别 SSC 来源；仅出现神名不能排除原版神话的假阳性。
+        string authored = mainMeme.descriptionMaker.rules.Rules[0].Generate()
+            .Replace("[deity0_name]", "%%deity0_name%%");
+        return template.Contains(authored, StringComparison.OrdinalIgnoreCase);
+    }
+
     private static void DynamicDescriptionTests(string language)
     {
         foreach (Gender gender in new[] { Gender.Male, Gender.Female })
@@ -34,8 +42,9 @@ internal static partial class Program
                             .Invoke(null, new object[] { ideo, pattern, true });
                         return result.text;
                     });
-                    if (result.text.Contains("SSCFIRSTDEITY")) break;
+                    if (ContainsAuthoredCreation(result.template)) break;
                 }
+                Require(ContainsAuthoredCreation(result.template), "No SSC creation selected");
                 Require(result.text.Contains("SSCFIRSTDEITY"));
                 ideo.descriptionTemplate = result.template;
                 Require(ideo.descriptionTemplate.Contains("%%deity0_name%%"));
@@ -43,7 +52,15 @@ internal static partial class Program
                 var refreshed = (IdeoDescriptionResult)AccessTools.Method(DescriptionUtility, "ResolveDescription")
                     .Invoke(null, new object[] { ideo, pattern, false });
                 ValidGenerated(refreshed.text); Require(refreshed.text.Contains("SSCRENAMEDDEITY"));
+                Equal(result.template, refreshed.template);
+                Require(ContainsAuthoredCreation(refreshed.template));
                 Require(!refreshed.text.Contains("SSCFIRSTDEITY") && !refreshed.text.Contains("%%"));
+                // 同样包含神名的原版故事必须不能通过 SSC 来源判断。
+                var plain = NamingIdeo(false);
+                ((IdeoFoundation_Deity)plain.foundation).SetDeities(new() { new() { name = "SSCFIRSTDEITY", type = "god", gender = gender } });
+                var vanilla = (IdeoDescriptionResult)AccessTools.Method(DescriptionUtility, "ResolveDescription")
+                    .Invoke(null, new object[] { plain, pattern, true });
+                Require(vanilla.text.Contains("SSCFIRSTDEITY")); Require(!ContainsAuthoredCreation(vanilla.template));
             });
             Check("native SSC founder aliases stay consistent " + gender + ": " + language, () =>
             {
@@ -64,6 +81,15 @@ internal static partial class Program
                 ValidGenerated(setup); ValidGenerated(story);
                 Require(setup.Contains("SSCFULLFOUNDER"), setup); Require(story.Contains("SSCSHORTFOUNDER"), story);
                 Require(!story.Contains("SSCFULLFOUNDER"), story);
+                // 英语正式 setup 引用人物代词；精确核对输出，避免男女用例只验证姓名而遗漏固定 he。
+                if (language == "English")
+                {
+                    Require(System.Text.RegularExpressions.Regex.IsMatch(setup, @"\b" + gender.GetPronoun() + @"\b",
+                        System.Text.RegularExpressions.RegexOptions.IgnoreCase), setup);
+                    string wrong = (gender == Gender.Male ? Gender.Female : Gender.Male).GetPronoun();
+                    Require(!System.Text.RegularExpressions.Regex.IsMatch(setup, @"\b" + wrong + @"\b",
+                        System.Text.RegularExpressions.RegexOptions.IgnoreCase), setup);
+                }
             });
         }
     }

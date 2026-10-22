@@ -92,7 +92,7 @@
     <defName>SSC_Precept_SlaveGender_FemaleRequired</defName>
     <issue>SSC_Issue_SlaveGender</issue>
     <label>女性必须</label>
-    <description>女子生来便当归顺。本文化要求每一个成年女子都献身于主人，以淫穴与乳房侍奉、被锁链束缚、被贯穿到高潮失禁——尚未履行此义务的女子，便是背弃了与生俱来的天命。</description>
+    <description>女子生来便当归顺。本文化要求每一个承担义务的成年女子都献身于主人，以淫穴与乳房侍奉、被锁链束缚、被贯穿到高潮失禁——尚未履行此义务的女子，便是背弃了与生俱来的天命。</description>
     <impact>High</impact>
     <displayOrderInIssue>40</displayOrderInIssue>
     <allowDuplicates>false</allowDuplicates>
@@ -135,7 +135,7 @@
     <defName>SSC_Precept_SlaveGender_MaleRequired</defName>
     <issue>SSC_Issue_SlaveGender</issue>
     <label>男性必须</label>
-    <description>男子生来便当归顺。本文化要求每一个成年男子都俯首于主人，以肉身与唇舌侍奉、被锁链束缚、被调教到甘愿撅臀承欢——尚未履行此义务的男子，便是违背了天命。</description>
+    <description>男子生来便当归顺。本文化要求每一个承担义务的成年男子都俯首于主人，以肉身与唇舌侍奉、被锁链束缚、被调教到甘愿撅臀承欢——尚未履行此义务的男子，便是违背了天命。</description>
     <impact>High</impact>
     <displayOrderInIssue>50</displayOrderInIssue>
     <allowDuplicates>false</allowDuplicates>

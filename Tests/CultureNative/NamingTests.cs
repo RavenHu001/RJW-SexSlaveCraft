@@ -133,6 +133,7 @@ internal static partial class Program
                 Require(!MoralistPool.Contains(role.Label) && !RitualPool.Contains(ritual.Label));
             });
             DescriptionTests(language);
+            CopyReviewTests(repo, language);
             Check("real injection changes a generated role candidate rather than only counting keys: " + language, () =>
             {
                 // 原版注入到新建的未解析 RulePack，替换右侧探针只存在于内存，资源文件始终不变。
@@ -240,7 +241,7 @@ internal static partial class Program
             Require(value.StartsWith(head + "->", StringComparison.Ordinal));
             string rhs = value[(head.Length + 2)..]; RequireFinalCopy(rhs);
             // 段落源文允许已核对的原版子规则；方括号只在最终解析结果中禁止。
-            var allowed = new[] { "deity0_name", "memberNamePlural", "founderName", "founder_pronoun" };
+            var allowed = new[] { "deity0_name", "memberNamePlural", "founderName", "founder_pronoun", "place_name", "foeLeader" };
             foreach (System.Text.RegularExpressions.Match token in System.Text.RegularExpressions.Regex.Matches(rhs, @"\[([^\]]+)\]"))
                 Require(allowed.Contains(token.Groups[1].Value), token.Value);
             if (i < 8) Require(rhs.Contains('['), "Missing dynamic story reference: " + i);
