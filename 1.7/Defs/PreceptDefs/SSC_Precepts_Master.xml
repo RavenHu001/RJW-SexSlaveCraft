@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- AI 辅助生成；1.7 步骤 1。两类权重显式配置；反馈 comps 随后续真实 workers 接入。
-     description 为交接占位，不是正式文案；不使用意愿/历史事件组件。 -->
+     description 已按测试稿 5改 落实；不使用意愿/历史事件组件。 -->
 <Defs>
   <!-- 同一议题仅允许一个档位；顶层 Ideology 门控避免未启用文化 DLC 时装载本组定义。 -->
   <IssueDef MayRequire="Ludeon.RimWorld.Ideology">
@@ -15,7 +15,7 @@
     <defName>SSC_Precept_Master_Hostile</defName>
     <issue>SSC_Issue_Master</issue>
     <label>敌视</label>
-    <description>[TODO:SSC_Precept_Master_Hostile.description]</description>
+    <description>视主人为窃据他人身体的僭越者——凭一条锁链便攫取他人肉身与意志，这是不可容忍的暴行。</description>
     <impact>Low</impact>
     <displayOrderInIssue>10</displayOrderInIssue>
     <allowDuplicates>false</allowDuplicates>
@@ -44,7 +44,7 @@
     <defName>SSC_Precept_Master_Revulsion</defName>
     <issue>SSC_Issue_Master</issue>
     <label>厌恶</label>
-    <description>[TODO:SSC_Precept_Master_Revulsion.description]</description>
+    <description>对“主人”这一身份强烈反感，见人执链而行便心生厌恶。</description>
     <impact>Low</impact>
     <displayOrderInIssue>20</displayOrderInIssue>
     <allowDuplicates>false</allowDuplicates>
@@ -73,7 +73,7 @@
     <defName>SSC_Precept_Master_Indifference</defName>
     <issue>SSC_Issue_Master</issue>
     <label>漠视</label>
-    <description>[TODO:SSC_Precept_Master_Indifference.description]</description>
+    <description>对主人身份不置可否，谁是主、谁是奴，皆与己无涉。</description>
     <impact>Low</impact>
     <displayOrderInIssue>30</displayOrderInIssue>
     <allowDuplicates>false</allowDuplicates>
@@ -87,7 +87,7 @@
     <defName>SSC_Precept_Master_Deference</defName>
     <issue>SSC_Issue_Master</issue>
     <label>尊奉</label>
-    <description>[TODO:SSC_Precept_Master_Deference.description]</description>
+    <description>敬重主人的意志并甘愿听命——主人是欲望的主人，也是秩序的主人，跪伏于主人胯下、顺从主人的每一声命令，即顺从天命。</description>
     <impact>Medium</impact>
     <displayOrderInIssue>40</displayOrderInIssue>
     <allowDuplicates>false</allowDuplicates>
@@ -109,9 +109,9 @@
       <li Class="PreceptComp_SituationalThought">
         <thought>SSC_Culture_Master_Deference_Leader</thought>
         <thoughtStageDescriptions>
-          <li>[占位: 尊奉 / 领袖是主人／本人非主人]</li>
-          <li>[占位: 尊奉 / 普通非主人领袖]</li>
-          <li>[占位: 尊奉 / 领袖是性奴]</li>
+          <li>领袖是主人（本人非主人）：心情 +3。</li>
+          <li>领袖是普通非主人：心情 -3。</li>
+          <li>领袖是性奴：心情 -6。</li>
         </thoughtStageDescriptions>
       </li>
       <!-- 独立社交由观察者的本戒律挂载，与性奴态度全额相加。 -->
@@ -125,7 +125,7 @@
     <defName>SSC_Precept_Master_HolyMaster</defName>
     <issue>SSC_Issue_Master</issue>
     <label>圣主</label>
-    <description>[TODO:SSC_Precept_Master_HolyMaster.description]</description>
+    <description>视主人为被供奉的神祇，予以最高尊崇。主人的每一次抽送、每一声命令皆是神意，信徒当以唇舌、乳房与淫穴献身侍奉，将高潮作为祭品奉上——能为主人泄身，是信徒至高的荣耀。</description>
     <impact>High</impact>
     <displayOrderInIssue>50</displayOrderInIssue>
     <allowDuplicates>false</allowDuplicates>
@@ -148,9 +148,9 @@
       <li Class="PreceptComp_SituationalThought">
         <thought>SSC_Culture_Master_HolyMaster_Leader</thought>
         <thoughtStageDescriptions>
-          <li>[占位: 圣主 / 领袖是主人／本人非主人]</li>
-          <li>[占位: 圣主 / 普通非主人领袖]</li>
-          <li>[占位: 圣主 / 领袖是性奴]</li>
+          <li>领袖是主人（本人非主人）：心情 +6。</li>
+          <li>领袖是普通非主人：心情 -6。</li>
+          <li>领袖是性奴：心情 -12。</li>
         </thoughtStageDescriptions>
       </li>
       <!-- 独立社交由观察者的本戒律挂载，与性奴态度全额相加。 -->

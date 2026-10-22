@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- AI 辅助生成：1.7 六档性别规范的持续反馈，仅占位文案，不写关系或记忆。 -->
+<!-- AI 辅助生成：1.7 六档性别规范的持续反馈，阶段名称与描述已落实，不写关系或记忆。 -->
 <Defs>
   <!-- LimitedViolation / Self：男女同数值档共用 Def，原版 sourcePrecept 保留实际戒律来源。 -->
   <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
@@ -15,8 +15,8 @@
       </li>
     </modExtensions>
     <stages><li>
-      <label>[TODO:SSC_Culture_SlaveGender_LimitedViolation_Self.stages.0.label]</label>
-      <description>[TODO:SSC_Culture_SlaveGender_LimitedViolation_Self.stages.0.description]</description>
+      <label>违规之奴</label>
+      <description>我以本文化所排斥的性别沦为锁链下的性奴——这副身躯本不该跪伏于此，错位令我痛苦。</description>
       <baseMoodEffect>-6</baseMoodEffect>
     </li></stages>
   </ThoughtDef>
@@ -34,8 +34,8 @@
       </li>
     </modExtensions>
     <stages><li>
-      <label>[TODO:SSC_Culture_SlaveGender_LimitedViolation_Social.stages.0.label]</label>
-      <description>[TODO:SSC_Culture_SlaveGender_LimitedViolation_Social.stages.0.description]</description>
+      <label>鄙夷此违规性奴</label>
+      <description>此人以被排斥的性别为奴，玷污了主奴秩序，令我侧目。</description>
       <baseOpinionOffset>-10</baseOpinionOffset>
     </li></stages>
   </ThoughtDef>
@@ -57,8 +57,8 @@
       </li>
     </modExtensions>
     <stages><li>
-      <label>[TODO:SSC_Culture_SlaveGender_LimitedViolation_Environment.stages.0.label]</label>
-      <description>[TODO:SSC_Culture_SlaveGender_LimitedViolation_Environment.stages.0.description]</description>
+      <label>身边有违规性奴</label>
+      <description>附近有违规性别的性奴在俯首侍奉，令我难以心安。</description>
       <baseMoodEffect>-1</baseMoodEffect>
     </li></stages>
   </ThoughtDef>
@@ -76,8 +76,8 @@
       </li>
     </modExtensions>
     <stages><li>
-      <label>[TODO:SSC_Culture_SlaveGender_RequiredViolation_Self.stages.0.label]</label>
-      <description>[TODO:SSC_Culture_SlaveGender_RequiredViolation_Self.stages.0.description]</description>
+      <label>违规之奴</label>
+      <description>我以被排斥的性别沦为性奴，既违必须之规，也令这副肉身蒙羞，痛苦更甚。</description>
       <baseMoodEffect>-12</baseMoodEffect>
     </li></stages>
   </ThoughtDef>
@@ -95,8 +95,8 @@
       </li>
     </modExtensions>
     <stages><li>
-      <label>[TODO:SSC_Culture_SlaveGender_RequiredViolation_Social.stages.0.label]</label>
-      <description>[TODO:SSC_Culture_SlaveGender_RequiredViolation_Social.stages.0.description]</description>
+      <label>深恶此违规性奴</label>
+      <description>此人以被排斥的性别为奴，公然践踏必须之规，令我深恶痛绝。</description>
       <baseOpinionOffset>-20</baseOpinionOffset>
     </li></stages>
   </ThoughtDef>
@@ -118,8 +118,8 @@
       </li>
     </modExtensions>
     <stages><li>
-      <label>[TODO:SSC_Culture_SlaveGender_RequiredViolation_Environment.stages.0.label]</label>
-      <description>[TODO:SSC_Culture_SlaveGender_RequiredViolation_Environment.stages.0.description]</description>
+      <label>身边有违规性奴</label>
+      <description>附近有违规性别的性奴在承欢侍奉，令我如鲠在喉。</description>
       <baseMoodEffect>-2</baseMoodEffect>
     </li></stages>
   </ThoughtDef>
@@ -139,13 +139,13 @@
       </li>
     </modExtensions>
     <stages><li>
-      <label>[TODO:SSC_Culture_SlaveGender_RequiredDuty_Self.stages.0.label]</label>
-      <description>[TODO:SSC_Culture_SlaveGender_RequiredDuty_Self.stages.0.description]</description>
+      <label>未尽为奴之责</label>
+      <description>我生来便该献身于主人，却仍游离于锁链之外，尚未跪伏、尚未被占有——这悬而未尽的义务令我焦灼。</description>
       <baseMoodEffect>-8</baseMoodEffect>
     </li><li>
-      <!-- 专属占位：与普通义务阶段分开交接，便于表达自我愿望和文化义务同时落空。 -->
-      <label>[TODO:SSC_Culture_SlaveGender_RequiredDuty_Self.stages.1.label]</label>
-      <description>[TODO:SSC_Culture_SlaveGender_RequiredDuty_Self.stages.1.description]</description>
+      <!-- 专属阶段：与普通义务阶段分开表达，便于表达自我愿望和文化义务同时落空。 -->
+      <label>艳羡未偿</label>
+      <description>我既艳羡那些被主人占有、被贯穿到高潮的性奴，自己又生来便该献身却尚未为奴——欲望与义务双双落空，令我下身发痒、焦渴难耐。</description>
       <baseMoodEffect>-12</baseMoodEffect>
     </li></stages>
   </ThoughtDef>
@@ -163,8 +163,8 @@
       </li>
     </modExtensions>
     <stages><li>
-      <label>[TODO:SSC_Culture_SlaveGender_RequiredDuty_Social.stages.0.label]</label>
-      <description>[TODO:SSC_Culture_SlaveGender_RequiredDuty_Social.stages.0.description]</description>
+      <label>轻鄙未尽责者</label>
+      <description>此人生来便该献身为奴，却迟迟不肯俯首，令我不齿。</description>
       <baseOpinionOffset>-10</baseOpinionOffset>
     </li></stages>
   </ThoughtDef>
@@ -186,8 +186,8 @@
       </li>
     </modExtensions>
     <stages><li>
-      <label>[TODO:SSC_Culture_SlaveGender_RequiredDuty_Environment.stages.0.label]</label>
-      <description>[TODO:SSC_Culture_SlaveGender_RequiredDuty_Environment.stages.0.description]</description>
+      <label>身边有人未尽为奴之责</label>
+      <description>附近有生来该献身却尚未为奴之人，令我不安。</description>
       <baseMoodEffect>-2</baseMoodEffect>
     </li></stages>
   </ThoughtDef>
@@ -207,13 +207,13 @@
       </li>
     </modExtensions>
     <stages><li>
-      <label>[TODO:SSC_Culture_SlaveGender_NonMasterDuty_Self.stages.0.label]</label>
-      <description>[TODO:SSC_Culture_SlaveGender_NonMasterDuty_Self.stages.0.description]</description>
+      <label>未尽为奴之责</label>
+      <description>我既非主人，便当为奴，却仍游离于锁链之外——这背弃身份的不安，令我坐立难安。</description>
       <baseMoodEffect>-12</baseMoodEffect>
     </li><li>
-      <!-- 专属占位：与普通义务阶段分开交接，便于表达自我愿望和文化义务同时落空。 -->
-      <label>[TODO:SSC_Culture_SlaveGender_NonMasterDuty_Self.stages.1.label]</label>
-      <description>[TODO:SSC_Culture_SlaveGender_NonMasterDuty_Self.stages.1.description]</description>
+      <!-- 专属阶段：与普通义务阶段分开表达，便于表达自我愿望和文化义务同时落空。 -->
+      <label>艳羡未偿</label>
+      <description>我艳羡那些被锁链占有、被肏到高潮失禁的性奴，自己却既非主人亦非性奴——欲望无处安放，责任又未了，令我浑身燥热、痛苦不堪。</description>
       <baseMoodEffect>-16</baseMoodEffect>
     </li></stages>
   </ThoughtDef>
@@ -231,8 +231,8 @@
       </li>
     </modExtensions>
     <stages><li>
-      <label>[TODO:SSC_Culture_SlaveGender_NonMasterDuty_Social.stages.0.label]</label>
-      <description>[TODO:SSC_Culture_SlaveGender_NonMasterDuty_Social.stages.0.description]</description>
+      <label>轻鄙游离者</label>
+      <description>此人既非主人又不肯为奴，游离于秩序之外，令我厌恶。</description>
       <baseOpinionOffset>-15</baseOpinionOffset>
     </li></stages>
   </ThoughtDef>
@@ -254,8 +254,8 @@
       </li>
     </modExtensions>
     <stages><li>
-      <label>[TODO:SSC_Culture_SlaveGender_NonMasterDuty_Environment.stages.0.label]</label>
-      <description>[TODO:SSC_Culture_SlaveGender_NonMasterDuty_Environment.stages.0.description]</description>
+      <label>身边有游离者</label>
+      <description>附近有既非主人亦非性奴、游离于秩序之外的人，令我焦躁。</description>
       <baseMoodEffect>-3</baseMoodEffect>
     </li></stages>
   </ThoughtDef>

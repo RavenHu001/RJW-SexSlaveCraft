@@ -15,8 +15,8 @@
     </modExtensions>
     <stages>
       <li>
-        <label>[占位: 主人总数超额 / 上限 1]</label>
-        <description>[TODO:SSC_Culture_MasterCount_One_Self.stages.0.description]</description>
+        <label>主人过多</label>
+        <description>殖民地的主人多于一人，欲望各执其链，秩序已然混乱。</description>
         <baseMoodEffect>-3</baseMoodEffect>
       </li>
     </stages>
@@ -35,8 +35,8 @@
     </modExtensions>
     <stages>
       <li>
-        <label>[占位: 主人总数超额 / 上限 3]</label>
-        <description>[TODO:SSC_Culture_MasterCount_Three_Self.stages.0.description]</description>
+        <label>主人过多</label>
+        <description>殖民地的主人多于三人，众多主人各立门户，令我心生不安。</description>
         <baseMoodEffect>-3</baseMoodEffect>
       </li>
     </stages>
@@ -55,8 +55,8 @@
     </modExtensions>
     <stages>
       <li>
-        <label>[占位: 本人性奴数量超额 / 上限 1]</label>
-        <description>[TODO:SSC_Culture_SlaveCount_One_Self.stages.0.description]</description>
+        <label>性奴过多</label>
+        <description>我名下的性奴多于一人，恩宠既分，淫穴与链环便难严丝合缝。</description>
         <baseMoodEffect>-3</baseMoodEffect>
       </li>
     </stages>
@@ -75,8 +75,8 @@
     </modExtensions>
     <stages>
       <li>
-        <label>[占位: 本人性奴数量超额 / 上限 3]</label>
-        <description>[TODO:SSC_Culture_SlaveCount_Three_Self.stages.0.description]</description>
+        <label>性奴过多</label>
+        <description>我名下的性奴多于三人，阳具分身乏术、调教不周，令我愧疚。</description>
         <baseMoodEffect>-3</baseMoodEffect>
       </li>
     </stages>
@@ -95,18 +95,18 @@
     </modExtensions>
     <stages>
       <li>
-        <label>[占位: 目标主人性奴数量超额 / 上限 1 / 超额 1]</label>
-        <description>[TODO:SSC_Culture_SlaveCount_One_Social.stages.0.description]</description>
+        <label>主人蓄奴过多</label>
+        <description>此主人名下性奴不止一人，令我侧目。</description>
         <baseOpinionOffset>-5</baseOpinionOffset>
       </li>
       <li>
-        <label>[占位: 目标主人性奴数量超额 / 上限 1 / 超额 2]</label>
-        <description>[TODO:SSC_Culture_SlaveCount_One_Social.stages.1.description]</description>
+        <label>主人蓄奴过多</label>
+        <description>此主人蓄奴无度，实属放纵。</description>
         <baseOpinionOffset>-15</baseOpinionOffset>
       </li>
       <li>
-        <label>[占位: 目标主人性奴数量超额 / 上限 1 / 超额 3 及以上]</label>
-        <description>[TODO:SSC_Culture_SlaveCount_One_Social.stages.2.description]</description>
+        <label>主人蓄奴过多</label>
+        <description>此主人贪得无厌、蓄奴成群，令我深恶。</description>
         <baseOpinionOffset>-30</baseOpinionOffset>
       </li>
     </stages>
@@ -125,18 +125,18 @@
     </modExtensions>
     <stages>
       <li>
-        <label>[占位: 目标主人性奴数量超额 / 上限 3 / 超额 1]</label>
-        <description>[TODO:SSC_Culture_SlaveCount_Three_Social.stages.0.description]</description>
+        <label>主人蓄奴过多</label>
+        <description>此主人名下性奴多于三人，令我侧目。</description>
         <baseOpinionOffset>-5</baseOpinionOffset>
       </li>
       <li>
-        <label>[占位: 目标主人性奴数量超额 / 上限 3 / 超额 2]</label>
-        <description>[TODO:SSC_Culture_SlaveCount_Three_Social.stages.1.description]</description>
+        <label>主人蓄奴过多</label>
+        <description>此主人蓄奴无度，实属放纵。</description>
         <baseOpinionOffset>-15</baseOpinionOffset>
       </li>
       <li>
-        <label>[占位: 目标主人性奴数量超额 / 上限 3 / 超额 3 及以上]</label>
-        <description>[TODO:SSC_Culture_SlaveCount_Three_Social.stages.2.description]</description>
+        <label>主人蓄奴过多</label>
+        <description>此主人贪得无厌、蓄奴成群，令我深恶。</description>
         <baseOpinionOffset>-30</baseOpinionOffset>
       </li>
     </stages>

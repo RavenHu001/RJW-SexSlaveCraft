@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- AI 辅助生成：1.7 性奴性别规范；新议题只表达文化反馈，全部正式描述使用占位。 -->
+<!-- AI 辅助生成：1.7 性奴性别规范；新议题只表达文化反馈，描述与效果说明均已按测试稿 5改 落实。 -->
 <Defs>
   <!-- 六档同组互斥，共用性别符号与爱心项圈的专属议题图标；具体规范由各档名称说明。 -->
   <IssueDef MayRequire="Ludeon.RimWorld.Ideology">
@@ -13,7 +13,7 @@
     <defName>SSC_Precept_SlaveGender_FemaleOnly</defName>
     <issue>SSC_Issue_SlaveGender</issue>
     <label>女性限定</label>
-    <description>[TODO:SSC_Precept_SlaveGender_FemaleOnly.description]</description>
+    <description>唯有女子才配被收作性奴。锁链与项圈只属于阴柔之躯——主人只占有女子的淫穴，只让她们撅臀承欢、以乳房与唇舌侍奉、在贯穿与鞭笞中攀上高潮；男子即便屈身，也不得享此殊荣。</description>
     <impact>Medium</impact>
     <displayOrderInIssue>10</displayOrderInIssue>
     <allowDuplicates>false</allowDuplicates>
@@ -26,15 +26,15 @@
     <comps>
       <li Class="PreceptComp_SituationalThought">
         <thought>SSC_Culture_SlaveGender_LimitedViolation_Self</thought>
-        <thoughtStageDescriptions><li>[TODO:SSC_Precept_SlaveGender_FemaleOnly.comps.0.thoughtStageDescriptions.0]</li></thoughtStageDescriptions>
+        <thoughtStageDescriptions><li>本人是违规性别性奴：心情 -6。</li></thoughtStageDescriptions>
       </li>
       <li Class="PreceptComp_SituationalThought">
         <thought>SSC_Culture_SlaveGender_LimitedViolation_Social</thought>
-        <thoughtStageDescriptions><li>[TODO:SSC_Precept_SlaveGender_FemaleOnly.comps.1.thoughtStageDescriptions.0]</li></thoughtStageDescriptions>
+        <thoughtStageDescriptions><li>对方是违规性别性奴：好感 -10。</li></thoughtStageDescriptions>
       </li>
       <li Class="PreceptComp_SituationalThought">
         <thought>SSC_Culture_SlaveGender_LimitedViolation_Environment</thought>
-        <thoughtStageDescriptions><li>[TODO:SSC_Precept_SlaveGender_FemaleOnly.comps.2.thoughtStageDescriptions.0]</li></thoughtStageDescriptions>
+        <thoughtStageDescriptions><li>环境中有违规性别性奴时按人数计罚：1/2/3 名及以上，心情 -1/-3/-6。</li></thoughtStageDescriptions>
       </li>
     </comps>
   </PreceptDef>
@@ -43,7 +43,7 @@
     <defName>SSC_Precept_SlaveGender_MaleOnly</defName>
     <issue>SSC_Issue_SlaveGender</issue>
     <label>男性限定</label>
-    <description>[TODO:SSC_Precept_SlaveGender_MaleOnly.description]</description>
+    <description>唯有男子才配被收作性奴。本文化将阳刚之躯缚上锁链、套上项圈，令其俯首于主人胯下，以唇舌与肉身侍奉、被贯穿到失神——女子的淫穴反而不入此道。</description>
     <impact>Medium</impact>
     <displayOrderInIssue>20</displayOrderInIssue>
     <allowDuplicates>false</allowDuplicates>
@@ -56,15 +56,15 @@
     <comps>
       <li Class="PreceptComp_SituationalThought">
         <thought>SSC_Culture_SlaveGender_LimitedViolation_Self</thought>
-        <thoughtStageDescriptions><li>[TODO:SSC_Precept_SlaveGender_MaleOnly.comps.0.thoughtStageDescriptions.0]</li></thoughtStageDescriptions>
+        <thoughtStageDescriptions><li>本人是违规性别性奴：心情 -6。</li></thoughtStageDescriptions>
       </li>
       <li Class="PreceptComp_SituationalThought">
         <thought>SSC_Culture_SlaveGender_LimitedViolation_Social</thought>
-        <thoughtStageDescriptions><li>[TODO:SSC_Precept_SlaveGender_MaleOnly.comps.1.thoughtStageDescriptions.0]</li></thoughtStageDescriptions>
+        <thoughtStageDescriptions><li>对方是违规性别性奴：好感 -10。</li></thoughtStageDescriptions>
       </li>
       <li Class="PreceptComp_SituationalThought">
         <thought>SSC_Culture_SlaveGender_LimitedViolation_Environment</thought>
-        <thoughtStageDescriptions><li>[TODO:SSC_Precept_SlaveGender_MaleOnly.comps.2.thoughtStageDescriptions.0]</li></thoughtStageDescriptions>
+        <thoughtStageDescriptions><li>环境中有违规性别性奴时按人数计罚：1/2/3 名及以上，心情 -1/-3/-6。</li></thoughtStageDescriptions>
       </li>
     </comps>
   </PreceptDef>
@@ -73,7 +73,7 @@
     <defName>SSC_Precept_SlaveGender_Unrestricted</defName>
     <issue>SSC_Issue_SlaveGender</issue>
     <label>性别不限</label>
-    <description>[TODO:SSC_Precept_SlaveGender_Unrestricted.description]</description>
+    <description>不论男女，皆可被收作性奴。锁链与项圈不挑性别，只要肉体甘愿献出、可供主人占有驰骋，皆可跪伏于主人脚下，被调教到沉溺其中。</description>
     <impact>Low</impact>
     <displayOrderInIssue>30</displayOrderInIssue>
     <allowDuplicates>false</allowDuplicates>
@@ -92,7 +92,7 @@
     <defName>SSC_Precept_SlaveGender_FemaleRequired</defName>
     <issue>SSC_Issue_SlaveGender</issue>
     <label>女性必须</label>
-    <description>[TODO:SSC_Precept_SlaveGender_FemaleRequired.description]</description>
+    <description>女子生来便当归顺。本文化要求每一个成年女子都献身于主人，以淫穴与乳房侍奉、被锁链束缚、被贯穿到高潮失禁——尚未履行此义务的女子，便是背弃了与生俱来的天命。</description>
     <impact>High</impact>
     <displayOrderInIssue>40</displayOrderInIssue>
     <allowDuplicates>false</allowDuplicates>
@@ -105,28 +105,28 @@
     <comps>
       <li Class="PreceptComp_SituationalThought">
         <thought>SSC_Culture_SlaveGender_RequiredViolation_Self</thought>
-        <thoughtStageDescriptions><li>[TODO:SSC_Precept_SlaveGender_FemaleRequired.comps.0.thoughtStageDescriptions.0]</li></thoughtStageDescriptions>
+        <thoughtStageDescriptions><li>本人是违规性别性奴：心情 -12。</li></thoughtStageDescriptions>
       </li>
       <li Class="PreceptComp_SituationalThought">
         <thought>SSC_Culture_SlaveGender_RequiredViolation_Social</thought>
-        <thoughtStageDescriptions><li>[TODO:SSC_Precept_SlaveGender_FemaleRequired.comps.1.thoughtStageDescriptions.0]</li></thoughtStageDescriptions>
+        <thoughtStageDescriptions><li>对方是违规性别性奴：好感 -20。</li></thoughtStageDescriptions>
       </li>
       <li Class="PreceptComp_SituationalThought">
         <thought>SSC_Culture_SlaveGender_RequiredViolation_Environment</thought>
-        <thoughtStageDescriptions><li>[TODO:SSC_Precept_SlaveGender_FemaleRequired.comps.2.thoughtStageDescriptions.0]</li></thoughtStageDescriptions>
+        <thoughtStageDescriptions><li>环境中有违规性别性奴时按人数计罚：1/2/3 名及以上，心情 -2/-6/-12。</li></thoughtStageDescriptions>
       </li>
       <li Class="PreceptComp_SituationalThought">
         <thought>SSC_Culture_SlaveGender_RequiredDuty_Self</thought>
-        <!-- 阶段 0 普通义务，阶段 1 艳羡义务；两份说明分别占位。 -->
-        <thoughtStageDescriptions><li>[TODO:SSC_Precept_SlaveGender_FemaleRequired.comps.3.thoughtStageDescriptions.0]</li><li>[TODO:SSC_Precept_SlaveGender_FemaleRequired.comps.3.thoughtStageDescriptions.1]</li></thoughtStageDescriptions>
+        <!-- 阶段 0 普通义务，阶段 1 艳羡义务；两份说明分别对应普通义务与艳羡义务。 -->
+        <thoughtStageDescriptions><li>本人身为须献身的性别却尚未为奴：心情 -8。</li><li>本人艳羡性奴、身为须献身的性别却尚未为奴：心情 -12。</li></thoughtStageDescriptions>
       </li>
       <li Class="PreceptComp_SituationalThought">
         <thought>SSC_Culture_SlaveGender_RequiredDuty_Social</thought>
-        <thoughtStageDescriptions><li>[TODO:SSC_Precept_SlaveGender_FemaleRequired.comps.4.thoughtStageDescriptions.0]</li></thoughtStageDescriptions>
+        <thoughtStageDescriptions><li>对方身为须献身的性别却尚未为奴：好感 -10。</li></thoughtStageDescriptions>
       </li>
       <li Class="PreceptComp_SituationalThought">
         <thought>SSC_Culture_SlaveGender_RequiredDuty_Environment</thought>
-        <thoughtStageDescriptions><li>[TODO:SSC_Precept_SlaveGender_FemaleRequired.comps.5.thoughtStageDescriptions.0]</li></thoughtStageDescriptions>
+        <thoughtStageDescriptions><li>环境中有须献身却尚未为奴者时按人数计罚：1/2/3 名及以上，心情 -2/-6/-12。</li></thoughtStageDescriptions>
       </li>
     </comps>
   </PreceptDef>
@@ -135,7 +135,7 @@
     <defName>SSC_Precept_SlaveGender_MaleRequired</defName>
     <issue>SSC_Issue_SlaveGender</issue>
     <label>男性必须</label>
-    <description>[TODO:SSC_Precept_SlaveGender_MaleRequired.description]</description>
+    <description>男子生来便当归顺。本文化要求每一个成年男子都俯首于主人，以肉身与唇舌侍奉、被锁链束缚、被调教到甘愿撅臀承欢——尚未履行此义务的男子，便是违背了天命。</description>
     <impact>High</impact>
     <displayOrderInIssue>50</displayOrderInIssue>
     <allowDuplicates>false</allowDuplicates>
@@ -148,28 +148,28 @@
     <comps>
       <li Class="PreceptComp_SituationalThought">
         <thought>SSC_Culture_SlaveGender_RequiredViolation_Self</thought>
-        <thoughtStageDescriptions><li>[TODO:SSC_Precept_SlaveGender_MaleRequired.comps.0.thoughtStageDescriptions.0]</li></thoughtStageDescriptions>
+        <thoughtStageDescriptions><li>本人是违规性别性奴：心情 -12。</li></thoughtStageDescriptions>
       </li>
       <li Class="PreceptComp_SituationalThought">
         <thought>SSC_Culture_SlaveGender_RequiredViolation_Social</thought>
-        <thoughtStageDescriptions><li>[TODO:SSC_Precept_SlaveGender_MaleRequired.comps.1.thoughtStageDescriptions.0]</li></thoughtStageDescriptions>
+        <thoughtStageDescriptions><li>对方是违规性别性奴：好感 -20。</li></thoughtStageDescriptions>
       </li>
       <li Class="PreceptComp_SituationalThought">
         <thought>SSC_Culture_SlaveGender_RequiredViolation_Environment</thought>
-        <thoughtStageDescriptions><li>[TODO:SSC_Precept_SlaveGender_MaleRequired.comps.2.thoughtStageDescriptions.0]</li></thoughtStageDescriptions>
+        <thoughtStageDescriptions><li>环境中有违规性别性奴时按人数计罚：1/2/3 名及以上，心情 -2/-6/-12。</li></thoughtStageDescriptions>
       </li>
       <li Class="PreceptComp_SituationalThought">
         <thought>SSC_Culture_SlaveGender_RequiredDuty_Self</thought>
-        <!-- 阶段 0 普通义务，阶段 1 艳羡义务；两份说明分别占位。 -->
-        <thoughtStageDescriptions><li>[TODO:SSC_Precept_SlaveGender_MaleRequired.comps.3.thoughtStageDescriptions.0]</li><li>[TODO:SSC_Precept_SlaveGender_MaleRequired.comps.3.thoughtStageDescriptions.1]</li></thoughtStageDescriptions>
+        <!-- 阶段 0 普通义务，阶段 1 艳羡义务；两份说明分别对应普通义务与艳羡义务。 -->
+        <thoughtStageDescriptions><li>本人身为须献身的性别却尚未为奴：心情 -8。</li><li>本人艳羡性奴、身为须献身的性别却尚未为奴：心情 -12。</li></thoughtStageDescriptions>
       </li>
       <li Class="PreceptComp_SituationalThought">
         <thought>SSC_Culture_SlaveGender_RequiredDuty_Social</thought>
-        <thoughtStageDescriptions><li>[TODO:SSC_Precept_SlaveGender_MaleRequired.comps.4.thoughtStageDescriptions.0]</li></thoughtStageDescriptions>
+        <thoughtStageDescriptions><li>对方身为须献身的性别却尚未为奴：好感 -10。</li></thoughtStageDescriptions>
       </li>
       <li Class="PreceptComp_SituationalThought">
         <thought>SSC_Culture_SlaveGender_RequiredDuty_Environment</thought>
-        <thoughtStageDescriptions><li>[TODO:SSC_Precept_SlaveGender_MaleRequired.comps.5.thoughtStageDescriptions.0]</li></thoughtStageDescriptions>
+        <thoughtStageDescriptions><li>环境中有须献身却尚未为奴者时按人数计罚：1/2/3 名及以上，心情 -2/-6/-12。</li></thoughtStageDescriptions>
       </li>
     </comps>
   </PreceptDef>
@@ -178,7 +178,7 @@
     <defName>SSC_Precept_SlaveGender_NonMasterRequired</defName>
     <issue>SSC_Issue_SlaveGender</issue>
     <label>非主即奴</label>
-    <description>[TODO:SSC_Precept_SlaveGender_NonMasterRequired.description]</description>
+    <description>凡非主人者，皆须为奴。本文化不承认主人与奴之外的任何身份——每一个未执链之人都该被收作性奴、跪伏承欢、以肉身侍奉，直到被某位主人占有、贯穿、驯成只知高潮的玩物。</description>
     <impact>High</impact>
     <displayOrderInIssue>60</displayOrderInIssue>
     <allowDuplicates>false</allowDuplicates>
@@ -191,16 +191,16 @@
     <comps>
       <li Class="PreceptComp_SituationalThought">
         <thought>SSC_Culture_SlaveGender_NonMasterDuty_Self</thought>
-        <!-- 阶段 0 普通义务，阶段 1 艳羡义务；两份说明分别占位。 -->
-        <thoughtStageDescriptions><li>[TODO:SSC_Precept_SlaveGender_NonMasterRequired.comps.0.thoughtStageDescriptions.0]</li><li>[TODO:SSC_Precept_SlaveGender_NonMasterRequired.comps.0.thoughtStageDescriptions.1]</li></thoughtStageDescriptions>
+        <!-- 阶段 0 普通义务，阶段 1 艳羡义务；两份说明分别对应普通义务与艳羡义务。 -->
+        <thoughtStageDescriptions><li>本人既非主人亦非性奴、未履行义务：心情 -12。</li><li>本人艳羡性奴、既非主人亦非性奴、未履行义务：心情 -16。</li></thoughtStageDescriptions>
       </li>
       <li Class="PreceptComp_SituationalThought">
         <thought>SSC_Culture_SlaveGender_NonMasterDuty_Social</thought>
-        <thoughtStageDescriptions><li>[TODO:SSC_Precept_SlaveGender_NonMasterRequired.comps.1.thoughtStageDescriptions.0]</li></thoughtStageDescriptions>
+        <thoughtStageDescriptions><li>对方既非主人亦非性奴、未履行义务：好感 -15。</li></thoughtStageDescriptions>
       </li>
       <li Class="PreceptComp_SituationalThought">
         <thought>SSC_Culture_SlaveGender_NonMasterDuty_Environment</thought>
-        <thoughtStageDescriptions><li>[TODO:SSC_Precept_SlaveGender_NonMasterRequired.comps.2.thoughtStageDescriptions.0]</li></thoughtStageDescriptions>
+        <thoughtStageDescriptions><li>环境中有既非主人亦非性奴、未履行义务者时按人数计罚：1/2/3 名及以上，心情 -3/-9/-18。</li></thoughtStageDescriptions>
       </li>
     </comps>
   </PreceptDef>

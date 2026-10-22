@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- AI 辅助生成；1.7 步骤 3。两类权重保持原样；有限档挂数量反馈，不限无组件。
-     description 为交接占位，不是正式文案；不使用意愿/历史事件组件。 -->
+     description 已按测试稿 5改 落实；不使用意愿/历史事件组件。 -->
 <Defs>
   <!-- 同一议题仅允许一个档位；顶层 Ideology 门控避免未启用文化 DLC 时装载本组定义。 -->
   <IssueDef MayRequire="Ludeon.RimWorld.Ideology">
@@ -15,7 +15,7 @@
     <defName>SSC_Precept_MasterCount_One</defName>
     <issue>SSC_Issue_MasterCount</issue>
     <label>一主为限</label>
-    <description>[TODO:SSC_Precept_MasterCount_One.description]</description>
+    <description>殖民地至多接纳一位主人。多主并立则乱，唯有一主，欲望方能各安其位。</description>
     <impact>Medium</impact>
     <displayOrderInIssue>20</displayOrderInIssue>
     <allowDuplicates>false</allowDuplicates>
@@ -28,7 +28,7 @@
       <li Class="PreceptComp_SituationalThought">
         <thought>SSC_Culture_MasterCount_One_Self</thought>
         <thoughtStageDescriptions>
-          <li>[占位: 主人总数超额 / 上限 1 / 超额 1/2/3+ / 心情 -6/-15/-27]</li>
+          <li>主人总数超过 1 人时，按超额计罚：超额 1/2/3 名及以上，心情 -6/-15/-27。</li>
         </thoughtStageDescriptions>
       </li>
     </comps>
@@ -38,7 +38,7 @@
     <defName>SSC_Precept_MasterCount_Three</defName>
     <issue>SSC_Issue_MasterCount</issue>
     <label>三主以内</label>
-    <description>[TODO:SSC_Precept_MasterCount_Three.description]</description>
+    <description>殖民地最多接受三位主人。主人可以多，但不可滥，秩序须在节制之中。</description>
     <impact>Medium</impact>
     <displayOrderInIssue>30</displayOrderInIssue>
     <allowDuplicates>false</allowDuplicates>
@@ -51,7 +51,7 @@
       <li Class="PreceptComp_SituationalThought">
         <thought>SSC_Culture_MasterCount_Three_Self</thought>
         <thoughtStageDescriptions>
-          <li>[占位: 主人总数超额 / 上限 3 / 超额 1/2/3+ / 心情 -6/-15/-27]</li>
+          <li>主人总数超过 3 人时，按超额计罚：超额 1/2/3 名及以上，心情 -6/-15/-27。</li>
         </thoughtStageDescriptions>
       </li>
     </comps>
@@ -61,7 +61,7 @@
     <defName>SSC_Precept_MasterCount_Unlimited</defName>
     <issue>SSC_Issue_MasterCount</issue>
     <label>主不厌多</label>
-    <description>[TODO:SSC_Precept_MasterCount_Unlimited.description]</description>
+    <description>主人多多益善，越多主人，越多欲望得偿，越多奴仆有处可归。</description>
     <impact>Medium</impact>
     <displayOrderInIssue>40</displayOrderInIssue>
     <allowDuplicates>false</allowDuplicates>
@@ -83,7 +83,7 @@
     <defName>SSC_Precept_SlaveCount_One</defName>
     <issue>SSC_Issue_SlaveCount</issue>
     <label>一奴为限</label>
-    <description>[TODO:SSC_Precept_SlaveCount_One.description]</description>
+    <description>每位主人至多拥有一位性奴。独占其淫穴，方显恩宠专一，链环方能严丝合缝。</description>
     <impact>Medium</impact>
     <displayOrderInIssue>20</displayOrderInIssue>
     <allowDuplicates>false</allowDuplicates>
@@ -96,15 +96,15 @@
       <li Class="PreceptComp_SituationalThought">
         <thought>SSC_Culture_SlaveCount_One_Self</thought>
         <thoughtStageDescriptions>
-          <li>[占位: 本人性奴数量超额 / 上限 1 / 超额 1/2/3+ / 心情 -3/-9/-18]</li>
+          <li>本人名下性奴超过 1 人时，按超额计罚：超额 1/2/3 名及以上，心情 -3/-9/-18。</li>
         </thoughtStageDescriptions>
       </li>
       <li Class="PreceptComp_SituationalThought">
         <thought>SSC_Culture_SlaveCount_One_Social</thought>
         <thoughtStageDescriptions>
-          <li>[占位: 目标主人性奴数量超额 / 上限 1 / 超额 1 / 好感 -5]</li>
-          <li>[占位: 目标主人性奴数量超额 / 上限 1 / 超额 2 / 好感 -15]</li>
-          <li>[占位: 目标主人性奴数量超额 / 上限 1 / 超额 3 及以上 / 好感 -30]</li>
+          <li>目标主人名下性奴超额 1 名：好感 -5。</li>
+          <li>目标主人名下性奴超额 2 名：好感 -15。</li>
+          <li>目标主人名下性奴超额 3 名及以上：好感 -30。</li>
         </thoughtStageDescriptions>
       </li>
     </comps>
@@ -114,7 +114,7 @@
     <defName>SSC_Precept_SlaveCount_Three</defName>
     <issue>SSC_Issue_SlaveCount</issue>
     <label>三奴以内</label>
-    <description>[TODO:SSC_Precept_SlaveCount_Three.description]</description>
+    <description>每位主人最多拥有三位性奴。齐人之福可享、三人之淫穴可贯，但不可失了调教的用心。</description>
     <impact>Medium</impact>
     <displayOrderInIssue>30</displayOrderInIssue>
     <allowDuplicates>false</allowDuplicates>
@@ -127,15 +127,15 @@
       <li Class="PreceptComp_SituationalThought">
         <thought>SSC_Culture_SlaveCount_Three_Self</thought>
         <thoughtStageDescriptions>
-          <li>[占位: 本人性奴数量超额 / 上限 3 / 超额 1/2/3+ / 心情 -3/-9/-18]</li>
+          <li>本人名下性奴超过 3 人时，按超额计罚：超额 1/2/3 名及以上，心情 -3/-9/-18。</li>
         </thoughtStageDescriptions>
       </li>
       <li Class="PreceptComp_SituationalThought">
         <thought>SSC_Culture_SlaveCount_Three_Social</thought>
         <thoughtStageDescriptions>
-          <li>[占位: 目标主人性奴数量超额 / 上限 3 / 超额 1 / 好感 -5]</li>
-          <li>[占位: 目标主人性奴数量超额 / 上限 3 / 超额 2 / 好感 -15]</li>
-          <li>[占位: 目标主人性奴数量超额 / 上限 3 / 超额 3 及以上 / 好感 -30]</li>
+          <li>目标主人名下性奴超额 1 名：好感 -5。</li>
+          <li>目标主人名下性奴超额 2 名：好感 -15。</li>
+          <li>目标主人名下性奴超额 3 名及以上：好感 -30。</li>
         </thoughtStageDescriptions>
       </li>
     </comps>
@@ -145,7 +145,7 @@
     <defName>SSC_Precept_SlaveCount_Unlimited</defName>
     <issue>SSC_Issue_SlaveCount</issue>
     <label>奴不厌多</label>
-    <description>[TODO:SSC_Precept_SlaveCount_Unlimited.description]</description>
+    <description>性奴多多益善，越多性奴，越多淫穴可供驰骋，主人越是荣光，欲望越是酣畅。</description>
     <impact>Medium</impact>
     <displayOrderInIssue>40</displayOrderInIssue>
     <allowDuplicates>false</allowDuplicates>

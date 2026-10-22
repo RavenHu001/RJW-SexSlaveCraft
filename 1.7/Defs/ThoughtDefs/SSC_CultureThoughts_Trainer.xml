@@ -15,8 +15,8 @@
     </modExtensions>
     <stages>
       <li>
-        <label>[占位: 敌视 / 本人任职]</label>
-        <description>[TODO:SSC_Culture_Trainer_Hostile_Self.stages.0.description]</description>
+        <label>身为训导官</label>
+        <description>我竟担此亵渎之职，横在主人与奴之间，心中唯有羞耻。</description>
         <baseMoodEffect>-8</baseMoodEffect>
       </li>
     </stages>
@@ -35,8 +35,8 @@
     </modExtensions>
     <stages>
       <li>
-        <label>[占位: 敌视 / 评价训导官]</label>
-        <description>[TODO:SSC_Culture_Trainer_Hostile_Social.stages.0.description]</description>
+        <label>敌视此训导官</label>
+        <description>此人僭越主奴秩序，以调教为名亵渎神圣，我深恶之。</description>
         <baseOpinionOffset>-20</baseOpinionOffset>
       </li>
     </stages>
@@ -55,8 +55,8 @@
     </modExtensions>
     <stages>
       <li>
-        <label>[占位: 厌恶 / 本人任职]</label>
-        <description>[TODO:SSC_Culture_Trainer_Revulsion_Self.stages.0.description]</description>
+        <label>身为训导官</label>
+        <description>做这份差事让我浑身不自在。</description>
         <baseMoodEffect>-4</baseMoodEffect>
       </li>
     </stages>
@@ -75,8 +75,8 @@
     </modExtensions>
     <stages>
       <li>
-        <label>[占位: 厌恶 / 评价训导官]</label>
-        <description>[TODO:SSC_Culture_Trainer_Revulsion_Social.stages.0.description]</description>
+        <label>厌恶此训导官</label>
+        <description>见此人执鞭驯人，我便心生反感。</description>
         <baseOpinionOffset>-10</baseOpinionOffset>
       </li>
     </stages>
@@ -95,8 +95,8 @@
     </modExtensions>
     <stages>
       <li>
-        <label>[占位: 尊敬 / 本人任职]</label>
-        <description>[TODO:SSC_Culture_Trainer_Reverence_Self.stages.0.description]</description>
+        <label>身为训导官</label>
+        <description>我能以鞭笞与操弄调教他人，使之成为俯首承欢的奴，这是份值得自豪的差事。</description>
         <baseMoodEffect>3</baseMoodEffect>
       </li>
     </stages>
@@ -115,8 +115,8 @@
     </modExtensions>
     <stages>
       <li>
-        <label>[占位: 尊敬 / 评价训导官]</label>
-        <description>[TODO:SSC_Culture_Trainer_Reverence_Social.stages.0.description]</description>
+        <label>尊敬此训导官</label>
+        <description>此人调教有方，能驯得再倔强的人也甘愿撅臀承欢，我敬其本领。</description>
         <baseOpinionOffset>5</baseOpinionOffset>
       </li>
     </stages>
@@ -135,8 +135,8 @@
     </modExtensions>
     <stages>
       <li>
-        <label>[占位: 圣职 / 本人任职]</label>
-        <description>[TODO:SSC_Culture_Trainer_SacredOffice_Self.stages.0.description]</description>
+        <label>司掌圣职</label>
+        <description>我以鞭为法器、以链为圣器，将野性之人抽打到翘臀红肿、下身湿透，再调教成虔诚顺从的奴——这神圣职务令我满心庄严。</description>
         <baseMoodEffect>5</baseMoodEffect>
       </li>
     </stages>
@@ -155,8 +155,8 @@
     </modExtensions>
     <stages>
       <li>
-        <label>[占位: 圣职 / 评价训导官]</label>
-        <description>[TODO:SSC_Culture_Trainer_SacredOffice_Social.stages.0.description]</description>
+        <label>敬奉此训导官</label>
+        <description>此人以鞭与链、以阳具与技艺代主调教众奴，所司乃神圣职务，我对其满怀敬意。</description>
         <baseOpinionOffset>10</baseOpinionOffset>
       </li>
     </stages>

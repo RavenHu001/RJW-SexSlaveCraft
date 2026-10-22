@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- AI 辅助生成；1.7 步骤 1。两类权重显式配置；反馈 comps 随后续真实 workers 接入。
-     description 为交接占位，不是正式文案；不使用意愿/历史事件组件。 -->
+     description 已按测试稿 5改 落实；不使用意愿/历史事件组件。 -->
 <Defs>
   <!-- 同一议题仅允许一个档位；顶层 Ideology 门控避免未启用文化 DLC 时装载本组定义。 -->
   <IssueDef MayRequire="Ludeon.RimWorld.Ideology">
@@ -15,7 +15,7 @@
     <defName>SSC_Precept_Trainer_Hostile</defName>
     <issue>SSC_Issue_Trainer</issue>
     <label>敌视</label>
-    <description>[TODO:SSC_Precept_Trainer_Hostile.description]</description>
+    <description>视训导官为对主奴秩序的亵渎——主人与奴之间，岂容第三人横插一手。调教之责当归主人，假手他人便是僭越。</description>
     <impact>Low</impact>
     <displayOrderInIssue>10</displayOrderInIssue>
     <allowDuplicates>false</allowDuplicates>
@@ -37,7 +37,7 @@
     <defName>SSC_Precept_Trainer_Revulsion</defName>
     <issue>SSC_Issue_Trainer</issue>
     <label>厌恶</label>
-    <description>[TODO:SSC_Precept_Trainer_Revulsion.description]</description>
+    <description>对训导官的存在强烈反感，见其以鞭与链驯人，便觉此人下作不堪。</description>
     <impact>Low</impact>
     <displayOrderInIssue>20</displayOrderInIssue>
     <allowDuplicates>false</allowDuplicates>
@@ -59,7 +59,7 @@
     <defName>SSC_Precept_Trainer_Indifference</defName>
     <issue>SSC_Issue_Trainer</issue>
     <label>漠视</label>
-    <description>[TODO:SSC_Precept_Trainer_Indifference.description]</description>
+    <description>不关心训导官的存续与作为，调教之事与己无关。</description>
     <impact>Low</impact>
     <displayOrderInIssue>30</displayOrderInIssue>
     <allowDuplicates>false</allowDuplicates>
@@ -72,7 +72,7 @@
     <defName>SSC_Precept_Trainer_Reverence</defName>
     <issue>SSC_Issue_Trainer</issue>
     <label>尊敬</label>
-    <description>[TODO:SSC_Precept_Trainer_Reverence.description]</description>
+    <description>承认训导官的调教技艺，对其能将野性之人鞭笞驯服、调教成俯首承欢的合格性奴的本领，致以由衷敬意。</description>
     <impact>Medium</impact>
     <displayOrderInIssue>40</displayOrderInIssue>
     <allowDuplicates>false</allowDuplicates>
@@ -95,7 +95,7 @@
     <defName>SSC_Precept_Trainer_SacredOffice</defName>
     <issue>SSC_Issue_Trainer</issue>
     <label>圣职</label>
-    <description>[TODO:SSC_Precept_Trainer_SacredOffice.description]</description>
+    <description>视训导官为一份神圣职务——他们以鞭为法器、以链为圣器，替主人调教出翘臀红肿、淫穴濡湿、顺从而虔诚的奴，其职如祭司般庄严。</description>
     <impact>High</impact>
     <displayOrderInIssue>50</displayOrderInIssue>
     <allowDuplicates>false</allowDuplicates>

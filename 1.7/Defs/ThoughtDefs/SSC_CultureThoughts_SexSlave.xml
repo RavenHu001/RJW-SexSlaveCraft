@@ -15,8 +15,8 @@
     </modExtensions>
     <stages>
       <li>
-        <label>[占位: 敌视 / 本人是性奴]</label>
-        <description>[TODO:SSC_Culture_SexSlave_Hostile_Self.stages.0.description]</description>
+        <label>身为性奴</label>
+        <description>我竟沦落至此，颈上锁着耻辱的链子——这比死更令我难以忍受。</description>
         <baseMoodEffect>-18</baseMoodEffect>
       </li>
     </stages>
@@ -35,8 +35,8 @@
     </modExtensions>
     <stages>
       <li>
-        <label>[占位: 厌恶 / 本人是性奴]</label>
-        <description>[TODO:SSC_Culture_SexSlave_Revulsion_Self.stages.0.description]</description>
+        <label>身为性奴</label>
+        <description>这副躯体被链子束缚着，每次呼吸都令我心生厌恶。</description>
         <baseMoodEffect>-6</baseMoodEffect>
       </li>
     </stages>
@@ -57,8 +57,8 @@
     </modExtensions>
     <stages>
       <li>
-        <label>[占位: 神圣 / 本人是性奴]</label>
-        <description>[TODO:SSC_Culture_SexSlave_Sacred_Self.stages.0.description]</description>
+        <label>身为性奴</label>
+        <description>我赤身跪伏在主人脚下，任他抽送、鞭笞、填满我的每一处，将高潮尽数奉献——这圣洁的驯服令我浑身发软，满心虔诚。</description>
         <baseMoodEffect>10</baseMoodEffect>
       </li>
     </stages>
@@ -79,13 +79,13 @@
     </modExtensions>
     <stages>
       <li>
-        <label>[占位: 艳羡 / 本人是性奴]</label>
-        <description>[TODO:SSC_Culture_SexSlave_Envy_Self.stages.0.description]</description>
+        <label>已成为性奴</label>
+        <description>我终于如愿以偿，颈上有了项圈，下身被主人反复贯穿——这份被占有、被肏弄的沉溺，正是我梦寐以求的极乐。</description>
         <baseMoodEffect>10</baseMoodEffect>
       </li>
       <li>
-        <label>[占位: 艳羡 / 既非性奴也非主人]</label>
-        <description>[TODO:SSC_Culture_SexSlave_Envy_Self.stages.1.description]</description>
+        <label>渴慕为奴</label>
+        <description>我既非主人也非性奴，下身瘙痒、欲望无所归依——多么希望有人将链子套上我的颈、将肉棒插进我的身体。</description>
         <baseMoodEffect>-6</baseMoodEffect>
       </li>
     </stages>
@@ -104,8 +104,8 @@
     </modExtensions>
     <stages>
       <li>
-        <label>[占位: 敌视 / 环境／每人]</label>
-        <description>[TODO:SSC_Culture_SexSlave_Hostile_Environment.stages.0.description]</description>
+        <label>周围有性奴</label>
+        <description>有人被锁链役使，我无法对此视而不见。</description>
         <baseMoodEffect>-3</baseMoodEffect>
       </li>
     </stages>
@@ -124,8 +124,8 @@
     </modExtensions>
     <stages>
       <li>
-        <label>[占位: 厌恶 / 环境／每人]</label>
-        <description>[TODO:SSC_Culture_SexSlave_Revulsion_Environment.stages.0.description]</description>
+        <label>周围有性奴</label>
+        <description>附近有人俯首为奴，令我不适。</description>
         <baseMoodEffect>-2</baseMoodEffect>
       </li>
     </stages>
@@ -157,8 +157,8 @@
     </modExtensions>
     <stages>
       <li>
-        <label>[占位: 神圣 / 环境人数增益／五人封顶]</label>
-        <description>[TODO:SSC_Culture_SexSlave_Sacred_Environment.stages.0.description]</description>
+        <label>性奴环绕</label>
+        <description>这些赤身跪伏、被调教得服服帖帖的性奴环绕四周，她们的呻吟与虔诚令此地更显圣洁。</description>
         <baseMoodEffect>1</baseMoodEffect>
       </li>
     </stages>
@@ -177,8 +177,8 @@
     </modExtensions>
     <stages>
       <li>
-        <label>[占位: 厌恶 / 评价性奴]</label>
-        <description>[TODO:SSC_Culture_SexSlave_Revulsion_Social.stages.0.description]</description>
+        <label>厌恶此性奴</label>
+        <description>此人身负锁链、以身为奴，令我厌弃。</description>
         <baseOpinionOffset>-5</baseOpinionOffset>
       </li>
     </stages>
@@ -197,8 +197,8 @@
     </modExtensions>
     <stages>
       <li>
-        <label>[占位: 尊重 / 评价性奴]</label>
-        <description>[TODO:SSC_Culture_SexSlave_Respect_Social.stages.0.description]</description>
+        <label>尊重此性奴</label>
+        <description>此人虽为奴，亦是人，我敬其人格。</description>
         <baseOpinionOffset>5</baseOpinionOffset>
       </li>
     </stages>
@@ -219,8 +219,8 @@
     </modExtensions>
     <stages>
       <li>
-        <label>[占位: 神圣 / 评价性奴]</label>
-        <description>[TODO:SSC_Culture_SexSlave_Sacred_Social.stages.0.description]</description>
+        <label>敬奉此性奴</label>
+        <description>此人将肉身与高潮尽数献于主人，是被神选中的存在，我对其满怀敬意。</description>
         <baseOpinionOffset>15</baseOpinionOffset>
       </li>
     </stages>
@@ -242,8 +242,8 @@
     </modExtensions>
     <stages>
       <li>
-        <label>[占位: 艳羡 / 评价性奴]</label>
-        <description>[TODO:SSC_Culture_SexSlave_Envy_Social.stages.0.description]</description>
+        <label>艳羡此性奴</label>
+        <description>此人已寻得归宿，夜夜被主人占有、肏弄到高潮，令我下身发痒、艳羡不已。</description>
         <baseOpinionOffset>15</baseOpinionOffset>
       </li>
     </stages>
@@ -261,8 +261,8 @@
     </modExtensions>
     <stages>
       <li>
-        <label>[占位: 敌视 / 评价性奴]</label>
-        <description>[TODO:SSC_Culture_SexSlave_Hostile_Social.stages.0.description]</description>
+        <label>仇视此性奴</label>
+        <description>此人甘心为奴、自甘堕落，是可耻的帮凶。</description>
         <baseOpinionOffset>-15</baseOpinionOffset>
       </li>
     </stages>
