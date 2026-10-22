@@ -45,4 +45,10 @@
   <SSC_Precept_SlaveCount_Three.description>[TODO:SSC_Precept_SlaveCount_Three.description]</SSC_Precept_SlaveCount_Three.description>
   <SSC_Precept_SlaveCount_Unlimited.label>без ограничений</SSC_Precept_SlaveCount_Unlimited.label>
   <SSC_Precept_SlaveCount_Unlimited.description>[TODO:SSC_Precept_SlaveCount_Unlimited.description]</SSC_Precept_SlaveCount_Unlimited.description>
+  <SSC_Precept_SexSlave_Envy.comps.0.thoughtStageDescriptions.0>[маркер: зависть / собственная цепь]</SSC_Precept_SexSlave_Envy.comps.0.thoughtStageDescriptions.0>
+  <SSC_Precept_SexSlave_Envy.comps.0.thoughtStageDescriptions.1>[маркер: зависть / без цепи и не хозяин]</SSC_Precept_SexSlave_Envy.comps.0.thoughtStageDescriptions.1>
+  <SSC_Precept_Master_Deference.comps.3.thoughtStageDescriptions.0>[маркер: почитание / лидер — хозяин]</SSC_Precept_Master_Deference.comps.3.thoughtStageDescriptions.0>
+  <SSC_Precept_Master_Deference.comps.3.thoughtStageDescriptions.1>[маркер: почитание / лидер не хозяин]</SSC_Precept_Master_Deference.comps.3.thoughtStageDescriptions.1>
+  <SSC_Precept_Master_HolyMaster.comps.3.thoughtStageDescriptions.0>[маркер: священный хозяин / лидер — хозяин]</SSC_Precept_Master_HolyMaster.comps.3.thoughtStageDescriptions.0>
+  <SSC_Precept_Master_HolyMaster.comps.3.thoughtStageDescriptions.1>[маркер: священный хозяин / лидер не хозяин]</SSC_Precept_Master_HolyMaster.comps.3.thoughtStageDescriptions.1>
 </LanguageData>

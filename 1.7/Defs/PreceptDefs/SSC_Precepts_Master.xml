@@ -9,7 +9,7 @@
     <iconPath>UI/Issues/Slavery</iconPath>
     <allowMultiplePrecepts>false</allowMultiplePrecepts>
   </IssueDef>
-  <!-- 普通文化低档：defaultSelectionWeight=1；必选组抽取权重为零。与主模因冲突，加入主模因时由原版兼容性维护替换。 显示顺序和重要度不代替后续反馈机制。 -->
+  <!-- 普通文化低档：defaultSelectionWeight=1；必选组抽取权重为零。与主模因冲突，加入主模因时由原版兼容性维护替换。 反馈数值由步骤 2 挂载的 ThoughtDef 保存，顺序和重要度不换算数值。 -->
   <PreceptDef MayRequire="Ludeon.RimWorld.Ideology">
     <defName>SSC_Precept_Master_Hostile</defName>
     <issue>SSC_Issue_Master</issue>
@@ -22,8 +22,23 @@
     <selectionWeight>0</selectionWeight>
     <defaultSelectionWeight>1</defaultSelectionWeight>
     <conflictingMemes><li>SSC_Meme_MasterSlaveOrder</li></conflictingMemes>
+    <!-- 原版持续反馈挂载：本人/环境互斥，跨 Issue 独立叠加；不产生行为记忆或拒绝。 -->
+    <comps>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_Master_Hostile_Self</thought>
+      </li>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_Master_Hostile_ActualMaster</thought>
+      </li>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_Master_Hostile_Social</thought>
+      </li>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_Master_Hostile_Leader</thought>
+      </li>
+    </comps>
   </PreceptDef>
-  <!-- 普通文化低档：defaultSelectionWeight=2；必选组抽取权重为零。与主模因冲突，加入主模因时由原版兼容性维护替换。 显示顺序和重要度不代替后续反馈机制。 -->
+  <!-- 普通文化低档：defaultSelectionWeight=2；必选组抽取权重为零。与主模因冲突，加入主模因时由原版兼容性维护替换。 反馈数值由步骤 2 挂载的 ThoughtDef 保存，顺序和重要度不换算数值。 -->
   <PreceptDef MayRequire="Ludeon.RimWorld.Ideology">
     <defName>SSC_Precept_Master_Revulsion</defName>
     <issue>SSC_Issue_Master</issue>
@@ -36,8 +51,23 @@
     <selectionWeight>0</selectionWeight>
     <defaultSelectionWeight>2</defaultSelectionWeight>
     <conflictingMemes><li>SSC_Meme_MasterSlaveOrder</li></conflictingMemes>
+    <!-- 原版持续反馈挂载：本人/环境互斥，跨 Issue 独立叠加；不产生行为记忆或拒绝。 -->
+    <comps>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_Master_Revulsion_Self</thought>
+      </li>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_Master_Revulsion_ActualMaster</thought>
+      </li>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_Master_Revulsion_Social</thought>
+      </li>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_Master_Revulsion_Leader</thought>
+      </li>
+    </comps>
   </PreceptDef>
-  <!-- 普通文化低档：defaultSelectionWeight=7；必选组抽取权重为零。与主模因冲突，加入主模因时由原版兼容性维护替换。 显示顺序和重要度不代替后续反馈机制。 -->
+  <!-- 普通文化低档：defaultSelectionWeight=7；必选组抽取权重为零。与主模因冲突，加入主模因时由原版兼容性维护替换。 反馈数值由步骤 2 挂载的 ThoughtDef 保存，顺序和重要度不换算数值。 -->
   <PreceptDef MayRequire="Ludeon.RimWorld.Ideology">
     <defName>SSC_Precept_Master_Indifference</defName>
     <issue>SSC_Issue_Master</issue>
@@ -51,7 +81,7 @@
     <defaultSelectionWeight>7</defaultSelectionWeight>
     <conflictingMemes><li>SSC_Meme_MasterSlaveOrder</li></conflictingMemes>
   </PreceptDef>
-  <!-- 两类生成权重均为零，仅供手选或保留已有合法选择；associatedMemes 仅关联，不作前置门槛。 显示顺序和重要度不代替后续反馈机制。 -->
+  <!-- 两类生成权重均为零，仅供手选或保留已有合法选择；associatedMemes 仅关联，不作前置门槛。 反馈数值由步骤 2 挂载的 ThoughtDef 保存，顺序和重要度不换算数值。 -->
   <PreceptDef MayRequire="Ludeon.RimWorld.Ideology">
     <defName>SSC_Precept_Master_Deference</defName>
     <issue>SSC_Issue_Master</issue>
@@ -64,8 +94,27 @@
     <selectionWeight>0</selectionWeight>
     <defaultSelectionWeight>0</defaultSelectionWeight>
     <associatedMemes><li>SSC_Meme_MasterSlaveOrder</li></associatedMemes>
+    <!-- 原版持续反馈挂载：本人/环境互斥，跨 Issue 独立叠加；不产生行为记忆或拒绝。 -->
+    <comps>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_Master_Deference_Self</thought>
+      </li>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_Master_Deference_ActualMaster</thought>
+      </li>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_Master_Deference_Social</thought>
+      </li>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_Master_Deference_Leader</thought>
+        <thoughtStageDescriptions>
+          <li>[占位: 尊奉 / 领袖是主人]</li>
+          <li>[占位: 尊奉 / 领袖非主人]</li>
+        </thoughtStageDescriptions>
+      </li>
+    </comps>
   </PreceptDef>
-  <!-- 主模因专属默认：必选组 selectionWeight=1，普通默认权重为零；requiredMemes 限定资格。 显示顺序和重要度不代替后续反馈机制。 -->
+  <!-- 主模因专属默认：必选组 selectionWeight=1，普通默认权重为零；requiredMemes 限定资格。 反馈数值由步骤 2 挂载的 ThoughtDef 保存，顺序和重要度不换算数值。 -->
   <PreceptDef MayRequire="Ludeon.RimWorld.Ideology">
     <defName>SSC_Precept_Master_HolyMaster</defName>
     <issue>SSC_Issue_Master</issue>
@@ -79,5 +128,24 @@
     <defaultSelectionWeight>0</defaultSelectionWeight>
     <requiredMemes><li>SSC_Meme_MasterSlaveOrder</li></requiredMemes>
     <associatedMemes><li>SSC_Meme_MasterSlaveOrder</li></associatedMemes>
+    <!-- 原版持续反馈挂载：本人/环境互斥，跨 Issue 独立叠加；不产生行为记忆或拒绝。 -->
+    <comps>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_Master_HolyMaster_Self</thought>
+      </li>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_Master_HolyMaster_ActualMaster</thought>
+      </li>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_Master_HolyMaster_Social</thought>
+      </li>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_Master_HolyMaster_Leader</thought>
+        <thoughtStageDescriptions>
+          <li>[占位: 圣主 / 领袖是主人]</li>
+          <li>[占位: 圣主 / 领袖非主人]</li>
+        </thoughtStageDescriptions>
+      </li>
+    </comps>
   </PreceptDef>
 </Defs>

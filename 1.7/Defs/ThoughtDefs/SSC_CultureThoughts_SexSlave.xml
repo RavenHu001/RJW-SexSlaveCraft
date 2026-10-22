@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <!-- AI 辅助生成：1.7 文化步骤 2。原版挂载和最终结算；数值为确认契约，正文交给后续文案。 -->
+  <!-- 独立反馈按戒律挂载；阶段仅表达互斥状态，不按人数新增。 -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Culture_SexSlave_Hostile_Self</defName>
+    <thoughtClass>Thought_Situational</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCCultureMood</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <!-- 配置只选条件；个人/双人数据不保存在共享 worker，环境人数复用 Game 快照。 -->
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
+        <condition>ChainedSelf</condition>
+      </li>
+    </modExtensions>
+    <stages>
+      <li>
+        <label>[占位: 敌视 / 本人持链]</label>
+        <description>[TODO:SSC_Culture_SexSlave_Hostile_Self.stages.0.description]</description>
+        <baseMoodEffect>-18</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+  <!-- 独立反馈按戒律挂载；阶段仅表达互斥状态，不按人数新增。 -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Culture_SexSlave_Revulsion_Self</defName>
+    <thoughtClass>Thought_Situational</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCCultureMood</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <!-- 配置只选条件；个人/双人数据不保存在共享 worker，环境人数复用 Game 快照。 -->
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
+        <condition>ChainedSelf</condition>
+      </li>
+    </modExtensions>
+    <stages>
+      <li>
+        <label>[占位: 厌恶 / 本人持链]</label>
+        <description>[TODO:SSC_Culture_SexSlave_Revulsion_Self.stages.0.description]</description>
+        <baseMoodEffect>-6</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+  <!-- 独立反馈按戒律挂载；阶段仅表达互斥状态，不按人数新增。 -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Culture_SexSlave_Sacred_Self</defName>
+    <thoughtClass>Thought_Situational</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCCultureMood</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <!-- 配置只选条件；个人/双人数据不保存在共享 worker，环境人数复用 Game 快照。 -->
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
+        <condition>ChainedSelf</condition>
+      </li>
+    </modExtensions>
+    <stages>
+      <li>
+        <label>[占位: 神圣 / 本人持链]</label>
+        <description>[TODO:SSC_Culture_SexSlave_Sacred_Self.stages.0.description]</description>
+        <baseMoodEffect>10</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+  <!-- 独立反馈按戒律挂载；阶段仅表达互斥状态，不按人数新增。 -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Culture_SexSlave_Envy_Self</defName>
+    <thoughtClass>Thought_Situational</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCCultureMood</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <!-- 配置只选条件；个人/双人数据不保存在共享 worker，环境人数复用 Game 快照。 -->
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
+        <condition>EnvySelf</condition>
+      </li>
+    </modExtensions>
+    <stages>
+      <li>
+        <label>[占位: 艳羡 / 本人持链]</label>
+        <description>[TODO:SSC_Culture_SexSlave_Envy_Self.stages.0.description]</description>
+        <baseMoodEffect>10</baseMoodEffect>
+      </li>
+      <li>
+        <label>[占位: 艳羡 / 未持链且非主人]</label>
+        <description>[TODO:SSC_Culture_SexSlave_Envy_Self.stages.1.description]</description>
+        <baseMoodEffect>-6</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+  <!-- 独立反馈按戒律挂载；阶段仅表达互斥状态，不按人数新增。 -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Culture_SexSlave_Hostile_Environment</defName>
+    <thoughtClass>Thought_Situational</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCCultureMood</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <!-- 配置只选条件；个人/双人数据不保存在共享 worker，环境人数复用 Game 快照。 -->
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
+        <condition>ManagedChainedEnvironment</condition>
+      </li>
+    </modExtensions>
+    <stages>
+      <li>
+        <label>[占位: 敌视 / 环境／每人]</label>
+        <description>[TODO:SSC_Culture_SexSlave_Hostile_Environment.stages.0.description]</description>
+        <baseMoodEffect>-3</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+  <!-- 独立反馈按戒律挂载；阶段仅表达互斥状态，不按人数新增。 -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Culture_SexSlave_Revulsion_Environment</defName>
+    <thoughtClass>Thought_Situational</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCCultureMood</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <!-- 配置只选条件；个人/双人数据不保存在共享 worker，环境人数复用 Game 快照。 -->
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
+        <condition>ManagedChainedEnvironment</condition>
+      </li>
+    </modExtensions>
+    <stages>
+      <li>
+        <label>[占位: 厌恶 / 环境／每人]</label>
+        <description>[TODO:SSC_Culture_SexSlave_Revulsion_Environment.stages.0.description]</description>
+        <baseMoodEffect>-2</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+  <!-- 独立反馈按戒律挂载；阶段仅表达互斥状态，不按人数新增。 -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Culture_SexSlave_Sacred_Environment</defName>
+    <thoughtClass>Thought_Situational</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCCultureMood</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <!-- 配置只选条件；个人/双人数据不保存在共享 worker，环境人数复用 Game 快照。 -->
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
+        <condition>ManagedChainedEnvironment</condition>
+      </li>
+    </modExtensions>
+    <stages>
+      <li>
+        <label>[占位: 神圣 / 环境／每人]</label>
+        <description>[TODO:SSC_Culture_SexSlave_Sacred_Environment.stages.0.description]</description>
+        <baseMoodEffect>1</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+  <!-- 独立反馈按戒律挂载；阶段仅表达互斥状态，不按人数新增。 -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Culture_SexSlave_Revulsion_Social</defName>
+    <thoughtClass>Thought_SituationalSocial</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCCultureSocial</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <!-- 配置只选条件；个人/双人数据不保存在共享 worker，环境人数复用 Game 快照。 -->
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
+        <condition>ChainedOther</condition>
+      </li>
+    </modExtensions>
+    <stages>
+      <li>
+        <label>[占位: 厌恶 / 评价持链者]</label>
+        <description>[TODO:SSC_Culture_SexSlave_Revulsion_Social.stages.0.description]</description>
+        <baseOpinionOffset>-5</baseOpinionOffset>
+      </li>
+    </stages>
+  </ThoughtDef>
+  <!-- 独立反馈按戒律挂载；阶段仅表达互斥状态，不按人数新增。 -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Culture_SexSlave_Respect_Social</defName>
+    <thoughtClass>Thought_SituationalSocial</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCCultureSocial</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <!-- 配置只选条件；个人/双人数据不保存在共享 worker，环境人数复用 Game 快照。 -->
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
+        <condition>ChainedOther</condition>
+      </li>
+    </modExtensions>
+    <stages>
+      <li>
+        <label>[占位: 尊重 / 评价持链者]</label>
+        <description>[TODO:SSC_Culture_SexSlave_Respect_Social.stages.0.description]</description>
+        <baseOpinionOffset>10</baseOpinionOffset>
+      </li>
+    </stages>
+  </ThoughtDef>
+  <!-- 独立反馈按戒律挂载；阶段仅表达互斥状态，不按人数新增。 -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Culture_SexSlave_Sacred_Social</defName>
+    <thoughtClass>Thought_SituationalSocial</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCCultureSocial</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <!-- 配置只选条件；个人/双人数据不保存在共享 worker，环境人数复用 Game 快照。 -->
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
+        <condition>ChainedOther</condition>
+      </li>
+    </modExtensions>
+    <stages>
+      <li>
+        <label>[占位: 神圣 / 评价持链者]</label>
+        <description>[TODO:SSC_Culture_SexSlave_Sacred_Social.stages.0.description]</description>
+        <baseOpinionOffset>20</baseOpinionOffset>
+      </li>
+    </stages>
+  </ThoughtDef>
+  <!-- 独立反馈按戒律挂载；阶段仅表达互斥状态，不按人数新增。 -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Culture_SexSlave_Envy_Social</defName>
+    <thoughtClass>Thought_SituationalSocial</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCCultureSocial</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <!-- 配置只选条件；个人/双人数据不保存在共享 worker，环境人数复用 Game 快照。 -->
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
+        <condition>ChainedOther</condition>
+        <requireEnviousObserver>true</requireEnviousObserver>
+      </li>
+    </modExtensions>
+    <stages>
+      <li>
+        <label>[占位: 艳羡 / 评价持链者]</label>
+        <description>[TODO:SSC_Culture_SexSlave_Envy_Social.stages.0.description]</description>
+        <baseOpinionOffset>20</baseOpinionOffset>
+      </li>
+    </stages>
+  </ThoughtDef>
+</Defs>

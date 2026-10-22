@@ -9,7 +9,7 @@
     <iconPath>UI/Issues/Slavery</iconPath>
     <allowMultiplePrecepts>false</allowMultiplePrecepts>
   </IssueDef>
-  <!-- 普通文化低档：defaultSelectionWeight=1；必选组抽取权重为零。与主模因冲突，加入主模因时由原版兼容性维护替换。 显示顺序和重要度不代替后续反馈机制。 -->
+  <!-- 普通文化低档：defaultSelectionWeight=1；必选组抽取权重为零。与主模因冲突，加入主模因时由原版兼容性维护替换。 反馈数值由步骤 2 挂载的 ThoughtDef 保存，顺序和重要度不换算数值。 -->
   <PreceptDef MayRequire="Ludeon.RimWorld.Ideology">
     <defName>SSC_Precept_SexSlave_Hostile</defName>
     <issue>SSC_Issue_SexSlave</issue>
@@ -22,8 +22,17 @@
     <selectionWeight>0</selectionWeight>
     <defaultSelectionWeight>1</defaultSelectionWeight>
     <conflictingMemes><li>SSC_Meme_MasterSlaveOrder</li></conflictingMemes>
+    <!-- 原版持续反馈挂载：本人/环境互斥，跨 Issue 独立叠加；不产生行为记忆或拒绝。 -->
+    <comps>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_SexSlave_Hostile_Self</thought>
+      </li>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_SexSlave_Hostile_Environment</thought>
+      </li>
+    </comps>
   </PreceptDef>
-  <!-- 普通文化低档：defaultSelectionWeight=2；必选组抽取权重为零。与主模因冲突，加入主模因时由原版兼容性维护替换。 显示顺序和重要度不代替后续反馈机制。 -->
+  <!-- 普通文化低档：defaultSelectionWeight=2；必选组抽取权重为零。与主模因冲突，加入主模因时由原版兼容性维护替换。 反馈数值由步骤 2 挂载的 ThoughtDef 保存，顺序和重要度不换算数值。 -->
   <PreceptDef MayRequire="Ludeon.RimWorld.Ideology">
     <defName>SSC_Precept_SexSlave_Revulsion</defName>
     <issue>SSC_Issue_SexSlave</issue>
@@ -36,8 +45,20 @@
     <selectionWeight>0</selectionWeight>
     <defaultSelectionWeight>2</defaultSelectionWeight>
     <conflictingMemes><li>SSC_Meme_MasterSlaveOrder</li></conflictingMemes>
+    <!-- 原版持续反馈挂载：本人/环境互斥，跨 Issue 独立叠加；不产生行为记忆或拒绝。 -->
+    <comps>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_SexSlave_Revulsion_Self</thought>
+      </li>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_SexSlave_Revulsion_Environment</thought>
+      </li>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_SexSlave_Revulsion_Social</thought>
+      </li>
+    </comps>
   </PreceptDef>
-  <!-- 普通文化低档：defaultSelectionWeight=7；必选组抽取权重为零。与主模因冲突，加入主模因时由原版兼容性维护替换。 显示顺序和重要度不代替后续反馈机制。 -->
+  <!-- 普通文化低档：defaultSelectionWeight=7；必选组抽取权重为零。与主模因冲突，加入主模因时由原版兼容性维护替换。 反馈数值由步骤 2 挂载的 ThoughtDef 保存，顺序和重要度不换算数值。 -->
   <PreceptDef MayRequire="Ludeon.RimWorld.Ideology">
     <defName>SSC_Precept_SexSlave_Indifference</defName>
     <issue>SSC_Issue_SexSlave</issue>
@@ -51,7 +72,7 @@
     <defaultSelectionWeight>7</defaultSelectionWeight>
     <conflictingMemes><li>SSC_Meme_MasterSlaveOrder</li></conflictingMemes>
   </PreceptDef>
-  <!-- 两类生成权重均为零，仅供手选或保留已有合法选择；associatedMemes 仅关联，不作前置门槛。 显示顺序和重要度不代替后续反馈机制。 -->
+  <!-- 两类生成权重均为零，仅供手选或保留已有合法选择；associatedMemes 仅关联，不作前置门槛。 反馈数值由步骤 2 挂载的 ThoughtDef 保存，顺序和重要度不换算数值。 -->
   <PreceptDef MayRequire="Ludeon.RimWorld.Ideology">
     <defName>SSC_Precept_SexSlave_Respect</defName>
     <issue>SSC_Issue_SexSlave</issue>
@@ -64,8 +85,14 @@
     <selectionWeight>0</selectionWeight>
     <defaultSelectionWeight>0</defaultSelectionWeight>
     <associatedMemes><li>SSC_Meme_MasterSlaveOrder</li></associatedMemes>
+    <!-- 原版持续反馈挂载：本人/环境互斥，跨 Issue 独立叠加；不产生行为记忆或拒绝。 -->
+    <comps>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_SexSlave_Respect_Social</thought>
+      </li>
+    </comps>
   </PreceptDef>
-  <!-- 主模因专属默认：必选组 selectionWeight=1，普通默认权重为零；requiredMemes 限定资格。 显示顺序和重要度不代替后续反馈机制。 -->
+  <!-- 主模因专属默认：必选组 selectionWeight=1，普通默认权重为零；requiredMemes 限定资格。 反馈数值由步骤 2 挂载的 ThoughtDef 保存，顺序和重要度不换算数值。 -->
   <PreceptDef MayRequire="Ludeon.RimWorld.Ideology">
     <defName>SSC_Precept_SexSlave_Sacred</defName>
     <issue>SSC_Issue_SexSlave</issue>
@@ -79,8 +106,20 @@
     <defaultSelectionWeight>0</defaultSelectionWeight>
     <requiredMemes><li>SSC_Meme_MasterSlaveOrder</li></requiredMemes>
     <associatedMemes><li>SSC_Meme_MasterSlaveOrder</li></associatedMemes>
+    <!-- 原版持续反馈挂载：本人/环境互斥，跨 Issue 独立叠加；不产生行为记忆或拒绝。 -->
+    <comps>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_SexSlave_Sacred_Self</thought>
+      </li>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_SexSlave_Sacred_Environment</thought>
+      </li>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_SexSlave_Sacred_Social</thought>
+      </li>
+    </comps>
   </PreceptDef>
-  <!-- 主模因专属手选档：requiredMemes 限定资格，两类零权重不禁止手选或改革保留。 显示顺序和重要度不代替后续反馈机制。 -->
+  <!-- 主模因专属手选档：requiredMemes 限定资格，两类零权重不禁止手选或改革保留。 反馈数值由步骤 2 挂载的 ThoughtDef 保存，顺序和重要度不换算数值。 -->
   <PreceptDef MayRequire="Ludeon.RimWorld.Ideology">
     <defName>SSC_Precept_SexSlave_Envy</defName>
     <issue>SSC_Issue_SexSlave</issue>
@@ -94,5 +133,18 @@
     <defaultSelectionWeight>0</defaultSelectionWeight>
     <requiredMemes><li>SSC_Meme_MasterSlaveOrder</li></requiredMemes>
     <associatedMemes><li>SSC_Meme_MasterSlaveOrder</li></associatedMemes>
+    <!-- 原版持续反馈挂载：本人/环境互斥，跨 Issue 独立叠加；不产生行为记忆或拒绝。 -->
+    <comps>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_SexSlave_Envy_Self</thought>
+        <thoughtStageDescriptions>
+          <li>[占位: 艳羡 / 本人持链]</li>
+          <li>[占位: 艳羡 / 未持链且非主人]</li>
+        </thoughtStageDescriptions>
+      </li>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_SexSlave_Envy_Social</thought>
+      </li>
+    </comps>
   </PreceptDef>
 </Defs>

@@ -45,4 +45,10 @@
   <SSC_Precept_SlaveCount_Three.description>[TODO:SSC_Precept_SlaveCount_Three.description]</SSC_Precept_SlaveCount_Three.description>
   <SSC_Precept_SlaveCount_Unlimited.label>unlimited</SSC_Precept_SlaveCount_Unlimited.label>
   <SSC_Precept_SlaveCount_Unlimited.description>[TODO:SSC_Precept_SlaveCount_Unlimited.description]</SSC_Precept_SlaveCount_Unlimited.description>
+  <SSC_Precept_SexSlave_Envy.comps.0.thoughtStageDescriptions.0>[placeholder: envy / self chained]</SSC_Precept_SexSlave_Envy.comps.0.thoughtStageDescriptions.0>
+  <SSC_Precept_SexSlave_Envy.comps.0.thoughtStageDescriptions.1>[placeholder: envy / unchained non-master]</SSC_Precept_SexSlave_Envy.comps.0.thoughtStageDescriptions.1>
+  <SSC_Precept_Master_Deference.comps.3.thoughtStageDescriptions.0>[placeholder: deference / leader is master]</SSC_Precept_Master_Deference.comps.3.thoughtStageDescriptions.0>
+  <SSC_Precept_Master_Deference.comps.3.thoughtStageDescriptions.1>[placeholder: deference / leader is not master]</SSC_Precept_Master_Deference.comps.3.thoughtStageDescriptions.1>
+  <SSC_Precept_Master_HolyMaster.comps.3.thoughtStageDescriptions.0>[placeholder: holy master / leader is master]</SSC_Precept_Master_HolyMaster.comps.3.thoughtStageDescriptions.0>
+  <SSC_Precept_Master_HolyMaster.comps.3.thoughtStageDescriptions.1>[placeholder: holy master / leader is not master]</SSC_Precept_Master_HolyMaster.comps.3.thoughtStageDescriptions.1>
 </LanguageData>

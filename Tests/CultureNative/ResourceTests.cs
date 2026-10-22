@@ -74,9 +74,10 @@ internal static partial class Program
         Context();
         Check("native XML fields and cross-references resolve for all authored culture definitions", () =>
         {
-            // 显式装载五份生产定义，逐顶层节点核对 Ideology 门控，并按实际 Def 类型交给原版解析。
+            // 态度定义与 thought 一起交叉引用；逐顶层节点核对 Ideology 门控，不以 XML 语法代替解析。
             var paths = new[] { "MemeDefs/SSC_Meme_MasterSlaveOrder.xml", "PreceptDefs/SSC_Precepts_SexSlave.xml",
-                "PreceptDefs/SSC_Precepts_Trainer.xml", "PreceptDefs/SSC_Precepts_Master.xml", "PreceptDefs/SSC_Precepts_Counts.xml" };
+                "PreceptDefs/SSC_Precepts_Trainer.xml", "PreceptDefs/SSC_Precepts_Master.xml", "PreceptDefs/SSC_Precepts_Counts.xml",
+                "ThoughtDefs/SSC_CultureThoughts_SexSlave.xml", "ThoughtDefs/SSC_CultureThoughts_Trainer.xml", "ThoughtDefs/SSC_CultureThoughts_Master.xml" };
             foreach (string path in paths)
                 foreach (var node in XDocument.Load(Path.Combine(repo, "1.7/Defs", path)).Root.Elements())
                 {
@@ -87,6 +88,7 @@ internal static partial class Program
                         case "MemeDef": ReadDef<MemeDef>(node); break;
                         case "IssueDef": ReadDef<IssueDef>(node); break;
                         case "PreceptDef": ReadDef<PreceptDef>(node); break;
+                        case "ThoughtDef": ReadDef<ThoughtDef>(node); break;
                         default: throw new Exception("Unexpected Def " + node.Name);
                     }
                 }
@@ -100,8 +102,13 @@ internal static partial class Program
             Equal("3,5,2,3,3", string.Join(',', mainMeme.requireOne.Select(l => l.Count)));
             Require(mainMeme.requireOne.All(l => l.All(p => p.issue == l[0].issue)));
             Require(DefDatabase<IssueDef>.AllDefs.All(d => !d.allowMultiplePrecepts));
-            // 步骤 1 只接定义与查询层，普通戒律不应提前挂入心情、意愿或事件反馈组件。
-            Require(DefDatabase<PreceptDef>.AllDefs.All(d => !d.allowDuplicates && d.countsTowardsPreceptLimit && d.comps.NullOrEmpty()));
+            // 步骤 2 只增加原版持续反馈组件，数量组和漠视保持空；不混入事件或意愿拦截。
+            Require(DefDatabase<PreceptDef>.AllDefs.All(d => !d.allowDuplicates && d.countsTowardsPreceptLimit));
+            Equal(13, DefDatabase<PreceptDef>.AllDefs.Count(d => !d.comps.NullOrEmpty()));
+            Equal(35, DefDatabase<PreceptDef>.AllDefs.Sum(d => d.comps.Count));
+            Require(DefDatabase<PreceptDef>.AllDefs.SelectMany(d => d.comps).All(c => c is PreceptComp_SituationalThought));
+            Equal(35, DefDatabase<ThoughtDef>.AllDefs.Count());
+            ThoughtUtility.Reset();
         });
         Check("all 22 weights, ordering, prefix and 4/6/13 meme lists match the fixed contract", () =>
         {
@@ -134,7 +141,7 @@ internal static partial class Program
                     string path = Path.Combine(repo, "1.7", relative);
                     Require(File.ReadAllBytes(path).SequenceEqual(File.ReadAllBytes(Path.Combine(repo, "Sexslavecraft", relative))));
                     var entries = XDocument.Load(path).Root.Elements().ToArray();
-                    Equal(type == "MemeDef" ? 2 : type == "IssueDef" ? 5 : 44, entries.Length);
+                    Equal(type == "MemeDef" ? 2 : type == "IssueDef" ? 5 : 50, entries.Length);
                     Equal(entries.Length, entries.Select(x => x.Name).Distinct().Count());
                     Require(entries.All(x => !string.IsNullOrWhiteSpace(x.Value)));
                     // 描述交给后续文案阶段，当前必须保留可搜索的精确 TODO 标记及完整 label 键。

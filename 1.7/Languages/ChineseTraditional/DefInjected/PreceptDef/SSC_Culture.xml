@@ -45,4 +45,10 @@
   <SSC_Precept_SlaveCount_Three.description>[TODO:SSC_Precept_SlaveCount_Three.description]</SSC_Precept_SlaveCount_Three.description>
   <SSC_Precept_SlaveCount_Unlimited.label>奴不厭多</SSC_Precept_SlaveCount_Unlimited.label>
   <SSC_Precept_SlaveCount_Unlimited.description>[TODO:SSC_Precept_SlaveCount_Unlimited.description]</SSC_Precept_SlaveCount_Unlimited.description>
+  <SSC_Precept_SexSlave_Envy.comps.0.thoughtStageDescriptions.0>[佔位: 豔羨 / 本人持鏈]</SSC_Precept_SexSlave_Envy.comps.0.thoughtStageDescriptions.0>
+  <SSC_Precept_SexSlave_Envy.comps.0.thoughtStageDescriptions.1>[佔位: 豔羨 / 未持鏈且非主人]</SSC_Precept_SexSlave_Envy.comps.0.thoughtStageDescriptions.1>
+  <SSC_Precept_Master_Deference.comps.3.thoughtStageDescriptions.0>[佔位: 尊奉 / 領袖是主人]</SSC_Precept_Master_Deference.comps.3.thoughtStageDescriptions.0>
+  <SSC_Precept_Master_Deference.comps.3.thoughtStageDescriptions.1>[佔位: 尊奉 / 領袖非主人]</SSC_Precept_Master_Deference.comps.3.thoughtStageDescriptions.1>
+  <SSC_Precept_Master_HolyMaster.comps.3.thoughtStageDescriptions.0>[佔位: 聖主 / 領袖是主人]</SSC_Precept_Master_HolyMaster.comps.3.thoughtStageDescriptions.0>
+  <SSC_Precept_Master_HolyMaster.comps.3.thoughtStageDescriptions.1>[佔位: 聖主 / 領袖非主人]</SSC_Precept_Master_HolyMaster.comps.3.thoughtStageDescriptions.1>
 </LanguageData>

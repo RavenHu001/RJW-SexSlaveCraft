@@ -9,7 +9,7 @@
     <iconPath>UI/Issues/Slavery</iconPath>
     <allowMultiplePrecepts>false</allowMultiplePrecepts>
   </IssueDef>
-  <!-- 普通文化低档：defaultSelectionWeight=1；必选组抽取权重为零。不与主模因冲突，已有合法选择在改革时可保留。 显示顺序和重要度不代替后续反馈机制。 -->
+  <!-- 普通文化低档：defaultSelectionWeight=1；必选组抽取权重为零。不与主模因冲突，已有合法选择在改革时可保留。 反馈数值由步骤 2 挂载的 ThoughtDef 保存，顺序和重要度不换算数值。 -->
   <PreceptDef MayRequire="Ludeon.RimWorld.Ideology">
     <defName>SSC_Precept_Trainer_Hostile</defName>
     <issue>SSC_Issue_Trainer</issue>
@@ -21,8 +21,17 @@
     <countsTowardsPreceptLimit>true</countsTowardsPreceptLimit>
     <selectionWeight>0</selectionWeight>
     <defaultSelectionWeight>1</defaultSelectionWeight>
+    <!-- 原版持续反馈挂载：本人/环境互斥，跨 Issue 独立叠加；不产生行为记忆或拒绝。 -->
+    <comps>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_Trainer_Hostile_Self</thought>
+      </li>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_Trainer_Hostile_Social</thought>
+      </li>
+    </comps>
   </PreceptDef>
-  <!-- 普通文化低档：defaultSelectionWeight=2；必选组抽取权重为零。不与主模因冲突，已有合法选择在改革时可保留。 显示顺序和重要度不代替后续反馈机制。 -->
+  <!-- 普通文化低档：defaultSelectionWeight=2；必选组抽取权重为零。不与主模因冲突，已有合法选择在改革时可保留。 反馈数值由步骤 2 挂载的 ThoughtDef 保存，顺序和重要度不换算数值。 -->
   <PreceptDef MayRequire="Ludeon.RimWorld.Ideology">
     <defName>SSC_Precept_Trainer_Revulsion</defName>
     <issue>SSC_Issue_Trainer</issue>
@@ -34,8 +43,17 @@
     <countsTowardsPreceptLimit>true</countsTowardsPreceptLimit>
     <selectionWeight>0</selectionWeight>
     <defaultSelectionWeight>2</defaultSelectionWeight>
+    <!-- 原版持续反馈挂载：本人/环境互斥，跨 Issue 独立叠加；不产生行为记忆或拒绝。 -->
+    <comps>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_Trainer_Revulsion_Self</thought>
+      </li>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_Trainer_Revulsion_Social</thought>
+      </li>
+    </comps>
   </PreceptDef>
-  <!-- 普通文化低档：defaultSelectionWeight=7；必选组抽取权重为零。不与主模因冲突，已有合法选择在改革时可保留。 显示顺序和重要度不代替后续反馈机制。 -->
+  <!-- 普通文化低档：defaultSelectionWeight=7；必选组抽取权重为零。不与主模因冲突，已有合法选择在改革时可保留。 反馈数值由步骤 2 挂载的 ThoughtDef 保存，顺序和重要度不换算数值。 -->
   <PreceptDef MayRequire="Ludeon.RimWorld.Ideology">
     <defName>SSC_Precept_Trainer_Indifference</defName>
     <issue>SSC_Issue_Trainer</issue>
@@ -48,7 +66,7 @@
     <selectionWeight>0</selectionWeight>
     <defaultSelectionWeight>7</defaultSelectionWeight>
   </PreceptDef>
-  <!-- 两类生成权重均为零，仅供手选或保留已有合法选择；associatedMemes 仅关联，不作前置门槛。 显示顺序和重要度不代替后续反馈机制。 -->
+  <!-- 两类生成权重均为零，仅供手选或保留已有合法选择；associatedMemes 仅关联，不作前置门槛。 反馈数值由步骤 2 挂载的 ThoughtDef 保存，顺序和重要度不换算数值。 -->
   <PreceptDef MayRequire="Ludeon.RimWorld.Ideology">
     <defName>SSC_Precept_Trainer_Reverence</defName>
     <issue>SSC_Issue_Trainer</issue>
@@ -61,8 +79,17 @@
     <selectionWeight>0</selectionWeight>
     <defaultSelectionWeight>0</defaultSelectionWeight>
     <associatedMemes><li>SSC_Meme_MasterSlaveOrder</li></associatedMemes>
+    <!-- 原版持续反馈挂载：本人/环境互斥，跨 Issue 独立叠加；不产生行为记忆或拒绝。 -->
+    <comps>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_Trainer_Reverence_Self</thought>
+      </li>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_Trainer_Reverence_Social</thought>
+      </li>
+    </comps>
   </PreceptDef>
-  <!-- 主模因专属默认：必选组 selectionWeight=1，普通默认权重为零；requiredMemes 限定资格。 显示顺序和重要度不代替后续反馈机制。 -->
+  <!-- 主模因专属默认：必选组 selectionWeight=1，普通默认权重为零；requiredMemes 限定资格。 反馈数值由步骤 2 挂载的 ThoughtDef 保存，顺序和重要度不换算数值。 -->
   <PreceptDef MayRequire="Ludeon.RimWorld.Ideology">
     <defName>SSC_Precept_Trainer_SacredOffice</defName>
     <issue>SSC_Issue_Trainer</issue>
@@ -76,5 +103,14 @@
     <defaultSelectionWeight>0</defaultSelectionWeight>
     <requiredMemes><li>SSC_Meme_MasterSlaveOrder</li></requiredMemes>
     <associatedMemes><li>SSC_Meme_MasterSlaveOrder</li></associatedMemes>
+    <!-- 原版持续反馈挂载：本人/环境互斥，跨 Issue 独立叠加；不产生行为记忆或拒绝。 -->
+    <comps>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_Trainer_SacredOffice_Self</thought>
+      </li>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_Trainer_SacredOffice_Social</thought>
+      </li>
+    </comps>
   </PreceptDef>
 </Defs>

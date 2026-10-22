@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <!-- AI 辅助生成：1.7 文化步骤 2。原版挂载和最终结算；数值为确认契约，正文交给后续文案。 -->
+  <!-- 独立反馈按戒律挂载；阶段仅表达互斥状态，不按人数新增。 -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Culture_Trainer_Hostile_Self</defName>
+    <thoughtClass>Thought_Situational</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCCultureMood</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <!-- 配置只选条件；个人/双人数据不保存在共享 worker，环境人数复用 Game 快照。 -->
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
+        <condition>OfficerSelf</condition>
+      </li>
+    </modExtensions>
+    <stages>
+      <li>
+        <label>[占位: 敌视 / 本人任职]</label>
+        <description>[TODO:SSC_Culture_Trainer_Hostile_Self.stages.0.description]</description>
+        <baseMoodEffect>-8</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+  <!-- 独立反馈按戒律挂载；阶段仅表达互斥状态，不按人数新增。 -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Culture_Trainer_Hostile_Social</defName>
+    <thoughtClass>Thought_SituationalSocial</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCCultureSocial</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <!-- 配置只选条件；个人/双人数据不保存在共享 worker，环境人数复用 Game 快照。 -->
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
+        <condition>OfficerOther</condition>
+      </li>
+    </modExtensions>
+    <stages>
+      <li>
+        <label>[占位: 敌视 / 评价训导官]</label>
+        <description>[TODO:SSC_Culture_Trainer_Hostile_Social.stages.0.description]</description>
+        <baseOpinionOffset>-20</baseOpinionOffset>
+      </li>
+    </stages>
+  </ThoughtDef>
+  <!-- 独立反馈按戒律挂载；阶段仅表达互斥状态，不按人数新增。 -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Culture_Trainer_Revulsion_Self</defName>
+    <thoughtClass>Thought_Situational</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCCultureMood</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <!-- 配置只选条件；个人/双人数据不保存在共享 worker，环境人数复用 Game 快照。 -->
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
+        <condition>OfficerSelf</condition>
+      </li>
+    </modExtensions>
+    <stages>
+      <li>
+        <label>[占位: 厌恶 / 本人任职]</label>
+        <description>[TODO:SSC_Culture_Trainer_Revulsion_Self.stages.0.description]</description>
+        <baseMoodEffect>-4</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+  <!-- 独立反馈按戒律挂载；阶段仅表达互斥状态，不按人数新增。 -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Culture_Trainer_Revulsion_Social</defName>
+    <thoughtClass>Thought_SituationalSocial</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCCultureSocial</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <!-- 配置只选条件；个人/双人数据不保存在共享 worker，环境人数复用 Game 快照。 -->
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
+        <condition>OfficerOther</condition>
+      </li>
+    </modExtensions>
+    <stages>
+      <li>
+        <label>[占位: 厌恶 / 评价训导官]</label>
+        <description>[TODO:SSC_Culture_Trainer_Revulsion_Social.stages.0.description]</description>
+        <baseOpinionOffset>-10</baseOpinionOffset>
+      </li>
+    </stages>
+  </ThoughtDef>
+  <!-- 独立反馈按戒律挂载；阶段仅表达互斥状态，不按人数新增。 -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Culture_Trainer_Reverence_Self</defName>
+    <thoughtClass>Thought_Situational</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCCultureMood</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <!-- 配置只选条件；个人/双人数据不保存在共享 worker，环境人数复用 Game 快照。 -->
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
+        <condition>OfficerSelf</condition>
+      </li>
+    </modExtensions>
+    <stages>
+      <li>
+        <label>[占位: 尊敬 / 本人任职]</label>
+        <description>[TODO:SSC_Culture_Trainer_Reverence_Self.stages.0.description]</description>
+        <baseMoodEffect>3</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+  <!-- 独立反馈按戒律挂载；阶段仅表达互斥状态，不按人数新增。 -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Culture_Trainer_Reverence_Social</defName>
+    <thoughtClass>Thought_SituationalSocial</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCCultureSocial</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <!-- 配置只选条件；个人/双人数据不保存在共享 worker，环境人数复用 Game 快照。 -->
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
+        <condition>OfficerOther</condition>
+      </li>
+    </modExtensions>
+    <stages>
+      <li>
+        <label>[占位: 尊敬 / 评价训导官]</label>
+        <description>[TODO:SSC_Culture_Trainer_Reverence_Social.stages.0.description]</description>
+        <baseOpinionOffset>10</baseOpinionOffset>
+      </li>
+    </stages>
+  </ThoughtDef>
+  <!-- 独立反馈按戒律挂载；阶段仅表达互斥状态，不按人数新增。 -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Culture_Trainer_SacredOffice_Self</defName>
+    <thoughtClass>Thought_Situational</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCCultureMood</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <!-- 配置只选条件；个人/双人数据不保存在共享 worker，环境人数复用 Game 快照。 -->
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
+        <condition>OfficerSelf</condition>
+      </li>
+    </modExtensions>
+    <stages>
+      <li>
+        <label>[占位: 圣职 / 本人任职]</label>
+        <description>[TODO:SSC_Culture_Trainer_SacredOffice_Self.stages.0.description]</description>
+        <baseMoodEffect>5</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+  <!-- 独立反馈按戒律挂载；阶段仅表达互斥状态，不按人数新增。 -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Culture_Trainer_SacredOffice_Social</defName>
+    <thoughtClass>Thought_SituationalSocial</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCCultureSocial</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <!-- 配置只选条件；个人/双人数据不保存在共享 worker，环境人数复用 Game 快照。 -->
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
+        <condition>OfficerOther</condition>
+      </li>
+    </modExtensions>
+    <stages>
+      <li>
+        <label>[占位: 圣职 / 评价训导官]</label>
+        <description>[TODO:SSC_Culture_Trainer_SacredOffice_Social.stages.0.description]</description>
+        <baseOpinionOffset>15</baseOpinionOffset>
+      </li>
+    </stages>
+  </ThoughtDef>
+</Defs>

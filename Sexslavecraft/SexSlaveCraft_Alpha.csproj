@@ -187,6 +187,9 @@
     <Compile Include="common\Culture\SSCCulturePopulationUtility.cs" />
     <Compile Include="common\Culture\SSCCultureLeaderUtility.cs" />
     <Compile Include="common\Culture\SSCCultureGameComponent.cs" />
+    <Compile Include="common\Culture\SSCCultureThoughtExtension.cs" />
+    <Compile Include="common\Culture\ThoughtWorker_SSCCultureMood.cs" />
+    <Compile Include="common\Culture\ThoughtWorker_SSCCultureSocial.cs" />
     <Compile Include="common\RabbitCloneUtility.cs" />
     <Compile Include="common\ConditioningUtility.cs" />
     <Compile Include="common\CorruptionProgressionUtility.cs" />

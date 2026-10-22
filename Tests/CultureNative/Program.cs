@@ -112,6 +112,8 @@ internal static partial class Program
             LeaderTests();
             SnapshotTests();
             SerializationTests();
+            // 先完成查询层与生成回归，再进入真实需求/thought/关系缓存和最终结算。
+            FeedbackTests(repo, game);
         }
         // 退出时撤销本宿主的补丁及当前游戏引用，不让一次失败污染后续进程内工作。
         finally { harmony.UnpatchAll(harmony.Id); Current.Game = null; }

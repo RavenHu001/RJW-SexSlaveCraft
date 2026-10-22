@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <!-- 阶段名称仅作功能标记，描述正文待补；键和阶段号是机制契约。 -->
+  <SSC_Culture_SexSlave_Hostile_Self.stages.0.label>[占位: 敌视 / 本人持链]</SSC_Culture_SexSlave_Hostile_Self.stages.0.label>
+  <SSC_Culture_SexSlave_Hostile_Self.stages.0.description>[TODO:SSC_Culture_SexSlave_Hostile_Self.stages.0.description]</SSC_Culture_SexSlave_Hostile_Self.stages.0.description>
+  <SSC_Culture_SexSlave_Revulsion_Self.stages.0.label>[占位: 厌恶 / 本人持链]</SSC_Culture_SexSlave_Revulsion_Self.stages.0.label>
+  <SSC_Culture_SexSlave_Revulsion_Self.stages.0.description>[TODO:SSC_Culture_SexSlave_Revulsion_Self.stages.0.description]</SSC_Culture_SexSlave_Revulsion_Self.stages.0.description>
+  <SSC_Culture_SexSlave_Sacred_Self.stages.0.label>[占位: 神圣 / 本人持链]</SSC_Culture_SexSlave_Sacred_Self.stages.0.label>
+  <SSC_Culture_SexSlave_Sacred_Self.stages.0.description>[TODO:SSC_Culture_SexSlave_Sacred_Self.stages.0.description]</SSC_Culture_SexSlave_Sacred_Self.stages.0.description>
+  <SSC_Culture_SexSlave_Envy_Self.stages.0.label>[占位: 艳羡 / 本人持链]</SSC_Culture_SexSlave_Envy_Self.stages.0.label>
+  <SSC_Culture_SexSlave_Envy_Self.stages.0.description>[TODO:SSC_Culture_SexSlave_Envy_Self.stages.0.description]</SSC_Culture_SexSlave_Envy_Self.stages.0.description>
+  <SSC_Culture_SexSlave_Envy_Self.stages.1.label>[占位: 艳羡 / 未持链且非主人]</SSC_Culture_SexSlave_Envy_Self.stages.1.label>
+  <SSC_Culture_SexSlave_Envy_Self.stages.1.description>[TODO:SSC_Culture_SexSlave_Envy_Self.stages.1.description]</SSC_Culture_SexSlave_Envy_Self.stages.1.description>
+  <SSC_Culture_SexSlave_Hostile_Environment.stages.0.label>[占位: 敌视 / 环境／每人]</SSC_Culture_SexSlave_Hostile_Environment.stages.0.label>
+  <SSC_Culture_SexSlave_Hostile_Environment.stages.0.description>[TODO:SSC_Culture_SexSlave_Hostile_Environment.stages.0.description]</SSC_Culture_SexSlave_Hostile_Environment.stages.0.description>
+  <SSC_Culture_SexSlave_Revulsion_Environment.stages.0.label>[占位: 厌恶 / 环境／每人]</SSC_Culture_SexSlave_Revulsion_Environment.stages.0.label>
+  <SSC_Culture_SexSlave_Revulsion_Environment.stages.0.description>[TODO:SSC_Culture_SexSlave_Revulsion_Environment.stages.0.description]</SSC_Culture_SexSlave_Revulsion_Environment.stages.0.description>
+  <SSC_Culture_SexSlave_Sacred_Environment.stages.0.label>[占位: 神圣 / 环境／每人]</SSC_Culture_SexSlave_Sacred_Environment.stages.0.label>
+  <SSC_Culture_SexSlave_Sacred_Environment.stages.0.description>[TODO:SSC_Culture_SexSlave_Sacred_Environment.stages.0.description]</SSC_Culture_SexSlave_Sacred_Environment.stages.0.description>
+  <SSC_Culture_SexSlave_Revulsion_Social.stages.0.label>[占位: 厌恶 / 评价持链者]</SSC_Culture_SexSlave_Revulsion_Social.stages.0.label>
+  <SSC_Culture_SexSlave_Revulsion_Social.stages.0.description>[TODO:SSC_Culture_SexSlave_Revulsion_Social.stages.0.description]</SSC_Culture_SexSlave_Revulsion_Social.stages.0.description>
+  <SSC_Culture_SexSlave_Respect_Social.stages.0.label>[占位: 尊重 / 评价持链者]</SSC_Culture_SexSlave_Respect_Social.stages.0.label>
+  <SSC_Culture_SexSlave_Respect_Social.stages.0.description>[TODO:SSC_Culture_SexSlave_Respect_Social.stages.0.description]</SSC_Culture_SexSlave_Respect_Social.stages.0.description>
+  <SSC_Culture_SexSlave_Sacred_Social.stages.0.label>[占位: 神圣 / 评价持链者]</SSC_Culture_SexSlave_Sacred_Social.stages.0.label>
+  <SSC_Culture_SexSlave_Sacred_Social.stages.0.description>[TODO:SSC_Culture_SexSlave_Sacred_Social.stages.0.description]</SSC_Culture_SexSlave_Sacred_Social.stages.0.description>
+  <SSC_Culture_SexSlave_Envy_Social.stages.0.label>[占位: 艳羡 / 评价持链者]</SSC_Culture_SexSlave_Envy_Social.stages.0.label>
+  <SSC_Culture_SexSlave_Envy_Social.stages.0.description>[TODO:SSC_Culture_SexSlave_Envy_Social.stages.0.description]</SSC_Culture_SexSlave_Envy_Social.stages.0.description>
+  <SSC_Culture_Trainer_Hostile_Self.stages.0.label>[占位: 敌视 / 本人任职]</SSC_Culture_Trainer_Hostile_Self.stages.0.label>
+  <SSC_Culture_Trainer_Hostile_Self.stages.0.description>[TODO:SSC_Culture_Trainer_Hostile_Self.stages.0.description]</SSC_Culture_Trainer_Hostile_Self.stages.0.description>
+  <SSC_Culture_Trainer_Hostile_Social.stages.0.label>[占位: 敌视 / 评价训导官]</SSC_Culture_Trainer_Hostile_Social.stages.0.label>
+  <SSC_Culture_Trainer_Hostile_Social.stages.0.description>[TODO:SSC_Culture_Trainer_Hostile_Social.stages.0.description]</SSC_Culture_Trainer_Hostile_Social.stages.0.description>
+  <SSC_Culture_Trainer_Revulsion_Self.stages.0.label>[占位: 厌恶 / 本人任职]</SSC_Culture_Trainer_Revulsion_Self.stages.0.label>
+  <SSC_Culture_Trainer_Revulsion_Self.stages.0.description>[TODO:SSC_Culture_Trainer_Revulsion_Self.stages.0.description]</SSC_Culture_Trainer_Revulsion_Self.stages.0.description>
+  <SSC_Culture_Trainer_Revulsion_Social.stages.0.label>[占位: 厌恶 / 评价训导官]</SSC_Culture_Trainer_Revulsion_Social.stages.0.label>
+  <SSC_Culture_Trainer_Revulsion_Social.stages.0.description>[TODO:SSC_Culture_Trainer_Revulsion_Social.stages.0.description]</SSC_Culture_Trainer_Revulsion_Social.stages.0.description>
+  <SSC_Culture_Trainer_Reverence_Self.stages.0.label>[占位: 尊敬 / 本人任职]</SSC_Culture_Trainer_Reverence_Self.stages.0.label>
+  <SSC_Culture_Trainer_Reverence_Self.stages.0.description>[TODO:SSC_Culture_Trainer_Reverence_Self.stages.0.description]</SSC_Culture_Trainer_Reverence_Self.stages.0.description>
+  <SSC_Culture_Trainer_Reverence_Social.stages.0.label>[占位: 尊敬 / 评价训导官]</SSC_Culture_Trainer_Reverence_Social.stages.0.label>
+  <SSC_Culture_Trainer_Reverence_Social.stages.0.description>[TODO:SSC_Culture_Trainer_Reverence_Social.stages.0.description]</SSC_Culture_Trainer_Reverence_Social.stages.0.description>
+  <SSC_Culture_Trainer_SacredOffice_Self.stages.0.label>[占位: 圣职 / 本人任职]</SSC_Culture_Trainer_SacredOffice_Self.stages.0.label>
+  <SSC_Culture_Trainer_SacredOffice_Self.stages.0.description>[TODO:SSC_Culture_Trainer_SacredOffice_Self.stages.0.description]</SSC_Culture_Trainer_SacredOffice_Self.stages.0.description>
+  <SSC_Culture_Trainer_SacredOffice_Social.stages.0.label>[占位: 圣职 / 评价训导官]</SSC_Culture_Trainer_SacredOffice_Social.stages.0.label>
+  <SSC_Culture_Trainer_SacredOffice_Social.stages.0.description>[TODO:SSC_Culture_Trainer_SacredOffice_Social.stages.0.description]</SSC_Culture_Trainer_SacredOffice_Social.stages.0.description>
+  <SSC_Culture_Master_Hostile_Self.stages.0.label>[占位: 敌视 / 本人是主人]</SSC_Culture_Master_Hostile_Self.stages.0.label>
+  <SSC_Culture_Master_Hostile_Self.stages.0.description>[TODO:SSC_Culture_Master_Hostile_Self.stages.0.description]</SSC_Culture_Master_Hostile_Self.stages.0.description>
+  <SSC_Culture_Master_Hostile_ActualMaster.stages.0.label>[占位: 敌视 / 拥有实际主人]</SSC_Culture_Master_Hostile_ActualMaster.stages.0.label>
+  <SSC_Culture_Master_Hostile_ActualMaster.stages.0.description>[TODO:SSC_Culture_Master_Hostile_ActualMaster.stages.0.description]</SSC_Culture_Master_Hostile_ActualMaster.stages.0.description>
+  <SSC_Culture_Master_Hostile_Social.stages.0.label>[占位: 敌视 / 评价主人]</SSC_Culture_Master_Hostile_Social.stages.0.label>
+  <SSC_Culture_Master_Hostile_Social.stages.0.description>[TODO:SSC_Culture_Master_Hostile_Social.stages.0.description]</SSC_Culture_Master_Hostile_Social.stages.0.description>
+  <SSC_Culture_Master_Hostile_Leader.stages.0.label>[占位: 敌视 / 领袖是主人]</SSC_Culture_Master_Hostile_Leader.stages.0.label>
+  <SSC_Culture_Master_Hostile_Leader.stages.0.description>[TODO:SSC_Culture_Master_Hostile_Leader.stages.0.description]</SSC_Culture_Master_Hostile_Leader.stages.0.description>
+  <SSC_Culture_Master_Revulsion_Self.stages.0.label>[占位: 厌恶 / 本人是主人]</SSC_Culture_Master_Revulsion_Self.stages.0.label>
+  <SSC_Culture_Master_Revulsion_Self.stages.0.description>[TODO:SSC_Culture_Master_Revulsion_Self.stages.0.description]</SSC_Culture_Master_Revulsion_Self.stages.0.description>
+  <SSC_Culture_Master_Revulsion_ActualMaster.stages.0.label>[占位: 厌恶 / 拥有实际主人]</SSC_Culture_Master_Revulsion_ActualMaster.stages.0.label>
+  <SSC_Culture_Master_Revulsion_ActualMaster.stages.0.description>[TODO:SSC_Culture_Master_Revulsion_ActualMaster.stages.0.description]</SSC_Culture_Master_Revulsion_ActualMaster.stages.0.description>
+  <SSC_Culture_Master_Revulsion_Social.stages.0.label>[占位: 厌恶 / 评价主人]</SSC_Culture_Master_Revulsion_Social.stages.0.label>
+  <SSC_Culture_Master_Revulsion_Social.stages.0.description>[TODO:SSC_Culture_Master_Revulsion_Social.stages.0.description]</SSC_Culture_Master_Revulsion_Social.stages.0.description>
+  <SSC_Culture_Master_Revulsion_Leader.stages.0.label>[占位: 厌恶 / 领袖是主人]</SSC_Culture_Master_Revulsion_Leader.stages.0.label>
+  <SSC_Culture_Master_Revulsion_Leader.stages.0.description>[TODO:SSC_Culture_Master_Revulsion_Leader.stages.0.description]</SSC_Culture_Master_Revulsion_Leader.stages.0.description>
+  <SSC_Culture_Master_Deference_Self.stages.0.label>[占位: 尊奉 / 本人是主人]</SSC_Culture_Master_Deference_Self.stages.0.label>
+  <SSC_Culture_Master_Deference_Self.stages.0.description>[TODO:SSC_Culture_Master_Deference_Self.stages.0.description]</SSC_Culture_Master_Deference_Self.stages.0.description>
+  <SSC_Culture_Master_Deference_ActualMaster.stages.0.label>[占位: 尊奉 / 拥有实际主人]</SSC_Culture_Master_Deference_ActualMaster.stages.0.label>
+  <SSC_Culture_Master_Deference_ActualMaster.stages.0.description>[TODO:SSC_Culture_Master_Deference_ActualMaster.stages.0.description]</SSC_Culture_Master_Deference_ActualMaster.stages.0.description>
+  <SSC_Culture_Master_Deference_Social.stages.0.label>[占位: 尊奉 / 评价主人]</SSC_Culture_Master_Deference_Social.stages.0.label>
+  <SSC_Culture_Master_Deference_Social.stages.0.description>[TODO:SSC_Culture_Master_Deference_Social.stages.0.description]</SSC_Culture_Master_Deference_Social.stages.0.description>
+  <SSC_Culture_Master_Deference_Leader.stages.0.label>[占位: 尊奉 / 领袖是主人]</SSC_Culture_Master_Deference_Leader.stages.0.label>
+  <SSC_Culture_Master_Deference_Leader.stages.0.description>[TODO:SSC_Culture_Master_Deference_Leader.stages.0.description]</SSC_Culture_Master_Deference_Leader.stages.0.description>
+  <SSC_Culture_Master_Deference_Leader.stages.1.label>[占位: 尊奉 / 领袖非主人]</SSC_Culture_Master_Deference_Leader.stages.1.label>
+  <SSC_Culture_Master_Deference_Leader.stages.1.description>[TODO:SSC_Culture_Master_Deference_Leader.stages.1.description]</SSC_Culture_Master_Deference_Leader.stages.1.description>
+  <SSC_Culture_Master_HolyMaster_Self.stages.0.label>[占位: 圣主 / 本人是主人]</SSC_Culture_Master_HolyMaster_Self.stages.0.label>
+  <SSC_Culture_Master_HolyMaster_Self.stages.0.description>[TODO:SSC_Culture_Master_HolyMaster_Self.stages.0.description]</SSC_Culture_Master_HolyMaster_Self.stages.0.description>
+  <SSC_Culture_Master_HolyMaster_ActualMaster.stages.0.label>[占位: 圣主 / 拥有实际主人]</SSC_Culture_Master_HolyMaster_ActualMaster.stages.0.label>
+  <SSC_Culture_Master_HolyMaster_ActualMaster.stages.0.description>[TODO:SSC_Culture_Master_HolyMaster_ActualMaster.stages.0.description]</SSC_Culture_Master_HolyMaster_ActualMaster.stages.0.description>
+  <SSC_Culture_Master_HolyMaster_Social.stages.0.label>[占位: 圣主 / 评价主人]</SSC_Culture_Master_HolyMaster_Social.stages.0.label>
+  <SSC_Culture_Master_HolyMaster_Social.stages.0.description>[TODO:SSC_Culture_Master_HolyMaster_Social.stages.0.description]</SSC_Culture_Master_HolyMaster_Social.stages.0.description>
+  <SSC_Culture_Master_HolyMaster_Leader.stages.0.label>[占位: 圣主 / 领袖是主人]</SSC_Culture_Master_HolyMaster_Leader.stages.0.label>
+  <SSC_Culture_Master_HolyMaster_Leader.stages.0.description>[TODO:SSC_Culture_Master_HolyMaster_Leader.stages.0.description]</SSC_Culture_Master_HolyMaster_Leader.stages.0.description>
+  <SSC_Culture_Master_HolyMaster_Leader.stages.1.label>[占位: 圣主 / 领袖非主人]</SSC_Culture_Master_HolyMaster_Leader.stages.1.label>
+  <SSC_Culture_Master_HolyMaster_Leader.stages.1.description>[TODO:SSC_Culture_Master_HolyMaster_Leader.stages.1.description]</SSC_Culture_Master_HolyMaster_Leader.stages.1.description>
+</LanguageData>

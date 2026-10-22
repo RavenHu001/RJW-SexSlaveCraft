@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <!-- 阶段名称仅作功能标记，描述正文待补；键和阶段号是机制契约。 -->
+  <SSC_Culture_SexSlave_Hostile_Self.stages.0.label>[placeholder: hostile / self chained]</SSC_Culture_SexSlave_Hostile_Self.stages.0.label>
+  <SSC_Culture_SexSlave_Hostile_Self.stages.0.description>[TODO:SSC_Culture_SexSlave_Hostile_Self.stages.0.description]</SSC_Culture_SexSlave_Hostile_Self.stages.0.description>
+  <SSC_Culture_SexSlave_Revulsion_Self.stages.0.label>[placeholder: revulsion / self chained]</SSC_Culture_SexSlave_Revulsion_Self.stages.0.label>
+  <SSC_Culture_SexSlave_Revulsion_Self.stages.0.description>[TODO:SSC_Culture_SexSlave_Revulsion_Self.stages.0.description]</SSC_Culture_SexSlave_Revulsion_Self.stages.0.description>
+  <SSC_Culture_SexSlave_Sacred_Self.stages.0.label>[placeholder: sacred / self chained]</SSC_Culture_SexSlave_Sacred_Self.stages.0.label>
+  <SSC_Culture_SexSlave_Sacred_Self.stages.0.description>[TODO:SSC_Culture_SexSlave_Sacred_Self.stages.0.description]</SSC_Culture_SexSlave_Sacred_Self.stages.0.description>
+  <SSC_Culture_SexSlave_Envy_Self.stages.0.label>[placeholder: envy / self chained]</SSC_Culture_SexSlave_Envy_Self.stages.0.label>
+  <SSC_Culture_SexSlave_Envy_Self.stages.0.description>[TODO:SSC_Culture_SexSlave_Envy_Self.stages.0.description]</SSC_Culture_SexSlave_Envy_Self.stages.0.description>
+  <SSC_Culture_SexSlave_Envy_Self.stages.1.label>[placeholder: envy / unchained non-master]</SSC_Culture_SexSlave_Envy_Self.stages.1.label>
+  <SSC_Culture_SexSlave_Envy_Self.stages.1.description>[TODO:SSC_Culture_SexSlave_Envy_Self.stages.1.description]</SSC_Culture_SexSlave_Envy_Self.stages.1.description>
+  <SSC_Culture_SexSlave_Hostile_Environment.stages.0.label>[placeholder: hostile / environment per pawn]</SSC_Culture_SexSlave_Hostile_Environment.stages.0.label>
+  <SSC_Culture_SexSlave_Hostile_Environment.stages.0.description>[TODO:SSC_Culture_SexSlave_Hostile_Environment.stages.0.description]</SSC_Culture_SexSlave_Hostile_Environment.stages.0.description>
+  <SSC_Culture_SexSlave_Revulsion_Environment.stages.0.label>[placeholder: revulsion / environment per pawn]</SSC_Culture_SexSlave_Revulsion_Environment.stages.0.label>
+  <SSC_Culture_SexSlave_Revulsion_Environment.stages.0.description>[TODO:SSC_Culture_SexSlave_Revulsion_Environment.stages.0.description]</SSC_Culture_SexSlave_Revulsion_Environment.stages.0.description>
+  <SSC_Culture_SexSlave_Sacred_Environment.stages.0.label>[placeholder: sacred / environment per pawn]</SSC_Culture_SexSlave_Sacred_Environment.stages.0.label>
+  <SSC_Culture_SexSlave_Sacred_Environment.stages.0.description>[TODO:SSC_Culture_SexSlave_Sacred_Environment.stages.0.description]</SSC_Culture_SexSlave_Sacred_Environment.stages.0.description>
+  <SSC_Culture_SexSlave_Revulsion_Social.stages.0.label>[placeholder: revulsion / opinion of chained pawn]</SSC_Culture_SexSlave_Revulsion_Social.stages.0.label>
+  <SSC_Culture_SexSlave_Revulsion_Social.stages.0.description>[TODO:SSC_Culture_SexSlave_Revulsion_Social.stages.0.description]</SSC_Culture_SexSlave_Revulsion_Social.stages.0.description>
+  <SSC_Culture_SexSlave_Respect_Social.stages.0.label>[placeholder: respect / opinion of chained pawn]</SSC_Culture_SexSlave_Respect_Social.stages.0.label>
+  <SSC_Culture_SexSlave_Respect_Social.stages.0.description>[TODO:SSC_Culture_SexSlave_Respect_Social.stages.0.description]</SSC_Culture_SexSlave_Respect_Social.stages.0.description>
+  <SSC_Culture_SexSlave_Sacred_Social.stages.0.label>[placeholder: sacred / opinion of chained pawn]</SSC_Culture_SexSlave_Sacred_Social.stages.0.label>
+  <SSC_Culture_SexSlave_Sacred_Social.stages.0.description>[TODO:SSC_Culture_SexSlave_Sacred_Social.stages.0.description]</SSC_Culture_SexSlave_Sacred_Social.stages.0.description>
+  <SSC_Culture_SexSlave_Envy_Social.stages.0.label>[placeholder: envy / opinion of chained pawn]</SSC_Culture_SexSlave_Envy_Social.stages.0.label>
+  <SSC_Culture_SexSlave_Envy_Social.stages.0.description>[TODO:SSC_Culture_SexSlave_Envy_Social.stages.0.description]</SSC_Culture_SexSlave_Envy_Social.stages.0.description>
+  <SSC_Culture_Trainer_Hostile_Self.stages.0.label>[placeholder: hostile / self in office]</SSC_Culture_Trainer_Hostile_Self.stages.0.label>
+  <SSC_Culture_Trainer_Hostile_Self.stages.0.description>[TODO:SSC_Culture_Trainer_Hostile_Self.stages.0.description]</SSC_Culture_Trainer_Hostile_Self.stages.0.description>
+  <SSC_Culture_Trainer_Hostile_Social.stages.0.label>[placeholder: hostile / opinion of officer]</SSC_Culture_Trainer_Hostile_Social.stages.0.label>
+  <SSC_Culture_Trainer_Hostile_Social.stages.0.description>[TODO:SSC_Culture_Trainer_Hostile_Social.stages.0.description]</SSC_Culture_Trainer_Hostile_Social.stages.0.description>
+  <SSC_Culture_Trainer_Revulsion_Self.stages.0.label>[placeholder: revulsion / self in office]</SSC_Culture_Trainer_Revulsion_Self.stages.0.label>
+  <SSC_Culture_Trainer_Revulsion_Self.stages.0.description>[TODO:SSC_Culture_Trainer_Revulsion_Self.stages.0.description]</SSC_Culture_Trainer_Revulsion_Self.stages.0.description>
+  <SSC_Culture_Trainer_Revulsion_Social.stages.0.label>[placeholder: revulsion / opinion of officer]</SSC_Culture_Trainer_Revulsion_Social.stages.0.label>
+  <SSC_Culture_Trainer_Revulsion_Social.stages.0.description>[TODO:SSC_Culture_Trainer_Revulsion_Social.stages.0.description]</SSC_Culture_Trainer_Revulsion_Social.stages.0.description>
+  <SSC_Culture_Trainer_Reverence_Self.stages.0.label>[placeholder: reverence / self in office]</SSC_Culture_Trainer_Reverence_Self.stages.0.label>
+  <SSC_Culture_Trainer_Reverence_Self.stages.0.description>[TODO:SSC_Culture_Trainer_Reverence_Self.stages.0.description]</SSC_Culture_Trainer_Reverence_Self.stages.0.description>
+  <SSC_Culture_Trainer_Reverence_Social.stages.0.label>[placeholder: reverence / opinion of officer]</SSC_Culture_Trainer_Reverence_Social.stages.0.label>
+  <SSC_Culture_Trainer_Reverence_Social.stages.0.description>[TODO:SSC_Culture_Trainer_Reverence_Social.stages.0.description]</SSC_Culture_Trainer_Reverence_Social.stages.0.description>
+  <SSC_Culture_Trainer_SacredOffice_Self.stages.0.label>[placeholder: sacred office / self in office]</SSC_Culture_Trainer_SacredOffice_Self.stages.0.label>
+  <SSC_Culture_Trainer_SacredOffice_Self.stages.0.description>[TODO:SSC_Culture_Trainer_SacredOffice_Self.stages.0.description]</SSC_Culture_Trainer_SacredOffice_Self.stages.0.description>
+  <SSC_Culture_Trainer_SacredOffice_Social.stages.0.label>[placeholder: sacred office / opinion of officer]</SSC_Culture_Trainer_SacredOffice_Social.stages.0.label>
+  <SSC_Culture_Trainer_SacredOffice_Social.stages.0.description>[TODO:SSC_Culture_Trainer_SacredOffice_Social.stages.0.description]</SSC_Culture_Trainer_SacredOffice_Social.stages.0.description>
+  <SSC_Culture_Master_Hostile_Self.stages.0.label>[placeholder: hostile / self is master]</SSC_Culture_Master_Hostile_Self.stages.0.label>
+  <SSC_Culture_Master_Hostile_Self.stages.0.description>[TODO:SSC_Culture_Master_Hostile_Self.stages.0.description]</SSC_Culture_Master_Hostile_Self.stages.0.description>
+  <SSC_Culture_Master_Hostile_ActualMaster.stages.0.label>[placeholder: hostile / has actual master]</SSC_Culture_Master_Hostile_ActualMaster.stages.0.label>
+  <SSC_Culture_Master_Hostile_ActualMaster.stages.0.description>[TODO:SSC_Culture_Master_Hostile_ActualMaster.stages.0.description]</SSC_Culture_Master_Hostile_ActualMaster.stages.0.description>
+  <SSC_Culture_Master_Hostile_Social.stages.0.label>[placeholder: hostile / opinion of master]</SSC_Culture_Master_Hostile_Social.stages.0.label>
+  <SSC_Culture_Master_Hostile_Social.stages.0.description>[TODO:SSC_Culture_Master_Hostile_Social.stages.0.description]</SSC_Culture_Master_Hostile_Social.stages.0.description>
+  <SSC_Culture_Master_Hostile_Leader.stages.0.label>[placeholder: hostile / leader is master]</SSC_Culture_Master_Hostile_Leader.stages.0.label>
+  <SSC_Culture_Master_Hostile_Leader.stages.0.description>[TODO:SSC_Culture_Master_Hostile_Leader.stages.0.description]</SSC_Culture_Master_Hostile_Leader.stages.0.description>
+  <SSC_Culture_Master_Revulsion_Self.stages.0.label>[placeholder: revulsion / self is master]</SSC_Culture_Master_Revulsion_Self.stages.0.label>
+  <SSC_Culture_Master_Revulsion_Self.stages.0.description>[TODO:SSC_Culture_Master_Revulsion_Self.stages.0.description]</SSC_Culture_Master_Revulsion_Self.stages.0.description>
+  <SSC_Culture_Master_Revulsion_ActualMaster.stages.0.label>[placeholder: revulsion / has actual master]</SSC_Culture_Master_Revulsion_ActualMaster.stages.0.label>
+  <SSC_Culture_Master_Revulsion_ActualMaster.stages.0.description>[TODO:SSC_Culture_Master_Revulsion_ActualMaster.stages.0.description]</SSC_Culture_Master_Revulsion_ActualMaster.stages.0.description>
+  <SSC_Culture_Master_Revulsion_Social.stages.0.label>[placeholder: revulsion / opinion of master]</SSC_Culture_Master_Revulsion_Social.stages.0.label>
+  <SSC_Culture_Master_Revulsion_Social.stages.0.description>[TODO:SSC_Culture_Master_Revulsion_Social.stages.0.description]</SSC_Culture_Master_Revulsion_Social.stages.0.description>
+  <SSC_Culture_Master_Revulsion_Leader.stages.0.label>[placeholder: revulsion / leader is master]</SSC_Culture_Master_Revulsion_Leader.stages.0.label>
+  <SSC_Culture_Master_Revulsion_Leader.stages.0.description>[TODO:SSC_Culture_Master_Revulsion_Leader.stages.0.description]</SSC_Culture_Master_Revulsion_Leader.stages.0.description>
+  <SSC_Culture_Master_Deference_Self.stages.0.label>[placeholder: deference / self is master]</SSC_Culture_Master_Deference_Self.stages.0.label>
+  <SSC_Culture_Master_Deference_Self.stages.0.description>[TODO:SSC_Culture_Master_Deference_Self.stages.0.description]</SSC_Culture_Master_Deference_Self.stages.0.description>
+  <SSC_Culture_Master_Deference_ActualMaster.stages.0.label>[placeholder: deference / has actual master]</SSC_Culture_Master_Deference_ActualMaster.stages.0.label>
+  <SSC_Culture_Master_Deference_ActualMaster.stages.0.description>[TODO:SSC_Culture_Master_Deference_ActualMaster.stages.0.description]</SSC_Culture_Master_Deference_ActualMaster.stages.0.description>
+  <SSC_Culture_Master_Deference_Social.stages.0.label>[placeholder: deference / opinion of master]</SSC_Culture_Master_Deference_Social.stages.0.label>
+  <SSC_Culture_Master_Deference_Social.stages.0.description>[TODO:SSC_Culture_Master_Deference_Social.stages.0.description]</SSC_Culture_Master_Deference_Social.stages.0.description>
+  <SSC_Culture_Master_Deference_Leader.stages.0.label>[placeholder: deference / leader is master]</SSC_Culture_Master_Deference_Leader.stages.0.label>
+  <SSC_Culture_Master_Deference_Leader.stages.0.description>[TODO:SSC_Culture_Master_Deference_Leader.stages.0.description]</SSC_Culture_Master_Deference_Leader.stages.0.description>
+  <SSC_Culture_Master_Deference_Leader.stages.1.label>[placeholder: deference / leader is not master]</SSC_Culture_Master_Deference_Leader.stages.1.label>
+  <SSC_Culture_Master_Deference_Leader.stages.1.description>[TODO:SSC_Culture_Master_Deference_Leader.stages.1.description]</SSC_Culture_Master_Deference_Leader.stages.1.description>
+  <SSC_Culture_Master_HolyMaster_Self.stages.0.label>[placeholder: holy master / self is master]</SSC_Culture_Master_HolyMaster_Self.stages.0.label>
+  <SSC_Culture_Master_HolyMaster_Self.stages.0.description>[TODO:SSC_Culture_Master_HolyMaster_Self.stages.0.description]</SSC_Culture_Master_HolyMaster_Self.stages.0.description>
+  <SSC_Culture_Master_HolyMaster_ActualMaster.stages.0.label>[placeholder: holy master / has actual master]</SSC_Culture_Master_HolyMaster_ActualMaster.stages.0.label>
+  <SSC_Culture_Master_HolyMaster_ActualMaster.stages.0.description>[TODO:SSC_Culture_Master_HolyMaster_ActualMaster.stages.0.description]</SSC_Culture_Master_HolyMaster_ActualMaster.stages.0.description>
+  <SSC_Culture_Master_HolyMaster_Social.stages.0.label>[placeholder: holy master / opinion of master]</SSC_Culture_Master_HolyMaster_Social.stages.0.label>
+  <SSC_Culture_Master_HolyMaster_Social.stages.0.description>[TODO:SSC_Culture_Master_HolyMaster_Social.stages.0.description]</SSC_Culture_Master_HolyMaster_Social.stages.0.description>
+  <SSC_Culture_Master_HolyMaster_Leader.stages.0.label>[placeholder: holy master / leader is master]</SSC_Culture_Master_HolyMaster_Leader.stages.0.label>
+  <SSC_Culture_Master_HolyMaster_Leader.stages.0.description>[TODO:SSC_Culture_Master_HolyMaster_Leader.stages.0.description]</SSC_Culture_Master_HolyMaster_Leader.stages.0.description>
+  <SSC_Culture_Master_HolyMaster_Leader.stages.1.label>[placeholder: holy master / leader is not master]</SSC_Culture_Master_HolyMaster_Leader.stages.1.label>
+  <SSC_Culture_Master_HolyMaster_Leader.stages.1.description>[TODO:SSC_Culture_Master_HolyMaster_Leader.stages.1.description]</SSC_Culture_Master_HolyMaster_Leader.stages.1.description>
+</LanguageData>
