@@ -6,6 +6,8 @@
 
 [2.4.3 版本范围](Docs/Releases/2.4.3/2.4.3发布说明.md) · [正式下载 2.4.3](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.3) · [双语模组介绍](Docs/模组介绍.md) · [玩家阅读入口](Docs/Players/README.md) · [文档总索引](Docs/README.md) · [English](#english-overview)
 
+**尚未发布的开发增量：SSC 文化拓展基本开发完成（仅 1.7）**，机制、图标、四语、命名和背景已有分批实机通过反馈，见[完成核对](Docs/Development/Completed/SSC文化拓展基本开发完成核对.md)。
+
 ## 2.4.3 更新（仅 1.7）
 
 | 方向 | 当前交付 | 详细说明 |

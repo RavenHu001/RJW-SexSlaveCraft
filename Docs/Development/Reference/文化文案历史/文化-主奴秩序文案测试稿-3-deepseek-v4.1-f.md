@@ -2,7 +2,7 @@
 
 # 主奴秩序中文文案测试稿 3（1.7）
 
-更新日期：2026-10-22　编写模型：deepseek-flash（DeepSeek Harness）　范围：仅 1.7。对应[文案交接清单](../文化-主奴秩序文案交接清单.md)与[戒律与职位设计](../文化-主奴秩序戒律与职位设计.md)。
+更新日期：2026-10-22　编写模型：deepseek-flash（DeepSeek Harness）　范围：仅 1.7。对应[文案交接清单](../文化-主奴秩序文案维护清单.md)与[戒律与职位设计](../../../Design/Archive/文化-主奴秩序戒律与职位设计.md)。
 
 本稿只写简体中文正文。Def 结构、数值、权重、索引、`include`、`priority`、规则左侧语法一律不动；落地时把表中值同时写入 Def 内联文本与 `1.7/Languages/ChineseSimplified/DefInjected/`，再同步 `Sexslavecraft/Languages` 镜像。英文、繁体、俄文与其余三语镜像不在本稿范围。
 
@@ -16,11 +16,11 @@
 
 | 清单条目 | 运行 Def | 需编纂内容 | 数量 |
 | --- | --- | --- | --- |
-| 模因 | [SSC_Meme_MasterSlaveOrder.xml](../../../1.7/Defs/MemeDefs/SSC_Meme_MasterSlaveOrder.xml) | 模因描述 1、命名包 3×4、组合词 3、称谓／仪式候选 9、背景段落 17 | 42 |
-| 五类议题戒律 | [PreceptDefs/SSC_Precepts_SexSlave.xml](../../../1.7/Defs/PreceptDefs/SSC_Precepts_SexSlave.xml)、[Trainer](../../../1.7/Defs/PreceptDefs/SSC_Precepts_Trainer.xml)、[Master](../../../1.7/Defs/PreceptDefs/SSC_Precepts_Master.xml)、[Counts](../../../1.7/Defs/PreceptDefs/SSC_Precepts_Counts.xml) | 戒律描述 22、阶段效果说明 19 | 41 |
-| 心情／社交 | [ThoughtDefs/SSC_CultureThoughts_SexSlave.xml](../../../1.7/Defs/ThoughtDefs/SSC_CultureThoughts_SexSlave.xml)、[Trainer](../../../1.7/Defs/ThoughtDefs/SSC_CultureThoughts_Trainer.xml)、[Master](../../../1.7/Defs/ThoughtDefs/SSC_CultureThoughts_Master.xml)、[Counts](../../../1.7/Defs/ThoughtDefs/SSC_CultureThoughts_Counts.xml) | 53 个阶段的名称 53＋描述 53 | 106 |
+| 模因 | [SSC_Meme_MasterSlaveOrder.xml](../../../../1.7/Defs/MemeDefs/SSC_Meme_MasterSlaveOrder.xml) | 模因描述 1、命名包 3×4、组合词 3、称谓／仪式候选 9、背景段落 17 | 42 |
+| 五类议题戒律 | [PreceptDefs/SSC_Precepts_SexSlave.xml](../../../../1.7/Defs/PreceptDefs/SSC_Precepts_SexSlave.xml)、[Trainer](../../../../1.7/Defs/PreceptDefs/SSC_Precepts_Trainer.xml)、[Master](../../../../1.7/Defs/PreceptDefs/SSC_Precepts_Master.xml)、[Counts](../../../../1.7/Defs/PreceptDefs/SSC_Precepts_Counts.xml) | 戒律描述 22、阶段效果说明 19 | 41 |
+| 心情／社交 | [ThoughtDefs/SSC_CultureThoughts_SexSlave.xml](../../../../1.7/Defs/ThoughtDefs/SSC_CultureThoughts_SexSlave.xml)、[Trainer](../../../../1.7/Defs/ThoughtDefs/SSC_CultureThoughts_Trainer.xml)、[Master](../../../../1.7/Defs/ThoughtDefs/SSC_CultureThoughts_Master.xml)、[Counts](../../../../1.7/Defs/ThoughtDefs/SSC_CultureThoughts_Counts.xml) | 53 个阶段的名称 53＋描述 53 | 106 |
 | 议题名称 | 四个 PreceptDef 内的 `IssueDef` | 仅校对，名称已定 | 0（校对 5） |
-| 连接规则 | [SSC_CultureNamers.xml](../../../1.7/Defs/RulePackDefs/SSC_CultureNamers.xml) | 无文学文本，仅校对左侧与优先级 | 0（校对 2） |
+| 连接规则 | [SSC_CultureNamers.xml](../../../../1.7/Defs/RulePackDefs/SSC_CultureNamers.xml) | 无文学文本，仅校对左侧与优先级 | 0（校对 2） |
 | 合计 | | | **189** |
 
 189 个中文值＝模因 42＋戒律 41＋心情 106。议题名称与连接规则不在其中，只做同步校对。
@@ -97,7 +97,7 @@
 
 本稿采用并收敛第二套（更贴合欲望／沉沦主题），把“臣服教义”改为“沉沦道”，使三套命名包分别落在**锁链（秩序）—纵欲（欲望）—沉沦（堕落）**三条线上，与主题三项一一对应。
 
-道德导师称谓另按[戒律与职位设计](../文化-主奴秩序戒律与职位设计.md)中 2026-10-22 的维护者决定处理：放弃独立职位，「首席性奴」降为道德导师称谓池三选之一，与另两条并列随机。因此本稿的道德导师池是**首席性奴／欲望祭司／沉沦引导者**，旧稿的“驯心者”不再保留。称谓只影响显示，不改任职条件。
+道德导师称谓另按[戒律与职位设计](../../../Design/Archive/文化-主奴秩序戒律与职位设计.md)中 2026-10-22 的维护者决定处理：放弃独立职位，「首席性奴」降为道德导师称谓池三选之一，与另两条并列随机。因此本稿的道德导师池是**首席性奴／欲望祭司／沉沦引导者**，旧稿的“驯心者”不再保留。称谓只影响显示，不改任职条件。
 
 旧稿保留作历史参考；若采用本稿，以本稿的取值落地。
 
@@ -362,9 +362,9 @@ DefInjected 键：`SSC_Meme_MasterSlaveOrder.descriptionMaker.rules.rulesStrings
 
 | 内容 | Def 内联 | DefInjected（中文） |
 | --- | --- | --- |
-| 第 1 节 | [MemeDefs/SSC_Meme_MasterSlaveOrder.xml](../../../1.7/Defs/MemeDefs/SSC_Meme_MasterSlaveOrder.xml) | [MemeDef/SSC_Culture.xml](../../../1.7/Languages/ChineseSimplified/DefInjected/MemeDef/SSC_Culture.xml) |
-| 第 3、4 节 | [SSC_Precepts_SexSlave.xml](../../../1.7/Defs/PreceptDefs/SSC_Precepts_SexSlave.xml) 等四个文件 | [PreceptDef/SSC_Culture.xml](../../../1.7/Languages/ChineseSimplified/DefInjected/PreceptDef/SSC_Culture.xml) |
-| 第 5 节 | [SSC_CultureThoughts_SexSlave.xml](../../../1.7/Defs/ThoughtDefs/SSC_CultureThoughts_SexSlave.xml) 等四个文件 | [ThoughtDef/SSC_Culture.xml](../../../1.7/Languages/ChineseSimplified/DefInjected/ThoughtDef/SSC_Culture.xml) |
+| 第 1 节 | [MemeDefs/SSC_Meme_MasterSlaveOrder.xml](../../../../1.7/Defs/MemeDefs/SSC_Meme_MasterSlaveOrder.xml) | [MemeDef/SSC_Culture.xml](../../../../1.7/Languages/ChineseSimplified/DefInjected/MemeDef/SSC_Culture.xml) |
+| 第 3、4 节 | [SSC_Precepts_SexSlave.xml](../../../../1.7/Defs/PreceptDefs/SSC_Precepts_SexSlave.xml) 等四个文件 | [PreceptDef/SSC_Culture.xml](../../../../1.7/Languages/ChineseSimplified/DefInjected/PreceptDef/SSC_Culture.xml) |
+| 第 5 节 | [SSC_CultureThoughts_SexSlave.xml](../../../../1.7/Defs/ThoughtDefs/SSC_CultureThoughts_SexSlave.xml) 等四个文件 | [ThoughtDef/SSC_Culture.xml](../../../../1.7/Languages/ChineseSimplified/DefInjected/ThoughtDef/SSC_Culture.xml) |
 
 DefInjected 写入后，同步 `Sexslavecraft/Languages/ChineseSimplified/` 下同名镜像；清单第二节列出的镜像路径逐字对应，不要只改运行目录。
 
