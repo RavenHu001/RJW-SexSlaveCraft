@@ -6,7 +6,8 @@
   <IssueDef MayRequire="Ludeon.RimWorld.Ideology">
     <defName>SSC_Issue_Trainer</defName>
     <label>训导官</label>
-    <iconPath>UI/Issues/Slavery</iconPath>
+    <!-- 1.7 专属透明图标：白色短鞭与爱心、厚黑描边；本议题五档共用。 -->
+    <iconPath>UI/Issues/SSC_Trainer</iconPath>
     <allowMultiplePrecepts>false</allowMultiplePrecepts>
   </IssueDef>
   <!-- 普通文化低档：defaultSelectionWeight=1；必选组抽取权重为零。不与主模因冲突，已有合法选择在改革时可保留。 反馈数值由步骤 2 挂载的 ThoughtDef 保存，顺序和重要度不换算数值。 -->

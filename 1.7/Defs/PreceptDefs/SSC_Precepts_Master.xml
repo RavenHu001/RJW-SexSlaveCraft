@@ -6,7 +6,8 @@
   <IssueDef MayRequire="Ludeon.RimWorld.Ideology">
     <defName>SSC_Issue_Master</defName>
     <label>主人</label>
-    <iconPath>UI/Issues/Slavery</iconPath>
+    <!-- 1.7 专属透明图标：白色握链手与右侧爱心、厚黑描边；本议题五档共用。 -->
+    <iconPath>UI/Issues/SSC_Master</iconPath>
     <allowMultiplePrecepts>false</allowMultiplePrecepts>
   </IssueDef>
   <!-- 普通文化低档：defaultSelectionWeight=1；必选组抽取权重为零。与主模因冲突，加入主模因时由原版兼容性维护替换。 反馈数值由步骤 2 挂载的 ThoughtDef 保存，顺序和重要度不换算数值。 -->
