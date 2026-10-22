@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- AI 辅助生成；1.7 主奴秩序模因挂载与专属图标；命名语法待后续，不添加行为拦截。 -->
+<!-- AI 辅助生成；1.7 主奴秩序挂载、命名与背景段落；具体文案使用可检索占位，不添加行为拦截。 -->
 <Defs>
   <!-- 模因分组仅控制界面排布；各顶层定义独立门控，分组本身不建立模因互斥。 -->
   <MemeGroupDef MayRequire="Ludeon.RimWorld.Ideology">
@@ -19,6 +19,81 @@
     <category>Normal</category>
     <impact>3</impact>
     <randomizationSelectionWeightFactor>1</randomizationSelectionWeightFactor>
+    <!-- 三个原生命名包参与来源选择；保留结构模因覆盖、神祇来源与已用包回退，不强制选中 SSC。 -->
+    <symbolPacks>
+      <li>
+        <ideoName>SSCNAMETODO01</ideoName>
+        <theme>SSCTHEMETODO01</theme>
+        <adjective>SSCADJTODO01</adjective>
+        <member>SSCMEMBERTODO01</member>
+      </li>
+      <li>
+        <ideoName>SSCNAMETODO02</ideoName>
+        <theme>SSCTHEMETODO02</theme>
+        <adjective>SSCADJTODO02</adjective>
+        <member>SSCMEMBERTODO02</member>
+      </li>
+      <li>
+        <ideoName>SSCNAMETODO03</ideoName>
+        <theme>SSCTHEMETODO03</theme>
+        <adjective>SSCADJTODO03</adjective>
+        <member>SSCMEMBERTODO03</member>
+      </li>
+    </symbolPacks>
+    <!-- 原版按当前模因收集共用规则；固定索引供四语注入，字面占位不能写成方括号子规则。 -->
+    <generalRules>
+      <rulesStrings>
+        <!-- 0～2：文化组合词；不覆盖全局文化命名器。 -->
+        <li>memeAdjective->SSCADJTODO</li>
+        <li>memeCreed->SSCCREEDTODO</li>
+        <li>memeHyphenPrefix->SSCPREFIXTODO</li>
+        <!-- 3：领袖独立入口；优先级控制选择，同一原版结果用于男女称谓。 -->
+        <li>r_leaderTitle(priority=10)->[SSC_LeaderPreset]</li>
+        <!-- 4～6：领袖候选。沿用原版名称生成、手工锁名及唯一性规则。 -->
+        <li>SSC_LeaderPreset->SSCLEADERTODO01</li>
+        <li>SSC_LeaderPreset->SSCLEADERTODO02</li>
+        <li>SSC_LeaderPreset->SSCLEADERTODO03</li>
+        <!-- 7～9：仅专用道德导师命名器引用；不在模因中定义通用职位根规则。 -->
+        <li>SSC_MoralistPreset->SSCMORALTODO01</li>
+        <li>SSC_MoralistPreset->SSCMORALTODO02</li>
+        <li>SSC_MoralistPreset->SSCMORALTODO03</li>
+        <!-- 10～12：仅 SSC 契约仪式命名器引用；无模因时子规则缺失，由原命名器兜底。 -->
+        <li>SSC_BindingRitualPreset->SSCRITUALTODO01</li>
+        <li>SSC_BindingRitualPreset->SSCRITUALTODO02</li>
+        <li>SSC_BindingRitualPreset->SSCRITUALTODO03</li>
+      </rulesStrings>
+    </generalRules>
+    <!-- 只提供当前模因的背景段落，不增加 patterns；继续由原版结构选择六类故事框架。
+         meme_ 分组参与原版段落偏好，允许多模因混合；移除模因不清洗历史描述或解除描述锁定。 -->
+    <descriptionMaker>
+      <rules>
+        <rulesStrings>
+          <!-- 0～1：TheistMyth；重复 episode 单条最多一次，其他位置由原版候选补足。 -->
+          <li>creation(tag=meme_SSC_MasterSlaveOrder)->SSCDESCTODO01</li>
+          <li>episode(uses=1,tag=meme_SSC_MasterSlaveOrder)->SSCDESCTODO02</li>
+          <!-- 2～5：TheistFounder。 -->
+          <li>intro(tag=meme_SSC_MasterSlaveOrder)->SSCDESCTODO03</li>
+          <li>conflict(tag=meme_SSC_MasterSlaveOrder)->SSCDESCTODO04</li>
+          <li>founderJoin(tag=meme_SSC_MasterSlaveOrder)->SSCDESCTODO05</li>
+          <li>victory(tag=meme_SSC_MasterSlaveOrder)->SSCDESCTODO06</li>
+          <!-- 6～7：IdeologicalFounder；同一 story 不在两个位置重复使用。 -->
+          <li>setup(tag=meme_SSC_MasterSlaveOrder)->SSCDESCTODO07</li>
+          <li>story(uses=1,tag=meme_SSC_MasterSlaveOrder)->SSCDESCTODO08</li>
+          <!-- 8～10：IdeologicalLesson。 -->
+          <li>lessonIntro(tag=meme_SSC_MasterSlaveOrder)->SSCDESCTODO09</li>
+          <li>lesson(tag=meme_SSC_MasterSlaveOrder)->SSCDESCTODO10</li>
+          <li>lessonReinforcement(tag=meme_SSC_MasterSlaveOrder)->SSCDESCTODO11</li>
+          <!-- 11～13：ArchistDescription。 -->
+          <li>archistBasis(tag=meme_SSC_MasterSlaveOrder)->SSCDESCTODO12</li>
+          <li>archistFact(tag=meme_SSC_MasterSlaveOrder)->SSCDESCTODO13</li>
+          <li>archistProphecy(tag=meme_SSC_MasterSlaveOrder)->SSCDESCTODO14</li>
+          <!-- 14～16：AnimistDescription。 -->
+          <li>animistBasis(tag=meme_SSC_MasterSlaveOrder)->SSCDESCTODO15</li>
+          <li>animistFact(tag=meme_SSC_MasterSlaveOrder)->SSCDESCTODO16</li>
+          <li>animistProphecy(tag=meme_SSC_MasterSlaveOrder)->SSCDESCTODO17</li>
+        </rulesStrings>
+      </rules>
+    </descriptionMaker>
     <!-- 五个同 Issue 必选组同时约束生成与手选替代范围；不新增模因间排斥标签。 -->
     <requireOne>
       <!-- 性奴态度：允许尊重、神圣、艳羡，正权重默认来自神圣档。 -->

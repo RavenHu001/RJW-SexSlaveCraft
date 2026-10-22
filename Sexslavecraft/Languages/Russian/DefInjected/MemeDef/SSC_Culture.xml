@@ -3,4 +3,47 @@
 <LanguageData>
   <SSC_Meme_MasterSlaveOrder.label>порядок хозяев и рабов</SSC_Meme_MasterSlaveOrder.label>
   <SSC_Meme_MasterSlaveOrder.description>[TODO:SSC_Meme_MasterSlaveOrder.description]</SSC_Meme_MasterSlaveOrder.description>
+  <!-- AI 辅助生成：命名包、共用规则和背景段落占位；固定索引及左侧语法供后续文案交接。 -->
+  <SSC_Meme_MasterSlaveOrder.symbolPacks.0.ideoName>SSCNAMETODO01</SSC_Meme_MasterSlaveOrder.symbolPacks.0.ideoName>
+  <SSC_Meme_MasterSlaveOrder.symbolPacks.0.theme>SSCTHEMETODO01</SSC_Meme_MasterSlaveOrder.symbolPacks.0.theme>
+  <SSC_Meme_MasterSlaveOrder.symbolPacks.0.adjective>SSCADJTODO01</SSC_Meme_MasterSlaveOrder.symbolPacks.0.adjective>
+  <SSC_Meme_MasterSlaveOrder.symbolPacks.0.member>SSCMEMBERTODO01</SSC_Meme_MasterSlaveOrder.symbolPacks.0.member>
+  <SSC_Meme_MasterSlaveOrder.symbolPacks.1.ideoName>SSCNAMETODO02</SSC_Meme_MasterSlaveOrder.symbolPacks.1.ideoName>
+  <SSC_Meme_MasterSlaveOrder.symbolPacks.1.theme>SSCTHEMETODO02</SSC_Meme_MasterSlaveOrder.symbolPacks.1.theme>
+  <SSC_Meme_MasterSlaveOrder.symbolPacks.1.adjective>SSCADJTODO02</SSC_Meme_MasterSlaveOrder.symbolPacks.1.adjective>
+  <SSC_Meme_MasterSlaveOrder.symbolPacks.1.member>SSCMEMBERTODO02</SSC_Meme_MasterSlaveOrder.symbolPacks.1.member>
+  <SSC_Meme_MasterSlaveOrder.symbolPacks.2.ideoName>SSCNAMETODO03</SSC_Meme_MasterSlaveOrder.symbolPacks.2.ideoName>
+  <SSC_Meme_MasterSlaveOrder.symbolPacks.2.theme>SSCTHEMETODO03</SSC_Meme_MasterSlaveOrder.symbolPacks.2.theme>
+  <SSC_Meme_MasterSlaveOrder.symbolPacks.2.adjective>SSCADJTODO03</SSC_Meme_MasterSlaveOrder.symbolPacks.2.adjective>
+  <SSC_Meme_MasterSlaveOrder.symbolPacks.2.member>SSCMEMBERTODO03</SSC_Meme_MasterSlaveOrder.symbolPacks.2.member>
+  <SSC_Meme_MasterSlaveOrder.generalRules.rulesStrings.0>memeAdjective-&gt;SSCADJTODO</SSC_Meme_MasterSlaveOrder.generalRules.rulesStrings.0>
+  <SSC_Meme_MasterSlaveOrder.generalRules.rulesStrings.1>memeCreed-&gt;SSCCREEDTODO</SSC_Meme_MasterSlaveOrder.generalRules.rulesStrings.1>
+  <SSC_Meme_MasterSlaveOrder.generalRules.rulesStrings.2>memeHyphenPrefix-&gt;SSCPREFIXTODO</SSC_Meme_MasterSlaveOrder.generalRules.rulesStrings.2>
+  <SSC_Meme_MasterSlaveOrder.generalRules.rulesStrings.3>r_leaderTitle(priority=10)-&gt;[SSC_LeaderPreset]</SSC_Meme_MasterSlaveOrder.generalRules.rulesStrings.3>
+  <SSC_Meme_MasterSlaveOrder.generalRules.rulesStrings.4>SSC_LeaderPreset-&gt;SSCLEADERTODO01</SSC_Meme_MasterSlaveOrder.generalRules.rulesStrings.4>
+  <SSC_Meme_MasterSlaveOrder.generalRules.rulesStrings.5>SSC_LeaderPreset-&gt;SSCLEADERTODO02</SSC_Meme_MasterSlaveOrder.generalRules.rulesStrings.5>
+  <SSC_Meme_MasterSlaveOrder.generalRules.rulesStrings.6>SSC_LeaderPreset-&gt;SSCLEADERTODO03</SSC_Meme_MasterSlaveOrder.generalRules.rulesStrings.6>
+  <SSC_Meme_MasterSlaveOrder.generalRules.rulesStrings.7>SSC_MoralistPreset-&gt;SSCMORALTODO01</SSC_Meme_MasterSlaveOrder.generalRules.rulesStrings.7>
+  <SSC_Meme_MasterSlaveOrder.generalRules.rulesStrings.8>SSC_MoralistPreset-&gt;SSCMORALTODO02</SSC_Meme_MasterSlaveOrder.generalRules.rulesStrings.8>
+  <SSC_Meme_MasterSlaveOrder.generalRules.rulesStrings.9>SSC_MoralistPreset-&gt;SSCMORALTODO03</SSC_Meme_MasterSlaveOrder.generalRules.rulesStrings.9>
+  <SSC_Meme_MasterSlaveOrder.generalRules.rulesStrings.10>SSC_BindingRitualPreset-&gt;SSCRITUALTODO01</SSC_Meme_MasterSlaveOrder.generalRules.rulesStrings.10>
+  <SSC_Meme_MasterSlaveOrder.generalRules.rulesStrings.11>SSC_BindingRitualPreset-&gt;SSCRITUALTODO02</SSC_Meme_MasterSlaveOrder.generalRules.rulesStrings.11>
+  <SSC_Meme_MasterSlaveOrder.generalRules.rulesStrings.12>SSC_BindingRitualPreset-&gt;SSCRITUALTODO03</SSC_Meme_MasterSlaveOrder.generalRules.rulesStrings.12>
+  <SSC_Meme_MasterSlaveOrder.descriptionMaker.rules.rulesStrings.0>creation(tag=meme_SSC_MasterSlaveOrder)-&gt;SSCDESCTODO01</SSC_Meme_MasterSlaveOrder.descriptionMaker.rules.rulesStrings.0>
+  <SSC_Meme_MasterSlaveOrder.descriptionMaker.rules.rulesStrings.1>episode(uses=1,tag=meme_SSC_MasterSlaveOrder)-&gt;SSCDESCTODO02</SSC_Meme_MasterSlaveOrder.descriptionMaker.rules.rulesStrings.1>
+  <SSC_Meme_MasterSlaveOrder.descriptionMaker.rules.rulesStrings.2>intro(tag=meme_SSC_MasterSlaveOrder)-&gt;SSCDESCTODO03</SSC_Meme_MasterSlaveOrder.descriptionMaker.rules.rulesStrings.2>
+  <SSC_Meme_MasterSlaveOrder.descriptionMaker.rules.rulesStrings.3>conflict(tag=meme_SSC_MasterSlaveOrder)-&gt;SSCDESCTODO04</SSC_Meme_MasterSlaveOrder.descriptionMaker.rules.rulesStrings.3>
+  <SSC_Meme_MasterSlaveOrder.descriptionMaker.rules.rulesStrings.4>founderJoin(tag=meme_SSC_MasterSlaveOrder)-&gt;SSCDESCTODO05</SSC_Meme_MasterSlaveOrder.descriptionMaker.rules.rulesStrings.4>
+  <SSC_Meme_MasterSlaveOrder.descriptionMaker.rules.rulesStrings.5>victory(tag=meme_SSC_MasterSlaveOrder)-&gt;SSCDESCTODO06</SSC_Meme_MasterSlaveOrder.descriptionMaker.rules.rulesStrings.5>
+  <SSC_Meme_MasterSlaveOrder.descriptionMaker.rules.rulesStrings.6>setup(tag=meme_SSC_MasterSlaveOrder)-&gt;SSCDESCTODO07</SSC_Meme_MasterSlaveOrder.descriptionMaker.rules.rulesStrings.6>
+  <SSC_Meme_MasterSlaveOrder.descriptionMaker.rules.rulesStrings.7>story(uses=1,tag=meme_SSC_MasterSlaveOrder)-&gt;SSCDESCTODO08</SSC_Meme_MasterSlaveOrder.descriptionMaker.rules.rulesStrings.7>
+  <SSC_Meme_MasterSlaveOrder.descriptionMaker.rules.rulesStrings.8>lessonIntro(tag=meme_SSC_MasterSlaveOrder)-&gt;SSCDESCTODO09</SSC_Meme_MasterSlaveOrder.descriptionMaker.rules.rulesStrings.8>
+  <SSC_Meme_MasterSlaveOrder.descriptionMaker.rules.rulesStrings.9>lesson(tag=meme_SSC_MasterSlaveOrder)-&gt;SSCDESCTODO10</SSC_Meme_MasterSlaveOrder.descriptionMaker.rules.rulesStrings.9>
+  <SSC_Meme_MasterSlaveOrder.descriptionMaker.rules.rulesStrings.10>lessonReinforcement(tag=meme_SSC_MasterSlaveOrder)-&gt;SSCDESCTODO11</SSC_Meme_MasterSlaveOrder.descriptionMaker.rules.rulesStrings.10>
+  <SSC_Meme_MasterSlaveOrder.descriptionMaker.rules.rulesStrings.11>archistBasis(tag=meme_SSC_MasterSlaveOrder)-&gt;SSCDESCTODO12</SSC_Meme_MasterSlaveOrder.descriptionMaker.rules.rulesStrings.11>
+  <SSC_Meme_MasterSlaveOrder.descriptionMaker.rules.rulesStrings.12>archistFact(tag=meme_SSC_MasterSlaveOrder)-&gt;SSCDESCTODO13</SSC_Meme_MasterSlaveOrder.descriptionMaker.rules.rulesStrings.12>
+  <SSC_Meme_MasterSlaveOrder.descriptionMaker.rules.rulesStrings.13>archistProphecy(tag=meme_SSC_MasterSlaveOrder)-&gt;SSCDESCTODO14</SSC_Meme_MasterSlaveOrder.descriptionMaker.rules.rulesStrings.13>
+  <SSC_Meme_MasterSlaveOrder.descriptionMaker.rules.rulesStrings.14>animistBasis(tag=meme_SSC_MasterSlaveOrder)-&gt;SSCDESCTODO15</SSC_Meme_MasterSlaveOrder.descriptionMaker.rules.rulesStrings.14>
+  <SSC_Meme_MasterSlaveOrder.descriptionMaker.rules.rulesStrings.15>animistFact(tag=meme_SSC_MasterSlaveOrder)-&gt;SSCDESCTODO16</SSC_Meme_MasterSlaveOrder.descriptionMaker.rules.rulesStrings.15>
+  <SSC_Meme_MasterSlaveOrder.descriptionMaker.rules.rulesStrings.16>animistProphecy(tag=meme_SSC_MasterSlaveOrder)-&gt;SSCDESCTODO17</SSC_Meme_MasterSlaveOrder.descriptionMaker.rules.rulesStrings.16>
 </LanguageData>

@@ -143,7 +143,7 @@ internal static partial class Program
                     string path = Path.Combine(repo, "1.7", relative);
                     Require(File.ReadAllBytes(path).SequenceEqual(File.ReadAllBytes(Path.Combine(repo, "Sexslavecraft", relative))));
                     var entries = XDocument.Load(path).Root.Elements().ToArray();
-                    Equal(type == "MemeDef" ? 2 : type == "IssueDef" ? 5 : 63, entries.Length);
+                    Equal(type == "MemeDef" ? 44 : type == "IssueDef" ? 5 : 63, entries.Length);
                     Equal(entries.Length, entries.Select(x => x.Name).Distinct().Count());
                     Require(entries.All(x => !string.IsNullOrWhiteSpace(x.Value)));
                     // 描述交给后续文案阶段，当前必须保留可搜索的精确 TODO 标记及完整 label 键。

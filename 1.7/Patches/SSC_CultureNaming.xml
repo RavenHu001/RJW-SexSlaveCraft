@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成；只切换原版道德导师的命名器，不修改职位资格、能力或专家数量。 -->
+<Patch>
+  <!-- 无 Ideology 时目标不存在，安全跳过；启用时仅替换该 Def 的直接 nameMaker 字段。
+       新命名器自身有 DLC 门控；文化是否带主奴秩序由请求中的专属子规则决定。 -->
+  <Operation Class="PatchOperationConditional">
+    <xpath>Defs/PreceptDef[defName="IdeoRole_Moralist"]/nameMaker</xpath>
+    <match Class="PatchOperationReplace">
+      <xpath>Defs/PreceptDef[defName="IdeoRole_Moralist"]/nameMaker</xpath>
+      <value><nameMaker>SSC_NamerRoleMoralist</nameMaker></value>
+    </match>
+  </Operation>
+</Patch>

@@ -114,6 +114,8 @@ internal static partial class Program
             SerializationTests();
             // 先完成查询层与生成回归，再进入真实需求/thought/关系缓存和最终结算。
             FeedbackTests(repo, game);
+            // 完整命名依赖在旧专项结束后装载，避免污染其固定 Def 数量与世界状态；四语逐次重建规则缓存。
+            NamingTests(repo, game);
         }
         // 退出时撤销本宿主的补丁及当前游戏引用，不让一次失败污染后续进程内工作。
         finally { harmony.UnpatchAll(harmony.Id); Current.Game = null; }

@@ -3,6 +3,9 @@
 
   <RitualPatternDef ParentName="CelebrationPartyChat">
     <defName>SSC_BindingRitualPattern</defName>
+    <!-- AI 辅助生成：仅覆盖本模式的继承命名器；无主奴秩序由原节庆规则兜底。
+         DLC 门控避免新增缺失引用；原版 Fill 负责新实例赋值，不自动改写旧档实例。 -->
+    <nameMaker MayRequire="Ludeon.RimWorld.Ideology">SSC_NamerRitualBinding</nameMaker>
     
     <ritualBehavior>SSC_BindingRitualBehavior</ritualBehavior>
     <ritualOutcomeEffect>SSC_BindingRitualOutcome</ritualOutcomeEffect>

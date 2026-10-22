@@ -45,3 +45,15 @@
 已登记到 `Scripts/Test-All.ps1`，沿用 NativeGameRoot、NativeDotnetPath、HarmonyAssemblyPath；生产 RJW、动画和游戏 Harmony 引用由 `1.7/BUILD-INFO.json` 提供，缺失时构建失败，不回退旧 DLL。无需联网，也不安装、提交或发布模组。
 
 直接构建本项目时同时传入 GameRoot、RjwAssemblyPath、AnimationsAssemblyPath、GameHarmonyAssemblyPath、HarmonyAssemblyPath；用匹配 .NET 10 运行生成 DLL，参数为仓库根目录和游戏根目录。首次使用 SDK 时将 DOTNET_CLI_HOME 指向仓库内可写目录。
+
+## 文化命名与生成描述（1.7）
+
+新增 NamingFixture／NamingTests／DescriptionTests，在原有反馈测试全部完成后装载命名依赖。真实执行原版 XML 补丁、父子继承、旧／当前默认新版反序列化器、交叉引用、GenerateTextSymbols、GenerateLeaderTitle、职位／仪式 GenerateNewName／RegenerateName、RitualPatternDef.Fill、文化描述请求／六类故事框架及 Scribe；不替换语法解析器或返回预设结果。
+
+四语逐语重建 RulePack 与 Def，使用 DefInjectionPackage.AddDataFromFile／InjectIntoDefs 读取交付文件，验证 44 个 MemeDef 键与 2 个 RulePackDef 键全部注入及源码镜像一致。额外内存注入探针证明生成结果确实读取了翻译字段。所有新增文本为普通 SS...TODO... 标记，不编写正式名称或故事。
+
+命名专项使用当前安装的 Core／Ideology 规则 include 闭包、原版结构模因和地点、Corunan 人物命名器及原版英文通用词库／语言 worker；验证的是四语 SSC Def 注入，不是四套完整原版翻译或界面。实际人物命名器及人物规则生成提供创始者／信徒，不构造游戏场景。职位、文化仅投影命名需要的字段；仪式模式保留真实原版继承与命名字段，行为提供可初始化的原版空 Def，不执行完整仪式阶段或结算。原机制由既有文化及 RitualDevelopmentNative 等专项回归。
+
+宿主补足实际世界文化管理器、WorldPawns、DLC 安装标记、语言词库和 DefOf；仍隔离图形、整场加载及外观保存。名称／模板／锁定／命名器的 Scribe 不被替换，描述比较只规范化 XML 的 CRLF／LF，不删改内容。未用候选和全部占用回退、混合来源、经典／缺失命名器、其他角色／仪式隔离、多实例三候选耗尽、无 DLC 时原版顶层加载门控均有断言。
+
+旧契约仪式保存的 nameMaker 在普通加载／改名时保留，只有实际重新 Fill 才获得当前模式引用；不以测试赋值伪装自动迁移。描述移除模因后允许保留历史文本／模板，锁定描述不被 force 越过；显式解锁并 force 重新抽取后验证不再生成 SSC 专属段落。普通非 force 刷新可能沿用模板，不要求清洗历史文本。本专项不代表已进游戏动态验收。
