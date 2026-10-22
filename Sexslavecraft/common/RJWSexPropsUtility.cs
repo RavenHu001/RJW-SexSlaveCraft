@@ -27,7 +27,7 @@ namespace SexSlaveCraft
             return ApplySexType(sexProps, initiator, partner, ConvertToRJWType(actType), ConvertToInteractionDefName(actType));
         }
 
-        /// <summary>开始前同步强制动作及部位；固定仪式可保留空接触结果，不增加解剖准入条件。</summary>
+        /// <summary>开始前同步强制动作及部位；固定仪式／人格排泄可保留空接触结果，不增加解剖准入条件。</summary>
         public static bool ApplySexType(SexProps sexProps, Pawn initiator, Pawn partner, xxx.rjwSextype sexType,
             string interactionDefName, bool allowEmptyParts = false)
         {
@@ -54,7 +54,7 @@ namespace SexSlaveCraft
 
             // 只解析指定交互，不重新随机挑动作；不得在结束阶段临时选部位充当接触证据。
             SexInteractionResolved resolved = SexInteractionHelper.ResolveInteraction(sexProps);
-            // 仪式原本按固定六阶段运行，不要求每种动作都满足 RJW 的选性交部位条件。
+            // 仪式及人格排泄使用固定场景，不要求每种动作都满足 RJW 的选性交部位条件。
             // 解析不到时保留当前动作和双方，明确记录无可确认接触；不能沿用上个随机动作的部位。
             // 这里只填写 RJW 已有解析载体，空列表让按真实插入遍历的怀孕／体液逻辑自然跳过。
             if (resolved == null && allowEmptyParts)

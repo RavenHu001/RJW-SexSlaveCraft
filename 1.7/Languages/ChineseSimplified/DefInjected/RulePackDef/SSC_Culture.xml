@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成；定点连接规则没有文学文本，四语保留相同左侧、优先级和专属子规则引用。 -->
+<LanguageData>
+  <!-- 道德导师专用；名称池在主奴秩序模因，无模因时保留原版 include 兜底。 -->
+  <SSC_NamerRoleMoralist.rulePack.rulesStrings.0>r_roleName(priority=10)-&gt;[SSC_MoralistPreset]</SSC_NamerRoleMoralist.rulePack.rulesStrings.0>
+  <!-- 契约仪式专用；不影响原版其他仪式。 -->
+  <SSC_NamerRitualBinding.rulePack.rulesStrings.0>r_ritualName(priority=10)-&gt;[SSC_BindingRitualPreset]</SSC_NamerRitualBinding.rulePack.rulesStrings.0>
+</LanguageData>

@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成；1.7 步骤 1。两类权重显式配置；反馈 comps 随后续真实 workers 接入。
+     description 已按测试稿 5改 落实；不使用意愿/历史事件组件。 -->
+<Defs>
+  <!-- 同一议题仅允许一个档位；顶层 Ideology 门控避免未启用文化 DLC 时装载本组定义。 -->
+  <IssueDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Issue_Trainer</defName>
+    <label>训导官</label>
+    <!-- 1.7 专属透明图标：白色短鞭与爱心、厚黑描边；本议题五档共用。 -->
+    <iconPath>UI/Issues/SSC_Trainer</iconPath>
+    <allowMultiplePrecepts>false</allowMultiplePrecepts>
+  </IssueDef>
+  <!-- 普通文化低档：defaultSelectionWeight=1；必选组抽取权重为零。不与主模因冲突，已有合法选择在改革时可保留。 反馈数值由步骤 2 挂载的 ThoughtDef 保存，顺序和重要度不换算数值。 -->
+  <PreceptDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Precept_Trainer_Hostile</defName>
+    <issue>SSC_Issue_Trainer</issue>
+    <label>敌视</label>
+    <description>视训导官为对主奴秩序的亵渎——主人与奴之间，岂容第三人横插一手。调教之责当归主人，假手他人便是僭越。</description>
+    <impact>Low</impact>
+    <displayOrderInIssue>10</displayOrderInIssue>
+    <allowDuplicates>false</allowDuplicates>
+    <countsTowardsPreceptLimit>true</countsTowardsPreceptLimit>
+    <selectionWeight>0</selectionWeight>
+    <defaultSelectionWeight>1</defaultSelectionWeight>
+    <!-- 原版持续反馈挂载：本人/环境互斥，跨 Issue 独立叠加；不产生行为记忆或拒绝。 -->
+    <comps>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_Trainer_Hostile_Self</thought>
+      </li>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_Trainer_Hostile_Social</thought>
+      </li>
+    </comps>
+  </PreceptDef>
+  <!-- 普通文化低档：defaultSelectionWeight=2；必选组抽取权重为零。不与主模因冲突，已有合法选择在改革时可保留。 反馈数值由步骤 2 挂载的 ThoughtDef 保存，顺序和重要度不换算数值。 -->
+  <PreceptDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Precept_Trainer_Revulsion</defName>
+    <issue>SSC_Issue_Trainer</issue>
+    <label>厌恶</label>
+    <description>对训导官的存在强烈反感，见其以鞭与链驯人，便觉此人下作不堪。</description>
+    <impact>Low</impact>
+    <displayOrderInIssue>20</displayOrderInIssue>
+    <allowDuplicates>false</allowDuplicates>
+    <countsTowardsPreceptLimit>true</countsTowardsPreceptLimit>
+    <selectionWeight>0</selectionWeight>
+    <defaultSelectionWeight>2</defaultSelectionWeight>
+    <!-- 原版持续反馈挂载：本人/环境互斥，跨 Issue 独立叠加；不产生行为记忆或拒绝。 -->
+    <comps>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_Trainer_Revulsion_Self</thought>
+      </li>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_Trainer_Revulsion_Social</thought>
+      </li>
+    </comps>
+  </PreceptDef>
+  <!-- 普通文化低档：defaultSelectionWeight=7；必选组抽取权重为零。不与主模因冲突，已有合法选择在改革时可保留。 反馈数值由步骤 2 挂载的 ThoughtDef 保存，顺序和重要度不换算数值。 -->
+  <PreceptDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Precept_Trainer_Indifference</defName>
+    <issue>SSC_Issue_Trainer</issue>
+    <label>漠视</label>
+    <description>不关心训导官的存续与作为，调教之事与己无关。</description>
+    <impact>Low</impact>
+    <displayOrderInIssue>30</displayOrderInIssue>
+    <allowDuplicates>false</allowDuplicates>
+    <countsTowardsPreceptLimit>true</countsTowardsPreceptLimit>
+    <selectionWeight>0</selectionWeight>
+    <defaultSelectionWeight>7</defaultSelectionWeight>
+  </PreceptDef>
+  <!-- 两类生成权重均为零，仅供手选或保留已有合法选择；associatedMemes 仅关联，不作前置门槛。 反馈数值由步骤 2 挂载的 ThoughtDef 保存，顺序和重要度不换算数值。 -->
+  <PreceptDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Precept_Trainer_Reverence</defName>
+    <issue>SSC_Issue_Trainer</issue>
+    <label>尊敬</label>
+    <description>承认训导官的调教技艺，对其能将野性之人鞭笞驯服、调教成俯首承欢的合格性奴的本领，致以由衷敬意。</description>
+    <impact>Medium</impact>
+    <displayOrderInIssue>40</displayOrderInIssue>
+    <allowDuplicates>false</allowDuplicates>
+    <countsTowardsPreceptLimit>true</countsTowardsPreceptLimit>
+    <selectionWeight>0</selectionWeight>
+    <defaultSelectionWeight>0</defaultSelectionWeight>
+    <associatedMemes><li>SSC_Meme_MasterSlaveOrder</li></associatedMemes>
+    <!-- 原版持续反馈挂载：本人/环境互斥，跨 Issue 独立叠加；不产生行为记忆或拒绝。 -->
+    <comps>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_Trainer_Reverence_Self</thought>
+      </li>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_Trainer_Reverence_Social</thought>
+      </li>
+    </comps>
+  </PreceptDef>
+  <!-- 主模因专属默认：必选组 selectionWeight=1，普通默认权重为零；requiredMemes 限定资格。 反馈数值由步骤 2 挂载的 ThoughtDef 保存，顺序和重要度不换算数值。 -->
+  <PreceptDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Precept_Trainer_SacredOffice</defName>
+    <issue>SSC_Issue_Trainer</issue>
+    <label>圣职</label>
+    <description>视训导官为一份神圣职务——他们以鞭为法器、以链为圣器，替主人调教出翘臀红肿、淫穴濡湿、顺从而虔诚的奴，其职如祭司般庄严。</description>
+    <impact>High</impact>
+    <displayOrderInIssue>50</displayOrderInIssue>
+    <allowDuplicates>false</allowDuplicates>
+    <countsTowardsPreceptLimit>true</countsTowardsPreceptLimit>
+    <selectionWeight>1</selectionWeight>
+    <defaultSelectionWeight>0</defaultSelectionWeight>
+    <requiredMemes><li>SSC_Meme_MasterSlaveOrder</li></requiredMemes>
+    <associatedMemes><li>SSC_Meme_MasterSlaveOrder</li></associatedMemes>
+    <!-- 原版持续反馈挂载：本人/环境互斥，跨 Issue 独立叠加；不产生行为记忆或拒绝。 -->
+    <comps>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_Trainer_SacredOffice_Self</thought>
+      </li>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_Trainer_SacredOffice_Social</thought>
+      </li>
+    </comps>
+  </PreceptDef>
+</Defs>

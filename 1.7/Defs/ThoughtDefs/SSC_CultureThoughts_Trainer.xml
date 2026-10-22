@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <!-- AI 辅助生成：1.7 文化步骤 2。原版挂载和最终结算；数值为确认契约，正文交给后续文案。 -->
+  <!-- 独立反馈按戒律挂载；阶段仅表达互斥状态，不按人数新增。 -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Culture_Trainer_Hostile_Self</defName>
+    <thoughtClass>Thought_Situational</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCCultureMood</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <!-- 配置只选条件；个人/双人数据不保存在共享 worker，环境人数复用 Game 快照。 -->
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
+        <condition>OfficerSelf</condition>
+      </li>
+    </modExtensions>
+    <stages>
+      <li>
+        <label>身为训导官</label>
+        <description>我竟担此亵渎之职，横在主人与奴之间，心中唯有羞耻。</description>
+        <baseMoodEffect>-8</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+  <!-- 独立反馈按戒律挂载；阶段仅表达互斥状态，不按人数新增。 -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Culture_Trainer_Hostile_Social</defName>
+    <thoughtClass>Thought_SituationalSocial</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCCultureSocial</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <!-- 配置只选条件；个人/双人数据不保存在共享 worker，环境人数复用 Game 快照。 -->
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
+        <condition>OfficerOther</condition>
+      </li>
+    </modExtensions>
+    <stages>
+      <li>
+        <label>敌视此训导官</label>
+        <description>此人僭越主奴秩序，以调教为名亵渎神圣，我深恶之。</description>
+        <baseOpinionOffset>-20</baseOpinionOffset>
+      </li>
+    </stages>
+  </ThoughtDef>
+  <!-- 独立反馈按戒律挂载；阶段仅表达互斥状态，不按人数新增。 -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Culture_Trainer_Revulsion_Self</defName>
+    <thoughtClass>Thought_Situational</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCCultureMood</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <!-- 配置只选条件；个人/双人数据不保存在共享 worker，环境人数复用 Game 快照。 -->
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
+        <condition>OfficerSelf</condition>
+      </li>
+    </modExtensions>
+    <stages>
+      <li>
+        <label>身为训导官</label>
+        <description>做这份差事让我浑身不自在。</description>
+        <baseMoodEffect>-4</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+  <!-- 独立反馈按戒律挂载；阶段仅表达互斥状态，不按人数新增。 -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Culture_Trainer_Revulsion_Social</defName>
+    <thoughtClass>Thought_SituationalSocial</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCCultureSocial</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <!-- 配置只选条件；个人/双人数据不保存在共享 worker，环境人数复用 Game 快照。 -->
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
+        <condition>OfficerOther</condition>
+      </li>
+    </modExtensions>
+    <stages>
+      <li>
+        <label>厌恶此训导官</label>
+        <description>见此人执鞭驯人，我便心生反感。</description>
+        <baseOpinionOffset>-10</baseOpinionOffset>
+      </li>
+    </stages>
+  </ThoughtDef>
+  <!-- 独立反馈按戒律挂载；阶段仅表达互斥状态，不按人数新增。 -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Culture_Trainer_Reverence_Self</defName>
+    <thoughtClass>Thought_Situational</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCCultureMood</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <!-- 配置只选条件；个人/双人数据不保存在共享 worker，环境人数复用 Game 快照。 -->
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
+        <condition>OfficerSelf</condition>
+      </li>
+    </modExtensions>
+    <stages>
+      <li>
+        <label>身为训导官</label>
+        <description>我能以鞭笞与操弄调教他人，使之成为俯首承欢的奴，这是份值得自豪的差事。</description>
+        <baseMoodEffect>3</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+  <!-- 独立反馈按戒律挂载；阶段仅表达互斥状态，不按人数新增。 -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Culture_Trainer_Reverence_Social</defName>
+    <thoughtClass>Thought_SituationalSocial</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCCultureSocial</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <!-- 配置只选条件；个人/双人数据不保存在共享 worker，环境人数复用 Game 快照。 -->
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
+        <condition>OfficerOther</condition>
+      </li>
+    </modExtensions>
+    <stages>
+      <li>
+        <label>尊敬此训导官</label>
+        <description>此人调教有方，能驯得再倔强的人也甘愿撅臀承欢，我敬其本领。</description>
+        <baseOpinionOffset>5</baseOpinionOffset>
+      </li>
+    </stages>
+  </ThoughtDef>
+  <!-- 独立反馈按戒律挂载；阶段仅表达互斥状态，不按人数新增。 -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Culture_Trainer_SacredOffice_Self</defName>
+    <thoughtClass>Thought_Situational</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCCultureMood</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <!-- 配置只选条件；个人/双人数据不保存在共享 worker，环境人数复用 Game 快照。 -->
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
+        <condition>OfficerSelf</condition>
+      </li>
+    </modExtensions>
+    <stages>
+      <li>
+        <label>司掌圣职</label>
+        <description>我以鞭为法器、以链为圣器，将野性之人抽打到翘臀红肿、下身湿透，再调教成虔诚顺从的奴——这神圣职务令我满心庄严。</description>
+        <baseMoodEffect>5</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+  <!-- 独立反馈按戒律挂载；阶段仅表达互斥状态，不按人数新增。 -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Culture_Trainer_SacredOffice_Social</defName>
+    <thoughtClass>Thought_SituationalSocial</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCCultureSocial</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <!-- 配置只选条件；个人/双人数据不保存在共享 worker，环境人数复用 Game 快照。 -->
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
+        <condition>OfficerOther</condition>
+      </li>
+    </modExtensions>
+    <stages>
+      <li>
+        <label>敬奉此训导官</label>
+        <description>此人以鞭与链、以阳具与技艺代主调教众奴，所司乃神圣职务，我对其满怀敬意。</description>
+        <baseOpinionOffset>10</baseOpinionOffset>
+      </li>
+    </stages>
+  </ThoughtDef>
+</Defs>

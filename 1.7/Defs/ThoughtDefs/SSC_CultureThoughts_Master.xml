@@ -1,0 +1,388 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <!-- AI 辅助生成：1.7 文化步骤 2。原版挂载和最终结算；数值为确认契约，正文交给后续文案。 -->
+  <!-- 独立反馈按戒律挂载；阶段仅表达互斥状态，不按人数新增。 -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Culture_Master_Hostile_Self</defName>
+    <thoughtClass>Thought_Situational</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCCultureMood</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <!-- 配置只选条件；个人/双人数据不保存在共享 worker，环境人数复用 Game 快照。 -->
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
+        <condition>MasterSelf</condition>
+      </li>
+    </modExtensions>
+    <stages>
+      <li>
+        <label>身为主人</label>
+        <description>我竟成了窃据他人身体的僭越者，这身份令我寝食难安。</description>
+        <baseMoodEffect>-12</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+  <!-- 独立反馈按戒律挂载；阶段仅表达互斥状态，不按人数新增。 -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Culture_Master_Hostile_ActualMaster</defName>
+    <thoughtClass>Thought_Situational</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCCultureMood</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <!-- 配置只选条件；个人/双人数据不保存在共享 worker，环境人数复用 Game 快照。 -->
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
+        <condition>ActualMaster</condition>
+      </li>
+    </modExtensions>
+    <stages>
+      <li>
+        <label>受制于主人</label>
+        <description>我的链子握在他人手中，被人当作玩物支配——这屈辱难以忍受。</description>
+        <baseMoodEffect>-8</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+  <!-- 独立反馈按戒律挂载；阶段仅表达互斥状态，不按人数新增。 -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Culture_Master_Hostile_Social</defName>
+    <thoughtClass>Thought_SituationalSocial</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCCultureSocial</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <!-- 配置只选条件；个人/双人数据不保存在共享 worker，环境人数复用 Game 快照。 -->
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
+        <condition>MasterOther</condition>
+      </li>
+    </modExtensions>
+    <stages>
+      <li>
+        <label>仇视此主人</label>
+        <description>此人以锁链窃据他人肉身与意志，是可憎的暴君。</description>
+        <baseOpinionOffset>-20</baseOpinionOffset>
+      </li>
+    </stages>
+  </ThoughtDef>
+  <!-- 独立反馈按戒律挂载；阶段仅表达互斥状态，不按人数新增。 -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Culture_Master_Hostile_Leader</defName>
+    <thoughtClass>Thought_Situational</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCCultureMood</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <!-- 配置只选条件；个人/双人数据不保存在共享 worker，环境人数复用 Game 快照。 -->
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
+        <condition>Leader</condition>
+      </li>
+    </modExtensions>
+    <stages>
+      <li>
+        <label>领袖竟是主人</label>
+        <description>我们的领袖竟是个窃据者，这令我痛心。</description>
+        <baseMoodEffect>-6</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+  <!-- 独立反馈按戒律挂载；阶段仅表达互斥状态，不按人数新增。 -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Culture_Master_Revulsion_Self</defName>
+    <thoughtClass>Thought_Situational</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCCultureMood</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <!-- 配置只选条件；个人/双人数据不保存在共享 worker，环境人数复用 Game 快照。 -->
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
+        <condition>MasterSelf</condition>
+      </li>
+    </modExtensions>
+    <stages>
+      <li>
+        <label>身为主人</label>
+        <description>执链驭奴的身份令我心中不适。</description>
+        <baseMoodEffect>-6</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+  <!-- 独立反馈按戒律挂载；阶段仅表达互斥状态，不按人数新增。 -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Culture_Master_Revulsion_ActualMaster</defName>
+    <thoughtClass>Thought_Situational</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCCultureMood</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <!-- 配置只选条件；个人/双人数据不保存在共享 worker，环境人数复用 Game 快照。 -->
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
+        <condition>ActualMaster</condition>
+      </li>
+    </modExtensions>
+    <stages>
+      <li>
+        <label>受制于主人</label>
+        <description>有人握着我的链子，这让我心生厌恶。</description>
+        <baseMoodEffect>-4</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+  <!-- 独立反馈按戒律挂载；阶段仅表达互斥状态，不按人数新增。 -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Culture_Master_Revulsion_Social</defName>
+    <thoughtClass>Thought_SituationalSocial</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCCultureSocial</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <!-- 配置只选条件；个人/双人数据不保存在共享 worker，环境人数复用 Game 快照。 -->
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
+        <condition>MasterOther</condition>
+      </li>
+    </modExtensions>
+    <stages>
+      <li>
+        <label>厌恶此主人</label>
+        <description>此人的主人做派令我反感。</description>
+        <baseOpinionOffset>-10</baseOpinionOffset>
+      </li>
+    </stages>
+  </ThoughtDef>
+  <!-- 独立反馈按戒律挂载；阶段仅表达互斥状态，不按人数新增。 -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Culture_Master_Revulsion_Leader</defName>
+    <thoughtClass>Thought_Situational</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCCultureMood</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <!-- 配置只选条件；个人/双人数据不保存在共享 worker，环境人数复用 Game 快照。 -->
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
+        <condition>Leader</condition>
+      </li>
+    </modExtensions>
+    <stages>
+      <li>
+        <label>领袖竟是主人</label>
+        <description>领袖竟是这般身份，令我心中不快。</description>
+        <baseMoodEffect>-3</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+  <!-- 独立反馈按戒律挂载；阶段仅表达互斥状态，不按人数新增。 -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Culture_Master_Deference_Self</defName>
+    <thoughtClass>Thought_Situational</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCCultureMood</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <!-- 配置只选条件；个人/双人数据不保存在共享 worker，环境人数复用 Game 快照。 -->
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
+        <condition>MasterSelf</condition>
+      </li>
+    </modExtensions>
+    <stages>
+      <li>
+        <label>身为主人</label>
+        <description>我执链驭奴、号令众人，众奴撅臀待我、任我驰骋，这主人之位令我自豪。</description>
+        <baseMoodEffect>4</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+  <!-- 独立反馈按戒律挂载；阶段仅表达互斥状态，不按人数新增。 -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Culture_Master_Deference_ActualMaster</defName>
+    <thoughtClass>Thought_Situational</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCCultureMood</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <!-- 配置只选条件；个人/双人数据不保存在共享 worker，环境人数复用 Game 快照。 -->
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
+        <condition>ActualMaster</condition>
+      </li>
+    </modExtensions>
+    <stages>
+      <li>
+        <label>有主可依</label>
+        <description>我的链子握在主人手中，我的淫穴归主人所有，这份被占有的归属让我安心。</description>
+        <baseMoodEffect>3</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+  <!-- 独立反馈按戒律挂载；阶段仅表达互斥状态，不按人数新增。 -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Culture_Master_Deference_Social</defName>
+    <thoughtClass>Thought_SituationalSocial</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCCultureSocial</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <!-- 配置只选条件；个人/双人数据不保存在共享 worker，环境人数复用 Game 快照。 -->
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
+        <condition>MasterOther</condition>
+      </li>
+    </modExtensions>
+    <stages>
+      <li>
+        <label>敬奉此主人</label>
+        <description>此人执掌欲望、统御奴仆，众奴拜服其胯下，我敬重其主人之威。</description>
+        <baseOpinionOffset>5</baseOpinionOffset>
+      </li>
+    </stages>
+  </ThoughtDef>
+  <!-- 独立反馈按戒律挂载；阶段仅表达互斥状态，不按人数新增。 -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Culture_Master_Deference_Leader</defName>
+    <thoughtClass>Thought_Situational</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCCultureMood</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <!-- 配置只选条件；个人/双人数据不保存在共享 worker，环境人数复用 Game 快照。 -->
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
+        <condition>Leader</condition>
+        <nonMasterLeaderStage>1</nonMasterLeaderStage>
+        <sexSlaveLeaderStage>2</sexSlaveLeaderStage>
+      </li>
+    </modExtensions>
+    <stages>
+      <li>
+        <label>领袖为主人</label>
+        <description>我们的领袖身为主人，统御有方，我由衷拥戴。</description>
+        <baseMoodEffect>3</baseMoodEffect>
+      </li>
+      <li>
+        <label>领袖非主人</label>
+        <description>领袖竟非主人，这样的领袖如何统御欲望？</description>
+        <baseMoodEffect>-3</baseMoodEffect>
+      </li>
+      <!-- 性奴领袖单独一档，与普通非主人阶段互斥；不改变实际主人或身份规则。 -->
+      <li>
+        <label>领袖竟是性奴</label>
+        <description>我们的领袖竟是个俯首为奴之人，这实在有辱秩序。</description>
+        <baseMoodEffect>-6</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+  <!-- 独立反馈按戒律挂载；阶段仅表达互斥状态，不按人数新增。 -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Culture_Master_HolyMaster_Self</defName>
+    <thoughtClass>Thought_Situational</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCCultureMood</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <!-- 配置只选条件；个人/双人数据不保存在共享 worker，环境人数复用 Game 快照。 -->
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
+        <condition>MasterSelf</condition>
+      </li>
+    </modExtensions>
+    <stages>
+      <li>
+        <label>身为圣主</label>
+        <description>我乃被供奉的主人，众奴以唇舌与肉身服侍于我，任我尽情驰骋、抽送到她们失声浪叫——这神圣的身份令我如登极乐。</description>
+        <baseMoodEffect>10</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+  <!-- 独立反馈按戒律挂载；阶段仅表达互斥状态，不按人数新增。 -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Culture_Master_HolyMaster_ActualMaster</defName>
+    <thoughtClass>Thought_Situational</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCCultureMood</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <!-- 配置只选条件；个人/双人数据不保存在共享 worker，环境人数复用 Game 快照。 -->
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
+        <condition>ActualMaster</condition>
+      </li>
+    </modExtensions>
+    <stages>
+      <li>
+        <label>供奉主人</label>
+        <description>我的主人是神圣的存在，能以唇舌与淫穴侍奉于他、任他灌满我的身体，我满心感恩。</description>
+        <baseMoodEffect>5</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+  <!-- 独立反馈按戒律挂载；阶段仅表达互斥状态，不按人数新增。 -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Culture_Master_HolyMaster_Social</defName>
+    <thoughtClass>Thought_SituationalSocial</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCCultureSocial</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <!-- 配置只选条件；个人/双人数据不保存在共享 worker，环境人数复用 Game 快照。 -->
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
+        <condition>MasterOther</condition>
+      </li>
+    </modExtensions>
+    <stages>
+      <li>
+        <label>敬奉此圣主</label>
+        <description>此人是被供奉的主人，一言一行皆是神意，众奴以高潮为祭、以肉身为香，我予以最高尊崇。</description>
+        <baseOpinionOffset>15</baseOpinionOffset>
+      </li>
+    </stages>
+  </ThoughtDef>
+  <!-- 独立反馈按戒律挂载；阶段仅表达互斥状态，不按人数新增。 -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Culture_Master_HolyMaster_Leader</defName>
+    <thoughtClass>Thought_Situational</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCCultureMood</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <!-- 配置只选条件；个人/双人数据不保存在共享 worker，环境人数复用 Game 快照。 -->
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
+        <condition>Leader</condition>
+        <nonMasterLeaderStage>1</nonMasterLeaderStage>
+        <sexSlaveLeaderStage>2</sexSlaveLeaderStage>
+      </li>
+    </modExtensions>
+    <stages>
+      <li>
+        <label>圣主为领袖</label>
+        <description>我们的领袖乃神圣的主人，这是天降的恩典。</description>
+        <baseMoodEffect>6</baseMoodEffect>
+      </li>
+      <li>
+        <label>领袖非主人</label>
+        <description>领袖竟不是主人，这简直是对神圣秩序的嘲弄。</description>
+        <baseMoodEffect>-6</baseMoodEffect>
+      </li>
+      <!-- 性奴领袖单独一档，与普通非主人阶段互斥；不改变实际主人或身份规则。 -->
+      <li>
+        <label>领袖竟是性奴</label>
+        <description>神圣的领袖之位竟被一个性奴占据，这是莫大的亵渎。</description>
+        <baseMoodEffect>-12</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+  <!-- 仅评价有效正式性奴领袖；观察者戒律决定值，原版排除自身并维护来源与缓存。 -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Culture_Master_Deference_SexSlaveLeaderSocial</defName>
+    <thoughtClass>Thought_SituationalSocial</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCCultureSocial</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
+        <condition>SexSlaveLeaderOther</condition>
+      </li>
+    </modExtensions>
+    <stages>
+      <li>
+        <label>鄙夷此性奴领袖</label>
+        <description>此人身为性奴却窃居领袖之位，有辱主奴秩序。</description>
+        <baseOpinionOffset>-10</baseOpinionOffset>
+      </li>
+    </stages>
+  </ThoughtDef>
+  <!-- 仅评价有效正式性奴领袖；观察者戒律决定值，原版排除自身并维护来源与缓存。 -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Culture_Master_HolyMaster_SexSlaveLeaderSocial</defName>
+    <thoughtClass>Thought_SituationalSocial</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCCultureSocial</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
+        <condition>SexSlaveLeaderOther</condition>
+      </li>
+    </modExtensions>
+    <stages>
+      <li>
+        <label>痛恨此性奴领袖</label>
+        <description>一个性奴竟敢僭居神圣领袖之位，这是对秩序的亵渎。</description>
+        <baseOpinionOffset>-20</baseOpinionOffset>
+      </li>
+    </stages>
+  </ThoughtDef>
+</Defs>

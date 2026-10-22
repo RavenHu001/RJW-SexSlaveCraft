@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <!-- AI 辅助生成：1.7 步骤 3。实际人数不截断，仅计罚超额封顶 3；描述留给后续文案。 -->
+  <!-- 社交使用固定阶段；心情基础 -3 乘封顶累进倍率。不产生记忆或永久关系。 -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Culture_MasterCount_One_Self</defName>
+    <thoughtClass>Thought_Situational</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCCultureMood</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
+        <condition>MasterCountExcess</condition>
+        <countLimit>1</countLimit>
+      </li>
+    </modExtensions>
+    <stages>
+      <li>
+        <label>主人过多</label>
+        <description>殖民地的主人多于一人，欲望各执其链，秩序已然混乱。</description>
+        <baseMoodEffect>-3</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+  <!-- 社交使用固定阶段；心情基础 -3 乘封顶累进倍率。不产生记忆或永久关系。 -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Culture_MasterCount_Three_Self</defName>
+    <thoughtClass>Thought_Situational</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCCultureMood</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
+        <condition>MasterCountExcess</condition>
+        <countLimit>3</countLimit>
+      </li>
+    </modExtensions>
+    <stages>
+      <li>
+        <label>主人过多</label>
+        <description>殖民地的主人多于三人，众多主人各立门户，令我心生不安。</description>
+        <baseMoodEffect>-3</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+  <!-- 社交使用固定阶段；心情基础 -3 乘封顶累进倍率。不产生记忆或永久关系。 -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Culture_SlaveCount_One_Self</defName>
+    <thoughtClass>Thought_Situational</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCCultureMood</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
+        <condition>BoundSlaveCountExcess</condition>
+        <countLimit>1</countLimit>
+      </li>
+    </modExtensions>
+    <stages>
+      <li>
+        <label>性奴过多</label>
+        <description>我名下的性奴多于一人，恩宠既分，淫穴与链环便难严丝合缝。</description>
+        <baseMoodEffect>-3</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+  <!-- 社交使用固定阶段；心情基础 -3 乘封顶累进倍率。不产生记忆或永久关系。 -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Culture_SlaveCount_Three_Self</defName>
+    <thoughtClass>Thought_Situational</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCCultureMood</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
+        <condition>BoundSlaveCountExcess</condition>
+        <countLimit>3</countLimit>
+      </li>
+    </modExtensions>
+    <stages>
+      <li>
+        <label>性奴过多</label>
+        <description>我名下的性奴多于三人，阳具分身乏术、调教不周，令我愧疚。</description>
+        <baseMoodEffect>-3</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+  <!-- 社交使用固定阶段；心情基础 -3 乘封顶累进倍率。不产生记忆或永久关系。 -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Culture_SlaveCount_One_Social</defName>
+    <thoughtClass>Thought_SituationalSocial</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCCultureSocial</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
+        <condition>OtherMasterBoundSlaveCountExcess</condition>
+        <countLimit>1</countLimit>
+      </li>
+    </modExtensions>
+    <stages>
+      <li>
+        <label>主人蓄奴过多</label>
+        <description>此主人名下性奴不止一人，令我侧目。</description>
+        <baseOpinionOffset>-5</baseOpinionOffset>
+      </li>
+      <li>
+        <label>主人蓄奴过多</label>
+        <description>此主人蓄奴无度，实属放纵。</description>
+        <baseOpinionOffset>-15</baseOpinionOffset>
+      </li>
+      <li>
+        <label>主人蓄奴过多</label>
+        <description>此主人贪得无厌、蓄奴成群，令我深恶。</description>
+        <baseOpinionOffset>-30</baseOpinionOffset>
+      </li>
+    </stages>
+  </ThoughtDef>
+  <!-- 社交使用固定阶段；心情基础 -3 乘封顶累进倍率。不产生记忆或永久关系。 -->
+  <ThoughtDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Culture_SlaveCount_Three_Social</defName>
+    <thoughtClass>Thought_SituationalSocial</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCCultureSocial</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCCultureThoughtExtension">
+        <condition>OtherMasterBoundSlaveCountExcess</condition>
+        <countLimit>3</countLimit>
+      </li>
+    </modExtensions>
+    <stages>
+      <li>
+        <label>主人蓄奴过多</label>
+        <description>此主人名下性奴多于三人，令我侧目。</description>
+        <baseOpinionOffset>-5</baseOpinionOffset>
+      </li>
+      <li>
+        <label>主人蓄奴过多</label>
+        <description>此主人蓄奴无度，实属放纵。</description>
+        <baseOpinionOffset>-15</baseOpinionOffset>
+      </li>
+      <li>
+        <label>主人蓄奴过多</label>
+        <description>此主人贪得无厌、蓄奴成群，令我深恶。</description>
+        <baseOpinionOffset>-30</baseOpinionOffset>
+      </li>
+    </stages>
+  </ThoughtDef>
+</Defs>

@@ -529,6 +529,7 @@ internal static class TestWorld
     public static bool ReceiverSucceeds = true, SynchronizeSucceeds = true, Animating = true;
     public static bool ResolveActSucceeds = true;
     public static bool RitualActSetupSucceeds = true;
+    public static bool PEActSetupSucceeds = true;
     public static Action OnResolveAct;
     public static int CombatantProgressAwards, ScoreCalls;
     public static float OutcomeScore, BodyScore, CombatantScore;
@@ -569,6 +570,7 @@ internal static class TestWorld
         ReceiverSucceeds = SynchronizeSucceeds = true;
         ResolveActSucceeds = true;
         RitualActSetupSucceeds = true;
+        PEActSetupSucceeds = true;
         OnResolveAct = null;
         RjwEndCalls = 0;
         LastGotoThingMode = PathEndMode.OnCell;

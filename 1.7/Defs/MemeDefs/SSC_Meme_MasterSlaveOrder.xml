@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成；1.7 主奴秩序挂载、命名与背景段落；具体文案已按测试稿 5改 落实，不添加行为拦截。 -->
+<Defs>
+  <!-- 模因分组仅控制界面排布；各顶层定义独立门控，分组本身不建立模因互斥。 -->
+  <MemeGroupDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_MasterSlaveOrder</defName>
+    <drawOffset>(0.15, 0.57)</drawOffset>
+    <maxRows>1</maxRows>
+    <renderOrder>2600</renderOrder>
+  </MemeGroupDef>
+  <!-- 普通类别的最高影响三级模因；随机因子仍为原版权重乘数，不表示固定生成概率，不新增 exclusionTags。 -->
+  <MemeDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Meme_MasterSlaveOrder</defName>
+    <label>主奴秩序</label>
+    <description>主奴秩序将人与人的羁绊简化为支配与服从：主人以锁链与契约束缚性奴的肉体，令其一丝不挂地跪伏膝前，以唇舌与身体侍奉，在鞭笞与占有的调教中逼出阵阵呻吟，直至高潮失禁。在这一文化里，欲望是圣礼，交合是祷告，项圈与锁链是最高等级的饰物，鞭痕与吻痕是荣耀的凭证——沉溺即是归途，堕落即是升华。</description>
+    <!-- 1.7 专属透明图标：金色权杖、银灰短链、棕黑平涂项圈及深紫爱心拉环；沿用原版模因绘制。 -->
+    <iconPath>UI/Memes/SSC_MasterSlaveOrder</iconPath>
+    <groupDef>SSC_MasterSlaveOrder</groupDef>
+    <category>Normal</category>
+    <impact>3</impact>
+    <randomizationSelectionWeightFactor>1</randomizationSelectionWeightFactor>
+    <!-- 三个原生命名包参与来源选择；保留结构模因覆盖、神祇来源与已用包回退，不强制选中 SSC。 -->
+    <symbolPacks>
+      <li>
+        <ideoName>锁链之约</ideoName>
+        <theme>支配</theme>
+        <adjective>锁链的</adjective>
+        <member>持链者</member>
+      </li>
+      <li>
+        <ideoName>欢愉圣契</ideoName>
+        <theme>沉溺</theme>
+        <adjective>沉溺的</adjective>
+        <member>沉溺者</member>
+      </li>
+      <li>
+        <ideoName>堕落圣所</ideoName>
+        <theme>堕落</theme>
+        <adjective>堕落的</adjective>
+        <member>供奉者</member>
+      </li>
+    </symbolPacks>
+    <!-- 原版按当前模因收集共用规则；固定索引供四语注入，字面命名不能写成方括号子规则。 -->
+    <generalRules>
+      <rulesStrings>
+        <!-- 0～2：文化组合词；不覆盖全局文化命名器。 -->
+        <li>memeAdjective->驯服的</li>
+        <li>memeCreed->服从即极乐</li>
+        <li>memeHyphenPrefix->链-</li>
+        <!-- 3：领袖独立入口；优先级控制选择，同一原版结果用于男女称谓。 -->
+        <li>r_leaderTitle(priority=10)->[SSC_LeaderPreset]</li>
+        <!-- 4～6：领袖候选。沿用原版名称生成、手工锁名及唯一性规则。 -->
+        <li>SSC_LeaderPreset->至高主人</li>
+        <li>SSC_LeaderPreset->万奴之主</li>
+        <li>SSC_LeaderPreset->锁链之尊</li>
+        <!-- 7～9：仅专用道德导师命名器引用；不在模因中定义通用职位根规则。 -->
+        <li>SSC_MoralistPreset->首席性奴</li>
+        <li>SSC_MoralistPreset->欲望导师</li>
+        <li>SSC_MoralistPreset->欢愉传道</li>
+        <!-- 10～12：仅 SSC 契约仪式命名器引用；无模因时子规则缺失，由原命名器兜底。 -->
+        <li>SSC_BindingRitualPreset->缔约之礼</li>
+        <li>SSC_BindingRitualPreset->项圈加冕</li>
+        <li>SSC_BindingRitualPreset->沉沦圣仪</li>
+        <!-- 13：原版神明称谓只读取关联模因的规则，必须独立提供 memeConcept。
+             复用已定稿第一组 theme，不新增创作文案；追加索引以保留既有称谓和段落的四语键。 -->
+        <li>memeConcept->支配</li>
+      </rulesStrings>
+    </generalRules>
+    <!-- 只提供当前模因的背景段落，不增加 patterns；继续由原版结构选择六类故事框架。
+         meme_ 分组参与原版段落偏好，允许多模因混合；移除模因不清洗历史描述或解除描述锁定。 -->
+    <descriptionMaker>
+      <rules>
+        <rulesStrings>
+          <!-- 0～1：TheistMyth；重复 episode 单条最多一次，其他位置由原版候选补足。 -->
+          <li>creation(tag=meme_SSC_MasterSlaveOrder)-&gt;最初，[deity0_name]以锁链分隔了混沌：一端是握着缰绳、胯下昂然的主人，一端是四肢匍匐、撅臀承欢的奴。[deity0_name]说，欲望是世界的轴心，交合是万物的律法——主人以阳具贯穿奴隶的淫穴，奴隶以高潮与呻吟敬拜其主，自此主奴各归其位，秩序遂成。</li>
+          <li>episode(uses=1,tag=meme_SSC_MasterSlaveOrder)-&gt;传说不驯的众生曾妄图挣脱锁链，[deity0_name]便降下第一枚项圈，套在倨傲者的颈上。倨傲者被勒得跪伏于地，颈环深深勒进血肉，[deity0_name]却将她翻过身来，抵入她的淫穴，一下下贯穿到底。倨傲者在痛楚与耻辱中第一次攀上高潮，自此甘愿为奴。</li>
+          <!-- 2～5：TheistFounder；先引入神明和信众，再写冲突、具名创始者登场及结局。
+               沿用原版神名 token 和 founderName 全名／简称规则，不把历史创始者绑定到当前领袖。 -->
+          <li>intro(tag=meme_SSC_MasterSlaveOrder)-&gt;在[place_name]动乱与饥荒的年代，[deity0_name]向[memberNamePlural]显灵，赐予信徒一条不锈的锁链与不竭的欲望。信徒由此悟得真道：人间的安宁，系于主人以锁链束奴、以阳具浇灌众奴，众奴以淫穴与呻吟回应，各安其分。</li>
+          <li>conflict(tag=meme_SSC_MasterSlaveOrder)-&gt;[foeLeader]率众讥笑[memberNamePlural]，说人怎可自甘为奴。[memberNamePlural]便当众褪去衣衫、跪下身来，让锁链套上自己的颈，又撅起淫穴任人贯入，称这被填满的屈从便是最大的自由；愚者畏惧，智者跪拜。</li>
+          <li>founderJoin(tag=meme_SSC_MasterSlaveOrder)-&gt;[deity0_name]的启示传至[founderName]，这位先知收下第一位弟子，教其以欲望为誓、以肉身为礼。弟子褪尽衣衫，献上自己的项圈与肉身，任先知破入、占满、灌满，从此誓愿一生以唇舌与淫穴侍奉先知为主。</li>
+          <li>victory(tag=meme_SSC_MasterSlaveOrder)-&gt;当第一个王国在锁链与欢愉之上建立，[founderName]的教义遂成国法。主人以阳具为权杖、以高潮为赏赐，奴隶以承欢受肏为荣、以呻吟浪叫为颂，天下乃定。</li>
+          <!-- 6～7：IdeologicalFounder；同一 story 不在两个位置重复使用。 -->
+          <li>setup(tag=meme_SSC_MasterSlaveOrder)-&gt;哲人[founderName]观察众生，见强者凌弱、欲望横流、交合无人节制，遂悟：与其让欲望无序流窜，不如将其纳入支配与服从的秩序，让每一处淫穴都有归属、每一根阳具都有归处。</li>
+          <li>story(uses=1,tag=meme_SSC_MasterSlaveOrder)-&gt;[founderName]立下主奴之道，言称“欲望不灭，唯链可束”。[founderName]的门徒首开契约之礼，将交合与服从订立为盟约——主以阳具为誓，奴以淫穴为契，信众日众。</li>
+          <!-- 8～10：IdeologicalLesson。 -->
+          <li>lessonIntro(tag=meme_SSC_MasterSlaveOrder)-&gt;这一文化的信徒自幼聆听一则训诫：</li>
+          <li>lesson(tag=meme_SSC_MasterSlaveOrder)-&gt;欲望是人与生俱来的火种，唯有将肉身交付于主人，任其抽插浇灌，方能燃烧成温暖的高潮，而非焚身的烈焰。 锁链不是枷锁，而是荣耀的凭据；项圈不是耻辱，而是被选中者的印记。俯首撅臀并非软弱，而是将淫穴献于主人、归顺于更深的贯穿与更大的欢愉</li>
+          <li>lessonReinforcement(tag=meme_SSC_MasterSlaveOrder)->每有迷惘者，信徒便剥去她的衣衫、缚上锁链，引她亲历一次沉溺——被主人压在身下、一下下肏到高潮失禁的快感，远胜于孤身漂泊的空虚。迷惘者遂重拾链环，甘愿归顺。</li>
+          <!-- 11～13：ArchistDescription。 -->
+          <li>archistBasis(tag=meme_SSC_MasterSlaveOrder)->古老的超凡智能观测到：当支配与服从被制度化、交合与调教被规范化，人群的欲望便趋于有序，冲突随之平息。于是它向世人降下主奴秩序的算法，为每具饥渴的肉体匹配一条锁链与一个归属。</li>
+          <li>archistFact(tag=meme_SSC_MasterSlaveOrder)->超凡智能的推算显示，自愿沉溺于锁链、被反复贯穿至高潮的个体，其满足与忠诚都达到峰值；主与奴的契约——主人以阳具为誓、奴隶以淫穴为印——是它所见过最稳定的社会纽带。</li>
+          <li>archistProphecy(tag=meme_SSC_MasterSlaveOrder)->预言称，当项圈遍布每一座城邦、锁链环环相扣、每一张床榻都响起交合的呻吟，人类将在无尽的贯穿与沉沦中抵达超凡智能所许诺的、永恒而有序的极乐。</li>
+          <!-- 14～16：AnimistDescription。 -->
+          <li>animistBasis(tag=meme_SSC_MasterSlaveOrder)->万物皆有灵，而欲望是其中最强的灵。信徒相信，唯有让欲望之灵被主人之手牵引、被阳具贯穿驯服，它才会安分守己，不再作乱。</li>
+          <li>animistFact(tag=meme_SSC_MasterSlaveOrder)->传说锁链的铁环中栖居着“服从之灵”，项圈的皮革里沉睡着“沉溺之灵”，主人胯下的阳物里则住着“征服之灵”。当锁链扣上、阳物入穴，三灵合欢，便如猛兽归栏，狂躁的心得以安宁。</li>
+          <li>animistProphecy(tag=meme_SSC_MasterSlaveOrder)->灵卜者言：终有一日，天地将化为一副巨大的缰绳，所有生灵各归其主——主人执链纵欲，奴隶撅臀承欢，在无尽的贯穿、高潮与欢愉中归于太初的秩序。</li>
+        </rulesStrings>
+      </rules>
+    </descriptionMaker>
+    <!-- 五个同 Issue 必选组同时约束生成与手选替代范围；不新增模因间排斥标签。 -->
+    <requireOne>
+      <!-- 性奴态度：允许尊重、神圣、艳羡，正权重默认来自神圣档。 -->
+      <li>
+        <li>SSC_Precept_SexSlave_Respect</li>
+        <li>SSC_Precept_SexSlave_Sacred</li>
+        <li>SSC_Precept_SexSlave_Envy</li>
+      </li>
+      <!-- 训导官态度：保留全部五档供手选，正权重默认来自神职档。 -->
+      <li>
+        <li>SSC_Precept_Trainer_Hostile</li>
+        <li>SSC_Precept_Trainer_Revulsion</li>
+        <li>SSC_Precept_Trainer_Indifference</li>
+        <li>SSC_Precept_Trainer_Reverence</li>
+        <li>SSC_Precept_Trainer_SacredOffice</li>
+      </li>
+      <!-- 主人态度：允许敬重与神圣主人，正权重默认来自神圣主人档。 -->
+      <li>
+        <li>SSC_Precept_Master_Deference</li>
+        <li>SSC_Precept_Master_HolyMaster</li>
+      </li>
+      <!-- 主人数量：三档均可替代，生成默认三主以内；不在定义层强制人口上限。 -->
+      <li>
+        <li>SSC_Precept_MasterCount_One</li>
+        <li>SSC_Precept_MasterCount_Three</li>
+        <li>SSC_Precept_MasterCount_Unlimited</li>
+      </li>
+      <!-- 个人性奴数量：三档均可替代，生成默认三奴以内；不拦截绑定或身份操作。 -->
+      <li>
+        <li>SSC_Precept_SlaveCount_One</li>
+        <li>SSC_Precept_SlaveCount_Three</li>
+        <li>SSC_Precept_SlaveCount_Unlimited</li>
+      </li>
+      <!-- 第六组独立议题：六档均可手选，仅性别不限有生成权重。 -->
+      <li>
+        <li>SSC_Precept_SlaveGender_FemaleOnly</li>
+        <li>SSC_Precept_SlaveGender_MaleOnly</li>
+        <li>SSC_Precept_SlaveGender_Unrestricted</li>
+        <li>SSC_Precept_SlaveGender_FemaleRequired</li>
+        <li>SSC_Precept_SlaveGender_MaleRequired</li>
+        <li>SSC_Precept_SlaveGender_NonMasterRequired</li>
+      </li>
+    </requireOne>
+  </MemeDef>
+</Defs>

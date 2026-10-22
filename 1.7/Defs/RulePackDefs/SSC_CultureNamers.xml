@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成；1.7 定点命名器。专属子规则仅来自当前主奴秩序模因，不新增职位或仪式。 -->
+<Defs>
+  <!-- 原版道德导师（传道者／传教士）专用；无 SSC 子规则时原版解析器回退 include 的候选。
+       通用根只放在此命名器，避免研究／射击等其他职位引用同一预设。 -->
+  <RulePackDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_NamerRoleMoralist</defName>
+    <include><li>NamerRoleMoralist</li></include>
+    <rulePack>
+      <rulesStrings>
+        <li>r_roleName(priority=10)->[SSC_MoralistPreset]</li>
+      </rulesStrings>
+    </rulePack>
+  </RulePackDef>
+  <!-- SSC 契约仪式专用；保留节庆命名兜底、名称唯一性及原版有界重试。
+       不修改 CelebrationPartyChat 父模式，不在读档时迁移旧实例保存的命名器或名称。 -->
+  <RulePackDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_NamerRitualBinding</defName>
+    <include><li>NamerRitualFestival</li></include>
+    <rulePack>
+      <rulesStrings>
+        <li>r_ritualName(priority=10)->[SSC_BindingRitualPreset]</li>
+      </rulesStrings>
+    </rulePack>
+  </RulePackDef>
+</Defs>

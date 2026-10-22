@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <!-- 阶段名称与描述已落实；键和阶段号是机制契约。 -->
+  <SSC_Culture_SexSlave_Hostile_Self.stages.0.label>Being a sex slave</SSC_Culture_SexSlave_Hostile_Self.stages.0.label>
+  <SSC_Culture_SexSlave_Hostile_Self.stages.0.description>To have sunk so low, with a chain of shame locked around my neck — I find this harder to bear than death.</SSC_Culture_SexSlave_Hostile_Self.stages.0.description>
+  <SSC_Culture_SexSlave_Revulsion_Self.stages.0.label>Being a sex slave</SSC_Culture_SexSlave_Revulsion_Self.stages.0.label>
+  <SSC_Culture_SexSlave_Revulsion_Self.stages.0.description>This body of mine is bound by a chain, and every breath fills me with disgust.</SSC_Culture_SexSlave_Revulsion_Self.stages.0.description>
+  <SSC_Culture_SexSlave_Sacred_Self.stages.0.label>Being a sex slave</SSC_Culture_SexSlave_Sacred_Self.stages.0.label>
+  <SSC_Culture_SexSlave_Sacred_Self.stages.0.description>I kneel naked at my master's feet and let him thrust, whip and fill every part of me, offering up all my climaxes — this holy taming leaves me weak all over and full of devotion.</SSC_Culture_SexSlave_Sacred_Self.stages.0.description>
+  <SSC_Culture_SexSlave_Envy_Self.stages.0.label>Became a sex slave</SSC_Culture_SexSlave_Envy_Self.stages.0.label>
+  <SSC_Culture_SexSlave_Envy_Self.stages.0.description>At last my wish has come true: there is a collar around my neck and my master pierces me again and again — this indulgence of being possessed and fucked is exactly the bliss I dreamed of.</SSC_Culture_SexSlave_Envy_Self.stages.0.description>
+  <SSC_Culture_SexSlave_Envy_Self.stages.1.label>Craving slavery</SSC_Culture_SexSlave_Envy_Self.stages.1.label>
+  <SSC_Culture_SexSlave_Envy_Self.stages.1.description>I am neither master nor sex slave, my loins itch and my desire has nowhere to rest — how I wish someone would put a chain around my neck and drive a cock into my body.</SSC_Culture_SexSlave_Envy_Self.stages.1.description>
+  <SSC_Culture_SexSlave_Hostile_Environment.stages.0.label>Sex slaves nearby</SSC_Culture_SexSlave_Hostile_Environment.stages.0.label>
+  <SSC_Culture_SexSlave_Hostile_Environment.stages.0.description>Someone is being used under a chain, and I cannot look away from it.</SSC_Culture_SexSlave_Hostile_Environment.stages.0.description>
+  <SSC_Culture_SexSlave_Revulsion_Environment.stages.0.label>Sex slaves nearby</SSC_Culture_SexSlave_Revulsion_Environment.stages.0.label>
+  <SSC_Culture_SexSlave_Revulsion_Environment.stages.0.description>Someone nearby bows their head as a slave, and it sickens me.</SSC_Culture_SexSlave_Revulsion_Environment.stages.0.description>
+  <SSC_Culture_SexSlave_Sacred_Environment.stages.0.label>Surrounded by sex slaves</SSC_Culture_SexSlave_Sacred_Environment.stages.0.label>
+  <SSC_Culture_SexSlave_Sacred_Environment.stages.0.description>These sex slaves kneel naked around me, trained into perfect obedience; their moans and their devotion make this place more holy still.</SSC_Culture_SexSlave_Sacred_Environment.stages.0.description>
+  <SSC_Culture_SexSlave_Revulsion_Social.stages.0.label>Disgusted by this sex slave</SSC_Culture_SexSlave_Revulsion_Social.stages.0.label>
+  <SSC_Culture_SexSlave_Revulsion_Social.stages.0.description>This one bears a chain and serves as a slave, and I find them repulsive.</SSC_Culture_SexSlave_Revulsion_Social.stages.0.description>
+  <SSC_Culture_SexSlave_Respect_Social.stages.0.label>Respect for this sex slave</SSC_Culture_SexSlave_Respect_Social.stages.0.label>
+  <SSC_Culture_SexSlave_Respect_Social.stages.0.description>Slave though they are, they are still a person, and I respect their dignity.</SSC_Culture_SexSlave_Respect_Social.stages.0.description>
+  <SSC_Culture_SexSlave_Sacred_Social.stages.0.label>Reverence for this sex slave</SSC_Culture_SexSlave_Sacred_Social.stages.0.label>
+  <SSC_Culture_SexSlave_Sacred_Social.stages.0.description>This one has given flesh and climax wholly to a master; they are chosen by the god, and I hold them in deep reverence.</SSC_Culture_SexSlave_Sacred_Social.stages.0.description>
+  <SSC_Culture_SexSlave_Envy_Social.stages.0.label>Envy of this sex slave</SSC_Culture_SexSlave_Envy_Social.stages.0.label>
+  <SSC_Culture_SexSlave_Envy_Social.stages.0.description>This one has found their place, possessed each night by a master and fucked to climax; my loins itch with envy.</SSC_Culture_SexSlave_Envy_Social.stages.0.description>
+  <SSC_Culture_Trainer_Hostile_Self.stages.0.label>Being a training officer</SSC_Culture_Trainer_Hostile_Self.stages.0.label>
+  <SSC_Culture_Trainer_Hostile_Self.stages.0.description>That I should hold this desecrating office, standing between master and slave — I feel nothing but shame.</SSC_Culture_Trainer_Hostile_Self.stages.0.description>
+  <SSC_Culture_Trainer_Hostile_Social.stages.0.label>Hostile to this training officer</SSC_Culture_Trainer_Hostile_Social.stages.0.label>
+  <SSC_Culture_Trainer_Hostile_Social.stages.0.description>This one usurps the master-slave order and desecrates the sacred under the name of training; I loathe them.</SSC_Culture_Trainer_Hostile_Social.stages.0.description>
+  <SSC_Culture_Trainer_Revulsion_Self.stages.0.label>Being a training officer</SSC_Culture_Trainer_Revulsion_Self.stages.0.label>
+  <SSC_Culture_Trainer_Revulsion_Self.stages.0.description>Doing this work leaves me uneasy in my own skin.</SSC_Culture_Trainer_Revulsion_Self.stages.0.description>
+  <SSC_Culture_Trainer_Revulsion_Social.stages.0.label>Revulsion toward this training officer</SSC_Culture_Trainer_Revulsion_Social.stages.0.label>
+  <SSC_Culture_Trainer_Revulsion_Social.stages.0.description>Seeing this one tame people with a whip in hand disgusts me.</SSC_Culture_Trainer_Revulsion_Social.stages.0.description>
+  <SSC_Culture_Trainer_Reverence_Self.stages.0.label>Being a training officer</SSC_Culture_Trainer_Reverence_Self.stages.0.label>
+  <SSC_Culture_Trainer_Reverence_Self.stages.0.description>I can train others with the whip and with my hands, making them into slaves who bow their heads and take their master gladly — this is work to be proud of.</SSC_Culture_Trainer_Reverence_Self.stages.0.description>
+  <SSC_Culture_Trainer_Reverence_Social.stages.0.label>Reverence for this training officer</SSC_Culture_Trainer_Reverence_Social.stages.0.label>
+  <SSC_Culture_Trainer_Reverence_Social.stages.0.description>This one trains with skill, taming even the most stubborn until they gladly present their ass; I respect that ability.</SSC_Culture_Trainer_Reverence_Social.stages.0.description>
+  <SSC_Culture_Trainer_SacredOffice_Self.stages.0.label>Holding a sacred office</SSC_Culture_Trainer_SacredOffice_Self.stages.0.label>
+  <SSC_Culture_Trainer_SacredOffice_Self.stages.0.description>I take the whip as my ritual tool and the chain as my holy vessel, whipping the wild until their presented ass is red and swollen and their loins soaked, then training them into devout and obedient slaves — this sacred office fills me with solemnity.</SSC_Culture_Trainer_SacredOffice_Self.stages.0.description>
+  <SSC_Culture_Trainer_SacredOffice_Social.stages.0.label>Reverence for this training officer</SSC_Culture_Trainer_SacredOffice_Social.stages.0.label>
+  <SSC_Culture_Trainer_SacredOffice_Social.stages.0.description>This one trains slaves on the master's behalf with whip and chain, with cock and craft; theirs is a sacred office, and I hold them in deep reverence.</SSC_Culture_Trainer_SacredOffice_Social.stages.0.description>
+  <SSC_Culture_Master_Hostile_Self.stages.0.label>Being a master</SSC_Culture_Master_Hostile_Self.stages.0.label>
+  <SSC_Culture_Master_Hostile_Self.stages.0.description>I have become a usurper who seizes another's body, and this station robs me of rest.</SSC_Culture_Master_Hostile_Self.stages.0.description>
+  <SSC_Culture_Master_Hostile_ActualMaster.stages.0.label>Under a master</SSC_Culture_Master_Hostile_ActualMaster.stages.0.label>
+  <SSC_Culture_Master_Hostile_ActualMaster.stages.0.description>My chain is held in another's hand, and I am ruled as a plaything — this humiliation is unbearable.</SSC_Culture_Master_Hostile_ActualMaster.stages.0.description>
+  <SSC_Culture_Master_Hostile_Social.stages.0.label>Hatred of this master</SSC_Culture_Master_Hostile_Social.stages.0.label>
+  <SSC_Culture_Master_Hostile_Social.stages.0.description>This one takes another's flesh and will by chain; they are an abominable tyrant.</SSC_Culture_Master_Hostile_Social.stages.0.description>
+  <SSC_Culture_Master_Hostile_Leader.stages.0.label>Leader is a master</SSC_Culture_Master_Hostile_Leader.stages.0.label>
+  <SSC_Culture_Master_Hostile_Leader.stages.0.description>Our leader is a usurper, and it grieves me.</SSC_Culture_Master_Hostile_Leader.stages.0.description>
+  <SSC_Culture_Master_Revulsion_Self.stages.0.label>Being a master</SSC_Culture_Master_Revulsion_Self.stages.0.label>
+  <SSC_Culture_Master_Revulsion_Self.stages.0.description>Holding the chain and ruling slaves leaves me uncomfortable.</SSC_Culture_Master_Revulsion_Self.stages.0.description>
+  <SSC_Culture_Master_Revulsion_ActualMaster.stages.0.label>Under a master</SSC_Culture_Master_Revulsion_ActualMaster.stages.0.label>
+  <SSC_Culture_Master_Revulsion_ActualMaster.stages.0.description>Someone holds my chain, and it fills me with disgust.</SSC_Culture_Master_Revulsion_ActualMaster.stages.0.description>
+  <SSC_Culture_Master_Revulsion_Social.stages.0.label>Revulsion toward this master</SSC_Culture_Master_Revulsion_Social.stages.0.label>
+  <SSC_Culture_Master_Revulsion_Social.stages.0.description>This one's masterly airs disgust me.</SSC_Culture_Master_Revulsion_Social.stages.0.description>
+  <SSC_Culture_Master_Revulsion_Leader.stages.0.label>Leader is a master</SSC_Culture_Master_Revulsion_Leader.stages.0.label>
+  <SSC_Culture_Master_Revulsion_Leader.stages.0.description>That our leader holds such a station displeases me.</SSC_Culture_Master_Revulsion_Leader.stages.0.description>
+  <SSC_Culture_Master_Deference_Self.stages.0.label>Being a master</SSC_Culture_Master_Deference_Self.stages.0.label>
+  <SSC_Culture_Master_Deference_Self.stages.0.description>I hold the chain and rule the slaves, I give the orders, and my slaves present their asses and let me ride them at will — this seat of master fills me with pride.</SSC_Culture_Master_Deference_Self.stages.0.description>
+  <SSC_Culture_Master_Deference_ActualMaster.stages.0.label>Belonging to a master</SSC_Culture_Master_Deference_ActualMaster.stages.0.label>
+  <SSC_Culture_Master_Deference_ActualMaster.stages.0.description>My chain is in my master's hand and my cunt belongs to my master; this possession, this belonging, puts me at ease.</SSC_Culture_Master_Deference_ActualMaster.stages.0.description>
+  <SSC_Culture_Master_Deference_Social.stages.0.label>Reverence for this master</SSC_Culture_Master_Deference_Social.stages.0.label>
+  <SSC_Culture_Master_Deference_Social.stages.0.description>This one commands desire and rules the slaves, and the slaves bow down before their hips; I respect the authority of a master in them.</SSC_Culture_Master_Deference_Social.stages.0.description>
+  <SSC_Culture_Master_Deference_Leader.stages.0.label>Leader is a master</SSC_Culture_Master_Deference_Leader.stages.0.label>
+  <SSC_Culture_Master_Deference_Leader.stages.0.description>Our leader is a master and rules with skill; I support them wholeheartedly.</SSC_Culture_Master_Deference_Leader.stages.0.description>
+  <SSC_Culture_Master_Deference_Leader.stages.1.label>Leader is not a master</SSC_Culture_Master_Deference_Leader.stages.1.label>
+  <SSC_Culture_Master_Deference_Leader.stages.1.description>Our leader is no master — how can such a leader govern desire?</SSC_Culture_Master_Deference_Leader.stages.1.description>
+  <SSC_Culture_Master_HolyMaster_Self.stages.0.label>Being a holy master</SSC_Culture_Master_HolyMaster_Self.stages.0.label>
+  <SSC_Culture_Master_HolyMaster_Self.stages.0.description>I am a master who is worshipped; my slaves serve me with tongue and flesh and let me ride and thrust as I please until they cry out without restraint — this sacred station lifts me into bliss.</SSC_Culture_Master_HolyMaster_Self.stages.0.description>
+  <SSC_Culture_Master_HolyMaster_ActualMaster.stages.0.label>Worshipping a master</SSC_Culture_Master_HolyMaster_ActualMaster.stages.0.label>
+  <SSC_Culture_Master_HolyMaster_ActualMaster.stages.0.description>My master is a sacred being; that I may serve him with tongue and cunt and let him flood my body fills me with gratitude.</SSC_Culture_Master_HolyMaster_ActualMaster.stages.0.description>
+  <SSC_Culture_Master_HolyMaster_Social.stages.0.label>Reverence for this holy master</SSC_Culture_Master_HolyMaster_Social.stages.0.label>
+  <SSC_Culture_Master_HolyMaster_Social.stages.0.description>This one is a master who is worshipped; each word and deed is divine will, the slaves offer up climax as sacrifice and flesh as incense, and I hold them in the highest reverence.</SSC_Culture_Master_HolyMaster_Social.stages.0.description>
+  <SSC_Culture_Master_HolyMaster_Leader.stages.0.label>Holy master as leader</SSC_Culture_Master_HolyMaster_Leader.stages.0.label>
+  <SSC_Culture_Master_HolyMaster_Leader.stages.0.description>Our leader is a holy master; this is a grace sent from heaven.</SSC_Culture_Master_HolyMaster_Leader.stages.0.description>
+  <SSC_Culture_Master_HolyMaster_Leader.stages.1.label>Leader is not a master</SSC_Culture_Master_HolyMaster_Leader.stages.1.label>
+  <SSC_Culture_Master_HolyMaster_Leader.stages.1.description>Our leader is not a master — this is a mockery of the sacred order.</SSC_Culture_Master_HolyMaster_Leader.stages.1.description>
+  <SSC_Culture_MasterCount_One_Self.stages.0.label>Too many masters</SSC_Culture_MasterCount_One_Self.stages.0.label>
+  <SSC_Culture_MasterCount_One_Self.stages.0.description>The colony has more than one master; desire pulls at a chain in every hand and order has already broken down.</SSC_Culture_MasterCount_One_Self.stages.0.description>
+  <SSC_Culture_MasterCount_Three_Self.stages.0.label>Too many masters</SSC_Culture_MasterCount_Three_Self.stages.0.label>
+  <SSC_Culture_MasterCount_Three_Self.stages.0.description>The colony has more than three masters; so many masters each keeping their own house leaves me uneasy.</SSC_Culture_MasterCount_Three_Self.stages.0.description>
+  <SSC_Culture_SlaveCount_One_Self.stages.0.label>Too many sex slaves</SSC_Culture_SlaveCount_One_Self.stages.0.label>
+  <SSC_Culture_SlaveCount_One_Self.stages.0.description>I hold more than one sex slave; with favor divided, cunt and chain link no longer fit tight.</SSC_Culture_SlaveCount_One_Self.stages.0.description>
+  <SSC_Culture_SlaveCount_Three_Self.stages.0.label>Too many sex slaves</SSC_Culture_SlaveCount_Three_Self.stages.0.label>
+  <SSC_Culture_SlaveCount_Three_Self.stages.0.description>I hold more than three sex slaves; my cock cannot be in so many places and the training suffers, and I feel guilty.</SSC_Culture_SlaveCount_Three_Self.stages.0.description>
+  <SSC_Culture_SlaveCount_One_Social.stages.0.label>Master keeps too many slaves</SSC_Culture_SlaveCount_One_Social.stages.0.label>
+  <SSC_Culture_SlaveCount_One_Social.stages.0.description>This master holds more than one sex slave, and it draws my eye.</SSC_Culture_SlaveCount_One_Social.stages.0.description>
+  <SSC_Culture_SlaveCount_One_Social.stages.1.label>Master keeps too many slaves</SSC_Culture_SlaveCount_One_Social.stages.1.label>
+  <SSC_Culture_SlaveCount_One_Social.stages.1.description>This master keeps slaves without limit; it is sheer self-indulgence.</SSC_Culture_SlaveCount_One_Social.stages.1.description>
+  <SSC_Culture_SlaveCount_One_Social.stages.2.label>Master keeps too many slaves</SSC_Culture_SlaveCount_One_Social.stages.2.label>
+  <SSC_Culture_SlaveCount_One_Social.stages.2.description>This master is insatiable and keeps a whole herd of slaves; I find it loathsome.</SSC_Culture_SlaveCount_One_Social.stages.2.description>
+  <SSC_Culture_SlaveCount_Three_Social.stages.0.label>Master keeps too many slaves</SSC_Culture_SlaveCount_Three_Social.stages.0.label>
+  <SSC_Culture_SlaveCount_Three_Social.stages.0.description>This master holds more than three sex slaves, and it draws my eye.</SSC_Culture_SlaveCount_Three_Social.stages.0.description>
+  <SSC_Culture_SlaveCount_Three_Social.stages.1.label>Master keeps too many slaves</SSC_Culture_SlaveCount_Three_Social.stages.1.label>
+  <SSC_Culture_SlaveCount_Three_Social.stages.1.description>This master keeps slaves without limit; it is sheer self-indulgence.</SSC_Culture_SlaveCount_Three_Social.stages.1.description>
+  <SSC_Culture_SlaveCount_Three_Social.stages.2.label>Master keeps too many slaves</SSC_Culture_SlaveCount_Three_Social.stages.2.label>
+  <SSC_Culture_SlaveCount_Three_Social.stages.2.description>This master is insatiable and keeps a whole herd of slaves; I find it loathsome.</SSC_Culture_SlaveCount_Three_Social.stages.2.description>
+  <SSC_Culture_SexSlave_Hostile_Social.stages.0.label>Hatred of this sex slave</SSC_Culture_SexSlave_Hostile_Social.stages.0.label>
+  <SSC_Culture_SexSlave_Hostile_Social.stages.0.description>This one gladly serves as a slave and chooses depravity; they are a shameful accomplice.</SSC_Culture_SexSlave_Hostile_Social.stages.0.description>
+  <SSC_Culture_Master_Deference_Leader.stages.2.label>Leader is a sex slave</SSC_Culture_Master_Deference_Leader.stages.2.label>
+  <SSC_Culture_Master_Deference_Leader.stages.2.description>Our leader is one who bows their head as a slave; this is a disgrace to order.</SSC_Culture_Master_Deference_Leader.stages.2.description>
+  <SSC_Culture_Master_Deference_SexSlaveLeaderSocial.stages.0.label>Contempt for this sex-slave leader</SSC_Culture_Master_Deference_SexSlaveLeaderSocial.stages.0.label>
+  <SSC_Culture_Master_Deference_SexSlaveLeaderSocial.stages.0.description>This one is a sex slave yet has stolen the leader's seat; it shames the master-slave order.</SSC_Culture_Master_Deference_SexSlaveLeaderSocial.stages.0.description>
+  <SSC_Culture_Master_HolyMaster_Leader.stages.2.label>Leader is a sex slave</SSC_Culture_Master_HolyMaster_Leader.stages.2.label>
+  <SSC_Culture_Master_HolyMaster_Leader.stages.2.description>The sacred seat of leader has been taken by a sex slave; this is a desecration beyond measure.</SSC_Culture_Master_HolyMaster_Leader.stages.2.description>
+  <SSC_Culture_Master_HolyMaster_SexSlaveLeaderSocial.stages.0.label>Loathing for this sex-slave leader</SSC_Culture_Master_HolyMaster_SexSlaveLeaderSocial.stages.0.label>
+  <SSC_Culture_Master_HolyMaster_SexSlaveLeaderSocial.stages.0.description>A sex slave dares to usurp the sacred seat of leader; this is a desecration of order.</SSC_Culture_Master_HolyMaster_SexSlaveLeaderSocial.stages.0.description>
+  <!-- 1.7 六档性别规范：名称为功能标记，正式描述后续交接。 -->
+  <SSC_Culture_SlaveGender_LimitedViolation_Self.stages.0.label>Slave of the forbidden sex</SSC_Culture_SlaveGender_LimitedViolation_Self.stages.0.label>
+  <SSC_Culture_SlaveGender_LimitedViolation_Self.stages.0.description>I have become a sex slave under the chain in the sex this culture rejects — this body was never meant to kneel here, and the wrongness of it torments me.</SSC_Culture_SlaveGender_LimitedViolation_Self.stages.0.description>
+  <SSC_Culture_SlaveGender_LimitedViolation_Social.stages.0.label>Contempt for this forbidden-sex slave</SSC_Culture_SlaveGender_LimitedViolation_Social.stages.0.label>
+  <SSC_Culture_SlaveGender_LimitedViolation_Social.stages.0.description>This one serves as a slave in a rejected sex, staining the master-slave order; it draws my eye.</SSC_Culture_SlaveGender_LimitedViolation_Social.stages.0.description>
+  <SSC_Culture_SlaveGender_LimitedViolation_Environment.stages.0.label>Forbidden-sex slaves nearby</SSC_Culture_SlaveGender_LimitedViolation_Environment.stages.0.label>
+  <SSC_Culture_SlaveGender_LimitedViolation_Environment.stages.0.description>A sex slave of the forbidden sex bows and serves nearby, and I cannot be at ease.</SSC_Culture_SlaveGender_LimitedViolation_Environment.stages.0.description>
+  <SSC_Culture_SlaveGender_RequiredViolation_Self.stages.0.label>Slave of the forbidden sex</SSC_Culture_SlaveGender_RequiredViolation_Self.stages.0.label>
+  <SSC_Culture_SlaveGender_RequiredViolation_Self.stages.0.description>I have become a sex slave in a rejected sex, breaking the rule of what must be and shaming this flesh of mine; the pain cuts deeper.</SSC_Culture_SlaveGender_RequiredViolation_Self.stages.0.description>
+  <SSC_Culture_SlaveGender_RequiredViolation_Social.stages.0.label>Loathing for this forbidden-sex slave</SSC_Culture_SlaveGender_RequiredViolation_Social.stages.0.label>
+  <SSC_Culture_SlaveGender_RequiredViolation_Social.stages.0.description>This one serves as a slave in a rejected sex, openly trampling the rule of what must be; I loathe it utterly.</SSC_Culture_SlaveGender_RequiredViolation_Social.stages.0.description>
+  <SSC_Culture_SlaveGender_RequiredViolation_Environment.stages.0.label>Forbidden-sex slaves nearby</SSC_Culture_SlaveGender_RequiredViolation_Environment.stages.0.label>
+  <SSC_Culture_SlaveGender_RequiredViolation_Environment.stages.0.description>A sex slave of the forbidden sex takes and serves nearby, and it sticks in my throat.</SSC_Culture_SlaveGender_RequiredViolation_Environment.stages.0.description>
+  <SSC_Culture_SlaveGender_RequiredDuty_Self.stages.0.label>Slave duty unfulfilled</SSC_Culture_SlaveGender_RequiredDuty_Self.stages.0.label>
+  <SSC_Culture_SlaveGender_RequiredDuty_Self.stages.0.description>I was born to give myself to a master, yet I still drift outside the chain, not yet kneeling, not yet possessed — this duty left hanging unfinished leaves me burning with impatience.</SSC_Culture_SlaveGender_RequiredDuty_Self.stages.0.description>
+  <SSC_Culture_SlaveGender_RequiredDuty_Social.stages.0.label>Scorn for the undutiful</SSC_Culture_SlaveGender_RequiredDuty_Social.stages.0.label>
+  <SSC_Culture_SlaveGender_RequiredDuty_Social.stages.0.description>This one was born to give themselves as a slave, yet will not bow their head; I hold them in contempt.</SSC_Culture_SlaveGender_RequiredDuty_Social.stages.0.description>
+  <SSC_Culture_SlaveGender_RequiredDuty_Environment.stages.0.label>Someone nearby neglects slave duty</SSC_Culture_SlaveGender_RequiredDuty_Environment.stages.0.label>
+  <SSC_Culture_SlaveGender_RequiredDuty_Environment.stages.0.description>Someone nearby was born to give themselves and is not yet a slave, and it unsettles me.</SSC_Culture_SlaveGender_RequiredDuty_Environment.stages.0.description>
+  <SSC_Culture_SlaveGender_NonMasterDuty_Self.stages.0.label>Slave duty unfulfilled</SSC_Culture_SlaveGender_NonMasterDuty_Self.stages.0.label>
+  <SSC_Culture_SlaveGender_NonMasterDuty_Self.stages.0.description>I am no master, so I ought to be a slave, yet I still drift outside the chain — this betrayal of my own station leaves me unable to sit still.</SSC_Culture_SlaveGender_NonMasterDuty_Self.stages.0.description>
+  <SSC_Culture_SlaveGender_NonMasterDuty_Social.stages.0.label>Scorn for the unplaced</SSC_Culture_SlaveGender_NonMasterDuty_Social.stages.0.label>
+  <SSC_Culture_SlaveGender_NonMasterDuty_Social.stages.0.description>This one is no master and will not be a slave, drifting outside the order; I find them repellent.</SSC_Culture_SlaveGender_NonMasterDuty_Social.stages.0.description>
+  <SSC_Culture_SlaveGender_NonMasterDuty_Environment.stages.0.label>Someone unplaced nearby</SSC_Culture_SlaveGender_NonMasterDuty_Environment.stages.0.label>
+  <SSC_Culture_SlaveGender_NonMasterDuty_Environment.stages.0.description>Someone nearby is neither master nor sex slave, drifting outside the order, and it makes me restless.</SSC_Culture_SlaveGender_NonMasterDuty_Environment.stages.0.description>
+  <!-- 艳羡且有义务：专属阶段与独立文案，不与普通义务叠扣。 -->
+  <SSC_Culture_SlaveGender_RequiredDuty_Self.stages.1.label>Envy unpaid</SSC_Culture_SlaveGender_RequiredDuty_Self.stages.1.label>
+  <SSC_Culture_SlaveGender_RequiredDuty_Self.stages.1.description>I envy the sex slaves who are possessed by a master and pierced to climax, and I myself was born to give myself yet am not a slave — desire and duty both unsatisfied, my loins itch and I burn with thirst.</SSC_Culture_SlaveGender_RequiredDuty_Self.stages.1.description>
+  <SSC_Culture_SlaveGender_NonMasterDuty_Self.stages.1.label>Envy unpaid</SSC_Culture_SlaveGender_NonMasterDuty_Self.stages.1.label>
+  <SSC_Culture_SlaveGender_NonMasterDuty_Self.stages.1.description>I envy the sex slaves who are possessed by the chain and fucked until they climax and lose control, while I am neither master nor sex slave — desire with nowhere to go and a duty undone, my whole body burns and the pain is unbearable.</SSC_Culture_SlaveGender_NonMasterDuty_Self.stages.1.description>
+</LanguageData>

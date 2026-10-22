@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成；description 保留相同可检索交接标记。 -->
+<LanguageData>
+  <SSC_Issue_SexSlave.label>性奴</SSC_Issue_SexSlave.label>
+  <SSC_Issue_Trainer.label>训导官</SSC_Issue_Trainer.label>
+  <SSC_Issue_Master.label>主人</SSC_Issue_Master.label>
+  <SSC_Issue_MasterCount.label>主人数量</SSC_Issue_MasterCount.label>
+  <SSC_Issue_SlaveCount.label>性奴数量</SSC_Issue_SlaveCount.label>
+  <!-- 1.7 六档性别规范：名称为功能标记，已定稿。 -->
+  <SSC_Issue_SlaveGender.label>性奴性别</SSC_Issue_SlaveGender.label>
+</LanguageData>

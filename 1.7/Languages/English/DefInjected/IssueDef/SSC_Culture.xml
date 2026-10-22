@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成；description 保留相同可检索交接标记。 -->
+<LanguageData>
+  <SSC_Issue_SexSlave.label>sex slavery</SSC_Issue_SexSlave.label>
+  <SSC_Issue_Trainer.label>training officer</SSC_Issue_Trainer.label>
+  <SSC_Issue_Master.label>master</SSC_Issue_Master.label>
+  <SSC_Issue_MasterCount.label>master count</SSC_Issue_MasterCount.label>
+  <SSC_Issue_SlaveCount.label>sex slave count</SSC_Issue_SlaveCount.label>
+  <!-- 1.7 六档性别规范：名称为功能标记，正式描述后续交接。 -->
+  <SSC_Issue_SlaveGender.label>Slave gender</SSC_Issue_SlaveGender.label>
+</LanguageData>

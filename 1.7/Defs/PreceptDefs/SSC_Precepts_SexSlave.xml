@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成；1.7 步骤 1。两类权重显式配置；反馈 comps 随后续真实 workers 接入。
+     description 已按测试稿 5改 落实；不使用意愿/历史事件组件。 -->
+<Defs>
+  <!-- 同一议题仅允许一个档位；顶层 Ideology 门控避免未启用文化 DLC 时装载本组定义。 -->
+  <IssueDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Issue_SexSlave</defName>
+    <label>性奴</label>
+    <!-- 1.7 专属透明图标：白色主体、厚黑描边及爱心形项圈拉环；本议题六档共用。 -->
+    <iconPath>UI/Issues/SSC_SexSlave</iconPath>
+    <allowMultiplePrecepts>false</allowMultiplePrecepts>
+  </IssueDef>
+  <!-- 普通文化低档：defaultSelectionWeight=1；必选组抽取权重为零。与主模因冲突，加入主模因时由原版兼容性维护替换。 反馈数值由步骤 2 挂载的 ThoughtDef 保存，顺序和重要度不换算数值。 -->
+  <PreceptDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Precept_SexSlave_Hostile</defName>
+    <issue>SSC_Issue_SexSlave</issue>
+    <label>敌视</label>
+    <description>视性奴制为应当铲除的恶——人不应被锁链缚身、以肉身侍奉他人。本文化将这种支配视为最可憎的罪行，必欲除之而后快。</description>
+    <impact>Low</impact>
+    <displayOrderInIssue>10</displayOrderInIssue>
+    <allowDuplicates>false</allowDuplicates>
+    <countsTowardsPreceptLimit>true</countsTowardsPreceptLimit>
+    <selectionWeight>0</selectionWeight>
+    <defaultSelectionWeight>1</defaultSelectionWeight>
+    <conflictingMemes><li>SSC_Meme_MasterSlaveOrder</li></conflictingMemes>
+    <!-- 原版持续反馈挂载：本人/环境互斥，跨 Issue 独立叠加；不产生行为记忆或拒绝。 -->
+    <comps>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_SexSlave_Hostile_Self</thought>
+      </li>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_SexSlave_Hostile_Environment</thought>
+      </li>
+      <!-- 敌视也评价另一名实际持链者；完全复用观察者文化条件，不对自身产生社交。 -->
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_SexSlave_Hostile_Social</thought>
+      </li>
+    </comps>
+  </PreceptDef>
+  <!-- 普通文化低档：defaultSelectionWeight=2；必选组抽取权重为零。与主模因冲突，加入主模因时由原版兼容性维护替换。 反馈数值由步骤 2 挂载的 ThoughtDef 保存，顺序和重要度不换算数值。 -->
+  <PreceptDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Precept_SexSlave_Revulsion</defName>
+    <issue>SSC_Issue_SexSlave</issue>
+    <label>厌恶</label>
+    <description>对性奴制深感反感，见人俯首于链下便觉胃中翻涌，不愿与任何以身为奴者共处一室。</description>
+    <impact>Low</impact>
+    <displayOrderInIssue>20</displayOrderInIssue>
+    <allowDuplicates>false</allowDuplicates>
+    <countsTowardsPreceptLimit>true</countsTowardsPreceptLimit>
+    <selectionWeight>0</selectionWeight>
+    <defaultSelectionWeight>2</defaultSelectionWeight>
+    <conflictingMemes><li>SSC_Meme_MasterSlaveOrder</li></conflictingMemes>
+    <!-- 原版持续反馈挂载：本人/环境互斥，跨 Issue 独立叠加；不产生行为记忆或拒绝。 -->
+    <comps>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_SexSlave_Revulsion_Self</thought>
+      </li>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_SexSlave_Revulsion_Environment</thought>
+      </li>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_SexSlave_Revulsion_Social</thought>
+      </li>
+    </comps>
+  </PreceptDef>
+  <!-- 普通文化低档：defaultSelectionWeight=7；必选组抽取权重为零。与主模因冲突，加入主模因时由原版兼容性维护替换。 反馈数值由步骤 2 挂载的 ThoughtDef 保存，顺序和重要度不换算数值。 -->
+  <PreceptDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Precept_SexSlave_Indifference</defName>
+    <issue>SSC_Issue_SexSlave</issue>
+    <label>漠视</label>
+    <description>不关心性奴制的存废，也无意为之喝彩。锁链与项圈在这些人眼中，不过是他人的私事。</description>
+    <impact>Low</impact>
+    <displayOrderInIssue>30</displayOrderInIssue>
+    <allowDuplicates>false</allowDuplicates>
+    <countsTowardsPreceptLimit>true</countsTowardsPreceptLimit>
+    <selectionWeight>0</selectionWeight>
+    <defaultSelectionWeight>7</defaultSelectionWeight>
+    <conflictingMemes><li>SSC_Meme_MasterSlaveOrder</li></conflictingMemes>
+  </PreceptDef>
+  <!-- 两类生成权重均为零，仅供手选或保留已有合法选择；associatedMemes 仅关联，不作前置门槛。 反馈数值由步骤 2 挂载的 ThoughtDef 保存，顺序和重要度不换算数值。 -->
+  <PreceptDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Precept_SexSlave_Respect</defName>
+    <issue>SSC_Issue_SexSlave</issue>
+    <label>尊重</label>
+    <description>承认性奴亦是人，即便颈上套着项圈，也当给予基本尊重与人格尊严。</description>
+    <impact>Medium</impact>
+    <displayOrderInIssue>40</displayOrderInIssue>
+    <allowDuplicates>false</allowDuplicates>
+    <countsTowardsPreceptLimit>true</countsTowardsPreceptLimit>
+    <selectionWeight>0</selectionWeight>
+    <defaultSelectionWeight>0</defaultSelectionWeight>
+    <associatedMemes><li>SSC_Meme_MasterSlaveOrder</li></associatedMemes>
+    <!-- 原版持续反馈挂载：本人/环境互斥，跨 Issue 独立叠加；不产生行为记忆或拒绝。 -->
+    <comps>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_SexSlave_Respect_Social</thought>
+      </li>
+    </comps>
+  </PreceptDef>
+  <!-- 主模因专属默认：必选组 selectionWeight=1，普通默认权重为零；requiredMemes 限定资格。 反馈数值由步骤 2 挂载的 ThoughtDef 保存，顺序和重要度不换算数值。 -->
+  <PreceptDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Precept_SexSlave_Sacred</defName>
+    <issue>SSC_Issue_SexSlave</issue>
+    <label>神圣</label>
+    <description>视性奴为被神选中的存在——她们赤身裸体、四肢匍匐，将每一寸皮肉与每一次高潮都奉献于主人，在鞭笞、插入与吞咽中淬炼出圣洁。这种彻底的驯服本身，便是对神最高的礼赞。</description>
+    <impact>High</impact>
+    <displayOrderInIssue>50</displayOrderInIssue>
+    <allowDuplicates>false</allowDuplicates>
+    <countsTowardsPreceptLimit>true</countsTowardsPreceptLimit>
+    <selectionWeight>1</selectionWeight>
+    <defaultSelectionWeight>0</defaultSelectionWeight>
+    <requiredMemes><li>SSC_Meme_MasterSlaveOrder</li></requiredMemes>
+    <associatedMemes><li>SSC_Meme_MasterSlaveOrder</li></associatedMemes>
+    <!-- 原版持续反馈挂载：本人/环境互斥，跨 Issue 独立叠加；不产生行为记忆或拒绝。 -->
+    <comps>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_SexSlave_Sacred_Self</thought>
+      </li>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_SexSlave_Sacred_Environment</thought>
+        <!-- 单阶段基础值 +1 经曲线换算；戒律预览明确峰值，避免显示为固定 +1 或线性每人 +1。 -->
+        <thoughtStageDescriptions>
+          <li>环境中有性奴时按人数获得心情加成：1 名 +1、2 名 +3、3 名 +6、4 名 +10、5 名及以上 +15。</li>
+        </thoughtStageDescriptions>
+      </li>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_SexSlave_Sacred_Social</thought>
+      </li>
+    </comps>
+  </PreceptDef>
+  <!-- 主模因专属手选档：requiredMemes 限定资格，两类零权重不禁止手选或改革保留。 反馈数值由步骤 2 挂载的 ThoughtDef 保存，顺序和重要度不换算数值。 -->
+  <PreceptDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Precept_SexSlave_Envy</defName>
+    <issue>SSC_Issue_SexSlave</issue>
+    <label>艳羡</label>
+    <description>艳羡那颈上戴着项圈之人：她们已寻得归宿，肉身不再寂寞，夜夜被主人压在身下、填满最深处，在交合与支配中攀上高潮。未持链的信徒暗自发痒、下身潮湿，渴望有朝一日自己也能跪伏于主人胯下，被占有、被调教、被肏到甘愿沉沦。</description>
+    <impact>High</impact>
+    <displayOrderInIssue>60</displayOrderInIssue>
+    <allowDuplicates>false</allowDuplicates>
+    <countsTowardsPreceptLimit>true</countsTowardsPreceptLimit>
+    <selectionWeight>0</selectionWeight>
+    <defaultSelectionWeight>0</defaultSelectionWeight>
+    <requiredMemes><li>SSC_Meme_MasterSlaveOrder</li></requiredMemes>
+    <associatedMemes><li>SSC_Meme_MasterSlaveOrder</li></associatedMemes>
+    <!-- 原版持续反馈挂载：本人/环境互斥，跨 Issue 独立叠加；不产生行为记忆或拒绝。 -->
+    <comps>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_SexSlave_Envy_Self</thought>
+        <thoughtStageDescriptions>
+          <li>本人是性奴：心情 +10。</li>
+          <li>本人既非性奴也非主人：心情 -6。</li>
+        </thoughtStageDescriptions>
+      </li>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>SSC_Culture_SexSlave_Envy_Social</thought>
+      </li>
+    </comps>
+  </PreceptDef>
+</Defs>
