@@ -14,7 +14,7 @@
   <PreceptDef MayRequire="Ludeon.RimWorld.Ideology">
     <defName>SSC_CosmeticRitualPrecept</defName><label>塑貌仪式</label>
     <description>信徒垂首接受药液与草药的涂抹，在祝祷中等待新的容貌。主持者称之为秩序的恩赐，皮肤下的微小机器却在依循另一套规律。</description>
-    <issue>Ritual</issue><impact>Medium</impact><iconPath>UI/Icons/Ritual</iconPath>
+    <issue>Ritual</issue><impact>Medium</impact><iconPath>UI/Icons/Rituals/SSC_Cosmetic</iconPath>
     <preceptClass>Precept_Ritual</preceptClass><ritualPatternBase>SSC_CosmeticRitualPattern</ritualPatternBase>
     <requiredMemes><li>SSC_Meme_MasterSlaveOrder</li></requiredMemes>
     <allowDuplicates>true</allowDuplicates><countsTowardsPreceptLimit>false</countsTowardsPreceptLimit>
@@ -32,7 +32,7 @@
 
 成功提升一级美貌，最高为倾国倾城。需普通原液20份、草药2份，主持者医术至少6级。
 医术6级时基础成功率约61.5%，医术、场所与观众会影响成效。</descOverride>
-    <iconPathOverride>UI/Icons/Ritual</iconPathOverride><ritualOnlyForIdeoMembers>false</ritualOnlyForIdeoMembers>
+    <iconPathOverride>UI/Icons/Rituals/SSC_Cosmetic</iconPathOverride><ritualOnlyForIdeoMembers>false</ritualOnlyForIdeoMembers>
     <canMergeGizmosFromDifferentIdeos>false</canMergeGizmosFromDifferentIdeos>
     <tags><li>SSC_Cosmetic</li></tags>
   </RitualPatternDef>
