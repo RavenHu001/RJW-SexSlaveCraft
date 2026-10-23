@@ -676,7 +676,7 @@ internal static class Program
                 }
                 finally { Set(Find.TickManager, "ticksGameInt", oldTick); effect.Cleanup(); }
             });
-            Check("formal stage starts native effect and smoke survives into native draw data", () =>
+            Check("native formal transition starts effect and smoke survives into native draw data", () =>
             {
                 var host = Pawn(); var recipient = Pawn(); var job = Job(host, recipient);
                 job.Ritual.playsIdeoMusic = false;
@@ -685,10 +685,17 @@ internal static class Program
                 Current.Game.signalManager = new SignalManager();
                 job.Notify_AddedToLord();
                 var graph = job.CreateGraph();
+                Set(job.lord, "graph", graph);
+                foreach (var toil in graph.lordToils) toil.lord = job.lord;
+                Set(job.lord, "curLordToil", graph.lordToils[1]);
+                Set(job, "stageIndex", 1);
+                Inventory(host, "Purple_Aphrodisiac_Nanofluid", 20); Inventory(host, "MedicineHerbal", 2);
                 var formal = (LordToil_Ritual)graph.lordToils[2];
-                formal.startAction();
+                graph.transitions.Single(t => t.sources.Contains(graph.lordToils[1]) && t.target == formal).Execute(job.lord);
+                Equal(2, job.StageIndex);
                 var effects = (List<RitualVisualEffect>)AccessTools.Field(typeof(LordJob_Ritual), "effectWorkersCurrentStage").GetValue(job);
                 Equal(1, effects.Count);
+                job.Ritual.behavior.Tick(job); Equal(1, effects.Count);
                 harmony.Unpatch(createFleck, HarmonyPatchType.Prefix, harmony.Id);
                 var manager = Bare<FleckManager>(); Set(manager, "parent", map);
                 var system = new FleckSystemThrown(manager);
@@ -717,6 +724,40 @@ internal static class Program
                     harmony.Patch(createFleck, prefix: new HarmonyMethod(typeof(Program), nameof(CaptureFleck)));
                     map.flecks = Bare<FleckManager>();
                 }
+            });
+            Check("missing formal stage effect is attached once without replacing saved component state", () =>
+            {
+                var job = Job(Pawn(), Pawn());
+                // 对应维护者存档：当前为正式阶段、定义有 visualEffectDef，但原版阶段实例列表为空。
+                Set(job, "stageIndex", 2);
+                Set(job.lord, "curLordToil", new LordToil_Ritual(job.Spot, job, behavior.stages[2], null) { lord = job.lord });
+                var effects = (List<RitualVisualEffect>)AccessTools.Field(typeof(LordJob_Ritual), "effectWorkersCurrentStage").GetValue(job);
+                Equal(0, effects.Count); mistSpawns.Clear();
+                job.Ritual.behavior.Tick(job); Equal(1, effects.Count);
+                var effect = effects[0];
+                Equal(behavior.stages[2].visualEffectDef, effect.def);
+                effect.Tick(); Equal(0, mistSpawns.Count);
+                effect.Tick(); Equal(1, mistSpawns.Count);
+                var comp = (CompRitualEffect_IntervalSpawn)effect.comps.Single();
+                int ticks = comp.ticksPassed, lastSpawn = comp.lastSpawnTick;
+                for (int i = 0; i < 60; i++) job.Ritual.behavior.Tick(job);
+                Equal(1, effects.Count); Equal(effect, effects[0]);
+                Equal(ticks, comp.ticksPassed); Equal(lastSpawn, comp.lastSpawnTick);
+            });
+            Check("stage effect admission refuses preparation and uncommitted transitions", () =>
+            {
+                var job = Job(Pawn(), Pawn());
+                var effects = (List<RitualVisualEffect>)AccessTools.Field(typeof(LordJob_Ritual), "effectWorkersCurrentStage").GetValue(job);
+                foreach (int stage in new[] { 0, 1 })
+                {
+                    Set(job, "stageIndex", stage);
+                    Set(job.lord, "curLordToil", new LordToil_Ritual(job.Spot, job, behavior.stages[stage], null) { lord = job.lord });
+                    job.Ritual.behavior.Tick(job); Equal(0, effects.Count);
+                }
+                Set(job.lord, "curLordToil", new LordToil_Ritual(job.Spot, job, behavior.stages[2], null) { lord = job.lord });
+                job.Ritual.behavior.Tick(job); Equal(0, effects.Count);
+                Set(job, "stageIndex", 2); Set(job.lord, "curLordToil", new LordToil_End { lord = job.lord });
+                job.Ritual.behavior.Tick(job); Equal(0, effects.Count);
             });
             Check("smoke native batch submits normal draw with per-draw color", () =>
             {

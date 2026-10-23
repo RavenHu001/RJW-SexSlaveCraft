@@ -1,6 +1,7 @@
 // AI 辅助生成
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using RimWorld;
 using Verse;
 
@@ -8,8 +9,28 @@ namespace SexSlaveCraft
 {
     public class RitualBehaviorWorker_Cosmetic : RitualBehaviorWorker
     {
+        // 特效仍由原版阶段列表驱动和保存；这里只补挂实机中未创建的本阶段实例。
+        private static readonly FieldInfo StageEffectsField = typeof(LordJob_Ritual).GetField(
+            "effectWorkersCurrentStage", BindingFlags.Instance | BindingFlags.NonPublic);
+
         public RitualBehaviorWorker_Cosmetic() { }
         public RitualBehaviorWorker_Cosmetic(RitualBehaviorDef def) : base(def) { }
+
+        public override void Tick(LordJob_Ritual ritual)
+        {
+            base.Tick(ritual);
+            // GotoToil 先进入下一职责、再执行扣料 postAction；只在两个阶段指针一致且正式开始后补挂。
+            RitualStage stage = ritual.CurrentStage;
+            if (stage == null || stage is RitualStage_CosmeticPreparation || stage.visualEffectDef == null ||
+                !(ritual.lord?.CurLordToil is LordToil_Ritual toil) || toil.stage != stage) return;
+            var effects = (List<RitualVisualEffect>)StageEffectsField.GetValue(ritual);
+            if (effects.Any(effect => effect.def == stage.visualEffectDef)) return;
+
+            // 正常创建或读档已有实例时不重置间隔；缺失时只创建一次，后续 Tick／存档／清理由原版负责。
+            RitualVisualEffect effect = stage.visualEffectDef.GetInstance();
+            effect.Setup(ritual, false);
+            effects.Add(effect);
+        }
 
         public override string CanStartRitualNow(TargetInfo target, Precept_Ritual ritual, Pawn selectedPawn = null, Dictionary<string, Pawn> forcedForRole = null)
         {
