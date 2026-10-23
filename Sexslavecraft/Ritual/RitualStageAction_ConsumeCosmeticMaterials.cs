@@ -10,10 +10,12 @@ namespace SexSlaveCraft
     /// <summary>天灯节式取料：准备时由原版 Job 领取，正式阶段前只消费主持者背包中的材料。</summary>
     public class RitualStageAction_ConsumeCosmeticMaterials : RitualStageAction
     {
+        private const int FluidCount = 20, HerbalCount = 2;
         private static ThingDef Fluid => DefDatabase<ThingDef>.GetNamedSilentFail("Purple_Aphrodisiac_Nanofluid");
+        internal static string MissingMaterialsReason => "SSC_Cosmetic_MaterialsRequired".Translate(FluidCount, HerbalCount);
 
         public static bool MaterialsReady(Pawn host) => host?.inventory != null && Fluid != null &&
-            host.inventory.Count(Fluid) >= 20 && host.inventory.Count(ThingDefOf.MedicineHerbal) >= 2;
+            host.inventory.Count(Fluid) >= FluidCount && host.inventory.Count(ThingDefOf.MedicineHerbal) >= HerbalCount;
 
         private static bool CanFetch(Pawn host, ThingDef material, int count)
         {
@@ -29,8 +31,8 @@ namespace SexSlaveCraft
         public static AcceptanceReport MaterialReport(TargetInfo target, Pawn host)
         {
             if (!target.IsValid || host == null || !host.Spawned || host.Map != target.Map ||
-                !CanFetch(host, Fluid, 20) || !CanFetch(host, ThingDefOf.MedicineHerbal, 2))
-                return "SSC_Cosmetic_MaterialsRequired".Translate(20, 2);
+                !CanFetch(host, Fluid, FluidCount) || !CanFetch(host, ThingDefOf.MedicineHerbal, HerbalCount))
+                return MissingMaterialsReason;
             return true;
         }
 
@@ -53,7 +55,7 @@ namespace SexSlaveCraft
             Pawn host = ritual.PawnWithRole(SSCCosmeticUtility.HostRole);
             if (!MaterialsReady(host))
             {
-                Messages.Message("SSC_Cosmetic_MaterialsRequired".Translate(20, 2), ritual.selectedTarget, MessageTypeDefOf.RejectInput, false);
+                Messages.Message(MissingMaterialsReason, ritual.selectedTarget, MessageTypeDefOf.RejectInput, false);
                 // 此处直接调用取消入口，不会经过原版 interruptedAction 转换，先放下尚未消费的材料。
                 ritual.CurrentStage.interruptedAction?.Apply(ritual);
                 // 切换后的回调再立即走原版取消，ended 防重；清理后不再有本次 GotoToil 分配职责。
@@ -61,8 +63,8 @@ namespace SexSlaveCraft
                 return;
             }
             // 两种材料先同时确认；使用原版库存消费，不远程扣地面或其他人的背包。
-            Consume(host, Fluid, 20);
-            Consume(host, ThingDefOf.MedicineHerbal, 2);
+            Consume(host, Fluid, FluidCount);
+            Consume(host, ThingDefOf.MedicineHerbal, HerbalCount);
         }
 
         public override void ExposeData() { }

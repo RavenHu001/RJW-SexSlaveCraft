@@ -71,8 +71,8 @@ namespace SexSlaveCraft
             if (!report.Accepted) return report;
             if (!doctor.IsColonistPlayerControlled || doctor.IsSlave || doctor.IsPrisoner)
                 return Reject("SSC_Cosmetic_FreeColonist");
-            if (doctor.WorkTypeIsDisabled(WorkTypeDefOf.Doctor) || doctor.skills?.GetSkill(SkillDefOf.Medicine) == null ||
-                doctor.skills.GetSkill(SkillDefOf.Medicine).TotallyDisabled || doctor.skills.GetSkill(SkillDefOf.Medicine).Level < 8)
+            var medicine = doctor.WorkTypeIsDisabled(WorkTypeDefOf.Doctor) ? null : doctor.skills?.GetSkill(SkillDefOf.Medicine);
+            if (medicine == null || medicine.TotallyDisabled || medicine.Level < 8)
                 return "SSC_Cosmetic_MedicineRequired".Translate(8);
             return true;
         }

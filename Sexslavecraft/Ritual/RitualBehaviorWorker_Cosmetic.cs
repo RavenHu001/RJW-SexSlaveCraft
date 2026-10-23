@@ -23,18 +23,19 @@ namespace SexSlaveCraft
             {
                 var hostReport = RitualRole_CosmeticHost.Report(host, target, ritual);
                 if (!hostReport.Accepted) return hostReport.Reason;
+                var materialReport = RitualStageAction_ConsumeCosmeticMaterials.MaterialReport(target, host);
+                return materialReport.Accepted ? null : materialReport.Reason;
             }
             // 开窗尚未选主持者时，仅做只读预检；实际开始和消费使用选中的主持者。
-            var hosts = (host != null ? new[] { host } : target.Map.mapPawns.FreeColonistsSpawned
-                .Where(p => RitualRole_CosmeticHost.Report(p, target, ritual).Accepted)).ToList();
-            if (hosts.Count == 0) return "SSC_Cosmetic_RolesRequired".Translate();
-            AcceptanceReport report = false;
-            foreach (Pawn candidate in hosts)
+            bool hasHost = false;
+            foreach (Pawn candidate in target.Map.mapPawns.FreeColonistsSpawned)
             {
-                report = RitualStageAction_ConsumeCosmeticMaterials.MaterialReport(target, candidate);
-                if (report.Accepted) return null;
+                if (!RitualRole_CosmeticHost.Report(candidate, target, ritual).Accepted) continue;
+                hasHost = true;
+                if (RitualStageAction_ConsumeCosmeticMaterials.MaterialReport(target, candidate).Accepted) return null;
             }
-            return report.Reason ?? "SSC_Cosmetic_MaterialsRequired".Translate(20, 2);
+            return hasHost ? RitualStageAction_ConsumeCosmeticMaterials.MissingMaterialsReason :
+                "SSC_Cosmetic_RolesRequired".Translate();
         }
 
         public override bool PawnCanFillRole(Pawn pawn, RitualRole role, out string s, TargetInfo ritualTarget)

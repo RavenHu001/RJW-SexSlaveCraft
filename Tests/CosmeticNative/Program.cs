@@ -53,6 +53,8 @@ internal static class Program
     private static readonly HashSet<Thing> area = new(), forbidden = new(), reserved = new();
     private static ushort itemHash = 100;
     private static int thingId = 1000000;
+    private static readonly List<Pawn> previewHosts = new();
+    private static string nativeStartReason;
     private static readonly Dictionary<string, Def> loadedDefs = new();
 
     internal static int Run(string repo, string game)
@@ -525,7 +527,68 @@ internal static class Program
             job.ApplyOutcome(1f);
             Equal(0, p.story.traits.allTraits.Count); Equal(0, p.health.hediffSet.hediffs.Count);
         });
+        StartPreviewTests();
     }
+
+    private static void StartPreviewTests()
+    {
+        // 隔离原版全局活动/行星/寻路环境；执行生产开场判断、角色资格、取料报告及真实背包数量。
+        var nativeStart = AccessTools.Method(typeof(RitualBehaviorWorker), nameof(RitualBehaviorWorker.CanStartRitualNow));
+        var hostList = AccessTools.PropertyGetter(typeof(MapPawns), nameof(MapPawns.FreeColonistsSpawned));
+        var canReach = AccessTools.Method(typeof(ReachabilityUtility), nameof(ReachabilityUtility.CanReach),
+            new[] { typeof(Pawn), typeof(LocalTargetInfo), typeof(PathEndMode), typeof(Danger), typeof(bool), typeof(bool), typeof(TraverseMode) });
+        harmony.Patch(nativeStart, prefix: new HarmonyMethod(typeof(Program), nameof(NativeStart)));
+        harmony.Patch(hostList, prefix: new HarmonyMethod(typeof(Program), nameof(PreviewHosts)));
+        harmony.Patch(canReach, prefix: new HarmonyMethod(typeof(Program), nameof(ReachTarget)));
+        map.mapPawns = Bare<MapPawns>();
+        try
+        {
+            Check("start preview preserves native rejection before cosmetic checks", () =>
+            {
+                var job = Job(Pawn(), Pawn()); nativeStartReason = "NativeDenied";
+                try { Equal("NativeDenied", job.Ritual.behavior.CanStartRitualNow(job.selectedTarget, job.Ritual)); }
+                finally { nativeStartReason = null; }
+            });
+            Check("unselected host keeps no-host and no-material reasons and finds a supplied candidate", () =>
+            {
+                ResetStacks(); previewHosts.Clear(); var host = Pawn(); var job = Job(host, Pawn());
+                var worker = job.Ritual.behavior;
+                Equal("SSC_Cosmetic_RolesRequired", worker.CanStartRitualNow(job.selectedTarget, job.Ritual));
+                host.skills.GetSkill(SkillDefOf.Medicine).Level = 5; previewHosts.Add(host);
+                Equal("SSC_Cosmetic_RolesRequired", worker.CanStartRitualNow(job.selectedTarget, job.Ritual));
+                host.skills.GetSkill(SkillDefOf.Medicine).Level = 6;
+                Equal("SSC_Cosmetic_MaterialsRequired", worker.CanStartRitualNow(job.selectedTarget, job.Ritual));
+                var supplied = Pawn(); Set(supplied.ideo, "ideo", job.Ritual.ideo); previewHosts.Add(supplied);
+                Inventory(supplied, "Purple_Aphrodisiac_Nanofluid", 20); Inventory(supplied, "MedicineHerbal", 2);
+                Equal<string>(null, worker.CanStartRitualNow(job.selectedTarget, job.Ritual));
+                Equal(20, supplied.inventory.Count(DefDatabase<ThingDef>.GetNamed("Purple_Aphrodisiac_Nanofluid")));
+                Equal(2, supplied.inventory.Count(ThingDefOf.MedicineHerbal));
+            });
+            Check("selected host must meet skill and supply conditions without falling back to another pawn", () =>
+            {
+                ResetStacks(); previewHosts.Clear(); var host = Pawn(); var job = Job(host, Pawn());
+                var supplied = Pawn(); Set(supplied.ideo, "ideo", job.Ritual.ideo); previewHosts.Add(supplied);
+                Inventory(supplied, "Purple_Aphrodisiac_Nanofluid", 20); Inventory(supplied, "MedicineHerbal", 2);
+                var forced = new Dictionary<string, Pawn> { ["host"] = host }; var worker = job.Ritual.behavior;
+                Equal("SSC_Cosmetic_MaterialsRequired", worker.CanStartRitualNow(job.selectedTarget, job.Ritual, forcedForRole: forced));
+                Inventory(host, "Purple_Aphrodisiac_Nanofluid", 20); Inventory(host, "MedicineHerbal", 2);
+                Equal<string>(null, worker.CanStartRitualNow(job.selectedTarget, job.Ritual, forcedForRole: forced));
+                host.skills.GetSkill(SkillDefOf.Medicine).Level = 5;
+                Equal("SSC_Cosmetic_MedicineRequired", worker.CanStartRitualNow(job.selectedTarget, job.Ritual, forcedForRole: forced));
+                Equal(20, host.inventory.Count(DefDatabase<ThingDef>.GetNamed("Purple_Aphrodisiac_Nanofluid")));
+                Equal(2, host.inventory.Count(ThingDefOf.MedicineHerbal));
+            });
+        }
+        finally
+        {
+            foreach (var method in new[] { nativeStart, hostList, canReach }) harmony.Unpatch(method, HarmonyPatchType.Prefix, harmony.Id);
+            previewHosts.Clear(); nativeStartReason = null;
+        }
+    }
+
+    private static bool NativeStart(ref string __result) { __result = nativeStartReason; return false; }
+    private static bool PreviewHosts(ref List<Pawn> __result) { __result = previewHosts; return false; }
+    private static bool ReachTarget(ref bool __result) { __result = true; return false; }
     private static LordJob_Ritual Job(Pawn host, Pawn recipient)
     {
         var ideo = new Ideo { memes = new() { DefDatabase<MemeDef>.GetNamed("SSC_Meme_MasterSlaveOrder") } };
