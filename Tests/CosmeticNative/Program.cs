@@ -49,7 +49,7 @@ internal static class Program
     private static RitualBehaviorDef behavior;
     private static RitualOutcomeEffectDef outcome;
     private static RecipeDef surgery;
-    private static string saveDirectory;
+    private static string saveDirectory, nativeGameRoot, repoRootForResources;
     private static readonly Dictionary<Thing, bool> reach = new();
     private static readonly HashSet<Thing> area = new(), forbidden = new(), reserved = new();
     private static ushort itemHash = 100;
@@ -61,6 +61,8 @@ internal static class Program
     internal static int Run(string repo, string game)
     {
         // 初始化隔离宿主和图形／全局通知边界；用生产程序集与原版类型执行后续业务分组。
+        nativeGameRoot = game;
+        repoRootForResources = repo;
         Console.WriteLine($"Game: {File.ReadAllText(Path.Combine(game, "Version.txt")).Trim()}, MVID: {typeof(Pawn).Module.ModuleVersionId:N}");
         harmony = new Harmony("ssc.tests.cosmetic.native");
         void Patch(MethodBase m, string name) => harmony.Patch(m, prefix: new HarmonyMethod(typeof(Program), name));
@@ -171,9 +173,10 @@ internal static class Program
         Add(new RitualObligationTargetFilterDef { defName = "RitualSpotOrAltar" });
         foreach (var name in new[] { "Spectate", "ArriveToCell", "Idle" }) Add(new DutyDef { defName = name });
         Add(new ShaderTypeDef { defName = "Mote" });
+        Add(new ShaderTypeDef { defName = "RitualSmoke" });
         var nodes = XDocument.Load(Path.Combine(game, "Data/Core/Defs/RecipeDefs/Recipes_Surgery_Misc.xml")).Root.Elements().Where(n => (string)n.Attribute("Name") == "SurgeryFlesh")
             .Concat(XDocument.Load(Path.Combine(game, "Data/Core/Defs/RecipeDefs/SurgeryOutcomeEffectDefs.xml")).Root.Elements().Where(n => (string)n.Attribute("Name") == "SurgeryOutcomeBase"))
-            .Concat(XDocument.Load(Path.Combine(game, "Data/Core/Defs/Effects/Fleck_Visual.xml")).Root.Elements().Where(n => new[] { "FleckBase", "FleckBase_Thrown" }.Contains((string)n.Attribute("Name"))))
+            .Concat(XDocument.Load(Path.Combine(game, "Data/Core/Defs/Effects/Mote_Visual.xml")).Root.Elements().Where(n => (string)n.Attribute("Name") == "MoteBase"))
             .Concat(Directory.GetFiles(Path.Combine(repo, "1.7/Defs"), "SSC_Cosmetic*.xml", SearchOption.AllDirectories).SelectMany(p => XDocument.Load(p).Root.Elements())).Select(Xml).ToList();
         XmlInheritance.Clear();
         // 独立宿主只启用 DLC 标志，没有安装包目录；门控另由资源检查验证。
@@ -195,7 +198,13 @@ internal static class Program
                 case "RitualBehaviorDef": behavior = DirectXmlToObject.ObjectFromXml<RitualBehaviorDef>(node, false); Add(behavior); break;
                 case "RitualOutcomeEffectDef": outcome = DirectXmlToObject.ObjectFromXml<RitualOutcomeEffectDef>(node, false); Add(outcome); break;
                 case "RitualVisualEffectDef": Add(DirectXmlToObject.ObjectFromXml<RitualVisualEffectDef>(node, false)); break;
-                case "FleckDef": Add(DirectXmlToObject.ObjectFromXml<FleckDef>(node, false)); break;
+                case "ThingDef":
+                    // ThingDef 构造器会初始化图形资产；仅隔离构造默认值，字段和组件仍走原版 XML 加载。
+                    var ctor = AccessTools.Constructor(typeof(ThingDef));
+                    harmony.Patch(ctor, prefix: new HarmonyMethod(typeof(Program), nameof(MoteDefConstructor)));
+                    try { Add(DirectXmlToObject.ObjectFromXml<ThingDef>(node, false)); }
+                    finally { harmony.Unpatch(ctor, HarmonyPatchType.Prefix, harmony.Id); }
+                    break;
                 default: throw new Exception(node.Name);
             }
         }
@@ -546,14 +555,30 @@ internal static class Program
 
     private static readonly HashSet<IntVec3> blockedRoleCells = new();
     private static bool blockAllRoleCells;
-    private static readonly List<FleckCreationData> mistSpawns = new();
+    private static readonly List<Mote> mistSpawns = new();
     private static bool RoleValidator(Pawn pawn, ref Func<IntVec3, bool> __result)
     {
         __result = cell => !blockAllRoleCells && !blockedRoleCells.Contains(cell);
         return false;
     }
     private static bool NoRitualRoom(ref Room __result) { __result = null; return false; }
-    private static bool CaptureFleck(FleckCreationData fleckData) { mistSpawns.Add(fleckData); return false; }
+    private static bool MoteDefConstructor(ThingDef __instance)
+    {
+        __instance.comps = new(); __instance.virtualDefs = new(); __instance.stackLimit = 1; __instance.shortHash = ++itemHash;
+        __instance.destroyable = true;
+        return false;
+    }
+    private static bool NotSaturated(ref bool __result) { __result = false; return false; }
+    private static bool FullMoteUpdate(ref int __result) { __result = 1; return false; }
+    // 保留真实 MoteMaker 和 ThingMaker，只隔离完整地图出生通知及图形设备注册。
+    private static bool SpawnMote(Thing newThing, IntVec3 loc, Map map, ref Thing __result)
+    {
+        if (newThing is not Mote mote) return true;
+        Set(mote, "mapIndexOrState", (sbyte)0); Set(mote, "positionInt", loc);
+        mote.ForceSpawnTick(Find.TickManager.TicksGame);
+        map.listerThings.Add(mote); mistSpawns.Add(mote); __result = mote;
+        return false;
+    }
 
     private static void PositionAndVisualTests()
     {
@@ -561,14 +586,28 @@ internal static class Program
         // 只注入地图可站/同室/寻路边界；执行真实配对选点、原版阶段缓存与职责分配。
         var validator = AccessTools.Method(typeof(CommonRitualCellPredicates), nameof(CommonRitualCellPredicates.DefaultValidator));
         var room = AccessTools.PropertyGetter(typeof(LordJob_Ritual), nameof(LordJob_Ritual.GetRoom));
-        var createFleck = AccessTools.Method(typeof(FleckManager), nameof(FleckManager.CreateFleck));
+        var spawnMote = AccessTools.Method(typeof(GenSpawn), nameof(GenSpawn.Spawn), new[] { typeof(Thing), typeof(IntVec3), typeof(Map), typeof(WipeMode) });
+        var camera = AccessTools.Method(typeof(GenView), nameof(GenView.ShouldSpawnMotesAt), new[] { typeof(UnityEngine.Vector3), typeof(Map), typeof(bool) });
+        var saturated = AccessTools.PropertyGetter(typeof(MoteCounter), nameof(MoteCounter.Saturated));
+        var despawnMote = AccessTools.Method(typeof(Mote), nameof(Mote.DeSpawn));
+        var uiRoot = AccessTools.PropertyGetter(typeof(Find), nameof(Find.UIRoot));
+        var hideMotes = AccessTools.PropertyGetter(typeof(UIRoot), nameof(UIRoot.HideMotes));
+        var updateRate = AccessTools.PropertyGetter(typeof(Thing), "UpdateRateTicks");
+        var silhouette = AccessTools.Method(typeof(SilhouetteUtility), nameof(SilhouetteUtility.DrawGraphicSilhouette));
         var clearWork = AccessTools.Method(typeof(PriorityWork), nameof(PriorityWork.ClearPrioritizedWorkAndJobQueue));
         harmony.Patch(validator, prefix: new HarmonyMethod(typeof(Program), nameof(RoleValidator)));
         harmony.Patch(room, prefix: new HarmonyMethod(typeof(Program), nameof(NoRitualRoom)));
-        harmony.Patch(createFleck, prefix: new HarmonyMethod(typeof(Program), nameof(CaptureFleck)));
+        harmony.Patch(spawnMote, prefix: new HarmonyMethod(typeof(Program), nameof(SpawnMote)));
+        harmony.Patch(camera, prefix: new HarmonyMethod(typeof(Program), nameof(ReachTarget)));
+        harmony.Patch(saturated, prefix: new HarmonyMethod(typeof(Program), nameof(NotSaturated)));
+        harmony.Patch(despawnMote, prefix: new HarmonyMethod(typeof(Program), nameof(Despawn)));
+        harmony.Patch(uiRoot, prefix: new HarmonyMethod(typeof(Program), nameof(MoteUiRoot)));
+        harmony.Patch(hideMotes, prefix: new HarmonyMethod(typeof(Program), nameof(NotSaturated)));
+        harmony.Patch(updateRate, prefix: new HarmonyMethod(typeof(Program), nameof(FullMoteUpdate)));
+        harmony.Patch(silhouette, prefix: new HarmonyMethod(typeof(Program), nameof(Skip)));
         harmony.Patch(clearWork, prefix: new HarmonyMethod(typeof(Program), nameof(Skip)));
         map.info.Size = new IntVec3(100, 1, 100);
-        map.flecks = Bare<FleckManager>();
+        map.moteCounter = Bare<MoteCounter>();
         map.lordManager.stencilDrawers = new();
         foreach (var stage in behavior.stages) stage.parent = behavior;
         try
@@ -650,12 +689,14 @@ internal static class Program
                 var props = (CompProperties_RitualEffectSpawnOnRole)effect.comps.Single();
                 Equal(typeof(CompRitualEffect_SpawnOnRole), props.compClass); Equal("recipient", props.roleId);
                 Equal(30, props.spawnIntervalTicks); Equal(1, props.delay); Require(props.maxBursts < 0);
-                Require(props.moteDef == null && props.effecterDef == null);
-                Equal("Things/Mote/Smoke", props.fleckDef.graphicData.texPath);
-                Equal(typeof(FleckSystemThrown), props.fleckDef.fleckSystemClass);
-                Near(2.4f, props.fleckDef.fadeInTime + props.fleckDef.solidTime + props.fleckDef.fadeOutTime);
-                Near(.35f, props.colorOverride.Value.a);
-                Require(!props.fleckDef.graphicData.renderInstanced);
+                Require(props.fleckDef == null && props.effecterDef == null);
+                Equal("Things/Mote/RitualEffects/Smoke2", props.moteDef.graphicData.texPath);
+                Equal(typeof(MoteThrown), props.moteDef.thingClass);
+                Equal(typeof(Graphic_MoteWithAgeSecs), props.moteDef.graphicData.graphicClass);
+                Equal("RitualSmoke", props.moteDef.graphicData.shaderType.defName);
+                Near(2.4f, props.moteDef.mote.Lifespan);
+                Near(.35f, props.overrideColors.Single().a);
+                Require(!props.moteDef.mote.realTime && !props.moteDef.mote.needsMaintenance);
                 Near(1.6f, props.scale.min); Near(1.9f, props.scale.max);
             });
             Check("native mist delay, interval and recipient spawn position", () =>
@@ -665,9 +706,9 @@ internal static class Program
                 var effect = behavior.stages[2].visualEffectDef.GetInstance(); effect.Setup(job, false);
                 effect.Tick(); Equal(0, mistSpawns.Count);
                 effect.Tick(); Equal(1, mistSpawns.Count);
-                Near(recipient.Position.x + .5f, mistSpawns[0].spawnPosition.x);
-                Near(recipient.Position.z + .5f, mistSpawns[0].spawnPosition.z);
-                Near(.35f, mistSpawns[0].instanceColor.Value.a);
+                Near(recipient.Position.x + .5f, mistSpawns[0].exactPosition.x);
+                Near(recipient.Position.z + .5f, mistSpawns[0].exactPosition.z);
+                Near(.35f, mistSpawns[0].instanceColor.a);
                 int oldTick = Find.TickManager.TicksGame;
                 try
                 {
@@ -696,35 +737,33 @@ internal static class Program
                 var effects = (List<RitualVisualEffect>)AccessTools.Field(typeof(LordJob_Ritual), "effectWorkersCurrentStage").GetValue(job);
                 Equal(1, effects.Count);
                 job.Ritual.behavior.Tick(job); Equal(1, effects.Count);
-                harmony.Unpatch(createFleck, HarmonyPatchType.Prefix, harmony.Id);
-                var manager = Bare<FleckManager>(); Set(manager, "parent", map);
-                var system = new FleckSystemThrown(manager);
-                Set(manager, "systems", new Dictionary<Type, FleckSystem> { [typeof(FleckSystemThrown)] = system });
-                map.flecks = manager;
-                var fleckDef = behavior.stages[2].visualEffectDef.comps.Single().fleckDef;
+                mistSpawns.Clear();
+                int oldTick = Find.TickManager.TicksGame;
+                var moteDef = behavior.stages[2].visualEffectDef.comps.Single().moteDef;
                 var graphic = new SmokeDrawProbe();
-                Set(fleckDef.graphicData, "cachedGraphic", graphic);
+                Set(moteDef.graphicData, "cachedGraphic", graphic);
                 try
                 {
-                    effects[0].Tick(); effects[0].Tick();
-                    Equal(1, system.EnumerateFlecks().Count());
-                    for (int tick = 0; tick < 30; tick++) system.Tick();
-                    ((FleckThrown)system.EnumerateFlecks().Single()).Draw(null);
-                    Require(graphic.drawn && graphic.lastDraw.alpha > 0 && graphic.lastDraw.scale.x >= 1.6f && graphic.lastDraw.scale.z >= 1.6f);
-                    Near(.35f, graphic.lastDraw.color.a);
-                    for (int tick = 0; tick < 90; tick++) system.Tick();
-                    ((FleckThrown)system.EnumerateFlecks().Single()).Draw(null);
-                    Require(graphic.lastDraw.alpha > 0 && graphic.lastDraw.alpha < 1, "smoke did not enter its native fade-out");
-                    for (int tick = 0; tick < 45; tick++) system.Tick();
-                    Equal(0, system.EnumerateFlecks().Count());
+                    effects[0].Tick(); effects[0].Tick(); Equal(1, mistSpawns.Count);
+                    var mote = mistSpawns.Single();
+                    Require(mote is MoteThrown && mote.Spawned);
+                    Set(Find.TickManager, "ticksGameInt", oldTick + 30); mote.DoTick(); mote.DrawNowAt(mote.DrawPos);
+                    Require(graphic.drawn, $"mote graphic was not reached; drawer={mote.def.drawerType}, alpha={mote.Alpha}");
+                    Require(mote.Alpha > 0 && mote.ExactScale.x >= 1.6f && mote.ExactScale.z >= 1.6f,
+                        $"mote alpha/scale invalid: {mote.Alpha}, {mote.ExactScale}");
+                    Near(.35f, mote.instanceColor.a); Equal(mote, graphic.mote);
+                    Set(Find.TickManager, "ticksGameInt", oldTick + 120); mote.DoTick();
+                    Require(mote.Alpha > 0 && mote.Alpha < 1, "smoke did not enter its native fade-out");
+                    Set(Find.TickManager, "ticksGameInt", oldTick + 165); mote.DoTick();
+                    Require(mote.Destroyed);
                 }
                 finally
                 {
-                    Set(fleckDef.graphicData, "cachedGraphic", null);
-                    harmony.Patch(createFleck, prefix: new HarmonyMethod(typeof(Program), nameof(CaptureFleck)));
-                    map.flecks = Bare<FleckManager>();
+                    Set(Find.TickManager, "ticksGameInt", oldTick);
+                    Set(moteDef.graphicData, "cachedGraphic", null);
                 }
             });
+
             Check("missing formal stage effect is attached once without replacing saved component state", () =>
             {
                 var job = Job(Pawn(), Pawn());
@@ -759,52 +798,72 @@ internal static class Program
                 Set(job, "stageIndex", 2); Set(job.lord, "curLordToil", new LordToil_End { lord = job.lord });
                 job.Ritual.behavior.Tick(job); Equal(0, effects.Count);
             });
-            Check("smoke native batch submits normal draw with per-draw color", () =>
+            Check("mote shader and animated textures match vanilla ritual smoke", () =>
             {
                 var props = behavior.stages[2].visualEffectDef.comps.Single();
-                Require(!props.fleckDef.graphicData.renderInstanced);
-                var draw = AccessTools.Method(typeof(UnityEngine.Graphics), nameof(UnityEngine.Graphics.DrawMesh),
-                    new[] { typeof(UnityEngine.Mesh), typeof(UnityEngine.Matrix4x4), typeof(UnityEngine.Material), typeof(int), typeof(UnityEngine.Camera), typeof(int), typeof(UnityEngine.MaterialPropertyBlock) });
-                var setColor = AccessTools.Method(typeof(UnityEngine.MaterialPropertyBlock), nameof(UnityEngine.MaterialPropertyBlock.SetColor),
-                    new[] { typeof(string), typeof(UnityEngine.Color) });
-                harmony.Patch(draw, prefix: new HarmonyMethod(typeof(Program), nameof(CaptureSmokeDraw)));
-                harmony.Patch(setColor, prefix: new HarmonyMethod(typeof(Program), nameof(CaptureSmokeColor)));
-                smokeDrawCount = 0; smokeDrawColor = default;
+                var authored = props.moteDef.graphicData;
+                var native = XDocument.Load(Path.Combine(nativeGameRoot, "Data/Ideology/Defs/Effects/Mote_RitualEffect.xml"))
+                    .Root.Elements().Single(n => (string)n.Element("defName") == "Mote_RitualSmoke").Element("graphicData");
+                var expected = DirectXmlToObject.ObjectFromXml<GraphicData>(Xml(native), false);
+                DirectXmlCrossRefLoader.ResolveAllWantedCrossReferences(FailMode.LogErrors);
+                Equal(expected.graphicClass, authored.graphicClass); Equal(expected.shaderType, authored.shaderType);
+                Equal(expected.texPath, authored.texPath); Equal(expected.shaderParameters.Count, authored.shaderParameters.Count);
+                var authoredXml = XDocument.Load(Path.Combine(repoRootForResources, "1.7/Defs/RitualDefs/SSC_CosmeticVisuals.xml"))
+                    .Root.Element("ThingDef").Element("graphicData").Element("shaderParameters");
+                Require(XNode.DeepEquals(native.Element("shaderParameters"), authoredXml));
+                Equal(UnityEngine.Vector2.one, authored.drawSize);
+                Require(props.colorOverride == null); Equal(1, props.overrideColors.Count);
+                Near(.55f, props.overrideColors[0].r); Near(.25f, props.overrideColors[0].g); Near(.75f, props.overrideColors[0].b);
+            });
+            Check("native animated mote graphic submits age and forces per-mote color properties", () =>
+            {
+                var effect = behavior.stages[2].visualEffectDef.GetInstance(); effect.Setup(Job(Pawn(), Pawn()), false);
+                effect.Tick(); effect.Tick(); var mote = mistSpawns.Last();
+                mote.ForceSpawnTick(Find.TickManager.TicksGame - 30);
+                var draw = AccessTools.GetDeclaredMethods(typeof(Graphic_Mote)).Single(m => m.Name == "DrawMote" &&
+                    m.GetParameters().Any(p => p.ParameterType == typeof(Thing)));
+                var setFloat = AccessTools.Method(typeof(UnityEngine.MaterialPropertyBlock), nameof(UnityEngine.MaterialPropertyBlock.SetFloat),
+                    new[] { typeof(int), typeof(float) });
+                harmony.Patch(draw, prefix: new HarmonyMethod(typeof(Program), nameof(CaptureMoteRender)));
+                harmony.Patch(setFloat, prefix: new HarmonyMethod(typeof(Program), nameof(CaptureMoteAge)));
+                renderAge = -1; renderMote = null;
                 try
                 {
-                    var batch = new DrawBatch();
-                    batch.DrawMesh(Bare<UnityEngine.Mesh>(), UnityEngine.Matrix4x4.identity, Bare<UnityEngine.Material>(), 0,
-                        props.colorOverride, props.fleckDef.graphicData.renderInstanced);
-                    batch.Flush();
-                    Equal(1, smokeDrawCount); Near(.35f, smokeDrawColor.a);
-                    Near(.55f, smokeDrawColor.r); Near(.25f, smokeDrawColor.g); Near(.75f, smokeDrawColor.b);
+                    var graphic = new Graphic_MoteWithAgeSecs();
+                    Set(graphic, "data", mote.def.graphicData); Set(graphic, "color", UnityEngine.Color.white);
+                    graphic.DrawWorker(mote.DrawPos, Rot4.North, mote.def, mote, 0);
+                    Equal(mote, renderMote); Near(.5f, renderAge); Require(mote.Alpha > 0);
+                    Near(.35f, mote.instanceColor.a);
                 }
                 finally
                 {
                     harmony.Unpatch(draw, HarmonyPatchType.Prefix, harmony.Id);
-                    harmony.Unpatch(setColor, HarmonyPatchType.Prefix, harmony.Id);
+                    harmony.Unpatch(setFloat, HarmonyPatchType.Prefix, harmony.Id);
                 }
             });
         }
         finally
         {
-            foreach (var method in new[] { validator, room, createFleck, clearWork }) harmony.Unpatch(method, HarmonyPatchType.Prefix, harmony.Id);
+            foreach (var method in new[] { validator, room, spawnMote, camera, saturated, despawnMote, clearWork, uiRoot, hideMotes, updateRate, silhouette }) harmony.Unpatch(method, HarmonyPatchType.Prefix, harmony.Id);
             blockAllRoleCells = false; blockedRoleCells.Clear();
         }
     }
 
-    private sealed class SmokeDrawProbe : Graphic_Fleck
+    private sealed class SmokeDrawProbe : Graphic_MoteWithAgeSecs
     {
         public bool drawn;
-        public FleckDrawData lastDraw;
-        public override void DrawFleck(FleckDrawData drawData, DrawBatch batch) { drawn = true; lastDraw = drawData; }
+        public Mote mote;
+        public override void DrawWorker(UnityEngine.Vector3 loc, Rot4 rot, ThingDef thingDef, Thing thing, float extraRotation)
+        { drawn = true; mote = (Mote)thing; }
     }
 
-    private static int smokeDrawCount;
-    private static UnityEngine.Color smokeDrawColor;
-    // 仅截断最后的图形设备调用；原版批处理与颜色属性写入仍执行。
-    private static bool CaptureSmokeDraw(UnityEngine.MaterialPropertyBlock properties) { Require(properties != null); smokeDrawCount++; return false; }
-    private static void CaptureSmokeColor(string name, UnityEngine.Color value) { if (name == "_Color") smokeDrawColor = value; }
+    private static bool MoteUiRoot(ref UIRoot __result) { __result = Bare<UIRoot_Play>(); return false; }
+    private static float renderAge;
+    private static Mote renderMote;
+    // 执行原版动画图形，只截断最终网格／材质提交；观察原版传递的年龄及强制逐次属性标记。
+    private static void CaptureMoteAge(int nameID, float value) { if (nameID == ShaderPropertyIDs.AgeSecs) renderAge = value; }
+    private static bool CaptureMoteRender(Thing thing, bool forcePropertyBlock)
+    { Require(forcePropertyBlock); renderMote = (Mote)thing; return false; }
 
     private static void StartPreviewTests()
     {

@@ -1,26 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- AI 辅助生成：复用原版烟雾贴图与角色绑定粒子；仅正式阶段持续播放。 -->
+<!-- AI 辅助生成：复用原版仪式烟雾的 Mote、着色器与角色组件；仅正式阶段播放。 -->
 <Defs>
-  <!-- 只引用原版烟雾贴图与抛射 Fleck 系统；短寿命粒子自行淡出，不需要额外清理类。 -->
-  <FleckDef ParentName="FleckBase_Thrown" MayRequire="Ludeon.RimWorld.Ideology">
-    <defName>SSC_CosmeticPurpleMistFleck</defName>
-    <!-- 少量角色烟雾使用原版普通绘制，颜色与淡出走逐次属性，避免依赖实例化颜色缓冲。 -->
-    <graphicData><texPath>Things/Mote/Smoke</texPath><renderInstanced>false</renderInstanced></graphicData>
-    <altitudeLayer>MoteOverhead</altitudeLayer>
-    <fadeInTime>0.4</fadeInTime><solidTime>0.8</solidTime><fadeOutTime>1.2</fadeOutTime>
-    <growthRate>0.08</growthRate>
-  </FleckDef>
+  <!-- 参照原版 Mote_RitualSmoke，将房间烟雾缩至人物周围；生命周期由原版 Mote 自行管理。 -->
+  <ThingDef ParentName="MoteBase" MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_CosmeticPurpleMistMote</defName>
+    <drawerType>RealtimeOnly</drawerType>
+    <altitudeLayer>Weather</altitudeLayer>
+    <mote>
+      <realTime>false</realTime><needsMaintenance>false</needsMaintenance>
+      <fadeInTime>0.4</fadeInTime><solidTime>0.8</solidTime><fadeOutTime>1.2</fadeOutTime>
+      <growthRate>0.08</growthRate>
+    </mote>
+    <graphicData>
+      <graphicClass>Graphic_MoteWithAgeSecs</graphicClass><shaderType>RitualSmoke</shaderType>
+      <texPath>Things/Mote/RitualEffects/Smoke2</texPath><drawSize>(1, 1)</drawSize>
+      <shaderParameters>
+        <_SmokeTex1>/Things/Mote/RitualEffects/Smoke1</_SmokeTex1>
+        <_SmokeTex2>/Things/Mote/RitualEffects/Smoke2</_SmokeTex2>
+        <_MaskTex>/Things/Mote/RitualEffects/GlowRayMask</_MaskTex>
+        <_DistortionTex>/Things/Mote/RitualEffects/DistortionSoft</_DistortionTex>
+        <_ScrollSpeed>0.016</_ScrollSpeed><_Thickness>10</_Thickness><_Distortion>1</_Distortion>
+      </shaderParameters>
+    </graphicData>
+  </ThingDef>
   <RitualVisualEffectDef MayRequire="Ludeon.RimWorld.Ideology">
     <defName>SSC_CosmeticPurpleMist</defName>
     <comps>
       <li Class="CompProperties_RitualEffectSpawnOnRole">
         <!-- 跟随受塑者当前位置；仅被正式阶段引用，原版负责组件 Tick、存档与停止播放。 -->
-        <roleId>recipient</roleId><fleckDef>SSC_CosmeticPurpleMistFleck</fleckDef>
+        <roleId>recipient</roleId><moteDef>SSC_CosmeticPurpleMistMote</moteDef>
         <!-- 延迟一个正式 tick，确保前一阶段 postAction 先扣料；每半秒生成一团低透明度紫雾。 -->
         <spawnIntervalTicks>30</spawnIntervalTicks><delay>1</delay>
-        <scale>1.6~1.9</scale><colorOverride>(0.55, 0.25, 0.75, 0.35)</colorOverride>
+        <!-- 原版 SpawnMote 读取 overrideColors；colorOverride 仅供其 Fleck 分支使用。 -->
+        <scale>1.6~1.9</scale><overrideColors><li>(0.55, 0.25, 0.75, 0.35)</li></overrideColors>
+        <rotation>-12~12</rotation>
         <rotationRate>-8~8</rotationRate>
-        <velocity>0.04~0.08</velocity><velocityDir>(0, 0, 1)</velocityDir>
       </li>
     </comps>
   </RitualVisualEffectDef>
