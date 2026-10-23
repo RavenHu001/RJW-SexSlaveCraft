@@ -1,5 +1,7 @@
 # 纳米催情液医美原生专项
 
+2026-10-23 本轮开发完成，当前专项 56／56，维护者已分批确认功能、最终 Mote 紫雾与预设名称；尚未发布。当前状态先读[完成核对](../../Docs/Development/Completed/纳米催情液医美应用完成核对.md)，下文继续说明测试边界，未将未覆盖的场景补记为实机通过。
+
 面向本机 RimWorld **1.7.4985 rev1269**（MVID `d368493b52bd4740bc7507c1b0386895`）。测试通过 ProjectReference 构建当前生产工程，使用实际游戏类型和生产 XML；不启动游戏，不修改用户配置或安装副本。
 
 统一入口已登记 `CosmeticNative`：
@@ -18,7 +20,7 @@ dotnet Tests/CosmeticNative/bin/Release/net10.0/CosmeticNative.dll '<repositoryR
 
 无界面宿主隔离了图形、通知、完整地图寻路／禁止／可预留判定、库存地图通知及落地放置和 Lord 移除的地图／信号投递；上述判定的生产调用保留为原版 API，测试只注入边界结果。材料执行真实原版取料 JobGiver 生成任务、背包／地面列表、足量判断、`ThingOwner.Take`／`SplitOff`／`Destroy`；落地放置隔离，但原版 Multi／DropThing 的角色范围和数量仍执行；取消执行原版 `ApplyOutcome` 的 `ended`／`cancelled` 及 `Lord.Cleanup`，通过实际 `Transition.Execute`／`GotoToil` 与测试用职责探针验证 postAction 清理后不再分配职责。技能禁用例通过真实 `SkillDef.IsDisabled` 验证，不替换 `TotallyDisabled`。
 
-这不覆盖游戏内清单刷新、真实医疗麻醉／政策／扣药、完整仪式 AI 站位、地图预留与搬运竞争、整场存读档。实机清单见[实施与验收](../../Docs/Development/Verification/纳米催情液医美实现与测试.md)。
+这不覆盖游戏内清单刷新、真实医疗麻醉／政策／扣药、完整仪式 AI 站位、地图预留与搬运竞争、整场存读档。实机清单见[实施与验收](../../Docs/Development/Completed/纳米催情液医美实现与测试.md)。
 
 开场专项额外隔离原版全局活动／行星预检、地图主持者候选列表和仪式目标可达性；保留生产开场分支、角色资格、材料报告及原版背包数量处理。原版拒绝透传用显式拒绝结果验证，不将这个局部宿主当作完整原版开场环境。
 
