@@ -2,25 +2,20 @@
 
 面向 RimWorld 的成人向 RimJobWorld（RJW）扩展，基于上游 **2.2.8** 继续维护，提供角色培养、主从绑定、六种特化、人格转移和身体改造。
 
-**当前正式版本：2.4.3（2026-10-20）。** `v2.4.2` 发布后截至 `dea5c78` 的开发统一纳入本版；1.7 使用 2.4.3 重编运行内容，1.6／Common 保留 **2.4.1** 冻结基线。文件／产品版本、About 与构建来源已对齐，验证与实机边界见[发布记录](Docs/Releases/2.4.3/2.4.3版本验证.md)。
+**当前开发版本：2.4.4（2026-10-23 登记，尚未发布）。** `v2.4.3` 之后截至 `f3e47c9` 的开发统一纳入本版，新增功能仅 1.7；1.6／Common 保留 **2.4.1** 冻结基线。公开下载仍为 **2.4.3（2026-10-20）**，不含本版新增。当前 DLL／BUILD-INFO、About 和源码产品属性仍为 2.4.3，正式发布前须对齐重编，见[验证与发布准备](Docs/Releases/2.4.4/2.4.4版本验证.md)。
 
-[2.4.3 版本范围](Docs/Releases/2.4.3/2.4.3发布说明.md) · [正式下载 2.4.3](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.3) · [双语模组介绍](Docs/模组介绍.md) · [玩家阅读入口](Docs/Players/README.md) · [文档总索引](Docs/README.md) · [English](#english-overview)
+[2.4.4 开发范围](Docs/Releases/2.4.4/2.4.4发布说明.md) · [正式下载 2.4.3](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.3) · [双语模组简介](Docs/模组介绍.md) · [玩家阅读入口](Docs/Players/README.md) · [文档总索引](Docs/README.md) · [English](#english-overview)
 
-**尚未发布的开发增量：SSC 文化拓展基本开发完成（仅 1.7）**，机制、图标、四语、命名和背景已有分批实机通过反馈，见[完成核对](Docs/Development/Completed/SSC文化拓展基本开发完成核对.md)。
+## 2.4.4 开发成果（仅 1.7，尚未发布）
 
-**尚未发布的开发增量：纳米催情液医美应用已完成（仅 1.7）**，包含工业手术、主奴秩序文化的塑貌仪式、共用恢复反应、紫雾与预设名称，已有分批实机通过反馈，见[完成核对](Docs/Development/Completed/纳米催情液医美应用完成核对.md)。
-
-## 2.4.3 更新（仅 1.7）
-
-| 方向 | 当前交付 | 详细说明 |
+| 主题 | 当前交付 | 详细说明 |
 | --- | --- | --- |
-| 主从关系概览 | 关系卡片、头像定位、调教员指派、当前地图批选、局部刷新与显式开发诊断 | [完成核对](Docs/Development/Completed/主从关系概览完成核对.md) |
-| 低科技发展 | 研究分级调整、篝火／灶台 10→1 粗放浓缩及兼容烹饪工作台接入 | [实现与验收](Docs/Development/Completed/低科技适配首批实现与测试.md) |
-| 三代九把 PNA 武器 | 中世纪、工业、太空各三把；研究／配方、效力、原版品质、正式美术与反馈；太空有效链无伤吸收及即时修复 | [版本清单](Docs/Releases/2.4.3/2.4.3发布说明.md#三代九把-pna-武器) |
-| 结算与清理 | 分摊伤害不传药、两代鞭束配合受药、旧品质适配归档与旧发射器退役 | [太空完成核对](Docs/Development/Completed/SSC太空时代纳米催情液武器完成核对.md) |
-| 欢愉恩赐 | 负荷按主人身体产液能力折算 3～100 点，参考产量 20 对应 8 点；其余结算沿用原规则 | [剂量验收](Docs/Development/Completed/欲望侵染体液产量与PNA剂量接入.md) |
+| SSC 文化拓展 | 主奴秩序模因、六组 28 戒律、心情／社交／领袖／数量／性别反馈，七张图标、四语、命名与动态背景 | [基本完成核对](Docs/Development/Completed/SSC文化拓展基本开发完成核对.md) |
+| 仪式演化点 | 默认关闭的全局开关，原版条件／曲线／上限，整场一次性结算 | [实现与验收](Docs/Development/Completed/仪式演化点开关实现与测试.md) |
+| 医美手术与塑貌仪式 | Beauty 单档提升至 +2，工业手术／主奴秩序仪式、共用恢复、原版供料、紫雾与预设名 | [完成核对](Docs/Development/Completed/纳米催情液医美应用完成核对.md) |
+| 人格排泄修复 | 固定动作空解析时继续既有空接触流程，原报告组合已实机确认 | [修复与验收](Docs/Development/Completed/人格排泄固定动作空解析修复与测试.md) |
 
-**升级注意：1.7 已移除旧简易 PNA 发射器、弹丸、配方与专属研究，不兼容引用这些旧定义的存档，不提供迁移或替代。** 1.6 冻结版保留原内容。这些更新纳入 2.4.3，历史 2.4.2 附件保留原内容。
+2.4.3 已发布的关系概览、低科技、三代九把 PNA 武器与恩赐剂量继续保留，详见[历史发布范围](Docs/Releases/2.4.3/2.4.3发布说明.md)。**1.7 旧简易 PNA 发射器及相关定义已在 2.4.3 移除，不提供引用旧定义的存档迁移。**
 
 ## 核心玩法与版本沿革
 
@@ -50,7 +45,7 @@
 | 用途 | 阅读顺序 |
 | --- | --- |
 | 了解与游玩 | [模组介绍](Docs/模组介绍.md) → [玩家阅读入口](Docs/Players/README.md) → 快速入门 → 完整机制 |
-| 查看版本变化 | [2.4.3 说明](Docs/Releases/2.4.3/2.4.3发布说明.md) → [提交归并核对](Docs/Releases/2.4.3/2.4.3开发归并核对.md) → [验证边界](Docs/Releases/2.4.3/2.4.3版本验证.md) |
+| 查看版本变化 | [2.4.4 说明](Docs/Releases/2.4.4/2.4.4发布说明.md) → [提交归并核对](Docs/Releases/2.4.4/2.4.4开发归并核对.md) → [验证边界](Docs/Releases/2.4.4/2.4.4版本验证.md) |
 | 接手开发 | [已交付记录](Docs/Development/Completed/README.md) → [专项待验收](Docs/Development/Verification/README.md) → [当前规划](Docs/Design/README.md) |
 | 编译、测试、打包 | [维护入口](Docs/Maintenance/README.md) → [测试说明](Tests/README.md) → [发布与打包](Docs/Maintenance/发布与打包.md) |
 | 美术与历史依据 | [资源索引](Docs/Art/README.md) · [设计归档](Docs/Design/Archive/README.md) · [开发日志](Docs/Development/开发更新记录.md) |
@@ -61,8 +56,8 @@
 
 ## English overview
 
-SexSlaveCraft is an adult RJW expansion for pawn development, bonds, six specializations, personality transfer and body modification. **The current release is 2.4.3 (2026-10-20).** New work targets 1.7; the 1.6/Common baseline stays frozen at 2.4.1.
+SexSlaveCraft is an adult RJW expansion for pawn development, bonds, six specializations, personality transfer and body modification. **Current development: 2.4.4, registered 2026-10-23; not released.** The public download remains [v2.4.3](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.3). New work targets 1.7; the 1.6/Common baseline stays frozen at 2.4.1.
 
-2.4.3 groups all post-v2.4.2 development through `dea5c78`: the bond overview, low-tech research and rough concentration, nine PNA weapons across three eras, dedicated art/feedback, native quality scaling, isolated damage sharing, cooperative whip hits, retirement of the old launcher, and Bestow Bliss doses based on body fluid output. **1.7 saves referencing the removed launcher definitions have no migration path.** The 1.7 binary and About metadata are aligned to 2.4.3; the 1.6 binary remains 2.4.1.
+2.4.4 groups post-v2.4.3 work through `f3e47c9`: Master-slave Order with six groups/28 precepts, cultural feedback/icons/four-language names and dynamic backgrounds; opt-in ritual development points; cosmetic surgery and Reshaping Rituals; and a Personality Excretion interruption fix. Current binary/About metadata remain 2.4.3 pending release preparation. The 2.4.3 bond overview, low-tech route and nine weapons remain available in development; saves referencing the removed old 1.7 launcher still have no migration path.
 
-Load Harmony and RJW before SSC; Binding Rituals require Ideology. Start with the [English mod overview](Docs/模组介绍.md#english), [player reading order](Docs/Players/README.md#english-reading-order), [quick start](QUICK_START_EN.md) and [full guide](PLAYER_GUIDE_EN.md). Read the [2.4.3 scope](Docs/Releases/2.4.3/2.4.3发布说明.md#english) for this release, or the [2.4.2 notes](Docs/Releases/2.4.2/2.4.2发布说明.md#english) for the historical 2.4.2 download.
+Load Harmony and RJW before SSC; Binding Rituals and cultural features require Ideology. Start with the [English mod overview](Docs/模组介绍.md#english), [player reading order](Docs/Players/README.md#english-reading-order), [quick start](QUICK_START_EN.md) and [full guide](PLAYER_GUIDE_EN.md). Compare the [2.4.4 development scope](Docs/Releases/2.4.4/2.4.4发布说明.md#english) with the [published 2.4.3 scope](Docs/Releases/2.4.3/2.4.3发布说明.md#english).

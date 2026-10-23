@@ -1,10 +1,6 @@
 # 文档总索引
 
-2026-10-23 开发增量：纳米催情液医美手术与文化仪式本轮开发完成，功能、紫雾及预设名已获维护者分批确认，先读[完成核对](Development/Completed/纳米催情液医美应用完成核对.md)。仅 1.7，尚未发布；两份设计已归档，历史验证与当前完成状态分开记录。
-
-2026-10-22 开发增量：SSC 文化拓展基本开发完成，统一从[完成核对](Development/Completed/SSC文化拓展基本开发完成核对.md)进入。此为尚未发布的 1.7 开发内容，不回写下述 2.4.3 已发布范围。
-
-当前文档对应 **2.4.3 正式版**（2026-10-20）。本版汇总关系概览、低科技、三代九武器及恩赐剂量更新；公开下载为 2.4.3，1.6／Common 冻结于 2.4.1。见[发布说明](Releases/2.4.3/2.4.3发布说明.md)、[提交归并](Releases/2.4.3/2.4.3开发归并核对.md)与[发布验证](Releases/2.4.3/2.4.3版本验证.md)。
+当前文档对应 **2.4.4 开发版（2026-10-23 登记，尚未发布）**，汇总 `v2.4.3` 后截至 `f3e47c9` 的仪式演化点、文化拓展、医美及人格排泄修复。新增仅限 1.7；1.6／Common 冻结于 2.4.1。公开下载仍为 2.4.3，运行产物版本尚未对齐 2.4.4。先读[版本说明](Releases/2.4.4/2.4.4发布说明.md)、[归并核对](Releases/2.4.4/2.4.4开发归并核对.md)与[验证／发布准备](Releases/2.4.4/2.4.4版本验证.md)。
 
 [项目首页](../README.md) · [玩家阅读入口](Players/README.md) · [当前规划](Design/README.md) · [开发资料](Development/README.md)
 
@@ -14,7 +10,7 @@
 | --- | --- | --- |
 | 了解功能、准备发布页面 | [双语模组介绍](模组介绍.md) | English 在前、中文在后；先看开发／下载版本区别 |
 | 安装和游玩 | [玩家阅读入口](Players/README.md) | 简介 → 快速入门 → 按需查机制与常见问题 |
-| 了解版本归属 | [发布与验证索引](Releases/README.md) | 2.4.3 说明 → 归并核对 → 验证；历史见 [CHANGELOG](../CHANGELOG.md) |
+| 了解版本归属 | [发布与验证索引](Releases/README.md) | 2.4.4 范围 → 归并核对 → 验证；历史见 [CHANGELOG](../CHANGELOG.md) |
 | 接手已完成功能 | [已交付开发记录](Development/Completed/README.md) | 主题完成核对 → 对应阶段 → 历史设计 |
 | 查明确的验证缺口 | [待验收事项](Development/Verification/README.md) | 尚待确认范围 → 实现依据 → 实机步骤 |
 | 继续设计 | [当前规划索引](Design/README.md) | 总体状态 → 未完成需求 → 关联历史；已完成方案在 [Archive](Design/Archive/README.md) |
@@ -26,8 +22,8 @@
 ## 三条阅读路线
 
 - **新玩家**：[模组介绍](模组介绍.md) → [快速入门](../读我，玩法介绍.md) → [机制详解](../机制详解.md)。英文路线见 [English reading order](Players/README.md#english-reading-order)。
-- **接手开发**：[2.4.3 范围](Releases/2.4.3/2.4.3发布说明.md) → [完成记录](Development/Completed/README.md) → [待验收](Development/Verification/README.md) → [未来规划](Design/README.md)。
-- **准备发布**：[版本验证](Releases/2.4.3/2.4.3版本验证.md) → [构建与打包](Maintenance/发布与打包.md) → [测试索引](../Tests/README.md)。
+- **接手开发**：[2.4.4 范围](Releases/2.4.4/2.4.4发布说明.md) → [完成记录](Development/Completed/README.md) → [待验收](Development/Verification/README.md) → [未来规划](Design/README.md)。
+- **准备发布**：[版本验证](Releases/2.4.4/2.4.4版本验证.md) → [构建与打包](Maintenance/发布与打包.md) → [测试索引](../Tests/README.md)。
 
 ## 目录与状态
 

@@ -1,6 +1,8 @@
 # RJW-SexSlaveCraft Quick Start Guide
 
-> This guide covers **SSC 2.4.3 (2026-10-20)**. The 1.7 runtime includes the bond overview, low-tech adaptation, nine PNA weapons and output-based Bestow Bliss doses. The 1.6 runtime stays frozen at 2.4.1. See the [2.4.3 release scope and download](Docs/Releases/2.4.3/2.4.3发布说明.md#english). Earlier section versions identify introductions.
+[New in 2.4.4: culture, ritual points and cosmetics](#22-244-culture-and-cosmetic-reshaping-17-development-only)
+
+> This guide covers **SSC 2.4.4 development (registered 2026-10-23; not released)**. Culture, ritual points, cosmetic reshaping and the Personality Excretion fix target 1.7; 1.6 remains frozen at 2.4.1. See the [2.4.4 scope](Docs/Releases/2.4.4/2.4.4发布说明.md#english). The [public 2.4.3 download](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.3) lacks these additions. Earlier section versions identify introductions.
 
 [Project home](README.md) · [Player reading order](Docs/Players/README.md#english-reading-order) · [中文快速入门](读我，玩法介绍.md) · [Complete guide](PLAYER_GUIDE_EN.md)
 
@@ -501,7 +503,7 @@ Combine sexual skill with actively controlled aphrodisiac nanomachines to bestow
 
 All four batches are implemented and accepted in game on the 2.4.1 release. The public 2.4.0 download does not include this feature.
 
-The 2026-10-20 fluid-output dose change belongs to 2.4.3 development for 1.7 accepted in-game on 2026-10-20; existing public packages were not rebuilt. See the [implementation record](Docs/Development/Completed/欲望侵染体液产量与PNA剂量接入.md).
+The fluid-output dose change was accepted in-game on 2026-10-20 and included in the subsequent 2.4.3 release for 1.7. See the [implementation record](Docs/Development/Completed/欲望侵染体液产量与PNA剂量接入.md).
 
 1. Select a current player-faction Master, open the Training tab, and enable **Bestow Bliss** in personal abilities. It starts off and requires no additional Master level, bond count or bridle.
 2. Complete an ordinary paired encounter or Lovin with an eligible humanlike partner. The Master may occupy either role. Unbound partners and Sex Slaves bonded to another Master can receive effects; existing encounter permissions still apply.
@@ -659,3 +661,26 @@ The extraction job requires a manual right-click order.
 ### Full Gelatinization keeps failing
 
 It remains risky until Corruption and all six body-part tracks reach 100%. Wait for the game to report guaranteed success.
+
+
+## 22. 2.4.4 Culture and Cosmetic Reshaping (1.7 Development Only)
+
+These additions are absent from the public 2.4.3 package. Confirm that you are using development content before following this section.
+
+### Culture and ritual development points
+
+Choose **Master-slave Order** during ideology creation/reform to configure six precept groups: sex-slave attitudes, Training Officers, Masters, Master counts, bound-pawn counts and gender rules. Choices affect mood, opinion, leadership and count feedback. Cultural bond checks use actual Chains, not identity selection on the Training tab. Precepts neither grant Master qualification nor create bonds.
+
+Ideology names, leader/moral-guide titles, ritual names and backgrounds have dedicated presets and dynamic text. Existing saved names remain. A title mentioning a chief does not create a separate role.
+
+**Ritual development points** defaults to off in mod settings. Enable it to let SSC Binding Rituals award 0/0/1/2 points under vanilla fluid-ideology conditions and the reform cap. Disabling it keeps existing points and other rewards; past rituals are not backfilled.
+
+### Starting cosmetic treatment
+
+- **Surgery:** research PNA Cosmetic Application (1,500 points; Basic PNA Application + Sterile Materials). Use an eligible Medical 8 doctor and **10 normal PNA + 3 industrial/glitterworld medicine**. Adult colonists, colony slaves and prisoners must pass individual eligibility checks.
+- **Ritual:** Master-slave Order provides a Reshaping Ritual without research. Pick a distinct practitioner and recipient of that ideology; the practitioner needs Medical 6. Supply **20 normal PNA + 2 herbal medicine**. Eligible adult colonists/colony slaves can receive treatment; prisoners use surgery. Spectators are optional and may follow other ideologies. Let the practitioner bring materials before the 5,000-tick main stage.
+- Each success improves vanilla Beauty by one step, capped at +2. Recovery causes pain and work penalties, stronger after failure; health details show the time remaining. Wait for recovery before repeating. Gene-sourced, suppressed, conflicting or ambiguous Beauty states are rejected; modded levels above +2 remain untouched.
+
+2.4.4 also fixes Personality Excretion aborting on an empty fixed-interaction resolution; existing work and extraction requirements remain.
+
+See [full guide section 25](PLAYER_GUIDE_EN.md#25-244-culture-rituals-and-cosmetic-reshaping-17-development-only) and [version verification](Docs/Releases/2.4.4/2.4.4版本验证.md) for rules and release status.

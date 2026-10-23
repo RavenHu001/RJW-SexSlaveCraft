@@ -1,8 +1,10 @@
 # 玩家阅读入口 / Player documentation
 
-当前指南对应 **2.4.3**；新增功能仅在 1.7，1.6 保留 2.4.1 冻结内容。[公开下载 2.4.3](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.3)已纳入关系概览、低科技、三代九武器及恩赐剂量调整，见[本版范围](../Releases/2.4.3/2.4.3发布说明.md)。
+当前指南对应 **2.4.4 开发版，尚未发布**。新增文化、演化点、医美及人格排泄修复仅限 1.7；1.6 冻结于 2.4.1。[公开下载 2.4.3](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.3)不含本版新增，先核对[版本范围](../Releases/2.4.4/2.4.4发布说明.md)。
 
 [项目首页](../../README.md) · [文档总索引](../README.md) · [双语模组介绍](../模组介绍.md) · [版本索引](../Releases/README.md)
+
+新增内容可直接查[文化与医美入门](../../读我，玩法介绍.md#22-244-文化与医美仅-17-开发版)，数值与条件查[完整规则](../../机制详解.md#25-244-文化仪式与医美仅-17-开发版)。
 
 ## 中文阅读顺序
 
@@ -16,6 +18,7 @@
 
 | 问题 | 入门 | 完整规则 |
 | --- | --- | --- |
+| 2.4.4 文化、演化点与医美 | [入门](../../读我，玩法介绍.md#22-244-文化与医美仅-17-开发版) | [规则／材料／恢复](../../机制详解.md#25-244-文化仪式与医美仅-17-开发版) |
 | 主人资格与成长 | [资格](../../读我，玩法介绍.md#主人资格入口240) · [面板](../../读我，玩法介绍.md#主人成长与面板240) | [四阶段](../../机制详解.md#312-主人阶段与实践经验240) |
 | 关系概览、头像定位与批选 | [操作](../../读我，玩法介绍.md#主从关系概览243仅-17) | [完成核对](../Development/Completed/主从关系概览完成核对.md) |
 | 浓缩与低科技 | [PNA](../../读我，玩法介绍.md#7-pna-与泌乳) | [浓缩](../../机制详解.md#112-浓缩) |
@@ -27,7 +30,7 @@
 
 ## English reading order
 
-The guides cover **2.4.3** on 1.7, with 1.6 frozen at 2.4.1. The public 2.4.3 package includes these additions; start with the [release scope](../Releases/2.4.3/2.4.3发布说明.md#english) when comparing versions.
+The guides cover **unreleased 2.4.4 development** on 1.7; 1.6 remains at 2.4.1. The public 2.4.3 package lacks these additions. Start with the [2.4.4 scope](../Releases/2.4.4/2.4.4发布说明.md#english), [culture/cosmetics quick start](../../QUICK_START_EN.md#22-244-culture-and-cosmetic-reshaping-17-development-only) and [full rules](../../PLAYER_GUIDE_EN.md#25-244-culture-rituals-and-cosmetic-reshaping-17-development-only).
 
 1. Read the [mod overview](../模组介绍.md#english).
 2. Follow [Getting Started](../../QUICK_START_EN.md#2-getting-started) for research, qualification, identities and trainers.
@@ -37,7 +40,9 @@ The guides cover **2.4.3** on 1.7, with 1.6 frozen at 2.4.1. The public 2.4.3 pa
 
 Use [Bond Overview](../../QUICK_START_EN.md#bond-overview-243-17-only) for portrait navigation and member selection; see [Bestow Bliss](../../PLAYER_GUIDE_EN.md#115-master-desire-infestation) for output-based doses. Industrial rules are in [11.7](../../PLAYER_GUIDE_EN.md#117-industrial-pna-weapons).
 
-## 2.4.3 升级要点 / Upgrade essentials
+## 升级要点 / Upgrade essentials
+
+**2.4.4 尚未发布。** 开发版新增文化、可选演化点、医美和人格排泄修复；以下旧发射器、武器和剂量规则保留 2.4.3 的升级边界。2.4.4 is unreleased; the launcher, weapon and dose notes below retain their 2.4.3 introduction.
 
 - **旧枪移除：** 1.7 不再加载旧简易发射器、弹丸、配方及专属研究，不提供旧定义存档迁移；1.6 内容保留。
 - **武器规则：** 六把涂覆武器保留真实伤口；太空主攻击对有效链目标无伤吸收并修复，护盾／掩体仍拦截。原版品质影响伤害／穿甲，不放大药效／修复。
@@ -48,6 +53,6 @@ Use [Bond Overview](../../QUICK_START_EN.md#bond-overview-243-17-only) for portr
 
 ## 版本与资料用途 / Versions and document roles
 
-当前指南与 2.4.3 安装包范围一致；历史标签资料保持各自版本，构建与发布结果见[验证记录](../Releases/2.4.3/2.4.3版本验证.md)。已交付、专项待验收与未来规划分别登记，测试计数保留实际执行日期。
+当前指南以 2.4.4 开发范围为准，与已发布 2.4.3 包分开；历史标签资料保持各自版本，构建与发布准备见[验证记录](../Releases/2.4.4/2.4.4版本验证.md)。已交付、专项待验收与未来规划分别登记，测试计数保留实际执行日期。
 
-The 2.4.3 guides describe the release package. Historical validation and maintainer acceptance retain their original scope; new build, release-gate and package results are recorded separately.
+These guides describe 2.4.4 development, not the public 2.4.3 package. Historical validation and maintainer acceptance retain their original scope; new build, release-gate and package results are recorded separately.

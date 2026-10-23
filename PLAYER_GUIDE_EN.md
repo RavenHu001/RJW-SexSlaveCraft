@@ -1,6 +1,8 @@
 # RJW-SexSlaveCraft Complete Player Guide
 
-> This guide covers **SSC 2.4.3 (2026-10-20)**. The 1.7 runtime includes the bond overview, low-tech adaptation, nine PNA weapons and output-based Bestow Bliss doses. The 1.6 runtime stays frozen at 2.4.1. See the [2.4.3 release scope and download](Docs/Releases/2.4.3/2.4.3发布说明.md#english). Earlier section versions identify introductions.
+[New in 2.4.4: culture, ritual points and cosmetics](#25-244-culture-rituals-and-cosmetic-reshaping-17-development-only)
+
+> This guide covers **SSC 2.4.4 development (registered 2026-10-23; not released)**. Culture, ritual points, cosmetic reshaping and the Personality Excretion fix target 1.7; 1.6 remains frozen at 2.4.1. See the [2.4.4 scope](Docs/Releases/2.4.4/2.4.4发布说明.md#english). The [public 2.4.3 download](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.3) lacks these additions. Earlier section versions identify introductions.
 
 [Project home](README.md) · [Player reading order](Docs/Players/README.md#english-reading-order) · [Quick start](QUICK_START_EN.md) · [中文机制详解](机制详解.md)
 
@@ -1534,6 +1536,7 @@ The operation currently does not reference `Sex Reassignment Surgery (Male to Fe
 | Use RJW original eligibility for training age checks | On | Current code branch is reversed relative to the displayed explanation |
 | Debug Gizmos | Off | Quick-test buttons in developer mode |
 | Per-pawn gel rendering (2.4.2 / 1.7) | On for new bodies; legacy preference for old saves | On the Training tab; controls body/head/SA rendering while retaining saved colors when off. The frozen 1.6 runtime keeps its global body tint |
+| Ritual development points (2.4.4 / 1.7) | Off | Uses vanilla development conditions, outcome curve and reform cap; no historical backfill |
 | Allow ritual conversion into slavery | On | Disables only ritual slave conversion, not other ritual rewards |
 | Enable Corruption decay | On | Off stops natural loss; apparel floors and Chain caps remain active |
 | Base Corruption decay per day | 2% | Adjustable from 0% to 20% per day in 0.5% steps |
@@ -1693,6 +1696,7 @@ Ordinary affection automatically discovers the actual bound master within about 
 | Basic PNA Application | 800 | Training | Prerequisite for primitive weapons, concentration and later PNA research |
 | Sex Reassignment Surgery (Male to Female) | 1,000 | Basic PNA Application | Node does not actually lock the operation |
 | Femboy Conversion | 1,200 | Sex Reassignment Surgery | Not fully implemented |
+| PNA Cosmetic Application (2.4.4, 1.7) | 1,500 | Basic PNA Application, Sterile Materials | Cosmetic surgery, Medical 8; not required for the cultural ritual |
 | Primitive PNA Weapons (2.4.3, 1.7) | 800 | Basic PNA Application | Short spear, blowpipe and light crossbow; no concentration requirement |
 | Industrial PNA Weapons (2.4.3, 1.7) | 1,600 | Primitive PNA Weapons, PNA Concentration, Machining | Short whip, repeating needle gun and precision needle rifle |
 | PNA Shape Control (2.4.3, 1.7) | 3,000 | Industrial PNA Weapons, Fabrication; high-tech bench + multi-analyzer | Silk whip, pulse gun and projector gun; fabrication bench |
@@ -1834,3 +1838,51 @@ The buff lasts 1 in-game hour. Its 4-hour cooldown starts on successful activati
 Combined with final passive bonuses, this specialization alone gives incoming damage `0.80 × 0.75 = 0.60` and melee cooldown `0.85 × 0.75 = 0.6375`. Body training, equipment and other effects still contribute to the final result.
 
 **Saves and personality transfer.** Normal saves preserve cooldown and remaining buff time. Personality extraction or replacement removes the old body's Combatant states, ability and active buff. Implanting a final personality grants a new ability without carrying over the old cooldown or active buff. A personality without Combatant achievements does not inherit them from its receiving body.
+
+
+## 25. 2.4.4 Culture, Rituals and Cosmetic Reshaping (1.7 Development Only)
+
+This section describes unreleased 2.4.4 development, absent from the public 2.4.3 package. 1.6/Common remain frozen. Start with the [quick start](QUICK_START_EN.md#22-244-culture-and-cosmetic-reshaping-17-development-only).
+
+### 25.1 Culture and actual identities
+
+Master-slave Order is an impact-3 meme with six groups and 28 precepts: sex-slave attitudes (6), Training Officers (5), Masters (5), Master counts (3), bound-pawn counts (3), and gender rules (6). Gender rules cover female only, male only, unrestricted, female duty, male duty and non-Master duty. Current Masters are exempt from the duty; actual bonds and adult membership still matter.
+
+Cultural checks use actual valid Chains. Training-tab identity remains an activity selection. Training Officers use existing role eligibility, and leadership uses valid vanilla office holders. Titles or faction-leader pointers alone do not establish office. Attitudes affect mood/opinion; they do not automatically alter work admission, willingness, qualification or bonds.
+
+Master counts use the valid member roster. Each Master's living bound pawns are counted across maps and deduplicated. Excess counts accumulate up to three: Master-count mood -6/-15/-27; bound-pawn-count self mood -3/-9/-18; an observer's count precept also applies -5/-15/-30 opinion toward the Master. Culture, observer/self rules and vanilla final modifiers remain distinct.
+
+Seven cultural icons, four-language text, ideology names, leader/moral-guide titles, Binding Ritual name presets and 17 paragraphs across six background frameworks are included. Dynamic deity/founder names and mixed backgrounds support new generation. Existing saved names remain; separate chief roles, further meme interactions and global performance work are still future scope.
+
+### 25.2 Ritual development points
+
+The global setting defaults to off, including configurations missing the key, and is shared across saves. When enabled, SSC Binding Rituals use the vanilla anytime-ritual curve: 0/0/1/2 points for the four outcome tiers. Fluid-ideology development conditions and the reform cap still apply; letters show the actual increase.
+
+The setting is read at completion. Settlement happens once per whole ritual, not once per each of the six stages. Off hides this reward and prevents new points while preserving existing points and other effects. Past rituals are not backfilled; no separate cooldown is added.
+
+### 25.3 Cosmetic eligibility and costs
+
+Success improves vanilla Beauty along `-2 → -1 → no trait → +1 → +2`. Existing +2 or higher levels remain unchanged and block further treatment. Conflicting traits, gene-sourced/suppressed Beauty, duplicate/unknown levels and ongoing recovery are rejected. Neither route requires SSC identities or a bond. Ordinary Beauty follows the existing personality-gel transfer rules; the recovery reaction stays with the body, so moving into a recovering body does not bypass it.
+
+| Requirement | Surgery | Reshaping Ritual |
+| --- | --- | --- |
+| Prerequisite | PNA Cosmetic Application, 1,500 research; Basic PNA Application + Sterile Materials | Master-slave Order; no research |
+| Practitioner | Adult free colonist with medical work enabled and Medical 8 | Medical 6; follows the ritual ideology; distinct from recipient |
+| Recipient | Eligible adult player-managed flesh humanoid, including colonists, colony slaves and prisoners | Eligible adult colonist/colony slave of the practitioner's ideology; no prisoners |
+| Materials | 10 normal PNA + 3 industrial/glitterworld medicine | 20 normal PNA + 2 herbal medicine |
+| Duration | 4,000 work, modified by medical work rules | 5,000-tick main stage, plus preparation |
+| Quality | Vanilla anesthesia, medical quality and surgery limits | Vanilla ritual quality and a single weighted outcome; Medical replaces Social |
+
+The ritual uses vanilla sky-lantern material preparation. The practitioner carries supplies in inventory, and a required stage consumes them before the main stage; outcomes do not charge again. Spectators are optional and may follow other ideologies. The pair stand adjacent, practitioner facing recipient and recipient facing spectators. Purple mist runs during the main stage and fades after ending/cancellation. Four name presets apply to newly created instances; saved names are retained. At Medical 6, baseline success is about 61.5%, subject to quality modifiers such as surroundings and spectators.
+
+### 25.4 Recovery and failure
+
+Both routes share a reaction that decays by 0.10 severity per day, with staged pain/work effects and remaining hours shown in health details. Initial severity: surgery success/failure 0.05/0.25; ritual success/failure 0.15/0.60. Natural recovery is approximately 12/60/36/144 hours respectively. Treatment is blocked until recovery, including after success.
+
+Failure does not improve Beauty and causes a stronger reaction. No extra refunds, material rollback or independent cooldown are provided. Dead/destroyed recipients are skipped at outcome; a living recipient who loses eligibility receives the route's failure result. Interruption and occupancy follow vanilla systems.
+
+### 25.5 Personality Excretion fix and verification
+
+When its fixed interaction has no anatomical resolution, Personality Excretion now uses the existing empty-contact path, clearing stale parts while retaining the correct participants. It adds no identity/anatomy gate and does not relax ordinary Training resolution. The maintainer confirmed the originally reported female pair can complete the work; other combinations and interruptions are not inferred as independently tested.
+
+Culture and cosmetics have batch acceptance, with final targeted results of 458/458 and 56/56 at their actual dates. They are not combined into a new full release gate. See [2.4.4 verification](Docs/Releases/2.4.4/2.4.4版本验证.md) for evidence and unreleased status.
