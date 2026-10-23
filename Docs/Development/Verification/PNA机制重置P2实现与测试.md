@@ -4,7 +4,7 @@
 
 日期：2026-10-14。分支：`codex/pna-reset`。基线：`015c73f`，保留已确认的 P1 和普通 XML 五档数值。状态：**P2 已实现，核心链路及最新成瘾调整均获维护者实机有效确认，未发布。** 不归并到已发布的 2.4.0 附件。
 
-[设计规划](../../Design/PNA机制重置开发规划.md) · [P1 已交付记录](../Completed/PNA机制重置P1实现与测试.md) · [PNA 专项](../../../Tests/PnaLoad/README.md)
+[设计规划](../../Design/Archive/PNA机制重置开发规划.md) · [P1 已交付记录](../Completed/PNA机制重置P1实现与测试.md) · [PNA 专项](../../../Tests/PnaLoad/README.md)
 
 ## 实现范围
 

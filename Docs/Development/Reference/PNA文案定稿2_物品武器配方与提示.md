@@ -1,8 +1,8 @@
 # PNA 文案定稿 二 物品、武器、配方、研究与提示
 
-2026-10-20 后续状态：旧简易发射器、弹丸及专属研究已从 1.7 移除，以下有关旧枪文案和兼容处理的内容保留历史含义，不再作为实施任务；见[移除记录](../Development/Completed/SSC旧简易PNA发射器移除与归档.md)。
+2026-10-20 后续状态：旧简易发射器、弹丸及专属研究已从 1.7 移除，以下有关旧枪文案和兼容处理的内容保留历史含义，不再作为实施任务；见[移除记录](../Completed/SSC旧简易PNA发射器移除与归档.md)。
 
-> 当前完成状态（2026-10-16）：定稿、四语 XML、后续调试旧称及心情标签已落地并获分批实机确认，原 2.4.0.5 开发成果归入 **2.4.1**。下文保留交接与编写历史，不作为待执行任务；见[完成核对](../Development/Completed/PNA重置与玩法补全完成核对.md)及[本版说明](../Releases/2.4.1/2.4.1发布说明.md)。
+> 当前完成状态（2026-10-16）：定稿、四语 XML、后续调试旧称及心情标签已落地并获分批实机确认，原 2.4.0.5 开发成果归入 **2.4.1**。下文保留交接与编写历史，不作为待执行任务；见[完成核对](../Completed/PNA重置与玩法补全完成核对.md)及[本版说明](../../Releases/2.4.1/2.4.1发布说明.md)。
 
 配套[交接文档](PNA文案重写交接.md)与[定稿一](PNA文案定稿1_药效与成瘾.md)。本稿覆盖余下全部玩家可见文本：分泌状态、需求、化学品、两种药液、发射器与弹丸、伤害名、两份配方、三项研究、短提示与调试反馈。
 
@@ -10,7 +10,7 @@
 
 ## 1 分泌状态
 
-`SSC_Purple_HyperLactation`（[HediffOfTrain.xml](../../1.7/Defs/HediffDefs/HediffOfTrain.xml)）
+`SSC_Purple_HyperLactation`（[HediffOfTrain.xml](../../../1.7/Defs/HediffDefs/HediffOfTrain.xml)）
 
 - label：**纳米催情液分泌**
 - description：
@@ -20,7 +20,7 @@
 
 ## 2 需求
 
-`Need_PNA`（[NeedDefs.xml](../../1.7/Defs/NeedDefs/NeedDefs.xml)）
+`Need_PNA`（[NeedDefs.xml](../../../1.7/Defs/NeedDefs/NeedDefs.xml)）
 
 - label：**纳米催情液渴求**
 - description：
@@ -30,7 +30,7 @@
 
 ## 3 化学品
 
-`PNA_Chemical`（[ChemicalDef.xml](../../1.7/Defs/ChemicalDefs/ChemicalDef.xml)）
+`PNA_Chemical`（[ChemicalDef.xml](../../../1.7/Defs/ChemicalDefs/ChemicalDef.xml)）
 
 - label：**紫色纳米催情液**
 
@@ -38,7 +38,7 @@
 
 ## 4 两种药液
 
-`Purple_Aphrodisiac_Nanofluid`（[Nanofluid.xml](../../1.7/Defs/ThingsDefs/Nanofluid.xml)）
+`Purple_Aphrodisiac_Nanofluid`（[Nanofluid.xml](../../../1.7/Defs/ThingsDefs/Nanofluid.xml)）
 
 - label：**紫色纳米催情液**
 - description：
@@ -56,7 +56,7 @@
 
 ## 5 发射器与弹丸
 
-`Gun_PNA_Low`（[SSC_Gun.xml](../../Archive/PnaSimpleLauncher/Defs/SSC_Gun.xml)）
+`Gun_PNA_Low`（[SSC_Gun.xml](../../../Archive/PnaSimpleLauncher/Defs/SSC_Gun.xml)）
 
 - label：**PNA 发射器**
 - description：
@@ -66,7 +66,7 @@
 
 - label：**PNA 弹丸**
 
-`Damage_PNA_Damage_LowTier`（[DemageDef_Gun.xml](../../Archive/PnaSimpleLauncher/Defs/DemageDef_Gun.xml)）
+`Damage_PNA_Damage_LowTier`（[DemageDef_Gun.xml](../../../Archive/PnaSimpleLauncher/Defs/DemageDef_Gun.xml)）
 
 - label：**低强度 PNA 作用**
 
@@ -74,7 +74,7 @@
 
 ## 6 两份配方
 
-[RecipeDef_PNA_PLUS.xml](../../1.7/Defs/RecipeDefs/RecipeDef_PNA_PLUS.xml)，DefName 保持不变。
+[RecipeDef_PNA_PLUS.xml](../../../1.7/Defs/RecipeDefs/RecipeDef_PNA_PLUS.xml)，DefName 保持不变。
 
 `SSC_Make_SuperDrug`
 
@@ -92,7 +92,7 @@
 
 ## 7 三项研究与一项顺带修正
 
-[ResearchProjectDef.xml](../../1.7/Defs/ResearchDefs/ResearchProjectDef.xml)
+[ResearchProjectDef.xml](../../../1.7/Defs/ResearchDefs/ResearchProjectDef.xml)
 
 `SSC_RES_PNASimpleApp`
 
@@ -128,7 +128,7 @@
 
 ## 9 调试文本（保留技术表达，仅清旧称）
 
-四语 `Keyed/SSC_Pna.xml` 与 [DebugActions_SSCPna.cs](../../Sexslavecraft/common/DebugActions_SSCPna.cs)。这部分不需要沉浸化，只把过期的 P1／P2 换成当前分档说法。
+四语 `Keyed/SSC_Pna.xml` 与 [DebugActions_SSCPna.cs](../../../Sexslavecraft/common/DebugActions_SSCPna.cs)。这部分不需要沉浸化，只把过期的 P1／P2 换成当前分档说法。
 
 | 位置 | 新文本 |
 | --- | --- |
@@ -154,13 +154,13 @@ C# 五处须重新编译；XML 八处（四语 × 两键）可即时生效。
 1. 先按本稿与定稿一改中文源 Def。
 2. 再改四语语言层：简中 5 个、繁中 13 个、英文 13 个、俄文 12 个（俄文缺 `ThoughtDef/HediffOfAddiction.xml`，如要补齐属新增，不因对称强求）。
 3. 简中需**新增** `Hediff_PNA_Consciousness_Record` 词条。
-4. 最后同步 [Sexslavecraft/Languages](../../Sexslavecraft/Languages) 镜像（326 个 XML 逐文件一致）。
+4. 最后同步 [Sexslavecraft/Languages](../../../Sexslavecraft/Languages) 镜像（326 个 XML 逐文件一致）。
 5. 重编译 DLL 以生效 C# 五处调试名。
 
 ## 12 替换后将成为历史说法的文档
 
 以下文档引用了旧档名（微量／活跃／侵蚀／深度影响／末期过载、微弱活化／稳定活化／深度活化／强烈活化／极限活化），重写后属历史记录，本次不回写：
 
-- [PNA机制重置开发规划.md](PNA机制重置开发规划.md)
-- [PNA玩法效果与性交补给补全分析.md](PNA玩法效果与性交补给补全分析.md)
-- [开发更新记录.md](../Development/开发更新记录.md)、[CHANGELOG.md](../../CHANGELOG.md)
+- [PNA机制重置开发规划.md](../../Design/Archive/PNA机制重置开发规划.md)
+- [PNA玩法效果与性交补给补全分析.md](../../Design/Archive/PNA玩法效果与性交补给补全分析.md)
+- [开发更新记录.md](../开发更新记录.md)、[CHANGELOG.md](../../../CHANGELOG.md)

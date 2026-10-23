@@ -76,7 +76,7 @@
 - [P1 基础](PNA机制重置P1实现与测试.md)、[P2 成瘾与摄入](../Verification/PNA机制重置P2实现与测试.md)、[P3 身体归属](../Verification/PNA机制重置P3实现与测试.md)。
 - [第一步：主人免疫](../Verification/PNA玩法补全第一步实现与测试.md)、[第二步：五档与戒断](../Verification/PNA玩法补全第二步固定效果与测试.md)。
 - [第三步：链枪接通](../Verification/PNA玩法补全第三步枪械接通与测试.md)、[第四步：来源性吸引](../Verification/PNA玩法补全第四步来源判断与性吸引测试.md)、[第五步：性交补给及仪式修复](../Verification/PNA玩法补全第五步性交补给与动作解析测试.md)。
-- [后续信息栏、研究门槛、枪击成瘾与调试修正](../Verification/PNA信息栏研究门槛与枪击成瘾修正.md)、[文案落地](../Verification/PNA文案定稿XML落地与检查.md)、[心情标签验收](../../Design/PNA文案重写交接.md#12-心情标签后续区分2026-10-15)。
+- [后续信息栏、研究门槛、枪击成瘾与调试修正](../Verification/PNA信息栏研究门槛与枪击成瘾修正.md)、[文案落地](../Verification/PNA文案定稿XML落地与检查.md)、[心情标签验收](../Reference/PNA文案重写交接.md#12-心情标签后续区分2026-10-15)。
 
 ## 训导官与受训身份
 

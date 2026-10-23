@@ -4,7 +4,7 @@
 
 日期：2026-10-14。分支：`codex/pna-reset`，本批基线 `e483d28`。状态：**第一步已获维护者实机测试无问题确认并批准提交，未发布。** P1～P3 已确认规则继续保留，主人免疫按本次数值补全方案实施。
 
-[补全方案](../../Design/PNA玩法效果与性交补给补全分析.md) · [基础规划](../../Design/PNA机制重置开发规划.md) · [PNA 专项](../../../Tests/PnaLoad/README.md)
+[补全方案](../../Design/Archive/PNA玩法效果与性交补给补全分析.md) · [基础规划](../../Design/Archive/PNA机制重置开发规划.md) · [PNA 专项](../../../Tests/PnaLoad/README.md)
 
 ## 本批范围
 

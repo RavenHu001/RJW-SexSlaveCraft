@@ -68,4 +68,4 @@
 
 收口复核结果：292 份 Markdown、3177 处本地相对链接（含 200 处锚点）无失效项，`git diff --check` 通过；Def 25 对、Languages 412 对镜像一致，版本布局 538 项通过。游戏目录中的 DLL、PDB 与 `BUILD-INFO.json` 三份文件均与已验收源文件及原同步哈希一致；本次文档收口期间 2311 份非 Markdown 文件未变，冻结／运行资源等 1470 份受保护文件保持开发前基线。
 
-相关入口：[当前规划](../../Design/主人欲望侵染开发规划.md) · [PNA 数值](../../Design/PNA玩法效果与性交补给补全分析.md) · [测试说明](../../../Tests/PnaLoad/README.md)。1.6／Common 冻结基线与既有正式附件保持。
+相关入口：[当前规划](../../Design/Archive/主人欲望侵染开发规划.md) · [PNA 数值](../../Design/Archive/PNA玩法效果与性交补给补全分析.md) · [测试说明](../../../Tests/PnaLoad/README.md)。1.6／Common 冻结基线与既有正式附件保持。

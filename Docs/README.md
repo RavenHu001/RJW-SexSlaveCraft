@@ -36,6 +36,9 @@ Docs/
   模组介绍.md                  当前开发版本双语简介
   Players/                     玩家入口和阅读顺序
   Design/                      当前需求与未完成设计
+    README.md                  规划入口与状态索引
+    未来内容开发规划.md        未完成需求及历史编号
+    性能测量与定点优化首批规划.md  暂缓方案留存
     Archive/                   已交付范围的设计依据
   Development/
     开发更新记录.md            按日期追溯
@@ -49,5 +52,7 @@ Docs/
 ```
 
 根目录四份玩家指南保留固定路径。已完成内容、明确待验证事项、未来提案分别维护；版本登记不等于已发布，历史测试计数不等于当前结果。工业和太空武器的设计已移入 Archive，完成状态先查各自汇总；鞭子后续声音等需求只留未来规划。
+
+2026-10-23 整理后，Design 根目录仅保留上述 3 份 Markdown；PNA／恩赐的 4 份设计及分析归入 Archive，4 份文案定稿及交接归入 Development/Reference。相关链接同步迁移，历史参数与验收范围保持原记录。
 
 源码旁的专用说明：[旧 RimTalk 归档](../Archive/RimTalk/README.md) · [Shader 源码与工具](../Sexslavecraft/ShaderSources/README.md)。
