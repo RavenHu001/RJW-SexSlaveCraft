@@ -7,7 +7,7 @@
   <SSC_PetDogTameUnconsciousTarget>The target lacks sufficient consciousness to receive guidance.</SSC_PetDogTameUnconsciousTarget>
   <SSC_PetDogTameUntamableTarget>The target does not meet the vanilla taming conditions.</SSC_PetDogTameUntamableTarget>
   <SSC_PetDogTameUnreachableTarget>Cannot reach the target's cell.</SSC_PetDogTameUnreachableTarget>
-  <SSC_PetDogTameMissingEffect>The Directed Taming effect is currently unavailable.</SSC_PetDogTameMissingEffect>
+  <SSC_PetDogTameMissingEffect>The Animal Training effect is currently unavailable.</SSC_PetDogTameMissingEffect>
   <SSC_PetDogTameTargetHint>Guide {0} (approach its cell to tame directly)</SSC_PetDogTameTargetHint>
   <SSC_PetDogTameTrainingTargetHint>Train {0}: {1} (approach its cell to complete this project)</SSC_PetDogTameTrainingTargetHint>
   <SSC_PetDogTameNoTrainingTarget>The target has no enabled, unfinished training project that meets vanilla prerequisites and species/body-size requirements.</SSC_PetDogTameNoTrainingTarget>

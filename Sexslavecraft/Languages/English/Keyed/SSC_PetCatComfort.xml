@@ -6,7 +6,7 @@
   <SSC_PetCatComfortInvalidTarget>Target another alive, spawned player-faction humanlike pawn on the same map. A target outside a mental state must also have a mood need.</SSC_PetCatComfortInvalidTarget>
   <SSC_PetCatComfortUnconsciousTarget>The target lacks enough consciousness to receive comfort.</SSC_PetCatComfortUnconsciousTarget>
   <SSC_PetCatComfortUnreachableTarget>Cannot reach the target's cell.</SSC_PetCatComfortUnreachableTarget>
-  <SSC_PetCatComfortMissingEffect>Soothing Resonance's effect is currently unavailable.</SSC_PetCatComfortMissingEffect>
+  <SSC_PetCatComfortMissingEffect>Gentle Comfort's effect is currently unavailable.</SSC_PetCatComfortMissingEffect>
   <!-- Only valid map targets receive this hover hint; {0} is the target's name. -->
   <SSC_PetCatComfortTargetHint>Comfort {0} (walk onto their cell to cast)</SSC_PetCatComfortTargetHint>
 </LanguageData>

@@ -7,7 +7,7 @@
   <SSC_PetDogTameUnconsciousTarget>目標意識不足，無法接受馴導。</SSC_PetDogTameUnconsciousTarget>
   <SSC_PetDogTameUntamableTarget>目標不符合原版可馴服條件。</SSC_PetDogTameUntamableTarget>
   <SSC_PetDogTameUnreachableTarget>無法到達目標所在格。</SSC_PetDogTameUnreachableTarget>
-  <SSC_PetDogTameMissingEffect>定向馴導效果目前不可用。</SSC_PetDogTameMissingEffect>
+  <SSC_PetDogTameMissingEffect>馴獸效果目前不可用。</SSC_PetDogTameMissingEffect>
   <SSC_PetDogTameTargetHint>馴導 {0}（走至同格後直接馴服）</SSC_PetDogTameTargetHint>
   <SSC_PetDogTameTrainingTargetHint>訓練 {0}：{1}（走至同格後完整完成該項目）</SSC_PetDogTameTrainingTargetHint>
   <SSC_PetDogTameNoTrainingTarget>目標沒有已勾選、滿足原版前置及種族/體型條件且仍需訓練的項目。</SSC_PetDogTameNoTrainingTarget>

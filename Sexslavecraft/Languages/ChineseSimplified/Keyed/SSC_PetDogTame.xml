@@ -7,7 +7,7 @@
   <SSC_PetDogTameUnconsciousTarget>目标意识不足，无法接受训导。</SSC_PetDogTameUnconsciousTarget>
   <SSC_PetDogTameUntamableTarget>目标不符合原版可驯服条件。</SSC_PetDogTameUntamableTarget>
   <SSC_PetDogTameUnreachableTarget>无法到达目标所在格。</SSC_PetDogTameUnreachableTarget>
-  <SSC_PetDogTameMissingEffect>定向驯导效果当前不可用。</SSC_PetDogTameMissingEffect>
+  <SSC_PetDogTameMissingEffect>驯兽效果当前不可用。</SSC_PetDogTameMissingEffect>
   <SSC_PetDogTameTargetHint>训导 {0}（走至同格后直接驯服）</SSC_PetDogTameTargetHint>
   <SSC_PetDogTameTrainingTargetHint>训练 {0}：{1}（走至同格后完整完成该项目）</SSC_PetDogTameTrainingTargetHint>
   <SSC_PetDogTameNoTrainingTarget>目标没有已勾选、满足原版前置及种族/体型条件且仍需训练的项目。</SSC_PetDogTameNoTrainingTarget>

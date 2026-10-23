@@ -6,7 +6,7 @@
   <SSC_PetCatComfortInvalidTarget>目標必須是同地圖上另一名存活、已生成的玩家陣營人形角色；未處於精神狀態的目標還須有心情需求。</SSC_PetCatComfortInvalidTarget>
   <SSC_PetCatComfortUnconsciousTarget>目標意識不足，無法接受安撫。</SSC_PetCatComfortUnconsciousTarget>
   <SSC_PetCatComfortUnreachableTarget>無法到達目標所在格。</SSC_PetCatComfortUnreachableTarget>
-  <SSC_PetCatComfortMissingEffect>安撫共鳴效果目前不可用。</SSC_PetCatComfortMissingEffect>
+  <SSC_PetCatComfortMissingEffect>貼心安撫效果目前不可用。</SSC_PetCatComfortMissingEffect>
   <!-- 僅合法地圖目標顯示懸停引導，{0} 為目標名字；並不宣告已進入同格施放。 -->
   <SSC_PetCatComfortTargetHint>安撫 {0}（走至同格後施放）</SSC_PetCatComfortTargetHint>
 </LanguageData>

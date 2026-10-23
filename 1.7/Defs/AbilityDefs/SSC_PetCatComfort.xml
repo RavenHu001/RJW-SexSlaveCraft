@@ -5,8 +5,8 @@
        原版读条、心形社交气泡和持续爱心只呈现预热过程，由原版结束预热时停止维护。 -->
   <AbilityDef>
     <defName>SSC_PetCatComfort</defName>
-    <label>安抚共鸣</label>
-    <description>终极宠物猫可选择同地图上另一名有意识的玩家阵营人形角色，走到其所在格后进行 2 秒安抚，期间显示读条并持续冒出爱心，目标暂停行动；普通睡眠可被唤醒，意识合格的倒地角色也可接受安抚。目标正处于精神状态时，使其恢复；未处于精神状态且有心情需求时，给予“猫咪鼓舞”，心情 +8、全局工作速度 ×1.10，持续 12 游戏内小时。重复鼓舞刷新持续时间，不叠加。完成后冷却 1 游戏内天；征召与未征召时均可使用。</description>
+    <label>贴心安抚</label>
+    <description>靠近己方角色，以亲昵的陪伴平复情绪，使其脱离精神状态，或改善心情与工作表现。冷却 1 天。</description>
     <abilityClass>SexSlaveCraft.Ability_PetCatComfort</abilityClass>
     <iconPath>UI/Icons/Ritual</iconPath>
     <jobDef>SSC_Job_PetCatComfort</jobDef>

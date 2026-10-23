@@ -31,6 +31,10 @@
           <SocialImpact>1.05</SocialImpact>
           <InjuryHealingFactor>1.10</InjuryHealingFactor>
         </statFactors>
+        <!-- 当前阶段生效时免疫 PNA 成瘾；停用时由 C# 返回空阶段。 -->
+        <makeImmuneTo>
+          <li>PNA_Addiction</li>
+        </makeImmuneTo>
       </li>
       <li>
         <label>觉醒</label>
@@ -46,6 +50,10 @@
           <SocialImpact>1.10</SocialImpact>
           <InjuryHealingFactor>1.20</InjuryHealingFactor>
         </statFactors>
+        <!-- 当前阶段生效时免疫 PNA 成瘾；停用时由 C# 返回空阶段。 -->
+        <makeImmuneTo>
+          <li>PNA_Addiction</li>
+        </makeImmuneTo>
       </li>
       <li>
         <label>掌控</label>
@@ -61,6 +69,10 @@
           <SocialImpact>1.15</SocialImpact>
           <InjuryHealingFactor>1.35</InjuryHealingFactor>
         </statFactors>
+        <!-- 当前阶段生效时免疫 PNA 成瘾；停用时由 C# 返回空阶段。 -->
+        <makeImmuneTo>
+          <li>PNA_Addiction</li>
+        </makeImmuneTo>
       </li>
       <!-- 最终意识自身超过性奴锁链；操控直接加成继续由既有共振承担。 -->
       <li>
@@ -77,6 +89,10 @@
           <SocialImpact>1.20</SocialImpact>
           <InjuryHealingFactor>1.50</InjuryHealingFactor>
         </statFactors>
+        <!-- 当前阶段生效时免疫 PNA 成瘾；停用时由 C# 返回空阶段。 -->
+        <makeImmuneTo>
+          <li>PNA_Addiction</li>
+        </makeImmuneTo>
       </li>
     </stages>
   </HediffDef>
