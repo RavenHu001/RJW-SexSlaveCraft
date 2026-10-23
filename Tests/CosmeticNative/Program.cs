@@ -688,16 +688,16 @@ internal static class Program
                 Equal(typeof(RitualVisualEffect), effect.workerClass);
                 var props = (CompProperties_RitualEffectSpawnOnRole)effect.comps.Single();
                 Equal(typeof(CompRitualEffect_SpawnOnRole), props.compClass); Equal("recipient", props.roleId);
-                Equal(30, props.spawnIntervalTicks); Equal(1, props.delay); Require(props.maxBursts < 0);
+                Equal(22, props.spawnIntervalTicks); Equal(1, props.delay); Require(props.maxBursts < 0);
                 Require(props.fleckDef == null && props.effecterDef == null);
                 Equal("Things/Mote/RitualEffects/Smoke2", props.moteDef.graphicData.texPath);
                 Equal(typeof(MoteThrown), props.moteDef.thingClass);
                 Equal(typeof(Graphic_MoteWithAgeSecs), props.moteDef.graphicData.graphicClass);
                 Equal("RitualSmoke", props.moteDef.graphicData.shaderType.defName);
                 Near(2.4f, props.moteDef.mote.Lifespan);
-                Near(.35f, props.overrideColors.Single().a);
+                Near(.55f, props.overrideColors.Single().a);
                 Require(!props.moteDef.mote.realTime && !props.moteDef.mote.needsMaintenance);
-                Near(1.6f, props.scale.min); Near(1.9f, props.scale.max);
+                Near(2.1f, props.scale.min); Near(2.5f, props.scale.max);
             });
             Check("native mist delay, interval and recipient spawn position", () =>
             {
@@ -708,12 +708,12 @@ internal static class Program
                 effect.Tick(); Equal(1, mistSpawns.Count);
                 Near(recipient.Position.x + .5f, mistSpawns[0].exactPosition.x);
                 Near(recipient.Position.z + .5f, mistSpawns[0].exactPosition.z);
-                Near(.35f, mistSpawns[0].instanceColor.a);
+                Near(.55f, mistSpawns[0].instanceColor.a);
                 int oldTick = Find.TickManager.TicksGame;
                 try
                 {
-                    Set(Find.TickManager, "ticksGameInt", oldTick + 29); effect.Tick(); Equal(1, mistSpawns.Count);
-                    Set(Find.TickManager, "ticksGameInt", oldTick + 30); effect.Tick(); Equal(2, mistSpawns.Count);
+                    Set(Find.TickManager, "ticksGameInt", oldTick + 21); effect.Tick(); Equal(1, mistSpawns.Count);
+                    Set(Find.TickManager, "ticksGameInt", oldTick + 22); effect.Tick(); Equal(2, mistSpawns.Count);
                 }
                 finally { Set(Find.TickManager, "ticksGameInt", oldTick); effect.Cleanup(); }
             });
@@ -749,9 +749,9 @@ internal static class Program
                     Require(mote is MoteThrown && mote.Spawned);
                     Set(Find.TickManager, "ticksGameInt", oldTick + 30); mote.DoTick(); mote.DrawNowAt(mote.DrawPos);
                     Require(graphic.drawn, $"mote graphic was not reached; drawer={mote.def.drawerType}, alpha={mote.Alpha}");
-                    Require(mote.Alpha > 0 && mote.ExactScale.x >= 1.6f && mote.ExactScale.z >= 1.6f,
+                    Require(mote.Alpha > 0 && mote.ExactScale.x >= 2.1f && mote.ExactScale.z >= 2.1f,
                         $"mote alpha/scale invalid: {mote.Alpha}, {mote.ExactScale}");
-                    Near(.35f, mote.instanceColor.a); Equal(mote, graphic.mote);
+                    Near(.55f, mote.instanceColor.a); Equal(mote, graphic.mote);
                     Set(Find.TickManager, "ticksGameInt", oldTick + 120); mote.DoTick();
                     Require(mote.Alpha > 0 && mote.Alpha < 1, "smoke did not enter its native fade-out");
                     Set(Find.TickManager, "ticksGameInt", oldTick + 165); mote.DoTick();
@@ -813,7 +813,7 @@ internal static class Program
                 Require(XNode.DeepEquals(native.Element("shaderParameters"), authoredXml));
                 Equal(UnityEngine.Vector2.one, authored.drawSize);
                 Require(props.colorOverride == null); Equal(1, props.overrideColors.Count);
-                Near(.55f, props.overrideColors[0].r); Near(.25f, props.overrideColors[0].g); Near(.75f, props.overrideColors[0].b);
+                Near(.75f, props.overrideColors[0].r); Near(.18f, props.overrideColors[0].g); Near(1f, props.overrideColors[0].b);
             });
             Check("native animated mote graphic submits age and forces per-mote color properties", () =>
             {
@@ -833,7 +833,7 @@ internal static class Program
                     Set(graphic, "data", mote.def.graphicData); Set(graphic, "color", UnityEngine.Color.white);
                     graphic.DrawWorker(mote.DrawPos, Rot4.North, mote.def, mote, 0);
                     Equal(mote, renderMote); Near(.5f, renderAge); Require(mote.Alpha > 0);
-                    Near(.35f, mote.instanceColor.a);
+                    Near(.55f, mote.instanceColor.a);
                 }
                 finally
                 {

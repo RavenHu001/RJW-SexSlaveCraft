@@ -29,10 +29,10 @@
       <li Class="CompProperties_RitualEffectSpawnOnRole">
         <!-- 跟随受塑者当前位置；仅被正式阶段引用，原版负责组件 Tick、存档与停止播放。 -->
         <roleId>recipient</roleId><moteDef>SSC_CosmeticPurpleMistMote</moteDef>
-        <!-- 延迟一个正式 tick，确保前一阶段 postAction 先扣料；每半秒生成一团低透明度紫雾。 -->
-        <spawnIntervalTicks>30</spawnIntervalTicks><delay>1</delay>
-        <!-- 原版 SpawnMote 读取 overrideColors；colorOverride 仅供其 Fleck 分支使用。 -->
-        <scale>1.6~1.9</scale><overrideColors><li>(0.55, 0.25, 0.75, 0.35)</li></overrideColors>
+        <!-- 延迟一个正式 tick，确保前一阶段 postAction 先扣料；2.4 秒寿命配合 22 tick 间隔，稳定时约有 6～7 团。 -->
+        <spawnIntervalTicks>22</spawnIntervalTicks><delay>1</delay>
+        <!-- 原版 Mote 从 overrideColors 取色；扩大雾团、提亮并增强紫色饱和度与覆盖浓度。 -->
+        <scale>2.1~2.5</scale><overrideColors><li>(0.75, 0.18, 1, 0.55)</li></overrideColors>
         <rotation>-12~12</rotation>
         <rotationRate>-8~8</rotationRate>
       </li>
