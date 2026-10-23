@@ -1,6 +1,6 @@
 # 玩家阅读入口 / Player documentation
 
-当前指南对应 **2.4.4 开发版，尚未发布**。新增文化、演化点、医美及人格排泄修复仅限 1.7；1.6 冻结于 2.4.1。[公开下载 2.4.3](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.3)不含本版新增，先核对[版本范围](../Releases/2.4.4/2.4.4发布说明.md)。
+**2.4.4 正式版 — 2026-10-23。** [下载 v2.4.4](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.4)。1.7 运行元数据对齐 2.4.4，1.6／Common 冻结于 2.4.1；此前开发登记与分批测试保留原时点，发布结果见版本验证。
 
 [项目首页](../../README.md) · [文档总索引](../README.md) · [双语模组介绍](../模组介绍.md) · [版本索引](../Releases/README.md)
 
@@ -30,7 +30,7 @@
 
 ## English reading order
 
-The guides cover **unreleased 2.4.4 development** on 1.7; 1.6 remains at 2.4.1. The public 2.4.3 package lacks these additions. Start with the [2.4.4 scope](../Releases/2.4.4/2.4.4发布说明.md#english), [culture/cosmetics quick start](../../QUICK_START_EN.md#22-244-culture-and-cosmetic-reshaping-17-development-only) and [full rules](../../PLAYER_GUIDE_EN.md#25-244-culture-rituals-and-cosmetic-reshaping-17-development-only).
+The guides cover **2.4.4** on 1.7; 1.6 remains at 2.4.1. The 2.4.4 package includes these additions. Start with the [2.4.4 scope](../Releases/2.4.4/2.4.4发布说明.md#english), [culture/cosmetics quick start](../../QUICK_START_EN.md#22-244-culture-and-cosmetic-reshaping-17-development-only) and [full rules](../../PLAYER_GUIDE_EN.md#25-244-culture-rituals-and-cosmetic-reshaping-17-development-only).
 
 1. Read the [mod overview](../模组介绍.md#english).
 2. Follow [Getting Started](../../QUICK_START_EN.md#2-getting-started) for research, qualification, identities and trainers.
@@ -42,7 +42,7 @@ Use [Bond Overview](../../QUICK_START_EN.md#bond-overview-243-17-only) for portr
 
 ## 升级要点 / Upgrade essentials
 
-**2.4.4 尚未发布。** 开发版新增文化、可选演化点、医美和人格排泄修复；以下旧发射器、武器和剂量规则保留 2.4.3 的升级边界。2.4.4 is unreleased; the launcher, weapon and dose notes below retain their 2.4.3 introduction.
+**2.4.4 已发布。** 开发版新增文化、可选演化点、医美和人格排泄修复；以下旧发射器、武器和剂量规则保留 2.4.3 的升级边界。2.4.4 is released; the launcher, weapon and dose notes below retain their 2.4.3 introduction.
 
 - **旧枪移除：** 1.7 不再加载旧简易发射器、弹丸、配方及专属研究，不提供旧定义存档迁移；1.6 内容保留。
 - **武器规则：** 六把涂覆武器保留真实伤口；太空主攻击对有效链目标无伤吸收并修复，护盾／掩体仍拦截。原版品质影响伤害／穿甲，不放大药效／修复。
@@ -53,6 +53,6 @@ Use [Bond Overview](../../QUICK_START_EN.md#bond-overview-243-17-only) for portr
 
 ## 版本与资料用途 / Versions and document roles
 
-当前指南以 2.4.4 开发范围为准，与已发布 2.4.3 包分开；历史标签资料保持各自版本，构建与发布准备见[验证记录](../Releases/2.4.4/2.4.4版本验证.md)。已交付、专项待验收与未来规划分别登记，测试计数保留实际执行日期。
+当前指南以 2.4.4 正式范围为准；历史标签资料保持各自版本，构建与发布准备见[验证记录](../Releases/2.4.4/2.4.4版本验证.md)。已交付、专项待验收与未来规划分别登记，测试计数保留实际执行日期。
 
-These guides describe 2.4.4 development, not the public 2.4.3 package. Historical validation and maintainer acceptance retain their original scope; new build, release-gate and package results are recorded separately.
+These guides describe the 2.4.4 release package. Historical validation and maintainer acceptance retain their original scope; new build, release-gate and package results are recorded separately.

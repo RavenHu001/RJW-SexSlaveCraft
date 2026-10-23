@@ -4,9 +4,9 @@
 
 This continuation builds on upstream **2.2.8**, the baseline when upstream development stopped in July, and retains its version numbering. Entries are listed newest first. Technical details are in the [development log (Chinese)](Docs/Development/开发更新记录.md).
 
-## [2.4.4] — 2026-10-23 登记，尚未发布 — 文化拓展与医美应用
+## [2.4.4] — 2026-10-23 — 文化拓展与医美应用
 
-`v2.4.3` 之后截至 `f3e47c9` 的开发统一归入 2.4.4，新增功能仅 1.7，1.6／Common 冻结于 2.4.1。公开下载仍为 2.4.3；本次仅更新 VERSION 和文档，运行产物版本仍为 2.4.3，未重编或发布。见[中英版本说明](Docs/Releases/2.4.4/2.4.4发布说明.md)、[63 个提交归并](Docs/Releases/2.4.4/2.4.4开发归并核对.md)与[发布准备](Docs/Releases/2.4.4/2.4.4版本验证.md)。
+`v2.4.3` 之后截至 `f3e47c9` 的开发统一归入 2.4.4，新增功能仅 1.7，1.6／Common 冻结于 2.4.1。正式发布元数据对齐 2.4.4；1.7 重编、完整门禁与安装包审计另记验证结果。见[中英版本说明](Docs/Releases/2.4.4/2.4.4发布说明.md)、[63 个提交归并](Docs/Releases/2.4.4/2.4.4开发归并核对.md)与[发布准备](Docs/Releases/2.4.4/2.4.4版本验证.md)。
 
 - **文化拓展：** 主奴秩序模因、六组 28 条戒律、持续心情／好感／数量／领袖／性别反馈、七张图标、四语正式文案、文化／职位／仪式命名和动态背景。
 - **仪式演化点：** 默认关闭的全局开关，启用后按原版条件和上限结算 0／0／1／2 点，不追补历史收益。
@@ -14,7 +14,7 @@ This continuation builds on upstream **2.2.8**, the baseline when upstream devel
 - **人格排泄修复：** 固定动作空解析不再到位即中断，原报告组合已获实机确认。
 - **资料整理：** 已完成设计、阶段记录及文案归档；当前指南与简介统一为 2.4.4 开发范围。首席、动物改造、特殊开局／势力、复合社交及整体重构等未实现规划保持独立。
 
-**2.4.4 is registered development, not a release.** All work after v2.4.3 through `f3e47c9` is grouped here: Master-slave Order with six groups/28 precepts, cultural feedback/icons/four-language names and backgrounds; opt-in ritual development points; Beauty surgery and Reshaping Rituals with shared recovery, material preparation and purple mist; and the Personality Excretion empty-resolution fix. New content targets 1.7; 1.6/Common remain at 2.4.1. Public downloads and runtime product metadata remain 2.4.3. Historical tests are preserved at their actual dates; a fresh 2.4.4 build/release gate is still required.
+**2.4.4 was released on 2026-10-23.** All work after v2.4.3 through `f3e47c9` is grouped here: Master-slave Order with six groups/28 precepts, cultural feedback/icons/four-language names and backgrounds; opt-in ritual development points; Beauty surgery and Reshaping Rituals with shared recovery, material preparation and purple mist; and the Personality Excretion empty-resolution fix. New content targets 1.7; 1.6/Common remain at 2.4.1. Public downloads and 1.7 runtime product metadata are aligned to 2.4.4. Historical tests retain their dates; fresh release-gate results are recorded in the version verification.
 
 ## [2.4.3] — 2026-10-20 — 关系概览、低科技与三代 PNA 武器
 

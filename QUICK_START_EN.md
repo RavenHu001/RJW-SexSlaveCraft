@@ -1,5 +1,7 @@
 # RJW-SexSlaveCraft Quick Start Guide
 
+**2.4.4 release — 2026-10-23.** [Download](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.4). 1.7 product metadata is aligned to 2.4.4; 1.6/Common stay at 2.4.1.
+
 [New in 2.4.4: culture, ritual points and cosmetics](#22-244-culture-and-cosmetic-reshaping-17-development-only)
 
 > This guide covers **SSC 2.4.4 development (registered 2026-10-23; not released)**. Culture, ritual points, cosmetic reshaping and the Personality Excretion fix target 1.7; 1.6 remains frozen at 2.4.1. See the [2.4.4 scope](Docs/Releases/2.4.4/2.4.4发布说明.md#english). The [public 2.4.3 download](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.3) lacks these additions. Earlier section versions identify introductions.
@@ -665,7 +667,7 @@ It remains risky until Corruption and all six body-part tracks reach 100%. Wait 
 
 ## 22. 2.4.4 Culture and Cosmetic Reshaping (1.7 Development Only)
 
-These additions are absent from the public 2.4.3 package. Confirm that you are using development content before following this section.
+These additions are included in the 2.4.4 package for RimWorld 1.7.
 
 ### Culture and ritual development points
 

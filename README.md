@@ -1,12 +1,12 @@
 # RJW-SexSlaveCraft · TieJin Modify
 
-面向 RimWorld 的成人向 RimJobWorld（RJW）扩展，基于上游 **2.2.8** 继续维护，提供角色培养、主从绑定、六种特化、人格转移和身体改造。
+**2.4.4 正式版 — 2026-10-23。** [下载 v2.4.4](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.4)。1.7 运行元数据对齐 2.4.4，1.6／Common 冻结于 2.4.1；此前开发登记与分批测试保留原时点，发布结果见版本验证。
 
-**当前开发版本：2.4.4（2026-10-23 登记，尚未发布）。** `v2.4.3` 之后截至 `f3e47c9` 的开发统一纳入本版，新增功能仅 1.7；1.6／Common 保留 **2.4.1** 冻结基线。公开下载仍为 **2.4.3（2026-10-20）**，不含本版新增。当前 DLL／BUILD-INFO、About 和源码产品属性仍为 2.4.3，正式发布前须对齐重编，见[验证与发布准备](Docs/Releases/2.4.4/2.4.4版本验证.md)。
+面向 RimWorld 的成人向 RimJobWorld（RJW）扩展，基于上游 **2.2.8** 继续维护，提供角色培养、主从绑定、六种特化、人格转移和身体改造。
 
 [2.4.4 开发范围](Docs/Releases/2.4.4/2.4.4发布说明.md) · [正式下载 2.4.3](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.3) · [双语模组简介](Docs/模组介绍.md) · [玩家阅读入口](Docs/Players/README.md) · [文档总索引](Docs/README.md) · [English](#english-overview)
 
-## 2.4.4 开发成果（仅 1.7，尚未发布）
+## 2.4.4 新增内容（仅 1.7）
 
 | 主题 | 当前交付 | 详细说明 |
 | --- | --- | --- |
@@ -56,8 +56,8 @@
 
 ## English overview
 
-SexSlaveCraft is an adult RJW expansion for pawn development, bonds, six specializations, personality transfer and body modification. **Current development: 2.4.4, registered 2026-10-23; not released.** The public download remains [v2.4.3](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.3). New work targets 1.7; the 1.6/Common baseline stays frozen at 2.4.1.
+SexSlaveCraft is an adult RJW expansion for pawn development, bonds, six specializations, personality transfer and body modification. **Current release: 2.4.4 (2026-10-23).** [Download v2.4.4](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.4). New work targets 1.7; the 1.6/Common baseline stays frozen at 2.4.1.
 
-2.4.4 groups post-v2.4.3 work through `f3e47c9`: Master-slave Order with six groups/28 precepts, cultural feedback/icons/four-language names and dynamic backgrounds; opt-in ritual development points; cosmetic surgery and Reshaping Rituals; and a Personality Excretion interruption fix. Current binary/About metadata remain 2.4.3 pending release preparation. The 2.4.3 bond overview, low-tech route and nine weapons remain available in development; saves referencing the removed old 1.7 launcher still have no migration path.
+2.4.4 groups post-v2.4.3 work through `f3e47c9`: Master-slave Order with six groups/28 precepts, cultural feedback/icons/four-language names and dynamic backgrounds; opt-in ritual development points; cosmetic surgery and Reshaping Rituals; and a Personality Excretion interruption fix. The 1.7 binary/About metadata are aligned to 2.4.4. The 2.4.3 bond overview, low-tech route and nine weapons remain available in development; saves referencing the removed old 1.7 launcher still have no migration path.
 
 Load Harmony and RJW before SSC; Binding Rituals and cultural features require Ideology. Start with the [English mod overview](Docs/模组介绍.md#english), [player reading order](Docs/Players/README.md#english-reading-order), [quick start](QUICK_START_EN.md) and [full guide](PLAYER_GUIDE_EN.md). Compare the [2.4.4 development scope](Docs/Releases/2.4.4/2.4.4发布说明.md#english) with the [published 2.4.3 scope](Docs/Releases/2.4.3/2.4.3发布说明.md#english).

@@ -7,20 +7,19 @@
 		<li>1.7</li>
 	</supportedVersions>
 	<packageId>rjw.sexslavecraft.TieJinVer</packageId>
-    <description>SexSlaveCraft 2.4.3 (TieJin Modify)
-关系概览、低科技适配与三代PNA武器：1.7加载2.4.3新内容，1.6保留2.4.1冻结基线。更新时完整替换旧模组目录，保留版本目录与加载配置。
-主从关系卡片支持头像定位、调教员指派及当前地图成员批选；低科技研究与篝火／灶台粗放浓缩连接原有PNA和人格路线。
-中世纪、工业与太空共九把PNA武器，配套研究、制作、效力说明、正式美术和紫色反馈。涂覆武器保留真实伤口；太空主攻击对主人保护，对有效锁链目标无伤吸收并即时修复。品质影响伤害和穿甲，不放大药效或修复；分摊伤害不传药。
-欢愉恩赐按主人当前身体产液能力决定负荷，其余结算沿用原规则。保留个体凝胶外观、六种特化、主人资格／成长、人格凝胶和身体改造。
-升级注意：1.7已移除旧简易PNA发射器、弹丸、配方及专属研究，不提供引用这些定义的存档迁移。1.6原内容保留。
-Harmony与RJW先于SSC加载，契约仪式需要Ideology。兔入口仍禁用，旧RimTalk对接暂停。版本及验证见CHANGELOG.md与Docs/Releases/2.4.3/。
+    <description>SexSlaveCraft 2.4.4 (TieJin Modify)
+文化拓展、仪式演化点与医美应用。新增功能仅限 RimWorld 1.7，1.6／Common 保留 SSC 2.4.1 冻结基线。
+主奴秩序模因与六组28条戒律，配合心情、社交、领袖、数量及性别反馈，专属图标、四语命名与动态背景。仪式演化点默认关闭，开启后遵循原版发展条件与改革上限。
+医美手术与塑貌仪式可将原版Beauty逐档提升至+2，配套材料、恢复反应、紫雾和命名预设。修复人格排泄固定动作空解析导致的中断。
+保留关系概览、低科技路线、九把PNA武器、个体凝胶外观、六种特化、主人资格／成长和人格转移。
+升级时完整替换旧模组目录，保留版本目录与LoadFolders.xml。1.7旧简易PNA发射器及相关定义已移除，不提供引用旧定义的存档迁移。
+Harmony与RJW先于SSC加载；文化及仪式需要Ideology。兔入口与旧RimTalk对接仍不可用。
 
-Version 2.4.3 — bond overview, low-tech progression and nine PNA weapons.
-New features target RimWorld 1.7; the 1.6 runtime stays frozen at SSC 2.4.1. Replace the old mod folder completely and keep both version directories and LoadFolders.xml intact.
-Relationship cards support portrait navigation, trainer assignment and selection of current-map members. Lower-tech research and campfire/stove rough concentration extend access to existing PNA and personality systems.
-Three weapon eras have dedicated research, crafting, potency displays, art and purple feedback. Coated weapons retain wounds; spacer main attacks protect Masters and allow valid Chain-bound bodies to absorb PNA without wounds and repair an eligible injury. Native quality scales damage and penetration, not potency or repair; shared damage carries no PNA.
-Bestow Bliss doses now use the Master's current body output. Retains gel appearance, six specializations, Master qualification/progression, personality gel and body modification.
-The old Basic PNA Launcher and its dedicated definitions are removed from 1.7 without save migration. Frozen 1.6 retains its original content. Load Harmony and RJW before SSC; Binding Rituals require Ideology. Rabbit selection and legacy RimTalk remain unavailable.
+Version 2.4.4 — culture, optional ritual development points and cosmetic reshaping.
+New features target RimWorld 1.7; 1.6/Common remain frozen at SSC 2.4.1. Includes Master-slave Order with six groups/28 precepts, cultural feedback, dedicated icons, four-language naming and dynamic backgrounds. Ritual development points default to off and follow vanilla conditions/caps.
+Cosmetic surgery and Reshaping Rituals improve vanilla Beauty one step up to +2, with material costs, shared recovery, purple mist and name presets. Fixes Personality Excretion aborting on empty fixed-interaction resolution.
+Retains bonds, low-tech progression, nine PNA weapons, gel appearance, specializations and personality transfer. Replace the old folder completely; retain version folders/loading configuration. Removed old 1.7 launcher definitions have no save migration.
+Load Harmony and RJW before SSC. Ideology is required for cultural features and rituals. Rabbit selection and legacy RimTalk remain unavailable.
 
 [AI 辅助生成 / Partly AI-assisted]</description>
 	<modDependencies>

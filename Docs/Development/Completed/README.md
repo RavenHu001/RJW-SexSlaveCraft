@@ -1,6 +1,6 @@
 # 已交付开发记录
 
-当前开发版本 **2.4.4，尚未发布**。先看完成核对，再查阶段、修复与证据；原日期、计数和未发布描述保留当时语境。公开下载为 2.4.3，1.6／Common 冻结于 2.4.1。
+**2.4.4 正式版 — 2026-10-23。** [下载 v2.4.4](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.4)。1.7 运行元数据对齐 2.4.4，1.6／Common 冻结于 2.4.1；此前开发登记与分批测试保留原时点，发布结果见版本验证。
 
 [开发入口](../README.md) · [待验收](../Verification/README.md) · [当前规划](../../Design/README.md) · [历史设计](../../Design/Archive/README.md) · [开发日志](../开发更新记录.md)
 
