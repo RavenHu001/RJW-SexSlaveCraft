@@ -1842,7 +1842,9 @@ Combined with final passive bonuses, this specialization alone gives incoming da
 **Saves and personality transfer.** Normal saves preserve cooldown and remaining buff time. Personality extraction or replacement removes the old body's Combatant states, ability and active buff. Implanting a final personality grants a new ability without carrying over the old cooldown or active buff. A personality without Combatant achievements does not inherit them from its receiving body.
 
 
-## 25. 2.4.4 Culture, Rituals and Cosmetic Reshaping (1.7 Development Only)
+<a id="25-244-culture-rituals-and-cosmetic-reshaping-17-development-only"></a>
+
+## 25. 2.4.4 Culture, Rituals and Cosmetic Reshaping (1.7 Only)
 
 This section describes the 2.4.4 release for RimWorld 1.7. 1.6/Common remain frozen. Start with the [quick start](QUICK_START_EN.md#22-244-culture-and-cosmetic-reshaping-17-development-only).
 

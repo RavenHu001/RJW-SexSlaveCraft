@@ -4,7 +4,7 @@
 
 面向 RimWorld 的成人向 RimJobWorld（RJW）扩展，基于上游 **2.2.8** 继续维护，提供角色培养、主从绑定、六种特化、人格转移和身体改造。
 
-[2.4.4 开发范围](Docs/Releases/2.4.4/2.4.4发布说明.md) · [正式下载 2.4.3](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.3) · [双语模组简介](Docs/模组介绍.md) · [玩家阅读入口](Docs/Players/README.md) · [文档总索引](Docs/README.md) · [English](#english-overview)
+[2.4.4 开发范围](Docs/Releases/2.4.4/2.4.4发布说明.md) · [正式下载 2.4.4](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.4) · [双语模组简介](Docs/模组介绍.md) · [玩家阅读入口](Docs/Players/README.md) · [文档总索引](Docs/README.md) · [English](#english-overview)
 
 ## 2.4.4 新增内容（仅 1.7）
 

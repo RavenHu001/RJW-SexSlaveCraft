@@ -665,7 +665,9 @@ The extraction job requires a manual right-click order.
 It remains risky until Corruption and all six body-part tracks reach 100%. Wait for the game to report guaranteed success.
 
 
-## 22. 2.4.4 Culture and Cosmetic Reshaping (1.7 Development Only)
+<a id="22-244-culture-and-cosmetic-reshaping-17-development-only"></a>
+
+## 22. 2.4.4 Culture and Cosmetic Reshaping (1.7 Only)
 
 These additions are included in the 2.4.4 package for RimWorld 1.7.
 
