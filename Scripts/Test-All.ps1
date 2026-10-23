@@ -5,7 +5,7 @@
 .DESCRIPTION
 需要 .NET SDK 9（或更新 SDK）及 .NET 9 运行时。SharedBed、InteractionProtection、RitualSelection、CombatantSpecialization、PnaLoad 和 BondRelations 需要 net9.0 的 0Harmony.dll，
 通过 -HarmonyAssemblyPath 或 SSC_TEST_HARMONY_PATH 提供，不自动下载、不使用游戏的 Harmony。
-默认将报告保存在 .builds/validation/<本次运行目录>；不编译或安装游戏模组。
+默认将报告保存在 .builds/validation/<本次运行目录>；CultureNative／CosmeticNative 引用并构建生产工程，不安装游戏副本。
 默认检查 1.7 运行资源并回归当前源码；原生品质、太空武器及仪式演化点专项另需当前游戏程序集和 .NET 10，
 可用 -NativeGameRoot / -NativeDotnetPath 指定，默认读取 BUILD-INFO 和仓库便携 SDK。
 -GameVersion 1.6 只核验冻结基线和 XML，不能证明旧版源码或游戏兼容性。
@@ -79,6 +79,7 @@ $suites = @(
     @{ Name = 'RitualDevelopmentNative'; Arguments = @(); Framework = 'net10.0' },
     # 原生文化挂载/人口/职位/快照；通过 ProjectReference 实际编译当前 1.7 生产代码。
     @{ Name = 'CultureNative'; Arguments = @(); Framework = 'net10.0' },
+    @{ Name = 'CosmeticNative'; Arguments = @(); Framework = 'net10.0' },
     @{ Name = 'LowTechAdaptation'; Arguments = @($repoRoot) },
     @{ Name = 'PersonalityMemories'; Arguments = @() },
     @{ Name = 'PersonalitySpecializations'; Arguments = @() },
@@ -272,7 +273,7 @@ foreach ($suite in $suites) {
     $problems = @($globalProblems.ToArray())
     if (-not (Test-Path -LiteralPath $project -PathType Leaf)) { $problems += "Project missing: $project" }
     # CultureNative 同样需要测试侧 Harmony；缺少合法依赖时标为 NotRun，不能当作已通过。
-    if ($name -in @('SharedBed', 'InteractionProtection', 'RitualSelection', 'CombatantSpecialization', 'PnaLoad', 'BondRelations', 'PnaWeaponEffects', 'PnaMeleeQuality', 'PnaSpacerNative', 'RitualDevelopmentNative', 'CultureNative') -and $harmonyProblem) { $problems += $harmonyProblem }
+    if ($name -in @('SharedBed', 'InteractionProtection', 'RitualSelection', 'CombatantSpecialization', 'PnaLoad', 'BondRelations', 'PnaWeaponEffects', 'PnaMeleeQuality', 'PnaSpacerNative', 'RitualDevelopmentNative', 'CultureNative', 'CosmeticNative') -and $harmonyProblem) { $problems += $harmonyProblem }
     if ($problems.Count -gt 0) {
         $result.Reason = $problems -join ' '
         Set-Content -LiteralPath $logPath -Value $result.Reason -Encoding utf8
@@ -285,14 +286,14 @@ foreach ($suite in $suites) {
             $suiteDotnet = $dotnetPath
             $framework = 'net9.0'
             $testArguments = $suite.Arguments
-            if ($name -in @('SharedBed', 'InteractionProtection', 'RitualSelection', 'CombatantSpecialization', 'PnaLoad', 'BondRelations', 'PnaWeaponEffects', 'PnaMeleeQuality', 'PnaSpacerNative', 'RitualDevelopmentNative', 'CultureNative')) { $properties += "-p:HarmonyAssemblyPath=$HarmonyAssemblyPath" }
-            # 四个实际游戏专项共用本机 1.7 和 .NET 10，CultureNative 另外传递生产模组引用。
-            if ($name -in @('PnaMeleeQuality', 'PnaSpacerNative', 'RitualDevelopmentNative', 'CultureNative')) {
+            if ($name -in @('SharedBed', 'InteractionProtection', 'RitualSelection', 'CombatantSpecialization', 'PnaLoad', 'BondRelations', 'PnaWeaponEffects', 'PnaMeleeQuality', 'PnaSpacerNative', 'RitualDevelopmentNative', 'CultureNative', 'CosmeticNative')) { $properties += "-p:HarmonyAssemblyPath=$HarmonyAssemblyPath" }
+            # 实际游戏专项共用本机 1.7 和 .NET 10；完整生产工程引用从构建记录读取。
+            if ($name -in @('PnaMeleeQuality', 'PnaSpacerNative', 'RitualDevelopmentNative', 'CultureNative', 'CosmeticNative')) {
                 $suiteDotnet = $NativeDotnetPath; $framework = $suite.Framework
                 $properties += "-p:GameRoot=$NativeGameRoot"
                 $testArguments = @($repoRoot, $NativeGameRoot)
             }
-            if ($name -eq 'CultureNative') {
+            if ($name -in @('CultureNative', 'CosmeticNative')) {
                 # 生产工程仍使用本机实际 RJW/动画/游戏 Harmony 引用；测试 Harmony 单独传入。
                 # 路径来自既有构建记录，缺失时让原生产构建明确失败，不退回旧 DLL。
                 $cultureBuild = Get-Content -LiteralPath (Join-Path $repoRoot '1.7/BUILD-INFO.json') -Raw | ConvertFrom-Json

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成 -->
+<LanguageData>
+  <SSC_Surgery_BeautyEnhancement.label>операция коррекции внешности</SSC_Surgery_BeautyEnhancement.label>
+  <SSC_Surgery_BeautyEnhancement.jobString>Проводит коррекцию внешности.</SSC_Surgery_BeautyEnhancement.jobString>
+  <SSC_Surgery_BeautyEnhancement.description>Тонкая хирургическая работа направляет PNA, придавая лицу пациента большую привлекательность. Ошибки оставляют более сильную боль и недомогание.
+
+Успех повышает красоту на одну ступень, максимум до невероятной красоты. Требуется медицина 8. Повторное вмешательство возможно после восстановления от коррекции.</SSC_Surgery_BeautyEnhancement.description>
+</LanguageData>

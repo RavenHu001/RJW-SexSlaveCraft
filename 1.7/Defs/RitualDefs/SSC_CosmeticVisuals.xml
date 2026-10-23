@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成：复用原版仪式烟雾的 Mote、着色器与角色组件；仅正式阶段播放。 -->
+<Defs>
+  <!-- 参照原版 Mote_RitualSmoke，将房间烟雾缩至人物周围；生命周期由原版 Mote 自行管理。 -->
+  <ThingDef ParentName="MoteBase" MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_CosmeticPurpleMistMote</defName>
+    <drawerType>RealtimeOnly</drawerType>
+    <altitudeLayer>Weather</altitudeLayer>
+    <mote>
+      <realTime>false</realTime><needsMaintenance>false</needsMaintenance>
+      <fadeInTime>0.4</fadeInTime><solidTime>0.8</solidTime><fadeOutTime>1.2</fadeOutTime>
+      <growthRate>0.08</growthRate>
+    </mote>
+    <graphicData>
+      <graphicClass>Graphic_MoteWithAgeSecs</graphicClass><shaderType>RitualSmoke</shaderType>
+      <texPath>Things/Mote/RitualEffects/Smoke2</texPath><drawSize>(1, 1)</drawSize>
+      <shaderParameters>
+        <_SmokeTex1>/Things/Mote/RitualEffects/Smoke1</_SmokeTex1>
+        <_SmokeTex2>/Things/Mote/RitualEffects/Smoke2</_SmokeTex2>
+        <_MaskTex>/Things/Mote/RitualEffects/GlowRayMask</_MaskTex>
+        <_DistortionTex>/Things/Mote/RitualEffects/DistortionSoft</_DistortionTex>
+        <_ScrollSpeed>0.016</_ScrollSpeed><_Thickness>10</_Thickness><_Distortion>1</_Distortion>
+      </shaderParameters>
+    </graphicData>
+  </ThingDef>
+  <RitualVisualEffectDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_CosmeticPurpleMist</defName>
+    <comps>
+      <li Class="CompProperties_RitualEffectSpawnOnRole">
+        <!-- 跟随受塑者当前位置；仅被正式阶段引用，原版负责组件 Tick、存档与停止播放。 -->
+        <roleId>recipient</roleId><moteDef>SSC_CosmeticPurpleMistMote</moteDef>
+        <!-- 延迟一个正式 tick，确保前一阶段 postAction 先扣料；2.4 秒寿命配合 22 tick 间隔，稳定时约有 6～7 团。 -->
+        <spawnIntervalTicks>22</spawnIntervalTicks><delay>1</delay>
+        <!-- 原版 Mote 从 overrideColors 取色；扩大雾团、提亮并增强紫色饱和度与覆盖浓度。 -->
+        <scale>2.1~2.5</scale><overrideColors><li>(0.75, 0.18, 1, 0.55)</li></overrideColors>
+        <rotation>-12~12</rotation>
+        <rotationRate>-8~8</rotationRate>
+      </li>
+    </comps>
+  </RitualVisualEffectDef>
+</Defs>

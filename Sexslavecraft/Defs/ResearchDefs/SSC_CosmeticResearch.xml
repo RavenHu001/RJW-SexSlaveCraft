@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成：1.7 医美草案数值，尚待实机平衡。 -->
+<Defs>
+  <ResearchProjectDef>
+    <defName>SSC_RES_PNACosmeticApplication</defName>
+    <label>纳米催情液医美应用</label>
+    <description>这些微小的机器不只会挑起欲望。精确控制剂量与作用部位，也能让它们重塑肌理与五官。解锁容貌重塑手术。</description>
+    <baseCost>1500</baseCost>
+    <techLevel>Industrial</techLevel>
+    <tab>SSC_ResearchTabDef</tab>
+    <!-- 工业手术同时依赖原液应用与无菌材料；文化仪式不引用这项研究作为前置。 -->
+    <prerequisites><li>SSC_RES_PNASimpleApp</li><li>SterileMaterials</li></prerequisites>
+    <researchViewX>3</researchViewX><researchViewY>3.5</researchViewY>
+  </ResearchProjectDef>
+</Defs>

@@ -8,7 +8,7 @@
     
     <issue>Ritual</issue>
     <impact>Medium</impact>
-    <iconPath>UI/Icons/Ritual</iconPath>
+    <iconPath>UI/Icons/Rituals/SSC_Binding</iconPath>
     <preceptClass>Precept_Ritual</preceptClass>
     
     <ritualPatternBase>SSC_BindingRitualPattern</ritualPatternBase>

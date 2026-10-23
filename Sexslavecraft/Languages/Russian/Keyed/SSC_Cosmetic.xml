@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成 -->
+<LanguageData>
+  <SSC_Cosmetic_InvalidTarget>Этот человек не может пройти коррекцию внешности.</SSC_Cosmetic_InvalidTarget>
+  <SSC_Cosmetic_AdultFlesh>Требуется взрослое человекоподобное тело из плоти.</SSC_Cosmetic_AdultFlesh>
+  <SSC_Cosmetic_AdultHumanlike>Только для взрослых человекоподобных.</SSC_Cosmetic_AdultHumanlike>
+  <SSC_Cosmetic_AtLimit>Внешность достигла предела коррекции.</SSC_Cosmetic_AtLimit>
+  <SSC_Cosmetic_Conflict>Черта «{0}» препятствует коррекции.</SSC_Cosmetic_Conflict>
+  <SSC_Cosmetic_Recovering>Восстановление ещё не завершено; осталось около {0} дн.</SSC_Cosmetic_Recovering>
+  <SSC_Cosmetic_UnsupportedBeauty>Такую внешность нельзя изменить этим способом.</SSC_Cosmetic_UnsupportedBeauty>
+  <SSC_Cosmetic_SurgeryIdentity>Пациент должен быть колонистом, рабом или пленником колонии.</SSC_Cosmetic_SurgeryIdentity>
+  <SSC_Cosmetic_RitualIdentity>Получатель должен быть колонистом или рабом колонии.</SSC_Cosmetic_RitualIdentity>
+  <SSC_Cosmetic_DifferentPawns>Специалист не может одновременно быть получателем.</SSC_Cosmetic_DifferentPawns>
+  <SSC_Cosmetic_FreeColonist>Требуется свободный колонист.</SSC_Cosmetic_FreeColonist>
+  <SSC_Cosmetic_MedicineRequired>Требуется способность лечить и медицина не ниже {0}.</SSC_Cosmetic_MedicineRequired>
+  <SSC_Cosmetic_CannotParticipate>Сейчас этот человек не может участвовать.</SSC_Cosmetic_CannotParticipate>
+  <SSC_Cosmetic_MemeRequired>Ритуал доступен лишь последователям Порядка хозяев и рабов.</SSC_Cosmetic_MemeRequired>
+  <SSC_Cosmetic_SameIdeo>Специалист и получатель должны следовать идеологии ритуала.</SSC_Cosmetic_SameIdeo>
+  <SSC_Cosmetic_RolesRequired>Выберите специалиста и другого получателя.</SSC_Cosmetic_RolesRequired>
+  <SSC_Cosmetic_MaterialsRequired>Нет подходящих припасов: {0} обычной PNA и {1} травяного лекарства. Соберите нужное количество каждого материала в доступную стопку.</SSC_Cosmetic_MaterialsRequired>
+  <SSC_Cosmetic_SurgerySuccess>После операции лицо {0} стало привлекательнее.</SSC_Cosmetic_SurgerySuccess>
+  <SSC_Cosmetic_SurgeryFailure>Операция не улучшила внешность {0}, оставив болезненное недомогание.</SSC_Cosmetic_SurgeryFailure>
+  <SSC_Cosmetic_RitualResult>После коррекции {0} всё ещё мучают боль и усталость. На восстановление нужно время.</SSC_Cosmetic_RitualResult>
+  <SSC_Cosmetic_TargetLost>Получателя больше нет; коррекцию не удалось продолжить.</SSC_Cosmetic_TargetLost>
+  <SSC_Cosmetic_NoRoleSpace>Вокруг места ритуала недостаточно свободного пространства.</SSC_Cosmetic_NoRoleSpace>
+</LanguageData>

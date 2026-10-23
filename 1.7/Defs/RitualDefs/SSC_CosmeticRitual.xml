@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成：仅 Ideology 加载；原版分配、阶段、质量组件和一次结果抽取。 -->
+<Defs>
+  <!-- 与天灯节相同的原版取料 Job；仅主持者取两种材料，然后沿用原版到场职责。 -->
+  <DutyDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_PrepareCosmeticMaterials</defName><hook>HighPriority</hook>
+    <thinkNode Class="ThinkNode_Priority"><subNodes>
+      <li Class="JobGiver_TakeCountToInventory"><def>Purple_Aphrodisiac_Nanofluid</def><count>20</count></li>
+      <li Class="JobGiver_TakeCountToInventory"><def>MedicineHerbal</def><count>2</count></li>
+      <li Class="JobGiver_GotoTravelDestination"><exactCell>true</exactCell><locomotionUrgency>Jog</locomotionUrgency><ritualTagOnArrival>Arrived</ritualTagOnArrival></li>
+      <li Class="JobGiver_Idle"><ticks>60</ticks></li>
+    </subNodes></thinkNode>
+  </DutyDef>
+  <!-- 原版到场与等待节点；只让受塑者成为观众的注视中心。 -->
+  <DutyDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_CosmeticRecipient</defName><ritualSpectateTarget>true</ritualSpectateTarget>
+    <thinkNode Class="ThinkNode_Priority"><subNodes>
+      <li Class="JobGiver_GotoTravelDestination"><exactCell>true</exactCell><locomotionUrgency>Jog</locomotionUrgency><ritualTagOnArrival>Arrived</ritualTagOnArrival></li>
+      <li Class="JobGiver_Idle"><ticks>60</ticks></li>
+    </subNodes></thinkNode>
+  </DutyDef>
+  <!-- 戒律限定主奴秩序文化；不自动注入旧文化，选择、重复惩罚和准备窗口继续走原版。 -->
+  <PreceptDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_CosmeticRitualPrecept</defName><label>塑貌仪式</label>
+    <description>信徒垂首接受药液与草药的涂抹，在祝祷中等待新的容貌。主持者称之为秩序的恩赐，皮肤下的微小机器却在依循另一套规律。</description>
+    <issue>Ritual</issue><impact>Medium</impact><iconPath>UI/Icons/Rituals/SSC_Cosmetic</iconPath>
+    <preceptClass>Precept_Ritual</preceptClass><ritualPatternBase>SSC_CosmeticRitualPattern</ritualPatternBase>
+    <requiredMemes><li>SSC_Meme_MasterSlaveOrder</li></requiredMemes>
+    <allowDuplicates>true</allowDuplicates><countsTowardsPreceptLimit>false</countsTowardsPreceptLimit>
+    <selectionWeight>1</selectionWeight><displayOrderInImpact>101</displayOrderInImpact>
+    <canGenerateAsSpecialPrecept>false</canGenerateAsSpecialPrecept>
+    <useRepeatPenalty>true</useRepeatPenalty>
+  </PreceptDef>
+  <!-- 与绑定仪式一样使用专属命名包和原版命名入口；名称池只供塑貌使用，原版负责生成与唯一性处理。 -->
+  <RulePackDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_NamerRitualCosmetic</defName>
+    <include><li>NamerRitualFestival</li></include>
+    <rulePack><rulesStrings>
+      <li>r_ritualName(priority=10)->[SSC_CosmeticRitualPreset]</li>
+      <li>SSC_CosmeticRitualPreset->悦主赐颜</li>
+      <li>SSC_CosmeticRitualPreset->媚颜祝圣</li>
+      <li>SSC_CosmeticRitualPreset->紫雾重绽</li>
+      <li>SSC_CosmeticRitualPreset->宠眷重塑</li>
+    </rulesStrings></rulePack>
+  </RulePackDef>
+  <RitualPatternDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_CosmeticRitualPattern</defName><nameMaker>SSC_NamerRitualCosmetic</nameMaker>
+    <ritualBehavior>SSC_CosmeticRitualBehavior</ritualBehavior><ritualOutcomeEffect>SSC_CosmeticRitualOutcome</ritualOutcomeEffect>
+    <canStartAnytime>true</canStartAnytime><alwaysStartAnytime>true</alwaysStartAnytime>
+    <ritualObligationTargetFilter>RitualSpotOrAltar</ritualObligationTargetFilter>
+    <shortDescOverride>塑貌仪式</shortDescOverride>
+    <descOverride>药液与草药的气味伴着祝祷，信徒将新的容貌视为秩序的恩赐。美丽有时随之而来，灼痛却总会留下。
+
+成功提升一级美貌，最高为倾国倾城。需普通原液20份、草药2份，主持者医术至少6级。
+医术6级时基础成功率约61.5%，医术、场所与观众会影响成效。</descOverride>
+    <iconPathOverride>UI/Icons/Rituals/SSC_Cosmetic</iconPathOverride><ritualOnlyForIdeoMembers>false</ritualOnlyForIdeoMembers>
+    <canMergeGizmosFromDifferentIdeos>false</canMergeGizmosFromDifferentIdeos>
+    <tags><li>SSC_Cosmetic</li></tags>
+  </RitualPatternDef>
+  <RitualBehaviorDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_CosmeticRitualBehavior</defName><workerClass>SexSlaveCraft.RitualBehaviorWorker_Cosmetic</workerClass>
+    <durationTicks>5000</durationTicks>
+    <!-- 两名角色必需且各一人，不计为观众人数；具体个人资格与互斥由专属角色类报告。 -->
+    <roles>
+      <li Class="SexSlaveCraft.RitualRole_CosmeticHost"><id>host</id><label>主持者</label><maxCount>1</maxCount><required>true</required><countsAsParticipant>false</countsAsParticipant><allowChild>false</allowChild><mustBeAbleToReachTarget>true</mustBeAbleToReachTarget></li>
+      <li Class="SexSlaveCraft.RitualRole_CosmeticRecipient"><id>recipient</id><label>受塑者</label><maxCount>1</maxCount><required>true</required><countsAsParticipant>false</countsAsParticipant><allowChild>false</allowChild><mustBeAbleToReachTarget>true</mustBeAbleToReachTarget></li>
+    </roles>
+    <stages>
+      <!-- 集合阶段不累计正式进度：主持者原版取料后返回，受塑者和观众按固定布局到场。 -->
+      <li Class="SexSlaveCraft.RitualStage_CosmeticPreparation">
+        <defaultDuty>Spectate</defaultDuty><allowedSpectateSidesOverride>Down</allowedSpectateSidesOverride><spectateDistanceOverride>2~3</spectateDistanceOverride><showProgressBar>false</showProgressBar>
+        <endTriggers><li Class="SexSlaveCraft.StageEndTrigger_CosmeticMaterialsReady"><roleIds><li>host</li><li>recipient</li></roleIds></li></endTriggers>
+        <pawnLeaveAction Class="SexSlaveCraft.RitualStageAction_DropCosmeticMaterials"><subActions>
+          <li Class="RitualStageAction_DropThing"><def>Purple_Aphrodisiac_Nanofluid</def><count>20</count></li>
+          <li Class="RitualStageAction_DropThing"><def>MedicineHerbal</def><count>2</count></li>
+        </subActions></pawnLeaveAction>
+        <interruptedAction Class="SexSlaveCraft.RitualStageAction_DropCosmeticMaterials"><subActions>
+          <li Class="RitualStageAction_DropThing"><def>Purple_Aphrodisiac_Nanofluid</def><count>20</count></li>
+          <li Class="RitualStageAction_DropThing"><def>MedicineHerbal</def><count>2</count></li>
+        </subActions></interruptedAction>
+        <roleBehaviors>
+          <li><roleId>host</roleId><dutyDef>SSC_PrepareCosmeticMaterials</dutyDef><customPositions><li Class="SexSlaveCraft.RitualPosition_Cosmetic" /></customPositions></li>
+          <li><roleId>recipient</roleId><dutyDef>SSC_CosmeticRecipient</dutyDef><customPositions><li Class="SexSlaveCraft.RitualPosition_Cosmetic" /></customPositions></li>
+        </roleBehaviors>
+      </li>
+      <!-- 必经瞬时阶段保证消费先于结果；中断动作仅放下主持者未用物资，不退款或复制物品。 -->
+      <li Class="SexSlaveCraft.RitualStage_CosmeticPreparation">
+        <defaultDuty>Spectate</defaultDuty><allowedSpectateSidesOverride>Down</allowedSpectateSidesOverride><spectateDistanceOverride>2~3</spectateDistanceOverride><showProgressBar>false</showProgressBar><essential>true</essential>
+        <endTriggers><li Class="StageEndTrigger_Instant" /></endTriggers>
+        <pawnLeaveAction Class="SexSlaveCraft.RitualStageAction_DropCosmeticMaterials"><subActions>
+          <li Class="RitualStageAction_DropThing"><def>Purple_Aphrodisiac_Nanofluid</def><count>20</count></li>
+          <li Class="RitualStageAction_DropThing"><def>MedicineHerbal</def><count>2</count></li>
+        </subActions></pawnLeaveAction>
+        <interruptedAction Class="SexSlaveCraft.RitualStageAction_DropCosmeticMaterials"><subActions>
+          <li Class="RitualStageAction_DropThing"><def>Purple_Aphrodisiac_Nanofluid</def><count>20</count></li>
+          <li Class="RitualStageAction_DropThing"><def>MedicineHerbal</def><count>2</count></li>
+        </subActions></interruptedAction>
+        <!-- 在原版切换后、正式阶段首 tick 前消费；缺料取消后的职责不会被 GotoToil 重新分配。 -->
+        <postAction Class="SexSlaveCraft.RitualStageAction_ConsumeCosmeticMaterials" />
+        <roleBehaviors>
+          <li><roleId>host</roleId><dutyDef>Idle</dutyDef><customPositions><li Class="SexSlaveCraft.RitualPosition_Cosmetic" /></customPositions></li>
+          <li><roleId>recipient</roleId><dutyDef>SSC_CosmeticRecipient</dutyDef><customPositions><li Class="SexSlaveCraft.RitualPosition_Cosmetic" /></customPositions></li>
+        </roleBehaviors>
+      </li>
+      <!-- 正式阶段才计入 5000 tick 并驱动紫雾；三阶段位置由原版缓存，结束结果不再次消费。 -->
+      <li>
+        <visualEffectDef>SSC_CosmeticPurpleMist</visualEffectDef>
+        <defaultDuty>Spectate</defaultDuty><allowedSpectateSidesOverride>Down</allowedSpectateSidesOverride><spectateDistanceOverride>2~3</spectateDistanceOverride>
+        <endTriggers><li Class="StageEndTrigger_DurationPercentage"><percentage>1</percentage></li></endTriggers>
+        <roleBehaviors>
+          <li><roleId>host</roleId><dutyDef>ArriveToCell</dutyDef><customPositions><li Class="SexSlaveCraft.RitualPosition_Cosmetic" /></customPositions></li>
+          <li><roleId>recipient</roleId><dutyDef>SSC_CosmeticRecipient</dutyDef><customPositions><li Class="SexSlaveCraft.RitualPosition_Cosmetic" /></customPositions></li>
+        </roleBehaviors>
+      </li>
+    </stages>
+  </RitualBehaviorDef>
+  <RitualOutcomeEffectDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_CosmeticRitualOutcome</defName><workerClass>SexSlaveCraft.RitualOutcomeEffectWorker_Cosmetic</workerClass>
+    <startingQuality>0.40</startingQuality><givesDevelopmentPoints>false</givesDevelopmentPoints><allowAttachableOutcome>false</allowAttachableOutcome>
+    <!-- 原版质量基值加医术、房间和有效观众组件；只替换技能配置，不另写质量或预测界面。 -->
+    <comps>
+      <li Class="RitualOutcomeComp_PawnSkill"><label>{PAWN_labelShort}的医术</label><labelAbstract>主持者医术</labelAbstract><roleId>host</roleId><skillDef>Medicine</skillDef><curve><points><li>(6, 0)</li><li>(10, 0.10)</li><li>(15, 0.20)</li><li>(20, 0.30)</li></points></curve></li>
+      <li Class="RitualOutcomeComp_RoomStat"><label>房间印象</label><labelAbstract>房间印象</labelAbstract><statDef>Impressiveness</statDef><curve><points><li>(0, 0)</li><li>(50, 0.10)</li><li>(100, 0.20)</li></points></curve></li>
+      <li Class="RitualOutcomeComp_ParticipantCount"><label>观众</label><labelAbstract>观众人数</labelAbstract><curve><points><li>(0, 0)</li><li>(2, 0.05)</li><li>(4, 0.10)</li></points></curve></li>
+    </comps>
+    <!-- 这里是原始权重，实际概率由原版质量修正后归一化；医美效果读取同一次已选结果。 -->
+    <outcomeChances>
+      <li><label>塑貌成功</label><chance>0.80</chance><positivityIndex>1</positivityIndex><description>祝祷结束后，一张更动人的面孔显露出来。重塑带来的隐痛尚需时日才能消退。</description></li>
+      <li><label>塑貌失败</label><chance>0.20</chance><positivityIndex>-1</positivityIndex><description>药液留下了灼痛，却未带来期盼中的变化。受塑者只能等待不适慢慢平息。</description></li>
+    </outcomeChances>
+  </RitualOutcomeEffectDef>
+</Defs>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 輔助生成：塑貌儀式預設名；固定規則索引與專屬子規則供原版命名器使用。 -->
+<LanguageData>
+  <SSC_NamerRitualCosmetic.rulePack.rulesStrings.0>r_ritualName(priority=10)-&gt;[SSC_CosmeticRitualPreset]</SSC_NamerRitualCosmetic.rulePack.rulesStrings.0>
+  <SSC_NamerRitualCosmetic.rulePack.rulesStrings.1>SSC_CosmeticRitualPreset-&gt;悅主賜顏</SSC_NamerRitualCosmetic.rulePack.rulesStrings.1>
+  <SSC_NamerRitualCosmetic.rulePack.rulesStrings.2>SSC_CosmeticRitualPreset-&gt;媚顏祝聖</SSC_NamerRitualCosmetic.rulePack.rulesStrings.2>
+  <SSC_NamerRitualCosmetic.rulePack.rulesStrings.3>SSC_CosmeticRitualPreset-&gt;紫霧重綻</SSC_NamerRitualCosmetic.rulePack.rulesStrings.3>
+  <SSC_NamerRitualCosmetic.rulePack.rulesStrings.4>SSC_CosmeticRitualPreset-&gt;寵眷重塑</SSC_NamerRitualCosmetic.rulePack.rulesStrings.4>
+</LanguageData>

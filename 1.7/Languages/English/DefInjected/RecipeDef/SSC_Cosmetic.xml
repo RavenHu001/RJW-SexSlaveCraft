@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成 -->
+<LanguageData>
+  <SSC_Surgery_BeautyEnhancement.label>cosmetic reshaping surgery</SSC_Surgery_BeautyEnhancement.label>
+  <SSC_Surgery_BeautyEnhancement.jobString>Performing cosmetic reshaping surgery.</SSC_Surgery_BeautyEnhancement.jobString>
+  <SSC_Surgery_BeautyEnhancement.description>Guide PNA through delicate surgery to give the patient a more appealing face. Mistakes leave greater pain and discomfort.
+
+Each success improves Beauty by one step, up to Beautiful. Requires Medical 8. The patient must recover from reshaping before another treatment.</SSC_Surgery_BeautyEnhancement.description>
+</LanguageData>

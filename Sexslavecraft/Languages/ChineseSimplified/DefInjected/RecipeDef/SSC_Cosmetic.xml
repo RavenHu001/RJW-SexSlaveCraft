@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成 -->
+<LanguageData>
+  <SSC_Surgery_BeautyEnhancement.label>容貌重塑手术</SSC_Surgery_BeautyEnhancement.label>
+  <SSC_Surgery_BeautyEnhancement.jobString>进行容貌重塑手术</SSC_Surgery_BeautyEnhancement.jobString>
+  <SSC_Surgery_BeautyEnhancement.description>以外科手段引导纳米催情液重塑五官，让受术者更具魅力。失误会带来更强烈的疼痛与不适。
+
+每次成功提升一级美貌，最高为倾国倾城。需要医术8级，塑貌后的不适消退后才能再次手术。</SSC_Surgery_BeautyEnhancement.description>
+</LanguageData>

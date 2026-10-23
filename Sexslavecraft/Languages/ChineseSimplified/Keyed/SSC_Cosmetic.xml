@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成 -->
+<LanguageData>
+  <SSC_Cosmetic_InvalidTarget>此人无法接受容貌重塑</SSC_Cosmetic_InvalidTarget>
+  <SSC_Cosmetic_AdultFlesh>需要成年的人形血肉之躯</SSC_Cosmetic_AdultFlesh>
+  <SSC_Cosmetic_AdultHumanlike>仅限成年的人形角色</SSC_Cosmetic_AdultHumanlike>
+  <SSC_Cosmetic_AtLimit>容貌已达到重塑的极限</SSC_Cosmetic_AtLimit>
+  <SSC_Cosmetic_Conflict>“{0}”使容貌无法重塑</SSC_Cosmetic_Conflict>
+  <SSC_Cosmetic_Recovering>身体尚在恢复，约需{0}天</SSC_Cosmetic_Recovering>
+  <SSC_Cosmetic_UnsupportedBeauty>此人的容貌不适合这种重塑方式</SSC_Cosmetic_UnsupportedBeauty>
+  <SSC_Cosmetic_SurgeryIdentity>受术者须为殖民者、殖民地奴隶或囚犯</SSC_Cosmetic_SurgeryIdentity>
+  <SSC_Cosmetic_RitualIdentity>受塑者须为殖民者或殖民地奴隶</SSC_Cosmetic_RitualIdentity>
+  <SSC_Cosmetic_DifferentPawns>主持者／医生不能同时接受重塑</SSC_Cosmetic_DifferentPawns>
+  <SSC_Cosmetic_FreeColonist>需要自由殖民者担任</SSC_Cosmetic_FreeColonist>
+  <SSC_Cosmetic_MedicineRequired>需要具备行医能力，医术至少{0}级</SSC_Cosmetic_MedicineRequired>
+  <SSC_Cosmetic_CannotParticipate>此人目前无法参与</SSC_Cosmetic_CannotParticipate>
+  <SSC_Cosmetic_MemeRequired>只有信奉主奴秩序的文化才能举行此仪式</SSC_Cosmetic_MemeRequired>
+  <SSC_Cosmetic_SameIdeo>主持者与受塑者须信奉仪式所属文化</SSC_Cosmetic_SameIdeo>
+  <SSC_Cosmetic_RolesRequired>请指定一名主持者和另一名受塑者</SSC_Cosmetic_RolesRequired>
+  <SSC_Cosmetic_MaterialsRequired>缺少可领取的材料：普通原液{0}份、草药{1}份。请将所需数量各自堆放在可取用的位置。</SSC_Cosmetic_MaterialsRequired>
+  <SSC_Cosmetic_SurgerySuccess>手术让{0}的容貌更加动人。</SSC_Cosmetic_SurgerySuccess>
+  <SSC_Cosmetic_SurgeryFailure>手术未能改善{0}的容貌，还留下了一阵难熬的不适。</SSC_Cosmetic_SurgeryFailure>
+  <SSC_Cosmetic_RitualResult>重塑后的疼痛与疲惫仍困扰着{0}，需要时间恢复。</SSC_Cosmetic_RitualResult>
+  <SSC_Cosmetic_TargetLost>受塑者已不在，重塑未能继续。</SSC_Cosmetic_TargetLost>
+  <SSC_Cosmetic_NoRoleSpace>仪式周围没有足够的施作空间。</SSC_Cosmetic_NoRoleSpace>
+</LanguageData>
