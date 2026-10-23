@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- AI 辅助生成 -->
 <LanguageData>
-  <SSC_Cosmetic_InvalidTarget>This pawn cannot receive cosmetic reshaping.</SSC_Cosmetic_InvalidTarget>
-  <SSC_Cosmetic_AdultFlesh>Requires an adult humanlike flesh pawn.</SSC_Cosmetic_AdultFlesh>
-  <SSC_Cosmetic_AdultHumanlike>Requires an adult humanlike pawn.</SSC_Cosmetic_AdultHumanlike>
-  <SSC_Cosmetic_AtLimit>Already at or above the supported Beauty limit.</SSC_Cosmetic_AtLimit>
-  <SSC_Cosmetic_Conflict>Beauty conflicts with the trait {0}.</SSC_Cosmetic_Conflict>
-  <SSC_Cosmetic_Recovering>Still recovering from nano-reshaping (about {0} days).</SSC_Cosmetic_Recovering>
-  <SSC_Cosmetic_UnsupportedBeauty>The current Beauty source, suppression or degree data is unsupported.</SSC_Cosmetic_UnsupportedBeauty>
-  <SSC_Cosmetic_SurgeryIdentity>Requires a player colonist, colony slave or colony prisoner.</SSC_Cosmetic_SurgeryIdentity>
-  <SSC_Cosmetic_RitualIdentity>Requires a player colonist or colony slave.</SSC_Cosmetic_RitualIdentity>
-  <SSC_Cosmetic_DifferentPawns>The practitioner and recipient must be different pawns.</SSC_Cosmetic_DifferentPawns>
-  <SSC_Cosmetic_FreeColonist>The practitioner must be a free player colonist.</SSC_Cosmetic_FreeColonist>
-  <SSC_Cosmetic_MedicineRequired>Requires enabled Medical skill of at least {0}.</SSC_Cosmetic_MedicineRequired>
-  <SSC_Cosmetic_CannotParticipate>Requires a living, spawned pawn who is not downed, anesthetized or in a mental state.</SSC_Cosmetic_CannotParticipate>
-  <SSC_Cosmetic_MemeRequired>The ritual ideoligion must include the Master-Slave Order meme.</SSC_Cosmetic_MemeRequired>
-  <SSC_Cosmetic_SameIdeo>The practitioner and recipient must follow the ritual ideoligion.</SSC_Cosmetic_SameIdeo>
-  <SSC_Cosmetic_RolesRequired>Assign an eligible practitioner and a different eligible recipient.</SSC_Cosmetic_RolesRequired>
-  <SSC_Cosmetic_MaterialsRequired>Requires {0} regular PNA and {1} herbal medicine. The practitioner fetches them automatically; no pre-hauling is needed. One reachable, allowed, reservable ground stack of each material must cover the inventory shortfall.</SSC_Cosmetic_MaterialsRequired>
-  <SSC_Cosmetic_SurgerySuccess>{0}'s cosmetic surgery succeeded, increasing Beauty by one step.</SSC_Cosmetic_SurgerySuccess>
-  <SSC_Cosmetic_SurgeryFailure>{0}'s cosmetic surgery failed. Beauty is unchanged; a nano-reshaping reaction remains.</SSC_Cosmetic_SurgeryFailure>
-  <SSC_Cosmetic_RitualResult>{0} has a nano-reshaping reaction of {1} severity, fading by 0.10 per day.</SSC_Cosmetic_RitualResult>
-  <SSC_Cosmetic_TargetLost>The recipient is dead or no longer exists. No cosmetic effects were applied.</SSC_Cosmetic_TargetLost>
+  <SSC_Cosmetic_InvalidTarget>This person cannot undergo reshaping.</SSC_Cosmetic_InvalidTarget>
+  <SSC_Cosmetic_AdultFlesh>Requires an adult humanlike body of flesh.</SSC_Cosmetic_AdultFlesh>
+  <SSC_Cosmetic_AdultHumanlike>Requires an adult humanlike.</SSC_Cosmetic_AdultHumanlike>
+  <SSC_Cosmetic_AtLimit>Appearance has reached the limits of reshaping.</SSC_Cosmetic_AtLimit>
+  <SSC_Cosmetic_Conflict>{0} prevents reshaping.</SSC_Cosmetic_Conflict>
+  <SSC_Cosmetic_Recovering>Still recovering; about {0} days remain.</SSC_Cosmetic_Recovering>
+  <SSC_Cosmetic_UnsupportedBeauty>This appearance cannot be reshaped by this method.</SSC_Cosmetic_UnsupportedBeauty>
+  <SSC_Cosmetic_SurgeryIdentity>The patient must be a colonist, colony slave or colony prisoner.</SSC_Cosmetic_SurgeryIdentity>
+  <SSC_Cosmetic_RitualIdentity>The recipient must be a colonist or colony slave.</SSC_Cosmetic_RitualIdentity>
+  <SSC_Cosmetic_DifferentPawns>The practitioner cannot also be the recipient.</SSC_Cosmetic_DifferentPawns>
+  <SSC_Cosmetic_FreeColonist>Requires a free colonist.</SSC_Cosmetic_FreeColonist>
+  <SSC_Cosmetic_MedicineRequired>Requires the ability to practise medicine and Medical {0} or higher.</SSC_Cosmetic_MedicineRequired>
+  <SSC_Cosmetic_CannotParticipate>This person cannot take part at present.</SSC_Cosmetic_CannotParticipate>
+  <SSC_Cosmetic_MemeRequired>Only followers of Master-Slave Order can hold this ritual.</SSC_Cosmetic_MemeRequired>
+  <SSC_Cosmetic_SameIdeo>Practitioner and recipient must follow the ritual ideoligion.</SSC_Cosmetic_SameIdeo>
+  <SSC_Cosmetic_RolesRequired>Choose a practitioner and a different recipient.</SSC_Cosmetic_RolesRequired>
+  <SSC_Cosmetic_MaterialsRequired>No suitable supplies: {0} regular PNA and {1} herbal medicine. Keep each required amount together in an accessible stack.</SSC_Cosmetic_MaterialsRequired>
+  <SSC_Cosmetic_SurgerySuccess>Surgery has given {0} a more appealing face.</SSC_Cosmetic_SurgerySuccess>
+  <SSC_Cosmetic_SurgeryFailure>Surgery failed to improve {0}'s appearance, leaving painful discomfort.</SSC_Cosmetic_SurgeryFailure>
+  <SSC_Cosmetic_RitualResult>Pain and weariness linger after {0}'s reshaping. Recovery will take time.</SSC_Cosmetic_RitualResult>
+  <SSC_Cosmetic_TargetLost>The recipient is gone; reshaping could not continue.</SSC_Cosmetic_TargetLost>
 </LanguageData>

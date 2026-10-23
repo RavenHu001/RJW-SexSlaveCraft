@@ -26,8 +26,7 @@ namespace SexSlaveCraft
             Pawn recipient = jobRitual.PawnWithRole(SSCCosmeticUtility.RecipientRole);
             bool applied = SSCCosmeticUtility.ApplyResult(recipient, outcome.Positive,
                 outcome.Positive ? SSCCosmeticUtility.RitualSuccess : SSCCosmeticUtility.RitualFailure);
-            extraOutcomeDesc = applied ? "SSC_Cosmetic_RitualResult".Translate(recipient.LabelShort,
-                (outcome.Positive ? SSCCosmeticUtility.RitualSuccess : SSCCosmeticUtility.RitualFailure).ToStringPercent()) :
+            extraOutcomeDesc = applied ? "SSC_Cosmetic_RitualResult".Translate(recipient.LabelShort) :
                 "SSC_Cosmetic_TargetLost".Translate();
         }
     }

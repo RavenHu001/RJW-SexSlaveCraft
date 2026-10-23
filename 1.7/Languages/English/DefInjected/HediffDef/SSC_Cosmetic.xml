@@ -2,5 +2,5 @@
 <!-- AI 辅助生成 -->
 <LanguageData>
   <SSC_Hediff_NanoCosmeticReaction.label>nano-reshaping reaction</SSC_Hediff_NanoCosmeticReaction.label>
-  <SSC_Hediff_NanoCosmeticReaction.description>A temporary tissue response to nano-reshaping. Greater severity causes more pain and slower work. Fades naturally by 0.10 per day; reshaping surgery and rituals are unavailable until it clears. Treatment and bed rest do not accelerate recovery.</SSC_Hediff_NanoCosmeticReaction.description>
+  <SSC_Hediff_NanoCosmeticReaction.description>A fine burning pain lingers beneath the skin. Reshaped tissue leaves the body tender and weary. The symptoms fade on their own; further reshaping must wait until recovery.</SSC_Hediff_NanoCosmeticReaction.description>
 </LanguageData>

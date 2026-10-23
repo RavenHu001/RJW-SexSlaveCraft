@@ -13,7 +13,7 @@
   </DutyDef>
   <PreceptDef MayRequire="Ludeon.RimWorld.Ideology">
     <defName>SSC_CosmeticRitualPrecept</defName><label>塑貌仪式</label>
-    <description>以传统仪轨利用纳米催情液的塑貌特性，使一名信徒的美貌提高一档，最高为原版的倾国倾城。只有主奴秩序文化可举行，主持者与受塑者须同属该文化。无需研究。主持者会从可达且未禁止的库存领取普通原液 20 份与草药 2 份，无需预放到仪式点。每种材料须有一个地面堆能补足主持者背包中的缺额；备齐并到场后统一扣料，再举行约两小时正式仪式。准备中取消会放下未用材料，扣料后不退。成功／失败产生 0.15／0.60 纳米塑貌反应，每天消退 0.10。基础质量 40%，医术 6 且无其他加减分时成功率约 61.5%；满质量时为 80%。原版重复、期望和进度修正照常生效。</description>
+    <description>信徒垂首接受药液与草药的涂抹，在祝祷中等待新的容貌。主持者称之为秩序的恩赐，皮肤下的微小机器却在依循另一套规律。</description>
     <issue>Ritual</issue><impact>Medium</impact><iconPath>UI/Icons/Ritual</iconPath>
     <preceptClass>Precept_Ritual</preceptClass><ritualPatternBase>SSC_CosmeticRitualPattern</ritualPatternBase>
     <requiredMemes><li>SSC_Meme_MasterSlaveOrder</li></requiredMemes>
@@ -28,7 +28,10 @@
     <canStartAnytime>true</canStartAnytime><alwaysStartAnytime>true</alwaysStartAnytime>
     <ritualObligationTargetFilter>RitualSpotOrAltar</ritualObligationTargetFilter>
     <shortDescOverride>塑貌仪式</shortDescOverride>
-    <descOverride>以传统仪轨利用纳米催情液重塑一名成年信徒的容貌。主持者医术至少 6；受塑者须为同文化的殖民者或殖民地奴隶。主持者会从可达且未禁止的库存领取普通原液 20 份与草药 2 份，无需预放到仪式点。每种材料须有一个地面堆能补足主持者背包中的缺额；备齐并到场后统一扣料，再举行约两小时正式仪式。准备中取消会放下未用材料，扣料后不退。反应恢复期间不能再次塑貌。基础质量 40%，医术 6 无其他修正时成功率约 61.5%，满质量时为 80%；原版质量修正照常生效。</descOverride>
+    <descOverride>药液与草药的气味伴着祝祷，信徒将新的容貌视为秩序的恩赐。美丽有时随之而来，灼痛却总会留下。
+
+成功提升一级美貌，最高为倾国倾城。需普通原液20份、草药2份，主持者医术至少6级。
+医术6级时基础成功率约61.5%，医术、场所与观众会影响成效。</descOverride>
     <iconPathOverride>UI/Icons/Ritual</iconPathOverride><ritualOnlyForIdeoMembers>false</ritualOnlyForIdeoMembers>
     <canMergeGizmosFromDifferentIdeos>false</canMergeGizmosFromDifferentIdeos>
     <tags><li>SSC_Cosmetic</li></tags>
@@ -91,8 +94,8 @@
       <li Class="RitualOutcomeComp_ParticipantCount"><label>观众</label><labelAbstract>观众人数</labelAbstract><curve><points><li>(0, 0)</li><li>(2, 0.05)</li><li>(4, 0.10)</li></points></curve></li>
     </comps>
     <outcomeChances>
-      <li><label>塑貌成功</label><chance>0.80</chance><positivityIndex>1</positivityIndex><description>仪式成功引导了纳米催情液的塑貌反应，受塑者的美貌提高一档。</description></li>
-      <li><label>塑貌失败</label><chance>0.20</chance><positivityIndex>-1</positivityIndex><description>仪式未能完成容貌重塑。受塑者的美貌保持原样，但仍须承受较重的纳米塑貌反应。</description></li>
+      <li><label>塑貌成功</label><chance>0.80</chance><positivityIndex>1</positivityIndex><description>祝祷结束后，一张更动人的面孔显露出来。重塑带来的隐痛尚需时日才能消退。</description></li>
+      <li><label>塑貌失败</label><chance>0.20</chance><positivityIndex>-1</positivityIndex><description>药液留下了灼痛，却未带来期盼中的变化。受塑者只能等待不适慢慢平息。</description></li>
     </outcomeChances>
   </RitualOutcomeEffectDef>
 </Defs>

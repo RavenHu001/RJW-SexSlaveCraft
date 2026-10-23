@@ -9,6 +9,6 @@
   <SSC_CosmeticRitualOutcome.comps.2.labelAbstract>观众人数</SSC_CosmeticRitualOutcome.comps.2.labelAbstract>
   <SSC_CosmeticRitualOutcome.outcomeChances.0.label>塑貌成功</SSC_CosmeticRitualOutcome.outcomeChances.0.label>
   <SSC_CosmeticRitualOutcome.outcomeChances.1.label>塑貌失败</SSC_CosmeticRitualOutcome.outcomeChances.1.label>
-  <SSC_CosmeticRitualOutcome.outcomeChances.0.description>仪式成功引导了纳米催情液的塑貌反应，受塑者的美貌提高一档。</SSC_CosmeticRitualOutcome.outcomeChances.0.description>
-  <SSC_CosmeticRitualOutcome.outcomeChances.1.description>仪式未能完成容貌重塑。受塑者的美貌保持原样，但仍须承受较重的纳米塑貌反应。</SSC_CosmeticRitualOutcome.outcomeChances.1.description>
+  <SSC_CosmeticRitualOutcome.outcomeChances.0.description>祝祷结束后，一张更动人的面孔显露出来。重塑带来的隐痛尚需时日才能消退。</SSC_CosmeticRitualOutcome.outcomeChances.0.description>
+  <SSC_CosmeticRitualOutcome.outcomeChances.1.description>药液留下了灼痛，却未带来期盼中的变化。受塑者只能等待不适慢慢平息。</SSC_CosmeticRitualOutcome.outcomeChances.1.description>
 </LanguageData>
