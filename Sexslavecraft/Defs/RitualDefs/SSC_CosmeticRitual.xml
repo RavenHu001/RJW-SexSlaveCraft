@@ -31,8 +31,20 @@
     <canGenerateAsSpecialPrecept>false</canGenerateAsSpecialPrecept>
     <useRepeatPenalty>true</useRepeatPenalty>
   </PreceptDef>
+  <!-- 与绑定仪式一样使用专属命名包和原版命名入口；名称池只供塑貌使用，原版负责生成与唯一性处理。 -->
+  <RulePackDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_NamerRitualCosmetic</defName>
+    <include><li>NamerRitualFestival</li></include>
+    <rulePack><rulesStrings>
+      <li>r_ritualName(priority=10)->[SSC_CosmeticRitualPreset]</li>
+      <li>SSC_CosmeticRitualPreset->悦主赐颜</li>
+      <li>SSC_CosmeticRitualPreset->媚颜祝圣</li>
+      <li>SSC_CosmeticRitualPreset->紫雾重绽</li>
+      <li>SSC_CosmeticRitualPreset->宠眷重塑</li>
+    </rulesStrings></rulePack>
+  </RulePackDef>
   <RitualPatternDef MayRequire="Ludeon.RimWorld.Ideology">
-    <defName>SSC_CosmeticRitualPattern</defName><nameMaker>NamerRitualFestival</nameMaker>
+    <defName>SSC_CosmeticRitualPattern</defName><nameMaker>SSC_NamerRitualCosmetic</nameMaker>
     <ritualBehavior>SSC_CosmeticRitualBehavior</ritualBehavior><ritualOutcomeEffect>SSC_CosmeticRitualOutcome</ritualOutcomeEffect>
     <canStartAnytime>true</canStartAnytime><alwaysStartAnytime>true</alwaysStartAnytime>
     <ritualObligationTargetFilter>RitualSpotOrAltar</ritualObligationTargetFilter>

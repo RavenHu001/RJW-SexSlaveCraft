@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI-assisted: cosmetic ritual presets; preserve rule indices and the dedicated keyword. -->
+<LanguageData>
+  <SSC_NamerRitualCosmetic.rulePack.rulesStrings.0>r_ritualName(priority=10)-&gt;[SSC_CosmeticRitualPreset]</SSC_NamerRitualCosmetic.rulePack.rulesStrings.0>
+  <SSC_NamerRitualCosmetic.rulePack.rulesStrings.1>SSC_CosmeticRitualPreset-&gt;Beauty for the Master</SSC_NamerRitualCosmetic.rulePack.rulesStrings.1>
+  <SSC_NamerRitualCosmetic.rulePack.rulesStrings.2>SSC_CosmeticRitualPreset-&gt;Consecration of Allure</SSC_NamerRitualCosmetic.rulePack.rulesStrings.2>
+  <SSC_NamerRitualCosmetic.rulePack.rulesStrings.3>SSC_CosmeticRitualPreset-&gt;Blooming in Violet Mist</SSC_NamerRitualCosmetic.rulePack.rulesStrings.3>
+  <SSC_NamerRitualCosmetic.rulePack.rulesStrings.4>SSC_CosmeticRitualPreset-&gt;Reshaping of the Favored</SSC_NamerRitualCosmetic.rulePack.rulesStrings.4>
+</LanguageData>

@@ -195,6 +195,7 @@ internal static class Program
                 case "PreceptDef": Add(DirectXmlToObject.ObjectFromXml<PreceptDef>(node, false)); break;
                 case "DutyDef": Add(DirectXmlToObject.ObjectFromXml<DutyDef>(node, false)); break;
                 case "RitualPatternDef": Add(DirectXmlToObject.ObjectFromXml<RitualPatternDef>(node, false)); break;
+                case "RulePackDef": Add(DirectXmlToObject.ObjectFromXml<RulePackDef>(node, false)); break;
                 case "RitualBehaviorDef": behavior = DirectXmlToObject.ObjectFromXml<RitualBehaviorDef>(node, false); Add(behavior); break;
                 case "RitualOutcomeEffectDef": outcome = DirectXmlToObject.ObjectFromXml<RitualOutcomeEffectDef>(node, false); Add(outcome); break;
                 case "RitualVisualEffectDef": Add(DirectXmlToObject.ObjectFromXml<RitualVisualEffectDef>(node, false)); break;
