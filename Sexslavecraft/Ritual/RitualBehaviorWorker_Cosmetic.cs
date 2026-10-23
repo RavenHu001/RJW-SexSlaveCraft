@@ -72,6 +72,13 @@ namespace SexSlaveCraft
                 }
             if (reason == null)
             {
+                if (!RitualPosition_Cosmetic.TryGetPositions(target,
+                    assignments?.FirstAssignedPawn(SSCCosmeticUtility.HostRole),
+                    assignments?.FirstAssignedPawn(SSCCosmeticUtility.RecipientRole), out _, out _))
+                    reason = "SSC_Cosmetic_NoRoleSpace".Translate();
+            }
+            if (reason == null)
+            {
                 var report = RitualStageAction_ConsumeCosmeticMaterials.MaterialReport(target, assignments?.FirstAssignedPawn(SSCCosmeticUtility.HostRole));
                 if (!report.Accepted) reason = report.Reason;
             }

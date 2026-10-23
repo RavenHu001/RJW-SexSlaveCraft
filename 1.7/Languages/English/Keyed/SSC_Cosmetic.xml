@@ -22,4 +22,5 @@
   <SSC_Cosmetic_SurgeryFailure>Surgery failed to improve {0}'s appearance, leaving painful discomfort.</SSC_Cosmetic_SurgeryFailure>
   <SSC_Cosmetic_RitualResult>Pain and weariness linger after {0}'s reshaping. Recovery will take time.</SSC_Cosmetic_RitualResult>
   <SSC_Cosmetic_TargetLost>The recipient is gone; reshaping could not continue.</SSC_Cosmetic_TargetLost>
+  <SSC_Cosmetic_NoRoleSpace>There is not enough room to perform the ritual.</SSC_Cosmetic_NoRoleSpace>
 </LanguageData>

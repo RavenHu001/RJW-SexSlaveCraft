@@ -107,6 +107,7 @@ internal static class Program
             ReactionTests();
             RoleAndOutcomeTests();
             StageAndMaterialTests();
+            PositionAndVisualTests();
             Check("four languages have matching keys, parameters and target fields", () => LanguageTests(repo));
         }
         finally { harmony.UnpatchAll(harmony.Id); Current.Game = null; }
@@ -166,13 +167,16 @@ internal static class Program
         Add(new RulePackDef { defName = "NamerRitualFestival" });
         Add(new RitualObligationTargetFilterDef { defName = "RitualSpotOrAltar" });
         foreach (var name in new[] { "Spectate", "ArriveToCell", "Idle" }) Add(new DutyDef { defName = name });
+        Add(new ShaderTypeDef { defName = "Mote" });
         var nodes = XDocument.Load(Path.Combine(game, "Data/Core/Defs/RecipeDefs/Recipes_Surgery_Misc.xml")).Root.Elements().Where(n => (string)n.Attribute("Name") == "SurgeryFlesh")
             .Concat(XDocument.Load(Path.Combine(game, "Data/Core/Defs/RecipeDefs/SurgeryOutcomeEffectDefs.xml")).Root.Elements().Where(n => (string)n.Attribute("Name") == "SurgeryOutcomeBase"))
+            .Concat(XDocument.Load(Path.Combine(game, "Data/Core/Defs/Effects/Fleck_Visual.xml")).Root.Elements().Where(n => new[] { "FleckBase", "FleckBase_Thrown" }.Contains((string)n.Attribute("Name"))))
             .Concat(Directory.GetFiles(Path.Combine(repo, "1.7/Defs"), "SSC_Cosmetic*.xml", SearchOption.AllDirectories).SelectMany(p => XDocument.Load(p).Root.Elements())).Select(Xml).ToList();
         XmlInheritance.Clear();
-        foreach (var n in nodes) XmlInheritance.TryRegister(n, null);
+        // 独立宿主只启用 DLC 标志，没有安装包目录；门控另由资源检查验证。
+        foreach (var n in nodes) { n.RemoveAttribute("MayRequire"); XmlInheritance.TryRegister(n, null); }
         XmlInheritance.Resolve();
-        foreach (var original in nodes.Skip(2))
+        foreach (var original in nodes.Where(n => !string.Equals(n.GetAttribute("Abstract"), "True", StringComparison.OrdinalIgnoreCase)))
         {
             var node = (XmlElement)XmlInheritance.GetResolvedNodeFor(original).CloneNode(true);
             node.RemoveAttribute("ParentName"); node.RemoveAttribute("Abstract");
@@ -187,6 +191,8 @@ internal static class Program
                 case "RitualPatternDef": Add(DirectXmlToObject.ObjectFromXml<RitualPatternDef>(node, false)); break;
                 case "RitualBehaviorDef": behavior = DirectXmlToObject.ObjectFromXml<RitualBehaviorDef>(node, false); Add(behavior); break;
                 case "RitualOutcomeEffectDef": outcome = DirectXmlToObject.ObjectFromXml<RitualOutcomeEffectDef>(node, false); Add(outcome); break;
+                case "RitualVisualEffectDef": Add(DirectXmlToObject.ObjectFromXml<RitualVisualEffectDef>(node, false)); break;
+                case "FleckDef": Add(DirectXmlToObject.ObjectFromXml<FleckDef>(node, false)); break;
                 default: throw new Exception(node.Name);
             }
         }
@@ -220,7 +226,7 @@ internal static class Program
         def.race.body.ResolveReferences();
         Set(def.race, "fleshType", new FleshTypeDef { defName = "Normal", isOrganic = true });
         def.race.lifeStageAges.Add(new LifeStageAge { def = new LifeStageDef { defName = "Adult", developmentalStage = DevelopmentalStage.Adult } });
-        var p = new Pawn { def = def, Name = new NameSingle("Fixture") };
+        var p = new Pawn { def = def, Name = new NameSingle("Fixture"), thingIDNumber = ++thingId };
         p.kindDef = new PawnKindDef { defName = "TestColonist", race = def };
         Set(p, "factionInt", player); Set(p, "mapIndexOrState", (sbyte)0);
         p.health = new Pawn_HealthTracker(p); p.story = new Pawn_StoryTracker(p); p.needs = new Pawn_NeedsTracker(p);
@@ -528,6 +534,143 @@ internal static class Program
             Equal(0, p.story.traits.allTraits.Count); Equal(0, p.health.hediffSet.hediffs.Count);
         });
         StartPreviewTests();
+    }
+
+    private static readonly HashSet<IntVec3> blockedRoleCells = new();
+    private static bool blockAllRoleCells;
+    private static readonly List<FleckCreationData> mistSpawns = new();
+    private static bool RoleValidator(Pawn pawn, ref Func<IntVec3, bool> __result)
+    {
+        __result = cell => !blockAllRoleCells && !blockedRoleCells.Contains(cell);
+        return false;
+    }
+    private static bool NoRitualRoom(ref Room __result) { __result = null; return false; }
+    private static bool CaptureFleck(FleckCreationData fleckData) { mistSpawns.Add(fleckData); return false; }
+
+    private static void PositionAndVisualTests()
+    {
+        // 只注入地图可站/同室/寻路边界；执行真实配对选点、原版阶段缓存与职责分配。
+        var validator = AccessTools.Method(typeof(CommonRitualCellPredicates), nameof(CommonRitualCellPredicates.DefaultValidator));
+        var room = AccessTools.PropertyGetter(typeof(LordJob_Ritual), nameof(LordJob_Ritual.GetRoom));
+        var createFleck = AccessTools.Method(typeof(FleckManager), nameof(FleckManager.CreateFleck));
+        var clearWork = AccessTools.Method(typeof(PriorityWork), nameof(PriorityWork.ClearPrioritizedWorkAndJobQueue));
+        harmony.Patch(validator, prefix: new HarmonyMethod(typeof(Program), nameof(RoleValidator)));
+        harmony.Patch(room, prefix: new HarmonyMethod(typeof(Program), nameof(NoRitualRoom)));
+        harmony.Patch(createFleck, prefix: new HarmonyMethod(typeof(Program), nameof(CaptureFleck)));
+        harmony.Patch(clearWork, prefix: new HarmonyMethod(typeof(Program), nameof(Skip)));
+        map.info.Size = new IntVec3(100, 1, 100);
+        map.flecks = Bare<FleckManager>();
+        map.lordManager.stencilDrawers = new();
+        foreach (var stage in behavior.stages) stage.parent = behavior;
+        try
+        {
+            Check("paired positions rotate with all four altar orientations", () =>
+            {
+                var host = Pawn(); var recipient = Pawn();
+                var altarDef = Bare<ThingDef>(); altarDef.defName = "TestAltar"; altarDef.size = new IntVec2(3, 2);
+                var altar = new Thing { def = altarDef };
+                Set(altar, "positionInt", new IntVec3(10, 0, 10)); Set(altar, "mapIndexOrState", (sbyte)0);
+                for (int rotation = 0; rotation < 4; rotation++)
+                {
+                    Set(altar, "rotationInt", new Rot4(rotation));
+                    Require(RitualPosition_Cosmetic.TryGetPositions(altar, host, recipient, out var h, out var r));
+                    Equal(new Rot4((rotation + 2) % 4), r.orientation);
+                    Equal(r.cell, h.cell + h.orientation.FacingCell);
+                    Equal(1, (r.cell - h.cell).LengthHorizontalSquared);
+                    IntVec3 delta = r.cell - h.cell, forward = r.orientation.FacingCell;
+                    Equal(0, delta.x * forward.x + delta.z * forward.z);
+                    Require(!altar.OccupiedRect().Contains(h.cell) && !altar.OccupiedRect().Contains(r.cell));
+                    delta = r.cell - altar.Position;
+                    Require(delta.x * forward.x + delta.z * forward.z > 0);
+                }
+            });
+            Check("ritual spot defaults south, mirrors blocked host side and rejects no space", () =>
+            {
+                var host = Pawn(); var recipient = Pawn(); var target = new TargetInfo(new IntVec3(10, 0, 10), map);
+                Require(RitualPosition_Cosmetic.TryGetPositions(target, host, recipient, out var h, out var r));
+                Equal(Rot4.South, r.orientation); IntVec3 firstHost = h.cell, firstRecipient = r.cell;
+                blockedRoleCells.Add(firstHost);
+                Require(RitualPosition_Cosmetic.TryGetPositions(target, host, recipient, out h, out r));
+                Equal(firstRecipient, r.cell); Equal(firstRecipient * 2 - firstHost, h.cell);
+                blockAllRoleCells = true;
+                Require(!RitualPosition_Cosmetic.TryGetPositions(target, host, recipient, out _, out _));
+                blockAllRoleCells = false; blockedRoleCells.Clear();
+                Require(!RitualPosition_Cosmetic.TryGetPositions(new TargetInfo(new IntVec3(0, 0, 0), map), host, recipient, out _, out _));
+                Require(RitualPosition_Cosmetic.TryGetPositions(new TargetInfo(new IntVec3(0, 0, 3), map), host, recipient, out h, out r));
+                Require(h.cell.InBounds(map) && r.cell.InBounds(map));
+            });
+            foreach (bool recipientFirst in new[] { false, true })
+                Check("native cached positions and facing stay fixed across stages; recipient first=" + recipientFirst, () =>
+                {
+                    var host = Pawn(); var recipient = Pawn(); var audience = Pawn(); var job = Job(host, recipient);
+                    job.Ritual.playsIdeoMusic = false;
+                    if (recipientFirst)
+                        Set(job.assignments, "assignedRoles", new Dictionary<string, List<Pawn>> { ["recipient"] = new() { recipient }, ["host"] = new() { host } });
+                    Set(job.assignments, "tmpParticipants", new List<Pawn>());
+                    Set(job.assignments, "allPawns", recipientFirst ? new List<Pawn> { recipient, host, audience } : new List<Pawn> { host, recipient, audience });
+                    ((List<Pawn>)AccessTools.Field(typeof(RitualRoleAssignments), "spectators").GetValue(job.assignments)).Add(audience);
+                    job.Notify_AddedToLord();
+                    var firstHost = job.PawnPositionForStage(host, behavior.stages[0]);
+                    var firstRecipient = job.PawnPositionForStage(recipient, behavior.stages[0]);
+                    // 原版已经保存位置，之后即使站位周围变化，也不应在阶段切换时随机改点。
+                    blockAllRoleCells = true;
+                    job.lord.ownedPawns.AddRange(new[] { host, recipient, audience });
+                    foreach (var stage in behavior.stages)
+                    {
+                        Equal(firstHost.cell, job.PawnPositionForStage(host, stage).cell);
+                        Equal(firstRecipient.cell, job.PawnPositionForStage(recipient, stage).cell);
+                        var toil = new LordToil_Ritual(job.Spot, job, stage, null) { lord = job.lord };
+                        toil.UpdateAllDuties();
+                        Equal(firstRecipient.cell, host.mindState.duty.focus.Cell + host.mindState.duty.overrideFacing.FacingCell);
+                        Equal(Rot4.South, recipient.mindState.duty.overrideFacing);
+                        Equal(firstRecipient.cell, audience.mindState.duty.spectateRect.CenterCell);
+                        Equal(SpectateRectSide.Down, audience.mindState.duty.spectateRectAllowedSides);
+                        Equal(new IntRange(2, 3), audience.mindState.duty.spectateDistance);
+                    }
+                    blockAllRoleCells = false;
+                    JobDefOf.Wait = new JobDef { defName = "Wait" };
+                    var wait = new JobGiver_Idle().TryIssueJobPackage(host, default).Job;
+                    Equal(firstHost.orientation, wait.overrideFacing);
+                    Require(!DefDatabase<DutyDef>.GetNamed("SSC_PrepareCosmeticMaterials").ritualSpectateTarget);
+                });
+            Check("mist uses native role effect and inherited smoke asset only during formal stage", () =>
+            {
+                Require(behavior.stages[0].visualEffectDef == null && behavior.stages[1].visualEffectDef == null);
+                var effect = behavior.stages[2].visualEffectDef;
+                Equal(typeof(RitualVisualEffect), effect.workerClass);
+                var props = (CompProperties_RitualEffectSpawnOnRole)effect.comps.Single();
+                Equal(typeof(CompRitualEffect_SpawnOnRole), props.compClass); Equal("recipient", props.roleId);
+                Equal(30, props.spawnIntervalTicks); Equal(1, props.delay); Require(props.maxBursts < 0);
+                Require(props.moteDef == null && props.effecterDef == null);
+                Equal("Things/Mote/Smoke", props.fleckDef.graphicData.texPath);
+                Equal(typeof(FleckSystemThrown), props.fleckDef.fleckSystemClass);
+                Near(2.4f, props.fleckDef.fadeInTime + props.fleckDef.solidTime + props.fleckDef.fadeOutTime);
+                Near(.2f, props.colorOverride.Value.a);
+            });
+            Check("native mist delay, interval and recipient spawn position", () =>
+            {
+                mistSpawns.Clear(); var host = Pawn(); var recipient = Pawn(); var job = Job(host, recipient);
+                Set(recipient, "positionInt", new IntVec3(17, 0, 18));
+                var effect = behavior.stages[2].visualEffectDef.GetInstance(); effect.Setup(job, false);
+                effect.Tick(); Equal(0, mistSpawns.Count);
+                effect.Tick(); Equal(1, mistSpawns.Count);
+                Near(recipient.Position.x + .5f, mistSpawns[0].spawnPosition.x);
+                Near(recipient.Position.z + .5f, mistSpawns[0].spawnPosition.z);
+                Near(.2f, mistSpawns[0].instanceColor.Value.a);
+                int oldTick = Find.TickManager.TicksGame;
+                try
+                {
+                    Set(Find.TickManager, "ticksGameInt", oldTick + 29); effect.Tick(); Equal(1, mistSpawns.Count);
+                    Set(Find.TickManager, "ticksGameInt", oldTick + 30); effect.Tick(); Equal(2, mistSpawns.Count);
+                }
+                finally { Set(Find.TickManager, "ticksGameInt", oldTick); effect.Cleanup(); }
+            });
+        }
+        finally
+        {
+            foreach (var method in new[] { validator, room, createFleck, clearWork }) harmony.Unpatch(method, HarmonyPatchType.Prefix, harmony.Id);
+            blockAllRoleCells = false; blockedRoleCells.Clear();
+        }
     }
 
     private static void StartPreviewTests()

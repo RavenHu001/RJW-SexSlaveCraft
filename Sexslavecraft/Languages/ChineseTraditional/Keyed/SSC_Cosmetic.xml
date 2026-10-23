@@ -22,4 +22,5 @@
   <SSC_Cosmetic_SurgeryFailure>手術未能改善{0}的容貌，還留下了一陣難熬的不適。</SSC_Cosmetic_SurgeryFailure>
   <SSC_Cosmetic_RitualResult>重塑後的疼痛與疲憊仍困擾著{0}，需要時間恢復。</SSC_Cosmetic_RitualResult>
   <SSC_Cosmetic_TargetLost>受塑者已不在，重塑未能繼續。</SSC_Cosmetic_TargetLost>
+  <SSC_Cosmetic_NoRoleSpace>儀式周圍沒有足夠的施作空間。</SSC_Cosmetic_NoRoleSpace>
 </LanguageData>

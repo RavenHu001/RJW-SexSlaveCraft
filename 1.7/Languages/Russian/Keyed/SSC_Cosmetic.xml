@@ -22,4 +22,5 @@
   <SSC_Cosmetic_SurgeryFailure>Операция не улучшила внешность {0}, оставив болезненное недомогание.</SSC_Cosmetic_SurgeryFailure>
   <SSC_Cosmetic_RitualResult>После коррекции {0} всё ещё мучают боль и усталость. На восстановление нужно время.</SSC_Cosmetic_RitualResult>
   <SSC_Cosmetic_TargetLost>Получателя больше нет; коррекцию не удалось продолжить.</SSC_Cosmetic_TargetLost>
+  <SSC_Cosmetic_NoRoleSpace>Вокруг места ритуала недостаточно свободного пространства.</SSC_Cosmetic_NoRoleSpace>
 </LanguageData>

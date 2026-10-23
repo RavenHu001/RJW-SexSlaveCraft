@@ -11,6 +11,14 @@
       <li Class="JobGiver_Idle"><ticks>60</ticks></li>
     </subNodes></thinkNode>
   </DutyDef>
+  <!-- 原版到场与等待节点；只让受塑者成为观众的注视中心。 -->
+  <DutyDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_CosmeticRecipient</defName><ritualSpectateTarget>true</ritualSpectateTarget>
+    <thinkNode Class="ThinkNode_Priority"><subNodes>
+      <li Class="JobGiver_GotoTravelDestination"><exactCell>true</exactCell><locomotionUrgency>Jog</locomotionUrgency><ritualTagOnArrival>Arrived</ritualTagOnArrival></li>
+      <li Class="JobGiver_Idle"><ticks>60</ticks></li>
+    </subNodes></thinkNode>
+  </DutyDef>
   <PreceptDef MayRequire="Ludeon.RimWorld.Ideology">
     <defName>SSC_CosmeticRitualPrecept</defName><label>塑貌仪式</label>
     <description>信徒垂首接受药液与草药的涂抹，在祝祷中等待新的容貌。主持者称之为秩序的恩赐，皮肤下的微小机器却在依循另一套规律。</description>
@@ -45,7 +53,7 @@
     </roles>
     <stages>
       <li Class="SexSlaveCraft.RitualStage_CosmeticPreparation">
-        <defaultDuty>Spectate</defaultDuty><showProgressBar>false</showProgressBar>
+        <defaultDuty>Spectate</defaultDuty><allowedSpectateSidesOverride>Down</allowedSpectateSidesOverride><spectateDistanceOverride>2~3</spectateDistanceOverride><showProgressBar>false</showProgressBar>
         <endTriggers><li Class="SexSlaveCraft.StageEndTrigger_CosmeticMaterialsReady"><roleIds><li>host</li><li>recipient</li></roleIds></li></endTriggers>
         <pawnLeaveAction Class="SexSlaveCraft.RitualStageAction_DropCosmeticMaterials"><subActions>
           <li Class="RitualStageAction_DropThing"><def>Purple_Aphrodisiac_Nanofluid</def><count>20</count></li>
@@ -56,12 +64,12 @@
           <li Class="RitualStageAction_DropThing"><def>MedicineHerbal</def><count>2</count></li>
         </subActions></interruptedAction>
         <roleBehaviors>
-          <li><roleId>host</roleId><dutyDef>SSC_PrepareCosmeticMaterials</dutyDef><customPositions><li Class="RitualPosition_InCircle"><distRange>1~2</distRange></li></customPositions></li>
-          <li><roleId>recipient</roleId><dutyDef>ArriveToCell</dutyDef><customPositions><li Class="RitualPosition_InCircle"><distRange>1~2</distRange></li></customPositions></li>
+          <li><roleId>host</roleId><dutyDef>SSC_PrepareCosmeticMaterials</dutyDef><customPositions><li Class="SexSlaveCraft.RitualPosition_Cosmetic" /></customPositions></li>
+          <li><roleId>recipient</roleId><dutyDef>SSC_CosmeticRecipient</dutyDef><customPositions><li Class="SexSlaveCraft.RitualPosition_Cosmetic" /></customPositions></li>
         </roleBehaviors>
       </li>
       <li Class="SexSlaveCraft.RitualStage_CosmeticPreparation">
-        <defaultDuty>Spectate</defaultDuty><showProgressBar>false</showProgressBar><essential>true</essential>
+        <defaultDuty>Spectate</defaultDuty><allowedSpectateSidesOverride>Down</allowedSpectateSidesOverride><spectateDistanceOverride>2~3</spectateDistanceOverride><showProgressBar>false</showProgressBar><essential>true</essential>
         <endTriggers><li Class="StageEndTrigger_Instant" /></endTriggers>
         <pawnLeaveAction Class="SexSlaveCraft.RitualStageAction_DropCosmeticMaterials"><subActions>
           <li Class="RitualStageAction_DropThing"><def>Purple_Aphrodisiac_Nanofluid</def><count>20</count></li>
@@ -73,14 +81,18 @@
         </subActions></interruptedAction>
         <!-- 在原版切换后、正式阶段首 tick 前消费；缺料取消后的职责不会被 GotoToil 重新分配。 -->
         <postAction Class="SexSlaveCraft.RitualStageAction_ConsumeCosmeticMaterials" />
-        <roleBehaviors><li><roleId>host</roleId><dutyDef>Idle</dutyDef></li><li><roleId>recipient</roleId><dutyDef>Idle</dutyDef></li></roleBehaviors>
+        <roleBehaviors>
+          <li><roleId>host</roleId><dutyDef>Idle</dutyDef><customPositions><li Class="SexSlaveCraft.RitualPosition_Cosmetic" /></customPositions></li>
+          <li><roleId>recipient</roleId><dutyDef>SSC_CosmeticRecipient</dutyDef><customPositions><li Class="SexSlaveCraft.RitualPosition_Cosmetic" /></customPositions></li>
+        </roleBehaviors>
       </li>
       <li>
-        <defaultDuty>Spectate</defaultDuty>
+        <visualEffectDef>SSC_CosmeticPurpleMist</visualEffectDef>
+        <defaultDuty>Spectate</defaultDuty><allowedSpectateSidesOverride>Down</allowedSpectateSidesOverride><spectateDistanceOverride>2~3</spectateDistanceOverride>
         <endTriggers><li Class="StageEndTrigger_DurationPercentage"><percentage>1</percentage></li></endTriggers>
         <roleBehaviors>
-          <li><roleId>host</roleId><dutyDef>ArriveToCell</dutyDef><customPositions><li Class="RitualPosition_InCircle"><distRange>1~2</distRange></li></customPositions></li>
-          <li><roleId>recipient</roleId><dutyDef>ArriveToCell</dutyDef><customPositions><li Class="RitualPosition_InCircle"><distRange>1~2</distRange></li></customPositions></li>
+          <li><roleId>host</roleId><dutyDef>ArriveToCell</dutyDef><customPositions><li Class="SexSlaveCraft.RitualPosition_Cosmetic" /></customPositions></li>
+          <li><roleId>recipient</roleId><dutyDef>SSC_CosmeticRecipient</dutyDef><customPositions><li Class="SexSlaveCraft.RitualPosition_Cosmetic" /></customPositions></li>
         </roleBehaviors>
       </li>
     </stages>

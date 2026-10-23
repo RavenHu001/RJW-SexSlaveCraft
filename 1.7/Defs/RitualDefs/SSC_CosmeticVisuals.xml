@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成：复用原版烟雾贴图与角色绑定粒子；仅正式阶段持续播放。 -->
+<Defs>
+  <FleckDef ParentName="FleckBase_Thrown" MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_CosmeticPurpleMistFleck</defName>
+    <graphicData><texPath>Things/Mote/Smoke</texPath><renderInstanced>true</renderInstanced></graphicData>
+    <altitudeLayer>MoteOverhead</altitudeLayer>
+    <fadeInTime>0.4</fadeInTime><solidTime>0.8</solidTime><fadeOutTime>1.2</fadeOutTime>
+    <growthRate>0.08</growthRate>
+  </FleckDef>
+  <RitualVisualEffectDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_CosmeticPurpleMist</defName>
+    <comps>
+      <li Class="CompProperties_RitualEffectSpawnOnRole">
+        <roleId>recipient</roleId><fleckDef>SSC_CosmeticPurpleMistFleck</fleckDef>
+        <spawnIntervalTicks>30</spawnIntervalTicks><delay>1</delay>
+        <scale>1.1~1.4</scale><colorOverride>(0.55, 0.25, 0.75, 0.20)</colorOverride>
+        <rotationRate>-8~8</rotationRate>
+        <velocity>0.04~0.08</velocity><velocityDir>(0, 0, 1)</velocityDir>
+      </li>
+    </comps>
+  </RitualVisualEffectDef>
+</Defs>
