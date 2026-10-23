@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成 -->
+<LanguageData>
+  <SSC_CosmeticRitualOutcome.comps.0.label>Медицина {PAWN_labelShort}</SSC_CosmeticRitualOutcome.comps.0.label>
+  <SSC_CosmeticRitualOutcome.comps.0.labelAbstract>Медицина специалиста</SSC_CosmeticRitualOutcome.comps.0.labelAbstract>
+  <SSC_CosmeticRitualOutcome.comps.1.label>Впечатление от комнаты</SSC_CosmeticRitualOutcome.comps.1.label>
+  <SSC_CosmeticRitualOutcome.comps.1.labelAbstract>Впечатление от комнаты</SSC_CosmeticRitualOutcome.comps.1.labelAbstract>
+  <SSC_CosmeticRitualOutcome.comps.2.label>Зрители</SSC_CosmeticRitualOutcome.comps.2.label>
+  <SSC_CosmeticRitualOutcome.comps.2.labelAbstract>Число зрителей</SSC_CosmeticRitualOutcome.comps.2.labelAbstract>
+  <SSC_CosmeticRitualOutcome.outcomeChances.0.label>успешная коррекция</SSC_CosmeticRitualOutcome.outcomeChances.0.label>
+  <SSC_CosmeticRitualOutcome.outcomeChances.1.label>неудачная коррекция</SSC_CosmeticRitualOutcome.outcomeChances.1.label>
+  <SSC_CosmeticRitualOutcome.outcomeChances.0.description>Ритуал успешно направил реакцию PNA. Красота получателя повышена на одну ступень.</SSC_CosmeticRitualOutcome.outcomeChances.0.description>
+  <SSC_CosmeticRitualOutcome.outcomeChances.1.description>Ритуал не смог изменить внешность. Красота не изменилась, но осталась более тяжёлая реакция нанокоррекции.</SSC_CosmeticRitualOutcome.outcomeChances.1.description>
+</LanguageData>

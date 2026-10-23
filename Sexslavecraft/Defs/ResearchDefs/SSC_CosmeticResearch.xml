@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成：1.7 医美草案数值，尚待实机平衡。 -->
+<Defs>
+  <ResearchProjectDef>
+    <defName>SSC_RES_PNACosmeticApplication</defName>
+    <label>纳米催情液医美应用</label>
+    <description>研究普通纳米催情液的塑貌特性，以定量施用和外科控制引导组织重塑。解锁容貌重塑手术，每次成功提高一档美貌，最高达到原版的倾国倾城；更高美貌与冲突特质不予改动。</description>
+    <baseCost>1500</baseCost>
+    <techLevel>Industrial</techLevel>
+    <tab>SSC_ResearchTabDef</tab>
+    <prerequisites><li>SSC_RES_PNASimpleApp</li><li>SterileMaterials</li></prerequisites>
+    <researchViewX>3</researchViewX><researchViewY>3.5</researchViewY>
+  </ResearchProjectDef>
+</Defs>

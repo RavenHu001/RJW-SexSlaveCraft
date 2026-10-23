@@ -21,11 +21,11 @@ $savedMode = $env:SSC_VALIDATION_FIXTURE_MODE
 $savedNativeDotnet = $env:SSC_DOTNET_PATH
 $savedNativeGameRoot = $env:SSC_GAME_ROOT
 $checks = 0
-$suiteCount = @(Get-ChildItem -LiteralPath (Join-Path $repo 'Tests') -Recurse -Filter '*.csproj').Count
-# Eleven registered suites require the test Harmony, including four native 1.7 suites.
+$suiteCount = @(Get-ChildItem -LiteralPath (Join-Path $repo 'Tests') -Recurse -Filter '*.csproj' | Where-Object BaseName -ne 'UnityCoreShim').Count
+# Twelve registered suites require the test Harmony, including five native 1.7 suites.
 # 文化原生专项也需要本地 Harmony；缺依赖时应全部记为 NotRun，不能漏掉新套件。
 # 缺少或误用 Harmony 的场景按该数量核对 NotRun 与其余 Passed；新增依赖套件必须同步纳入。
-$harmonySuiteCount = 11
+$harmonySuiteCount = 12
 
 <#
 .SYNOPSIS

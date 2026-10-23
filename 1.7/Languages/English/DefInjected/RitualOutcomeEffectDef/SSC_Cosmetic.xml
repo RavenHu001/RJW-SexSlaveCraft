@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成 -->
+<LanguageData>
+  <SSC_CosmeticRitualOutcome.comps.0.label>{PAWN_labelShort}'s Medical skill</SSC_CosmeticRitualOutcome.comps.0.label>
+  <SSC_CosmeticRitualOutcome.comps.0.labelAbstract>Practitioner Medical skill</SSC_CosmeticRitualOutcome.comps.0.labelAbstract>
+  <SSC_CosmeticRitualOutcome.comps.1.label>Room impressiveness</SSC_CosmeticRitualOutcome.comps.1.label>
+  <SSC_CosmeticRitualOutcome.comps.1.labelAbstract>Room impressiveness</SSC_CosmeticRitualOutcome.comps.1.labelAbstract>
+  <SSC_CosmeticRitualOutcome.comps.2.label>Spectators</SSC_CosmeticRitualOutcome.comps.2.label>
+  <SSC_CosmeticRitualOutcome.comps.2.labelAbstract>Spectator count</SSC_CosmeticRitualOutcome.comps.2.labelAbstract>
+  <SSC_CosmeticRitualOutcome.outcomeChances.0.label>successful reshaping</SSC_CosmeticRitualOutcome.outcomeChances.0.label>
+  <SSC_CosmeticRitualOutcome.outcomeChances.1.label>failed reshaping</SSC_CosmeticRitualOutcome.outcomeChances.1.label>
+  <SSC_CosmeticRitualOutcome.outcomeChances.0.description>The ritual successfully guided the PNA reshaping response. The recipient gains one Beauty step.</SSC_CosmeticRitualOutcome.outcomeChances.0.description>
+  <SSC_CosmeticRitualOutcome.outcomeChances.1.description>The ritual could not reshape the recipient. Beauty is unchanged, but a stronger nano-reshaping reaction remains.</SSC_CosmeticRitualOutcome.outcomeChances.1.description>
+</LanguageData>

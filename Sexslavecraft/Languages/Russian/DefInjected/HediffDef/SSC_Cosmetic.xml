@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成 -->
+<LanguageData>
+  <SSC_Hediff_NanoCosmeticReaction.label>реакция нанокоррекции</SSC_Hediff_NanoCosmeticReaction.label>
+  <SSC_Hediff_NanoCosmeticReaction.description>Временная реакция тканей на нанокоррекцию. Чем выше тяжесть, тем сильнее боль и медленнее работа. Снижается на 0.10 в день. До восстановления повторная коррекция недоступна; лечение и постельный режим её не ускоряют.</SSC_Hediff_NanoCosmeticReaction.description>
+</LanguageData>

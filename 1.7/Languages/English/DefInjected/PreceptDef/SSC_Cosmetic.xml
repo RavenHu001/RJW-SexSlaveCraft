@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成 -->
+<LanguageData>
+  <SSC_CosmeticRitualPrecept.label>reshaping ritual</SSC_CosmeticRitualPrecept.label>
+  <SSC_CosmeticRitualPrecept.description>Use the tissue-reshaping properties of regular PNA through traditional ceremony. Only a Master-Slave Order ideoligion can perform it. The adult practitioner (Medical 6+) and recipient must share that ideoligion; the recipient may be a colonist or colony slave. No research required. Haul 20 regular PNA and 2 herbal medicine into the vanilla gathering area first. Supplies are consumed after gathering, before the two-hour formal ceremony. Success raises vanilla Beauty one step, up to +2. Success/failure causes reaction severity 0.15/0.60, fading 0.10 per day; recovery blocks further reshaping. Base quality is 40%: Medical 6 with no other modifiers gives about 61.5% success; full quality gives 80%. Vanilla repeat, expectations and progress modifiers apply.</SSC_CosmeticRitualPrecept.description>
+</LanguageData>

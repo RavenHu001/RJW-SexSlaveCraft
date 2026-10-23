@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成 -->
+<LanguageData>
+  <SSC_CosmeticRitualPattern.shortDescOverride>塑貌仪式</SSC_CosmeticRitualPattern.shortDescOverride>
+  <SSC_CosmeticRitualPattern.descOverride>以传统仪轨利用纳米催情液的塑貌特性，使一名信徒的美貌提高一档，最高为原版的倾国倾城。只有主奴秩序文化可举行，主持者与受塑者须同属该文化。无需研究。先用原版储存和搬运将普通原液 20 份与草药 2 份放在仪式活动范围内，集合后消费，再举行约两小时的正式仪式。成功／失败产生 0.15／0.60 纳米塑貌反应，每天消退 0.10。基础质量 40%，医术 6 且无其他加减分时成功率约 61.5%；满质量时为 80%。原版重复、期望和进度修正照常生效。</SSC_CosmeticRitualPattern.descOverride>
+</LanguageData>

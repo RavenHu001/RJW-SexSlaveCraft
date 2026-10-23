@@ -19,6 +19,7 @@
     <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>disable</Nullable>
     <LangVersion>latest</LangVersion>
+    <DefineConstants>$(DefineConstants);SSC_RW17</DefineConstants>
     <Deterministic>true</Deterministic>
     <DebugType>portable</DebugType>
     <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
@@ -67,10 +68,24 @@
   <Target Name="LoadLegacySourceItems" BeforeTargets="PrepareForBuild">
     <XmlPeek XmlInputPath="$(MSBuildProjectDirectory)/SexSlaveCraft_Alpha.csproj"
              Query="/*[local-name()='Project']/*[local-name()='ItemGroup']/*[local-name()='Compile']/@Include">
-      <Output TaskParameter="Result" ItemName="Compile" />
+      <Output TaskParameter="Result" ItemName="LegacyCompile" />
     </XmlPeek>
-    <Error Condition="'@(Compile)' == ''" Text="The shared legacy source list is empty." />
+    <Error Condition="'@(LegacyCompile)' == ''" Text="The shared legacy source list is empty." />
+    <ItemGroup><Compile Include="@(LegacyCompile)" /></ItemGroup>
   </Target>
+  <!-- AI 辅助生成：医美功能仅编入 1.7，不改变冻结的 1.6 编译清单。 -->
+  <ItemGroup>
+    <Compile Include="common/SSCCosmeticUtility.cs" />
+    <Compile Include="Recipe/Recipe_BeautyEnhancement.cs" />
+    <Compile Include="Recipe/SurgeryOutcome_CosmeticFailure.cs" />
+    <Compile Include="ThePatches/Harmony_CosmeticSurgeryAdmission.cs" />
+    <Compile Include="Ritual/RitualRole_CosmeticHost.cs" />
+    <Compile Include="Ritual/RitualRole_CosmeticRecipient.cs" />
+    <Compile Include="Ritual/RitualBehaviorWorker_Cosmetic.cs" />
+    <Compile Include="Ritual/RitualStage_CosmeticPreparation.cs" />
+    <Compile Include="Ritual/RitualStageAction_ConsumeCosmeticMaterials.cs" />
+    <Compile Include="Ritual/RitualOutcomeEffectWorker_Cosmetic.cs" />
+  </ItemGroup>
   <Target Name="ValidateGameReferences" BeforeTargets="PrepareForBuild">
     <Error Condition="'$(GameRoot)' == '' or !Exists('$(GameRoot)/Assembly-CSharp.dll')"
            Text="Set GameRoot to a RimWorld 1.7 installation containing Assembly-CSharp.dll at its root." />

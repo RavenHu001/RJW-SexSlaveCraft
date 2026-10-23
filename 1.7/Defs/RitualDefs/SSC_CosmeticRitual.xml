@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成：仅 Ideology 加载；原版分配、阶段、质量组件和一次结果抽取。 -->
+<Defs>
+  <PreceptDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_CosmeticRitualPrecept</defName><label>塑貌仪式</label>
+    <description>以传统仪轨利用纳米催情液的塑貌特性，使一名信徒的美貌提高一档，最高为原版的倾国倾城。只有主奴秩序文化可举行，主持者与受塑者须同属该文化。无需研究。先用原版储存和搬运将普通原液 20 份与草药 2 份放在仪式活动范围内，集合后消费，再举行约两小时的正式仪式。成功／失败产生 0.15／0.60 纳米塑貌反应，每天消退 0.10。基础质量 40%，医术 6 且无其他加减分时成功率约 61.5%；满质量时为 80%。原版重复、期望和进度修正照常生效。</description>
+    <issue>Ritual</issue><impact>Medium</impact><iconPath>UI/Icons/Ritual</iconPath>
+    <preceptClass>Precept_Ritual</preceptClass><ritualPatternBase>SSC_CosmeticRitualPattern</ritualPatternBase>
+    <requiredMemes><li>SSC_Meme_MasterSlaveOrder</li></requiredMemes>
+    <allowDuplicates>true</allowDuplicates><countsTowardsPreceptLimit>false</countsTowardsPreceptLimit>
+    <selectionWeight>1</selectionWeight><displayOrderInImpact>101</displayOrderInImpact>
+    <canGenerateAsSpecialPrecept>false</canGenerateAsSpecialPrecept>
+    <useRepeatPenalty>true</useRepeatPenalty>
+  </PreceptDef>
+  <RitualPatternDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_CosmeticRitualPattern</defName><nameMaker>NamerRitualFestival</nameMaker>
+    <ritualBehavior>SSC_CosmeticRitualBehavior</ritualBehavior><ritualOutcomeEffect>SSC_CosmeticRitualOutcome</ritualOutcomeEffect>
+    <canStartAnytime>true</canStartAnytime><alwaysStartAnytime>true</alwaysStartAnytime>
+    <ritualObligationTargetFilter>RitualSpotOrAltar</ritualObligationTargetFilter>
+    <shortDescOverride>塑貌仪式</shortDescOverride>
+    <descOverride>以传统仪轨利用纳米催情液重塑一名成年信徒的容貌。主持者医术至少 6；受塑者须为同文化的殖民者或殖民地奴隶。请先将普通原液 20 份和草药 2 份搬运到仪式活动范围内。集合后消耗材料，正式仪式约两小时。反应恢复期间不能再次塑貌。基础质量 40%，医术 6 无其他修正时成功率约 61.5%，满质量时为 80%；原版质量修正照常生效。</descOverride>
+    <iconPathOverride>UI/Icons/Ritual</iconPathOverride><ritualOnlyForIdeoMembers>false</ritualOnlyForIdeoMembers>
+    <canMergeGizmosFromDifferentIdeos>false</canMergeGizmosFromDifferentIdeos>
+    <tags><li>SSC_Cosmetic</li></tags>
+  </RitualPatternDef>
+  <RitualBehaviorDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_CosmeticRitualBehavior</defName><workerClass>SexSlaveCraft.RitualBehaviorWorker_Cosmetic</workerClass>
+    <durationTicks>5000</durationTicks>
+    <roles>
+      <li Class="SexSlaveCraft.RitualRole_CosmeticHost"><id>host</id><label>主持者</label><maxCount>1</maxCount><required>true</required><countsAsParticipant>false</countsAsParticipant><allowChild>false</allowChild><mustBeAbleToReachTarget>true</mustBeAbleToReachTarget></li>
+      <li Class="SexSlaveCraft.RitualRole_CosmeticRecipient"><id>recipient</id><label>受塑者</label><maxCount>1</maxCount><required>true</required><countsAsParticipant>false</countsAsParticipant><allowChild>false</allowChild><mustBeAbleToReachTarget>true</mustBeAbleToReachTarget></li>
+    </roles>
+    <stages>
+      <li Class="SexSlaveCraft.RitualStage_CosmeticPreparation">
+        <defaultDuty>Spectate</defaultDuty><showProgressBar>false</showProgressBar>
+        <endTriggers><li Class="StageEndTrigger_RolesArrived"><roleIds><li>host</li><li>recipient</li></roleIds></li></endTriggers>
+        <roleBehaviors>
+          <li><roleId>host</roleId><dutyDef>ArriveToCell</dutyDef><customPositions><li Class="RitualPosition_InCircle"><distRange>1~2</distRange></li></customPositions></li>
+          <li><roleId>recipient</roleId><dutyDef>ArriveToCell</dutyDef><customPositions><li Class="RitualPosition_InCircle"><distRange>1~2</distRange></li></customPositions></li>
+        </roleBehaviors>
+      </li>
+      <li Class="SexSlaveCraft.RitualStage_CosmeticPreparation">
+        <defaultDuty>Spectate</defaultDuty><showProgressBar>false</showProgressBar><essential>true</essential>
+        <endTriggers><li Class="StageEndTrigger_Instant" /></endTriggers>
+        <!-- 在原版切换后、正式阶段首 tick 前消费；缺料取消后的职责不会被 GotoToil 重新分配。 -->
+        <postAction Class="SexSlaveCraft.RitualStageAction_ConsumeCosmeticMaterials" />
+        <roleBehaviors><li><roleId>host</roleId><dutyDef>Idle</dutyDef></li><li><roleId>recipient</roleId><dutyDef>Idle</dutyDef></li></roleBehaviors>
+      </li>
+      <li>
+        <defaultDuty>Spectate</defaultDuty>
+        <endTriggers><li Class="StageEndTrigger_DurationPercentage"><percentage>1</percentage></li></endTriggers>
+        <roleBehaviors>
+          <li><roleId>host</roleId><dutyDef>ArriveToCell</dutyDef><customPositions><li Class="RitualPosition_InCircle"><distRange>1~2</distRange></li></customPositions></li>
+          <li><roleId>recipient</roleId><dutyDef>ArriveToCell</dutyDef><customPositions><li Class="RitualPosition_InCircle"><distRange>1~2</distRange></li></customPositions></li>
+        </roleBehaviors>
+      </li>
+    </stages>
+  </RitualBehaviorDef>
+  <RitualOutcomeEffectDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_CosmeticRitualOutcome</defName><workerClass>SexSlaveCraft.RitualOutcomeEffectWorker_Cosmetic</workerClass>
+    <startingQuality>0.40</startingQuality><givesDevelopmentPoints>false</givesDevelopmentPoints><allowAttachableOutcome>false</allowAttachableOutcome>
+    <comps>
+      <li Class="RitualOutcomeComp_PawnSkill"><label>{PAWN_labelShort}的医术</label><labelAbstract>主持者医术</labelAbstract><roleId>host</roleId><skillDef>Medicine</skillDef><curve><points><li>(6, 0)</li><li>(10, 0.10)</li><li>(15, 0.20)</li><li>(20, 0.30)</li></points></curve></li>
+      <li Class="RitualOutcomeComp_RoomStat"><label>房间印象</label><labelAbstract>房间印象</labelAbstract><statDef>Impressiveness</statDef><curve><points><li>(0, 0)</li><li>(50, 0.10)</li><li>(100, 0.20)</li></points></curve></li>
+      <li Class="RitualOutcomeComp_ParticipantCount"><label>观众</label><labelAbstract>观众人数</labelAbstract><curve><points><li>(0, 0)</li><li>(2, 0.05)</li><li>(4, 0.10)</li></points></curve></li>
+    </comps>
+    <outcomeChances>
+      <li><label>塑貌成功</label><chance>0.80</chance><positivityIndex>1</positivityIndex><description>仪式成功引导了纳米催情液的塑貌反应，受塑者的美貌提高一档。</description></li>
+      <li><label>塑貌失败</label><chance>0.20</chance><positivityIndex>-1</positivityIndex><description>仪式未能完成容貌重塑。受塑者的美貌保持原样，但仍须承受较重的纳米塑貌反应。</description></li>
+    </outcomeChances>
+  </RitualOutcomeEffectDef>
+</Defs>

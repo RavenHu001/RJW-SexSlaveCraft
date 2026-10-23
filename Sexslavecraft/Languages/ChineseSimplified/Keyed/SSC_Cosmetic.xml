@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成 -->
+<LanguageData>
+  <SSC_Cosmetic_InvalidTarget>此对象无法接受医美改造</SSC_Cosmetic_InvalidTarget>
+  <SSC_Cosmetic_AdultFlesh>仅限成年人形肉身</SSC_Cosmetic_AdultFlesh>
+  <SSC_Cosmetic_AdultHumanlike>仅限成年人形角色</SSC_Cosmetic_AdultHumanlike>
+  <SSC_Cosmetic_AtLimit>已达到或超过本技术的美貌上限</SSC_Cosmetic_AtLimit>
+  <SSC_Cosmetic_Conflict>美貌与特质“{0}”冲突</SSC_Cosmetic_Conflict>
+  <SSC_Cosmetic_Recovering>尚在纳米塑貌恢复期（约 {0} 天）</SSC_Cosmetic_Recovering>
+  <SSC_Cosmetic_UnsupportedBeauty>当前美貌来源、抑制状态或等级数据不支持安全升级</SSC_Cosmetic_UnsupportedBeauty>
+  <SSC_Cosmetic_SurgeryIdentity>仅限玩家殖民者、殖民地奴隶或囚犯</SSC_Cosmetic_SurgeryIdentity>
+  <SSC_Cosmetic_RitualIdentity>仅限玩家殖民者或殖民地奴隶</SSC_Cosmetic_RitualIdentity>
+  <SSC_Cosmetic_DifferentPawns>主持者／医生与受塑者必须为不同角色</SSC_Cosmetic_DifferentPawns>
+  <SSC_Cosmetic_FreeColonist>主持者／医生须为玩家自由殖民者</SSC_Cosmetic_FreeColonist>
+  <SSC_Cosmetic_MedicineRequired>需要未禁用的医术技能，等级至少 {0}</SSC_Cosmetic_MedicineRequired>
+  <SSC_Cosmetic_CannotParticipate>角色须存活、在图、未倒地、未麻醉且未精神崩溃</SSC_Cosmetic_CannotParticipate>
+  <SSC_Cosmetic_MemeRequired>仪式所属文化必须包含主奴秩序模因</SSC_Cosmetic_MemeRequired>
+  <SSC_Cosmetic_SameIdeo>主持者与受塑者须属于仪式的同一文化</SSC_Cosmetic_SameIdeo>
+  <SSC_Cosmetic_RolesRequired>需要有效且不同的主持者与受塑者</SSC_Cosmetic_RolesRequired>
+  <SSC_Cosmetic_MaterialsRequired>请用原版搬运将普通纳米催情液 {0} 份与草药 {1} 份放到仪式活动范围内；须在地面、可达、未禁止且未被其他工作独占</SSC_Cosmetic_MaterialsRequired>
+  <SSC_Cosmetic_SurgerySuccess>{0}的容貌重塑手术成功，美貌提高一档。</SSC_Cosmetic_SurgerySuccess>
+  <SSC_Cosmetic_SurgeryFailure>{0}的容貌重塑手术失败，美貌未提升，并产生纳米塑貌反应。</SSC_Cosmetic_SurgeryFailure>
+  <SSC_Cosmetic_RitualResult>{0}产生纳米塑貌反应，严重度 {1}；每天自然消退 0.10。</SSC_Cosmetic_RitualResult>
+  <SSC_Cosmetic_TargetLost>受塑者已死亡或不再存在，未施加医美效果。</SSC_Cosmetic_TargetLost>
+</LanguageData>

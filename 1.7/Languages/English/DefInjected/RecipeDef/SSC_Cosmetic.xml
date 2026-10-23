@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成 -->
+<LanguageData>
+  <SSC_Surgery_BeautyEnhancement.label>cosmetic reshaping surgery</SSC_Surgery_BeautyEnhancement.label>
+  <SSC_Surgery_BeautyEnhancement.jobString>Performing cosmetic reshaping surgery.</SSC_Surgery_BeautyEnhancement.jobString>
+  <SSC_Surgery_BeautyEnhancement.description>Reshape an adult humanlike flesh pawn with regular PNA. Each success raises vanilla Beauty by one step, up to Beautiful (+2). Existing higher Beauty, conflicts, unsupported trait sources or recovery prevent treatment. Requires a free adult colonist with Medical 8. Uses 10 regular PNA and 3 industrial or glitterworld medicine, including anesthesia. Vanilla surgeon, medicine, bed, room and inspiration factors determine success, capped at 98%. Success/failure causes reaction severity 0.05/0.25, fading by 0.10 per day. Failure adds no surgical injuries; anesthesia, interruption and supplies follow vanilla surgery.</SSC_Surgery_BeautyEnhancement.description>
+</LanguageData>

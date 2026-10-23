@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成 -->
+<LanguageData>
+  <SSC_Cosmetic_InvalidTarget>Этот персонаж не может пройти изменение внешности.</SSC_Cosmetic_InvalidTarget>
+  <SSC_Cosmetic_AdultFlesh>Требуется взрослый человекоподобный органический персонаж.</SSC_Cosmetic_AdultFlesh>
+  <SSC_Cosmetic_AdultHumanlike>Требуется взрослый человекоподобный персонаж.</SSC_Cosmetic_AdultHumanlike>
+  <SSC_Cosmetic_AtLimit>Красота уже достигла или превысила предел этой технологии.</SSC_Cosmetic_AtLimit>
+  <SSC_Cosmetic_Conflict>Красота несовместима с чертой «{0}».</SSC_Cosmetic_Conflict>
+  <SSC_Cosmetic_Recovering>Восстановление после нанокоррекции (около {0} дн.).</SSC_Cosmetic_Recovering>
+  <SSC_Cosmetic_UnsupportedBeauty>Источник, подавление или степень черты красоты не поддерживаются.</SSC_Cosmetic_UnsupportedBeauty>
+  <SSC_Cosmetic_SurgeryIdentity>Требуется колонист игрока, раб или пленник колонии.</SSC_Cosmetic_SurgeryIdentity>
+  <SSC_Cosmetic_RitualIdentity>Требуется колонист игрока или раб колонии.</SSC_Cosmetic_RitualIdentity>
+  <SSC_Cosmetic_DifferentPawns>Специалист и получатель должны быть разными персонажами.</SSC_Cosmetic_DifferentPawns>
+  <SSC_Cosmetic_FreeColonist>Специалист должен быть свободным колонистом игрока.</SSC_Cosmetic_FreeColonist>
+  <SSC_Cosmetic_MedicineRequired>Требуется доступный навык медицины не ниже {0}.</SSC_Cosmetic_MedicineRequired>
+  <SSC_Cosmetic_CannotParticipate>Персонаж должен быть жив, на карте, в сознании, без наркоза и психического срыва.</SSC_Cosmetic_CannotParticipate>
+  <SSC_Cosmetic_MemeRequired>Идеология ритуала должна включать мем «Порядок хозяев и рабов».</SSC_Cosmetic_MemeRequired>
+  <SSC_Cosmetic_SameIdeo>Специалист и получатель должны следовать идеологии ритуала.</SSC_Cosmetic_SameIdeo>
+  <SSC_Cosmetic_RolesRequired>Назначьте подходящего специалиста и другого подходящего получателя.</SSC_Cosmetic_RolesRequired>
+  <SSC_Cosmetic_MaterialsRequired>Принесите {0} обычной PNA и {1} травяного лекарства в область ритуала. Припасы должны лежать на земле, быть доступны, разрешены и не заняты другой работой.</SSC_Cosmetic_MaterialsRequired>
+  <SSC_Cosmetic_SurgerySuccess>Операция по коррекции внешности {0} успешна: красота повышена на одну ступень.</SSC_Cosmetic_SurgerySuccess>
+  <SSC_Cosmetic_SurgeryFailure>Операция по коррекции внешности {0} не удалась. Красота не изменилась; возникла реакция нанокоррекции.</SSC_Cosmetic_SurgeryFailure>
+  <SSC_Cosmetic_RitualResult>У {0} возникла реакция нанокоррекции тяжестью {1}; она снижается на 0.10 в день.</SSC_Cosmetic_RitualResult>
+  <SSC_Cosmetic_TargetLost>Получатель погиб или больше не существует. Эффекты коррекции не применены.</SSC_Cosmetic_TargetLost>
+</LanguageData>

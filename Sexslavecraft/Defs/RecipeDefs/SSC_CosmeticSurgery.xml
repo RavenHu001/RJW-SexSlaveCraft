@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成：沿用本机 1.7 SurgeryOutcomeBase 的原版医疗质量组件，仅替换失败效果。 -->
+<Defs>
+  <SurgeryOutcomeEffectDef ParentName="SurgeryOutcomeBase">
+    <defName>SSC_CosmeticSurgeryOutcome</defName>
+    <outcomes Inherit="False">
+      <li Class="SurgeryOutcomeSuccess" />
+      <li Class="SexSlaveCraft.SurgeryOutcome_CosmeticFailure"><failure>true</failure></li>
+    </outcomes>
+  </SurgeryOutcomeEffectDef>
+  <RecipeDef ParentName="SurgeryFlesh">
+    <defName>SSC_Surgery_BeautyEnhancement</defName>
+    <label>容貌重塑手术</label>
+    <description>利用普通纳米催情液的塑貌特性，通过外科控制引导组织重塑。每次成功提高一档原版美貌，最高为倾国倾城；已有更高美貌、冲突特质或塑貌反应时不能进行。限成年的人形肉身，医生医术至少 8。消耗普通原液 10 份与工业药或闪耀世界药物 3 份，麻醉用药包含在内。成功率沿用医生、药品、床铺、环境及灵感计算，上限 98%。成功与失败分别产生 0.05／0.25 的纳米塑貌反应，每天消退 0.10；失败不附加外科伤害。麻醉、中断与用料沿用原版。</description>
+    <workerClass>SexSlaveCraft.Recipe_BeautyEnhancement</workerClass>
+    <jobString>进行容貌重塑手术</jobString>
+    <workAmount>4000</workAmount>
+    <workSpeedStat>MedicalOperationSpeed</workSpeedStat>
+    <hideBodyPartNames>true</hideBodyPartNames>
+    <targetsBodyPart>false</targetsBodyPart>
+    <humanlikeOnly>true</humanlikeOnly>
+    <developmentalStageFilter>Adult</developmentalStageFilter>
+    <researchPrerequisite>SSC_RES_PNACosmeticApplication</researchPrerequisite>
+    <recipeUsers><li>Human</li></recipeUsers>
+    <skillRequirements><Medicine>8</Medicine></skillRequirements>
+    <ingredients>
+      <li><filter><thingDefs><li>Purple_Aphrodisiac_Nanofluid</li></thingDefs></filter><count>10</count></li>
+      <li><filter><thingDefs><li>MedicineIndustrial</li><li>MedicineUltratech</li></thingDefs></filter><count>3</count></li>
+    </ingredients>
+    <fixedIngredientFilter><thingDefs><li>Purple_Aphrodisiac_Nanofluid</li><li>MedicineIndustrial</li><li>MedicineUltratech</li></thingDefs></fixedIngredientFilter>
+    <defaultIngredientFilter><thingDefs><li>Purple_Aphrodisiac_Nanofluid</li><li>MedicineIndustrial</li><li>MedicineUltratech</li></thingDefs></defaultIngredientFilter>
+    <anesthetize>true</anesthetize>
+    <surgerySuccessChanceFactor>1</surgerySuccessChanceFactor>
+    <surgeryOutcomeEffect>SSC_CosmeticSurgeryOutcome</surgeryOutcomeEffect>
+  </RecipeDef>
+</Defs>

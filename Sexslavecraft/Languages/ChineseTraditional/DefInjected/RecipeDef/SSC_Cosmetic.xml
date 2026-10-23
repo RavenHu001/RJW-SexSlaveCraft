@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成 -->
+<LanguageData>
+  <SSC_Surgery_BeautyEnhancement.label>容貌重塑手術</SSC_Surgery_BeautyEnhancement.label>
+  <SSC_Surgery_BeautyEnhancement.jobString>進行容貌重塑手術</SSC_Surgery_BeautyEnhancement.jobString>
+  <SSC_Surgery_BeautyEnhancement.description>利用普通奈米催情液進行組織重塑。限成年的人形肉身，每次成功提高一級原版美貌，最高 +2；已有更高美貌、衝突特質、不支援來源或塑貌反應時無法進行。自由殖民者醫生須醫術 8。消耗普通原液 10 份與工業藥或閃耀世界藥物 3 份，包含麻醉。沿用原版醫生、藥品、床鋪、環境及靈感成功率，上限 98%。成功／失敗反應嚴重度 0.05／0.25，每天消退 0.10。失敗不增加外科傷害；麻醉、中斷與用料沿用原版。</SSC_Surgery_BeautyEnhancement.description>
+</LanguageData>

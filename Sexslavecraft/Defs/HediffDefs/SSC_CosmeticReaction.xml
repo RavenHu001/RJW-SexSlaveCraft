@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成：手术／仪式共用，原版 SeverityPerDay 自然消退。 -->
+<Defs>
+  <HediffDef>
+    <defName>SSC_Hediff_NanoCosmeticReaction</defName>
+    <label>纳米塑貌反应</label>
+    <description>纳米催情液引导组织重塑后的暂时反应。严重程度越高，疼痛和工作效率损失越明显。每天自然消退 0.10，恢复期间不能再次接受塑貌手术或仪式；不会因治疗或卧床加速。</description>
+    <hediffClass>HediffWithComps</hediffClass>
+    <isBad>true</isBad>
+    <initialSeverity>0.05</initialSeverity><maxSeverity>1</maxSeverity>
+    <tendable>false</tendable>
+    <comps><li Class="HediffCompProperties_SeverityPerDay"><severityPerDay>-0.10</severityPerDay><showDaysToRecover>true</showDaysToRecover></li></comps>
+    <stages>
+      <li><minSeverity>0</minSeverity><painOffset>0.05</painOffset><statFactors><WorkSpeedGlobal>0.95</WorkSpeedGlobal></statFactors></li>
+      <li><minSeverity>0.20</minSeverity><painOffset>0.10</painOffset><statFactors><WorkSpeedGlobal>0.85</WorkSpeedGlobal></statFactors></li>
+      <li><minSeverity>0.50</minSeverity><painOffset>0.20</painOffset><statFactors><WorkSpeedGlobal>0.70</WorkSpeedGlobal></statFactors></li>
+    </stages>
+  </HediffDef>
+</Defs>

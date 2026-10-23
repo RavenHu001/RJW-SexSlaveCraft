@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成 -->
+<LanguageData>
+  <SSC_CosmeticRitualOutcome.comps.0.label>{PAWN_labelShort}的医术</SSC_CosmeticRitualOutcome.comps.0.label>
+  <SSC_CosmeticRitualOutcome.comps.0.labelAbstract>主持者医术</SSC_CosmeticRitualOutcome.comps.0.labelAbstract>
+  <SSC_CosmeticRitualOutcome.comps.1.label>房间印象</SSC_CosmeticRitualOutcome.comps.1.label>
+  <SSC_CosmeticRitualOutcome.comps.1.labelAbstract>房间印象</SSC_CosmeticRitualOutcome.comps.1.labelAbstract>
+  <SSC_CosmeticRitualOutcome.comps.2.label>观众</SSC_CosmeticRitualOutcome.comps.2.label>
+  <SSC_CosmeticRitualOutcome.comps.2.labelAbstract>观众人数</SSC_CosmeticRitualOutcome.comps.2.labelAbstract>
+  <SSC_CosmeticRitualOutcome.outcomeChances.0.label>塑貌成功</SSC_CosmeticRitualOutcome.outcomeChances.0.label>
+  <SSC_CosmeticRitualOutcome.outcomeChances.1.label>塑貌失败</SSC_CosmeticRitualOutcome.outcomeChances.1.label>
+  <SSC_CosmeticRitualOutcome.outcomeChances.0.description>仪式成功引导了纳米催情液的塑貌反应，受塑者的美貌提高一档。</SSC_CosmeticRitualOutcome.outcomeChances.0.description>
+  <SSC_CosmeticRitualOutcome.outcomeChances.1.description>仪式未能完成容貌重塑。受塑者的美貌保持原样，但仍须承受较重的纳米塑貌反应。</SSC_CosmeticRitualOutcome.outcomeChances.1.description>
+</LanguageData>

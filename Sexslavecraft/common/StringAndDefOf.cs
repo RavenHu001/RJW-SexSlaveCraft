@@ -157,6 +157,11 @@ namespace SexSlaveCraft
         public static RecipeDef SSC_Surgery_GenderChange_MtF;
         public static RecipeDef SSC_ApplyGelatinization;
         public static RecipeDef SSC_ApplyFullGelatinization;
+#if SSC_RW17
+        // AI 辅助生成：医美不依赖 Ideology；仪式模因按需查询，不在无 DLC 时强制解析。
+        public static RecipeDef SSC_Surgery_BeautyEnhancement;
+        public static HediffDef SSC_Hediff_NanoCosmeticReaction;
+#endif
 
         public static TraitDef SSC_Trait_PE;
         public static ThingDef SSC_PS_P;             // PLUS款
@@ -339,6 +344,10 @@ namespace SexSlaveCraft
             SSC_Surgery_GenderChange_MtF = GetDef<RecipeDef>("SSC_Surgery_GenderChange_MtF");
             SSC_ApplyGelatinization = GetDef<RecipeDef>("ApplyGelatinization");
             SSC_ApplyFullGelatinization = GetDef<RecipeDef>("ApplyFullGelatinization");
+#if SSC_RW17
+            SSC_Surgery_BeautyEnhancement = GetDef<RecipeDef>("SSC_Surgery_BeautyEnhancement");
+            SSC_Hediff_NanoCosmeticReaction = GetDef<HediffDef>("SSC_Hediff_NanoCosmeticReaction");
+#endif
             SSC_Trait_PE = GetDef<TraitDef>("SSC_Trait_PE");
 
             // (这里删除了重复的 SSC_PersonalitySlime 获取，保留上面的即可)
