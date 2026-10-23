@@ -50,8 +50,9 @@ internal static class Program
     private static RecipeDef surgery;
     private static string saveDirectory;
     private static readonly Dictionary<Thing, bool> reach = new();
-    private static readonly HashSet<Thing> area = new(), forbidden = new();
+    private static readonly HashSet<Thing> area = new(), forbidden = new(), reserved = new();
     private static ushort itemHash = 100;
+    private static int thingId = 1000000;
     private static readonly Dictionary<string, Def> loadedDefs = new();
 
     internal static int Run(string repo, string game)
@@ -180,6 +181,7 @@ internal static class Program
                 case "SurgeryOutcomeEffectDef": Add(DirectXmlToObject.ObjectFromXml<SurgeryOutcomeEffectDef>(node, false)); break;
                 case "HediffDef": reaction = DirectXmlToObject.ObjectFromXml<HediffDef>(node, false); Add(reaction); break;
                 case "PreceptDef": Add(DirectXmlToObject.ObjectFromXml<PreceptDef>(node, false)); break;
+                case "DutyDef": Add(DirectXmlToObject.ObjectFromXml<DutyDef>(node, false)); break;
                 case "RitualPatternDef": Add(DirectXmlToObject.ObjectFromXml<RitualPatternDef>(node, false)); break;
                 case "RitualBehaviorDef": behavior = DirectXmlToObject.ObjectFromXml<RitualBehaviorDef>(node, false); Add(behavior); break;
                 case "RitualOutcomeEffectDef": outcome = DirectXmlToObject.ObjectFromXml<RitualOutcomeEffectDef>(node, false); Add(outcome); break;
@@ -221,6 +223,7 @@ internal static class Program
         Set(p, "factionInt", player); Set(p, "mapIndexOrState", (sbyte)0);
         p.health = new Pawn_HealthTracker(p); p.story = new Pawn_StoryTracker(p); p.needs = new Pawn_NeedsTracker(p);
         p.guest = new Pawn_GuestTracker(p); p.mindState = new Pawn_MindState(p); p.ageTracker = new Pawn_AgeTracker(p);
+        p.inventory = new Pawn_InventoryTracker(p); p.carryTracker = new Pawn_CarryTracker(p);
         Set(p.ageTracker, "cachedLifeStageIndex", 0); p.ageTracker.AgeBiologicalTicks = 30L * GenDate.TicksPerYear;
         p.ideo = new Pawn_IdeoTracker(p);
         // 资格和质量使用真实技能；不依赖完整工作/背景 Def 的禁用缓存计算。
@@ -294,6 +297,9 @@ internal static class Program
             var h = (HediffWithComps)p.health.hediffSet.GetFirstHediffOfDef(reaction);
             Near(severity, h.Severity); Require(!SSCCosmeticUtility.RecipientReport(p, true).Accepted);
             var comp = h.TryGetComp<HediffComp_SeverityPerDay>(); Require(comp != null);
+            Require(((HediffCompProperties_SeverityPerDay)comp.props).showHoursToRecover);
+            Equal(((int)Math.Round(severity / .1f * 24)).ToString() + "LetterHour", comp.CompLabelInBracketsExtra);
+            Require(((HediffCompProperties_SeverityPerDay)comp.props).showDaysToRecover);
             // 实际组件每次 TicksPerDay/粒度的 TickInterval；不复制其恢复公式。
             for (int i = 0; i < (int)Math.Ceiling(severity / .1f * 60000 / 200f) + 2; i++)
             { float delta = 0; comp.CompPostTickInterval(ref delta, 200); h.Severity += delta; }
@@ -406,49 +412,102 @@ internal static class Program
         {
             Equal(3, behavior.stages.Count); Near(0, behavior.stages[0].ProgressPerTick(null)); Near(0, behavior.stages[1].ProgressPerTick(null)); Near(1, behavior.stages[2].ProgressPerTick(null));
             Require(behavior.stages[1].essential && behavior.stages[1].postAction is RitualStageAction_ConsumeCosmeticMaterials && behavior.stages[1].preAction == null);
-            Require(behavior.stages[0].endTriggers.Single() is StageEndTrigger_RolesArrived);
+            Require(behavior.stages[0].endTriggers.Single() is StageEndTrigger_CosmeticMaterialsReady);
             Require(behavior.stages[1].endTriggers.Single() is StageEndTrigger_Instant);
             Near(1, ((StageEndTrigger_DurationPercentage)behavior.stages[2].endTriggers.Single()).percentage); Equal(5000, behavior.durationTicks.min);
         });
         // 地图路径、禁用与活动范围作为边界注入；真实地面列表、数量检查、SplitOff/Destroy 和 native ended 仍执行。
-        harmony.Patch(AccessTools.Method(typeof(GatheringsUtility), nameof(GatheringsUtility.InGatheringArea)), prefix: new HarmonyMethod(typeof(Program), nameof(Area)));
-        harmony.Patch(AccessTools.Method(typeof(ReservationUtility), nameof(ReservationUtility.CanReserveAndReach)), prefix: new HarmonyMethod(typeof(Program), nameof(Reach)));
+        harmony.Patch(AccessTools.Method(typeof(GenClosest), nameof(GenClosest.ClosestThingReachable)), prefix: new HarmonyMethod(typeof(Program), nameof(Closest)));
+        harmony.Patch(AccessTools.Method(typeof(ReservationUtility), nameof(ReservationUtility.CanReserve)), prefix: new HarmonyMethod(typeof(Program), nameof(Reach)));
         harmony.Patch(AccessTools.Method(typeof(ForbidUtility), nameof(ForbidUtility.IsForbidden), new[] { typeof(Thing), typeof(Pawn) }), prefix: new HarmonyMethod(typeof(Program), nameof(Forbidden)));
         // 仅隔离地图出生/销毁通知，不替换 SplitOff 数量、Destroy 状态或原版 ApplyOutcome 的 ended/cancelled。
+        harmony.Patch(AccessTools.Method(typeof(Pawn_InventoryTracker), nameof(Pawn_InventoryTracker.DropCount)), prefix: new HarmonyMethod(typeof(Program), nameof(Drop)));
+        harmony.Patch(AccessTools.Method(typeof(ThingOwner), "NotifyAdded"), prefix: new HarmonyMethod(typeof(Program), nameof(Skip)));
+        harmony.Patch(AccessTools.Method(typeof(ThingOwner), "NotifyRemoved"), prefix: new HarmonyMethod(typeof(Program), nameof(Skip)));
         harmony.Patch(AccessTools.Method(typeof(Thing), nameof(Thing.DeSpawn)), prefix: new HarmonyMethod(typeof(Program), nameof(Despawn)));
         harmony.Patch(AccessTools.Method(typeof(Thing), nameof(Thing.DirtyMapMesh)), prefix: new HarmonyMethod(typeof(Program), nameof(Skip)));
         harmony.Patch(AccessTools.Method(typeof(Thing), "RemoveAllReservationsAndDesignationsOnThis"), prefix: new HarmonyMethod(typeof(Program), nameof(Skip)));
         harmony.Patch(AccessTools.Method(typeof(LordManager), nameof(LordManager.RemoveLord)), prefix: new HarmonyMethod(typeof(Program), nameof(RemoveLord)));
         harmony.Patch(AccessTools.Method(typeof(AttackTargetsCache), nameof(AttackTargetsCache.UpdateTarget)), prefix: new HarmonyMethod(typeof(Program), nameof(Skip)));
         map.attackTargetsCache ??= Bare<AttackTargetsCache>();
-        Check("supply precheck counts split ground stacks without consumption", () =>
+        Check("supply precheck accepts distant ground stacks without consumption", () =>
         {
-            var host = Pawn(); var a = Stack("Purple_Aphrodisiac_Nanofluid", 12); var b = Stack("Purple_Aphrodisiac_Nanofluid", 8); var herb = Stack("MedicineHerbal", 2);
+            ResetStacks(); var host = Pawn(); var fluid = Stack("Purple_Aphrodisiac_Nanofluid", 20); var herb = Stack("MedicineHerbal", 2);
+            area.Clear(); Set(fluid, "positionInt", new IntVec3(70, 0, 70));
             Require(RitualStageAction_ConsumeCosmeticMaterials.MaterialReport(new TargetInfo(new IntVec3(10, 0, 10), map), host).Accepted);
-            Equal(12, a.stackCount); Equal(8, b.stackCount); Equal(2, herb.stackCount);
+            Equal(20, fluid.stackCount); Equal(2, herb.stackCount); Equal(0, host.inventory.innerContainer.Count);
         });
-        Check("one missing, forbidden, unreachable or outside supply rejected", () =>
+        Check("native fetch and precheck agree on split stacks and inventory shortfall", () =>
+        {
+            ResetStacks(); var host = Pawn(); Stack("Purple_Aphrodisiac_Nanofluid", 12); Stack("Purple_Aphrodisiac_Nanofluid", 8); Stack("MedicineHerbal", 2);
+            JobDefOf.TakeCountToInventory = new JobDef { defName = "TakeCountToInventory" };
+            var giver = new JobGiver_TakeCountToInventory { def = DefDatabase<ThingDef>.GetNamed("Purple_Aphrodisiac_Nanofluid"), count = 20 };
+            var target = new TargetInfo(new IntVec3(10, 0, 10), map);
+            Require(!RitualStageAction_ConsumeCosmeticMaterials.MaterialReport(target, host).Accepted);
+            Require(giver.TryIssueJobPackage(host, default).Job == null);
+            Inventory(host, "Purple_Aphrodisiac_Nanofluid", 8);
+            Require(RitualStageAction_ConsumeCosmeticMaterials.MaterialReport(target, host).Accepted);
+            var fetch = giver.TryIssueJobPackage(host, default).Job;
+            Equal(12, fetch.count); Equal(JobDefOf.TakeCountToInventory, fetch.def); Equal(12, fetch.targetA.Thing.stackCount);
+        });
+        Check("one missing, forbidden, unreachable or reserved supply rejected", () =>
         {
             ResetStacks(); var host = Pawn(); var fluid = Stack("Purple_Aphrodisiac_Nanofluid", 20); var herb = Stack("MedicineHerbal", 1);
             var target = new TargetInfo(new IntVec3(10, 0, 10), map);
             Require(!RitualStageAction_ConsumeCosmeticMaterials.MaterialReport(target, host).Accepted); herb.stackCount = 2;
             forbidden.Add(fluid); Require(!RitualStageAction_ConsumeCosmeticMaterials.MaterialReport(target, host).Accepted); forbidden.Clear();
             reach[fluid] = false; Require(!RitualStageAction_ConsumeCosmeticMaterials.MaterialReport(target, host).Accepted); reach.Clear();
-            area.Remove(fluid); Require(!RitualStageAction_ConsumeCosmeticMaterials.MaterialReport(target, host).Accepted);
+            reserved.Add(fluid); Require(!RitualStageAction_ConsumeCosmeticMaterials.MaterialReport(target, host).Accepted);
         });
-        Check("mandatory action consumes both materials once using real SplitOff/Destroy", () =>
+        Check("host duty reuses vanilla fetch jobs then vanilla arrival", () =>
         {
-            ResetStacks(); var a = Stack("Purple_Aphrodisiac_Nanofluid", 12); var b = Stack("Purple_Aphrodisiac_Nanofluid", 8); var herb = Stack("MedicineHerbal", 2);
-            var job = Job(Pawn(), Pawn());
-            behavior.stages[1].postAction.Apply(job);
-            Require(a.Destroyed && b.Destroyed && herb.Destroyed);
-            Equal(0, a.stackCount + b.stackCount + herb.stackCount);
+            var duty = DefDatabase<DutyDef>.GetNamed("SSC_PrepareCosmeticMaterials");
+            Equal(ThinkTreeDutyHook.HighPriority, duty.hook);
+            var nodes = duty.thinkNode.subNodes;
+            Equal(4, nodes.Count);
+            Equal(20, ((JobGiver_TakeCountToInventory)nodes[0]).count);
+            Equal("Purple_Aphrodisiac_Nanofluid", ((JobGiver_TakeCountToInventory)nodes[0]).def.defName);
+            Equal(2, ((JobGiver_TakeCountToInventory)nodes[1]).count);
+            Require(nodes[2] is JobGiver_GotoTravelDestination && nodes[3] is JobGiver_Idle);
+            Equal(duty, behavior.stages[0].BehaviorForRole("host").dutyDef);
+        });
+        Check("arrival requires host inventory and actual return to assigned position", () =>
+        {
+            var host = Pawn(); var recipient = Pawn(); var job = Job(host, recipient);
+            var trigger = behavior.stages[0].endTriggers.Single();
+            var arrived = AccessTools.Method(trigger.GetType(), "ArrivedCheck");
+            job.AddTagForPawn(host, "Arrived"); job.AddTagForPawn(recipient, "Arrived");
+            Set(host, "positionInt", new IntVec3(10, 0, 10)); host.mindState.duty = new PawnDuty(DefDatabase<DutyDef>.GetNamed("SSC_PrepareCosmeticMaterials"), host.Position);
+            Require(!(bool)arrived.Invoke(trigger, new object[] { "host", job }));
+            Inventory(host, "Purple_Aphrodisiac_Nanofluid", 20); Inventory(host, "MedicineHerbal", 2);
+            Require((bool)arrived.Invoke(trigger, new object[] { "host", job }));
+            Set(host, "positionInt", new IntVec3(70, 0, 70));
+            Require(!(bool)arrived.Invoke(trigger, new object[] { "host", job }));
+        });
+        Check("mandatory action consumes host inventory only and preserves surplus", () =>
+        {
+            ResetStacks(); var ground = Stack("Purple_Aphrodisiac_Nanofluid", 50);
+            var host = Pawn(); var recipient = Pawn(); Inventory(recipient, "MedicineHerbal", 4);
+            Inventory(host, "Purple_Aphrodisiac_Nanofluid", 12); Inventory(host, "Purple_Aphrodisiac_Nanofluid", 13); Inventory(host, "MedicineHerbal", 3);
+            var job = Job(host, recipient); behavior.stages[1].postAction.Apply(job);
+            Equal(5, host.inventory.Count(ground.def)); Equal(1, host.inventory.Count(ThingDefOf.MedicineHerbal));
+            Equal(50, ground.stackCount); Equal(4, recipient.inventory.Count(ThingDefOf.MedicineHerbal));
             Require(!(bool)AccessTools.Field(typeof(LordJob_Ritual), "ended").GetValue(job));
-            Require(!RitualStageAction_ConsumeCosmeticMaterials.MaterialReport(job.selectedTarget, job.PawnWithRole("host")).Accepted);
+        });
+        Check("pre-consumption interruption drops host materials and leaves audience inventory", () =>
+        {
+            ResetStacks(); var host = Pawn(); var recipient = Pawn();
+            Inventory(host, "Purple_Aphrodisiac_Nanofluid", 20); Inventory(host, "MedicineHerbal", 2); Inventory(recipient, "MedicineHerbal", 4);
+            var job = Job(host, recipient); behavior.stages[0].pawnLeaveAction.ApplyToPawn(job, recipient);
+            Equal(4, recipient.inventory.Count(ThingDefOf.MedicineHerbal));
+            behavior.stages[0].interruptedAction.Apply(job);
+            Equal(0, host.inventory.innerContainer.Count); Equal(4, recipient.inventory.Count(ThingDefOf.MedicineHerbal));
+            Equal(20, map.listerThings.ThingsOfDef(DefDatabase<ThingDef>.GetNamed("Purple_Aphrodisiac_Nanofluid")).Sum(t => t.stackCount));
+            Require(behavior.stages[2].interruptedAction == null && behavior.stages[2].pawnLeaveAction == null);
         });
         Check("missing second material consumes nothing, native cancellation cannot produce result later", () =>
         {
-            ResetStacks(); var fluid = Stack("Purple_Aphrodisiac_Nanofluid", 20); var p = Pawn(); var job = Job(Pawn(), p);
+            ResetStacks(); var host = Pawn(); Inventory(host, "Purple_Aphrodisiac_Nanofluid", 20); var fluid = host.inventory.innerContainer[0]; var p = Pawn(); var job = Job(host, p);
             job.lord.ownedPawns.Add(p); p.lord = job.lord;
             // 实际 Transition/GotoToil 先分配下一阶段职责，再由生产 postAction 取消并执行原版 Lord.Cleanup。
             // 若回归为 preAction，GotoToil 会在清理后重设职责，本例必须失败。
@@ -495,13 +554,33 @@ internal static class Program
             foreach (Pawn pawn in lord.ownedPawns) pawn.mindState.duty = new PawnDuty(DefDatabase<DutyDef>.GetNamed("Idle"));
         }
     }
-    private static bool Area(IntVec3 cell, ref bool __result) { __result = area.Any(t => t.Position == cell); return false; }
-    private static bool Reach(LocalTargetInfo target, ref bool __result) { __result = !reach.TryGetValue(target.Thing, out bool value) || value; return false; }
+    private static bool Closest(Map map, ThingRequest thingReq, Predicate<Thing> validator, ref Thing __result)
+    {
+        __result = map.listerThings.ThingsMatching(thingReq).FirstOrDefault(t => t.Spawned &&
+            (!reach.TryGetValue(t, out bool value) || value) && (validator == null || validator(t)));
+        return false;
+    }
+    private static bool Reach(LocalTargetInfo target, ref bool __result) { __result = !reserved.Contains(target.Thing); return false; }
+    // 放置是地图边界；原版 Multi/DropThing 选择角色与数量，真实 ThingOwner.Take 移出背包。
+    private static bool Drop(Pawn_InventoryTracker __instance, ThingDef def, int count)
+    {
+        foreach (var stack in __instance.innerContainer.Where(t => t.def == def).ToList())
+        {
+            int take = Math.Min(count, stack.stackCount); var ground = __instance.innerContainer.Take(stack, take);
+            Set(ground, "mapIndexOrState", (sbyte)0); map.listerThings.Add(ground); count -= take; if (count == 0) break;
+        }
+        return false;
+    }
+    private static void Inventory(Pawn pawn, string defName, int count)
+    {
+        var thing = new Thing { def = DefDatabase<ThingDef>.GetNamed(defName), stackCount = count, thingIDNumber = ++thingId };
+        Require(pawn.inventory.innerContainer.TryAdd(thing, canMergeWithExistingStacks: false));
+    }
     private static bool Forbidden(Thing t, ref bool __result) { __result = forbidden.Contains(t); return false; }
-    private static void ResetStacks() { map.listerThings = new ListerThings(ListerThingsUse.Global); area.Clear(); reach.Clear(); forbidden.Clear(); }
+    private static void ResetStacks() { map.listerThings = new ListerThings(ListerThingsUse.Global); area.Clear(); reach.Clear(); forbidden.Clear(); reserved.Clear(); }
     private static Thing Stack(string name, int count)
     {
-        var t = new Thing { def = DefDatabase<ThingDef>.GetNamed(name), stackCount = count };
+        var t = new Thing { def = DefDatabase<ThingDef>.GetNamed(name), stackCount = count, thingIDNumber = ++thingId };
         t.Position = new IntVec3(10 + area.Count, 0, 10); Set(t, "mapIndexOrState", (sbyte)0); map.listerThings.Add(t); area.Add(t); return t;
     }
 

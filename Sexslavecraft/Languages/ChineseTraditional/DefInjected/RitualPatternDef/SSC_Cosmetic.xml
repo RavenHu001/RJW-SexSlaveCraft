@@ -2,5 +2,5 @@
 <!-- AI 辅助生成 -->
 <LanguageData>
   <SSC_CosmeticRitualPattern.shortDescOverride>塑貌儀式</SSC_CosmeticRitualPattern.shortDescOverride>
-  <SSC_CosmeticRitualPattern.descOverride>以傳統儀軌利用普通奈米催情液的塑貌特性。僅限主奴秩序文化，成年主持者（醫術 6 以上）和受塑者須同文化，受塑者可為殖民者或殖民地奴隸。無研究需求。先用原版搬運將普通原液 20 份與草藥 2 份放入儀式活動範圍，集合後扣料，再舉行約兩小時正式儀式。成功提高一級原版美貌，最高 +2。成功／失敗反應 0.15／0.60，每天消退 0.10，恢復期間不能再次塑貌。基礎品質 40%，醫術 6 且無其他修正時成功率約 61.5%，滿品質為 80%；原版重複、期望及進度修正照常生效。</SSC_CosmeticRitualPattern.descOverride>
+  <SSC_CosmeticRitualPattern.descOverride>以傳統儀軌利用普通奈米催情液的塑貌特性。僅限主奴秩序文化，成年主持者（醫術 6 以上）和受塑者須同文化，受塑者可為殖民者或殖民地奴隸。無研究需求。主持者會從可達且未禁止的庫存領取普通原液 20 份與草藥 2 份，無需預放到儀式點。每種材料須有一個地面堆能補足主持者背包中的缺額；備齊並到場後統一扣料，再舉行約兩小時正式儀式。準備中取消會放下未用材料，扣料後不退。成功提高一級原版美貌，最高 +2。成功／失敗反應 0.15／0.60，每天消退 0.10，恢復期間不能再次塑貌。基礎品質 40%，醫術 6 且無其他修正時成功率約 61.5%，滿品質為 80%；原版重複、期望及進度修正照常生效。</SSC_CosmeticRitualPattern.descOverride>
 </LanguageData>

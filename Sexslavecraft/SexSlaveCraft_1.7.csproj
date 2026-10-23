@@ -83,6 +83,8 @@
     <Compile Include="Ritual/RitualRole_CosmeticRecipient.cs" />
     <Compile Include="Ritual/RitualBehaviorWorker_Cosmetic.cs" />
     <Compile Include="Ritual/RitualStage_CosmeticPreparation.cs" />
+    <Compile Include="Ritual/StageEndTrigger_CosmeticMaterialsReady.cs" />
+    <Compile Include="Ritual/RitualStageAction_DropCosmeticMaterials.cs" />
     <Compile Include="Ritual/RitualStageAction_ConsumeCosmeticMaterials.cs" />
     <Compile Include="Ritual/RitualOutcomeEffectWorker_Cosmetic.cs" />
   </ItemGroup>

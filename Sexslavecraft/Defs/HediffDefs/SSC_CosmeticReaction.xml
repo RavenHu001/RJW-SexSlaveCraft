@@ -9,7 +9,7 @@
     <isBad>true</isBad>
     <initialSeverity>0.05</initialSeverity><maxSeverity>1</maxSeverity>
     <tendable>false</tendable>
-    <comps><li Class="HediffCompProperties_SeverityPerDay"><severityPerDay>-0.10</severityPerDay><showDaysToRecover>true</showDaysToRecover></li></comps>
+    <comps><li Class="HediffCompProperties_SeverityPerDay"><severityPerDay>-0.10</severityPerDay><showDaysToRecover>true</showDaysToRecover><showHoursToRecover>true</showHoursToRecover></li></comps>
     <stages>
       <li><minSeverity>0</minSeverity><painOffset>0.05</painOffset><statFactors><WorkSpeedGlobal>0.95</WorkSpeedGlobal></statFactors></li>
       <li><minSeverity>0.20</minSeverity><painOffset>0.10</painOffset><statFactors><WorkSpeedGlobal>0.85</WorkSpeedGlobal></statFactors></li>

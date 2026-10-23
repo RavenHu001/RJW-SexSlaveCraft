@@ -17,7 +17,7 @@
   <SSC_Cosmetic_MemeRequired>The ritual ideoligion must include the Master-Slave Order meme.</SSC_Cosmetic_MemeRequired>
   <SSC_Cosmetic_SameIdeo>The practitioner and recipient must follow the ritual ideoligion.</SSC_Cosmetic_SameIdeo>
   <SSC_Cosmetic_RolesRequired>Assign an eligible practitioner and a different eligible recipient.</SSC_Cosmetic_RolesRequired>
-  <SSC_Cosmetic_MaterialsRequired>Haul {0} regular PNA and {1} herbal medicine into the ritual gathering area. Supplies must be on the ground, reachable, allowed and available for use.</SSC_Cosmetic_MaterialsRequired>
+  <SSC_Cosmetic_MaterialsRequired>Requires {0} regular PNA and {1} herbal medicine. The practitioner fetches them automatically; no pre-hauling is needed. One reachable, allowed, reservable ground stack of each material must cover the inventory shortfall.</SSC_Cosmetic_MaterialsRequired>
   <SSC_Cosmetic_SurgerySuccess>{0}'s cosmetic surgery succeeded, increasing Beauty by one step.</SSC_Cosmetic_SurgerySuccess>
   <SSC_Cosmetic_SurgeryFailure>{0}'s cosmetic surgery failed. Beauty is unchanged; a nano-reshaping reaction remains.</SSC_Cosmetic_SurgeryFailure>
   <SSC_Cosmetic_RitualResult>{0} has a nano-reshaping reaction of {1} severity, fading by 0.10 per day.</SSC_Cosmetic_RitualResult>

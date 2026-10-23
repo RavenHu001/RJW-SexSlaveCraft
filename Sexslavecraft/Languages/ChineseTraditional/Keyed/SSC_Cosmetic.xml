@@ -17,7 +17,7 @@
   <SSC_Cosmetic_MemeRequired>儀式所屬文化必須包含主奴秩序模因</SSC_Cosmetic_MemeRequired>
   <SSC_Cosmetic_SameIdeo>主持者與受塑者須屬於儀式的同一文化</SSC_Cosmetic_SameIdeo>
   <SSC_Cosmetic_RolesRequired>需要有效且不同的主持者與受塑者</SSC_Cosmetic_RolesRequired>
-  <SSC_Cosmetic_MaterialsRequired>請用原版搬運將普通奈米催情液 {0} 份與草藥 {1} 份放到儀式活動範圍內；須在地面、可達、未禁止且未被其他工作獨佔</SSC_Cosmetic_MaterialsRequired>
+  <SSC_Cosmetic_MaterialsRequired>需要普通奈米催情液 {0} 份與草藥 {1} 份：主持者自動領取，無需預放。每種材料須有一個可達、未禁止且可預留的地面堆能補足背包缺額</SSC_Cosmetic_MaterialsRequired>
   <SSC_Cosmetic_SurgerySuccess>{0}的容貌重塑手術成功，美貌提高一級。</SSC_Cosmetic_SurgerySuccess>
   <SSC_Cosmetic_SurgeryFailure>{0}的容貌重塑手術失敗，美貌未提升，並產生奈米塑貌反應。</SSC_Cosmetic_SurgeryFailure>
   <SSC_Cosmetic_RitualResult>{0}產生奈米塑貌反應，嚴重度 {1}；每天自然消退 0.10。</SSC_Cosmetic_RitualResult>
