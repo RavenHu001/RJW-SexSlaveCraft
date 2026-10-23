@@ -8,7 +8,7 @@
     <label>驯兽</label>
     <description>靠近动物，以动作和呼唤建立信任，驯服野生动物或完成己方动物的训练项目。冷却 1 天。</description>
     <abilityClass>SexSlaveCraft.Ability_PetDogTame</abilityClass>
-    <iconPath>UI/Icons/Trainables/Tameness</iconPath>
+    <iconPath>UI/Icons/Abilities/SSC_PetDogTame</iconPath>
     <jobDef>SSC_Job_PetDogTame</jobDef>
     <targetRequired>true</targetRequired>
     <canUseAoeToGetTargets>false</canUseAoeToGetTargets>

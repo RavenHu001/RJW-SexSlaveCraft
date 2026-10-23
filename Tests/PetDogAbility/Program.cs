@@ -118,7 +118,7 @@ internal static partial class Program
         Check((string)verb.Element("targetParams").Element("canTargetAnimals") == "true" && (string)verb.Element("targetParams").Element("canTargetSelf") == "false", "animal targeting wiring wrong");
         foreach (string field in new[] { "canTargetHumans", "canTargetMechs", "neverTargetIncapacitated", "canTargetBuildings", "canTargetLocations" })
             Check((string)verb.Element("targetParams").Element(field) == "false", "wrong target XML " + field);
-        Check((string)def.Element("warmupMoteSocialSymbol") == "Things/Mote/SpeechSymbols/TrainAttempt" && (string)def.Element("iconPath") == "UI/Icons/Trainables/Tameness", "native train icon/social symbol missing");
+        Check((string)def.Element("warmupMoteSocialSymbol") == "Things/Mote/SpeechSymbols/TrainAttempt" && (string)def.Element("iconPath") == "UI/Icons/Abilities/SSC_PetDogTame", "dog ability icon/native training symbol missing");
         Check((string)def.Element("comps").Elements().Single().Attribute("Class") == typeof(CompProperties_AbilityPetDogTame).FullName, "single recruit effect missing");
         var job = Directory.EnumerateFiles(SscTestPaths.Combine(root, "Defs/JobDefs"), "*.xml").SelectMany(path => XDocument.Load(path).Root.Elements()).Single(e => (string)e.Element("defName") == "SSC_Job_PetDogTame");
         Check((string)job.Element("driverClass") == typeof(JobDriver_PetDogTame).FullName && (string)job.Element("abilityCasting") == "false" && (string)job.Element("collideWithPawns") == "false", "approach driver casts early or collides");
