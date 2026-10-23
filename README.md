@@ -36,7 +36,7 @@
 | 契约仪式与阶段进阶 | 需要 Ideology（文化）DLC |
 | Royalty（可选） | 安装时调教研究需要蓝图；种子或原版独立蓝图可补齐，之后仍需研究 |
 
-正式游玩从 [v2.4.3 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.3) 下载 ZIP 与 SHA-256。退出游戏，移出旧文件夹后完整解压新文件夹，保留加载配置及两套版本目录。该下载的功能范围见[2.4.3 发布说明](Docs/Releases/2.4.3/2.4.3发布说明.md)，历史说明与附件保留各自版本。
+正式游玩从 [v2.4.4 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.4) 下载 ZIP 与 SHA-256。退出游戏，移出旧文件夹后完整解压新文件夹，保留加载配置及两套版本目录。该下载的功能范围见[2.4.4 发布说明](Docs/Releases/2.4.4/2.4.4发布说明.md)，历史说明与附件保留各自版本。
 
 宠物兔选择入口未开放，旧 RimTalk 对接暂停。受训目标须为 SSC 性奴身份，原版奴隶身份不能替代。
 
@@ -58,6 +58,6 @@
 
 SexSlaveCraft is an adult RJW expansion for pawn development, bonds, six specializations, personality transfer and body modification. **Current release: 2.4.4 (2026-10-23).** [Download v2.4.4](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.4). New work targets 1.7; the 1.6/Common baseline stays frozen at 2.4.1.
 
-2.4.4 groups post-v2.4.3 work through `f3e47c9`: Master-slave Order with six groups/28 precepts, cultural feedback/icons/four-language names and dynamic backgrounds; opt-in ritual development points; cosmetic surgery and Reshaping Rituals; and a Personality Excretion interruption fix. The 1.7 binary/About metadata are aligned to 2.4.4. The 2.4.3 bond overview, low-tech route and nine weapons remain available in development; saves referencing the removed old 1.7 launcher still have no migration path.
+2.4.4 groups post-v2.4.3 work through `f3e47c9`: Master-slave Order with six groups/28 precepts, cultural feedback/icons/four-language names and dynamic backgrounds; opt-in ritual development points; cosmetic surgery and Reshaping Rituals; and a Personality Excretion interruption fix. The 1.7 binary/About metadata are aligned to 2.4.4. The 2.4.3 bond overview, low-tech route and nine weapons remain available; saves referencing the removed old 1.7 launcher still have no migration path.
 
 Load Harmony and RJW before SSC; Binding Rituals and cultural features require Ideology. Start with the [English mod overview](Docs/模组介绍.md#english), [player reading order](Docs/Players/README.md#english-reading-order), [quick start](QUICK_START_EN.md) and [full guide](PLAYER_GUIDE_EN.md). Compare the [2.4.4 development scope](Docs/Releases/2.4.4/2.4.4发布说明.md#english) with the [published 2.4.3 scope](Docs/Releases/2.4.3/2.4.3发布说明.md#english).
