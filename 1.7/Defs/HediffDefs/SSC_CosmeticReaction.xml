@@ -9,7 +9,9 @@
     <isBad>true</isBad>
     <initialSeverity>0.05</initialSeverity><maxSeverity>1</maxSeverity>
     <tendable>false</tendable>
+    <!-- 统一按每日 0.10 自然恢复；健康条目显示剩余小时，悬停保留天数，无额外恢复计时器。 -->
     <comps><li Class="HediffCompProperties_SeverityPerDay"><severityPerDay>-0.10</severityPerDay><showDaysToRecover>true</showDaysToRecover><showHoursToRecover>true</showHoursToRecover></li></comps>
+    <!-- 按当前严重度选一个阶段，疼痛与工作倍率不叠加；两途径仅在施加初值时区分轻重。 -->
     <stages>
       <li><minSeverity>0</minSeverity><painOffset>0.05</painOffset><statFactors><WorkSpeedGlobal>0.95</WorkSpeedGlobal></statFactors></li>
       <li><minSeverity>0.20</minSeverity><painOffset>0.10</painOffset><statFactors><WorkSpeedGlobal>0.85</WorkSpeedGlobal></statFactors></li>

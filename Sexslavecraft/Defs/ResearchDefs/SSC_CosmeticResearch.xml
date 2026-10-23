@@ -8,6 +8,7 @@
     <baseCost>1500</baseCost>
     <techLevel>Industrial</techLevel>
     <tab>SSC_ResearchTabDef</tab>
+    <!-- 工业手术同时依赖原液应用与无菌材料；文化仪式不引用这项研究作为前置。 -->
     <prerequisites><li>SSC_RES_PNASimpleApp</li><li>SterileMaterials</li></prerequisites>
     <researchViewX>3</researchViewX><researchViewY>3.5</researchViewY>
   </ResearchProjectDef>

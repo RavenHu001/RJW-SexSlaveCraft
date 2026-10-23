@@ -11,6 +11,7 @@ namespace SexSlaveCraft
 
         public override bool Apply(float quality, RecipeDef recipe, Pawn surgeon, Pawn patient, BodyPartRecord part)
         {
+            // 配置在原版成功项之后；一旦执行即承接失败并终止结果尝试，不再套用外科损伤。
             Recipe_BeautyEnhancement.ApplyFailure(patient);
             return true;
         }

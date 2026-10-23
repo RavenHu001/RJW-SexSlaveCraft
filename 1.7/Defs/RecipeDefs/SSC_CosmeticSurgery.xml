@@ -3,6 +3,7 @@
 <Defs>
   <SurgeryOutcomeEffectDef ParentName="SurgeryOutcomeBase">
     <defName>SSC_CosmeticSurgeryOutcome</defName>
+    <!-- 继承原版质量组件和限幅，仅替换结果列表：先尝试原版成功，再由专用失败项兜底。 -->
     <outcomes Inherit="False">
       <li Class="SurgeryOutcomeSuccess" />
       <li Class="SexSlaveCraft.SurgeryOutcome_CosmeticFailure"><failure>true</failure></li>
@@ -25,12 +26,14 @@
     <researchPrerequisite>SSC_RES_PNACosmeticApplication</researchPrerequisite>
     <recipeUsers><li>Human</li></recipeUsers>
     <skillRequirements><Medicine>8</Medicine></skillRequirements>
+    <!-- 原液与药物交给原版手术收集和消费；药物仅允许工业药／闪耀药，结果入口不再扣料。 -->
     <ingredients>
       <li><filter><thingDefs><li>Purple_Aphrodisiac_Nanofluid</li></thingDefs></filter><count>10</count></li>
       <li><filter><thingDefs><li>MedicineIndustrial</li><li>MedicineUltratech</li></thingDefs></filter><count>3</count></li>
     </ingredients>
     <fixedIngredientFilter><thingDefs><li>Purple_Aphrodisiac_Nanofluid</li><li>MedicineIndustrial</li><li>MedicineUltratech</li></thingDefs></fixedIngredientFilter>
     <defaultIngredientFilter><thingDefs><li>Purple_Aphrodisiac_Nanofluid</li><li>MedicineIndustrial</li><li>MedicineUltratech</li></thingDefs></defaultIngredientFilter>
+    <!-- 原版负责麻醉，概率因子保持 1；失败效果只施加共用反应，不产生普通外科损伤。 -->
     <anesthetize>true</anesthetize>
     <surgerySuccessChanceFactor>1</surgerySuccessChanceFactor>
     <surgeryOutcomeEffect>SSC_CosmeticSurgeryOutcome</surgeryOutcomeEffect>

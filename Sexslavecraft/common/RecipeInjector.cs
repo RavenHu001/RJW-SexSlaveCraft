@@ -29,6 +29,7 @@ namespace SexSlaveCraft
             };
 #if SSC_RW17
             // AI 辅助生成：只扩展原有种族注入，不另建手术清单。
+            // 医美配方仅存在于 1.7；复用下方人形种族遍历，具体肉身与年龄限制仍由配方资格负责。
             myRecipes.Add(SSCDefOf.SSC_Surgery_BeautyEnhancement);
 #endif
 

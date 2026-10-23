@@ -13,6 +13,7 @@ namespace SexSlaveCraft
 
         public override string CanStartRitualNow(TargetInfo target, Precept_Ritual ritual, Pawn selectedPawn = null, Dictionary<string, Pawn> forcedForRole = null)
         {
+            // 开窗和原版启动都会查询这里；保留原版拒绝，再做不消耗物资的文化与供料预检。
             string reason = base.CanStartRitualNow(target, ritual, selectedPawn, forcedForRole);
             if (reason != null) return reason;
             if (!SSCCosmeticUtility.HasRequiredMeme(ritual)) return "SSC_Cosmetic_MemeRequired".Translate();
@@ -21,6 +22,7 @@ namespace SexSlaveCraft
             if (forcedForRole != null) forcedForRole.TryGetValue(SSCCosmeticUtility.HostRole, out host);
             if (host != null)
             {
+                // 已指定主持者时只检查此人，不能借其他人的资格或库存使预检通过。
                 var hostReport = RitualRole_CosmeticHost.Report(host, target, ritual);
                 if (!hostReport.Accepted) return hostReport.Reason;
                 var materialReport = RitualStageAction_ConsumeCosmeticMaterials.MaterialReport(target, host);
@@ -40,6 +42,7 @@ namespace SexSlaveCraft
 
         public override bool PawnCanFillRole(Pawn pawn, RitualRole role, out string s, TargetInfo ritualTarget)
         {
+            // 两个专属角色由各自角色类检查；无角色的候选作为观众，不受 Beauty 或同文化限制。
             if (!base.PawnCanFillRole(pawn, role, out s, ritualTarget)) return false;
             if (role != null) return true;
             var report = SSCCosmeticUtility.ActiveParticipantReport(pawn, ritualTarget);
@@ -52,6 +55,7 @@ namespace SexSlaveCraft
         public override void TryExecuteOn(TargetInfo target, Pawn organizer, Precept_Ritual ritual,
             RitualObligation obligation, RitualRoleAssignments assignments, bool playerForced = false)
         {
+            // 点击开始时先检查必需槽位，再让原版统一复查当前实际分配的所有参与者。
             string reason = null;
             foreach (var role in def.roles.Where(r => r.required))
             {
@@ -70,6 +74,7 @@ namespace SexSlaveCraft
                         ritual, assignments, target, out _);
                     if (reason != null) break;
                 }
+            // 空间和材料只读复查通过后才交给原版建 Lord，拒绝时尚未发起搬运或扣料。
             if (reason == null)
             {
                 if (!RitualPosition_Cosmetic.TryGetPositions(target,
@@ -84,9 +89,11 @@ namespace SexSlaveCraft
             }
             if (reason != null)
             {
+                // 集中报告首个拒绝原因；不改分配清单，也不替换原版角色选择与刷新流程。
                 Messages.Message(reason, target, MessageTypeDefOf.RejectInput, false);
                 return;
             }
+            // 原版继续负责启动、职责、阶段保存、活动占用和结束释放。
             base.TryExecuteOn(target, organizer, ritual, obligation, assignments, playerForced);
         }
     }

@@ -15,6 +15,7 @@ internal static class Entry
 {
     private static int Main(string[] args)
     {
+        // 从当前构建记录寻找游戏与依赖程序集，再进入真实类型测试；不启动游戏或写安装目录。
         if (args.Length != 2) throw new ArgumentException("repositoryRoot gameRoot");
         string repo = Path.GetFullPath(args[0]), game = Path.GetFullPath(args[1]);
         var info = System.Text.Json.JsonDocument.Parse(File.ReadAllText(Path.Combine(repo, "1.7/BUILD-INFO.json")));
@@ -59,6 +60,7 @@ internal static class Program
 
     internal static int Run(string repo, string game)
     {
+        // 初始化隔离宿主和图形／全局通知边界；用生产程序集与原版类型执行后续业务分组。
         Console.WriteLine($"Game: {File.ReadAllText(Path.Combine(game, "Version.txt")).Trim()}, MVID: {typeof(Pawn).Module.ModuleVersionId:N}");
         harmony = new Harmony("ssc.tests.cosmetic.native");
         void Patch(MethodBase m, string name) => harmony.Patch(m, prefix: new HarmonyMethod(typeof(Program), name));
@@ -150,6 +152,7 @@ internal static class Program
 
     private static void LoadResources(string repo, string game)
     {
+        // 本机原版父定义与生产医美 XML 共同走原版继承、解析和交叉引用，避免手抄配置代替被测资源。
         // 只提供交叉引用边界的命名 Def；被测 XML、父定义和组件均从生产/本机文件读取。
         SkillDefOf.Medicine = new SkillDef { defName = "Medicine", skillLabel = "medicine" }; Add(SkillDefOf.Medicine);
         WorkTypeDefOf.Doctor = new WorkTypeDef { defName = "Doctor", relevantSkills = new() { SkillDefOf.Medicine }, workTags = WorkTags.Caring | WorkTags.Commoner | WorkTags.AllWork };
@@ -218,6 +221,7 @@ internal static class Program
 
     private static Pawn Pawn(int? degree = null)
     {
+        // 仅构造业务所需的身体、身份、技能与库存；每个人使用独立 ID，保留原版角色相等判断。
         player ??= new Faction { def = new FactionDef { defName = "Player", isPlayer = true } };
         if (map == null) { map = new Map(); map.listerThings = new ListerThings(ListerThingsUse.Global); maps.Add(map); }
         var def = Bare<ThingDef>(); def.defName = "TestHuman"; def.category = ThingCategory.Pawn; def.stackLimit = 1;
@@ -242,6 +246,7 @@ internal static class Program
 
     private static void TraitTests()
     {
+        // 覆盖实际 TraitSet 升档和保守拒绝边界；观测原版增删次数以识别重复写入。
         foreach (var pair in new[] { (-2, -1), (-1, 0), (0, 1), (1, 2) })
             Check($"real TraitSet one-step {pair.Item1} -> {pair.Item2}", () =>
             {
@@ -299,6 +304,7 @@ internal static class Program
 
     private static void ReactionTests()
     {
+        // 用生产 Hediff 和原版消退组件核对四种初值、阶段切换、实例合并与恢复时间显示。
         foreach (float severity in new[] { .05f, .25f, .15f, .60f }) Check("real reaction severity/decay " + severity, () =>
         {
             var p = Pawn(); SSCCosmeticUtility.ApplyResult(p, false, severity);
@@ -333,6 +339,7 @@ internal static class Program
 
     private static void RoleAndOutcomeTests()
     {
+        // 资格、同人双槽和最终失效使用生产入口；概率验证调用原版权重而非重写抽取算法。
         Check("Medical 5/6 host threshold and mature spectator without Beauty gate", () =>
         {
             var p = Pawn(3); p.skills.GetSkill(SkillDefOf.Medicine).Level = 5;
@@ -416,6 +423,7 @@ internal static class Program
 
     private static void StageAndMaterialTests()
     {
+        // 阶段结构与真实背包数量先验，再覆盖搬运任务、消费、取消和原版职责释放顺序。
         Check("native stage structure: zero preparation, essential consumption before 5000 ticks", () =>
         {
             Equal(3, behavior.stages.Count); Near(0, behavior.stages[0].ProgressPerTick(null)); Near(0, behavior.stages[1].ProgressPerTick(null)); Near(1, behavior.stages[2].ProgressPerTick(null));
@@ -549,6 +557,7 @@ internal static class Program
 
     private static void PositionAndVisualTests()
     {
+        // 配对算法、原版阶段位置缓存和特效 Tick 均执行；最终粒子只截取数据，不宣称画面验收。
         // 只注入地图可站/同室/寻路边界；执行真实配对选点、原版阶段缓存与职责分配。
         var validator = AccessTools.Method(typeof(CommonRitualCellPredicates), nameof(CommonRitualCellPredicates.DefaultValidator));
         var room = AccessTools.PropertyGetter(typeof(LordJob_Ritual), nameof(LordJob_Ritual.GetRoom));
@@ -734,6 +743,7 @@ internal static class Program
     private static bool ReachTarget(ref bool __result) { __result = true; return false; }
     private static LordJob_Ritual Job(Pawn host, Pawn recipient)
     {
+        // 搭建同文化的实际双角色 LordJob；复杂地图服务仅按各测试需要补齐或隔离。
         var ideo = new Ideo { memes = new() { DefDatabase<MemeDef>.GetNamed("SSC_Meme_MasterSlaveOrder") } };
         Set(host.ideo, "ideo", ideo); Set(recipient.ideo, "ideo", ideo);
         var ritual = new Precept_Ritual { def = DefDatabase<PreceptDef>.GetNamed("SSC_CosmeticRitualPrecept"), ideo = ideo,
@@ -792,6 +802,7 @@ internal static class Program
 
     private static void LanguageTests(string repo)
     {
+        // 比较四语键与占位参数，并沿实际 Def 字段定位注入目标；不以文本相同代替字段有效性。
         var baseline = XDocument.Load(Path.Combine(repo, "1.7/Languages/English/Keyed/SSC_Cosmetic.xml")).Root.Elements().ToDictionary(e => e.Name.LocalName, e => e.Value);
         foreach (string lang in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" })
         {

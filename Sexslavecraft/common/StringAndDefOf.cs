@@ -159,6 +159,7 @@ namespace SexSlaveCraft
         public static RecipeDef SSC_ApplyFullGelatinization;
 #if SSC_RW17
         // AI 辅助生成：医美不依赖 Ideology；仪式模因按需查询，不在无 DLC 时强制解析。
+        // 仅在 1.7 共享注册手术和身体反应；文化专属 Def 不进入这组无条件引用。
         public static RecipeDef SSC_Surgery_BeautyEnhancement;
         public static HediffDef SSC_Hediff_NanoCosmeticReaction;
 #endif
@@ -345,6 +346,7 @@ namespace SexSlaveCraft
             SSC_ApplyGelatinization = GetDef<RecipeDef>("ApplyGelatinization");
             SSC_ApplyFullGelatinization = GetDef<RecipeDef>("ApplyFullGelatinization");
 #if SSC_RW17
+            // 与上方条件字段对应，在原有 Def 初始化流程中解析，不增加独立加载或恢复入口。
             SSC_Surgery_BeautyEnhancement = GetDef<RecipeDef>("SSC_Surgery_BeautyEnhancement");
             SSC_Hediff_NanoCosmeticReaction = GetDef<HediffDef>("SSC_Hediff_NanoCosmeticReaction");
 #endif

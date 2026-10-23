@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- AI 辅助生成：复用原版烟雾贴图与角色绑定粒子；仅正式阶段持续播放。 -->
 <Defs>
+  <!-- 只引用原版烟雾贴图与抛射 Fleck 系统；短寿命粒子自行淡出，不需要额外清理类。 -->
   <FleckDef ParentName="FleckBase_Thrown" MayRequire="Ludeon.RimWorld.Ideology">
     <defName>SSC_CosmeticPurpleMistFleck</defName>
     <graphicData><texPath>Things/Mote/Smoke</texPath><renderInstanced>true</renderInstanced></graphicData>
@@ -12,7 +13,9 @@
     <defName>SSC_CosmeticPurpleMist</defName>
     <comps>
       <li Class="CompProperties_RitualEffectSpawnOnRole">
+        <!-- 跟随受塑者当前位置；仅被正式阶段引用，原版负责组件 Tick、存档与停止播放。 -->
         <roleId>recipient</roleId><fleckDef>SSC_CosmeticPurpleMistFleck</fleckDef>
+        <!-- 延迟一个正式 tick，确保前一阶段 postAction 先扣料；每半秒生成一团低透明度紫雾。 -->
         <spawnIntervalTicks>30</spawnIntervalTicks><delay>1</delay>
         <scale>1.1~1.4</scale><colorOverride>(0.55, 0.25, 0.75, 0.20)</colorOverride>
         <rotationRate>-8~8</rotationRate>
