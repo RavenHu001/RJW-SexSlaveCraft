@@ -14,7 +14,7 @@ pwsh -File Scripts/Test-All.ps1 -GameVersion 1.7 -HarmonyAssemblyPath '<net9.0/0
 dotnet Tests/CosmeticNative/bin/Release/net10.0/CosmeticNative.dll '<repositoryRoot>' '<gameRoot>'
 ```
 
-51 项覆盖原版 XML 继承／交叉引用、Beauty 四步升级与保守兼容、原版 TraitSet 增删、手术／仪式身份、医术门槛、共用反应三阶段和四种自然恢复、原版权重概率、失效固定失败、原版取料 Job／单地面堆缺额预检／背包分堆消费／返回站位／主持者放下物资／原版剩余小时标签、缺料后的原版取消防重、开场原版拒绝透传／无候选与缺料区别／指定主持者不回退、DLC 门控及四语键／参数，以及配对站位与紫雾。
+53 项覆盖原版 XML 继承／交叉引用、Beauty 四步升级与保守兼容、原版 TraitSet 增删、手术／仪式身份、医术门槛、共用反应三阶段和四种自然恢复、原版权重概率、失效固定失败、原版取料 Job／单地面堆缺额预检／背包分堆消费／返回站位／主持者放下物资／原版剩余小时标签、缺料后的原版取消防重、开场原版拒绝透传／无候选与缺料区别／指定主持者不回退、DLC 门控及四语键／参数，以及配对站位与紫雾。
 
 无界面宿主隔离了图形、通知、完整地图寻路／禁止／可预留判定、库存地图通知及落地放置和 Lord 移除的地图／信号投递；上述判定的生产调用保留为原版 API，测试只注入边界结果。材料执行真实原版取料 JobGiver 生成任务、背包／地面列表、足量判断、`ThingOwner.Take`／`SplitOff`／`Destroy`；落地放置隔离，但原版 Multi／DropThing 的角色范围和数量仍执行；取消执行原版 `ApplyOutcome` 的 `ended`／`cancelled` 及 `Lord.Cleanup`，通过实际 `Transition.Execute`／`GotoToil` 与测试用职责探针验证 postAction 清理后不再分配职责。技能禁用例通过真实 `SkillDef.IsDisabled` 验证，不替换 `TotallyDisabled`。
 
@@ -23,3 +23,5 @@ dotnet Tests/CosmeticNative/bin/Release/net10.0/CosmeticNative.dll '<repositoryR
 开场专项额外隔离原版全局活动／行星预检、地图主持者候选列表和仪式目标可达性；保留生产开场分支、角色资格、材料报告及原版背包数量处理。原版拒绝透传用显式拒绝结果验证，不将这个局部宿主当作完整原版开场环境。
 
 站位／视效新增 6 项：四向祭坛选点、格子默认朝南／障碍镜像／空间不足／地图边界、两种角色迭代次序下原版三阶段位置缓存和职责／观众区域、原版 Idle 朝向、正式阶段限定的烟雾 Def 继承与原版角色绑定组件，以及真实组件 Tick 的延迟、间隔、生成坐标和颜色。地图验证器、工作队列清理和最终图形投递作为边界隔离；实际执行 Notify_AddedToLord、PawnPositionForStage、UpdateAllDuties 和 RitualVisualEffect／SpawnOnRole。角色夹具使用唯一 Thing ID，避免原版人物相等判断将不同角色误认为观众。图形投递被截取，不验证画面浓度、实际整场 AI 或存读档。
+
+不可见反馈后再加 2 项：执行 CreateGraph 创建的正式阶段 startAction、真实 FleckManager／FleckSystemThrown／FleckThrown 的生成、Tick、Draw 和淡出移除，只在 Graphic_Fleck 的图形边界截取绘制数据；另执行原版 DrawBatch.Flush，验证生产配置选择普通 DrawMesh 并写入逐次紫色与 Alpha，最后设备调用隔离。两项均不证明真实 GPU 出图或完整模组环境下的可见性，也不据此断言实例化引擎存在缺陷。

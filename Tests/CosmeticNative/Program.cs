@@ -654,7 +654,9 @@ internal static class Program
                 Equal("Things/Mote/Smoke", props.fleckDef.graphicData.texPath);
                 Equal(typeof(FleckSystemThrown), props.fleckDef.fleckSystemClass);
                 Near(2.4f, props.fleckDef.fadeInTime + props.fleckDef.solidTime + props.fleckDef.fadeOutTime);
-                Near(.2f, props.colorOverride.Value.a);
+                Near(.35f, props.colorOverride.Value.a);
+                Require(!props.fleckDef.graphicData.renderInstanced);
+                Near(1.6f, props.scale.min); Near(1.9f, props.scale.max);
             });
             Check("native mist delay, interval and recipient spawn position", () =>
             {
@@ -665,7 +667,7 @@ internal static class Program
                 effect.Tick(); Equal(1, mistSpawns.Count);
                 Near(recipient.Position.x + .5f, mistSpawns[0].spawnPosition.x);
                 Near(recipient.Position.z + .5f, mistSpawns[0].spawnPosition.z);
-                Near(.2f, mistSpawns[0].instanceColor.Value.a);
+                Near(.35f, mistSpawns[0].instanceColor.Value.a);
                 int oldTick = Find.TickManager.TicksGame;
                 try
                 {
@@ -674,6 +676,74 @@ internal static class Program
                 }
                 finally { Set(Find.TickManager, "ticksGameInt", oldTick); effect.Cleanup(); }
             });
+            Check("formal stage starts native effect and smoke survives into native draw data", () =>
+            {
+                var host = Pawn(); var recipient = Pawn(); var job = Job(host, recipient);
+                job.Ritual.playsIdeoMusic = false;
+                Set(job.assignments, "tmpParticipants", new List<Pawn>());
+                Set(job.assignments, "allPawns", new List<Pawn> { host, recipient });
+                Current.Game.signalManager = new SignalManager();
+                job.Notify_AddedToLord();
+                var graph = job.CreateGraph();
+                var formal = (LordToil_Ritual)graph.lordToils[2];
+                formal.startAction();
+                var effects = (List<RitualVisualEffect>)AccessTools.Field(typeof(LordJob_Ritual), "effectWorkersCurrentStage").GetValue(job);
+                Equal(1, effects.Count);
+                harmony.Unpatch(createFleck, HarmonyPatchType.Prefix, harmony.Id);
+                var manager = Bare<FleckManager>(); Set(manager, "parent", map);
+                var system = new FleckSystemThrown(manager);
+                Set(manager, "systems", new Dictionary<Type, FleckSystem> { [typeof(FleckSystemThrown)] = system });
+                map.flecks = manager;
+                var fleckDef = behavior.stages[2].visualEffectDef.comps.Single().fleckDef;
+                var graphic = new SmokeDrawProbe();
+                Set(fleckDef.graphicData, "cachedGraphic", graphic);
+                try
+                {
+                    effects[0].Tick(); effects[0].Tick();
+                    Equal(1, system.EnumerateFlecks().Count());
+                    for (int tick = 0; tick < 30; tick++) system.Tick();
+                    ((FleckThrown)system.EnumerateFlecks().Single()).Draw(null);
+                    Require(graphic.drawn && graphic.lastDraw.alpha > 0 && graphic.lastDraw.scale.x >= 1.6f && graphic.lastDraw.scale.z >= 1.6f);
+                    Near(.35f, graphic.lastDraw.color.a);
+                    for (int tick = 0; tick < 90; tick++) system.Tick();
+                    ((FleckThrown)system.EnumerateFlecks().Single()).Draw(null);
+                    Require(graphic.lastDraw.alpha > 0 && graphic.lastDraw.alpha < 1, "smoke did not enter its native fade-out");
+                    for (int tick = 0; tick < 45; tick++) system.Tick();
+                    Equal(0, system.EnumerateFlecks().Count());
+                }
+                finally
+                {
+                    Set(fleckDef.graphicData, "cachedGraphic", null);
+                    harmony.Patch(createFleck, prefix: new HarmonyMethod(typeof(Program), nameof(CaptureFleck)));
+                    map.flecks = Bare<FleckManager>();
+                }
+            });
+            Check("smoke native batch submits normal draw with per-draw color", () =>
+            {
+                var props = behavior.stages[2].visualEffectDef.comps.Single();
+                Require(!props.fleckDef.graphicData.renderInstanced);
+                var draw = AccessTools.Method(typeof(UnityEngine.Graphics), nameof(UnityEngine.Graphics.DrawMesh),
+                    new[] { typeof(UnityEngine.Mesh), typeof(UnityEngine.Matrix4x4), typeof(UnityEngine.Material), typeof(int), typeof(UnityEngine.Camera), typeof(int), typeof(UnityEngine.MaterialPropertyBlock) });
+                var setColor = AccessTools.Method(typeof(UnityEngine.MaterialPropertyBlock), nameof(UnityEngine.MaterialPropertyBlock.SetColor),
+                    new[] { typeof(string), typeof(UnityEngine.Color) });
+                harmony.Patch(draw, prefix: new HarmonyMethod(typeof(Program), nameof(CaptureSmokeDraw)));
+                harmony.Patch(setColor, prefix: new HarmonyMethod(typeof(Program), nameof(CaptureSmokeColor)));
+                smokeDrawCount = 0; smokeDrawColor = default;
+                try
+                {
+                    var batch = new DrawBatch();
+                    batch.DrawMesh(Bare<UnityEngine.Mesh>(), UnityEngine.Matrix4x4.identity, Bare<UnityEngine.Material>(), 0,
+                        props.colorOverride, props.fleckDef.graphicData.renderInstanced);
+                    batch.Flush();
+                    Equal(1, smokeDrawCount); Near(.35f, smokeDrawColor.a);
+                    Near(.55f, smokeDrawColor.r); Near(.25f, smokeDrawColor.g); Near(.75f, smokeDrawColor.b);
+                }
+                finally
+                {
+                    harmony.Unpatch(draw, HarmonyPatchType.Prefix, harmony.Id);
+                    harmony.Unpatch(setColor, HarmonyPatchType.Prefix, harmony.Id);
+                }
+            });
         }
         finally
         {
@@ -681,6 +751,19 @@ internal static class Program
             blockAllRoleCells = false; blockedRoleCells.Clear();
         }
     }
+
+    private sealed class SmokeDrawProbe : Graphic_Fleck
+    {
+        public bool drawn;
+        public FleckDrawData lastDraw;
+        public override void DrawFleck(FleckDrawData drawData, DrawBatch batch) { drawn = true; lastDraw = drawData; }
+    }
+
+    private static int smokeDrawCount;
+    private static UnityEngine.Color smokeDrawColor;
+    // 仅截断最后的图形设备调用；原版批处理与颜色属性写入仍执行。
+    private static bool CaptureSmokeDraw(UnityEngine.MaterialPropertyBlock properties) { Require(properties != null); smokeDrawCount++; return false; }
+    private static void CaptureSmokeColor(string name, UnityEngine.Color value) { if (name == "_Color") smokeDrawColor = value; }
 
     private static void StartPreviewTests()
     {

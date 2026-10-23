@@ -4,7 +4,8 @@
   <!-- 只引用原版烟雾贴图与抛射 Fleck 系统；短寿命粒子自行淡出，不需要额外清理类。 -->
   <FleckDef ParentName="FleckBase_Thrown" MayRequire="Ludeon.RimWorld.Ideology">
     <defName>SSC_CosmeticPurpleMistFleck</defName>
-    <graphicData><texPath>Things/Mote/Smoke</texPath><renderInstanced>true</renderInstanced></graphicData>
+    <!-- 少量角色烟雾使用原版普通绘制，颜色与淡出走逐次属性，避免依赖实例化颜色缓冲。 -->
+    <graphicData><texPath>Things/Mote/Smoke</texPath><renderInstanced>false</renderInstanced></graphicData>
     <altitudeLayer>MoteOverhead</altitudeLayer>
     <fadeInTime>0.4</fadeInTime><solidTime>0.8</solidTime><fadeOutTime>1.2</fadeOutTime>
     <growthRate>0.08</growthRate>
@@ -17,7 +18,7 @@
         <roleId>recipient</roleId><fleckDef>SSC_CosmeticPurpleMistFleck</fleckDef>
         <!-- 延迟一个正式 tick，确保前一阶段 postAction 先扣料；每半秒生成一团低透明度紫雾。 -->
         <spawnIntervalTicks>30</spawnIntervalTicks><delay>1</delay>
-        <scale>1.1~1.4</scale><colorOverride>(0.55, 0.25, 0.75, 0.20)</colorOverride>
+        <scale>1.6~1.9</scale><colorOverride>(0.55, 0.25, 0.75, 0.35)</colorOverride>
         <rotationRate>-8~8</rotationRate>
         <velocity>0.04~0.08</velocity><velocityDir>(0, 0, 1)</velocityDir>
       </li>
