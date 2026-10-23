@@ -4,7 +4,7 @@
 
 [New in 2.4.4: culture, ritual points and cosmetics](#22-244-culture-and-cosmetic-reshaping-17-development-only)
 
-> This guide covers **SSC 2.4.4 development (registered 2026-10-23; not released)**. Culture, ritual points, cosmetic reshaping and the Personality Excretion fix target 1.7; 1.6 remains frozen at 2.4.1. See the [2.4.4 scope](Docs/Releases/2.4.4/2.4.4发布说明.md#english). The [public 2.4.3 download](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.3) lacks these additions. Earlier section versions identify introductions.
+> This guide covers **SSC 2.4.4 (2026-10-23)** for RimWorld 1.7; 1.6 remains frozen at 2.4.1. See the [release scope](Docs/Releases/2.4.4/2.4.4发布说明.md#english). Earlier section versions identify introductions.
 
 [Project home](README.md) · [Player reading order](Docs/Players/README.md#english-reading-order) · [中文快速入门](读我，玩法介绍.md) · [Complete guide](PLAYER_GUIDE_EN.md)
 

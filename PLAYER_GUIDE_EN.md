@@ -4,7 +4,7 @@
 
 [New in 2.4.4: culture, ritual points and cosmetics](#25-244-culture-rituals-and-cosmetic-reshaping-17-development-only)
 
-> This guide covers **SSC 2.4.4 development (registered 2026-10-23; not released)**. Culture, ritual points, cosmetic reshaping and the Personality Excretion fix target 1.7; 1.6 remains frozen at 2.4.1. See the [2.4.4 scope](Docs/Releases/2.4.4/2.4.4发布说明.md#english). The [public 2.4.3 download](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.3) lacks these additions. Earlier section versions identify introductions.
+> This guide covers **SSC 2.4.4 (2026-10-23)** for RimWorld 1.7; 1.6 remains frozen at 2.4.1. See the [release scope](Docs/Releases/2.4.4/2.4.4发布说明.md#english). Earlier section versions identify introductions.
 
 [Project home](README.md) · [Player reading order](Docs/Players/README.md#english-reading-order) · [Quick start](QUICK_START_EN.md) · [中文机制详解](机制详解.md)
 
@@ -1887,4 +1887,4 @@ Failure does not improve Beauty and causes a stronger reaction. No extra refunds
 
 When its fixed interaction has no anatomical resolution, Personality Excretion now uses the existing empty-contact path, clearing stale parts while retaining the correct participants. It adds no identity/anatomy gate and does not relax ordinary Training resolution. The maintainer confirmed the originally reported female pair can complete the work; other combinations and interruptions are not inferred as independently tested.
 
-Culture and cosmetics have batch acceptance, with final targeted results of 458/458 and 56/56 at their actual dates. They are not combined into a new full release gate. See [2.4.4 verification](Docs/Releases/2.4.4/2.4.4版本验证.md) for evidence and unreleased status.
+Culture and cosmetics have batch acceptance, with final targeted results of 458/458 and 56/56 at their actual dates. They are not combined into a new full release gate. See [2.4.4 verification](Docs/Releases/2.4.4/2.4.4版本验证.md) for evidence and release status.
