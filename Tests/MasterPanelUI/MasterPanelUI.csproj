@@ -3,6 +3,7 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
+    <DefineConstants>$(DefineConstants);SSC_ABILITY_TOGGLE_MASTER_SHARE</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <!-- 直接运行生产面板、成长与缰绳字段读写；仅替代 Unity、健康与原有绑定查询接口。 -->
@@ -12,5 +13,9 @@
     <Compile Include="../../Sexslavecraft/Hediff/Hediff_BridleOfSexSlave.cs" Link="Production/Bridle.cs" />
   </ItemGroup>
   <ItemGroup><Compile Include="../../Sexslavecraft/ITab/ITab_SexSlaveTraining.AbilityToggles.cs" Link="Production/AbilityToggleRows.cs" /></ItemGroup>
+  <ItemGroup>
+    <Compile Include="../../Sexslavecraft/common/SSCBridleAbilityToggleBackend.cs" Link="Production/SSCBridleAbilityToggleBackend.cs" />
+    <Compile Include="../../Sexslavecraft/common/SSCMasterDamageSharingToggle.cs" Link="Production/SSCMasterDamageSharingToggle.cs" />
+  </ItemGroup>
   <Import Project="../Shared/AbilityToggleProduction.targets" />
 </Project>

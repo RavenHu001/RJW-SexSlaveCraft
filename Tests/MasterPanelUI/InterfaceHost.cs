@@ -242,7 +242,8 @@ namespace SexSlaveCraft
         public Probe Read(Pawn pawn, float width = 322)
         {
             var v = BuildMasterPanelView(pawn, pawn.Training, width);
-            return new Probe(v.Stage, v.Experience, v.Benefits, v.Progress, v.ProgressFraction, v.SectionHeight, v.CanEditShare);
+            return new Probe(v.Stage, v.Experience, v.Benefits, v.Progress, v.ProgressFraction, v.SectionHeight,
+                v.AbilityRows.Single(r => r.Id == SSCAbilityToggleUtility.MasterDamageSharing).CanEdit);
         }
         /// <summary>执行真实绘制方法；不复制布局或点击提交算法。</summary>
         public float Draw(Pawn pawn, float width = 322)
@@ -258,7 +259,8 @@ namespace SexSlaveCraft
         {
             SelPawn = pawn;
             var view = BuildMasterPanelView(pawn, pawn.Training, 322);
-            return value => TrySetMasterDamageSharing(view, value);
+            var row = view.AbilityRows.Single(r => r.Id == SSCAbilityToggleUtility.MasterDamageSharing);
+            return value => { if (SelPawn == row.Pawn) SSCAbilityToggleUtility.TrySet(row.Pawn, row.Id, value, row.Context, out _); };
         }
         public float DrawToggleGroup(Pawn pawn, SSCAbilityToggleGroup group, float width)
         {

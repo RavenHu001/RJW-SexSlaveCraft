@@ -1,5 +1,6 @@
 // AI 辅助生成
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Verse;
 
@@ -13,10 +14,15 @@ namespace SexSlaveCraft
         {
             public Pawn Pawn;
             public CompSexSlaveTraining Comp;
+#if !(SSC_RW17 || SSC_ABILITY_TOGGLE_FRAMEWORK)
             public object PersonalityToken;
+#endif
             public string Id, Label, Tip;
             public bool Enabled, CanEdit;
             public float Height;
+#if SSC_RW17 || SSC_ABILITY_TOGGLE_FRAMEWORK
+            public SSCAbilityToggleContext Context;
+#endif
         }
 
         /// <summary>主人与性奴面板可共用；只形成当前 GUI 事件的只读视图。</summary>
@@ -31,10 +37,27 @@ namespace SexSlaveCraft
                 Text.Font = GameFont.Small;
                 Text.WordWrap = true;
                 // 按组复用同一行模板，并给复选框留宽度；只读测量不创建成长或默认配置。
-                foreach (SSCAbilityToggleDefinition definition in SSCAbilityToggleUtility.Definitions)
+                foreach (SSCAbilityToggleDefinition definition in SSCAbilityToggleUtility.Definitions
+#if SSC_RW17 || SSC_ABILITY_TOGGLE_FRAMEWORK
+                    .OrderBy(d => d.Order)
+#endif
+                    )
                 {
                     if (definition.Group != group) continue;
                     string label = definition.LabelKey.Translate();
+#if SSC_RW17 || SSC_ABILITY_TOGGLE_FRAMEWORK
+                    var state = SSCAbilityToggleUtility.GetView(pawn, definition.Id);
+                    if (!state.Visible) continue;
+                    string tip = definition.TipRule == null ? definition.TipKey.Translate().ToString() : definition.TipRule(pawn);
+                    string reason = !state.CanChange ? state.ChangeReason : state.Enabled && !state.Active ? state.InactiveReason : null;
+                    if (!string.IsNullOrEmpty(reason)) tip += "\n\n" + reason;
+                    rows.Add(new AbilityToggleRow
+                    {
+                        Pawn = pawn, Comp = comp, Id = definition.Id, Label = label, Tip = tip,
+                        Enabled = state.Enabled, CanEdit = state.CanChange, Context = state.Context,
+                        Height = Mathf.Max(24f, Text.CalcHeight(label, Mathf.Max(1f, innerWidth - 24f)))
+                    });
+#else
                     rows.Add(new AbilityToggleRow
                     {
                         Pawn = pawn, Comp = comp, PersonalityToken = SSCPersonalityRuntimeUtility.Capture(pawn),
@@ -43,6 +66,7 @@ namespace SexSlaveCraft
                         CanEdit = SSCAbilityToggleUtility.CanEdit(pawn, definition.Id),
                         Height = Mathf.Max(24f, Text.CalcHeight(label, Mathf.Max(1f, innerWidth - 24f)))
                     });
+#endif
                 }
             }
             finally { Text.Font = oldFont; Text.WordWrap = oldWrap; }
@@ -93,7 +117,11 @@ namespace SexSlaveCraft
                 TooltipHandler.TipRegion(rect, row.Tip);
                 // 行快照仅用于显示；真正提交交给通用入口再查当前权限与人格归属。
                 if (GUI.enabled && enabled != row.Enabled && SelPawn == row.Pawn)
+#if SSC_RW17 || SSC_ABILITY_TOGGLE_FRAMEWORK
+                    SSCAbilityToggleUtility.TrySet(row.Pawn, row.Id, enabled, row.Context, out _);
+#else
                     SSCAbilityToggleUtility.TrySetEnabled(row.Pawn, row.Id, enabled, row.Comp, row.PersonalityToken);
+#endif
                 y += row.Height;
             }
         }

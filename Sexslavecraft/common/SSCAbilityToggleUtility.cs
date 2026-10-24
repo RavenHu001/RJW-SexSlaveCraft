@@ -10,7 +10,7 @@ namespace SexSlaveCraft
 {
     public enum SSCAbilityToggleGroup { Master, Slave }
 
-    /// <summary>声明一项随人格流转的个人开关；能力效果由各自的实际事件入口处理。</summary>
+    /// <summary>声明个人开关；默认沿用人格存储，1.7 可适配其他原载体。</summary>
     public sealed class SSCAbilityToggleDefinition
     {
         public readonly string Id, LabelKey, TipKey, MarkerDefName;
@@ -18,17 +18,33 @@ namespace SexSlaveCraft
         public readonly PawnIdentity Identity;
         public readonly bool DefaultEnabled;
         public readonly Func<Pawn, bool> ActivationRule, EditRule;
+#if SSC_RW17 || SSC_ABILITY_TOGGLE_FRAMEWORK
+        public readonly SSCAbilityToggleBackend Backend;
+        public readonly int Order;
+        public readonly Func<Pawn, bool> VisibleRule;
+        public readonly Func<Pawn, bool, string> ChangeRule;
+        public readonly Func<Pawn, string> TipRule;
+#endif
         public SSCAbilityToggleDefinition(string id, SSCAbilityToggleGroup group, PawnIdentity identity,
             string labelKey, string tipKey, string markerDefName = null, bool defaultEnabled = false,
-            Func<Pawn, bool> activationRule = null, Func<Pawn, bool> editRule = null)
+            Func<Pawn, bool> activationRule = null, Func<Pawn, bool> editRule = null
+#if SSC_RW17 || SSC_ABILITY_TOGGLE_FRAMEWORK
+            , SSCAbilityToggleBackend backend = null, int order = 0, Func<Pawn, bool> visibleRule = null,
+            Func<Pawn, bool, string> changeRule = null, Func<Pawn, string> tipRule = null
+#endif
+            )
         {
             Id = id; Group = group; Identity = identity; LabelKey = labelKey; TipKey = tipKey;
             MarkerDefName = markerDefName; DefaultEnabled = defaultEnabled;
             ActivationRule = activationRule; EditRule = editRule;
+#if SSC_RW17 || SSC_ABILITY_TOGGLE_FRAMEWORK
+            Backend = backend ?? SSCPersonalityAbilityToggleBackend.Instance;
+            Order = order; VisibleRule = visibleRule; ChangeRule = changeRule; TipRule = tipRule;
+#endif
         }
     }
 
-    public static class SSCAbilityToggleUtility
+    public static partial class SSCAbilityToggleUtility
     {
         public const string MasterDesireInfestation = "SSC_MasterDesireInfestation";
         public const string InfestationMarker = "SSC_Hediff_MasterDesireInfestation";
@@ -37,6 +53,12 @@ namespace SexSlaveCraft
         {
             new SSCAbilityToggleDefinition(MasterDesireInfestation, SSCAbilityToggleGroup.Master, PawnIdentity.Master,
                 "SSC_AbilityToggle_MasterDesireInfestation_Label", "SSC_AbilityToggle_MasterDesireInfestation_Tip", InfestationMarker)
+#if SSC_RW17 || SSC_ABILITY_TOGGLE_MASTER_SHARE
+            , new SSCAbilityToggleDefinition(MasterDamageSharing, SSCAbilityToggleGroup.Master, PawnIdentity.Master,
+                "SSC_MasterShareDamage_Label", "SSC_MasterShareDamage_Desc", defaultEnabled: true,
+                backend: SSCBridleAbilityToggleBackend.Instance, order: -100,
+                tipRule: pawn => "SSC_MasterShareDamage_Desc".Translate(SSCMasterBondUtility.DamageShareRatio.ToStringPercent()).ToString())
+#endif
         };
         private static readonly IReadOnlyList<SSCAbilityToggleDefinition> readOnlyDefinitions = definitions.AsReadOnly();
         public static IReadOnlyList<SSCAbilityToggleDefinition> Definitions => readOnlyDefinitions;
@@ -63,10 +85,15 @@ namespace SexSlaveCraft
         public static bool GetEnabled(Pawn pawn, string id)
         {
             SSCAbilityToggleDefinition definition = Find(id);
+#if SSC_RW17 || SSC_ABILITY_TOGGLE_FRAMEWORK
+            return definition != null && definition.Backend.GetEnabled(pawn, definition);
+#else
             CompSexSlaveTraining comp = pawn?.TryGetComp<CompSexSlaveTraining>();
             return definition != null && comp != null && (comp.abilityToggles
                 ?.Get(id, definition.DefaultEnabled) ?? definition.DefaultEnabled);
+#endif
         }
+#if !(SSC_RW17 || SSC_ABILITY_TOGGLE_FRAMEWORK)
         private static bool HasStablePersonality(Pawn pawn, SSCAbilityToggleDefinition definition)
         {
             // 人格替换期间全部能力暂停；主人资格、成长记录和缰绳不是通用开关的前置。
@@ -76,20 +103,37 @@ namespace SexSlaveCraft
                 comp.pawnIdentity == definition.Identity && !SSCMasterProgressionUtility.IsHollow(pawn) &&
                 !SSCPersonalityRuntimeUtility.IsMutating(pawn);
         }
+#endif
         public static bool IsActive(Pawn pawn, string id)
         {
             SSCAbilityToggleDefinition definition = Find(id);
+#if SSC_RW17 || SSC_ABILITY_TOGGLE_FRAMEWORK
+            return definition != null && GetEnabled(pawn, id) && ActivationFailure(pawn, definition) == null;
+#else
             return HasStablePersonality(pawn, definition) && GetEnabled(pawn, id) &&
                 (definition.ActivationRule == null || definition.ActivationRule(pawn));
+#endif
         }
         public static bool CanEdit(Pawn pawn, string id)
         {
+#if SSC_RW17 || SSC_ABILITY_TOGGLE_FRAMEWORK
+            return CanSet(pawn, id, !GetEnabled(pawn, id), out _);
+#else
             SSCAbilityToggleDefinition definition = Find(id);
             return HasStablePersonality(pawn, definition) && Faction.OfPlayer != null && pawn.Faction == Faction.OfPlayer &&
                 (definition.EditRule == null || definition.EditRule(pawn));
+#endif
         }
         public static bool TrySetEnabled(Pawn pawn, string id, bool enabled, CompSexSlaveTraining expectedComp, object token)
         {
+#if SSC_RW17 || SSC_ABILITY_TOGGLE_FRAMEWORK
+            // 旧接口只有人格凭据，不能据此提交需要原身体／关系 owner 的请求。
+            var definition = Find(id);
+            if (definition == null || definition.Backend != SSCPersonalityAbilityToggleBackend.Instance) return false;
+            var context = new SSCAbilityToggleContext(pawn, definition);
+            if (!ReferenceEquals(context.Comp, expectedComp) || !ReferenceEquals(context.PersonalityToken, token)) return false;
+            return TrySet(pawn, id, enabled, context, out _);
+#else
             // 点击可能晚于选中项或人格改变；写入前同时复查原组件、人格 token 和当前权限。
             if (Scribe.mode != LoadSaveMode.Inactive || pawn?.TryGetComp<CompSexSlaveTraining>() != expectedComp ||
                 !SSCPersonalityRuntimeUtility.IsCurrent(pawn, token) || !CanEdit(pawn, id)) return false;
@@ -97,6 +141,7 @@ namespace SexSlaveCraft
             expectedComp.abilityToggles.Set(id, enabled);
             SyncMarkers(pawn);
             return pawn.TryGetComp<CompSexSlaveTraining>() == expectedComp && SSCPersonalityRuntimeUtility.IsCurrent(pawn, token);
+#endif
         }
         // 清源和植入均替换整个容器；显式关闭必须覆盖宿主开启，不能按 true 或最大值合并。
         public static void ClearPersonalityState(Pawn pawn)

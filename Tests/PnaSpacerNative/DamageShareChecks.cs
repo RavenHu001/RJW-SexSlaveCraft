@@ -39,6 +39,25 @@ internal static partial class Program
         sharedOrdinary=new DamageDef{defName="SSC_ShareOrdinary",harmsHealth=true,workerClass=typeof(DamageWorker_AddInjury),hediff=new HediffDef{defName="Bruise",maxSeverity=100}};
         try
         {
+            ShareCheck("串联：原缰绳关闭阻断分伤，重开恢复原比例",()=>
+            {
+                var (master,slaves)=ShareMaster(1);var bridle=ShareBridles[master];var shot=SharedShot(sharedOrdinary);
+                bridle.shareDamageEnabled=false;
+                Assert(!SSCAbilityToggleUtility.GetMasterDamageSharingEnabled(master));
+                Assert(!SSCMasterBondUtility.CanRedirectDamageFrom(master,shot));
+                master.TakeDamage(shot);Equal(1,ShareHits.Count);Assert(ShareHits[0].Target==master);Near(5,ShareHits[0].Info.Amount);
+                ShareHits.Clear();bridle.shareDamageEnabled=true;
+                Assert(SSCAbilityToggleUtility.GetMasterDamageSharingEnabled(master));
+                master.TakeDamage(shot);Equal(2,ShareHits.Count);Near(3.5f,ShareHits[0].Info.Amount);Near(1.5f,ShareHits[1].Info.Amount);
+            });
+            ShareCheck("串联：统一偏好仍受无候选与伤害过滤约束",()=>
+            {
+                var (master,_)=ShareMaster(0);Assert(SSCAbilityToggleUtility.GetMasterDamageSharingEnabled(master));
+                Assert(!SSCMasterBondUtility.TryCreateDamageRedirectPlan(master,SharedShot(sharedOrdinary),out _));
+                master.TakeDamage(SharedShot(sharedOrdinary));Equal(1,ShareHits.Count);Near(5,ShareHits[0].Info.Amount);
+                var harmless=new DamageDef{defName="SSC_ShareHarmless",harmsHealth=false};
+                Assert(!SSCMasterBondUtility.CanRedirectDamageFrom(master,SharedShot(harmless)));
+            });
             ShareCheck("串联：涂覆命中主人保留70%物理分摊且双方不投药",()=>
             {
                 var (master,slaves)=ShareMaster(1);var shot=SharedShot(sharedCoating);

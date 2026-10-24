@@ -287,8 +287,12 @@ namespace SexSlaveCraft
             if (master.MapHeld == null) return false;
             if (ShouldBlockDamageDef(dinfo.Def)) return false;
 
+#if SSC_RW17 || SSC_ABILITY_TOGGLE_MASTER_SHARE
+            return SSCAbilityToggleUtility.GetMasterDamageSharingEnabled(master);
+#else
             Hediff_BridleOfSexSlave bridle = SSCBondUtility.GetBridle(master);
             return bridle != null && bridle.shareDamageEnabled;
+#endif
         }
 
         public static bool ShouldBlockDamageDef(DamageDef damageDef)
