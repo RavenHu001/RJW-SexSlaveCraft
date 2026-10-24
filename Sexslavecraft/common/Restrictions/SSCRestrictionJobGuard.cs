@@ -156,7 +156,11 @@ namespace SexSlaveCraft
             state.Initiator = request.Initiator;
             state.Receiver = request.Receiver;
             state.Kind = SceneKind(driver, request);
-            if (firstStart && (state.Kind == SSCInteractionKind.Consensual || state.Kind == SSCInteractionKind.Forced))
+            if (firstStart && (state.Kind == SSCInteractionKind.Consensual || state.Kind == SSCInteractionKind.Forced
+#if SSC_RW17
+                || state.Kind == SSCInteractionKind.DailyTraining || state.Kind == SSCInteractionKind.RitualTraining
+#endif
+                ))
                 state.Parts = SSCOrdinarySexPartsUtility.Capture(driver.Sexprops);
             var receiver = request.Receiver?.jobs?.curDriver as JobDriver_SexBaseReciever;
             if (receiver != null && receiver.Partner == request.Initiator)
@@ -170,6 +174,20 @@ namespace SexSlaveCraft
             state.Events.NotifyStarted(state.Initiator, state.Receiver);
             return true;
         }
+
+#if SSC_RW17
+        /// <summary>只读取得当前调教 Job 首次 Start 保存的部位；不为旧档、替换任务或新 SexProps 补造。</summary>
+        internal static SSCOrdinarySexPartsSnapshot TrainingParts(JobDriver_SexBaseInitiator driver,
+            SSCInteractionKind kind)
+        {
+            if (Scribe.mode != LoadSaveMode.Inactive || driver == null || driver.pawn?.jobs?.curDriver != driver ||
+                driver.job == null || (kind != SSCInteractionKind.DailyTraining && kind != SSCInteractionKind.RitualTraining)) return null;
+            SceneState state = State(driver);
+            if (!state.Started || state.Rejected || state.Kind != kind || state.Initiator != driver.pawn ||
+                state.Receiver != driver.Partner || state.Parts?.Matches(driver.Sexprops) != true) return null;
+            return state.Parts;
+        }
+#endif
 
         /// <summary>阻止未开始而遭拒绝的原生收尾，避免访问空数据或替无关参与者生成结算任务。</summary>
         public static bool TryEnd(JobDriver_SexBaseInitiator driver, out bool allowed)

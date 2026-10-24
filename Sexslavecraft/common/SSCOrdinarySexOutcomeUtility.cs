@@ -76,8 +76,12 @@ namespace SexSlaveCraft
             private readonly float infestationDose;
             private readonly Need_Corruption need;
             private readonly SSCDesireInfestationBodyUtility.Plan bodyPlan;
+#if SSC_RW17
+            private readonly SSCUterusDevelopmentGrowthUtility.Plan uterusPlan;
+#endif
             private readonly SSCDesireInfestationFeedbackUtility.Plan feedbackPlan;
             private readonly Func<bool> partsCurrent;
+            /// <summary>在原结算前冻结同一供给方向的资格、评分及各独立分量。</summary>
             public Direction(Pawn source, Pawn target, bool allowProducer, SSCOrdinarySexPartsSnapshot parts, Func<bool> partsCurrent)
             {
                 this.source = source; this.target = target;
@@ -91,8 +95,26 @@ namespace SexSlaveCraft
                 this.partsCurrent = partsCurrent;
                 // 与 PNA/C 同一原结算前边界冻结评分、倍率和候选；无可靠部位只留下空开发计划。
                 if (infestation && partsCurrent?.Invoke() == true)
+#if SSC_RW17
+                {
+                    // 两个独立开发项目共用一次原结算前评分；旧评分的随机项不推进 RJW 随机序列。
+                    float? capturedScore = null;
+                    float Score()
+                    {
+                        if (capturedScore.HasValue) return capturedScore.Value;
+                        Rand.PushState();
+                        try { capturedScore = TrainingOutcomeUtility.GetScore(source, target); }
+                        finally { Rand.PopState(); }
+                        return capturedScore.Value;
+                    }
+                    bodyPlan = SSCDesireInfestationBodyUtility.Capture(source, target, parts, Score);
+                    uterusPlan = SSCUterusDevelopmentGrowthUtility.CaptureInfestation(source, target, parts, Score);
+                }
+#else
                     bodyPlan = SSCDesireInfestationBodyUtility.Capture(source, target, parts);
+#endif
             }
+            /// <summary>只在整场完成认领内执行，逐个分量复查原场景与人格归属。</summary>
             public void Apply(Func<bool> contextCurrent)
             {
                 if (!contextCurrent()) return;
@@ -107,6 +129,11 @@ namespace SexSlaveCraft
                     // 恶堕达到上限仍可开发；每条身体写入复查人格、需求和原部位凭据。
                     if (StrongCurrent() && bodyPlan != null)
                         bodyPlan.Apply(() => StrongCurrent() && partsCurrent?.Invoke() == true);
+#if SSC_RW17
+                    // 六部位和子宫各用自己的系数；仍共享本场认领，训练 Job 不会进入此出口。
+                    if (StrongCurrent() && uterusPlan != null)
+                        uterusPlan.Apply(() => StrongCurrent() && partsCurrent?.Invoke() == true);
+#endif
                     // 无研究、无可靠部位或开发已满均不取消反馈；原版 Lovin 也走同一独立分量。
                     if (StrongCurrent() && feedbackPlan != null) feedbackPlan.Apply(StrongCurrent);
                 }

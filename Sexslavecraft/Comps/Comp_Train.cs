@@ -247,6 +247,9 @@ namespace SexSlaveCraft
             Scribe_Values.Look(ref isRitualTraining, "isRitualTraining", false);
             Scribe_References.Look(ref bindingRitualLord, "bindingRitualLord");
             Scribe_Values.Look(ref bindingRitualOutcomeClaimed, "bindingRitualOutcomeClaimed", false);
+#if SSC_RW17
+            ExposeUterusRitualEvidence();
+#endif
 
             // selectedTrainer 是 Pawn 引用，所以要作为引用类型单独保存和恢复。
             Scribe_Values.Look(ref fineTrainingEnabled, "fineTrainingEnabled", false);

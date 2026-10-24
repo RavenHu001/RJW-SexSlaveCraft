@@ -119,6 +119,7 @@ internal static partial class Program
             MergeAndNormalization();
             SaveLoad();
             SurgeryTests(repo, game, harmony.Value);
+            GrowthTests(repo, harmony.Value);
         }
         finally { Scribe.mode = LoadSaveMode.Inactive; Current.Game = null; }
         Console.WriteLine($"{passed}/{passed + failed} cases passed");

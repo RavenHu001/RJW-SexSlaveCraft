@@ -10,6 +10,7 @@ namespace SexSlaveCraft
     /// <summary>RJW 实际部位到 SSC 身体开发的适配边界；不调用 resolved getter 或任何部位选择器。</summary>
     public static class SSCOrdinarySexPartsUtility
     {
+        /// <summary>首次真实开始时只读取已有解析；可选凭据失败不改变 RJW 场景执行。</summary>
         internal static SSCOrdinarySexPartsSnapshot Capture(SexProps props)
         {
             if (Scribe.mode != LoadSaveMode.Inactive || props?.isCoreLovin != false) return null;
@@ -23,6 +24,7 @@ namespace SexSlaveCraft
             catch (Exception ex) { Log.Warning("[SSC InfestationParts] Cannot capture optional body evidence: " + ex.GetType().Name); return null; }
         }
 
+        /// <summary>保留旧六部位的参与器官匹配语义；新项目的插入方向另行复查。</summary>
         internal static bool SameCachedParts(SSCOrdinarySexPartsSnapshot snapshot, SexProps props)
         {
             try
@@ -36,6 +38,7 @@ namespace SexSlaveCraft
             catch { return false; } // 仅把可选证据视为不可靠；不接管 RJW 原方法或原生异常。
         }
 
+        /// <summary>核对真实缓存中的双方、交互、器官及接触端点，不访问会重新解析的 getter。</summary>
         private static SSCOrdinarySexPartsSnapshot ReadCached(SexProps props)
         {
             // 原缓存必须同时证明交互和双方方向；不能只凭 sexType 或某一个对象列表推测参与部位。
@@ -58,10 +61,16 @@ namespace SexSlaveCraft
                 if (!((a == snapshot.Initiator && b == snapshot.Recipient) ||
                       (a == snapshot.Recipient && b == snapshot.Initiator)) ||
                     !Add(snapshot, contact.Item1, a) || !Add(snapshot, contact.Item2, b)) return null;
+#if SSC_RW17
+                // Item1 为插入端，Item2 为被插入端；主人/发起者方向不能替代此凭据。
+                if (contact.Item2.Family == LewdablePartFamily.Vagina)
+                    MarkReceivingVagina(snapshot, contact.Item2, b);
+#endif
             }
             return snapshot;
         }
 
+        /// <summary>按原器官与身体引用合并参与条目，方向标记在接触端点遍历中单独写入。</summary>
         private static bool Add(SSCOrdinarySexPartsSnapshot snapshot, ILewdablePart part, Pawn owner)
         {
             if (part == null || part.Owner != owner) return false;
@@ -74,6 +83,35 @@ namespace SexSlaveCraft
             if (!snapshot.Parts.Exists(record.Same)) snapshot.Parts.Add(record);
             return true;
         }
+
+#if SSC_RW17
+        /// <summary>在已合并的器官条目上置位；原参与列表与接触端点重复时不丢失 true。</summary>
+        private static void MarkReceivingVagina(SSCOrdinarySexPartsSnapshot snapshot, ILewdablePart part, Pawn owner)
+        {
+            Hediff organ = (part as RJWLewdablePart)?.SexPart?.AsHediff;
+            foreach (var evidence in snapshot.Parts)
+                if (evidence.Owner == owner && evidence.BodyPart == part.BodyPart &&
+                    evidence.Family == LewdablePartFamily.Vagina && evidence.Organ == organ &&
+                    evidence.HadOrgan == (part is RJWLewdablePart))
+                    evidence.ReceivedVaginalPenetration = true;
+        }
+
+        /// <summary>验证保存的被插入条目；已有缓存时额外核对方向，读档无缓存时不重新解析。</summary>
+        internal static bool IsCurrentReceivingVagina(SSCOrdinarySexPartsSnapshot snapshot, SexProps props,
+            SSCOrdinarySexPartsSnapshot.Part evidence)
+        {
+            if (snapshot == null || evidence == null || !evidence.ReceivedVaginalPenetration ||
+                evidence.Family != LewdablePartFamily.Vagina || !evidence.IsAttached() ||
+                snapshot.Parts?.Contains(evidence) != true || !snapshot.Matches(props)) return false;
+            if (props._resolved == null) return true;
+            try
+            {
+                var current = ReadCached(props);
+                return current?.Parts.Exists(p => p.ReceivedVaginalPenetration && evidence.Same(p)) == true;
+            }
+            catch { return false; } // 可选成长证据失效，不改变原有部位匹配与结算。
+        }
+#endif
 
         internal static HediffDef GetExperienceDef(LewdablePartFamily family)
         {

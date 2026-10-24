@@ -24,7 +24,12 @@ namespace SexSlaveCraft
             internal LewdablePartFamily Family;
             internal Hediff Organ;
             internal bool HadOrgan;
+#if SSC_RW17
+            // 只由真实接触的 Item2 写入；随本次 Job 保存，不是身体的永久状态。
+            internal bool ReceivedVaginalPenetration;
+#endif
 
+            /// <summary>保存原器官引用及本场接触事实；旧档没有新标记时不能推补插入证据。</summary>
             public void ExposeData()
             {
                 Scribe_References.Look(ref Owner, "owner");
@@ -33,6 +38,9 @@ namespace SexSlaveCraft
                 Scribe_Values.Look(ref Family, "family", LewdablePartFamily.Undefined);
                 Scribe_Values.Look(ref HadOrgan, "hadOrgan", false);
                 Scribe_References.Look(ref Organ, "organ");
+#if SSC_RW17
+                Scribe_Values.Look(ref ReceivedVaginalPenetration, "receivedVaginalPenetration", false);
+#endif
             }
 
             internal bool Same(Part other) => other != null && Owner == other.Owner && BodyPart == other.BodyPart &&
@@ -45,6 +53,12 @@ namespace SexSlaveCraft
 
         // 绑定只在真实开始或读档引用恢复后进行；运行中的 SexProps 被替换不能继承旧部位凭据。
         internal void Bind(SexProps props) => boundProps = props;
+
+#if SSC_RW17
+        /// <summary>将方向复查限制在原来绑定的 SexProps；调用方不能借新对象续用旧接触。</summary>
+        internal bool IsCurrentReceivingVagina(Part evidence)
+            => SSCOrdinarySexPartsUtility.IsCurrentReceivingVagina(this, boundProps, evidence);
+#endif
 
         internal bool Matches(SexProps props)
         {

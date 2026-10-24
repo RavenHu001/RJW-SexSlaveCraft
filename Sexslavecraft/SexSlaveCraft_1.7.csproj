@@ -77,6 +77,8 @@
   <ItemGroup>
     <Compile Include="Hediff/Hediff_SSCUterusDevelopment.cs" />
     <Compile Include="common/SSCUterusDevelopmentUtility.cs" />
+    <Compile Include="common/SSCUterusDevelopmentGrowthUtility.cs" />
+    <Compile Include="Comps/Comp_Train.UterusDevelopment.cs" />
     <Compile Include="common/SSCUterusSurgeryUtility.cs" />
     <Compile Include="Recipe/Recipe_StartUterusDevelopment.cs" />
     <Compile Include="ThePatches/Harmony_UterusSurgeryAdmission.cs" />

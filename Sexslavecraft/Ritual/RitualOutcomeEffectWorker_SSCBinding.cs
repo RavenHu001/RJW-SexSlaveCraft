@@ -202,6 +202,15 @@ namespace SexSlaveCraft
             string sscDetails = ConditioningUtility.ExecuteRitualOutcome(master, slave, quality, outcome.memory);
             if (!canContinue()) return;
 
+#if SSC_RW17
+            // 整场只在原 TryClaimOutcome 内领取一次；六阶段不逐次发放，评分采用 75q。
+            var uterus = SSCUterusDevelopmentGrowthUtility.Capture(slave,
+                slave.TryGetComp<CompSexSlaveTraining>()?.uterusRitualEvidence,
+                SpecializationTrainingProgressUtility.RitualScore(quality));
+            uterus?.Apply(canContinue);
+            if (!canContinue()) return;
+#endif
+
             // 六个阶段的 ProcessSex 各自只负责 RJW 阶段效果。上方已消费
             // 本场 Lord 的一次性资格，按整场结果只发一份当前方向基础经验。
             SpecializationTrainingProgressUtility.NotifyTrainingCompleted(master, slave,
