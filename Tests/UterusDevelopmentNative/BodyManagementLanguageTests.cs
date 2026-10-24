@@ -32,10 +32,12 @@ internal static partial class Program
                 LoadBodyManagementLanguage(repo, language);
                 string title = "SSC_BodyManagement_Title".Translate();
                 string toggle = "SSC_BodyManagement_FertilityToggle".Translate();
-                Require(title.Contains("身体管理") && toggle.Contains("开启生育"));
+                var entries = XDocument.Load(Path.Combine(repo, "1.7/Languages", language, "Keyed/SSC_BodyManagement.xml")).Root;
+                Equal(entries.Element("SSC_BodyManagement_Title").Value, title);
+                Equal(entries.Element("SSC_BodyManagement_FertilityToggle").Value, toggle);
                 Require(!title.Contains("SSC_") && !toggle.Contains("SSC_"));
                 Require(!SSCUterusDevelopmentUtility.CanSetFertilityEnabled(NewPawn(), true, out string reason));
-                Equal("SSC_BodyManagement_NotStarted".Translate().ToString(), reason); Require(reason.Contains("尚未开始"));
+                Equal("SSC_BodyManagement_NotStarted".Translate().ToString(), reason); Require(!reason.Contains("SSC_"));
                 string milk = Strings.ITab_MilkProductionToggle;
                 Equal("SSC_ITab_MilkProductionToggle".Translate().ToString(), milk); Require(!milk.Contains("SSC_"));
             });

@@ -229,7 +229,7 @@ internal static partial class Program
         });
         foreach (var name in new[] { "Pregnant", "PregnantHuman", "RJW_pregnancy", "RJW_pregnancy_beast" })
             Check("batch2 hidden pregnancy refuses surgery: " + name, () =>
-            { var pawn = SurgeryPawn(); pawn.health.AddHediff(DefDatabase<HediffDef>.GetNamed(name)); Refused(pawn, "妊娠"); });
+            { var pawn = SurgeryPawn(); pawn.health.AddHediff(DefDatabase<HediffDef>.GetNamed(name)); Refused(pawn, "SSC_UterusDevelopment_PregnancyBlocked".Translate()); });
         foreach (float progress in new[] { .01f, .7f, 1f }) Check("batch2 started bodies cannot reset through surgery: " + progress,
             () => { var pawn = SurgeryPawn(); Start(pawn, progress); Refused(pawn, "已经"); });
         Check("batch2 foreign target part is refused without modifying anatomy", () =>

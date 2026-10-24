@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- AI 辅助生成：第 5 批中文占位文案，正式文案待确认；已有泌乳开关和属性名称复用原资源。 -->
+<!-- AI 辅助生成：依据已确认的 v2 中文稿落实 ChineseSimplified 文案；保留现有键名及参数契约。 -->
 <LanguageData>
   <SSC_BodyManagement_Title>身体管理</SSC_BodyManagement_Title>
-  <SSC_BodyManagement_MilkTip>控制当前身体的产奶；关闭不会移除永久泌乳状态或重置已有奶量。</SSC_BodyManagement_MilkTip>
-  <SSC_BodyManagement_FertilityToggle>开启生育</SSC_BodyManagement_FertilityToggle>
-  <SSC_BodyManagement_FertilityTip>切换当前身体的生育状态。妊娠期间不能关闭。</SSC_BodyManagement_FertilityTip>
-  <SSC_BodyManagement_BodyChanged>身体状态已变化，请重新查看。</SSC_BodyManagement_BodyChanged>
+  <SSC_BodyManagement_MilkTip>开关这副身体的产奶。关闭只止住出奶，不移除永久泌乳，也不清空奶量。</SSC_BodyManagement_MilkTip>
+  <SSC_BodyManagement_FertilityToggle>允许受孕</SSC_BodyManagement_FertilityToggle>
+  <SSC_BodyManagement_FertilityTip>开关这副身体是否允许受孕。妊娠期间不能关闭。</SSC_BodyManagement_FertilityTip>
+  <SSC_BodyManagement_BodyChanged>身体状态已经变了，重新查看后再操作。</SSC_BodyManagement_BodyChanged>
   <SSC_BodyManagement_CannotChange>当前无法调整生育状态。</SSC_BodyManagement_CannotChange>
-  <SSC_BodyManagement_NotStarted>尚未开始子宫开发。</SSC_BodyManagement_NotStarted>
-  <SSC_BodyManagement_NotComplete>子宫开发尚未完成。</SSC_BodyManagement_NotComplete>
-  <SSC_BodyManagement_PregnancyBlocked>妊娠期间不能关闭生育。</SSC_BodyManagement_PregnancyBlocked>
-  <SSC_BodyManagement_FertilityConfigUnavailable>子宫开发生育配置不可用。</SSC_BodyManagement_FertilityConfigUnavailable>
+  <SSC_BodyManagement_NotStarted>这副身体还没有接受过子宫开发。</SSC_BodyManagement_NotStarted>
+  <SSC_BodyManagement_NotComplete>子宫的开发还没有完成，现在还不能受孕。</SSC_BodyManagement_NotComplete>
+  <SSC_BodyManagement_PregnancyBlocked>正在妊娠，不能关闭生育。</SSC_BodyManagement_PregnancyBlocked>
+  <SSC_BodyManagement_FertilityConfigUnavailable>子宫开发的生育配置不可用。</SSC_BodyManagement_FertilityConfigUnavailable>
 </LanguageData>

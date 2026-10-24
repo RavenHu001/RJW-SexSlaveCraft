@@ -136,7 +136,7 @@ internal static partial class Program
                 var pawn = SurgeryPawn(); var milk = AttachLactationStage(pawn, lactation); Start(pawn, 1); Toggle(pawn, true);
                 Equal("×1", FertilityEntry(milk).ValueString);
                 string note = "SSC_HediffFertility_LactationOverrideNote".Translate();
-                Require(note.Contains("抑制已解除") && milk.TipStringExtra.Contains(note));
+                Require(!string.IsNullOrWhiteSpace(note) && milk.TipStringExtra.Contains(note));
                 Require(!milk.TipStringExtra.Contains("SSC_HediffFertility_"));
                 Toggle(pawn, false); Equal("×0.05", FertilityEntry(milk).ValueString); Require(!milk.TipStringExtra.Contains(note));
             });

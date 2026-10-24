@@ -37,23 +37,23 @@ internal static class Program
         Run("满级开关执行生产检查并刷新健康状态", () =>
         {
             var p = Body(2, 1); var h = SSCUterusDevelopmentUtility.Find(p); int before = p.health.Notifications;
-            Draw(p, "开启生育"); Require(h.FertilityEnabled && p.health.Notifications == before + 1);
-            Draw(p, "开启生育"); Require(!h.FertilityEnabled);
+            Draw(p, "SSC_BodyManagement_FertilityToggle".Translate()); Require(h.FertilityEnabled && p.health.Notifications == before + 1);
+            Draw(p, "SSC_BodyManagement_FertilityToggle".Translate()); Require(!h.FertilityEnabled);
         });
         Run("未完成的禁用控件不能被异常鼠标返回值绕过", () =>
-        { var p = Body(2); Widgets.IgnoreDisabled = true; Draw(p, "开启生育"); Require(!SSCUterusDevelopmentUtility.Find(p).FertilityEnabled); });
+        { var p = Body(2); Widgets.IgnoreDisabled = true; Draw(p, "SSC_BodyManagement_FertilityToggle".Translate()); Require(!SSCUterusDevelopmentUtility.Find(p).FertilityEnabled); });
         Run("妊娠时保留勾选、禁用关闭并显示原因", () =>
         {
             var p = Body(2, 1); SSCUterusDevelopmentUtility.TrySetFertilityEnabled(p, true, out _); p.Pregnant = true;
-            Widgets.IgnoreDisabled = true; Draw(p, "开启生育"); Require(SSCUterusDevelopmentUtility.Find(p).FertilityEnabled);
+            Widgets.IgnoreDisabled = true; Draw(p, "SSC_BodyManagement_FertilityToggle".Translate()); Require(SSCUterusDevelopmentUtility.Find(p).FertilityEnabled);
             Require(Widgets.Drawn.Single(d => d.Kind == "checkbox").Disabled);
-            Require(Widgets.Drawn.Any(d => d.Kind == "tip" && d.Label.Contains("妊娠期间不能关闭")));
+            Require(Widgets.Drawn.Any(d => d.Kind == "tip" && d.Label == "SSC_BodyManagement_PregnancyBlocked".Translate()));
         });
         Run("测量后才发生妊娠由实际提交拒绝", () =>
         {
             var p = Body(2, 1); SSCUterusDevelopmentUtility.TrySetFertilityEnabled(p, true, out _);
             var tab = new ITab_SexSlaveTraining(); var view = tab.Capture(p, 322); p.Pregnant = true;
-            Widgets.Click = "开启生育"; view.Draw(); Require(SSCUterusDevelopmentUtility.Find(p).FertilityEnabled);
+            Widgets.Click = "SSC_BodyManagement_FertilityToggle".Translate(); view.Draw(); Require(SSCUterusDevelopmentUtility.Find(p).FertilityEnabled);
             Require(Messages.Rejections.Single().Contains("妊娠"));
         });
         foreach (string change in new[] { "移除开发", "替换开发", "移除泌乳", "替换组件", "切换角色" })
@@ -221,7 +221,7 @@ internal static class Program
         if (change == "移除泌乳") p.health.RemoveHediff(p.health.hediffSet.GetFirstHediffOfDef(SSCDefOf.SSC_Lactating_SubState));
         if (change == "替换组件") p.Training = new CompSexSlaveTraining();
         if (change == "切换角色") tab.SelPawn = Body(3, 1);
-        Widgets.IgnoreDisabled = true; Widgets.Click = change == "移除泌乳" ? Strings.ITab_MilkProductionToggle : "开启生育"; view.Draw();
+        Widgets.IgnoreDisabled = true; Widgets.Click = change == "移除泌乳" ? Strings.ITab_MilkProductionToggle : "SSC_BodyManagement_FertilityToggle".Translate(); view.Draw();
         Require(!old.FertilityEnabled && !(SSCUterusDevelopmentUtility.Find(p)?.FertilityEnabled ?? false) && comp.milkProductionEnabled);
     }
     /// <summary>正常及异常绘制均归还颜色、禁用、字体、对齐和换行设置。</summary>

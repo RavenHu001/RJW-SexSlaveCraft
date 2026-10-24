@@ -96,7 +96,7 @@ internal static partial class Program
             // 第 4 批新增真实属性引用；宿主只提供正常基础值，能力、装备等修正不参与阶段专项。
             LoadStageStatReferences(game);
             // 生产 XML 仍走原版字段解析与交叉引用，防止手工抄写配置掩盖资源错误。
-            Check("production XML uses native loader, independent fertile stage and Chinese placeholders", () =>
+            Check("production XML uses native loader, independent fertile stage and approved Chinese text", () =>
             {
                 var xml = new XmlDocument(); xml.Load(Path.Combine(repo, "1.7/Defs/HediffDefs/SSC_UterusDevelopment.xml"));
                 development = DirectXmlToObject.ObjectFromXml<HediffDef>(xml.DocumentElement.SelectSingleNode("HediffDef"), false);
@@ -104,7 +104,9 @@ internal static partial class Program
                 Equal(SSCUterusDevelopmentUtility.DefName, development.defName);
                 Equal(typeof(Hediff_SSCUterusDevelopment), development.hediffClass);
                 Near(.01f, development.initialSeverity); Near(1f, development.maxSeverity);
-                Require(development.label.Contains("子宫开发")); Require(development.description.Contains("正式文案待定"));
+                Equal("恶堕化（子宫）", development.label);
+                Require(development.description.Contains("培养完成前自身生育能力为零"));
+                Require(!development.description.Contains("正式文案待定"));
                 Require(development.stages.All(stage => stage.fertilityFactor == 0));
                 Near(2.5f, development.GetModExtension<SSCUterusDevelopmentExtension>().fertileStage.fertilityFactor);
             });
@@ -132,6 +134,7 @@ internal static partial class Program
             HediffFertilityDisplayTests(repo, harmony.Value);
             LactationFertilityControlTests(repo);
             UterusDescriptionTests(repo);
+            UterusDefInjectedTests(repo);
         }
         finally { Scribe.mode = LoadSaveMode.Inactive; Current.Game = null; }
         Console.WriteLine($"{passed}/{passed + failed} cases passed");
@@ -176,7 +179,7 @@ internal static partial class Program
         Check("old bodies and read-only queries do not create a record or alter native fertility", () =>
         {
             var pawn = NewPawn(); Require(SSCUterusDevelopmentUtility.Find(pawn) == null); Near(1, Factor(pawn));
-            Require(!SSCUterusDevelopmentUtility.TrySetFertilityEnabled(pawn, true, out var reason)); Require(reason.Contains("尚未开始"));
+            Require(!SSCUterusDevelopmentUtility.TrySetFertilityEnabled(pawn, true, out var reason)); Equal("SSC_BodyManagement_NotStarted".Translate().ToString(), reason);
             Equal(0, pawn.health.hediffSet.hediffs.Count);
         });
         Check("creation attaches to Torso at one percent and persists through native health interval", () =>
@@ -195,7 +198,7 @@ internal static partial class Program
         foreach (float progress in new[] { .01f, .3f, .7f, .999f }) Check("incomplete body stays infertile and refuses enable: " + progress, () =>
         {
             var pawn = NewPawn(); var record = Start(pawn, progress);
-            Require(!SSCUterusDevelopmentUtility.TrySetFertilityEnabled(pawn, true, out var reason)); Require(reason.Contains("尚未完成"));
+            Require(!SSCUterusDevelopmentUtility.TrySetFertilityEnabled(pawn, true, out var reason)); Equal("SSC_BodyManagement_NotComplete".Translate().ToString(), reason);
             Near(0, Factor(pawn)); Require(!record.FertilityEnabled);
         });
         Check("completion defaults off; enable/disable refreshes health without modifying shared stages", () =>

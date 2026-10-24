@@ -3,10 +3,10 @@
 <Defs>
   <RecipeDef ParentName="SurgeryFlesh">
     <defName>SSC_Surgery_StartUterusDevelopment</defName>
-    <label>子宫开发启动手术（暂名）</label>
-    <description>在体内建立用于后续子宫开发的媒介。正式描述待补充。</description>
+    <label>子宫开发手术</label>
+    <description>将浓缩紫色纳米催情液与药物调和成制剂，经手术送入子宫最深处，让紫色微械在温热的宫腔里安定下来。刀口愈合之后，往后的交合与欢愉便会化作喂给微械的养分，让它继续改造这具身体的子宫。</description>
     <workerClass>SexSlaveCraft.Recipe_StartUterusDevelopment</workerClass>
-    <jobString>进行子宫开发启动手术</jobString>
+    <jobString>进行子宫开发手术</jobString>
     <workAmount>4000</workAmount>
     <humanlikeOnly>true</humanlikeOnly>
     <genderPrerequisite>Female</genderPrerequisite>

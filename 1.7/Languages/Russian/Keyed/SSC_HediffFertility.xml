@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- AI 辅助生成：身体健康状态的生育倍率说明，正式文案待定；属性名称复用原版 Fertility 标签。 -->
+<!-- AI 辅助生成：依据已确认的 v2 中文稿落实 Russian 文案；保留现有键名及参数契约。 -->
 <LanguageData>
-  <SSC_HediffFertility_Label>生育能力</SSC_HediffFertility_Label>
+  <SSC_HediffFertility_Label>Фертильность</SSC_HediffFertility_Label>
   <SSC_HediffFertility_Factor>×{0}</SSC_HediffFertility_Factor>
-  <SSC_HediffFertility_Description>此健康状态对自身原版生育能力的倍率，会与其他来源的影响相乘。这里显示该健康状态本身的作用，不代表最终受孕概率。</SSC_HediffFertility_Description>
-  <SSC_HediffFertility_LactationNote>关闭产奶不会移除永久泌乳期的生育影响。</SSC_HediffFertility_LactationNote>
-  <SSC_HediffFertility_LactationOverrideNote>子宫开发的生育模式已开启，本状态的生育抑制已解除。</SSC_HediffFertility_LactationOverrideNote>
+  <SSC_HediffFertility_Description>Множитель, с которым это состояние влияет на собственную фертильность тела. Он перемножается с эффектами из других источников и отражает лишь вклад этой модификации, а не итоговую вероятность зачатия.</SSC_HediffFertility_Description>
+  <SSC_HediffFertility_LactationNote>Выключение выработки молока лишь останавливает её, но не снимает подавление фертильности, вызванное постоянной лактацией.</SSC_HediffFertility_LactationNote>
+  <SSC_HediffFertility_LactationOverrideNote>Режим фертильности развитой матки включён, и подавление фертильности постоянной лактацией также снято.</SSC_HediffFertility_LactationOverrideNote>
 </LanguageData>

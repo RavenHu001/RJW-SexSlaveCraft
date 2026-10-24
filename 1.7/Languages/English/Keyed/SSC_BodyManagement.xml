@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- AI 辅助生成：第 5 批中文占位文案，正式文案待确认；已有泌乳开关和属性名称复用原资源。 -->
+<!-- AI 辅助生成：依据已确认的 v2 中文稿落实 English 文案；保留现有键名及参数契约。 -->
 <LanguageData>
-  <SSC_BodyManagement_Title>身体管理</SSC_BodyManagement_Title>
-  <SSC_BodyManagement_MilkTip>控制当前身体的产奶；关闭不会移除永久泌乳状态或重置已有奶量。</SSC_BodyManagement_MilkTip>
-  <SSC_BodyManagement_FertilityToggle>开启生育</SSC_BodyManagement_FertilityToggle>
-  <SSC_BodyManagement_FertilityTip>切换当前身体的生育状态。妊娠期间不能关闭。</SSC_BodyManagement_FertilityTip>
-  <SSC_BodyManagement_BodyChanged>身体状态已变化，请重新查看。</SSC_BodyManagement_BodyChanged>
-  <SSC_BodyManagement_CannotChange>当前无法调整生育状态。</SSC_BodyManagement_CannotChange>
-  <SSC_BodyManagement_NotStarted>尚未开始子宫开发。</SSC_BodyManagement_NotStarted>
-  <SSC_BodyManagement_NotComplete>子宫开发尚未完成。</SSC_BodyManagement_NotComplete>
-  <SSC_BodyManagement_PregnancyBlocked>妊娠期间不能关闭生育。</SSC_BodyManagement_PregnancyBlocked>
-  <SSC_BodyManagement_FertilityConfigUnavailable>子宫开发生育配置不可用。</SSC_BodyManagement_FertilityConfigUnavailable>
+  <SSC_BodyManagement_Title>Body management</SSC_BodyManagement_Title>
+  <SSC_BodyManagement_MilkTip>Toggle milk production in this body. Switching it off only stops milk production; it does not remove permanent lactation or empty stored milk.</SSC_BodyManagement_MilkTip>
+  <SSC_BodyManagement_FertilityToggle>Allow conception</SSC_BodyManagement_FertilityToggle>
+  <SSC_BodyManagement_FertilityTip>Toggle whether this body is allowed to conceive. This cannot be switched off during pregnancy.</SSC_BodyManagement_FertilityTip>
+  <SSC_BodyManagement_BodyChanged>The body's condition has changed. Check it again before making adjustments.</SSC_BodyManagement_BodyChanged>
+  <SSC_BodyManagement_CannotChange>The fertility state cannot be adjusted right now.</SSC_BodyManagement_CannotChange>
+  <SSC_BodyManagement_NotStarted>This body has not yet undergone uterine development.</SSC_BodyManagement_NotStarted>
+  <SSC_BodyManagement_NotComplete>Uterine development is not yet complete; conception is still unavailable.</SSC_BodyManagement_NotComplete>
+  <SSC_BodyManagement_PregnancyBlocked>Fertility cannot be switched off during pregnancy.</SSC_BodyManagement_PregnancyBlocked>
+  <SSC_BodyManagement_FertilityConfigUnavailable>The fertility configuration for uterine development is unavailable.</SSC_BodyManagement_FertilityConfigUnavailable>
 </LanguageData>

@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- AI 辅助生成：创建／手术及三态描述的中文占位文案；医术门槛复用既有 SSC_Cosmetic_MedicineRequired。 -->
+<!-- AI 辅助生成：依据已确认的 v2 中文稿落实 Russian 文案；保留现有键名及参数契约。 -->
 <LanguageData>
-  <SSC_UterusDevelopment_CannotStart>当前无法开始子宫开发。</SSC_UterusDevelopment_CannotStart>
-  <SSC_UterusDevelopment_AlreadyStarted>已经进行过子宫开发。</SSC_UterusDevelopment_AlreadyStarted>
-  <SSC_UterusDevelopment_MissingTorso>缺少有效的目标躯干部位。</SSC_UterusDevelopment_MissingTorso>
-  <SSC_UterusDevelopment_ConfigUnavailable>子宫开发配置不可用。</SSC_UterusDevelopment_ConfigUnavailable>
-  <SSC_UterusDevelopment_CreateFailed>未能建立子宫开发状态。</SSC_UterusDevelopment_CreateFailed>
-  <SSC_UterusDevelopment_SurgeryUnavailable>当前无法进行子宫开发手术。</SSC_UterusDevelopment_SurgeryUnavailable>
-  <SSC_UterusDevelopment_AdultFemaleRequired>需要成年女性人形身体。</SSC_UterusDevelopment_AdultFemaleRequired>
-  <SSC_UterusDevelopment_SlaveIdentityRequired>需要将 SSC 身份设为性奴。</SSC_UterusDevelopment_SlaveIdentityRequired>
-  <SSC_UterusDevelopment_ResearchRequired>尚未完成子宫开发研究。</SSC_UterusDevelopment_ResearchRequired>
-  <SSC_UterusDevelopment_PregnancyBlocked>妊娠期间不能进行子宫开发手术。</SSC_UterusDevelopment_PregnancyBlocked>
-  <SSC_UterusDevelopment_MissingOrgan>缺少适用的生殖器官。</SSC_UterusDevelopment_MissingOrgan>
-  <SSC_UterusDevelopment_DoctorRequired>缺少可执行手术的医生。</SSC_UterusDevelopment_DoctorRequired>
-  <SSC_UterusDevelopment_SurgeryConfigUnavailable>子宫开发手术配置不可用。</SSC_UterusDevelopment_SurgeryConfigUnavailable>
-  <SSC_UterusDevelopment_Started>子宫开发已开始，当前进度为 {0}。</SSC_UterusDevelopment_Started>
-  <SSC_UterusDevelopment_DescriptionDeveloping>子宫开发仍在进行中，当前身体暂不能开启生育。持续培养可推进进度，完成后可以选择生育模式。</SSC_UterusDevelopment_DescriptionDeveloping>
-  <SSC_UterusDevelopment_DescriptionInfertile>子宫开发已完成，当前处于禁育模式，自身生育能力降为零，并维持已获得的身体强化。切换模式不会清除开发进度。</SSC_UterusDevelopment_DescriptionInfertile>
-  <SSC_UterusDevelopment_DescriptionFertile>子宫开发已完成，当前已开启生育模式，自身生育能力得到增强，之后形成的合格新妊娠孕期缩短。永久泌乳造成的生育抑制得到解除，其他生育影响仍然生效。</SSC_UterusDevelopment_DescriptionFertile>
+  <SSC_UterusDevelopment_CannotStart>Сейчас нельзя начать развитие матки.</SSC_UterusDevelopment_CannotStart>
+  <SSC_UterusDevelopment_AlreadyStarted>Это тело уже прошло операцию по развитию матки. Повторная операция не нужна.</SSC_UterusDevelopment_AlreadyStarted>
+  <SSC_UterusDevelopment_MissingTorso>Отсутствует туловище, пригодное для операции.</SSC_UterusDevelopment_MissingTorso>
+  <SSC_UterusDevelopment_ConfigUnavailable>Настройки развития матки недоступны.</SSC_UterusDevelopment_ConfigUnavailable>
+  <SSC_UterusDevelopment_CreateFailed>Не удалось оставить в этом теле метку развития.</SSC_UterusDevelopment_CreateFailed>
+  <SSC_UterusDevelopment_SurgeryUnavailable>Сейчас нельзя провести операцию по развитию матки.</SSC_UterusDevelopment_SurgeryUnavailable>
+  <SSC_UterusDevelopment_AdultFemaleRequired>Это развитие доступно только взрослому женскому телу.</SSC_UterusDevelopment_AdultFemaleRequired>
+  <SSC_UterusDevelopment_SlaveIdentityRequired>Сначала пациентка должна получить статус секс-рабыни.</SSC_UterusDevelopment_SlaveIdentityRequired>
+  <SSC_UterusDevelopment_ResearchRequired>Исследование «Преобразование внутренних органов с помощью PNA» ещё не завершено.</SSC_UterusDevelopment_ResearchRequired>
+  <SSC_UterusDevelopment_PregnancyBlocked>Это тело уже вынашивает ребёнка; сейчас такую операцию проводить нельзя.</SSC_UterusDevelopment_PregnancyBlocked>
+  <SSC_UterusDevelopment_MissingOrgan>У этого тела нет половых органов, пригодных для развития.</SSC_UterusDevelopment_MissingOrgan>
+  <SSC_UterusDevelopment_DoctorRequired>Нет врача, способного провести операцию.</SSC_UterusDevelopment_DoctorRequired>
+  <SSC_UterusDevelopment_SurgeryConfigUnavailable>Настройки операции по развитию матки недоступны.</SSC_UterusDevelopment_SurgeryConfigUnavailable>
+  <SSC_UterusDevelopment_Started>Развитие матки началось. Фиолетовые наномашины затаились в самой глубине этого тела. Текущий прогресс: {0}.</SSC_UterusDevelopment_Started>
+  <SSC_UterusDevelopment_DescriptionDeveloping>Фиолетовые наномашины обосновались в матке и день за днём придают ей новый облик. Это тело ещё далеко не готово вынашивать новую жизнь; лишь снова и снова испытывая глубокое наслаждение, оно сможет понемногу созреть.</SSC_UterusDevelopment_DescriptionDeveloping>
+  <SSC_UterusDevelopment_DescriptionInfertile>Матка полностью развита, а тело стало соблазнительным сосудом, созданным лишь для наслаждения. Больше не отвлекаясь на вынашивание, оно отдаёт все силы быстрому заживлению ран и избавлению от усталости.</SSC_UterusDevelopment_DescriptionInfertile>
+  <SSC_UterusDevelopment_DescriptionFertile>Полностью развитая матка стала лоном, всегда готовым к зачатию. Это тело беременеет легче обычного, а наступившая беременность длится меньше.</SSC_UterusDevelopment_DescriptionFertile>
 </LanguageData>

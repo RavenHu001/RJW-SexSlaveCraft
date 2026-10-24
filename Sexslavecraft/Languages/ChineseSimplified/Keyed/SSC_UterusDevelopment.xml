@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- AI 辅助生成：创建／手术及三态描述的中文占位文案；医术门槛复用既有 SSC_Cosmetic_MedicineRequired。 -->
+<!-- AI 辅助生成：依据已确认的 v2 中文稿落实 ChineseSimplified 文案；保留现有键名及参数契约。 -->
 <LanguageData>
-  <SSC_UterusDevelopment_CannotStart>当前无法开始子宫开发。</SSC_UterusDevelopment_CannotStart>
-  <SSC_UterusDevelopment_AlreadyStarted>已经进行过子宫开发。</SSC_UterusDevelopment_AlreadyStarted>
-  <SSC_UterusDevelopment_MissingTorso>缺少有效的目标躯干部位。</SSC_UterusDevelopment_MissingTorso>
+  <SSC_UterusDevelopment_CannotStart>现在无法开始子宫开发。</SSC_UterusDevelopment_CannotStart>
+  <SSC_UterusDevelopment_AlreadyStarted>这副身体已经接受过子宫开发，无需再次手术。</SSC_UterusDevelopment_AlreadyStarted>
+  <SSC_UterusDevelopment_MissingTorso>缺少可施术的躯干部位。</SSC_UterusDevelopment_MissingTorso>
   <SSC_UterusDevelopment_ConfigUnavailable>子宫开发配置不可用。</SSC_UterusDevelopment_ConfigUnavailable>
-  <SSC_UterusDevelopment_CreateFailed>未能建立子宫开发状态。</SSC_UterusDevelopment_CreateFailed>
+  <SSC_UterusDevelopment_CreateFailed>未能在这副身体里留下开发的印记。</SSC_UterusDevelopment_CreateFailed>
   <SSC_UterusDevelopment_SurgeryUnavailable>当前无法进行子宫开发手术。</SSC_UterusDevelopment_SurgeryUnavailable>
-  <SSC_UterusDevelopment_AdultFemaleRequired>需要成年女性人形身体。</SSC_UterusDevelopment_AdultFemaleRequired>
-  <SSC_UterusDevelopment_SlaveIdentityRequired>需要将 SSC 身份设为性奴。</SSC_UterusDevelopment_SlaveIdentityRequired>
-  <SSC_UterusDevelopment_ResearchRequired>尚未完成子宫开发研究。</SSC_UterusDevelopment_ResearchRequired>
-  <SSC_UterusDevelopment_PregnancyBlocked>妊娠期间不能进行子宫开发手术。</SSC_UterusDevelopment_PregnancyBlocked>
-  <SSC_UterusDevelopment_MissingOrgan>缺少适用的生殖器官。</SSC_UterusDevelopment_MissingOrgan>
-  <SSC_UterusDevelopment_DoctorRequired>缺少可执行手术的医生。</SSC_UterusDevelopment_DoctorRequired>
+  <SSC_UterusDevelopment_AdultFemaleRequired>这项开发只面向成年的女性身体。</SSC_UterusDevelopment_AdultFemaleRequired>
+  <SSC_UterusDevelopment_SlaveIdentityRequired>受术者需要先具有性奴身份。</SSC_UterusDevelopment_SlaveIdentityRequired>
+  <SSC_UterusDevelopment_ResearchRequired>尚未完成「纳米催情液内脏改造」研究。</SSC_UterusDevelopment_ResearchRequired>
+  <SSC_UterusDevelopment_PregnancyBlocked>腹中已有了身孕，此时不能动这项手术。</SSC_UterusDevelopment_PregnancyBlocked>
+  <SSC_UterusDevelopment_MissingOrgan>这副身体缺少可用于开发的生殖器官。</SSC_UterusDevelopment_MissingOrgan>
+  <SSC_UterusDevelopment_DoctorRequired>缺少能够执刀的医生。</SSC_UterusDevelopment_DoctorRequired>
   <SSC_UterusDevelopment_SurgeryConfigUnavailable>子宫开发手术配置不可用。</SSC_UterusDevelopment_SurgeryConfigUnavailable>
-  <SSC_UterusDevelopment_Started>子宫开发已开始，当前进度为 {0}。</SSC_UterusDevelopment_Started>
-  <SSC_UterusDevelopment_DescriptionDeveloping>子宫开发仍在进行中，当前身体暂不能开启生育。持续培养可推进进度，完成后可以选择生育模式。</SSC_UterusDevelopment_DescriptionDeveloping>
-  <SSC_UterusDevelopment_DescriptionInfertile>子宫开发已完成，当前处于禁育模式，自身生育能力降为零，并维持已获得的身体强化。切换模式不会清除开发进度。</SSC_UterusDevelopment_DescriptionInfertile>
-  <SSC_UterusDevelopment_DescriptionFertile>子宫开发已完成，当前已开启生育模式，自身生育能力得到增强，之后形成的合格新妊娠孕期缩短。永久泌乳造成的生育抑制得到解除，其他生育影响仍然生效。</SSC_UterusDevelopment_DescriptionFertile>
+  <SSC_UterusDevelopment_Started>子宫开发已经启动，紫色微械在这副身体的最深处蛰伏下来。当前进度：{0}。</SSC_UterusDevelopment_Started>
+  <SSC_UterusDevelopment_DescriptionDeveloping>紫色微械已在子宫里安定下来，日复一日地把它改造成新的模样。这副身体还远没准备好孕育，只能靠一次次深入的欢愉，把它一点一点喂熟。</SSC_UterusDevelopment_DescriptionDeveloping>
+  <SSC_UterusDevelopment_DescriptionInfertile>子宫已被彻底开发，成了一具只为欢愉而生的媚体。它不再为孕育分神，只把全部的力气都用来让伤口更快愈合、让疲惫更快消退。</SSC_UterusDevelopment_DescriptionInfertile>
+  <SSC_UterusDevelopment_DescriptionFertile>子宫已被彻底开发，成了一处随时准备受孕的孕宫。它比寻常的身体更容易怀上，而一旦怀上，妊娠期也会更短。</SSC_UterusDevelopment_DescriptionFertile>
 </LanguageData>

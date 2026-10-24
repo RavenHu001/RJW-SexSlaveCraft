@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- AI 辅助生成：第 5 批中文占位文案，正式文案待确认；已有泌乳开关和属性名称复用原资源。 -->
+<!-- AI 辅助生成：依据已确认的 v2 中文稿落实 Russian 文案；保留现有键名及参数契约。 -->
 <LanguageData>
-  <SSC_BodyManagement_Title>身体管理</SSC_BodyManagement_Title>
-  <SSC_BodyManagement_MilkTip>控制当前身体的产奶；关闭不会移除永久泌乳状态或重置已有奶量。</SSC_BodyManagement_MilkTip>
-  <SSC_BodyManagement_FertilityToggle>开启生育</SSC_BodyManagement_FertilityToggle>
-  <SSC_BodyManagement_FertilityTip>切换当前身体的生育状态。妊娠期间不能关闭。</SSC_BodyManagement_FertilityTip>
-  <SSC_BodyManagement_BodyChanged>身体状态已变化，请重新查看。</SSC_BodyManagement_BodyChanged>
-  <SSC_BodyManagement_CannotChange>当前无法调整生育状态。</SSC_BodyManagement_CannotChange>
-  <SSC_BodyManagement_NotStarted>尚未开始子宫开发。</SSC_BodyManagement_NotStarted>
-  <SSC_BodyManagement_NotComplete>子宫开发尚未完成。</SSC_BodyManagement_NotComplete>
-  <SSC_BodyManagement_PregnancyBlocked>妊娠期间不能关闭生育。</SSC_BodyManagement_PregnancyBlocked>
-  <SSC_BodyManagement_FertilityConfigUnavailable>子宫开发生育配置不可用。</SSC_BodyManagement_FertilityConfigUnavailable>
+  <SSC_BodyManagement_Title>Управление телом</SSC_BodyManagement_Title>
+  <SSC_BodyManagement_MilkTip>Включает или выключает выработку молока в этом теле. Выключение лишь останавливает выработку, не снимая постоянную лактацию и не удаляя накопленное молоко.</SSC_BodyManagement_MilkTip>
+  <SSC_BodyManagement_FertilityToggle>Разрешить зачатие</SSC_BodyManagement_FertilityToggle>
+  <SSC_BodyManagement_FertilityTip>Определяет, разрешено ли этому телу зачать. Во время беременности выключить нельзя.</SSC_BodyManagement_FertilityTip>
+  <SSC_BodyManagement_BodyChanged>Состояние тела изменилось. Проверьте его ещё раз перед настройкой.</SSC_BodyManagement_BodyChanged>
+  <SSC_BodyManagement_CannotChange>Сейчас нельзя изменить состояние фертильности.</SSC_BodyManagement_CannotChange>
+  <SSC_BodyManagement_NotStarted>Это тело ещё не прошло операцию по развитию матки.</SSC_BodyManagement_NotStarted>
+  <SSC_BodyManagement_NotComplete>Развитие матки ещё не завершено; зачатие пока недоступно.</SSC_BodyManagement_NotComplete>
+  <SSC_BodyManagement_PregnancyBlocked>Во время беременности нельзя отключить фертильность.</SSC_BodyManagement_PregnancyBlocked>
+  <SSC_BodyManagement_FertilityConfigUnavailable>Настройки фертильности для развития матки недоступны.</SSC_BodyManagement_FertilityConfigUnavailable>
 </LanguageData>

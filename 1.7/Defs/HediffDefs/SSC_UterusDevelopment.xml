@@ -1,10 +1,10 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Defs>
   <!-- AI 辅助生成：当前身体的进度、生育因子及第 4 批阶段收益；各阶段替换、不累乘。 -->
   <HediffDef>
     <defName>SSC_UterusDevelopment</defName>
-    <label>子宫开发（暂名）</label>
-    <description>记录当前身体的子宫开发进度。培养完成前自身生育能力为零；完成后可手动开启生育。正式文案待定。</description>
+    <label>恶堕化（子宫）</label>
+    <description>记录当前身体的子宫开发进度。培养完成前自身生育能力为零；完成后可手动开启生育。</description>
     <hediffClass>SexSlaveCraft.Hediff_SSCUterusDevelopment</hediffClass>
     <!-- 名称行统一为与旧部位开发相同的亮粉色 #FF69B4（RGB 255、105、180）；培养及满级两态共用，描述正文不染色。 -->
     <defaultLabelColor>(255, 105, 180)</defaultLabelColor>
@@ -21,12 +21,12 @@
       <!-- 常规阶段均关闭自身原版生育；前 30% 没有额外属性收益。 -->
       <li>
         <minSeverity>0</minSeverity>
-        <label>培养中</label>
+        <label>微械入宫</label>
         <fertilityFactor>0</fertilityFactor>
       </li>
       <li>
         <minSeverity>0.3</minSeverity>
-        <label>培养中·第一阶段</label>
+        <label>宫腔渐熟</label>
         <fertilityFactor>0</fertilityFactor>
         <statFactors>
           <SexFrequency>1.10</SexFrequency>
@@ -37,7 +37,7 @@
       </li>
       <li>
         <minSeverity>0.7</minSeverity>
-        <label>培养中·第二阶段</label>
+        <label>深宫媚熟</label>
         <fertilityFactor>0</fertilityFactor>
         <statFactors>
           <SexFrequency>1.25</SexFrequency>
@@ -48,7 +48,7 @@
       </li>
       <li>
         <minSeverity>1</minSeverity>
-        <label>已完成·生育关闭</label>
+        <label>完熟媚体</label>
         <fertilityFactor>0</fertilityFactor>
         <statFactors>
           <SexFrequency>1.50</SexFrequency>
@@ -64,7 +64,7 @@
       <li Class="SexSlaveCraft.SSCUterusDevelopmentExtension">
         <fertileStage>
           <minSeverity>1</minSeverity>
-          <label>已完成·生育开启</label>
+          <label>完熟孕宫</label>
           <fertilityFactor>2.5</fertilityFactor>
           <statFactors>
             <SexFrequency>1.50</SexFrequency>

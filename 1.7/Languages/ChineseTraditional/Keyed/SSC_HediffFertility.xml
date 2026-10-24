@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- AI 辅助生成：身体健康状态的生育倍率说明，正式文案待定；属性名称复用原版 Fertility 标签。 -->
+<!-- AI 辅助生成：依据已确认的 v2 中文稿落实 ChineseTraditional 文案；保留现有键名及参数契约。 -->
 <LanguageData>
   <SSC_HediffFertility_Label>生育能力</SSC_HediffFertility_Label>
   <SSC_HediffFertility_Factor>×{0}</SSC_HediffFertility_Factor>
-  <SSC_HediffFertility_Description>此健康状态对自身原版生育能力的倍率，会与其他来源的影响相乘。这里显示该健康状态本身的作用，不代表最终受孕概率。</SSC_HediffFertility_Description>
-  <SSC_HediffFertility_LactationNote>关闭产奶不会移除永久泌乳期的生育影响。</SSC_HediffFertility_LactationNote>
-  <SSC_HediffFertility_LactationOverrideNote>子宫开发的生育模式已开启，本状态的生育抑制已解除。</SSC_HediffFertility_LactationOverrideNote>
+  <SSC_HediffFertility_Description>這項狀態對這副身體自身生育能力的倍率，會與其他來源的影響相乘。它只反映這項改造本身的作用，不代表最終受孕的機率。</SSC_HediffFertility_Description>
+  <SSC_HediffFertility_LactationNote>關閉產奶只會止住出奶，不會解除永久泌乳對生育的壓制。</SSC_HediffFertility_LactationNote>
+  <SSC_HediffFertility_LactationOverrideNote>子宮開發的生育模式已經開啟，永久泌乳對生育的壓制被一併解開。</SSC_HediffFertility_LactationOverrideNote>
 </LanguageData>

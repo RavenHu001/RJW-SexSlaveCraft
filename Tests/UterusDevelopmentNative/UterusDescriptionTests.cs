@@ -87,7 +87,7 @@ internal static partial class Program
             {
                 var pawn = SurgeryPawn(); var record = Start(pawn, .7f);
                 LoadBodyManagementLanguage(repo, language);
-                // 四语目前使用同一套中文占位；给真实语言容器附不同标记，检测硬编码和旧语言缓存。
+                // 在各语定稿正文后附不同标记，同时检测硬编码和旧语言缓存。
                 foreach (string suffix in new[] { "Developing", "Infertile", "Fertile" })
                     LanguageDatabase.activeLanguage.keyedReplacements["SSC_UterusDevelopment_Description" + suffix].value += "（语言检查：" + language + "）";
                 RequireDescription(record, "Developing"); Require(record.Description.Contains(language));
