@@ -1,5 +1,7 @@
 # 开发资料入口
 
+2026-10-24 目录核对：已完成／已被取代的历史实现归入 Completed；Verification 仅保留实际尚待查看的四份专项记录和索引。目录位置不代表新增验收，也不改变历史版本归属。
+
 **2.4.5 开发版 — 2026-10-24 登记，尚未发布。** 2.4.4 后开发已归入本版；最新正式下载仍为 [v2.4.4](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.4)。1.7 运行元数据暂保留 2.4.4，1.6／Common 冻结于 2.4.1。
 
 [文档总索引](../README.md) · [完成记录](Completed/README.md) · [待验收](Verification/README.md) · [当前规划](../Design/README.md) · [测试说明](../../Tests/README.md)

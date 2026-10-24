@@ -132,7 +132,7 @@ pwsh -File Scripts/Test-All.ps1 -GameVersion 1.7 -HarmonyAssemblyPath 'C:\Depend
 
 ## 身份、训导官与自我调教
 
-- [PnaLoad](PnaLoad/README.md)：2.4.1 的 PNA 负荷、成瘾、来源、信息栏与旧档回归；P3 直接执行 SSC 新生／成熟复制及身体归属过滤，详见[P3 测试记录](../Docs/Development/Verification/PNA机制重置P3实现与测试.md)。
+- [PnaLoad](PnaLoad/README.md)：2.4.1 的 PNA 负荷、成瘾、来源、信息栏与旧档回归；P3 直接执行 SSC 新生／成熟复制及身体归属过滤，详见[P3 测试记录](../Docs/Development/Completed/PNA机制重置P3实现与测试.md)。
 
 - [TrainerIdentity](TrainerIdentity/README.md)：调教员身份回归。
 - [TrainerIntegration](TrainerIntegration/README.md)：训导官人格恢复集成回归。

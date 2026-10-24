@@ -76,7 +76,7 @@ Core Heart 中心约 RGB=(205,72,104)、Alpha=176（255 尺度）；补色后约
 
 单个 Mote 的尾部固定在攻击者前方 `min(0.25,距离×0.25)` 格，长度在前 0.10 秒从最大长度的 12% 缓出伸至全长，最大长度 `min(1.6,距离×1.5)`。每次改变长度时同时沿攻击方向移动中心，保持尾部不动，前端真实向前伸展；斜向同样成立。0.10 秒后保持长度、按平方曲线收细宽度，宽度最低为初始值的 2%。原版按 0.02 秒渐入、0.10 秒停留、0.30 秒淡出处理透明度，总时长 0.42 秒；不把攻击距离、目标状态或药效作为动画进度。
 
-专用图为内置 **imagegen** 生成的 RGBA PNG，尖端朝上、尾部朝下，画布 **1254×1254**、230626 字节。保留生成原图像素和真实 alpha，无后续手工重绘、裁切或压缩；`graphicData.drawSize=(5,1)` 仅补偿横向透明留白，使实际尖梭轮廓宽度约 0.25～0.3 格。游戏内不将整张透明画布的宽度当作实际视觉宽度。旧资源 `1.7/Textures/Things/Mote/SSC_PnaStabSpindle.png` 已在泛光实现中撤下，可从历史提交 `8fdc491` 追溯；完整最终提示词保存在 [SSC_PnaStabSpindle.prompt.txt](../Verification/Assets/SSC_PnaStabSpindle.prompt.txt)。
+专用图为内置 **imagegen** 生成的 RGBA PNG，尖端朝上、尾部朝下，画布 **1254×1254**、230626 字节。保留生成原图像素和真实 alpha，无后续手工重绘、裁切或压缩；`graphicData.drawSize=(5,1)` 仅补偿横向透明留白，使实际尖梭轮廓宽度约 0.25～0.3 格。游戏内不将整张透明画布的宽度当作实际视觉宽度。旧资源 `1.7/Textures/Things/Mote/SSC_PnaStabSpindle.png` 已在泛光实现中撤下，可从历史提交 `8fdc491` 追溯；完整最终提示词保存在 [SSC_PnaStabSpindle.prompt.txt](../../Art/Source/SSC_PnaStabSpindle.prompt.txt)。
 
 动画通过 `MoteMaker.MakeStaticMote` 创建，遵守原版地图 Mote 饱和限制；专用类只在 `TimeInterval` 中完整调用父类后更新位置和线性缩放，销毁后不再更新。继承 MoteBase 的正常 ticker、非存档与普通 Mote 材质；原版负责 AgeSecs、暂停、Alpha、绘制与回收。每次攻击仍只有一个对象，无额外发射器、声音或灯光。没有改动受药、抗性、伤害或远程拖尾代码。
 
