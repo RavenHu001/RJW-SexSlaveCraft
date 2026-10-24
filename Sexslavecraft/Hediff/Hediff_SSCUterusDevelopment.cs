@@ -24,6 +24,22 @@ namespace SexSlaveCraft
         /// <summary>未完成时不暴露开启态；真正切换还须经工具类检查妊娠。</summary>
         public bool FertilityEnabled => IsComplete && fertilityEnabled;
 
+        /// <summary>按当前身体的培养进度与生育选择返回本地化正文，不保存或缓存描述状态。</summary>
+        public override string Description
+        {
+            get
+            {
+                // 无效、离体或尚未加入身体的实例使用通用定义说明，不补建开发记录。
+                if (!SSCUterusDevelopmentUtility.IsCurrentRecord(this)) return base.Description;
+                // 培养期的各属性阶段共用一套正文；满级再按现有开关区分两套正文。
+                // 每次读取都查当前语言，切换模式或语言无需修改共享 Def 或另存字段。
+                string key = !IsComplete ? "SSC_UterusDevelopment_DescriptionDeveloping"
+                    : FertilityEnabled ? "SSC_UterusDevelopment_DescriptionFertile"
+                    : "SSC_UterusDevelopment_DescriptionInfertile";
+                return key.Translate();
+            }
+        }
+
         /// <summary>统一约束运行时进度写入，并清除未完成状态下失效的开启选择。</summary>
         public override float Severity
         {

@@ -43,6 +43,7 @@ namespace Verse
     public class HediffDef
     {
         public string defName;
+        public string description;
         public Type hediffClass;
         public List<HediffStage> stages = new();
         public SSCUterusDevelopmentExtension Extension;
@@ -60,6 +61,7 @@ namespace Verse
         public BodyPartRecord Part;
         public object Comp;
         public virtual float Severity { get; set; }
+        public virtual string Description => def.description;
         public virtual HediffStage CurStage => def.stages.Last(stage => Severity >= stage.minSeverity);
         public T TryGetComp<T>() where T : class => Comp as T;
         public virtual void PostMake() { }

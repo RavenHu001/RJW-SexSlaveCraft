@@ -131,6 +131,7 @@ internal static partial class Program
             BodyManagementLanguageTests(repo);
             HediffFertilityDisplayTests(repo, harmony.Value);
             LactationFertilityControlTests(repo);
+            UterusDescriptionTests(repo);
         }
         finally { Scribe.mode = LoadSaveMode.Inactive; Current.Game = null; }
         Console.WriteLine($"{passed}/{passed + failed} cases passed");

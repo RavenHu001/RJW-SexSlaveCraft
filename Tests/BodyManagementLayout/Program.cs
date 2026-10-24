@@ -30,7 +30,7 @@ internal static class Program
         foreach (string language in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" })
             Run("本地化键、镜像、占位参数及旧泌乳键复用：" + language, () => LanguageResources(repo, language));
         foreach (string language in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" })
-            Run("早期创建／手术文案资源完整性：" + language, () => StartupLanguageResources(repo, language));
+            Run("创建／手术与三态描述文案资源完整性：" + language, () => StartupLanguageResources(repo, language));
         Run("长标题与开关译文按缩进宽度测量且无占位符泄漏", LongTranslations);
         foreach (float progress in new[] { .01f, .3f, .7f, .99999f, 1f })
             Run("各培养阶段只显示生育开关 " + progress, () => StageDisplay(progress));
@@ -171,7 +171,8 @@ internal static class Program
             .Root.Elements().ToDictionary(e => e.Name.LocalName, e => e.Value);
         Require(entries.Keys.Order().SequenceEqual(reference.Keys.Order()));
         string source = "";
-        foreach (string file in new[] { "common/SSCUterusDevelopmentUtility.cs", "common/SSCUterusSurgeryUtility.cs", "Recipe/Recipe_StartUterusDevelopment.cs" })
+        // 描述键与启动提示共用资源文件，覆盖新增调用来源，仍严格核对全部键都有实际调用。
+        foreach (string file in new[] { "common/SSCUterusDevelopmentUtility.cs", "common/SSCUterusSurgeryUtility.cs", "Recipe/Recipe_StartUterusDevelopment.cs", "Hediff/Hediff_SSCUterusDevelopment.cs" })
         {
             string code = File.ReadAllText(Path.Combine(repo, "Sexslavecraft", file)); source += code;
             foreach (Match literal in Regex.Matches(code, "\"(?:\\\\.|[^\"\\\\])*\""))

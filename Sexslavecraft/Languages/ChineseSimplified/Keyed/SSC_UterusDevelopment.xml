@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- AI 辅助生成：第 1～2 批创建／手术的中文占位文案；医术门槛复用既有 SSC_Cosmetic_MedicineRequired。 -->
+<!-- AI 辅助生成：创建／手术及三态描述的中文占位文案；医术门槛复用既有 SSC_Cosmetic_MedicineRequired。 -->
 <LanguageData>
   <SSC_UterusDevelopment_CannotStart>当前无法开始子宫开发。</SSC_UterusDevelopment_CannotStart>
   <SSC_UterusDevelopment_AlreadyStarted>已经进行过子宫开发。</SSC_UterusDevelopment_AlreadyStarted>
@@ -15,4 +15,7 @@
   <SSC_UterusDevelopment_DoctorRequired>缺少可执行手术的医生。</SSC_UterusDevelopment_DoctorRequired>
   <SSC_UterusDevelopment_SurgeryConfigUnavailable>子宫开发手术配置不可用。</SSC_UterusDevelopment_SurgeryConfigUnavailable>
   <SSC_UterusDevelopment_Started>子宫开发已开始，当前进度为 {0}。</SSC_UterusDevelopment_Started>
+  <SSC_UterusDevelopment_DescriptionDeveloping>子宫开发仍在进行中，当前身体暂不能开启生育。持续培养可推进进度，完成后可以选择生育模式。</SSC_UterusDevelopment_DescriptionDeveloping>
+  <SSC_UterusDevelopment_DescriptionInfertile>子宫开发已完成，当前处于禁育模式，自身生育能力降为零，并维持已获得的身体强化。切换模式不会清除开发进度。</SSC_UterusDevelopment_DescriptionInfertile>
+  <SSC_UterusDevelopment_DescriptionFertile>子宫开发已完成，当前已开启生育模式，自身生育能力得到增强，之后形成的合格新妊娠孕期缩短。永久泌乳造成的生育抑制得到解除，其他生育影响仍然生效。</SSC_UterusDevelopment_DescriptionFertile>
 </LanguageData>
