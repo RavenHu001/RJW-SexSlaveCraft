@@ -56,18 +56,19 @@ namespace SexSlaveCraft
         public const string MasterDesireInfestation = "SSC_MasterDesireInfestation";
         public const string InfestationMarker = "SSC_Hediff_MasterDesireInfestation";
         // 注册表只声明能力及可选规则，不保存每个 Pawn 的开启值，也不在这里发放能力收益。
+        // 模型宿主可仅链接某类载体；实际 1.7 不定义 SCOPED_TEST，始终注册全部五项。
         private static readonly List<SSCAbilityToggleDefinition> definitions = new List<SSCAbilityToggleDefinition>
         {
             new SSCAbilityToggleDefinition(MasterDesireInfestation, SSCAbilityToggleGroup.Master, PawnIdentity.Master,
                 "SSC_AbilityToggle_MasterDesireInfestation_Label", "SSC_AbilityToggle_MasterDesireInfestation_Tip", InfestationMarker)
-#if SSC_RW17 || SSC_ABILITY_TOGGLE_MASTER_SHARE
+#if (SSC_RW17 && !SSC_ABILITY_TOGGLE_SCOPED_TEST) || SSC_ABILITY_TOGGLE_MASTER_SHARE
             // 分伤沿原缰绳保存，排序保持在恩赐之前；百分比提示仍使用原业务常量。
             , new SSCAbilityToggleDefinition(MasterDamageSharing, SSCAbilityToggleGroup.Master, PawnIdentity.Master,
                 "SSC_MasterShareDamage_Label", "SSC_MasterShareDamage_Desc", defaultEnabled: true,
                 backend: SSCBridleAbilityToggleBackend.Instance, order: -100,
                 tipRule: pawn => "SSC_MasterShareDamage_Desc".Translate(SSCMasterBondUtility.DamageShareRatio.ToStringPercent()).ToString())
 #endif
-#if SSC_RW17 || SSC_ABILITY_TOGGLE_BODY
+#if (SSC_RW17 && !SSC_ABILITY_TOGGLE_SCOPED_TEST) || SSC_ABILITY_TOGGLE_BODY
             // 两项同处身体栏但保存源不同：泌乳沿 Comp，生育沿身体 Hediff，均不迁入人格字典。
             , new SSCAbilityToggleDefinition(MilkProduction, SSCAbilityToggleGroup.Body, PawnIdentity.Unset,
                 "SSC_ITab_MilkProductionToggle", "SSC_BodyManagement_MilkTip", defaultEnabled: true,
@@ -79,7 +80,7 @@ namespace SexSlaveCraft
                 backend: SSCUterusAbilityToggleBackend.Instance, order: 10,
                 visibleRule: pawn => pawn?.TryGetComp<CompSexSlaveTraining>() != null && SSCUterusDevelopmentUtility.Find(pawn) != null)
 #endif
-#if SSC_RW17 || SSC_ABILITY_TOGGLE_GEL
+#if (SSC_RW17 && !SSC_ABILITY_TOGGLE_SCOPED_TEST) || SSC_ABILITY_TOGGLE_GEL
             // 外观只接入个人渲染选择；颜色、透明度、快照和高频渲染查询仍由原外观模块负责。
             , new SSCAbilityToggleDefinition(GelRendering, SSCAbilityToggleGroup.Appearance, PawnIdentity.Unset,
                 "SSC_GelAppearance_RenderEnabled", "SSC_GelAppearance_RenderTip", defaultEnabled: true,

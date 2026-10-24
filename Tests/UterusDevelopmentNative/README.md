@@ -1,5 +1,7 @@
 # 子宫开发第 1～5 批原生专项
 
+2026-10-24 通用能力开关第三批：**479／479**（437＋42）。新增真实五项保存源的 32 种真假 Scribe 组合、全部旧字段默认、Comp／人格／四种 owner 替换、marker 对身体／关系隔离及原健康克隆例外。健康和训练组件分别使用原生节点恢复再组合，不能据此宣称完整 Pawn 世界跨引用存档通过；加载实际本批候选并核对哈希，见[第三批记录](../../Docs/Development/Completed/通用能力开关框架第三批生命周期复核与验证.md)。
+
 2026-10-24 通用开关框架第二批：**437／437**（原 432＋5），使用本次隔离候选 DLL；公共五项注册、只读不补建、生育身体记录／实际倍率、原妊娠拒绝和牛特化四档收益均通过。新增可选 `-p:SscAssemblyPath=<候选 DLL 绝对路径>`，此模式不经生产 ProjectReference 重建正式 DLL，仍构建 Unity 边界；启动输出实际载入路径及 SHA-256，已与候选核对。正常默认 ProjectReference 模式保留，构建参数可沿用文末命令并增加该参数，见[本批验证](../../Docs/Development/Completed/通用能力开关框架第二批实现与验证.md)。
 
 2026-10-24 医药类别调整：两项启动手术的药物筛选均采用原版 `Medicine` 类别；局部宿主补齐类别成员及类别库阶段标记，继续由真实 `ThingFilter.ResolveReferences` 解析生产资源。原生专项仍为 432／432，通过 `BuildProjectReferences=false` 仅重编宿主，生产 DLL／BUILD-INFO 不变；日志在 `.builds/surgery-medicine-category/`，未同步游戏。

@@ -1,5 +1,6 @@
 <Project>
-  <PropertyGroup><DefineConstants>$(DefineConstants);SSC_ABILITY_TOGGLE_FRAMEWORK</DefineConstants></PropertyGroup>
+  <!-- 模型宿主可单独启用 1.7 身体过滤；只注册显式链接的载体，实际生产仍注册全部五项。 -->
+  <PropertyGroup><DefineConstants>$(DefineConstants);SSC_ABILITY_TOGGLE_FRAMEWORK;SSC_ABILITY_TOGGLE_SCOPED_TEST</DefineConstants></PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)../../Sexslavecraft/common/SSCAbilityToggleFramework.cs" Link="Production/SSCAbilityToggleFramework.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)../../Sexslavecraft/common/SSCAbilityToggleState.cs" Link="Production/SSCAbilityToggleState.cs" />

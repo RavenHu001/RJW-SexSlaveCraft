@@ -139,7 +139,10 @@ internal static partial class Program
             UterusDescriptionTests(repo);
             UterusDefInjectedTests(repo);
             StomachDevelopmentTests(repo, game, harmony.Value);
+            // 局部 XML 加载发生在 DefOf 初始化之后；为开关后端绑定真实已加载定义，避免空 Def 夹具假通过。
+            SSCDefOf.SSC_Lactating_SubState = DefDatabase<HediffDef>.GetNamed(Harmony_LactationFertilityControl.LactationDefName);
             AbilityToggleAdapterTests();
+            AbilityToggleLifecycleTests(repo);
         }
         finally { Scribe.mode = LoadSaveMode.Inactive; Current.Game = null; }
         Console.WriteLine($"{passed}/{passed + failed} cases passed");

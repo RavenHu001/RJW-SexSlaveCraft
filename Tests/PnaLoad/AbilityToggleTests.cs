@@ -29,6 +29,7 @@ namespace RimWorld
 internal static partial class Program
 {
     private const string InfestationToggle=SSCAbilityToggleUtility.MasterDesireInfestation;
+    /// <summary>登记实际 marker 类型和空壳定义，复用当前专项定义库而不创建业务状态。</summary>
     private static HediffDef RegisterToggleMarker()
     {
         SSCDefOf.SSC_PersonalityExcreted_Done = SSCDefOf.SSC_PersonalityExcreted_Done ??
@@ -41,6 +42,7 @@ internal static partial class Program
         }
         return def;
     }
+    /// <summary>构造已保存恩赐开启的模型主人，实际准入与 marker 同步均执行生产工具。</summary>
     private static Pawn ToggleMaster()
     {
         RegisterToggleMarker();var p=NewPawn();p.Comp=new CompSexSlaveTraining{pawnIdentity=PawnIdentity.Master};p.IsMaster=true;
@@ -48,9 +50,34 @@ internal static partial class Program
         // 旧侵染用例显式使用参考产量；无器官与零产量下限由独立产量用例覆盖。
         AddFluidOrgan(p,20f);SSCAbilityToggleUtility.SyncMarkers(p);return p;
     }
+    /// <summary>只计数生产工具识别的 marker，避免用普通健康记录代替派生状态。</summary>
     private static int ToggleMarkers(Pawn p)=>p.health.hediffSet.hediffs.Count(h=>SSCAbilityToggleUtility.IsMarkerDef(h.def));
+    /// <summary>运行真实同步补丁及克隆业务，显式区分默认值、复制器边界与成熟时的保留规则。</summary>
     private static void RunAbilityToggleLifecycleTests()
     {
+        // 默认 true 的测试能力不带 marker，不进入生产注册表，专门区分“回默认”和“一律关闭”。
+        const string defaultTrue = "SSC_TestCloneDefaultTrue";
+        SSCAbilityToggleUtility.Register(new SSCAbilityToggleDefinition(defaultTrue, SSCAbilityToggleGroup.Master,
+            PawnIdentity.Master, "test", "test", defaultEnabled: true));
+        foreach (bool copiedMilk in new[] { false, true })
+            Run("新生克隆默认 true 能力及泌乳原字段边界 " + copiedMilk, () =>
+            {
+                var source = CloneSource(); var sourceComp = (CompSexSlaveTraining)source.Comp;
+                sourceComp.abilityToggles.Set(defaultTrue, false);
+                var body = CopiedBody(source); var copiedComp = (CompSexSlaveTraining)body.Comp;
+                copiedComp.abilityToggles.Set(defaultTrue, false); copiedComp.milkProductionEnabled = copiedMilk;
+                Assert(RabbitCloneUtility.TryCreateRabbitClone(source, out var clone, false), "实际新生清理入口");
+                var comp = (CompSexSlaveTraining)clone.Comp;
+                Assert(!comp.abilityToggles.HasEntries && SSCAbilityToggleUtility.GetEnabled(clone, defaultTrue), "清字典回定义默认，不强制 false");
+                Assert(comp.milkProductionEnabled == copiedMilk && !sourceComp.abilityToggles.Get(defaultTrue, true), "保留复制器已有泌乳值且不改来源");
+            });
+        Run("成熟不清自身后来取得的未知偏好及泌乳原值", () =>
+        {
+            var source = CloneSource(); var clone = ToggleMaster(); var comp = (CompSexSlaveTraining)clone.Comp;
+            comp.abilityToggles.Set(defaultTrue, false); comp.abilityToggles.Set("SSC_UnknownFuture", true); comp.milkProductionEnabled = false;
+            RabbitCloneUtility.MatureRabbitClone(clone, source, CloneLink(clone, source));
+            Assert(!SSCAbilityToggleUtility.GetEnabled(clone, defaultTrue) && comp.abilityToggles.Get("SSC_UnknownFuture") && !comp.milkProductionEnabled, "成熟不重新初始化人格／泌乳选择");
+        });
         Run("完整读档初始化统一修复标记，不依赖地图或面板",()=>
         {
             var p=ToggleMaster();p.health.hediffSet.hediffs.RemoveAll(h=>SSCAbilityToggleUtility.IsMarkerDef(h.def));

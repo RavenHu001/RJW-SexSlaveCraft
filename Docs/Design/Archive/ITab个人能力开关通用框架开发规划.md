@@ -1,12 +1,14 @@
 # ITab 个人能力开关通用框架开发规划
 
-> 记录日期：2026-10-24。状态：第一、二批均已实机验收关闭；第三批未开始。
+> 记录日期：2026-10-24。状态：三批约定开发范围均已完成并获维护者实机认可，本专项收尾归档；暂不发布。统一发布门禁的原元数据差异另留发布准备，不重标为通过。
 > 分析基线：SSC 2.4.5 开发代码，提交 `39910e6`；目标游戏为本机 RimWorld 1.7.4985 rev1269。后续实施前重新核对源码、游戏及依赖 DLL。
-> 原规划落地只修改文档；后续第一批已在 `codex/ability-toggle-framework` 实施，见[实现与验证](../Development/Completed/通用能力开关框架第一批实现与验证.md)。仅开发 1.7，保留存档字段和发布身份，1.6／Common 保持 SSC 2.4.1 冻结基线，不预定发布版本。
+> 原规划落地只修改文档；后续第一批已在 `codex/ability-toggle-framework` 实施，见[实现与验证](../../Development/Completed/通用能力开关框架第一批实现与验证.md)。仅开发 1.7，保留存档字段和发布身份，1.6／Common 保持 SSC 2.4.1 冻结基线，不预定发布版本。
 
-2026-10-24 第二批已接入泌乳、生育与凝胶个人渲染，五项均使用通用行／提交及原载体适配。相关 11 套 **2290／2290**、真实引用隔离构建零警告／零错误；测试版备份同步后获维护者整体反馈“测试没有问题”，第二批验收关闭，注释等价核对通过，见[第二批实现与验收](../Development/Completed/通用能力开关框架第二批实现与验证.md)。仓库正式产物未改；下文分析基线事实保留原时点，实施状态以各批记录为准。
+2026-10-24 第二批已接入泌乳、生育与凝胶个人渲染，五项均使用通用行／提交及原载体适配。相关 11 套 **2290／2290**、真实引用隔离构建零警告／零错误；测试版备份同步后获维护者整体反馈“测试没有问题”，第二批验收关闭，注释等价核对通过，见[第二批实现与验收](../../Development/Completed/通用能力开关框架第二批实现与验证.md)。仓库正式产物未改；下文分析基线事实保留原时点，实施状态以各批记录为准。
 
-[总体规划第 28 项](未来内容开发规划.md#28-itab-内个人能力开关的通用管理框架部分实现) · [当前规划索引](README.md) · [2.4.1 通用框架交付记录](../Development/Completed/欲望侵染第一批通用开关框架实现与测试.md) · [测试索引](../../Tests/README.md)
+[总体规划第 28 项](../未来内容开发规划.md#28-itab-内个人能力开关的通用管理框架已完成约定范围收尾) · [当前规划索引](../README.md) · [2.4.1 通用框架交付记录](../../Development/Completed/欲望侵染第一批通用开关框架实现与测试.md) · [测试索引](../../../Tests/README.md)
+
+2026-10-24，维护者反馈“第三批实机测试没有问题”，要求按约定范围收尾归档及提交，暂不发布。第三批独立机制 45／45 套、5135／5135 项及实机认可分别登记；总规划第 28 项按五项原载体适配、生命周期回归与接入规范关闭，见[完成核对](../../Development/Completed/通用能力开关框架完成核对.md)。下文保留原分析与批次约束，不将扩展建议转为本轮待办。
 
 ## 1. 目标与实施边界
 
@@ -30,17 +32,17 @@
 
 ### 2.1 可复用的框架
 
-- [能力定义与工具](../../Sexslavecraft/common/SSCAbilityToggleUtility.cs) 已有稳定 ID、Master／Slave 分组、默认值、可选激活／编辑规则和健康标记；分析基线只注册欢愉恩赐，后续第一批源码已增加伤害分担，Slave 组仍为空。
-- [状态容器](../../Sexslavecraft/common/SSCAbilityToggleState.cs) 按 `sscAbilityToggles/enabledById` 保存，保留显式 `false` 和未知键；查询不补写缺省值。缺键采用定义默认值，修改已发布默认值会影响未明确保存该键的旧档。
-- [Pawn／凝胶组件](../../Sexslavecraft/Comps/Comp_AbilityToggles.cs) 分别持有独立字典；提取、植入和克隆已有入口。植入精确替换，不能将来源关闭与宿主开启按“取 true”合并。
-- [通用 ITab 行](../../Sexslavecraft/ITab/ITab_SexSlaveTraining.AbilityToggles.cs) 已共享测量／绘制快照、动态行高、GUI 状态恢复及人格 token 防迟到提交。主人面板已接 Master 行，主页面已为 Slave 行计算高度。
-- [标记同步补丁](../../Sexslavecraft/ThePatches/Harmony_SSCAbilityToggles.cs) 监听能力标记、空壳、死亡与成功复活；[游戏组件](../../Sexslavecraft/common/SSCAbilityToggleGameComponent.cs) 在完整载入后协调一次，不新增每 Tick 全图扫描。
+- [能力定义与工具](../../../Sexslavecraft/common/SSCAbilityToggleUtility.cs) 已有稳定 ID、Master／Slave 分组、默认值、可选激活／编辑规则和健康标记；分析基线只注册欢愉恩赐，后续第一批源码已增加伤害分担，Slave 组仍为空。
+- [状态容器](../../../Sexslavecraft/common/SSCAbilityToggleState.cs) 按 `sscAbilityToggles/enabledById` 保存，保留显式 `false` 和未知键；查询不补写缺省值。缺键采用定义默认值，修改已发布默认值会影响未明确保存该键的旧档。
+- [Pawn／凝胶组件](../../../Sexslavecraft/Comps/Comp_AbilityToggles.cs) 分别持有独立字典；提取、植入和克隆已有入口。植入精确替换，不能将来源关闭与宿主开启按“取 true”合并。
+- [通用 ITab 行](../../../Sexslavecraft/ITab/ITab_SexSlaveTraining.AbilityToggles.cs) 已共享测量／绘制快照、动态行高、GUI 状态恢复及人格 token 防迟到提交。主人面板已接 Master 行，主页面已为 Slave 行计算高度。
+- [标记同步补丁](../../../Sexslavecraft/ThePatches/Harmony_SSCAbilityToggles.cs) 监听能力标记、空壳、死亡与成功复活；[游戏组件](../../../Sexslavecraft/common/SSCAbilityToggleGameComponent.cs) 在完整载入后协调一次，不新增每 Tick 全图扫描。
 
 ### 2.2 泌乳归属更正与已有例外
 
-泌乳开关不是保存在身体 Hediff：原值由[训练组件](../../Sexslavecraft/Comps/Comp_Train.cs)保存，[凝胶组件](../../Sexslavecraft/Comps/ThingsComp_PE_PES.cs)采集、保存及加工复制，[人格植入](../../Sexslavecraft/common/ExcretionUtility.cs)将来源值覆盖到宿主。身体管理栏只决定展示位置。
+泌乳开关不是保存在身体 Hediff：原值由[训练组件](../../../Sexslavecraft/Comps/Comp_Train.cs)保存，[凝胶组件](../../../Sexslavecraft/Comps/ThingsComp_PE_PES.cs)采集、保存及加工复制，[人格植入](../../../Sexslavecraft/common/ExcretionUtility.cs)将来源值覆盖到宿主。身体管理栏只决定展示位置。
 
-但是，旧泌乳字段也不等同于现通用人格字典的全部生命周期：`ClearPersonalityState` 当前只清空字典，没有顺带重置泌乳字段；[克隆准备](../../Sexslavecraft/common/RabbitCloneUtility.cs)也没有显式将该旧字段按能力定义默认值重置。后续应保持现生产流程的结果，补对照验证，不因“随人格采集／植入”就额外增加提取清源或克隆重置。
+但是，旧泌乳字段也不等同于现通用人格字典的全部生命周期：`ClearPersonalityState` 当前只清空字典，没有顺带重置泌乳字段；[克隆准备](../../../Sexslavecraft/common/RabbitCloneUtility.cs)也没有显式将该旧字段按能力定义默认值重置。后续应保持现生产流程的结果，补对照验证，不因“随人格采集／植入”就额外增加提取清源或克隆重置。
 
 生育开关属于子宫开发 Hediff 当前身体实例；凝胶渲染开关属于身体外观 HediffComp，两者不进入人格凝胶能力字典。身体状态的克隆复制与成熟恢复继续遵循各自已有过滤／复制规则，不能统一理解为“身体项从不复制”。
 
@@ -89,7 +91,7 @@
 
 ### 4.2 自动验收条件
 
-2026-10-24：以下条件已由第一批相关回归／构建覆盖，7 套 1409／1409、生产构建零警告／零错误；冻结文件哈希与资源镜像通过。完整布局检查仍因既有 VERSION 2.4.5／正式 BUILD-INFO 2.4.4 不一致而未通过，未运行完整 Test-All，详见[本批证据与边界](../Development/Completed/通用能力开关框架第一批实现与验证.md)。
+2026-10-24：以下条件已由第一批相关回归／构建覆盖，7 套 1409／1409、生产构建零警告／零错误；冻结文件哈希与资源镜像通过。完整布局检查仍因既有 VERSION 2.4.5／正式 BUILD-INFO 2.4.4 不一致而未通过，未运行完整 Test-All，详见[本批证据与边界](../../Development/Completed/通用能力开关框架第一批实现与验证.md)。
 
 - [x] 新增第二种后端无需给通用绘制器添加专用 `if`／enum 分派；同一行模板能处理人格与缰绳载体。
 - [x] 欢愉恩赐默认关闭、明确关闭及未知键保留、非玩家实际生效但不可编辑、退出身份暂停且偏好保留等既有用例通过。
@@ -111,7 +113,7 @@
 
 **目标：** 五项均通过共用框架管理，身体管理与外观布局继续服务原功能，保存归属和实际消费者保持一致。
 
-**实施状态（2026-10-24）：实现、相关自动验证和约定范围实机验收完成。** 本批新增三种原载体后端、Body／Appearance 分组及泌乳原字段公共读取；未改序列化、人格采集／植入、克隆或图形热路径。五项接线表、逐套结果、候选哈希、整体实机反馈与边界见[第二批记录](../Development/Completed/通用能力开关框架第二批实现与验证.md)。
+**实施状态（2026-10-24）：实现、相关自动验证和约定范围实机验收完成。** 本批新增三种原载体后端、Body／Appearance 分组及泌乳原字段公共读取；未改序列化、人格采集／植入、克隆或图形热路径。五项接线表、逐套结果、候选哈希、整体实机反馈与边界见[第二批记录](../../Development/Completed/通用能力开关框架第二批实现与验证.md)。
 
 ### 5.1 改动范围
 
@@ -150,7 +152,7 @@
 
 ## 6. 第三批：生命周期、整体验证与接入规范
 
-**未开始，按维护者要求暂不推进。** 第二批对既有生命周期专项的兼容复跑不计为本批矩阵完成。
+**第三批约定验收已关闭。** 新增五项原生保存组合、两条提取入口、人格覆盖／旧档及克隆／载体替换回归，补齐[接入规范](../../Development/Reference/个人能力开关接入规范.md)。生产运行分支有效代码保持；维护者反馈“第三批实机测试没有问题”，整体认可与未报告组合边界见[第三批记录](../../Development/Completed/通用能力开关框架第三批生命周期复核与验证.md)。第二批旧兼容计数不冒充本批结果，正式发布门禁差异保留。
 
 **目标：** 证明统一框架保留旧档、人格、身体、关系和克隆各自的契约，并形成可复用的后续接入方法。
 
@@ -182,14 +184,17 @@
 
 ### 6.3 自动与实机验收条件
 
-- [ ] 上述矩阵覆盖适用项目，界面与后台均查询同一保存源；不存在旧字段／新字典竞争写入。
-- [ ] 人格快照、凝胶加工副本、克隆配置彼此独立；失败或中断沿现有语义释放作用域，不留下永久暂停标记或错误授权。
-- [ ] 新增资格变化有明确通知来源；实际收益直接查最终准入，不依赖可能过期的健康标记。
-- [ ] 相关专项及当时适用的统一门禁通过，记录实际套件数、失败／未运行数及命令，不把分析基线计数当新结果。
-- [ ] 以匹配目标游戏和依赖 DLL 的 1.7 工程完成构建；核对冻结目录、资源镜像与文档链接，无运行元数据／版本身份的无关变更。
-- [ ] 在真实游戏中完成五项存读档、人格提取／植入、适用克隆流程和旧界面／载体替换回归；检查实际字体、滚动、健康展示、产出、分伤与渲染。
-- [ ] 按实际运行组合登记第三方边界；未测试项留待验收，不能通过本框架验收顺带关闭来源偏好、Equal Milking 或其他既有专项。
-- [ ] 完成开发者接入说明与本专项总结，经维护者实机确认后再登记约定范围交付；构建通过、门禁通过与实机反馈分别保留。
+- [x] 上述矩阵在原生／模型宿主范围内覆盖适用项目，界面与后台查询同一保存源；原字段／字典不竞争写入。
+- [x] 人格快照、凝胶加工副本、克隆配置彼此独立；失败或中断沿现有语义释放作用域，不留下永久暂停标记或错误授权。
+- [x] 已复核资格通知来源；三种身体后端无新增 marker，实际收益直接查最终准入，不依赖可能过期的健康标记。
+- [x] 相关专项及独立完整机制清单 45／45 套、5135／5135 项通过，实际套件数、失败／未运行数及命令保留；统一入口结果另行登记，不把分析基线计数当新结果。
+- [x] 以匹配目标游戏和依赖 DLL 的 1.7 工程完成隔离构建；冻结目录与资源镜像核对通过，无运行元数据／版本身份的无关变更，文档链接另行核验记录。
+- [x] 维护者反馈“第三批实机测试没有问题”，按五项及生命周期约定范围关闭第三批实机验收；未附逐项流水，不把各存档、克隆、字体、第三方组合逐格补记为独立实测。
+- [x] 已登记实际宿主的第三方边界；未实机项继续待验收，不顺带关闭来源偏好、Equal Milking 或其他既有专项。
+- [x] 开发者接入说明与本批总结完成，维护者已授权整体收尾归档及提交；构建／机制回归／实机认可与发布门禁分别保留。
+- [ ] **后续发布前置（本次明确暂不发布）：** 正式统一门禁仍因已有 VERSION／正式 BUILD-INFO 差异未通过，保留至发布准备；不通过改写旧产物消除此项。
+
+2026-10-24：独立机制清单 **45／45 套、5135／5135 项通过，0 失败／未执行**，包含新增 68 项生命周期用例；真实引用构建零警告／零错误，运行分支等价／冻结／镜像检查通过。第三批 DLL、PDB 和游戏构建记录 3 项备份同步后获维护者整体实机认可，按要求收尾归档。统一门禁仍因既有 VERSION 2.4.5／正式 BUILD-INFO 2.4.4 差异未通过，45 套在该入口为 NotRun；本次不发布，此项作为后续发布前置保留，不冒充通过，也不重开维护者已明确关闭的本专项。
 
 ## 7. 验证入口与证据管理
 
@@ -197,15 +202,15 @@
 
 | 验证入口 | 本专项使用范围 |
 | --- | --- |
-| [MasterPanelUI](../../Tests/MasterPanelUI/README.md) | 第一批共用行、欢愉恩赐、缰绳适配、禁用原因、迟到点击与布局 |
-| [BodyManagementLayout](../../Tests/BodyManagementLayout/README.md) | 第二批跨载体行、四语测量、妊娠方向性规则、身体／人格替换提交 |
-| [PermanentLactation](../../Tests/PermanentLactation/README.md)、[PersonalitySpecializations](../../Tests/PersonalitySpecializations/README.md) | 泌乳累计生产与牛特化相关消费者；按改动实际范围选择用例，1.7 展示边界按既有参数启用 |
-| [UterusDevelopmentNative](../../Tests/UterusDevelopmentNative/README.md) | 生育准入、实际身体记录、妊娠与健康展示接入 |
-| [Gelatinization](../../Tests/Gelatinization/README.md) | 外观 owner、个人开关旧档、快照／缓存和 FA／SA 既有边界 |
-| [PersonalityTraits](../../Tests/PersonalityTraits/README.md)、[PnaLoad](../../Tests/PnaLoad/README.md)、[TrainerIdentity](../../Tests/TrainerIdentity/README.md)、[RitualLifecycle](../../Tests/RitualLifecycle/README.md) | 第三批人格、凝胶、身份、标记及实际克隆生产入口 |
-| [统一测试说明](../../Tests/README.md)、`Scripts/Test-All.ps1` | 最终适用门禁；原生 SDK、真实游戏路径和依赖参数沿用当时验证配置 |
+| [MasterPanelUI](../../../Tests/MasterPanelUI/README.md) | 第一批共用行、欢愉恩赐、缰绳适配、禁用原因、迟到点击与布局 |
+| [BodyManagementLayout](../../../Tests/BodyManagementLayout/README.md) | 第二批跨载体行、四语测量、妊娠方向性规则、身体／人格替换提交 |
+| [PermanentLactation](../../../Tests/PermanentLactation/README.md)、[PersonalitySpecializations](../../../Tests/PersonalitySpecializations/README.md) | 泌乳累计生产与牛特化相关消费者；按改动实际范围选择用例，1.7 展示边界按既有参数启用 |
+| [UterusDevelopmentNative](../../../Tests/UterusDevelopmentNative/README.md) | 生育准入、实际身体记录、妊娠与健康展示接入 |
+| [Gelatinization](../../../Tests/Gelatinization/README.md) | 外观 owner、个人开关旧档、快照／缓存和 FA／SA 既有边界 |
+| [PersonalityTraits](../../../Tests/PersonalityTraits/README.md)、[PnaLoad](../../../Tests/PnaLoad/README.md)、[TrainerIdentity](../../../Tests/TrainerIdentity/README.md)、[RitualLifecycle](../../../Tests/RitualLifecycle/README.md) | 第三批人格、凝胶、身份、标记及实际克隆生产入口 |
+| [统一测试说明](../../../Tests/README.md)、`Scripts/Test-All.ps1` | 最终适用门禁；原生 SDK、真实游戏路径和依赖参数沿用当时验证配置 |
 
-分析阶段于 2026-10-24 执行过 MasterPanelUI **107／107**、BodyManagementLayout **92／92**，作为改造前基线。后续第一批执行 7 套 **1409／1409**，其中 MasterPanelUI 为 **131／131**，详见[第一批验证记录](../Development/Completed/通用能力开关框架第一批实现与验证.md)。第二批重新执行相关 11 套 **2290／2290**，BodyManagementLayout 为 **105／105**，其余逐套结果见[第二批记录](../Development/Completed/通用能力开关框架第二批实现与验证.md)，不改写第一批计数。
+分析阶段于 2026-10-24 执行过 MasterPanelUI **107／107**、BodyManagementLayout **92／92**，作为改造前基线。后续第一批执行 7 套 **1409／1409**，其中 MasterPanelUI 为 **131／131**，详见[第一批验证记录](../../Development/Completed/通用能力开关框架第一批实现与验证.md)。第二批重新执行相关 11 套 **2290／2290**，BodyManagementLayout 为 **105／105**，其余逐套结果见[第二批记录](../../Development/Completed/通用能力开关框架第二批实现与验证.md)，不改写第一批计数。
 
 ```powershell
 dotnet run --project Tests/MasterPanelUI/MasterPanelUI.csproj -c Release -- .
@@ -216,7 +221,7 @@ dotnet run --project Tests/BodyManagementLayout/BodyManagementLayout.csproj -c R
 
 ## 8. 完成判定与后续扩展
 
-三批分别登记“实现／自动验证／构建／实机”的证据与剩余缺口。五项的注册、UI、后台查询及生命周期均按约定范围验收后，再更新第 28 项完成状态；当前仍为“部分实现，第一、二批已验收，第三批未开始”。
+三批分别登记“实现／自动验证／构建／实机”的证据。五项注册、UI、后台保存源及生命周期均按约定范围完成并获维护者整体实机认可，第 28 项已登记为“已完成：约定范围收尾”，本规划归档。未报告组合的独立测试、后续扩展及正式发布门禁不混入本次完成声明，按维护者要求暂不发布。
 
 未来新增人格能力继续使用稳定 ID 和既有字典；身体或关系能力通过对应后端接入。新增默认值、强制启停、依赖／互斥、全局模板、批量应用、枚举／数值控件以及新主动技能开关须按具体需求另定，不为本次五项预建通用依赖图或扩大玩法。
 

@@ -352,7 +352,8 @@ namespace SexSlaveCraft
             using (mutation)
             {
 
-                // 新身体使用默认个人偏好；成熟路径不会调用此入口或覆盖自身后来取得的设置。
+                // 新身体使用默认人格偏好；清的是字典而非统一写 false，默认 true 的能力仍回到 true。
+                // 原版 Duplicate 已恢复的泌乳旧字段不在此重置；成熟路径也不覆盖自身后来取得的设置。
                 SSCAbilityToggleUtility.ClearPersonalityState(clone);
 
                 clone.SetFaction(source.Faction);
