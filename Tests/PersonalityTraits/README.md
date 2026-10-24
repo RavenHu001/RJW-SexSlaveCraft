@@ -8,6 +8,8 @@
 dotnet run --project Tests/PersonalityTraits/PersonalityTraits.csproj --configuration Release
 ```
 
+2026-10-23 子宫开发第 5 批专项使用 `-p:SscUterusBoundary=true`，启用真实 1.7 采集、CopyFrom 与恢复过滤分支，并链接生产定义身份工具，**131／131** 通过。新增 4 项检查：候选标签配方不导出开发记录、加工复制排除外部开发标签、未经加工的外部标签植入无记录／已有记录宿主均不补建或合并。健康与人格环境仍使用本套件原有边界模型，躯干、开关、实际身份和真实 Scribe 由 UterusDevelopmentNative 验证。Test-All 在 1.7 模式自动启用此参数。
+
 项目没有包引用，不需要安装游戏。首次还原时如需显式禁用远程源：
 
 ```powershell
@@ -115,3 +117,5 @@ Scribe 替身记录和回放标量、定义与对象引用，并复制列表、�
 ## 欲望侵染第一批通用开关回归（2026-10-15）
 
 本宿主已链接真实通用开关／人格凭据代码，新增本领域的状态闭环回归；范围、实际本批结果与实机边界见[第一批记录](../../Docs/Development/Completed/欲望侵染第一批通用开关框架实现与测试.md)。历史计数保留原批次语境。
+
+2026-10-24 胃部身体状态：以 `-p:SscUterusBoundary=true` 启用 1.7 边界时，新增 [StomachBodyTests](StomachBodyTests.cs) 的 4 项实际采集／加工／植入过滤，合计 135／135；共用精确定义分类仅识别子宫和胃部开发，不影响普通人格标签或宿主原记录。默认旧编译模式不包含此增量。

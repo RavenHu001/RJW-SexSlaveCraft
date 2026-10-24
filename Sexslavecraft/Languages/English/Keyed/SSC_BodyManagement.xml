@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成：依据已确认的 v2 中文稿落实 English 文案；保留现有键名及参数契约。 -->
+<LanguageData>
+  <SSC_BodyManagement_Title>Body management</SSC_BodyManagement_Title>
+  <SSC_BodyManagement_MilkTip>Toggle milk production in this body. Switching it off only stops milk production; it does not remove permanent lactation or empty stored milk.</SSC_BodyManagement_MilkTip>
+  <SSC_BodyManagement_FertilityToggle>Allow conception</SSC_BodyManagement_FertilityToggle>
+  <SSC_BodyManagement_FertilityTip>Toggle whether this body is allowed to conceive. This cannot be switched off during pregnancy.</SSC_BodyManagement_FertilityTip>
+  <SSC_BodyManagement_BodyChanged>The body's condition has changed. Check it again before making adjustments.</SSC_BodyManagement_BodyChanged>
+  <SSC_BodyManagement_CannotChange>The fertility state cannot be adjusted right now.</SSC_BodyManagement_CannotChange>
+  <SSC_BodyManagement_NotStarted>This body has not yet undergone uterine development.</SSC_BodyManagement_NotStarted>
+  <SSC_BodyManagement_NotComplete>Uterine development is not yet complete; conception is still unavailable.</SSC_BodyManagement_NotComplete>
+  <SSC_BodyManagement_PregnancyBlocked>Fertility cannot be switched off during pregnancy.</SSC_BodyManagement_PregnancyBlocked>
+  <SSC_BodyManagement_FertilityConfigUnavailable>The fertility configuration for uterine development is unavailable.</SSC_BodyManagement_FertilityConfigUnavailable>
+</LanguageData>

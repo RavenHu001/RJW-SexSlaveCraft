@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成：仅 1.7，四档取代而非累乘；玩家文字依据维护者确认的 v1 中文稿。 -->
+<Defs>
+  <HediffDef>
+    <defName>SSC_StomachDevelopment</defName>
+    <label>恶堕化（胃）</label>
+    <description>紫色微械已在胃里安定下来，把整副胃当成新的巢穴。随着一次次被深喉、被灌满，它们把胃重新改造得越来越会消化吸收、越来越耐饿，直到再也吃不坏肚子。</description>
+    <hediffClass>SexSlaveCraft.Hediff_SSCStomachDevelopment</hediffClass>
+    <defaultLabelColor>(255, 105, 180)</defaultLabelColor>
+    <isBad>false</isBad><tendable>false</tendable><everCurableByItem>false</everCurableByItem><makesAlert>false</makesAlert>
+    <initialSeverity>0.01</initialSeverity><minSeverity>0</minSeverity><maxSeverity>1</maxSeverity>
+    <!-- 胃部恢复与替换沿用原版清理；消失的记录不从历史恢复。 -->
+    <stages>
+      <li>
+        <minSeverity>0</minSeverity>
+        <label>淫种入胃</label>
+        <hungerRateFactor>1.00</hungerRateFactor>
+        <foodPoisoningChanceFactor>1</foodPoisoningChanceFactor>
+        <statFactors><EatingSpeed>1.00</EatingSpeed></statFactors>
+      </li>
+      <li>
+        <minSeverity>0.3</minSeverity>
+        <label>淫根伸展</label>
+        <hungerRateFactor>0.90</hungerRateFactor>
+        <foodPoisoningChanceFactor>1</foodPoisoningChanceFactor>
+        <statFactors><EatingSpeed>1.10</EatingSpeed></statFactors>
+      </li>
+      <li>
+        <minSeverity>0.7</minSeverity>
+        <label>淫媚充腹</label>
+        <hungerRateFactor>0.75</hungerRateFactor>
+        <foodPoisoningChanceFactor>1</foodPoisoningChanceFactor>
+        <statFactors><EatingSpeed>1.25</EatingSpeed></statFactors>
+      </li>
+      <li>
+        <minSeverity>1</minSeverity>
+        <label>堕落淫胃</label>
+        <hungerRateFactor>0.50</hungerRateFactor>
+        <foodPoisoningChanceFactor>0</foodPoisoningChanceFactor>
+        <statFactors><EatingSpeed>1.50</EatingSpeed></statFactors>
+      </li>
+    </stages>
+  </HediffDef>
+</Defs>

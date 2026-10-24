@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成：依据已确认的 v2 中文稿落实 English 文案；保留现有键名及参数契约。 -->
+<LanguageData>
+  <SSC_HediffFertility_Label>Fertility</SSC_HediffFertility_Label>
+  <SSC_HediffFertility_Factor>×{0}</SSC_HediffFertility_Factor>
+  <SSC_HediffFertility_Description>This is the multiplier this condition applies to the body's own fertility. It multiplies with effects from other sources and reflects only this modification's contribution, not the final chance of conception.</SSC_HediffFertility_Description>
+  <SSC_HediffFertility_LactationNote>Switching off milk production only stops milk production; it does not lift the fertility suppression caused by permanent lactation.</SSC_HediffFertility_LactationNote>
+  <SSC_HediffFertility_LactationOverrideNote>Uterine development's fertile mode is enabled, also lifting the fertility suppression caused by permanent lactation.</SSC_HediffFertility_LactationOverrideNote>
+</LanguageData>

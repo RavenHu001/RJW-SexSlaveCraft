@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成：依据维护者确认的胃部 v1 中文稿落实 ChineseTraditional 文案，保留键名、注入路径与参数。 -->
+<LanguageData>
+  <SSC_StomachDevelopment_CannotStart>現在無法開始胃部開發。</SSC_StomachDevelopment_CannotStart>
+  <SSC_StomachDevelopment_AlreadyStarted>這副身體的胃已經接受過開發，無需再次手術。</SSC_StomachDevelopment_AlreadyStarted>
+  <SSC_StomachDevelopment_MissingStomach>缺少可施術的胃部。</SSC_StomachDevelopment_MissingStomach>
+  <SSC_StomachDevelopment_ConfigUnavailable>胃部開發設定無法使用。</SSC_StomachDevelopment_ConfigUnavailable>
+  <SSC_StomachDevelopment_CreateFailed>未能在這副身體的胃裡留下開發的印記。</SSC_StomachDevelopment_CreateFailed>
+  <SSC_StomachDevelopment_SurgeryUnavailable>目前無法進行胃部開發手術。</SSC_StomachDevelopment_SurgeryUnavailable>
+  <SSC_StomachDevelopment_AdultRequired>這項開發只面向成年的身體。</SSC_StomachDevelopment_AdultRequired>
+  <SSC_StomachDevelopment_MissingMouth>缺少可用的口部，無法進行這項手術。</SSC_StomachDevelopment_MissingMouth>
+  <SSC_StomachDevelopment_SurgeryConfigUnavailable>胃部開發手術設定無法使用。</SSC_StomachDevelopment_SurgeryConfigUnavailable>
+  <SSC_StomachDevelopment_Started>胃部開發已經啟動，紫色微械在這副身體的胃裡安定下來。目前進度：{0}。</SSC_StomachDevelopment_Started>
+</LanguageData>

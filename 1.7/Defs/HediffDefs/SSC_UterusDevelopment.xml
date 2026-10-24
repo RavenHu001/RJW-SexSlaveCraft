@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <!-- AI 辅助生成：当前身体的进度、生育因子及第 4 批阶段收益；各阶段替换、不累乘。 -->
+  <HediffDef>
+    <defName>SSC_UterusDevelopment</defName>
+    <label>恶堕化（子宫）</label>
+    <description>记录当前身体的子宫开发进度。培养完成前自身生育能力为零；完成后可手动开启生育。</description>
+    <hediffClass>SexSlaveCraft.Hediff_SSCUterusDevelopment</hediffClass>
+    <!-- 名称行统一为与旧部位开发相同的亮粉色 #FF69B4（RGB 255、105、180）；培养及满级两态共用，描述正文不染色。 -->
+    <defaultLabelColor>(255, 105, 180)</defaultLabelColor>
+    <isBad>false</isBad>
+    <tendable>false</tendable>
+    <everCurableByItem>false</everCurableByItem>
+    <makesAlert>false</makesAlert>
+    <!-- 进度保留在身体记录上；不安装自然衰减组件，0 严重度仍按原版规则移除。 -->
+    <keepOnBodyPartRestoration>true</keepOnBodyPartRestoration>
+    <initialSeverity>0.01</initialSeverity>
+    <minSeverity>0</minSeverity>
+    <maxSeverity>1</maxSeverity>
+    <stages>
+      <!-- 常规阶段均关闭自身原版生育；前 30% 没有额外属性收益。 -->
+      <li>
+        <minSeverity>0</minSeverity>
+        <label>微械入宫</label>
+        <fertilityFactor>0</fertilityFactor>
+      </li>
+      <li>
+        <minSeverity>0.3</minSeverity>
+        <label>宫腔渐熟</label>
+        <fertilityFactor>0</fertilityFactor>
+        <statFactors>
+          <SexFrequency>1.10</SexFrequency>
+          <SexSatisfaction>1.10</SexSatisfaction>
+          <RestRateMultiplier>1.05</RestRateMultiplier>
+          <InjuryHealingFactor>1.10</InjuryHealingFactor>
+        </statFactors>
+      </li>
+      <li>
+        <minSeverity>0.7</minSeverity>
+        <label>深宫媚熟</label>
+        <fertilityFactor>0</fertilityFactor>
+        <statFactors>
+          <SexFrequency>1.25</SexFrequency>
+          <SexSatisfaction>1.25</SexSatisfaction>
+          <RestRateMultiplier>1.10</RestRateMultiplier>
+          <InjuryHealingFactor>1.20</InjuryHealingFactor>
+        </statFactors>
+      </li>
+      <li>
+        <minSeverity>1</minSeverity>
+        <label>完熟媚体</label>
+        <fertilityFactor>0</fertilityFactor>
+        <statFactors>
+          <SexFrequency>1.50</SexFrequency>
+          <SexSatisfaction>1.50</SexSatisfaction>
+          <RestRateMultiplier>1.35</RestRateMultiplier>
+          <InjuryHealingFactor>1.50</InjuryHealingFactor>
+          <ImmunityGainSpeed>1.20</ImmunityGainSpeed>
+        </statFactors>
+      </li>
+    </stages>
+    <modExtensions>
+      <!-- 单独配置满级开启态，由实例的 CurStage 选择，不原位修改共享 stages。 -->
+      <li Class="SexSlaveCraft.SSCUterusDevelopmentExtension">
+        <fertileStage>
+          <minSeverity>1</minSeverity>
+          <label>完熟孕宫</label>
+          <fertilityFactor>2.5</fertilityFactor>
+          <statFactors>
+            <SexFrequency>1.50</SexFrequency>
+            <SexSatisfaction>1.50</SexSatisfaction>
+            <RestRateMultiplier>1.25</RestRateMultiplier>
+            <InjuryHealingFactor>1.35</InjuryHealingFactor>
+            <ImmunityGainSpeed>1.30</ImmunityGainSpeed>
+          </statFactors>
+        </fertileStage>
+      </li>
+    </modExtensions>
+  </HediffDef>
+</Defs>

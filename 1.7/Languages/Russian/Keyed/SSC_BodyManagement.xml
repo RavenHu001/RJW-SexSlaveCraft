@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成：依据已确认的 v2 中文稿落实 Russian 文案；保留现有键名及参数契约。 -->
+<LanguageData>
+  <SSC_BodyManagement_Title>Управление телом</SSC_BodyManagement_Title>
+  <SSC_BodyManagement_MilkTip>Включает или выключает выработку молока в этом теле. Выключение лишь останавливает выработку, не снимая постоянную лактацию и не удаляя накопленное молоко.</SSC_BodyManagement_MilkTip>
+  <SSC_BodyManagement_FertilityToggle>Разрешить зачатие</SSC_BodyManagement_FertilityToggle>
+  <SSC_BodyManagement_FertilityTip>Определяет, разрешено ли этому телу зачать. Во время беременности выключить нельзя.</SSC_BodyManagement_FertilityTip>
+  <SSC_BodyManagement_BodyChanged>Состояние тела изменилось. Проверьте его ещё раз перед настройкой.</SSC_BodyManagement_BodyChanged>
+  <SSC_BodyManagement_CannotChange>Сейчас нельзя изменить состояние фертильности.</SSC_BodyManagement_CannotChange>
+  <SSC_BodyManagement_NotStarted>Это тело ещё не прошло операцию по развитию матки.</SSC_BodyManagement_NotStarted>
+  <SSC_BodyManagement_NotComplete>Развитие матки ещё не завершено; зачатие пока недоступно.</SSC_BodyManagement_NotComplete>
+  <SSC_BodyManagement_PregnancyBlocked>Во время беременности нельзя отключить фертильность.</SSC_BodyManagement_PregnancyBlocked>
+  <SSC_BodyManagement_FertilityConfigUnavailable>Настройки фертильности для развития матки недоступны.</SSC_BodyManagement_FertilityConfigUnavailable>
+</LanguageData>

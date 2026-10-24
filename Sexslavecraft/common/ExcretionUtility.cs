@@ -307,6 +307,10 @@ namespace SexSlaveCraft
                         {
                             HediffDef hediffDef = tag.Key;
                             float severity = tag.Value;
+#if SSC_RW17
+                            // 拒绝历史／外部凝胶中的身体开发标签，既不补建，也不合并覆盖宿主原进度和开关。
+                            if (SSCBodyDevelopmentUtility.IsBodyStateDef(hediffDef)) continue;
+#endif
                             // 全部 PNA 身体状态留在宿主，历史／外部凝胶中的同类标签也不恢复。
                             // 宿主原有记录及 Need_PNA 值由身体保留，不参与下方最大值合并。
                             // 能力标记也不得按标签还原：偏好由专用容器精确替换，标记在流转结束后派生。

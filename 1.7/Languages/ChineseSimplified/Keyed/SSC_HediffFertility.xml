@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成：依据已确认的 v2 中文稿落实 ChineseSimplified 文案；保留现有键名及参数契约。 -->
+<LanguageData>
+  <SSC_HediffFertility_Label>生育能力</SSC_HediffFertility_Label>
+  <SSC_HediffFertility_Factor>×{0}</SSC_HediffFertility_Factor>
+  <SSC_HediffFertility_Description>这项状态对这副身体自身生育能力的倍率，会与其他来源的影响相乘。它只反映这项改造本身的作用，不代表最终受孕的概率。</SSC_HediffFertility_Description>
+  <SSC_HediffFertility_LactationNote>关闭产奶只会止住出奶，不会解除永久泌乳对生育的压制。</SSC_HediffFertility_LactationNote>
+  <SSC_HediffFertility_LactationOverrideNote>子宫开发的生育模式已经开启，永久泌乳对生育的压制被一并解开。</SSC_HediffFertility_LactationOverrideNote>
+</LanguageData>

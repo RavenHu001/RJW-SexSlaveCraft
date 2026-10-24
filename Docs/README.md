@@ -1,8 +1,12 @@
-# 文档总索引
+﻿# 文档总索引
 
 **2.4.4 正式版 — 2026-10-23。** [下载 v2.4.4](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.4)。1.7 运行元数据对齐 2.4.4，1.6／Common 冻结于 2.4.1；此前开发登记与分批测试保留原时点，发布结果见版本验证。
 
 [项目首页](../README.md) · [玩家阅读入口](Players/README.md) · [当前规划](Design/README.md) · [开发资料](Development/README.md)
+
+## 最新开发状态
+
+2026-10-24：[子宫开发与生育控制](Development/Completed/子宫开发与生育控制完成核对.md)及[胃部恶堕化开发](Development/Completed/胃部恶堕化开发完成核对.md)的约定功能已完成，并分别取得实机认可；两项定稿均已落实四语，尚未发布。设计及已交付分批记录已归档，部署与四语显示的剩余核查集中在[待验收索引](Development/Verification/README.md)。
 
 ## 按用途选择入口
 
@@ -35,15 +39,14 @@ Docs/
     README.md                  规划入口与状态索引
     未来内容开发规划.md        未完成需求及历史编号
     性能测量与定点优化首批规划.md  暂缓方案留存
-    子宫开发与生育控制开发规划.md  手术启动、培养与两态收益，未实现
     性奴浪漫行为控制开发规划.md    四阶段权限与精确命令，未实现
-    Archive/                   已交付范围的设计依据
+    Archive/                   已交付设计，含子宫与胃部开发
   Development/
     开发更新记录.md            按日期追溯
     Completed/                 实现、修复与已关闭批次
-    Verification/              当前验证缺口及历史验证资料
+    Verification/              尚未完成的实机、部署与显示核查
     Reviews/                   代码和机制复盘
-    Reference/                 历史交接与提示词
+    Reference/                 文案定稿、维护清单与历史交接
   Releases/<版本>/             版本说明、归并核对、验证与历史公告
   Maintenance/                 构建发布和文档维护
   Art/                         原稿、资源表、提示词与备份
@@ -51,6 +54,6 @@ Docs/
 
 根目录四份玩家指南保留固定路径。已完成内容、明确待验证事项、未来提案分别维护；版本登记不等于已发布，历史测试计数不等于当前结果。工业和太空武器的设计已移入 Archive，完成状态先查各自汇总；鞭子后续声音等需求只留未来规划。
 
-2026-10-23 当次归档后，Design 根目录保留 3 份 Markdown；PNA／恩赐的 4 份设计及分析归入 Archive，4 份文案定稿及交接归入 Development/Reference。同日后续新增[子宫开发与生育控制规划](Design/子宫开发与生育控制开发规划.md)和[浪漫行为控制规划](Design/性奴浪漫行为控制开发规划.md)，当前根目录共 5 份 Markdown。新增内容仅为后续 1.7 规划，未写运行代码，历史参数与验收范围保持原记录。
+2026-10-24 分类整理后，Design 根目录保留 4 份 Markdown：README、总体规划、性能测量暂缓方案及未实现的浪漫控制规划。子宫与胃部的两份已交付设计移入 Archive；10 份已交付实现／反馈／历史迭代记录归入 Completed。两份四语显示待验收记录继续留在 Verification，文案定稿与文件清单留在 Reference，废案身份不变。分类不改历史验证结论或游戏安装副本。
 
 源码旁的专用说明：[旧 RimTalk 归档](../Archive/RimTalk/README.md) · [Shader 源码与工具](../Sexslavecraft/ShaderSources/README.md)。

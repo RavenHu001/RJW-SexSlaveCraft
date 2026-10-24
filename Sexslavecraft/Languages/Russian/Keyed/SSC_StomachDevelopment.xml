@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成：依据维护者确认的胃部 v1 中文稿落实 Russian 文案，保留键名、注入路径与参数。 -->
+<LanguageData>
+  <SSC_StomachDevelopment_CannotStart>Сейчас нельзя начать развитие желудка.</SSC_StomachDevelopment_CannotStart>
+  <SSC_StomachDevelopment_AlreadyStarted>Желудок этого тела уже прошёл развитие. Повторная операция не нужна.</SSC_StomachDevelopment_AlreadyStarted>
+  <SSC_StomachDevelopment_MissingStomach>Отсутствует желудок, пригодный для операции.</SSC_StomachDevelopment_MissingStomach>
+  <SSC_StomachDevelopment_ConfigUnavailable>Настройки развития желудка недоступны.</SSC_StomachDevelopment_ConfigUnavailable>
+  <SSC_StomachDevelopment_CreateFailed>Не удалось оставить метку развития в желудке этого тела.</SSC_StomachDevelopment_CreateFailed>
+  <SSC_StomachDevelopment_SurgeryUnavailable>Сейчас нельзя провести операцию по развитию желудка.</SSC_StomachDevelopment_SurgeryUnavailable>
+  <SSC_StomachDevelopment_AdultRequired>Это развитие доступно только взрослому телу.</SSC_StomachDevelopment_AdultRequired>
+  <SSC_StomachDevelopment_MissingMouth>Отсутствует пригодный рот; эту операцию провести нельзя.</SSC_StomachDevelopment_MissingMouth>
+  <SSC_StomachDevelopment_SurgeryConfigUnavailable>Настройки операции по развитию желудка недоступны.</SSC_StomachDevelopment_SurgeryConfigUnavailable>
+  <SSC_StomachDevelopment_Started>Развитие желудка началось. Фиолетовые наномашины обосновались в желудке этого тела. Текущий прогресс: {0}.</SSC_StomachDevelopment_Started>
+</LanguageData>

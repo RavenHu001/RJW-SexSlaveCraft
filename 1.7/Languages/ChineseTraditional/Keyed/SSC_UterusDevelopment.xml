@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成：依据已确认的 v2 中文稿落实 ChineseTraditional 文案；保留现有键名及参数契约。 -->
+<LanguageData>
+  <SSC_UterusDevelopment_CannotStart>現在無法開始子宮開發。</SSC_UterusDevelopment_CannotStart>
+  <SSC_UterusDevelopment_AlreadyStarted>這副身體已經接受過子宮開發，無需再次手術。</SSC_UterusDevelopment_AlreadyStarted>
+  <SSC_UterusDevelopment_MissingTorso>缺少可施術的軀幹部位。</SSC_UterusDevelopment_MissingTorso>
+  <SSC_UterusDevelopment_ConfigUnavailable>子宮開發設定無法使用。</SSC_UterusDevelopment_ConfigUnavailable>
+  <SSC_UterusDevelopment_CreateFailed>未能在這副身體裡留下開發的印記。</SSC_UterusDevelopment_CreateFailed>
+  <SSC_UterusDevelopment_SurgeryUnavailable>目前無法進行子宮開發手術。</SSC_UterusDevelopment_SurgeryUnavailable>
+  <SSC_UterusDevelopment_AdultFemaleRequired>這項開發只面向成年的女性身體。</SSC_UterusDevelopment_AdultFemaleRequired>
+  <SSC_UterusDevelopment_SlaveIdentityRequired>受術者需要先具有性奴身分。</SSC_UterusDevelopment_SlaveIdentityRequired>
+  <SSC_UterusDevelopment_ResearchRequired>尚未完成「奈米催情液內臟改造」研究。</SSC_UterusDevelopment_ResearchRequired>
+  <SSC_UterusDevelopment_PregnancyBlocked>腹中已有了身孕，此時不能動這項手術。</SSC_UterusDevelopment_PregnancyBlocked>
+  <SSC_UterusDevelopment_MissingOrgan>這副身體缺少可用於開發的生殖器官。</SSC_UterusDevelopment_MissingOrgan>
+  <SSC_UterusDevelopment_DoctorRequired>缺少能夠執刀的醫生。</SSC_UterusDevelopment_DoctorRequired>
+  <SSC_UterusDevelopment_SurgeryConfigUnavailable>子宮開發手術設定無法使用。</SSC_UterusDevelopment_SurgeryConfigUnavailable>
+  <SSC_UterusDevelopment_Started>子宮開發已經啟動，紫色微械在這副身體的最深處蟄伏下來。目前進度：{0}。</SSC_UterusDevelopment_Started>
+  <SSC_UterusDevelopment_DescriptionDeveloping>紫色微械已在子宮裡安定下來，日復一日地把它改造成新的模樣。這副身體還遠沒準備好孕育，只能靠一次次深入的歡愉，把它一點一點餵熟。</SSC_UterusDevelopment_DescriptionDeveloping>
+  <SSC_UterusDevelopment_DescriptionInfertile>子宮已被徹底開發，成了一具只為歡愉而生的媚體。它不再為孕育分神，只把全部的力氣都用來讓傷口更快癒合、讓疲憊更快消退。</SSC_UterusDevelopment_DescriptionInfertile>
+  <SSC_UterusDevelopment_DescriptionFertile>子宮已被徹底開發，成了一處隨時準備受孕的孕宮。它比尋常的身體更容易懷上，而一旦懷上，妊娠期也會更短。</SSC_UterusDevelopment_DescriptionFertile>
+</LanguageData>

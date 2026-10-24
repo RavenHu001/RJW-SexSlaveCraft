@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- AI 辅助生成：实际 1.7 类型、生产程序集和 XML，不复制被测逻辑。 -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType><TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings><Nullable>disable</Nullable>
+    <BuildInParallel>false</BuildInParallel><RestoreBuildInParallel>false</RestoreBuildInParallel>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- 原生 CLR 使用 Harmony 2；链接同一生产补丁源码，避免混用两代 CodeInstruction 类型。
+         组件、工具类、Hediff 与其他被测业务仍来自真实生产程序集。 -->
+    <Compile Include="../../Sexslavecraft/ThePatches/Harmony_UterusPregnancy.cs" Link="Production/Harmony_UterusPregnancy.cs" />
+    <ProjectReference Include="../CultureNative/UnityCoreShim/UnityCoreShim.csproj" />
+    <ProjectReference Include="../../Sexslavecraft/SexSlaveCraft_1.7.csproj" />
+    <Reference Include="Assembly-CSharp"><HintPath>$(GameRoot)/Assembly-CSharp.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityStubs"><HintPath>$(GameRoot)/UnityStubs.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="RJW"><HintPath>$(RjwAssemblyPath)</HintPath><Private>false</Private></Reference>
+    <Reference Include="0Harmony"><HintPath>$(HarmonyAssemblyPath)</HintPath></Reference>
+  </ItemGroup>
+</Project>

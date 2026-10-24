@@ -362,6 +362,19 @@ namespace SexSlaveCraft
                 // CN: 步骤 2：把这次调教场景换算成对应部位的经验奖励。
                 TrainingExpUtility.ApplyExperienceFromScore(target, props.sexType, score, 1.0f);
                 if (!ValidateTargetIdentityOrAbort(context, target)) return;
+#if SSC_RW17
+                // 本场已由 dailyOutcomeClaimed 认领；只用首次真实 Start 的阴道接触与同一评分。
+                var parts = SSCRestrictionJobGuard.TrainingParts(this, SSCInteractionKind.DailyTraining);
+                var uterus = SSCUterusDevelopmentGrowthUtility.Capture(target, parts, props, score);
+                uterus?.Apply(() => ValidateTargetIdentityOrAbort(context, target) && Sexprops == props &&
+                    SSCRestrictionJobGuard.TrainingParts(this, SSCInteractionKind.DailyTraining) == parts);
+                if (!ValidateTargetIdentityOrAbort(context, target)) return;
+                // 胃部独立匹配严格口交，继续复用本场评分和已认领的完成出口。
+                var stomach = SSCStomachDevelopmentGrowthUtility.Capture(target, parts, props, score);
+                stomach?.Apply(() => ValidateTargetIdentityOrAbort(context, target) && Sexprops == props &&
+                    SSCRestrictionJobGuard.TrainingParts(this, SSCInteractionKind.DailyTraining) == parts);
+                if (!ValidateTargetIdentityOrAbort(context, target)) return;
+#endif
             }
 
             // EN: Step 3: close the training session and start cooldown tracking on the sex slave comp.

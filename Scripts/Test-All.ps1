@@ -80,6 +80,8 @@ $suites = @(
     # 原生文化挂载/人口/职位/快照；通过 ProjectReference 实际编译当前 1.7 生产代码。
     @{ Name = 'CultureNative'; Arguments = @(); Framework = 'net10.0' },
     @{ Name = 'CosmeticNative'; Arguments = @(); Framework = 'net10.0' },
+    # 真实躯干 Hediff／生育因子／Scribe；同样编译生产工程并使用独立测试 Harmony。
+    @{ Name = 'UterusDevelopmentNative'; Arguments = @(); Framework = 'net10.0' },
     @{ Name = 'LowTechAdaptation'; Arguments = @($repoRoot) },
     @{ Name = 'PersonalityMemories'; Arguments = @() },
     @{ Name = 'PersonalitySpecializations'; Arguments = @() },
@@ -89,6 +91,8 @@ $suites = @(
     @{ Name = 'PetDogAbility'; Arguments = @($repoRoot) },
     @{ Name = 'CombatantSpecialization'; Arguments = @($repoRoot) },
     @{ Name = 'PersonalityCardLayout'; Arguments = @($repoRoot) },
+    # 真实身体管理区块及开关入口，字体／输入边界与实机验收分开记录。
+    @{ Name = 'BodyManagementLayout'; Arguments = @($repoRoot) },
     @{ Name = 'MasterPanelUI'; Arguments = @($repoRoot) },
     @{ Name = 'RaceInjection'; Arguments = @() },
     @{ Name = 'InteractionProtection'; Arguments = @() },
@@ -273,7 +277,7 @@ foreach ($suite in $suites) {
     $problems = @($globalProblems.ToArray())
     if (-not (Test-Path -LiteralPath $project -PathType Leaf)) { $problems += "Project missing: $project" }
     # CultureNative 同样需要测试侧 Harmony；缺少合法依赖时标为 NotRun，不能当作已通过。
-    if ($name -in @('SharedBed', 'InteractionProtection', 'RitualSelection', 'CombatantSpecialization', 'PnaLoad', 'BondRelations', 'PnaWeaponEffects', 'PnaMeleeQuality', 'PnaSpacerNative', 'RitualDevelopmentNative', 'CultureNative', 'CosmeticNative') -and $harmonyProblem) { $problems += $harmonyProblem }
+    if ($name -in @('SharedBed', 'InteractionProtection', 'RitualSelection', 'CombatantSpecialization', 'PnaLoad', 'BondRelations', 'PnaWeaponEffects', 'PnaMeleeQuality', 'PnaSpacerNative', 'RitualDevelopmentNative', 'CultureNative', 'CosmeticNative', 'UterusDevelopmentNative') -and $harmonyProblem) { $problems += $harmonyProblem }
     if ($problems.Count -gt 0) {
         $result.Reason = $problems -join ' '
         Set-Content -LiteralPath $logPath -Value $result.Reason -Encoding utf8
@@ -283,17 +287,19 @@ foreach ($suite in $suites) {
         Set-Content -LiteralPath $logPath -Value "Suite: $name" -Encoding utf8
         try {
             $properties = @()
+            # 1.7 回归采集／植入排除及泌乳只读展示的新分支，不改变 1.6 冻结验证。
+            if ($name -in @('PersonalityTraits', 'PermanentLactation')) { $properties += '-p:SscUterusBoundary=true' }
             $suiteDotnet = $dotnetPath
             $framework = 'net9.0'
             $testArguments = $suite.Arguments
-            if ($name -in @('SharedBed', 'InteractionProtection', 'RitualSelection', 'CombatantSpecialization', 'PnaLoad', 'BondRelations', 'PnaWeaponEffects', 'PnaMeleeQuality', 'PnaSpacerNative', 'RitualDevelopmentNative', 'CultureNative', 'CosmeticNative')) { $properties += "-p:HarmonyAssemblyPath=$HarmonyAssemblyPath" }
+            if ($name -in @('SharedBed', 'InteractionProtection', 'RitualSelection', 'CombatantSpecialization', 'PnaLoad', 'BondRelations', 'PnaWeaponEffects', 'PnaMeleeQuality', 'PnaSpacerNative', 'RitualDevelopmentNative', 'CultureNative', 'CosmeticNative', 'UterusDevelopmentNative')) { $properties += "-p:HarmonyAssemblyPath=$HarmonyAssemblyPath" }
             # 实际游戏专项共用本机 1.7 和 .NET 10；完整生产工程引用从构建记录读取。
-            if ($name -in @('PnaMeleeQuality', 'PnaSpacerNative', 'RitualDevelopmentNative', 'CultureNative', 'CosmeticNative')) {
+            if ($name -in @('PnaMeleeQuality', 'PnaSpacerNative', 'RitualDevelopmentNative', 'CultureNative', 'CosmeticNative', 'UterusDevelopmentNative')) {
                 $suiteDotnet = $NativeDotnetPath; $framework = $suite.Framework
                 $properties += "-p:GameRoot=$NativeGameRoot"
                 $testArguments = @($repoRoot, $NativeGameRoot)
             }
-            if ($name -in @('CultureNative', 'CosmeticNative')) {
+            if ($name -in @('CultureNative', 'CosmeticNative', 'UterusDevelopmentNative')) {
                 # 生产工程仍使用本机实际 RJW/动画/游戏 Harmony 引用；测试 Harmony 单独传入。
                 # 路径来自既有构建记录，缺失时让原生产构建明确失败，不退回旧 DLL。
                 $cultureBuild = Get-Content -LiteralPath (Join-Path $repoRoot '1.7/BUILD-INFO.json') -Raw | ConvertFrom-Json

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成：v2 定稿的 English Def 文案；开启态阶段通过扩展字段正常注入。 -->
+<LanguageData>
+  <SSC_UterusDevelopment.label>Corruption Mark (Uterus)</SSC_UterusDevelopment.label>
+  <SSC_UterusDevelopment.description>Tracks uterine development in the current body. Its own fertility is zero until development is complete, after which fertility can be enabled manually.</SSC_UterusDevelopment.description>
+  <SSC_UterusDevelopment.stages.0.label>Nanomachine seeding</SSC_UterusDevelopment.stages.0.label>
+  <SSC_UterusDevelopment.stages.1.label>Ripening womb</SSC_UterusDevelopment.stages.1.label>
+  <SSC_UterusDevelopment.stages.2.label>Ripe with desire</SSC_UterusDevelopment.stages.2.label>
+  <SSC_UterusDevelopment.stages.3.label>Fully ripened allure</SSC_UterusDevelopment.stages.3.label>
+  <SSC_UterusDevelopment.modExtensions.0.fertileStage.label>Fully ripened fertile womb</SSC_UterusDevelopment.modExtensions.0.fertileStage.label>
+</LanguageData>

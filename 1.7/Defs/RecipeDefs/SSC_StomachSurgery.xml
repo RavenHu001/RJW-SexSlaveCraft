@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成：继承本机 1.7 原版 SurgeryFlesh，保留正常医疗流程与失败伤口。 -->
+<Defs>
+  <RecipeDef ParentName="SurgeryFlesh">
+    <defName>SSC_Surgery_StartStomachDevelopment</defName>
+    <label>胃部开发手术</label>
+    <description>将浓缩紫色纳米催情液与药物调和成制剂，经手术送入胃中，让紫色微械在胃壁上安定下来。刀口愈合之后，往后的每一次深喉，都会化作喂给微械的养分，让它继续改造这具身体的胃。</description>
+    <workerClass>SexSlaveCraft.Recipe_StartStomachDevelopment</workerClass>
+    <jobString>进行胃部开发手术</jobString>
+    <workAmount>4000</workAmount>
+    <humanlikeOnly>true</humanlikeOnly>
+    <developmentalStageFilter>Adult</developmentalStageFilter>
+    <targetsBodyPart>true</targetsBodyPart>
+    <hideBodyPartNames>true</hideBodyPartNames>
+    <researchPrerequisite>SSC_RES_UterusDevelopment</researchPrerequisite>
+    <recipeUsers><li>Human</li></recipeUsers>
+    <skillRequirements><Medicine>10</Medicine></skillRequirements>
+    <!-- 原版账单负责收集与消费；药物按原版 Medicine 类别筛选，浓缩纳米催情液单独指定。 -->
+    <ingredients>
+      <li><filter><thingDefs><li>Purple_Aphrodisiac_Nanofluid_Plus</li></thingDefs></filter><count>5</count></li>
+      <li><filter><categories><li>Medicine</li></categories></filter><count>6</count></li>
+    </ingredients>
+    <fixedIngredientFilter><thingDefs><li>Purple_Aphrodisiac_Nanofluid_Plus</li></thingDefs><categories><li>Medicine</li></categories></fixedIngredientFilter>
+    <defaultIngredientFilter><thingDefs><li>Purple_Aphrodisiac_Nanofluid_Plus</li></thingDefs><categories><li>Medicine</li></categories></defaultIngredientFilter>
+    <anesthetize>true</anesthetize>
+    <surgerySuccessChanceFactor>1</surgerySuccessChanceFactor>
+    <!-- 仅关闭原版直接 Kill 的失败分支，不替换 SurgeryOutcomeBase 或普通损伤。 -->
+    <deathOnFailedSurgeryChance>0</deathOnFailedSurgeryChance>
+  </RecipeDef>
+</Defs>

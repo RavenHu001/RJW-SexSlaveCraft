@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成：依据已确认的 v2 中文稿落实 Russian 文案；保留现有键名及参数契约。 -->
+<LanguageData>
+  <SSC_UterusDevelopment_CannotStart>Сейчас нельзя начать развитие матки.</SSC_UterusDevelopment_CannotStart>
+  <SSC_UterusDevelopment_AlreadyStarted>Это тело уже прошло операцию по развитию матки. Повторная операция не нужна.</SSC_UterusDevelopment_AlreadyStarted>
+  <SSC_UterusDevelopment_MissingTorso>Отсутствует туловище, пригодное для операции.</SSC_UterusDevelopment_MissingTorso>
+  <SSC_UterusDevelopment_ConfigUnavailable>Настройки развития матки недоступны.</SSC_UterusDevelopment_ConfigUnavailable>
+  <SSC_UterusDevelopment_CreateFailed>Не удалось оставить в этом теле метку развития.</SSC_UterusDevelopment_CreateFailed>
+  <SSC_UterusDevelopment_SurgeryUnavailable>Сейчас нельзя провести операцию по развитию матки.</SSC_UterusDevelopment_SurgeryUnavailable>
+  <SSC_UterusDevelopment_AdultFemaleRequired>Это развитие доступно только взрослому женскому телу.</SSC_UterusDevelopment_AdultFemaleRequired>
+  <SSC_UterusDevelopment_SlaveIdentityRequired>Для этой операции требуется статус «Секс-раб».</SSC_UterusDevelopment_SlaveIdentityRequired>
+  <SSC_UterusDevelopment_ResearchRequired>Исследование «Преобразование внутренних органов с помощью PNA» ещё не завершено.</SSC_UterusDevelopment_ResearchRequired>
+  <SSC_UterusDevelopment_PregnancyBlocked>Это тело уже вынашивает ребёнка; сейчас такую операцию проводить нельзя.</SSC_UterusDevelopment_PregnancyBlocked>
+  <SSC_UterusDevelopment_MissingOrgan>У этого тела нет половых органов, пригодных для развития.</SSC_UterusDevelopment_MissingOrgan>
+  <SSC_UterusDevelopment_DoctorRequired>Нет врача, способного провести операцию.</SSC_UterusDevelopment_DoctorRequired>
+  <SSC_UterusDevelopment_SurgeryConfigUnavailable>Настройки операции по развитию матки недоступны.</SSC_UterusDevelopment_SurgeryConfigUnavailable>
+  <SSC_UterusDevelopment_Started>Развитие матки началось. Фиолетовые наномашины затаились в самой глубине этого тела. Текущий прогресс: {0}.</SSC_UterusDevelopment_Started>
+  <SSC_UterusDevelopment_DescriptionDeveloping>Фиолетовые наномашины обосновались в матке и день за днём придают ей новый облик. Это тело ещё далеко не готово вынашивать новую жизнь; лишь снова и снова испытывая глубокое наслаждение, оно сможет понемногу созреть.</SSC_UterusDevelopment_DescriptionDeveloping>
+  <SSC_UterusDevelopment_DescriptionInfertile>Матка полностью развита, а тело стало соблазнительным сосудом, созданным лишь для наслаждения. Больше не отвлекаясь на вынашивание, оно отдаёт все силы быстрому заживлению ран и избавлению от усталости.</SSC_UterusDevelopment_DescriptionInfertile>
+  <SSC_UterusDevelopment_DescriptionFertile>Полностью развитая матка стала лоном, всегда готовым к зачатию. Это тело беременеет легче обычного, а наступившая беременность длится меньше.</SSC_UterusDevelopment_DescriptionFertile>
+</LanguageData>

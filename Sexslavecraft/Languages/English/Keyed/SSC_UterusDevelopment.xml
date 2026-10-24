@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成：依据已确认的 v2 中文稿落实 English 文案；保留现有键名及参数契约。 -->
+<LanguageData>
+  <SSC_UterusDevelopment_CannotStart>Uterine development cannot begin right now.</SSC_UterusDevelopment_CannotStart>
+  <SSC_UterusDevelopment_AlreadyStarted>This body has already undergone uterine development and needs no further surgery.</SSC_UterusDevelopment_AlreadyStarted>
+  <SSC_UterusDevelopment_MissingTorso>No torso suitable for surgery is present.</SSC_UterusDevelopment_MissingTorso>
+  <SSC_UterusDevelopment_ConfigUnavailable>Uterine development configuration is unavailable.</SSC_UterusDevelopment_ConfigUnavailable>
+  <SSC_UterusDevelopment_CreateFailed>The procedure failed to leave a mark of development within this body.</SSC_UterusDevelopment_CreateFailed>
+  <SSC_UterusDevelopment_SurgeryUnavailable>Uterine development surgery is currently unavailable.</SSC_UterusDevelopment_SurgeryUnavailable>
+  <SSC_UterusDevelopment_AdultFemaleRequired>This development is only available to adult female bodies.</SSC_UterusDevelopment_AdultFemaleRequired>
+  <SSC_UterusDevelopment_SlaveIdentityRequired>The patient must first have the sex slave identity.</SSC_UterusDevelopment_SlaveIdentityRequired>
+  <SSC_UterusDevelopment_ResearchRequired>The research "PNA internal organ reshaping" has not been completed.</SSC_UterusDevelopment_ResearchRequired>
+  <SSC_UterusDevelopment_PregnancyBlocked>This body is already carrying a pregnancy; the surgery cannot be performed now.</SSC_UterusDevelopment_PregnancyBlocked>
+  <SSC_UterusDevelopment_MissingOrgan>This body lacks reproductive organs suitable for development.</SSC_UterusDevelopment_MissingOrgan>
+  <SSC_UterusDevelopment_DoctorRequired>No doctor is available to perform the surgery.</SSC_UterusDevelopment_DoctorRequired>
+  <SSC_UterusDevelopment_SurgeryConfigUnavailable>Uterine development surgery configuration is unavailable.</SSC_UterusDevelopment_SurgeryConfigUnavailable>
+  <SSC_UterusDevelopment_Started>Uterine development has begun. Purple nanomachines have settled dormant in the deepest part of this body. Current progress: {0}.</SSC_UterusDevelopment_Started>
+  <SSC_UterusDevelopment_DescriptionDeveloping>Purple nanomachines have settled within the womb, reshaping it day by day. This body is still far from ready to nurture new life; only repeated, deep-reaching pleasure can feed it toward maturity, little by little.</SSC_UterusDevelopment_DescriptionDeveloping>
+  <SSC_UterusDevelopment_DescriptionInfertile>The womb has been fully developed, turning this body into a seductive vessel made solely for pleasure. No longer distracted by childbearing, it devotes all its strength to healing wounds and dispelling fatigue more quickly.</SSC_UterusDevelopment_DescriptionInfertile>
+  <SSC_UterusDevelopment_DescriptionFertile>The womb has been fully developed into a chamber always ready to conceive. This body conceives more easily than an ordinary one, and once pregnant, its gestation is shorter as well.</SSC_UterusDevelopment_DescriptionFertile>
+</LanguageData>

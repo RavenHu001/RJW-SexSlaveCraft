@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成：依据维护者确认的胃部 v1 中文稿落实 ChineseSimplified 文案，保留键名、注入路径与参数。 -->
+<LanguageData>
+  <SSC_Surgery_StartStomachDevelopment.label>胃部开发手术</SSC_Surgery_StartStomachDevelopment.label>
+  <SSC_Surgery_StartStomachDevelopment.description>将浓缩紫色纳米催情液与药物调和成制剂，经手术送入胃中，让紫色微械在胃壁上安定下来。刀口愈合之后，往后的每一次深喉，都会化作喂给微械的养分，让它继续改造这具身体的胃。</SSC_Surgery_StartStomachDevelopment.description>
+  <SSC_Surgery_StartStomachDevelopment.jobString>进行胃部开发手术</SSC_Surgery_StartStomachDevelopment.jobString>
+</LanguageData>

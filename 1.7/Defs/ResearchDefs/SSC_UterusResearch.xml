@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成：仅 1.7；v2 中文定稿作为基础文案；四语名称与描述由 DefInjected 提供。 -->
+<Defs>
+  <ResearchProjectDef>
+    <defName>SSC_RES_UterusDevelopment</defName>
+    <label>纳米催情液内脏改造</label>
+    <description>用药物把浓缩纳米催情液调成能长久保持惰性的制剂，使药力在送往体内深处的途中不致提前渗散，直到抵达目标器官后才开始起效。如此，便能把这种催情的药力牢牢种在身体最深处，一点一点地改造内部的器官。</description>
+    <baseCost>2000</baseCost>
+    <techLevel>Medieval</techLevel>
+    <tab>SSC_ResearchTabDef</tab>
+    <prerequisites>
+      <li>SSC_RES_BodyPartTraining</li>
+      <li>SSC_RES_PNAConcentration</li>
+    </prerequisites>
+    <!-- 不设置专用研究台、设施或蓝图；位于现有双前置右侧的空行。 -->
+    <researchViewX>3</researchViewX>
+    <researchViewY>2.5</researchViewY>
+  </ResearchProjectDef>
+</Defs>

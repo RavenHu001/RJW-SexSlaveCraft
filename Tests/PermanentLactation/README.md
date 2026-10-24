@@ -8,6 +8,8 @@
 dotnet run --project Tests/PermanentLactation/PermanentLactation.csproj --configuration Release -- .
 ```
 
+2026-10-23 子宫开发第 5 批：以 `-p:SscUterusBoundary=true` 启用 1.7 展示分支，**23／23** 通过，包含原有 22 项及界面标签只读检查。新增用例直接设置超上限奶量，验证展示局部限幅且不写回原奶量、不消耗原有未结算时间。Test-All 在 1.7 验证中自动传入此参数；默认命令仍为原编译模式。
+
 ## 修复行为
 
 - 将每次调用传入的 `delta` 累计到至少 60 tick，结算全部累计时间，随后清零。调用跨过阈值时也不丢掉超出的时间。

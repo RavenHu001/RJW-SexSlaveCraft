@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成：依据已确认的 v2 中文稿落实 ChineseTraditional 文案；保留现有键名及参数契约。 -->
+<LanguageData>
+  <SSC_BodyManagement_Title>身體管理</SSC_BodyManagement_Title>
+  <SSC_BodyManagement_MilkTip>開關這副身體的產奶。關閉只止住出奶，不移除永久泌乳，也不清空奶量。</SSC_BodyManagement_MilkTip>
+  <SSC_BodyManagement_FertilityToggle>允許受孕</SSC_BodyManagement_FertilityToggle>
+  <SSC_BodyManagement_FertilityTip>開關這副身體是否允許受孕。妊娠期間不能關閉。</SSC_BodyManagement_FertilityTip>
+  <SSC_BodyManagement_BodyChanged>身體狀態已經變了，重新查看後再操作。</SSC_BodyManagement_BodyChanged>
+  <SSC_BodyManagement_CannotChange>目前無法調整生育狀態。</SSC_BodyManagement_CannotChange>
+  <SSC_BodyManagement_NotStarted>這副身體還沒有接受過子宮開發。</SSC_BodyManagement_NotStarted>
+  <SSC_BodyManagement_NotComplete>子宮的開發還沒有完成，現在還不能受孕。</SSC_BodyManagement_NotComplete>
+  <SSC_BodyManagement_PregnancyBlocked>正在妊娠，不能關閉生育。</SSC_BodyManagement_PregnancyBlocked>
+  <SSC_BodyManagement_FertilityConfigUnavailable>子宮開發的生育設定無法使用。</SSC_BodyManagement_FertilityConfigUnavailable>
+</LanguageData>

@@ -142,6 +142,10 @@ namespace SexSlaveCraft
             float contentWidth = trainingRect.width - 18f;
             TrainerIdentityView identityView = BuildTrainerIdentityView(pawn, comp, contentWidth);
             GelAppearanceView gelView = BuildGelAppearanceView(pawn, contentWidth);
+#if SSC_RW17
+            // 身体管理不受后续身份和研究分支影响；测量与绘制复用同一份只读视图。
+            BodyManagementView bodyView = BuildBodyManagementView(pawn, comp, contentWidth);
+#endif
             float specializationHeight = GetSpecializationSectionHeight(pawn, comp, contentWidth);
             // 主人信息同样只测量本次事件一次；绘制和滚动高度共用快照，界面不补建成长或缰绳。
             MasterPanelView masterView = comp.pawnIdentity == PawnIdentity.Master
@@ -153,6 +157,9 @@ namespace SexSlaveCraft
             float contentHeight = CalculateContentHeight(pawn, comp, identityView.SectionHeight, specializationHeight,
                 contentWidth, masterView.SectionHeight) + (slaveAbilityHeight > 0f ? slaveAbilityHeight + SectionSpacing : 0f)
                 + (gelView.Height > 0f ? gelView.Height + SectionSpacing : 0f);
+#if SSC_RW17
+            if (bodyView.Height > 0f) contentHeight += bodyView.Height + SectionSpacing;
+#endif
             Rect viewRect = trainingRect;
             Rect contentRect = new Rect(0f, 0f, contentWidth, contentHeight);
 
@@ -169,6 +176,15 @@ namespace SexSlaveCraft
                     DrawGelAppearanceSection(new Rect(0f, curY, contentRect.width, gelView.Height), gelView);
                     curY += gelView.Height + SectionSpacing;
                 }
+
+#if SSC_RW17
+                // 共用身体栏只绘制一次，主人、未设身份及研究未完成时也能操作已有身体状态。
+                if (bodyView.Height > 0f)
+                {
+                    DrawBodyManagementSection(new Rect(0f, curY, contentRect.width, bodyView.Height), bodyView);
+                    curY += bodyView.Height + SectionSpacing;
+                }
+#endif
 
                 // 入口位置与高度保持稳定；没有实际绑定或总限制停用时可见但不可操作。
                 DrawRestrictionToggle(new Rect(0f, curY, contentRect.width, RestrictionToggleHeight), pawn);
@@ -206,10 +222,13 @@ namespace SexSlaveCraft
                     curY = DrawTrainingSection(new Rect(0f, curY, contentRect.width, 124f), pawn, comp) + SectionSpacing;
                     curY = DrawScheduleSection(new Rect(0f, curY, contentRect.width, 210f), pawn, comp) + SectionSpacing;
 
+#if !SSC_RW17
+                    // 旧版本保留原泌乳栏；1.7 已在所有身份共用的身体栏绘制。
                     if (pawn.health.hediffSet.HasHediff(SSCDefOf.SSC_Lactating_SubState))
                     {
                         curY = DrawMilkSection(new Rect(0f, curY, contentRect.width, 88f), pawn, comp) + SectionSpacing;
                     }
+#endif
 
                     curY = DrawPoseSection(new Rect(0f, curY, contentRect.width, 82f), comp) + SectionSpacing;
                     DrawTrainerSection(new Rect(0f, curY, contentRect.width, 82f), pawn, comp);
@@ -244,10 +263,13 @@ namespace SexSlaveCraft
 
             height += SectionSpacing + 124f;
             height += SectionSpacing + 210f;
+#if !SSC_RW17
+            // 与旧版本的绘制分支保持一致；1.7 的身体栏高度由同一份视图另行累计。
             if (pawn.health.hediffSet.HasHediff(SSCDefOf.SSC_Lactating_SubState))
             {
                 height += SectionSpacing + 88f;
             }
+#endif
 
             height += SectionSpacing + 82f;
             height += SectionSpacing + 82f;
@@ -542,7 +564,8 @@ namespace SexSlaveCraft
             return rect.yMax;
         }
 
-        /// <summary>绘制泌乳配置与进度，并保证异常路径结束本节列表。</summary>
+#if !SSC_RW17
+        /// <summary>保留旧版本的泌乳配置与进度；1.7 改由共用身体栏绘制。</summary>
         private float DrawMilkSection(Rect rect, Pawn pawn, CompSexSlaveTraining comp)
         {
             DrawSection(rect, Strings.ITab_MilkProductionToggle, delegate(Rect innerRect)
@@ -575,6 +598,7 @@ namespace SexSlaveCraft
 
             return rect.yMax;
         }
+#endif
 
         /// <summary>绘制姿势选择菜单，并保证菜单创建失败时结束本节列表。</summary>
         private float DrawPoseSection(Rect rect, CompSexSlaveTraining comp)
@@ -989,7 +1013,8 @@ namespace SexSlaveCraft
             }
         }
 
-        /// <summary>仅在角色具有泌乳状态时显示并保存产奶开关。</summary>
+#if !SSC_RW17
+        /// <summary>仅在旧版本角色具有泌乳状态时显示并保存产奶开关。</summary>
         private static void DrawMilkToggle(Listing_Standard listing, Pawn pawn, CompSexSlaveTraining comp)
         {
             if (!pawn.health.hediffSet.HasHediff(SSCDefOf.SSC_Lactating_SubState)) return;
@@ -998,5 +1023,6 @@ namespace SexSlaveCraft
             listing.CheckboxLabeled(Strings.ITab_MilkProductionToggle, ref enabled);
             comp.milkProductionEnabled = enabled;
         }
+#endif
     }
 }

@@ -42,14 +42,26 @@ namespace SexSlaveCraft
             }
         }
 
+        /// <summary>保留既有独立捕获入口；未提供共享评分时沿用原有评分取样方式。</summary>
         internal static Plan Capture(Pawn source, Pawn target, SSCOrdinarySexPartsSnapshot parts)
+            => CaptureWithScore(source, target, parts, null);
+
+#if SSC_RW17
+        /// <summary>与子宫开发共用同一次评分；保持本项目原有 20% 预算及资格不变。</summary>
+        internal static Plan Capture(Pawn source, Pawn target, SSCOrdinarySexPartsSnapshot parts, Func<float> score)
+            => CaptureWithScore(source, target, parts, score);
+#endif
+
+        /// <summary>隔离可选开发准备失败，旧调用不提供评分时继续使用原有隔离取样。</summary>
+        private static Plan CaptureWithScore(Pawn source, Pawn target, SSCOrdinarySexPartsSnapshot parts, Func<float> score)
         {
             // 可选分量的第三方评分/器官查询失败不应阻断原结算及第二批分量。
-            try { return CaptureCore(source, target, parts); }
+            try { return CaptureCore(source, target, parts, score); }
             catch (Exception ex) { Log.Warning("[SSC InfestationBody] Cannot prepare optional development: " + ex.GetType().Name); return null; }
         }
 
-        private static Plan CaptureCore(Pawn source, Pawn target, SSCOrdinarySexPartsSnapshot parts)
+        /// <summary>冻结旧部位的候选和均分预算；共享输入不改变旧项目的研究、分母或系数。</summary>
+        private static Plan CaptureCore(Pawn source, Pawn target, SSCOrdinarySexPartsSnapshot parts, Func<float> scoreQuery)
         {
             // 这里只收窄身体开发资格；研究、评分载体或部位不足时不修改整套侵染准入。
             if (Scribe.mode != LoadSaveMode.Inactive || parts?.Parts == null || !SSCDesireInfestationUtility.CanAffect(source, target) ||
@@ -71,7 +83,7 @@ namespace SexSlaveCraft
             // 旧评分含随机项；隔离新增取样，不移动 RJW 后续怀孕/记忆等原结算的随机序列。
             float score;
             Rand.PushState();
-            try { score = TrainingOutcomeUtility.GetScore(source, target); }
+            try { score = scoreQuery != null ? scoreQuery() : TrainingOutcomeUtility.GetScore(source, target); }
             finally { Rand.PopState(); }
             float budget = TrainingExpUtility.CalculateExperienceBudget(score, ExperienceFactor,
                 TrainingExpUtility.GetCorruptionStageMultiplier(target), TrainingOutcomeUtility.GetChainStageMult(target));

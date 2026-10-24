@@ -297,6 +297,10 @@ namespace SexSlaveCraft
             {
                 foreach (var pair in other.hediffTags)
                 {
+#if SSC_RW17
+                    // 加工／复制也不携带外部或旧载荷中的身体开发标签；原载荷不在此处改写。
+                    if (SSCBodyDevelopmentUtility.IsBodyStateDef(pair.Key)) continue;
+#endif
                     // 能力标记不是人格标签；由独立偏好与接收身体的最终身份重新派生。
                     if (SSCAbilityToggleUtility.IsMarkerDef(pair.Key)) continue;
                     this.hediffTags.Add(pair.Key, pair.Value);
@@ -476,6 +480,10 @@ namespace SexSlaveCraft
             // Need_PNA 的满足度不进入此标签字典，也不新增人格侧的需求快照。
             foreach (var recipe in DefDatabase<RecipeDef>.AllDefs.OfType<RecipeDef_PSTag>())
             {
+#if SSC_RW17
+                // 子宫／胃部开发属于原身体；即使扩展配方将它列为标签，也不采集进人格凝胶。
+                if (SSCBodyDevelopmentUtility.IsBodyStateDef(recipe.hediffToAdd)) continue;
+#endif
                 if (recipe.hediffToAdd != null && !SSCPnaExposureUtility.IsBodyStateDef(recipe.hediffToAdd) &&
                     !SSCAbilityToggleUtility.IsMarkerDef(recipe.hediffToAdd))
                 {
