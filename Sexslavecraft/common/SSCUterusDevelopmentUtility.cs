@@ -25,30 +25,31 @@ namespace SexSlaveCraft
         public static Hediff_SSCUterusDevelopment Find(Pawn pawn)
             => pawn?.health?.hediffSet?.hediffs.OfType<Hediff_SSCUterusDevelopment>().FirstOrDefault(IsCurrentRecord);
 
-        /// <summary>仅为第二批成功手术提供落地入口；完整手术准入由手术实现负责。</summary>
+        /// <summary>仅为成功手术建立身体记录，拒绝原因使用本地化资源；完整准入仍由手术实现负责。</summary>
         public static bool TryCreate(Pawn pawn, out Hediff_SSCUterusDevelopment record, out string reason)
         {
             record = null;
             reason = null;
             if (Scribe.mode != LoadSaveMode.Inactive || pawn?.health?.hediffSet == null)
-            { reason = "当前无法开始子宫开发。"; return false; }
+            { reason = "SSC_UterusDevelopment_CannotStart".Translate(); return false; }
             // 明确启动操作才允许先清理异常旧实例，避免重复手术重置现有有效进度。
             Normalize(pawn);
             record = Find(pawn);
-            if (record != null) { reason = "已经进行过子宫开发。"; return false; }
+            if (record != null) { reason = "SSC_UterusDevelopment_AlreadyStarted".Translate(); return false; }
             // 不回退到全身或生殖器官挂载；缺少定义或正确类时直接拒绝。
             BodyPartRecord torso = FindTorso(pawn);
-            if (torso == null) { reason = "缺少可用的躯干部位。"; return false; }
+            if (torso == null) { reason = "SSC_UterusDevelopment_MissingTorso".Translate(); return false; }
             HediffDef definition = DefDatabase<HediffDef>.GetNamedSilentFail(DefName);
             if (definition?.hediffClass != typeof(Hediff_SSCUterusDevelopment))
-            { reason = "子宫开发配置不可用。"; return false; }
+            { reason = "SSC_UterusDevelopment_ConfigUnavailable".Translate(); return false; }
             // 通过正常原版加入路径落地，并从健康列表复查最终保留的实例。
             var created = (Hediff_SSCUterusDevelopment)HediffMaker.MakeHediff(definition, pawn, torso);
             created.Severity = InitialProgress;
             pawn.health.AddHediff(created, torso);
             record = Find(pawn);
             if (record != null) return true;
-            reason = "未能建立子宫开发状态。";
+            // 最终健康列表未接纳记录时也由同一语言入口报告，不在代码拼接玩家可见文字。
+            reason = "SSC_UterusDevelopment_CreateFailed".Translate();
             return false;
         }
 

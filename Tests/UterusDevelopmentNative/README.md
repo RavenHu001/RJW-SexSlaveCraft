@@ -1,6 +1,6 @@
 # 子宫开发第 1～5 批原生专项
 
-2026-10-23：**293／293 通过**，包括前两批 100 项、第 3 批 92 项、第 4 批 81 项及第 5 批 20 项（生命周期 16 项＋本地化 4 项）。目标为 RimWorld **1.7.4985 rev1269**，游戏程序集 MVID `d368493b52bd4740bc7507c1b0386895`。不启动游戏，不改安装副本或用户配置。
+2026-10-23：**305／305 通过**，包括前两批 100 项、第 3 批 92 项、第 4 批 81 项、第 5 批 20 项，以及早期文案本地化收尾 12 项。目标为 RimWorld **1.7.4985 rev1269**，游戏程序集 MVID `d368493b52bd4740bc7507c1b0386895`。不启动游戏，不改安装副本或用户配置。
 
 通过 ProjectReference 编译当前生产工程，实际执行生产 XML 的原版加载、Hediff 创建／添加／合并／移除、原版 `StatPart_FertilityByHediffs.TransformValue`、健康缓存通知，以及 Scribe 的保存、交叉引用和 PostLoadInit。测试没有复制开发进度、生育状态或合并算法。
 
@@ -40,6 +40,8 @@
 
 这不证明完整模组环境中的行为、健康页、研究树排版、实际取料／麻醉／伤口、完整地图存档、分娩或开关 UI 已通过实机验收。阶段强化及孕期缩短已实现并完成本专项验证，共用身体管理栏第 5 批已实现，近似字体／输入布局检查另见 [BodyManagementLayout](../BodyManagementLayout/README.md)，真实页面仍待实机验收。
 
+第 1～2 批文案收尾新增 [UterusStartupLanguageTests](UterusStartupLanguageTests.cs) 的 12 项：四语各执行创建拒绝、真实健康页禁用菜单与医生报告、原生成功及重复拒绝消息；医术提示与既有 SSC_Cosmetic_MedicineRequired 当前译文一致，成功进度参数正确。新增键来自真实生产 XML，实际翻译器查键／格式化保留，医疗和地图边界沿用旧专项。当前日志在 `.builds/uterus-development-startup-localization/`，见[收尾记录](../../Docs/Development/Verification/子宫开发第1～2批文案本地化与验证.md)。
+
 已登记到 `Scripts/Test-All.ps1`。单独验证使用 .NET 10 SDK、实际游戏引用及测试侧 net9.0 Harmony；依赖路径可从 `1.7/BUILD-INFO.json` 读取：
 
 ```powershell
@@ -56,4 +58,4 @@ if ($LASTEXITCODE -ne 0) { throw '专项构建失败' }
     $repo ([IO.Path]::GetDirectoryName($info.gameAssemblyPath))
 ```
 
-隔离 Scribe 文件继续写入 `.builds/uterus-development-batch1/`；本轮日志保存于 `.builds/uterus-development-batch5/`，验证记录见[第 5 批](../../Docs/Development/Verification/子宫开发第5批实现与验证.md)，前四批记录保持原时点。测试构建会重建 1.7 生产 DLL；需要更新构建来源记录时，再运行 `Scripts/Build-Mod.ps1`，不要把 DLL 哈希不一致作为通过。
+隔离 Scribe 文件继续写入 `.builds/uterus-development-batch1/`；第 5 批日志保存在 `.builds/uterus-development-batch5/`，本地化收尾日志保存在 `.builds/uterus-development-startup-localization/`；前五批记录均保留原时点。测试构建会重建 1.7 生产 DLL；需要更新构建来源记录时，再运行 `Scripts/Build-Mod.ps1`，不要把 DLL 哈希不一致作为通过。

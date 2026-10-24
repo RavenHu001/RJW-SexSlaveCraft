@@ -154,8 +154,8 @@ pwsh -File Scripts/Test-All.ps1 -GameVersion 1.7 -HarmonyAssemblyPath 'C:\Depend
 - [PersonalityMemories](PersonalityMemories/README.md)：人格记忆快照回归检查。
 - [PersonalitySpecializations](PersonalitySpecializations/README.md)：人格特化进度回归。
 - [PersonalityCardLayout](PersonalityCardLayout/README.md)：人格凝胶界面布局检查。
-- [BodyManagementLayout](BodyManagementLayout/README.md)：共用身体管理栏及生产开关检查，88／88；真实页面仍待实机验收。
-- [UterusDevelopmentNative](UterusDevelopmentNative/README.md)：子宫开发第 1～5 批真实程序集专项，293／293。
+- [BodyManagementLayout](BodyManagementLayout/README.md)：共用身体管理栏及生产开关检查，92／92；真实页面仍待实机验收。
+- [UterusDevelopmentNative](UterusDevelopmentNative/README.md)：子宫开发第 1～5 批真实程序集专项，305／305。
 - [GenderChangeMemory](GenderChangeMemory/README.md)：性别重置手术记忆回归测试。
 - [PermanentLactation](PermanentLactation/README.md)：永久泌乳累计计时回归。
 

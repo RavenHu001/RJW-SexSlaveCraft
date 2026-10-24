@@ -123,6 +123,7 @@ internal static partial class Program
             MergeAndNormalization();
             SaveLoad();
             SurgeryTests(repo, game, harmony.Value);
+            UterusStartupLanguageTests(repo);
             GrowthTests(repo, harmony.Value);
             PregnancyTests(repo, game, harmony.Value);
             BodyManagementLifecycleTests(harmony.Value);

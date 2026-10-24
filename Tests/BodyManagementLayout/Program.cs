@@ -29,6 +29,8 @@ internal static class Program
             { Translator.Load(repo, language); Layout(width, scale, contents); });
         foreach (string language in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" })
             Run("本地化键、镜像、占位参数及旧泌乳键复用：" + language, () => LanguageResources(repo, language));
+        foreach (string language in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" })
+            Run("早期创建／手术文案资源完整性：" + language, () => StartupLanguageResources(repo, language));
         Run("长译文及参数重排后标题、条目完整测量且无占位符泄漏", LongTranslations);
         foreach (float progress in new[] { .01f, .3f, .7f, .99999f, 1f })
             Run("阶段与收益读取实际配置 " + progress, () => StageDisplay(progress));
@@ -145,6 +147,32 @@ internal static class Program
         Require(Widgets.Drawn.Any(d => d.Kind == "checkbox" && d.Label == milk));
         Require(Widgets.Drawn.Any(d => d.Kind == "tip" && d.Label.Contains("已有属性译名")));
         Require(Widgets.Drawn.All(d => !d.Label.Contains("SSC_") && !Regex.IsMatch(d.Label, @"\{\d+\}") && !d.Label.Contains("\\n")));
+    }
+
+    /// <summary>逐键核对新增资源及镜像，审计三个生产入口不再含中文字符串；参数检查不复制业务逻辑。</summary>
+    private static void StartupLanguageResources(string repo, string language)
+    {
+        string relative = $"{language}/Keyed/SSC_UterusDevelopment.xml";
+        string path = Path.Combine(repo, "1.7/Languages", relative);
+        Require(File.ReadAllBytes(path).SequenceEqual(File.ReadAllBytes(Path.Combine(repo, "Sexslavecraft/Languages", relative))));
+        var entries = XDocument.Load(path).Root.Elements().ToDictionary(e => e.Name.LocalName, e => e.Value);
+        var reference = XDocument.Load(Path.Combine(repo, "1.7/Languages/ChineseSimplified/Keyed/SSC_UterusDevelopment.xml"))
+            .Root.Elements().ToDictionary(e => e.Name.LocalName, e => e.Value);
+        Require(entries.Keys.Order().SequenceEqual(reference.Keys.Order()));
+        string source = "";
+        foreach (string file in new[] { "common/SSCUterusDevelopmentUtility.cs", "common/SSCUterusSurgeryUtility.cs", "Recipe/Recipe_StartUterusDevelopment.cs" })
+        {
+            string code = File.ReadAllText(Path.Combine(repo, "Sexslavecraft", file)); source += code;
+            foreach (Match literal in Regex.Matches(code, "\"(?:\\\\.|[^\"\\\\])*\""))
+                Require(!Regex.IsMatch(literal.Value, @"[\u4e00-\u9fff]"));
+        }
+        Require(Regex.Matches(source, @"SSC_UterusDevelopment_\w+").Select(m => m.Value).Distinct().Order().SequenceEqual(entries.Keys.Order()));
+        foreach (var pair in entries)
+        {
+            Require(Regex.Matches(pair.Value, @"\{\d+\}").Select(m => m.Value).Order()
+                .SequenceEqual(Regex.Matches(reference[pair.Key], @"\{\d+\}").Select(m => m.Value).Order()));
+            Require(!Regex.IsMatch(string.Format(pair.Value, "1%"), @"\{\d+\}"));
+        }
     }
 
     /// <summary>模拟更长译文和句式重排；测量使用翻译结果，标题在同一次视图内保持一致。</summary>

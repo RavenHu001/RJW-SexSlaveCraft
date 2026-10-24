@@ -1,6 +1,6 @@
 # 共用身体管理栏针对性检查
 
-2026-10-23：**88／88 通过**。使用 .NET 9，无外部包依赖：
+2026-10-23：**92／92 通过**（原 88 项＋早期启动／手术文案资源检查 4 项）。使用 .NET 9，无外部包依赖：
 
 ```powershell
 dotnet run --project Tests/BodyManagementLayout/BodyManagementLayout.csproj -c Release -- .
@@ -20,3 +20,5 @@ dotnet run --project Tests/BodyManagementLayout/BodyManagementLayout.csproj -c R
 已登记到 `Scripts/Test-All.ps1`；本批仅运行针对性套件，没有运行整套 Test-All。
 
 本地化复核新增：四语各 23 个新增键的集合、参数及源码调用完整性，资源镜像字节一致；旧泌乳开关键复用，属性名称取自 StatDef 标签。所有新增文案仍是中文占位。更长标题／按钮、进度句式参数重排和当次视图标题缓存均验证；生产分部的字符串字面量不再包含中文文本。布局夹具按真实 statFactors 字典加载倍率，并断言阶段实际数值及已有属性译名，避免空列表掩盖展示问题。
+
+第 1～2 批文案收尾新增四语各一项：14 个启动资源键、参数、镜像及源码引用一致；创建工具、手术资格与手术 Worker 的字符串字面量不再包含中文玩家文本。生产创建调用继续参与原有全部布局用例。实际医疗菜单、医术键复用和成功反馈另由 [UterusStartupLanguageTests](../UterusDevelopmentNative/UterusStartupLanguageTests.cs) 验证。

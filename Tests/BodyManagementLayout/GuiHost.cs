@@ -144,7 +144,7 @@ namespace Verse
         public static void Load(string repo, string language)
         {
             Values = new();
-            foreach (string file in new[] { "SSC_Keys.xml", "SSC_BodyManagement.xml" })
+            foreach (string file in new[] { "SSC_Keys.xml", "SSC_BodyManagement.xml", "SSC_UterusDevelopment.xml" })
                 foreach (var element in System.Xml.Linq.XDocument.Load(Path.Combine(repo, "1.7/Languages", language, "Keyed", file)).Root.Elements())
                     Values.Add(element.Name.LocalName, element.Value.Replace("\\n", "\n"));
         }

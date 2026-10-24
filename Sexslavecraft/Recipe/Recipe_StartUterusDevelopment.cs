@@ -18,7 +18,7 @@ namespace SexSlaveCraft
             return torso != null && (part == null || part == torso);
         }
 
-        /// <summary>保留原版准入，向医疗清单提供本手术当前不可用的中文原因。</summary>
+        /// <summary>保留原版准入，向医疗清单提供本手术当前不可用的本地化原因。</summary>
         public override AcceptanceReport AvailableReport(Thing thing, BodyPartRecord part = null)
         {
             // 先保留原版性别、年龄等基础筛选，再给保留的部位候选提供完整业务拒绝原因。
@@ -40,7 +40,7 @@ namespace SexSlaveCraft
             // 旧账单或手术期间的身体变化不得落地到其他部位；资格失效不另加失败惩罚。
             var report = SSCUterusSurgeryUtility.RecipientReport(pawn, part);
             if (!report.Accepted) { Reject(pawn, report.Reason); return; }
-            if (part == null) { Reject(pawn, "缺少有效的目标躯干部位。"); return; }
+            if (part == null) { Reject(pawn, "SSC_UterusDevelopment_MissingTorso".Translate()); return; }
             report = SSCUterusSurgeryUtility.DoctorReport(billDoer, pawn);
             if (!report.Accepted) { Reject(pawn, report.Reason); return; }
             // SurgeryFlesh 继承原版质量、药物效力、失败伤口和反馈；本配方直接死亡概率为 0。
@@ -52,7 +52,9 @@ namespace SexSlaveCraft
             { Reject(pawn, reason); return; }
             // 只有创建成功才报告已开始；初始禁育由身体 Hediff 的阶段属性直接生效。
             TaleRecorder.RecordTale(TaleDefOf.DidSurgery, billDoer, pawn);
-            Messages.Message("子宫开发已开始，当前进度为 1%。", pawn, MessageTypeDefOf.PositiveEvent);
+            // 成功通知的句式放入语言资源，初始进度由生产常量格式化后填入，避免文案另维护一份数值。
+            string progress = (SSCUterusDevelopmentUtility.InitialProgress * 100f).ToString("0.##") + "%";
+            Messages.Message("SSC_UterusDevelopment_Started".Translate(progress), pawn, MessageTypeDefOf.PositiveEvent);
         }
 
         /// <summary>报告启动未完成的原因，不发放心情、伤口或开发记录。</summary>
