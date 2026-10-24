@@ -91,6 +91,8 @@ internal static partial class Program
             // RJW 类初始化会读取遗传排除表；本批只使用其妊娠登记，不执行遗传逻辑。
             DefDatabase<rjw.StringListDef>.Add(new rjw.StringListDef { defName = "NonInheritedTraits", strings = new() });
             bootstrap = false;
+            // 第 4 批新增真实属性引用；宿主只提供正常基础值，能力、装备等修正不参与阶段专项。
+            LoadStageStatReferences(game);
             // 生产 XML 仍走原版字段解析与交叉引用，防止手工抄写配置掩盖资源错误。
             Check("production XML uses native loader, independent fertile stage and Chinese placeholders", () =>
             {
@@ -101,7 +103,7 @@ internal static partial class Program
                 Equal(typeof(Hediff_SSCUterusDevelopment), development.hediffClass);
                 Near(.01f, development.initialSeverity); Near(1f, development.maxSeverity);
                 Require(development.label.Contains("子宫开发")); Require(development.description.Contains("正式文案待定"));
-                Near(0, development.stages[0].fertilityFactor); Near(0, development.stages[1].fertilityFactor);
+                Require(development.stages.All(stage => stage.fertilityFactor == 0));
                 Near(2.5f, development.GetModExtension<SSCUterusDevelopmentExtension>().fertileStage.fertilityFactor);
             });
             if (development == null) return 1;
@@ -120,6 +122,7 @@ internal static partial class Program
             SaveLoad();
             SurgeryTests(repo, game, harmony.Value);
             GrowthTests(repo, harmony.Value);
+            PregnancyTests(repo, game, harmony.Value);
         }
         finally { Scribe.mode = LoadSaveMode.Inactive; Current.Game = null; }
         Console.WriteLine($"{passed}/{passed + failed} cases passed");
@@ -191,7 +194,7 @@ internal static partial class Program
             var pawn = NewPawn(); var record = Start(pawn, 1); var other = NewPawn(); Start(other, 1);
             Require(!record.FertilityEnabled); Near(0, Factor(pawn)); notifications = 0;
             Toggle(pawn, true); Near(2.5f, Factor(pawn)); Equal(1, notifications); Near(0, Factor(other));
-            Near(0, development.stages[1].fertilityFactor); Toggle(pawn, true); Equal(1, notifications);
+            Near(0, development.stages.Single(stage => stage.minSeverity == 1f).fertilityFactor); Toggle(pawn, true); Equal(1, notifications);
             Toggle(pawn, false); Near(0, Factor(pawn)); Equal(2, notifications);
         });
         Check("native lactation factor composes normally and is never compensated", () =>

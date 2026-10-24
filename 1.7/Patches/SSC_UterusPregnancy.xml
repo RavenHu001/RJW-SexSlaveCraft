@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Patch>
+  <!-- AI 辅助生成：只为四个已取证定义追加单次妊娠待遇组件，保留原有通知等 comps。 -->
+  <Operation Class="PatchOperationSequence">
+    <operations>
+      <!-- 有组件列表时直接追加；没有列表的定义单独建立，不覆盖现有内容。 -->
+      <li Class="PatchOperationAdd">
+        <xpath>Defs/HediffDef[defName="Pregnant" or defName="PregnantHuman" or defName="RJW_pregnancy" or defName="RJW_pregnancy_beast"][comps]/comps</xpath>
+        <value>
+          <li><compClass>SexSlaveCraft.HediffComp_SSCUterusPregnancy</compClass></li>
+        </value>
+      </li>
+      <li Class="PatchOperationConditional">
+        <xpath>Defs/HediffDef[defName="Pregnant" or defName="PregnantHuman" or defName="RJW_pregnancy" or defName="RJW_pregnancy_beast"][not(comps)]</xpath>
+        <match Class="PatchOperationAdd">
+          <xpath>Defs/HediffDef[defName="Pregnant" or defName="PregnantHuman" or defName="RJW_pregnancy" or defName="RJW_pregnancy_beast"][not(comps)]</xpath>
+          <value>
+            <comps><li><compClass>SexSlaveCraft.HediffComp_SSCUterusPregnancy</compClass></li></comps>
+          </value>
+        </match>
+      </li>
+    </operations>
+  </Operation>
+</Patch>

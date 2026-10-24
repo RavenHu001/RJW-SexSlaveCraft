@@ -1,6 +1,6 @@
-# 子宫开发第 1～3 批原生专项
+# 子宫开发第 1～4 批原生专项
 
-2026-10-23：**192／192 通过**，包括前两批 100 项和第 3 批 92 项。目标为 RimWorld **1.7.4985 rev1269**，游戏程序集 MVID `d368493b52bd4740bc7507c1b0386895`。不启动游戏，不改安装副本或用户配置。
+2026-10-23：**273／273 通过**，包括前两批 100 项、第 3 批 92 项及第 4 批 81 项。目标为 RimWorld **1.7.4985 rev1269**，游戏程序集 MVID `d368493b52bd4740bc7507c1b0386895`。不启动游戏，不改安装副本或用户配置。
 
 通过 ProjectReference 编译当前生产工程，实际执行生产 XML 的原版加载、Hediff 创建／添加／合并／移除、原版 `StatPart_FertilityByHediffs.TransformValue`、健康缓存通知，以及 Scribe 的保存、交叉引用和 PostLoadInit。测试没有复制开发进度、生育状态或合并算法。
 
@@ -28,7 +28,13 @@
 
 存档执行真实 RJW／SSC 派生驱动 ExposeData 和基类保存后缀、快照与新字段的 Scribe，恢复到新的驱动对象并检查交叉引用、PostLoadInit、已领取不重发、缺字段／快照不补造、重复 Start 不补造，以及仪式已完成阶段列表往返。Pawn／器官／Lord 作为外部世界登记，原生 JobDriver 地图 Toil 恢复层隔离；仪式列表调用生产 partial 的序列化入口，不声称整套角色组件恢复已验收。独立 CLR 仅把 `rjw.SexProps` 类名定位到真实依赖类型，避免整程序集的旧 IMGUI 扫描，后续原生序列化不替换。
 
-这不证明完整模组环境中的行为、健康页、研究树排版、实际取料／麻醉／伤口、完整地图存档或开关 UI 已通过实机验收。阶段强化、孕期缩短及共用身体管理栏属于第 4～5 批，尚未实现。
+第 4 批新增 [PregnancyTests](PregnancyTests.cs)、[PregnancyFlowTests](PregnancyFlowTests.cs)、[PregnancySaveTests](PregnancySaveTests.cs)。通过原版 StatWorker 实际计算 30%／70%／100% 阶段与两态收益，验证旧身体状态相乘、角色隔离、移除和切换。StatDef 采用本机实名及正常基础值，隔离能力／装备等其他修正。
+
+本机四个妊娠 XML 经原生 PatchOperation、继承及字段解析，保留原有 comps，实际创建生产组件。覆盖首次真实 Add 冻结待遇、未加入不提前判定、原先不合格后来开启不补发。原版真实 TickInterval 验证正常进度 ×1.25、保留饥饿倍率、连续 Tick、ageTicks 及达到终点当次进入临产。RJW 真实 Create<T>／Initialize／GetGestationPeriod／InitializeIfNoBabies 及 StartVanillaPregnancy 验证只应用一次、重复初始化不累乘、原有时长设置与 FertilityEnhancer 保留。四种妊娠真实 Scribe 恢复进度／判定／RJW 起止时间；旧字段缺失、未判定或坏枚举均为普通待遇，不补发。
+
+因独立宿主 Harmony 2 与生产 Harmony 3 的 CodeInstruction 类型不同，直接链接同一生产孕期补丁源码，以 Harmony 2 构建和安装；无匹配或倍率算法副本，组件与工具仍来自生产 DLL。只在该测试文件局部抑制刻意同名链接的 CS0436。游戏 Harmony 3 的自动扫描与完整补丁组合仍待实机确认。食物类别、遗传与完整婴儿生成是显式边界；正常孕期计算保留，StartLabor 只检查调用，不执行其后地图／出生流程。Scribe 不重建完整胎儿 Pawn 列表或地图；真实健康与组件序列化及 PostLoadInit 保留，提供真实空 WorldPawns 容器。所需 RJW 类型名映射至实际依赖类型，不扫描其旧版 UI 模块。
+
+这不证明完整模组环境中的行为、健康页、研究树排版、实际取料／麻醉／伤口、完整地图存档、分娩或开关 UI 已通过实机验收。阶段强化及孕期缩短已实现并完成本专项验证，共用身体管理栏仍属于未实施的第 5 批。
 
 已登记到 `Scripts/Test-All.ps1`。单独验证使用 .NET 10 SDK、实际游戏引用及测试侧 net9.0 Harmony；依赖路径可从 `1.7/BUILD-INFO.json` 读取：
 
@@ -46,4 +52,4 @@ if ($LASTEXITCODE -ne 0) { throw '专项构建失败' }
     $repo ([IO.Path]::GetDirectoryName($info.gameAssemblyPath))
 ```
 
-隔离 Scribe 文件继续写入 `.builds/uterus-development-batch1/`；第 3 批日志保存于 `.builds/uterus-development-batch3/`，验证记录见[第 3 批](../../Docs/Development/Verification/子宫开发第3批实现与验证.md)，前两批记录保持原时点。测试构建会重建 1.7 生产 DLL；需要更新构建来源记录时，再运行 `Scripts/Build-Mod.ps1`，不要把 DLL 哈希不一致作为通过。
+隔离 Scribe 文件继续写入 `.builds/uterus-development-batch1/`；本轮日志保存于 `.builds/uterus-development-batch4/`，验证记录见[第 4 批](../../Docs/Development/Verification/子宫开发第4批实现与验证.md)，前三批记录保持原时点。测试构建会重建 1.7 生产 DLL；需要更新构建来源记录时，再运行 `Scripts/Build-Mod.ps1`，不要把 DLL 哈希不一致作为通过。

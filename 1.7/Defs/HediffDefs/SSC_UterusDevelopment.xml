@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Defs>
-  <!-- AI 辅助生成：第 1 批仅实现身体记录及原版生育因子；其余阶段收益在第 4 批接入。 -->
+  <!-- AI 辅助生成：当前身体的进度、生育因子及第 4 批阶段收益；各阶段替换、不累乘。 -->
   <HediffDef>
     <defName>SSC_UterusDevelopment</defName>
     <label>子宫开发（暂名）</label>
@@ -16,16 +16,45 @@
     <minSeverity>0</minSeverity>
     <maxSeverity>1</maxSeverity>
     <stages>
-      <!-- 常规阶段均关闭自身原版生育；其他阶段属性由第 4 批补齐。 -->
+      <!-- 常规阶段均关闭自身原版生育；前 30% 没有额外属性收益。 -->
       <li>
         <minSeverity>0</minSeverity>
         <label>培养中</label>
         <fertilityFactor>0</fertilityFactor>
       </li>
       <li>
+        <minSeverity>0.3</minSeverity>
+        <label>培养中·第一阶段</label>
+        <fertilityFactor>0</fertilityFactor>
+        <statFactors>
+          <SexFrequency>1.10</SexFrequency>
+          <SexSatisfaction>1.10</SexSatisfaction>
+          <RestRateMultiplier>1.05</RestRateMultiplier>
+          <InjuryHealingFactor>1.10</InjuryHealingFactor>
+        </statFactors>
+      </li>
+      <li>
+        <minSeverity>0.7</minSeverity>
+        <label>培养中·第二阶段</label>
+        <fertilityFactor>0</fertilityFactor>
+        <statFactors>
+          <SexFrequency>1.25</SexFrequency>
+          <SexSatisfaction>1.25</SexSatisfaction>
+          <RestRateMultiplier>1.10</RestRateMultiplier>
+          <InjuryHealingFactor>1.20</InjuryHealingFactor>
+        </statFactors>
+      </li>
+      <li>
         <minSeverity>1</minSeverity>
         <label>已完成·生育关闭</label>
         <fertilityFactor>0</fertilityFactor>
+        <statFactors>
+          <SexFrequency>1.50</SexFrequency>
+          <SexSatisfaction>1.50</SexSatisfaction>
+          <RestRateMultiplier>1.35</RestRateMultiplier>
+          <InjuryHealingFactor>1.50</InjuryHealingFactor>
+          <ImmunityGainSpeed>1.20</ImmunityGainSpeed>
+        </statFactors>
       </li>
     </stages>
     <modExtensions>
@@ -35,6 +64,13 @@
           <minSeverity>1</minSeverity>
           <label>已完成·生育开启</label>
           <fertilityFactor>2.5</fertilityFactor>
+          <statFactors>
+            <SexFrequency>1.50</SexFrequency>
+            <SexSatisfaction>1.50</SexSatisfaction>
+            <RestRateMultiplier>1.25</RestRateMultiplier>
+            <InjuryHealingFactor>1.35</InjuryHealingFactor>
+            <ImmunityGainSpeed>1.30</ImmunityGainSpeed>
+          </statFactors>
         </fertileStage>
       </li>
     </modExtensions>
