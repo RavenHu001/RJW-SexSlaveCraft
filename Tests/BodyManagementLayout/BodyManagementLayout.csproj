@@ -2,6 +2,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType><TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings><Nullable>disable</Nullable>
+    <DefineConstants>$(DefineConstants);SSC_ABILITY_TOGGLE_BODY</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <!-- 真实管理栏、开关检查与身体记录；只替代引擎/绘制边界，不复制布局或业务判断。 -->
@@ -11,4 +12,12 @@
     <Compile Include="../../Sexslavecraft/common/SSCUterusDevelopmentUtility.Identity.cs" Link="Production/UterusIdentity.cs" />
     <Compile Include="../../Sexslavecraft/Hediff/Hediff_SSCUterusDevelopment.cs" Link="Production/UterusHediff.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Include="../Shared/AbilityToggleBodyScribeBoundary.cs" Link="Boundary/AbilityToggleScribe.cs" />
+    <Compile Include="../../Sexslavecraft/common/SSCBodyAbilityTogglePreferences.cs" Link="Production/SSCBodyAbilityTogglePreferences.cs" />
+    <Compile Include="../../Sexslavecraft/common/SSCMilkAbilityToggleBackend.cs" Link="Production/SSCMilkAbilityToggleBackend.cs" />
+    <Compile Include="../../Sexslavecraft/common/SSCUterusAbilityToggleBackend.cs" Link="Production/SSCUterusAbilityToggleBackend.cs" />
+    <Compile Include="../../Sexslavecraft/ITab/ITab_SexSlaveTraining.AbilityToggles.cs" Link="Production/AbilityToggleRows.cs" />
+  </ItemGroup>
+  <Import Project="../Shared/AbilityToggleProduction.targets" />
 </Project>

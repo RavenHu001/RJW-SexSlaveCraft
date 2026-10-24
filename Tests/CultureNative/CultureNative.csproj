@@ -10,7 +10,9 @@
     <!-- 标准 CLR 不支持 Waylith 的简单名重定向；仅测试宿主使用同名类型转发，不随 mod 交付。 -->
     <Compile Remove="UnityCoreShim/**/*.cs" />
     <ProjectReference Include="UnityCoreShim/UnityCoreShim.csproj" />
-    <ProjectReference Include="../../Sexslavecraft/SexSlaveCraft_1.7.csproj" />
+    <!-- 整体验证可复用已构建的隔离候选，避免覆盖仓库正式产物。 -->
+    <ProjectReference Include="../../Sexslavecraft/SexSlaveCraft_1.7.csproj" Condition="'$(SscAssemblyPath)' == ''" />
+    <Reference Include="Sexslavecraft" Condition="'$(SscAssemblyPath)' != ''"><HintPath>$(SscAssemblyPath)</HintPath><Private>true</Private></Reference>
     <Reference Include="Assembly-CSharp"><HintPath>$(GameRoot)/Assembly-CSharp.dll</HintPath><Private>false</Private></Reference>
     <Reference Include="UnityStubs"><HintPath>$(GameRoot)/UnityStubs.dll</HintPath><Private>false</Private></Reference>
     <Reference Include="0Harmony"><HintPath>$(HarmonyAssemblyPath)</HintPath></Reference>

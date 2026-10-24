@@ -11,7 +11,10 @@ namespace UnityEngine
         public Rect(float x,float y,float w,float h){this.x=x;this.y=y;width=w;height=h;}
         public float yMax {get=>y+height;set=>height=value-y;}
         public float xMax=>x+width;
+        /// <summary>提供通用行绘制所需的原版矩形缩进接口，不代替生产布局。</summary>
+        public Rect ContractedBy(float amount)=>new Rect(x+amount,y+amount,width-amount*2,height-amount*2);
     }
+    public enum TextAnchor { UpperLeft }
     public enum EventType { layout, repaint, mouseUp }
     public class Event { public static Event current = new Event(); public EventType type; }
     public static class GUI
@@ -57,13 +60,19 @@ namespace Verse
     public sealed class TextBlock : IDisposable { public static TextBlock Default()=>new TextBlock(); public void Dispose() { } }
     public static class Text
     {
+        public static GameFont Font;
+        public static UnityEngine.TextAnchor Anchor;
+        public static bool WordWrap;
         public static float LineHeight=24;
         public static float CalcHeight(string value,float width)=>LineHeight*(float)Math.Max(1,Math.Ceiling(value.Length*7d/Math.Max(1,width)));
     }
+    public enum GameFont { Small, Medium }
     public static class TooltipHandler { public static int Tips; public static void TipRegion(UnityEngine.Rect rect,string text){Tips++;} }
     public struct RectAggregator { public UnityEngine.Rect Rect; public RectAggregator(UnityEngine.Rect rect,int hash) {Rect=rect;} }
     public static class Widgets
     {
+        /// <summary>只满足公共绘制器的背景接口，宿主不执行真实游戏 GUI。</summary>
+        public static void DrawMenuSection(UnityEngine.Rect rect) { }
         // 脚本化输入每项只消费一次；生产DoWindowContents决定草稿、确认与取消的实际顺序。
         [Flags] public enum ColorComponents { Red=1,Green=2,Blue=4,Hue=8,Sat=16,Value=32,None=0,All=63 }
         public static int Wheels,Fields,Selectors,Sliders;
@@ -98,7 +107,13 @@ namespace Verse
 }
 namespace SexSlaveCraft
 {
-    public static class SSCDefOf { public static readonly Verse.HediffDef SSC_FullGelatinizedBody=new Verse.HediffDef("SSC_FullGelatinizedBody"); }
+    public static class SSCDefOf
+    {
+        public static readonly Verse.HediffDef SSC_FullGelatinizedBody=new Verse.HediffDef("SSC_FullGelatinizedBody");
+        public static readonly Verse.HediffDef SSC_PersonalityExcreted_Done=new Verse.HediffDef("SSC_PersonalityExcreted_Done");
+    }
+    public static class SSCMasterProgressionUtility
+    { public static bool IsHollow(Verse.Pawn pawn) => pawn?.health?.hediffSet?.GetFirstHediffOfDef(SSCDefOf.SSC_PersonalityExcreted_Done) != null; }
 }
 
 namespace SexSlaveCraft
@@ -107,6 +122,7 @@ namespace SexSlaveCraft
     public partial class ITab_SexSlaveTraining
     {
         private const float SectionPadding=12, SectionTitleHeight=28, IdentityListingSpacing=2;
+        internal Verse.Pawn SelPawn;
         internal static void DrawTrainer(Verse.Pawn p,bool qualified)
         {
             bool slave=p.Training.pawnIdentity==PawnIdentity.Slave;
@@ -117,11 +133,14 @@ namespace SexSlaveCraft
         }
         private static void DrawSection(UnityEngine.Rect rect,string title,Action<UnityEngine.Rect> draw)
         {draw(new UnityEngine.Rect(rect.x+12,rect.y+40,rect.width-24,rect.height-52));}
+        /// <summary>调用生产快照测高，不在测试入口复制区域高度公式。</summary>
         internal static float GelHeight(Verse.Pawn pawn,float width)=>BuildGelAppearanceView(pawn,width).Height;
+        /// <summary>用选中角色创建最小 ITab 实例，执行实际公共行与外观区域绘制。</summary>
         internal static void DrawGel(Verse.Pawn pawn,float width)
-        {var view=BuildGelAppearanceView(pawn,width);if(view.Height>0)DrawGelAppearanceSection(new UnityEngine.Rect(0,0,width,view.Height),view);}
+        {var tab=new ITab_SexSlaveTraining{SelPawn=pawn};var view=BuildGelAppearanceView(pawn,width);if(view.Height>0)tab.DrawGelAppearanceSection(new UnityEngine.Rect(0,0,width,view.Height),view);}
+        /// <summary>保留绘制时捕获的原角色／owner／人格上下文，以验证后续迟到点击。</summary>
         internal static Action CaptureGel(Verse.Pawn pawn,float width)
-        {var view=BuildGelAppearanceView(pawn,width);return ()=>DrawGelAppearanceSection(new UnityEngine.Rect(0,0,width,view.Height),view);}
+        {var tab=new ITab_SexSlaveTraining{SelPawn=pawn};var view=BuildGelAppearanceView(pawn,width);return ()=>tab.DrawGelAppearanceSection(new UnityEngine.Rect(0,0,width,view.Height),view);}
     }
 }
 
@@ -143,8 +162,8 @@ namespace SexSlaveCraft
 {
     // 资格/人格组件是引擎边界；任职setter与UI提交函数均使用生产源码。
     public enum PawnIdentity {Unset,Slave,Master}
-    public class CompSexSlaveTraining
-    {public PawnIdentity pawnIdentity;public bool slaveTrainerEnabled,trainerIdentityInitialized;}
+    public partial class CompSexSlaveTraining
+    {public PawnIdentity pawnIdentity;public bool slaveTrainerEnabled,trainerIdentityInitialized;public bool milkProductionEnabled=true;}
     public static class TrainerSpecializationUtility
     {public static bool HasTrainerQualification(Verse.Pawn pawn,out int failure){failure=0;return pawn.TrainerQualified;}}
 }

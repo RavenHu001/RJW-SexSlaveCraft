@@ -16,6 +16,7 @@ internal static partial class Program
     private static Action<Pawn,DamageInfo> onSharePhysical;
     private static DamageDef sharedCoating, sharedOrdinary;
 
+    /// <summary>串联实际 1.7 TakeDamage 与生产分伤／PNA 上下文；地图、最终伤势和日志等保持隔离边界。</summary>
     private static void RunDamageShareChecks(Harmony harmony)
     {
         harmony.CreateClassProcessor(typeof(Harmony_SSCPnaDamageShareContext)).Patch();
@@ -39,6 +40,28 @@ internal static partial class Program
         sharedOrdinary=new DamageDef{defName="SSC_ShareOrdinary",harmsHealth=true,workerClass=typeof(DamageWorker_AddInjury),hediff=new HediffDef{defName="Bruise",maxSeverity=100}};
         try
         {
+            // 改写原缰绳字段后仍走实际受伤入口，证明公共偏好读取真实控制分伤且没有第二份保存值。
+            ShareCheck("串联：原缰绳关闭阻断分伤，重开恢复原比例",()=>
+            {
+                var (master,slaves)=ShareMaster(1);var bridle=ShareBridles[master];var shot=SharedShot(sharedOrdinary);
+                bridle.shareDamageEnabled=false;
+                Assert(!SSCAbilityToggleUtility.GetMasterDamageSharingEnabled(master));
+                Assert(!SSCMasterBondUtility.CanRedirectDamageFrom(master,shot));
+                master.TakeDamage(shot);Equal(1,ShareHits.Count);Assert(ShareHits[0].Target==master);Near(5,ShareHits[0].Info.Amount);
+                ShareHits.Clear();bridle.shareDamageEnabled=true;
+                // 同一请求重开后恢复旧比例；不通过修改候选、过滤器或伤害处理器来制造结果。
+                Assert(SSCAbilityToggleUtility.GetMasterDamageSharingEnabled(master));
+                master.TakeDamage(shot);Equal(2,ShareHits.Count);Near(3.5f,ShareHits[0].Info.Amount);Near(1.5f,ShareHits[1].Info.Amount);
+            });
+            // 偏好开启只放行配置层，不保证无候选或无害事件能生成分担计划。
+            ShareCheck("串联：统一偏好仍受无候选与伤害过滤约束",()=>
+            {
+                var (master,_)=ShareMaster(0);Assert(SSCAbilityToggleUtility.GetMasterDamageSharingEnabled(master));
+                Assert(!SSCMasterBondUtility.TryCreateDamageRedirectPlan(master,SharedShot(sharedOrdinary),out _));
+                master.TakeDamage(SharedShot(sharedOrdinary));Equal(1,ShareHits.Count);Near(5,ShareHits[0].Info.Amount);
+                var harmless=new DamageDef{defName="SSC_ShareHarmless",harmsHealth=false};
+                Assert(!SSCMasterBondUtility.CanRedirectDamageFrom(master,SharedShot(harmless)));
+            });
             ShareCheck("串联：涂覆命中主人保留70%物理分摊且双方不投药",()=>
             {
                 var (master,slaves)=ShareMaster(1);var shot=SharedShot(sharedCoating);

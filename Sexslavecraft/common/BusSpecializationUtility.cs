@@ -248,20 +248,31 @@ namespace SexSlaveCraft
             return true;
         }
 
+        /// <summary>由原牛特化、泌乳偏好和进度共同决定产奶加成；关闭返回零，既有四档阈值不变。</summary>
         public static float GetCowLactationBoostMultiplier(Pawn pawn)
         {
             CompSexSlaveTraining comp = pawn?.TryGetComp<CompSexSlaveTraining>();
+#if SSC_RW17 || SSC_ABILITY_TOGGLE_MILK
+            if (comp == null || !comp.IsCowSpecialized || !SSCAbilityToggleUtility.GetMilkProductionEnabled(comp)) return 0f;
+#else
             if (comp == null || !comp.IsCowSpecialized || !comp.milkProductionEnabled) return 0f;
+#endif
+            // 统一读取只替换开关来源入口，倍率及完成阈值仍留在原特化业务中。
             if (comp.specializationProgress >= 0.999f) return 1.60f;
             if (comp.specializationProgress >= 0.50f) return 1.30f;
             if (comp.specializationProgress >= 0.20f) return 1.00f;
             return 0.60f;
         }
 
+        /// <summary>保留牛特化与原泌乳字段共同许可，不因通用注册增加身份、身体或人格资格要求。</summary>
         public static bool CanAccelerateMilkProduction(Pawn pawn)
         {
             CompSexSlaveTraining comp = pawn?.TryGetComp<CompSexSlaveTraining>();
+#if SSC_RW17 || SSC_ABILITY_TOGGLE_MILK
+            return comp != null && comp.IsCowSpecialized && SSCAbilityToggleUtility.GetMilkProductionEnabled(comp);
+#else
             return comp != null && comp.IsCowSpecialized && comp.milkProductionEnabled;
+#endif
         }
 
         public static HediffComp_CowMilkReservoir GetCowMilkReservoirComp(Pawn pawn)

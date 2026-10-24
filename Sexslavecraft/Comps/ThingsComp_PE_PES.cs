@@ -437,6 +437,7 @@ namespace SexSlaveCraft
                 sscIdentity = trainingComp.pawnIdentity;
                 specializationType = trainingComp.specializationType;
                 specializationProgress = trainingComp.specializationProgress;
+                // 泌乳保留独立旧字段；此条件分支沿旧行为，缺 Comp 时不改写复用凝胶已有的原字段。
                 milkProductionEnabled = trainingComp.milkProductionEnabled;
             }
             personalityExcretionCompleted = false;

@@ -1,5 +1,9 @@
 # 子宫开发第 1～5 批原生专项
 
+2026-10-24 通用能力开关第三批：**479／479**（437＋42）。新增真实五项保存源的 32 种真假 Scribe 组合、全部旧字段默认、Comp／人格／四种 owner 替换、marker 对身体／关系隔离及原健康克隆例外。健康和训练组件分别使用原生节点恢复再组合，不能据此宣称完整 Pawn 世界跨引用存档通过；加载实际本批候选并核对哈希，见[第三批记录](../../Docs/Development/Completed/通用能力开关框架第三批生命周期复核与验证.md)。
+
+2026-10-24 通用开关框架第二批：**437／437**（原 432＋5），使用本次隔离候选 DLL；公共五项注册、只读不补建、生育身体记录／实际倍率、原妊娠拒绝和牛特化四档收益均通过。新增可选 `-p:SscAssemblyPath=<候选 DLL 绝对路径>`，此模式不经生产 ProjectReference 重建正式 DLL，仍构建 Unity 边界；启动输出实际载入路径及 SHA-256，已与候选核对。正常默认 ProjectReference 模式保留，构建参数可沿用文末命令并增加该参数，见[本批验证](../../Docs/Development/Completed/通用能力开关框架第二批实现与验证.md)。
+
 2026-10-24 医药类别调整：两项启动手术的药物筛选均采用原版 `Medicine` 类别；局部宿主补齐类别成员及类别库阶段标记，继续由真实 `ThingFilter.ResolveReferences` 解析生产资源。原生专项仍为 432／432，通过 `BuildProjectReferences=false` 仅重编宿主，生产 DLL／BUILD-INFO 不变；日志在 `.builds/surgery-medicine-category/`，未同步游戏。
 
 2026-10-24：**357／357 通过**，包括前两批 100 项、第 3 批 92 项、第 4 批 81 项、第 5 批 20 项、早期文案本地化收尾 12 项、健康页倍率展示 15 项、永久泌乳生育抑制中和 20 项及三态描述 17 项。目标为 RimWorld **1.7.4985 rev1269**，游戏程序集 MVID `d368493b52bd4740bc7507c1b0386895`。不启动游戏，不改安装副本或用户配置。
@@ -70,7 +74,7 @@ if ($LASTEXITCODE -ne 0) { throw '专项构建失败' }
 
 三态描述新增 **17 项**，累计 **357／357**。直接调用生产 Hediff.Description 和原版 GetTooltip，验证三套正文、培养档共用、模式／语言即时切换、共享 Def 与角色隔离、无效或离体实例兜底、保存读取及缺开关旧档；悬停仍保留阶段名和生育倍率。只补齐原版 ColoredText 的语言初始化上下文，不替换悬停生成或描述选择算法。与布局 92／92 合计 449／449；此前泌乳组件 23 项保留上批时点。日志：`.builds/uterus-three-state-description/`。上述为自动验证生成时点；随后提交 `d2ecb6f` 已同步，维护者确认三态描述显示正常、本批显示验收关闭。正式文案仍待定，见[验收记录](../../Docs/Development/Completed/子宫开发Hediff三态描述实现与验证.md)。
 
-2026-10-24 v2 定稿四语：本轮原生 **362／362**，含新增 5 项 [UterusDefInjectedTests](UterusDefInjectedTests.cs)。实际执行当前游戏的 DefInjectionPackage XML 加载及注入，覆盖研究／手术／四档阶段／扩展开启阶段、四语再回简中、健康悬停与研究提示译名一致；此前占位断言改为定稿／当前语言资源。本次以 BuildProjectReferences=false 只重编宿主，生产 DLL 和 BUILD-INFO 不变；布局另跑 92／92，共 454／454。记录见[四语落实](../../Docs/Development/Verification/子宫开发v2定稿四语落实与验证.md)，未同步游戏，不冒充完整游戏语言重载或四语排版验收。
+2026-10-24 v2 定稿四语：本轮原生 **362／362**，含新增 5 项 [UterusDefInjectedTests](UterusDefInjectedTests.cs)。实际执行当前游戏的 DefInjectionPackage XML 加载及注入，覆盖研究／手术／四档阶段／扩展开启阶段、四语再回简中、健康悬停与研究提示译名一致；此前占位断言改为定稿／当前语言资源。本次以 BuildProjectReferences=false 只重编宿主，生产 DLL 和 BUILD-INFO 不变；布局另跑 92／92，共 454／454。记录见[四语落实](../../Docs/Development/Completed/子宫开发v2定稿四语落实与验证.md)，未同步游戏，不冒充完整游戏语言重载或四语排版验收。
 
 ## 胃部开发增量（2026-10-24）
 

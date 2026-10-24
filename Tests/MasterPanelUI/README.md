@@ -20,3 +20,11 @@ dotnet run --project Tests/MasterPanelUI/MasterPanelUI.csproj -c Release -- .
 ## 欲望侵染第一批通用开关回归（2026-10-15）
 
 本宿主已链接真实通用开关／人格凭据代码，新增本领域的状态闭环回归；范围、实际本批结果与实机边界见[第一批记录](../../Docs/Development/Completed/欲望侵染第一批通用开关框架实现与测试.md)。历史计数保留原批次语境。
+
+## 通用框架后续第一批（2026-10-24）
+
+当前 **131／131**，保留原 107 项并新增 24 项。直接链接新公共框架和缰绳后端，测试定义不向游戏新增能力。覆盖两种真实后端共用行、原字段独占保存、可见／排序、目标值规则、暂停／禁用原因、原 owner／人格／Comp 变化、权限回调替换载体、加载禁写及四语原因键／镜像。
+
+`SSC_ABILITY_TOGGLE_FRAMEWORK` 与 `SSC_ABILITY_TOGGLE_MASTER_SHARE` 仅使宿主编译实际 1.7 开关路径，不为整个模型项目打开其他 `SSC_RW17` 功能。生产项目仍按 `SSC_RW17` 接线。新 `Program.Framework.cs` 的测试后端只提供外部载体与资格变化，查询／授权／提交运行生产代码。
+
+相关 7 套合计 **1409／1409**；原生实际分伤链另由 PnaSpacerNative 验证。完整布局门禁有既有 VERSION／BUILD-INFO 元数据差异，本批未运行完整 Test-All，维护者确认实机未发现问题，第一批验收关闭，详见[实现与验证](../../Docs/Development/Completed/通用能力开关框架第一批实现与验证.md)。

@@ -82,6 +82,7 @@ namespace SexSlaveCraft
         }
 
         // 独立清理入口建立作用域；植入入口已持有外层作用域时直接复用此核心，避免嵌套被拒绝。
+        /// <summary>复用已持有的人格作用域清理宿主；身体开发与外观按原过滤保留，不把它们当人格字典重置。</summary>
         private static void CleanConsumerDataCore(Pawn consumer)
         {
             SSCAbilityToggleUtility.ClearPersonalityState(consumer);
@@ -244,6 +245,7 @@ namespace SexSlaveCraft
                         // 整体替换历史，避免普通方向切换将宿主的旧进度混入新人格。
                         trainingComp.RestoreSpecializationProgress(data.specializationType,
                             data.specializationProgress, data.specializationProgressByType);
+                        // 原泌乳字段按来源精确覆盖，包括 false；不与人格字典合并或套用身体开关默认。
                         trainingComp.milkProductionEnabled = data.milkProductionEnabled;
                         if (!SSCIdentityUtility.TryRestorePersonalityIdentity(consumer, data.sscIdentity,
                             data.masterQualificationUnlocked))

@@ -2,4 +2,11 @@
 <LanguageData>
   <SSC_AbilityToggle_MasterDesireInfestation_Label>欢愉恩赐</SSC_AbilityToggle_MasterDesireInfestation_Label>
   <SSC_AbilityToggle_MasterDesireInfestation_Tip>以性技配合主动操控的催情微械，在亲密行为中赐予对象无比的欢愉，并逐步推动恶堕与身体改造，使其对性刺激愈加敏感。</SSC_AbilityToggle_MasterDesireInfestation_Tip>
+  <SSC_AbilityToggle_Unavailable>当前条件不满足。</SSC_AbilityToggle_Unavailable>
+  <SSC_AbilityToggle_Identity>当前 SSC 身份不符合该能力要求。</SSC_AbilityToggle_Identity>
+  <SSC_AbilityToggle_Hollow>人格已被提取，当前无法使用。</SSC_AbilityToggle_Hollow>
+  <SSC_AbilityToggle_Mutating>人格正在变更，请稍后再试。</SSC_AbilityToggle_Mutating>
+  <SSC_AbilityToggle_PlayerOnly>只能修改玩家角色的开关。</SSC_AbilityToggle_PlayerOnly>
+  <SSC_AbilityToggle_Loading>存档正在载入或保存，暂时无法修改。</SSC_AbilityToggle_Loading>
+  <SSC_AbilityToggle_Changed>当前角色或状态已变化，请重新打开面板。</SSC_AbilityToggle_Changed>
 </LanguageData>

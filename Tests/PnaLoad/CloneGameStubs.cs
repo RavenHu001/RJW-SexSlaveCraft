@@ -96,6 +96,8 @@ namespace SexSlaveCraft
     public enum PawnIdentity { Unset, Slave, Master }
     public partial class CompSexSlaveTraining
     {
+        // 只承载复制器已恢复的旧字段值；克隆业务本身使用实际生产实现，不在模型内自动重置。
+        public bool milkProductionEnabled = true;
         public bool IsPetRabbitSpecialized=true, slaveTrainerEnabled, trainerIdentityInitialized;
         public RabbitReproductionMode rabbitReproductionMode;
         public SexSlaveSpecializationType specializationType;

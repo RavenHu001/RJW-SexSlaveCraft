@@ -1,5 +1,7 @@
 # Binding Ritual lifecycle regression tests
 
+2026-10-24 ability-toggle batch 3: **232/232** (228 + 4). The real PE job verifies all gift/milk combinations, clearing only the personality dictionary while preserving the old milk field, invalidating the old token and releasing the mutation scope. Snapshot serialization remains covered by PersonalityTraits; this host observes the StorePawnData boundary. See [batch 3](../../Docs/Development/Completed/通用能力开关框架第三批生命周期复核与验证.md).
+
 The suite currently contains 228 cases, including ritual lifecycle, UAP compatibility,
 daily training, Education interactions, receiver handoff/reservation regressions,
 and exclusive ownership during personality excretion.

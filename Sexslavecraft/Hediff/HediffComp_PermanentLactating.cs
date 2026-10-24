@@ -138,7 +138,12 @@ namespace SexSlaveCraft
             }
 
             CompSexSlaveTraining trainingComp = Pawn?.TryGetComp<CompSexSlaveTraining>();
+#if SSC_RW17 || SSC_ABILITY_TOGGLE_MILK
+            // 与 UI／牛特化读取同一原字段；缺 Comp 默认放行，关闭时仍由下方原逻辑清累计时间。
+            if (!SSCAbilityToggleUtility.GetMilkProductionEnabled(trainingComp))
+#else
             if (trainingComp != null && !trainingComp.milkProductionEnabled)
+#endif
             {
                 pendingProductionTicks = 0;
                 Traverse.Create(this).Field<int>("ticksSinceLastSuckled").Value = 0;
@@ -230,7 +235,12 @@ namespace SexSlaveCraft
                 string progress = (currentCharge / fullAmount * 100f).ToString("F0") + "%";
 
                 CompSexSlaveTraining trainingComp = Pawn?.TryGetComp<CompSexSlaveTraining>();
+#if SSC_RW17 || SSC_ABILITY_TOGGLE_MILK
+                // 状态文字与生产读取一致；显示查询不写回偏好、奶量或未结算时间。
+                if (!SSCAbilityToggleUtility.GetMilkProductionEnabled(trainingComp))
+#else
                 if (trainingComp != null && !trainingComp.milkProductionEnabled)
+#endif
                 {
                     return Strings.Lactating_Disabled(progress);
                 }

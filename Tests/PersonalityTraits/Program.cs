@@ -17,6 +17,7 @@ internal static partial class Program
         RunMasterQualificationCases();
         RunMasterProgressionCases();
         RunAbilityToggleTransferCases();
+        RunAbilityToggleMilkLifecycleCases();
         RunBondRelationTransferCases();
         Run("Cross-body insertion replaces ordinary traits and consumes gel", CrossBodyInsertion);
         Run("Same-body insertion restores an earlier trait snapshot", SameBodySnapshot);

@@ -44,9 +44,25 @@ internal static partial class Program
         }
     }
 
+    /// <summary>执行真实任务的提取、清源、交接及失败边界；完整快照字段另由人格宿主验证。</summary>
     private static void RunPersonalityExcretionTests()
     {
         RunPersonalityExcretionApproachTests();
+        // StorePawnData 的原字段序列化另由 PersonalityTraits 执行；这里验证第二条真实任务入口的清源时机。
+        foreach (bool gift in new[] { false, true })
+        foreach (bool milk in new[] { false, true })
+            Check($"PE 生命周期：恩赐={gift}泌乳={milk}按各自契约清源", () =>
+            {
+                var execution = new PEExecution(); var comp = execution.Target.TryGetComp<CompSexSlaveTraining>();
+                comp.abilityToggles.Set(SSCAbilityToggleUtility.MasterDesireInfestation, gift);
+                comp.milkProductionEnabled = milk;
+                object before = SSCPersonalityRuntimeUtility.Capture(execution.Target);
+                execution.Start(); execution.Toils[3].initAction();
+                var store = GenSpawn.Spawned.Last().TryGetComp<CompPersonalityStore>();
+                Require(store.Stored == execution.Target && store.abilityToggles.Get(SSCAbilityToggleUtility.MasterDesireInfestation) == gift, "真实任务传入原身体并采集人格选择");
+                Require(!comp.abilityToggles.HasEntries && comp.milkProductionEnabled == milk, "只清人格字典，不顺带重置泌乳旧字段");
+                Require(!SSCPersonalityRuntimeUtility.IsCurrent(execution.Target, before) && !SSCPersonalityRuntimeUtility.IsMutating(execution.Target), "旧授权失效，作用域释放");
+            });
         Check("PE 通用能力快照保存后清源，旧人格凭据失效", () =>
         {
             var execution=new PEExecution();var comp=execution.Target.TryGetComp<CompSexSlaveTraining>();

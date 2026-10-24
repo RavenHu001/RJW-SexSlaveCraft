@@ -1,5 +1,7 @@
 # 永久泌乳累计计时回归
 
+2026-10-24 通用开关第二批：以 `-p:SscUterusBoundary=true` 运行 **29／29**（原 23＋6）。生产计时、标签和实际牛储液组件均读取原 Comp 字段公共入口；新增缺 Comp 默认生产、关闭保留奶量且可挤取、牛储液暂停／重开／转奶／营养、HumanCattle 接管优先级和原 charge 模型存取。没有模拟第三方自身产奶；实际牛特化倍率另由原生专项验证，见[本批记录](../../Docs/Development/Completed/通用能力开关框架第二批实现与验证.md)。默认不启用 1.7 展示参数时为 28 项。
+
 直接链接 `HediffComp_PermanentLactating.cs`，读取仓库实际 `SSC_Lactating_SubState` XML 参数。无包依赖，使用 `Tests/NuGet.Config` 的离线还原配置。
 
 在仓库根目录运行：

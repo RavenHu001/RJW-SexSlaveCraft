@@ -279,6 +279,7 @@ namespace SexSlaveCraft
                 ?? pawn.health.hediffSet.GetNotMissingParts().FirstOrDefault();
         }
 
+        /// <summary>判断本次伤害是否进入原分担流程；先过滤伤害上下文，再读取原缰绳偏好，候选规划仍在后续入口完成。</summary>
         public static bool CanRedirectDamageFrom(Pawn master, DamageInfo dinfo)
         {
             if (master == null || master.Dead || IsRedirectingDamage) return false;
@@ -287,8 +288,13 @@ namespace SexSlaveCraft
             if (master.MapHeld == null) return false;
             if (ShouldBlockDamageDef(dinfo.Def)) return false;
 
+#if SSC_RW17 || SSC_ABILITY_TOGGLE_MASTER_SHARE
+            // 与 UI 后端共享原字段读取；不借用编辑资格或恩赐的人格门槛改变实际分伤行为。
+            return SSCAbilityToggleUtility.GetMasterDamageSharingEnabled(master);
+#else
             Hediff_BridleOfSexSlave bridle = SSCBondUtility.GetBridle(master);
             return bridle != null && bridle.shareDamageEnabled;
+#endif
         }
 
         public static bool ShouldBlockDamageDef(DamageDef damageDef)

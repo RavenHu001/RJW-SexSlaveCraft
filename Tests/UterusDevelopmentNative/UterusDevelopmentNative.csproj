@@ -10,7 +10,9 @@
          组件、工具类、Hediff 与其他被测业务仍来自真实生产程序集。 -->
     <Compile Include="../../Sexslavecraft/ThePatches/Harmony_UterusPregnancy.cs" Link="Production/Harmony_UterusPregnancy.cs" />
     <ProjectReference Include="../CultureNative/UnityCoreShim/UnityCoreShim.csproj" />
-    <ProjectReference Include="../../Sexslavecraft/SexSlaveCraft_1.7.csproj" />
+    <!-- 可显式验证隔离候选 DLL，避免专项构建覆盖仓库正式产物。 -->
+    <ProjectReference Include="../../Sexslavecraft/SexSlaveCraft_1.7.csproj" Condition="'$(SscAssemblyPath)' == ''" />
+    <Reference Include="Sexslavecraft" Condition="'$(SscAssemblyPath)' != ''"><HintPath>$(SscAssemblyPath)</HintPath><Private>true</Private></Reference>
     <Reference Include="Assembly-CSharp"><HintPath>$(GameRoot)/Assembly-CSharp.dll</HintPath><Private>false</Private></Reference>
     <Reference Include="UnityStubs"><HintPath>$(GameRoot)/UnityStubs.dll</HintPath><Private>false</Private></Reference>
     <Reference Include="RJW"><HintPath>$(RjwAssemblyPath)</HintPath><Private>false</Private></Reference>

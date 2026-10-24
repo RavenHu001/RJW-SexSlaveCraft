@@ -18,15 +18,26 @@ namespace SexSlaveCraft
         {
             public Pawn Pawn;
             public CompSexSlaveTraining Comp;
+#if !(SSC_RW17 || SSC_ABILITY_TOGGLE_FRAMEWORK)
+            // 旧分伤专用字段仅供冻结分支使用；1.7 的两项开关都通过 AbilityRows 持有快照与凭据。
             public Hediff_BridleOfSexSlave Bridle;
+#endif
             public Hediff_MasterProgression Record;
+#if !(SSC_RW17 || SSC_ABILITY_TOGGLE_FRAMEWORK)
             public object PersonalityToken;
+#endif
             public List<AbilityToggleRow> AbilityRows;
             public string Header, Stage, Experience, Progress, Benefits, PracticeTip;
+#if !(SSC_RW17 || SSC_ABILITY_TOGGLE_FRAMEWORK)
             public string ShareLabel, ShareTip;
-            public bool CanEditShare, ShareEnabled, ShowProgress;
+            public bool CanEditShare, ShareEnabled;
+#endif
+            public bool ShowProgress;
             public float ProgressFraction;
-            public float HeaderHeight, StageHeight, ExperienceHeight, ProgressHeight, BenefitsHeight, ShareHeight;
+            public float HeaderHeight, StageHeight, ExperienceHeight, ProgressHeight, BenefitsHeight;
+#if !(SSC_RW17 || SSC_ABILITY_TOGGLE_FRAMEWORK)
+            public float ShareHeight;
+#endif
             public float SectionHeight;
         }
 
@@ -35,16 +46,23 @@ namespace SexSlaveCraft
         {
             // 成长与绑定分别查询：没有成长不影响原有伤害分担，查询也不创建任何 Hediff。
             Hediff_MasterProgression record = SSCMasterProgressionUtility.GetRecord(pawn);
+#if !(SSC_RW17 || SSC_ABILITY_TOGGLE_FRAMEWORK)
             Hediff_BridleOfSexSlave bridle = SSCBondUtility.GetBridle(pawn);
+#endif
             var view = new MasterPanelView
             {
-                Pawn = pawn, Comp = comp, Bridle = bridle, Record = record,
+                Pawn = pawn, Comp = comp, Record = record,
+#if !(SSC_RW17 || SSC_ABILITY_TOGGLE_FRAMEWORK)
+                Bridle = bridle,
                 PersonalityToken = SSCPersonalityRuntimeUtility.Capture(pawn),
+#endif
                 Header = "SSC_MasterProgression_PanelHeader".Translate(),
                 Stage = record == null ? "SSC_MasterProgression_NoRecord".Translate().ToString() : record.LabelInBrackets,
+#if !(SSC_RW17 || SSC_ABILITY_TOGGLE_FRAMEWORK)
                 ShareLabel = "SSC_MasterShareDamage_Label".Translate(),
                 ShareEnabled = bridle?.shareDamageEnabled ?? false,
                 CanEditShare = CanEditMasterDamageSharing(pawn, comp, bridle),
+#endif
                 PracticeTip = "SSC_MasterProgression_PracticeTip".Translate()
             };
             // 复用健康栏的原版数值说明与能力名称，不把共振或人物最终属性混入阶段加成。
@@ -76,9 +94,11 @@ namespace SexSlaveCraft
                 }
             }
             // 复选框的可编辑条件与原 Gizmo 一致；当前没有承伤候选并不阻止保存偏好。
+#if !(SSC_RW17 || SSC_ABILITY_TOGGLE_FRAMEWORK)
             view.ShareTip = "SSC_MasterShareDamage_Desc".Translate(SSCMasterBondUtility.DamageShareRatio.ToStringPercent());
             if (bridle == null) view.ShareTip += "\n\n" + "SSC_MasterProgression_ShareNoBond".Translate();
             else if (!view.CanEditShare) view.ShareTip += "\n\n" + "SSC_MasterProgression_ShareReadOnly".Translate();
+#endif
 
             // 标题和正文按与绘制相同的字体/换行测量；长译文及窄窗口增加整体高度。
             GameFont oldFont = Text.Font;
@@ -94,11 +114,17 @@ namespace SexSlaveCraft
                 view.ProgressHeight = view.ShowProgress ? Text.CalcHeight(view.Progress, innerWidth) : 0f;
                 view.BenefitsHeight = record != null ? Text.CalcHeight(view.Benefits, innerWidth) : 0f;
                 // 原版 CheckboxLabeled 在右侧保留 24 像素；测量必须扣除相同宽度。
+#if SSC_RW17 || SSC_ABILITY_TOGGLE_FRAMEWORK
+                // 分伤按注册排序仍为第一项，共用同一测量／提交路径。
+                view.SectionHeight = SectionPadding * 2f + view.HeaderHeight + view.StageHeight;
+#else
                 view.ShareHeight = Mathf.Max(24f, Text.CalcHeight(view.ShareLabel, Mathf.Max(1f, innerWidth - 24f)));
                 view.SectionHeight = SectionPadding * 2f + view.HeaderHeight + view.StageHeight + MasterControlGap + view.ShareHeight;
+#endif
                 if (record != null) view.SectionHeight += MasterRowGap + view.ExperienceHeight + MasterRowGap + view.BenefitsHeight;
                 if (view.ShowProgress) view.SectionHeight += MasterRowGap + MasterBarHeight + MasterBarTextGap + view.ProgressHeight;
                 // 能力行和成长/伤害分担共用本次测量快照，长翻译直接计入滚动高度。
+                // 1.7 不额外预留一条分伤高度，注册表中的分伤行也只在绘制器内出现一次。
                 view.AbilityRows = BuildAbilityToggleRows(pawn, comp, SSCAbilityToggleGroup.Master, innerWidth);
                 foreach (AbilityToggleRow row in view.AbilityRows) view.SectionHeight += AbilityToggleRowGap + row.Height;
             }
@@ -106,7 +132,8 @@ namespace SexSlaveCraft
             return view;
         }
 
-        /// <summary>配置开关不依赖当前伤害、地图候选、成长等级或永久资格；主人面板限定当前身份。</summary>
+#if !(SSC_RW17 || SSC_ABILITY_TOGGLE_FRAMEWORK)
+        /// <summary>冻结版本原分伤入口；1.7 统一交由载体适配器处理。</summary>
         private static bool CanEditMasterDamageSharing(Pawn pawn, CompSexSlaveTraining comp, Hediff_BridleOfSexSlave bridle)
         {
             return pawn != null && Faction.OfPlayer != null && pawn.Faction == Faction.OfPlayer &&
@@ -124,6 +151,7 @@ namespace SexSlaveCraft
             view.Bridle.shareDamageEnabled = enabled;
             return true;
         }
+#endif
 
         /// <summary>按同一份测量绘制全部行，使用外层左栏滚动，并在异常路径恢复全局 GUI 状态。</summary>
         private void DrawMasterPanel(Rect rect, MasterPanelView view)
@@ -160,6 +188,7 @@ namespace SexSlaveCraft
                     y += MasterRowGap;
                     DrawMasterLabel(inner, ref y, view.BenefitsHeight, view.Benefits, null, view.Record);
                 }
+#if !(SSC_RW17 || SSC_ABILITY_TOGGLE_FRAMEWORK)
                 y += MasterControlGap;
                 Rect shareRect = new Rect(inner.x, y, inner.width, view.ShareHeight);
                 bool enabled = view.ShareEnabled;
@@ -170,6 +199,8 @@ namespace SexSlaveCraft
                 TooltipHandler.TipRegion(shareRect, view.ShareTip);
                 if (GUI.enabled && enabled != view.ShareEnabled) TrySetMasterDamageSharing(view, enabled);
                 y += view.ShareHeight;
+#endif
+                // 公共行决定分伤／恩赐的排序、提示和提交；成长面板不再逐能力写保存字段。
                 DrawAbilityToggleRows(inner, ref y, view.AbilityRows, oldEnabled);
             }
             finally

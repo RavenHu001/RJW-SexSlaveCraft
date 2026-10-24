@@ -97,7 +97,8 @@ namespace SexSlaveCraft
     {
         public static bool IsBeOnaholeDriver(object driver) => false;
     }
-    public partial class CompSexSlaveTraining { public bool IsWaitingAfterFailedValidation => false; }
+    // 泌乳只作原字段观察值，生产任务不得通过清人格入口重置它；完整字段保存由实际 Comp 宿主验证。
+    public partial class CompSexSlaveTraining { public bool IsWaitingAfterFailedValidation => false; public bool milkProductionEnabled = true; }
     public static class RabbitCloneUtility { public static bool IsRabbitClone(Pawn pawn) => false; }
     public static partial class Strings { public static string Message_PersonalityExcretionComplete(string label) => label; }
     public static partial class RJWSexPropsUtility

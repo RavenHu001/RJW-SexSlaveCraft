@@ -2,4 +2,11 @@
 <LanguageData>
   <SSC_AbilityToggle_MasterDesireInfestation_Label>Дар блаженства</SSC_AbilityToggle_MasterDesireInfestation_Label>
   <SSC_AbilityToggle_MasterDesireInfestation_Tip>Сочетает сексуальное мастерство с активно управляемыми возбуждающими наномашинами, даруя партнёру несравненное блаженство во время близости, постепенно усиливая развращение и изменяя тело, делая его чувствительнее к сексуальной стимуляции.</SSC_AbilityToggle_MasterDesireInfestation_Tip>
+  <SSC_AbilityToggle_Unavailable>Текущие условия не выполнены.</SSC_AbilityToggle_Unavailable>
+  <SSC_AbilityToggle_Identity>Текущая роль SSC не соответствует требованиям способности.</SSC_AbilityToggle_Identity>
+  <SSC_AbilityToggle_Hollow>Личность извлечена; способность недоступна.</SSC_AbilityToggle_Hollow>
+  <SSC_AbilityToggle_Mutating>Идёт смена личности. Повторите попытку позже.</SSC_AbilityToggle_Mutating>
+  <SSC_AbilityToggle_PlayerOnly>Можно менять настройки только персонажей игрока.</SSC_AbilityToggle_PlayerOnly>
+  <SSC_AbilityToggle_Loading>Изменения недоступны во время сохранения или загрузки.</SSC_AbilityToggle_Loading>
+  <SSC_AbilityToggle_Changed>Персонаж или его состояние изменились. Откройте панель заново.</SSC_AbilityToggle_Changed>
 </LanguageData>
