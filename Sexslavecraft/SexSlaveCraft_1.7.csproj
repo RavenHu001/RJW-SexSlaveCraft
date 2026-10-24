@@ -75,6 +75,15 @@
   </Target>
   <!-- AI 辅助生成：开关后端适配仅编入 1.7，保留旧版条件分支。 -->
   <ItemGroup>
+    <Compile Include="common/Romance/SSCRomanceConfig.cs" />
+    <Compile Include="common/Romance/SSCRomanceResolver.cs" />
+    <Compile Include="common/Romance/SSCRomancePolicy.cs" />
+    <Compile Include="common/Romance/SSCRomancePreferences.cs" />
+    <Compile Include="common/Romance/SSCRomancePersonality.cs" />
+    <Compile Include="common/Romance/SSCRomanceLifecycle.cs" />
+    <Compile Include="Comps/Comp_Train.Romance.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="common/SSCAbilityToggleFramework.cs" />
     <Compile Include="common/SSCBridleAbilityToggleBackend.cs" />
     <Compile Include="common/SSCMasterDamageSharingToggle.cs" />

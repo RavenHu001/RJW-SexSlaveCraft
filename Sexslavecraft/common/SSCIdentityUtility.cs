@@ -174,6 +174,10 @@ namespace SexSlaveCraft
             else if (identity == PawnIdentity.Master && !SSCMasterQualificationUtility.CanSelectMaster(pawn))
                 return false;
             comp.pawnIdentity = identity;
+#if SSC_RW17
+            // 身份写入后立即观察退出事件，不能等后续资格回调结束才撤销旧命令。
+            SSCRomanceLifecycle.Notify(pawn);
+#endif
             if (restoredQualification.HasValue) comp.ReplaceMasterQualification(restoredQualification.Value);
             if (identity != PawnIdentity.Slave)
             {
@@ -221,6 +225,10 @@ namespace SexSlaveCraft
             // 普通切换仍被历史锁链锁定。此定向修复只接受 Unset，不泛化为 Master 转换。
             // 不立即运行可能重算成长或协调指派的生命周期；正常资格查询读取恢复后的身份。
             pawn.TryGetComp<CompSexSlaveTraining>().pawnIdentity = PawnIdentity.Slave;
+#if SSC_RW17
+            // 显式恢复仍沿用原锁链；浪漫模块只更新观察，不据此补发关系或创建命令。
+            SSCRomanceLifecycle.Notify(pawn);
+#endif
             SSCAbilityToggleUtility.SyncMarkers(pawn);
             return true;
         }

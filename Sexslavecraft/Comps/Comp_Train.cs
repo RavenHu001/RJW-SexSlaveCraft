@@ -223,6 +223,10 @@ namespace SexSlaveCraft
             ExposeMasterProgression();
             // 独立节点保存人格能力偏好；旧档缺失按各定义默认值解释，不从健康标记反推或预填整个字典。
             ExposeAbilityToggles();
+#if SSC_RW17
+            // 浪漫许可使用独立人格配置与授权节点，不与能力字典或旧性行为模板混存。
+            ExposeRomance();
+#endif
 
             Scribe_Values.Look(ref mode, "mode", TrainingMode.Disabled);
             Scribe_Values.Look(ref selectedMode, "selectedMode", TrainingActType.Auto);

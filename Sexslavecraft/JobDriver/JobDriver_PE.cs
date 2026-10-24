@@ -238,8 +238,13 @@ namespace SexSlaveCraft
             object originalPersonality = SSCPersonalityRuntimeUtility.Capture(victim);
             SexUtility.ProcessSex(Sexprops);
             if (Partner != victim || victim?.TryGetComp<CompSexSlaveTraining>() != originalComp ||
-                !SSCPersonalityRuntimeUtility.IsCurrent(victim, originalPersonality) ||
-                !SSCPersonalityRuntimeUtility.TryBeginMutation(victim, out var mutation)) return;
+                !SSCPersonalityRuntimeUtility.IsCurrent(victim, originalPersonality)) return;
+#if SSC_RW17
+            // 场景结算后的另一条提取入口，同样在剥离人格前拒绝未知格式。
+            if (originalComp?.romanceConfig?.IsSupported == false)
+            { Log.Error("[SSC] Cannot extract an unsupported romance configuration."); return; }
+#endif
+            if (!SSCPersonalityRuntimeUtility.TryBeginMutation(victim, out var mutation)) return;
             using (mutation)
             {
                 // 生成、快照与清源共用人格作用域；缺存储组件先退出，成功生成后才清开关偏好。
@@ -267,6 +272,10 @@ namespace SexSlaveCraft
                 if (product.TryGetComp<CompPersonalityStore>() != null)
                 {
                     SSCAbilityToggleUtility.ClearPersonalityState(victim);
+#if SSC_RW17
+                    // 场景入口也以放置成功为清源边界，不改原场景流程已有的异常回滚范围。
+                    SSCRomancePreferences.Clear(victim);
+#endif
                     SSCMasterQualificationUtility.ClearPersonalityQualification(victim);
                     SSCMasterProgressionUtility.ClearPersonalityRecord(victim);
                 }

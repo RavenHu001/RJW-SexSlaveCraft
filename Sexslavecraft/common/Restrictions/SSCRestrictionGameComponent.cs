@@ -36,6 +36,10 @@ namespace SexSlaveCraft
                 // 一次性整理离图角色的训导官状态，不新增周期性世界扫描。
                 TrainerSpecializationLifecycle.Maintain(pawn);
                 Notify(pawn);
+#if SSC_RW17
+                // 复用完整引用恢复后的现有快照，建立观察基线而不更换合法保存世代。
+                SSCRomanceLifecycle.Notify(pawn);
+#endif
             }
         }
 

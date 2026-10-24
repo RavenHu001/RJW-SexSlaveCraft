@@ -58,6 +58,7 @@ internal static partial class Program
         RunPnaBodyCases();
 #if SSC_RW17
         RunUterusBodyCases();
+        RunRomanceCases();
 #endif
         Console.WriteLine($"RESULT: {passed}/{passed + failed} cases passed.");
         return failed == 0 ? 0 : 1;

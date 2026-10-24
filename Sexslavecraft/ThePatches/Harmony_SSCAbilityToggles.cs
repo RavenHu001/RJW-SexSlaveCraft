@@ -22,6 +22,11 @@ namespace SexSlaveCraft
         /// <summary>仅处理已注册／通用标记及空壳；身体开关直接查询原载体，不因此新增全图或逐帧同步。</summary>
         internal static void Notify(Hediff hediff)
         {
+#if SSC_RW17
+            // 复用已有空壳健康通知；外部直接添加该状态也要撤销旧浪漫授权，不能等人格作用域。
+            if (hediff != null && hediff.def == SSCDefOf.SSC_PersonalityExcreted_Done)
+                SSCRomanceLifecycle.Notify(hediff.pawn);
+#endif
             if (hediff != null && (SSCAbilityToggleUtility.IsMarkerDef(hediff.def) ||
                 hediff.def == SSCDefOf.SSC_PersonalityExcreted_Done))
                 SSCAbilityToggleUtility.SyncMarkers(hediff.pawn);

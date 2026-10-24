@@ -35,6 +35,10 @@ namespace SexSlaveCraft
             state.Token = new object();
             scope = new MutationScope(pawn, state.Token);
             state.Mutation = scope;
+#if SSC_RW17
+            // 即使后续替换失败也不恢复旧命令，持久世代与进程内 token 同时撤销。
+            SSCRomanceLifecycle.Invalidate(pawn);
+#endif
             return true;
         }
 
@@ -55,6 +59,9 @@ namespace SexSlaveCraft
                 State state = states.GetOrCreateValue(pawn);
                 if (!ReferenceEquals(state.Mutation, this)) return;
                 state.Mutation = null;
+#if SSC_RW17
+                SSCRomanceLifecycle.Notify(pawn);
+#endif
                 SSCAbilityToggleUtility.SyncMarkers(pawn);
             }
         }
