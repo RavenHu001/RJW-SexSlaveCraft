@@ -42,7 +42,7 @@
 
 这不证明完整模组环境中的行为、健康页、研究树排版、实际取料／麻醉／伤口、完整地图存档、分娩或开关 UI 已通过实机验收。阶段强化及孕期缩短已实现并完成本专项验证，共用身体管理栏第 5 批已实现，近似字体／输入布局检查另见 [BodyManagementLayout](../BodyManagementLayout/README.md)，真实页面仍待实机验收。
 
-第 1～2 批文案收尾新增 [UterusStartupLanguageTests](UterusStartupLanguageTests.cs) 的 12 项：四语各执行创建拒绝、真实健康页禁用菜单与医生报告、原生成功及重复拒绝消息；医术提示与既有 SSC_Cosmetic_MedicineRequired 当前译文一致，成功进度参数正确。新增键来自真实生产 XML，实际翻译器查键／格式化保留，医疗和地图边界沿用旧专项。当前日志在 `.builds/uterus-development-startup-localization/`，见[收尾记录](../../Docs/Development/Verification/子宫开发第1～2批文案本地化与验证.md)。
+第 1～2 批文案收尾新增 [UterusStartupLanguageTests](UterusStartupLanguageTests.cs) 的 12 项：四语各执行创建拒绝、真实健康页禁用菜单与医生报告、原生成功及重复拒绝消息；医术提示与既有 SSC_Cosmetic_MedicineRequired 当前译文一致，成功进度参数正确。新增键来自真实生产 XML，实际翻译器查键／格式化保留，医疗和地图边界沿用旧专项。当前日志在 `.builds/uterus-development-startup-localization/`，见[收尾记录](../../Docs/Development/Completed/子宫开发第1～2批文案本地化与验证.md)。
 
 已登记到 `Scripts/Test-All.ps1`。单独验证使用 .NET 10 SDK、实际游戏引用及测试侧 net9.0 Harmony；依赖路径可从 `1.7/BUILD-INFO.json` 读取：
 
@@ -68,7 +68,7 @@ if ($LASTEXITCODE -ne 0) { throw '专项构建失败' }
 
 永久泌乳生育控制新增 **20 项**，累计 **340／340**。安装实际 Hediff.CurStage getter 的生产后置逻辑，计算与说明均走原生 StatPart_FertilityByHediffs；未手写替代统计。覆盖无开发／培养／关闭／开启矩阵、多角色、共享源阶段全部其他字段不变、关闭与移除、失效躯干、其他抑制及零倍率、源配置动态变化和 HumanCattle 式中和、真实 Scribe 回环与缺字段旧档、妊娠锁定。实际永久泌乳组件夹具通过反射设置已有奶量和累计计时，验证查询与生育开关均不改这些字段、组件或产奶开关；不调用依赖游戏 Harmony 3 的 CompPostMake。四语检查实际健康悬停的 ×1、解除抑制说明及关闭后恢复 ×0.05。相关布局 92／92、永久泌乳组件 23／23，三套合计 455／455。日志位于 `.builds/lactation-fertility-override/`；未执行完整游戏或 Test-All。
 
-三态描述新增 **17 项**，累计 **357／357**。直接调用生产 Hediff.Description 和原版 GetTooltip，验证三套正文、培养档共用、模式／语言即时切换、共享 Def 与角色隔离、无效或离体实例兜底、保存读取及缺开关旧档；悬停仍保留阶段名和生育倍率。只补齐原版 ColoredText 的语言初始化上下文，不替换悬停生成或描述选择算法。与布局 92／92 合计 449／449；此前泌乳组件 23 项保留上批时点。日志：`.builds/uterus-three-state-description/`。上述为自动验证生成时点；随后提交 `d2ecb6f` 已同步，维护者确认三态描述显示正常、本批显示验收关闭。正式文案仍待定，见[验收记录](../../Docs/Development/Verification/子宫开发Hediff三态描述实现与验证.md)。
+三态描述新增 **17 项**，累计 **357／357**。直接调用生产 Hediff.Description 和原版 GetTooltip，验证三套正文、培养档共用、模式／语言即时切换、共享 Def 与角色隔离、无效或离体实例兜底、保存读取及缺开关旧档；悬停仍保留阶段名和生育倍率。只补齐原版 ColoredText 的语言初始化上下文，不替换悬停生成或描述选择算法。与布局 92／92 合计 449／449；此前泌乳组件 23 项保留上批时点。日志：`.builds/uterus-three-state-description/`。上述为自动验证生成时点；随后提交 `d2ecb6f` 已同步，维护者确认三态描述显示正常、本批显示验收关闭。正式文案仍待定，见[验收记录](../../Docs/Development/Completed/子宫开发Hediff三态描述实现与验证.md)。
 
 2026-10-24 v2 定稿四语：本轮原生 **362／362**，含新增 5 项 [UterusDefInjectedTests](UterusDefInjectedTests.cs)。实际执行当前游戏的 DefInjectionPackage XML 加载及注入，覆盖研究／手术／四档阶段／扩展开启阶段、四语再回简中、健康悬停与研究提示译名一致；此前占位断言改为定稿／当前语言资源。本次以 BuildProjectReferences=false 只重编宿主，生产 DLL 和 BUILD-INFO 不变；布局另跑 92／92，共 454／454。记录见[四语落实](../../Docs/Development/Verification/子宫开发v2定稿四语落实与验证.md)，未同步游戏，不冒充完整游戏语言重载或四语排版验收。
 
@@ -78,7 +78,7 @@ if ($LASTEXITCODE -ne 0) { throw '专项构建失败' }
 
 胃部占位为显式 WIP，非正式文案；局部语言宿主加载胃部 Keyed，保留原版查键／格式化及注入。RJW 分类初始化中未纳入宿主的 Def 在 bootstrap 阶段隔离日志，实际口部检查及接触判定不替换。损伤、地图／动画及完整健康界面依旧属于游戏边界，不据此声称实机通过。
 
-本轮运行日志与统一回归：`.builds/stomach-development/`；实际实现、部署与待验情境见[胃部实现记录](../../Docs/Development/Verification/胃部恶堕化实现与验证.md)。
+本轮运行日志与统一回归：`.builds/stomach-development/`；实际实现、部署与待验情境见[胃部实现记录](../../Docs/Development/Completed/胃部恶堕化实现与验证.md)。
 
 ## 胃部 v1 中文定稿与四语落实（2026-10-24）
 

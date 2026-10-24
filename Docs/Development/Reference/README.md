@@ -1,4 +1,4 @@
-# 历史交接与提示词
+# 文案定稿、维护清单与历史交接
 
 [开发资料入口](../README.md) · [当前规划](../../Design/README.md) · [已交付记录](../Completed/README.md)
 
