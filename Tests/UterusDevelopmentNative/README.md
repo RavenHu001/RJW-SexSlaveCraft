@@ -1,5 +1,7 @@
 # 子宫开发第 1～5 批原生专项
 
+2026-10-24 医药类别调整：两项启动手术的药物筛选均采用原版 `Medicine` 类别；局部宿主补齐类别成员及类别库阶段标记，继续由真实 `ThingFilter.ResolveReferences` 解析生产资源。原生专项仍为 432／432，通过 `BuildProjectReferences=false` 仅重编宿主，生产 DLL／BUILD-INFO 不变；日志在 `.builds/surgery-medicine-category/`，未同步游戏。
+
 2026-10-24：**357／357 通过**，包括前两批 100 项、第 3 批 92 项、第 4 批 81 项、第 5 批 20 项、早期文案本地化收尾 12 项、健康页倍率展示 15 项、永久泌乳生育抑制中和 20 项及三态描述 17 项。目标为 RimWorld **1.7.4985 rev1269**，游戏程序集 MVID `d368493b52bd4740bc7507c1b0386895`。不启动游戏，不改安装副本或用户配置。
 
 通过 ProjectReference 编译当前生产工程，实际执行生产 XML 的原版加载、Hediff 创建／添加／合并／移除、原版 `StatPart_FertilityByHediffs.TransformValue`、健康缓存通知，以及 Scribe 的保存、交叉引用和 PostLoadInit。测试没有复制开发进度、生育状态或合并算法。

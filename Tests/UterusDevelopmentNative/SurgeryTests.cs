@@ -85,14 +85,21 @@ internal static partial class Program
         concentratedPna = SurgeryItem("Purple_Aphrodisiac_Nanofluid_Plus");
         // 医疗效力从当前游戏原始药物 Def 读取，避免手工设定高低顺序代替被测计算。
         var rawItems = XDocument.Load(Path.Combine(game, "Data/Core/Defs/ThingDefs_Items/Items_Resource_Manufactured.xml"));
+        // 原生类别筛选会枚举类别成员；局部宿主补齐原版 Medicine 归属，再解析生产过滤器。
+        var medicineCategory = Bare<ThingCategoryDef>(); medicineCategory.defName = "Medicine"; medicineCategory.label = "medicine";
+        medicineCategory.childThingDefs = new(); medicineCategory.childCategories = new(); medicineCategory.childSpecialFilters = new();
+        Add(medicineCategory);
         medicines = new[] { "MedicineHerbal", "MedicineIndustrial", "MedicineUltratech" }.Select(name =>
         {
             var def = SurgeryItem(name); def.thingClass = typeof(Medicine);
+            def.thingCategories = new() { medicineCategory }; medicineCategory.childThingDefs.Add(def);
             var node = rawItems.Root.Elements("ThingDef").Single(n => (string)n.Element("defName") == name);
             def.statBases = new() { new StatModifier { stat = StatDefOf.MedicalPotency,
                 value = float.Parse(node.Element("statBases").Element("MedicalPotency").Value, CultureInfo.InvariantCulture) } };
             return def;
         }).ToArray();
+        // 完整游戏在解析过滤器前已建立类别库；宿主已提供成员表，仅补齐该加载阶段标记。
+        ThingCategoryNodeDatabase.initialized = true;
         // 手术只引用 Human；另一个实际人形种族会在后续注入用例中检查。
         var race = Bare<ThingDef>(); race.defName = "Human"; race.race = human.race; Add(race);
         var nodes = XDocument.Load(Path.Combine(game, "Data/Core/Defs/RecipeDefs/Recipes_Surgery_Misc.xml")).Root.Elements()

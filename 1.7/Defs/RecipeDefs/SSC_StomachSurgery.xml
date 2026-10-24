@@ -15,13 +15,13 @@
     <researchPrerequisite>SSC_RES_UterusDevelopment</researchPrerequisite>
     <recipeUsers><li>Human</li></recipeUsers>
     <skillRequirements><Medicine>10</Medicine></skillRequirements>
-    <!-- 原版账单负责收集与消费；药物允许草药、工业药和闪耀药，效力沿用原版质量计算。 -->
+    <!-- 原版账单负责收集与消费；药物按原版 Medicine 类别筛选，浓缩纳米催情液单独指定。 -->
     <ingredients>
       <li><filter><thingDefs><li>Purple_Aphrodisiac_Nanofluid_Plus</li></thingDefs></filter><count>5</count></li>
-      <li><filter><thingDefs><li>MedicineHerbal</li><li>MedicineIndustrial</li><li>MedicineUltratech</li></thingDefs></filter><count>6</count></li>
+      <li><filter><categories><li>Medicine</li></categories></filter><count>6</count></li>
     </ingredients>
-    <fixedIngredientFilter><thingDefs><li>Purple_Aphrodisiac_Nanofluid_Plus</li><li>MedicineHerbal</li><li>MedicineIndustrial</li><li>MedicineUltratech</li></thingDefs></fixedIngredientFilter>
-    <defaultIngredientFilter><thingDefs><li>Purple_Aphrodisiac_Nanofluid_Plus</li><li>MedicineHerbal</li><li>MedicineIndustrial</li><li>MedicineUltratech</li></thingDefs></defaultIngredientFilter>
+    <fixedIngredientFilter><thingDefs><li>Purple_Aphrodisiac_Nanofluid_Plus</li></thingDefs><categories><li>Medicine</li></categories></fixedIngredientFilter>
+    <defaultIngredientFilter><thingDefs><li>Purple_Aphrodisiac_Nanofluid_Plus</li></thingDefs><categories><li>Medicine</li></categories></defaultIngredientFilter>
     <anesthetize>true</anesthetize>
     <surgerySuccessChanceFactor>1</surgerySuccessChanceFactor>
     <!-- 仅关闭原版直接 Kill 的失败分支，不替换 SurgeryOutcomeBase 或普通损伤。 -->
