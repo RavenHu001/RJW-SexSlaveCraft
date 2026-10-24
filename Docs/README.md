@@ -1,8 +1,12 @@
-# 文档总索引
+﻿# 文档总索引
 
 **2.4.4 正式版 — 2026-10-23。** [下载 v2.4.4](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.4)。1.7 运行元数据对齐 2.4.4，1.6／Common 冻结于 2.4.1；此前开发登记与分批测试保留原时点，发布结果见版本验证。
 
 [项目首页](../README.md) · [玩家阅读入口](Players/README.md) · [当前规划](Design/README.md) · [开发资料](Development/README.md)
+
+## 最新开发状态
+
+2026-10-24：[子宫开发与生育控制功能已通过本轮实机验收](Development/Completed/子宫开发与生育控制完成核对.md)，尚未发布，正式文案按[填充文件清单](Development/Reference/子宫开发与生育控制文案填充文件清单.md)后续处理。
 
 ## 按用途选择入口
 
