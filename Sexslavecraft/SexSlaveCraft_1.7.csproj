@@ -90,6 +90,17 @@
     <Compile Include="Recipe/Recipe_StartUterusDevelopment.cs" />
     <Compile Include="ThePatches/Harmony_UterusSurgeryAdmission.cs" />
   </ItemGroup>
+  <!-- AI 辅助生成：胃部开发仅编入 1.7，共享文件的新增调用也受 SSC_RW17 保护。 -->
+  <ItemGroup>
+    <Compile Include="Hediff/Hediff_SSCStomachDevelopment.cs" />
+    <Compile Include="common/SSCStomachDevelopmentUtility.cs" />
+    <Compile Include="common/SSCStomachDevelopmentGrowthUtility.cs" />
+    <Compile Include="common/SSCStomachSurgeryUtility.cs" />
+    <Compile Include="common/SSCBodyDevelopmentUtility.Identity.cs" />
+    <Compile Include="common/SSCDevelopmentSurgeryUtility.cs" />
+    <Compile Include="Recipe/Recipe_StartStomachDevelopment.cs" />
+    <Compile Include="Comps/Comp_Train.StomachDevelopment.cs" />
+  </ItemGroup>
   <!-- AI 辅助生成：医美功能仅编入 1.7，不改变冻结的 1.6 编译清单。 -->
   <ItemGroup>
     <Compile Include="common/SSCCosmeticUtility.cs" />

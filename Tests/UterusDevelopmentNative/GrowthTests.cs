@@ -51,8 +51,10 @@ internal static partial class Program
         internal readonly SSCOrdinarySexPartsSnapshot Snapshot;
 
         /// <summary>只提供已经解析的接触，不执行或模拟 RJW 的交互选择器。</summary>
-        internal GrowthScene(bool reverse = false, bool contact = true, bool start = true)
+        internal GrowthScene(bool reverse = false, bool contact = true, bool start = true, bool oral = false)
         {
+            // 胃部用例使用独立身体；原阴道场景保留原有身体及预期，不改写旧样本。
+            if (oral) SetupStomachBody(Target);
             Organ = new Hediff_NaturalSexPart { pawn = Target, Part = Target.RaceProps.body.corePart, def = vagina, loadID = ++nextId };
             Target.health.hediffSet.hediffs.Add(Organ);
             var interaction = new InteractionDef { defName = "UterusContact" + ++nextId,
@@ -62,13 +64,15 @@ internal static partial class Program
                 { isRevese = reverse, dictionaryKey = interaction };
             AccessTools.Field(typeof(SexProps), "_sexType").SetValue(Props, (xxx.rjwSextype?)xxx.rjwSextype.Vaginal);
             Penetrator = new VanillaLewdablePart(Source, Source.RaceProps.body.corePart, LewdablePartFamily.Penis);
-            Vagina = new RJWLewdablePart(Organ, LewdablePartFamily.Vagina);
+            Vagina = oral ? new VanillaLewdablePart(Target, StomachMouth(Target), LewdablePartFamily.Mouth)
+                : new RJWLewdablePart(Organ, LewdablePartFamily.Vagina);
             Props._resolved = new SexInteractionResolved { Initiator = Props.initiator, Recipient = Props.recipient,
                 Interaction = new SexInteraction(interaction), InitiatorParts = new(), RecipientParts = new(), Penetrations = new() };
             (reverse ? Props._resolved.RecipientParts : Props._resolved.InitiatorParts).Add(Penetrator);
             (reverse ? Props._resolved.InitiatorParts : Props._resolved.RecipientParts).Add(Vagina);
             if (contact) Props._resolved.Penetrations.Add(Tuple.Create(Penetrator, Vagina));
             if (start) Start(Target);
+            if (oral && start) StartStomach(Target);
             Snapshot = CaptureParts(Props);
         }
     }

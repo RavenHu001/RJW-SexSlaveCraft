@@ -65,6 +65,9 @@ namespace SexSlaveCraft
                 // Item1 为插入端，Item2 为被插入端；主人/发起者方向不能替代此凭据。
                 if (contact.Item2.Family == LewdablePartFamily.Vagina)
                     MarkReceivingVagina(snapshot, contact.Item2, b);
+                // 严格口交只看本场实际端点；普通、反向和六九式均按口腔归属判断。
+                if (contact.Item1.Family == LewdablePartFamily.Penis && contact.Item2.Family == LewdablePartFamily.Mouth)
+                    MarkReceivingPenileOral(snapshot, contact.Item2, b);
 #endif
             }
             return snapshot;
@@ -108,6 +111,33 @@ namespace SexSlaveCraft
             {
                 var current = ReadCached(props);
                 return current?.Parts.Exists(p => p.ReceivedVaginalPenetration && evidence.Same(p)) == true;
+            }
+            catch { return false; } // 可选成长证据失效，不改变原有部位匹配与结算。
+        }
+
+        /// <summary>在已合并的器官条目上置位；原参与列表与接触端点重复时不丢失 true。</summary>
+        private static void MarkReceivingPenileOral(SSCOrdinarySexPartsSnapshot snapshot, ILewdablePart part, Pawn owner)
+        {
+            Hediff organ = (part as RJWLewdablePart)?.SexPart?.AsHediff;
+            foreach (var evidence in snapshot.Parts)
+                if (evidence.Owner == owner && evidence.BodyPart == part.BodyPart &&
+                    evidence.Family == LewdablePartFamily.Mouth && evidence.Organ == organ &&
+                    evidence.HadOrgan == (part is RJWLewdablePart))
+                    evidence.ReceivedPenileOralPenetration = true;
+        }
+
+        /// <summary>验证保存的严格口交口腔条目；已有缓存时额外核对方向，读档无缓存时不重新解析。</summary>
+        internal static bool IsCurrentReceivingPenileOral(SSCOrdinarySexPartsSnapshot snapshot, SexProps props,
+            SSCOrdinarySexPartsSnapshot.Part evidence)
+        {
+            if (snapshot == null || evidence == null || !evidence.ReceivedPenileOralPenetration ||
+                evidence.Family != LewdablePartFamily.Mouth || !evidence.IsAttached() ||
+                snapshot.Parts?.Contains(evidence) != true || !snapshot.Matches(props)) return false;
+            if (props._resolved == null) return true;
+            try
+            {
+                var current = ReadCached(props);
+                return current?.Parts.Exists(p => p.ReceivedPenileOralPenetration && evidence.Same(p)) == true;
             }
             catch { return false; } // 可选成长证据失效，不改变原有部位匹配与结算。
         }

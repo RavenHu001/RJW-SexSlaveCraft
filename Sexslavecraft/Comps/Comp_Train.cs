@@ -249,6 +249,7 @@ namespace SexSlaveCraft
             Scribe_Values.Look(ref bindingRitualOutcomeClaimed, "bindingRitualOutcomeClaimed", false);
 #if SSC_RW17
             ExposeUterusRitualEvidence();
+            ExposeStomachRitualEvidence();
 #endif
 
             // selectedTrainer 是 Pawn 引用，所以要作为引用类型单独保存和恢复。

@@ -41,16 +41,10 @@ namespace SexSlaveCraft
         /// <summary>使用原版技能门槛，兼容医护机械体；已有医术提示复用原键，其他接单限制由原版负责。</summary>
         public static AcceptanceReport DoctorReport(Pawn doctor, Pawn patient)
         {
-            if (doctor == null || doctor == patient || doctor.Dead || doctor.Destroyed || doctor.Discarded)
-                return "SSC_UterusDevelopment_DoctorRequired".Translate();
-            var recipe = SSCDefOf.SSC_Surgery_StartUterusDevelopment;
-            if (recipe == null) return "SSC_UterusDevelopment_SurgeryConfigUnavailable".Translate();
-            // 原版同时处理普通技能与受控机械体的固定技能及启用工作类型。
-            // 不直接要求 skills 跟踪器；技能禁用或未达配方门槛仍由原版检查拒绝。
-            if (!recipe.PawnSatisfiesSkillRequirements(doctor))
-                // 医美已有相同语义的参数化行医／医术提示，复用四语键，不再新增一份医生文案。
-                return "SSC_Cosmetic_MedicineRequired".Translate(10);
-            return true;
+            // 使用实际配方执行共用检查，不借用另一项身体开发的配方引用。
+            return SSCDevelopmentSurgeryUtility.DoctorReport(doctor, patient,
+                SSCDefOf.SSC_Surgery_StartUterusDevelopment,
+                "SSC_UterusDevelopment_SurgeryConfigUnavailable");
         }
     }
 }

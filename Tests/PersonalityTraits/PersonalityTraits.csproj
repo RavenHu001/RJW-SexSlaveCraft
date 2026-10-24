@@ -8,6 +8,7 @@
   </PropertyGroup>
   <ItemGroup Condition="'$(SscUterusBoundary)' == 'true'">
     <Compile Include="$(SscSourceRoot)/common/SSCUterusDevelopmentUtility.Identity.cs" Link="Production/UterusBodyIdentity.cs" />
+    <Compile Include="$(SscSourceRoot)/common/SSCBodyDevelopmentUtility.Identity.cs" Link="Production/BodyDevelopmentIdentity.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="$(SscSourceRoot)/common/SSCBondRelationRules.cs" Link="Production/SSCBondRelationRules.cs" />

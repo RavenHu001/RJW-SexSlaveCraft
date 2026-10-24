@@ -165,6 +165,9 @@ namespace SexSlaveCraft
         // 子宫开发只登记于 1.7；研究、正常医疗配方及身体记录分别承担各自职责。
         public static ResearchProjectDef SSC_RES_UterusDevelopment;
         public static RecipeDef SSC_Surgery_StartUterusDevelopment;
+        // 胃部开发复用内脏研究；原版 BodyPartDefOf 没有 Stomach，按实际定义名登记。
+        public static RecipeDef SSC_Surgery_StartStomachDevelopment;
+        public static BodyPartDef Stomach;
 #endif
 
         public static TraitDef SSC_Trait_PE;
@@ -354,6 +357,8 @@ namespace SexSlaveCraft
             SSC_Hediff_NanoCosmeticReaction = GetDef<HediffDef>("SSC_Hediff_NanoCosmeticReaction");
             SSC_RES_UterusDevelopment = GetDef<ResearchProjectDef>("SSC_RES_UterusDevelopment");
             SSC_Surgery_StartUterusDevelopment = GetDef<RecipeDef>("SSC_Surgery_StartUterusDevelopment");
+            SSC_Surgery_StartStomachDevelopment = GetDef<RecipeDef>("SSC_Surgery_StartStomachDevelopment");
+            Stomach = GetDef<BodyPartDef>("Stomach");
 #endif
             SSC_Trait_PE = GetDef<TraitDef>("SSC_Trait_PE");
 

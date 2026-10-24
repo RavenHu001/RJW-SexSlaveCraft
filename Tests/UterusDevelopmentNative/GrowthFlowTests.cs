@@ -121,9 +121,9 @@ internal static partial class Program
     }
 
     /// <summary>枚举真实日常 Toil，并直接执行原有最终完成闭包验证整场认领。</summary>
-    private static (GrowthScene scene, JobDriver_Training driver, Toil payout) DailyGrowth(bool contact = true, bool begun = true)
+    private static (GrowthScene scene, JobDriver_Training driver, Toil payout) DailyGrowth(bool contact = true, bool begun = true, bool oral = false)
     {
-        ResetGrowthFlow(); var s = new GrowthScene(contact: contact); var driver = InstallDriver<JobDriver_Training>(s);
+        ResetGrowthFlow(); var s = new GrowthScene(contact: contact, oral: oral); var driver = InstallDriver<JobDriver_Training>(s);
         var toils = ((IEnumerable<Toil>)Hidden(typeof(JobDriver_Training), driver, "MakeNewToils")).ToArray();
         if (begun)
         {
@@ -174,9 +174,9 @@ internal static partial class Program
     }
 
     /// <summary>使用实际守卫、方向计划和持久化认领，既有能力资格由本例显式提供。</summary>
-    private static (GrowthScene scene, GrowthOrdinaryDriver driver) OrdinaryGrowth(bool reverse = false, bool contact = true)
+    private static (GrowthScene scene, GrowthOrdinaryDriver driver) OrdinaryGrowth(bool reverse = false, bool contact = true, bool oral = false)
     {
-        ResetGrowthFlow(); var s = new GrowthScene(reverse, contact); var driver = InstallDriver<GrowthOrdinaryDriver>(s);
+        ResetGrowthFlow(); var s = new GrowthScene(reverse, contact, oral: oral); var driver = InstallDriver<GrowthOrdinaryDriver>(s);
         infestationSource = s.Source; infestationTarget = s.Target; infestationAllowed = true;
         s.Source.relations = new Pawn_RelationsTracker(s.Source); s.Target.relations = new Pawn_RelationsTracker(s.Target);
         MarkStarted(driver); return (s, driver);

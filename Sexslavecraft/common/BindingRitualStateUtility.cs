@@ -202,6 +202,7 @@ namespace SexSlaveCraft
 #if SSC_RW17
             // 清掉接触事实，避免结束、中断或新 Lord 继承上一场已完成阶段。
             training.uterusRitualEvidence = null;
+            training.stomachRitualEvidence = null;
 #endif
         }
     }

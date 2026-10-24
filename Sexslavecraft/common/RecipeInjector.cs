@@ -33,6 +33,8 @@ namespace SexSlaveCraft
             myRecipes.Add(SSCDefOf.SSC_Surgery_BeautyEnhancement);
             // AI 辅助生成：复用同一人形种族注入路径，实际身体与启动资格由手术 Worker 复查。
             myRecipes.Add(SSCDefOf.SSC_Surgery_StartUterusDevelopment);
+            // 胃部开发沿用相同的人形种族注入；实际胃／口部与成年资格仍由 Worker 检查。
+            myRecipes.Add(SSCDefOf.SSC_Surgery_StartStomachDevelopment);
 #endif
 
             // EN: Step 2: visit each SSC surgery and expand its recipeUsers white list.

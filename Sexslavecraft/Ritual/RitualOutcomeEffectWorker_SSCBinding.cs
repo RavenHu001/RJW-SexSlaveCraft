@@ -209,6 +209,12 @@ namespace SexSlaveCraft
                 SpecializationTrainingProgressUtility.RitualScore(quality));
             uterus?.Apply(canContinue);
             if (!canContinue()) return;
+            // 胃部只领取整场一份奖励；证据来自成功完成的阶段，包含末阶段同步通知前的记录。
+            var stomach = SSCStomachDevelopmentGrowthUtility.Capture(slave,
+                slave.TryGetComp<CompSexSlaveTraining>()?.stomachRitualEvidence,
+                SpecializationTrainingProgressUtility.RitualScore(quality));
+            stomach?.Apply(canContinue);
+            if (!canContinue()) return;
 #endif
 
             // 六个阶段的 ProcessSex 各自只负责 RJW 阶段效果。上方已消费

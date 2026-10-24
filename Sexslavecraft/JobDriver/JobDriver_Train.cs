@@ -369,6 +369,11 @@ namespace SexSlaveCraft
                 uterus?.Apply(() => ValidateTargetIdentityOrAbort(context, target) && Sexprops == props &&
                     SSCRestrictionJobGuard.TrainingParts(this, SSCInteractionKind.DailyTraining) == parts);
                 if (!ValidateTargetIdentityOrAbort(context, target)) return;
+                // 胃部独立匹配严格口交，继续复用本场评分和已认领的完成出口。
+                var stomach = SSCStomachDevelopmentGrowthUtility.Capture(target, parts, props, score);
+                stomach?.Apply(() => ValidateTargetIdentityOrAbort(context, target) && Sexprops == props &&
+                    SSCRestrictionJobGuard.TrainingParts(this, SSCInteractionKind.DailyTraining) == parts);
+                if (!ValidateTargetIdentityOrAbort(context, target)) return;
 #endif
             }
 

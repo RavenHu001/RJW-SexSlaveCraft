@@ -49,7 +49,11 @@ internal static partial class Program
         // 使用无业务逻辑的转发器，避免 Harmony 2 读取生产类上的 Harmony 3 特性；实际执行生产 Postfix。
         harmony.Patch(AccessTools.Method(typeof(Bill_Medical), nameof(Bill_Medical.PawnAllowedToStartAnew)),
             postfix: new HarmonyMethod(typeof(Program), nameof(UterusAdmission)));
-        Check("batch2 XML native inheritance, research and ingredient configuration", () => LoadSurgeryResources(repo, game));
+        Check("batch2 XML native inheritance, research and ingredient configuration", () =>
+        {
+            LoadSurgeryResources(repo, game);
+            LoadStomachResources(repo, game);
+        });
         if (uterusSurgery == null || uterusResearch == null) return;
         SurgeryEligibilityTests();
         SurgeryAdmissionTests();
@@ -429,11 +433,11 @@ internal static partial class Program
     { forcedQuality = quality; surgeryRolls = injuryCalls = injuryDamage = tales = consumedStacks = 0; surgeryMessages.Clear(); }
     /// <summary>稳定成功／失败用例中的质量；药物效力用例直接调用实际组件且不经过此边界。</summary>
     private static bool ControlQuality(RecipeDef recipe, ref float __result)
-    { if (recipe != uterusSurgery || !forcedQuality.HasValue) return true; __result = forcedQuality.Value; return false; }
+    { if ((recipe != uterusSurgery && recipe != stomachSurgery) || !forcedQuality.HasValue) return true; __result = forcedQuality.Value; return false; }
     /// <summary>只观察真实原版结果选择是否被调用。</summary>
-    private static void ObserveOutcome(RecipeDef recipe) { if (recipe == uterusSurgery) surgeryRolls++; }
+    private static void ObserveOutcome(RecipeDef recipe) { if (recipe == uterusSurgery || recipe == stomachSurgery) surgeryRolls++; }
     /// <summary>模拟其他结果补丁改变身体，检验生产成功落地前的第二次资格复查。</summary>
-    private static void AfterOutcome(RecipeDef recipe, Pawn patient) { if (recipe == uterusSurgery) afterOutcome?.Invoke(patient); }
+    private static void AfterOutcome(RecipeDef recipe, Pawn patient) { if (recipe == uterusSurgery || recipe == stomachSurgery) afterOutcome?.Invoke(patient); }
     /// <summary>记录原版失败请求的损伤；独立宿主不运行完整伤害与生命状态计算。</summary>
     private static bool InjuryBoundary(int totalDamage) { injuryCalls++; injuryDamage += totalDamage; return false; }
     /// <summary>记录玩家消息并隔离信件、声音和屏幕消息队列。</summary>

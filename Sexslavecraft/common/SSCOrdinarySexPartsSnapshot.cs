@@ -27,6 +27,8 @@ namespace SexSlaveCraft
 #if SSC_RW17
             // 只由真实接触的 Item2 写入；随本次 Job 保存，不是身体的永久状态。
             internal bool ReceivedVaginalPenetration;
+            // 只在阴茎向 Mouth 的真实接触上置位，不把舔舐、喙部或其他插入当成严格口交。
+            internal bool ReceivedPenileOralPenetration;
 #endif
 
             /// <summary>保存原器官引用及本场接触事实；旧档没有新标记时不能推补插入证据。</summary>
@@ -40,6 +42,7 @@ namespace SexSlaveCraft
                 Scribe_References.Look(ref Organ, "organ");
 #if SSC_RW17
                 Scribe_Values.Look(ref ReceivedVaginalPenetration, "receivedVaginalPenetration", false);
+                Scribe_Values.Look(ref ReceivedPenileOralPenetration, "receivedPenileOralPenetration", false);
 #endif
             }
 
@@ -58,6 +61,10 @@ namespace SexSlaveCraft
         /// <summary>将方向复查限制在原来绑定的 SexProps；调用方不能借新对象续用旧接触。</summary>
         internal bool IsCurrentReceivingVagina(Part evidence)
             => SSCOrdinarySexPartsUtility.IsCurrentReceivingVagina(this, boundProps, evidence);
+
+        /// <summary>使用本场绑定的对象复查严格口交；旧档缺标记时不推补接触。</summary>
+        internal bool IsCurrentReceivingPenileOral(Part evidence)
+            => SSCOrdinarySexPartsUtility.IsCurrentReceivingPenileOral(this, boundProps, evidence);
 #endif
 
         internal bool Matches(SexProps props)

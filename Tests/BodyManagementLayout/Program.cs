@@ -160,7 +160,7 @@ internal static class Program
         Require(Widgets.Drawn.All(d => !d.Label.Contains("SSC_") && !Regex.IsMatch(d.Label, @"\{\d+\}") && !d.Label.Contains("\\n")));
     }
 
-    /// <summary>逐键核对新增资源及镜像，审计三个生产入口不再含中文字符串；参数检查不复制业务逻辑。</summary>
+    /// <summary>逐键核对资源及镜像，审计开发入口与共用医生检查；参数检查不复制业务逻辑。</summary>
     private static void StartupLanguageResources(string repo, string language)
     {
         string relative = $"{language}/Keyed/SSC_UterusDevelopment.xml";
@@ -172,7 +172,7 @@ internal static class Program
         Require(entries.Keys.Order().SequenceEqual(reference.Keys.Order()));
         string source = "";
         // 描述键与启动提示共用资源文件，覆盖新增调用来源，仍严格核对全部键都有实际调用。
-        foreach (string file in new[] { "common/SSCUterusDevelopmentUtility.cs", "common/SSCUterusSurgeryUtility.cs", "Recipe/Recipe_StartUterusDevelopment.cs", "Hediff/Hediff_SSCUterusDevelopment.cs" })
+        foreach (string file in new[] { "common/SSCUterusDevelopmentUtility.cs", "common/SSCUterusSurgeryUtility.cs", "common/SSCDevelopmentSurgeryUtility.cs", "Recipe/Recipe_StartUterusDevelopment.cs", "Hediff/Hediff_SSCUterusDevelopment.cs" })
         {
             string code = File.ReadAllText(Path.Combine(repo, "Sexslavecraft", file)); source += code;
             foreach (Match literal in Regex.Matches(code, "\"(?:\\\\.|[^\"\\\\])*\""))

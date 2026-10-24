@@ -78,6 +78,7 @@ namespace SexSlaveCraft
             private readonly SSCDesireInfestationBodyUtility.Plan bodyPlan;
 #if SSC_RW17
             private readonly SSCUterusDevelopmentGrowthUtility.Plan uterusPlan;
+            private readonly SSCStomachDevelopmentGrowthUtility.Plan stomachPlan;
 #endif
             private readonly SSCDesireInfestationFeedbackUtility.Plan feedbackPlan;
             private readonly Func<bool> partsCurrent;
@@ -97,7 +98,7 @@ namespace SexSlaveCraft
                 if (infestation && partsCurrent?.Invoke() == true)
 #if SSC_RW17
                 {
-                    // 两个独立开发项目共用一次原结算前评分；旧评分的随机项不推进 RJW 随机序列。
+                    // 各独立开发项目共用一次原结算前评分；旧评分的随机项不推进 RJW 随机序列。
                     float? capturedScore = null;
                     float Score()
                     {
@@ -109,6 +110,7 @@ namespace SexSlaveCraft
                     }
                     bodyPlan = SSCDesireInfestationBodyUtility.Capture(source, target, parts, Score);
                     uterusPlan = SSCUterusDevelopmentGrowthUtility.CaptureInfestation(source, target, parts, Score);
+                    stomachPlan = SSCStomachDevelopmentGrowthUtility.CaptureInfestation(source, target, parts, Score);
                 }
 #else
                     bodyPlan = SSCDesireInfestationBodyUtility.Capture(source, target, parts);
@@ -133,6 +135,9 @@ namespace SexSlaveCraft
                     // 六部位和子宫各用自己的系数；仍共享本场认领，训练 Job 不会进入此出口。
                     if (StrongCurrent() && uterusPlan != null)
                         uterusPlan.Apply(() => StrongCurrent() && partsCurrent?.Invoke() == true);
+                    // 新项目与其他侵蚀分量独立；写入仍复查原身体、场景及严格口交证据。
+                    if (StrongCurrent() && stomachPlan != null)
+                        stomachPlan.Apply(() => StrongCurrent() && partsCurrent?.Invoke() == true);
 #endif
                     // 无研究、无可靠部位或开发已满均不取消反馈；原版 Lovin 也走同一独立分量。
                     if (StrongCurrent() && feedbackPlan != null) feedbackPlan.Apply(StrongCurrent);

@@ -47,6 +47,9 @@ internal static partial class Program
                 Assert(host.health.hediffSet.GetFirstHediffOfDef(def) == record, "宿主记录不补建、不替换");
                 if (record != null) Assert(record.Severity == .23f, "不合并外部更高进度");
             });
+        RunStomachBodyCases();
     }
+
+
 }
 #endif

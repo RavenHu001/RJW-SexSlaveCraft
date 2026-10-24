@@ -137,6 +137,9 @@ public sealed class GrowthSceneSave : IExposable
     {
         driver.ExposeData();
         if (training != null)
+        {
             AccessTools.Method(typeof(CompSexSlaveTraining), "ExposeUterusRitualEvidence").Invoke(training, null);
+            AccessTools.Method(typeof(CompSexSlaveTraining), "ExposeStomachRitualEvidence").Invoke(training, null);
+        }
     }
 }

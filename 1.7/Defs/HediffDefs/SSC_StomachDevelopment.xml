@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成：仅 1.7，四档取代而非累乘；WIP 标记是开发占位，非正式文案。 -->
+<Defs>
+  <HediffDef>
+    <defName>SSC_StomachDevelopment</defName>
+    <label>【WIP｜胃部开发｜健康状态名称】</label>
+    <description>【WIP｜胃部开发｜健康状态说明】</description>
+    <hediffClass>SexSlaveCraft.Hediff_SSCStomachDevelopment</hediffClass>
+    <defaultLabelColor>(255, 105, 180)</defaultLabelColor>
+    <isBad>false</isBad><tendable>false</tendable><everCurableByItem>false</everCurableByItem><makesAlert>false</makesAlert>
+    <initialSeverity>0.01</initialSeverity><minSeverity>0</minSeverity><maxSeverity>1</maxSeverity>
+    <!-- 胃部恢复与替换沿用原版清理；消失的记录不从历史恢复。 -->
+    <stages>
+      <li>
+        <minSeverity>0</minSeverity>
+        <label>【WIP｜胃部开发｜阶段0】</label>
+        <hungerRateFactor>1.00</hungerRateFactor>
+        <foodPoisoningChanceFactor>1</foodPoisoningChanceFactor>
+        <statFactors><EatingSpeed>1.00</EatingSpeed></statFactors>
+      </li>
+      <li>
+        <minSeverity>0.3</minSeverity>
+        <label>【WIP｜胃部开发｜阶段30】</label>
+        <hungerRateFactor>0.90</hungerRateFactor>
+        <foodPoisoningChanceFactor>1</foodPoisoningChanceFactor>
+        <statFactors><EatingSpeed>1.10</EatingSpeed></statFactors>
+      </li>
+      <li>
+        <minSeverity>0.7</minSeverity>
+        <label>【WIP｜胃部开发｜阶段70】</label>
+        <hungerRateFactor>0.75</hungerRateFactor>
+        <foodPoisoningChanceFactor>1</foodPoisoningChanceFactor>
+        <statFactors><EatingSpeed>1.25</EatingSpeed></statFactors>
+      </li>
+      <li>
+        <minSeverity>1</minSeverity>
+        <label>【WIP｜胃部开发｜阶段100】</label>
+        <hungerRateFactor>0.50</hungerRateFactor>
+        <foodPoisoningChanceFactor>0</foodPoisoningChanceFactor>
+        <statFactors><EatingSpeed>1.50</EatingSpeed></statFactors>
+      </li>
+    </stages>
+  </HediffDef>
+</Defs>
