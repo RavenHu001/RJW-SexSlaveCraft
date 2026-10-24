@@ -34,7 +34,7 @@ internal static class Entry
     }
 }
 
-internal static class Program
+internal static partial class Program
 {
     private static int passed, failed, nextId = 1000000, notifications;
     private static bool bootstrap = true;
@@ -43,7 +43,7 @@ internal static class Program
     private static HediffDef development;
     private static ThingDef human;
 
-    /// <summary>建立隔离原生宿主，加载生产定义并运行三组检查，最后释放全局上下文。</summary>
+    /// <summary>建立隔离原生宿主，加载生产定义并验证身体状态及正常手术，最后释放全局上下文。</summary>
     internal static int Run(string repo, string game)
     {
         Console.WriteLine($"Game: {File.ReadAllText(Path.Combine(game, "Version.txt")).Trim()}, MVID: {typeof(Pawn).Module.ModuleVersionId:N}");
@@ -118,6 +118,7 @@ internal static class Program
             BodyAndFertility();
             MergeAndNormalization();
             SaveLoad();
+            SurgeryTests(repo, game, harmony.Value);
         }
         finally { Scribe.mode = LoadSaveMode.Inactive; Current.Game = null; }
         Console.WriteLine($"{passed}/{passed + failed} cases passed");

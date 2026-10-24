@@ -162,6 +162,9 @@ namespace SexSlaveCraft
         // 仅在 1.7 共享注册手术和身体反应；文化专属 Def 不进入这组无条件引用。
         public static RecipeDef SSC_Surgery_BeautyEnhancement;
         public static HediffDef SSC_Hediff_NanoCosmeticReaction;
+        // 子宫开发只登记于 1.7；研究、正常医疗配方及身体记录分别承担各自职责。
+        public static ResearchProjectDef SSC_RES_UterusDevelopment;
+        public static RecipeDef SSC_Surgery_StartUterusDevelopment;
 #endif
 
         public static TraitDef SSC_Trait_PE;
@@ -349,6 +352,8 @@ namespace SexSlaveCraft
             // 与上方条件字段对应，在原有 Def 初始化流程中解析，不增加独立加载或恢复入口。
             SSC_Surgery_BeautyEnhancement = GetDef<RecipeDef>("SSC_Surgery_BeautyEnhancement");
             SSC_Hediff_NanoCosmeticReaction = GetDef<HediffDef>("SSC_Hediff_NanoCosmeticReaction");
+            SSC_RES_UterusDevelopment = GetDef<ResearchProjectDef>("SSC_RES_UterusDevelopment");
+            SSC_Surgery_StartUterusDevelopment = GetDef<RecipeDef>("SSC_Surgery_StartUterusDevelopment");
 #endif
             SSC_Trait_PE = GetDef<TraitDef>("SSC_Trait_PE");
 

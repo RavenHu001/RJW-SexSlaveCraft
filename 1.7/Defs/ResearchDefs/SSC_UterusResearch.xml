@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成：仅 1.7；正式文案待定，研究配置已确定。 -->
+<Defs>
+  <ResearchProjectDef>
+    <defName>SSC_RES_UterusDevelopment</defName>
+    <label>子宫开发（暂名）</label>
+    <description>解锁子宫开发启动手术及后续培养、生育管理功能。正式描述待补充。</description>
+    <baseCost>2000</baseCost>
+    <techLevel>Medieval</techLevel>
+    <tab>SSC_ResearchTabDef</tab>
+    <prerequisites>
+      <li>SSC_RES_BodyPartTraining</li>
+      <li>SSC_RES_PNAConcentration</li>
+    </prerequisites>
+    <!-- 不设置专用研究台、设施或蓝图；位于现有双前置右侧的空行。 -->
+    <researchViewX>3</researchViewX>
+    <researchViewY>2.5</researchViewY>
+  </ResearchProjectDef>
+</Defs>

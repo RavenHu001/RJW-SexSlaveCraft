@@ -31,6 +31,8 @@ namespace SexSlaveCraft
             // AI 辅助生成：只扩展原有种族注入，不另建手术清单。
             // 医美配方仅存在于 1.7；复用下方人形种族遍历，具体肉身与年龄限制仍由配方资格负责。
             myRecipes.Add(SSCDefOf.SSC_Surgery_BeautyEnhancement);
+            // AI 辅助生成：复用同一人形种族注入路径，实际身体与启动资格由手术 Worker 复查。
+            myRecipes.Add(SSCDefOf.SSC_Surgery_StartUterusDevelopment);
 #endif
 
             // EN: Step 2: visit each SSC surgery and expand its recipeUsers white list.
