@@ -6,6 +6,7 @@ namespace SexSlaveCraft
     public static partial class SSCAbilityToggleUtility
     {
         public const string MasterDamageSharing = "SSC_MasterDamageSharing";
+        /// <summary>UI 后端与高频受伤入口共用的只读偏好查询；不追加身份／人格条件，不遍历注册表。</summary>
         public static bool GetMasterDamageSharingEnabled(Pawn pawn)
             => SSCBondUtility.GetBridle(pawn)?.shareDamageEnabled ?? false;
     }

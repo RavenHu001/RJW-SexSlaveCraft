@@ -239,6 +239,7 @@ namespace SexSlaveCraft
         private const float SectionPadding = 12f, SectionTitleHeight = 28f;
         public Pawn SelPawn;
         public record Probe(string Stage, string Experience, string Benefits, string Progress, float Fraction, float Height, bool CanEdit);
+        /// <summary>从真实主人面板快照取出测试观测值，分伤资格直接读取注册行而非另写判断。</summary>
         public Probe Read(Pawn pawn, float width = 322)
         {
             var v = BuildMasterPanelView(pawn, pawn.Training, width);
@@ -255,6 +256,7 @@ namespace SexSlaveCraft
             DrawMasterPanel(new Rect(0, 0, width, view.SectionHeight), view);
             return view.SectionHeight;
         }
+        /// <summary>保留测量时的原分伤行与上下文，供用例在状态改变后调用生产 TrySet 验证迟到请求。</summary>
         public Action<bool> CaptureShareAction(Pawn pawn)
         {
             SelPawn = pawn;
@@ -262,6 +264,7 @@ namespace SexSlaveCraft
             var row = view.AbilityRows.Single(r => r.Id == SSCAbilityToggleUtility.MasterDamageSharing);
             return value => { if (SelPawn == row.Pawn) SSCAbilityToggleUtility.TrySet(row.Pawn, row.Id, value, row.Context, out _); };
         }
+        /// <summary>直接执行真实分组测量与绘制器；只提供选中对象和矩形，空组不额外绘制。</summary>
         public float DrawToggleGroup(Pawn pawn, SSCAbilityToggleGroup group, float width)
         {
             SelPawn=pawn;Widgets.Items.Clear();

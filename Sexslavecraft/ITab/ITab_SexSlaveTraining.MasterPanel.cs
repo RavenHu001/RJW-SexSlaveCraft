@@ -19,6 +19,7 @@ namespace SexSlaveCraft
             public Pawn Pawn;
             public CompSexSlaveTraining Comp;
 #if !(SSC_RW17 || SSC_ABILITY_TOGGLE_FRAMEWORK)
+            // 旧分伤专用字段仅供冻结分支使用；1.7 的两项开关都通过 AbilityRows 持有快照与凭据。
             public Hediff_BridleOfSexSlave Bridle;
 #endif
             public Hediff_MasterProgression Record;
@@ -123,6 +124,7 @@ namespace SexSlaveCraft
                 if (record != null) view.SectionHeight += MasterRowGap + view.ExperienceHeight + MasterRowGap + view.BenefitsHeight;
                 if (view.ShowProgress) view.SectionHeight += MasterRowGap + MasterBarHeight + MasterBarTextGap + view.ProgressHeight;
                 // 能力行和成长/伤害分担共用本次测量快照，长翻译直接计入滚动高度。
+                // 1.7 不额外预留一条分伤高度，注册表中的分伤行也只在绘制器内出现一次。
                 view.AbilityRows = BuildAbilityToggleRows(pawn, comp, SSCAbilityToggleGroup.Master, innerWidth);
                 foreach (AbilityToggleRow row in view.AbilityRows) view.SectionHeight += AbilityToggleRowGap + row.Height;
             }
@@ -198,6 +200,7 @@ namespace SexSlaveCraft
                 if (GUI.enabled && enabled != view.ShareEnabled) TrySetMasterDamageSharing(view, enabled);
                 y += view.ShareHeight;
 #endif
+                // 公共行决定分伤／恩赐的排序、提示和提交；成长面板不再逐能力写保存字段。
                 DrawAbilityToggleRows(inner, ref y, view.AbilityRows, oldEnabled);
             }
             finally

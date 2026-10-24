@@ -7,8 +7,10 @@ using Verse;
 internal static partial class Program
 {
     private const string Sharing = SSCAbilityToggleUtility.MasterDamageSharing;
+    /// <summary>执行公共框架与真实缰绳后端回归；GUI、翻译和健康接口仍使用宿主边界，不替代实机结果。</summary>
     private static void RunFrameworkTests()
     {
+        // 先验证原字段仍是唯一真值，以及两种后端在真实通用绘制器中的排序与提示。
         Run("分伤注册使用原字段，读取与后台共用入口一致", () =>
         {
             var p = new Pawn(); var bridle = Bind(p);
@@ -41,6 +43,7 @@ internal static partial class Program
             Assert(!SSCAbilityToggleUtility.CanSet(p, Sharing, false, out _));
             Assert(!SSCAbilityToggleUtility.IsActive(p, Infestation));
         });
+        // 捕获上下文后分别改变载入状态、人格、角色或载体，确认提交入口不沿用旧授权。
         Run("加载中两种后端都拒绝写入并返回原因", () =>
         {
             var p = new Pawn(); var bridle = Bind(p);
@@ -73,6 +76,7 @@ internal static partial class Program
             Assert(!SSCAbilityToggleUtility.TrySetEnabled(p, Sharing, false, p.Training, SSCPersonalityRuntimeUtility.Capture(p)));
             Assert(bridle.shareDamageEnabled);
         });
+        // 人格字典的清源／恢复不得影响关系保存源，即使字典里有同名未知历史键也不能反推分伤值。
         Run("人格清源与恢复不写缰绳，不从字典伪造分伤偏好", () =>
         {
             var p = new Pawn(); var bridle = Bind(p); var snapshot = new SSCAbilityToggleState(); snapshot.Set(Sharing, false);
@@ -100,6 +104,7 @@ internal static partial class Program
             Assert(!SSCAbilityToggleUtility.TrySet(p, Infestation, true, view.Context, out _));
             Assert(bridle.shareDamageEnabled && !SSCAbilityToggleUtility.GetEnabled(p, Infestation));
         });
+        // 额外定义只注册到当前测试进程，并用可见规则约束目标，游戏生产注册项不因此增加。
         Run("保存开启但暂停的能力显示动态原因，仍允许关闭", () =>
         {
             var p = new Pawn { Downed = true }; const string id = "SSC_TestPaused";
@@ -123,6 +128,7 @@ internal static partial class Program
             Assert(!p.Training.abilityToggles.HasEntries && p.health.Adds == 0);
         });
         RunBackendContractTests();
+        // 读取真实四语资源及其源码镜像，避免用人工复制文本掩盖缺键或同步遗漏。
         foreach (string language in Languages)
             Run(language + " 通用原因键完整且资源镜像一致", () =>
             {
@@ -135,23 +141,33 @@ internal static partial class Program
             });
     }
 
+    /// <summary>仅提供一个可替换的外部保存实例及写入计数，不模拟人格、缰绳或身体业务。</summary>
     private sealed class TestOwner { internal bool Enabled = true; internal int Writes; }
+    /// <summary>用外部载体、权限开关和回调驱动场景，公共查询／凭据／规则组合仍执行生产实现。</summary>
     private sealed class TestBackend : SSCAbilityToggleBackend
     {
         internal TestOwner Owner = new TestOwner();
         internal bool Allowed = true;
         internal Action OnCheck;
+        /// <summary>只读返回外部实例中的偏好，不落入真实人格字典。</summary>
         public override bool GetEnabled(Pawn pawn, SSCAbilityToggleDefinition definition) => Owner.Enabled;
+        /// <summary>该边界默认准入，供用例单独验证定义附加规则，而不重写其组合算法。</summary>
         public override string ActivationFailure(Pawn pawn, SSCAbilityToggleDefinition definition) => null;
+        /// <summary>在生产校验调用期间触发外部变化，再返回边界权限，验证回调后的 owner 复查。</summary>
         public override string ChangeFailure(Pawn pawn, SSCAbilityToggleDefinition definition, bool enabled)
         { OnCheck?.Invoke(); return Allowed ? null : "permission changed"; }
+        /// <summary>提供当前外部实例给生产上下文捕获，替换引用由用例显式控制。</summary>
         public override object CaptureOwner(Pawn pawn) => Owner;
+        /// <summary>按实例相等报告归属，不在替身里重新实现公共角色／人格／定义校验。</summary>
         public override bool IsOwnerCurrent(Pawn pawn, object owner) => ReferenceEquals(Owner, owner);
+        /// <summary>只统计实际值变化，便于断言被拒绝或重复请求没有落到外部写入。</summary>
         public override void SetEnabled(Pawn pawn, SSCAbilityToggleDefinition definition, bool enabled)
         { if (Owner.Enabled != enabled) { Owner.Enabled = enabled; Owner.Writes++; } }
     }
+    /// <summary>验证自定义后端的方向规则、引用替换与回调重入，不接入第二批身体能力。</summary>
     private static void RunBackendContractTests()
     {
+        // 同一载体依次经历关闭、替换和权限变化；其结果由后续用例继续断言，执行顺序有意保留。
         var p = new Pawn { Training = new CompSexSlaveTraining { pawnIdentity = PawnIdentity.Unset } };
         var backend = new TestBackend(); const string id = "SSC_TestExternalOwner";
         SSCAbilityToggleUtility.Register(new SSCAbilityToggleDefinition(id, SSCAbilityToggleGroup.Master, PawnIdentity.Master,
@@ -201,6 +217,7 @@ internal static partial class Program
             Assert(!SSCAbilityToggleUtility.TrySet(p, id, false, view.Context, out _));
             Assert(old.Enabled && old.Writes == 0 && backend.Owner.Enabled && backend.Owner.Writes == 0);
         });
+        // 后端提供自身准入后，公共层仍须追加定义规则，不能因换后端而跳过激活／编辑限制。
         Run("后端适配仍遵守定义的激活与编辑附加规则", () =>
         {
             const string ruleId = "SSC_TestBackendRules"; bool allow = false;
