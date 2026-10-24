@@ -18,9 +18,10 @@
 | 安装和游玩 | [玩家阅读入口](Players/README.md) | 简介 → 快速入门 → 按需查机制与常见问题 |
 | 了解版本归属 | [发布与验证索引](Releases/README.md) | 2.4.5 开发范围 → 归并核对 → 验证；2.4.4 正式范围保留；历史见 [CHANGELOG](../CHANGELOG.md) |
 | 接手已完成功能 | [已交付开发记录](Development/Completed/README.md) | 主题完成核对 → 对应阶段 → 历史设计 |
+| 新增个人能力开关 | [现行接入规范](Development/Reference/个人能力开关接入规范.md) | [开发协作约定](../AGENTS.md) → 保存源与适用边界 → 原载体后端 → 公共查询、UI 与提交 → 生命周期验收 |
 | 查明确的验证缺口 | [待验收事项](Development/Verification/README.md) | 尚待确认范围 → 实现依据 → 实机步骤 |
 | 继续设计 | [当前规划索引](Design/README.md) | 总体状态 → 未完成需求 → 关联历史；已完成方案在 [Archive](Design/Archive/README.md) |
-| 追溯实现与交接 | [开发日志](Development/开发更新记录.md) · [代码复盘](Development/Reviews/README.md) · [历史参考](Development/Reference/README.md) | 按日期／基线查，旧待办保留当时语境 |
+| 查开发规范与追溯交接 | [开发规范与历史参考](Development/Reference/README.md) · [开发日志](Development/开发更新记录.md) · [代码复盘](Development/Reviews/README.md) | 现行接入规范用于后续开发；历史交接按日期／基线查，旧待办保留当时语境 |
 | 编译、测试、发布和文档维护 | [维护入口](Maintenance/README.md) | [发布与打包](Maintenance/发布与打包.md) → [测试说明](../Tests/README.md) → 版本检查 |
 | 贴图、声音与提示词 | [美术索引](Art/README.md) | [PNA 资源表](Art/SSC纳米催情液武器资源.md) → 当前选定原稿 → 历史尝试 |
 | 绘制武器资源 | [绘制与导入经验](Art/RimWorld武器贴图绘制与导入经验.md) | 构型与小尺寸辨识 → 导出 → 实机验证 |
@@ -28,7 +29,7 @@
 ## 三条阅读路线
 
 - **新玩家**：[模组介绍](模组介绍.md) → [快速入门](../读我，玩法介绍.md) → [机制详解](../机制详解.md)。英文路线见 [English reading order](Players/README.md#english-reading-order)。
-- **接手开发**：[2.4.4 范围](Releases/2.4.4/2.4.4发布说明.md) → [完成记录](Development/Completed/README.md) → [待验收](Development/Verification/README.md) → [未来规划](Design/README.md)。
+- **接手开发**：[开发协作约定](../AGENTS.md) → [开发资料入口](Development/README.md) → [开发规范与历史参考](Development/Reference/README.md) → [完成记录](Development/Completed/README.md) → [待验收](Development/Verification/README.md) → [未来规划](Design/README.md)。新增同类个人布尔能力先读[能力开关接入规范](Development/Reference/个人能力开关接入规范.md)。
 - **准备发布**：[版本验证](Releases/2.4.4/2.4.4版本验证.md) → [构建与打包](Maintenance/发布与打包.md) → [测试索引](../Tests/README.md)。
 
 ## 目录与状态
@@ -48,7 +49,7 @@ Docs/
     Completed/                 实现、修复与已关闭批次
     Verification/              尚未完成的实机、部署与显示核查
     Reviews/                   代码和机制复盘
-    Reference/                 开发接入规范、文案定稿与维护清单
+    Reference/                 现行开发规范、文案维护清单与历史交接
   Releases/<版本>/             版本说明、归并核对、验证与历史公告
   Maintenance/                 构建发布和文档维护
   Art/                         原稿、资源表、提示词与备份

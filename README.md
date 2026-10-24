@@ -57,7 +57,8 @@
 | --- | --- |
 | 了解与游玩 | [模组介绍](Docs/模组介绍.md) → [玩家阅读入口](Docs/Players/README.md) → 快速入门 → 完整机制 |
 | 查看版本变化 | [2.4.5 开发说明](Docs/Releases/2.4.5/2.4.5发布说明.md) → [提交归并](Docs/Releases/2.4.5/2.4.5开发归并核对.md) → [验证边界](Docs/Releases/2.4.5/2.4.5版本验证.md)；[2.4.4 正式范围](Docs/Releases/2.4.4/2.4.4发布说明.md) |
-| 接手开发 | [已交付记录](Docs/Development/Completed/README.md) → [专项待验收](Docs/Development/Verification/README.md) → [当前规划](Docs/Design/README.md) |
+| 接手开发 | [开发协作约定](AGENTS.md) → [开发资料入口](Docs/Development/README.md) → [已交付记录](Docs/Development/Completed/README.md) → [专项待验收](Docs/Development/Verification/README.md) → [当前规划](Docs/Design/README.md) |
+| 新增个人能力开关 | 先读[现行接入规范](Docs/Development/Reference/个人能力开关接入规范.md)，复用能力注册、原载体后端、状态查询与上下文提交；UI 行及跨 ITab 复用边界见规范 |
 | 编译、测试、打包 | [维护入口](Docs/Maintenance/README.md) → [测试说明](Tests/README.md) → [发布与打包](Docs/Maintenance/发布与打包.md) |
 | 美术与历史依据 | [资源索引](Docs/Art/README.md) · [设计归档](Docs/Design/Archive/README.md) · [开发日志](Docs/Development/开发更新记录.md) |
 
