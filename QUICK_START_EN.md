@@ -1,10 +1,10 @@
 # RJW-SexSlaveCraft Quick Start Guide
 
-**2.4.4 release — 2026-10-23.** [Download](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.4). 1.7 product metadata is aligned to 2.4.4; 1.6/Common stay at 2.4.1.
+**2.4.5 development milestone — registered 2026-10-24, unreleased.** The latest public download remains [v2.4.4](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.4). Runtime metadata still says 2.4.4; 1.6/Common remain frozen at 2.4.1.
 
 [New in 2.4.4: culture, ritual points and cosmetics](#22-244-culture-and-cosmetic-reshaping-17-development-only)
 
-> This guide covers **SSC 2.4.4 (2026-10-23)** for RimWorld 1.7; 1.6 remains frozen at 2.4.1. See the [release scope](Docs/Releases/2.4.4/2.4.4发布说明.md#english). Earlier section versions identify introductions.
+> This guide covers **SSC 2.4.5 development (2026-10-24, unreleased)** for RimWorld 1.7; 1.6 remains frozen at 2.4.1. See the [release scope](Docs/Releases/2.4.5/2.4.5发布说明.md#english). Earlier section versions identify introductions.
 
 [Project home](README.md) · [Player reading order](Docs/Players/README.md#english-reading-order) · [中文快速入门](读我，玩法介绍.md) · [Complete guide](PLAYER_GUIDE_EN.md)
 
@@ -688,3 +688,11 @@ Ideology names, leader/moral-guide titles, ritual names and backgrounds have ded
 2.4.4 also fixes Personality Excretion aborting on an empty fixed-interaction resolution; existing work and extraction requirements remain.
 
 See [full guide section 25](PLAYER_GUIDE_EN.md#25-244-culture-rituals-and-cosmetic-reshaping-17-development-only) and [version verification](Docs/Releases/2.4.4/2.4.4版本验证.md) for rules and release status.
+
+## 23. 2.4.5 body development and maintenance (1.7, unreleased)
+
+Research PNA internal modification, then use normal medical bills to start uterine or stomach development. Each surgery requires five concentrated PNA, six medicines and Medicine 10. Medicine-category filtering still respects patient medical-care settings. Successful surgery starts independent body progress at 1%.
+
+Uterine development blocks new conception until completion; the body-management fertility toggle then starts off. Enabling it gives ×2.5 vanilla fertility and ×0.8 duration for eligible new pregnancies. It cannot be disabled during pregnancy. Stomach development provides staged hunger/eating-speed benefits and vanilla normal-ingestion food-poisoning immunity only at 100%.
+
+Other changes add native Master PNA addiction immunity, update cat/dog ability copy and icons, and fix stalled consecutive Personality Excretion jobs. Core features have batch acceptance; later deployment/display checks remain separate. The public v2.4.4 download does not include these additions. See the [2.4.5 scope](Docs/Releases/2.4.5/2.4.5发布说明.md#english).

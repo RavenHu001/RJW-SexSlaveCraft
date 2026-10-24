@@ -1,10 +1,10 @@
 # 玩家阅读入口 / Player documentation
 
-**2.4.4 正式版 — 2026-10-23。** [下载 v2.4.4](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.4)。1.7 运行元数据对齐 2.4.4，1.6／Common 冻结于 2.4.1；此前开发登记与分批测试保留原时点，发布结果见版本验证。
+**2.4.5 开发版 — 2026-10-24 登记，尚未发布。** 2.4.4 后开发已归入本版；最新正式下载仍为 [v2.4.4](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.4)。1.7 运行元数据暂保留 2.4.4，1.6／Common 冻结于 2.4.1。
 
 [项目首页](../../README.md) · [文档总索引](../README.md) · [双语模组介绍](../模组介绍.md) · [版本索引](../Releases/README.md)
 
-新增内容可直接查[文化与医美入门](../../读我，玩法介绍.md#22-244-文化与医美仅-17-开发版)，数值与条件查[完整规则](../../机制详解.md#25-244-文化仪式与医美仅-17-开发版)。
+2.4.5 开发内容先查[身体开发入门](../../读我，玩法介绍.md#23-245-身体开发与维护调整仅-17未发布)与[完整规则](../../机制详解.md#26-245-身体开发与生育控制仅-17未发布)。此前已发布内容可直接查[文化与医美入门](../../读我，玩法介绍.md#22-244-文化与医美仅-17-开发版)，数值与条件查[完整规则](../../机制详解.md#25-244-文化仪式与医美仅-17-开发版)。
 
 ## 中文阅读顺序
 
@@ -30,7 +30,7 @@
 
 ## English reading order
 
-The guides cover **2.4.4** on 1.7; 1.6 remains at 2.4.1. The 2.4.4 package includes these additions. Start with the [2.4.4 scope](../Releases/2.4.4/2.4.4发布说明.md#english), [culture/cosmetics quick start](../../QUICK_START_EN.md#22-244-culture-and-cosmetic-reshaping-17-development-only) and [full rules](../../PLAYER_GUIDE_EN.md#25-244-culture-rituals-and-cosmetic-reshaping-17-development-only).
+The guides now include **unreleased 2.4.5** development on 1.7; 1.6 remains at 2.4.1. Start with the [new body-development guide](../../QUICK_START_EN.md#23-245-body-development-and-maintenance-17-unreleased). The latest public package is still 2.4.4 and excludes these additions. For already released features, use the [2.4.4 scope](../Releases/2.4.4/2.4.4发布说明.md#english), [culture/cosmetics quick start](../../QUICK_START_EN.md#22-244-culture-and-cosmetic-reshaping-17-development-only) and [full rules](../../PLAYER_GUIDE_EN.md#25-244-culture-rituals-and-cosmetic-reshaping-17-development-only).
 
 1. Read the [mod overview](../模组介绍.md#english).
 2. Follow [Getting Started](../../QUICK_START_EN.md#2-getting-started) for research, qualification, identities and trainers.
@@ -53,6 +53,6 @@ Use [Bond Overview](../../QUICK_START_EN.md#bond-overview-243-17-only) for portr
 
 ## 版本与资料用途 / Versions and document roles
 
-当前指南以 2.4.4 正式范围为准；历史标签资料保持各自版本，构建与发布准备见[验证记录](../Releases/2.4.4/2.4.4版本验证.md)。已交付、专项待验收与未来规划分别登记，测试计数保留实际执行日期。
+当前指南包含 2.4.5 未发布开发内容，正式下载仍为 2.4.4；历史标签资料保持各自版本，构建与发布准备见[2.4.5 验证记录](../Releases/2.4.5/2.4.5版本验证.md)。已交付、专项待验收与未来规划分别登记，测试计数保留实际执行日期。
 
-These guides describe the 2.4.4 release package. Historical validation and maintainer acceptance retain their original scope; new build, release-gate and package results are recorded separately.
+These guides include unreleased 2.4.5 additions; the v2.4.4 release package retains its original scope. Historical validation and maintainer acceptance retain their original scope; new build, release-gate and package results are recorded separately.

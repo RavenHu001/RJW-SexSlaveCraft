@@ -1,12 +1,23 @@
 # RJW-SexSlaveCraft · TieJin Modify
 
-**2.4.4 正式版 — 2026-10-23。** [下载 v2.4.4](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.4)。1.7 运行元数据对齐 2.4.4，1.6／Common 冻结于 2.4.1；此前开发登记与分批测试保留原时点，发布结果见版本验证。
+**2.4.5 开发版 — 2026-10-24 登记，尚未发布。** 2.4.4 后开发已归入本版；最新正式下载仍为 [v2.4.4](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.4)。1.7 运行元数据暂保留 2.4.4，1.6／Common 冻结于 2.4.1。
 
 面向 RimWorld 的成人向 RimJobWorld（RJW）扩展，基于上游 **2.2.8** 继续维护，提供角色培养、主从绑定、六种特化、人格转移和身体改造。
 
-[2.4.4 开发范围](Docs/Releases/2.4.4/2.4.4发布说明.md) · [正式下载 2.4.4](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.4) · [双语模组简介](Docs/模组介绍.md) · [玩家阅读入口](Docs/Players/README.md) · [文档总索引](Docs/README.md) · [English](#english-overview)
+[2.4.5 开发范围](Docs/Releases/2.4.5/2.4.5发布说明.md) · [正式下载 2.4.4](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.4) · [双语模组简介](Docs/模组介绍.md) · [玩家阅读入口](Docs/Players/README.md) · [文档总索引](Docs/README.md) · [English](#english-overview)
 
-## 2.4.4 新增内容（仅 1.7）
+## 2.4.5 新增内容（仅 1.7，未发布）
+
+| 主题 | 当前交付 | 详细说明 |
+| --- | --- | --- |
+| 子宫开发与生育控制 | 独立身体培养、受孕开关、新妊娠时长、身体栏及 SSC 泌乳抑制中和 | [完成核对](Docs/Development/Completed/子宫开发与生育控制完成核对.md) |
+| 胃部开发 | 独立培养、阶段饥饿／进食收益、完成后的食物中毒免疫 | [完成核对](Docs/Development/Completed/胃部恶堕化开发完成核对.md) |
+| 连续人格排泄修复 | SSC 侧走位恢复与任务保护，原故障已实机确认修复 | [验收](Docs/Development/Completed/人格排泄连续任务走位恢复与验收.md) |
+| 主人与猫狗表现调整 | 四阶段 PNA 成瘾免疫、猫狗技能正式名称／文案／专用图标 | [图标记录](Docs/Art/宠物特化技能图标.md) · [归并核对](Docs/Releases/2.4.5/2.4.5开发归并核对.md) |
+
+两项身体开发主体已获实机认可；后续资源部署和四语显示仍有待核查项。VERSION 已登记 2.4.5，DLL／About 仍为 2.4.4，未生成或发布 2.4.5 安装包，见[验证与准备](Docs/Releases/2.4.5/2.4.5版本验证.md)。
+
+## 2.4.4 已发布内容（仅 1.7）
 
 | 主题 | 当前交付 | 详细说明 |
 | --- | --- | --- |
@@ -45,7 +56,7 @@
 | 用途 | 阅读顺序 |
 | --- | --- |
 | 了解与游玩 | [模组介绍](Docs/模组介绍.md) → [玩家阅读入口](Docs/Players/README.md) → 快速入门 → 完整机制 |
-| 查看版本变化 | [2.4.4 说明](Docs/Releases/2.4.4/2.4.4发布说明.md) → [提交归并核对](Docs/Releases/2.4.4/2.4.4开发归并核对.md) → [验证边界](Docs/Releases/2.4.4/2.4.4版本验证.md) |
+| 查看版本变化 | [2.4.5 开发说明](Docs/Releases/2.4.5/2.4.5发布说明.md) → [提交归并](Docs/Releases/2.4.5/2.4.5开发归并核对.md) → [验证边界](Docs/Releases/2.4.5/2.4.5版本验证.md)；[2.4.4 正式范围](Docs/Releases/2.4.4/2.4.4发布说明.md) |
 | 接手开发 | [已交付记录](Docs/Development/Completed/README.md) → [专项待验收](Docs/Development/Verification/README.md) → [当前规划](Docs/Design/README.md) |
 | 编译、测试、打包 | [维护入口](Docs/Maintenance/README.md) → [测试说明](Tests/README.md) → [发布与打包](Docs/Maintenance/发布与打包.md) |
 | 美术与历史依据 | [资源索引](Docs/Art/README.md) · [设计归档](Docs/Design/Archive/README.md) · [开发日志](Docs/Development/开发更新记录.md) |
@@ -57,6 +68,8 @@
 ## English overview
 
 SexSlaveCraft is an adult RJW expansion for pawn development, bonds, six specializations, personality transfer and body modification. **Current release: 2.4.4 (2026-10-23).** [Download v2.4.4](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.4). New work targets 1.7; the 1.6/Common baseline stays frozen at 2.4.1.
+
+2.4.5 groups later uterine/fertility and stomach development, consecutive Personality Excretion movement recovery, native Master addiction immunity, and cat/dog ability copy/icons. It is unreleased; see the [development scope](Docs/Releases/2.4.5/2.4.5发布说明.md#english) and [validation boundaries](Docs/Releases/2.4.5/2.4.5版本验证.md). Runtime metadata still says 2.4.4.
 
 2.4.4 groups post-v2.4.3 work through `f3e47c9`: Master-slave Order with six groups/28 precepts, cultural feedback/icons/four-language names and dynamic backgrounds; opt-in ritual development points; cosmetic surgery and Reshaping Rituals; and a Personality Excretion interruption fix. The 1.7 binary/About metadata are aligned to 2.4.4. The 2.4.3 bond overview, low-tech route and nine weapons remain available; saves referencing the removed old 1.7 launcher still have no migration path.
 

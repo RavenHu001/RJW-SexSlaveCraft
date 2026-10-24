@@ -4,6 +4,18 @@
 
 This continuation builds on upstream **2.2.8**, the baseline when upstream development stopped in July, and retains its version numbering. Entries are listed newest first. Technical details are in the [development log (Chinese)](Docs/Development/开发更新记录.md).
 
+## [2.4.5] — 未发布 / Unreleased — 身体开发与生育控制
+
+2026-10-24 登记：`v2.4.4` 之后截至 `94e37bb` 的 39 个非合并提交统一归入 2.4.5，仅 1.7；1.6／Common 冻结于 2.4.1。见[中英说明](Docs/Releases/2.4.5/2.4.5发布说明.md)、[开发归并](Docs/Releases/2.4.5/2.4.5开发归并核对.md)和[分批验证／发布准备](Docs/Releases/2.4.5/2.4.5版本验证.md)。
+
+- **子宫开发与生育控制：** 内脏改造研究与手术、独立身体成长、受孕开关、合格新妊娠时长 ×0.8、开启态生育倍率 ×2.5、共用身体栏与 SSC 泌乳抑制中和。
+- **胃部开发：** 复用研究与手术框架，独立身体进度、分阶段饥饿／进食收益、满级食物中毒免疫；两项手术采用 Medicine 类别医药筛选。
+- **本地化与显示：** 子宫 v2、胃部 v1 四语定稿与镜像，健康页阶段／三态及亮粉色，共用俄语身份提示改为不限性别；部分部署与四语显示待核查。
+- **修复与表现：** 修复连续人格排泄原地发呆；补全主人四阶段原生 PNA 成瘾免疫；统一猫狗技能名称／文案，接入专用图标并调整狗图标尺寸，实际技能参数不变。
+- **资料整理：** 已完成设计／分批记录归档，定稿、废案和待显示核查按用途分开；生育向特化候选能力及其他未实施规划保持原状态。
+
+2.4.5 groups post-v2.4.4 work through `94e37bb`: uterine development and fertility controls, stomach development, shared medical filters and finalized four-language text, consecutive Personality Excretion movement recovery, native Master PNA addiction immunity, and cat/dog copy/icons. Core features have batch acceptance; later deployment/display checks remain separate. **Unreleased:** VERSION is 2.4.5, while runtime metadata still says 2.4.4. No new release gate, rebuild or package was produced by this documentation update.
+
 ## [2.4.4] — 2026-10-23 — 文化拓展与医美应用
 
 `v2.4.3` 之后截至 `f3e47c9` 的开发统一归入 2.4.4，新增功能仅 1.7，1.6／Common 冻结于 2.4.1。正式发布元数据对齐 2.4.4；1.7 重编、完整门禁与安装包审计另记验证结果。见[中英版本说明](Docs/Releases/2.4.4/2.4.4发布说明.md)、[63 个提交归并](Docs/Releases/2.4.4/2.4.4开发归并核对.md)与[发布准备](Docs/Releases/2.4.4/2.4.4版本验证.md)。

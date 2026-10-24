@@ -1,10 +1,10 @@
 # RJW-SexSlaveCraft Complete Player Guide
 
-**2.4.4 release — 2026-10-23.** [Download](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.4). 1.7 product metadata is aligned to 2.4.4; 1.6/Common stay at 2.4.1.
+**2.4.5 development milestone — registered 2026-10-24, unreleased.** The latest public download remains [v2.4.4](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.4). Runtime metadata still says 2.4.4; 1.6/Common remain frozen at 2.4.1.
 
 [New in 2.4.4: culture, ritual points and cosmetics](#25-244-culture-rituals-and-cosmetic-reshaping-17-development-only)
 
-> This guide covers **SSC 2.4.4 (2026-10-23)** for RimWorld 1.7; 1.6 remains frozen at 2.4.1. See the [release scope](Docs/Releases/2.4.4/2.4.4发布说明.md#english). Earlier section versions identify introductions.
+> This guide covers **SSC 2.4.5 development (2026-10-24, unreleased)** for RimWorld 1.7; 1.6 remains frozen at 2.4.1. See the [release scope](Docs/Releases/2.4.5/2.4.5发布说明.md#english). Earlier section versions identify introductions.
 
 [Project home](README.md) · [Player reading order](Docs/Players/README.md#english-reading-order) · [Quick start](QUICK_START_EN.md) · [中文机制详解](机制详解.md)
 
@@ -1890,3 +1890,22 @@ Failure does not improve Beauty and causes a stronger reaction. No extra refunds
 When its fixed interaction has no anatomical resolution, Personality Excretion now uses the existing empty-contact path, clearing stale parts while retaining the correct participants. It adds no identity/anatomy gate and does not relax ordinary Training resolution. The maintainer confirmed the originally reported female pair can complete the work; other combinations and interruptions are not inferred as independently tested.
 
 Culture and cosmetics have batch acceptance, with final targeted results of 458/458 and 56/56 at their actual dates. They are not combined into a new full release gate. See [2.4.4 verification](Docs/Releases/2.4.4/2.4.4版本验证.md) for evidence and release status.
+
+## 26. 2.4.5 body development and fertility control (1.7, unreleased)
+
+The 2000-point Medieval internal-modification research uses a simple research bench. Both surgeries require Medicine 10, 4000 work, five concentrated PNA and six medicines. Vanilla anesthesia and surgical outcomes are retained, with direct-death failures disabled. Uterine surgery requires an eligible adult female human-flesh SSC slave who is not pregnant. Stomach surgery requires a valid stomach and mouth; gender and pregnancy do not exclude it. Medicine selection still respects patient medical-care settings.
+
+Successful surgery starts independent body progress at 1%. Eligible development uses its own body-part evidence and the existing corruption/bond multipliers, with coefficient 0.5 and a ten-percentage-point cap per event, without an extra daily cap. Personality transfer does not carry body records; cloning follows existing health copying.
+
+Uterine development blocks new conception. At completion, fertility remains off until enabled in body management. Enabling it gives ×2.5 vanilla fertility and ×0.8 duration for eligible new pregnancies, without rewriting existing pregnancies. The toggle cannot be disabled during pregnancy. Only SSC's own permanent-lactation fertility suppression is neutralized; other infertility factors and milk production remain unchanged. Health tooltips show actual fertility factors.
+
+| Stomach progress | Hunger rate | Eating speed | Food poisoning |
+| --- | --- | --- | --- |
+| Below 30% | ×1 | ×1 | No reduction |
+| 30% to below 70% | ×0.90 | ×1.10 | No reduction |
+| 70% to below 100% | ×0.75 | ×1.25 | No reduction |
+| 100% | ×0.50 | ×1.50 | Vanilla normal-ingestion immunity |
+
+Stages replace earlier stages rather than multiplying cumulatively. External effects stack under vanilla rules; permanent lactation's separate nutrition cost is retained. Removed/replaced organs follow actual health-record lifecycle; lost progress is not restored from a hidden backup.
+
+Core features have maintainer acceptance, and finalized four-language resources are implemented. Later deployment and display checks remain open. The fertility-specialization candidate ability is outside this delivered scope. See the [version scope](Docs/Releases/2.4.5/2.4.5发布说明.md#english) and [verification record](Docs/Releases/2.4.5/2.4.5版本验证.md).

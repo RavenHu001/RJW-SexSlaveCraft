@@ -1,12 +1,12 @@
 ﻿# 文档总索引
 
-**2.4.4 正式版 — 2026-10-23。** [下载 v2.4.4](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.4)。1.7 运行元数据对齐 2.4.4，1.6／Common 冻结于 2.4.1；此前开发登记与分批测试保留原时点，发布结果见版本验证。
+**2.4.5 开发版 — 2026-10-24 登记，尚未发布。** 2.4.4 后开发已归入本版；最新正式下载仍为 [v2.4.4](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.4)。1.7 运行元数据暂保留 2.4.4，1.6／Common 冻结于 2.4.1。
 
 [项目首页](../README.md) · [玩家阅读入口](Players/README.md) · [当前规划](Design/README.md) · [开发资料](Development/README.md)
 
 ## 最新开发状态
 
-2026-10-24：[子宫开发与生育控制](Development/Completed/子宫开发与生育控制完成核对.md)及[胃部恶堕化开发](Development/Completed/胃部恶堕化开发完成核对.md)的约定功能已完成，并分别取得实机认可；两项定稿均已落实四语，尚未发布。设计及已交付分批记录已归档，部署与四语显示的剩余核查集中在[待验收索引](Development/Verification/README.md)。
+2026-10-24：2.4.4 后截至 `94e37bb` 的开发已统一登记为 **2.4.5 开发版（未发布）**，见[版本说明](Releases/2.4.5/2.4.5发布说明.md)、[归并核对](Releases/2.4.5/2.4.5开发归并核对.md)和[验证边界](Releases/2.4.5/2.4.5版本验证.md)。包括主人免疫／猫狗调整、连续人格排泄修复，以及[子宫开发与生育控制](Development/Completed/子宫开发与生育控制完成核对.md)及[胃部恶堕化开发](Development/Completed/胃部恶堕化开发完成核对.md)的约定功能已完成，并分别取得实机认可；两项定稿均已落实四语，尚未发布。设计及已交付分批记录已归档，部署与四语显示的剩余核查集中在[待验收索引](Development/Verification/README.md)。
 
 ## 按用途选择入口
 
@@ -14,7 +14,7 @@
 | --- | --- | --- |
 | 了解功能、准备发布页面 | [双语模组介绍](模组介绍.md) | English 在前、中文在后；先看开发／下载版本区别 |
 | 安装和游玩 | [玩家阅读入口](Players/README.md) | 简介 → 快速入门 → 按需查机制与常见问题 |
-| 了解版本归属 | [发布与验证索引](Releases/README.md) | 2.4.4 范围 → 归并核对 → 验证；历史见 [CHANGELOG](../CHANGELOG.md) |
+| 了解版本归属 | [发布与验证索引](Releases/README.md) | 2.4.5 开发范围 → 归并核对 → 验证；2.4.4 正式范围保留；历史见 [CHANGELOG](../CHANGELOG.md) |
 | 接手已完成功能 | [已交付开发记录](Development/Completed/README.md) | 主题完成核对 → 对应阶段 → 历史设计 |
 | 查明确的验证缺口 | [待验收事项](Development/Verification/README.md) | 尚待确认范围 → 实现依据 → 实机步骤 |
 | 继续设计 | [当前规划索引](Design/README.md) | 总体状态 → 未完成需求 → 关联历史；已完成方案在 [Archive](Design/Archive/README.md) |

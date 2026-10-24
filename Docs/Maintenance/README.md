@@ -1,10 +1,10 @@
 # 开发维护入口
 
-**2.4.4 正式版 — 2026-10-23。** [下载 v2.4.4](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.4)。1.7 运行元数据对齐 2.4.4，1.6／Common 冻结于 2.4.1；此前开发登记与分批测试保留原时点，发布结果见版本验证。
+**2.4.5 开发版 — 2026-10-24 登记，尚未发布。** 2.4.4 后开发已归入本版；最新正式下载仍为 [v2.4.4](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.4)。1.7 运行元数据暂保留 2.4.4，1.6／Common 冻结于 2.4.1。
 
 [文档总索引](../README.md) · [开发资料](../Development/README.md) · [发布索引](../Releases/README.md)
 
-当前正式版本 **2.4.4**，VERSION、About、1.7 文件／产品属性与 BUILD-INFO 已对齐，AssemblyVersion 保持 1.0.0.0；1.6／Common 冻结于 2.4.1。构建、门禁与附件结果见[2.4.4 验证](../Releases/2.4.4/2.4.4版本验证.md)，历史结果保留原日期。
+当前开发登记 **2.4.5（未发布）**，VERSION 已更新；最新正式版仍为 **2.4.4**，About、1.7 源码文件／产品属性、DLL 与 BUILD-INFO 仍标记 2.4.4，AssemblyVersion 保持 1.0.0.0。正式打包前须对齐元数据、重编并执行门禁，见[2.4.5 准备](../Releases/2.4.5/2.4.5版本验证.md)；1.6／Common 冻结于 2.4.1。构建、门禁与附件结果见[2.4.4 验证](../Releases/2.4.4/2.4.4版本验证.md)，历史结果保留原日期。
 
 2.4.2 已交付的身体视觉采用原生 Shader，维护者确认深紫色与 0.85 不透明度效果可保留；本次不改动产物，见[验收记录](../Development/Completed/1.7全身凝胶化身体视觉调整与验收.md)。
 
