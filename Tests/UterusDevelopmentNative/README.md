@@ -70,7 +70,7 @@ if ($LASTEXITCODE -ne 0) { throw '专项构建失败' }
 
 三态描述新增 **17 项**，累计 **357／357**。直接调用生产 Hediff.Description 和原版 GetTooltip，验证三套正文、培养档共用、模式／语言即时切换、共享 Def 与角色隔离、无效或离体实例兜底、保存读取及缺开关旧档；悬停仍保留阶段名和生育倍率。只补齐原版 ColoredText 的语言初始化上下文，不替换悬停生成或描述选择算法。与布局 92／92 合计 449／449；此前泌乳组件 23 项保留上批时点。日志：`.builds/uterus-three-state-description/`。上述为自动验证生成时点；随后提交 `d2ecb6f` 已同步，维护者确认三态描述显示正常、本批显示验收关闭。正式文案仍待定，见[验收记录](../../Docs/Development/Completed/子宫开发Hediff三态描述实现与验证.md)。
 
-2026-10-24 v2 定稿四语：本轮原生 **362／362**，含新增 5 项 [UterusDefInjectedTests](UterusDefInjectedTests.cs)。实际执行当前游戏的 DefInjectionPackage XML 加载及注入，覆盖研究／手术／四档阶段／扩展开启阶段、四语再回简中、健康悬停与研究提示译名一致；此前占位断言改为定稿／当前语言资源。本次以 BuildProjectReferences=false 只重编宿主，生产 DLL 和 BUILD-INFO 不变；布局另跑 92／92，共 454／454。记录见[四语落实](../../Docs/Development/Verification/子宫开发v2定稿四语落实与验证.md)，未同步游戏，不冒充完整游戏语言重载或四语排版验收。
+2026-10-24 v2 定稿四语：本轮原生 **362／362**，含新增 5 项 [UterusDefInjectedTests](UterusDefInjectedTests.cs)。实际执行当前游戏的 DefInjectionPackage XML 加载及注入，覆盖研究／手术／四档阶段／扩展开启阶段、四语再回简中、健康悬停与研究提示译名一致；此前占位断言改为定稿／当前语言资源。本次以 BuildProjectReferences=false 只重编宿主，生产 DLL 和 BUILD-INFO 不变；布局另跑 92／92，共 454／454。记录见[四语落实](../../Docs/Development/Completed/子宫开发v2定稿四语落实与验证.md)，未同步游戏，不冒充完整游戏语言重载或四语排版验收。
 
 ## 胃部开发增量（2026-10-24）
 

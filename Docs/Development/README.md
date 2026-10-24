@@ -10,11 +10,11 @@
 
 本版还包括主人四阶段 PNA 成瘾免疫补全、猫狗技能名称／文案／专用图标及共用俄语身份提示修订；完整范围与提交见[2.4.5 归并核对](../Releases/2.4.5/2.4.5开发归并核对.md)。已完成主体与后续显示／部署核查分别记录。
 
-- [胃部恶堕化开发完成核对](Completed/胃部恶堕化开发完成核对.md)：四批主体获维护者整体实机认可；v1 定稿四语已落实并获文案确认，材料限制反馈已澄清。后续 Medicine 类别调整及定稿尚未同步，四语显示另行查看。
-- [子宫开发与生育控制完成核对](Completed/子宫开发与生育控制完成核对.md)：主体、反馈修订和三态描述已获实机确认，v2 定稿四语已落实；文案与亮粉色已同步，四语显示及后续药物筛选调整仍按各自记录核查。
+- [胃部恶堕化开发完成核对](Completed/胃部恶堕化开发完成核对.md)：四批主体获维护者整体实机认可；v1 定稿四语已落实并获文案确认，材料限制反馈已澄清。后续 Medicine 类别调整、定稿及共用俄语提示已同步，显示和功能获实机认可。
+- [子宫开发与生育控制完成核对](Completed/子宫开发与生育控制完成核对.md)：主体、反馈修订和三态描述已获实机确认，v2 定稿四语已落实；文案、亮粉色及后续药物筛选／俄语修订已同步，显示和功能验收关闭。
 - [人格排泄连续任务走位恢复](Completed/人格排泄连续任务走位恢复与验收.md)：维护者已实机确认连续排泄不再原地发呆，关闭本次故障验收；UAP 未修改。
 
-两项身体开发的设计已归入 [Design/Archive](../Design/Archive/README.md)，已交付分批记录归入 [Completed](Completed/README.md)。定稿与维护清单留在 [Reference](Reference/README.md)，尚未完成的显示／部署核查留在 [Verification](Verification/README.md)；文案确认不记为四语实机排版通过。
+两项身体开发的设计已归入 [Design/Archive](../Design/Archive/README.md)，已交付分批记录归入 [Completed](Completed/README.md)。定稿与维护清单留在 [Reference](Reference/README.md)，两份四语显示记录已随本次实机认可移入 Completed；[Verification](Verification/README.md)保留其他尚未关闭专项。
 
 ## 2.4.4 接手顺序
 
