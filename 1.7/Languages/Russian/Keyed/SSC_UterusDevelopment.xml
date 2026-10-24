@@ -8,7 +8,7 @@
   <SSC_UterusDevelopment_CreateFailed>Не удалось оставить в этом теле метку развития.</SSC_UterusDevelopment_CreateFailed>
   <SSC_UterusDevelopment_SurgeryUnavailable>Сейчас нельзя провести операцию по развитию матки.</SSC_UterusDevelopment_SurgeryUnavailable>
   <SSC_UterusDevelopment_AdultFemaleRequired>Это развитие доступно только взрослому женскому телу.</SSC_UterusDevelopment_AdultFemaleRequired>
-  <SSC_UterusDevelopment_SlaveIdentityRequired>Сначала пациентка должна получить статус секс-рабыни.</SSC_UterusDevelopment_SlaveIdentityRequired>
+  <SSC_UterusDevelopment_SlaveIdentityRequired>Для этой операции требуется статус «Секс-раб».</SSC_UterusDevelopment_SlaveIdentityRequired>
   <SSC_UterusDevelopment_ResearchRequired>Исследование «Преобразование внутренних органов с помощью PNA» ещё не завершено.</SSC_UterusDevelopment_ResearchRequired>
   <SSC_UterusDevelopment_PregnancyBlocked>Это тело уже вынашивает ребёнка; сейчас такую операцию проводить нельзя.</SSC_UterusDevelopment_PregnancyBlocked>
   <SSC_UterusDevelopment_MissingOrgan>У этого тела нет половых органов, пригодных для развития.</SSC_UterusDevelopment_MissingOrgan>
