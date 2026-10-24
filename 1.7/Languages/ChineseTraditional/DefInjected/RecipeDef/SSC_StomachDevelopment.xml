@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- AI 辅助生成：显式 WIP 开发占位，四语定稿留待后续；保留正常翻译键与参数。 -->
+<!-- AI 辅助生成：依据维护者确认的胃部 v1 中文稿落实 ChineseTraditional 文案，保留键名、注入路径与参数。 -->
 <LanguageData>
-  <SSC_Surgery_StartStomachDevelopment.label>【WIP｜胃部开发｜启动手术】</SSC_Surgery_StartStomachDevelopment.label>
-  <SSC_Surgery_StartStomachDevelopment.description>【WIP｜胃部开发｜手术说明】</SSC_Surgery_StartStomachDevelopment.description>
-  <SSC_Surgery_StartStomachDevelopment.jobString>【WIP｜胃部开发｜正在手术】</SSC_Surgery_StartStomachDevelopment.jobString>
+  <SSC_Surgery_StartStomachDevelopment.label>胃部開發手術</SSC_Surgery_StartStomachDevelopment.label>
+  <SSC_Surgery_StartStomachDevelopment.description>將濃縮紫色奈米催情液與藥物調和成製劑，經手術送入胃中，讓紫色微械在胃壁上安定下來。刀口癒合之後，往後的每一次深喉，都會化作餵給微械的養分，讓它繼續改造這具身體的胃。</SSC_Surgery_StartStomachDevelopment.description>
+  <SSC_Surgery_StartStomachDevelopment.jobString>進行胃部開發手術</SSC_Surgery_StartStomachDevelopment.jobString>
 </LanguageData>

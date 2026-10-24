@@ -107,28 +107,53 @@ internal static partial class Program
             Equal(10, stomachSurgery.skillRequirements.Single().minLevel);
             Near(5, stomachSurgery.ingredients[0].GetBaseCount()); Near(6, stomachSurgery.ingredients[1].GetBaseCount());
             Require(stomachSurgery.recipeUsers.Any(p => p.defName.StartsWith("SurgeryRace")));
-            Require(stomachDefinition.label.StartsWith("【WIP｜") && stomachSurgery.label.StartsWith("【WIP｜"));
+            Equal("恶堕化（胃）", stomachDefinition.label); Equal("胃部开发手术", stomachSurgery.label);
         });
         // 原版中毒因子需要故事讲述者的难度配置；宿主不运行任何故事事件。
         Current.Game.storyteller = Bare<Storyteller>(); Current.Game.storyteller.difficulty = new Difficulty();
         StomachBodyTests(); StomachSurgeryTests(); StomachGrowthTests(); StomachLifecycleTests();
         foreach (string language in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" })
-            Check("stomach native four-language WIP injection and parameters: " + language, () =>
+            Check("stomach native four-language finalized injection and parameters: " + language, () =>
             {
                 LoadBodyManagementLanguage(repo, language);
+                var texts = new Dictionary<Type, Dictionary<string, string>>();
+                // XML 路径和字段写入继续走原版注入器；以当前语言资源核对真实 Def 的全部九个字段。
                 foreach (var type in new[] { typeof(HediffDef), typeof(RecipeDef) })
                 {
                     var file = new TranslationFile(Path.Combine(repo, "1.7/Languages", language, "DefInjected", type.Name, "SSC_StomachDevelopment.xml"));
                     var package = new DefInjectionPackage(type); package.AddDataFromFile(file, out bool error, file.ReadAllText());
                     Require(!error && package.loadErrors.Count == 0); package.InjectIntoDefs(true);
                     Require(package.loadErrors.Count == 0 && package.injections.Values.All(p => p.injected));
+                    texts[type] = XDocument.Load(file.FullPath).Root.Elements().ToDictionary(p => p.Name.LocalName, p => p.Value);
                 }
-                foreach (var entry in XDocument.Load(Path.Combine(repo, "1.7/Languages", language, "Keyed/SSC_StomachDevelopment.xml")).Root.Elements())
-                    Require(entry.Value.StartsWith("【WIP｜"));
+                var hediffText = texts[typeof(HediffDef)]; var surgeryText = texts[typeof(RecipeDef)];
+                Equal(hediffText[stomachDefinition.defName + ".label"], stomachDefinition.label);
+                Equal(hediffText[stomachDefinition.defName + ".description"], stomachDefinition.description);
+                Equal(surgeryText[stomachSurgery.defName + ".label"], stomachSurgery.label);
+                Equal(surgeryText[stomachSurgery.defName + ".description"], stomachSurgery.description);
+                Equal(surgeryText[stomachSurgery.defName + ".jobString"], stomachSurgery.jobString);
+                var keyed = XDocument.Load(Path.Combine(repo, "1.7/Languages", language, "Keyed/SSC_StomachDevelopment.xml"))
+                    .Root.Elements().ToDictionary(p => p.Name.LocalName, p => p.Value);
+                foreach (var entry in keyed)
+                {
+                    Require(!entry.Value.Contains("WIP")); Equal(entry.Value, entry.Key.Translate().ToString());
+                }
+                // 进度由调用者提供；只替换 {0}，不得遗留参数、重复百分号或显示内部翻译键。
                 string message = "SSC_StomachDevelopment_Started".Translate("1%");
-                Require(message.Contains("WIP") && message.Contains("1%") && !message.Contains("{0}"));
+                Equal(keyed["SSC_StomachDevelopment_Started"].Replace("{0}", "1%"), message);
+                Require(message.Contains("1%") && !message.Contains("{0}") && !message.Contains("%%"));
                 var pawn = StomachPawn(); var record = StartStomach(pawn, 1);
-                Require(record.GetTooltip(pawn, false).Contains("WIP")); Near(.5f, pawn.health.hediffSet.GetHungerRateFactor());
+                // 同一实例遍历四档，确认注入后的阶段与共用正文实际出现在健康悬停中。
+                foreach (var row in new[] { (.01f, 0), (.3f, 1), (.7f, 2), (1f, 3) })
+                {
+                    record.Severity = row.Item1;
+                    string stage = hediffText[$"{stomachDefinition.defName}.stages.{row.Item2}.label"];
+                    Equal(stage, record.CurStage.label);
+                    string tip = record.GetTooltip(pawn, false);
+                    Require(tip.Contains(stage) && tip.Contains(record.Description));
+                    Require(!tip.Contains("WIP") && !tip.Contains("SSC_StomachDevelopment"));
+                }
+                Near(.5f, pawn.health.hediffSet.GetHungerRateFactor());
             });
         LoadBodyManagementLanguage(repo, "ChineseSimplified");
     }
@@ -184,7 +209,7 @@ internal static partial class Program
             Near(progress,StomachProgress(restored)); Equal(SSCStomachDevelopmentUtility.FindStomach(restored),SSCStomachDevelopmentUtility.Find(restored).Part);
         });
         Check("stomach missing part rejects creation without torso fallback", () =>
-        { var p=SurgeryPawn(); Require(!SSCStomachDevelopmentUtility.TryCreate(p,out _,out string reason)); Require(reason.Contains("WIP")); });
+        { var p=SurgeryPawn(); Require(!SSCStomachDevelopmentUtility.TryCreate(p,out _,out string reason)); Equal("SSC_StomachDevelopment_MissingStomach".Translate().ToString(),reason); });
         Check("stomach removed record does not recreate after queries", () =>
         { var p=StomachPawn(); p.health.RemoveHediff(StartStomach(p,1)); Near(0,StomachProgress(p)); Near(1,p.health.hediffSet.GetHungerRateFactor()); });
     }

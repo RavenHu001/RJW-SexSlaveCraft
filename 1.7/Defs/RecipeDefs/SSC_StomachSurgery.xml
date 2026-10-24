@@ -3,10 +3,10 @@
 <Defs>
   <RecipeDef ParentName="SurgeryFlesh">
     <defName>SSC_Surgery_StartStomachDevelopment</defName>
-    <label>【WIP｜胃部开发｜启动手术】</label>
-    <description>【WIP｜胃部开发｜手术说明】</description>
+    <label>胃部开发手术</label>
+    <description>将浓缩紫色纳米催情液与药物调和成制剂，经手术送入胃中，让紫色微械在胃壁上安定下来。刀口愈合之后，往后的每一次深喉，都会化作喂给微械的养分，让它继续改造这具身体的胃。</description>
     <workerClass>SexSlaveCraft.Recipe_StartStomachDevelopment</workerClass>
-    <jobString>【WIP｜胃部开发｜正在手术】</jobString>
+    <jobString>进行胃部开发手术</jobString>
     <workAmount>4000</workAmount>
     <humanlikeOnly>true</humanlikeOnly>
     <developmentalStageFilter>Adult</developmentalStageFilter>

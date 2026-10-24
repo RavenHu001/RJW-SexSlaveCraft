@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- AI 辅助生成：显式 WIP 开发占位，四语定稿留待后续；保留正常翻译键与参数。 -->
+<!-- AI 辅助生成：依据维护者确认的胃部 v1 中文稿落实 English 文案，保留键名、注入路径与参数。 -->
 <LanguageData>
-  <SSC_Surgery_StartStomachDevelopment.label>【WIP｜胃部开发｜启动手术】</SSC_Surgery_StartStomachDevelopment.label>
-  <SSC_Surgery_StartStomachDevelopment.description>【WIP｜胃部开发｜手术说明】</SSC_Surgery_StartStomachDevelopment.description>
-  <SSC_Surgery_StartStomachDevelopment.jobString>【WIP｜胃部开发｜正在手术】</SSC_Surgery_StartStomachDevelopment.jobString>
+  <SSC_Surgery_StartStomachDevelopment.label>Stomach development surgery</SSC_Surgery_StartStomachDevelopment.label>
+  <SSC_Surgery_StartStomachDevelopment.description>Concentrated purple aphrodisiac nanofluid is blended with medicine into a preparation and surgically delivered into the stomach, allowing purple nanomachines to settle on its lining. Once the incision has healed, each future deep-throating will become nourishment for the nanomachines, letting them continue to reshape this body's stomach.</SSC_Surgery_StartStomachDevelopment.description>
+  <SSC_Surgery_StartStomachDevelopment.jobString>Performing stomach development surgery</SSC_Surgery_StartStomachDevelopment.jobString>
 </LanguageData>

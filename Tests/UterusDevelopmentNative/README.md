@@ -79,3 +79,7 @@ if ($LASTEXITCODE -ne 0) { throw '专项构建失败' }
 胃部占位为显式 WIP，非正式文案；局部语言宿主加载胃部 Keyed，保留原版查键／格式化及注入。RJW 分类初始化中未纳入宿主的 Def 在 bootstrap 阶段隔离日志，实际口部检查及接触判定不替换。损伤、地图／动画及完整健康界面依旧属于游戏边界，不据此声称实机通过。
 
 本轮运行日志与统一回归：`.builds/stomach-development/`；实际实现、部署与待验情境见[胃部实现记录](../../Docs/Development/Verification/胃部恶堕化实现与验证.md)。
+
+## 胃部 v1 中文定稿与四语落实（2026-10-24）
+
+维护者确认 v1 中文稿后，已替换每语 10 键＋9 处 DefInjected 及两份基础 Def 中文，语言镜像同步。原有四语 WIP 断言改为逐键真实 Translate、原版 DefInjectionPackage 对全部九个字段的注入、四阶段悬停正文／名称和启动进度参数核对；测试总数不变，仍为 432／432。只重编宿主（BuildProjectReferences=false），生产 DLL 和 BUILD-INFO 不变。日志 `.builds/stomach-copy-v1/`，本轮按维护者要求提交，尚未同步游戏，完整游戏中的语言选择与排版仍待实机确认。
