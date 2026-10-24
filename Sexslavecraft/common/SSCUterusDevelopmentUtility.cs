@@ -7,9 +7,8 @@ using Verse;
 namespace SexSlaveCraft
 {
     /// <summary>仅操作当前身体；查询不创建、不迁移旧部位进度、不检查身份或绑定。</summary>
-    public static class SSCUterusDevelopmentUtility
+    public static partial class SSCUterusDevelopmentUtility
     {
-        public const string DefName = "SSC_UterusDevelopment";
         public const float InitialProgress = 0.01f;
 
         /// <summary>只在当前身体未缺失的部位中找 Torso；没有适用躯干时返回 null。</summary>
@@ -53,24 +52,38 @@ namespace SexSlaveCraft
             return false;
         }
 
-        /// <summary>执行玩家生育选择，失败时返回中文原因；不重判身份、绑定或启动资格。</summary>
+        /// <summary>执行玩家生育选择，失败时返回本地化原因；不重判身份、绑定或启动资格。</summary>
         public static bool TrySetFertilityEnabled(Pawn pawn, bool enabled, out string reason)
         {
+            if (!FertilityChangeReport(pawn, enabled, out var record, out reason)) return false;
+            // 重复请求不写字段，也不再次发送健康变化通知。
+            if (record.FertilityEnabled != enabled) record.SetFertilityEnabled(enabled);
+            return true;
+        }
+
+        /// <summary>为界面提供与实际提交相同的只读检查；不会更改开关、规范化或创建身体记录。</summary>
+        public static bool CanSetFertilityEnabled(Pawn pawn, bool enabled, out string reason)
+            => FertilityChangeReport(pawn, enabled, out _, out reason);
+
+        /// <summary>统一检查当前身体、培养、妊娠与配置；拒绝原因通过同一语言资源供界面和提交复用。</summary>
+        private static bool FertilityChangeReport(Pawn pawn, bool enabled,
+            out Hediff_SSCUterusDevelopment record, out string reason)
+        {
+            record = null;
             reason = null;
             if (Scribe.mode != LoadSaveMode.Inactive)
-            { reason = "当前无法调整生育状态。"; return false; }
-            var record = Find(pawn);
-            if (record == null) { reason = "尚未开始子宫开发。"; return false; }
+            { reason = "SSC_BodyManagement_CannotChange".Translate(); return false; }
+            record = Find(pawn);
+            if (record == null) { reason = "SSC_BodyManagement_NotStarted".Translate(); return false; }
             // 未完成禁止开启；重复请求不再写字段或发送健康变化通知。
-            if (enabled && !record.IsComplete) { reason = "子宫开发尚未完成。"; return false; }
+            if (enabled && !record.IsComplete) { reason = "SSC_BodyManagement_NotComplete".Translate(); return false; }
             if (record.FertilityEnabled == enabled) return true;
             // false 表示包含尚不可见的妊娠；复用原版及 RJW 已登记妊娠的既有判定。
             if (!enabled && rjw.PawnExtensions.IsPregnant(pawn, false))
-            { reason = "妊娠期间不能关闭生育。"; return false; }
+            { reason = "SSC_BodyManagement_PregnancyBlocked".Translate(); return false; }
             // 只在切换前检查开启态配置；此处不为已有妊娠创建收益标记或调整进度。
             if (enabled && record.def.GetModExtension<SSCUterusDevelopmentExtension>()?.fertileStage == null)
-            { reason = "子宫开发生育配置不可用。"; return false; }
-            record.SetFertilityEnabled(enabled);
+            { reason = "SSC_BodyManagement_FertilityConfigUnavailable".Translate(); return false; }
             return true;
         }
 

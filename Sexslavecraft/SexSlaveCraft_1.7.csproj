@@ -75,11 +75,13 @@
   </Target>
   <!-- AI 辅助生成：子宫开发仅编入 1.7，不改变冻结的 1.6 编译清单。 -->
   <ItemGroup>
+    <Compile Include="ITab/ITab_SexSlaveTraining.BodyManagement.cs" />
     <Compile Include="Hediff/Hediff_SSCUterusDevelopment.cs" />
     <Compile Include="Hediff/HediffComp_SSCUterusPregnancy.cs" />
     <Compile Include="common/SSCUterusPregnancyUtility.cs" />
     <Compile Include="ThePatches/Harmony_UterusPregnancy.cs" />
     <Compile Include="common/SSCUterusDevelopmentUtility.cs" />
+    <Compile Include="common/SSCUterusDevelopmentUtility.Identity.cs" />
     <Compile Include="common/SSCUterusDevelopmentGrowthUtility.cs" />
     <Compile Include="Comps/Comp_Train.UterusDevelopment.cs" />
     <Compile Include="common/SSCUterusSurgeryUtility.cs" />

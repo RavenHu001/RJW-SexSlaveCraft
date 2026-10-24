@@ -39,6 +39,19 @@ internal static class Program
         Run("旧存档缺少累计字段时从零累计", LegacySave);
         Run("HumanCattle 接管不运行 SSC 生产或遗留累计时间", HumanCattleTakeover);
         Run("零或负 delta 不制造生产时间", NonPositiveDelta);
+#if SSC_RW17
+        Run("1.7 界面读取仅限幅显示，不写回异常奶量或推进生产", () =>
+        {
+            var comp = Create(); Tick(comp, 50);
+            var charge = typeof(HediffComp_Chargeable).GetField("charge", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Public);
+            // 直接设置引擎字段，绕过生产 setter 的限幅，才能发现展示 getter 的隐式写入。
+            charge.SetValue(comp, properties.fullChargeAmount * 2f);
+            string text = comp.CompLabelInBracketsExtra;
+            Near(properties.fullChargeAmount * 2f, (float)charge.GetValue(comp), "读取不改奶量");
+            if (!text.Contains("100%")) throw new InvalidOperationException("充盈度应按上限显示");
+            charge.SetValue(comp, properties.initialCharge); Tick(comp, 10); ExpectProduction(comp, 60);
+        });
+#endif
         Console.WriteLine($"结果：{passed}/{passed + failed} 项通过。");
         return failed == 0 ? 0 : 1;
     }

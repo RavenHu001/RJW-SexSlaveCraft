@@ -3,7 +3,12 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>net9.0</TargetFramework>
     <SscSourceRoot Condition="'$(SscSourceRoot)' == ''">../../Sexslavecraft</SscSourceRoot>
+    <!-- 子宫边界专项启用真实 1.7 分支；默认运行仍保留原套件的编译模式。 -->
+    <DefineConstants Condition="'$(SscUterusBoundary)' == 'true'">$(DefineConstants);SSC_RW17</DefineConstants>
   </PropertyGroup>
+  <ItemGroup Condition="'$(SscUterusBoundary)' == 'true'">
+    <Compile Include="$(SscSourceRoot)/common/SSCUterusDevelopmentUtility.Identity.cs" Link="Production/UterusBodyIdentity.cs" />
+  </ItemGroup>
   <ItemGroup>
     <Compile Include="$(SscSourceRoot)/common/SSCBondRelationRules.cs" Link="Production/SSCBondRelationRules.cs" />
     <Compile Include="$(SscSourceRoot)/common/SSCBondRelationUtility.cs" Link="Production/SSCBondRelationUtility.cs" />

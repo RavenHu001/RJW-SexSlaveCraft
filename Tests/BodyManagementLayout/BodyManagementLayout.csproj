@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType><TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings><Nullable>disable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- 真实管理栏、开关检查与身体记录；只替代引擎/绘制边界，不复制布局或业务判断。 -->
+    <Compile Include="../../Sexslavecraft/ITab/ITab_SexSlaveTraining.BodyManagement.cs" Link="Production/BodyManagement.cs" />
+    <Compile Include="../../Sexslavecraft/common/SSCUIWidgets.cs" Link="Production/SSCUIWidgets.cs" />
+    <Compile Include="../../Sexslavecraft/common/SSCUterusDevelopmentUtility.cs" Link="Production/UterusUtility.cs" />
+    <Compile Include="../../Sexslavecraft/common/SSCUterusDevelopmentUtility.Identity.cs" Link="Production/UterusIdentity.cs" />
+    <Compile Include="../../Sexslavecraft/Hediff/Hediff_SSCUterusDevelopment.cs" Link="Production/UterusHediff.cs" />
+  </ItemGroup>
+</Project>

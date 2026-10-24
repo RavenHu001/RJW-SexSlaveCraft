@@ -74,6 +74,8 @@ internal static partial class Program
             SetStatic(typeof(Prefs), "data", new PrefsData());
             var root = Bare<Game>(); root.tickManager = new TickManager(); root.uniqueIDsManager = new UniqueIDsManager();
             Current.Game = root;
+            // 实际翻译器读取生产 Keyed 内容，避免本地化检查用键名转发器掩盖丢键或参数错误。
+            LoadBodyManagementLanguage(repo, "ChineseSimplified");
             var pack = Bare<ModContentPack>(); pack.assemblies = new ModAssemblyHandler(pack);
             pack.assemblies.loadedAssemblies.Add(typeof(SSCUterusDevelopmentUtility).Assembly);
             pack.assemblies.loadedAssemblies.Add(typeof(Program).Assembly);
@@ -123,6 +125,8 @@ internal static partial class Program
             SurgeryTests(repo, game, harmony.Value);
             GrowthTests(repo, harmony.Value);
             PregnancyTests(repo, game, harmony.Value);
+            BodyManagementLifecycleTests(harmony.Value);
+            BodyManagementLanguageTests(repo);
         }
         finally { Scribe.mode = LoadSaveMode.Inactive; Current.Game = null; }
         Console.WriteLine($"{passed}/{passed + failed} cases passed");

@@ -8,6 +8,8 @@
 dotnet run --project Tests/PersonalityTraits/PersonalityTraits.csproj --configuration Release
 ```
 
+2026-10-23 子宫开发第 5 批专项使用 `-p:SscUterusBoundary=true`，启用真实 1.7 采集、CopyFrom 与恢复过滤分支，并链接生产定义身份工具，**131／131** 通过。新增 4 项检查：候选标签配方不导出开发记录、加工复制排除外部开发标签、未经加工的外部标签植入无记录／已有记录宿主均不补建或合并。健康与人格环境仍使用本套件原有边界模型，躯干、开关、实际身份和真实 Scribe 由 UterusDevelopmentNative 验证。Test-All 在 1.7 模式自动启用此参数。
+
 项目没有包引用，不需要安装游戏。首次还原时如需显式禁用远程源：
 
 ```powershell

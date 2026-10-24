@@ -1,6 +1,6 @@
-# 子宫开发第 1～4 批原生专项
+# 子宫开发第 1～5 批原生专项
 
-2026-10-23：**273／273 通过**，包括前两批 100 项、第 3 批 92 项及第 4 批 81 项。目标为 RimWorld **1.7.4985 rev1269**，游戏程序集 MVID `d368493b52bd4740bc7507c1b0386895`。不启动游戏，不改安装副本或用户配置。
+2026-10-23：**293／293 通过**，包括前两批 100 项、第 3 批 92 项、第 4 批 81 项及第 5 批 20 项（生命周期 16 项＋本地化 4 项）。目标为 RimWorld **1.7.4985 rev1269**，游戏程序集 MVID `d368493b52bd4740bc7507c1b0386895`。不启动游戏，不改安装副本或用户配置。
 
 通过 ProjectReference 编译当前生产工程，实际执行生产 XML 的原版加载、Hediff 创建／添加／合并／移除、原版 `StatPart_FertilityByHediffs.TransformValue`、健康缓存通知，以及 Scribe 的保存、交叉引用和 PostLoadInit。测试没有复制开发进度、生育状态或合并算法。
 
@@ -34,7 +34,11 @@
 
 因独立宿主 Harmony 2 与生产 Harmony 3 的 CodeInstruction 类型不同，直接链接同一生产孕期补丁源码，以 Harmony 2 构建和安装；无匹配或倍率算法副本，组件与工具仍来自生产 DLL。只在该测试文件局部抑制刻意同名链接的 CS0436。游戏 Harmony 3 的自动扫描与完整补丁组合仍待实机确认。食物类别、遗传与完整婴儿生成是显式边界；正常孕期计算保留，StartLabor 只检查调用，不执行其后地图／出生流程。Scribe 不重建完整胎儿 Pawn 列表或地图；真实健康与组件序列化及 PostLoadInit 保留，提供真实空 WorldPawns 容器。所需 RJW 类型名映射至实际依赖类型，不扫描其旧版 UI 模块。
 
-这不证明完整模组环境中的行为、健康页、研究树排版、实际取料／麻醉／伤口、完整地图存档、分娩或开关 UI 已通过实机验收。阶段强化及孕期缩短已实现并完成本专项验证，共用身体管理栏仍属于未实施的第 5 批。
+第 5 批新增 [BodyManagementTests](BodyManagementTests.cs) 的 16 项实际生产程序集验证：只读准入和提交一致，三种 SSC 身份且无绑定时仍可操作，实际身份退出／恢复、绑定／换绑／解绑、器官移除／恢复与性别变化均保留躯干记录；移除后不恢复历史。实际调用现有克隆健康复制，验证严重度继承、新副本开关默认关闭及身体隔离；执行完全凝胶化健康清理和永久状态添加，保留原开发实例／进度／开关。后者仅隔离图形刷新及成功消息翻译，绑定提供真实空 GameComponent 容器，不执行完整地图限制系统。
+
+本地化复核新增 [BodyManagementLanguageTests](BodyManagementLanguageTests.cs) 的 4 项：四语生产 Keyed XML 内容交给实际 LoadedLanguage／Translate，验证五参数预览、生育拒绝原因及已有泌乳翻译键，不显示键名、未替换参数或字面量换行。语言加载提供局部真实容器，不扫描完整模组语言目录或执行 Def 注入。原生专项现为 293／293。
+
+这不证明完整模组环境中的行为、健康页、研究树排版、实际取料／麻醉／伤口、完整地图存档、分娩或开关 UI 已通过实机验收。阶段强化及孕期缩短已实现并完成本专项验证，共用身体管理栏第 5 批已实现，近似字体／输入布局检查另见 [BodyManagementLayout](../BodyManagementLayout/README.md)，真实页面仍待实机验收。
 
 已登记到 `Scripts/Test-All.ps1`。单独验证使用 .NET 10 SDK、实际游戏引用及测试侧 net9.0 Harmony；依赖路径可从 `1.7/BUILD-INFO.json` 读取：
 
@@ -52,4 +56,4 @@ if ($LASTEXITCODE -ne 0) { throw '专项构建失败' }
     $repo ([IO.Path]::GetDirectoryName($info.gameAssemblyPath))
 ```
 
-隔离 Scribe 文件继续写入 `.builds/uterus-development-batch1/`；本轮日志保存于 `.builds/uterus-development-batch4/`，验证记录见[第 4 批](../../Docs/Development/Verification/子宫开发第4批实现与验证.md)，前三批记录保持原时点。测试构建会重建 1.7 生产 DLL；需要更新构建来源记录时，再运行 `Scripts/Build-Mod.ps1`，不要把 DLL 哈希不一致作为通过。
+隔离 Scribe 文件继续写入 `.builds/uterus-development-batch1/`；本轮日志保存于 `.builds/uterus-development-batch5/`，验证记录见[第 5 批](../../Docs/Development/Verification/子宫开发第5批实现与验证.md)，前四批记录保持原时点。测试构建会重建 1.7 生产 DLL；需要更新构建来源记录时，再运行 `Scripts/Build-Mod.ps1`，不要把 DLL 哈希不一致作为通过。

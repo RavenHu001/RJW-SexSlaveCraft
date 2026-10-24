@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成：第 5 批中文占位文案，正式文案待确认；已有泌乳开关和属性名称复用原资源。 -->
+<LanguageData>
+  <SSC_BodyManagement_Title>身体管理</SSC_BodyManagement_Title>
+  <SSC_BodyManagement_MilkTip>控制当前身体的产奶；关闭不会移除永久泌乳状态或重置已有奶量。</SSC_BodyManagement_MilkTip>
+  <SSC_BodyManagement_Progress>子宫开发：{0}（{1}）</SSC_BodyManagement_Progress>
+  <SSC_BodyManagement_FertilityOn>生育：已开启</SSC_BodyManagement_FertilityOn>
+  <SSC_BodyManagement_FertilityOff>生育：已关闭</SSC_BodyManagement_FertilityOff>
+  <SSC_BodyManagement_FertilityIncomplete>生育：培养未完成，暂不能开启</SSC_BodyManagement_FertilityIncomplete>
+  <SSC_BodyManagement_FertilityScope>开关只调整自身原版生育能力；其他健康状态仍会影响最终结果，开启不保证受孕。</SSC_BodyManagement_FertilityScope>
+  <SSC_BodyManagement_CurrentTip>当前收益：\n{0}\n自身原版生育能力：{1}</SSC_BodyManagement_CurrentTip>
+  <SSC_BodyManagement_TwoStateTip>关闭生育：\n{0}\n自身原版生育能力：{1}\n\n开启生育：\n{2}\n自身原版生育能力：{3}\n开启后新形成的适用妊娠时长 ×{4}；已有妊娠不追溯调整。</SSC_BodyManagement_TwoStateTip>
+  <SSC_BodyManagement_CurrentBenefits>当前收益：{0}</SSC_BodyManagement_CurrentBenefits>
+  <SSC_BodyManagement_FertilityToggle>开启生育</SSC_BodyManagement_FertilityToggle>
+  <SSC_BodyManagement_FertilityTip>切换当前身体的生育状态。妊娠期间不能关闭。</SSC_BodyManagement_FertilityTip>
+  <SSC_BodyManagement_ConfigUnavailable>配置不可用</SSC_BodyManagement_ConfigUnavailable>
+  <SSC_BodyManagement_StatFactor>{0} ×{1}</SSC_BodyManagement_StatFactor>
+  <SSC_BodyManagement_BenefitsSeparator>；</SSC_BodyManagement_BenefitsSeparator>
+  <SSC_BodyManagement_NoBenefits>暂无额外强化</SSC_BodyManagement_NoBenefits>
+  <SSC_BodyManagement_Multiplier>×{0}</SSC_BodyManagement_Multiplier>
+  <SSC_BodyManagement_BodyChanged>身体状态已变化，请重新查看。</SSC_BodyManagement_BodyChanged>
+  <SSC_BodyManagement_CannotChange>当前无法调整生育状态。</SSC_BodyManagement_CannotChange>
+  <SSC_BodyManagement_NotStarted>尚未开始子宫开发。</SSC_BodyManagement_NotStarted>
+  <SSC_BodyManagement_NotComplete>子宫开发尚未完成。</SSC_BodyManagement_NotComplete>
+  <SSC_BodyManagement_PregnancyBlocked>妊娠期间不能关闭生育。</SSC_BodyManagement_PregnancyBlocked>
+  <SSC_BodyManagement_FertilityConfigUnavailable>子宫开发生育配置不可用。</SSC_BodyManagement_FertilityConfigUnavailable>
+</LanguageData>

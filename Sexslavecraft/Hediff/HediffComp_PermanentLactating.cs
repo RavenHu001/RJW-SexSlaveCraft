@@ -215,12 +215,17 @@ namespace SexSlaveCraft
             HumanCattleBridgeUtility.CleanupBridge(Pawn);
         }
 
-        // 修改 UI 面板提示，让玩家知道没饭吃了会停产
+        /// <summary>提供停产、饥饿及充盈度说明；1.7 的界面读取不修改储奶或生产计时。</summary>
         public override string CompLabelInBracketsExtra
         {
             get
             {
+#if SSC_RW17
+                // CurrentCharge 会顺便写回越界奶量；纯展示只读取并在局部限幅，写回仍由生产入口处理。
+                float currentCharge = Mathf.Clamp(Traverse.Create(this).Field<float>("charge").Value, 0f, FullChargeAmount);
+#else
                 float currentCharge = CurrentCharge;
+#endif
                 float fullAmount = Mathf.Max(FullChargeAmount, 0.001f);
                 string progress = (currentCharge / fullAmount * 100f).ToString("F0") + "%";
 

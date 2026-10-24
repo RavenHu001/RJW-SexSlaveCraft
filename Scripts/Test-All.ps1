@@ -91,6 +91,8 @@ $suites = @(
     @{ Name = 'PetDogAbility'; Arguments = @($repoRoot) },
     @{ Name = 'CombatantSpecialization'; Arguments = @($repoRoot) },
     @{ Name = 'PersonalityCardLayout'; Arguments = @($repoRoot) },
+    # 真实身体管理区块及开关入口，字体／输入边界与实机验收分开记录。
+    @{ Name = 'BodyManagementLayout'; Arguments = @($repoRoot) },
     @{ Name = 'MasterPanelUI'; Arguments = @($repoRoot) },
     @{ Name = 'RaceInjection'; Arguments = @() },
     @{ Name = 'InteractionProtection'; Arguments = @() },
@@ -285,6 +287,8 @@ foreach ($suite in $suites) {
         Set-Content -LiteralPath $logPath -Value "Suite: $name" -Encoding utf8
         try {
             $properties = @()
+            # 1.7 回归采集／植入排除及泌乳只读展示的新分支，不改变 1.6 冻结验证。
+            if ($name -in @('PersonalityTraits', 'PermanentLactation')) { $properties += '-p:SscUterusBoundary=true' }
             $suiteDotnet = $dotnetPath
             $framework = 'net9.0'
             $testArguments = $suite.Arguments
