@@ -5,7 +5,7 @@ using SexSlaveCraft;
 using UnityEngine;
 using Verse;
 
-internal static class Program
+internal static partial class Program
 {
     private static int passed, failed;
     private static HediffDef development;
@@ -68,6 +68,7 @@ internal static class Program
         { var p = Body(3, 1); int n = p.health.Notifications; Draw(p); Draw(p); Require(n == p.health.Notifications && p.Training.milkProductionEnabled && !SSCUterusDevelopmentUtility.Find(p).FertilityEnabled); });
         foreach (bool throws in new[] { false, true }) Run("绘制归还全部 GUI 状态 异常=" + throws, () => GuiState(throws));
         Run("主调教页的 1.7 接入先于身份分支且无旧泌乳栏", () => MainIntegration(repo));
+        RunToggleFrameworkTests();
         Console.WriteLine($"{passed}/{passed + failed} cases passed"); return failed == 0 ? 0 : 1;
     }
 
@@ -147,6 +148,8 @@ internal static class Program
             Require(!Regex.IsMatch(formatted, @"\{\d+\}"));
         }
         string source = File.ReadAllText(Path.Combine(repo, "Sexslavecraft/ITab/ITab_SexSlaveTraining.BodyManagement.cs"));
+        // 能力标签／提示改由真实注册表声明，资源引用审计应覆盖定义所在文件。
+        source += File.ReadAllText(Path.Combine(repo, "Sexslavecraft/common/SSCAbilityToggleUtility.cs"));
         string reports = File.ReadAllText(Path.Combine(repo, "Sexslavecraft/common/SSCUterusDevelopmentUtility.cs"));
         Require(Regex.Matches(source + reports, @"SSC_BodyManagement_\w+").Select(m => m.Value).Distinct().Order().SequenceEqual(entries.Keys.Order()));
         // 仅检查 C# 字符串字面量，允许中文注释；内部 StatDef 名及数字格式仍可留在代码。

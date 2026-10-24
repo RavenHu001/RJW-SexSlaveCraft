@@ -7,7 +7,7 @@ using System.Xml.Linq;
 using SexSlaveCraft;
 using Verse;
 
-internal static class Program
+internal static partial class Program
 {
     private static int passed, failed;
     private static HediffCompProperties_PermanentLactating properties;
@@ -52,6 +52,7 @@ internal static class Program
             charge.SetValue(comp, properties.initialCharge); Tick(comp, 10); ExpectProduction(comp, 60);
         });
 #endif
+        MilkToggleConsumerTests();
         Console.WriteLine($"结果：{passed}/{passed + failed} 项通过。");
         return failed == 0 ? 0 : 1;
     }

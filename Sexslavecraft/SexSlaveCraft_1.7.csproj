@@ -78,6 +78,10 @@
     <Compile Include="common/SSCAbilityToggleFramework.cs" />
     <Compile Include="common/SSCBridleAbilityToggleBackend.cs" />
     <Compile Include="common/SSCMasterDamageSharingToggle.cs" />
+    <Compile Include="common/SSCBodyAbilityTogglePreferences.cs" />
+    <Compile Include="common/SSCMilkAbilityToggleBackend.cs" />
+    <Compile Include="common/SSCUterusAbilityToggleBackend.cs" />
+    <Compile Include="common/SSCGelRenderingAbilityToggleBackend.cs" />
   </ItemGroup>
   <!-- AI 辅助生成：子宫开发仅编入 1.7，不改变冻结的 1.6 编译清单。 -->
   <ItemGroup>

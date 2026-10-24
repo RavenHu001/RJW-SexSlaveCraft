@@ -29,11 +29,25 @@ namespace Verse
     }
     public class HediffCompProperties_Lactating : HediffCompProperties_Chargeable { }
     public class HediffDef { public List<HediffCompProperties> comps = new List<HediffCompProperties>(); }
-    public class Hediff { public HediffDef def = new HediffDef(); public Pawn pawn; }
+    public class Hediff
+    {
+        public HediffDef def = new HediffDef(); public Pawn pawn;
+        public List<HediffComp> comps = new List<HediffComp>();
+        /// <summary>给真实转奶入口返回同一模型身体上挂载的实际生产组件。</summary>
+        public T TryGetComp<T>() where T : HediffComp => comps.Find(c => c is T) as T;
+    }
+    public class Health { public HediffSet hediffSet = new HediffSet(); }
+    public class HediffSet
+    {
+        public List<Hediff> hediffs = new List<Hediff>();
+        /// <summary>仅提供实际储液组件查找目标所需的 Def 引用匹配。</summary>
+        public Hediff GetFirstHediffOfDef(HediffDef def) => hediffs.Find(h => h.def == def);
+    }
     public class Pawn
     {
         public int Tick, HashOffset;
         public Needs needs = new Needs();
+        public Health health = new Health();
         public SexSlaveCraft.CompSexSlaveTraining Training = new SexSlaveCraft.CompSexSlaveTraining();
         public T TryGetComp<T>() where T : class => Training as T;
         public bool IsHashIntervalTick(int interval) => (Tick + HashOffset) % interval == 0;
@@ -41,19 +55,27 @@ namespace Verse
     public class Needs { public Food food = new Food(); }
     public class Food { public float CurLevel = 1f; }
 
-    public class HediffComp_Chargeable
+    public struct DamageInfo { }
+    public class HediffComp
     {
-        private float charge;
         public HediffCompProperties props;
         public Hediff parent;
         public Pawn Pawn => parent.pawn;
-        public float Charge { get => charge; protected set => charge = value; }
         public virtual void CompPostMake() { }
+        /// <summary>添加回调的引擎空操作边界，初始储量仍由实际储液组件设置。</summary>
+        public virtual void CompPostPostAdd(DamageInfo? dinfo) { }
         public virtual void CompPostTick(ref float adjustment) { }
         public virtual void CompPostTickInterval(ref float adjustment, int delta) => throw new InvalidOperationException("永久泌乳不能恢复基类计时。");
         public virtual void CompPostPostRemoved() { }
         public virtual string CompLabelInBracketsExtra => "";
-        public virtual void CompExposeData() => Scribe_Values.Look(ref charge, "charge", ((HediffCompProperties_Chargeable)props).initialCharge);
+        /// <summary>基类本身没有测试保存字段，实际组件继续向模型 Scribe 写原 charge。</summary>
+        public virtual void CompExposeData() { }
+    }
+    public class HediffComp_Chargeable : HediffComp
+    {
+        private float charge;
+        public float Charge { get => charge; protected set => charge = value; }
+        public override void CompExposeData() => Scribe_Values.Look(ref charge, "charge", ((HediffCompProperties_Chargeable)props).initialCharge);
 
         /// <summary>模拟原版从私有奶量字段扣除资源，避免测试只覆盖自定义 setter。</summary>
         public float GreedyConsume(float amount)
@@ -115,6 +137,7 @@ namespace HarmonyLib
 
 namespace SexSlaveCraft
 {
+    public static class SSCDefOf { public static Verse.HediffDef SSC_Lactating_SubState = new Verse.HediffDef(); }
     public class CompSexSlaveTraining { public bool milkProductionEnabled = true; }
     public static class HumanCattleBridgeUtility
     {

@@ -13,14 +13,12 @@ namespace SexSlaveCraft
         private const float BodyRowGap = 6f;
         private const float BodyChildIndent = 16f;
         private const float BodyGroupGap = 10f;
-        private enum BodyControl { None, Milk, Fertility }
 
         /// <summary>一行的文字、控件状态与测量结果；不跨 GUI 事件缓存。</summary>
         private sealed class BodyManagementRow
         {
             internal string Label, Tip;
-            internal BodyControl Control;
-            internal bool Enabled, CanEdit;
+            internal AbilityToggleRow Toggle;
             internal float Height, Indent, GapBefore;
         }
 
@@ -29,8 +27,6 @@ namespace SexSlaveCraft
         {
             internal Pawn Pawn;
             internal CompSexSlaveTraining Comp;
-            internal Hediff Milk;
-            internal Hediff_SSCUterusDevelopment Uterus;
             internal string Title, ChangedTip;
             internal readonly List<BodyManagementRow> Rows = new List<BodyManagementRow>();
             internal float Height, TitleHeight;
@@ -41,9 +37,6 @@ namespace SexSlaveCraft
         {
             var view = new BodyManagementView { Pawn = pawn, Comp = comp };
             if (pawn?.health?.hediffSet == null || comp == null) return view;
-            view.Milk = pawn.health.hediffSet.GetFirstHediffOfDef(SSCDefOf.SSC_Lactating_SubState);
-            view.Uterus = SSCUterusDevelopmentUtility.Find(pawn);
-            if (view.Milk == null && view.Uterus == null) return view;
 
             // 测量时和绘制时使用同样的字体、换行及复选框预留宽度。
             GameFont font = Text.Font;
@@ -57,22 +50,19 @@ namespace SexSlaveCraft
                 view.Title = "SSC_BodyManagement_Title".Translate();
                 view.ChangedTip = "SSC_BodyManagement_BodyChanged".Translate();
                 view.TitleHeight = Mathf.Max(SectionTitleHeight, Text.CalcHeight(view.Title, innerWidth));
-                if (view.Milk != null)
+                // 所有布尔条目按注册分组／顺序构建；从属信息由定义提供，不按能力 enum 分派。
+                var toggles = BuildAbilityToggleRows(pawn, comp, SSCAbilityToggleGroup.Body, innerWidth);
+                // 无条目时保留零高度；即使在 try 内提前返回，finally 仍归还字体与换行状态。
+                if (toggles.Count == 0) return view;
+                bool first = true;
+                foreach (var toggle in toggles)
                 {
-                    // 泌乳操作沿用已有四语翻译键；只为新增说明建立占位键。
-                    AddBodyRow(view, innerWidth, Strings.ITab_MilkProductionToggle, "SSC_BodyManagement_MilkTip".Translate(),
-                        BodyControl.Milk, comp.milkProductionEnabled, true);
-                    string progress = view.Milk.TryGetComp<HediffComp_PermanentLactating>()?.CompLabelInBracketsExtra;
-                    // 充盈度是泌乳开关的从属信息，缩进显示，不与下一项独立开关混排。
-                    if (!string.IsNullOrEmpty(progress)) AddBodyRow(view, innerWidth, progress, indent: BodyChildIndent);
-                }
-                if (view.Uterus != null)
-                {
-                    // 身体管理只提供开关；名称、开发进度、阶段、收益和生育状态由健康页展示。
-                    bool enabled = view.Uterus.FertilityEnabled;
-                    bool available = SSCUterusDevelopmentUtility.CanSetFertilityEnabled(pawn, !enabled, out string reason);
-                    AddBodyRow(view, innerWidth, "SSC_BodyManagement_FertilityToggle".Translate(), reason ?? "SSC_BodyManagement_FertilityTip".Translate(),
-                        BodyControl.Fertility, enabled, available, gapBefore: view.Milk != null ? BodyGroupGap : 0f);
+                    // 生育禁用时仍优先显示原权威原因，独立项组间距与旧身体栏相同。
+                    AddBodyRow(view, innerWidth, toggle.Label, toggle.ChangeReason ?? toggle.Tip,
+                        toggle, gapBefore: first ? 0f : BodyGroupGap);
+                    first = false;
+                    // 充盈度继续作为缩进信息，不新增身体开发进度／收益展示。
+                    if (!string.IsNullOrEmpty(toggle.Detail)) AddBodyRow(view, innerWidth, toggle.Detail, indent: BodyChildIndent);
                 }
                 view.Height = SectionPadding * 2f + view.TitleHeight + view.Rows.Sum(row => row.Height + row.GapBefore)
                     + BodyRowGap * Math.Max(0, view.Rows.Count - 1);
@@ -83,14 +73,14 @@ namespace SexSlaveCraft
 
         /// <summary>按缩进后的实际宽度测量文字，行高与组间留白同时计入视图；复选框另留控件宽度。</summary>
         private static void AddBodyRow(BodyManagementView view, float width, string label, string tip = null,
-            BodyControl control = BodyControl.None, bool enabled = false, bool canEdit = false, float indent = 0f, float gapBefore = 0f)
+            AbilityToggleRow toggle = null, float indent = 0f, float gapBefore = 0f)
         {
             view.Rows.Add(new BodyManagementRow
             {
-                Label = label, Tip = tip, Control = control, Enabled = enabled, CanEdit = canEdit,
+                Label = label, Tip = tip, Toggle = toggle,
                 Indent = indent, GapBefore = gapBefore,
-                Height = Mathf.Max(control == BodyControl.None ? Text.LineHeight : 24f,
-                    Text.CalcHeight(label, Mathf.Max(1f, width - indent - (control == BodyControl.None ? 0f : 24f))))
+                Height = Mathf.Max(toggle == null ? Text.LineHeight : 24f,
+                    Text.CalcHeight(label, Mathf.Max(1f, width - indent - (toggle == null ? 0f : 24f))))
             });
         }
 
@@ -114,21 +104,22 @@ namespace SexSlaveCraft
                     // 独立开关之间增加组间留白，充盈度的缩进与测量保持同一宽度。
                     y += row.GapBefore;
                     Rect line = new Rect(inner.x + row.Indent, y, inner.width - row.Indent, row.Height);
-                    if (row.Control == BodyControl.None)
+                    if (row.Toggle == null)
                     {
                         Widgets.Label(line, row.Label);
                         if (!string.IsNullOrEmpty(row.Tip)) TooltipHandler.TipRegion(line, row.Tip);
                     }
                     else
                     {
-                        bool current = IsBodyViewCurrent(view, row.Control);
-                        bool next = SSCUIWidgets.Checkbox(line, row.Label, row.Enabled, row.CanEdit && current,
+                        var toggle = row.Toggle;
+                        bool current = IsBodyViewCurrent(view, toggle);
+                        bool next = SSCUIWidgets.Checkbox(line, row.Label, toggle.Enabled, toggle.CanEdit && current,
                             current ? row.Tip : view.ChangedTip);
                         // 禁用、原身体离体或切换选中角色后均不写回快照值。
-                        if (next != row.Enabled && enabled && row.CanEdit && IsBodyViewCurrent(view, row.Control))
+                        if (next != toggle.Enabled && enabled && toggle.CanEdit && IsBodyViewCurrent(view, toggle))
                         {
-                            if (row.Control == BodyControl.Milk) view.Comp.milkProductionEnabled = next;
-                            else if (!SSCUterusDevelopmentUtility.TrySetFertilityEnabled(view.Pawn, next, out string reason))
+                            // UI 禁用只是展示保护；公共提交重查目标值，并把原生育 setter 拒绝反馈给玩家。
+                            if (!TrySetAbilityToggleRow(toggle, next, out string reason))
                                 Messages.Message(reason, view.Pawn, MessageTypeDefOf.RejectInput, false);
                         }
                     }
@@ -143,11 +134,11 @@ namespace SexSlaveCraft
         }
 
         /// <summary>只允许本次选中身体及原组件／Hediff 接受点击，不重新进行身份或绑定准入。</summary>
-        private bool IsBodyViewCurrent(BodyManagementView view, BodyControl control)
+        private bool IsBodyViewCurrent(BodyManagementView view, AbilityToggleRow toggle)
         {
             if (SelPawn != view.Pawn || view.Pawn?.GetComp<CompSexSlaveTraining>() != view.Comp) return false;
-            if (control == BodyControl.Fertility) return SSCUterusDevelopmentUtility.Find(view.Pawn) == view.Uterus;
-            return view.Milk != null && view.Pawn.health.hediffSet.GetFirstHediffOfDef(SSCDefOf.SSC_Lactating_SubState) == view.Milk;
+            // 原 Comp 相同仍可能已换人格；各行还必须匹配原 token 及原泌乳／子宫 Hediff。
+            return SSCAbilityToggleUtility.IsCurrent(view.Pawn, toggle.Id, toggle.Context);
         }
     }
 }

@@ -135,7 +135,8 @@ namespace Verse
     // 每个角色拥有独立健康列表和事件账本；FullGel、Destroyed、Guaranteed 只表示测试服务状态。
     public partial class Pawn
     {
-        public bool Dead, Destroyed, Guaranteed, Invisible;
+        public bool Dead, Destroyed, Guaranteed, Invisible, Discarded;
+        public RaceProperties RaceProps = new RaceProperties();
         // 夹具便捷标记也创建真实完成Hediff/生产组件；准入判断直接运行生产实现。
         public bool FullGel
         {
@@ -191,6 +192,9 @@ namespace Verse
     public class Hediff
     {
         public Pawn pawn; public BodyPartRecord Part; public HediffDef def; public float Severity;
+        public virtual bool Visible => true;
+        public virtual bool ShouldRemove => false;
+        public virtual string SeverityLabel => null;
         public virtual void PostAdd(DamageInfo? damage) { }
         public virtual void PostTick() { }
         public virtual void ExposeData() { }
@@ -210,7 +214,10 @@ namespace Verse
     }
     // 以下类型只承载组件会读写的属性、部位与开发按钮数据，不代替生产组件的结算逻辑。
     public class Hediff_MissingPart : Hediff { public HediffDef lastInjury; public bool IsFresh; }
-    public class HediffDef { public string defName; public HediffDef(string name) { defName = name; } }
+    public class HediffDef { public string defName; public System.Type hediffClass; public HediffDef(string name) { defName = name; } }
+    public class RaceProperties { public bool Humanlike = true; }
+    public enum LoadSaveMode { Inactive, LoadingVars, PostLoadInit }
+    public static class Scribe { public static LoadSaveMode mode; }
     public class BodyPartRecord { public BodyPartDef def = new BodyPartDef(); }
     public class BodyPartDef { public List<object> tags = new List<object>(); }
     public class HediffCompProperties { public Type compClass; }
@@ -268,7 +275,7 @@ namespace Verse
     public static class HediffMaker
     {
         // 通过实际定义名区分稳定缺肢与成功义肢，结果次数由健康列表的添加入口记录。
-        public static Hediff MakeHediff(HediffDef def, Pawn pawn, BodyPartRecord part)
+        public static Hediff MakeHediff(HediffDef def, Pawn pawn, BodyPartRecord part = null)
         {
             Hediff h = def.defName == "MissingBodyPart" ? new Hediff_MissingPart() : new Hediff();
             h.def = def; h.pawn = pawn; h.Part = part; return h;

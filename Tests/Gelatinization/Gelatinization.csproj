@@ -44,4 +44,12 @@
     <Compile Include="$(SscSourceRoot)/common/SSCIdentityUtility.Trainer.cs" Link="Production/TrainerIdentity.cs" />
     <Compile Include="$(SscSourceRoot)/Hediff/HediffComp_FullGelAppearance.cs" Link="Production/HediffComp_FullGelAppearance.cs" />
   </ItemGroup>
+  <PropertyGroup><DefineConstants>$(DefineConstants);SSC_ABILITY_TOGGLE_GEL</DefineConstants></PropertyGroup>
+  <ItemGroup>
+    <Compile Include="../Shared/AbilityToggleBodyScribeBoundary.cs" Link="Boundary/AbilityToggleScribe.cs" />
+    <Compile Include="../../Sexslavecraft/common/SSCBodyAbilityTogglePreferences.cs" Link="Production/SSCBodyAbilityTogglePreferences.cs" />
+    <Compile Include="../../Sexslavecraft/common/SSCGelRenderingAbilityToggleBackend.cs" Link="Production/SSCGelRenderingAbilityToggleBackend.cs" />
+    <Compile Include="../../Sexslavecraft/ITab/ITab_SexSlaveTraining.AbilityToggles.cs" Link="Production/AbilityToggleRows.cs" />
+  </ItemGroup>
+  <Import Project="../Shared/AbilityToggleProduction.targets" />
 </Project>

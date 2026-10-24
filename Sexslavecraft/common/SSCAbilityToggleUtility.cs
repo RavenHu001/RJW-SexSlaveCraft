@@ -8,7 +8,8 @@ using Verse;
 
 namespace SexSlaveCraft
 {
-    public enum SSCAbilityToggleGroup { Master, Slave }
+    // 分组只决定展示区域，不改变各后端的保存归属，也不自动附加身份或研究门槛。
+    public enum SSCAbilityToggleGroup { Master, Slave, Body, Appearance }
 
     /// <summary>声明个人开关；默认沿用人格存储，1.7 可适配其他原载体。</summary>
     public sealed class SSCAbilityToggleDefinition
@@ -25,6 +26,8 @@ namespace SexSlaveCraft
         public readonly Func<Pawn, bool> VisibleRule;
         public readonly Func<Pawn, bool, string> ChangeRule;
         public readonly Func<Pawn, string> TipRule;
+        // 只读从属文字，例如原泌乳充盈度；不承担开关保存、生产结算或新增状态展示。
+        public readonly Func<Pawn, string> DetailRule;
 #endif
         /// <summary>声明稳定 ID、默认值和规则；未指定后端时沿用人格字典，定义对象不保存某个角色的开关。</summary>
         public SSCAbilityToggleDefinition(string id, SSCAbilityToggleGroup group, PawnIdentity identity,
@@ -32,7 +35,8 @@ namespace SexSlaveCraft
             Func<Pawn, bool> activationRule = null, Func<Pawn, bool> editRule = null
 #if SSC_RW17 || SSC_ABILITY_TOGGLE_FRAMEWORK
             , SSCAbilityToggleBackend backend = null, int order = 0, Func<Pawn, bool> visibleRule = null,
-            Func<Pawn, bool, string> changeRule = null, Func<Pawn, string> tipRule = null
+            Func<Pawn, bool, string> changeRule = null, Func<Pawn, string> tipRule = null,
+            Func<Pawn, string> detailRule = null
 #endif
             )
         {
@@ -42,6 +46,7 @@ namespace SexSlaveCraft
 #if SSC_RW17 || SSC_ABILITY_TOGGLE_FRAMEWORK
             Backend = backend ?? SSCPersonalityAbilityToggleBackend.Instance;
             Order = order; VisibleRule = visibleRule; ChangeRule = changeRule; TipRule = tipRule;
+            DetailRule = detailRule;
 #endif
         }
     }
@@ -61,6 +66,25 @@ namespace SexSlaveCraft
                 "SSC_MasterShareDamage_Label", "SSC_MasterShareDamage_Desc", defaultEnabled: true,
                 backend: SSCBridleAbilityToggleBackend.Instance, order: -100,
                 tipRule: pawn => "SSC_MasterShareDamage_Desc".Translate(SSCMasterBondUtility.DamageShareRatio.ToStringPercent()).ToString())
+#endif
+#if SSC_RW17 || SSC_ABILITY_TOGGLE_BODY
+            // 两项同处身体栏但保存源不同：泌乳沿 Comp，生育沿身体 Hediff，均不迁入人格字典。
+            , new SSCAbilityToggleDefinition(MilkProduction, SSCAbilityToggleGroup.Body, PawnIdentity.Unset,
+                "SSC_ITab_MilkProductionToggle", "SSC_BodyManagement_MilkTip", defaultEnabled: true,
+                backend: SSCMilkAbilityToggleBackend.Instance,
+                visibleRule: pawn => pawn?.TryGetComp<CompSexSlaveTraining>() != null && SSCMilkAbilityToggleBackend.Find(pawn) != null,
+                detailRule: pawn => SSCMilkAbilityToggleBackend.Find(pawn)?.TryGetComp<HediffComp_PermanentLactating>()?.CompLabelInBracketsExtra)
+            , new SSCAbilityToggleDefinition(UterusFertility, SSCAbilityToggleGroup.Body, PawnIdentity.Unset,
+                "SSC_BodyManagement_FertilityToggle", "SSC_BodyManagement_FertilityTip",
+                backend: SSCUterusAbilityToggleBackend.Instance, order: 10,
+                visibleRule: pawn => pawn?.TryGetComp<CompSexSlaveTraining>() != null && SSCUterusDevelopmentUtility.Find(pawn) != null)
+#endif
+#if SSC_RW17 || SSC_ABILITY_TOGGLE_GEL
+            // 外观只接入个人渲染选择；颜色、透明度、快照和高频渲染查询仍由原外观模块负责。
+            , new SSCAbilityToggleDefinition(GelRendering, SSCAbilityToggleGroup.Appearance, PawnIdentity.Unset,
+                "SSC_GelAppearance_RenderEnabled", "SSC_GelAppearance_RenderTip", defaultEnabled: true,
+                backend: SSCGelRenderingAbilityToggleBackend.Instance,
+                visibleRule: pawn => FullGelAppearanceUtility.GetOwner(pawn) != null)
 #endif
         };
         private static readonly IReadOnlyList<SSCAbilityToggleDefinition> readOnlyDefinitions = definitions.AsReadOnly();

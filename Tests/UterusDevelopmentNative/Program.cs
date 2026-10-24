@@ -47,6 +47,9 @@ internal static partial class Program
     internal static int Run(string repo, string game)
     {
         Console.WriteLine($"Game: {File.ReadAllText(Path.Combine(game, "Version.txt")).Trim()}, MVID: {typeof(Pawn).Module.ModuleVersionId:N}");
+        // 显示实际载入位置及哈希，隔离候选模式下可核对未误用仓库正式旧 DLL。
+        string production = typeof(SSCUterusDevelopmentUtility).Assembly.Location;
+        Console.WriteLine($"Production: {production}, SHA256: {Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(File.ReadAllBytes(production))).ToLowerInvariant()}");
         using var harmony = new HarmonyScope();
         // 所有宿主边界补丁都归属于本次测试，离开入口时统一卸载。
         void Patch(MethodBase method, string prefix) => harmony.Value.Patch(method, prefix: new HarmonyMethod(typeof(Program), prefix));
@@ -136,6 +139,7 @@ internal static partial class Program
             UterusDescriptionTests(repo);
             UterusDefInjectedTests(repo);
             StomachDevelopmentTests(repo, game, harmony.Value);
+            AbilityToggleAdapterTests();
         }
         finally { Scribe.mode = LoadSaveMode.Inactive; Current.Game = null; }
         Console.WriteLine($"{passed}/{passed + failed} cases passed");

@@ -20,6 +20,14 @@ namespace SexSlaveCraft
         public abstract bool IsOwnerCurrent(Pawn pawn, object owner);
         /// <summary>在公共入口完成校验后执行唯一写入；同步标记／图形等副作用由对应后端负责。</summary>
         public abstract void SetEnabled(Pawn pawn, SSCAbilityToggleDefinition definition, bool enabled);
+        /// <summary>兼容第一批无失败返回的写入；有权威拒绝结果的载体覆盖此入口并原样回传原因。</summary>
+        public virtual bool TrySetEnabled(Pawn pawn, SSCAbilityToggleDefinition definition, bool enabled, out string reason)
+        {
+            // 第一批人格／缰绳后端沿用无返回值入口；能够拒绝提交的身体后端必须覆盖本方法。
+            SetEnabled(pawn, definition, enabled);
+            reason = null;
+            return true;
+        }
     }
 
     /// <summary>一次 UI 事件捕获的提交凭据；不能从新载体反推旧请求的授权。</summary>
@@ -155,7 +163,8 @@ namespace SexSlaveCraft
             // 自定义规则可能触发外部回调；校验结束后仍须确认原载体才能写入。
             if (!IsContextCurrent(pawn, definition, context))
             { reason = Reason("Changed"); return false; }
-            definition.Backend.SetEnabled(pawn, definition, enabled);
+            // 预检不替代载体最终检查：例如预检后才检出妊娠时，保留原 setter 的 false 和原因。
+            if (!definition.Backend.TrySetEnabled(pawn, definition, enabled, out reason)) return false;
             // 健康回调可能替换人格或原载体，不能将原请求的结果授权给新对象。
             bool current = IsContextCurrent(pawn, definition, context);
             reason = current ? null : Reason("Changed");
@@ -168,5 +177,9 @@ namespace SexSlaveCraft
                 ReferenceEquals(pawn.TryGetComp<CompSexSlaveTraining>(), context.Comp) &&
                 SSCPersonalityRuntimeUtility.IsCurrent(pawn, context.PersonalityToken) &&
                 definition.Backend.IsOwnerCurrent(pawn, context.Owner);
+
+        /// <summary>供身体／外观绘制器只读检查快照；复用同一套人格与 owner 凭据，不重拍上下文或写入载体。</summary>
+        public static bool IsCurrent(Pawn pawn, string id, SSCAbilityToggleContext context)
+            => IsContextCurrent(pawn, Find(id), context);
     }
 }

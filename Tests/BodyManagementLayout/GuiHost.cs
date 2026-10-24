@@ -23,6 +23,7 @@ namespace UnityEngine
 }
 namespace RimWorld
 {
+    public sealed class Faction { public static readonly Faction OfPlayer = new(); }
     public static class BodyPartDefOf { public static readonly Verse.BodyPartDef Torso = new(); }
     public static class MessageTypeDefOf { public static readonly object RejectInput = new(); }
 }
@@ -45,6 +46,7 @@ namespace Verse
         public string defName;
         public string description;
         public Type hediffClass;
+        public float maxSeverity = 100;
         public List<HediffStage> stages = new();
         public SSCUterusDevelopmentExtension Extension;
         public T GetModExtension<T>() where T : class => Extension as T;
@@ -61,6 +63,9 @@ namespace Verse
         public BodyPartRecord Part;
         public object Comp;
         public virtual float Severity { get; set; }
+        public virtual bool Visible => true;
+        public virtual bool ShouldRemove => false;
+        public virtual string SeverityLabel => null;
         public virtual string Description => def.description;
         public virtual HediffStage CurStage => def.stages.Last(stage => Severity >= stage.minSeverity);
         public T TryGetComp<T>() where T : class => Comp as T;
@@ -71,7 +76,7 @@ namespace Verse
     }
     public static class HediffMaker
     {
-        public static Hediff MakeHediff(HediffDef def, Pawn pawn, BodyPartRecord part)
+        public static Hediff MakeHediff(HediffDef def, Pawn pawn, BodyPartRecord part = null)
         {
             var item = (Hediff)Activator.CreateInstance(def.hediffClass);
             item.def = def; item.pawn = pawn; item.Part = part; item.PostMake(); return item;
@@ -89,17 +94,22 @@ namespace Verse
         public int Notifications;
         public void Notify_HediffChanged(Hediff value) => Notifications++;
         public void RemoveHediff(Hediff item) => hediffSet.hediffs.Remove(item);
-        public void AddHediff(Hediff item, BodyPartRecord part) { item.Part = part; hediffSet.hediffs.Add(item); item.PostAdd(null); }
+        public void AddHediff(Hediff item, BodyPartRecord part = null) { item.Part = part; hediffSet.hediffs.Add(item); item.PostAdd(null); }
     }
     public sealed class Pawn
     {
         public Health health;
         public bool Pregnant;
+        public bool Dead, Destroyed, Discarded;
+        public RimWorld.Faction Faction = RimWorld.Faction.OfPlayer;
+        public RaceProperties RaceProps = new();
         public CompSexSlaveTraining Training;
         public BodyPartRecord Torso = new() { def = RimWorld.BodyPartDefOf.Torso };
         public Pawn() { health = new(this); Training = new(); }
         public T GetComp<T>() where T : class => Training as T;
+        public T TryGetComp<T>() where T : class => Training as T;
     }
+    public sealed class RaceProperties { public bool Humanlike = true; }
     public static class Text
     {
         public static GameFont Font;
@@ -146,7 +156,7 @@ namespace Verse
         public static void Load(string repo, string language)
         {
             Values = new();
-            foreach (string file in new[] { "SSC_Keys.xml", "SSC_BodyManagement.xml", "SSC_UterusDevelopment.xml" })
+            foreach (string file in new[] { "SSC_Keys.xml", "SSC_BodyManagement.xml", "SSC_UterusDevelopment.xml", "SSC_AbilityToggles.xml" })
                 foreach (var element in System.Xml.Linq.XDocument.Load(Path.Combine(repo, "1.7/Languages", language, "Keyed", file)).Root.Elements())
                     Values.Add(element.Name.LocalName, element.Value.Replace("\\n", "\n"));
         }
@@ -156,12 +166,25 @@ namespace Verse
 }
 namespace rjw
 {
-    public static class PawnExtensions { public static bool IsPregnant(Verse.Pawn pawn, bool visible) => pawn.Pregnant; }
+    public static class PawnExtensions
+    {
+        // 仅用来安排预检与原 setter 之间的妊娠变化，不在宿主复制准入规则。
+        public static Func<Verse.Pawn,bool> PregnancyProbe;
+        /// <summary>向实际生产工具提供本例妊娠状态，未注入探针时直接读取模型角色字段。</summary>
+        public static bool IsPregnant(Verse.Pawn pawn, bool visible) => PregnancyProbe?.Invoke(pawn) ?? pawn.Pregnant;
+    }
 }
 namespace SexSlaveCraft
 {
-    public sealed class CompSexSlaveTraining { public bool milkProductionEnabled = true; }
-    public static class SSCDefOf { public static readonly Verse.HediffDef SSC_Lactating_SubState = new(); }
+    public enum PawnIdentity { Unset, Master, Slave }
+    public sealed partial class CompSexSlaveTraining { public bool milkProductionEnabled = true; public PawnIdentity pawnIdentity; }
+    public static class SSCDefOf
+    {
+        public static readonly Verse.HediffDef SSC_Lactating_SubState = new();
+        public static readonly Verse.HediffDef SSC_PersonalityExcreted_Done = new();
+    }
+    public static class SSCMasterProgressionUtility
+    { public static bool IsHollow(Verse.Pawn pawn) => pawn?.health?.hediffSet?.GetFirstHediffOfDef(SSCDefOf.SSC_PersonalityExcreted_Done) != null; }
     // 与原 Strings 入口相同的单键转发；实际四语资源从磁盘加载，不在宿主复制译文。
     public static class Strings { public static string ITab_MilkProductionToggle => "SSC_ITab_MilkProductionToggle".Translate(); }
     // 泌乳标签及孕期因子属于外部组件边界，生产实现另由原生／泌乳专项验证。

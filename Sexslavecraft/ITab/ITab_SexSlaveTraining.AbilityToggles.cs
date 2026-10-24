@@ -22,10 +22,11 @@ namespace SexSlaveCraft
             public float Height;
 #if SSC_RW17 || SSC_ABILITY_TOGGLE_FRAMEWORK
             public SSCAbilityToggleContext Context;
+            public string Detail, ChangeReason;
 #endif
         }
 
-        /// <summary>主人与性奴面板可共用；只形成当前 GUI 事件的只读视图。</summary>
+        /// <summary>按展示分组为主人、性奴、身体和外观区域形成当前 GUI 事件的只读行，不授予编辑资格。</summary>
         private static List<AbilityToggleRow> BuildAbilityToggleRows(Pawn pawn, CompSexSlaveTraining comp,
             SSCAbilityToggleGroup group, float innerWidth)
         {
@@ -53,10 +54,12 @@ namespace SexSlaveCraft
                     string tip = definition.TipRule == null ? definition.TipKey.Translate().ToString() : definition.TipRule(pawn);
                     string reason = !state.CanChange ? state.ChangeReason : state.Enabled && !state.Active ? state.InactiveReason : null;
                     if (!string.IsNullOrEmpty(reason)) tip += "\n\n" + reason;
+                    // 同一次状态、提示与从属文字供各区域测量／绘制；提交仍只携带原捕获上下文。
                     rows.Add(new AbilityToggleRow
                     {
                         Pawn = pawn, Comp = comp, Id = definition.Id, Label = label, Tip = tip,
                         Enabled = state.Enabled, CanEdit = state.CanChange, Context = state.Context,
+                        Detail = definition.DetailRule?.Invoke(pawn), ChangeReason = state.ChangeReason,
                         Height = Mathf.Max(24f, Text.CalcHeight(label, Mathf.Max(1f, innerWidth - 24f)))
                     });
 #else
@@ -124,12 +127,22 @@ namespace SexSlaveCraft
                 // 行快照仅用于显示；真正提交交给通用入口再查当前权限与人格归属。
                 if (GUI.enabled && enabled != row.Enabled && SelPawn == row.Pawn)
 #if SSC_RW17 || SSC_ABILITY_TOGGLE_FRAMEWORK
-                    SSCAbilityToggleUtility.TrySet(row.Pawn, row.Id, enabled, row.Context, out _);
+                    TrySetAbilityToggleRow(row, enabled, out _);
 #else
                     SSCAbilityToggleUtility.TrySetEnabled(row.Pawn, row.Id, enabled, row.Comp, row.PersonalityToken);
 #endif
                 y += row.Height;
             }
         }
+#if SSC_RW17 || SSC_ABILITY_TOGGLE_FRAMEWORK
+        /// <summary>所有显示区域共用提交；角色选择变化后不把旧行请求交给新选中角色。</summary>
+        private bool TrySetAbilityToggleRow(AbilityToggleRow row, bool enabled, out string reason)
+        {
+            // 显示区域不重新捕获身体或人格；切换选中对象后直接拒绝这次旧行请求。
+            if (SelPawn != row.Pawn)
+            { reason = SSCAbilityToggleUtility.Reason("Changed"); return false; }
+            return SSCAbilityToggleUtility.TrySet(row.Pawn, row.Id, enabled, row.Context, out reason);
+        }
+#endif
     }
 }
