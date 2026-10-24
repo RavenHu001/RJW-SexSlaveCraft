@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <!-- AI 辅助生成：第 1 批仅实现身体记录及原版生育因子；其余阶段收益在第 4 批接入。 -->
+  <HediffDef>
+    <defName>SSC_UterusDevelopment</defName>
+    <label>子宫开发（暂名）</label>
+    <description>记录当前身体的子宫开发进度。培养完成前自身生育能力为零；完成后可手动开启生育。正式文案待定。</description>
+    <hediffClass>SexSlaveCraft.Hediff_SSCUterusDevelopment</hediffClass>
+    <isBad>false</isBad>
+    <tendable>false</tendable>
+    <everCurableByItem>false</everCurableByItem>
+    <makesAlert>false</makesAlert>
+    <!-- 进度保留在身体记录上；不安装自然衰减组件，0 严重度仍按原版规则移除。 -->
+    <keepOnBodyPartRestoration>true</keepOnBodyPartRestoration>
+    <initialSeverity>0.01</initialSeverity>
+    <minSeverity>0</minSeverity>
+    <maxSeverity>1</maxSeverity>
+    <stages>
+      <!-- 常规阶段均关闭自身原版生育；其他阶段属性由第 4 批补齐。 -->
+      <li>
+        <minSeverity>0</minSeverity>
+        <label>培养中</label>
+        <fertilityFactor>0</fertilityFactor>
+      </li>
+      <li>
+        <minSeverity>1</minSeverity>
+        <label>已完成·生育关闭</label>
+        <fertilityFactor>0</fertilityFactor>
+      </li>
+    </stages>
+    <modExtensions>
+      <!-- 单独配置满级开启态，由实例的 CurStage 选择，不原位修改共享 stages。 -->
+      <li Class="SexSlaveCraft.SSCUterusDevelopmentExtension">
+        <fertileStage>
+          <minSeverity>1</minSeverity>
+          <label>已完成·生育开启</label>
+          <fertilityFactor>2.5</fertilityFactor>
+        </fertileStage>
+      </li>
+    </modExtensions>
+  </HediffDef>
+</Defs>

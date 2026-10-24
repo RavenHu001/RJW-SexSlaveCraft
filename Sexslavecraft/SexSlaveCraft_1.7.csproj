@@ -73,6 +73,11 @@
     <Error Condition="'@(LegacyCompile)' == ''" Text="The shared legacy source list is empty." />
     <ItemGroup><Compile Include="@(LegacyCompile)" /></ItemGroup>
   </Target>
+  <!-- AI 辅助生成：子宫开发仅编入 1.7，不改变冻结的 1.6 编译清单。 -->
+  <ItemGroup>
+    <Compile Include="Hediff/Hediff_SSCUterusDevelopment.cs" />
+    <Compile Include="common/SSCUterusDevelopmentUtility.cs" />
+  </ItemGroup>
   <!-- AI 辅助生成：医美功能仅编入 1.7，不改变冻结的 1.6 编译清单。 -->
   <ItemGroup>
     <Compile Include="common/SSCCosmeticUtility.cs" />
