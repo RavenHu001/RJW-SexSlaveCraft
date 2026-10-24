@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Defs>
   <!-- AI 辅助生成：当前身体的进度、生育因子及第 4 批阶段收益；各阶段替换、不累乘。 -->
   <HediffDef>
@@ -6,8 +6,8 @@
     <label>子宫开发（暂名）</label>
     <description>记录当前身体的子宫开发进度。培养完成前自身生育能力为零；完成后可手动开启生育。正式文案待定。</description>
     <hediffClass>SexSlaveCraft.Hediff_SSCUterusDevelopment</hediffClass>
-    <!-- 名称行统一为亮紫色 #C060FF（RGB 192、96、255）；培养及满级两态共用，描述正文不染色。 -->
-    <defaultLabelColor>(0.7529412, 0.3764706, 1.0)</defaultLabelColor>
+    <!-- 名称行统一为与旧部位开发相同的亮粉色 #FF69B4（RGB 255、105、180）；培养及满级两态共用，描述正文不染色。 -->
+    <defaultLabelColor>(255, 105, 180)</defaultLabelColor>
     <isBad>false</isBad>
     <tendable>false</tendable>
     <everCurableByItem>false</everCurableByItem>
