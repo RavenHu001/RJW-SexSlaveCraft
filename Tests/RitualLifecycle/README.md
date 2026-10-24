@@ -1,6 +1,6 @@
 # Binding Ritual lifecycle regression tests
 
-The suite currently contains 208 cases, including ritual lifecycle, UAP compatibility,
+The suite currently contains 228 cases, including ritual lifecycle, UAP compatibility,
 daily training, Education interactions, receiver handoff/reservation regressions,
 and exclusive ownership during personality excretion.
 
@@ -39,6 +39,28 @@ files and all pass with the fix. The completed scene also records that its paylo
 before cat and dog effects are detached; a missing storage component cannot invoke either
 detach boundary. These checks run the real extraction task, while the actual pet-state and
 cooldown algorithms are exercised by PersonalityTraits and PetCatAbility/PetDogAbility.
+
+The 2026-10-24 PE approach regression adds 20 cases (12 also run without UAP).
+It drives the production approach, receiver handoff, scene finish and extraction for
+the same actor across two targets, with a retained external position lock between
+scenes. Other cases cover Touch arrival and same-cell scene synchronization,
+restored idle paths, retry frequency and limits, saved/missing retry fields,
+resetting consecutive failures after movement, and stale callbacks after changing
+the Job, driver, loadID, target or map, including RJW's cached PartnerPawn. Reentrant unlock and throwing external API
+cases preserve replacement tasks or terminate a persistently blocked approach.
+The path host records requests and supplies explicit arrival signals; the UAP stub
+supplies locks and notification hooks. Neither reproduces SSC recovery logic, real
+map pathfinding, actual UAP patch execution, or native Scribe cross-reference loading.
+The initial 19-case batch failed 16 times before the fix; an additional cached-target
+case failed until ownership also checked the live Job target. The final suite passed
+228/228 cases with the UAP boundary and 212/212 without it. Related InteractionProtection (259/259) and
+ForcedSexProps (28/28) passed, and an isolated production build against the local
+RimWorld 1.7.4985 rev1269 assemblies succeeded without warnings or errors. Logs
+and the test build are in `.builds/pe-approach/`. On 2026-10-24, the maintainer
+confirmed in game that consecutive personality-excretion jobs no longer leave
+the actor standing idle; this reported scenario is accepted. Other combinations
+and native save/load recovery were not individually reported as tested in game.
+
 `GameStubs.cs` supplies the minimal game host and stores observable state. The
 tests do not duplicate the ritual ownership, progression, recovery or outcome
 eligibility algorithms.

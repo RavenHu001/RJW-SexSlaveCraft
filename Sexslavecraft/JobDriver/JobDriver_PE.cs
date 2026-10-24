@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Verse;
 using Verse.AI;
 
+// AI 辅助生成：人格排泄走位恢复与任务归属校验。
 // EN: This file implements personality excretion as a sex job.
 // EN: It finishes the RJW scene, produces personality gel, and leaves the victim behind as a hollow pawn.
 // CN: 这个文件实现“人格排泄”对应的性行为 Job。
@@ -13,6 +14,16 @@ namespace SexSlaveCraft
     public class JobDriver_PE : JobDriver_SexBaseInitiator
     {
         private readonly JobDef partnerJob = SSCDefOf.SSC_TrainingReceiver;
+        private int approachIdleRetries;
+        private const int ApproachRetryIntervalTicks = 60;
+        private const int MaxApproachIdleRetries = 10;
+
+        /// <summary>保存连续寻路失败次数；读档恢复走位步骤时继续原有重试预算。</summary>
+        public override void ExposeData()
+        {
+            base.ExposeData();
+            Scribe_Values.Look(ref approachIdleRetries, "sscPEApproachIdleRetries", 0);
+        }
 
         /// <summary>为人格排泄任务预约唯一接收目标；预约冲突时返回 false。</summary>
         public override bool TryMakePreToilReservations(bool errorOnFailed)
@@ -41,7 +52,49 @@ namespace SexSlaveCraft
                 return h == null;
             });
 
-            yield return Toils_Goto.GotoThing(iTarget, PathEndMode.OnCell);
+            // 闭包固定创建它的任务编号和目标，不能在迟到回调中认领回池复用后的新任务。
+            var approachContext = new TrainingJobUtility.JobContext(this);
+            Pawn approachTarget = Partner;
+            System.Func<bool> ownsApproach = () => approachContext.IsCurrent &&
+                approachContext.Target.Thing == approachTarget && job.targetA.Thing == approachTarget &&
+                Partner == approachTarget;
+
+            // 与 WorkGiver 的 Touch 一致；接近后由既有接收交接同步到同格。
+            // 上一场动画的遗留位置锁可能吞掉 StartPath，必须在首次寻路前释放本人旧锁。
+            Toil approach = Toils_Goto.GotoThing(iTarget, PathEndMode.Touch);
+            System.Action startApproach = approach.initAction;
+            approach.initAction = delegate
+            {
+                if (!ownsApproach()) return;
+                approachIdleRetries = 0;
+                UapRitualCompatibilityUtility.ReleasePositionLocks(pawn, null);
+                if (!ownsApproach()) return;
+                startApproach();
+            };
+            approach.tickAction = delegate
+            {
+                if (!ownsApproach()) return;
+                if (pawn.pather.MovingNow)
+                {
+                    approachIdleRetries = 0;
+                    return;
+                }
+
+                // 读档停在走位步骤中间不会重跑 initAction；有限补发也覆盖途中被外部停止寻路。
+                if (Find.TickManager.TicksGame % ApproachRetryIntervalTicks != 0) return;
+                if (++approachIdleRetries > MaxApproachIdleRetries)
+                {
+                    TrainingJobUtility.MarkValidationFailure(approachTarget, "SSC_PE_PATH");
+                    if (ownsApproach()) pawn.jobs.EndCurrentJob(JobCondition.Incompletable);
+                    return;
+                }
+
+                // 只解锁发起者；不干扰目标或其他场次参与者的合法动画。
+                UapRitualCompatibilityUtility.ReleasePositionLocks(pawn, null);
+                if (!ownsApproach()) return;
+                pawn.pather.StartPath(new LocalTargetInfo(approachTarget), PathEndMode.Touch);
+            };
+            yield return approach;
 
             // EN: Step 1: start the receiver Job so the victim enters the same personality-excretion scene.
             // CN: 步骤 1：启动 receiver Job，让受害者进入同一段人格排泄场景。

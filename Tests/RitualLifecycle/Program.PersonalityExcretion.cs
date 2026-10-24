@@ -12,9 +12,9 @@ internal static partial class Program
         public readonly JobDriver_PE Driver;
         public readonly Toil[] Toils;
 
-        public PEExecution(Pawn target = null, bool forced = false)
+        public PEExecution(Pawn target = null, bool forced = false, Pawn actor = null)
         {
-            Actor = TestWorld.NewPawn();
+            Actor = actor ?? TestWorld.NewPawn();
             Target = target ?? TestWorld.NewPawn();
             if (!Target.health.hediffSet.HasHediff(SSCDefOf.SSC_PersonalityExcreting))
                 Target.health.AddHediff(SSCDefOf.SSC_PersonalityExcreting).Severity = 1f;
@@ -46,6 +46,7 @@ internal static partial class Program
 
     private static void RunPersonalityExcretionTests()
     {
+        RunPersonalityExcretionApproachTests();
         Check("PE 通用能力快照保存后清源，旧人格凭据失效", () =>
         {
             var execution=new PEExecution();var comp=execution.Target.TryGetComp<CompSexSlaveTraining>();

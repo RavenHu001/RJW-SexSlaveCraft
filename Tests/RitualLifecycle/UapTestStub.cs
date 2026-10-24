@@ -13,6 +13,7 @@ namespace UAP_Animations
         private static readonly Dictionary<Pawn, Job> Locks = new Dictionary<Pawn, Job>();
         internal static readonly HashSet<Pawn> Animating = new HashSet<Pawn>();
         internal static bool ThrowOnUnlock;
+        internal static Action AfterUnlock;
 
         /// <summary>清除外部模组替身的全部状态，使每个用例独立运行。</summary>
         internal static void Reset()
@@ -20,6 +21,7 @@ namespace UAP_Animations
             Locks.Clear();
             Animating.Clear();
             ThrowOnUnlock = false;
+            AfterUnlock = null;
         }
 
         /// <summary>模拟 UAP 启动动画时记录参与者当前任务并建立位置锁。</summary>
@@ -33,6 +35,7 @@ namespace UAP_Animations
         {
             if (ThrowOnUnlock) throw new InvalidOperationException("simulated UAP API failure");
             foreach (Pawn pawn in participants) Locks.Remove(pawn);
+            AfterUnlock?.Invoke();
         }
 
         /// <summary>查询指定参与者的位置锁是否仍存在。</summary>

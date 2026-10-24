@@ -141,6 +141,8 @@ namespace Verse.AI
         public bool MovingNow, BlockStarts;
         public int StartPathCalls;
         public PathEndMode LastEndMode;
+        public LocalTargetInfo LastTarget;
+        public Action BeforeStartPath;
         public Action OnArrival;
         /// <summary>同步位置后停止移动；不替生产工具执行任务交接。</summary>
         public void StopDead() => MovingNow = false;
@@ -151,6 +153,8 @@ namespace Verse.AI
         {
             StartPathCalls++;
             LastEndMode = mode;
+            LastTarget = target;
+            BeforeStartPath?.Invoke();
             if (!BlockStarts) MovingNow = true;
         }
     }
@@ -479,7 +483,8 @@ namespace rjw
     }
     public abstract class JobDriver_Sex : JobDriver
     {
-        public Pawn Partner => job.targetA.Thing as Pawn;
+        public Pawn PartnerPawn;
+        public Pawn Partner => PartnerPawn ?? job.targetA.Thing as Pawn;
         public TargetIndex iTarget = TargetIndex.A;
         public int orgasms, ticks_between_hearts = 10;
         /// <summary>无界面模型不生成心形特效。</summary>
