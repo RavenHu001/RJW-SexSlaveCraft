@@ -119,6 +119,7 @@ internal static partial class Program
             foreach (string name in rjw.Hediff_BasePregnancy.KnownPregnancies())
                 if (DefDatabase<HediffDef>.GetNamedSilentFail(name) == null) PregnancyDef(name);
             // 先验证正常行为，再覆盖重复／坏值与真实存档生命周期。
+            InstallLactationFertilityControl(harmony.Value);
             BodyAndFertility();
             MergeAndNormalization();
             SaveLoad();
@@ -128,6 +129,8 @@ internal static partial class Program
             PregnancyTests(repo, game, harmony.Value);
             BodyManagementLifecycleTests(harmony.Value);
             BodyManagementLanguageTests(repo);
+            HediffFertilityDisplayTests(repo, harmony.Value);
+            LactationFertilityControlTests(repo);
         }
         finally { Scribe.mode = LoadSaveMode.Inactive; Current.Game = null; }
         Console.WriteLine($"{passed}/{passed + failed} cases passed");
@@ -202,7 +205,7 @@ internal static partial class Program
             Near(0, development.stages.Single(stage => stage.minSeverity == 1f).fertilityFactor); Toggle(pawn, true); Equal(1, notifications);
             Toggle(pawn, false); Near(0, Factor(pawn)); Equal(2, notifications);
         });
-        Check("native lactation factor composes normally and is never compensated", () =>
+        Check("native unrelated fertility suppression still composes normally", () =>
         {
             var pawn = NewPawn(); Start(pawn, 1); Toggle(pawn, true);
             var lactation = new HediffDef { defName = "TestLactation", label = "永久泌乳", stages = new() { new HediffStage { fertilityFactor = .05f } } };

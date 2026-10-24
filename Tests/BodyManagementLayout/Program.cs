@@ -31,9 +31,9 @@ internal static class Program
             Run("本地化键、镜像、占位参数及旧泌乳键复用：" + language, () => LanguageResources(repo, language));
         foreach (string language in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" })
             Run("早期创建／手术文案资源完整性：" + language, () => StartupLanguageResources(repo, language));
-        Run("长译文及参数重排后标题、条目完整测量且无占位符泄漏", LongTranslations);
+        Run("长标题与开关译文按缩进宽度测量且无占位符泄漏", LongTranslations);
         foreach (float progress in new[] { .01f, .3f, .7f, .99999f, 1f })
-            Run("阶段与收益读取实际配置 " + progress, () => StageDisplay(progress));
+            Run("各培养阶段只显示生育开关 " + progress, () => StageDisplay(progress));
         Run("满级开关执行生产检查并刷新健康状态", () =>
         {
             var p = Body(2, 1); var h = SSCUterusDevelopmentUtility.Find(p); int before = p.health.Notifications;
@@ -117,6 +117,17 @@ internal static class Program
             Require(draw.Rect.yMax <= view.Height - 12 && draw.Rect.xMax <= width - 12);
         }
         Require(Widgets.Drawn.Count(d => d.Kind == "checkbox") == ((contents & 1) != 0 ? 1 : 0) + ((contents & 2) != 0 ? 1 : 0));
+        if ((contents & 1) != 0)
+        {
+            var milk = Widgets.Drawn.Single(d => d.Kind == "checkbox" && d.Label == Strings.ITab_MilkProductionToggle);
+            var charge = Widgets.Drawn.Single(d => d.Kind == "label" && d.Label.Contains("53%"));
+            Require(charge.Rect.x == milk.Rect.x + 16 && charge.Rect.xMax == milk.Rect.xMax);
+            if ((contents & 2) != 0)
+            {
+                var fertility = Widgets.Drawn.Single(d => d.Kind == "checkbox" && d.Label == "SSC_BodyManagement_FertilityToggle".Translate());
+                Require(fertility.Rect.x == milk.Rect.x && fertility.Rect.y - charge.Rect.yMax >= 16);
+            }
+        }
     }
     /// <summary>检查真实四语资源的完整性、镜像与格式参数，并执行已有泌乳键和属性标签的复用。</summary>
     private static void LanguageResources(string repo, string language)
@@ -145,7 +156,7 @@ internal static class Program
         string milk = XDocument.Load(Path.Combine(repo, "1.7/Languages", language, "Keyed/SSC_Keys.xml"))
             .Root.Element("SSC_ITab_MilkProductionToggle").Value;
         Require(Widgets.Drawn.Any(d => d.Kind == "checkbox" && d.Label == milk));
-        Require(Widgets.Drawn.Any(d => d.Kind == "tip" && d.Label.Contains("已有属性译名")));
+        Require(Widgets.Drawn.All(d => !d.Label.Contains("×")));
         Require(Widgets.Drawn.All(d => !d.Label.Contains("SSC_") && !Regex.IsMatch(d.Label, @"\{\d+\}") && !d.Label.Contains("\\n")));
     }
 
@@ -175,32 +186,29 @@ internal static class Program
         }
     }
 
-    /// <summary>模拟更长译文和句式重排；测量使用翻译结果，标题在同一次视图内保持一致。</summary>
+    /// <summary>模拟更长标题和开关译文；测量使用缩进后的宽度，标题在当次视图内保持一致。</summary>
     private static void LongTranslations()
     {
         string title = string.Concat(Enumerable.Repeat("身体管理的长标题", 5));
         Translator.Values["SSC_BodyManagement_Title"] = title;
         Translator.Values["SSC_ITab_MilkProductionToggle"] = string.Concat(Enumerable.Repeat("泌乳开关长译文", 4));
-        Translator.Values["SSC_BodyManagement_Progress"] = "当前阶段为{1}；开发进度为{0}。这是一条用于验证自动换行的较长占位文本。";
+        Translator.Values["SSC_BodyManagement_FertilityToggle"] = string.Concat(Enumerable.Repeat("生育开关长译文", 4));
         Layout(200, 1.8f, 3);
-        Require(Widgets.Drawn.Any(d => d.Kind == "label" && d.Label.StartsWith("当前阶段为") && d.Label.Contains("100%")));
         Require(Widgets.Drawn.All(d => !Regex.IsMatch(d.Label, @"\{\d+\}")));
         Widgets.Drawn.Clear(); var tab = new ITab_SexSlaveTraining(); var view = tab.Capture(Body(3), 200);
         Translator.Values["SSC_BodyManagement_Title"] = "稍后变化的标题";
         view.Draw(); Require(Widgets.Drawn.Any(d => d.Kind == "label" && d.Label == title));
     }
 
-    /// <summary>显示阶段来自生产 XML；99.999% 未完成时不得四舍五入为 100%。</summary>
+    /// <summary>五个培养进度都只绘制一个生育开关；进度、阶段、收益和生育状态不再作为页面行出现。</summary>
     private static void StageDisplay(float progress)
     {
-        var p = Body(2, progress); Draw(p); var stage = SSCUterusDevelopmentUtility.Find(p).CurStage;
-        Require(Widgets.Drawn.Any(d => d.Label.Contains(stage.label)));
-        if (progress == .01f || progress == .3f || progress == .7f)
-            Require(Widgets.Drawn.Any(d => d.Kind == "label" && d.Label.Contains((progress == .01f ? "1%" : progress == .3f ? "30%" : "70%"))));
-        if (progress < 1) Require(Widgets.Drawn.Where(d => d.Kind == "label").All(d => !d.Label.Contains("100%")));
-        if (progress == 1) Require(Widgets.Drawn.Any(d => d.Kind == "tip" && d.Label.Contains("×2.5") && d.Label.Contains("×0.8") && d.Label.Contains("关闭生育") && d.Label.Contains("开启生育")));
-        if (progress == .01f) Require(Widgets.Drawn.Any(d => d.Label.Contains("暂无额外强化")));
-        else Require(Widgets.Drawn.Any(d => d.Kind == "label" && d.Label.Contains("已有属性译名 ×" + (progress == .3f ? "1.1" : progress < 1 ? "1.25" : "1.5"))));
+        var p = Body(2, progress); Draw(p);
+        var labels = Widgets.Drawn.Where(d => d.Kind == "label").ToList();
+        Require(labels.Count == 1 && labels[0].Label == "SSC_BodyManagement_Title".Translate());
+        var toggle = Widgets.Drawn.Single(d => d.Kind == "checkbox");
+        Require(toggle.Label == "SSC_BodyManagement_FertilityToggle".Translate() && toggle.Disabled == (progress < 1));
+        Require(Widgets.Drawn.Where(d => d.Kind != "tip").All(d => !d.Label.Contains("子宫开发") && !d.Label.Contains("%") && !d.Label.Contains("收益") && !d.Label.Contains("生育：")));
     }
     /// <summary>保存旧界面后替换身体条件，实际绘制不得操作新身体记录或旧组件。</summary>
     private static void Stale(string change)

@@ -1,4 +1,4 @@
-# 测试说明索引
+﻿# 测试说明索引
 
 当前版本登记为 **2.4.4 开发版，尚未发布**。以下仪式演化点、文化、人格排泄与医美结果保留各自日期，不作为本次新执行的全量门禁；见[2.4.4 验证与发布准备](../Docs/Releases/2.4.4/2.4.4版本验证.md)。
 
@@ -155,7 +155,7 @@ pwsh -File Scripts/Test-All.ps1 -GameVersion 1.7 -HarmonyAssemblyPath 'C:\Depend
 - [PersonalitySpecializations](PersonalitySpecializations/README.md)：人格特化进度回归。
 - [PersonalityCardLayout](PersonalityCardLayout/README.md)：人格凝胶界面布局检查。
 - [BodyManagementLayout](BodyManagementLayout/README.md)：共用身体管理栏及生产开关检查，92／92；真实页面仍待实机验收。
-- [UterusDevelopmentNative](UterusDevelopmentNative/README.md)：子宫开发第 1～5 批真实程序集专项，305／305。
+- [UterusDevelopmentNative](UterusDevelopmentNative/README.md)：子宫开发第 1～5 批及实机反馈修订的真实程序集专项，340／340（含 Hediff 生育展示、满级开启时解除 SSC 永久泌乳抑制）。
 - [GenderChangeMemory](GenderChangeMemory/README.md)：性别重置手术记忆回归测试。
 - [PermanentLactation](PermanentLactation/README.md)：永久泌乳累计计时回归。
 

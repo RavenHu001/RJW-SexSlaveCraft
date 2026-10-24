@@ -80,6 +80,8 @@
     <Compile Include="Hediff/HediffComp_SSCUterusPregnancy.cs" />
     <Compile Include="common/SSCUterusPregnancyUtility.cs" />
     <Compile Include="ThePatches/Harmony_UterusPregnancy.cs" />
+    <Compile Include="ThePatches/Harmony_HediffFertilityDisplay.cs" />
+    <Compile Include="ThePatches/Harmony_LactationFertilityControl.cs" />
     <Compile Include="common/SSCUterusDevelopmentUtility.cs" />
     <Compile Include="common/SSCUterusDevelopmentUtility.Identity.cs" />
     <Compile Include="common/SSCUterusDevelopmentGrowthUtility.cs" />

@@ -11,6 +11,8 @@ namespace SexSlaveCraft
     public partial class ITab_SexSlaveTraining
     {
         private const float BodyRowGap = 6f;
+        private const float BodyChildIndent = 16f;
+        private const float BodyGroupGap = 10f;
         private enum BodyControl { None, Milk, Fertility }
 
         /// <summary>一行的文字、控件状态与测量结果；不跨 GUI 事件缓存。</summary>
@@ -19,7 +21,7 @@ namespace SexSlaveCraft
             internal string Label, Tip;
             internal BodyControl Control;
             internal bool Enabled, CanEdit;
-            internal float Height;
+            internal float Height, Indent, GapBefore;
         }
 
         /// <summary>同一次测量和绘制共享的身体引用；点击前必须再次确认引用仍然有效。</summary>
@@ -61,72 +63,36 @@ namespace SexSlaveCraft
                     AddBodyRow(view, innerWidth, Strings.ITab_MilkProductionToggle, "SSC_BodyManagement_MilkTip".Translate(),
                         BodyControl.Milk, comp.milkProductionEnabled, true);
                     string progress = view.Milk.TryGetComp<HediffComp_PermanentLactating>()?.CompLabelInBracketsExtra;
-                    if (!string.IsNullOrEmpty(progress)) AddBodyRow(view, innerWidth, progress);
+                    // 充盈度是泌乳开关的从属信息，缩进显示，不与下一项独立开关混排。
+                    if (!string.IsNullOrEmpty(progress)) AddBodyRow(view, innerWidth, progress, indent: BodyChildIndent);
                 }
                 if (view.Uterus != null)
                 {
-                    // 保留两位小数，并限制未完成的显示上限；兼顾浮点误差和接近满级时的可读性。
-                    double progress = view.Uterus.IsComplete ? 100d : Math.Min(99.99d, Math.Round(view.Uterus.Severity * 100d, 2));
-                    string percent = progress.ToString("0.##") + "%";
-                    // 完整句式交给语言资源，进度、阶段和倍率均通过参数填入。
-                    AddBodyRow(view, innerWidth, "SSC_BodyManagement_Progress".Translate(percent, view.Uterus.CurStage.label));
-                    AddBodyRow(view, innerWidth, view.Uterus.IsComplete
-                        ? (view.Uterus.FertilityEnabled ? "SSC_BodyManagement_FertilityOn" : "SSC_BodyManagement_FertilityOff").Translate()
-                        : "SSC_BodyManagement_FertilityIncomplete".Translate(), "SSC_BodyManagement_FertilityScope".Translate());
-                    string benefits = BodyBenefits(view.Uterus.CurStage);
-                    string tip = "SSC_BodyManagement_CurrentTip".Translate(benefits, BodyFertilityFactor(view.Uterus.CurStage));
-                    if (view.Uterus.IsComplete)
-                    {
-                        var fertile = view.Uterus.def.GetModExtension<SSCUterusDevelopmentExtension>()?.fertileStage;
-                        var closed = view.Uterus.def.stages.LastOrDefault();
-                        tip += "\n\n" + "SSC_BodyManagement_TwoStateTip".Translate(BodyBenefits(closed), BodyFertilityFactor(closed),
-                            BodyBenefits(fertile), BodyFertilityFactor(fertile), SSCUterusPregnancyUtility.DurationFactor.ToString("0.##"));
-                    }
-                    AddBodyRow(view, innerWidth, "SSC_BodyManagement_CurrentBenefits".Translate(BodyBenefits(view.Uterus.CurStage, true)), tip);
+                    // 身体管理只提供开关；名称、开发进度、阶段、收益和生育状态由健康页展示。
                     bool enabled = view.Uterus.FertilityEnabled;
                     bool available = SSCUterusDevelopmentUtility.CanSetFertilityEnabled(pawn, !enabled, out string reason);
                     AddBodyRow(view, innerWidth, "SSC_BodyManagement_FertilityToggle".Translate(), reason ?? "SSC_BodyManagement_FertilityTip".Translate(),
-                        BodyControl.Fertility, enabled, available);
+                        BodyControl.Fertility, enabled, available, gapBefore: view.Milk != null ? BodyGroupGap : 0f);
                 }
-                view.Height = SectionPadding * 2f + view.TitleHeight + view.Rows.Sum(row => row.Height)
+                view.Height = SectionPadding * 2f + view.TitleHeight + view.Rows.Sum(row => row.Height + row.GapBefore)
                     + BodyRowGap * Math.Max(0, view.Rows.Count - 1);
             }
             finally { Text.Font = font; Text.WordWrap = wrap; }
             return view;
         }
 
-        /// <summary>将一行的实际文字高度计入视图，复选框始终保留右侧控件宽度。</summary>
+        /// <summary>按缩进后的实际宽度测量文字，行高与组间留白同时计入视图；复选框另留控件宽度。</summary>
         private static void AddBodyRow(BodyManagementView view, float width, string label, string tip = null,
-            BodyControl control = BodyControl.None, bool enabled = false, bool canEdit = false)
+            BodyControl control = BodyControl.None, bool enabled = false, bool canEdit = false, float indent = 0f, float gapBefore = 0f)
         {
             view.Rows.Add(new BodyManagementRow
             {
                 Label = label, Tip = tip, Control = control, Enabled = enabled, CanEdit = canEdit,
+                Indent = indent, GapBefore = gapBefore,
                 Height = Mathf.Max(control == BodyControl.None ? Text.LineHeight : 24f,
-                    Text.CalcHeight(label, Mathf.Max(1f, width - (control == BodyControl.None ? 0f : 24f))))
+                    Text.CalcHeight(label, Mathf.Max(1f, width - indent - (control == BodyControl.None ? 0f : 24f))))
             });
         }
-
-        /// <summary>读取阶段真实倍率及 StatDef 已本地化名称；句式、分隔符和无收益提示来自语言资源。</summary>
-        private static string BodyBenefits(HediffStage stage, bool compact = false)
-        {
-            if (stage == null) return "SSC_BodyManagement_ConfigUnavailable".Translate();
-            string[] names = { "SexFrequency", "SexSatisfaction", "RestRateMultiplier", "InjuryHealingFactor", "ImmunityGainSpeed" };
-            var values = new List<string>();
-            for (int i = 0; i < (compact ? 2 : names.Length); i++)
-            {
-                var modifier = stage.statFactors?.FirstOrDefault(item => item.stat?.defName == names[i]);
-                float factor = modifier?.value ?? 1f;
-                // 属性名复用原版／RJW 的 Def 本地化，不再在界面维护第二组中文名称。
-                if (factor != 1f) values.Add("SSC_BodyManagement_StatFactor".Translate(modifier.stat.LabelCap, factor.ToString("0.##")));
-            }
-            return values.Count == 0 ? "SSC_BodyManagement_NoBenefits".Translate() : string.Join("SSC_BodyManagement_BenefitsSeparator".Translate(), values);
-        }
-
-        /// <summary>显示本项目阶段的生育因子，不将其误写成角色最终受孕概率。</summary>
-        private static string BodyFertilityFactor(HediffStage stage)
-            => stage == null ? "SSC_BodyManagement_ConfigUnavailable".Translate() : stage.fertilityFactor == 0f ? "0"
-                : "SSC_BodyManagement_Multiplier".Translate(stage.fertilityFactor.ToString("0.##"));
 
         /// <summary>绘制一次共享栏并归还全部 GUI 状态；栏内所有项目沿外层滚动布局排列。</summary>
         private void DrawBodyManagementSection(Rect rect, BodyManagementView view)
@@ -145,7 +111,9 @@ namespace SexSlaveCraft
                 float y = inner.y + view.TitleHeight;
                 foreach (var row in view.Rows)
                 {
-                    Rect line = new Rect(inner.x, y, inner.width, row.Height);
+                    // 独立开关之间增加组间留白，充盈度的缩进与测量保持同一宽度。
+                    y += row.GapBefore;
+                    Rect line = new Rect(inner.x + row.Indent, y, inner.width - row.Indent, row.Height);
                     if (row.Control == BodyControl.None)
                     {
                         Widgets.Label(line, row.Label);
