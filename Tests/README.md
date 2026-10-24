@@ -126,7 +126,7 @@ pwsh -File Scripts/Test-All.ps1 -GameVersion 1.7 -HarmonyAssemblyPath 'C:\Depend
 - [主人阶段第二批测试说明](../Docs/Development/Completed/主人阶段第二批测试说明.md)：实践经验联通真实日常 Job、整场仪式 Apply 和成长工具；441/441 专项用例通过，2026-10-13 维护者确认实机测试有效。
 
 - [MasterPanelUI](MasterPanelUI/README.md)：第三批真实主人面板、阶段区间、四语布局及原缰绳开关回归；2026-10-13 维护者确认面板和开关符合预期，实机步骤见[第三批测试说明](../Docs/Development/Completed/主人阶段第三批测试说明.md)。
-- 通用开关框架后续第一批：MasterPanelUI 131／131、原生 PnaSpacerNative 88／88，相关 7 套 1409／1409；保留恩赐／缰绳原保存源，测试候选已备份同步、待实机，完整布局检查存在既有版本元数据差异，见[本批验证](../Docs/Development/Verification/通用能力开关框架第一批实现与验证.md)。
+- 通用开关框架后续第一批：MasterPanelUI 131／131、原生 PnaSpacerNative 88／88，相关 7 套 1409／1409；保留恩赐／缰绳原保存源，维护者确认实机未发现问题，第一批验收关闭，完整布局检查存在既有版本元数据差异，见[本批验证](../Docs/Development/Completed/通用能力开关框架第一批实现与验证.md)。
 - [主人阶段第四批测试说明](../Docs/Development/Completed/主人阶段第四批测试说明.md)：现有五套专项 535/535，覆盖命名、提示去重、人格恢复静默和四语悬停字段；2026-10-13 维护者反馈实机测试未发现问题，已提交为 `708e8be`。
 - 后续五项加成已在 `84a0079` 获实机确认；`66b9a13` 的悬停精简由 MasterPanelUI／TrainerIdentity 共 243/243 验证，已随本轮隐藏版本同步，复测步骤见同一第四批测试说明。
 - 退出身份隐藏功能已于 2026-10-13 获维护者实机确认并提交为 `018752d`，返回主人恢复原阶段和经验；相关五套专项 536/536。

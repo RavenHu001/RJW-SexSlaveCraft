@@ -27,4 +27,4 @@ dotnet run --project Tests/MasterPanelUI/MasterPanelUI.csproj -c Release -- .
 
 `SSC_ABILITY_TOGGLE_FRAMEWORK` 与 `SSC_ABILITY_TOGGLE_MASTER_SHARE` 仅使宿主编译实际 1.7 开关路径，不为整个模型项目打开其他 `SSC_RW17` 功能。生产项目仍按 `SSC_RW17` 接线。新 `Program.Framework.cs` 的测试后端只提供外部载体与资格变化，查询／授权／提交运行生产代码。
 
-相关 7 套合计 **1409／1409**；原生实际分伤链另由 PnaSpacerNative 验证。完整布局门禁有既有 VERSION／BUILD-INFO 元数据差异，本批未运行完整 Test-All，测试候选已备份同步、待实机，详见[实现与验证](../../Docs/Development/Verification/通用能力开关框架第一批实现与验证.md)。
+相关 7 套合计 **1409／1409**；原生实际分伤链另由 PnaSpacerNative 验证。完整布局门禁有既有 VERSION／BUILD-INFO 元数据差异，本批未运行完整 Test-All，维护者确认实机未发现问题，第一批验收关闭，详见[实现与验证](../../Docs/Development/Completed/通用能力开关框架第一批实现与验证.md)。
