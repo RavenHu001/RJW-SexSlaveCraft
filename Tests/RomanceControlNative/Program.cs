@@ -88,6 +88,7 @@ internal static partial class Program
             _ = GenTypes.AllTypes;
             bootstrap = false;
             PolicyTests(); PreferenceTests(); LifecycleTests(); SnapshotTests(); SaveTests(); WiringTests(repo);
+            InteractionTests(harmony, repo, game);
         }
         finally { harmony.UnpatchAll(harmony.Id); Scribe.mode = LoadSaveMode.Inactive; Current.Game = null; }
         Console.WriteLine($"RESULT: {passed}/{passed + failed} passed"); return failed == 0 ? 0 : 1;

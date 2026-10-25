@@ -158,7 +158,7 @@ internal static partial class Program
             Require(text.IndexOf("originalComp?.romanceConfig?.IsSupported") < text.IndexOf("StripVictimPersonality(victim)"));
             Require(text.IndexOf("GenSpawn.Spawn(product") < text.IndexOf("SSCRomancePreferences.Clear(victim)"));
         });
-        Check("maturation never reapplies romance defaults and first batch adds no interaction patch", () =>
+        Check("maturation never reapplies romance defaults and rule layer never writes relations or installs hooks", () =>
         {
             string text = File.ReadAllText(Path.Combine(repo, "Sexslavecraft/common/RabbitCloneUtility.cs")); Require(!text.Contains("SSCRomanceLifecycle.ResetNewClone"));
             foreach (string path in Directory.GetFiles(Path.Combine(repo, "Sexslavecraft/common/Romance"), "*.cs"))

@@ -12,6 +12,7 @@
     <Reference Include="Assembly-CSharp"><HintPath>$(GameRoot)/Assembly-CSharp.dll</HintPath><Private>false</Private></Reference>
     <Reference Include="RJW"><HintPath>$(RjwAssemblyPath)</HintPath><Private>false</Private></Reference>
     <Reference Include="UnityStubs"><HintPath>$(GameRoot)/UnityStubs.dll</HintPath><Private>false</Private></Reference>
-    <Reference Include="0Harmony"><HintPath>$(HarmonyAssemblyPath)</HintPath></Reference>
+    <!-- 第二批直接安装生产补丁，优先采用相同的游戏 Harmony 3，避免两代 CodeInstruction 混用。 -->
+    <Reference Include="0Harmony"><HintPath Condition="'$(GameHarmonyAssemblyPath)' != ''">$(GameHarmonyAssemblyPath)</HintPath><HintPath Condition="'$(GameHarmonyAssemblyPath)' == ''">$(HarmonyAssemblyPath)</HintPath></Reference>
   </ItemGroup>
 </Project>

@@ -81,6 +81,10 @@
     <Compile Include="common/Romance/SSCRomancePreferences.cs" />
     <Compile Include="common/Romance/SSCRomancePersonality.cs" />
     <Compile Include="common/Romance/SSCRomanceLifecycle.cs" />
+    <Compile Include="common/Romance/SSCRomanceEligibility.cs" />
+    <Compile Include="common/Romance/SSCRomanceInteractionUtility.cs" />
+    <Compile Include="common/Romance/SSCRomanceAcceptanceUtility.cs" />
+    <Compile Include="ThePatches/Harmony_RomanceControl.cs" />
     <Compile Include="Comps/Comp_Train.Romance.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_Romance_InvalidParticipants>Романтическое взаимодействие невозможно: недопустимые участники.</SSC_Romance_InvalidParticipants>
+  <SSC_Romance_AlreadyPartners>Между этими персонажами уже есть романтические или брачные отношения.</SSC_Romance_AlreadyPartners>
+  <SSC_Romance_LoverRequired>Для предложения нужны отношения любовников без существующей помолвки или брака.</SSC_Romance_LoverRequired>
+  <SSC_Romance_NoRelationship>Между этими персонажами нет романтических или брачных отношений, которые можно завершить.</SSC_Romance_NoRelationship>
+  <SSC_Romance_UnknownAction>Неизвестное романтическое действие.</SSC_Romance_UnknownAction>
+  <SSC_Romance_RuleDenied>Настройки романтического поведения запрещают этому персонажу начинать это действие.</SSC_Romance_RuleDenied>
+  <SSC_Romance_OwnerOnly>Этот персонаж может начинать ухаживания или делать предложение только своему хозяину по цепи.</SSC_Romance_OwnerOnly>
+  <SSC_Romance_AcceptancePreview>{0} (согласие: {1})</SSC_Romance_AcceptancePreview>
+</LanguageData>

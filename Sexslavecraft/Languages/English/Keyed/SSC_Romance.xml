@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_Romance_InvalidParticipants>Cannot interact romantically: invalid participants.</SSC_Romance_InvalidParticipants>
+  <SSC_Romance_AlreadyPartners>These pawns already have a romantic or marital relationship.</SSC_Romance_AlreadyPartners>
+  <SSC_Romance_LoverRequired>A proposal requires a current lover relationship without an existing engagement or marriage.</SSC_Romance_LoverRequired>
+  <SSC_Romance_NoRelationship>These pawns have no romantic or marital relationship to end.</SSC_Romance_NoRelationship>
+  <SSC_Romance_UnknownAction>Unrecognized romantic action.</SSC_Romance_UnknownAction>
+  <SSC_Romance_RuleDenied>This pawn's romance permissions prohibit initiating this action.</SSC_Romance_RuleDenied>
+  <SSC_Romance_OwnerOnly>This pawn may initiate romance or propose only to their bound master.</SSC_Romance_OwnerOnly>
+  <SSC_Romance_AcceptancePreview>{0} ({1} acceptance)</SSC_Romance_AcceptancePreview>
+</LanguageData>

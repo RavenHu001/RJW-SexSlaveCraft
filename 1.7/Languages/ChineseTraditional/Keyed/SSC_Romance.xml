@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_Romance_InvalidParticipants>無法進行浪漫互動：參與者無效。</SSC_Romance_InvalidParticipants>
+  <SSC_Romance_AlreadyPartners>雙方已存在戀愛或婚姻關係。</SSC_Romance_AlreadyPartners>
+  <SSC_Romance_LoverRequired>求婚需要雙方目前為戀人，且尚未訂婚或結婚。</SSC_Romance_LoverRequired>
+  <SSC_Romance_NoRelationship>雙方沒有可結束的戀愛或婚姻關係。</SSC_Romance_NoRelationship>
+  <SSC_Romance_UnknownAction>無法識別此浪漫行為。</SSC_Romance_UnknownAction>
+  <SSC_Romance_RuleDenied>目前浪漫許可禁止主動發起此行為。</SSC_Romance_RuleDenied>
+  <SSC_Romance_OwnerOnly>目前只允許向實際主人主動求愛或求婚。</SSC_Romance_OwnerOnly>
+  <SSC_Romance_AcceptancePreview>{0}（接受：{1}）</SSC_Romance_AcceptancePreview>
+</LanguageData>

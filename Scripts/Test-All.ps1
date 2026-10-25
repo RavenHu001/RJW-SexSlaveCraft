@@ -8,6 +8,7 @@
 默认将报告保存在 .builds/validation/<本次运行目录>；CultureNative／CosmeticNative 引用并构建生产工程，不安装游戏副本。
 默认检查 1.7 运行资源并回归当前源码；原生品质、太空武器及仪式演化点专项另需当前游戏程序集和 .NET 10，
 可用 -NativeGameRoot / -NativeDotnetPath 指定，默认读取 BUILD-INFO 和仓库便携 SDK。
+RomanceControlNative 第二批优先使用 BUILD-INFO 的游戏 Harmony 3，直接安装生产特性补丁；其他模型宿主仍用单独测试 Harmony。
 -GameVersion 1.6 只核验冻结基线和 XML，不能证明旧版源码或游戏兼容性。
 #>
 [CmdletBinding()]
@@ -301,7 +302,7 @@ foreach ($suite in $suites) {
                 $testArguments = @($repoRoot, $NativeGameRoot)
             }
             if ($name -in @('CultureNative', 'CosmeticNative', 'UterusDevelopmentNative', 'RomanceControlNative')) {
-                # 生产工程仍使用本机实际 RJW/动画/游戏 Harmony 引用；测试 Harmony 单独传入。
+                # 生产工程使用本机实际 RJW/动画/游戏 Harmony 引用；浪漫宿主直接采用游戏 Harmony 3，其余测试 Harmony 单独传入。
                 # 路径来自既有构建记录，缺失时让原生产构建明确失败，不退回旧 DLL。
                 $cultureBuild = Get-Content -LiteralPath (Join-Path $repoRoot '1.7/BUILD-INFO.json') -Raw | ConvertFrom-Json
                 foreach ($reference in $cultureBuild.references) {
