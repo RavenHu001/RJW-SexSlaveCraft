@@ -115,7 +115,7 @@
   <SSC_Restrictions_Tip_ReceiveConsensual>Allow receiving consensual activity from non-owners; the initiator must also have permission.</SSC_Restrictions_Tip_ReceiveConsensual>
   <SSC_Restrictions_Tip_ReceiveForced>Allow receiving forced activity from non-owners. Equipment may force this option off.</SSC_Restrictions_Tip_ReceiveForced>
   <SSC_Restrictions_Tip_ReceiveTraining>Allow non-owner daily or ritual training. Trainer qualifications and assignment requirements still apply.</SSC_Restrictions_Tip_ReceiveTraining>
-  <SSC_Restrictions_Tip_SelfTraining>Allow an SSC sex slave with a chain to train themselves, independently of ordinary masturbation permission. RJW ability and location checks still apply.</SSC_Restrictions_Tip_SelfTraining>
+  <SSC_Restrictions_Tip_SelfTraining>Allow self-training independently of ordinary masturbation permission.</SSC_Restrictions_Tip_SelfTraining>
   <SSC_Restrictions_AssignAuthorizesSuffix> (also allow training)</SSC_Restrictions_AssignAuthorizesSuffix>
   <SSC_Restrictions_AssignAuthorizesTip>Selecting a non-owner trainer also enables receiving non-owner training. Ordinary interactions still use their own rules; forced equipment or specialization restrictions still apply.</SSC_Restrictions_AssignAuthorizesTip>
   <SSC_Restrictions_AssignFailed>Assignment failed: eligibility or restrictions changed, or a forced rule denies training. The previous assignment and personal choices are unchanged.</SSC_Restrictions_AssignFailed>

@@ -1,4 +1,4 @@
-// AI 辅助生成：近似字体/Listing 几何模型；业务查询与提交使用生产 Resolver/Preferences，不模拟屏幕像素。
+﻿// AI 辅助生成：近似字体/Listing 几何模型；业务查询与提交使用生产 Resolver/Preferences，不模拟屏幕像素。
 using SexSlaveCraft;
 using UnityEngine;
 
@@ -35,9 +35,11 @@ namespace Verse
         public static int RomanceCheckboxIndex, RomanceClick = -1;
         public static int RomanceButtonIndex, RomanceButtonClick = -1;
         public static Action BeforeRomanceButton;
+        public static int TargetIndex, TargetClick = -1;
+        public static Action BeforeTargetButton;
         /// <summary>仅记录生产灰底禁用命令区域；不执行图形渲染或命令点击。</summary>
         public static void DrawBoxSolid(Rect rect, Color color)
-            => Items.Add(new DrawItem("romance-button", RomanceUiOrigins.Transform(rect), "", true));
+            => Items.Add(new DrawItem(color.r == .24f && color.g == .24f && color.b == .24f ? "romance-button" : "romance-surface", RomanceUiOrigins.Transform(rect), "", !GUI.enabled));
         /// <summary>记录生产框线矩形，不修改其尺寸。</summary>
         public static void DrawBox(Rect rect) => Items.Add(new DrawItem("romance-frame", RomanceUiOrigins.Transform(rect)));
         /// <summary>记录按钮几何与外层输入状态，本宿主不打开实际窗口。</summary>
@@ -48,7 +50,12 @@ namespace Verse
             return RomanceButtonIndex++ == RomanceButtonClick;
         }
         /// <summary>仅从复选框注入点击，避免标签热区在同一模型事件再次翻转。</summary>
-        public static bool ButtonInvisible(Rect rect) => false;
+        public static bool ButtonInvisible(Rect rect)
+        {
+            if (Items.LastOrDefault()?.Kind != "romance-target") return false;
+            var callback = BeforeTargetButton; BeforeTargetButton = null; callback?.Invoke();
+            return TargetIndex++ == TargetClick;
+        }
         /// <summary>按指定行注入点击，生产绘制器负责禁用保护及原上下文提交。</summary>
         public static void Checkbox(float x, float y, ref bool value, float size, bool disabled)
         {

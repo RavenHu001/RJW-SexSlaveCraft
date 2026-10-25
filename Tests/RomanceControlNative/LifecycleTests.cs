@@ -100,7 +100,7 @@ internal static partial class Program
             var auth = Authorize(clone, Pawn());
             AccessTools.Method(production.GetType("SexSlaveCraft.SSCRestrictionCloneHook"), "Postfix").Invoke(null, new object[] { clone });
             Require(Comp(clone).romanceConfig == null); Require(!Comp(source).romanceConfig.IsDefault);
-            foreach (var setting in Enum.GetValues<SSCRomanceSetting>()) Equal(setting <= SSCRomanceSetting.AcceptProposal || setting == SSCRomanceSetting.InitiateToSexSlave, SSCRomancePreferences.GetView(clone, setting).Saved);
+            foreach (var setting in Enum.GetValues<SSCRomanceSetting>()) Equal(setting <= SSCRomanceSetting.AcceptProposal || (setting == SSCRomanceSetting.InitiateToMaster || setting == SSCRomanceSetting.InitiateToSexSlave || setting == SSCRomanceSetting.InitiateToOthers), SSCRomancePreferences.GetView(clone, setting).Saved);
             Require(Comp(clone).abilityToggles.Get("FixtureAbility")); Require(ReferenceEquals(chain, SSCBondUtility.GetChain(clone))); Equal(owner, chain.target);
             Require(!SSCRomanceLifecycle.TryResume(auth.Stamp, out _));
         });
@@ -133,7 +133,7 @@ internal static partial class Program
                 var p = Slave(); Comp(p).romanceConfig = targetDefault ? null : Denied(); var incoming = sourceDefault ? null : Denied();
                 Require(SSCPersonalityRuntimeUtility.TryBeginMutation(p, out var scope)); using (scope) { SSCRomancePreferences.Clear(p); Require(SSCRomancePreferences.Restore(p, incoming)); }
                 Equal(sourceDefault, Comp(p).romanceConfig == null);
-                if (incoming != null) { Require(!ReferenceEquals(incoming, Comp(p).romanceConfig)); Require(!Comp(p).romanceConfig.allowAcceptRomance); Require(Comp(p).romanceConfig.initiateOnlyMaster); }
+                if (incoming != null) { Require(!ReferenceEquals(incoming, Comp(p).romanceConfig)); Require(!Comp(p).romanceConfig.allowAcceptRomance); Require(Comp(p).romanceConfig.allowInitiateToMaster); }
             });
         Check("unknown version and missing carrier are rejected before replacing saved preference", () =>
         {

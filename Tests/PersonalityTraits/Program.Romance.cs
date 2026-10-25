@@ -1,4 +1,4 @@
-// AI 辅助生成：执行真实提取／加工／植入及浪漫数据处理；授权事件边界由原生专项另验。
+﻿// AI 辅助生成：执行真实提取／加工／植入及浪漫数据处理；授权事件边界由原生专项另验。
 #if SSC_RW17
 using SexSlaveCraft;
 using Verse;
@@ -14,14 +14,26 @@ internal static partial class Program
             training.romanceConfig = RomanceDenied(); ExcretionUtility.DoExcretion(source);
             var captured = GenSpawn.LastSpawned.TryGetComp<CompPersonalityStore>();
             Assert(training.romanceConfig == null, "Successful extraction clears the original preference.");
-            Assert(captured.romanceConfig != null && !captured.romanceConfig.allowAcceptProposal && captured.romanceConfig.initiateOnlyMaster, "Capture keeps dormant explicit values.");
+            Assert(captured.romanceConfig != null && !captured.romanceConfig.allowAcceptProposal && captured.romanceConfig.allowInitiateToMaster, "Capture keeps dormant explicit values.");
             var processed = Gel(); processed.CopyFrom(captured);
             var host = RomanceBody("RomanceHost"); host.TryGetComp<CompSexSlaveTraining>().romanceConfig = new SSCRomanceConfig();
             Assert(ExcretionUtility.InheritEverything(host, processed), "Insertion must succeed.");
             var restored = host.TryGetComp<CompSexSlaveTraining>().romanceConfig;
-            Assert(!restored.allowAcceptProposal && restored.initiateOnlyMaster && restored.alwaysAcceptMaster, "Source preference replaces host default.");
+            Assert(!restored.allowAcceptProposal && restored.allowInitiateToMaster && restored.alwaysAcceptMaster, "Source preference replaces host default.");
             restored.allowAcceptProposal = true;
             Assert(!captured.romanceConfig.allowAcceptProposal && !processed.romanceConfig.allowAcceptProposal, "All three mutable snapshots remain independent.");
+        });
+        Run("浪漫三类目标完整迁移保留混合值及独立副本", () =>
+        {
+            var source = RomanceBody("TargetSource"); var cfg = source.TryGetComp<CompSexSlaveTraining>().romanceConfig =
+                new SSCRomanceConfig { allowInitiateToMaster = false, allowInitiateToSexSlave = true, allowInitiateToOthers = false };
+            ExcretionUtility.DoExcretion(source); var captured = GenSpawn.LastSpawned.TryGetComp<CompPersonalityStore>();
+            var processed = Gel(); processed.CopyFrom(captured); var host = RomanceBody("TargetHost");
+            Assert(ExcretionUtility.InheritEverything(host, processed), "Insertion succeeds.");
+            var restored = host.TryGetComp<CompSexSlaveTraining>().romanceConfig;
+            Assert(!restored.allowInitiateToMaster && restored.allowInitiateToSexSlave && !restored.allowInitiateToOthers, "Exact target set survives.");
+            restored.allowInitiateToMaster = true;
+            Assert(!cfg.allowInitiateToMaster && !captured.romanceConfig.allowInitiateToMaster && !processed.romanceConfig.allowInitiateToMaster, "Snapshots stay independent.");
         });
         Run("旧凝胶缺浪漫字段精确覆盖宿主旧人格选择", () =>
         {
@@ -62,9 +74,9 @@ internal static partial class Program
             Assert(Log.Errors.Count == 1, "Expected a diagnostic."); Log.Errors.Clear();
         });
     }
-    /// <summary>创建七项非默认偏好，检测迁移时丢弃 false 或错误套用克隆默认。</summary>
+    /// <summary>创建主动受限及被动保证偏好，检测迁移时丢弃 false 或错误套用克隆默认。</summary>
     private static SSCRomanceConfig RomanceDenied() => new SSCRomanceConfig { allowInitiateRomance = false, allowInitiateProposal = false,
-        allowInitiateBreakup = false, allowAcceptRomance = false, allowAcceptProposal = false, initiateOnlyMaster = true, alwaysAcceptMaster = true };
+        allowInitiateBreakup = false, allowAcceptRomance = false, allowAcceptProposal = false, allowInitiateToMaster = true, allowInitiateToSexSlave = false, allowInitiateToOthers = false, alwaysAcceptMaster = true };
     /// <summary>沿用既有身体夹具并显式提供训练组件，不将缺组件误当成迁移失败。</summary>
     private static Pawn RomanceBody(string name)
     { var pawn = Body(name); MasterTraining(pawn, PawnIdentity.Slave, false); return pawn; }

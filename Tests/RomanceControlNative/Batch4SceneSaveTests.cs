@@ -1,4 +1,4 @@
-// AI 辅助生成：重建全部参与者的场景级 Scribe，不以原内存 Pawn 代替跨引用恢复。
+﻿// AI 辅助生成：重建全部参与者的场景级 Scribe，不以原内存 Pawn 代替跨引用恢复。
 using HarmonyLib;
 using RimWorld;
 using SexSlaveCraft;
@@ -125,8 +125,8 @@ internal static partial class Program
                     var source = SocialSlave(); Comp(source).romanceConfig = Denied();
                     var clone = SocialSlave(SSCBondUtility.GetBoundMaster(source)); clone.jobs = new Pawn_JobTracker(clone);
                     AccessTools.Method(typeof(RabbitCloneUtility), "PrepareFreshRabbitCloneBody").Invoke(null, new object[] { source, clone });
-                    foreach (var setting in new[] { SSCRomanceSetting.AcceptProposal, SSCRomanceSetting.InitiateOnlyMaster })
-                    { var view = SSCRomancePreferences.GetView(clone, setting); Require(SSCRomancePreferences.TrySet(clone, setting, setting == SSCRomanceSetting.InitiateOnlyMaster, view.Context, out _)); }
+                    foreach (var setting in new[] { SSCRomanceSetting.AcceptProposal, SSCRomanceSetting.InitiateToMaster })
+                    { var view = SSCRomancePreferences.GetView(clone, setting); Require(SSCRomancePreferences.TrySet(clone, setting, setting == SSCRomanceSetting.InitiateToMaster, view.Context, out _)); }
                     var link = ((HediffWithComps)clone.health.AddHediff(linkDef)).TryGetComp<HediffComp_RabbitCloneLink>();
                     link.Initialize(source, clone.ageTracker.AgeBiologicalTicks);
                     if (matureBeforeLoad) RabbitCloneUtility.MatureRabbitClone(clone, source, link);
@@ -137,7 +137,7 @@ internal static partial class Program
                     Equal(matureBeforeLoad, restoredLink.mature); var own = Comp(restored.Actor).romanceConfig;
                     RabbitCloneUtility.MatureRabbitClone(restored.Actor, restored.Target, restoredLink);
                     RabbitCloneUtility.MatureRabbitClone(restored.Actor, restored.Target, restoredLink);
-                    Require(ReferenceEquals(own, Comp(restored.Actor).romanceConfig)); Require(!own.allowAcceptProposal && own.initiateOnlyMaster && !own.alwaysAcceptMaster);
+                    Require(ReferenceEquals(own, Comp(restored.Actor).romanceConfig)); Require(!own.allowAcceptProposal && own.allowInitiateToMaster && !own.alwaysAcceptMaster);
                     var again = LoadBatch4Scene(SaveBatch4Scene(restored));
                     Require(RabbitCloneUtility.GetRabbitCloneLinkComp(again.Actor).mature); Require(!Comp(again.Actor).romanceConfig.allowAcceptProposal);
                     Require(Comp(again.Target).romanceConfig.alwaysAcceptMaster);

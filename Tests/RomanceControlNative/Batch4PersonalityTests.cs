@@ -1,4 +1,4 @@
-// AI 辅助生成：完整生产人格入口与真实命令层联测；仅隔离需要完整地图的引擎通知。
+﻿// AI 辅助生成：完整生产人格入口与真实命令层联测；仅隔离需要完整地图的引擎通知。
 using HarmonyLib;
 using rjw;
 using RimWorld;
@@ -54,7 +54,7 @@ internal static partial class Program
                 var preview = SSCRomanceCommandUtility.Capture(outsider, receiver);
                 Require(ExcretionUtility.InheritEverything(receiver, gel));
                 Require(Comp(receiver).romanceConfig != null && !Comp(receiver).romanceConfig.allowAcceptProposal);
-                Require(Comp(receiver).romanceConfig.initiateOnlyMaster && Comp(receiver).romanceConfig.alwaysAcceptMaster);
+                Require(Comp(receiver).romanceConfig.allowInitiateToMaster && Comp(receiver).romanceConfig.alwaysAcceptMaster);
                 Require(!ReferenceEquals(Comp(receiver).romanceConfig, gel.romanceConfig));
                 Equal(SSCRomanceCommandStatus.Cancelled, incoming.Status); Equal(SSCRomanceCommandStatus.Cancelled, outgoing.Status);
                 Equal("StaleContext", SSCRomanceCommandUtility.Failure(preview));
@@ -77,7 +77,7 @@ internal static partial class Program
                     Require(transferProduct != rawGel); var processed = transferProduct.TryGetComp<CompPersonalityStore>();
                     Require(!ReferenceEquals(captured.romanceConfig, processed.romanceConfig));
                     var receiver = SocialSlave(); Require(ExcretionUtility.InheritEverything(receiver, processed));
-                    Require(!Comp(receiver).romanceConfig.allowInitiateRomance && Comp(receiver).romanceConfig.initiateOnlyMaster);
+                    Require(!Comp(receiver).romanceConfig.allowInitiateRomance && Comp(receiver).romanceConfig.allowInitiateToMaster);
                     Require(!Comp(receiver).milkProductionEnabled); Equal(0, bubbleCalls);
                 });
             foreach (bool scene in new[] { false, true })

@@ -19,11 +19,11 @@ internal static partial class Program
                     var pawn = RomanceUiPawn(); pawn.LabelShort = new string('长', 40); pawn.BoundMaster.LabelShort = new string('M', 60);
                     var (height, frames) = DrawRomanceUi(pawn, width);
                     Assert(frames.Length == 2 && frames[0].Rect.yMax + 14 <= frames[1].Rect.y && frames[1].Rect.yMax <= height);
-                    Assert(Widgets.Items.Count(i => i.Kind == "romance-checkbox") == 9);
+                    Assert(Widgets.Items.Count(i => i.Kind == "romance-checkbox") == 7);
                     var buttons = Widgets.Items.Where(i => i.Kind == "romance-button").ToArray();
                     Assert(buttons.Length == 3 && buttons[0].Rect.y > Widgets.Items.Where(i => i.Kind == "romance-checkbox").Max(i => i.Rect.yMax));
                     Assert(buttons[0].Rect.yMax <= buttons[1].Rect.y && buttons[1].Rect.yMax <= buttons[2].Rect.y);
-                    foreach (var item in Widgets.Items.Where(i => i.Kind is "label" or "romance-checkbox" or "romance-button"))
+                    foreach (var item in Widgets.Items.Where(i => i.Kind is "label" or "romance-checkbox" or "romance-button" or "romance-target" or "romance-surface"))
                         Assert(frames.Any(f => item.Rect.x >= f.Rect.x && item.Rect.xMax <= f.Rect.xMax + .01f && item.Rect.y >= f.Rect.y && item.Rect.yMax <= f.Rect.yMax + .01f), item.Kind + ": outside section");
                     Assert(RomanceUiOrigins.Stack.Count == 0);
                 });
@@ -36,7 +36,8 @@ internal static partial class Program
                 var pawn = RomanceUiPawn(stage); pawn.Training.romanceConfig = new() { allowAcceptRomance = false };
                 DrawRomanceUi(pawn, 352);
                 var boxes = Widgets.Items.Where(i => i.Kind == "romance-checkbox").ToArray();
-                Assert(boxes.Count(b => !b.Disabled) == (stage == 1 ? 0 : stage == 2 ? 5 : 9));
+                Assert(Widgets.Items.Count(i => i.Kind == "romance-target" && !i.Disabled) == (stage < 2 ? 0 : 3));
+                Assert(boxes.Count(b => !b.Disabled) == (stage == 1 ? 0 : stage == 2 ? 3 : 7));
                 Assert(!pawn.Training.romanceConfig.allowAcceptRomance);
                 Assert(Widgets.Items.Where(i => i.Kind == "romance-button").All(i => i.Disabled == (stage < 4)));
             });
@@ -87,6 +88,49 @@ internal static partial class Program
             DrawRomanceUi(pawn, 260); Assert(SSCRomanceCommandMenu.Opened.Count == 1);
             Assert(!SSCPersonalityRuntimeUtility.IsCurrent(pawn, SSCRomanceCommandMenu.Opened[0].Token));
         });
+        foreach (int targetIndex in new[] { 0, 1, 2 })
+            Run("浪漫对象多选按钮只切换自身且可全部关闭 " + targetIndex, () =>
+            {
+                var pawn = RomanceUiPawn(2); Widgets.TargetClick = targetIndex;
+                DrawRomanceUi(pawn, 260); Widgets.TargetClick = -1;
+                var cfg = pawn.Training.romanceConfig;
+                Assert(cfg.allowInitiateToMaster == (targetIndex != 0));
+                Assert(cfg.allowInitiateToSexSlave == (targetIndex != 1));
+                Assert(cfg.allowInitiateToOthers == (targetIndex != 2));
+            });
+        Run("浪漫对象按钮使用原人格上下文且恢复 GUI 状态", () =>
+        {
+            var pawn = RomanceUiPawn(2); Widgets.TargetClick = 0;
+            Widgets.BeforeTargetButton = () => { SSCPersonalityRuntimeUtility.TryBeginMutation(pawn, out var scope); scope?.Dispose(); };
+            DrawRomanceUi(pawn, 260); Widgets.TargetClick = -1;
+            Assert(pawn.Training.romanceConfig == null && GUI.enabled && Text.Anchor == TextAnchor.UpperLeft);
+        });
+        Run("浪漫对象按钮外层禁用不可提交", () =>
+        {
+            var pawn = RomanceUiPawn(2); Widgets.TargetClick = 0; GUI.enabled = false;
+            DrawRomanceUi(pawn, 260); Widgets.TargetClick = -1;
+            Assert(pawn.Training.romanceConfig == null && !GUI.enabled);
+        });
+        Run("浪漫对象支持累计关闭及再次开启且不改行为许可", () =>
+        {
+            var pawn = RomanceUiPawn(2);
+            for (int i = 0; i < 3; i++) { Widgets.TargetClick = i; DrawRomanceUi(pawn, 260); }
+            Widgets.TargetClick = -1;
+            Assert(!pawn.Training.romanceConfig.allowInitiateToMaster && !pawn.Training.romanceConfig.allowInitiateToSexSlave && !pawn.Training.romanceConfig.allowInitiateToOthers);
+            Assert(pawn.Training.romanceConfig.allowInitiateRomance && pawn.Training.romanceConfig.allowInitiateProposal);
+            Widgets.TargetClick = 1; DrawRomanceUi(pawn, 260); Widgets.TargetClick = -1;
+            Assert(pawn.Training.romanceConfig.allowInitiateToSexSlave && !pawn.Training.romanceConfig.allowInitiateToOthers);
+        });
+        Run("浪漫对象长译文自动改为纵向且按钮不重叠", () =>
+        {
+            const string key = "SSC_Romance_Setting_InitiateToSexSlave";
+            string original = Translation.Entries[key];
+            try {
+                Translation.Entries[key] = new string('W', 80); DrawRomanceUi(RomanceUiPawn(2), 260);
+                var targets = Widgets.Items.Where(i => i.Kind == "romance-target").ToArray();
+                Assert(targets.Length == 3 && targets[0].Rect.yMax <= targets[1].Rect.y && targets[1].Rect.yMax <= targets[2].Rect.y);
+            } finally { Translation.Entries[key] = original; }
+        });
         Widgets.RomanceClick = -1;
     }
     /// <summary>仅准备已有健康模型的链引用；生产 Resolver/Preferences 与原人格 token 实际参与绘制/提交。</summary>
@@ -98,7 +142,7 @@ internal static partial class Program
     /// <summary>只提供外层列表，行高、板块高度和边框均由生产绘制器计算。</summary>
     private static (float height, DrawItem[] frames) DrawRomanceUi(Pawn pawn, float width)
     {
-        Widgets.Items.Clear(); Widgets.RomanceCheckboxIndex = 0; var listing = new Listing_Standard(); listing.Begin(new Rect(0,0,width,100000));
+        Widgets.Items.Clear(); Widgets.TargetIndex = 0; Widgets.RomanceCheckboxIndex = 0; var listing = new Listing_Standard(); listing.Begin(new Rect(0,0,width,100000));
         try { SSCBehaviorControlUI.DrawPawn(listing, pawn, true); return (listing.CurHeight, Widgets.Items.Where(i => i.Kind == "romance-frame").ToArray()); }
         finally { listing.End(); }
     }

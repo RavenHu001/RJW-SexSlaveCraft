@@ -42,7 +42,7 @@ internal static partial class Program
         });
         Check("batch2 only-master selection checks actual owner rather than assigned trainer", () =>
         {
-            ResetSocial(); var a = SocialSlave(); var b = SocialPawn(); Comp(a).selectedTrainer = b; Comp(a).romanceConfig = new() { initiateOnlyMaster = true };
+            ResetSocial(); var a = SocialSlave(); var b = SocialPawn(); Comp(a).selectedTrainer = b; Comp(a).romanceConfig = new() { allowInitiateToMaster = true, allowInitiateToSexSlave = false, allowInitiateToOthers = false };
             Equal(0f, InteractionDefOf.RomanceAttempt.Worker.RandomSelectionWeight(a, b));
             Require(InteractionDefOf.RomanceAttempt.Worker.RandomSelectionWeight(a, SocialPawn(SSCBondUtility.GetChain(a).LinkedPawn)) > 0);
         });
@@ -161,8 +161,8 @@ internal static partial class Program
             Check("romance translated keys and exact source mirror " + language, () =>
             {
                 string path = Path.Combine(repo, "1.7/Languages", language, "Keyed/SSC_Romance.xml"); string source = Path.Combine(repo, "Sexslavecraft/Languages", language, "Keyed/SSC_Romance.xml");
-                Require(File.ReadAllBytes(path).SequenceEqual(File.ReadAllBytes(source))); var entries = XDocument.Load(path).Root.Elements().ToArray(); Equal(83, entries.Length);
-                Require(entries.All(e => !string.IsNullOrWhiteSpace(e.Value))); Equal(83, entries.Select(e => e.Name.LocalName).Distinct().Count());
+                Require(File.ReadAllBytes(path).SequenceEqual(File.ReadAllBytes(source))); var entries = XDocument.Load(path).Root.Elements().ToArray(); Equal(89, entries.Length);
+                Require(entries.All(e => !string.IsNullOrWhiteSpace(e.Value))); Equal(89, entries.Select(e => e.Name.LocalName).Distinct().Count());
             });
     }
 }

@@ -1,4 +1,4 @@
-// AI 辅助生成
+﻿// AI 辅助生成
 // 仅模拟外部接口：字体为近似测量，健康/翻译与 Scribe 是字典模型，不运行 Unity 或跨引用恢复。
 using System.Xml.Linq;
 using SexSlaveCraft;
@@ -54,7 +54,7 @@ namespace Verse
         public static void Label(Rect rect, string label)
         {
             if (Throw) throw new InvalidOperationException("test draw failure");
-            Items.Add(new DrawItem("label", RomanceUiOrigins.Transform(rect), label));
+            Items.Add(new DrawItem(label.StartsWith("✓ ") || label.StartsWith("□ ") ? "romance-target" : "label", RomanceUiOrigins.Transform(rect), label, !GUI.enabled));
         }
         public static Rect FillableBar(Rect rect, float value)
         {

@@ -1,4 +1,4 @@
-// AI 辅助生成：第二批提交前的状态变化窗口与真实原版入口复核。
+﻿// AI 辅助生成：第二批提交前的状态变化窗口与真实原版入口复核。
 using System.Reflection.Emit;
 using HarmonyLib;
 using RimWorld;
@@ -31,7 +31,7 @@ internal static partial class Program
         Check("batch2 review callback cannot retain old-owner target under only-master rule", () =>
         {
             ResetSocial(0f); var oldOwner = SocialPawn(); var a = SocialSlave(oldOwner); var nextOwner = SocialPawn();
-            Comp(a).romanceConfig = new() { initiateOnlyMaster = true }; socialDuringCanInteract = () => SSCBondUtility.GetChain(a).target = nextOwner;
+            Comp(a).romanceConfig = new() { allowInitiateToMaster = true, allowInitiateToSexSlave = false, allowInitiateToOthers = false }; socialDuringCanInteract = () => SSCBondUtility.GetChain(a).target = nextOwner;
             Require(!a.interactions.TryInteractWith(oldOwner, InteractionDefOf.RomanceAttempt)); Equal(0, bubbleCalls + playLogCalls);
         });
         ReviewFinalGuardTests(); ReviewNativeEntryTests();

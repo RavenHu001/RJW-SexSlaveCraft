@@ -33,18 +33,16 @@ namespace SexSlaveCraft
             { result.CanInitiate = false; result.InitiatorReason = SSCRomanceReason.InvalidAuthorization; }
             else if (actor.Applicable && actor.Stage >= 2 && !command)
             {
-                // 先读本行为许可，再筛选对象；仅主人不能重新开放已经禁止的主动行为。
+                // 先读本行为许可，再统一筛选对象；对象选中不能重新开放已经禁止的主动行为。
                 var setting = action == SSCRomanceAction.Romance ? SSCRomanceSetting.InitiateRomance :
                     action == SSCRomanceAction.Proposal ? SSCRomanceSetting.InitiateProposal : SSCRomanceSetting.InitiateBreakup;
                 if (!actor.GetSaved(setting))
                 { result.CanInitiate = false; result.InitiatorReason = SSCRomanceReason.RuleDenied; }
+                // 行为与目标同时满足才可发起；目标只选一个类别，不让主人身份再被性奴类别重复否决。
+                // 分手／离婚只读自身行为许可，不能因旧伴侣不在新关系对象范围中而无法结束关系。
                 else if (action != SSCRomanceAction.Breakup &&
-                    actor.GetSaved(SSCRomanceSetting.InitiateOnlyMaster) && recipient != actor.Master)
-                { result.CanInitiate = false; result.InitiatorReason = SSCRomanceReason.OwnerOnly; }
-                // 仅限制本人的求爱／求婚目标，不影响对方发起；身份使用 SSC 身份，原版奴隶身份不代替性奴。
-                else if (action != SSCRomanceAction.Breakup && SSCIdentityUtility.IsSexSlave(recipient) &&
-                    !actor.GetSaved(SSCRomanceSetting.InitiateToSexSlave))
-                { result.CanInitiate = false; result.InitiatorReason = SSCRomanceReason.SexSlaveTargetDenied; }
+                    !actor.GetSaved(SSCRomanceResolver.TargetSetting(recipient, actor.Master)))
+                { result.CanInitiate = false; result.InitiatorReason = SSCRomanceReason.TargetDenied; }
             }
             // 即使主动被阻止也保留接收端诊断；执行层先看 CanInitiate，不能把接收保证当发起许可。
             // 被动必拒仅决定真实互动后的结果，不能据此从自然候选或菜单中移除目标。

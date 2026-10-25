@@ -50,18 +50,22 @@ namespace SexSlaveCraft
             Widgets.DrawBox(new Rect(0f, top, width, height));
         }
     }
-    /// <summary>九项浪漫偏好沿独立 GetView/TrySet；不注册为通用能力，不创建隐式默认配置。</summary>
+    /// <summary>十项浪漫偏好沿独立 GetView/TrySet；不注册为通用能力，不创建隐式默认配置。</summary>
     public static class SSCRomanceUI
     {
         private static readonly SSCRomanceSetting[][] groups =
         {
-            new[] { SSCRomanceSetting.InitiateRomance, SSCRomanceSetting.InitiateProposal, SSCRomanceSetting.InitiateBreakup, SSCRomanceSetting.InitiateOnlyMaster, SSCRomanceSetting.InitiateToSexSlave },
+            new[] { SSCRomanceSetting.InitiateRomance, SSCRomanceSetting.InitiateProposal, SSCRomanceSetting.InitiateBreakup },
             new[] { SSCRomanceSetting.AcceptRomance, SSCRomanceSetting.AcceptProposal, SSCRomanceSetting.AlwaysAcceptMaster, SSCRomanceSetting.AlwaysAcceptSexSlave }
         };
         /// <summary>保留分组和命令，常驻只显示标签，说明放入悬停；首组复用主标题下横线，所有子标题下方另画横线。</summary>
         public static void DrawPawn(Listing_Standard listing, Pawn pawn)
         {
-            for (int i = 0; i < groups.Length; i++) DrawGroup(listing, pawn, groups[i], i == 0);
+            for (int i = 0; i < groups.Length; i++)
+            {
+                DrawGroup(listing, pawn, groups[i], i == 0);
+                if (i == 0) DrawTargets(listing, pawn);
+            }
             listing.GapLine();
             DrawCommands(listing, pawn);
         }
@@ -98,6 +102,68 @@ namespace SexSlaveCraft
                 DrawSetting(new Rect(row.x, row.y, width, row.height), pawn, settings[i], views[i], labels[i]);
             }
         }
+        /// <summary>主动区域内的目标多选：先捕获三个原视图，再测量换行；点击不能重新查询以取得新人格权限。</summary>
+        private static void DrawTargets(Listing_Standard listing, Pawn pawn)
+        {
+            var settings = new[] { SSCRomanceSetting.InitiateToMaster, SSCRomanceSetting.InitiateToSexSlave, SSCRomanceSetting.InitiateToOthers };
+            var views = new SSCRomanceView[3];
+            var labels = new string[3];
+            for (int i = 0; i < settings.Length; i++)
+            {
+                views[i] = SSCRomancePreferences.GetView(pawn, settings[i]);
+                labels[i] = (views[i].Saved ? "✓ " : "□ ") + ("SSC_Romance_Setting_" + settings[i]).Translate();
+            }
+            const float indent = 12f, padding = 8f, gap = 6f;
+            float width = Mathf.Max(1f, listing.ColumnWidth - indent - padding * 2f);
+            int columns = 3;
+            // 长译文优先减少列数，单列仍可按实际高度换行，不挤压按钮文字或越过外框。
+            while (columns > 1)
+            {
+                float candidateWidth = Mathf.Max(1f, (width - gap * (columns - 1)) / columns);
+                bool fits = true;
+                foreach (string label in labels) if (Text.CalcHeight(label, Mathf.Max(1f, candidateWidth - 12f)) > 24f) fits = false;
+                if (fits) break;
+                columns--;
+            }
+            float buttonWidth = Mathf.Max(1f, (width - gap * (columns - 1)) / columns);
+            float buttonHeight = 32f;
+            foreach (string label in labels) buttonHeight = Mathf.Max(buttonHeight, Text.CalcHeight(label, Mathf.Max(1f, buttonWidth - 12f)) + 12f);
+            string title = "SSC_Romance_TargetTitle".Translate();
+            float titleHeight = Text.CalcHeight(title, width);
+            int rows = (settings.Length + columns - 1) / columns;
+            listing.Gap(4f);
+            Rect area = listing.GetRect(padding * 2f + titleHeight + gap + rows * buttonHeight + (rows - 1) * gap);
+            Color previousColor = GUI.color;
+            TextAnchor previousAnchor = Text.Anchor;
+            bool previousEnabled = GUI.enabled, previousWrap = Text.WordWrap;
+            try
+            {
+                GUI.color = Color.white;
+                Widgets.DrawBoxSolid(new Rect(area.x + indent, area.y, area.width - indent, area.height), new Color(.14f, .14f, .14f, 1f));
+                GUI.color = new Color(.75f, .75f, .75f, 1f);
+                Text.Anchor = TextAnchor.UpperLeft; Text.WordWrap = true;
+                Widgets.Label(new Rect(area.x + indent + padding, area.y + padding, width, titleHeight), title);
+                for (int i = 0; i < settings.Length; i++)
+                {
+                    var view = views[i];
+                    Rect button = new Rect(area.x + indent + padding + (i % columns) * (buttonWidth + gap),
+                        area.y + padding + titleHeight + gap + (i / columns) * (buttonHeight + gap), buttonWidth, buttonHeight);
+                    GUI.enabled = previousEnabled && view.CanChange;
+                    GUI.color = Color.white;
+                    Color fill = !GUI.enabled ? new Color(.18f, .18f, .18f, 1f) :
+                        view.Saved ? new Color(.30f, .38f, .24f, 1f) : new Color(.22f, .22f, .22f, 1f);
+                    Widgets.DrawBoxSolid(button, fill);
+                    GUI.color = GUI.enabled ? Color.white : new Color(.55f, .55f, .55f, 1f);
+                    Text.Anchor = TextAnchor.MiddleCenter;
+                    Widgets.Label(new Rect(button.x + 6f, button.y + 4f, Mathf.Max(1f, button.width - 12f), button.height - 8f), labels[i]);
+                    if (GUI.enabled && Widgets.ButtonInvisible(button) && GUI.enabled &&
+                        !SSCRomancePreferences.TrySet(pawn, settings[i], !view.Saved, view.Context, out var reason))
+                        Messages.Message(SSCRomanceCommandUtility.Explain(reason.ToString()), pawn, MessageTypeDefOf.RejectInput, false);
+                    TooltipHandler.TipRegion(button, SettingTip(settings[i], view));
+                }
+            }
+            finally { GUI.color = previousColor; GUI.enabled = previousEnabled; Text.Anchor = previousAnchor; Text.WordWrap = previousWrap; }
+        }
         /// <summary>底部三个按钮纵向排列，长译文按实际宽度换行；整组使用最初捕获的执行者，点击不重拍人格。</summary>
         private static void DrawCommands(Listing_Standard listing, Pawn pawn)
         {
@@ -115,8 +181,8 @@ namespace SexSlaveCraft
                     Rect button = listing.GetRect(Mathf.Max(32f, Text.CalcHeight(label, Mathf.Max(1f, listing.ColumnWidth - 12f)) + 12f));
                     if (!GUI.enabled) DrawDisabledCommand(button, label);
                     else if (Widgets.ButtonText(button, label) && GUI.enabled) SSCRomanceCommandMenu.OpenTargets(context);
-                    string tip = "SSC_Romance_CommandOverride".Translate() + "\n\n" +
-                        (action == SSCRomanceAction.Breakup ? "SSC_Romance_BreakupPreview" : "SSC_Romance_Reception_Vanilla").Translate();
+                    // 每个命令只显示一句明确动作的说明；禁用原因仍按当前资格追加。
+                    string tip = ("SSC_Romance_CommandTip_" + action).Translate();
                     if (failure != null) tip += "\n\n" + SSCRomanceCommandUtility.Explain(failure);
                     TooltipHandler.TipRegion(button, tip);
                     listing.Gap(4f);
@@ -158,15 +224,19 @@ namespace SexSlaveCraft
                     Messages.Message(SSCRomanceCommandUtility.Explain(reason.ToString()), pawn, MessageTypeDefOf.RejectInput, false);
             }
             finally { GUI.enabled = previous; GUI.color = color; }
-            string tip = setting == SSCRomanceSetting.InitiateToSexSlave ? "SSC_Romance_InitiateToSexSlaveTip".Translate().ToString() :
-                setting == SSCRomanceSetting.AlwaysAcceptSexSlave ? "SSC_Romance_AlwaysAcceptSexSlaveTip".Translate().ToString() :
-                (setting <= SSCRomanceSetting.InitiateBreakup ? "SSC_Romance_ActiveMeaning" :
-                setting <= SSCRomanceSetting.AcceptProposal ? "SSC_Romance_PassiveMeaning" : "SSC_Romance_ExtraMeaning").Translate();
+            TooltipHandler.TipRegion(row, SettingTip(setting, view));
+        }
+        /// <summary>按钮与开关共享当前视图的悬停说明，资格原因只展示，不为旧点击重新捕获上下文。</summary>
+        private static string SettingTip(SSCRomanceSetting setting, SSCRomanceView view)
+        {
+            string key = setting == SSCRomanceSetting.InitiateToMaster || setting == SSCRomanceSetting.InitiateToSexSlave || setting == SSCRomanceSetting.InitiateToOthers
+                ? "SSC_Romance_TargetMeaning" : setting <= SSCRomanceSetting.InitiateBreakup ? "SSC_Romance_ActiveMeaning" :
+                setting <= SSCRomanceSetting.AcceptProposal ? "SSC_Romance_PassiveMeaning" : "SSC_Romance_MustAcceptMeaning";
+            string tip = key.Translate();
             if (!view.CanChange) tip += "\n\n" + SSCRomanceCommandUtility.Explain(view.Reason.ToString());
             if (!view.Unlocked) tip += "\n" + "SSC_Romance_RequiredStage".Translate(SSCRomanceResolver.RequiredStage(setting));
-            if (setting == SSCRomanceSetting.AlwaysAcceptMaster && view.Saved && view.Context.Master != null)
-                tip += "\n\n" + "SSC_Romance_MasterPriority".Translate(view.Context.Master.LabelShort);
-            TooltipHandler.TipRegion(row, tip);
+            return tip;
         }
+
     }
 }

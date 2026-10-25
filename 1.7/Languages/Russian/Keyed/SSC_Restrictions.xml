@@ -115,7 +115,7 @@
   <SSC_Restrictions_Tip_ReceiveConsensual>Разрешает принимать добровольные действия не от хозяина; инициатору тоже требуется разрешение.</SSC_Restrictions_Tip_ReceiveConsensual>
   <SSC_Restrictions_Tip_ReceiveForced>Разрешает принимать принудительные действия не от хозяина. Снаряжение может принудительно запретить этот пункт.</SSC_Restrictions_Tip_ReceiveForced>
   <SSC_Restrictions_Tip_ReceiveTraining>Разрешает ежедневную или ритуальную дрессировку не от хозяина. Требования к дрессировщику и назначению сохраняются.</SSC_Restrictions_Tip_ReceiveTraining>
-  <SSC_Restrictions_Tip_SelfTraining>Разрешает SSC секс-рабыне с цепью самостоятельно проходить дрессировку, независимо от разрешения на обычную мастурбацию. Требования RJW к способностям и месту также действуют.</SSC_Restrictions_Tip_SelfTraining>
+  <SSC_Restrictions_Tip_SelfTraining>Разрешить самостоятельную тренировку независимо от разрешения обычной мастурбации.</SSC_Restrictions_Tip_SelfTraining>
   <SSC_Restrictions_AssignAuthorizesSuffix> (также разрешить дрессировку)</SSC_Restrictions_AssignAuthorizesSuffix>
   <SSC_Restrictions_AssignAuthorizesTip>Выбор дрессировщика, который не является хозяином, также разрешает принимать от него дрессировку. Обычные действия проверяются по собственным правилам; принудительные запреты снаряжения и специализации сохраняются.</SSC_Restrictions_AssignAuthorizesTip>
   <SSC_Restrictions_AssignFailed>Назначение не удалось: право на него или ограничения изменились либо принудительное правило запрещает дрессировку. Предыдущее назначение и личный выбор сохранены.</SSC_Restrictions_AssignFailed>

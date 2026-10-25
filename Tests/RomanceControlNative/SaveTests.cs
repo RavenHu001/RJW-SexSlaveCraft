@@ -23,16 +23,28 @@ internal static partial class Program
             {
                 var p = Slave(); Comp(p).romanceConfig = Denied(); string path = Save(new RomanceFixture(Comp(p)));
                 Edit(path, doc => { if (entireNode) doc.Descendants("sscRomanceConfig").Remove(); else doc.Descendants("sscRomanceConfig").Single().RemoveNodes(); });
-                var restored = Slave(); Load(path, Comp(restored)); foreach (var s in Enum.GetValues<SSCRomanceSetting>()) Equal(s <= SSCRomanceSetting.AcceptProposal || s == SSCRomanceSetting.InitiateToSexSlave, SSCRomancePreferences.GetView(restored, s).Saved);
+                var restored = Slave(); Load(path, Comp(restored)); foreach (var s in Enum.GetValues<SSCRomanceSetting>()) Equal(s <= SSCRomanceSetting.AcceptProposal || (s == SSCRomanceSetting.InitiateToMaster || s == SSCRomanceSetting.InitiateToSexSlave || s == SSCRomanceSetting.InitiateToOthers), SSCRomancePreferences.GetView(restored, s).Saved);
             });
-        Check("old seven-field config preserves choices and defaults new peer fields", () =>
+        Check("missing peer fields preserve other known choices and use defaults", () =>
         {
             var p = Slave(); Comp(p).romanceConfig = Denied();
             Comp(p).romanceConfig.allowInitiateToSexSlave = false; Comp(p).romanceConfig.alwaysAcceptSexSlave = true;
             string path = Save(new RomanceFixture(Comp(p)));
             Edit(path, doc => { doc.Descendants("allowInitiateToSexSlave").Remove(); doc.Descendants("alwaysAcceptSexSlave").Remove(); });
             var restored = Slave(); Load(path, Comp(restored)); var cfg = Comp(restored).romanceConfig;
-            Require(cfg.allowInitiateToSexSlave && !cfg.alwaysAcceptSexSlave && cfg.initiateOnlyMaster && !cfg.allowInitiateRomance);
+            Require(cfg.allowInitiateToSexSlave && !cfg.alwaysAcceptSexSlave && cfg.allowInitiateToMaster && !cfg.allowInitiateRomance);
+        });
+        Check("unreleased owner-only field is ignored rather than migrated", () =>
+        {
+            var p = Slave(); Comp(p).romanceConfig = new() { allowInitiateRomance = false,
+                allowInitiateToMaster = false, allowInitiateToSexSlave = false, allowInitiateToOthers = false };
+            string path = Save(new RomanceFixture(Comp(p)));
+            Edit(path, doc => {
+                foreach (string name in new[] { "allowInitiateToMaster", "allowInitiateToSexSlave", "allowInitiateToOthers" }) doc.Descendants(name).Remove();
+                doc.Descendants("sscRomanceConfig").Single().Add(new XElement("initiateOnlyMaster", true));
+            });
+            var restored = Slave(); Load(path, Comp(restored)); var cfg = Comp(restored).romanceConfig;
+            Require(cfg.allowInitiateToMaster && cfg.allowInitiateToSexSlave && cfg.allowInitiateToOthers && !cfg.allowInitiateRomance);
         });
         Check("real Scribe unknown version preserved and remains diagnosed", () =>
         {

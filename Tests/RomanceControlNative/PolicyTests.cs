@@ -8,7 +8,28 @@ internal static partial class Program
     /// <summary>验证阈值、许可独立性、双边优先级和异常回退；策略通过不等于互动已执行。</summary>
     private static void PolicyTests()
     {
-        // 新增同伴身份规则：验证方向、二／三阶门槛、双边优先级及单次命令边界；本轮仅补用例，未执行。
+        // 穷举三个类别的八种组合与行为许可：类别之间取并集，类别与行为之间取交集。
+        foreach (int mask in Enumerable.Range(0, 8))
+        foreach (bool actionAllowed in new[] { false, true })
+        foreach (var action in new[] { SSCRomanceAction.Romance, SSCRomanceAction.Proposal })
+            Check($"unified targets mask={mask} allowed={actionAllowed} action={action}", () =>
+            {
+                var a = Slave(.3f); var master = SSCBondUtility.GetBoundMaster(a); var slave = Slave(); var other = Pawn();
+                Comp(a).romanceConfig = new() { allowInitiateRomance = actionAllowed, allowInitiateProposal = actionAllowed,
+                    allowInitiateToMaster = (mask & 1) != 0, allowInitiateToSexSlave = (mask & 2) != 0, allowInitiateToOthers = (mask & 4) != 0 };
+                Equal(actionAllowed && (mask & 1) != 0, Decide(a, master, action).CanInitiate);
+                Equal(actionAllowed && (mask & 2) != 0, Decide(a, slave, action).CanInitiate);
+                Equal(actionAllowed && (mask & 4) != 0, Decide(a, other, action).CanInitiate);
+                Require(Decide(a, other, SSCRomanceAction.Breakup).CanInitiate);
+            });
+        Check("bound master that is also a sex slave belongs only to master category", () =>
+        {
+            var master = Slave(); var a = Slave(.3f, master); Comp(a).romanceConfig = new() {
+                allowInitiateToMaster = true, allowInitiateToSexSlave = false, allowInitiateToOthers = false };
+            Require(Decide(a, master).CanInitiate); Comp(a).romanceConfig.allowInitiateToMaster = false;
+            Comp(a).romanceConfig.allowInitiateToSexSlave = true; Require(!Decide(a, master).CanInitiate);
+        });
+        // 新增同伴身份规则：验证方向、二／三阶门槛、双边优先级及单次命令边界；同时验证主动过滤器及被动接受保证。
         foreach (var action in new[] { SSCRomanceAction.Romance, SSCRomanceAction.Proposal })
         foreach (var severity in new[] { .1f, .3f, .5f, .9f })
             Check($"peer controls follow direction and stage {severity}/{action}", () =>
@@ -22,10 +43,10 @@ internal static partial class Program
                 Equal(severity >= .5f ? SSCRomanceReception.ForceReject : SSCRomanceReception.Vanilla, Decide(other, a, action).Reception);
                 Require(Decide(a, b, SSCRomanceAction.Breakup).CanInitiate);
             });
-        Check("owner-only belongs to active stage two", () =>
+        Check("master-only target selection belongs to active stage two", () =>
         {
-            var a = Slave(.3f); Comp(a).romanceConfig = new() { initiateOnlyMaster = true };
-            Require(SSCRomancePreferences.GetView(a, SSCRomanceSetting.InitiateOnlyMaster).CanChange);
+            var a = Slave(.3f); Comp(a).romanceConfig = new() { allowInitiateToMaster = true, allowInitiateToSexSlave = false, allowInitiateToOthers = false };
+            Require(SSCRomancePreferences.GetView(a, SSCRomanceSetting.InitiateToMaster).CanChange);
             Require(!SSCRomancePreferences.GetView(a, SSCRomanceSetting.AlwaysAcceptMaster).CanChange);
             Require(!Decide(a, Slave()).CanInitiate); Require(Decide(a, SSCBondUtility.GetBoundMaster(a)).CanInitiate);
         });
@@ -63,9 +84,9 @@ internal static partial class Program
         foreach (bool guarantee in new[] { false, true })
             Check($"two independent extras {onlyOwner}/{guarantee}", () =>
             {
-                var p = Slave(); Comp(p).romanceConfig = new() { initiateOnlyMaster = onlyOwner, alwaysAcceptMaster = guarantee };
-                Require(Decide(p, SSCBondUtility.GetBoundMaster(p)).CanInitiate);
-                Equal(!onlyOwner, Decide(p, Pawn()).CanInitiate);
+                var p = Slave(); Comp(p).romanceConfig = new() { allowInitiateToMaster = onlyOwner, alwaysAcceptMaster = guarantee };
+                Equal(onlyOwner, Decide(p, SSCBondUtility.GetBoundMaster(p)).CanInitiate);
+                Require(Decide(p, Pawn()).CanInitiate);
                 Require(Decide(p, Pawn(), SSCRomanceAction.Breakup).CanInitiate);
             });
         foreach (var setting in new[] { SSCRomanceSetting.InitiateRomance, SSCRomanceSetting.InitiateProposal, SSCRomanceSetting.InitiateBreakup })

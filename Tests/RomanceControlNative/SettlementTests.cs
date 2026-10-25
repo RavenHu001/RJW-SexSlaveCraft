@@ -1,4 +1,4 @@
-// AI 辅助生成：原版 worker 的关系、记忆、姓氏及床位交接；不在测试中复刻结算。
+﻿// AI 辅助生成：原版 worker 的关系、记忆、姓氏及床位交接；不在测试中复刻结算。
 using HarmonyLib;
 using RimWorld;
 using SexSlaveCraft;
@@ -37,7 +37,7 @@ internal static partial class Program
             Check("batch2 full native breakup retains SSC bond and reward " + relation.defName, () =>
             {
                 ResetSocial(0f, 0f, 0f); var master = SocialPawn(); var slave = SocialSlave(master);
-                Comp(slave).romanceConfig = new() { initiateOnlyMaster = true, allowAcceptRomance = false, alwaysAcceptMaster = true };
+                Comp(slave).romanceConfig = new() { allowInitiateToMaster = true, allowAcceptRomance = false, alwaysAcceptMaster = true };
                 var trainer = Comp(slave).selectedTrainer = SocialPawn(); var chain = SSCBondUtility.GetChain(slave);
                 SSCDefOf.SSC_FlawedLovers ??= new PawnRelationDef { defName = "SSC_FlawedLovers", reflexive = true, workerClass = typeof(PawnRelationWorker) };
                 slave.relations.AddDirectRelation(SSCDefOf.SSC_FlawedLovers, master); slave.relations.AddDirectRelation(relation, master);
@@ -62,7 +62,7 @@ internal static partial class Program
         });
         Check("batch2 only-master does not prevent ending third-person relationship", () =>
         {
-            ResetSocial(); var a = SocialSlave(); var b = SocialPawn(); Comp(a).romanceConfig = new() { initiateOnlyMaster = true };
+            ResetSocial(); var a = SocialSlave(); var b = SocialPawn(); Comp(a).romanceConfig = new() { allowInitiateToMaster = true, allowInitiateToSexSlave = false, allowInitiateToOthers = false };
             a.relations.AddDirectRelation(PawnRelationDefOf.Fiance, b); Require(a.interactions.TryInteractWith(b, SSCRomanceDefOf.Breakup));
             Require(a.relations.DirectRelationExists(PawnRelationDefOf.ExLover, b));
         });

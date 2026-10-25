@@ -43,17 +43,17 @@ internal static partial class Program
                 AccessTools.Method(typeof(RabbitCloneUtility), "PrepareFreshRabbitCloneBody").Invoke(null, new object[] { source, clone });
                 Require(Comp(clone).romanceConfig == null); Equal(99, Comp(source).romanceConfig.version);
                 foreach (var setting in Enum.GetValues<SSCRomanceSetting>())
-                    Equal(setting <= SSCRomanceSetting.AcceptProposal || setting == SSCRomanceSetting.InitiateToSexSlave, SSCRomancePreferences.GetView(clone, setting).Saved);
+                    Equal(setting <= SSCRomanceSetting.AcceptProposal || (setting == SSCRomanceSetting.InitiateToMaster || setting == SSCRomanceSetting.InitiateToSexSlave || setting == SSCRomanceSetting.InitiateToOthers), SSCRomancePreferences.GetView(clone, setting).Saved);
             });
             Check("batch4 actual maturation and actual Scribe keep clone later preference independently", () =>
             {
                 CommandReset(); var source = SocialSlave(); Comp(source).romanceConfig = Denied();
                 var clone = SocialSlave();
                 AccessTools.Method(typeof(RabbitCloneUtility), "PrepareFreshRabbitCloneBody").Invoke(null, new object[] { source, clone });
-                foreach (var setting in new[] { SSCRomanceSetting.AcceptProposal, SSCRomanceSetting.InitiateOnlyMaster })
+                foreach (var setting in new[] { SSCRomanceSetting.AcceptProposal, SSCRomanceSetting.InitiateToMaster })
                 {
                     var view = SSCRomancePreferences.GetView(clone, setting);
-                    Require(SSCRomancePreferences.TrySet(clone, setting, setting == SSCRomanceSetting.InitiateOnlyMaster, view.Context, out _));
+                    Require(SSCRomancePreferences.TrySet(clone, setting, setting == SSCRomanceSetting.InitiateToMaster, view.Context, out _));
                 }
                 var own = Comp(clone).romanceConfig;
                 var link = new HediffComp_RabbitCloneLink();
@@ -61,7 +61,7 @@ internal static partial class Program
                 Require(link.mature); Require(ReferenceEquals(own, Comp(clone).romanceConfig));
                 string path = Save(new RomanceFixture(Comp(clone))); var restored = SocialSlave(); Load(path, Comp(restored));
                 SSCRomanceLifecycle.InitializeAfterLoad(restored);
-                Require(!Comp(restored).romanceConfig.allowAcceptProposal && Comp(restored).romanceConfig.initiateOnlyMaster);
+                Require(!Comp(restored).romanceConfig.allowAcceptProposal && Comp(restored).romanceConfig.allowInitiateToMaster);
                 Require(!Comp(restored).romanceConfig.alwaysAcceptMaster); Require(Comp(source).romanceConfig.alwaysAcceptMaster);
             });
         }

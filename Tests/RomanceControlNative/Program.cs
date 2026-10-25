@@ -1,4 +1,4 @@
-// AI 辅助生成：原生类型与真实生产代码；图形、完整健康结算及界面显示不属于此宿主。
+﻿// AI 辅助生成：原生类型与真实生产代码；图形、完整健康结算及界面显示不属于此宿主。
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.Loader;
@@ -121,9 +121,9 @@ internal static partial class Program
         var chain = new Hediff_ChainOfSexSlave { def = SSCDefOf.ChainOfSexSlave, pawn = pawn, target = master, loadID = ++id };
         chain.Severity = severity; pawn.health.hediffSet.hediffs.Add(chain); SSCRomanceLifecycle.Notify(pawn); return pawn;
     }
-    /// <summary>构造七项均偏离模块默认的固定来源，检查显式 false 与两个附加开关的保留。</summary>
+    /// <summary>构造行为禁止、仅主人目标集合及主人必须接受的固定来源，检查显式值和副本保留。</summary>
     private static SSCRomanceConfig Denied() => new() { allowInitiateRomance = false, allowInitiateProposal = false, allowInitiateBreakup = false,
-        allowAcceptRomance = false, allowAcceptProposal = false, initiateOnlyMaster = true, alwaysAcceptMaster = true };
+        allowAcceptRomance = false, allowAcceptProposal = false, allowInitiateToMaster = true, allowInitiateToSexSlave = false, allowInitiateToOthers = false, alwaysAcceptMaster = true };
     /// <summary>直接调用生产双边策略，测试期望值由用例给定而不在宿主重写策略。</summary>
     private static SSCRomanceDecision Decide(Pawn actor, Pawn recipient, SSCRomanceAction action = SSCRomanceAction.Romance)
         => SSCRomancePolicy.Evaluate(actor, recipient, action);

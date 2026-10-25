@@ -115,7 +115,7 @@
   <SSC_Restrictions_Tip_ReceiveConsensual>允许接受非主人的自愿性行为；对方仍需具备发起许可。</SSC_Restrictions_Tip_ReceiveConsensual>
   <SSC_Restrictions_Tip_ReceiveForced>允许接受非主人的强制行为；装备可强制禁止此项。</SSC_Restrictions_Tip_ReceiveForced>
   <SSC_Restrictions_Tip_ReceiveTraining>允许非主人进行日常或仪式调教，仍需满足调教员资格与指派要求。</SSC_Restrictions_Tip_ReceiveTraining>
-  <SSC_Restrictions_Tip_SelfTraining>允许持有锁链的 SSC 性奴进行自我调教；与普通自慰许可独立。行为还需满足 RJW 的能力与地点条件。</SSC_Restrictions_Tip_SelfTraining>
+  <SSC_Restrictions_Tip_SelfTraining>允许自我调教，与普通自慰许可独立。</SSC_Restrictions_Tip_SelfTraining>
   <SSC_Restrictions_AssignAuthorizesSuffix>（同时允许调教）</SSC_Restrictions_AssignAuthorizesSuffix>
   <SSC_Restrictions_AssignAuthorizesTip>选择非主人调教员时，同步开启接受非主人调教。普通互动仍按各自条目检查；装备或特化的强制禁止仍然有效。</SSC_Restrictions_AssignAuthorizesTip>
   <SSC_Restrictions_AssignFailed>无法完成指派：资格或限制状态已改变，或强制规则不允许调教。原指派及个人选择保持不变。</SSC_Restrictions_AssignFailed>

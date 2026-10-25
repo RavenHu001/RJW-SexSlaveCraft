@@ -11,13 +11,14 @@ namespace SexSlaveCraft
         // 保存原始选择；未解锁或解绑不回写，重新取得资格后仍使用原选择。
         public bool allowInitiateRomance = true, allowInitiateProposal = true, allowInitiateBreakup = true;
         public bool allowAcceptRomance = true, allowAcceptProposal = true;
-        public bool initiateOnlyMaster, alwaysAcceptMaster;
+        public bool alwaysAcceptMaster;
+        public bool allowInitiateToMaster = true, allowInitiateToOthers = true;
         public bool allowInitiateToSexSlave = true, alwaysAcceptSexSlave;
         public bool IsSupported => version == CurrentVersion;
         public bool IsDefault => IsSupported && allowInitiateRomance && allowInitiateProposal &&
-            allowInitiateBreakup && allowAcceptRomance && allowAcceptProposal && !initiateOnlyMaster && !alwaysAcceptMaster && allowInitiateToSexSlave && !alwaysAcceptSexSlave;
+            allowInitiateBreakup && allowAcceptRomance && allowAcceptProposal && allowInitiateToMaster && allowInitiateToOthers && !alwaysAcceptMaster && allowInitiateToSexSlave && !alwaysAcceptSexSlave;
 
-        /// <summary>九个标量逐值复制；未知版本保持版本及可读取字段，不冒充当前格式。</summary>
+        /// <summary>十个标量逐值复制；未知版本保持版本及可读取字段，不冒充当前格式。</summary>
         public SSCRomanceConfig Copy() => (SSCRomanceConfig)MemberwiseClone();
         /// <summary>读取指定保存值；未知条目返回 false，调用方仍须独立检查条目合法性。</summary>
         public bool Get(SSCRomanceSetting setting)
@@ -29,7 +30,8 @@ namespace SexSlaveCraft
                 case SSCRomanceSetting.InitiateBreakup: return allowInitiateBreakup;
                 case SSCRomanceSetting.AcceptRomance: return allowAcceptRomance;
                 case SSCRomanceSetting.AcceptProposal: return allowAcceptProposal;
-                case SSCRomanceSetting.InitiateOnlyMaster: return initiateOnlyMaster;
+                case SSCRomanceSetting.InitiateToMaster: return allowInitiateToMaster;
+                case SSCRomanceSetting.InitiateToOthers: return allowInitiateToOthers;
                 case SSCRomanceSetting.AlwaysAcceptMaster: return alwaysAcceptMaster;
                 case SSCRomanceSetting.InitiateToSexSlave: return allowInitiateToSexSlave;
                 case SSCRomanceSetting.AlwaysAcceptSexSlave: return alwaysAcceptSexSlave;
@@ -46,7 +48,8 @@ namespace SexSlaveCraft
                 case SSCRomanceSetting.InitiateBreakup: allowInitiateBreakup = value; break;
                 case SSCRomanceSetting.AcceptRomance: allowAcceptRomance = value; break;
                 case SSCRomanceSetting.AcceptProposal: allowAcceptProposal = value; break;
-                case SSCRomanceSetting.InitiateOnlyMaster: initiateOnlyMaster = value; break;
+                case SSCRomanceSetting.InitiateToMaster: allowInitiateToMaster = value; break;
+                case SSCRomanceSetting.InitiateToOthers: allowInitiateToOthers = value; break;
                 case SSCRomanceSetting.AlwaysAcceptMaster: alwaysAcceptMaster = value; break;
                 case SSCRomanceSetting.InitiateToSexSlave: allowInitiateToSexSlave = value; break;
                 case SSCRomanceSetting.AlwaysAcceptSexSlave: alwaysAcceptSexSlave = value; break;
@@ -62,7 +65,9 @@ namespace SexSlaveCraft
             Scribe_Values.Look(ref allowInitiateBreakup, "allowInitiateBreakup", true);
             Scribe_Values.Look(ref allowAcceptRomance, "allowAcceptRomance", true);
             Scribe_Values.Look(ref allowAcceptProposal, "allowAcceptProposal", true);
-            Scribe_Values.Look(ref initiateOnlyMaster, "initiateOnlyMaster", false);
+            // 仅限主人旧字段不读取、不转换；未发布配置改为三个独立目标许可，缺字段全部允许。
+            Scribe_Values.Look(ref allowInitiateToMaster, "allowInitiateToMaster", true);
+            Scribe_Values.Look(ref allowInitiateToOthers, "allowInitiateToOthers", true);
             Scribe_Values.Look(ref alwaysAcceptMaster, "alwaysAcceptMaster", false);
             // 向旧格式追加字段：旧档允许向性奴发起、不保证接受性奴；人格副本及克隆清理仍复用原流程。
             Scribe_Values.Look(ref allowInitiateToSexSlave, "allowInitiateToSexSlave", true);
@@ -70,9 +75,9 @@ namespace SexSlaveCraft
         }
     }
 
-    /// <summary>九项持久选择；新值追加以保留旧枚举编号，阶段和默认值按语义显式解析。</summary>
+    /// <summary>十项持久选择；未发布的仅主人项已改为主人目标许可，不提供旧语义转换；阶段和默认值按语义解析。</summary>
     public enum SSCRomanceSetting
-    { InitiateRomance, InitiateProposal, InitiateBreakup, AcceptRomance, AcceptProposal, InitiateOnlyMaster, AlwaysAcceptMaster, InitiateToSexSlave, AlwaysAcceptSexSlave }
+    { InitiateRomance, InitiateProposal, InitiateBreakup, AcceptRomance, AcceptProposal, InitiateToMaster, AlwaysAcceptMaster, InitiateToSexSlave, AlwaysAcceptSexSlave, InitiateToOthers }
     /// <summary>实际发起的互动；分手与离婚共用 Breakup，不包含被动分手许可。</summary>
     public enum SSCRomanceAction { Romance, Proposal, Breakup }
     /// <summary>接收端覆盖方式；Vanilla 不保证接受，NotApplicable 表示没有接受判定。</summary>
@@ -81,6 +86,6 @@ namespace SexSlaveCraft
     public enum SSCRomanceReason
     {
         None, InvalidPawn, Identity, NoBinding, Stage, Hollow, Mutating, Loading,
-        UnsupportedConfig, UnknownSetting, PlayerOnly, StaleContext, RuleDenied, OwnerOnly, InvalidAuthorization, SexSlaveTargetDenied
+        UnsupportedConfig, UnknownSetting, PlayerOnly, StaleContext, RuleDenied, TargetDenied, InvalidAuthorization, SexSlaveTargetDenied
     }
 }

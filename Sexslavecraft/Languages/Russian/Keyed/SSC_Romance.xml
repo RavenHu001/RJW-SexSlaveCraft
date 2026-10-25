@@ -6,7 +6,7 @@
   <SSC_Romance_NoRelationship>Между этими персонажами нет романтических или брачных отношений, которые можно завершить.</SSC_Romance_NoRelationship>
   <SSC_Romance_UnknownAction>Неизвестное романтическое действие.</SSC_Romance_UnknownAction>
   <SSC_Romance_RuleDenied>Настройки романтического поведения запрещают этому персонажу начинать это действие.</SSC_Romance_RuleDenied>
-  <SSC_Romance_OwnerOnly>Этот персонаж может начинать ухаживания или делать предложение только своему хозяину по цепи.</SSC_Romance_OwnerOnly>
+  <SSC_Romance_TargetDenied>Текущий фильтр романтических целей запрещает романтическую инициативу и предложение этому персонажу.</SSC_Romance_TargetDenied>
   <SSC_Romance_AcceptancePreview>{0} (согласие: {1})</SSC_Romance_AcceptancePreview>
   <SSC_Romance_SexSection>Контроль сексуального поведения (всегда принимает сексуальную инициативу хозяина)</SSC_Romance_SexSection>
   <SSC_Romance_RomanceSection>Контроль романтических отношений</SSC_Romance_RomanceSection>
@@ -16,14 +16,14 @@
   <SSC_Romance_Independent>Романтические правила не зависят от переключателя сексуального поведения. Галочки показывают сохранённый выбор, включая временно недоступные настройки.</SSC_Romance_Independent>
   <SSC_Romance_Group_InitiateRomance>Активные действия</SSC_Romance_Group_InitiateRomance>
   <SSC_Romance_Group_AcceptRomance>Ответы</SSC_Romance_Group_AcceptRomance>
-  <SSC_Romance_Group_InitiateOnlyMaster>Правила хозяина</SSC_Romance_Group_InitiateOnlyMaster>
+  <SSC_Romance_TargetTitle>Романтические цели</SSC_Romance_TargetTitle>
   <SSC_Romance_Setting_InitiateRomance>Разрешить попытки ухаживания</SSC_Romance_Setting_InitiateRomance>
   <SSC_Romance_Setting_InitiateProposal>Разрешить предложения брака</SSC_Romance_Setting_InitiateProposal>
   <SSC_Romance_Setting_InitiateBreakup>Разрешить расставание / развод</SSC_Romance_Setting_InitiateBreakup>
   <SSC_Romance_Setting_AcceptRomance>Разрешить принимать ухаживания</SSC_Romance_Setting_AcceptRomance>
   <SSC_Romance_Setting_AcceptProposal>Разрешить принимать предложение брака</SSC_Romance_Setting_AcceptProposal>
-  <SSC_Romance_Setting_InitiateOnlyMaster>Романтическая инициатива только к хозяину</SSC_Romance_Setting_InitiateOnlyMaster>
-  <SSC_Romance_Setting_AlwaysAcceptMaster>Всегда принимать связанного хозяина</SSC_Romance_Setting_AlwaysAcceptMaster>
+  <SSC_Romance_Setting_InitiateToMaster>Хозяин</SSC_Romance_Setting_InitiateToMaster>
+  <SSC_Romance_Setting_AlwaysAcceptMaster>Принудительно принимать романтическую инициативу хозяина</SSC_Romance_Setting_AlwaysAcceptMaster>
   <SSC_Romance_MasterPriority>Гарантированное принятие для привязанного хозяина {0} имеет приоритет над запретами ответа. Для остальных действуют соответствующие правила ответа.</SSC_Romance_MasterPriority>
   <SSC_Romance_OpenCommand>Стадия 4: отдать адресный приказ…</SSC_Romance_OpenCommand>
   <SSC_Romance_ActiveMeaning>При отключении действие не начинается.</SSC_Romance_ActiveMeaning>
@@ -37,9 +37,9 @@
   <SSC_Romance_ChooseTarget>Цель: {0}</SSC_Romance_ChooseTarget>
   <SSC_Romance_NoTarget>Цель не выбрана / нет доступных целей</SSC_Romance_NoTarget>
   <SSC_Romance_RelationPreview>Текущие отношения: {0}</SSC_Romance_RelationPreview>
-  <SSC_Romance_CommandOverride>Этот приказ разово обходит собственные запреты инициативы исполнителя, ограничения целей хозяином и секс-рабами и его нежелание. Сохранённые предпочтения не меняются.</SSC_Romance_CommandOverride>
-  <SSC_Romance_BreakupPreview>Прекращает текущие романтические / брачные отношения без согласия другой стороны. Привязка цепью сохраняется.</SSC_Romance_BreakupPreview>
-  <SSC_Romance_Reception_Vanilla>Цель отвечает по своим обычным правилам и может отказать.</SSC_Romance_Reception_Vanilla>
+  <SSC_Romance_CommandOverride>Обойти запреты инициативы только для этого приказа. Настройки не меняются.</SSC_Romance_CommandOverride>
+  <SSC_Romance_BreakupPreview>Приказать секс-рабу расстаться с выбранной целью или развестись.</SSC_Romance_BreakupPreview>
+  <SSC_Romance_Reception_Vanilla>Цель отвечает согласно своим настройкам романтики.</SSC_Romance_Reception_Vanilla>
   <SSC_Romance_Reception_ForceReject>Текущее разрешение цели требует отказа; взаимодействие всё равно может состояться.</SSC_Romance_Reception_ForceReject>
   <SSC_Romance_Reception_ForceAccept>Исполнитель — связанный хозяин цели, и принятие хозяина гарантировано при выполнении условий взаимодействия.</SSC_Romance_Reception_ForceAccept>
   <SSC_Romance_Submit>Прямой приказ</SSC_Romance_Submit>
@@ -78,9 +78,15 @@
   <SSC_Romance_SexTestTab>Проверка сексуальных разрешений</SSC_Romance_SexTestTab>
   <SSC_Romance_ForcedRomanceRefusal>{1} отклоняет признание {0} из-за ограничений на романтические ответы.</SSC_Romance_ForcedRomanceRefusal>
   <SSC_Romance_ForcedProposalRefusal>{1} отклоняет предложение руки и сердца от {0} из-за ограничений на романтические ответы.</SSC_Romance_ForcedProposalRefusal>
-  <SSC_Romance_Setting_InitiateToSexSlave>Разрешить романтическую инициативу к секс-рабам</SSC_Romance_Setting_InitiateToSexSlave>
-  <SSC_Romance_Setting_AlwaysAcceptSexSlave>Всегда принимать романтическую инициативу секс-рабов</SSC_Romance_Setting_AlwaysAcceptSexSlave>
+  <SSC_Romance_Setting_InitiateToSexSlave>Секс-рабы</SSC_Romance_Setting_InitiateToSexSlave>
+  <SSC_Romance_Setting_AlwaysAcceptSexSlave>Принудительно принимать романтическую инициативу секс-рабов</SSC_Romance_Setting_AlwaysAcceptSexSlave>
   <SSC_Romance_InitiateToSexSlaveTip>При отключении этот персонаж не может начинать романтическое общение или делать предложение другим секс-рабам SSC. Не влияет на расставание и развод и не отменяет другие запреты инициативы.</SSC_Romance_InitiateToSexSlaveTip>
   <SSC_Romance_AlwaysAcceptSexSlaveTip>При включении этот персонаж всегда принимает романтическую инициативу и предложения других секс-рабов SSC, несмотря на свои обычные запреты ответа. Не отменяет ограничения инициатора или необходимые условия взаимодействия.</SSC_Romance_AlwaysAcceptSexSlaveTip>
   <SSC_Romance_SexSlaveTargetDenied>Текущие разрешения запрещают романтическую инициативу и предложения секс-рабам.</SSC_Romance_SexSlaveTargetDenied>
+  <SSC_Romance_Setting_InitiateToOthers>Другие</SSC_Romance_Setting_InitiateToOthers>
+  <SSC_Romance_TargetMeaning>Выберите допустимые цели романтической инициативы и предложений. Можно выбрать несколько; не влияет на расставание и развод.</SSC_Romance_TargetMeaning>
+  <SSC_Romance_MustAcceptMeaning>Принудительно принимать романтическую инициативу и предложения этих целей, несмотря на разрешения ответа.</SSC_Romance_MustAcceptMeaning>
+  <SSC_Romance_CommandTip_Romance>Приказать секс-рабу начать романтическое общение с выбранной целью.</SSC_Romance_CommandTip_Romance>
+  <SSC_Romance_CommandTip_Proposal>Приказать секс-рабу сделать предложение выбранной цели.</SSC_Romance_CommandTip_Proposal>
+  <SSC_Romance_CommandTip_Breakup>Приказать секс-рабу расстаться с выбранной целью или развестись.</SSC_Romance_CommandTip_Breakup>
 </LanguageData>

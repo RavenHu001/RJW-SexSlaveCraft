@@ -21,8 +21,8 @@ namespace SexSlaveCraft
     public static class SSCRomanceResolver
     {
         /// <summary>拒绝未知枚举值，避免把未注册条目当成默认允许的许可。</summary>
-        public static bool IsKnown(SSCRomanceSetting setting) => setting >= SSCRomanceSetting.InitiateRomance && setting <= SSCRomanceSetting.AlwaysAcceptSexSlave;
-        /// <summary>明确主动二阶、被动三阶；不依赖枚举排列，主人限制与同方向规则同步解锁。</summary>
+        public static bool IsKnown(SSCRomanceSetting setting) => setting >= SSCRomanceSetting.InitiateRomance && setting <= SSCRomanceSetting.InitiateToOthers;
+        /// <summary>明确主动二阶、被动三阶；不依赖枚举排列，三个目标许可与主动规则同步解锁。</summary>
         public static int RequiredStage(SSCRomanceSetting setting)
         {
             switch (setting)
@@ -30,8 +30,9 @@ namespace SexSlaveCraft
                 case SSCRomanceSetting.InitiateRomance:
                 case SSCRomanceSetting.InitiateProposal:
                 case SSCRomanceSetting.InitiateBreakup:
-                case SSCRomanceSetting.InitiateOnlyMaster:
-                case SSCRomanceSetting.InitiateToSexSlave: return 2;
+                case SSCRomanceSetting.InitiateToMaster:
+                case SSCRomanceSetting.InitiateToSexSlave:
+                case SSCRomanceSetting.InitiateToOthers: return 2;
                 case SSCRomanceSetting.AcceptRomance:
                 case SSCRomanceSetting.AcceptProposal:
                 case SSCRomanceSetting.AlwaysAcceptMaster:
@@ -39,9 +40,14 @@ namespace SexSlaveCraft
                 default: return int.MaxValue;
             }
         }
-        /// <summary>旧档缺配置的五项原许可及性奴目标许可默认允许；接受保证与仅主人默认关闭。</summary>
+        /// <summary>行为许可及三个目标许可默认允许，两个必须接受开关默认关闭。</summary>
         public static bool DefaultEnabled(SSCRomanceSetting setting) => IsKnown(setting) &&
-            (setting <= SSCRomanceSetting.AcceptProposal || setting == SSCRomanceSetting.InitiateToSexSlave);
+            (setting <= SSCRomanceSetting.AcceptProposal || setting == SSCRomanceSetting.InitiateToMaster ||
+             setting == SSCRomanceSetting.InitiateToSexSlave || setting == SSCRomanceSetting.InitiateToOthers);
+        /// <summary>目标互斥分类：自己的实际主人优先，其次其他 SSC 性奴，其余均为其他人；不额外限制阵营或法律身份。</summary>
+        public static SSCRomanceSetting TargetSetting(Pawn target, Pawn master)
+            => target != null && target == master ? SSCRomanceSetting.InitiateToMaster :
+                SSCIdentityUtility.IsSexSlave(target) ? SSCRomanceSetting.InitiateToSexSlave : SSCRomanceSetting.InitiateToOthers;
         /// <summary>高频读取不写载体；人格替换及加载期暂停本模块的覆盖，实际互动仍须检查可执行性。</summary>
         public static SSCRomanceState Resolve(Pawn pawn)
         {
