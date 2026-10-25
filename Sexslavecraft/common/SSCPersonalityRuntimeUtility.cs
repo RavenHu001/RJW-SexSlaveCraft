@@ -37,7 +37,7 @@ namespace SexSlaveCraft
             state.Mutation = scope;
 #if SSC_RW17
             // 即使后续替换失败也不恢复旧命令，持久世代与进程内 token 同时撤销。
-            SSCRomanceLifecycle.Invalidate(pawn);
+            SSCRomanceLifecycle.InvalidatePersonality(pawn);
 #endif
             return true;
         }

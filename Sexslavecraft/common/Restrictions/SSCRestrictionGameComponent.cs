@@ -41,6 +41,10 @@ namespace SexSlaveCraft
                 SSCRomanceLifecycle.Notify(pawn);
 #endif
             }
+#if SSC_RW17
+            // 角色引用、绑定及人格完整恢复后，才认领原存档的当前/排队命令。
+            SSCRomanceCommandGameComponent.Current?.ReconcileAfterLoad();
+#endif
         }
 
         /// <summary>获得当前存档内地图、世界和临时容器角色的独立快照，避免枚举中关系更新改变集合。</summary>

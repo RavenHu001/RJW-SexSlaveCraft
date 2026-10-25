@@ -41,7 +41,7 @@ internal static partial class Program
     private static void ReviewFinalGuardTests()
     {
         var method = AccessTools.Method(typeof(Pawn_InteractionsTracker), "TryInteractWith");
-        var enter = AccessTools.Method(typeof(SSCRomanceInteractionUtility), nameof(SSCRomanceInteractionUtility.CanEnter));
+        var enter = AccessTools.Method(typeof(SSCRomanceExecutionScope), nameof(SSCRomanceExecutionScope.BeforeEffects));
         Check("batch2 review final guard production transpiler is actually installed", () =>
             Require(Harmony.GetPatchInfo(method).Transpilers.Any(p => p.PatchMethod.DeclaringType == typeof(Harmony_SSCRomanceInteraction))));
         Check("batch2 review actual tracker IL gets one final guard without changing native probability calls", () =>

@@ -14,12 +14,16 @@ namespace SexSlaveCraft
     public static class Harmony_SSCRomanceInteraction
     {
         /// <summary>在原方法的思想、经验、worker、冷却与日志前中止主动禁止；RJW 和原版 Toil 同样经过此处。</summary>
-        public static bool Prefix(Pawn ___pawn, Pawn recipient, InteractionDef intDef, ref bool __result)
+        public static bool Prefix(Pawn ___pawn, Pawn recipient, InteractionDef intDef, ref bool __result, out SSCRomanceExecutionScope.Invocation __state)
         {
+            __state = SSCRomanceExecutionScope.Enter(___pawn, recipient, intDef);
             if (SSCRomanceInteractionUtility.CanEnter(___pawn, recipient, intDef)) return true;
             __result = false;
             return false;
         }
+
+        /// <summary>原版和外部补丁异常也释放调用帧；无授权调用及重入不会继承外层票据。</summary>
+        public static void Finalizer(SSCRomanceExecutionScope.Invocation __state) => SSCRomanceExecutionScope.Exit(__state);
 
         /// <summary>在原版可交互性／冷却检查返回后、首次思想或经验前再次检查，堵住外部回调改变规则或关系的窗口。</summary>
         public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
@@ -33,7 +37,8 @@ namespace SexSlaveCraft
             for (int i = 0; i + 3 < codes.Count; i++)
                 if (codes[i].opcode == OpCodes.Newobj && Equals(codes[i].operand, constructor) && codes[i + 1].IsStloc() &&
                     codes[i + 2].opcode == OpCodes.Ldarg_2 && codes[i + 3].LoadsField(thought)) matches.Add(i);
-            if (matches.Count != 1 || codes.Any(c => c.blocks.Count != 0))
+            SSCRomanceCommandHooks.common = matches.Count == 1 && !codes.Any(c => c.blocks.Count != 0);
+            if (!SSCRomanceCommandHooks.common)
             {
                 SSCLog.WarningImportant("[SSC Romance] 共同入口副作用前锚点不匹配，未安装末次复查；入口前缀仍保留。");
                 return codes;
@@ -46,7 +51,7 @@ namespace SexSlaveCraft
             codes.InsertRange(at, new[] { begin,
                 new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(Pawn_InteractionsTracker), "pawn")),
                 new CodeInstruction(OpCodes.Ldarg_1), new CodeInstruction(OpCodes.Ldarg_2),
-                new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(SSCRomanceInteractionUtility), nameof(SSCRomanceInteractionUtility.CanEnter))),
+                new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(SSCRomanceExecutionScope), nameof(SSCRomanceExecutionScope.BeforeEffects))),
                 new CodeInstruction(OpCodes.Brtrue, proceed), new CodeInstruction(OpCodes.Ldc_I4_0), new CodeInstruction(OpCodes.Ret) });
             return codes;
         }
@@ -99,6 +104,7 @@ namespace SexSlaveCraft
                 codes[index].opcode == OpCodes.Bge_Un || codes[index].opcode == OpCodes.Bge_Un_S :
                 codes[index].opcode == OpCodes.Clt && codes[calls[0] + 1].opcode == OpCodes.Stloc_0 &&
                 codes[calls[0] + 2].Calls(AccessTools.PropertyGetter(typeof(Rand), "Value")) && codes[calls[0] + 3].opcode == OpCodes.Ldloc_0);
+            if (romance) SSCRomanceCommandHooks.romance = matched; else SSCRomanceCommandHooks.proposal = matched;
             if (!matched)
             {
                 // 返回原指令，避免猜改其他判定；明确留下本分支未覆盖的诊断，不能当作完成安装。

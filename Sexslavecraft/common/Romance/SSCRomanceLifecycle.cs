@@ -13,6 +13,13 @@ namespace SexSlaveCraft
             var comp = pawn?.TryGetComp<CompSexSlaveTraining>();
             if (comp == null || Scribe.mode != LoadSaveMode.Inactive) return;
             comp.romanceAuthorizationId = Guid.NewGuid().ToString("N");
+            SSCRomanceCommandGameComponent.Current?.Invalidate(pawn);
+        }
+        /// <summary>人格替换开始即撤销本人授权，并取消指向旧目标人格的请求；正常读档不调用。</summary>
+        public static void InvalidatePersonality(Pawn pawn)
+        {
+            Invalidate(pawn);
+            SSCRomanceCommandGameComponent.Current?.Invalidate(pawn, targetPersonality: true);
         }
         /// <summary>运行事件比较真实链／主人和阶段；加载期不观察半恢复引用。</summary>
         public static void Notify(Pawn pawn)

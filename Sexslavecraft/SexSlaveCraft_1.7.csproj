@@ -86,6 +86,14 @@
     <Compile Include="common/Romance/SSCRomanceAcceptanceUtility.cs" />
     <Compile Include="ThePatches/Harmony_RomanceControl.cs" />
     <Compile Include="Comps/Comp_Train.Romance.cs" />
+    <Compile Include="common/Romance/SSCRomanceCommandRecord.cs" />
+    <Compile Include="common/Romance/SSCRomanceCommandGameComponent.cs" />
+    <Compile Include="common/Romance/SSCRomanceCommandUtility.cs" />
+    <Compile Include="common/Romance/SSCRomanceExecutionScope.cs" />
+    <Compile Include="JobDriver/JobDriver_SSCRomanceCommand.cs" />
+    <Compile Include="ThePatches/Harmony_RomanceCommand.cs" />
+    <Compile Include="common/Romance/SSCRomanceUI.cs" />
+    <Compile Include="common/Romance/Dialog_SSCRomanceCommand.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="common/SSCAbilityToggleFramework.cs" />

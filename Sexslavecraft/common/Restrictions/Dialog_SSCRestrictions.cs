@@ -50,7 +50,11 @@ namespace SexSlaveCraft
                 float width = (inRect.width - 8f) / 2f;
                 if (Widgets.ButtonText(new Rect(0f, 0f, width, 32f), (testing ? "" : "▶ ") + "SSC_Restrictions_EditTab".Translate()))
                     SelectPage(false);
-                if (Widgets.ButtonText(new Rect(width + 8f, 0f, width, 32f), (testing ? "▶ " : "") + "SSC_Restrictions_TestTab".Translate()))
+                string testTabKey = "SSC_Restrictions_TestTab";
+#if SSC_RW17
+                testTabKey = "SSC_Romance_SexTestTab";
+#endif
+                if (Widgets.ButtonText(new Rect(width + 8f, 0f, width, 32f), (testing ? "▶ " : "") + testTabKey.Translate()))
                     SelectPage(true);
                 Rect viewport = new Rect(0f, 42f, inRect.width, Mathf.Max(1f, inRect.height - 104f));
                 Rect content = new Rect(0f, 0f, Mathf.Max(1f, viewport.width - 20f), Mathf.Max(viewport.height, contentHeight));
@@ -67,8 +71,12 @@ namespace SexSlaveCraft
                             listing.Label("SSC_Restrictions_OwnerNotice".Translate());
                             listing.GapLine();
                         }
-                        DrawGlobalSwitches(listing);
-                        listing.GapLine();
+#if SSC_RW17
+                        // 编辑页把旧全局开关收进性行为板块，避免被理解成浪漫控制总开关。
+                        if (testing) { DrawGlobalSwitches(listing); listing.GapLine(); }
+#else
+                        DrawGlobalSwitches(listing); listing.GapLine();
+#endif
                         if (testing) DrawTest(listing); else DrawEditor(listing);
                         if (!string.IsNullOrEmpty(error)) listing.Label("SSC_Restrictions_Error".Translate(error));
                     }
@@ -92,7 +100,7 @@ namespace SexSlaveCraft
         }
 
         /// <summary>编辑并保存统一限制和特化覆盖两个全局开关，不重置个体配置。</summary>
-        private static void DrawGlobalSwitches(Listing_Standard listing)
+        internal static void DrawGlobalSwitches(Listing_Standard listing)
         {
             SSCSettings settings = SSCMod.settings;
             if (settings == null) return;
@@ -112,7 +120,11 @@ namespace SexSlaveCraft
         {
             if (listing.ButtonText("SSC_Restrictions_EditPawn".Translate(PawnLabel(editedPawn))))
                 ChoosePawn(p => { editedPawn = p; scrollPosition = Vector2.zero; error = null; }, false);
+#if SSC_RW17
+            SSCBehaviorControlUI.DrawPawn(listing, editedPawn, showSexSwitches: true);
+#else
             SSCRestrictionUI.DrawPawn(listing, editedPawn);
+#endif
             listing.Gap();
             if (listing.ButtonText("SSC_Restrictions_TestAsReceiver".Translate()))
             {

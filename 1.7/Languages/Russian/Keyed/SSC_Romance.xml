@@ -8,4 +8,72 @@
   <SSC_Romance_RuleDenied>Настройки романтического поведения запрещают этому персонажу начинать это действие.</SSC_Romance_RuleDenied>
   <SSC_Romance_OwnerOnly>Этот персонаж может начинать ухаживания или делать предложение только своему хозяину по цепи.</SSC_Romance_OwnerOnly>
   <SSC_Romance_AcceptancePreview>{0} (согласие: {1})</SSC_Romance_AcceptancePreview>
+  <SSC_Romance_SexSection>Контроль сексуального поведения</SSC_Romance_SexSection>
+  <SSC_Romance_RomanceSection>Контроль романтических отношений</SSC_Romance_RomanceSection>
+  <SSC_Romance_State>Текущая стадия цепи: {0}; связанный хозяин: {1}</SSC_Romance_State>
+  <SSC_Romance_NoMaster>Нет действующей привязки</SSC_Romance_NoMaster>
+  <SSC_Romance_FirstStage>На стадии 1 романтическое поведение не меняется; сохранённые настройки пока не действуют.</SSC_Romance_FirstStage>
+  <SSC_Romance_Independent>Романтические правила не зависят от переключателя сексуального поведения. Галочки показывают сохранённый выбор, включая временно недоступные настройки.</SSC_Romance_Independent>
+  <SSC_Romance_Group_InitiateRomance>Активные действия · стадия 2</SSC_Romance_Group_InitiateRomance>
+  <SSC_Romance_Group_AcceptRomance>Ответы · стадия 3</SSC_Romance_Group_AcceptRomance>
+  <SSC_Romance_Group_InitiateOnlyMaster>Правила хозяина · стадия 3</SSC_Romance_Group_InitiateOnlyMaster>
+  <SSC_Romance_Setting_InitiateRomance>Разрешить попытки ухаживания</SSC_Romance_Setting_InitiateRomance>
+  <SSC_Romance_Setting_InitiateProposal>Разрешить предложения брака</SSC_Romance_Setting_InitiateProposal>
+  <SSC_Romance_Setting_InitiateBreakup>Разрешить расставание / развод</SSC_Romance_Setting_InitiateBreakup>
+  <SSC_Romance_Setting_AcceptRomance>Разрешить принимать ухаживания</SSC_Romance_Setting_AcceptRomance>
+  <SSC_Romance_Setting_AcceptProposal>Разрешить принимать предложение брака</SSC_Romance_Setting_AcceptProposal>
+  <SSC_Romance_Setting_InitiateOnlyMaster>Ухаживать / предлагать брак только хозяину</SSC_Romance_Setting_InitiateOnlyMaster>
+  <SSC_Romance_Setting_AlwaysAcceptMaster>Всегда принимать связанного хозяина</SSC_Romance_Setting_AlwaysAcceptMaster>
+  <SSC_Romance_MasterPriority>Гарантированное принятие хозяина {0} имеет приоритет над запретом ответа; для остальных действуют сохранённые разрешения.</SSC_Romance_MasterPriority>
+  <SSC_Romance_OpenCommand>Стадия 4: отдать адресный приказ…</SSC_Romance_OpenCommand>
+  <SSC_Romance_ActiveMeaning>При отключении действие не начинается и воспоминаний об отказе нет.</SSC_Romance_ActiveMeaning>
+  <SSC_Romance_PassiveMeaning>При отключении остаётся доступной целью, но всегда отказывает. При включении ответ определяется обычным образом.</SSC_Romance_PassiveMeaning>
+  <SSC_Romance_ExtraMeaning>Эти два правила независимы. Ограничение хозяином не разрешает запрещённое активное действие.</SSC_Romance_ExtraMeaning>
+  <SSC_Romance_RequiredStage>Требуется стадия цепи {0}.</SSC_Romance_RequiredStage>
+  <SSC_Romance_OpenBehaviorWindow>Открыть ограничения поведения…</SSC_Romance_OpenBehaviorWindow>
+  <SSC_Romance_CommandTitle>Адресный приказ стадии 4</SSC_Romance_CommandTitle>
+  <SSC_Romance_Executor>Исполнитель: {0}</SSC_Romance_Executor>
+  <SSC_Romance_ChooseAction>Действие: {0}</SSC_Romance_ChooseAction>
+  <SSC_Romance_ChooseTarget>Цель: {0}</SSC_Romance_ChooseTarget>
+  <SSC_Romance_NoTarget>Цель не выбрана / нет доступных целей</SSC_Romance_NoTarget>
+  <SSC_Romance_RelationPreview>Текущие отношения: {0}</SSC_Romance_RelationPreview>
+  <SSC_Romance_CommandOverride>Приказ для этого запроса обходит ограничения активных действий исполнителя, правило «только хозяин» и его собственное желание. Сохранённые настройки не меняются.</SSC_Romance_CommandOverride>
+  <SSC_Romance_BreakupPreview>Прекращает текущие романтические / брачные отношения без согласия другой стороны. Привязка цепью сохраняется.</SSC_Romance_BreakupPreview>
+  <SSC_Romance_Reception_Vanilla>Цель отвечает по своим обычным правилам и может отказать.</SSC_Romance_Reception_Vanilla>
+  <SSC_Romance_Reception_ForceReject>Текущее разрешение цели требует отказа; взаимодействие всё равно может состояться.</SSC_Romance_Reception_ForceReject>
+  <SSC_Romance_Reception_ForceAccept>Исполнитель — связанный хозяин цели, и принятие хозяина гарантировано при выполнении условий взаимодействия.</SSC_Romance_Reception_ForceAccept>
+  <SSC_Romance_Submit>Отдать приказ</SSC_Romance_Submit>
+  <SSC_Romance_Scheduled>Адресный приказ для {0} в отношении {1} назначен; взаимодействие и ответ ещё ожидаются.</SSC_Romance_Scheduled>
+  <SSC_Romance_NoRelationshipLabel>Нет текущих романтических / брачных отношений</SSC_Romance_NoRelationshipLabel>
+  <SSC_Romance_Action_Romance>Попытаться ухаживать</SSC_Romance_Action_Romance>
+  <SSC_Romance_Action_Proposal>Предложить брак</SSC_Romance_Action_Proposal>
+  <SSC_Romance_Action_Breakup>Расстаться / развестись</SSC_Romance_Action_Breakup>
+  <SSC_Romance_InvalidPawn>Персонаж недействителен или не может действовать.</SSC_Romance_InvalidPawn>
+  <SSC_Romance_Identity>Требуется явно назначенная роль подчинённого SSC.</SSC_Romance_Identity>
+  <SSC_Romance_NoBinding>Нет действующей привязки подчинённого цепью.</SSC_Romance_NoBinding>
+  <SSC_Romance_Stage>Настройка недоступна на текущей стадии цепи.</SSC_Romance_Stage>
+  <SSC_Romance_Hollow>Персонаж с пустой личностью не может использовать это управление.</SSC_Romance_Hollow>
+  <SSC_Romance_Mutating>Идёт замена личности.</SSC_Romance_Mutating>
+  <SSC_Romance_Loading>Ссылки сохранения ещё не восстановлены полностью.</SSC_Romance_Loading>
+  <SSC_Romance_UnsupportedConfig>Неизвестная версия романтических настроек; данные сохранены, управление приостановлено.</SSC_Romance_UnsupportedConfig>
+  <SSC_Romance_UnknownSetting>Неизвестная романтическая настройка.</SSC_Romance_UnknownSetting>
+  <SSC_Romance_PlayerOnly>Можно изменять настройки и отдавать приказы только персонажам фракции игрока.</SSC_Romance_PlayerOnly>
+  <SSC_Romance_StaleContext>Исходный контекст окна устарел. Откройте его заново.</SSC_Romance_StaleContext>
+  <SSC_Romance_InvalidAuthorization>Исходное разрешение приказа больше не действует.</SSC_Romance_InvalidAuthorization>
+  <SSC_Romance_CommandStage>Для адресного приказа требуется текущая стадия цепи 4.</SSC_Romance_CommandStage>
+  <SSC_Romance_HooksUnavailable>Необходимые адаптеры взаимодействия недоступны; адресные приказы приостановлены.</SSC_Romance_HooksUnavailable>
+  <SSC_Romance_SameMapRequired>Оба персонажа должны быть живы и находиться на одной карте.</SSC_Romance_SameMapRequired>
+  <SSC_Romance_UnableToInteract>Текущее состояние персонажа не позволяет выполнить социальную задачу.</SSC_Romance_UnableToInteract>
+  <SSC_Romance_InvalidRomancePair>Возраст или родство не соответствует требованиям романтического взаимодействия.</SSC_Romance_InvalidRomancePair>
+  <SSC_Romance_Unreachable>Цель запрещена или недостижима.</SSC_Romance_Unreachable>
+  <SSC_Romance_DuplicateCommand>Такой приказ уже ожидает выполнения либо номер задания недействителен.</SSC_Romance_DuplicateCommand>
+  <SSC_Romance_JobRejected>Задание фактически не было принято.</SSC_Romance_JobRejected>
+  <SSC_Romance_InvalidRecord>Запись приказа неполна или имеет неоднозначного владельца; приказ отменён.</SSC_Romance_InvalidRecord>
+  <SSC_Romance_InteractionTimeout>Время ожидания условий взаимодействия истекло; взаимодействие не состоялось.</SSC_Romance_InteractionTimeout>
+  <SSC_Romance_JobEnded>Задание завершено или прервано и не будет продолжено.</SSC_Romance_JobEnded>
+  <SSC_Romance_Result_NotOccurred>Приказанное взаимодействие между {0} и {1} не состоялось.</SSC_Romance_Result_NotOccurred>
+  <SSC_Romance_Result_Rejected>{0} начал взаимодействие с {1} и получил отказ.</SSC_Romance_Result_Rejected>
+  <SSC_Romance_Result_RelationshipChanged>Приказанное взаимодействие между {0} и {1} завершено; отношения изменились.</SSC_Romance_Result_RelationshipChanged>
+  <SSC_Romance_Result_Unconfirmed>Результат взаимодействия между {0} и {1} не удалось полностью подтвердить; автоматического повтора не будет.</SSC_Romance_Result_Unconfirmed>
+  <SSC_Romance_SexTestTab>Проверка сексуальных разрешений</SSC_Romance_SexTestTab>
 </LanguageData>

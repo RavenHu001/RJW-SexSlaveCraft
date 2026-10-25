@@ -9,6 +9,7 @@ namespace SexSlaveCraft
     public static class SSCRomanceDefOf
     {
         public static InteractionDef Breakup;
+        public static JobDef SSC_RomanceCommand;
         /// <summary>沿游戏 DefOf 生命周期解析原版 Breakup，不在高频互动中按字符串搜索数据库。</summary>
         static SSCRomanceDefOf() => DefOfHelper.EnsureInitializedInCtor(typeof(SSCRomanceDefOf));
     }
@@ -34,7 +35,8 @@ namespace SexSlaveCraft
 
         /// <summary>供共同入口在副作用前使用当前有效 Def 再检查；普通互动透传，不在查询中创建命令豁免。</summary>
         public static bool CanEnter(Pawn actor, Pawn target, InteractionDef interaction)
-            => !TryGetAction(interaction, out var action) || CanStart(actor, target, action);
+            => SSCRomanceExecutionScope.TryCanEnter(actor, target, interaction, out bool allowed) ? allowed :
+                !TryGetAction(interaction, out var action) || CanStart(actor, target, action);
 
         /// <summary>为玩家主动点击提供原因；高频 AI／权重查询不弹消息，不依赖界面禁用来确保执行安全。</summary>
         public static string Rejection(Pawn actor, Pawn target, SSCRomanceAction action)

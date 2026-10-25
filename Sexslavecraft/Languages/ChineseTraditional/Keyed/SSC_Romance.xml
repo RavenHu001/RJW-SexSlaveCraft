@@ -8,4 +8,72 @@
   <SSC_Romance_RuleDenied>目前浪漫許可禁止主動發起此行為。</SSC_Romance_RuleDenied>
   <SSC_Romance_OwnerOnly>目前只允許向實際主人主動求愛或求婚。</SSC_Romance_OwnerOnly>
   <SSC_Romance_AcceptancePreview>{0}（接受：{1}）</SSC_Romance_AcceptancePreview>
+  <SSC_Romance_SexSection>性行為控制</SSC_Romance_SexSection>
+  <SSC_Romance_RomanceSection>浪漫控制</SSC_Romance_RomanceSection>
+  <SSC_Romance_State>目前鎖鏈階段：{0}；實際主人：{1}</SSC_Romance_State>
+  <SSC_Romance_NoMaster>無有效綁定</SSC_Romance_NoMaster>
+  <SSC_Romance_FirstStage>第一階段不改變本人的浪漫行為；以下儲存選擇尚未生效。</SSC_Romance_FirstStage>
+  <SSC_Romance_Independent>浪漫規則獨立於性行為控制的總開關。勾選表示儲存偏好，暫停或未解鎖不會清除它。</SSC_Romance_Independent>
+  <SSC_Romance_Group_InitiateRomance>主動行為 · 第二階段</SSC_Romance_Group_InitiateRomance>
+  <SSC_Romance_Group_AcceptRomance>被動回應 · 第三階段</SSC_Romance_Group_AcceptRomance>
+  <SSC_Romance_Group_InitiateOnlyMaster>主人規則 · 第三階段</SSC_Romance_Group_InitiateOnlyMaster>
+  <SSC_Romance_Setting_InitiateRomance>允許主動求愛</SSC_Romance_Setting_InitiateRomance>
+  <SSC_Romance_Setting_InitiateProposal>允許主動求婚</SSC_Romance_Setting_InitiateProposal>
+  <SSC_Romance_Setting_InitiateBreakup>允許主動分手／離婚</SSC_Romance_Setting_InitiateBreakup>
+  <SSC_Romance_Setting_AcceptRomance>允許接受求愛</SSC_Romance_Setting_AcceptRomance>
+  <SSC_Romance_Setting_AcceptProposal>允許接受求婚</SSC_Romance_Setting_AcceptProposal>
+  <SSC_Romance_Setting_InitiateOnlyMaster>主動求愛／求婚僅限主人</SSC_Romance_Setting_InitiateOnlyMaster>
+  <SSC_Romance_Setting_AlwaysAcceptMaster>被動無法拒絕主人</SSC_Romance_Setting_AlwaysAcceptMaster>
+  <SSC_Romance_MasterPriority>實際主人 {0} 的接受保證優先於被動禁止；其他人仍按儲存許可判斷。</SSC_Romance_MasterPriority>
+  <SSC_Romance_OpenCommand>第四階段：下達點名命令…</SSC_Romance_OpenCommand>
+  <SSC_Romance_ActiveMeaning>關閉時阻止發起，不產生本次失敗記憶。</SSC_Romance_ActiveMeaning>
+  <SSC_Romance_PassiveMeaning>關閉時仍可成為目標，但必定拒絕；開啟時保留正常接受判斷。</SSC_Romance_PassiveMeaning>
+  <SSC_Romance_ExtraMeaning>兩個主人規則獨立儲存；僅主人不重新開放已禁止的主動行為。</SSC_Romance_ExtraMeaning>
+  <SSC_Romance_RequiredStage>需要鎖鏈第 {0} 階段。</SSC_Romance_RequiredStage>
+  <SSC_Romance_OpenBehaviorWindow>開啟行為限制…</SSC_Romance_OpenBehaviorWindow>
+  <SSC_Romance_CommandTitle>第四階段點名命令</SSC_Romance_CommandTitle>
+  <SSC_Romance_Executor>執行者：{0}</SSC_Romance_Executor>
+  <SSC_Romance_ChooseAction>行為：{0}</SSC_Romance_ChooseAction>
+  <SSC_Romance_ChooseTarget>目標：{0}</SSC_Romance_ChooseTarget>
+  <SSC_Romance_NoTarget>未選擇目標／無可用目標</SSC_Romance_NoTarget>
+  <SSC_Romance_RelationPreview>目前相關關係：{0}</SSC_Romance_RelationPreview>
+  <SSC_Romance_CommandOverride>本次命令可覆蓋執行者自己的主動禁止、僅主人限制及自主意願；不修改儲存偏好。</SSC_Romance_CommandOverride>
+  <SSC_Romance_BreakupPreview>結束上述目前戀愛／婚姻關係，無需對方接受；鎖鏈綁定保持。</SSC_Romance_BreakupPreview>
+  <SSC_Romance_Reception_Vanilla>對方仍按自己的正常規則決定，可能拒絕。</SSC_Romance_Reception_Vanilla>
+  <SSC_Romance_Reception_ForceReject>對方目前被動許可禁止接受：互動仍會發生，但必定拒絕。</SSC_Romance_Reception_ForceReject>
+  <SSC_Romance_Reception_ForceAccept>執行者是對方實際主人，且對方已開啟主人接受保證；滿足互動必要條件後保證接受。</SSC_Romance_Reception_ForceAccept>
+  <SSC_Romance_Submit>下達命令</SSC_Romance_Submit>
+  <SSC_Romance_Scheduled>已為 {0} 安排對 {1} 的點名命令；互動及回應尚待執行。</SSC_Romance_Scheduled>
+  <SSC_Romance_NoRelationshipLabel>無目前戀愛／婚姻關係</SSC_Romance_NoRelationshipLabel>
+  <SSC_Romance_Action_Romance>向指定對象求愛</SSC_Romance_Action_Romance>
+  <SSC_Romance_Action_Proposal>向指定對象求婚</SSC_Romance_Action_Proposal>
+  <SSC_Romance_Action_Breakup>與指定對象分手／離婚</SSC_Romance_Action_Breakup>
+  <SSC_Romance_InvalidPawn>角色無效或無法執行。</SSC_Romance_InvalidPawn>
+  <SSC_Romance_Identity>需要明確的 SSC 性奴身分。</SSC_Romance_Identity>
+  <SSC_Romance_NoBinding>沒有有效的從屬鎖鏈綁定。</SSC_Romance_NoBinding>
+  <SSC_Romance_Stage>目前鎖鏈階段尚未解鎖此設定。</SSC_Romance_Stage>
+  <SSC_Romance_Hollow>空殼人格不能使用此控制。</SSC_Romance_Hollow>
+  <SSC_Romance_Mutating>人格正在替換，請等待完成。</SSC_Romance_Mutating>
+  <SSC_Romance_Loading>存檔引用尚未完整恢復。</SSC_Romance_Loading>
+  <SSC_Romance_UnsupportedConfig>浪漫設定版本未知，保留資料並暫停此控制。</SSC_Romance_UnsupportedConfig>
+  <SSC_Romance_UnknownSetting>未知的浪漫設定。</SSC_Romance_UnknownSetting>
+  <SSC_Romance_PlayerOnly>僅可修改或指揮玩家陣營角色。</SSC_Romance_PlayerOnly>
+  <SSC_Romance_StaleContext>原介面上下文已失效，請重新開啟。</SSC_Romance_StaleContext>
+  <SSC_Romance_InvalidAuthorization>原命令授權已失效。</SSC_Romance_InvalidAuthorization>
+  <SSC_Romance_CommandStage>點名命令需要目前鎖鏈第四階段。</SSC_Romance_CommandStage>
+  <SSC_Romance_HooksUnavailable>必要互動適配未就緒，點名命令暫停。</SSC_Romance_HooksUnavailable>
+  <SSC_Romance_SameMapRequired>雙方必須存活並生成在同一地圖。</SSC_Romance_SameMapRequired>
+  <SSC_Romance_UnableToInteract>目前角色狀態不允許完成社交任務。</SSC_Romance_UnableToInteract>
+  <SSC_Romance_InvalidRomancePair>年齡或近親關係不符合浪漫互動的必要條件。</SSC_Romance_InvalidRomancePair>
+  <SSC_Romance_Unreachable>目標被禁止或不可達。</SSC_Romance_Unreachable>
+  <SSC_Romance_DuplicateCommand>已有相同的在途命令，或任務編號無效。</SSC_Romance_DuplicateCommand>
+  <SSC_Romance_JobRejected>任務未被實際接納。</SSC_Romance_JobRejected>
+  <SSC_Romance_InvalidRecord>命令紀錄不完整或歸屬不唯一，已取消。</SSC_Romance_InvalidRecord>
+  <SSC_Romance_InteractionTimeout>等待互動條件逾時，互動未發生。</SSC_Romance_InteractionTimeout>
+  <SSC_Romance_JobEnded>任務結束或被中斷，未繼續執行。</SSC_Romance_JobEnded>
+  <SSC_Romance_Result_NotOccurred>{0} 對 {1} 的點名互動未發生。</SSC_Romance_Result_NotOccurred>
+  <SSC_Romance_Result_Rejected>{0} 已向 {1} 發起互動，對方拒絕了。</SSC_Romance_Result_Rejected>
+  <SSC_Romance_Result_RelationshipChanged>{0} 與 {1} 的點名互動已完成，對應關係已變更。</SSC_Romance_Result_RelationshipChanged>
+  <SSC_Romance_Result_Unconfirmed>{0} 與 {1} 的互動結果無法完整確認；不會自動再次執行。</SSC_Romance_Result_Unconfirmed>
+  <SSC_Romance_SexTestTab>性行為許可測試</SSC_Romance_SexTestTab>
 </LanguageData>

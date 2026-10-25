@@ -60,6 +60,7 @@ internal static partial class Program
         Run("主文件接入同一面板高度且保留未选择分支", Integration);
         RunAbilityToggleTests();
         RunFrameworkTests();
+        RunRomanceUiTests();
         Console.WriteLine($"{passed}/{passed + failed} passed (production Master panel/bridle; approximate game interface model).");
         return failed == 0 ? 0 : 1;
     }

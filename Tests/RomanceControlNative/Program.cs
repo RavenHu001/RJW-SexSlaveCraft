@@ -89,6 +89,7 @@ internal static partial class Program
             bootstrap = false;
             PolicyTests(); PreferenceTests(); LifecycleTests(); SnapshotTests(); SaveTests(); WiringTests(repo);
             InteractionTests(harmony, repo, game);
+            CommandTests(harmony, repo);
         }
         finally { harmony.UnpatchAll(harmony.Id); Scribe.mode = LoadSaveMode.Inactive; Current.Game = null; }
         Console.WriteLine($"RESULT: {passed}/{passed + failed} passed"); return failed == 0 ? 0 : 1;
@@ -141,7 +142,7 @@ internal static partial class Program
     /// <summary>仅精确映射三个被测存档类型，后续实例构造、字段读写及引用恢复仍走原生 Scribe。</summary>
     private static bool ScribeTypeBoundary(string typeName, ref Type __result)
     {
-        foreach (var type in new[] { typeof(RomanceFixture), typeof(SSCRomanceConfig), typeof(SSCRomanceCommandStamp) })
+        foreach (var type in new[] { typeof(RomanceFixture), typeof(SSCRomanceConfig), typeof(SSCRomanceCommandStamp), typeof(SSCRomanceCommandRecord), typeof(RomanceCommandFixture), typeof(RomanceTrackerFixture), typeof(JobDriver_SSCRomanceCommand), typeof(Verse.AI.Job), typeof(Verse.AI.JobQueue) })
             if (typeName == type.FullName || typeName == type.Name) { __result = type; return false; }
         return true;
     }

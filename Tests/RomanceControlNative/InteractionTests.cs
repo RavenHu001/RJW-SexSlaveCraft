@@ -166,7 +166,7 @@ internal static partial class Program
     /// <summary>给自主权重提供稳定吸引力输入，保留权重本身的原生公式与 SSC 主动过滤。</summary>
     private static bool SocialAttraction(ref float __result) { __result = 1f; return false; }
     /// <summary>控制原版意识形态意愿输入，以验证原生清旧关系循环。</summary>
-    private static bool SocialWilling(ref bool __result) { __result = socialWilling; return false; }
+    private static bool SocialWilling(ref bool __result) { __result = commandWilling.Count > 0 ? commandWilling.Dequeue() : socialWilling; return false; }
     /// <summary>按序提供包含 0／1 端点的原随机输入；序列外继续真实 Rand 实现。</summary>
     private static bool SocialRoll(ref float __result) { if (socialRolls.Count == 0) return true; __result = socialRolls.Dequeue(); return false; }
     /// <summary>记录原 tracker 的气泡请求，独立宿主不创建图形对象。</summary>

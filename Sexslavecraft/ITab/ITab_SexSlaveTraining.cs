@@ -53,15 +53,24 @@ namespace SexSlaveCraft
                 restrictionsExpanded = false;
             }
             // 展开偏好保留在会话内；切到未绑定角色或停用系统时，不显示右栏也不占据右栏宽度。
-            size = new Vector2(Mathf.Min(restrictionsExpanded && CanShowRestrictions(SelPawn) ? 740f : WinSize.x, UI.screenWidth - 16f),
+            size = new Vector2(Mathf.Min(restrictionsExpanded && CanShowRestrictions(SelPawn)
+#if SSC_RW17
+                && SSCBehaviorControlUI.CanFitSidebar(UI.screenWidth)
+#endif
+                ? 740f : WinSize.x, UI.screenWidth - 16f),
                 Mathf.Min(WinSize.y, Mathf.Max(100f, PaneTopY - 40f)));
         }
 
         /// <summary>普通限制生效或具备自我调教资格时可展开；总限制关闭时保持现有面板停用语义。</summary>
         private static bool CanShowRestrictions(Pawn pawn)
         {
+#if SSC_RW17
+            // 两个模块的展示资格独立于旧总开关；第一阶段/解绑保留值也需要显示原因。
+            return SSCBehaviorControlUI.CanInspect(pawn);
+#else
             return (SSCMod.settings?.enableSexSlaveProtectionRules ?? true) &&
                 (SSCRestrictionResolver.IsApplicable(pawn) || SSCSelfTrainingEligibility.IsEligible(pawn));
+#endif
         }
 
         /// <summary>保持原按钮位置，对不受限制的角色明确置灰并拦截点击，悬停说明不可用原因。</summary>
@@ -75,8 +84,18 @@ namespace SexSlaveCraft
                 GUI.enabled = oldEnabled && available;
                 if (!GUI.enabled) GUI.color = oldColor * new Color(0.55f, 0.55f, 0.55f, 1f);
                 string key = available && restrictionsExpanded ? "SSC_Restrictions_Collapse" : "SSC_Restrictions_Expand";
+#if SSC_RW17
+                if (!SSCBehaviorControlUI.CanFitSidebar(UI.screenWidth)) key = "SSC_Romance_OpenBehaviorWindow";
+#endif
                 if (Widgets.ButtonText(rect, key.Translate()) && GUI.enabled)
+#if SSC_RW17
+                {
+                    if (SSCBehaviorControlUI.CanFitSidebar(UI.screenWidth)) restrictionsExpanded = !restrictionsExpanded;
+                    else Find.WindowStack.Add(new Dialog_SSCRestrictions(pawn));
+                }
+#else
                     restrictionsExpanded = !restrictionsExpanded;
+#endif
             }
             finally { GUI.enabled = oldEnabled; GUI.color = oldColor; }
             if (!available)
@@ -101,7 +120,13 @@ namespace SexSlaveCraft
             {
                 var listing = new Listing_Standard { maxOneColumn = true };
                 listing.Begin(content);
-                try { SSCRestrictionUI.DrawPawn(listing, pawn); }
+                try {
+#if SSC_RW17
+                    SSCBehaviorControlUI.DrawPawn(listing, pawn);
+#else
+                    SSCRestrictionUI.DrawPawn(listing, pawn);
+#endif
+                }
                 finally { restrictionContentHeight = listing.CurHeight + 12f; listing.End(); }
             }
             finally { Widgets.EndScrollView(); }
@@ -134,7 +159,11 @@ namespace SexSlaveCraft
             outerRect.yMin = Mathf.Max(outerRect.yMin, 24f);
             Rect trainingRect = new Rect(outerRect.x, outerRect.y,
                 Mathf.Min(WinSize.x - 20f, outerRect.width), outerRect.height);
-            if (restrictionsExpanded && CanShowRestrictions(pawn))
+            if (restrictionsExpanded && CanShowRestrictions(pawn)
+#if SSC_RW17
+                && SSCBehaviorControlUI.CanFitSidebar(UI.screenWidth)
+#endif
+                )
                 DrawRestrictionPanel(new Rect(trainingRect.xMax + 10f, outerRect.y,
                     outerRect.xMax - trainingRect.xMax - 10f, outerRect.height), pawn);
             // 身份资格、翻译文字和测量结果只为本次绘制生成一次。

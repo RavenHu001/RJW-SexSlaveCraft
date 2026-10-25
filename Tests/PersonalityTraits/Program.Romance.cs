@@ -76,6 +76,8 @@ namespace SexSlaveCraft
     {
         /// <summary>仅为模型提供外部撤权通知边界，持久世代的业务由原生专项测试。</summary>
         public static void Invalidate(Pawn pawn) { }
+        /// <summary>第三批同属外部命令撤权通知边界，目标人格取消/Job 去重由原生专项执行真实生产实现。</summary>
+        public static void InvalidatePersonality(Pawn pawn) { }
         /// <summary>仅为模型提供外部最终协调边界，不在此复制原生生命周期判定。</summary>
         public static void Notify(Pawn pawn) { }
     }
