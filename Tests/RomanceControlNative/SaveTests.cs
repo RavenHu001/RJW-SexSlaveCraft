@@ -1,4 +1,4 @@
-// AI 辅助生成：真实 XML／Scribe 阶段与跨 Pawn 引用；只为外部世界提供已加载实体登记。
+﻿// AI 辅助生成：真实 XML／Scribe 阶段与跨 Pawn 引用；只为外部世界提供已加载实体登记。
 using System.Xml.Linq;
 using HarmonyLib;
 using SexSlaveCraft;
@@ -23,8 +23,17 @@ internal static partial class Program
             {
                 var p = Slave(); Comp(p).romanceConfig = Denied(); string path = Save(new RomanceFixture(Comp(p)));
                 Edit(path, doc => { if (entireNode) doc.Descendants("sscRomanceConfig").Remove(); else doc.Descendants("sscRomanceConfig").Single().RemoveNodes(); });
-                var restored = Slave(); Load(path, Comp(restored)); foreach (var s in Enum.GetValues<SSCRomanceSetting>()) Equal(s <= SSCRomanceSetting.AcceptProposal, SSCRomancePreferences.GetView(restored, s).Saved);
+                var restored = Slave(); Load(path, Comp(restored)); foreach (var s in Enum.GetValues<SSCRomanceSetting>()) Equal(s <= SSCRomanceSetting.AcceptProposal || s == SSCRomanceSetting.InitiateToSexSlave, SSCRomancePreferences.GetView(restored, s).Saved);
             });
+        Check("old seven-field config preserves choices and defaults new peer fields", () =>
+        {
+            var p = Slave(); Comp(p).romanceConfig = Denied();
+            Comp(p).romanceConfig.allowInitiateToSexSlave = false; Comp(p).romanceConfig.alwaysAcceptSexSlave = true;
+            string path = Save(new RomanceFixture(Comp(p)));
+            Edit(path, doc => { doc.Descendants("allowInitiateToSexSlave").Remove(); doc.Descendants("alwaysAcceptSexSlave").Remove(); });
+            var restored = Slave(); Load(path, Comp(restored)); var cfg = Comp(restored).romanceConfig;
+            Require(cfg.allowInitiateToSexSlave && !cfg.alwaysAcceptSexSlave && cfg.initiateOnlyMaster && !cfg.allowInitiateRomance);
+        });
         Check("real Scribe unknown version preserved and remains diagnosed", () =>
         {
             var p = Slave(); Comp(p).romanceConfig = Denied(); Comp(p).romanceConfig.version = 999;

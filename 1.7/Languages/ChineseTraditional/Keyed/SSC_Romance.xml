@@ -22,9 +22,9 @@
   <SSC_Romance_Setting_InitiateBreakup>允許主動分手／離婚</SSC_Romance_Setting_InitiateBreakup>
   <SSC_Romance_Setting_AcceptRomance>允許接受求愛</SSC_Romance_Setting_AcceptRomance>
   <SSC_Romance_Setting_AcceptProposal>允許接受求婚</SSC_Romance_Setting_AcceptProposal>
-  <SSC_Romance_Setting_InitiateOnlyMaster>主動求愛／求婚僅限主人</SSC_Romance_Setting_InitiateOnlyMaster>
+  <SSC_Romance_Setting_InitiateOnlyMaster>主動浪漫僅限主人</SSC_Romance_Setting_InitiateOnlyMaster>
   <SSC_Romance_Setting_AlwaysAcceptMaster>被動無法拒絕主人</SSC_Romance_Setting_AlwaysAcceptMaster>
-  <SSC_Romance_MasterPriority>實際主人 {0} 的接受保證優先於被動禁止；其他人仍按儲存許可判斷。</SSC_Romance_MasterPriority>
+  <SSC_Romance_MasterPriority>實際主人 {0} 的接受保證優先於被動禁止；其他人按各自適用的被動規則判斷。</SSC_Romance_MasterPriority>
   <SSC_Romance_OpenCommand>第四階段：下達點名命令…</SSC_Romance_OpenCommand>
   <SSC_Romance_ActiveMeaning>關閉時阻止發起。</SSC_Romance_ActiveMeaning>
   <SSC_Romance_PassiveMeaning>關閉時仍可成為目標，但必定拒絕；開啟時保留正常接受判斷。</SSC_Romance_PassiveMeaning>
@@ -37,7 +37,7 @@
   <SSC_Romance_ChooseTarget>目標：{0}</SSC_Romance_ChooseTarget>
   <SSC_Romance_NoTarget>未選擇目標／無可用目標</SSC_Romance_NoTarget>
   <SSC_Romance_RelationPreview>目前相關關係：{0}</SSC_Romance_RelationPreview>
-  <SSC_Romance_CommandOverride>本次命令可覆蓋執行者自己的主動禁止、僅主人限制及自主意願；不修改儲存偏好。</SSC_Romance_CommandOverride>
+  <SSC_Romance_CommandOverride>本次命令可覆蓋執行者自己的主動禁止、僅主人及性奴目標限制和自主意願；不修改保存偏好。</SSC_Romance_CommandOverride>
   <SSC_Romance_BreakupPreview>結束上述目前戀愛／婚姻關係，無需對方接受；鎖鏈綁定保持。</SSC_Romance_BreakupPreview>
   <SSC_Romance_Reception_Vanilla>對方仍按自己的正常規則決定，可能拒絕。</SSC_Romance_Reception_Vanilla>
   <SSC_Romance_Reception_ForceReject>對方目前被動許可禁止接受：互動仍會發生，但必定拒絕。</SSC_Romance_Reception_ForceReject>
@@ -78,4 +78,9 @@
   <SSC_Romance_SexTestTab>性行為許可測試</SSC_Romance_SexTestTab>
   <SSC_Romance_ForcedRomanceRefusal>{1} 因浪漫回應限制拒絕了 {0} 的告白。</SSC_Romance_ForcedRomanceRefusal>
   <SSC_Romance_ForcedProposalRefusal>{1} 因浪漫回應限制拒絕了 {0} 的求婚。</SSC_Romance_ForcedProposalRefusal>
+  <SSC_Romance_Setting_InitiateToSexSlave>允許向性奴發起浪漫</SSC_Romance_Setting_InitiateToSexSlave>
+  <SSC_Romance_Setting_AlwaysAcceptSexSlave>必須接受性奴發起的浪漫行為</SSC_Romance_Setting_AlwaysAcceptSexSlave>
+  <SSC_Romance_InitiateToSexSlaveTip>關閉時，本人不能向其他 SSC 性奴求愛或求婚；不影響分手／離婚，也不重新開放已禁止的主動行為。</SSC_Romance_InitiateToSexSlaveTip>
+  <SSC_Romance_AlwaysAcceptSexSlaveTip>開啟時，本人必定接受其他 SSC 性奴的求愛或求婚，優先於本人的普通被動禁止；不替對方解除主動限制或繞過互動必要條件。</SSC_Romance_AlwaysAcceptSexSlaveTip>
+  <SSC_Romance_SexSlaveTargetDenied>目前許可禁止向性奴主動求愛或求婚。</SSC_Romance_SexSlaveTargetDenied>
 </LanguageData>

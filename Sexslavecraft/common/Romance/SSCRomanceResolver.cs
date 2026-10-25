@@ -1,4 +1,4 @@
-// AI 辅助生成
+﻿// AI 辅助生成
 using Verse;
 
 namespace SexSlaveCraft
@@ -15,15 +15,33 @@ namespace SexSlaveCraft
         public bool Applicable => Reason == SSCRomanceReason.None;
         /// <summary>读取保存偏好而非生效结果；缺配置仍按许可允许、附加开关关闭解释。</summary>
         public bool GetSaved(SSCRomanceSetting setting) => Comp?.romanceConfig?.Get(setting) ??
-            (SSCRomanceResolver.IsKnown(setting) && setting <= SSCRomanceSetting.AcceptProposal);
+            SSCRomanceResolver.DefaultEnabled(setting);
     }
 
     public static class SSCRomanceResolver
     {
         /// <summary>拒绝未知枚举值，避免把未注册条目当成默认允许的许可。</summary>
-        public static bool IsKnown(SSCRomanceSetting setting) => setting >= SSCRomanceSetting.InitiateRomance && setting <= SSCRomanceSetting.AlwaysAcceptMaster;
-        /// <summary>主动三项第二阶段解锁，其余第三阶段；未知项永远不能取得编辑资格。</summary>
-        public static int RequiredStage(SSCRomanceSetting setting) => !IsKnown(setting) ? int.MaxValue : setting <= SSCRomanceSetting.InitiateBreakup ? 2 : 3;
+        public static bool IsKnown(SSCRomanceSetting setting) => setting >= SSCRomanceSetting.InitiateRomance && setting <= SSCRomanceSetting.AlwaysAcceptSexSlave;
+        /// <summary>明确主动二阶、被动三阶；不依赖枚举排列，主人限制与同方向规则同步解锁。</summary>
+        public static int RequiredStage(SSCRomanceSetting setting)
+        {
+            switch (setting)
+            {
+                case SSCRomanceSetting.InitiateRomance:
+                case SSCRomanceSetting.InitiateProposal:
+                case SSCRomanceSetting.InitiateBreakup:
+                case SSCRomanceSetting.InitiateOnlyMaster:
+                case SSCRomanceSetting.InitiateToSexSlave: return 2;
+                case SSCRomanceSetting.AcceptRomance:
+                case SSCRomanceSetting.AcceptProposal:
+                case SSCRomanceSetting.AlwaysAcceptMaster:
+                case SSCRomanceSetting.AlwaysAcceptSexSlave: return 3;
+                default: return int.MaxValue;
+            }
+        }
+        /// <summary>旧档缺配置的五项原许可及性奴目标许可默认允许；接受保证与仅主人默认关闭。</summary>
+        public static bool DefaultEnabled(SSCRomanceSetting setting) => IsKnown(setting) &&
+            (setting <= SSCRomanceSetting.AcceptProposal || setting == SSCRomanceSetting.InitiateToSexSlave);
         /// <summary>高频读取不写载体；人格替换及加载期暂停本模块的覆盖，实际互动仍须检查可执行性。</summary>
         public static SSCRomanceState Resolve(Pawn pawn)
         {

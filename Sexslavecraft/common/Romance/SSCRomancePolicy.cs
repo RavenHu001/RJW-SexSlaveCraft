@@ -1,4 +1,4 @@
-// AI 辅助生成
+﻿// AI 辅助生成
 using Verse;
 
 namespace SexSlaveCraft
@@ -38,9 +38,13 @@ namespace SexSlaveCraft
                     action == SSCRomanceAction.Proposal ? SSCRomanceSetting.InitiateProposal : SSCRomanceSetting.InitiateBreakup;
                 if (!actor.GetSaved(setting))
                 { result.CanInitiate = false; result.InitiatorReason = SSCRomanceReason.RuleDenied; }
-                else if (action != SSCRomanceAction.Breakup && actor.Stage >= 3 &&
+                else if (action != SSCRomanceAction.Breakup &&
                     actor.GetSaved(SSCRomanceSetting.InitiateOnlyMaster) && recipient != actor.Master)
                 { result.CanInitiate = false; result.InitiatorReason = SSCRomanceReason.OwnerOnly; }
+                // 仅限制本人的求爱／求婚目标，不影响对方发起；身份使用 SSC 身份，原版奴隶身份不代替性奴。
+                else if (action != SSCRomanceAction.Breakup && SSCIdentityUtility.IsSexSlave(recipient) &&
+                    !actor.GetSaved(SSCRomanceSetting.InitiateToSexSlave))
+                { result.CanInitiate = false; result.InitiatorReason = SSCRomanceReason.SexSlaveTargetDenied; }
             }
             // 即使主动被阻止也保留接收端诊断；执行层先看 CanInitiate，不能把接收保证当发起许可。
             // 被动必拒仅决定真实互动后的结果，不能据此从自然候选或菜单中移除目标。
@@ -49,6 +53,9 @@ namespace SexSlaveCraft
             {
                 // 主人例外只影响接收者，不替发起者绕过其限制。
                 if (initiator == target.Master && target.GetSaved(SSCRomanceSetting.AlwaysAcceptMaster))
+                    result.Reception = SSCRomanceReception.ForceAccept;
+                // 与主人保证同属本人的被动接受保证，优先于本人的普通被动禁止；不能解除发起方限制。
+                else if (SSCIdentityUtility.IsSexSlave(initiator) && target.GetSaved(SSCRomanceSetting.AlwaysAcceptSexSlave))
                     result.Reception = SSCRomanceReception.ForceAccept;
                 else if (!target.GetSaved(action == SSCRomanceAction.Romance ? SSCRomanceSetting.AcceptRomance : SSCRomanceSetting.AcceptProposal))
                     result.Reception = SSCRomanceReception.ForceReject;

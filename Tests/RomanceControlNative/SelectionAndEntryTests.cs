@@ -1,4 +1,4 @@
-// AI 辅助生成：真实随机权重、原版菜单后置适配、RJW 点击及局部状态变化。
+﻿// AI 辅助生成：真实随机权重、原版菜单后置适配、RJW 点击及局部状态变化。
 using System.Reflection;
 using System.Xml.Linq;
 using HarmonyLib;
@@ -161,8 +161,8 @@ internal static partial class Program
             Check("romance translated keys and exact source mirror " + language, () =>
             {
                 string path = Path.Combine(repo, "1.7/Languages", language, "Keyed/SSC_Romance.xml"); string source = Path.Combine(repo, "Sexslavecraft/Languages", language, "Keyed/SSC_Romance.xml");
-                Require(File.ReadAllBytes(path).SequenceEqual(File.ReadAllBytes(source))); var entries = XDocument.Load(path).Root.Elements().ToArray(); Equal(78, entries.Length);
-                Require(entries.All(e => !string.IsNullOrWhiteSpace(e.Value))); Equal(78, entries.Select(e => e.Name.LocalName).Distinct().Count());
+                Require(File.ReadAllBytes(path).SequenceEqual(File.ReadAllBytes(source))); var entries = XDocument.Load(path).Root.Elements().ToArray(); Equal(83, entries.Length);
+                Require(entries.All(e => !string.IsNullOrWhiteSpace(e.Value))); Equal(83, entries.Select(e => e.Name.LocalName).Distinct().Count());
             });
     }
 }

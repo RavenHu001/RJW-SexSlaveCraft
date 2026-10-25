@@ -1,4 +1,4 @@
-// AI 辅助生成
+﻿// AI 辅助生成
 using System;
 using Verse;
 
@@ -61,7 +61,7 @@ namespace SexSlaveCraft
         /// <summary>只用于新个体初始化；恢复模块默认，不搬运旧模板或重置其他后端。</summary>
         public static void ResetNewClone(Pawn pawn)
         {
-            // 清配置代表回模块默认，不是七项统一写 false；成熟与正常读档不得调用此入口。
+            // 清配置代表回模块默认，不是将各项统一写 false；成熟与正常读档不得调用此入口。
             SSCRomancePreferences.Clear(pawn);
             Invalidate(pawn);
             Notify(pawn);

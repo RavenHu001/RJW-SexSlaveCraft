@@ -22,9 +22,9 @@
   <SSC_Romance_Setting_InitiateBreakup>Allow initiating breakup / divorce</SSC_Romance_Setting_InitiateBreakup>
   <SSC_Romance_Setting_AcceptRomance>Allow accepting romance</SSC_Romance_Setting_AcceptRomance>
   <SSC_Romance_Setting_AcceptProposal>Allow accepting proposals</SSC_Romance_Setting_AcceptProposal>
-  <SSC_Romance_Setting_InitiateOnlyMaster>Initiate romance / proposals only with master</SSC_Romance_Setting_InitiateOnlyMaster>
+  <SSC_Romance_Setting_InitiateOnlyMaster>Initiate romance only with the master</SSC_Romance_Setting_InitiateOnlyMaster>
   <SSC_Romance_Setting_AlwaysAcceptMaster>Always accept the bound master</SSC_Romance_Setting_AlwaysAcceptMaster>
-  <SSC_Romance_MasterPriority>Guaranteed acceptance for bound master {0} takes priority over response prohibitions; saved permissions apply to others.</SSC_Romance_MasterPriority>
+  <SSC_Romance_MasterPriority>Guaranteed acceptance for bound master {0} takes priority over response prohibitions. Others follow the response rules that apply to them.</SSC_Romance_MasterPriority>
   <SSC_Romance_OpenCommand>Stage 4: issue a targeted command…</SSC_Romance_OpenCommand>
   <SSC_Romance_ActiveMeaning>When off, prevents initiation.</SSC_Romance_ActiveMeaning>
   <SSC_Romance_PassiveMeaning>When off, remains a valid target but always rejects. When on, normal acceptance applies.</SSC_Romance_PassiveMeaning>
@@ -37,7 +37,7 @@
   <SSC_Romance_ChooseTarget>Target: {0}</SSC_Romance_ChooseTarget>
   <SSC_Romance_NoTarget>No target selected / available</SSC_Romance_NoTarget>
   <SSC_Romance_RelationPreview>Current relationship: {0}</SSC_Romance_RelationPreview>
-  <SSC_Romance_CommandOverride>This command overrides the executor’s initiation restrictions, master-only rule and autonomous willingness for this request. Saved choices remain intact.</SSC_Romance_CommandOverride>
+  <SSC_Romance_CommandOverride>This command can override the actor's own initiation prohibitions, master-only and sex-slave target restrictions, and autonomous willingness for this request only. Saved preferences are unchanged.</SSC_Romance_CommandOverride>
   <SSC_Romance_BreakupPreview>Ends the current romantic / marital relationship without requiring acceptance. The chain binding remains.</SSC_Romance_BreakupPreview>
   <SSC_Romance_Reception_Vanilla>The target follows their normal acceptance rules and may refuse.</SSC_Romance_Reception_Vanilla>
   <SSC_Romance_Reception_ForceReject>The target’s current response permission forces rejection; the interaction can still occur.</SSC_Romance_Reception_ForceReject>
@@ -78,4 +78,9 @@
   <SSC_Romance_SexTestTab>Sexual permission test</SSC_Romance_SexTestTab>
   <SSC_Romance_ForcedRomanceRefusal>{1} rejected {0}’s romantic advance because of romance response restrictions.</SSC_Romance_ForcedRomanceRefusal>
   <SSC_Romance_ForcedProposalRefusal>{1} rejected {0}’s marriage proposal because of romance response restrictions.</SSC_Romance_ForcedProposalRefusal>
+  <SSC_Romance_Setting_InitiateToSexSlave>Allow romance toward sex slaves</SSC_Romance_Setting_InitiateToSexSlave>
+  <SSC_Romance_Setting_AlwaysAcceptSexSlave>Always accept romance from sex slaves</SSC_Romance_Setting_AlwaysAcceptSexSlave>
+  <SSC_Romance_InitiateToSexSlaveTip>When off, this pawn cannot initiate romance or propose to other SSC sex slaves. Does not affect breakups or divorce, or re-enable prohibited initiation.</SSC_Romance_InitiateToSexSlaveTip>
+  <SSC_Romance_AlwaysAcceptSexSlaveTip>When on, this pawn always accepts romance or proposals from other SSC sex slaves, overriding their own ordinary response prohibitions. Does not override the initiator's restrictions or interaction requirements.</SSC_Romance_AlwaysAcceptSexSlaveTip>
+  <SSC_Romance_SexSlaveTargetDenied>Current permissions prohibit initiating romance or proposing to sex slaves.</SSC_Romance_SexSlaveTargetDenied>
 </LanguageData>

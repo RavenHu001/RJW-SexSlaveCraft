@@ -1,4 +1,4 @@
-// AI 辅助生成
+﻿// AI 辅助生成
 using HarmonyLib;
 using SexSlaveCraft;
 using Verse;
@@ -100,7 +100,7 @@ internal static partial class Program
             var auth = Authorize(clone, Pawn());
             AccessTools.Method(production.GetType("SexSlaveCraft.SSCRestrictionCloneHook"), "Postfix").Invoke(null, new object[] { clone });
             Require(Comp(clone).romanceConfig == null); Require(!Comp(source).romanceConfig.IsDefault);
-            foreach (var setting in Enum.GetValues<SSCRomanceSetting>()) Equal(setting <= SSCRomanceSetting.AcceptProposal, SSCRomancePreferences.GetView(clone, setting).Saved);
+            foreach (var setting in Enum.GetValues<SSCRomanceSetting>()) Equal(setting <= SSCRomanceSetting.AcceptProposal || setting == SSCRomanceSetting.InitiateToSexSlave, SSCRomancePreferences.GetView(clone, setting).Saved);
             Require(Comp(clone).abilityToggles.Get("FixtureAbility")); Require(ReferenceEquals(chain, SSCBondUtility.GetChain(clone))); Equal(owner, chain.target);
             Require(!SSCRomanceLifecycle.TryResume(auth.Stamp, out _));
         });

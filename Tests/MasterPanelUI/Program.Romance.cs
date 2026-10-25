@@ -1,4 +1,4 @@
-// AI 辅助生成：实际双板块绘制及生产设置提交，字体与 Listing 为近似接口模型。
+﻿// AI 辅助生成：实际双板块绘制及生产设置提交，字体与 Listing 为近似接口模型。
 using System.Xml.Linq;
 using SexSlaveCraft;
 using UnityEngine;
@@ -19,7 +19,7 @@ internal static partial class Program
                     var pawn = RomanceUiPawn(); pawn.LabelShort = new string('长', 40); pawn.BoundMaster.LabelShort = new string('M', 60);
                     var (height, frames) = DrawRomanceUi(pawn, width);
                     Assert(frames.Length == 2 && frames[0].Rect.yMax + 14 <= frames[1].Rect.y && frames[1].Rect.yMax <= height);
-                    Assert(Widgets.Items.Count(i => i.Kind == "romance-checkbox") == 7);
+                    Assert(Widgets.Items.Count(i => i.Kind == "romance-checkbox") == 9);
                     var buttons = Widgets.Items.Where(i => i.Kind == "romance-button").ToArray();
                     Assert(buttons.Length == 3 && buttons[0].Rect.y > Widgets.Items.Where(i => i.Kind == "romance-checkbox").Max(i => i.Rect.yMax));
                     Assert(buttons[0].Rect.yMax <= buttons[1].Rect.y && buttons[1].Rect.yMax <= buttons[2].Rect.y);
@@ -36,7 +36,7 @@ internal static partial class Program
                 var pawn = RomanceUiPawn(stage); pawn.Training.romanceConfig = new() { allowAcceptRomance = false };
                 DrawRomanceUi(pawn, 352);
                 var boxes = Widgets.Items.Where(i => i.Kind == "romance-checkbox").ToArray();
-                Assert(boxes.Count(b => !b.Disabled) == (stage == 1 ? 0 : stage == 2 ? 3 : 7));
+                Assert(boxes.Count(b => !b.Disabled) == (stage == 1 ? 0 : stage == 2 ? 5 : 9));
                 Assert(!pawn.Training.romanceConfig.allowAcceptRomance);
                 Assert(Widgets.Items.Where(i => i.Kind == "romance-button").All(i => i.Disabled == (stage < 4)));
             });

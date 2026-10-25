@@ -50,13 +50,13 @@ namespace SexSlaveCraft
             Widgets.DrawBox(new Rect(0f, top, width, height));
         }
     }
-    /// <summary>七项浪漫偏好沿独立 GetView/TrySet；不注册为通用能力，不创建隐式默认配置。</summary>
+    /// <summary>九项浪漫偏好沿独立 GetView/TrySet；不注册为通用能力，不创建隐式默认配置。</summary>
     public static class SSCRomanceUI
     {
         private static readonly SSCRomanceSetting[][] groups =
         {
-            new[] { SSCRomanceSetting.InitiateRomance, SSCRomanceSetting.InitiateProposal, SSCRomanceSetting.InitiateBreakup, SSCRomanceSetting.InitiateOnlyMaster },
-            new[] { SSCRomanceSetting.AcceptRomance, SSCRomanceSetting.AcceptProposal, SSCRomanceSetting.AlwaysAcceptMaster }
+            new[] { SSCRomanceSetting.InitiateRomance, SSCRomanceSetting.InitiateProposal, SSCRomanceSetting.InitiateBreakup, SSCRomanceSetting.InitiateOnlyMaster, SSCRomanceSetting.InitiateToSexSlave },
+            new[] { SSCRomanceSetting.AcceptRomance, SSCRomanceSetting.AcceptProposal, SSCRomanceSetting.AlwaysAcceptMaster, SSCRomanceSetting.AlwaysAcceptSexSlave }
         };
         /// <summary>保留分组和命令，常驻只显示标签，说明放入悬停；首组复用主标题下横线，所有子标题下方另画横线。</summary>
         public static void DrawPawn(Listing_Standard listing, Pawn pawn)
@@ -158,7 +158,9 @@ namespace SexSlaveCraft
                     Messages.Message(SSCRomanceCommandUtility.Explain(reason.ToString()), pawn, MessageTypeDefOf.RejectInput, false);
             }
             finally { GUI.enabled = previous; GUI.color = color; }
-            string tip = (setting <= SSCRomanceSetting.InitiateBreakup ? "SSC_Romance_ActiveMeaning" :
+            string tip = setting == SSCRomanceSetting.InitiateToSexSlave ? "SSC_Romance_InitiateToSexSlaveTip".Translate().ToString() :
+                setting == SSCRomanceSetting.AlwaysAcceptSexSlave ? "SSC_Romance_AlwaysAcceptSexSlaveTip".Translate().ToString() :
+                (setting <= SSCRomanceSetting.InitiateBreakup ? "SSC_Romance_ActiveMeaning" :
                 setting <= SSCRomanceSetting.AcceptProposal ? "SSC_Romance_PassiveMeaning" : "SSC_Romance_ExtraMeaning").Translate();
             if (!view.CanChange) tip += "\n\n" + SSCRomanceCommandUtility.Explain(view.Reason.ToString());
             if (!view.Unlocked) tip += "\n" + "SSC_Romance_RequiredStage".Translate(SSCRomanceResolver.RequiredStage(setting));

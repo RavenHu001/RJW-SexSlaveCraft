@@ -1,4 +1,4 @@
-// AI 辅助生成：执行原生复制通知与真实 SSC 新生/成熟入口，不用手动重置代替接线测试。
+﻿// AI 辅助生成：执行原生复制通知与真实 SSC 新生/成熟入口，不用手动重置代替接线测试。
 using HarmonyLib;
 using RimWorld;
 using SexSlaveCraft;
@@ -43,7 +43,7 @@ internal static partial class Program
                 AccessTools.Method(typeof(RabbitCloneUtility), "PrepareFreshRabbitCloneBody").Invoke(null, new object[] { source, clone });
                 Require(Comp(clone).romanceConfig == null); Equal(99, Comp(source).romanceConfig.version);
                 foreach (var setting in Enum.GetValues<SSCRomanceSetting>())
-                    Equal(setting <= SSCRomanceSetting.AcceptProposal, SSCRomancePreferences.GetView(clone, setting).Saved);
+                    Equal(setting <= SSCRomanceSetting.AcceptProposal || setting == SSCRomanceSetting.InitiateToSexSlave, SSCRomancePreferences.GetView(clone, setting).Saved);
             });
             Check("batch4 actual maturation and actual Scribe keep clone later preference independently", () =>
             {

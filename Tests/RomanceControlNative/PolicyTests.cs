@@ -1,4 +1,4 @@
-// AI 辅助生成
+﻿// AI 辅助生成
 using SexSlaveCraft;
 using HarmonyLib;
 using Verse;
@@ -8,6 +8,33 @@ internal static partial class Program
     /// <summary>验证阈值、许可独立性、双边优先级和异常回退；策略通过不等于互动已执行。</summary>
     private static void PolicyTests()
     {
+        // 新增同伴身份规则：验证方向、二／三阶门槛、双边优先级及单次命令边界；本轮仅补用例，未执行。
+        foreach (var action in new[] { SSCRomanceAction.Romance, SSCRomanceAction.Proposal })
+        foreach (var severity in new[] { .1f, .3f, .5f, .9f })
+            Check($"peer controls follow direction and stage {severity}/{action}", () =>
+            {
+                var a = Slave(severity); var b = Slave(); var other = Pawn();
+                Comp(a).romanceConfig = new() { allowInitiateToSexSlave = false, alwaysAcceptSexSlave = true,
+                    allowAcceptRomance = false, allowAcceptProposal = false };
+                Equal(severity < .3f, Decide(a, b, action).CanInitiate);
+                Require(Decide(a, other, action).CanInitiate);
+                Equal(severity >= .5f ? SSCRomanceReception.ForceAccept : SSCRomanceReception.Vanilla, Decide(b, a, action).Reception);
+                Equal(severity >= .5f ? SSCRomanceReception.ForceReject : SSCRomanceReception.Vanilla, Decide(other, a, action).Reception);
+                Require(Decide(a, b, SSCRomanceAction.Breakup).CanInitiate);
+            });
+        Check("owner-only belongs to active stage two", () =>
+        {
+            var a = Slave(.3f); Comp(a).romanceConfig = new() { initiateOnlyMaster = true };
+            Require(SSCRomancePreferences.GetView(a, SSCRomanceSetting.InitiateOnlyMaster).CanChange);
+            Require(!SSCRomancePreferences.GetView(a, SSCRomanceSetting.AlwaysAcceptMaster).CanChange);
+            Require(!Decide(a, Slave()).CanInitiate); Require(Decide(a, SSCBondUtility.GetBoundMaster(a)).CanInitiate);
+        });
+        Check("peer guarantee cannot reopen prohibited initiation on the other participant", () =>
+        {
+            var a = Slave(); var b = Slave(); Comp(a).romanceConfig = new() { allowInitiateToSexSlave = false };
+            Comp(b).romanceConfig = new() { alwaysAcceptSexSlave = true, allowAcceptRomance = false };
+            var r = Decide(a, b); Require(!r.CanInitiate); Equal(SSCRomanceReception.ForceAccept, r.Reception);
+        });
         foreach (var (severity, stage) in new[] { (.099f, 0), (.1f, 1), (.2999f, 1), (.3f, 2), (.4999f, 2), (.5f, 3), (.8999f, 3), (.9f, 4) })
         foreach (var action in Enum.GetValues<SSCRomanceAction>())
             Check($"current chain stage {severity}/{action}", () =>
