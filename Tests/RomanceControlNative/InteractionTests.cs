@@ -123,6 +123,7 @@ internal static partial class Program
         JobDefOf.TryRomance = new JobDef { defName = "TryRomance" };
         AccessTools.Field(typeof(RaceProperties), "fleshType").SetValue(human.race, new FleshTypeDef { defName = "FixtureFlesh", isOrganic = true });
         MessageTypeDefOf.RejectInput = new MessageTypeDef { defName = "RejectInput" };
+        MessageTypeDefOf.NeutralEvent = new MessageTypeDef { defName = "NeutralEvent" };
         human.race.lifeStageAges.Add(new LifeStageAge { minAge = 0, def = new LifeStageDef { defName = "FixtureAdult", developmentalStage = DevelopmentalStage.Adult } });
         foreach (string name in new[] { "Lover", "Fiance", "Spouse", "ExLover", "ExSpouse" })
         { var def = new PawnRelationDef { defName = name, reflexive = true, workerClass = typeof(PawnRelationWorker) }; DefDatabase<PawnRelationDef>.Add(def); AccessTools.Field(typeof(PawnRelationDefOf), name).SetValue(null, def); }

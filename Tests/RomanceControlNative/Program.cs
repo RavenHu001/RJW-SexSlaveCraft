@@ -94,6 +94,9 @@ internal static partial class Program
             Batch4PersonalityTests();
             Batch4CloneTests();
             Batch4ReviewTests();
+            PassiveFeedbackTests(harmony, repo);
+            TargetMenuTests();
+            FeedbackReviewTests();
         }
         finally { harmony.UnpatchAll(harmony.Id); Scribe.mode = LoadSaveMode.Inactive; Current.Game = null; }
         Console.WriteLine($"RESULT: {passed}/{passed + failed} passed"); return failed == 0 ? 0 : 1;

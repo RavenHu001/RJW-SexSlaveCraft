@@ -84,6 +84,18 @@ namespace SexSlaveCraft
     [HarmonyPatch]
     public static class Harmony_SSCRomanceAcceptance
     {
+        /// <summary>记录这次真实 worker 调用；查询概率不会创建拒绝反馈，嵌套调用各自保存结果。</summary>
+        public static void Prefix(Pawn initiator, Pawn recipient, MethodBase __originalMethod, out SSCRomanceAcceptanceUtility.Attempt __state)
+            => __state = SSCRomanceAcceptanceUtility.Begin(initiator, recipient, Harmony_SSCRomanceRandomSelection.ActionFor(__originalMethod.DeclaringType));
+
+        /// <summary>原 worker 正常返回后才提示实际强制拒绝；被跳过的原方法不补发互动消息。</summary>
+        public static void Postfix(bool __runOriginal, SSCRomanceAcceptanceUtility.Attempt __state)
+            => SSCRomanceAcceptanceUtility.Complete(__state, __runOriginal);
+
+        /// <summary>正常、异常及被其他 Prefix 跳过时都释放观察帧，不吞掉原异常。</summary>
+        public static void Finalizer(SSCRomanceAcceptanceUtility.Attempt __state)
+            => SSCRomanceAcceptanceUtility.End(__state);
+
         /// <summary>只接入两个原版接受分支；分手没有接收判定，不能伪造接受分手。</summary>
         public static IEnumerable<MethodBase> TargetMethods()
         {
@@ -104,6 +116,10 @@ namespace SexSlaveCraft
                 codes[index].opcode == OpCodes.Bge_Un || codes[index].opcode == OpCodes.Bge_Un_S :
                 codes[index].opcode == OpCodes.Clt && codes[calls[0] + 1].opcode == OpCodes.Stloc_0 &&
                 codes[calls[0] + 2].Calls(AccessTools.PropertyGetter(typeof(Rand), "Value")) && codes[calls[0] + 3].opcode == OpCodes.Ldloc_0);
+            // 求爱失败消息的实际调用与接受覆盖一同校验，不能以开始时的 Job 类型推测是否已经提示。
+            var nativeMessage = AccessTools.Method(typeof(Messages), nameof(Messages.Message), new[] { typeof(string), typeof(LookTargets), typeof(MessageTypeDef), typeof(bool) });
+            int[] messageCalls = codes.Select((c, i) => c.Calls(nativeMessage) ? i : -1).Where(i => i >= 0).ToArray();
+            if (romance) matched &= messageCalls.Length == 1 && codes.Count(c => c.opcode == OpCodes.Ldstr && Equals(c.operand, "TryRomanceFailedMessage")) == 1;
             if (romance) SSCRomanceCommandHooks.romance = matched; else SSCRomanceCommandHooks.proposal = matched;
             if (!matched)
             {
@@ -111,6 +127,9 @@ namespace SexSlaveCraft
                 SSCLog.WarningImportant("[SSC Romance] 接受判定锚点不匹配，未安装覆盖：" + __originalMethod.DeclaringType.FullName);
                 return codes;
             }
+            if (romance)
+                // 替换等签名调用并保留原标签／异常边界，正文、对象和历史标志继续由原版提供。
+                codes[messageCalls[0]].operand = AccessTools.Method(typeof(SSCRomanceAcceptanceUtility), nameof(SSCRomanceAcceptanceUtility.NativeRomanceMessage));
             var tail = new List<CodeInstruction>();
             if (romance)
             {
@@ -144,11 +163,12 @@ namespace SexSlaveCraft
                 __result = false;
                 return;
             }
-            // 显示当前保证／必拒结果，但保留原可点击动作；这里的 0 不回流原版资格函数。
+            // 被动禁止不改变原版概览概率、标签或可点击动作；实际接受 bool 在 worker 中强制拒绝。
+            // 主人保证仍按既有约定显示 100%，不将该展示值回流原版资格函数。
             var reception = SSCRomancePolicy.Evaluate(initiator, romanceTarget, SSCRomanceAction.Romance).Reception;
-            if (reception == SSCRomanceReception.ForceAccept || reception == SSCRomanceReception.ForceReject)
+            if (reception == SSCRomanceReception.ForceAccept)
             {
-                chance = reception == SSCRomanceReception.ForceAccept ? 1f : 0f;
+                chance = 1f;
                 option.Label = "SSC_Romance_AcceptancePreview".Translate(romanceTarget.LabelShort, chance.ToStringPercent());
             }
         }

@@ -47,48 +47,47 @@ namespace SexSlaveCraft
     /// <summary>七项浪漫偏好沿独立 GetView/TrySet；不注册为通用能力，不创建隐式默认配置。</summary>
     public static class SSCRomanceUI
     {
-        /// <summary>绘制保存选择、阶段门槛及实际主人例外；界面读取不维护链或发放关系奖励。</summary>
+        /// <summary>保留子板块标题、七项保存选择及底部命令，去除额外说明；阶段与载体资格仍由真实查询／提交校验。</summary>
         public static void DrawPawn(Listing_Standard listing, Pawn pawn)
         {
-            var state = SSCRomanceResolver.Resolve(pawn);
-            listing.Label("SSC_Romance_State".Translate(state.Stage, state.Master?.LabelShort ?? "SSC_Romance_NoMaster".Translate().ToString()));
-            if (!state.Applicable) listing.Label(SSCRomanceCommandUtility.Explain(state.Reason.ToString()));
-            else if (state.Stage < 2) listing.Label("SSC_Romance_FirstStage".Translate());
-            listing.Label("SSC_Romance_Independent".Translate());
             foreach (SSCRomanceSetting setting in Enum.GetValues(typeof(SSCRomanceSetting)))
             {
                 if (setting == SSCRomanceSetting.InitiateRomance || setting == SSCRomanceSetting.AcceptRomance || setting == SSCRomanceSetting.InitiateOnlyMaster)
                 { listing.GapLine(6f); listing.Label(("SSC_Romance_Group_" + setting).Translate()); }
                 DrawSetting(listing, pawn, setting);
             }
-            if (state.Applicable && state.Stage >= 3 && state.GetSaved(SSCRomanceSetting.AlwaysAcceptMaster))
-                listing.Label("SSC_Romance_MasterPriority".Translate(state.Master.LabelShort));
             listing.GapLine();
+            DrawCommands(listing, pawn);
+        }
+        /// <summary>底部三个按钮纵向排列，长译文按实际宽度换行；整组使用最初捕获的执行者，点击不重拍人格。</summary>
+        private static void DrawCommands(Listing_Standard listing, Pawn pawn)
+        {
+            listing.Label("SSC_Romance_CommandTitle".Translate());
             string failure = SSCRomanceCommandUtility.ActorFailure(pawn);
-            string label = "SSC_Romance_OpenCommand".Translate();
-            Rect button = listing.GetRect(Mathf.Max(32f, Text.CalcHeight(label, Mathf.Max(1f, listing.ColumnWidth - 12f)) + 12f));
+            var original = SSCRomanceCommandUtility.Capture(pawn);
             bool oldEnabled = GUI.enabled;
             try
             {
                 GUI.enabled = oldEnabled && failure == null;
-                if (Widgets.ButtonText(button, label) && GUI.enabled)
-                    Find.WindowStack.Add(new Dialog_SSCRomanceCommand(pawn));
+                foreach (SSCRomanceAction action in Enum.GetValues(typeof(SSCRomanceAction)))
+                {
+                    var context = original.ForTarget(null, action);
+                    string label = ("SSC_Romance_Action_" + action).Translate();
+                    Rect button = listing.GetRect(Mathf.Max(32f, Text.CalcHeight(label, Mathf.Max(1f, listing.ColumnWidth - 12f)) + 12f));
+                    if (Widgets.ButtonText(button, label) && GUI.enabled) SSCRomanceCommandMenu.OpenTargets(context);
+                    listing.Gap(4f);
+                }
             }
             finally { GUI.enabled = oldEnabled; }
-            if (failure != null) listing.Label(SSCRomanceCommandUtility.Explain(failure));
         }
         /// <summary>同一行快照用于尺寸、绘制和提交；禁止点击时重新 GetView 为旧请求续权。</summary>
         private static void DrawSetting(Listing_Standard listing, Pawn pawn, SSCRomanceSetting setting)
         {
             var view = SSCRomancePreferences.GetView(pawn, setting);
             string label = ("SSC_Romance_Setting_" + setting).Translate();
-            string detail = !view.CanChange ? SSCRomanceCommandUtility.Explain(view.Reason.ToString()) :
-                (setting <= SSCRomanceSetting.InitiateBreakup ? "SSC_Romance_ActiveMeaning" :
-                setting <= SSCRomanceSetting.AcceptProposal ? "SSC_Romance_PassiveMeaning" : "SSC_Romance_ExtraMeaning").Translate().ToString();
-            if (!view.Unlocked) detail += " " + "SSC_Romance_RequiredStage".Translate(SSCRomanceResolver.RequiredStage(setting));
             float labelWidth = Mathf.Max(1f, listing.ColumnWidth - 34f);
             float labelHeight = Mathf.Max(28f, Text.CalcHeight(label, labelWidth));
-            Rect row = listing.GetRect(labelHeight + Text.CalcHeight(detail, listing.ColumnWidth) + 8f);
+            Rect row = listing.GetRect(labelHeight + 8f);
             bool previous = GUI.enabled, value = view.Saved;
             Color color = GUI.color;
             try
@@ -102,7 +101,6 @@ namespace SexSlaveCraft
                     Messages.Message(SSCRomanceCommandUtility.Explain(reason.ToString()), pawn, MessageTypeDefOf.RejectInput, false);
             }
             finally { GUI.enabled = previous; GUI.color = color; }
-            Widgets.Label(new Rect(row.x, row.y + labelHeight + 3f, row.width, row.height - labelHeight - 3f), detail);
         }
     }
 }

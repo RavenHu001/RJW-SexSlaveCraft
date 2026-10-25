@@ -85,6 +85,10 @@ namespace SexSlaveCraft
             if (r == null || !r.workerEntered || r.Stamp.Actor != actor || r.Stamp.Target != target || r.Stamp.Action != action) return;
             r.decisionKnown = true; r.accepted = accepted;
         }
+        /// <summary>只读识别当前精确命令调用，供结果提示去重；不签发授权，也不让内层普通互动借用外层身份。</summary>
+        public static bool IsCommandInvocation(Pawn actor, Pawn target, SSCRomanceAction action)
+            => current?.record != null && current.actor == actor && current.target == target &&
+                current.record.Stamp.Action == action;
         /// <summary>求婚公式只覆盖命令发起者的意识形态意愿；接收者意愿和普通调用逐值透传。</summary>
         public static bool InitiatorWilling(bool vanilla, Pawn actor, Pawn target)
             => vanilla || (current?.record?.Stamp.Action == SSCRomanceAction.Proposal &&

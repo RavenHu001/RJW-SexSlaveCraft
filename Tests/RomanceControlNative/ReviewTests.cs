@@ -99,7 +99,7 @@ internal static partial class Program
             }
             finally { mapIndex.SetValue(b, previousIndex); maps.SetValue(Current.Game, previousMaps); }
         });
-        Check("batch2 review actual original RomanceOption keeps passive-zero target actionable", () =>
+        Check("batch2 review actual original RomanceOption keeps passive-denied target native probability and actionable", () =>
         {
             var boundary = new Harmony("ssc.tests.romance-control.review-menu-boundary");
             try
@@ -108,7 +108,7 @@ internal static partial class Program
                 boundary.Patch(AccessTools.Method(typeof(RelationsUtility), "RomanceEligiblePair"), prefix: new HarmonyMethod(typeof(Program), nameof(ReviewEligiblePair)));
                 boundary.Patch(AccessTools.Method(typeof(RelationsUtility), "AttractedToGender", new[] { typeof(Pawn), typeof(Gender) }), prefix: new HarmonyMethod(typeof(Program), nameof(ReviewAttracted)));
                 ResetSocial(); var a = SocialPawn(); var b = SocialSlave(a); Comp(b).romanceConfig = new() { allowAcceptRomance = false };
-                Require(RelationsUtility.RomanceOption(a, b, out var option, out var chance)); Require(option.action != null); Equal(0f, chance);
+                Require(RelationsUtility.RomanceOption(a, b, out var option, out var chance)); Require(option.action != null); Equal(.6f, chance);
                 Comp(b).romanceConfig.alwaysAcceptMaster = true; Require(RelationsUtility.RomanceOption(a, b, out option, out chance)); Require(option.action != null); Equal(1f, chance);
                 var slaveActor = SocialSlave(); Comp(slaveActor).romanceConfig = new() { allowInitiateRomance = false };
                 Require(!RelationsUtility.RomanceOption(slaveActor, SocialPawn(), out option, out chance)); Require(option.action == null);

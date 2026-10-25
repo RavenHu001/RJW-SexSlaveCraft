@@ -93,7 +93,7 @@
     <Compile Include="JobDriver/JobDriver_SSCRomanceCommand.cs" />
     <Compile Include="ThePatches/Harmony_RomanceCommand.cs" />
     <Compile Include="common/Romance/SSCRomanceUI.cs" />
-    <Compile Include="common/Romance/Dialog_SSCRomanceCommand.cs" />
+    <Compile Include="common/Romance/SSCRomanceCommandMenu.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="common/SSCAbilityToggleFramework.cs" />

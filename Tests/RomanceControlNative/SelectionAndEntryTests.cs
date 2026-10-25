@@ -79,7 +79,8 @@ internal static partial class Program
             {
                 Comp(b).romanceConfig.alwaysAcceptMaster = guarantee; var option = new FloatMenuOption("original", () => { }); float chance = .6f; bool eligible = true;
                 Harmony_SSCRomanceMenu.Postfix(a, b, ref option, ref chance, ref eligible);
-                Require(eligible && option.action != null); Equal(guarantee ? 1f : 0f, chance); Require(option.Label.Contains("acceptance"));
+                Require(eligible && option.action != null); Equal(guarantee ? 1f : .6f, chance);
+                Require(guarantee ? option.Label.Contains("acceptance") : option.Label == "original");
             }
         });
         Check("batch2 original menu shows active denial while late ordinary execution rechecks", () =>
@@ -160,8 +161,8 @@ internal static partial class Program
             Check("romance translated keys and exact source mirror " + language, () =>
             {
                 string path = Path.Combine(repo, "1.7/Languages", language, "Keyed/SSC_Romance.xml"); string source = Path.Combine(repo, "Sexslavecraft/Languages", language, "Keyed/SSC_Romance.xml");
-                Require(File.ReadAllBytes(path).SequenceEqual(File.ReadAllBytes(source))); var entries = XDocument.Load(path).Root.Elements().ToArray(); Equal(76, entries.Length);
-                Require(entries.All(e => !string.IsNullOrWhiteSpace(e.Value))); Equal(76, entries.Select(e => e.Name.LocalName).Distinct().Count());
+                Require(File.ReadAllBytes(path).SequenceEqual(File.ReadAllBytes(source))); var entries = XDocument.Load(path).Root.Elements().ToArray(); Equal(78, entries.Length);
+                Require(entries.All(e => !string.IsNullOrWhiteSpace(e.Value))); Equal(78, entries.Select(e => e.Name.LocalName).Distinct().Count());
             });
     }
 }

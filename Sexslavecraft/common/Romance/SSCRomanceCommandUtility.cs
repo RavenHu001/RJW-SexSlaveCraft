@@ -31,7 +31,7 @@ namespace SexSlaveCraft
         // 本构建的原版近亲检查为 private，缓存精确签名委托；版本不符时拒绝该类命令。
         private static readonly Func<Pawn, Pawn, bool> incest = AccessTools.Method(typeof(RelationsUtility), "Incestuous", new[] { typeof(Pawn), typeof(Pawn) })?
             .CreateDelegate(typeof(Func<Pawn, Pawn, bool>)) as Func<Pawn, Pawn, bool>;
-        /// <summary>打开窗口时捕获原执行者；目标尚未选择时也不写配置或授权。</summary>
+        /// <summary>绘制按钮或建立菜单时捕获原执行者；目标尚未选择时也不写配置或授权。</summary>
         public static SSCRomanceCommandContext Capture(Pawn actor, Pawn target = null, SSCRomanceAction action = SSCRomanceAction.Romance)
             => new SSCRomanceCommandContext(new SSCRomanceEditContext(SSCRomanceResolver.Resolve(actor)), target, action, Verse.Current.Game);
         /// <summary>分离展示资格与目标资格，第一阶段和失效绑定也能在面板得到具体门槛。</summary>

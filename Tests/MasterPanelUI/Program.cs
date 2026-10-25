@@ -69,6 +69,8 @@ internal static partial class Program
     private static void Run(string name, Action test)
     {
         Widgets.Click = Widgets.Throw = false; Widgets.BeforeCheckbox = null;
+        Widgets.RomanceClick = -1; Widgets.RomanceButtonIndex = 0; Widgets.RomanceButtonClick = -1; Widgets.BeforeRomanceButton = null;
+        SSCRomanceCommandMenu.Opened.Clear();
         GUI.enabled = true; GUI.color = Color.white; Text.Font = GameFont.Small; Text.Anchor = TextAnchor.UpperLeft; Text.WordWrap = true;
         Scribe.mode = LoadSaveMode.Inactive; Scribe_Values.Data.Clear();
         Messages.Received.Clear();

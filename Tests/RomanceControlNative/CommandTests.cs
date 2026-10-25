@@ -24,7 +24,9 @@ internal static partial class Program
         // 前两批会直接调用 Transpiler 测试失配回退；卸下再安装真实补丁，恢复实际安装结果而非伪填能力标志。
         foreach (string patch in new[] { "Prefix", "Finalizer", "Transpiler" })
             harmony.Unpatch(AccessTools.Method(typeof(Pawn_InteractionsTracker), "TryInteractWith"), AccessTools.Method(typeof(Harmony_SSCRomanceInteraction), patch));
-        foreach (var method in Harmony_SSCRomanceAcceptance.TargetMethods()) harmony.Unpatch(method, AccessTools.Method(typeof(Harmony_SSCRomanceAcceptance), "Transpiler"));
+        foreach (var method in Harmony_SSCRomanceAcceptance.TargetMethods())
+        foreach (string patch in new[] { "Prefix", "Postfix", "Finalizer", "Transpiler" })
+            harmony.Unpatch(method, AccessTools.Method(typeof(Harmony_SSCRomanceAcceptance), patch));
         foreach (var type in new[] { typeof(Harmony_SSCRomanceInteraction), typeof(Harmony_SSCRomanceAcceptance),
             typeof(Harmony_SSCRomanceCommandWorker), typeof(Harmony_SSCRomanceCommandWillingness) }) harmony.CreateClassProcessor(type).Patch();
         SSCRomanceDefOf.SSC_RomanceCommand = new JobDef { defName = "SSC_RomanceCommand", driverClass = typeof(JobDriver_SSCRomanceCommand), suspendable = false };

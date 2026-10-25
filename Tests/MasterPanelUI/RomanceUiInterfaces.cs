@@ -33,11 +33,17 @@ namespace Verse
     public static partial class Widgets
     {
         public static int RomanceCheckboxIndex, RomanceClick = -1;
+        public static int RomanceButtonIndex, RomanceButtonClick = -1;
+        public static Action BeforeRomanceButton;
         /// <summary>记录生产框线矩形，不修改其尺寸。</summary>
         public static void DrawBox(Rect rect) => Items.Add(new DrawItem("romance-frame", RomanceUiOrigins.Transform(rect)));
         /// <summary>记录按钮几何与外层输入状态，本宿主不打开实际窗口。</summary>
         public static bool ButtonText(Rect rect, string text)
-        { Items.Add(new DrawItem("romance-button", RomanceUiOrigins.Transform(rect), text, !GUI.enabled)); return false; }
+        {
+            Items.Add(new DrawItem("romance-button", RomanceUiOrigins.Transform(rect), text, !GUI.enabled));
+            var callback = BeforeRomanceButton; BeforeRomanceButton = null; callback?.Invoke();
+            return RomanceButtonIndex++ == RomanceButtonClick;
+        }
         /// <summary>仅从复选框注入点击，避免标签热区在同一模型事件再次翻转。</summary>
         public static bool ButtonInvisible(Rect rect) => false;
         /// <summary>按指定行注入点击，生产绘制器负责禁用保护及原上下文提交。</summary>
@@ -94,16 +100,30 @@ namespace SexSlaveCraft
         /// <summary>只记录旧开关属于性行为板块，不模拟全局设置编辑。</summary>
         public static void DrawGlobalSwitches(Verse.Listing_Standard listing) => listing.Label("SEX-GLOBALS");
     }
-    public sealed class Dialog_SSCRomanceCommand
+    public sealed class SSCRomanceCommandContext
     {
-        /// <summary>命令弹窗不属于本近似 UI 宿主的执行范围。</summary>
-        public Dialog_SSCRomanceCommand(Verse.Pawn pawn) { }
+        public Verse.Pawn Actor;
+        public object Token;
+        public SSCRomanceAction Action;
+        /// <summary>切换行为保留模型中的原执行者凭据；实际目标授权由原生宿主验证。</summary>
+        public SSCRomanceCommandContext ForTarget(Verse.Pawn target, SSCRomanceAction action)
+            => new() { Actor = Actor, Token = Token, Action = action };
+    }
+    public static class SSCRomanceCommandMenu
+    {
+        public static readonly List<SSCRomanceCommandContext> Opened = new();
+        /// <summary>只记录生产 UI 传出的原上下文，不模拟真实菜单或任务。</summary>
+        public static void OpenTargets(SSCRomanceCommandContext context) => Opened.Add(context);
     }
     /// <summary>任务服务是 UI 外部边界，真实任务签发/门禁由 RomanceControlNative 验证。</summary>
     public static class SSCRomanceCommandUtility
     {
-        /// <summary>命令按钮取固定不可用输入，实际命令门禁由原生专项验证。</summary>
-        public static string ActorFailure(Verse.Pawn pawn) => "CommandStage";
+        /// <summary>模型仅按链阶段决定按钮资格，实际身份／绑定／补丁门禁由原生专项验证。</summary>
+        public static string ActorFailure(Verse.Pawn pawn)
+            => SSCBondUtility.GetChain(pawn)?.Stage >= 4 ? null : "CommandStage";
+        /// <summary>只捕获原人格 token，验证生产按钮不在点击后重新采集。</summary>
+        public static SSCRomanceCommandContext Capture(Verse.Pawn pawn)
+            => new() { Actor = pawn, Token = SSCPersonalityRuntimeUtility.Capture(pawn) };
         /// <summary>直接读取当前四语文本，不另复制生产原因文案。</summary>
         public static string Explain(string reason) => Verse.Translation.Translate("SSC_Romance_" + reason);
     }

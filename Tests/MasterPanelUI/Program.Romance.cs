@@ -20,6 +20,9 @@ internal static partial class Program
                     var (height, frames) = DrawRomanceUi(pawn, width);
                     Assert(frames.Length == 2 && frames[0].Rect.yMax + 14 <= frames[1].Rect.y && frames[1].Rect.yMax <= height);
                     Assert(Widgets.Items.Count(i => i.Kind == "romance-checkbox") == 7);
+                    var buttons = Widgets.Items.Where(i => i.Kind == "romance-button").ToArray();
+                    Assert(buttons.Length == 3 && buttons[0].Rect.y > Widgets.Items.Where(i => i.Kind == "romance-checkbox").Max(i => i.Rect.yMax));
+                    Assert(buttons[0].Rect.yMax <= buttons[1].Rect.y && buttons[1].Rect.yMax <= buttons[2].Rect.y);
                     foreach (var item in Widgets.Items.Where(i => i.Kind is "label" or "romance-checkbox" or "romance-button"))
                         Assert(frames.Any(f => item.Rect.x >= f.Rect.x && item.Rect.xMax <= f.Rect.xMax + .01f && item.Rect.y >= f.Rect.y && item.Rect.yMax <= f.Rect.yMax + .01f), item.Kind + ": outside section");
                     Assert(RomanceUiOrigins.Stack.Count == 0);
@@ -35,6 +38,7 @@ internal static partial class Program
                 var boxes = Widgets.Items.Where(i => i.Kind == "romance-checkbox").ToArray();
                 Assert(boxes.Count(b => !b.Disabled) == (stage == 1 ? 0 : stage == 2 ? 3 : 7));
                 Assert(!pawn.Training.romanceConfig.allowAcceptRomance);
+                Assert(Widgets.Items.Where(i => i.Kind == "romance-button").All(i => i.Disabled == (stage < 4)));
             });
         Run("浪漫 UI 点击通过生产 TrySet 写原字段且不改其他项", () =>
         {
@@ -57,6 +61,31 @@ internal static partial class Program
             var pawn = RomanceUiPawn(); Widgets.Throw = true; bool threw = false;
             try { DrawRomanceUi(pawn, 352); } catch (InvalidOperationException) { threw = true; }
             Assert(threw && RomanceUiOrigins.Stack.Count == 0 && GUI.enabled);
+        });
+        foreach (var action in Enum.GetValues<SSCRomanceAction>())
+            Run("浪漫 UI 底部按钮直接打开对应目标菜单 " + action, () =>
+            {
+                var pawn = RomanceUiPawn(4); Widgets.RomanceButtonClick = (int)action; DrawRomanceUi(pawn, 260);
+                Assert(SSCRomanceCommandMenu.Opened.Count == 1);
+                var context = SSCRomanceCommandMenu.Opened[0]; Assert(context.Actor == pawn && context.Action == action);
+                Assert(SSCPersonalityRuntimeUtility.IsCurrent(pawn, context.Token));
+            });
+        Run("浪漫 UI 未解锁三个按钮都不能打开菜单", () =>
+        {
+            var pawn = RomanceUiPawn(3); Widgets.RomanceButtonClick = 0; DrawRomanceUi(pawn, 260);
+            Assert(SSCRomanceCommandMenu.Opened.Count == 0);
+        });
+        Run("浪漫 UI 外层禁用三个命令都不能重新启用", () =>
+        {
+            var pawn = RomanceUiPawn(4); GUI.enabled = false; Widgets.RomanceButtonClick = 1; DrawRomanceUi(pawn, 260);
+            Assert(!GUI.enabled && SSCRomanceCommandMenu.Opened.Count == 0);
+        });
+        Run("浪漫 UI 按钮事件换人格不重拍执行者上下文", () =>
+        {
+            var pawn = RomanceUiPawn(4); Widgets.RomanceButtonClick = 0;
+            Widgets.BeforeRomanceButton = () => { SSCPersonalityRuntimeUtility.TryBeginMutation(pawn, out var scope); scope?.Dispose(); };
+            DrawRomanceUi(pawn, 260); Assert(SSCRomanceCommandMenu.Opened.Count == 1);
+            Assert(!SSCPersonalityRuntimeUtility.IsCurrent(pawn, SSCRomanceCommandMenu.Opened[0].Token));
         });
         Widgets.RomanceClick = -1;
     }
