@@ -8,7 +8,7 @@
   <SSC_Romance_RuleDenied>目前浪漫許可禁止主動發起此行為。</SSC_Romance_RuleDenied>
   <SSC_Romance_OwnerOnly>目前只允許向實際主人主動求愛或求婚。</SSC_Romance_OwnerOnly>
   <SSC_Romance_AcceptancePreview>{0}（接受：{1}）</SSC_Romance_AcceptancePreview>
-  <SSC_Romance_SexSection>性行為控制</SSC_Romance_SexSection>
+  <SSC_Romance_SexSection>性行為控制（始終接受主人發起的性行為）</SSC_Romance_SexSection>
   <SSC_Romance_RomanceSection>浪漫控制</SSC_Romance_RomanceSection>
   <SSC_Romance_State>目前鎖鏈階段：{0}；實際主人：{1}</SSC_Romance_State>
   <SSC_Romance_NoMaster>無有效綁定</SSC_Romance_NoMaster>
@@ -26,12 +26,12 @@
   <SSC_Romance_Setting_AlwaysAcceptMaster>被動無法拒絕主人</SSC_Romance_Setting_AlwaysAcceptMaster>
   <SSC_Romance_MasterPriority>實際主人 {0} 的接受保證優先於被動禁止；其他人仍按儲存許可判斷。</SSC_Romance_MasterPriority>
   <SSC_Romance_OpenCommand>第四階段：下達點名命令…</SSC_Romance_OpenCommand>
-  <SSC_Romance_ActiveMeaning>關閉時阻止發起，不產生本次失敗記憶。</SSC_Romance_ActiveMeaning>
+  <SSC_Romance_ActiveMeaning>關閉時阻止發起。</SSC_Romance_ActiveMeaning>
   <SSC_Romance_PassiveMeaning>關閉時仍可成為目標，但必定拒絕；開啟時保留正常接受判斷。</SSC_Romance_PassiveMeaning>
   <SSC_Romance_ExtraMeaning>兩個主人規則獨立儲存；僅主人不重新開放已禁止的主動行為。</SSC_Romance_ExtraMeaning>
   <SSC_Romance_RequiredStage>需要鎖鏈第 {0} 階段。</SSC_Romance_RequiredStage>
   <SSC_Romance_OpenBehaviorWindow>開啟行為限制…</SSC_Romance_OpenBehaviorWindow>
-  <SSC_Romance_CommandTitle>點名命令</SSC_Romance_CommandTitle>
+  <SSC_Romance_CommandTitle>直接命令</SSC_Romance_CommandTitle>
   <SSC_Romance_Executor>執行者：{0}</SSC_Romance_Executor>
   <SSC_Romance_ChooseAction>行為：{0}</SSC_Romance_ChooseAction>
   <SSC_Romance_ChooseTarget>目標：{0}</SSC_Romance_ChooseTarget>
@@ -42,7 +42,7 @@
   <SSC_Romance_Reception_Vanilla>對方仍按自己的正常規則決定，可能拒絕。</SSC_Romance_Reception_Vanilla>
   <SSC_Romance_Reception_ForceReject>對方目前被動許可禁止接受：互動仍會發生，但必定拒絕。</SSC_Romance_Reception_ForceReject>
   <SSC_Romance_Reception_ForceAccept>執行者是對方實際主人，且對方已開啟主人接受保證；滿足互動必要條件後保證接受。</SSC_Romance_Reception_ForceAccept>
-  <SSC_Romance_Submit>下達命令</SSC_Romance_Submit>
+  <SSC_Romance_Submit>直接命令</SSC_Romance_Submit>
   <SSC_Romance_Scheduled>已為 {0} 安排對 {1} 的點名命令；互動及回應尚待執行。</SSC_Romance_Scheduled>
   <SSC_Romance_NoRelationshipLabel>無目前戀愛／婚姻關係</SSC_Romance_NoRelationshipLabel>
   <SSC_Romance_Action_Romance>向指定對象求愛</SSC_Romance_Action_Romance>

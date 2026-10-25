@@ -22,7 +22,7 @@ namespace UnityEngine
         public static Color white => new Color(1, 1, 1);
         public static Color operator *(Color a, Color b) => new(a.r*b.r,a.g*b.g,a.b*b.b,a.a*b.a);
     }
-    public enum TextAnchor { UpperLeft, MiddleRight }
+    public enum TextAnchor { UpperLeft, MiddleRight, MiddleCenter }
     public static class GUI { public static bool enabled = true; public static Color color = Color.white; }
     public static class Mathf
     {

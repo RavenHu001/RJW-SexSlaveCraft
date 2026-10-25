@@ -35,6 +35,9 @@ namespace Verse
         public static int RomanceCheckboxIndex, RomanceClick = -1;
         public static int RomanceButtonIndex, RomanceButtonClick = -1;
         public static Action BeforeRomanceButton;
+        /// <summary>仅记录生产灰底禁用命令区域；不执行图形渲染或命令点击。</summary>
+        public static void DrawBoxSolid(Rect rect, Color color)
+            => Items.Add(new DrawItem("romance-button", RomanceUiOrigins.Transform(rect), "", true));
         /// <summary>记录生产框线矩形，不修改其尺寸。</summary>
         public static void DrawBox(Rect rect) => Items.Add(new DrawItem("romance-frame", RomanceUiOrigins.Transform(rect)));
         /// <summary>记录按钮几何与外层输入状态，本宿主不打开实际窗口。</summary>
@@ -93,7 +96,7 @@ namespace SexSlaveCraft
     public static class SSCRestrictionUI
     {
         /// <summary>旧板块提前返回，检查调用方仍能绘制第二板块。</summary>
-        public static void DrawPawn(Verse.Listing_Standard listing, Verse.Pawn pawn) { listing.Label("SEX-CONTENT"); }
+        public static void DrawPawn(Verse.Listing_Standard listing, Verse.Pawn pawn, bool compact = false) { listing.Label("SEX-CONTENT"); }
     }
     public static class Dialog_SSCRestrictions
     {

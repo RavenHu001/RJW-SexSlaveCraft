@@ -8,7 +8,7 @@
   <SSC_Romance_RuleDenied>This pawn's romance permissions prohibit initiating this action.</SSC_Romance_RuleDenied>
   <SSC_Romance_OwnerOnly>This pawn may initiate romance or propose only to their bound master.</SSC_Romance_OwnerOnly>
   <SSC_Romance_AcceptancePreview>{0} ({1} acceptance)</SSC_Romance_AcceptancePreview>
-  <SSC_Romance_SexSection>Sexual behavior control</SSC_Romance_SexSection>
+  <SSC_Romance_SexSection>Sexual behavior control (always accepts sex initiated by the master)</SSC_Romance_SexSection>
   <SSC_Romance_RomanceSection>Romance control</SSC_Romance_RomanceSection>
   <SSC_Romance_State>Current chain stage: {0}; bound master: {1}</SSC_Romance_State>
   <SSC_Romance_NoMaster>No valid binding</SSC_Romance_NoMaster>
@@ -26,12 +26,12 @@
   <SSC_Romance_Setting_AlwaysAcceptMaster>Always accept the bound master</SSC_Romance_Setting_AlwaysAcceptMaster>
   <SSC_Romance_MasterPriority>Guaranteed acceptance for bound master {0} takes priority over response prohibitions; saved permissions apply to others.</SSC_Romance_MasterPriority>
   <SSC_Romance_OpenCommand>Stage 4: issue a targeted command…</SSC_Romance_OpenCommand>
-  <SSC_Romance_ActiveMeaning>When off, prevents initiation without creating rejection memories.</SSC_Romance_ActiveMeaning>
+  <SSC_Romance_ActiveMeaning>When off, prevents initiation.</SSC_Romance_ActiveMeaning>
   <SSC_Romance_PassiveMeaning>When off, remains a valid target but always rejects. When on, normal acceptance applies.</SSC_Romance_PassiveMeaning>
   <SSC_Romance_ExtraMeaning>These two rules are independent. Master-only does not re-enable prohibited initiation.</SSC_Romance_ExtraMeaning>
   <SSC_Romance_RequiredStage>Requires chain stage {0}.</SSC_Romance_RequiredStage>
   <SSC_Romance_OpenBehaviorWindow>Open behavior restrictions…</SSC_Romance_OpenBehaviorWindow>
-  <SSC_Romance_CommandTitle>Targeted commands</SSC_Romance_CommandTitle>
+  <SSC_Romance_CommandTitle>Direct commands</SSC_Romance_CommandTitle>
   <SSC_Romance_Executor>Executor: {0}</SSC_Romance_Executor>
   <SSC_Romance_ChooseAction>Action: {0}</SSC_Romance_ChooseAction>
   <SSC_Romance_ChooseTarget>Target: {0}</SSC_Romance_ChooseTarget>
@@ -42,7 +42,7 @@
   <SSC_Romance_Reception_Vanilla>The target follows their normal acceptance rules and may refuse.</SSC_Romance_Reception_Vanilla>
   <SSC_Romance_Reception_ForceReject>The target’s current response permission forces rejection; the interaction can still occur.</SSC_Romance_Reception_ForceReject>
   <SSC_Romance_Reception_ForceAccept>The executor is the target’s bound master and guaranteed acceptance is enabled. Acceptance is guaranteed once interaction requirements are met.</SSC_Romance_Reception_ForceAccept>
-  <SSC_Romance_Submit>Issue command</SSC_Romance_Submit>
+  <SSC_Romance_Submit>Direct command</SSC_Romance_Submit>
   <SSC_Romance_Scheduled>A targeted command from {0} to {1} is scheduled; interaction and response are pending.</SSC_Romance_Scheduled>
   <SSC_Romance_NoRelationshipLabel>No current romantic / marital relationship</SSC_Romance_NoRelationshipLabel>
   <SSC_Romance_Action_Romance>Attempt romance</SSC_Romance_Action_Romance>

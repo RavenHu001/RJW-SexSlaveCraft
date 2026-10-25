@@ -8,7 +8,7 @@
   <SSC_Romance_RuleDenied>Настройки романтического поведения запрещают этому персонажу начинать это действие.</SSC_Romance_RuleDenied>
   <SSC_Romance_OwnerOnly>Этот персонаж может начинать ухаживания или делать предложение только своему хозяину по цепи.</SSC_Romance_OwnerOnly>
   <SSC_Romance_AcceptancePreview>{0} (согласие: {1})</SSC_Romance_AcceptancePreview>
-  <SSC_Romance_SexSection>Контроль сексуального поведения</SSC_Romance_SexSection>
+  <SSC_Romance_SexSection>Контроль сексуального поведения (всегда принимает сексуальную инициативу хозяина)</SSC_Romance_SexSection>
   <SSC_Romance_RomanceSection>Контроль романтических отношений</SSC_Romance_RomanceSection>
   <SSC_Romance_State>Текущая стадия цепи: {0}; связанный хозяин: {1}</SSC_Romance_State>
   <SSC_Romance_NoMaster>Нет действующей привязки</SSC_Romance_NoMaster>
@@ -26,12 +26,12 @@
   <SSC_Romance_Setting_AlwaysAcceptMaster>Всегда принимать связанного хозяина</SSC_Romance_Setting_AlwaysAcceptMaster>
   <SSC_Romance_MasterPriority>Гарантированное принятие хозяина {0} имеет приоритет над запретом ответа; для остальных действуют сохранённые разрешения.</SSC_Romance_MasterPriority>
   <SSC_Romance_OpenCommand>Стадия 4: отдать адресный приказ…</SSC_Romance_OpenCommand>
-  <SSC_Romance_ActiveMeaning>При отключении действие не начинается и воспоминаний об отказе нет.</SSC_Romance_ActiveMeaning>
+  <SSC_Romance_ActiveMeaning>При отключении действие не начинается.</SSC_Romance_ActiveMeaning>
   <SSC_Romance_PassiveMeaning>При отключении остаётся доступной целью, но всегда отказывает. При включении ответ определяется обычным образом.</SSC_Romance_PassiveMeaning>
   <SSC_Romance_ExtraMeaning>Эти два правила независимы. Ограничение хозяином не разрешает запрещённое активное действие.</SSC_Romance_ExtraMeaning>
   <SSC_Romance_RequiredStage>Требуется стадия цепи {0}.</SSC_Romance_RequiredStage>
   <SSC_Romance_OpenBehaviorWindow>Открыть ограничения поведения…</SSC_Romance_OpenBehaviorWindow>
-  <SSC_Romance_CommandTitle>Адресные приказы</SSC_Romance_CommandTitle>
+  <SSC_Romance_CommandTitle>Прямые приказы</SSC_Romance_CommandTitle>
   <SSC_Romance_Executor>Исполнитель: {0}</SSC_Romance_Executor>
   <SSC_Romance_ChooseAction>Действие: {0}</SSC_Romance_ChooseAction>
   <SSC_Romance_ChooseTarget>Цель: {0}</SSC_Romance_ChooseTarget>
@@ -42,7 +42,7 @@
   <SSC_Romance_Reception_Vanilla>Цель отвечает по своим обычным правилам и может отказать.</SSC_Romance_Reception_Vanilla>
   <SSC_Romance_Reception_ForceReject>Текущее разрешение цели требует отказа; взаимодействие всё равно может состояться.</SSC_Romance_Reception_ForceReject>
   <SSC_Romance_Reception_ForceAccept>Исполнитель — связанный хозяин цели, и принятие хозяина гарантировано при выполнении условий взаимодействия.</SSC_Romance_Reception_ForceAccept>
-  <SSC_Romance_Submit>Отдать приказ</SSC_Romance_Submit>
+  <SSC_Romance_Submit>Прямой приказ</SSC_Romance_Submit>
   <SSC_Romance_Scheduled>Адресный приказ для {0} в отношении {1} назначен; взаимодействие и ответ ещё ожидаются.</SSC_Romance_Scheduled>
   <SSC_Romance_NoRelationshipLabel>Нет текущих романтических / брачных отношений</SSC_Romance_NoRelationshipLabel>
   <SSC_Romance_Action_Romance>Попытаться ухаживать</SSC_Romance_Action_Romance>
