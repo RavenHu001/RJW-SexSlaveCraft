@@ -35,6 +35,20 @@ internal static partial class Program
             restored.allowInitiateToMaster = true;
             Assert(!cfg.allowInitiateToMaster && !captured.romanceConfig.allowInitiateToMaster && !processed.romanceConfig.allowInitiateToMaster, "Snapshots stay independent.");
         });
+        foreach (bool enabled in new[] { false, true })
+            Run("其他人接受保证完整提取加工植入精确覆盖及独立副本 " + enabled, () =>
+            {
+                var source = RomanceBody("OtherAcceptSource"); source.TryGetComp<CompSexSlaveTraining>().romanceConfig = new() { alwaysAcceptOthers = enabled };
+                ExcretionUtility.DoExcretion(source); var captured = GenSpawn.LastSpawned.TryGetComp<CompPersonalityStore>();
+                Assert(source.TryGetComp<CompSexSlaveTraining>().romanceConfig == null, "Extraction clears the original.");
+                var processed = Gel(); processed.CopyFrom(captured); var host = RomanceBody("OtherAcceptHost");
+                host.TryGetComp<CompSexSlaveTraining>().romanceConfig = new() { alwaysAcceptOthers = !enabled };
+                Assert(ExcretionUtility.InheritEverything(host, processed), "Insertion succeeds.");
+                var restored = host.TryGetComp<CompSexSlaveTraining>().romanceConfig;
+                Assert(restored.alwaysAcceptOthers == enabled, "Both true and explicit false replace the host value.");
+                restored.alwaysAcceptOthers = !enabled;
+                Assert(captured.romanceConfig.alwaysAcceptOthers == enabled && processed.romanceConfig.alwaysAcceptOthers == enabled, "Copies remain independent.");
+            });
         Run("旧凝胶缺浪漫字段精确覆盖宿主旧人格选择", () =>
         {
             var source = RomanceBody("OldRomanceSource"); var gel = Gel(); gel.StorePawnData(source);
@@ -76,7 +90,7 @@ internal static partial class Program
     }
     /// <summary>创建主动受限及被动保证偏好，检测迁移时丢弃 false 或错误套用克隆默认。</summary>
     private static SSCRomanceConfig RomanceDenied() => new SSCRomanceConfig { allowInitiateRomance = false, allowInitiateProposal = false,
-        allowInitiateBreakup = false, allowAcceptRomance = false, allowAcceptProposal = false, allowInitiateToMaster = true, allowInitiateToSexSlave = false, allowInitiateToOthers = false, alwaysAcceptMaster = true };
+        allowInitiateBreakup = false, allowAcceptRomance = false, allowAcceptProposal = false, allowInitiateToMaster = true, allowInitiateToSexSlave = false, allowInitiateToOthers = false, alwaysAcceptMaster = true, alwaysAcceptOthers = true };
     /// <summary>沿用既有身体夹具并显式提供训练组件，不将缺组件误当成迁移失败。</summary>
     private static Pawn RomanceBody(string name)
     { var pawn = Body(name); MasterTraining(pawn, PawnIdentity.Slave, false); return pawn; }

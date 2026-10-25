@@ -89,4 +89,7 @@
   <SSC_Romance_CommandTip_Romance>命令性奴向指定對象求愛。</SSC_Romance_CommandTip_Romance>
   <SSC_Romance_CommandTip_Proposal>命令性奴向指定對象求婚。</SSC_Romance_CommandTip_Proposal>
   <SSC_Romance_CommandTip_Breakup>命令性奴與指定對象分手／離婚。</SSC_Romance_CommandTip_Breakup>
+  <SSC_Romance_Setting_AlwaysAcceptOthers>強制接受其他人發起的浪漫</SSC_Romance_Setting_AlwaysAcceptOthers>
+  <SSC_Romance_AlwaysAcceptOthersTip>強制接受對應對象的求愛／求婚，不受接受許可限制。</SSC_Romance_AlwaysAcceptOthersTip>
+  <SSC_Romance_AcceptTargetTitle>強制接受對象</SSC_Romance_AcceptTargetTitle>
 </LanguageData>

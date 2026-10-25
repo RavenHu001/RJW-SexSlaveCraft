@@ -89,4 +89,7 @@
   <SSC_Romance_CommandTip_Romance>Order the sex slave to romance the chosen target.</SSC_Romance_CommandTip_Romance>
   <SSC_Romance_CommandTip_Proposal>Order the sex slave to propose to the chosen target.</SSC_Romance_CommandTip_Proposal>
   <SSC_Romance_CommandTip_Breakup>Order the sex slave to break up with or divorce the chosen target.</SSC_Romance_CommandTip_Breakup>
+  <SSC_Romance_Setting_AlwaysAcceptOthers>Force acceptance of romance from others</SSC_Romance_Setting_AlwaysAcceptOthers>
+  <SSC_Romance_AlwaysAcceptOthersTip>Force acceptance of romance and proposals from these targets, overriding response permissions.</SSC_Romance_AlwaysAcceptOthersTip>
+  <SSC_Romance_AcceptTargetTitle>Force acceptance from</SSC_Romance_AcceptTargetTitle>
 </LanguageData>

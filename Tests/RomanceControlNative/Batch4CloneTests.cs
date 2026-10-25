@@ -28,11 +28,14 @@ internal static partial class Program
             {
                 CommandReset(); var source = SocialSlave(); Comp(source).romanceConfig = Denied();
                 var clone = SocialSlave(SSCBondUtility.GetBoundMaster(source)); Comp(clone).romanceConfig = Denied();
+                // 来源与新生体都携带新保证，验证实际准备钩子清除副本而保留来源。
+                Comp(source).romanceConfig.alwaysAcceptOthers = true; Comp(clone).romanceConfig.alwaysAcceptOthers = true;
                 var sourceConfig = Comp(source).romanceConfig; var chain = SSCBondUtility.GetChain(clone);
                 object token = SSCPersonalityRuntimeUtility.Capture(clone);
                 AccessTools.Method(typeof(RabbitCloneUtility), "PrepareFreshRabbitCloneBody").Invoke(null, new object[] { source, clone });
                 Require(Comp(clone).romanceConfig == null); Require(ReferenceEquals(sourceConfig, Comp(source).romanceConfig));
                 Equal(chain, SSCBondUtility.GetChain(clone)); Equal(chain.target, SSCBondUtility.GetBoundMaster(source));
+                Require(sourceConfig.alwaysAcceptOthers && !SSCRomancePreferences.GetView(clone, SSCRomanceSetting.AlwaysAcceptOthers).Saved);
                 Require(!SSCPersonalityRuntimeUtility.IsCurrent(clone, token)); Require(!SSCPersonalityRuntimeUtility.IsMutating(clone));
                 Require(clone.ageTracker.AgeBiologicalYearsFloat < 16);
             });
@@ -50,10 +53,10 @@ internal static partial class Program
                 CommandReset(); var source = SocialSlave(); Comp(source).romanceConfig = Denied();
                 var clone = SocialSlave();
                 AccessTools.Method(typeof(RabbitCloneUtility), "PrepareFreshRabbitCloneBody").Invoke(null, new object[] { source, clone });
-                foreach (var setting in new[] { SSCRomanceSetting.AcceptProposal, SSCRomanceSetting.InitiateToMaster })
+                foreach (var setting in new[] { SSCRomanceSetting.AcceptProposal, SSCRomanceSetting.InitiateToMaster, SSCRomanceSetting.AlwaysAcceptOthers })
                 {
                     var view = SSCRomancePreferences.GetView(clone, setting);
-                    Require(SSCRomancePreferences.TrySet(clone, setting, setting == SSCRomanceSetting.InitiateToMaster, view.Context, out _));
+                    Require(SSCRomancePreferences.TrySet(clone, setting, setting != SSCRomanceSetting.AcceptProposal, view.Context, out _));
                 }
                 var own = Comp(clone).romanceConfig;
                 var link = new HediffComp_RabbitCloneLink();
@@ -62,6 +65,7 @@ internal static partial class Program
                 string path = Save(new RomanceFixture(Comp(clone))); var restored = SocialSlave(); Load(path, Comp(restored));
                 SSCRomanceLifecycle.InitializeAfterLoad(restored);
                 Require(!Comp(restored).romanceConfig.allowAcceptProposal && Comp(restored).romanceConfig.allowInitiateToMaster);
+                Require(Comp(restored).romanceConfig.alwaysAcceptOthers);
                 Require(!Comp(restored).romanceConfig.alwaysAcceptMaster); Require(Comp(source).romanceConfig.alwaysAcceptMaster);
             });
         }

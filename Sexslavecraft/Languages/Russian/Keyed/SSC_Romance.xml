@@ -89,4 +89,7 @@
   <SSC_Romance_CommandTip_Romance>Приказать секс-рабу начать романтическое общение с выбранной целью.</SSC_Romance_CommandTip_Romance>
   <SSC_Romance_CommandTip_Proposal>Приказать секс-рабу сделать предложение выбранной цели.</SSC_Romance_CommandTip_Proposal>
   <SSC_Romance_CommandTip_Breakup>Приказать секс-рабу расстаться с выбранной целью или развестись.</SSC_Romance_CommandTip_Breakup>
+  <SSC_Romance_Setting_AlwaysAcceptOthers>Принудительно принимать романтическую инициативу остальных</SSC_Romance_Setting_AlwaysAcceptOthers>
+  <SSC_Romance_AlwaysAcceptOthersTip>Принудительно принимать романтическую инициативу и предложения этих целей, несмотря на разрешения ответа.</SSC_Romance_AlwaysAcceptOthersTip>
+  <SSC_Romance_AcceptTargetTitle>Принудительно принимать от</SSC_Romance_AcceptTargetTitle>
 </LanguageData>

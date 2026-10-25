@@ -21,7 +21,7 @@ namespace SexSlaveCraft
     public static class SSCRomanceResolver
     {
         /// <summary>拒绝未知枚举值，避免把未注册条目当成默认允许的许可。</summary>
-        public static bool IsKnown(SSCRomanceSetting setting) => setting >= SSCRomanceSetting.InitiateRomance && setting <= SSCRomanceSetting.InitiateToOthers;
+        public static bool IsKnown(SSCRomanceSetting setting) => setting >= SSCRomanceSetting.InitiateRomance && setting <= SSCRomanceSetting.AlwaysAcceptOthers;
         /// <summary>明确主动二阶、被动三阶；不依赖枚举排列，三个目标许可与主动规则同步解锁。</summary>
         public static int RequiredStage(SSCRomanceSetting setting)
         {
@@ -36,11 +36,12 @@ namespace SexSlaveCraft
                 case SSCRomanceSetting.AcceptRomance:
                 case SSCRomanceSetting.AcceptProposal:
                 case SSCRomanceSetting.AlwaysAcceptMaster:
-                case SSCRomanceSetting.AlwaysAcceptSexSlave: return 3;
+                case SSCRomanceSetting.AlwaysAcceptSexSlave:
+                case SSCRomanceSetting.AlwaysAcceptOthers: return 3;
                 default: return int.MaxValue;
             }
         }
-        /// <summary>行为许可及三个目标许可默认允许，两个必须接受开关默认关闭。</summary>
+        /// <summary>行为许可及三个目标许可默认允许，三个强制接受开关默认关闭。</summary>
         public static bool DefaultEnabled(SSCRomanceSetting setting) => IsKnown(setting) &&
             (setting <= SSCRomanceSetting.AcceptProposal || setting == SSCRomanceSetting.InitiateToMaster ||
              setting == SSCRomanceSetting.InitiateToSexSlave || setting == SSCRomanceSetting.InitiateToOthers);

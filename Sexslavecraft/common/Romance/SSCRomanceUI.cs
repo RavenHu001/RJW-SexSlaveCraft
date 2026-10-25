@@ -1,4 +1,4 @@
-﻿// AI 辅助生成
+// AI 辅助生成
 using System;
 using RimWorld;
 using UnityEngine;
@@ -50,13 +50,13 @@ namespace SexSlaveCraft
             Widgets.DrawBox(new Rect(0f, top, width, height));
         }
     }
-    /// <summary>十项浪漫偏好沿独立 GetView/TrySet；不注册为通用能力，不创建隐式默认配置。</summary>
+    /// <summary>十一项浪漫偏好沿独立 GetView/TrySet；不注册为通用能力，不创建隐式默认配置。</summary>
     public static class SSCRomanceUI
     {
         private static readonly SSCRomanceSetting[][] groups =
         {
             new[] { SSCRomanceSetting.InitiateRomance, SSCRomanceSetting.InitiateProposal, SSCRomanceSetting.InitiateBreakup },
-            new[] { SSCRomanceSetting.AcceptRomance, SSCRomanceSetting.AcceptProposal, SSCRomanceSetting.AlwaysAcceptMaster, SSCRomanceSetting.AlwaysAcceptSexSlave }
+            new[] { SSCRomanceSetting.AcceptRomance, SSCRomanceSetting.AcceptProposal }
         };
         /// <summary>保留分组和命令，常驻只显示标签，说明放入悬停；首组复用主标题下横线，所有子标题下方另画横线。</summary>
         public static void DrawPawn(Listing_Standard listing, Pawn pawn)
@@ -64,7 +64,7 @@ namespace SexSlaveCraft
             for (int i = 0; i < groups.Length; i++)
             {
                 DrawGroup(listing, pawn, groups[i], i == 0);
-                if (i == 0) DrawTargets(listing, pawn);
+                DrawTargets(listing, pawn, i == 1);
             }
             listing.GapLine();
             DrawCommands(listing, pawn);
@@ -102,16 +102,20 @@ namespace SexSlaveCraft
                 DrawSetting(new Rect(row.x, row.y, width, row.height), pawn, settings[i], views[i], labels[i]);
             }
         }
-        /// <summary>主动区域内的目标多选：先捕获三个原视图，再测量换行；点击不能重新查询以取得新人格权限。</summary>
-        private static void DrawTargets(Listing_Standard listing, Pawn pawn)
+        /// <summary>主动对象与被动接受保证复用多选绘制；先捕获整组原视图，点击不能为旧请求重新取得人格权限。</summary>
+        private static void DrawTargets(Listing_Standard listing, Pawn pawn, bool passive)
         {
-            var settings = new[] { SSCRomanceSetting.InitiateToMaster, SSCRomanceSetting.InitiateToSexSlave, SSCRomanceSetting.InitiateToOthers };
+            // 展示类别共用短标签，实际提交仍分别指向主动许可或被动保证，不能混用保存源。
+            var labelsFor = new[] { SSCRomanceSetting.InitiateToMaster, SSCRomanceSetting.InitiateToSexSlave, SSCRomanceSetting.InitiateToOthers };
+            var settings = passive
+                ? new[] { SSCRomanceSetting.AlwaysAcceptMaster, SSCRomanceSetting.AlwaysAcceptSexSlave, SSCRomanceSetting.AlwaysAcceptOthers }
+                : labelsFor;
             var views = new SSCRomanceView[3];
             var labels = new string[3];
             for (int i = 0; i < settings.Length; i++)
             {
                 views[i] = SSCRomancePreferences.GetView(pawn, settings[i]);
-                labels[i] = (views[i].Saved ? "✓ " : "□ ") + ("SSC_Romance_Setting_" + settings[i]).Translate();
+                labels[i] = (views[i].Saved ? "✓ " : "□ ") + ("SSC_Romance_Setting_" + labelsFor[i]).Translate();
             }
             const float indent = 12f, padding = 8f, gap = 6f;
             float width = Mathf.Max(1f, listing.ColumnWidth - indent - padding * 2f);
@@ -128,7 +132,7 @@ namespace SexSlaveCraft
             float buttonWidth = Mathf.Max(1f, (width - gap * (columns - 1)) / columns);
             float buttonHeight = 32f;
             foreach (string label in labels) buttonHeight = Mathf.Max(buttonHeight, Text.CalcHeight(label, Mathf.Max(1f, buttonWidth - 12f)) + 12f);
-            string title = "SSC_Romance_TargetTitle".Translate();
+            string title = (passive ? "SSC_Romance_AcceptTargetTitle" : "SSC_Romance_TargetTitle").Translate();
             float titleHeight = Text.CalcHeight(title, width);
             int rows = (settings.Length + columns - 1) / columns;
             listing.Gap(4f);
@@ -232,6 +236,7 @@ namespace SexSlaveCraft
             string key = setting == SSCRomanceSetting.InitiateToMaster || setting == SSCRomanceSetting.InitiateToSexSlave || setting == SSCRomanceSetting.InitiateToOthers
                 ? "SSC_Romance_TargetMeaning" : setting <= SSCRomanceSetting.InitiateBreakup ? "SSC_Romance_ActiveMeaning" :
                 setting <= SSCRomanceSetting.AcceptProposal ? "SSC_Romance_PassiveMeaning" : "SSC_Romance_MustAcceptMeaning";
+            // 三项被动接受保证共用相同说明格式；仅按各自视图追加资格与阶段信息。
             string tip = key.Translate();
             if (!view.CanChange) tip += "\n\n" + SSCRomanceCommandUtility.Explain(view.Reason.ToString());
             if (!view.Unlocked) tip += "\n" + "SSC_Romance_RequiredStage".Translate(SSCRomanceResolver.RequiredStage(setting));

@@ -1,4 +1,4 @@
-// AI 辅助生成
+﻿// AI 辅助生成
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using RimWorld;
@@ -69,6 +69,7 @@ internal static partial class Program
     private static void Run(string name, Action test)
     {
         Widgets.Click = Widgets.Throw = false; Widgets.BeforeCheckbox = null;
+        Widgets.TargetClick = -1; Widgets.BeforeTargetButton = null;
         Widgets.RomanceClick = -1; Widgets.RomanceButtonIndex = 0; Widgets.RomanceButtonClick = -1; Widgets.BeforeRomanceButton = null;
         SSCRomanceCommandMenu.Opened.Clear();
         GUI.enabled = true; GUI.color = Color.white; Text.Font = GameFont.Small; Text.Anchor = TextAnchor.UpperLeft; Text.WordWrap = true;

@@ -19,7 +19,7 @@ internal static partial class Program
                     var pawn = RomanceUiPawn(); pawn.LabelShort = new string('长', 40); pawn.BoundMaster.LabelShort = new string('M', 60);
                     var (height, frames) = DrawRomanceUi(pawn, width);
                     Assert(frames.Length == 2 && frames[0].Rect.yMax + 14 <= frames[1].Rect.y && frames[1].Rect.yMax <= height);
-                    Assert(Widgets.Items.Count(i => i.Kind == "romance-checkbox") == 7);
+                    Assert(Widgets.Items.Count(i => i.Kind == "romance-checkbox") == 5);
                     var buttons = Widgets.Items.Where(i => i.Kind == "romance-button").ToArray();
                     Assert(buttons.Length == 3 && buttons[0].Rect.y > Widgets.Items.Where(i => i.Kind == "romance-checkbox").Max(i => i.Rect.yMax));
                     Assert(buttons[0].Rect.yMax <= buttons[1].Rect.y && buttons[1].Rect.yMax <= buttons[2].Rect.y);
@@ -36,8 +36,8 @@ internal static partial class Program
                 var pawn = RomanceUiPawn(stage); pawn.Training.romanceConfig = new() { allowAcceptRomance = false };
                 DrawRomanceUi(pawn, 352);
                 var boxes = Widgets.Items.Where(i => i.Kind == "romance-checkbox").ToArray();
-                Assert(Widgets.Items.Count(i => i.Kind == "romance-target" && !i.Disabled) == (stage < 2 ? 0 : 3));
-                Assert(boxes.Count(b => !b.Disabled) == (stage == 1 ? 0 : stage == 2 ? 3 : 7));
+                Assert(Widgets.Items.Count(i => i.Kind == "romance-target" && !i.Disabled) == (stage < 2 ? 0 : stage == 2 ? 3 : 6));
+                Assert(boxes.Count(b => !b.Disabled) == (stage == 1 ? 0 : stage == 2 ? 3 : 5));
                 Assert(!pawn.Training.romanceConfig.allowAcceptRomance);
                 Assert(Widgets.Items.Where(i => i.Kind == "romance-button").All(i => i.Disabled == (stage < 4)));
             });
@@ -127,9 +127,60 @@ internal static partial class Program
             string original = Translation.Entries[key];
             try {
                 Translation.Entries[key] = new string('W', 80); DrawRomanceUi(RomanceUiPawn(2), 260);
-                var targets = Widgets.Items.Where(i => i.Kind == "romance-target").ToArray();
+                var targets = Widgets.Items.Where(i => i.Kind == "romance-target").Take(3).ToArray();
                 Assert(targets.Length == 3 && targets[0].Rect.yMax <= targets[1].Rect.y && targets[1].Rect.yMax <= targets[2].Rect.y);
             } finally { Translation.Entries[key] = original; }
+        });
+        Run("其他人接受保证位于被动多选且只修改本人保存项", () =>
+        {
+            var pawn = RomanceUiPawn(3); Widgets.TargetClick = 5; DrawRomanceUi(pawn, 260);
+            Assert(pawn.Training.romanceConfig.alwaysAcceptOthers && !pawn.Training.romanceConfig.alwaysAcceptMaster && !pawn.Training.romanceConfig.alwaysAcceptSexSlave);
+            Assert(pawn.Training.romanceConfig.allowAcceptRomance && pawn.Training.romanceConfig.allowInitiateToOthers);
+            Widgets.TargetClick = -1; DrawRomanceUi(pawn, 260);
+            Assert(Widgets.Items.Any(i => i.Kind == "label" && i.Text == Translation.Entries["SSC_Romance_AcceptTargetTitle"]));
+            Assert(Widgets.Items.Count(i => i.Kind == "romance-target") == 6);
+        });
+        Run("其他人接受保证低阶灰显保留显式选择且不能点击", () =>
+        {
+            var pawn = RomanceUiPawn(2); pawn.Training.romanceConfig = new() { alwaysAcceptOthers = true };
+            Widgets.TargetClick = 5; DrawRomanceUi(pawn, 260);
+            Assert(pawn.Training.romanceConfig.alwaysAcceptOthers);
+            Assert(Widgets.Items.Where(i => i.Kind == "romance-target").Skip(3).All(i => i.Disabled));
+        });
+        Run("其他人接受保证末行使用原组上下文防止点击时换人格", () =>
+        {
+            var pawn = RomanceUiPawn(3); Widgets.TargetClick = 5; int seen = 0;
+            Widgets.BeforeCheckbox = () => { if (++seen == 5) Widgets.BeforeTargetButton = () =>
+                { SSCPersonalityRuntimeUtility.TryBeginMutation(pawn, out var scope); scope.Dispose(); }; };
+            DrawRomanceUi(pawn, 260); Assert(pawn.Training.romanceConfig == null);
+        });
+        foreach (int index in new[] { 0, 1, 2 })
+            Run("被动多选独立切换对应保证且不改主动对象 " + index, () =>
+            {
+                var pawn = RomanceUiPawn(3); Widgets.TargetClick = index + 3; DrawRomanceUi(pawn, 260);
+                var cfg = pawn.Training.romanceConfig;
+                Assert(cfg.alwaysAcceptMaster == (index == 0) && cfg.alwaysAcceptSexSlave == (index == 1) && cfg.alwaysAcceptOthers == (index == 2));
+                Assert(cfg.allowInitiateToMaster && cfg.allowInitiateToSexSlave && cfg.allowInitiateToOthers && cfg.allowAcceptRomance && cfg.allowAcceptProposal);
+            });
+        Run("被动多选允许全选及全不选", () =>
+        {
+            var pawn = RomanceUiPawn(3);
+            foreach (int i in new[] { 3, 4, 5, 3, 4, 5 }) { Widgets.TargetClick = i; DrawRomanceUi(pawn, 260); }
+            Assert(!pawn.Training.romanceConfig.alwaysAcceptMaster && !pawn.Training.romanceConfig.alwaysAcceptSexSlave && !pawn.Training.romanceConfig.alwaysAcceptOthers);
+        });
+        Run("被动多选外层禁用不提交", () =>
+        {
+            var pawn = RomanceUiPawn(3); Widgets.TargetClick = 5; GUI.enabled = false; DrawRomanceUi(pawn, 260);
+            Assert(pawn.Training.romanceConfig == null && !GUI.enabled);
+        });
+        Run("被动多选长译文自动换行", () =>
+        {
+            const string key = "SSC_Romance_Setting_InitiateToOthers"; string old = Translation.Entries[key];
+            try {
+                Translation.Entries[key] = new string('W', 80); DrawRomanceUi(RomanceUiPawn(3), 260);
+                var targets = Widgets.Items.Where(i => i.Kind == "romance-target").Skip(3).ToArray();
+                Assert(targets.Length == 3 && targets[0].Rect.yMax <= targets[1].Rect.y && targets[1].Rect.yMax <= targets[2].Rect.y);
+            } finally { Translation.Entries[key] = old; }
         });
         Widgets.RomanceClick = -1;
     }

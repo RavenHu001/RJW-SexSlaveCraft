@@ -55,6 +55,11 @@ namespace SexSlaveCraft
                 // 与主人保证同属本人的被动接受保证，优先于本人的普通被动禁止；不能解除发起方限制。
                 else if (SSCIdentityUtility.IsSexSlave(initiator) && target.GetSaved(SSCRomanceSetting.AlwaysAcceptSexSlave))
                     result.Reception = SSCRomanceReception.ForceAccept;
+                // 复用互斥对象分类，明确排除本人主人及 SSC 性奴；不能把前两项关闭当成“其他人”兜底。
+                // 仅保证目标自己的接受，不反向开放发起方许可，也不改变前三阶门槛或原版必要条件。
+                else if (target.GetSaved(SSCRomanceSetting.AlwaysAcceptOthers) &&
+                    SSCRomanceResolver.TargetSetting(initiator, target.Master) == SSCRomanceSetting.InitiateToOthers)
+                    result.Reception = SSCRomanceReception.ForceAccept;
                 else if (!target.GetSaved(action == SSCRomanceAction.Romance ? SSCRomanceSetting.AcceptRomance : SSCRomanceSetting.AcceptProposal))
                     result.Reception = SSCRomanceReception.ForceReject;
             }
