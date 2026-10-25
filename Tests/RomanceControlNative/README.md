@@ -1,8 +1,8 @@
 ﻿# 浪漫控制原生回归（第一至四批）
 
-2026-10-25：提交前新增 `RomanceMoodReviewTests` 13 项，完整本专项 1148／1148；覆盖工厂／准入换 token／Comp／心情／处理器，快照后许可／关系／命令再检，嵌套损失去重及缺关系载体。仅本专项，不是整仓完整回归；见[复核记录](../../Docs/Development/Verification/性奴浪漫控制心情扩展实现与验证.md#提交前复核2026-10-25)。
+2026-10-25：提交前新增 `RomanceMoodReviewTests` 13 项，完整本专项 1148／1148；覆盖工厂／准入换 token／Comp／心情／处理器，快照后许可／关系／命令再检，嵌套损失去重及缺关系载体。仅本专项，不是整仓完整回归；见[复核记录](../../Docs/Development/Completed/性奴浪漫控制心情扩展实现与验收.md#提交前复核2026-10-25)。
 
-2026-10-25：新增 RomanceMoodTests、RomanceMoodInteractionTests、RomanceMoodLifecycleTests；本轮从旧互动用例开始安装心情／损失／日志生产补丁。覆盖三保证八组合、数值／刷新、真实 Scribe、凝胶和原生 CopyNeeds，详情见[心情扩展记录](../../Docs/Development/Verification/性奴浪漫控制心情扩展实现与验证.md)。
+2026-10-25：新增 RomanceMoodTests、RomanceMoodInteractionTests、RomanceMoodLifecycleTests；本轮从旧互动用例开始安装心情／损失／日志生产补丁。覆盖三保证八组合、数值／刷新、真实 Scribe、凝胶和原生 CopyNeeds，详情见[心情扩展记录](../../Docs/Development/Completed/性奴浪漫控制心情扩展实现与验收.md)。
 
 2026-10-25 其他人接受保证：本轮仅三套专项，原生 **608／608**、UI **167／167**、人格 1.7 **163／163**；新三阶被动保证的分类排除、保存与原版结算、UI 原上下文和完整人格迁移已覆盖。隔离证据及宿主边界见[实现与验证](../../Docs/Development/Verification/性奴浪漫控制其他人接受保证实现与验证.md)。未跑完整回归；随后复核候选无变化并无备份同步游戏，本次未重编或重跑测试，待实机。心情扩展未开发，下列历史结果保留原时点。
 

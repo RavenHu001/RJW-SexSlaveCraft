@@ -1,8 +1,8 @@
 # 测试说明索引
 
-2026-10-25：[心情扩展复核](../Docs/Development/Verification/性奴浪漫控制心情扩展实现与验证.md#提交前复核2026-10-25)仅四套相关专项通过：原生 1148／1148、UI 173／173、人格 1.7 163／163、旧记忆 17／17；新增回调换载体、快照后准入、嵌套去重及缺关系载体共 13 项，无完整回归。
+2026-10-25：[心情扩展复核](../Docs/Development/Completed/性奴浪漫控制心情扩展实现与验收.md#提交前复核2026-10-25)仅四套相关专项通过：原生 1148／1148、UI 173／173、人格 1.7 163／163、旧记忆 17／17；新增回调换载体、快照后准入、嵌套去重及缺关系载体共 13 项，无完整回归。
 
-2026-10-25：浪漫心情扩展仅运行 RomanceControlNative、MasterPanelUI、PersonalityTraits 1.7 及 PersonalityMemories 专项，覆盖真实 worker、保存、人格及原生克隆边界。精确计数与范围见[本轮记录](../Docs/Development/Verification/性奴浪漫控制心情扩展实现与验证.md)；未跑完整回归或实机。
+2026-10-25：浪漫心情扩展仅运行 RomanceControlNative、MasterPanelUI、PersonalityTraits 1.7 及 PersonalityMemories 专项，覆盖真实 worker、保存、人格及原生克隆边界。精确计数与范围见[本轮记录](../Docs/Development/Completed/性奴浪漫控制心情扩展实现与验收.md)；未跑完整回归或实机。
 
 2026-10-25 浪漫主体及三项修正已获维护者实机确认；本次精简说明并保留无阶段信息的子标题，运行现有界面 **157／157** 与隔离构建。未重跑完整回归或原生专项，旧计数不作为本次结果；精简显示尚未再次同步，见[验收及范围](../Docs/Development/Completed/性奴浪漫控制主体与三项修正实机验收.md)。
 
