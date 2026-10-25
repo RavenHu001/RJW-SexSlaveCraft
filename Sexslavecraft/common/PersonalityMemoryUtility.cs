@@ -20,6 +20,10 @@ namespace SexSlaveCraft
         public int durationTicksOverride = -1;
         public bool permanent;
         public Precept sourcePrecept;
+#if SSC_RW17
+        // 可选历史快照；缺节点不改变既有记忆版本与恢复语义。
+        public SSCRomanceMoodData romanceMood;
+#endif
 
         /// <summary>保存或读取记忆定义、年龄、倍率、关联角色及新版实例状态；旧数据的版本保持为零。</summary>
         public void ExposeData()
@@ -36,6 +40,9 @@ namespace SexSlaveCraft
             Scribe_Values.Look(ref durationTicksOverride, "durationTicksOverride", -1);
             Scribe_Values.Look(ref permanent, "permanent", false);
             Scribe_References.Look(ref sourcePrecept, "sourcePrecept");
+#if SSC_RW17
+            Scribe_Deep.Look(ref romanceMood, "sscRomanceMood");
+#endif
         }
     }
 
@@ -63,7 +70,10 @@ namespace SexSlaveCraft
                 moodOffset = memory.moodOffset,
                 durationTicksOverride = memory.durationTicksOverride,
                 permanent = memory.permanent,
-                sourcePrecept = memory.sourcePrecept
+                sourcePrecept = memory.sourcePrecept,
+#if SSC_RW17
+                romanceMood = (memory as Thought_MemorySSCRomance)?.Data?.Copy()
+#endif
             };
         }
 
@@ -85,7 +95,10 @@ namespace SexSlaveCraft
                 moodOffset = memory.moodOffset,
                 durationTicksOverride = memory.durationTicksOverride,
                 permanent = memory.permanent,
-                sourcePrecept = memory.sourcePrecept
+                sourcePrecept = memory.sourcePrecept,
+#if SSC_RW17
+                romanceMood = memory.romanceMood?.Copy()
+#endif
             };
         }
 
@@ -121,6 +134,9 @@ namespace SexSlaveCraft
                         memory.durationTicksOverride = data.durationTicksOverride;
                         memory.permanent = data.permanent;
                         memory.sourcePrecept = data.sourcePrecept;
+#if SSC_RW17
+                        if (memory is Thought_MemorySSCRomance romance) romance.Data = data.romanceMood?.Copy();
+#endif
                         if (data.hasOpinionOffset && memory is Thought_MemorySocial socialMemory)
                             socialMemory.opinionOffset = data.opinionOffset;
                     }

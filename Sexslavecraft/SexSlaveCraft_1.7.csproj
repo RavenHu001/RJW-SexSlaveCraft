@@ -75,6 +75,12 @@
   </Target>
   <!-- AI 辅助生成：开关后端适配仅编入 1.7，保留旧版条件分支。 -->
   <ItemGroup>
+    <Compile Include="common/Romance/SSCRomanceMoodRules.cs" />
+    <Compile Include="common/Romance/SSCRomanceMoodData.cs" />
+    <Compile Include="common/Romance/SSCRomanceMoodEvents.cs" />
+    <Compile Include="common/Romance/SSCRomanceMoodLog.cs" />
+    <Compile Include="ThePatches/Harmony_RomanceMood.cs" />
+    <Compile Include="common/Romance/SSCRomanceMoodMemory.cs" />
     <Compile Include="common/Romance/SSCRomanceConfig.cs" />
     <Compile Include="common/Romance/SSCRomanceResolver.cs" />
     <Compile Include="common/Romance/SSCRomancePolicy.cs" />

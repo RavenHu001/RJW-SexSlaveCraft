@@ -1,4 +1,4 @@
-// AI 辅助生成：真实游戏 Harmony 3 安装生产补丁；实际 tracker／worker 结算，显式隔离图形、地图和通知发送。
+﻿// AI 辅助生成：真实游戏 Harmony 3 安装生产补丁；实际 tracker／worker 结算，显式隔离图形、地图和通知发送。
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Xml.Linq;
@@ -20,6 +20,7 @@ internal static partial class Program
     {
         bootstrap = true;
         SetupInteractionDefs(repo);
+        SetupMoodDefs();
         AccessTools.Field(typeof(TickManager), "gameStartAbsTick").SetValue(Current.Game.tickManager, 3600000);
         AccessTools.Field(typeof(Game), "playLog").SetValue(Current.Game, new PlayLog());
         // 边界签名缺失必须带明确入口报错，不能静默漏装后以假环境取得通过。
@@ -43,7 +44,7 @@ internal static partial class Program
         harmony.Patch(AccessTools.PropertyGetter(typeof(Rand), "Value"), prefix: new HarmonyMethod(typeof(Program), nameof(SocialRoll)));
         // 使用生产特性与同一 Harmony 3 安装，不链接副本、不在宿主重写策略或指令匹配。
         foreach (var type in new[] { typeof(Harmony_SSCRomanceRandomSelection), typeof(Harmony_SSCRomanceInteraction),
-            typeof(Harmony_SSCRomanceAcceptance), typeof(Harmony_SSCRomanceMenu), typeof(Harmony_SSCRomanceRjwClick),
+            typeof(Harmony_SSCRomanceAcceptance), typeof(Harmony_SSCRomanceMoodWorker), typeof(Harmony_SSCRomanceMoodCorruption), typeof(Harmony_SSCRomanceMoodLoss), typeof(Harmony_SSCRomanceMoodLog), typeof(Harmony_SSCRomanceMenu), typeof(Harmony_SSCRomanceRjwClick),
             typeof(Patch_DogSpecialization_AnimalHandling) }) harmony.CreateClassProcessor(type).Patch();
         bootstrap = false;
         Check("batch2 actual game Harmony 3 and production annotated patches installed", () =>
@@ -177,7 +178,7 @@ internal static partial class Program
     /// <summary>记录求爱成功后的共床协调入口，地图床位选择留游戏验证。</summary>
     private static bool SocialShareBed() { shareBedCalls++; return false; }
     /// <summary>记录原 tracker 的互动日志提交，不展开依赖完整语法包的文字生成。</summary>
-    private static bool SocialPlayLog() { playLogCalls++; return false; }
+    private static bool SocialPlayLog(LogEntry entry) { moodLastLog = entry; playLogCalls++; return false; }
     /// <summary>隔离实际地图床位 Comp，只记录原分手是否调用解除并清掉夹具的拥有引用。</summary>
     private static bool SocialUnclaim(Pawn_Ownership __instance)
     { unclaimCalls++; AccessTools.Field(typeof(Pawn_Ownership), "intOwnedBed").SetValue(__instance, null); return false; }

@@ -53,13 +53,15 @@ namespace SexSlaveCraft
         {
             // 不修改公共 SuccessChance：它也参与菜单资格，改成零会把被动必拒误变为不可选目标。
             // 原版使用 Rand.Value < chance，且随机值可等于 1；覆盖 bool 才能严格保证接受。
-            var reception = SSCRomancePolicy.Evaluate(initiator, recipient, action).Reception;
+            var decision = SSCRomancePolicy.Evaluate(initiator, recipient, action);
+            var reception = decision.Reception;
             bool accepted = reception == SSCRomanceReception.ForceAccept ||
                 (reception != SSCRomanceReception.ForceReject && vanillaAccepted);
             // 概率查询和直接调用 Resolve 均不弹消息；只有匹配的实际 worker 帧可登记拒绝。
             if (current != null && current.actor == initiator && current.target == recipient && current.action == action)
                 current.forcedRejection = reception == SSCRomanceReception.ForceReject;
             SSCRomanceExecutionScope.ObserveDecision(initiator, recipient, action, accepted);
+            SSCRomanceMoodEvents.Observe(initiator, recipient, action, vanillaAccepted, accepted, decision.ReceptionSetting);
             return accepted;
         }
     }

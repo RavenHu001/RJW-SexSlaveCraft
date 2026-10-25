@@ -57,6 +57,7 @@ namespace SexSlaveCraft
             comp.romanceObservedChain = chain; comp.romanceObservedMaster = master;
             comp.romanceObservedStage = stage; comp.romanceObservedIdentity = comp.pawnIdentity;
             comp.romanceObservedHollow = hollow;
+            SSCRomanceMoodRefresh.Notify(pawn);
         }
         /// <summary>只用于新个体初始化；恢复模块默认，不搬运旧模板或重置其他后端。</summary>
         public static void ResetNewClone(Pawn pawn)

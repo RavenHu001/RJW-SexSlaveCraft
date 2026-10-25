@@ -138,3 +138,10 @@ namespace SexSlaveCraft
         public static string Explain(string reason) => Verse.Translation.Translate("SSC_Romance_" + reason);
     }
 }
+
+namespace SexSlaveCraft
+{
+    /// <summary>持续思想刷新为界面宿主的外部边界；实际思想及缓存由原生专项验证。</summary>
+    public static class SSCRomanceMoodRefresh
+    { public static void Notify(Verse.Pawn pawn) { } }
+}

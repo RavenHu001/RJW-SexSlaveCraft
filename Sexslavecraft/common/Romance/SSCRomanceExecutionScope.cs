@@ -22,7 +22,10 @@ namespace SexSlaveCraft
             internal SSCRomanceCommandRecord record;
             internal Pawn actor, target;
             internal InteractionDef interaction;
+            internal SSCRomanceMoodFrame mood;
         }
+        /// <summary>只读当前共同入口快照；不为直接 worker 或概率查询补造授权。</summary>
+        internal static SSCRomanceMoodFrame MoodFrame => current?.mood;
         /// <summary>Prefix 为所有调用建立帧；票据精确匹配后消费一次，后续重入没有可用票。</summary>
         public static Invocation Enter(Pawn actor, Pawn target, InteractionDef interaction)
         {
@@ -64,6 +67,15 @@ namespace SexSlaveCraft
         public static bool BeforeEffects(Pawn actor, Pawn target, InteractionDef interaction)
         {
             if (!SSCRomanceInteractionUtility.CanEnter(actor, target, interaction)) return false;
+            // 最后准入复查后、思想与经验之前采集；查询不构造事件，重复进入不重采。
+            if (current != null && current.mood == null && SSCRomanceInteractionUtility.TryGetAction(interaction, out var moodAction))
+            {
+                var frame = current;
+                frame.mood = SSCRomanceMoodEvents.Capture(actor, target, moodAction, frame.record != null);
+                // OpinionOf 等快照读取可能经外部补丁修改许可、必要关系或人格；不能新开一个副作用窗口。
+                // 仍在原帧复查，不重建票据，也不把失效命令降为普通互动。
+                if (current != frame || !SSCRomanceInteractionUtility.CanEnter(actor, target, interaction)) return false;
+            }
             if (current?.record == null) return true;
             if (current.record.effectsStarted) return false;
             current.record.effectsStarted = true; return true;

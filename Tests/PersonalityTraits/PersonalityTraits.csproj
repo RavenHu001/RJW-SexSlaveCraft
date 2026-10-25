@@ -7,6 +7,8 @@
     <DefineConstants Condition="'$(SscUterusBoundary)' == 'true'">$(DefineConstants);SSC_RW17</DefineConstants>
   </PropertyGroup>
   <ItemGroup Condition="'$(SscUterusBoundary)' == 'true'">
+    <Compile Include="$(SscSourceRoot)/common/Romance/SSCRomanceMoodRules.cs" Link="Production/RomanceMoodRules.cs" />
+    <Compile Include="$(SscSourceRoot)/common/Romance/SSCRomanceMoodData.cs" Link="Production/RomanceMoodData.cs" />
     <Compile Include="$(SscSourceRoot)/common/Romance/SSCRomanceConfig.cs" Link="Production/RomanceConfig.cs" />
     <Compile Include="$(SscSourceRoot)/common/Romance/SSCRomancePersonality.cs" Link="Production/RomancePersonality.cs" />
     <Compile Include="$(SscSourceRoot)/Comps/Comp_Train.Romance.cs" Link="Production/RomanceStorage.cs" />
