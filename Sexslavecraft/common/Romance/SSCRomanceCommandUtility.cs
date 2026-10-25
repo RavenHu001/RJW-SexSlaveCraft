@@ -48,8 +48,11 @@ namespace SexSlaveCraft
         }
         /// <summary>原引用、组件、链、人格和存档均须一致；配置开关变化不重新签发旧菜单权限。</summary>
         private static bool IsCurrent(SSCRomanceCommandContext context)
+            => context != null && !context.consumed && MatchesOriginal(context);
+        /// <summary>比对最初捕获的载体，不检查消费标记；签名后的末次复查也不能重拍上下文续权。</summary>
+        private static bool MatchesOriginal(SSCRomanceCommandContext context)
         {
-            if (context == null || context.consumed || context.game != Verse.Current.Game || context.Actor == null) return false;
+            if (context == null || context.game != Verse.Current.Game || context.Actor == null) return false;
             var original = context.actor; var state = SSCRomanceResolver.Resolve(context.Actor);
             return state.Comp == original.Comp && state.Chain == original.Chain && state.Master == original.Master &&
                 state.Comp?.romanceAuthorizationId == original.AuthorizationId &&
@@ -60,10 +63,18 @@ namespace SexSlaveCraft
         public static string Failure(SSCRomanceCommandContext context)
         {
             if (!IsCurrent(context)) return "StaleContext";
+            string reason = ParticipantFailure(context); if (reason != null) return reason;
+            string taskReason = TaskFailure(context.Actor, context.Target, context.Action);
+            // 路径/禁用查询可能回调换人格、换主或结束关系；必须用原上下文及最终参与者状态复查。
+            if (!IsCurrent(context)) return "StaleContext";
+            return ParticipantFailure(context) ?? taskReason;
+        }
+        /// <summary>只读检查当前执行者准入和必要关系，不重复调用有外部回调的地图路径查询。</summary>
+        private static string ParticipantFailure(SSCRomanceCommandContext context)
+        {
             string reason = ActorFailure(context.Actor); if (reason != null) return reason;
             var eligibility = SSCRomanceEligibility.Check(context.Actor, context.Target, context.Action);
-            if (eligibility != SSCRomanceEligibilityReason.None) return eligibility.ToString();
-            return TaskFailure(context.Actor, context.Target, context.Action);
+            return eligibility != SSCRomanceEligibilityReason.None ? eligibility.ToString() : null;
         }
         /// <summary>命令必须能形成真实社交；不越过年龄、近亲、精神状态、征召或地图路径条件。</summary>
         public static string TaskFailure(Pawn actor, Pawn target, SSCRomanceAction action)
@@ -86,7 +97,10 @@ namespace SexSlaveCraft
             { reason = "InvalidAuthorization"; return false; }
             var job = JobMaker.MakeJob(SSCRomanceDefOf.SSC_RomanceCommand, context.Target);
             job.interaction = Interaction(context.Action);
-            if (!proof.IsCurrent(context.Actor, context.Target, context.Action) || !SSCPersonalityRuntimeUtility.IsCurrent(context.Target, context.targetToken))
+            // 签名/创建任务的回调也可能改变玩家准入或必要关系，登记前按最终参与者状态再查一次。
+            reason = ParticipantFailure(context); if (reason != null) return false;
+            // TryAuthorize 的事件对账也可能旋转世代；新证明仍须属于原预览，不能替旧点击领取新世代。
+            if (!proof.IsCurrent(context.Actor, context.Target, context.Action) || !MatchesOriginal(context))
             { reason = "InvalidAuthorization"; return false; }
             var store = SSCRomanceCommandGameComponent.Current;
             record = store.Register(job, proof);

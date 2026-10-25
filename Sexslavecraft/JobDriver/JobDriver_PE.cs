@@ -267,6 +267,10 @@ namespace SexSlaveCraft
                 StripVictimPersonality(victim);
                 ReplaceExcretionHediff(victim);
                 GenSpawn.Spawn(product, victim.Position, victim.Map);
+#if SSC_RW17
+                // 场景产物放置后的回调同样可能换载体；原提取请求不得清掉新组件的人格选择。
+                if (!mutation.IsCurrent || victim.TryGetComp<CompSexSlaveTraining>() != originalComp) return;
+#endif
                 // 场景抽取是另一条独立入口，也必须等快照保存及凝胶生成后再清资格与成长。
                 // 成长清理同时写当前迁移版本，防止残留主人身份在读档时补回零经验。
                 if (product.TryGetComp<CompPersonalityStore>() != null)

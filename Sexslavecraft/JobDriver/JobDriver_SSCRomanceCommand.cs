@@ -25,6 +25,7 @@ namespace SexSlaveCraft
         /// <summary>实际当前驱动领取原登记；加载重建 toil 时不领取、不维护半恢复的链。</summary>
         private bool EnsureClaim()
         {
+            if (ended) return false;
             if (record != null)
             {
                 if (record.runtimeDriver != this || record.runtimeJob != job || pawn.CurJob != job || pawn.jobs?.curDriver != this) return false;
@@ -87,25 +88,34 @@ namespace SexSlaveCraft
         /// <summary>冷却/清醒可短暂等待，超时明确未互动；不强制通过原版能力或位置检查。</summary>
         private void WaitForInteraction(int delta)
         {
+            if (ended) return;
             if (Invalid()) { EndJobWith(JobCondition.Incompletable); return; }
+            if (ended) return;
             if (record.Terminal) { EndJobWith(record.Status == SSCRomanceCommandStatus.Completed ? JobCondition.Succeeded : JobCondition.Incompletable); return; }
             waitTicks += delta;
-            if (pawn.interactions.CanInteractNowWith(record.Stamp.Target, job.interaction)) ReadyForNextToil();
+            bool canInteract = pawn.interactions.CanInteractNowWith(record.Stamp.Target, job.interaction);
+            // 可交互性回调也能中断当前驱动，旧等待回调不能再推进 toil 或发起第二次结束。
+            if (ended) return;
+            if (canInteract) ReadyForNextToil();
             else if (waitTicks >= MaximumWaitTicks)
             { SSCRomanceCommandGameComponent.Cancel(record, "InteractionTimeout"); EndJobWith(JobCondition.Incompletable); }
         }
         /// <summary>唯一互动入口；重复 initAction、驱动恢复或 Cleanup 均不能重新执行终态记录。</summary>
         public void ExecuteOnce()
         {
+            if (ended) return;
             if (Invalid()) { EndJobWith(JobCondition.Incompletable); return; }
-            if (record.Terminal) return;
+            if (ended || record.Terminal) return;
             SSCRomanceExecutionScope.Execute(this, record);
             SSCRomanceCommandGameComponent.Feedback(record);
         }
         /// <summary>结束回调只释放认领并取消未完成请求，不建立关系、不发记忆、不再次调用 worker。</summary>
         private void Finish(JobCondition condition)
         {
+            // 任务可能在第一条 initAction 领取前就被打断；只找回原 Job 的清理归属，不能因此认领执行权限。
+            record ??= SSCRomanceCommandGameComponent.Current?.FindOwned(this);
             if (record == null) return;
+            if (record.runtimeDriver != null && record.runtimeDriver != this) return;
             SSCRomanceCommandGameComponent.Cancel(record, "JobEnded");
             SSCRomanceCommandGameComponent.Feedback(record);
             record.runtimeDriver = null;

@@ -38,7 +38,7 @@ namespace SexSlaveCraft
                 Notify(pawn);
 #if SSC_RW17
                 // 复用完整引用恢复后的现有快照，建立观察基线而不更换合法保存世代。
-                SSCRomanceLifecycle.Notify(pawn);
+                SSCRomanceLifecycle.InitializeAfterLoad(pawn);
 #endif
             }
 #if SSC_RW17

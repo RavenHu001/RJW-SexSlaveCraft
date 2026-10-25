@@ -36,12 +36,12 @@ namespace SexSlaveCraft
         /// <summary>异常也释放本次帧；不吞掉游戏或其他模组异常，不把外层票据重新开放。</summary>
         public static void Exit(Invocation frame)
         { if (frame != null && current == frame) current = frame.previous; }
-        /// <summary>仅当前原驱动、Job、参与者及实际 Def 一致才能使用本帧授权。</summary>
+        /// <summary>仅未结束的当前原驱动、Job、参与者及实际 Def 一致才能使用本帧授权。</summary>
         private static bool Valid(Invocation frame, Pawn actor, Pawn target, InteractionDef interaction)
         {
             var r = frame?.record;
             return r != null && frame.actor == actor && frame.target == target && frame.interaction == interaction &&
-                r.Status == SSCRomanceCommandStatus.Executing && r.runtimeDriver != null &&
+                r.Status == SSCRomanceCommandStatus.Executing && r.runtimeDriver != null && !r.runtimeDriver.ended &&
                 SSCRomanceCommandGameComponent.Current?.Records.Contains(r) == true &&
                 actor.jobs?.curDriver == r.runtimeDriver && actor.CurJob == r.runtimeJob &&
                 SSCRomanceCommandGameComponent.Matches(r, actor.CurJob) && SSCRomanceCommandGameComponent.IsCurrent(r);
@@ -92,7 +92,8 @@ namespace SexSlaveCraft
         /// <summary>真实驱动执行一次；先占用再回调，任何异常/部分结算都留下不可重放终态。</summary>
         public static void Execute(JobDriver_SSCRomanceCommand driver, SSCRomanceCommandRecord r)
         {
-            if (r == null || r.Status != SSCRomanceCommandStatus.Claimed || r.runtimeDriver != driver ||
+            // 原版中断先设置 ended 再运行清理回调；即使记录尚未取消，也不能在这个窗口进入互动。
+            if (driver == null || driver.ended || r == null || r.Status != SSCRomanceCommandStatus.Claimed || r.runtimeDriver != driver ||
                 driver.pawn.jobs?.curDriver != driver || driver.pawn.CurJob != r.runtimeJob || !SSCRomanceCommandGameComponent.IsCurrent(r)) return;
             var previous = ticket;
             var scope = new SSCRomanceExecutionScope(r); ticket = scope; r.status = SSCRomanceCommandStatus.Executing;

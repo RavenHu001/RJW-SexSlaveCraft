@@ -1,5 +1,7 @@
 # 文档总索引
 
+2026-10-24：[浪漫控制第四批](Development/Verification/性奴浪漫控制第四批实现与验证.md)完成外部空壳双向撤权、中断清理及人格／凝胶／克隆／场景保存联测，原生 **403／403**。点名命令一次下令、打断即结束；前四批仍待实际组合及第五批整机验收，未部署。下列第三批条目保留历史时点。
+
 **2.4.5 开发版 — 2026-10-24 登记，尚未发布。** 2.4.4 后开发已归入本版；最新正式下载仍为 [v2.4.4](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.4)。1.7 运行元数据暂保留 2.4.4，1.6／Common 冻结于 2.4.1。
 
 [项目首页](../README.md) · [玩家阅读入口](Players/README.md) · [当前规划](Design/README.md) · [开发资料](Development/README.md)

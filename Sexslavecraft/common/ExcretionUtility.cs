@@ -45,6 +45,10 @@ namespace SexSlaveCraft
                 }
 
                 GenSpawn.Spawn(slime, victim.Position, victim.Map);
+#if SSC_RW17
+                // 放置也可能触发外部回调替换训练组件；已生成的快照不能授权清理后来接管身体的载体。
+                if (!mutation.IsCurrent || victim.TryGetComp<CompSexSlaveTraining>() != originalComp) return;
+#endif
                 // 资格与成长已进入成功生成的凝胶，再清原身体并写当前成长版本。
                 // 空壳即使保留主人身份，也不能在以后读档时补回转走的记录。
                 if (comp != null)

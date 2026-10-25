@@ -23,9 +23,9 @@ namespace SexSlaveCraft
         internal static void Notify(Hediff hediff)
         {
 #if SSC_RW17
-            // 复用已有空壳健康通知；外部直接添加该状态也要撤销旧浪漫授权，不能等人格作用域。
+            // 外部直接进入空壳也代表旧目标人格失效；重复健康通知不重新签发或反复旋转凭据。
             if (hediff != null && hediff.def == SSCDefOf.SSC_PersonalityExcreted_Done)
-                SSCRomanceLifecycle.Notify(hediff.pawn);
+                SSCRomanceLifecycle.NotifyHollowChanged(hediff.pawn);
 #endif
             if (hediff != null && (SSCAbilityToggleUtility.IsMarkerDef(hediff.def) ||
                 hediff.def == SSCDefOf.SSC_PersonalityExcreted_Done))

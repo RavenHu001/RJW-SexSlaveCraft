@@ -20,6 +20,18 @@ namespace SexSlaveCraft
         public override void ExposeData()
         {
             if (Scribe.mode == LoadSaveMode.LoadingVars) Ready = false;
+            if (Scribe.mode == LoadSaveMode.Saving)
+            {
+                // 中断回调可能立即存档，此时 ended 已设置而 Finish 尚未运行；不能把已结束任务保存成可续行。
+                // 仅核对记录对应的原当前 Job，不触碰合法排队任务，不在保存期间发送反馈或执行互动。
+                foreach (var record in records)
+                {
+                    var jobs = record?.Stamp?.Actor?.jobs;
+                    if (record != null && !record.Terminal && record.runtimeJob != null &&
+                        jobs?.curJob == record.runtimeJob && jobs.curDriver?.job == record.runtimeJob && jobs.curDriver.ended)
+                        Cancel(record, "JobEnded");
+                }
+            }
             Scribe_Collections.Look(ref records, "sscRomanceCommands", LookMode.Deep);
             if (Scribe.mode == LoadSaveMode.PostLoadInit && records == null) records = new List<SSCRomanceCommandRecord>();
         }
@@ -91,11 +103,11 @@ namespace SexSlaveCraft
                 (!r.Terminal && r.Stamp.Actor == proof.Stamp.Actor && r.Stamp.Target == proof.Stamp.Target && r.Stamp.Action == proof.Stamp.Action))) return null;
             var record = new SSCRomanceCommandRecord(job, proof); records.Add(record); return record;
         }
-        /// <summary>只有当前原 Job 与当前原驱动可以领取；同编号克隆和另一个驱动不得接管运行时归属。</summary>
+        /// <summary>只有当前原 Job 与未结束的当前原驱动可以领取；同编号克隆和另一个驱动不得接管运行时归属。</summary>
         public SSCRomanceCommandRecord Claim(JobDriver_SSCRomanceCommand driver)
         {
             var record = FindOwned(driver);
-            if (!Ready || record == null || record.Terminal || record.Status == SSCRomanceCommandStatus.Executing ||
+            if (!Ready || record == null || driver.ended || record.Terminal || record.Status == SSCRomanceCommandStatus.Executing ||
                 record.runtimeJob != driver.job || driver.pawn?.CurJob != driver.job || driver.pawn.jobs.curDriver != driver ||
                 record.Stamp.Actor != driver.pawn || !Matches(record, driver.job) ||
                 (record.runtimeDriver != null && record.runtimeDriver != driver) || !IsCurrent(record)) return null;

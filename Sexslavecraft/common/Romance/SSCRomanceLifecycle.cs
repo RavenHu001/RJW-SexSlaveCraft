@@ -18,8 +18,24 @@ namespace SexSlaveCraft
         /// <summary>人格替换开始即撤销本人授权，并取消指向旧目标人格的请求；正常读档不调用。</summary>
         public static void InvalidatePersonality(Pawn pawn)
         {
+            if (pawn == null || Scribe.mode != LoadSaveMode.Inactive) return;
             Invalidate(pawn);
             SSCRomanceCommandGameComponent.Current?.Invalidate(pawn, targetPersonality: true);
+        }
+        /// <summary>外部空壳事件同时撤销本人及指向旧人格的命令；普通人格流程已在替换开始时撤权。</summary>
+        public static void NotifyHollowChanged(Pawn pawn)
+        {
+            if (pawn == null || Scribe.mode != LoadSaveMode.Inactive) return;
+            if (SSCPersonalityRuntimeUtility.ObserveHollow(pawn, SSCMasterProgressionUtility.IsHollow(pawn)))
+                InvalidatePersonality(pawn);
+            Notify(pawn);
+        }
+        /// <summary>完整读档后建立已有空壳基线，不把保存中的目标人格当成一次新提取。</summary>
+        public static void InitializeAfterLoad(Pawn pawn)
+        {
+            if (pawn == null || Scribe.mode != LoadSaveMode.Inactive) return;
+            SSCPersonalityRuntimeUtility.ObserveHollow(pawn, SSCMasterProgressionUtility.IsHollow(pawn), baseline: true);
+            Notify(pawn);
         }
         /// <summary>运行事件比较真实链／主人和阶段；加载期不观察半恢复引用。</summary>
         public static void Notify(Pawn pawn)
