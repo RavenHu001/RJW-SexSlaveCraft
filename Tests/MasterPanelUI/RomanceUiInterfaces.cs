@@ -35,6 +35,8 @@ namespace Verse
         public static int RomanceCheckboxIndex, RomanceClick = -1;
         public static int RomanceButtonIndex, RomanceButtonClick = -1;
         public static Action BeforeRomanceButton;
+        public static int ResetButtonIndex, ResetButtonClick = -1;
+        public static Action BeforeResetButton;
         public static int TargetIndex, TargetClick = -1;
         public static Action BeforeTargetButton;
         /// <summary>仅记录生产灰底禁用命令区域；不执行图形渲染或命令点击。</summary>
@@ -45,6 +47,13 @@ namespace Verse
         /// <summary>记录按钮几何与外层输入状态，本宿主不打开实际窗口。</summary>
         public static bool ButtonText(Rect rect, string text)
         {
+            if (text == Translation.Translate("SSC_BehaviorReset_Button"))
+            {
+                Items.Add(new DrawItem("reset-button", RomanceUiOrigins.Transform(rect), text, !GUI.enabled));
+                if (ResetButtonIndex == ResetButtonClick)
+                { var before = BeforeResetButton; BeforeResetButton = null; before?.Invoke(); }
+                return ResetButtonIndex++ == ResetButtonClick;
+            }
             Items.Add(new DrawItem("romance-button", RomanceUiOrigins.Transform(rect), text, !GUI.enabled));
             var callback = BeforeRomanceButton; BeforeRomanceButton = null; callback?.Invoke();
             return RomanceButtonIndex++ == RomanceButtonClick;
@@ -105,6 +114,24 @@ namespace SexSlaveCraft
         /// <summary>旧板块提前返回，检查调用方仍能绘制第二板块。</summary>
         public static void DrawPawn(Verse.Listing_Standard listing, Verse.Pawn pawn, bool compact = false) { listing.Label("SEX-CONTENT"); }
     }
+    /// <summary>性行为业务由原生宿主测试；此处只观察共享标题向独立后台分发。</summary>
+    public sealed class SSCRestrictionResetContext { }
+    public sealed class SSCRestrictionResetView
+    {
+        public bool CanReset;
+        public string Reason = "Default";
+        public SSCRestrictionResetContext Context = new();
+    }
+    public static class SSCRestrictionEditor
+    {
+        public static bool CanReset;
+        public static int Resets;
+        /// <summary>标题布局边界，不在 UI 宿主重写七项默认规则。</summary>
+        public static SSCRestrictionResetView GetResetView(Verse.Pawn pawn) => new() { CanReset = CanReset, Reason = CanReset ? null : "Default" };
+        /// <summary>记录独立性行为请求，实际原子提交另由原生专项执行。</summary>
+        public static bool TryReset(Verse.Pawn pawn, SSCRestrictionResetContext context, out string reason)
+        { Resets++; reason = null; return true; }
+    }
     public static class Dialog_SSCRestrictions
     {
         /// <summary>只记录旧开关属于性行为板块，不模拟全局设置编辑。</summary>
@@ -143,5 +170,5 @@ namespace SexSlaveCraft
 {
     /// <summary>持续思想刷新为界面宿主的外部边界；实际思想及缓存由原生专项验证。</summary>
     public static class SSCRomanceMoodRefresh
-    { public static void Notify(Verse.Pawn pawn) { } }
+    { public static void Notify(Verse.Pawn pawn, string reason = null) { } }
 }

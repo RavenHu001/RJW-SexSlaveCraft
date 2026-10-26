@@ -23,6 +23,7 @@
     <Compile Include="../../Sexslavecraft/common/Romance/SSCRomanceConfig.cs" Link="Production/SSCRomanceConfig.cs" />
     <Compile Include="../../Sexslavecraft/common/Romance/SSCRomanceResolver.cs" Link="Production/SSCRomanceResolver.cs" />
     <Compile Include="../../Sexslavecraft/common/Romance/SSCRomancePreferences.cs" Link="Production/SSCRomancePreferences.cs" />
+    <Compile Include="../../Sexslavecraft/common/Romance/SSCRomancePersonalReset.cs" Link="Production/SSCRomancePersonalReset.cs" />
     <Compile Include="../../Sexslavecraft/common/Romance/SSCRomanceUI.cs" Link="Production/SSCRomanceUI.cs" />
   </ItemGroup>
 </Project>

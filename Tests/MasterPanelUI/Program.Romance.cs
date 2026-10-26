@@ -13,6 +13,7 @@ internal static partial class Program
         {
             LoadLanguage(language);
             foreach (var node in XDocument.Load(SscTestPaths.Combine(repo, "Languages", language, "Keyed/SSC_Romance.xml")).Root.Elements()) Translation.Entries[node.Name.LocalName] = node.Value;
+            LoadResetLanguage(language);
             foreach (float width in new[] { 260f, 352f, 560f })
                 Run($"浪漫双板块 {language}/{width} 边界/长姓名/长译文不重叠", () =>
                 {
@@ -30,6 +31,7 @@ internal static partial class Program
         }
         LoadLanguage("English");
         foreach (var node in XDocument.Load(SscTestPaths.Combine(repo, "Languages/English/Keyed/SSC_Romance.xml")).Root.Elements()) Translation.Entries[node.Name.LocalName] = node.Value;
+        LoadResetLanguage("English");
         foreach (int stage in new[] { 1, 2, 3, 4 })
             Run("浪漫 UI 解锁行/保存值独立于灰显 " + stage, () =>
             {

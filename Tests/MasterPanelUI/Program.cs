@@ -61,6 +61,7 @@ internal static partial class Program
         RunAbilityToggleTests();
         RunFrameworkTests();
         RunRomanceUiTests();
+        RunPersonalResetUiTests();
         Console.WriteLine($"{passed}/{passed + failed} passed (production Master panel/bridle; approximate game interface model).");
         return failed == 0 ? 0 : 1;
     }
@@ -70,6 +71,7 @@ internal static partial class Program
     {
         Widgets.Click = Widgets.Throw = false; Widgets.BeforeCheckbox = null;
         Widgets.TargetClick = -1; Widgets.BeforeTargetButton = null;
+        Widgets.ResetButtonIndex = 0; Widgets.ResetButtonClick = -1; Widgets.BeforeResetButton = null; SSCRestrictionEditor.CanReset = false; SSCRestrictionEditor.Resets = 0;
         Widgets.RomanceClick = -1; Widgets.RomanceButtonIndex = 0; Widgets.RomanceButtonClick = -1; Widgets.BeforeRomanceButton = null;
         SSCRomanceCommandMenu.Opened.Clear();
         GUI.enabled = true; GUI.color = Color.white; Text.Font = GameFont.Small; Text.Anchor = TextAnchor.UpperLeft; Text.WordWrap = true;

@@ -41,6 +41,8 @@ namespace Verse
         public static GameFont Font = GameFont.Small;
         public static TextAnchor Anchor;
         public static bool WordWrap = true;
+        /// <summary>与本宿主既有近似字宽一致，仅提供标题按钮测量边界。</summary>
+        public static (float x, float y) CalcSize(string text) => ((text ?? "").Sum(c => c > 255 ? 13f : 7f), 22f);
         // 近似字体测量仅用于区域容纳检查，不宣称等同 Unity 的字形、裁剪与输入行为。
         public static float CalcHeight(string text, float width) => Math.Max(1, (float)Math.Ceiling((text ?? "").Sum(c => c > 255 ? 13f : 7f) / width)) * (Font == GameFont.Small ? 22 : 30);
     }

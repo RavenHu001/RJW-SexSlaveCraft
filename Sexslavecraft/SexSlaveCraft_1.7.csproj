@@ -86,6 +86,8 @@
     <Compile Include="ThePatches/Harmony_RomanceMoodAdmissionTail.cs" />
     <Compile Include="common/Romance/SSCRomanceInteractionFacts.cs" />
     <Compile Include="common/Romance/SSCRomanceLogGrammar.cs" />
+    <Compile Include="common/Romance/SSCRomancePersonalReset.cs" />
+    <Compile Include="common/Restrictions/SSCRestrictionPersonalReset.cs" />
     <Compile Include="common/Romance/SSCRomanceCommandPresentation.cs" />
     <Compile Include="ThePatches/Harmony_RomanceInteractionFacts.cs" />
     <Compile Include="common/Romance/SSCRomanceMoodEvents.cs" />

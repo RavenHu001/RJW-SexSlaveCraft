@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成：个人恢复默认标题按钮与结果说明。 -->
+<LanguageData>
+  <SSC_BehaviorReset_Button>Reset defaults</SSC_BehaviorReset_Button>
+  <SSC_BehaviorReset_SexTip>Restore this pawn’s sexual behavior settings using the current defaults.</SSC_BehaviorReset_SexTip>
+  <SSC_BehaviorReset_RomanceTip>Restore this pawn’s romance settings to defaults.</SSC_BehaviorReset_RomanceTip>
+  <SSC_BehaviorReset_Default>Already using the default settings.</SSC_BehaviorReset_Default>
+  <SSC_BehaviorReset_Unavailable>This pawn’s settings cannot be edited now.</SSC_BehaviorReset_Unavailable>
+  <SSC_BehaviorReset_InvalidDefaults>The default settings are invalid.</SSC_BehaviorReset_InvalidDefaults>
+  <SSC_BehaviorReset_Stale>The settings or pawn state changed. Please try again.</SSC_BehaviorReset_Stale>
+</LanguageData>

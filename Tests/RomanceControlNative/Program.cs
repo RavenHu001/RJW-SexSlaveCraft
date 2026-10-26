@@ -112,6 +112,7 @@ internal static partial class Program
             RomanceSocialBatch1Tests(harmony, repo);
             RomanceSocialReviewTests();
             RomanceSocialBatch2Tests(harmony, repo, game);
+            PersonalResetTests(harmony);
         }
         finally { harmony.UnpatchAll(harmony.Id); Scribe.mode = LoadSaveMode.Inactive; Current.Game = null; }
         Console.WriteLine($"RESULT: {passed}/{passed + failed} passed"); return failed == 0 ? 0 : 1;

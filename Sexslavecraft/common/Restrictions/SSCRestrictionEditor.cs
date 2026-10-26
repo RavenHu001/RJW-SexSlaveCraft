@@ -3,7 +3,7 @@
 namespace SexSlaveCraft
 {
     /// <summary>所有设置界面的配置写入入口，拒绝覆盖待迁移数据并在成功编辑后协调指定者。</summary>
-    public static class SSCRestrictionEditor
+    public static partial class SSCRestrictionEditor
     {
         /// <summary>检查配置版本和所有保存值，供界面决定是否允许编辑；不修复或替换异常数据。</summary>
         public static bool IsValid(SSCRestrictionConfig config)

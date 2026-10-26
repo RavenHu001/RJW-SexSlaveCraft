@@ -22,16 +22,25 @@ namespace SexSlaveCraft
         /// <summary>在一个外层滚动区域连续绘制两个独立边框；旧模块提前 return 不会退出浪漫板块。</summary>
         public static void DrawPawn(Listing_Standard listing, Pawn pawn, bool showSexSwitches = false)
         {
+            var sexReset = SSCRestrictionEditor.GetResetView(pawn);
             DrawBlock(listing, "SSC_Romance_SexSection".Translate(), inner =>
             {
                 if (showSexSwitches) Dialog_SSCRestrictions.DrawGlobalSwitches(inner);
                 SSCRestrictionUI.DrawPawn(inner, pawn, true);
-            });
+            }, rect => DrawReset(rect, sexReset.CanReset, "SSC_BehaviorReset_SexTip", sexReset.Reason, () =>
+            {
+                if (!SSCRestrictionEditor.TryReset(pawn, sexReset.Context, out var reason)) ResetFailed(pawn, reason);
+            }));
             listing.Gap(14f);
-            DrawBlock(listing, "SSC_Romance_RomanceSection".Translate(), inner => SSCRomanceUI.DrawPawn(inner, pawn));
+            var romanceReset = SSCRomancePreferences.GetResetView(pawn);
+            DrawBlock(listing, "SSC_Romance_RomanceSection".Translate(), inner => SSCRomanceUI.DrawPawn(inner, pawn),
+                rect => DrawReset(rect, romanceReset.CanReset, "SSC_BehaviorReset_RomanceTip", romanceReset.Reason, () =>
+                {
+                    if (!SSCRomancePreferences.TryReset(pawn, romanceReset.Context, out var reason)) ResetFailed(pawn, reason);
+                }));
         }
         /// <summary>内容只绘制一次并据实际推进高度设置边框，避免测量时重复调用按钮或初始化提交。</summary>
-        private static void DrawBlock(Listing_Standard listing, string title, Action<Listing_Standard> content, bool drawDivider = true)
+        private static void DrawBlock(Listing_Standard listing, string title, Action<Listing_Standard> content, Action<Rect> reset, bool drawDivider = true)
         {
             float top = listing.CurHeight, width = listing.ColumnWidth;
             var inner = new Listing_Standard { maxOneColumn = true };
@@ -39,7 +48,7 @@ namespace SexSlaveCraft
             inner.Begin(new Rect(12f, top + 12f, Mathf.Max(1f, width - 24f), 100000f));
             try
             {
-                inner.Label(title);
+                DrawHeader(inner, title, reset);
                 if (drawDivider) inner.GapLine(6f);
                 else inner.Gap(6f);
                 content(inner);
@@ -49,6 +58,44 @@ namespace SexSlaveCraft
             // 只描边，不在绘制完内容后填充背景，保证控件与文字不被覆盖。
             Widgets.DrawBox(new Rect(0f, top, width, height));
         }
+
+        /// <summary>按译文实测首行按钮，长标题在剩余空间换行；局部文字状态不会泄露到其他区域。</summary>
+        private static void DrawHeader(Listing_Standard listing, string title, Action<Rect> reset)
+        {
+            var anchor = Text.Anchor; bool wrap = Text.WordWrap;
+            try
+            {
+                Text.Anchor = TextAnchor.UpperLeft; Text.WordWrap = true;
+                string label = "SSC_BehaviorReset_Button".Translate();
+                float buttonWidth = Mathf.Min(listing.ColumnWidth * .46f, Mathf.Max(72f, Text.CalcSize(label).x + 18f));
+                float titleWidth = Mathf.Max(1f, listing.ColumnWidth - buttonWidth - 8f);
+                float buttonHeight = Mathf.Max(28f, Text.CalcHeight(label, Mathf.Max(1f, buttonWidth - 12f)) + 8f);
+                Rect header = listing.GetRect(Mathf.Max(buttonHeight, Text.CalcHeight(title, titleWidth)));
+                Widgets.Label(new Rect(header.x, header.y, titleWidth, header.height), title);
+                reset(new Rect(header.x + titleWidth + 8f, header.y, buttonWidth, buttonHeight));
+            }
+            finally { Text.Anchor = anchor; Text.WordWrap = wrap; }
+        }
+
+        /// <summary>共享标题按钮仅绘制和分发原请求；禁用时灰显，事件后恢复外层 GUI 状态。</summary>
+        private static void DrawReset(Rect rect, bool canReset, string tipKey, string reason, Action submit)
+        {
+            bool enabled = GUI.enabled; Color color = GUI.color;
+            try
+            {
+                GUI.enabled = enabled && canReset;
+                if (!GUI.enabled) GUI.color = color * new Color(.55f, .55f, .55f);
+                if (Widgets.ButtonText(rect, "SSC_BehaviorReset_Button".Translate()) && GUI.enabled) submit();
+            }
+            finally { GUI.enabled = enabled; GUI.color = color; }
+            string tip = tipKey.Translate();
+            if (reason != null) tip += "\n\n" + ("SSC_BehaviorReset_" + reason).Translate();
+            TooltipHandler.TipRegion(rect, tip);
+        }
+
+        /// <summary>只提示当前点击失败；无需新增确认窗口、成功消息或社交／心情事件。</summary>
+        private static void ResetFailed(Pawn pawn, string reason)
+            => Messages.Message(("SSC_BehaviorReset_" + (reason ?? "Unavailable")).Translate(), pawn, MessageTypeDefOf.RejectInput, false);
     }
     /// <summary>十一项浪漫偏好沿独立 GetView/TrySet；不注册为通用能力，不创建隐式默认配置。</summary>
     public static class SSCRomanceUI
