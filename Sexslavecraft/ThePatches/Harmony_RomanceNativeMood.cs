@@ -60,15 +60,9 @@ namespace SexSlaveCraft
             var codes = instructions.Select(c => new CodeInstruction(c)).ToList();
             bool proposal = __originalMethod.DeclaringType == typeof(InteractionWorker_MarriageProposal);
             int count = proposal ? 2 : __originalMethod.DeclaringType == typeof(InteractionWorker_RomanceAttempt) ? 3 : 1;
-            var packAdd = AccessTools.Method(typeof(List<RulePackDef>), "Add");
-            if (proposal && (codes.Count(c => c.Calls(packAdd)) != 3 || codes.Count(c => c.LoadsField(
-                AccessTools.Field(typeof(RulePackDefOf), nameof(RulePackDefOf.Sentence_MarriageProposalRejectedBrokeUp)))) != 1))
-            { SSCRomanceNativeMoodHooks.Matched.Remove(__originalMethod); return codes; }
+            // 求婚语句包由独立事实补丁观察；卸载心情账本不会吞掉已经发生的互动背景。
             var rewritten = SSCRomanceNativeMoodHooks.Rewrite(codes, __originalMethod,
                 (SSCRomanceNativeMoodHooks.DefGain, nameof(SSCRomanceNativeMood.GainFromWorker), count)).ToList();
-            if (proposal && SSCRomanceNativeMoodHooks.Matched.Contains(__originalMethod))
-                foreach (var code in rewritten.Where(c => c.Calls(packAdd)))
-                { code.opcode = OpCodes.Call; code.operand = AccessTools.Method(typeof(SSCRomanceMoodEvents), nameof(SSCRomanceMoodEvents.ObserveProposalPack)); }
             return rewritten;
         }
     }

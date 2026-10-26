@@ -89,7 +89,7 @@ internal static partial class Program
         if(ev is 9 or 10){Require(!subject.needs.mood.thoughts.memories.Memories.Any(m=>m.def==ThoughtDefOf.RejectedMyProposalMood));Require(subject.needs.mood.thoughts.memories.Memories.Any(m=>m.def==ThoughtDefOf.RejectedMyProposal));}
         if(ev==3)Require(!subject.needs.mood.thoughts.memories.Memories.Any(m=>m.def==ThoughtDefOf.FailedRomanceAttemptOnMeLowOpinionMood));
         Equal(1,playLogCalls);
-        Require(moodLastLog is PlayLogEntry_SSCRomance);Equal(branch.Id,((PlayLogEntry_SSCRomance)moodLastLog).BackgroundFromPOV(subject).BranchId);
+        Require(moodLastLog is PlayLogEntry_SSCRomance);Equal(branch.Event,((PlayLogEntry_SSCRomance)moodLastLog).BackgroundFromPOV(subject).Kind);
     }
 
     /// <summary>直接验证原版新增、续期及容量淘汰被精准撤销，技术失败保留原版且不复活外部历史。</summary>

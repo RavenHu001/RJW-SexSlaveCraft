@@ -15,6 +15,7 @@ internal static partial class Program
     private static string taskFailure;
     private static readonly Queue<bool> commandWilling = new();
     private static int commandFeedback;
+    private static string commandLastMessage;
     private static bool nativeSchedule, nativeTask, captureEnd;
     private static JobCondition? commandEnd;
     private static Action taskDuringCheck;
@@ -84,7 +85,7 @@ internal static partial class Program
     /// <summary>每例使用独立游戏内命令组件，清掉测试调度边界和随机输入，不跨例保留授权。</summary>
     private static void CommandReset(params float[] rolls)
     {
-        ResetSocial(rolls); commandWilling.Clear(); taskFailure = null; commandFeedback = 0; scheduleMode = ScheduleMode.Current;
+        ResetSocial(rolls); commandWilling.Clear(); taskFailure = null; commandFeedback = 0; commandLastMessage = null; scheduleMode = ScheduleMode.Current;
         nativeSchedule = nativeTask = captureEnd = false; commandEnd = null;
         taskDuringCheck = null;
         SSCMod.settings ??= new SSCSettings();
@@ -127,7 +128,7 @@ internal static partial class Program
         actor.jobs.curJob = job; actor.jobs.curDriver = driver; return driver;
     }
     /// <summary>统计被明确隔离的原生消息投递次数；原版关系/记忆仍实际执行。</summary>
-    private static void CommandMessageBoundary() => commandFeedback++;
+    private static void CommandMessageBoundary(Message __0) { commandFeedback++; commandLastMessage = __0.text; }
     /// <summary>有限等待夹具只截获调度器结束请求，记录判定结果，不替代命令的等待与取消逻辑。</summary>
     private static bool CommandEndBoundary(JobCondition condition)
     { if (!captureEnd) return true; commandEnd = condition; return false; }

@@ -64,8 +64,13 @@ namespace SexSlaveCraft
                     (record.Outcome == SSCRomanceCommandOutcome.None || record.Outcome < SSCRomanceCommandOutcome.None || record.Outcome > SSCRomanceCommandOutcome.Unconfirmed ||
                     (record.Status == SSCRomanceCommandStatus.Completed && (!record.effectsStarted || !record.workerCompleted ||
                         (record.Outcome != SSCRomanceCommandOutcome.Rejected && record.Outcome != SSCRomanceCommandOutcome.RelationshipChanged))));
-                if (invalid || invalidResult)
+                // 本版新事实没有旧格式迁移：完成必须有匹配事实，尚未执行的请求不能夹带历史结果。
+                bool invalidFact = record.interactionFact != null && record.ConfirmedFact == null ||
+                    record.Status == SSCRomanceCommandStatus.Completed && !record.FactMatchesOutcome ||
+                    (record.Status == SSCRomanceCommandStatus.Pending || record.Status == SSCRomanceCommandStatus.Claimed) && record.interactionFact != null;
+                if (invalid || invalidResult || invalidFact)
                 {
+                    record.interactionFact = null;
                     record.status = SSCRomanceCommandStatus.Indeterminate;
                     record.outcome = SSCRomanceCommandOutcome.Unconfirmed;
                     record.reason = "InvalidRecord";
@@ -149,7 +154,8 @@ namespace SexSlaveCraft
         {
             if (record == null || !record.Terminal || record.feedbackSent) return;
             record.feedbackSent = true;
-            string text = ("SSC_Romance_Result_" + record.Outcome).Translate(record.Stamp.Actor.LabelShort, record.Stamp.Target?.LabelShort ?? "?");
+            // 沿同一终态出口按实际行为格式化，保留原 feedbackSent 与被动拒绝去重规则。
+            string text = SSCRomanceCommandPresentation.ResultText(record);
             if (record.reason != null) text += " " + SSCRomanceCommandUtility.Explain(record.reason);
             Messages.Message(text,
                 record.Stamp.Actor, MessageTypeDefOf.NeutralEvent, false);

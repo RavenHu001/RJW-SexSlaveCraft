@@ -109,6 +109,8 @@ internal static partial class Program
             RomanceSemanticInteractionTests();
             RomanceSemanticFormerTests();
             RomanceCompositeBatch4Tests(harmony, repo);
+            RomanceSocialBatch1Tests(harmony, repo);
+            RomanceSocialReviewTests();
         }
         finally { harmony.UnpatchAll(harmony.Id); Scribe.mode = LoadSaveMode.Inactive; Current.Game = null; }
         Console.WriteLine($"RESULT: {passed}/{passed + failed} passed"); return failed == 0 ? 0 : 1;
@@ -161,7 +163,7 @@ internal static partial class Program
     /// <summary>仅精确映射三个被测存档类型，后续实例构造、字段读写及引用恢复仍走原生 Scribe。</summary>
     private static bool ScribeTypeBoundary(string typeName, ref Type __result)
     {
-        foreach (var type in new[] { typeof(RomanceMoodScene), typeof(SSCRomanceMoodOrderGameComponent), typeof(SSCRomanceMoodData), typeof(StoredMemoryData), typeof(Thought_MemorySSCRomance), typeof(PlayLogEntry_SSCRomance), typeof(Batch4Scene), typeof(Hediff_ChainOfSexSlave), typeof(Hediff_BridleOfSexSlave), typeof(RomanceFixture), typeof(SSCRomanceConfig), typeof(SSCRomanceCommandStamp), typeof(SSCRomanceCommandRecord), typeof(RomanceCommandFixture), typeof(RomanceTrackerFixture), typeof(JobDriver_SSCRomanceCommand), typeof(Verse.AI.Job), typeof(Verse.AI.JobQueue) })
+        foreach (var type in new[] { typeof(RomanceMoodScene), typeof(SSCRomanceInteractionFact), typeof(SSCRomanceMoodOrderGameComponent), typeof(SSCRomanceMoodData), typeof(StoredMemoryData), typeof(Thought_MemorySSCRomance), typeof(PlayLogEntry_SSCRomance), typeof(Batch4Scene), typeof(Hediff_ChainOfSexSlave), typeof(Hediff_BridleOfSexSlave), typeof(RomanceFixture), typeof(SSCRomanceConfig), typeof(SSCRomanceCommandStamp), typeof(SSCRomanceCommandRecord), typeof(RomanceCommandFixture), typeof(RomanceTrackerFixture), typeof(JobDriver_SSCRomanceCommand), typeof(Verse.AI.Job), typeof(Verse.AI.JobQueue) })
             if (typeName == type.FullName || typeName == type.Name) { __result = type; return false; }
         return true;
     }

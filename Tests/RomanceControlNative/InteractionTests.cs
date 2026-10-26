@@ -47,7 +47,7 @@ internal static partial class Program
         harmony.Patch(AccessTools.PropertyGetter(typeof(Rand), "Value"), prefix: new HarmonyMethod(typeof(Program), nameof(SocialRoll)));
         // 使用生产特性与同一 Harmony 3 安装，不链接副本、不在宿主重写策略或指令匹配。
         foreach (var type in new[] { typeof(Harmony_SSCRomanceRandomSelection), typeof(Harmony_SSCRomanceInteraction),
-            typeof(Harmony_SSCRomanceAcceptance), typeof(Harmony_SSCRomanceMoodWorker), typeof(Harmony_SSCRomanceMoodTraits), typeof(Harmony_SSCRomanceMoodLog), typeof(Harmony_SSCRomanceMenu), typeof(Harmony_SSCRomanceRjwClick),
+            typeof(Harmony_SSCRomanceAcceptance), typeof(Harmony_SSCRomanceMoodWorker), typeof(Harmony_SSCRomanceProposalFacts), typeof(Harmony_SSCRomanceMoodTraits), typeof(Harmony_SSCRomanceMoodLog), typeof(Harmony_SSCRomanceMenu), typeof(Harmony_SSCRomanceRjwClick),
             typeof(Patch_DogSpecialization_AnimalHandling) }) harmony.CreateClassProcessor(type).Patch();
         foreach(string name in new[]{"Worker","Definition","Memory","Renew"}) harmony.CreateClassProcessor(production.GetType("SexSlaveCraft.Harmony_SSCRomanceNative"+name)).Patch();
         bootstrap = false;
@@ -152,7 +152,11 @@ internal static partial class Program
         ThoughtDefOf.IRejectedTheirProposal.thoughtClass=typeof(Thought_MemorySocial);
         ThoughtDefOf.FailedRomanceAttemptOnMeLowOpinionMood.stackLimit=5;
         foreach (var field in typeof(RulePackDefOf).GetFields().Where(f => f.Name.StartsWith("Sentence_RomanceAttempt") || f.Name.StartsWith("Sentence_MarriageProposal")))
-            field.SetValue(null, new RulePackDef { defName = field.Name });
+        {
+            // 本轮首次真实往返社交日志：原生 extras 保存 Def 引用，夹具同样必须登记原语句包。
+            var sentence = new RulePackDef { defName = field.Name };
+            field.SetValue(null, sentence); DefDatabase<RulePackDef>.Add(sentence);
+        }
         InteractionDefOf.RomanceAttempt = SocialInteraction("RomanceAttempt", typeof(InteractionWorker_RomanceAttempt));
         InteractionDefOf.MarriageProposal = SocialInteraction("MarriageProposal", typeof(InteractionWorker_MarriageProposal));
         SSCRomanceDefOf.Breakup = SocialInteraction("Breakup", typeof(InteractionWorker_Breakup));

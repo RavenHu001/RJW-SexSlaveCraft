@@ -123,6 +123,14 @@ namespace SexSlaveCraft
         public static bool IsCommandInvocation(Pawn actor, Pawn target, SSCRomanceAction action)
             => current?.record != null && current.actor == actor && current.target == target &&
                 current.record.Stamp.Action == action;
+        /// <summary>把本次已确认事实交给原命令反馈；不授予权限，不改变终态，也不受心情准入影响。</summary>
+        internal static void ObserveFacts(SSCRomanceMoodFrame frame)
+        {
+            var r = current?.record;
+            if (r == null || current.mood != frame || !frame.FactsConfirmed || frame.ActorFact?.IsCommand != true ||
+                !r.workerEntered || r.Stamp.Actor != frame.Actor || r.Stamp.Target != frame.Target || r.Stamp.Action != frame.Action) return;
+            if (r.interactionFact == null) r.interactionFact = frame.ActorFact.Copy();
+        }
         /// <summary>求婚公式只覆盖命令发起者的意识形态意愿；接收者意愿和普通调用逐值透传。</summary>
         public static bool InitiatorWilling(bool vanilla, Pawn actor, Pawn target)
             => vanilla || (current?.record?.Stamp.Action == SSCRomanceAction.Proposal &&
@@ -133,6 +141,8 @@ namespace SexSlaveCraft
             // 原版中断先设置 ended 再运行清理回调；即使记录尚未取消，也不能在这个窗口进入互动。
             if (driver == null || driver.ended || r == null || r.Status != SSCRomanceCommandStatus.Claimed || r.runtimeDriver != driver ||
                 driver.pawn.jobs?.curDriver != driver || driver.pawn.CurJob != r.runtimeJob || !SSCRomanceCommandGameComponent.IsCurrent(r)) return;
+            // 每次真正进入执行先丢弃残留结果；只能由本次 worker 重新观察，不能借历史事实补成完成。
+            r.interactionFact = null;
             var previous = ticket;
             var scope = new SSCRomanceExecutionScope(r); ticket = scope; r.status = SSCRomanceCommandStatus.Executing;
             try
@@ -141,12 +151,12 @@ namespace SexSlaveCraft
                 if (r.Terminal) return;
                 if (!occurred && !r.effectsStarted)
                 { r.status = SSCRomanceCommandStatus.Failed; r.outcome = SSCRomanceCommandOutcome.NotOccurred; r.reason = "UnableToInteract"; return; }
-                bool relationChanged = RelationChanged(r);
-                if (!occurred || !r.workerCompleted || (r.Stamp.Action != SSCRomanceAction.Breakup && !r.decisionKnown) ||
-                    (r.Stamp.Action == SSCRomanceAction.Breakup ? !relationChanged : r.accepted != relationChanged))
+                // 日志、心情和命令结果消费同一次完整事实确认；不再另用关系变化猜测成功或拒婚分手。
+                var fact = r.ConfirmedFact;
+                if (!occurred || !r.workerCompleted || fact == null)
                 { r.status = SSCRomanceCommandStatus.Indeterminate; r.outcome = SSCRomanceCommandOutcome.Unconfirmed; return; }
                 r.status = SSCRomanceCommandStatus.Completed;
-                r.outcome = relationChanged ? SSCRomanceCommandOutcome.RelationshipChanged : SSCRomanceCommandOutcome.Rejected;
+                r.outcome = fact.WasRejected ? SSCRomanceCommandOutcome.Rejected : SSCRomanceCommandOutcome.RelationshipChanged;
             }
             finally
             {
@@ -155,15 +165,6 @@ namespace SexSlaveCraft
                 { r.status = SSCRomanceCommandStatus.Indeterminate; r.outcome = SSCRomanceCommandOutcome.Unconfirmed; }
                 TraceCommandTerminal(r);
             }
-        }
-        /// <summary>只核对期望关系，不据此推导接受判定；拒婚附带分手仍是 Rejected。</summary>
-        private static bool RelationChanged(SSCRomanceCommandRecord r)
-        {
-            var actor = r.Stamp.Actor; var target = r.Stamp.Target;
-            if (r.Stamp.Action == SSCRomanceAction.Romance) return actor.relations.DirectRelationExists(PawnRelationDefOf.Lover, target);
-            if (r.Stamp.Action == SSCRomanceAction.Proposal) return actor.relations.DirectRelationExists(PawnRelationDefOf.Fiance, target);
-            return !actor.relations.DirectRelationExists(PawnRelationDefOf.Lover, target) &&
-                !actor.relations.DirectRelationExists(PawnRelationDefOf.Fiance, target) && !actor.relations.DirectRelationExists(PawnRelationDefOf.Spouse, target);
         }
     }
 }

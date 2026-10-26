@@ -15,6 +15,15 @@ namespace SexSlaveCraft
         private SSCRomanceCommandRecord record;
         /// <summary>Job 目标和执行者都不独占预约；目标仍可执行自身任务，不创建配对性行为任务。</summary>
         public override bool TryMakePreToilReservations(bool errorOnFailed) => true;
+        /// <summary>按原命令类别显示当前工作；只读查找，不调用 EnsureClaim、资格维护或任何互动入口。</summary>
+        public override string GetReport()
+        {
+            string reportOverride = GetReportStringOverride();
+            if (!reportOverride.NullOrEmpty()) return reportOverride;
+            var original = record ?? SSCRomanceCommandGameComponent.Current?.FindOwned(this);
+            if (original != null && !SSCRomanceCommandGameComponent.Matches(original, job)) original = null;
+            return ReportStringProcessed(SSCRomanceCommandPresentation.Report(original, job));
+        }
         /// <summary>保存归属校验及等待进度；原生 Job/Driver 保存位置、toil 索引，读档不重置等待期限。</summary>
         public override void ExposeData()
         {

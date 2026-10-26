@@ -71,10 +71,10 @@
   <SSC_Romance_InvalidRecord>The command record is incomplete or has ambiguous ownership and was cancelled.</SSC_Romance_InvalidRecord>
   <SSC_Romance_InteractionTimeout>Timed out waiting for interaction conditions; no interaction occurred.</SSC_Romance_InteractionTimeout>
   <SSC_Romance_JobEnded>The job ended or was interrupted and will not continue.</SSC_Romance_JobEnded>
-  <SSC_Romance_Result_NotOccurred>The commanded interaction from {0} to {1} did not occur.</SSC_Romance_Result_NotOccurred>
-  <SSC_Romance_Result_Rejected>{0} interacted with {1}, who refused.</SSC_Romance_Result_Rejected>
-  <SSC_Romance_Result_RelationshipChanged>The commanded interaction between {0} and {1} completed and the relationship changed.</SSC_Romance_Result_RelationshipChanged>
-  <SSC_Romance_Result_Unconfirmed>The interaction result between {0} and {1} could not be fully confirmed and will not be replayed automatically.</SSC_Romance_Result_Unconfirmed>
+  <SSC_Romance_Result_NotOccurred>[Text pending] {0}: the {2} order involving {1} did not occur.</SSC_Romance_Result_NotOccurred>
+  <SSC_Romance_Result_Rejected>[Text pending] {0} carried out the {2} order involving {1}, who rejected it.</SSC_Romance_Result_Rejected>
+  <SSC_Romance_Result_RelationshipChanged>[Text pending] {0} completed the {2} order involving {1}; the relationship changed.</SSC_Romance_Result_RelationshipChanged>
+  <SSC_Romance_Result_Unconfirmed>[Text pending] {0}: the {2} outcome involving {1} is unconfirmed; it will not be repeated.</SSC_Romance_Result_Unconfirmed>
   <SSC_Romance_SexTestTab>Sexual permission test</SSC_Romance_SexTestTab>
   <SSC_Romance_ForcedRomanceRefusal>{1} rejected {0}’s romantic advance because of romance response restrictions.</SSC_Romance_ForcedRomanceRefusal>
   <SSC_Romance_ForcedProposalRefusal>{1} rejected {0}’s marriage proposal because of romance response restrictions.</SSC_Romance_ForcedProposalRefusal>
@@ -92,4 +92,18 @@
   <SSC_Romance_Setting_AlwaysAcceptOthers>Force acceptance of romance from others</SSC_Romance_Setting_AlwaysAcceptOthers>
   <SSC_Romance_AlwaysAcceptOthersTip>Force acceptance of romance and proposals from these targets, overriding response permissions.</SSC_Romance_AlwaysAcceptOthersTip>
   <SSC_Romance_AcceptTargetTitle>Force acceptance from</SSC_Romance_AcceptTargetTitle>
+  <!-- 开发占位：行为专属任务和结果；正式文案待定。 -->
+  <SSC_Romance_Report_Romance>[Text pending] carrying out an order to romance TargetA.</SSC_Romance_Report_Romance>
+  <SSC_Romance_CommandAction_Romance>romance</SSC_Romance_CommandAction_Romance>
+  <SSC_Romance_Report_Proposal>[Text pending] carrying out an order to propose marriage to TargetA.</SSC_Romance_Report_Proposal>
+  <SSC_Romance_CommandAction_Proposal>marriage proposal</SSC_Romance_CommandAction_Proposal>
+  <SSC_Romance_Report_EndLover>[Text pending] carrying out an order to break up with TargetA.</SSC_Romance_Report_EndLover>
+  <SSC_Romance_CommandAction_EndLover>breakup</SSC_Romance_CommandAction_EndLover>
+  <SSC_Romance_Report_EndFiance>[Text pending] carrying out an order to end the engagement with TargetA.</SSC_Romance_Report_EndFiance>
+  <SSC_Romance_CommandAction_EndFiance>ending the engagement</SSC_Romance_CommandAction_EndFiance>
+  <SSC_Romance_Report_Divorce>[Text pending] carrying out an order to divorce TargetA.</SSC_Romance_Report_Divorce>
+  <SSC_Romance_CommandAction_Divorce>divorce</SSC_Romance_CommandAction_Divorce>
+  <SSC_Romance_Report_Breakup>[Text pending] carrying out an order to end the relationship with TargetA.</SSC_Romance_Report_Breakup>
+  <SSC_Romance_CommandAction_Breakup>ending the relationship</SSC_Romance_CommandAction_Breakup>
+  <SSC_Romance_Result_RejectedAndSeparated>[Text pending] {0} proposed marriage to {1} under orders; the proposal was rejected and they broke up.</SSC_Romance_Result_RejectedAndSeparated>
 </LanguageData>

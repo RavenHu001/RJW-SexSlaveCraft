@@ -28,6 +28,15 @@ namespace SexSlaveCraft
         internal SSCRomanceAuthorization authorization;
         internal object targetToken;
         internal bool scheduling = true;
+        // 纯展示历史独立于授权；事实在 worker 正常结束后冻结，绝不以该字段允许执行。
+        internal SSCRomanceCommandDisplay displayKind;
+        internal SSCRomanceInteractionFact interactionFact;
+        /// <summary>事实必须属于原命令行为和主动侧；保存载体存在并不等于有效确认。</summary>
+        internal SSCRomanceInteractionFact ConfirmedFact => interactionFact?.IsValid == true && interactionFact.IsCommand &&
+            interactionFact.Action == stamp?.Action ? interactionFact : null;
+        /// <summary>完成记录的结果必须与同一次事实一致，缺失或损坏不能展示成成功／特定拒绝。</summary>
+        internal bool FactMatchesOutcome => ConfirmedFact != null && outcome ==
+            (interactionFact.WasRejected ? SSCRomanceCommandOutcome.Rejected : SSCRomanceCommandOutcome.RelationshipChanged);
         public string RequestId => requestId;
         public int JobId => jobId;
         public SSCRomanceCommandStamp Stamp => stamp;
@@ -45,6 +54,7 @@ namespace SexSlaveCraft
             requestId = Guid.NewGuid().ToString("N"); jobId = job.loadID;
             runtimeJob = job; stamp = proof.Stamp; authorization = proof;
             targetToken = SSCPersonalityRuntimeUtility.Capture(stamp.Target);
+            displayKind = SSCRomanceCommandPresentation.Capture(stamp);
         }
         /// <summary>只保存持久状态；驱动、原 Job 实例及人格 token 必须在引用恢复后重新认领。</summary>
         public void ExposeData()
@@ -60,6 +70,8 @@ namespace SexSlaveCraft
             Scribe_Values.Look(ref workerEntered, "workerEntered"); Scribe_Values.Look(ref workerCompleted, "workerCompleted");
             Scribe_Values.Look(ref decisionKnown, "decisionKnown"); Scribe_Values.Look(ref accepted, "accepted");
             Scribe_Values.Look(ref feedbackSent, "feedbackSent");
+            Scribe_Values.Look(ref displayKind, "displayKind");
+            Scribe_Deep.Look(ref interactionFact, "interactionFact");
         }
     }
 }
