@@ -54,12 +54,13 @@ internal static partial class Program
     }
 
     /// <summary>输入仅控制原随机、好感和引擎边界；结果分类、目录选择、关系及替换均运行生产代码。</summary>
-    private static void RunCompositeEvent(SSCRomanceMoodBranch branch,int raw)
+    private static void RunCompositeEvent(SSCRomanceMoodBranch branch,int raw,bool samePassiveResult=false)
     {
         int ev=(int)branch.Event;
         bool passive=ev<=5, accepted=ev is 1 or 2 or 6 or 8, split=ev is 5 or 10;
         var action=ev is 1 or 3 or 6 or 7?SSCRomanceAction.Romance:ev<=10?SSCRomanceAction.Proposal:SSCRomanceAction.Breakup;
-        bool vanilla=passive?!accepted:accepted;
+        // 同结果变体只调整原版取样边界；生效规则、结果分类、替换与分组仍运行生产代码。
+        bool vanilla=passive?(samePassiveResult?accepted:!accepted):accepted;
         CommandReset(vanilla?0f:1f,split?0f:1f);socialOpinionValue=raw;
         Pawn actor,target,subject;
         if(passive)

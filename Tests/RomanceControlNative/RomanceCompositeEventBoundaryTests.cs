@@ -11,7 +11,7 @@ internal static partial class Program
     private static Action eventWorkerCallback;
     private static ThoughtDef eventDeniedDef;
 
-    /// <summary>三类对象／八种保证组合经过原 worker，开关未改变判定时不发综合记忆。</summary>
+    /// <summary>三类对象／八种保证组合经过原 worker，按实际命中规则结算，包含原判定相同。</summary>
     private static void CompositeEventBoundaryTests(Harmony owner)
     {
         for(int mask=0;mask<8;mask++)for(int category=0;category<3;category++)
@@ -29,7 +29,7 @@ internal static partial class Program
                 Require(a.interactions.TryInteractWith(b,SocialDef(action)));
                 bool accepted=(choices&(1<<cat))!=0||allow&&original;
                 var memories=b.needs.mood.thoughts.memories.Memories.OfType<Thought_MemorySSCCompositeRomance>().ToList();
-                Equal(original!=accepted?1:0,memories.Count);
+                Equal((choices&(1<<cat))!=0||!allow?1:0,memories.Count);
                 if(memories.Count>0)Equal(action==SSCRomanceAction.Romance?(accepted?SSCRomanceCompositeEvent.ForcedRomanceAccepted:SSCRomanceCompositeEvent.ForcedRomanceRejected):
                     accepted?SSCRomanceCompositeEvent.ForcedProposalAccepted:SSCRomanceCompositeEvent.ForcedProposalRejected,memories.Single().Data.CompositeEvent);
                 Require(!a.needs.mood.thoughts.memories.Memories.OfType<Thought_MemorySSCCompositeRomance>().Any());

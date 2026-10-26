@@ -35,6 +35,8 @@ internal static partial class Program
             CompositeDiagnosticTests(repo);
             CompositeBatch4BoundaryTests(repo);
             RomanceCompositeBatch4ReviewTests();
+            RomanceCompositeDurationTests();
+            RomanceCompositeReplacementAuditTests();
         }
         finally
         {
@@ -237,7 +239,7 @@ internal static partial class Program
                 Require(line.Contains(branch.Value == 0 ? "result=Zero" : "result=Added"));
                 Require(!line.Contains("corruption", StringComparison.OrdinalIgnoreCase));
             });
-        foreach (string mode in new[] { "renew", "capacity", "kept", "denied", "unchanged", "interrupted", "exception", "sink-fault" })
+        foreach (string mode in new[] { "renew", "capacity", "kept", "denied", "same-result-controlled", "interrupted", "exception", "sink-fault" })
             Check("composite b4 diagnostic actual boundary " + mode, () =>
             {
                 CommandReset(1f); socialOpinionValue = 60; var (a, b) = CommandPair(SSCRomanceAction.Romance); var h = a.needs.mood.thoughts.memories;
@@ -252,8 +254,13 @@ internal static partial class Program
                     if (mode == "denied") { eventDeniedDef = DefDatabase<ThoughtDef>.GetNamed(Thought_MemorySSCCompositeRomance.ShortDefName); boundary.Patch(AccessTools.Method(typeof(ThoughtUtility), nameof(ThoughtUtility.CanGetThought)), prefix: new HarmonyMethod(typeof(Program), nameof(EventDenyThought))); }
                     if (mode == "exception") { eventWorkerCallback = () => throw new InvalidOperationException("worker diagnostic test"); boundary.Patch(AccessTools.Method(typeof(InteractionWorker_RomanceAttempt), "Interacted"), postfix: new HarmonyMethod(typeof(Program), nameof(EventWorkerAfter))); }
                     moodDiagnostics.Clear();
-                    if (mode == "unchanged")
-                    { ResetSocial(0f); a = SocialPawn(); b = SocialSlave(); Comp(b).romanceConfig = new() { alwaysAcceptOthers = true }; moodDiagnostics.Clear(); Require(a.interactions.TryInteractWith(b, InteractionDefOf.RomanceAttempt)); Require(moodDiagnostics.Any(m => m.Contains("reason=DecisionUnchanged"))); return; }
+                    if (mode == "same-result-controlled")
+                    {
+                        ResetSocial(0f); a = SocialPawn(); b = SocialSlave(); Comp(b).romanceConfig = new() { alwaysAcceptOthers = true };
+                        moodDiagnostics.Clear(); Require(a.interactions.TryInteractWith(b, InteractionDefOf.RomanceAttempt));
+                        Require(moodDiagnostics.Any(m => m.Contains("event=ForcedRomanceAccepted") && m.Contains("original=True accepted=True") && m.Contains("native=committed")));
+                        Require(moodDiagnostics.Any(m => m.Contains("finish id=") && m.Contains("reason=Settled"))); return;
+                    }
                     if (mode == "interrupted")
                     {
                         Require(SSCRomanceCommandUtility.TrySubmit(SSCRomanceCommandUtility.Capture(a, b), out var r, out _));

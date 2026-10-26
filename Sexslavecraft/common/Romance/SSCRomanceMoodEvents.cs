@@ -78,13 +78,18 @@ namespace SexSlaveCraft
             frame.Entered = true; frame.Previous = current; current = frame; return frame;
         }
 
-        /// <summary>登记原版一次比较及本次覆盖；开关开启但判定相同不代表受控被动事件。</summary>
+        /// <summary>登记原版一次比较及本次生效规则；结果相同仍属于该规则接管的回应。</summary>
         public static void Observe(Pawn actor, Pawn target, SSCRomanceAction action, bool original, bool accepted, SSCRomanceSetting? rule)
         {
             var frame = CurrentWorker;
             if (frame == null || frame.Actor != actor || frame.Target != target || frame.Action != action || frame.DecisionKnown) return;
             frame.DecisionKnown = true; frame.OriginalAccepted = original; frame.Accepted = accepted; frame.Rule = rule;
         }
+
+        /// <summary>按本次命中的被动规则识别受控者，不要求原版抽签结果被改变；普通许可透传不算接管。</summary>
+        internal static bool HasControlledReception(SSCRomanceMoodFrame frame)
+            => frame?.DecisionKnown == true && frame.Rule.HasValue && frame.TargetState?.Applicable == true &&
+                frame.TargetState.Data.Stage >= 3;
 
         /// <summary>包装原生求婚语句包 Add，确认真正进入的拒婚／附带分手分支，不增加随机取样。</summary>
         internal static void ObserveProposalPack(List<RulePackDef> packs, RulePackDef pack)
@@ -125,11 +130,10 @@ namespace SexSlaveCraft
                 }
                 frame.Completed = frame.Settled = true;
                 bool command = frame.Command && frame.ActorState.Applicable && frame.ActorState.Data.Stage == 4;
-                bool passive = frame.DecisionKnown && frame.OriginalAccepted != frame.Accepted && frame.Rule.HasValue &&
-                    frame.TargetState.Applicable && frame.TargetState.Data.Stage >= 3;
+                bool passive = HasControlledReception(frame);
                 if (command) frame.ActorEvent = Award(frame, frame.ActorState, frame.Target, CommandEvent(frame), null);
                 if (passive) frame.TargetEvent = Award(frame, frame.TargetState, frame.Actor, PassiveEvent(frame), frame.Rule);
-                reason = command || passive ? "Settled" : frame.Rule.HasValue && frame.OriginalAccepted == frame.Accepted ? "DecisionUnchanged" : "NaturalUncontrolled";
+                reason = command || passive ? "Settled" : "NaturalUncontrolled";
             }
             finally
             {
@@ -148,7 +152,7 @@ namespace SexSlaveCraft
             return frame.ActorState.Data.Relation == SSCRomanceOldRelation.Spouse ? SSCRomanceCompositeEvent.CommandDivorce :
                 frame.ActorState.Data.Relation == SSCRomanceOldRelation.Fiance ? SSCRomanceCompositeEvent.CommandEndFiance : SSCRomanceCompositeEvent.CommandEndLover;
         }
-        /// <summary>被动只分类实际改变的接受结果；拒婚结果来自原生附带分手分支观察。</summary>
+        /// <summary>被动按生效规则下的实际结果分类；原判定相同也结算，拒婚附带分手仍由原生分支证明。</summary>
         private static SSCRomanceCompositeEvent PassiveEvent(SSCRomanceMoodFrame frame)
             => frame.Action == SSCRomanceAction.Romance ? (frame.Accepted ? SSCRomanceCompositeEvent.ForcedRomanceAccepted : SSCRomanceCompositeEvent.ForcedRomanceRejected) :
                 frame.Accepted ? SSCRomanceCompositeEvent.ForcedProposalAccepted : frame.ProposalSeparated ?

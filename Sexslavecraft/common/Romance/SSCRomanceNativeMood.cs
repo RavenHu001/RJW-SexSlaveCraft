@@ -59,18 +59,23 @@ namespace SexSlaveCraft
             internal readonly ThoughtDef def;
             internal readonly Pawn owner, other;
             internal readonly Precept precept;
-            internal readonly int age, duration, stage, offset;
+            internal readonly int age, duration, defaultDuration, stage, offset;
             internal readonly float power;
             internal readonly bool permanent;
             internal State(Thought_Memory memory)
             {
                 Memory = memory; def = memory.def; owner = memory.pawn; other = memory.otherPawn;
                 precept = memory.sourcePrecept; age = memory.age; duration = memory.durationTicksOverride;
+                // 保存默认期限的当时值，避免后处理将 -1 显式化时误判，也不能放过 Def 期限被真正改写。
+                defaultDuration = def.DurationTicks;
                 stage = stageReader(memory); offset = memory.moodOffset; power = memory.moodPowerFactor; permanent = memory.permanent;
             }
             internal bool Matches() => Memory.def == def && Memory.pawn == owner && Memory.otherPawn == other &&
-                Memory.sourcePrecept == precept && Memory.age == age && Memory.durationTicksOverride == duration &&
+                Memory.sourcePrecept == precept && Memory.age == age && EffectiveDuration ==
+                    (Memory.durationTicksOverride < 0 ? Memory.def.DurationTicks : Memory.durationTicksOverride) &&
                 stageReader(Memory) == stage && Memory.moodOffset == offset && Memory.moodPowerFactor == power && Memory.permanent == permanent;
+            /// <summary>负值表示沿用默认值；只有实际期限相同的表示变化等价，不接受延长、缩短或倍率变化。</summary>
+            internal int EffectiveDuration => duration < 0 ? defaultDuration : duration;
             internal void Restore()
             {
                 Memory.age = age;
@@ -154,7 +159,7 @@ namespace SexSlaveCraft
                 projected.Clear(); foreach (var state in before) projected.Add(state.Memory, state);
                 return true;
             }
-            private static bool SameState(State a, State b, bool ignoreAge = false) => a.Memory == b.Memory && (ignoreAge || a.age == b.age) && a.duration == b.duration &&
+            private static bool SameState(State a, State b, bool ignoreAge = false) => a.Memory == b.Memory && (ignoreAge || a.age == b.age) && a.EffectiveDuration == b.EffectiveDuration &&
                 a.def == b.def && a.owner == b.owner && a.other == b.other && a.precept == b.precept && a.stage == b.stage &&
                 a.offset == b.offset && a.power == b.power && a.permanent == b.permanent;
             // 操作数来自已封存的因果账本，供最终提交后诊断使用；不推断净差异。
@@ -178,8 +183,9 @@ namespace SexSlaveCraft
         {
             var frame = SSCRomanceMoodEvents.CurrentWorker;
             var person = frame?.ActorState?.Handler == handler ? frame.ActorState : frame?.TargetState?.Handler == handler ? frame.TargetState : null;
+            // 观察与最终发放共用受控定义，原本就会拒绝时也必须见证本次原版心情以供精确替换。
             bool controlled = person?.Applicable == true && (person == frame.ActorState ? frame.Command && person.Data.Stage == 4 :
-                person.Data.Stage >= 3 && frame.DecisionKnown && frame.OriginalAccepted != frame.Accepted && frame.Rule.HasValue);
+                SSCRomanceMoodEvents.HasControlledReception(frame));
             var site = !controlled || other != (person == frame.ActorState ? frame.Target : frame.Actor) || !KnownRoot(def?.defName) ? null :
                 new Site { Frame = frame, Person = person, Handler = handler, Def = def, ChildDef = def.thoughtToMake, Other = other };
             if (site != null) frame.NativeSites.Add(site);
