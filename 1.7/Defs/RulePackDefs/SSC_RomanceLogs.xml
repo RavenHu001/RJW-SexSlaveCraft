@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成：三个本人背景包、十三个独立入口；正式文案待定。
+     固定各包 rulesStrings 索引供 DefInjected 翻译使用；后续新规则只追加，不重排。
+     仅本人显示层按事件根解析，禁止加入双方共用 extras；不要求任何 DLC。 -->
+<Defs>
+  <RulePackDef>
+    <defName>SSC_RomanceLog_Command</defName>
+    <rulePack>
+      <rulesStrings>
+        <li>ssc_romance_log_command_romance_accepted-&gt;SSC text pending E06: [INITIATOR_nameDef] carried out an order to romance the recipient; accepted. Other: [RECIPIENT_nameDef].</li>
+        <li>ssc_romance_log_command_romance_rejected-&gt;SSC text pending E07: [INITIATOR_nameDef] carried out an order to romance the recipient; rejected. Other: [RECIPIENT_nameDef].</li>
+        <li>ssc_romance_log_command_proposal_accepted-&gt;SSC text pending E08: [INITIATOR_nameDef] carried out an order to propose to the recipient; accepted. Other: [RECIPIENT_nameDef].</li>
+        <li>ssc_romance_log_command_proposal_rejected-&gt;SSC text pending E09: [INITIATOR_nameDef] carried out an order to propose to the recipient; rejected. Other: [RECIPIENT_nameDef].</li>
+        <li>ssc_romance_log_command_proposal_rejected_separated-&gt;SSC text pending E10: [INITIATOR_nameDef] carried out an order to propose to the recipient; rejected and the relationship ended. Other: [RECIPIENT_nameDef].</li>
+        <li>ssc_romance_log_command_end_lover-&gt;SSC text pending E11: [INITIATOR_nameDef] carried out an order to end the lover relationship. Other: [RECIPIENT_nameDef].</li>
+        <li>ssc_romance_log_command_end_fiance-&gt;SSC text pending E12: [INITIATOR_nameDef] carried out an order to end the engagement. Other: [RECIPIENT_nameDef].</li>
+        <li>ssc_romance_log_command_divorce-&gt;SSC text pending E13: [INITIATOR_nameDef] carried out an order to divorce. Other: [RECIPIENT_nameDef].</li>
+      </rulesStrings>
+    </rulePack>
+  </RulePackDef>
+  <RulePackDef>
+    <defName>SSC_RomanceLog_Reject</defName>
+    <rulePack>
+      <rulesStrings>
+        <li>ssc_romance_log_reject_romance-&gt;SSC text pending E03: [RECIPIENT_nameDef] rejected romance under control. Other: [INITIATOR_nameDef].</li>
+        <li>ssc_romance_log_reject_proposal-&gt;SSC text pending E04: [RECIPIENT_nameDef] rejected a proposal under control. Other: [INITIATOR_nameDef].</li>
+        <li>ssc_romance_log_reject_proposal_separated-&gt;SSC text pending E05: [RECIPIENT_nameDef] rejected a proposal under control and the relationship ended. Other: [INITIATOR_nameDef].</li>
+      </rulesStrings>
+    </rulePack>
+  </RulePackDef>
+  <RulePackDef>
+    <defName>SSC_RomanceLog_Accept</defName>
+    <rulePack>
+      <rulesStrings>
+        <li>ssc_romance_log_accept_romance-&gt;SSC text pending E01: [RECIPIENT_nameDef] accepted romance under control. Other: [INITIATOR_nameDef].</li>
+        <li>ssc_romance_log_accept_proposal-&gt;SSC text pending E02: [RECIPIENT_nameDef] accepted a proposal under control. Other: [INITIATOR_nameDef].</li>
+      </rulesStrings>
+    </rulePack>
+  </RulePackDef>
+</Defs>

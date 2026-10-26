@@ -23,11 +23,18 @@ namespace SexSlaveCraft
             return fact?.IsValid == true && fact.IsCommand == (pov == initiator) &&
                 SSCRomanceInteractionUtility.TryGetAction(intDef, out var action) && fact.Action == action ? fact.Copy() : null;
         }
-        /// <summary>开发占位仅在受控本人视角出现；正式文案待维护者定稿，不公开内部许可。</summary>
-        public string BackgroundTextFromPOV(Thing pov) => BackgroundFromPOV(pov) == null ? string.Empty : " [SSC 浪漫反馈：文案待定]";
-        /// <summary>补充原条目，不生成第二次互动；重复查看只格式化已保存背景。</summary>
+        /// <summary>按本人冻结事实解析三类专属语法；正式文案仍占位，不读取当前许可或推断另一方知情。</summary>
+        public string BackgroundTextFromPOV(Thing pov) => BackgroundTextFromPOV(pov, false);
+        /// <summary>原版强制语法诊断沿本次查询传入；普通背景查询不绕过本人角色和行为校验。</summary>
+        private string BackgroundTextFromPOV(Thing pov, bool forceLog)
+            => SSCRomanceLogGrammar.Format(BackgroundFromPOV(pov), initiator, recipient, logID, forceLog);
+        /// <summary>保留原正文及所有结果 extras，只补本人句子；原 tracker 信件自然使用发起者视角。</summary>
         protected override string ToGameStringFromPOV_Worker(Thing pov, bool forceLog)
-            => base.ToGameStringFromPOV_Worker(pov, forceLog) + BackgroundTextFromPOV(pov);
+        {
+            var original = base.ToGameStringFromPOV_Worker(pov, forceLog);
+            var background = BackgroundTextFromPOV(pov, forceLog);
+            return string.IsNullOrEmpty(background) ? original : original + " " + background;
+        }
         /// <summary>背景随本条日志保存；不随人格复制命令或结算请求，读取不重放事件。</summary>
         public override void ExposeData()
         { base.ExposeData(); Scribe_Deep.Look(ref actorEvent, "sscActorFact"); Scribe_Deep.Look(ref targetEvent, "sscTargetFact"); }

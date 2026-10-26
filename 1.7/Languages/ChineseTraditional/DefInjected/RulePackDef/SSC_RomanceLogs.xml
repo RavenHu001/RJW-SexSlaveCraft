@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成：各事件独立的临时占位；保留左侧根及固定索引，正式文案待定。 -->
+<LanguageData>
+  <SSC_RomanceLog_Command.rulePack.rulesStrings.0>ssc_romance_log_command_romance_accepted-&gt;（SSC 文案待定 E06）[INITIATOR_nameDef]：受命求愛：成功；對象：[RECIPIENT_nameDef]。</SSC_RomanceLog_Command.rulePack.rulesStrings.0>
+  <SSC_RomanceLog_Command.rulePack.rulesStrings.1>ssc_romance_log_command_romance_rejected-&gt;（SSC 文案待定 E07）[INITIATOR_nameDef]：受命求愛：被拒絕；對象：[RECIPIENT_nameDef]。</SSC_RomanceLog_Command.rulePack.rulesStrings.1>
+  <SSC_RomanceLog_Command.rulePack.rulesStrings.2>ssc_romance_log_command_proposal_accepted-&gt;（SSC 文案待定 E08）[INITIATOR_nameDef]：受命求婚：成功；對象：[RECIPIENT_nameDef]。</SSC_RomanceLog_Command.rulePack.rulesStrings.2>
+  <SSC_RomanceLog_Command.rulePack.rulesStrings.3>ssc_romance_log_command_proposal_rejected-&gt;（SSC 文案待定 E09）[INITIATOR_nameDef]：受命求婚：被拒絕；對象：[RECIPIENT_nameDef]。</SSC_RomanceLog_Command.rulePack.rulesStrings.3>
+  <SSC_RomanceLog_Command.rulePack.rulesStrings.4>ssc_romance_log_command_proposal_rejected_separated-&gt;（SSC 文案待定 E10）[INITIATOR_nameDef]：受命求婚：被拒絕並分手；對象：[RECIPIENT_nameDef]。</SSC_RomanceLog_Command.rulePack.rulesStrings.4>
+  <SSC_RomanceLog_Command.rulePack.rulesStrings.5>ssc_romance_log_command_end_lover-&gt;（SSC 文案待定 E11）[INITIATOR_nameDef]：受命結束戀人關係；對象：[RECIPIENT_nameDef]。</SSC_RomanceLog_Command.rulePack.rulesStrings.5>
+  <SSC_RomanceLog_Command.rulePack.rulesStrings.6>ssc_romance_log_command_end_fiance-&gt;（SSC 文案待定 E12）[INITIATOR_nameDef]：受命解除婚約；對象：[RECIPIENT_nameDef]。</SSC_RomanceLog_Command.rulePack.rulesStrings.6>
+  <SSC_RomanceLog_Command.rulePack.rulesStrings.7>ssc_romance_log_command_divorce-&gt;（SSC 文案待定 E13）[INITIATOR_nameDef]：受命離婚；對象：[RECIPIENT_nameDef]。</SSC_RomanceLog_Command.rulePack.rulesStrings.7>
+  <SSC_RomanceLog_Reject.rulePack.rulesStrings.0>ssc_romance_log_reject_romance-&gt;（SSC 文案待定 E03）[RECIPIENT_nameDef]：拒絕求愛；對象：[INITIATOR_nameDef]。</SSC_RomanceLog_Reject.rulePack.rulesStrings.0>
+  <SSC_RomanceLog_Reject.rulePack.rulesStrings.1>ssc_romance_log_reject_proposal-&gt;（SSC 文案待定 E04）[RECIPIENT_nameDef]：拒絕求婚；對象：[INITIATOR_nameDef]。</SSC_RomanceLog_Reject.rulePack.rulesStrings.1>
+  <SSC_RomanceLog_Reject.rulePack.rulesStrings.2>ssc_romance_log_reject_proposal_separated-&gt;（SSC 文案待定 E05）[RECIPIENT_nameDef]：拒絕求婚並分手；對象：[INITIATOR_nameDef]。</SSC_RomanceLog_Reject.rulePack.rulesStrings.2>
+  <SSC_RomanceLog_Accept.rulePack.rulesStrings.0>ssc_romance_log_accept_romance-&gt;（SSC 文案待定 E01）[RECIPIENT_nameDef]：接受求愛；對象：[INITIATOR_nameDef]。</SSC_RomanceLog_Accept.rulePack.rulesStrings.0>
+  <SSC_RomanceLog_Accept.rulePack.rulesStrings.1>ssc_romance_log_accept_proposal-&gt;（SSC 文案待定 E02）[RECIPIENT_nameDef]：接受求婚；對象：[INITIATOR_nameDef]。</SSC_RomanceLog_Accept.rulePack.rulesStrings.1>
+</LanguageData>
