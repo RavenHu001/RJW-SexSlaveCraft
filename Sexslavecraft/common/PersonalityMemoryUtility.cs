@@ -143,7 +143,15 @@ namespace SexSlaveCraft
 
                     // 社交记忆必须有有效对象；普通记忆也要显式传入对象，否则引擎会将其覆盖为空引用。
                     if (memory is Thought_MemorySocial && otherPawn == null) continue;
+#if SSC_RW17
+                    // 已存在的未知浪漫分支仍是历史；只标记当前实例，不能误当新事件拒绝而丢失历史。
+                    var romanceRestore = memory as ISSCRomanceHistoricalRestore;
+                    romanceRestore?.BeginHistoricalRestore();
+                    try { memoryHandler.TryGainMemory(memory, otherPawn); }
+                    finally { romanceRestore?.EndHistoricalRestore(); }
+#else
                     memoryHandler.TryGainMemory(memory, otherPawn);
+#endif
                 }
                 catch (Exception ex)
                 {

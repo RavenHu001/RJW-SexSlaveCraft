@@ -1,5 +1,9 @@
 ﻿# 浪漫控制原生回归（第一至四批）
 
+2026-10-25：[综合心情第一批提交前复核](../../Docs/Development/Verification/性奴浪漫综合心情第一批实现与验证.md#6-提交前复核2026-10-25)新增 `RomanceCompositeReviewTests` 17 项后本轮 **1379／1379**；工厂前后回调、未知文案／冻结值、五类未知历史恢复与复制、一次性标记和空白翻译通过。另跑人格 163／163、旧记忆 17／17；只相关专项、未完整回归、未同步游戏，按授权提交。下方 1362 保留初次时点。
+
+2026-10-25：综合心情第一批新增 `RomanceCompositeFoundationTests` 213 项，本轮 **1362／1362**；目录逐行对照完整分支表，覆盖真实载体 XML、四语 246 占位键／镜像、版本与未知数据、语言刷新、原生 Scribe／CopyFrom 及单条人格恢复。实际互动仍跑旧结算断言，尚未接入原版替换、新旧语义组及日志；[本轮记录](../../Docs/Development/Verification/性奴浪漫综合心情第一批实现与验证.md)。本次只本专项及人格 163／旧记忆 17，未跑整仓回归或实机。
+
 2026-10-25：提交前新增 `RomanceMoodReviewTests` 13 项，完整本专项 1148／1148；覆盖工厂／准入换 token／Comp／心情／处理器，快照后许可／关系／命令再检，嵌套损失去重及缺关系载体。仅本专项，不是整仓完整回归；见[复核记录](../../Docs/Development/Completed/性奴浪漫控制心情扩展实现与验收.md#提交前复核2026-10-25)。
 
 2026-10-25：新增 RomanceMoodTests、RomanceMoodInteractionTests、RomanceMoodLifecycleTests；本轮从旧互动用例开始安装心情／损失／日志生产补丁。覆盖三保证八组合、数值／刷新、真实 Scribe、凝胶和原生 CopyNeeds，详情见[心情扩展记录](../../Docs/Development/Completed/性奴浪漫控制心情扩展实现与验收.md)。

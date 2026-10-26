@@ -8,7 +8,7 @@ using Verse;
 namespace SexSlaveCraft
 {
     /// <summary>普通心情记忆，不派生社交好感；同组跨目标最多一条，保留原版准入及显示倍率。</summary>
-    public sealed class Thought_MemorySSCRomance : Thought_Memory
+    public class Thought_MemorySSCRomance : Thought_Memory
     {
         public SSCRomanceMoodData Data;
         // 仅新事件准入期间使用的原上下文守卫；不保存、不进入凝胶或原生克隆副本。
@@ -20,6 +20,9 @@ namespace SexSlaveCraft
         { base.CopyFrom(other); Data = (other as Thought_MemorySSCRomance)?.Data?.Copy(); CanApply = null; }
         /// <summary>明确跨对象同组；不依赖尚未定稿的标签或关联人物来判定组别。</summary>
         public override bool GroupsWith(Thought other) => other is Thought_MemorySSCRomance && other.def == def;
+
+        /// <summary>旧格式仍按原事件判定；新载体仅覆盖期限类型，不改变旧 Def 的组身份。</summary>
+        protected virtual bool IsLongTermGroup => Data?.Kind == SSCRomanceMoodEvent.RelationshipLoss;
 
         /// <summary>此时 TryGainMemory 已完成原版准入；拒绝较弱事件时不续期，不先删后验。</summary>
         public override bool TryMergeWithExistingMemory(out bool showBubble)
@@ -33,7 +36,7 @@ namespace SexSlaveCraft
             if (old == null) return false;
             int oldValue = old.Data?.Value ?? (int)old.CurStage.baseMoodEffect;
             int newValue = Data?.Value ?? (int)CurStage.baseMoodEffect;
-            bool loss = Data?.Kind == SSCRomanceMoodEvent.RelationshipLoss;
+            bool loss = IsLongTermGroup;
             if (!SSCRomanceMoodRules.Replace(oldValue, newValue, loss)) return true;
             int remaining = old.DurationTicks - old.age;
             // 同等损失不得缩短仍有效的旧期限；更强损失按本次关系时长重新计时。
