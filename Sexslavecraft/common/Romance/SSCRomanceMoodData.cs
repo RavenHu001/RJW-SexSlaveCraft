@@ -25,6 +25,8 @@ namespace SexSlaveCraft
     {
         void BeginHistoricalRestore();
         void EndHistoricalRestore();
+        void RestoreHistorical(Pawn owner, Pawn other, System.Func<bool> current);
+        void CompleteHistoricalRestore(Pawn owner, System.Func<bool> current);
     }
 
     /// <summary>历史基准快照；普通保存、人格凝胶及原生克隆均复制，不携带授权或待结算请求。</summary>

@@ -431,6 +431,8 @@ namespace RimWorld
     public class ThoughtDef : Def
     {
         public Type thoughtClass = typeof(Thought_Memory);
+        /// <summary>此宿主只建记忆 Def；对应原生 ThoughtClass 在字段省略时的记忆类型回退。</summary>
+        public Type ThoughtClass => thoughtClass ?? typeof(Thought_Memory);
         public List<ThoughtStage> stages = new List<ThoughtStage> { new ThoughtStage() };
     }
 

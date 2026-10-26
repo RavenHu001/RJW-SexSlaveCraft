@@ -24,12 +24,10 @@ namespace SexSlaveCraft
     }
 
     /// <summary>两个新数值载体共用的记忆类；分支身份在 Data 中，旧记忆类及旧 Def 阶段不重排。</summary>
-    public sealed class Thought_MemorySSCCompositeRomance : Thought_MemorySSCRomance, ISSCRomanceHistoricalRestore
+    public sealed class Thought_MemorySSCCompositeRomance : Thought_MemorySSCRomance
     {
         public const string ShortDefName = "SSC_Romance_CompositeShort";
         public const string LongDefName = "SSC_Romance_CompositeLong";
-        // 只属于这次复制／恢复的实例，不是新事件；首次进入合并即消费，不进入 Scribe 或 Data.Copy。
-        private bool historicalRestore;
 
         /// <summary>只识别本系统的两个载体，历史回退也不能借其他 Def 创建伪装记忆。</summary>
         private bool IsCarrier => def?.defName == ShortDefName || def?.defName == LongDefName;
@@ -49,36 +47,8 @@ namespace SexSlaveCraft
         protected override float BaseMoodOffset => IsCarrier && Data?.IsComposite == true && Data.Value != 0 && Data.Value >= -15 && Data.Value <= 15 ?
             Data.Value : base.BaseMoodOffset;
 
-        /// <summary>沿原生 Scribe 保存历史；运行期的历史领取标记不存档，读取时明确清除。</summary>
-        public override void ExposeData()
-        {
-            base.ExposeData();
-            if (Scribe.mode == LoadSaveMode.LoadingVars) historicalRestore = false;
-        }
-
-        /// <summary>原生克隆已复制一条真实历史，只标记这条新实例；基类同时清除旧 CanApply 运行守卫。</summary>
-        public override void CopyFrom(Thought_Memory other)
-        { base.CopyFrom(other); historicalRestore = true; }
-
-        /// <summary>普通人格恢复在原版准入周围显式标记当前实例，失败也由 finally 清除。</summary>
-        void ISSCRomanceHistoricalRestore.BeginHistoricalRestore() => historicalRestore = true;
-        /// <summary>结束当前历史恢复；标记不延续到后续新的发放尝试。</summary>
-        void ISSCRomanceHistoricalRestore.EndHistoricalRestore() => historicalRestore = false;
-
-        /// <summary>原生年龄／期限保存不变；长组沿用已有同强度较晚到期逻辑，跨旧组接入留第二批。</summary>
-        protected override bool IsLongTermGroup => Data?.Group == SSCRomanceMoodGroup.Long;
-
-        /// <summary>原准入后区分已有历史和新请求；未知分支只能恢复历史，不成为有效的新事件。</summary>
-        public override bool TryMergeWithExistingMemory(out bool showBubble)
-        {
-            bool restoring = historicalRestore; historicalRestore = false;
-            if (!TryBranch(out _))
-            {
-                // 新的无效请求仍拒绝；已有不可解释历史按原生容量恢复，保留年龄而不进入新事件强弱计算。
-                showBubble = false; return !(restoring && IsCarrier);
-            }
-            return base.TryMergeWithExistingMemory(out showBubble);
-        }
+        /// <summary>新发放必须具有完整合法分支；未知历史仍由基类独立恢复，不冒充有效新事件。</summary>
+        internal override bool ValidNewEvent => base.ValidNewEvent && MatchingCarrier && TryBranch(out _);
 
         /// <summary>文案只读已保存分支，不用当前阶段、特质或好感重新选名字。</summary>
         public override string LabelCap
@@ -132,7 +102,7 @@ namespace SexSlaveCraft
             if (created == null || !ReferenceEquals(registered, carrier) || !ReferenceEquals(created.def, carrier) ||
                 !ValidCarrier(carrier, name, index, selection.Branch.Value) || created.CurStageIndex != index) return false;
             created.Data = snapshot; created.durationTicksOverride = selection.DurationTicks;
-            created.historicalRestore = false;
+            created.ResetRuntime();
             memory = created;
             return true;
         }

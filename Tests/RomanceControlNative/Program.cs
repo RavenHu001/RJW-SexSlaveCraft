@@ -87,6 +87,7 @@ internal static partial class Program
             // 后续每例仍将原版 Error 判为失败；Scribe 三个测试类型由上述精确映射解析。
             _ = GenTypes.AllTypes;
             bootstrap = false;
+            harmony.CreateClassProcessor(production.GetType("SexSlaveCraft.Harmony_SSCRomanceMoodAdmissionTail")).Patch();
             PolicyTests(); PreferenceTests(); LifecycleTests(); SnapshotTests(); SaveTests(); WiringTests(repo);
             InteractionTests(harmony, repo, game);
             CommandTests(harmony, repo);
@@ -104,6 +105,9 @@ internal static partial class Program
             RomanceMoodReviewTests();
             RomanceCompositeFoundationTests(repo);
             RomanceCompositeReviewTests();
+            RomanceCompositeGroupTests();
+            RomanceCompositeHistoryTests();
+            RomanceCompositeBatch2ReviewTests();
         }
         finally { harmony.UnpatchAll(harmony.Id); Scribe.mode = LoadSaveMode.Inactive; Current.Game = null; }
         Console.WriteLine($"RESULT: {passed}/{passed + failed} passed"); return failed == 0 ? 0 : 1;

@@ -79,6 +79,10 @@
     <Compile Include="common/Romance/SSCRomanceMoodData.cs" />
     <Compile Include="common/Romance/SSCRomanceMoodCatalog.cs" />
     <Compile Include="common/Romance/SSCRomanceCompositeMemory.cs" />
+    <Compile Include="common/Romance/SSCRomanceMoodGroups.cs" />
+    <Compile Include="common/Romance/SSCRomanceMoodRequest.cs" />
+    <Compile Include="ThePatches/Harmony_RomanceMoodHistory.cs" />
+    <Compile Include="ThePatches/Harmony_RomanceMoodAdmissionTail.cs" />
     <Compile Include="common/Romance/SSCRomanceMoodEvents.cs" />
     <Compile Include="common/Romance/SSCRomanceMoodLog.cs" />
     <Compile Include="ThePatches/Harmony_RomanceMood.cs" />

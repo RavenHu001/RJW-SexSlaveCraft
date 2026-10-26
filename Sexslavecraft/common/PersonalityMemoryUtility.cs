@@ -108,20 +108,45 @@ namespace SexSlaveCraft
             if (target?.needs?.mood?.thoughts?.memories == null || memories == null) return;
 
             var memoryHandler = target.needs.mood.thoughts.memories;
+#if SSC_RW17
+            // 恢复本来就在合法人格替换作用域内；只校验原 token／载体，不按 IsMutating 拒绝自身。
+            object restoreToken = SSCPersonalityRuntimeUtility.Capture(target);
+            var restoreMood = target.needs.mood;
+            var restoreComp = target.TryGetComp<CompSexSlaveTraining>();
+            Func<bool> current = () => SSCPersonalityRuntimeUtility.IsCurrent(target, restoreToken) &&
+                target.TryGetComp<CompSexSlaveTraining>() == restoreComp && target.needs?.mood == restoreMood &&
+                target.needs?.mood?.thoughts?.memories == memoryHandler;
+            // 工厂和思想准入允许回调；先复制全部来源，不能让后续回调改写尚未恢复的保存事实。
+            memories = memories.ConvertAll(Copy);
+            ISSCRomanceHistoricalRestore historicalBatch = null;
+#endif
             memoryHandler.Memories.Clear();
             foreach (StoredMemoryData data in memories)
             {
+#if SSC_RW17
+                if (!current()) return;
+#endif
                 if (data?.def == null) continue;
 
                 try
                 {
                     if (!ThoughtUtility.CanGetThought(target, data.def)) continue;
+#if SSC_RW17
+                    if (!current()) return;
+#endif
 
                     bool hasInstanceData = data.memoryDataVersion >= CurrentMemoryDataVersion;
+                    int restorableStage = hasInstanceData ? GetRestorableStage(data) : -1;
                     Thought_Memory memory = hasInstanceData
-                        ? ThoughtMaker.MakeThought(data.def, GetRestorableStage(data))
+                        ? ThoughtMaker.MakeThought(data.def, restorableStage)
                         : ThoughtMaker.MakeThought(data.def) as Thought_Memory;
                     if (memory == null) continue;
+#if SSC_RW17
+                    if (!current()) return;
+                    // 历史恢复也核对工厂实际返回载体；不能把保存快照安装到回调换出的另一种思想上。
+                    if (memory.def != data.def || memory.GetType() != data.def.ThoughtClass ||
+                        (hasInstanceData && memory.CurStageIndex != restorableStage)) continue;
+#endif
 
                     memory.age = data.age;
                     memory.moodPowerFactor = data.moodPowerFactor;
@@ -144,11 +169,13 @@ namespace SexSlaveCraft
                     // 社交记忆必须有有效对象；普通记忆也要显式传入对象，否则引擎会将其覆盖为空引用。
                     if (memory is Thought_MemorySocial && otherPawn == null) continue;
 #if SSC_RW17
-                    // 已存在的未知浪漫分支仍是历史；只标记当前实例，不能误当新事件拒绝而丢失历史。
-                    var romanceRestore = memory as ISSCRomanceHistoricalRestore;
-                    romanceRestore?.BeginHistoricalRestore();
-                    try { memoryHandler.TryGainMemory(memory, otherPawn); }
-                    finally { romanceRestore?.EndHistoricalRestore(); }
+                    // SSC 历史不回放原生新获得的 Renew／关联思想；其他记忆保留原恢复流程。
+                    if (memory is ISSCRomanceHistoricalRestore romanceRestore)
+                    {
+                        historicalBatch = romanceRestore;
+                        romanceRestore.RestoreHistorical(target, otherPawn, current);
+                    }
+                    else memoryHandler.TryGainMemory(memory, otherPawn);
 #else
                     memoryHandler.TryGainMemory(memory, otherPawn);
 #endif
@@ -158,6 +185,9 @@ namespace SexSlaveCraft
                     Log.Warning($"[SSC] 人格植入跳过无效记忆：定义={data.def.defName}，角色={target.LabelShort}，原因={ex.Message}");
                 }
             }
+#if SSC_RW17
+            historicalBatch?.CompleteHistoricalRestore(target, current);
+#endif
         }
 
         /// <summary>验证已保存的阶段；定义更新导致阶段失效时回退到首阶段，避免一条旧记忆中断整个植入。</summary>
