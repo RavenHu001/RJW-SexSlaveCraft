@@ -66,6 +66,9 @@
   <SSC_Restrictions_Reason_RuleDenied>當前生效規則禁止此行為</SSC_Restrictions_Reason_RuleDenied>
   <SSC_Restrictions_Reason_OwnerOnly>主動行為僅限該角色的實際主人</SSC_Restrictions_Reason_OwnerOnly>
   <SSC_Restrictions_Reason_InvalidBindingPreparation>不符合首次綁定準備的身份或指定關系</SSC_Restrictions_Reason_InvalidBindingPreparation>
+  <SSC_Restrictions_Reason_BindingTrainerNotAssigned>目標尚未指定調教員；請先在目標的調教頁指定首次綁定的主人</SSC_Restrictions_Reason_BindingTrainerNotAssigned>
+  <SSC_Restrictions_Reason_BindingTrainerMismatch>目標指定的調教員不是目前操作者；請改由指定者操作，或重新指定調教員</SSC_Restrictions_Reason_BindingTrainerMismatch>
+  <SSC_Restrictions_Reason_BindingInitiatorNotMaster>目前操作者的 SSC 身分未設為「主人」；僅有主人資格或調教員任職不足以首次綁定</SSC_Restrictions_Reason_BindingInitiatorNotMaster>
   <SSC_Restrictions_Reason_SelfTrainingIneligible>需要持有鎖鏈的 SSC 性奴身份</SSC_Restrictions_Reason_SelfTrainingIneligible>
   <SSC_Restrictions_EditInitiator>編輯發起者規則</SSC_Restrictions_EditInitiator>
   <SSC_Restrictions_EditReceiver>編輯接收者規則</SSC_Restrictions_EditReceiver>

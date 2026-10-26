@@ -201,9 +201,40 @@ internal static partial class Program
             var p = Pair(); p.b.BoundMaster = null; p.b.Training.selectedTrainer = p.a;
             p.b.Training.restrictionConfig = null;
             Decision(p.a, p.b, SSCInteractionKind.BindingPreparation, true, SSCRestrictionReason.Allowed);
-            Decision(Pawn("C", PawnIdentity.Master), p.b, SSCInteractionKind.BindingPreparation, false, SSCRestrictionReason.InvalidBindingPreparation);
+            Decision(Pawn("C", PawnIdentity.Master), p.b, SSCInteractionKind.BindingPreparation, false, SSCRestrictionReason.BindingTrainerMismatch);
             p.a.Training.pawnIdentity = PawnIdentity.Slave;
-            Decision(p.a, p.b, SSCInteractionKind.BindingPreparation, false, SSCRestrictionReason.InvalidBindingPreparation);
+            Decision(p.a, p.b, SSCInteractionKind.BindingPreparation, false, SSCRestrictionReason.BindingInitiatorNotMaster);
+        });
+        Run("First binding reports missing assignment before actor identity", () =>
+        {
+            var p = Pair(); p.b.BoundMaster = null; p.b.Training.selectedTrainer = null;
+            p.a.Training.pawnIdentity = PawnIdentity.Slave;
+            Decision(p.a, p.b, SSCInteractionKind.BindingPreparation, false, SSCRestrictionReason.BindingTrainerNotAssigned);
+        });
+        Run("First binding reports another assigned trainer before actor identity", () =>
+        {
+            var p = Pair(); p.b.BoundMaster = null; p.b.Training.selectedTrainer = Pawn("other", PawnIdentity.Master);
+            p.a.Training.pawnIdentity = PawnIdentity.Unset;
+            Decision(p.a, p.b, SSCInteractionKind.BindingPreparation, false, SSCRestrictionReason.BindingTrainerMismatch);
+        });
+        Run("First binding admission preserves detailed reasons for manual and automatic requests", () =>
+        {
+            foreach (bool requireAssignment in new[] { true, false })
+            {
+                var p = Pair(); p.b.BoundMaster = null;
+                foreach (var reason in new[] { SSCRestrictionReason.BindingTrainerNotAssigned,
+                    SSCRestrictionReason.BindingTrainerMismatch, SSCRestrictionReason.BindingInitiatorNotMaster })
+                {
+                    p.b.Training.selectedTrainer = reason == SSCRestrictionReason.BindingTrainerNotAssigned ? null :
+                        reason == SSCRestrictionReason.BindingTrainerMismatch ? Pawn("other", PawnIdentity.Master) : p.a;
+                    p.a.Training.pawnIdentity = reason == SSCRestrictionReason.BindingInitiatorNotMaster ? PawnIdentity.Unset : PawnIdentity.Master;
+                    var admission = SSCRestrictionTrainingUtility.Evaluate(
+                        SSCRestrictionTrainingUtility.CreateRequest(p.a, p.b, false), requireAssignment);
+                    Equal(SSCTrainingFailure.PermissionDenied, admission.Failure);
+                    Equal(reason, admission.Permission.Reason);
+                    Equal(false, string.IsNullOrWhiteSpace(admission.Reason));
+                }
+            }
         });
         Run("First-binding purpose cannot bypass an existing owner", () =>
         {

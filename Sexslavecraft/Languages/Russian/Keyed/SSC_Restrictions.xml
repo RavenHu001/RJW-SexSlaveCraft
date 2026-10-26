@@ -66,6 +66,9 @@
   <SSC_Restrictions_Reason_RuleDenied>Действующее правило запрещает это действие</SSC_Restrictions_Reason_RuleDenied>
   <SSC_Restrictions_Reason_OwnerOnly>Начать действие может только настоящий хозяин персонажа</SSC_Restrictions_Reason_OwnerOnly>
   <SSC_Restrictions_Reason_InvalidBindingPreparation>Личность или назначение не подходят для подготовки первого связывания</SSC_Restrictions_Reason_InvalidBindingPreparation>
+  <SSC_Restrictions_Reason_BindingTrainerNotAssigned>Цели не назначен наставник; назначьте хозяина для первого связывания на вкладке обучения цели</SSC_Restrictions_Reason_BindingTrainerNotAssigned>
+  <SSC_Restrictions_Reason_BindingTrainerMismatch>Назначенный наставник цели — не текущий исполнитель; выберите назначенного наставника или измените назначение</SSC_Restrictions_Reason_BindingTrainerMismatch>
+  <SSC_Restrictions_Reason_BindingInitiatorNotMaster>Текущему исполнителю не выбрана роль SSC «Хозяин»; одного права стать хозяином или назначения наставником недостаточно для первого связывания</SSC_Restrictions_Reason_BindingInitiatorNotMaster>
   <SSC_Restrictions_Reason_SelfTrainingIneligible>Требуется SSC секс-рабыня с цепью</SSC_Restrictions_Reason_SelfTrainingIneligible>
   <SSC_Restrictions_EditInitiator>Изменить правила инициатора</SSC_Restrictions_EditInitiator>
   <SSC_Restrictions_EditReceiver>Изменить правила принимающего</SSC_Restrictions_EditReceiver>

@@ -12,7 +12,8 @@ namespace SexSlaveCraft
     {
         BoundOwner, SystemDisabled, NotApplicable, Allowed, IncompleteContext,
         ConfigurationMissing, ConfigurationInvalid, RuleDenied, OwnerOnly, InvalidBindingPreparation,
-        SelfTrainingIneligible
+        SelfTrainingIneligible,
+        BindingTrainerNotAssigned, BindingTrainerMismatch, BindingInitiatorNotMaster
     }
 
     /// <summary>适配器必须提供实际发起方向和用途，不从性别、姿势或主人身份猜测方向。</summary>
@@ -91,9 +92,16 @@ namespace SexSlaveCraft
             {
                 case SSCInteractionKind.BindingPreparation:
                     CompSexSlaveTraining comp = target.TryGetComp<CompSexSlaveTraining>();
-                    bool valid = comp != null && comp.pawnIdentity != PawnIdentity.Master &&
-                        SSCBondUtility.GetBoundMaster(target) == null && comp.selectedTrainer == actor && SSCIdentityUtility.IsMaster(actor);
-                    return Result(valid, valid ? SSCRestrictionReason.Allowed : SSCRestrictionReason.InvalidBindingPreparation);
+                    if (comp == null || comp.pawnIdentity == PawnIdentity.Master || SSCBondUtility.GetBoundMaster(target) != null)
+                        return Result(false, SSCRestrictionReason.InvalidBindingPreparation);
+                    // 按玩家修正顺序报告：先指定，再核对当前操作者，最后检查主人身份。
+                    if (comp.selectedTrainer == null)
+                        return Result(false, SSCRestrictionReason.BindingTrainerNotAssigned);
+                    if (comp.selectedTrainer != actor)
+                        return Result(false, SSCRestrictionReason.BindingTrainerMismatch);
+                    if (!SSCIdentityUtility.IsMaster(actor))
+                        return Result(false, SSCRestrictionReason.BindingInitiatorNotMaster);
+                    return Result(true, SSCRestrictionReason.Allowed);
                 case SSCInteractionKind.DailyTraining:
                 case SSCInteractionKind.RitualTraining:
                     return targetApplies ? Check(target, SSCRestrictionRule.ReceiveTraining, request) : Result(true, SSCRestrictionReason.NotApplicable);
