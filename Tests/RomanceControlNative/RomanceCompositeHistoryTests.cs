@@ -11,44 +11,47 @@ internal static partial class Program
     private static void RomanceCompositeHistoryTests()
     {
         foreach(bool reverse in new[]{false,true}) foreach(bool longTerm in new[]{false,true})
-            Check($"composite composite history order independence {reverse}/{longTerm}",()=>
+            Check($"semantic history newest whole record independent of input order {reverse}/{longTerm}",()=>
             {
-                var old=MoodMemory(-3,longTerm);old.age=50000;
-                var newer=CompositeMemory(longTerm?-3:-2,longTerm?SSCRomanceMoodGroup.Long:SSCRomanceMoodGroup.Short);
+                var target=SocialPawn();
+                var old=SemanticMemory(SSCRomanceCompositeEvent.CommandProposalRejected,target,raw:longTerm?1:0);old.age=50000;
+                var newer=SemanticMemory(SSCRomanceCompositeEvent.CommandProposalRejected,target,masochist:true,raw:longTerm?1:0);
                 newer.age=70000;newer.durationTicksOverride=(longTerm?30:3)*60000;
-                var source=SocialPawn();old.pawn=newer.pawn=source;var target=SocialPawn();old.otherPawn=newer.otherPawn=target;
+                var source=SocialPawn();old.pawn=newer.pawn=source;
                 var list=new List<StoredMemoryData>{PersonalityMemoryUtility.Capture(old),PersonalityMemoryUtility.Capture(newer)};
                 if(reverse)list.Reverse();var host=SocialPawn();PersonalityMemoryUtility.Restore(host,list);
                 var actual=host.needs.mood.thoughts.memories.Memories.OfType<Thought_MemorySSCRomance>().Single();
-                Equal(longTerm?newer.def:old.def,actual.def);Equal(longTerm?70000:50000,actual.age);Equal(-3,actual.Data.Value);
-                Equal(host,actual.pawn);Equal(target,actual.otherPawn);Equal(longTerm?30*60000:3*60000,actual.durationTicksOverride);
+                Equal(newer.def,actual.def);Equal(70000,actual.age);Equal(newer.Data.Value,actual.Data.Value);
+                Equal(newer.Data.OccurrenceOrder,actual.Data.OccurrenceOrder);Equal(host,actual.pawn);Equal(target,actual.otherPawn);
+                Equal((longTerm?30:3)*60000,actual.durationTicksOverride);
             });
-        Check("composite history strength selects whole record instead of merging lifetimes",()=>
+        Check("semantic history picks weaker latest record without merging lifetimes",()=>
         {
-            var stronger=CompositeMemory(-15,SSCRomanceMoodGroup.Long);stronger.age=20*60000;stronger.durationTicksOverride=30*60000;
-            var weaker=CompositeMemory(-13,SSCRomanceMoodGroup.Long);weaker.age=60000;weaker.durationTicksOverride=25*60000;
+            var target=SocialPawn();
+            var stronger=SemanticMemory(SSCRomanceCompositeEvent.CommandProposalRejected,target,raw:60);stronger.age=20*60000;stronger.durationTicksOverride=30*60000;
+            var weaker=SemanticMemory(SSCRomanceCompositeEvent.CommandProposalRejected,target,masochist:true,raw:60);weaker.age=60000;weaker.durationTicksOverride=25*60000;
             var host=SocialPawn();PersonalityMemoryUtility.Restore(host,new(){PersonalityMemoryUtility.Capture(weaker),PersonalityMemoryUtility.Capture(stronger)});
             var actual=host.needs.mood.thoughts.memories.Memories.OfType<Thought_MemorySSCRomance>().Single();
-            Equal(stronger.Data.BranchId,actual.Data.BranchId);Equal(10*60000,actual.DurationTicks-actual.age);Equal(20*60000,actual.age);
+            Equal(weaker.Data.BranchId,actual.Data.BranchId);Equal(24*60000,actual.DurationTicks-actual.age);Equal(60000,actual.age);
         });
-        Check("composite exact history ties have stable branch independent of input order",()=>
+        Check("semantic exact occurrence ties choose deterministic whole record",()=>
         {
-            SSCRomanceMoodCatalog.TryResolve(SSCRomanceCompositeEvent.CommandRomanceAccepted,4,true,60,out var a);
-            SSCRomanceMoodCatalog.TryResolve(SSCRomanceCompositeEvent.CommandProposalAccepted,4,true,60,out var b);
-            Thought_MemorySSCCompositeRomance.TryCreate(a,out var first);Thought_MemorySSCCompositeRomance.TryCreate(b,out var second);
-            first.age=second.age=12345;
+            var target=SocialPawn();
+            var first=SemanticMemory(SSCRomanceCompositeEvent.ForcedRomanceAccepted,target,masochist:true,raw:60);
+            var second=SemanticMemory(SSCRomanceCompositeEvent.ForcedRomanceAccepted,target,masochist:true,raw:0);
+            first.age=second.age=12345;second.Data.OccurrenceOrder=first.Data.OccurrenceOrder;
             string selected=null;
             foreach(bool reverse in new[]{false,true})
             {
                 var list=new List<StoredMemoryData>{PersonalityMemoryUtility.Capture(first),PersonalityMemoryUtility.Capture(second)};if(reverse)list.Reverse();
                 var host=SocialPawn();PersonalityMemoryUtility.Restore(host,list);var actual=host.needs.mood.thoughts.memories.Memories.OfType<Thought_MemorySSCRomance>().Single();
-                selected??=actual.Data.BranchId;Equal(selected,actual.Data.BranchId);Equal(12345,actual.age);
+                selected??=actual.Data.BranchId;Equal(selected,actual.Data.BranchId);Equal(12345,actual.age);Equal(first.Data.OccurrenceOrder,actual.Data.OccurrenceOrder);
             }
         });
-        foreach(string kind in new[]{"id","version","raw","group","payload"}) Check("composite mixed unknown history preserves evidence "+kind,()=>
+        foreach(string kind in new[]{"id","version","raw","group","payload"}) Check("semantic corrupt history preserves evidence "+kind,()=>
         {
-            var known=CompositeMemory(-13,SSCRomanceMoodGroup.Long);known.age=123;
-            var unknown=CompositeMemory(-15,SSCRomanceMoodGroup.Long);unknown.age=456;
+            var target=SocialPawn();var known=SemanticMemory(SSCRomanceCompositeEvent.CommandProposalRejected,target,raw:60);known.age=123;
+            var unknown=SemanticMemory(SSCRomanceCompositeEvent.CommandProposalRejected,target,masochist:true,raw:60);unknown.age=456;
             if(kind=="id")unknown.Data.BranchId="Retired";
             else if(kind=="version")unknown.Data.DataVersion=99;
             else if(kind=="raw")unknown.Data.HasRawOpinion=false;
@@ -58,8 +61,8 @@ internal static partial class Program
             var all=host.needs.mood.thoughts.memories.Memories.OfType<Thought_MemorySSCRomance>().ToList();
             bool opaque=kind=="version"||kind=="payload";
             Equal(opaque?2:1,all.Count);Require(all.Any(m=>m.age==456));
-            if(opaque)Equal(SSCRomanceMoodResultKind.Conflict,new SSCRomanceMoodRequest(host,null,CompositeSelection(-15,SSCRomanceMoodGroup.Long)).Execute().Kind);
-            else Equal(-15,all.Single().Data.Value);
+            if(opaque)Equal(SSCRomanceMoodResultKind.Conflict,new SSCRomanceMoodRequest(host,target,SemanticSelection(SSCRomanceCompositeEvent.CommandProposalRejected,raw:60)).Execute().Kind);
+            else Equal(unknown.Data.Value,all.Single().Data.Value);
             Require(all.All(m=>m.age==123||m.age==456));
         });
         Check("composite restore twice preserves age duration and instance modifiers",()=>
@@ -70,13 +73,15 @@ internal static partial class Program
             for(int i=0;i<2;i++)PersonalityMemoryUtility.Restore(host,new(){saved});
             var actual=host.needs.mood.thoughts.memories.Memories.OfType<Thought_MemorySSCRomance>().Single();
             Equal(12345,actual.age);Equal(29*60000,actual.DurationTicks-actual.age);Equal(.5f,actual.moodPowerFactor);Equal(2,actual.moodOffset);
-            Equal(original.otherPawn,actual.otherPawn);Equal(original.Data.Master,actual.Data.Master);Require(!ReferenceEquals(original.Data,actual.Data));
+            Equal(original.otherPawn,actual.otherPawn);Equal(original.Data.Master,actual.Data.Master);Equal(original.Data.OccurrenceOrder,actual.Data.OccurrenceOrder);
+            Require(!ReferenceEquals(original.Data,actual.Data));
         });
         foreach(int[] order in new[]{new[]{0,1,2},new[]{0,2,1},new[]{1,0,2},new[]{1,2,0},new[]{2,0,1},new[]{2,1,0}})
-            Check("composite opaque history postpones whole batch "+string.Join(",",order),()=>
+            Check("semantic opaque affected key postpones normalization "+string.Join(",",order),()=>
             {
-                var weak=CompositeMemory(-3,SSCRomanceMoodGroup.Long);var strong=CompositeMemory(-15,SSCRomanceMoodGroup.Long);
-                var opaque=CompositeMemory(-13,SSCRomanceMoodGroup.Long);opaque.Data.DataVersion=99;
+                var target=SocialPawn();var weak=SemanticMemory(SSCRomanceCompositeEvent.CommandProposalRejected,target,raw:1);
+                var strong=SemanticMemory(SSCRomanceCompositeEvent.CommandProposalRejected,target,raw:60);
+                var opaque=SemanticMemory(SSCRomanceCompositeEvent.CommandProposalRejected,target,masochist:true,raw:60);opaque.Data.DataVersion=99;
                 weak.age=111;strong.age=222;opaque.age=333;
                 var source=new[]{weak,strong,opaque};var host=SocialPawn();
                 PersonalityMemoryUtility.Restore(host,order.Select(i=>PersonalityMemoryUtility.Capture(source[i])).ToList());
@@ -113,13 +118,15 @@ internal static partial class Program
         {
             Check("composite actual handler Scribe performs postload normalization without replay",()=>
             {
-                var source=SocialPawn();var old=MoodMemory(-3,true);old.pawn=source;old.age=50000;
-                var next=CompositeMemory(-15,SSCRomanceMoodGroup.Long);next.pawn=source;next.age=12345;next.durationTicksOverride=29*60000+next.age;
+                var source=SocialPawn();var target=SocialPawn();var old=SemanticMemory(SSCRomanceCompositeEvent.CommandProposalRejected,target,raw:1);old.pawn=source;old.age=50000;
+                var next=SemanticMemory(SSCRomanceCompositeEvent.CommandProposalRejected,target,raw:60);next.pawn=source;next.age=12345;next.durationTicksOverride=29*60000+next.age;
                 source.needs.mood.thoughts.memories.Memories.AddRange(new[]{old,next});
                 var scene=new RomanceCompositeHistoryScene(source);string path=Path.Combine(saveDirectory,"composite-history-"+(++id)+".xml");
                 Scribe.saver.InitSaving(path,"History");Scribe_Deep.Look(ref scene,"scene",source);Scribe.saver.FinalizeSaving();
                 Equal(2,source.needs.mood.thoughts.memories.Memories.Count);
-                var host=SocialPawn();RomanceCompositeHistoryScene loaded=null;Scribe.loader.InitLoading(path);Scribe_Deep.Look(ref loaded,"scene",host);Scribe.loader.FinalizeLoading();
+                var host=SocialPawn();RomanceCompositeHistoryScene loaded=null;Scribe.loader.InitLoading(path);
+                var directory=(LoadedObjectDirectory)AccessTools.Field(typeof(CrossRefHandler),"loadedObjectDirectory").GetValue(Scribe.loader.crossRefs);directory.RegisterLoaded(target);
+                Scribe_Deep.Look(ref loaded,"scene",host);Scribe.loader.FinalizeLoading();
                 var actual=loaded.Handler.Memories.OfType<Thought_MemorySSCRomance>().Single();Equal(host,actual.pawn);Equal(12345,actual.age);Equal(29*60000,actual.DurationTicks-actual.age);
                 Equal(next.Data.BranchId,actual.Data.BranchId);Require(!File.ReadAllText(path).Contains("MergeResult"));
             });
@@ -153,7 +160,8 @@ internal static partial class Program
             Check("composite actual clone normalizes composite source without modifying source",()=>
             {
                 var source=SocialPawn();source.needs.mood.def.needClass=typeof(Need_Mood);source.needs.AllNeeds.Add(source.needs.mood);
-                var old=MoodMemory(-3);old.pawn=source;old.age=321;var next=CompositeMemory(-9,SSCRomanceMoodGroup.Short);next.pawn=source;next.age=789;
+                var other=SocialPawn();var old=SemanticMemory(SSCRomanceCompositeEvent.CommandRomanceAccepted,other);old.pawn=source;old.age=321;
+                var next=SemanticMemory(SSCRomanceCompositeEvent.CommandRomanceRejected,other,raw:60);next.pawn=source;next.age=789;
                 source.needs.mood.thoughts.memories.Memories.AddRange(new[]{old,next});var clone=SocialPawn();
                 AccessTools.Method(typeof(GameComponent_PawnDuplicator),"CopyNeeds").Invoke(null,new object[]{source,clone});
                 Equal(2,source.needs.mood.thoughts.memories.Memories.Count);Equal(321,old.age);Equal(789,clone.needs.mood.thoughts.memories.Memories.Single().age);

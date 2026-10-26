@@ -24,7 +24,11 @@ namespace SexSlaveCraft
         private static void Postfix(MemoryThoughtHandler __instance, Pawn ___pawn)
         {
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
+            {
+                // 强制存档回调可能捕获暂入列候选；恢复只丢弃标记实例，不执行待提交计划或补发事件。
+                __instance.Memories.RemoveAll(m => m is Thought_MemorySSCRomance pending && pending.CopiedPendingEvent);
                 SSCRomanceMoodGroups.NormalizeHistory(__instance, () => ___pawn?.needs?.mood?.thoughts?.memories == __instance);
+            }
         }
     }
 
@@ -50,6 +54,8 @@ namespace SexSlaveCraft
             bool Current() => newPawn != null && SSCPersonalityRuntimeUtility.IsCurrent(newPawn, __state.Token) &&
                 newPawn.TryGetComp<CompSexSlaveTraining>() == __state.Comp && newPawn.needs?.mood?.thoughts?.memories == handler;
             if (handler == null || __state == null || !Current()) return;
+            // 原生直接复制列表；先删除来源尚待结算的候选，不能先ResetRuntime丢掉临时来源证据。
+            handler.Memories.RemoveAll(m => m is Thought_MemorySSCRomance pending && pending.CopiedPendingEvent);
             foreach (var memory in handler.Memories.OfType<Thought_MemorySSCRomance>()) memory.ResetRuntime();
             SSCRomanceMoodGroups.NormalizeHistory(handler, Current);
         }

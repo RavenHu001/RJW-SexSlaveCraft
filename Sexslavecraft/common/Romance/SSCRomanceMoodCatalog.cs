@@ -38,6 +38,8 @@ namespace SexSlaveCraft
         public SSCRomanceMoodBranch Branch { get; }
         public int RawOpinion { get; }
         public SSCRomanceMoodGroup Group { get; }
+        /// <summary>零值也保留事件语义，供结清同组及关系阶段清理使用。</summary>
+        public SSCRomanceSemanticGroup SemanticGroup => SSCRomanceMoodSemantics.Of(Branch.Event);
         public int DurationTicks { get; }
         public bool HasMemory => Group != SSCRomanceMoodGroup.None;
 
@@ -51,7 +53,7 @@ namespace SexSlaveCraft
             DurationTicks = (longTerm ? branch.LongDays : 3) * 60000;
         }
 
-        /// <summary>构造独立快照；可选上下文仅保留实际旧关系、主人及规则，不复制旧分支、恶堕或运行凭据。</summary>
+        /// <summary>构造独立快照；保留事件确认顺序和冻结关系／主人／规则，不在纯目录查询时签发顺序。</summary>
         public SSCRomanceMoodData CreateSnapshot(SSCRomanceMoodData context = null) => new SSCRomanceMoodData
         {
             DataVersion = SSCRomanceMoodData.CompositeVersion, BranchId = Branch.Id,
@@ -59,7 +61,8 @@ namespace SexSlaveCraft
             HasRawOpinion = true, RawOpinion = RawOpinion, OpinionBand = Branch.Opinion.Value,
             Value = Branch.Value, Group = Group, NominalDurationTicks = DurationTicks,
             Relation = context?.Relation ?? SSCRomanceOldRelation.None, Master = context?.Master,
-            Rule = context?.Rule ?? default, HasRule = context?.HasRule ?? false
+            Rule = context?.Rule ?? default, HasRule = context?.HasRule ?? false,
+            OccurrenceOrder = context?.OccurrenceOrder ?? 0L
         };
     }
 

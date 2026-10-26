@@ -55,6 +55,10 @@ namespace SexSlaveCraft
         public static StoredMemoryData Capture(Thought_Memory memory)
         {
             if (memory == null) return null;
+#if SSC_RW17
+            // 准入后置回调能立即提取人格；尚未提交的唯一候选不能被采集为已发生历史。
+            if (memory is Thought_MemorySSCRomance pending && (pending.IsPendingNewEvent || pending.CopiedPendingEvent)) return null;
+#endif
 
             var socialMemory = memory as Thought_MemorySocial;
             return new StoredMemoryData
@@ -151,6 +155,11 @@ namespace SexSlaveCraft
                     memory.age = data.age;
                     memory.moodPowerFactor = data.moodPowerFactor;
                     Pawn otherPawn = data.otherPawn != null && !data.otherPawn.Destroyed ? data.otherPawn : null;
+#if SSC_RW17
+                    // SSC 语义键依赖原保存对象；即使对象已销毁也保留尚能解析的引用，不能把不同历史合并为空对象。
+                    // 普通社交记忆继续沿原有效目标规则，不因 SSC 的保存边界改变其他模块。
+                    if (memory is Thought_MemorySSCRomance) otherPawn = data.otherPawn;
+#endif
                     memory.otherPawn = otherPawn;
 
                     if (hasInstanceData)

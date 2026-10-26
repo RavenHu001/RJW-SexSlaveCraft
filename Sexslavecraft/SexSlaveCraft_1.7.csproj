@@ -77,6 +77,7 @@
   <ItemGroup>
     <Compile Include="common/Romance/SSCRomanceOldRelation.cs" />
     <Compile Include="common/Romance/SSCRomanceMoodData.cs" />
+    <Compile Include="common/Romance/SSCRomanceMoodOrder.cs" />
     <Compile Include="common/Romance/SSCRomanceMoodCatalog.cs" />
     <Compile Include="common/Romance/SSCRomanceCompositeMemory.cs" />
     <Compile Include="common/Romance/SSCRomanceMoodGroups.cs" />

@@ -17,18 +17,18 @@ internal static partial class Program
     {
         Check("composite b2 review rollback restores actual commit predecessor",()=>
         {
-            var p=SocialPawn();var h=p.needs.mood.thoughts.memories;var original=MoodMemory(-2);h.TryGainMemory(original);original.age=777;
+            var p=SocialPawn();var other=SocialPawn();var h=p.needs.mood.thoughts.memories;var original=SemanticMemory(SSCRomanceCompositeEvent.CommandRomanceAccepted,other);h.TryGainMemory(original,other);original.age=777;
             Thought_Memory inner=null;var boundary=CompositeB2Boundary();
             try
             {
                 compositeB2Before=memory=>
                 {
                     compositeB2Outer=memory;
-                    Require(new SSCRomanceMoodRequest(p,null,CompositeSelection(-6,SSCRomanceMoodGroup.Short)).Execute().Applied);
+                    Require(new SSCRomanceMoodRequest(p,other,SemanticSelection(SSCRomanceCompositeEvent.CommandRomanceAccepted,raw:60)).Execute().Applied);
                     inner=h.Memories.Single();inner.age=333;
                 };
                 compositeB2After=memory=>{if(memory==compositeB2Outer)throw new InvalidOperationException("outer failed after nested event");};
-                var result=new SSCRomanceMoodRequest(p,null,CompositeSelection(-9,SSCRomanceMoodGroup.Short)).Execute();
+                var result=new SSCRomanceMoodRequest(p,other,SemanticSelection(SSCRomanceCompositeEvent.CommandRomanceRejected,raw:60)).Execute();
                 Require(!result.Completed);Equal(inner,h.Memories.Single());Equal(333,inner.age);Require(!h.Memories.Contains(original));
             }
             finally{CompositeB2Clear(boundary);}
@@ -78,26 +78,27 @@ internal static partial class Program
         });
         Check("composite b2 review opaque history arriving during admission survives native tail",()=>
         {
-            var p=SocialPawn();var h=p.needs.mood.thoughts.memories;var old=CompositeMemory(-13,SSCRomanceMoodGroup.Long);h.TryGainMemory(old);old.age=1;
-            var opaque=CompositeMemory(-15,SSCRomanceMoodGroup.Long);opaque.Data.DataVersion=99;opaque.pawn=p;opaque.age=99999;
+            var p=SocialPawn();var other=SocialPawn();var h=p.needs.mood.thoughts.memories;var old=SemanticMemory(SSCRomanceCompositeEvent.CommandProposalRejected,other,raw:60);h.TryGainMemory(old,other);old.age=1;
+            var opaque=SemanticMemory(SSCRomanceCompositeEvent.CommandProposalRejected,other,masochist:true,raw:60);opaque.Data.DataVersion=99;opaque.pawn=p;opaque.age=99999;
             var boundary=CompositeB2Boundary();
             try
             {
                 compositeB2Admission=()=>{h.Memories.Add(opaque);compositeB2Admission=null;};
-                var result=new SSCRomanceMoodRequest(p,null,CompositeSelection(-15,SSCRomanceMoodGroup.Long)).Execute();
+                var result=new SSCRomanceMoodRequest(p,other,SemanticSelection(SSCRomanceCompositeEvent.CommandProposalRejected,raw:60)).Execute();
                 Require(!result.Completed);Require(h.Memories.Contains(opaque));Require(h.Memories.Contains(old));Equal(99999,opaque.age);Equal(1,old.age);
             }
             finally{CompositeB2Clear(boundary);}
         });
-        Check("composite b2 review admission nested stronger event yields normal kept receipt",()=>
+        Check("semantic admission later real event survives earlier outer request",()=>
         {
-            var p=SocialPawn();var h=p.needs.mood.thoughts.memories;h.TryGainMemory(MoodMemory(2));var boundary=CompositeB2Boundary();
+            var p=SocialPawn();var other=SocialPawn();var h=p.needs.mood.thoughts.memories;
+            h.TryGainMemory(SemanticMemory(SSCRomanceCompositeEvent.CommandRomanceAccepted,other),other);var boundary=CompositeB2Boundary();
             Thought_Memory inner=null;
             try
             {
-                compositeB2Before=_=>{Require(new SSCRomanceMoodRequest(p,null,CompositeSelection(-9,SSCRomanceMoodGroup.Short)).Execute().Applied);inner=h.Memories.Single();inner.age=543;};
-                var result=new SSCRomanceMoodRequest(p,null,CompositeSelection(-6,SSCRomanceMoodGroup.Short)).Execute();
-                Equal(SSCRomanceMoodResultKind.Kept,result.Kind);Require(result.Completed&&!result.Applied);Equal(inner,h.Memories.Single());Equal(543,inner.age);
+                compositeB2Before=_=>{Require(new SSCRomanceMoodRequest(p,other,SemanticSelection(SSCRomanceCompositeEvent.CommandRomanceRejected,raw:60)).Execute().Applied);inner=h.Memories.Single();inner.age=543;};
+                var result=new SSCRomanceMoodRequest(p,other,SemanticSelection(SSCRomanceCompositeEvent.CommandRomanceAccepted,raw:60)).Execute();
+                Require(!result.Completed&&!result.Applied);Equal(inner,h.Memories.Single());Equal(543,inner.age);
             }
             finally{CompositeB2Clear(boundary);}
         });

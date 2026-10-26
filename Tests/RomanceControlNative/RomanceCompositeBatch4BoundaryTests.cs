@@ -116,22 +116,21 @@ internal static partial class Program
             Check("composite b4 actual short replacement refresh receipt " + same, () =>
             {
                 CommandReset(1f); socialOpinionValue = 0; var (a, b) = CommandPair(SSCRomanceAction.Romance);
-                var old = MoodMemory(same ? -3 : -2); a.needs.mood.thoughts.memories.TryGainMemory(old); old.age = 4000;
+                var old = SemanticMemory(SSCRomanceCompositeEvent.CommandRomanceRejected,b,raw:same?0:60); a.needs.mood.thoughts.memories.TryGainMemory(old,b); old.age = 4000;
                 moodDiagnostics.Clear(); SubmitAndRun(a, b, SSCRomanceAction.Romance, out _);
                 string line = moodDiagnostics.Single(m => m.Contains("event id="));
                 Require(line.Contains(same ? "result=Refreshed" : "result=Replaced")); Require(line.Contains("oldRemainingTicks=176000") && line.Contains("remainingTicks=180000"));
                 Equal(-3, a.needs.mood.thoughts.memories.Memories.OfType<Thought_MemorySSCCompositeRomance>().Single().Data.Value);
             });
-        Check("composite b4 actual long equal refresh logs retained later expiry", () =>
+        Check("semantic actual long equal value replaces background and uses new nominal expiry", () =>
         {
             CommandReset(1f, 0f); socialOpinionValue = 60; var (a, b) = CommandPair(SSCRomanceAction.Proposal);
-            Require(SSCRomanceMoodCatalog.TryResolve(SSCRomanceCompositeEvent.CommandDivorce, 4, false, 60, out var selected));
-            Require(Thought_MemorySSCCompositeRomance.TryCreate(selected, out var old)); a.needs.mood.thoughts.memories.TryGainMemory(old); old.age = 60000;
+            var old=SemanticMemory(SSCRomanceCompositeEvent.CommandDivorce,b,raw:60); a.needs.mood.thoughts.memories.TryGainMemory(old,b); old.age = 60000;
             moodDiagnostics.Clear(); SubmitAndRun(a, b, SSCRomanceAction.Proposal, out _);
             string line = moodDiagnostics.Single(m => m.Contains("event id="));
-            Require(line.Contains("branch=E10-S4-N-C") && line.Contains("oldBranch=E13-S4-N-C") && line.Contains("result=Refreshed"));
-            Require(line.Contains("nominalTicks=1500000 remainingTicks=1740000"));
-            Equal(1740000, a.needs.mood.thoughts.memories.Memories.OfType<Thought_MemorySSCCompositeRomance>().Single().DurationTicks);
+            Require(line.Contains("branch=E10-S4-N-C") && line.Contains("oldBranch=E13-S4-N-C") && line.Contains("result=Replaced"));
+            Require(line.Contains("nominalTicks=1500000 remainingTicks=1500000") && line.Contains("oldRemainingTicks=1740000"));
+            Equal(1500000, a.needs.mood.thoughts.memories.Memories.OfType<Thought_MemorySSCCompositeRomance>().Single().DurationTicks);
         });
         Check("composite b4 two controlled sides share one runtime correlation without merged outcomes", () =>
         {

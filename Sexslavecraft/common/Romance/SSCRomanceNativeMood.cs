@@ -60,13 +60,14 @@ namespace SexSlaveCraft
             internal readonly Pawn owner, other;
             internal readonly Precept precept;
             internal readonly int age, duration, defaultDuration, stage, offset;
-            internal readonly float power;
+            internal readonly float power, defaultDurationDays;
             internal readonly bool permanent;
             internal State(Thought_Memory memory)
             {
                 Memory = memory; def = memory.def; owner = memory.pawn; other = memory.otherPawn;
                 precept = memory.sourcePrecept; age = memory.age; duration = memory.durationTicksOverride;
                 // 保存默认期限的当时值，避免后处理将 -1 显式化时误判，也不能放过 Def 期限被真正改写。
+                defaultDurationDays = def.durationDays;
                 defaultDuration = def.DurationTicks;
                 stage = stageReader(memory); offset = memory.moodOffset; power = memory.moodPowerFactor; permanent = memory.permanent;
             }
@@ -74,6 +75,11 @@ namespace SexSlaveCraft
                 Memory.sourcePrecept == precept && Memory.age == age && EffectiveDuration ==
                     (Memory.durationTicksOverride < 0 ? Memory.def.DurationTicks : Memory.durationTicksOverride) &&
                 stageReader(Memory) == stage && Memory.moodOffset == offset && Memory.moodPowerFactor == power && Memory.permanent == permanent;
+            /// <summary>所有可回调读取结束后核对原始字段，不能再次查询 DurationTicks 打开新的改写窗口。</summary>
+            internal bool RawMatches() => Memory.def == def && Memory.pawn == owner && Memory.otherPawn == other &&
+                Memory.sourcePrecept == precept && Memory.age == age && Memory.durationTicksOverride == duration &&
+                def.durationDays == defaultDurationDays && stageReader(Memory) == stage && Memory.moodOffset == offset &&
+                Memory.moodPowerFactor == power && Memory.permanent == permanent;
             /// <summary>负值表示沿用默认值；只有实际期限相同的表示变化等价，不接受延长、缩短或倍率变化。</summary>
             internal int EffectiveDuration => duration < 0 ? defaultDuration : duration;
             internal void Restore()
@@ -310,19 +316,45 @@ namespace SexSlaveCraft
         /// <summary>替换只针对本人所选原因；先校验整套逆序计划，最后直接提交，无外部回调窗口。</summary>
         internal static bool TryUndo(SSCRomanceMoodFrame frame, SSCRomanceMoodFrame.Person person, bool apply)
         {
-            if (!SSCRomanceNativeMoodHooks.Ready || !Thought_MemorySSCCompositeRomance.DefinitionsReady || !SSCRomanceMoodEvents.CurrentPerson(person)) return false;
+            var prepared = PrepareUndo(frame, person);
+            if (prepared == null) return false;
+            if (apply) prepared();
+            return true;
+        }
+
+        /// <summary>先完成所有可回调的期限／定义读取，返回只应用已核对账本的无回调提交。</summary>
+        internal static Action PrepareUndo(SSCRomanceMoodFrame frame, SSCRomanceMoodFrame.Person person)
+        {
+            if (!SSCRomanceNativeMoodHooks.Ready || !Thought_MemorySSCCompositeRomance.DefinitionsReady || !SSCRomanceMoodEvents.CurrentPerson(person)) return null;
             var sites = frame.NativeSites.Where(s => s.Person == person).ToArray();
-            if (sites.Any(s => !s.Completed || s.Invalid || !s.Consumed || !s.Admitted || s.Def.thoughtToMake != s.ChildDef)) return false;
+            if (sites.Any(s => !s.Completed || s.Invalid || !s.Consumed || !s.Admitted || s.Def.thoughtToMake != s.ChildDef)) return null;
             // 已知社交父定义缺少对应原生子节点属于结构失配，不能假定原版没有该心情。
-            if (sites.Any(s => ExpectedChild(s.Def.defName) is string name && s.Def.thoughtToMake?.defName != name)) return false;
+            if (sites.Any(s => ExpectedChild(s.Def.defName) is string name && s.Def.thoughtToMake?.defName != name)) return null;
+            // 快照读取本身也可能被其他补丁包装；冻结来源结构以便最后在无回调段再次比对。
+            var bindings = sites.Select(s => new { Site = s, s.Frame, s.Person, s.Handler, s.Def, s.ChildDef, s.Other,
+                Name = s.Def.defName, Class = s.Def.thoughtClass }).ToArray();
             var entries = frame.NativeEntries.Where(e => e.Site.Person == person).ToArray();
+            var live = new List<KeyValuePair<ThoughtDef, State[]>>();
             foreach (var group in entries.GroupBy(e => e.Site.Def))
             {
-                var projected = person.Handler.Memories.Where(m => m.def == group.Key).ToDictionary(m => m, m => new State(m));
-                foreach (var entry in group.Reverse()) if (!entry.Plan(projected)) return false;
+                var states = person.Handler.Memories.Where(m => m.def == group.Key).Select(m => new State(m)).ToArray();
+                live.Add(new KeyValuePair<ThoughtDef, State[]>(group.Key, states));
+                var projected = states.ToDictionary(s => s.Memory);
+                foreach (var entry in group.Reverse()) if (!entry.Plan(projected)) return null;
             }
-            if (!SSCRomanceMoodEvents.CurrentPerson(person)) return false;
-            if (apply)
+            // State 构造会查询默认期限。若该查询改写了早已捕获的 age 等字段，投影仍可能通过；
+            // 因而必须在全部读取结束后，再核对真实列表、原始实例字段及父子来源结构。
+            if (!SSCRomanceMoodEvents.CurrentPerson(person) ||
+                !frame.NativeSites.Where(s => s.Person == person).SequenceEqual(sites) ||
+                !frame.NativeEntries.Where(e => e.Site.Person == person).SequenceEqual(entries) ||
+                entries.Any(e => e.Invalid || !e.Sealed) ||
+                bindings.Any(b => b.Site.Frame != b.Frame || b.Site.Person != b.Person || b.Site.Handler != b.Handler ||
+                    b.Site.Def != b.Def || b.Site.ChildDef != b.ChildDef || b.Site.Other != b.Other ||
+                    !b.Site.Completed || b.Site.Invalid || !b.Site.Consumed || !b.Site.Admitted ||
+                    b.Def.defName != b.Name || b.Def.thoughtClass != b.Class || b.Def.thoughtToMake != b.ChildDef) ||
+                live.Any(group => !person.Handler.Memories.Where(m => m.def == group.Key).SequenceEqual(group.Value.Select(s => s.Memory)) ||
+                    group.Value.Any(s => !s.RawMatches()))) return null;
+            return () =>
             {
                 foreach (var entry in entries.Reverse()) entry.Undo();
                 // 只有实际撤销成功后才记录完成，不能将预检计划当成执行结果。
@@ -330,8 +362,7 @@ namespace SexSlaveCraft
                 person.NativeAddsUndone = entries.Sum(e => e.Adds);
                 person.NativeRemovesUndone = entries.Sum(e => e.Removes);
                 person.NativeRenewsUndone = entries.Sum(e => e.Renews);
-            }
-            return true;
+            };
         }
     }
 }

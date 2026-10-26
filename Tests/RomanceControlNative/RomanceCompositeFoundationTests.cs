@@ -218,7 +218,7 @@ internal static partial class Program
                     kind==SSCRomanceCompositeEvent.CommandProposalRejected?SSCRomanceOldRelation.Lover:SSCRomanceOldRelation.None,
                     Master=master,HasRule=true,Rule=SSCRomanceSetting.AlwaysAcceptMaster};
                 Require(Thought_MemorySSCCompositeRomance.TryCreate(selection,context,out var memory));
-                memory.pawn=owner;memory.otherPawn=other;memory.age=4321;memory.moodPowerFactor=.5f;memory.moodOffset=2;
+                memory.pawn=owner;memory.otherPawn=other;memory.Data.OccurrenceOrder=SSCRomanceMoodOrder.Next();memory.age=4321;memory.moodPowerFactor=.5f;memory.moodOffset=2;
                 // 标准二十五天与实际剩余二十九天必须独立保留。
                 if(kind==SSCRomanceCompositeEvent.CommandProposalRejected && opinion==1)memory.durationTicksOverride=29*60000+memory.age;
                 var saved=PersonalityMemoryUtility.Capture(memory);var copy=PersonalityMemoryUtility.Copy(saved);
@@ -231,7 +231,7 @@ internal static partial class Program
                 Scribe_Deep.Look(ref loaded,"scene");Scribe.loader.FinalizeLoading();
                 var actual=(Thought_MemorySSCCompositeRomance)loaded.Memory;
                 Equal(memory.Data.BranchId,actual.Data.BranchId);Equal(memory.Data.RawOpinion,actual.Data.RawOpinion);Equal(memory.Data.Value,actual.Data.Value);
-                Equal(memory.Data.NominalDurationTicks,actual.Data.NominalDurationTicks);Equal(memory.durationTicksOverride,actual.durationTicksOverride);Equal(4321,actual.age);
+                Equal(memory.Data.OccurrenceOrder,actual.Data.OccurrenceOrder);Equal(memory.Data.NominalDurationTicks,actual.Data.NominalDurationTicks);Equal(memory.durationTicksOverride,actual.durationTicksOverride);Equal(4321,actual.age);
                 Equal(.5f,actual.moodPowerFactor);Equal(2,actual.moodOffset);Equal(memory.Data.Group,actual.Data.Group);
                 // 原版不把运行 owner 写入独立思想；人格恢复由目标处理器重新绑定，不能指回旧身体。
                 Require(actual.pawn==null);Equal(other,actual.otherPawn);Equal(master,actual.Data.Master);Equal(context.Relation,actual.Data.Relation);

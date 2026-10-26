@@ -1,5 +1,6 @@
 // AI 辅助生成：只读运行期诊断，不保存、授权、重试或参与心情业务。
 using System;
+using System.Linq;
 using System.Threading;
 using Verse;
 
@@ -34,10 +35,27 @@ namespace SexSlaveCraft
                 $" separated={frame.ProposalSeparated} rule={ownRule?.ToString() ?? "none"} decisionRule={frame.Rule?.ToString() ?? "none"} " +
                 $" event={selection?.Branch.Event.ToString() ?? "unknown"} stage={person?.Data?.Stage} masochist={person?.Data?.Masochist}" +
                 $" rawOpinion={person?.Data?.RawOpinion} band={person?.Data?.OpinionBand} branch={selection?.Branch.Id ?? "unknown"} value={selection?.Branch.Value}" +
+                $" semantic={selection?.SemanticGroup.ToString() ?? "none"} order={frame.OccurrenceOrder} phase={result?.Phase.ToString() ?? "none"}" +
                 $" group={selection?.Group.ToString() ?? "none"} nominalTicks={selection?.DurationTicks ?? 0} remainingTicks={result?.RemainingTicks ?? 0}" +
                 $" oldBranch={result?.OldBranch ?? "none"} oldValue={result?.OldValue?.ToString() ?? "none"} oldRemainingTicks={result?.OldRemainingTicks ?? 0}" +
                 $" result={result?.Kind.ToString() ?? "Skipped"} reason={reason} native={(person?.NativeApplied == true ? "committed" : "preserved")}" +
-                $" undoAdd={person?.NativeAddsUndone ?? 0} undoRenew={person?.NativeRenewsUndone ?? 0} restoreCapacity={person?.NativeRemovesUndone ?? 0}");
+                $" undoAdd={person?.NativeAddsUndone ?? 0} undoRenew={person?.NativeRenewsUndone ?? 0} restoreCapacity={person?.NativeRemovesUndone ?? 0}" +
+                $" removed={Removed(result)}");
+        }
+
+        /// <summary>记录实际清理集合；同组更新与跨组阶段清理分开标明，不把预检计划冒充删除结果。</summary>
+        private static string Removed(SSCRomanceMoodResult result)
+            => result?.Removed == null || result.Removed.Count == 0 ? "none" : string.Join(";", result.Removed.Select(item =>
+                $"{PawnId(item.Other)}:{item.SemanticGroup}:{item.BranchId ?? "unknown"}:{item.Value}:{item.RemainingTicks}:{item.Reason}"));
+
+        /// <summary>自然阶段与附带旧伴侣只报告清理，不伪装成受控记忆发放或原版撤销。</summary>
+        internal static void Cleanup(SSCRomanceMoodFrame frame, SSCRomanceMoodFrame.Person person, Pawn other,
+            SSCRomanceMoodPhase phase, SSCRomanceMoodResult result, bool former, string reason)
+        {
+            if (!SSCLog.VerboseEnabled) return;
+            Write(() => $"cleanup id={frame.DiagnosticId} pawn={PawnId(person?.Pawn)} other={PawnId(other)} order={frame.OccurrenceOrder}" +
+                $" phase={phase} formerPartner={former} result={result?.Kind.ToString() ?? "Skipped"} reason={reason}" +
+                $" native=preserved removed={Removed(result)}");
         }
 
         /// <summary>一帧退出原因只记录一次；已发生事件的两端回执仍分别输出。</summary>

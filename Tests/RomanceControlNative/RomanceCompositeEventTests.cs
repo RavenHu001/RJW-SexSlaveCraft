@@ -95,7 +95,7 @@ internal static partial class Program
     /// <summary>直接验证原版新增、续期及容量淘汰被精准撤销，技术失败保留原版且不复活外部历史。</summary>
     private static void CompositeNativeReplacementTests()
     {
-        foreach(string mode in new[]{"new","renew","capacity","zero","kept","factory-failure"})
+        foreach(string mode in new[]{"new","renew","capacity","zero","updated","factory-failure"})
             Check("composite native replacement "+mode,()=>
             {
                 CommandReset(1f);socialOpinionValue=mode=="zero"?-10:0;var(a,b)=CommandPair(SSCRomanceAction.Romance);
@@ -112,7 +112,7 @@ internal static partial class Program
                         review3CapacityRemovals=0;
                         boundary.Patch(AccessTools.Method(typeof(MemoryThoughtHandler),nameof(MemoryThoughtHandler.RemoveMemory)),prefix:new HarmonyMethod(typeof(Program),nameof(Review3CountCapacityRemoval)));
                     }
-                    if(mode=="kept"){var memory=MoodMemory(-9);h.TryGainMemory(memory);memory.age=765;}
+                    if(mode=="updated"){var memory=SemanticMemory(SSCRomanceCompositeEvent.CommandRomanceRejected,b,raw:60);h.TryGainMemory(memory,b);memory.age=765;}
                     if(mode=="factory-failure")compositeReviewBeforeFactory=()=>throw new InvalidOperationException("composite factory failure");
                     SubmitAndRun(a,b,SSCRomanceAction.Romance,out _);
                     if(mode=="capacity")Equal(1,review3CapacityRemovals);
@@ -121,7 +121,7 @@ internal static partial class Program
                     {
                         Equal(old.Count,h.Memories.Count(m=>m.def==def));foreach(var memory in old){Require(h.Memories.Contains(memory));Equal(54321,memory.age);}
                         var composite=h.Memories.OfType<Thought_MemorySSCCompositeRomance>().ToList();Equal(mode=="zero"?0:1,composite.Count);
-                        if(mode=="kept"){Equal(-9,composite.Single().Data.Value);Equal(765,composite.Single().age);}
+                        if(mode=="updated"){Equal(-3,composite.Single().Data.Value);Equal(0,composite.Single().age);}
                     }
                 }
                 finally{def.stackLimit=savedLimit;boundary.UnpatchAll(boundary.Id);compositeReviewBeforeFactory=null;}

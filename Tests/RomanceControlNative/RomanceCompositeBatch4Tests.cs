@@ -236,10 +236,11 @@ internal static partial class Program
                 RunCompositeEvent(branch, raw);
                 string line = moodDiagnostics.Single(m => m.Contains("event id="));
                 Require(line.Contains("branch=" + branch.Id + " ") && line.Contains("value=" + branch.Value + " ") && line.Contains("native=committed"));
+                Require(line.Contains("semantic=" + SSCRomanceMoodSemantics.Of(branch.Event) + " ") && line.Contains(" order=") && line.Contains(" removed="));
                 Require(line.Contains(branch.Value == 0 ? "result=Zero" : "result=Added"));
                 Require(!line.Contains("corruption", StringComparison.OrdinalIgnoreCase));
             });
-        foreach (string mode in new[] { "renew", "capacity", "kept", "denied", "same-result-controlled", "interrupted", "exception", "sink-fault" })
+        foreach (string mode in new[] { "renew", "capacity", "updated", "denied", "same-result-controlled", "interrupted", "exception", "sink-fault" })
             Check("composite b4 diagnostic actual boundary " + mode, () =>
             {
                 CommandReset(1f); socialOpinionValue = 60; var (a, b) = CommandPair(SSCRomanceAction.Romance); var h = a.needs.mood.thoughts.memories;
@@ -250,7 +251,7 @@ internal static partial class Program
                     Thought_Memory oldNative = null; Thought_MemorySSCCompositeRomance old = null;
                     if (mode is "renew" or "capacity")
                     { native.stackLimit = 1; oldNative = (Thought_Memory)ThoughtMaker.MakeThought(native); h.TryGainMemory(oldNative, mode == "renew" ? b : SocialPawn()); oldNative.age = 7654; }
-                    if (mode == "kept") { old = MoodMemory(-9); h.TryGainMemory(old); old.age = 6543; }
+                    if (mode == "updated") { old = SemanticMemory(SSCRomanceCompositeEvent.CommandRomanceRejected,b,raw:0); h.TryGainMemory(old,b); old.age = 6543; }
                     if (mode == "denied") { eventDeniedDef = DefDatabase<ThoughtDef>.GetNamed(Thought_MemorySSCCompositeRomance.ShortDefName); boundary.Patch(AccessTools.Method(typeof(ThoughtUtility), nameof(ThoughtUtility.CanGetThought)), prefix: new HarmonyMethod(typeof(Program), nameof(EventDenyThought))); }
                     if (mode == "exception") { eventWorkerCallback = () => throw new InvalidOperationException("worker diagnostic test"); boundary.Patch(AccessTools.Method(typeof(InteractionWorker_RomanceAttempt), "Interacted"), postfix: new HarmonyMethod(typeof(Program), nameof(EventWorkerAfter))); }
                     moodDiagnostics.Clear();
@@ -275,7 +276,7 @@ internal static partial class Program
                     if (mode == "sink-fault") { Require(h.Memories.OfType<Thought_MemorySSCCompositeRomance>().Any()); Require(!h.Memories.Any(m => m.def == native)); return; }
                     string line = moodDiagnostics.Single(m => m.Contains("event id="));
                     if (mode == "denied") { Require(line.Contains("result=NotAdmitted") && line.Contains("native=preserved")); Require(h.Memories.Any(m => m.def == native)); }
-                    else if (mode == "kept") { Require(line.Contains("result=Kept") && line.Contains("oldRemainingTicks=173457")); Equal(6543, old.age); }
+                    else if (mode == "updated") { Require(line.Contains("result=Replaced") && line.Contains("oldRemainingTicks=173457")); Require(!h.Memories.Contains(old)); Equal(-7,h.Memories.OfType<Thought_MemorySSCRomance>().Single().Data.Value); }
                     else { Require(line.Contains(mode == "renew" ? "undoRenew=1" : "restoreCapacity=1")); Require(h.Memories.Contains(oldNative)); Equal(7654, oldNative.age); }
                 }
                 finally { native.stackLimit = limit; boundary.UnpatchAll(boundary.Id); eventDeniedDef = null; eventWorkerCallback = null; throwMoodDiagnostic = false; }

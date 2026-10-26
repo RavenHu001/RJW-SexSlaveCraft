@@ -48,7 +48,7 @@ internal static partial class Program
     /// <summary>同结果拒绝仍遵守零值、组内保留与原版准入；仅撤销本次新增／续期／容量淘汰。</summary>
     private static void CompositeSameResultHistoryAudit()
     {
-        foreach (string mode in new[] { "new", "renew", "capacity", "zero", "kept", "denied", "no-rule" })
+        foreach (string mode in new[] { "new", "renew", "capacity", "zero", "updated", "denied", "no-rule" })
             Check("composite replacement audit same-result history " + mode, () =>
             {
                 CommandReset(1f); socialOpinionValue = -10;
@@ -70,7 +70,7 @@ internal static partial class Program
                         handler.TryGainMemory(native, mode == "renew" ? actor : SocialPawn());
                         oldNative = handler.Memories.Single(); oldNative.age = 54321;
                     }
-                    if (mode == "kept") { oldComposite = MoodMemory(-9); handler.TryGainMemory(oldComposite); oldComposite.age = 765; }
+                    if (mode == "updated") { oldComposite = SemanticMemory(SSCRomanceCompositeEvent.ForcedRomanceRejected,actor,stage:3,raw:60); handler.TryGainMemory(oldComposite,actor); oldComposite.age = 765; }
                     if (mode == "denied")
                     {
                         eventDeniedDef = DefDatabase<ThoughtDef>.GetNamed(Thought_MemorySSCCompositeRomance.ShortDefName);
@@ -83,14 +83,14 @@ internal static partial class Program
                     if (oldNative != null) { Require(handler.Memories.Contains(oldNative)); Equal(54321, oldNative.age); }
                     var composites = handler.Memories.OfType<Thought_MemorySSCCompositeRomance>().ToList();
                     Equal(mode == "zero" || preserve ? 0 : 1, composites.Count);
-                    if (oldComposite != null) { Equal(oldComposite, composites.Single()); Equal(765, oldComposite.age); }
+                    if (oldComposite != null) { Require(!handler.Memories.Contains(oldComposite)); Equal(0, composites.Single().age); Equal(3, composites.Single().Data.Value); }
                     if (mode == "no-rule")
                     { Require(!moodDiagnostics.Any(m => m.Contains("event id="))); Require(moodDiagnostics.Any(m => m.Contains("reason=NaturalUncontrolled"))); }
                     else
                     {
                         string receipt = moodDiagnostics.Single(m => m.Contains("event id="));
                         Require(receipt.Contains("original=False accepted=False"));
-                        Require(receipt.Contains(mode == "denied" ? "result=NotAdmitted" : mode == "zero" ? "result=Zero" : mode == "kept" ? "result=Kept" : "result=Added"));
+                        Require(receipt.Contains(mode == "denied" ? "result=NotAdmitted" : mode == "zero" ? "result=Zero" : mode == "updated" ? "result=Replaced" : "result=Added"));
                         Require(receipt.Contains(preserve ? "native=preserved" : "native=committed"));
                         if (mode == "renew") Require(receipt.Contains("undoRenew=1"));
                         if (mode == "capacity") Require(receipt.Contains("restoreCapacity=1"));

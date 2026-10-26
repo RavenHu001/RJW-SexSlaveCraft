@@ -422,7 +422,13 @@ namespace SexSlaveCraft
                 {
                     if (mem == null || mem.def == null) continue;
 
+#if SSC_RW17
+                    // SSC 暂存候选尚未提交，采集会明确返回空；不把空项计入凝胶的历史条数。
+                    var capturedMemory = PersonalityMemoryUtility.Capture(mem);
+                    if (capturedMemory != null) storedMemories.Add(capturedMemory);
+#else
                     storedMemories.Add(PersonalityMemoryUtility.Capture(mem));
+#endif
                 }
             }
 

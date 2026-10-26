@@ -15,8 +15,36 @@ namespace SexSlaveCraft
 
     /// <summary>综合三档；原始好感另存，用于长期资格。</summary>
     public enum SSCRomanceOpinionBand { Disliked = 0, General = 1, Close = 2 }
-    /// <summary>分组是保存事实，不从当前人物状态或剩余期限反推。</summary>
+    /// <summary>只表示短／长期保存载体，不再决定记忆互斥范围。</summary>
     public enum SSCRomanceMoodGroup { None = 0, Short = 1, Long = 2 }
+    /// <summary>同对象的五类经历；阶段、特质、好感、正负及期限不另占名额。</summary>
+    public enum SSCRomanceSemanticGroup { None = 0, PassiveRomance = 1, CommandRomance = 2, PassiveProposal = 3, CommandProposal = 4, Separation = 5 }
+
+    /// <summary>事件到语义的唯一映射；不读取人物、当前关系或尚未定稿的标签。</summary>
+    public static class SSCRomanceMoodSemantics
+    {
+        /// <summary>十三类事件各映射一次；拒婚附带分手只进入关系结束组。</summary>
+        public static SSCRomanceSemanticGroup Of(SSCRomanceCompositeEvent kind)
+        {
+            switch (kind)
+            {
+                case SSCRomanceCompositeEvent.ForcedRomanceAccepted:
+                case SSCRomanceCompositeEvent.ForcedRomanceRejected: return SSCRomanceSemanticGroup.PassiveRomance;
+                case SSCRomanceCompositeEvent.CommandRomanceAccepted:
+                case SSCRomanceCompositeEvent.CommandRomanceRejected: return SSCRomanceSemanticGroup.CommandRomance;
+                case SSCRomanceCompositeEvent.ForcedProposalAccepted:
+                case SSCRomanceCompositeEvent.ForcedProposalRejected: return SSCRomanceSemanticGroup.PassiveProposal;
+                case SSCRomanceCompositeEvent.CommandProposalAccepted:
+                case SSCRomanceCompositeEvent.CommandProposalRejected: return SSCRomanceSemanticGroup.CommandProposal;
+                case SSCRomanceCompositeEvent.ForcedProposalRejectedAndSeparated:
+                case SSCRomanceCompositeEvent.CommandProposalRejectedAndSeparated:
+                case SSCRomanceCompositeEvent.CommandEndLover:
+                case SSCRomanceCompositeEvent.CommandEndFiance:
+                case SSCRomanceCompositeEvent.CommandDivorce: return SSCRomanceSemanticGroup.Separation;
+                default: return SSCRomanceSemanticGroup.None;
+            }
+        }
+    }
     /// <summary>持续思想的当前有效限制；不把三个状态相加，也不虚构目标好感。</summary>
     public enum SSCRomanceControlState { None = 0, Active = 1, Passive = 2, Both = 3 }
 
@@ -48,6 +76,10 @@ namespace SexSlaveCraft
         public SSCRomanceOpinionBand OpinionBand;
         public SSCRomanceMoodGroup Group;
         public int NominalDurationTicks;
+        // 真实事件确认时分配的保存顺序；不是诊断编号、人格凭据或恢复时的新获得时间。
+        public long OccurrenceOrder;
+        /// <summary>语义由已保存事件唯一派生，避免额外保存一份可能不一致的分类。</summary>
+        public SSCRomanceSemanticGroup SemanticGroup => SSCRomanceMoodSemantics.Of(CompositeEvent);
         /// <summary>只识别本版格式；实际数据完整性由目录查询检查，不把此属性当成发放授权。</summary>
         public bool IsComposite => DataVersion == CompositeVersion;
         /// <summary>值字段独立复制，历史主人保留原引用；不带原人格运行凭据。</summary>
@@ -69,6 +101,9 @@ namespace SexSlaveCraft
             Scribe_Values.Look(ref OpinionBand, "opinionBand");
             Scribe_Values.Look(ref Group, "group");
             Scribe_Values.Look(ref NominalDurationTicks, "nominalDurationTicks", 0);
+            Scribe_Values.Look(ref OccurrenceOrder, "occurrenceOrder", 0L);
+            // 载入人格凝胶等离体历史同样抬高水位，但绝不重新分配事件顺序。
+            if (Scribe.mode == LoadSaveMode.PostLoadInit) SSCRomanceMoodOrder.Observe(OccurrenceOrder);
         }
     }
 
