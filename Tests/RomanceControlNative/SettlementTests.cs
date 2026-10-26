@@ -31,7 +31,7 @@ internal static partial class Program
         {
             ResetSocial(1f); var a = SocialSlave(); var b = SocialPawn();
             Require(a.interactions.TryInteractWith(b, InteractionDefOf.RomanceAttempt));
-            Require(!a.relations.DirectRelationExists(PawnRelationDefOf.Lover, b)); Equal(1, a.needs.mood.thoughts.memories.Memories.Count);
+            Require(!a.relations.DirectRelationExists(PawnRelationDefOf.Lover, b)); Equal(2, a.needs.mood.thoughts.memories.Memories.Count);
         });
         foreach (var relation in new[] { PawnRelationDefOf.Lover, PawnRelationDefOf.Fiance, PawnRelationDefOf.Spouse })
             Check("batch2 full native breakup retains SSC bond and reward " + relation.defName, () =>
@@ -107,11 +107,12 @@ internal static partial class Program
                 Require(a.interactions.TryInteractWith(b, SocialDef(action)));
                 Equal(acceptMaster, a.relations.DirectRelationExists(action == SSCRomanceAction.Romance ? PawnRelationDefOf.Lover : PawnRelationDefOf.Fiance, b));
             });
-        Check("batch2 passive rejection defeats native certain acceptance and retains low-opinion memory", () =>
+        Check("batch2 passive rejection defeats native certain acceptance and replaces own low-opinion mood", () =>
         {
             ResetSocial(0f); socialChance = 1; socialOpinionValue = -100; var a = SocialPawn(); var b = SocialSlave(); Comp(b).romanceConfig = new() { allowAcceptRomance = false };
             Require(a.interactions.TryInteractWith(b, InteractionDefOf.RomanceAttempt)); Require(!a.relations.DirectRelationExists(PawnRelationDefOf.Lover, b));
-            Require(b.needs.mood.thoughts.memories.Memories.Any(m => m.def == ThoughtDefOf.FailedRomanceAttemptOnMeLowOpinionMood));
+            Require(!b.needs.mood.thoughts.memories.Memories.Any(m => m.def == ThoughtDefOf.FailedRomanceAttemptOnMeLowOpinionMood));
+            Equal("E03-S4-N-D",b.needs.mood.thoughts.memories.Memories.OfType<Thought_MemorySSCCompositeRomance>().Single().Data.BranchId);
         });
         Check("batch2 controlled initiator denial wins before recipient master guarantee", () =>
         {

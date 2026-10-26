@@ -23,11 +23,27 @@ namespace SexSlaveCraft
         }
     }
 
-    /// <summary>两个新数值载体共用的记忆类；分支身份在 Data 中，旧记忆类及旧 Def 阶段不重排。</summary>
+    /// <summary>两个新数值载体共用的记忆类；分支身份在 Data 中，通用基类仅负责本方案的合并及历史恢复。</summary>
     public sealed class Thought_MemorySSCCompositeRomance : Thought_MemorySSCRomance
     {
         public const string ShortDefName = "SSC_Romance_CompositeShort";
         public const string LongDefName = "SSC_Romance_CompositeLong";
+
+        /// <summary>零值没有可构造记忆，也必须验证替代载体完整，缺定义不能冒充合法零值吞掉原版反馈。</summary>
+        internal static bool DefinitionsReady
+        {
+            get
+            {
+                foreach (string name in new[] { ShortDefName, LongDefName })
+                {
+                    var carrier = DefDatabase<ThoughtDef>.GetNamedSilentFail(name);
+                    if (carrier?.stages?.Count != 31 || carrier.stackLimit != 1 || carrier.stackLimitForSameOtherPawn == 0 ||
+                        carrier.showBubble || carrier.thoughtToMake != null || carrier.replaceThoughts?.Count > 0) return false;
+                    for (int index = 0; index < 31; index++) if (!ValidCarrier(carrier, name, index, index - 15)) return false;
+                }
+                return true;
+            }
+        }
 
         /// <summary>只识别本系统的两个载体，历史回退也不能借其他 Def 创建伪装记忆。</summary>
         private bool IsCarrier => def?.defName == ShortDefName || def?.defName == LongDefName;

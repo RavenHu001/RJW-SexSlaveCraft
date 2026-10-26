@@ -1,20 +1,24 @@
-// AI 辅助生成
+// AI 辅助生成：十三类真实综合事件；查询、菜单及命令创建不生成心情。
 using System;
+using System.Collections.Generic;
 using RimWorld;
 using Verse;
 
 namespace SexSlaveCraft
 {
-    /// <summary>一个共同互动的快照与 worker 观察；只活在调用栈上，不存档、不重试。</summary>
+    /// <summary>一次共同互动的原人格快照和完成证据；只在调用栈存在，不保存或重试。</summary>
     public sealed class SSCRomanceMoodFrame
     {
         internal Pawn Actor, Target;
         internal SSCRomanceAction Action;
         internal Person ActorState, TargetState;
-        internal bool Command, Entered, Completed, Settled, DecisionKnown, OriginalAccepted, Accepted, NativeLoss;
+        internal bool Command, Entered, Completed, Settled, DecisionKnown, OriginalAccepted, Accepted;
+        internal bool ProposalRejected, ProposalSeparated;
         internal SSCRomanceSetting? Rule;
         internal SSCRomanceMoodFrame Previous;
         internal SSCRomanceMoodData ActorEvent, TargetEvent;
+        internal readonly List<SSCRomanceNativeMood.Site> NativeSites = new List<SSCRomanceNativeMood.Site>();
+        internal readonly List<SSCRomanceNativeMood.Entry> NativeEntries = new List<SSCRomanceNativeMood.Entry>();
 
         internal sealed class Person
         {
@@ -23,124 +27,145 @@ namespace SexSlaveCraft
             internal CompSexSlaveTraining Comp;
             internal Need_Mood Mood;
             internal MemoryThoughtHandler Handler;
+            internal Pawn_RelationsTracker Relations;
             internal bool Applicable;
             internal SSCRomanceMoodData Data;
         }
     }
 
-    /// <summary>真实互动驱动心情；查询和 UI 不调用此类，消息标志与心情结算完全分开。</summary>
+    /// <summary>沿现有 tracker／worker／接受覆盖入口观察实际事件，不修改关系或额外抽概率。</summary>
     public static class SSCRomanceMoodEvents
     {
         [ThreadStatic] private static SSCRomanceMoodFrame current;
+        internal static SSCRomanceMoodFrame CurrentWorker => current?.Entered == true &&
+            ReferenceEquals(current, SSCRomanceExecutionScope.MoodFrame) ? current : null;
 
-        /// <summary>在共同入口首个副作用之前冻结双方状态；原版概率比较稍后单独观察。</summary>
+        /// <summary>首个副作用之前冻结双方；任意查询回调后仍由共同入口进行最终准入复查。</summary>
         public static SSCRomanceMoodFrame Capture(Pawn actor, Pawn target, SSCRomanceAction action, bool command)
             => new SSCRomanceMoodFrame { Actor = actor, Target = target, Action = action, Command = command,
                 ActorState = CapturePerson(actor, target), TargetState = CapturePerson(target, actor) };
 
-        /// <summary>持有原需求和处理器实例，防止同一身体更换人格后领取前一人格的事件。</summary>
+        /// <summary>先保存载体再读取可回调业务属性；受虐狂使用原版已排除 Suppressed 的 HasTrait。</summary>
         private static SSCRomanceMoodFrame.Person CapturePerson(Pawn pawn, Pawn other)
         {
+            var person = new SSCRomanceMoodFrame.Person { Pawn = pawn, Token = SSCPersonalityRuntimeUtility.Capture(pawn),
+                Comp = pawn?.TryGetComp<CompSexSlaveTraining>(), Mood = pawn?.needs?.mood,
+                Handler = pawn?.needs?.mood?.thoughts?.memories, Relations = pawn?.relations };
             var state = SSCRomanceResolver.Resolve(pawn);
-            return new SSCRomanceMoodFrame.Person { Pawn = pawn, Token = SSCPersonalityRuntimeUtility.Capture(pawn), Comp = state.Comp,
-                Mood = pawn?.needs?.mood, Handler = pawn?.needs?.mood?.thoughts?.memories, Applicable = state.Applicable,
-                Data = new SSCRomanceMoodData { Stage = state.Stage, Master = state.Master,
-                    Masochist = SSCRomanceMoodDefOf.Masochist != null && pawn?.story?.traits?.HasTrait(SSCRomanceMoodDefOf.Masochist) == true,
-                    Corruption = pawn?.needs?.TryGetNeed<Need_Corruption>()?.CurLevel,
-                    Opinion = SSCRomanceMoodRules.OpinionCategory(pawn?.relations?.OpinionOf(other) ?? 0), Relation = Relation(pawn, other) } };
+            person.Applicable = state.Applicable;
+            int raw = pawn?.relations?.OpinionOf(other) ?? 0;
+            person.Data = new SSCRomanceMoodData { Stage = state.Stage, Master = state.Master, RawOpinion = raw,
+                HasRawOpinion = true, OpinionBand = SSCRomanceMoodCatalog.ClassifyOpinion(raw),
+                Masochist = SSCRomanceMoodDefOf.Masochist != null && pawn?.story?.traits?.HasTrait(SSCRomanceMoodDefOf.Masochist) == true,
+                Relation = Relation(pawn, other) };
+            return person;
         }
 
-        /// <summary>明确按配偶、婚约、恋人顺序冻结旧关系，不从事后 Ex 关系反推。</summary>
+        /// <summary>按配偶、婚约、恋人顺序读取直接关系，不从事后 Ex 关系猜测原关系。</summary>
         private static SSCRomanceOldRelation Relation(Pawn pawn, Pawn other)
             => pawn?.relations?.DirectRelationExists(PawnRelationDefOf.Spouse, other) == true ? SSCRomanceOldRelation.Spouse :
                 pawn?.relations?.DirectRelationExists(PawnRelationDefOf.Fiance, other) == true ? SSCRomanceOldRelation.Fiance :
                 pawn?.relations?.DirectRelationExists(PawnRelationDefOf.Lover, other) == true ? SSCRomanceOldRelation.Lover : SSCRomanceOldRelation.None;
 
-        /// <summary>只有当前 tracker 帧能领一次原 worker；直接调用和嵌套调用不能借外层命令。</summary>
+        /// <summary>一次匹配 worker 占用一帧；直接和嵌套调用也压空帧，不能借外层命令。</summary>
         public static SSCRomanceMoodFrame EnterWorker(SSCRomanceMoodFrame frame, Pawn actor, Pawn target, SSCRomanceAction action)
         {
-            // 无匹配 tracker 的直接 worker 也压一个空帧，屏蔽外层观察，避免嵌套借用原始判定。
             if (frame == null || frame.Entered || frame.Actor != actor || frame.Target != target || frame.Action != action)
             { var empty = new SSCRomanceMoodFrame { Previous = current }; current = empty; return empty; }
             frame.Entered = true; frame.Previous = current; current = frame; return frame;
         }
 
-        /// <summary>仅登记真实 worker 的这一次比较；不重抽随机、不以规则开启代替结果改变。</summary>
+        /// <summary>登记原版一次比较及本次覆盖；开关开启但判定相同不代表受控被动事件。</summary>
         public static void Observe(Pawn actor, Pawn target, SSCRomanceAction action, bool original, bool accepted, SSCRomanceSetting? rule)
         {
-            var f = current;
-            if (f == null || !ReferenceEquals(f, SSCRomanceExecutionScope.MoodFrame) || f.Actor != actor || f.Target != target || f.Action != action || f.DecisionKnown) return;
-            f.DecisionKnown = true; f.OriginalAccepted = original; f.Accepted = accepted; f.Rule = rule;
+            var frame = CurrentWorker;
+            if (frame == null || frame.Actor != actor || frame.Target != target || frame.Action != action || frame.DecisionKnown) return;
+            frame.DecisionKnown = true; frame.OriginalAccepted = original; frame.Accepted = accepted; frame.Rule = rule;
         }
 
-        /// <summary>原 worker 及同链补丁都未抛异常才结算；后续 Job 清理不撤销已确认经历。</summary>
+        /// <summary>包装原生求婚语句包 Add，确认真正进入的拒婚／附带分手分支，不增加随机取样。</summary>
+        internal static void ObserveProposalPack(List<RulePackDef> packs, RulePackDef pack)
+        {
+            packs.Add(pack);
+            var frame = CurrentWorker;
+            if (frame?.Action != SSCRomanceAction.Proposal) return;
+            if (pack == RulePackDefOf.Sentence_MarriageProposalRejected) frame.ProposalRejected = true;
+            if (pack == RulePackDefOf.Sentence_MarriageProposalRejectedBrokeUp) frame.ProposalSeparated = true;
+        }
+
+        /// <summary>正常完成、原判定及关系证据一致才结算；先占用去重，双方各自准入和替换。</summary>
         public static void Finish(SSCRomanceMoodFrame frame, bool originalRan, Exception exception)
         {
             if (frame == null || current != frame) return;
             try
             {
-                if (!frame.Entered || !originalRan || exception != null || frame.Settled) return;
-                // 外部 worker 补丁可能替换人格或关系载体；必须先判无效，不能在 Finalizer 中新增异常。
-                if (!CurrentPerson(frame.ActorState) || !CurrentPerson(frame.TargetState) ||
-                    frame.Actor?.relations == null || frame.Target?.relations == null) return;
-                frame.Completed = true;
-                bool changed = frame.Action == SSCRomanceAction.Breakup ? Relation(frame.Actor, frame.Target) == SSCRomanceOldRelation.None &&
-                    frame.ActorState.Data.Relation != SSCRomanceOldRelation.None : frame.Actor.relations.DirectRelationExists(
-                        frame.Action == SSCRomanceAction.Romance ? PawnRelationDefOf.Lover : PawnRelationDefOf.Fiance, frame.Target);
-                if (frame.Action == SSCRomanceAction.Breakup ? !changed : !frame.DecisionKnown || frame.Accepted != changed) return;
-                // 一次占用在任何记忆回调之前；外部补丁重入也不能为本事件再次发放。
-                frame.Settled = true;
-                if (!CurrentPerson(frame.ActorState) || !CurrentPerson(frame.TargetState)) return;
-                if (frame.Command && frame.ActorState.Applicable && frame.ActorState.Data.Stage >= 4)
+                if (!frame.Entered || !originalRan || exception != null || frame.Settled ||
+                    !CurrentPerson(frame.ActorState) || !CurrentPerson(frame.TargetState) ||
+                    frame.Actor?.relations == null || frame.Target?.relations == null || !SSCRomanceNativeMoodHooks.Ready) return;
+                var after = Relation(frame.Actor, frame.Target);
+                if (frame.Action == SSCRomanceAction.Breakup)
                 {
-                    var kind = frame.Action == SSCRomanceAction.Romance ? SSCRomanceMoodEvent.CommandRomance :
-                        frame.Action == SSCRomanceAction.Proposal ? SSCRomanceMoodEvent.CommandProposal : SSCRomanceMoodEvent.CommandBreakup;
-                    // 发起者经历来自合法命令；接收者命中的保证不能记成发起者自己的控制规则。
-                    frame.ActorEvent = Award(frame.ActorState, frame.Target, kind, null);
-                    if (frame.Action == SSCRomanceAction.Breakup && !frame.NativeLoss)
-                        Award(frame.ActorState, frame.Target, SSCRomanceMoodEvent.RelationshipLoss, null);
+                    if (frame.ActorState.Data.Relation == SSCRomanceOldRelation.None || after != SSCRomanceOldRelation.None) return;
                 }
+                else
+                {
+                    if (!frame.DecisionKnown || frame.Accepted != (after == (frame.Action == SSCRomanceAction.Romance ?
+                        SSCRomanceOldRelation.Lover : SSCRomanceOldRelation.Fiance))) return;
+                    if (frame.Action == SSCRomanceAction.Proposal && !frame.Accepted &&
+                        (!frame.ProposalRejected || frame.ProposalSeparated != (after == SSCRomanceOldRelation.None) ||
+                         (!frame.ProposalSeparated && after != SSCRomanceOldRelation.Lover))) return;
+                }
+                frame.Completed = frame.Settled = true;
+                if (frame.Command && frame.ActorState.Applicable && frame.ActorState.Data.Stage == 4)
+                    frame.ActorEvent = Award(frame, frame.ActorState, frame.Target, CommandEvent(frame), null);
                 if (frame.DecisionKnown && frame.OriginalAccepted != frame.Accepted && frame.Rule.HasValue &&
                     frame.TargetState.Applicable && frame.TargetState.Data.Stage >= 3)
-                    frame.TargetEvent = Award(frame.TargetState, frame.Actor, frame.Accepted ? SSCRomanceMoodEvent.ForcedAcceptance : SSCRomanceMoodEvent.ForcedRefusal, frame.Rule);
+                    frame.TargetEvent = Award(frame, frame.TargetState, frame.Actor, PassiveEvent(frame), frame.Rule);
             }
             finally { current = frame.Previous; }
         }
 
-        /// <summary>复查原人格、原组件和原需求，不要求历史事件在结算后仍维持原绑定或开关。</summary>
-        private static bool CurrentPerson(SSCRomanceMoodFrame.Person person)
-            => person.Pawn != null && !person.Pawn.Destroyed && !person.Pawn.Discarded && !SSCPersonalityRuntimeUtility.IsMutating(person.Pawn) &&
-                SSCPersonalityRuntimeUtility.IsCurrent(person.Pawn, person.Token) && person.Pawn.TryGetComp<CompSexSlaveTraining>() == person.Comp &&
-                person.Pawn.needs?.mood == person.Mood && person.Pawn.needs?.mood?.thoughts?.memories == person.Handler;
-
-        /// <summary>原生准入负责获得资格，记忆自身负责组内替换；零值只保留事件背景，不刷新历史。</summary>
-        private static SSCRomanceMoodData Award(SSCRomanceMoodFrame.Person person, Pawn other, SSCRomanceMoodEvent kind, SSCRomanceSetting? rule)
+        /// <summary>命令按真实结果及互动前关系唯一分类，失败附带分手不再追加独立损失。</summary>
+        private static SSCRomanceCompositeEvent CommandEvent(SSCRomanceMoodFrame frame)
         {
-            var data = person.Data.Copy(); data.Kind = kind; data.Rule = rule ?? default; data.HasRule = rule.HasValue;
-            bool loss = kind == SSCRomanceMoodEvent.RelationshipLoss;
-            data.Value = loss ? SSCRomanceMoodRules.Loss(data.Relation, data.Opinion) :
-                SSCRomanceMoodRules.Experience(kind, data.Stage, data.Masochist, data.Corruption, data.Opinion);
-            var def = loss ? SSCRomanceMoodDefOf.SSC_Romance_Loss : SSCRomanceMoodDefOf.SSC_Romance_Experience;
-            if (!CurrentPerson(person)) return null;
-            if (data.Value == 0 || def == null || person.Handler == null) return data;
-            var memory = (Thought_MemorySSCRomance)ThoughtMaker.MakeThought(def, data.Value + (loss ? 5 : 6));
-            // ThoughtMaker.Init 也允许外部回调；重新核对但不重新捕获原人格 token。
-            if (!CurrentPerson(person)) return null;
-            memory.Data = data.Copy(); memory.durationTicksOverride = SSCRomanceMoodRules.Duration(kind, data.Relation);
-            memory.CanApply = () => CurrentPerson(person);
-            try { person.Handler.TryGainMemory(memory, other); }
-            finally { memory.CanApply = null; }
-            return CurrentPerson(person) ? data : null;
+            if (frame.Action == SSCRomanceAction.Romance) return frame.Accepted ? SSCRomanceCompositeEvent.CommandRomanceAccepted : SSCRomanceCompositeEvent.CommandRomanceRejected;
+            if (frame.Action == SSCRomanceAction.Proposal) return frame.Accepted ? SSCRomanceCompositeEvent.CommandProposalAccepted :
+                frame.ProposalSeparated ? SSCRomanceCompositeEvent.CommandProposalRejectedAndSeparated : SSCRomanceCompositeEvent.CommandProposalRejected;
+            return frame.ActorState.Data.Relation == SSCRomanceOldRelation.Spouse ? SSCRomanceCompositeEvent.CommandDivorce :
+                frame.ActorState.Data.Relation == SSCRomanceOldRelation.Fiance ? SSCRomanceCompositeEvent.CommandEndFiance : SSCRomanceCompositeEvent.CommandEndLover;
         }
+        /// <summary>被动只分类实际改变的接受结果；拒婚结果来自原生附带分手分支观察。</summary>
+        private static SSCRomanceCompositeEvent PassiveEvent(SSCRomanceMoodFrame frame)
+            => frame.Action == SSCRomanceAction.Romance ? (frame.Accepted ? SSCRomanceCompositeEvent.ForcedRomanceAccepted : SSCRomanceCompositeEvent.ForcedRomanceRejected) :
+                frame.Accepted ? SSCRomanceCompositeEvent.ForcedProposalAccepted : frame.ProposalSeparated ?
+                    SSCRomanceCompositeEvent.ForcedProposalRejectedAndSeparated : SSCRomanceCompositeEvent.ForcedProposalRejected;
 
-        /// <summary>仅在原版准入后实际调用合并时登记；已有零龄记忆本身不能证明本次获得。</summary>
-        public static void ObserveAdmittedLoss(Thought_Memory memory)
+        /// <summary>继续复查互动前的实例，不捕获新 token；关系载体替换也不能借用原事件。</summary>
+        internal static bool CurrentPerson(SSCRomanceMoodFrame.Person person)
+            => person?.Pawn != null && !person.Pawn.Dead && !person.Pawn.Destroyed && !person.Pawn.Discarded &&
+                !SSCPersonalityRuntimeUtility.IsMutating(person.Pawn) && SSCPersonalityRuntimeUtility.IsCurrent(person.Pawn, person.Token) &&
+                person.Pawn.TryGetComp<CompSexSlaveTraining>() == person.Comp && person.Pawn.needs?.mood == person.Mood &&
+                person.Pawn.needs?.mood?.thoughts?.memories == person.Handler && person.Pawn.relations == person.Relations;
+
+        /// <summary>目录只决定分支，原生准入及第二批提交负责获得；原版撤销纳入同一请求提交边界。</summary>
+        private static SSCRomanceMoodData Award(SSCRomanceMoodFrame frame, SSCRomanceMoodFrame.Person person, Pawn other,
+            SSCRomanceCompositeEvent kind, SSCRomanceSetting? rule)
         {
-            var f = current;
-            if (f == null || !ReferenceEquals(f, SSCRomanceExecutionScope.MoodFrame) || f.Action != SSCRomanceAction.Breakup || !f.Command || memory?.pawn != f.Actor || memory.otherPawn != f.Target ||
-                memory.pawn.needs?.mood?.thoughts?.memories != f.ActorState.Handler) return;
-            string name = memory.def?.defName;
-            if (name == "BrokeUpWithMeMood" || name == "DivorcedMeMood") f.NativeLoss = true;
+            try
+            {
+                if (!CurrentPerson(person) || person.Handler == null || !SSCRomanceMoodCatalog.TryResolve(kind, person.Data.Stage,
+                    person.Data.Masochist, person.Data.RawOpinion, out var selection)) return null;
+                var context = person.Data.Copy(); context.Rule = rule ?? default; context.HasRule = rule.HasValue;
+                var request = new SSCRomanceMoodRequest(person, other, selection, context,
+                    () => SSCRomanceNativeMood.TryUndo(frame, person, false), () => SSCRomanceNativeMood.TryUndo(frame, person, true));
+                var result = request.Execute();
+                return result.Completed ? selection.CreateSnapshot(context) : null;
+            }
+            catch (Exception)
+            {
+                // 原版观察／资格查询可被其他补丁包装；技术失败不能从 worker Finalizer 制造新异常。
+                return null;
+            }
         }
     }
 }

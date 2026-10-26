@@ -21,12 +21,15 @@ internal static partial class Program
         bootstrap = true;
         SetupInteractionDefs(repo);
         SetupMoodDefs();
+        SetupCompositeCarriers(repo);
         AccessTools.Field(typeof(TickManager), "gameStartAbsTick").SetValue(Current.Game.tickManager, 3600000);
         AccessTools.Field(typeof(Game), "playLog").SetValue(Current.Game, new PlayLog());
         // 边界签名缺失必须带明确入口报错，不能静默漏装后以假环境取得通过。
         void Prefix(Type type, string method, string boundary) => harmony.Patch(AccessTools.Method(type, method) ?? throw new Exception(type.FullName + "." + method), prefix: new HarmonyMethod(typeof(Program), boundary));
         Prefix(typeof(Pawn_InteractionsTracker), "CanInteractNowWith", nameof(SocialCanInteract));
         Prefix(typeof(Pawn_InteractionsTracker), "InteractedTooRecentlyToInteract", nameof(NoCooldown));
+        // tracker 在调用已隔离的气泡工厂前仍求取贴图参数；直接隔离这一纯图形入口，避免依赖资源包缓存。
+        Prefix(typeof(InteractionDef), "GetSymbol", nameof(NoTexture));
         Prefix(typeof(InteractionWorker_RomanceAttempt), "SuccessChance", nameof(SocialProbability));
         Prefix(typeof(InteractionWorker_MarriageProposal), "AcceptanceChance", nameof(SocialProbability));
         Prefix(typeof(InteractionWorker_RomanceAttempt), "CanCreatePsychicBondBetween", nameof(NoCooldown));
@@ -44,8 +47,9 @@ internal static partial class Program
         harmony.Patch(AccessTools.PropertyGetter(typeof(Rand), "Value"), prefix: new HarmonyMethod(typeof(Program), nameof(SocialRoll)));
         // 使用生产特性与同一 Harmony 3 安装，不链接副本、不在宿主重写策略或指令匹配。
         foreach (var type in new[] { typeof(Harmony_SSCRomanceRandomSelection), typeof(Harmony_SSCRomanceInteraction),
-            typeof(Harmony_SSCRomanceAcceptance), typeof(Harmony_SSCRomanceMoodWorker), typeof(Harmony_SSCRomanceMoodCorruption), typeof(Harmony_SSCRomanceMoodLoss), typeof(Harmony_SSCRomanceMoodLog), typeof(Harmony_SSCRomanceMenu), typeof(Harmony_SSCRomanceRjwClick),
+            typeof(Harmony_SSCRomanceAcceptance), typeof(Harmony_SSCRomanceMoodWorker), typeof(Harmony_SSCRomanceMoodCorruption), typeof(Harmony_SSCRomanceMoodLog), typeof(Harmony_SSCRomanceMenu), typeof(Harmony_SSCRomanceRjwClick),
             typeof(Patch_DogSpecialization_AnimalHandling) }) harmony.CreateClassProcessor(type).Patch();
+        foreach(string name in new[]{"Worker","Definition","Memory","Renew"}) harmony.CreateClassProcessor(production.GetType("SexSlaveCraft.Harmony_SSCRomanceNative"+name)).Patch();
         bootstrap = false;
         Check("batch2 actual game Harmony 3 and production annotated patches installed", () =>
         {
@@ -128,11 +132,25 @@ internal static partial class Program
         human.race.lifeStageAges.Add(new LifeStageAge { minAge = 0, def = new LifeStageDef { defName = "FixtureAdult", developmentalStage = DevelopmentalStage.Adult } });
         foreach (string name in new[] { "Lover", "Fiance", "Spouse", "ExLover", "ExSpouse" })
         { var def = new PawnRelationDef { defName = name, reflexive = true, workerClass = typeof(PawnRelationWorker) }; DefDatabase<PawnRelationDef>.Add(def); AccessTools.Field(typeof(PawnRelationDefOf), name).SetValue(null, def); }
-        foreach (string name in new[] { "RebuffedMyRomanceAttempt", "FailedRomanceAttemptOnMe", "FailedRomanceAttemptOnMeLowOpinionMood", "RejectedMyProposal", "RejectedMyProposalMood", "IRejectedTheirProposal", "BrokeUpWithMe", "GotMarried", "DivorcedMe", "HoneymoonPhase", "CheatedOnMe" })
+        foreach (string name in new[] { "RebuffedMyRomanceAttempt", "RebuffedMyRomanceAttemptMood", "FailedRomanceAttemptOnMe", "FailedRomanceAttemptOnMeLowOpinionMood", "RejectedMyProposal", "RejectedMyProposalMood", "IRejectedTheirProposal", "BrokeUpWithMe", "GotMarried", "DivorcedMe", "HoneymoonPhase", "CheatedOnMe" })
         {
             var def = new ThoughtDef { defName = name, thoughtClass = typeof(Thought_Memory), durationDays = 5, stages = new() { new ThoughtStage { label = name } } };
             DefDatabase<ThoughtDef>.Add(def); AccessTools.Field(typeof(ThoughtDefOf), name)?.SetValue(null, def);
         }
+        foreach(var names in new[]{("RebuffedMyRomanceAttempt","RebuffedMyRomanceAttemptMood",-5f,3f),("RejectedMyProposal","RejectedMyProposalMood",-18f,25f),("BrokeUpWithMe","BrokeUpWithMeMood",-15f,25f)})
+        {
+            var parent=DefDatabase<ThoughtDef>.GetNamed(names.Item1);parent.thoughtClass=typeof(Thought_MemorySocial);parent.stages[0].baseOpinionOffset=-10;
+            var child=DefDatabase<ThoughtDef>.GetNamedSilentFail(names.Item2);
+            if(child==null){child=new ThoughtDef{defName=names.Item2,thoughtClass=typeof(Thought_Memory),stages=new(){new ThoughtStage{label="Native mood {0}"}},showBubble=false};DefDatabase<ThoughtDef>.Add(child);}
+            // 原版按格式化标签决定不同对象是否同组；保留对象占位，才能真正执行容量淘汰而非误走 Renew。
+            child.stages[0].label="Native mood {0}";
+            child.stages[0].baseMoodEffect=names.Item3;child.durationDays=names.Item4;child.stackLimit=5;parent.thoughtToMake=child;
+            AccessTools.Field(typeof(ThoughtDefOf),names.Item2)?.SetValue(null,child);
+        }
+        ThoughtDefOf.FailedRomanceAttemptOnMeLowOpinionMood.stages[0].baseMoodEffect=-3;ThoughtDefOf.FailedRomanceAttemptOnMeLowOpinionMood.durationDays=3;
+        ThoughtDefOf.FailedRomanceAttemptOnMe.thoughtClass=typeof(Thought_MemorySocial);
+        ThoughtDefOf.IRejectedTheirProposal.thoughtClass=typeof(Thought_MemorySocial);
+        ThoughtDefOf.FailedRomanceAttemptOnMeLowOpinionMood.stackLimit=5;
         foreach (var field in typeof(RulePackDefOf).GetFields().Where(f => f.Name.StartsWith("Sentence_RomanceAttempt") || f.Name.StartsWith("Sentence_MarriageProposal")))
             field.SetValue(null, new RulePackDef { defName = field.Name });
         InteractionDefOf.RomanceAttempt = SocialInteraction("RomanceAttempt", typeof(InteractionWorker_RomanceAttempt));

@@ -7,7 +7,7 @@ using Verse;
 
 namespace SexSlaveCraft
 {
-    /// <summary>原生 CopyNeeds 直接恢复列表；该调用栈内的 CopyFrom 无需留下单条新获得的兼容标记。</summary>
+    /// <summary>原生 CopyNeeds 直接恢复列表；该调用栈内的 CopyFrom 无需留下单条历史恢复标记。</summary>
     internal static class SSCRomanceMoodCopyScope
     {
         [ThreadStatic] private static int depth;

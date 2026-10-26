@@ -9,37 +9,11 @@ internal static partial class Program
     private static Action<Thought_Memory> compositeSubmitCallback;
     private static Action compositeAdmissionAction;
 
-    /// <summary>新旧载体任意方向都共享容量，比较冻结值，专项独立于尚未切换的互动分类。</summary>
+    /// <summary>综合两个载体各自共享容量，比较冻结值，专项独立于尚未切换的互动分类。</summary>
     private static void RomanceCompositeGroupTests()
     {
-        var carriers = new[] { MoodMemory(-2), MoodMemory(-2,true), CompositeMemory(-2,SSCRomanceMoodGroup.Short), CompositeMemory(-2,SSCRomanceMoodGroup.Long) };
-        for (int a=0;a<4;a++) for(int b=0;b<4;b++)
-        {
-            int left=a,right=b;
-            Check($"composite semantic group symmetry {a}/{b}",()=>
-            { Equal(left%2==right%2,carriers[left].GroupsWith(carriers[right]));Equal(left%2==right%2,carriers[right].GroupsWith(carriers[left])); });
-        }
-        foreach(int oldValue in new[]{-6,-2,2,6}) foreach(int newValue in new[]{-9,-6,-2,2,6,15})
-            Check($"composite legacy to new short {oldValue}/{newValue}",()=>
-            {
-                var p=SocialPawn();var old=MoodMemory(oldValue);p.needs.mood.thoughts.memories.TryGainMemory(old,SocialPawn());old.age=12345;
-                // 期望来自独立列举的强度顺序：负面从 -9 到 -2，其次正面从 15 到 2。
-                int[] priority={-9,-6,-2,15,6,2};bool wins=Array.IndexOf(priority,newValue)<=Array.IndexOf(priority,oldValue);
-                var result=new SSCRomanceMoodRequest(p,SocialPawn(),CompositeSelection(newValue,SSCRomanceMoodGroup.Short)).Execute();
-                Equal(wins?(newValue==oldValue?SSCRomanceMoodResultKind.Refreshed:SSCRomanceMoodResultKind.Replaced):SSCRomanceMoodResultKind.Kept,result.Kind);
-                var actual=p.needs.mood.thoughts.memories.Memories.OfType<Thought_MemorySSCRomance>().Single();
-                Equal(wins?newValue:oldValue,actual.Data.Value);Equal(wins?0:12345,actual.age);Equal(wins,result.Applied);Require(result.Completed);
-                Require(wins?actual is Thought_MemorySSCCompositeRomance:ReferenceEquals(old,actual));
-            });
-        foreach(int oldValue in new[]{-9,-6,-2,2,6,15}) foreach(int newValue in new[]{-6,-2,2,6})
-            Check($"composite new to legacy short {oldValue}/{newValue}",()=>
-            {
-                var p=SocialPawn();var old=CompositeMemory(oldValue,SSCRomanceMoodGroup.Short);p.needs.mood.thoughts.memories.TryGainMemory(old);old.age=123;
-                p.needs.mood.thoughts.memories.TryGainMemory(MoodMemory(newValue));
-                int[] priority={-9,-6,-2,15,6,2};bool wins=Array.IndexOf(priority,newValue)<=Array.IndexOf(priority,oldValue);
-                var actual=p.needs.mood.thoughts.memories.Memories.OfType<Thought_MemorySSCRomance>().Single();
-                Equal(wins?newValue:oldValue,actual.Data.Value);Equal(wins?0:123,actual.age);
-            });
+        var shortCarrier=CompositeMemory(-2,SSCRomanceMoodGroup.Short);var longCarrier=CompositeMemory(-2,SSCRomanceMoodGroup.Long);
+        Check("composite two carriers symmetric separate groups",()=>{Require(shortCarrier.GroupsWith(shortCarrier));Require(longCarrier.GroupsWith(longCarrier));Require(!shortCarrier.GroupsWith(longCarrier)&&!longCarrier.GroupsWith(shortCarrier));});
         foreach(int oldValue in new[]{-9,-6,-2,2,6,15}) foreach(int newValue in new[]{-9,-6,-2,2,6,15})
             Check($"composite new to new short {oldValue}/{newValue}",()=>
             {
@@ -49,14 +23,13 @@ internal static partial class Program
                 Equal(wins?newValue:oldValue,p.needs.mood.thoughts.memories.Memories.OfType<Thought_MemorySSCRomance>().Single().Data.Value);
                 Equal(wins,result.Applied);Equal(wins?0:777,p.needs.mood.thoughts.memories.Memories.Single().age);
             });
-        foreach(bool oldLegacy in new[]{false,true}) foreach(bool newLegacy in new[]{false,true})
         foreach(int oldValue in new[]{-5,-3,-1}) foreach(int newValue in new[]{-5,-3,-1})
-            Check($"composite long cross carriers {oldLegacy}/{newLegacy}/{oldValue}/{newValue}",()=>
+            Check($"composite long replacement {oldValue}/{newValue}",()=>
             {
                 var p=SocialPawn();var handler=p.needs.mood.thoughts.memories;
-                var old=oldLegacy?MoodMemory(oldValue,true):CompositeMemory(oldValue,SSCRomanceMoodGroup.Long);
+                var old=CompositeMemory(oldValue,SSCRomanceMoodGroup.Long);
                 handler.TryGainMemory(old);old.durationTicksOverride=30*60000;old.age=60000;
-                var next=newLegacy?MoodMemory(newValue,true):CompositeMemory(newValue,SSCRomanceMoodGroup.Long);next.durationTicksOverride=25*60000;
+                var next=CompositeMemory(newValue,SSCRomanceMoodGroup.Long);next.durationTicksOverride=25*60000;
                 handler.TryGainMemory(next);var actual=handler.Memories.OfType<Thought_MemorySSCRomance>().Single();
                 Equal(Math.Min(oldValue,newValue),actual.Data.Value);
                 Equal(newValue<oldValue?25*60000:29*60000,actual.DurationTicks-actual.age);

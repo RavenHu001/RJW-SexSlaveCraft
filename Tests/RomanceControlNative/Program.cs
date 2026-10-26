@@ -99,15 +99,12 @@ internal static partial class Program
             TargetMenuTests();
             FeedbackReviewTests();
             OtherAcceptanceTests();
-            RomanceMoodFoundationTests();
-            RomanceMoodInteractionTests(harmony);
-            RomanceMoodLifecycleTests(harmony, repo);
-            RomanceMoodReviewTests();
             RomanceCompositeFoundationTests(repo);
             RomanceCompositeReviewTests();
             RomanceCompositeGroupTests();
             RomanceCompositeHistoryTests();
             RomanceCompositeBatch2ReviewTests();
+            RomanceCompositeEventTests(harmony, repo);
         }
         finally { harmony.UnpatchAll(harmony.Id); Scribe.mode = LoadSaveMode.Inactive; Current.Game = null; }
         Console.WriteLine($"RESULT: {passed}/{passed + failed} passed"); return failed == 0 ? 0 : 1;

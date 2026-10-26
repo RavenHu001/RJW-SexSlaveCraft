@@ -3,7 +3,7 @@ using Verse;
 
 namespace SexSlaveCraft
 {
-    /// <summary>综合格式独立编号；不能改动旧 SSCRomanceMoodEvent 的已保存枚举值。</summary>
+    /// <summary>综合事件稳定编号；None 仅表示尚未形成真实事件。</summary>
     public enum SSCRomanceCompositeEvent
     {
         None = 0, ForcedRomanceAccepted = 1, ForcedProposalAccepted = 2,
@@ -13,7 +13,7 @@ namespace SexSlaveCraft
         CommandEndLover = 11, CommandEndFiance = 12, CommandDivorce = 13
     }
 
-    /// <summary>新三档仅属于综合格式；旧 Opinion 字段仍保留原来的 0／40 分类语义。</summary>
+    /// <summary>综合三档；原始好感另存，用于长期资格。</summary>
     public enum SSCRomanceOpinionBand { Disliked = 0, General = 1, Close = 2 }
     /// <summary>分组是保存事实，不从当前人物状态或剩余期限反推。</summary>
     public enum SSCRomanceMoodGroup { None = 0, Short = 1, Long = 2 }
@@ -32,16 +32,14 @@ namespace SexSlaveCraft
     /// <summary>历史基准快照；普通保存、人格凝胶及原生克隆均复制，不携带授权或待结算请求。</summary>
     public sealed class SSCRomanceMoodData : IExposable
     {
-        public SSCRomanceMoodEvent Kind;
         public SSCRomanceOldRelation Relation;
-        public int Stage, Opinion, Value;
+        public int Stage, Value;
         public bool Masochist;
-        public float? Corruption;
         public SSCRomanceSetting Rule;
         public bool HasRule;
         public Pawn Master;
         public const int CompositeVersion = 2;
-        // 新字段缺省为零：旧记忆不被猜配成综合分支，未知未来版本也不当成当前格式。
+        // 格式标记只校验本方案结构；不迁移或解释未发布旧方案。
         public int DataVersion;
         public string BranchId;
         public SSCRomanceCompositeEvent CompositeEvent;
@@ -54,11 +52,10 @@ namespace SexSlaveCraft
         public bool IsComposite => DataVersion == CompositeVersion;
         /// <summary>值字段独立复制，历史主人保留原引用；不带原人格运行凭据。</summary>
         public SSCRomanceMoodData Copy() => (SSCRomanceMoodData)MemberwiseClone();
-        /// <summary>保存新格式身份与标准期限并保留旧字段；可空恶堕仅供旧历史读取，不参与新目录。</summary>
+        /// <summary>只保存综合方案的冻结事实；授权、调用帧及原版变更账本均不进入存档。</summary>
         public void ExposeData()
         {
-            Scribe_Values.Look(ref Kind, "kind"); Scribe_Values.Look(ref Relation, "relation");
-            Scribe_Values.Look(ref Stage, "stage"); Scribe_Values.Look(ref Opinion, "opinion");
+            Scribe_Values.Look(ref Relation, "relation"); Scribe_Values.Look(ref Stage, "stage");
             Scribe_Values.Look(ref Value, "value"); Scribe_Values.Look(ref Masochist, "masochist");
             Scribe_Values.Look(ref Rule, "rule");
             Scribe_Values.Look(ref HasRule, "hasRule");
@@ -72,10 +69,6 @@ namespace SexSlaveCraft
             Scribe_Values.Look(ref OpinionBand, "opinionBand");
             Scribe_Values.Look(ref Group, "group");
             Scribe_Values.Look(ref NominalDurationTicks, "nominalDurationTicks", 0);
-            // Scribe 不直接序列化 Nullable；独立存在位保留合法零值及缺需求区别。
-            bool has = Corruption.HasValue; float value = Corruption ?? 0;
-            Scribe_Values.Look(ref has, "hasCorruption"); Scribe_Values.Look(ref value, "corruption");
-            if (Scribe.mode == LoadSaveMode.LoadingVars) Corruption = has ? value : (float?)null;
         }
     }
 

@@ -29,17 +29,17 @@ namespace SexSlaveCraft
         { Kind = kind; Group = group; OldValue = oldValue; NewValue = newValue; RemainingTicks = remaining; }
     }
 
-    /// <summary>旧 Def 只是语义别名；不重写其载体、数值、文案、好感分类或年龄。</summary>
+    /// <summary>只识别综合方案两个载体；没有旧方案别名或阶段数值回退。</summary>
     public static class SSCRomanceMoodGroups
     {
-        /// <summary>只识别四个已知普通心情载体；不以剩余天数、对象或派生类名称猜分组。</summary>
+        /// <summary>只按综合载体归组，不以剩余天数、对象或名称猜分组。</summary>
         public static SSCRomanceMoodGroup GroupOf(Thought thought)
         {
-            if (!(thought is Thought_MemorySSCRomance)) return SSCRomanceMoodGroup.None;
+            if (!(thought is Thought_MemorySSCCompositeRomance)) return SSCRomanceMoodGroup.None;
             switch (thought.def?.defName)
             {
-                case "SSC_Romance_Experience": case Thought_MemorySSCCompositeRomance.ShortDefName: return SSCRomanceMoodGroup.Short;
-                case "SSC_Romance_Loss": case Thought_MemorySSCCompositeRomance.LongDefName: return SSCRomanceMoodGroup.Long;
+                case Thought_MemorySSCCompositeRomance.ShortDefName: return SSCRomanceMoodGroup.Short;
+                case Thought_MemorySSCCompositeRomance.LongDefName: return SSCRomanceMoodGroup.Long;
                 default: return SSCRomanceMoodGroup.None;
             }
         }
@@ -50,18 +50,8 @@ namespace SexSlaveCraft
             value = 0;
             var group = GroupOf(memory);
             if (group == SSCRomanceMoodGroup.None) return false;
-            bool composite = memory is Thought_MemorySSCCompositeRomance;
-            if (composite && (memory.Data == null || !memory.Data.IsComposite)) return false;
-            if (memory.Data != null) value = memory.Data.Value;
-            else
-            {
-                int stage = memory.CurStageIndex;
-                var stages = memory.def.stages;
-                if (stages == null || stage < 0 || stage >= stages.Count || stages[stage] == null) return false;
-                float saved = stages[stage].baseMoodEffect;
-                if (float.IsNaN(saved) || float.IsInfinity(saved) || saved < -15 || saved > 15 || saved != Math.Truncate(saved)) return false;
-                value = (int)saved;
-            }
+            if (memory.Data == null || !memory.Data.IsComposite) return false;
+            value = memory.Data.Value;
             return value >= -15 && value <= 15 && (group != SSCRomanceMoodGroup.Long || value < 0);
         }
 
@@ -95,7 +85,7 @@ namespace SexSlaveCraft
             var d = memory.Data;
             return string.Join("|", new object[] { memory.def.defName, d?.BranchId, memory.otherPawn?.thingIDNumber,
                 memory.age, memory.durationTicksOverride, memory.moodPowerFactor, memory.moodOffset, memory.sourcePrecept?.GetUniqueLoadID(),
-                d?.Kind, d?.Relation, d?.Stage, d?.Opinion, d?.Masochist, d?.Corruption, d?.Rule, d?.HasRule, d?.Master?.thingIDNumber,
+                d?.Relation, d?.Stage, d?.Masochist, d?.Rule, d?.HasRule, d?.Master?.thingIDNumber,
                 d?.DataVersion, d?.CompositeEvent, d?.HasRawOpinion, d?.RawOpinion, d?.OpinionBand, d?.Group, d?.NominalDurationTicks }
                 .Select(value => value is IFormattable number ? number.ToString(null, CultureInfo.InvariantCulture) : value?.ToString() ?? ""));
         }

@@ -43,7 +43,7 @@ internal static partial class Program
                     Equal(days * 60000, selection.DurationTicks);
                     Equal(days == 0 ? SSCRomanceMoodGroup.None : days == 3 ? SSCRomanceMoodGroup.Short : SSCRomanceMoodGroup.Long, selection.Group);
                     var data = selection.CreateSnapshot(); Require(SSCRomanceMoodCatalog.TryReadSnapshot(data,out var branch));
-                    Equal(bid, branch.Id); Equal(opinion, data.RawOpinion); Require(data.HasRawOpinion && data.IsComposite); Require(data.Corruption == null);
+                    Equal(bid, branch.Id); Equal(opinion, data.RawOpinion); Require(data.HasRawOpinion && data.IsComposite);
                     Equal(days * 60000,data.NominalDurationTicks); Equal(value != 0,Thought_MemorySSCCompositeRomance.TryCreate(selection,out var memory));
                     if (value == 0) { Require(memory == null); continue; }
                     memory.pawn = SocialPawn(); Equal(value + 15,memory.CurStageIndex); Equal((float)value,memory.MoodOffset());
@@ -98,11 +98,11 @@ internal static partial class Program
         {
             SSCRomanceMoodCatalog.TryResolve(SSCRomanceCompositeEvent.CommandDivorce,4,true,60,out var selection);
             var context=new SSCRomanceMoodData{Relation=SSCRomanceOldRelation.Spouse,Master=SocialPawn(),HasRule=true,
-                Rule=SSCRomanceSetting.AlwaysAcceptMaster,Kind=SSCRomanceMoodEvent.RelationshipLoss,Corruption=.8f,BranchId="old"};
+                Rule=SSCRomanceSetting.AlwaysAcceptMaster,BranchId="unrelated"};
             Require(Thought_MemorySSCCompositeRomance.TryCreate(selection,context,out var memory));
             Equal(context.Relation,memory.Data.Relation);Equal(context.Master,memory.Data.Master);Require(memory.Data.HasRule);
-            Equal(context.Rule,memory.Data.Rule);Equal(selection.Branch.Id,memory.Data.BranchId);Equal(SSCRomanceMoodEvent.None,memory.Data.Kind);
-            Require(memory.Data.Corruption==null);Equal(.8f,context.Corruption.Value);Equal("old",context.BranchId);
+            Equal(context.Rule,memory.Data.Rule);Equal(selection.Branch.Id,memory.Data.BranchId);
+            Equal("unrelated",context.BranchId);
         });
         CompositeTextTests(repo);
         CompositeSaveTests();
@@ -111,6 +111,7 @@ internal static partial class Program
     /// <summary>从新增实际 XML 构建原生 Def；地图与 DLC Def 合并不属于宿主，条件引用另静态核对。</summary>
     private static void SetupCompositeCarriers(string repo)
     {
+        if(DefDatabase<ThoughtDef>.GetNamedSilentFail(Thought_MemorySSCCompositeRomance.ShortDefName)!=null)return;
         var xml=XDocument.Load(Path.Combine(repo,"1.7/Defs/ThoughtDefs/SSC_RomanceCompositeMood.xml"));
         foreach (var node in xml.Root.Elements())
         {
@@ -251,19 +252,7 @@ internal static partial class Program
             memory.Data.Value=-14;memory.moodPowerFactor=.5f;memory.moodOffset=2;
             Equal(-5f,memory.MoodOffset());Equal(-14,memory.Data.Value);
         });
-        Check("legacy mood roundtrip does not invent a composite identity",()=>
-        {
-            var memory=MoodMemory(-5);memory.pawn=SocialPawn();memory.age=812;memory.Data.Corruption=.8f;
-            var scene=new RomanceMoodScene{Memory=memory};string path=Path.Combine(saveDirectory,"composite-legacy-"+(++id)+".xml");
-            Scribe.saver.InitSaving(path,"CompositeLegacy");Scribe_Deep.Look(ref scene,"scene");Scribe.saver.FinalizeSaving();
-            Require(!File.ReadAllText(path).Contains("<dataVersion>"));
-            RomanceMoodScene loaded=null;Scribe.loader.InitLoading(path);
-            var directory=(LoadedObjectDirectory)AccessTools.Field(typeof(CrossRefHandler),"loadedObjectDirectory").GetValue(Scribe.loader.crossRefs);
-            directory.RegisterLoaded(memory.pawn);Scribe_Deep.Look(ref loaded,"scene");Scribe.loader.FinalizeLoading();
-            Equal(0,loaded.Memory.Data.DataVersion);Require(loaded.Memory.Data.BranchId==null);Require(!loaded.Memory.Data.HasRawOpinion);
-            Equal(.8f,loaded.Memory.Data.Corruption.Value);Equal(-5,loaded.Memory.Data.Value);Equal(812,loaded.Memory.age);
-            Require(loaded.Memory is not Thought_MemorySSCCompositeRomance);Require(!SSCRomanceMoodCatalog.TryReadSnapshot(loaded.Memory.Data,out _));
-        });
+
     }
 
     /// <summary>只提供 DLC 说明边界，正文拼接仍执行生产入口；不把此项冒充完整 DLC 模组验收。</summary>

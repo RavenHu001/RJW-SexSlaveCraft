@@ -17,7 +17,7 @@ namespace SexSlaveCraft
         /// <summary>锚点和补丁登记必须同时有效；动态卸载后新请求技术拒绝，不把未生效的防护当作正常结算。</summary>
         internal static bool Ready => matched && Harmony.GetPatchInfo(target)?.Transpilers.Any(p => p.PatchMethod.DeclaringType == typeof(Harmony_SSCRomanceMoodAdmissionTail)) == true;
 
-        /// <summary>只识别本系统四载体且已执行生产合并的实例；其他思想完整执行原生尾部。</summary>
+        /// <summary>只识别本系统两个综合载体且已执行生产合并的实例；其他思想完整执行原生尾部。</summary>
         private static bool Handled(Thought_Memory memory) => memory is Thought_MemorySSCRomance romance &&
             SSCRomanceMoodGroups.GroupOf(romance) != SSCRomanceMoodGroup.None && romance.MergeResult != null;
 

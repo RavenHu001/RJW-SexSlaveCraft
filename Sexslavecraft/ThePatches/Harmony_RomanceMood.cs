@@ -49,12 +49,4 @@ namespace SexSlaveCraft
         public static void Finalizer(Exception __exception, State __state)
         { if (__state != null) SSCRomanceMoodEvents.Finish(__state.Frame, __state.OriginalRan, __exception); }
     }
-
-    [HarmonyPatch(typeof(Thought_Memory), nameof(Thought_Memory.TryMergeWithExistingMemory))]
-    public static class Harmony_SSCRomanceMoodLoss
-    {
-        /// <summary>原版准入已通过且合并正常完成；同次新增和刷新均可识别，拒绝准入不能误去重。</summary>
-        public static void Postfix(Thought_Memory __instance, bool __runOriginal)
-        { if (__runOriginal) SSCRomanceMoodEvents.ObserveAdmittedLoss(__instance); }
-    }
 }

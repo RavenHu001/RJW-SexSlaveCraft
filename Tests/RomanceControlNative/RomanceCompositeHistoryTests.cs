@@ -11,7 +11,7 @@ internal static partial class Program
     private static void RomanceCompositeHistoryTests()
     {
         foreach(bool reverse in new[]{false,true}) foreach(bool longTerm in new[]{false,true})
-            Check($"composite mixed history order independence {reverse}/{longTerm}",()=>
+            Check($"composite composite history order independence {reverse}/{longTerm}",()=>
             {
                 var old=MoodMemory(-3,longTerm);old.age=50000;
                 var newer=CompositeMemory(longTerm?-3:-2,longTerm?SSCRomanceMoodGroup.Long:SSCRomanceMoodGroup.Short);
@@ -150,7 +150,7 @@ internal static partial class Program
                     Equal(0,clone.needs.mood.thoughts.memories.Memories.Count);
                 }
             });
-            Check("composite actual clone normalizes mixed source without modifying source",()=>
+            Check("composite actual clone normalizes composite source without modifying source",()=>
             {
                 var source=SocialPawn();source.needs.mood.def.needClass=typeof(Need_Mood);source.needs.AllNeeds.Add(source.needs.mood);
                 var old=MoodMemory(-3);old.pawn=source;old.age=321;var next=CompositeMemory(-9,SSCRomanceMoodGroup.Short);next.pawn=source;next.age=789;

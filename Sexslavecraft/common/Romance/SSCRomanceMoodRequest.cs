@@ -17,6 +17,7 @@ namespace SexSlaveCraft
         private readonly SSCRomanceMoodSelection selection;
         private readonly SSCRomanceMoodData context;
         private bool submitted;
+        private readonly Func<bool> settlementCurrent, commitNative;
 
         /// <summary>在工厂／准入回调前冻结原载体和上下文；此对象不进入存档或人格副本。</summary>
         public SSCRomanceMoodRequest(Pawn owner, Pawn other, SSCRomanceMoodSelection selection, SSCRomanceMoodData context = null)
@@ -24,6 +25,15 @@ namespace SexSlaveCraft
             this.owner = owner; this.other = other; this.selection = selection; this.context = context?.Copy();
             token = SSCPersonalityRuntimeUtility.Capture(owner); comp = owner?.TryGetComp<CompSexSlaveTraining>();
             mood = owner?.needs?.mood; handler = mood?.thoughts?.memories;
+        }
+
+        /// <summary>真实事件沿用互动前人格；原版逆向计划先复查，最后无回调提交，不重新签发人格上下文。</summary>
+        internal SSCRomanceMoodRequest(SSCRomanceMoodFrame.Person original, Pawn other, SSCRomanceMoodSelection selection,
+            SSCRomanceMoodData context, Func<bool> current, Func<bool> commit)
+        {
+            owner = original.Pawn; this.other = other; this.selection = selection; this.context = context?.Copy();
+            token = original.Token; comp = original.Comp; mood = original.Mood; handler = original.Handler;
+            settlementCurrent = current; commitNative = commit;
         }
 
         /// <summary>仅复查捕获时的实例；不重新获取 token，不要求历史在事后仍维持原开关／阶段。</summary>
@@ -37,9 +47,13 @@ namespace SexSlaveCraft
             if (submitted) return new SSCRomanceMoodResult(SSCRomanceMoodResultKind.Duplicate);
             submitted = true;
             if (!Current()) return new SSCRomanceMoodResult(SSCRomanceMoodResultKind.InvalidContext);
+            if (settlementCurrent != null && !settlementCurrent()) return new SSCRomanceMoodResult(SSCRomanceMoodResultKind.Conflict);
             if (selection == null) return new SSCRomanceMoodResult(SSCRomanceMoodResultKind.InvalidData);
             if (!Harmony_SSCRomanceMoodAdmissionTail.Ready) return new SSCRomanceMoodResult(SSCRomanceMoodResultKind.InvalidData, selection.Group);
-            if (!selection.HasMemory) return new SSCRomanceMoodResult(SSCRomanceMoodResultKind.Zero);
+            if (!selection.HasMemory && !Thought_MemorySSCCompositeRomance.DefinitionsReady)
+                return new SSCRomanceMoodResult(SSCRomanceMoodResultKind.InvalidData);
+            if (!selection.HasMemory) return new SSCRomanceMoodResult(commitNative == null || commitNative() ?
+                SSCRomanceMoodResultKind.Zero : SSCRomanceMoodResultKind.Conflict);
             Thought_MemorySSCCompositeRomance memory = null;
             SSCRomanceMoodMemoryState[] before = null;
             SSCRomanceMoodMemoryState expected = null;
@@ -73,7 +87,9 @@ namespace SexSlaveCraft
                         memory.DurationTicks - memory.age == result.RemainingTicks :
                         !handler.Memories.Contains(memory) && observed.All(s => handler.Memories.Contains(s.Memory) && s.Matches(s.Memory, false)) &&
                         handler.Memories.OfType<Thought_MemorySSCRomance>().Count(m => SSCRomanceMoodGroups.GroupOf(m) == selection.Group) == observed.Length);
-                if (valid) return result;
+                // 全部工厂／准入／后置补丁返回后统一复查；原版撤销失败时仍可撤销本次 SSC 局部写入。
+                if (valid && Current() && (settlementCurrent == null || settlementCurrent()) &&
+                    (!result.Completed || commitNative == null || commitNative())) return result;
                 Rollback(memory);
                 return new SSCRomanceMoodResult(result == null ? SSCRomanceMoodResultKind.NotAdmitted : SSCRomanceMoodResultKind.Failed, selection.Group);
             }
@@ -136,8 +152,8 @@ namespace SexSlaveCraft
             memory.moodPowerFactor == power && memory.permanent == permanent && (allowDuration || memory.durationTicksOverride == duration) && Same(data, memory.Data);
         /// <summary>明确列出全部历史字段，缺快照与零值不同；不比较临时授权或日志状态。</summary>
         private static bool Same(SSCRomanceMoodData a, SSCRomanceMoodData b) => a == null || b == null ? a == b :
-            a.Kind == b.Kind && a.Relation == b.Relation && a.Stage == b.Stage && a.Opinion == b.Opinion && a.Value == b.Value &&
-            a.Masochist == b.Masochist && a.Corruption == b.Corruption && a.Rule == b.Rule && a.HasRule == b.HasRule && a.Master == b.Master &&
+            a.Relation == b.Relation && a.Stage == b.Stage && a.Value == b.Value &&
+            a.Masochist == b.Masochist && a.Rule == b.Rule && a.HasRule == b.HasRule && a.Master == b.Master &&
             a.DataVersion == b.DataVersion && a.BranchId == b.BranchId && a.CompositeEvent == b.CompositeEvent &&
             a.HasRawOpinion == b.HasRawOpinion && a.RawOpinion == b.RawOpinion && a.OpinionBand == b.OpinionBand &&
             a.Group == b.Group && a.NominalDurationTicks == b.NominalDurationTicks;

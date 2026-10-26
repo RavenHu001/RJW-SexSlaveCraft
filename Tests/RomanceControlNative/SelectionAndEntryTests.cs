@@ -102,7 +102,7 @@ internal static partial class Program
                 ResetSocial(0f); var a = SocialSlave(); var b = SocialSlave(); Comp(a).romanceConfig = new() { allowInitiateRomance = !forbidden };
                 Comp(b).romanceConfig = new() { allowAcceptRomance = false };
                 Harmony_SSCRomanceRjwClick.TargetMethod().Invoke(null, new object[] { a, new LocalTargetInfo(b), InteractionDefOf.RomanceAttempt });
-                Equal(forbidden ? 0 : 1, playLogCalls); Equal(forbidden ? 0 : 1, a.needs.mood.thoughts.memories.Memories.Count);
+                Equal(forbidden ? 0 : 1, playLogCalls); Equal(forbidden ? 0 : 2, a.needs.mood.thoughts.memories.Memories.Count);
             });
         Check("batch2 shared entry rechecks preference, chain stage and personality without caching", () =>
         {

@@ -57,7 +57,7 @@ internal static partial class Program
                     if(compositeB2Restored==null)return;
                     if(field=="value")((Thought_MemorySSCRomance)compositeB2Restored).Data.Value=15;
                     else if(field=="age")compositeB2Restored.age=0;
-                    else compositeB2Restored.def=SSCRomanceMoodDefOf.SSC_Romance_Experience;
+                    else compositeB2Restored.def=DefDatabase<ThoughtDef>.GetNamed(Thought_MemorySSCCompositeRomance.ShortDefName);
                 };
                 PersonalityMemoryUtility.Restore(host,new(){saved});Require(compositeB2Restored!=null);
                 Equal(0,host.needs.mood.thoughts.memories.Memories.Count);Equal(54321,saved.age);Equal(-15,saved.romanceMood.Value);

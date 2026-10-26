@@ -7,7 +7,7 @@ using Verse;
 namespace SexSlaveCraft
 {
     /// <summary>普通心情记忆，不派生社交好感；同组跨目标最多一条，保留原版准入及显示倍率。</summary>
-    public class Thought_MemorySSCRomance : Thought_Memory, ISSCRomanceHistoricalRestore
+    public abstract class Thought_MemorySSCRomance : Thought_Memory, ISSCRomanceHistoricalRestore
     {
         public SSCRomanceMoodData Data;
         // 仅新事件准入期间使用的原上下文守卫；不保存、不进入凝胶或原生克隆副本。
@@ -17,7 +17,7 @@ namespace SexSlaveCraft
         // 只记录本次真正提交时移除的条目；不得用准入前快照回滚回调已完成的另一事件。
         internal SSCRomanceMoodMemoryState[] ReplacedHistory;
         internal SSCRomanceMoodMemoryState[] ObservedHistory;
-        // 原生 CopyFrom 的兼容领取只消费一次；真实复制／读档完成后另有局部收尾。
+        // 新方案历史经 CopyFrom 后的单条恢复只消费一次；真实复制／读档完成后另有局部收尾。
         internal bool HistoricalRestore;
         /// <summary>正常存读档仅恢复历史，绝不调用事件发放或按新阶段重算。</summary>
         public override void ExposeData()
@@ -36,7 +36,7 @@ namespace SexSlaveCraft
 
         /// <summary>清除的是实例临时状态，绝不清除保存的快照、年龄或实际期限。</summary>
         internal void ResetRuntime() { CanApply = null; FrozenRequest = null; MergeResult = null; ReplacedHistory = null; ObservedHistory = null; HistoricalRestore = false; }
-        /// <summary>兼容逐条恢复入口；作用域不进入保存数据或生成新事件授权。</summary>
+        /// <summary>新方案的逐条历史恢复入口；作用域不进入保存数据或生成新事件授权。</summary>
         void ISSCRomanceHistoricalRestore.BeginHistoricalRestore() => HistoricalRestore = true;
         /// <summary>异常和提前返回也结束临时领取。</summary>
         void ISSCRomanceHistoricalRestore.EndHistoricalRestore() => HistoricalRestore = false;
@@ -62,7 +62,7 @@ namespace SexSlaveCraft
     public static class SSCRomanceMoodDefOf
     {
         public static TraitDef Masochist;
-        public static ThoughtDef SSC_Romance_Control, SSC_Romance_Experience, SSC_Romance_Loss;
+        public static ThoughtDef SSC_Romance_Control;
         /// <summary>沿 DefOf 加载生命周期引用 SSC 定义及原版 Masochist，不复制原版 TraitDef。</summary>
         static SSCRomanceMoodDefOf() => DefOfHelper.EnsureInitializedInCtor(typeof(SSCRomanceMoodDefOf));
     }
