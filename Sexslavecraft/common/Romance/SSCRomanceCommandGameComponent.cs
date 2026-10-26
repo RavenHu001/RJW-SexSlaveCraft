@@ -139,6 +139,7 @@ namespace SexSlaveCraft
             record.reason = reason;
             record.status = record.effectsStarted ? SSCRomanceCommandStatus.Indeterminate : SSCRomanceCommandStatus.Cancelled;
             record.outcome = record.effectsStarted ? SSCRomanceCommandOutcome.Unconfirmed : SSCRomanceCommandOutcome.NotOccurred;
+            SSCRomanceExecutionScope.TraceCommandTerminal(record);
         }
         /// <summary>结束/丢弃记录只处理本模块内存；原 Job 尚在当前/队列时保留终态防重放。</summary>
         internal void Prune()

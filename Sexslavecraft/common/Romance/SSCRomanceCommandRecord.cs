@@ -13,6 +13,9 @@ namespace SexSlaveCraft
     /// <summary>本存档独有的任务记录；人格、凝胶与克隆快照均不持有此对象。</summary>
     public sealed class SSCRomanceCommandRecord : IExposable
     {
+        // 诊断关联及输出去重仅属当前进程，不保存、不参与任务授权。
+        internal long diagnosticId;
+        internal bool diagnosticTerminalReported;
         internal int version = 1, jobId = -1;
         internal string requestId, reason;
         internal SSCRomanceCommandStamp stamp;
@@ -46,6 +49,7 @@ namespace SexSlaveCraft
         /// <summary>只保存持久状态；驱动、原 Job 实例及人格 token 必须在引用恢复后重新认领。</summary>
         public void ExposeData()
         {
+            if (Scribe.mode == LoadSaveMode.LoadingVars) { diagnosticId = 0; diagnosticTerminalReported = false; }
             Scribe_Values.Look(ref version, "version", 0);
             Scribe_Values.Look(ref requestId, "requestId"); Scribe_Values.Look(ref jobId, "jobId", -1);
             Scribe_Deep.Look(ref stamp, "stamp");

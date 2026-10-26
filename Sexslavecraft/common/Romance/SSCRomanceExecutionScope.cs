@@ -18,6 +18,7 @@ namespace SexSlaveCraft
         /// <summary>运行时调用帧；仅保存进程内归属，由 Finalizer 成对释放。</summary>
         public sealed class Invocation
         {
+            internal long DiagnosticId;
             internal Invocation previous;
             internal SSCRomanceCommandRecord record;
             internal Pawn actor, target;
@@ -26,6 +27,7 @@ namespace SexSlaveCraft
         }
         /// <summary>只读当前共同入口快照；不为直接 worker 或概率查询补造授权。</summary>
         internal static SSCRomanceMoodFrame MoodFrame => current?.mood;
+        internal static long DiagnosticId => current?.DiagnosticId ?? 0;
         /// <summary>Prefix 为所有调用建立帧；票据精确匹配后消费一次，后续重入没有可用票。</summary>
         public static Invocation Enter(Pawn actor, Pawn target, InteractionDef interaction)
         {
@@ -34,11 +36,31 @@ namespace SexSlaveCraft
             if (pending != null && !pending.taken && pending.record.Stamp.Actor == actor && pending.record.Stamp.Target == target &&
                 SSCRomanceInteractionUtility.TryGetAction(interaction, out var action) && pending.record.Stamp.Action == action)
             { pending.taken = true; frame.record = pending.record; }
+            if (SSCRomanceInteractionUtility.TryGetAction(interaction, out _))
+                frame.DiagnosticId = frame.record != null ? CommandDiagnosticId(frame.record) : SSCRomanceMoodDiagnostics.NextId();
             current = frame; return frame;
         }
         /// <summary>异常也释放本次帧；不吞掉游戏或其他模组异常，不把外层票据重新开放。</summary>
         public static void Exit(Invocation frame)
-        { if (frame != null && current == frame) current = frame.previous; }
+        {
+            if (frame == null || current != frame) return;
+            current = frame.previous;
+            if (frame.mood != null && !frame.mood.DiagnosticFinished) SSCRomanceMoodDiagnostics.Finish(frame.mood, "TrackerExitedWithoutWorker");
+            else if (frame.mood == null && frame.DiagnosticId != 0 && (frame.record != null ||
+                frame.actor?.TryGetComp<CompSexSlaveTraining>()?.pawnIdentity == PawnIdentity.Slave || frame.target?.TryGetComp<CompSexSlaveTraining>()?.pawnIdentity == PawnIdentity.Slave))
+                SSCRomanceMoodDiagnostics.Attempt(frame.DiagnosticId, frame.actor, frame.target, "EntryDeniedOrNotOccurred");
+        }
+        /// <summary>寻路中断也有进程内编号；不保存、不作为命令授权或去重凭据。</summary>
+        internal static long CommandDiagnosticId(SSCRomanceCommandRecord record)
+        { if (record.diagnosticId == 0) record.diagnosticId = SSCRomanceMoodDiagnostics.NextId(); return record.diagnosticId; }
+        /// <summary>只观察首次运行终态，重复清理和反馈不会再次输出；读档不是新执行。</summary>
+        internal static void TraceCommandTerminal(SSCRomanceCommandRecord record)
+        {
+            if (record == null || !record.Terminal || record.diagnosticTerminalReported || Scribe.mode != LoadSaveMode.Inactive) return;
+            record.diagnosticTerminalReported = true;
+            SSCRomanceMoodDiagnostics.Attempt(CommandDiagnosticId(record), record.Stamp?.Actor, record.Stamp?.Target,
+                "Command:" + record.Status + ":" + record.Outcome + ":" + record.Reason);
+        }
         /// <summary>仅未结束的当前原驱动、Job、参与者及实际 Def 一致才能使用本帧授权。</summary>
         private static bool Valid(Invocation frame, Pawn actor, Pawn target, InteractionDef interaction)
         {
@@ -131,6 +153,7 @@ namespace SexSlaveCraft
                 ticket = previous;
                 if (r.status == SSCRomanceCommandStatus.Executing)
                 { r.status = SSCRomanceCommandStatus.Indeterminate; r.outcome = SSCRomanceCommandOutcome.Unconfirmed; }
+                TraceCommandTerminal(r);
             }
         }
         /// <summary>只核对期望关系，不据此推导接受判定；拒婚附带分手仍是 Rejected。</summary>

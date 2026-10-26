@@ -105,6 +105,7 @@ internal static partial class Program
             RomanceCompositeHistoryTests();
             RomanceCompositeBatch2ReviewTests();
             RomanceCompositeEventTests(harmony, repo);
+            RomanceCompositeBatch4Tests(harmony, repo);
         }
         finally { harmony.UnpatchAll(harmony.Id); Scribe.mode = LoadSaveMode.Inactive; Current.Game = null; }
         Console.WriteLine($"RESULT: {passed}/{passed + failed} passed"); return failed == 0 ? 0 : 1;
@@ -166,5 +167,9 @@ internal static partial class Program
     private static void HealthPostfix(Hediff hediff) => production.GetType("SexSlaveCraft.SSCBondHealthChanged").GetMethod("Postfix").Invoke(null, new object[] { hediff });
     /// <summary>隔离图形日志投递；预热结束后的原版 Error 纳入当前用例失败结果。</summary>
     private static bool LogBoundary(MethodBase __originalMethod, object[] __args)
-    { if (!bootstrap && __originalMethod.Name == "Error") errors.Add((string)__args[0]); return false; }
+    {
+        if (captureMoodDiagnostics && __originalMethod.Name == "Message" && ((string)__args[0]).StartsWith("[SSC RomanceMood]"))
+        { if (throwMoodDiagnostic) throw new InvalidOperationException("diagnostic sink fault"); moodDiagnostics.Add((string)__args[0]); moodDiagnosticEvidence.Add((string)__args[0]); }
+        if (!bootstrap && __originalMethod.Name == "Error") errors.Add((string)__args[0]); return false;
+    }
 }

@@ -1,6 +1,5 @@
 // AI 辅助生成
 using System;
-using System.Runtime.CompilerServices;
 using RimWorld;
 using Verse;
 
@@ -67,48 +66,4 @@ namespace SexSlaveCraft
         static SSCRomanceMoodDefOf() => DefOfHelper.EnsureInitializedInCtor(typeof(SSCRomanceMoodDefOf));
     }
 
-    /// <summary>只读持续思想，不创建事件；阶段和选择实时解析，不存第二份有效状态。</summary>
-    public sealed class ThoughtWorker_SSCRomanceControl : ThoughtWorker
-    {
-        /// <summary>引擎沿原版思想准入查询；只有一个综合阶段，不创建或保存事件。</summary>
-        protected override ThoughtState CurrentStateInternal(Pawn pawn)
-            => TryStage(pawn, out int stage) ? ThoughtState.ActiveAtStage(stage) : ThoughtState.Inactive;
-
-        /// <summary>独立只读查询供需求阈值刷新复用；有效零值仍是存在的受限状态。</summary>
-        public static bool TryStage(Pawn pawn, out int stage)
-        {
-            stage = -1;
-            var state = SSCRomanceResolver.Resolve(pawn);
-            if (!state.Applicable || pawn.Dead || state.Stage < 2) return false;
-            // 目标过滤只有至少一种主动浪漫可用时参与；分手许可不依赖当前有无伴侣。
-            bool active = !state.GetSaved(SSCRomanceSetting.InitiateRomance) || !state.GetSaved(SSCRomanceSetting.InitiateProposal) ||
-                !state.GetSaved(SSCRomanceSetting.InitiateBreakup) ||
-                ((state.GetSaved(SSCRomanceSetting.InitiateRomance) || state.GetSaved(SSCRomanceSetting.InitiateProposal)) &&
-                 (!state.GetSaved(SSCRomanceSetting.InitiateToMaster) || !state.GetSaved(SSCRomanceSetting.InitiateToSexSlave) || !state.GetSaved(SSCRomanceSetting.InitiateToOthers)));
-            // 三项保证逻辑或成一个 B，不能按多选个数叠加心情。
-            bool passive = state.Stage >= 3 && (!state.GetSaved(SSCRomanceSetting.AcceptRomance) || !state.GetSaved(SSCRomanceSetting.AcceptProposal) ||
-                state.GetSaved(SSCRomanceSetting.AlwaysAcceptMaster) || state.GetSaved(SSCRomanceSetting.AlwaysAcceptSexSlave) || state.GetSaved(SSCRomanceSetting.AlwaysAcceptOthers));
-            if (!active && !passive) return false;
-            int value = SSCRomanceMoodRules.Continuous(state.Stage, active, passive,
-                SSCRomanceMoodDefOf.Masochist != null && pawn.story?.traits?.HasTrait(SSCRomanceMoodDefOf.Masochist) == true, pawn.needs?.TryGetNeed<Need_Corruption>()?.CurLevel);
-            stage = value + 4; return true;
-        }
-    }
-
-    /// <summary>局部缓存只服务持续思想失效，不保存、不扫描世界、不操作历史记忆。</summary>
-    public static class SSCRomanceMoodRefresh
-    {
-        private sealed class State { internal int Signature = int.MinValue; }
-        private static readonly ConditionalWeakTable<Pawn, State> states = new ConditionalWeakTable<Pawn, State>();
-        /// <summary>恶堕跨阈值或特质／阶段导致综合值变化时才通知原版缓存。</summary>
-        public static void Notify(Pawn pawn)
-        {
-            if (pawn == null || Scribe.mode != LoadSaveMode.Inactive) return;
-            int signature = ThoughtWorker_SSCRomanceControl.TryStage(pawn, out int stage) ? stage : -1;
-            var state = states.GetOrCreateValue(pawn);
-            if (state.Signature == signature) return;
-            state.Signature = signature;
-            pawn.needs?.mood?.thoughts?.situational?.Notify_SituationalThoughtsDirty();
-        }
-    }
 }

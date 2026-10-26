@@ -10,13 +10,6 @@ using Verse;
 
 namespace SexSlaveCraft
 {
-    [HarmonyPatch(typeof(Need_Corruption), nameof(Need_Corruption.NeedInterval))]
-    public static class Harmony_SSCRomanceMoodCorruption
-    {
-        /// <summary>需求更新后的当前值与当前链阶段才是依据；冻结需求仍可检查特质变化。</summary>
-        public static void Postfix(Pawn ___pawn) => SSCRomanceMoodRefresh.Notify(___pawn);
-    }
-
     [HarmonyPatch(typeof(Pawn_InteractionsTracker), nameof(Pawn_InteractionsTracker.TryInteractWith))]
     public static class Harmony_SSCRomanceMoodLog
     {

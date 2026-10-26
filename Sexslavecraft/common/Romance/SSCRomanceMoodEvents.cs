@@ -9,6 +9,8 @@ namespace SexSlaveCraft
     /// <summary>一次共同互动的原人格快照和完成证据；只在调用栈存在，不保存或重试。</summary>
     public sealed class SSCRomanceMoodFrame
     {
+        internal long DiagnosticId;
+        internal bool DiagnosticFinished;
         internal Pawn Actor, Target;
         internal SSCRomanceAction Action;
         internal Person ActorState, TargetState;
@@ -28,7 +30,8 @@ namespace SexSlaveCraft
             internal Need_Mood Mood;
             internal MemoryThoughtHandler Handler;
             internal Pawn_RelationsTracker Relations;
-            internal bool Applicable;
+            internal bool Applicable, NativeApplied;
+            internal int NativeAddsUndone, NativeRemovesUndone, NativeRenewsUndone;
             internal SSCRomanceMoodData Data;
         }
     }
@@ -42,7 +45,7 @@ namespace SexSlaveCraft
 
         /// <summary>首个副作用之前冻结双方；任意查询回调后仍由共同入口进行最终准入复查。</summary>
         public static SSCRomanceMoodFrame Capture(Pawn actor, Pawn target, SSCRomanceAction action, bool command)
-            => new SSCRomanceMoodFrame { Actor = actor, Target = target, Action = action, Command = command,
+            => new SSCRomanceMoodFrame { DiagnosticId = SSCRomanceExecutionScope.DiagnosticId != 0 ? SSCRomanceExecutionScope.DiagnosticId : SSCRomanceMoodDiagnostics.NextId(), Actor = actor, Target = target, Action = action, Command = command,
                 ActorState = CapturePerson(actor, target), TargetState = CapturePerson(target, actor) };
 
         /// <summary>先保存载体再读取可回调业务属性；受虐狂使用原版已排除 Suppressed 的 HasTrait。</summary>
@@ -97,11 +100,16 @@ namespace SexSlaveCraft
         public static void Finish(SSCRomanceMoodFrame frame, bool originalRan, Exception exception)
         {
             if (frame == null || current != frame) return;
+            string reason = "UnconfirmedResult";
             try
             {
-                if (!frame.Entered || !originalRan || exception != null || frame.Settled ||
-                    !CurrentPerson(frame.ActorState) || !CurrentPerson(frame.TargetState) ||
-                    frame.Actor?.relations == null || frame.Target?.relations == null || !SSCRomanceNativeMoodHooks.Ready) return;
+                if (!frame.Entered) { reason = "DirectWorkerWithoutSnapshot"; return; }
+                if (!originalRan) { reason = "WorkerSkipped"; return; }
+                if (exception != null) { reason = "WorkerException:" + exception.GetType().Name; return; }
+                if (frame.Settled) { reason = "Duplicate"; return; }
+                if (!CurrentPerson(frame.ActorState) || !CurrentPerson(frame.TargetState)) { reason = "InvalidContext"; return; }
+                if (frame.Actor?.relations == null || frame.Target?.relations == null || !SSCRomanceNativeMoodHooks.Ready)
+                { reason = "UnsupportedNativeHooks"; return; }
                 var after = Relation(frame.Actor, frame.Target);
                 if (frame.Action == SSCRomanceAction.Breakup)
                 {
@@ -116,13 +124,19 @@ namespace SexSlaveCraft
                          (!frame.ProposalSeparated && after != SSCRomanceOldRelation.Lover))) return;
                 }
                 frame.Completed = frame.Settled = true;
-                if (frame.Command && frame.ActorState.Applicable && frame.ActorState.Data.Stage == 4)
-                    frame.ActorEvent = Award(frame, frame.ActorState, frame.Target, CommandEvent(frame), null);
-                if (frame.DecisionKnown && frame.OriginalAccepted != frame.Accepted && frame.Rule.HasValue &&
-                    frame.TargetState.Applicable && frame.TargetState.Data.Stage >= 3)
-                    frame.TargetEvent = Award(frame, frame.TargetState, frame.Actor, PassiveEvent(frame), frame.Rule);
+                bool command = frame.Command && frame.ActorState.Applicable && frame.ActorState.Data.Stage == 4;
+                bool passive = frame.DecisionKnown && frame.OriginalAccepted != frame.Accepted && frame.Rule.HasValue &&
+                    frame.TargetState.Applicable && frame.TargetState.Data.Stage >= 3;
+                if (command) frame.ActorEvent = Award(frame, frame.ActorState, frame.Target, CommandEvent(frame), null);
+                if (passive) frame.TargetEvent = Award(frame, frame.TargetState, frame.Actor, PassiveEvent(frame), frame.Rule);
+                reason = command || passive ? "Settled" : frame.Rule.HasValue && frame.OriginalAccepted == frame.Accepted ? "DecisionUnchanged" : "NaturalUncontrolled";
             }
-            finally { current = frame.Previous; }
+            finally
+            {
+                // 日志只消费已捕获事实；先释放业务作用域，再输出不会重放的退出原因。
+                current = frame.Previous;
+                SSCRomanceMoodDiagnostics.Finish(frame, reason);
+            }
         }
 
         /// <summary>命令按真实结果及互动前关系唯一分类，失败附带分手不再追加独立损失。</summary>
@@ -151,21 +165,27 @@ namespace SexSlaveCraft
         private static SSCRomanceMoodData Award(SSCRomanceMoodFrame frame, SSCRomanceMoodFrame.Person person, Pawn other,
             SSCRomanceCompositeEvent kind, SSCRomanceSetting? rule)
         {
+            SSCRomanceMoodSelection selection = null;
+            SSCRomanceMoodResult result = null;
+            string reason = "InvalidContext";
             try
             {
-                if (!CurrentPerson(person) || person.Handler == null || !SSCRomanceMoodCatalog.TryResolve(kind, person.Data.Stage,
-                    person.Data.Masochist, person.Data.RawOpinion, out var selection)) return null;
+                if (!CurrentPerson(person) || person.Handler == null) return null;
+                if (!SSCRomanceMoodCatalog.TryResolve(kind, person.Data.Stage, person.Data.Masochist, person.Data.RawOpinion, out selection))
+                { reason = "UnknownBranch"; return null; }
                 var context = person.Data.Copy(); context.Rule = rule ?? default; context.HasRule = rule.HasValue;
                 var request = new SSCRomanceMoodRequest(person, other, selection, context,
                     () => SSCRomanceNativeMood.TryUndo(frame, person, false), () => SSCRomanceNativeMood.TryUndo(frame, person, true));
-                var result = request.Execute();
+                result = request.Execute(); reason = request.DiagnosticReason ?? result.Kind.ToString();
                 return result.Completed ? selection.CreateSnapshot(context) : null;
             }
-            catch (Exception)
+            catch (Exception exception)
             {
-                // 原版观察／资格查询可被其他补丁包装；技术失败不能从 worker Finalizer 制造新异常。
+                // 技术失败不从 Finalizer 制造新异常；日志保留失败类型，不重试或重放原调用。
+                reason = "TechnicalException:" + exception.GetType().Name;
                 return null;
             }
+            finally { SSCRomanceMoodDiagnostics.Settlement(frame, person, other, selection, result, reason, rule); }
         }
     }
 }

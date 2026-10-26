@@ -157,6 +157,10 @@ namespace SexSlaveCraft
             private static bool SameState(State a, State b, bool ignoreAge = false) => a.Memory == b.Memory && (ignoreAge || a.age == b.age) && a.duration == b.duration &&
                 a.def == b.def && a.owner == b.owner && a.other == b.other && a.precept == b.precept && a.stage == b.stage &&
                 a.offset == b.offset && a.power == b.power && a.permanent == b.permanent;
+            // 操作数来自已封存的因果账本，供最终提交后诊断使用；不推断净差异。
+            internal int Adds => operations.Count(o => o.Kind == 0);
+            internal int Removes => operations.Count(o => o.Kind == 1);
+            internal int Renews => operations.Count(o => o.Kind == 2);
             internal void Undo()
             {
                 for (int i = operations.Count - 1; i >= 0; i--)
@@ -312,7 +316,15 @@ namespace SexSlaveCraft
                 foreach (var entry in group.Reverse()) if (!entry.Plan(projected)) return false;
             }
             if (!SSCRomanceMoodEvents.CurrentPerson(person)) return false;
-            if (apply) foreach (var entry in entries.Reverse()) entry.Undo();
+            if (apply)
+            {
+                foreach (var entry in entries.Reverse()) entry.Undo();
+                // 只有实际撤销成功后才记录完成，不能将预检计划当成执行结果。
+                person.NativeApplied = true;
+                person.NativeAddsUndone = entries.Sum(e => e.Adds);
+                person.NativeRemovesUndone = entries.Sum(e => e.Removes);
+                person.NativeRenewsUndone = entries.Sum(e => e.Renews);
+            }
             return true;
         }
     }

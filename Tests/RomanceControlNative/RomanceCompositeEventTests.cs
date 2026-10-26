@@ -11,13 +11,13 @@ internal static partial class Program
     private static ThoughtDef moodNativeLoss;
     private static int review3CapacityRemovals;
 
-    /// <summary>持续思想在第四批切换；本批夹具只加载其当前 XML 及综合载体。</summary>
+    /// <summary>持续思想使用当前十四阶段映射；思想准入与显示仍执行生产类型。</summary>
     private static void SetupMoodDefs()
     {
         if(SSCRomanceMoodDefOf.SSC_Romance_Control!=null)return;
         SSCRomanceMoodDefOf.Masochist=new TraitDef{defName="Masochist",degreeDatas=new(){new TraitDegreeData{degree=0,label="Masochist"}}};
-        var def=new ThoughtDef{defName="SSC_Romance_Control",thoughtClass=typeof(Thought_Situational),stages=new()};
-        for(int value=-4;value<=4;value++)def.stages.Add(new ThoughtStage{label="[文案待定]",description="开发占位",baseMoodEffect=value});
+        var def=new ThoughtDef{defName="SSC_Romance_Control",thoughtClass=typeof(Thought_SituationalSSCRomanceControl),stages=new()};
+        for(int index=0;index<14;index++)def.stages.Add(new ThoughtStage{label="[文案待定]",description="开发占位",baseMoodEffect=SSCRomanceContinuousMood.BranchAt(index).Value});
         AccessTools.Field(typeof(ThoughtDef),"workerClass").SetValue(def,typeof(ThoughtWorker_SSCRomanceControl));
         DefDatabase<ThoughtDef>.Add(def);SSCRomanceMoodDefOf.SSC_Romance_Control=def;
         moodNativeLoss=DefDatabase<ThoughtDef>.GetNamed("BrokeUpWithMeMood");moodNativeLoss.stackLimit=1;

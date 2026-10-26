@@ -20,6 +20,7 @@ namespace SexSlaveCraft
         {
             if (pawn == null || Scribe.mode != LoadSaveMode.Inactive) return;
             Invalidate(pawn);
+            SSCRomanceMoodRefresh.Suspend(pawn);
             SSCRomanceCommandGameComponent.Current?.Invalidate(pawn, targetPersonality: true);
         }
         /// <summary>外部空壳事件同时撤销本人及指向旧人格的命令；普通人格流程已在替换开始时撤权。</summary>
@@ -35,10 +36,10 @@ namespace SexSlaveCraft
         {
             if (pawn == null || Scribe.mode != LoadSaveMode.Inactive) return;
             SSCPersonalityRuntimeUtility.ObserveHollow(pawn, SSCMasterProgressionUtility.IsHollow(pawn), baseline: true);
-            Notify(pawn);
+            Notify(pawn, "LoadBaseline");
         }
         /// <summary>运行事件比较真实链／主人和阶段；加载期不观察半恢复引用。</summary>
-        public static void Notify(Pawn pawn)
+        public static void Notify(Pawn pawn, string moodReason = "Lifecycle")
         {
             var comp = pawn?.TryGetComp<CompSexSlaveTraining>();
             if (comp == null || Scribe.mode != LoadSaveMode.Inactive) return;
@@ -57,7 +58,7 @@ namespace SexSlaveCraft
             comp.romanceObservedChain = chain; comp.romanceObservedMaster = master;
             comp.romanceObservedStage = stage; comp.romanceObservedIdentity = comp.pawnIdentity;
             comp.romanceObservedHollow = hollow;
-            SSCRomanceMoodRefresh.Notify(pawn);
+            SSCRomanceMoodRefresh.Notify(pawn, moodReason);
         }
         /// <summary>只用于新个体初始化；恢复模块默认，不搬运旧模板或重置其他后端。</summary>
         public static void ResetNewClone(Pawn pawn)

@@ -1,4 +1,4 @@
-// AI 辅助生成：综合心情第一批，只读目录与保存契约；不进入实际互动结算。
+// AI 辅助生成：综合心情只读目录与保存契约；不在目录中执行实际互动。
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -104,7 +104,7 @@ namespace SexSlaveCraft
             ControlBranches = controlList.AsReadOnly();
         }
 
-        /// <summary>新格式的三档好感；原始值仍保留给期限判断，旧规则入口不受影响。</summary>
+        /// <summary>三档好感；原始值仍保留给期限判断，不使用旧版档位或恶堕修正。</summary>
         public static SSCRomanceOpinionBand ClassifyOpinion(int opinion) => opinion <= -10 ? SSCRomanceOpinionBand.Disliked :
             opinion < 60 ? SSCRomanceOpinionBand.General : SSCRomanceOpinionBand.Close;
 

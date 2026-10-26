@@ -1,19 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Defs>
-  <!-- AI 辅助生成：1.7 浪漫控制心情；占位文本已获维护者授权，正式名称和描述尚待定稿。 -->
+  <!-- AI 辅助生成：十四个独立持续分支；名称和描述由分支 Keyed 占位提供，不保存旧阶段。 -->
   <ThoughtDef>
     <defName>SSC_Romance_Control</defName>
+    <thoughtClass>SexSlaveCraft.Thought_SituationalSSCRomanceControl</thoughtClass>
     <workerClass>SexSlaveCraft.ThoughtWorker_SSCRomanceControl</workerClass>
     <stages>
-      <li><label>[文案待定] 浪漫控制</label><description>SSC 浪漫控制开发占位文本，正式文案待定。</description><baseMoodEffect>-4</baseMoodEffect></li>
-      <li><label>[文案待定] 浪漫控制</label><description>SSC 浪漫控制开发占位文本，正式文案待定。</description><baseMoodEffect>-3</baseMoodEffect></li>
-      <li><label>[文案待定] 浪漫控制</label><description>SSC 浪漫控制开发占位文本，正式文案待定。</description><baseMoodEffect>-2</baseMoodEffect></li>
-      <li><label>[文案待定] 浪漫控制</label><description>SSC 浪漫控制开发占位文本，正式文案待定。</description><baseMoodEffect>-1</baseMoodEffect></li>
-      <li><label>[文案待定] 浪漫控制</label><description>SSC 浪漫控制开发占位文本，正式文案待定。</description><baseMoodEffect>0</baseMoodEffect></li>
-      <li><label>[文案待定] 浪漫控制</label><description>SSC 浪漫控制开发占位文本，正式文案待定。</description><baseMoodEffect>1</baseMoodEffect></li>
-      <li><label>[文案待定] 浪漫控制</label><description>SSC 浪漫控制开发占位文本，正式文案待定。</description><baseMoodEffect>2</baseMoodEffect></li>
-      <li><label>[文案待定] 浪漫控制</label><description>SSC 浪漫控制开发占位文本，正式文案待定。</description><baseMoodEffect>3</baseMoodEffect></li>
-      <li><label>[文案待定] 浪漫控制</label><description>SSC 浪漫控制开发占位文本，正式文案待定。</description><baseMoodEffect>4</baseMoodEffect></li>
+      <!-- C-A-S2-N -->
+      <li><label>[文案待定] C-A-S2-N</label><description>SSC 浪漫控制开发占位文本，正式文案待定。</description><baseMoodEffect>-3</baseMoodEffect></li>
+      <!-- C-A-S2-M -->
+      <li><label>[文案待定] C-A-S2-M</label><description>SSC 浪漫控制开发占位文本，正式文案待定。</description><baseMoodEffect>-1</baseMoodEffect></li>
+      <!-- C-A-S3-N -->
+      <li><label>[文案待定] C-A-S3-N</label><description>SSC 浪漫控制开发占位文本，正式文案待定。</description><baseMoodEffect>-1</baseMoodEffect></li>
+      <!-- C-A-S3-M -->
+      <li><label>[文案待定] C-A-S3-M</label><description>SSC 浪漫控制开发占位文本，正式文案待定。</description><baseMoodEffect>1</baseMoodEffect></li>
+      <!-- C-A-S4-N -->
+      <li><label>[文案待定] C-A-S4-N</label><description>SSC 浪漫控制开发占位文本，正式文案待定。</description><baseMoodEffect>1</baseMoodEffect></li>
+      <!-- C-A-S4-M -->
+      <li><label>[文案待定] C-A-S4-M</label><description>SSC 浪漫控制开发占位文本，正式文案待定。</description><baseMoodEffect>3</baseMoodEffect></li>
+      <!-- C-B-S3-N -->
+      <li><label>[文案待定] C-B-S3-N</label><description>SSC 浪漫控制开发占位文本，正式文案待定。</description><baseMoodEffect>-2</baseMoodEffect></li>
+      <!-- C-B-S3-M -->
+      <li><label>[文案待定] C-B-S3-M</label><description>SSC 浪漫控制开发占位文本，正式文案待定。</description><baseMoodEffect>0</baseMoodEffect></li>
+      <!-- C-B-S4-N -->
+      <li><label>[文案待定] C-B-S4-N</label><description>SSC 浪漫控制开发占位文本，正式文案待定。</description><baseMoodEffect>0</baseMoodEffect></li>
+      <!-- C-B-S4-M -->
+      <li><label>[文案待定] C-B-S4-M</label><description>SSC 浪漫控制开发占位文本，正式文案待定。</description><baseMoodEffect>2</baseMoodEffect></li>
+      <!-- C-AB-S3-N -->
+      <li><label>[文案待定] C-AB-S3-N</label><description>SSC 浪漫控制开发占位文本，正式文案待定。</description><baseMoodEffect>-3</baseMoodEffect></li>
+      <!-- C-AB-S3-M -->
+      <li><label>[文案待定] C-AB-S3-M</label><description>SSC 浪漫控制开发占位文本，正式文案待定。</description><baseMoodEffect>-1</baseMoodEffect></li>
+      <!-- C-AB-S4-N -->
+      <li><label>[文案待定] C-AB-S4-N</label><description>SSC 浪漫控制开发占位文本，正式文案待定。</description><baseMoodEffect>2</baseMoodEffect></li>
+      <!-- C-AB-S4-M -->
+      <li><label>[文案待定] C-AB-S4-M</label><description>SSC 浪漫控制开发占位文本，正式文案待定。</description><baseMoodEffect>4</baseMoodEffect></li>
     </stages>
   </ThoughtDef>
 </Defs>

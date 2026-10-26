@@ -1,4 +1,4 @@
-// AI 辅助生成：单次新记忆提交与回执；不判定互动成立，不发放命令或接管原版心情。
+// AI 辅助生成：单次新记忆提交、回执及原版撤销协调；不判定互动成立或发放命令。
 using System;
 using System.Linq;
 using RimWorld;
@@ -17,6 +17,8 @@ namespace SexSlaveCraft
         private readonly SSCRomanceMoodSelection selection;
         private readonly SSCRomanceMoodData context;
         private bool submitted;
+        // 只解释本次退出路径，不参与 Completed、原版撤销或历史选择。
+        internal string DiagnosticReason { get; private set; }
         private readonly Func<bool> settlementCurrent, commitNative;
 
         /// <summary>在工厂／准入回调前冻结原载体和上下文；此对象不进入存档或人格副本。</summary>
@@ -44,29 +46,29 @@ namespace SexSlaveCraft
         /// <summary>经原版准入发放；合并回执与最终列表、冻结字段都一致后才报告成功。</summary>
         public SSCRomanceMoodResult Execute()
         {
-            if (submitted) return new SSCRomanceMoodResult(SSCRomanceMoodResultKind.Duplicate);
+            if (submitted) return Report(new SSCRomanceMoodResult(SSCRomanceMoodResultKind.Duplicate), "RequestAlreadyConsumed");
             submitted = true;
-            if (!Current()) return new SSCRomanceMoodResult(SSCRomanceMoodResultKind.InvalidContext);
-            if (settlementCurrent != null && !settlementCurrent()) return new SSCRomanceMoodResult(SSCRomanceMoodResultKind.Conflict);
-            if (selection == null) return new SSCRomanceMoodResult(SSCRomanceMoodResultKind.InvalidData);
-            if (!Harmony_SSCRomanceMoodAdmissionTail.Ready) return new SSCRomanceMoodResult(SSCRomanceMoodResultKind.InvalidData, selection.Group);
+            if (!Current()) return Report(new SSCRomanceMoodResult(SSCRomanceMoodResultKind.InvalidContext), "OriginalContextLost");
+            if (settlementCurrent != null && !settlementCurrent()) return Report(new SSCRomanceMoodResult(SSCRomanceMoodResultKind.Conflict), "NativeUndoPrecheckFailed");
+            if (selection == null) return Report(new SSCRomanceMoodResult(SSCRomanceMoodResultKind.InvalidData), "MissingSelection");
+            if (!Harmony_SSCRomanceMoodAdmissionTail.Ready) return Report(new SSCRomanceMoodResult(SSCRomanceMoodResultKind.InvalidData, selection.Group), "AdmissionTailUnavailable");
             if (!selection.HasMemory && !Thought_MemorySSCCompositeRomance.DefinitionsReady)
-                return new SSCRomanceMoodResult(SSCRomanceMoodResultKind.InvalidData);
-            if (!selection.HasMemory) return new SSCRomanceMoodResult(commitNative == null || commitNative() ?
-                SSCRomanceMoodResultKind.Zero : SSCRomanceMoodResultKind.Conflict);
+                return Report(new SSCRomanceMoodResult(SSCRomanceMoodResultKind.InvalidData), "InvalidZeroDefinitions");
+            if (!selection.HasMemory) return Report(new SSCRomanceMoodResult(commitNative == null || commitNative() ?
+                SSCRomanceMoodResultKind.Zero : SSCRomanceMoodResultKind.Conflict), "ZeroBranchCommit");
             Thought_MemorySSCCompositeRomance memory = null;
             SSCRomanceMoodMemoryState[] before = null;
             SSCRomanceMoodMemoryState expected = null;
             try
             {
                 if (!Thought_MemorySSCCompositeRomance.TryCreate(selection, context, out memory) || !memory.ValidNewEvent)
-                    return new SSCRomanceMoodResult(SSCRomanceMoodResultKind.InvalidData, selection.Group);
-                if (!Current()) return new SSCRomanceMoodResult(SSCRomanceMoodResultKind.InvalidContext, selection.Group);
+                    return Report(new SSCRomanceMoodResult(SSCRomanceMoodResultKind.InvalidData, selection.Group), "FactoryOrCarrierInvalid");
+                if (!Current()) return Report(new SSCRomanceMoodResult(SSCRomanceMoodResultKind.InvalidContext, selection.Group), "OriginalContextLostAfterCallback");
                 before = handler.Memories.OfType<Thought_MemorySSCRomance>().Where(m => SSCRomanceMoodGroups.GroupOf(m) == selection.Group)
                     .Select(m => new SSCRomanceMoodMemoryState(m, handler.Memories.IndexOf(m))).ToArray();
                 // 未知历史可能有意超过一条；进入原生新获得会按 Def 淘汰它，故在任何新获得副作用之前停下。
                 if (before.Any(s => !SSCRomanceMoodGroups.TryValue(s.Memory, out _)))
-                    return new SSCRomanceMoodResult(SSCRomanceMoodResultKind.Conflict, selection.Group);
+                    return Report(new SSCRomanceMoodResult(SSCRomanceMoodResultKind.Conflict, selection.Group), "OpaqueGroupHistory");
                 memory.otherPawn = other;
                 expected = new SSCRomanceMoodMemoryState(memory, -1);
                 // 准入和合并可能被兼容补丁包裹；只绑定这一个请求，不把守卫复制进历史。
@@ -76,7 +78,7 @@ namespace SexSlaveCraft
                 if (!Current())
                 {
                     RemoveOwnCandidate(memory);
-                    return new SSCRomanceMoodResult(SSCRomanceMoodResultKind.InvalidContext, selection.Group);
+                    return Report(new SSCRomanceMoodResult(SSCRomanceMoodResultKind.InvalidContext, selection.Group), "OriginalContextLostAfterCallback");
                 }
                 var result = memory.MergeResult;
                 // 准入回调可合法完成另一事件；正常保留的见证必须来自实际合并时，而非调用原生前。
@@ -89,19 +91,24 @@ namespace SexSlaveCraft
                         handler.Memories.OfType<Thought_MemorySSCRomance>().Count(m => SSCRomanceMoodGroups.GroupOf(m) == selection.Group) == observed.Length);
                 // 全部工厂／准入／后置补丁返回后统一复查；原版撤销失败时仍可撤销本次 SSC 局部写入。
                 if (valid && Current() && (settlementCurrent == null || settlementCurrent()) &&
-                    (!result.Completed || commitNative == null || commitNative())) return result;
+                    (!result.Completed || commitNative == null || commitNative())) return Report(result, "GroupDecision:" + result.Kind);
                 Rollback(memory);
-                return new SSCRomanceMoodResult(result == null ? SSCRomanceMoodResultKind.NotAdmitted : SSCRomanceMoodResultKind.Failed, selection.Group);
+                return Report(new SSCRomanceMoodResult(result == null ? SSCRomanceMoodResultKind.NotAdmitted : SSCRomanceMoodResultKind.Failed, selection.Group),
+                    result == null ? "NativeAdmissionOrExternalSkip" : "FinalReceiptOrNativeCommitFailed");
             }
-            catch (Exception)
+            catch (Exception exception)
             {
                 // 不重试准入、不重放互动；只撤销本请求的局部结果，其他系统的写入不回滚。
                 Rollback(memory);
                 if (!Current()) RemoveOwnCandidate(memory);
-                return new SSCRomanceMoodResult(SSCRomanceMoodResultKind.Failed, selection.Group);
+                return Report(new SSCRomanceMoodResult(SSCRomanceMoodResultKind.Failed, selection.Group), "RequestException:" + exception.GetType().Name);
             }
             finally { memory?.ResetRuntime(); }
         }
+
+        /// <summary>附加运行期退出原因；返回值和业务判定完全沿用原结果。</summary>
+        private SSCRomanceMoodResult Report(SSCRomanceMoodResult result, string reason)
+        { DiagnosticReason = reason; return result; }
 
         /// <summary>只在原载体仍有效且没有后来同组事件时恢复原条目；不向接管身体的新人格写回旧历史。</summary>
         private void Rollback(Thought_MemorySSCRomance memory)

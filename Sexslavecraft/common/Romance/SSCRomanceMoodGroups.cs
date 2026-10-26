@@ -21,12 +21,14 @@ namespace SexSlaveCraft
         public int? OldValue { get; }
         public int NewValue { get; }
         public int RemainingTicks { get; }
+        public string OldBranch { get; }
+        public int OldRemainingTicks { get; }
         public bool Applied => Kind == SSCRomanceMoodResultKind.Added || Kind == SSCRomanceMoodResultKind.Replaced || Kind == SSCRomanceMoodResultKind.Refreshed;
         public bool Completed => Applied || Kind == SSCRomanceMoodResultKind.Kept || Kind == SSCRomanceMoodResultKind.Zero;
         /// <summary>仅由分组／提交层构造；不公开可变记忆或原人格凭据。</summary>
         internal SSCRomanceMoodResult(SSCRomanceMoodResultKind kind, SSCRomanceMoodGroup group = SSCRomanceMoodGroup.None,
-            int? oldValue = null, int newValue = 0, int remaining = 0)
-        { Kind = kind; Group = group; OldValue = oldValue; NewValue = newValue; RemainingTicks = remaining; }
+            int? oldValue = null, int newValue = 0, int remaining = 0, string oldBranch = null, int oldRemaining = 0)
+        { Kind = kind; Group = group; OldValue = oldValue; NewValue = newValue; RemainingTicks = remaining; OldBranch = oldBranch; OldRemainingTicks = oldRemaining; }
     }
 
     /// <summary>只识别综合方案两个载体；没有旧方案别名或阶段数值回退。</summary>
@@ -152,13 +154,13 @@ namespace SexSlaveCraft
             if (memory.CanApply != null && !memory.CanApply()) return new SSCRomanceMoodResult(SSCRomanceMoodResultKind.InvalidContext, group);
             if (memory.FrozenRequest != null && !memory.FrozenRequest()) return new SSCRomanceMoodResult(SSCRomanceMoodResultKind.InvalidData, group);
             if (!Unchanged(handler, group, states)) return new SSCRomanceMoodResult(SSCRomanceMoodResultKind.Conflict, group);
-            if (keep) return new SSCRomanceMoodResult(SSCRomanceMoodResultKind.Kept, group, oldValue, value, remaining);
+            if (keep) return new SSCRomanceMoodResult(SSCRomanceMoodResultKind.Kept, group, oldValue, value, remaining, old?.Data?.BranchId, remaining);
             memory.ReplacedHistory = states;
             memory.durationTicksOverride = duration;
             handler.Memories.Add(memory);
             foreach (var item in oldItems) handler.Memories.Remove(item);
             return new SSCRomanceMoodResult(old == null ? SSCRomanceMoodResultKind.Added : oldValue == value ?
-                SSCRomanceMoodResultKind.Refreshed : SSCRomanceMoodResultKind.Replaced, group, oldValue, value, duration - memory.age);
+                SSCRomanceMoodResultKind.Refreshed : SSCRomanceMoodResultKind.Replaced, group, oldValue, value, duration - memory.age, old?.Data?.BranchId, remaining);
         }
 
         /// <summary>读取虚方法期间若同组记录被回调改动，放弃旧计划而不是删除后来写入的历史。</summary>

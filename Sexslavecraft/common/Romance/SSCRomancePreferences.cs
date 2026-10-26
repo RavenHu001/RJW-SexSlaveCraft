@@ -65,7 +65,7 @@ namespace SexSlaveCraft
             var replacement = state.Comp.romanceConfig?.Copy() ?? new SSCRomanceConfig();
             replacement.Set(setting, value);
             state.Comp.romanceConfig = replacement;
-            SSCRomanceMoodRefresh.Notify(pawn);
+            SSCRomanceMoodRefresh.Notify(pawn, "Preferences");
             return true;
         }
     }

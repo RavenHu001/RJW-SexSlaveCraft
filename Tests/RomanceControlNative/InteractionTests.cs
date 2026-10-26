@@ -47,7 +47,7 @@ internal static partial class Program
         harmony.Patch(AccessTools.PropertyGetter(typeof(Rand), "Value"), prefix: new HarmonyMethod(typeof(Program), nameof(SocialRoll)));
         // 使用生产特性与同一 Harmony 3 安装，不链接副本、不在宿主重写策略或指令匹配。
         foreach (var type in new[] { typeof(Harmony_SSCRomanceRandomSelection), typeof(Harmony_SSCRomanceInteraction),
-            typeof(Harmony_SSCRomanceAcceptance), typeof(Harmony_SSCRomanceMoodWorker), typeof(Harmony_SSCRomanceMoodCorruption), typeof(Harmony_SSCRomanceMoodLog), typeof(Harmony_SSCRomanceMenu), typeof(Harmony_SSCRomanceRjwClick),
+            typeof(Harmony_SSCRomanceAcceptance), typeof(Harmony_SSCRomanceMoodWorker), typeof(Harmony_SSCRomanceMoodTraits), typeof(Harmony_SSCRomanceMoodLog), typeof(Harmony_SSCRomanceMenu), typeof(Harmony_SSCRomanceRjwClick),
             typeof(Patch_DogSpecialization_AnimalHandling) }) harmony.CreateClassProcessor(type).Patch();
         foreach(string name in new[]{"Worker","Definition","Memory","Renew"}) harmony.CreateClassProcessor(production.GetType("SexSlaveCraft.Harmony_SSCRomanceNative"+name)).Patch();
         bootstrap = false;
