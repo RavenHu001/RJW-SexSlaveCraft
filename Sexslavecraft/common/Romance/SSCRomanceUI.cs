@@ -209,7 +209,7 @@ namespace SexSlaveCraft
                     Widgets.Label(new Rect(button.x + 6f, button.y + 4f, Mathf.Max(1f, button.width - 12f), button.height - 8f), labels[i]);
                     if (GUI.enabled && Widgets.ButtonInvisible(button) && GUI.enabled &&
                         !SSCRomancePreferences.TrySet(pawn, settings[i], !view.Saved, view.Context, out var reason))
-                        Messages.Message(SSCRomanceCommandUtility.Explain(reason.ToString()), pawn, MessageTypeDefOf.RejectInput, false);
+                        Messages.Message(SettingFailureText(settings[i], reason), pawn, MessageTypeDefOf.RejectInput, false);
                     TooltipHandler.TipRegion(button, SettingTip(settings[i], view));
                 }
             }
@@ -272,11 +272,17 @@ namespace SexSlaveCraft
                 Widgets.Checkbox(row.xMax - 24f, row.y + Mathf.Max(0f, (labelHeight - 24f) / 2f), ref value, 24f, !GUI.enabled);
                 if (GUI.enabled && Widgets.ButtonInvisible(new Rect(row.x, row.y, labelWidth, labelHeight))) value = !value;
                 if (GUI.enabled && value != view.Saved && !SSCRomancePreferences.TrySet(pawn, setting, value, view.Context, out var reason))
-                    Messages.Message(SSCRomanceCommandUtility.Explain(reason.ToString()), pawn, MessageTypeDefOf.RejectInput, false);
+                    Messages.Message(SettingFailureText(setting, reason), pawn, MessageTypeDefOf.RejectInput, false);
             }
             finally { GUI.enabled = previous; GUI.color = color; }
             TooltipHandler.TipRegion(row, SettingTip(setting, view));
         }
+        /// <summary>开关与对象按钮的提交失败共用具体阶段说明，其余原因继续走原入口。</summary>
+        private static string SettingFailureText(SSCRomanceSetting setting, SSCRomanceReason reason)
+            => reason == SSCRomanceReason.Stage
+                ? "SSC_Romance_RequiredStage".Translate(SSCRomanceResolver.StageName(SSCRomanceResolver.RequiredStage(setting)))
+                : SSCRomanceCommandUtility.Explain(reason.ToString());
+
         /// <summary>按钮与开关共享当前视图的悬停说明，资格原因只展示，不为旧点击重新捕获上下文。</summary>
         private static string SettingTip(SSCRomanceSetting setting, SSCRomanceView view)
         {
@@ -285,8 +291,9 @@ namespace SexSlaveCraft
                 setting <= SSCRomanceSetting.AcceptProposal ? "SSC_Romance_PassiveMeaning" : "SSC_Romance_MustAcceptMeaning";
             // 三项被动接受保证共用相同说明格式；仅按各自视图追加资格与阶段信息。
             string tip = key.Translate();
-            if (!view.CanChange) tip += "\n\n" + SSCRomanceCommandUtility.Explain(view.Reason.ToString());
-            if (!view.Unlocked) tip += "\n" + "SSC_Romance_RequiredStage".Translate(SSCRomanceResolver.RequiredStage(setting));
+            // 阶段不足直接显示具体名称，避免先给泛化原因再重复一条数字阶段提示。
+            if (!view.CanChange && view.Reason != SSCRomanceReason.Stage) tip += "\n\n" + SSCRomanceCommandUtility.Explain(view.Reason.ToString());
+            if (!view.Unlocked) tip += "\n\n" + "SSC_Romance_RequiredStage".Translate(SSCRomanceResolver.StageName(SSCRomanceResolver.RequiredStage(setting)));
             return tip;
         }
 

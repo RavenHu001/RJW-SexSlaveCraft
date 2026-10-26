@@ -162,7 +162,9 @@ namespace SexSlaveCraft
         public static SSCRomanceCommandContext Capture(Verse.Pawn pawn)
             => new() { Actor = pawn, Token = SSCPersonalityRuntimeUtility.Capture(pawn) };
         /// <summary>直接读取当前四语文本，不另复制生产原因文案。</summary>
-        public static string Explain(string reason) => Verse.Translation.Translate("SSC_Romance_" + reason);
+        public static string Explain(string reason) => reason == "CommandStage"
+            ? Verse.Translation.Translate("SSC_Romance_CommandStage", SSCRomanceResolver.StageName(4))
+            : Verse.Translation.Translate("SSC_Romance_" + reason);
     }
 }
 

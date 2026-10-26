@@ -29,7 +29,7 @@
   <SSC_Romance_ActiveMeaning>При отключении действие не начинается.</SSC_Romance_ActiveMeaning>
   <SSC_Romance_PassiveMeaning>При отключении остаётся доступной целью, но всегда отказывает. При включении ответ определяется обычным образом.</SSC_Romance_PassiveMeaning>
   <SSC_Romance_ExtraMeaning>Эти два правила независимы. Ограничение хозяином не разрешает запрещённое активное действие.</SSC_Romance_ExtraMeaning>
-  <SSC_Romance_RequiredStage>Требуется стадия цепи {0}.</SSC_Romance_RequiredStage>
+  <SSC_Romance_RequiredStage>Требуется достичь стадии цепи «{0}».</SSC_Romance_RequiredStage>
   <SSC_Romance_OpenBehaviorWindow>Открыть ограничения поведения…</SSC_Romance_OpenBehaviorWindow>
   <SSC_Romance_CommandTitle>Прямые приказы</SSC_Romance_CommandTitle>
   <SSC_Romance_Executor>Исполнитель: {0}</SSC_Romance_Executor>
@@ -60,7 +60,7 @@
   <SSC_Romance_PlayerOnly>Можно изменять настройки и отдавать приказы только персонажам фракции игрока.</SSC_Romance_PlayerOnly>
   <SSC_Romance_StaleContext>Исходный контекст окна устарел. Откройте его заново.</SSC_Romance_StaleContext>
   <SSC_Romance_InvalidAuthorization>Исходное разрешение приказа больше не действует.</SSC_Romance_InvalidAuthorization>
-  <SSC_Romance_CommandStage>Для адресного приказа требуется текущая стадия цепи 4.</SSC_Romance_CommandStage>
+  <SSC_Romance_CommandStage>Требуется достичь стадии цепи «{0}».</SSC_Romance_CommandStage>
   <SSC_Romance_HooksUnavailable>Необходимые адаптеры взаимодействия недоступны; адресные приказы приостановлены.</SSC_Romance_HooksUnavailable>
   <SSC_Romance_SameMapRequired>Оба персонажа должны быть живы и находиться на одной карте.</SSC_Romance_SameMapRequired>
   <SSC_Romance_UnableToInteract>Текущее состояние персонажа не позволяет выполнить социальную задачу.</SSC_Romance_UnableToInteract>

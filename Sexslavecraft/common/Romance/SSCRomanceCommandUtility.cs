@@ -120,6 +120,8 @@ namespace SexSlaveCraft
         public static InteractionDef Interaction(SSCRomanceAction action) => action == SSCRomanceAction.Romance ? InteractionDefOf.RomanceAttempt :
             action == SSCRomanceAction.Proposal ? InteractionDefOf.MarriageProposal : action == SSCRomanceAction.Breakup ? SSCRomanceDefOf.Breakup : null;
         /// <summary>所有面板/命令窗口共用原因文本，查询不发送反馈。</summary>
-        public static string Explain(string reason) => reason == null ? null : ("SSC_Romance_" + reason).Translate();
+        public static string Explain(string reason) => reason == null ? null : reason == "CommandStage"
+            ? "SSC_Romance_CommandStage".Translate(SSCRomanceResolver.StageName(4))
+            : ("SSC_Romance_" + reason).Translate();
     }
 }

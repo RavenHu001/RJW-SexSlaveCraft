@@ -29,7 +29,7 @@
   <SSC_Romance_ActiveMeaning>When off, prevents initiation.</SSC_Romance_ActiveMeaning>
   <SSC_Romance_PassiveMeaning>When off, remains a valid target but always rejects. When on, normal acceptance applies.</SSC_Romance_PassiveMeaning>
   <SSC_Romance_ExtraMeaning>These two rules are independent. Master-only does not re-enable prohibited initiation.</SSC_Romance_ExtraMeaning>
-  <SSC_Romance_RequiredStage>Requires chain stage {0}.</SSC_Romance_RequiredStage>
+  <SSC_Romance_RequiredStage>Requires the chain to reach the {0} stage.</SSC_Romance_RequiredStage>
   <SSC_Romance_OpenBehaviorWindow>Open behavior restrictions…</SSC_Romance_OpenBehaviorWindow>
   <SSC_Romance_CommandTitle>Direct commands</SSC_Romance_CommandTitle>
   <SSC_Romance_Executor>Executor: {0}</SSC_Romance_Executor>
@@ -60,7 +60,7 @@
   <SSC_Romance_PlayerOnly>Only player-faction pawns can be edited or commanded.</SSC_Romance_PlayerOnly>
   <SSC_Romance_StaleContext>The original interface context has expired. Reopen it.</SSC_Romance_StaleContext>
   <SSC_Romance_InvalidAuthorization>The original command authorization is no longer valid.</SSC_Romance_InvalidAuthorization>
-  <SSC_Romance_CommandStage>Targeted commands require current chain stage 4.</SSC_Romance_CommandStage>
+  <SSC_Romance_CommandStage>Requires the chain to reach the {0} stage.</SSC_Romance_CommandStage>
   <SSC_Romance_HooksUnavailable>Required interaction adapters are unavailable; targeted commands are paused.</SSC_Romance_HooksUnavailable>
   <SSC_Romance_SameMapRequired>Both pawns must be alive and spawned on the same map.</SSC_Romance_SameMapRequired>
   <SSC_Romance_UnableToInteract>The current pawn state prevents this social task.</SSC_Romance_UnableToInteract>

@@ -29,7 +29,7 @@
   <SSC_Romance_ActiveMeaning>關閉時阻止發起。</SSC_Romance_ActiveMeaning>
   <SSC_Romance_PassiveMeaning>關閉時仍可成為目標，但必定拒絕；開啟時保留正常接受判斷。</SSC_Romance_PassiveMeaning>
   <SSC_Romance_ExtraMeaning>兩個主人規則獨立儲存；僅主人不重新開放已禁止的主動行為。</SSC_Romance_ExtraMeaning>
-  <SSC_Romance_RequiredStage>需要鎖鏈第 {0} 階段。</SSC_Romance_RequiredStage>
+  <SSC_Romance_RequiredStage>需要鎖鏈達到{0}階段。</SSC_Romance_RequiredStage>
   <SSC_Romance_OpenBehaviorWindow>開啟行為限制…</SSC_Romance_OpenBehaviorWindow>
   <SSC_Romance_CommandTitle>直接命令</SSC_Romance_CommandTitle>
   <SSC_Romance_Executor>執行者：{0}</SSC_Romance_Executor>
@@ -60,7 +60,7 @@
   <SSC_Romance_PlayerOnly>僅可修改或指揮玩家陣營角色。</SSC_Romance_PlayerOnly>
   <SSC_Romance_StaleContext>原介面上下文已失效，請重新開啟。</SSC_Romance_StaleContext>
   <SSC_Romance_InvalidAuthorization>原命令授權已失效。</SSC_Romance_InvalidAuthorization>
-  <SSC_Romance_CommandStage>點名命令需要目前鎖鏈第四階段。</SSC_Romance_CommandStage>
+  <SSC_Romance_CommandStage>需要鎖鏈達到{0}階段。</SSC_Romance_CommandStage>
   <SSC_Romance_HooksUnavailable>必要互動適配未就緒，點名命令暫停。</SSC_Romance_HooksUnavailable>
   <SSC_Romance_SameMapRequired>雙方必須存活並生成在同一地圖。</SSC_Romance_SameMapRequired>
   <SSC_Romance_UnableToInteract>目前角色狀態不允許完成社交任務。</SSC_Romance_UnableToInteract>

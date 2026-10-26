@@ -233,6 +233,7 @@ namespace SexSlaveCraft
     }
     public static class SSCDefOf
     {
+        public static HediffDef ChainOfSexSlave = new HediffDef();
         public static HediffDef SSC_Hediff_MasterProgression = new HediffDef { defName = SSCMasterProgressionUtility.DefName, hediffClass = typeof(Hediff_MasterProgression) };
         public static HediffDef BridleOfSexSlave = new HediffDef { hediffClass = typeof(Hediff_BridleOfSexSlave) };
         public static HediffDef SSC_PersonalityExcreted_Done = new HediffDef(), SSC_MasterBondEmpowerment = new HediffDef();

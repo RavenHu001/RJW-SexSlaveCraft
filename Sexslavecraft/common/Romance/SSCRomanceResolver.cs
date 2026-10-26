@@ -41,6 +41,14 @@ namespace SexSlaveCraft
                 default: return int.MaxValue;
             }
         }
+        /// <summary>阶段提示复用锁链 Def 的当前本地化名称，不另存译名或改变阶段准入；异常定义回退序号。</summary>
+        public static string StageName(int stage)
+        {
+            var stages = SSCDefOf.ChainOfSexSlave?.stages;
+            int index = stage - 1;
+            string label = stages != null && index >= 0 && index < stages.Count ? stages[index]?.label : null;
+            return string.IsNullOrEmpty(label) ? stage.ToString() : label;
+        }
         /// <summary>行为许可及三个目标许可默认允许，三个强制接受开关默认关闭。</summary>
         public static bool DefaultEnabled(SSCRomanceSetting setting) => IsKnown(setting) &&
             (setting <= SSCRomanceSetting.AcceptProposal || setting == SSCRomanceSetting.InitiateToMaster ||
