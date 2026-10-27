@@ -32,7 +32,14 @@ internal static partial class Program
                 for (int i = 0; i < 4; i++) Equal(fact.Kind, log.BackgroundFromPOV(subject).Kind);
                 Equal(order, memory?.Data.OccurrenceOrder ?? 0); Equal(1, playLogCalls);
                 RoundTripSocialLog(log, actor, target, subject, fact.Kind);
-                if (record != null) Require(SSCRomanceCommandPresentation.ResultText(record).Contains("[Text pending]"));
+                if (record != null)
+                {
+                    // 正式文案已替换占位；按本例真实结果及行为核对当前语言，不要求旧占位字面。
+                    string outcome = ev is 7 or 9 ? "Rejected" : ev == 10 ? "RejectedAndSeparated" : "RelationshipChanged";
+                    string action = ev is 6 or 7 ? "Romance" : ev <= 10 ? "Proposal" : ev == 11 ? "EndLover" : ev == 12 ? "EndFiance" : "Divorce";
+                    Equal(("SSC_Romance_Result_" + outcome).Translate(actor.LabelShort, target.LabelShort,
+                        ("SSC_Romance_CommandAction_" + action).Translate()).ToString(), SSCRomanceCommandPresentation.ResultText(record));
+                }
             });
             foreach (string mode in new[] { "no-mood", "ssc-denied" })
                 Check($"social facts survive mood admission {ev}/{mode}", () =>
@@ -215,8 +222,10 @@ internal static partial class Program
                         Rand.PushState(91341);
                         try { report = driver.GetReport(); Equal(expectedRandom, Rand.Int); }
                         finally { Rand.PopState(); }
-                        Require(report.Contains("[Text pending]") && !report.Contains("TargetA"));
-                        Require(report.Contains(ev == 6 ? "romance" : ev == 8 ? "propose marriage" : ev == 11 ? "break up" : ev == 12 ? "end the engagement" : "divorce"));
+                        // 用本例指定类别的现行语言模板，经原版目标替换独立生成期望报告。
+                        string template = ("SSC_Romance_Report_" + expected).Translate().ToString();
+                        Equal((string)AccessTools.Method(typeof(JobDriver), "ReportStringProcessed").Invoke(driver, new object[] { template }), report);
+                        Require(!report.Contains("TargetA"));
                         Equal(SSCRomanceCommandStatus.Pending, pending.Status); Equal(epoch, (string)AccessTools.Field(typeof(CompSexSlaveTraining), "romanceAuthorizationId").GetValue(Comp(a)));
                         Equal(0, bubbleCalls + playLogCalls + commandFeedback);
                     }

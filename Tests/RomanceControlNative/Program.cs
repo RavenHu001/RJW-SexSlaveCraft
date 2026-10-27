@@ -42,6 +42,10 @@ internal static partial class Program
         Console.WriteLine($"Production: {production.Location}, SHA256: {Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(File.ReadAllBytes(production.Location))).ToLowerInvariant()}");
         var harmony = new Harmony("ssc.tests.romance-control.native");
         void Patch(MethodBase method, string prefix) => harmony.Patch(method, prefix: new HarmonyMethod(typeof(Program), prefix));
+        // 在首次关系查询前安装惰性故障注入，避免预热后再补丁被已内联的查询绕过。
+        // 回调只在指定复核窗口和目标配对激活，不修改其他用例的关系或判定。
+        if (Environment.GetEnvironmentVariable("SSC_ROMANCE_TEXT_ONLY") != "1")
+            SetupSocialReviewQueryBoundaries(harmony);
         saveDirectory = Path.Combine(repo, ".builds/romance-batch1/userdata");
         Directory.CreateDirectory(Path.Combine(saveDirectory, "Config"));
         File.WriteAllText(Path.Combine(saveDirectory, "Config/ModsConfig.xml"), "<ModsConfigData><version>1.7.4985</version><activeMods/><knownExpansions/></ModsConfigData>");

@@ -11,6 +11,14 @@ internal static partial class Program
     private static bool socialReviewConfirming, socialReviewCapturing;
     private static Pawn socialReviewPairActor, socialReviewPairTarget;
     private static Action socialReviewPairMutation;
+    /// <summary>启动时安装查询回调；实际破坏仍由用例的采集／确认窗口及唯一配对限定。</summary>
+    private static void SetupSocialReviewQueryBoundaries(Harmony owner)
+    {
+        owner.Patch(AccessTools.Method(typeof(Pawn_RelationsTracker), nameof(Pawn_RelationsTracker.OpinionOf)),
+            postfix: new HarmonyMethod(typeof(Program), nameof(SocialReviewOpinionChanged)));
+        owner.Patch(AccessTools.Method(typeof(Pawn_RelationsTracker), nameof(Pawn_RelationsTracker.DirectRelationExists)),
+            postfix: new HarmonyMethod(typeof(Program), nameof(SocialReviewRelationChanged)));
+    }
     /// <summary>第三方回调与原生 Scribe 破坏输入：未知结果不冒充拒绝，历史事实不成为下一次执行依据。</summary>
     private static void RomanceSocialReviewTests()
     {
@@ -24,13 +32,11 @@ internal static partial class Program
                     {
                         boundary.Patch(AccessTools.Method(typeof(SSCRomanceMoodEvents), nameof(SSCRomanceMoodEvents.Capture)),
                             prefix: new HarmonyMethod(typeof(Program), nameof(SocialReviewCaptureStart)), finalizer: new HarmonyMethod(typeof(Program), nameof(SocialReviewCaptureEnd)));
-                        boundary.Patch(AccessTools.Method(typeof(Pawn_RelationsTracker), nameof(Pawn_RelationsTracker.OpinionOf)), postfix: new HarmonyMethod(typeof(Program), nameof(SocialReviewOpinionChanged)));
                     }
                     else
                     {
                         boundary.Patch(AccessTools.Method(production.GetType("SexSlaveCraft.SSCRomanceInteractionFacts"), "TryConfirm"),
                             prefix: new HarmonyMethod(typeof(Program), nameof(SocialReviewConfirmStart)), finalizer: new HarmonyMethod(typeof(Program), nameof(SocialReviewConfirmEnd)));
-                        boundary.Patch(AccessTools.Method(typeof(Pawn_RelationsTracker), nameof(Pawn_RelationsTracker.DirectRelationExists)), postfix: new HarmonyMethod(typeof(Program), nameof(SocialReviewRelationChanged)));
                     }
                     var (_, _, subject, record) = SocialFactEvent(capture ? 11 : 7, (a, b, _) =>
                     {
