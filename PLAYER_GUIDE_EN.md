@@ -1,10 +1,12 @@
 # RJW-SexSlaveCraft Complete Player Guide
 
-**2.4.5 development milestone — registered 2026-10-24, unreleased.** The latest public download remains [v2.4.4](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.4). Runtime metadata still says 2.4.4; 1.6/Common remain frozen at 2.4.1.
+**2.4.6 development milestone — registered 2026-10-26, unreleased.** Work after the 2.4.5 registration through `385cdd8e` belongs here; 2.4.5 body development is retained. The latest public download remains [v2.4.4](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.4). Runtime metadata still says 2.4.4; 1.6/Common remain frozen at 2.4.1.
+
+[2.4.6: stages, orders, moods and personal resets](#27-246-personal-abilities-and-romance-controls-17-unreleased)
 
 [New in 2.4.4: culture, ritual points and cosmetics](#25-244-culture-rituals-and-cosmetic-reshaping-17-development-only)
 
-> This guide covers **SSC 2.4.5 development (2026-10-24, unreleased)** for RimWorld 1.7; 1.6 remains frozen at 2.4.1. See the [release scope](Docs/Releases/2.4.5/2.4.5发布说明.md#english). Earlier section versions identify introductions.
+> This guide covers **SSC 2.4.6 development (2026-10-26, unreleased)** for RimWorld 1.7; 1.6 remains frozen at 2.4.1. See the [release scope](Docs/Releases/2.4.6/2.4.6发布说明.md#english). Earlier section versions identify introductions.
 
 [Project home](README.md) · [Player reading order](Docs/Players/README.md#english-reading-order) · [Quick start](QUICK_START_EN.md) · [中文机制详解](机制详解.md)
 
@@ -1393,7 +1395,7 @@ Damage that is not shared:
 
 An SSC Sex Slave with current Corruption strictly above 0.1% gains extra permission to share an ordinary multi-person bed with both the bonded Master and active Assigned Trainer. Binding does not exclude the trainer. Ordinary vanilla slaves without SSC Sex Slave identity receive no such exception.
 
-SSC does not alter vanilla romance checks. Existing lovers/spouses may still share beds. Medical rest and deathrest take priority; ordinary rest tries the pawn’s assigned bed, then the Master’s bed, then the trainer’s bed. Bed capacity, reachability, reservations and other environment checks remain native.
+Bed sharing supplies an additional permission; existing lovers/spouses may still share beds. Separate 2.4.6 romance initiative/response rules are described in section 27. Medical rest and deathrest take priority; ordinary rest tries the pawn’s assigned bed, then the Master’s bed, then the trainer’s bed. Bed capacity, reachability, reservations and other environment checks remain native.
 
 A Sex Slave with vanilla slave status cannot be assigned directly to an empty colonist bed: assign the Master or active trainer first, then the eligible slave. Colonist Sex Slaves follow native assignment rules. Existing bed ownership is not forcibly removed.
 
@@ -1908,4 +1910,39 @@ Uterine development blocks new conception. At completion, fertility remains off 
 
 Stages replace earlier stages rather than multiplying cumulatively. External effects stack under vanilla rules; permanent lactation's separate nutrition cost is retained. Removed/replaced organs follow actual health-record lifecycle; lost progress is not restored from a hidden backup.
 
-Core features have maintainer acceptance, and finalized four-language resources are implemented. Later deployment and display checks remain open. The fertility-specialization candidate ability is outside this delivered scope. See the [version scope](Docs/Releases/2.4.5/2.4.5发布说明.md#english) and [verification record](Docs/Releases/2.4.5/2.4.5版本验证.md).
+Core features have maintainer acceptance, and finalized four-language resources are implemented. Later body-resource deployment and display acceptance is also closed. The fertility-specialization candidate ability is outside this delivered scope. See the [version scope](Docs/Releases/2.4.5/2.4.5发布说明.md#english) and [verification record](Docs/Releases/2.4.5/2.4.5版本验证.md).
+
+
+## 27. 2.4.6 personal abilities and romance controls (1.7, unreleased)
+
+### 27.1 Abilities, preferences and stages
+
+Five personal abilities share queries and submission checks while keeping their original save owners: Bestow Bliss belongs to personality, damage sharing to its bridle, milk production to the original Training Comp with existing transfer exceptions, fertility to uterine development and gel rendering to body appearance. Original defaults and production/damage/rendering rules remain. Behavior permissions, identity, Training switches and color/opacity are separate settings.
+
+Romance saves eleven preferences: three initiative behaviors, three initiative partner categories, two ordinary response permissions and three acceptance guarantees. Permissions default on and guarantees off. Effective Chain stage 2 unlocks initiative, stage 3 responses and stage 4 commands; tooltips use localized stage names. The controlled pawn needs an actual SSC identity and valid current bond. Hollow, transformation and carrier changes retain their existing restrictions.
+
+Courtship/proposals require both behavior and partner permission. Partner classification prioritizes the pawn's actual Master, then SSC sex slaves, then others; breakup/divorce ignores the partner filter. The matching acceptance guarantee overrides its owner's ordinary response prohibition but cannot release the initiator's restriction or necessary interaction conditions. Turning off the other guarantees does not reclassify a partner as “other”. Forced rejection affects the real result; it does not fabricate a zero preview chance or remove an otherwise valid initiative target.
+
+### 27.2 One-time orders, personal resets and personality
+
+Named courtship, proposal and relationship-ending commands select a currently eligible target and use the existing interaction/job. A valid one-time authorization overrides only the executor's initiative preferences; it changes no saved preference and does not exempt the recipient's response or necessary conditions. Interruption ends the request; loading and carrier changes recheck ownership rather than granting a new carrier permission.
+
+Behavior restrictions and romance each have a personal reset. The former uses the current global template and specialization defaults, with equipment/specialization rules still effective; the latter restores the eleven defaults above. Reset does not unlock stages, change research/global switches, clear relationships/history or edit the template. Disabled/stale UI requests cannot update a replacement personality or carrier.
+
+Ordinary personality extraction, gel processing and implantation carry romance preferences and settled history. New clones receive default control preferences, while history follows the existing copying boundary. Losing a Chain stage suspends effects without deleting saved choices. Orders and pending events do not travel as authority over a new body.
+
+### 27.3 Mood, logs and confirmed events
+
+The controlled pawn has fourteen continuous branches and 108 event branches, plus 26 long-duration variants sharing text. Stage, effective traits and relationship context select branches. Existing values and 3/25/30-day durations remain; balance was not adjusted for this registration.
+
+Event memories group by saved partner and five meanings: received courtship, commanded courtship, received proposal, commanded proposal and relationship ending. Different partners/groups coexist. A new real event in the same group replaces the branch, value and full standard duration regardless of strength/sign. Duplicate callbacks do not refresh it. Valid zero outcomes settle the matching group/stage set without a zero-value thought; technical failure preserves valid history. Relationship formation, engagement, rejected proposals retaining the relationship and relationship endings trigger directed cleanup.
+
+Settlement requires completed interaction facts, confirmed final relationships and native admission. Matching vanilla mood additions/renewals/capacity effects are handled precisely; unrelated history and social parent memories remain. Restoring saved history does not recalculate, renew or replay relationship cleanup.
+
+Three categories/thirteen log entries, participant-perspective history, vanilla letters, six task reports and five results share those facts. Presentation does not reroll outcomes. This does not add other observers' opinions or the newly proposed romance events.
+
+### 27.4 Copy and validation boundaries
+
+Each language has 270 display texts: 246 thought names/descriptions, thirteen logs, six task reports and five results. Simplified Chinese v1 has local in-game acceptance. Traditional Chinese, English and Russian have review approval and 590 targeted text checks, but await deployment/in-game display. Technical carrier fallbacks are separate. Final four-language PNA item/research guidance is deployed and awaits display confirmation; it describes existing production, not a new output boost/facility.
+
+Mechanisms, logs, personal resets and stage hints have batch acceptance. No new 2.4.6 full release gate, metadata rebuild or package audit was run. This is a documentation update; see [verification and open scope](Docs/Releases/2.4.6/2.4.6版本验证.md).

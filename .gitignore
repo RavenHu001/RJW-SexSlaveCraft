@@ -407,3 +407,8 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# 2.4.6 release documentation
+!/Docs/Releases/2.4.6/
+/Docs/Releases/2.4.6/*
+!/Docs/Releases/2.4.6/*.md

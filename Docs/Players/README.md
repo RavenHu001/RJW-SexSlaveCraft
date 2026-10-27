@@ -1,10 +1,10 @@
 # 玩家阅读入口 / Player documentation
 
-**2.4.5 开发版 — 2026-10-24 登记，尚未发布。** 2.4.4 后开发已归入本版；最新正式下载仍为 [v2.4.4](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.4)。1.7 运行元数据暂保留 2.4.4，1.6／Common 冻结于 2.4.1。
+**2.4.6 开发版 — 2026-10-26 登记，尚未发布。** 2.4.5 登记后截至 `385cdd8e` 的开发归入本版，继承 2.4.5 身体开发内容；最新正式下载仍为 [v2.4.4](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.4)。1.7 运行元数据仍为 2.4.4，1.6／Common 冻结于 2.4.1。
 
 [项目首页](../../README.md) · [文档总索引](../README.md) · [双语模组介绍](../模组介绍.md) · [版本索引](../Releases/README.md)
 
-2.4.5 开发内容先查[身体开发入门](../../读我，玩法介绍.md#23-245-身体开发与维护调整仅-17未发布)与[完整规则](../../机制详解.md#26-245-身体开发与生育控制仅-17未发布)。此前已发布内容可直接查[文化与医美入门](../../读我，玩法介绍.md#22-244-文化与医美仅-17-开发版)，数值与条件查[完整规则](../../机制详解.md#25-244-文化仪式与医美仅-17-开发版)。
+2.4.6先查[能力与浪漫控制入门](../../读我，玩法介绍.md#24-246-个人能力与浪漫控制仅-17未发布)与[完整规则](../../机制详解.md#27-246-个人能力与浪漫控制仅-17未发布)。继承的2.4.5内容查[身体开发入门](../../读我，玩法介绍.md#23-245-身体开发与维护调整仅-17未发布)与[完整规则](../../机制详解.md#26-245-身体开发与生育控制仅-17未发布)。此前已发布内容可直接查[文化与医美入门](../../读我，玩法介绍.md#22-244-文化与医美仅-17-开发版)，数值与条件查[完整规则](../../机制详解.md#25-244-文化仪式与医美仅-17-开发版)。
 
 ## 中文阅读顺序
 
@@ -26,11 +26,12 @@
 | 太空武器、无伤吸收与修复 | [操作](../../读我，玩法介绍.md#太空纳米催情液武器243仅-17) | [完整规则](../../机制详解.md#118-太空纳米催情液武器) |
 | 欢愉恩赐与产量剂量 | [开启](../../读我，玩法介绍.md#欲望侵染) | [数值](../../机制详解.md#115-主人欲望侵染) |
 | 凝胶外观 | [全身凝胶化](../../读我，玩法介绍.md#14-全身凝胶化) | [2.4.2 引入的外观设置](../../机制详解.md#176-凝胶外观242仅17) |
+| 个人能力／浪漫控制 | [入门](../../读我，玩法介绍.md#24-246-个人能力与浪漫控制仅-17未发布) | [阶段、命令与心情](../../机制详解.md#27-246-个人能力与浪漫控制仅-17未发布) |
 | 验证与兼容 | [主要兼容](../../读我，玩法介绍.md#19-主要兼容) | [专项边界](../Development/Verification/README.md) |
 
 ## English reading order
 
-The guides now include **unreleased 2.4.5** development on 1.7; 1.6 remains at 2.4.1. Start with the [new body-development guide](../../QUICK_START_EN.md#23-245-body-development-and-maintenance-17-unreleased). The latest public package is still 2.4.4 and excludes these additions. For already released features, use the [2.4.4 scope](../Releases/2.4.4/2.4.4发布说明.md#english), [culture/cosmetics quick start](../../QUICK_START_EN.md#22-244-culture-and-cosmetic-reshaping-17-development-only) and [full rules](../../PLAYER_GUIDE_EN.md#25-244-culture-rituals-and-cosmetic-reshaping-17-development-only).
+The guides now include **unreleased 2.4.6** development on 1.7; 1.6 remains at 2.4.1. Start with [ability/romance controls](../../QUICK_START_EN.md#24-246-personal-abilities-and-romance-controls-17-unreleased), the [full rules](../../PLAYER_GUIDE_EN.md#27-246-personal-abilities-and-romance-controls-17-unreleased) and the inherited [body-development guide](../../QUICK_START_EN.md#23-245-body-development-and-maintenance-17-unreleased). The latest public package is still 2.4.4 and excludes these additions. For already released features, use the [2.4.4 scope](../Releases/2.4.4/2.4.4发布说明.md#english), [culture/cosmetics quick start](../../QUICK_START_EN.md#22-244-culture-and-cosmetic-reshaping-17-development-only) and [full rules](../../PLAYER_GUIDE_EN.md#25-244-culture-rituals-and-cosmetic-reshaping-17-development-only).
 
 1. Read the [mod overview](../模组介绍.md#english).
 2. Follow [Getting Started](../../QUICK_START_EN.md#2-getting-started) for research, qualification, identities and trainers.
@@ -53,6 +54,6 @@ Use [Bond Overview](../../QUICK_START_EN.md#bond-overview-243-17-only) for portr
 
 ## 版本与资料用途 / Versions and document roles
 
-当前指南包含 2.4.5 未发布开发内容，正式下载仍为 2.4.4；历史标签资料保持各自版本，构建与发布准备见[2.4.5 验证记录](../Releases/2.4.5/2.4.5版本验证.md)。已交付、专项待验收与未来规划分别登记，测试计数保留实际执行日期。
+当前指南包含 2.4.6 未发布开发内容及继承的2.4.5身体开发，正式下载仍为 2.4.4；历史标签资料保持各自版本，构建与发布准备见[2.4.6 验证记录](../Releases/2.4.6/2.4.6版本验证.md)。已交付、专项待验收与未来规划分别登记，测试计数保留实际执行日期。
 
-These guides include unreleased 2.4.5 additions; the v2.4.4 release package retains its original scope. Historical validation and maintainer acceptance retain their original scope; new build, release-gate and package results are recorded separately.
+These guides include unreleased 2.4.6 additions and inherited 2.4.5 body development; the v2.4.4 release package retains its original scope. Historical validation and maintainer acceptance retain their original scope; new build, release-gate and package results are recorded separately.

@@ -4,12 +4,26 @@
 
 This continuation builds on upstream **2.2.8**, the baseline when upstream development stopped in July, and retains its version numbering. Entries are listed newest first. Technical details are in the [development log (Chinese)](Docs/Development/开发更新记录.md).
 
+## [2.4.6] — 未发布 / Unreleased — 个人能力与浪漫控制
+
+2026-10-26 登记：以 2.4.5 登记提交 `7225f729` 为边界，其后截至 `385cdd8e` 的52个非合并提交、363个变更路径归入本版。2.4.5也是未发布里程碑，身体开发等既有范围继续继承。见[中英说明](Docs/Releases/2.4.6/2.4.6发布说明.md)、[逐项归并](Docs/Releases/2.4.6/2.4.6开发归并核对.md)和[验证边界](Docs/Releases/2.4.6/2.4.6版本验证.md)。
+
+- **个人能力框架：** 五项现有布尔能力统一查询／提交与原载体适配，保留原存储和默认；三批约定范围已实机关闭。
+- **浪漫控制：** 十一项个人选择，主动行为与对象取交集，被动回应及三类默认关闭的接受保证，二／三／四阶门槛、一次点名命令及人格／克隆规则。
+- **心情与反馈：** 十四持续分支、108事件分支及26长期变体，按对象＋五类语义组更新／结清／定向清理；三类十三日志、本人历史／信件和任务结果共用真实事实。
+- **界面与文案：** 两个个人恢复默认按钮、目标多选、窄栏布局和锁链具体阶段名；四语各270项浪漫显示文字已落实。简中已实机，繁英俄已审阅但尚未部署／实机。
+- **引导与修复：** PNA两物品／两研究四语产出引导已同步待显示；首次绑定原因精简、战斗超频新图标、生命周期保护及文案专项与总回归隔离。
+- **资料与未来边界：** 补齐玩家指南和版本索引；身体显示验收补记继承2.4.5。种子用途、PNA增产／设施、社交评价及新事件等未实施方案不计功能。
+
+2.4.6 groups post-registration work through `385cdd8e`: five ability adapters, stage-based romance controls, partner/five-group mood handling, shared logs and task facts, personal reset buttons, four-language copy, PNA production guidance, binding feedback and test-scope isolation. New runtime work targets 1.7; 1.6/Common stay at 2.4.1. **Unreleased:** VERSION is 2.4.6; runtime metadata remains 2.4.4. Simplified Chinese has in-game acceptance; three-language display and PNA guidance display remain open. This registration performs no rebuild, full regression, deployment or publication; public downloads remain v2.4.4.
+
 ## [2.4.5] — 未发布 / Unreleased — 身体开发与生育控制
+
+历史登记范围保留；登记后的个人能力框架等开发现归2.4.6。身体开发后续显示验收已关闭，以下原待核查表述保留登记时点。
 
 2026-10-24 登记：`v2.4.4` 之后截至 `94e37bb` 的 39 个非合并提交统一归入 2.4.5，仅 1.7；1.6／Common 冻结于 2.4.1。见[中英说明](Docs/Releases/2.4.5/2.4.5发布说明.md)、[开发归并](Docs/Releases/2.4.5/2.4.5开发归并核对.md)和[分批验证／发布准备](Docs/Releases/2.4.5/2.4.5版本验证.md)。
 
 - **子宫开发与生育控制：** 内脏改造研究与手术、独立身体成长、受孕开关、合格新妊娠时长 ×0.8、开启态生育倍率 ×2.5、共用身体栏与 SSC 泌乳抑制中和。
-- **个人能力开关框架：** 欢愉恩赐、伤害分担、泌乳、生育和凝胶个人渲染统一接入原载体适配；保留原字段、保存归属、默认与业务规则。生命周期回归、注释与接入规范齐备，三批均获维护者实机认可，专项按约定范围收尾归档，暂不发布。
 - **胃部开发：** 复用研究与手术框架，独立身体进度、分阶段饥饿／进食收益、满级食物中毒免疫；两项手术采用 Medicine 类别医药筛选。
 - **本地化与显示：** 子宫 v2、胃部 v1 四语定稿与镜像，健康页阶段／三态及亮粉色，共用俄语身份提示改为不限性别；部分部署与四语显示待核查。
 - **修复与表现：** 修复连续人格排泄原地发呆；补全主人四阶段原生 PNA 成瘾免疫；统一猫狗技能名称／文案，接入专用图标并调整狗图标尺寸，实际技能参数不变。
