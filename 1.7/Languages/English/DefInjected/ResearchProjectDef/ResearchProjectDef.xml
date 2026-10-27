@@ -3,7 +3,7 @@
   <SSC_RES_BasicTraining.label>Training</SSC_RES_BasicTraining.label>
   <SSC_RES_BasicTraining.description>Study surviving training manuals to learn practical training methods.</SSC_RES_BasicTraining.description>
   <SSC_RES_BodyPartTraining.label>Body-part Training</SSC_RES_BodyPartTraining.label>
-  <SSC_RES_BodyPartTraining.description>Study targeted training methods for specific body parts, granting bonuses through training.</SSC_RES_BodyPartTraining.description>
+  <SSC_RES_BodyPartTraining.description>Study targeted training methods for specific body parts, granting bonuses through actual development.\n\nReaching 100% genital development grants Nano-Aphrodisiac Secretion. The body consumes nutrition to accumulate progress automatically and produces ordinary PNA when progress is full. Completing this research alone does not grant secretion; the corresponding body part must still be fully developed.</SSC_RES_BodyPartTraining.description>
   <SSC_RES_PNASimpleApp.label>Basic PNA Applications</SSC_RES_PNASimpleApp.label>
   <SSC_RES_PNASimpleApp.description>Learn the first surgical applications of aphrodisiac nanofluid, using injections during operations for modification and training.</SSC_RES_PNASimpleApp.description>
   <SSC_RES_SexChange.label>Sex Reassignment Surgery (Male to Female)</SSC_RES_SexChange.label>
@@ -32,5 +32,5 @@
   <SSC_RES_GelatinizationPartial.description>Preliminary gelatinization modification.</SSC_RES_GelatinizationPartial.description>
   <SSC_RES_GelatinizationFull.label>Full-body Gelatinization</SSC_RES_GelatinizationFull.label>
   <SSC_RES_GelatinizationFull.description>A complete morphological transformation.</SSC_RES_GelatinizationFull.description>
-  <SSC_RES_PNAConcentration.description>Learn to concentrate aphrodisiac nanofluid over a campfire or stove, at the cost of greater losses. Reduced-pressure processing at a drug lab produces the same concentrate from less raw fluid.</SSC_RES_PNAConcentration.description>
+  <SSC_RES_PNAConcentration.description>Learn to process ordinary aphrodisiac nanofluid into concentrate. Efficient processing at a drug lab turns 5 units of raw fluid into 1 unit of concentrate, or 20 into 4. The less efficient method at a campfire, fueled stove or electric stove requires 10 units of raw fluid for 1 unit of concentrate.\n\nBoth methods yield the same product and require raw fluid. This research unlocks concentration only; it does not grant bodily secretion. Ordinary raw fluid can be produced automatically by a body with fully developed genitals.</SSC_RES_PNAConcentration.description>
 </LanguageData>

@@ -21,7 +21,7 @@
   <ResearchProjectDef>
     <defName>SSC_RES_BodyPartTraining</defName>
     <label>部位调教</label>
-    <description>研究特定部位的调教方式，通过调教使得这些部位获得增益</description>
+    <description>研究特定部位的调教方式，通过实际开发使这些部位获得增益。\n\n生殖器开发达到100%后，可获得“纳米催情液分泌”，身体消耗营养自动积累进度，满进度产出普通PNA。完成研究本身不会直接获得分泌能力，仍需完成相应部位开发。</description>
     <baseCost>800</baseCost>
     <techLevel>Neolithic</techLevel>
     <tab>SSC_ResearchTabDef</tab>
@@ -90,7 +90,7 @@
   <ResearchProjectDef>
     <defName>SSC_RES_PNAConcentration</defName>
     <label>PNA 浓缩技术</label>
-    <description>掌握纳米催情液的浓缩方法。可在篝火或灶台上粗放浓缩，但会损失更多原液；药物台的减压工艺能以较少原液制成相同的浓缩品。</description>
+    <description>掌握把普通纳米催情液加工为浓缩品的方法。药物台的高效工艺可用5份原液制成1份，或用20份制成4份；篝火、燃料灶和电灶的粗放工艺损耗较高，需要10份原液制成1份。\n\n两种工艺的产物相同，都需要已有原液。本研究只解锁浓缩加工，不赋予身体分泌能力；普通原液可由完成生殖器开发的身体自动产出。</description>
     <baseCost>1200</baseCost>
     <techLevel>Medieval</techLevel>
     <tab>SSC_ResearchTabDef</tab>

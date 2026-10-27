@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <LanguageData>
   <Purple_Aphrodisiac_Nanofluid.label>紫色奈米催情液</Purple_Aphrodisiac_Nanofluid.label>
-  <Purple_Aphrodisiac_Nanofluid.description>懸浮著活性紫色微械的紫色液體，能強烈喚起情慾。它也是配製濃縮品的原料。</Purple_Aphrodisiac_Nanofluid.description>
+  <Purple_Aphrodisiac_Nanofluid.description>懸浮著活性紫色微械的紫色液體，能強烈喚起情慾。它也是配製濃縮品的原料。\n\n取得方式：生殖器開發達到100%後，身體獲得「奈米催情液分泌」，消耗營養自動累積產出進度。基礎進度每天增加20%，滿進度生成10份原液，從零累積約需5天；飽食度不足以支付消耗時暫停累積。進度可在健康狀態或角色資訊欄查看，產物出現在角色附近；遠行隊中進入庫存。</Purple_Aphrodisiac_Nanofluid.description>
   <Purple_Aphrodisiac_Nanofluid_Plus.label>濃縮紫色奈米催情液</Purple_Aphrodisiac_Nanofluid_Plus.label>
-  <Purple_Aphrodisiac_Nanofluid_Plus.description>經減壓蒸去多餘液體製成的濃縮品，單位體積內的紫色微械更多，作用也更強、更快。對普通人而言，過量攝入足以讓人在連續高潮中失去意識。</Purple_Aphrodisiac_Nanofluid_Plus.description>
+  <Purple_Aphrodisiac_Nanofluid_Plus.description>由普通奈米催情液濃縮製成，單位體積內的紫色微械更多，作用也更強、更快。對普通人而言，過量攝入足以讓人在連續高潮中失去意識。\n\n製作方式：研究「PNA濃縮技術」後，在藥物台用5份原液製成1份，或用20份製成4份；也可在篝火、燃料爐或電爐用10份原液製成1份。兩種工藝的產物相同，都需要先取得普通原液。</Purple_Aphrodisiac_Nanofluid_Plus.description>
 </LanguageData>

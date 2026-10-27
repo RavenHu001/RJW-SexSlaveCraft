@@ -3,7 +3,7 @@
   <ThingDef Class="SexSlaveCraft.ThingDef_SSCPna" ParentName="ResourceBase">
     <defName>Purple_Aphrodisiac_Nanofluid</defName>
     <label>紫色纳米催情液</label>
-    <description>悬浮着活性紫色微械的紫色液体，能强烈唤起情欲。它也是配制浓缩品的原料。</description>
+    <description>悬浮着活性紫色微械的紫色液体，能强烈唤起情欲。它也是配制浓缩品的原料。\n\n获取方式：生殖器开发达到100%后，身体获得“纳米催情液分泌”，消耗营养自动积累产出进度。基础进度每天增加20%，满进度生成10份原液，从零积累约需5天；饱食度不足以支付消耗时暂停积累。进度可在健康状态或角色信息栏查看，产物出现在角色附近；远行队中进入库存。</description>
     
     <graphicData>
       <texPath>Things/Item/PNA</texPath> <graphicClass>Graphic_StackCount</graphicClass>
@@ -58,7 +58,7 @@
     <ThingDef Class="SexSlaveCraft.ThingDef_SSCPna" ParentName="ResourceBase">
     <defName>Purple_Aphrodisiac_Nanofluid_Plus</defName>
     <label>浓缩紫色纳米催情液</label>
-    <description>经减压蒸去多余液体制成的浓缩品，单位体积内的紫色微械更多，作用也更强、更快。对普通人而言，过量摄入足以让人在连续高潮中失去意识。</description>
+    <description>由普通纳米催情液浓缩制成，单位体积内的紫色微械更多，作用也更强、更快。对普通人而言，过量摄入足以让人在连续高潮中失去意识。\n\n制作方式：研究“PNA浓缩技术”后，在药物台用5份原液制成1份，或用20份制成4份；也可在篝火、燃料灶或电灶用10份原液制成1份。两种工艺的产物相同，都需要先取得普通原液。</description>
     
     <graphicData>
       <texPath>Things/Item/PNA_PLUS</texPath> <graphicClass>Graphic_StackCount</graphicClass>

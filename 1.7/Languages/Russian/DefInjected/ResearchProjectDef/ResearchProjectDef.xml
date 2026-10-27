@@ -3,7 +3,7 @@
   <SSC_RES_BasicTraining.label>Дрессировка</SSC_RES_BasicTraining.label>
   <SSC_RES_BasicTraining.description>Изучение выживших руководств по дрессировке для освоения практических методов.</SSC_RES_BasicTraining.description>
   <SSC_RES_BodyPartTraining.label>Дрессировка частей тела</SSC_RES_BodyPartTraining.label>
-  <SSC_RES_BodyPartTraining.description>Изучение целенаправленных методов дрессировки отдельных частей тела, дающих бонусы через тренировку.</SSC_RES_BodyPartTraining.description>
+  <SSC_RES_BodyPartTraining.description>Изучение целенаправленных методов дрессировки отдельных частей тела, дающих бонусы по мере их развития.\n\nРазвитие половых органов до 100% даёт способность «Выделение наножидкости-афродизиака». Тело расходует питательные вещества, автоматически накапливает прогресс и производит обычную PNA, когда прогресс заполнен. Само завершение исследования не даёт способности к выделению: соответствующую часть тела ещё необходимо полностью развить.</SSC_RES_BodyPartTraining.description>
   <SSC_RES_PNASimpleApp.label>Простое применение PNA</SSC_RES_PNASimpleApp.label>
   <SSC_RES_PNASimpleApp.description>Освоить первые хирургические приёмы применения наножидкости-афродизиака: инъекции во время операций для модификации и дрессировки.</SSC_RES_PNASimpleApp.description>
   <SSC_RES_SexChange.label>Операция смены пола (мужчина → женщина)</SSC_RES_SexChange.label>
@@ -32,5 +32,5 @@
   <SSC_RES_GelatinizationPartial.description>Предварительная gelatinизационная модификация.</SSC_RES_GelatinizationPartial.description>
   <SSC_RES_GelatinizationFull.label>Полная gelatinизация тела</SSC_RES_GelatinizationFull.label>
   <SSC_RES_GelatinizationFull.description>Полная морфологическая трансформация.</SSC_RES_GelatinizationFull.description>
-  <SSC_RES_PNAConcentration.description>Освоить концентрирование наножидкости-афродизиака на костре или плите с повышенными потерями. Обработка при пониженном давлении в лаборатории даёт такой же концентрат из меньшего количества исходной жидкости.</SSC_RES_PNAConcentration.description>
+  <SSC_RES_PNAConcentration.description>Освойте переработку обычной наножидкости-афродизиака в концентрат. Эффективный способ в лаборатории позволяет переработать 5 единиц исходной жидкости в 1 единицу концентрата или 20 в 4. Менее эффективный способ на костре, топливной или электрической плите требует 10 единиц исходной жидкости для получения 1 единицы концентрата.\n\nОба способа дают одинаковый продукт и требуют исходной жидкости. Исследование открывает только концентрирование и не даёт телу способности к выделению. Обычную исходную жидкость может автоматически производить тело с полностью развитыми половыми органами.</SSC_RES_PNAConcentration.description>
 </LanguageData>
