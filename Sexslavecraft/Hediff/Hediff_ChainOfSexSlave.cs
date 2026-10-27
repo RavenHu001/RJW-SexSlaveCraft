@@ -18,6 +18,10 @@ namespace SexSlaveCraft
         {
             base.PostAdd(dinfo);
             observedMaster = LinkedPawn;
+#if SSC_RW17
+            // 健康列表已持有这条链后再观察，不能把尚未入体的实例当作当前绑定。
+            SSCRomanceLifecycle.Notify(pawn);
+#endif
             SSCSelfTrainingFeedback.NotifyStatusChanged(pawn);
             ModLog.Message($"[ChainOfSexSlave] Added to {pawn}, linked with {LinkedPawn ?? target}");
         }
@@ -32,6 +36,10 @@ namespace SexSlaveCraft
             if (observedMaster == currentMaster) return;
             Pawn previousMaster = observedMaster;
             observedMaster = currentMaster;
+#if SSC_RW17
+            // 外部改 target 被检测到时立即撤权，后面的反向索引修复不能延续旧主人授权。
+            SSCRomanceLifecycle.Notify(pawn);
+#endif
             SSCBondUtility.GetBridle(previousMaster)?.RemoveTarget(pawn);
             SSCBondRelationUtility.RemoveInvalidRelations(pawn);
             SSCBondUtility.RepairReciprocalLink(pawn);
@@ -83,6 +91,10 @@ namespace SexSlaveCraft
         {
             // 正常严重度变化也会发出通知；仍在身体上的锁链不触发解绑维护。
             if (pawn?.health?.hediffSet == null || pawn.health.hediffSet.hediffs.Contains(this)) return;
+#if SSC_RW17
+            // 以现在实际持有的链比较；删除旧实例时已存在的新链不能被误认为同一授权。
+            SSCRomanceLifecycle.Notify(pawn);
+#endif
             Pawn formerMaster = LinkedPawn;
             Pawn currentMaster = SSCBondUtility.GetBoundMaster(pawn);
             // 删除旧实例后可能已经有新锁链；仍由新链指向的主人应保留反向索引和仪式奖励。
@@ -123,6 +135,10 @@ namespace SexSlaveCraft
                 Pawn previousMaster = hediff.LinkedPawn;
                 hediff.target = Master;
                 hediff.observedMaster = Master;
+#if SSC_RW17
+                // 先记录真实换主，再执行可能重入的缰绳／关系清理；回调恢复原主人也不能掩盖这次撤权。
+                SSCRomanceLifecycle.Notify(SexSlave);
+#endif
                 // AddToPawn 也可能被绕过 Bind 直接调用，换主时仍须清除旧主人的反向引用。
                 if (previousMaster != Master) SSCBondUtility.GetBridle(previousMaster)?.RemoveTarget(SexSlave);
                 ModLog.Message($"[ChainOfSexSlave] Updated existing link: {SexSlave} ↔ {Master}");
@@ -130,6 +146,10 @@ namespace SexSlaveCraft
 
             // 新建或改写 target 后，以当前实际锁链清除过期主人关系，不创建新的奖励关系。
             SSCBondRelationUtility.RemoveInvalidRelations(SexSlave);
+#if SSC_RW17
+            // 覆盖绕过 Bind 直接调用 AddToPawn 的换主路径，不等待下一次锁链 Tick。
+            SSCRomanceLifecycle.Notify(SexSlave);
+#endif
             return hediff;
         }
 
@@ -154,6 +174,10 @@ namespace SexSlaveCraft
             float oldSeverity = hediff.Severity;
             int oldStage = SSCIdentityUtility.GetSexSlaveStageFromChain(hediff);
             hediff.Severity = Mathf.Clamp(oldSeverity + amount, 0f, hediff.def.maxSeverity);
+#if SSC_RW17
+            // 原入口也显式通知，避免健康阶段被外部改写后漏掉 SSC 自身的第四阶段退阶。
+            if (oldStage != SSCIdentityUtility.GetSexSlaveStageFromChain(hediff)) SSCRomanceLifecycle.Notify(pawn);
+#endif
             if (oldStage != SSCIdentityUtility.GetSexSlaveStageFromChain(hediff))
                 SSCSelfTrainingFeedback.NotifyStatusChanged(pawn);
 

@@ -1,4 +1,4 @@
-// AI 辅助生成
+﻿// AI 辅助生成
 // 仅模拟外部接口：字体为近似测量，健康/翻译与 Scribe 是字典模型，不运行 Unity 或跨引用恢复。
 using System.Xml.Linq;
 using SexSlaveCraft;
@@ -12,6 +12,7 @@ namespace UnityEngine
         public float x, y, width, height;
         public Rect(float x, float y, float width, float height) { this.x = x; this.y = y; this.width = width; this.height = height; }
         public float yMax => y + height;
+        public float xMax => x + width;
         public Rect ContractedBy(float margin) => new Rect(x + margin, y + margin, width - margin * 2, height - margin * 2);
     }
     public struct Color
@@ -19,12 +20,14 @@ namespace UnityEngine
         public float r, g, b, a;
         public Color(float r, float g, float b, float a = 1) { this.r = r; this.g = g; this.b = b; this.a = a; }
         public static Color white => new Color(1, 1, 1);
+        public static Color operator *(Color a, Color b) => new(a.r*b.r,a.g*b.g,a.b*b.b,a.a*b.a);
     }
-    public enum TextAnchor { UpperLeft, MiddleRight }
+    public enum TextAnchor { UpperLeft, MiddleRight, MiddleCenter }
     public static class GUI { public static bool enabled = true; public static Color color = Color.white; }
     public static class Mathf
     {
         public static float Max(float a, float b) => Math.Max(a, b);
+        public static float Min(float a, float b) => Math.Min(a, b);
         public static float Clamp01(float value) => Math.Clamp(value, 0, 1);
         public static float Clamp(float value, float min, float max) => Math.Clamp(value, min, max);
     }
@@ -38,11 +41,13 @@ namespace Verse
         public static GameFont Font = GameFont.Small;
         public static TextAnchor Anchor;
         public static bool WordWrap = true;
+        /// <summary>与本宿主既有近似字宽一致，仅提供标题按钮测量边界。</summary>
+        public static (float x, float y) CalcSize(string text) => ((text ?? "").Sum(c => c > 255 ? 13f : 7f), 22f);
         // 近似字体测量仅用于区域容纳检查，不宣称等同 Unity 的字形、裁剪与输入行为。
         public static float CalcHeight(string text, float width) => Math.Max(1, (float)Math.Ceiling((text ?? "").Sum(c => c > 255 ? 13f : 7f) / width)) * (Font == GameFont.Small ? 22 : 30);
     }
     public record DrawItem(string Kind, Rect Rect, string Text = "", bool Disabled = false);
-    public static class Widgets
+    public static partial class Widgets
     {
         public static List<DrawItem> Items = new List<DrawItem>();
         public static bool Click, Throw;
@@ -51,7 +56,7 @@ namespace Verse
         public static void Label(Rect rect, string label)
         {
             if (Throw) throw new InvalidOperationException("test draw failure");
-            Items.Add(new DrawItem("label", rect, label));
+            Items.Add(new DrawItem(label.StartsWith("✓ ") || label.StartsWith("□ ") ? "romance-target" : "label", RomanceUiOrigins.Transform(rect), label, !GUI.enabled));
         }
         public static Rect FillableBar(Rect rect, float value)
         {
@@ -200,15 +205,15 @@ namespace Verse
 namespace RimWorld
 {
     public class Faction { public static Faction OfPlayer = new Faction(); }
-    public static class MessageTypeDefOf { public static readonly object PositiveEvent = new object(); }
+    public static class MessageTypeDefOf { public static readonly object PositiveEvent = new object(), RejectInput = new object(); }
 }
 
 namespace SexSlaveCraft
 {
     public enum PawnIdentity { Unset, Master, Slave }
     public partial class CompSexSlaveTraining { public PawnIdentity pawnIdentity = PawnIdentity.Master; public int masterProgressionVersion = 1; }
-    public static class SSCIdentityUtility { public static bool IsMaster(Pawn pawn) => pawn?.Training?.pawnIdentity == PawnIdentity.Master; }
-    public static class SSCBondUtility
+    public static partial class SSCIdentityUtility { public static bool IsMaster(Pawn pawn) => pawn?.Training?.pawnIdentity == PawnIdentity.Master; }
+    public static partial class SSCBondUtility
     {
         // 面板宿主只提供实际归属引用，缰绳的有效性和空状态清理由生产类判断。
         public static Pawn GetBoundMaster(Pawn pawn) => pawn?.BoundMaster;
@@ -228,6 +233,7 @@ namespace SexSlaveCraft
     }
     public static class SSCDefOf
     {
+        public static HediffDef ChainOfSexSlave = new HediffDef();
         public static HediffDef SSC_Hediff_MasterProgression = new HediffDef { defName = SSCMasterProgressionUtility.DefName, hediffClass = typeof(Hediff_MasterProgression) };
         public static HediffDef BridleOfSexSlave = new HediffDef { hediffClass = typeof(Hediff_BridleOfSexSlave) };
         public static HediffDef SSC_PersonalityExcreted_Done = new HediffDef(), SSC_MasterBondEmpowerment = new HediffDef();

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成：简中测试稿 v1；保留左侧根及固定索引。 -->
+<LanguageData>
+  <SSC_RomanceLog_Command.rulePack.rulesStrings.0>ssc_romance_log_command_romance_accepted-&gt;受锁链牵引，[INITIATOR_nameDef]向[RECIPIENT_nameDef]求爱得手，就此结为恋人。</SSC_RomanceLog_Command.rulePack.rulesStrings.0>
+  <SSC_RomanceLog_Command.rulePack.rulesStrings.1>ssc_romance_log_command_romance_rejected-&gt;受锁链牵引，[INITIATOR_nameDef]向[RECIPIENT_nameDef]求爱，却被对方拒了。</SSC_RomanceLog_Command.rulePack.rulesStrings.1>
+  <SSC_RomanceLog_Command.rulePack.rulesStrings.2>ssc_romance_log_command_proposal_accepted-&gt;受锁链牵引，[INITIATOR_nameDef]向[RECIPIENT_nameDef]求婚，对方应了，就此订婚。</SSC_RomanceLog_Command.rulePack.rulesStrings.2>
+  <SSC_RomanceLog_Command.rulePack.rulesStrings.3>ssc_romance_log_command_proposal_rejected-&gt;受锁链牵引，[INITIATOR_nameDef]向[RECIPIENT_nameDef]求婚，被对方拒了，恋人关系仍在。</SSC_RomanceLog_Command.rulePack.rulesStrings.3>
+  <SSC_RomanceLog_Command.rulePack.rulesStrings.4>ssc_romance_log_command_proposal_rejected_separated-&gt;受锁链牵引，[INITIATOR_nameDef]向[RECIPIENT_nameDef]求婚，被对方拒了，二人就此分手。</SSC_RomanceLog_Command.rulePack.rulesStrings.4>
+  <SSC_RomanceLog_Command.rulePack.rulesStrings.5>ssc_romance_log_command_end_lover-&gt;奉锁链之命，[INITIATOR_nameDef]结束了与[RECIPIENT_nameDef]的恋人关系。</SSC_RomanceLog_Command.rulePack.rulesStrings.5>
+  <SSC_RomanceLog_Command.rulePack.rulesStrings.6>ssc_romance_log_command_end_fiance-&gt;奉锁链之命，[INITIATOR_nameDef]解除了与[RECIPIENT_nameDef]的婚约。</SSC_RomanceLog_Command.rulePack.rulesStrings.6>
+  <SSC_RomanceLog_Command.rulePack.rulesStrings.7>ssc_romance_log_command_divorce-&gt;奉锁链之命，[INITIATOR_nameDef]与[RECIPIENT_nameDef]离了婚。</SSC_RomanceLog_Command.rulePack.rulesStrings.7>
+  <SSC_RomanceLog_Reject.rulePack.rulesStrings.0>ssc_romance_log_reject_romance-&gt;受锁链支配，[RECIPIENT_nameDef]回绝了[INITIATOR_nameDef]的求爱。</SSC_RomanceLog_Reject.rulePack.rulesStrings.0>
+  <SSC_RomanceLog_Reject.rulePack.rulesStrings.1>ssc_romance_log_reject_proposal-&gt;受锁链支配，[RECIPIENT_nameDef]回绝了[INITIATOR_nameDef]的求婚。</SSC_RomanceLog_Reject.rulePack.rulesStrings.1>
+  <SSC_RomanceLog_Reject.rulePack.rulesStrings.2>ssc_romance_log_reject_proposal_separated-&gt;受锁链支配，[RECIPIENT_nameDef]回绝了[INITIATOR_nameDef]的求婚，并结束了这段恋人关系。</SSC_RomanceLog_Reject.rulePack.rulesStrings.2>
+  <SSC_RomanceLog_Accept.rulePack.rulesStrings.0>ssc_romance_log_accept_romance-&gt;受锁链支配，[RECIPIENT_nameDef]浑身发烫地应下了[INITIATOR_nameDef]的求爱，就此结为恋人。</SSC_RomanceLog_Accept.rulePack.rulesStrings.0>
+  <SSC_RomanceLog_Accept.rulePack.rulesStrings.1>ssc_romance_log_accept_proposal-&gt;受锁链支配，[RECIPIENT_nameDef]浑身发烫地应下了[INITIATOR_nameDef]的求婚，就此订婚。</SSC_RomanceLog_Accept.rulePack.rulesStrings.1>
+</LanguageData>

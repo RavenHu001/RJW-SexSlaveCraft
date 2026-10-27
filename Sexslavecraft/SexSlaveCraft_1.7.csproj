@@ -75,6 +75,51 @@
   </Target>
   <!-- AI 辅助生成：开关后端适配仅编入 1.7，保留旧版条件分支。 -->
   <ItemGroup>
+    <Compile Include="common/Romance/SSCRomanceOldRelation.cs" />
+    <Compile Include="common/Romance/SSCRomanceMoodData.cs" />
+    <Compile Include="common/Romance/SSCRomanceMoodOrder.cs" />
+    <Compile Include="common/Romance/SSCRomanceMoodCatalog.cs" />
+    <Compile Include="common/Romance/SSCRomanceCompositeMemory.cs" />
+    <Compile Include="common/Romance/SSCRomanceMoodGroups.cs" />
+    <Compile Include="common/Romance/SSCRomanceMoodRequest.cs" />
+    <Compile Include="ThePatches/Harmony_RomanceMoodHistory.cs" />
+    <Compile Include="ThePatches/Harmony_RomanceMoodAdmissionTail.cs" />
+    <Compile Include="common/Romance/SSCRomanceInteractionFacts.cs" />
+    <Compile Include="common/Romance/SSCRomanceLogGrammar.cs" />
+    <Compile Include="common/Romance/SSCRomancePersonalReset.cs" />
+    <Compile Include="common/Restrictions/SSCRestrictionPersonalReset.cs" />
+    <Compile Include="common/Romance/SSCRomanceCommandPresentation.cs" />
+    <Compile Include="ThePatches/Harmony_RomanceInteractionFacts.cs" />
+    <Compile Include="common/Romance/SSCRomanceMoodEvents.cs" />
+    <Compile Include="common/Romance/SSCRomanceNativeMood.cs" />
+    <Compile Include="ThePatches/Harmony_RomanceNativeMood.cs" />
+    <Compile Include="common/Romance/SSCRomanceMoodLog.cs" />
+    <Compile Include="ThePatches/Harmony_RomanceMood.cs" />
+    <Compile Include="common/Romance/SSCRomanceMoodMemory.cs" />
+    <Compile Include="common/Romance/SSCRomanceContinuousMood.cs" />
+    <Compile Include="common/Romance/SSCRomanceMoodDiagnostics.cs" />
+    <Compile Include="ThePatches/Harmony_RomanceMoodTraits.cs" />
+    <Compile Include="common/Romance/SSCRomanceConfig.cs" />
+    <Compile Include="common/Romance/SSCRomanceResolver.cs" />
+    <Compile Include="common/Romance/SSCRomancePolicy.cs" />
+    <Compile Include="common/Romance/SSCRomancePreferences.cs" />
+    <Compile Include="common/Romance/SSCRomancePersonality.cs" />
+    <Compile Include="common/Romance/SSCRomanceLifecycle.cs" />
+    <Compile Include="common/Romance/SSCRomanceEligibility.cs" />
+    <Compile Include="common/Romance/SSCRomanceInteractionUtility.cs" />
+    <Compile Include="common/Romance/SSCRomanceAcceptanceUtility.cs" />
+    <Compile Include="ThePatches/Harmony_RomanceControl.cs" />
+    <Compile Include="Comps/Comp_Train.Romance.cs" />
+    <Compile Include="common/Romance/SSCRomanceCommandRecord.cs" />
+    <Compile Include="common/Romance/SSCRomanceCommandGameComponent.cs" />
+    <Compile Include="common/Romance/SSCRomanceCommandUtility.cs" />
+    <Compile Include="common/Romance/SSCRomanceExecutionScope.cs" />
+    <Compile Include="JobDriver/JobDriver_SSCRomanceCommand.cs" />
+    <Compile Include="ThePatches/Harmony_RomanceCommand.cs" />
+    <Compile Include="common/Romance/SSCRomanceUI.cs" />
+    <Compile Include="common/Romance/SSCRomanceCommandMenu.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="common/SSCAbilityToggleFramework.cs" />
     <Compile Include="common/SSCBridleAbilityToggleBackend.cs" />
     <Compile Include="common/SSCMasterDamageSharingToggle.cs" />

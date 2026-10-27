@@ -1,0 +1,170 @@
+// AI 辅助生成
+using System;
+using System.Linq;
+using RimWorld;
+using Verse;
+
+namespace SexSlaveCraft
+{
+    /// <summary>只把一张票交给一次 tracker 调用；每次嵌套调用都有自己的帧，不能借用外层豁免。</summary>
+    public sealed class SSCRomanceExecutionScope
+    {
+        [ThreadStatic] private static SSCRomanceExecutionScope ticket;
+        [ThreadStatic] private static Invocation current;
+        private readonly SSCRomanceCommandRecord record;
+        private bool taken;
+        /// <summary>票据只能由真实驱动执行入口创建，不提供外部全局强制 bool。</summary>
+        private SSCRomanceExecutionScope(SSCRomanceCommandRecord record) { this.record = record; }
+        /// <summary>运行时调用帧；仅保存进程内归属，由 Finalizer 成对释放。</summary>
+        public sealed class Invocation
+        {
+            internal long DiagnosticId;
+            internal Invocation previous;
+            internal SSCRomanceCommandRecord record;
+            internal Pawn actor, target;
+            internal InteractionDef interaction;
+            internal SSCRomanceMoodFrame mood;
+        }
+        /// <summary>只读当前共同入口快照；不为直接 worker 或概率查询补造授权。</summary>
+        internal static SSCRomanceMoodFrame MoodFrame => current?.mood;
+        internal static long DiagnosticId => current?.DiagnosticId ?? 0;
+        /// <summary>Prefix 为所有调用建立帧；票据精确匹配后消费一次，后续重入没有可用票。</summary>
+        public static Invocation Enter(Pawn actor, Pawn target, InteractionDef interaction)
+        {
+            var frame = new Invocation { previous = current, actor = actor, target = target, interaction = interaction };
+            var pending = ticket;
+            if (pending != null && !pending.taken && pending.record.Stamp.Actor == actor && pending.record.Stamp.Target == target &&
+                SSCRomanceInteractionUtility.TryGetAction(interaction, out var action) && pending.record.Stamp.Action == action)
+            { pending.taken = true; frame.record = pending.record; }
+            if (SSCRomanceInteractionUtility.TryGetAction(interaction, out _))
+                frame.DiagnosticId = frame.record != null ? CommandDiagnosticId(frame.record) : SSCRomanceMoodDiagnostics.NextId();
+            current = frame; return frame;
+        }
+        /// <summary>异常也释放本次帧；不吞掉游戏或其他模组异常，不把外层票据重新开放。</summary>
+        public static void Exit(Invocation frame)
+        {
+            if (frame == null || current != frame) return;
+            current = frame.previous;
+            if (frame.mood != null && !frame.mood.DiagnosticFinished) SSCRomanceMoodDiagnostics.Finish(frame.mood, "TrackerExitedWithoutWorker");
+            else if (frame.mood == null && frame.DiagnosticId != 0 && (frame.record != null ||
+                frame.actor?.TryGetComp<CompSexSlaveTraining>()?.pawnIdentity == PawnIdentity.Slave || frame.target?.TryGetComp<CompSexSlaveTraining>()?.pawnIdentity == PawnIdentity.Slave))
+                SSCRomanceMoodDiagnostics.Attempt(frame.DiagnosticId, frame.actor, frame.target, "EntryDeniedOrNotOccurred");
+        }
+        /// <summary>寻路中断也有进程内编号；不保存、不作为命令授权或去重凭据。</summary>
+        internal static long CommandDiagnosticId(SSCRomanceCommandRecord record)
+        { if (record.diagnosticId == 0) record.diagnosticId = SSCRomanceMoodDiagnostics.NextId(); return record.diagnosticId; }
+        /// <summary>只观察首次运行终态，重复清理和反馈不会再次输出；读档不是新执行。</summary>
+        internal static void TraceCommandTerminal(SSCRomanceCommandRecord record)
+        {
+            if (record == null || !record.Terminal || record.diagnosticTerminalReported || Scribe.mode != LoadSaveMode.Inactive) return;
+            record.diagnosticTerminalReported = true;
+            SSCRomanceMoodDiagnostics.Attempt(CommandDiagnosticId(record), record.Stamp?.Actor, record.Stamp?.Target,
+                "Command:" + record.Status + ":" + record.Outcome + ":" + record.Reason);
+        }
+        /// <summary>仅未结束的当前原驱动、Job、参与者及实际 Def 一致才能使用本帧授权。</summary>
+        private static bool Valid(Invocation frame, Pawn actor, Pawn target, InteractionDef interaction)
+        {
+            var r = frame?.record;
+            return r != null && frame.actor == actor && frame.target == target && frame.interaction == interaction &&
+                r.Status == SSCRomanceCommandStatus.Executing && r.runtimeDriver != null && !r.runtimeDriver.ended &&
+                SSCRomanceCommandGameComponent.Current?.Records.Contains(r) == true &&
+                actor.jobs?.curDriver == r.runtimeDriver && actor.CurJob == r.runtimeJob &&
+                SSCRomanceCommandGameComponent.Matches(r, actor.CurJob) && SSCRomanceCommandGameComponent.IsCurrent(r);
+        }
+        /// <summary>返回是否存在命令帧；存在但失效时明确拒绝，不能降为普通允许继续。</summary>
+        public static bool TryCanEnter(Pawn actor, Pawn target, InteractionDef interaction, out bool allowed)
+        {
+            allowed = false;
+            if (current?.record == null) return false;
+            allowed = Valid(current, actor, target, interaction) &&
+                SSCRomanceEligibility.Check(actor, target, current.record.Stamp.Action) == SSCRomanceEligibilityReason.None &&
+                SSCRomanceCommandUtility.ActorFailure(actor) == null && SSCRomanceCommandUtility.TaskFailure(actor, target, current.record.Stamp.Action) == null &&
+                SSCRomancePolicy.Evaluate(actor, target, current.record.Stamp.Action, current.record.authorization).CanInitiate &&
+                // 路径/许可查询可被其他补丁回调；完成这些查询后仍须复查原目标人格和必要关系。
+                Valid(current, actor, target, interaction) &&
+                SSCRomanceEligibility.Check(actor, target, current.record.Stamp.Action) == SSCRomanceEligibilityReason.None;
+            return true;
+        }
+        /// <summary>共同入口原生检查全部通过后占用副作用边界；一次记录绝不能二次进入。</summary>
+        public static bool BeforeEffects(Pawn actor, Pawn target, InteractionDef interaction)
+        {
+            if (!SSCRomanceInteractionUtility.CanEnter(actor, target, interaction)) return false;
+            // 最后准入复查后、思想与经验之前采集；查询不构造事件，重复进入不重采。
+            if (current != null && current.mood == null && SSCRomanceInteractionUtility.TryGetAction(interaction, out var moodAction))
+            {
+                var frame = current;
+                frame.mood = SSCRomanceMoodEvents.Capture(actor, target, moodAction, frame.record != null);
+                // OpinionOf 等快照读取可能经外部补丁修改许可、必要关系或人格；不能新开一个副作用窗口。
+                // 仍在原帧复查，不重建票据，也不把失效命令降为普通互动。
+                if (current != frame || !SSCRomanceInteractionUtility.CanEnter(actor, target, interaction)) return false;
+            }
+            if (current?.record == null) return true;
+            if (current.record.effectsStarted) return false;
+            current.record.effectsStarted = true; return true;
+        }
+        /// <summary>只观察当前命令的原 worker，普通互动及外层嵌套帧均不记入结果。</summary>
+        public static SSCRomanceCommandRecord WorkerEnter(Pawn actor, Pawn target, SSCRomanceAction action)
+        {
+            var r = current?.record;
+            if (r == null || !r.effectsStarted || r.workerEntered || r.Stamp.Actor != actor || r.Stamp.Target != target || r.Stamp.Action != action) return null;
+            r.workerEntered = true; return r;
+        }
+        /// <summary>原 worker 正常返回才标记完成；Finalizer 的异常路径不能伪装成功。</summary>
+        public static void WorkerExit(SSCRomanceCommandRecord record)
+        { if (record != null) record.workerCompleted = true; }
+        /// <summary>记录已经解析的接受 bool，不修改概率、不抽随机数、不写任何关系。</summary>
+        public static void ObserveDecision(Pawn actor, Pawn target, SSCRomanceAction action, bool accepted)
+        {
+            var r = current?.record;
+            if (r == null || !r.workerEntered || r.Stamp.Actor != actor || r.Stamp.Target != target || r.Stamp.Action != action) return;
+            r.decisionKnown = true; r.accepted = accepted;
+        }
+        /// <summary>只读识别当前精确命令调用，供结果提示去重；不签发授权，也不让内层普通互动借用外层身份。</summary>
+        public static bool IsCommandInvocation(Pawn actor, Pawn target, SSCRomanceAction action)
+            => current?.record != null && current.actor == actor && current.target == target &&
+                current.record.Stamp.Action == action;
+        /// <summary>把本次已确认事实交给原命令反馈；不授予权限，不改变终态，也不受心情准入影响。</summary>
+        internal static void ObserveFacts(SSCRomanceMoodFrame frame)
+        {
+            var r = current?.record;
+            if (r == null || current.mood != frame || !frame.FactsConfirmed || frame.ActorFact?.IsCommand != true ||
+                !r.workerEntered || r.Stamp.Actor != frame.Actor || r.Stamp.Target != frame.Target || r.Stamp.Action != frame.Action) return;
+            if (r.interactionFact == null) r.interactionFact = frame.ActorFact.Copy();
+        }
+        /// <summary>求婚公式只覆盖命令发起者的意识形态意愿；接收者意愿和普通调用逐值透传。</summary>
+        public static bool InitiatorWilling(bool vanilla, Pawn actor, Pawn target)
+            => vanilla || (current?.record?.Stamp.Action == SSCRomanceAction.Proposal &&
+                Valid(current, actor, target, InteractionDefOf.MarriageProposal));
+        /// <summary>真实驱动执行一次；先占用再回调，任何异常/部分结算都留下不可重放终态。</summary>
+        public static void Execute(JobDriver_SSCRomanceCommand driver, SSCRomanceCommandRecord r)
+        {
+            // 原版中断先设置 ended 再运行清理回调；即使记录尚未取消，也不能在这个窗口进入互动。
+            if (driver == null || driver.ended || r == null || r.Status != SSCRomanceCommandStatus.Claimed || r.runtimeDriver != driver ||
+                driver.pawn.jobs?.curDriver != driver || driver.pawn.CurJob != r.runtimeJob || !SSCRomanceCommandGameComponent.IsCurrent(r)) return;
+            // 每次真正进入执行先丢弃残留结果；只能由本次 worker 重新观察，不能借历史事实补成完成。
+            r.interactionFact = null;
+            var previous = ticket;
+            var scope = new SSCRomanceExecutionScope(r); ticket = scope; r.status = SSCRomanceCommandStatus.Executing;
+            try
+            {
+                bool occurred = driver.pawn.interactions.TryInteractWith(r.Stamp.Target, r.runtimeJob.interaction);
+                if (r.Terminal) return;
+                if (!occurred && !r.effectsStarted)
+                { r.status = SSCRomanceCommandStatus.Failed; r.outcome = SSCRomanceCommandOutcome.NotOccurred; r.reason = "UnableToInteract"; return; }
+                // 日志、心情和命令结果消费同一次完整事实确认；不再另用关系变化猜测成功或拒婚分手。
+                var fact = r.ConfirmedFact;
+                if (!occurred || !r.workerCompleted || fact == null)
+                { r.status = SSCRomanceCommandStatus.Indeterminate; r.outcome = SSCRomanceCommandOutcome.Unconfirmed; return; }
+                r.status = SSCRomanceCommandStatus.Completed;
+                r.outcome = fact.WasRejected ? SSCRomanceCommandOutcome.Rejected : SSCRomanceCommandOutcome.RelationshipChanged;
+            }
+            finally
+            {
+                ticket = previous;
+                if (r.status == SSCRomanceCommandStatus.Executing)
+                { r.status = SSCRomanceCommandStatus.Indeterminate; r.outcome = SSCRomanceCommandOutcome.Unconfirmed; }
+                TraceCommandTerminal(r);
+            }
+        }
+    }
+}

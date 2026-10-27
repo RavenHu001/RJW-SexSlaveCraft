@@ -7,6 +7,18 @@ internal static partial class Program
 {
     private static void RunTrainingIdentityTests()
     {
+        Run("First binding diagnostics have four-language translations and matching mirrors", () =>
+        {
+            foreach (string language in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" })
+            {
+                string relative = Path.Combine("Languages", language, "Keyed", "SSC_Restrictions.xml");
+                string contents = File.ReadAllText(SscTestPaths.Combine(root, relative));
+                var values = XDocument.Parse(contents).Root.Elements().ToDictionary(e => e.Name.LocalName, e => e.Value);
+                foreach (string reason in new[] { "BindingTrainerNotAssigned", "BindingTrainerMismatch", "BindingInitiatorNotMaster" })
+                    Equal(false, string.IsNullOrWhiteSpace(values["SSC_Restrictions_Reason_" + reason]));
+                Equal(contents, File.ReadAllText(SscTestPaths.Combine(root, "Sexslavecraft", relative)));
+            }
+        });
         foreach (SSCInteractionKind kind in new[] { SSCInteractionKind.DailyTraining,
             SSCInteractionKind.RitualTraining, SSCInteractionKind.BindingPreparation })
         foreach (PawnIdentity identity in new[] { PawnIdentity.Unset, PawnIdentity.Master, PawnIdentity.Slave })

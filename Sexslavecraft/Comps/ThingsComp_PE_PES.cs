@@ -133,6 +133,10 @@ namespace SexSlaveCraft
             // 独立保存成长标量与格式版本；身份已读入，成长模块在 PostLoadInit 解释旧凝胶。
             ExposeMasterProgressionSnapshot();
             ExposeAbilityToggleSnapshot();
+#if SSC_RW17
+            // 凝胶只携带浪漫偏好，来源载体的命令及授权世代留在原执行上下文。
+            ExposeRomanceSnapshot();
+#endif
             Scribe_Values.Look(ref corruptionLevel, "corruptionLevel", -1f);
             Scribe_Values.Look(ref highestCorruptionLevel, "highestCorruptionLevel", -1f);
             Scribe_Values.Look(ref specializationType, "specializationType", SexSlaveSpecializationType.None);
@@ -230,6 +234,10 @@ namespace SexSlaveCraft
             CopyMasterProgressionSnapshot(other);
             // 普通复制和配方加工共享该入口，但各凝胶必须持有独立的原始开关字典。
             CopyAbilityToggleSnapshot(other);
+#if SSC_RW17
+            // 凝胶加工属于人格复制；只有新生克隆采用恢复默认的例外。
+            CopyRomanceSnapshot(other);
+#endif
             this.corruptionLevel = other.corruptionLevel;
             this.highestCorruptionLevel = other.highestCorruptionLevel;
             this.specializationType = other.specializationType;
@@ -414,7 +422,13 @@ namespace SexSlaveCraft
                 {
                     if (mem == null || mem.def == null) continue;
 
+#if SSC_RW17
+                    // SSC 暂存候选尚未提交，采集会明确返回空；不把空项计入凝胶的历史条数。
+                    var capturedMemory = PersonalityMemoryUtility.Capture(mem);
+                    if (capturedMemory != null) storedMemories.Add(capturedMemory);
+#else
                     storedMemories.Add(PersonalityMemoryUtility.Capture(mem));
+#endif
                 }
             }
 
@@ -427,6 +441,10 @@ namespace SexSlaveCraft
             CaptureMasterProgression(p);
             // 暂停/退出身份的开启值同样要迁移，不能只采集当前显示的标记。
             CaptureAbilityToggles(p);
+#if SSC_RW17
+            // 即使来源退阶或解绑，也采集原始选择，不能以当前规则是否生效筛掉数据。
+            CaptureRomance(p);
+#endif
             specializationProgressByType = trainingComp?.ExportSpecializationProgress()
                 ?? new Dictionary<string, float>();
             petCatComfortCooldownEndTick = PetCatAbilityUtility.CaptureCooldownDeadline(p);

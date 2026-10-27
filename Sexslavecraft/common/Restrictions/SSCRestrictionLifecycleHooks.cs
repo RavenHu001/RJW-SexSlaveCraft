@@ -68,6 +68,10 @@ namespace SexSlaveCraft
         /// <summary>复制体准备完成且尚未生成到地图时清除来源配置，保证新克隆拥有独立默认。</summary>
         private static void Postfix(Pawn clone)
         {
+#if SSC_RW17
+            // 只借用新生初始化时机；浪漫默认独立于下方旧限制模板，不触碰来源或其他后端。
+            SSCRomanceLifecycle.ResetNewClone(clone);
+#endif
             SSCRestrictionLifecycle.ResetNewClone(clone);
         }
     }

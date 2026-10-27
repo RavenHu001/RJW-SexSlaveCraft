@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_Romance_InvalidParticipants>无法进行浪漫互动：参与者无效。</SSC_Romance_InvalidParticipants>
+  <SSC_Romance_AlreadyPartners>双方已存在恋爱或婚姻关系。</SSC_Romance_AlreadyPartners>
+  <SSC_Romance_LoverRequired>求婚需要双方当前为恋人，且尚未订婚或结婚。</SSC_Romance_LoverRequired>
+  <SSC_Romance_NoRelationship>双方没有可结束的恋爱或婚姻关系。</SSC_Romance_NoRelationship>
+  <SSC_Romance_UnknownAction>无法识别此浪漫行为。</SSC_Romance_UnknownAction>
+  <SSC_Romance_RuleDenied>当前浪漫许可禁止主动发起此行为。</SSC_Romance_RuleDenied>
+  <SSC_Romance_TargetDenied>当前浪漫对象筛选不允许向此人主动求爱或求婚。</SSC_Romance_TargetDenied>
+  <SSC_Romance_AcceptancePreview>{0}（接受：{1}）</SSC_Romance_AcceptancePreview>
+  <SSC_Romance_SexSection>性行为控制（始终接受主人发起的性行为）</SSC_Romance_SexSection>
+  <SSC_Romance_RomanceSection>浪漫控制</SSC_Romance_RomanceSection>
+  <SSC_Romance_State>当前锁链阶段：{0}；实际主人：{1}</SSC_Romance_State>
+  <SSC_Romance_NoMaster>无有效绑定</SSC_Romance_NoMaster>
+  <SSC_Romance_FirstStage>第一阶段不改变本人的浪漫行为；以下保存选择尚未生效。</SSC_Romance_FirstStage>
+  <SSC_Romance_Independent>浪漫规则独立于性行为控制的总开关。勾选表示保存偏好，暂停或未解锁不会清除它。</SSC_Romance_Independent>
+  <SSC_Romance_Group_InitiateRomance>主动行为</SSC_Romance_Group_InitiateRomance>
+  <SSC_Romance_Group_AcceptRomance>被动回应</SSC_Romance_Group_AcceptRomance>
+  <SSC_Romance_TargetTitle>浪漫对象</SSC_Romance_TargetTitle>
+  <SSC_Romance_Setting_InitiateRomance>允许主动求爱</SSC_Romance_Setting_InitiateRomance>
+  <SSC_Romance_Setting_InitiateProposal>允许主动求婚</SSC_Romance_Setting_InitiateProposal>
+  <SSC_Romance_Setting_InitiateBreakup>允许主动分手／离婚</SSC_Romance_Setting_InitiateBreakup>
+  <SSC_Romance_Setting_AcceptRomance>允许接受求爱</SSC_Romance_Setting_AcceptRomance>
+  <SSC_Romance_Setting_AcceptProposal>允许接受求婚</SSC_Romance_Setting_AcceptProposal>
+  <SSC_Romance_Setting_InitiateToMaster>主人</SSC_Romance_Setting_InitiateToMaster>
+  <SSC_Romance_Setting_AlwaysAcceptMaster>强制接受主人发起的浪漫</SSC_Romance_Setting_AlwaysAcceptMaster>
+  <SSC_Romance_MasterPriority>实际主人 {0} 的接受保证优先于被动禁止；其他人按各自适用的被动规则判断。</SSC_Romance_MasterPriority>
+  <SSC_Romance_OpenCommand>第四阶段：下达点名命令…</SSC_Romance_OpenCommand>
+  <SSC_Romance_ActiveMeaning>关闭时阻止发起。</SSC_Romance_ActiveMeaning>
+  <SSC_Romance_PassiveMeaning>关闭时仍可成为目标，但必定拒绝；开启时保留正常接受判断。</SSC_Romance_PassiveMeaning>
+  <SSC_Romance_ExtraMeaning>两个主人规则独立保存；仅主人不重新开放已禁止的主动行为。</SSC_Romance_ExtraMeaning>
+  <SSC_Romance_RequiredStage>需要锁链达到{0}阶段。</SSC_Romance_RequiredStage>
+  <SSC_Romance_OpenBehaviorWindow>打开行为限制…</SSC_Romance_OpenBehaviorWindow>
+  <SSC_Romance_CommandTitle>直接命令</SSC_Romance_CommandTitle>
+  <SSC_Romance_Executor>执行者：{0}</SSC_Romance_Executor>
+  <SSC_Romance_ChooseAction>行为：{0}</SSC_Romance_ChooseAction>
+  <SSC_Romance_ChooseTarget>目标：{0}</SSC_Romance_ChooseTarget>
+  <SSC_Romance_NoTarget>未选择目标／无可用目标</SSC_Romance_NoTarget>
+  <SSC_Romance_RelationPreview>当前相关关系：{0}</SSC_Romance_RelationPreview>
+  <SSC_Romance_CommandOverride>仅本次命令忽略主动限制，不改变设置。</SSC_Romance_CommandOverride>
+  <SSC_Romance_BreakupPreview>命令性奴与指定对象分手／离婚。</SSC_Romance_BreakupPreview>
+  <SSC_Romance_Reception_Vanilla>对方按其浪漫设置回应。</SSC_Romance_Reception_Vanilla>
+  <SSC_Romance_Reception_ForceReject>对方当前被动许可禁止接受：互动仍会发生，但必定拒绝。</SSC_Romance_Reception_ForceReject>
+  <SSC_Romance_Reception_ForceAccept>执行者是对方实际主人，且对方已开启主人接受保证；满足互动必要条件后保证接受。</SSC_Romance_Reception_ForceAccept>
+  <SSC_Romance_Submit>直接命令</SSC_Romance_Submit>
+  <SSC_Romance_Scheduled>已为 {0} 安排对 {1} 的点名命令；互动及回应尚待执行。</SSC_Romance_Scheduled>
+  <SSC_Romance_NoRelationshipLabel>无当前恋爱／婚姻关系</SSC_Romance_NoRelationshipLabel>
+  <SSC_Romance_Action_Romance>向指定对象求爱</SSC_Romance_Action_Romance>
+  <SSC_Romance_Action_Proposal>向指定对象求婚</SSC_Romance_Action_Proposal>
+  <SSC_Romance_Action_Breakup>与指定对象分手／离婚</SSC_Romance_Action_Breakup>
+  <SSC_Romance_InvalidPawn>角色无效或无法执行。</SSC_Romance_InvalidPawn>
+  <SSC_Romance_Identity>需要明确的 SSC 性奴身份。</SSC_Romance_Identity>
+  <SSC_Romance_NoBinding>没有有效的从属锁链绑定。</SSC_Romance_NoBinding>
+  <SSC_Romance_Stage>当前锁链阶段尚未解锁此设置。</SSC_Romance_Stage>
+  <SSC_Romance_Hollow>空壳人格不能使用此控制。</SSC_Romance_Hollow>
+  <SSC_Romance_Mutating>人格正在替换，请等待完成。</SSC_Romance_Mutating>
+  <SSC_Romance_Loading>存档引用尚未完整恢复。</SSC_Romance_Loading>
+  <SSC_Romance_UnsupportedConfig>浪漫配置版本未知，保留数据并暂停此控制。</SSC_Romance_UnsupportedConfig>
+  <SSC_Romance_UnknownSetting>未知的浪漫设置。</SSC_Romance_UnknownSetting>
+  <SSC_Romance_PlayerOnly>仅可修改或指挥玩家阵营角色。</SSC_Romance_PlayerOnly>
+  <SSC_Romance_StaleContext>原界面上下文已失效，请重新打开。</SSC_Romance_StaleContext>
+  <SSC_Romance_InvalidAuthorization>原命令授权已失效。</SSC_Romance_InvalidAuthorization>
+  <SSC_Romance_CommandStage>需要锁链达到{0}阶段。</SSC_Romance_CommandStage>
+  <SSC_Romance_HooksUnavailable>必要互动适配未就绪，点名命令暂停。</SSC_Romance_HooksUnavailable>
+  <SSC_Romance_SameMapRequired>双方必须存活并生成在同一地图。</SSC_Romance_SameMapRequired>
+  <SSC_Romance_UnableToInteract>当前角色状态不允许完成社交任务。</SSC_Romance_UnableToInteract>
+  <SSC_Romance_InvalidRomancePair>年龄或近亲关系不符合浪漫互动的必要条件。</SSC_Romance_InvalidRomancePair>
+  <SSC_Romance_Unreachable>目标被禁止或不可达。</SSC_Romance_Unreachable>
+  <SSC_Romance_DuplicateCommand>已有相同的在途命令，或任务编号无效。</SSC_Romance_DuplicateCommand>
+  <SSC_Romance_JobRejected>任务未被实际接纳。</SSC_Romance_JobRejected>
+  <SSC_Romance_InvalidRecord>命令记录不完整或归属不唯一，已取消。</SSC_Romance_InvalidRecord>
+  <SSC_Romance_InteractionTimeout>等待互动条件超时，互动未发生。</SSC_Romance_InteractionTimeout>
+  <SSC_Romance_JobEnded>任务结束或被中断，未继续执行。</SSC_Romance_JobEnded>
+  <SSC_Romance_Result_NotOccurred>{0}对{1}的{2}命令未及发生，就这样不了了之。</SSC_Romance_Result_NotOccurred>
+  <SSC_Romance_Result_Rejected>{0}已奉命向{1}发起{2}，对方拒绝了；命令的灼热散不去，却只换来一身空。</SSC_Romance_Result_Rejected>
+  <SSC_Romance_Result_RelationshipChanged>{0}对{1}的{2}命令已经完成，关系已被改写；身不由己，只能照单全收。</SSC_Romance_Result_RelationshipChanged>
+  <SSC_Romance_Result_Unconfirmed>{0}对{1}的{2}结果无法确认，也不会再次执行，只余一点悬而未决的怅然。</SSC_Romance_Result_Unconfirmed>
+  <SSC_Romance_SexTestTab>性行为许可测试</SSC_Romance_SexTestTab>
+  <SSC_Romance_ForcedRomanceRefusal>{1} 因浪漫回应限制拒绝了 {0} 的表白。</SSC_Romance_ForcedRomanceRefusal>
+  <SSC_Romance_ForcedProposalRefusal>{1} 因浪漫回应限制拒绝了 {0} 的求婚。</SSC_Romance_ForcedProposalRefusal>
+  <SSC_Romance_Setting_InitiateToSexSlave>性奴</SSC_Romance_Setting_InitiateToSexSlave>
+  <SSC_Romance_Setting_AlwaysAcceptSexSlave>强制接受性奴发起的浪漫</SSC_Romance_Setting_AlwaysAcceptSexSlave>
+  <SSC_Romance_InitiateToSexSlaveTip>关闭时，本人不能向其他 SSC 性奴求爱或求婚；不影响分手／离婚，也不重新开放已禁止的主动行为。</SSC_Romance_InitiateToSexSlaveTip>
+  <SSC_Romance_AlwaysAcceptSexSlaveTip>开启时，本人必定接受其他 SSC 性奴的求爱或求婚，优先于本人的普通被动禁止；不替对方解除主动限制或绕过互动必要条件。</SSC_Romance_AlwaysAcceptSexSlaveTip>
+  <SSC_Romance_SexSlaveTargetDenied>当前许可禁止向性奴主动求爱或求婚。</SSC_Romance_SexSlaveTargetDenied>
+  <SSC_Romance_Setting_InitiateToOthers>其他人</SSC_Romance_Setting_InitiateToOthers>
+  <SSC_Romance_TargetMeaning>选择允许求爱／求婚的对象，可多选；不影响分手／离婚。</SSC_Romance_TargetMeaning>
+  <SSC_Romance_MustAcceptMeaning>强制接受对应对象的求爱／求婚，不受接受许可限制。</SSC_Romance_MustAcceptMeaning>
+  <SSC_Romance_CommandTip_Romance>命令性奴向指定对象求爱。</SSC_Romance_CommandTip_Romance>
+  <SSC_Romance_CommandTip_Proposal>命令性奴向指定对象求婚。</SSC_Romance_CommandTip_Proposal>
+  <SSC_Romance_CommandTip_Breakup>命令性奴与指定对象分手／离婚。</SSC_Romance_CommandTip_Breakup>
+  <SSC_Romance_Setting_AlwaysAcceptOthers>强制接受其他人发起的浪漫</SSC_Romance_Setting_AlwaysAcceptOthers>
+  <SSC_Romance_AlwaysAcceptOthersTip>强制接受对应对象的求爱／求婚，不受接受许可限制。</SSC_Romance_AlwaysAcceptOthersTip>
+  <SSC_Romance_AcceptTargetTitle>强制接受对象</SSC_Romance_AcceptTargetTitle>
+  <!-- 简中测试稿 v1：行为专属任务和结果。 -->
+  <SSC_Romance_Report_Romance>正按命令向 TargetA 求爱，腿心已经湿了。</SSC_Romance_Report_Romance>
+  <SSC_Romance_CommandAction_Romance>求爱</SSC_Romance_CommandAction_Romance>
+  <SSC_Romance_Report_Proposal>正按命令向 TargetA 求婚，身子已经软了。</SSC_Romance_Report_Proposal>
+  <SSC_Romance_CommandAction_Proposal>求婚</SSC_Romance_CommandAction_Proposal>
+  <SSC_Romance_Report_EndLover>正按命令与 TargetA 分手。</SSC_Romance_Report_EndLover>
+  <SSC_Romance_CommandAction_EndLover>分手</SSC_Romance_CommandAction_EndLover>
+  <SSC_Romance_Report_EndFiance>正按命令解除与 TargetA 的婚约。</SSC_Romance_Report_EndFiance>
+  <SSC_Romance_CommandAction_EndFiance>解除婚约</SSC_Romance_CommandAction_EndFiance>
+  <SSC_Romance_Report_Divorce>正按命令与 TargetA 离婚。</SSC_Romance_Report_Divorce>
+  <SSC_Romance_CommandAction_Divorce>离婚</SSC_Romance_CommandAction_Divorce>
+  <SSC_Romance_Report_Breakup>正按命令结束与 TargetA 的关系。</SSC_Romance_Report_Breakup>
+  <SSC_Romance_CommandAction_Breakup>结束关系</SSC_Romance_CommandAction_Breakup>
+  <SSC_Romance_Result_RejectedAndSeparated>{0}已按命令向{1}求婚，对方拒绝了，二人就此分手；命令的热，凉成了一场空。</SSC_Romance_Result_RejectedAndSeparated>
+</LanguageData>

@@ -18,4 +18,12 @@
     <Compile Include="../../Sexslavecraft/common/SSCMasterDamageSharingToggle.cs" Link="Production/SSCMasterDamageSharingToggle.cs" />
   </ItemGroup>
   <Import Project="../Shared/AbilityToggleProduction.targets" />
+  <ItemGroup>
+    <!-- 第三批复用本 UI 宿主；实际浪漫绘制/保存提交运行生产源码，任务服务仅作为外部边界。 -->
+    <Compile Include="../../Sexslavecraft/common/Romance/SSCRomanceConfig.cs" Link="Production/SSCRomanceConfig.cs" />
+    <Compile Include="../../Sexslavecraft/common/Romance/SSCRomanceResolver.cs" Link="Production/SSCRomanceResolver.cs" />
+    <Compile Include="../../Sexslavecraft/common/Romance/SSCRomancePreferences.cs" Link="Production/SSCRomancePreferences.cs" />
+    <Compile Include="../../Sexslavecraft/common/Romance/SSCRomancePersonalReset.cs" Link="Production/SSCRomancePersonalReset.cs" />
+    <Compile Include="../../Sexslavecraft/common/Romance/SSCRomanceUI.cs" Link="Production/SSCRomanceUI.cs" />
+  </ItemGroup>
 </Project>

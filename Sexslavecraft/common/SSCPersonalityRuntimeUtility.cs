@@ -12,6 +12,9 @@ namespace SexSlaveCraft
         {
             public object Token = new object();
             public MutationScope Mutation;
+#if SSC_RW17
+            public bool HollowObserved, Hollow;
+#endif
         }
         // 凭据只服务当前进程的回调归属；弱引用不延长 Pawn 生命周期，也不额外写入存档。
         private static readonly ConditionalWeakTable<Pawn, State> states = new ConditionalWeakTable<Pawn, State>();
@@ -24,6 +27,23 @@ namespace SexSlaveCraft
         public static bool IsMutating(Pawn pawn)
             => pawn != null && states.TryGetValue(pawn, out State state) && state.Mutation != null;
 
+#if SSC_RW17
+        /// <summary>观察空壳健康事件；真实进入空壳时使旧人格凭据失效，加载基线和重复通知不制造替换。</summary>
+        internal static bool ObserveHollow(Pawn pawn, bool hollow, bool baseline = false)
+        {
+            if (pawn == null || Scribe.mode != LoadSaveMode.Inactive) return false;
+            State state = states.GetOrCreateValue(pawn);
+            bool entered = hollow && (!state.HollowObserved || !state.Hollow);
+            // 先写观察值再撤权，避免健康维护重入时把同一次新增当成第二次人格变化。
+            state.HollowObserved = true;
+            state.Hollow = hollow;
+            if (baseline || !entered || state.Mutation != null) return false;
+            // 无训练 Comp 的自由目标也有原预览 token；只更新凭据，不打开嵌套人格替换作用域。
+            state.Token = new object();
+            return true;
+        }
+#endif
+
         /// <summary>拒绝加载期与重入，开始时立即替换人格 token；不承诺对原人格流程做事务回滚。</summary>
         public static bool TryBeginMutation(Pawn pawn, out MutationScope scope)
         {
@@ -35,6 +55,10 @@ namespace SexSlaveCraft
             state.Token = new object();
             scope = new MutationScope(pawn, state.Token);
             state.Mutation = scope;
+#if SSC_RW17
+            // 即使后续替换失败也不恢复旧命令，持久世代与进程内 token 同时撤销。
+            SSCRomanceLifecycle.InvalidatePersonality(pawn);
+#endif
             return true;
         }
 
@@ -55,6 +79,9 @@ namespace SexSlaveCraft
                 State state = states.GetOrCreateValue(pawn);
                 if (!ReferenceEquals(state.Mutation, this)) return;
                 state.Mutation = null;
+#if SSC_RW17
+                SSCRomanceLifecycle.Notify(pawn);
+#endif
                 SSCAbilityToggleUtility.SyncMarkers(pawn);
             }
         }

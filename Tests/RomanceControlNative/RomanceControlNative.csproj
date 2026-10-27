@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- AI 辅助生成：执行隔离生产程序集，真实 Pawn／Comp／Hediff／Scribe，不复制被测规则。 -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType><TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings><Nullable>disable</Nullable>
+    <BuildInParallel>false</BuildInParallel><RestoreBuildInParallel>false</RestoreBuildInParallel>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../CultureNative/UnityCoreShim/UnityCoreShim.csproj" />
+    <ProjectReference Include="../../Sexslavecraft/SexSlaveCraft_1.7.csproj" Condition="'$(SscAssemblyPath)' == ''" />
+    <Reference Include="Sexslavecraft" Condition="'$(SscAssemblyPath)' != ''"><HintPath>$(SscAssemblyPath)</HintPath><Private>true</Private></Reference>
+    <Reference Include="Assembly-CSharp"><HintPath>$(GameRoot)/Assembly-CSharp.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="RJW"><HintPath>$(RjwAssemblyPath)</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityStubs"><HintPath>$(GameRoot)/UnityStubs.dll</HintPath><Private>false</Private></Reference>
+    <!-- 第二批直接安装生产补丁，优先采用相同的游戏 Harmony 3，避免两代 CodeInstruction 混用。 -->
+    <Reference Include="0Harmony"><HintPath Condition="'$(GameHarmonyAssemblyPath)' != ''">$(GameHarmonyAssemblyPath)</HintPath><HintPath Condition="'$(GameHarmonyAssemblyPath)' == ''">$(HarmonyAssemblyPath)</HintPath></Reference>
+  </ItemGroup>
+</Project>

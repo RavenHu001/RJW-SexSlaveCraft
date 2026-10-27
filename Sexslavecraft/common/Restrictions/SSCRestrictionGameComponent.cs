@@ -36,7 +36,15 @@ namespace SexSlaveCraft
                 // 一次性整理离图角色的训导官状态，不新增周期性世界扫描。
                 TrainerSpecializationLifecycle.Maintain(pawn);
                 Notify(pawn);
+#if SSC_RW17
+                // 复用完整引用恢复后的现有快照，建立观察基线而不更换合法保存世代。
+                SSCRomanceLifecycle.InitializeAfterLoad(pawn);
+#endif
             }
+#if SSC_RW17
+            // 角色引用、绑定及人格完整恢复后，才认领原存档的当前/排队命令。
+            SSCRomanceCommandGameComponent.Current?.ReconcileAfterLoad();
+#endif
         }
 
         /// <summary>获得当前存档内地图、世界和临时容器角色的独立快照，避免枚举中关系更新改变集合。</summary>

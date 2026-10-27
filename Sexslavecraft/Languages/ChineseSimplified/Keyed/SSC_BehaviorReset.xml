@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成：个人恢复默认标题按钮与结果说明。 -->
+<LanguageData>
+  <SSC_BehaviorReset_Button>恢复默认</SSC_BehaviorReset_Button>
+  <SSC_BehaviorReset_SexTip>将此角色的性行为设置恢复为当前默认配置。</SSC_BehaviorReset_SexTip>
+  <SSC_BehaviorReset_RomanceTip>将此角色的浪漫设置恢复为默认配置。</SSC_BehaviorReset_RomanceTip>
+  <SSC_BehaviorReset_Default>当前已是默认配置。</SSC_BehaviorReset_Default>
+  <SSC_BehaviorReset_Unavailable>当前无法编辑此角色的设置。</SSC_BehaviorReset_Unavailable>
+  <SSC_BehaviorReset_InvalidDefaults>默认配置无效，无法恢复。</SSC_BehaviorReset_InvalidDefaults>
+  <SSC_BehaviorReset_Stale>设置或角色状态已变化，请重新操作。</SSC_BehaviorReset_Stale>
+</LanguageData>

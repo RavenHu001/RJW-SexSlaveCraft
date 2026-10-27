@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Localized from the accepted Simplified Chinese copy v1; stable keys and parameters retained. -->
+<LanguageData>
+  <SSC_RomanceLog_Command.rulePack.rulesStrings.0>ssc_romance_log_command_romance_accepted-&gt;Под властью цепи [INITIATOR_nameDef] добивается любви; [RECIPIENT_nameDef] принимает ухаживания. Они становятся любовниками.</SSC_RomanceLog_Command.rulePack.rulesStrings.0>
+  <SSC_RomanceLog_Command.rulePack.rulesStrings.1>ssc_romance_log_command_romance_rejected-&gt;Под властью цепи [INITIATOR_nameDef] добивается любви, но [RECIPIENT_nameDef] отвечает отказом.</SSC_RomanceLog_Command.rulePack.rulesStrings.1>
+  <SSC_RomanceLog_Command.rulePack.rulesStrings.2>ssc_romance_log_command_proposal_accepted-&gt;Под властью цепи [INITIATOR_nameDef] делает предложение; [RECIPIENT_nameDef] соглашается. Они обручаются.</SSC_RomanceLog_Command.rulePack.rulesStrings.2>
+  <SSC_RomanceLog_Command.rulePack.rulesStrings.3>ssc_romance_log_command_proposal_rejected-&gt;Под властью цепи [INITIATOR_nameDef] делает предложение, но [RECIPIENT_nameDef] отвечает отказом. Они остаются любовниками.</SSC_RomanceLog_Command.rulePack.rulesStrings.3>
+  <SSC_RomanceLog_Command.rulePack.rulesStrings.4>ssc_romance_log_command_proposal_rejected_separated-&gt;Под властью цепи [INITIATOR_nameDef] делает предложение, [RECIPIENT_nameDef] отказывает, и их отношения обрываются.</SSC_RomanceLog_Command.rulePack.rulesStrings.4>
+  <SSC_RomanceLog_Command.rulePack.rulesStrings.5>ssc_romance_log_command_end_lover-&gt;По приказу цепи [INITIATOR_nameDef] разрывает любовную связь; [RECIPIENT_nameDef] больше не в этих отношениях.</SSC_RomanceLog_Command.rulePack.rulesStrings.5>
+  <SSC_RomanceLog_Command.rulePack.rulesStrings.6>ssc_romance_log_command_end_fiance-&gt;По приказу цепи [INITIATOR_nameDef] расторгает помолвку; [RECIPIENT_nameDef] больше не состоит в ней.</SSC_RomanceLog_Command.rulePack.rulesStrings.6>
+  <SSC_RomanceLog_Command.rulePack.rulesStrings.7>ssc_romance_log_command_divorce-&gt;По приказу цепи [INITIATOR_nameDef] расторгает брак; [RECIPIENT_nameDef] больше не состоит в нём.</SSC_RomanceLog_Command.rulePack.rulesStrings.7>
+  <SSC_RomanceLog_Reject.rulePack.rulesStrings.0>ssc_romance_log_reject_romance-&gt;Под властью цепи [RECIPIENT_nameDef] отвергает ухаживания; [INITIATOR_nameDef] получает отказ.</SSC_RomanceLog_Reject.rulePack.rulesStrings.0>
+  <SSC_RomanceLog_Reject.rulePack.rulesStrings.1>ssc_romance_log_reject_proposal-&gt;Под властью цепи [RECIPIENT_nameDef] отвергает предложение; [INITIATOR_nameDef] получает отказ.</SSC_RomanceLog_Reject.rulePack.rulesStrings.1>
+  <SSC_RomanceLog_Reject.rulePack.rulesStrings.2>ssc_romance_log_reject_proposal_separated-&gt;Под властью цепи [RECIPIENT_nameDef] отвергает предложение и разрывает любовную связь; [INITIATOR_nameDef] получает отказ.</SSC_RomanceLog_Reject.rulePack.rulesStrings.2>
+  <SSC_RomanceLog_Accept.rulePack.rulesStrings.0>ssc_romance_log_accept_romance-&gt;Под властью цепи [RECIPIENT_nameDef] пылает всем телом и принимает ухаживания; [INITIATOR_nameDef] получает согласие. Они становятся любовниками.</SSC_RomanceLog_Accept.rulePack.rulesStrings.0>
+  <SSC_RomanceLog_Accept.rulePack.rulesStrings.1>ssc_romance_log_accept_proposal-&gt;Под властью цепи [RECIPIENT_nameDef] пылает всем телом и принимает предложение; [INITIATOR_nameDef] получает согласие. Они обручаются.</SSC_RomanceLog_Accept.rulePack.rulesStrings.1>
+</LanguageData>

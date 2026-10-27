@@ -76,6 +76,8 @@ internal static partial class Program
             SetStatic(typeof(UnityData), "mainThreadId", Environment.CurrentManagedThreadId);
             SetStatic(typeof(Prefs), "data", new PrefsData());
             var root = Bare<Game>(); root.tickManager = new TickManager(); root.uniqueIDsManager = new UniqueIDsManager();
+            // 浪漫命令撤权会查询游戏组件；空列表是引擎边界，不安装或模拟命令业务。
+            AccessTools.Field(typeof(Game), "components").SetValue(root, new List<GameComponent>());
             Current.Game = root;
             // 实际翻译器读取生产 Keyed 内容，避免本地化检查用键名转发器掩盖丢键或参数错误。
             LoadBodyManagementLanguage(repo, "ChineseSimplified");

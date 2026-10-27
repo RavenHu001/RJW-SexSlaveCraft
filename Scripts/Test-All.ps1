@@ -8,6 +8,7 @@
 默认将报告保存在 .builds/validation/<本次运行目录>；CultureNative／CosmeticNative 引用并构建生产工程，不安装游戏副本。
 默认检查 1.7 运行资源并回归当前源码；原生品质、太空武器及仪式演化点专项另需当前游戏程序集和 .NET 10，
 可用 -NativeGameRoot / -NativeDotnetPath 指定，默认读取 BUILD-INFO 和仓库便携 SDK。
+RomanceControlNative 第二批优先使用 BUILD-INFO 的游戏 Harmony 3，直接安装生产特性补丁；其他模型宿主仍用单独测试 Harmony。
 -GameVersion 1.6 只核验冻结基线和 XML，不能证明旧版源码或游戏兼容性。
 #>
 [CmdletBinding()]
@@ -36,12 +37,16 @@ if (-not $ReportDirectory) {
 $reportRoot = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($ReportDirectory)
 [IO.Directory]::CreateDirectory($reportRoot) | Out-Null
 $savedTestEnvironment = @{}
-# 连同 SDK 首次初始化开关保存调用者环境；原生文化宿主编译生产工程也遵循同一隔离目录。
+# 连同 SDK 和专项选择开关保存调用者环境；完成或异常退出时由 finally 原样恢复。
 foreach ($name in @('SSC_TEST_REPOSITORY_ROOT', 'SSC_TEST_RUNTIME_ROOT', 'SSC_TEST_COMMON_ROOT',
-    'DOTNET_CLI_HOME', 'DOTNET_GENERATE_ASPNET_CERTIFICATE', 'DOTNET_ADD_GLOBAL_TOOLS_TO_PATH')) {
+    'DOTNET_CLI_HOME', 'DOTNET_GENERATE_ASPNET_CERTIFICATE', 'DOTNET_ADD_GLOBAL_TOOLS_TO_PATH',
+    'SSC_ROMANCE_TEXT_ONLY')) {
     $savedTestEnvironment[$name] = [Environment]::GetEnvironmentVariable($name, 'Process')
 }
 try {
+# 总回归（含发布入口调用）必须运行完整套件，不能继承调用者的仅文案模式。
+# 只清除当前进程环境，子进程随之隔离；独立文案运行及调用结束后的原选择不受影响。
+[Environment]::SetEnvironmentVariable('SSC_ROMANCE_TEXT_ONLY', [NullString]::Value, 'Process')
 $env:SSC_TEST_REPOSITORY_ROOT = $repoRoot
 $env:SSC_TEST_RUNTIME_ROOT = $runtimeRootPath
 $env:SSC_TEST_COMMON_ROOT = Join-Path $repoRoot 'Common'
@@ -82,6 +87,7 @@ $suites = @(
     @{ Name = 'CosmeticNative'; Arguments = @(); Framework = 'net10.0' },
     # 真实躯干 Hediff／生育因子／Scribe；同样编译生产工程并使用独立测试 Harmony。
     @{ Name = 'UterusDevelopmentNative'; Arguments = @(); Framework = 'net10.0' },
+    @{ Name = 'RomanceControlNative'; Arguments = @(); Framework = 'net10.0' },
     @{ Name = 'LowTechAdaptation'; Arguments = @($repoRoot) },
     @{ Name = 'PersonalityMemories'; Arguments = @() },
     @{ Name = 'PersonalitySpecializations'; Arguments = @() },
@@ -277,7 +283,7 @@ foreach ($suite in $suites) {
     $problems = @($globalProblems.ToArray())
     if (-not (Test-Path -LiteralPath $project -PathType Leaf)) { $problems += "Project missing: $project" }
     # CultureNative 同样需要测试侧 Harmony；缺少合法依赖时标为 NotRun，不能当作已通过。
-    if ($name -in @('SharedBed', 'InteractionProtection', 'RitualSelection', 'CombatantSpecialization', 'PnaLoad', 'BondRelations', 'PnaWeaponEffects', 'PnaMeleeQuality', 'PnaSpacerNative', 'RitualDevelopmentNative', 'CultureNative', 'CosmeticNative', 'UterusDevelopmentNative') -and $harmonyProblem) { $problems += $harmonyProblem }
+    if ($name -in @('SharedBed', 'InteractionProtection', 'RitualSelection', 'CombatantSpecialization', 'PnaLoad', 'BondRelations', 'PnaWeaponEffects', 'PnaMeleeQuality', 'PnaSpacerNative', 'RitualDevelopmentNative', 'CultureNative', 'CosmeticNative', 'UterusDevelopmentNative', 'RomanceControlNative') -and $harmonyProblem) { $problems += $harmonyProblem }
     if ($problems.Count -gt 0) {
         $result.Reason = $problems -join ' '
         Set-Content -LiteralPath $logPath -Value $result.Reason -Encoding utf8
@@ -292,15 +298,15 @@ foreach ($suite in $suites) {
             $suiteDotnet = $dotnetPath
             $framework = 'net9.0'
             $testArguments = $suite.Arguments
-            if ($name -in @('SharedBed', 'InteractionProtection', 'RitualSelection', 'CombatantSpecialization', 'PnaLoad', 'BondRelations', 'PnaWeaponEffects', 'PnaMeleeQuality', 'PnaSpacerNative', 'RitualDevelopmentNative', 'CultureNative', 'CosmeticNative', 'UterusDevelopmentNative')) { $properties += "-p:HarmonyAssemblyPath=$HarmonyAssemblyPath" }
+            if ($name -in @('SharedBed', 'InteractionProtection', 'RitualSelection', 'CombatantSpecialization', 'PnaLoad', 'BondRelations', 'PnaWeaponEffects', 'PnaMeleeQuality', 'PnaSpacerNative', 'RitualDevelopmentNative', 'CultureNative', 'CosmeticNative', 'UterusDevelopmentNative', 'RomanceControlNative')) { $properties += "-p:HarmonyAssemblyPath=$HarmonyAssemblyPath" }
             # 实际游戏专项共用本机 1.7 和 .NET 10；完整生产工程引用从构建记录读取。
-            if ($name -in @('PnaMeleeQuality', 'PnaSpacerNative', 'RitualDevelopmentNative', 'CultureNative', 'CosmeticNative', 'UterusDevelopmentNative')) {
+            if ($name -in @('PnaMeleeQuality', 'PnaSpacerNative', 'RitualDevelopmentNative', 'CultureNative', 'CosmeticNative', 'UterusDevelopmentNative', 'RomanceControlNative')) {
                 $suiteDotnet = $NativeDotnetPath; $framework = $suite.Framework
                 $properties += "-p:GameRoot=$NativeGameRoot"
                 $testArguments = @($repoRoot, $NativeGameRoot)
             }
-            if ($name -in @('CultureNative', 'CosmeticNative', 'UterusDevelopmentNative')) {
-                # 生产工程仍使用本机实际 RJW/动画/游戏 Harmony 引用；测试 Harmony 单独传入。
+            if ($name -in @('CultureNative', 'CosmeticNative', 'UterusDevelopmentNative', 'RomanceControlNative')) {
+                # 生产工程使用本机实际 RJW/动画/游戏 Harmony 引用；浪漫宿主直接采用游戏 Harmony 3，其余测试 Harmony 单独传入。
                 # 路径来自既有构建记录，缺失时让原生产构建明确失败，不退回旧 DLL。
                 $cultureBuild = Get-Content -LiteralPath (Join-Path $repoRoot '1.7/BUILD-INFO.json') -Raw | ConvertFrom-Json
                 foreach ($reference in $cultureBuild.references) {
@@ -312,6 +318,11 @@ foreach ($suite in $suites) {
             $null = Invoke-DotnetStep -CommandArguments (@('build', $project, '--configuration', 'Release', '--no-restore', '--target:Rebuild', '--verbosity', 'quiet') + $properties) -Stage 'build' -LogPath $logPath -Executable $suiteDotnet
             $testDll = Join-Path $repoRoot "Tests/$name/bin/Release/$framework/$name.dll"
             $output = Invoke-DotnetStep -CommandArguments (@($testDll) + $testArguments) -Stage 'tests' -LogPath $logPath -Executable $suiteDotnet
+            # 摘要数字只能证明所运行用例通过，不能证明运行范围完整。
+            # 即使宿主意外进入仅文案模式，也必须记为 Failed，禁止以其摘要放行总回归或发布。
+            if ($name -eq 'RomanceControlNative' -and $output -match '(?m)^\s*SCOPE:\s*romance text only\b') {
+                throw 'RomanceControlNative ran in text-only scope; full regression is required.'
+            }
             # Counts come from the suite, not a hard-coded historical total of 390.
             $summary = [regex]::Matches($output, '(?m)^(?:结果：|RESULT:\s*)?(\d+)/(\d+) (?:项通过。|(?:cases |lifecycle tests )?passed\b[^\r\n]*)\s*$')
             if ($summary.Count -ne 1) { throw 'Missing or ambiguous case summary; cannot confirm complete execution.' }
@@ -358,6 +369,7 @@ if ($PassThru) { return $report }
 }
 finally {
     foreach ($name in $savedTestEnvironment.Keys) {
-        [Environment]::SetEnvironmentVariable($name, $savedTestEnvironment[$name], 'Process')
+        # 新版运行时区分空串与未设置；NullString 避免 PowerShell 将 null 参数转为空串。
+        [Environment]::SetEnvironmentVariable($name, ($savedTestEnvironment[$name] ?? [NullString]::Value), 'Process')
     }
 }

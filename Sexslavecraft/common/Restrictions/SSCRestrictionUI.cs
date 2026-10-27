@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using RimWorld;
 using UnityEngine;
@@ -84,10 +84,16 @@ namespace SexSlaveCraft
 
         /// <summary>绘制角色配置、实时强制来源及全局状态；不适用角色已有配置只读，缺失配置可显式重试。</summary>
         public static void DrawPawn(Listing_Standard listing, Pawn pawn)
+            => DrawPawn(listing, pawn, false);
+
+        /// <summary>双板块界面省去重复角色标题和常驻说明，保留子组间横线；其他入口及规则／保存逻辑不变。</summary>
+        public static void DrawPawn(Listing_Standard listing, Pawn pawn, bool compact)
         {
-            listing.Label("SSC_Restrictions_PawnTitle".Translate(pawn?.LabelShort ?? "SSC_Restrictions_None".Translate().ToString()));
-            // 日常面板只常驻一条操作说明；保存机制放在悬停中，接管清单留给许可测试页。
-            listing.Label("SSC_Restrictions_CompactNotice".Translate(), -1f, "SSC_Restrictions_SaveNotice".Translate());
+            if (!compact)
+            {
+                listing.Label("SSC_Restrictions_PawnTitle".Translate(pawn?.LabelShort ?? "SSC_Restrictions_None".Translate().ToString()));
+                listing.Label("SSC_Restrictions_CompactNotice".Translate(), -1f, "SSC_Restrictions_SaveNotice".Translate());
+            }
             if (!(SSCMod.settings?.enableSexSlaveProtectionRules ?? true))
                 listing.Label("SSC_Restrictions_Paused".Translate());
             bool applicable = SSCRestrictionResolver.IsApplicable(pawn);
@@ -109,7 +115,7 @@ namespace SexSlaveCraft
             if (!config.IsValid()) { listing.Label("SSC_Restrictions_InvalidConfig".Translate(config.version)); return; }
             foreach (SSCRestrictionRule rule in SSCRestrictionRules.All)
             {
-                DrawGroup(listing, rule);
+                DrawGroup(listing, rule, !compact || rule != SSCRestrictionRule.Masturbation);
                 // 未绑定角色只展示保留的个人选择，不把当前装备/特化标成正在生效的强制来源。
                 bool rowApplicable = rule == SSCRestrictionRule.SelfTraining ? selfApplicable : applicable;
                 SSCRestrictionResolution entry = rowApplicable ? SSCRestrictionResolver.Resolve(pawn, config.rules, rule) : null;
@@ -127,13 +133,29 @@ namespace SexSlaveCraft
             }
         }
 
-        /// <summary>在主动、被动、调教的首项绘制分组标题，避免规则成为没有分类的长列表。</summary>
-        private static void DrawGroup(Listing_Standard listing, SSCRestrictionRule rule)
+        /// <summary>子标题居中并统一下横线的绘制颜色；恢复 GUI 状态，避免影响后续开关及禁用样式。</summary>
+        private static void DrawSubtitle(Listing_Standard listing, string label)
+        {
+            TextAnchor previousAnchor = Text.Anchor;
+            Color previousColor = GUI.color;
+            try
+            {
+                Text.Anchor = TextAnchor.MiddleCenter;
+                GUI.color = Color.white;
+                listing.Label(label);
+                listing.GapLine(6f);
+            }
+            finally { Text.Anchor = previousAnchor; GUI.color = previousColor; }
+        }
+
+        /// <summary>主动、被动及调教子标题上下均有横线；紧凑首组复用外层主标题下横线。</summary>
+        private static void DrawGroup(Listing_Standard listing, SSCRestrictionRule rule, bool drawDivider = true)
         {
             if (rule != SSCRestrictionRule.Masturbation && rule != SSCRestrictionRule.ReceiveConsensual &&
                 rule != SSCRestrictionRule.ReceiveTraining) return;
-            listing.GapLine();
-            listing.Label(("SSC_Restrictions_Group_" + rule).Translate());
+            if (drawDivider) listing.GapLine();
+            else listing.Gap(6f);
+            DrawSubtitle(listing, ("SSC_Restrictions_Group_" + rule).Translate());
         }
 
         /// <summary>绘制左文右勾叉；受强制影响时显示并锁住有效值，保存选择只用于无强制时的编辑及悬停说明。</summary>

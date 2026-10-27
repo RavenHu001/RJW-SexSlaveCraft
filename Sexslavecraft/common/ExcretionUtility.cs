@@ -14,6 +14,11 @@ namespace SexSlaveCraft
         {
             if (victim == null || victim.Map == null) return;
             if (RabbitCloneUtility.IsRabbitClone(victim)) return;
+#if SSC_RW17
+            // 未知格式不能在提取清源后静默丢失；预检早于创建载体及人格替换。
+            if (victim.TryGetComp<CompSexSlaveTraining>()?.romanceConfig?.IsSupported == false)
+            { Log.Error("[SSC] Cannot extract an unsupported romance configuration."); return; }
+#endif
             // 从采集开始暂停能力并使旧请求失效；作用域仅隔离人格写入，不承诺原流程的完整回滚。
             if (!SSCPersonalityRuntimeUtility.TryBeginMutation(victim, out var mutation)) return;
             using (mutation)
@@ -40,11 +45,19 @@ namespace SexSlaveCraft
                 }
 
                 GenSpawn.Spawn(slime, victim.Position, victim.Map);
+#if SSC_RW17
+                // 放置也可能触发外部回调替换训练组件；已生成的快照不能授权清理后来接管身体的载体。
+                if (!mutation.IsCurrent || victim.TryGetComp<CompSexSlaveTraining>() != originalComp) return;
+#endif
                 // 资格与成长已进入成功生成的凝胶，再清原身体并写当前成长版本。
                 // 空壳即使保留主人身份，也不能在以后读档时补回转走的记录。
                 if (comp != null)
                 {
                     SSCAbilityToggleUtility.ClearPersonalityState(victim);
+#if SSC_RW17
+                    // 此时凝胶已放置成功，才清原人格偏好；前面的生成失败不应丢失保存值。
+                    SSCRomancePreferences.Clear(victim);
+#endif
                     SSCMasterQualificationUtility.ClearPersonalityQualification(victim);
                     SSCMasterProgressionUtility.ClearPersonalityRecord(victim);
                 }
@@ -86,6 +99,10 @@ namespace SexSlaveCraft
         private static void CleanConsumerDataCore(Pawn consumer)
         {
             SSCAbilityToggleUtility.ClearPersonalityState(consumer);
+#if SSC_RW17
+            // 清掉接收者旧人格选择；来源缺字段时也不能把这些值混入新人格。
+            SSCRomancePreferences.Clear(consumer);
+#endif
             // 清宿主时同时封住旧档补建，且必须早于下面的普通身份清理；
             // 后续若来源没有成长，空记录就是植入的最终结果。
             SSCMasterQualificationUtility.ClearPersonalityQualification(consumer);
@@ -145,6 +162,13 @@ namespace SexSlaveCraft
         public static bool InheritEverything(Pawn consumer, CompPersonalityStore data)
         {
             if (consumer == null || data == null) return false;
+#if SSC_RW17
+            // 快照先复制并校验，缺配置表示来源默认；不能把宿主旧选择混入来源。
+            SSCRomanceConfig romanceSnapshot = data.romanceConfig?.Copy();
+            if (!SSCRomancePreferences.CanRestore(consumer, romanceSnapshot) ||
+                consumer.TryGetComp<CompSexSlaveTraining>()?.romanceConfig?.IsSupported == false)
+            { Log.Error("[SSC] Personality insertion cannot preserve the romance configuration."); return false; }
+#endif
             // 缺失快照不等于合法的空特质人格。
             // 必须在修改身体或消耗凝胶前拒绝此类植入。
             if (consumer.story?.traits?.allTraits == null || data.storedTraits == null)
@@ -404,6 +428,10 @@ namespace SexSlaveCraft
                     if (!mutation.IsCurrent || consumer.TryGetComp<CompSexSlaveTraining>() != originalComp) return false;
                     // 完整恢复成功后精确替换，明确关闭及未知能力键均保留；作用域结束才重新启用能力。
                     SSCAbilityToggleUtility.RestorePreference(consumer, toggleSnapshot);
+#if SSC_RW17
+                    // 最终人格和锁链已恢复，再精确覆盖来源配置；作用域退出后按最终状态协调。
+                    if (!SSCRomancePreferences.Restore(consumer, romanceSnapshot)) return false;
+#endif
 
                     // 健康、专精及能力恢复可能触发后续回调，成功出口再按最终锁链核对一次。
                     // 此处只清理失效关系，不把凝胶里的旧社会历史解释为一次新的仪式奖励。

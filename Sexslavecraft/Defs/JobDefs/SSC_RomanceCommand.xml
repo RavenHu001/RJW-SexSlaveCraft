@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成：1.7 独立命令，不依赖 Biotech TryRomance，不附带其概率提升及专属冷却。 -->
+<Defs>
+  <JobDef>
+    <defName>SSC_RomanceCommand</defName>
+    <driverClass>SexSlaveCraft.JobDriver_SSCRomanceCommand</driverClass>
+    <reportString>carrying out a romantic command involving TargetA.</reportString>
+    <casualInterruptible>true</casualInterruptible>
+    <suspendable>false</suspendable>
+  </JobDef>
+</Defs>
