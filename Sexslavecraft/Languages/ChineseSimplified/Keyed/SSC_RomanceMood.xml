@@ -1,250 +1,250 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-  <!-- AI 辅助生成：122 个分支分别保留名称和描述键；仅开发占位，不是正式文案。 -->
-  <SSC_RomanceMood_E01_S3_N_D_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E01_S3_N_D_Name>
-  <SSC_RomanceMood_E01_S3_N_D_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E01_S3_N_D_Description>
-  <SSC_RomanceMood_E01_S3_N_G_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E01_S3_N_G_Name>
-  <SSC_RomanceMood_E01_S3_N_G_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E01_S3_N_G_Description>
-  <SSC_RomanceMood_E01_S3_N_C_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E01_S3_N_C_Name>
-  <SSC_RomanceMood_E01_S3_N_C_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E01_S3_N_C_Description>
-  <SSC_RomanceMood_E01_S3_M_D_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E01_S3_M_D_Name>
-  <SSC_RomanceMood_E01_S3_M_D_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E01_S3_M_D_Description>
-  <SSC_RomanceMood_E01_S3_M_G_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E01_S3_M_G_Name>
-  <SSC_RomanceMood_E01_S3_M_G_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E01_S3_M_G_Description>
-  <SSC_RomanceMood_E01_S3_M_C_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E01_S3_M_C_Name>
-  <SSC_RomanceMood_E01_S3_M_C_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E01_S3_M_C_Description>
-  <SSC_RomanceMood_E01_S4_N_D_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E01_S4_N_D_Name>
-  <SSC_RomanceMood_E01_S4_N_D_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E01_S4_N_D_Description>
-  <SSC_RomanceMood_E01_S4_N_G_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E01_S4_N_G_Name>
-  <SSC_RomanceMood_E01_S4_N_G_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E01_S4_N_G_Description>
-  <SSC_RomanceMood_E01_S4_N_C_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E01_S4_N_C_Name>
-  <SSC_RomanceMood_E01_S4_N_C_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E01_S4_N_C_Description>
-  <SSC_RomanceMood_E01_S4_M_D_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E01_S4_M_D_Name>
-  <SSC_RomanceMood_E01_S4_M_D_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E01_S4_M_D_Description>
-  <SSC_RomanceMood_E01_S4_M_G_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E01_S4_M_G_Name>
-  <SSC_RomanceMood_E01_S4_M_G_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E01_S4_M_G_Description>
-  <SSC_RomanceMood_E01_S4_M_C_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E01_S4_M_C_Name>
-  <SSC_RomanceMood_E01_S4_M_C_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E01_S4_M_C_Description>
-  <SSC_RomanceMood_E02_S3_N_D_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E02_S3_N_D_Name>
-  <SSC_RomanceMood_E02_S3_N_D_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E02_S3_N_D_Description>
-  <SSC_RomanceMood_E02_S3_N_G_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E02_S3_N_G_Name>
-  <SSC_RomanceMood_E02_S3_N_G_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E02_S3_N_G_Description>
-  <SSC_RomanceMood_E02_S3_N_C_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E02_S3_N_C_Name>
-  <SSC_RomanceMood_E02_S3_N_C_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E02_S3_N_C_Description>
-  <SSC_RomanceMood_E02_S3_M_D_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E02_S3_M_D_Name>
-  <SSC_RomanceMood_E02_S3_M_D_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E02_S3_M_D_Description>
-  <SSC_RomanceMood_E02_S3_M_G_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E02_S3_M_G_Name>
-  <SSC_RomanceMood_E02_S3_M_G_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E02_S3_M_G_Description>
-  <SSC_RomanceMood_E02_S3_M_C_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E02_S3_M_C_Name>
-  <SSC_RomanceMood_E02_S3_M_C_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E02_S3_M_C_Description>
-  <SSC_RomanceMood_E02_S4_N_D_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E02_S4_N_D_Name>
-  <SSC_RomanceMood_E02_S4_N_D_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E02_S4_N_D_Description>
-  <SSC_RomanceMood_E02_S4_N_G_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E02_S4_N_G_Name>
-  <SSC_RomanceMood_E02_S4_N_G_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E02_S4_N_G_Description>
-  <SSC_RomanceMood_E02_S4_N_C_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E02_S4_N_C_Name>
-  <SSC_RomanceMood_E02_S4_N_C_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E02_S4_N_C_Description>
-  <SSC_RomanceMood_E02_S4_M_D_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E02_S4_M_D_Name>
-  <SSC_RomanceMood_E02_S4_M_D_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E02_S4_M_D_Description>
-  <SSC_RomanceMood_E02_S4_M_G_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E02_S4_M_G_Name>
-  <SSC_RomanceMood_E02_S4_M_G_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E02_S4_M_G_Description>
-  <SSC_RomanceMood_E02_S4_M_C_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E02_S4_M_C_Name>
-  <SSC_RomanceMood_E02_S4_M_C_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E02_S4_M_C_Description>
-  <SSC_RomanceMood_E03_S3_N_D_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E03_S3_N_D_Name>
-  <SSC_RomanceMood_E03_S3_N_D_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E03_S3_N_D_Description>
-  <SSC_RomanceMood_E03_S3_N_G_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E03_S3_N_G_Name>
-  <SSC_RomanceMood_E03_S3_N_G_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E03_S3_N_G_Description>
-  <SSC_RomanceMood_E03_S3_N_C_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E03_S3_N_C_Name>
-  <SSC_RomanceMood_E03_S3_N_C_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E03_S3_N_C_Description>
-  <SSC_RomanceMood_E03_S3_M_D_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E03_S3_M_D_Name>
-  <SSC_RomanceMood_E03_S3_M_D_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E03_S3_M_D_Description>
-  <SSC_RomanceMood_E03_S3_M_G_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E03_S3_M_G_Name>
-  <SSC_RomanceMood_E03_S3_M_G_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E03_S3_M_G_Description>
-  <SSC_RomanceMood_E03_S3_M_C_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E03_S3_M_C_Name>
-  <SSC_RomanceMood_E03_S3_M_C_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E03_S3_M_C_Description>
-  <SSC_RomanceMood_E03_S4_N_D_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E03_S4_N_D_Name>
-  <SSC_RomanceMood_E03_S4_N_D_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E03_S4_N_D_Description>
-  <SSC_RomanceMood_E03_S4_N_G_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E03_S4_N_G_Name>
-  <SSC_RomanceMood_E03_S4_N_G_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E03_S4_N_G_Description>
-  <SSC_RomanceMood_E03_S4_N_C_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E03_S4_N_C_Name>
-  <SSC_RomanceMood_E03_S4_N_C_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E03_S4_N_C_Description>
-  <SSC_RomanceMood_E03_S4_M_D_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E03_S4_M_D_Name>
-  <SSC_RomanceMood_E03_S4_M_D_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E03_S4_M_D_Description>
-  <SSC_RomanceMood_E03_S4_M_G_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E03_S4_M_G_Name>
-  <SSC_RomanceMood_E03_S4_M_G_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E03_S4_M_G_Description>
-  <SSC_RomanceMood_E03_S4_M_C_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E03_S4_M_C_Name>
-  <SSC_RomanceMood_E03_S4_M_C_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E03_S4_M_C_Description>
-  <SSC_RomanceMood_E04_S3_N_D_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E04_S3_N_D_Name>
-  <SSC_RomanceMood_E04_S3_N_D_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E04_S3_N_D_Description>
-  <SSC_RomanceMood_E04_S3_N_G_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E04_S3_N_G_Name>
-  <SSC_RomanceMood_E04_S3_N_G_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E04_S3_N_G_Description>
-  <SSC_RomanceMood_E04_S3_N_C_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E04_S3_N_C_Name>
-  <SSC_RomanceMood_E04_S3_N_C_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E04_S3_N_C_Description>
-  <SSC_RomanceMood_E04_S3_M_D_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E04_S3_M_D_Name>
-  <SSC_RomanceMood_E04_S3_M_D_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E04_S3_M_D_Description>
-  <SSC_RomanceMood_E04_S3_M_G_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E04_S3_M_G_Name>
-  <SSC_RomanceMood_E04_S3_M_G_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E04_S3_M_G_Description>
-  <SSC_RomanceMood_E04_S3_M_C_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E04_S3_M_C_Name>
-  <SSC_RomanceMood_E04_S3_M_C_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E04_S3_M_C_Description>
-  <SSC_RomanceMood_E04_S4_N_D_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E04_S4_N_D_Name>
-  <SSC_RomanceMood_E04_S4_N_D_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E04_S4_N_D_Description>
-  <SSC_RomanceMood_E04_S4_N_G_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E04_S4_N_G_Name>
-  <SSC_RomanceMood_E04_S4_N_G_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E04_S4_N_G_Description>
-  <SSC_RomanceMood_E04_S4_N_C_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E04_S4_N_C_Name>
-  <SSC_RomanceMood_E04_S4_N_C_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E04_S4_N_C_Description>
-  <SSC_RomanceMood_E04_S4_M_D_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E04_S4_M_D_Name>
-  <SSC_RomanceMood_E04_S4_M_D_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E04_S4_M_D_Description>
-  <SSC_RomanceMood_E04_S4_M_G_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E04_S4_M_G_Name>
-  <SSC_RomanceMood_E04_S4_M_G_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E04_S4_M_G_Description>
-  <SSC_RomanceMood_E04_S4_M_C_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E04_S4_M_C_Name>
-  <SSC_RomanceMood_E04_S4_M_C_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E04_S4_M_C_Description>
-  <SSC_RomanceMood_E05_S3_N_D_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E05_S3_N_D_Name>
-  <SSC_RomanceMood_E05_S3_N_D_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E05_S3_N_D_Description>
-  <SSC_RomanceMood_E05_S3_N_G_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E05_S3_N_G_Name>
-  <SSC_RomanceMood_E05_S3_N_G_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E05_S3_N_G_Description>
-  <SSC_RomanceMood_E05_S3_N_C_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E05_S3_N_C_Name>
-  <SSC_RomanceMood_E05_S3_N_C_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E05_S3_N_C_Description>
-  <SSC_RomanceMood_E05_S3_M_D_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E05_S3_M_D_Name>
-  <SSC_RomanceMood_E05_S3_M_D_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E05_S3_M_D_Description>
-  <SSC_RomanceMood_E05_S3_M_G_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E05_S3_M_G_Name>
-  <SSC_RomanceMood_E05_S3_M_G_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E05_S3_M_G_Description>
-  <SSC_RomanceMood_E05_S3_M_C_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E05_S3_M_C_Name>
-  <SSC_RomanceMood_E05_S3_M_C_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E05_S3_M_C_Description>
-  <SSC_RomanceMood_E05_S4_N_D_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E05_S4_N_D_Name>
-  <SSC_RomanceMood_E05_S4_N_D_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E05_S4_N_D_Description>
-  <SSC_RomanceMood_E05_S4_N_G_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E05_S4_N_G_Name>
-  <SSC_RomanceMood_E05_S4_N_G_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E05_S4_N_G_Description>
-  <SSC_RomanceMood_E05_S4_N_C_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E05_S4_N_C_Name>
-  <SSC_RomanceMood_E05_S4_N_C_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E05_S4_N_C_Description>
-  <SSC_RomanceMood_E05_S4_M_D_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E05_S4_M_D_Name>
-  <SSC_RomanceMood_E05_S4_M_D_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E05_S4_M_D_Description>
-  <SSC_RomanceMood_E05_S4_M_G_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E05_S4_M_G_Name>
-  <SSC_RomanceMood_E05_S4_M_G_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E05_S4_M_G_Description>
-  <SSC_RomanceMood_E05_S4_M_C_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E05_S4_M_C_Name>
-  <SSC_RomanceMood_E05_S4_M_C_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E05_S4_M_C_Description>
-  <SSC_RomanceMood_E06_S4_N_D_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E06_S4_N_D_Name>
-  <SSC_RomanceMood_E06_S4_N_D_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E06_S4_N_D_Description>
-  <SSC_RomanceMood_E06_S4_N_G_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E06_S4_N_G_Name>
-  <SSC_RomanceMood_E06_S4_N_G_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E06_S4_N_G_Description>
-  <SSC_RomanceMood_E06_S4_N_C_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E06_S4_N_C_Name>
-  <SSC_RomanceMood_E06_S4_N_C_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E06_S4_N_C_Description>
-  <SSC_RomanceMood_E06_S4_M_D_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E06_S4_M_D_Name>
-  <SSC_RomanceMood_E06_S4_M_D_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E06_S4_M_D_Description>
-  <SSC_RomanceMood_E06_S4_M_G_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E06_S4_M_G_Name>
-  <SSC_RomanceMood_E06_S4_M_G_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E06_S4_M_G_Description>
-  <SSC_RomanceMood_E06_S4_M_C_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E06_S4_M_C_Name>
-  <SSC_RomanceMood_E06_S4_M_C_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E06_S4_M_C_Description>
-  <SSC_RomanceMood_E07_S4_N_D_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E07_S4_N_D_Name>
-  <SSC_RomanceMood_E07_S4_N_D_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E07_S4_N_D_Description>
-  <SSC_RomanceMood_E07_S4_N_G_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E07_S4_N_G_Name>
-  <SSC_RomanceMood_E07_S4_N_G_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E07_S4_N_G_Description>
-  <SSC_RomanceMood_E07_S4_N_C_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E07_S4_N_C_Name>
-  <SSC_RomanceMood_E07_S4_N_C_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E07_S4_N_C_Description>
-  <SSC_RomanceMood_E07_S4_M_D_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E07_S4_M_D_Name>
-  <SSC_RomanceMood_E07_S4_M_D_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E07_S4_M_D_Description>
-  <SSC_RomanceMood_E07_S4_M_G_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E07_S4_M_G_Name>
-  <SSC_RomanceMood_E07_S4_M_G_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E07_S4_M_G_Description>
-  <SSC_RomanceMood_E07_S4_M_C_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E07_S4_M_C_Name>
-  <SSC_RomanceMood_E07_S4_M_C_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E07_S4_M_C_Description>
-  <SSC_RomanceMood_E08_S4_N_D_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E08_S4_N_D_Name>
-  <SSC_RomanceMood_E08_S4_N_D_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E08_S4_N_D_Description>
-  <SSC_RomanceMood_E08_S4_N_G_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E08_S4_N_G_Name>
-  <SSC_RomanceMood_E08_S4_N_G_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E08_S4_N_G_Description>
-  <SSC_RomanceMood_E08_S4_N_C_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E08_S4_N_C_Name>
-  <SSC_RomanceMood_E08_S4_N_C_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E08_S4_N_C_Description>
-  <SSC_RomanceMood_E08_S4_M_D_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E08_S4_M_D_Name>
-  <SSC_RomanceMood_E08_S4_M_D_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E08_S4_M_D_Description>
-  <SSC_RomanceMood_E08_S4_M_G_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E08_S4_M_G_Name>
-  <SSC_RomanceMood_E08_S4_M_G_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E08_S4_M_G_Description>
-  <SSC_RomanceMood_E08_S4_M_C_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E08_S4_M_C_Name>
-  <SSC_RomanceMood_E08_S4_M_C_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E08_S4_M_C_Description>
-  <SSC_RomanceMood_E09_S4_N_D_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E09_S4_N_D_Name>
-  <SSC_RomanceMood_E09_S4_N_D_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E09_S4_N_D_Description>
-  <SSC_RomanceMood_E09_S4_N_G_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E09_S4_N_G_Name>
-  <SSC_RomanceMood_E09_S4_N_G_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E09_S4_N_G_Description>
-  <SSC_RomanceMood_E09_S4_N_C_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E09_S4_N_C_Name>
-  <SSC_RomanceMood_E09_S4_N_C_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E09_S4_N_C_Description>
-  <SSC_RomanceMood_E09_S4_M_D_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E09_S4_M_D_Name>
-  <SSC_RomanceMood_E09_S4_M_D_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E09_S4_M_D_Description>
-  <SSC_RomanceMood_E09_S4_M_G_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E09_S4_M_G_Name>
-  <SSC_RomanceMood_E09_S4_M_G_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E09_S4_M_G_Description>
-  <SSC_RomanceMood_E09_S4_M_C_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E09_S4_M_C_Name>
-  <SSC_RomanceMood_E09_S4_M_C_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E09_S4_M_C_Description>
-  <SSC_RomanceMood_E10_S4_N_D_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E10_S4_N_D_Name>
-  <SSC_RomanceMood_E10_S4_N_D_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E10_S4_N_D_Description>
-  <SSC_RomanceMood_E10_S4_N_G_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E10_S4_N_G_Name>
-  <SSC_RomanceMood_E10_S4_N_G_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E10_S4_N_G_Description>
-  <SSC_RomanceMood_E10_S4_N_C_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E10_S4_N_C_Name>
-  <SSC_RomanceMood_E10_S4_N_C_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E10_S4_N_C_Description>
-  <SSC_RomanceMood_E10_S4_M_D_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E10_S4_M_D_Name>
-  <SSC_RomanceMood_E10_S4_M_D_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E10_S4_M_D_Description>
-  <SSC_RomanceMood_E10_S4_M_G_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E10_S4_M_G_Name>
-  <SSC_RomanceMood_E10_S4_M_G_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E10_S4_M_G_Description>
-  <SSC_RomanceMood_E10_S4_M_C_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E10_S4_M_C_Name>
-  <SSC_RomanceMood_E10_S4_M_C_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E10_S4_M_C_Description>
-  <SSC_RomanceMood_E11_S4_N_D_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E11_S4_N_D_Name>
-  <SSC_RomanceMood_E11_S4_N_D_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E11_S4_N_D_Description>
-  <SSC_RomanceMood_E11_S4_N_G_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E11_S4_N_G_Name>
-  <SSC_RomanceMood_E11_S4_N_G_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E11_S4_N_G_Description>
-  <SSC_RomanceMood_E11_S4_N_C_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E11_S4_N_C_Name>
-  <SSC_RomanceMood_E11_S4_N_C_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E11_S4_N_C_Description>
-  <SSC_RomanceMood_E11_S4_M_D_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E11_S4_M_D_Name>
-  <SSC_RomanceMood_E11_S4_M_D_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E11_S4_M_D_Description>
-  <SSC_RomanceMood_E11_S4_M_G_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E11_S4_M_G_Name>
-  <SSC_RomanceMood_E11_S4_M_G_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E11_S4_M_G_Description>
-  <SSC_RomanceMood_E11_S4_M_C_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E11_S4_M_C_Name>
-  <SSC_RomanceMood_E11_S4_M_C_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E11_S4_M_C_Description>
-  <SSC_RomanceMood_E12_S4_N_D_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E12_S4_N_D_Name>
-  <SSC_RomanceMood_E12_S4_N_D_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E12_S4_N_D_Description>
-  <SSC_RomanceMood_E12_S4_N_G_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E12_S4_N_G_Name>
-  <SSC_RomanceMood_E12_S4_N_G_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E12_S4_N_G_Description>
-  <SSC_RomanceMood_E12_S4_N_C_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E12_S4_N_C_Name>
-  <SSC_RomanceMood_E12_S4_N_C_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E12_S4_N_C_Description>
-  <SSC_RomanceMood_E12_S4_M_D_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E12_S4_M_D_Name>
-  <SSC_RomanceMood_E12_S4_M_D_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E12_S4_M_D_Description>
-  <SSC_RomanceMood_E12_S4_M_G_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E12_S4_M_G_Name>
-  <SSC_RomanceMood_E12_S4_M_G_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E12_S4_M_G_Description>
-  <SSC_RomanceMood_E12_S4_M_C_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E12_S4_M_C_Name>
-  <SSC_RomanceMood_E12_S4_M_C_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E12_S4_M_C_Description>
-  <SSC_RomanceMood_E13_S4_N_D_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E13_S4_N_D_Name>
-  <SSC_RomanceMood_E13_S4_N_D_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E13_S4_N_D_Description>
-  <SSC_RomanceMood_E13_S4_N_G_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E13_S4_N_G_Name>
-  <SSC_RomanceMood_E13_S4_N_G_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E13_S4_N_G_Description>
-  <SSC_RomanceMood_E13_S4_N_C_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E13_S4_N_C_Name>
-  <SSC_RomanceMood_E13_S4_N_C_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E13_S4_N_C_Description>
-  <SSC_RomanceMood_E13_S4_M_D_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E13_S4_M_D_Name>
-  <SSC_RomanceMood_E13_S4_M_D_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E13_S4_M_D_Description>
-  <SSC_RomanceMood_E13_S4_M_G_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E13_S4_M_G_Name>
-  <SSC_RomanceMood_E13_S4_M_G_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E13_S4_M_G_Description>
-  <SSC_RomanceMood_E13_S4_M_C_Name>[文案待定] 浪漫综合心情</SSC_RomanceMood_E13_S4_M_C_Name>
-  <SSC_RomanceMood_E13_S4_M_C_Description>SSC 浪漫综合心情开发占位，正式描述待定。</SSC_RomanceMood_E13_S4_M_C_Description>
-  <SSC_RomanceMood_C_A_S2_N_Name>[文案待定] 浪漫控制状态</SSC_RomanceMood_C_A_S2_N_Name>
-  <SSC_RomanceMood_C_A_S2_N_Description>SSC 浪漫控制持续思想开发占位，正式描述待定。</SSC_RomanceMood_C_A_S2_N_Description>
-  <SSC_RomanceMood_C_A_S2_M_Name>[文案待定] 浪漫控制状态</SSC_RomanceMood_C_A_S2_M_Name>
-  <SSC_RomanceMood_C_A_S2_M_Description>SSC 浪漫控制持续思想开发占位，正式描述待定。</SSC_RomanceMood_C_A_S2_M_Description>
-  <SSC_RomanceMood_C_A_S3_N_Name>[文案待定] 浪漫控制状态</SSC_RomanceMood_C_A_S3_N_Name>
-  <SSC_RomanceMood_C_A_S3_N_Description>SSC 浪漫控制持续思想开发占位，正式描述待定。</SSC_RomanceMood_C_A_S3_N_Description>
-  <SSC_RomanceMood_C_A_S3_M_Name>[文案待定] 浪漫控制状态</SSC_RomanceMood_C_A_S3_M_Name>
-  <SSC_RomanceMood_C_A_S3_M_Description>SSC 浪漫控制持续思想开发占位，正式描述待定。</SSC_RomanceMood_C_A_S3_M_Description>
-  <SSC_RomanceMood_C_A_S4_N_Name>[文案待定] 浪漫控制状态</SSC_RomanceMood_C_A_S4_N_Name>
-  <SSC_RomanceMood_C_A_S4_N_Description>SSC 浪漫控制持续思想开发占位，正式描述待定。</SSC_RomanceMood_C_A_S4_N_Description>
-  <SSC_RomanceMood_C_A_S4_M_Name>[文案待定] 浪漫控制状态</SSC_RomanceMood_C_A_S4_M_Name>
-  <SSC_RomanceMood_C_A_S4_M_Description>SSC 浪漫控制持续思想开发占位，正式描述待定。</SSC_RomanceMood_C_A_S4_M_Description>
-  <SSC_RomanceMood_C_B_S3_N_Name>[文案待定] 浪漫控制状态</SSC_RomanceMood_C_B_S3_N_Name>
-  <SSC_RomanceMood_C_B_S3_N_Description>SSC 浪漫控制持续思想开发占位，正式描述待定。</SSC_RomanceMood_C_B_S3_N_Description>
-  <SSC_RomanceMood_C_B_S3_M_Name>[文案待定] 浪漫控制状态</SSC_RomanceMood_C_B_S3_M_Name>
-  <SSC_RomanceMood_C_B_S3_M_Description>SSC 浪漫控制持续思想开发占位，正式描述待定。</SSC_RomanceMood_C_B_S3_M_Description>
-  <SSC_RomanceMood_C_B_S4_N_Name>[文案待定] 浪漫控制状态</SSC_RomanceMood_C_B_S4_N_Name>
-  <SSC_RomanceMood_C_B_S4_N_Description>SSC 浪漫控制持续思想开发占位，正式描述待定。</SSC_RomanceMood_C_B_S4_N_Description>
-  <SSC_RomanceMood_C_B_S4_M_Name>[文案待定] 浪漫控制状态</SSC_RomanceMood_C_B_S4_M_Name>
-  <SSC_RomanceMood_C_B_S4_M_Description>SSC 浪漫控制持续思想开发占位，正式描述待定。</SSC_RomanceMood_C_B_S4_M_Description>
-  <SSC_RomanceMood_C_AB_S3_N_Name>[文案待定] 浪漫控制状态</SSC_RomanceMood_C_AB_S3_N_Name>
-  <SSC_RomanceMood_C_AB_S3_N_Description>SSC 浪漫控制持续思想开发占位，正式描述待定。</SSC_RomanceMood_C_AB_S3_N_Description>
-  <SSC_RomanceMood_C_AB_S3_M_Name>[文案待定] 浪漫控制状态</SSC_RomanceMood_C_AB_S3_M_Name>
-  <SSC_RomanceMood_C_AB_S3_M_Description>SSC 浪漫控制持续思想开发占位，正式描述待定。</SSC_RomanceMood_C_AB_S3_M_Description>
-  <SSC_RomanceMood_C_AB_S4_N_Name>[文案待定] 浪漫控制状态</SSC_RomanceMood_C_AB_S4_N_Name>
-  <SSC_RomanceMood_C_AB_S4_N_Description>SSC 浪漫控制持续思想开发占位，正式描述待定。</SSC_RomanceMood_C_AB_S4_N_Description>
-  <SSC_RomanceMood_C_AB_S4_M_Name>[文案待定] 浪漫控制状态</SSC_RomanceMood_C_AB_S4_M_Name>
-  <SSC_RomanceMood_C_AB_S4_M_Description>SSC 浪漫控制持续思想开发占位，正式描述待定。</SSC_RomanceMood_C_AB_S4_M_Description>
-  <SSC_RomanceMood_Unknown_Name>[文案待定] 未识别的浪漫心情</SSC_RomanceMood_Unknown_Name>
-  <SSC_RomanceMood_Unknown_Description>SSC 历史心情占位，未识别对应文案分支。</SSC_RomanceMood_Unknown_Description>
+  <!-- AI 辅助生成：122 个分支名称和描述已落实简中测试稿 v1；分支键保持独立。 -->
+  <SSC_RomanceMood_E01_S3_N_D_Name>被控接受求爱：凉到发苦</SSC_RomanceMood_E01_S3_N_D_Name>
+  <SSC_RomanceMood_E01_S3_N_D_Description>应下这声求爱时，锁链逼出的湿意凉得发苦，一路淌到腿根。眼前这人叫我作呕，我却已成了对方的恋人。</SSC_RomanceMood_E01_S3_N_D_Description>
+  <SSC_RomanceMood_E01_S3_N_G_Name>被控接受求爱：空落落</SSC_RomanceMood_E01_S3_N_G_Name>
+  <SSC_RomanceMood_E01_S3_N_G_Description>那声「愿意」不知怎么就溢了出来，等我回神，人已经成了对方的恋人。胸口空落落的，像被人借走了一回。</SSC_RomanceMood_E01_S3_N_G_Description>
+  <SSC_RomanceMood_E01_S3_N_C_Name>被控接受求爱：偷偷欢喜</SSC_RomanceMood_E01_S3_N_C_Name>
+  <SSC_RomanceMood_E01_S3_N_C_Description>那声答应出口时，我几乎没有挣扎，心口跳得发烫，腿心也跟着湿了。至少，这是我喜欢的人。</SSC_RomanceMood_E01_S3_N_C_Description>
+  <SSC_RomanceMood_E01_S3_M_D_Name>被控接受求爱：屈辱里发烫</SSC_RomanceMood_E01_S3_M_D_Name>
+  <SSC_RomanceMood_E01_S3_M_D_Description>我分明厌恶这人，可被占有的预感一上来，腿心就泛起酥麻。这分下贱的渴求，比厌恶更让我难熬。</SSC_RomanceMood_E01_S3_M_D_Description>
+  <SSC_RomanceMood_E01_S3_M_G_Name>被控接受求爱：羞得发甜</SSC_RomanceMood_E01_S3_M_G_Name>
+  <SSC_RomanceMood_E01_S3_M_G_Description>认下这段情时，我羞得耳根发烫，腿心却不争气地湿了。原来被安排着去爱，也能尝到一点甜。</SSC_RomanceMood_E01_S3_M_G_Description>
+  <SSC_RomanceMood_E01_S3_M_C_Name>被控接受求爱：求之不得</SSC_RomanceMood_E01_S3_M_C_Name>
+  <SSC_RomanceMood_E01_S3_M_C_Description>我早想献身给对方，真到了这一刻，腿间先湿成一片，羞耻和期待绞在一起，全成了催情的前戏。</SSC_RomanceMood_E01_S3_M_C_Description>
+  <SSC_RomanceMood_E01_S4_N_D_Name>被控接受求爱：麻到发冷</SSC_RomanceMood_E01_S4_N_D_Name>
+  <SSC_RomanceMood_E01_S4_N_D_Description>明知厌憎，我还是顺从地点了头，腿间只机械地涌上一阵潮意，连一点热都生不出来。</SSC_RomanceMood_E01_S4_N_D_Description>
+  <SSC_RomanceMood_E01_S4_N_G_Name>被控接受求爱：驯顺到发软</SSC_RomanceMood_E01_S4_N_G_Name>
+  <SSC_RomanceMood_E01_S4_N_G_Description>被安排成谁的恋人，本不该由我多想；可定下的那一刻，股间竟泛起温热的期待，答应得格外顺。</SSC_RomanceMood_E01_S4_N_G_Description>
+  <SSC_RomanceMood_E01_S4_N_C_Name>被控接受求爱：心动到发烫</SSC_RomanceMood_E01_S4_N_C_Name>
+  <SSC_RomanceMood_E01_S4_N_C_Description>那人一开口，我腿心就软成了水。等他牵过我的手，我早已湿得说不出半个不字，这声答应顺得连自己都心惊。</SSC_RomanceMood_E01_S4_N_C_Description>
+  <SSC_RomanceMood_E01_S4_M_D_Name>被控接受求爱：越屈辱越烫</SSC_RomanceMood_E01_S4_M_D_Name>
+  <SSC_RomanceMood_E01_S4_M_D_Description>明知厌恶，我却在对方应允的目光下湿了个透。抗拒越深，被占有的下贱快感就越烫，烫得我在这样的屈从里尝到了甜。</SSC_RomanceMood_E01_S4_M_D_Description>
+  <SSC_RomanceMood_E01_S4_M_G_Name>被控接受求爱：着迷到发颤</SSC_RomanceMood_E01_S4_M_G_Name>
+  <SSC_RomanceMood_E01_S4_M_G_Description>成为恋人这件事，像一道快感从锁链灌进身体，化成腿间止不住的淫液。被安排去爱，竟比自由地爱更让我战栗。</SSC_RomanceMood_E01_S4_M_G_Description>
+  <SSC_RomanceMood_E01_S4_M_C_Name>被控接受求爱：甘愿到发抖</SSC_RomanceMood_E01_S4_M_C_Name>
+  <SSC_RomanceMood_E01_S4_M_C_Description>我爱着这人，而锁链的奖赏让我连拒绝的余地都省了。应下的那一瞬，小腹一绞，仿佛连心带身子都被贯穿到顶，高潮得心甘情愿。</SSC_RomanceMood_E01_S4_M_C_Description>
+  <SSC_RomanceMood_E02_S3_N_D_Name>被控接受求婚：窒息到发抖</SSC_RomanceMood_E02_S3_N_D_Name>
+  <SSC_RomanceMood_E02_S3_N_D_Description>那纸婚约像绞索套上我的喉咙。锁链逼出的湿意还没干，我已与最厌恶的人订了婚，被催出来的每一分快感都成了刑具。</SSC_RomanceMood_E02_S3_N_D_Description>
+  <SSC_RomanceMood_E02_S3_N_G_Name>被控接受求婚：满口苦涩</SSC_RomanceMood_E02_S3_N_G_Name>
+  <SSC_RomanceMood_E02_S3_N_G_Description>答应的声音轻得不像我的，等我回神，婚事已经定下。胸口像压了块石头，既挣不脱，也暖不起来。</SSC_RomanceMood_E02_S3_N_G_Description>
+  <SSC_RomanceMood_E02_S3_N_C_Name>被控接受求婚：心里一甜</SSC_RomanceMood_E02_S3_N_C_Name>
+  <SSC_RomanceMood_E02_S3_N_C_Description>被锁链牵着应下这桩婚事，我竟没有多少抗拒。心口发烫，腿心也跟着湿了，许给这人倒是我曾奢望过的甜。</SSC_RomanceMood_E02_S3_N_C_Description>
+  <SSC_RomanceMood_E02_S3_M_D_Name>被控接受求婚：痛里发烫</SSC_RomanceMood_E02_S3_M_D_Name>
+  <SSC_RomanceMood_E02_S3_M_D_Description>我厌恶着要与自己订婚的人，可被迫跪下来接那枚婚约时，腿心却一阵灼烫。这分屈辱里的酥麻，比婚约本身更让我煎熬。</SSC_RomanceMood_E02_S3_M_D_Description>
+  <SSC_RomanceMood_E02_S3_M_G_Name>被控接受求婚：淡淡无谓</SSC_RomanceMood_E02_S3_M_G_Name>
+  <SSC_RomanceMood_E02_S3_M_G_Description>这桩婚事不咸不淡，既没有多少喜悦，也谈不上痛。锁链替我应下时，我平静得没有半点波澜。</SSC_RomanceMood_E02_S3_M_G_Description>
+  <SSC_RomanceMood_E02_S3_M_C_Name>被控接受求婚：求之不得</SSC_RomanceMood_E02_S3_M_C_Name>
+  <SSC_RomanceMood_E02_S3_M_C_Description>我早想与对方共度一生，偏要让锁链替我许下这诺。应下婚约的那一刻，腿间湿成一片，羞耻和幸福绞在一起，全成了催情的前戏。</SSC_RomanceMood_E02_S3_M_C_Description>
+  <SSC_RomanceMood_E02_S4_N_D_Name>被控接受求婚：冷到发寒</SSC_RomanceMood_E02_S4_N_D_Name>
+  <SSC_RomanceMood_E02_S4_N_D_Description>明知厌憎，我还是应下了这桩婚事，腿间只机械地泛起一阵潮意，像例行公事般冰凉。</SSC_RomanceMood_E02_S4_N_D_Description>
+  <SSC_RomanceMood_E02_S4_N_G_Name>被控接受求婚：微微发暖</SSC_RomanceMood_E02_S4_N_G_Name>
+  <SSC_RomanceMood_E02_S4_N_G_Description>与谁订婚，本不该由我多想；可定下的那一刻，身子竟泛起温热的顺从。被驯透的我，连「我愿意」都说得格外顺。</SSC_RomanceMood_E02_S4_N_G_Description>
+  <SSC_RomanceMood_E02_S4_N_C_Name>被控接受求婚：甜到发软</SSC_RomanceMood_E02_S4_N_C_Name>
+  <SSC_RomanceMood_E02_S4_N_C_Description>那人跪下求婚时，我的腿心先一步软成了水。等婚约套上我的手指，我早已湿得说不出半个不字，这桩被安排的婚事，正是我梦寐以求的。</SSC_RomanceMood_E02_S4_N_C_Description>
+  <SSC_RomanceMood_E02_S4_M_D_Name>被控接受求婚：苦里生甜</SSC_RomanceMood_E02_S4_M_D_Name>
+  <SSC_RomanceMood_E02_S4_M_D_Description>明知厌恶，我却在对方递来婚约时湿了个透。抗拒越深，被占有的下贱快感就越烫，这桩婚事里藏着让我上瘾的甜。</SSC_RomanceMood_E02_S4_M_D_Description>
+  <SSC_RomanceMood_E02_S4_M_G_Name>被控接受求婚：沦陷到发颤</SSC_RomanceMood_E02_S4_M_G_Name>
+  <SSC_RomanceMood_E02_S4_M_G_Description>订婚这件事，像一道快感从锁链灌进身体，化成腿间止不住的淫液。被安排着许下终身，竟比自由地爱更让我战栗。</SSC_RomanceMood_E02_S4_M_G_Description>
+  <SSC_RomanceMood_E02_S4_M_C_Name>被控接受求婚：圆满到发烫</SSC_RomanceMood_E02_S4_M_C_Name>
+  <SSC_RomanceMood_E02_S4_M_C_Description>我爱着这人，而锁链的奖赏让我连拒绝的余地都省了。婚约套上手指的那一瞬，小腹深处一阵痉挛，仿佛连心带身子都被贯穿到了顶，高潮得心甘情愿。</SSC_RomanceMood_E02_S4_M_C_Description>
+  <SSC_RomanceMood_E03_S3_N_D_Name>被控拒绝求爱：平静无波</SSC_RomanceMood_E03_S3_N_D_Name>
+  <SSC_RomanceMood_E03_S3_N_D_Description>锁链替我拒了那人的求爱，我心里没有一丝波澜。本就厌恶的人，拒绝起来像甩掉一只苍蝇。</SSC_RomanceMood_E03_S3_N_D_Description>
+  <SSC_RomanceMood_E03_S3_N_G_Name>被控拒绝求爱：心里发闷</SSC_RomanceMood_E03_S3_N_G_Name>
+  <SSC_RomanceMood_E03_S3_N_G_Description>那声「不」从喉咙里溢出来时，胸口轻轻抽了一下。谈不上多舍不得，只是被牵着鼻子走，终究不是滋味。</SSC_RomanceMood_E03_S3_N_G_Description>
+  <SSC_RomanceMood_E03_S3_N_C_Name>被控拒绝求爱：心口发堵</SSC_RomanceMood_E03_S3_N_C_Name>
+  <SSC_RomanceMood_E03_S3_N_C_Description>锁链逼着我说了「不」，可那人失望的眼神像刀一样剜在心上。我明明想答应，却只能眼睁睁看着缘分被掐断。</SSC_RomanceMood_E03_S3_N_C_Description>
+  <SSC_RomanceMood_E03_S3_M_D_Name>被控拒绝求爱：白捡的甜</SSC_RomanceMood_E03_S3_M_D_Name>
+  <SSC_RomanceMood_E03_S3_M_D_Description>亲手拒了厌恶之人的求爱，看着对方落寞而去，我心底泛起一丝扭曲的快意，腿心也跟着热了起来。</SSC_RomanceMood_E03_S3_M_D_Description>
+  <SSC_RomanceMood_E03_S3_M_G_Name>被控拒绝求爱：淡淡无谓</SSC_RomanceMood_E03_S3_M_G_Name>
+  <SSC_RomanceMood_E03_S3_M_G_Description>这声拒绝不咸不淡，既无快意也无愧疚。锁链替我开口时，我心里平静得没有半点涟漪。</SSC_RomanceMood_E03_S3_M_G_Description>
+  <SSC_RomanceMood_E03_S3_M_C_Name>被控拒绝求爱：酸里回甜</SSC_RomanceMood_E03_S3_M_C_Name>
+  <SSC_RomanceMood_E03_S3_M_C_Description>被迫推开我深爱的人，胸口酸得发涨。锁链越勒越紧，腿心那丝背叛的酥麻却越缠越深。</SSC_RomanceMood_E03_S3_M_C_Description>
+  <SSC_RomanceMood_E03_S4_N_D_Name>被控拒绝求爱：白捡的解脱</SSC_RomanceMood_E03_S4_N_D_Name>
+  <SSC_RomanceMood_E03_S4_N_D_Description>拒了那人的求爱，我心里难得地轻快。被锁链安排着推掉一个厌恶的人，倒像是白捡的解脱。</SSC_RomanceMood_E03_S4_N_D_Description>
+  <SSC_RomanceMood_E03_S4_N_G_Name>被控拒绝求爱：微微轻快</SSC_RomanceMood_E03_S4_N_G_Name>
+  <SSC_RomanceMood_E03_S4_N_G_Description>这声拒绝顺口得不像话，胸口没有多少波澜。被驯透的我，连说「不」都像在完成一道命令。</SSC_RomanceMood_E03_S4_N_G_Description>
+  <SSC_RomanceMood_E03_S4_N_C_Name>被控拒绝求爱：怅然若失</SSC_RomanceMood_E03_S4_N_C_Name>
+  <SSC_RomanceMood_E03_S4_N_C_Description>锁链让我推开那个人时，心口空了一块。可这具身子已经学会不问缘由地服从，连伤心都淡淡的。</SSC_RomanceMood_E03_S4_N_C_Description>
+  <SSC_RomanceMood_E03_S4_M_D_Name>被控拒绝求爱：拒绝的快意</SSC_RomanceMood_E03_S4_M_D_Name>
+  <SSC_RomanceMood_E03_S4_M_D_Description>亲手拒了那厌恶之人，看着对方失魂落魄，我腿心竟止不住地发烫。这种把别人的心意踩在脚下的下贱快感，让我亢奋得战栗。</SSC_RomanceMood_E03_S4_M_D_Description>
+  <SSC_RomanceMood_E03_S4_M_G_Name>被控拒绝求爱：轻快得发飘</SSC_RomanceMood_E03_S4_M_G_Name>
+  <SSC_RomanceMood_E03_S4_M_G_Description>拒绝成了一道命令，而我执行得又快又狠。看着对方悻悻离去，腿间的快意一阵阵往上涌。</SSC_RomanceMood_E03_S4_M_G_Description>
+  <SSC_RomanceMood_E03_S4_M_C_Name>被控拒绝求爱：微苦带甜</SSC_RomanceMood_E03_S4_M_C_Name>
+  <SSC_RomanceMood_E03_S4_M_C_Description>我深爱着那人，却奉命亲手掐断了这段缘。心在滴血，可这分自虐般的痛楚竟让腿心湿成一片，混成了取悦锁链的甜。</SSC_RomanceMood_E03_S4_M_C_Description>
+  <SSC_RomanceMood_E04_S3_N_D_Name>被控拒绝求婚：微微发凉</SSC_RomanceMood_E04_S3_N_D_Name>
+  <SSC_RomanceMood_E04_S3_N_D_Description>锁链替我回了「不」，没让那厌恶的人再进一步。心里松是松了，可被这么牵着走，终究留了点凉意。</SSC_RomanceMood_E04_S3_N_D_Description>
+  <SSC_RomanceMood_E04_S3_N_G_Name>被控拒绝求婚：满口苦涩</SSC_RomanceMood_E04_S3_N_G_Name>
+  <SSC_RomanceMood_E04_S3_N_G_Description>拒绝求婚的那声「不」落下去，胸口钝钝地疼了一下。明知并非良配，可被安排着错过，到底不是滋味。</SSC_RomanceMood_E04_S3_N_G_Description>
+  <SSC_RomanceMood_E04_S3_N_C_Name>被控拒绝求婚：割舍之痛</SSC_RomanceMood_E04_S3_N_C_Name>
+  <SSC_RomanceMood_E04_S3_N_C_Description>我深爱的人跪下来求婚，锁链却逼着我说了「不」。看着他失落的样子，我的心像被人攥着绞，痛得喘不过气。</SSC_RomanceMood_E04_S3_N_C_Description>
+  <SSC_RomanceMood_E04_S3_M_D_Name>被控拒绝求婚：白捡的甜</SSC_RomanceMood_E04_S3_M_D_Name>
+  <SSC_RomanceMood_E04_S3_M_D_Description>拒了那厌恶之人的求婚，我心里涌上一阵扭曲的快意。看着对方狼狈收场，腿心竟隐隐发热。</SSC_RomanceMood_E04_S3_M_D_Description>
+  <SSC_RomanceMood_E04_S3_M_G_Name>被控拒绝求婚：怅然若失</SSC_RomanceMood_E04_S3_M_G_Name>
+  <SSC_RomanceMood_E04_S3_M_G_Description>这声拒绝不轻不重地落了地，胸口只余一丝怅然。被牵着做决定，终究少了点温度。</SSC_RomanceMood_E04_S3_M_G_Description>
+  <SSC_RomanceMood_E04_S3_M_C_Name>被控拒绝求婚：心口发堵</SSC_RomanceMood_E04_S3_M_C_Name>
+  <SSC_RomanceMood_E04_S3_M_C_Description>亲手拒了我深爱之人的婚约，胸口酸得发涨。锁链勒紧时，腿心那丝背叛的酥麻却越缠越深。</SSC_RomanceMood_E04_S3_M_C_Description>
+  <SSC_RomanceMood_E04_S4_N_D_Name>被控拒绝求婚：白捡的解脱</SSC_RomanceMood_E04_S4_N_D_Name>
+  <SSC_RomanceMood_E04_S4_N_D_Description>拒了那厌恶之人的求婚，我心里难得地轻松。被锁链安排着挡下这桩婚事，倒像白捡的解脱。</SSC_RomanceMood_E04_S4_N_D_Description>
+  <SSC_RomanceMood_E04_S4_N_G_Name>被控拒绝求婚：平静无波</SSC_RomanceMood_E04_S4_N_G_Name>
+  <SSC_RomanceMood_E04_S4_N_G_Description>这声拒绝顺得没有半点波澜，既无快意也无遗憾。被驯透的我，连回绝一桩婚事都像在完成命令。</SSC_RomanceMood_E04_S4_N_G_Description>
+  <SSC_RomanceMood_E04_S4_N_C_Name>被控拒绝求婚：闷得发慌</SSC_RomanceMood_E04_S4_N_C_Name>
+  <SSC_RomanceMood_E04_S4_N_C_Description>锁链让我回绝了那人的求婚，心口空了一块。可这具身子已学会不争不问地服从，连伤心都淡淡的，只剩一点黯然。</SSC_RomanceMood_E04_S4_N_C_Description>
+  <SSC_RomanceMood_E04_S4_M_D_Name>被控拒绝求婚：拒绝的快意</SSC_RomanceMood_E04_S4_M_D_Name>
+  <SSC_RomanceMood_E04_S4_M_D_Description>亲手拒了那厌恶之人的婚约，看着对方狼狈退场，我腿心止不住地发烫。这种把他人痴心踩碎的下贱快感，让我亢奋得战栗。</SSC_RomanceMood_E04_S4_M_D_Description>
+  <SSC_RomanceMood_E04_S4_M_G_Name>被控拒绝求婚：轻快得发飘</SSC_RomanceMood_E04_S4_M_G_Name>
+  <SSC_RomanceMood_E04_S4_M_G_Description>拒绝婚约成了一道命令，我执行得又快又冷。看着对方悻悻离去，腿间的快意一阵阵往上涌。</SSC_RomanceMood_E04_S4_M_G_Description>
+  <SSC_RomanceMood_E04_S4_M_C_Name>被控拒绝求婚：微苦带甜</SSC_RomanceMood_E04_S4_M_C_Name>
+  <SSC_RomanceMood_E04_S4_M_C_Description>我深爱着那人，却奉命拒了他的婚约。心在滴血，可这分自虐般的痛楚竟让腿心微湿，成了取悦锁链的一剂药。</SSC_RomanceMood_E04_S4_M_C_Description>
+  <SSC_RomanceMood_E05_S3_N_D_Name>被控拒婚分手：微微发凉</SSC_RomanceMood_E05_S3_N_D_Name>
+  <SSC_RomanceMood_E05_S3_N_D_Description>锁链替我拒了婚，又顺手断了这段早该断的关系。心里松了，可被牵着鼻子走到底，仍留了一丝凉意。</SSC_RomanceMood_E05_S3_N_D_Description>
+  <SSC_RomanceMood_E05_S3_N_G_Name>被控拒婚分手：满口苦涩</SSC_RomanceMood_E05_S3_N_G_Name>
+  <SSC_RomanceMood_E05_S3_N_G_Description>拒婚的那声「不」落下时，一段关系也彻底冷了。胸口像被抽空，说不清是解脱还是难过，只觉得空荡荡的疼。</SSC_RomanceMood_E05_S3_N_G_Description>
+  <SSC_RomanceMood_E05_S3_N_C_Name>被控拒婚分手：痛彻心扉</SSC_RomanceMood_E05_S3_N_C_Name>
+  <SSC_RomanceMood_E05_S3_N_C_Description>我深爱的人跪着求我别走，锁链却逼着我连拒婚带分手一并说尽。看着他碎裂的眼神，我的心也跟着碎成了渣，像被自己亲手剜下一刀。</SSC_RomanceMood_E05_S3_N_C_Description>
+  <SSC_RomanceMood_E05_S3_M_D_Name>被控拒婚分手：白捡的甜</SSC_RomanceMood_E05_S3_M_D_Name>
+  <SSC_RomanceMood_E05_S3_M_D_Description>拒了婚，又亲手断了这厌恶之人的念想。看着他颓然离去，我心底泛起扭曲的快意，腿心也跟着热了起来。</SSC_RomanceMood_E05_S3_M_D_Description>
+  <SSC_RomanceMood_E05_S3_M_G_Name>被控拒婚分手：闷得发慌</SSC_RomanceMood_E05_S3_M_G_Name>
+  <SSC_RomanceMood_E05_S3_M_G_Description>一段不咸不淡的关系就这么被锁链剪断了。胸口钝钝地酸，可也算不上多痛，只是空落落的。</SSC_RomanceMood_E05_S3_M_G_Description>
+  <SSC_RomanceMood_E05_S3_M_C_Name>被控拒婚分手：苦里生甜</SSC_RomanceMood_E05_S3_M_C_Name>
+  <SSC_RomanceMood_E05_S3_M_C_Description>亲手拒了我深爱之人的婚约，又把这段情彻底斩断。心口像被火燎过，锁链勒紧时，腿心那丝背叛的酥麻却越缠越深。</SSC_RomanceMood_E05_S3_M_C_Description>
+  <SSC_RomanceMood_E05_S4_N_D_Name>被控拒婚分手：白捡的解脱</SSC_RomanceMood_E05_S4_N_D_Name>
+  <SSC_RomanceMood_E05_S4_N_D_Description>拒了婚、断了这厌恶之人的关系，我心里难得地轻快。被锁链安排着了结这段孽缘，倒像白捡的解脱。</SSC_RomanceMood_E05_S4_N_D_Description>
+  <SSC_RomanceMood_E05_S4_N_G_Name>被控拒婚分手：怅然若失</SSC_RomanceMood_E05_S4_N_G_Name>
+  <SSC_RomanceMood_E05_S4_N_G_Description>这声拒婚落下，一段关系也就散了。胸口空落落的，谈不上多痛，只是被牵着走完这一程，到底有点凉。</SSC_RomanceMood_E05_S4_N_G_Description>
+  <SSC_RomanceMood_E05_S4_N_C_Name>被控拒婚分手：心口裂开</SSC_RomanceMood_E05_S4_N_C_Name>
+  <SSC_RomanceMood_E05_S4_N_C_Description>锁链逼着我拒了婚，又逼着我亲手了断这段情。那人眼里的光熄了，我的心也跟着塌了一角，这具身子却只顾闷头服从。</SSC_RomanceMood_E05_S4_N_C_Description>
+  <SSC_RomanceMood_E05_S4_M_D_Name>被控拒婚分手：拒绝的快意</SSC_RomanceMood_E05_S4_M_D_Name>
+  <SSC_RomanceMood_E05_S4_M_D_Description>亲手拒了那厌恶之人的婚约，又把这段关系踩得粉碎。看着对方失魂落魄，腿心止不住地发烫，亢奋得浑身战栗。</SSC_RomanceMood_E05_S4_M_D_Description>
+  <SSC_RomanceMood_E05_S4_M_G_Name>被控拒婚分手：微微轻快</SSC_RomanceMood_E05_S4_M_G_Name>
+  <SSC_RomanceMood_E05_S4_M_G_Description>奉命拒了婚、断了这段关系，我执行得又快又稳。心头只余一丝说不清的微甜，连亲手了断都尝出了顺从的快感。</SSC_RomanceMood_E05_S4_M_G_Description>
+  <SSC_RomanceMood_E05_S4_M_C_Name>被控拒婚分手：痛里发烫</SSC_RomanceMood_E05_S4_M_C_Name>
+  <SSC_RomanceMood_E05_S4_M_C_Description>我深爱着那人，却奉命拒了婚、断了情。心口像被灼烧，可这分自虐般的痛楚竟让腿心湿成一片，成了取悦锁链的祭品。</SSC_RomanceMood_E05_S4_M_C_Description>
+  <SSC_RomanceMood_E06_S4_N_D_Name>奉命求爱成功：凉到发苦</SSC_RomanceMood_E06_S4_N_D_Name>
+  <SSC_RomanceMood_E06_S4_N_D_Description>奉命向那厌恶的人求爱，竟还成了。被催起来的情欲逼着我一步步靠过去，锁链给的奖赏是烫的，怀里这人却让我只想作呕。</SSC_RomanceMood_E06_S4_N_D_Description>
+  <SSC_RomanceMood_E06_S4_N_G_Name>奉命求爱成功：心里一甜</SSC_RomanceMood_E06_S4_N_G_Name>
+  <SSC_RomanceMood_E06_S4_N_G_Description>奉命去爱一个不咸不淡的人，居然真成了。心口没有多少波澜，只有完成命令后的那点微甜，和腿间一阵温热的顺从。</SSC_RomanceMood_E06_S4_N_G_Description>
+  <SSC_RomanceMood_E06_S4_N_C_Name>奉命求爱成功：甜到发软</SSC_RomanceMood_E06_S4_N_C_Name>
+  <SSC_RomanceMood_E06_S4_N_C_Description>奉命向心仪已久的人求爱，又真的成了。我几乎分不清是命令还是自己的心意，腿心早就湿透，这声「愿意」甜得我整个人都在发软。</SSC_RomanceMood_E06_S4_N_C_Description>
+  <SSC_RomanceMood_E06_S4_M_D_Name>奉命求爱成功：苦里生甜</SSC_RomanceMood_E06_S4_M_D_Name>
+  <SSC_RomanceMood_E06_S4_M_D_Description>奉命拿下这个我厌恶的人，竟真拿下了。看着对方沦陷，我腿心泛起下贱的快意，酥麻得发颤。</SSC_RomanceMood_E06_S4_M_D_Description>
+  <SSC_RomanceMood_E06_S4_M_G_Name>奉命求爱成功：沦陷到发颤</SSC_RomanceMood_E06_S4_M_G_Name>
+  <SSC_RomanceMood_E06_S4_M_G_Description>奉命去求爱，又真的得手，这份由命令带来的征服感让我腿间止不住地湿。被安排着去赢得一颗心，竟比自由地爱更让人上瘾。</SSC_RomanceMood_E06_S4_M_G_Description>
+  <SSC_RomanceMood_E06_S4_M_C_Name>奉命求爱成功：高潮里的甘心</SSC_RomanceMood_E06_S4_M_C_Name>
+  <SSC_RomanceMood_E06_S4_M_C_Description>奉命向深爱之人求爱，又真的成了。从开口那一刻，腿间就湿得没停过，高潮般的快感一路灌到顶，赢得心甘情愿。</SSC_RomanceMood_E06_S4_M_C_Description>
+  <SSC_RomanceMood_E07_S4_N_D_Name>奉命求爱被拒：平静无波</SSC_RomanceMood_E07_S4_N_D_Name>
+  <SSC_RomanceMood_E07_S4_N_D_Description>奉命去求那厌恶之人的爱，被拒了。我心里没有半点可惜，只觉得甩掉了一桩差事。</SSC_RomanceMood_E07_S4_N_D_Description>
+  <SSC_RomanceMood_E07_S4_N_G_Name>奉命求爱被拒：心里发闷</SSC_RomanceMood_E07_S4_N_G_Name>
+  <SSC_RomanceMood_E07_S4_N_G_Description>奉命求爱，却碰了一鼻子灰。胸口轻轻抽了一下，谈不上多难过，只是这份「失败」落在我身上，到底不是滋味。</SSC_RomanceMood_E07_S4_N_G_Description>
+  <SSC_RomanceMood_E07_S4_N_C_Name>奉命求爱被拒：心口发堵</SSC_RomanceMood_E07_S4_N_C_Name>
+  <SSC_RomanceMood_E07_S4_N_C_Description>奉命向深爱之人求爱，却被拒了。命令是执行完了，可被催起来的那股情欲没了着落，闷在腿间和心口，又湿又堵。</SSC_RomanceMood_E07_S4_N_C_Description>
+  <SSC_RomanceMood_E07_S4_M_D_Name>奉命求爱被拒：被拒的甜</SSC_RomanceMood_E07_S4_M_D_Name>
+  <SSC_RomanceMood_E07_S4_M_D_Description>奉命求爱却被厌恶之人拒绝，这份羞辱竟让我腿心一阵发烫。被嫌弃的难堪，反倒成了最烈的催情药。</SSC_RomanceMood_E07_S4_M_D_Description>
+  <SSC_RomanceMood_E07_S4_M_G_Name>奉命求爱被拒：微微轻快</SSC_RomanceMood_E07_S4_M_G_Name>
+  <SSC_RomanceMood_E07_S4_M_G_Description>奉命求爱遭拒，我心里却没有多少难过。被拒绝的难堪里，竟混着一丝说不清的轻快与兴奋。</SSC_RomanceMood_E07_S4_M_G_Description>
+  <SSC_RomanceMood_E07_S4_M_C_Name>奉命求爱被拒：酸里回甜</SSC_RomanceMood_E07_S4_M_C_Name>
+  <SSC_RomanceMood_E07_S4_M_C_Description>向深爱之人求爱却被拒，心口酸得发涨。求而不得的情欲悬着，混着腿心那丝背叛的酥麻，越缠越深。</SSC_RomanceMood_E07_S4_M_C_Description>
+  <SSC_RomanceMood_E08_S4_N_D_Name>奉命求婚成功：冷到发寒</SSC_RomanceMood_E08_S4_N_D_Name>
+  <SSC_RomanceMood_E08_S4_N_D_Description>奉命向那厌恶的人求婚，竟真成了。被催起来的情欲逼着我跪下，锁链的奖赏是烫的，可套上婚约的那一刻，我只觉得像被套上了绞索。</SSC_RomanceMood_E08_S4_N_D_Description>
+  <SSC_RomanceMood_E08_S4_N_G_Name>奉命求婚成功：微微发暖</SSC_RomanceMood_E08_S4_N_G_Name>
+  <SSC_RomanceMood_E08_S4_N_G_Description>奉命向一个不咸不淡的人求婚，居然成了。心口没有多少波澜，只有完成命令后的那点温热的顺从与微甜。</SSC_RomanceMood_E08_S4_N_G_Description>
+  <SSC_RomanceMood_E08_S4_N_C_Name>奉命求婚成功：甜到发软</SSC_RomanceMood_E08_S4_N_C_Name>
+  <SSC_RomanceMood_E08_S4_N_C_Description>奉命向心仪已久的人求婚，又真的成了。从跪下那一刻，腿心就软成了水，这声「我愿意」甜得我整个人都在发软。</SSC_RomanceMood_E08_S4_N_C_Description>
+  <SSC_RomanceMood_E08_S4_M_D_Name>奉命求婚成功：痛里发烫</SSC_RomanceMood_E08_S4_M_D_Name>
+  <SSC_RomanceMood_E08_S4_M_D_Description>奉命拿下这个我厌恶的人，竟连婚约都定了。看着对方心甘情愿套上戒指，我腿心泛起下贱的快意，酥麻得发颤。</SSC_RomanceMood_E08_S4_M_D_Description>
+  <SSC_RomanceMood_E08_S4_M_G_Name>奉命求婚成功：沦陷到发颤</SSC_RomanceMood_E08_S4_M_G_Name>
+  <SSC_RomanceMood_E08_S4_M_G_Description>奉命求婚又真成了，这份由命令带来的占有让我腿间止不住地湿。被安排着定下终身，竟比自由地爱更让人上瘾。</SSC_RomanceMood_E08_S4_M_G_Description>
+  <SSC_RomanceMood_E08_S4_M_C_Name>奉命求婚成功：圆满到发烫</SSC_RomanceMood_E08_S4_M_C_Name>
+  <SSC_RomanceMood_E08_S4_M_C_Description>奉命向深爱之人求婚，又真的成了。从跪下那一刻，腿间就湿得没停过，高潮般的快感一路灌到顶，把余生许得心甘情愿。</SSC_RomanceMood_E08_S4_M_C_Description>
+  <SSC_RomanceMood_E09_S4_N_D_Name>奉命求婚被拒：微微发凉</SSC_RomanceMood_E09_S4_N_D_Name>
+  <SSC_RomanceMood_E09_S4_N_D_Description>奉命向那厌恶的人求婚被拒，我心底松了口气。只是被牵着走这一遭，到底留了点凉意。</SSC_RomanceMood_E09_S4_N_D_Description>
+  <SSC_RomanceMood_E09_S4_N_G_Name>奉命求婚被拒：满口苦涩</SSC_RomanceMood_E09_S4_N_G_Name>
+  <SSC_RomanceMood_E09_S4_N_G_Description>奉命求婚，却被一口回绝。胸口像被抽空，这段不咸不淡的关系还在，可这声「不」落得我浑身发冷。</SSC_RomanceMood_E09_S4_N_G_Description>
+  <SSC_RomanceMood_E09_S4_N_C_Name>奉命求婚被拒：痛彻心扉</SSC_RomanceMood_E09_S4_N_C_Name>
+  <SSC_RomanceMood_E09_S4_N_C_Description>奉命向深爱之人求婚，却被拒了。婚没成，关系还在，被催起来的那股情欲没了着落，梗在腿间和心口，又湿又痛。</SSC_RomanceMood_E09_S4_N_C_Description>
+  <SSC_RomanceMood_E09_S4_M_D_Name>奉命求婚被拒：被拒的甜</SSC_RomanceMood_E09_S4_M_D_Name>
+  <SSC_RomanceMood_E09_S4_M_D_Description>奉命求婚却被厌恶之人拒绝，这份难堪竟让我腿心发烫。被嫌弃的羞辱，反倒成了最烈的催情药。</SSC_RomanceMood_E09_S4_M_D_Description>
+  <SSC_RomanceMood_E09_S4_M_G_Name>奉命求婚被拒：怅然若失</SSC_RomanceMood_E09_S4_M_G_Name>
+  <SSC_RomanceMood_E09_S4_M_G_Description>奉命求婚遭拒，心口空了一块。关系还在，却只剩一点惘然，和腿间那丝说不清的湿意。</SSC_RomanceMood_E09_S4_M_G_Description>
+  <SSC_RomanceMood_E09_S4_M_C_Name>奉命求婚被拒：苦里生甜</SSC_RomanceMood_E09_S4_M_C_Name>
+  <SSC_RomanceMood_E09_S4_M_C_Description>向深爱之人求婚却被拒，心口像被灼烧。求而不得的情欲悬着，混着腿心湿成的一片，越缠越深。</SSC_RomanceMood_E09_S4_M_C_Description>
+  <SSC_RomanceMood_E10_S4_N_D_Name>奉命求婚分手：微微发凉</SSC_RomanceMood_E10_S4_N_D_Name>
+  <SSC_RomanceMood_E10_S4_N_D_Description>奉命向那厌恶的人求婚被拒，还顺手断了这段关系。心底松了口气，只是被牵着走完这一程，留了点凉意。</SSC_RomanceMood_E10_S4_N_D_Description>
+  <SSC_RomanceMood_E10_S4_N_G_Name>奉命求婚分手：冷到骨里</SSC_RomanceMood_E10_S4_N_G_Name>
+  <SSC_RomanceMood_E10_S4_N_G_Description>奉命求婚被拒，一段关系也就此散了。胸口像塌了一块，说不上是解脱还是难过，只觉得浑身发冷。</SSC_RomanceMood_E10_S4_N_G_Description>
+  <SSC_RomanceMood_E10_S4_N_C_Name>奉命求婚分手：心口裂开</SSC_RomanceMood_E10_S4_N_C_Name>
+  <SSC_RomanceMood_E10_S4_N_C_Description>奉命向深爱之人求婚，却被拒，还连这段情也一并断了。看着对方决绝的背影，我的心碎成了渣，被催起来的情欲也凉在了腿间。</SSC_RomanceMood_E10_S4_N_C_Description>
+  <SSC_RomanceMood_E10_S4_M_D_Name>奉命求婚分手：白捡的甜</SSC_RomanceMood_E10_S4_M_D_Name>
+  <SSC_RomanceMood_E10_S4_M_D_Description>奉命求婚却被厌恶之人拒绝，又断了个干净。这份羞辱与了断的快意，竟让我腿心一阵发烫。</SSC_RomanceMood_E10_S4_M_D_Description>
+  <SSC_RomanceMood_E10_S4_M_G_Name>奉命求婚分手：闷得发慌</SSC_RomanceMood_E10_S4_M_G_Name>
+  <SSC_RomanceMood_E10_S4_M_G_Description>奉命求婚遭拒，关系也就散了。胸口钝钝地酸，可也算不上多痛，只是空落落的，混着一丝腿间的湿意。</SSC_RomanceMood_E10_S4_M_G_Description>
+  <SSC_RomanceMood_E10_S4_M_C_Name>奉命求婚分手：苦里生甜</SSC_RomanceMood_E10_S4_M_C_Name>
+  <SSC_RomanceMood_E10_S4_M_C_Description>向深爱之人求婚却被拒，又连这段情也断得彻底。心口像被火燎过，求而不得的情欲混着自虐的痛，在腿心湿成一片，成了取悦锁链的祭品。</SSC_RomanceMood_E10_S4_M_C_Description>
+  <SSC_RomanceMood_E11_S4_N_D_Name>奉命结束恋人：白捡的解脱</SSC_RomanceMood_E11_S4_N_D_Name>
+  <SSC_RomanceMood_E11_S4_N_D_Description>奉命甩掉这个我早已厌恶的人，心里难得地轻快。这桩差事，我执行得干脆又利落。</SSC_RomanceMood_E11_S4_N_D_Description>
+  <SSC_RomanceMood_E11_S4_N_G_Name>奉命结束恋人：闷得发慌</SSC_RomanceMood_E11_S4_N_G_Name>
+  <SSC_RomanceMood_E11_S4_N_G_Description>奉命结束这段不咸不淡的关系，胸口钝钝地酸。谈不上多舍不得，只是被安排着亲手了断，到底不是滋味。</SSC_RomanceMood_E11_S4_N_G_Description>
+  <SSC_RomanceMood_E11_S4_N_C_Name>奉命结束恋人：割舍之痛</SSC_RomanceMood_E11_S4_N_C_Name>
+  <SSC_RomanceMood_E11_S4_N_C_Description>我奉命亲手结束与深爱之人的关系，看着对方碎裂的眼神，心也跟着绞成一团，像被命令逼着亲手捅了一刀。</SSC_RomanceMood_E11_S4_N_C_Description>
+  <SSC_RomanceMood_E11_S4_M_D_Name>奉命结束恋人：痛快松手</SSC_RomanceMood_E11_S4_M_D_Name>
+  <SSC_RomanceMood_E11_S4_M_D_Description>奉命甩掉这个我厌恶已久的人，看着对方失魂落魄，我腿心止不住地发烫。这种把人心撕碎的下贱快感，让我亢奋得战栗。</SSC_RomanceMood_E11_S4_M_D_Description>
+  <SSC_RomanceMood_E11_S4_M_G_Name>奉命结束恋人：微微轻快</SSC_RomanceMood_E11_S4_M_G_Name>
+  <SSC_RomanceMood_E11_S4_M_G_Description>奉命了断这段不咸不淡的关系，我执行得又快又稳。心头只余一丝说不清的微甜，连亲手分手都尝出了顺从的快感。</SSC_RomanceMood_E11_S4_M_G_Description>
+  <SSC_RomanceMood_E11_S4_M_C_Name>奉命结束恋人：苦里生甜</SSC_RomanceMood_E11_S4_M_C_Name>
+  <SSC_RomanceMood_E11_S4_M_C_Description>奉命结束与深爱之人的关系，心口像被挖去一块。可这分自虐般的痛楚竟让腿心微湿，成了取悦锁链的一剂药。</SSC_RomanceMood_E11_S4_M_C_Description>
+  <SSC_RomanceMood_E12_S4_N_D_Name>奉命解除婚约：白捡的解脱</SSC_RomanceMood_E12_S4_N_D_Name>
+  <SSC_RomanceMood_E12_S4_N_D_Description>奉命解除与这厌恶之人的婚约，我心里难得地轻快。这桩差事，我执行得干净又利落。</SSC_RomanceMood_E12_S4_N_D_Description>
+  <SSC_RomanceMood_E12_S4_N_G_Name>奉命解除婚约：满口苦涩</SSC_RomanceMood_E12_S4_N_G_Name>
+  <SSC_RomanceMood_E12_S4_N_G_Description>奉命解除这桩不咸不淡的婚约，胸口酸得发涨。谈不上多舍不得，只是被安排着亲手退掉，到底不是滋味。</SSC_RomanceMood_E12_S4_N_G_Description>
+  <SSC_RomanceMood_E12_S4_N_C_Name>奉命解除婚约：痛彻心扉</SSC_RomanceMood_E12_S4_N_C_Name>
+  <SSC_RomanceMood_E12_S4_N_C_Description>我奉命亲手解除与深爱之人的婚约，看着对方崩塌的眼神，我的心也跟着碎成了渣，像被命令逼着亲手捅了一刀。</SSC_RomanceMood_E12_S4_N_C_Description>
+  <SSC_RomanceMood_E12_S4_M_D_Name>奉命解除婚约：痛快松手</SSC_RomanceMood_E12_S4_M_D_Name>
+  <SSC_RomanceMood_E12_S4_M_D_Description>奉命退掉这厌恶之人的婚约，看着对方狼狈收场，我腿心止不住地发烫。这种把人心踩碎的下贱快感，让我亢奋得战栗。</SSC_RomanceMood_E12_S4_M_D_Description>
+  <SSC_RomanceMood_E12_S4_M_G_Name>奉命解除婚约：怅然若失</SSC_RomanceMood_E12_S4_M_G_Name>
+  <SSC_RomanceMood_E12_S4_M_G_Description>奉命解除这桩不咸不淡的婚约，心头只余一丝惘然，和腿间那点说不清的湿意。</SSC_RomanceMood_E12_S4_M_G_Description>
+  <SSC_RomanceMood_E12_S4_M_C_Name>奉命解除婚约：痛里发烫</SSC_RomanceMood_E12_S4_M_C_Name>
+  <SSC_RomanceMood_E12_S4_M_C_Description>奉命解除与深爱之人的婚约，心口像被灼烧。可这分自虐般的痛楚竟让腿心湿成一片，成了取悦锁链的祭品。</SSC_RomanceMood_E12_S4_M_C_Description>
+  <SSC_RomanceMood_E13_S4_N_D_Name>奉命结束婚姻：白捡的解脱</SSC_RomanceMood_E13_S4_N_D_Name>
+  <SSC_RomanceMood_E13_S4_N_D_Description>奉命与这厌恶已久的人离婚，我心里难得地轻快。这桩差事，我执行得干脆又彻底。</SSC_RomanceMood_E13_S4_N_D_Description>
+  <SSC_RomanceMood_E13_S4_N_G_Name>奉命结束婚姻：冷到骨里</SSC_RomanceMood_E13_S4_N_G_Name>
+  <SSC_RomanceMood_E13_S4_N_G_Description>奉命离了这段不咸不淡的婚，胸口像被抽空，说不清是解脱还是难过，只觉得浑身发冷。</SSC_RomanceMood_E13_S4_N_G_Description>
+  <SSC_RomanceMood_E13_S4_N_C_Name>奉命结束婚姻：心口裂开</SSC_RomanceMood_E13_S4_N_C_Name>
+  <SSC_RomanceMood_E13_S4_N_C_Description>我奉命亲手离了与深爱之人的婚，看着对方灰败的眼神，我的心也跟着碎成了渣，像被命令逼着亲手剜下一刀。</SSC_RomanceMood_E13_S4_N_C_Description>
+  <SSC_RomanceMood_E13_S4_M_D_Name>奉命结束婚姻：痛快松手</SSC_RomanceMood_E13_S4_M_D_Name>
+  <SSC_RomanceMood_E13_S4_M_D_Description>奉命离掉这厌恶已久的人，看着对方失魂落魄，我腿心止不住地发烫。这种把婚姻碾碎的下贱快感，让我亢奋得战栗。</SSC_RomanceMood_E13_S4_M_D_Description>
+  <SSC_RomanceMood_E13_S4_M_G_Name>奉命结束婚姻：怅然若失</SSC_RomanceMood_E13_S4_M_G_Name>
+  <SSC_RomanceMood_E13_S4_M_G_Description>奉命离了这段不咸不淡的婚，胸口空落落的，混着一丝腿间的湿意，说不清是难过还是别的什么。</SSC_RomanceMood_E13_S4_M_G_Description>
+  <SSC_RomanceMood_E13_S4_M_C_Name>奉命结束婚姻：苦里生甜</SSC_RomanceMood_E13_S4_M_C_Name>
+  <SSC_RomanceMood_E13_S4_M_C_Description>奉命离掉深爱之人，心口像被火燎过。可这分自虐般的痛楚竟让腿心湿成一片，成了取悦锁链的祭品。</SSC_RomanceMood_E13_S4_M_C_Description>
+  <SSC_RomanceMood_C_A_S2_N_Name>缚手难求：憋闷在胸口</SSC_RomanceMood_C_A_S2_N_Name>
+  <SSC_RomanceMood_C_A_S2_N_Description>想主动去爱一个人、想向谁求婚、想离开谁，都不再由我说了算。这种被拴住手脚的憋闷，一天天压在胸口。</SSC_RomanceMood_C_A_S2_N_Description>
+  <SSC_RomanceMood_C_A_S2_M_Name>缚手难求：不痛快里发麻</SSC_RomanceMood_C_A_S2_M_Name>
+  <SSC_RomanceMood_C_A_S2_M_Description>主动去爱被限制着，心里多少有些不甘。可锁链勒住那冲动时，不痛快里竟混着一丝说不清的酥麻。</SSC_RomanceMood_C_A_S2_M_Description>
+  <SSC_RomanceMood_C_A_S3_N_Name>缚手难求：憋得发闷</SSC_RomanceMood_C_A_S3_N_Name>
+  <SSC_RomanceMood_C_A_S3_N_Description>想主动迈出一步、想随心去爱谁，早已不能。久而久之，只剩一点怅然，和对这套规矩的默认。</SSC_RomanceMood_C_A_S3_N_Description>
+  <SSC_RomanceMood_C_A_S3_M_Name>缚手难求：微微发甜</SSC_RomanceMood_C_A_S3_M_Name>
+  <SSC_RomanceMood_C_A_S3_M_Description>主动去爱被管着，我渐渐不再抗拒。被夺走的选择里，竟渗出一丝顺从的微甜。</SSC_RomanceMood_C_A_S3_M_Description>
+  <SSC_RomanceMood_C_A_S4_N_Name>缚手难求：温顺地认了</SSC_RomanceMood_C_A_S4_N_Name>
+  <SSC_RomanceMood_C_A_S4_N_Description>爱谁、求谁、离开谁，早就不该由我主动。被驯透之后，连「想主动」的念头都淡了，只剩温顺的服从。</SSC_RomanceMood_C_A_S4_N_Description>
+  <SSC_RomanceMood_C_A_S4_M_Name>缚手难求：被缚得发烫</SSC_RomanceMood_C_A_S4_M_Name>
+  <SSC_RomanceMood_C_A_S4_M_Description>主动去爱被锁链收走了，我却在这份剥夺里尝到欢愉。连「想爱」都不再自由，反而让我浑身发烫、安心得紧。</SSC_RomanceMood_C_A_S4_M_Description>
+  <SSC_RomanceMood_C_B_S3_N_Name>缚身难拒：堵成一团</SSC_RomanceMood_C_B_S3_N_Name>
+  <SSC_RomanceMood_C_B_S3_N_Description>连要不要接受、要不要拒绝，都不再由我。别人的心意砸过来，我只能照规矩接或拒，胸口像堵了一团棉花。</SSC_RomanceMood_C_B_S3_N_Description>
+  <SSC_RomanceMood_C_B_S3_M_Name>缚身难拒：平静无波</SSC_RomanceMood_C_B_S3_M_Name>
+  <SSC_RomanceMood_C_B_S3_M_Description>接受或拒绝都被安排着，我既不欢喜也不难过。被支配惯了，心里反而平静得没有波澜。</SSC_RomanceMood_C_B_S3_M_Description>
+  <SSC_RomanceMood_C_B_S4_N_Name>缚身难拒：淡淡无谓</SSC_RomanceMood_C_B_S4_N_Name>
+  <SSC_RomanceMood_C_B_S4_N_Description>接受或拒绝，都只是照规矩办事。这具身子早已习惯不问缘由，心里淡淡的，没有多少起伏。</SSC_RomanceMood_C_B_S4_N_Description>
+  <SSC_RomanceMood_C_B_S4_M_Name>缚身难拒：微微发烫</SSC_RomanceMood_C_B_S4_M_Name>
+  <SSC_RomanceMood_C_B_S4_M_Description>接受谁、拒绝谁都不由我，可这分身不由己竟让我腿心发烫。被安排着回应，也成了一种微甜的服从。</SSC_RomanceMood_C_B_S4_M_Description>
+  <SSC_RomanceMood_C_AB_S3_N_Name>尽缚难逃：喘不过气</SSC_RomanceMood_C_AB_S3_N_Name>
+  <SSC_RomanceMood_C_AB_S3_N_Description>想主动去爱不可以，想拒绝别人的爱也不可以。爱的两头都被锁链拴死，我像被闷在笼里，喘不过气。</SSC_RomanceMood_C_AB_S3_N_Description>
+  <SSC_RomanceMood_C_AB_S3_M_Name>尽缚难逃：闷里发麻</SSC_RomanceMood_C_AB_S3_M_Name>
+  <SSC_RomanceMood_C_AB_S3_M_Description>主动与被动都被管得死死的，心里有些堵。可锁链勒紧时，那股不痛快里偏又混着一丝酥麻。</SSC_RomanceMood_C_AB_S3_M_Description>
+  <SSC_RomanceMood_C_AB_S4_N_Name>尽缚难逃：温顺地认了</SSC_RomanceMood_C_AB_S4_N_Name>
+  <SSC_RomanceMood_C_AB_S4_N_Description>爱与被爱都不再由我，我反而不再挣扎。这具身子早已把「被支配」活成了本能，连心都跟着温顺下来。</SSC_RomanceMood_C_AB_S4_N_Description>
+  <SSC_RomanceMood_C_AB_S4_M_Name>尽缚难逃：被缚到发颤</SSC_RomanceMood_C_AB_S4_M_Name>
+  <SSC_RomanceMood_C_AB_S4_M_Description>主动与被动都被锁链收尽，我却在这份尽缚里达到了极乐。连「爱」的方向都不再属于我，反而让我浑身上下都酥麻得发抖。</SSC_RomanceMood_C_AB_S4_M_Description>
+  <SSC_RomanceMood_Unknown_Name>未识别的浪漫心情</SSC_RomanceMood_Unknown_Name>
+  <SSC_RomanceMood_Unknown_Description>一段尚未被归类的情愫，说不出因何而起，也道不明去往何处。</SSC_RomanceMood_Unknown_Description>
 </LanguageData>

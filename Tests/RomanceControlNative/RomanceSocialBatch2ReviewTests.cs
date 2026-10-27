@@ -144,8 +144,18 @@ internal static partial class Program
                 {
                     InjectSocialLogLanguage(repo, language);
                     string first = loaded.ToGameStringFromPOV(a, true), second = loaded.ToGameStringFromPOV(b, true);
-                    Require(first.Contains("E10") && !first.Contains("E05"));
-                    Require(second.Contains("E05") && !second.Contains("E10"));
+                    if (language == "ChineseSimplified")
+                    {
+                        string actorText = ChineseCopyLogExpected(repo, 10, a, b), recipientText = ChineseCopyLogExpected(repo, 5, a, b);
+                        string actorView = ChineseCopyPlainText(first), recipientView = ChineseCopyPlainText(second);
+                        Require(actorView.Contains(actorText) && !actorView.Contains(recipientText));
+                        Require(recipientView.Contains(recipientText) && !recipientView.Contains(actorText));
+                    }
+                    else
+                    {
+                        Require(first.Contains("E10") && !first.Contains("E05"));
+                        Require(second.Contains("E05") && !second.Contains("E10"));
+                    }
                     Equal(oldText, loadedLetter.Text.ToString().Replace("\r\n", "\n"));
                 }
             }

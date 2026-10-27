@@ -153,6 +153,18 @@ internal static partial class Program
                     {
                         Equal(language.keyedReplacements[branch.NameKey].value,SSCRomanceMoodText.Name(branch));
                         Equal(language.keyedReplacements[branch.DescriptionKey].value,SSCRomanceMoodText.Description(branch));
+                        // 简中稿通过真实记忆显示路径验证；零值不造记忆，持续思想另有真实情境显示用例。
+                        if (locale == "ChineseSimplified" && !branch.IsContinuous)
+                        {
+                            int opinion = branch.Opinion == SSCRomanceOpinionBand.Disliked ? -10 : branch.Opinion == SSCRomanceOpinionBand.Close ? 60 : 30;
+                            Require(SSCRomanceMoodCatalog.TryResolve(branch.Event, branch.Stage, branch.Masochist, opinion, out var selection));
+                            if (selection.HasMemory)
+                            {
+                                Require(Thought_MemorySSCCompositeRomance.TryCreate(selection, out var memory)); memory.pawn = SocialPawn();
+                                Equal(language.keyedReplacements[branch.NameKey].value, memory.LabelCap);
+                                Equal(language.keyedReplacements[branch.DescriptionKey].value, memory.Description);
+                            }
+                        }
                     }
                 }
                 finally{language.keyedReplacements=original;}

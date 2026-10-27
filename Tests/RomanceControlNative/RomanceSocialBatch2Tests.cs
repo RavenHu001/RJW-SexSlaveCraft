@@ -61,10 +61,15 @@ internal static partial class Program
                     InjectSocialLogLanguage(repo, language);
                     foreach (int ev in Enumerable.Range(1, 13))
                     {
-                        var (_, _, subject, _) = SocialLogEvent(ev);
+                        var (a, b, subject, _) = SocialLogEvent(ev);
                         var text = ((PlayLogEntry_SSCRomance)moodLastLog).BackgroundTextFromPOV(subject);
-                        Require(text.Contains($"E{ev:00}"), text);
-                        Require(text.Contains(language == "English" ? "text pending" : language == "Russian" ? "текст ожидается" : "文案待定"), text);
+                        if (language == "ChineseSimplified")
+                            Equal(ChineseCopyLogExpected(repo, ev, a, b), ChineseCopyPlainText(text));
+                        else
+                        {
+                            Require(text.Contains($"E{ev:00}"), text);
+                            Require(text.Contains(language == "English" ? "text pending" : language == "Russian" ? "текст ожидается" : "文案待定"), text);
+                        }
                     }
                     var rel = $"Languages/{language}/DefInjected/RulePackDef/SSC_RomanceLogs.xml";
                     Require(File.ReadAllBytes(Path.Combine(repo, "1.7", rel)).SequenceEqual(File.ReadAllBytes(Path.Combine(repo, "Sexslavecraft", rel))));
@@ -361,6 +366,24 @@ internal static partial class Program
         AccessTools.Field(typeof(RulePackDef), "rulePack").SetValue(def, SocialLogXml<RulePack>(node));
         AccessTools.Field(typeof(RulePackDef), "cachedRules").SetValue(def, null);
         AccessTools.Field(typeof(RulePackDef), "cachedUntranslatedRules").SetValue(def, null);
+    }
+
+    /// <summary>去除原生人物颜色标签，只比较文字；不重新解析或替代受测语法入口。</summary>
+    private static string ChineseCopyPlainText(string text)
+        => System.Text.RegularExpressions.Regex.Replace(text, "<[^>]+>", "");
+
+    /// <summary>按稳定事件／索引从真实简中资源读取预期，不再依赖开发占位中的 E 编号。</summary>
+    private static string ChineseCopyLogExpected(string repo, int ev, Pawn actor, Pawn recipient)
+    {
+        string[] paths = { "Accept.0", "Accept.1", "Reject.0", "Reject.1", "Reject.2",
+            "Command.0", "Command.1", "Command.2", "Command.3", "Command.4", "Command.5", "Command.6", "Command.7" };
+        var parts = paths[ev - 1].Split('.');
+        string key = "SSC_RomanceLog_" + parts[0] + ".rulePack.rulesStrings." + parts[1];
+        var row = XDocument.Load(Path.Combine(repo, "1.7/Languages/ChineseSimplified/DefInjected/RulePackDef/SSC_RomanceLogs.xml"))
+            .Root.Elements().Single(node => node.Name.LocalName == key).Value;
+        return row.Substring(row.IndexOf("->", StringComparison.Ordinal) + 2)
+            .Replace("[INITIATOR_nameDef]", actor.Name.ToStringShort)
+            .Replace("[RECIPIENT_nameDef]", recipient.Name.ToStringShort);
     }
 
     /// <summary>通过原版语言注入器写入真实生产 Def；固定索引和路径必须全部成功，不能只匹配 XML 文本。</summary>
