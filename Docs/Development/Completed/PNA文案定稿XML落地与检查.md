@@ -4,7 +4,7 @@
 
 日期：2026-10-15。分支：`codex/pna-reset`。定稿基线：`6d697a1`。状态：**XML 文案已落地，静态核对通过；维护者已确认游戏内文案显示正常，批准提交。**
 
-[文案交接](../Reference/PNA文案重写交接.md) · [定稿一](../Reference/PNA文案定稿1_药效与成瘾.md) · [定稿二](../Reference/PNA文案定稿2_物品武器配方与提示.md)
+[文案交接](../Reference/History/PNA文案重写交接.md) · [定稿一](../Reference/History/PNA文案定稿1_药效与成瘾.md) · [定稿二](../Reference/History/PNA文案定稿2_物品武器配方与提示.md)
 
 ## 落地范围
 

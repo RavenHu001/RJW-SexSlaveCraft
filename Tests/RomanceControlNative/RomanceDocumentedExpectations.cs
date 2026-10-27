@@ -12,7 +12,7 @@ internal static partial class Program
     // 独立预期继续来自维护者的分支表；实际事件不以生产目录中的数值自证。
     private static void LoadDocumentedMoodExpectations(string repo)
     {
-        string document = File.ReadAllText(Path.Combine(repo, "Docs/Design/性奴浪漫综合心情完整分支表.md"));
+        string document = File.ReadAllText(Path.Combine(repo, "Docs/Development/Reference/性奴浪漫综合心情完整分支表.md"));
         static IEnumerable<string[]> Rows(string text, string prefix) => text.Split('\n')
             .Where(line => line.StartsWith(prefix))
             .Select(line => line.Trim().Trim('|').Split('|').Select(c => c.Trim()).ToArray());

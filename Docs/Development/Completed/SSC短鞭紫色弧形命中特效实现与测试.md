@@ -4,7 +4,7 @@
 
 日期：2026-10-19。基线：`4dcbf7d`。状态：维护者确认最终上半弧加宽提亮版“这版可以，实机测试正常”，授权提交本轮短鞭命中残影、相关测试和文档。约定效果已实机验收，按授权提交；未打包发布。
 
-[工业规划](../../Design/Archive/SSC工业时代纳米催情液武器开发规划.md) · [已验收四姿态](../Completed/SSC短鞭四姿态接入与测试.md) · [视觉专项](../../../Tests/PnaWeaponEffects/README.md)
+[工业规划](../../Design/Archive/SSC工业时代纳米催情液武器开发规划.md) · [已验收四姿态](SSC短鞭四姿态接入与测试.md) · [视觉专项](../../../Tests/PnaWeaponEffects/README.md)
 
 ## 当前形态与绘制
 

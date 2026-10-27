@@ -6,7 +6,7 @@
 
 旧套件 104 项中的“品质例外空请求放行”已随补丁撤下，不再验证废弃接口；其余断言改为原版品质预期。历史批次计数和 SHA 保留在[旧适配记录](../../Docs/Development/Completed/SSC近战品质穿甲修正与远程品质核对.md)，当前构建、同步及待实机范围见[恢复记录](../../Docs/Development/Completed/SSC武器恢复原版品质规则与测试.md)。废案源码见[归档说明](../../Archive/PnaMeleeQuality/README.md)。
 
-已登记进 [Test-All](../../scripts/Test-All.ps1)。该项目需要 .NET 10 SDK 与当前游戏程序集，其他边界宿主继续使用 .NET 9。统一入口可以从 `1.7/BUILD-INFO.json` 推导游戏目录、从 `.builds/version-layout/sdk/dotnet/dotnet.exe` 找本机 SDK；也可传 `-NativeGameRoot`／`-NativeDotnetPath`。
+已登记进 [Test-All](../../Scripts/Test-All.ps1)。该项目需要 .NET 10 SDK 与当前游戏程序集，其他边界宿主继续使用 .NET 9。统一入口可以从 `1.7/BUILD-INFO.json` 推导游戏目录、从 `.builds/version-layout/sdk/dotnet/dotnet.exe` 找本机 SDK；也可传 `-NativeGameRoot`／`-NativeDotnetPath`。
 
 单独运行：
 

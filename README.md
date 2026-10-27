@@ -71,6 +71,7 @@
 | 接手开发 | [开发协作约定](AGENTS.md) → [开发资料入口](Docs/Development/README.md) → [已交付记录](Docs/Development/Completed/README.md) → [专项待验收](Docs/Development/Verification/README.md) → [当前规划](Docs/Design/README.md) |
 | 新增个人能力开关 | 先读[现行接入规范](Docs/Development/Reference/个人能力开关接入规范.md)，复用能力注册、原载体后端、状态查询与上下文提交；UI 行及跨 ITab 复用边界见规范 |
 | 编译、测试、打包 | [维护入口](Docs/Maintenance/README.md) → [测试说明](Tests/README.md) → [发布与打包](Docs/Maintenance/发布与打包.md) |
+| 工具与历史实现 | [独立工具](Tools/README.md) · [归档索引](Archive/README.md) |
 | 美术与历史依据 | [资源索引](Docs/Art/README.md) · [设计归档](Docs/Design/Archive/README.md) · [开发日志](Docs/Development/开发更新记录.md) |
 
 1.7 工程为 `Sexslavecraft/SexSlaveCraft_1.7.csproj`（.NET 10），输出到 `1.7/Assemblies/`。1.6 成品按哈希冻结，不能用当前源码回归冒充旧版验证。文档新增与移动遵循[维护约定](Docs/Maintenance/文档维护约定.md)。
