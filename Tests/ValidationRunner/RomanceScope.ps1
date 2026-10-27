@@ -41,7 +41,7 @@ $capture = $source.Substring($environmentStart[0].Extent.StartOffset,
 $prepare = $source.Substring($outerTry.Body.Extent.StartOffset + 1,
     $suiteAssignment[0].Extent.StartOffset - $outerTry.Body.Extent.StartOffset - 1)
 $environmentBlock = [scriptblock]::Create(@"
-param([scriptblock]`$TestBody, [string]`$repoRoot, [string]`$runtimeRootPath)
+param([scriptblock]`$TestBody, [string]`$repoRoot, [string]`$runtimeRootPath, [string]`$Scope = 'All')
 $capture
 try {
 $prepare
@@ -52,7 +52,7 @@ finally $($outerTry.Finally.Extent.Text)
 
 # 保存专项本身会触及的环境。入口成功／失败两条路径都必须恢复调用者的精确值。
 $savedEnvironment = @{}
-foreach ($variable in @('SSC_ROMANCE_TEXT_ONLY', 'SSC_TEST_REPOSITORY_ROOT', 'SSC_TEST_RUNTIME_ROOT',
+foreach ($variable in @('SSC_TEST_SCOPE', 'SSC_ROMANCE_TEXT_ONLY', 'SSC_TEST_REPOSITORY_ROOT', 'SSC_TEST_RUNTIME_ROOT',
     'SSC_TEST_COMMON_ROOT', 'DOTNET_CLI_HOME', 'DOTNET_GENERATE_ASPNET_CERTIFICATE', 'DOTNET_ADD_GLOBAL_TOOLS_TO_PATH')) {
     $savedEnvironment[$variable] = [Environment]::GetEnvironmentVariable($variable, 'Process')
 }
@@ -95,7 +95,7 @@ $outputAssignment = @($suiteTry.Body.Statements | Where-Object { $_.Extent.Text.
 $gate = $source.Substring($outputAssignment.Extent.StartOffset,
     $suiteTry.Body.Extent.EndOffset - 1 - $outputAssignment.Extent.StartOffset)
 $gateBlock = [scriptblock]::Create(@"
-param([string]`$fixtureOutput, [string]`$name, [string]`$logPath)
+param([string]`$fixtureOutput, [string]`$name, [string]`$logPath, [string]`$Scope = 'All')
 function Invoke-DotnetStep { param(`$CommandArguments, `$Stage, `$LogPath, `$Executable) return `$fixtureOutput }
 `$testDll = 'fixture.dll'; `$testArguments = @(); `$suiteDotnet = 'fixture'
 `$result = [pscustomobject]@{ Status = 'NotRun'; PassedCases = `$null; TotalCases = `$null; Reason = '' }
@@ -117,12 +117,45 @@ $cases = @(
 )
 foreach ($case in $cases) {
     $logPath = Join-Path $reportRoot ($case.Name.Replace(' ', '-') + '.log')
-    $result = & $gateBlock $case.Output 'RomanceControlNative' $logPath
+    $fixtureOutput = if ($case.Output.Contains('SCOPE:')) { $case.Output } else { "SCOPE: All`n" + $case.Output }
+    $result = & $gateBlock $fixtureOutput 'RomanceControlNative' $logPath
     Assert ($result.Status -eq $case.Status -and [object]::Equals($result.TotalCases, $case.Total)) $case.Name
     if ($case.Output.Contains('SCOPE:')) {
         Assert ($result.Reason -like '*text-only scope*' -and (Get-Content -LiteralPath $logPath -Raw).Contains($result.Reason)) 'text-only rejection reaches original failure receipt and log'
     }
 }
+# 实际输出判定区块不得接受子集冒充全量，也必须拒绝缺失/重复/不匹配的范围。
+foreach ($fixture in @(
+    @{ Scope='All'; Output="SCOPE: Core`nRESULT: 2/2 passed"; Status='Failed' },
+    @{ Scope='All'; Output="SCOPE: Special`nRESULT: 2/2 passed"; Status='Failed' },
+    @{ Scope='All'; Output='RESULT: 2/2 passed'; Status='Failed' },
+    @{ Scope='All'; Output="SCOPE: All`nSCOPE: All`nRESULT: 2/2 passed"; Status='Failed' },
+    @{ Scope='Core'; Output="SCOPE: All`nRESULT: 2/2 passed"; Status='Failed' },
+    @{ Scope='Core'; Output="SCOPE: Core`nRESULT: 2/2 passed"; Status='Passed' },
+    @{ Scope='Special'; Output="SCOPE: Special`nRESULT: 2/2 passed"; Status='Passed' }
+)) {
+    $logPath = Join-Path $reportRoot ('scope-' + [guid]::NewGuid().ToString('N') + '.log')
+    $result = & $gateBlock $fixture.Output 'RomanceControlNative' $logPath $fixture.Scope
+    Assert ($result.Status -eq $fixture.Status) "scope receipt rejects substitution or accepts explicit $($fixture.Scope)"
+}
+# All/Core/Special均隔离父进程选择，成功和异常后精确恢复。
+$savedScope = [Environment]::GetEnvironmentVariable('SSC_TEST_SCOPE', 'Process')
+try {
+    foreach ($selected in @('All','Core','Special')) {
+        foreach ($fail in @($false,$true)) {
+            [Environment]::SetEnvironmentVariable('SSC_TEST_SCOPE', 'caller-selection', 'Process')
+            try {
+                & $environmentBlock {
+                    Assert ($env:SSC_TEST_SCOPE -eq $selected) 'child suite scope follows explicit aggregate selection'
+                    if ($fail) { throw 'fixture scope failure' }
+                } $repo (Join-Path $repo '1.7') $selected
+            }
+            catch { if (-not $fail -or $_.Exception.Message -ne 'fixture scope failure') { throw } }
+            Assert ($env:SSC_TEST_SCOPE -eq 'caller-selection') 'caller suite scope restored after success or exception'
+        }
+    }
+}
+finally { [Environment]::SetEnvironmentVariable('SSC_TEST_SCOPE', ($savedScope ?? [NullString]::Value), 'Process') }
 # 检查两个入口的接线：发布继续调用受保护总入口，独立文案选择条件保持原样。
 Assert ((Get-Content -LiteralPath (Join-Path $repo 'Scripts/New-Release.ps1') -Raw).Contains("Join-Path `$PSScriptRoot 'Test-All.ps1'")) 'release still delegates to aggregate gate'
 Assert ((Get-Content -LiteralPath (Join-Path $repo 'Tests/RomanceControlNative/Program.cs') -Raw).Contains('Environment.GetEnvironmentVariable("SSC_ROMANCE_TEXT_ONLY") == "1"')) 'standalone text-only selection remains available'

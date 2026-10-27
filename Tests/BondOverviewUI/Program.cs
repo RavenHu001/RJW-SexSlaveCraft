@@ -17,6 +17,7 @@ internal static partial class Program
     static void Require(bool value,string reason="assertion failed"){if(!value)throw new Exception(reason);}
     static void Check(string name,Action action)
     {
+        if (!SscTestProfile.ShouldRun(name)) return;
         cases++; Reset();
         try{action();Console.WriteLine("PASS "+name);}catch(Exception ex){failures++;Console.WriteLine("FAIL "+name+": "+ex);}
     }

@@ -69,6 +69,7 @@ internal static partial class Program
     /// <summary>每项隔离鼠标和 GUI 模型，避免前一项影响新场景。</summary>
     private static void Run(string name, Action test)
     {
+        if (!SscTestProfile.ShouldRun(name)) return;
         Widgets.Click = Widgets.Throw = false; Widgets.BeforeCheckbox = null;
         Widgets.TargetClick = -1; Widgets.BeforeTargetButton = null;
         Widgets.ResetButtonIndex = 0; Widgets.ResetButtonClick = -1; Widgets.BeforeResetButton = null; SSCRestrictionEditor.CanReset = false; SSCRestrictionEditor.Resets = 0;

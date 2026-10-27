@@ -142,6 +142,7 @@ internal static class Program
 
     private static void Run(string name, Action test)
     {
+        if (!SscTestProfile.ShouldRun(name)) return;
         DefDatabase<RecipeDef>.AllDefsListForReading.Clear();
         DefDatabase<ThingDef>.AllDefsListForReading.Clear();
         rough = new RecipeDef { defName = "SSC_Make_SuperDrug_Rough" };

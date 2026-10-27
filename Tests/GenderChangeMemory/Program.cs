@@ -139,6 +139,7 @@ internal static class Program
     /// <summary>重置每个用例的定义和计数，执行回调并记录结果，避免用例互相影响。</summary>
     private static void Run(string name, Action body)
     {
+        if (!SscTestProfile.ShouldRun(name)) return;
         DefDatabase<ThoughtDef>.Definitions.Clear();
         DefDatabase<ThoughtDef>.Queries = 0;
         Recipe_Surgery.SurgeryFails = false;

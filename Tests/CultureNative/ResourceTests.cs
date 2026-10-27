@@ -69,35 +69,44 @@ internal static partial class Program
         return true;
     }
 
+    /// <summary>所有范围共用原生Def初始化，验证断言单独归资源专项。</summary>
+    private static XElement[] LoadCultureFixture(string repo)
+    {
+        // 态度定义与 thought 一起交叉引用；逐顶层节点核对 Ideology 门控，不以 XML 语法代替解析。
+        var paths = new[] { "MemeDefs/SSC_Meme_MasterSlaveOrder.xml", "PreceptDefs/SSC_Precepts_SexSlave.xml",
+            "PreceptDefs/SSC_Precepts_Trainer.xml", "PreceptDefs/SSC_Precepts_Master.xml", "PreceptDefs/SSC_Precepts_Counts.xml",
+            "ThoughtDefs/SSC_CultureThoughts_SexSlave.xml", "ThoughtDefs/SSC_CultureThoughts_Trainer.xml", "ThoughtDefs/SSC_CultureThoughts_Master.xml",
+            "ThoughtDefs/SSC_CultureThoughts_Counts.xml", "PreceptDefs/SSC_Precepts_SlaveGender.xml",
+            "ThoughtDefs/SSC_CultureThoughts_SlaveGender.xml" };
+        var nodes = paths.SelectMany(path => XDocument.Load(Path.Combine(repo, "1.7/Defs", path)).Root.Elements()).ToArray();
+        foreach (var node in nodes)
+        {
+            switch (node.Name.LocalName)
+            {
+                case "MemeGroupDef": ReadDef<MemeGroupDef>(node); break;
+                case "MemeDef": ReadDef<MemeDef>(node); break;
+                case "IssueDef": ReadDef<IssueDef>(node); break;
+                case "PreceptDef": ReadDef<PreceptDef>(node); break;
+                case "ThoughtDef": ReadDef<ThoughtDef>(node); break;
+                default: throw new Exception("Unexpected Def " + node.Name);
+            }
+        }
+        // 解析失败立即停止夹具初始化，不能被下一条用例的错误清理掩盖。
+        DirectXmlCrossRefLoader.ResolveAllWantedCrossReferences(FailMode.LogErrors);
+        mainMeme = DefDatabase<MemeDef>.GetNamed(MemeName);
+        Require(errors.Count == 0, string.Join('\n', errors));
+        ThoughtUtility.Reset();
+        return nodes;
+    }
+
     private static void ResourceTests(string repo, string game)
     {
         // 后续用例共享已解析的生产 Def；游戏根对象仍由各类测试按需重置。
         Context();
+        var nodes = LoadCultureFixture(repo);
         Check("native XML fields and cross-references resolve for all authored culture definitions", () =>
         {
-            // 态度定义与 thought 一起交叉引用；逐顶层节点核对 Ideology 门控，不以 XML 语法代替解析。
-            var paths = new[] { "MemeDefs/SSC_Meme_MasterSlaveOrder.xml", "PreceptDefs/SSC_Precepts_SexSlave.xml",
-                "PreceptDefs/SSC_Precepts_Trainer.xml", "PreceptDefs/SSC_Precepts_Master.xml", "PreceptDefs/SSC_Precepts_Counts.xml",
-                "ThoughtDefs/SSC_CultureThoughts_SexSlave.xml", "ThoughtDefs/SSC_CultureThoughts_Trainer.xml", "ThoughtDefs/SSC_CultureThoughts_Master.xml",
-                "ThoughtDefs/SSC_CultureThoughts_Counts.xml", "PreceptDefs/SSC_Precepts_SlaveGender.xml",
-                "ThoughtDefs/SSC_CultureThoughts_SlaveGender.xml" };
-            foreach (string path in paths)
-                foreach (var node in XDocument.Load(Path.Combine(repo, "1.7/Defs", path)).Root.Elements())
-                {
-                    Equal("Ludeon.RimWorld.Ideology", (string)node.Attribute("MayRequire"));
-                    switch (node.Name.LocalName)
-                    {
-                        case "MemeGroupDef": ReadDef<MemeGroupDef>(node); break;
-                        case "MemeDef": ReadDef<MemeDef>(node); break;
-                        case "IssueDef": ReadDef<IssueDef>(node); break;
-                        case "PreceptDef": ReadDef<PreceptDef>(node); break;
-                        case "ThoughtDef": ReadDef<ThoughtDef>(node); break;
-                        default: throw new Exception("Unexpected Def " + node.Name);
-                    }
-                }
-            // 跨引用解析后再断言挂载和数量；仅 XML 语法正确不足以证明原版成功识别字段。
-            DirectXmlCrossRefLoader.ResolveAllWantedCrossReferences(FailMode.LogErrors);
-            mainMeme = DefDatabase<MemeDef>.GetNamed(MemeName);
+            foreach (var node in nodes) Equal("Ludeon.RimWorld.Ideology", (string)node.Attribute("MayRequire"));
             Equal(28, DefDatabase<PreceptDef>.AllDefs.Count()); Equal(6, DefDatabase<IssueDef>.AllDefs.Count());
             // 实机调整：主奴秩序使用原版最高影响三级；Normal 是模因类别，不是影响档位。
             Equal(3, mainMeme.impact); Equal(MemeCategory.Normal, mainMeme.category);
@@ -112,7 +121,6 @@ internal static partial class Program
             Equal(65, DefDatabase<PreceptDef>.AllDefs.Sum(d => d.comps.Count));
             Require(DefDatabase<PreceptDef>.AllDefs.SelectMany(d => d.comps).All(c => c is PreceptComp_SituationalThought));
             Equal(56, DefDatabase<ThoughtDef>.AllDefs.Count());
-            ThoughtUtility.Reset();
         });
         Check("all 28 weights, ordering, prefix and 7/6/19 meme lists match the fixed contract", () =>
         {

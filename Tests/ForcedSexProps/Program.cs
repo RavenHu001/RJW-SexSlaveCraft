@@ -30,6 +30,7 @@ internal static class Program
     private static void Assert(bool condition, string message) { if (!condition) throw new Exception(message); }
     private static void Run(string name, Action action)
     {
+        if (!SscTestProfile.ShouldRun(name)) return;
         DefDatabase<InteractionDef>.Values.Clear(); SexInteractionHelper.Calls = 0; SexInteractionHelper.Resolver = Valid;
         try { action(); passed++; Console.WriteLine("PASS " + name); }
         catch (Exception ex) { failed++; Console.WriteLine("FAIL " + name + ": " + ex.Message); }

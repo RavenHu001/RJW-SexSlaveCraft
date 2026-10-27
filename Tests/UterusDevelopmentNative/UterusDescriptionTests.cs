@@ -17,6 +17,9 @@ internal static partial class Program
     /// <summary>验证真实身体状态、描述查询只读、语言即时切换和原有存档结构。</summary>
     private static void UterusDescriptionTests(string repo)
     {
+        // 独立专项也要准备原版悬停格式化缓存，不能依赖先跑某条核心断言。
+        FactionDefOf.PlayerColony ??= new FactionDef { defName = "TooltipPlayerColony", pawnSingular = "殖民者", pawnsPlural = "殖民者" };
+        ColoredText.ResetStaticData();
         foreach (var state in new[] { (.01f, false, "Developing"), (.3f, false, "Developing"), (.7f, false, "Developing"), (1f, false, "Infertile"), (1f, true, "Fertile") })
             Check("three-state description native progress and toggle: " + state, () =>
             {
@@ -53,9 +56,6 @@ internal static partial class Program
         });
         Check("three-state description is used by native tooltip with stage and fertility effects intact", () =>
         {
-            // 独立宿主未运行语言加载后的原版颜色初始化；提供派系称谓并初始化格式化缓存。
-            FactionDefOf.PlayerColony ??= new FactionDef { defName = "TooltipPlayerColony", pawnSingular = "殖民者", pawnsPlural = "殖民者" };
-            ColoredText.ResetStaticData();
             var pawn = SurgeryPawn(); var record = Start(pawn, 1);
             foreach (bool enabled in new[] { false, true })
             {

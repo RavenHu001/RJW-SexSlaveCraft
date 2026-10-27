@@ -1,5 +1,7 @@
 <Project>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Shared/TestPaths.cs" Link="Boundary/TestPaths.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Shared/TestProfile.cs" Link="Boundary/TestProfile.cs" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)TestProfiles.json" LogicalName="Ssc.TestProfiles.json" />
   </ItemGroup>
 </Project>

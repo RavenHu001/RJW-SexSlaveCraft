@@ -24,8 +24,7 @@ internal static partial class Program
             Require(!shortCarrier.GroupsWith(different));
         });
         // 同事件矩阵覆盖更弱、反号和同值；预期来自目录中本次分支，不在测试复制替换比较器。
-        var candidates=SSCRomanceMoodCatalog.EventBranches.Where(b=>b.Event==SSCRomanceCompositeEvent.ForcedRomanceAccepted).ToArray();
-        foreach(var previous in candidates) foreach(var next in candidates)
+        foreach (var (previous, next) in RepresentativeReplacements())
             Check($"semantic newest branch replaces {previous.Id}/{next.Id}",()=>
             {
                 var p=SocialPawn();var other=SocialPawn();var h=p.needs.mood.thoughts.memories;
@@ -58,9 +57,7 @@ internal static partial class Program
             Require(h.Memories.Any(m=>m.def==moodNativeLoss));
             Require(h.Memories.OfType<Thought_MemorySSCRomance>().All(m=>!m.GroupsWith(new Thought_Situational{def=SSCRomanceMoodDefOf.SSC_Romance_Control})));
         });
-        foreach(var branch in SSCRomanceMoodCatalog.EventBranches)
-        foreach(int raw in branch.Opinion==SSCRomanceOpinionBand.Disliked?new[]{-10}:branch.Opinion==SSCRomanceOpinionBand.Close?new[]{60}:
-            branch.LongDays>0&&branch.Value<0?new[]{0,1}:new[]{0})
+        foreach (var (branch, raw) in RepresentativeBranches(RomanceRepresentativeCases.Admissions))
             Check($"composite every branch admission receipt {branch.Id}/{raw}",()=>
             {
                 SSCRomanceMoodCatalog.TryResolve(branch.Event,branch.Stage,branch.Masochist,raw,out var selection);

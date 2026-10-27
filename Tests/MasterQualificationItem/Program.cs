@@ -39,6 +39,7 @@ internal static partial class Program
     /// <summary>逐项隔离并记录失败；单项失败后继续检查其他行为，汇总供统一门禁解析。</summary>
     private static void Run(string name, Action action)
     {
+        if (!SscTestProfile.ShouldRun(name)) return;
         Reset();
         try { action(); passed++; Console.WriteLine("PASS " + name); }
         catch (Exception ex) { failed++; Console.WriteLine("FAIL " + name + ": " + ex); }

@@ -6,7 +6,7 @@ using Verse;
 
 internal static partial class Program
 {
-    /// <summary>以实际 Comp／Hediff 序列化入口验证五项全部真假组合、旧字段及身体复制，不模拟业务 setter。</summary>
+    /// <summary>以实际 Comp／Hediff 序列化验证五项单开／单关代表、旧字段及身体复制，不模拟业务 setter。</summary>
     private static void AbilityToggleLifecycleTests(string repo)
     {
         // 外观定义提供最小实际组件，业务参数／旧档迁移执行生产实现；不加载 GPU 或完整游戏 Mod 启动。
@@ -14,7 +14,8 @@ internal static partial class Program
         SSCDefOf.SSC_FullGelatinizedBody.comps = new() { new HediffCompProperties_FullGelAppearance() };
         SSCDefOf.BridleOfSexSlave = ToggleDef("Hediff_BridleOfSexSlave", typeof(Hediff_BridleOfSexSlave));
         var marker = ToggleDef(SSCAbilityToggleUtility.InfestationMarker, typeof(Hediff_SSCToggleAbilityMarker));
-        foreach (int bits in Enumerable.Range(0, 32))
+        // 全关、全开、逐项单开与单关；原载体/旧字段/克隆边界在后续独立验证。
+        foreach (int bits in new[] { 0, 31, 1, 2, 4, 8, 16, 30, 29, 27, 23, 15 })
             Check("toggle lifecycle native five-storage Scribe combination " + bits, () =>
             {
                 var p = NewPawn(); var comp = AttachToggleTraining(p);

@@ -14,9 +14,7 @@ internal static partial class Program
     /// <summary>三类对象／八种保证组合经过原 worker，按实际命中规则结算，包含原判定相同。</summary>
     private static void CompositeEventBoundaryTests(Harmony owner)
     {
-        for(int mask=0;mask<8;mask++)for(int category=0;category<3;category++)
-        foreach(bool allow in new[]{false,true})foreach(bool original in new[]{false,true})
-        foreach(var action in new[]{SSCRomanceAction.Romance,SSCRomanceAction.Proposal})
+        foreach (var (mask, category, allow, original, action) in RomanceRepresentativeCases.Guarantees)
         {
             int choices=mask,cat=category;
             Check($"composite actual guarantees {mask}/{category}/{allow}/{original}/{action}",()=>

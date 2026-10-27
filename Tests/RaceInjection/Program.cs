@@ -29,6 +29,7 @@ internal static class Program
     /// <summary>清空场景数据后执行指定测试，将注入警告视为失败，并继续记录后续场景结果。</summary>
     private static void Run(string name, Action test)
     {
+        if (!SscTestProfile.ShouldRun(name)) return;
         DefDatabase<ThingDef>.AllDefsListForReading.Clear();
         Log.Warnings.Clear();
         try

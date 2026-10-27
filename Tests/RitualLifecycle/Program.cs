@@ -15,6 +15,7 @@ internal static partial class Program
     /// <summary>重置测试世界后运行单个用例，累计结果并报告异常，使失败不会阻止后续用例执行。</summary>
     private static void Check(string name, Action test)
     {
+        if (!SscTestProfile.ShouldRun(name)) return;
         cases++;
         TestWorld.Reset();
         Messages.Received.Clear();

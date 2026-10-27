@@ -290,6 +290,7 @@ internal static class Program
     /// <summary>重置外围统计，各用例新建 Pawn，避免历史关系共享造成误通过。</summary>
     private static void Run(string name, Action test)
     {
+        if (!SscTestProfile.ShouldRun(name)) return;
         Scribe.mode = LoadSaveMode.Inactive;
         SSCRestrictionGameComponent.Notifications = 0;
         SSCMod.settings = new Settings();

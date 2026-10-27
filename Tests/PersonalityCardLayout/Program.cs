@@ -59,6 +59,7 @@ internal static class Program
     /// <summary>隔离测试输入并记录失败，保证某一场景异常不会隐藏后续场景的问题。</summary>
     private static void Run(string name, Action test)
     {
+        if (!SscTestProfile.ShouldRun(name)) return;
         try
         {
             ResetInput();

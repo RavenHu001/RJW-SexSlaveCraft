@@ -156,6 +156,7 @@ internal static partial class Program
     /// <summary>隔离每例错误并汇总结果；异常时结束 Scribe，避免一个坏存档影响后续用例。</summary>
     private static void Check(string name, Action action)
     {
+        if (!SscTestProfile.ShouldRun(name)) return;
         errors.Clear();
         try { action(); Require(errors.Count == 0, string.Join('\n', errors)); passed++; Console.WriteLine("PASS " + name); }
         catch (Exception ex) { failed++; Console.WriteLine("FAIL " + name + ": " + ex + "\n" + string.Join('\n', errors)); Scribe.loader.ForceStop(); Scribe.mode = LoadSaveMode.Inactive; }

@@ -138,6 +138,7 @@ internal static partial class Program
     private static void Equal<T>(T expected, T actual) { if (!EqualityComparer<T>.Default.Equals(expected, actual)) throw new Exception($"Expected {expected}, actual {actual}"); }
     private static void Check(string name, Action action)
     {
+        if (!SscTestProfile.ShouldRun(name)) return;
         // 除显式断言外，该例产生的原版 Error 也必须使其失败；上一例日志先清空。
         errors.Clear();
         try { action(); Require(errors.Count == 0, string.Join("\n", errors)); passed++; Console.WriteLine("PASS " + name); }

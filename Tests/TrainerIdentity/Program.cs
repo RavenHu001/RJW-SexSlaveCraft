@@ -469,6 +469,7 @@ internal static partial class Program
     /// <summary>运行独立场景并在失败后继续报告其余场景。</summary>
     private static void Run(string name, Action test)
     {
+        if (!SscTestProfile.ShouldRun(name)) return;
         // 通用身份／成长夹具显式允许直接选择，避免把资格门槛混入各自的生命周期断言。
         // 默认关闭、缺字段及空设置的准入由主人资格专项使用新设置独立验证。
         SSCMod.settings = new Settings { allowDirectMasterSelection = true };

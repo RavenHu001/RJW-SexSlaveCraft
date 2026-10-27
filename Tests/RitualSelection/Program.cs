@@ -438,6 +438,7 @@ internal static partial class Program
 
     private static void Run(string name, Action test)
     {
+        if (!SscTestProfile.ShouldRun(name)) return;
         Counters.Reset(); SSCMod.settings = new Settings(); rjw.RJWSettings.rape_enabled = true; rjw.xxx.Throw = false;
         try { test(); passed++; Console.WriteLine("PASS " + name); }
         catch (Exception ex) { failed++; Console.WriteLine("FAIL " + name + ": " + ex); }

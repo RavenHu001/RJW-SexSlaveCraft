@@ -97,7 +97,8 @@ internal static partial class Program
         tools = new List<Tool> { new Tool { power = 3 } }
     };
     private static void Check(string name, Action action)
-    { try { action(); passed++; Console.WriteLine("PASS " + name); } catch (Exception e) { failed++; Console.WriteLine("FAIL " + name + ": " + e); } }
+    {
+        if (!SscTestProfile.ShouldRun(name)) return; try { action(); passed++; Console.WriteLine("PASS " + name); } catch (Exception e) { failed++; Console.WriteLine("FAIL " + name + ": " + e); } }
     private static void Near(float expected, float value)
     { if (Math.Abs(expected - value) > .00001f) throw new Exception($"Expected {expected}, actual {value}"); }
 }

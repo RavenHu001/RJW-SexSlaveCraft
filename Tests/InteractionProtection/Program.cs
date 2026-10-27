@@ -67,6 +67,7 @@ internal static partial class Program
     /// <summary>重置本用例的设置与提示计数，执行测试并记录结果；单例失败不会阻止后续用例运行。</summary>
     private static void Run(string name, Action test)
     {
+        if (!SscTestProfile.ShouldRun(name)) return;
         SSCMod.settings = new Settings();
         Messages.Count = 0;
         JobMaker.LastReturned = null;

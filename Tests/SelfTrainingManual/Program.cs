@@ -7,6 +7,8 @@ using SexSlaveCraft;
 using Verse;
 using Verse.AI;
 
+SscTestProfile.Start();
+if (!SscTestProfile.IncludesSuite) { Console.WriteLine("RESULT: 0/0 passed (suite excluded)"); return; }
 int count = 0;
 void Check(bool condition, string message)
 {

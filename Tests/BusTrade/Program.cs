@@ -54,6 +54,7 @@ internal static partial class Program
     /// <summary>重置模拟游戏全局状态，执行独立用例并报告失败原因。</summary>
     private static void Run(string name, Action test)
     {
+        if (!SscTestProfile.ShouldRun(name)) return;
         try { Reset(); test(); passed++; Console.WriteLine("通过：" + name); }
         catch (Exception error) { failed++; Console.WriteLine("失败：" + name + "\n" + error.Message); }
     }

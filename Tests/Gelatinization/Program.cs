@@ -84,6 +84,7 @@ internal static partial class Program
     /// <summary>重置可变输入，单项失败继续执行后续用例，最后统一报告失败。</summary>
     private static void Run(string name, Action test)
     {
+        if (!SscTestProfile.ShouldRun(name)) return;
         // 固定增量分别位于 XML 配置的局部适应、局部严重度和全胶区间内。
         // 连续概率命中是合法序列；测试证明故障可达，不估计实际发生频率。
         Rand.Draws = 0;

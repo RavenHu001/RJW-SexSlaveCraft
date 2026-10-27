@@ -6,7 +6,7 @@ using Verse;
 
 internal static partial class Program
 {
-    /// <summary>保留已取证的等价期限后处理，复查全部真实事件；不把宿主当作完整外部模组实机。</summary>
+    /// <summary>保留等价期限后处理的事件／跨零代表；完整终端分支在原生事件入口验证。</summary>
     private static void RomanceCompositeReplacementAuditTests()
     {
         var boundary = new Harmony("ssc.tests.composite.replacement-audit");
@@ -16,10 +16,7 @@ internal static partial class Program
         try
         {
             // 沿用真实事件助手的关系、父社交记忆及心情断言；长期候选的一般档同时覆盖零／正好感。
-            foreach (var branch in SSCRomanceMoodCatalog.EventBranches)
-            foreach (int raw in branch.Opinion == SSCRomanceOpinionBand.Disliked ? new[] { -10 } :
-                branch.Opinion == SSCRomanceOpinionBand.Close ? new[] { 60 } :
-                branch.LongDays > 0 && branch.Value < 0 ? new[] { 0, 1 } : new[] { 0 })
+            foreach (var (branch, raw) in RepresentativeBranches(RomanceRepresentativeCases.EquivalentReplacements))
                 Check($"composite replacement audit equivalent {branch.Id}/{raw}", () =>
                 {
                     moodDiagnostics.Clear(); RunCompositeEvent(branch, raw);
@@ -27,11 +24,8 @@ internal static partial class Program
                     Require(line.Contains("native=committed") && line.Contains(branch.Value == 0 ? "result=Zero" : "result=Added"));
                 });
             CompositeUnchangedDecisionAudit();
-            // 被动五类的每个终端分支也走原判定相同的路径，含拒婚附带分手及跨零期限。
-            foreach (var branch in SSCRomanceMoodCatalog.EventBranches.Where(b => (int)b.Event <= 5))
-            foreach (int raw in branch.Opinion == SSCRomanceOpinionBand.Disliked ? new[] { -10 } :
-                branch.Opinion == SSCRomanceOpinionBand.Close ? new[] { 60 } :
-                branch.LongDays > 0 && branch.Value < 0 ? new[] { 0, 1 } : new[] { 0 })
+            // 被动五类的阶段／特质／零值代表走原判定相同路径，拒婚附带分手仍参与验证。
+            foreach (var (branch, raw) in RepresentativeBranches(RomanceRepresentativeCases.SameResultBranches))
                 Check($"composite replacement audit same-result branch {branch.Id}/{raw}", () =>
                 {
                     moodDiagnostics.Clear(); RunCompositeEvent(branch, raw, samePassiveResult: true);

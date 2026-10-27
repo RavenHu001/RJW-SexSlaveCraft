@@ -184,6 +184,7 @@ internal static class Program
     /// <summary>执行单个用例并捕获断言异常，累计通过与失败数量后继续后续用例。</summary>
     private static void Run(string name, Action body)
     {
+        if (!SscTestProfile.ShouldRun(name)) return;
         try { body(); passed++; Console.WriteLine("通过：" + name); }
         catch (Exception ex) { failed++; Console.WriteLine("失败：" + name + " — " + ex.Message); }
     }

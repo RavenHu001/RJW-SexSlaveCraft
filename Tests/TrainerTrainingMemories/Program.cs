@@ -116,6 +116,7 @@ internal static partial class Program
     /// <summary>运行独立场景并在失败后继续报告其余场景。</summary>
     private static void Run(string name, Action test)
     {
+        if (!SscTestProfile.ShouldRun(name)) return;
         SSCMod.settings = new Settings();
         Rand.RangeValue = 0f;
         Rand.ChanceResult = false;

@@ -86,6 +86,7 @@ internal static partial class Program
     /// <summary>隔离控件输入和静态显示状态，每个用例都从正常 GUI 环境开始。</summary>
     private static void Run(string name, Action action)
     {
+        if (!SscTestProfile.ShouldRun(name)) return;
         Widgets.Drawn.Clear(); Widgets.Click = null; Widgets.BeforeClick = null; Widgets.ThrowLabel = false; Widgets.IgnoreDisabled = false;
         GUI.enabled = true; GUI.color = Color.white; Text.Font = GameFont.Small; Text.WordWrap = true;
         Text.Anchor = TextAnchor.UpperLeft; Text.WidthScale = 1; Scribe.mode = LoadSaveMode.Inactive; Messages.Rejections.Clear();

@@ -108,6 +108,7 @@ internal static partial class Program
 
     private static void Run(string name,Action test)
     {
+        if (!SscTestProfile.ShouldRun(name)) return;
         Scribe.mode=LoadSaveMode.Inactive; Scribe.Data.Clear(); SSCRestrictionGameComponent.Pawns.Clear(); Messages.Sent.Clear(); MoteMaker.Sent.Clear();
         SSCPnaWeaponEffectsUtility.Absorptions.Clear();
         ArmorUtility.Calls=0; ArmorUtility.Boundary=null;

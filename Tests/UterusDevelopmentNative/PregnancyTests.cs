@@ -40,7 +40,10 @@ internal static partial class Program
         finally { bootstrap = false; }
         harmony.Patch(AccessTools.Method(typeof(GenTypes), nameof(GenTypes.GetTypeInAnyAssembly)),
             prefix: new HarmonyMethod(typeof(Program), nameof(PregnancyTypeBoundary)));
-        Check("batch4 native XML patch preserves original comps and adds exactly one pregnancy comp", () => LoadPregnancyResources(repo, game));
+        errors.Clear();
+        var pregnancyXml = LoadPregnancyResources(repo, game);
+        Require(errors.Count == 0, string.Join('\n', errors));
+        Check("batch4 native XML patch preserves original comps and adds exactly one pregnancy comp", () => ValidatePregnancyResources(pregnancyXml));
         PregnancyDecisionTests();
         PregnancyFlowTests(harmony);
         PregnancySaveTests(harmony);
@@ -86,7 +89,7 @@ internal static partial class Program
     private static float StageStat(Pawn p, string name) => DefDatabase<StatDef>.GetNamed(name).Worker.GetValueUnfinalized(StatRequest.For(p), false);
 
     /// <summary>原版 PatchOperation 和 XML 继承实际应用于本机妊娠定义，保留现有 comps 与阶段。</summary>
-    private static void LoadPregnancyResources(string repo, string game)
+    private static XmlDocument LoadPregnancyResources(string repo, string game)
     {
         var doc = new XmlDocument(); doc.LoadXml("<Defs/>");
         void Import(string path, Func<XElement, bool> include)
@@ -100,10 +103,6 @@ internal static partial class Program
         var patch = new XmlDocument(); patch.Load(Path.Combine(repo, "1.7/Patches/SSC_UterusPregnancy.xml"));
         var op = DirectXmlToObject.ObjectFromXml<PatchOperation>(patch.DocumentElement.SelectSingleNode("Operation"), false);
         Require(op.Apply(doc), "native pregnancy XML patch failed");
-        foreach (string name in pregnancyNames)
-            Equal(1, doc.SelectNodes($"Defs/HediffDef[defName='{name}']/comps/li[compClass='SexSlaveCraft.HediffComp_SSCUterusPregnancy']").Count);
-        Equal(0, doc.SelectNodes("Defs/HediffDef[defName='RJW_pregnancy_mech']/comps").Count);
-        Equal(2, doc.SelectNodes("Defs/HediffDef[defName='PregnantHuman']/comps/li[@Class or compClass='HediffComp_PregnantHuman']").Count);
         foreach (XmlNode node in doc.SelectNodes(".//capacity"))
             if (DefDatabase<PawnCapacityDef>.GetNamedSilentFail(node.InnerText) == null)
                 DefDatabase<PawnCapacityDef>.Add(new PawnCapacityDef { defName = node.InnerText });
@@ -134,6 +133,15 @@ internal static partial class Program
         }
         XmlInheritance.Clear(); DirectXmlCrossRefLoader.ResolveAllWantedCrossReferences(FailMode.LogErrors);
         HediffDefOf.Pregnant = DefDatabase<HediffDef>.GetNamed("Pregnant"); HediffDefOf.PregnantHuman = DefDatabase<HediffDef>.GetNamed("PregnantHuman");
+        return doc;
+    }
+
+    private static void ValidatePregnancyResources(XmlDocument doc)
+    {
+        foreach (string name in pregnancyNames)
+            Equal(1, doc.SelectNodes($"Defs/HediffDef[defName='{name}']/comps/li[compClass='SexSlaveCraft.HediffComp_SSCUterusPregnancy']").Count);
+        Equal(0, doc.SelectNodes("Defs/HediffDef[defName='RJW_pregnancy_mech']/comps").Count);
+        Equal(2, doc.SelectNodes("Defs/HediffDef[defName='PregnantHuman']/comps/li[@Class or compClass='HediffComp_PregnantHuman']").Count);
     }
 
     /// <summary>使用真正妊娠类和原版 Make/PostMake；RJW 人形关联 Def 的 XML 基类为抽象类，按真实具体实例建立。</summary>

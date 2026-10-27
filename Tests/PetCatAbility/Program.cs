@@ -55,6 +55,7 @@ internal static partial class Program
     /// <summary>每组重建最小定义与游戏tick，不让前一组冷却、标签或配置泄漏。</summary>
     private static void Run(string name, Action test)
     {
+        if (!SscTestProfile.ShouldRun(name)) return;
         Reset();
         try { test(); passed++; Console.WriteLine("PASS: " + name); }
         catch (Exception error) { failed++; Console.WriteLine("FAIL: " + name + "\n" + error); }

@@ -40,6 +40,7 @@ internal static class Program
     /// <summary>为每项用例重置模拟存档和日志，记录失败而继续其余检查。</summary>
     private static void Run(string name, Action test)
     {
+        if (!SscTestProfile.ShouldRun(name)) return;
         Scribe.mode = LoadSaveMode.Inactive;
         Scribe.Values.Clear();
         Log.Warnings.Clear();

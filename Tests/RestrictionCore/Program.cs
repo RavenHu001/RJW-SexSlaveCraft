@@ -803,6 +803,7 @@ internal static partial class Program
     /// <summary>重置全局设置、序列化环境及全部实际特化定义后执行用例；初始化异常也计入失败汇总。</summary>
     private static void Run(string name, Action test)
     {
+        if (!SscTestProfile.ShouldRun(name)) return;
         try
         {
             SSCMod.settings = new SSCSettings(); Scribe.mode = LoadSaveMode.Inactive; Scribe.node = new Dictionary<string, object>();

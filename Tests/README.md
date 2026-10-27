@@ -1,5 +1,9 @@
 # 测试说明索引
 
+2026-10-27：测试已按必要性精简并接入显式范围。完整 `All` **46套／6886项**通过，相对原7881项减少995项；`Core` 5553／5553项、`Special` 1333／1333项，分区执行及编排结果见[本轮记录](../Docs/Development/Completed/测试分级与数量精简实现与验证.md)。以下日期和计数均保留原运行时点。
+
+统一入口默认仍执行完整范围，发布强制 `All`。日常可显式加 `-Scope Core`，相关改动可加 `-Scope Special`；子集报告包含排除套件且 `FullRegression = false`，不能用于发布放行。专项覆盖资源／四语、排版、渲染／FA／SA、性能、原生品质；相应改动及发布时运行。命令和初始化契约见[范围说明](#测试范围与计数)。
+
 > 2026-10-26：当前开发登记为2.4.6，新增来源截至`385cdd8e`。本次仅更新文档与VERSION，未执行机制回归或完整发布门禁；以下按日期计数保留原运行时点，不累加为2.4.6新结果。文案专项不替代机制验证；当前产物与开放范围见[2.4.6验证记录](../Docs/Releases/2.4.6/2.4.6版本验证.md)。
 
 2026-10-26：[PNA产出引导文案专项](../Docs/Development/Verification/PNA产出引导四语文案落实与验证.md#3-本次文案专项及复核)16／16描述核查及结构隔离通过，Def镜像31份一致、语言镜像528份来源无差异；仅文本／参数对应检查，不执行PNA机制或完整回归，不计入机制用例总数。
@@ -76,7 +80,7 @@
 
 2026-10-24 浪漫控制第一批：新增 [RomanceControlNative](RomanceControlNative/README.md) **114／114**，PersonalityTraits 1.7 变体新增 6 项后 **160／160**；独立完整清单 **46 套、5255／5255 项通过**，隔离生产构建零警告／零错误。正式 Test-All 因既有版本元数据差异将 46 套标为 NotRun，资源 2／2 通过；冻结 531 文件哈希一致，未同步游戏或进行实机验证，详见[第一批记录](../Docs/Development/Verification/性奴浪漫控制第一批实现与验证.md)。自然互动、接受概率、点名 Job 与配置界面仍待后续批次，不将数据契约通过写成完整功能已验收。
 
-当前开发登记为 **2.4.5，尚未发布**；最新正式版为 2.4.4。新增子宫／胃部开发、身体栏与泌乳、连续人格排泄及主人／猫狗专项结果保留各自日期，不相加为新门禁；见[2.4.5 分批证据与发布准备](../Docs/Releases/2.4.5/2.4.5版本验证.md)。历史文化、医美等结果保留 2.4.4 归属。
+历史时点登记为 **2.4.5，尚未发布**；当时最新正式版为 2.4.4。新增子宫／胃部开发、身体栏与泌乳、连续人格排泄及主人／猫狗专项结果保留各自日期，不相加为新门禁；见[2.4.5 分批证据与发布准备](../Docs/Releases/2.4.5/2.4.5版本验证.md)。历史文化、医美等结果保留 2.4.4 归属。
 
 2026-10-24 通用能力开关第三批：新增 68 项生命周期回归；独立执行统一清单全部 **45 套、5135／5135 项通过，0 失败、0 未执行**，1.7 隔离构建零警告／零错误。正式 Test-All 入口仍因已有版本元数据差异将 45 套标为 NotRun，资源检查 2／2 通过；两份结果分别登记，不宣称发布门禁通过。维护者已确认“第三批实机测试没有问题”，三批专项按约定范围收尾归档，暂不发布，见[第三批记录](../Docs/Development/Completed/通用能力开关框架第三批生命周期复核与验证.md)及[接入规范](../Docs/Development/Reference/个人能力开关接入规范.md)。下列前两批计数保持原执行时点。
 
@@ -192,9 +196,31 @@ pwsh -File Scripts/Test-All.ps1 -GameVersion 1.7 -HarmonyAssemblyPath 'C:\Depend
 
 可单独执行 `pwsh -File Scripts/Test-DefMirrors.ps1` 或 `pwsh -File Scripts/Sync-LanguagesMirror.ps1`。两者均支持 `-RepositoryRoot`、`-GameVersion`、`-RuntimeRoot` 与 `-PassThru`；语言同步仍须显式加 `-Sync`，且仅允许以 `1.7/Languages` 为源，不能同步冻结的 1.6 内容。统一报告位于 `.builds/validation/`，分别生成 `DefMirrors.log`、`LanguagesMirrors.log`，并在 `summary.json` 的 `Checks` 中按 `DefMirrors`／`LanguagesMirrors` 登记状态、文件数、原因和日志路径，合计字段为 `CheckCount`、`PassedChecks`、`FailedChecks`。布局结果另记在 `LayoutValidation`，不计入两项资源检查。
 
-`pwsh -File Scripts/Test-All.ps1 -GameVersion 1.6` 只验证冻结文件哈希与该版 Def／Languages XML，不比较当前源码镜像、不编译或运行当前源码套件，报告 `SuiteCount = 0`。`SourceValidationScope` 明确区分这项资源检查与 1.7 统一入口登记的 36 套当前源码模型回归；都不能替代游戏内流程、动画及真实存档往返验收。
+`pwsh -File Scripts/Test-All.ps1 -GameVersion 1.6` 只验证冻结文件哈希与该版 Def／Languages XML，不比较当前源码镜像、不编译或运行当前源码套件，报告 `SuiteCount = 0`。`SourceValidationScope` 明确区分这项资源检查与 1.7 统一入口登记的46套当前源码回归；都不能替代游戏内流程、动画及真实存档往返验收。
 
 单套测试传入的目录参数仍为仓库根目录。`Tests/Shared/TestPaths.cs` 将源码解析到 `Sexslavecraft/`，运行资源默认解析到 `1.7/`，贴图解析到 `Common/Textures/` 并优先使用版本目录中的同名覆盖。需要独立资源夹具时可设置 `SSC_TEST_REPOSITORY_ROOT`、`SSC_TEST_RUNTIME_ROOT`、`SSC_TEST_COMMON_ROOT`；统一入口仅在本次调用期间设置这些进程环境变量，结束或失败后恢复原值。`RitualProgression` 保留显式 XML 文件参数。
+
+
+## 测试范围与计数
+
+- **All（默认）**：46套，6886项，包含核心和专项。发布入口显式指定 `All`，核对成功报告的 `Scope` 和 `FullRegression`。
+- **Core**：42套，5553项。保留机制准入、保存归属、人格／身体／关系流转、旧上下文、原 Job、重复／中断／回调／异常边界。
+- **Special**：30套，1333项。资源／四语／文化生成与文案、排版／字体、渲染／FA／SA、性能及原生品质，相关改动和发布时运行。
+
+```powershell
+pwsh -File Scripts/Test-All.ps1 -Scope Core -HarmonyAssemblyPath 'C:\Dependencies\Harmony\net9.0\0Harmony.dll'
+pwsh -File Scripts/Test-All.ps1 -Scope Special -HarmonyAssemblyPath 'C:\Dependencies\Harmony\net9.0\0Harmony.dll'
+```
+
+`Tests/TestProfiles.json`登记套件类别和专项名称，随宿主嵌入。四个纯专项为 PnaProjectileTrail、PnaWeaponEffects、PnaMeleeQuality、PersonalityCardLayout。混合套件未列出的新用例默认属于核心，纯专项套件的新用例仍属于专项。1332个唯一专项名称对应1333个报告项，一处既有重复名称不改变执行次数。
+
+注册表始终核对完整46套和辅助工程，不以选测排除未登记项目。子集报告列出 `ExcludedSuites`，不伪记为 Passed 或 NotRun；`FullRegression = false`。输出必须有唯一且匹配的 `SCOPE`，成功数字不能让子集或仅文案模式冒充 All。入口设置 `SSC_TEST_SCOPE`、清除仅文案选择，结束后恢复调用者原环境。
+
+分流必须维护初始化：Def、跨引用、语言和原版悬停缓存不能依赖先执行另一条用例。医美核心流程只在 All／Core 进入，纯语言专项使用独立资源初始化。修改测试名称或增加专项时同步维护清单，并执行分区核对。
+
+净减995项包括108次重复事件执行合并和887个穷举输入删减。日志字段断言保留在原120项真实事件中，不能把相同输入循环包在一个 Check 内冒充精简。保留条件独立性、阶段、零值／期限代表和已知故障回归，但不再声称全部旧参数组合仍有穷举覆盖。
+
+独立浪漫文案590项、完整编排及文案隔离检查单独记数。1.6仍仅核验冻结基线与XML，Core／Special不改变冻结范围。
 
 ## 主人资格与成长（2.4.0）
 

@@ -23,6 +23,7 @@ internal static partial class Program
     /// <summary>清空世界角色快照后独立执行用例，累计通过数量及失败详情。</summary>
     static void Check(string name, Action action)
     {
+        if (!SscTestProfile.ShouldRun(name)) return;
         cases++; SSCRestrictionGameComponent.Pawns.Clear();
         ResetOverviewWorld();
         try { action(); Console.WriteLine("PASS " + name); }

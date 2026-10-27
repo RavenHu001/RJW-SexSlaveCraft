@@ -67,6 +67,7 @@ internal static partial class Program
     /// <summary>隔离单个用例的日志和存档模拟状态，捕获断言异常，并检查生产代码是否记录了意外错误。</summary>
     private static void Run(string name, Action test)
     {
+        if (!SscTestProfile.ShouldRun(name)) return;
         SSCBondUtility.TestBoundMasters.Clear();
         SSCBondUtility.AllowBondRestore = false;
         Log.Errors.Clear();

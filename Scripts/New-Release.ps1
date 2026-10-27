@@ -102,7 +102,10 @@ if ($dllVersion.FileVersion -ne $fileVersion -or $dllVersion.ProductVersion -ne 
 
 # 镜像一致性统一执行并记录；发布另检查 1.7 翻译键／参数。不启动任何游戏版本。
 & (Join-Path $PSScriptRoot 'Test-RestrictionLocalization.ps1') -GameVersion '1.7'
-$validation = & (Join-Path $PSScriptRoot 'Test-All.ps1') -GameVersion '1.7' -HarmonyAssemblyPath $HarmonyAssemblyPath -ReportDirectory $ValidationReportDirectory -PassThru
+$validation = & (Join-Path $PSScriptRoot 'Test-All.ps1') -GameVersion '1.7' -Scope All -HarmonyAssemblyPath $HarmonyAssemblyPath -ReportDirectory $ValidationReportDirectory -PassThru
+if ($null -eq $validation -or -not $validation.Success -or $validation.Scope -ne 'All' -or -not $validation.FullRegression) {
+    throw 'Release requires a complete successful All-scope regression report.'
+}
 
 $baseCommit = (& git -C $repoRoot rev-parse HEAD).Trim()
 if ($LASTEXITCODE -ne 0) { throw 'Cannot read the base Git commit.' }
@@ -255,7 +258,10 @@ The .NET 9 regression suite does not establish in-game 1.7 compatibility; in-gam
         }
         validation = [ordered]@{
             gameVersion = '1.7'
-            testRuntime = '.NET 9'
+            testRuntime = '.NET 9 model and .NET 10 native harnesses'
+            scope = $validation.Scope
+            fullRegression = $validation.FullRegression
+            profileManifestSha256 = $validation.ProfileManifestSha256
             suiteCount = $validation.SuiteCount
             passedCases = $validation.PassedCases
             totalCases = $validation.TotalCases

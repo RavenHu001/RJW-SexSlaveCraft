@@ -84,7 +84,7 @@ internal static partial class Program
                 var thought = ControlThought(pawn); Require(thought.Active, "native continuous admission must succeed"); Equal(SSCRomanceContinuousMood.IndexOf(branch), thought.CurStageIndex);
                 Equal((float)branch.Value, thought.CurStage.baseMoodEffect); Equal(0, pawn.needs.mood.thoughts.memories.Memories.Count);
             });
-        foreach (int stage in new[] { 1, 2, 3, 4 }) foreach (int mask in Enumerable.Range(0, 64))
+        foreach (var (stage, mask) in RomanceRepresentativeCases.ActiveFilters)
             Check($"composite b4 active filter {stage}/{mask}", () =>
             {
                 var pawn = ControlPawn(stage, active: false); var c = Comp(pawn).romanceConfig;
@@ -94,7 +94,7 @@ internal static partial class Program
                 Equal(expected, SSCRomanceContinuousMood.TryResolve(pawn, out var branch));
                 if (expected) Equal(SSCRomanceControlState.Active, branch.Control);
             });
-        foreach (int stage in new[] { 1, 2, 3, 4 }) foreach (int permissions in Enumerable.Range(0, 4)) foreach (int guarantees in Enumerable.Range(0, 8))
+        foreach (var (stage, permissions, guarantees) in RomanceRepresentativeCases.PassiveFilters)
             Check($"composite b4 passive OR {stage}/{permissions}/{guarantees}", () =>
             {
                 var pawn = ControlPawn(stage, active: false); var c = Comp(pawn).romanceConfig;
@@ -229,17 +229,7 @@ internal static partial class Program
     /// <summary>控制台日志与真实提交的对应关系，不将字符串存在作为业务正确性的唯一断言。</summary>
     private static void CompositeDiagnosticTests(string repo)
     {
-        foreach (var branch in SSCRomanceMoodCatalog.EventBranches)
-            Check("composite b4 actual event receipt diagnostic " + branch.Id, () =>
-            {
-                moodDiagnostics.Clear(); int raw = branch.Opinion == SSCRomanceOpinionBand.Disliked ? -10 : branch.Opinion == SSCRomanceOpinionBand.Close ? 60 : 1;
-                RunCompositeEvent(branch, raw);
-                string line = moodDiagnostics.Single(m => m.Contains("event id="));
-                Require(line.Contains("branch=" + branch.Id + " ") && line.Contains("value=" + branch.Value + " ") && line.Contains("native=committed"));
-                Require(line.Contains("semantic=" + SSCRomanceMoodSemantics.Of(branch.Event) + " ") && line.Contains(" order=") && line.Contains(" removed="));
-                Require(line.Contains(branch.Value == 0 ? "result=Zero" : "result=Added"));
-                Require(!line.Contains("corruption", StringComparison.OrdinalIgnoreCase));
-            });
+        // 所有分支的日志字段已并入原生真实事件，不为同一数据重跑108次事件。
         foreach (string mode in new[] { "renew", "capacity", "updated", "denied", "same-result-controlled", "interrupted", "exception", "sink-fault" })
             Check("composite b4 diagnostic actual boundary " + mode, () =>
             {

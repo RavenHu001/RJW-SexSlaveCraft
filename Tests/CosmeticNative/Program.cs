@@ -105,13 +105,20 @@ internal static class Program
             SetStatic(typeof(ModsConfig), "ideologyActive", true);
             SetStatic(typeof(ModsConfig), "biotechActive", true);
             bootstrap = false;
-            Check("native XML inheritance and cross references", () => LoadResources(repo, game));
+            errors.Clear();
+            LoadResources(repo, game);
+            Require(errors.Count == 0, string.Join('\n', errors));
+            Check("native XML inheritance and cross references", ValidateResources);
             if (surgery == null || reaction == null || outcome == null || beauty == null) return 1;
-            TraitTests();
-            ReactionTests();
-            RoleAndOutcomeTests();
-            StageAndMaterialTests();
-            PositionAndVisualTests();
+            // 核心流程的跨步骤夹具不属于纯资源专项，专项不进入这些执行链。
+            if (SscTestProfile.IncludesCore)
+            {
+                TraitTests();
+                ReactionTests();
+                RoleAndOutcomeTests();
+                StageAndMaterialTests();
+                PositionAndVisualTests();
+            }
             Check("four languages have matching keys, parameters and target fields", () => LanguageTests(repo));
         }
         finally { harmony.UnpatchAll(harmony.Id); Current.Game = null; }
@@ -139,6 +146,7 @@ internal static class Program
     private static void Near(float expected, float actual) => Require(Math.Abs(expected - actual) < 0.0001f, $"expected {expected}, actual {actual}");
     private static void Check(string name, Action action)
     {
+        if (!SscTestProfile.ShouldRun(name)) return;
         errors.Clear();
         try { action(); Require(errors.Count == 0, string.Join('\n', errors)); passed++; Console.WriteLine("PASS " + name); }
         catch (Exception ex) { failed++; Console.WriteLine("FAIL " + name + ": " + ex + "\n" + string.Join('\n', errors)); }
@@ -212,6 +220,13 @@ internal static class Program
         XmlInheritance.Clear(); DirectXmlCrossRefLoader.ResolveAllWantedCrossReferences(FailMode.LogErrors);
         SSCDefOf.SSC_Hediff_NanoCosmeticReaction = reaction; SSCDefOf.SSC_Surgery_BeautyEnhancement = surgery;
         behavior.ResolveReferences(); reaction.ResolveReferences(); surgery.ResolveReferences();
+        beauty = new TraitDef { defName = "Beauty", degreeDatas = new List<TraitDegreeData>() };
+        foreach (int degree in new[] { -2, -1, 1, 2, 3 }) beauty.degreeDatas.Add(new TraitDegreeData { degree = degree, label = "beauty" + degree });
+        Add(beauty);
+    }
+
+    private static void ValidateResources()
+    {
         var research = DefDatabase<ResearchProjectDef>.GetNamed("SSC_RES_PNACosmeticApplication");
         Near(1500, research.baseCost); Equal(TechLevel.Industrial, research.techLevel); Equal(2, research.prerequisites.Count);
         Near(4000, surgery.workAmount); Near(1, surgery.surgerySuccessChanceFactor); Equal("MedicalOperationSpeed", surgery.workSpeedStat.defName);
@@ -224,9 +239,6 @@ internal static class Program
         Require(!outcome.givesDevelopmentPoints && !outcome.allowAttachableOutcome);
         Near(.4f, outcome.startingQuality); Equal("Medicine", ((RitualOutcomeComp_PawnSkill)outcome.comps[0]).skillDef.defName);
         Require(behavior.roles.All(r => r.required && !r.countsAsParticipant && !r.substitutable && r.addToLord));
-        beauty = new TraitDef { defName = "Beauty", degreeDatas = new List<TraitDegreeData>() };
-        foreach (int degree in new[] { -2, -1, 1, 2, 3 }) beauty.degreeDatas.Add(new TraitDegreeData { degree = degree, label = "beauty" + degree });
-        Add(beauty);
     }
 
     private static Pawn Pawn(int? degree = null)

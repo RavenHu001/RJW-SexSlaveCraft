@@ -50,6 +50,7 @@ internal static class Program
     /// <summary>隔离每组状态，失败仍继续运行后续用例，最终统一报告实际通过数量。</summary>
     private static void Run(string name, Action action)
     {
+        if (!SscTestProfile.ShouldRun(name)) return;
         Reset();
         try { action(); passed++; Console.WriteLine("PASS " + name); }
         catch (Exception ex) { failed++; Console.WriteLine("FAIL " + name + ": " + ex); }

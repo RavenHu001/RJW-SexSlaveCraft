@@ -21,6 +21,7 @@ internal static partial class Program
     }
     private static void Run(string name, Action test)
     {
+        if (!SscTestProfile.ShouldRun(name)) return;
         Reset();
         try { test(); passed++; Console.WriteLine("通过：" + name); }
         catch (Exception error) { failed++; Console.WriteLine("失败：" + name + "\n" + error); }

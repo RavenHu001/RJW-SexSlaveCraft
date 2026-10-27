@@ -198,6 +198,7 @@ internal static class Program
     private static void Equal(int expected, int actual) { if (expected != actual) throw new Exception($"Expected {expected}, actual {actual}"); }
     private static void Check(string name, Action test)
     {
+        if (!SscTestProfile.ShouldRun(name)) return;
         SSCMod.settings = new SSCSettings(); messages = reformLetters = 0;
         try { test(); passed++; Console.WriteLine("PASS " + name); }
         catch (Exception e) { failed++; Console.WriteLine("FAIL " + name + ": " + e); }

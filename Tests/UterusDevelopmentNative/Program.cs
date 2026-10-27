@@ -101,11 +101,13 @@ internal static partial class Program
             // 第 4 批新增真实属性引用；宿主只提供正常基础值，能力、装备等修正不参与阶段专项。
             LoadStageStatReferences(game);
             // 生产 XML 仍走原版字段解析与交叉引用，防止手工抄写配置掩盖资源错误。
+            errors.Clear();
+            var developmentXml = new XmlDocument(); developmentXml.Load(Path.Combine(repo, "1.7/Defs/HediffDefs/SSC_UterusDevelopment.xml"));
+            development = DirectXmlToObject.ObjectFromXml<HediffDef>(developmentXml.DocumentElement.SelectSingleNode("HediffDef"), false);
+            DefDatabase<HediffDef>.Add(development); DirectXmlCrossRefLoader.ResolveAllWantedCrossReferences(FailMode.LogErrors);
+            Require(errors.Count == 0, string.Join('\n', errors));
             Check("production XML uses native loader, independent fertile stage and approved Chinese text", () =>
             {
-                var xml = new XmlDocument(); xml.Load(Path.Combine(repo, "1.7/Defs/HediffDefs/SSC_UterusDevelopment.xml"));
-                development = DirectXmlToObject.ObjectFromXml<HediffDef>(xml.DocumentElement.SelectSingleNode("HediffDef"), false);
-                DefDatabase<HediffDef>.Add(development); DirectXmlCrossRefLoader.ResolveAllWantedCrossReferences(FailMode.LogErrors);
                 Equal(SSCUterusDevelopmentUtility.DefName, development.defName);
                 Equal(typeof(Hediff_SSCUterusDevelopment), development.hediffClass);
                 Near(.01f, development.initialSeverity); Near(1f, development.maxSeverity);
@@ -392,6 +394,7 @@ internal static partial class Program
     /// <summary>执行独立用例并汇总异常和原版错误；失败后释放 Scribe 状态以继续其他用例。</summary>
     private static void Check(string name, Action action)
     {
+        if (!SscTestProfile.ShouldRun(name)) return;
         errors.Clear();
         try { action(); Require(errors.Count == 0, string.Join('\n', errors)); passed++; Console.WriteLine("PASS " + name); }
         catch (Exception ex) { failed++; Console.WriteLine("FAIL " + name + ": " + ex + "\n" + string.Join('\n', errors)); Scribe.loader.ForceStop(); Scribe.mode = LoadSaveMode.Inactive; }

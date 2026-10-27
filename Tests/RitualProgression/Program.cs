@@ -17,6 +17,7 @@ internal static class Program
     // 单个用例失败后继续运行其余用例，最后统一以非零退出码报告失败，方便脚本比较新旧代码。
     private static void Check(string name, Action test)
     {
+        if (!SscTestProfile.ShouldRun(name)) return;
         cases++;
         SSCMod.settings = new TestSettings();
         try { test(); Console.WriteLine("PASS " + name); }

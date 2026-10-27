@@ -40,7 +40,7 @@ internal static partial class Program
         foreach(var branch in SSCRomanceMoodCatalog.EventBranches)
         foreach(int raw in branch.Opinion==SSCRomanceOpinionBand.Disliked?new[]{-10}:branch.Opinion==SSCRomanceOpinionBand.Close?new[]{60}:
             branch.LongDays>0&&branch.Value<0?new[]{0,1}:new[]{0})
-            Check($"composite actual event {branch.Id}/{raw}",()=>RunCompositeEvent(branch,raw));
+            Check($"composite actual event {branch.Id}/{raw}",()=>RunCompositeEventWithDiagnostics(branch,raw));
         CompositeNativeReplacementTests();
         CompositeEventBoundaryTests(harmony);
         RomanceCompositeBatch3ReviewTests();

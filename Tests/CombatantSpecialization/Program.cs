@@ -45,6 +45,7 @@ internal static partial class Program
     }
     private static void Run(string name, Action test)
     {
+        if (!SscTestProfile.ShouldRun(name)) return;
         try { test(); passed++; Console.WriteLine("通过：" + name); }
         catch (Exception e) { failed++; Console.WriteLine("失败：" + name + "\n" + e); }
         finally { Scribe.mode = LoadSaveMode.Inactive; }

@@ -42,6 +42,7 @@ internal static class Program
     /// <summary>隔离测试数据并运行单项检查，汇总可定位的失败信息。</summary>
     private static void Run(string name, Action test)
     {
+        if (!SscTestProfile.ShouldRun(name)) return;
         DefDatabase<Def>.AllDefsListForReading.Clear();
         SSCLog.Warnings.Clear();
         SSCLog.Errors.Clear();

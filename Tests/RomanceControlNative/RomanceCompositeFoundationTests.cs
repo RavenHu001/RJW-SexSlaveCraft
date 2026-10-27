@@ -64,11 +64,8 @@ internal static partial class Program
                 Equal(bid,branch.Id);Equal(int.Parse(cells[4].Replace('−','-')),branch.Value);Require(branch.IsContinuous);Require(!branch.Opinion.HasValue);
             });
         }
-        foreach (int eventNumber in Enumerable.Range(0,15))
-        foreach (int stage in new[]{0,1,2,3,4,5})
+        foreach (var (ev, s) in RomanceRepresentativeCases.UnsupportedStages)
         {
-            int ev=eventNumber,s=stage;
-            if (ev>=1 && ev<=13 && (s==4 || s==3 && ev<=5)) continue;
             Check($"composite unsupported event stage {ev}/{s}",()=>Require(!SSCRomanceMoodCatalog.TryResolve((SSCRomanceCompositeEvent)ev,s,false,60,out _)));
         }
         Check("composite missing and malformed snapshot never becomes a valid zero",()=>

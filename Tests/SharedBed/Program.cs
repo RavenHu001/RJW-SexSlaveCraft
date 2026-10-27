@@ -191,6 +191,7 @@ internal static partial class Program
     /// <summary>执行命名用例并累计结果；记录单个失败后继续运行其余用例。</summary>
     private static void Run(string name, Action test)
     {
+        if (!SscTestProfile.ShouldRun(name)) return;
         try { test(); passed++; Console.WriteLine("PASS " + name); }
         catch (Exception ex) { failed++; Console.WriteLine("FAIL " + name + ": " + ex); }
     }

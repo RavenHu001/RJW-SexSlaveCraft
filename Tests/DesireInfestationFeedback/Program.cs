@@ -31,6 +31,7 @@ internal static class Program
     {var memory=ThoughtMaker.MakeThought(def,stage);memory.age=age;t.needs.mood.thoughts.memories.TryGainMemory(memory,m);}
     private static void Run(string name,Action action)
     {
+        if (!SscTestProfile.ShouldRun(name)) return;
         Scribe.mode=LoadSaveMode.Inactive;Scribe.node.Clear();Log.Warnings.Clear();
         ThoughtMaker.OnMade=null;ThoughtUtility.OnCheck=null;MemoryThoughtHandler.OnRemoved=null;MemoryThoughtHandler.OnGained=null;
         SSCPnaSexSupplyUtility.Calls=0;SSCPnaSexSupplyUtility.OnApply=null;CorruptionUtility.OnApply=null;

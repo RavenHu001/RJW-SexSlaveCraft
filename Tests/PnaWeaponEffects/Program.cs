@@ -35,7 +35,8 @@ internal static class Program
  }
  private static int passed,failed;
  private static void Run(string name,Action body)
- {try{body();passed++;Console.WriteLine("PASS "+name);}catch(Exception e){failed++;Console.WriteLine("FAIL "+name+": "+e);}}
+ {
+        if (!SscTestProfile.ShouldRun(name)) return;try{body();passed++;Console.WriteLine("PASS "+name);}catch(Exception e){failed++;Console.WriteLine("FAIL "+name+": "+e);}}
  private static void Check(bool value,string message){if(!value)throw new Exception(message);}
  private static void Near(double a,double b)=>Check(Math.Abs(a-b)<.0001,$"{a} != {b}");
  private static int Main(string[] args)

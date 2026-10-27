@@ -8,6 +8,7 @@
 默认将报告保存在 .builds/validation/<本次运行目录>；CultureNative／CosmeticNative 引用并构建生产工程，不安装游戏副本。
 默认检查 1.7 运行资源并回归当前源码；原生品质、太空武器及仪式演化点专项另需当前游戏程序集和 .NET 10，
 可用 -NativeGameRoot / -NativeDotnetPath 指定，默认读取 BUILD-INFO 和仓库便携 SDK。
+Scope 默认 All；Core/Special 显式分流，子集报告不能代替发布完整门禁。
 RomanceControlNative 第二批优先使用 BUILD-INFO 的游戏 Harmony 3，直接安装生产特性补丁；其他模型宿主仍用单独测试 Harmony。
 -GameVersion 1.6 只核验冻结基线和 XML，不能证明旧版源码或游戏兼容性。
 #>
@@ -20,6 +21,7 @@ param(
     [string]$NativeDotnetPath = $env:SSC_DOTNET_PATH,
     [ValidateSet('1.6', '1.7')][string]$GameVersion = '1.7',
     [string]$RuntimeRoot,
+    [ValidateSet('All', 'Core', 'Special')][string]$Scope = 'All',
     [switch]$PassThru
 )
 
@@ -40,13 +42,14 @@ $savedTestEnvironment = @{}
 # 连同 SDK 和专项选择开关保存调用者环境；完成或异常退出时由 finally 原样恢复。
 foreach ($name in @('SSC_TEST_REPOSITORY_ROOT', 'SSC_TEST_RUNTIME_ROOT', 'SSC_TEST_COMMON_ROOT',
     'DOTNET_CLI_HOME', 'DOTNET_GENERATE_ASPNET_CERTIFICATE', 'DOTNET_ADD_GLOBAL_TOOLS_TO_PATH',
-    'SSC_ROMANCE_TEXT_ONLY')) {
+    'SSC_ROMANCE_TEXT_ONLY', 'SSC_TEST_SCOPE')) {
     $savedTestEnvironment[$name] = [Environment]::GetEnvironmentVariable($name, 'Process')
 }
 try {
 # 总回归（含发布入口调用）必须运行完整套件，不能继承调用者的仅文案模式。
 # 只清除当前进程环境，子进程随之隔离；独立文案运行及调用结束后的原选择不受影响。
 [Environment]::SetEnvironmentVariable('SSC_ROMANCE_TEXT_ONLY', [NullString]::Value, 'Process')
+$env:SSC_TEST_SCOPE = $Scope
 $env:SSC_TEST_REPOSITORY_ROOT = $repoRoot
 $env:SSC_TEST_RUNTIME_ROOT = $runtimeRootPath
 $env:SSC_TEST_COMMON_ROOT = Join-Path $repoRoot 'Common'
@@ -270,6 +273,32 @@ try {
 catch { $globalProblems.Add('Native quality prerequisites: ' + $_.Exception.Message) }
 }
 
+# 清单始终按完整注册表检查；显式排除不等于 NotRun，更不能用于发布放行。
+$registeredSuiteCount = $suites.Count
+$excludedSuites = @()
+$profileManifestHash = $null
+if ($GameVersion -eq '1.7') {
+    try {
+        $profilePath = Join-Path $repoRoot 'Tests/TestProfiles.json'
+        $profile = Get-Content -LiteralPath $profilePath -Raw | ConvertFrom-Json
+        if ($profile.SchemaVersion -ne 1) { throw 'Unsupported test profile schema.' }
+        $kinds = @{}
+        foreach ($row in $profile.Suites) {
+            if ($kinds.ContainsKey($row.Name) -or $row.Kind -notin @('Core', 'Mixed', 'Special')) { throw 'Duplicate or invalid suite profile.' }
+            $kinds[$row.Name] = $row.Kind
+        }
+        if ($kinds.Count -ne $suites.Count -or @($suites | Where-Object { -not $kinds.ContainsKey($_.Name) }).Count) {
+            throw 'Test profiles must match the complete registered suite list.'
+        }
+        $profileManifestHash = (Get-FileHash -LiteralPath $profilePath -Algorithm SHA256).Hash
+        $excludedSuites = @($suites | Where-Object {
+            ($Scope -eq 'Core' -and $kinds[$_.Name] -eq 'Special') -or
+            ($Scope -eq 'Special' -and $kinds[$_.Name] -eq 'Core')
+        } | ForEach-Object { $_.Name })
+        $suites = @($suites | Where-Object { $_.Name -notin $excludedSuites })
+    }
+    catch { $globalProblems.Add('Test profile prerequisites: ' + $_.Exception.Message) }
+}
 $results = [Collections.Generic.List[object]]::new()
 Write-Host "Validation reports: $reportRoot"
 foreach ($suite in $suites) {
@@ -323,6 +352,10 @@ foreach ($suite in $suites) {
             if ($name -eq 'RomanceControlNative' -and $output -match '(?m)^\s*SCOPE:\s*romance text only\b') {
                 throw 'RomanceControlNative ran in text-only scope; full regression is required.'
             }
+            $scopeMarkers = [regex]::Matches($output, '(?im)^\s*SCOPE:\s*(All|Core|Special)\s*$')
+            if ($scopeMarkers.Count -ne 1 -or $scopeMarkers[0].Groups[1].Value -ne $Scope) {
+                throw "Missing, ambiguous or mismatched test scope; expected $Scope."
+            }
             # Counts come from the suite, not a hard-coded historical total of 390.
             $summary = [regex]::Matches($output, '(?m)^(?:结果：|RESULT:\s*)?(\d+)/(\d+) (?:项通过。|(?:cases |lifecycle tests )?passed\b[^\r\n]*)\s*$')
             if ($summary.Count -ne 1) { throw 'Missing or ambiguous case summary; cannot confirm complete execution.' }
@@ -350,6 +383,8 @@ $report = [pscustomobject][ordered]@{
     StartedAtUtc = $startedAt.ToString('o'); FinishedAtUtc = [DateTime]::UtcNow.ToString('o')
     Success = ($passed -eq $suites.Count -and $failedChecks -eq 0 -and $globalProblems.Count -eq 0); SuiteCount = $suites.Count
     GameVersion = $GameVersion; RepositoryRoot = $repoRoot; RuntimeRoot = $runtimeRootPath
+    Scope = $Scope; FullRegression = ($GameVersion -eq '1.7' -and $Scope -eq 'All')
+    RegisteredSuiteCount = $registeredSuiteCount; ExcludedSuites = $excludedSuites; ProfileManifestSha256 = $profileManifestHash
     SourceValidationScope = $(if ($GameVersion -eq '1.7') { 'Current source with selected 1.7 resources; model regression and native quality calculation, not in-game compatibility.' } else { 'Frozen 2.4.1 artifacts and 1.6 XML only; no 1.6 source rebuild or source regression.' })
     LayoutValidation = $layoutValidation; GlobalProblems = $globalProblems.ToArray()
     PassedSuites = $passed; FailedSuites = $failed; NotRunSuites = $notRun

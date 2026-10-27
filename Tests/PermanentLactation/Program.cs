@@ -63,6 +63,7 @@ internal static partial class Program
     /// <summary>隔离可选依赖及存档状态，并汇总失败。</summary>
     private static void Run(string name, Action test)
     {
+        if (!SscTestProfile.ShouldRun(name)) return;
         HumanCattleBridgeUtility.IsLoaded = false;
         HumanCattleBridgeUtility.Calls = 0;
         Scribe.mode = LoadSaveMode.Inactive;

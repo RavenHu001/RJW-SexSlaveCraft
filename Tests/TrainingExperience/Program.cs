@@ -19,7 +19,8 @@ internal static class Program
         Rand.DrawState=0;SexProps.ResolveCalls=0;
     }
     private static void Run(string name,Action test)
-    {try{Reset();test();passed++;Console.WriteLine("PASS "+name);}catch(Exception e){failed++;Console.WriteLine("FAIL "+name+": "+e);}}
+    {
+        if (!SscTestProfile.ShouldRun(name)) return;try{Reset();test();passed++;Console.WriteLine("PASS "+name);}catch(Exception e){failed++;Console.WriteLine("FAIL "+name+": "+e);}}
     private static void Check(bool ok,string message="assertion") {if(!ok)throw new Exception(message);}
     private static void Near(float a,float b) {Check(Math.Abs(a-b)<.000001f,$"{a} != {b}");}
     private static HediffDef Def(string n)=>DefDatabase<HediffDef>.GetNamed("SSC_Exp_"+n);

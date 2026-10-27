@@ -154,7 +154,8 @@ internal static partial class Program
     private static void Equal(int a,int b){if(a!=b)throw new Exception($"Expected {a}, actual {b}");}
     private static void Near(float a,float b){if(Math.Abs(a-b)>.00001f)throw new Exception($"Expected {a}, actual {b}");}
     private static void Check(string name,Action action)
-    {Valid.Clear();Rooted.Clear();Masters.Clear();Ratings.Clear();Clothes.Clear();Doses.Clear();armorCalls=wearCalls=injuryCalls=takeCalls=fallbackCalls=0;lastInjury=0;lastType=null;interceptPawnHit=shield=false;try{action();passed++;Console.WriteLine("PASS "+name);}catch(Exception e){failed++;Console.WriteLine("FAIL "+name+": "+e);}}
+    {
+        if (!SscTestProfile.ShouldRun(name)) return;Valid.Clear();Rooted.Clear();Masters.Clear();Ratings.Clear();Clothes.Clear();Doses.Clear();armorCalls=wearCalls=injuryCalls=takeCalls=fallbackCalls=0;lastInjury=0;lastType=null;interceptPawnHit=shield=false;try{action();passed++;Console.WriteLine("PASS "+name);}catch(Exception e){failed++;Console.WriteLine("FAIL "+name+": "+e);}}
     // 以下钩子只服务测试：捕获实际伤害元数据或提供外部上下文，不替代被测护甲算法。
     private static void CountArmor()=>armorCalls++;
     private static bool Stat(Thing thing,StatDef stat,ref float __result){__result=stat==StatDefOf.IncomingDamageFactor||stat==StatDefOf.MeleeWeapon_DamageMultiplier?1:Ratings.GetValueOrDefault(thing,1);return false;}

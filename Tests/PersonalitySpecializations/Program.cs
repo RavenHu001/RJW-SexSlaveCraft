@@ -42,6 +42,7 @@ internal static class Program
     /// <summary>逐项记录通过或失败，并继续检查其余独立场景。</summary>
     private static void Run(string name, Action test)
     {
+        if (!SscTestProfile.ShouldRun(name)) return;
         try
         {
             test();

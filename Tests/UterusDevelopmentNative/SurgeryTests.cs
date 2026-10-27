@@ -49,11 +49,12 @@ internal static partial class Program
         // 使用无业务逻辑的转发器，避免 Harmony 2 读取生产类上的 Harmony 3 特性；实际执行生产 Postfix。
         harmony.Patch(AccessTools.Method(typeof(Bill_Medical), nameof(Bill_Medical.PawnAllowedToStartAnew)),
             postfix: new HarmonyMethod(typeof(Program), nameof(UterusAdmission)));
-        Check("batch2 XML native inheritance, research and ingredient configuration", () =>
-        {
-            LoadSurgeryResources(repo, game);
-            LoadStomachResources(repo, game);
-        });
+        // 身体/手术数据是两种范围的共享夹具，配置断言仍归原核心用例。
+        errors.Clear();
+        LoadSurgeryResources(repo, game);
+        LoadStomachResources(repo, game);
+        Require(errors.Count == 0, string.Join('\n', errors));
+        Check("batch2 XML native inheritance, research and ingredient configuration", ValidateSurgeryResources);
         if (uterusSurgery == null || uterusResearch == null) return;
         SurgeryEligibilityTests();
         SurgeryAdmissionTests();
@@ -134,6 +135,11 @@ internal static partial class Program
         vagina = new HediffDef_SexPart { defName = "FixtureVagina", hediffClass = typeof(Hediff),
             genitalFamily = GenitalFamily.Vagina, genitalTags = new() };
         DefDatabase<HediffDef>.Add(vagina);
+    }
+
+    /// <summary>配置合同与共享初始化分开，专项单独运行不依赖先跑核心用例。</summary>
+    private static void ValidateSurgeryResources()
+    {
         Near(2000, uterusResearch.baseCost); Equal(TechLevel.Medieval, uterusResearch.techLevel);
         Equal("SSC_ResearchTabDef", uterusResearch.tab.defName);
         Equal("SSC_RES_BodyPartTraining,SSC_RES_PNAConcentration", string.Join(',', uterusResearch.prerequisites.Select(p => p.defName)));

@@ -43,12 +43,12 @@ function Assert([bool]$Condition, [string]$Message) {
 .DESCRIPTION
 返回退出码、解析后的报告及输出目录，由调用方断言失败传播、依赖校验或打包结果。
 #>
-function Run-Case([string]$Name, [string]$Mode, [string]$Harmony, [bool]$Package = $false) {
+function Run-Case([string]$Name, [string]$Mode, [string]$Harmony, [bool]$Package = $false, [string]$Scope = 'All') {
     $env:SSC_VALIDATION_FIXTURE_MODE = $Mode
     $reportDir = Join-Path $fixture "reports/$Name"
     $outputDir = Join-Path $fixture "packages/$Name"
     $scriptPath = Join-Path $fixture 'Scripts/Test-All.ps1'
-    $arguments = @('-ReportDirectory', $reportDir)
+    $arguments = @('-ReportDirectory', $reportDir, '-Scope', $Scope)
     if ($Package) {
         $scriptPath = Join-Path $fixture 'Scripts/New-Release.ps1'
         $arguments = @('-ValidationReportDirectory', $reportDir, '-OutputDirectory', $outputDir)
@@ -67,7 +67,7 @@ try {
         [IO.Directory]::CreateDirectory((Join-Path $fixture $dir)) | Out-Null
     }
     foreach ($file in @('Scripts/Test-All.ps1', 'Scripts/Test-DefMirrors.ps1', 'Scripts/New-Release.ps1', 'Scripts/Test-ModLayout.ps1', 'Scripts/ModLayout.ps1', 'Scripts/Sync-LanguagesMirror.ps1', 'Scripts/Test-RestrictionLocalization.ps1', 'Tests/NuGet.Config', 'VERSION', 'CHANGELOG.md', 'LoadFolders.xml',
-        'About/About.xml', '1.7/Assemblies/Sexslavecraft.dll', '1.7/BUILD-INFO.json', 'Sexslavecraft/Properties/AssemblyInfo.cs', 'README.md',
+        'Tests/TestProfiles.json', 'About/About.xml', '1.7/Assemblies/Sexslavecraft.dll', '1.7/BUILD-INFO.json', 'Sexslavecraft/Properties/AssemblyInfo.cs', 'README.md',
         'QUICK_START_EN.md', '读我，玩法介绍.md', '机制详解.md', 'PLAYER_GUIDE_EN.md',
         'Docs/模组介绍.md', 'Docs/Players/README.md',
         ('Docs/Releases/{0}/{0}发布说明.md' -f (Get-Content -LiteralPath (Join-Path $repo 'VERSION') -Raw).Trim()))) {
@@ -163,6 +163,7 @@ if ($command -in @('restore', 'build')) {
     exit 0
 }
 $name = [IO.Path]::GetFileNameWithoutExtension($command)
+"SCOPE: $env:SSC_TEST_SCOPE"
 if ($mode -eq 'failures') {
     if ($name -eq 'PersonalityTraits') { '0/1 passed'; exit 2 }
     if ($name -eq 'PersonalityInsertion') { 'No summary'; exit 0 }
@@ -332,6 +333,23 @@ exit $LASTEXITCODE
         Assert ($run.Code -ne 0 -and $run.Report.FailedChecks -eq 1 -and $run.Report.Checks[0].Status -eq 'Passed' -and $run.Report.NotRunSuites -eq $suiteCount -and $run.Report.Checks[1].Reason -match 'Sync-LanguagesMirror.ps1') 'A missing Languages checker is recorded independently and blocks validation.'
         Copy-Item -LiteralPath (Join-Path $repo 'Scripts/Sync-LanguagesMirror.ps1') -Destination $languageScript
 
+        $profile = Get-Content -LiteralPath (Join-Path $fixture 'Tests/TestProfiles.json') -Raw | ConvertFrom-Json
+        foreach ($selectedScope in @('Core', 'Special')) {
+            $expected = @($profile.Suites | Where-Object { $_.Kind -ne $(if ($selectedScope -eq 'Core') { 'Special' } else { 'Core' }) }).Count
+            $run = Run-Case ('scope-' + $selectedScope) 'pass' $HarmonyAssemblyPath $false $selectedScope
+            Assert ($run.Code -eq 0 -and $run.Report.Scope -eq $selectedScope -and -not $run.Report.FullRegression -and
+                $run.Report.RegisteredSuiteCount -eq $suiteCount -and $run.Report.PassedSuites -eq $expected -and
+                $run.Report.ExcludedSuites.Count -eq ($suiteCount - $expected)) 'Explicit subset selects registered suites and cannot claim full regression.'
+        }
+        $profilePath = Join-Path $fixture 'Tests/TestProfiles.json'
+        $profileBytes = [IO.File]::ReadAllBytes($profilePath)
+        try {
+            [IO.File]::WriteAllText($profilePath, '{"SchemaVersion":99,"Suites":[]}')
+            $run = Run-Case 'invalid-profile' 'pass' $HarmonyAssemblyPath
+            Assert ($run.Code -ne 0 -and $run.Report.NotRunSuites -eq $suiteCount -and -not $run.Report.Success) 'Invalid profile metadata cannot silently omit registered suites.'
+        }
+        finally { [IO.File]::WriteAllBytes($profilePath, $profileBytes) }
+
         $run = Run-Case 'missing-harmony' 'pass' ''
         Assert ($run.Code -ne 0 -and $run.Report.PassedSuites -eq ($suiteCount - $harmonySuiteCount) -and $run.Report.NotRunSuites -eq $harmonySuiteCount) 'Missing Harmony is NotRun and fails the overall check.'
         $run = Run-Case 'wrong-harmony' 'pass' $FrameworkHarmonyAssemblyPath
@@ -359,7 +377,7 @@ exit $LASTEXITCODE
             $entry = @($zip.Entries | Where-Object FullName -like '*/RELEASE-MANIFEST.json')[0]
             $reader = [IO.StreamReader]::new($entry.Open())
             try { $manifest = $reader.ReadToEnd() | ConvertFrom-Json } finally { $reader.Dispose() }
-            Assert ($manifest.validation.suiteCount -eq $suiteCount -and $manifest.validation.passedCases -eq $suiteCount) 'Package manifest includes completed validation counts.'
+            Assert ($manifest.validation.suiteCount -eq $suiteCount -and $manifest.validation.passedCases -eq $suiteCount -and $manifest.validation.scope -eq 'All' -and $manifest.validation.fullRegression) 'Package manifest includes completed All-scope validation counts.'
             Assert ($manifest.validation.checks.Count -eq 2 -and $manifest.validation.checks[0].Name -eq 'DefMirrors' -and $manifest.validation.checks[0].Status -eq 'Passed' -and $manifest.validation.checks[0].CheckedFiles -eq 1) 'Package manifest records the successful Def mirror gate separately.'
             Assert ($manifest.validation.checks[1].Name -eq 'LanguagesMirrors' -and $manifest.validation.checks[1].Status -eq 'Passed' -and $manifest.validation.checks[1].CheckedFiles -eq $languageFileCount) 'Package manifest records the successful Languages mirror gate separately.'
             Assert ($manifest.layoutValidation.status -eq 'Passed' -and $manifest.layoutValidation.name -eq 'ModLayout' -and $manifest.layoutValidation.checkedFiles -gt 0) 'Package manifest records the real versioned layout and frozen baseline gate.'
