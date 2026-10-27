@@ -8,7 +8,7 @@ using Verse;
 
 internal static partial class Program
 {
-    private static bool socialReviewConfirming, socialReviewCapturing;
+    private static bool socialReviewConfirming, socialReviewCapturing, socialReviewConfirmProbe, socialReviewCaptureProbe;
     private static Pawn socialReviewPairActor, socialReviewPairTarget;
     private static Action socialReviewPairMutation;
     /// <summary>启动时安装查询回调；实际破坏仍由用例的采集／确认窗口及唯一配对限定。</summary>
@@ -18,6 +18,10 @@ internal static partial class Program
             postfix: new HarmonyMethod(typeof(Program), nameof(SocialReviewOpinionChanged)));
         owner.Patch(AccessTools.Method(typeof(Pawn_RelationsTracker), nameof(Pawn_RelationsTracker.DirectRelationExists)),
             postfix: new HarmonyMethod(typeof(Program), nameof(SocialReviewRelationChanged)));
+        owner.Patch(AccessTools.Method(typeof(SSCRomanceMoodEvents), nameof(SSCRomanceMoodEvents.Capture)),
+            prefix: new HarmonyMethod(typeof(Program), nameof(SocialReviewCaptureStart)), finalizer: new HarmonyMethod(typeof(Program), nameof(SocialReviewCaptureEnd)));
+        owner.Patch(AccessTools.Method(production.GetType("SexSlaveCraft.SSCRomanceInteractionFacts"), "TryConfirm"),
+            prefix: new HarmonyMethod(typeof(Program), nameof(SocialReviewConfirmStart)), finalizer: new HarmonyMethod(typeof(Program), nameof(SocialReviewConfirmEnd)));
     }
     /// <summary>第三方回调与原生 Scribe 破坏输入：未知结果不冒充拒绝，历史事实不成为下一次执行依据。</summary>
     private static void RomanceSocialReviewTests()
@@ -25,19 +29,10 @@ internal static partial class Program
         foreach (bool capture in new[] { false, true })
             Check("social review relation callback cannot publish mixed pair evidence " + capture, () =>
             {
-                var boundary = new Harmony("ssc.tests.social-review.pair-evidence");
                 try
                 {
-                    if (capture)
-                    {
-                        boundary.Patch(AccessTools.Method(typeof(SSCRomanceMoodEvents), nameof(SSCRomanceMoodEvents.Capture)),
-                            prefix: new HarmonyMethod(typeof(Program), nameof(SocialReviewCaptureStart)), finalizer: new HarmonyMethod(typeof(Program), nameof(SocialReviewCaptureEnd)));
-                    }
-                    else
-                    {
-                        boundary.Patch(AccessTools.Method(production.GetType("SexSlaveCraft.SSCRomanceInteractionFacts"), "TryConfirm"),
-                            prefix: new HarmonyMethod(typeof(Program), nameof(SocialReviewConfirmStart)), finalizer: new HarmonyMethod(typeof(Program), nameof(SocialReviewConfirmEnd)));
-                    }
+                    // 查询和窗口钩子均在启动时安装；每例只打开对应探针，不在预热后重写调用目标。
+                    socialReviewCaptureProbe = capture; socialReviewConfirmProbe = !capture;
                     var (_, _, subject, record) = SocialFactEvent(capture ? 11 : 7, (a, b, _) =>
                     {
                         socialReviewPairActor = a; socialReviewPairTarget = b;
@@ -47,13 +42,14 @@ internal static partial class Program
                             a.relations.AddDirectRelation(PawnRelationDefOf.Spouse, b);
                         };
                     });
-                    Require(socialReviewPairMutation == null); Equal(SSCRomanceCommandStatus.Indeterminate, record.Status);
+                    Require(socialReviewPairMutation == null, "relationship mutation probe did not execute; capture=" + capture);
+                    Equal(SSCRomanceCommandStatus.Indeterminate, record.Status);
                     Require(moodLastLog is not PlayLogEntry_SSCRomance);
                     Require(!subject.needs.mood.thoughts.memories.Memories.OfType<Thought_MemorySSCCompositeRomance>().Any());
                 }
                 finally
                 {
-                    boundary.UnpatchAll(boundary.Id); socialReviewConfirming = socialReviewCapturing = false;
+                    socialReviewConfirming = socialReviewCapturing = socialReviewConfirmProbe = socialReviewCaptureProbe = false;
                     socialReviewPairActor = socialReviewPairTarget = null; socialReviewPairMutation = null;
                 }
             });
@@ -168,10 +164,10 @@ internal static partial class Program
     }
 
     /// <summary>限定破坏输入只发生在共用确认器的真实关系查询窗口，不改写原 worker 的接受 bool。</summary>
-    private static void SocialReviewConfirmStart() => socialReviewConfirming = true;
+    private static void SocialReviewConfirmStart() => socialReviewConfirming = socialReviewConfirmProbe;
     private static void SocialReviewConfirmEnd() => socialReviewConfirming = false;
     /// <summary>限定破坏输入只发生在原入口快照采集，不干预菜单或策略查询。</summary>
-    private static void SocialReviewCaptureStart() => socialReviewCapturing = true;
+    private static void SocialReviewCaptureStart() => socialReviewCapturing = socialReviewCaptureProbe;
     private static void SocialReviewCaptureEnd() => socialReviewCapturing = false;
     /// <summary>第二方向的最后一次旧查询返回后改变真实关系，复现查询结果与实际列表错开。</summary>
     private static void SocialReviewRelationChanged(Pawn_RelationsTracker __instance, PawnRelationDef __0, Pawn __1)
