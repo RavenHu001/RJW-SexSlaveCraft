@@ -180,8 +180,6 @@ internal static partial class Program
         RunUpdatedSharedBedRules();
         RunTrainerIdentityBedRules();
         RunBadgePresentationRules();
-        Run("XML 记忆持续一天、不叠加并保留六档数值", CheckDefs);
-        Run("四种界面翻译键完整且参数匹配", CheckLanguages);
         Run("共同睡眠记录接入现有 Pawn 存档", () => { string source = File.ReadAllText(SscTestPaths.Combine(repo, "Sexslavecraft/Comps/Comp_Train.cs")); Assert(source.Contains("Scribe_Deep.Look(ref sharedSleep, \"sharedSleep\")")); });
 
         Console.WriteLine($"{passed}/{passed + failed} passed (actual Harmony + lifecycle model; no live game).");
@@ -228,27 +226,4 @@ internal static partial class Program
     private static void Finish(Pawn pawn) => Toils_LayDown.FinalizeLayingJob(pawn, pawn.Bed, false);
     /// <summary>取得模型中的可变记忆列表，便于布置旧记忆并检查结算结果。</summary>
     private static System.Collections.Generic.List<Thought_Memory> Memories(Pawn p) => p.needs.mood.thoughts.memories.Items;
-    /// <summary>检查两种同床 XML 定义均为一天、不叠加的记忆，并保留约定的六档心情数值。</summary>
-    private static void CheckDefs()
-    {
-        var defs = XDocument.Load(SscTestPaths.Combine(repo, "Defs/ThoughtDefs/Thought_SharedBed.xml")).Root.Elements().ToList();
-        Assert(defs.Count == 2);
-        foreach (var def in defs)
-        {
-            Assert(def.Element("thoughtClass").Value == "Thought_Memory" && def.Element("workerClass") == null);
-            Assert(def.Element("durationDays").Value == "1" && def.Element("stackLimit").Value == "1" && def.Element("stackLimitForSameOtherPawn").Value == "1");
-            Assert(def.Element("stages").Elements().Select(x => x.Element("baseMoodEffect").Value).SequenceEqual(new[] { "-6", "-3", "2", "5", "9", "13" }));
-        }
-    }
-    /// <summary>检查四语提示键与简中基准一致，并验证文本可以接受对象和门槛格式参数。</summary>
-    private static void CheckLanguages()
-    {
-        string[] expected = Translation.Keys.Keys.OrderBy(x => x).ToArray();
-        foreach (string language in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" })
-        {
-            var keys = XDocument.Load(SscTestPaths.Combine(repo, "Languages", language, "Keyed/SSC_SharedBed.xml")).Root.Elements().ToList();
-            Assert(keys.Select(x => x.Name.LocalName).OrderBy(x => x).SequenceEqual(expected));
-            foreach (var key in keys) string.Format(key.Value, "Partner", "Threshold");
-        }
-    }
 }

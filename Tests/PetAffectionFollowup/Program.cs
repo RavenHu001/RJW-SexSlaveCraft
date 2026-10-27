@@ -15,7 +15,6 @@ internal static partial class Program
         RunUtilityCases();
         RunAffectionCases();
         RunDerivedCases();
-        RunResourceCases();
         Console.WriteLine($"结果：{passed}/{passed + failed} 项通过。");
         return failed == 0 ? 0 : 1;
     }

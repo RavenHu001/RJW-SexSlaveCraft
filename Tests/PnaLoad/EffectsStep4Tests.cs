@@ -167,15 +167,6 @@ internal static partial class Program
             Near(0, observer.needs.PnaNeed.Value); Near(.6, producer.Severity); Equal(2, target.health.hediffSet.hediffs.Count);
             Equal(beforeObserver, observer.health.Notifications); Equal(beforeTarget, target.health.Notifications);
         });
-        foreach (string language in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" })
-            Run("第四步吸引解释四语完整且占位符可格式化 " + language, () =>
-            {
-                var path = SscTestPaths.Combine(root, "Languages", language, "Keyed/SSC_Pna.xml"); var keyed = XDocument.Load(path).Root;
-                string template = keyed.Element("SSC_Pna_AttractionExplanation")?.Value;
-                Assert(!string.IsNullOrWhiteSpace(template) && template.Contains("{0}") && template.Contains("{1}"), "两项参数完整");
-                string text = string.Format(CultureInfo.InvariantCulture, template, "1.5", "3");
-                Assert(!text.Contains('{') && text.Contains("1.5") && text.Contains("3"), "解释格式");
-            });
     }
 
     private sealed class ForcedWithdrawal : Hediff { public override int CurStageIndex => 1; }

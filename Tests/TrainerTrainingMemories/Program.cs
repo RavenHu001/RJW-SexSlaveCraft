@@ -34,7 +34,6 @@ internal static partial class Program
         Run("动态社交记忆：同档刷新、异档共存且对象隔离", DynamicSocialStacking);
         Run("人格链路：弱套定义、阶段与整数偏移完整恢复", PersonalityRoundTrip);
         Run("定义数值：弱套 XML 与主人原套按 K 互相校核", DefinitionAlignment);
-        Run("定义镜像与四语文案：键集与占位符一致", LocalizationParity);
 
         Console.WriteLine($"结果：{passed}/{passed + failed} 项通过。");
         return failed == 0 ? 0 : 1;

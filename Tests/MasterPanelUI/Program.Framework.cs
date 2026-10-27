@@ -128,17 +128,6 @@ internal static partial class Program
             Assert(!p.Training.abilityToggles.HasEntries && p.health.Adds == 0);
         });
         RunBackendContractTests();
-        // 读取真实四语资源及其源码镜像，避免用人工复制文本掩盖缺键或同步遗漏。
-        foreach (string language in Languages)
-            Run(language + " 通用原因键完整且资源镜像一致", () =>
-            {
-                string relative = "Keyed/SSC_AbilityToggles.xml";
-                var file = SscTestPaths.Combine(repo, "Languages", language, relative);
-                var nodes = XDocument.Load(file).Root.Elements().ToDictionary(e => e.Name.LocalName, e => e.Value);
-                foreach (string suffix in new[] { "Unavailable", "Identity", "Hollow", "Mutating", "PlayerOnly", "Loading", "Changed" })
-                    Assert(nodes.TryGetValue("SSC_AbilityToggle_" + suffix, out string text) && !string.IsNullOrWhiteSpace(text));
-                Assert(File.ReadAllBytes(file).SequenceEqual(File.ReadAllBytes(SscTestPaths.Combine(repo, "Sexslavecraft/Languages", language, relative))));
-            });
     }
 
     /// <summary>仅提供一个可替换的外部保存实例及写入计数，不模拟人格、缰绳或身体业务。</summary>

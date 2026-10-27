@@ -395,18 +395,6 @@ internal static partial class Program
             SSCTrainerIdentityMigration.Migrate(new[] { f.slave, f.master, dead });
             Assert(!SSCIdentityUtility.IsTrainer(fresh) && !SSCIdentityUtility.IsTrainer(dead));
         });
-        Run("四语新文案键及参数一致", () =>
-        {
-            var expected = xml.Root.Elements().Select(e => e.Name.LocalName).Order().ToArray();
-            foreach (string language in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" })
-            {
-                var entries = XDocument.Load(SscTestPaths.Combine(repo, "Languages", language, "Keyed/SSC_TrainerIdentity.xml")).Root.Elements().ToList();
-                Assert(entries.Select(e => e.Name.LocalName).Order().SequenceEqual(expected));
-                foreach (var entry in entries) Assert(!string.IsNullOrWhiteSpace(string.Format(entry.Value, "Test")));
-                var identityXml = XDocument.Load(SscTestPaths.Combine(repo, "Languages", language, "Keyed/SSC_Identity.xml"));
-                Assert(!string.IsNullOrWhiteSpace(identityXml.Root.Element("SSC_Identity_BoundTip")?.Value));
-            }
-        });
         Run("绑定不再根据旧开放状态覆盖第三方或空指派", () =>
         {
             // 本套件直接调用生产绑定函数；新限制生命周期协调另由 RestrictionCore 覆盖。

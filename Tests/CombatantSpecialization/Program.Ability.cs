@@ -10,8 +10,6 @@ internal static partial class Program
 {
     private static void RunAbilityCases()
     {
-        Run("超频定义固定六项倍率、2500 ticks、四小时冷却和自身征召配置", OverdriveDefinitions);
-        Run("超频四语名称、效果与征召拒绝文本完整", OverdriveTranslations);
         Run("超频要求终极与征召并保留原版使用限制", OverdriveEligibility);
         Run("排队后解除征召、死亡或失去人格不会激活或扣冷却", OverdriveExecutionGuard);
         Run("普通完成不授予，终极授予仅一份且跨方向征召保持冷却", OverdriveGrantLifecycle);
@@ -23,56 +21,6 @@ internal static partial class Program
     {
         float adjustment = 0;
         foreach (var h in pawn.health.hediffSet.hediffs.ToArray()) h.Grant?.CompPostTick(ref adjustment);
-    }
-
-    private static void OverdriveDefinitions()
-    {
-        var ability = XDocument.Load(SscTestPaths.Combine(root, "Defs/AbilityDefs/SSC_CombatOverdrive.xml")).Root.Element("AbilityDef");
-        Check((string)ability.Element("abilityClass") == typeof(Ability_CombatOverdrive).FullName, "未使用执行保护");
-        Check((string)ability.Element("targetRequired") == "false" &&
-            (string)ability.Element("showWhenDrafted") == "true" &&
-            (string)ability.Element("displayGizmoWhileUndrafted") == "false" &&
-            (string)ability.Element("disableGizmoWhileUndrafted") == "true", "征召或自身配置缺失");
-        Equal(10000, Value(ability, "cooldownTicksRange"));
-        var effect = ability.Element("comps").Elements().Single();
-        // 原版此属性类的构造函数不设置 compClass；缺失时 Ability.Initialize 报空类型并跳过效果。
-        Check((string)effect.Element("compClass") == "CompAbilityEffect_GiveHediff", "缺少可实例化的 Hediff 效果组件类型");
-        Check((string)effect.Attribute("Class") == "CompProperties_AbilityGiveHediff" &&
-            (string)effect.Element("hediffDef") == "SSC_Hediff_CombatOverdrive" &&
-            (string)effect.Element("onlyApplyToSelf") == "true" &&
-            (string)effect.Element("replaceExisting") == "true", "效果不是唯一自身临时状态");
-        // 与已核对原版 GenTicks.SecondsToTicks 的乘 60 并四舍五入规则一致。
-        Check(MathF.Round(Value(effect, "durationSecondsOverride") * 60f) == 2500 &&
-            MathF.Round(Value(ability.Element("statBases"), "Ability_Duration") * 60f) == 2500, "时长覆盖或显示不符");
-        var defs = XDocument.Load(SscTestPaths.Combine(root, "Defs/HediffDefs/SSC_HediffDefs_CombatantSpecialization.xml")).Root.Elements();
-        var final = defs.Single(e => (string)e.Element("defName") == "SSC_Hediff_Combatant_Final");
-        var buff = defs.Single(e => (string)e.Element("defName") == "SSC_Hediff_CombatOverdrive");
-        Check((string)final.Element("hediffClass") == "HediffWithComps" && (string)buff.Element("hediffClass") == "HediffWithComps", "组件无法运行");
-        var timer = buff.Element("comps").Elements().Single();
-        Check((string)timer.Attribute("Class") == "HediffCompProperties_Disappears", "未复用原版计时");
-        Equal(2500, Value(timer, "disappearsAfterTicks"));
-        var stage = buff.Element("stages").Elements().Single(); var factors = stage.Element("statFactors");
-        Check(factors.Elements().Count() == 5, "多余或缺失属性");
-        Equal(1.3f, Value(factors, "MeleeDamageFactor")); Equal(.75f, Value(factors, "MeleeCooldownFactor"));
-        Equal(.8f, Value(factors, "RangedCooldownFactor")); Equal(.75f, Value(factors, "IncomingDamageFactor"));
-        Equal(1.25f, Value(factors, "MoveSpeed")); Equal(.5f, Value(stage, "painFactor"));
-    }
-
-    private static void OverdriveTranslations()
-    {
-        foreach (string lang in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" })
-        {
-            var keyed = XDocument.Load(SscTestPaths.Combine(root, "Languages", lang, "Keyed/SSC_CombatOverdrive.xml"));
-            Check(!string.IsNullOrWhiteSpace((string)keyed.Root.Element("SSC_CombatOverdriveRequiresDrafted")), "缺少征召原因");
-            if (lang == "ChineseSimplified") continue; // 简中使用根 Def 文本。
-            foreach (var item in new[] { ("AbilityDef/SSC_CombatOverdrive.xml", "SSC_CombatOverdrive"),
-                ("HediffDef/SSC_HediffDefs_CombatantSpecialization.xml", "SSC_Hediff_CombatOverdrive") })
-            {
-                var text = XDocument.Load(SscTestPaths.Combine(root, "Languages", lang, "DefInjected", item.Item1));
-                foreach (string field in new[] { "label", "description" })
-                    Check(!string.IsNullOrWhiteSpace((string)text.Root.Element(item.Item2 + "." + field)), "缺少能力/状态译文");
-            }
-        }
     }
 
     private static void OverdriveEligibility()

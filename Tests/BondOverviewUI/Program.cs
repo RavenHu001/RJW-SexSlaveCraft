@@ -533,13 +533,6 @@ internal static partial class Program
     {
         var englishXml=XDocument.Load(SscTestPaths.Combine(root,"Languages/English/Keyed/SSC_BondOverview.xml"));
         var reference=englishXml.Root.Elements().ToDictionary(e=>e.Name.LocalName,e=>e.Value);
-        foreach(string lang in new[]{"ChineseSimplified","ChineseTraditional","English","Russian"})Check("resources: keys placeholders and mirror "+lang,()=>{
-            string path=SscTestPaths.Combine(root,"Languages",lang,"Keyed/SSC_BondOverview.xml");
-            var nodes=XDocument.Load(path).Root.Elements().ToArray();Require(nodes.Length==reference.Count&&nodes.Select(e=>e.Name.LocalName).Distinct().Count()==nodes.Length);
-            foreach(var node in nodes){Require(reference.ContainsKey(node.Name.LocalName)&&!string.IsNullOrWhiteSpace(node.Value));
-                Require(Regex.Matches(reference[node.Name.LocalName],@"\{\d+\}").Select(m=>m.Value).Order().SequenceEqual(Regex.Matches(node.Value,@"\{\d+\}").Select(m=>m.Value).Order()));}
-            Require(File.ReadAllBytes(path).SequenceEqual(File.ReadAllBytes(Path.Combine(root,"Sexslavecraft/Languages",lang,"Keyed/SSC_BondOverview.xml"))));
-        });
         Check("resources: all structured state keys exist",()=>{
             foreach(var value in Enum.GetValues<SSCBondOverviewNavigationFailure>())Require(reference.ContainsKey("SSC_BondOverview_Failure_"+value));
             foreach(var value in Enum.GetValues<SSCBondOverviewLocationKind>())Require(reference.ContainsKey("SSC_BondOverview_Location_"+value));

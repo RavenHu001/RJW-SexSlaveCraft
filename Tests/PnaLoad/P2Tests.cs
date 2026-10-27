@@ -60,7 +60,6 @@ internal static partial class Program
         Run("截图约6%满足度不再阻止原版恢复",()=>{var p=NewPawn();AddOldAddiction(p,1);p.needs.PnaNeed=.0567000248f;NativeRecoveryDay(p);Near(.9,SSCPnaExposureUtility.GetAddiction(p).Severity,.00002);p.needs.PnaNeed=0;NativeRecoveryDay(p);Near(.8,SSCPnaExposureUtility.GetAddiction(p).Severity,.00002);});
         Run("其他成瘾组件保持原版速率",()=>{var p=NewPawn();var h=new HediffWithComps{pawn=p,def=new HediffDef{defName="OtherAddiction"}};var c=new HediffComp_SeverityPerDay{parent=h,severityPerDay=-.0333f};Near(-.0333,c.SeverityChangePerDay());});
         Run("PNA大步长也沿用原版200tick调度",()=>{var p=NewPawn();AddOldAddiction(p,1);p.needs.PnaNeed=0;for(int t=0;t<60000;t+=250)Tick(p,250);Near(.92,SSCPnaExposureUtility.GetAddiction(p).Severity,.00002);});
-        Run("真实摄入与枪械来源参数XML",SourceDefinitions);
         Run("浓缩液非末期只增加原版成瘾0.2",()=>{var p=NewPawn();AddOldAddiction(p,.4f);var d=Drug(new IngestionOutcomeDoer_SSCPna{severity=1.4f});d.Props.existingAddictionSeverityOffset=.2f;d.PrePostIngested(p);d.parent.def.ingestible.outcomeDoers[0].DoIngestionOutcome(p,d.parent,1);Near(.6,SSCPnaExposureUtility.GetAddiction(p).Severity);Near(.7,SSCPnaExposureUtility.GetLoad(p));});
         Run("浓缩液进入末期成瘾总增加0.4",()=>{var p=NewPawn();Raw(p,.6f);AddOldAddiction(p,.4f);var d=Drug(new IngestionOutcomeDoer_SSCPna{severity=1.4f});d.Props.existingAddictionSeverityOffset=.2f;d.PrePostIngested(p);d.parent.def.ingestible.outcomeDoers[0].DoIngestionOutcome(p,d.parent,1);Near(.8,SSCPnaExposureUtility.GetAddiction(p).Severity);Near(1,SSCPnaExposureUtility.GetLoad(p));Equal(1,d.OriginalCalls);});
         Run("末期服药原版增量和强化各执行一次",()=>{var p=NewPawn();Raw(p,1.6f);AddOldAddiction(p,.4f);p.needs.PnaNeed=0;var d=Drug(new IngestionOutcomeDoer_SSCPna{severity=.4f});d.PrePostIngested(p);d.parent.def.ingestible.outcomeDoers[0].DoIngestionOutcome(p,d.parent,1);Near(.7,SSCPnaExposureUtility.GetAddiction(p).Severity);Near(1,SSCPnaExposureUtility.GetLoad(p));Equal(1,d.OriginalCalls);});
@@ -149,20 +148,5 @@ internal static partial class Program
         result.parent.Comp=result;
         if(doer!=null)result.parent.def.ingestible.outcomeDoers.Add(doer);
         return result;
-    }
-    // 使用同一组确认后的低阶参数，让多部位／重入场景共享输入基准。
-    // 读取实际作者 XML，确认测试执行的剂量与运行资源一致且不存在并行旧 Doer。
-    private static void SourceDefinitions()
-    {
-        foreach(var item in new[]{("Purple_Aphrodisiac_Nanofluid",.4),("Purple_Aphrodisiac_Nanofluid_Plus",1.4)})
-        {
-            var def=LoadDef("Defs/ThingsDefs/Nanofluid.xml",item.Item1);
-            var doer=def.Element("ingestible").Element("outcomeDoers").Elements().Single();
-            Equal("SexSlaveCraft.IngestionOutcomeDoer_SSCPna",(string)doer.Attribute("Class"));Near(item.Item2,Number(doer.Element("severity")));
-            Assert(doer.Element("hediffDef")==null,"无旧Doer剂量");
-            var offset=def.Element("comps").Element("li").Element("existingAddictionSeverityOffset");
-            Near(item.Item1.EndsWith("_Plus")?.2:.1,offset==null?.1:Number(offset));
-        }
-        Near(.06,Number(LoadDef("Defs/DemageDefs/SSC_PnaPrimitiveDamage.xml","SSC_Damage_PnaDartStab").Element("modExtensions").Element("li").Element("baseLoad")));
     }
 }

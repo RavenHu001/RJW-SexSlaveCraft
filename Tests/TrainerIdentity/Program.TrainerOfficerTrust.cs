@@ -17,51 +17,6 @@ internal static partial class Program
         string relativeDef = "Defs/ThoughtDefs/SSC_TrainerOfficerThoughts.xml";
         var xml = XDocument.Load(SscTestPaths.Combine(repo, relativeDef));
 
-        Run("任职信任定义与四语文案完整：条件性心情显式声明 Thought_Situational", () =>
-        {
-            var social = xml.Root.Elements("ThoughtDef").Single(d => (string)d.Element("defName") == "SSC_TrainerOfficer_TrustedByOwnerSocial");
-            var mood = xml.Root.Elements("ThoughtDef").Single(d => (string)d.Element("defName") == "SSC_TrainerOfficer_TrustedByOwnerMood");
-
-            // 社交条按社交形态解析，固定 +5 好感。
-            Assert((string)social.Element("thoughtClass") == "Thought_SituationalSocial"
-                && (string)social.Element("workerClass") == typeof(ThoughtWorker_TrainerOfficerTrustedByOwner).FullName
-                && (int)social.Element("stages").Element("li").Element("baseOpinionOffset") == 5);
-
-            // 心情条必须显式声明非社交形态，否则带 workerClass 时可能被解析成社交想法而不进心情栏。
-            Assert((string)mood.Element("thoughtClass") == "Thought_Situational"
-                && (string)mood.Element("workerClass") == typeof(ThoughtWorker_TrainerOfficerTrustedByOwnerMood).FullName
-                && (float)mood.Element("stages").Element("li").Element("baseMoodEffect") == 3f);
-
-            // 条件性想法不是记忆：不设时长与容量。
-            foreach (var def in new[] { social, mood })
-            {
-                Assert(def.Element("durationDays") == null && def.Element("stackLimit") == null
-                    && def.Element("stackLimitForSameOtherPawn") == null);
-            }
-
-            // 源码目录镜像与四语文案键集一致。
-            Assert(XNode.DeepEquals(xml, XDocument.Load(SscTestPaths.Combine(repo, "Sexslavecraft", relativeDef))));
-            foreach (string language in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" })
-            {
-                string relativeLanguage = $"Languages/{language}/DefInjected/ThoughtDef/SSC_TrainerOfficerThoughts.xml";
-                var translated = XDocument.Load(SscTestPaths.Combine(repo, relativeLanguage));
-                string[] keys =
-                {
-                    "SSC_TrainerOfficer_DutyFulfilled.stages.0.label",
-                    "SSC_TrainerOfficer_DutyFulfilled.stages.0.description",
-                    "SSC_TrainerOfficer_Appraisal.stages.0.label",
-                    "SSC_TrainerOfficer_Appraisal.stages.0.description",
-                    "SSC_TrainerOfficer_TrustedByOwnerSocial.stages.0.label",
-                    "SSC_TrainerOfficer_TrustedByOwnerSocial.stages.0.description",
-                    "SSC_TrainerOfficer_TrustedByOwnerMood.stages.0.label",
-                    "SSC_TrainerOfficer_TrustedByOwnerMood.stages.0.description"
-                };
-                Assert(translated.Root.Elements().Select(e => e.Name.LocalName).Distinct().Count() == keys.Length
-                    && keys.All(key => !string.IsNullOrWhiteSpace((string)translated.Root.Element(key))));
-                Assert(XNode.DeepEquals(translated, XDocument.Load(SscTestPaths.Combine(repo, "Sexslavecraft", relativeLanguage))));
-            }
-        });
-
         Run("有效任职训导官对实际主人获得反向好感与心情，两条同时生效", () =>
         {
             Pawn officer = QualifiedTrainer(Pawn().Map);

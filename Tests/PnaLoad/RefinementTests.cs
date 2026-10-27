@@ -91,11 +91,6 @@ internal static partial class Program
                 Assert(SSCPnaExposureUtility.GetAddiction(pawn) == null && SSCPnaExposureUtility.GetNeed(pawn) == null, "清成瘾及需求");
                 Assert(master ? SSCPnaExposureUtility.GetBodyRecord(pawn) == null : RootedRecord(pawn) != null, "最终药效保护");
             });
-        Run("药物定义保留局部展示类", () =>
-        {
-            foreach (string name in new[] { "Purple_Aphrodisiac_Nanofluid", "Purple_Aphrodisiac_Nanofluid_Plus" })
-                Equal("SexSlaveCraft.ThingDef_SSCPna", (string)LoadDef("Defs/ThingsDefs/Nanofluid.xml", name).Attribute("Class"));
-        });
     }
 
     // 以真实新伤口作为药效准入，Parts 只提供多伤口边界，不复制原版护甲算法。

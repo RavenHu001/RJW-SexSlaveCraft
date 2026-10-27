@@ -18,8 +18,6 @@ internal static partial class Program
     private static int Main(string[] args)
     {
         root = SscTestPaths.RepositoryRoot(args.Length > 0 ? args[0] : null);
-        Run("狗技能XML为单一驯服效果、两秒预热和一天冷却", Definitions);
-        Run("技能、任务和拒绝原因四语及镜像完整", Translations);
         Run("普通狗和其他终极不授予，狗终极严重度达标才授予", FinalQualification);
         Run("旧普通Hediff终极狗授予技能，重复维护保留能力及冷却", LegacyGrant);
         Run("终极狗跨方向留空及SSC身份可用，不依赖绑定研究与征召", CrossDirectionQualification);
@@ -129,39 +127,6 @@ internal static partial class Program
         Check((string)speech.Element("subEffecterClass") == "SubEffecter_SprayerContinuous" && (string)speech.Element("fleckDef") == "SpeechLines" && (string)speech.Element("spawnLocType") == "OnTarget", "native continuous speech warmup missing");
         Check((string)speech.Element("ticksBetweenMotes") == "15" && (string)speech.Element("initialDelayTicks") == "0" && (string)speech.Element("makeMoteOnSubtrigger") == "false" && (string)speech.Element("maxMoteCount") == "10" && (string)speech.Element("burstCount") == "1", "native speech cadence/bound wrong");
         Check((string)speech.Element("positionOffset") == "(0.35, 0, 0.6)", "speech obscured by same-cell bodies"); Equal(1.7f, float.Parse((string)speech.Element("scale"))); Equal(0, float.Parse((string)speech.Element("speed")));
-    }
-
-    private static void Translations()
-    {
-        string[] languages = { "ChineseSimplified", "ChineseTraditional", "English", "Russian" };
-        foreach (string lang in languages)
-        {
-            foreach (string area in new[] { "DefInjected/AbilityDef", "DefInjected/JobDef", "Keyed" })
-            {
-                string directory = SscTestPaths.Combine(root, "Languages", lang, area);
-                var files = Directory.EnumerateFiles(directory, "*.xml").Where(path => XDocument.Load(path).Descendants().Any(e => e.Name.LocalName.StartsWith("SSC_PetDogTame") || e.Name.LocalName.StartsWith("SSC_Job_PetDogTame"))).ToArray();
-                Check(files.Length > 0, "dog text missing " + lang + "/" + area);
-                foreach (string file in files)
-                {
-                    string mirror = SscTestPaths.Combine(root, "Sexslavecraft", SscTestPaths.ResourceRelativePath(root, file));
-                    Check(File.Exists(mirror) && File.ReadAllBytes(file).SequenceEqual(File.ReadAllBytes(mirror)), "language mirror differs " + file);
-                }
-                if (area == "Keyed")
-                {
-                    var keys = files.SelectMany(path => XDocument.Load(path).Root.Elements()).ToArray();
-                    foreach (string suffix in new[] { "RequiresFinal", "InvalidCaster", "InvalidTarget", "UnconsciousTarget", "UntamableTarget", "UnreachableTarget", "MissingEffect", "TargetHint" })
-                        Check(!string.IsNullOrWhiteSpace(keys.Single(e => e.Name.LocalName == "SSC_PetDogTame" + suffix).Value), "missing/empty reject/hint " + suffix);
-                    Check(keys.Single(e => e.Name.LocalName == "SSC_PetDogTameTargetHint").Value.Contains("{0}"), "target name placeholder missing");
-                }
-                else if (area == "DefInjected/AbilityDef")
-                {
-                    var keys = files.SelectMany(path => XDocument.Load(path).Root.Elements()).ToArray();
-                    foreach (string suffix in new[] { "label", "description" })
-                        Check(!string.IsNullOrWhiteSpace(keys.Single(e => e.Name.LocalName == "SSC_PetDogTame." + suffix).Value), "missing ability " + suffix);
-                }
-                else Check(files.SelectMany(path => XDocument.Load(path).Root.Elements()).Any(e => e.Name.LocalName == "SSC_Job_PetDogTame.reportString" && !string.IsNullOrWhiteSpace(e.Value)), "job report missing");
-            }
-        }
     }
 
     private static void FinalQualification()

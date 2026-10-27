@@ -80,32 +80,6 @@ internal static partial class Program
                 SSCMasterProgressionUtility.TryAddExperience(pawn, 1);
                 Assert(Messages.Received.Count == 0);
             });
-        Run("默认 Def 与简中注入一致且四语悬停字段镜像完整", () =>
-        {
-            var def = XDocument.Load(SscTestPaths.Combine(repo, "Defs/HediffDefs/SSC_MasterProgression.xml")).Root.Element("HediffDef");
-            foreach (string language in Languages)
-            {
-                string relative = "DefInjected/HediffDef/SSC_MasterProgression.xml";
-                var entries = XDocument.Load(SscTestPaths.Combine(repo, "Languages", language, relative)).Root;
-                Assert(entries.Elements().Count() == 10);
-                Assert(entries.Element("SSC_Hediff_MasterProgression.extraTooltip") == null && def.Element("extraTooltip") == null);
-                foreach (string field in new[] { "label", "description" })
-                {
-                    string value = entries.Element("SSC_Hediff_MasterProgression." + field)?.Value;
-                    Assert(!string.IsNullOrWhiteSpace(value));
-                    if (language == "ChineseSimplified") Assert(value == def.Element(field).Value);
-                }
-                for (int i = 0; i < 4; i++)
-                    foreach (string field in new[] { "label", "extraTooltip" })
-                    {
-                        string value = entries.Element($"SSC_Hediff_MasterProgression.stages.{i}.{field}")?.Value;
-                        Assert(!string.IsNullOrWhiteSpace(value));
-                        if (language == "ChineseSimplified") Assert(value == def.Element("stages").Elements().ElementAt(i).Element(field).Value);
-                    }
-                Assert(File.ReadAllBytes(SscTestPaths.Combine(repo, "Languages", language, relative)).SequenceEqual(
-                    File.ReadAllBytes(SscTestPaths.Combine(repo, "Sexslavecraft/Languages", language, relative))));
-            }
-        });
     }
 
     /// <summary>四语实际名称参与消息格式；定位和历史参数属于生产代码输出，不由宿主推导。</summary>

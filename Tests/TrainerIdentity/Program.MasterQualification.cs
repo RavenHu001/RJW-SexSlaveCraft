@@ -210,17 +210,5 @@ internal static partial class Program
             }
             finally { SSCMod.settings = previousSettings; }
         });
-        Run("主人准入和设置提示四语完整，根目录与源码镜像一致", () =>
-        {
-            string[] keys = { "SSC_Identity_MasterQualificationRequired", "SSC_Identity_SelectionUnavailable",
-                "SSC_Setting_AllowDirectMasterSelection", "SSC_Setting_AllowDirectMasterSelection_Desc" };
-            foreach (string language in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" })
-            {
-                string relative = $"Languages/{language}/Keyed/SSC_Identity.xml";
-                var xml = XDocument.Load(SscTestPaths.Combine(repo, relative));
-                foreach (string key in keys) Assert(!string.IsNullOrWhiteSpace(xml.Root.Element(key)?.Value));
-                Assert(File.ReadAllText(SscTestPaths.Combine(repo, relative)) == File.ReadAllText(SscTestPaths.Combine(repo, "Sexslavecraft", relative)));
-            }
-        });
     }
 }

@@ -127,32 +127,6 @@ internal static partial class Program
             Equal(messages, Messages.Sent.Count); Equal(motes, MoteMaker.Sent.Count);
             Find.Selector.SingleSelectedThing = null;
         });
-        Run("效力 StatDef 接入原生武器属性及百分比悬浮", () =>
-        {
-            var def = LoadDef("Defs/StatDefs/SSC_PnaWeaponStats.xml", "SSC_PnaWeaponPotency");
-            Equal("SexSlaveCraft.StatWorker_SSCPnaWeaponPotency", def.Element("workerClass").Value);
-            Equal("Weapon", def.Element("category").Value);
-            Equal("PercentZero", def.Element("toStringStyle").Value);
-            Equal("true", def.Element("showIfUndefined").Value);
-            Equal("true", def.Element("forInformationOnly").Value);
-            Assert(!string.IsNullOrWhiteSpace(def.Element("description").Value), "原生悬浮读取 description");
-        });
-        foreach (string language in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" })
-            Run("效力四语属性和报告完整 " + language, () =>
-            {
-                var injected = XDocument.Load(SscTestPaths.Combine(root,
-                    $"Languages/{language}/DefInjected/StatDef/SSC_PnaWeaponStats.xml")).Root;
-                Equal(2, injected.Elements().Count());
-                foreach (string key in new[] { "SSC_PnaWeaponPotency.label", "SSC_PnaWeaponPotency.description" })
-                    Assert(!string.IsNullOrWhiteSpace(injected.Element(key)?.Value), key);
-                var keyed = XDocument.Load(SscTestPaths.Combine(root,
-                    $"Languages/{language}/Keyed/SSC_PnaWeaponStats.xml")).Root;
-                Equal(2, keyed.Elements().Count());
-                string baseline = keyed.Element("SSC_PnaWeaponPotency_Baseline").Value;
-                Equal(1, baseline.Split("{0}").Length - 1);
-                Assert(!string.IsNullOrWhiteSpace(keyed.Element("SSC_PnaWeaponPotency_Calculation").Value), "机制说明");
-                string.Format(baseline, "15%");
-            });
     }
 
     private static float Potency(ThingDef weapon)

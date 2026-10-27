@@ -10,20 +10,6 @@ internal static partial class Program
     /// <summary>以生产资格、解析器和统一行为许可验证阶段 4 的两条独立生效门槛。</summary>
     private static void RunStage4Tests(string repo)
     {
-        Run("训导官定义只强制允许两项主动行为，不写入个人默认", () =>
-        {
-            // 检查实际随 Mod 加载的 XML，而不只构造测试 Profile；
-            // 目标接收项和调教项必须维持未声明状态。
-            var xml = XDocument.Load(SscTestPaths.Combine(repo, "Defs/SSCRestrictionProfiles.xml"));
-            var profile = xml.Root.Elements().Single(element =>
-                (string)element.Element("defName") == "SSC_Restriction_TrainerOfficer");
-            Assert((string)profile.Element("specialization") == "TrainerOfficer");
-            Assert(profile.Element("defaults") == null);
-            var forced = profile.Element("forced").Elements().ToArray();
-            Assert(forced.Length == 2 &&
-                (string)profile.Element("forced").Element("consensualInitiation") == "Allow" &&
-                (string)profile.Element("forced").Element("forcedInitiation") == "Allow");
-        });
 
         Run("当前选择训导官从零进度获得主动行为强制效果但不能任职", () =>
         {

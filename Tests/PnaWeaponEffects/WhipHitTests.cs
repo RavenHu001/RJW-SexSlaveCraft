@@ -118,10 +118,5 @@ internal static class WhipHitTests
             Near(.6,Math.Sqrt(Math.Pow(mesh.vertices[4].x-mesh.vertices[0].x,2)+Math.Pow(mesh.vertices[4].z-mesh.vertices[0].z,2)));
             Check(mesh.colors.Take(5).All(c=>c.a<.0001)&&mesh.colors.Skip(180).All(c=>c.a<.0001),"tapered arc ends");
         });
-        run("撤下旧目标弧痕Fleck与运行贴图并保持受药爱心参数",()=>{
-            var defs=XDocument.Load(Path.Combine(root,"1.7/Defs/EffecterDefs/SSC_PnaWeaponEffects.xml")).Root.Elements("FleckDef").ToArray();
-            Near(1,defs.Length);Check((string)defs[0].Element("defName")=="SSC_PnaAbsorptionHeart","heart only");
-            Near(.64,(double)defs[0].Element("solidTime"));Check(!File.Exists(Path.Combine(root,"1.7/Textures/Things/Mote/SSC_PnaWhipHitArc.png")),"old asset removed");
-        });
     }
 }

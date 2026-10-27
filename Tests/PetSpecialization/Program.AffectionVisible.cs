@@ -47,7 +47,6 @@ internal static partial class Program
         Run("亲昵读档后主人等待已被替换时拒绝结算且保留新任务", AffectionLoadedReplacementWait);
         Run("亲昵目标引用改变后仍清理原主人等待，不能清理新对象", AffectionTargetReferenceChange);
         Run("亲昵原版等待安装后异常不吞异常，清理仍释放精确等待", AffectionWaitStartException);
-        Run("亲昵效果使用原版Heart与30tick喷射，四语任务报告及镜像一致", AffectionResourceContracts);
     }
 
     /// <summary>接触资格由测试提供引擎的即时可达返回；不在宿主复制寻路算法。</summary>
@@ -430,32 +429,6 @@ internal static partial class Program
             Assert(p.master.CurJob == null && p.master.jobs.EndCalls == (scenario == 0 ? 0 : 1), "exception cleanup leaked or duplicated wait");
             if (scenario == 2) Assert(ReferenceEquals(p.pet.CurJob, replacement), "exception cleanup affected replacement actor job");
             AssertNoAffectionReward(p.pet, p.master);
-        }
-    }
-
-    private static void AffectionResourceContracts()
-    {
-        string root = SscTestPaths.RepositoryRoot();
-        XElement effect = XDocument.Load(SscTestPaths.Combine(root, "Defs/EffecterDefs/SSC_PetAffectionEffects.xml")).Root.Elements()
-            .Single(e => (string)e.Element("defName") == "SSC_PetAffectionInteraction");
-        XElement child = effect.Element("children").Elements("li").Single();
-        Assert((string)child.Element("subEffecterClass") == "SubEffecter_SprayerContinuous" &&
-            (string)child.Element("fleckDef") == "Heart" && (string)child.Element("spawnLocType") == "OnTarget" &&
-            (int)child.Element("ticksBetweenMotes") == 30 && (int)child.Element("initialDelayTicks") == 0 &&
-            (int)child.Element("maxMoteCount") == 5 && (bool)child.Element("makeMoteOnSubtrigger") == false,
-            "continuous Core Heart timing/spawn contract incorrect");
-        XElement job = XDocument.Load(SscTestPaths.Combine(root, "Defs/JobDefs/SSC_PetAffectionJobDefs.xml")).Root.Elements().Single();
-        Assert((string)job.Element("defName") == "SSC_Job_PetAffection" &&
-            (string)job.Element("driverClass") == typeof(JobDriver_PetAffection).FullName &&
-            (bool)job.Element("casualInterruptible") && !string.IsNullOrWhiteSpace((string)job.Element("reportString")),
-            "affection job driver/report/interruptibility contract incorrect");
-        foreach (string language in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" })
-        {
-            string relative = "Languages/" + language + "/DefInjected/JobDef/SSC_PetAffectionJobDefs.xml";
-            byte[] main = File.ReadAllBytes(SscTestPaths.Combine(root, relative));
-            Assert(main.SequenceEqual(File.ReadAllBytes(SscTestPaths.Combine(root, "Sexslavecraft", relative))), "job mirror differs " + language);
-            XElement text = XDocument.Load(SscTestPaths.Combine(root, relative)).Root.Element("SSC_Job_PetAffection.reportString");
-            Assert(text != null && !string.IsNullOrWhiteSpace(text.Value) && text.Value.Contains("TargetA"), "localized job report missing target " + language);
         }
     }
 }

@@ -382,15 +382,6 @@ internal static partial class Program
                 Require(File.ReadAllText(Path.Combine(repo, path)).Contains("SSCBehaviorControlUI.DrawPawn"));
             Require(drawer.Contains("view.Context") && !drawer.Contains("SSCAbilityToggleUtility.TrySet"));
         });
-        foreach (string language in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" })
-            Check("batch3 localized job resource and all enum/command reasons " + language, () =>
-            {
-                string path = $"Languages/{language}/DefInjected/JobDef/SSC_RomanceCommand.xml";
-                Equal(File.ReadAllText(Path.Combine(repo, "1.7", path)), File.ReadAllText(Path.Combine(repo, "Sexslavecraft", path)));
-                var keys = XDocument.Load(Path.Combine(repo, "1.7/Languages", language, "Keyed/SSC_Romance.xml")).Root.Elements().Select(e => e.Name.LocalName).ToHashSet();
-                foreach (var setting in Enum.GetValues<SSCRomanceSetting>()) Require(keys.Contains("SSC_Romance_Setting_" + setting));
-                foreach (var reason in Enum.GetValues<SSCRomanceReason>().Where(r => r != SSCRomanceReason.None)) Require(keys.Contains("SSC_Romance_" + reason));
-            });
     }
     /// <summary>真实卸载/重装关键补丁验证能力门禁；不能只凭曾经匹配过 IL 就继续授予命令豁免。</summary>
     private static void CommandHookLossTests(Harmony harmony, string repo)

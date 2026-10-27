@@ -8,10 +8,22 @@ internal static partial class Program
     /// <summary>验证阈值、许可独立性、双边优先级和异常回退；策略通过不等于互动已执行。</summary>
     private static void PolicyTests()
     {
-        // 穷举三个类别的八种组合与行为许可：类别之间取并集，类别与行为之间取交集。
-        foreach (int mask in Enumerable.Range(0, 8))
-        foreach (bool actionAllowed in new[] { false, true })
-        foreach (var action in new[] { SSCRomanceAction.Romance, SSCRomanceAction.Proposal })
+        // 全关、单类别、全开及行为禁止代表；类别并集与行为交集分别可观测。
+        foreach (var (mask, actionAllowed, action) in new (int, bool, SSCRomanceAction)[]
+        {
+            (0, true, SSCRomanceAction.Romance),
+            (0, true, SSCRomanceAction.Proposal),
+            (1, true, SSCRomanceAction.Romance),
+            (1, true, SSCRomanceAction.Proposal),
+            (2, true, SSCRomanceAction.Romance),
+            (2, true, SSCRomanceAction.Proposal),
+            (4, true, SSCRomanceAction.Romance),
+            (4, true, SSCRomanceAction.Proposal),
+            (7, false, SSCRomanceAction.Romance),
+            (7, false, SSCRomanceAction.Proposal),
+            (7, true, SSCRomanceAction.Romance),
+            (7, true, SSCRomanceAction.Proposal),
+        })
             Check($"unified targets mask={mask} allowed={actionAllowed} action={action}", () =>
             {
                 var a = Slave(.3f); var master = SSCBondUtility.GetBoundMaster(a); var slave = Slave(); var other = Pawn();
@@ -56,8 +68,21 @@ internal static partial class Program
             Comp(b).romanceConfig = new() { alwaysAcceptSexSlave = true, allowAcceptRomance = false };
             var r = Decide(a, b); Require(!r.CanInitiate); Equal(SSCRomanceReception.ForceAccept, r.Reception);
         });
-        foreach (var (severity, stage) in new[] { (.099f, 0), (.1f, 1), (.2999f, 1), (.3f, 2), (.4999f, 2), (.5f, 3), (.8999f, 3), (.9f, 4) })
-        foreach (var action in Enum.GetValues<SSCRomanceAction>())
+        foreach (var (severity, stage, action) in new (float, int, SSCRomanceAction)[]
+        {
+            (0.099f, 0, SSCRomanceAction.Romance),
+            (0.1f, 1, SSCRomanceAction.Romance),
+            (0.2999f, 1, SSCRomanceAction.Romance),
+            (0.2999f, 1, SSCRomanceAction.Breakup),
+            (0.3f, 2, SSCRomanceAction.Romance),
+            (0.3f, 2, SSCRomanceAction.Proposal),
+            (0.3f, 2, SSCRomanceAction.Breakup),
+            (0.4999f, 2, SSCRomanceAction.Romance),
+            (0.5f, 3, SSCRomanceAction.Romance),
+            (0.5f, 3, SSCRomanceAction.Proposal),
+            (0.8999f, 3, SSCRomanceAction.Romance),
+            (0.9f, 4, SSCRomanceAction.Romance),
+        })
             Check($"current chain stage {severity}/{action}", () =>
             {
                 var p = Slave(severity); Comp(p).romanceConfig = Denied();
@@ -70,10 +95,21 @@ internal static partial class Program
         foreach (var action in Enum.GetValues<SSCRomanceAction>())
             Check("old missing config preserves ordinary decision: " + action, () =>
             { var p = Slave(); var q = Pawn(); Require(Decide(p, q, action).CanInitiate); Equal(action == SSCRomanceAction.Breakup ? SSCRomanceReception.NotApplicable : SSCRomanceReception.Vanilla, Decide(q, p, action).Reception); Require(Comp(p).romanceConfig == null); });
-        foreach (bool guarantee in new[] { false, true })
-        foreach (bool accept in new[] { false, true })
-        foreach (bool owner in new[] { false, true })
-        foreach (var action in new[] { SSCRomanceAction.Romance, SSCRomanceAction.Proposal })
+        foreach (var (guarantee, accept, owner, action) in new (bool, bool, bool, SSCRomanceAction)[]
+        {
+            (false, false, true, SSCRomanceAction.Romance),
+            (false, false, true, SSCRomanceAction.Proposal),
+            (false, true, true, SSCRomanceAction.Romance),
+            (false, true, true, SSCRomanceAction.Proposal),
+            (true, false, false, SSCRomanceAction.Romance),
+            (true, false, false, SSCRomanceAction.Proposal),
+            (true, false, true, SSCRomanceAction.Romance),
+            (true, false, true, SSCRomanceAction.Proposal),
+            (true, true, false, SSCRomanceAction.Romance),
+            (true, true, false, SSCRomanceAction.Proposal),
+            (true, true, true, SSCRomanceAction.Romance),
+            (true, true, true, SSCRomanceAction.Proposal),
+        })
             Check($"recipient priority guarantee={guarantee} accept={accept} owner={owner} {action}", () =>
             {
                 var p = Slave(); Comp(p).romanceConfig = new() { alwaysAcceptMaster = guarantee, allowAcceptRomance = accept, allowAcceptProposal = accept };

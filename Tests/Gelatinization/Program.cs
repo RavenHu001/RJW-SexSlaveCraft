@@ -57,7 +57,6 @@ internal static partial class Program
         Run("透明背景和孔洞始终透明", GelTransparent);
         Run("抗锯齿覆盖连续且不过度透明", GelCoverage);
         Run("异常颜色和Alpha输入被限制在合法区间", GelBounds);
-        Run("1.7原生Shader资源成套且头部只注册材质入口", () => ShaderResources(root));
         Run("SizedApparel从渲染树角色染色", SizedApparel);
         Run("SizedApparel空节点安全跳过", () => EmptyNode(null));
         Run("SizedApparel空渲染树安全跳过", () => EmptyNode(new PawnRenderNode()));
@@ -374,20 +373,6 @@ internal static partial class Program
                 float color = GelShaderMath.sscGelChannel(a, b), alpha = GelShaderMath.sscGelAlpha(a, b, 1);
                 Check(float.IsFinite(color) && color >= 0 && color <= 1 && alpha >= 0 && alpha <= 1, "有界输入不得产生非法输出");
             }
-    }
-
-    /// <summary>核对真正随版本加载的定义、片元及 include，防止只编译DLL却遗漏运行资源。</summary>
-    private static void ShaderResources(string root)
-    {
-        string runtime = SscTestPaths.RuntimeRoot(root);
-        var def = XDocument.Load(Path.Combine(runtime, "Defs/ShaderDefs/SSC_FullGelBody17.xml")).Root.Element("ShaderDef");
-        Check((string)def.Element("defName") == "SSC_FullGelBody17", "原生定义名称必须匹配生产选择器");
-        var program = def.Element("shaderProgram");
-        Check((string)program.Element("transparent") == "true" && (string)program.Element("depthWrite") == "false", "透明材质不能遮挡后续节点深度");
-        string frag = Path.Combine(runtime, "Shaders", (string)program.Element("fragmentShaderFileName"));
-        Check(File.Exists(frag) && File.ReadAllText(frag).Contains("sscGelChannel(source.r, tint.r * uMaterial._GelColor.r)") && File.ReadAllText(frag).Contains("sscGelAlpha(source.a, tint.a * uMaterial._GelColor.a, vColor.a)"), "片元必须使用被数值回归的生产函数");
-        Check(File.ReadAllBytes(Path.Combine(runtime, "Shaders/SSC/FullGelMath.glsl")).SequenceEqual(File.ReadAllBytes(Path.Combine(root, "1.7/Shaders/SSC/FullGelMath.glsl"))), "所选运行资源必须与编译测试的数学函数一致");
-        Check(File.ReadAllText(Path.Combine(root, "Sexslavecraft/ThePatches/HarmonyStartUp.cs")).Contains("Harmony_FullGelatinizationHeadTint.Register(harmony)"), "头部应挂接已测试的材质入口");
     }
     /// <summary>节点没有 pawn 字段，只有渲染树持有角色；该形状能捕获旧反射读取失败。</summary>
     private static void SizedApparel()

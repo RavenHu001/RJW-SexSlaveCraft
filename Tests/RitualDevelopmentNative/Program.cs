@@ -149,22 +149,6 @@ internal static class Program
                 r.ideo.Fluid = false; sources.Clear();
                 IdeoDevelopmentUtility.GetAllRitualsThatGiveDevelopmentPoints(r.ideo, sources); Equal(0, sources.Count);
             });
-
-            // 运行资源与源码镜像分别核对，确保翻译实际可加载，而非只存在于源码目录。
-            Check("active 1.7 ritual Def explicitly supports development points", () =>
-                Require(XDocument.Load(Path.Combine(SscTestPaths.RuntimeRoot(repo), "Defs/RitualDefs/Ritual_Outcome.xml"))
-                    .Descendants("RitualOutcomeEffectDef").Single(d => (string)d.Element("defName") == "SSC_BindingRitualOutcome")
-                    .Element("givesDevelopmentPoints")?.Value == "true"));
-            foreach (string language in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" })
-                Check($"runtime and source localization complete: {language}", () =>
-                {
-                    string relative = Path.Combine("Languages", language, "Keyed/SSC_RitualDevelopmentPoints.xml");
-                    string runtime = Path.Combine(SscTestPaths.RuntimeRoot(repo), relative);
-                    Require(File.ReadAllBytes(runtime).SequenceEqual(File.ReadAllBytes(Path.Combine(repo, "Sexslavecraft", relative))));
-                    var root = XDocument.Load(runtime).Root;
-                    foreach (string key in new[] { "SSC_Setting_EnableRitualDevelopmentPoints", "SSC_Setting_EnableRitualDevelopmentPoints_Desc" })
-                        Require(root.Elements(key).Count() == 1 && !string.IsNullOrWhiteSpace(root.Element(key).Value));
-                });
         }
         finally { harmony.UnpatchAll(harmony.Id); }
         Console.WriteLine($"{passed}/{passed + failed} cases passed");

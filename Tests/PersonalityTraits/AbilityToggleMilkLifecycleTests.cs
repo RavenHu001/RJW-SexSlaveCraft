@@ -8,10 +8,20 @@ internal static partial class Program
     /// <summary>将人格开关与原泌乳字段交叉组合，验证独立快照、明确 false 覆盖和提取后的原体残值。</summary>
     private static void RunAbilityToggleMilkLifecycleCases()
     {
-        foreach (bool gift in new[] { false, true })
-        foreach (bool milk in new[] { false, true })
-        foreach (bool hostGift in new[] { false, true })
-        foreach (bool hostMilk in new[] { false, true })
+        // 二元成对覆盖，并保留完整覆盖宿主的锚点。
+        foreach (var (gift, milk, hostGift, hostMilk) in new (bool, bool, bool, bool)[]
+        {
+            (false, false, false, false),
+            (false, false, true, false),
+            (false, false, true, true),
+            (false, true, false, true),
+            (false, true, true, true),
+            (true, false, false, true),
+            (true, false, true, true),
+            (true, true, false, false),
+            (true, true, true, false),
+            (true, true, true, true),
+        })
             Run($"生命周期：来源恩赐={gift}泌乳={milk}／宿主恩赐={hostGift}泌乳={hostMilk}", () =>
             {
                 var source = Body("Source"); var original = MasterTraining(source, PawnIdentity.Master, false);

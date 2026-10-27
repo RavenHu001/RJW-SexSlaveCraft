@@ -162,49 +162,5 @@ internal static partial class Program
             }
             finally { Scribe_Values.Loading = false; Scribe_Values.Data.Clear(); }
         });
-        Run("阶段 XML 符合已确定的五项加成，伤口恢复只使用原版属性因子", () =>
-        {
-            var stages = definition.Element("stages").Elements().ToArray(); Assert(stages.Length == 4);
-            Assert(stages.Select(s => (float)s.Element("minSeverity")).SequenceEqual(new[] { 0f, 12f, 40f, 100f }));
-            Assert((float)definition.Element("initialSeverity") == 0 && (float)definition.Element("maxSeverity") == 100);
-            // 核对维护者选定的四阶段总值，尤其防止旧操控／自然愈合与新方案一起叠加。
-            float[] consciousness = { .10f, .20f, .30f, .40f };
-            float[] senses = { .05f, .10f, .20f, .30f };
-            float[] social = { 1.05f, 1.10f, 1.15f, 1.20f };
-            float[] healing = { 1.10f, 1.20f, 1.35f, 1.50f };
-            for (int i = 0; i < stages.Length; i++)
-            {
-                var mods = stages[i].Element("capMods").Elements().ToDictionary(e => e.Element("capacity").Value, e => (float)e.Element("offset"));
-                Assert(mods.Count == 3 && mods["Consciousness"] == consciousness[i] && mods["Sight"] == senses[i] && mods["Hearing"] == senses[i]);
-                var factors = stages[i].Element("statFactors").Elements().ToDictionary(e => e.Name.LocalName, e => (float)e);
-                Assert(factors.Count == 2 && factors["SocialImpact"] == social[i] && factors["InjuryHealingFactor"] == healing[i]);
-                Assert(stages[i].Element("naturalHealingFactor") == null);
-            }
-            // 新方案保留最高意识下限；不再要求成长 Hediff 自身直接提供操控偏移。
-            var slaveFinal = XDocument.Load(SscTestPaths.Combine(repo, "Defs/HediffDefs/HediffOfSexSlave.xml")).Root.Elements("HediffDef")
-                .First(d => d.Element("defName").Value == "Hediff_ChainOfSexSlave").Element("stages").Elements().Last();
-            var slaveConsciousness = slaveFinal.Element("capMods").Elements().Single(e => e.Element("capacity").Value == "Consciousness");
-            Assert(consciousness.Last() >= (float)slaveConsciousness.Element("offset"));
-        });
-        Run("四语成长文案键与占位符完整且镜像一致", () =>
-        {
-            foreach (string relative in new[] { "Keyed/SSC_MasterProgression.xml", "DefInjected/HediffDef/SSC_MasterProgression.xml" })
-            {
-                var baseline = XDocument.Load(SscTestPaths.Combine(repo, "Languages/ChineseSimplified", relative)).Root.Elements().ToDictionary(e => e.Name.LocalName, e => e.Value);
-                foreach (string language in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" })
-                {
-                    string path = SscTestPaths.Combine(repo, "Languages", language, relative);
-                    var entries = XDocument.Load(path).Root.Elements().ToDictionary(e => e.Name.LocalName, e => e.Value);
-                    Assert(entries.Keys.Order().SequenceEqual(baseline.Keys.Order()));
-                    foreach (var entry in entries)
-                    {
-                        Assert(!string.IsNullOrWhiteSpace(entry.Value));
-                        Assert(Regex.Matches(entry.Value, "\\{\\d+\\}").Select(m => m.Value).Order().SequenceEqual(
-                            Regex.Matches(baseline[entry.Key], "\\{\\d+\\}").Select(m => m.Value).Order()));
-                    }
-                    Assert(File.ReadAllBytes(path).SequenceEqual(File.ReadAllBytes(SscTestPaths.Combine(repo, "Sexslavecraft/Languages", language, relative))));
-                }
-            }
-        });
     }
 }

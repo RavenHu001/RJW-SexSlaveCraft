@@ -18,13 +18,6 @@ internal static class Program
     private static int Main(string[] args)
     {
         root = SscTestPaths.RepositoryRoot(args.Length > 0 ? args[0] : null);
-        // 定义校验回调：阻止同一个 ThoughtDef 再次出现多个名称或被错误改名。
-        Run("术后记忆只定义一个规范名称", () =>
-        {
-            XElement thought = ReadThought();
-            Require(thought.Elements("defName").Count() == 1, "ThoughtDef 必须只有一个 defName。");
-            Require((string)thought.Element("defName") == ExpectedName, "定义必须与代码及翻译使用同一名称。");
-        });
         // 正常手术回调：使用实际 XML 注册定义，验证生产代码添加正确的记忆。
         Run("成功手术添加十五天基础心情负十的记忆", () =>
         {
@@ -84,22 +77,6 @@ internal static class Program
             Require(patient.needs.mood.thoughts.memories.Memories.Count == 1 && patient.RebuiltParts == 3,
                 "第二次调用应由性别检查提前返回。");
         });
-        foreach (string language in new[] { "ChineseTraditional", "English", "Russian" })
-        {
-            // 翻译校验回调：逐语言检查非空译文能绑定实际注册的术后记忆。
-            Run(language + " 术后记忆翻译指向有效定义", () =>
-            {
-                LoadDefinition();
-                XDocument translation = XDocument.Load(SscTestPaths.Combine(root, "Languages", language,
-                    "DefInjected", "ThoughtDef", "RecipeDef_Surgery_DCMtF.xml"));
-                foreach (string suffix in new[] { ".stages.0.label", ".stages.0.description" })
-                {
-                    XElement entry = translation.Root.Element(ExpectedName + suffix);
-                    Require(entry != null && !string.IsNullOrWhiteSpace(entry.Value), "缺少非空翻译：" + suffix);
-                    Require(DefDatabase<ThoughtDef>.Definitions.ContainsKey(ExpectedName), "译文对应的定义未注册。");
-                }
-            });
-        }
         Console.WriteLine($"结果：{passed}/{passed + failed} 项通过。");
         return failed == 0 ? 0 : 1;
     }

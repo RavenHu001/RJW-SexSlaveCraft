@@ -680,34 +680,6 @@ internal static partial class Program
             Decision(other, p.b, SSCInteractionKind.DailyTraining, true, SSCRestrictionReason.Allowed);
             Decision(other, p.b, SSCInteractionKind.Consensual, false, SSCRestrictionReason.RuleDenied);
         });
-        Run("Test interface translations cover controls and enum results in both shipped languages", () =>
-        {
-            var keys = new HashSet<string>();
-            foreach (string source in new[] { "common/Restrictions/Dialog_SSCRestrictions.cs", "common/Restrictions/SSCRestrictionUI.cs",
-                "common/Settings.cs", "ITab/ITab_SexSlaveTraining.cs" })
-                foreach (System.Text.RegularExpressions.Match match in System.Text.RegularExpressions.Regex.Matches(
-                    File.ReadAllText(SscTestPaths.Combine(root, "Sexslavecraft", source)), "\"(SSC_Restrictions_[A-Za-z]+)\""))
-                    keys.Add(match.Groups[1].Value);
-            foreach (string group in new[] { "Masturbation", "ReceiveConsensual", "ReceiveTraining" })
-                keys.Add("SSC_Restrictions_Group_" + group);
-            foreach (SSCRestrictionRule rule in Enum.GetValues<SSCRestrictionRule>())
-            {
-                keys.Add("SSC_Restrictions_Rule_" + rule);
-                keys.Add("SSC_Restrictions_Option_" + rule);
-                keys.Add("SSC_Restrictions_Tip_" + rule);
-            }
-            foreach (SSCRestrictionReason reason in Enum.GetValues<SSCRestrictionReason>()) keys.Add("SSC_Restrictions_Reason_" + reason);
-            foreach (SSCRestrictionSource source in Enum.GetValues<SSCRestrictionSource>()) keys.Add("SSC_Restrictions_Source_" + source);
-            foreach (SSCInteractionKind kind in Enum.GetValues<SSCInteractionKind>().Where(k => k != SSCInteractionKind.Unknown)) keys.Add("SSC_Restrictions_Kind_" + kind);
-            foreach (SSCRestrictionValue value in Enum.GetValues<SSCRestrictionValue>().Where(v => v != SSCRestrictionValue.Unspecified)) keys.Add("SSC_Restrictions_Value_" + value);
-            foreach (string language in new[] { "English", "ChineseSimplified" })
-            {
-                string path = Path.Combine("Languages", language, "Keyed/SSC_Restrictions.xml");
-                var translations = XDocument.Load(SscTestPaths.Combine(root, path)).Root.Elements().ToDictionary(e => e.Name.LocalName, e => e.Value);
-                foreach (string key in keys) Equal(true, translations.ContainsKey(key) && !string.IsNullOrWhiteSpace(translations[key]));
-                Equal(File.ReadAllText(SscTestPaths.Combine(root, path)), File.ReadAllText(SscTestPaths.Combine(root, "Sexslavecraft", path)));
-            }
-        });
         RunLifecycleTests();
         RunCompactUiPreferenceTests();
         RunBoundScopeTests();

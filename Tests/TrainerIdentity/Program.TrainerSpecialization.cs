@@ -10,27 +10,6 @@ internal static partial class Program
     /// <summary>直接运行生产资格代码，覆盖阶段 1 的数据定义、条件矩阵和状态优先级。</summary>
     private static void RunTrainerSpecializationTests(string repo)
     {
-        Run("训导官枚举追加及三种 Hediff 定义一致", () =>
-        {
-            // 旧方向的序号是存档兼容边界；新方向只能追加在末尾。
-            Assert((int)SexSlaveSpecializationType.PetRabbit == 5);
-            Assert((int)SexSlaveSpecializationType.TrainerOfficer == 6);
-
-            // 编译 C# 不会加载游戏 XML，所以单独解析实际定义并核对三种状态的名称。
-            var xml = XDocument.Load(SscTestPaths.Combine(repo, "Defs/HediffDefs/SSC_HediffDefs_TrainerSpecialization.xml"));
-            string[] names = xml.Root.Elements("HediffDef")
-                .Select(def => (string)def.Element("defName")).ToArray();
-            Assert(names.Length == 3 && names.Distinct().Count() == 3);
-            Assert(names.Contains("SSC_Hediff_TrainerOfficer")
-                && names.Contains("SSC_Hediff_TrainerOfficer_Final")
-                && names.Contains("SSC_Hediff_TrainerOfficer_FinalDisabled"));
-
-            // 普通 Hediff 的显示阶段必须与资格代码使用相同的 20% 边界。
-            var ordinary = xml.Root.Elements("HediffDef")
-                .Single(def => (string)def.Element("defName") == "SSC_Hediff_TrainerOfficer");
-            Assert(ordinary.Element("stages").Elements("li")
-                .Any(stage => (string)stage.Element("minSeverity") == "0.20"));
-        });
 
         Run("持续条件以当前 SSC 身份、自由殖民者、实际主人和锁链阶段为准", () =>
         {

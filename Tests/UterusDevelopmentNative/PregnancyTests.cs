@@ -159,8 +159,19 @@ internal static partial class Program
     /// <summary>覆盖首次加入和冻结待遇，包含加入前切换与旧妊娠不补发。</summary>
     private static void PregnancyDecisionTests()
     {
-        foreach (string name in pregnancyNames)
-        foreach (int state in new[] { 0, 1, 2, 3 })
+        foreach (var (name, state) in new (string, int)[]
+        {
+            ("Pregnant", 0),
+            ("Pregnant", 3),
+            ("PregnantHuman", 0),
+            ("PregnantHuman", 1),
+            ("PregnantHuman", 2),
+            ("PregnantHuman", 3),
+            ("RJW_pregnancy", 0),
+            ("RJW_pregnancy", 3),
+            ("RJW_pregnancy_beast", 0),
+            ("RJW_pregnancy_beast", 3),
+        })
             Check("batch4 first real Add freezes eligibility: " + name + "/" + state, () =>
             {
                 var p = NewPawn(); if (state > 0) Start(p, state == 1 ? .7f : 1f); if (state == 3) Toggle(p, true);

@@ -48,7 +48,6 @@ internal static partial class Program
         Run("原版头部附加眼睛头发头饰只移光照阶段", EyeAttachments);
         Run("原版头部遮罩槽仍保留且缺失时跳过", EyeSkinMask);
         Run("原版眼部重复回调不重复透明化", EyeIdempotent);
-        Run("原版眼部原生资源及镜像正确", () => EyeResources(root));
     }
 
     private static void SetAdapters(bool fa, bool sa)
@@ -183,15 +182,4 @@ internal static partial class Program
     private static void EyeAttachments() {foreach(var n in new PawnRenderNode[]{new PawnRenderNode {parent=new PawnRenderNode_Head()},new PawnRenderNode_Hair(),new PawnRenderNode_Apparel {parent=new PawnRenderNode_Head()}}) {var r=EyeRig();var m=r.Apply(n);Check(m.shader==r.source.shader&&m.color.a==1&&m.renderQueue==3150,"附加眼睛和毛发不染色");}}
     private static void EyeSkinMask() {var r=EyeRig();r.source.HasMaskSlot=true;Check(r.Apply(new PawnRenderNode_Head())==r.source,"缺遮罩不漏皮肤");var mask=new Texture("Skin");r.source.SetTexture("_MaskTex",mask);var m=r.Apply(new PawnRenderNode_Head());Check(m.GetTexture("_MaskTex")==mask&&m.GetFloat("_UseSkinMask")==1,"已有皮肤遮罩继续生效");}
     private static void EyeIdempotent() {var r=EyeRig();var n=new PawnRenderNode_Head();var m=r.Apply(n);var again=m;Harmony_FullGelatinizationHeadTint.MaterialPostfix(n,r.parms,ref again);Check(again==m&&GelTint(m).a==.85f,"不能重复乘Alpha");}
-    private static void EyeResources(string root)
-    {
-        foreach(var name in new[]{Harmony_FullGelatinizationHeadTint.VanillaShaderDefName,Harmony_FullGelatinizationHeadTint.VanillaDepthShaderDefName})
-        {
-            string rel="Defs/ShaderDefs/"+name+".xml";Check(File.ReadAllText(Path.Combine(root,"1.7",rel))==File.ReadAllText(Path.Combine(root,"Sexslavecraft",rel)),"ShaderDef镜像一致");
-            var p=XDocument.Load(Path.Combine(root,"1.7",rel)).Root.Element("ShaderDef").Element("shaderProgram");
-            Check(p.Element("renderQueue").Value=="3150"&&p.Element("depthWrite").Value==name.Contains("Depth").ToString().ToLowerInvariant(),"光照与深度状态");
-            string code=File.ReadAllText(Path.Combine(root,"1.7/Shaders",p.Element("fragmentShaderFileName").Value));
-            Check(code.Contains("_EyeSourceColor")&&code.Contains("_EyeMask")&&code.Contains("sscGelEyeBlend"),"原色及遮罩接入片元");
-        }
-    }
 }

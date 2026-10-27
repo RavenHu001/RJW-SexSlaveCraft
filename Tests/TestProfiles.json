@@ -24,10 +24,8 @@
     },
     {
       "Name": "DesireInfestationFeedback",
-      "Kind": "Mixed",
-      "SpecialCases": [
-        "四语与 Def 镜像完整一致"
-      ]
+      "Kind": "Core",
+      "SpecialCases": []
     },
     {
       "Name": "RitualSelection",
@@ -44,7 +42,6 @@
         "100 人开窗、自动填充和高亮不做完整执行者检查",
         "300 人开窗、自动填充和高亮不做完整执行者检查",
         "1000 人开窗、自动填充和高亮不做完整执行者检查",
-        "四语新提示完整且键一致",
         "1000 人常驻角色预览无 RJW、寻路、报告、消息或角色写入",
         "主持者选定后 1000 人配对预览仅执行低成本许可查询",
         "目标角标按 SSC 性奴身份过滤：殖民者, SSC性奴=False",
@@ -92,12 +89,8 @@
     },
     {
       "Name": "GenderChangeMemory",
-      "Kind": "Mixed",
-      "SpecialCases": [
-        "ChineseTraditional 术后记忆翻译指向有效定义",
-        "English 术后记忆翻译指向有效定义",
-        "Russian 术后记忆翻译指向有效定义"
-      ]
+      "Kind": "Core",
+      "SpecialCases": []
     },
     {
       "Name": "RitualAnimationFallback",
@@ -124,7 +117,6 @@
         "透明背景和孔洞始终透明",
         "抗锯齿覆盖连续且不过度透明",
         "异常颜色和Alpha输入被限制在合法区间",
-        "1.7原生Shader资源成套且头部只注册材质入口",
         "SizedApparel从渲染树角色染色",
         "SizedApparel空节点安全跳过",
         "SizedApparel空渲染树安全跳过",
@@ -187,7 +179,6 @@
         "头部遮罩孔洞保持透明",
         "头部半透明遮罩保留连续覆盖",
         "完整遮罩与身体Alpha一致",
-        "头部遮罩定义与片元完整",
         "基础头皮继承原深度写入而不是统一透明管线",
         "带遮罩的深度皮肤同样保留写入",
         "原透明皮肤覆盖层继续不写深度",
@@ -196,7 +187,6 @@
         "动画切换原Shader深度状态时重新选变体",
         "头身交叠处阻止后画的身体盖到脸上",
         "原图透明孔洞与低覆盖边缘不写深度",
-        "所有头部写深度变体使用生产裁剪函数",
         "SA注册最终材质而非GetGraphic入口",
         "SA工作线程首次缓存未命中仍完整染色",
         "SA帧切换更新贴图并复用材质",
@@ -294,7 +284,6 @@
         "原版头部附加眼睛头发头饰只移光照阶段",
         "原版头部遮罩槽仍保留且缺失时跳过",
         "原版眼部重复回调不重复透明化",
-        "原版眼部原生资源及镜像正确",
         "同贴图多人配置使用隔离材质",
         "个体颜色修改会使稳定源缓存刷新",
         "连续调色复用当前材质而非累积历史变体",
@@ -323,7 +312,6 @@
         "任意RGB(1,1,1)与Alpha0.01保眼和动画",
         "任意RGB(1,1,1)与Alpha0.85保眼和动画",
         "任意RGB(1,1,1)与Alpha1保眼和动画",
-        "个体外观资源组件和四语镜像完整",
         "外观布局宽300分量高102不重叠",
         "外观布局宽300分量高192不重叠",
         "外观布局宽480分量高102不重叠",
@@ -336,43 +324,12 @@
       "Name": "PnaLoad",
       "Kind": "Mixed",
       "SpecialCases": [
-        "四语 PNA 标签与占位符 ChineseSimplified",
-        "四语 PNA 标签与占位符 ChineseTraditional",
-        "四语 PNA 标签与占位符 English",
-        "四语 PNA 标签与占位符 Russian",
-        "第四步吸引解释四语完整且占位符可格式化 ChineseSimplified",
-        "第四步吸引解释四语完整且占位符可格式化 ChineseTraditional",
-        "第四步吸引解释四语完整且占位符可格式化 English",
-        "第四步吸引解释四语完整且占位符可格式化 Russian",
-        "原始武器研究在简易应用后独立解锁且坐标不重叠",
-        "原始武器配方中世纪可达、仅制造耗液 SSC_Weapon_PnaSpikeStaff",
-        "原始武器普通柄击不连接携液入口 SSC_Weapon_PnaSpikeStaff",
-        "原始武器配方中世纪可达、仅制造耗液 SSC_Weapon_PnaBlowpipe",
-        "原始武器普通柄击不连接携液入口 SSC_Weapon_PnaBlowpipe",
-        "原始武器配方中世纪可达、仅制造耗液 SSC_Weapon_PnaLightCrossbow",
-        "原始武器普通柄击不连接携液入口 SSC_Weapon_PnaLightCrossbow",
-        "短矛通过独立能力和动作接入主伤害",
-        "远程武器主射击完整连接至携液弹丸 SSC_Weapon_PnaBlowpipe",
-        "远程武器主射击完整连接至携液弹丸 SSC_Weapon_PnaLightCrossbow",
         "XML 剂量经生产处理器在开放伤口后输入 SSC_Damage_PnaStaffStab",
         "XML 携液命中被阻挡不建立抗性或施药 SSC_Damage_PnaStaffStab",
         "XML 剂量经生产处理器在开放伤口后输入 SSC_Damage_PnaDartStab",
         "XML 携液命中被阻挡不建立抗性或施药 SSC_Damage_PnaDartStab",
         "XML 剂量经生产处理器在开放伤口后输入 SSC_Damage_PnaBolt",
         "XML 携液命中被阻挡不建立抗性或施药 SSC_Damage_PnaBolt",
-        "新武器不额外声明自动生成配方或改变原版能力",
-        "原始武器四语文本和死亡占位符 ChineseSimplified",
-        "原始武器四语文本和死亡占位符 ChineseTraditional",
-        "原始武器四语文本和死亡占位符 English",
-        "原始武器四语文本和死亡占位符 Russian",
-        "工业研究三个前置及1600点，无废案或额外研究台门槛",
-        "工业制造固定聚合物材料和加工台 SSC_Weapon_PnaShortWhip",
-        "工业制造固定聚合物材料和加工台 SSC_Weapon_PnaNeedleRepeater",
-        "工业制造固定聚合物材料和加工台 SSC_Weapon_PnaNeedleRifle",
-        "短鞭低创伤主攻击、独立动作与文化装备属性",
-        "所有武器不再声明品质伤害例外",
-        "针枪精度点射、防身伤害与尾迹 SSC_Weapon_PnaNeedleRepeater",
-        "针枪精度点射、防身伤害与尾迹 SSC_Weapon_PnaNeedleRifle",
         "工业XML真实剂量入口及效力显示 SSC_Damage_PnaWhipCut",
         "工业命中挡甲不施药 SSC_Damage_PnaWhipCut",
         "工业XML真实剂量入口及效力显示 SSC_Damage_PnaRepeaterNeedle",
@@ -380,17 +337,6 @@
         "工业XML真实剂量入口及效力显示 SSC_Damage_PnaRifleNeedle",
         "工业命中挡甲不施药 SSC_Damage_PnaRifleNeedle",
         "速射三针各自读取命中前意识，不固定合计24点",
-        "工业四语接线与死亡占位符 ChineseSimplified",
-        "工业四语接线与死亡占位符 ChineseTraditional",
-        "工业四语接线与死亡占位符 English",
-        "工业四语接线与死亡占位符 Russian",
-        "太空研究承接工业及精密装配，设备和布局明确",
-        "太空固定配方及制造耗液 SSC_Weapon_PnaSilkWhip",
-        "太空固定配方及制造耗液 SSC_Weapon_PnaPulseGun",
-        "太空固定配方及制造耗液 SSC_Weapon_PnaProjectorGun",
-        "丝鞭只有纳米端，原版品质与专用动作接线完整",
-        "太空两枪射击与普通防身入口 SSC_Weapon_PnaPulseGun",
-        "太空两枪射击与普通防身入口 SSC_Weapon_PnaProjectorGun",
         "正式XML效力读取及普通穿透 SSC_Weapon_PnaSilkWhip",
         "正式XML有效链无甲耗吸收修复 SSC_Weapon_PnaSilkWhip",
         "正式XML主人优先免疫 SSC_Weapon_PnaSilkWhip",
@@ -404,23 +350,7 @@
         "正式XML主人优先免疫 SSC_Weapon_PnaProjectorGun",
         "正式XML普通目标挡甲不施药 SSC_Weapon_PnaProjectorGun",
         "太空三发由正式XML驱动逐发投送及修复",
-        "太空四语键及自动配方描述完整 ChineseSimplified",
-        "太空四语键及自动配方描述完整 ChineseTraditional",
-        "太空四语键及自动配方描述完整 English",
-        "太空四语键及自动配方描述完整 Russian",
-        "效力四语属性和报告完整 ChineseSimplified",
-        "效力四语属性和报告完整 ChineseTraditional",
-        "效力四语属性和报告完整 English",
-        "效力四语属性和报告完整 Russian",
-        "退役 Def 不得残留活动定义或引用 Defs",
-        "退役 Def 不得残留活动定义或引用 Patches",
-        "退役伤害类型不进入当前测试程序集",
-        "废案源码与配置存在且不在编译清单",
-        "现役九武器、三代研究与公共抗性记录保留",
-        "四语退役条目清理 ChineseSimplified",
-        "四语退役条目清理 ChineseTraditional",
-        "四语退役条目清理 English",
-        "四语退役条目清理 Russian"
+        "退役伤害类型不进入当前测试程序集"
       ]
     },
     {
@@ -455,8 +385,7 @@
         "极小分段配置仍有固定预算",
         "坏坐标后重新采样不污染后续",
         "缺少粒子定义时仍执行原版移动",
-        "错误挂载不抛异常",
-        "XML 现役六种弹丸共享尾迹入口且无双重喷射"
+        "错误挂载不抛异常"
       ]
     },
     {
@@ -522,8 +451,6 @@
         "爱心原门槛 offscreen",
         "爱心原门槛 no-def",
         "爱心原门槛 saving",
-        "尖梭定义和贴图撤下，爱心XML参数保留",
-        "专用动作仍接原伤害，普通柄击不接泛光",
         "鞭击命中与打空均播放且保留父类返回值 True",
         "鞭击命中与打空均播放且保留父类返回值 False",
         "短鞭姿态时间边界 0",
@@ -633,7 +560,6 @@
         "不同武器不串亮度且私有材质底色不变",
         "半弧网格宽度端部柔边镜像与三角朝上 False",
         "半弧网格宽度端部柔边镜像与三角朝上 True",
-        "撤下旧目标弧痕Fleck与运行贴图并保持受药爱心参数",
         "丝鞭三阶段共用握持点与1.75手持缩放 False/0",
         "丝鞭三阶段共用握持点与1.75手持缩放 False/53",
         "丝鞭三阶段共用握持点与1.75手持缩放 False/90",
@@ -658,8 +584,7 @@
         "丝鞭复用姿态清理且无残留特效 destroyed",
         "丝鞭复用姿态清理且无残留特效 clock",
         "丝鞭复用姿态清理且无残留特效 backward",
-        "丝鞭手持倍率保留外部矩阵变化与非等比Graphic尺寸",
-        "丝鞭三张运行图来自明确选图且柄部标定一致"
+        "丝鞭手持倍率保留外部矩阵变化与非等比Graphic尺寸"
       ]
     },
     {
@@ -667,62 +592,32 @@
       "Kind": "Special",
       "SpecialCases": [
         "SSC_Weapon_PnaSpikeStaff Awful: 抽象及实物请求正常应用品质",
-        "SSC_Weapon_PnaShortWhip Awful: 抽象及实物请求正常应用品质",
-        "SSC_Weapon_PnaSilkWhip Awful: 抽象及实物请求正常应用品质",
         "普通近战 Awful: 原版品质曲线仍生效",
-        "武器其他属性 Awful: 品质仍生效",
         "SSC_Weapon_PnaSpikeStaff Poor: 抽象及实物请求正常应用品质",
-        "SSC_Weapon_PnaShortWhip Poor: 抽象及实物请求正常应用品质",
-        "SSC_Weapon_PnaSilkWhip Poor: 抽象及实物请求正常应用品质",
         "普通近战 Poor: 原版品质曲线仍生效",
-        "武器其他属性 Poor: 品质仍生效",
         "SSC_Weapon_PnaSpikeStaff Normal: 抽象及实物请求正常应用品质",
         "SSC_Weapon_PnaShortWhip Normal: 抽象及实物请求正常应用品质",
         "SSC_Weapon_PnaSilkWhip Normal: 抽象及实物请求正常应用品质",
         "普通近战 Normal: 原版品质曲线仍生效",
         "武器其他属性 Normal: 品质仍生效",
         "SSC_Weapon_PnaSpikeStaff Good: 抽象及实物请求正常应用品质",
-        "SSC_Weapon_PnaShortWhip Good: 抽象及实物请求正常应用品质",
-        "SSC_Weapon_PnaSilkWhip Good: 抽象及实物请求正常应用品质",
         "普通近战 Good: 原版品质曲线仍生效",
-        "武器其他属性 Good: 品质仍生效",
         "SSC_Weapon_PnaSpikeStaff Excellent: 抽象及实物请求正常应用品质",
-        "SSC_Weapon_PnaShortWhip Excellent: 抽象及实物请求正常应用品质",
-        "SSC_Weapon_PnaSilkWhip Excellent: 抽象及实物请求正常应用品质",
         "普通近战 Excellent: 原版品质曲线仍生效",
-        "武器其他属性 Excellent: 品质仍生效",
         "SSC_Weapon_PnaSpikeStaff Masterwork: 抽象及实物请求正常应用品质",
-        "SSC_Weapon_PnaShortWhip Masterwork: 抽象及实物请求正常应用品质",
-        "SSC_Weapon_PnaSilkWhip Masterwork: 抽象及实物请求正常应用品质",
         "普通近战 Masterwork: 原版品质曲线仍生效",
-        "武器其他属性 Masterwork: 品质仍生效",
         "SSC_Weapon_PnaSpikeStaff Legendary: 抽象及实物请求正常应用品质",
-        "SSC_Weapon_PnaShortWhip Legendary: 抽象及实物请求正常应用品质",
-        "SSC_Weapon_PnaSilkWhip Legendary: 抽象及实物请求正常应用品质",
         "普通近战 Legendary: 原版品质曲线仍生效",
         "武器其他属性 Legendary: 品质仍生效",
         "射针枪普通防身伤害正常受品质影响",
-        "品质适配源码归档且所有生产和测试入口均已撤下",
         "原生品质伤害、穿甲和信息卡一致 SSC_Weapon_PnaSpikeStaff Awful",
-        "原生品质伤害、穿甲和信息卡一致 SSC_Weapon_PnaSpikeStaff Poor",
         "原生品质伤害、穿甲和信息卡一致 SSC_Weapon_PnaSpikeStaff Normal",
-        "原生品质伤害、穿甲和信息卡一致 SSC_Weapon_PnaSpikeStaff Good",
-        "原生品质伤害、穿甲和信息卡一致 SSC_Weapon_PnaSpikeStaff Excellent",
-        "原生品质伤害、穿甲和信息卡一致 SSC_Weapon_PnaSpikeStaff Masterwork",
         "原生品质伤害、穿甲和信息卡一致 SSC_Weapon_PnaSpikeStaff Legendary",
         "原生品质伤害、穿甲和信息卡一致 SSC_Weapon_PnaShortWhip Awful",
-        "原生品质伤害、穿甲和信息卡一致 SSC_Weapon_PnaShortWhip Poor",
         "原生品质伤害、穿甲和信息卡一致 SSC_Weapon_PnaShortWhip Normal",
-        "原生品质伤害、穿甲和信息卡一致 SSC_Weapon_PnaShortWhip Good",
-        "原生品质伤害、穿甲和信息卡一致 SSC_Weapon_PnaShortWhip Excellent",
-        "原生品质伤害、穿甲和信息卡一致 SSC_Weapon_PnaShortWhip Masterwork",
         "原生品质伤害、穿甲和信息卡一致 SSC_Weapon_PnaShortWhip Legendary",
         "原生品质伤害、穿甲和信息卡一致 SSC_Weapon_PnaSilkWhip Awful",
-        "原生品质伤害、穿甲和信息卡一致 SSC_Weapon_PnaSilkWhip Poor",
         "原生品质伤害、穿甲和信息卡一致 SSC_Weapon_PnaSilkWhip Normal",
-        "原生品质伤害、穿甲和信息卡一致 SSC_Weapon_PnaSilkWhip Good",
-        "原生品质伤害、穿甲和信息卡一致 SSC_Weapon_PnaSilkWhip Excellent",
-        "原生品质伤害、穿甲和信息卡一致 SSC_Weapon_PnaSilkWhip Masterwork",
         "原生品质伤害、穿甲和信息卡一致 SSC_Weapon_PnaSilkWhip Legendary",
         "外部倍率只保留一次且零穿甲不被凭空提高",
         "缺失品质按普通且普通武器仍由原版处理",
@@ -735,39 +630,19 @@
         "远程原版伤害穿甲精度及普通防身品质 SSC_Weapon_PnaBlowpipe Masterwork",
         "远程原版伤害穿甲精度及普通防身品质 SSC_Weapon_PnaBlowpipe Legendary",
         "远程原版伤害穿甲精度及普通防身品质 SSC_Weapon_PnaLightCrossbow Awful",
-        "远程原版伤害穿甲精度及普通防身品质 SSC_Weapon_PnaLightCrossbow Poor",
         "远程原版伤害穿甲精度及普通防身品质 SSC_Weapon_PnaLightCrossbow Normal",
-        "远程原版伤害穿甲精度及普通防身品质 SSC_Weapon_PnaLightCrossbow Good",
-        "远程原版伤害穿甲精度及普通防身品质 SSC_Weapon_PnaLightCrossbow Excellent",
-        "远程原版伤害穿甲精度及普通防身品质 SSC_Weapon_PnaLightCrossbow Masterwork",
         "远程原版伤害穿甲精度及普通防身品质 SSC_Weapon_PnaLightCrossbow Legendary",
         "远程原版伤害穿甲精度及普通防身品质 SSC_Weapon_PnaNeedleRepeater Awful",
-        "远程原版伤害穿甲精度及普通防身品质 SSC_Weapon_PnaNeedleRepeater Poor",
         "远程原版伤害穿甲精度及普通防身品质 SSC_Weapon_PnaNeedleRepeater Normal",
-        "远程原版伤害穿甲精度及普通防身品质 SSC_Weapon_PnaNeedleRepeater Good",
-        "远程原版伤害穿甲精度及普通防身品质 SSC_Weapon_PnaNeedleRepeater Excellent",
-        "远程原版伤害穿甲精度及普通防身品质 SSC_Weapon_PnaNeedleRepeater Masterwork",
         "远程原版伤害穿甲精度及普通防身品质 SSC_Weapon_PnaNeedleRepeater Legendary",
         "远程原版伤害穿甲精度及普通防身品质 SSC_Weapon_PnaNeedleRifle Awful",
-        "远程原版伤害穿甲精度及普通防身品质 SSC_Weapon_PnaNeedleRifle Poor",
         "远程原版伤害穿甲精度及普通防身品质 SSC_Weapon_PnaNeedleRifle Normal",
-        "远程原版伤害穿甲精度及普通防身品质 SSC_Weapon_PnaNeedleRifle Good",
-        "远程原版伤害穿甲精度及普通防身品质 SSC_Weapon_PnaNeedleRifle Excellent",
-        "远程原版伤害穿甲精度及普通防身品质 SSC_Weapon_PnaNeedleRifle Masterwork",
         "远程原版伤害穿甲精度及普通防身品质 SSC_Weapon_PnaNeedleRifle Legendary",
         "远程原版伤害穿甲精度及普通防身品质 SSC_Weapon_PnaPulseGun Awful",
-        "远程原版伤害穿甲精度及普通防身品质 SSC_Weapon_PnaPulseGun Poor",
         "远程原版伤害穿甲精度及普通防身品质 SSC_Weapon_PnaPulseGun Normal",
-        "远程原版伤害穿甲精度及普通防身品质 SSC_Weapon_PnaPulseGun Good",
-        "远程原版伤害穿甲精度及普通防身品质 SSC_Weapon_PnaPulseGun Excellent",
-        "远程原版伤害穿甲精度及普通防身品质 SSC_Weapon_PnaPulseGun Masterwork",
         "远程原版伤害穿甲精度及普通防身品质 SSC_Weapon_PnaPulseGun Legendary",
         "远程原版伤害穿甲精度及普通防身品质 SSC_Weapon_PnaProjectorGun Awful",
-        "远程原版伤害穿甲精度及普通防身品质 SSC_Weapon_PnaProjectorGun Poor",
         "远程原版伤害穿甲精度及普通防身品质 SSC_Weapon_PnaProjectorGun Normal",
-        "远程原版伤害穿甲精度及普通防身品质 SSC_Weapon_PnaProjectorGun Good",
-        "远程原版伤害穿甲精度及普通防身品质 SSC_Weapon_PnaProjectorGun Excellent",
-        "远程原版伤害穿甲精度及普通防身品质 SSC_Weapon_PnaProjectorGun Masterwork",
         "远程原版伤害穿甲精度及普通防身品质 SSC_Weapon_PnaProjectorGun Legendary"
       ]
     },
@@ -778,24 +653,14 @@
     },
     {
       "Name": "RitualDevelopmentNative",
-      "Kind": "Mixed",
-      "SpecialCases": [
-        "runtime and source localization complete: ChineseSimplified",
-        "runtime and source localization complete: ChineseTraditional",
-        "runtime and source localization complete: English",
-        "runtime and source localization complete: Russian"
-      ]
+      "Kind": "Core",
+      "SpecialCases": []
     },
     {
       "Name": "CultureNative",
       "Kind": "Mixed",
       "SpecialCases": [
         "native XML fields and cross-references resolve for all authored culture definitions",
-        "all 28 weights, ordering, prefix and 7/6/19 meme lists match the fixed contract",
-        "four-language keys, final copy and byte-identical mirror: ChineseSimplified",
-        "four-language keys, final copy and byte-identical mirror: ChineseTraditional",
-        "four-language keys, final copy and byte-identical mirror: English",
-        "four-language keys, final copy and byte-identical mirror: Russian",
         "native CanAdd and zero-weight manual replacement: meme=False",
         "native CanAdd and zero-weight manual replacement: meme=True",
         "native full RandomizePrecepts produces the six fixed defaults (not requiredPreceptsOnly)",
@@ -806,14 +671,6 @@
         "all local vanilla normal meme exclusion contracts allow SSC pairings and six positive groups",
         "native legal multi-meme combinations keep six feasible groups and preserve reform choices in both orders",
         "vanilla Lovin_Prohibited qualification contract coexists and survives SSC addition/removal",
-        "67 stages and forty-three effect descriptions include slave leaders and count curves: ChineseSimplified",
-        "67 stages and forty-three effect descriptions include slave leaders and count curves: ChineseTraditional",
-        "67 stages and forty-three effect descriptions include slave leaders and count curves: English",
-        "67 stages and forty-three effect descriptions include slave leaders and count curves: Russian",
-        "gender all localized fields contain final copy: ChineseSimplified",
-        "gender all localized fields contain final copy: ChineseTraditional",
-        "gender all localized fields contain final copy: English",
-        "gender all localized fields contain final copy: Russian",
         "gender actual four-language field injection: ChineseSimplified",
         "gender actual four-language field injection: ChineseTraditional",
         "gender actual four-language field injection: English",
@@ -980,10 +837,8 @@
     },
     {
       "Name": "CosmeticNative",
-      "Kind": "Mixed",
-      "SpecialCases": [
-        "four languages have matching keys, parameters and target fields"
-      ]
+      "Kind": "Core",
+      "SpecialCases": []
     },
     {
       "Name": "UterusDevelopmentNative",
@@ -1035,28 +890,12 @@
         "batch2 actual translator resolves menu rejection and preview ChineseTraditional",
         "batch2 actual translator resolves menu rejection and preview English",
         "batch2 actual translator resolves menu rejection and preview Russian",
-        "romance translated keys and exact source mirror ChineseSimplified",
-        "romance translated keys and exact source mirror ChineseTraditional",
-        "romance translated keys and exact source mirror English",
-        "romance translated keys and exact source mirror Russian",
         "batch3 sidebar width fallback preserves minimum real content width 320",
         "batch3 sidebar width fallback preserves minimum real content width 640",
         "batch3 sidebar width fallback preserves minimum real content width 645",
         "batch3 sidebar width fallback preserves minimum real content width 646",
         "batch3 sidebar width fallback preserves minimum real content width 800",
         "batch3 sidebar width fallback preserves minimum real content width 1920",
-        "batch3 localized job resource and all enum/command reasons ChineseSimplified",
-        "batch3 localized job resource and all enum/command reasons ChineseTraditional",
-        "batch3 localized job resource and all enum/command reasons English",
-        "batch3 localized job resource and all enum/command reasons Russian",
-        "passive refusal translated messages and exact language mirror ChineseSimplified",
-        "passive refusal translated messages and exact language mirror ChineseTraditional",
-        "passive refusal translated messages and exact language mirror English",
-        "passive refusal translated messages and exact language mirror Russian",
-        "composite independent text keys and mirror ChineseSimplified",
-        "composite independent text keys and mirror ChineseTraditional",
-        "composite independent text keys and mirror English",
-        "composite independent text keys and mirror Russian",
         "composite b4 real continuous independent text ChineseSimplified/C-A-S2-N",
         "composite b4 real continuous independent text ChineseSimplified/C-A-S2-M",
         "composite b4 real continuous independent text ChineseSimplified/C-A-S3-N",
@@ -1113,10 +952,6 @@
         "composite b4 real continuous independent text Russian/C-AB-S3-M",
         "composite b4 real continuous independent text Russian/C-AB-S4-N",
         "composite b4 real continuous independent text Russian/C-AB-S4-M",
-        "social command localized placeholders and mirrors ChineseSimplified",
-        "social command localized placeholders and mirrors ChineseTraditional",
-        "social command localized placeholders and mirrors English",
-        "social command localized placeholders and mirrors Russian",
         "social grammar actual DefInjected and thirteen roots ChineseSimplified",
         "social grammar actual DefInjected and thirteen roots ChineseTraditional",
         "social grammar actual DefInjected and thirteen roots Russian",
@@ -1125,13 +960,8 @@
     },
     {
       "Name": "LowTechAdaptation",
-      "Kind": "Mixed",
-      "SpecialCases": [
-        "ChineseSimplified 新配方三项文本和现有配方名称齐全",
-        "ChineseTraditional 新配方三项文本和现有配方名称齐全",
-        "English 新配方三项文本和现有配方名称齐全",
-        "Russian 新配方三项文本和现有配方名称齐全"
-      ]
+      "Kind": "Core",
+      "SpecialCases": []
     },
     {
       "Name": "PersonalityMemories",
@@ -1145,42 +975,28 @@
     },
     {
       "Name": "PetSpecialization",
-      "Kind": "Mixed",
-      "SpecialCases": [
-        "亲昵效果使用原版Heart与30tick喷射，四语任务报告及镜像一致"
-      ]
+      "Kind": "Core",
+      "SpecialCases": []
     },
     {
       "Name": "PetAffectionFollowup",
-      "Kind": "Mixed",
-      "SpecialCases": [
-        "亲昵后续JobDef及四语任务报告和开始消息完整，镜像一致"
-      ]
+      "Kind": "Core",
+      "SpecialCases": []
     },
     {
       "Name": "PetCatAbility",
-      "Kind": "Mixed",
-      "SpecialCases": [
-        "技能、鼓舞、思绪与拒绝原因的四语和源码镜像完整"
-      ]
+      "Kind": "Core",
+      "SpecialCases": []
     },
     {
       "Name": "PetDogAbility",
-      "Kind": "Mixed",
-      "SpecialCases": [
-        "技能、任务和拒绝原因四语及镜像完整",
-        "训练任务、拒绝提示与双参数目标和成功提示四语镜像完整"
-      ]
+      "Kind": "Core",
+      "SpecialCases": []
     },
     {
       "Name": "CombatantSpecialization",
-      "Kind": "Mixed",
-      "SpecialCases": [
-        "猫狗终极化引导四语唯一、非空并与镜像一致",
-        "研究成本、前置与四语资源完整",
-        "终极定义与配方成本、八种凝胶及三语译文齐全",
-        "超频四语名称、效果与征召拒绝文本完整"
-      ]
+      "Kind": "Core",
+      "SpecialCases": []
     },
     {
       "Name": "PersonalityCardLayout",
@@ -1236,68 +1052,20 @@
         "ChineseSimplified 内容3 宽200 字宽1.8 无空栏、完整换行且不重叠",
         "ChineseSimplified 内容0 宽322 字宽1 无空栏、完整换行且不重叠",
         "ChineseSimplified 内容1 宽322 字宽1 无空栏、完整换行且不重叠",
-        "ChineseSimplified 内容2 宽322 字宽1 无空栏、完整换行且不重叠",
         "ChineseSimplified 内容3 宽322 字宽1 无空栏、完整换行且不重叠",
-        "ChineseSimplified 内容0 宽322 字宽1.8 无空栏、完整换行且不重叠",
-        "ChineseSimplified 内容1 宽322 字宽1.8 无空栏、完整换行且不重叠",
         "ChineseSimplified 内容2 宽322 字宽1.8 无空栏、完整换行且不重叠",
-        "ChineseSimplified 内容3 宽322 字宽1.8 无空栏、完整换行且不重叠",
-        "ChineseTraditional 内容0 宽200 字宽1 无空栏、完整换行且不重叠",
-        "ChineseTraditional 内容1 宽200 字宽1 无空栏、完整换行且不重叠",
         "ChineseTraditional 内容2 宽200 字宽1 无空栏、完整换行且不重叠",
-        "ChineseTraditional 内容3 宽200 字宽1 无空栏、完整换行且不重叠",
-        "ChineseTraditional 内容0 宽200 字宽1.8 无空栏、完整换行且不重叠",
-        "ChineseTraditional 内容1 宽200 字宽1.8 无空栏、完整换行且不重叠",
-        "ChineseTraditional 内容2 宽200 字宽1.8 无空栏、完整换行且不重叠",
         "ChineseTraditional 内容3 宽200 字宽1.8 无空栏、完整换行且不重叠",
         "ChineseTraditional 内容0 宽322 字宽1 无空栏、完整换行且不重叠",
-        "ChineseTraditional 内容1 宽322 字宽1 无空栏、完整换行且不重叠",
-        "ChineseTraditional 内容2 宽322 字宽1 无空栏、完整换行且不重叠",
-        "ChineseTraditional 内容3 宽322 字宽1 无空栏、完整换行且不重叠",
-        "ChineseTraditional 内容0 宽322 字宽1.8 无空栏、完整换行且不重叠",
         "ChineseTraditional 内容1 宽322 字宽1.8 无空栏、完整换行且不重叠",
-        "ChineseTraditional 内容2 宽322 字宽1.8 无空栏、完整换行且不重叠",
-        "ChineseTraditional 内容3 宽322 字宽1.8 无空栏、完整换行且不重叠",
-        "English 内容0 宽200 字宽1 无空栏、完整换行且不重叠",
         "English 内容1 宽200 字宽1 无空栏、完整换行且不重叠",
         "English 内容2 宽200 字宽1 无空栏、完整换行且不重叠",
-        "English 内容3 宽200 字宽1 无空栏、完整换行且不重叠",
-        "English 内容0 宽200 字宽1.8 无空栏、完整换行且不重叠",
-        "English 内容1 宽200 字宽1.8 无空栏、完整换行且不重叠",
-        "English 内容2 宽200 字宽1.8 无空栏、完整换行且不重叠",
         "English 内容3 宽200 字宽1.8 无空栏、完整换行且不重叠",
         "English 内容0 宽322 字宽1 无空栏、完整换行且不重叠",
-        "English 内容1 宽322 字宽1 无空栏、完整换行且不重叠",
-        "English 内容2 宽322 字宽1 无空栏、完整换行且不重叠",
-        "English 内容3 宽322 字宽1 无空栏、完整换行且不重叠",
-        "English 内容0 宽322 字宽1.8 无空栏、完整换行且不重叠",
-        "English 内容1 宽322 字宽1.8 无空栏、完整换行且不重叠",
-        "English 内容2 宽322 字宽1.8 无空栏、完整换行且不重叠",
-        "English 内容3 宽322 字宽1.8 无空栏、完整换行且不重叠",
-        "Russian 内容0 宽200 字宽1 无空栏、完整换行且不重叠",
         "Russian 内容1 宽200 字宽1 无空栏、完整换行且不重叠",
         "Russian 内容2 宽200 字宽1 无空栏、完整换行且不重叠",
-        "Russian 内容3 宽200 字宽1 无空栏、完整换行且不重叠",
-        "Russian 内容0 宽200 字宽1.8 无空栏、完整换行且不重叠",
-        "Russian 内容1 宽200 字宽1.8 无空栏、完整换行且不重叠",
-        "Russian 内容2 宽200 字宽1.8 无空栏、完整换行且不重叠",
         "Russian 内容3 宽200 字宽1.8 无空栏、完整换行且不重叠",
         "Russian 内容0 宽322 字宽1 无空栏、完整换行且不重叠",
-        "Russian 内容1 宽322 字宽1 无空栏、完整换行且不重叠",
-        "Russian 内容2 宽322 字宽1 无空栏、完整换行且不重叠",
-        "Russian 内容3 宽322 字宽1 无空栏、完整换行且不重叠",
-        "Russian 内容0 宽322 字宽1.8 无空栏、完整换行且不重叠",
-        "Russian 内容1 宽322 字宽1.8 无空栏、完整换行且不重叠",
-        "Russian 内容2 宽322 字宽1.8 无空栏、完整换行且不重叠",
-        "Russian 内容3 宽322 字宽1.8 无空栏、完整换行且不重叠",
-        "本地化键、镜像、占位参数及旧泌乳键复用：ChineseSimplified",
-        "本地化键、镜像、占位参数及旧泌乳键复用：ChineseTraditional",
-        "本地化键、镜像、占位参数及旧泌乳键复用：English",
-        "本地化键、镜像、占位参数及旧泌乳键复用：Russian",
-        "创建／手术与三态描述文案资源完整性：ChineseSimplified",
-        "创建／手术与三态描述文案资源完整性：ChineseTraditional",
-        "创建／手术与三态描述文案资源完整性：English",
-        "创建／手术与三态描述文案资源完整性：Russian",
         "长标题与开关译文按缩进宽度测量且无占位符泄漏"
       ]
     },
@@ -1306,29 +1074,19 @@
       "Kind": "Mixed",
       "SpecialCases": [
         "ChineseSimplified: XP 0 正常与窄栏区域容纳",
-        "ChineseSimplified: XP 11 正常与窄栏区域容纳",
         "ChineseSimplified: XP 12 正常与窄栏区域容纳",
-        "ChineseSimplified: XP 16 正常与窄栏区域容纳",
-        "ChineseSimplified: XP 39 正常与窄栏区域容纳",
         "ChineseSimplified: XP 40 正常与窄栏区域容纳",
-        "ChineseSimplified: XP 99 正常与窄栏区域容纳",
         "ChineseSimplified: XP 100 正常与窄栏区域容纳",
         "ChineseSimplified: 无记录不补建",
         "ChineseSimplified: 空壳保存阶段但停用加成",
-        "ChineseSimplified: 四语键/参数与镜像",
         "ChineseSimplified: 阶段短句与原版悬停组合",
         "ChineseSimplified: 升阶消息名称参数与定位",
         "ChineseTraditional: XP 0 正常与窄栏区域容纳",
-        "ChineseTraditional: XP 11 正常与窄栏区域容纳",
         "ChineseTraditional: XP 12 正常与窄栏区域容纳",
-        "ChineseTraditional: XP 16 正常与窄栏区域容纳",
-        "ChineseTraditional: XP 39 正常与窄栏区域容纳",
         "ChineseTraditional: XP 40 正常与窄栏区域容纳",
-        "ChineseTraditional: XP 99 正常与窄栏区域容纳",
         "ChineseTraditional: XP 100 正常与窄栏区域容纳",
         "ChineseTraditional: 无记录不补建",
         "ChineseTraditional: 空壳保存阶段但停用加成",
-        "ChineseTraditional: 四语键/参数与镜像",
         "ChineseTraditional: 阶段短句与原版悬停组合",
         "ChineseTraditional: 升阶消息名称参数与定位",
         "English: XP 0 正常与窄栏区域容纳",
@@ -1339,27 +1097,16 @@
         "English: XP 40 正常与窄栏区域容纳",
         "English: XP 99 正常与窄栏区域容纳",
         "English: XP 100 正常与窄栏区域容纳",
-        "English: 四语键/参数与镜像",
         "English: 阶段短句与原版悬停组合",
         "English: 升阶消息名称参数与定位",
         "Russian: XP 0 正常与窄栏区域容纳",
-        "Russian: XP 11 正常与窄栏区域容纳",
         "Russian: XP 12 正常与窄栏区域容纳",
-        "Russian: XP 16 正常与窄栏区域容纳",
-        "Russian: XP 39 正常与窄栏区域容纳",
         "Russian: XP 40 正常与窄栏区域容纳",
-        "Russian: XP 99 正常与窄栏区域容纳",
         "Russian: XP 100 正常与窄栏区域容纳",
         "Russian: 无记录不补建",
         "Russian: 空壳保存阶段但停用加成",
-        "Russian: 四语键/参数与镜像",
         "Russian: 阶段短句与原版悬停组合",
         "Russian: 升阶消息名称参数与定位",
-        "默认 Def 与简中注入一致且四语悬停字段镜像完整",
-        "ChineseSimplified 通用原因键完整且资源镜像一致",
-        "ChineseTraditional 通用原因键完整且资源镜像一致",
-        "English 通用原因键完整且资源镜像一致",
-        "Russian 通用原因键完整且资源镜像一致",
         "浪漫双板块 ChineseSimplified/260 边界/长姓名/长译文不重叠",
         "浪漫双板块 ChineseSimplified/352 边界/长姓名/长译文不重叠",
         "浪漫双板块 ChineseSimplified/560 边界/长姓名/长译文不重叠",
@@ -1406,30 +1153,18 @@
     },
     {
       "Name": "TrainerIdentity",
-      "Kind": "Mixed",
-      "SpecialCases": [
-        "主人准入和设置提示四语完整，根目录与源码镜像一致",
-        "四语成长文案键与占位符完整且镜像一致",
-        "训导官反馈真实定义及四语镜像完整，职责心情单份一天且评价为条件好感",
-        "任职信任定义与四语文案完整：条件性心情显式声明 Thought_Situational",
-        "阶段 5 训导官菜单、状态和原因四语键一致",
-        "训导官三类健康状态及普通阶段均有完整注入翻译",
-        "四语新文案键及参数一致"
-      ]
+      "Kind": "Core",
+      "SpecialCases": []
     },
     {
       "Name": "MasterQualificationItem",
-      "Kind": "Mixed",
-      "SpecialCases": [
-        "四语物品、按钮、拒绝和提示完整且镜像一致"
-      ]
+      "Kind": "Core",
+      "SpecialCases": []
     },
     {
       "Name": "MasterEntry",
-      "Kind": "Mixed",
-      "SpecialCases": [
-        "四语任务按钮与拒绝文案齐全，语言镜像一致"
-      ]
+      "Kind": "Core",
+      "SpecialCases": []
     },
     {
       "Name": "TrainerIntegration",
@@ -1438,24 +1173,19 @@
     },
     {
       "Name": "TrainerTrainingMemories",
-      "Kind": "Mixed",
-      "SpecialCases": [
-        "定义镜像与四语文案：键集与占位符一致"
-      ]
+      "Kind": "Core",
+      "SpecialCases": []
     },
     {
       "Name": "RestrictionCore",
       "Kind": "Mixed",
       "SpecialCases": [
         "XML definitions are valid and source/runtime copies match",
-        "Test interface translations cover controls and enum results in both shipped languages",
         "Consensual toggle preserves each target choice through repeated disable and save reload",
         "Old three-state saves infer target preference without changing permission",
         "Preference cannot permit disabled activity or override equipment and owner semantics",
         "Independent default copies retain their target preference without sharing future changes",
-        "Malformed display preference falls back narrowly without changing the actual rule",
-        "First binding diagnostics have four-language translations and matching mirrors",
-        "Training identity and explicit recovery translations ship in all four languages with matching mirrors"
+        "Malformed display preference falls back narrowly without changing the actual rule"
       ]
     },
     {
@@ -1467,8 +1197,7 @@
       "Name": "SharedBed",
       "Kind": "Mixed",
       "SpecialCases": [
-        "四语双标签均保留姓名起点并避开按钮",
-        "四种界面翻译键完整且参数匹配"
+        "四语双标签均保留姓名起点并避开按钮"
       ]
     },
     {
@@ -1587,10 +1316,6 @@
         "optimization: diagnostic count matches full query on dead",
         "optimization: diagnostic count matches full query on duplicate",
         "optimization: diagnostic count matches full query on stale",
-        "resources: keys placeholders and mirror ChineseSimplified",
-        "resources: keys placeholders and mirror ChineseTraditional",
-        "resources: keys placeholders and mirror English",
-        "resources: keys placeholders and mirror Russian",
         "resources: all structured state keys exist"
       ]
     }

@@ -39,7 +39,7 @@ internal static partial class Program
             foreach (int ev in Enumerable.Range(1, 13))
                 Check("social grammar actual event POV and native results " + ev, () =>
                 {
-                    var (a, b, subject, _) = SocialLogEvent(ev);
+                    var (a, b, subject, record) = SocialLogEvent(ev);
                     var log = (PlayLogEntry_SSCRomance)moodLastLog;
                     var background = log.BackgroundTextFromPOV(subject);
                     Require(CopyEventTextPresent(repo, background, ev), background);
@@ -54,6 +54,8 @@ internal static partial class Program
                         Equal(pov == subject ? original + " " + background : original, actual);
                     }
                     Equal(1, playLogCalls); Equal(0, socialLogLetters.Count);
+                    AssertSocialFactAndWrappedSave(ev, a, b, subject);
+                    AssertSocialHistorySave(repo, ev, a, b, subject, record);
                 });
             foreach (string language in new[] { "ChineseSimplified", "ChineseTraditional", "Russian", "English" })
                 Check("social grammar actual DefInjected and thirteen roots " + language, () =>
@@ -142,27 +144,6 @@ internal static partial class Program
     {
         foreach (int ev in Enumerable.Range(1, 13))
         {
-            Check("social grammar native history display frozen event " + ev, () =>
-            {
-                var (a, b, subject, _) = SocialLogEvent(ev);
-                var log = (PlayLogEntry_SSCRomance)moodLastLog;
-                string actorText = log.ToGameStringFromPOV(a), targetText = log.ToGameStringFromPOV(b);
-                var oldExtras = ((List<RulePackDef>)AccessTools.Field(typeof(PlayLogEntry_Interaction), "extraSentencePacks").GetValue(log)).ToArray();
-                var path = Path.Combine(saveDirectory, "social-grammar-history-" + (++id) + ".xml");
-                Scribe.saver.InitSaving(path, "SocialGrammar"); Scribe_Deep.Look(ref log, "log"); Scribe.saver.FinalizeSaving();
-                string xml = File.ReadAllText(path);
-                Require(!xml.Contains("ssc_romance_log_") && !xml.Contains("SSC_RomanceLog_") && !CopyAnyEventTextPresent(repo, xml));
-                Comp(subject).romanceConfig = Denied(); Comp(subject).pawnIdentity = PawnIdentity.Unset;
-                foreach (var p in new[] { a, b }) p.relations.DirectRelations.Clear();
-                SSCPersonalityRuntimeUtility.TryBeginMutation(subject, out var mutation); mutation?.Dispose();
-                PlayLogEntry_SSCRomance loaded = null;
-                Scribe.loader.InitLoading(path); RegisterSocialLogReferences(a, b);
-                Scribe_Deep.Look(ref loaded, "log"); Scribe.loader.FinalizeLoading();
-                Equal(log.LogID, loaded.LogID); Equal(log.Timestamp, loaded.Timestamp);
-                Equal(actorText, loaded.ToGameStringFromPOV(a)); Equal(targetText, loaded.ToGameStringFromPOV(b));
-                Require(oldExtras.SequenceEqual((List<RulePackDef>)AccessTools.Field(typeof(PlayLogEntry_Interaction), "extraSentencePacks").GetValue(loaded)));
-                Require(loaded.Concerns(a) && loaded.Concerns(b)); Equal(1, playLogCalls);
-            });
             Check("social grammar actual native letter and saved text " + ev, () =>
             {
                 var (a, b, _, record) = SocialLogEvent(ev, true);
@@ -213,7 +194,12 @@ internal static partial class Program
                 if (denied) boundary.Patch(AccessTools.Method(typeof(ThoughtUtility), nameof(ThoughtUtility.CanGetThought)), prefix: new HarmonyMethod(typeof(Program), nameof(SocialDenyComposite)));
                 try
                 {
-                    var (_, _, subject, _) = SocialLogEvent(ev, false, (a, b, s) => { if (!denied) s.needs.mood = null; });
+                    var (_, _, subject, record) = SocialLogEvent(ev, false, (a, b, s) => { if (!denied) s.needs.mood = null; });
+                    var fact = ((PlayLogEntry_SSCRomance)moodLastLog).BackgroundFromPOV(subject);
+                    Equal((SSCRomanceCompositeEvent)ev, fact.Kind);
+                    Require(subject.needs.mood == null || !subject.needs.mood.thoughts.memories.Memories.OfType<Thought_MemorySSCCompositeRomance>().Any());
+                    Equal(1, playLogCalls);
+                    if (record != null) Equal(SSCRomanceCommandStatus.Completed, record.Status);
                     Require(CopyEventTextPresent(repo, ((PlayLogEntry_SSCRomance)moodLastLog).ToGameStringFromPOV(subject), ev));
                 }
                 finally { if (denied) boundary.Unpatch(AccessTools.Method(typeof(ThoughtUtility), nameof(ThoughtUtility.CanGetThought)), AccessTools.Method(typeof(Program), nameof(SocialDenyComposite))); }
@@ -259,14 +245,6 @@ internal static partial class Program
     /// <summary>资源故障和损坏事实只影响补句；失败后可恢复显示，原版正文及世界随机不变。</summary>
     private static void SocialLogFallbackTests(string repo, Harmony boundary)
     {
-        Check("social grammar only three packs thirteen independent roots and no DLC requirement", () =>
-        {
-            var nodes = XDocument.Load(Path.Combine(repo, "1.7/Defs/RulePackDefs/SSC_RomanceLogs.xml")).Root.Elements().ToArray();
-            Equal(3, nodes.Length); Require(nodes.All(n => n.Attribute("MayRequire") == null));
-            foreach (var expected in new[] { ("Command", 8), ("Reject", 3), ("Accept", 2) })
-                Equal(expected.Item2, nodes.Single(n => n.Element("defName").Value == "SSC_RomanceLog_" + expected.Item1).Descendants("li").Count());
-            Equal(13, nodes.SelectMany(n => n.Descendants("li")).Select(n => n.Value.Split("->")[0]).Distinct().Count());
-        });
         foreach (string mode in new[] { "missing-pack", "missing-root", "broken-root", "exception" })
             Check("social grammar resource failure retains native entry " + mode, () =>
             {

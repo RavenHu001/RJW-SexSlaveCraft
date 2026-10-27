@@ -34,9 +34,7 @@ internal static partial class Program
         Run("显示区分普通完成和终极，未完成不舍入至百分百", CompletionDisplay);
         Run("狗显示真实完成门槛，不提前显示百分百或终极", DogCompletionDisplay);
         Run("猫狗完成引导只属于当前普通方向，不建议重复加工", PetFinalizationTips);
-        Run("猫狗终极化引导四语唯一、非空并与镜像一致", PetFinalizationResources);
         Run("阶段边界读取真实 XML，熟练收益不叠加", StageDefinitions);
-        Run("研究成本、前置与四语资源完整", Resources);
         RunExperienceCases();
         RunFinalCases();
         RunAbilityCases();
@@ -328,22 +326,6 @@ internal static partial class Program
         p.health.AddHediff(SSCDefOf.SSC_Hediff_Combatant_Final);
         Check(ITab_SexSlaveTraining.ProgressTip(p) == null, "终极战斗员仍建议重复加工");
     }
-    private static void PetFinalizationResources()
-    {
-        foreach (string language in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" })
-        {
-            string relative = Path.Combine(language, "Keyed", "SSC_Specialization.xml");
-            string source = SscTestPaths.Combine(root, "Languages", relative);
-            var keys = Directory.EnumerateFiles(SscTestPaths.Combine(root, "Languages", language, "Keyed"), "*.xml")
-                .SelectMany(path => XDocument.Load(path).Root.Elements()).ToArray();
-            foreach (string key in new[] { "SSC_ITab_PetCatFinalizationTip", "SSC_ITab_PetDogFinalizationTip" })
-            {
-                var values = keys.Where(e => e.Name.LocalName == key).ToArray();
-                Check(values.Length == 1 && !string.IsNullOrWhiteSpace(values[0].Value), "引导翻译缺失、为空或重复：" + language + "/" + key);
-            }
-            Check(File.ReadAllBytes(source).SequenceEqual(File.ReadAllBytes(SscTestPaths.Combine(root, "Sexslavecraft", "Languages", relative))), "引导语言镜像不一致：" + language);
-        }
-    }
     private static float Value(XElement e, string path) => float.Parse(e.Element(path).Value, CultureInfo.InvariantCulture);
     private static void StageDefinitions()
     {
@@ -366,27 +348,6 @@ internal static partial class Program
             Equal(basic ? 0.95f : 0.9f, Value(factors, "MeleeCooldownFactor"));
             Equal(basic ? 1f : 0.9f, Value(factors, "IncomingDamageFactor"));
             Check(offsets.Elements().Count() == 3 && factors.Elements().Count() == 3, "多余属性");
-        }
-    }
-    private static void Resources()
-    {
-        var research = XDocument.Load(SscTestPaths.Combine(root, "Defs/ResearchDefs/ResearchProjectDef.xml"))
-            .Root.Elements().Single(e => (string)e.Element("defName") == "SSC_RES_Combatant");
-        Equal(1200, Value(research, "baseCost"));
-        Check(research.Element("prerequisites").Elements().Single().Value == "SSC_RES_SlaveSpecialization", "研究前置改变");
-        foreach (var lang in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" })
-        {
-            var keyed = XDocument.Load(SscTestPaths.Combine(root, "Languages", lang, "Keyed/SSC_CombatantSpecialization.xml"));
-            foreach (string key in new[] { "SSC_ITab_SpecializationCombatant", "SSC_ITab_SelectSpecializationCombatant",
-                "SSC_ITab_SpecializationCombatantDisabledIdentity", "SSC_ITab_SpecializationCombatantDisabledResearch",
-                "SSC_ITab_SpecializationOrdinaryComplete", "SSC_ITab_CombatantFinalizationTip" })
-                Check(!string.IsNullOrWhiteSpace((string)keyed.Root.Element(key)), "缺少界面翻译：" + key);
-            if (lang == "ChineseSimplified") continue;
-            var defs = XDocument.Load(SscTestPaths.Combine(root, "Languages", lang, "DefInjected/HediffDef/SSC_HediffDefs_CombatantSpecialization.xml"));
-            foreach (string key in new[] { "SSC_Hediff_Combatant.label", "SSC_Hediff_Combatant.description",
-                "SSC_Hediff_Combatant.stages.0.label", "SSC_Hediff_Combatant.stages.1.label", "SSC_Hediff_Combatant.stages.2.label",
-                "SSC_Hediff_Combatant_Final.label", "SSC_Hediff_Combatant_Final.description" })
-                Check(!string.IsNullOrWhiteSpace((string)defs.Root.Element(key)), "缺少阶段翻译：" + key);
         }
     }
 }

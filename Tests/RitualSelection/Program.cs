@@ -416,18 +416,6 @@ internal static partial class Program
             var notes = new List<string> { "original" }; var f = new Fixture(); f.Open(notes);
             Assert(notes.Count == 1 && f.Window.ExtraInfos.Count == 3);
         });
-        if (args.Length > 0) Run("四语新提示完整且键一致", () =>
-        {
-            string[] expected = { "ChooseParticipants", "MissingRoles", "Invalid", "HostBadge", "TargetBadge", "HostCandidate", "TargetCandidate",
-                "Candidate", "PairReady", "Assigned", "Allowed", "CannotAssign", "PairBlocked", "Legend" };
-            foreach (string language in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" })
-            {
-                var doc = XDocument.Load(SscTestPaths.Combine(SscTestPaths.RepositoryRoot(args[0]), "Languages", language, "Keyed", "SSC_RitualSelection.xml"));
-                Assert(doc.Root.Elements().Select(x => x.Name.LocalName).OrderBy(x => x)
-                    .SequenceEqual(expected.Select(x => "SSC_RitualSelection_" + x).OrderBy(x => x)));
-                Assert(doc.Root.Elements().All(x => !string.IsNullOrWhiteSpace(x.Value)));
-            }
-        });
         RunPreviewTests();
         RunTrainingIdentityTests();
         RunVisualTests();

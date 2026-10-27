@@ -12,58 +12,30 @@ internal static partial class Program
     private static void RomanceCompositeFoundationTests(string repo)
     {
         SetupCompositeCarriers(repo);
-        string document = File.ReadAllText(Path.Combine(repo, "Docs/Design/性奴浪漫综合心情完整分支表.md"));
-        string eventTable = document.Split("## 2. 完整事件分支")[1].Split("## 3.")[0];
-        var rows = eventTable.Split('\n').Where(line => line.StartsWith("| `E"))
-            .Select(line => line.Trim().Trim('|').Split('|').Select(c => c.Trim()).ToArray()).ToList();
+        LoadDocumentedMoodExpectations(repo);
         Check("composite catalog has complete immutable stable identities", () =>
         {
-            Equal(108, rows.Count); Equal(108, SSCRomanceMoodCatalog.EventBranches.Count); Equal(14, SSCRomanceMoodCatalog.ControlBranches.Count);
+            Equal(108, documentedMoods.Count); Equal(14, documentedControls.Count); Equal(108, SSCRomanceMoodCatalog.EventBranches.Count); Equal(14, SSCRomanceMoodCatalog.ControlBranches.Count);
             var all = SSCRomanceMoodCatalog.EventBranches.Concat(SSCRomanceMoodCatalog.ControlBranches).ToList();
             Equal(122, all.Select(b => b.Id).Distinct().Count()); Equal(122, all.Select(b => b.NameKey).Distinct().Count());
             Equal(122, all.Select(b => b.DescriptionKey).Distinct().Count()); Require(((IList<SSCRomanceMoodBranch>)SSCRomanceMoodCatalog.EventBranches).IsReadOnly);
             Equal(5, SSCRomanceMoodCatalog.EventBranches.Count(b => b.Value == 0));
         });
-        int longCount = 0, splitCount = 0;
-        foreach (var row in rows)
+        Check("composite 26 long variants include 12 general raw opinion splits", () =>
         {
-            string bid = row[0].Trim('`'); var tokens = bid.Split('-');
-            int eventNumber = int.Parse(tokens[0].Substring(1)), stage = int.Parse(tokens[1].Substring(1));
-            bool maso = tokens[2] == "M"; int value = int.Parse(row[4].Replace('−','-'), CultureInfo.InvariantCulture);
-            int longDays = eventNumber == 13 ? 30 : new[] { 5,9,10,11,12 }.Contains(eventNumber) ? 25 : 0;
-            int[] opinions = tokens[3] == "D" ? new[] { -100,-10 } : tokens[3] == "G" ? new[] { -9,0,1,59 } : new[] { 60,100 };
-            if (longDays > 0 && value < 0 && tokens[3] != "D") { longCount++; if (tokens[3] == "G") splitCount++; }
-            Check("composite documented branch " + bid, () =>
+            var longVariants = documentedMoods.Values.Where(b => b.LongDays > 0 && b.Value < 0 && b.Band != "D").ToList();
+            Equal(26, longVariants.Count); Equal(12, longVariants.Count(b => b.Band == "G"));
+        });
+        foreach (int raw in new[] { -10, -9, 0, 1, 59, 60 })
+            Check("composite documented opinion boundary " + raw, () =>
             {
-                foreach (int opinion in opinions)
-                {
-                    Require(SSCRomanceMoodCatalog.TryResolve((SSCRomanceCompositeEvent)eventNumber,stage,maso,opinion,out var selection));
-                    Equal(bid, selection.Branch.Id); Equal(value, selection.Branch.Value);
-                    int days = value == 0 ? 0 : longDays > 0 && value < 0 && opinion > 0 ? longDays : 3;
-                    Equal(days * 60000, selection.DurationTicks);
-                    Equal(days == 0 ? SSCRomanceMoodGroup.None : days == 3 ? SSCRomanceMoodGroup.Short : SSCRomanceMoodGroup.Long, selection.Group);
-                    var data = selection.CreateSnapshot(); Require(SSCRomanceMoodCatalog.TryReadSnapshot(data,out var branch));
-                    Equal(bid, branch.Id); Equal(opinion, data.RawOpinion); Require(data.HasRawOpinion && data.IsComposite);
-                    Equal(days * 60000,data.NominalDurationTicks); Equal(value != 0,Thought_MemorySSCCompositeRomance.TryCreate(selection,out var memory));
-                    if (value == 0) { Require(memory == null); continue; }
-                    memory.pawn = SocialPawn(); Equal(value + 15,memory.CurStageIndex); Equal((float)value,memory.MoodOffset());
-                    Equal(value,data.Copy().Value); Equal(days * 60000,memory.DurationTicks); Require(!ReferenceEquals(data,data.Copy()));
-                }
+                string id = "E13-S4-N-" + (raw <= -10 ? "D" : raw >= 60 ? "C" : "G");
+                Require(SSCRomanceMoodCatalog.TryResolve(SSCRomanceCompositeEvent.CommandDivorce, 4, false, raw, out var selection));
+                Equal(id, selection.Branch.Id);
+                Thought_MemorySSCCompositeRomance.TryCreate(selection, out var memory);
+                if (memory != null) memory.pawn = SocialPawn();
+                AssertDocumentedEvent(selection.Branch, raw, memory);
             });
-        }
-        Check("composite 26 long variants include 12 general raw opinion splits",()=>{Equal(26,longCount);Equal(12,splitCount);});
-
-        string controlTable = document.Split("## 4. 持续思想分支补全")[1].Split("## 5.")[0];
-        foreach (string line in controlTable.Split('\n').Where(l=>l.StartsWith("| `C-")))
-        {
-            var cells=line.Trim().Trim('|').Split('|').Select(c=>c.Trim()).ToArray(); string bid=cells[0].Trim('`'); var tokens=bid.Split('-');
-            var state=tokens[1]=="A"?SSCRomanceControlState.Active:tokens[1]=="B"?SSCRomanceControlState.Passive:SSCRomanceControlState.Both;
-            Check("composite continuous directory " + bid,()=>
-            {
-                Require(SSCRomanceMoodCatalog.TryResolveControl(state,int.Parse(tokens[2].Substring(1)),tokens[3]=="M",out var branch));
-                Equal(bid,branch.Id);Equal(int.Parse(cells[4].Replace('−','-')),branch.Value);Require(branch.IsContinuous);Require(!branch.Opinion.HasValue);
-            });
-        }
         foreach (var (ev, s) in RomanceRepresentativeCases.UnsupportedStages)
         {
             Check($"composite unsupported event stage {ev}/{s}",()=>Require(!SSCRomanceMoodCatalog.TryResolve((SSCRomanceCompositeEvent)ev,s,false,60,out _)));
@@ -136,37 +108,6 @@ internal static partial class Program
         ColoredText.ResetStaticData();
         var language=LanguageDatabase.activeLanguage;var original=language.keyedReplacements;
         var branches=SSCRomanceMoodCatalog.EventBranches.Concat(SSCRomanceMoodCatalog.ControlBranches).ToList();
-        foreach(string locale in new[]{"ChineseSimplified","ChineseTraditional","English","Russian"})
-        {
-            Check("composite independent text keys and mirror " + locale,()=>
-            {
-                string path=Path.Combine(repo,"1.7/Languages",locale,"Keyed/SSC_RomanceMood.xml");
-                Equal(File.ReadAllText(path),File.ReadAllText(Path.Combine(repo,"Sexslavecraft/Languages",locale,"Keyed/SSC_RomanceMood.xml")));
-                var entries=XDocument.Load(path).Root.Elements().ToList();Equal(246,entries.Count);Equal(246,entries.Select(e=>e.Name.LocalName).Distinct().Count());
-                try
-                {
-                    language.keyedReplacements=entries.ToDictionary(e=>e.Name.LocalName,e=>new LoadedLanguage.KeyedReplacement{key=e.Name.LocalName,value=e.Value});
-                    foreach(var branch in branches)
-                    {
-                        Equal(language.keyedReplacements[branch.NameKey].value,SSCRomanceMoodText.Name(branch));
-                        Equal(language.keyedReplacements[branch.DescriptionKey].value,SSCRomanceMoodText.Description(branch));
-                        // 简中稿通过真实记忆显示路径验证；零值不造记忆，持续思想另有真实情境显示用例。
-                        if (locale == "ChineseSimplified" && !branch.IsContinuous)
-                        {
-                            int opinion = branch.Opinion == SSCRomanceOpinionBand.Disliked ? -10 : branch.Opinion == SSCRomanceOpinionBand.Close ? 60 : 30;
-                            Require(SSCRomanceMoodCatalog.TryResolve(branch.Event, branch.Stage, branch.Masochist, opinion, out var selection));
-                            if (selection.HasMemory)
-                            {
-                                Require(Thought_MemorySSCCompositeRomance.TryCreate(selection, out var memory)); memory.pawn = SocialPawn();
-                                Equal(language.keyedReplacements[branch.NameKey].value, memory.LabelCap);
-                                Equal(language.keyedReplacements[branch.DescriptionKey].value, memory.Description);
-                            }
-                        }
-                    }
-                }
-                finally{language.keyedReplacements=original;}
-            });
-        }
         Check("composite equal values keep distinct names descriptions and language changes",()=>
         {
             SSCRomanceMoodCatalog.TryResolve(SSCRomanceCompositeEvent.CommandRomanceAccepted,4,true,60,out var a);

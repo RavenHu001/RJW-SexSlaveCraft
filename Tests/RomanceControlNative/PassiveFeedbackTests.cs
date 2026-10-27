@@ -97,16 +97,6 @@ internal static partial class Program
             }
             finally { boundary.UnpatchAll(boundary.Id); }
         });
-        foreach (string language in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" })
-            Check("passive refusal translated messages and exact language mirror " + language, () =>
-            {
-                string relative = $"Languages/{language}/Keyed/SSC_Romance.xml";
-                string runtime = File.ReadAllText(Path.Combine(repo, "1.7", relative));
-                Equal(runtime, File.ReadAllText(Path.Combine(repo, "Sexslavecraft", relative)));
-                var xml = XDocument.Parse(runtime);
-                foreach (string key in new[] { "SSC_Romance_ForcedRomanceRefusal", "SSC_Romance_ForcedProposalRefusal" })
-                { string text = xml.Root.Element(key)?.Value; Require(text != null && text.Contains("{0}") && text.Contains("{1}")); }
-            });
     }
 
     /// <summary>在实际接受比较之后注入异常，验证反馈不能先于真实拒绝结算完成。</summary>

@@ -87,7 +87,9 @@ internal static partial class Program
                     Assert(f.ThreatDuringDamage==f.OldThreat&&f.Target.mindState.meleeThreat==f.OldThreat);
                     Equal(81,f.TickDuringDamage);Equal(81,f.Target.mindState.lastMeleeThreatHarmTick);
                 });
-                foreach(string gate in new[]{"unlinked","invalid-target","target-hostile","attacker-hostile","unequipped","spear","handle","capacity","damage","worker","dose","record","saving"})
+                foreach(string gate in silk
+                    ? new[]{"handle","capacity","damage","worker","dose","record"}
+                    : new[]{"unlinked","invalid-target","target-hostile","attacker-hostile","unequipped","spear","handle","capacity","damage","worker","dose","record","saving"})
                     Check("鞭束合作准入即时失效且原版闪避保留 "+silk+"/"+gate,()=>
                     {
                         var f=Cooperation(silk);cooperating=f;

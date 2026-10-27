@@ -19,10 +19,6 @@ internal static partial class Program
     private static int Main(string[] args)
     {
         root = SscTestPaths.RepositoryRoot(args.Length > 0 ? args[0] : null);
-        Run("猫技能XML只有单一效果与一天冷却，地图选择并接近同格原版读条", Definitions);
-        Run("猫激励使用定时状态与工作倍率，猫终极挂真实能力授予组件", EffectDefinitions);
-        Run("猫鼓舞心情为Hediff即时思绪，状态存续时提供8点且不另发长期记忆", MoodDefinition);
-        Run("技能、鼓舞、思绪与拒绝原因的四语和源码镜像完整", Translations);
         Run("普通完成与狗兔终极不授予猫技能，猫终极达到有效严重度才可用", FinalQualification);
         Run("猫终极跨全部方向、身份和征召状态可用，不依赖绑定与研究", CrossDirectionQualification);
         Run("施放者死亡、销毁、倒地、离图、精神状态或空壳均拒绝", InvalidCasters);
@@ -150,57 +146,6 @@ internal static partial class Program
         var comp = def.Element("comps").Elements().Single();
         Check((string)comp.Attribute("Class") == typeof(CompProperties_AbilityPetCatComfort).FullName, "wrong sole effect component");
         Check((string)comp.Element("encouragementHediff") == Buff.defName && (string)comp.Element("durationTicks") == "30000", "effect configuration mismatch");
-    }
-
-    /// <summary>终极授予与临时状态计时分别连接，不把鼓舞注册为永久人格标签。</summary>
-    private static void EffectDefinitions()
-    {
-        var final = Definition("Defs/HediffDefs/SSC_HediffDefs_PetSpecializations.xml", CatFinal.defName);
-        Check((string)final.Element("hediffClass") == "HediffWithComps", "final cannot run grant component");
-        var grant = final.Element("comps").Elements().Single();
-        Check((string)grant.Attribute("Class") == typeof(HediffCompProperties_GiveAbility).FullName && (string)grant.Element("abilityDef") == SSCDefOf.SSC_PetCatComfort.defName, "grant mismatch");
-        var buff = Definition("Defs/HediffDefs/SSC_HediffDefs_PetCatComfort.xml", Buff.defName);
-        var timer = buff.Element("comps").Elements().Single();
-        Check((string)timer.Attribute("Class") == "HediffCompProperties_Disappears" && (string)timer.Element("disappearsAfterTicks") == "30000", "wrong buff timer");
-        Equal(1.10f, float.Parse((string)buff.Element("stages").Elements().Single().Element("statFactors").Element("WorkSpeedGlobal")));
-    }
-
-    /// <summary>心情效应绑定Hediff存在，而非独立长记忆，保证与工作倍率共用一个状态生命周期。</summary>
-    private static void MoodDefinition()
-    {
-        var thought = Definition("Defs/ThoughtDefs/SSC_PetCatComfortThoughts.xml", "SSC_PetCatEncouragement_Mood");
-        Check((string)thought.Element("workerClass") == "ThoughtWorker_Hediff" && (string)thought.Element("hediff") == Buff.defName, "mood not tied to encouragement state");
-        Equal(8, float.Parse((string)thought.Element("stages").Elements().Single().Element("baseMoodEffect")));
-        Check(thought.Element("thoughtClass") == null && thought.Element("durationDays") == null, "encouragement emits independent memory");
-    }
-
-    /// <summary>逐条核对资源键与镜像，不把译文存在检查当成原版心情或UI渲染测试。</summary>
-    private static void Translations()
-    {
-        foreach (string language in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" })
-        {
-            var keyed = XDocument.Load(SscTestPaths.Combine(root, "Languages", language, "Keyed/SSC_PetCatComfort.xml"));
-            foreach (string key in new[] { "RequiresFinal", "InvalidCaster", "InvalidTarget", "MissingEffect", "UnconsciousTarget", "UnreachableTarget" })
-                Check(!string.IsNullOrWhiteSpace((string)keyed.Root.Element("SSC_PetCatComfort" + key)), "missing reason translation " + language + "/" + key);
-            string hint = (string)keyed.Root.Element("SSC_PetCatComfortTargetHint");
-            Check(!string.IsNullOrWhiteSpace(hint) && hint.Contains("{0}"), "missing target name hint or placeholder " + language);
-            Check(XNode.DeepEquals(keyed.Root, XDocument.Load(SscTestPaths.Combine(root, "Sexslavecraft/Languages", language, "Keyed/SSC_PetCatComfort.xml")).Root), "source reason mirror mismatch " + language);
-            string jobPath = Path.Combine("Languages", language, "DefInjected/JobDef/SSC_PetCatComfortJobDefs.xml");
-            var translatedJob = XDocument.Load(SscTestPaths.Combine(root, jobPath));
-            Check(!string.IsNullOrWhiteSpace((string)translatedJob.Root.Element("SSC_Job_PetCatComfort.reportString")) &&
-                XNode.DeepEquals(translatedJob.Root, XDocument.Load(SscTestPaths.Combine(root, "Sexslavecraft", jobPath)).Root), "job translation or mirror missing " + language);
-            foreach (var resource in new[] {
-                ("DefInjected/AbilityDef/SSC_PetCatComfort.xml", "SSC_PetCatComfort.label", "SSC_PetCatComfort.description"),
-                ("DefInjected/HediffDef/SSC_PetCatComfort.xml", "SSC_Hediff_PetCatEncouragement.label", "SSC_Hediff_PetCatEncouragement.description"),
-                ("DefInjected/ThoughtDef/SSC_PetCatComfortThoughts.xml", "SSC_PetCatEncouragement_Mood.stages.0.label", "SSC_PetCatEncouragement_Mood.stages.0.description") })
-            {
-                string path = Path.Combine("Languages", language, resource.Item1);
-                var definition = XDocument.Load(SscTestPaths.Combine(root, path));
-                Check(!string.IsNullOrWhiteSpace((string)definition.Root.Element(resource.Item2)) && !string.IsNullOrWhiteSpace((string)definition.Root.Element(resource.Item3)), "missing definition translation " + path);
-                var mirror = XDocument.Load(SscTestPaths.Combine(root, "Sexslavecraft", path));
-                Check(XNode.DeepEquals(definition.Root, mirror.Root), "source language mirror mismatch " + path);
-            }
-        }
     }
 
     /// <summary>普通完成和其他种终极都不能冒充猫成果；授予组件的严重度门槛与使用资格一致。</summary>

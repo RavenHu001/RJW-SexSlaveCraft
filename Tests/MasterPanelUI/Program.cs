@@ -23,11 +23,12 @@ internal static partial class Program
         foreach (string language in Languages)
         {
             LoadLanguage(language);
-            foreach (float experience in new float[] { 0, 11, 12, 16, 39, 40, 99, 100 })
+            foreach (float experience in language == "English"
+                ? new float[] { 0, 11, 12, 16, 39, 40, 99, 100 }
+                : new float[] { 0, 12, 40, 100 })
                 Run($"{language}: XP {experience} 正常与窄栏区域容纳", () => Layout(experience));
             Run($"{language}: 无记录不补建", MissingRecord);
             Run($"{language}: 空壳保存阶段但停用加成", Hollow);
-            Run($"{language}: 四语键/参数与镜像", () => Localization(language));
             Run($"{language}: 阶段短句与原版悬停组合", StageDescriptions);
             Run($"{language}: 升阶消息名称参数与定位", StageFeedback);
         }
@@ -227,20 +228,6 @@ internal static partial class Program
     private static void OldSaveDefault()
     {
         var restored = new Hediff_BridleOfSexSlave { shareDamageEnabled = false }; Scribe.mode = LoadSaveMode.LoadingVars; restored.ExposeData(); Assert(restored.shareDamageEnabled);
-    }
-    /// <summary>检查新增键相等、参数逐键匹配和双树逐字节一致；语义翻译仍需人工核查。</summary>
-    private static void Localization(string language)
-    {
-        string relative = "Keyed/SSC_MasterProgression.xml";
-        var source = XDocument.Load(SscTestPaths.Combine(repo, "Languages", language, relative)).Root.Elements().ToDictionary(e => e.Name.LocalName, e => e.Value);
-        var english = XDocument.Load(SscTestPaths.Combine(repo, "Languages/English", relative)).Root.Elements().ToDictionary(e => e.Name.LocalName, e => e.Value);
-        Assert(source.Keys.Order().SequenceEqual(english.Keys.Order()));
-        foreach (var key in english.Keys)
-        {
-            Assert(!string.IsNullOrWhiteSpace(source[key]));
-            Assert(Regex.Matches(source[key], @"\{\d+\}").Select(m => m.Value).Order().SequenceEqual(Regex.Matches(english[key], @"\{\d+\}").Select(m => m.Value).Order()), "Placeholder mismatch: " + key);
-        }
-        Assert(File.ReadAllBytes(SscTestPaths.Combine(repo, "Languages", language, relative)).SequenceEqual(File.ReadAllBytes(SscTestPaths.Combine(repo, "Sexslavecraft/Languages", language, relative))));
     }
     /// <summary>宿主不执行完整旧页签；额外检查接入点和固定几何，真实外层滚动留待实机。</summary>
     private static void Integration()

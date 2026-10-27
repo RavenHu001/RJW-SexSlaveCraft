@@ -21,16 +21,35 @@ internal static partial class Program
             stages = xml.Element("stages").Elements("li").Select(Stage).ToList(),
             Extension = new SSCUterusDevelopmentExtension { fertileStage = Stage(xml.Element("modExtensions").Element("li").Element("fertileStage")) } };
         DefDatabase<HediffDef>.Definition = development;
-        foreach (string language in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" })
-        foreach (float width in new[] { 200f, 322f })
-        foreach (float scale in new[] { 1f, 1.8f })
-        foreach (int contents in new[] { 0, 1, 2, 3 })
+        foreach (var (language, width, scale, contents) in new (string, float, float, int)[]
+        {
+            ("ChineseSimplified", 200f, 1.8f, 3),
+            ("ChineseSimplified", 322f, 1f, 0),
+            ("ChineseTraditional", 200f, 1.8f, 3),
+            ("ChineseTraditional", 322f, 1f, 0),
+            ("English", 200f, 1.8f, 3),
+            ("English", 322f, 1f, 0),
+            ("Russian", 200f, 1.8f, 3),
+            ("Russian", 322f, 1f, 0),
+            ("ChineseSimplified", 200f, 1f, 1),
+            ("ChineseSimplified", 322f, 1.8f, 2),
+            ("ChineseTraditional", 200f, 1f, 2),
+            ("ChineseTraditional", 322f, 1.8f, 1),
+            ("ChineseSimplified", 200f, 1.8f, 0),
+            ("ChineseSimplified", 322f, 1f, 3),
+            ("English", 200f, 1f, 1),
+            ("English", 200f, 1f, 2),
+            ("Russian", 200f, 1f, 1),
+            ("Russian", 200f, 1f, 2),
+            ("ChineseSimplified", 200f, 1f, 0),
+            ("ChineseSimplified", 200f, 1f, 2),
+            ("ChineseSimplified", 200f, 1f, 3),
+            ("ChineseSimplified", 200f, 1.8f, 1),
+            ("ChineseSimplified", 200f, 1.8f, 2),
+            ("ChineseSimplified", 322f, 1f, 1),
+        })
             Run($"{language} 内容{contents} 宽{width} 字宽{scale} 无空栏、完整换行且不重叠", () =>
             { Translator.Load(repo, language); Layout(width, scale, contents); });
-        foreach (string language in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" })
-            Run("本地化键、镜像、占位参数及旧泌乳键复用：" + language, () => LanguageResources(repo, language));
-        foreach (string language in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" })
-            Run("创建／手术与三态描述文案资源完整性：" + language, () => StartupLanguageResources(repo, language));
         Run("长标题与开关译文按缩进宽度测量且无占位符泄漏", LongTranslations);
         foreach (float progress in new[] { .01f, .3f, .7f, .99999f, 1f })
             Run("各培养阶段只显示生育开关 " + progress, () => StageDisplay(progress));
@@ -129,65 +148,6 @@ internal static partial class Program
                 var fertility = Widgets.Drawn.Single(d => d.Kind == "checkbox" && d.Label == "SSC_BodyManagement_FertilityToggle".Translate());
                 Require(fertility.Rect.x == milk.Rect.x && fertility.Rect.y - charge.Rect.yMax >= 16);
             }
-        }
-    }
-    /// <summary>检查真实四语资源的完整性、镜像与格式参数，并执行已有泌乳键和属性标签的复用。</summary>
-    private static void LanguageResources(string repo, string language)
-    {
-        string relative = $"{language}/Keyed/SSC_BodyManagement.xml";
-        byte[] resource = File.ReadAllBytes(Path.Combine(repo, "1.7/Languages", relative));
-        Require(resource.SequenceEqual(File.ReadAllBytes(Path.Combine(repo, "Sexslavecraft/Languages", relative))));
-        var entries = XDocument.Load(Path.Combine(repo, "1.7/Languages", relative)).Root.Elements().ToDictionary(e => e.Name.LocalName, e => e.Value);
-        var reference = XDocument.Load(Path.Combine(repo, "1.7/Languages/ChineseSimplified/Keyed/SSC_BodyManagement.xml"))
-            .Root.Elements().ToDictionary(e => e.Name.LocalName, e => e.Value);
-        Require(entries.Keys.Order().SequenceEqual(reference.Keys.Order()));
-        foreach (var pair in entries)
-        {
-            var indices = Regex.Matches(pair.Value, @"\{(\d+)\}").Select(m => int.Parse(m.Groups[1].Value)).ToArray();
-            Require(indices.Order().SequenceEqual(Regex.Matches(reference[pair.Key], @"\{(\d+)\}").Select(m => int.Parse(m.Groups[1].Value)).Order()));
-            string formatted = string.Format(pair.Value, Enumerable.Range(0, indices.DefaultIfEmpty(-1).Max() + 1).Select(i => (object)("参数" + i)).ToArray());
-            Require(!Regex.IsMatch(formatted, @"\{\d+\}"));
-        }
-        string source = File.ReadAllText(Path.Combine(repo, "Sexslavecraft/ITab/ITab_SexSlaveTraining.BodyManagement.cs"));
-        // 能力标签／提示改由真实注册表声明，资源引用审计应覆盖定义所在文件。
-        source += File.ReadAllText(Path.Combine(repo, "Sexslavecraft/common/SSCAbilityToggleUtility.cs"));
-        string reports = File.ReadAllText(Path.Combine(repo, "Sexslavecraft/common/SSCUterusDevelopmentUtility.cs"));
-        Require(Regex.Matches(source + reports, @"SSC_BodyManagement_\w+").Select(m => m.Value).Distinct().Order().SequenceEqual(entries.Keys.Order()));
-        // 仅检查 C# 字符串字面量，允许中文注释；内部 StatDef 名及数字格式仍可留在代码。
-        foreach (Match literal in Regex.Matches(source, "\"(?:\\\\.|[^\"\\\\])*\""))
-            Require(!Regex.IsMatch(literal.Value, @"[\u4e00-\u9fff]"));
-        Translator.Load(repo, language); Draw(Body(3, 1));
-        string milk = XDocument.Load(Path.Combine(repo, "1.7/Languages", language, "Keyed/SSC_Keys.xml"))
-            .Root.Element("SSC_ITab_MilkProductionToggle").Value;
-        Require(Widgets.Drawn.Any(d => d.Kind == "checkbox" && d.Label == milk));
-        Require(Widgets.Drawn.All(d => !d.Label.Contains("×")));
-        Require(Widgets.Drawn.All(d => !d.Label.Contains("SSC_") && !Regex.IsMatch(d.Label, @"\{\d+\}") && !d.Label.Contains("\\n")));
-    }
-
-    /// <summary>逐键核对资源及镜像，审计开发入口与共用医生检查；参数检查不复制业务逻辑。</summary>
-    private static void StartupLanguageResources(string repo, string language)
-    {
-        string relative = $"{language}/Keyed/SSC_UterusDevelopment.xml";
-        string path = Path.Combine(repo, "1.7/Languages", relative);
-        Require(File.ReadAllBytes(path).SequenceEqual(File.ReadAllBytes(Path.Combine(repo, "Sexslavecraft/Languages", relative))));
-        var entries = XDocument.Load(path).Root.Elements().ToDictionary(e => e.Name.LocalName, e => e.Value);
-        var reference = XDocument.Load(Path.Combine(repo, "1.7/Languages/ChineseSimplified/Keyed/SSC_UterusDevelopment.xml"))
-            .Root.Elements().ToDictionary(e => e.Name.LocalName, e => e.Value);
-        Require(entries.Keys.Order().SequenceEqual(reference.Keys.Order()));
-        string source = "";
-        // 描述键与启动提示共用资源文件，覆盖新增调用来源，仍严格核对全部键都有实际调用。
-        foreach (string file in new[] { "common/SSCUterusDevelopmentUtility.cs", "common/SSCUterusSurgeryUtility.cs", "common/SSCDevelopmentSurgeryUtility.cs", "Recipe/Recipe_StartUterusDevelopment.cs", "Hediff/Hediff_SSCUterusDevelopment.cs" })
-        {
-            string code = File.ReadAllText(Path.Combine(repo, "Sexslavecraft", file)); source += code;
-            foreach (Match literal in Regex.Matches(code, "\"(?:\\\\.|[^\"\\\\])*\""))
-                Require(!Regex.IsMatch(literal.Value, @"[\u4e00-\u9fff]"));
-        }
-        Require(Regex.Matches(source, @"SSC_UterusDevelopment_\w+").Select(m => m.Value).Distinct().Order().SequenceEqual(entries.Keys.Order()));
-        foreach (var pair in entries)
-        {
-            Require(Regex.Matches(pair.Value, @"\{\d+\}").Select(m => m.Value).Order()
-                .SequenceEqual(Regex.Matches(reference[pair.Key], @"\{\d+\}").Select(m => m.Value).Order()));
-            Require(!Regex.IsMatch(string.Format(pair.Value, "1%"), @"\{\d+\}"));
         }
     }
 

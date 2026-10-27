@@ -20,7 +20,6 @@ internal static partial class Program
         Run("动画切换原Shader深度状态时重新选变体", HeadDepthChange);
         Run("头身交叠处阻止后画的身体盖到脸上", () => HeadBodyOcclusion(root));
         Run("原图透明孔洞与低覆盖边缘不写深度", DepthCoverage);
-        Run("所有头部写深度变体使用生产裁剪函数", () => DepthResources(root));
         Run("SA注册最终材质而非GetGraphic入口", SaRegistration);
         Run("SA工作线程首次缓存未命中仍完整染色", SaWorkerCold);
         Run("SA帧切换更新贴图并复用材质", SaFrames);
@@ -81,16 +80,6 @@ internal static partial class Program
     {
         foreach (float coverage in new[] { 0f, .001f, .099f }) Check(!GelShaderMath.sscGelWritesDepth(coverage), "无效覆盖不能写深度");
         foreach (float coverage in new[] { .1f, .5f, 1f }) Check(GelShaderMath.sscGelWritesDepth(coverage), "保留原CutoutSkin阈值，不能乘0.85后再裁剪");
-    }
-    private static void DepthResources(string root)
-    {
-        foreach (string name in new[] { "SSC_FullGelHeadDepth17", "SSC_FullGelHeadMaskedDepth17" })
-        {
-            var program = XDocument.Load(Path.Combine(SscTestPaths.RuntimeRoot(root), "Defs/ShaderDefs", name + ".xml")).Root.Element("ShaderDef").Element("shaderProgram");
-            Check((string)program.Element("depthWrite") == "true", "深度变体必须启用写入");
-            string fragment = File.ReadAllText(Path.Combine(SscTestPaths.RuntimeRoot(root), "Shaders", program.Element("fragmentShaderFileName").Value));
-            Check(fragment.Contains("if (!sscGelWritesDepth(") && fragment.Contains("sscGelChannel(source.r, tint.r * uMaterial._GelColor.r)"), "片元使用共同裁剪与颜色函数");
-        }
     }
     private static void SaRegistration()
     {

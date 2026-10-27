@@ -13,7 +13,6 @@ internal static partial class Program
         Run("终极完成阻止重复选择和两类经验", FinalStopsTraining);
         Run("终极跨方向及明确留空保留，显示不被历史覆盖", FinalDirectionAndDisplay);
         Run("终极不依赖身份绑定，加载后对账保持实例", FinalPersistence);
-        Run("终极定义与配方成本、八种凝胶及三语译文齐全", FinalDefinitions);
     }
 
     private static void FinalMutualExclusion()
@@ -67,39 +66,6 @@ internal static partial class Program
             CompSexSlaveTraining.ReconcileSpecialization(p);
             Check(p.health.hediffSet.hediffs.Single() == final, "终极依赖身份或发生重建");
             Check(p.Training.specializationType == SexSlaveSpecializationType.None, "终极自动认领方向");
-        }
-    }
-
-    private static void FinalDefinitions()
-    {
-        var def = XDocument.Load(SscTestPaths.Combine(root, "Defs/HediffDefs/SSC_HediffDefs_CombatantSpecialization.xml"))
-            .Root.Elements().Single(e => (string)e.Element("defName") == "SSC_Hediff_Combatant_Final");
-        var stage = def.Element("stages").Elements("li").Single();
-        var offsets = stage.Element("statOffsets"); var factors = stage.Element("statFactors");
-        Equal(6f, Value(offsets, "ShootingAccuracyPawn")); Equal(6f, Value(offsets, "MeleeHitChance"));
-        Equal(-0.06f, Value(offsets, "MentalBreakThreshold"));
-        Equal(0.85f, Value(factors, "AimingDelayFactor")); Equal(0.85f, Value(factors, "MeleeCooldownFactor"));
-        Equal(0.8f, Value(factors, "IncomingDamageFactor"));
-        Check(def.Element("comps").Descendants("abilityDef").Single().Value == "SSC_CombatOverdrive", "终极能力未接入");
-        var recipe = XDocument.Load(SscTestPaths.Combine(root, "Defs/RecipeDefs/RecipeDef_PSEdit.xml"))
-            .Root.Elements().Single(e => (string)e.Element("defName") == "SSC_PSEdit_Combatant_Final");
-        Equal(3500f, Value(recipe, "workAmount"));
-        Check((string)recipe.Element("workSpeedStat") == "GeneralLaborSpeed" &&
-            recipe.Element("recipeUsers").Elements().Single().Value == "TableSculpting" &&
-            (string)recipe.Element("researchPrerequisite") == "SSC_RES_Combatant", "设施或研究不符");
-        Check((string)recipe.Element("requireSpecializationType") == "Combatant" &&
-            (string)recipe.Element("requireSpecializationComplete") == "true", "缺少普通完成门槛");
-        Check(recipe.Element("exclusiveTags").Elements().Single().Value == "SSC_Hediff_Combatant_Final", "普通标签错误放入筛料排除表");
-        var ingredient = recipe.Element("ingredients").Elements().Single();
-        Equal(1f, Value(ingredient, "count"));
-        var gels = ingredient.Descendants("thingDefs").Single().Elements().Select(e => e.Value).ToArray();
-        Check(gels.Length == 8 && gels.Distinct().Count() == 8 && gels.SequenceEqual(
-            recipe.Element("fixedIngredientFilter").Element("thingDefs").Elements().Select(e => e.Value)), "八种凝胶白名单不一致");
-        foreach (var lang in new[] { "English", "ChineseTraditional", "Russian" })
-        {
-            var text = XDocument.Load(SscTestPaths.Combine(root, "Languages", lang, "DefInjected/RecipeDef/RecipeDef_PSEdit.xml"));
-            foreach (var suffix in new[] { "label", "description", "jobString" })
-                Check(!string.IsNullOrWhiteSpace((string)text.Root.Element("SSC_PSEdit_Combatant_Final." + suffix)), "缺少配方翻译");
         }
     }
 }

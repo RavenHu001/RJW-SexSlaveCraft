@@ -82,7 +82,8 @@ internal static partial class Program
                 var pawn = ControlPawn(branch.Stage, branch.Masochist, branch.Control != SSCRomanceControlState.Passive, branch.Control != SSCRomanceControlState.Active);
                 Require(SSCRomanceContinuousMood.TryResolve(pawn, out var selected)); Equal(branch.Id, selected.Id);
                 var thought = ControlThought(pawn); Require(thought.Active, "native continuous admission must succeed"); Equal(SSCRomanceContinuousMood.IndexOf(branch), thought.CurStageIndex);
-                Equal((float)branch.Value, thought.CurStage.baseMoodEffect); Equal(0, pawn.needs.mood.thoughts.memories.Memories.Count);
+                AssertDocumentedControl(branch, selected, thought);
+                Equal(0, pawn.needs.mood.thoughts.memories.Memories.Count);
             });
         foreach (var (stage, mask) in RomanceRepresentativeCases.ActiveFilters)
             Check($"composite b4 active filter {stage}/{mask}", () =>

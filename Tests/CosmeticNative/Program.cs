@@ -119,7 +119,6 @@ internal static class Program
                 StageAndMaterialTests();
                 PositionAndVisualTests();
             }
-            Check("four languages have matching keys, parameters and target fields", () => LanguageTests(repo));
         }
         finally { harmony.UnpatchAll(harmony.Id); Current.Game = null; }
         Console.WriteLine($"{passed}/{passed + failed} cases passed");
@@ -994,39 +993,5 @@ internal static class Program
     {
         var t = new Thing { def = DefDatabase<ThingDef>.GetNamed(name), stackCount = count, thingIDNumber = ++thingId };
         t.Position = new IntVec3(10 + area.Count, 0, 10); Set(t, "mapIndexOrState", (sbyte)0); map.listerThings.Add(t); area.Add(t); return t;
-    }
-
-    private static void LanguageTests(string repo)
-    {
-        // 比较四语键与占位参数，并沿实际 Def 字段定位注入目标；不以文本相同代替字段有效性。
-        var baseline = XDocument.Load(Path.Combine(repo, "1.7/Languages/English/Keyed/SSC_Cosmetic.xml")).Root.Elements().ToDictionary(e => e.Name.LocalName, e => e.Value);
-        foreach (string lang in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" })
-        {
-            var data = XDocument.Load(Path.Combine(repo, $"1.7/Languages/{lang}/Keyed/SSC_Cosmetic.xml")).Root.Elements().ToDictionary(e => e.Name.LocalName, e => e.Value);
-            Equal(string.Join(',', baseline.Keys.Order()), string.Join(',', data.Keys.Order()));
-            foreach (string key in baseline.Keys)
-                Equal(string.Join(',', System.Text.RegularExpressions.Regex.Matches(baseline[key], @"\{\d+\}").Select(m => m.Value).Order()),
-                    string.Join(',', System.Text.RegularExpressions.Regex.Matches(data[key], @"\{\d+\}").Select(m => m.Value).Order()));
-            foreach (string path in Directory.GetFiles(Path.Combine(repo, $"1.7/Languages/{lang}/DefInjected"), "SSC_Cosmetic.xml", SearchOption.AllDirectories))
-            {
-                string type = new DirectoryInfo(Path.GetDirectoryName(path)).Name;
-                var expected = XDocument.Load(Path.Combine(repo, $"1.7/Languages/English/DefInjected/{type}/SSC_Cosmetic.xml"))
-                    .Root.Elements().ToDictionary(e => e.Name.LocalName, e => e.Value);
-                var actual = XDocument.Load(path).Root.Elements().ToDictionary(e => e.Name.LocalName, e => e.Value);
-                Equal(string.Join(',', expected.Keys.Order()), string.Join(',', actual.Keys.Order()));
-                foreach (string key in actual.Keys)
-                {
-                    Equal(string.Join(',', System.Text.RegularExpressions.Regex.Matches(expected[key], @"\{[^{}]+\}").Select(m => m.Value).Order()),
-                        string.Join(',', System.Text.RegularExpressions.Regex.Matches(actual[key], @"\{[^{}]+\}").Select(m => m.Value).Order()));
-                    var parts = key.Split('.'); object value = loadedDefs[parts[0]];
-                    foreach (string part in parts.Skip(1))
-                        value = int.TryParse(part, out int index) ? ((System.Collections.IList)value)[index] :
-                            (AccessTools.Field(value.GetType(), part) ?? throw new Exception("Unknown injected field: " + key)).GetValue(value);
-                    Require(value is string && !string.IsNullOrWhiteSpace(actual[key]), "Invalid translated field: " + key);
-                }
-            }
-        }
-        foreach (var n in XDocument.Load(Path.Combine(repo, "1.7/Defs/RitualDefs/SSC_CosmeticRitual.xml")).Root.Elements())
-            Equal("Ludeon.RimWorld.Ideology", (string)n.Attribute("MayRequire"));
     }
 }

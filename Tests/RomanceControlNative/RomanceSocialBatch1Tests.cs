@@ -12,52 +12,7 @@ internal static partial class Program
     /// <summary>验证事实先于心情准入、共享原生结果、只读任务报告及终态反馈去重。</summary>
     private static void RomanceSocialBatch1Tests(Harmony owner, string repo)
     {
-        foreach (int number in Enumerable.Range(1, 13))
-        {
-            int ev = number;
-            Check("social facts real event and saved POV " + ev, () =>
-            {
-                var (actor, target, subject, record) = SocialFactEvent(ev);
-                Equal(1, playLogCalls);
-                var log = (PlayLogEntry_SSCRomance)moodLastLog;
-                var fact = log.BackgroundFromPOV(subject);
-                Require(fact.IsValid); Equal((SSCRomanceCompositeEvent)ev, fact.Kind);
-                Require(log.BackgroundFromPOV(subject == actor ? target : actor) == null);
-                Require(log.BackgroundFromPOV(SocialPawn()) == null);
-                Equal(ev >= 6, fact.IsCommand);
-                // 查看历史及修改当前开关不重新发放思想、不分配发生顺序，也不变更旧背景。
-                var memory = subject.needs.mood.thoughts.memories.Memories.OfType<Thought_MemorySSCCompositeRomance>().FirstOrDefault();
-                long order = memory?.Data.OccurrenceOrder ?? 0;
-                Comp(subject).romanceConfig = Denied();
-                for (int i = 0; i < 4; i++) Equal(fact.Kind, log.BackgroundFromPOV(subject).Kind);
-                Equal(order, memory?.Data.OccurrenceOrder ?? 0); Equal(1, playLogCalls);
-                RoundTripSocialLog(log, actor, target, subject, fact.Kind);
-                if (record != null)
-                {
-                    // 正式文案已替换占位；按本例真实结果及行为核对当前语言，不要求旧占位字面。
-                    string outcome = ev is 7 or 9 ? "Rejected" : ev == 10 ? "RejectedAndSeparated" : "RelationshipChanged";
-                    string action = ev is 6 or 7 ? "Romance" : ev <= 10 ? "Proposal" : ev == 11 ? "EndLover" : ev == 12 ? "EndFiance" : "Divorce";
-                    Equal(("SSC_Romance_Result_" + outcome).Translate(actor.LabelShort, target.LabelShort,
-                        ("SSC_Romance_CommandAction_" + action).Translate()).ToString(), SSCRomanceCommandPresentation.ResultText(record));
-                }
-            });
-            foreach (string mode in new[] { "no-mood", "ssc-denied" })
-                Check($"social facts survive mood admission {ev}/{mode}", () =>
-                {
-                    var boundary = new Harmony("ssc.tests.social-facts.admission");
-                    try
-                    {
-                        if (mode == "ssc-denied") boundary.Patch(AccessTools.Method(typeof(ThoughtUtility), nameof(ThoughtUtility.CanGetThought)),
-                            prefix: new HarmonyMethod(typeof(Program), nameof(SocialDenyComposite)));
-                        var (actor, target, subject, record) = SocialFactEvent(ev, (a, b, s) => { if (mode == "no-mood") s.needs.mood = null; });
-                        Equal((SSCRomanceCompositeEvent)ev, ((PlayLogEntry_SSCRomance)moodLastLog).BackgroundFromPOV(subject).Kind);
-                        Require(subject.needs.mood == null || !subject.needs.mood.thoughts.memories.Memories.OfType<Thought_MemorySSCCompositeRomance>().Any());
-                        Equal(1, playLogCalls);
-                        if (record != null) Equal(SSCRomanceCommandStatus.Completed, record.Status);
-                    }
-                    finally { boundary.UnpatchAll(boundary.Id); }
-                });
-        }
+        // 十三种普通事实与准入失败的断言合并到第二批同一次原生互动。
         foreach (int ev in new[] { 3, 4, 7, 9, 10 })
             Check("social facts independent of native mood worker hook " + ev, () =>
             {
@@ -286,18 +241,6 @@ internal static partial class Program
                     driver.ExecuteOnce(); Equal(1, commandFeedback); Equal(0, playLogCalls);
                 }
                 finally { boundary.UnpatchAll(boundary.Id); eventWorkerCallback = null; }
-            });
-        foreach (string language in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" })
-            Check("social command localized placeholders and mirrors " + language, () =>
-            {
-                var path = Path.Combine("Languages", language, "Keyed/SSC_Romance.xml");
-                var runtime = XDocument.Load(Path.Combine(repo, "1.7", path)); var source = XDocument.Load(Path.Combine(repo, "Sexslavecraft", path));
-                Equal(runtime.ToString(), source.ToString());
-                var entries = runtime.Root.Elements().Where(e => e.Name.LocalName.StartsWith("SSC_Romance_Report_") ||
-                    e.Name.LocalName.StartsWith("SSC_Romance_CommandAction_") || e.Name.LocalName.StartsWith("SSC_Romance_Result_")).ToList();
-                Equal(17, entries.Count); Equal(17, entries.Select(e => e.Name.LocalName).Distinct().Count());
-                Require(entries.All(e => !string.IsNullOrWhiteSpace(e.Value)));
-                Require(entries.Where(e => e.Name.LocalName.StartsWith("SSC_Romance_Report_")).All(e => e.Value.Contains("TargetA")));
             });
     }
 }

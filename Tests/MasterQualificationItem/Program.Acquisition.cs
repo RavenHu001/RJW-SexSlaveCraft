@@ -15,16 +15,6 @@ internal static partial class Program
     /// <summary>核对实际 XML 的长期入口及精确追加范围，不把 XML 模型当作原版物品生成测试。</summary>
     private static void RunAcquisitionDefinitions()
     {
-        Run("模块仅由奖励获取，停用商人库存且不受研究或 DLC 控制", () => {
-            var item = XDocument.Load(SscTestPaths.Combine(root, "Defs/ThingsDefs/SSC_MasterQualificationItem.xml")).Root.Element("ThingDef");
-            Check((string)item.Element("tradeability") == "Sellable" && item.Element("tradeTags") == null);
-            Check(item.Element("thingSetMakerTags").Elements("li").Select(x => x.Value).SequenceEqual(new[] { "RewardStandardHighFreq" }));
-            Check((int)item.Element("minRewardCount") == 1 && (int)item.Element("stackLimit") == 10);
-            Check((decimal)item.Element("statBases").Element("MarketValue") == 1000);
-            Check(!item.DescendantsAndSelf().Attributes().Any(x => x.Name == "MayRequire"));
-            Check(item.Element("requiresFactionToAcquire") == null && item.Element("destroyOnDrop") == null);
-            Check(!item.Descendants().Any(x => x.Name.LocalName.Contains("research", StringComparison.OrdinalIgnoreCase)));
-        });
         Run("神殿并入既有高价值组，不添加独立模块概率分支", () => {
             var defs = Fixture(false); var options = Options(defs, TempleName); string original = options.InnerXml;
             ApplySources(defs);

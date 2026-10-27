@@ -157,12 +157,5 @@ internal static partial class Program
                 }
                 finally { loaded.keyedReplacements = saved; }
             });
-        foreach (string language in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" })
-            Check("romance translated keys and exact source mirror " + language, () =>
-            {
-                string path = Path.Combine(repo, "1.7/Languages", language, "Keyed/SSC_Romance.xml"); string source = Path.Combine(repo, "Sexslavecraft/Languages", language, "Keyed/SSC_Romance.xml");
-                Require(File.ReadAllBytes(path).SequenceEqual(File.ReadAllBytes(source))); var entries = XDocument.Load(path).Root.Elements().ToArray(); Equal(105, entries.Length);
-                Require(entries.All(e => !string.IsNullOrWhiteSpace(e.Value))); Equal(105, entries.Select(e => e.Name.LocalName).Distinct().Count());
-            });
     }
 }

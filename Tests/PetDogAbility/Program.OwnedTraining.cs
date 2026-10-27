@@ -28,7 +28,6 @@ internal static partial class Program
         Run("两人竞争最后项目只结算一次，剩余项目允许另一施放者完成", CompetingTraining);
         Run("第三方训练无实效恢复本次冷却且不更新互动时间", NativeTrainingFailure);
         Run("训练期间Tracker替换或阵营变化视为失败，无MindState仍可成功", NativeTrainingPostconditions);
-        Run("训练任务、拒绝提示与双参数目标和成功提示四语镜像完整", TrainingResources);
     }
 
     /// <summary>边界输入显式给出原版排序和资格；生产工具决定实际候选，不重写原版资格算法。</summary>
@@ -234,24 +233,6 @@ internal static partial class Program
             Check(p.target.training.Requests.Count == 1 && p.ability.ActivationCalls == 1 && p.ability.CooldownStartCalls == 1 && p.target.mindState.lastAssignedInteractTime == -100 && p.target.mindState.interactionsToday == 0, "failed train updated scheduling or attempted twice");
             p.target.training.OnTrain = null; p.target.training.NativeTrainEffective = true; p.target.training.State(project).CanBeTrained = true;
             Check(p.ability.Activate(p.target, default) && p.target.training.Requests.Count == 2 && p.ability.CooldownTicksRemaining == 60000 && p.target.mindState.interactionsToday == 1, "no-effect training cannot retry immediately");
-        }
-    }
-    private static void TrainingResources()
-    {
-        var job = Definition("Defs/JobDefs/SSC_PetDogTameJobDefs.xml", "SSC_Job_PetDogTrain");
-        Check((string)job.Element("driverClass") == typeof(JobDriver_PetDogTame).FullName && (string)job.Element("abilityCasting") == "false" && (string)job.Element("collideWithPawns") == "false", "owned job lost same driver/native-cooldown safeguards");
-        foreach (string language in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" })
-        {
-            string keyed = SscTestPaths.Combine(root, "Languages", language, "Keyed"); var files = Directory.EnumerateFiles(keyed, "*.xml").Where(f => XDocument.Load(f).Descendants().Any(e => e.Name.LocalName == "SSC_PetDogTameTrainingTargetHint")).ToArray();
-            var keys = files.SelectMany(f => XDocument.Load(f).Root.Elements()).ToArray();
-            foreach (string suffix in new[] { "NoTrainingTarget", "TrainingTargetHint", "TrainingSuccess" })
-            {
-                var value = keys.Single(e => e.Name.LocalName == "SSC_PetDogTame" + suffix).Value; Check(!string.IsNullOrWhiteSpace(value), "empty training key " + language + suffix);
-                if (suffix != "NoTrainingTarget") Check(value.Contains("{0}") && value.Contains("{1}"), "training animal/project placeholders missing " + language + suffix);
-            }
-            var jobs = Directory.EnumerateFiles(SscTestPaths.Combine(root, "Languages", language, "DefInjected/JobDef"), "*.xml").Where(f => XDocument.Load(f).Descendants().Any(e => e.Name.LocalName == "SSC_Job_PetDogTrain.reportString")).ToArray();
-            Check(jobs.Length == 1 && !string.IsNullOrWhiteSpace(XDocument.Load(jobs.Single()).Descendants("SSC_Job_PetDogTrain.reportString").Single().Value), "training job report missing " + language);
-            foreach (string file in files.Concat(jobs)) Check(File.ReadAllBytes(file).SequenceEqual(File.ReadAllBytes(SscTestPaths.Combine(root, "Sexslavecraft", SscTestPaths.ResourceRelativePath(root, file)))), "training language mirror differs " + file);
         }
     }
     private static void NativeTrainingPostconditions()

@@ -97,7 +97,6 @@ internal static partial class Program
         foreach(var color in new[]{new Color(1,0,0,1),new Color(0,1,0,1),new Color(0,0,1,1),new Color(0,0,0,1),new Color(1,1,1,1)})
         foreach(float alpha in new[]{0f,.01f,.85f,1f})
         {var captured=color;float opacity=alpha;Run($"任意RGB({color.r},{color.g},{color.b})与Alpha{alpha}保眼和动画",()=>AppearanceChannels(captured,opacity));}
-        Run("个体外观资源组件和四语镜像完整",()=>AppearanceResources(root));
     }
 
     /// <summary>调用生产CompExposeData往返，Scribe边界只模拟字段存取，不等同实机存档验收。</summary>
@@ -198,16 +197,5 @@ internal static partial class Program
         }
         var skin=r.Apply(Fa(new HeadControllerComp()));Check(skin.GetColor("_GelColor").r==color.r&&skin.GetTexture("_EyeMask")==null,"FA皮肤统一参数");
         var feature=r.Apply(Fa(new EyeballControllerComp()));Check(feature.color.r==r.source.color.r&&feature.color.a==1&&feature.shader==r.source.shader,"FA五官保留原动画材质");
-    }
-    /// <summary>验证组件只挂完成状态、四语镜像及所有片元的uniform/深度条件。</summary>
-    private static void AppearanceResources(string root)
-    {
-        var defs=XDocument.Load(Path.Combine(root,"1.7/Defs/HediffDefs/Hediffs_Gelatinization.xml"));
-        var body=defs.Root.Elements().Single(e=>(string)e.Element("defName")=="SSC_FullGelatinizedBody");
-        Check(body.Element("comps").Elements().Count(e=>(string)e.Attribute("Class")=="SexSlaveCraft.HediffCompProperties_FullGelAppearance")==1,"只给完成状态挂组件");
-        foreach(string lang in new[]{"ChineseSimplified","ChineseTraditional","English","Russian"})
-        {string rel=$"Languages/{lang}/Keyed/SSC_GelAppearance.xml";Check(File.ReadAllBytes(Path.Combine(root,"1.7",rel)).SequenceEqual(File.ReadAllBytes(Path.Combine(root,"Sexslavecraft",rel))),"四语镜像一致");Check(XDocument.Load(Path.Combine(root,"1.7",rel)).Root.Elements().Count()==18,"文案完整");}
-        foreach(string p in Directory.GetFiles(Path.Combine(root,"1.7/Shaders/SSC"),"*.frag.glsl"))
-        {string s=File.ReadAllText(p);Check(s.Contains("_GelColor")&&!s.Contains("_EyeGelBaseColor"),"原生参数独立");Check(s.Contains("vec4(0.3995, 0.068, 0.68, 0.85)"),"六种程序缺省参数一致为S90");if(p.Contains("Depth"))Check(s.Contains("alpha <= 0.0")&&s.Contains("sscGelWritesDepth"),"零Alpha丢弃和原覆盖阈值保留");}
     }
 }

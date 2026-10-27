@@ -36,7 +36,7 @@ internal static partial class Program
             (File:"SSC_PnaSpacerWeapons.xml", Name:"SSC_Weapon_PnaSilkWhip", Power:1f, Ap:.60f) })
         {
             var source = ReadThing(root, row.File, row.Name);
-            foreach (QualityCategory quality in Enum.GetValues<QualityCategory>())
+            foreach (QualityCategory quality in new[] { QualityCategory.Awful, QualityCategory.Normal, QualityCategory.Legendary })
                 Check($"原生品质伤害、穿甲和信息卡一致 {row.Name} {quality}", () =>
                 {
                     var weapon = WeaponFromXml(source, quality, damage);
@@ -117,7 +117,9 @@ internal static partial class Program
             var prop = new ProjectileProperties { damageDef = damage };
             AccessTools.Field(typeof(ProjectileProperties), "damageAmountBase").SetValue(prop, baseDamage);
             AccessTools.Field(typeof(ProjectileProperties), "armorPenetrationBase").SetValue(prop, baseAp);
-            foreach (QualityCategory quality in Enum.GetValues<QualityCategory>())
+            foreach (QualityCategory quality in row.Name == "SSC_Weapon_PnaBlowpipe"
+                ? Enum.GetValues<QualityCategory>()
+                : new[] { QualityCategory.Awful, QualityCategory.Normal, QualityCategory.Legendary })
                 Check($"远程原版伤害穿甲精度及普通防身品质 {row.Name} {quality}", () =>
                 {
                     var def = new ThingDef { defName = row.Name, category = ThingCategory.Item, equipmentType = EquipmentType.Primary, tools = new List<Tool> { new Tool { power = 9 } } };

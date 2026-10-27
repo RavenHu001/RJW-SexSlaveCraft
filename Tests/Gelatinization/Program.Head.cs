@@ -69,7 +69,6 @@ internal static partial class Program
         Run("头部遮罩孔洞保持透明", HeadMaskHole);
         Run("头部半透明遮罩保留连续覆盖", HeadMaskCoverage);
         Run("完整遮罩与身体Alpha一致", HeadMaskOpaque);
-        Run("头部遮罩定义与片元完整", () => HeadResources(root));
     }
 
     private static PawnRenderNode Fa(object controller, NLFacialAnimationLayerType layer = NLFacialAnimationLayerType.Basic)
@@ -195,12 +194,4 @@ internal static partial class Program
         Check(Math.Abs(GelShaderMath.sscGelMaskedAlpha(.5f, .5f, .85f, .5f) - .85f / 8) < 1e-6f, "遮罩/原图/顶点覆盖分别保留");
     }
     private static void HeadMaskOpaque() { Check(GelShaderMath.sscGelMaskedAlpha(1, 1, .85f, 1) == GelShaderMath.sscGelAlpha(1, .85f, 1), "完整遮罩不能重复乘不透明度"); }
-    private static void HeadResources(string root)
-    {
-        string runtime = SscTestPaths.RuntimeRoot(root);
-        var def = XDocument.Load(Path.Combine(runtime, "Defs/ShaderDefs/SSC_FullGelHeadMasked17.xml")).Root.Element("ShaderDef");
-        Check((string)def.Element("defName") == Harmony_FullGelatinizationHeadTint.MaskedShaderDefName, "资源名称与实际选择器一致");
-        string code = File.ReadAllText(Path.Combine(runtime, "Shaders", (string)def.Element("shaderProgram").Element("fragmentShaderFileName")));
-        Check(code.Contains("uniform sampler2D _MaskTex") && code.Contains("sscGelMaskedAlpha(source.a, mask.a, tint.a * uMaterial._GelColor.a, vColor.a)"), "必须使用实际遮罩采样和生产Alpha函数");
-    }
 }

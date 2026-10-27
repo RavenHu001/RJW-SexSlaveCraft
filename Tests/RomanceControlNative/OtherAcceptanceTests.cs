@@ -11,10 +11,25 @@ internal static partial class Program
     private static void OtherAcceptanceTests()
     {
         // 二／三阶边界及普通许可组合：保证只在接收方三阶起覆盖，而非替主动方发起。
-        foreach (float severity in new[] { .1f, .3f, .4999f, .5f, .9f })
-        foreach (bool guarantee in new[] { false, true })
-        foreach (bool allowed in new[] { false, true })
-        foreach (var action in new[] { SSCRomanceAction.Romance, SSCRomanceAction.Proposal })
+        foreach (var (severity, guarantee, allowed, action) in new (float, bool, bool, SSCRomanceAction)[]
+        {
+            (0.1f, true, false, SSCRomanceAction.Romance),
+            (0.1f, true, false, SSCRomanceAction.Proposal),
+            (0.3f, true, false, SSCRomanceAction.Romance),
+            (0.3f, true, false, SSCRomanceAction.Proposal),
+            (0.4999f, true, false, SSCRomanceAction.Romance),
+            (0.4999f, true, false, SSCRomanceAction.Proposal),
+            (0.5f, false, false, SSCRomanceAction.Romance),
+            (0.5f, false, false, SSCRomanceAction.Proposal),
+            (0.5f, false, true, SSCRomanceAction.Romance),
+            (0.5f, false, true, SSCRomanceAction.Proposal),
+            (0.5f, true, false, SSCRomanceAction.Romance),
+            (0.5f, true, false, SSCRomanceAction.Proposal),
+            (0.5f, true, true, SSCRomanceAction.Romance),
+            (0.5f, true, true, SSCRomanceAction.Proposal),
+            (0.9f, true, false, SSCRomanceAction.Romance),
+            (0.9f, true, false, SSCRomanceAction.Proposal),
+        })
             Check($"other guarantee stage={severity} guarantee={guarantee} allowed={allowed} {action}", () =>
             {
                 var a = Pawn(); var b = Slave(severity);

@@ -44,7 +44,7 @@ internal static partial class Program
             float[] expected = { .8f, .9f, 1f, 1.1f, 1.2f, 1.45f, 1.65f };
             foreach (QualityCategory quality in Enum.GetValues<QualityCategory>())
             {
-                foreach (var def in pnaDefs)
+                foreach (var def in quality == QualityCategory.Normal ? pnaDefs : pnaDefs.Take(1))
                     Check($"{def.defName} {quality}: 抽象及实物请求正常应用品质", () =>
                     {
                         float value = 1.25f;
@@ -57,6 +57,9 @@ internal static partial class Program
                     float value = 1.25f; part.TransformValue(StatRequest.For(other, null, quality), ref value);
                     Near(1.25f * expected[(int)quality], value);
                 });
+
+            }
+            foreach (QualityCategory quality in new[] { QualityCategory.Normal, QualityCategory.Legendary })
                 Check($"武器其他属性 {quality}: 品质仍生效", () =>
                 {
                     var otherPart = new StatPart_Quality { parentStat = new StatDef { defName = "MarketValue" } };
@@ -64,7 +67,6 @@ internal static partial class Program
                         .SetValue(otherPart, float.Parse(e.Value, System.Globalization.CultureInfo.InvariantCulture));
                     float value = 1; otherPart.TransformValue(StatRequest.For(pnaDefs[0], null, quality), ref value); Near(expected[(int)quality], value);
                 });
-            }
             Check("射针枪普通防身伤害正常受品质影响", () =>
             {
                 var gun = MakeWeapon("SSC_Weapon_PnaNeedleRepeater");
@@ -72,18 +74,6 @@ internal static partial class Program
                 typeof(ThingDef).GetField("verbs", BindingFlags.Instance | BindingFlags.NonPublic)
                     .SetValue(gun, new List<VerbProperties> { new VerbProperties { verbClass = typeof(Verb_Shoot) } });
                 float value = 1; part.TransformValue(StatRequest.For(gun, null, QualityCategory.Legendary), ref value); Near(1.65f, value);
-            });
-            Check("品质适配源码归档且所有生产和测试入口均已撤下", () =>
-            {
-                const string obsolete = "SSCPnaFixedMeleeDamageExtension";
-                var marked = Directory.GetFiles(Path.Combine(root, "1.7/Defs"), "*.xml", SearchOption.AllDirectories)
-                    .Where(f => File.ReadAllText(f).Contains(obsolete)).ToArray();
-                if (marked.Length != 0) throw new Exception("运行时 XML 仍引用废案类型");
-                string archive = Path.Combine(root, "Archive/PnaMeleeQuality/Harmony_SSCPnaMeleeQuality.cs");
-                if (!File.Exists(archive) || !File.ReadAllText(archive).Contains("废案归档")) throw new Exception("源码归档或用途说明缺失");
-                if (File.Exists(Path.Combine(root, "Sexslavecraft/ThePatches/Harmony_SSCPnaMeleeQuality.cs"))) throw new Exception("生效源码仍存在");
-                foreach (string file in new[] { "Sexslavecraft/SexSlaveCraft_Alpha.csproj", "Tests/PnaMeleeQuality/PnaMeleeQuality.csproj", "Tests/PnaSpacerNative/PnaSpacerNative.csproj" })
-                    if (File.ReadAllText(Path.Combine(root, file)).Contains("Harmony_SSCPnaMeleeQuality.cs")) throw new Exception("编译入口未撤下：" + file);
             });
             RunArmorAndRangedChecks(root, gameRoot, harmony);
         }

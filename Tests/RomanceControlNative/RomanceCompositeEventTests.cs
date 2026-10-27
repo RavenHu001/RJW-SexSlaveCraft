@@ -85,6 +85,7 @@ internal static partial class Program
             Equal(branch.LongDays>0&&branch.Value<0&&raw>0?branch.LongDays*60000:3*60000,memory.DurationTicks);
             Equal(passive?actor:target,memory.otherPawn);Equal(subject,memory.pawn);
         }
+        AssertDocumentedEvent(branch, raw, records.SingleOrDefault());
         if(ev==7){Require(!subject.needs.mood.thoughts.memories.Memories.Any(m=>m.def.defName=="RebuffedMyRomanceAttemptMood"));Require(subject.needs.mood.thoughts.memories.Memories.Any(m=>m.def==ThoughtDefOf.RebuffedMyRomanceAttempt));}
         if(ev is 9 or 10){Require(!subject.needs.mood.thoughts.memories.Memories.Any(m=>m.def==ThoughtDefOf.RejectedMyProposalMood));Require(subject.needs.mood.thoughts.memories.Memories.Any(m=>m.def==ThoughtDefOf.RejectedMyProposal));}
         if(ev==3)Require(!subject.needs.mood.thoughts.memories.Memories.Any(m=>m.def==ThoughtDefOf.FailedRomanceAttemptOnMeLowOpinionMood));

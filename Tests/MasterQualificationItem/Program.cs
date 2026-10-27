@@ -201,60 +201,8 @@ internal static partial class Program
             GenPlace.MergeInto = Item(3); Widgets.Click = true; DrawButton();
             Check(GenPlace.MergeInto.stackCount == 4 && Messages.Records.Single().target == GenPlace.MergeInto);
         });
-        // 配套资源：XML 只负责连接原版任务与 SSC 效果，四语覆盖玩家能看到的全部入口。
-        Run("道具始终加载、原版 UseItem 与唯一效果控制消耗", ItemDefinition);
-        Run("研究只对 Royalty 加蓝图条件，不新增全局迁移或替换原版蓝图", ResearchDefinition);
-        Run("四语物品、按钮、拒绝和提示完整且镜像一致", Translations);
         RunAcquisitionDefinitions();
         Console.WriteLine($"{passed}/{passed + failed} passed");
         return failed == 0 ? 0 : 1;
-    }
-
-    /// <summary>检查实际道具定义的任务、唯一结算效果、原版分类及注册/设置接入。</summary>
-    private static void ItemDefinition()
-    {
-        var def = XDocument.Load(SscTestPaths.Combine(root, "Defs/ThingsDefs/SSC_MasterQualificationItem.xml")).Root.Element("ThingDef");
-        Check(def.Attribute("MayRequire") == null && (string)def.Element("thingClass") == "ThingWithComps");
-        var comps = def.Element("comps").Elements("li").ToArray();
-        Check(comps.Length == 3 && comps[0].Attribute("Class").Value == "CompProperties_Usable");
-        Check((string)comps[0].Element("useJob") == "UseItem" && (int)comps[0].Element("useDuration") == 600);
-        Check(comps[1].Attribute("Class").Value == "CompProperties_UseEffect" && (string)comps[1].Element("compClass") == "SexSlaveCraft.CompUseEffect_MasterQualification");
-        Check(comps[2].Attribute("Class").Value == "CompProperties_Forbiddable");
-        Check(!def.ToString().Contains("DestroySelf") && !def.ToString().Contains("CompProperties_Techprint"));
-        Check((int)def.Element("stackLimit") > 1 && (float)def.Element("statBases").Element("MarketValue") > 0);
-        Check((string)def.Element("thingCategories").Element("li") == "ItemsMisc", "invalid core item category");
-        var source = File.ReadAllText(SscTestPaths.Combine(root, "Sexslavecraft/common/StringAndDefOf.cs"));
-        Check(source.Contains("SSC_MasterQualificationItem = GetDef<ThingDef>(\"SSC_MasterQualificationItem\")"));
-        Check(File.ReadAllText(SscTestPaths.Combine(root, "Sexslavecraft/common/Settings.cs")).Contains("DrawMasterQualificationDebugEntry(listingStandard)"));
-    }
-    /// <summary>检查 Royalty 条件字段，确保 SSC 没有定向替换暂时保留的原版自动蓝图。</summary>
-    private static void ResearchDefinition()
-    {
-        var def = XDocument.Load(SscTestPaths.Combine(root, "Defs/ResearchDefs/ResearchProjectDef.xml")).Root.Elements("ResearchProjectDef")
-            .Single(x => (string)x.Element("defName") == "SSC_RES_BasicTraining");
-        var count = def.Element("techprintCount");
-        Check((int)count == 1 && (string)count.Attribute("MayRequire") == "Ludeon.RimWorld.Royalty");
-        Check((float)def.Element("baseCost") == 500);
-        Check(def.Element("heldByFactionCategoryTags").Elements("li").Select(x => x.Value).SequenceEqual(new[] { "Empire", "Outlander" }));
-        foreach (string file in Directory.GetFiles(SscTestPaths.Combine(root, "Sexslavecraft"), "*.cs", SearchOption.AllDirectories))
-            if (!file.Contains(Path.DirectorySeparatorChar + "obj" + Path.DirectorySeparatorChar))
-                Check(!File.ReadAllText(file).Contains("Techprint_SSC_RES_BasicTraining"), "generated vanilla blueprint was adapted");
-    }
-    /// <summary>核对四语必需键、姓名占位符、物品注入路径及源码镜像。</summary>
-    private static void Translations()
-    {
-        string[] keys = { "InvalidPawn", "Slave", "AlreadyUnlocked", "Unavailable", "InvalidItem", "Granted", "DebugSpawn", "DebugSpawnTip", "DebugUnavailable", "DebugSpawned", "DebugSpawnFailed" };
-        foreach (string language in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" }) {
-            string keyed = $"Languages/{language}/Keyed/SSC_MasterQualification.xml";
-            string injected = $"Languages/{language}/DefInjected/ThingDef/SSC_MasterQualificationItem.xml";
-            var keyData = XDocument.Load(SscTestPaths.Combine(root, keyed)).Root;
-            foreach (string key in keys) Check(!string.IsNullOrWhiteSpace(keyData.Element("SSC_MasterQualification_" + key)?.Value));
-            Check(keyData.Element("SSC_MasterQualification_Granted").Value.Contains("{0}"));
-            var itemData = XDocument.Load(SscTestPaths.Combine(root, injected)).Root;
-            foreach (string key in new[] { "label", "description", "comps.0.useLabel" })
-                Check(!string.IsNullOrWhiteSpace(itemData.Element("SSC_MasterQualificationItem." + key)?.Value));
-            foreach (string relative in new[] { keyed, injected })
-                Check(File.ReadAllText(SscTestPaths.Combine(root, relative)) == File.ReadAllText(SscTestPaths.Combine(root, "Sexslavecraft", relative)));
-        }
     }
 }

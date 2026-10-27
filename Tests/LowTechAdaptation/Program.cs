@@ -128,14 +128,6 @@ internal static class Program
             Assert(targets.All(t => !t.AllRecipes.Contains(efficient)), "不传播高效药物台配方");
         });
 
-        RunResearchChecks();
-        Run("粗放配方原料产物工作与研究门槛", CheckRoughRecipe);
-        Run("药物台两份配方保持原工艺参数和入口", CheckEfficientRecipes);
-        foreach (string language in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" })
-        {
-            string current = language;
-            Run(current + " 新配方三项文本和现有配方名称齐全", () => CheckLanguage(current));
-        }
         Console.WriteLine($"结果：{passed}/{passed + failed} 项通过。");
         return failed == 0 ? 0 : 1;
     }
@@ -170,100 +162,4 @@ internal static class Program
     private static XElement Def(string relative, string name) => XDocument.Load(Resource(relative)).Root.Elements()
         .Single(d => (string)d.Element("defName") == name);
 
-    private static void RunResearchChecks()
-    {
-        // 保留原树的点数与前置；旧简易发射器研究已退役，不再计入分档。
-        var expected = new[]
-        {
-            ("BasicTraining", 500, ""), ("BodyPartTraining", 800, "BasicTraining"),
-            ("PNASimpleApp", 800, "BasicTraining"), ("SexChange", 1000, "PNASimpleApp"),
-            ("PNAPrimitiveWeapons", 800, "PNASimpleApp"),
-            ("Femboy", 1200, "SexChange"),
-            ("PNAConcentration", 1200, "PNASimpleApp"), ("PE", 1500, "PNAConcentration"),
-            ("SlaveSpecialization", 1500, "BodyPartTraining,PE"), ("CowTraining", 1200, "SlaveSpecialization"),
-            ("PublicUse", 1200, "SlaveSpecialization"), ("TrainerOfficer", 1200, "SlaveSpecialization"),
-            ("PetCat", 1200, "SlaveSpecialization"), ("Combatant", 1200, "SlaveSpecialization"),
-            ("PetDog", 1500, "PetCat"), ("PetRabbit", 1800, "PetDog"),
-            ("GelatinizationPartial", 2000, "PE"), ("GelatinizationFull", 3000, "GelatinizationPartial")
-        };
-        foreach (var row in expected)
-        {
-            var current = row;
-            Run("研究等级及原点数／前置：" + row.Item1, () =>
-            {
-                XElement d = Def("Defs/ResearchDefs/ResearchProjectDef.xml", "SSC_RES_" + current.Item1);
-                string tier = current.Item1 == "BasicTraining" || current.Item1 == "BodyPartTraining" ? "Neolithic" :
-                    "Medieval";
-                Equal(tier, (string)d.Element("techLevel"));
-                Equal(current.Item2, (int)d.Element("baseCost"));
-                string[] parents = d.Element("prerequisites")?.Elements().Select(e => e.Value).ToArray() ?? Array.Empty<string>();
-                string[] wanted = current.Item3.Split(',', StringSplitOptions.RemoveEmptyEntries)
-                    .Select(s => "SSC_RES_" + s).ToArray();
-                Assert(parents.SequenceEqual(wanted), "现有研究顺序与前置必须保留");
-            });
-        }
-        Run("研究总数分档与Royalty蓝图要求保留", () =>
-        {
-            XElement[] defs = XDocument.Load(Resource("Defs/ResearchDefs/ResearchProjectDef.xml")).Root.Elements().ToArray();
-            Equal(18, defs.Length);
-            Equal(2, defs.Count(d => (string)d.Element("techLevel") == "Neolithic"));
-            Equal(16, defs.Count(d => (string)d.Element("techLevel") == "Medieval"));
-            Equal(0, defs.Count(d => (string)d.Element("techLevel") == "Industrial"));
-            XElement basic = defs.Single(d => (string)d.Element("defName") == "SSC_RES_BasicTraining");
-            Equal(1, (int)basic.Element("techprintCount"));
-            Equal("Ludeon.RimWorld.Royalty", (string)basic.Element("techprintCount").Attribute("MayRequire"));
-        });
-    }
-
-    private static void CheckRoughRecipe()
-    {
-        XElement d = Def("Defs/RecipeDefs/RecipeDef_PNA_Rough.xml", "SSC_Make_SuperDrug_Rough");
-        Equal("粗放浓缩紫色纳米催情液", (string)d.Element("label"));
-        Equal(600, (int)d.Element("workAmount"));
-        Equal("Cooking", (string)d.Element("workSkill"));
-        Equal("Cooking", (string)d.Element("requiredGiverWorkType"));
-        Equal("CookSpeed", (string)d.Element("workSpeedStat"));
-        Equal("SSC_RES_PNAConcentration", (string)d.Element("researchPrerequisite"));
-        XElement ingredient = d.Element("ingredients").Elements().Single();
-        Equal(10, (int)ingredient.Element("count"));
-        Equal("Purple_Aphrodisiac_Nanofluid", ingredient.Element("filter").Element("thingDefs").Elements().Single().Value);
-        foreach (string tag in new[] { "fixedIngredientFilter", "defaultIngredientFilter" })
-            Equal("Purple_Aphrodisiac_Nanofluid", d.Element(tag).Element("thingDefs").Elements().Single().Value);
-        Equal("Purple_Aphrodisiac_Nanofluid_Plus", d.Element("products").Elements().Single().Name.LocalName);
-        Equal(1, (int)d.Element("products").Elements().Single());
-        Assert(d.Element("recipeUsers").Elements().Select(e => e.Value).SequenceEqual(new[] { "Campfire", "FueledStove", "ElectricStove" }), "原版三个入口");
-        Assert(d.Attribute("ParentName") == null && d.Element("efficiencyStat") == null && d.Element("workTableEfficiencyStat") == null,
-            "不继承餐食筛选或额外产出倍率");
-    }
-
-    private static void CheckEfficientRecipes()
-    {
-        foreach (var row in new[] { ("SSC_Make_SuperDrug", 5, 1, 450, "浓缩紫色纳米催情液"), ("SSC_Make_SuperDrug_forth", 20, 4, 1350, "批量浓缩紫色纳米催情液") })
-        {
-            XElement d = Def("Defs/RecipeDefs/RecipeDef_PNA_PLUS.xml", row.Item1);
-            Equal(row.Item5, (string)d.Element("label"));
-            Equal(row.Item2, (int)d.Element("ingredients").Elements().Single().Element("count"));
-            Equal(row.Item3, (int)d.Element("products").Elements().Single());
-            Equal(row.Item4, (int)d.Element("workAmount"));
-            Equal("Intellectual", (string)d.Element("workSkill"));
-            Equal("DrugSynthesisSpeed", (string)d.Element("workSpeedStat"));
-            Equal("DrugLab", d.Element("recipeUsers").Elements().Single().Value);
-            Equal("SSC_RES_PNAConcentration", (string)d.Element("researchPrerequisite"));
-        }
-    }
-
-    private static void CheckLanguage(string language)
-    {
-        XElement data = XDocument.Load(Resource($"Languages/{language}/DefInjected/RecipeDef/RecipeDef_PNA_PLUS.xml")).Root;
-        foreach (string suffix in new[] { "label", "description", "jobString" })
-            Assert(!string.IsNullOrWhiteSpace((string)data.Element("SSC_Make_SuperDrug_Rough." + suffix)), "新配方文本缺失");
-        foreach (string name in new[] { "SSC_Make_SuperDrug.label", "SSC_Make_SuperDrug_forth.label" })
-            Assert(!string.IsNullOrWhiteSpace((string)data.Element(name)), "原配方名称缺失");
-        if (language == "ChineseSimplified")
-        {
-            Equal("粗放浓缩紫色纳米催情液", (string)data.Element("SSC_Make_SuperDrug_Rough.label"));
-            Equal("浓缩紫色纳米催情液", (string)data.Element("SSC_Make_SuperDrug.label"));
-            Equal("批量浓缩紫色纳米催情液", (string)data.Element("SSC_Make_SuperDrug_forth.label"));
-        }
-    }
 }

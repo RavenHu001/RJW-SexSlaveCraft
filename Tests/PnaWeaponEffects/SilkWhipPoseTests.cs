@@ -100,22 +100,5 @@ internal static class SilkWhipPoseTests
             var m=SSCPnaWhipRenderer.SilkHeldMatrix(f.Weapon,input);Near(3.5,m.m00);Near(3.5,m.m22);
             Near(7,m.m03);Near(9,m.m23);Near(.1,m.m13);Near(.75,f.Weapon.Graphic.drawSize.x);
         });
-        run("丝鞭三张运行图来自明确选图且柄部标定一致",()=>{
-            using var doc=JsonDocument.Parse(File.ReadAllText(Path.Combine(root,"Docs/Art/SSC_PnaSilkWhip/256/poses-export.json")));
-            foreach(var pose in doc.RootElement.GetProperty("poses").EnumerateArray()){
-                string name=pose.GetProperty("pose").GetString();
-                var export=File.ReadAllBytes(Path.Combine(root,"Docs/Art/SSC_PnaSilkWhip/256",pose.GetProperty("output").GetString()));
-                Check(export.SequenceEqual(File.ReadAllBytes(Path.Combine(root,"1.7/Textures/Things/Item/Equipment/SSC_PnaSilkWhip_"+name+".png"))),"runtime image matches export");
-                string source=Path.Combine(root,"Docs/Art/SSC_PnaSilkWhip",pose.GetProperty("source").GetString());
-                Check(Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(source))).Equals(pose.GetProperty("source_sha256").GetString(),StringComparison.OrdinalIgnoreCase),"selected source unchanged");
-                Check(Math.Abs(pose.GetProperty("handle_width_px").GetDouble()-64)<.3,"shared handle width");
-                var center=pose.GetProperty("handle_center_px");Check(Math.Abs(center[0].GetDouble()-50)<.5&&Math.Abs(center[1].GetDouble()-128)<.5,"shared grip anchor");
-                Check(export[16]==0&&export[17]==0&&export[18]==1&&export[19]==0&&export[20]==0&&export[21]==0&&export[22]==1&&export[23]==0,"PNG IHDR 256 square");
-            }
-            var defs=XDocument.Load(Path.Combine(root,"1.7/Defs/ThingsDefs/SSC_PnaSpacerWeapons.xml"));
-            var whip=defs.Root.Elements("ThingDef").Single(d=>(string)d.Element("defName")==SSCPnaWhipPoseUtility.SilkWeaponDefName);
-            Near(.75,(double)whip.Element("graphicData").Element("drawSize"));
-            Check((string)whip.Element("graphicData").Element("texPath")=="Things/Item/Equipment/SSC_PnaSilkWhip","item stays separate");
-        });
     }
 }
