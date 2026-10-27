@@ -37,12 +37,16 @@ if (-not $ReportDirectory) {
 $reportRoot = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($ReportDirectory)
 [IO.Directory]::CreateDirectory($reportRoot) | Out-Null
 $savedTestEnvironment = @{}
-# 连同 SDK 首次初始化开关保存调用者环境；原生文化宿主编译生产工程也遵循同一隔离目录。
+# 连同 SDK 和专项选择开关保存调用者环境；完成或异常退出时由 finally 原样恢复。
 foreach ($name in @('SSC_TEST_REPOSITORY_ROOT', 'SSC_TEST_RUNTIME_ROOT', 'SSC_TEST_COMMON_ROOT',
-    'DOTNET_CLI_HOME', 'DOTNET_GENERATE_ASPNET_CERTIFICATE', 'DOTNET_ADD_GLOBAL_TOOLS_TO_PATH')) {
+    'DOTNET_CLI_HOME', 'DOTNET_GENERATE_ASPNET_CERTIFICATE', 'DOTNET_ADD_GLOBAL_TOOLS_TO_PATH',
+    'SSC_ROMANCE_TEXT_ONLY')) {
     $savedTestEnvironment[$name] = [Environment]::GetEnvironmentVariable($name, 'Process')
 }
 try {
+# 总回归（含发布入口调用）必须运行完整套件，不能继承调用者的仅文案模式。
+# 只清除当前进程环境，子进程随之隔离；独立文案运行及调用结束后的原选择不受影响。
+[Environment]::SetEnvironmentVariable('SSC_ROMANCE_TEXT_ONLY', [NullString]::Value, 'Process')
 $env:SSC_TEST_REPOSITORY_ROOT = $repoRoot
 $env:SSC_TEST_RUNTIME_ROOT = $runtimeRootPath
 $env:SSC_TEST_COMMON_ROOT = Join-Path $repoRoot 'Common'
@@ -314,6 +318,11 @@ foreach ($suite in $suites) {
             $null = Invoke-DotnetStep -CommandArguments (@('build', $project, '--configuration', 'Release', '--no-restore', '--target:Rebuild', '--verbosity', 'quiet') + $properties) -Stage 'build' -LogPath $logPath -Executable $suiteDotnet
             $testDll = Join-Path $repoRoot "Tests/$name/bin/Release/$framework/$name.dll"
             $output = Invoke-DotnetStep -CommandArguments (@($testDll) + $testArguments) -Stage 'tests' -LogPath $logPath -Executable $suiteDotnet
+            # 摘要数字只能证明所运行用例通过，不能证明运行范围完整。
+            # 即使宿主意外进入仅文案模式，也必须记为 Failed，禁止以其摘要放行总回归或发布。
+            if ($name -eq 'RomanceControlNative' -and $output -match '(?m)^\s*SCOPE:\s*romance text only\b') {
+                throw 'RomanceControlNative ran in text-only scope; full regression is required.'
+            }
             # Counts come from the suite, not a hard-coded historical total of 390.
             $summary = [regex]::Matches($output, '(?m)^(?:结果：|RESULT:\s*)?(\d+)/(\d+) (?:项通过。|(?:cases |lifecycle tests )?passed\b[^\r\n]*)\s*$')
             if ($summary.Count -ne 1) { throw 'Missing or ambiguous case summary; cannot confirm complete execution.' }
@@ -360,6 +369,7 @@ if ($PassThru) { return $report }
 }
 finally {
     foreach ($name in $savedTestEnvironment.Keys) {
-        [Environment]::SetEnvironmentVariable($name, $savedTestEnvironment[$name], 'Process')
+        # 新版运行时区分空串与未设置；NullString 避免 PowerShell 将 null 参数转为空串。
+        [Environment]::SetEnvironmentVariable($name, ($savedTestEnvironment[$name] ?? [NullString]::Value), 'Process')
     }
 }

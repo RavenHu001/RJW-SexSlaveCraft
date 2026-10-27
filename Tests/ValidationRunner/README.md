@@ -2,6 +2,16 @@
 
 验证 `Scripts/Test-All.ps1` 和 `Scripts/New-Release.ps1` 的编排及打包阻断行为，**不是额外的游戏机制套件，也不计入机制回归总数**。
 
+## 浪漫文案模式隔离专项（2026-10-26）
+
+```powershell
+pwsh -NoProfile -File Tests/ValidationRunner/RomanceScope.ps1
+```
+
+该入口只需 PowerShell 7，执行真实 `Test-All.ps1` AST 中的环境准备／恢复和输出判定／异常处理区块，以轻量子进程及模拟宿主输出验证，不执行下述完整编排夹具或任何游戏机制套件。覆盖五种调用者环境值的成功／异常恢复、子进程继承、仅文案范围拒绝、动态摘要及已有失败规则；另静态核对发布入口和独立文案选择接线。本次56／56，日志位于 `.builds/romance-gate-isolation/`；详见[完成记录](../../Docs/Development/Completed/浪漫文案专项与总回归门禁隔离修复.md)。它不代表完整编排、发布或游戏验收通过。
+
+## 完整编排夹具
+
 需要 Windows、PowerShell 7、Git，以及两份本地 Harmony：net9.0 和用于拒绝场景的 net472。替换示例路径后运行：
 
 ```powershell
