@@ -71,10 +71,10 @@
   <SSC_Romance_InvalidRecord>命令紀錄不完整或歸屬不唯一，已取消。</SSC_Romance_InvalidRecord>
   <SSC_Romance_InteractionTimeout>等待互動條件逾時，互動未發生。</SSC_Romance_InteractionTimeout>
   <SSC_Romance_JobEnded>任務結束或被中斷，未繼續執行。</SSC_Romance_JobEnded>
-  <SSC_Romance_Result_NotOccurred>[文案待定] {0} 對 {1} 的{2}命令未執行。</SSC_Romance_Result_NotOccurred>
-  <SSC_Romance_Result_Rejected>[文案待定] {0} 已按命令向 {1} 發起{2}，對方拒絕了。</SSC_Romance_Result_Rejected>
-  <SSC_Romance_Result_RelationshipChanged>[文案待定] {0} 對 {1} 的{2}命令已完成，關係已變更。</SSC_Romance_Result_RelationshipChanged>
-  <SSC_Romance_Result_Unconfirmed>[文案待定] {0} 對 {1} 的{2}結果無法確認，不會再次執行。</SSC_Romance_Result_Unconfirmed>
+  <SSC_Romance_Result_NotOccurred>{0}對{1}的{2}命令未及發生，就這樣不了了之。</SSC_Romance_Result_NotOccurred>
+  <SSC_Romance_Result_Rejected>{0}已奉命向{1}發起{2}，對方拒絕了；命令的灼熱散不去，卻只換來一身空。</SSC_Romance_Result_Rejected>
+  <SSC_Romance_Result_RelationshipChanged>{0}對{1}的{2}命令已經完成，關係已被改寫；身不由己，只能照單全收。</SSC_Romance_Result_RelationshipChanged>
+  <SSC_Romance_Result_Unconfirmed>{0}對{1}的{2}結果無法確認，也不會再次執行，只餘一點懸而未決的悵然。</SSC_Romance_Result_Unconfirmed>
   <SSC_Romance_SexTestTab>性行為許可測試</SSC_Romance_SexTestTab>
   <SSC_Romance_ForcedRomanceRefusal>{1} 因浪漫回應限制拒絕了 {0} 的告白。</SSC_Romance_ForcedRomanceRefusal>
   <SSC_Romance_ForcedProposalRefusal>{1} 因浪漫回應限制拒絕了 {0} 的求婚。</SSC_Romance_ForcedProposalRefusal>
@@ -92,18 +92,18 @@
   <SSC_Romance_Setting_AlwaysAcceptOthers>強制接受其他人發起的浪漫</SSC_Romance_Setting_AlwaysAcceptOthers>
   <SSC_Romance_AlwaysAcceptOthersTip>強制接受對應對象的求愛／求婚，不受接受許可限制。</SSC_Romance_AlwaysAcceptOthersTip>
   <SSC_Romance_AcceptTargetTitle>強制接受對象</SSC_Romance_AcceptTargetTitle>
-  <!-- 开发占位：行为专属任务和结果；正式文案待定。 -->
-  <SSC_Romance_Report_Romance>[文案待定] 正按命令向 TargetA 求愛。</SSC_Romance_Report_Romance>
+  <!-- Localized from the accepted Simplified Chinese copy v1; stable keys and parameters retained. -->
+  <SSC_Romance_Report_Romance>正按命令向 TargetA 求愛，腿心已經濕了。</SSC_Romance_Report_Romance>
   <SSC_Romance_CommandAction_Romance>求愛</SSC_Romance_CommandAction_Romance>
-  <SSC_Romance_Report_Proposal>[文案待定] 正按命令向 TargetA 求婚。</SSC_Romance_Report_Proposal>
+  <SSC_Romance_Report_Proposal>正按命令向 TargetA 求婚，身子已經軟了。</SSC_Romance_Report_Proposal>
   <SSC_Romance_CommandAction_Proposal>求婚</SSC_Romance_CommandAction_Proposal>
-  <SSC_Romance_Report_EndLover>[文案待定] 正按命令與 TargetA 分手。</SSC_Romance_Report_EndLover>
+  <SSC_Romance_Report_EndLover>正按命令與 TargetA 分手。</SSC_Romance_Report_EndLover>
   <SSC_Romance_CommandAction_EndLover>分手</SSC_Romance_CommandAction_EndLover>
-  <SSC_Romance_Report_EndFiance>[文案待定] 正按命令解除與 TargetA 的婚約。</SSC_Romance_Report_EndFiance>
+  <SSC_Romance_Report_EndFiance>正按命令解除與 TargetA 的婚約。</SSC_Romance_Report_EndFiance>
   <SSC_Romance_CommandAction_EndFiance>解除婚約</SSC_Romance_CommandAction_EndFiance>
-  <SSC_Romance_Report_Divorce>[文案待定] 正按命令與 TargetA 離婚。</SSC_Romance_Report_Divorce>
+  <SSC_Romance_Report_Divorce>正按命令與 TargetA 離婚。</SSC_Romance_Report_Divorce>
   <SSC_Romance_CommandAction_Divorce>離婚</SSC_Romance_CommandAction_Divorce>
-  <SSC_Romance_Report_Breakup>[文案待定] 正按命令結束與 TargetA 的關係。</SSC_Romance_Report_Breakup>
+  <SSC_Romance_Report_Breakup>正按命令結束與 TargetA 的關係。</SSC_Romance_Report_Breakup>
   <SSC_Romance_CommandAction_Breakup>結束關係</SSC_Romance_CommandAction_Breakup>
-  <SSC_Romance_Result_RejectedAndSeparated>[文案待定] {0} 已按命令向 {1} 求婚，對方拒絕且雙方分手了。</SSC_Romance_Result_RejectedAndSeparated>
+  <SSC_Romance_Result_RejectedAndSeparated>{0}已按命令向{1}求婚，對方拒絕了，二人就此分手；命令的熱，涼成了一場空。</SSC_Romance_Result_RejectedAndSeparated>
 </LanguageData>

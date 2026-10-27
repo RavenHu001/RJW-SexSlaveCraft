@@ -246,7 +246,10 @@ internal static partial class Program
             {
                 var (_, _, _, record) = SocialFactEvent(ev);
                 string text = SSCRomanceCommandPresentation.ResultText(record);
-                Require(text.Contains(ev == 10 ? "they broke up" : "who rejected it")); Equal(text, commandLastMessage); Equal(1, commandFeedback);
+                string key = ev == 10 ? "SSC_Romance_Result_RejectedAndSeparated" : "SSC_Romance_Result_Rejected";
+                string action = (ev == 7 ? "SSC_Romance_CommandAction_Romance" : "SSC_Romance_CommandAction_Proposal").Translate();
+                Equal(key.Translate(record.Stamp.Actor.LabelShort, record.Stamp.Target.LabelShort, action).ToString(), text);
+                Equal(text, commandLastMessage); Equal(1, commandFeedback);
             });
         foreach (string mode in new[] { "not-occurred", "interrupted", "unconfirmed" })
             Check("social command actual failure message and no replay " + mode, () =>

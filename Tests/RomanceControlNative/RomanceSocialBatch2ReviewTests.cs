@@ -25,8 +25,8 @@ internal static partial class Program
                     InjectSocialLogLanguage(repo, "English"); SetSocialLanguage("ChineseSimplified");
                     var (_, _, subject, _) = SocialLogEvent(8, letter);
                     var log = (PlayLogEntry_SSCRomance)moodLastLog;
-                    if (letter) Require(socialLogLetters.Single().Text.ToString().Contains("SSC text pending E08"));
-                    else Require(log.BackgroundTextFromPOV(subject).Contains("SSC text pending E08"));
+                    if (letter) Require(CopyEventTextPresent(repo, socialLogLetters.Single().Text.ToString(), 8, "English"));
+                    else Require(CopyEventTextPresent(repo, log.BackgroundTextFromPOV(subject), 8, "English"));
                     Require(socialReviewTranslated > 0 && socialReviewUntranslated > 0);
                     Equal(1, playLogCalls);
                 }
@@ -144,18 +144,10 @@ internal static partial class Program
                 {
                     InjectSocialLogLanguage(repo, language);
                     string first = loaded.ToGameStringFromPOV(a, true), second = loaded.ToGameStringFromPOV(b, true);
-                    if (language == "ChineseSimplified")
-                    {
-                        string actorText = ChineseCopyLogExpected(repo, 10, a, b), recipientText = ChineseCopyLogExpected(repo, 5, a, b);
-                        string actorView = ChineseCopyPlainText(first), recipientView = ChineseCopyPlainText(second);
-                        Require(actorView.Contains(actorText) && !actorView.Contains(recipientText));
-                        Require(recipientView.Contains(recipientText) && !recipientView.Contains(actorText));
-                    }
-                    else
-                    {
-                        Require(first.Contains("E10") && !first.Contains("E05"));
-                        Require(second.Contains("E05") && !second.Contains("E10"));
-                    }
+                    string actorText = CopyLogExpected(repo, language, 10, a, b), recipientText = CopyLogExpected(repo, language, 5, a, b);
+                    string actorView = CopyPlainText(first), recipientView = CopyPlainText(second);
+                    Require(actorView.Contains(actorText) && !actorView.Contains(recipientText));
+                    Require(recipientView.Contains(recipientText) && !recipientView.Contains(actorText));
                     Equal(oldText, loadedLetter.Text.ToString().Replace("\r\n", "\n"));
                 }
             }
@@ -169,7 +161,7 @@ internal static partial class Program
             var pack = DefDatabase<RulePackDef>.GetNamed("SSC_RomanceLog_Command");
             var node = XDocument.Load(Path.Combine(repo, "1.7/Defs/RulePackDefs/SSC_RomanceLogs.xml")).Root.Elements().Single(n => n.Element("defName").Value == pack.defName).Element("rulePack");
             var rules = node.Element("rulesStrings"); var list = rules.Elements().Reverse().ToArray(); rules.ReplaceNodes(list);
-            try { SetSocialRulePack(pack, node); Require(log.BackgroundTextFromPOV(subject).Contains("E07")); }
+            try { SetSocialRulePack(pack, node); Require(CopyEventTextPresent(repo, log.BackgroundTextFromPOV(subject), 7)); }
             finally { InjectSocialLogLanguage(repo, "English"); }
         });
     }

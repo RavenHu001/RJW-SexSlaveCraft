@@ -42,7 +42,7 @@ internal static partial class Program
                     var (a, b, subject, _) = SocialLogEvent(ev);
                     var log = (PlayLogEntry_SSCRomance)moodLastLog;
                     var background = log.BackgroundTextFromPOV(subject);
-                    Require(background.Contains($"E{ev:00}"), background);
+                    Require(CopyEventTextPresent(repo, background, ev), background);
                     Require(background.Contains(a.Name.ToStringShort) && background.Contains(b.Name.ToStringShort), background);
                     Equal("", log.BackgroundTextFromPOV(subject == a ? b : a));
                     Equal("", log.BackgroundTextFromPOV(SocialPawn()));
@@ -63,13 +63,7 @@ internal static partial class Program
                     {
                         var (a, b, subject, _) = SocialLogEvent(ev);
                         var text = ((PlayLogEntry_SSCRomance)moodLastLog).BackgroundTextFromPOV(subject);
-                        if (language == "ChineseSimplified")
-                            Equal(ChineseCopyLogExpected(repo, ev, a, b), ChineseCopyPlainText(text));
-                        else
-                        {
-                            Require(text.Contains($"E{ev:00}"), text);
-                            Require(text.Contains(language == "English" ? "text pending" : language == "Russian" ? "текст ожидается" : "文案待定"), text);
-                        }
+                        Equal(CopyLogExpected(repo, language, ev, a, b), CopyPlainText(text));
                     }
                     var rel = $"Languages/{language}/DefInjected/RulePackDef/SSC_RomanceLogs.xml";
                     Require(File.ReadAllBytes(Path.Combine(repo, "1.7", rel)).SequenceEqual(File.ReadAllBytes(Path.Combine(repo, "Sexslavecraft", rel))));
@@ -157,7 +151,7 @@ internal static partial class Program
                 var path = Path.Combine(saveDirectory, "social-grammar-history-" + (++id) + ".xml");
                 Scribe.saver.InitSaving(path, "SocialGrammar"); Scribe_Deep.Look(ref log, "log"); Scribe.saver.FinalizeSaving();
                 string xml = File.ReadAllText(path);
-                Require(!xml.Contains("ssc_romance_log_") && !xml.Contains("SSC_RomanceLog_") && !xml.Contains("text pending"));
+                Require(!xml.Contains("ssc_romance_log_") && !xml.Contains("SSC_RomanceLog_") && !CopyAnyEventTextPresent(repo, xml));
                 Comp(subject).romanceConfig = Denied(); Comp(subject).pawnIdentity = PawnIdentity.Unset;
                 foreach (var p in new[] { a, b }) p.relations.DirectRelations.Clear();
                 SSCPersonalityRuntimeUtility.TryBeginMutation(subject, out var mutation); mutation?.Dispose();
@@ -177,7 +171,7 @@ internal static partial class Program
                 var log = (PlayLogEntry_SSCRomance)moodLastLog; var letter = socialLogLetters.Single();
                 string text = letter.Text.ToString();
                 Require(text.StartsWith(log.ToGameStringFromPOV(a) + "\n\n"), text);
-                Equal(ev >= 6, text.Contains("SSC text pending"));
+                Equal(ev >= 6, CopyAnyEventTextPresent(repo, text));
                 Equal(ev is 1 or 2 or 6 or 8 ? LetterDefOf.PositiveEvent : LetterDefOf.NegativeEvent, letter.def);
                 Require(letter.lookTargets.targets.Any(t => t.Thing == a));
                 if (ev is not 1 and not 6) Require(letter.lookTargets.targets.Any(t => t.Thing == b));
@@ -205,12 +199,12 @@ internal static partial class Program
                 var log = (PlayLogEntry_SSCRomance)moodLastLog;
                 int passive = ev == 6 ? 1 : ev == 7 ? 3 : ev == 8 ? 2 : ev == 9 ? 4 : 5;
                 var first = log.ToGameStringFromPOV(a); var second = log.ToGameStringFromPOV(b);
-                Require(first.Contains($"E{ev:00}") && !first.Contains($"E{passive:00}"));
-                Require(second.Contains($"E{passive:00}") && !second.Contains($"E{ev:00}"));
+                Require(CopyEventTextPresent(repo, first, ev) && !CopyEventTextPresent(repo, first, passive));
+                Require(CopyEventTextPresent(repo, second, passive) && !CopyEventTextPresent(repo, second, ev));
                 Equal(first, log.ToGameStringFromPOV(a)); Equal(second, log.ToGameStringFromPOV(b));
                 Equal(1, playLogCalls); Equal(1, commandFeedback);
                 if (ev == 7) Equal(0, socialLogLetters.Count);
-                else { Require(socialLogLetters.Single().Text.ToString().Contains($"E{ev:00}")); Require(!socialLogLetters.Single().Text.ToString().Contains($"E{passive:00}")); }
+                else { Require(CopyEventTextPresent(repo, socialLogLetters.Single().Text.ToString(), ev)); Require(!CopyEventTextPresent(repo, socialLogLetters.Single().Text.ToString(), passive)); }
             });
         foreach (int ev in Enumerable.Range(1, 13))
         foreach (bool denied in new[] { false, true })
@@ -220,7 +214,7 @@ internal static partial class Program
                 try
                 {
                     var (_, _, subject, _) = SocialLogEvent(ev, false, (a, b, s) => { if (!denied) s.needs.mood = null; });
-                    Require(((PlayLogEntry_SSCRomance)moodLastLog).ToGameStringFromPOV(subject).Contains($"E{ev:00}"));
+                    Require(CopyEventTextPresent(repo, ((PlayLogEntry_SSCRomance)moodLastLog).ToGameStringFromPOV(subject), ev));
                 }
                 finally { if (denied) boundary.Unpatch(AccessTools.Method(typeof(ThoughtUtility), nameof(ThoughtUtility.CanGetThought)), AccessTools.Method(typeof(Program), nameof(SocialDenyComposite))); }
             });
@@ -242,7 +236,7 @@ internal static partial class Program
                 for (int i = 0; i < 4; i++)
                 {
                     Equal(original, log.ToGameStringFromPOV(subject, true));
-                    Require(log.BackgroundTextFromPOV(subject).Contains("E07"));
+                    Require(CopyEventTextPresent(repo, log.BackgroundTextFromPOV(subject), 7));
                     Require(log.ToGameStringFromPOV(b, true).Contains("Third party preserved."));
                 }
                 Equal(expected, Rand.Value); Require(original.Contains("Third party preserved."));
@@ -303,7 +297,7 @@ internal static partial class Program
                     SetSocialRulePack(pack, packXml);
                     if (mode == "exception") boundary.Unpatch(AccessTools.Method(typeof(GrammarResolver), "ResolveUnsafe", new[] { typeof(string), typeof(GrammarRequest), typeof(bool).MakeByRefType(), typeof(string), typeof(bool), typeof(bool), typeof(List<string>), typeof(List<string>), typeof(bool) }), AccessTools.Method(typeof(Program), nameof(SocialGrammarThrow)));
                 }
-                Require(log.ToGameStringFromPOV(subject, true).Contains("E07")); Equal(1, playLogCalls);
+                Require(CopyEventTextPresent(repo, log.ToGameStringFromPOV(subject, true), 7)); Equal(1, playLogCalls);
             });
         Check("social grammar missing translated root uses native untranslated snapshot", () =>
         {
@@ -316,7 +310,7 @@ internal static partial class Program
                 SetSocialLanguage("ChineseSimplified");
                 pack.RulesImmediate.RemoveAll(r => r.keyword == "ssc_romance_log_command_romance_rejected");
                 AccessTools.Field(typeof(RulePackDef), "cachedRules").SetValue(pack, null);
-                Require(log.BackgroundTextFromPOV(subject).Contains("SSC text pending E07"));
+                Require(CopyEventTextPresent(repo, log.BackgroundTextFromPOV(subject), 7, "English"));
             }
             finally { LanguageDatabase.activeLanguage = old; InjectSocialLogLanguage(repo, "English"); }
         });
@@ -324,7 +318,7 @@ internal static partial class Program
         {
             var (a, b, _, _) = SocialLogEvent(7); var log = (PlayLogEntry_SSCRomance)moodLastLog;
             var plain = PlainSocialLog(log, a, b);
-            foreach (var pov in new[] { a, b }) Require(!plain.ToGameStringFromPOV(pov).Contains("SSC text pending"));
+            foreach (var pov in new[] { a, b }) Require(!CopyAnyEventTextPresent(repo, plain.ToGameStringFromPOV(pov)));
         });
         foreach (bool role in new[] { false, true })
             Check("social grammar damaged saved role or action cannot disclose background " + role, () =>
@@ -333,7 +327,7 @@ internal static partial class Program
                 var (a, b, actor, _) = SocialLogEvent(role ? 7 : 9); var active = ((PlayLogEntry_SSCRomance)moodLastLog).BackgroundFromPOV(actor);
                 var invalid = new PlayLogEntry_SSCRomance(InteractionDefOf.RomanceAttempt, a, b, new(), role ? passive : active, role ? active : null);
                 Equal("", invalid.BackgroundTextFromPOV(a)); Equal("", invalid.BackgroundTextFromPOV(b));
-                Require(!invalid.ToGameStringFromPOV(a).Contains("SSC text pending"));
+                Require(!CopyAnyEventTextPresent(repo, invalid.ToGameStringFromPOV(a)));
             });
     }
 
@@ -369,22 +363,42 @@ internal static partial class Program
     }
 
     /// <summary>去除原生人物颜色标签，只比较文字；不重新解析或替代受测语法入口。</summary>
-    private static string ChineseCopyPlainText(string text)
+    private static string CopyPlainText(string text)
         => System.Text.RegularExpressions.Regex.Replace(text, "<[^>]+>", "");
 
-    /// <summary>按稳定事件／索引从真实简中资源读取预期，不再依赖开发占位中的 E 编号。</summary>
-    private static string ChineseCopyLogExpected(string repo, int ev, Pawn actor, Pawn recipient)
+    /// <summary>按稳定事件／索引读取指定语言资源的预期正文，不依赖开发占位或 E 编号。</summary>
+    private static string CopyLogExpected(string repo, string locale, int ev, Pawn actor, Pawn recipient)
     {
         string[] paths = { "Accept.0", "Accept.1", "Reject.0", "Reject.1", "Reject.2",
             "Command.0", "Command.1", "Command.2", "Command.3", "Command.4", "Command.5", "Command.6", "Command.7" };
         var parts = paths[ev - 1].Split('.');
         string key = "SSC_RomanceLog_" + parts[0] + ".rulePack.rulesStrings." + parts[1];
-        var row = XDocument.Load(Path.Combine(repo, "1.7/Languages/ChineseSimplified/DefInjected/RulePackDef/SSC_RomanceLogs.xml"))
+        var row = XDocument.Load(Path.Combine(repo, "1.7/Languages", locale, "DefInjected/RulePackDef/SSC_RomanceLogs.xml"))
             .Root.Elements().Single(node => node.Name.LocalName == key).Value;
         return row.Substring(row.IndexOf("->", StringComparison.Ordinal) + 2)
             .Replace("[INITIATOR_nameDef]", actor.Name.ToStringShort)
             .Replace("[RECIPIENT_nameDef]", recipient.Name.ToStringShort);
     }
+
+    /// <summary>历史／信件断言按当前资源的固定片段识别事件，人物部分由原生语法另行核对。</summary>
+    private static bool CopyEventTextPresent(string repo, string actual, int ev, string locale = null)
+    {
+        locale ??= LanguageDatabase.activeLanguage.folderName;
+        string[] paths = { "Accept.0", "Accept.1", "Reject.0", "Reject.1", "Reject.2", "Command.0", "Command.1", "Command.2", "Command.3", "Command.4", "Command.5", "Command.6", "Command.7" };
+        var parts = paths[ev - 1].Split('.');
+        string key = "SSC_RomanceLog_" + parts[0] + ".rulePack.rulesStrings." + parts[1];
+        string rule = XDocument.Load(Path.Combine(repo, "1.7/Languages", locale, "DefInjected/RulePackDef/SSC_RomanceLogs.xml"))
+            .Root.Elements().Single(node => node.Name.LocalName == key).Value;
+        string body = rule.Substring(rule.IndexOf("->", StringComparison.Ordinal) + 2);
+        var fragments = System.Text.RegularExpressions.Regex.Split(body, @"\[(?:INITIATOR|RECIPIENT)_[^\]]+\]")
+            .Where(part => !string.IsNullOrWhiteSpace(part));
+        actual = CopyPlainText(actual);
+        return fragments.All(part => actual.Contains(part));
+    }
+
+    /// <summary>验证未注入 SSC 背景的普通正文／持久记录，不再把开发占位当作唯一识别标志。</summary>
+    private static bool CopyAnyEventTextPresent(string repo, string actual)
+        => Enumerable.Range(1, 13).Any(ev => CopyEventTextPresent(repo, actual, ev));
 
     /// <summary>通过原版语言注入器写入真实生产 Def；固定索引和路径必须全部成功，不能只匹配 XML 文本。</summary>
     private static void InjectSocialLogLanguage(string repo, string language)

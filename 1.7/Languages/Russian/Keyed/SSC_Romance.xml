@@ -71,10 +71,10 @@
   <SSC_Romance_InvalidRecord>Запись приказа неполна или имеет неоднозначного владельца; приказ отменён.</SSC_Romance_InvalidRecord>
   <SSC_Romance_InteractionTimeout>Время ожидания условий взаимодействия истекло; взаимодействие не состоялось.</SSC_Romance_InteractionTimeout>
   <SSC_Romance_JobEnded>Задание завершено или прервано и не будет продолжено.</SSC_Romance_JobEnded>
-  <SSC_Romance_Result_NotOccurred>[Текст ожидается] {0}: приказ ({2}) в отношении {1} не выполнен.</SSC_Romance_Result_NotOccurred>
-  <SSC_Romance_Result_Rejected>[Текст ожидается] {0}: приказ ({2}) в отношении {1} выполнен, но последовал отказ.</SSC_Romance_Result_Rejected>
-  <SSC_Romance_Result_RelationshipChanged>[Текст ожидается] {0}: приказ ({2}) в отношении {1} выполнен; отношения изменились.</SSC_Romance_Result_RelationshipChanged>
-  <SSC_Romance_Result_Unconfirmed>[Текст ожидается] {0}: результат ({2}) в отношении {1} не подтверждён; повторения не будет.</SSC_Romance_Result_Unconfirmed>
+  <SSC_Romance_Result_NotOccurred>{0} получает приказ «{2}»; адресат — {1}. До исполнения так и не доходит, всё сходит на нет.</SSC_Romance_Result_NotOccurred>
+  <SSC_Romance_Result_Rejected>{0} исполняет приказ «{2}», но {1} отвечает отказом; жар приказа не уходит, оставляя лишь пустоту.</SSC_Romance_Result_Rejected>
+  <SSC_Romance_Result_RelationshipChanged>{0} исполняет приказ «{2}»; адресат — {1}. Отношения изменились, остаётся лишь принять это, не имея выбора.</SSC_Romance_Result_RelationshipChanged>
+  <SSC_Romance_Result_Unconfirmed>{0} и {1}: результат приказа «{2}» не подтверждён. Повторного исполнения не будет; остаётся лишь неразрешённая тоска.</SSC_Romance_Result_Unconfirmed>
   <SSC_Romance_SexTestTab>Проверка сексуальных разрешений</SSC_Romance_SexTestTab>
   <SSC_Romance_ForcedRomanceRefusal>{1} отклоняет признание {0} из-за ограничений на романтические ответы.</SSC_Romance_ForcedRomanceRefusal>
   <SSC_Romance_ForcedProposalRefusal>{1} отклоняет предложение руки и сердца от {0} из-за ограничений на романтические ответы.</SSC_Romance_ForcedProposalRefusal>
@@ -92,18 +92,18 @@
   <SSC_Romance_Setting_AlwaysAcceptOthers>Принудительно принимать романтическую инициативу остальных</SSC_Romance_Setting_AlwaysAcceptOthers>
   <SSC_Romance_AlwaysAcceptOthersTip>Принудительно принимать романтическую инициативу и предложения этих целей, несмотря на разрешения ответа.</SSC_Romance_AlwaysAcceptOthersTip>
   <SSC_Romance_AcceptTargetTitle>Принудительно принимать от</SSC_Romance_AcceptTargetTitle>
-  <!-- 开发占位：行为专属任务和结果；正式文案待定。 -->
-  <SSC_Romance_Report_Romance>[Текст ожидается] выполняет приказ начать роман с TargetA.</SSC_Romance_Report_Romance>
+  <!-- Localized from the accepted Simplified Chinese copy v1; stable keys and parameters retained. -->
+  <SSC_Romance_Report_Romance>ухаживает по приказу: TargetA; между ног уже влажно.</SSC_Romance_Report_Romance>
   <SSC_Romance_CommandAction_Romance>роман</SSC_Romance_CommandAction_Romance>
-  <SSC_Romance_Report_Proposal>[Текст ожидается] выполняет приказ предложить брак TargetA.</SSC_Romance_Report_Proposal>
+  <SSC_Romance_Report_Proposal>делает предложение по приказу: TargetA; тело уже размякло.</SSC_Romance_Report_Proposal>
   <SSC_Romance_CommandAction_Proposal>предложение брака</SSC_Romance_CommandAction_Proposal>
-  <SSC_Romance_Report_EndLover>[Текст ожидается] выполняет приказ расстаться с TargetA.</SSC_Romance_Report_EndLover>
+  <SSC_Romance_Report_EndLover>расстаётся по приказу: TargetA.</SSC_Romance_Report_EndLover>
   <SSC_Romance_CommandAction_EndLover>расставание</SSC_Romance_CommandAction_EndLover>
-  <SSC_Romance_Report_EndFiance>[Текст ожидается] выполняет приказ расторгнуть помолвку с TargetA.</SSC_Romance_Report_EndFiance>
+  <SSC_Romance_Report_EndFiance>расторгает помолвку по приказу: TargetA.</SSC_Romance_Report_EndFiance>
   <SSC_Romance_CommandAction_EndFiance>расторжение помолвки</SSC_Romance_CommandAction_EndFiance>
-  <SSC_Romance_Report_Divorce>[Текст ожидается] выполняет приказ развестись с TargetA.</SSC_Romance_Report_Divorce>
+  <SSC_Romance_Report_Divorce>разводится по приказу: TargetA.</SSC_Romance_Report_Divorce>
   <SSC_Romance_CommandAction_Divorce>развод</SSC_Romance_CommandAction_Divorce>
-  <SSC_Romance_Report_Breakup>[Текст ожидается] выполняет приказ прекратить отношения с TargetA.</SSC_Romance_Report_Breakup>
+  <SSC_Romance_Report_Breakup>завершает отношения по приказу: TargetA.</SSC_Romance_Report_Breakup>
   <SSC_Romance_CommandAction_Breakup>прекращение отношений</SSC_Romance_CommandAction_Breakup>
-  <SSC_Romance_Result_RejectedAndSeparated>[Текст ожидается] {0} предложил брак {1} по приказу; последовал отказ и отношения прекратились.</SSC_Romance_Result_RejectedAndSeparated>
+  <SSC_Romance_Result_RejectedAndSeparated>{0} делает предложение по приказу, {1} отказывает, и отношения обрываются; жар приказа остывает до пустоты.</SSC_Romance_Result_RejectedAndSeparated>
 </LanguageData>

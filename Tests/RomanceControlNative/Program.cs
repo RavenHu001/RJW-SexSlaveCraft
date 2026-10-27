@@ -88,6 +88,11 @@ internal static partial class Program
             _ = GenTypes.AllTypes;
             bootstrap = false;
             harmony.CreateClassProcessor(production.GetType("SexSlaveCraft.Harmony_SSCRomanceMoodAdmissionTail")).Patch();
+            // 文案专项仅建立显示夹具，不执行互动、许可、人格或存档机制回归。
+            if (Environment.GetEnvironmentVariable("SSC_ROMANCE_TEXT_ONLY") == "1")
+                RomanceLocalizationOnlyTests(harmony, repo, game);
+            else
+            {
             PolicyTests(); PreferenceTests(); LifecycleTests(); SnapshotTests(); SaveTests(); WiringTests(repo);
             InteractionTests(harmony, repo, game);
             CommandTests(harmony, repo);
@@ -113,6 +118,7 @@ internal static partial class Program
             RomanceSocialReviewTests();
             RomanceSocialBatch2Tests(harmony, repo, game);
             PersonalResetTests(harmony);
+            }
         }
         finally { harmony.UnpatchAll(harmony.Id); Scribe.mode = LoadSaveMode.Inactive; Current.Game = null; }
         Console.WriteLine($"RESULT: {passed}/{passed + failed} passed"); return failed == 0 ? 0 : 1;
