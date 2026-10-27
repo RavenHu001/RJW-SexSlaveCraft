@@ -20,7 +20,7 @@ internal static partial class Program
     /// <summary>从本机 Def 确认名称与基础值；移除其他系统影响，专门验证生产 Hediff 的原生属性运算。</summary>
     private static void LoadStageStatReferences(string game)
     {
-        var rjw = XDocument.Load(Path.Combine(game, "Mods/RJW_核心_本体/1.6/Defs/StatDefs/Stats.xml"));
+        var rjw = XDocument.Load(RjwResource("Defs/StatDefs/Stats.xml"));
         var core = XDocument.Load(Path.Combine(game, "Data/Core/Defs/Stats/Stats_Pawns_General.xml"));
         foreach (string name in stageStats)
         {
@@ -99,7 +99,7 @@ internal static partial class Program
         }
         Import(Path.Combine(game, "Data/Core/Defs/HediffDefs/Hediffs_Global_Misc.xml"), n => (string)n.Element("defName") == "Pregnant");
         Import(Path.Combine(game, "Data/Biotech/Defs/HediffDefs/Hediffs_Global_Misc.xml"), n => (string)n.Element("defName") == "PregnantHuman");
-        Import(Path.Combine(game, "Mods/RJW_核心_本体/1.6/Defs/HediffDefs/Hediffs_Pregnancy.xml"), n => true);
+        Import(RjwResource("Defs/HediffDefs/Hediffs_Pregnancy.xml"), n => true);
         var patch = new XmlDocument(); patch.Load(Path.Combine(repo, "1.7/Patches/SSC_UterusPregnancy.xml"));
         var op = DirectXmlToObject.ObjectFromXml<PatchOperation>(patch.DocumentElement.SelectSingleNode("Operation"), false);
         Require(op.Apply(doc), "native pregnancy XML patch failed");

@@ -21,6 +21,8 @@ namespace SexSlaveCraft
 #if SSC_RW17
             // 健康列表已持有这条链后再观察，不能把尚未入体的实例当作当前绑定。
             SSCRomanceLifecycle.Notify(pawn);
+            // 新链只刷新身体指令的实际准入，不在锁链上保存或重置敏感度档位。
+            SSCOrgasmSensitivityUtility.NotifyStateChanged(pawn);
 #endif
             SSCSelfTrainingFeedback.NotifyStatusChanged(pawn);
             ModLog.Message($"[ChainOfSexSlave] Added to {pawn}, linked with {LinkedPawn ?? target}");
@@ -39,6 +41,8 @@ namespace SexSlaveCraft
 #if SSC_RW17
             // 外部改 target 被检测到时立即撤权，后面的反向索引修复不能延续旧主人授权。
             SSCRomanceLifecycle.Notify(pawn);
+            // 兼容外部直接写 target；保存档位虽未变，实际链与旧菜单凭据已经变化。
+            SSCOrgasmSensitivityUtility.NotifyStateChanged(pawn);
 #endif
             SSCBondUtility.GetBridle(previousMaster)?.RemoveTarget(pawn);
             SSCBondRelationUtility.RemoveInvalidRelations(pawn);
@@ -94,6 +98,7 @@ namespace SexSlaveCraft
 #if SSC_RW17
             // 以现在实际持有的链比较；删除旧实例时已存在的新链不能被误认为同一授权。
             SSCRomanceLifecycle.Notify(pawn);
+            SSCOrgasmSensitivityUtility.NotifyStateChanged(pawn);
 #endif
             Pawn formerMaster = LinkedPawn;
             Pawn currentMaster = SSCBondUtility.GetBoundMaster(pawn);
@@ -138,6 +143,7 @@ namespace SexSlaveCraft
 #if SSC_RW17
                 // 先记录真实换主，再执行可能重入的缰绳／关系清理；回调恢复原主人也不能掩盖这次撤权。
                 SSCRomanceLifecycle.Notify(SexSlave);
+                SSCOrgasmSensitivityUtility.NotifyStateChanged(SexSlave);
 #endif
                 // AddToPawn 也可能被绕过 Bind 直接调用，换主时仍须清除旧主人的反向引用。
                 if (previousMaster != Master) SSCBondUtility.GetBridle(previousMaster)?.RemoveTarget(SexSlave);
@@ -149,6 +155,7 @@ namespace SexSlaveCraft
 #if SSC_RW17
             // 覆盖绕过 Bind 直接调用 AddToPawn 的换主路径，不等待下一次锁链 Tick。
             SSCRomanceLifecycle.Notify(SexSlave);
+            SSCOrgasmSensitivityUtility.NotifyStateChanged(SexSlave);
 #endif
             return hediff;
         }
@@ -177,6 +184,7 @@ namespace SexSlaveCraft
 #if SSC_RW17
             // 原入口也显式通知，避免健康阶段被外部改写后漏掉 SSC 自身的第四阶段退阶。
             if (oldStage != SSCIdentityUtility.GetSexSlaveStageFromChain(hediff)) SSCRomanceLifecycle.Notify(pawn);
+            if (oldStage != SSCIdentityUtility.GetSexSlaveStageFromChain(hediff)) SSCOrgasmSensitivityUtility.NotifyStateChanged(pawn);
 #endif
             if (oldStage != SSCIdentityUtility.GetSexSlaveStageFromChain(hediff))
                 SSCSelfTrainingFeedback.NotifyStatusChanged(pawn);

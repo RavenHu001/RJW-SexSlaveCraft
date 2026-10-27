@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_OrgasmSensitivity.label>微械感度調節（開發佔位）</SSC_OrgasmSensitivity.label>
+  <SSC_OrgasmSensitivity.description>由目前身體儲存微械指令；鎖鏈階段限制實際檔位。主人死亡不撤銷仍有效鎖鏈中的指令。</SSC_OrgasmSensitivity.description>
+  <SSC_OrgasmSensitivity.stages.0.label>一檔</SSC_OrgasmSensitivity.stages.0.label>
+  <SSC_OrgasmSensitivity.stages.1.label>二檔</SSC_OrgasmSensitivity.stages.1.label>
+  <SSC_OrgasmSensitivity.stages.2.label>三檔</SSC_OrgasmSensitivity.stages.2.label>
+  <SSC_OrgasmSensitivity.stages.3.label>四檔</SSC_OrgasmSensitivity.stages.3.label>
+</LanguageData>

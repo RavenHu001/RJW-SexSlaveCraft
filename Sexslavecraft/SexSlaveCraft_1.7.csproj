@@ -79,6 +79,14 @@
     <Compile Include="common/Orgasm/SSCOrgasmProgressSampling.cs" />
     <Compile Include="ThePatches/Harmony_OrgasmProgressSampling.cs" />
   </ItemGroup>
+  <!-- 身体敏感度第二批：载体、XML 参数与枚举 UI；倍率尚未接入推进桥。 -->
+  <ItemGroup>
+    <Compile Include="common/Orgasm/SSCOrgasmSensitivityConfig.cs" />
+    <Compile Include="common/Orgasm/SSCOrgasmSensitivityUtility.cs" />
+    <Compile Include="Hediff/Hediff_SSCOrgasmSensitivity.cs" />
+    <Compile Include="ITab/ITab_SexSlaveTraining.OrgasmSensitivity.cs" />
+    <Compile Include="ThePatches/Harmony_OrgasmSensitivityLifecycle.cs" />
+  </ItemGroup>
   <!-- AI 辅助生成：开关后端适配仅编入 1.7，保留旧版条件分支。 -->
   <ItemGroup>
     <Compile Include="common/Romance/SSCRomanceOldRelation.cs" />

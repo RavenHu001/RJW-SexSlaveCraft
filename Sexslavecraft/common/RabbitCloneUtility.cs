@@ -512,6 +512,10 @@ namespace SexSlaveCraft
             foreach (Hediff sourceHediff in source.health.hediffSet.hediffs.ToList())
             {
                 if (sourceHediff == null || !ShouldKeepSscHediff(sourceHediff.def)) continue;
+#if SSC_RW17
+                // 初生 Duplicate 已复制一次身体指令；成熟既不覆盖分身选择，也不重建它主动关闭的记录。
+                if (sourceHediff.def.defName == SSCOrgasmSensitivityUtility.DefName) continue;
+#endif
                 if (sourceHediff.def == SSCDefOf.SSC_PersonalityExcreting ||
                     sourceHediff.def == SSCDefOf.SSC_PersonalityExcreted_Done ||
                     sourceHediff.def == RabbitCloneLinkDef ||

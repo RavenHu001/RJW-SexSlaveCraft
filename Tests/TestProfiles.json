@@ -884,7 +884,11 @@
         "stomach native four-language finalized injection and parameters: ChineseSimplified",
         "stomach native four-language finalized injection and parameters: ChineseTraditional",
         "stomach native four-language finalized injection and parameters: English",
-        "stomach native four-language finalized injection and parameters: Russian"
+        "stomach native four-language finalized injection and parameters: Russian",
+        "sensitivity native language and XML mirrors: ChineseSimplified",
+        "sensitivity native language and XML mirrors: ChineseTraditional",
+        "sensitivity native language and XML mirrors: English",
+        "sensitivity native language and XML mirrors: Russian"
       ]
     },
     {

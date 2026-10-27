@@ -14,7 +14,9 @@ internal static class Entry
     private static int Main(string[] args)
     {
         string repo = Path.GetFullPath(args[0]), game = Path.GetFullPath(args[1]);
-        using var info = System.Text.Json.JsonDocument.Parse(File.ReadAllText(Path.Combine(repo, "1.7/BUILD-INFO.json")));
+        // 显式引用记录只供隔离候选复核，不修改正式 BUILD-INFO，也不搜索未知依赖目录。
+        string referenceInfo = Environment.GetEnvironmentVariable("SSC_TEST_BUILD_INFO_PATH") ?? Path.Combine(repo, "1.7/BUILD-INFO.json");
+        using var info = System.Text.Json.JsonDocument.Parse(File.ReadAllText(referenceInfo));
         var dirs = new[] { game }.Concat(info.RootElement.GetProperty("references").EnumerateArray()
             .Select(x => Path.GetDirectoryName(x.GetProperty("path").GetString()))).ToArray();
         AssemblyLoadContext.Default.Resolving += (context, name) =>

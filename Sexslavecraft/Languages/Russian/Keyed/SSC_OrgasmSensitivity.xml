@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_Sensitivity_Title>Управление чувствительностью микромашинами [WIP]</SSC_Sensitivity_Title>
+  <SSC_Sensitivity_Level0>Выкл.</SSC_Sensitivity_Level0>
+  <SSC_Sensitivity_Level1>Уровень I</SSC_Sensitivity_Level1>
+  <SSC_Sensitivity_Level2>Уровень II</SSC_Sensitivity_Level2>
+  <SSC_Sensitivity_Level3>Уровень III</SSC_Sensitivity_Level3>
+  <SSC_Sensitivity_Level4>Уровень IV</SSC_Sensitivity_Level4>
+  <SSC_Sensitivity_Summary>Сохранено: {0}; действует: {1}. Чувствительность оргазма ×{2}, уязвимость {3}.</SSC_Sensitivity_Summary>
+  <SSC_Sensitivity_Adjust>Изменить уровень: {0}</SSC_Sensitivity_Adjust>
+  <SSC_Sensitivity_OptionParameters> (чувствительность ×{0}, уязвимость {1})</SSC_Sensitivity_OptionParameters>
+  <SSC_Sensitivity_Tip>Тело хранит команды микромашинам. Стадия цепи ограничивает действующий уровень. Смерть хозяина не отменяет команды действующей цепи.</SSC_Sensitivity_Tip>
+  <SSC_Sensitivity_ConfigInvalid>Некорректная конфигурация чувствительности; сохранённую настройку можно отключить.</SSC_Sensitivity_ConfigInvalid>
+  <SSC_Sensitivity_BodyUnavailable>Это тело не может выполнять команды микромашин.</SSC_Sensitivity_BodyUnavailable>
+  <SSC_Sensitivity_PersonalityUnavailable>Управление приостановлено при замене личности или пока тело пусто.</SSC_Sensitivity_PersonalityUnavailable>
+  <SSC_Sensitivity_NotSlave>У пешки нет роли раба SSC; команды приостановлены.</SSC_Sensitivity_NotSlave>
+  <SSC_Sensitivity_NoChain>Нет действующей цепи; команды приостановлены.</SSC_Sensitivity_NoChain>
+  <SSC_Sensitivity_NotEditable>Изменять можно только живое, доступное для управления тело игрока.</SSC_Sensitivity_NotEditable>
+  <SSC_Sensitivity_InvalidLevel>Недопустимый уровень чувствительности.</SSC_Sensitivity_InvalidLevel>
+  <SSC_Sensitivity_LevelLocked>Эта стадия цепи ещё не открывает уровень; сохранённый выбор остаётся.</SSC_Sensitivity_LevelLocked>
+</LanguageData>

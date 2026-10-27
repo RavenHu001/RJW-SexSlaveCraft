@@ -16,7 +16,9 @@ internal static class Entry
     {
         if (args.Length != 2) throw new ArgumentException("repositoryRoot gameRoot");
         string repo = Path.GetFullPath(args[0]), game = Path.GetFullPath(args[1]);
-        using var build = System.Text.Json.JsonDocument.Parse(File.ReadAllText(Path.Combine(repo, "1.7/BUILD-INFO.json")));
+        // 隔离复核可显式提供本轮引用记录；默认仍使用正式记录，不自动猜测更新后的依赖目录。
+        string referenceInfo = Environment.GetEnvironmentVariable("SSC_TEST_BUILD_INFO_PATH") ?? Path.Combine(repo, "1.7/BUILD-INFO.json");
+        using var build = System.Text.Json.JsonDocument.Parse(File.ReadAllText(referenceInfo));
         var dirs = new[] { game, Path.Combine(repo, "1.7/Assemblies") }.Concat(build.RootElement.GetProperty("references")
             .EnumerateArray().Select(x => Path.GetDirectoryName(x.GetProperty("path").GetString()))).ToArray();
         // 只搜索构建记录中的目录；不复制游戏 DLL，不生成生产依赖替身。
@@ -40,6 +42,9 @@ internal static partial class Program
     private static bool bootstrap = true;
     private static readonly List<string> errors = new();
     private static string saveDirectory;
+    /// <summary>资源与本进程实际加载的 RJW DLL 使用同一版本目录，不把旧 1.6 文件混入新引用验证。</summary>
+    private static string RjwResource(string relative)
+        => Path.Combine(Path.GetDirectoryName(Path.GetDirectoryName(typeof(rjw.xxx).Assembly.Location)), relative);
     private static HediffDef development;
     private static ThingDef human;
 
@@ -50,6 +55,8 @@ internal static partial class Program
         // 显示实际载入位置及哈希，隔离候选模式下可核对未误用仓库正式旧 DLL。
         string production = typeof(SSCUterusDevelopmentUtility).Assembly.Location;
         Console.WriteLine($"Production: {production}, SHA256: {Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(File.ReadAllBytes(production))).ToLowerInvariant()}");
+        var rjwAssembly = typeof(rjw.xxx).Assembly;
+        Console.WriteLine($"RJW: {rjwAssembly.Location}, MVID: {rjwAssembly.ManifestModule.ModuleVersionId:N}, SHA256: {Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(File.ReadAllBytes(rjwAssembly.Location))).ToLowerInvariant()}");
         using var harmony = new HarmonyScope();
         // 所有宿主边界补丁都归属于本次测试，离开入口时统一卸载。
         void Patch(MethodBase method, string prefix) => harmony.Value.Patch(method, prefix: new HarmonyMethod(typeof(Program), prefix));
@@ -147,6 +154,7 @@ internal static partial class Program
             SSCDefOf.SSC_Lactating_SubState = DefDatabase<HediffDef>.GetNamed(Harmony_LactationFertilityControl.LactationDefName);
             AbilityToggleAdapterTests();
             AbilityToggleLifecycleTests(repo);
+            OrgasmSensitivityTests(repo, harmony.Value);
         }
         finally { Scribe.mode = LoadSaveMode.Inactive; Current.Game = null; }
         Console.WriteLine($"{passed}/{passed + failed} cases passed");

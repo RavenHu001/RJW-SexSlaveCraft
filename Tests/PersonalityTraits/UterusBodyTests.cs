@@ -48,6 +48,7 @@ internal static partial class Program
                 if (record != null) Assert(record.Severity == .23f, "不合并外部更高进度");
             });
         RunStomachBodyCases();
+        RunOrgasmSensitivityBodyCases();
     }
 
 
