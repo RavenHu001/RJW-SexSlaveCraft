@@ -1,12 +1,12 @@
 # RJW-SexSlaveCraft Quick Start Guide
 
-**2.4.6 development milestone — registered 2026-10-26, unreleased.** Work after the 2.4.5 registration through `385cdd8e` belongs here; 2.4.5 body development is retained. The latest public download remains [v2.4.4](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.4). Runtime metadata still says 2.4.4; 1.6/Common remain frozen at 2.4.1.
+**2.4.6 — released 2026-10-26.** Personal abilities and romance controls, including 2.4.5 body development. [Download v2.4.6](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.6). 1.7 runtime/About metadata are aligned to 2.4.6; 1.6/Common remain frozen at SSC 2.4.1. Three-language romance display and PNA guidance display retain their open verification scope.
 
 [2.4.6: personal abilities and romance controls](#24-246-personal-abilities-and-romance-controls-17-unreleased)
 
 [New in 2.4.4: culture, ritual points and cosmetics](#22-244-culture-and-cosmetic-reshaping-17-development-only)
 
-> This guide covers **SSC 2.4.6 development (2026-10-26, unreleased)** for RimWorld 1.7; 1.6 remains frozen at 2.4.1. See the [release scope](Docs/Releases/2.4.6/2.4.6发布说明.md#english). Earlier section versions identify introductions.
+> This guide covers **SSC 2.4.6 (released 2026-10-26)** for RimWorld 1.7; 1.6 remains frozen at 2.4.1. See the [release scope](Docs/Releases/2.4.6/2.4.6发布说明.md#english). Earlier section versions identify introductions.
 
 [Project home](README.md) · [Player reading order](Docs/Players/README.md#english-reading-order) · [中文快速入门](读我，玩法介绍.md) · [Complete guide](PLAYER_GUIDE_EN.md)
 
@@ -697,10 +697,12 @@ Research PNA internal modification, then use normal medical bills to start uteri
 
 Uterine development blocks new conception until completion; the body-management fertility toggle then starts off. Enabling it gives ×2.5 vanilla fertility and ×0.8 duration for eligible new pregnancies. It cannot be disabled during pregnancy. Stomach development provides staged hunger/eating-speed benefits and vanilla normal-ingestion food-poisoning immunity only at 100%.
 
-Other changes add native Master PNA addiction immunity, update cat/dog ability copy and icons, and fix stalled consecutive Personality Excretion jobs. Core features have batch acceptance; later body-resource deployment/display acceptance is also closed. The public v2.4.4 download does not include these additions. See the [2.4.5 scope](Docs/Releases/2.4.5/2.4.5发布说明.md#english).
+Other changes add native Master PNA addiction immunity, update cat/dog ability copy and icons, and fix stalled consecutive Personality Excretion jobs. Core features have batch acceptance; later body-resource deployment/display acceptance is also closed. These additions are included in the 2.4.6 package; the old v2.4.4 package excludes them. See the [2.4.5 scope](Docs/Releases/2.4.5/2.4.5发布说明.md#english).
 
 
-## 24. 2.4.6 personal abilities and romance controls (1.7, unreleased)
+<a id="24-246-personal-abilities-and-romance-controls-17-unreleased"></a>
+
+## 24. 2.4.6 personal abilities and romance controls (1.7)
 
 The Training tab separates behavior restrictions from romance controls. Chain stage 2 unlocks initiative preferences for courtship, proposals and ending relationships plus partner selection; stage 3 unlocks response preferences and acceptance guarantees; stage 4 enables one-time named commands. Tooltips show the actual localized Chain-stage name. Losing a stage suspends its controls without erasing saved choices.
 
@@ -712,4 +714,4 @@ Bestow Bliss, damage sharing, milk production, fertility and gel rendering use s
 
 PNA item/research descriptions explain existing production: complete genital Training, provide nutrition, accumulate 20% base progress per day and produce ten units at full progress. Output goes nearby on a map or into caravan inventory. Concentration research unlocks drug-lab recipes (5→1 or 20→4) and campfire/stove recipes (10→1); research alone does not grant bodily production. Rabbit clones are not an available route.
 
-Simplified Chinese copy has in-game acceptance; the other three languages have review approval but await deployment/in-game display. Final PNA guidance is deployed and awaits display confirmation. The public v2.4.4 package excludes 2.4.5 and these additions. See [2.4.6 scope](Docs/Releases/2.4.6/2.4.6发布说明.md#english) and [verification](Docs/Releases/2.4.6/2.4.6版本验证.md).
+Simplified Chinese copy has in-game acceptance; the other three languages have review approval but await deployment/in-game display. Final PNA guidance is deployed and awaits display confirmation. The public v2.4.6 package includes 2.4.5 and these additions. See [2.4.6 scope](Docs/Releases/2.4.6/2.4.6发布说明.md#english) and [verification](Docs/Releases/2.4.6/2.4.6版本验证.md).

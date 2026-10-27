@@ -4,7 +4,7 @@
 
 This continuation builds on upstream **2.2.8**, the baseline when upstream development stopped in July, and retains its version numbering. Entries are listed newest first. Technical details are in the [development log (Chinese)](Docs/Development/开发更新记录.md).
 
-## [2.4.6] — 未发布 / Unreleased — 个人能力与浪漫控制
+## [2.4.6] — 2026-10-26 — 个人能力与浪漫控制
 
 2026-10-26 登记：以 2.4.5 登记提交 `7225f729` 为边界，其后截至 `385cdd8e` 的52个非合并提交、363个变更路径归入本版。2.4.5也是未发布里程碑，身体开发等既有范围继续继承。见[中英说明](Docs/Releases/2.4.6/2.4.6发布说明.md)、[逐项归并](Docs/Releases/2.4.6/2.4.6开发归并核对.md)和[验证边界](Docs/Releases/2.4.6/2.4.6版本验证.md)。
 
@@ -15,7 +15,7 @@ This continuation builds on upstream **2.2.8**, the baseline when upstream devel
 - **引导与修复：** PNA两物品／两研究四语产出引导已同步待显示；首次绑定原因精简、战斗超频新图标、生命周期保护及文案专项与总回归隔离。
 - **资料与未来边界：** 补齐玩家指南和版本索引；身体显示验收补记继承2.4.5。种子用途、PNA增产／设施、社交评价及新事件等未实施方案不计功能。
 
-2.4.6 groups post-registration work through `385cdd8e`: five ability adapters, stage-based romance controls, partner/five-group mood handling, shared logs and task facts, personal reset buttons, four-language copy, PNA production guidance, binding feedback and test-scope isolation. New runtime work targets 1.7; 1.6/Common stay at 2.4.1. **Unreleased:** VERSION is 2.4.6; runtime metadata remains 2.4.4. Simplified Chinese has in-game acceptance; three-language display and PNA guidance display remain open. This registration performs no rebuild, full regression, deployment or publication; public downloads remain v2.4.4.
+2.4.6 groups post-registration work through `385cdd8e`: five ability adapters, stage-based romance controls, partner/five-group mood handling, shared logs and task facts, personal reset buttons, four-language copy, PNA production guidance, binding feedback and test-scope isolation. New runtime work targets 1.7; 1.6/Common stay at 2.4.1. **Released 2026-10-26:** VERSION, About and rebuilt 1.7 runtime metadata are 2.4.6. Simplified Chinese has in-game acceptance; three-language display and PNA guidance display remain open. The release rebuild, full gate and package audit are recorded separately from the earlier registration; public downloads are v2.4.6.
 
 ## [2.4.5] — 未发布 / Unreleased — 身体开发与生育控制
 

@@ -1,6 +1,6 @@
 # 玩家阅读入口 / Player documentation
 
-**2.4.6 开发版 — 2026-10-26 登记，尚未发布。** 2.4.5 登记后截至 `385cdd8e` 的开发归入本版，继承 2.4.5 身体开发内容；最新正式下载仍为 [v2.4.4](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.4)。1.7 运行元数据仍为 2.4.4，1.6／Common 冻结于 2.4.1。
+**2.4.6 — 2026-10-26 正式发布。** 个人能力与浪漫控制，整合2.4.5身体开发；[下载v2.4.6](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.6)。1.7产物／About已对齐2.4.6，1.6／Common保留SSC 2.4.1冻结基线。三语浪漫显示及PNA引导显示的未确认范围继续保留。
 
 [项目首页](../../README.md) · [文档总索引](../README.md) · [双语模组介绍](../模组介绍.md) · [版本索引](../Releases/README.md)
 
@@ -31,7 +31,7 @@
 
 ## English reading order
 
-The guides now include **unreleased 2.4.6** development on 1.7; 1.6 remains at 2.4.1. Start with [ability/romance controls](../../QUICK_START_EN.md#24-246-personal-abilities-and-romance-controls-17-unreleased), the [full rules](../../PLAYER_GUIDE_EN.md#27-246-personal-abilities-and-romance-controls-17-unreleased) and the inherited [body-development guide](../../QUICK_START_EN.md#23-245-body-development-and-maintenance-17-unreleased). The latest public package is still 2.4.4 and excludes these additions. For already released features, use the [2.4.4 scope](../Releases/2.4.4/2.4.4发布说明.md#english), [culture/cosmetics quick start](../../QUICK_START_EN.md#22-244-culture-and-cosmetic-reshaping-17-development-only) and [full rules](../../PLAYER_GUIDE_EN.md#25-244-culture-rituals-and-cosmetic-reshaping-17-development-only).
+The guides now include **released 2.4.6** content on 1.7; 1.6 remains at 2.4.1. Start with [ability/romance controls](../../QUICK_START_EN.md#24-246-personal-abilities-and-romance-controls-17-unreleased), the [full rules](../../PLAYER_GUIDE_EN.md#27-246-personal-abilities-and-romance-controls-17-unreleased) and the inherited [body-development guide](../../QUICK_START_EN.md#23-245-body-development-and-maintenance-17-unreleased). The latest public package is 2.4.6 and includes these additions. For already released features, use the [2.4.4 scope](../Releases/2.4.4/2.4.4发布说明.md#english), [culture/cosmetics quick start](../../QUICK_START_EN.md#22-244-culture-and-cosmetic-reshaping-17-development-only) and [full rules](../../PLAYER_GUIDE_EN.md#25-244-culture-rituals-and-cosmetic-reshaping-17-development-only).
 
 1. Read the [mod overview](../模组介绍.md#english).
 2. Follow [Getting Started](../../QUICK_START_EN.md#2-getting-started) for research, qualification, identities and trainers.
@@ -54,6 +54,6 @@ Use [Bond Overview](../../QUICK_START_EN.md#bond-overview-243-17-only) for portr
 
 ## 版本与资料用途 / Versions and document roles
 
-当前指南包含 2.4.6 未发布开发内容及继承的2.4.5身体开发，正式下载仍为 2.4.4；历史标签资料保持各自版本，构建与发布准备见[2.4.6 验证记录](../Releases/2.4.6/2.4.6版本验证.md)。已交付、专项待验收与未来规划分别登记，测试计数保留实际执行日期。
+当前指南包含2.4.6正式内容及整合的2.4.5身体开发，正式下载为2.4.6；历史标签资料保持各自版本，构建与发布准备见[2.4.6 验证记录](../Releases/2.4.6/2.4.6版本验证.md)。已交付、专项待验收与未来规划分别登记，测试计数保留实际执行日期。
 
-These guides include unreleased 2.4.6 additions and inherited 2.4.5 body development; the v2.4.4 release package retains its original scope. Historical validation and maintainer acceptance retain their original scope; new build, release-gate and package results are recorded separately.
+These guides cover the 2.4.6 release, including the earlier 2.4.5 milestone; the historical v2.4.4 package retains its original scope. Historical validation and maintainer acceptance retain their original scope; new build, release-gate and package results are recorded separately.

@@ -7,19 +7,19 @@
 		<li>1.7</li>
 	</supportedVersions>
 	<packageId>rjw.sexslavecraft.TieJinVer</packageId>
-    <description>SexSlaveCraft 2.4.4 (TieJin Modify)
-文化拓展、仪式演化点与医美应用。新增功能仅限 RimWorld 1.7，1.6／Common 保留 SSC 2.4.1 冻结基线。
-主奴秩序模因与六组28条戒律，配合心情、社交、领袖、数量及性别反馈，专属图标、四语命名与动态背景。仪式演化点默认关闭，开启后遵循原版发展条件与改革上限。
-医美手术与塑貌仪式可将原版Beauty逐档提升至+2，配套材料、恢复反应、紫雾和命名预设。修复人格排泄固定动作空解析导致的中断。
-保留关系概览、低科技路线、九把PNA武器、个体凝胶外观、六种特化、主人资格／成长和人格转移。
+    <description>SexSlaveCraft 2.4.6 (TieJin Modify)
+个人能力与浪漫控制；整合2.4.5身体开发。新增功能仅限RimWorld 1.7，1.6／Common保留SSC 2.4.1冻结基线。
+五项个人能力开关保留原载体和规则；分阶段浪漫控制、对象多选、一次点名命令、综合心情与历史、日志／任务反馈及个人恢复默认。
+继承子宫／生育控制与胃部开发，完善四语文案和PNA产出引导。保留文化、仪式演化点、医美、关系概览、九把PNA武器、凝胶外观、六特化和人格转移。
+机制及简中文案已有分批实机认可；繁英俄文案已审阅，三语实机显示与PNA引导显示仍待确认，不补记全部模组组合或平衡结论。
 升级时完整替换旧模组目录，保留版本目录与LoadFolders.xml。1.7旧简易PNA发射器及相关定义已移除，不提供引用旧定义的存档迁移。
 Harmony与RJW先于SSC加载；文化及仪式需要Ideology。兔入口与旧RimTalk对接仍不可用。
 
-Version 2.4.4 — culture, optional ritual development points and cosmetic reshaping.
-New features target RimWorld 1.7; 1.6/Common remain frozen at SSC 2.4.1. Includes Master-slave Order with six groups/28 precepts, cultural feedback, dedicated icons, four-language naming and dynamic backgrounds. Ritual development points default to off and follow vanilla conditions/caps.
-Cosmetic surgery and Reshaping Rituals improve vanilla Beauty one step up to +2, with material costs, shared recovery, purple mist and name presets. Fixes Personality Excretion aborting on empty fixed-interaction resolution.
-Retains bonds, low-tech progression, nine PNA weapons, gel appearance, specializations and personality transfer. Replace the old folder completely; retain version folders/loading configuration. Removed old 1.7 launcher definitions have no save migration.
-Load Harmony and RJW before SSC. Ideology is required for cultural features and rituals. Rabbit selection and legacy RimTalk remain unavailable.
+Version 2.4.6 — personal abilities and romance controls, including 2.4.5 body development.
+New features target RimWorld 1.7; 1.6/Common stay frozen at SSC 2.4.1. Shared ability controls retain original save owners and rules. Stage-based romance preferences, partner selection, one-time orders, mood/history, logs/tasks and personal resets are included.
+Includes uterine/fertility and stomach development, four-language copy and PNA production guidance. Retains culture, ritual points, cosmetics, bonds, nine PNA weapons, gel appearance, specializations and personality transfer.
+Mechanisms and Simplified Chinese have batch in-game acceptance; other romance languages have review approval. Three-language display and PNA guidance display remain unconfirmed; balance and unreported mod combinations are not inferred as tested.
+Replace the whole old folder, retaining version folders/loading configuration. Removed old 1.7 launcher definitions have no save migration. Load Harmony and RJW before SSC; Ideology is required for culture and rituals. Rabbit selection and legacy RimTalk remain unavailable.
 
 [AI 辅助生成 / Partly AI-assisted]</description>
 	<modDependencies>

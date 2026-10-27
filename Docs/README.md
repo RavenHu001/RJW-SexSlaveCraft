@@ -1,10 +1,10 @@
 # 文档总索引
 
-2026-10-26：当前开发登记为 **2.4.6（未发布）**，范围与状态先读[中英说明](Releases/2.4.6/2.4.6发布说明.md)、[52项提交归并](Releases/2.4.6/2.4.6开发归并核对.md)及[验证边界](Releases/2.4.6/2.4.6版本验证.md)。个人能力框架、浪漫控制／综合心情／日志、个人恢复默认、四语文案及PNA引导纳入本版。简中已实机，繁英俄已审阅待部署／实机，PNA引导已同步待显示。以下按日期的旧状态保留原时点，当前待验收以专项表为准。
+2026-10-26：当前正式版本为 **2.4.6（2026-10-26）**，范围与状态先读[中英说明](Releases/2.4.6/2.4.6发布说明.md)、[52项提交归并](Releases/2.4.6/2.4.6开发归并核对.md)及[验证边界](Releases/2.4.6/2.4.6版本验证.md)。个人能力框架、浪漫控制／综合心情／日志、个人恢复默认、四语文案及PNA引导纳入本版。简中已实机，繁英俄已审阅待部署／实机，PNA引导已同步待显示。以下按日期的旧状态保留原时点，当前待验收以专项表为准。
 
 2026-10-24：[浪漫控制第四批](Development/Verification/性奴浪漫控制第四批实现与验证.md)完成外部空壳双向撤权、中断清理及人格／凝胶／克隆／场景保存联测，原生 **403／403**。点名命令一次下令、打断即结束；前四批仍待实际组合及第五批整机验收，未部署。下列第三批条目保留历史时点。
 
-**2.4.6 开发版 — 2026-10-26 登记，尚未发布。** 2.4.5 登记后截至 `385cdd8e` 的开发归入本版，继承 2.4.5 身体开发内容；最新正式下载仍为 [v2.4.4](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.4)。1.7 运行元数据仍为 2.4.4，1.6／Common 冻结于 2.4.1。
+**2.4.6 — 2026-10-26 正式发布。** 个人能力与浪漫控制，整合2.4.5身体开发；[下载v2.4.6](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.6)。1.7产物／About已对齐2.4.6，1.6／Common保留SSC 2.4.1冻结基线。三语浪漫显示及PNA引导显示的未确认范围继续保留。
 
 [项目首页](../README.md) · [玩家阅读入口](Players/README.md) · [当前规划](Design/README.md) · [开发资料](Development/README.md)
 
@@ -22,7 +22,7 @@
 | --- | --- | --- |
 | 了解功能、准备发布页面 | [双语模组介绍](模组介绍.md) | English 在前、中文在后；先看开发／下载版本区别 |
 | 安装和游玩 | [玩家阅读入口](Players/README.md) | 简介 → 快速入门 → 按需查机制与常见问题 |
-| 了解版本归属 | [发布与验证索引](Releases/README.md) | 2.4.6 开发范围 → 归并核对 → 验证；2.4.5 身体开发继承；2.4.4 正式范围保留；历史见 [CHANGELOG](../CHANGELOG.md) |
+| 了解版本归属 | [发布与验证索引](Releases/README.md) | 2.4.6 正式范围 → 归并核对 → 验证；2.4.5 身体开发继承；2.4.4 正式范围保留；历史见 [CHANGELOG](../CHANGELOG.md) |
 | 接手已完成功能 | [已交付开发记录](Development/Completed/README.md) | 主题完成核对 → 对应阶段 → 历史设计 |
 | 新增个人能力开关 | [现行接入规范](Development/Reference/个人能力开关接入规范.md) | [开发协作约定](../AGENTS.md) → 保存源与适用边界 → 原载体后端 → 公共查询、UI 与提交 → 生命周期验收 |
 | 查明确的验证缺口 | [待验收事项](Development/Verification/README.md) | 尚待确认范围 → 实现依据 → 实机步骤 |
@@ -36,7 +36,7 @@
 
 - **新玩家**：[模组介绍](模组介绍.md) → [快速入门](../读我，玩法介绍.md) → [机制详解](../机制详解.md)。英文路线见 [English reading order](Players/README.md#english-reading-order)。
 - **接手开发**：[开发协作约定](../AGENTS.md) → [开发资料入口](Development/README.md) → [开发规范与历史参考](Development/Reference/README.md) → [完成记录](Development/Completed/README.md) → [待验收](Development/Verification/README.md) → [未来规划](Design/README.md)。新增同类个人布尔能力先读[能力开关接入规范](Development/Reference/个人能力开关接入规范.md)。
-- **准备发布**：[版本验证](Releases/2.4.4/2.4.4版本验证.md) → [构建与打包](Maintenance/发布与打包.md) → [测试索引](../Tests/README.md)。
+- **准备发布**：[版本验证](Releases/2.4.6/2.4.6版本验证.md) → [构建与打包](Maintenance/发布与打包.md) → [测试索引](../Tests/README.md)。
 
 ## 目录与状态
 
