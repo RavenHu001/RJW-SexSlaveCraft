@@ -73,6 +73,12 @@
     <Error Condition="'@(LegacyCompile)' == ''" Text="The shared legacy source list is empty." />
     <ItemGroup><Compile Include="@(LegacyCompile)" /></ItemGroup>
   </Target>
+  <!-- 原始高潮推进接口与只读采样仅编入 1.7，不引入敏感度效果或改动旧版产物。 -->
+  <ItemGroup>
+    <Compile Include="common/Orgasm/SSCOrgasmProgressUtility.cs" />
+    <Compile Include="common/Orgasm/SSCOrgasmProgressSampling.cs" />
+    <Compile Include="ThePatches/Harmony_OrgasmProgressSampling.cs" />
+  </ItemGroup>
   <!-- AI 辅助生成：开关后端适配仅编入 1.7，保留旧版条件分支。 -->
   <ItemGroup>
     <Compile Include="common/Romance/SSCRomanceOldRelation.cs" />

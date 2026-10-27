@@ -86,6 +86,10 @@ namespace SexSlaveCraft
                 ticks_between_hits = hits;
                 ticks_between_thrusts = thrusts;
                 if (toils.Count > 1) toils[1].defaultDuration = elapsedDuration;
+#if SSC_RW17
+                // 本批只废弃构建前的瞬时样本，不恢复余数或变更原生计时。
+                SSCOrgasmProgressSampling.NotifyReset(this);
+#endif
             }
             this.FailOn(() => !IsCurrentJob || pawn.Map == null || !SSCSelfTrainingEligibility.IsEligible(pawn) ||
                 !xxx.can_masturbate(pawn) || !cell.IsValid || !cell.InBounds(pawn.Map) ||

@@ -1,5 +1,7 @@
 # 开发资料入口
 
+2026-10-27：[第27项第一批公共接口与高潮推进采样](Verification/高潮推进采样第一批实现与验证.md)已实现，原生57／57、自我调教相关50／50，真实引用隔离构建零警告／零错误。未接敏感度效果、未同步或实机；后续范围见[详细规划](../Design/RJW个人高潮敏感度调节开发规划.md#15-第一批开发状态2026-10-27)。
+
 2026-10-27文件归属整理：已关闭实施记录集中至[Completed](Completed/README.md#246-浪漫与个人控制)，已交付主规划至[Design/Archive](../Design/Archive/README.md)，现行规则和接入规范在[Reference](Reference/README.md)，已使用交接稿在[Reference/History](Reference/History/README.md)。未开发事项和未确认专项分别从Design与Verification进入；本次只整理路径与索引。
 
 2026-10-27：[核心301项与专项101项精简](Completed/核心301项与专项101项测试精简实现与验证.md)已按方案实施，当前登记All 6279、Core 5207、Special 1072；本次仅九个关联套件2687项通过，未跑整仓全量。下方6681／6886为前两轮历史基线。
