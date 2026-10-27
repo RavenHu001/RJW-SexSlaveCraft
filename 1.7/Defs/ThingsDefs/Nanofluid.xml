@@ -3,7 +3,7 @@
   <ThingDef Class="SexSlaveCraft.ThingDef_SSCPna" ParentName="ResourceBase">
     <defName>Purple_Aphrodisiac_Nanofluid</defName>
     <label>紫色纳米催情液</label>
-    <description>悬浮着活性紫色微械的紫色液体，能强烈唤起情欲。它也是配制浓缩品的原料。\n\n获取方式：生殖器开发达到100%后，身体获得“纳米催情液分泌”，消耗营养自动积累产出进度。基础进度每天增加20%，满进度生成10份原液，从零积累约需5天；饱食度不足以支付消耗时暂停积累。进度可在健康状态或角色信息栏查看，产物出现在角色附近；远行队中进入库存。</description>
+    <description>悬浮着活性紫色微械的紫色液体，能强烈唤起情欲。它也是配制浓缩品的原料。\n\n获取方式：生殖器调教达到100%后，身体获得“纳米催情液分泌”，消耗营养自动积累产出进度。基础进度每天增加20%，满进度生成10份原液，从零积累约需5天；饱食度不足以支付消耗时暂停积累。进度可在健康状态或角色信息栏查看，产物出现在角色附近；远行队中进入库存。</description>
     
     <graphicData>
       <texPath>Things/Item/PNA</texPath> <graphicClass>Graphic_StackCount</graphicClass>
