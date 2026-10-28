@@ -56,6 +56,10 @@ namespace SexSlaveCraft
             Scribe_Values.Look(ref useOldScoring, "useOldScoring", false);
             ExposeMasterQualificationSettings();
             ExposeRestrictionSettings();
+#if SSC_RW17
+            // 1.7 独立全局偏好，缺字段默认关闭；不参与原个人规则或能力字典的保存。
+            ExposeUapGroupSettings();
+#endif
 
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
@@ -154,6 +158,10 @@ namespace SexSlaveCraft
             );
 
             SSCRestrictionUI.DrawSettings(listingStandard);
+#if SSC_RW17
+            // 只有整套 UAP 兼容接口就绪时显示选项；普通限制系统仍由上方总开关独立控制。
+            SSCUapGroupSettingsUI.Draw(listingStandard);
+#endif
             listingStandard.Gap(8f);
             DrawRestrictionTestEntry(listingStandard);
             if (restrictionsWereEnabled != settings.enableSexSlaveProtectionRules)

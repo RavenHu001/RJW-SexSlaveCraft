@@ -26,6 +26,10 @@
     <GenerateDependencyFile>false</GenerateDependencyFile>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="common/Uap/SSCUapGroupRuntime.cs" />
+    <Compile Include="common/Uap/SSCUapGroupApi.cs" />
+    <Compile Include="common/Uap/SSCSettings.UapGroup.cs" />
+    <Compile Include="ThePatches/Harmony_UapGroupCompatibility.cs" />
     <Reference Include="Assembly-CSharp">
       <HintPath>$(GameRoot)/Assembly-CSharp.dll</HintPath>
       <Private>false</Private>

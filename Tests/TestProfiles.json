@@ -2,6 +2,7 @@
   "SchemaVersion": 1,
   "Description": "显式专项清单；未列为专项的新用例默认属于核心。完整范围仍执行全部用例。",
   "Suites": [
+    { "Name": "UapGroupNative", "Kind": "Core", "SpecialCases": [] },
     {
       "Name": "OrgasmProgressNative",
       "Kind": "Core",

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_Uap_Override>Ignore SSC behavior permissions for manual UAP group sex</SSC_Uap_Override>
+  <SSC_Uap_OverrideTip>For this request issued from the UAP Group Together window, bypass SSC initiation, reception, owner-only, and specialization/equipment permission rules. Individual settings remain unchanged. UAP and RJW requirements still apply.</SSC_Uap_OverrideTip>
+  <SSC_Uap_RequestChanged>The group request participants or their state changed. Issue a new request.</SSC_Uap_RequestChanged>
+  <SSC_Uap_StartFailed>The group jobs could not all start. This request has been cancelled.</SSC_Uap_StartFailed>
+  <SSC_Uap_PairRejected>Group initiation from {0} to {1} was denied: {2}</SSC_Uap_PairRejected>
+</LanguageData>

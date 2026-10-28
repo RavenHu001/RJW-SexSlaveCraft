@@ -101,6 +101,11 @@ namespace SexSlaveCraft
         public static bool TryReserve(JobDriver_Sex driver, out bool allowed, bool ordered = false)
         {
             allowed = true;
+#if SSC_RW17
+            // 先检查原 UAP 票据，再允许 Started 快速路径；过期任务不能回退普通主人例外重新取权。
+            if (SSCUapGroupRuntime.Check(driver, out allowed) && !allowed)
+            { State(driver).Rejected = true; return true; }
+#endif
             if (!SSCRestrictionJobContext.TryCreate(driver, out SSCRestrictionRequest request)) return false;
             if (HasStarted(driver, request) && (!SSCRestrictionTrainingUtility.IsTraining(request) ||
                 SSCIdentityUtility.IsSexSlave(request.Receiver))) return true;
@@ -114,6 +119,12 @@ namespace SexSlaveCraft
         public static bool TryCheck(JobDriver_Sex driver, string phase, out bool allowed)
         {
             allowed = true;
+#if SSC_RW17
+            // 预约通过不等于可立即 Start；接管任务还必须等待整组提交，并保持原载体与任务归属。
+            if ((SSCUapGroupRuntime.Check(driver, out allowed) && !allowed) ||
+                (phase == "Start" && !SSCUapGroupRuntime.CanStart(driver)))
+            { allowed = false; State(driver).Rejected = true; return true; }
+#endif
             if (!SSCRestrictionJobContext.TryCreate(driver, out SSCRestrictionRequest request)) return false;
             if (driver.pawn?.jobs?.curDriver != driver) { allowed = false; return true; }
             if (HasStarted(driver, request) && (!SSCRestrictionTrainingUtility.IsTraining(request) ||
@@ -135,6 +146,10 @@ namespace SexSlaveCraft
         private static bool Evaluate(JobDriver_Sex driver, SSCRestrictionRequest request,
             out SSCRestrictionDecision decision, out string reason, bool ordered = false)
         {
+#if SSC_RW17
+            // 专用适配只处理已登记请求；其他用途继续走下方统一策略，不能形成玩家命令通用白名单。
+            if (SSCUapGroupRuntime.Evaluate(driver, out decision, out reason)) return decision.Allowed;
+#endif
             JobDriver_Sex actor = driver is JobDriver_SexBaseReciever receiver
                 ? SSCRestrictionJobContext.FindInitiator(receiver) : driver;
             bool automaticDaily = actor is JobDriver_Training && !ordered && actor.job?.playerForced != true;
@@ -151,6 +166,10 @@ namespace SexSlaveCraft
             if (!ranOriginal || driver.pawn?.jobs?.curDriver != driver) return true;
             SceneState state = State(driver);
             if (state.Rejected) return true;
+#if SSC_RW17
+            // 仅在原 Start 确实执行且驱动仍当前时记录；预检、集合及安装屏障都不能提前得到完成资格。
+            SSCUapGroupRuntime.MarkStarted(driver);
+#endif
             bool firstStart = !state.Started;
             state.Started = true;
             state.Initiator = request.Initiator;
@@ -193,6 +212,10 @@ namespace SexSlaveCraft
         public static bool TryEnd(JobDriver_SexBaseInitiator driver, out bool allowed)
         {
             allowed = true;
+#if SSC_RW17
+            // 准备阶段即被撤销的 UAP 任务没有真实开始凭据，不能借原 End 触发伪收尾。
+            if (!SSCUapGroupRuntime.CanEnd(driver)) { allowed = false; return true; }
+#endif
             if (!SSCRestrictionJobContext.TryCreate(driver, out _)) return false;
             SceneState state = State(driver);
             allowed = !state.Rejected || (state.Started && state.Initiator == driver.pawn && state.Receiver == driver.Partner);
@@ -208,6 +231,10 @@ namespace SexSlaveCraft
             // ProcessSex 的 pawn 会受姿势反转影响。实际发起者只能从其当前
             // Job 与统一请求的方向读取，且传入的 SexProps 必须属于此任务。
             JobDriver_SexBaseInitiator driver = props?.initiator?.jobs?.curDriver as JobDriver_SexBaseInitiator;
+#if SSC_RW17
+            // 对接管场景先检查旧工作归属，再使用下方原倒计时、SexProps 和一次领取合同。
+            if (!SSCUapGroupRuntime.Outcome(driver)) return false;
+#endif
             if (driver == null || driver.pawn != props.initiator || driver.Sexprops != props ||
                 driver is JobDriver_Training || driver is JobDriver_RitualTraining || driver is JobDriver_PE ||
                 !SSCRestrictionJobContext.TryCreate(driver, out SSCRestrictionRequest request) ||

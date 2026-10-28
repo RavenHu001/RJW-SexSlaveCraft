@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_Uap_Override>UAP 手动群交忽略 SSC 行为许可</SSC_Uap_Override>
+  <SSC_Uap_OverrideTip>仅对从 UAP 群体交合窗口下达的本次请求，忽略 SSC 主动、接受、仅限主人及特化／装备的同类许可限制；不修改个人配置，仍需满足 UAP 和 RJW 的行为条件。</SSC_Uap_OverrideTip>
+  <SSC_Uap_RequestChanged>群体交合请求的参与者或状态已改变，请重新下令。</SSC_Uap_RequestChanged>
+  <SSC_Uap_StartFailed>群体交合任务未能完整启动，已取消本次请求。</SSC_Uap_StartFailed>
+  <SSC_Uap_PairRejected>{0} 向 {1} 发起群体交合被拒绝：{2}</SSC_Uap_PairRejected>
+</LanguageData>

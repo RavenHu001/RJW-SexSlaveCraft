@@ -22,6 +22,8 @@ namespace SexSlaveCraft
 #if SSC_RW17
             // 等本轮静态构造／原有补丁注册完成后安装只读计时采样；不改变冻结版入口。
             LongEventHandler.ExecuteWhenFinished(SSCOrgasmProgressPatches.Install);
+            // 可选 UAP 接入使用独立 owner，完整核对后才开放手动豁免；不随旧版 PatchAll 注册。
+            LongEventHandler.ExecuteWhenFinished(SSCUapGroupPatches.Install);
 #endif
             SSCLog.Important("[SexSlaveCraft.training.patch] Harmony patches loaded successfully.");
 

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_Uap_Override>Игнорировать разрешения SSC для ручной группы UAP</SSC_Uap_Override>
+  <SSC_Uap_OverrideTip>Только для этого запроса из окна группового действия UAP игнорируются разрешения SSC на инициативу и принятие, ограничения по хозяину и аналогичные правила специализации или одежды. Личные настройки не меняются. Требования UAP и RJW сохраняются.</SSC_Uap_OverrideTip>
+  <SSC_Uap_RequestChanged>Участники или их состояние изменились. Отдайте команду заново.</SSC_Uap_RequestChanged>
+  <SSC_Uap_StartFailed>Не удалось запустить все групповые задания. Запрос отменён.</SSC_Uap_StartFailed>
+  <SSC_Uap_PairRejected>Групповая инициатива {0} по отношению к {1} запрещена: {2}</SSC_Uap_PairRejected>
+</LanguageData>

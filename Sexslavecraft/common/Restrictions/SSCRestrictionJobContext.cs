@@ -26,6 +26,10 @@ namespace SexSlaveCraft
         {
             request = null;
             if (driver == null) return false;
+#if SSC_RW17
+            // 先使用本次已登记的 UAP 准备方向，覆盖共享接收者先安装而发起驱动尚未就绪的时序。
+            if (SSCUapGroupRuntime.Context(driver, out request)) return true;
+#endif
             if (driver is JobDriver_SexBaseReciever receiver)
             {
                 JobDriver_SexBaseInitiator actor = FindInitiator(receiver);
