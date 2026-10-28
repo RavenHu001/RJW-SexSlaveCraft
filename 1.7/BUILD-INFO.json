@@ -4,10 +4,10 @@
   "binaryOrigin": "rebuilt",
   "sourceVersion": "2.4.6",
   "modVersion": "2.4.6",
-  "sourceCommit": "0a2a58ce822b1fe336fcb214f3a97eb7a7ee1940",
+  "sourceCommit": "0da391f654329abd064c46aa6afb356b468e29a7",
   "sourceWorkingTreeDirty": true,
   "assemblyPath": "1.7/Assemblies/Sexslavecraft.dll",
-  "sha256": "06d02cbf1dd24e75531ef399588cb9e423f8d2f1f66596eee3ba2136a41ebc58",
+  "sha256": "f1beef11514649e05d0e5d590797420ea0767dc52e05b46398934429215473a6",
   "gameBuild": "1.7.4990 rev1069",
   "gameAssemblyPath": "D:\\STEAM\\steamapps\\common\\RimWorld\\Assembly-CSharp.dll",
   "gameAssemblySha256": "4e61d57205944c113631234bc55136a1a7c1679667b26008bee5425bcffa1463",
@@ -15,8 +15,8 @@
   "references": [
     {
       "name": "RjwAssemblyPath",
-      "path": "D:\\STEAM\\steamapps\\common\\RimWorld\\Mods\\RJW_核心_本体\\1.6\\Assemblies\\RJW.dll",
-      "sha256": "8aab958ee0fc0df45d83d21360973b1f9010b9fe3293bf98af3dcc894bbf1e2d"
+      "path": "D:\\STEAM\\steamapps\\common\\RimWorld\\Mods\\RJW_核心_本体\\1.7\\Assemblies\\RJW.dll",
+      "sha256": "bf2534c7c433e90aa64588d8acea71c1d1d8ab17bc415c0a169ac22a11ae0703"
     },
     {
       "name": "AnimationsAssemblyPath",
