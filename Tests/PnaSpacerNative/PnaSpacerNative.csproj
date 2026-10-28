@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net10.0</TargetFramework><ImplicitUsings>enable</ImplicitUsings><Nullable>disable</Nullable></PropertyGroup>
-  <PropertyGroup><DefineConstants>$(DefineConstants);SSC_ABILITY_TOGGLE_MASTER_SHARE</DefineConstants></PropertyGroup>
+  <PropertyGroup><DefineConstants>$(DefineConstants);SSC_ABILITY_TOGGLE_MASTER_SHARE;SSC_RW17</DefineConstants></PropertyGroup>
   <ItemGroup>
     <Compile Include="../../Sexslavecraft/common/SSCMasterDamageSharingToggle.cs" Link="Production/SSCMasterDamageSharingToggle.cs" />
     <Compile Include="../../Sexslavecraft/DamageWorker/DamageWorker_SSCPnaCoated.cs" Link="Production/DamageWorker_SSCPnaCoated.cs" />

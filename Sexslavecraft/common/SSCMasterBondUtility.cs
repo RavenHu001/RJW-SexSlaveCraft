@@ -5,6 +5,7 @@ using RimWorld;
 using UnityEngine;
 using Verse;
 
+// AI 辅助生成
 // EN: This file contains the master-bond and damage-share helpers.
 // EN: It calculates the master's resonance field, selects bonded sex slaves, and builds the damage-share plan.
 // CN: 这个文件负责主从绑定和伤害分摊工具。
@@ -62,6 +63,9 @@ namespace SexSlaveCraft
 
         public static float CalculateMasterEmpowermentSeverity(Pawn master)
         {
+#if SSC_RW17
+            return CaptureEmpowermentStats(master).Severity;
+#else
             // EN: The master's resonance field grows from both sex-slave count and average corruption.
             // CN: 主人身上的“灵欲共振场”强度同时取决于性奴数量和平均恶堕。
             int slaveCount = GetBoundSlaves(master).Count();
@@ -74,7 +78,47 @@ namespace SexSlaveCraft
             float avgCorruption = slaveCount > 0 ? GetBoundSlaves(master).Average(GetCorruption) : 0f;
             float scaledCorruption = GetStageScaledCorruption(avgCorruption);
             return Mathf.Lerp(StageMinSeverity[stage], StageMaxSeverity[stage], scaledCorruption);
+#endif
         }
+
+#if SSC_RW17
+        // 仅在本次查询内复用数值，不持有 Pawn、不保存，也不跨刷新缓存。
+        private readonly struct MasterEmpowermentStats
+        {
+            public readonly int Count;
+            public readonly float AverageCorruption;
+            public readonly float Severity;
+
+            public MasterEmpowermentStats(int count, float averageCorruption, float severity)
+            {
+                Count = count;
+                AverageCorruption = averageCorruption;
+                Severity = severity;
+            }
+        }
+
+        /// <summary>沿原绑定筛选一次取得人数和恶堕，保留原档位与强度公式。</summary>
+        private static MasterEmpowermentStats CaptureEmpowermentStats(Pawn master)
+        {
+            int count = 0;
+            double sum = 0d;
+            foreach (Pawn slave in GetBoundSlaves(master))
+            {
+                float corruption = GetCorruption(slave);
+                // 与原 LINQ Average(float selector) 一样，从首值开始按顺序用 double 累加。
+                sum = count == 0 ? corruption : sum + corruption;
+                count = checked(count + 1);
+            }
+
+            int stage = GetEmpowermentStageFromSlaveCount(count);
+            if (stage < 0) return default;
+
+            float averageCorruption = (float)(sum / count);
+            float scaledCorruption = GetStageScaledCorruption(averageCorruption);
+            float severity = Mathf.Lerp(StageMinSeverity[stage], StageMaxSeverity[stage], scaledCorruption);
+            return new MasterEmpowermentStats(count, averageCorruption, severity);
+        }
+#endif
 
         private static float GetStageScaledCorruption(float avgCorruption)
         {
@@ -119,7 +163,12 @@ namespace SexSlaveCraft
         {
             // EN: Build the inspect-string text for the current resonance-field stage.
             // CN: 这里负责生成当前“灵欲共振场”等级的检查栏文本。
+#if SSC_RW17
+            MasterEmpowermentStats stats = CaptureEmpowermentStats(master);
+            float severity = stats.Severity;
+#else
             float severity = CalculateMasterEmpowermentSeverity(master);
+#endif
             int stage = GetEmpowermentStage(severity);
             if (stage < 0)
             {
@@ -157,8 +206,13 @@ namespace SexSlaveCraft
                 pain = 0.35f;
             }
 
+#if SSC_RW17
+            int slaveCount = stats.Count;
+            float avgCorruption = stats.AverageCorruption;
+#else
             int slaveCount = GetBoundSlaves(master).Count();
             float avgCorruption = slaveCount > 0 ? GetBoundSlaves(master).Average(GetCorruption) : 0f;
+#endif
 
             return "SSC_MasterEmpowerment_Summary".Translate(
                 slaveCount.ToString(),

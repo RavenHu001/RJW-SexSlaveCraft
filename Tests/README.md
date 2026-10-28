@@ -243,11 +243,11 @@ pwsh -File Scripts/Test-All.ps1 -GameVersion 1.7 -HarmonyAssemblyPath 'C:\Depend
 
 ## 测试范围与计数
 
-- **All（默认）**：50套，6513项，包含核心和专项。发布入口显式指定 `All`，核对成功报告的 `Scope` 和 `FullRegression`。
-- **Core**：46套，5440项。保留机制准入、保存归属、人格／身体／关系流转、旧上下文、原 Job、重复／中断／回调／异常边界。
+- **All（默认）**：50套，6526项，包含核心和专项。发布入口显式指定 `All`，核对成功报告的 `Scope` 和 `FullRegression`。
+- **Core**：46套，5453项。保留机制准入、保存归属、人格／身体／关系流转、旧上下文、原 Job、重复／中断／回调／异常边界。
 - **Special**：16套，1073项。资源／四语／文化生成与文案、排版／字体、渲染／FA／SA、性能及原生品质，相关改动和发布时运行。
 
-2026-10-28 的当前登记由主人吸引力6502项基线加本次倒地修复11项Core得出；本次实际运行新原生10项和仪式生命周期233项，未执行整仓All。前轮吸引力及PNA的执行结果保留各自时点。
+2026-10-28 的当前登记由倒地修复6513项基线加共振统计合并13项Core得出；实施轮实际运行PnaSpacerNative94项及BondRelations110项，合计204／204，未执行整仓All。新增用例沿用现有Core登记，范围及部署见[本次记录](../Docs/Development/Completed/共振统计合并实现与验证.md)。前轮执行结果保留各自时点。共振统计合并已获维护者实机无问题确认、验收关闭；验收收尾仅整理文档并提交，不重跑回归。
 
 ```powershell
 pwsh -File Scripts/Test-All.ps1 -Scope Core -HarmonyAssemblyPath 'C:\Dependencies\Harmony\net9.0\0Harmony.dll'

@@ -168,13 +168,25 @@ internal static partial class Program
 }
 namespace SexSlaveCraft
 {
-    public class Hediff_BridleOfSexSlave:Hediff { public bool shareDamageEnabled;public List<Pawn> slaves; public IEnumerable<Pawn> ValidTargets=>slaves; }
+    public class Hediff_BridleOfSexSlave:Hediff
+    {
+        public bool shareDamageEnabled;
+        public List<Pawn> slaves;
+        // 共振检查仅在这个环境边界提供可计数的枚举和独立的归属结果。
+        public IEnumerable<Pawn> targetsOverride;
+        public Func<Pawn, bool> boundOverride;
+        public IEnumerable<Pawn> ValidTargets=>targetsOverride ?? slaves;
+    }
     public class Hediff_GelatinizationTemporary:Hediff { }
     public class Need_Corruption:Need { public Need_Corruption(Pawn pawn):base(pawn){} public override void NeedInterval(){} }
     public static class SSCDefOf { public static HediffDef SSC_MasterBondEmpowerment; }
     public static class SSCBondUtility
     {
         public static Hediff_BridleOfSexSlave GetBridle(Pawn pawn)=>Program.ShareBridles.GetValueOrDefault(pawn);
-        public static bool IsBoundTo(Pawn slave,Pawn master)=>GetBridle(master)?.slaves.Contains(slave)==true;
+        public static bool IsBoundTo(Pawn slave,Pawn master)
+        {
+            var bridle=GetBridle(master);
+            return bridle?.boundOverride?.Invoke(slave) ?? (bridle?.slaves.Contains(slave)==true);
+        }
     }
 }

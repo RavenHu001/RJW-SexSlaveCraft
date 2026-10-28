@@ -71,6 +71,7 @@ internal static partial class Program
         {
             RunDamageShareChecks(harmony);
             RunWhipCooperationChecks();
+            RunEmpowermentChecks();
             // 实际游戏护甲算法与生产处理器组合验证；固定种子使随机分支可重复。
             Check("无甲目标判甲一次并按基线投送",()=>{var p=Pawn();Hit(p,.7f);Near(1,lastInjury);Equal(1,injuryCalls);Equal(1,armorCalls);Near(.2f,Doses.Single());});
             Check("有效链满甲不进入护甲或衣甲磨损",()=>{var p=Pawn(3);Rooted.Add(p);Wear(p,3);Hit(p,.6f);Equal(0,armorCalls);Equal(0,wearCalls);Equal(0,injuryCalls);Near(.2f,Doses.Single());});
