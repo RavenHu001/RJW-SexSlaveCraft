@@ -150,6 +150,9 @@ namespace SexSlaveCraft
                 // 同身份的人格恢复也可能换入带药效的身体，仍须执行主人免疫核对。
                 SSCPnaExposureUtility.RefreshBodyState(pawn, true);
                 if (!SSCPersonalityRuntimeUtility.IsCurrent(pawn, personalityToken) || pawn.TryGetComp<CompSexSlaveTraining>() != comp) return false;
+#if SSC_RW17
+                SSCOrgasmSensitivityUtility.NotifyStateChanged(pawn);
+#endif
                 SSCAbilityToggleUtility.SyncMarkers(pawn);
                 return true;
             }
@@ -177,6 +180,7 @@ namespace SexSlaveCraft
 #if SSC_RW17
             // 身份写入后立即观察退出事件，不能等后续资格回调结束才撤销旧命令。
             SSCRomanceLifecycle.Notify(pawn);
+            SSCOrgasmSensitivityUtility.NotifyStateChanged(pawn);
 #endif
             if (restoredQualification.HasValue) comp.ReplaceMasterQualification(restoredQualification.Value);
             if (identity != PawnIdentity.Slave)
@@ -228,6 +232,7 @@ namespace SexSlaveCraft
 #if SSC_RW17
             // 显式恢复仍沿用原锁链；浪漫模块只更新观察，不据此补发关系或创建命令。
             SSCRomanceLifecycle.Notify(pawn);
+            SSCOrgasmSensitivityUtility.NotifyStateChanged(pawn);
 #endif
             SSCAbilityToggleUtility.SyncMarkers(pawn);
             return true;

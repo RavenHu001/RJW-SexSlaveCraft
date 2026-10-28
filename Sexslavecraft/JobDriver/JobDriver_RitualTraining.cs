@@ -240,6 +240,10 @@ namespace SexSlaveCraft
                             receiverSex.sex_ticks = animTicks;
                             receiverSex.orgasmStartTick = animTicks;
                             receiverSex.duration = animTicks;
+#if SSC_RW17
+                            // 动画已完整覆盖受方时钟；废弃旧样本，不把这次初始化解释为推进。
+                            SSCOrgasmProgressSampling.NotifyReset(receiverSex);
+#endif
                         }
                     });
                 }
@@ -352,6 +356,10 @@ namespace SexSlaveCraft
             sex_ticks = animationTicks;
             orgasmStartTick = animationTicks;
             duration = animationTicks;
+#if SSC_RW17
+            // 仅通知本方旧观察失效；保持原回退动画时长和阶段完成规则。
+            SSCOrgasmProgressSampling.NotifyReset(this);
+#endif
         }
 
 

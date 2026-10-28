@@ -58,6 +58,8 @@ namespace SexSlaveCraft
 #if SSC_RW17
             // 即使后续替换失败也不恢复旧命令，持久世代与进程内 token 同时撤销。
             SSCRomanceLifecycle.InvalidatePersonality(pawn);
+            // 暂停身体指令的派生效果，不把身体选择清到人格字典或转移到新人格载荷。
+            SSCOrgasmSensitivityUtility.NotifyStateChanged(pawn);
 #endif
             return true;
         }
@@ -81,6 +83,8 @@ namespace SexSlaveCraft
                 state.Mutation = null;
 #if SSC_RW17
                 SSCRomanceLifecycle.Notify(pawn);
+                // 全部人格写入结束后，按最终身份／空壳状态恢复当前身体的有效档位。
+                SSCOrgasmSensitivityUtility.NotifyStateChanged(pawn);
 #endif
                 SSCAbilityToggleUtility.SyncMarkers(pawn);
             }

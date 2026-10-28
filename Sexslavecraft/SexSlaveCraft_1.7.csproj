@@ -73,6 +73,24 @@
     <Error Condition="'@(LegacyCompile)' == ''" Text="The shared legacy source list is empty." />
     <ItemGroup><Compile Include="@(LegacyCompile)" /></ItemGroup>
   </Target>
+  <!-- 原始推进采样与独立倍率执行／保存仅编入 1.7，不改动旧版产物。 -->
+  <ItemGroup>
+    <Compile Include="common/Orgasm/SSCOrgasmProgressUtility.cs" />
+    <Compile Include="common/Orgasm/SSCOrgasmProgressSampling.cs" />
+    <Compile Include="common/Orgasm/SSCOrgasmAdvanceRuntime.cs" />
+    <Compile Include="common/Orgasm/SSCOrgasmAdvanceSaveState.cs" />
+    <Compile Include="common/Orgasm/SSCOrgasmNativeTestAccess.cs" />
+    <Compile Include="ThePatches/Harmony_OrgasmProgressSampling.cs" />
+  </ItemGroup>
+  <!-- 身体敏感度载体、XML 参数、持续思想与枚举 UI；执行余数另由驱动模块持有。 -->
+  <ItemGroup>
+    <Compile Include="common/Orgasm/SSCOrgasmSensitivityConfig.cs" />
+    <Compile Include="common/Orgasm/SSCOrgasmSensitivityUtility.cs" />
+    <Compile Include="common/Orgasm/SSCOrgasmFrequencyUtility.cs" />
+    <Compile Include="Hediff/Hediff_SSCOrgasmSensitivity.cs" />
+    <Compile Include="ITab/ITab_SexSlaveTraining.OrgasmSensitivity.cs" />
+    <Compile Include="ThePatches/Harmony_OrgasmSensitivityLifecycle.cs" />
+  </ItemGroup>
   <!-- AI 辅助生成：开关后端适配仅编入 1.7，保留旧版条件分支。 -->
   <ItemGroup>
     <Compile Include="common/Romance/SSCRomanceOldRelation.cs" />

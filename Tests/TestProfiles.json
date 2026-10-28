@@ -3,6 +3,11 @@
   "Description": "显式专项清单；未列为专项的新用例默认属于核心。完整范围仍执行全部用例。",
   "Suites": [
     {
+      "Name": "OrgasmProgressNative",
+      "Kind": "Core",
+      "SpecialCases": []
+    },
+    {
       "Name": "RitualProgression",
       "Kind": "Core",
       "SpecialCases": []
@@ -879,7 +884,8 @@
         "stomach native four-language finalized injection and parameters: ChineseSimplified",
         "stomach native four-language finalized injection and parameters: ChineseTraditional",
         "stomach native four-language finalized injection and parameters: English",
-        "stomach native four-language finalized injection and parameters: Russian"
+        "stomach native four-language finalized injection and parameters: Russian",
+        "advance native active hot path has no per-step allocations"
       ]
     },
     {

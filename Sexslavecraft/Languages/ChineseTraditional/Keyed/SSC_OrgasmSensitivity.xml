@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_Sensitivity_Title>性敏感改寫</SSC_Sensitivity_Title>
+  <SSC_Sensitivity_Level0>關閉</SSC_Sensitivity_Level0>
+  <SSC_Sensitivity_Level1>輕度敏感</SSC_Sensitivity_Level1>
+  <SSC_Sensitivity_Level2>中度敏感</SSC_Sensitivity_Level2>
+  <SSC_Sensitivity_Level3>深度敏感</SSC_Sensitivity_Level3>
+  <SSC_Sensitivity_Level4>極致敏感</SSC_Sensitivity_Level4>
+  <SSC_Sensitivity_Summary>儲存：{0}；實際：{1}。高潮頻率係數 ×{2}，脆弱度 {3}。</SSC_Sensitivity_Summary>
+  <SSC_Sensitivity_Adjust>調整檔位：{0}</SSC_Sensitivity_Adjust>
+  <SSC_Sensitivity_OptionParameters>（高潮頻率係數 ×{0}，脆弱度 {1}）</SSC_Sensitivity_OptionParameters>
+  <SSC_Sensitivity_Tip>這副身子有多性敏感，全憑主人決定；鎖鏈階段越高，能調到的檔位越高。</SSC_Sensitivity_Tip>
+  <SSC_Sensitivity_ConfigInvalid>敏感度配置無效，仍可關閉已有設定。</SSC_Sensitivity_ConfigInvalid>
+  <SSC_Sensitivity_BodyUnavailable>目前身體無法接受敏感度調節。</SSC_Sensitivity_BodyUnavailable>
+  <SSC_Sensitivity_PersonalityUnavailable>空殼或人格替換期間，敏感度調節暫停。</SSC_Sensitivity_PersonalityUnavailable>
+  <SSC_Sensitivity_NotSlave>目前並非 SSC 性奴身分，調節暫停。</SSC_Sensitivity_NotSlave>
+  <SSC_Sensitivity_NoChain>缺少有效鎖鏈，調節暫停。</SSC_Sensitivity_NoChain>
+  <SSC_Sensitivity_NotEditable>只能調整玩家所屬、存活且可編輯的目前身體。</SSC_Sensitivity_NotEditable>
+  <SSC_Sensitivity_InvalidLevel>檔位無效。</SSC_Sensitivity_InvalidLevel>
+  <SSC_Sensitivity_LevelLocked>目前鎖鏈階段尚未開放該檔；儲存選擇保留。</SSC_Sensitivity_LevelLocked>
+  <SSC_Sensitivity_EffectiveLevel>實際：{0}</SSC_Sensitivity_EffectiveLevel>
+</LanguageData>

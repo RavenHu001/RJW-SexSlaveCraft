@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType><TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings><Nullable>disable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- 标准 CLR 复用既有测试类型转发，模拟 Waylith 的旧 Unity 名称解析；不打包到 mod。 -->
+    <ProjectReference Include="../CultureNative/UnityCoreShim/UnityCoreShim.csproj" />
+    <!-- 第三批使用实际完整候选及测试友元，采样与效果不再分别编译成不同实现。 -->
+    <ProjectReference Include="../../Sexslavecraft/SexSlaveCraft_1.7.csproj" Condition="'$(SscAssemblyPath)' == ''" />
+    <Reference Include="Sexslavecraft" Condition="'$(SscAssemblyPath)' != ''"><HintPath>$(SscAssemblyPath)</HintPath><Private>true</Private></Reference>
+    <Reference Include="Assembly-CSharp"><HintPath>$(GameRoot)/Assembly-CSharp.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityStubs"><HintPath>$(GameRoot)/UnityStubs.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Waylith"><HintPath>$(GameRoot)/Waylith.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Waylith.UnityCompat"><HintPath>$(GameRoot)/Waylith.UnityCompat.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Brutal.Core.Maths"><HintPath>$(GameRoot)/Brutal.Core.Maths.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Brutal.Core.Numerics"><HintPath>$(GameRoot)/Brutal.Core.Numerics.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="RJW"><HintPath>$(RjwAssemblyPath)</HintPath><Private>false</Private></Reference>
+    <Reference Include="Rimworld-Animations"><HintPath>$(AnimationsAssemblyPath)</HintPath><Private>false</Private></Reference>
+    <Reference Include="0Harmony"><HintPath>$(GameHarmonyAssemblyPath)</HintPath></Reference>
+  </ItemGroup>
+  <Target Name="RequireReferences" BeforeTargets="ResolveReferences">
+    <Error Condition="!Exists('$(GameRoot)/Assembly-CSharp.dll') or !Exists('$(RjwAssemblyPath)') or !Exists('$(AnimationsAssemblyPath)') or !Exists('$(GameHarmonyAssemblyPath)')"
+           Text="Supply actual 1.7 GameRoot, RjwAssemblyPath, AnimationsAssemblyPath and GameHarmonyAssemblyPath." />
+  </Target>
+</Project>

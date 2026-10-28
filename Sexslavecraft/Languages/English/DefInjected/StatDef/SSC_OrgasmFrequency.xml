@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_OrgasmFrequency.label>orgasm frequency multiplier</SSC_OrgasmFrequency.label>
+  <SSC_OrgasmFrequency.description>How quickly this character approaches orgasm during sexual activity. ×1 is the normal pace; higher values make orgasms more frequent. Sexual sensitivity rewrite and other effects can modify this multiplier. It does not prolong the activity.</SSC_OrgasmFrequency.description>
+</LanguageData>

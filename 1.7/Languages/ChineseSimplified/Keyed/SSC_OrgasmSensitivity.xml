@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_Sensitivity_Title>性敏感改写</SSC_Sensitivity_Title>
+  <SSC_Sensitivity_Level0>关闭</SSC_Sensitivity_Level0>
+  <SSC_Sensitivity_Level1>轻度敏感</SSC_Sensitivity_Level1>
+  <SSC_Sensitivity_Level2>中度敏感</SSC_Sensitivity_Level2>
+  <SSC_Sensitivity_Level3>深度敏感</SSC_Sensitivity_Level3>
+  <SSC_Sensitivity_Level4>极致敏感</SSC_Sensitivity_Level4>
+  <SSC_Sensitivity_Summary>保存：{0}；实际：{1}。高潮频率系数 ×{2}，脆弱度 {3}。</SSC_Sensitivity_Summary>
+  <SSC_Sensitivity_Adjust>调整档位：{0}</SSC_Sensitivity_Adjust>
+  <SSC_Sensitivity_OptionParameters>（高潮频率系数 ×{0}，脆弱度 {1}）</SSC_Sensitivity_OptionParameters>
+  <SSC_Sensitivity_Tip>这副身子有多性敏感，全凭主人决定；锁链阶段越高，能调到的档位越高。</SSC_Sensitivity_Tip>
+  <SSC_Sensitivity_ConfigInvalid>敏感度配置无效，仍可关闭已有设置。</SSC_Sensitivity_ConfigInvalid>
+  <SSC_Sensitivity_BodyUnavailable>当前身体无法接受敏感度调节。</SSC_Sensitivity_BodyUnavailable>
+  <SSC_Sensitivity_PersonalityUnavailable>空壳或人格替换期间，敏感度调节暂停。</SSC_Sensitivity_PersonalityUnavailable>
+  <SSC_Sensitivity_NotSlave>当前并非 SSC 性奴身份，调节暂停。</SSC_Sensitivity_NotSlave>
+  <SSC_Sensitivity_NoChain>缺少有效锁链，调节暂停。</SSC_Sensitivity_NoChain>
+  <SSC_Sensitivity_NotEditable>只能调整玩家所属、存活且可编辑的当前身体。</SSC_Sensitivity_NotEditable>
+  <SSC_Sensitivity_InvalidLevel>档位无效。</SSC_Sensitivity_InvalidLevel>
+  <SSC_Sensitivity_LevelLocked>当前锁链阶段尚未开放该档；保存选择保留。</SSC_Sensitivity_LevelLocked>
+  <SSC_Sensitivity_EffectiveLevel>实际：{0}</SSC_Sensitivity_EffectiveLevel>
+</LanguageData>

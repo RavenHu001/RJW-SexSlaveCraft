@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <!-- Severity 是稳定枚举；所有效果数值只配置在扩展中，阶段只提供名称。 -->
+  <HediffDef>
+    <defName>SSC_OrgasmSensitivity</defName>
+    <label>Sexual sensitivity rewrite</label>
+    <description>How sexually sensitive a sex slave's micromachine-invaded body is rests entirely with its master.</description>
+    <hediffClass>SexSlaveCraft.Hediff_SSCOrgasmSensitivity</hediffClass>
+    <isBad>false</isBad>
+    <minSeverity>0</minSeverity>
+    <maxSeverity>4</maxSeverity>
+    <initialSeverity>1</initialSeverity>
+    <stages>
+      <li><minSeverity>1</minSeverity><label>Mild sensitivity</label></li>
+      <li><minSeverity>2</minSeverity><label>Moderate sensitivity</label></li>
+      <li><minSeverity>3</minSeverity><label>High sensitivity</label></li>
+      <li><minSeverity>4</minSeverity><label>Extreme sensitivity</label></li>
+    </stages>
+    <modExtensions>
+      <li Class="SexSlaveCraft.SSCOrgasmSensitivityExtension">
+        <multipliers><li>2</li><li>4</li><li>8</li><li>16</li></multipliers>
+        <vulnerabilityOffsets><li>0.30</li><li>0.75</li><li>1.50</li><li>3.00</li></vulnerabilityOffsets>
+        <minChainStages><li>1</li><li>2</li><li>3</li><li>4</li></minChainStages>
+      </li>
+    </modExtensions>
+  </HediffDef>
+</Defs>

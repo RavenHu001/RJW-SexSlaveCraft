@@ -19,6 +19,9 @@ namespace SexSlaveCraft
         {
             internal string Label, Tip;
             internal AbilityToggleRow Toggle;
+#if SSC_RW17
+            internal OrgasmSensitivityRow Sensitivity;
+#endif
             internal float Height, Indent, GapBefore;
         }
 
@@ -52,8 +55,6 @@ namespace SexSlaveCraft
                 view.TitleHeight = Mathf.Max(SectionTitleHeight, Text.CalcHeight(view.Title, innerWidth));
                 // 所有布尔条目按注册分组／顺序构建；从属信息由定义提供，不按能力 enum 分派。
                 var toggles = BuildAbilityToggleRows(pawn, comp, SSCAbilityToggleGroup.Body, innerWidth);
-                // 无条目时保留零高度；即使在 try 内提前返回，finally 仍归还字体与换行状态。
-                if (toggles.Count == 0) return view;
                 bool first = true;
                 foreach (var toggle in toggles)
                 {
@@ -64,6 +65,12 @@ namespace SexSlaveCraft
                     // 充盈度继续作为缩进信息，不新增身体开发进度／收益展示。
                     if (!string.IsNullOrEmpty(toggle.Detail)) AddBodyRow(view, innerWidth, toggle.Detail, indent: BodyChildIndent);
                 }
+#if SSC_RW17
+                // 枚举行独立于 bool 条目，必须追加后再判断整个身体区是否为空。
+                AppendOrgasmSensitivityRows(view, innerWidth);
+#endif
+                // 无任何条目时保留零高度；提前返回也由 finally 归还字体与换行状态。
+                if (view.Rows.Count == 0) return view;
                 view.Height = SectionPadding * 2f + view.TitleHeight + view.Rows.Sum(row => row.Height + row.GapBefore)
                     + BodyRowGap * Math.Max(0, view.Rows.Count - 1);
             }
@@ -104,6 +111,10 @@ namespace SexSlaveCraft
                     // 独立开关之间增加组间留白，充盈度的缩进与测量保持同一宽度。
                     y += row.GapBefore;
                     Rect line = new Rect(inner.x + row.Indent, y, inner.width - row.Indent, row.Height);
+#if SSC_RW17
+                    if (row.Sensitivity != null) DrawOrgasmSensitivityRow(line, row);
+                    else
+#endif
                     if (row.Toggle == null)
                     {
                         Widgets.Label(line, row.Label);

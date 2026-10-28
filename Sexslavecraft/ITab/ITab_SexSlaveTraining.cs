@@ -199,6 +199,12 @@ namespace SexSlaveCraft
                 curY = DrawIdentitySection(new Rect(0f, curY, contentRect.width,
                     identityView.SectionHeight), comp, identityView) + SectionSpacing;
 
+#if SSC_RW17
+                // 紧跟身份区，凝胶／身体条目增加时入口不会被继续向下推；总滚动高度不变。
+                DrawRestrictionToggle(new Rect(0f, curY, contentRect.width, RestrictionToggleHeight), pawn);
+                curY += RestrictionToggleHeight + RestrictionToggleSpacing;
+#endif
+
                 // 在所有身份/研究分支之前绘制；个人开关关闭也能继续编辑外观。
                 if (gelView.Height > 0f)
                 {
@@ -215,9 +221,11 @@ namespace SexSlaveCraft
                 }
 #endif
 
-                // 入口位置与高度保持稳定；没有实际绑定或总限制停用时可见但不可操作。
+#if !SSC_RW17
+                // 冻结版本保留旧布局；当前入口前移只对1.7生效。
                 DrawRestrictionToggle(new Rect(0f, curY, contentRect.width, RestrictionToggleHeight), pawn);
                 curY += RestrictionToggleHeight + RestrictionToggleSpacing;
+#endif
                 if (CanShowSpecializationSection(comp))
                 {
                     curY = DrawSpecializationSection(new Rect(0f, curY, contentRect.width,

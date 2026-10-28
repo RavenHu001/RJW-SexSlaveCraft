@@ -2,6 +2,12 @@
 #if SSC_RW17
 namespace SexSlaveCraft
 {
+    /// <summary>无游戏的载荷模型不构建健康／情境思想缓存；真实刷新由 UterusDevelopmentNative 验证。</summary>
+    public static class SSCOrgasmSensitivityUtility
+    {
+        /// <summary>仅提供人格作用域通知边界，不在模型宿主复制身体敏感度业务。</summary>
+        public static void NotifyStateChanged(Verse.Pawn pawn) { }
+    }
     public sealed class Thought_MemorySSCRomance : RimWorld.Thought_Memory
     {
         public SSCRomanceMoodData Data;

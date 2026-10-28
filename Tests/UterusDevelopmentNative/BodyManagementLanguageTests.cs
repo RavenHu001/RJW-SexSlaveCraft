@@ -13,7 +13,7 @@ internal static partial class Program
         AccessTools.Field(typeof(LoadedLanguage), "legacyFolderName").SetValue(loaded, language);
         loaded.info = new LanguageInfo { languageWorkerClass = typeof(LanguageWorker_English) };
         loaded.stringFiles = new(); loaded.keyedReplacements = new(); loaded.loadErrors = new();
-        foreach (string file in new[] { "SSC_Keys.xml", "SSC_BodyManagement.xml", "SSC_UterusDevelopment.xml", "SSC_Cosmetic.xml", "SSC_HediffFertility.xml", "SSC_StomachDevelopment.xml" })
+        foreach (string file in new[] { "SSC_Keys.xml", "SSC_BodyManagement.xml", "SSC_UterusDevelopment.xml", "SSC_Cosmetic.xml", "SSC_HediffFertility.xml", "SSC_StomachDevelopment.xml", "SSC_OrgasmSensitivity.xml" })
             foreach (var entry in XDocument.Load(Path.Combine(repo, "1.7/Languages", language, "Keyed", file)).Root.Elements())
                 loaded.keyedReplacements.Add(entry.Name.LocalName, new LoadedLanguage.KeyedReplacement
                     { key = entry.Name.LocalName, value = entry.Value.Replace("\\n", "\n") });

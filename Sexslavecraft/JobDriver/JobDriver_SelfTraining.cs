@@ -15,6 +15,7 @@ namespace SexSlaveCraft
         private SSCSelfTrainingSnapshot snapshot;
         private InteractionDef manualInteraction;
 
+        /// <summary>沿原继承链保存计时及第三批余数节点，自身继续保存原完成快照与手动交互。</summary>
         public override void ExposeData()
         {
             base.ExposeData();
@@ -58,9 +59,12 @@ namespace SexSlaveCraft
             return true;
         }
 
+        /// <summary>确认角色当前仍运行此驱动；旧完成回调不能结束后来换入的任务。</summary>
         private bool IsActiveDriver => pawn?.jobs?.curDriver == this;
+        /// <summary>自我目标必须仍为本人；恢复候选和实际步骤均复用这一原业务资格。</summary>
         private bool IsCurrentJob => IsActiveDriver && job?.GetTarget(iTarget).Pawn == pawn;
 
+        /// <summary>只中断仍属于自己的当前任务，不接续失效的交互或完成收益。</summary>
         private void Abort()
         {
             if (IsActiveDriver) pawn.jobs.EndCurrentJob(JobCondition.Incompletable, startNewJob: false);
@@ -86,6 +90,10 @@ namespace SexSlaveCraft
                 ticks_between_hits = hits;
                 ticks_between_thrusts = thrusts;
                 if (toils.Count > 1) toils[1].defaultDuration = elapsedDuration;
+#if SSC_RW17
+                // 原周期恢复不是一次新周期；只废弃旧样本，恢复候选在完整枚举末尾再通知。
+                SSCOrgasmProgressSampling.InvalidateSamples(this);
+#endif
             }
             this.FailOn(() => !IsCurrentJob || pawn.Map == null || !SSCSelfTrainingEligibility.IsEligible(pawn) ||
                 !xxx.can_masturbate(pawn) || !cell.IsValid || !cell.InBounds(pawn.Map) ||
@@ -131,8 +139,13 @@ namespace SexSlaveCraft
                 initAction = CompleteSelfTraining,
                 defaultCompleteMode = ToilCompleteMode.Instant
             };
+#if SSC_RW17
+            // 只有外围 SetupToils 枚举、Dispose 均正常完成后，才会接受这里的原周期恢复候选。
+            if (resuming && IsCurrentJob) SSCOrgasmAdvanceRuntime.MarkRestored(this);
+#endif
         }
 
+        /// <summary>沿既有手动／自动交互选择生成RJW场景，不因敏感度或读档恢复绕过原许可。</summary>
         private bool TryPrepareInteraction(out string reason)
         {
             reason = null;
@@ -158,6 +171,7 @@ namespace SexSlaveCraft
             return true;
         }
 
+        /// <summary>确认当前仍是本人自慰且解析Def一致；读档或改档不能使旧交互跨上下文复用。</summary>
         private bool HasValidInteraction()
         {
             return Sexprops?.pawn == pawn && Sexprops.partner == pawn && Sexprops.dictionaryKey != null &&
@@ -165,6 +179,7 @@ namespace SexSlaveCraft
                 Sexprops.resolved?.Interaction?.Def == Sexprops.dictionaryKey;
         }
 
+        /// <summary>只有原场景完整结束才一次性认领自我调教收益；敏感度不增加完成次数。</summary>
         private void CompleteSelfTraining()
         {
             if (!IsCurrentJob || ticks_left > 0 || !HasValidInteraction() ||

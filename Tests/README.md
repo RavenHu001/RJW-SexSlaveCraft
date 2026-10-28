@@ -1,5 +1,23 @@
 # 测试说明索引
 
+2026-10-28：[界面与通用高潮频率Stat](../Docs/Development/Completed/调教界面与高潮频率属性优化实现与验证.md)前次相关 **623／623**（原生567、采样56），只新增Core3项通用来源／合成／Scribe边界，原6项UI回归随布局调整，不新增文案快照。登记为 **All6453、Core5380、Special1073**，47套不变；候选后续已同步并获实机认可，见[最终核对](../Docs/Development/Completed/个人高潮敏感度系统完成核对.md)。本次仅文档收尾，不重跑机制测试，未执行整仓All或发布。
+
+测试新增、精简与执行遵循[测试编写与执行准则](../Docs/Development/Reference/测试编写与执行准则.md)。普通文案不默认新增用例或运行完整机制宿主；复用资源脚本，机制回归保留实际故障和生命周期边界，计数区分本次执行与登记规模。
+
+2026-10-27：[第27项测试精简](../Docs/Development/Completed/第27项测试精简实现与验证.md)实际删除62项（Core58／Special4）：身体96→55、倍率余数76→56，原生套件625→564（Core526／Special38），公共采样57→56，仅删一个重复非1减量例。本次相关两套 **620／620**，未跑整仓All；登记更新为 **All6450、Core5377、Special1073**，47套不变。文案先提交430f0167，测试精简单独提交；不改生产机制、不重编正式DLL、不作游戏同步。下方625／6512等保留原批次时点。
+
+2026-10-27：第27项[第四批四语文案](../Docs/Development/Completed/高潮敏感度第四批四语文案落实与验证.md)本次仅相关原生 **625／625**，宿主构建零警告／零错误；四语176字段、简中44原文、英文26回退与镜像及结构检查通过。旧数字档位断言更新为当前语言正式名称，不新增用例或改变登记数，未重编生产DLL、未跑整仓All、未同步或实机。
+
+2026-10-27：第27项[第三批提交前复核](../Docs/Development/Completed/高潮敏感度第三批统一推进与余数恢复实现与验证.md#6-提交前复核2026-10-27)相关四套 **2182／2182**（625＋57＋1450＋50），修正阈值饱和的小数余数清理时机。新增Core4项，另修正原有3项算术预期；旧候选618／625、修正后625／625。当前登记 **All6512、Core5435、Special1077**，47套不变；未跑整仓All，按授权提交、不作游戏同步，下方首次实施数字保留原时点。
+
+2026-10-27：第27项[第三批统一推进与余数恢复](../Docs/Development/Completed/高潮敏感度第三批统一推进与余数恢复实现与验证.md)相关四套 **2178／2178**：身体与余数原生621、原始采样57、浪漫1450、自我调教50。新增原生72项（Core71／Special1），登记据此前6436更新为 **All6508、Core5431、Special1077**，47套不变；登记数并非本次全量执行。原生套件加载同一隔离完整候选，实际Scribe／Toil／自我调教恢复、统一倍率、极值、去重及活跃热路径零分配通过，未跑整仓All、未同步或实机。
+
+2026-10-27：第27项第二批[提交前复核](../Docs/Development/Completed/高潮敏感度第二批身体载体与界面实现与验证.md#6-提交前复核2026-10-27)运行五套 **2246／2246**：身体原生549、浪漫原生1450、人格161、共用栏57、泌乳29。按当前RJW6.2.2与游戏Harmony3重新隔离构建，新增1项Core证明并修正最终值回调误报；登记更新为 **All6436、Core5360、Special1076**，47套不变。未跑整仓All、未同步或实机；下方766／6435保留首次第二批时点。
+
+2026-10-27：第27项第二批仅相关专项 **766／766**：原生身体／属性／思想／菜单548、人格1.7流转161、共用身体栏57；隔离生产构建零警告／零错误，资源镜像及冻结检查通过，未跑整仓All、未同步游戏。新增原生95项（Core91／Special4）及人格Core4项；按此前登记6336项增加99项，现登记 **All6435、Core5359、Special1076**，47套不变（登记数，非本次全量执行）。倍率只查询／显示，未接计时及执行余数，见[第二批记录](../Docs/Development/Completed/高潮敏感度第二批身体载体与界面实现与验证.md)。
+
+2026-10-27：新增核心专项 [OrgasmProgressNative](OrgasmProgressNative/README.md)，本批原生 **57／57**、相关 SelfTrainingManual **50／50**；生产隔离构建通过，未跑整仓All、未同步游戏。套件登记为47套，按此前6279项基线加本套57项为 **All 6336、Core 5264、Special 1072**（登记数，非本次执行总量）；原有下方计数保留历史时点。真实DLL计时采样与完整游戏实机分开记录，见[第一批依据](../Docs/Development/Completed/高潮推进采样第一批实现与验证.md)。
+
 2026-10-27：按方案再精简核心301项及专项101项，当前登记 `All` **46套／6279项**、`Core` **42套／5207项**、`Special` **16套／1072项**，较原7881项累计减少1602项。本次只执行九个关联套件的指定分区 **2687／2687**，未跑整仓全量；见[本轮实现与验证](../Docs/Development/Completed/核心301项与专项101项测试精简实现与验证.md)。[上一轮静态资源205项](../Docs/Development/Completed/静态资源测试205项删减与验证.md)、[首轮995项](../Docs/Development/Completed/测试分级与数量精简实现与验证.md)及下方历史数字保留原运行时点。
 
 统一入口默认仍执行完整范围，发布强制 `All`。日常可显式加 `-Scope Core`，相关改动可加 `-Scope Special`；子集报告包含排除套件且 `FullRegression = false`，不能用于发布放行。专项覆盖资源／四语、排版、渲染／FA／SA、性能、原生品质；相应改动及发布时运行。命令和初始化契约见[范围说明](#测试范围与计数)。
@@ -198,25 +216,25 @@ pwsh -File Scripts/Test-All.ps1 -GameVersion 1.7 -HarmonyAssemblyPath 'C:\Depend
 
 可单独执行 `pwsh -File Scripts/Test-DefMirrors.ps1` 或 `pwsh -File Scripts/Sync-LanguagesMirror.ps1`。两者均支持 `-RepositoryRoot`、`-GameVersion`、`-RuntimeRoot` 与 `-PassThru`；语言同步仍须显式加 `-Sync`，且仅允许以 `1.7/Languages` 为源，不能同步冻结的 1.6 内容。统一报告位于 `.builds/validation/`，分别生成 `DefMirrors.log`、`LanguagesMirrors.log`，并在 `summary.json` 的 `Checks` 中按 `DefMirrors`／`LanguagesMirrors` 登记状态、文件数、原因和日志路径，合计字段为 `CheckCount`、`PassedChecks`、`FailedChecks`。布局结果另记在 `LayoutValidation`，不计入两项资源检查。
 
-`pwsh -File Scripts/Test-All.ps1 -GameVersion 1.6` 只验证冻结文件哈希与该版 Def／Languages XML，不比较当前源码镜像、不编译或运行当前源码套件，报告 `SuiteCount = 0`。`SourceValidationScope` 明确区分这项资源检查与 1.7 统一入口登记的46套当前源码回归；都不能替代游戏内流程、动画及真实存档往返验收。
+`pwsh -File Scripts/Test-All.ps1 -GameVersion 1.6` 只验证冻结文件哈希与该版 Def／Languages XML，不比较当前源码镜像、不编译或运行当前源码套件，报告 `SuiteCount = 0`。`SourceValidationScope` 明确区分这项资源检查与 1.7 统一入口登记的47套当前源码回归；都不能替代游戏内流程、动画及真实存档往返验收。
 
 单套测试传入的目录参数仍为仓库根目录。`Tests/Shared/TestPaths.cs` 将源码解析到 `Sexslavecraft/`，运行资源默认解析到 `1.7/`，贴图解析到 `Common/Textures/` 并优先使用版本目录中的同名覆盖。需要独立资源夹具时可设置 `SSC_TEST_REPOSITORY_ROOT`、`SSC_TEST_RUNTIME_ROOT`、`SSC_TEST_COMMON_ROOT`；统一入口仅在本次调用期间设置这些进程环境变量，结束或失败后恢复原值。`RitualProgression` 保留显式 XML 文件参数。
 
 
 ## 测试范围与计数
 
-- **All（默认）**：46套，6279项，包含核心和专项。发布入口显式指定 `All`，核对成功报告的 `Scope` 和 `FullRegression`。
-- **Core**：42套，5207项。保留机制准入、保存归属、人格／身体／关系流转、旧上下文、原 Job、重复／中断／回调／异常边界。
-- **Special**：16套，1072项。资源／四语／文化生成与文案、排版／字体、渲染／FA／SA、性能及原生品质，相关改动和发布时运行。
+- **All（默认）**：47套，6453项，包含核心和专项。发布入口显式指定 `All`，核对成功报告的 `Scope` 和 `FullRegression`。
+- **Core**：43套，5380项。保留机制准入、保存归属、人格／身体／关系流转、旧上下文、原 Job、重复／中断／回调／异常边界。
+- **Special**：16套，1073项。资源／四语／文化生成与文案、排版／字体、渲染／FA／SA、性能及原生品质，相关改动和发布时运行。
 
 ```powershell
 pwsh -File Scripts/Test-All.ps1 -Scope Core -HarmonyAssemblyPath 'C:\Dependencies\Harmony\net9.0\0Harmony.dll'
 pwsh -File Scripts/Test-All.ps1 -Scope Special -HarmonyAssemblyPath 'C:\Dependencies\Harmony\net9.0\0Harmony.dll'
 ```
 
-`Tests/TestProfiles.json`登记套件类别和专项名称，随宿主嵌入。四个纯专项为 PnaProjectileTrail、PnaWeaponEffects、PnaMeleeQuality、PersonalityCardLayout。混合套件未列出的新用例默认属于核心，纯专项套件的新用例仍属于专项。1071个唯一专项名称对应1072个报告项，一处既有重复名称不改变执行次数。
+`Tests/TestProfiles.json`登记套件类别和专项名称，随宿主嵌入。四个纯专项为 PnaProjectileTrail、PnaWeaponEffects、PnaMeleeQuality、PersonalityCardLayout。混合套件未列出的新用例默认属于核心，纯专项套件的新用例仍属于专项。报告项按实际执行次数统计，既有重复名称不合并。当前计数依据历史基线及已验证的增减更新，不代表本轮执行了整仓All。
 
-注册表始终核对完整46套和辅助工程，不以选测排除未登记项目。子集报告列出 `ExcludedSuites`，不伪记为 Passed 或 NotRun；`FullRegression = false`。输出必须有唯一且匹配的 `SCOPE`，成功数字不能让子集或仅文案模式冒充 All。入口设置 `SSC_TEST_SCOPE`、清除仅文案选择，结束后恢复调用者原环境。
+注册表始终核对完整47套和辅助工程，不以选测排除未登记项目。子集报告列出 `ExcludedSuites`，不伪记为 Passed 或 NotRun；`FullRegression = false`。输出必须有唯一且匹配的 `SCOPE`，成功数字不能让子集或仅文案模式冒充 All。入口设置 `SSC_TEST_SCOPE`、清除仅文案选择，结束后恢复调用者原环境。
 
 分流必须维护初始化：Def、跨引用、语言和原版悬停缓存不能依赖先执行另一条用例。医美核心流程只在 All／Core 进入，纯语言专项使用独立资源初始化。修改测试名称或增加专项时同步维护清单，并执行分区核对。
 

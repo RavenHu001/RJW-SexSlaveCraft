@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_OrgasmFrequency.label>高潮頻率係數</SSC_OrgasmFrequency.label>
+  <SSC_OrgasmFrequency.description>角色在性行為中達到高潮的速度。×1為正常速度；數值越高，通常越容易頻繁高潮。性敏感改寫與其他效果均可影響該係數，不會因此延長一次性行為的持續時間。</SSC_OrgasmFrequency.description>
+</LanguageData>

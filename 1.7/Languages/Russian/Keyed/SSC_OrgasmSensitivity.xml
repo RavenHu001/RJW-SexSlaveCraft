@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_Sensitivity_Title>Перенастройка сексуальной чувствительности</SSC_Sensitivity_Title>
+  <SSC_Sensitivity_Level0>Выкл.</SSC_Sensitivity_Level0>
+  <SSC_Sensitivity_Level1>Слабая чувствительность</SSC_Sensitivity_Level1>
+  <SSC_Sensitivity_Level2>Умеренная чувствительность</SSC_Sensitivity_Level2>
+  <SSC_Sensitivity_Level3>Высокая чувствительность</SSC_Sensitivity_Level3>
+  <SSC_Sensitivity_Level4>Предельная чувствительность</SSC_Sensitivity_Level4>
+  <SSC_Sensitivity_Summary>Сохранено: {0}; действует: {1}. Множитель частоты оргазмов ×{2}, уязвимость {3}.</SSC_Sensitivity_Summary>
+  <SSC_Sensitivity_Adjust>Изменить уровень: {0}</SSC_Sensitivity_Adjust>
+  <SSC_Sensitivity_OptionParameters> (множитель частоты оргазмов ×{0}, уязвимость {1})</SSC_Sensitivity_OptionParameters>
+  <SSC_Sensitivity_Tip>Насколько сексуально чувствительным будет это тело, решает только хозяин. Чем выше стадия цепи, тем выше доступный уровень.</SSC_Sensitivity_Tip>
+  <SSC_Sensitivity_ConfigInvalid>Некорректная конфигурация чувствительности. Сохранённую настройку всё ещё можно отключить.</SSC_Sensitivity_ConfigInvalid>
+  <SSC_Sensitivity_BodyUnavailable>Сейчас это тело не может подвергаться регулировке чувствительности.</SSC_Sensitivity_BodyUnavailable>
+  <SSC_Sensitivity_PersonalityUnavailable>Регулировка чувствительности приостановлена, пока тело пусто или идёт замена личности.</SSC_Sensitivity_PersonalityUnavailable>
+  <SSC_Sensitivity_NotSlave>Сейчас у персонажа нет статуса секс-раба SSC. Регулировка приостановлена.</SSC_Sensitivity_NotSlave>
+  <SSC_Sensitivity_NoChain>Нет действующей цепи. Регулировка приостановлена.</SSC_Sensitivity_NoChain>
+  <SSC_Sensitivity_NotEditable>Изменять можно только живое, доступное для редактирования тело, принадлежащее игроку.</SSC_Sensitivity_NotEditable>
+  <SSC_Sensitivity_InvalidLevel>Недопустимый уровень чувствительности.</SSC_Sensitivity_InvalidLevel>
+  <SSC_Sensitivity_LevelLocked>Текущая стадия цепи ещё не открывает этот уровень. Сохранённый выбор остаётся.</SSC_Sensitivity_LevelLocked>
+  <SSC_Sensitivity_EffectiveLevel>Действует: {0}</SSC_Sensitivity_EffectiveLevel>
+</LanguageData>
