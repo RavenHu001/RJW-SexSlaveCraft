@@ -2,13 +2,13 @@
 
 [2.4.7: new controls and compatibility](#ssc-247)
 
-**2.4.7 — development registration, 2026-10-28; unreleased.** Sensitivity, personal PNA production controls, UAP compatibility and bond/Training fixes target 1.7; 1.6/Common stay frozen at 2.4.1. The latest public download remains [v2.4.6](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.6). About/binary metadata remain 2.4.6 pending a release rebuild. Three-language romance display retains its independent verification scope; PNA production guidance has been accepted.
+**2.4.7 — 2026-10-28.** Sensitivity, personal PNA production controls, UAP compatibility and bond/Training fixes. [Download v2.4.7](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.7). New work targets 1.7; 1.6/Common stay frozen at 2.4.1. About/source version attributes and rebuilt runtime metadata are aligned to 2.4.7. Three-language romance display retains its independent scope; PNA guidance has been accepted. Build, gate and upload results are archived separately.
 
 [2.4.6: stages, orders, moods and personal resets](#27-246-personal-abilities-and-romance-controls-17-unreleased)
 
 [New in 2.4.4: culture, ritual points and cosmetics](#25-244-culture-rituals-and-cosmetic-reshaping-17-development-only)
 
-> This guide covers **SSC 2.4.7 (development registration, unreleased)** for RimWorld 1.7; 1.6 remains frozen at 2.4.1. See the [release scope](Docs/Releases/2.4.7/2.4.7发布说明.md#english). Earlier section versions identify introductions.
+> This guide covers **SSC 2.4.7 (2026-10-28)** for RimWorld 1.7; 1.6 remains frozen at 2.4.1. See the [release scope](Docs/Releases/2.4.7/2.4.7发布说明.md#english). Earlier section versions identify introductions.
 
 [Project home](README.md) · [Player reading order](Docs/Players/README.md#english-reading-order) · [Quick start](QUICK_START_EN.md) · [中文机制详解](机制详解.md)
 
@@ -1949,12 +1949,12 @@ Three categories/thirteen log entries, participant-perspective history, vanilla 
 
 Each language has 270 display texts: 246 thought names/descriptions, thirteen logs, six task reports and five results. Simplified Chinese v1 has local in-game acceptance. Traditional Chinese, English and Russian have review approval and 590 targeted text checks, but await deployment/in-game display. Technical carrier fallbacks are separate. Final four-language PNA item/research guidance was deployed and accepted on 2026-10-27; it describes existing production, not a new output boost/facility.
 
-Mechanisms, logs, personal resets and stage hints have batch acceptance. The historical 2.4.6 release build had aligned metadata; current VERSION/docs are 2.4.7 while runtime metadata remains 2.4.6; full release-gate and package results are recorded separately. See [verification and open scope](Docs/Releases/2.4.6/2.4.6版本验证.md).
+Mechanisms, logs, personal resets and stage hints have batch acceptance. The historical 2.4.6 release build had aligned metadata; current VERSION, About and rebuilt runtime metadata are 2.4.7; full release-gate and package results are recorded separately. See [verification and open scope](Docs/Releases/2.4.6/2.4.6版本验证.md).
 
 <a id="ssc-247"></a>
-## 28. 2.4.7 body controls and compatibility rules (1.7 development)
+## 28. 2.4.7 body controls and compatibility rules (1.7)
 
-**Registered 2026-10-28; unreleased.** [Development notes](Docs/Releases/2.4.7/2.4.7发布说明.md#english) · [Commit audit](Docs/Releases/2.4.7/2.4.7开发归并核对.md) · [Validation](Docs/Releases/2.4.7/2.4.7版本验证.md).
+**Version 2.4.7, 2026-10-28.** [Development notes](Docs/Releases/2.4.7/2.4.7发布说明.md#english) · [Commit audit](Docs/Releases/2.4.7/2.4.7开发归并核对.md) · [Validation](Docs/Releases/2.4.7/2.4.7版本验证.md).
 
 ### Body sensitivity
 
@@ -1992,4 +1992,4 @@ Each resonance query reuses one statistics result, preserving bond filtering, ze
 
 ### Version and remaining scope
 
-Scoped in-game acceptance exists for these features; unreported language/mod combinations are not independently declared passed. Traditional Chinese/English/Russian romance display and other separate checks remain in the [verification index](Docs/Development/Verification/README.md). Automatic warm-up/slowdown, a standalone framework, PNA boosting/facilities and new social events remain future work. This registration performs no rebuild or full release gate.
+Scoped in-game acceptance exists for these features; unreported language/mod combinations are not independently declared passed. Traditional Chinese/English/Russian romance display and other separate checks remain in the [verification index](Docs/Development/Verification/README.md). Automatic warm-up/slowdown, a standalone framework, PNA boosting/facilities and new social events remain future work. The formal rebuild, complete gate and upload receipts are recorded separately in the version-validation archive.

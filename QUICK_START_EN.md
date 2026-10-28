@@ -2,13 +2,13 @@
 
 [2.4.7: new controls and compatibility](#ssc-247)
 
-**2.4.7 — development registration, 2026-10-28; unreleased.** Sensitivity, personal PNA production controls, UAP compatibility and bond/Training fixes target 1.7; 1.6/Common stay frozen at 2.4.1. The latest public download remains [v2.4.6](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.6). About/binary metadata remain 2.4.6 pending a release rebuild. Three-language romance display retains its independent verification scope; PNA production guidance has been accepted.
+**2.4.7 — 2026-10-28.** Sensitivity, personal PNA production controls, UAP compatibility and bond/Training fixes. [Download v2.4.7](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.7). New work targets 1.7; 1.6/Common stay frozen at 2.4.1. About/source version attributes and rebuilt runtime metadata are aligned to 2.4.7. Three-language romance display retains its independent scope; PNA guidance has been accepted. Build, gate and upload results are archived separately.
 
 [2.4.6: personal abilities and romance controls](#24-246-personal-abilities-and-romance-controls-17-unreleased)
 
 [New in 2.4.4: culture, ritual points and cosmetics](#22-244-culture-and-cosmetic-reshaping-17-development-only)
 
-> This guide covers **SSC 2.4.7 (development registration, unreleased)** for RimWorld 1.7; 1.6 remains frozen at 2.4.1. See the [release scope](Docs/Releases/2.4.7/2.4.7发布说明.md#english). Earlier section versions identify introductions.
+> This guide covers **SSC 2.4.7 (2026-10-28)** for RimWorld 1.7; 1.6 remains frozen at 2.4.1. See the [release scope](Docs/Releases/2.4.7/2.4.7发布说明.md#english). Earlier section versions identify introductions.
 
 [Project home](README.md) · [Player reading order](Docs/Players/README.md#english-reading-order) · [中文快速入门](读我，玩法介绍.md) · [Complete guide](PLAYER_GUIDE_EN.md)
 
@@ -719,9 +719,9 @@ PNA item/research descriptions explain existing production: complete genital Tra
 Simplified Chinese copy has in-game acceptance; the other three languages have review approval but await deployment/in-game display. Final PNA guidance was deployed and accepted as effective on 2026-10-27. The public v2.4.6 package includes 2.4.5 and these additions. See [2.4.6 scope](Docs/Releases/2.4.6/2.4.6发布说明.md#english) and [verification](Docs/Releases/2.4.6/2.4.6版本验证.md).
 
 <a id="ssc-247"></a>
-## 25. 2.4.7 sensitivity, production controls and compatibility (1.7 development)
+## 25. 2.4.7 sensitivity, production controls and compatibility (1.7)
 
-**Registered 2026-10-28; no package released.** This section covers current development; the public v2.4.6 package does not contain these additions. See the [development notes](Docs/Releases/2.4.7/2.4.7发布说明.md#english).
+**Version 2.4.7, 2026-10-28.** This section covers the new release content; the earlier public v2.4.6 package does not contain these additions. See the [development notes](Docs/Releases/2.4.7/2.4.7发布说明.md#english).
 
 - **Sensitivity:** select it in the Training tab's body panel; off by default. Eligible player-faction SSC slaves unlock one level per Chain stage. The button shows the saved choice, the indented line shows the effective level, and locked options explain why in tooltips. Levels provide ×2/×4/×8/×16 frequency factors, increased vulnerability and stage-dependent ongoing mood. A stage reduction limits the effect without overwriting the choice; the choice belongs to the body.
 - **General frequency stat:** defaults to ×1. SSC levels contribute one factor; valid external sources can also affect RJW pawns without SSC identity. It does not automatically accelerate everyone. Automatic warm-up, fatigue slowdown and a standalone framework are not included.

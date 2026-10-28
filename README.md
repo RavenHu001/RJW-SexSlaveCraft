@@ -1,12 +1,12 @@
 # RJW-SexSlaveCraft · TieJin Modify
 
-**2.4.7 — 2026-10-28 开发登记，未发布。** 敏感度、个人PNA启停、UAP手动多人兼容、绑定吸引力及调教修复；新增仅1.7，1.6／Common冻结2.4.1。最新正式下载仍为[v2.4.6](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.6)；About／DLL等运行元数据仍为2.4.6，正式发布前对齐重编。繁英俄浪漫显示等独立待验收范围保留；PNA产出引导已确认有效。
+**2.4.7 — 2026-10-28。** 敏感度、个人PNA生产控制、UAP兼容、绑定吸引力与调教修复；[下载v2.4.7](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.7)。新增仅1.7，1.6／Common冻结2.4.1；About、源码版本属性及重编运行产物对齐2.4.7。繁英俄浪漫显示等独立待验收范围保留，PNA产出引导已确认有效。构建、门禁与上传结果在本版验证记录单独归档。
 
 面向 RimWorld 的成人向 RimJobWorld（RJW）扩展，基于上游 **2.2.8** 继续维护，提供角色培养、主从绑定、六种特化、人格转移和身体改造。
 
-[2.4.7开发范围](Docs/Releases/2.4.7/2.4.7发布说明.md) · [正式下载2.4.6](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.6) · [双语模组简介](Docs/模组介绍.md) · [玩家阅读入口](Docs/Players/README.md) · [文档总索引](Docs/README.md) · [English](#english-overview)
+[2.4.7开发范围](Docs/Releases/2.4.7/2.4.7发布说明.md) · [正式下载2.4.7](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.7) · [双语模组简介](Docs/模组介绍.md) · [玩家阅读入口](Docs/Players/README.md) · [文档总索引](Docs/README.md) · [English](#english-overview)
 
-## 2.4.7 当前开发（仅1.7，未发布）
+## 2.4.7 新增内容（仅1.7）
 
 | 主题 | 当前范围 | 阅读入口 |
 | --- | --- | --- |
@@ -15,7 +15,7 @@
 | 兼容与绑定 | UAP手动多人及可选豁免、真实主人吸引力、受方倒地继续 | [版本说明](Docs/Releases/2.4.7/2.4.7发布说明.md) |
 | 查询与维护 | 共振统计复用、测试分级与精简、轻量资源检查及文档归属 | [归并与证据](Docs/Releases/2.4.7/2.4.7开发归并核对.md) |
 
-新增功能已有各自范围的实机认可；本次仅登记VERSION和文档。统一发布门禁、元数据重编与安装包审计尚未执行，见[2.4.7验证](Docs/Releases/2.4.7/2.4.7版本验证.md)。
+新增功能已有各自范围的实机认可；本次已对齐元数据并重编。完整发布门禁、安装包审计与上传结果单独归档，见[2.4.7验证](Docs/Releases/2.4.7/2.4.7版本验证.md)。
 
 ## 2.4.6 已发布内容（仅1.7）
 
@@ -69,7 +69,7 @@
 | 契约仪式与阶段进阶 | 需要 Ideology（文化）DLC |
 | Royalty（可选） | 安装时调教研究需要蓝图；种子或原版独立蓝图可补齐，之后仍需研究 |
 
-正式游玩从 [v2.4.6 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.6) 下载 ZIP 与 SHA-256。退出游戏，移出旧文件夹后完整解压新文件夹，保留加载配置及两套版本目录。该下载的功能范围见[2.4.6发布说明](Docs/Releases/2.4.6/2.4.6发布说明.md)，历史说明与附件保留各自版本。
+正式游玩从 [v2.4.7 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.7) 下载 ZIP 与 SHA-256。退出游戏，移出旧文件夹后完整解压新文件夹，保留加载配置及两套版本目录。该下载的功能范围见[2.4.7发布说明](Docs/Releases/2.4.7/2.4.7发布说明.md)，历史说明与附件保留各自版本。
 
 宠物兔选择入口未开放，旧 RimTalk 对接暂停。受训目标须为 SSC 性奴身份，原版奴隶身份不能替代。
 
@@ -91,13 +91,13 @@
 
 ## English overview
 
-SexSlaveCraft is an adult RJW expansion for pawn development, bonds, six specializations, personality transfer and body modification. **Current development: 2.4.7 (registered 2026-10-28, unreleased); latest public release: 2.4.6 (2026-10-26).** [Download v2.4.6](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.6). New work targets 1.7; the 1.6/Common baseline stays frozen at 2.4.1.
+SexSlaveCraft is an adult RJW expansion for pawn development, bonds, six specializations, personality transfer and body modification. **Current version: 2.4.7 (2026-10-28).** [Download v2.4.7](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.7). New work targets 1.7; the 1.6/Common baseline stays frozen at 2.4.1.
 
-2.4.7 adds body sensitivity and a general frequency stat, personal PNA pause/resume and status display, manual UAP group compatibility, directed attraction toward the actual Master, downed-receiver Training continuity and resonance-query optimization. Testing and documentation maintenance are included. [Development scope](Docs/Releases/2.4.7/2.4.7发布说明.md#english) · [Validation boundaries](Docs/Releases/2.4.7/2.4.7版本验证.md). VERSION/docs are 2.4.7; About/source version attributes and the current binary/BUILD-INFO remain 2.4.6 pending release preparation.
+2.4.7 adds body sensitivity and a general frequency stat, personal PNA pause/resume and status display, manual UAP group compatibility, directed attraction toward the actual Master, downed-receiver Training continuity and resonance-query optimization. Testing and documentation maintenance are included. [Development scope](Docs/Releases/2.4.7/2.4.7发布说明.md#english) · [Validation boundaries](Docs/Releases/2.4.7/2.4.7版本验证.md). VERSION, About/source version attributes and the rebuilt 1.7 binary/BUILD-INFO are aligned to 2.4.7.
 
 2.4.6 adds personal ability adapters, stage-based romance controls, partner/five-group moods, logs/tasks, reset buttons, four-language text and PNA guidance. It was released on 2026-10-26; see the [current scope](Docs/Releases/2.4.6/2.4.6发布说明.md#english) and [validation boundaries](Docs/Releases/2.4.6/2.4.6版本验证.md). Three-language romance display remains open; PNA production guidance was accepted on 2026-10-27.
 
-The inherited 2.4.5 milestone groups later uterine/fertility and stomach development, consecutive Personality Excretion movement recovery, native Master addiction immunity, and cat/dog ability copy/icons. It is included in the 2.4.6 package without a separate release; see the [development scope](Docs/Releases/2.4.5/2.4.5发布说明.md#english) and [validation boundaries](Docs/Releases/2.4.5/2.4.5版本验证.md). Current 1.7 runtime metadata is 2.4.6.
+The inherited 2.4.5 milestone groups later uterine/fertility and stomach development, consecutive Personality Excretion movement recovery, native Master addiction immunity, and cat/dog ability copy/icons. It is included in the 2.4.6 package without a separate release; see the [development scope](Docs/Releases/2.4.5/2.4.5发布说明.md#english) and [validation boundaries](Docs/Releases/2.4.5/2.4.5版本验证.md). Current 1.7 runtime metadata is 2.4.7.
 
 2.4.4 groups post-v2.4.3 work through `f3e47c9`: Master-slave Order with six groups/28 precepts, cultural feedback/icons/four-language names and dynamic backgrounds; opt-in ritual development points; cosmetic surgery and Reshaping Rituals; and a Personality Excretion interruption fix. The 1.7 binary/About metadata are aligned to 2.4.4. The 2.4.3 bond overview, low-tech route and nine weapons remain available; saves referencing the removed old 1.7 launcher still have no migration path.
 

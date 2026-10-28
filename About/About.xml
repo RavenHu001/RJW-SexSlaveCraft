@@ -7,19 +7,20 @@
 		<li>1.7</li>
 	</supportedVersions>
 	<packageId>rjw.sexslavecraft.TieJinVer</packageId>
-    <description>SexSlaveCraft 2.4.6 (TieJin Modify)
-个人能力与浪漫控制；整合2.4.5身体开发。新增功能仅限RimWorld 1.7，1.6／Common保留SSC 2.4.1冻结基线。
-五项个人能力开关保留原载体和规则；分阶段浪漫控制、对象多选、一次点名命令、综合心情与历史、日志／任务反馈及个人恢复默认。
-继承子宫／生育控制与胃部开发，完善四语文案和PNA产出引导。保留文化、仪式演化点、医美、关系概览、九把PNA武器、凝胶外观、六特化和人格转移。
-机制及简中文案已有分批实机认可；繁英俄文案已审阅，三语实机显示与PNA引导显示仍待确认，不补记全部模组组合或平衡结论。
-升级时完整替换旧模组目录，保留版本目录与LoadFolders.xml。1.7旧简易PNA发射器及相关定义已移除，不提供引用旧定义的存档迁移。
+    <description>SexSlaveCraft 2.4.7 (TieJin Modify)
+个人身体敏感度与通用频率属性、PNA生产启停与储量／营养提示、真实主人方向吸引力、UAP手动多人兼容，以及受方倒地继续调教和共振查询优化。
+新增仅RimWorld 1.7；1.6／Common保留SSC 2.4.1冻结基线。敏感度默认关闭，生产开关默认开启；UAP手动许可豁免默认关闭，仍保留匹配与身体条件，读档取消未完成会话。
+继承浪漫控制／心情／日志与个人恢复默认、子宫／生育与胃部开发、文化／医美、关系概览、九把PNA武器、凝胶外观、六特化及人格转移。
+本版功能已有分批实机认可，PNA产出引导已确认有效；繁英俄浪漫显示与未报告组合继续保留独立验证范围。
+升级时完整替换旧目录，保留版本目录与LoadFolders.xml。1.7已移除的旧简易PNA发射器等定义不提供存档迁移。
 Harmony与RJW先于SSC加载；文化及仪式需要Ideology。兔入口与旧RimTalk对接仍不可用。
 
-Version 2.4.6 — personal abilities and romance controls, including 2.4.5 body development.
-New features target RimWorld 1.7; 1.6/Common stay frozen at SSC 2.4.1. Shared ability controls retain original save owners and rules. Stage-based romance preferences, partner selection, one-time orders, mood/history, logs/tasks and personal resets are included.
-Includes uterine/fertility and stomach development, four-language copy and PNA production guidance. Retains culture, ritual points, cosmetics, bonds, nine PNA weapons, gel appearance, specializations and personality transfer.
-Mechanisms and Simplified Chinese have batch in-game acceptance; other romance languages have review approval. Three-language display and PNA guidance display remain unconfirmed; balance and unreported mod combinations are not inferred as tested.
-Replace the whole old folder, retaining version folders/loading configuration. Removed old 1.7 launcher definitions have no save migration. Load Harmony and RJW before SSC; Ideology is required for culture and rituals. Rabbit selection and legacy RimTalk remain unavailable.
+Version 2.4.7 — body sensitivity, personal production controls and compatibility fixes.
+Adds a general frequency stat, PNA pause/resume with batch/nutrition display, directed attraction toward the actual Master, manual UAP group compatibility, downed-receiver Training continuity and resonance-query deduplication.
+New features target RimWorld 1.7; 1.6/Common retain frozen SSC 2.4.1 content. Sensitivity and the manual UAP permission override default to off; ordinary PNA production defaults to enabled. Native matching/body requirements remain; unfinished group sessions are canceled on load.
+Retains romance controls, moods/logs, body development, culture/cosmetics, bonds, nine PNA weapons, gel appearance, specializations and personality transfer.
+Development batches have scoped maintainer acceptance; PNA guidance was accepted. Three-language romance display and unreported combinations retain their independent verification scope.
+Replace the entire old folder, keeping version folders and LoadFolders.xml. Removed old 1.7 launcher definitions have no save migration. Load Harmony and RJW before SSC; Ideology is required for culture and rituals. Rabbit selection and legacy RimTalk remain unavailable.
 
 [AI 辅助生成 / Partly AI-assisted]</description>
 	<modDependencies>
