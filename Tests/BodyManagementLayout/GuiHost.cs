@@ -101,6 +101,7 @@ namespace Verse
         public Health health;
         public bool Pregnant;
         public bool Dead, Destroyed, Discarded;
+        public bool Managed = true;
         public RimWorld.Faction Faction = RimWorld.Faction.OfPlayer;
         public RaceProperties RaceProps = new();
         public CompSexSlaveTraining Training;
@@ -156,7 +157,7 @@ namespace Verse
         public static void Load(string repo, string language)
         {
             Values = new();
-            foreach (string file in new[] { "SSC_Keys.xml", "SSC_BodyManagement.xml", "SSC_UterusDevelopment.xml", "SSC_AbilityToggles.xml" })
+            foreach (string file in new[] { "SSC_Keys.xml", "SSC_BodyManagement.xml", "SSC_UterusDevelopment.xml", "SSC_AbilityToggles.xml", "SSC_PnaProduction.xml" })
                 foreach (var element in System.Xml.Linq.XDocument.Load(Path.Combine(repo, "1.7/Languages", language, "Keyed", file)).Root.Elements())
                     Values.Add(element.Name.LocalName, element.Value.Replace("\\n", "\n"));
         }
@@ -185,10 +186,21 @@ namespace SexSlaveCraft
     }
     public static class SSCMasterProgressionUtility
     { public static bool IsHollow(Verse.Pawn pawn) => pawn?.health?.hediffSet?.GetFirstHediffOfDef(SSCDefOf.SSC_PersonalityExcreted_Done) != null; }
+    // 整页原版身份／自我调教准入属于外部边界，此宿主只执行真实身体区和后端提交。
+    public static class SSCIdentityUtility { public static bool IsSupportedVanillaStatus(Verse.Pawn pawn) => pawn?.Managed == true; }
+    public static class SSCSelfTrainingEligibility { public static bool IsEligible(Verse.Pawn pawn) => false; }
     // 与原 Strings 入口相同的单键转发；实际四语资源从磁盘加载，不在宿主复制译文。
     public static class Strings { public static string ITab_MilkProductionToggle => "SSC_ITab_MilkProductionToggle".Translate(); }
     // 泌乳标签及孕期因子属于外部组件边界，生产实现另由原生／泌乳专项验证。
     public sealed class HediffComp_PermanentLactating { public string CompLabelInBracketsExtra = "乳汁充盈度 53%"; }
+    // 仅提供生产组件的 owner 与保存字段形状；不复制生产、营养、存档或催熟算法。
+    // 实际 HediffComp_SeverityProduct 由 UterusDevelopmentNative 加载当前生产 DLL 验证。
+    public sealed class HediffComp_SeverityProduct
+    {
+        public Hediff parent;
+        public bool ProductionEnabled { get; private set; } = true;
+        internal void SetProductionEnabled(bool enabled) => ProductionEnabled = enabled;
+    }
     public static class SSCUterusPregnancyUtility { public const float DurationFactor = .8f; }
     public partial class ITab_SexSlaveTraining
     {

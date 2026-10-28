@@ -147,6 +147,8 @@
     <Compile Include="common/SSCMasterDamageSharingToggle.cs" />
     <Compile Include="common/SSCBodyAbilityTogglePreferences.cs" />
     <Compile Include="common/SSCMilkAbilityToggleBackend.cs" />
+    <Compile Include="common/SSCPnaProductionUtility.cs" />
+    <Compile Include="common/SSCPnaProductionAbilityToggleBackend.cs" />
     <Compile Include="common/SSCUterusAbilityToggleBackend.cs" />
     <Compile Include="common/SSCGelRenderingAbilityToggleBackend.cs" />
   </ItemGroup>

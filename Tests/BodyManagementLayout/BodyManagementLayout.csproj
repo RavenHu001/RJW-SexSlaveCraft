@@ -3,6 +3,7 @@
     <OutputType>Exe</OutputType><TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings><Nullable>disable</Nullable>
     <DefineConstants>$(DefineConstants);SSC_ABILITY_TOGGLE_BODY</DefineConstants>
+    <SscPnaProductionBoundary>true</SscPnaProductionBoundary>
   </PropertyGroup>
   <ItemGroup>
     <!-- 真实管理栏、开关检查与身体记录；只替代引擎/绘制边界，不复制布局或业务判断。 -->

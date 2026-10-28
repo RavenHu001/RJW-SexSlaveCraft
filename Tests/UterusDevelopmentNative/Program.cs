@@ -154,6 +154,7 @@ internal static partial class Program
             SSCDefOf.SSC_Lactating_SubState = DefDatabase<HediffDef>.GetNamed(Harmony_LactationFertilityControl.LactationDefName);
             AbilityToggleAdapterTests();
             AbilityToggleLifecycleTests(repo);
+            PnaProductionTests(repo, harmony.Value);
             OrgasmSensitivityTests(repo, harmony.Value);
             OrgasmAdvanceTests(repo, game, harmony.Value);
         }

@@ -8,13 +8,32 @@ internal static partial class Program
     private static void RunToggleFrameworkTests()
     {
         const string milk = SSCAbilityToggleUtility.MilkProduction, fertility = SSCAbilityToggleUtility.UterusFertility;
-        Run("身体两项由注册表生成且默认与旧字段一致", () =>
+        Run("身体条目由注册表生成且默认与原保存源一致", () =>
         {
-            Require(SSCAbilityToggleUtility.Definitions.Count(d => d.Group == SSCAbilityToggleGroup.Body) == 2);
+            Require(SSCAbilityToggleUtility.Definitions.Count(d => d.Group == SSCAbilityToggleGroup.Body) == 3);
             var p = Body(3, 1);
             Require(SSCAbilityToggleUtility.GetEnabled(p, milk) && !SSCAbilityToggleUtility.GetEnabled(p, fertility));
             Require(!p.Training.abilityToggles.HasEntries);
             Require(SSCAbilityToggleUtility.Definitions.Where(d => d.Group == SSCAbilityToggleGroup.Body).All(d => d.MarkerDefName == null));
+        });
+        Run("PNA共用身体行位于泌乳和生育之间且只改变自身生产选择", () =>
+        {
+            var p = Body(3, 1); var production = AttachPnaProduction(p);
+            Draw(p, "SSC_PnaProduction_Label".Translate());
+            Require(!production.ProductionEnabled && p.Training.milkProductionEnabled);
+            Require(production.parent.Severity == .43f && !p.Training.abilityToggles.HasEntries);
+            Require(!SSCUterusDevelopmentUtility.Find(p).FertilityEnabled);
+            var labels = Widgets.Drawn.Where(d => d.Kind == "checkbox").Select(d => d.Label).ToArray();
+            Require(labels.SequenceEqual(new[] { Strings.ITab_MilkProductionToggle, "SSC_PnaProduction_Label".Translate(), "SSC_BodyManagement_FertilityToggle".Translate() }));
+        });
+        Run("替换PNA生产记录后旧身体视图不能改变新记录", () =>
+        {
+            var p = Body(0); var previous = AttachPnaProduction(p);
+            var tab = new ITab_SexSlaveTraining(); var snapshot = tab.Capture(p, 322);
+            p.health.RemoveHediff(previous.parent); var current = AttachPnaProduction(p);
+            Widgets.IgnoreDisabled = true; Widgets.Click = "SSC_PnaProduction_Label".Translate(); snapshot.Draw();
+            Require(previous.ProductionEnabled && current.ProductionEnabled);
+            Require(Widgets.Drawn.Single(d => d.Kind == "checkbox").Disabled);
         });
         // 故意放入冲突的同名人格键，检出后端误读字典或产生双保存源的问题。
         Run("泌乳偏好和原字段双向一致，字典同名键不能覆盖", () =>
@@ -107,5 +126,14 @@ internal static partial class Program
             Require(!SSCAbilityToggleUtility.TrySet(p, fertility, true, b.Context, out _));
             Require(p.Training.milkProductionEnabled && !SSCUterusDevelopmentUtility.Find(p).FertilityEnabled);
         });
+    }
+
+    /// <summary>只构造 GUI 所需的身体 owner 与存储边界；实际生产和保存另由原生专项验证。</summary>
+    private static HediffComp_SeverityProduct AttachPnaProduction(Pawn pawn)
+    {
+        var record = new Hediff { pawn = pawn, def = new HediffDef { defName = SSCPnaProductionUtility.ProducerDefName }, Severity = .43f };
+        var production = new HediffComp_SeverityProduct { parent = record };
+        record.Comp = production; pawn.health.hediffSet.hediffs.Add(record);
+        return production;
     }
 }

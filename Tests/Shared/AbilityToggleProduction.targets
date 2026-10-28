@@ -1,5 +1,5 @@
 <Project>
-  <!-- 模型宿主可单独启用 1.7 身体过滤；只注册显式链接的载体，实际生产仍注册全部五项。 -->
+  <!-- 模型宿主仅注册显式链接的载体；PNA 另行启用，避免未链接原生产组件的宿主依赖它。 -->
   <PropertyGroup><DefineConstants>$(DefineConstants);SSC_ABILITY_TOGGLE_FRAMEWORK;SSC_ABILITY_TOGGLE_SCOPED_TEST</DefineConstants></PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)../../Sexslavecraft/common/SSCAbilityToggleFramework.cs" Link="Production/SSCAbilityToggleFramework.cs" />
@@ -9,4 +9,11 @@
     <Compile Include="$(MSBuildThisFileDirectory)../../Sexslavecraft/Comps/Comp_AbilityToggles.cs" Link="Production/Comp_AbilityToggles.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)../../Sexslavecraft/Hediff/Hediff_SSCToggleAbilityMarker.cs" Link="Production/Hediff_SSCToggleAbilityMarker.cs" />
   </ItemGroup>
+  <ItemGroup Condition="'$(SscPnaProductionBoundary)' == 'true'">
+    <Compile Include="$(MSBuildThisFileDirectory)../../Sexslavecraft/common/SSCPnaProductionUtility.cs" Link="Production/SSCPnaProductionUtility.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)../../Sexslavecraft/common/SSCPnaProductionAbilityToggleBackend.cs" Link="Production/SSCPnaProductionAbilityToggleBackend.cs" />
+  </ItemGroup>
+  <PropertyGroup Condition="'$(SscPnaProductionBoundary)' == 'true'">
+    <DefineConstants>$(DefineConstants);SSC_ABILITY_TOGGLE_PNA</DefineConstants>
+  </PropertyGroup>
 </Project>

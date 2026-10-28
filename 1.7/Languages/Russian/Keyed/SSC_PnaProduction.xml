@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_PnaProduction_Label>Производить PNA</SSC_PnaProduction_Label>
+  <SSC_PnaProduction_Tip>Пауза сохраняет текущий прогресс производства, останавливает естественную выработку, ускоренное накопление и связанный с ними дополнительный расход питательных веществ. После возобновления накопление продолжается. Передача PNA во время секса не меняется.</SSC_PnaProduction_Tip>
+  <SSC_PnaProduction_ProgressPaused>Прогресс производства: {0} (приостановлено)</SSC_PnaProduction_ProgressPaused>
+</LanguageData>

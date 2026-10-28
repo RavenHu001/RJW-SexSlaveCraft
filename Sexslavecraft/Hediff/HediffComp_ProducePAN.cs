@@ -35,6 +35,24 @@ namespace SexSlaveCraft
     {
         public HediffCompProperties_SeverityProduct Props => (HediffCompProperties_SeverityProduct)this.props;
 
+#if SSC_RW17 || SSC_ABILITY_TOGGLE_PNA
+        // 生产选择与原进度共同属于当前身体的这份 Hediff，不进入人格偏好快照。
+        private bool productionEnabled = true;
+
+        /// <summary>只读当前生产选择；新记录及旧档缺字段均保持原有的默认生产。</summary>
+        public bool ProductionEnabled => productionEnabled;
+
+        /// <summary>仅改变当前记录的选择，不清进度、不移除能力，也不补算暂停期间的生产。</summary>
+        internal void SetProductionEnabled(bool enabled) => productionEnabled = enabled;
+
+        /// <summary>保存身体生产选择；进度仍由原 Hediff.Severity 保存，不另存副本。</summary>
+        public override void CompExposeData()
+        {
+            base.CompExposeData();
+            Scribe_Values.Look(ref productionEnabled, "sscPnaProductionEnabled", true);
+        }
+#endif
+
         public override void CompPostTick(ref float severityAdjustment)
         {
             base.CompPostTick(ref severityAdjustment);
@@ -42,6 +60,10 @@ namespace SexSlaveCraft
             // 🔥 TPS 优化核心：每 60 帧 (现实1秒) 才执行一次真正的判断和扣除！
             if (Pawn.IsHashIntervalTick(60))
             {
+#if SSC_RW17 || SSC_ABILITY_TOGGLE_PNA
+                // 暂停同时保留未满和已满进度；恢复后只结算正常间隔，不追补暂停时间。
+                if (!productionEnabled) return;
+#endif
                 // 1. 如果进度还没满 (1.0)
                 if (parent.Severity < 1.0f)
                 {
@@ -104,6 +126,10 @@ namespace SexSlaveCraft
 
                 string progress = (parent.Severity * 100f).ToString("F0") + "%";
 
+#if SSC_RW17 || SSC_ABILITY_TOGGLE_PNA
+                // 主动暂停优先于营养不足，避免将玩家的生产选择误报为饥饿停工。
+                if (!productionEnabled) return "SSC_PnaProduction_ProgressPaused".Translate(progress);
+#endif
                 // 提示判定：用除法看看当前饱食度还能不能撑过 1 秒
                 if (Pawn.needs?.food != null && Pawn.needs.food.CurLevel < (Props.nutritionPerDay / 60000f * 60f))
                 {

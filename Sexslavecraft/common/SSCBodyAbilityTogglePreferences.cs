@@ -7,6 +7,7 @@ namespace SexSlaveCraft
     {
         // 稳定 ID 只用于注册／查询；它们不是新增的 Scribe 键，也不会产生同名人格偏好副本。
         public const string MilkProduction = "SSC_MilkProduction";
+        public const string PnaProduction = "SSC_PnaProduction";
         public const string UterusFertility = "SSC_UterusFertility";
         public const string GelRendering = "SSC_GelRendering";
 

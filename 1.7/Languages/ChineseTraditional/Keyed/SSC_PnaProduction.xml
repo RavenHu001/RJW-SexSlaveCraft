@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_PnaProduction_Label>生產奈米催情液</SSC_PnaProduction_Label>
+  <SSC_PnaProduction_Tip>暫停時保留目前生產進度，停止自然生產、催熟推進及對應的額外營養消耗；恢復後繼續累積。性交中的奈米催情液供給不受影響。</SSC_PnaProduction_Tip>
+  <SSC_PnaProduction_ProgressPaused>生產進度：{0}（已暫停）</SSC_PnaProduction_ProgressPaused>
+</LanguageData>

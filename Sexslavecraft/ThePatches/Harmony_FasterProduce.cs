@@ -75,10 +75,21 @@ namespace SexSlaveCraft
             // A. 催熟自定义的纳米液 (SSC_Purple_HyperLactation)
             // -----------------------------------------------------------------
             Hediff hyperLactation = pawn.health.hediffSet.GetFirstHediffOfDef(DefDatabase<HediffDef>.GetNamedSilentFail("SSC_Purple_HyperLactation"));
+#if SSC_RW17 || SSC_ABILITY_TOGGLE_PNA
+            var pnaProduction = hyperLactation?.TryGetComp<HediffComp_SeverityProduct>();
+            // 只暂停 PNA 的进度和营养交换；下方母乳及牛储液仍沿原泌乳许可结算。
+            // 缺生产组件时保留旧分支行为，不以新开关修正其他模组替换后的记录。
+            if (hyperLactation != null && (pnaProduction == null || pnaProduction.ProductionEnabled))
+#else
             if (hyperLactation != null)
+#endif
             {
                 float actualBoost = finalBoost;
+#if SSC_RW17 || SSC_ABILITY_TOGGLE_PNA
+                var comp = pnaProduction;
+#else
                 var comp = hyperLactation.TryGetComp<HediffComp_SeverityProduct>();
+#endif
 
                 if (comp != null && !isDirectFeed)
                 {

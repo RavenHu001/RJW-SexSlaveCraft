@@ -56,7 +56,7 @@ namespace SexSlaveCraft
         public const string MasterDesireInfestation = "SSC_MasterDesireInfestation";
         public const string InfestationMarker = "SSC_Hediff_MasterDesireInfestation";
         // 注册表只声明能力及可选规则，不保存每个 Pawn 的开启值，也不在这里发放能力收益。
-        // 模型宿主可仅链接某类载体；实际 1.7 不定义 SCOPED_TEST，始终注册全部五项。
+        // 模型宿主可仅链接某类载体；实际 1.7 不定义 SCOPED_TEST，注册全部已接入能力。
         private static readonly List<SSCAbilityToggleDefinition> definitions = new List<SSCAbilityToggleDefinition>
         {
             new SSCAbilityToggleDefinition(MasterDesireInfestation, SSCAbilityToggleGroup.Master, PawnIdentity.Master,
@@ -79,6 +79,13 @@ namespace SexSlaveCraft
                 "SSC_BodyManagement_FertilityToggle", "SSC_BodyManagement_FertilityTip",
                 backend: SSCUterusAbilityToggleBackend.Instance, order: 10,
                 visibleRule: pawn => pawn?.TryGetComp<CompSexSlaveTraining>() != null && SSCUterusDevelopmentUtility.Find(pawn) != null)
+#endif
+#if (SSC_RW17 && !SSC_ABILITY_TOGGLE_SCOPED_TEST) || SSC_ABILITY_TOGGLE_PNA
+            // 普通 PNA 的新选择与原生产进度共归身体记录，不写人格字典；保持在泌乳与生育之间。
+            , new SSCAbilityToggleDefinition(PnaProduction, SSCAbilityToggleGroup.Body, PawnIdentity.Unset,
+                "SSC_PnaProduction_Label", "SSC_PnaProduction_Tip", defaultEnabled: true,
+                backend: SSCPnaProductionAbilityToggleBackend.Instance, order: 5,
+                visibleRule: pawn => pawn?.TryGetComp<CompSexSlaveTraining>() != null && SSCPnaProductionUtility.Find(pawn) != null)
 #endif
 #if (SSC_RW17 && !SSC_ABILITY_TOGGLE_SCOPED_TEST) || SSC_ABILITY_TOGGLE_GEL
             // 外观只接入个人渲染选择；颜色、透明度、快照和高频渲染查询仍由原外观模块负责。

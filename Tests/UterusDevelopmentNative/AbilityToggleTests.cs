@@ -8,10 +8,10 @@ internal static partial class Program
     /// <summary>为第二批接线补充原生类型验证；既有保存、妊娠和克隆回归保留原有独立范围。</summary>
     private static void AbilityToggleAdapterTests()
     {
-        Check("toggle batch2 production registry contains five original-storage adapters", () =>
+        Check("toggle production registry contains original-storage and PNA body adapters", () =>
         {
-            Equal(5, SSCAbilityToggleUtility.Definitions.Count);
-            Equal(2, SSCAbilityToggleUtility.Definitions.Count(d => d.Group == SSCAbilityToggleGroup.Body));
+            Equal(6, SSCAbilityToggleUtility.Definitions.Count);
+            Equal(3, SSCAbilityToggleUtility.Definitions.Count(d => d.Group == SSCAbilityToggleGroup.Body));
             Require(SSCAbilityToggleUtility.Find(SSCAbilityToggleUtility.MilkProduction).DefaultEnabled);
             Require(!SSCAbilityToggleUtility.Find(SSCAbilityToggleUtility.UterusFertility).DefaultEnabled);
             Require(SSCAbilityToggleUtility.Find(SSCAbilityToggleUtility.GelRendering).DefaultEnabled);
