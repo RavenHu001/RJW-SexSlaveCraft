@@ -26,6 +26,8 @@ namespace SexSlaveCraft
             LongEventHandler.ExecuteWhenFinished(SSCUapGroupPatches.Install);
             // 完整核对 RJW 评价与自愿入口后安装关系保底，保留原基础资格和主人侧意愿。
             LongEventHandler.ExecuteWhenFinished(SSCMasterAttractionPatches.Install);
+            // 保留正在SSC调教中的受方倒地接收任务，仍执行原健康通知和其他中断条件。
+            LongEventHandler.ExecuteWhenFinished(SSCTrainingDownedPatches.Install);
 #endif
             SSCLog.Important("[SexSlaveCraft.training.patch] Harmony patches loaded successfully.");
 

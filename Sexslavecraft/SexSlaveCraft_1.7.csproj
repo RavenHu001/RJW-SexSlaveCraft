@@ -33,6 +33,9 @@
     <!-- AI 辅助生成：实际绑定关系的单向自愿吸引力，仅接入 1.7。 -->
     <Compile Include="common/SSCMasterAttractionUtility.cs" />
     <Compile Include="ThePatches/Harmony_MasterAttraction.cs" />
+    <!-- 仅保留SSC调教受方的倒地接收，不改变普通工作或其他RJW场景。 -->
+    <Compile Include="common/SSCTrainingDownedUtility.cs" />
+    <Compile Include="ThePatches/Harmony_TrainingDowned.cs" />
     <Reference Include="Assembly-CSharp">
       <HintPath>$(GameRoot)/Assembly-CSharp.dll</HintPath>
       <Private>false</Private>

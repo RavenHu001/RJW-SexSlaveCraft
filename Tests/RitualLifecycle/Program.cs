@@ -448,6 +448,27 @@ internal static partial class Program
             Cleared(ritual.Comp);
         });
 
+        Check("receiver remains downed across all six production phases and finishes ritual once", () =>
+        {
+            var ritual = new RitualFixture();
+            ritual.Lord.MemoReceived = memo =>
+            {
+                Equal("SSC_Training_Finished", memo, "final ritual memo");
+                ritual.End();
+            };
+            for (int phase = 0; phase < BindingRitualStateUtility.PhaseCount; phase++)
+            {
+                var execution = new PhaseExecution(ritual);
+                execution.StartScene();
+                ritual.Slave.Downed = true;
+                execution.ReachPhaseEnd();
+                execution.FinishCurrent(JobCondition.Succeeded);
+            }
+            Equal(6, TestWorld.ProcessSexCalls, "completed stage settlements");
+            Equal(1, ritual.Lord.ReceivedMemos.Count, "natural completion memo count");
+            Cleared(ritual.Comp);
+        });
+
         RunUapCompatibilityTests();
         RunPersonalityExcretionTests();
         Console.WriteLine($"{cases - failures}/{cases} lifecycle tests passed.");

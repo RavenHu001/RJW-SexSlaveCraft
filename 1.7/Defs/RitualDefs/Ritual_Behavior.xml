@@ -18,6 +18,8 @@
 
       <li Class="SexSlaveCraft.RitualRole_BindingSlave">
         <id>slave</id> 
+        <!-- 已入场的受训者倒地后仍保留角色；选人入口仍显式拒绝倒地候选。 -->
+        <allowDowned>true</allowDowned>
         <label>性奴</label>
         <maxCount>1</maxCount>
         <required>true</required>
