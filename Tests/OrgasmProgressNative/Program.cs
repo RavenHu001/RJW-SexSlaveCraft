@@ -355,7 +355,8 @@ internal static class Program
             var unauthorized = new SSCOrgasmObservationContext(SSCOrgasmAdvanceSource.RjwSexTick, new object(), 1, 1, true);
             Require(!SSCOrgasmProgressUtility.CaptureBeforeAdvance(d, unauthorized).IsValid); Equal(1000, d.sex_ticks);
         });
-        foreach (int delta in new[] { 0, 1, 3, 123 })
+        // 零量、原生单位量及非1推进各留一例；极端整数差值另有独立边界回归。
+        foreach (int delta in new[] { 0, 1, 3 })
             Check("公共接口纯读实际减量 " + delta, () =>
             {
                 var d = Driver(); var c = Context(); var before = SSCOrgasmProgressUtility.CaptureBeforeAdvance(d, c);

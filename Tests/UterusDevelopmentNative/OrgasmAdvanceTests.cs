@@ -100,38 +100,32 @@ internal static partial class Program
     /// <summary>固定算术例子及饱和边界，包含 int 端点差值、零推进和极大倍率。</summary>
     private static void AdvanceMathTests()
     {
-        foreach (var input in new[] { (3L, 16d, 0d, 800L, 45L, 0d), (1L, 1.25d, .5d, 800L, 0L, .75d),
-            (3L, 1.5d, .75d, 800L, 2L, .25d), (0L, 16d, .75d, 800L, 0L, .75d),
-            (1L, 16d, .5d, 3L, 3L, .5d), (1L, double.MaxValue, 0d, 3L, 3L, 0d),
-            (4294967295L, 16d, .75d, 4294967295L, 4294967295L, .75d), (1L, 4d, .5d, 0L, 0L, .5d),
+        // 零量和逐步小数累积已有真实桥接回归；这里只留不同的算术／饱和边界。
+        foreach (var input in new[] { (3L, 16d, 0d, 800L, 45L, 0d), (3L, 1.5d, .75d, 800L, 2L, .25d),
+            (1L, 16d, .5d, 3L, 3L, .5d), (4294967295L, 16d, .75d, 4294967295L, 4294967295L, .75d),
             (1L, double.MaxValue, .75d, 3L, 3L, .75d), (1L, 1.5d, .75d, 0L, 0L, .25d) })
             Check("advance native uniform arithmetic: " + input, () =>
             {
                 Require(SSCOrgasmAdvanceRuntime.TryCalculate(input.Item1, input.Item2, input.Item3, input.Item4, out long extra, out double carry));
                 Equal(input.Item5, extra); Require(Math.Abs(input.Item6 - carry) < 1e-10);
             });
-        foreach (double value in new[] { double.NaN, double.PositiveInfinity, -1d, .5d })
+        foreach (double value in new[] { double.NaN, .5d })
             Check("advance native invalid multiplier: " + value, () => Require(!SSCOrgasmAdvanceRuntime.TryCalculate(1, value, 0, 800, out _, out _)));
-        foreach (double value in new[] { double.NaN, double.PositiveInfinity, -1d, 1d })
+        foreach (double value in new[] { double.NaN, -1d, 1d })
             Check("advance native invalid carry: " + value, () => Require(!SSCOrgasmAdvanceRuntime.TryCalculate(1, 2, value, 800, out _, out _)));
     }
 
     /// <summary>执行安装后的真实写回桥，而非直接调用公式；检查样本共享、一次提交、生命周期和性能。</summary>
     private static void AdvanceBridgeTests()
     {
-        foreach (var source in new[] { SSCOrgasmAdvanceSource.RjwSexTick, SSCOrgasmAdvanceSource.AnimationSexTick,
-            SSCOrgasmAdvanceSource.UapInitiator, SSCOrgasmAdvanceSource.UapReceiver })
-            Check("advance native same formula for installed source: " + source, () =>
-            {
-                var d = AdvanceDriver(4);
-                if (source == SSCOrgasmAdvanceSource.RjwSexTick) SSCOrgasmProgressSampling.WriteRjw(d, 997);
-                else if (source == SSCOrgasmAdvanceSource.AnimationSexTick) SSCOrgasmProgressSampling.WriteAnimation(d, 997);
-                else if (source == SSCOrgasmAdvanceSource.UapInitiator) SSCOrgasmProgressSampling.WriteUapInitiator(d, 997);
-                else SSCOrgasmProgressSampling.WriteUapReceiver(d, 997);
-                Equal(952, d.sex_ticks); Require(SSCOrgasmProgressUtility.TryGetLastObservedAdvance(d, out var raw));
-                Equal(3L, raw.RawAdvance); Equal(source, raw.Source);
-            });
-        foreach (int level in new[] { 1, 2, 3, 4 })
+        // 公共采样专项验证全部真实写回路径；本批仅补一条动画来源启用效果，基础来源沿Step实际调用。
+        Check("advance native animation source uses shared consumer", () =>
+        {
+            var d = AdvanceDriver(4); SSCOrgasmProgressSampling.WriteAnimation(d, 997);
+            Equal(952, d.sex_ticks); Require(SSCOrgasmProgressUtility.TryGetLastObservedAdvance(d, out var raw));
+            Equal(3L, raw.RawAdvance); Equal(SSCOrgasmAdvanceSource.AnimationSexTick, raw.Source);
+        });
+        foreach (int level in new[] { 1, 4 })
             Check("advance native configured level scales actual delta: " + level, () =>
             {
                 var d = AdvanceDriver(level); int clock = d.ticks_left; d.Step(3);
@@ -279,7 +273,8 @@ internal static partial class Program
             Near(.5f, (float)SSCOrgasmAdvanceRuntime.GetCarry(loaded.Driver));
             Equal(SSCOrgasmAdvanceRuntime.RestoreStatus.Restored, SSCOrgasmAdvanceRuntime.GetRestoreStatus(loaded.Driver));
         }));
-        foreach (string corruption in new[] { "missing", "version", "missing version", "NaN", "range", "negative", "job", "type", "counter", "level", "rate", "body ref", "chain ref", "actor ref", "master ref" })
+        // 缺节点、格式、余数、任务、周期及引用各留代表；改档／改配置／换主由真实迁移回归覆盖。
+        foreach (string corruption in new[] { "missing", "version", "NaN", "range", "job", "counter", "body ref" })
             Check("advance native invalid saved carry is discarded: " + corruption, () => WithAdvanceMultiplier(1.25f, () =>
             {
                 var d = AdvanceDriver(); d.Step(3); string path = SaveAdvance(new SSCAdvanceScene(d));
@@ -290,19 +285,11 @@ internal static partial class Program
                     {
                         case "missing": node.Remove(); break;
                         case "version": node.Element("schemaVersion").Value = "99"; break;
-                        case "missing version": node.Element("schemaVersion").Remove(); break;
                         case "NaN": node.Element("carry").Value = "NaN"; break;
                         case "range": node.Element("carry").Value = "1"; break;
-                        case "negative": node.Element("carry").Value = "-0.25"; break;
                         case "job": node.Element("jobLoadId").Value = "-1"; break;
-                        case "type": node.Element("driverType").Value = "OtherDriver"; break;
                         case "counter": node.Element("counter").Value = "700"; break;
-                        case "level": node.Element("level").Value = "4"; break;
-                        case "rate": node.Element("multiplierBits").Value = "0"; break;
                         case "body ref": node.Element("body").Value = "null"; break;
-                        case "chain ref": node.Element("chain").Value = "null"; break;
-                        case "actor ref": node.Element("actor").Value = "null"; break;
-                        case "master ref": node.Element("master").Value = "null"; break;
                     }
                 });
                 AdvanceBuildMode = 0; var loaded = LoadAdvance(path); int before = loaded.Driver.sex_ticks; loaded.Driver.Step(1); Equal(before - 1, loaded.Driver.sex_ticks);

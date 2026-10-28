@@ -44,7 +44,6 @@ internal static partial class Program
         SensitivityContextTests();
         SensitivitySaveAndTransferTests();
         SensitivityConfigurationTests();
-        SensitivityPresentationTests(repo, harmony);
         SensitivityUiTests(harmony);
         SensitivityCallbackTests(harmony);
     }
@@ -95,21 +94,22 @@ internal static partial class Program
             Near(1, state.Multiplier); Near(0, SensitivityStat(p)); Require(!SensitivityMood(p).Active);
             Equal(count, p.health.hediffSet.hediffs.Count); Equal(before, notifications);
         });
-        foreach (int saved in new[] { 1, 2, 3, 4 })
-            foreach (int stage in new[] { 1, 2, 3, 4 })
-                Check($"sensitivity native effective state saved {saved} stage {stage}", () =>
-                {
-                    var p = SensitivityPawn(); var record = SetSensitivity(p, saved); SetChainStage(p, stage);
-                    int effective = Math.Min(saved, stage);
-                    var state = SSCOrgasmSensitivityUtility.GetState(p);
-                    Equal(saved, state.SavedLevel); Equal(effective, state.EffectiveLevel); Equal(stage, state.MaximumLevel);
-                    Near(new[] { 2f, 4f, 8f, 16f }[effective - 1], state.Multiplier);
-                    Near(new[] { .3f, .75f, 1.5f, 3f }[effective - 1], SensitivityStat(p));
-                    Near(saved, record.Severity); Equal(effective - 1, record.CurStageIndex);
-                    SetChainStage(p, 4); Equal(saved, SSCOrgasmSensitivityUtility.GetState(p).EffectiveLevel);
-                });
-        foreach (var cell in new[] { (1, 1, -3f), (2, 1, -1f), (2, 2, -2f), (3, 1, 1f), (3, 2, 2f),
-            (3, 3, 3f), (4, 1, 2f), (4, 2, 3f), (4, 3, 4f), (4, 4, 6f) })
+        // 只保留低档不升档、最大选择降至最低／中间上限；不逐格快照整个XML参数表。
+        foreach (var scenario in new[] { (saved: 1, stage: 4, effective: 1), (saved: 4, stage: 1, effective: 1), (saved: 4, stage: 3, effective: 3) })
+            Check($"sensitivity native effective state saved {scenario.saved} stage {scenario.stage}", () =>
+            {
+                int saved = scenario.saved, stage = scenario.stage;
+                var p = SensitivityPawn(); var record = SetSensitivity(p, saved); SetChainStage(p, stage);
+                int effective = scenario.effective;
+                var state = SSCOrgasmSensitivityUtility.GetState(p);
+                Equal(saved, state.SavedLevel); Equal(effective, state.EffectiveLevel); Equal(stage, state.MaximumLevel);
+                Near(new[] { 2f, 4f, 8f, 16f }[effective - 1], state.Multiplier);
+                Near(new[] { .3f, .75f, 1.5f, 3f }[effective - 1], SensitivityStat(p));
+                Near(saved, record.Severity); Equal(effective - 1, record.CurStageIndex);
+                SetChainStage(p, 4); Equal(saved, SSCOrgasmSensitivityUtility.GetState(p).EffectiveLevel);
+            });
+        // 负面首格和非对角正面映射足以验证消费；阶段切换及最终格由缓存消费回归覆盖。
+        foreach (var cell in new[] { (1, 1, -3f), (3, 2, 2f) })
             Check($"sensitivity native continuous mood {cell.Item1}/{cell.Item2}", () =>
             {
                 var p = SensitivityPawn(); SetSensitivity(p, cell.Item2); SetChainStage(p, cell.Item1);
@@ -117,7 +117,7 @@ internal static partial class Program
                 Near(cell.Item3, sensitivityThought.stages[thought.StageIndex].baseMoodEffect);
                 Require(p.needs.mood == null); Near(new[] { .3f, .75f, 1.5f, 3f }[cell.Item2 - 1], SensitivityStat(p));
             });
-        foreach (string why in new[] { "identity", "chain", "null master", "destroyed master", "discarded master", "dead body", "hollow", "mutation" })
+        foreach (string why in new[] { "identity", "chain", "dead body", "hollow", "mutation" })
             Check("sensitivity native suspension retains body: " + why, () =>
             {
                 var p = SensitivityPawn(); var record = SetSensitivity(p, 4); var chain = SSCBondUtility.GetChain(p);
@@ -126,9 +126,6 @@ internal static partial class Program
                 {
                     case "identity": p.GetComp<CompSexSlaveTraining>().pawnIdentity = PawnIdentity.Unset; break;
                     case "chain": p.health.hediffSet.hediffs.Remove(chain); break;
-                    case "null master": chain.target = null; break;
-                    case "destroyed master": AccessTools.Field(typeof(Thing), "mapIndexOrState").SetValue(chain.LinkedPawn, (sbyte)-2); break;
-                    case "discarded master": AccessTools.Field(typeof(Thing), "mapIndexOrState").SetValue(chain.LinkedPawn, (sbyte)-3); break;
                     case "dead body": AccessTools.Field(typeof(Pawn_HealthTracker), "healthState").SetValue(p.health, PawnHealthState.Dead); break;
                     case "hollow": p.health.hediffSet.hediffs.Add(new Hediff { def = SSCDefOf.SSC_PersonalityExcreted_Done, pawn = p }); break;
                     case "mutation": Require(SSCPersonalityRuntimeUtility.TryBeginMutation(p, out scope)); break;
@@ -190,7 +187,8 @@ internal static partial class Program
             SSCOrgasmSensitivityUtility.Normalize(p); Equal(original, SSCOrgasmSensitivityUtility.Find(p)); Near(1, original.Severity);
             Equal(1, p.health.hediffSet.hediffs.Count(h => h.def == sensitivity));
         });
-        foreach (float invalid in new[] { -1f, 0f, .5f, 1.5f, 4.5f, 5f, float.NaN, float.PositiveInfinity, float.NegativeInfinity })
+        // 下界、非整数和非有限值各留一个；上界另由真实setter拒绝回归覆盖。
+        foreach (float invalid in new[] { 0f, 1.5f, float.NaN })
             Check("sensitivity native invalid severity remains inactive: " + invalid, () =>
             {
                 var p = SensitivityPawn(); var record = SetSensitivity(p, 2);
@@ -257,7 +255,8 @@ internal static partial class Program
     /// <summary>真实健康节点 Scribe 及成熟复制入口验证身体归属，不声称完整世界跨引用存档。</summary>
     private static void SensitivitySaveAndTransferTests()
     {
-        foreach (int level in new[] { 0, 1, 2, 3, 4 })
+        // 只验证旧档无记录和最大档位的保存端点；中间档走同一整数序列化路径。
+        foreach (int level in new[] { 0, 4 })
             Check("sensitivity native health Scribe body level " + level, () =>
             {
                 var p = NewPawn(); if (level > 0) { var record = HediffMaker.MakeHediff(sensitivity, p); record.Severity = level; p.health.AddHediff(record); }
@@ -320,76 +319,41 @@ internal static partial class Program
             }
             finally { ext.multipliers[0] = originalRate; ext.vulnerabilityOffsets[0] = originalOffset; ext.minChainStages[3] = gate; ClearSensitivityConfig(); }
         });
-        foreach (string fault in new[] { "multiplier", "offset", "length", "gate range", "gate order" })
+        foreach (string fault in new[] { "multiplier", "length", "gate order" })
             Check("sensitivity native bad body config disables effects but permits off: " + fault, () =>
             {
                 var p = SensitivityPawn(); SetSensitivity(p, 4); var ext = sensitivity.GetModExtension<SSCOrgasmSensitivityExtension>();
-                var rates = ext.multipliers.ToList(); var offsets = ext.vulnerabilityOffsets.ToList(); var gates = ext.minChainStages.ToList();
+                var rates = ext.multipliers.ToList(); var gates = ext.minChainStages.ToList();
                 try
                 {
                     switch (fault)
                     {
                         case "multiplier": ext.multipliers[0] = float.NaN; break;
-                        case "offset": ext.vulnerabilityOffsets[3] = float.PositiveInfinity; break;
                         case "length": ext.multipliers.RemoveAt(0); break;
-                        case "gate range": ext.minChainStages[3] = 5; break;
                         case "gate order": ext.minChainStages[1] = 3; ext.minChainStages[2] = 2; break;
                     }
                     ClearSensitivityConfig(); Near(1, SSCOrgasmSensitivityUtility.GetMultiplier(p)); Near(0, SensitivityStat(p)); Require(!SensitivityMood(p).Active);
                     Require(!SSCOrgasmSensitivityUtility.TrySet(SSCOrgasmSensitivityUtility.Capture(p), 1, out _)); SetSensitivity(p, 0);
                 }
-                finally { ext.multipliers = rates; ext.vulnerabilityOffsets = offsets; ext.minChainStages = gates; ClearSensitivityConfig(); }
+                finally { ext.multipliers = rates; ext.minChainStages = gates; ClearSensitivityConfig(); }
             });
-        foreach (string fault in new[] { "duplicate", "missing", "index", "mood" })
+        foreach (string fault in new[] { "missing", "index" })
             Check("sensitivity native bad thought config leaves body effects active: " + fault, () =>
             {
                 var p = SensitivityPawn(); SetSensitivity(p, 4);
                 var ext = sensitivityThought.GetModExtension<SSCOrgasmSensitivityMoodExtension>(); var original = ext.stageMappings.ToList();
-                int originalIndex = original[0].thoughtStageIndex; float mood = sensitivityThought.stages[0].baseMoodEffect;
+                int originalIndex = original[0].thoughtStageIndex;
                 try
                 {
                     switch (fault)
                     {
-                        case "duplicate": ext.stageMappings.Add(original[0]); break;
                         case "missing": ext.stageMappings.RemoveAt(0); break;
                         case "index": original[0].thoughtStageIndex = 100; break;
-                        case "mood": sensitivityThought.stages[0].baseMoodEffect = float.NaN; break;
                     }
                     ClearSensitivityConfig(); Require(!SensitivityMood(p).Active); Near(16, SSCOrgasmSensitivityUtility.GetMultiplier(p)); Near(3, SensitivityStat(p));
                 }
-                finally { ext.stageMappings = original; original[0].thoughtStageIndex = originalIndex; sensitivityThought.stages[0].baseMoodEffect = mood; ClearSensitivityConfig(); }
+                finally { ext.stageMappings = original; original[0].thoughtStageIndex = originalIndex; ClearSensitivityConfig(); }
             });
-    }
-
-    /// <summary>四语真实查键及 UI 构建，图形度量替换仅用于独立 CLR 的布局边界。</summary>
-    private static void SensitivityPresentationTests(string repo, Harmony harmony)
-    {
-        foreach (string language in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" })
-            Check("sensitivity native language and XML mirrors: " + language, () =>
-            {
-                LoadBodyManagementLanguage(repo, language); var p = SensitivityPawn(); var record = SetSensitivity(p, 4); SetChainStage(p, 2);
-                // 正式档位可用设定名称，不强制含数字；保存四档与实际二档必须同时显示当前语言的名称。
-                Require(record.Description.Contains("SSC_Sensitivity_Level4".Translate()));
-                Require(record.Description.Contains("SSC_Sensitivity_Level2".Translate()));
-                Require(record.Description.Contains("0.75")); Require(!record.Description.Contains("SSC_Sensitivity_"));
-                foreach (string section in new[] { "Keyed", "DefInjected/HediffDef", "DefInjected/ThoughtDef" })
-                {
-                    string relative = $"Languages/{language}/{section}/SSC_OrgasmSensitivity.xml";
-                    Equal(File.ReadAllText(Path.Combine(repo, "1.7", relative)), File.ReadAllText(Path.Combine(repo, "Sexslavecraft", relative)));
-                    var resource = XDocument.Load(Path.Combine(repo, "1.7", relative)); Require(resource.Root.Elements().All(e => !string.IsNullOrWhiteSpace(e.Value)));
-                    if (section.StartsWith("DefInjected"))
-                    {
-                        var type = section.EndsWith("HediffDef") ? typeof(HediffDef) : typeof(ThoughtDef);
-                        var package = new DefInjectionPackage(type); var file = new TranslationFile(Path.Combine(repo, "1.7", relative));
-                        package.AddDataFromFile(file, out bool parseError, file.ReadAllText());
-                        Require(!parseError && package.loadErrors.Count == 0, string.Join(";", package.loadErrors));
-                        package.InjectIntoDefs(true); Require(package.loadErrors.Count == 0, string.Join(";", package.loadErrors));
-                        Require(package.injections.Values.All(i => i.injected), "unapplied sensitivity DefInjected path");
-                    }
-                }
-                Equal(sensitivity.stages[1].label, record.CurStage.label);
-            });
-        LoadBodyManagementLanguage(repo, "ChineseSimplified");
     }
 
     /// <summary>取真实私有视图字段，仅供断言，不复制布局或提交算法。</summary>

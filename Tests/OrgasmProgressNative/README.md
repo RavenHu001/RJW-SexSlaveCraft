@@ -1,8 +1,10 @@
 # 原始高潮推进采样专项
 
+2026-10-27 第27项[测试精简](../../Docs/Development/Completed/第27项测试精简实现与验证.md)仅删除一个重复的非1减量例，当前56／56重新通过；实际RJW／动画／UAP五处写回、公共接口、Harmony排序及旧回调边界不属于文案检查。本套仍为Core，不新增用例、不改生产机制或同步游戏。
+
 2026-10-27 第三批兼容回归 **57／57**：改为引用实际完整候选与测试友元，不再把三份采样源码复制编入宿主。当前RJW6.2.2、动画／UAP及游戏Harmony3实际桥接、有效排序与门槛通过；五处原始写回及共享样本语义保持，见[第三批记录](../../Docs/Development/Verification/高潮敏感度第三批统一推进与余数恢复实现与验证.md)。
 
-仅 1.7，使用实际游戏／RJW／动画／UAP DLL、游戏 Harmony 3 和实际完整生产候选DLL，目标 net10.0。当前 **57 项核心用例**；测试不启动游戏、不改运行 Def、不修改／同步游戏安装件。
+仅 1.7，使用实际游戏／RJW／动画／UAP DLL、游戏 Harmony 3 和实际完整生产候选DLL，目标 net10.0。当前 **56 项核心用例**；测试不启动游戏、不改运行 Def、不修改／同步游戏安装件。
 
 默认读取 `1.7/BUILD-INFO.json` 中的引用，可用 `SSC_TEST_BUILD_INFO_PATH` 显式指定隔离引用JSON；正式记录对应原产物，不因本机RJW更新而重写。依赖实际编译所用引用及本机 UAP `Mods/RJW_动画_UAP终极动画包/Assemblies/UAP_Animations.dll`。独立宿主复用 `Tests/CultureNative/UnityCoreShim` 类型转发，仅用于标准 CLR 的旧 Unity 名称解析；不随 mod 打包。
 
