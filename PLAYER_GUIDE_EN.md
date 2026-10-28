@@ -1,12 +1,14 @@
 # RJW-SexSlaveCraft Complete Player Guide
 
-**2.4.6 — released 2026-10-26.** Personal abilities and romance controls, including 2.4.5 body development. [Download v2.4.6](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.6). 1.7 runtime/About metadata are aligned to 2.4.6; 1.6/Common remain frozen at SSC 2.4.1. Three-language romance display and PNA guidance display retain their open verification scope.
+[2.4.7: new controls and compatibility](#ssc-247)
+
+**2.4.7 — development registration, 2026-10-28; unreleased.** Sensitivity, personal PNA production controls, UAP compatibility and bond/Training fixes target 1.7; 1.6/Common stay frozen at 2.4.1. The latest public download remains [v2.4.6](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.6). About/binary metadata remain 2.4.6 pending a release rebuild. Three-language romance display retains its independent verification scope; PNA production guidance has been accepted.
 
 [2.4.6: stages, orders, moods and personal resets](#27-246-personal-abilities-and-romance-controls-17-unreleased)
 
 [New in 2.4.4: culture, ritual points and cosmetics](#25-244-culture-rituals-and-cosmetic-reshaping-17-development-only)
 
-> This guide covers **SSC 2.4.6 (released 2026-10-26)** for RimWorld 1.7; 1.6 remains frozen at 2.4.1. See the [release scope](Docs/Releases/2.4.6/2.4.6发布说明.md#english). Earlier section versions identify introductions.
+> This guide covers **SSC 2.4.7 (development registration, unreleased)** for RimWorld 1.7; 1.6 remains frozen at 2.4.1. See the [release scope](Docs/Releases/2.4.7/2.4.7发布说明.md#english). Earlier section versions identify introductions.
 
 [Project home](README.md) · [Player reading order](Docs/Players/README.md#english-reading-order) · [Quick start](QUICK_START_EN.md) · [中文机制详解](机制详解.md)
 
@@ -1945,6 +1947,49 @@ Three categories/thirteen log entries, participant-perspective history, vanilla 
 
 ### 27.4 Copy and validation boundaries
 
-Each language has 270 display texts: 246 thought names/descriptions, thirteen logs, six task reports and five results. Simplified Chinese v1 has local in-game acceptance. Traditional Chinese, English and Russian have review approval and 590 targeted text checks, but await deployment/in-game display. Technical carrier fallbacks are separate. Final four-language PNA item/research guidance is deployed and awaits display confirmation; it describes existing production, not a new output boost/facility.
+Each language has 270 display texts: 246 thought names/descriptions, thirteen logs, six task reports and five results. Simplified Chinese v1 has local in-game acceptance. Traditional Chinese, English and Russian have review approval and 590 targeted text checks, but await deployment/in-game display. Technical carrier fallbacks are separate. Final four-language PNA item/research guidance was deployed and accepted on 2026-10-27; it describes existing production, not a new output boost/facility.
 
-Mechanisms, logs, personal resets and stage hints have batch acceptance. 2.4.6 runtime metadata and the release build are aligned; full release-gate and package results are recorded separately. See [verification and open scope](Docs/Releases/2.4.6/2.4.6版本验证.md).
+Mechanisms, logs, personal resets and stage hints have batch acceptance. The historical 2.4.6 release build had aligned metadata; current VERSION/docs are 2.4.7 while runtime metadata remains 2.4.6; full release-gate and package results are recorded separately. See [verification and open scope](Docs/Releases/2.4.6/2.4.6版本验证.md).
+
+<a id="ssc-247"></a>
+## 28. 2.4.7 body controls and compatibility rules (1.7 development)
+
+**Registered 2026-10-28; unreleased.** [Development notes](Docs/Releases/2.4.7/2.4.7发布说明.md#english) · [Commit audit](Docs/Releases/2.4.7/2.4.7开发归并核对.md) · [Validation](Docs/Releases/2.4.7/2.4.7版本验证.md).
+
+### Body sensitivity
+
+Off by default; the body holds the single saved choice. Editing requires an editable player-faction body, SSC Sex Slave identity and a valid actual Chain; stale menus are rejected. The Master's death or absence does not revoke a saved instruction. Unbinding, invalid identity or a Hollow body removes the SSC effect. Lower stages cap the effective level while preserving the saved choice, which can become effective again after advancement. Switching off removes the body record. Personality transfer does not carry it; Rabbit clones copy it only at birth, not again at maturity.
+
+| Level | Minimum Chain stage | This source's frequency factor | Vulnerability offset |
+| --- | ---: | ---: | ---: |
+| Off | No effect | ×1 | 0 |
+| 1 | 1 | ×2 | +0.30 |
+| 2 | 2 | ×4 | +0.75 |
+| 3 | 3 | ×8 | +1.50 |
+| 4 | 4 | ×16 | +3.00 |
+
+Ongoing mood follows effective level and Chain stage: stage 1 level 1 gives−3; stage 2 levels 1/2 give−1/−2; stage 3 levels 1/2/3 give+1/+2/+3; stage 4 levels 1/2/3/4 give+2/+3/+4/+6. Disabled or ineligible bodies receive no effect from this source.
+
+The final **Orgasm Frequency Multiplier** is a general stat, default/minimum ×1. Valid external sources can affect RJW pawns without SSC identity. SSC sensitivity contributes one factor through the native stat pipeline and is not multiplied twice. Current supported timing paths supplement actual original progress, retaining fractional carry with validated task/cycle/final-factor restoration. There is no multiplier-based event/reward replay loop or scene extension. High factors remain limited by native event checks; independent third-party timers require explicit integration. See the [current integration specification](Docs/Development/Reference/高潮推进与敏感度接入规范.md).
+
+### PNA production and status
+
+The sixth common personal ability is available to bodies with the original ordinary PNA producer and Training Comp. It adds no research or bond requirement; management follows the tab's existing identity/self-training admission, including eligible colony prisoners. New producers and old saves missing the field default to enabled. The producer stores the choice; personality transfer and personal-rule resets do not clear it.
+
+Pausing retains the current batch's Severity and stops natural accumulation, the eligible Cow maturation A contribution, associated extra nutrition costs and full-batch settlement. Other interaction effects and baseline hunger remain. Resuming continues from the current value with no catch-up. The indented percentage is progress toward the next batch, not item inventory. Disabled takes precedence over insufficient nutrition. The latter requires enabled production, an incomplete batch, a food need and less than the current interval's cost. Exact sufficiency, zero cost, no food need and full batches keep their original behavior; resumed growth waits for the native 60-tick interval.
+
+### Directed attraction and UAP
+
+Attraction only applies from an eligible SSC slave toward their actual Master; both must be at least 18 biological years old and satisfy the original adult classifications. After native Preflight and before final need/reservation modifiers, full voluntary appraisal receives a base floor of 1, retaining naturally higher values. Native zero reservation may still produce zero. Local opinion/willingness exceptions do not rewrite opinion, orientation or global settings and do not raise Master-side willingness. Native explanations remain with an SSC result appended. This neither guarantees execution nor forces automatic partner choice: body, desire, path, cooldown, work, pairing and SSC permissions still apply. Bond/personality changes invalidate old authorization and caches; PNA source preference remains separate.
+
+UAP is an optional soft dependency; its files are not modified. With restrictions enabled, the whole group is checked pair by pair, and startup waits until all actual jobs are installed. A separate global manual override defaults to off and only applies to an explicit UAP window request, not arbitrary playerForced jobs. It bypasses the relevant SSC behavior permissions while retaining native matching/body requirements. Pre-commit failure cancels this session's precise jobs; old callbacks cannot claim new work. Loading cancels identified unfinished group drivers without resuming or replaying settlement. Cross-mod side effects already performed during initialization are not transactionally rolled back.
+
+### Downed receivers and resonance
+
+Only an already-started actual SSC receiver pair and the Binding Ritual slave role receive downing continuity, using original timing, stages and handoffs. Initial ritual candidates must still not be downed. Trainer downing, death/invalidity, player cancellation, ordinary RJW, Personality Excretion, self-training and third-party receiver drivers retain their original rules. Old interrupted rituals or removed roles are not reconstructed.
+
+Each resonance query reuses one statistics result, preserving bond filtering, zero contribution for missing Corruption needs, thresholds, interpolation, display and refresh rules. It adds no cache or saved state. This reduces repeated query work; overall TPS/FPS improvement has not been measured.
+
+### Version and remaining scope
+
+Scoped in-game acceptance exists for these features; unreported language/mod combinations are not independently declared passed. Traditional Chinese/English/Russian romance display and other separate checks remain in the [verification index](Docs/Development/Verification/README.md). Automatic warm-up/slowdown, a standalone framework, PNA boosting/facilities and new social events remain future work. This registration performs no rebuild or full release gate.

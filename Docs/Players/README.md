@@ -1,10 +1,10 @@
 # 玩家阅读入口 / Player documentation
 
-**2.4.6 — 2026-10-26 正式发布。** 个人能力与浪漫控制，整合2.4.5身体开发；[下载v2.4.6](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.6)。1.7产物／About已对齐2.4.6，1.6／Common保留SSC 2.4.1冻结基线。三语浪漫显示的未确认范围继续保留；PNA产出引导已于2026-10-27获维护者确认有效。
+**2.4.7 — 2026-10-28 开发登记，未发布。** 敏感度、个人PNA启停、UAP手动多人兼容、绑定吸引力及调教修复；新增仅1.7，1.6／Common冻结2.4.1。最新正式下载仍为[v2.4.6](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.6)；About／DLL等运行元数据仍为2.4.6，正式发布前对齐重编。繁英俄浪漫显示等独立待验收范围保留；PNA产出引导已确认有效。
 
 [项目首页](../../README.md) · [文档总索引](../README.md) · [双语模组介绍](../模组介绍.md) · [版本索引](../Releases/README.md)
 
-2.4.6先查[能力与浪漫控制入门](../../读我，玩法介绍.md#24-246-个人能力与浪漫控制仅-17未发布)与[完整规则](../../机制详解.md#27-246-个人能力与浪漫控制仅-17未发布)。继承的2.4.5内容查[身体开发入门](../../读我，玩法介绍.md#23-245-身体开发与维护调整仅-17未发布)与[完整规则](../../机制详解.md#26-245-身体开发与生育控制仅-17未发布)。此前已发布内容可直接查[文化与医美入门](../../读我，玩法介绍.md#22-244-文化与医美仅-17-开发版)，数值与条件查[完整规则](../../机制详解.md#25-244-文化仪式与医美仅-17-开发版)。
+2.4.7先查[新增玩法](../../读我，玩法介绍.md#ssc-247)与[完整规则](../../机制详解.md#ssc-247)，本版未发布，公开2.4.6包不含新增功能。已发布2.4.6内容查[能力与浪漫控制入门](../../读我，玩法介绍.md#24-246-个人能力与浪漫控制仅-17未发布)与[完整规则](../../机制详解.md#27-246-个人能力与浪漫控制仅-17未发布)。继承的2.4.5内容查[身体开发入门](../../读我，玩法介绍.md#23-245-身体开发与维护调整仅-17未发布)与[完整规则](../../机制详解.md#26-245-身体开发与生育控制仅-17未发布)。此前已发布内容可直接查[文化与医美入门](../../读我，玩法介绍.md#22-244-文化与医美仅-17-开发版)，数值与条件查[完整规则](../../机制详解.md#25-244-文化仪式与医美仅-17-开发版)。
 
 ## 中文阅读顺序
 
@@ -18,6 +18,7 @@
 
 | 问题 | 入门 | 完整规则 |
 | --- | --- | --- |
+| 2.4.7敏感度、PNA启停、UAP与修复 | [入门](../../读我，玩法介绍.md#ssc-247) | [规则](../../机制详解.md#ssc-247) |
 | 2.4.4 文化、演化点与医美 | [入门](../../读我，玩法介绍.md#22-244-文化与医美仅-17-开发版) | [规则／材料／恢复](../../机制详解.md#25-244-文化仪式与医美仅-17-开发版) |
 | 主人资格与成长 | [资格](../../读我，玩法介绍.md#主人资格入口240) · [面板](../../读我，玩法介绍.md#主人成长与面板240) | [四阶段](../../机制详解.md#312-主人阶段与实践经验240) |
 | 关系概览、头像定位与批选 | [操作](../../读我，玩法介绍.md#主从关系概览243仅-17) | [完成核对](../Development/Completed/主从关系概览完成核对.md) |
@@ -31,7 +32,7 @@
 
 ## English reading order
 
-The guides now include **released 2.4.6** content on 1.7; 1.6 remains at 2.4.1. Start with [ability/romance controls](../../QUICK_START_EN.md#24-246-personal-abilities-and-romance-controls-17-unreleased), the [full rules](../../PLAYER_GUIDE_EN.md#27-246-personal-abilities-and-romance-controls-17-unreleased) and the inherited [body-development guide](../../QUICK_START_EN.md#23-245-body-development-and-maintenance-17-unreleased). The latest public package is 2.4.6 and includes these additions. For already released features, use the [2.4.4 scope](../Releases/2.4.4/2.4.4发布说明.md#english), [culture/cosmetics quick start](../../QUICK_START_EN.md#22-244-culture-and-cosmetic-reshaping-17-development-only) and [full rules](../../PLAYER_GUIDE_EN.md#25-244-culture-rituals-and-cosmetic-reshaping-17-development-only).
+The guides now include **2.4.7 development** on 1.7; 1.6 remains at 2.4.1. Start with the [new controls](../../QUICK_START_EN.md#ssc-247) and [full rules](../../PLAYER_GUIDE_EN.md#ssc-247). These additions are not in the latest public v2.4.6 package. For the earlier released features, see [ability/romance controls](../../QUICK_START_EN.md#24-246-personal-abilities-and-romance-controls-17-unreleased), the [full rules](../../PLAYER_GUIDE_EN.md#27-246-personal-abilities-and-romance-controls-17-unreleased) and the inherited [body-development guide](../../QUICK_START_EN.md#23-245-body-development-and-maintenance-17-unreleased). The public 2.4.6 package includes those earlier ability, romance and body-development features. For already released features, use the [2.4.4 scope](../Releases/2.4.4/2.4.4发布说明.md#english), [culture/cosmetics quick start](../../QUICK_START_EN.md#22-244-culture-and-cosmetic-reshaping-17-development-only) and [full rules](../../PLAYER_GUIDE_EN.md#25-244-culture-rituals-and-cosmetic-reshaping-17-development-only).
 
 1. Read the [mod overview](../模组介绍.md#english).
 2. Follow [Getting Started](../../QUICK_START_EN.md#2-getting-started) for research, qualification, identities and trainers.
@@ -54,6 +55,6 @@ Use [Bond Overview](../../QUICK_START_EN.md#bond-overview-243-17-only) for portr
 
 ## 版本与资料用途 / Versions and document roles
 
-当前指南包含2.4.6正式内容及整合的2.4.5身体开发，正式下载为2.4.6；历史标签资料保持各自版本，构建与发布准备见[2.4.6 验证记录](../Releases/2.4.6/2.4.6版本验证.md)。已交付、专项待验收与未来规划分别登记，测试计数保留实际执行日期。
+当前指南包含2.4.7开发内容、2.4.6正式内容及整合的2.4.5身体开发；2.4.7未发布，正式下载为2.4.6；历史标签资料保持各自版本，构建与发布准备见[2.4.7 验证记录](../Releases/2.4.7/2.4.7版本验证.md)。已交付、专项待验收与未来规划分别登记，测试计数保留实际执行日期。
 
-These guides cover the 2.4.6 release, including the earlier 2.4.5 milestone; the historical v2.4.4 package retains its original scope. Historical validation and maintainer acceptance retain their original scope; new build, release-gate and package results are recorded separately.
+These guides cover unreleased 2.4.7 additions and the 2.4.6 release, including the earlier 2.4.5 milestone; the historical v2.4.4 package retains its original scope. Historical validation and maintainer acceptance retain their original scope; new build, release-gate and package results are recorded separately.

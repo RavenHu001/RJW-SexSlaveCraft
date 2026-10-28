@@ -412,3 +412,8 @@ FodyWeavers.xsd
 !/Docs/Releases/2.4.6/
 /Docs/Releases/2.4.6/*
 !/Docs/Releases/2.4.6/*.md
+
+# 2.4.7 release documentation
+!/Docs/Releases/2.4.7/
+/Docs/Releases/2.4.7/*
+!/Docs/Releases/2.4.7/*.md

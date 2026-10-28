@@ -4,6 +4,18 @@
 
 This continuation builds on upstream **2.2.8**, the baseline when upstream development stopped in July, and retains its version numbering. Entries are listed newest first. Technical details are in the [development log (Chinese)](Docs/Development/开发更新记录.md).
 
+## [2.4.7] — 2026-10-28 — 开发登记，未发布 / Unreleased
+
+以`v2.4.6`为起点，截至`2c05238a`的30个非合并提交、381个变更路径归入2.4.7；见[双语说明](Docs/Releases/2.4.7/2.4.7发布说明.md)、[提交归并](Docs/Releases/2.4.7/2.4.7开发归并核对.md)及[验证边界](Docs/Releases/2.4.7/2.4.7版本验证.md)。新增仅1.7，1.6／Common冻结2.4.1。
+
+- **身体敏感度与通用属性：** 默认关闭，四阶段依次开放四档；保存与实际档位分离，频率／脆弱度／持续心情接入，实际推进、小数余数与存读档恢复，行为限制布局及通用频率Stat优化。
+- **PNA生产管理：** 第六项个人身体开关，暂停保留批次进度；缩进储量、关闭／营养不足提示及满批营养判断修正。
+- **绑定吸引力：** 成年真实绑定方向的自愿基础评分保底与局部意愿接入；保留原生解释、主人侧条件和原其他准入，不保证必定执行。
+- **兼容与修复：** UAP手动多人启动与默认关闭的局部许可豁免、参数／池化任务／RAF顺序修复；受方倒地后SSC调教及仪式继续；共振查询合并重复统计。
+- **维护：** Core／Special分级、多轮重复组合精简、轻量键与参数检查、目录及索引归属、写作／测试规范。PNA产出引导获实机确认；其他历史专项不自动关闭。
+
+2.4.7 groups post-v2.4.6 development through `2c05238a`: body sensitivity and a general frequency stat, unified progress/carry handling, personal PNA pause/resume and status display, directed attraction toward an actual Master, manual UAP group compatibility, downed-receiver Training continuity and resonance-query deduplication. Testing adds Core/Special profiles, focused case reduction and lightweight localization checks. Scoped in-game acceptance is recorded separately. **Unreleased:** VERSION/docs are 2.4.7; About, source version attributes and the current binary/BUILD-INFO remain 2.4.6. Registered All6333/Core5400/Special933 across 50 suites is not a fresh full-gate result; the latest related run was 3241 plus 138 independent text cases. The latest public package remains v2.4.6.
+
 ## [2.4.6] — 2026-10-26 — 个人能力与浪漫控制
 
 2026-10-26 登记：以 2.4.5 登记提交 `7225f729` 为边界，其后截至 `385cdd8e` 的52个非合并提交、363个变更路径归入本版。2.4.5也是未发布里程碑，身体开发等既有范围继续继承。见[中英说明](Docs/Releases/2.4.6/2.4.6发布说明.md)、[逐项归并](Docs/Releases/2.4.6/2.4.6开发归并核对.md)和[验证边界](Docs/Releases/2.4.6/2.4.6版本验证.md)。

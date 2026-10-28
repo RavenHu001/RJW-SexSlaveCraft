@@ -1,12 +1,14 @@
 # RJW-SexSlaveCraft Quick Start Guide
 
-**2.4.6 — released 2026-10-26.** Personal abilities and romance controls, including 2.4.5 body development. [Download v2.4.6](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.6). 1.7 runtime/About metadata are aligned to 2.4.6; 1.6/Common remain frozen at SSC 2.4.1. Three-language romance display and PNA guidance display retain their open verification scope.
+[2.4.7: new controls and compatibility](#ssc-247)
+
+**2.4.7 — development registration, 2026-10-28; unreleased.** Sensitivity, personal PNA production controls, UAP compatibility and bond/Training fixes target 1.7; 1.6/Common stay frozen at 2.4.1. The latest public download remains [v2.4.6](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.6). About/binary metadata remain 2.4.6 pending a release rebuild. Three-language romance display retains its independent verification scope; PNA production guidance has been accepted.
 
 [2.4.6: personal abilities and romance controls](#24-246-personal-abilities-and-romance-controls-17-unreleased)
 
 [New in 2.4.4: culture, ritual points and cosmetics](#22-244-culture-and-cosmetic-reshaping-17-development-only)
 
-> This guide covers **SSC 2.4.6 (released 2026-10-26)** for RimWorld 1.7; 1.6 remains frozen at 2.4.1. See the [release scope](Docs/Releases/2.4.6/2.4.6发布说明.md#english). Earlier section versions identify introductions.
+> This guide covers **SSC 2.4.7 (development registration, unreleased)** for RimWorld 1.7; 1.6 remains frozen at 2.4.1. See the [release scope](Docs/Releases/2.4.7/2.4.7发布说明.md#english). Earlier section versions identify introductions.
 
 [Project home](README.md) · [Player reading order](Docs/Players/README.md#english-reading-order) · [中文快速入门](读我，玩法介绍.md) · [Complete guide](PLAYER_GUIDE_EN.md)
 
@@ -714,4 +716,18 @@ Bestow Bliss, damage sharing, milk production, fertility and gel rendering use s
 
 PNA item/research descriptions explain existing production: complete genital Training, provide nutrition, accumulate 20% base progress per day and produce ten units at full progress. Output goes nearby on a map or into caravan inventory. Concentration research unlocks drug-lab recipes (5→1 or 20→4) and campfire/stove recipes (10→1); research alone does not grant bodily production. Rabbit clones are not an available route.
 
-Simplified Chinese copy has in-game acceptance; the other three languages have review approval but await deployment/in-game display. Final PNA guidance is deployed and awaits display confirmation. The public v2.4.6 package includes 2.4.5 and these additions. See [2.4.6 scope](Docs/Releases/2.4.6/2.4.6发布说明.md#english) and [verification](Docs/Releases/2.4.6/2.4.6版本验证.md).
+Simplified Chinese copy has in-game acceptance; the other three languages have review approval but await deployment/in-game display. Final PNA guidance was deployed and accepted as effective on 2026-10-27. The public v2.4.6 package includes 2.4.5 and these additions. See [2.4.6 scope](Docs/Releases/2.4.6/2.4.6发布说明.md#english) and [verification](Docs/Releases/2.4.6/2.4.6版本验证.md).
+
+<a id="ssc-247"></a>
+## 25. 2.4.7 sensitivity, production controls and compatibility (1.7 development)
+
+**Registered 2026-10-28; no package released.** This section covers current development; the public v2.4.6 package does not contain these additions. See the [development notes](Docs/Releases/2.4.7/2.4.7发布说明.md#english).
+
+- **Sensitivity:** select it in the Training tab's body panel; off by default. Eligible player-faction SSC slaves unlock one level per Chain stage. The button shows the saved choice, the indented line shows the effective level, and locked options explain why in tooltips. Levels provide ×2/×4/×8/×16 frequency factors, increased vulnerability and stage-dependent ongoing mood. A stage reduction limits the effect without overwriting the choice; the choice belongs to the body.
+- **General frequency stat:** defaults to ×1. SSC levels contribute one factor; valid external sources can also affect RJW pawns without SSC identity. It does not automatically accelerate everyone. Automatic warm-up, fatigue slowdown and a standalone framework are not included.
+- **Personal PNA production:** an existing ordinary producer can be paused/resumed in the body panel; enabled by default. Pausing preserves batch progress and stops natural accumulation, the relevant maturation contribution, extra production nutrition cost and full-batch settlement. Resuming does not catch up. The percentage is progress toward the next batch, not item inventory; disabled and insufficient-nutrition markers are distinct and shared with the health page.
+- **Master bonds:** eligible adult slaves receive a voluntary base-attraction floor of 1 toward their actual Master, with corresponding local willingness handling. Master-side willingness, body conditions and task permissions remain required; an interaction is not guaranteed.
+- **Manual UAP groups:** with matching UAP installed, manual groups can start while SSC restrictions remain enabled and obey personal rules. A separate manual permission override defaults to off and only applies to that explicit window request. Other matching/body conditions remain; unfinished sessions are canceled on load, not resumed.
+- **Training and resonance:** an already-started SSC receiver becoming downed can continue Training/Binding Rituals. Trainer downing, death and cancellation retain their original rules. Resonance queries avoid repeated statistics while preserving values and refresh behavior.
+
+Behavior restrictions now sit directly below identity controls. Scoped in-game acceptance and the full release gate are separate; see [validation boundaries](Docs/Releases/2.4.7/2.4.7版本验证.md).
