@@ -51,6 +51,7 @@ internal static partial class Program
         AdvanceBridgeTests();
         AdvanceBuildILTests();
         AdvanceSaveTests(repo, harmony);
+        AdvanceGlobalStatTests();
         AdvanceSelfTrainingTests(harmony);
         AdvanceBuildMode = 0; advanceEvents = false;
     }
@@ -95,6 +96,52 @@ internal static partial class Program
         var ext = sensitivity.GetModExtension<SSCOrgasmSensitivityExtension>(); float previous = ext.multipliers[0];
         try { ext.multipliers[0] = value; ClearSensitivityConfig(); action(); }
         finally { ext.multipliers[0] = previous; ClearSensitivityConfig(); }
+    }
+
+    /// <summary>提供普通外部Hediff来源；属性合成及实际计时仍走生产StatWorker与推进桥。</summary>
+    private static void AddFrequencySource(Pawn pawn, float factor)
+    {
+        var def = new HediffDef { defName = "AdvanceFrequencySource" + ++nextId, hediffClass = typeof(Hediff), initialSeverity = 1,
+            stages = new() { new HediffStage { statFactors = new() { new StatModifier { stat = SSCOrgasmFrequencyUtility.Definition, value = factor } } } } };
+        DefDatabase<HediffDef>.Add(def); pawn.health.AddHediff(def);
+    }
+
+    /// <summary>移除SSC保存源和绑定；外部Stat来源不应被SSC身份门槛拦截。</summary>
+    private static void RemoveAdvanceSscState(Pawn pawn)
+    {
+        SetSensitivity(pawn, 0); pawn.health.RemoveHediff(SSCBondUtility.GetChain(pawn));
+        pawn.GetComp<CompSexSlaveTraining>().pawnIdentity = PawnIdentity.Unset;
+    }
+
+    /// <summary>只补充新Stat契约的边界：无SSC也生效、多个来源只合成一次、空SSC引用的真实存读档。</summary>
+    private static void AdvanceGlobalStatTests()
+    {
+        Check("advance native global stat works without SSC identity or body", () =>
+        {
+            var d = AdvanceDriver(); RemoveAdvanceSscState(d.pawn);
+            // 原版无组件使用null；当前1.7 GetComp的短列表路径不接受人为创建的零项列表。
+            AccessTools.Field(typeof(ThingWithComps), "comps").SetValue(d.pawn, null);
+            Require(d.pawn.TryGetComp<CompSexSlaveTraining>() == null);
+            Near(1, SSCOrgasmFrequencyUtility.GetMultiplier(d.pawn)); d.Step(3); Equal(997, d.sex_ticks);
+            AddFrequencySource(d.pawn, 3f); d.Step(3); Equal(988, d.sex_ticks);
+            Require(SSCOrgasmSensitivityUtility.Find(d.pawn) == null && SSCBondUtility.GetChain(d.pawn) == null);
+        });
+        Check("advance native SSC and external stat combine once and off keeps external source", () =>
+        {
+            var d = AdvanceDriver(); AddFrequencySource(d.pawn, 1.5f);
+            Near(3, SSCOrgasmFrequencyUtility.GetMultiplier(d.pawn)); d.Step(3); Equal(991, d.sex_ticks);
+            SetSensitivity(d.pawn, 0); Near(1.5f, SSCOrgasmFrequencyUtility.GetMultiplier(d.pawn));
+            d.Step(2); Equal(988, d.sex_ticks);
+        });
+        Check("advance native global fractional carry survives Scribe with no SSC references", () =>
+        {
+            var d = AdvanceDriver(); RemoveAdvanceSscState(d.pawn); AddFrequencySource(d.pawn, 1.25f);
+            d.Step(3); Near(.75f, (float)SSCOrgasmAdvanceRuntime.GetCarry(d));
+            var loaded = LoadAdvance(SaveAdvance(new SSCAdvanceScene(d)));
+            Require(loaded.Master == null && SSCOrgasmSensitivityUtility.Find(loaded.Actor) == null);
+            loaded.Driver.Step(1); Equal(995, loaded.Driver.sex_ticks);
+            Equal(SSCOrgasmAdvanceRuntime.RestoreStatus.Restored, SSCOrgasmAdvanceRuntime.GetRestoreStatus(loaded.Driver));
+        });
     }
 
     /// <summary>固定算术例子及饱和边界，包含 int 端点差值、零推进和极大倍率。</summary>
@@ -442,17 +489,18 @@ public sealed class SSCAdvanceScene : IExposable
     public SSCAdvanceScene(JobDriver_Sex driver)
     {
         Driver = driver; Actor = driver.pawn; Master = SSCBondUtility.GetBoundMaster(Actor); job = driver.job;
-        health = new HealthFixture(Actor); actorId = Actor.thingIDNumber; masterId = Master.thingIDNumber;
+        health = new HealthFixture(Actor); actorId = Actor.thingIDNumber; masterId = Master?.thingIDNumber ?? 0;
     }
     /// <summary>LoadingVars 在深读驱动后才绑定 Pawn／Job，重现原版 JobTracker 的引用恢复时序。</summary>
     public void ExposeData()
     {
         Scribe_Values.Look(ref actorId, "actorId"); Scribe_Values.Look(ref masterId, "masterId");
-        if (Scribe.mode == LoadSaveMode.Saving) masterDead = Master.Dead;
+        if (Scribe.mode == LoadSaveMode.Saving) masterDead = Master?.Dead == true;
         Scribe_Values.Look(ref masterDead, "masterDead"); Scribe_Values.Look(ref DriverFirst, "driverFirst");
         if (Scribe.mode == LoadSaveMode.LoadingVars)
         {
-            Actor = Program.AdvanceWorldPawn(actorId, PawnIdentity.Slave); Master = Program.AdvanceWorldPawn(masterId, PawnIdentity.Master);
+            Actor = Program.AdvanceWorldPawn(actorId, PawnIdentity.Slave);
+            Master = masterId == 0 ? null : Program.AdvanceWorldPawn(masterId, PawnIdentity.Master);
             if (masterDead) AccessTools.Field(typeof(Pawn_HealthTracker), "healthState").SetValue(Master.health, PawnHealthState.Dead);
         }
         if (!DriverFirst) Scribe_Deep.Look(ref health, "health", Actor);
@@ -463,7 +511,7 @@ public sealed class SSCAdvanceScene : IExposable
         {
             Driver.pawn = Actor; Driver.job = job; Actor.jobs.curDriver = Driver; Actor.jobs.curJob = job;
             var directory = (LoadedObjectDirectory)AccessTools.Field(typeof(CrossRefHandler), "loadedObjectDirectory").GetValue(Scribe.loader.crossRefs);
-            directory.RegisterLoaded(Actor); directory.RegisterLoaded(Master);
+            directory.RegisterLoaded(Actor); if (Master != null) directory.RegisterLoaded(Master);
         }
     }
 }

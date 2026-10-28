@@ -38,8 +38,9 @@ namespace SexSlaveCraft
             }
         }
 
-        /// <summary>说明同时展示保存档位、实际档位和当前系数，不额外定义重复参与计算的 StatDef。</summary>
-        public override string Description => base.Description + "\n\n" + SSCOrgasmSensitivityPresentation.Describe(pawn);
+        /// <summary>健康名称只附加实际档位，暂停时显示关闭；不在正文追加保存选择或参数摘要。</summary>
+        public override string LabelInBrackets => SSCOrgasmSensitivityPresentation.Level(
+            SSCOrgasmSensitivityUtility.GetState(pawn).EffectiveLevel);
 
         /// <summary>重复加入保留当前原实例和原档位，不调用原版严重度相加。</summary>
         public override bool TryMergeWith(Hediff other)

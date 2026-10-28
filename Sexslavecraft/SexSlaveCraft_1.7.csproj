@@ -86,6 +86,7 @@
   <ItemGroup>
     <Compile Include="common/Orgasm/SSCOrgasmSensitivityConfig.cs" />
     <Compile Include="common/Orgasm/SSCOrgasmSensitivityUtility.cs" />
+    <Compile Include="common/Orgasm/SSCOrgasmFrequencyUtility.cs" />
     <Compile Include="Hediff/Hediff_SSCOrgasmSensitivity.cs" />
     <Compile Include="ITab/ITab_SexSlaveTraining.OrgasmSensitivity.cs" />
     <Compile Include="ThePatches/Harmony_OrgasmSensitivityLifecycle.cs" />

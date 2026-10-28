@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_OrgasmFrequency.label>множитель частоты оргазмов</SSC_OrgasmFrequency.label>
+  <SSC_OrgasmFrequency.description>Скорость достижения оргазма во время секса. ×1 — обычная скорость; при большем значении оргазмы могут происходить чаще. На множитель влияют перенастройка сексуальной чувствительности и другие эффекты. Продолжительность самого действия не увеличивается.</SSC_OrgasmFrequency.description>
+</LanguageData>

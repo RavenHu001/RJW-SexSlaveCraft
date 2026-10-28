@@ -25,13 +25,13 @@ namespace SexSlaveCraft
             internal readonly int Level, Bits;
             internal readonly float Multiplier;
 
-            /// <summary>只在实际有效档位非零时捕获，不保存原始锁链阶段或文案／脆弱度配置。</summary>
-            internal Binding(JobDriver_Sex d, SSCOrgasmSensitivityState sensitivity)
+            /// <summary>绑定最终Stat及可选SSC载体，不要求每个RJW角色都有SSC身份或锁链。</summary>
+            internal Binding(JobDriver_Sex d, SSCOrgasmSensitivityState sensitivity, float multiplier)
             {
                 Pawn = d.pawn; Job = d.job; Props = d.Sexprops; Comp = Pawn.TryGetComp<CompSexSlaveTraining>();
                 Token = SSCPersonalityRuntimeUtility.Capture(Pawn); Body = sensitivity.Record;
                 Chain = SSCBondUtility.GetChain(Pawn); Master = Chain?.LinkedPawn;
-                Level = sensitivity.EffectiveLevel; Multiplier = sensitivity.Multiplier;
+                Level = sensitivity.EffectiveLevel; Multiplier = multiplier;
                 Bits = BitConverter.SingleToInt32Bits(Multiplier);
             }
 
@@ -107,14 +107,15 @@ namespace SexSlaveCraft
         private static readonly ConditionalWeakTable<JobDriver_Sex, State> states = new ConditionalWeakTable<JobDriver_Sex, State>();
         private static readonly ConditionalWeakTable<JobDriver_Sex, State>.CreateValueCallback create = _ => new State();
 
-        /// <summary>仅为已有合法身体／实际当前任务取得准入；关闭时不分配执行状态或构造菜单快照。</summary>
+        /// <summary>所有当前RJW驱动读取最终Stat；正常速度不创建余数记录，SSC档位仅是可选属性来源。</summary>
         private static bool TryBinding(JobDriver_Sex d, out Binding binding)
         {
             binding = default;
             if (!SSCOrgasmProgressUtility.IsCurrentDriver(d) || d.pawn.health?.hediffSet == null) return false;
+            float multiplier = SSCOrgasmFrequencyUtility.GetMultiplier(d.pawn);
+            if (multiplier <= 1f) return false;
             var sensitivity = SSCOrgasmSensitivityUtility.GetState(d.pawn);
-            if (sensitivity.EffectiveLevel <= 0) return false;
-            binding = new Binding(d, sensitivity);
+            binding = new Binding(d, sensitivity, multiplier);
             return true;
         }
 

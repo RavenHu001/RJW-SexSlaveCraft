@@ -90,11 +90,12 @@ namespace SexSlaveCraft
             var result = new Body();
             var ext = def.GetModExtension<SSCOrgasmSensitivityExtension>();
             StatDef vulnerability = DefDatabase<StatDef>.GetNamedSilentFail("Vulnerability");
+            StatDef frequency = SSCOrgasmFrequencyUtility.Definition;
             // 四项是稳定档位的结构契约，不是平衡参数。结构或引用损坏时整份身体配置停用。
             bool valid = def.hediffClass == typeof(Hediff_SSCOrgasmSensitivity) && def.minSeverity == 0f &&
                 def.maxSeverity == 4f && def.initialSeverity == 1f && def.stages?.Count == 4 &&
                 ext?.multipliers?.Count == 4 && ext.vulnerabilityOffsets?.Count == 4 &&
-                ext.minChainStages?.Count == 4 && vulnerability != null;
+                ext.minChainStages?.Count == 4 && vulnerability != null && frequency != null;
             for (int i = 0; valid && i < 4; i++)
             {
                 float multiplier = ext.multipliers[i], offset = ext.vulnerabilityOffsets[i];
@@ -110,7 +111,9 @@ namespace SexSlaveCraft
                 {
                     label = def.stages[i].label,
                     minSeverity = i + 1,
-                    statOffsets = new List<StatModifier> { new StatModifier { stat = vulnerability, value = offset } }
+                    statOffsets = new List<StatModifier> { new StatModifier { stat = vulnerability, value = offset } },
+                    // SSC只提供一个原生因子；其他来源由StatWorker合成，推进消费者不再额外乘此倍率。
+                    statFactors = new List<StatModifier> { new StatModifier { stat = frequency, value = multiplier } }
                 };
             }
             result.Valid = valid;

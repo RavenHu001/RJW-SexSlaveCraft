@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <!-- 原生Stat管线，正常值1；PawnHealth支持所有Pawn，避免PawnSocial默认仅显示类人。 -->
+  <StatDef>
+    <defName>SSC_OrgasmFrequency</defName>
+    <label>orgasm frequency multiplier</label>
+    <description>How quickly this character approaches orgasm during sexual activity. ×1 is the normal pace; higher values make orgasms more frequent. Sexual sensitivity rewrite and other effects can modify this multiplier. It does not prolong the activity.</description>
+    <category>PawnHealth</category>
+    <defaultBaseValue>1</defaultBaseValue>
+    <minValue>1</minValue>
+    <maxValue>3.4028235E+38</maxValue>
+    <roundToFiveOver>3.4028235E+38</roundToFiveOver>
+    <toStringStyle>FloatTwo</toStringStyle>
+    <formatString>×{0}</formatString>
+    <showIfUndefined>true</showIfUndefined>
+    <showOnDefaultValue>true</showOnDefaultValue>
+    <showOnAnimals>true</showOnAnimals>
+    <showOnMechanoids>true</showOnMechanoids>
+    <showOnEntities>true</showOnEntities>
+    <showOnDrones>true</showOnDrones>
+    <neverDisabled>true</neverDisabled>
+  </StatDef>
+</Defs>

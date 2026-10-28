@@ -22,7 +22,12 @@ internal static partial class Program
         SSCDefOf.SSC_PersonalityExcreted_Done ??= new HediffDef { defName = "SSC_PersonalityExcreted_Done", hediffClass = typeof(Hediff), initialSeverity = 1 };
         vulnerability = DefDatabase<StatDef>.GetNamedSilentFail("Vulnerability");
         if (vulnerability == null) { vulnerability = new StatDef { defName = "Vulnerability", defaultBaseValue = 1f }; DefDatabase<StatDef>.Add(vulnerability); }
-        var xml = new XmlDocument(); xml.Load(Path.Combine(repo, "1.7/Defs/HediffDefs/SSC_OrgasmSensitivity.xml"));
+        var category = DefDatabase<StatCategoryDef>.GetNamedSilentFail("PawnHealth");
+        if (category == null) { category = new StatCategoryDef { defName = "PawnHealth" }; DefDatabase<StatCategoryDef>.Add(category); }
+        StatCategoryDefOf.PawnHealth = category;
+        var xml = new XmlDocument(); xml.Load(Path.Combine(repo, "1.7/Defs/StatDefs/SSC_OrgasmFrequency.xml"));
+        DefDatabase<StatDef>.Add(DirectXmlToObject.ObjectFromXml<StatDef>(xml.DocumentElement.SelectSingleNode("StatDef"), false));
+        xml.Load(Path.Combine(repo, "1.7/Defs/HediffDefs/SSC_OrgasmSensitivity.xml"));
         sensitivity = DirectXmlToObject.ObjectFromXml<HediffDef>(xml.DocumentElement.SelectSingleNode("HediffDef"), false);
         DefDatabase<HediffDef>.Add(sensitivity);
         xml.Load(Path.Combine(repo, "1.7/Defs/ThoughtDefs/SSC_OrgasmSensitivity.xml"));
@@ -394,7 +399,9 @@ internal static partial class Program
             Check("sensitivity native enum row exists when body boolean rows are empty", () =>
             {
                 var p = SensitivityPawn(1); int before = p.health.hediffSet.hediffs.Count; var view = Build(p, 322f);
-                var rows = Rows(view); Equal(1, rows.Length); Require(SensitivityField<object>(rows[0], "Sensitivity") != null);
+                var rows = Rows(view); Equal(2, rows.Length); Require(SensitivityField<object>(rows[0], "Sensitivity") != null);
+                Near(16f, SensitivityField<float>(rows[1], "Indent")); Require(SensitivityField<string>(rows[0], "Tip") == null);
+                Require(SensitivityField<string>(rows[1], "Tip") == null);
                 Equal(before, p.health.hediffSet.hediffs.Count); Require(SSCOrgasmSensitivityUtility.Find(p) == null);
             });
             Check("sensitivity native enum row wraps and preserves GUI text settings", () =>
@@ -406,7 +413,14 @@ internal static partial class Program
                 Equal(GameFont.Medium, Text.Font); Require(!Text.WordWrap); Text.Font = GameFont.Small; Text.WordWrap = true;
                 var row = Rows(narrow).Single(r => SensitivityField<object>(r, "Sensitivity") != null);
                 var detail = SensitivityField<object>(row, "Sensitivity");
-                Near(SensitivityField<float>(detail, "LabelHeight") + 36f, SensitivityField<float>(row, "Height"));
+                Require(SensitivityField<float>(row, "Height") >= 24f);
+                Require(SensitivityField<float>(detail, "ButtonWidth") < 200f);
+                Equal("SSC_Sensitivity_Level4".Translate().ToString(), SensitivityField<string>(detail, "Button"));
+                Require(!SensitivityField<string>(row, "Label").Contains("\n"));
+                // 健康说明回归原通用正文，括号内只取实际一档，不追加旧保存／参数摘要。
+                var record = SSCOrgasmSensitivityUtility.Find(p);
+                Equal("SSC_Sensitivity_Level1".Translate().ToString(), record.LabelInBrackets);
+                Equal(sensitivity.description, record.Description);
             });
             Check("sensitivity native retained body row stays visible after identity loss", () =>
             {
@@ -415,10 +429,12 @@ internal static partial class Program
             });
             Check("sensitivity native menu offers off and unlocked level with disabled high levels", () =>
             {
-                var p = SensitivityPawn(1); var row = SensitivityField<object>(Rows(Build(p, 322f)).Single(), "Sensitivity");
+                var p = SensitivityPawn(1); var row = SensitivityField<object>(Rows(Build(p, 322f)).Single(r => SensitivityField<object>(r, "Sensitivity") != null), "Sensitivity");
                 var options = (List<FloatMenuOption>)AccessTools.Method(tabType, "BuildOrgasmSensitivityOptions").Invoke(new ITab_SexSlaveTraining(), new[] { row });
                 Equal(5, options.Count); Require(options[0].action != null && options[1].action != null);
                 Require(options.Skip(2).All(o => o.action == null));
+                Require(options.Skip(2).All(o => o.tooltip.HasValue));
+                Require(options.Skip(2).All(o => !o.Label.Contains("SSC_Sensitivity_LevelLocked".Translate().ToString())));
                 SetSensitivity(p, 1);
                 options = (List<FloatMenuOption>)AccessTools.Method(tabType, "BuildOrgasmSensitivityOptions").Invoke(new ITab_SexSlaveTraining(), new[] { row });
                 Require(options.All(o => o.action == null), "missing-record snapshot acquired new owner");
@@ -426,7 +442,7 @@ internal static partial class Program
             Check("sensitivity native menu closure submits original missing body context once", () =>
             {
                 var p = SensitivityPawn(); var tab = new SensitivityTab { Selected = p };
-                var row = SensitivityField<object>(Rows(Build(p, 322f)).Single(), "Sensitivity");
+                var row = SensitivityField<object>(Rows(Build(p, 322f)).Single(r => SensitivityField<object>(r, "Sensitivity") != null), "Sensitivity");
                 var options = (List<FloatMenuOption>)AccessTools.Method(tabType, "BuildOrgasmSensitivityOptions").Invoke(tab, new[] { row });
                 options[3].action(); var owner = SSCOrgasmSensitivityUtility.Find(p); Near(3, owner.Severity);
                 options[1].action(); Equal(owner, SSCOrgasmSensitivityUtility.Find(p)); Near(3, owner.Severity);
@@ -434,7 +450,7 @@ internal static partial class Program
             Check("sensitivity native menu closure rejects changed selected pawn", () =>
             {
                 var p = SensitivityPawn(); var tab = new SensitivityTab { Selected = p };
-                var row = SensitivityField<object>(Rows(Build(p, 322f)).Single(), "Sensitivity");
+                var row = SensitivityField<object>(Rows(Build(p, 322f)).Single(r => SensitivityField<object>(r, "Sensitivity") != null), "Sensitivity");
                 var options = (List<FloatMenuOption>)AccessTools.Method(tabType, "BuildOrgasmSensitivityOptions").Invoke(tab, new[] { row });
                 tab.Selected = SensitivityPawn(); options[1].action();
                 Require(SSCOrgasmSensitivityUtility.Find(p) == null && SSCOrgasmSensitivityUtility.Find(tab.Selected) == null);

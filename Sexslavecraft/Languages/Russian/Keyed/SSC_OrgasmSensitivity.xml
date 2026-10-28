@@ -18,4 +18,5 @@
   <SSC_Sensitivity_NotEditable>Изменять можно только живое, доступное для редактирования тело, принадлежащее игроку.</SSC_Sensitivity_NotEditable>
   <SSC_Sensitivity_InvalidLevel>Недопустимый уровень чувствительности.</SSC_Sensitivity_InvalidLevel>
   <SSC_Sensitivity_LevelLocked>Текущая стадия цепи ещё не открывает этот уровень. Сохранённый выбор остаётся.</SSC_Sensitivity_LevelLocked>
+  <SSC_Sensitivity_EffectiveLevel>Действует: {0}</SSC_Sensitivity_EffectiveLevel>
 </LanguageData>

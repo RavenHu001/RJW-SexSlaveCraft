@@ -18,4 +18,5 @@
   <SSC_Sensitivity_NotEditable>Only a living, editable body belonging to the player can be adjusted.</SSC_Sensitivity_NotEditable>
   <SSC_Sensitivity_InvalidLevel>Invalid sensitivity level.</SSC_Sensitivity_InvalidLevel>
   <SSC_Sensitivity_LevelLocked>The current chain stage has not unlocked this level. The saved choice is retained.</SSC_Sensitivity_LevelLocked>
+  <SSC_Sensitivity_EffectiveLevel>Active: {0}</SSC_Sensitivity_EffectiveLevel>
 </LanguageData>

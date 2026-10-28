@@ -18,4 +18,5 @@
   <SSC_Sensitivity_NotEditable>只能调整玩家所属、存活且可编辑的当前身体。</SSC_Sensitivity_NotEditable>
   <SSC_Sensitivity_InvalidLevel>档位无效。</SSC_Sensitivity_InvalidLevel>
   <SSC_Sensitivity_LevelLocked>当前锁链阶段尚未开放该档；保存选择保留。</SSC_Sensitivity_LevelLocked>
+  <SSC_Sensitivity_EffectiveLevel>实际：{0}</SSC_Sensitivity_EffectiveLevel>
 </LanguageData>

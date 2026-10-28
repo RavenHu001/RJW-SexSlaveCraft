@@ -84,8 +84,8 @@ namespace SexSlaveCraft
                 effective > 0 ? config.Offsets[effective - 1] : 0f, reason);
         }
 
-        /// <summary>供消费者取得同一有效系数；本函数本身不推进、不采样、不保存余数。</summary>
-        public static float GetMultiplier(Pawn pawn) => GetState(pawn).Multiplier;
+        /// <summary>兼容原查询入口，返回原生Stat最终系数；身体配置本身的倍率仍由GetState查询。</summary>
+        public static float GetMultiplier(Pawn pawn) => SSCOrgasmFrequencyUtility.GetMultiplier(pawn);
 
         /// <summary>捕获整组同 Def 实例，以识别外部增删、替换及原本缺少记录的情况。</summary>
         public static SSCOrgasmSensitivityContext Capture(Pawn pawn)
