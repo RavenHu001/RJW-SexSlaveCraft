@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <SSC_PnaProduction_Label>Produce PNA</SSC_PnaProduction_Label>
-  <SSC_PnaProduction_Tip>Pausing preserves current production progress and stops natural production, accelerated progress and their additional nutrition costs. Resume to continue accumulating progress. PNA supplied during sex is unaffected.</SSC_PnaProduction_Tip>
+  <SSC_PnaProduction_Tip>Pausing preserves progress and stops production, acceleration and extra nutrition use. Resume to continue.</SSC_PnaProduction_Tip>
+  <SSC_PnaProduction_Storage>Current accumulation: {0}</SSC_PnaProduction_Storage>
+  <SSC_PnaProduction_StorageDisabled>Current storage: {0} (production disabled)</SSC_PnaProduction_StorageDisabled>
   <SSC_PnaProduction_ProgressPaused>Production progress: {0} (paused)</SSC_PnaProduction_ProgressPaused>
 </LanguageData>

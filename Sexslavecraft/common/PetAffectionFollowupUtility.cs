@@ -34,10 +34,15 @@ namespace SexSlaveCraft
             bool lovers = LovePartnerRelationUtility.LovePartnerRelationExists(pet, master);
             if (!HasDesire(pet, lovers) || !HasDesire(master, lovers)) return false;
             if (!lovers && !RJWSettings.WildMode && !RJWSettings.HippieMode &&
+#if SSC_RW17
+                // 仅宠物对实际主人的对象意愿得到保障，主人侧仍执行原婚恋判断。
+                (!SSCMasterAttractionUtility.AllowsCasualPair(pet, master) || !AllowsCasualPair(master))) return false;
+#else
                 (!AllowsCasualPair(pet) || !AllowsCasualPair(master))) return false;
+#endif
 
             // 只评估既定双方，不调用原版 FindPartner/RNG 搜索、随机换人或再叠加一次触发概率。
-            // 吸引力内部仍使用 RJW 自己的确定性种子评估；双方阈值和玩家配对设置照常生效。
+            // 每次新建评价，避免关系变化后沿用旧分；主人侧阈值与双方执行设置照常生效。
             var settings = new AppraisalSettings(AttractionPurpose.ForFucking);
             var appraisal = new AppraisalResult(pet, settings, master, settings);
             return SexAppraiser.FindBestResults(new[] { appraisal }).Any() &&

@@ -24,6 +24,16 @@ namespace SexSlaveCraft
         /// <summary>仅取得保存选择；没有产出记录时沿原生产默认放行，不创建组件或人格字典键。</summary>
         public static bool GetProductionEnabled(Pawn pawn) => Find(pawn)?.ProductionEnabled ?? true;
 
+        /// <summary>只读显示当前批次积累；与健康页沿用同一 Severity 百分比，暂停不会隐藏或改写进度。</summary>
+        public static string GetStorageDetail(Pawn pawn)
+        {
+            var production = Find(pawn);
+            if (production == null) return null;
+            // 这是下一批物品的生产积累，不是性交供给或可消耗物品的库存。
+            string progress = (production.parent.Severity * 100f).ToString("F0") + "%";
+            return (production.ProductionEnabled ? "SSC_PnaProduction_Storage" : "SSC_PnaProduction_StorageDisabled").Translate(progress);
+        }
+
         /// <summary>通用准入只检查存活身体与当前产出记录；营养和满进度结算仍由生产事件判断。</summary>
         internal static string ActivationFailure(Pawn pawn)
             => IsUnavailable(pawn, Find(pawn))

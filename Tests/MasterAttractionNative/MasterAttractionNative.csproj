@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType><TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings><Nullable>disable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- 实际候选与游戏依赖；类型转发仅服务独立 CLR，不进入 mod。 -->
+    <ProjectReference Include="../CultureNative/UnityCoreShim/UnityCoreShim.csproj" />
+    <ProjectReference Include="../../Sexslavecraft/SexSlaveCraft_1.7.csproj" Condition="'$(SscAssemblyPath)' == ''" />
+    <Reference Include="Sexslavecraft" Condition="'$(SscAssemblyPath)' != ''"><HintPath>$(SscAssemblyPath)</HintPath><Private>true</Private></Reference>
+    <Reference Include="Assembly-CSharp"><HintPath>$(GameRoot)/Assembly-CSharp.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityStubs"><HintPath>$(GameRoot)/UnityStubs.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="RJW"><HintPath>$(RjwAssemblyPath)</HintPath><Private>false</Private></Reference>
+    <Reference Include="0Harmony"><HintPath>$(GameHarmonyAssemblyPath)</HintPath></Reference>
+  </ItemGroup>
+</Project>

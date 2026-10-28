@@ -24,6 +24,8 @@ namespace SexSlaveCraft
             LongEventHandler.ExecuteWhenFinished(SSCOrgasmProgressPatches.Install);
             // 可选 UAP 接入使用独立 owner，完整核对后才开放手动豁免；不随旧版 PatchAll 注册。
             LongEventHandler.ExecuteWhenFinished(SSCUapGroupPatches.Install);
+            // 完整核对 RJW 评价与自愿入口后安装关系保底，保留原基础资格和主人侧意愿。
+            LongEventHandler.ExecuteWhenFinished(SSCMasterAttractionPatches.Install);
 #endif
             SSCLog.Important("[SexSlaveCraft.training.patch] Harmony patches loaded successfully.");
 

@@ -1,4 +1,4 @@
-// AI 辅助生成：当前身体的泌乳与子宫开发管理，独立于 SSC 身份及训练研究。
+// AI 辅助生成：当前身体的泌乳、PNA 生产与子宫开发管理，独立于 SSC 身份及训练研究。
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -62,8 +62,8 @@ namespace SexSlaveCraft
                     AddBodyRow(view, innerWidth, toggle.Label, toggle.ChangeReason ?? toggle.Tip,
                         toggle, gapBefore: first ? 0f : BodyGroupGap);
                     first = false;
-                    // 充盈度继续作为缩进信息，不新增身体开发进度／收益展示。
-                    if (!string.IsNullOrEmpty(toggle.Detail)) AddBodyRow(view, innerWidth, toggle.Detail, indent: BodyChildIndent);
+                    // 乳汁充盈度与 PNA 本批积累共用缩进行；悬停沿用该生产项说明，不重复绘制进度。
+                    if (!string.IsNullOrEmpty(toggle.Detail)) AddBodyRow(view, innerWidth, toggle.Detail, toggle.Tip, indent: BodyChildIndent);
                 }
 #if SSC_RW17
                 // 枚举行独立于 bool 条目，必须追加后再判断整个身体区是否为空。

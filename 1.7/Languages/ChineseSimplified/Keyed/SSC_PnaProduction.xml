@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <SSC_PnaProduction_Label>生产纳米催情液</SSC_PnaProduction_Label>
-  <SSC_PnaProduction_Tip>暂停时保留当前生产进度，停止自然生产、催熟推进及对应的额外营养消耗；恢复后继续积累。性交中的纳米催情液供给不受影响。</SSC_PnaProduction_Tip>
+  <SSC_PnaProduction_Tip>暂停时保留储量，停止生产、催熟及额外营养消耗；恢复后继续。</SSC_PnaProduction_Tip>
+  <SSC_PnaProduction_Storage>当前储量：{0}</SSC_PnaProduction_Storage>
+  <SSC_PnaProduction_StorageDisabled>当前储量：{0}（已关闭生产）</SSC_PnaProduction_StorageDisabled>
   <SSC_PnaProduction_ProgressPaused>生产进度：{0}（已暂停）</SSC_PnaProduction_ProgressPaused>
 </LanguageData>

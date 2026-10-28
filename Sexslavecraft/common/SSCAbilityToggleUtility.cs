@@ -85,7 +85,8 @@ namespace SexSlaveCraft
             , new SSCAbilityToggleDefinition(PnaProduction, SSCAbilityToggleGroup.Body, PawnIdentity.Unset,
                 "SSC_PnaProduction_Label", "SSC_PnaProduction_Tip", defaultEnabled: true,
                 backend: SSCPnaProductionAbilityToggleBackend.Instance, order: 5,
-                visibleRule: pawn => pawn?.TryGetComp<CompSexSlaveTraining>() != null && SSCPnaProductionUtility.Find(pawn) != null)
+                visibleRule: pawn => pawn?.TryGetComp<CompSexSlaveTraining>() != null && SSCPnaProductionUtility.Find(pawn) != null,
+                detailRule: SSCPnaProductionUtility.GetStorageDetail)
 #endif
 #if (SSC_RW17 && !SSC_ABILITY_TOGGLE_SCOPED_TEST) || SSC_ABILITY_TOGGLE_GEL
             // 外观只接入个人渲染选择；颜色、透明度、快照和高频渲染查询仍由原外观模块负责。

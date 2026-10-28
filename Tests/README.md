@@ -1,5 +1,11 @@
 # 测试说明索引
 
+2026-10-28：维护者确认主人绑定吸引力保底及PNA显示修正版运行没有问题，验收关闭，记录归Completed并按授权提交；78／78、1257份同步核对保留前轮时点，本次只整理验收文档。倒地中断调教另作独立修复。
+
+2026-10-28截图反馈修订：既有原生解释用例改为实际执行RJW原方法并核对原分项保留；身体栏既有样本增加PNA关闭状态。原生19／19、布局59／59，登记数量不变；修正产物已重新同步，详见[实施记录](../Docs/Development/Completed/主人绑定吸引力保底与PNA界面实现与验证.md)。
+
+2026-10-28：[主人绑定吸引力保底与PNA界面](../Docs/Development/Completed/主人绑定吸引力保底与PNA界面实现与验证.md)本轮相关 **78／78**：新增[MasterAttractionNative](MasterAttractionNative/README.md) Core19，真实RJW评价／门槛／缓存及回调撤权；既有BodyManagementLayout59项纳入缩进储量检查，不新增用例。当前登记 **All6502／Core5429／Special1073、49套**由此前基线加19得出，未跑整仓All。受测候选与正式／安装DLL一致，10份同步／1257份运行文件核对完成，待实机；未提交／发布。
+
 2026-10-28：[个人 PNA 生产启停](../Docs/Development/Completed/个人PNA生产启停实现与验证.md)已获维护者整体实机确认并关闭验收，按授权提交，未发布；本轮仅文档收尾，不重编、重跑或再次同步。前轮原生 **577／577**（既有567＋Core10）、共用身体栏 **59／59**（既有57＋Core2），合计 **636／636**；Def34／34、语言552份无差异、两次构建零警告／零错误及1253份同步核对保留原时点。登记 **All6483／Core5410／Special1073、48套**不变，不是本轮整仓执行结果；整体实机反馈不补记逐语或扩展模组组合的独立实测。
 
 2026-10-28：[UAP最终核对与实机反馈](../Docs/Development/Completed/UAP手动群交兼容与许可豁免实现与验证.md#实机反馈与最终提交核对2026-10-28)确认当前候选正常执行；本轮只读复核生产源码／受测产物／安装件一致，沿用实际输出18／18＋无UAP1／1，不重编或重跑。回归仅新增两个已复现故障用例，标准18项及48套登记不变；测试身体边界注释已校正，文档归Completed。
@@ -226,18 +232,18 @@ pwsh -File Scripts/Test-All.ps1 -GameVersion 1.7 -HarmonyAssemblyPath 'C:\Depend
 
 可单独执行 `pwsh -File Scripts/Test-DefMirrors.ps1` 或 `pwsh -File Scripts/Sync-LanguagesMirror.ps1`。两者均支持 `-RepositoryRoot`、`-GameVersion`、`-RuntimeRoot` 与 `-PassThru`；语言同步仍须显式加 `-Sync`，且仅允许以 `1.7/Languages` 为源，不能同步冻结的 1.6 内容。统一报告位于 `.builds/validation/`，分别生成 `DefMirrors.log`、`LanguagesMirrors.log`，并在 `summary.json` 的 `Checks` 中按 `DefMirrors`／`LanguagesMirrors` 登记状态、文件数、原因和日志路径，合计字段为 `CheckCount`、`PassedChecks`、`FailedChecks`。布局结果另记在 `LayoutValidation`，不计入两项资源检查。
 
-`pwsh -File Scripts/Test-All.ps1 -GameVersion 1.6` 只验证冻结文件哈希与该版 Def／Languages XML，不比较当前源码镜像、不编译或运行当前源码套件，报告 `SuiteCount = 0`。`SourceValidationScope` 明确区分这项资源检查与 1.7 统一入口登记的48套当前源码回归；都不能替代游戏内流程、动画及真实存档往返验收。
+`pwsh -File Scripts/Test-All.ps1 -GameVersion 1.6` 只验证冻结文件哈希与该版 Def／Languages XML，不比较当前源码镜像、不编译或运行当前源码套件，报告 `SuiteCount = 0`。`SourceValidationScope` 明确区分这项资源检查与 1.7 统一入口登记的49套当前源码回归；都不能替代游戏内流程、动画及真实存档往返验收。
 
 单套测试传入的目录参数仍为仓库根目录。`Tests/Shared/TestPaths.cs` 将源码解析到 `Sexslavecraft/`，运行资源默认解析到 `1.7/`，贴图解析到 `Common/Textures/` 并优先使用版本目录中的同名覆盖。需要独立资源夹具时可设置 `SSC_TEST_REPOSITORY_ROOT`、`SSC_TEST_RUNTIME_ROOT`、`SSC_TEST_COMMON_ROOT`；统一入口仅在本次调用期间设置这些进程环境变量，结束或失败后恢复原值。`RitualProgression` 保留显式 XML 文件参数。
 
 
 ## 测试范围与计数
 
-- **All（默认）**：48套，6483项，包含核心和专项。发布入口显式指定 `All`，核对成功报告的 `Scope` 和 `FullRegression`。
-- **Core**：44套，5410项。保留机制准入、保存归属、人格／身体／关系流转、旧上下文、原 Job、重复／中断／回调／异常边界。
+- **All（默认）**：49套，6502项，包含核心和专项。发布入口显式指定 `All`，核对成功报告的 `Scope` 和 `FullRegression`。
+- **Core**：45套，5429项。保留机制准入、保存归属、人格／身体／关系流转、旧上下文、原 Job、重复／中断／回调／异常边界。
 - **Special**：16套，1073项。资源／四语／文化生成与文案、排版／字体、渲染／FA／SA、性能及原生品质，相关改动和发布时运行。
 
-2026-10-28 的当前登记由前次基线加个人 PNA 生产启停的 12 项 Core 得出；本次实际运行原生 577 项及身体栏 59 项，未执行整仓 All。
+2026-10-28 的当前登记由此前个人PNA生产启停基线加主人吸引力19项Core得出；本次实际运行新原生19项及身体栏59项，未执行整仓All。前轮PNA原生577项及身体栏59项保留其原执行时点。
 
 ```powershell
 pwsh -File Scripts/Test-All.ps1 -Scope Core -HarmonyAssemblyPath 'C:\Dependencies\Harmony\net9.0\0Harmony.dll'
@@ -246,7 +252,7 @@ pwsh -File Scripts/Test-All.ps1 -Scope Special -HarmonyAssemblyPath 'C:\Dependen
 
 `Tests/TestProfiles.json`登记套件类别和专项名称，随宿主嵌入。四个纯专项为 PnaProjectileTrail、PnaWeaponEffects、PnaMeleeQuality、PersonalityCardLayout。混合套件未列出的新用例默认属于核心，纯专项套件的新用例仍属于专项。报告项按实际执行次数统计，既有重复名称不合并。当前计数依据历史基线及已验证的增减更新，不代表本轮执行了整仓All。
 
-注册表始终核对完整48套和辅助工程，不以选测排除未登记项目。子集报告列出 `ExcludedSuites`，不伪记为 Passed 或 NotRun；`FullRegression = false`。输出必须有唯一且匹配的 `SCOPE`，成功数字不能让子集或仅文案模式冒充 All。入口设置 `SSC_TEST_SCOPE`、清除仅文案选择，结束后恢复调用者原环境。
+注册表始终核对完整49套和辅助工程，不以选测排除未登记项目。子集报告列出 `ExcludedSuites`，不伪记为 Passed 或 NotRun；`FullRegression = false`。输出必须有唯一且匹配的 `SCOPE`，成功数字不能让子集或仅文案模式冒充 All。入口设置 `SSC_TEST_SCOPE`、清除仅文案选择，结束后恢复调用者原环境。
 
 分流必须维护初始化：Def、跨引用、语言和原版悬停缓存不能依赖先执行另一条用例。医美核心流程只在 All／Core 进入，纯语言专项使用独立资源初始化。修改测试名称或增加专项时同步维护清单，并执行分区核对。
 

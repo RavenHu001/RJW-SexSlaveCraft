@@ -87,6 +87,7 @@ $suites = @(
     @{ Name = 'RitualDevelopmentNative'; Arguments = @(); Framework = 'net10.0' },
     @{ Name = 'OrgasmProgressNative'; Arguments = @(); Framework = 'net10.0' },
     @{ Name = 'UapGroupNative'; Arguments = @(); Framework = 'net10.0' },
+    @{ Name = 'MasterAttractionNative'; Arguments = @(); Framework = 'net10.0' },
     # 原生文化挂载/人口/职位/快照；通过 ProjectReference 实际编译当前 1.7 生产代码。
     @{ Name = 'CultureNative'; Arguments = @(); Framework = 'net10.0' },
     @{ Name = 'CosmeticNative'; Arguments = @(); Framework = 'net10.0' },
@@ -331,12 +332,12 @@ foreach ($suite in $suites) {
             $testArguments = $suite.Arguments
             if ($name -in @('SharedBed', 'InteractionProtection', 'RitualSelection', 'CombatantSpecialization', 'PnaLoad', 'BondRelations', 'PnaWeaponEffects', 'PnaMeleeQuality', 'PnaSpacerNative', 'RitualDevelopmentNative', 'CultureNative', 'CosmeticNative', 'UterusDevelopmentNative', 'RomanceControlNative')) { $properties += "-p:HarmonyAssemblyPath=$HarmonyAssemblyPath" }
             # 实际游戏专项共用本机 1.7 和 .NET 10；完整生产工程引用从构建记录读取。
-            if ($name -in @('PnaMeleeQuality', 'PnaSpacerNative', 'RitualDevelopmentNative', 'OrgasmProgressNative', 'UapGroupNative', 'CultureNative', 'CosmeticNative', 'UterusDevelopmentNative', 'RomanceControlNative')) {
+            if ($name -in @('PnaMeleeQuality', 'PnaSpacerNative', 'RitualDevelopmentNative', 'OrgasmProgressNative', 'UapGroupNative', 'MasterAttractionNative', 'CultureNative', 'CosmeticNative', 'UterusDevelopmentNative', 'RomanceControlNative')) {
                 $suiteDotnet = $NativeDotnetPath; $framework = $suite.Framework
                 $properties += "-p:GameRoot=$NativeGameRoot"
                 $testArguments = @($repoRoot, $NativeGameRoot)
             }
-            if ($name -in @('CultureNative', 'CosmeticNative', 'UterusDevelopmentNative', 'RomanceControlNative', 'OrgasmProgressNative', 'UapGroupNative')) {
+            if ($name -in @('CultureNative', 'CosmeticNative', 'UterusDevelopmentNative', 'RomanceControlNative', 'OrgasmProgressNative', 'UapGroupNative', 'MasterAttractionNative')) {
                 # 生产工程使用本机实际 RJW/动画/游戏 Harmony 引用；浪漫宿主直接采用游戏 Harmony 3，其余测试 Harmony 单独传入。
                 # 路径来自既有构建记录，缺失时让原生产构建明确失败，不退回旧 DLL。
                 $cultureBuild = Get-Content -LiteralPath (Join-Path $repoRoot '1.7/BUILD-INFO.json') -Raw | ConvertFrom-Json

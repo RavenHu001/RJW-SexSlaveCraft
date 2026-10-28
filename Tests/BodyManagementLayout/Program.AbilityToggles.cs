@@ -25,6 +25,15 @@ internal static partial class Program
             Require(!SSCUterusDevelopmentUtility.Find(p).FertilityEnabled);
             var labels = Widgets.Drawn.Where(d => d.Kind == "checkbox").Select(d => d.Label).ToArray();
             Require(labels.SequenceEqual(new[] { Strings.ITab_MilkProductionToggle, "SSC_PnaProduction_Label".Translate(), "SSC_BodyManagement_FertilityToggle".Translate() }));
+            // 点击帧绘制的是开启状态快照；下一帧才显示刚提交的关闭状态。
+            AssertPnaDetail("43%");
+            // 暂停后的新视图仍只显示一条原进度；显示查询不能补建载体或写健康／人格状态。
+            int notifications = p.health.Notifications;
+            Widgets.Drawn.Clear(); Draw(p); AssertPnaDetail("43%", disabled: true);
+            production.parent.Severity = .61f;
+            Widgets.Drawn.Clear(); Draw(p); AssertPnaDetail("61%", disabled: true);
+            Require(production.parent.Severity == .61f && !production.ProductionEnabled &&
+                p.health.Notifications == notifications && !p.Training.abilityToggles.HasEntries);
         });
         Run("替换PNA生产记录后旧身体视图不能改变新记录", () =>
         {
@@ -135,5 +144,15 @@ internal static partial class Program
         var production = new HediffComp_SeverityProduct { parent = record };
         record.Comp = production; pawn.health.hediffSet.hediffs.Add(record);
         return production;
+    }
+
+    /// <summary>同一生产项只有一条缩进积累信息，悬停共用解释；不固定任何语言的正文。</summary>
+    private static void AssertPnaDetail(string progress, bool disabled = false)
+    {
+        var toggle = Widgets.Drawn.Single(d => d.Kind == "checkbox" && d.Label == "SSC_PnaProduction_Label".Translate());
+        var detail = Widgets.Drawn.Single(d => d.Kind == "label" && d.Label == (disabled ? "SSC_PnaProduction_StorageDisabled" : "SSC_PnaProduction_Storage").Translate(progress));
+        Require(detail.Rect.x == toggle.Rect.x + 16 && detail.Rect.xMax == toggle.Rect.xMax && detail.Rect.y >= toggle.Rect.yMax);
+        Require(Widgets.Drawn.Any(d => d.Kind == "tip" && d.Rect.x == detail.Rect.x && d.Rect.y == detail.Rect.y &&
+            d.Label == "SSC_PnaProduction_Tip".Translate()));
     }
 }

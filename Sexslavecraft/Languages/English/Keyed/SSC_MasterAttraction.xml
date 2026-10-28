@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_MasterAttraction_ExplainBody>SSC master bond: base consensual attraction is at least 1.\nActual final attraction of {0} to {1}: {2}\nThe original RJW breakdown is shown above. This actual result includes the bond minimum and original eligibility, need and reservation rules.</SSC_MasterAttraction_ExplainBody>
+  <SSC_MasterAttraction_ExplainUnavailable>The current bond has changed. This attraction minimum no longer applies.</SSC_MasterAttraction_ExplainUnavailable>
+</LanguageData>

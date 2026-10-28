@@ -127,7 +127,10 @@ internal static partial class Program
     /// <summary>逐行核对实际矩形和测量高度；零内容时不绘制任何框或条目。</summary>
     private static void Layout(float width, float scale, int contents)
     {
-        Text.WidthScale = scale; var p = Body(contents, 1); var tab = new ITab_SexSlaveTraining(); var view = tab.Capture(p, width); view.Draw();
+        Text.WidthScale = scale; var p = Body(contents, 1);
+        // 四语完整身体组合沿用既有代表样本，加入 PNA 从属行的换行／高度检查。
+        if (contents == 3) AttachPnaProduction(p);
+        var tab = new ITab_SexSlaveTraining(); var view = tab.Capture(p, width); view.Draw();
         if (contents == 0) { Require(view.Height == 0 && Widgets.Drawn.Count == 0); return; }
         Require(Widgets.Drawn.Count(d => d.Kind == "section") == 1);
         float bottom = 0;
@@ -137,7 +140,8 @@ internal static partial class Program
             Require(draw.Rect.height >= Text.CalcHeight(draw.Label, draw.Rect.width - (draw.Kind == "checkbox" ? 24 : 0)));
             Require(draw.Rect.yMax <= view.Height - 12 && draw.Rect.xMax <= width - 12);
         }
-        Require(Widgets.Drawn.Count(d => d.Kind == "checkbox") == ((contents & 1) != 0 ? 1 : 0) + ((contents & 2) != 0 ? 1 : 0));
+        Require(Widgets.Drawn.Count(d => d.Kind == "checkbox") == ((contents & 1) != 0 ? 1 : 0) + ((contents & 2) != 0 ? 1 : 0) + (contents == 3 ? 1 : 0));
+        if (contents == 3) AssertPnaDetail("43%");
         if ((contents & 1) != 0)
         {
             var milk = Widgets.Drawn.Single(d => d.Kind == "checkbox" && d.Label == Strings.ITab_MilkProductionToggle);

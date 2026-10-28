@@ -30,6 +30,9 @@
     <Compile Include="common/Uap/SSCUapGroupApi.cs" />
     <Compile Include="common/Uap/SSCSettings.UapGroup.cs" />
     <Compile Include="ThePatches/Harmony_UapGroupCompatibility.cs" />
+    <!-- AI 辅助生成：实际绑定关系的单向自愿吸引力，仅接入 1.7。 -->
+    <Compile Include="common/SSCMasterAttractionUtility.cs" />
+    <Compile Include="ThePatches/Harmony_MasterAttraction.cs" />
     <Reference Include="Assembly-CSharp">
       <HintPath>$(GameRoot)/Assembly-CSharp.dll</HintPath>
       <Private>false</Private>
