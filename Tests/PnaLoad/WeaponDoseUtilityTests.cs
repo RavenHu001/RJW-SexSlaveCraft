@@ -84,7 +84,8 @@ internal static partial class Program
                 Near(.10,SSCPnaExposureUtility.GetLoad(p));Near(3,p.health.hediffSet.GetFirstHediffOfDef(CoatingResistance).Severity);
                 Equal(1,p.health.hediffSet.hediffs.Count(h=>h.def==CoatingResistance));
             });
-        foreach(float invalid in new[]{0f,-1f,float.NaN,float.PositiveInfinity,float.NegativeInfinity})
+        // 工具层区分零、负值、NaN与无穷；正负无穷共用非有限回退。
+        foreach(float invalid in new[]{0f,-1f,float.NaN,float.PositiveInfinity})
             Run("共用非法既有快照只读回退正常意识 "+invalid,()=>
             {
                 var p=CoatedPawn();var record=new Hediff{pawn=p,def=CoatingResistance,RawSeverity=invalid};
@@ -92,7 +93,7 @@ internal static partial class Program
                 var sample=SSCPnaWeaponDoseUtility.Capture(p,CoatingResistance);
                 Near(.15,SSCPnaWeaponDoseUtility.FromLoad(.15f,sample));Equal(0,p.health.Notifications);
             });
-        foreach(float invalid in new[]{float.NaN,float.PositiveInfinity,float.NegativeInfinity})
+        foreach(float invalid in new[]{float.NaN,float.PositiveInfinity})
             Run("共用非有限意识不制造快照 "+invalid,()=>
             {
                 var p=CoatedPawn();p.health.capacities.Consciousness=invalid;

@@ -7,10 +7,20 @@ internal static partial class Program
 {
     private static void RunTrainingIdentityTests()
     {
-        foreach (SSCInteractionKind kind in new[] { SSCInteractionKind.DailyTraining,
-            SSCInteractionKind.RitualTraining, SSCInteractionKind.BindingPreparation })
-        foreach (PawnIdentity identity in new[] { PawnIdentity.Unset, PawnIdentity.Master, PawnIdentity.Slave })
-        foreach (bool protection in new[] { true, false })
+        // 共享身份门槛在日常入口覆盖全部身份／总开关；其余入口验证接入及关闭保护后仍拒绝非法身份。
+        foreach (var (kind, identity, protection) in new[]
+        {
+            (SSCInteractionKind.DailyTraining, PawnIdentity.Unset, true),
+            (SSCInteractionKind.DailyTraining, PawnIdentity.Unset, false),
+            (SSCInteractionKind.DailyTraining, PawnIdentity.Master, true),
+            (SSCInteractionKind.DailyTraining, PawnIdentity.Master, false),
+            (SSCInteractionKind.DailyTraining, PawnIdentity.Slave, true),
+            (SSCInteractionKind.DailyTraining, PawnIdentity.Slave, false),
+            (SSCInteractionKind.RitualTraining, PawnIdentity.Unset, false),
+            (SSCInteractionKind.RitualTraining, PawnIdentity.Slave, false),
+            (SSCInteractionKind.BindingPreparation, PawnIdentity.Master, false),
+            (SSCInteractionKind.BindingPreparation, PawnIdentity.Slave, false)
+        })
             Run($"Training identity admission: {kind}, {identity}, protection={protection}", () =>
             {
                 var pair = Pair();

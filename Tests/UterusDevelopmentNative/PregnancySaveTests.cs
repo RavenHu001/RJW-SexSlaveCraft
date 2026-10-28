@@ -27,8 +27,13 @@ internal static partial class Program
                     Near(boosted ? 960000 : 1200000, result.p_end_tick - result.p_start_tick);
                 }
             });
-        foreach (string name in pregnancyNames)
-        foreach (string bad in new[] { "missing", "Undecided", "999" })
+        // 共用Comp在一种RJW妊娠覆盖三种异常；其余类型验证旧档接入，不重复完整异常矩阵。
+        foreach (var (name, bad) in new[]
+        {
+            ("Pregnant", "missing"), ("PregnantHuman", "missing"),
+            ("RJW_pregnancy", "missing"), ("RJW_pregnancy", "Undecided"),
+            ("RJW_pregnancy", "999"), ("RJW_pregnancy_beast", "missing")
+        })
             Check("batch4 old or invalid saved decision stays normal despite enabled mother: " + name + "/" + bad, () =>
             {
                 var p = NewPawn(); Start(p, 1); Toggle(p, true); NewPregnancy(p, name);

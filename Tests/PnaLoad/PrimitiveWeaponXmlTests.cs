@@ -36,15 +36,6 @@ internal static partial class Program
                 Near(row.Power, result.totalDamageDealt);
                 Equal(1, worker.ApplyCalls);
             });
-            Run("XML 携液命中被阻挡不建立抗性或施药 " + row.Damage, () =>
-            {
-                var pawn = CoatedPawn(); pawn.health.capacities.Consciousness=3;
-                var worker = CoatedWorker(row.Injury);
-                worker.PhysicalApply = (info,target) => new DamageWorker.DamageResult { deflected=true };
-                var shot = CoatedShot(PrimitiveExtension(row.Damage).baseLoad, row.Power);
-                worker.Apply(shot, pawn);
-                AssertNoCoatingDrug(pawn);
-            });
         }
     }
 

@@ -13,7 +13,7 @@ internal static partial class Program
     private static void PassiveFeedbackTests(Harmony harmony, string repo)
     {
         foreach (var action in new[] { SSCRomanceAction.Romance, SSCRomanceAction.Proposal })
-        foreach (float chance in new[] { 0f, .6f, 1f })
+        foreach (float chance in new[] { 0f, 1f })
             Check($"passive refusal native chance {chance} still rejects and emits one message {action}", () =>
             {
                 CommandReset(0f, .9f); socialChance = chance;

@@ -66,10 +66,10 @@ try {
     foreach ($dir in @('Scripts', 'Tests', 'shim', 'About', '1.7/Assemblies', 'Sexslavecraft/Properties', 'Sexslavecraft/Languages', 'Sexslavecraft/Defs/夹具目录', '1.7/Defs/夹具目录', '1.7/Languages', '1.7/Resources', 'Docs')) {
         [IO.Directory]::CreateDirectory((Join-Path $fixture $dir)) | Out-Null
     }
-    foreach ($file in @('Scripts/Test-All.ps1', 'Scripts/Test-DefMirrors.ps1', 'Scripts/New-Release.ps1', 'Scripts/Test-ModLayout.ps1', 'Scripts/ModLayout.ps1', 'Scripts/Sync-LanguagesMirror.ps1', 'Scripts/Test-RestrictionLocalization.ps1', 'Tests/NuGet.Config', 'VERSION', 'CHANGELOG.md', 'LoadFolders.xml',
+    foreach ($file in @('Scripts/Test-All.ps1', 'Scripts/Test-DefMirrors.ps1', 'Scripts/New-Release.ps1', 'Scripts/Test-ModLayout.ps1', 'Scripts/ModLayout.ps1', 'Scripts/Sync-LanguagesMirror.ps1', 'Scripts/Test-RestrictionLocalization.ps1', 'Scripts/Test-KeyedLocalization.ps1', 'Tests/NuGet.Config', 'VERSION', 'CHANGELOG.md', 'LoadFolders.xml',
         'Tests/TestProfiles.json', 'About/About.xml', '1.7/Assemblies/Sexslavecraft.dll', '1.7/BUILD-INFO.json', 'Sexslavecraft/Properties/AssemblyInfo.cs', 'README.md',
         'QUICK_START_EN.md', '读我，玩法介绍.md', '机制详解.md', 'PLAYER_GUIDE_EN.md',
-        'Docs/模组介绍.md', 'Docs/Players/README.md',
+        'Docs/模组介绍.md', 'Docs/Players/README.md', 'Docs/Development/Reference/性奴浪漫综合心情完整分支表.md',
         ('Docs/Releases/{0}/{0}发布说明.md' -f (Get-Content -LiteralPath (Join-Path $repo 'VERSION') -Raw).Trim()))) {
         $destination = Join-Path $fixture $file
         [IO.Directory]::CreateDirectory([IO.Path]::GetDirectoryName($destination)) | Out-Null
@@ -114,13 +114,17 @@ try {
     $fixtureVersion = [Diagnostics.FileVersionInfo]::GetVersionInfo((Join-Path $fixture '1.7/Assemblies/Sexslavecraft.dll')).ProductVersion
     if ($fixtureVersion -notmatch '^\d+\.\d+\.\d+$') { throw 'Fixture requires a DLL with three-part release product metadata.' }
     [IO.File]::WriteAllText((Join-Path $fixture 'VERSION'), $fixtureVersion, [Text.UTF8Encoding]::new($false))
-    # 发布前检查限制翻译，统一入口再检查完整语言镜像；夹具提供真实的四语前置文件。
+    # 仅提供发布资源预检所需真实四语文件；不需要执行机制宿主。
+    $preflightKeyedFiles = @('SSC_Restrictions.xml', 'SSC_RomanceMood.xml', 'SSC_Romance.xml',
+        'SSC_BodyManagement.xml', 'SSC_UterusDevelopment.xml', 'SSC_Cosmetic.xml', 'SSC_Keys.xml')
     foreach ($language in @('English', 'ChineseSimplified', 'ChineseTraditional', 'Russian')) {
-        $relative = "Languages/$language/Keyed/SSC_Restrictions.xml"
-        foreach ($prefix in @('1.7/', 'Sexslavecraft/')) {
-            $destination = Join-Path $fixture ($prefix + $relative)
-            [IO.Directory]::CreateDirectory([IO.Path]::GetDirectoryName($destination)) | Out-Null
-            Copy-Item -LiteralPath (Join-Path $repo ($prefix + $relative)) -Destination $destination
+        foreach ($keyedFile in $preflightKeyedFiles) {
+            $relative = "Languages/$language/Keyed/$keyedFile"
+            foreach ($prefix in @('1.7/', 'Sexslavecraft/')) {
+                $destination = Join-Path $fixture ($prefix + $relative)
+                [IO.Directory]::CreateDirectory([IO.Path]::GetDirectoryName($destination)) | Out-Null
+                Copy-Item -LiteralPath (Join-Path $repo ($prefix + $relative)) -Destination $destination
+            }
         }
     }
     # 语言镜像要求完整对应，另加含中文文件名的词条用于差异、缺失与手动同步场景。
@@ -131,7 +135,7 @@ try {
     foreach ($path in @($languageSource, $languageMirror)) {
         [IO.File]::WriteAllText($path, $languageText, [Text.UTF8Encoding]::new($false))
     }
-    $languageFileCount = 5
+    $languageFileCount = $preflightKeyedFiles.Count * 4 + 1
     # Use each real project name, but no production code or game runtime in this fixture.
     foreach ($project in Get-ChildItem -LiteralPath (Join-Path $repo 'Tests') -Recurse -Filter '*.csproj') {
         $relative = [IO.Path]::GetRelativePath($repo, $project.FullName)

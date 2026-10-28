@@ -76,11 +76,9 @@ internal static partial class Program
             Check("无甲目标判甲一次并按基线投送",()=>{var p=Pawn();Hit(p,.7f);Near(1,lastInjury);Equal(1,injuryCalls);Equal(1,armorCalls);Near(.2f,Doses.Single());});
             Check("有效链满甲不进入护甲或衣甲磨损",()=>{var p=Pawn(3);Rooted.Add(p);Wear(p,3);Hit(p,.6f);Equal(0,armorCalls);Equal(0,wearCalls);Equal(0,injuryCalls);Near(.2f,Doses.Single());});
             Check("主人优先免疫且不进入护甲",()=>{var p=Pawn(3);Rooted.Add(p);Masters.Add(p);Wear(p,3);Hit(p,.6f);Equal(0,armorCalls);Equal(0,wearCalls);Equal(0,Doses.Count);});
-            foreach(float penetration in new[]{.6f,.7f,.9f})
-            {
-                Check("真实护甲高于穿甲2必挡 "+penetration,()=>{var p=Pawn(penetration+2f);var r=Hit(p,penetration);Assert(r.deflected);Equal(0,Doses.Count);Equal(0,injuryCalls);});
-                Check("真实护甲不高于穿甲必穿 "+penetration,()=>{var p=Pawn(penetration);Hit(p,penetration);Near(.2f,Doses.Single());Near(1,lastInjury);});
-            }
+            // 同一护甲算法只保留必挡／必穿两个数学边界，不按普通穿甲数值重复。
+            Check("真实护甲高于穿甲2必挡 "+.7f,()=>{var p=Pawn(2.7f);var r=Hit(p,.7f);Assert(r.deflected);Equal(0,Doses.Count);Equal(0,injuryCalls);});
+            Check("真实护甲不高于穿甲必穿 "+.7f,()=>{var p=Pawn(.7f);Hit(p,.7f);Near(.2f,Doses.Single());Near(1,lastInjury);});
             Check("真实减伤随机能产生0或1钝伤且均不投药",()=>
             {var p=Pawn(1.6f);var seen=new HashSet<int>();int pass=0,block=0;
                 Rand.PushState(8123);try{for(int i=0;i<2000;i++){Doses.Clear();injuryCalls=0;lastType=null;var r=Hit(p,.6f);

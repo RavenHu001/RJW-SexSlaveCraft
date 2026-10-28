@@ -42,7 +42,8 @@ internal static class SilkWhipPoseTests
 
     internal static void Register(Action<string,Action> run,string root)
     {
-        foreach(bool flip in new[]{false,true}) foreach(int angle in new[]{0,53,90,180,270,307})
+        // 镜像各留轴向与斜向，三姿态及丝鞭专用倍率仍走完整生产绘制入口。
+        foreach(bool flip in new[]{false,true}) foreach(int angle in new[]{0,53})
             run($"丝鞭三阶段共用握持点与1.75手持缩放 {flip}/{angle}",()=>{
                 var f=new Fixture(); double r=angle*Math.PI/180;
                 var input=new Matrix4x4 {m00=(float)Math.Cos(r)*.75f,m20=-(float)Math.Sin(r)*.75f,
@@ -84,13 +85,12 @@ internal static class SilkWhipPoseTests
             }
             Check(((Texture2D)f.Original.mainTexture).Path=="silk item","source material not changed");
         });
-        foreach(string gate in new[]{"saving","unequip","dead","despawned","map","destroyed","clock","backward"})
+        // 全部失效原因由短鞭共用状态测试覆盖；丝鞭只确认两个生命周期锚点接入同一清理器。
+        foreach(string gate in new[]{"unequip","clock"})
             run("丝鞭复用姿态清理且无残留特效 "+gate,()=>{
                 var f=new Fixture();f.Verb.Cast();
-                switch(gate){case "saving":Scribe.mode=LoadSaveMode.Saving;break;case "unequip":f.Owner.equipment.Primary=null;break;
-                    case "dead":f.Owner.Dead=true;break;case "despawned":f.Owner.Spawned=false;break;
-                    case "map":f.Owner.Map=new Map();break;case "destroyed":f.Weapon.Destroyed=true;break;
-                    case "clock":Find.TickManager=new TickManager{TicksGame=1000};break;case "backward":f.Clock.TicksGame=999;break;}
+                switch(gate){case "unequip":f.Owner.equipment.Primary=null;break;
+                    case "clock":Find.TickManager=new TickManager{TicksGame=1000};break;}
                 Check(SSCPnaWhipPoseUtility.GetPose(f.Weapon)==SSCPnaWhipPose.Idle,"expired or invalid");
                 f.Draw();Check(Graphics.Sent.All(x=>!x.Overlay),"no leftover hit effect");
             });

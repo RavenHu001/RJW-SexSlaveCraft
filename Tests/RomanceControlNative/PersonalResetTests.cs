@@ -53,10 +53,11 @@ internal static partial class Program
                     var fresh = SSCRestrictionEditor.GetResetView(p); Require(fresh.CanReset);
                     Require(SSCRestrictionEditor.TryReset(p, fresh.Context, out _));
                 });
-            foreach (int stage in new[] { 1, 2, 3, 4 })
+            // 重置统一使用二阶编辑资格，只取门槛前后；不再跨三个已开放阶段重复整份重置。
+            foreach (int stage in new[] { 1, 2 })
                 Check("personal romance restore full defaults at editable stage " + stage, () =>
                 {
-                    var p = SocialSlave(severity: stage == 1 ? .1f : stage == 2 ? .3f : stage == 3 ? .5f : .9f);
+                    var p = SocialSlave(severity: stage == 1 ? .1f : .3f);
                     var c = Comp(p).romanceConfig = InvertedRomanceDefaults();
                     var view = SSCRomancePreferences.GetResetView(p); Equal(stage >= 2, view.CanReset); Equal(c, Comp(p).romanceConfig);
                     Equal(stage >= 2, SSCRomancePreferences.TryReset(p, view.Context, out _));

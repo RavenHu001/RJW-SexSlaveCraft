@@ -64,6 +64,9 @@ internal static partial class Program
             pawn.health.RemoveHediff(record); pawn.gender = Gender.Male; pawn.gender = Gender.Female;
             Require(SSCUterusDevelopmentUtility.Find(pawn) == null); Near(1f, Factor(pawn));
         });
+        // 后续敏感度／推进夹具也使用这些定义；Special独立运行不能依赖先执行本条Core用例。
+        SSCDefOf.ChainOfSexSlave = new HediffDef { defName = "Hediff_ChainOfSexSlave", hediffClass = typeof(Hediff_ChainOfSexSlave), initialSeverity = .1f };
+        SSCDefOf.BridleOfSexSlave = new HediffDef { defName = "Hediff_BridleOfSexSlave", hediffClass = typeof(Hediff_BridleOfSexSlave), initialSeverity = 1 };
         Check("batch5 actual binding, rebinding and unbinding preserve body development", () =>
         {
             // 提供真实但为空的游戏组件容器；不运行完整地图限制系统，也不替换绑定实现。
@@ -71,8 +74,6 @@ internal static partial class Program
                 .Single(field => field.FieldType == typeof(List<GameComponent>)).SetValue(Current.Game, new List<GameComponent>());
             var pawn = SurgeryPawn(); var record = Start(pawn, 1); Toggle(pawn, true);
             var first = SurgeryPawn(PawnIdentity.Master); var second = SurgeryPawn(PawnIdentity.Master);
-            SSCDefOf.ChainOfSexSlave = new HediffDef { defName = "Hediff_ChainOfSexSlave", hediffClass = typeof(Hediff_ChainOfSexSlave), initialSeverity = .1f };
-            SSCDefOf.BridleOfSexSlave = new HediffDef { defName = "Hediff_BridleOfSexSlave", hediffClass = typeof(Hediff_BridleOfSexSlave), initialSeverity = 1 };
             Require(SSCBondUtility.Bind(first, pawn));
             Require(SSCBondUtility.Bind(second, pawn, true)); Equal(second, SSCBondUtility.GetBoundMaster(pawn));
             Equal(record, SSCUterusDevelopmentUtility.Find(pawn)); Require(record.FertilityEnabled);

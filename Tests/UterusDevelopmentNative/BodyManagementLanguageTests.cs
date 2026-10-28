@@ -23,24 +23,24 @@ internal static partial class Program
         LanguageDatabase.activeLanguage = LanguageDatabase.defaultLanguage = loaded;
     }
 
-    /// <summary>四语均通过原版翻译器取得精简界面标题、开关和拒绝原因，不显示代码键。</summary>
+    /// <summary>通过原版翻译器取得代表性界面标题、开关和拒绝原因；四语键与参数另由轻量资源检查负责。</summary>
     private static void BodyManagementLanguageTests(string repo)
     {
-        foreach (string language in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" })
-            Check("body controls native keyed lookup: " + language, () =>
-            {
-                LoadBodyManagementLanguage(repo, language);
-                string title = "SSC_BodyManagement_Title".Translate();
-                string toggle = "SSC_BodyManagement_FertilityToggle".Translate();
-                var entries = XDocument.Load(Path.Combine(repo, "1.7/Languages", language, "Keyed/SSC_BodyManagement.xml")).Root;
-                Equal(entries.Element("SSC_BodyManagement_Title").Value, title);
-                Equal(entries.Element("SSC_BodyManagement_FertilityToggle").Value, toggle);
-                Require(!title.Contains("SSC_") && !toggle.Contains("SSC_"));
-                Require(!SSCUterusDevelopmentUtility.CanSetFertilityEnabled(NewPawn(), true, out string reason));
-                Equal("SSC_BodyManagement_NotStarted".Translate().ToString(), reason); Require(!reason.Contains("SSC_"));
-                string milk = Strings.ITab_MilkProductionToggle;
-                Equal("SSC_ITab_MilkProductionToggle".Translate().ToString(), milk); Require(!milk.Contains("SSC_"));
-            });
+        const string language = "ChineseSimplified";
+        Check("body controls native keyed lookup: " + language, () =>
+        {
+            LoadBodyManagementLanguage(repo, language);
+            string title = "SSC_BodyManagement_Title".Translate();
+            string toggle = "SSC_BodyManagement_FertilityToggle".Translate();
+            var entries = XDocument.Load(Path.Combine(repo, "1.7/Languages", language, "Keyed/SSC_BodyManagement.xml")).Root;
+            Equal(entries.Element("SSC_BodyManagement_Title").Value, title);
+            Equal(entries.Element("SSC_BodyManagement_FertilityToggle").Value, toggle);
+            Require(!title.Contains("SSC_") && !toggle.Contains("SSC_"));
+            Require(!SSCUterusDevelopmentUtility.CanSetFertilityEnabled(NewPawn(), true, out string reason));
+            Equal("SSC_BodyManagement_NotStarted".Translate().ToString(), reason); Require(!reason.Contains("SSC_"));
+            string milk = Strings.ITab_MilkProductionToggle;
+            Equal("SSC_ITab_MilkProductionToggle".Translate().ToString(), milk); Require(!milk.Contains("SSC_"));
+        });
         LoadBodyManagementLanguage(repo, "ChineseSimplified");
     }
 }

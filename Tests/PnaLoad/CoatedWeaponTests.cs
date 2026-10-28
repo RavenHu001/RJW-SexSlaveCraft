@@ -175,15 +175,14 @@ internal static partial class Program
             var p=CoatedPawn();p.health.OnAdded=h=>{if(h is Hediff_Injury)p.health.capacities.Consciousness=.2f;};
             CoatedWorker().Apply(CoatedShot(),p);Near(.15,SSCPnaExposureUtility.GetLoad(p));
         });
-        foreach(float bad in new[]{0f,-1f,float.NaN,float.PositiveInfinity})
-            Run("涂覆非法旧快照回退1 "+bad,()=>
-            {
-                var p=CoatedPawn();p.health.hediffSet.hediffs.Add(new Hediff{pawn=p,def=CoatingResistance,RawSeverity=bad});
-                CoatedWorker().Apply(CoatedShot(),p);Near(.15,SSCPnaExposureUtility.GetLoad(p));
-            });
-        foreach(float bad in new[]{float.NaN,float.PositiveInfinity,float.NegativeInfinity})
-            Run("涂覆异常意识不建立非法快照 "+bad,()=>
-            {var p=CoatedPawn();p.health.capacities.Consciousness=bad;CoatedWorker().Apply(CoatedShot(),p);Near(.15,SSCPnaExposureUtility.GetLoad(p));Assert(!p.health.hediffSet.HasHediff(CoatingResistance),"无快照");});
+        // 非法数值分类由共用剂量工具覆盖；这里仅保留真实涂覆入口的回退与不创建快照两条接入。
+        Run("涂覆非法旧快照回退1 "+float.NaN,()=>
+        {
+            var p=CoatedPawn();p.health.hediffSet.hediffs.Add(new Hediff{pawn=p,def=CoatingResistance,RawSeverity=float.NaN});
+            CoatedWorker().Apply(CoatedShot(),p);Near(.15,SSCPnaExposureUtility.GetLoad(p));
+        });
+        Run("涂覆异常意识不建立非法快照 "+float.PositiveInfinity,()=>
+        {var p=CoatedPawn();p.health.capacities.Consciousness=float.PositiveInfinity;CoatedWorker().Apply(CoatedShot(),p);Near(.15,SSCPnaExposureUtility.GetLoad(p));Assert(!p.health.hediffSet.HasHediff(CoatingResistance),"无快照");});
         Run("涂覆嵌套先建快照不被外层覆盖或反算剂量",()=>
         {
             var p=CoatedPawn();p.health.capacities.Consciousness=3;var w=CoatedWorker();bool nested=false;

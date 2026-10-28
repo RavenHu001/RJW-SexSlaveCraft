@@ -146,9 +146,14 @@ internal static partial class Program
             Widgets.Buttons.Add("Accept");window.DoWindowContents(new Rect(0,0,640,580));window.DoWindowContents(new Rect(0,0,640,580));
             Check(Math.Abs(c.Appearance.Color.b-.3f)<1e-5&&c.Appearance.Color.a==.85f,"改变明度不改变Alpha");
         });
-        foreach(var identity in new[]{PawnIdentity.Unset,PawnIdentity.Master,PawnIdentity.Slave})
-        foreach(bool qualified in new[]{false,true})
-        foreach(bool saved in new[]{false,true})
+        // 性奴保留资格／保存选择四种语义；其他身份在具备资格时仍须保持只读。
+        foreach(var (identity,qualified,saved) in new[]
+        {
+            (PawnIdentity.Unset,true,false), (PawnIdentity.Unset,true,true),
+            (PawnIdentity.Master,true,false), (PawnIdentity.Master,true,true),
+            (PawnIdentity.Slave,false,false), (PawnIdentity.Slave,false,true),
+            (PawnIdentity.Slave,true,false), (PawnIdentity.Slave,true,true)
+        })
         {
             var id=identity;bool q=qualified,choice=saved;
             Run($"任职UI身份{id}资格{q}保存{choice}",()=>

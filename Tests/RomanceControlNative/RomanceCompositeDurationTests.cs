@@ -11,10 +11,10 @@ internal static partial class Program
     /// <summary>模拟已取证 VEF 对默认期限的显式化，实际 tracker、worker、原版记忆及 SSC 提交全部执行。</summary>
     private static void RomanceCompositeDurationTests()
     {
+        // 期限匹配不读取受虐特质；特质对应的终端分支由完整真实事件回归验证。
         foreach (string mode in new[] { "equivalent", "changed" })
         foreach (string action in new[] { "romance", "proposal", "passive" })
-        foreach (bool masochist in new[] { false, true })
-            Check("composite duration postprocess " + mode + "/" + action + "/masochist=" + masochist, () =>
+            Check("composite duration postprocess " + mode + "/" + action + "/masochist=False", () =>
             {
                 var boundary = new Harmony("ssc.tests.composite.duration-postprocess");
                 try
@@ -27,7 +27,6 @@ internal static partial class Program
                     if (action == "passive")
                     {
                         var actor = SocialPawn(); owner = SocialSlave(); Comp(owner).romanceConfig = new() { allowAcceptRomance = false };
-                        if (masochist) owner.story.traits.allTraits.Add(new Trait(SSCRomanceMoodDefOf.Masochist, 0));
                         native = ThoughtDefOf.FailedRomanceAttemptOnMeLowOpinionMood;
                         Require(actor.interactions.TryInteractWith(owner, InteractionDefOf.RomanceAttempt));
                     }
@@ -35,7 +34,6 @@ internal static partial class Program
                     {
                         var kind = action == "proposal" ? SSCRomanceAction.Proposal : SSCRomanceAction.Romance;
                         var pair = CommandPair(kind); owner = pair.actor;
-                        if (masochist) owner.story.traits.allTraits.Add(new Trait(SSCRomanceMoodDefOf.Masochist, 0));
                         native = DefDatabase<ThoughtDef>.GetNamed(action == "proposal" ? "RejectedMyProposalMood" : "RebuffedMyRomanceAttemptMood");
                         SubmitAndRun(owner, pair.target, kind, out _);
                     }
@@ -45,8 +43,7 @@ internal static partial class Program
                     if (mode == "equivalent")
                     {
                         string branch = memories.OfType<Thought_MemorySSCCompositeRomance>().Single().Data.BranchId;
-                        string trait = masochist ? "M" : "N";
-                        Equal(action == "romance" ? "E07-S4-" + trait + "-G" : action == "proposal" ? "E09-S4-" + trait + "-G" : "E03-S4-" + trait + "-D", branch);
+                        Equal(action == "romance" ? "E07-S4-N-G" : action == "proposal" ? "E09-S4-N-G" : "E03-S4-N-D", branch);
                     }
                 }
                 finally { boundary.UnpatchAll(boundary.Id); durationPostprocessMode = null; }

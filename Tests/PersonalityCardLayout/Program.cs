@@ -24,9 +24,10 @@ internal static class Program
     private static int Main(string[] args)
     {
         repo = SscTestPaths.RepositoryRoot(args.Length > 0 ? args[0] : null);
-        foreach (string language in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" })
-            foreach (int count in new[] { 0, 3, 15, 30 })
-                Run($"{language} / {count} traits: fixed information stays visible", () => Layout(language, count));
+        // 空、短、溢出列表各选代表；下方资格用例已覆盖四语长列表，不再展开语言与数量全表。
+        foreach (var sample in new[] { (Language: "ChineseSimplified", Count: 0), (Language: "ChineseTraditional", Count: 3),
+            (Language: "English", Count: 15), (Language: "Russian", Count: 30) })
+            Run($"{sample.Language} / {sample.Count} traits: fixed information stays visible", () => Layout(sample.Language, sample.Count));
         Run("Long trait names wrap without overlapping the next row", LongNames);
         Run("Scroll regions are independent and the last trait is reachable", IndependentScrolling);
         Run("Switching gels resets scrolling while refresh preserves it", ScrollLifecycle);

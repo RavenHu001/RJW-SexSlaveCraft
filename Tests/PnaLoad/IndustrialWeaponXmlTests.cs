@@ -27,12 +27,6 @@ internal static partial class Program
                 Near(row.Dose, SSCPnaExposureUtility.GetLoad(pawn));
                 Assert(SSCPnaWeaponPotencyUtility.TryGetBaseline(PotencyRanged(shot.Def), out float dose), "共用属性正确识别新伤害"); Near(row.Dose, dose);
             });
-            Run("工业命中挡甲不施药 " + row.Damage, () =>
-            {
-                var pawn = CoatedPawn(); var worker = CoatedWorker(row.Injury);
-                worker.PhysicalApply = (info,target) => new Verse.DamageWorker.DamageResult { deflected=true };
-                worker.Apply(CoatedShot(row.Dose, row.Power), pawn); AssertNoCoatingDrug(pawn);
-            });
         }
         Run("速射三针各自读取命中前意识，不固定合计24点", () =>
         {

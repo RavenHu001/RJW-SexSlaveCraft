@@ -6,25 +6,9 @@ using Verse;
 
 internal static partial class Program
 {
-    /// <summary>显式验收十三类事件映射、关系阶段清理、零值及保存顺序，不重写生产清理算法。</summary>
+    /// <summary>验收关系阶段清理、零值及保存顺序；事件语义映射随既有真实事件核对。</summary>
     private static void RomanceSemanticGroupTests()
     {
-        var expected=new[]{SSCRomanceSemanticGroup.PassiveRomance,SSCRomanceSemanticGroup.PassiveProposal,
-            SSCRomanceSemanticGroup.PassiveRomance,SSCRomanceSemanticGroup.PassiveProposal,SSCRomanceSemanticGroup.Separation,
-            SSCRomanceSemanticGroup.CommandRomance,SSCRomanceSemanticGroup.CommandRomance,SSCRomanceSemanticGroup.CommandProposal,
-            SSCRomanceSemanticGroup.CommandProposal,SSCRomanceSemanticGroup.Separation,SSCRomanceSemanticGroup.Separation,
-            SSCRomanceSemanticGroup.Separation,SSCRomanceSemanticGroup.Separation};
-        for(int index=0;index<expected.Length;index++)
-        {
-            int number=index+1;var group=expected[index];
-            Check("semantic thirteen events map exactly once "+number,()=>Equal(group,SSCRomanceMoodSemantics.Of((SSCRomanceCompositeEvent)number)));
-        }
-        foreach(var branch in SSCRomanceMoodCatalog.EventBranches.Where(b=>b.Value==0))
-            Check("semantic zero retains event group "+branch.Id,()=>
-            {
-                var selection=BranchSelection(branch);Require(!selection.HasMemory);
-                Equal(expected[(int)branch.Event-1],selection.SemanticGroup);Require(selection.SemanticGroup!=SSCRomanceSemanticGroup.None);
-            });
         Check("semantic game occurrence watermark survives actual Scribe",()=>
         {
             var components=(List<GameComponent>)AccessTools.Field(typeof(Game),"components").GetValue(Current.Game);

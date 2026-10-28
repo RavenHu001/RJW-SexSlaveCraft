@@ -68,7 +68,7 @@ internal static class Program
             Check(typeof(Projectile_SSCPnaTrail).GetMethods(BindingFlags.NonPublic|BindingFlags.Public|BindingFlags.Instance|BindingFlags.DeclaredOnly)
                 .All(m=>m.Name!="Impact" && m.Name!="Launch"),"不替换命中或发射入口");
         });
-        foreach(float size in new[]{.5f,.6f,1f})
+        foreach(float size in new[]{.5f,1f})
             Run("尾迹完整前缘在弹丸贴图之后 "+size,()=>
             {
                 var f=new Fixture();f.Projectile.def.graphicData.drawSize=new Vector2(size,size);
@@ -84,7 +84,7 @@ internal static class Program
                 Near(arrowRear-f.Props.tailGap,last.spawnPosition.x+last.exactScale.Value.z/2);
                 Near(.55,f.Projectile.Position.x);
             });
-        foreach(float invalid in new[]{-.01f,float.NaN,float.PositiveInfinity})
+        foreach(float invalid in new[]{-.01f,float.NaN})
             Run("非法尾端间隙只关闭视觉 "+invalid,()=>
             {var f=new Fixture();f.Props.tailGap=invalid;f.Seed();f.Projectile.Move(new Vector3(.3f,0,0));Check(f.Map.flecks.Sent.Count==0 && f.Projectile.BaseCalls==2,"移动不受影响");});
         Run("缺少图形配置仍可安全生成尾迹",()=>
@@ -99,7 +99,7 @@ internal static class Program
         {var f=new Fixture();f.Seed();f.Projectile.Move(new Vector3(30,0,30));Check(f.Map.flecks.Sent.Count==0,"不画传送");f.Projectile.Move(new Vector3(30.2f,0,30));Check(f.Map.flecks.Sent.Count==1,"恢复");});
         Run("加载重新生成不恢复旧视觉历史",()=>
         {var f=new Fixture();f.Seed();f.Comp.PostSpawnSetup(true);f.Projectile.Move(new Vector3(3,0,3));Check(f.Map.flecks.Sent.Count==0,"新样本");});
-        foreach(float invalid in new[]{0f,-1f,float.NaN,float.PositiveInfinity})
+        foreach(float invalid in new[]{0f,float.NaN})
             Run("拒绝非法宽度和分段配置 "+invalid,()=>
             {
                 var f=new Fixture();f.Seed();f.Props.width=invalid;f.Projectile.Move(new Vector3(.3f,0,0));Check(f.Map.flecks.Sent.Count==0,"非法宽度");

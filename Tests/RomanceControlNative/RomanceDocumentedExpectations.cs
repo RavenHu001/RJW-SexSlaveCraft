@@ -8,6 +8,15 @@ internal static partial class Program
     private sealed record DocumentedControl(string Id, SSCRomanceControlState State, int Stage, bool Masochist, int Value);
     private static Dictionary<string, DocumentedMood> documentedMoods;
     private static Dictionary<string, DocumentedControl> documentedControls;
+    // 保留原十三类事件的独立语义预期，不调用生产映射计算期望；零值分支也沿此表核对。
+    private static readonly SSCRomanceSemanticGroup[] documentedEventSemantics =
+    {
+        SSCRomanceSemanticGroup.PassiveRomance, SSCRomanceSemanticGroup.PassiveProposal,
+        SSCRomanceSemanticGroup.PassiveRomance, SSCRomanceSemanticGroup.PassiveProposal, SSCRomanceSemanticGroup.Separation,
+        SSCRomanceSemanticGroup.CommandRomance, SSCRomanceSemanticGroup.CommandRomance, SSCRomanceSemanticGroup.CommandProposal,
+        SSCRomanceSemanticGroup.CommandProposal, SSCRomanceSemanticGroup.Separation, SSCRomanceSemanticGroup.Separation,
+        SSCRomanceSemanticGroup.Separation, SSCRomanceSemanticGroup.Separation
+    };
 
     // 独立预期继续来自维护者的分支表；实际事件不以生产目录中的数值自证。
     private static void LoadDocumentedMoodExpectations(string repo)
@@ -42,6 +51,8 @@ internal static partial class Program
         Equal(raw <= -10 ? "D" : raw >= 60 ? "C" : "G", expected.Band);
         Require(SSCRomanceMoodCatalog.TryResolve((SSCRomanceCompositeEvent)expected.Number, expected.Stage, expected.Masochist, raw, out var selection));
         Equal(expected.Id, selection.Branch.Id);
+        Equal(documentedEventSemantics[expected.Number - 1], selection.SemanticGroup);
+        Require(selection.SemanticGroup != SSCRomanceSemanticGroup.None);
         int days = expected.Value == 0 ? 0 : expected.LongDays > 0 && expected.Value < 0 && raw > 0 ? expected.LongDays : 3;
         Equal(days * 60000, selection.DurationTicks);
         Equal(days == 0 ? SSCRomanceMoodGroup.None : days == 3 ? SSCRomanceMoodGroup.Short : SSCRomanceMoodGroup.Long, selection.Group);
@@ -51,7 +62,7 @@ internal static partial class Program
         Require(!ReferenceEquals(data, data.Copy()));
         if (expected.Value == 0)
         {
-            Require(memory == null);
+            Require(!selection.HasMemory && memory == null);
             Require(!Thought_MemorySSCCompositeRomance.TryCreate(selection, out var zero) && zero == null);
             return;
         }

@@ -102,6 +102,8 @@ if ($dllVersion.FileVersion -ne $fileVersion -or $dllVersion.ProductVersion -ne 
 
 # 镜像一致性统一执行并记录；发布另检查 1.7 翻译键／参数。不启动任何游戏版本。
 & (Join-Path $PSScriptRoot 'Test-RestrictionLocalization.ps1') -GameVersion '1.7'
+# 文案矩阵精简后，集中检查浪漫／身体管理消费键及参数；失败沿原Stop策略阻止后续回归与打包。
+& (Join-Path $PSScriptRoot 'Test-KeyedLocalization.ps1') -RepositoryRoot $repoRoot
 $validation = & (Join-Path $PSScriptRoot 'Test-All.ps1') -GameVersion '1.7' -Scope All -HarmonyAssemblyPath $HarmonyAssemblyPath -ReportDirectory $ValidationReportDirectory -PassThru
 if ($null -eq $validation -or -not $validation.Success -or $validation.Scope -ne 'All' -or -not $validation.FullRegression) {
     throw 'Release requires a complete successful All-scope regression report.'

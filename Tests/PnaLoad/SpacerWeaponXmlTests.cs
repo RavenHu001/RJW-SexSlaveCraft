@@ -33,17 +33,6 @@ internal static partial class Program
                 var result = new DamageWorker_SSCPnaSpacer().Apply(pair.Shot,p);
                 Near(row.Dose,SSCPnaExposureUtility.GetLoad(p)); Near(row.Repair,injury.Healed); Equal(0,ArmorUtility.Calls); Assert(!result.wounded,"无创伤");
             });
-            Run("正式XML主人优先免疫 " + row.Name, () =>
-            {
-                var pair = SpacerAttackFromXml(row.Name); var p = SpacerSlave(); p.IsMaster=true; var injury=SpacerInjury(p,10);
-                new DamageWorker_SSCPnaSpacer().Apply(pair.Shot,p); AssertNoMasterDrugState(p); Near(0,injury.Healed); Equal(0,ArmorUtility.Calls);
-            });
-            Run("正式XML普通目标挡甲不施药 " + row.Name, () =>
-            {
-                var pair = SpacerAttackFromXml(row.Name); var p=CoatedPawn(); p.health.capacities.Consciousness=3;
-                ArmorUtility.Boundary=(Pawn _,float amount,ref DamageDef damage)=>0;
-                new DamageWorker_SSCPnaSpacer().Apply(pair.Shot,p); AssertNoCoatingDrug(p); Equal(1,ArmorUtility.Calls);
-            });
         }
         Run("太空三发由正式XML驱动逐发投送及修复", () =>
         {

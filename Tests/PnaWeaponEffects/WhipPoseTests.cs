@@ -224,7 +224,7 @@ internal static class WhipPoseTests
             Check(f.Pose == SSCPnaWhipPose.Idle, "only actual melee entry triggers");
         });
         foreach (bool flip in new[] { false, true })
-            foreach (int angle in new[] { 0, 90, 180, 270 })
+            foreach (int angle in new[] { 90, 270 })
                 run($"短鞭四方向待机柄尾向下45度且柄心不跳 {flip}/{angle}", () => {
                     var f = new Fixture(); double r = angle * Math.PI / 180;
                     var source = new Matrix4x4 {m00=(float)Math.Cos(r)*1.2f, m20=-(float)Math.Sin(r)*1.2f,
@@ -233,32 +233,32 @@ internal static class WhipPoseTests
                     PawnRenderUtility.NextMesh = flip ? MeshPool.plane10Flip : MeshPool.plane10;
                     f.Draw(); Near(1, Graphics.Sent.Count); CheckIdle(source, Graphics.Sent.Single().Matrix, flip);
                 });
-        foreach (bool flip in new[] { false, true })
-            foreach (int angle in new[] { 0, 53, 90, 180, 270, 307 })
-                run($"短鞭缩放与三阶段保持原版握持点 {flip}/{angle}", () => {
-                    foreach (float scale in new[] { .75f, 1f, 1.4f, 2f }) {
-                        var f = new Fixture(); double r = angle * Math.PI / 180;
-                        var source = new Matrix4x4 { m00=(float)Math.Cos(r)*scale, m20=-(float)Math.Sin(r)*scale,
-                            m02=(float)Math.Sin(r)*scale, m22=(float)Math.Cos(r)*scale,
-                            m03=7, m23=9, m13=.05f, m33=1 };
-                        PawnRenderUtility.NextMesh = flip ? MeshPool.plane10Flip : MeshPool.plane10;
-                        PawnRenderUtility.NextMatrix = source;
-                        // 待机 -> 挥击 -> 回落 -> 待机；同一输入握持点在姿态切换时不漂移。
-                        foreach (int age in new[] { -1, 0, 6, 18 }) {
-                            if (age == 0) f.Verb.Cast();
-                            if (age >= 0) f.Clock.TicksGame = 1000 + age;
-                            Graphics.Sent.Clear(); f.Draw();
-                            var actual = Graphics.Sent.Single().Matrix;
-                            CheckGrip(source, actual, flip);
-                            Near(scale * scale, actual.m00*actual.m00+actual.m20*actual.m20);
-                            Near(scale * scale, actual.m02*actual.m02+actual.m22*actual.m22);
-                        }
-                        // 原版传入的走动／出手平移仍原样传递，不钉死到角色静态格心。
-                        source.m03 += .2f; source.m23 -= .15f;
-                        PawnRenderUtility.NextMatrix = source;
-                        Graphics.Sent.Clear(); f.Draw(); CheckGrip(source, Graphics.Sent.Single().Matrix, flip);
-                    }
-                });
+        // 四个真实样本保留原尺度端点、轴向／斜向和两种镜像，不再执行角度×尺度全组合。
+        foreach (var sample in new[] { (Flip: false, Angle: 53, Scale: .75f), (Flip: false, Angle: 90, Scale: 1f),
+            (Flip: true, Angle: 180, Scale: 1.4f), (Flip: true, Angle: 307, Scale: 2f) })
+            run($"短鞭缩放与三阶段保持原版握持点 {sample.Flip}/{sample.Angle}", () => {
+                bool flip = sample.Flip; float scale = sample.Scale;
+                var f = new Fixture(); double r = sample.Angle * Math.PI / 180;
+                var source = new Matrix4x4 { m00=(float)Math.Cos(r)*scale, m20=-(float)Math.Sin(r)*scale,
+                    m02=(float)Math.Sin(r)*scale, m22=(float)Math.Cos(r)*scale,
+                    m03=7, m23=9, m13=.05f, m33=1 };
+                PawnRenderUtility.NextMesh = flip ? MeshPool.plane10Flip : MeshPool.plane10;
+                PawnRenderUtility.NextMatrix = source;
+                // 待机 -> 挥击 -> 回落 -> 待机；同一输入握持点在姿态切换时不漂移。
+                foreach (int age in new[] { -1, 0, 6, 18 }) {
+                    if (age == 0) f.Verb.Cast();
+                    if (age >= 0) f.Clock.TicksGame = 1000 + age;
+                    Graphics.Sent.Clear(); f.Draw();
+                    var actual = Graphics.Sent.Single().Matrix;
+                    CheckGrip(source, actual, flip);
+                    Near(scale * scale, actual.m00*actual.m00+actual.m20*actual.m20);
+                    Near(scale * scale, actual.m02*actual.m02+actual.m22*actual.m22);
+                }
+                // 原版传入的走动／出手平移仍原样传递，不钉死到角色静态格心。
+                source.m03 += .2f; source.m23 -= .15f;
+                PawnRenderUtility.NextMatrix = source;
+                Graphics.Sent.Clear(); f.Draw(); CheckGrip(source, Graphics.Sent.Single().Matrix, flip);
+            });
         run("短鞭保留存档类型但继承原版出手且柄击仍为Blunt", () => {
             var maneuver = XDocument.Load(Path.Combine(root, "1.7/Defs/ManeuverDefs/SSC_PnaIndustrialManeuvers.xml"));
             Check(maneuver.Descendants("verbClass").Single().Value == "SexSlaveCraft.Verb_MeleeAttackSSCPnaWhip", "saved verb type unchanged");

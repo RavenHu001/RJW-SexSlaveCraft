@@ -122,14 +122,14 @@ internal static partial class Program
             });
             ShareCheck("串联：普通枪托类物理攻击继续分摊",()=>
             {var (master,slaves)=ShareMaster(1);master.TakeDamage(SharedShot(sharedOrdinary));Equal(2,ShareHits.Count);Near(3.5f,ShareHits[0].Info.Amount);Equal(0,Doses.Count);});
-            foreach(float load in new[]{.20f,.10f,.25f})
-                ShareCheck("串联：太空主攻击主人不生成性奴受击 "+load,()=>
-                {
-                    var (master,slaves)=ShareMaster(1);var damage=new DamageDef{defName="SSC_SpaceShare",harmsHealth=true,workerClass=typeof(DamageWorker_SSCPnaSpacer),armorCategory=DamageArmorCategoryDefOf.Sharp,
-                        modExtensions=new List<DefModExtension>{new SSCPnaSpacerExtension{baseLoad=load,recordHediff=new HediffDef{defName="SpaceSnapshot"}}}};
-                    Assert(!SSCMasterBondUtility.CanRedirectDamageFrom(master,SharedShot(damage)));
-                    master.TakeDamage(SharedShot(damage));Equal(0,ShareHits.Count);Equal(0,Doses.Count);Equal(0,injuryCalls);Equal(0,armorCalls);
-                });
+            // 主人免疫按处理器识别，与合法药量无关；保留一次真实TakeDamage串联。
+            ShareCheck("串联：太空主攻击主人不生成性奴受击 "+.20f,()=>
+            {
+                var (master,slaves)=ShareMaster(1);var damage=new DamageDef{defName="SSC_SpaceShare",harmsHealth=true,workerClass=typeof(DamageWorker_SSCPnaSpacer),armorCategory=DamageArmorCategoryDefOf.Sharp,
+                    modExtensions=new List<DefModExtension>{new SSCPnaSpacerExtension{baseLoad=.20f,recordHediff=new HediffDef{defName="SpaceSnapshot"}}}};
+                Assert(!SSCMasterBondUtility.CanRedirectDamageFrom(master,SharedShot(damage)));
+                master.TakeDamage(SharedShot(damage));Equal(0,ShareHits.Count);Equal(0,Doses.Count);Equal(0,injuryCalls);Equal(0,armorCalls);
+            });
             ShareCheck("串联：太空直接有效链投送仍运作",()=>
             {var p=Pawn(3);Rooted.Add(p);p.TakeDamage(Info(p,.6f));Near(.2f,Doses.Single());Equal(0,armorCalls);});
             ShareCheck("普通伤害空闲路径不分配上下文",()=>

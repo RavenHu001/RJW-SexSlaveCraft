@@ -93,9 +93,14 @@ internal static partial class Program
         Run("原版身体最终材质保留源Alpha并只乘一次",()=>{var p=new Pawn();AppearanceOwner(p).Set(AppearanceValue(),false);var source=AppearanceSource();source.color=new Color(.2f,.4f,.6f,.5f);var m=AppearanceBody(p,source);Check(GelTint(m).a==.2f&&m.color.r==1&&source.color.r==.2f,"源Alpha与个体Alpha相乘一次");});
         Run("SA服装预缓存最终阶段读取个体颜色",AppearanceApparel);
         Run("新旧默认参数的像素输出保持一致",AppearanceDefaultPixels);
-        // 颜色极值含零通道，Alpha极值含完全透明；验证原版眼睛和FA五官始终独立。
-        foreach(var color in new[]{new Color(1,0,0,1),new Color(0,1,0,1),new Color(0,0,1,1),new Color(0,0,0,1),new Color(1,1,1,1)})
-        foreach(float alpha in new[]{0f,.01f,.85f,1f})
+        // 颜色通道与Alpha分别选边界，保留五色及完全透明／低透明／默认／不透明，不展开二者全交叉。
+        foreach(var (color,alpha) in new[]
+        {
+            (new Color(1,0,0,1),0f), (new Color(1,0,0,1),.01f),
+            (new Color(1,0,0,1),.85f), (new Color(1,0,0,1),1f),
+            (new Color(0,1,0,1),.85f), (new Color(0,0,1,1),.85f),
+            (new Color(0,0,0,1),.85f), (new Color(1,1,1,1),.85f)
+        })
         {var captured=color;float opacity=alpha;Run($"任意RGB({color.r},{color.g},{color.b})与Alpha{alpha}保眼和动画",()=>AppearanceChannels(captured,opacity));}
     }
 

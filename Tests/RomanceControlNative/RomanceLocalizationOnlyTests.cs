@@ -34,9 +34,11 @@ internal static partial class Program
             foreach (string file in new[] { "SSC_RomanceMood.xml", "SSC_Romance.xml" })
                 foreach (var entry in XDocument.Load(Path.Combine(repo, "1.7/Languages", locale, "Keyed", file)).Root.Elements())
                     language.keyedReplacements[entry.Name.LocalName] = new LoadedLanguage.KeyedReplacement { key = entry.Name.LocalName, value = entry.Value };
-            foreach (var branch in SSCRomanceMoodCatalog.EventBranches)
-                Check("copy event text " + locale + "/" + branch.Id, () =>
+            // 零值、正负值、短／长期、三好感档与双方特质各有代表；完整机制分支不在文案宿主重复。
+            foreach (string id in new[] { "E03-S3-N-D", "E01-S3-N-G", "E01-S4-M-C", "E09-S4-N-G", "E13-S4-N-C", "E06-S4-M-D" })
+                Check("copy event text " + locale + "/" + id, () =>
                 {
+                    Require(SSCRomanceMoodCatalog.TryGet(id, out var branch));
                     Equal(language.keyedReplacements[branch.NameKey].value, SSCRomanceMoodText.Name(branch));
                     Equal(language.keyedReplacements[branch.DescriptionKey].value, SSCRomanceMoodText.Description(branch));
                     int opinion = branch.Opinion == SSCRomanceOpinionBand.Disliked ? -10 : branch.Opinion == SSCRomanceOpinionBand.Close ? 60 : 30;
@@ -46,9 +48,11 @@ internal static partial class Program
                     Equal(SSCRomanceMoodText.Name(branch).CapitalizeFirst(), memory.LabelCap);
                     Equal(SSCRomanceMoodText.Description(branch), memory.Description);
                 });
-            foreach (var branch in SSCRomanceMoodCatalog.ControlBranches)
-                Check("copy continuous text " + locale + "/" + branch.Id, () =>
+            // 三个控制态同时代表二／三／四阶、普通／受虐及负／零／正数值。
+            foreach (string id in new[] { "C-A-S2-N", "C-B-S3-M", "C-AB-S4-M" })
+                Check("copy continuous text " + locale + "/" + id, () =>
                 {
+                    Require(SSCRomanceMoodCatalog.TryGet(id, out var branch));
                     var pawn = ControlPawn(branch.Stage, branch.Masochist, branch.Control != SSCRomanceControlState.Passive, branch.Control != SSCRomanceControlState.Active);
                     var thought = ControlThought(pawn); Require(thought.Active);
                     Equal(SSCRomanceMoodText.Name(branch).CapitalizeFirst(), thought.LabelCap);
