@@ -368,7 +368,9 @@ internal static partial class Program
             Check("sensitivity native language and XML mirrors: " + language, () =>
             {
                 LoadBodyManagementLanguage(repo, language); var p = SensitivityPawn(); var record = SetSensitivity(p, 4); SetChainStage(p, 2);
-                Require(record.Description.Contains("4") || record.Description.Contains("四") || record.Description.Contains("IV"));
+                // 正式档位可用设定名称，不强制含数字；保存四档与实际二档必须同时显示当前语言的名称。
+                Require(record.Description.Contains("SSC_Sensitivity_Level4".Translate()));
+                Require(record.Description.Contains("SSC_Sensitivity_Level2".Translate()));
                 Require(record.Description.Contains("0.75")); Require(!record.Description.Contains("SSC_Sensitivity_"));
                 foreach (string section in new[] { "Keyed", "DefInjected/HediffDef", "DefInjected/ThoughtDef" })
                 {

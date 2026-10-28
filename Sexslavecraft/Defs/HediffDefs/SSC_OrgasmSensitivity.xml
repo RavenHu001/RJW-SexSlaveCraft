@@ -3,18 +3,18 @@
   <!-- Severity 是稳定枚举；所有效果数值只配置在扩展中，阶段只提供名称。 -->
   <HediffDef>
     <defName>SSC_OrgasmSensitivity</defName>
-    <label>micromachine sensitivity control [WIP]</label>
-    <description>The chain's micromachines retain the sensitivity instructions for this body. [WIP]</description>
+    <label>Sexual sensitivity rewrite</label>
+    <description>How sexually sensitive a sex slave's micromachine-invaded body is rests entirely with its master.</description>
     <hediffClass>SexSlaveCraft.Hediff_SSCOrgasmSensitivity</hediffClass>
     <isBad>false</isBad>
     <minSeverity>0</minSeverity>
     <maxSeverity>4</maxSeverity>
     <initialSeverity>1</initialSeverity>
     <stages>
-      <li><minSeverity>1</minSeverity><label>level I</label></li>
-      <li><minSeverity>2</minSeverity><label>level II</label></li>
-      <li><minSeverity>3</minSeverity><label>level III</label></li>
-      <li><minSeverity>4</minSeverity><label>level IV</label></li>
+      <li><minSeverity>1</minSeverity><label>Mild sensitivity</label></li>
+      <li><minSeverity>2</minSeverity><label>Moderate sensitivity</label></li>
+      <li><minSeverity>3</minSeverity><label>High sensitivity</label></li>
+      <li><minSeverity>4</minSeverity><label>Extreme sensitivity</label></li>
     </stages>
     <modExtensions>
       <li Class="SexSlaveCraft.SSCOrgasmSensitivityExtension">

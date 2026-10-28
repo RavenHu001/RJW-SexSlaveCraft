@@ -8,16 +8,16 @@
     <hediff>SSC_OrgasmSensitivity</hediff>
     <validWhileDespawned>true</validWhileDespawned>
     <stages>
-      <li><label>sensitivity control 1/1 [WIP]</label><description>The chain regulates my body's sensitivity. [WIP]</description><baseMoodEffect>-3</baseMoodEffect></li>
-      <li><label>sensitivity control 2/1 [WIP]</label><description>The chain regulates my body's sensitivity. [WIP]</description><baseMoodEffect>-1</baseMoodEffect></li>
-      <li><label>sensitivity control 2/2 [WIP]</label><description>The chain regulates my body's sensitivity. [WIP]</description><baseMoodEffect>-2</baseMoodEffect></li>
-      <li><label>sensitivity control 3/1 [WIP]</label><description>The chain regulates my body's sensitivity. [WIP]</description><baseMoodEffect>1</baseMoodEffect></li>
-      <li><label>sensitivity control 3/2 [WIP]</label><description>The chain regulates my body's sensitivity. [WIP]</description><baseMoodEffect>2</baseMoodEffect></li>
-      <li><label>sensitivity control 3/3 [WIP]</label><description>The chain regulates my body's sensitivity. [WIP]</description><baseMoodEffect>3</baseMoodEffect></li>
-      <li><label>sensitivity control 4/1 [WIP]</label><description>The chain regulates my body's sensitivity. [WIP]</description><baseMoodEffect>2</baseMoodEffect></li>
-      <li><label>sensitivity control 4/2 [WIP]</label><description>The chain regulates my body's sensitivity. [WIP]</description><baseMoodEffect>3</baseMoodEffect></li>
-      <li><label>sensitivity control 4/3 [WIP]</label><description>The chain regulates my body's sensitivity. [WIP]</description><baseMoodEffect>4</baseMoodEffect></li>
-      <li><label>sensitivity control 4/4 [WIP]</label><description>The chain regulates my body's sensitivity. [WIP]</description><baseMoodEffect>6</baseMoodEffect></li>
+      <li><label>Sexual sensitivity rewrite: Fear</label><description>My pussy is getting hot for no reason, wetness slowly seeping out... It's so unfamiliar it scares me. This body... it doesn't feel like mine anymore...</description><baseMoodEffect>-3</baseMoodEffect></li>
+      <li><label>Sexual sensitivity rewrite: Discomfort</label><description>My pussy is heating up again, getting wet too... So sticky, so uncomfortable. Don't think about it, just don't...</description><baseMoodEffect>-1</baseMoodEffect></li>
+      <li><label>Sexual sensitivity rewrite: Irritation</label><description>The heat burns all the way down to my pussy. Wetter and wetter, no matter how hard I try to hold it back... Annoying, so annoying. Stop reacting already...</description><baseMoodEffect>-2</baseMoodEffect></li>
+      <li><label>Sexual sensitivity rewrite: Shame</label><description>My pussy is heating up, wetness welling up too... So embarrassing. But I kind of... want it...</description><baseMoodEffect>1</baseMoodEffect></li>
+      <li><label>Sexual sensitivity rewrite: Desire</label><description>My pussy is getting wetter and wetter, the heat surging up through me... Hah... I still want more, more...</description><baseMoodEffect>2</baseMoodEffect></li>
+      <li><label>Sexual sensitivity rewrite: Excitement</label><description>One touch to my nipples and my pussy clenches... Coming, almost coming❤ Hah. Don't touch me, I'm... I'm about to lose it...</description><baseMoodEffect>3</baseMoodEffect></li>
+      <li><label>Sexual sensitivity rewrite: Contentment</label><description>My pussy feels swollen, wetness slowly spreading... It feels so good. Just like this... this is nice too...</description><baseMoodEffect>2</baseMoodEffect></li>
+      <li><label>Sexual sensitivity rewrite: Craving</label><description>My pussy is soaking wet, and it's still not enough... Hah... so good. A little more sensitive, I want more❤</description><baseMoodEffect>3</baseMoodEffect></li>
+      <li><label>Sexual sensitivity rewrite: Rapture</label><description>One brush against my nipples and I come❤... My pussy twitches along with it. Hah... so good. Again, again❤</description><baseMoodEffect>4</baseMoodEffect></li>
+      <li><label>Sexual sensitivity rewrite: Abandon</label><description>Coming❤ Coming❤... My pussy is squirting, twitching. Hah❤ I can't stop, it feels so good❤... Just like this, keep going, mmm❤</description><baseMoodEffect>6</baseMoodEffect></li>
     </stages>
     <modExtensions>
       <li Class="SexSlaveCraft.SSCOrgasmSensitivityMoodExtension">

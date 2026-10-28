@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-  <SSC_Sensitivity_Title>Micromachine sensitivity control [WIP]</SSC_Sensitivity_Title>
+  <SSC_Sensitivity_Title>Sexual sensitivity rewrite</SSC_Sensitivity_Title>
   <SSC_Sensitivity_Level0>Off</SSC_Sensitivity_Level0>
-  <SSC_Sensitivity_Level1>Level I</SSC_Sensitivity_Level1>
-  <SSC_Sensitivity_Level2>Level II</SSC_Sensitivity_Level2>
-  <SSC_Sensitivity_Level3>Level III</SSC_Sensitivity_Level3>
-  <SSC_Sensitivity_Level4>Level IV</SSC_Sensitivity_Level4>
-  <SSC_Sensitivity_Summary>Saved: {0}; effective: {1}. Orgasm sensitivity ×{2}, vulnerability {3}.</SSC_Sensitivity_Summary>
+  <SSC_Sensitivity_Level1>Mild sensitivity</SSC_Sensitivity_Level1>
+  <SSC_Sensitivity_Level2>Moderate sensitivity</SSC_Sensitivity_Level2>
+  <SSC_Sensitivity_Level3>High sensitivity</SSC_Sensitivity_Level3>
+  <SSC_Sensitivity_Level4>Extreme sensitivity</SSC_Sensitivity_Level4>
+  <SSC_Sensitivity_Summary>Saved: {0}; active: {1}. Orgasm frequency multiplier ×{2}, vulnerability {3}.</SSC_Sensitivity_Summary>
   <SSC_Sensitivity_Adjust>Adjust level: {0}</SSC_Sensitivity_Adjust>
-  <SSC_Sensitivity_OptionParameters> (sensitivity ×{0}, vulnerability {1})</SSC_Sensitivity_OptionParameters>
-  <SSC_Sensitivity_Tip>This body retains its micromachine instructions. The current chain stage limits the effective level. A master's death does not cancel instructions in a valid chain.</SSC_Sensitivity_Tip>
-  <SSC_Sensitivity_ConfigInvalid>Invalid sensitivity configuration; existing settings can still be turned off.</SSC_Sensitivity_ConfigInvalid>
-  <SSC_Sensitivity_BodyUnavailable>This body cannot execute its micromachine instructions.</SSC_Sensitivity_BodyUnavailable>
-  <SSC_Sensitivity_PersonalityUnavailable>Control is suspended during personality replacement or while the body is hollow.</SSC_Sensitivity_PersonalityUnavailable>
-  <SSC_Sensitivity_NotSlave>This pawn does not currently have the SSC slave role; instructions are suspended.</SSC_Sensitivity_NotSlave>
-  <SSC_Sensitivity_NoChain>No valid chain; instructions are suspended.</SSC_Sensitivity_NoChain>
+  <SSC_Sensitivity_OptionParameters> (orgasm frequency multiplier ×{0}, vulnerability {1})</SSC_Sensitivity_OptionParameters>
+  <SSC_Sensitivity_Tip>How sexually sensitive this body is rests entirely with its master. Higher chain stages unlock higher sensitivity levels.</SSC_Sensitivity_Tip>
+  <SSC_Sensitivity_ConfigInvalid>The sensitivity configuration is invalid. Existing settings can still be turned off.</SSC_Sensitivity_ConfigInvalid>
+  <SSC_Sensitivity_BodyUnavailable>This body cannot currently undergo sensitivity adjustment.</SSC_Sensitivity_BodyUnavailable>
+  <SSC_Sensitivity_PersonalityUnavailable>Sensitivity adjustment is paused while the body is hollow or its personality is being replaced.</SSC_Sensitivity_PersonalityUnavailable>
+  <SSC_Sensitivity_NotSlave>The current pawn is not an SSC sex slave. Adjustment is paused.</SSC_Sensitivity_NotSlave>
+  <SSC_Sensitivity_NoChain>There is no valid chain. Adjustment is paused.</SSC_Sensitivity_NoChain>
   <SSC_Sensitivity_NotEditable>Only a living, editable body belonging to the player can be adjusted.</SSC_Sensitivity_NotEditable>
   <SSC_Sensitivity_InvalidLevel>Invalid sensitivity level.</SSC_Sensitivity_InvalidLevel>
-  <SSC_Sensitivity_LevelLocked>This level is locked by the current chain stage; the saved choice is retained.</SSC_Sensitivity_LevelLocked>
+  <SSC_Sensitivity_LevelLocked>The current chain stage has not unlocked this level. The saved choice is retained.</SSC_Sensitivity_LevelLocked>
 </LanguageData>
