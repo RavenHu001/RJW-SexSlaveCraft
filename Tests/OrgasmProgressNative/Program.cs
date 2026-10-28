@@ -17,7 +17,8 @@ internal static class Entry
         if (args.Length != 2) throw new ArgumentException("repositoryRoot gameRoot");
         string repo = Path.GetFullPath(args[0]), game = Path.GetFullPath(args[1]);
         var dependencies = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-        using (var doc = JsonDocument.Parse(File.ReadAllText(Path.Combine(repo, "1.7/BUILD-INFO.json"))))
+        string referenceInfo = Environment.GetEnvironmentVariable("SSC_TEST_BUILD_INFO_PATH") ?? Path.Combine(repo, "1.7/BUILD-INFO.json");
+        using (var doc = JsonDocument.Parse(File.ReadAllText(referenceInfo)))
             foreach (var reference in doc.RootElement.GetProperty("references").EnumerateArray())
             {
                 string path = reference.GetProperty("path").GetString();

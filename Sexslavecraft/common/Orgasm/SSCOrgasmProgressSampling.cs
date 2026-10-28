@@ -5,7 +5,7 @@ using Verse;
 
 namespace SexSlaveCraft
 {
-    /// <summary>适配层持有周期／操作凭据；公共 getter 不在此创建记录。本批没有效果消费者。</summary>
+    /// <summary>适配层持有周期／操作凭据；原始样本只读，执行状态和余数由独立消费者负责。</summary>
     internal static class SSCOrgasmProgressSampling
     {
         /// <summary>仅属于一个驱动实例的瞬时记录；不进入 Scribe，也不承担任何玩家选择的保存。</summary>
@@ -15,6 +15,7 @@ namespace SexSlaveCraft
             internal int ResetDepth;
             internal bool HasLast, Exhausted;
             internal SSCOrgasmAdvance Last;
+            internal int AcceptedCounter;
         }
 
         /// <summary>一次初始化观察的关闭凭据；同时绑定驱动与原记录，防止清理后误关新记录。</summary>
@@ -57,19 +58,20 @@ namespace SexSlaveCraft
         /// <summary>UAP 主发起者已经完成去重之后的共享接收者写回入口。</summary>
         internal static void WriteUapReceiver(JobDriver_Sex driver, int value) => WriteOriginal(driver, value, SSCOrgasmAdvanceSource.UapReceiver);
 
-        /// <summary>观察一次原写回并发布结果。无效／关闭时仍写原值一次，本批没有效果补充或事件补发。</summary>
+        /// <summary>原写回一次、发布不可变原始样本、再调用统一消费者；原高潮调用链继续，不补发事件。</summary>
         private static void WriteOriginal(JobDriver_Sex driver, int value, SSCOrgasmAdvanceSource source)
         {
             State state = null;
             SSCOrgasmAdvanceSnapshot before = default;
             try
             {
+                SSCOrgasmAdvanceRuntime.BeforeAdvance(driver, SSCOrgasmProgressPatches.IsReady(source));
                 // 只有可信入口才建立记录。先失效不再匹配的旧结果，再发行该驱动的新操作号。
                 if (driver != null && Scribe.mode == LoadSaveMode.Inactive
                     && SSCOrgasmProgressPatches.IsReady(source) && SSCOrgasmProgressUtility.IsCurrentDriver(driver))
                 {
                     state = states.GetValue(driver, createState);
-                    if (state.HasLast && !SSCOrgasmProgressUtility.IsStillCurrent(state.Last, state.Last.After.Context))
+                    if (state.HasLast && !SSCOrgasmProgressUtility.IsAtAcceptedCounter(state.Last, state.Last.After.Context, state.AcceptedCounter))
                         Invalidate(state);
                     state.HasLast = false;
                     if (state.ResetDepth == 0 && !state.Exhausted && state.Operation != ulong.MaxValue)
@@ -87,7 +89,7 @@ namespace SexSlaveCraft
             // 原字段访问刻意在 SSC 的 catch 之外：无效样本不能吞原推进，也不能吞原 NullReferenceException。
             driver.sex_ticks = value;
 
-            // 写回后的验证不修改原计时。失败只影响 SSC 记录，不回滚值或再次执行写入。
+            // 原写回后先形成只读样本，再交独立消费者补充。检查失败不回滚值或再次执行原写入。
             try
             {
                 if (state != null && before.IsValid && state.ResetDepth == 0 && SSCOrgasmProgressPatches.IsReady(source)
@@ -96,8 +98,10 @@ namespace SexSlaveCraft
                 {
                     state.Last = result;
                     state.HasLast = true;
-                    // 将来效果消费者只在此之后接入；本批不修改已写回的计数，不调用 Orgasm。
+                    state.AcceptedCounter = result.After.Counter;
+                    SSCOrgasmAdvanceRuntime.Apply(result);
                 }
+                else SSCOrgasmAdvanceRuntime.NotifyReset(driver);
             }
             catch (Exception error) when (Recoverable(error)) { NotifyReset(driver); }
         }
@@ -109,7 +113,7 @@ namespace SexSlaveCraft
             if (driver == null || !states.TryGetValue(driver, out var state) || !state.HasLast || state.Exhausted
                 || state.ResetDepth != 0 || !SSCOrgasmProgressPatches.IsReady(state.Last.Source)) return false;
             var context = new SSCOrgasmObservationContext(state.Last.Source, state, state.Cycle, state.Operation);
-            if (!SSCOrgasmProgressUtility.IsStillCurrent(state.Last, context)) return false;
+            if (!SSCOrgasmProgressUtility.IsAtAcceptedCounter(state.Last, context, state.AcceptedCounter)) return false;
             advance = state.Last;
             return true;
         }
@@ -119,6 +123,14 @@ namespace SexSlaveCraft
             => TryGetLast(advance.Driver, out var latest) && advance.Before.Context.Matches(latest.Before.Context)
                 && advance.Before.Counter == latest.Before.Counter && advance.Before.Threshold == latest.Before.Threshold
                 && advance.After.Counter == latest.After.Counter && advance.After.Threshold == latest.After.Threshold;
+
+        /// <summary>仅认可同一已发布操作的本模块补充值；不改写原始样本，后续只读消费者仍取得同一原始量。</summary>
+        internal static void AcceptSupplement(SSCOrgasmAdvance advance, int counter)
+        {
+            if (advance.Driver != null && states.TryGetValue(advance.Driver, out var state) && state.HasLast
+                && state.Last.Before.Context.Matches(advance.Before.Context) && advance.Driver.sex_ticks == counter)
+                state.AcceptedCounter = counter;
+        }
 
         /// <summary>废弃旧结果并更新周期代号；代号耗尽时停止该记录采样，避免回绕后旧凭据重新有效。</summary>
         private static void Invalidate(State state)
@@ -131,15 +143,22 @@ namespace SexSlaveCraft
         /// <summary>已知初始化／直接计时重设通知。没有旧记录时不为清理而分配新记录。</summary>
         internal static void NotifyReset(JobDriver_Sex driver)
         {
+            SSCOrgasmAdvanceRuntime.NotifyReset(driver);
             if (driver != null && states.TryGetValue(driver, out var state)) Invalidate(state);
         }
 
+        /// <summary>加载／外围构建只使瞬时样本过期，不将生命周期通知冒充真实新周期。</summary>
+        internal static void InvalidateSamples(JobDriver_Sex driver)
+        { if (driver != null && states.TryGetValue(driver, out var state)) Invalidate(state); }
+
         /// <summary>任务清理时解除弱表关联；尚未返回的旧回调不得据此操作未来新建的 State。</summary>
-        internal static void Forget(JobDriver_Sex driver) { if (driver != null) states.Remove(driver); }
+        internal static void Forget(JobDriver_Sex driver)
+        { SSCOrgasmAdvanceRuntime.Forget(driver); if (driver != null) states.Remove(driver); }
 
         /// <summary>打开初始化范围；最外层只失效一次，嵌套 base／override 共享当前记录的深度。</summary>
         internal static ResetScope BeginReset(JobDriver_Sex driver)
         {
+            SSCOrgasmAdvanceRuntime.NotifyReset(driver);
             if (driver == null || !states.TryGetValue(driver, out var state)) return default;
             if (state.ResetDepth++ == 0) Invalidate(state);
             return new ResetScope(driver, state);
@@ -162,6 +181,7 @@ namespace SexSlaveCraft
         {
             if (!scope.Open || driver == null || !states.TryGetValue(driver, out var state)
                 || !ReferenceEquals(scope.StateOwner, state)) return;
+            if (error != null || driver.orgasms != scope.Count) SSCOrgasmAdvanceRuntime.NotifyReset(driver);
             if (error != null || (driver.orgasms != scope.Count && state.Cycle == scope.Cycle)) Invalidate(state);
         }
     }

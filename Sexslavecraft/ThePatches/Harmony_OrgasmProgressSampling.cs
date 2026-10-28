@@ -46,7 +46,18 @@ namespace SexSlaveCraft
         private static readonly MethodInfo orgasm = AccessTools.Method(typeof(JobDriver_Sex), "Orgasm");
         [ThreadStatic] private static InstallAttempt attempt;
         private static bool installed, observersReady;
+        private static bool buildReady;
+        private static MethodInfo buildMethod;
+        private static Patch[] buildTranspilers;
+        private static readonly AccessTools.FieldRef<JobDriver, List<Toil>> toils = AccessTools.FieldRefAccess<JobDriver, List<Toil>>("toils");
         private static string observerFailure = "";
+
+        /// <summary>跨读档恢复必须有成功锚点和完整观察门槛，不因计时数字相同而放行。</summary>
+        internal static bool RecoveryReady => observersReady && buildReady;
+
+        /// <summary>构建完成的低频范围检查，失败／空枚举不能冒充可恢复的当前任务。</summary>
+        internal static bool HasValidToils(JobDriver driver)
+            => toils(driver) != null && toils(driver).Count > 0 && driver.CurToilIndex >= -1 && driver.CurToilIndex < toils(driver).Count;
 
         /// <summary>低频输出已登记入口及失效原因，供测试／诊断使用，不在逐次推进中组装字符串。</summary>
         internal static string Describe() => "observers=" + observersReady + " (" + observerFailure + "); "
@@ -141,9 +152,13 @@ namespace SexSlaveCraft
             PatchObserver(harmony, AccessTools.DeclaredMethod(typeof(JobDriver_Sex), "SetupOrgasmTicks"), nameof(ResetPrefix), nameof(ResetFinalizer));
             PatchObserver(harmony, AccessTools.DeclaredMethod(typeof(JobDriver_Masturbate), "SetupOrgasmTicks"), nameof(ResetPrefix), nameof(ResetFinalizer));
             PatchObserver(harmony, orgasm, nameof(OrgasmPrefix), nameof(OrgasmFinalizer));
-            PatchLifetime(harmony, AccessTools.DeclaredMethod(typeof(JobDriver), "Cleanup"), nameof(CleanupPrefix));
-            PatchLifetime(harmony, AccessTools.DeclaredMethod(typeof(JobDriver_Sex), "ExposeData"), nameof(LoadPrefix));
-            PatchLifetime(harmony, AccessTools.DeclaredMethod(typeof(JobDriver), "SetupToils"), nameof(SetupToilsPrefix));
+            var cleanup = AccessTools.DeclaredMethod(typeof(JobDriver), "Cleanup");
+            PatchLifetime(harmony, cleanup, nameof(CleanupPrefix));
+            harmony.Patch(cleanup, finalizer: Ordered(nameof(CleanupFinalizer), cleanup, false));
+            var expose = AccessTools.DeclaredMethod(typeof(JobDriver_Sex), "ExposeData");
+            PatchLifetime(harmony, expose, nameof(LoadPrefix));
+            harmony.Patch(expose, postfix: Ordered(nameof(ExposePostfix), expose, false));
+            InstallBuildObserver(harmony);
 
             var start = AccessTools.DeclaredMethod(typeof(JobDriver_SexBaseInitiator), "Start");
             if (start == null) throw new MissingMethodException("JobDriver_SexBaseInitiator.Start");
@@ -155,8 +170,59 @@ namespace SexSlaveCraft
         private static void PatchLifetime(Harmony harmony, MethodInfo original, string prefix)
         {
             if (original == null) throw new MissingMethodException(prefix);
-            harmony.Patch(original, prefix: new HarmonyMethod(Method(prefix)));
+            harmony.Patch(original, prefix: Ordered(prefix, original, true));
             lifetimeMethods.Add(original);
+        }
+
+        /// <summary>正常 try 离开处插入成功标记；外围范围包住其他补丁，最终检查仍以有效排序为准。</summary>
+        private static void InstallBuildObserver(Harmony harmony)
+        {
+            buildMethod = AccessTools.DeclaredMethod(typeof(JobDriver), "SetupToils");
+            if (buildMethod == null) throw new MissingMethodException("JobDriver.SetupToils");
+            var report = new InstallAttempt { Method = buildMethod };
+            attempt = report;
+            try
+            {
+                // 只有本次实际安装转换的报告能够授权恢复；以后重放Transpiler不会改写这个安装凭据。
+                harmony.Patch(buildMethod, prefix: Ordered(nameof(SetupToilsPrefix), buildMethod, true),
+                    transpiler: Ordered(nameof(BuildTranspiler), buildMethod, false), finalizer: Ordered(nameof(BuildFinalizer), buildMethod, false));
+                buildReady = report.Matched;
+                buildTranspilers = Harmony.GetPatchInfo(buildMethod)?.Transpilers.ToArray();
+            }
+            finally { attempt = null; }
+            if (!buildReady) throw new InvalidOperationException("SetupToils success anchor: " + report.Reason);
+            observerMethods.Add(buildMethod);
+        }
+
+        /// <summary>诊断重放只返回转换结果，不更新运行门槛；安装尝试独立收集本轮成功证据。</summary>
+        private static IEnumerable<CodeInstruction> BuildTranspiler(IEnumerable<CodeInstruction> instructions, MethodBase __originalMethod)
+        {
+            var input = instructions.ToList();
+            bool ok = TryRewriteBuild(input, out var output);
+            if (attempt != null && attempt.Method == __originalMethod) { attempt.Matched = ok; attempt.Reason = ok ? "normal try exit" : "ambiguous normal exit"; }
+            return output;
+        }
+
+        /// <summary>识别唯一 catch(Exception) 前的正常 leave，要求原错误恢复调用仍存在；不在公共 ret 插标记。</summary>
+        internal static bool TryRewriteBuild(IList<CodeInstruction> input, out List<CodeInstruction> output)
+        {
+            // 先检查整段输入再生成新指令；失败时返回原输入集合内容，不留下半段成功标记。
+            output = input.ToList();
+            var catches = input.Select((code, index) => new { code, index })
+                .Where(x => x.code.blocks.Any(b => b.blockType == ExceptionBlockType.BeginCatchBlock)).ToArray();
+            if (catches.Length != 1 || catches[0].index == 0 ||
+                !catches[0].code.blocks.Any(b => b.blockType == ExceptionBlockType.BeginCatchBlock && b.catchType == typeof(Exception))) return false;
+            int exit = catches[0].index - 1;
+            if (input[exit].opcode != OpCodes.Leave && input[exit].opcode != OpCodes.Leave_S) return false;
+            if (input.Count(c => c.operand is MethodInfo m && m.DeclaringType == typeof(JobUtility) && m.Name == "TryStartErrorRecoverJob") != 1) return false;
+            var mark = AccessTools.Method(typeof(SSCOrgasmAdvanceRuntime), nameof(SSCOrgasmAdvanceRuntime.MarkBuildSuccess));
+            if (input.Any(c => Equals(c.operand, mark))) return false;
+            // 将原 leave 的入口标签／异常块移到标记开头，原离开指令及 catch 仍各执行原有语义。
+            var load = new CodeInstruction(OpCodes.Ldarg_0); load.labels.AddRange(input[exit].labels); load.blocks.AddRange(input[exit].blocks);
+            var leave = new CodeInstruction(input[exit]); leave.labels.Clear(); leave.blocks.Clear();
+            output.RemoveAt(exit);
+            output.InsertRange(exit, new[] { load, new CodeInstruction(OpCodes.Call, mark), leave });
+            return true;
         }
 
         /// <summary>幂等安装一个已知来源；保存本次匹配结果与转换集合，不把部分成功视为可运行。</summary>
@@ -273,6 +339,11 @@ namespace SexSlaveCraft
         {
             // 先关闭旧开关，再检查实际排序与安装集合；检查途中出错也不会保留上次的放行。
             Array.Clear(readySources, 0, readySources.Length);
+            var buildInfo = buildMethod == null ? null : Harmony.GetPatchInfo(buildMethod);
+            var buildOrder = buildInfo == null ? new List<MethodInfo>() : PatchProcessor.GetSortedPatchMethods(buildMethod, buildInfo.Transpilers.ToArray());
+            if (buildInfo == null || buildOrder.Count == 0 || buildOrder[buildOrder.Count - 1] != Method(nameof(BuildTranspiler))
+                || !SamePatchSet(buildTranspilers, buildInfo.Transpilers.ToArray()) || !DependenciesSatisfied(buildInfo.Transpilers.ToArray(), buildOrder)) buildReady = false;
+            if (!buildReady) observersReady = false;
             foreach (var target in targets.Values)
             {
                 var info = Harmony.GetPatchInfo(target.Method);
@@ -309,6 +380,22 @@ namespace SexSlaveCraft
                 var info = Harmony.GetPatchInfo(original);
                 if (info == null || !info.Prefixes.Any(x => x.owner == Owner && IsOwnMethod(x.PatchMethod)))
                     observersReady = false;
+                if (original == AccessTools.DeclaredMethod(typeof(JobDriver_Sex), "ExposeData"))
+                {
+                    // 加载持有者必须先于原基类SetupToils建立；深存节点最后处理，且由Scribe独立调度子回调。
+                    var prefixes = info == null ? new List<MethodInfo>() : PatchProcessor.GetSortedPatchMethods(original, info.Prefixes.ToArray());
+                    if (prefixes.Count == 0 || prefixes[0] != Method(nameof(LoadPrefix))
+                        || !DependenciesSatisfied(info.Prefixes.ToArray(), prefixes)) observersReady = false;
+                    var ordered = info == null ? new List<MethodInfo>() : PatchProcessor.GetSortedPatchMethods(original, info.Postfixes.ToArray());
+                    if (ordered.Count == 0 || ordered[ordered.Count - 1] != Method(nameof(ExposePostfix))
+                        || !DependenciesSatisfied(info.Postfixes.ToArray(), ordered)) observersReady = false;
+                }
+                if (original == AccessTools.DeclaredMethod(typeof(JobDriver), "Cleanup"))
+                {
+                    var finalizers = info == null ? new List<MethodInfo>() : PatchProcessor.GetSortedPatchMethods(original, info.Finalizers.ToArray());
+                    if (finalizers.Count == 0 || finalizers[finalizers.Count - 1] != Method(nameof(CleanupFinalizer))
+                        || !DependenciesSatisfied(info.Finalizers.ToArray(), finalizers)) observersReady = false;
+                }
             }
             if (observersReady)
                 // 全部公共依赖成立后才发布来源开关。失败状态不自动恢复，须重新证明安装。
@@ -358,7 +445,7 @@ namespace SexSlaveCraft
         private static void DisableObservers(Exception error)
         { observersReady = false; Array.Clear(readySources, 0, readySources.Length); observerFailure = error.Message; }
 
-        /// <summary>实例周期初始化入口；只打开采样失效范围，不调用 Setup 或修改其结果。</summary>
+        /// <summary>实例周期初始化入口；失效原样本／运行余数，加载期仅记录重设事实，不改 Setup 结果。</summary>
         private static void ResetPrefix(JobDriver_Sex __instance, out SSCOrgasmProgressSampling.ResetScope __state)
             => __state = SSCOrgasmProgressSampling.BeginReset(__instance);
         /// <summary>UAP 静态时长同步入口，真实驱动来自原方法第一个参数。</summary>
@@ -376,19 +463,34 @@ namespace SexSlaveCraft
         /// <summary>任务结束解除该驱动记录，防止清理后的回调再使用旧样本。</summary>
         private static void CleanupPrefix(JobDriver __instance)
         { if (__instance is JobDriver_Sex driver) SSCOrgasmProgressSampling.Forget(driver); }
-        /// <summary>加载阶段使瞬时样本失效；本批不写保存节点，Saving 本身不清理正常执行状态。</summary>
+        /// <summary>原生清理及其回调结束／抛错后再次解除索引，不留下清理期间新建的执行状态。</summary>
+        private static void CleanupFinalizer(JobDriver __instance)
+        { if (__instance is JobDriver_Sex driver) SSCOrgasmProgressSampling.Forget(driver); }
+        /// <summary>LoadingVars 先建节点持有者；其他加载阶段只失效样本，不伪造真实周期重设。</summary>
         private static void LoadPrefix(JobDriver_Sex __instance)
-        { if (Scribe.mode != LoadSaveMode.Saving && Scribe.mode != LoadSaveMode.Inactive) SSCOrgasmProgressSampling.NotifyReset(__instance); }
-        /// <summary>在新任务／读档的低频入口复核补丁门槛并丢弃旧样本，不声称已证明 Toil 构建成功。</summary>
-        private static void SetupToilsPrefix(JobDriver __instance)
         {
+            SSCOrgasmAdvanceRuntime.BeginLoading(__instance);
+            if (Scribe.mode != LoadSaveMode.Saving && Scribe.mode != LoadSaveMode.Inactive) SSCOrgasmProgressSampling.InvalidateSamples(__instance);
+        }
+        /// <summary>基类 ExposeData 深存一次附加节点，不主动调用子节点的交叉引用／初始化回调。</summary>
+        private static void ExposePostfix(JobDriver_Sex __instance) => SSCOrgasmAdvanceRuntime.Expose(__instance);
+
+        /// <summary>低频复核补丁并打开构建屏障；成功由独立正常路径标记确认，不能由 Finalizer 无异常推断。</summary>
+        private static void SetupToilsPrefix(JobDriver __instance, out SSCOrgasmAdvanceRuntime.BuildScope __state)
+        {
+            __state = default;
             if (!(__instance is JobDriver_Sex driver)) return;
             // 新任务／读档的低频屏障：覆盖启动末尾其他模组追加的补丁，不在高潮或逐 tick 反射。
             try { ValidateInstalledOrder(); }
             catch (Exception error) when (SSCOrgasmProgressSampling.Recoverable(error))
             { DisableObservers(error); }
-            SSCOrgasmProgressSampling.NotifyReset(driver);
+            SSCOrgasmProgressSampling.InvalidateSamples(driver);
+            __state = SSCOrgasmAdvanceRuntime.BeginBuild(driver);
         }
+
+        /// <summary>所有退出路径至多关闭自己打开的构建范围，保留原异常语义。</summary>
+        private static void BuildFinalizer(Exception __exception, ref SSCOrgasmAdvanceRuntime.BuildScope __state)
+        { var scope = __state; __state = default; SSCOrgasmAdvanceRuntime.EndBuild(scope, __exception); }
         /// <summary>在动画／Organic 等开始后计时改写之后，使实际参与驱动的旧样本失效，不覆盖新计时。</summary>
         private static void StartPostfix(JobDriver_SexBaseInitiator __instance)
         {

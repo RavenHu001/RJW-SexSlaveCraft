@@ -73,13 +73,16 @@
     <Error Condition="'@(LegacyCompile)' == ''" Text="The shared legacy source list is empty." />
     <ItemGroup><Compile Include="@(LegacyCompile)" /></ItemGroup>
   </Target>
-  <!-- 原始高潮推进接口与只读采样仅编入 1.7，不引入敏感度效果或改动旧版产物。 -->
+  <!-- 原始推进采样与独立倍率执行／保存仅编入 1.7，不改动旧版产物。 -->
   <ItemGroup>
     <Compile Include="common/Orgasm/SSCOrgasmProgressUtility.cs" />
     <Compile Include="common/Orgasm/SSCOrgasmProgressSampling.cs" />
+    <Compile Include="common/Orgasm/SSCOrgasmAdvanceRuntime.cs" />
+    <Compile Include="common/Orgasm/SSCOrgasmAdvanceSaveState.cs" />
+    <Compile Include="common/Orgasm/SSCOrgasmNativeTestAccess.cs" />
     <Compile Include="ThePatches/Harmony_OrgasmProgressSampling.cs" />
   </ItemGroup>
-  <!-- 身体敏感度第二批：载体、XML 参数与枚举 UI；倍率尚未接入推进桥。 -->
+  <!-- 身体敏感度载体、XML 参数、持续思想与枚举 UI；执行余数另由驱动模块持有。 -->
   <ItemGroup>
     <Compile Include="common/Orgasm/SSCOrgasmSensitivityConfig.cs" />
     <Compile Include="common/Orgasm/SSCOrgasmSensitivityUtility.cs" />

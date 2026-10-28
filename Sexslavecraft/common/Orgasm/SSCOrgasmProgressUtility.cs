@@ -150,10 +150,14 @@ namespace SexSlaveCraft
 
         /// <summary>外部观察者使用，须传入其发行者的当前凭据，而不是复制旧结果的 Context。</summary>
         public static bool IsStillCurrent(SSCOrgasmAdvance advance, SSCOrgasmObservationContext currentContext)
+            => IsAtAcceptedCounter(advance, currentContext, advance.After.Counter);
+
+        /// <summary>自动采样器可认可自身消费者已提交的终态；外部观察者仍只能认可原始 After 端点。</summary>
+        internal static bool IsAtAcceptedCounter(SSCOrgasmAdvance advance, SSCOrgasmObservationContext currentContext, int counter)
             => advance.After.IsValid && Scribe.mode == LoadSaveMode.Inactive
                 && advance.After.Context.Matches(currentContext) && SameOwner(advance.After, advance.Driver)
                 && SameCycleFields(advance.After, advance.Driver)
-                && advance.Driver.sex_ticks == advance.After.Counter
+                && advance.Driver.sex_ticks == counter
                 && advance.Driver.orgasmstick == advance.After.Threshold;
 
         /// <summary>只读取得当前驱动最近一次仍有效的结果；不是历史队列，也不补采错过的操作。</summary>

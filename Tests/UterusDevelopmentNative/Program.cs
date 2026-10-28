@@ -155,6 +155,7 @@ internal static partial class Program
             AbilityToggleAdapterTests();
             AbilityToggleLifecycleTests(repo);
             OrgasmSensitivityTests(repo, harmony.Value);
+            OrgasmAdvanceTests(repo, game, harmony.Value);
         }
         finally { Scribe.mode = LoadSaveMode.Inactive; Current.Game = null; }
         Console.WriteLine($"{passed}/{passed + failed} cases passed");

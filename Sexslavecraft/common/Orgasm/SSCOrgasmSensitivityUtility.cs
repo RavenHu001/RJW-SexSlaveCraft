@@ -84,7 +84,7 @@ namespace SexSlaveCraft
                 effective > 0 ? config.Offsets[effective - 1] : 0f, reason);
         }
 
-        /// <summary>供后续消费者取得同一有效系数；本函数本身不推进、不采样、不保存余数。</summary>
+        /// <summary>供消费者取得同一有效系数；本函数本身不推进、不采样、不保存余数。</summary>
         public static float GetMultiplier(Pawn pawn) => GetState(pawn).Multiplier;
 
         /// <summary>捕获整组同 Def 实例，以识别外部增删、替换及原本缺少记录的情况。</summary>
@@ -229,6 +229,7 @@ namespace SexSlaveCraft
         /// <summary>自有身份、锁链、人格及记录变化统一刷新健康／思想缓存，不改保存档位。</summary>
         public static void NotifyStateChanged(Pawn pawn)
         {
+            SSCOrgasmAdvanceRuntime.NotifyBodyChanged(pawn);
             // 直接使派生缓存失效，不再次调用 Notify_HediffChanged，避免健康 Postfix 转发形成递归。
             pawn?.health?.hediffSet?.DirtyCache();
             pawn?.needs?.mood?.thoughts?.situational?.Notify_SituationalThoughtsDirty();

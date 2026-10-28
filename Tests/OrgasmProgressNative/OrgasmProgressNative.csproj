@@ -6,9 +6,9 @@
   <ItemGroup>
     <!-- 标准 CLR 复用既有测试类型转发，模拟 Waylith 的旧 Unity 名称解析；不打包到 mod。 -->
     <ProjectReference Include="../CultureNative/UnityCoreShim/UnityCoreShim.csproj" />
-    <Compile Include="../../Sexslavecraft/common/Orgasm/SSCOrgasmProgressUtility.cs" Link="Production/SSCOrgasmProgressUtility.cs" />
-    <Compile Include="../../Sexslavecraft/common/Orgasm/SSCOrgasmProgressSampling.cs" Link="Production/SSCOrgasmProgressSampling.cs" />
-    <Compile Include="../../Sexslavecraft/ThePatches/Harmony_OrgasmProgressSampling.cs" Link="Production/Harmony_OrgasmProgressSampling.cs" />
+    <!-- 第三批使用实际完整候选及测试友元，采样与效果不再分别编译成不同实现。 -->
+    <ProjectReference Include="../../Sexslavecraft/SexSlaveCraft_1.7.csproj" Condition="'$(SscAssemblyPath)' == ''" />
+    <Reference Include="Sexslavecraft" Condition="'$(SscAssemblyPath)' != ''"><HintPath>$(SscAssemblyPath)</HintPath><Private>true</Private></Reference>
     <Reference Include="Assembly-CSharp"><HintPath>$(GameRoot)/Assembly-CSharp.dll</HintPath><Private>false</Private></Reference>
     <Reference Include="UnityStubs"><HintPath>$(GameRoot)/UnityStubs.dll</HintPath><Private>false</Private></Reference>
     <Reference Include="Waylith"><HintPath>$(GameRoot)/Waylith.dll</HintPath><Private>false</Private></Reference>
