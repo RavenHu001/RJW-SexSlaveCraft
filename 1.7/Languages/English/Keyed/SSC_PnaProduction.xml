@@ -5,4 +5,5 @@
   <SSC_PnaProduction_Storage>Current accumulation: {0}</SSC_PnaProduction_Storage>
   <SSC_PnaProduction_StorageDisabled>Current storage: {0} (production disabled)</SSC_PnaProduction_StorageDisabled>
   <SSC_PnaProduction_ProgressPaused>Production progress: {0} (paused)</SSC_PnaProduction_ProgressPaused>
+  <SSC_PnaProduction_StorageNutritionInsufficient>Current accumulation: {0} (insufficient nutrition)</SSC_PnaProduction_StorageNutritionInsufficient>
 </LanguageData>

@@ -36,6 +36,13 @@ namespace SexSlaveCraft
         public HediffCompProperties_SeverityProduct Props => (HediffCompProperties_SeverityProduct)this.props;
 
 #if SSC_RW17 || SSC_ABILITY_TOGGLE_PNA
+        /// <summary>沿用每60tick的原营养成本；显示查询与生产扣除共用，不按饥饿等级推断。</summary>
+        private float IntervalNutritionCost => (Props.nutritionPerDay / 60000f) * 60f;
+
+        /// <summary>只读描述自然积累的营养阻塞；关闭、已满及无食物需求均不属于此状态。</summary>
+        public bool IsWaitingForNutrition => productionEnabled && parent.Severity < 1f
+            && Pawn.needs?.food != null && Pawn.needs.food.CurLevel < IntervalNutritionCost;
+
         // 生产选择与原进度共同属于当前身体的这份 Hediff，不进入人格偏好快照。
         private bool productionEnabled = true;
 
@@ -69,7 +76,11 @@ namespace SexSlaveCraft
                 {
                     // 注意：因为我们 60 帧才算一次，所以增量和消耗量都要直接乘以 60
                     float severityGain = (Props.severityPerDay / 60000f) * 60f;
+#if SSC_RW17 || SSC_ABILITY_TOGGLE_PNA
+                    float nutritionCost = IntervalNutritionCost;
+#else
                     float nutritionCost = (Props.nutritionPerDay / 60000f) * 60f;
+#endif
 
                     // 营养度扣除与停工逻辑
                     if (Pawn.needs != null && Pawn.needs.food != null)
@@ -129,9 +140,11 @@ namespace SexSlaveCraft
 #if SSC_RW17 || SSC_ABILITY_TOGGLE_PNA
                 // 主动暂停优先于营养不足，避免将玩家的生产选择误报为饥饿停工。
                 if (!productionEnabled) return "SSC_PnaProduction_ProgressPaused".Translate(progress);
-#endif
+                if (IsWaitingForNutrition)
+#else
                 // 提示判定：用除法看看当前饱食度还能不能撑过 1 秒
                 if (Pawn.needs?.food != null && Pawn.needs.food.CurLevel < (Props.nutritionPerDay / 60000f * 60f))
+#endif
                 {
                     return Strings.Produce_ProgressStalled(progress);
                 }

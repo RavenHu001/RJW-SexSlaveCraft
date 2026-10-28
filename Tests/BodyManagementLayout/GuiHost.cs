@@ -199,6 +199,7 @@ namespace SexSlaveCraft
     {
         public Hediff parent;
         public bool ProductionEnabled { get; private set; } = true;
+        public bool IsWaitingForNutrition;
         internal void SetProductionEnabled(bool enabled) => ProductionEnabled = enabled;
     }
     public static class SSCUterusPregnancyUtility { public const float DurationFactor = .8f; }

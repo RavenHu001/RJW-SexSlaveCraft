@@ -128,8 +128,8 @@ internal static partial class Program
     private static void Layout(float width, float scale, int contents)
     {
         Text.WidthScale = scale; var p = Body(contents, 1);
-        // 四语完整身体组合沿用既有代表样本，加入 PNA 从属行的换行／高度检查。
-        if (contents == 3) AttachPnaProduction(p);
+        // 四语完整身体组合沿用既有代表样本，检查带营养不足提示的较长从属行。
+        if (contents == 3) AttachPnaProduction(p).IsWaitingForNutrition = true;
         var tab = new ITab_SexSlaveTraining(); var view = tab.Capture(p, width); view.Draw();
         if (contents == 0) { Require(view.Height == 0 && Widgets.Drawn.Count == 0); return; }
         Require(Widgets.Drawn.Count(d => d.Kind == "section") == 1);
@@ -141,7 +141,7 @@ internal static partial class Program
             Require(draw.Rect.yMax <= view.Height - 12 && draw.Rect.xMax <= width - 12);
         }
         Require(Widgets.Drawn.Count(d => d.Kind == "checkbox") == ((contents & 1) != 0 ? 1 : 0) + ((contents & 2) != 0 ? 1 : 0) + (contents == 3 ? 1 : 0));
-        if (contents == 3) AssertPnaDetail("43%");
+        if (contents == 3) AssertPnaDetail("43%", waiting: true);
         if ((contents & 1) != 0)
         {
             var milk = Widgets.Drawn.Single(d => d.Kind == "checkbox" && d.Label == Strings.ITab_MilkProductionToggle);

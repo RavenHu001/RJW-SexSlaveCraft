@@ -52,6 +52,67 @@ internal static partial class Program
             stalled.SetProductionEnabled(false);
             Equal("SSC_PnaProduction_ProgressPaused".Translate("30%").ToString(), stalled.CompLabelInBracketsExtra);
         });
+        Check("PNA nutrition status shares read-only detail and health state with pause precedence", () =>
+        {
+            var pawn = PnaManagedPawn(); var production = AddPnaProduction(pawn, .42f); var food = PnaFood(pawn, 0f);
+            for (int i = 0; i < 2; ++i)
+            {
+                Require(production.IsWaitingForNutrition);
+                Equal("SSC_PnaProduction_StorageNutritionInsufficient".Translate("42%").ToString(), SSCPnaProductionUtility.GetStorageDetail(pawn));
+                Equal(Strings.Produce_ProgressStalled("42%"), production.CompLabelInBracketsExtra);
+            }
+            var view = SSCAbilityToggleUtility.GetView(pawn, SSCAbilityToggleUtility.PnaProduction);
+            Require(view.Enabled && view.Active && view.CanChange); Near(.42f, production.parent.Severity); Near(0f, food.CurLevel);
+            SetPnaProduction(pawn, false); Require(!production.IsWaitingForNutrition);
+            Equal("SSC_PnaProduction_StorageDisabled".Translate("42%").ToString(), SSCPnaProductionUtility.GetStorageDetail(pawn));
+            Equal("SSC_PnaProduction_ProgressPaused".Translate("42%").ToString(), production.CompLabelInBracketsExtra);
+        });
+        Check("PNA nutrition threshold uses configured absolute cost and equal payment resumes", () =>
+        {
+            var pawn = PnaManagedPawn(); var production = AddPnaProduction(pawn, .42f); var food = PnaFood(pawn, 0f);
+            float oldCost = production.Props.nutritionPerDay;
+            try
+            {
+                production.Props.nutritionPerDay = .45f;
+                float cost = (.45f / 60000f) * 60f; food.CurLevel = MathF.BitDecrement(cost);
+                Require(production.IsWaitingForNutrition); PnaInterval(production); Near(.42f, production.parent.Severity);
+                food.CurLevel = cost; Require(!production.IsWaitingForNutrition);
+                Equal("SSC_PnaProduction_Storage".Translate("42%").ToString(), SSCPnaProductionUtility.GetStorageDetail(pawn));
+                Equal(Strings.Produce_Progress("42%"), production.CompLabelInBracketsExtra);
+                PnaInterval(production); Near(.4202f, production.parent.Severity); Near(0f, food.CurLevel);
+            }
+            finally { production.Props.nutritionPerDay = oldCost; }
+        });
+        Check("PNA nutrition absent food remains unblocked and continues free growth", () =>
+        {
+            var pawn = PnaManagedPawn(); var production = AddPnaProduction(pawn, .3f);
+            Require(pawn.needs.food == null && !production.IsWaitingForNutrition);
+            Equal("SSC_PnaProduction_Storage".Translate("30%").ToString(), SSCPnaProductionUtility.GetStorageDetail(pawn));
+            Equal(Strings.Produce_Progress("30%"), production.CompLabelInBracketsExtra);
+            PnaInterval(production); Near(.3002f, production.parent.Severity);
+        });
+        Check("PNA nutrition zero configured cost permits growth with empty food", () =>
+        {
+            var pawn = PnaManagedPawn(); var production = AddPnaProduction(pawn, .3f); var food = PnaFood(pawn, 0f);
+            float oldCost = production.Props.nutritionPerDay;
+            try
+            {
+                production.Props.nutritionPerDay = 0f; Require(!production.IsWaitingForNutrition);
+                PnaInterval(production); Near(.3002f, production.parent.Severity); Near(0f, food.CurLevel);
+            }
+            finally { production.Props.nutritionPerDay = oldCost; }
+        });
+        Check("PNA nutrition uses raw progress and full batch settles without nutrition", () =>
+        {
+            var pawn = PnaManagedPawn(); var production = AddPnaProduction(pawn, .9999f); var food = PnaFood(pawn, 0f);
+            Require(production.IsWaitingForNutrition);
+            production.parent.Severity = 1f; Require(!production.IsWaitingForNutrition);
+            Equal("SSC_PnaProduction_Storage".Translate("100%").ToString(), SSCPnaProductionUtility.GetStorageDetail(pawn));
+            Equal(Strings.Produce_Progress("100%"), production.CompLabelInBracketsExtra);
+            pnaMapFixtures.Add(pawn); pnaSpawnBatches = 0;
+            try { PnaInterval(production); Equal(1, pnaSpawnBatches); Near(0f, food.CurLevel); Near(0f, production.parent.Severity); }
+            finally { pnaMapFixtures.Remove(pawn); }
+        });
         Check("PNA production native paused full batch is retained and released once after resume", () =>
         {
             var pawn = PnaManagedPawn(); var production = AddPnaProduction(pawn, 1f); var food = PnaFood(pawn, .8f);

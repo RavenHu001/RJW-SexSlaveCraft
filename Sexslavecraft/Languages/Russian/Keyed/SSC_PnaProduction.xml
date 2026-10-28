@@ -5,4 +5,5 @@
   <SSC_PnaProduction_Storage>Текущее накопление: {0}</SSC_PnaProduction_Storage>
   <SSC_PnaProduction_StorageDisabled>Текущий запас: {0} (производство отключено)</SSC_PnaProduction_StorageDisabled>
   <SSC_PnaProduction_ProgressPaused>Прогресс производства: {0} (приостановлено)</SSC_PnaProduction_ProgressPaused>
+  <SSC_PnaProduction_StorageNutritionInsufficient>Текущее накопление: {0} (недостаточно питания)</SSC_PnaProduction_StorageNutritionInsufficient>
 </LanguageData>

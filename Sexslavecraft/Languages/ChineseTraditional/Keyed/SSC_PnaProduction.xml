@@ -5,4 +5,5 @@
   <SSC_PnaProduction_Storage>目前儲量：{0}</SSC_PnaProduction_Storage>
   <SSC_PnaProduction_StorageDisabled>目前儲量：{0}（已關閉生產）</SSC_PnaProduction_StorageDisabled>
   <SSC_PnaProduction_ProgressPaused>生產進度：{0}（已暫停）</SSC_PnaProduction_ProgressPaused>
+  <SSC_PnaProduction_StorageNutritionInsufficient>目前儲量：{0}（營養不足）</SSC_PnaProduction_StorageNutritionInsufficient>
 </LanguageData>

@@ -31,7 +31,10 @@ namespace SexSlaveCraft
             if (production == null) return null;
             // 这是下一批物品的生产积累，不是性交供给或可消耗物品的库存。
             string progress = (production.parent.Severity * 100f).ToString("F0") + "%";
-            return (production.ProductionEnabled ? "SSC_PnaProduction_Storage" : "SSC_PnaProduction_StorageDisabled").Translate(progress);
+            string key = !production.ProductionEnabled ? "SSC_PnaProduction_StorageDisabled"
+                : production.IsWaitingForNutrition ? "SSC_PnaProduction_StorageNutritionInsufficient"
+                : "SSC_PnaProduction_Storage";
+            return key.Translate(progress);
         }
 
         /// <summary>通用准入只检查存活身体与当前产出记录；营养和满进度结算仍由生产事件判断。</summary>

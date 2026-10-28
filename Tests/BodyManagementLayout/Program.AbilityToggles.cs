@@ -35,6 +35,14 @@ internal static partial class Program
             Require(production.parent.Severity == .61f && !production.ProductionEnabled &&
                 p.health.Notifications == notifications && !p.Training.abilityToggles.HasEntries);
         });
+        Run("PNA营养不足从属行复用缩进且关闭提示优先", () =>
+        {
+            var p = Body(0); var production = AttachPnaProduction(p);
+            production.IsWaitingForNutrition = true; Draw(p);
+            AssertPnaDetail("43%", waiting: true);
+            production.SetProductionEnabled(false); Widgets.Drawn.Clear(); Draw(p);
+            AssertPnaDetail("43%", disabled: true);
+        });
         Run("替换PNA生产记录后旧身体视图不能改变新记录", () =>
         {
             var p = Body(0); var previous = AttachPnaProduction(p);
@@ -147,10 +155,11 @@ internal static partial class Program
     }
 
     /// <summary>同一生产项只有一条缩进积累信息，悬停共用解释；不固定任何语言的正文。</summary>
-    private static void AssertPnaDetail(string progress, bool disabled = false)
+    private static void AssertPnaDetail(string progress, bool disabled = false, bool waiting = false)
     {
         var toggle = Widgets.Drawn.Single(d => d.Kind == "checkbox" && d.Label == "SSC_PnaProduction_Label".Translate());
-        var detail = Widgets.Drawn.Single(d => d.Kind == "label" && d.Label == (disabled ? "SSC_PnaProduction_StorageDisabled" : "SSC_PnaProduction_Storage").Translate(progress));
+        string key = disabled ? "SSC_PnaProduction_StorageDisabled" : waiting ? "SSC_PnaProduction_StorageNutritionInsufficient" : "SSC_PnaProduction_Storage";
+        var detail = Widgets.Drawn.Single(d => d.Kind == "label" && d.Label == key.Translate(progress));
         Require(detail.Rect.x == toggle.Rect.x + 16 && detail.Rect.xMax == toggle.Rect.xMax && detail.Rect.y >= toggle.Rect.yMax);
         Require(Widgets.Drawn.Any(d => d.Kind == "tip" && d.Rect.x == detail.Rect.x && d.Rect.y == detail.Rect.y &&
             d.Label == "SSC_PnaProduction_Tip".Translate()));
