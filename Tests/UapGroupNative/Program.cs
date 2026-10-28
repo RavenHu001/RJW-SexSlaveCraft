@@ -39,6 +39,9 @@ internal static class Program
     private static object plan, match;
     private static Pawn[] people;
     private static int passed, installs, failInstall, ended, nextId, initialized, processCalls;
+    private static bool beginResult;
+    private static string beginReason;
+    private static int startBodies, otherStartPostfixes, automaticSelections, namedAnimationStarts;
     private static readonly List<string> logs = new();
     /// <summary>为测试边界创建没有构造副作用的真实类型实例；本例所需字段随后由夹具显式填写。</summary>
     private static object Bare(Type t) => RuntimeHelpers.GetUninitializedObject(t);
@@ -92,7 +95,8 @@ internal static class Program
         h.Patch(AccessTools.Method(typeof(SexUtility), "ProcessSex"),
             prefix: new HarmonyMethod(typeof(Program), nameof(ProcessBoundary)) { priority = Priority.Last });
         Patch(AccessTools.Method(typeof(JobDriver_Sex), "setup_ticks"), nameof(Skip));
-        Patch(AccessTools.Method(SSCUapGroupApi.Matcher, "TryBuildLaunchPlan"), nameof(Match));
+        h.Patch(AccessTools.Method(SSCUapGroupApi.Matcher, "TryBuildLaunchPlan"),
+            transpiler: new HarmonyMethod(typeof(Program), nameof(Match)));
         Patch(AccessTools.Method(SSCUapGroupApi.Request, "TryStart"), nameof(Gather));
         Patch(AccessTools.Method(typeof(Window), "Close"), nameof(Skip));
         foreach (var method in AccessTools.GetDeclaredMethods(typeof(Messages)).Where(m => m.Name == "Message")) Patch(method, nameof(Skip));
@@ -116,8 +120,24 @@ internal static class Program
             prefix: new HarmonyMethod(typeof(Patch_JobDriver_Sex_ProtectChainOfSexSlave), "Prefix"));
         h.Patch(AccessTools.DeclaredMethod(typeof(JobDriver_SexBaseInitiator), "TryMakePreToilReservations"),
             prefix: new HarmonyMethod(typeof(SSCRestrictionReservationHook), "Prefix"));
+        // 装入真实 RAF Start 后置；仅隔离 RJW 身体初始化和最终图形播放，自动匹配及其 PawnTest 保持原样。
+        var rafStart = typeof(Rimworld_Animations.AnimationUtility).Assembly.GetType(
+            "Rimworld_Animations.HarmonyPatch_JobDriver_SexBaseInitiator_Start", true);
+        h.Patch(AccessTools.Method(typeof(JobDriver_SexBaseInitiator), "Start"),
+            transpiler: new HarmonyMethod(typeof(Program), nameof(StartBodyBoundary)),
+            postfix: new HarmonyMethod(typeof(Program), nameof(OtherStartPostfix)));
+        new Harmony("rjwanim").Patch(AccessTools.Method(typeof(JobDriver_SexBaseInitiator), "Start"),
+            postfix: new HarmonyMethod(AccessTools.DeclaredMethod(rafStart, "Postfix")));
+        h.Patch(AccessTools.Method(typeof(Rimworld_Animations.AnimationUtility), "FindGroupAnimation"),
+            prefix: new HarmonyMethod(typeof(Program), nameof(ObserveAutomaticSelection)));
+        Patch(AccessTools.Method(typeof(Rimworld_Animations.AnimationUtility), "StartGroupAnimation",
+            new[] { typeof(List<Pawn>), typeof(Rimworld_Animations.GroupAnimationDef), typeof(Thing) }), nameof(NamedAnimationBoundary));
+        // 先运行实际 Start 包装，再安装对其 RAF 后置自身的补丁，防止重建上层包装掩盖已 JIT 的调用问题。
+        WarmAutomaticStart();
         // 在生成生产包装前隔离小型地图 getter，避免包装已内联原 getter 后才做 detour。
         SSCUapGroupPatches.Install();
+        h.Patch(AccessTools.Method(SSCUapGroupApi.Component, "TryBeginRequest"),
+            postfix: new HarmonyMethod(typeof(Program), nameof(ObserveBegin)));
         Check("actual UAP signatures install complete adapter", () => Require(SSCUapGroupApi.Ready, string.Join("\n", logs)));
         Check("incompatible required signature is rejected instead of guessed", () =>
         {
@@ -125,6 +145,25 @@ internal static class Program
             try { SSCUapGroupApi.Method(SSCUapGroupApi.Dialog, "TryInitiate", typeof(bool)); }
             catch (MissingMethodException) { rejected = true; }
             Require(rejected);
+        });
+
+        Check("real matcher failure preserves original reason and empty plan without throwing", () =>
+        {
+            var batch = Fixture(true, false);
+            var method = AccessTools.Method(SSCUapGroupApi.Matcher, "TryBuildLaunchPlan");
+            // 实际原方法的早期拒绝不依赖身体／动画环境；临时撤掉算法替身，验证失败 out 不被 Postfix 清空。
+            h.Unpatch(method, HarmonyPatchType.Transpiler, h.Id);
+            try
+            {
+                object[] args = { null, match, null, null };
+                using (new SSCUapGroupRuntime.Scope(batch))
+                    Require(!(bool)method.Invoke(null, args));
+                Require(args[2] == null && args[3] is string reason && !string.IsNullOrWhiteSpace(reason));
+                object[] begin = { anchor, people.Take(2).ToList(), match, null };
+                Require(!(bool)Call(SSCUapGroupApi.Component, "TryBeginRequest", map.GetComponent(SSCUapGroupApi.Component), begin));
+                Require(begin[3] is string rejected && !string.IsNullOrWhiteSpace(rejected));
+            }
+            finally { h.Patch(method, transpiler: new HarmonyMethod(typeof(Program), nameof(Match))); }
         });
 
         // 来源、准入和安装屏障覆盖原故障；原 Policy 在相同人物的普通请求中仍须拒绝。
@@ -150,17 +189,50 @@ internal static class Program
             Require(initialized == 0);
             toils[0].tickAction(); Require(initialized == 1, "committed gate must release original toil");
         });
-        Check("override off rejects full group before any job installation", () =>
+        Check("override off returns actual pair rejection to GUI caller before any job installation", () =>
         {
-            var batch = Fixture(false, false); batch.Override = false;
-            Require(!SSCUapGroupRuntime.Launch(batch, out var reason) && !string.IsNullOrEmpty(reason));
-            Require(installs == 0 && batch.Aborted);
+            var batch = Fixture(false, true);
+            Require(!beginResult && !string.IsNullOrWhiteSpace(beginReason) && beginReason.Contains(people[1].LabelShortCap));
+            Require(installs == 0 && batch.Closed && batch.Denial != null);
         });
-        Check("non-GUI request cannot inherit enabled override", () =>
+        Check("pending group initiators skip only RAF automatic Start selection and keep selected UAP animation", () =>
+        {
+            var batch = Fixture(true, true); Require(SSCUapGroupRuntime.Launch(batch, out _));
+            var ready = (JobDriver_SexBaseInitiator)people[2].jobs.curDriver;
+            var pending = (JobDriver_SexBaseInitiator)people[1].jobs.curDriver;
+            var receiver = (JobDriver_SexBaseReciever)people[0].jobs.curDriver;
+            ready.Sexprops = Bare<SexProps>(); ready.Sexprops.pawn = people[2]; ready.Sexprops.partner = people[0];
+            Require(pending.Sexprops == null && receiver.parteners[0] == people[1]);
+            // 真正的 RAF 过滤器会解引用尚未初始化的另一名发起者；不替换其匹配实现。
+            var filter = new Rimworld_Animations.PawnTest_RJWInitiator();
+            Set(filter, "interactionDefs", new List<InteractionDef> { new InteractionDef { defName = "FixtureInteraction" } });
+            DefDatabase<Rimworld_Animations.GroupAnimationDef>.Add(new Rimworld_Animations.GroupAnimationDef {
+                defName = "Fixture", numActors = 3, contexts = new List<Rimworld_Animations.GroupAnimationContext> {
+                    new Rimworld_Animations.GroupAnimationContext { whitelist = new List<Rimworld_Animations.BasePawnTest> { filter, filter, filter } } } });
+            ready.Start();
+            Require(startBodies == 1 && otherStartPostfixes == 1 && automaticSelections == 0 && pending.Sexprops == null);
+            object[] namedArgs = { people.ToList(), "Fixture", anchor, null };
+            Require((bool)Call(SSCUapGroupApi.Dialog.Assembly.GetType("UAP_Animations.UAPGroupAnimationBridge", true),
+                "TryStartNamedGroupAnimation", null, namedArgs), namedArgs[3] as string);
+            Require(namedAnimationStarts == 1);
+            // 同一 RJW Start 包装对未接管任务仍应调用 RAF 自动选择，其他后置也继续运行。
+            Job ordinaryJob = JobMaker.MakeJob(SSCUapGroupApi.InitiatorDef, people[0]);
+            var ordinary = (JobDriver_SexBaseInitiator)ordinaryJob.MakeDriver(people[2]);
+            people[2].jobs.curJob = ordinaryJob; people[2].jobs.curDriver = ordinary;
+            receiver.parteners.Clear(); receiver.parteners.Add(people[2]);
+            ordinary.Start();
+            Require(startBodies == 2 && otherStartPostfixes == 2 && automaticSelections == 1);
+        });
+        Check("non-GUI request keeps original UAP path without SSC session takeover", () =>
         {
             var batch = Fixture(true, false);
             Require(!batch.Manual && !batch.Override);
-            Require(!SSCUapGroupRuntime.Launch(batch, out _) && installs == 0);
+            object[] args = { anchor, people.ToList(), match, null };
+            var component = map.GetComponent(SSCUapGroupApi.Component);
+            Require((bool)Call(SSCUapGroupApi.Component, "TryBeginRequest", component, args));
+            object request = ((IList)Get(component, "activeRequests"))[0];
+            Require(!SSCUapGroupRuntime.FindRequest(request, out _) && installs == 0 &&
+                Current.Game.GetComponent<SSCUapGroupGameComponent>().Batches.Count == 1);
         });
         Check("override off still fixes receiver-first when all actual pairs allow", () =>
         {
@@ -186,8 +258,10 @@ internal static class Program
             index[people[1].thingIDNumber] = 9999;
             SSCUapGroupRuntime.Close(batch, true);
             Require(people[1].CurJob.loadID == 99999 && (int)index[people[1].thingIDNumber] == 9999);
-            old.loadID++; var d = (JobDriver_Sex)old.MakeDriver(people[1]);
-            Require(SSCUapGroupRuntime.Check(d, out bool allowed) && !allowed);
+            // 池化复用的新普通任务必须继续原版路径，不能被旧场景的全局推进钩子冻结。
+            old.loadID++; old.def = new JobDef { driverClass = typeof(PooledOrdinaryDriver) };
+            var d = old.MakeDriver(people[1]); people[1].jobs.curJob = old; people[1].jobs.curDriver = d;
+            Require(!SSCUapGroupRuntime.Find(d, out _) && SSCUapGroupRuntime.CanAdvance(d));
         });
         Check("personality replacement invalidates old request before installation", () =>
         {
@@ -328,7 +402,9 @@ internal static class Program
         SSCMod.settings.allowUapManualGroupRestrictionOverride = setting;
         var component = (MapComponent)Activator.CreateInstance(SSCUapGroupApi.Component, map);
         ((List<MapComponent>)Get(map, "components")).Add(component);
-        installs = failInstall = ended = initialized = processCalls = 0; logs.Clear();
+        installs = failInstall = ended = initialized = processCalls = 0;
+        startBodies = otherStartPostfixes = automaticSelections = namedAnimationStarts = 0;
+        beginResult = false; beginReason = null; logs.Clear();
         if (!gui) return SSCUapGroupRuntime.Create(anchor, people, match, false);
         // 手动来源须经真实 TryInitiate -> TryBeginRequest 路径，不能在测试中直接把 Manual 改为 true。
         var dialog = Bare(SSCUapGroupApi.Dialog);
@@ -339,7 +415,20 @@ internal static class Program
         Require(map.GetComponent(SSCUapGroupApi.Component) == component, "map component boundary");
         Require(((List<Pawn>)Get(dialog, "readyPawns")).Count == 3 && ((IList)Get(dialog, "matchingAnimations")).Count == 1, "dialog boundary");
         Call(SSCUapGroupApi.Dialog, "TryInitiate", dialog);
-        return Current.Game.GetComponent<SSCUapGroupGameComponent>().Batches.Single(b => !b.Closed);
+        return Current.Game.GetComponent<SSCUapGroupGameComponent>().Batches.Single();
+    }
+    /// <summary>在接入安装前预热真实 RAF 后置调用；空动画库只做自动选择，不进入图形服务。</summary>
+    private static void WarmAutomaticStart()
+    {
+        Fixture(false, false);
+        Job receiverJob = JobMaker.MakeJob(SSCUapGroupApi.ReceiverDef, people[1]);
+        var receiver = (JobDriver_SexBaseReciever)receiverJob.MakeDriver(people[0]);
+        people[0].jobs.curJob = receiverJob; people[0].jobs.curDriver = receiver; receiver.parteners.Add(people[1]);
+        Job job = JobMaker.MakeJob(SSCUapGroupApi.InitiatorDef, people[0]);
+        var driver = (JobDriver_SexBaseInitiator)job.MakeDriver(people[1]);
+        people[1].jobs.curJob = job; people[1].jobs.curDriver = driver;
+        driver.Start();
+        Require(startBodies == 1 && otherStartPostfixes == 1 && automaticSelections == 1);
     }
     /// <summary>跳过与本专项无关的 DefOf、窗口、渲染或身体服务，不在夹具里重写这些系统的算法。</summary>
     private static bool Skip() => false;
@@ -357,8 +446,40 @@ internal static class Program
     private static bool Reserve(ref bool __result) { __result = true; return false; }
     /// <summary>计数能到达的 RJW 结算入口并跳过身体效果；生产前缀拒绝旧场时不能抵达此边界。</summary>
     private static bool ProcessBoundary() { processCalls++; return false; }
-    /// <summary>给原 UAP 会话构造提供固定有效计划；不把该夹具当作完整动画和解剖匹配测试。</summary>
-    private static bool Match(object[] __args, ref bool __result) { __args[2] = plan; __args[3] = null; __result = true; return false; }
+    /// <summary>只观察真实窗口请求返回给调用者的结果与原因，不改写任何 out 参数。</summary>
+    private static void ObserveBegin(bool __result, string failureReason) { beginResult = __result; beginReason = failureReason; }
+    /// <summary>隔离 RJW 身体初始化，但仍执行真实 Start 的全部 Harmony 后置。</summary>
+    private static IEnumerable<CodeInstruction> StartBodyBoundary(IEnumerable<CodeInstruction> original)
+    {
+        yield return new CodeInstruction(System.Reflection.Emit.OpCodes.Call, AccessTools.Method(typeof(Program), nameof(RecordStartBody)));
+        yield return new CodeInstruction(System.Reflection.Emit.OpCodes.Ret);
+    }
+    /// <summary>记录 Start 身体边界替身已执行，不能把跳过整个 Start 当作修复。</summary>
+    private static void RecordStartBody() => startBodies++;
+    /// <summary>代表其他后置回调，确认只抑制重复动画选择而非整个 RJW 后置链。</summary>
+    private static void OtherStartPostfix() => otherStartPostfixes++;
+    /// <summary>只观察实际自动匹配调用，不改写其返回值或过滤器。</summary>
+    private static void ObserveAutomaticSelection() => automaticSelections++;
+    /// <summary>隔离最终渲染，原 UAP 命名启动及参数选择仍执行。</summary>
+    private static bool NamedAnimationBoundary(List<Pawn> __0, Rimworld_Animations.GroupAnimationDef __1, Thing __2)
+    {
+        Require(__0.SequenceEqual(people) && __1.defName == "Fixture" && __2 == anchor);
+        namedAnimationStarts++; return false;
+    }
+    /// <summary>隔离匹配算法，方法体沿真实 out 引用写回；不能用 Prefix 改 __args 掩盖 Postfix 读取旧快照的问题。</summary>
+    private static IEnumerable<CodeInstruction> Match(IEnumerable<CodeInstruction> original)
+    {
+        yield return new CodeInstruction(System.Reflection.Emit.OpCodes.Ldarg_2);
+        yield return new CodeInstruction(System.Reflection.Emit.OpCodes.Ldsfld, AccessTools.Field(typeof(Program), nameof(plan)));
+        yield return new CodeInstruction(System.Reflection.Emit.OpCodes.Castclass,
+            SSCUapGroupApi.Dialog.Assembly.GetType("UAP_Animations.UAPGroupLaunchPlan", true));
+        yield return new CodeInstruction(System.Reflection.Emit.OpCodes.Stind_Ref);
+        yield return new CodeInstruction(System.Reflection.Emit.OpCodes.Ldarg_3);
+        yield return new CodeInstruction(System.Reflection.Emit.OpCodes.Ldnull);
+        yield return new CodeInstruction(System.Reflection.Emit.OpCodes.Stind_Ref);
+        yield return new CodeInstruction(System.Reflection.Emit.OpCodes.Ldc_I4_1);
+        yield return new CodeInstruction(System.Reflection.Emit.OpCodes.Ret);
+    }
     /// <summary>隔离集合寻路，只返回请求派发成功；请求对象绑定和后续真实启动接入仍由生产补丁处理。</summary>
     private static bool Gather(ref bool __result) { __result = true; return false; }
     // 只隔离地图任务调度；实际 Job.MakeDriver、预约守卫、UAP MakeNewToils/SetupToils 都执行。
@@ -394,4 +515,13 @@ internal static class Program
     }
     /// <summary>对独立行为契约作最小断言，保留失败场景名称及调用栈。</summary>
     private static void Require(bool value, string reason = "assertion failed") { if (!value) throw new Exception(reason); }
+
+    /// <summary>仅提供池化复用后的普通任务类型，核对兼容钩子不接管无关任务。</summary>
+    private sealed class PooledOrdinaryDriver : JobDriver
+    {
+        /// <summary>不添加预约条件，只验证全局兼容钩子是否错误阻止新的普通任务。</summary>
+        public override bool TryMakePreToilReservations(bool errorOnFailed) => true;
+        /// <summary>池化归属用例不执行实际任务，无需构造行为步骤。</summary>
+        protected override IEnumerable<Toil> MakeNewToils() { yield break; }
+    }
 }

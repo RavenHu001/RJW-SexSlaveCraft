@@ -47,6 +47,10 @@ namespace SexSlaveCraft
                 var abortPawn = M(SSCUapGroupApi.Manager, "AbortSessionForPawn", typeof(void), typeof(Pawn), typeof(string));
                 var end = M(SSCUapGroupApi.Manager, "EndSession", typeof(void), typeof(int));
                 var finalized = M(SSCUapGroupApi.Manager, "NotifyInitiatorFinalized", typeof(void), typeof(Pawn));
+                var rafStartType = typeof(Rimworld_Animations.AnimationUtility).Assembly.GetType(
+                    "Rimworld_Animations.HarmonyPatch_JobDriver_SexBaseInitiator_Start", true);
+                var rafStart = M(rafStartType, "Postfix", typeof(void), typeof(JobDriver_SexBaseInitiator).MakeByRefType());
+                if (!rafStart.IsStatic) throw new MissingMethodException(rafStartType.FullName, "static Postfix");
                 MethodInfo[] toils = new[] { SSCUapGroupApi.Receiver, SSCUapGroupApi.Initiator, SSCUapGroupApi.Passive }
                     .Select(t => M(t, "MakeNewToils", typeof(IEnumerable<Toil>))).ToArray();
                 // 统一安装 Prefix/Postfix/Finalizer；外层 catch 按独立 owner 回滚半途注册。
@@ -70,6 +74,8 @@ namespace SexSlaveCraft
                 foreach (MethodInfo method in toils) P(method, postfix: nameof(ToilsPostfix));
                 P(abort, nameof(AbortPrefix)); P(abortPawn, nameof(AbortPawnPrefix));
                 P(end, nameof(EndPrefix)); P(finalized, nameof(FinalizedPrefix));
+                // UAP 按所选动画单独启动；阻止 RAF 在第一个 Start 后扫描仍未初始化的其他群体发起者。
+                P(rafStart, nameof(AutomaticAnimationPrefix));
                 // 第三段覆盖原版加载、推进、tick 和清理入口；具体范围在回调内按记录或精确类型筛选。
                 P(AccessTools.DeclaredMethod(typeof(JobDriver), "SetupToils"), nameof(SetupPrefix));
                 P(AccessTools.DeclaredMethod(typeof(JobDriver), "ReadyForNextToil"), nameof(AdvancePrefix));
@@ -98,32 +104,36 @@ namespace SexSlaveCraft
         /// <summary>无论原窗口方法成功、提前退出或抛异常，都恢复外层手动来源，不吞掉原异常。</summary>
         private static void ManualFinalizer(ManualState __state) { if (__state != null) SSCUapGroupRuntime.Manual = __state.Previous; }
 
-        /// <summary>按发生点、原参与者集合及动画核对窗口来源，为本次请求固定载体和豁免选择。</summary>
-        private static void BeginPrefix(object[] __args, out SSCUapGroupRuntime.Scope __state)
+        /// <summary>仅接管同发生点、完整人物集合及动画的真实窗口请求，其他调用隔离外层作用域后沿原路径。</summary>
+        private static void BeginPrefix(Thing __0, List<Pawn> __1, object __2, out SSCUapGroupRuntime.Scope __state)
         {
             __state = null;
-            if (__args[0] is not Thing anchor || __args[1] is not List<Pawn> pawns || __args[2] == null) return;
+            if (__0 == null || __1 == null || __2 == null) return;
             // public TryBeginRequest 也可能被其他代码调用，不能仅凭方法名或 playerForced 判为窗口命令。
             var manual = SSCUapGroupRuntime.Manual;
-            bool trusted = manual != null && manual.Anchor == anchor && new HashSet<Pawn>(manual.Pawns).SetEquals(pawns) &&
-                manual.Animation == SSCUapGroupApi.Get<string>(__args[2], "DefName");
-            __state = new SSCUapGroupRuntime.Scope(SSCUapGroupRuntime.Create(anchor, pawns, __args[2], trusted));
+            bool trusted = manual != null && manual.Anchor == __0 && new HashSet<Pawn>(manual.Pawns).SetEquals(__1) &&
+                manual.Animation == SSCUapGroupApi.Get<string>(__2, "DefName");
+            __state = new SSCUapGroupRuntime.Scope(trusted ? SSCUapGroupRuntime.Create(__0, __1, __2, true) : null);
         }
         /// <summary>请求创建失败或抛异常时撤销当前批次，并在 finally 恢复外层请求作用域。</summary>
         private static void BeginFinalizer(SSCUapGroupRuntime.Scope __state, bool __result, Exception __exception)
         {
             if (__state == null) return;
-            try { if (!__result || __exception != null) SSCUapGroupRuntime.Close(SSCUapGroupRuntime.Ambient, true); }
+            try
+            {
+                var batch = SSCUapGroupRuntime.Ambient;
+                if (batch != null && (!__result || __exception != null)) SSCUapGroupRuntime.Close(batch, true);
+            }
             finally { __state.Dispose(); }
         }
         /// <summary>在初次匹配及最终会话匹配后复查原批次；拒绝通过原 bool/out 原因返回给 UAP。</summary>
-        private static void PlanPostfix(object[] __args, ref bool __result)
+        private static void PlanPostfix(object __1, object __2, ref string __3, ref bool __result)
         {
             var batch = SSCUapGroupRuntime.Ambient;
-            // 已核对的签名中 __args[2] 是 out plan，__args[3] 是 out failureReason。
-            if (__result && batch != null && ReferenceEquals(__args[1], batch.Match) &&
-                !SSCUapGroupRuntime.CheckPlan(batch, __args[2], out string reason))
-            { __result = false; __args[3] = reason; }
+            // 直接读取原方法写回的 out plan；当前 Harmony 的 __args 是执行前快照，使用它还会覆写原失败原因。
+            if (__result && batch != null && ReferenceEquals(__1, batch.Match) &&
+                !SSCUapGroupRuntime.CheckPlan(batch, __2, out string reason))
+            { __result = false; __3 = reason; }
         }
         /// <summary>只把与当前下令完全匹配的真实请求对象登记到批次，使集合后的 tick 仍能取回原上下文。</summary>
         private static void RequestPrefix(object __instance)
@@ -165,18 +175,22 @@ namespace SexSlaveCraft
                 SSCUapGroupRuntime.Register(batch, pawn, job, null, true);
         }
         /// <summary>只替换当前请求内同发生点、动画和完整人物集合的启动调用，其他调用保持原路径。</summary>
-        private static bool LaunchPrefix(object[] __args, ref bool __result)
+        private static bool LaunchPrefix(Thing __0, List<Pawn> __1, object __2, ref string __3, ref bool __result)
         {
             var batch = SSCUapGroupRuntime.Ambient;
-            if (batch?.Request == null || !ReferenceEquals(__args[0], batch.Anchor) || !ReferenceEquals(__args[2], batch.Match) ||
-                !SSCUapGroupRuntime.SamePeople(batch, (List<Pawn>)__args[1])) return true;
+            if (batch?.Request == null || !ReferenceEquals(__0, batch.Anchor) || !ReferenceEquals(__2, batch.Match) ||
+                !SSCUapGroupRuntime.SamePeople(batch, __1)) return true;
             // 同步改写返回值与 out 原因，使 UAP 原 Tick 正确进入 Complete 或 Fail 分支。
-            __result = SSCUapGroupRuntime.Launch(batch, out string reason); __args[3] = reason;
+            __result = SSCUapGroupRuntime.Launch(batch, out __3);
             return false;
         }
         /// <summary>包装原步骤序列；运行时只为已登记的真正行为任务加入等待提交步骤。</summary>
         private static void ToilsPostfix(JobDriver __instance, ref IEnumerable<Toil> __result)
         { if (__result != null) __result = SSCUapGroupRuntime.Gate(__instance, __result); }
+
+        /// <summary>只跳过接管任务重复的 RAF 自动选动画；RJW Start、其他后置和 UAP 命名动画启动继续执行。</summary>
+        private static bool AutomaticAnimationPrefix(JobDriver_SexBaseInitiator __0)
+            => !SSCUapGroupRuntime.Find(__0, out var slot) || slot.Gather;
 
         /// <summary>在当前游戏登记的活动批次中查会话编号，关闭后的批次不再接收新会话操作。</summary>
         private static SSCUapGroupRuntime.Batch Session(int id) => Current.Game?.GetComponent<SSCUapGroupGameComponent>()?

@@ -88,16 +88,6 @@ namespace SexSlaveCraft
 
         /// <summary>通过已集中管理的字段访问当前实例数据；不缓存会话、角色或许可的最终值。</summary>
         internal static T Get<T>(object instance, string name) => (T)Field(instance.GetType(), name).GetValue(instance);
-        /// <summary>按明确的候选字段名读取计划或会话人物列表，兼容两种已核对的数据载体。</summary>
-        internal static IEnumerable<Pawn> Pawns(object instance, params string[] names)
-        {
-            foreach (string name in names)
-            {
-                FieldInfo field = AccessTools.Field(instance.GetType(), name);
-                if (field != null) return ((IEnumerable)field.GetValue(instance)).Cast<Pawn>();
-            }
-            throw new MissingFieldException(instance.GetType().FullName, string.Join("/", names));
-        }
         /// <summary>枚举 UAP 实际机械配对，保持发起和接收方向，不按性别、身份或姿势重新推断。</summary>
         internal static IEnumerable<(Pawn Actor, Pawn Target)> Pairs(object plan)
         {
@@ -117,7 +107,7 @@ namespace SexSlaveCraft
         /// <summary>核对会话地图、发生点、完整 Pawn 对象集合及每人索引，防止沿旧编号借用另一场。</summary>
         internal static bool OwnsSession(SSCUapGroupRuntime.Batch batch) => batch.Session != null &&
             Get<Map>(batch.Session, "Map") == batch.Map && Get<Thing>(batch.Session, "Anchor") == batch.Anchor &&
-            SSCUapGroupRuntime.SamePeople(batch, Pawns(batch.Session, "Participants")) &&
+            SSCUapGroupRuntime.SamePeople(batch, Get<List<Pawn>>(batch.Session, "Participants")) &&
             batch.People.All(p => PawnSessionIs(batch, p.Pawn));
 
         /// <summary>调用原 UAP 构造会话并接收原失败原因；这里只绑定实际返回对象，不标记行为已开始。</summary>

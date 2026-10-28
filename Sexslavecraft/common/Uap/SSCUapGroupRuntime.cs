@@ -56,7 +56,6 @@ namespace SexSlaveCraft
             // Manual 证明窗口来源，Override 固定下令选择；Committed 只放行安装屏障。
             // Closed 先撤销新准入，Aborted 区分失败清场和正常完成后的旧任务收尾。
             internal bool Manual, Override, Committed, Closed, Aborted;
-            internal Pawn Receiver, Primary;
             internal readonly List<Person> People = new List<Person>();
             internal readonly List<Work> Gathering = new List<Work>();
             internal readonly List<Work> Jobs = new List<Work>();
@@ -148,7 +147,10 @@ namespace SexSlaveCraft
         {
             reason = null;
             batch.Denial = null;
-            if (!batch.Current || !SamePeople(batch, SSCUapGroupApi.Pawns(plan, "OrderedParticipants", "Participants")))
+            if (plan == null)
+                reason = "SSC_Uap_StartFailed".Translate();
+            else if (!batch.Current || !SamePeople(batch, SSCUapGroupApi.Get<List<Pawn>>(plan,
+                ReferenceEquals(plan, batch.Session) ? "Participants" : "OrderedParticipants")))
                 reason = "SSC_Uap_RequestChanged".Translate();
             else if (batch.Override && !(SSCMod.settings?.allowUapManualGroupRestrictionOverride ?? false))
                 reason = "SSC_Uap_RequestChanged".Translate();
@@ -193,11 +195,18 @@ namespace SexSlaveCraft
             return slot;
         }
 
-        /// <summary>按驱动当前持有的 Job 查记录；编号、角色和运行驱动的进一步复核交给实际消费入口。</summary>
+        /// <summary>仅认原 Job 编号及人物／驱动；池化后的新任务不继承旧记录，迟到驱动不能擦掉新候选。</summary>
         internal static bool Find(JobDriver driver, out Work slot)
-            => driver?.job != null && work.TryGetValue(driver.job, out slot) ? true : AssignNone(out slot);
-        /// <summary>为没有任务或未登记的驱动统一返回空记录，调用者继续沿原非兼容路径处理。</summary>
-        private static bool AssignNone(out Work slot) { slot = null; return false; }
+        {
+            slot = null;
+            if (driver?.job == null || !work.TryGetValue(driver.job, out Work candidate)) return false;
+            if (candidate.Id != driver.job.loadID) { work.Remove(driver.job); return false; }
+            if (candidate.Pawn != driver.pawn || (candidate.Driver != null && candidate.Driver != driver) ||
+                (candidate.Driver == null && (driver.pawn?.jobs?.curDriver != driver || driver.pawn.CurJob != driver.job)))
+                return false;
+            slot = candidate;
+            return true;
+        }
 
         /// <summary>精确检查必须先于 Guard 的 Started 快速路径；过期票据不能回退主人例外重新取权。</summary>
         internal static bool Check(JobDriver_Sex driver, out bool allowed)
@@ -334,12 +343,12 @@ namespace SexSlaveCraft
                 if (!batch.Current) { reason = "SSC_Uap_RequestChanged".Translate(); return false; }
                 if (!SSCUapGroupApi.CreateSession(batch, out reason)) return false;
                 if (!CheckPlan(batch, batch.Session, out reason)) return false;
-                batch.Receiver = SSCUapGroupApi.Get<Pawn>(batch.Session, "Receiver");
-                batch.Primary = SSCUapGroupApi.Get<Pawn>(batch.Session, "PrimaryInitiator");
+                Pawn receiver = SSCUapGroupApi.Get<Pawn>(batch.Session, "Receiver");
+                Pawn primary = SSCUapGroupApi.Get<Pawn>(batch.Session, "PrimaryInitiator");
                 var assignments = new List<(Pawn Pawn, Pawn Partner, JobDef Def)> {
-                    (batch.Receiver, batch.Primary, SSCUapGroupApi.ReceiverDef) };
+                    (receiver, primary, SSCUapGroupApi.ReceiverDef) };
                 assignments.AddRange(SSCUapGroupApi.Pairs(batch.Session).Select(p => (p.Actor, p.Target, SSCUapGroupApi.InitiatorDef)));
-                assignments.AddRange(SSCUapGroupApi.Pawns(batch.Session, "PassiveParticipants").Select(p => (p, (Pawn)null, SSCUapGroupApi.PassiveDef)));
+                assignments.AddRange(SSCUapGroupApi.Get<List<Pawn>>(batch.Session, "PassiveParticipants").Select(p => (p, (Pawn)null, SSCUapGroupApi.PassiveDef)));
                 if (assignments.Select(p => p.Pawn).Distinct().Count() != batch.People.Count ||
                     !SamePeople(batch, assignments.Select(p => p.Pawn))) throw new InvalidOperationException("UAP incomplete assignment");
                 // 先创建并登记全组 Job；StartJob 会构造另一份驱动，不能把缓存驱动当作运行凭据。
