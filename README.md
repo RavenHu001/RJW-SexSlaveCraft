@@ -1,6 +1,8 @@
 # RJW-SexSlaveCraft · TieJin Modify
 
-**2.4.7 — 2026-10-28。** 敏感度、个人PNA生产控制、UAP兼容、绑定吸引力与调教修复；[下载v2.4.7](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.7)。新增仅1.7，1.6／Common冻结2.4.1；About、源码版本属性及重编运行产物对齐2.4.7。繁英俄浪漫显示等独立待验收范围保留，PNA产出引导已确认有效。构建、门禁与上传结果在本版验证记录单独归档。
+2026-10-28：**2.4.7已正式发布**，[下载](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.7)。完整All **50套／6333项全部通过**，资源2／2、编排56项及浪漫隔离75项通过；532份冻结文件未变。源码标签`e567e1b1`，ZIP与SHA-256已上传并复核；本轮没有再启动游戏或同步安装目录。旧分批／登记数字按原日期阅读。
+
+**2.4.7 — 2026-10-28正式发布。** 敏感度、个人PNA生产控制、UAP兼容、绑定吸引力与调教修复；[下载v2.4.7](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.7)。新增仅1.7，1.6／Common冻结2.4.1；About、源码版本属性及重编运行产物对齐2.4.7。繁英俄浪漫显示等独立待验收范围保留，PNA产出引导已确认有效。构建、门禁与上传结果在本版验证记录单独归档。
 
 面向 RimWorld 的成人向 RimJobWorld（RJW）扩展，基于上游 **2.2.8** 继续维护，提供角色培养、主从绑定、六种特化、人格转移和身体改造。
 
