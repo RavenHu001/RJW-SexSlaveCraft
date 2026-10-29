@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <SSC_RES_Fertility.label>生育</SSC_RES_Fertility.label>
-  <SSC_RES_Fertility.description>完成子宫改造后可培养；关闭生育仍可授课和陪玩。有效育儿每小时增加1个百分点，无日上限。</SSC_RES_Fertility.description>
+  <!-- Flavor paragraph and functional guide are separate sections; update the guide as planned features ship. -->
+  <SSC_RES_Fertility.description>（描述文案待编写）\n\n【培养途径】\n成年SSC性奴完成子宫改造后可选择此方向，通过完整调教、整场仪式、实际授课和婴儿陪玩培养。授课不要求学生获得技能；育儿培养无日上限，关闭生育仍可培养。自身成功分娩也将提供培养进度（后续开放）。\n\n【功能概况】\n逐步强化生育能力、缩短新妊娠，并提高授课和婴儿陪玩效率。普通培养完成后，计划开放孕前胎儿性别、物种跟随自身或对象、后代初始印记的选择（后续开放）。\n\n【终极化】\n完成生育方向的普通培养后，在雕刻台加工对应人格凝胶并重新植入，进一步强化生育、授课和婴儿陪玩效果。专属技能“定向孕育”及自克隆后续开放。</SSC_RES_Fertility.description>
 </LanguageData>

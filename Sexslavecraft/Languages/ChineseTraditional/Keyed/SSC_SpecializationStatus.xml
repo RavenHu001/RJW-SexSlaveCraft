@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_SpecializationStatus_Header>終極化</SSC_SpecializationStatus_Header>
+  <SSC_SpecializationStatus_Finalized>已終極化</SSC_SpecializationStatus_Finalized>
+  <SSC_SpecializationStatus_FinalDisabled>已終極化，目前停用</SSC_SpecializationStatus_FinalDisabled>
+</LanguageData>

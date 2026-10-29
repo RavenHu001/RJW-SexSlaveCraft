@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_SpecializationStatus_Header>Finalization</SSC_SpecializationStatus_Header>
+  <SSC_SpecializationStatus_Finalized>Finalized</SSC_SpecializationStatus_Finalized>
+  <SSC_SpecializationStatus_FinalDisabled>Finalized, currently disabled</SSC_SpecializationStatus_FinalDisabled>
+</LanguageData>

@@ -6,8 +6,6 @@
   <SSC_Fertility_Uterus>需要完成子宫改造</SSC_Fertility_Uterus>
   <SSC_Fertility_Finalized>性奴特化（终极生育）</SSC_Fertility_Finalized>
   <SSC_Fertility_Research>需要完成生育特化研究</SSC_Fertility_Research>
-  <SSC_Fertility_Status>生育特化：{0}，教学／陪玩效率 ×{1}</SSC_Fertility_Status>
-  <SSC_Fertility_Paused>生育特化暂停：{0}</SSC_Fertility_Paused>
   <SSC_Fertility_Tip>完成子宫改造后可培养；关闭生育仍可授课和陪玩。有效育儿每小时增加1个百分点，无日上限。</SSC_Fertility_Tip>
   <SSC_Fertility_FinalTip>普通培养完成。可在雕刻台加工一份人格凝胶进行终极化。</SSC_Fertility_FinalTip>
 </LanguageData>

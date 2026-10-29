@@ -30,11 +30,11 @@ namespace SexSlaveCraft
             }
         }
 
-        /// <summary>生成当前培养方向的标签；没有当前方向时始终显示未选择。</summary>
-        private static string GetSpecializationLabel(Pawn pawn, CompSexSlaveTraining comp)
+        /// <summary>方向名称供选择按钮及终极成果列表共用，不附加完成或未开放后缀。</summary>
+        private static string GetSpecializationName(SexSlaveSpecializationType type)
         {
             string label;
-            switch (comp.specializationType)
+            switch (type)
             {
 #if SSC_RW17
                 case SexSlaveSpecializationType.Fertility:
@@ -56,12 +56,19 @@ namespace SexSlaveCraft
                 case SexSlaveSpecializationType.PetCat:
                 case SexSlaveSpecializationType.PetDog:
                 case SexSlaveSpecializationType.PetRabbit:
-                    label = PetSpecializationUtility.GetSpecializationLabel(comp.specializationType);
+                    label = PetSpecializationUtility.GetSpecializationLabel(type);
                     break;
                 default:
                     label = Strings.ITab_SpecializationNone;
                     break;
             }
+            return label;
+        }
+
+        /// <summary>生成当前培养方向的标签；没有当前方向时始终显示未选择。</summary>
+        private static string GetSpecializationLabel(Pawn pawn, CompSexSlaveTraining comp)
+        {
+            string label = GetSpecializationName(comp.specializationType);
 
             // 选择按钮只表示当前培养方向。保留的终极健康状态属于已取得的效果，
             // 不能在 None 时拿历史完成方向替代“未选择”，否则玩家清空后看不到变化。
@@ -96,7 +103,7 @@ namespace SexSlaveCraft
         private static string GetSpecializationProgressText(Pawn pawn, CompSexSlaveTraining comp)
         {
             // 进度与按钮采用同一个当前方向；None 不能因为其他完成记录而显示已完成。
-            // 终极记录仍由各自健康状态及训导官独立状态行展示，不在这里改写其效果。
+            // 终极记录仍由独立成果行展示，不在这里改写其效果。
             if (
 #if SSC_RW17
                 comp.specializationType == SexSlaveSpecializationType.Fertility ||

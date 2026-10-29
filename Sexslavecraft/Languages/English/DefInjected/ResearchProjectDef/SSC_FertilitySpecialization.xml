@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <SSC_RES_Fertility.label>Fertility</SSC_RES_Fertility.label>
-  <SSC_RES_Fertility.description>Requires a fully developed uterus. Training and care remain available with fertility disabled. Each hour of active care grants 1 percentage point, without a daily cap.</SSC_RES_Fertility.description>
+  <!-- Flavor paragraph and functional guide are separate sections; update the guide as planned features ship. -->
+  <SSC_RES_Fertility.description>(Flavor description pending.)\n\nTraining routes\nAdult SSC slaves with a fully developed uterus can choose this specialization. Complete training sessions, whole rituals, active teaching and baby play build progress. Teaching counts even without student skill gains. Care training has no daily cap and remains available with fertility disabled. Successful childbirth will also grant progress (coming later).\n\nFeatures\nProgress improves fertility, shortens new pregnancies and improves teaching and baby play. Ordinary completion is planned to unlock preconception choices for offspring sex, species following the bearer or partner, and an initial offspring imprint (coming later).\n\nFinalization\nComplete ordinary fertility training, process the corresponding personality gel at a sculpting table, then reimplant it to further improve fertility, teaching and baby play. Targeted Gestation and self-cloning will be added later.</SSC_RES_Fertility.description>
 </LanguageData>
