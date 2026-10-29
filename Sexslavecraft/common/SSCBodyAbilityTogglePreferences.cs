@@ -9,6 +9,9 @@ namespace SexSlaveCraft
         public const string MilkProduction = "SSC_MilkProduction";
         public const string PnaProduction = "SSC_PnaProduction";
         public const string UterusFertility = "SSC_UterusFertility";
+#if SSC_RW17
+        public const string OffspringImprint = "SSC_OffspringImprint";
+#endif
         public const string GelRendering = "SSC_GelRendering";
 
         /// <summary>从旧训练组件读取泌乳选择；没有组件时仍按旧生产入口放行，不创建组件或人格字典键。</summary>

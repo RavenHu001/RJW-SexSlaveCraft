@@ -100,7 +100,7 @@ namespace SexSlaveCraft
             Hediff_SSCUterusDevelopment keep = null;
             float progress = 0f;
             bool changed = false;
-            // 先规范每份记录，再选首个有效躯干实例；进度可取最大值，开关不从其他份搬运。
+            // 先规范每份记录，再选首个有效躯干实例；只合并进度，原开关及三项孕前预设不从来者搬运。
             foreach (var candidate in records)
             {
                 changed |= candidate.NormalizeState();
@@ -108,7 +108,7 @@ namespace SexSlaveCraft
                 keep ??= candidate;
                 progress = Math.Max(progress, candidate.Severity);
             }
-            // 快照遍历，避免 RemoveHediff 修改活动枚举；开关始终保留首个有效实例的选择。
+            // 快照遍历避免RemoveHediff修改活动枚举；首个有效实例保留全部身体选择。
             foreach (var candidate in records)
                 if (candidate != keep) pawn.health.RemoveHediff(candidate);
             // 移除通知可能使保留实例也离体，因此写回前再次确认列表归属。

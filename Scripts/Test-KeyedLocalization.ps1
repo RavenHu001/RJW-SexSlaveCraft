@@ -86,6 +86,16 @@ function Read-KeyedEntries([string]$path, [string]$context) {
 
 # 仅记录本轮移除语言矩阵实际消费的接口；不复制正文，也不固定资源文件的键总数。
 $contracts = @{
+    # 孕前菜单包含拼接键；独立列出消费接口，避免四语同时缺少同一选项仍通过对齐检查。
+    'SSC_FertilityPreconception.xml' = @{
+        'SSC_Preconception_GenderLabel' = ''; 'SSC_Preconception_SpeciesLabel' = ''; 'SSC_Preconception_ImprintLabel' = ''
+        'SSC_Preconception_GenderNatural' = ''; 'SSC_Preconception_GenderMale' = ''; 'SSC_Preconception_GenderFemale' = ''
+        'SSC_Preconception_SpeciesNatural' = ''; 'SSC_Preconception_SpeciesSelf' = ''; 'SSC_Preconception_SpeciesPartner' = ''
+        'SSC_Preconception_GenderTip' = ''; 'SSC_Preconception_SpeciesTip' = ''; 'SSC_Preconception_ImprintTip' = ''
+        'SSC_Preconception_GenderLocked' = ''; 'SSC_Preconception_SpeciesLocked' = ''; 'SSC_Preconception_ImprintLocked' = ''
+        'SSC_Preconception_PregnancyBlocked' = ''; 'SSC_Preconception_FertilityDisabled' = ''
+        'SSC_Preconception_Unavailable' = ''; 'SSC_Preconception_InvalidSelection' = ''
+    }
     'SSC_Imprint.xml' = @{
         'SSC_Imprint_None' = ''; 'SSC_Imprint_Unlocked' = ''; 'SSC_Imprint_MasterLocked' = ''; 'SSC_Imprint_SlaveLocked' = ''
         'SSC_Imprint_GelStatus' = '0'; 'SSC_Imprint_GelTooltip' = ''; 'SSC_Imprint_SeedAlreadyMarked' = ''

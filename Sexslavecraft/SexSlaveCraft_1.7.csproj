@@ -29,6 +29,9 @@
     <!-- 人格印记与停龄补丁仅编入1.7；共享入口通过SSC_RW17保留旧版本行为。 -->
     <Compile Include="common/SSCImprintUtility.cs" />
     <Compile Include="common/FertilitySpecializationUtility.cs" />
+    <Compile Include="common/SSCFertilityPreconceptionUtility.cs" />
+    <Compile Include="common/SSCUterusOffspringImprintToggleBackend.cs" />
+    <Compile Include="ITab/ITab_SexSlaveTraining.Preconception.cs" />
     <Compile Include="ITab/ITab_SexSlaveTraining.FinalSpecializations.cs" />
     <Compile Include="common/FertilitySpecializationGelUtility.cs" />
     <Compile Include="Hediff/Hediff_FertilitySpecialization.cs" />

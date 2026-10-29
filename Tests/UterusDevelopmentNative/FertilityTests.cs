@@ -16,7 +16,7 @@ internal static partial class Program
     private static Thing fertilityProduct;
 
     /// <summary>扩展现有原生宿主；图形、地图放置与完整健康状态机仍是边界。</summary>
-    private static void FertilityTests(string repo, Harmony harmony)
+    private static void FertilityTests(string repo, Harmony harmony, bool preconceptionOnly = false)
     {
         // 复用原翻译器，将本批Keyed内容并入当前已载入语言。
         LoadBodyManagementLanguage(repo, "ChineseSimplified");
@@ -72,6 +72,9 @@ internal static partial class Program
         InstallFertilityPatch(harmony,AccessTools.Method(typeof(Hediff_Pregnant), nameof(Hediff_Pregnant.StartLabor)), prefix: new HarmonyMethod(typeof(Program), nameof(LaborBoundary)));
         Current.Game.storyteller = Bare<Storyteller>(); Current.Game.storyteller.difficulty = new Difficulty { babiesAreHealthy = true };
         pregnancyHunger = HungerCategory.Fed;
+
+        // 共享初始化与实际生产引用，不以执行旧测试作为新分区的隐式前置。
+        if (preconceptionOnly) { PreconceptionTests(harmony); return; }
 
         Check("fertility real research and recipe use approved gates", () =>
         {

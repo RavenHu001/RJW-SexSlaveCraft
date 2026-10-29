@@ -80,6 +80,13 @@ namespace SexSlaveCraft
                 backend: SSCUterusAbilityToggleBackend.Instance, order: 10,
                 visibleRule: pawn => pawn?.TryGetComp<CompSexSlaveTraining>() != null && SSCUterusDevelopmentUtility.Find(pawn) != null)
 #endif
+#if SSC_RW17 && !SSC_ABILITY_TOGGLE_SCOPED_TEST
+            // 后代初始印记是身体预设，默认关闭；不生成标记或向人格字典保存第二份bool。
+            , new SSCAbilityToggleDefinition(OffspringImprint, SSCAbilityToggleGroup.Body, PawnIdentity.Unset,
+                "SSC_Preconception_ImprintLabel", "SSC_Preconception_ImprintTip",
+                backend: SSCUterusOffspringImprintToggleBackend.Instance, order: 11,
+                visibleRule: pawn => pawn?.TryGetComp<CompSexSlaveTraining>() != null && SSCUterusDevelopmentUtility.Find(pawn) != null)
+#endif
 #if (SSC_RW17 && !SSC_ABILITY_TOGGLE_SCOPED_TEST) || SSC_ABILITY_TOGGLE_PNA
             // 普通 PNA 的新选择与原生产进度共归身体记录，不写人格字典；保持在泌乳与生育之间。
             , new SSCAbilityToggleDefinition(PnaProduction, SSCAbilityToggleGroup.Body, PawnIdentity.Unset,
