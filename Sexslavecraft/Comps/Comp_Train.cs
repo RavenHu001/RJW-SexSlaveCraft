@@ -236,6 +236,10 @@ namespace SexSlaveCraft
             Scribe_Values.Look(ref lastTrainingLocalDay, "lastTrainingLocalDay", -999999);
             Scribe_Values.Look(ref specializationType, "specializationType", SexSlaveSpecializationType.None);
             Scribe_Values.Look(ref specializationProgress, "specializationProgress", 0f);
+#if SSC_RW17
+            Scribe_Values.Look(ref fertilityCareTicks, "fertilityCareTicks", 0);
+            if (Scribe.mode == LoadSaveMode.PostLoadInit) fertilityCareTicks = Math.Clamp(fertilityCareTicks, 0, 2499);
+#endif
             Scribe_Values.Look(ref savedCowReservoirCharge, "savedCowReservoirCharge", 0f);
             Scribe_Values.Look(ref trainerInvalidExitBlocksAdoption, "trainerInvalidExitBlocksAdoption", false);
             Scribe_Values.Look(ref specializationExplicitlyUnset, "specializationExplicitlyUnset", false);

@@ -164,6 +164,7 @@ namespace SexSlaveCraft
                 if (!SSCPersonalityRuntimeUtility.IsCurrent(pawn, personalityToken) || pawn.TryGetComp<CompSexSlaveTraining>() != comp) return false;
 #if SSC_RW17
                 SSCOrgasmSensitivityUtility.NotifyStateChanged(pawn);
+                FertilitySpecializationUtility.Sync(pawn);
 #endif
                 SSCAbilityToggleUtility.SyncMarkers(pawn);
                 return true;
@@ -215,6 +216,9 @@ namespace SexSlaveCraft
             // 仅在身份成功写入后协调；成为主人清受药状态，退出主人不恢复已清记录。
             SSCPnaExposureUtility.RefreshBodyState(pawn, true);
             if (!SSCPersonalityRuntimeUtility.IsCurrent(pawn, personalityToken) || pawn.TryGetComp<CompSexSlaveTraining>() != comp) return false;
+#if SSC_RW17
+            FertilitySpecializationUtility.Sync(pawn);
+#endif
             // 身份真正变化后通知训导官生命周期。绑定事务会暂缓这次检查，
             // 待主人锁链和身份全部就绪后统一判断持续条件。
             TrainerSpecializationLifecycle.Notify(pawn);

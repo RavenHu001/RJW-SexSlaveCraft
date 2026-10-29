@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <!-- AI 辅助生成：进度权威仍在训练Comp，CurStage按当前身体资格暂停；不授予后续主动技能。 -->
+  <HediffDef>
+    <defName>SSC_Hediff_Fertility</defName><label>fertility specialization</label>
+    <description>[Placeholder] Fertility specialization in training.</description>
+    <hediffClass>SexSlaveCraft.Hediff_FertilitySpecialization</hediffClass>
+    <isBad>false</isBad><everCurableByItem>false</everCurableByItem><initialSeverity>0.01</initialSeverity><maxSeverity>1</maxSeverity>
+    <modExtensions><li Class="SexSlaveCraft.FertilitySpecializationExtension"><careFactors><li>1</li><li>1.1</li><li>1.2</li><li>1.3</li><li>1.4</li><li>1.5</li></careFactors></li></modExtensions>
+    <stages>
+      <li><minSeverity>0</minSeverity><fertilityFactor>1</fertilityFactor></li>
+      <li><minSeverity>0.2</minSeverity><fertilityFactor>1.2</fertilityFactor></li>
+      <li><minSeverity>0.5</minSeverity><fertilityFactor>1.4</fertilityFactor></li>
+      <li><minSeverity>0.8</minSeverity><fertilityFactor>1.6</fertilityFactor></li>
+      <li><minSeverity>0.999</minSeverity><fertilityFactor>1.8</fertilityFactor></li>
+    </stages>
+  </HediffDef>
+  <HediffDef>
+    <defName>SSC_Hediff_Fertility_Final</defName><label>ultimate fertility specialization</label>
+    <description>[Placeholder] Completed fertility specialization.</description>
+    <hediffClass>SexSlaveCraft.Hediff_FertilitySpecialization</hediffClass>
+    <isBad>false</isBad><everCurableByItem>false</everCurableByItem><initialSeverity>1</initialSeverity><maxSeverity>1</maxSeverity>
+    <modExtensions><li Class="SexSlaveCraft.FertilitySpecializationExtension"><careFactors><li>1</li><li>1.1</li><li>1.2</li><li>1.3</li><li>1.4</li><li>1.5</li></careFactors></li></modExtensions>
+    <stages><li><fertilityFactor>2</fertilityFactor></li></stages>
+  </HediffDef>
+</Defs>

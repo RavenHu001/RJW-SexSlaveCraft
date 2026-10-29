@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_RES_Fertility.label>Fertility specialization</SSC_RES_Fertility.label>
+  <SSC_RES_Fertility.description>Requires a fully developed uterus. Training and care remain available with fertility disabled. Each hour of active care grants 1 percentage point, without a daily cap.</SSC_RES_Fertility.description>
+</LanguageData>

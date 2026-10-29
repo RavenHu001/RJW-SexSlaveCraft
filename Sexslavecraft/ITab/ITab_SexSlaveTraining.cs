@@ -381,7 +381,11 @@ namespace SexSlaveCraft
             bool showRabbitMode = comp.IsPetRabbitSpecialized ||
                 PetSpecializationUtility.HasAnyPetState(pawn, SexSlaveSpecializationType.PetRabbit);
             float progressExtraHeight = 0f;
-            if (comp.specializationType == SexSlaveSpecializationType.Combatant)
+            if (comp.specializationType == SexSlaveSpecializationType.Combatant
+#if SSC_RW17
+                || comp.specializationType == SexSlaveSpecializationType.Fertility
+#endif
+                )
             {
                 GameFont previousFont = Text.Font;
                 try
@@ -393,6 +397,10 @@ namespace SexSlaveCraft
                 }
                 finally { Text.Font = previousFont; }
             }
+            // 生育状态可与训导官终极状态、兔模式同时显示，各自预留高度。
+#if SSC_RW17
+            progressExtraHeight += GetFertilityStatusHeight(pawn, comp, width - SectionPadding * 2f);
+#endif
             return SpecializationSectionHeight + progressExtraHeight +
                 (showTrainerStatus ? TrainerStatusExtraHeight : 0f) +
                 (showRabbitMode ? RabbitModeExtraHeight : 0f);
@@ -511,6 +519,8 @@ namespace SexSlaveCraft
                 Listing_Standard listing = BeginSectionListing(innerRect);
                 try
                 {
+                    // 状态行已按实际宽度测高，仍强制单列，避免界面补丁使其横向溢出。
+                    listing.maxOneColumn = true;
                     DrawSpecializationSelector(listing, pawn, comp);
                 }
                 finally
@@ -879,6 +889,9 @@ namespace SexSlaveCraft
                         () => comp.SetSpecialization(SexSlaveSpecializationType.None)),
                     BuildCombatantSpecializationOption(pawn, comp)
                 };
+#if SSC_RW17
+                options.Add(BuildFertilitySpecializationOption(pawn, comp));
+#endif
                 if (CanShowLegacySpecializationOptions(comp))
                 {
                     string busOptionLabel = Strings.ITab_SelectSpecializationBus;
@@ -956,6 +969,9 @@ namespace SexSlaveCraft
                     : "SSC_TrainerIdentity_RestrictionTip".Translate().ToString();
                 listing.Label("SSC_TrainerIdentity_StatusLine".Translate(status), -1f, tip);
             }
+#if SSC_RW17
+            DrawFertilityState(listing, pawn, comp);
+#endif
             DrawRabbitReproductionModeSelector(listing, pawn, comp);
         }
 

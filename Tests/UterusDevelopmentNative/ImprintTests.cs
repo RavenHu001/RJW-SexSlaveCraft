@@ -15,7 +15,7 @@ internal static partial class Program
     private static bool imprintBiotech = true;
 
     /// <summary>准备最小原生上下文、加载生产印记XML并安装必要边界，再执行五组真实入口用例。</summary>
-    private static void ImprintTests(string repo, Harmony harmony)
+    private static void ImprintTests(string repo, Harmony harmony, bool fertilityOnly = false)
     {
         LoadBodyManagementLanguage(repo, "ChineseSimplified");
         // 只预热游戏 DefOf 的非本批引用；生产 XML 解析和用例期间错误仍计为失败。
@@ -68,6 +68,8 @@ internal static partial class Program
             postfix: new HarmonyMethod(typeof(Harmony_ImprintAge), nameof(Harmony_ImprintAge.Postfix)));
         // 正常年龄速率固定为 1；仍执行生产停龄补丁及原版进位/年龄字段更新。
         harmony.Patch(AccessTools.PropertyGetter(typeof(Pawn_AgeTracker), "BiologicalTicksPerTick"), prefix: new HarmonyMethod(typeof(Program), nameof(ImprintAgeRate)));
+
+        if (fertilityOnly) { FertilityTests(repo, harmony); return; }
 
         Check("imprint native XML resolves all references and forbids item cures", () =>
         {

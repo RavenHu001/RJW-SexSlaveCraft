@@ -296,6 +296,7 @@ namespace SexSlaveCraft
                     SSCRomancePreferences.Clear(victim);
                     // 场景提取与普通提取使用相同清源时点，不能让原身体继续持有印记收益或身份锁。
                     SSCImprintUtility.Clear(victim);
+                    FertilitySpecializationGelUtility.DetachAfterExtraction(victim);
 #endif
                     SSCMasterQualificationUtility.ClearPersonalityQualification(victim);
                     SSCMasterProgressionUtility.ClearPersonalityRecord(victim);

@@ -9,6 +9,10 @@ namespace SexSlaveCraft
         {
             switch (type)
             {
+#if SSC_RW17
+                case SexSlaveSpecializationType.Fertility:
+                    return FertilitySpecializationUtility.HasFinalState(pawn);
+#endif
                 case SexSlaveSpecializationType.Combatant:
                     return CombatantSpecializationUtility.HasFinalState(pawn);
                 case SexSlaveSpecializationType.Bus:
@@ -32,6 +36,11 @@ namespace SexSlaveCraft
             string label;
             switch (comp.specializationType)
             {
+#if SSC_RW17
+                case SexSlaveSpecializationType.Fertility:
+                    label = "SSC_Fertility_Label".Translate();
+                    break;
+#endif
                 case SexSlaveSpecializationType.Bus:
                     label = Strings.ITab_SpecializationBus;
                     break;
@@ -88,7 +97,11 @@ namespace SexSlaveCraft
         {
             // 进度与按钮采用同一个当前方向；None 不能因为其他完成记录而显示已完成。
             // 终极记录仍由各自健康状态及训导官独立状态行展示，不在这里改写其效果。
-            if (comp.specializationType == SexSlaveSpecializationType.Combatant ||
+            if (
+#if SSC_RW17
+                comp.specializationType == SexSlaveSpecializationType.Fertility ||
+#endif
+                comp.specializationType == SexSlaveSpecializationType.Combatant ||
                 comp.specializationType == SexSlaveSpecializationType.PetCat ||
                 comp.specializationType == SexSlaveSpecializationType.PetDog)
             {
@@ -115,6 +128,10 @@ namespace SexSlaveCraft
 
             // 引导只属于当前方向。普通完成仍需提取、加工和植入，不能将历史进度
             // 或其他方向保留的终极成果解释为当前方向已经终极化。
+#if SSC_RW17
+            if (comp.specializationType == SexSlaveSpecializationType.Fertility)
+                return IsTypeFinalized(pawn, comp.specializationType) ? null : "SSC_Fertility_FinalTip".Translate().ToString();
+#endif
             if (comp.specializationType == SexSlaveSpecializationType.Combatant)
                 return IsTypeFinalized(pawn, comp.specializationType)
                     ? null : "SSC_ITab_CombatantFinalizationTip".Translate().ToString();

@@ -1,4 +1,4 @@
-// AI 辅助生成：补充两项 SSC 身体 Hediff 的原生生育因子展示，不参与属性计算或状态保存。
+// AI 辅助生成：补充 SSC 身体与生育特化 Hediff 的原生生育因子展示，不参与属性计算或状态保存。
 using System.Collections.Generic;
 using HarmonyLib;
 using RimWorld;
@@ -9,11 +9,11 @@ namespace SexSlaveCraft
     [HarmonyPatch(typeof(HediffStatsUtility), nameof(HediffStatsUtility.SpecialDisplayStats))]
     public static class Harmony_HediffFertilityDisplay
     {
-        /// <summary>仅扩展子宫开发与永久泌乳实例的展示，其他 Hediff 和无实例的定义预览保持原结果。</summary>
+        /// <summary>仅扩展子宫开发、永久泌乳与生育特化实例的展示，其他 Hediff 和无实例的定义预览保持原结果。</summary>
         public static void Postfix(Hediff instance, ref IEnumerable<StatDrawEntry> __result)
         {
             string name = instance?.def?.defName;
-            if (name != SSCUterusDevelopmentUtility.DefName && name != "SSC_Lactating_SubState") return;
+            if (name != SSCUterusDevelopmentUtility.DefName && name != "SSC_Lactating_SubState" && !FertilitySpecializationUtility.IsTag(instance?.def)) return;
             __result = WithFertilityFactor(__result, instance);
         }
 

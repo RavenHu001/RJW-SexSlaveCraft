@@ -21,6 +21,9 @@ namespace SexSlaveCraft
                 // 人格恢复会先更新方向再恢复标签，这里只清理，避免宿主旧普通严重度污染源进度。
                 PetSpecializationUtility.RemoveInactiveOrdinaryPetStates(parent as Pawn);
                 CombatantSpecializationUtility.Sync(parent as Pawn);
+#if SSC_RW17
+                FertilitySpecializationUtility.Sync(parent as Pawn);
+#endif
             }
         }
 
@@ -39,6 +42,9 @@ namespace SexSlaveCraft
             TrainerSpecializationLifecycle.Maintain(pawn);
             // 同步当前战斗员方向及明确留空后的普通状态。
             CombatantSpecializationUtility.Sync(pawn);
+#if SSC_RW17
+            FertilitySpecializationUtility.Sync(pawn);
+#endif
             if (comp.pawnIdentity == PawnIdentity.Master)
             {
                 PetSpecializationUtility.RemoveInactiveOrdinaryPetStates(pawn);
@@ -112,6 +118,10 @@ namespace SexSlaveCraft
         {
             if (pawn?.health?.hediffSet == null) return;
 
+#if SSC_RW17
+            if (typeToKeep != SexSlaveSpecializationType.Fertility)
+                RemoveSpecializationHediff(pawn, FertilitySpecializationUtility.OrdinaryDef);
+#endif
             if (typeToKeep != SexSlaveSpecializationType.Combatant)
                 CombatantSpecializationUtility.RemoveOrdinaryState(pawn);
 

@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using RimWorld;
 using SexSlaveCraft;
 using System;
@@ -18,6 +18,16 @@ namespace SexSlaveCraft
         public static void Postfix(Bill __instance, Thing thing, ref bool __result)
         {
             if (!(__instance.recipe is RecipeDef_PSTag smartRecipe)) return;
+#if SSC_RW17
+            if (FertilityFinalizationRecipeUtility.IsFinalizationRecipe(smartRecipe))
+            {
+                // 保留原账单与玩家筛选结果；即使通用标签过滤关闭也检查本方向资格。
+                __result = __result && thing != null && !thing.Destroyed && thing.stackCount == 1 &&
+                    FertilityFinalizationRecipeUtility.CanCreateProduct(thing.def) &&
+                    FertilityFinalizationRecipeUtility.IsEligibleGel(smartRecipe, thing.TryGetComp<CompPersonalityStore>());
+                return;
+            }
+#endif
             if (PetFinalizationRecipeUtility.IsFinalizationRecipe(smartRecipe))
             {
                 // 第一关只筛选当下可搬运的单份人格凝胶，并预检加工产物。

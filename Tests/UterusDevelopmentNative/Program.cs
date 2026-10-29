@@ -11,11 +11,11 @@ using Verse;
 
 internal static class Entry
 {
-    /// <summary>定位真实依赖后进入隔离宿主；可用--imprint只运行印记，避免JIT提前解析游戏引用。</summary>
+    /// <summary>定位真实依赖后进入隔离宿主；可用--imprint／--fertility／--pregnancy选择相关专项，避免JIT提前解析游戏引用。</summary>
     private static int Main(string[] args)
     {
-        if (args.Length < 2 || args.Length > 3 || (args.Length == 3 && args[2] != "--imprint"))
-            throw new ArgumentException("repositoryRoot gameRoot [--imprint]");
+        if (args.Length < 2 || args.Length > 3 || (args.Length == 3 && args[2] != "--imprint" && args[2] != "--fertility" && args[2] != "--pregnancy"))
+            throw new ArgumentException("repositoryRoot gameRoot [--imprint|--fertility|--pregnancy]");
         string repo = Path.GetFullPath(args[0]), game = Path.GetFullPath(args[1]);
         // 隔离复核可显式提供本轮引用记录；默认仍使用正式记录，不自动猜测更新后的依赖目录。
         string referenceInfo = Environment.GetEnvironmentVariable("SSC_TEST_BUILD_INFO_PATH") ?? Path.Combine(repo, "1.7/BUILD-INFO.json");
@@ -33,7 +33,7 @@ internal static class Entry
             return null;
         };
         return (int)typeof(Entry).Assembly.GetType("Program").GetMethod("Run", BindingFlags.Static | BindingFlags.NonPublic)
-            .Invoke(null, new object[] { repo, game, args.Length == 3 });
+            .Invoke(null, new object[] { repo, game, args.Length == 3 ? args[2] : null });
     }
 }
 
@@ -49,8 +49,8 @@ internal static partial class Program
     private static HediffDef development;
     private static ThingDef human;
 
-    /// <summary>建立隔离原生宿主，按入口选择完整身体范围或印记专项，最终均释放Scribe与游戏上下文。</summary>
-    internal static int Run(string repo, string game, bool imprintOnly)
+    /// <summary>建立隔离原生宿主，按入口选择完整身体范围、印记、生育特化或孕期专项，最终均释放Scribe与游戏上下文。</summary>
+    internal static int Run(string repo, string game, string selection)
     {
         Console.WriteLine($"Game: {File.ReadAllText(Path.Combine(game, "Version.txt")).Trim()}, MVID: {typeof(Pawn).Module.ModuleVersionId:N}");
         // 显示实际载入位置及哈希，隔离候选模式下可核对未误用仓库正式旧 DLL。
@@ -109,10 +109,10 @@ internal static partial class Program
             // 第 4 批新增真实属性引用；宿主只提供正常基础值，能力、装备等修正不参与阶段专项。
             LoadStageStatReferences(game);
             // 印记专项只复用公共游戏夹具，不依赖先执行子宫、手术或敏感度用例来完成初始化。
-            if (imprintOnly)
+            if (selection != null && selection != "--pregnancy")
             {
-                ImprintTests(repo, harmony.Value);
-                Console.WriteLine($"{passed}/{passed + failed} imprint cases passed");
+                ImprintTests(repo, harmony.Value, selection == "--fertility");
+                Console.WriteLine($"{passed}/{passed + failed} {selection} cases passed");
                 return failed == 0 ? 0 : 1;
             }
             // 生产 XML 仍走原版字段解析与交叉引用，防止手工抄写配置掩盖资源错误。
@@ -121,6 +121,12 @@ internal static partial class Program
             development = DirectXmlToObject.ObjectFromXml<HediffDef>(developmentXml.DocumentElement.SelectSingleNode("HediffDef"), false);
             DefDatabase<HediffDef>.Add(development); DirectXmlCrossRefLoader.ResolveAllWantedCrossReferences(FailMode.LogErrors);
             Require(errors.Count == 0, string.Join('\n', errors));
+            if (selection == "--pregnancy")
+            {
+                PregnancyTests(repo, game, harmony.Value);
+                Console.WriteLine($"{passed}/{passed + failed} pregnancy cases passed");
+                return failed == 0 ? 0 : 1;
+            }
             Check("production XML uses native loader, independent fertile stage and approved Chinese text", () =>
             {
                 Equal(SSCUterusDevelopmentUtility.DefName, development.defName);
@@ -166,6 +172,7 @@ internal static partial class Program
             OrgasmSensitivityTests(repo, harmony.Value);
             OrgasmAdvanceTests(repo, game, harmony.Value);
             ImprintTests(repo, harmony.Value);
+            FertilityTests(repo, harmony.Value);
         }
         finally { Scribe.mode = LoadSaveMode.Inactive; Current.Game = null; }
         Console.WriteLine($"{passed}/{passed + failed} cases passed");

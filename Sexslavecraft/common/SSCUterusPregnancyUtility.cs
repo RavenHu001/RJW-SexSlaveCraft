@@ -21,15 +21,15 @@ namespace SexSlaveCraft
         }
 
         /// <summary>读取该次妊娠已有的判定；无组件或不支持的类型保持普通待遇。</summary>
-        private static bool IsShortened(Hediff pregnancy) => IsSupported(pregnancy) &&
-            pregnancy.TryGetComp<HediffComp_SSCUterusPregnancy>()?.IsShortened == true;
+        private static float GetDurationFactor(Hediff pregnancy) => IsSupported(pregnancy)
+            ? pregnancy.TryGetComp<HediffComp_SSCUterusPregnancy>()?.DurationFactor ?? 1f : 1f;
 
         /// <summary>在原版正常速率算出后应用一次固定因子，保留原方法的饥饿与临产逻辑。</summary>
         public static float ScaleNativeRate(float rate, Hediff_Pregnant pregnancy)
-            => float.IsFinite(rate) && rate > 0f && IsShortened(pregnancy) ? rate * NativeRateFactor : rate;
+            => float.IsFinite(rate) && rate > 0f ? rate / GetDurationFactor(pregnancy) : rate;
 
         /// <summary>只缩放 RJW 每次重新算出的原始时长，不读取或累乘已有起止时间。</summary>
         public static float ScaleRjwDuration(float duration, rjw.Hediff_BasePregnancy pregnancy)
-            => float.IsFinite(duration) && duration > 0f && IsShortened(pregnancy) ? duration * DurationFactor : duration;
+            => float.IsFinite(duration) && duration > 0f ? duration * GetDurationFactor(pregnancy) : duration;
     }
 }

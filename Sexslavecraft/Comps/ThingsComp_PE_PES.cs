@@ -84,6 +84,9 @@ namespace SexSlaveCraft
         public float highestCorruptionLevel = -1f;
         public SexSlaveSpecializationType specializationType = SexSlaveSpecializationType.None;
         public float specializationProgress = 0f;
+#if SSC_RW17
+        public int fertilityCareTicks;
+#endif
         // 空引用表示旧凝胶没有保存历史；空字典表示新快照确实没有任何方向的进度。
         public Dictionary<string, float> specializationProgressByType;
         // 猫技能随人格保存绝对冷却结束 tick；0 表示可用或旧快照缺少此字段。
@@ -141,6 +144,10 @@ namespace SexSlaveCraft
             Scribe_Values.Look(ref highestCorruptionLevel, "highestCorruptionLevel", -1f);
             Scribe_Values.Look(ref specializationType, "specializationType", SexSlaveSpecializationType.None);
             Scribe_Values.Look(ref specializationProgress, "specializationProgress", 0f);
+#if SSC_RW17
+            Scribe_Values.Look(ref fertilityCareTicks, "fertilityCareTicks", 0);
+            if (Scribe.mode == LoadSaveMode.PostLoadInit) fertilityCareTicks = Math.Clamp(fertilityCareTicks, 0, 2499);
+#endif
             Scribe_Collections.Look(ref specializationProgressByType, "specializationProgressByType", LookMode.Value, LookMode.Value);
             Scribe_Values.Look(ref petCatComfortCooldownEndTick, "petCatComfortCooldownEndTick", 0);
             Scribe_Values.Look(ref petDogTameCooldownEndTick, "petDogTameCooldownEndTick", 0);
@@ -251,6 +258,9 @@ namespace SexSlaveCraft
             this.highestCorruptionLevel = other.highestCorruptionLevel;
             this.specializationType = other.specializationType;
             this.specializationProgress = other.specializationProgress;
+#if SSC_RW17
+            this.fertilityCareTicks = Math.Clamp(other.fertilityCareTicks, 0, 2499);
+#endif
             this.specializationProgressByType = other.specializationProgressByType == null
                 ? null
                 : new Dictionary<string, float>(other.specializationProgressByType);
@@ -536,6 +546,10 @@ namespace SexSlaveCraft
             // 的当前进度作为普通标签的权威值。
             TrainerSpecializationGelUtility.StoreExclusiveTrainerTags(this, p);
             CombatantSpecializationGelUtility.StoreExclusiveTags(this, p);
+#if SSC_RW17
+            fertilityCareTicks = Math.Clamp(trainingComp?.fertilityCareTicks ?? 0, 0, 2499);
+            FertilitySpecializationGelUtility.StoreExclusiveTags(this, p);
+#endif
 #if SSC_RW17
             // 印记没有配方输出，通用配方枚举不会发现；最后显式采集并覆盖复用载荷中的旧印记。
             SSCImprintUtility.Store(this, p);

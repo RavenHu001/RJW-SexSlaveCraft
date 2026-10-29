@@ -28,6 +28,13 @@
   <ItemGroup>
     <!-- 人格印记与停龄补丁仅编入1.7；共享入口通过SSC_RW17保留旧版本行为。 -->
     <Compile Include="common/SSCImprintUtility.cs" />
+    <Compile Include="common/FertilitySpecializationUtility.cs" />
+    <Compile Include="common/FertilitySpecializationGelUtility.cs" />
+    <Compile Include="Hediff/Hediff_FertilitySpecialization.cs" />
+    <Compile Include="Comps/Comp_Train.Fertility.cs" />
+    <Compile Include="Recipe/FertilityFinalizationRecipeUtility.cs" />
+    <Compile Include="ThePatches/Harmony_FertilityCare.cs" />
+    <Compile Include="ITab/ITab_SexSlaveTraining.Fertility.cs" />
     <Compile Include="common/SSCPersonalityExcretionAdmission.cs" />
     <Compile Include="Hediff/Hediff_SSCImprint.cs" />
     <Compile Include="ThePatches/Harmony_ImprintAge.cs" />

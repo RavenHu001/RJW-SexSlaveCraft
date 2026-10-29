@@ -133,6 +133,11 @@ internal static partial class Program
         }
         XmlInheritance.Clear(); DirectXmlCrossRefLoader.ResolveAllWantedCrossReferences(FailMode.LogErrors);
         HediffDefOf.Pregnant = DefDatabase<HediffDef>.GetNamed("Pregnant"); HediffDefOf.PregnantHuman = DefDatabase<HediffDef>.GetNamed("PregnantHuman");
+        // 独立宿主不扫描RJW整程序集，Create的子类属性缓存需对齐本批实际使用的真实类型映射。
+        // 不替换Create、MakeHediff、PostAdd或Initialize，否则会掩盖首次待遇结算的实际入口。
+        var classDefs = (Dictionary<Type, string>)AccessTools.Property(typeof(Hediff_BasePregnancy), "hediffOfClass").GetValue(null);
+        classDefs[typeof(Hediff_HumanlikePregnancy)] = "RJW_pregnancy";
+        classDefs[typeof(Hediff_BestialPregnancy)] = "RJW_pregnancy_beast";
         return doc;
     }
 

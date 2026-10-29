@@ -64,6 +64,7 @@ namespace SexSlaveCraft
                     SSCRomancePreferences.Clear(victim);
                     // 印记已进入成功放置的凝胶，才移出原身体，避免生成失败时丢失收益和永久方向。
                     SSCImprintUtility.Clear(victim);
+                    FertilitySpecializationGelUtility.DetachAfterExtraction(victim);
 #endif
                     SSCMasterQualificationUtility.ClearPersonalityQualification(victim);
                     SSCMasterProgressionUtility.ClearPersonalityRecord(victim);
@@ -165,6 +166,11 @@ namespace SexSlaveCraft
             // 的方向和进度恢复前完成，避免宿主完成记录或普通严重度混入。
             TrainerSpecializationGelUtility.RemoveAllTrainerStates(consumer);
             CombatantSpecializationGelUtility.RemoveAllStates(consumer);
+#if SSC_RW17
+            FertilitySpecializationGelUtility.RemoveAllStates(consumer);
+            var fertilityComp = consumer.TryGetComp<CompSexSlaveTraining>();
+            if (fertilityComp != null) fertilityComp.fertilityCareTicks = 0;
+#endif
         }
 
         /// <summary>预检凝胶后替换人格、印记、身份与特化历史，恢复记忆；成功才消耗凝胶，沿原流程处理恢复失败。</summary>
@@ -281,6 +287,9 @@ namespace SexSlaveCraft
                         // 整体替换历史，避免普通方向切换将宿主的旧进度混入新人格。
                         trainingComp.RestoreSpecializationProgress(data.specializationType,
                             data.specializationProgress, data.specializationProgressByType);
+#if SSC_RW17
+                        trainingComp.fertilityCareTicks = Math.Clamp(data.fertilityCareTicks, 0, 2499);
+#endif
                         // 原泌乳字段按来源精确覆盖，包括 false；不与人格字典合并或套用身体开关默认。
                         trainingComp.milkProductionEnabled = data.milkProductionEnabled;
                         if (!SSCIdentityUtility.TryRestorePersonalityIdentity(consumer, data.sscIdentity,
@@ -358,7 +367,7 @@ namespace SexSlaveCraft
                             // 拒绝历史／外部凝胶中的身体开发标签，既不补建，也不合并覆盖宿主原进度和开关。
                             if (SSCBodyDevelopmentUtility.IsBodyStateDef(hediffDef)) continue;
                             // 印记已在身份恢复后精确还原，不再按普通标签添加或与宿主严重度取最大值。
-                            if (SSCImprintUtility.IsImprintDef(hediffDef)) continue;
+                            if (SSCImprintUtility.IsImprintDef(hediffDef) || FertilitySpecializationUtility.IsTag(hediffDef)) continue;
 #endif
                             // 全部 PNA 身体状态留在宿主，历史／外部凝胶中的同类标签也不恢复。
                             // 宿主原有记录及 Need_PNA 值由身体保留，不参与下方最大值合并。
@@ -434,6 +443,9 @@ namespace SexSlaveCraft
                     // 决定终极标记是否应转为禁用，不能在此处提前维护。
                     TrainerSpecializationGelUtility.ApplyExclusiveTrainerTags(consumer, data);
                     CombatantSpecializationGelUtility.ApplyExclusiveTags(consumer, data);
+#if SSC_RW17
+                    FertilitySpecializationGelUtility.ApplyExclusiveTags(consumer, data);
+#endif
 
                     // 同步组件与刚恢复的健康状态，使凝胶携带的专精立即被识别并可持续训练。
                     CompSexSlaveTraining.ReconcileSpecialization(consumer);
