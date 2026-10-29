@@ -318,6 +318,20 @@ internal static partial class Program
             Require(ExcretionUtility.InheritEverything(host, empty)); Equal(SSCImprintKind.None, SSCImprintUtility.GetKind(host));
             Require(SSCIdentityUtility.TrySetIdentity(host, PawnIdentity.Slave));
         });
+        Check("imprint personality cleanup preserves the body master-side bonds", () =>
+        {
+            var host = ImprintPawn(PawnIdentity.Master); Mark(host, imprintNames[1]);
+            var previousSlave = ImprintPawn(PawnIdentity.Slave);
+            Require(SSCBondUtility.Bind(host, previousSlave));
+            var chain = SSCBondUtility.GetChain(previousSlave);
+            var bridle = SSCBondUtility.GetBridle(host);
+            ExcretionUtility.CleanConsumerData(host);
+            Equal(SSCImprintKind.None, SSCImprintUtility.GetKind(host));
+            Require(SSCBondUtility.GetBoundMaster(previousSlave) == host);
+            Require(ReferenceEquals(chain, SSCBondUtility.GetChain(previousSlave)));
+            Require(ReferenceEquals(bridle, SSCBondUtility.GetBridle(host)));
+            Require(bridle.ValidTargets.Contains(previousSlave));
+        });
         Check("imprint malformed migration refuses before clearing host", () =>
         {
             var host = ImprintPawn(PawnIdentity.Master); Mark(host, imprintNames[1]);
