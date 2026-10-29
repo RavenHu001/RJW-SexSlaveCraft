@@ -65,13 +65,17 @@ internal static partial class Program
         {
             var pawn = PreconceptionPawn(.1999f); var comp = pawn.TryGetComp<CompSexSlaveTraining>();
             var context = SSCFertilityPreconceptionUtility.Capture(pawn);
-            Require(!SSCFertilityPreconceptionUtility.CanSetGender(context, SSCOffspringGender.Male, out _));
+            Require(!SSCFertilityPreconceptionUtility.CanSetGender(context, SSCOffspringGender.Male, out string lockedReason));
+            Equal("SSC_Preconception_GenderLocked".Translate().ToString(), lockedReason);
             comp.specializationProgress = .2f;
             Require(SSCFertilityPreconceptionUtility.TrySetGender(context, SSCOffspringGender.Male, out string reason), reason);
-            Require(!SSCFertilityPreconceptionUtility.CanSetSpeciesSource(context, SSCOffspringSpeciesSource.Self, out _));
+            Require(!SSCFertilityPreconceptionUtility.CanSetSpeciesSource(context, SSCOffspringSpeciesSource.Self, out lockedReason));
+            Equal("SSC_Preconception_SpeciesLocked".Translate().ToString(), lockedReason);
             comp.specializationProgress = .5f;
             Require(SSCFertilityPreconceptionUtility.TrySetSpeciesSource(context, SSCOffspringSpeciesSource.Self, out reason), reason);
-            Require(!SSCAbilityToggleUtility.GetView(pawn, SSCAbilityToggleUtility.OffspringImprint).CanChange);
+            var lockedImprint = SSCAbilityToggleUtility.GetView(pawn, SSCAbilityToggleUtility.OffspringImprint);
+            Require(!lockedImprint.CanChange);
+            Equal("SSC_Preconception_ImprintLocked".Translate().ToString(), lockedImprint.ChangeReason);
             comp.specializationProgress = .999f;
             SetPreconceptionImprint(pawn, true);
             Require(!SSCFertilityPreconceptionUtility.TrySetGender(context, (SSCOffspringGender)99, out _));
@@ -101,7 +105,8 @@ internal static partial class Program
             SetPreconceptionChoices(pawn, SSCOffspringGender.Male, SSCOffspringSpeciesSource.Self, true); Toggle(pawn, true);
             comp.SetSpecialization(SexSlaveSpecializationType.None);
             var context = SSCFertilityPreconceptionUtility.Capture(pawn);
-            Require(!SSCFertilityPreconceptionUtility.TrySetGender(context, SSCOffspringGender.Natural, out _));
+            Require(!SSCFertilityPreconceptionUtility.TrySetGender(context, SSCOffspringGender.Natural, out string directionReason));
+            Equal("SSC_Preconception_DirectionRequired".Translate().ToString(), directionReason);
             var view = SSCAbilityToggleUtility.GetView(pawn, SSCAbilityToggleUtility.OffspringImprint);
             Require(view.Enabled && !view.CanChange && !view.Active);
             Require(!SSCAbilityToggleUtility.TrySet(pawn, SSCAbilityToggleUtility.OffspringImprint, false, view.Context, out _));

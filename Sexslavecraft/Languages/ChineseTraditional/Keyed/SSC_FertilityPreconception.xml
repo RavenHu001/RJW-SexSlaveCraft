@@ -9,14 +9,16 @@
   <SSC_Preconception_SpeciesNatural>原規則</SSC_Preconception_SpeciesNatural>
   <SSC_Preconception_SpeciesSelf>自身</SSC_Preconception_SpeciesSelf>
   <SSC_Preconception_SpeciesPartner>對象</SSC_Preconception_SpeciesPartner>
-  <SSC_Preconception_GenderTip>預設新受孕的後代性別。關閉生育時也可預設；嬰兒生成套用後續開放。</SSC_Preconception_GenderTip>
-  <SSC_Preconception_SpeciesTip>預設後代物種隨自身或對象，如人類、米莉拉；基因遺傳沿原規則。嬰兒生成套用後續開放。</SSC_Preconception_SpeciesTip>
+  <SSC_Preconception_GenderTip>預設新受孕的後代性別。</SSC_Preconception_GenderTip>
+  <SSC_Preconception_SpeciesTip>預設後代物種隨自身或對象，如人類、外星人種族；基因繼承不受影響。</SSC_Preconception_SpeciesTip>
   <SSC_Preconception_ImprintTip>預設後代出生時獲得「淫慾之子」初始印記，不複製親代的分化印記。出生賦予後續開放。</SSC_Preconception_ImprintTip>
   <SSC_Preconception_GenderLocked>生育特化達到20%後解鎖</SSC_Preconception_GenderLocked>
   <SSC_Preconception_SpeciesLocked>生育特化達到50%後解鎖</SSC_Preconception_SpeciesLocked>
   <SSC_Preconception_ImprintLocked>完成生育特化普通培養後解鎖</SSC_Preconception_ImprintLocked>
-  <SSC_Preconception_PregnancyBlocked>懷孕或臨產期間不能修改孕前設定</SSC_Preconception_PregnancyBlocked>
+  <SSC_Preconception_PregnancyBlocked>懷孕或臨產期間不能修改胎兒調控</SSC_Preconception_PregnancyBlocked>
   <SSC_Preconception_FertilityDisabled>生育已關閉，預設暫不用於新受孕</SSC_Preconception_FertilityDisabled>
-  <SSC_Preconception_Unavailable>目前無法使用孕前設定</SSC_Preconception_Unavailable>
-  <SSC_Preconception_InvalidSelection>無效的孕前選擇</SSC_Preconception_InvalidSelection>
+  <SSC_Preconception_Unavailable>目前無法使用胎兒調控</SSC_Preconception_Unavailable>
+  <SSC_Preconception_InvalidSelection>無效的胎兒調控選項</SSC_Preconception_InvalidSelection>
+  <SSC_Preconception_DirectionRequired>需啟用生育特化</SSC_Preconception_DirectionRequired>
+  <SSC_Preconception_MissingUterus>胎兒調控：需完成子宮改造</SSC_Preconception_MissingUterus>
 </LanguageData>

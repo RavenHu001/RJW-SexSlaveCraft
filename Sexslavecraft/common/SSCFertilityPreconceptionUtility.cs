@@ -74,7 +74,8 @@ namespace SexSlaveCraft
             // Stage已经区分当前普通方向和跨方向终极成果；不能拿历史进度或CanSelect授予设置权限。
             int stage = FertilitySpecializationUtility.Stage(pawn);
             if (stage < 0)
-                return !FertilitySpecializationUtility.MeetsConditions(pawn, out string reason) ? reason : "SSC_Preconception_Unavailable".Translate().ToString();
+                // 身体/身份满足前置但未启用该方向时，明确说明缺少特化；低阶段继续给各项门槛。
+                return !FertilitySpecializationUtility.MeetsConditions(pawn, out string reason) ? reason : "SSC_Preconception_DirectionRequired".Translate().ToString();
             if (stage >= requiredStage) return null;
             string key = requiredStage == 1 ? "SSC_Preconception_GenderLocked" :
                 requiredStage == 2 ? "SSC_Preconception_SpeciesLocked" : "SSC_Preconception_ImprintLocked";

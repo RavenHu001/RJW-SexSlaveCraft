@@ -95,6 +95,11 @@ $contracts = @{
         'SSC_Preconception_GenderLocked' = ''; 'SSC_Preconception_SpeciesLocked' = ''; 'SSC_Preconception_ImprintLocked' = ''
         'SSC_Preconception_PregnancyBlocked' = ''; 'SSC_Preconception_FertilityDisabled' = ''
         'SSC_Preconception_Unavailable' = ''; 'SSC_Preconception_InvalidSelection' = ''
+        'SSC_Preconception_DirectionRequired' = ''
+        'SSC_Preconception_MissingUterus' = ''
+    }
+    'SSC_FertilitySpecialization.xml' = @{
+        'SSC_Fertility_InactiveLabel' = ''; 'SSC_Fertility_InactiveDescription' = '0'
     }
     'SSC_Imprint.xml' = @{
         'SSC_Imprint_None' = ''; 'SSC_Imprint_Unlocked' = ''; 'SSC_Imprint_MasterLocked' = ''; 'SSC_Imprint_SlaveLocked' = ''

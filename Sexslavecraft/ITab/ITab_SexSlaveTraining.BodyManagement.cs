@@ -80,6 +80,7 @@ namespace SexSlaveCraft
 #endif
                 }
 #if SSC_RW17
+                AppendMissingFertilityBodyRow(view, innerWidth);
                 // 枚举行独立于 bool 条目，必须追加后再判断整个身体区是否为空。
                 AppendOrgasmSensitivityRows(view, innerWidth);
 #endif

@@ -21,6 +21,7 @@ namespace SexSlaveCraft
         private static IEnumerable<StatDrawEntry> WithReproductionEffects(IEnumerable<StatDrawEntry> original, Hediff instance)
         {
             foreach (var entry in original) yield return entry;
+            if (instance is Hediff_FertilitySpecialization { IsInactiveFinal: true }) yield break;
             bool uterus = instance is Hediff_SSCUterusDevelopment;
             bool specialization = FertilitySpecializationUtility.IsTag(instance.def);
             if (!uterus && !specialization) yield break;
@@ -29,7 +30,8 @@ namespace SexSlaveCraft
             // 分项只展示本Hediff的贡献：子宫0.8与特化额外系数相乘，不重复列总倍率。
             float duration = !enabled ? 1f : uterus ? SSCUterusPregnancyUtility.DurationFactor
                 : stage < 0 ? 1f : HediffComp_SSCUterusPregnancy.DurationForStage(stage) / SSCUterusPregnancyUtility.DurationFactor;
-            yield return EffectEntry("Duration", duration, 4069);
+            // 没有时长影响时省略中性条目，保留实际缩短倍率及其余属性说明。
+            if (duration != 1f) yield return EffectEntry("Duration", duration, 4069);
             if (specialization)
             {
                 float care = FertilitySpecializationUtility.CareFactor(instance.pawn);
@@ -48,6 +50,8 @@ namespace SexSlaveCraft
         private static IEnumerable<StatDrawEntry> WithFertilityFactor(IEnumerable<StatDrawEntry> original, Hediff instance)
         {
             foreach (StatDrawEntry entry in original) yield return entry;
+            // 失效终极成果没有实际额外收益，不用中性生育倍率冒充属性影响。
+            if (instance is Hediff_FertilitySpecialization { IsInactiveFinal: true }) yield break;
             HediffStage stage = instance.CurStage;
             if (stage == null || !float.IsFinite(stage.fertilityFactor) || stage.fertilityFactor < 0f) yield break;
             // fertilityFactor 由原版单独相乘，不应改写成 statFactors 或显示为角色的最终受孕概率。

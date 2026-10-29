@@ -71,6 +71,16 @@ internal static partial class Program
                 Equal(SSCOffspringSpeciesSource.Partner, record.OffspringSpeciesSource);
                 Require(record.OffspringImprintEnabled);
                 Equal(count, pawn.health.hediffSet.hediffs.Count);
+                // 无子宫记录的终极人格也必须得到只读前置提示，不能因身体bool列表为空消失。
+                var missingBody=PreconceptionPawn();
+                missingBody.health.AddHediff(FertilitySpecializationUtility.FinalDef);
+                missingBody.health.RemoveHediff(SSCUterusDevelopmentUtility.Find(missingBody));
+                int missingCount=missingBody.health.hediffSet.hediffs.Count;
+                var missingView=Build(missingBody,180f);
+                Require(Rows(missingView).Any(row=>SensitivityField<string>(row,"Label")=="SSC_Preconception_MissingUterus".Translate().ToString()));
+                Equal(0,EnumRows(missingView).Length);
+                Require(SensitivityField<float>(missingView,"Height")>0);
+                Equal(missingCount,missingBody.health.hediffSet.hediffs.Count);
             });
             Check("preconception native enum menu applies original selection and rejects a changed selected pawn", () =>
             {

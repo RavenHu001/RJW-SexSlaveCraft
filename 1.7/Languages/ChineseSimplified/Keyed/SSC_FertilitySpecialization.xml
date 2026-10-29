@@ -8,4 +8,6 @@
   <SSC_Fertility_Research>需要完成生育特化研究</SSC_Fertility_Research>
   <SSC_Fertility_Tip>完成子宫改造后可培养；关闭生育仍可授课和陪玩。有效育儿每小时增加1个百分点，无日上限。</SSC_Fertility_Tip>
   <SSC_Fertility_FinalTip>普通培养完成。可在雕刻台加工一份人格凝胶进行终极化。</SSC_Fertility_FinalTip>
+  <SSC_Fertility_InactiveLabel>已失效</SSC_Fertility_InactiveLabel>
+  <SSC_Fertility_InactiveDescription>当前未生效：{0}</SSC_Fertility_InactiveDescription>
 </LanguageData>

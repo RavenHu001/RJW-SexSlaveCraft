@@ -177,9 +177,26 @@ internal static partial class Program
             foreach (var factor in uterus.CurStage.statFactors) Require(entries.Any(e=>e.LabelCap==factor.stat.LabelCap.ToString()),factor.stat.defName);
             Require(ordinary.TipStringExtra.Contains("SSC_HediffFertility_Duration".Translate().ToString()));
             Require(ordinary.TipStringExtra.Contains("SSC_HediffFertility_Education".Translate().ToString()));
-            Toggle(pawn,false); Equal("×1",Value(uterus,"SSC_HediffFertility_Duration")); Equal("×1",Value(ordinary,"SSC_HediffFertility_Duration"));
+            Toggle(pawn,false);
+            // 中性时长不占健康说明；有效缩短倍率仍由上面的实际条目检查覆盖。
+            Require(!HediffStatsUtility.SpecialDisplayStats(uterus.CurStage,uterus).Any(e=>e.LabelCap=="SSC_HediffFertility_Duration".Translate().ToString()));
+            Require(!HediffStatsUtility.SpecialDisplayStats(ordinary.CurStage,ordinary).Any(e=>e.LabelCap=="SSC_HediffFertility_Duration".Translate().ToString()));
             pawn.TryGetComp<CompSexSlaveTraining>().pawnIdentity=PawnIdentity.Unset;
             Equal("×1",Value(ordinary,"SSC_HediffFertility_Education"));
+            // 终极人格进入无改造身体后保留成果，名称/说明显式失效，恢复身体前置后自动生效。
+            var finalPawn=FertilityPawn();
+            var final=(Hediff_FertilitySpecialization)finalPawn.health.AddHediff(FertilitySpecializationUtility.FinalDef);
+            var finalUterus=SSCUterusDevelopmentUtility.Find(finalPawn);
+            finalPawn.health.RemoveHediff(finalUterus);
+            Require(final.IsInactiveFinal);
+            Equal("SSC_Fertility_InactiveLabel".Translate().ToString(),final.LabelInBrackets);
+            Require(final.Description.Contains("SSC_Fertility_Uterus".Translate().ToString()));
+            var inactiveEntries=HediffStatsUtility.SpecialDisplayStats(final.CurStage,final).ToList();
+            Require(!inactiveEntries.Any(e=>e.LabelCap=="SSC_HediffFertility_Education".Translate().ToString()));
+            Require(!inactiveEntries.Any(e=>e.LabelCap=="SSC_HediffFertility_Duration".Translate().ToString()));
+            Start(finalPawn,1f);
+            Require(!final.IsInactiveFinal && finalPawn.health.hediffSet.hediffs.Contains(final));
+            Equal("×1.5",Value(final,"SSC_HediffFertility_Education"));
         });
     }
 

@@ -126,6 +126,7 @@ namespace SexSlaveCraft
             GameFont previousFont = Text.Font;
             TextAnchor previousAnchor = Text.Anchor;
             bool previousWrap = Text.WordWrap;
+            Color previousColor = GUI.color;
             try
             {
                 Text.Font = GameFont.Small;
@@ -138,11 +139,15 @@ namespace SexSlaveCraft
                 {
                     Rect cell = layout.Cells[i];
                     cell.x += block.x; cell.y += block.y;
+                    // 名单仍保留成果名称；生育失格只置灰，不影响其他方向的原显示规则。
+                    GUI.color = rows[i].Type == SexSlaveSpecializationType.Fertility && !FertilitySpecializationUtility.MeetsConditions(pawn, out _)
+                        ? new Color(previousColor.r * .55f, previousColor.g * .55f, previousColor.b * .55f, previousColor.a) : previousColor;
                     Widgets.Label(cell, rows[i].Text);
+                    GUI.color = previousColor;
                     TooltipHandler.TipRegion(cell, rows[i].Tip);
                 }
             }
-            finally { Text.Font = previousFont; Text.Anchor = previousAnchor; Text.WordWrap = previousWrap; }
+            finally { Text.Font = previousFont; Text.Anchor = previousAnchor; Text.WordWrap = previousWrap; GUI.color = previousColor; }
         }
     }
 }

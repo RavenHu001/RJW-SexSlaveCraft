@@ -9,14 +9,16 @@
   <SSC_Preconception_SpeciesNatural>Original rules</SSC_Preconception_SpeciesNatural>
   <SSC_Preconception_SpeciesSelf>Self</SSC_Preconception_SpeciesSelf>
   <SSC_Preconception_SpeciesPartner>Partner</SSC_Preconception_SpeciesPartner>
-  <SSC_Preconception_GenderTip>Set the preferred sex for offspring from a new pregnancy. This can be configured while fertility is disabled. Application to baby generation will be added later.</SSC_Preconception_GenderTip>
-  <SSC_Preconception_SpeciesTip>Choose whether offspring use your species or the partner's, such as human or Milira. Gene inheritance follows the original rules. Application to baby generation will be added later.</SSC_Preconception_SpeciesTip>
+  <SSC_Preconception_GenderTip>Set the preferred sex for offspring from a new pregnancy.</SSC_Preconception_GenderTip>
+  <SSC_Preconception_SpeciesTip>Choose whether offspring use your species or the partner's, such as human or an alien race; gene inheritance is unaffected.</SSC_Preconception_SpeciesTip>
   <SSC_Preconception_ImprintTip>Choose whether offspring receive the initial Child of Lust imprint at birth, without copying a parent's differentiated imprint. The birth effect will be added later.</SSC_Preconception_ImprintTip>
   <SSC_Preconception_GenderLocked>Requires 20% fertility specialization progress</SSC_Preconception_GenderLocked>
   <SSC_Preconception_SpeciesLocked>Requires 50% fertility specialization progress</SSC_Preconception_SpeciesLocked>
   <SSC_Preconception_ImprintLocked>Requires completed ordinary fertility specialization training</SSC_Preconception_ImprintLocked>
-  <SSC_Preconception_PregnancyBlocked>Preconception settings cannot be changed during pregnancy or labor</SSC_Preconception_PregnancyBlocked>
+  <SSC_Preconception_PregnancyBlocked>Fetal control cannot be changed during pregnancy or labor</SSC_Preconception_PregnancyBlocked>
   <SSC_Preconception_FertilityDisabled>Fertility is disabled; these preferences do not apply to new pregnancies</SSC_Preconception_FertilityDisabled>
-  <SSC_Preconception_Unavailable>Preconception settings are currently unavailable</SSC_Preconception_Unavailable>
-  <SSC_Preconception_InvalidSelection>Invalid preconception choice</SSC_Preconception_InvalidSelection>
+  <SSC_Preconception_Unavailable>Fetal control is currently unavailable</SSC_Preconception_Unavailable>
+  <SSC_Preconception_InvalidSelection>Invalid fetal control option</SSC_Preconception_InvalidSelection>
+  <SSC_Preconception_DirectionRequired>Requires active fertility specialization</SSC_Preconception_DirectionRequired>
+  <SSC_Preconception_MissingUterus>Fetal control: requires completed uterus development</SSC_Preconception_MissingUterus>
 </LanguageData>

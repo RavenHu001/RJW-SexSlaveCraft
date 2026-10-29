@@ -8,6 +8,13 @@ namespace SexSlaveCraft
 {
     public partial class ITab_SexSlaveTraining
     {
+        /// <summary>终极人格缺少身体载体时只提示前置，不创建子宫或伪造可保存的控件。</summary>
+        private static void AppendMissingFertilityBodyRow(BodyManagementView view, float width)
+        {
+            if (!FertilitySpecializationUtility.HasFinalState(view.Pawn) || SSCUterusDevelopmentUtility.Find(view.Pawn) != null) return;
+            AddBodyRow(view, width, "SSC_Preconception_MissingUterus".Translate(),
+                "SSC_Fertility_Uterus".Translate(), gapBefore: view.Rows.Count == 0 ? 0f : BodyGroupGap);
+        }
         /// <summary>本次视图的保存选择与原提交凭据；浮动菜单继续使用同一上下文。</summary>
         private sealed class PreconceptionRow
         {
