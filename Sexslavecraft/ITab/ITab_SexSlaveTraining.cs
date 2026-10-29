@@ -415,8 +415,14 @@ namespace SexSlaveCraft
                     bool identityLocked = SSCIdentityUtility.IsIdentityLocked(SelPawn);
                     Rect identityRect = listing.GetRect(IdentityButtonHeight);
                     bool identityClicked = SSCUIWidgets.Button(identityRect, idLabel, !identityLocked);
+                    // 同为不可切换，仍区分永久印记锁和普通绑定锁，避免解绑后的定型人格收到错误提示。
                     if (identityLocked)
-                        TooltipHandler.TipRegion(identityRect, "SSC_Identity_BoundTip".Translate());
+                        TooltipHandler.TipRegion(identityRect,
+#if SSC_RW17
+                            SSCImprintUtility.GetImprintLockedIdentity(SelPawn) != PawnIdentity.Unset ?
+                                "SSC_Imprint_GelTooltip".Translate() :
+#endif
+                                "SSC_Identity_BoundTip".Translate());
                     listing.Gap(2f);
                     if (identityClicked)
                     {

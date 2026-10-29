@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_ImprintInitial.label>Дитя похоти</SSC_ImprintInitial.label>
+  <SSC_ImprintInitial.description>[Заглушка] Описание будет добавлено.</SSC_ImprintInitial.description>
+  <SSC_ImprintMaster.label>Владыка похоти</SSC_ImprintMaster.label>
+  <SSC_ImprintMaster.description>[Заглушка] Описание будет добавлено.</SSC_ImprintMaster.description>
+  <SSC_ImprintSlave.label>Раб похоти</SSC_ImprintSlave.label>
+  <SSC_ImprintSlave.description>[Заглушка] Описание будет добавлено.</SSC_ImprintSlave.description>
+</LanguageData>

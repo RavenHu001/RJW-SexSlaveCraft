@@ -213,6 +213,7 @@ namespace SexSlaveCraft
     public class StoredChainHediffData { public Pawn masterPawn; public float severity; }
     public class CompPersonalityStore
     {
+        public string imprintDisplay;
         public string firstName = "Riley", nickName = "Riley", lastName = "Test";
         public bool hasSexSlaveTrait = true;
         public bool masterQualificationUnlocked;
@@ -221,6 +222,13 @@ namespace SexSlaveCraft
         public List<RimWorld.Trait> storedTraits = new List<RimWorld.Trait>();
         public List<object> storedRelations = new List<object>(), storedMemories = new List<object>();
         public StoredChainHediffData chainHediffData;
+    }
+    /// <summary>布局宿主只提供印记展示结果；三态业务和实际翻译由原生专项执行生产服务。</summary>
+    public static class SSCImprintUtility
+    {
+        /// <summary>提供指定长文案或无印记默认展示，供生产布局测量；不模拟健康记录和永久锁判断。</summary>
+        public static string GelLabel(CompPersonalityStore data) => data.imprintDisplay ??
+            string.Format("SSC_Imprint_GelStatus".Translate(), "SSC_Imprint_None".Translate(), "SSC_Imprint_Unlocked".Translate());
     }
     public static class SSCDefOf { public static object SSC_PersonalityExcreted_Done = new object(); }
     public class MapComponent_PersonalityAssignment
@@ -241,7 +249,7 @@ namespace SexSlaveCraft
         /// <summary>直接读取仓库语言文件，让布局检查使用真实翻译文本。</summary>
         public static void Load(string root, string language)
         {
-            translations = new[] { "SSC_Keys.xml", "SSC_MasterQualification.xml" }
+            translations = new[] { "SSC_Keys.xml", "SSC_MasterQualification.xml", "SSC_Imprint.xml" }
                 .SelectMany(file => XDocument.Load(SscTestPaths.Combine(root, "Languages", language, "Keyed", file)).Root.Elements())
                 .GroupBy(element => element.Name.LocalName).ToDictionary(group => group.Key, group => group.First().Value);
         }

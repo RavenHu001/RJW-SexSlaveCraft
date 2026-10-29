@@ -9,7 +9,7 @@ namespace SexSlaveCraft
 {
     public static class ExcretionUtility
     {
-        /// <summary>生成人格凝胶并保存角色快照，随后清理社交身份、重置技能并将身体标记为空壳。</summary>
+        /// <summary>保存并放置人格凝胶后清源；印记随人格移出，社交与技能再按原空壳流程清理。</summary>
         public static void DoExcretion(Pawn victim)
         {
             if (victim == null || victim.Map == null) return;
@@ -57,6 +57,8 @@ namespace SexSlaveCraft
 #if SSC_RW17
                     // 此时凝胶已放置成功，才清原人格偏好；前面的生成失败不应丢失保存值。
                     SSCRomancePreferences.Clear(victim);
+                    // 印记已进入成功放置的凝胶，才移出原身体，避免生成失败时丢失收益和永久方向。
+                    SSCImprintUtility.Clear(victim);
 #endif
                     SSCMasterQualificationUtility.ClearPersonalityQualification(victim);
                     SSCMasterProgressionUtility.ClearPersonalityRecord(victim);
@@ -95,13 +97,15 @@ namespace SexSlaveCraft
         }
 
         // 独立清理入口建立作用域；植入入口已持有外层作用域时直接复用此核心，避免嵌套被拒绝。
-        /// <summary>复用已持有的人格作用域清理宿主；身体开发与外观按原过滤保留，不把它们当人格字典重置。</summary>
+        /// <summary>复用人格替换作用域清理旧人格；先移出印记锁再清身份，身体开发与外观保持原归属。</summary>
         private static void CleanConsumerDataCore(Pawn consumer)
         {
             SSCAbilityToggleUtility.ClearPersonalityState(consumer);
 #if SSC_RW17
             // 清掉接收者旧人格选择；来源缺字段时也不能把这些值混入新人格。
             SSCRomancePreferences.Clear(consumer);
+            // 这是移出旧人格，必须早于后续普通身份清理；不为原人格开放解除永久锁的身份操作。
+            SSCImprintUtility.Clear(consumer);
 #endif
             // 清宿主时同时封住旧档补建，且必须早于下面的普通身份清理；
             // 后续若来源没有成长，空记录就是植入的最终结果。
@@ -158,11 +162,14 @@ namespace SexSlaveCraft
             CombatantSpecializationGelUtility.RemoveAllStates(consumer);
         }
 
-        /// <summary>校验凝胶快照，替换人格与全部特化历史并恢复记忆实例；成功后消耗凝胶，校验或恢复失败时返回失败。</summary>
+        /// <summary>预检凝胶后替换人格、印记、身份与特化历史，恢复记忆；成功才消耗凝胶，沿原流程处理恢复失败。</summary>
         public static bool InheritEverything(Pawn consumer, CompPersonalityStore data)
         {
             if (consumer == null || data == null) return false;
 #if SSC_RW17
+            // 多印记、损坏严重度或定型方向与保存身份矛盾时，必须在清空宿主前拒绝。
+            if (!SSCImprintUtility.CanRestore(consumer, data))
+            { Log.Error("[SSC] Personality insertion has an invalid imprint snapshot."); return false; }
             // 快照先复制并校验，缺配置表示来源默认；不能把宿主旧选择混入来源。
             SSCRomanceConfig romanceSnapshot = data.romanceConfig?.Copy();
             if (!SSCRomancePreferences.CanRestore(consumer, romanceSnapshot) ||
@@ -278,6 +285,11 @@ namespace SexSlaveCraft
                             return false;
                         }
                     }
+#if SSC_RW17
+                    // 精确恢复来源印记；无印记来源不继承宿主印记，旧链恢复也不触发分化。
+                    if (!SSCImprintUtility.Restore(consumer, data))
+                    { Log.Error("[SSC] Personality insertion could not restore the imprint."); return false; }
+#endif
                     // 身份恢复成功后再重建来源成长；同为主人也不能跳过此步骤。
                     // 无记录来源保持清空，退出主人后的来源则恢复暂停记录；通用标签不能取最大值覆盖它。
                     if (!SSCMasterProgressionUtility.RestoreRecord(consumer, data.masterGrowthPoints))
@@ -285,9 +297,13 @@ namespace SexSlaveCraft
                         Log.Error("[SSC] Personality insertion could not restore the saved Master progression.");
                         return false;
                     }
-                    // 步骤 6：重建锁链，让主从系统继续知道当前绑定的主人。
+                    // 步骤 6：重建来源已有锁链，让系统继续知道实际主人；1.7专用入口禁止重放首次分化。
                     if (data.chainHediffData?.masterPawn != null && consumer.health != null &&
+#if SSC_RW17
+                        SSCBondUtility.RestorePersonalityBinding(data.chainHediffData.masterPawn, consumer))
+#else
                         SSCBondUtility.Bind(data.chainHediffData.masterPawn, consumer, true))
+#endif
                     {
                         Hediff_ChainOfSexSlave chain = SSCBondUtility.GetChain(consumer);
                         if (chain != null)
@@ -336,6 +352,8 @@ namespace SexSlaveCraft
 #if SSC_RW17
                             // 拒绝历史／外部凝胶中的身体开发标签，既不补建，也不合并覆盖宿主原进度和开关。
                             if (SSCBodyDevelopmentUtility.IsBodyStateDef(hediffDef)) continue;
+                            // 印记已在身份恢复后精确还原，不再按普通标签添加或与宿主严重度取最大值。
+                            if (SSCImprintUtility.IsImprintDef(hediffDef)) continue;
 #endif
                             // 全部 PNA 身体状态留在宿主，历史／外部凝胶中的同类标签也不恢复。
                             // 宿主原有记录及 Need_PNA 值由身体保留，不参与下方最大值合并。

@@ -26,6 +26,10 @@
     <GenerateDependencyFile>false</GenerateDependencyFile>
   </PropertyGroup>
   <ItemGroup>
+    <!-- 人格印记与停龄补丁仅编入1.7；共享入口通过SSC_RW17保留旧版本行为。 -->
+    <Compile Include="common/SSCImprintUtility.cs" />
+    <Compile Include="Hediff/Hediff_SSCImprint.cs" />
+    <Compile Include="ThePatches/Harmony_ImprintAge.cs" />
     <Compile Include="common/Uap/SSCUapGroupRuntime.cs" />
     <Compile Include="common/Uap/SSCUapGroupApi.cs" />
     <Compile Include="common/Uap/SSCSettings.UapGroup.cs" />

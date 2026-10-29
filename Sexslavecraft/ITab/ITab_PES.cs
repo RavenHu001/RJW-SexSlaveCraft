@@ -151,7 +151,7 @@ namespace SexSlaveCraft
             }
         }
 
-        /// <summary>按可用高度限制特质滚动区，将隶属关系和记录摘要保留在滚动区域之外。</summary>
+        /// <summary>按实际摘要高度缩减特质滚动区，使资格、印记与隶属关系始终保留在滚动区域之外。</summary>
         private void DrawTraitsAndInfo(Rect rect, CompPersonalityStore comp, float rowHeight)
         {
             List<Trait> traits = comp.storedTraits?.Where(trait => trait?.def != null).ToList() ?? new List<Trait>();
@@ -165,6 +165,11 @@ namespace SexSlaveCraft
             string qualificationLabel = SSCMasterQualificationDisplay.GetLabel(comp.masterQualificationUnlocked);
             float qualificationHeight = SSCMasterQualificationDisplay.GetHeight(qualificationLabel, rect.width, rowHeight);
             float summaryHeight = rowHeight * 5f + 12f + qualificationHeight;
+#if SSC_RW17
+            // 印记包含形态与锁说明，长译文可能换行；先预留完整高度，再计算特质可滚动高度。
+            string imprintLabel = SSCImprintUtility.GelLabel(comp);
+            summaryHeight += SSCMasterQualificationDisplay.GetHeight(imprintLabel, rect.width, rowHeight);
+#endif
             float availableHeight = Mathf.Max(0f, rect.height - rowHeight - 4f - SectionGap - summaryHeight);
             float viewportHeight = Mathf.Min(contentHeight, availableHeight);
             Rect viewport = new Rect(rect.x, rect.y + rowHeight + 4f, rect.width, viewportHeight);
@@ -200,7 +205,7 @@ namespace SexSlaveCraft
                 qualificationLabel, qualificationHeight);
         }
 
-        /// <summary>显示不随特质列表滚动的永久资格、主人、锁链严重度以及关系和记忆数量。</summary>
+        /// <summary>绘制固定摘要中的永久资格、印记与身份锁、主人、锁链及社交记录数量。</summary>
         private void DrawSummary(Rect rect, CompPersonalityStore comp, float rowHeight,
             string qualificationLabel, float qualificationHeight)
         {
@@ -209,6 +214,14 @@ namespace SexSlaveCraft
             SSCMasterQualificationDisplay.Draw(new Rect(rect.x, y, rect.width, qualificationHeight),
                 qualificationLabel, SSCMasterQualificationDisplay.GetGelTooltip());
             y += qualificationHeight;
+#if SSC_RW17
+            // 使用与预留阶段相同的文字、宽度和测量方式，保证印记行不压住下方绑定信息。
+            string imprintLabel = SSCImprintUtility.GelLabel(comp);
+            float imprintHeight = SSCMasterQualificationDisplay.GetHeight(imprintLabel, rect.width, rowHeight);
+            SSCMasterQualificationDisplay.Draw(new Rect(rect.x, y, rect.width, imprintHeight), imprintLabel,
+                "SSC_Imprint_GelTooltip".Translate().ToString());
+            y += imprintHeight;
+#endif
             DrawSingleLine(new Rect(rect.x, y, rect.width, rowHeight), Strings.PES_BondHeader);
             y += rowHeight;
             Pawn master = comp.chainHediffData?.masterPawn;

@@ -54,13 +54,30 @@ namespace SexSlaveCraft
             return SSCRestrictionTrainerAssignment.TryAssign(sexSlave, trainer);
         }
 
-        /// <summary>先确认目标可以成为性奴，再建立双向绑定；身份锁定或归属冲突时不改动已有关系。</summary>
+        /// <summary>建立一次实际绑定；1.7在新的双向关系成功后定型初始印记，同关系重放不重新定型。</summary>
         public static bool Bind(Pawn master, Pawn sexSlave, bool replaceExisting = false)
+#if SSC_RW17
+            => BindCore(master, sexSlave, replaceExisting, true);
+
+        /// <summary>仅供人格植入恢复来源已有关系；沿共同绑定逻辑恢复两端，不重放初始印记分化。</summary>
+        internal static bool RestorePersonalityBinding(Pawn master, Pawn sexSlave)
+            => BindCore(master, sexSlave, true, false);
+
+        /// <summary>校验身份与归属、建立双向链并发送原生命周期通知；仅新绑定入口允许末端分化。</summary>
+        private static bool BindCore(Pawn master, Pawn sexSlave, bool replaceExisting, bool differentiate)
+#endif
         {
             if (master == null || sexSlave == null || master == sexSlave) return false;
             if (!SSCIdentityUtility.IsMaster(master)) return false;
 
             Pawn existingMaster = GetBoundMaster(sexSlave);
+#if SSC_RW17
+            // 绑定会触发身份和健康回调，定型前必须仍是本次请求的两个组件与人格。
+            object masterToken = SSCPersonalityRuntimeUtility.Capture(master);
+            object slaveToken = SSCPersonalityRuntimeUtility.Capture(sexSlave);
+            CompSexSlaveTraining masterComp = master.TryGetComp<CompSexSlaveTraining>();
+            CompSexSlaveTraining slaveComp = sexSlave.TryGetComp<CompSexSlaveTraining>();
+#endif
             if (existingMaster != null && existingMaster != master && !replaceExisting) return false;
             if (SSCDefOf.ChainOfSexSlave == null || SSCDefOf.BridleOfSexSlave == null) return false;
             using (TrainerSpecializationLifecycle.BeginMutation(sexSlave))
@@ -82,6 +99,13 @@ namespace SexSlaveCraft
 
                 // 限制系统沿用原有事务通知；训导官维护在作用域释放时运行。
                 SSCRestrictionGameComponent.Notify(sexSlave);
+#if SSC_RW17
+                // 原载体经过全部回调仍有效才允许写定型事实；恢复旧链或同一对关系重放均不触发。
+                if (!SSCPersonalityRuntimeUtility.IsCurrent(master, masterToken) ||
+                    !SSCPersonalityRuntimeUtility.IsCurrent(sexSlave, slaveToken) ||
+                    master.TryGetComp<CompSexSlaveTraining>() != masterComp || sexSlave.TryGetComp<CompSexSlaveTraining>() != slaveComp) return false;
+                if (differentiate && existingMaster != master) SSCImprintUtility.DifferentiateAfterBinding(master, sexSlave);
+#endif
                 return true;
             }
         }

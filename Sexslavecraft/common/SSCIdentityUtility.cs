@@ -109,14 +109,18 @@ namespace SexSlaveCraft
             return corruption != null && corruption.CurLevel > 0f;
         }
 
-        /// <summary>已有锁链或仍有有效绑定性奴时锁定身份，避免切换身份删除绑定和成长进度。</summary>
+        /// <summary>汇总原有绑定锁与1.7分化印记锁；供界面判断，实际提交还会核对目标身份。</summary>
         public static bool IsIdentityLocked(Pawn pawn)
         {
-            return SSCBondUtility.GetChain(pawn) != null ||
+            return
+#if SSC_RW17
+                   SSCImprintUtility.GetImprintLockedIdentity(pawn) != PawnIdentity.Unset ||
+#endif
+                   SSCBondUtility.GetChain(pawn) != null ||
                    SSCBondUtility.GetBridle(pawn)?.ValidTargets.Any() == true;
         }
 
-        /// <summary>普通身份选择统一检查主人资格和绑定锁定；关闭手动赋予不撤销当前身份。</summary>
+        /// <summary>普通身份选择统一检查主人资格、绑定锁与印记方向；选择初始印记者的身份不使其分化。</summary>
         public static bool TrySetIdentity(Pawn pawn, PawnIdentity identity)
         {
             // 在旧主人首次退出身份前保留其历史资格与基础成长；查询和界面绘制不执行迁移。
@@ -125,12 +129,13 @@ namespace SexSlaveCraft
             return TrySetIdentityCore(pawn, identity, null);
         }
 
-        /// <summary>仅供人格植入恢复已保存的身份与资格，仍遵守绑定锁定及仪式取消保护。</summary>
+        /// <summary>仅供人格植入恢复已保存的身份与资格，仍遵守现有锁和仪式保护；旧人格印记由清源步骤先移出。</summary>
         internal static bool TryRestorePersonalityIdentity(Pawn pawn, PawnIdentity identity, bool qualificationUnlocked)
         {
             return TrySetIdentityCore(pawn, identity, qualificationUnlocked);
         }
 
+        /// <summary>执行共同身份提交；恢复参数只替代资格准入，不开放绕过印记方向或绑定锁的通道。</summary>
         private static bool TrySetIdentityCore(Pawn pawn, PawnIdentity identity, bool? restoredQualification)
         {
             CompSexSlaveTraining comp = pawn?.TryGetComp<CompSexSlaveTraining>();
@@ -139,6 +144,10 @@ namespace SexSlaveCraft
             object personalityToken = SSCPersonalityRuntimeUtility.Capture(pawn);
             if (identity != PawnIdentity.Unset && identity != PawnIdentity.Slave && identity != PawnIdentity.Master)
                 return false;
+#if SSC_RW17
+            // 必须早于同身份快捷分支，避免坏身份记录借重复提交绕过 Hediff 已保存的定型方向。
+            if (!SSCImprintUtility.AllowsIdentity(pawn, identity)) return false;
+#endif
             // 重复设置不属于身份切换，绑定结算也会重复写入性奴身份。
             if (comp.pawnIdentity == identity)
             {
@@ -168,6 +177,10 @@ namespace SexSlaveCraft
             // Cancel 可经外部回调替换组件、改身份或建立新绑定；原切换不得覆盖新状态。
             if (pawn.TryGetComp<CompSexSlaveTraining>() != comp || comp.pawnIdentity != previousIdentity ||
                 !SSCPersonalityRuntimeUtility.IsCurrent(pawn, personalityToken) || IsIdentityLocked(pawn)) return false;
+#if SSC_RW17
+            // 仪式取消回调可能新增或替换印记；不能只相信点击时的锁定结果。
+            if (!SSCImprintUtility.AllowsIdentity(pawn, identity)) return false;
+#endif
             // 取消回调可能改变设置或换入另一个人格，旧请求不得覆盖其最新资格。
             if (restoredQualification.HasValue)
             {
@@ -226,6 +239,10 @@ namespace SexSlaveCraft
         public static bool TryRestoreLegacySlaveIdentity(Pawn pawn)
         {
             if (!CanRestoreLegacySlaveIdentity(pawn)) return false;
+#if SSC_RW17
+            // 旧锁链的显式身份修复也不能把已定型为主人的人格改成性奴。
+            if (!SSCImprintUtility.AllowsIdentity(pawn, PawnIdentity.Slave)) return false;
+#endif
             // 普通切换仍被历史锁链锁定。此定向修复只接受 Unset，不泛化为 Master 转换。
             // 不立即运行可能重算成长或协调指派的生命周期；正常资格查询读取恢复后的身份。
             pawn.TryGetComp<CompSexSlaveTraining>().pawnIdentity = PawnIdentity.Slave;

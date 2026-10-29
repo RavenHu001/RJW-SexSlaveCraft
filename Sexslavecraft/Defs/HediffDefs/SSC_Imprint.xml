@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <!-- 人格印记：互斥 Def 本身保存定型事实，所有效果采用已认可的首版参数。 -->
+  <!-- 初始态不冻结年龄；儿童学习项仅在Biotech启用时参与交叉引用。 -->
+  <HediffDef>
+    <defName>SSC_ImprintInitial</defName>
+    <label>Child of Lust</label>
+    <description>[Placeholder] Description pending.</description>
+    <hediffClass>SexSlaveCraft.Hediff_SSCImprint</hediffClass>
+    <isBad>false</isBad>
+    <everCurableByItem>false</everCurableByItem>
+    <initialSeverity>1</initialSeverity><maxSeverity>1</maxSeverity>
+    <stages><li>
+      <!-- 心灵敏感度使用直接加值，其余属性按各自倍率与外部来源叠加。 -->
+      <statOffsets><PsychicSensitivity>0.25</PsychicSensitivity></statOffsets>
+      <statFactors>
+        <LifespanFactor>1.5</LifespanFactor>
+        <GlobalLearningFactor>1.2</GlobalLearningFactor>
+        <LearningRateFactor MayRequire="Ludeon.RimWorld.Biotech">1.5</LearningRateFactor>
+        <ImmunityGainSpeed>1.25</ImmunityGainSpeed>
+      </statFactors>
+    </li></stages>
+  </HediffDef>
+  <!-- 主人态：永久方向由Def识别；自然停龄由C#接入，寿命倍率与疾病免疫仍由原版阶段消费。 -->
+  <HediffDef>
+    <defName>SSC_ImprintMaster</defName>
+    <label>Lord of Lust</label>
+    <description>[Placeholder] Description pending.</description>
+    <hediffClass>SexSlaveCraft.Hediff_SSCImprint</hediffClass>
+    <isBad>false</isBad>
+    <everCurableByItem>false</everCurableByItem>
+    <initialSeverity>1</initialSeverity><maxSeverity>1</maxSeverity>
+    <stages><li>
+      <statOffsets><PsychicSensitivity>0.5</PsychicSensitivity></statOffsets>
+      <statFactors>
+        <LifespanFactor>3</LifespanFactor><GlobalLearningFactor>1.5</GlobalLearningFactor>
+        <ImmunityGainSpeed>1.5</ImmunityGainSpeed>
+        <Vulnerability>0.25</Vulnerability><SexFrequency>1.25</SexFrequency><SexSatisfaction>1.25</SexSatisfaction>
+      </statFactors>
+      <makeImmuneTo><li>WoundInfection</li><li>GutWorms</li><li>MuscleParasites</li></makeImmuneTo>
+    </li></stages>
+  </HediffDef>
+  <!-- 性奴态：沿用同一停龄与免疫规则，脆弱度和本人性满足等属性采用对应方向的配置。 -->
+  <HediffDef>
+    <defName>SSC_ImprintSlave</defName>
+    <label>Servant of Lust</label>
+    <description>[Placeholder] Description pending.</description>
+    <hediffClass>SexSlaveCraft.Hediff_SSCImprint</hediffClass>
+    <isBad>false</isBad>
+    <everCurableByItem>false</everCurableByItem>
+    <initialSeverity>1</initialSeverity><maxSeverity>1</maxSeverity>
+    <stages><li>
+      <statOffsets><PsychicSensitivity>0.5</PsychicSensitivity></statOffsets>
+      <statFactors>
+        <LifespanFactor>3</LifespanFactor><GlobalLearningFactor>1.5</GlobalLearningFactor>
+        <ImmunityGainSpeed>1.5</ImmunityGainSpeed>
+        <Vulnerability>1.5</Vulnerability><SexFrequency>1.5</SexFrequency><SexSatisfaction>1.5</SexSatisfaction>
+        <SSC_OrgasmFrequency>1.25</SSC_OrgasmFrequency>
+      </statFactors>
+      <makeImmuneTo><li>WoundInfection</li><li>GutWorms</li><li>MuscleParasites</li></makeImmuneTo>
+    </li></stages>
+  </HediffDef>
+</Defs>

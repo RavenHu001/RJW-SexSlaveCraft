@@ -56,6 +56,8 @@ namespace SexSlaveCraft
             scope = new MutationScope(pawn, state.Token);
             state.Mutation = scope;
 #if SSC_RW17
+            // 已换 token 且已占用替换作用域后，才终止前任待用种子任务，阻止其结果落到换入者。
+            SSCImprintUtility.CancelPendingSeedUse(pawn);
             // 即使后续替换失败也不恢复旧命令，持久世代与进程内 token 同时撤销。
             SSCRomanceLifecycle.InvalidatePersonality(pawn);
             // 暂停身体指令的派生效果，不把身体选择清到人格字典或转移到新人格载荷。

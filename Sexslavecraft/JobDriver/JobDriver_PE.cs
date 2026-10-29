@@ -229,7 +229,7 @@ namespace SexSlaveCraft
             };
         }
 
-        /// <summary>结算已完成场景，保存人格凝胶、更新目标为空壳状态，并施加提取后的恢复期。</summary>
+        /// <summary>结算已完成场景；人格凝胶成功放置后移出原人格印记等记录，再完成空壳与恢复期处理。</summary>
         private void CompletePersonalityExtraction()
         {
             Pawn victim = Partner;
@@ -279,6 +279,8 @@ namespace SexSlaveCraft
 #if SSC_RW17
                     // 场景入口也以放置成功为清源边界，不改原场景流程已有的异常回滚范围。
                     SSCRomancePreferences.Clear(victim);
+                    // 场景提取与普通提取使用相同清源时点，不能让原身体继续持有印记收益或身份锁。
+                    SSCImprintUtility.Clear(victim);
 #endif
                     SSCMasterQualificationUtility.ClearPersonalityQualification(victim);
                     SSCMasterProgressionUtility.ClearPersonalityRecord(victim);
