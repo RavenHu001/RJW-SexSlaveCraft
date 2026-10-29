@@ -14,8 +14,35 @@ namespace SexSlaveCraft
         {
             string name = instance?.def?.defName;
             if (name != SSCUterusDevelopmentUtility.DefName && name != "SSC_Lactating_SubState" && !FertilitySpecializationUtility.IsTag(instance?.def)) return;
-            __result = WithFertilityFactor(__result, instance);
+            __result = WithReproductionEffects(WithFertilityFactor(__result, instance), instance);
         }
+
+        /// <summary>保留全部原版属性行，补齐非原生Stat的孕期、教育及陪玩影响；无保存或状态修改。</summary>
+        private static IEnumerable<StatDrawEntry> WithReproductionEffects(IEnumerable<StatDrawEntry> original, Hediff instance)
+        {
+            foreach (var entry in original) yield return entry;
+            bool uterus = instance is Hediff_SSCUterusDevelopment;
+            bool specialization = FertilitySpecializationUtility.IsTag(instance.def);
+            if (!uterus && !specialization) yield break;
+            bool enabled = SSCUterusDevelopmentUtility.Find(instance.pawn)?.FertilityEnabled == true;
+            int stage = specialization ? FertilitySpecializationUtility.Stage(instance.pawn) : -1;
+            // 分项只展示本Hediff的贡献：子宫0.8与特化额外系数相乘，不重复列总倍率。
+            float duration = !enabled ? 1f : uterus ? SSCUterusPregnancyUtility.DurationFactor
+                : stage < 0 ? 1f : HediffComp_SSCUterusPregnancy.DurationForStage(stage) / SSCUterusPregnancyUtility.DurationFactor;
+            yield return EffectEntry("Duration", duration, 4069);
+            if (specialization)
+            {
+                float care = FertilitySpecializationUtility.CareFactor(instance.pawn);
+                yield return EffectEntry("Education", care, 4068);
+                yield return EffectEntry("BabyPlay", care, 4067);
+            }
+        }
+
+        /// <summary>普通倍率行使用本地化名称与说明，健康悬停也由原版读取这些同一条目。</summary>
+        private static StatDrawEntry EffectEntry(string effect, float factor, int order)
+            => new StatDrawEntry(StatCategoryDefOf.CapacityEffects, ("SSC_HediffFertility_" + effect).Translate(),
+                "SSC_HediffFertility_Factor".Translate(factor.ToString("0.##")),
+                ("SSC_HediffFertility_" + effect + "Description").Translate(), order);
 
         /// <summary>保留原有属性条目，再读取实例当前阶段；开关和兼容修正后的值随本次查询实时反映。</summary>
         private static IEnumerable<StatDrawEntry> WithFertilityFactor(IEnumerable<StatDrawEntry> original, Hediff instance)

@@ -14,11 +14,13 @@ namespace SexSlaveCraft
         /// <summary>只读取首次加入时固定的待遇，不重新查询当前母体或开关。</summary>
         public bool IsShortened => DurationFactor < 1f;
         /// <summary>旧Shortened仍为0.8；新增枚举映射已合并子宫的总时长系数，孕中不重判。</summary>
-        public float DurationFactor => decision switch
+        public float DurationFactor => decision >= Decision.Shortened && decision <= Decision.FertilityFinal
+            ? DurationForStage((int)decision - (int)Decision.Shortened) : 1f;
+
+        /// <summary>显示与孕期消费者共用同一固定总时长映射；负阶段表示未生效。</summary>
+        public static float DurationForStage(int stage) => stage switch
         {
-            Decision.Shortened => .8f, Decision.FertilityBasic => .72f, Decision.FertilitySkilled => .60f,
-            Decision.FertilityExpert => .48f, Decision.FertilityComplete => .40f, Decision.FertilityFinal => .32f,
-            _ => 1f
+            0 => .8f, 1 => .72f, 2 => .60f, 3 => .48f, 4 => .40f, 5 => .32f, _ => 1f
         };
 
         /// <summary>仅在妊娠真实加入母体时判定一次，重复 Add 或 RJW Initialize 不补领。</summary>

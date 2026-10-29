@@ -148,11 +148,36 @@ internal static partial class Program
             Edit(path,doc=>doc.Descendants("fertilityCareTicks").Remove()); fixture=null;
             Scribe.loader.InitLoading(path); Scribe_Deep.Look(ref fixture,"data",target); Scribe.loader.FinalizeLoading(); Equal(0,target.fertilityCareTicks);
         });
+        FertilityEffectDisplayTests(harmony);
         FertilityRecipeReviewTests(harmony);
         FertilityUiReviewTests(harmony);
         FertilityPregnancyTests();
         InstallFertilityPatch(harmony,AccessTools.PropertyGetter(typeof(SkillRecord), nameof(SkillRecord.TotallyDisabled)), prefix: new HarmonyMethod(typeof(Program), nameof(FertilitySkillEnabled)));
         FertilityActivityTests(harmony);
+    }
+
+    /// <summary>实际健康属性列表与悬停均应包含自定义倍率，且不丢失子宫原版属性行。</summary>
+    private static void FertilityEffectDisplayTests(Harmony harmony)
+    {
+        FleshTypeDefOf.Mechanoid ??= new FleshTypeDef { defName="Mechanoid" };
+        foreach (string name in stageStats) DefDatabase<StatDef>.GetNamed(name).label ??= name;
+        StatCategoryDefOf.CapacityEffects ??= new StatCategoryDef { defName="CapacityEffects",label="Effects" };
+        InstallFertilityPatch(harmony,AccessTools.Method(typeof(HediffStatsUtility),nameof(HediffStatsUtility.SpecialDisplayStats)),postfix:new HarmonyMethod(typeof(Program),nameof(FertilityDisplayPostfix)));
+        Check("fertility health display preserves native effects and exposes individual duration and care factors", () =>
+        {
+            var pawn=FertilityPawn(.5f); var uterus=SSCUterusDevelopmentUtility.Find(pawn); Toggle(pawn,true);
+            var ordinary=pawn.health.hediffSet.GetFirstHediffOfDef(FertilitySpecializationUtility.OrdinaryDef);
+            string Value(Hediff h,string key)=>HediffStatsUtility.SpecialDisplayStats(h.CurStage,h).Single(e=>e.LabelCap==key.Translate().ToString()).ValueString;
+            Equal("×0.8",Value(uterus,"SSC_HediffFertility_Duration")); Equal("×0.75",Value(ordinary,"SSC_HediffFertility_Duration"));
+            Equal("×1.2",Value(ordinary,"SSC_HediffFertility_Education")); Equal("×1.2",Value(ordinary,"SSC_HediffFertility_BabyPlay"));
+            var entries=HediffStatsUtility.SpecialDisplayStats(uterus.CurStage,uterus).ToList();
+            foreach (var factor in uterus.CurStage.statFactors) Require(entries.Any(e=>e.LabelCap==factor.stat.LabelCap.ToString()),factor.stat.defName);
+            Require(ordinary.TipStringExtra.Contains("SSC_HediffFertility_Duration".Translate().ToString()));
+            Require(ordinary.TipStringExtra.Contains("SSC_HediffFertility_Education".Translate().ToString()));
+            Toggle(pawn,false); Equal("×1",Value(uterus,"SSC_HediffFertility_Duration")); Equal("×1",Value(ordinary,"SSC_HediffFertility_Duration"));
+            pawn.TryGetComp<CompSexSlaveTraining>().pawnIdentity=PawnIdentity.Unset;
+            Equal("×1",Value(ordinary,"SSC_HediffFertility_Education"));
+        });
     }
 
     private static int fertilityGuardRejects;

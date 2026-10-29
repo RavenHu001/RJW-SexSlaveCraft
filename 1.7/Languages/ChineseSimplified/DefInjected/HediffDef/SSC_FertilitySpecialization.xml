@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-  <SSC_Hediff_Fertility.label>生育特化</SSC_Hediff_Fertility.label>
+  <SSC_Hediff_Fertility.label>性奴特化（生育）</SSC_Hediff_Fertility.label>
   <SSC_Hediff_Fertility.description>[占位] 生育特化状态，描述待定。</SSC_Hediff_Fertility.description>
-  <SSC_Hediff_Fertility_Final.label>终极生育特化</SSC_Hediff_Fertility_Final.label>
+  <SSC_Hediff_Fertility_Final.label>性奴特化（终极生育）</SSC_Hediff_Fertility_Final.label>
   <SSC_Hediff_Fertility_Final.description>[占位] 生育特化状态，描述待定。</SSC_Hediff_Fertility_Final.description>
+  <SSC_Hediff_Fertility.stages.0.label>生育培养中</SSC_Hediff_Fertility.stages.0.label>
+  <SSC_Hediff_Fertility.stages.1.label>性奴特化（生育）</SSC_Hediff_Fertility.stages.1.label>
+  <SSC_Hediff_Fertility.stages.2.label>性奴特化（熟练生育）</SSC_Hediff_Fertility.stages.2.label>
+  <SSC_Hediff_Fertility.stages.3.label>性奴特化（精通生育）</SSC_Hediff_Fertility.stages.3.label>
+  <SSC_Hediff_Fertility.stages.4.label>性奴特化（完全生育）</SSC_Hediff_Fertility.stages.4.label>
 </LanguageData>

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-  <SSC_Fertility_Label>Fertility specialization</SSC_Fertility_Label>
+  <SSC_Fertility_Label>Fertility</SSC_Fertility_Label>
   <SSC_Fertility_Identity>Requires SSC slave identity</SSC_Fertility_Identity>
   <SSC_Fertility_Adult>Requires an adult humanlike body</SSC_Fertility_Adult>
   <SSC_Fertility_Uterus>Requires a fully developed uterus</SSC_Fertility_Uterus>
-  <SSC_Fertility_Finalized>Ultimate fertility specialization</SSC_Fertility_Finalized>
+  <SSC_Fertility_Finalized>Sex slave specialization (Ultimate fertility)</SSC_Fertility_Finalized>
   <SSC_Fertility_Research>Requires fertility specialization research</SSC_Fertility_Research>
   <SSC_Fertility_Status>Fertility: {0}, teaching / baby play ×{1}</SSC_Fertility_Status>
   <SSC_Fertility_Paused>Fertility specialization paused: {0}</SSC_Fertility_Paused>

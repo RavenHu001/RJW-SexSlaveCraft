@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-  <SSC_RES_Fertility.label>Специализация на деторождении</SSC_RES_Fertility.label>
+  <SSC_RES_Fertility.label>Деторождение</SSC_RES_Fertility.label>
   <SSC_RES_Fertility.description>Требуется полностью развитая матка. Обучение и игры доступны при отключённой фертильности. Каждый час ухода даёт 1 процентный пункт без суточного ограничения.</SSC_RES_Fertility.description>
 </LanguageData>

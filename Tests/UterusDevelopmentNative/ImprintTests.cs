@@ -138,6 +138,9 @@ internal static partial class Program
     {
         Pawn pawn = NewPawn();
         var race = new RaceProperties { intelligence = Intelligence.Humanlike, body = human.race.body };
+        // 健康属性说明会读取肉体类型，提供真实普通有机身体，避免缺省null被误认成机械体。
+        var corpseCategory = Bare<ThingCategoryDef>(); corpseCategory.defName = "CorpsesHumanlike";
+        AccessTools.Field(typeof(RaceProperties), "fleshType").SetValue(race,new FleshTypeDef { defName="Normal",isOrganic=true,corpseCategory=corpseCategory });
         race.lifeStageAges.Add(new LifeStageAge { minAge = 0, def = new LifeStageDef { defName = "ImprintAdult", developmentalStage = DevelopmentalStage.Adult } });
         pawn.def = Bare<ThingDef>(); pawn.def.defName = "ImprintRace" + pawn.thingIDNumber;
         pawn.def.category = ThingCategory.Pawn; pawn.def.race = race;

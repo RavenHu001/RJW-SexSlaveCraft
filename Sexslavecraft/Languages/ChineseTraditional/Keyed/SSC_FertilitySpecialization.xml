@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-  <SSC_Fertility_Label>生育特化</SSC_Fertility_Label>
+  <SSC_Fertility_Label>生育</SSC_Fertility_Label>
   <SSC_Fertility_Identity>需要SSC性奴身分</SSC_Fertility_Identity>
   <SSC_Fertility_Adult>需要成年類人身體</SSC_Fertility_Adult>
   <SSC_Fertility_Uterus>需要完成子宮改造</SSC_Fertility_Uterus>
-  <SSC_Fertility_Finalized>終極生育特化</SSC_Fertility_Finalized>
+  <SSC_Fertility_Finalized>性奴特化（終極生育）</SSC_Fertility_Finalized>
   <SSC_Fertility_Research>需要完成生育特化研究</SSC_Fertility_Research>
   <SSC_Fertility_Status>生育特化：{0}，教學／陪玩效率 ×{1}</SSC_Fertility_Status>
   <SSC_Fertility_Paused>生育特化暫停：{0}</SSC_Fertility_Paused>

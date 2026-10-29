@@ -1,10 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Defs>
   <ResearchProjectDef>
-    <defName>SSC_RES_Fertility</defName><label>fertility specialization</label>
+    <defName>SSC_RES_Fertility</defName>
+    <label>Fertility</label>
     <description>Train adult SSC slaves with a fully developed uterus. Ordinary training, teaching and baby play build progress. Complete ordinary training before finalizing the personality gel.</description>
-    <baseCost>1200</baseCost><techLevel>Medieval</techLevel><tab>SSC_ResearchTabDef</tab>
-    <prerequisites><li>SSC_RES_SlaveSpecialization</li><li>SSC_RES_UterusDevelopment</li></prerequisites>
-    <researchViewX>5</researchViewX><researchViewY>3.5</researchViewY>
+    <baseCost>1200</baseCost>
+    <techLevel>Medieval</techLevel>
+    <tab>SSC_ResearchTabDef</tab>
+    <prerequisites>
+      <li>SSC_RES_SlaveSpecialization</li>
+      <li>SSC_RES_UterusDevelopment</li>
+    </prerequisites>
+    <researchViewX>5</researchViewX>
+    <researchViewY>3.5</researchViewY>
   </ResearchProjectDef>
 </Defs>

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-  <SSC_Fertility_Label>Специализация на деторождении</SSC_Fertility_Label>
+  <SSC_Fertility_Label>Деторождение</SSC_Fertility_Label>
   <SSC_Fertility_Identity>Требуется статус секс-раба SSC</SSC_Fertility_Identity>
   <SSC_Fertility_Adult>Требуется взрослое человекоподобное тело</SSC_Fertility_Adult>
   <SSC_Fertility_Uterus>Требуется полностью развитая матка</SSC_Fertility_Uterus>
-  <SSC_Fertility_Finalized>Высшая специализация на деторождении</SSC_Fertility_Finalized>
+  <SSC_Fertility_Finalized>Специализация секс-раба (высшее деторождение)</SSC_Fertility_Finalized>
   <SSC_Fertility_Research>Требуется исследование специализации</SSC_Fertility_Research>
   <SSC_Fertility_Status>Деторождение: {0}, обучение / игры ×{1}</SSC_Fertility_Status>
   <SSC_Fertility_Paused>Специализация приостановлена: {0}</SSC_Fertility_Paused>
