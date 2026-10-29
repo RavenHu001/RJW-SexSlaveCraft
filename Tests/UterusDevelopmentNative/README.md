@@ -1,6 +1,6 @@
 # 子宫开发第 1～5 批原生专项
 
-2026-10-29：[第三步整体复核](../../Docs/Development/Verification/生育特化第三步孕前设置实现与验证.md#提交前整体复核与本轮验证)新增实际Draw Special1项；`--preconception`13／13（Core10／Special3），Special独立3／3。执行真实Draw及共用按钮，隔离Widgets绘制／悬停末端，验证禁用active、置灰、外层禁用和底层误报点击不打开菜单，GUI状态恢复；不把它当作真实游戏显示通过。原孕期69、生育18及印记21也通过，同正式DLL指纹一致，待提交同步及实机；未执行完整宿主或整仓All。
+2026-10-29：[第三步整体复核](../../Docs/Development/Verification/生育特化第三步孕前设置实现与验证.md#提交前整体复核与本轮验证)新增实际Draw Special1项；`--preconception`13／13（Core10／Special3），Special独立3／3。执行真实Draw及共用按钮，隔离Widgets绘制／悬停末端，验证禁用active、置灰、外层禁用和底层误报点击不打开菜单，GUI状态恢复；不把它当作真实游戏显示通过。原孕期69、生育18及印记21也通过，实现`325e4d99`已提交同步，正式／候选／安装DLL一致，待实机；未执行完整宿主或整仓All。
 
 2026-10-29：[第三步孕前设置](../../Docs/Development/Verification/生育特化第三步孕前设置实现与验证.md)新增`PreconceptionTests` Core10及原生UI Special2，`--preconception`12／12，Special独立2／2；同候选相关`--pregnancy`69、`--fertility`18和`--imprint`21均通过。默认完整入口也纳入新12项，未执行默认完整宿主或整仓All。验证身体字段／原生Scribe、阶段、孕态／临产、旧凭据、合法人格链和实际菜单；实际婴儿生成、世界存档／完整任务及游戏显示另验。首次越界身份夹具与并行共享文件失败保留原日志，见记录；未同步游戏。
 
