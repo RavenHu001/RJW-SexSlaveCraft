@@ -86,6 +86,35 @@ internal static partial class Program
             finally { imprintBiotech = true; }
         });
         // 从实际属性开始，再覆盖获取、真实绑定、年龄推进和人格存读档，避免仅检查配置文本。
+        Check("master cannot extract and preparation is removed without touching bonds", () =>
+        {
+            var master = ImprintPawn(PawnIdentity.Master); var slave = ImprintPawn(PawnIdentity.Slave);
+            Require(SSCBondUtility.Bind(master, slave));
+            Require(!SSCPersonalityExcretionAdmission.CanExtract(master));
+            Require(SSCPersonalityExcretionAdmission.CanExtract(slave));
+            SSCDefOf.SSC_InducePersonalityExcretion = new RecipeDef { defName = "SSC_InducePersonalityExcretion" };
+            var surgery = new Recipe_AddHediff { recipe = SSCDefOf.SSC_InducePersonalityExcretion };
+            bool available = true;
+            Patch_RabbitClone_BlocksPersonalityExcretionSurgery.Postfix(surgery, master, ref available);
+            Require(!available);
+            Require(!Harmony_MasterBlocksExcretionOperation.Prefix(surgery, master));
+            Require(Harmony_MasterBlocksExcretionOperation.Prefix(surgery, slave));
+            var preparation = new Hediff_SSC_PersonalityExcreting { def = SSCDefOf.SSC_PersonalityExcreting, pawn = master };
+            master.health.AddHediff(preparation);
+            Require(!master.health.hediffSet.hediffs.Contains(preparation));
+            var stale = new Hediff_SSC_PersonalityExcreting { def = SSCDefOf.SSC_PersonalityExcreting, pawn = master };
+            master.health.hediffSet.hediffs.Add(stale);
+            Require(stale.ShouldRemove);
+            ExcretionUtility.DoExcretion(master);
+            Require(!master.health.hediffSet.hediffs.Contains(stale));
+            Equal(PawnIdentity.Master, SSCIdentityUtility.GetIdentity(master));
+            Require(SSCBondUtility.IsBoundTo(slave, master));
+            var candidate = ImprintPawn();
+            candidate.TryGetComp<CompSexSlaveTraining>().ReplaceMasterQualification(true);
+            candidate.health.AddHediff(new Hediff_SSC_PersonalityExcreting { def = SSCDefOf.SSC_PersonalityExcreting, pawn = candidate });
+            Require(SSCIdentityUtility.TrySetIdentity(candidate, PawnIdentity.Master));
+            Require(!candidate.health.hediffSet.HasHediff(SSCDefOf.SSC_PersonalityExcreting));
+        });
         ImprintEffectTests();
         ImprintSeedTests();
         ImprintBindingTests();
@@ -302,7 +331,7 @@ internal static partial class Program
             fixture = null;
             Scribe.loader.InitLoading(path); Scribe_Deep.Look(ref fixture, "gel"); Scribe.loader.FinalizeLoading();
             copy = fixture.Data;
-            Require(SSCImprintUtility.GelLabel(copy).Contains("永久锁定性奴"));
+            Require(SSCImprintUtility.GelLabel(copy).Contains(DefDatabase<HediffDef>.GetNamed(imprintNames[2]).LabelCap));
             var host = ImprintPawn(PawnIdentity.Slave, 70); Require(SSCImprintUtility.CanRestore(host, copy));
             Require(SSCImprintUtility.Restore(host, copy)); Equal(25, host.ageTracker.AgeBiologicalYears);
             SSCImprintUtility.Clear(host); Require(SSCImprintUtility.Restore(host, new CompPersonalityStore())); Equal(SSCImprintKind.None, SSCImprintUtility.GetKind(host));

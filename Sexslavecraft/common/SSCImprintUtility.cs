@@ -160,15 +160,13 @@ namespace SexSlaveCraft
             return def == null || Add(pawn, def.defName);
         }
 
-        /// <summary>从离体载荷生成形态与永久锁说明，供凝胶检查文字和人格卡共用。</summary>
+        /// <summary>从离体载荷生成简洁形态名称，供凝胶检查文字和人格卡共用。</summary>
         public static string GelLabel(CompPersonalityStore data)
         {
             // 只解释凝胶内的印记；不查询宿主年龄、当前主人或全局身份选择设置。
             HediffDef def = data?.hediffTags?.Keys.FirstOrDefault(IsImprintDef);
             string state = def?.LabelCap.ToString() ?? "SSC_Imprint_None".Translate().ToString();
-            string locked = Kind(def) == SSCImprintKind.Master ? "SSC_Imprint_MasterLocked" :
-                Kind(def) == SSCImprintKind.Slave ? "SSC_Imprint_SlaveLocked" : "SSC_Imprint_Unlocked";
-            return "SSC_Imprint_GelStatus".Translate(state, locked.Translate()).ToString();
+            return "SSC_Imprint_GelStatus".Translate(state).ToString();
         }
 
         /// <summary>人格换入时中止其前任尚未完成的种子任务，不影响其他任务或物品。</summary>

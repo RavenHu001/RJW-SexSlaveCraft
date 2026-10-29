@@ -13,6 +13,9 @@ namespace SexSlaveCraft
         public static bool IsValidPETarget(Pawn actor, Pawn target, bool forced)
         {
             if (actor == null || target == null) return false;
+#if SSC_RW17
+            if (!SSCPersonalityExcretionAdmission.CanExtract(target)) return false;
+#endif
             if (PersonalityExcretionJobUtility.IsOccupiedByOther(target, actor))
             {
                 if (forced) JobFailReason.Is("SSC_PE_TargetBusy".Translate());

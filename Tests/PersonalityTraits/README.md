@@ -1,6 +1,8 @@
 # 人格特质与迁移链路回归测试
 
-2026-10-29：三态印记接入后，`-p:SscUterusBoundary=true` 关联回归161／161通过。本模型只构造无印记人格，对新增印记模块提供无记录边界，不复制印记业务；带印记的实际采集、凝胶Scribe、完整植入及身份锁由[原生专项](../UterusDevelopmentNative/ImprintTests.cs)验证，见[本批记录](../../Docs/Development/Verification/三态印记第一步实现与验证.md)。
+2026-10-29主人排泄禁用后，本模型隔离新准入，保留对历史主人凝胶等旧载荷后续处理的验证，本轮161／161。新禁用和健康清理执行真实生产DLL，由原生印记专项覆盖；不能把本模型视为主人仍可排泄的机制证据。
+
+2026-10-29：三态印记接入后，`-p:SscUterusBoundary=true` 关联回归161／161通过。本模型只构造无印记人格，对新增印记模块提供无记录边界，不复制印记业务；带印记的实际采集、凝胶Scribe、完整植入及身份锁由[原生专项](../UterusDevelopmentNative/ImprintTests.cs)验证，见[本批记录](../../Docs/Development/Completed/三态印记第一步实现与验证.md)。
 
 2026-10-27 第27项第二批：`-p:SscUterusBoundary=true` 本轮 **161／161**，当前157项加 [身体敏感度4项](OrgasmSensitivityBodyTests.cs)。真实采集／加工／植入均排除微械身体指令，已有宿主档位保留，普通SSC标签照常迁移；人格作用域的游戏健康／思想刷新仅作模型边界，原生效果与菜单由 UterusDevelopmentNative 另验。未同步或实机，见[本批记录](../../Docs/Development/Completed/高潮敏感度第二批身体载体与界面实现与验证.md)。下方数字保留对应历史时点。
 

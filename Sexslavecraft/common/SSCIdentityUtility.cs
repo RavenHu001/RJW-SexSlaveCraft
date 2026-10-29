@@ -149,6 +149,9 @@ namespace SexSlaveCraft
             if (!SSCImprintUtility.AllowsIdentity(pawn, identity)) return false;
 #endif
             // 重复设置不属于身份切换，绑定结算也会重复写入性奴身份。
+#if SSC_RW17
+            if (comp.pawnIdentity == PawnIdentity.Master) SSCPersonalityExcretionAdmission.RemoveForbiddenPreparation(pawn);
+#endif
             if (comp.pawnIdentity == identity)
             {
                 if (restoredQualification.HasValue) comp.ReplaceMasterQualification(restoredQualification.Value);
@@ -191,6 +194,7 @@ namespace SexSlaveCraft
                 return false;
             comp.pawnIdentity = identity;
 #if SSC_RW17
+            SSCPersonalityExcretionAdmission.RemoveForbiddenPreparation(pawn);
             // 身份写入后立即观察退出事件，不能等后续资格回调结束才撤销旧命令。
             SSCRomanceLifecycle.Notify(pawn);
             SSCOrgasmSensitivityUtility.NotifyStateChanged(pawn);

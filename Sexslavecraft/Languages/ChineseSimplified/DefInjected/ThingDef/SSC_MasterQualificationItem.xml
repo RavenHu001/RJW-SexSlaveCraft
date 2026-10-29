@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <SSC_MasterQualificationItem.label>欲望之种</SSC_MasterQualificationItem.label>
-  <SSC_MasterQualificationItem.description>一枚泛着幽紫光泽的超凡造物，触感温热，像是在等一个愿意接纳它的人。\n\n它会以未知的方式融进宿主的身体，而后慢慢显出它要的是什么样的主人。\n\n无印记的非性奴：第一枚授予主人资格，已有资格时再用一枚取得淫欲之主并永久锁定主人身份。\n无印记的SSC性奴：一枚取得淫欲之奴并永久锁定性奴身份，保留当前绑定。\n已有任何印记者不能使用。首次授予资格仍按原规则补齐调教研究蓝图，研究需正常完成。\n\n用法：选中未带印记、且符合上述用途的角色，右键种子，选择“使用欲望之种”。首次仅取得主人资格后，仍需在“调教”页选择主人身份。\n\n额外获取：若迟迟刷不到更多种子，载入地图后打开本模组设置，点击“调试：生成欲望之种”。</SSC_MasterQualificationItem.description>
+  <SSC_MasterQualificationItem.description>一枚泛着幽紫光泽的超凡造物，触感温热，像是在等一个愿意接纳它的人。\n\n它会以未知的方式融进宿主的身体，而后慢慢显出它要的是什么样的主人。\n\n无印记者：首次使用解锁主人资格；已有资格再用一枚获得淫欲之主。性奴使用一枚获得淫欲之奴。已有印记者不能使用。\n\n额外获取：若迟迟刷不到更多种子，载入地图后打开本模组设置，点击“调试：生成欲望之种”。</SSC_MasterQualificationItem.description>
   <SSC_MasterQualificationItem.comps.0.useLabel>使用欲望之种</SSC_MasterQualificationItem.comps.0.useLabel>
 </LanguageData>

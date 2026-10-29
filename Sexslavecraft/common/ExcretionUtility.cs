@@ -12,6 +12,11 @@ namespace SexSlaveCraft
         /// <summary>保存并放置人格凝胶后清源；印记随人格移出，社交与技能再按原空壳流程清理。</summary>
         public static void DoExcretion(Pawn victim)
         {
+#if SSC_RW17
+            // 最终入口也拒绝主人，不能靠直接调用绕过手术或任务准入。
+            if (!SSCPersonalityExcretionAdmission.CanExtract(victim))
+            { SSCPersonalityExcretionAdmission.RemoveForbiddenPreparation(victim); return; }
+#endif
             if (victim == null || victim.Map == null) return;
             if (RabbitCloneUtility.IsRabbitClone(victim)) return;
 #if SSC_RW17

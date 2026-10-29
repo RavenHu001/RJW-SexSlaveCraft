@@ -28,6 +28,9 @@ namespace SexSlaveCraft
         /// <summary>为人格排泄任务预约唯一接收目标；预约冲突时返回 false。</summary>
         public override bool TryMakePreToilReservations(bool errorOnFailed)
         {
+#if SSC_RW17
+            if (!SSCPersonalityExcretionAdmission.CanExtract(Partner)) return false;
+#endif
             if (PersonalityExcretionJobUtility.IsOccupiedByOther(Partner, pawn)) return false;
             return pawn.Reserve(Partner, job, 1, 0, null, errorOnFailed);
         }
@@ -38,6 +41,9 @@ namespace SexSlaveCraft
             setup_ticks();
 
             this.FailOnDespawnedNullOrForbidden(iTarget);
+#if SSC_RW17
+            this.FailOn(() => !SSCPersonalityExcretionAdmission.CanExtract(Partner));
+#endif
             this.FailOn(() => pawn.Drafted || pawn.IsFighting());
             this.FailOn(() => Partner.IsFighting());
             this.FailOn(() => !pawn.CanReserve(Partner, 1, 0));
@@ -233,10 +239,19 @@ namespace SexSlaveCraft
         private void CompletePersonalityExtraction()
         {
             Pawn victim = Partner;
+#if SSC_RW17
+            if (!SSCPersonalityExcretionAdmission.CanExtract(victim))
+            { SSCPersonalityExcretionAdmission.RemoveForbiddenPreparation(victim); return; }
+#endif
             // RJW 原结算可触发外部回调；只继续处理原参与者的同一人格，不能提取后来换入的人格。
             CompSexSlaveTraining originalComp = victim?.TryGetComp<CompSexSlaveTraining>();
             object originalPersonality = SSCPersonalityRuntimeUtility.Capture(victim);
             SexUtility.ProcessSex(Sexprops);
+#if SSC_RW17
+            // 原结算回调可能改身份，生成凝胶之前再次复查。
+            if (!SSCPersonalityExcretionAdmission.CanExtract(victim))
+            { SSCPersonalityExcretionAdmission.RemoveForbiddenPreparation(victim); return; }
+#endif
             if (Partner != victim || victim?.TryGetComp<CompSexSlaveTraining>() != originalComp ||
                 !SSCPersonalityRuntimeUtility.IsCurrent(victim, originalPersonality)) return;
 #if SSC_RW17

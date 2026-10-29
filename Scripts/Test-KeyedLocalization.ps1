@@ -88,7 +88,7 @@ function Read-KeyedEntries([string]$path, [string]$context) {
 $contracts = @{
     'SSC_Imprint.xml' = @{
         'SSC_Imprint_None' = ''; 'SSC_Imprint_Unlocked' = ''; 'SSC_Imprint_MasterLocked' = ''; 'SSC_Imprint_SlaveLocked' = ''
-        'SSC_Imprint_GelStatus' = '0,1'; 'SSC_Imprint_GelTooltip' = ''; 'SSC_Imprint_SeedAlreadyMarked' = ''
+        'SSC_Imprint_GelStatus' = '0'; 'SSC_Imprint_GelTooltip' = ''; 'SSC_Imprint_SeedAlreadyMarked' = ''
         'SSC_Imprint_SeedIdentityBlocked' = ''; 'SSC_Imprint_SeedUsed' = '0'
     }
     'SSC_BodyManagement.xml' = @{

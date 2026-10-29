@@ -2,6 +2,12 @@
 #if SSC_RW17
 namespace SexSlaveCraft
 {
+    /// <summary>旧载荷模型隔离排泄准入，继续验证既有主人凝胶数据；当前主人拒绝及健康移除由原生专项验证。</summary>
+    public static class SSCPersonalityExcretionAdmission
+    {
+        public static bool CanExtract(Verse.Pawn pawn) => pawn != null;
+        public static void RemoveForbiddenPreparation(Verse.Pawn pawn) { }
+    }
     /// <summary>本模型只构造无印记人格；印记实际获取、锁定及迁移由原生专项验证，不在此复制算法。</summary>
     public static class SSCImprintUtility
     {
