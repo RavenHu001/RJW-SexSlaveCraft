@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <SSC_FertilityConception.label>Направленная беременность</SSC_FertilityConception.label>
-  <SSC_FertilityConception.description>(Описание в разработке.) Сбор образца у взрослого на карте вызывает беременность носителя. Перезарядка после успеха — семь дней. Недоступно при беременности и родах; последующее взаимодействие независимо.</SSC_FertilityConception.description>
+  <SSC_FertilityConception.description>(Описание в разработке.) Выберите взрослого на карте, подойдите и остановитесь вместе с ним для применения: беременность возникает у носителя. Перезарядка после успеха — семь дней. Недоступно при беременности и родах; последующее взаимодействие независимо.</SSC_FertilityConception.description>
 </LanguageData>

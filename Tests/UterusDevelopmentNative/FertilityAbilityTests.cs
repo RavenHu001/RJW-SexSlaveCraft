@@ -15,6 +15,10 @@ internal static partial class Program
     private static bool skillBlockPregnancy, skillReenter, skillQueueBoundary;
     private static Action skillPregnancyCallback, skillPairCallback;
     private static int skillPregnancyCalls;
+    private static bool skillContactAllowed;
+    private static LocalTargetInfo skillPathTarget;
+    private static PathEndMode skillPathMode;
+    private static int skillPathStarts, skillPathStops;
     private static Ability_FertilityConception skillAbility;
     private static Pawn skillTarget;
 
@@ -34,6 +38,13 @@ internal static partial class Program
     { if (!skillPawns.Contains(__instance)) return true; __result = true; return false; }
     // Random gene selection is an engine boundary; the actual RJW helper still constructs/parents/adds the Hediff.
     private static bool SkillAwake(ref bool __result) { __result = true; return false; }
+    // 地图接触／寻路是宿主边界；选取、GotoThing、预热和暂停执行实际生产及原版入口。
+    private static bool SkillTouchBoundary(LocalTargetInfo target, ref bool __result)
+    { if (!skillPawns.Contains(target.Thing)) return true; __result=skillContactAllowed; return false; }
+    private static bool SkillStartPath(Pawn ___pawn, LocalTargetInfo dest, PathEndMode peMode)
+    { if (!skillPawns.Contains(___pawn)) return true; skillPathStarts++; skillPathTarget=dest; skillPathMode=peMode; return false; }
+    private static bool SkillStopPath(Pawn ___pawn)
+    { if (!skillPawns.Contains(___pawn)) return true; skillPathStops++; return false; }
     private static bool SkillPairBoundary(ref bool __result) { if (!skillQueueBoundary) return true; skillPairCallback?.Invoke(); __result = true; return false; }
     private static bool SkillEventBoundary(ref bool __result) { if (!skillQueueBoundary) return true; __result = true; return false; }
     private static bool SkillGenes(ref GeneSet __result) { __result = new GeneSet(); return false; }
@@ -51,6 +62,8 @@ internal static partial class Program
         p.SetFactionDirect(preconceptionPlayer);
         p.abilities = new Pawn_AbilityTracker(p);
         p.jobs = new Pawn_JobTracker(p);
+        p.stances = new Pawn_StanceTracker(p);
+        p.pather = new Pawn_PathFollower(p);
         p.health.AddHediff(vagina, p.RaceProps.body.corePart);
         Toggle(p, true);
         if (final) p.health.AddHediff(FertilitySpecializationUtility.FinalDef);
@@ -64,13 +77,36 @@ internal static partial class Program
         var job = ability.GetJob(b, LocalTargetInfo.Invalid);
         AccessTools.Field(typeof(Pawn_JobTracker), "curJob").SetValue(a.jobs, job);
         skillAbility = ability; skillTarget = b; skillPregnancyCalls = 0; skillBlockPregnancy = skillReenter = false; skillPregnancyCallback = null;
+        skillContactAllowed=true;skillPathStarts=skillPathStops=0;
         return (a, b, ability, job);
+    }
+    /// <summary>枚举实际驱动Toil，只将地图路径启动交给记录边界，不复制接近／施法顺序。</summary>
+    private static List<Toil> SkillToils(Pawn pawn, Job job)
+    {
+        var driver=new JobDriver_FertilityConception {pawn=pawn,job=job};
+        pawn.jobs.curDriver=driver;
+        var toils=((IEnumerable<Toil>)AccessTools.Method(typeof(JobDriver_FertilityConception),"MakeNewToils").Invoke(driver,null)).ToList();
+        foreach (var toil in toils) toil.actor=pawn;
+        return toils;
     }
     /// <summary>只执行本批行为；完整地图和自愿AI联动仍待实机。</summary>
     private static void FertilityAbilityTests(string repo, Harmony harmony)
     {
         InitializeBirth(harmony);
         skillMap = Bare<Map>();
+        skillMap.info = new MapInfo();
+        AccessTools.Field(typeof(MapInfo), "sizeInt").SetValue(skillMap.info, new IntVec3(700, 1, 700));
+        // 只隔离画面、地图接触和寻路引擎；实际Toil、Verb预热、暂停及Stance安装执行原版。
+        harmony.Patch(AccessTools.Method(typeof(Pawn_DrawTracker), nameof(Pawn_DrawTracker.Notify_WarmingCastAlongLine)),
+            prefix: new HarmonyMethod(typeof(Program), nameof(Skip)));
+        harmony.Patch(AccessTools.Method(typeof(ReachabilityImmediate), nameof(ReachabilityImmediate.CanReachImmediate),
+            new[] { typeof(IntVec3), typeof(LocalTargetInfo), typeof(Map), typeof(PathEndMode), typeof(Pawn) }),
+            prefix: new HarmonyMethod(typeof(Program), nameof(SkillTouchBoundary)));
+        harmony.Patch(AccessTools.Method(typeof(Pawn_PathFollower),nameof(Pawn_PathFollower.StartPath)),
+            prefix:new HarmonyMethod(typeof(Program),nameof(SkillStartPath)));
+        harmony.Patch(AccessTools.Method(typeof(Pawn_PathFollower),nameof(Pawn_PathFollower.StopDead)),
+            prefix:new HarmonyMethod(typeof(Program),nameof(SkillStopPath)));
+        StatDefOf.AimingDelayFactor = new StatDef { defName = "AimingDelayFactor", defaultBaseValue = 1f };
         harmony.Patch(AccessTools.PropertyGetter(typeof(PawnCapacitiesHandler), nameof(PawnCapacitiesHandler.CanBeAwake)), prefix: new HarmonyMethod(typeof(Program), nameof(SkillAwake)));
         vagina ??= new HediffDef_SexPart { defName = "SkillVagina", hediffClass = typeof(Hediff), genitalFamily = GenitalFamily.Vagina, genitalTags = new() };
         if (DefDatabase<HediffDef>.GetNamedSilentFail(vagina.defName) == null) DefDatabase<HediffDef>.Add(vagina);
@@ -86,13 +122,40 @@ internal static partial class Program
             harmony.Patch(method, prefix: new HarmonyMethod(typeof(Program), nameof(SkillPairBoundary)));
 
 
-        Check("fertility ability global verb selects distant adult partners without path or sight and rejects self", () =>
+        Check("fertility ability global selection approaches selected adult before any warmup or conception", () =>
         {
-            var (a,b,ability,job) = SkillRequest(); AccessTools.Field(typeof(Thing), "positionInt").SetValue(a,new IntVec3(0,0,0)); AccessTools.Field(typeof(Thing), "positionInt").SetValue(b,new IntVec3(300,0,300));
-            Require(FertilityAbilityUtility.CanTarget(a,b,out _)); Require(ability.verb.CanHitTarget(b)); Require(ability.verb.CanHitTargetFrom(a.Position,b));
+            var (a,b,ability,job) = SkillRequest(); AccessTools.Field(typeof(Thing), "positionInt").SetValue(a,new IntVec3(0,0,0)); AccessTools.Field(typeof(Thing), "positionInt").SetValue(b,new IntVec3(699,0,699));
+            skillContactAllowed=false;
+            Require(ability.verb.ValidateTarget(b,false));Require(!ability.verb.CanHitTarget(b));Require(!ability.verb.CanHitTargetFrom(a.Position,b));
+            Require(!ability.verb.TryStartCastOn(b,LocalTargetInfo.Invalid));Require(!ability.Activate(b,LocalTargetInfo.Invalid));
+            Require(!b.stances.stunner.Stunned);
+            var toils=SkillToils(a,job);Require(toils[0].defaultCompleteMode==ToilCompleteMode.PatherArrival);
+            toils[0].initAction();Equal(1,skillPathStarts);Require(skillPathTarget.Pawn==b);Equal(PathEndMode.Touch,skillPathMode);
+            Require(!ability.verb.WarmingUp && !b.stances.stunner.Stunned);
+            Require(!SSCFertilityPreconceptionUtility.HasPregnancyOrLabor(a));Equal(0,ability.CooldownTicksRemaining);
             b.gender=Gender.Female; b.health.RemoveHediff(b.health.hediffSet.GetFirstHediffOfDef(vagina));
             Require(FertilityAbilityUtility.CanTarget(a,b,out _)); Require(!FertilityAbilityUtility.CanTarget(a,a,out _));
             b.ageTracker.AgeBiologicalTicks=17L*GenDate.TicksPerYear; Require(!FertilityAbilityUtility.CanTarget(a,b,out _));
+        });
+        Check("fertility ability contact warmup stops both pawns and interrupted contact cannot conceive",()=>
+        {
+            var (a,b,ability,job)=SkillRequest();var before=b.CurJob;
+            var aiming=StatDefOf.AimingDelayFactor;float original=aiming.defaultBaseValue;aiming.defaultBaseValue=2f;
+            try
+            {
+                AccessTools.Field(typeof(Pawn), "drawer").SetValue(a,Bare<Pawn_DrawTracker>());
+                var toils=SkillToils(a,job);toils[1].initAction();Equal(1,skillPathStops);
+                toils[2].initAction();Require(ability.verb.WarmingUp && a.stances.curStance is Stance_Warmup);
+                Require(a.stances.FullBodyBusy && b.stances.FullBodyBusy);Require(b.CurJob==before);
+                Require((int)AccessTools.Field(typeof(StunHandler),"stunTicksLeft").GetValue(b.stances.stunner)>=ability.verb.WarmupTicksLeft);
+                Equal(0,skillPregnancyCalls);Equal(0,ability.CooldownTicksRemaining);
+                // 外部搬走／失去接触时，实际驱动的预热终止条件必须拒绝，不能远程补交效果。
+                skillContactAllowed=false;Require(toils[2].endConditions.Any(f=>f()==JobCondition.Incompletable));
+                Require(!ability.Activate(b,LocalTargetInfo.Invalid));Equal(0,skillPregnancyCalls);
+                ((Stance_Warmup)a.stances.curStance).Interrupt();ability.verb.Reset();
+                Equal(0,ability.CooldownTicksRemaining);Require(!SSCFertilityPreconceptionUtility.HasPregnancyOrLabor(a));
+            }
+            finally {aiming.defaultBaseValue=original;}
         });
         Check("fertility ability native conception records both parents once and starts seven day cooldown", () =>
         {

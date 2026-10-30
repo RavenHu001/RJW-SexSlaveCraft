@@ -59,7 +59,7 @@ namespace SexSlaveCraft
             { reason = "SSC_FertilitySkill_Body"; return false; }
             reason = null; return true;
         }
-        /// <summary>同地图全图选取，无距离、视线、预约或可达性条件。</summary>
+        /// <summary>同地图全图选取；实际接近由原版GotoThing负责，不能把远端可选等同远端可施放。</summary>
         public static bool CanTarget(Pawn caster, Pawn target, out string reason)
         {
             if (!CanUse(caster, out reason)) return false;
@@ -68,11 +68,14 @@ namespace SexSlaveCraft
                 !SSCCultureGenderUtility.IsAdult(target) || target.HostileTo(caster) || caster.HostileTo(target)) return false;
             reason = null; return true;
         }
+        /// <summary>预热及建孕提交均要求原版Touch接触位置；不将距离限制加到地图选取资格。</summary>
+        internal static bool CanApply(Pawn caster, Pawn target) => CanTarget(caster, target, out _) &&
+            caster.CanReachImmediate(target, PathEndMode.Touch);
         /// <summary>公共void入口之后核对实际落地结果；异常发生于落地之后也不能退还成功冷却。</summary>
         internal static bool TryConceive(Context c)
         {
             if (!IsCurrent(c) || c.Ability is not Ability_FertilityConception { Submitting: true } ||
-                !CanTarget(c.Caster, c.Target, out _) || !submitting.Add(c.Caster)) return false;
+                !CanApply(c.Caster, c.Target) || !submitting.Add(c.Caster)) return false;
             try
             {
                 try { PregnancyHelper.StartVanillaPregnancy(c.Caster, c.Target, geneticMother: c.Caster); }

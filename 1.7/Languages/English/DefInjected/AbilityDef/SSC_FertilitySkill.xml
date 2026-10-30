@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <SSC_FertilityConception.label>Directed gestation</SSC_FertilityConception.label>
-  <SSC_FertilityConception.description>(Description pending.) Sample an adult on this map to become pregnant. Successful use has a seven-day cooldown. Disabled during pregnancy and labor; follow-up interaction is independent.</SSC_FertilityConception.description>
+  <SSC_FertilityConception.description>(Description pending.) Select an adult anywhere on this map, approach, then pause together to conceive. Successful use has a seven-day cooldown. Disabled during pregnancy and labor; follow-up interaction is independent.</SSC_FertilityConception.description>
 </LanguageData>

@@ -33,7 +33,7 @@ namespace SexSlaveCraft
         {
             var c = FertilityAbilityUtility.Request(pawn.CurJob);
             if (activating || !CanCast || !FertilityAbilityUtility.IsCurrent(c) || c.Ability != this || c.Target != target.Pawn ||
-                !FertilityAbilityUtility.CanTarget(pawn, target.Pawn, out _)) return false;
+                !FertilityAbilityUtility.CanApply(pawn, target.Pawn)) return false;
             var effects = EffectComps.OfType<CompAbilityEffect_FertilityConception>().Take(2).ToArray();
             if (effects.Length != 1) return false;
             var effect = effects[0];
@@ -71,8 +71,8 @@ namespace SexSlaveCraft
             if (!Succeeded) Messages.Message("SSC_FertilitySkill_Failed".Translate(), parent.pawn, MessageTypeDefOf.RejectInput, false);
         }
     }
-    /// <summary>只认实际同图目标资格，不让原版射程、接触或LOS把采样变成走近工作。</summary>
-    public class Verb_FertilityConception : Verb_CastAbility
+    /// <summary>复用原版接触技能显示：全图选人，走到可接触位置后才允许预热及采样。</summary>
+    public class Verb_FertilityConception : Verb_CastAbilityTouch
     {
         public override bool ValidateTarget(LocalTargetInfo target, bool showMessages = true)
         {
@@ -81,7 +81,25 @@ namespace SexSlaveCraft
             return valid;
         }
         public override bool IsApplicableTo(LocalTargetInfo target, bool showMessages = false) => ValidateTarget(target, showMessages);
-        public override bool CanHitTarget(LocalTargetInfo target) => ValidateTarget(target, false);
-        public override bool CanHitTargetFrom(IntVec3 root, LocalTargetInfo target) => ValidateTarget(target, false);
+        public override bool CanHitTarget(LocalTargetInfo target) => FertilityAbilityUtility.CanApply(ability.pawn, target.Pawn);
+        public override bool CanHitTargetFrom(IntVec3 root, LocalTargetInfo target) =>
+            FertilityAbilityUtility.CanTarget(ability.pawn, target.Pawn, out _) &&
+            ReachabilityImmediate.CanReachImmediate(root, target, ability.pawn.Map, PathEndMode.Touch, ability.pawn);
+
+        /// <summary>接触且原请求有效后才进入原版预热；目标暂停由原版stunTargetWhileCasting负责。</summary>
+        public override bool TryStartCastOn(LocalTargetInfo castTarg, LocalTargetInfo destTarg,
+            bool surpriseAttack = false, bool canHitNonTargetPawns = true,
+            bool preventFriendlyFire = false, bool nonInterruptingSelfCast = false)
+        {
+            var c = FertilityAbilityUtility.Request(ability.pawn.CurJob);
+            if (!ability.CanCast || !FertilityAbilityUtility.IsCurrent(c) || c.Ability != ability ||
+                c.Target != castTarg.Pawn || !CanHitTarget(castTarg)) return false;
+            bool started = base.TryStartCastOn(castTarg, destTarg, surpriseAttack, canHitNonTargetPawns,
+                preventFriendlyFire, nonInterruptingSelfCast);
+            // 原版按配置预热时长暂停；实际预热可能受瞄准倍率延长，补足同一原生暂停计时。
+            if (started && ability.def.stunTargetWhileCasting && WarmingUp)
+                castTarg.Pawn.stances.stunner.StunFor(WarmupTicksLeft, ability.pawn, addBattleLog: false, showMote: false);
+            return started;
+        }
     }
 }
