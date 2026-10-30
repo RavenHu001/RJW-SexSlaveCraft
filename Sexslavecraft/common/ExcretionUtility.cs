@@ -466,6 +466,7 @@ namespace SexSlaveCraft
                     CombatantSpecializationGelUtility.ApplyExclusiveTags(consumer, data);
 #if SSC_RW17
                     FertilitySpecializationGelUtility.ApplyExclusiveTags(consumer, data);
+                    FertilityAbilityUtility.RestoreCooldown(consumer, data.fertilityConceptionCooldownEndTick);
 #endif
 
                     // 同步组件与刚恢复的健康状态，使凝胶携带的专精立即被识别并可持续训练。

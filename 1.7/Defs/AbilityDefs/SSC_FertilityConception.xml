@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <!-- AI 辅助生成：原地全图采样；range=0由专用Verb按同图资格判断，不启动接近任务。 -->
+  <AbilityDef>
+    <defName>SSC_FertilityConception</defName>
+    <label>定向孕育</label>
+    <description>（描述暂待编写）从同地图的非敌对成年类人对象获取遗传信息，使自己立即怀孕。对象性别和生育能力不限。成功后冷却7天，孕期及临产禁用；后续自愿互动独立进行。</description>
+    <abilityClass>SexSlaveCraft.Ability_FertilityConception</abilityClass>
+    <iconPath>UI/Icons/Abilities/SSC_PetCatComfort</iconPath>
+    <jobDef>SSC_Job_FertilityConception</jobDef>
+    <targetRequired>true</targetRequired><canUseAoeToGetTargets>false</canUseAoeToGetTargets>
+    <hostile>false</hostile><showPsycastEffects>false</showPsycastEffects><stunTargetWhileCasting>false</stunTargetWhileCasting>
+    <showCastingProgressBar>true</showCastingProgressBar><casterMustBeCapableOfViolence>false</casterMustBeCapableOfViolence>
+    <showWhenDrafted>true</showWhenDrafted><displayGizmoWhileUndrafted>true</displayGizmoWhileUndrafted><disableGizmoWhileUndrafted>false</disableGizmoWhileUndrafted>
+    <cooldownTicksRange>420000</cooldownTicksRange>
+    <verbProperties><verbClass>SexSlaveCraft.Verb_FertilityConception</verbClass><warmupTime>2</warmupTime><range>0</range><requireLineOfSight>false</requireLineOfSight>
+      <targetParams><canTargetSelf>false</canTargetSelf><canTargetPawns>true</canTargetPawns><canTargetHumans>true</canTargetHumans><canTargetAnimals>false</canTargetAnimals><canTargetMechs>false</canTargetMechs><canTargetBuildings>false</canTargetBuildings><canTargetLocations>false</canTargetLocations><neverTargetIncapacitated>false</neverTargetIncapacitated></targetParams>
+    </verbProperties>
+    <comps><li Class="SexSlaveCraft.CompProperties_FertilityConception" /></comps>
+  </AbilityDef>
+</Defs>

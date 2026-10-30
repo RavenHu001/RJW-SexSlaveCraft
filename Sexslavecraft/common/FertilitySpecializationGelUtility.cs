@@ -40,6 +40,7 @@ namespace SexSlaveCraft
             var states = pawn.health.hediffSet.hediffs;
             for (int i = states.Count - 1; i >= 0; i--)
                 if (IsTag(states[i].def)) pawn.health.RemoveHediff(states[i]);
+            FertilityAbilityUtility.Remove(pawn);
         }
 
         /// <summary>仅在完成快照采集后的抽取入口调用，不改变身份或绑定。</summary>

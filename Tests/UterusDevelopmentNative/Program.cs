@@ -14,8 +14,8 @@ internal static class Entry
     /// <summary>定位真实依赖后进入隔离宿主；专项参数只选择相关行为，避免JIT提前解析游戏引用。</summary>
     private static int Main(string[] args)
     {
-        if (args.Length < 2 || args.Length > 3 || (args.Length == 3 && args[2] != "--imprint" && args[2] != "--fertility" && args[2] != "--pregnancy" && args[2] != "--preconception" && args[2] != "--birth" && args[2] != "--birth-compat"))
-            throw new ArgumentException("repositoryRoot gameRoot [--imprint|--fertility|--pregnancy|--preconception|--birth|--birth-compat]");
+        if (args.Length < 2 || args.Length > 3 || (args.Length == 3 && args[2] != "--imprint" && args[2] != "--fertility" && args[2] != "--pregnancy" && args[2] != "--preconception" && args[2] != "--birth" && args[2] != "--birth-compat" && args[2] != "--fertility-skill"))
+            throw new ArgumentException("repositoryRoot gameRoot [--imprint|--fertility|--pregnancy|--preconception|--birth|--birth-compat|--fertility-skill]");
         string repo = Path.GetFullPath(args[0]), game = Path.GetFullPath(args[1]);
         // 隔离复核可显式提供本轮引用记录；默认仍使用正式记录，不自动猜测更新后的依赖目录。
         string referenceInfo = Environment.GetEnvironmentVariable("SSC_TEST_BUILD_INFO_PATH") ?? Path.Combine(repo, "1.7/BUILD-INFO.json");
@@ -105,6 +105,8 @@ internal static partial class Program
             HediffDefOf.PregnantHuman = PregnancyDef("PregnantHuman");
             // RJW 类初始化会读取遗传排除表；本批只使用其妊娠登记，不执行遗传逻辑。
             DefDatabase<rjw.StringListDef>.Add(new rjw.StringListDef { defName = "NonInheritedTraits", strings = new() });
+            // RJW只读Def缓存必须在其类初始化前就具备实际接收Job定义。
+            DefDatabase<JobDef>.Add(new JobDef { defName = "GettingQuickie", driverClass = typeof(rjw.JobDriver_SexBaseRecieverQuickie) });
             bootstrap = false;
             // 第 4 批新增真实属性引用；宿主只提供正常基础值，能力、装备等修正不参与阶段专项。
             LoadStageStatReferences(game);
@@ -112,7 +114,7 @@ internal static partial class Program
             if (selection != null && selection != "--pregnancy")
             {
                 ImprintTests(repo, harmony.Value, selection == "--fertility", selection == "--preconception",
-                    selection == "--birth" ? 1 : selection == "--birth-compat" ? 2 : 0);
+                    selection == "--birth" ? 1 : selection == "--birth-compat" ? 2 : selection == "--fertility-skill" ? 3 : 0);
                 Console.WriteLine($"{passed}/{passed + failed} {selection} cases passed");
                 return failed == 0 ? 0 : 1;
             }
@@ -176,6 +178,7 @@ internal static partial class Program
             FertilityTests(repo, harmony.Value);
             PreconceptionTests(harmony.Value);
             BirthTests(harmony.Value);
+            FertilityAbilityTests(repo, harmony.Value);
         }
         finally { Scribe.mode = LoadSaveMode.Inactive; Current.Game = null; }
         Console.WriteLine($"{passed}/{passed + failed} cases passed");

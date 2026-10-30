@@ -16,6 +16,13 @@ namespace SexSlaveCraft
         public static void DetachAfterExtraction(Verse.Pawn pawn) { }
         public static void ApplyExclusiveTags(Verse.Pawn pawn, CompPersonalityStore data) { }
     }
+    // 新技能的真实冷却与植入由原生宿主验证；此历史模型只保留无技能载荷边界。
+    public static class FertilityAbilityUtility
+    {
+        public static void Maintain(Verse.Pawn pawn) { }
+        public static int CaptureCooldown(Verse.Pawn pawn) => 0;
+        public static void RestoreCooldown(Verse.Pawn pawn, int deadline) { }
+    }
     internal static class FertilityFinalizationRecipeUtility
     {
         internal static bool IsFinalizationRecipe(RecipeDef_PSTag recipe) => false;

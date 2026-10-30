@@ -1,0 +1,39 @@
+// AI 辅助生成
+using System.Collections.Generic;
+using Verse;
+using Verse.AI;
+
+namespace SexSlaveCraft
+{
+    /// <summary>原地预热与施放，无预约、走近和结束时自动扣冷却；未提交的存档任务安全取消。</summary>
+    public class JobDriver_FertilityConception : JobDriver_CastAbility
+    {
+        public override bool TryMakePreToilReservations(bool errorOnFailed)
+            => FertilityAbilityUtility.IsCurrent(FertilityAbilityUtility.Request(job));
+
+        protected override IEnumerable<Toil> MakeNewToils()
+        {
+            var c = FertilityAbilityUtility.Request(job);
+            this.FailOn(() => !FertilityAbilityUtility.IsCurrent(c));
+            AddFinishAction(_ =>
+            {
+                if (pawn.jobs?.curDriver != this) return;
+                if (pawn.stances?.curStance is Stance_Warmup w && w.verb == job.verbToUse) w.Interrupt();
+                job.verbToUse?.Reset();
+            });
+            yield return Toils_General.Do(() => pawn.pather.StopDead());
+            Toil cast = Toils_Combat.CastVerb(TargetIndex.A, TargetIndex.B, false);
+            cast.FailOn(() => job.verbToUse.WarmingUp && !FertilityAbilityUtility.CanTarget(pawn, c?.Target, out _));
+            cast.WithProgressBar(TargetIndex.A, () => job.verbToUse.WarmupProgress);
+            yield return cast;
+            yield return Toils_General.Do(() =>
+            {
+                if (job.ability is Ability_FertilityConception a && a.SuccessfulJobId == job.loadID)
+                {
+                    a.SuccessfulJobId = -1;
+                    if (FertilityAbilityUtility.IsCurrent(c)) FertilityFollowupUtility.TryQueue(pawn, c.Target);
+                }
+            });
+        }
+    }
+}

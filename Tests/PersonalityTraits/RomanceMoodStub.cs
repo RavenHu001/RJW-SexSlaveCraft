@@ -6,6 +6,8 @@ namespace SexSlaveCraft
     public static class SSCPersonalityExcretionAdmission
     {
         public static bool CanExtract(Verse.Pawn pawn) => pawn != null;
+        // 末端准入仍属于原生孕期宿主；历史载荷模型只提供成功空间边界。
+        internal static bool TryContinueExtraction(Verse.Pawn pawn, Verse.Thing preparedProduct) => pawn != null;
         public static void RemoveForbiddenPreparation(Verse.Pawn pawn) { }
     }
     /// <summary>本模型只构造无印记人格；印记实际获取、锁定及迁移由原生专项验证，不在此复制算法。</summary>

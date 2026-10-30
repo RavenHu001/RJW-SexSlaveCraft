@@ -70,6 +70,7 @@
         </careFactors>
       </li>
     </modExtensions>
+    <comps><li Class="SexSlaveCraft.HediffCompProperties_GiveAbility"><abilityDef>SSC_FertilityConception</abilityDef></li></comps>
     <stages>
       <li>
         <fertilityFactor>2</fertilityFactor>

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <JobDef><defName>SSC_Job_FertilityConception</defName><driverClass>SexSlaveCraft.JobDriver_FertilityConception</driverClass><reportString>正在采样孕育。</reportString><casualInterruptible>false</casualInterruptible><playerInterruptible>true</playerInterruptible></JobDef>
+  <JobDef><defName>SSC_Job_FertilityFollowup</defName><driverClass>SexSlaveCraft.JobDriver_FertilityFollowup</driverClass><reportString>正在进行孕育后的亲密互动。</reportString><casualInterruptible>false</casualInterruptible><playerInterruptible>true</playerInterruptible></JobDef>
+</Defs>

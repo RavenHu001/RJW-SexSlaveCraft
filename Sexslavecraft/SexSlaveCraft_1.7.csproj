@@ -29,6 +29,10 @@
     <!-- 人格印记与停龄补丁仅编入1.7；共享入口通过SSC_RW17保留旧版本行为。 -->
     <Compile Include="common/SSCImprintUtility.cs" />
     <Compile Include="common/FertilitySpecializationUtility.cs" />
+    <Compile Include="common/FertilityAbilityUtility.cs" />
+    <Compile Include="common/FertilityFollowupUtility.cs" />
+    <Compile Include="Comps/Ability_FertilityConception.cs" />
+    <Compile Include="JobDriver/JobDriver_FertilityConception.cs" />
     <Compile Include="common/SSCFertilityPreconceptionUtility.cs" />
     <Compile Include="common/SSCFertilityOffspringUtility.cs" />
     <Compile Include="common/SSCFertilityBirthUtility.cs" />

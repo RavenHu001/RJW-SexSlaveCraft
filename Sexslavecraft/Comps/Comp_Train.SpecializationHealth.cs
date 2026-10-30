@@ -44,6 +44,7 @@ namespace SexSlaveCraft
             CombatantSpecializationUtility.Sync(pawn);
 #if SSC_RW17
             FertilitySpecializationUtility.Sync(pawn);
+            FertilityAbilityUtility.Maintain(pawn);
 #endif
             if (comp.pawnIdentity == PawnIdentity.Master)
             {

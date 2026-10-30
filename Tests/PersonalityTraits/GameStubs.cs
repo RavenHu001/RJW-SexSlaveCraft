@@ -367,10 +367,11 @@ namespace Verse
         public static Thing LastSpawned;
         public static bool FailSpawn;
         /// <summary>记录最近生成的测试物品，供用例读取凝胶；不模拟地图放置行为。</summary>
-        public static void Spawn(Thing t, object p, Map m)
+        public static Thing Spawn(Thing t, object p, Map m)
         {
             if (FailSpawn) throw new InvalidOperationException("test spawn failure");
             LastSpawned = t;
+            return t;
         }
     }
 

@@ -86,6 +86,10 @@ function Read-KeyedEntries([string]$path, [string]$context) {
 
 # 仅记录本轮移除语言矩阵实际消费的接口；不复制正文，也不固定资源文件的键总数。
 $contracts = @{
+    'SSC_FertilitySkill.xml' = @{
+        'SSC_FertilitySkill_Unavailable' = ''; 'SSC_FertilitySkill_Biotech' = ''; 'SSC_FertilitySkill_Disabled' = ''
+        'SSC_FertilitySkill_Pregnant' = ''; 'SSC_FertilitySkill_Body' = ''; 'SSC_FertilitySkill_Target' = ''; 'SSC_FertilitySkill_Failed' = ''
+    }
     # 孕前菜单包含拼接键；独立列出消费接口，避免四语同时缺少同一选项仍通过对齐检查。
     'SSC_FertilityPreconception.xml' = @{
         'SSC_Preconception_GenderLabel' = ''; 'SSC_Preconception_SpeciesLabel' = ''; 'SSC_Preconception_ImprintLabel' = ''

@@ -26,6 +26,9 @@ internal static partial class Program
         errors.Clear();
         human.race.gestationPeriodDays = 20;
         if (DefDatabase<HediffDef>.GetNamedSilentFail("FertilityEnhancer") == null) PregnancyDef("FertilityEnhancer");
+        // AbilityDef constructor loads BaseContent textures; native graphics are outside this headless host.
+        harmony.Patch(typeof(BaseContent).TypeInitializer, prefix: new HarmonyMethod(typeof(Program), nameof(Skip)));
+        InitializeFertilityAbilityDefs(repo);
         var xml = new XmlDocument();
         foreach (string rel in new[] { "HediffDefs/SSC_UterusDevelopment.xml", "HediffDefs/SSC_FertilitySpecialization.xml" })
         {
@@ -76,7 +79,8 @@ internal static partial class Program
         // 共享初始化与实际生产引用，不以执行旧测试作为新分区的隐式前置。
         if (birthSelection != 0)
         {
-            if (birthSelection == 2) BirthCompatibilityTests(harmony);
+            if (birthSelection == 3) FertilityAbilityTests(repo, harmony);
+            else if (birthSelection == 2) BirthCompatibilityTests(harmony);
             else BirthTests(harmony);
             return;
         }

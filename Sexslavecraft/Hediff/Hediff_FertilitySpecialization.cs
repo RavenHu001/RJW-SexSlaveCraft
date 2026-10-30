@@ -10,7 +10,7 @@ namespace SexSlaveCraft
         public List<float> careFactors;
     }
     /// <summary>普通表现从组件派生，终极Def保存成果；当前身体失格不删除成果。</summary>
-    public sealed class Hediff_FertilitySpecialization : Hediff
+    public sealed class Hediff_FertilitySpecialization : HediffWithComps
     {
         private static readonly HediffStage neutral = new HediffStage();
         private int lastStage = -2;

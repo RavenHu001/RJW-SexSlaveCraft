@@ -86,6 +86,8 @@ namespace SexSlaveCraft
         public float specializationProgress = 0f;
 #if SSC_RW17
         public int fertilityCareTicks;
+        // 生育技能仅迁移绝对冷却截止tick；不迁移身体预设或孕次。
+        public int fertilityConceptionCooldownEndTick;
 #endif
         // 空引用表示旧凝胶没有保存历史；空字典表示新快照确实没有任何方向的进度。
         public Dictionary<string, float> specializationProgressByType;
@@ -146,6 +148,7 @@ namespace SexSlaveCraft
             Scribe_Values.Look(ref specializationProgress, "specializationProgress", 0f);
 #if SSC_RW17
             Scribe_Values.Look(ref fertilityCareTicks, "fertilityCareTicks", 0);
+            Scribe_Values.Look(ref fertilityConceptionCooldownEndTick, "fertilityConceptionCooldownEndTick", 0);
             if (Scribe.mode == LoadSaveMode.PostLoadInit) fertilityCareTicks = Math.Clamp(fertilityCareTicks, 0, 2499);
 #endif
             Scribe_Collections.Look(ref specializationProgressByType, "specializationProgressByType", LookMode.Value, LookMode.Value);
@@ -260,6 +263,7 @@ namespace SexSlaveCraft
             this.specializationProgress = other.specializationProgress;
 #if SSC_RW17
             this.fertilityCareTicks = Math.Clamp(other.fertilityCareTicks, 0, 2499);
+            this.fertilityConceptionCooldownEndTick = other.fertilityConceptionCooldownEndTick;
 #endif
             this.specializationProgressByType = other.specializationProgressByType == null
                 ? null
@@ -549,6 +553,7 @@ namespace SexSlaveCraft
 #if SSC_RW17
             fertilityCareTicks = Math.Clamp(trainingComp?.fertilityCareTicks ?? 0, 0, 2499);
             FertilitySpecializationGelUtility.StoreExclusiveTags(this, p);
+            fertilityConceptionCooldownEndTick = FertilityAbilityUtility.CaptureCooldown(p);
 #endif
 #if SSC_RW17
             // 印记没有配方输出，通用配方枚举不会发现；最后显式采集并覆盖复用载荷中的旧印记。
