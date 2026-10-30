@@ -25,8 +25,8 @@ namespace SexSlaveCraft
     public class Hediff_SSC_PersonalityExcreting : HediffWithComps
     {
 #if SSC_RW17
-        /// <summary>旧档、外部写身份或残留状态在正常健康维护时移除，主人不能继续积累排泄进度。</summary>
-        public override bool ShouldRemove => !SSCPersonalityExcretionAdmission.CanExtract(pawn) || base.ShouldRemove;
+        /// <summary>主人不保留排泄准备；仅怀孕或临产不会触发移除，满进度也保留等待。</summary>
+        public override bool ShouldRemove => SSCPersonalityExcretionAdmission.MustRemovePreparation(pawn) || base.ShouldRemove;
 
         /// <summary>手术结算或外部添加时立即清除主人身上的准备状态。</summary>
         public override void PostAdd(DamageInfo? dinfo)

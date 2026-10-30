@@ -16,7 +16,7 @@ internal static partial class Program
     private static Thing fertilityProduct;
 
     /// <summary>扩展现有原生宿主；图形、地图放置与完整健康状态机仍是边界。</summary>
-    private static void FertilityTests(string repo, Harmony harmony, bool preconceptionOnly = false)
+    private static void FertilityTests(string repo, Harmony harmony, bool preconceptionOnly = false, int birthSelection = 0)
     {
         // 复用原翻译器，将本批Keyed内容并入当前已载入语言。
         LoadBodyManagementLanguage(repo, "ChineseSimplified");
@@ -74,6 +74,12 @@ internal static partial class Program
         pregnancyHunger = HungerCategory.Fed;
 
         // 共享初始化与实际生产引用，不以执行旧测试作为新分区的隐式前置。
+        if (birthSelection != 0)
+        {
+            if (birthSelection == 2) BirthCompatibilityTests(harmony);
+            else BirthTests(harmony);
+            return;
+        }
         if (preconceptionOnly) { PreconceptionTests(harmony); return; }
 
         Check("fertility real research and recipe use approved gates", () =>

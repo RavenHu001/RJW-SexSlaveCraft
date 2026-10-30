@@ -13,7 +13,7 @@ using Verse;
 namespace SexSlaveCraft
 {
 #if SSC_RW17
-    /// <summary>已排队手术在执行时复查身份，防止候选通过后变成主人仍施加排泄准备状态。</summary>
+    /// <summary>已排队手术执行时复查主人及孕期／临产准入；拒绝不删除孕期已有准备。</summary>
     [HarmonyPatch(typeof(Recipe_AddHediff), nameof(Recipe_AddHediff.ApplyOnPawn))]
     internal static class Harmony_MasterBlocksExcretionOperation
     {
@@ -76,7 +76,7 @@ namespace SexSlaveCraft
         {
             if (!__result || __instance?.recipe != SSCDefOf.SSC_InducePersonalityExcretion) return;
 #if SSC_RW17
-            if (thing is Pawn master && !SSCPersonalityExcretionAdmission.CanExtract(master))
+            if (thing is Pawn blocked && !SSCPersonalityExcretionAdmission.CanExtract(blocked))
             { __result = false; return; }
 #endif
             if (thing is Pawn pawn && RabbitCloneUtility.IsRabbitClone(pawn))

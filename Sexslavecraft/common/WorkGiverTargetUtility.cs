@@ -14,7 +14,12 @@ namespace SexSlaveCraft
         {
             if (actor == null || target == null) return false;
 #if SSC_RW17
-            if (!SSCPersonalityExcretionAdmission.CanExtract(target)) return false;
+            if (!SSCPersonalityExcretionAdmission.CanExtract(target))
+            {
+                string reason = SSCPersonalityExcretionAdmission.PregnancyBlockReason(target);
+                if (forced && reason != null) JobFailReason.Is(reason);
+                return false;
+            }
 #endif
             if (PersonalityExcretionJobUtility.IsOccupiedByOther(target, actor))
             {

@@ -79,8 +79,13 @@ namespace SexSlaveCraft
             // 未完成禁止开启；重复请求不再写字段或发送健康变化通知。
             if (enabled && !record.IsComplete) { reason = "SSC_BodyManagement_NotComplete".Translate(); return false; }
             if (record.FertilityEnabled == enabled) return true;
-            // false 表示包含尚不可见的妊娠；复用原版及 RJW 已登记妊娠的既有判定。
-            if (!enabled && rjw.PawnExtensions.IsPregnant(pawn, false))
+            // 包含隐藏妊娠及原版两段临产；保留1.6冻结路径，不在妊娠移除后的临产窗口关闭。
+            if (!enabled &&
+#if SSC_RW17
+                SSCFertilityPreconceptionUtility.HasPregnancyOrLabor(pawn))
+#else
+                rjw.PawnExtensions.IsPregnant(pawn, false))
+#endif
             { reason = "SSC_BodyManagement_PregnancyBlocked".Translate(); return false; }
             // 只在切换前检查开启态配置；此处不为已有妊娠创建收益标记或调整进度。
             if (enabled && record.def.GetModExtension<SSCUterusDevelopmentExtension>()?.fertileStage == null)

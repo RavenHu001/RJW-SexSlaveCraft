@@ -30,6 +30,10 @@
     <Compile Include="common/SSCImprintUtility.cs" />
     <Compile Include="common/FertilitySpecializationUtility.cs" />
     <Compile Include="common/SSCFertilityPreconceptionUtility.cs" />
+    <Compile Include="common/SSCFertilityOffspringUtility.cs" />
+    <Compile Include="common/SSCFertilityBirthUtility.cs" />
+    <Compile Include="ThePatches/Harmony_FertilityOffspring.cs" />
+    <Compile Include="ThePatches/Harmony_FertilityBirth.cs" />
     <Compile Include="common/SSCUterusOffspringImprintToggleBackend.cs" />
     <Compile Include="ITab/ITab_SexSlaveTraining.Preconception.cs" />
     <Compile Include="ITab/ITab_SexSlaveTraining.FinalSpecializations.cs" />

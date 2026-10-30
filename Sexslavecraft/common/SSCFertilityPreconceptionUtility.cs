@@ -27,7 +27,7 @@ namespace SexSlaveCraft
         }
     }
 
-    /// <summary>只读的新受孕可用预设，不保存孕次、亲代或遗传快照；后续消费者自行处理真实入口。</summary>
+    /// <summary>实际生成时的只读有效预设，不保存孕次、亲代或遗传快照；已有婴儿不追补。</summary>
     public readonly struct SSCFertilityPreconceptionSettings
     {
         public readonly SSCOffspringGender Gender;
@@ -152,7 +152,7 @@ namespace SexSlaveCraft
             return true;
         }
 
-        /// <summary>为后续新受孕入口只读解释可用预设；不保存冻结方案，也不能充当既有孕次的历史凭据。</summary>
+        /// <summary>供真实婴儿生成入口解释当前有效预设；不保存冻结方案，不充当受孕时历史凭据。</summary>
         public static bool TryGetApplicableSettings(Pawn pawn, out SSCFertilityPreconceptionSettings settings)
         {
             settings = default;

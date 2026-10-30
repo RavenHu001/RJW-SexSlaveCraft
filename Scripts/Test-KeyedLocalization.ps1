@@ -97,6 +97,8 @@ $contracts = @{
         'SSC_Preconception_Unavailable' = ''; 'SSC_Preconception_InvalidSelection' = ''
         'SSC_Preconception_DirectionRequired' = ''
         'SSC_Preconception_MissingUterus' = ''
+        'SSC_Birth_ExcretionBlocked' = ''; 'SSC_Birth_ControlUnapplied' = '0,1'
+        'SSC_Birth_SpeciesUnavailable' = ''; 'SSC_Birth_ResultMismatch' = ''; 'SSC_Birth_ImprintUnavailable' = ''
     }
     'SSC_FertilitySpecialization.xml' = @{
         'SSC_Fertility_InactiveLabel' = ''; 'SSC_Fertility_InactiveDescription' = '0'

@@ -9,7 +9,7 @@ namespace SexSlaveCraft
 {
     public static class ExcretionUtility
     {
-        /// <summary>保存并放置人格凝胶后清源；印记随人格移出，社交与技能再按原空壳流程清理。</summary>
+        /// <summary>保存、放置及末端准入通过后清源；孕期拒绝撤回新产物，印记与技能沿原人格流程转移。</summary>
         public static void DoExcretion(Pawn victim)
         {
 #if SSC_RW17
@@ -44,15 +44,36 @@ namespace SexSlaveCraft
                 {
                     comp.StorePawnData(victim);
                     if (!mutation.IsCurrent || victim.TryGetComp<CompSexSlaveTraining>() != originalComp) return;
+#if SSC_RW17
+                    // 快照读取会进入外部回调；受孕后撤回本次凝胶，不能继续放置或剥离人格。
+                    if (!SSCPersonalityExcretionAdmission.TryContinueExtraction(victim, slime)) return;
+#else
                     PetCatAbilityUtility.DetachAfterExtraction(victim);
                     PetDogAbilityUtility.DetachAfterExtraction(victim);
                     CombatantSpecializationGelUtility.DetachAfterExtraction(victim);
+#endif
                 }
 
+#if SSC_RW17
+                // 地图或位置可在快照回调后失效；原版Spawn可能返回null，失败不能授权后续清源。
+                if (GenSpawn.Spawn(slime, victim.Position, victim.Map) == null)
+                {
+                    if (!slime.Destroyed) slime.Destroy(DestroyMode.Vanish);
+                    return;
+                }
+#else
                 GenSpawn.Spawn(slime, victim.Position, victim.Map);
+#endif
 #if SSC_RW17
                 // 放置也可能触发外部回调替换训练组件；已生成的快照不能授权清理后来接管身体的载体。
                 if (!mutation.IsCurrent || victim.TryGetComp<CompSexSlaveTraining>() != originalComp) return;
+                if (!SSCPersonalityExcretionAdmission.TryContinueExtraction(victim, slime)) return;
+                // 1.7只有成功放置并通过末端准入后才清源特化；1.6保留原时序。
+                PetCatAbilityUtility.DetachAfterExtraction(victim);
+                PetDogAbilityUtility.DetachAfterExtraction(victim);
+                CombatantSpecializationGelUtility.DetachAfterExtraction(victim);
+                if (!mutation.IsCurrent || victim.TryGetComp<CompSexSlaveTraining>() != originalComp) return;
+                if (!SSCPersonalityExcretionAdmission.TryContinueExtraction(victim, slime)) return;
 #endif
                 // 资格与成长已进入成功生成的凝胶，再清原身体并写当前成长版本。
                 // 空壳即使保留主人身份，也不能在以后读档时补回转走的记录。
