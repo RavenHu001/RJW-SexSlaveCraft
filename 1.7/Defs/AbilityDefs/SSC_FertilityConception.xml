@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Defs>
-  <!-- AI 辅助生成：全图选人后沿原版接触技能走近，预热时暂停目标，再使施法者自身怀孕。 -->
+  <!-- AI 辅助生成：全图选人后在同场RJW任务完成性行为，再结算施法者受孕。 -->
   <AbilityDef>
     <defName>SSC_FertilityConception</defName>
     <label>定向孕育</label>
-    <description>（描述暂待编写）选择同地图的非敌对成年类人对象，走近并暂停对方完成采样，使自己怀孕。对象性别和生育能力不限。成功后冷却7天，孕期及临产禁用；后续自愿互动独立进行。</description>
+    <description>（描述暂待编写）选择同地图的非敌对成年类人对象，走近并正常完成性行为后，使自己怀孕。对象性别和生育能力不限。成功后冷却7天，孕期及临产禁用；中断不受孕、不消耗冷却。</description>
     <abilityClass>SexSlaveCraft.Ability_FertilityConception</abilityClass>
     <iconPath>UI/Icons/Abilities/SSC_PetCatComfort</iconPath>
     <jobDef>SSC_Job_FertilityConception</jobDef>
     <targetRequired>true</targetRequired><canUseAoeToGetTargets>false</canUseAoeToGetTargets>
-    <hostile>false</hostile><showPsycastEffects>false</showPsycastEffects><stunTargetWhileCasting>true</stunTargetWhileCasting>
-    <showCastingProgressBar>true</showCastingProgressBar><casterMustBeCapableOfViolence>false</casterMustBeCapableOfViolence>
+    <hostile>false</hostile><showPsycastEffects>false</showPsycastEffects><stunTargetWhileCasting>false</stunTargetWhileCasting>
+    <showCastingProgressBar>false</showCastingProgressBar><casterMustBeCapableOfViolence>false</casterMustBeCapableOfViolence>
     <showWhenDrafted>true</showWhenDrafted><displayGizmoWhileUndrafted>true</displayGizmoWhileUndrafted><disableGizmoWhileUndrafted>false</disableGizmoWhileUndrafted>
     <cooldownTicksRange>420000</cooldownTicksRange>
-    <verbProperties><verbClass>SexSlaveCraft.Verb_FertilityConception</verbClass><warmupTime>2</warmupTime><range>0</range><requireLineOfSight>false</requireLineOfSight>
+    <verbProperties><verbClass>SexSlaveCraft.Verb_FertilityConception</verbClass><warmupTime>0</warmupTime><range>0</range><requireLineOfSight>false</requireLineOfSight>
       <targetParams><canTargetSelf>false</canTargetSelf><canTargetPawns>true</canTargetPawns><canTargetHumans>true</canTargetHumans><canTargetAnimals>false</canTargetAnimals><canTargetMechs>false</canTargetMechs><canTargetBuildings>false</canTargetBuildings><canTargetLocations>false</canTargetLocations><neverTargetIncapacitated>false</neverTargetIncapacitated></targetParams>
     </verbProperties>
     <comps><li Class="SexSlaveCraft.CompProperties_FertilityConception" /></comps>

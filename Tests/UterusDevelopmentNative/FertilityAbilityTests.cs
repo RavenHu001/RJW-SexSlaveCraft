@@ -1,5 +1,5 @@
-// AI 辅助生成：实际Ability、原生建孕入口及人格载荷；只隔离地图、遗传抽样和完整AI。
-using System.Reflection;
+// AI 辅助生成：真实同场驱动、完成提交、原生妊娠／冷却及局部Harmony受孕拦截。
+// 地图路径、RJW动作随机选择／Start／计时与完整性交结果为显式宿主边界，不复制技能结算算法。
 using System.Xml;
 using HarmonyLib;
 using RimWorld;
@@ -7,229 +7,148 @@ using rjw;
 using SexSlaveCraft;
 using Verse;
 using Verse.AI;
-
 internal static partial class Program
 {
-    private static readonly HashSet<Thing> skillPawns = new();
+    private static readonly HashSet<Thing> skillPawns=new();
     private static Map skillMap;
-    private static bool skillBlockPregnancy, skillReenter, skillQueueBoundary;
-    private static Action skillPregnancyCallback, skillPairCallback;
-    private static int skillPregnancyCalls;
-    private static bool skillContactAllowed;
-    private static LocalTargetInfo skillPathTarget;
-    private static PathEndMode skillPathMode;
-    private static int skillPathStarts, skillPathStops;
+    private static bool skillBlockPregnancy,skillContactAllowed,skillRejectStart,skillPermission=true;
+    private static int skillPregnancyCalls,skillProcessCalls,skillNaturalCalls,skillPathStarts,skillEndCalls;
+    private static Action skillPregnancyCallback,skillProcessCallback,skillSelectCallback,skillPolicyCallback;
+    private static Action<Pawn> skillAppearanceCallback;
     private static Ability_FertilityConception skillAbility;
     private static Pawn skillTarget;
-
+    private static bool SkillMap(Thing __instance,ref Map __result) {if(!skillPawns.Contains(__instance))return true;__result=skillMap;return false;}
+    private static bool SkillMapHeld(Thing __instance,ref Map __result) {if(!skillPawns.Contains(__instance))return true;__result=null;return false;}
+    private static bool SkillSpawned(Thing __instance,ref bool __result) {if(!skillPawns.Contains(__instance))return true;__result=true;return false;}
+    private static bool SkillAwake(ref bool __result) {__result=true;return false;}
+    private static bool SkillTouch(LocalTargetInfo target,ref bool __result) {if(!skillPawns.Contains(target.Thing))return true;__result=skillContactAllowed;return false;}
+    private static bool SkillGenes(ref GeneSet __result) {__result=new GeneSet();return false;}
+    private static bool SkillPregnancy() {skillPregnancyCalls++;skillPregnancyCallback?.Invoke();return !skillBlockPregnancy;}
+    private static bool SkillSelect(Pawn pawn,Pawn partner,ref SexProps __result) {skillSelectCallback?.Invoke();__result=new SexProps(pawn,partner);return false;}
+    private static bool SkillSetup(JobDriver_Sex __instance) {if(__instance is not JobDriver_FertilityConception && __instance is not JobDriver_FertilityReceiver)return true;__instance.duration=__instance.ticks_left=__instance.sex_ticks=3;return false;}
+    private static bool SkillPermission(JobDriver_Sex driver,ref bool allowed,ref bool __result) {if(driver is not JobDriver_FertilityConception)return true;skillPolicyCallback?.Invoke();allowed=skillPermission;__result=true;return false;}
+    private static bool SkillStarted(JobDriver_Sex driver,ref bool __result) {if(driver is not JobDriver_FertilityConception)return true;__result=!skillRejectStart;return false;}
+    private static bool SkillStart(JobDriver_SexBaseInitiator __instance) {if(__instance is not JobDriver_FertilityConception)return true;var r=(JobDriver_Sex)__instance.Partner.jobs.curDriver;r.Sexprops=new SexProps(__instance.Partner,__instance.pawn){isReceiver=true};return false;}
+    private static bool SkillTick(JobDriver_Sex __instance) {if(__instance is not JobDriver_FertilityConception)return true;__instance.ticks_left--;PregnancyHelper.impregnate(__instance.Sexprops);PregnancyHelper.impregnate((__instance.Partner.jobs.curDriver as JobDriver_Sex).Sexprops);return false;}
+    private static bool SkillProcess(SexProps props) {skillProcessCalls++;PregnancyHelper.impregnate(props);skillProcessCallback?.Invoke();return false;}
+    private static bool SkillNatural() {skillNaturalCalls++;return false;}
+    private static bool SkillReady(JobDriver __instance)=>__instance is not JobDriver_FertilityConception;
+    private static bool SkillStartPath(Pawn ___pawn) {if(!skillPawns.Contains(___pawn))return true;skillPathStarts++;return false;}
+    private static bool SkillStopPath(Pawn ___pawn)=>!skillPawns.Contains(___pawn);
+    private static bool SkillInstall(Pawn_JobTracker __instance,Pawn ___pawn,Job newJob)
+    {
+        if(!skillPawns.Contains(___pawn))return true;
+        var r=new JobDriver_FertilityReceiver{pawn=___pawn,job=newJob};r.parteners=new List<Pawn>{newJob.targetA.Pawn};
+        AccessTools.Field(typeof(Pawn_JobTracker),"curJob").SetValue(__instance,newJob);__instance.curDriver=r;return false;
+    }
+    private static bool SkillEnd(Pawn_JobTracker __instance,Pawn ___pawn)
+    {if(!skillPawns.Contains(___pawn))return true;if(__instance.curDriver is JobDriver_FertilityConception d)d.CleanupScene();AccessTools.Field(typeof(Pawn_JobTracker),"curJob").SetValue(__instance,null);__instance.curDriver=null;return false;}
+    /// <summary>图形为边界；可注入异常，核对外观清理失败也不遗留本场受方。</summary>
+    private static bool SkillAppearance(Pawn pawn) {if(!skillPawns.Contains(pawn))return true;skillAppearanceCallback?.Invoke(pawn);return false;}
+    /// <summary>隔离原生End的图形／结锁任务，记录生产驱动是否把中断误送入正常收尾。</summary>
+    private static bool SkillEndScene(JobDriver_SexBaseInitiator __instance) {if(__instance is not JobDriver_FertilityConception)return true;skillEndCalls++;return false;}
+    private static Pawn SkillPawn(bool final=true)
+    {
+        var p=FertilityPawn();skillPawns.Add(p);p.SetFactionDirect(preconceptionPlayer);
+        p.abilities=new Pawn_AbilityTracker(p);p.jobs=new Pawn_JobTracker(p);p.stances=new Pawn_StanceTracker(p);p.pather=new Pawn_PathFollower(p);
+        p.health.AddHediff(vagina,p.RaceProps.body.corePart);Toggle(p,true);if(final)p.health.AddHediff(FertilitySpecializationUtility.FinalDef);
+        FertilityAbilityUtility.Maintain(p);return p;
+    }
+    private static (Pawn,Pawn,Ability_FertilityConception,Job) SkillRequest()
+    {
+        skillPregnancyCalls=skillProcessCalls=skillNaturalCalls=skillPathStarts=skillEndCalls=0;skillContactAllowed=skillPermission=true;skillBlockPregnancy=skillRejectStart=false;skillPregnancyCallback=skillProcessCallback=skillSelectCallback=skillPolicyCallback=null;skillAppearanceCallback=null;
+        var a=SkillPawn();var b=SkillPawn(false);b.gender=Gender.Male;
+        var ability=(Ability_FertilityConception)a.abilities.GetAbility(FertilityAbilityUtility.Definition);var job=ability.GetJob(b,LocalTargetInfo.Invalid);
+        AccessTools.Field(typeof(Pawn_JobTracker),"curJob").SetValue(a.jobs,job);a.jobs.curDriver=new JobDriver_FertilityConception{pawn=a,job=job};skillAbility=ability;skillTarget=b;return(a,b,ability,job);
+    }
+    private static JobDriver_FertilityConception Scene(Pawn a,bool finish=false)
+    {var d=(JobDriver_FertilityConception)a.jobs.curDriver;d.BeginScene();if(finish)for(int i=0;i<3;i++)d.TickScene();return d;}
     private static void InitializeFertilityAbilityDefs(string repo)
     {
-        var xml = new XmlDocument();
-        xml.Load(Path.Combine(repo, "1.7/Defs/JobDefs/SSC_FertilityConception.xml"));
-        foreach (XmlNode n in xml.DocumentElement.ChildNodes.OfType<XmlElement>()) RegisterFertility(DirectXmlToObject.ObjectFromXml<JobDef>(n, false));
-        xml.Load(Path.Combine(repo, "1.7/Defs/AbilityDefs/SSC_FertilityConception.xml"));
-        foreach (XmlNode n in xml.DocumentElement.ChildNodes.OfType<XmlElement>()) RegisterFertility(DirectXmlToObject.ObjectFromXml<AbilityDef>(n, false));
+        var xml=new XmlDocument();foreach(string path in new[]{"1.7/Defs/JobDefs/SSC_FertilityConception.xml","1.7/Defs/AbilityDefs/SSC_FertilityConception.xml"})
+        {xml.Load(Path.Combine(repo,path));foreach(XmlNode n in xml.DocumentElement.ChildNodes.OfType<XmlElement>())if(path.Contains("JobDefs"))RegisterFertility(DirectXmlToObject.ObjectFromXml<JobDef>(n,false));else RegisterFertility(DirectXmlToObject.ObjectFromXml<AbilityDef>(n,false));}
     }
-    private static bool SkillMap(Thing __instance, ref Map __result)
-    { if (!skillPawns.Contains(__instance)) return true; __result = skillMap; return false; }
-    private static bool SkillMapHeld(Thing __instance, ref Map __result)
-    { if (!skillPawns.Contains(__instance)) return true; __result = null; return false; }
-    private static bool SkillSpawned(Thing __instance, ref bool __result)
-    { if (!skillPawns.Contains(__instance)) return true; __result = true; return false; }
-    // Random gene selection is an engine boundary; the actual RJW helper still constructs/parents/adds the Hediff.
-    private static bool SkillAwake(ref bool __result) { __result = true; return false; }
-    // 地图接触／寻路是宿主边界；选取、GotoThing、预热和暂停执行实际生产及原版入口。
-    private static bool SkillTouchBoundary(LocalTargetInfo target, ref bool __result)
-    { if (!skillPawns.Contains(target.Thing)) return true; __result=skillContactAllowed; return false; }
-    private static bool SkillStartPath(Pawn ___pawn, LocalTargetInfo dest, PathEndMode peMode)
-    { if (!skillPawns.Contains(___pawn)) return true; skillPathStarts++; skillPathTarget=dest; skillPathMode=peMode; return false; }
-    private static bool SkillStopPath(Pawn ___pawn)
-    { if (!skillPawns.Contains(___pawn)) return true; skillPathStops++; return false; }
-    private static bool SkillPairBoundary(ref bool __result) { if (!skillQueueBoundary) return true; skillPairCallback?.Invoke(); __result = true; return false; }
-    private static bool SkillEventBoundary(ref bool __result) { if (!skillQueueBoundary) return true; __result = true; return false; }
-    private static bool SkillGenes(ref GeneSet __result) { __result = new GeneSet(); return false; }
-    private static bool SkillPregnancy()
+    private static void FertilityAbilityTests(string repo,Harmony harmony)
     {
-        skillPregnancyCalls++;
-        skillPregnancyCallback?.Invoke();
-        if (skillReenter) { skillReenter = false; Require(!skillAbility.Activate(skillTarget, LocalTargetInfo.Invalid)); }
-        return !skillBlockPregnancy;
-    }
-    private static Pawn SkillPawn(bool final = true)
-    {
-        var p = FertilityPawn();
-        skillPawns.Add(p);
-        p.SetFactionDirect(preconceptionPlayer);
-        p.abilities = new Pawn_AbilityTracker(p);
-        p.jobs = new Pawn_JobTracker(p);
-        p.stances = new Pawn_StanceTracker(p);
-        p.pather = new Pawn_PathFollower(p);
-        p.health.AddHediff(vagina, p.RaceProps.body.corePart);
-        Toggle(p, true);
-        if (final) p.health.AddHediff(FertilitySpecializationUtility.FinalDef);
-        FertilityAbilityUtility.Maintain(p);
-        return p;
-    }
-    private static (Pawn, Pawn, Ability_FertilityConception, Job) SkillRequest()
-    {
-        var a = SkillPawn(); var b = SkillPawn(false); b.gender = Gender.Male;
-        var ability = (Ability_FertilityConception)a.abilities.GetAbility(FertilityAbilityUtility.Definition);
-        var job = ability.GetJob(b, LocalTargetInfo.Invalid);
-        AccessTools.Field(typeof(Pawn_JobTracker), "curJob").SetValue(a.jobs, job);
-        skillAbility = ability; skillTarget = b; skillPregnancyCalls = 0; skillBlockPregnancy = skillReenter = false; skillPregnancyCallback = null;
-        skillContactAllowed=true;skillPathStarts=skillPathStops=0;
-        return (a, b, ability, job);
-    }
-    /// <summary>枚举实际驱动Toil，只将地图路径启动交给记录边界，不复制接近／施法顺序。</summary>
-    private static List<Toil> SkillToils(Pawn pawn, Job job)
-    {
-        var driver=new JobDriver_FertilityConception {pawn=pawn,job=job};
-        pawn.jobs.curDriver=driver;
-        var toils=((IEnumerable<Toil>)AccessTools.Method(typeof(JobDriver_FertilityConception),"MakeNewToils").Invoke(driver,null)).ToList();
-        foreach (var toil in toils) toil.actor=pawn;
-        return toils;
-    }
-    /// <summary>只执行本批行为；完整地图和自愿AI联动仍待实机。</summary>
-    private static void FertilityAbilityTests(string repo, Harmony harmony)
-    {
-        InitializeBirth(harmony);
-        skillMap = Bare<Map>();
-        skillMap.info = new MapInfo();
-        AccessTools.Field(typeof(MapInfo), "sizeInt").SetValue(skillMap.info, new IntVec3(700, 1, 700));
-        // 只隔离画面、地图接触和寻路引擎；实际Toil、Verb预热、暂停及Stance安装执行原版。
-        harmony.Patch(AccessTools.Method(typeof(Pawn_DrawTracker), nameof(Pawn_DrawTracker.Notify_WarmingCastAlongLine)),
-            prefix: new HarmonyMethod(typeof(Program), nameof(Skip)));
-        harmony.Patch(AccessTools.Method(typeof(ReachabilityImmediate), nameof(ReachabilityImmediate.CanReachImmediate),
-            new[] { typeof(IntVec3), typeof(LocalTargetInfo), typeof(Map), typeof(PathEndMode), typeof(Pawn) }),
-            prefix: new HarmonyMethod(typeof(Program), nameof(SkillTouchBoundary)));
-        harmony.Patch(AccessTools.Method(typeof(Pawn_PathFollower),nameof(Pawn_PathFollower.StartPath)),
-            prefix:new HarmonyMethod(typeof(Program),nameof(SkillStartPath)));
-        harmony.Patch(AccessTools.Method(typeof(Pawn_PathFollower),nameof(Pawn_PathFollower.StopDead)),
-            prefix:new HarmonyMethod(typeof(Program),nameof(SkillStopPath)));
-        StatDefOf.AimingDelayFactor = new StatDef { defName = "AimingDelayFactor", defaultBaseValue = 1f };
-        harmony.Patch(AccessTools.PropertyGetter(typeof(PawnCapacitiesHandler), nameof(PawnCapacitiesHandler.CanBeAwake)), prefix: new HarmonyMethod(typeof(Program), nameof(SkillAwake)));
-        vagina ??= new HediffDef_SexPart { defName = "SkillVagina", hediffClass = typeof(Hediff), genitalFamily = GenitalFamily.Vagina, genitalTags = new() };
-        if (DefDatabase<HediffDef>.GetNamedSilentFail(vagina.defName) == null) DefDatabase<HediffDef>.Add(vagina);
-        harmony.Patch(AccessTools.PropertyGetter(typeof(Thing), nameof(Thing.Map)), prefix: new HarmonyMethod(typeof(Program), nameof(SkillMap)));
-        // Keep native base Ability cooldown checks; isolate only world-map biome/layer queries.
-        harmony.Patch(AccessTools.PropertyGetter(typeof(Thing), nameof(Thing.MapHeld)), prefix: new HarmonyMethod(typeof(Program), nameof(SkillMapHeld)));
-        harmony.Patch(AccessTools.PropertyGetter(typeof(Thing), nameof(Thing.Spawned)), prefix: new HarmonyMethod(typeof(Program), nameof(SkillSpawned)));
-        harmony.Patch(AccessTools.Method(typeof(PregnancyUtility), nameof(PregnancyUtility.GetInheritedGeneSet), new[] { typeof(Pawn), typeof(Pawn) }), prefix: new HarmonyMethod(typeof(Program), nameof(SkillGenes)));
-        harmony.Patch(AccessTools.Method(typeof(PregnancyHelper), nameof(PregnancyHelper.StartVanillaPregnancy)), prefix: new HarmonyMethod(typeof(Program), nameof(SkillPregnancy)));
-        harmony.Patch(AccessTools.Method(typeof(FertilityFollowupUtility), "CanPair"), prefix: new HarmonyMethod(typeof(Program), nameof(SkillPairBoundary)));
-        harmony.Patch(AccessTools.Method(typeof(SSCRestrictionJobGuard), "PrepareEvent"), prefix: new HarmonyMethod(typeof(Program), nameof(SkillEventBoundary)));
-        foreach (var method in AccessTools.GetDeclaredMethods(typeof(ReservationUtility)).Where(m=>m.Name=="CanReserveAndReach"))
-            harmony.Patch(method, prefix: new HarmonyMethod(typeof(Program), nameof(SkillPairBoundary)));
+        InitializeBirth(harmony);skillMap=Bare<Map>();
+        vagina??=new HediffDef_SexPart{defName="SkillVagina",hediffClass=typeof(Hediff),genitalFamily=GenitalFamily.Vagina,genitalTags=new()};
+        if(DefDatabase<HediffDef>.GetNamedSilentFail(vagina.defName)==null)DefDatabase<HediffDef>.Add(vagina);
+        void Patch(System.Reflection.MethodBase m,string name)=>harmony.Patch(m,prefix:new HarmonyMethod(typeof(Program),name));
+        Patch(AccessTools.PropertyGetter(typeof(Thing),nameof(Thing.Map)),nameof(SkillMap));Patch(AccessTools.PropertyGetter(typeof(Thing),nameof(Thing.MapHeld)),nameof(SkillMapHeld));Patch(AccessTools.PropertyGetter(typeof(Thing),nameof(Thing.Spawned)),nameof(SkillSpawned));
+        Patch(AccessTools.PropertyGetter(typeof(PawnCapacitiesHandler),nameof(PawnCapacitiesHandler.CanBeAwake)),nameof(SkillAwake));
+        Patch(AccessTools.Method(typeof(ReachabilityImmediate),nameof(ReachabilityImmediate.CanReachImmediate),new[]{typeof(IntVec3),typeof(LocalTargetInfo),typeof(Map),typeof(PathEndMode),typeof(Pawn)}),nameof(SkillTouch));
+        Patch(AccessTools.Method(typeof(PregnancyUtility),nameof(PregnancyUtility.GetInheritedGeneSet),new[]{typeof(Pawn),typeof(Pawn)}),nameof(SkillGenes));
+        Patch(AccessTools.Method(typeof(PregnancyHelper),nameof(PregnancyHelper.StartVanillaPregnancy)),nameof(SkillPregnancy));
+        Patch(AccessTools.Method(typeof(PregnancyHelper),nameof(PregnancyHelper.impregnate)),nameof(SkillNatural));
+        harmony.Patch(AccessTools.Method(typeof(PregnancyHelper),nameof(PregnancyHelper.impregnate)),prefix:new HarmonyMethod(typeof(FertilityScenePregnancyHook),nameof(FertilityScenePregnancyHook.Prefix)));
+        Patch(AccessTools.Method(typeof(SexUtility),nameof(SexUtility.SelectSextype)),nameof(SkillSelect));Patch(AccessTools.Method(typeof(JobDriver_Sex),nameof(JobDriver_Sex.setup_ticks)),nameof(SkillSetup));
+        Patch(AccessTools.Method(typeof(JobDriver_SexBaseInitiator),nameof(JobDriver_SexBaseInitiator.Start)),nameof(SkillStart));Patch(AccessTools.Method(typeof(JobDriver_SexBaseInitiator),nameof(JobDriver_SexBaseInitiator.End)),nameof(SkillEndScene));
+        Patch(AccessTools.Method(typeof(JobDriver_Sex),nameof(JobDriver_Sex.SexTick)),nameof(SkillTick));Patch(AccessTools.Method(typeof(SexUtility),nameof(SexUtility.ProcessSex)),nameof(SkillProcess));
+        Patch(AccessTools.Method(typeof(SSCRestrictionJobGuard),nameof(SSCRestrictionJobGuard.TryCheck)),nameof(SkillPermission));Patch(AccessTools.Method(typeof(SSCRestrictionJobGuard),"HasStartedScene"),nameof(SkillStarted));
+        Patch(AccessTools.Method(typeof(Pawn_JobTracker),nameof(Pawn_JobTracker.StartJob)),nameof(SkillInstall));foreach(var m in AccessTools.GetDeclaredMethods(typeof(Pawn_JobTracker)).Where(m=>m.Name=="EndCurrentJob"))Patch(m,nameof(SkillEnd));
+        Patch(AccessTools.Method(typeof(Pawn_PathFollower),nameof(Pawn_PathFollower.StartPath)),nameof(SkillStartPath));Patch(AccessTools.Method(typeof(Pawn_PathFollower),nameof(Pawn_PathFollower.StopDead)),nameof(SkillStopPath));Patch(AccessTools.Method(typeof(JobDriver),nameof(JobDriver.ReadyForNextToil)),nameof(SkillReady));Patch(AccessTools.Method(typeof(FertilitySceneUtility),"ClearAppearance"),nameof(SkillAppearance));
 
-
-        Check("fertility ability global selection approaches selected adult before any warmup or conception", () =>
-        {
-            var (a,b,ability,job) = SkillRequest(); AccessTools.Field(typeof(Thing), "positionInt").SetValue(a,new IntVec3(0,0,0)); AccessTools.Field(typeof(Thing), "positionInt").SetValue(b,new IntVec3(699,0,699));
-            skillContactAllowed=false;
-            Require(ability.verb.ValidateTarget(b,false));Require(!ability.verb.CanHitTarget(b));Require(!ability.verb.CanHitTargetFrom(a.Position,b));
-            Require(!ability.verb.TryStartCastOn(b,LocalTargetInfo.Invalid));Require(!ability.Activate(b,LocalTargetInfo.Invalid));
-            Require(!b.stances.stunner.Stunned);
-            var toils=SkillToils(a,job);Require(toils[0].defaultCompleteMode==ToilCompleteMode.PatherArrival);
-            toils[0].initAction();Equal(1,skillPathStarts);Require(skillPathTarget.Pawn==b);Equal(PathEndMode.Touch,skillPathMode);
-            Require(!ability.verb.WarmingUp && !b.stances.stunner.Stunned);
-            Require(!SSCFertilityPreconceptionUtility.HasPregnancyOrLabor(a));Equal(0,ability.CooldownTicksRemaining);
-            b.gender=Gender.Female; b.health.RemoveHediff(b.health.hediffSet.GetFirstHediffOfDef(vagina));
-            Require(FertilityAbilityUtility.CanTarget(a,b,out _)); Require(!FertilityAbilityUtility.CanTarget(a,a,out _));
-            b.ageTracker.AgeBiologicalTicks=17L*GenDate.TicksPerYear; Require(!FertilityAbilityUtility.CanTarget(a,b,out _));
+        Check("fertility scene global selection approaches without a separate warmup or early effect",()=>{
+            var(a,b,ability,job)=SkillRequest();skillContactAllowed=false;Require(ability.verb.ValidateTarget(b,false));Require(!ability.verb.TryStartCastOn(b,LocalTargetInfo.Invalid));Require(!ability.Activate(b,LocalTargetInfo.Invalid));
+            var toils=((IEnumerable<Toil>)AccessTools.Method(typeof(JobDriver_FertilityConception),"MakeNewToils").Invoke(a.jobs.curDriver,null)).ToList();toils[0].actor=a;toils[0].initAction();Equal(1,skillPathStarts);Equal(0,skillPregnancyCalls);Equal(0,ability.CooldownTicksRemaining);
         });
-        Check("fertility ability contact warmup stops both pawns and interrupted contact cannot conceive",()=>
-        {
-            var (a,b,ability,job)=SkillRequest();var before=b.CurJob;
-            var aiming=StatDefOf.AimingDelayFactor;float original=aiming.defaultBaseValue;aiming.defaultBaseValue=2f;
-            try
-            {
-                AccessTools.Field(typeof(Pawn), "drawer").SetValue(a,Bare<Pawn_DrawTracker>());
-                var toils=SkillToils(a,job);toils[1].initAction();Equal(1,skillPathStops);
-                toils[2].initAction();Require(ability.verb.WarmingUp && a.stances.curStance is Stance_Warmup);
-                Require(a.stances.FullBodyBusy && b.stances.FullBodyBusy);Require(b.CurJob==before);
-                Require((int)AccessTools.Field(typeof(StunHandler),"stunTicksLeft").GetValue(b.stances.stunner)>=ability.verb.WarmupTicksLeft);
-                Equal(0,skillPregnancyCalls);Equal(0,ability.CooldownTicksRemaining);
-                // 外部搬走／失去接触时，实际驱动的预热终止条件必须拒绝，不能远程补交效果。
-                skillContactAllowed=false;Require(toils[2].endConditions.Any(f=>f()==JobCondition.Incompletable));
-                Require(!ability.Activate(b,LocalTargetInfo.Invalid));Equal(0,skillPregnancyCalls);
-                ((Stance_Warmup)a.stances.curStance).Interrupt();ability.verb.Reset();
-                Equal(0,ability.CooldownTicksRemaining);Require(!SSCFertilityPreconceptionUtility.HasPregnancyOrLabor(a));
-            }
-            finally {aiming.defaultBaseValue=original;}
+        Check("fertility scene completes once after actual scene ticks and preserves both native parents",()=>{
+            var(a,b,ability,job)=SkillRequest();var d=Scene(a);d.TickScene();Require(!d.CompleteScene());Equal(0,skillPregnancyCalls);d.TickScene();d.TickScene();
+            skillPregnancyCallback=()=>{Equal(0,ability.CooldownTicksRemaining);Equal(0,FertilityAbilityUtility.CaptureCooldown(a));};
+            Require(d.CompleteScene());Require(!d.CompleteScene());Equal(1,skillPregnancyCalls);Equal(1,skillProcessCalls);Equal(0,skillNaturalCalls);Equal(420000,ability.CooldownTicksRemaining);
+            var h=a.health.hediffSet.hediffs.OfType<HediffWithParents>().Single();Require(h.Mother==a&&h.Father==b);d.CleanupScene();d.CleanupScene();Equal(1,skillEndCalls);Require(b.CurJob==null);Equal(0,a.jobs.jobQueue.Count);
         });
-        Check("fertility ability native conception records both parents once and starts seven day cooldown", () =>
-        {
-            var (a,b,ability,job)=SkillRequest(); skillReenter=true;
-            Require(ability.Activate(b,LocalTargetInfo.Invalid)); Equal(1,skillPregnancyCalls);
-            var pregnancy=a.health.hediffSet.hediffs.OfType<HediffWithParents>().Single(); Require(pregnancy.Mother==a && pregnancy.Father==b);
-            Equal(420000,ability.CooldownTicksRemaining); Require(!ability.Activate(b,LocalTargetInfo.Invalid)); Equal(1,skillPregnancyCalls);
+        Check("fertility scene cancellation cannot submit pregnancy or cooldown",()=>{
+            var(a,b,ability,job)=SkillRequest();var d=Scene(a);d.TickScene();d.CleanupScene();Require(!d.CompleteScene());Equal(0,skillPregnancyCalls);Equal(0,ability.CooldownTicksRemaining);Equal(0,skillEndCalls);Require(b.CurJob==null);
         });
-        Check("fertility ability rejected backend rolls back only unsuccessful cooldown", () =>
-        {
-            var (a,b,ability,job)=SkillRequest(); skillBlockPregnancy=true;
-            Require(!ability.Activate(b,LocalTargetInfo.Invalid)); Equal(0,ability.CooldownTicksRemaining); Require(!SSCFertilityPreconceptionUtility.HasPregnancyOrLabor(a));
+        Check("fertility scene receiver ended before tracker replacement cancels completion",()=>{
+            var(a,b,ability,job)=SkillRequest();var d=Scene(a);b.jobs.curDriver.ended=true;d.TickScene();Require(!d.CompleteScene());Require(a.CurJob==null&&b.CurJob==null);Equal(0,skillPregnancyCalls);Equal(0,ability.CooldownTicksRemaining);Equal(0,skillEndCalls);
         });
-        Check("fertility ability stale personality request cannot acquire fresh submission rights", () =>
-        {
-            var (a,b,ability,job)=SkillRequest(); var context=FertilityAbilityUtility.Request(job);
-            Require(SSCPersonalityRuntimeUtility.TryBeginMutation(a,out var mutation)); mutation.Dispose();
-            Require(!FertilityAbilityUtility.IsCurrent(context)); Require(!ability.Activate(b,LocalTargetInfo.Invalid)); Equal(0,skillPregnancyCalls);
+        Check("fertility scene appearance cleanup exception still releases the owned receiver",()=>{
+            var(a,b,ability,job)=SkillRequest();var d=Scene(a);skillAppearanceCallback=p=>{if(p==a)throw new InvalidOperationException("appearance boundary");};
+            bool threw=false;try{d.CleanupScene();}catch(InvalidOperationException){threw=true;}Require(threw);Require(b.CurJob==null);d.CleanupScene();Equal(0,skillPregnancyCalls);Equal(0,ability.CooldownTicksRemaining);Equal(0,skillEndCalls);
         });
-        Check("fertility ability pregnancy retains same ability without starting a new cooldown", () =>
-        {
-            var (a,b,ability,job)=SkillRequest(); a.health.AddHediff(HediffDefOf.PregnantHuman);
-            FertilityAbilityUtility.Maintain(a); Require(a.abilities.GetAbility(FertilityAbilityUtility.Definition)==ability);
-            Require(!FertilityAbilityUtility.CanUse(a,out string reason)); Require(reason=="SSC_FertilitySkill_Pregnant"); Equal(0,ability.CooldownTicksRemaining);
-            a.health.RemoveHediff(a.health.hediffSet.GetFirstHediffOfDef(HediffDefOf.PregnantHuman));
-            a.health.AddHediff(HediffDefOf.PregnancyLabor); Require(!FertilityAbilityUtility.CanUse(a,out reason)); Require(reason=="SSC_FertilitySkill_Pregnant");
+        Check("fertility scene direct activation is rejected even after start before normal completion",()=>{
+            var(a,b,ability,job)=SkillRequest();Scene(a);Require(!ability.Activate(b,LocalTargetInfo.Invalid));Equal(0,skillPregnancyCalls);Equal(0,ability.CooldownTicksRemaining);
         });
-        Check("fertility ability cooldown follows gel copy scribe and actual personality restore", () =>
-        {
-            var (a,b,ability,job)=SkillRequest(); ability.StartCooldown(420000);
-            var data=new CompPersonalityStore(); data.StorePawnData(a); var copy=new CompPersonalityStore(); copy.CopyFrom(data);
-            Equal(Find.TickManager.TicksGame+420000,copy.fertilityConceptionCooldownEndTick);
-            var fixture=new ImprintGelFixture { Data=copy }; string path=Path.Combine(saveDirectory,"fertility-ability-gel.xml");
-            Scribe.saver.InitSaving(path,"Gel"); Scribe_Deep.Look(ref fixture,"data"); Scribe.saver.FinalizeSaving();
-            fixture=null; Scribe.loader.InitLoading(path); Scribe_Deep.Look(ref fixture,"data"); Scribe.loader.FinalizeLoading();
-            AccessTools.Field(typeof(TickManager),"ticksGameInt").SetValue(Current.Game.tickManager,Find.TickManager.TicksGame+60000);
-            var host=SkillPawn(false); Require(ExcretionUtility.InheritEverything(host,fixture.Data));
-            Equal(360000,host.abilities.GetAbility(FertilityAbilityUtility.Definition).CooldownTicksRemaining);
-            FertilitySpecializationGelUtility.DetachAfterExtraction(a); Require(a.abilities.GetAbility(FertilityAbilityUtility.Definition)==null);
+        Check("fertility scene backend rejection and duplicate finish do not start cooldown",()=>{
+            var(a,b,ability,job)=SkillRequest();var d=Scene(a,true);skillBlockPregnancy=true;skillPregnancyCallback=()=>Equal(0,ability.CooldownTicksRemaining);Require(!d.CompleteScene());Require(!d.CompleteScene());Equal(1,skillPregnancyCalls);Equal(0,ability.CooldownTicksRemaining);
         });
-        Check("fertility ability followup rejection cannot undo pregnancy or cooldown", () =>
-        {
-            var (a,b,ability,job)=SkillRequest(); Require(ability.Activate(b,LocalTargetInfo.Invalid));
-            b.ageTracker.AgeBiologicalTicks=17L*GenDate.TicksPerYear;
-            Require(!FertilityFollowupUtility.TryQueue(a,b)); Equal(420000,ability.CooldownTicksRemaining); Require(SSCFertilityPreconceptionUtility.HasPregnancyOrLabor(a));
+        Check("fertility scene reentrant completion cannot replay pregnancy",()=>{
+            var(a,b,ability,job)=SkillRequest();var d=Scene(a,true);skillProcessCallback=()=>Require(!d.CompleteScene());skillPregnancyCallback=()=>Require(!ability.Activate(b,LocalTargetInfo.Invalid));Require(d.CompleteScene());Equal(1,skillPregnancyCalls);
         });
-        Check("fertility ability followup queues one job without replacing target work or changing pregnancy", () =>
-        {
-            var (a,b,ability,job)=SkillRequest(); Require(ability.Activate(b,LocalTargetInfo.Invalid));
-            AccessTools.Field(typeof(Thing), "positionInt").SetValue(a,new IntVec3(1,0,1));
-            AccessTools.Field(typeof(Thing), "positionInt").SetValue(b,new IntVec3(2,0,2));
-            var before=b.CurJob; skillQueueBoundary=true;
-            try
-            {
-                Require(FertilityFollowupUtility.TryQueue(a,b));
-                var queued=a.jobs.jobQueue.Single().job; Equal("SSC_Job_FertilityFollowup",queued.def.defName);
-                Require(queued.GetTarget(TargetIndex.A).Pawn==b && !queued.playerForced);
-                Require(FertilityFollowupUtility.Get(queued).Current && b.CurJob==before);
-                Equal(420000,ability.CooldownTicksRemaining); Equal(1,a.health.hediffSet.hediffs.OfType<Hediff_Pregnant>().Count());
-            }
-            finally { skillQueueBoundary=false; }
+        Check("fertility scene exception after native pregnancy landing retains success cooldown",()=>{
+            var(a,b,ability,job)=SkillRequest();var d=Scene(a,true);skillPregnancyCallback=()=>{var h=(Hediff_Pregnant)HediffMaker.MakeHediff(HediffDefOf.PregnantHuman,a);h.SetParents(a,b,new GeneSet());a.health.AddHediff(h);throw new InvalidOperationException("boundary");};Require(d.CompleteScene());Equal(420000,ability.CooldownTicksRemaining);
         });
-        Check("fertility ability pooled job reuse invalidates old context and replaces weak registration", () =>
-        {
-            var (a,b,ability,job)=SkillRequest(); var original=FertilityAbilityUtility.Request(job);
-            job.loadID++; FertilityAbilityUtility.Register(job,ability,b);
-            Require(!FertilityAbilityUtility.IsCurrent(original)); Require(FertilityAbilityUtility.IsCurrent(FertilityAbilityUtility.Request(job)));
+        Check("fertility scene receiver personality replacement invalidates original request",()=>{
+            var(a,b,ability,job)=SkillRequest();var d=Scene(a,true);Require(SSCPersonalityRuntimeUtility.TryBeginMutation(b,out var mutation));mutation.Dispose();Require(!d.CompleteScene());Equal(0,skillPregnancyCalls);Equal(0,ability.CooldownTicksRemaining);
         });
-        Check("fertility ability exception after native pregnancy landing keeps successful cooldown", () =>
-        {
-            var (a,b,ability,job)=SkillRequest();
-            skillPregnancyCallback=()=> { var h=(Hediff_Pregnant)HediffMaker.MakeHediff(HediffDefOf.PregnantHuman,a); h.SetParents(a,b,new GeneSet()); a.health.AddHediff(h); throw new InvalidOperationException("boundary"); };
-            Require(ability.Activate(b,LocalTargetInfo.Invalid)); Equal(420000,ability.CooldownTicksRemaining);
-            skillPregnancyCallback=null;
+        Check("fertility scene permission rejection does not install receiver or conceive",()=>{
+            var(a,b,ability,job)=SkillRequest();skillPermission=false;Scene(a);Require(b.CurJob==null);Equal(0,skillPregnancyCalls);Equal(0,ability.CooldownTicksRemaining);
+        });
+        Check("fertility scene permission callback replacing actor personality cannot install receiver",()=>{
+            var(a,b,ability,job)=SkillRequest();skillPolicyCallback=()=>{Require(SSCPersonalityRuntimeUtility.TryBeginMutation(a,out var mutation));mutation.Dispose();};Scene(a);Require(b.CurJob==null);Equal(0,skillPregnancyCalls);Equal(0,ability.CooldownTicksRemaining);
+        });
+        Check("fertility scene rejected Start cleans its own receiver without committing",()=>{
+            var(a,b,ability,job)=SkillRequest();skillRejectStart=true;Scene(a);Require(b.CurJob==null);Equal(0,skillPregnancyCalls);Equal(0,ability.CooldownTicksRemaining);
+        });
+        Check("fertility scene replaced target work is preserved by late cleanup",()=>{
+            var(a,b,ability,job)=SkillRequest();var d=Scene(a);var later=JobMaker.MakeJob(new JobDef{defName="LaterTargetCommand"});AccessTools.Field(typeof(Pawn_JobTracker),"curJob").SetValue(b.jobs,later);b.jobs.curDriver=null;d.CleanupScene();Require(b.CurJob==later);Require(!d.CompleteScene());
+        });
+        Check("fertility scene natural pregnancy is blocked only for exact scene data including late callbacks",()=>{
+            var(a,b,ability,job)=SkillRequest();var d=Scene(a);var saved=new SexProps(a,b);d.Sexprops=saved;PregnancyHelper.impregnate(saved);Equal(0,skillNaturalCalls);d.CleanupScene();
+            // 清理后让原驱动真正离开任务跟踪器，迟到回调不能继续借当前驱动匹配来掩盖记录缺失。
+            AccessTools.Field(typeof(Pawn_JobTracker),"curJob").SetValue(a.jobs,null);a.jobs.curDriver=null;
+            PregnancyHelper.impregnate(saved);Equal(0,skillNaturalCalls);PregnancyHelper.impregnate(new SexProps(a,b));Equal(1,skillNaturalCalls);
+        });
+        Check("fertility scene callback replacing caster work cancels completion and preserves new command",()=>{
+            var(a,b,ability,job)=SkillRequest();var d=Scene(a,true);var later=JobMaker.MakeJob(new JobDef{defName="LaterActorCommand"});skillProcessCallback=()=>{AccessTools.Field(typeof(Pawn_JobTracker),"curJob").SetValue(a.jobs,later);a.jobs.curDriver=null;};Require(!d.CompleteScene());d.CleanupScene();Require(a.CurJob==later);Equal(0,skillPregnancyCalls);
+        });
+        Check("fertility scene ability survives pregnancy and keeps existing cooldown",()=>{
+            var(a,b,ability,job)=SkillRequest();a.health.AddHediff(HediffDefOf.PregnantHuman);FertilityAbilityUtility.Maintain(a);Require(a.abilities.GetAbility(FertilityAbilityUtility.Definition)==ability);Require(!FertilityAbilityUtility.CanUse(a,out _));Equal(0,ability.CooldownTicksRemaining);
+        });
+        Check("fertility scene cooldown gel copy scribe and personality restore keep absolute deadline",()=>{
+            var(a,b,ability,job)=SkillRequest();ability.StartCooldown(420000);var data=new CompPersonalityStore();data.StorePawnData(a);var copy=new CompPersonalityStore();copy.CopyFrom(data);var fixture=new ImprintGelFixture{Data=copy};string path=Path.Combine(saveDirectory,"fertility-scene-gel.xml");Scribe.saver.InitSaving(path,"Gel");Scribe_Deep.Look(ref fixture,"data");Scribe.saver.FinalizeSaving();fixture=null;Scribe.loader.InitLoading(path);Scribe_Deep.Look(ref fixture,"data");Scribe.loader.FinalizeLoading();AccessTools.Field(typeof(TickManager),"ticksGameInt").SetValue(Current.Game.tickManager,Find.TickManager.TicksGame+60000);var host=SkillPawn(false);Require(ExcretionUtility.InheritEverything(host,fixture.Data));Equal(360000,host.abilities.GetAbility(FertilityAbilityUtility.Definition).CooldownTicksRemaining);
         });
         FertilityAbilityReviewTests(harmony);
     }

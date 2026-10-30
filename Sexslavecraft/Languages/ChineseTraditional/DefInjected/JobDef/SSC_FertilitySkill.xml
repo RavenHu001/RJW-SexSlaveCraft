@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <SSC_Job_FertilityConception.reportString>正在採樣孕育。</SSC_Job_FertilityConception.reportString>
-  <SSC_Job_FertilityFollowup.reportString>正在進行孕育後的親密互動。</SSC_Job_FertilityFollowup.reportString>
+  <SSC_Job_FertilityReceiver.reportString>正在進行孕育互動。</SSC_Job_FertilityReceiver.reportString>
+  <SSC_Job_FertilityFollowup.reportString>正在取消舊孕育互動。</SSC_Job_FertilityFollowup.reportString>
 </LanguageData>

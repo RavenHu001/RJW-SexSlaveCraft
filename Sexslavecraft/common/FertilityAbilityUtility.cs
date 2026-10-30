@@ -15,7 +15,9 @@ namespace SexSlaveCraft
         public const string AbilityName = "SSC_FertilityConception";
         public const int CooldownTicks = 7 * GenDate.TicksPerDay;
         public static AbilityDef Definition => DefDatabase<AbilityDef>.GetNamedSilentFail(AbilityName);
+        // Job弱表只保存原命令的当前进程授权，不恢复待施放场景；成功冷却仍保存于原Ability。
         private static readonly ConditionalWeakTable<Job, Context> requests = new();
+        // 公共建孕入口可能回调技能，按原施法者拒绝同步重入；不作为永久状态或人格保存源。
         private static readonly System.Collections.Generic.HashSet<Pawn> submitting = new();
 
         /// <summary>原命令的进程内归属，不序列化；未成功的施法在读档后取消，不能重授旧请求权限。</summary>
@@ -23,22 +25,37 @@ namespace SexSlaveCraft
         {
             internal readonly Pawn Caster, Target;
             internal readonly CompSexSlaveTraining Comp;
-            internal readonly object Token;
+            internal readonly object Token, TargetToken;
+            internal readonly CompSexSlaveTraining TargetComp;
             internal readonly Hediff_SSCUterusDevelopment Uterus;
             internal readonly Ability Ability;
             internal readonly Job Job;
             internal readonly int JobId;
+
+            /// <summary>仅在选定命令时捕获双方人格和原身体；开始／完成／读档不得为旧命令重捕获。</summary>
             internal Context(Pawn caster, Pawn target, Ability ability, Job job)
-            { Job = job; JobId = job.loadID; Caster = caster; Target = target; Ability = ability; Comp = caster?.TryGetComp<CompSexSlaveTraining>();
-              Token = SSCPersonalityRuntimeUtility.Capture(caster); Uterus = SSCUterusDevelopmentUtility.Find(caster); }
+            {
+                Job = job; JobId = job.loadID;
+                Caster = caster; Target = target; Ability = ability;
+                Comp = caster?.TryGetComp<CompSexSlaveTraining>();
+                TargetComp = target?.TryGetComp<CompSexSlaveTraining>();
+                Token = SSCPersonalityRuntimeUtility.Capture(caster);
+                TargetToken = SSCPersonalityRuntimeUtility.Capture(target);
+                Uterus = SSCUterusDevelopmentUtility.Find(caster);
+            }
         }
+
         /// <summary>原选取时登记，替换对象池遗留键；loadID同时使旧上下文失效。</summary>
         internal static void Register(Job job, Ability ability, Pawn target)
         { requests.Remove(job); requests.Add(job, new Context(ability.pawn, target, ability, job)); }
+
         /// <summary>只读取原Job的凭据，不为未登记或读档任务重新Capture。</summary>
         internal static Context Request(Job job) => job != null && requests.TryGetValue(job, out var c) ? c : null;
+
         /// <summary>人格、组件、身体、实际技能与任务世代须全部属于原提交。</summary>
         internal static bool IsCurrent(Context c) => c != null && c.Caster?.TryGetComp<CompSexSlaveTraining>() == c.Comp &&
+            c.Target != null && c.Target.TryGetComp<CompSexSlaveTraining>() == c.TargetComp &&
+            SSCPersonalityRuntimeUtility.IsCurrent(c.Target, c.TargetToken) && !SSCPersonalityRuntimeUtility.IsMutating(c.Target) &&
             c.Comp != null && SSCPersonalityRuntimeUtility.IsCurrent(c.Caster, c.Token) && !SSCPersonalityRuntimeUtility.IsMutating(c.Caster) &&
             ReferenceEquals(SSCUterusDevelopmentUtility.Find(c.Caster), c.Uterus) && c.Uterus != null &&
             c.Caster.abilities?.GetAbility(Definition) == c.Ability && c.Job.loadID == c.JobId &&
@@ -65,12 +82,13 @@ namespace SexSlaveCraft
             if (!CanUse(caster, out reason)) return false;
             reason = "SSC_FertilitySkill_Target";
             if (target == null || target == caster || target.Dead || target.Destroyed || !target.Spawned || target.Map != caster.Map ||
-                !SSCCultureGenderUtility.IsAdult(target) || target.HostileTo(caster) || caster.HostileTo(target)) return false;
+                !target.RaceProps.Humanlike || !SSCCultureGenderUtility.IsAdult(target) || target.HostileTo(caster) || caster.HostileTo(target)) return false;
             reason = null; return true;
         }
-        /// <summary>预热及建孕提交均要求原版Touch接触位置；不将距离限制加到地图选取资格。</summary>
+        /// <summary>建孕提交仍要求原版Touch接触位置；不将距离限制加到地图选取资格。</summary>
         internal static bool CanApply(Pawn caster, Pawn target) => CanTarget(caster, target, out _) &&
             caster.CanReachImmediate(target, PathEndMode.Touch);
+
         /// <summary>公共void入口之后核对实际落地结果；异常发生于落地之后也不能退还成功冷却。</summary>
         internal static bool TryConceive(Context c)
         {
@@ -78,6 +96,7 @@ namespace SexSlaveCraft
                 !CanApply(c.Caster, c.Target) || !submitting.Add(c.Caster)) return false;
             try
             {
+                // 直接提交现有后端，既不调用本场高潮受孕入口，也不重写基因、胎数或生成时胎儿调控。
                 try { PregnancyHelper.StartVanillaPregnancy(c.Caster, c.Target, geneticMother: c.Caster); }
                 catch (Exception ex) { Log.Warning("[SSC] Fertility conception callback: " + ex.GetType().Name); }
                 return c.Caster.health.hediffSet.hediffs.OfType<HediffWithParents>().Any(h =>

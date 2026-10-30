@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <SSC_Job_FertilityConception.reportString>Sampling for gestation.</SSC_Job_FertilityConception.reportString>
-  <SSC_Job_FertilityFollowup.reportString>Sharing intimacy after conception.</SSC_Job_FertilityFollowup.reportString>
+  <SSC_Job_FertilityReceiver.reportString>Taking part in a conception interaction.</SSC_Job_FertilityReceiver.reportString>
+  <SSC_Job_FertilityFollowup.reportString>Cancelling an obsolete conception interaction.</SSC_Job_FertilityFollowup.reportString>
 </LanguageData>
