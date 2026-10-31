@@ -2,13 +2,22 @@
 
 2026-10-28：**2.4.7已正式发布**，[下载](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.7)。完整All **50套／6333项全部通过**，资源2／2、编排56项及浪漫隔离75项通过；532份冻结文件未变。源码标签`e567e1b1`，ZIP与SHA-256已上传并复核；本轮没有再启动游戏或同步安装目录。旧分批／登记数字按原日期阅读。
 
-**2.4.7 — 2026-10-28正式发布。** 敏感度、个人PNA生产控制、UAP兼容、绑定吸引力与调教修复；[下载v2.4.7](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.7)。新增仅1.7，1.6／Common冻结2.4.1；About、源码版本属性及重编运行产物对齐2.4.7。繁英俄浪漫显示等独立待验收范围保留，PNA产出引导已确认有效。构建、门禁与上传结果在本版验证记录单独归档。
+**2.4.8 — 2026-10-31开发登记，未发布。** 孕母特化、三态人格印记、频率属性、空壳需求与调教员便捷操作；新增仅1.7，1.6／Common冻结2.4.1。最新正式下载仍为[v2.4.7](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.7)。About／源码版本属性／DLL／BUILD-INFO仍持有2.4.7，发布前须对齐重编；分批验收与本版完整门禁分别记录。
 
-面向 RimWorld 的成人向 RimJobWorld（RJW）扩展，基于上游 **2.2.8** 继续维护，提供角色培养、主从绑定、六种特化、人格转移和身体改造。
+面向 RimWorld 的成人向 RimJobWorld（RJW）扩展，基于上游 **2.2.8** 继续维护，提供角色培养、主从绑定、七种特化、人格转移和身体改造。
 
-[2.4.7开发范围](Docs/Releases/2.4.7/2.4.7发布说明.md) · [正式下载2.4.7](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.7) · [双语模组简介](Docs/模组介绍.md) · [玩家阅读入口](Docs/Players/README.md) · [文档总索引](Docs/README.md) · [English](#english-overview)
+[2.4.8开发范围](Docs/Releases/2.4.8/2.4.8发布说明.md) · [正式下载2.4.7](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.7) · [双语模组简介](Docs/模组介绍.md) · [玩家阅读入口](Docs/Players/README.md) · [文档总索引](Docs/README.md) · [English](#english-overview)
 
-## 2.4.7 新增内容（仅1.7）
+## 2.4.8 当前开发（仅1.7，未发布）
+
+| 主题 | 交付与阅读入口 |
+| --- | --- |
+| 孕母与人格印记 | 第七特化、孕前预设、生成／出生、成人目标同场技能与人格印记；[入门](读我，玩法介绍.md#ssc-248) |
+| 频率属性与空壳 | PNA／部位属性来源，空壳六项需求禁用；[规则](机制详解.md#ssc-248) |
+| 调教员便捷操作 | 显式指派并启用／就地启用，保留原工作优先级；[版本说明](Docs/Releases/2.4.8/2.4.8发布说明.md) |
+| 验收与维护 | 分批认可、测试精简、文案与归档；[归并](Docs/Releases/2.4.8/2.4.8开发归并核对.md) · [验证](Docs/Releases/2.4.8/2.4.8版本验证.md) |
+
+## 2.4.7 已发布内容（仅1.7）
 
 | 主题 | 当前范围 | 阅读入口 |
 | --- | --- | --- |
@@ -55,7 +64,7 @@
 ## 核心玩法与版本沿革
 
 - 日常调教、手动命令、自我调教与契约仪式，连接恶堕、锁链及六项部位成长。
-- 公交车、奶牛、训导官、宠物猫、宠物狗、战斗员六种特化；普通培养完成后，经人格凝胶加工／植入获得终极形态。
+- 公交车、奶牛、训导官、宠物猫、宠物狗、战斗员、孕母七种特化；普通培养完成后，经人格凝胶加工／植入获得终极形态。
 - 欲望之种与永久主人资格、欲望共生四阶段和主人面板由 **2.4.0** 引入。
 - PNA 五档、身体归属、来源偏好、欢愉恩赐首版及绑定维护归入 **2.4.1**。
 - 双版本布局、1.7 兼容与个体凝胶颜色／不透明度／渲染开关归入 **2.4.2**，本版继续保留。
@@ -80,7 +89,7 @@
 | 用途 | 阅读顺序 |
 | --- | --- |
 | 了解与游玩 | [模组介绍](Docs/模组介绍.md) → [玩家阅读入口](Docs/Players/README.md) → 快速入门 → 完整机制 |
-| 查看版本变化 | [2.4.7开发说明](Docs/Releases/2.4.7/2.4.7发布说明.md) → [提交归并](Docs/Releases/2.4.7/2.4.7开发归并核对.md) → [验证边界](Docs/Releases/2.4.7/2.4.7版本验证.md)；[2.4.4 正式范围](Docs/Releases/2.4.4/2.4.4发布说明.md) |
+| 查看版本变化 | [2.4.8开发说明](Docs/Releases/2.4.8/2.4.8发布说明.md) → [提交归并](Docs/Releases/2.4.8/2.4.8开发归并核对.md) → [验证边界](Docs/Releases/2.4.8/2.4.8版本验证.md)；[2.4.4 正式范围](Docs/Releases/2.4.4/2.4.4发布说明.md) |
 | 接手开发 | [开发协作约定](AGENTS.md) → [开发资料入口](Docs/Development/README.md) → [已交付记录](Docs/Development/Completed/README.md) → [专项待验收](Docs/Development/Verification/README.md) → [当前规划](Docs/Design/README.md) |
 | 新增个人能力开关 | 先读[现行接入规范](Docs/Development/Reference/个人能力开关接入规范.md)，复用能力注册、原载体后端、状态查询与上下文提交；UI 行及跨 ITab 复用边界见规范 |
 | 编译、测试、打包 | [维护入口](Docs/Maintenance/README.md) → [测试说明](Tests/README.md) → [发布与打包](Docs/Maintenance/发布与打包.md) |
@@ -93,7 +102,9 @@
 
 ## English overview
 
-SexSlaveCraft is an adult RJW expansion for pawn development, bonds, six specializations, personality transfer and body modification. **Current version: 2.4.7 (2026-10-28).** [Download v2.4.7](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.7). New work targets 1.7; the 1.6/Common baseline stays frozen at 2.4.1.
+SexSlaveCraft is an adult RJW expansion for pawn development, bonds, seven specializations, personality transfer and body modification. **Current development: 2.4.8 (registered 2026-10-31, unreleased); latest public release: 2.4.7.** [Download v2.4.7](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.7). New work targets 1.7; the 1.6/Common baseline stays frozen at 2.4.1.
+
+2.4.8 adds Broodmother progression, three-state personality imprints, preconception/generation rules and a final conception scene for eligible adult targets, PNA/body frequency sources, six disabled Hollow needs and explicit trainer/work-enabling actions. Scoped batches have maintainer acceptance; replicas and the unified framework remain future work. [Development scope](Docs/Releases/2.4.8/2.4.8发布说明.md#english) · [Validation](Docs/Releases/2.4.8/2.4.8版本验证.md). Current runtime metadata remains 2.4.7 pending release preparation.
 
 2.4.7 adds body sensitivity and a general frequency stat, personal PNA pause/resume and status display, manual UAP group compatibility, directed attraction toward the actual Master, downed-receiver Training continuity and resonance-query optimization. Testing and documentation maintenance are included. [Development scope](Docs/Releases/2.4.7/2.4.7发布说明.md#english) · [Validation boundaries](Docs/Releases/2.4.7/2.4.7版本验证.md). VERSION, About/source version attributes and the rebuilt 1.7 binary/BUILD-INFO are aligned to 2.4.7.
 

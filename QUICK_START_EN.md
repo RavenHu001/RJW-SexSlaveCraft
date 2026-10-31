@@ -1,14 +1,16 @@
 # RJW-SexSlaveCraft Quick Start Guide
 
+[2.4.8: Broodmother, imprints and management](#ssc-248)
+
 [2.4.7: new controls and compatibility](#ssc-247)
 
-**2.4.7 — 2026-10-28.** Sensitivity, personal PNA production controls, UAP compatibility and bond/Training fixes. [Download v2.4.7](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.7). New work targets 1.7; 1.6/Common stay frozen at 2.4.1. About/source version attributes and rebuilt runtime metadata are aligned to 2.4.7. Three-language romance display retains its independent scope; PNA guidance has been accepted. Build, gate and upload results are archived separately.
+**2.4.8 — development registration, 2026-10-31; unreleased.** Broodmother, personality imprints, frequency attributes, Hollow needs and trainer convenience target 1.7; 1.6/Common remain frozen at 2.4.1. Latest public download: [v2.4.7](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.7). About/source version attributes and DLL/BUILD-INFO still hold 2.4.7 pending a release rebuild. Batch acceptance is separate from a new full gate.
 
 [2.4.6: personal abilities and romance controls](#24-246-personal-abilities-and-romance-controls-17-unreleased)
 
 [New in 2.4.4: culture, ritual points and cosmetics](#22-244-culture-and-cosmetic-reshaping-17-development-only)
 
-> This guide covers **SSC 2.4.7 (2026-10-28)** for RimWorld 1.7; 1.6 remains frozen at 2.4.1. See the [release scope](Docs/Releases/2.4.7/2.4.7发布说明.md#english). Earlier section versions identify introductions.
+> This guide covers **SSC 2.4.8 (development registration, 2026-10-31; unreleased)** for RimWorld 1.7; 1.6 remains frozen at 2.4.1. See the [release scope](Docs/Releases/2.4.8/2.4.8发布说明.md#english). Earlier section versions identify introductions.
 
 [Project home](README.md) · [Player reading order](Docs/Players/README.md#english-reading-order) · [中文快速入门](读我，玩法介绍.md) · [Complete guide](PLAYER_GUIDE_EN.md)
 
@@ -21,7 +23,7 @@ SexSlaveCraft (SSC) is built around this progression:
 1. Designate Masters and sex slaves.
 2. Use ordinary Training to raise Corruption and develop body parts.
 3. Perform the Binding Ritual to establish a bond and advance the `Sex Slave Chain` health stage.
-4. Choose one of six specializations: Public Use, Cow, Training Officer, Pet Cat, Pet Dog or Combatant.
+4. Choose one of seven specializations: Public Use, Cow, Training Officer, Pet Cat, Pet Dog, Combatant or Broodmother.
 5. Extract a pawn's personality into Personality Gel, edit it, or implant it into a Hollow.
 6. Attempt Semi-gelatinization or Full Gelatinization.
 
@@ -731,3 +733,18 @@ Simplified Chinese copy has in-game acceptance; the other three languages have r
 - **Training and resonance:** an already-started SSC receiver becoming downed can continue Training/Binding Rituals. Trainer downing, death and cancellation retain their original rules. Resonance queries avoid repeated statistics while preserving values and refresh behavior.
 
 Behavior restrictions now sit directly below identity controls. Scoped in-game acceptance and the full release gate are separate; see [validation boundaries](Docs/Releases/2.4.7/2.4.7版本验证.md).
+
+<a id="ssc-248"></a>
+## 26. 2.4.8 Broodmother, imprints and management (1.7 development)
+
+**Registered 2026-10-31; unreleased.** These additions are not in public v2.4.7. See the [development notes](Docs/Releases/2.4.8/2.4.8发布说明.md#english).
+
+- **Seventh specialization: Broodmother.** New selection/reselection requires Chain stage 3 and completed uterine development. Eligible Training, teaching, playing and live births advance development, unlocking staged benefits and Beauty; Gel processing provides the final form. Lower stages alone do not newly suspend existing achievements; other current eligibility still applies.
+- **Preconception presets:** sex, species source and the initial-imprint preset unlock at 20%, 50% and ordinary completion. Settings belong to the uterine body, can be prepared with fertility off, and cannot change during pregnancy/labor. They apply only on actual generation, not to existing offspring, genes or litter size.
+- **Conception:** the final form selects an eligible adult, non-hostile humanlike target on the same map, approaches and completes a shared scene before committing pregnancy to the caster. Success starts a seven-day cooldown; interruption grants neither conception nor success cooldown. Pregnancy retains but disables the ability; unfinished scenes are canceled on load.
+- **Personality imprints:** Seed routing, first-new-binding differentiation, role locks and stat effects follow each form's rules. Imprints follow personality transfer; the initial form itself grants no SSC role/Chain. Current Masters cannot undergo personality extraction; old gels retain existing compatibility.
+- **Frequency sources:** five PNA factors span ×1.10 to ×2; five completed body paths add a combined +0.50 offset. These compose with sensitivity and imprint factors; disabling personal sensitivity leaves other valid sources active.
+- **Hollow needs:** the completed state disables Joy, Comfort, Beauty, Outdoors, Indoors and RoomSize. Other needs/effects remain.
+- **Trainer convenience:** assign-and-enable, or enable the current assignee in place. New enabling uses priority 3 and preserves existing enabled priorities. Closing work keeps the assignment without automatic re-enabling. The entire work category is enabled, including eligible personality extraction/implantation tasks.
+
+Scoped feature, localization, Beauty and color acceptance is recorded separately from a full release gate. Replicas, room effects and unified-framework integration remain future work; see [validation](Docs/Releases/2.4.8/2.4.8版本验证.md).

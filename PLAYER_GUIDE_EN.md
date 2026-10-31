@@ -1,14 +1,16 @@
 # RJW-SexSlaveCraft Complete Player Guide
 
+[2.4.8: Broodmother, imprints and management](#ssc-248)
+
 [2.4.7: new controls and compatibility](#ssc-247)
 
-**2.4.7 — 2026-10-28.** Sensitivity, personal PNA production controls, UAP compatibility and bond/Training fixes. [Download v2.4.7](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.7). New work targets 1.7; 1.6/Common stay frozen at 2.4.1. About/source version attributes and rebuilt runtime metadata are aligned to 2.4.7. Three-language romance display retains its independent scope; PNA guidance has been accepted. Build, gate and upload results are archived separately.
+**2.4.8 — development registration, 2026-10-31; unreleased.** Broodmother, personality imprints, frequency attributes, Hollow needs and trainer convenience target 1.7; 1.6/Common remain frozen at 2.4.1. Latest public download: [v2.4.7](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.7). About/source version attributes and DLL/BUILD-INFO still hold 2.4.7 pending a release rebuild. Batch acceptance is separate from a new full gate.
 
 [2.4.6: stages, orders, moods and personal resets](#27-246-personal-abilities-and-romance-controls-17-unreleased)
 
 [New in 2.4.4: culture, ritual points and cosmetics](#25-244-culture-rituals-and-cosmetic-reshaping-17-development-only)
 
-> This guide covers **SSC 2.4.7 (2026-10-28)** for RimWorld 1.7; 1.6 remains frozen at 2.4.1. See the [release scope](Docs/Releases/2.4.7/2.4.7发布说明.md#english). Earlier section versions identify introductions.
+> This guide covers **SSC 2.4.8 (development registration, 2026-10-31; unreleased)** for RimWorld 1.7; 1.6 remains frozen at 2.4.1. See the [release scope](Docs/Releases/2.4.8/2.4.8发布说明.md#english). Earlier section versions identify introductions.
 
 [Project home](README.md) · [Player reading order](Docs/Players/README.md#english-reading-order) · [Quick start](QUICK_START_EN.md) · [中文机制详解](机制详解.md)
 
@@ -21,7 +23,7 @@ SexSlaveCraft, abbreviated SSC below, is built around this progression loop:
 1. Set a humanlike pawn’s `Pawn Identity` to `Master` or `Sex Slave`.
 2. Use ordinary `Training` to raise Corruption, opinion, and body-part experience while reducing Will.
 3. Use the `Binding Ritual` to establish the master–slave bond, deepen the `Sex Slave Chain` health stage, and attempt slave conversion.
-4. Choose one of six specializations: `Public Use`, `Cow`, `Training Officer`, `Pet Cat`, `Pet Dog` or `Combatant`.
+4. Choose one of seven specializations: `Public Use`, `Cow`, `Training Officer`, `Pet Cat`, `Pet Dog`, `Combatant` or `Broodmother`.
 5. Use `Personality Excretion` to store a personality in `Personality Gel`, implant it into a Hollow, or edit it into a final specialization.
 6. Use `Semi-gelatinization Surgery` and `Full Gelatinization Surgery` for high-risk body transformation.
 
@@ -1993,3 +1995,67 @@ Each resonance query reuses one statistics result, preserving bond filtering, ze
 ### Version and remaining scope
 
 Scoped in-game acceptance exists for these features; unreported language/mod combinations are not independently declared passed. Traditional Chinese/English/Russian romance display and other separate checks remain in the [verification index](Docs/Development/Verification/README.md). Automatic warm-up/slowdown, a standalone framework, PNA boosting/facilities and new social events remain future work. The formal rebuild, complete gate and upload receipts are recorded separately in the version-validation archive.
+
+<a id="ssc-248"></a>
+## 29. 2.4.8 Broodmother, personality imprints and attributes (1.7 development)
+
+**Registered 2026-10-31; unreleased.** [Development notes](Docs/Releases/2.4.8/2.4.8发布说明.md#english) · [Commit audit](Docs/Releases/2.4.8/2.4.8开发归并核对.md) · [Validation](Docs/Releases/2.4.8/2.4.8版本验证.md).
+
+### Broodmother development and finalization
+
+New selection/reselection requires SSC Slave Chain stage 3 and completed uterine development. Lower stages alone add no suspension of existing progress or achievements; body/direction/final-effect eligibility still applies. Invalid conditions retain progress/achievements while their effects pause.
+
+Eligible Training, teaching, playing and live births use their respective progression paths. Teaching time counts even if the student gains no skill XP. Live births settle once per birth scope; failed/stillbirth results do not award progress, and repeated completion cannot claim twice.
+
+Ordinary stages begin at 0/20%/50%/80%/completion, ending in Complete Broodmother; Gel processing yields Ultimate Broodmother. Fertility, pregnancy duration, education/play efficiency and Beauty depend on effective eligibility. Beauty at 50%/80%/completion is +0.5/+1/+1.5; final Beauty is +2. Ordinary and final effects do not stack with each other; imprint Beauty can add separately. Pregnancy shortening reuses the uterine mechanism without retroactive awards or repeated initialization.
+
+Specialization progress and achievements follow personality; uterine development and the following choices stay with the body. Finalization still validates research, material, personality and output rather than merging incompatible inputs.
+
+### Preconception settings and generation
+
+| Setting | Unlock | Ownership/application |
+| --- | --- | --- |
+| Offspring sex | Broodmother 20% | Uterine body; read on actual generation |
+| Species source | Broodmother 50% | Human/HAR species Kind selection; native genes/xenotypes remain |
+| Initial-imprint preset | Ordinary completion | Seventh personal boolean ability; saved only in the uterine Hediff, default off |
+
+Choices can be prepared with fertility off but do not bypass application eligibility. Pregnancy/labor prohibits edits; loss of eligibility preserves choices without creating missing carriers. Old menus revalidate the original pawn, Comp, personality and uterus.
+
+Actual generation reads current eligibility and choices while retaining native gene/litter-size handling. Pre-generated pawns are returned unchanged. The initial imprint grants no SSC role/Chain and does not inherit a parent's differentiated form. HAR/menstruation adapters retain scoped verification, not universal backend coverage. Pregnancy blocks personality extraction but retains preparation/progress; the separate Master prohibition still clears preparation.
+
+### Final Conception ability
+
+Select an eligible adult, non-hostile humanlike target on the same map. The caster approaches and starts the shared scene; only normal completion submits pregnancy to the caster through the existing backend. Success starts a seven-day cooldown. Pregnancy retains but disables the ability. Target sex/fertility is not a natural-pairing filter; native body, SSC permission and job conditions remain, and protected work is not forcibly replaced.
+
+Interruption, failed start and changed personality/job do not grant conception or success cooldown. Natural conception is isolated only for this exact scene. Unfinished sessions are canceled on load without resumption/replayed settlement. Successful cooldown uses an absolute deadline that follows personality; pregnancy keeps its backend. The earlier standalone cast and separate follow-up design are removed.
+
+### Imprints and Master extraction
+
+Three forms are mutually exclusive. Seed routing follows existing qualification/current identity, refusing repeat use without consumption once any imprint exists. Initial state, adult admission and differentiation are distinct; only a genuinely new successful binding differentiates. Old-Chain restoration/replay/index repair does not.
+
+Differentiated forms lock their corresponding SSC role even after unbinding. Age/immunity/stats follow the form; natural biological aging is capped at 25 without rewinding chronological age. Immunity covers the explicitly listed diseases, not all diseases. Gel extraction, processing and implantation preserve exact imprint state; old imprint-free payloads clear the host imprint, and contradictory payloads are rejected before mutation.
+
+Current Masters cannot undergo personality extraction and residual preparation is cleared. Pregnant non-Masters keep preparation while extraction is blocked. This adds no unbinding/transfer behavior and does not rewrite legacy Master gels. Gel display names the imprint; role-lock semantics remain.
+
+### PNA and five body-frequency sources
+
+When a corresponding PNA load record exists, both ordinary erosion and Chain activation use the original five stages with factors ×1.10/×1.25/×1.50/×1.75/×2. Load, immunity and Chain routing remain unchanged.
+
+| Body development | Below 30% | 30%–below 70% | 70%–below 100% | Complete |
+| --- | ---: | ---: | ---: | ---: |
+| Vagina | 0 | +0.03 | +0.08 | +0.15 |
+| Anus | 0 | +0.02 | +0.05 | +0.10 |
+| Breasts | 0 | +0.02 | +0.05 | +0.10 |
+| Mouth | 0 | +0.01 | +0.03 | +0.05 |
+| Uterus | 0 | +0.02 | +0.05 | +0.10 |
+| Same-stage total | 0 | +0.10 | +0.26 | +0.50 |
+
+Only the current stage's complete offset applies; earlier stages do not accumulate. Fertility on/off does not change a completed uterus's +0.10. Offsets affect the general stat, not contact-specific parts. For these sources: `final=(1+body offsets)×personal level×PNA factor×imprint factor`. All five complete, personal×16, PNA×2 and the corresponding imprint×1.25 can produce×60; this describes progress, not guaranteed event count. Disabling personal sensitivity removes only that source; no global shutdown, new timer or idle automatic trigger is added.
+
+### Hollow needs and trainer convenience
+
+The completed Hollow state disables Joy, Comfort, Beauty, Outdoors, Indoors and RoomSize, not merely their bars. Mood, food, rest and other needs/effects remain. Removing the state rebuilds needs according to current eligibility without restoring old satisfaction. Skills, relations, personality and body abilities are not redesigned here.
+
+Explicitly assign-and-enable Training work, or enable the existing assignee in place. New enabling uses native priority 3; existing enabled saved priorities remain. Disabled work/admission cannot be bypassed by the menu. Work saves through the native system; failure withdraws still-identifiable changes from this request, not arbitrary third-party side effects.
+
+The whole Training work category is enabled, including personality tasks under their original conditions. In-place enabling does not replay non-Master authorization. Closing work keeps the assignment without background re-enabling; changing/clearing an assignee does not turn off their work. Training tab and overview share the action; multiple-trainer assignment remains deferred.
