@@ -28,11 +28,15 @@ namespace SexSlaveCraft
             Map map = sexSlave?.Map;
             if (map == null) yield break;
 
-            // EN: Candidate scan only returns free colonists who already have the TrainSexSlave work type enabled.
-            // CN: 候选扫描只返回自由殖民者里那些已经启用“调教”工作类型的人。
+            // 1.7候选由显式菜单说明工作状态；冻结版本仍要求预先启用工作。
             foreach (Pawn candidate in map.mapPawns.FreeColonists.ToList())
             {
+#if SSC_RW17 || SSC_TRAINER_WORK_TEST
+                // 显式菜单允许指派时启用工作；禁止工作者也保留，供菜单解释原因。
+                if (!SSCTrainerWorkUtility.CanConsider(sexSlave, candidate)) continue;
+#else
                 if (!CanAssignTrainerTo(sexSlave, candidate)) continue;
+#endif
                 yield return candidate;
             }
         }
@@ -46,10 +50,14 @@ namespace SexSlaveCraft
         /// <summary>检查指派所需身份、存活状态和原有工作开关；工作关闭不抹除调教员身份。</summary>
         public static bool CanAssignAsTrainer(Pawn candidate)
         {
+#if SSC_RW17 || SSC_TRAINER_WORK_TEST
+            return SSCTrainerWorkUtility.GetState(candidate) == SSCTrainerWorkState.Active;
+#else
             if (candidate == null || candidate.Dead || candidate.Destroyed || candidate.Downed
                 || !SSCIdentityUtility.IsTrainer(candidate)) return false;
             if (candidate.workSettings == null || TrainSexSlaveWorkType == null) return false;
             return candidate.workSettings.WorkIsActive(TrainSexSlaveWorkType);
+#endif
         }
 
         /// <summary>菜单和直接指派共用资格：保持自由殖民者范围、排除自身，再只读检查指派及所需授权能否提交。</summary>
@@ -75,10 +83,16 @@ namespace SexSlaveCraft
         {
             Pawn trainer = sexSlave?.TryGetComp<CompSexSlaveTraining>()?.selectedTrainer;
             if (trainer == null) return Strings.ITab_TrainerNone;
+#if SSC_RW17 || SSC_TRAINER_WORK_TEST
+            SSCTrainerWorkState state = SSCTrainerWorkUtility.GetState(trainer, sexSlave);
+            if (state != SSCTrainerWorkState.Active)
+                return "SSC_TrainerWork_AssignmentStatus".Translate(trainer.LabelShort, SSCTrainerWorkUtility.Reason(state));
+#else
             if (GetActiveAssignedTrainer(sexSlave) == null)
                 return "SSC_TrainerIdentity_InactiveAssignment".Translate(trainer.LabelShort);
             if (!CanAssignAsTrainer(trainer))
                 return "SSC_TrainerIdentity_UnavailableAssignment".Translate(trainer.LabelShort);
+#endif
             return trainer.LabelShort;
         }
 

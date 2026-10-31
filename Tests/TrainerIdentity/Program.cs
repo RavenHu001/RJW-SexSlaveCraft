@@ -165,7 +165,7 @@ internal static partial class Program
             Assert(!SSCBondUtility.Bind(Pawn(PawnIdentity.Master), missing));
             Assert(SSCBondUtility.GetChain(missing) == null);
         });
-        Run("菜单排除未选择、关闭性奴、自身、原版候选外人员及工作关闭", () =>
+        Run("菜单保留未启用工作者，排除无资格自身及原版候选外人员", () =>
         {
             var f = Setup(); Pawn on = QualifiedTrainer(f.slave.Map);
             Pawn off = Pawn(PawnIdentity.Slave, f.slave.Map), unset = Pawn(PawnIdentity.Unset, f.slave.Map);
@@ -173,7 +173,7 @@ internal static partial class Program
             Pawn legalSlave = QualifiedTrainer(f.slave.Map); legalSlave.IsSlave = true; legalSlave.IsColonist = false;
             f.slave.Map.mapPawns.FreeColonistsSource.Remove(legalSlave);
             f.slave.Training.slaveTrainerEnabled = true;
-            Assert(TrainerAssignmentUtility.GetTrainerCandidates(f.slave).SequenceEqual(new[] { f.master, on }));
+            Assert(TrainerAssignmentUtility.GetTrainerCandidates(f.slave).SequenceEqual(new[] { f.master, on, paused }));
             foreach (Pawn invalid in new[] { off, unset, paused, legalSlave, f.slave })
                 Assert(!SSCBondUtility.TryAssignTrainer(f.slave, invalid));
         });
@@ -310,7 +310,7 @@ internal static partial class Program
         Run("指派显示区分停用和工作暂停", () =>
         {
             var f = Setup(); f.slave.Training.selectedTrainer = f.master;
-            f.master.workSettings.Active = false; Assert(TrainerAssignmentUtility.GetAssignedTrainerLabel(f.slave).Contains("工作或身体"));
+            f.master.workSettings.Active = false; Assert(TrainerAssignmentUtility.GetAssignedTrainerLabel(f.slave).Contains(SSCTrainerWorkUtility.Reason(SSCTrainerWorkState.Off)));
             SSCIdentityUtility.TrySetIdentity(f.master, PawnIdentity.Unset);
             Assert(TrainerAssignmentUtility.GetAssignedTrainerLabel(f.slave).Contains("身份停用"));
         });
@@ -416,6 +416,7 @@ internal static partial class Program
         RunWorkScanTests();
         RunTrainingTargetIdentityTests();
         RunTrainerMenuTests();
+        RunTrainerWorkTests();
         Console.WriteLine($"{passed}/{passed + failed} passed (production trainer identity and assignment; game interface model).");
         return failed == 0 ? 0 : 1;
     }

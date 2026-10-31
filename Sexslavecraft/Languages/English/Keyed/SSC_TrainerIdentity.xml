@@ -33,4 +33,21 @@
   <SSC_TrainerIdentity_InactiveAssignment>{0} (trainer status inactive)</SSC_TrainerIdentity_InactiveAssignment>
   <SSC_TrainerIdentity_UnavailableAssignment>{0} (work or physical requirements not met)</SSC_TrainerIdentity_UnavailableAssignment>
   <SSC_TrainerIdentity_Required>Requires a master or an active Training Officer.</SSC_TrainerIdentity_Required>
+
+  <!-- 调教员指派与工作启用便捷操作 -->
+  <SSC_TrainerWork_State_Active>Training work enabled</SSC_TrainerWork_State_Active>
+  <SSC_TrainerWork_State_Off>Training work disabled</SSC_TrainerWork_State_Off>
+  <SSC_TrainerWork_State_Forbidden>Incapable of training work</SSC_TrainerWork_State_Forbidden>
+  <SSC_TrainerWork_State_Uninitialized>Work settings unavailable</SSC_TrainerWork_State_Uninitialized>
+  <SSC_TrainerWork_State_Inactive>Trainer identity inactive</SSC_TrainerWork_State_Inactive>
+  <SSC_TrainerWork_State_Downed>Trainer downed</SSC_TrainerWork_State_Downed>
+  <SSC_TrainerWork_State_Away>Trainer is not a free colonist on this map</SSC_TrainerWork_State_Away>
+  <SSC_TrainerWork_AssignmentStatus>{0} ({1})</SSC_TrainerWork_AssignmentStatus>
+  <SSC_TrainerWork_StatusSuffix> ({0})</SSC_TrainerWork_StatusSuffix>
+  <SSC_TrainerWork_AssignAndEnable> (assign and enable training work)</SSC_TrainerWork_AssignAndEnable>
+  <SSC_TrainerWork_EnableAssigned>Enable training work for {0}</SSC_TrainerWork_EnableAssigned>
+  <SSC_TrainerWork_Enable>Enable</SSC_TrainerWork_Enable>
+  <SSC_TrainerWork_CategoryTip>Enables Training at priority 3; keeps an existing priority. Includes eligible personality excretion and insertion tasks.</SSC_TrainerWork_CategoryTip>
+  <SSC_TrainerWork_Changed>The pawn, assignment or work settings changed. Reopen the menu.</SSC_TrainerWork_Changed>
+  <SSC_TrainerWork_Failed>Could not complete the training work settings. Please try again.</SSC_TrainerWork_Failed>
 </LanguageData>

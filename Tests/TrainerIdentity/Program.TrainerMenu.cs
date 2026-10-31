@@ -11,6 +11,7 @@ namespace Verse
     public class FloatMenuOption
     {
         public readonly string Label; public readonly Action action;
+        public string tooltip;
         public FloatMenuOption(string label, Action action) { Label = label; this.action = action; }
     }
 }

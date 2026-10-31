@@ -26,6 +26,7 @@
     <GenerateDependencyFile>false</GenerateDependencyFile>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="common/SSCTrainerWorkUtility.cs" />
     <!-- 人格印记与停龄补丁仅编入1.7；共享入口通过SSC_RW17保留旧版本行为。 -->
     <Compile Include="common/SSCImprintUtility.cs" />
     <Compile Include="common/FertilitySpecializationUtility.cs" />

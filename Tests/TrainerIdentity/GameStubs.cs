@@ -8,6 +8,7 @@ using Verse.AI;
 
 namespace Verse
 {
+    public class DefMap<T, TValue> { public TValue Value; public TValue this[T key] { get => Value; set => Value = value; } }
     public class Thing { public bool Destroyed; public Map Map; }
     public class Pawn : Thing
     {
@@ -17,7 +18,10 @@ namespace Verse
         public string LabelShort = "Pawn";
         public Faction Faction = Faction.OfPlayer;
         public CompSexSlaveTraining Training = new CompSexSlaveTraining();
-        public WorkSettings workSettings = new WorkSettings();
+        public Pawn_WorkSettings workSettings = new Pawn_WorkSettings();
+        public bool WorkDisabled;
+        public bool WorkTypeIsDisabled(WorkTypeDef work) => WorkDisabled;
+        public List<string> GetReasonsForDisabledWorkType(WorkTypeDef work) => new List<string> { "test work prohibition" };
         public Health health = new Health();
         public Story story = new Story();
         public Needs needs = new Needs();
@@ -52,12 +56,6 @@ namespace Verse
                 return freeColonists;
             }
         }
-    }
-    public class WorkSettings
-    {
-        public bool Active = true;
-        /// <summary>返回测试工作开关，不从 SSC 身份推导。</summary>
-        public bool WorkIsActive(WorkTypeDef work) => Active;
     }
     public class Story { public TraitSet traits = new TraitSet(); }
     public class TraitSet
@@ -155,10 +153,11 @@ namespace Verse
     }
     public static class DefDatabase<T> where T : new()
     {
+        private static readonly T fallback = new T();
         public static List<T> AllDefsListForReading = new List<T>();
         /// <summary>测试仅请求调教工作定义。</summary>
         public static T GetNamedSilentFail(string name) => typeof(T) == typeof(HediffDef)
-            ? AllDefsListForReading.FirstOrDefault(d => ((HediffDef)(object)d).defName == name) : new T();
+            ? AllDefsListForReading.FirstOrDefault(d => ((HediffDef)(object)d).defName == name) : fallback;
     }
     public static class Find { public static TickManager TickManager = new TickManager(); }
     public class TickManager { public int TicksGame = 100000; }
@@ -200,6 +199,7 @@ namespace Verse
     {
         /// <summary>模型不连接游戏日志。</summary>
         public static void Warning(string message) { }
+        public static void Error(string message) { }
     }
 }
 namespace Verse.AI
@@ -235,6 +235,25 @@ namespace Verse
 namespace RimWorld
 {
     using Verse;
+    // 原版工作接口边界：保存数值与非数字模式的读取值分开；回调用于模拟外部补丁。
+    public class Pawn_WorkSettings
+    {
+        public const int DefaultPriority = 3;
+        public bool Initialized = true, UsePriorities = true, IgnoreEnable;
+        private readonly DefMap<WorkTypeDef, int> priorities = new DefMap<WorkTypeDef, int> { Value = 3 };
+        public int RawPriority { get => priorities.Value; set => priorities.Value = value; }
+        public int SetCalls;
+        public Action<int> AfterSet;
+        public bool Active { get => RawPriority > 0; set => RawPriority = value ? 3 : 0; }
+        public int GetPriority(WorkTypeDef work) => RawPriority > 0 && !UsePriorities ? 3 : RawPriority;
+        public bool WorkIsActive(WorkTypeDef work) => GetPriority(work) > 0;
+        public void SetPriority(WorkTypeDef work, int priority)
+        {
+            SetCalls++;
+            if (!IgnoreEnable || priority == 0) RawPriority = priority;
+            AfterSet?.Invoke(priority);
+        }
+    }
     public class Faction { public static readonly Faction OfPlayer = new Faction(); }
     public static class MessageTypeDefOf { public static readonly object PositiveEvent = new object(), RejectInput = new object(); }
     public class WorkTypeDef { }

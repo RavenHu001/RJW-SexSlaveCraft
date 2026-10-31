@@ -794,7 +794,11 @@ namespace SexSlaveCraft
 
         /// <summary>列出合格且可完成调教授权的对象；普通互动不随指派开放，强制来源禁止时不能换人。</summary>
         private List<FloatMenuOption> GetTrainerOptions(Pawn slave)
+#if SSC_RW17
+            => SSCTrainerAssignmentMenu.Options(slave, current: () => SelPawn == slave);
+#else
             => SSCTrainerAssignmentMenu.Options(slave);
+#endif
 
         /// <summary>切换日常训练状态并清除当前训练占用；启用时显示现有资格校验结果。</summary>
         private static void DrawTrainingToggle(Listing_Standard listing, Pawn pawn, CompSexSlaveTraining comp)
@@ -871,9 +875,28 @@ namespace SexSlaveCraft
         {
             string trainerName = TrainerAssignmentUtility.GetAssignedTrainerLabel(pawn);
             Rect row = listing.GetRect(30f);
+#if SSC_RW17
+            FloatMenuOption enable = SSCTrainerAssignmentMenu.EnableOption(pawn,
+                current: () => SelPawn == pawn && pawn.TryGetComp<CompSexSlaveTraining>() == comp && SSCIdentityUtility.IsSexSlave(pawn));
+            if (enable != null)
+            {
+                string enableLabel = "SSC_TrainerWork_Enable".Translate();
+                float buttonWidth = Mathf.Min(row.width * .4f, Mathf.Max(58f, Text.CalcSize(enableLabel).x + 16f));
+                Rect button = new Rect(row.xMax - buttonWidth, row.y, buttonWidth, row.height);
+                if (Widgets.ButtonText(button, enableLabel)) enable.action();
+                TooltipHandler.TipRegion(button, "SSC_TrainerWork_CategoryTip".Translate());
+                row.width -= buttonWidth + 6f;
+            }
+#endif
             if (Widgets.ButtonText(row, trainerName) && CanEditTrainingConfiguration(pawn, comp))
                 Find.WindowStack.Add(new FloatMenu(GetTrainerOptions(pawn)));
-            TooltipHandler.TipRegion(row, "SSC_Restrictions_AssignAuthorizesTip".Translate());
+            string trainerTip = "SSC_Restrictions_AssignAuthorizesTip".Translate();
+#if SSC_RW17
+            if (comp.selectedTrainer != null)
+                trainerTip += "\n\n" + SSCTrainerWorkUtility.Reason(
+                    SSCTrainerWorkUtility.GetState(comp.selectedTrainer, pawn), comp.selectedTrainer);
+#endif
+            TooltipHandler.TipRegion(row, trainerTip);
         }
 
         /// <summary>设置回调只接受仍属于原 Pawn 的 SSC 性奴组件，不用已绘制面板代替后台身份检查。</summary>

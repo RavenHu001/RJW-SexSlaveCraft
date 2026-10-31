@@ -288,7 +288,12 @@ namespace SexSlaveCraft
             if (!Mouse.IsOver(rect)) return false;
             if (!current) { TooltipHandler.TipRegion(rect, SSCBondOverviewText.T("RelationChanged")); return false; }
             Widgets.DrawHighlight(rect);
+#if SSC_RW17
+            TooltipHandler.TipRegion(rect, view.Display.TrainerTooltip + "\n" +
+                SSCTrainerWorkUtility.Reason(SSCTrainerWorkUtility.GetState(snapshot.AssignedTrainer, snapshot.Source), snapshot.AssignedTrainer));
+#else
             TooltipHandler.TipRegion(rect, view.Display.TrainerTooltip);
+#endif
             SSCBondOverviewNavigation.Highlight(snapshot.AssignedTrainerLocation);
             bool available = SSCBondOverviewNavigation.CanPreview(snapshot.AssignedTrainerLocation, out _);
             if (!available) TooltipHandler.TipRegion(rect, SSCBondOverviewText.T("ResolveOnClick"));

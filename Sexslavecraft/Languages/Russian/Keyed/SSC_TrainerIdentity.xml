@@ -33,4 +33,21 @@
   <SSC_TrainerIdentity_InactiveAssignment>{0} (статус дрессировщика неактивен)</SSC_TrainerIdentity_InactiveAssignment>
   <SSC_TrainerIdentity_UnavailableAssignment>{0} (не выполнены условия труда или физического состояния)</SSC_TrainerIdentity_UnavailableAssignment>
   <SSC_TrainerIdentity_Required>Нужен хозяин или действующий инструктор-дрессировщик.</SSC_TrainerIdentity_Required>
+
+  <!-- 调教员指派与工作启用便捷操作 -->
+  <SSC_TrainerWork_State_Active>Работа по дрессировке включена</SSC_TrainerWork_State_Active>
+  <SSC_TrainerWork_State_Off>Работа по дрессировке отключена</SSC_TrainerWork_State_Off>
+  <SSC_TrainerWork_State_Forbidden>Персонаж не способен заниматься дрессировкой</SSC_TrainerWork_State_Forbidden>
+  <SSC_TrainerWork_State_Uninitialized>Настройки работы недоступны</SSC_TrainerWork_State_Uninitialized>
+  <SSC_TrainerWork_State_Inactive>Роль дрессировщика неактивна</SSC_TrainerWork_State_Inactive>
+  <SSC_TrainerWork_State_Downed>Дрессировщик недееспособен</SSC_TrainerWork_State_Downed>
+  <SSC_TrainerWork_State_Away>Дрессировщик не является свободным колонистом на этой карте</SSC_TrainerWork_State_Away>
+  <SSC_TrainerWork_AssignmentStatus>{0} ({1})</SSC_TrainerWork_AssignmentStatus>
+  <SSC_TrainerWork_StatusSuffix> ({0})</SSC_TrainerWork_StatusSuffix>
+  <SSC_TrainerWork_AssignAndEnable> (назначить и включить дрессировку)</SSC_TrainerWork_AssignAndEnable>
+  <SSC_TrainerWork_EnableAssigned>Включить дрессировку для {0}</SSC_TrainerWork_EnableAssigned>
+  <SSC_TrainerWork_Enable>Включить</SSC_TrainerWork_Enable>
+  <SSC_TrainerWork_CategoryTip>Включает дрессировку с приоритетом 3; сохраняет существующий приоритет. Включает доступные задачи выведения и внедрения личности.</SSC_TrainerWork_CategoryTip>
+  <SSC_TrainerWork_Changed>Персонаж, назначение или настройки работы изменились. Откройте меню заново.</SSC_TrainerWork_Changed>
+  <SSC_TrainerWork_Failed>Не удалось изменить настройки дрессировки. Повторите попытку.</SSC_TrainerWork_Failed>
 </LanguageData>

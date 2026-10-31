@@ -33,4 +33,21 @@
   <SSC_TrainerIdentity_InactiveAssignment>{0}（调教员身份停用）</SSC_TrainerIdentity_InactiveAssignment>
   <SSC_TrainerIdentity_UnavailableAssignment>{0}（工作或身体条件暂不满足）</SSC_TrainerIdentity_UnavailableAssignment>
   <SSC_TrainerIdentity_Required>需要主人或已任职的训导官。</SSC_TrainerIdentity_Required>
+
+  <!-- 调教员指派与工作启用便捷操作 -->
+  <SSC_TrainerWork_State_Active>调教工作已启用</SSC_TrainerWork_State_Active>
+  <SSC_TrainerWork_State_Off>调教工作未启用</SSC_TrainerWork_State_Off>
+  <SSC_TrainerWork_State_Forbidden>原版禁止从事调教工作</SSC_TrainerWork_State_Forbidden>
+  <SSC_TrainerWork_State_Uninitialized>工作设置尚不可用</SSC_TrainerWork_State_Uninitialized>
+  <SSC_TrainerWork_State_Inactive>调教员身份停用</SSC_TrainerWork_State_Inactive>
+  <SSC_TrainerWork_State_Downed>调教员倒地</SSC_TrainerWork_State_Downed>
+  <SSC_TrainerWork_State_Away>调教员不在当前地图的自由殖民者中</SSC_TrainerWork_State_Away>
+  <SSC_TrainerWork_AssignmentStatus>{0}（{1}）</SSC_TrainerWork_AssignmentStatus>
+  <SSC_TrainerWork_StatusSuffix>（{0}）</SSC_TrainerWork_StatusSuffix>
+  <SSC_TrainerWork_AssignAndEnable>（指定并启用调教工作）</SSC_TrainerWork_AssignAndEnable>
+  <SSC_TrainerWork_EnableAssigned>启用{0}的调教工作</SSC_TrainerWork_EnableAssigned>
+  <SSC_TrainerWork_Enable>启用</SSC_TrainerWork_Enable>
+  <SSC_TrainerWork_CategoryTip>启用调教工作，默认优先级3；已启用则保留原值。包含符合条件的人格排泄与植入任务。</SSC_TrainerWork_CategoryTip>
+  <SSC_TrainerWork_Changed>角色、指派或工作设置已变化，请重新打开菜单。</SSC_TrainerWork_Changed>
+  <SSC_TrainerWork_Failed>未能完成调教工作设置，请重新尝试。</SSC_TrainerWork_Failed>
 </LanguageData>
