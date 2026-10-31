@@ -90,7 +90,29 @@ internal static partial class Program
         {
             Near(1200, research.baseCost); Near(3500, fertilityRecipe.workAmount); Near(1, fertilityRecipe.ingredients.Single().GetBaseCount());
             var p = FertilityPawn(); Require(!FertilitySpecializationUtility.CanSelect(p, out _));
+            Require(SSCBondUtility.Bind(ImprintPawn(PawnIdentity.Master),p)); SSCBondUtility.GetChain(p).Severity=.5f;
             ((Dictionary<ResearchProjectDef,float>)AccessTools.Field(typeof(ResearchManager),"progress").GetValue(Current.Game.researchManager))[research]=1200; Require(FertilitySpecializationUtility.CanSelect(p, out _));
+        });
+        Check("fertility stage three selection rechecks stale menu without disabling retained training or final effects", () =>
+        {
+            var p=FertilityPawn(); var c=p.TryGetComp<CompSexSlaveTraining>();
+            ((Dictionary<ResearchProjectDef,float>)AccessTools.Field(typeof(ResearchManager),"progress").GetValue(Current.Game.researchManager))[research]=1200;
+            Require(!FertilitySpecializationUtility.CanSelect(p,out var reason));
+            Equal("SSC_Fertility_Stage".Translate(3).ToString(),reason);
+            Require(SSCBondUtility.Bind(ImprintPawn(PawnIdentity.Master),p)); var chain=SSCBondUtility.GetChain(p);
+            chain.Severity=.3f; Require(!FertilitySpecializationUtility.CanSelect(p,out _));
+            chain.Severity=.5f; Require(FertilitySpecializationUtility.CanSelect(p,out _));
+            c.SetSpecialization(SexSlaveSpecializationType.None);
+            var menu=(FloatMenuOption)AccessTools.Method(typeof(ITab_SexSlaveTraining),"BuildFertilitySpecializationOption").Invoke(null,new object[]{p,c});
+            Require(menu.action!=null); chain.Severity=.3f; menu.action(); Equal(SexSlaveSpecializationType.None,c.specializationType);
+            chain.Severity=.5f;
+            menu=(FloatMenuOption)AccessTools.Method(typeof(ITab_SexSlaveTraining),"BuildFertilitySpecializationOption").Invoke(null,new object[]{p,c});
+            menu.action(); Equal(SexSlaveSpecializationType.Fertility,c.specializationType);
+            c.specializationProgress=.4f; chain.Severity=.3f;
+            Near(.01f,FertilitySpecializationUtility.TryGainProgress(p,.01f)); Near(.41f,c.specializationProgress);
+            p.health.AddHediff(FertilitySpecializationUtility.FinalDef); c.SetSpecialization(SexSlaveSpecializationType.None);
+            Equal(5,FertilitySpecializationUtility.Stage(p)); Near(1.5f,FertilitySpecializationUtility.CareFactor(p));
+            Require(FertilitySpecializationUtility.HasFinalState(p));
         });
         Check("fertility admission pauses without a valid complete uterus or adult slave identity", () =>
         {

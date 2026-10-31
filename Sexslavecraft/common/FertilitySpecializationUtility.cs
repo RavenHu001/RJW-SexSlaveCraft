@@ -13,6 +13,8 @@ namespace SexSlaveCraft
         public const string OrdinaryName = "SSC_Hediff_Fertility";
         public const string FinalName = "SSC_Hediff_Fertility_Final";
         public const string ResearchName = "SSC_RES_Fertility";
+        // 与奶牛化相同，仅作为玩家选择方向的门槛，不用于清空或停用已有培养／终极成果。
+        public const int MinimumSelectionStage = 3;
         public static HediffDef OrdinaryDef => DefDatabase<HediffDef>.GetNamedSilentFail(OrdinaryName);
         public static HediffDef FinalDef => DefDatabase<HediffDef>.GetNamedSilentFail(FinalName);
         private static readonly HashSet<Pawn> syncing = new HashSet<Pawn>();
@@ -41,6 +43,8 @@ namespace SexSlaveCraft
             if (HasFinalState(pawn)) reason = "SSC_Fertility_Finalized".Translate();
             else if (!ResearchUtils.IsResearchFinished(DefDatabase<ResearchProjectDef>.GetNamedSilentFail(ResearchName)))
                 reason = "SSC_Fertility_Research".Translate();
+            else if (SSCIdentityUtility.GetSexSlaveStage(pawn) < MinimumSelectionStage)
+                reason = "SSC_Fertility_Stage".Translate(MinimumSelectionStage);
             return reason == null;
         }
 

@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <SSC_Fertility_Label>Fertility</SSC_Fertility_Label>
+  <SSC_Fertility_Select>Set as: Fertility</SSC_Fertility_Select>
   <SSC_Fertility_Identity>Requires SSC slave identity</SSC_Fertility_Identity>
   <SSC_Fertility_Adult>Requires an adult humanlike body</SSC_Fertility_Adult>
   <SSC_Fertility_Uterus>Requires a fully developed uterus</SSC_Fertility_Uterus>
   <SSC_Fertility_Finalized>Sex slave specialization (Ultimate fertility)</SSC_Fertility_Finalized>
   <SSC_Fertility_Research>Requires fertility specialization research</SSC_Fertility_Research>
-  <SSC_Fertility_Tip>Requires a fully developed uterus. Training and care remain available with fertility disabled. Each hour of active care grants 1 percentage point, without a daily cap.</SSC_Fertility_Tip>
+  <SSC_Fertility_Stage>Sex slave degree is below {0}</SSC_Fertility_Stage>
+  <SSC_Fertility_Tip>Selection requires sex-slave stage 3 and a fully developed uterus. Training and care remain available with fertility disabled. Each hour of active care grants 1 percentage point, without a daily cap.</SSC_Fertility_Tip>
   <SSC_Fertility_FinalTip>Ordinary training complete. Finalize one personality gel at a sculpting table.</SSC_Fertility_FinalTip>
   <SSC_Fertility_InactiveLabel>Inactive</SSC_Fertility_InactiveLabel>
   <SSC_Fertility_InactiveDescription>Currently inactive: {0}</SSC_Fertility_InactiveDescription>

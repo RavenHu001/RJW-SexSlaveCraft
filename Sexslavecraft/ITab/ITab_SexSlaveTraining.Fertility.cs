@@ -12,8 +12,9 @@ namespace SexSlaveCraft
         {
             bool available = FertilitySpecializationUtility.CanSelect(pawn, out string reason);
             object token = SSCPersonalityRuntimeUtility.Capture(pawn);
-            string label = "SSC_Fertility_Label".Translate();
-            if (!available && !string.IsNullOrEmpty(reason)) label += " (" + reason + ")";
+            string label = "SSC_Fertility_Select".Translate();
+            if (FertilitySpecializationUtility.HasFinalState(pawn)) label += " " + Strings.ITab_SpecializationFinalizedSuffix;
+            else if (!available && !string.IsNullOrEmpty(reason)) label += " (" + reason + ")";
             return new FloatMenuOption(label, available ? (Action)(() =>
             {
                 if (pawn.TryGetComp<CompSexSlaveTraining>() != comp || !SSCPersonalityRuntimeUtility.IsCurrent(pawn, token) ||
