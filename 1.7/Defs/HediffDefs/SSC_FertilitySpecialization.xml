@@ -35,16 +35,19 @@
       <li>
         <minSeverity>0.5</minSeverity>
         <fertilityFactor>1.4</fertilityFactor>
+        <statOffsets><PawnBeauty>0.5</PawnBeauty></statOffsets>
         <label>Sex slave specialization (Skilled fertility)</label>
       </li>
       <li>
         <minSeverity>0.8</minSeverity>
         <fertilityFactor>1.6</fertilityFactor>
+        <statOffsets><PawnBeauty>1</PawnBeauty></statOffsets>
         <label>Sex slave specialization (Expert fertility)</label>
       </li>
       <li>
         <minSeverity>0.999</minSeverity>
         <fertilityFactor>1.8</fertilityFactor>
+        <statOffsets><PawnBeauty>1.5</PawnBeauty></statOffsets>
         <label>Sex slave specialization (Complete fertility)</label>
       </li>
     </stages>
@@ -74,6 +77,7 @@
     <stages>
       <li>
         <fertilityFactor>2</fertilityFactor>
+        <statOffsets><PawnBeauty>2</PawnBeauty></statOffsets>
       </li>
     </stages>
   </HediffDef>
