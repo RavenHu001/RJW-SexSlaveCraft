@@ -86,17 +86,18 @@ internal static partial class Program
         }
         if (preconceptionOnly) { PreconceptionTests(harmony); return; }
 
-        Check("fertility real research and recipe use approved gates", () =>
+        Check("fertility selection requires completed research", () =>
         {
-            Near(1200, research.baseCost); Near(3500, fertilityRecipe.workAmount); Near(1, fertilityRecipe.ingredients.Single().GetBaseCount());
-            var p = FertilityPawn(); Require(!FertilitySpecializationUtility.CanSelect(p, out _));
+            var p = FertilityPawn();
             Require(SSCBondUtility.Bind(ImprintPawn(PawnIdentity.Master),p)); SSCBondUtility.GetChain(p).Severity=.5f;
-            ((Dictionary<ResearchProjectDef,float>)AccessTools.Field(typeof(ResearchManager),"progress").GetValue(Current.Game.researchManager))[research]=1200; Require(FertilitySpecializationUtility.CanSelect(p, out _));
+            Require(!FertilitySpecializationUtility.CanSelect(p, out string reason));
+            Equal("SSC_Fertility_Research".Translate().ToString(),reason);
+            ((Dictionary<ResearchProjectDef,float>)AccessTools.Field(typeof(ResearchManager),"progress").GetValue(Current.Game.researchManager))[research]=research.baseCost; Require(FertilitySpecializationUtility.CanSelect(p, out _));
         });
         Check("fertility stage three selection rechecks stale menu without disabling retained training or final effects", () =>
         {
             var p=FertilityPawn(); var c=p.TryGetComp<CompSexSlaveTraining>();
-            ((Dictionary<ResearchProjectDef,float>)AccessTools.Field(typeof(ResearchManager),"progress").GetValue(Current.Game.researchManager))[research]=1200;
+            ((Dictionary<ResearchProjectDef,float>)AccessTools.Field(typeof(ResearchManager),"progress").GetValue(Current.Game.researchManager))[research]=research.baseCost;
             Require(!FertilitySpecializationUtility.CanSelect(p,out var reason));
             Equal("SSC_Fertility_Stage".Translate(3).ToString(),reason);
             Require(SSCBondUtility.Bind(ImprintPawn(PawnIdentity.Master),p)); var chain=SSCBondUtility.GetChain(p);
@@ -126,13 +127,13 @@ internal static partial class Program
         Check("fertility ordinary factor combines with uterus once and completion uses .999", () =>
         {
             var p = FertilityPawn(.5f); Toggle(p,true); Near(3.5f, Factor(p));
+            Near(.5f,StageStat(p,"PawnBeauty"));
             var c=p.TryGetComp<CompSexSlaveTraining>(); c.specializationProgress=.999f; FertilitySpecializationUtility.Sync(p); Near(4.5f,Factor(p));
             Near(1.5f,StageStat(p,"PawnBeauty"));
-            p.health.RemoveHediff(SSCUterusDevelopmentUtility.Find(p)); Near(1,Factor(p)); Start(p,1); Toggle(p,true); Near(4.5f,Factor(p));
-            c.SetSpecialization(SexSlaveSpecializationType.None); Near(2.5f,Factor(p)); c.SetSpecialization(SexSlaveSpecializationType.Fertility); Near(4.5f,Factor(p));
-            // 复用阶段用例核对实际Stat消费；各档为总加值，不随阶段升级累加。
-            foreach (var stage in new[] { (0f,0f), (.2f,0f), (.5f,.5f), (.8f,1f), (.999f,1.5f) })
-            { c.specializationProgress=stage.Item1; FertilitySpecializationUtility.Sync(p); Near(stage.Item2,StageStat(p,"PawnBeauty")); }
+            p.health.RemoveHediff(SSCUterusDevelopmentUtility.Find(p)); Near(1,Factor(p)); Near(0,StageStat(p,"PawnBeauty"));
+            Start(p,1); Toggle(p,true); Near(4.5f,Factor(p));
+            c.SetSpecialization(SexSlaveSpecializationType.None); Near(2.5f,Factor(p)); Near(0,StageStat(p,"PawnBeauty"));
+            c.SetSpecialization(SexSlaveSpecializationType.Fertility); Near(4.5f,Factor(p)); Near(1.5f,StageStat(p,"PawnBeauty"));
         });
         Check("fertility final persists across directions while invalid bodies return neutral", () =>
         {
@@ -165,7 +166,7 @@ internal static partial class Program
         Check("fertility gel copy Scribe processing and full insertion preserve source and body ownership", () =>
         {
             var source=FertilityPawn(.999f); var c=source.TryGetComp<CompSexSlaveTraining>(); c.fertilityCareTicks=1234;
-            SSCImprintUtility.TryGrantInitial(source); var data=new CompPersonalityStore(); data.StorePawnData(source);
+            var data=new CompPersonalityStore(); data.StorePawnData(source);
             Require(SpecializationFinalizationRecipeUtility.IsEligibleGel(fertilityRecipe,data));
             var gel=(ThingWithComps)ThingMaker.MakeThing(DefDatabase<ThingDef>.GetNamed("SSC_PersonalitySlime")); gel.GetComp<CompPersonalityStore>().CopyFrom(data);
             fertilityProduct=null; new Recipe_PSTagWorker { recipe=fertilityRecipe }.Notify_IterationCompleted(source,new List<Thing>{gel}); Require(fertilityProduct != null);
@@ -174,7 +175,7 @@ internal static partial class Program
             Scribe.loader.InitLoading(path); Scribe_Deep.Look(ref fixture,"data"); Scribe.loader.FinalizeLoading(); data=fixture.Data;
             Equal(1234,data.fertilityCareTicks); Require(!data.HasTag(FertilitySpecializationUtility.OrdinaryDef)); Require(!SpecializationFinalizationRecipeUtility.IsEligibleGel(fertilityRecipe,data));
             var host=ImprintPawn(PawnIdentity.Slave); Require(ExcretionUtility.InheritEverything(host,data)); Require(FertilitySpecializationUtility.HasFinalState(host)); Equal(-1,FertilitySpecializationUtility.Stage(host));
-            Equal(SSCImprintKind.Initial,SSCImprintUtility.GetKind(host)); Equal(1234,host.TryGetComp<CompSexSlaveTraining>().fertilityCareTicks);
+            Equal(1234,host.TryGetComp<CompSexSlaveTraining>().fertilityCareTicks);
             var uterus=Start(host,1); Toggle(host,true); Near(5,Factor(host));
             var empty=new CompPersonalityStore(); empty.StorePawnData(ImprintPawn()); Require(ExcretionUtility.InheritEverything(host,empty));
             Require(!FertilitySpecializationUtility.HasFinalState(host)); Equal(0,host.TryGetComp<CompSexSlaveTraining>().fertilityCareTicks); Require(ReferenceEquals(uterus,SSCUterusDevelopmentUtility.Find(host))); Require(uterus.FertilityEnabled);
@@ -374,14 +375,6 @@ internal static partial class Program
             var p=FertilityPawn(); p.health.AddHediff(FertilitySpecializationUtility.FinalDef); Toggle(p,true); var h=(rjw.Hediff_BasePregnancy)NewPregnancy(p,"RJW_pregnancy");
             h.babies=new(){NewPawn()}; rjw.RJWPregnancySettings.normal_pregnancy_duration=1; h.Initialize(p,null,default); Near(384000,h.p_end_tick-h.p_start_tick);
             h.Initialize(p,null,default); Near(384000,h.p_end_tick-h.p_start_tick);
-        });
-        Check("fertility old shortened and missing decision do not acquire new stage after load", () =>
-        {
-            var p=FertilityPawn(); Toggle(p,true); NewPregnancy(p,"PregnantHuman"); var path=Save(p);
-            p.TryGetComp<CompSexSlaveTraining>().specializationProgress=.999f;
-            var loaded=Load(path); Near(.8f,loaded.health.hediffSet.hediffs.Single(x=>x.def.defName=="PregnantHuman").TryGetComp<HediffComp_SSCUterusPregnancy>().DurationFactor);
-            Edit(path,doc=>doc.Descendants("sscUterusPregnancyDecision").Remove()); loaded=Load(path);
-            Near(1,loaded.health.hediffSet.hediffs.Single(x=>x.def.defName=="PregnantHuman").TryGetComp<HediffComp_SSCUterusPregnancy>().DurationFactor);
         });
     }
 

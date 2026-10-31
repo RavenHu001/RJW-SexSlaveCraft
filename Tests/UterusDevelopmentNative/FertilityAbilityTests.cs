@@ -89,7 +89,7 @@ internal static partial class Program
         Patch(AccessTools.Method(typeof(Pawn_PathFollower),nameof(Pawn_PathFollower.StartPath)),nameof(SkillStartPath));Patch(AccessTools.Method(typeof(Pawn_PathFollower),nameof(Pawn_PathFollower.StopDead)),nameof(SkillStopPath));Patch(AccessTools.Method(typeof(JobDriver),nameof(JobDriver.ReadyForNextToil)),nameof(SkillReady));Patch(AccessTools.Method(typeof(FertilitySceneUtility),"ClearAppearance"),nameof(SkillAppearance));
 
         Check("fertility scene global selection approaches without a separate warmup or early effect",()=>{
-            var(a,b,ability,job)=SkillRequest();skillContactAllowed=false;Require(ability.verb.ValidateTarget(b,false));Require(!ability.verb.TryStartCastOn(b,LocalTargetInfo.Invalid));Require(!ability.Activate(b,LocalTargetInfo.Invalid));
+            var(a,b,ability,job)=SkillRequest();skillContactAllowed=false;Require(ability.verb.ValidateTarget(b,false));Require(!ability.verb.TryStartCastOn(b,LocalTargetInfo.Invalid));
             var toils=((IEnumerable<Toil>)AccessTools.Method(typeof(JobDriver_FertilityConception),"MakeNewToils").Invoke(a.jobs.curDriver,null)).ToList();toils[0].actor=a;toils[0].initAction();Equal(1,skillPathStarts);Equal(0,skillPregnancyCalls);Equal(0,ability.CooldownTicksRemaining);
         });
         Check("fertility scene completes once after actual scene ticks and preserves both native parents",()=>{

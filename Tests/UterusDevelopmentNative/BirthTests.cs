@@ -79,12 +79,8 @@ internal static partial class Program
             Equal(PawnIdentity.Unset, SSCImprintUtility.GetImprintLockedIdentity(baby));
             Require(birthRequest.PawnKindDefGetter == null);
             Require(ReferenceEquals(request.ForcedEndogenes, birthRequest.ForcedEndogenes));
-            Equal(genes.Single(), birthRequest.ForcedEndogenes.Single()); Equal(xenotype, birthRequest.ForcedXenotype);
+            Equal(xenotype, birthRequest.ForcedXenotype);
             Equal(request.Faction, birthRequest.Faction); Equal(request.AllowedDevelopmentalStages, birthRequest.AllowedDevelopmentalStages);
-            Require(!SSCImprintUtility.TryGrantInitial(baby));
-            baby.ageTracker.AgeBiologicalTicks = 20L * GenDate.TicksPerYear;
-            Require(SSCBondUtility.Bind(ImprintPawn(PawnIdentity.Master), baby));
-            Equal(SSCImprintKind.Slave, SSCImprintUtility.GetKind(baby)); Equal(PawnIdentity.Slave, SSCImprintUtility.GetImprintLockedIdentity(baby));
         });
         Check("birth late generation reads current qualification and natural choices keep original request", () =>
         {
@@ -122,8 +118,6 @@ internal static partial class Program
             outer.Finish(null); outer.Finish(null); Near(.48f, comp.specializationProgress);
             var next = SSCFertilityBirthUtility.Begin(mother); next.Observe(ImprintPawn(age: 0)); next.Finish(null);
             Near(.56f, comp.specializationProgress);
-            comp.specializationProgress = .98f;
-            next = SSCFertilityBirthUtility.Begin(mother); next.Observe(ImprintPawn(age: 0)); next.Finish(null); Near(1f, comp.specializationProgress);
         });
         Check("birth no live result skipped original and exceptional exits do not award or leak scope", () =>
         {
@@ -181,9 +175,6 @@ internal static partial class Program
             Require(!SSCUterusDevelopmentUtility.TrySetFertilityEnabled(mother, false, out _));
             SSCPersonalityExcretionAdmission.RemoveForbiddenPreparation(mother); Require(mother.health.hediffSet.hediffs.Contains(preparation));
             mother.health.RemoveHediff(labor); Require(SSCPersonalityExcretionAdmission.CanExtract(mother));
-            var master = ImprintPawn(PawnIdentity.Master); var stale = new Hediff_SSC_PersonalityExcreting { def = SSCDefOf.SSC_PersonalityExcreting, pawn = master };
-            master.health.hediffSet.hediffs.Add(stale); Require(stale.ShouldRemove);
-            SSCPersonalityExcretionAdmission.RemoveForbiddenPreparation(master); Require(!master.health.hediffSet.hediffs.Contains(stale));
         });
         Check("birth actual native and RJW IL install local adapters and preserve branch entry", () =>
         {

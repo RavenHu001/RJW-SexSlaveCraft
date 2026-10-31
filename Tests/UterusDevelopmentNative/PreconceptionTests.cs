@@ -136,8 +136,12 @@ internal static partial class Program
                 // 状态通过真实健康列表出现；不运行妊娠或临产推进，从而只检验提交时的准入竞态。
                 var pregnant = new Hediff { def = definition, pawn = pawn }; pawn.health.hediffSet.hediffs.Add(pregnant);
                 Require(!SSCFertilityPreconceptionUtility.TrySetGender(context, SSCOffspringGender.Natural, out _), definition.defName);
-                Require(!SSCFertilityPreconceptionUtility.TrySetSpeciesSource(context, SSCOffspringSpeciesSource.Natural, out _), definition.defName);
-                Require(!SSCAbilityToggleUtility.TrySet(pawn, SSCAbilityToggleUtility.OffspringImprint, false, view.Context, out _), definition.defName);
+                // 三入口共用孕中锁：性别入口覆盖三状态，其余入口只在一种孕态检验接线，不做3×3矩阵。
+                if (definition == HediffDefOf.PregnantHuman)
+                {
+                    Require(!SSCFertilityPreconceptionUtility.TrySetSpeciesSource(context, SSCOffspringSpeciesSource.Natural, out _));
+                    Require(!SSCAbilityToggleUtility.TrySet(pawn, SSCAbilityToggleUtility.OffspringImprint, false, view.Context, out _));
+                }
                 var owner = SSCUterusDevelopmentUtility.Find(pawn);
                 Equal(SSCOffspringGender.Female, owner.OffspringGender); Equal(SSCOffspringSpeciesSource.Partner, owner.OffspringSpeciesSource); Require(owner.OffspringImprintEnabled);
                 pawn.health.hediffSet.hediffs.Remove(pregnant);

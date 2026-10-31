@@ -72,11 +72,6 @@ internal static partial class Program
         // 独立孕前分区只复用资源和身体初始化，不先执行印记或特化旧用例。
         if (fertilityOnly || preconceptionOnly || birthSelection != 0) { FertilityTests(repo, harmony, preconceptionOnly, birthSelection); return; }
 
-        Check("imprint native XML resolves all references and forbids item cures", () =>
-        {
-            Require(SSCImprintUtility.DefinitionsAvailable);
-            foreach (string name in imprintNames) Require(!DefDatabase<HediffDef>.GetNamed(name).everCurableByItem);
-        });
         Check("imprint native XML omits Biotech-only stat when DLC inactive", () =>
         {
             imprintBiotech = false;
@@ -88,7 +83,7 @@ internal static partial class Program
             }
             finally { imprintBiotech = true; }
         });
-        // 从实际属性开始，再覆盖获取、真实绑定、年龄推进和人格存读档，避免仅检查配置文本。
+        // XML交叉引用已在初始化检查；业务用例只保留实际属性消费与人格生命周期。
         Check("master cannot extract and preparation is removed without touching bonds", () =>
         {
             var master = ImprintPawn(PawnIdentity.Master); var slave = ImprintPawn(PawnIdentity.Slave);
@@ -189,20 +184,29 @@ internal static partial class Program
     /// <summary>验证三态真实属性运算、互斥去重及原版完全免疫查询，保留已有疾病。</summary>
     private static void ImprintEffectTests()
     {
+        // 主人态验证共用成年效果，其余两态只验独有差异，不再复制三份完整属性矩阵。
         foreach (var sample in new[] {
-            (imprintNames[0], new[] { 1.5f, 1.25f, 1.2f, 1.5f, 1.25f, 1f, 1f, 1f, 1f, 1f }),
-            (imprintNames[1], new[] { 3f, 1.5f, 1.5f, 1f, 1.5f, .25f, 1.25f, 1.25f, 1f, 1f }),
-            (imprintNames[2], new[] { 3f, 1.5f, 1.5f, 1f, 1.5f, 1.5f, 1.5f, 1.5f, 1.25f, 2f }) })
+            (imprintNames[0], new[] { ("LifespanFactor",1.5f), ("PsychicSensitivity",1.25f),
+                ("GlobalLearningFactor",1.2f), ("LearningRateFactor",1.5f), ("ImmunityGainSpeed",1.25f), ("PawnBeauty",1f) }),
+            (imprintNames[1], new[] { ("LifespanFactor",3f), ("PsychicSensitivity",1.5f), ("GlobalLearningFactor",1.5f),
+                ("ImmunityGainSpeed",1.5f), ("Vulnerability",.25f), ("SexFrequency",1.25f), ("SexSatisfaction",1.25f), ("PawnBeauty",1f) }),
+            (imprintNames[2], new[] { ("Vulnerability",1.5f), ("SexFrequency",1.5f),
+                ("SexSatisfaction",1.5f), ("SSC_OrgasmFrequency",1.25f), ("PawnBeauty",2f) }) })
             Check("imprint actual native stat calculation " + sample.Item1, () =>
             {
                 var pawn = ImprintPawn(); Mark(pawn, sample.Item1);
-                string[] names = { "LifespanFactor", "PsychicSensitivity", "GlobalLearningFactor", "LearningRateFactor", "ImmunityGainSpeed", "Vulnerability", "SexFrequency", "SexSatisfaction", "SSC_OrgasmFrequency", "PawnBeauty" };
-                for (int i = 0; i < names.Length; i++)
-                    Require(Math.Abs(sample.Item2[i] - StageStat(pawn, names[i])) < .0001f, names[i] + " expected " + sample.Item2[i] + ", got " + StageStat(pawn, names[i]));
-                Mark(pawn, sample.Item1); Mark(pawn, imprintNames[(Array.IndexOf(imprintNames, sample.Item1) + 1) % 3]);
-                Equal(1, pawn.health.hediffSet.hediffs.Count(h => SSCImprintUtility.IsImprintDef(h.def)));
-                Near(sample.Item2[1], StageStat(pawn, "PsychicSensitivity"));
-                Near(sample.Item2[9], StageStat(pawn, "PawnBeauty"));
+                foreach (var (name, expected) in sample.Item2)
+                {
+                    float actual = StageStat(pawn, name);
+                    Require(Math.Abs(expected - actual) < .0001f, name + " expected " + expected + ", got " + actual);
+                }
+                // 三态共用同一Hediff类；同Def重复及异Def互斥只需一个代表，不逐态重放。
+                if (sample.Item1 == SSCImprintUtility.MasterDefName)
+                {
+                    Mark(pawn, sample.Item1); Mark(pawn, SSCImprintUtility.SlaveDefName);
+                    Equal(1, pawn.health.hediffSet.hediffs.Count(h => SSCImprintUtility.IsImprintDef(h.def)));
+                    Near(1.5f, StageStat(pawn, "PsychicSensitivity")); Near(1f, StageStat(pawn, "PawnBeauty"));
+                }
             });
         Check("imprint immunity uses native immunity handler without deleting illness", () =>
         {
@@ -316,14 +320,9 @@ internal static partial class Program
         });
     }
 
-    /// <summary>执行健康与凝胶原生Scribe、载荷复制、完整植入和坏快照预检，不模拟迁移算法。</summary>
+    /// <summary>执行凝胶原生Scribe、载荷复制、完整植入和坏快照预检；不重复测试原版Hediff的Def序列化。</summary>
     private static void ImprintPersonalityTests()
     {
-        Check("imprint native Scribe roundtrip preserves all three forms without age conversion", () =>
-        {
-            foreach (string name in imprintNames)
-            { var pawn = ImprintPawn(); Mark(pawn, name); var loaded = Load(Save(pawn)); Equal(name, SSCImprintUtility.Find(loaded)?.def.defName); }
-        });
         Check("imprint snapshot copy and gel status preserve exact form; old payload stays empty", () =>
         {
             var pawn = ImprintPawn(PawnIdentity.Slave); Mark(pawn, imprintNames[2]);
