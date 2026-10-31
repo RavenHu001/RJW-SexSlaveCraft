@@ -107,6 +107,9 @@
         <statFactors>
           <SocialImpact>1.15</SocialImpact>
         </statFactors>
+        <statOffsets>
+          <SSC_OrgasmFrequency>0.01</SSC_OrgasmFrequency>
+        </statOffsets>
       </li>
       <li>
         <minSeverity>0.7</minSeverity>
@@ -118,6 +121,7 @@
           <SocialImpact>1.30</SocialImpact>
         </statFactors>
         <statOffsets>
+          <SSC_OrgasmFrequency>0.03</SSC_OrgasmFrequency>
           <TradePriceImprovement>0.05</TradePriceImprovement>
           <NegotiationAbility>0.10</NegotiationAbility>
         </statOffsets>
@@ -131,6 +135,7 @@
         <statFactors>
           <SocialImpact>1.50</SocialImpact> </statFactors>
         <statOffsets>
+          <SSC_OrgasmFrequency>0.05</SSC_OrgasmFrequency>
           <PawnBeauty>1</PawnBeauty> 
           <ConversionPower>0.25</ConversionPower>
           <TradePriceImprovement>0.15</TradePriceImprovement> <NegotiationAbility>0.25</NegotiationAbility> </statOffsets>
@@ -195,6 +200,7 @@
         <minSeverity>0.3</minSeverity>
         <label>熟练</label>
         <statOffsets>
+          <SSC_OrgasmFrequency>0.03</SSC_OrgasmFrequency>
           <PainShockThreshold>0.05</PainShockThreshold>
         </statOffsets>
         <statFactors>
@@ -205,6 +211,7 @@
         <minSeverity>0.7</minSeverity>
         <label>敏感</label>
         <statOffsets>
+          <SSC_OrgasmFrequency>0.08</SSC_OrgasmFrequency>
           <PainShockThreshold>0.15</PainShockThreshold>
           <PawnBeauty>1</PawnBeauty>
         </statOffsets>
@@ -216,6 +223,7 @@
         <minSeverity>1.0</minSeverity>
         <label>肉便器化</label>
         <statOffsets>
+          <SSC_OrgasmFrequency>0.15</SSC_OrgasmFrequency>
           <PawnBeauty>2</PawnBeauty>
           <PainShockThreshold>0.30</PainShockThreshold> </statOffsets>
         <statFactors>
@@ -243,6 +251,7 @@
         <label>熟练</label>
         <minSeverity>0.3</minSeverity>
         <statOffsets>
+          <SSC_OrgasmFrequency>0.02</SSC_OrgasmFrequency>
           <PawnBeauty>1</PawnBeauty>
         </statOffsets>
       </li>
@@ -250,6 +259,7 @@
         <label>彻底改造</label>
         <minSeverity>0.7</minSeverity>
         <statOffsets>
+          <SSC_OrgasmFrequency>0.05</SSC_OrgasmFrequency>
           <PawnBeauty>2</PawnBeauty>
           <TameAnimalChance>0.10</TameAnimalChance>
           <TrainAnimalChance>0.10</TrainAnimalChance>
@@ -264,6 +274,7 @@
         <label>刻印恶堕化</label>
         <minSeverity>1.0</minSeverity>
         <statOffsets>
+          <SSC_OrgasmFrequency>0.10</SSC_OrgasmFrequency>
           <PawnBeauty>3</PawnBeauty> <TameAnimalChance>0.20</TameAnimalChance>
           <TrainAnimalChance>0.20</TrainAnimalChance>
         </statOffsets>
@@ -293,6 +304,9 @@
           <InjuryHealingFactor>1.25</InjuryHealingFactor>
           <ImmunityGainSpeed>1.05</ImmunityGainSpeed>
         </statFactors>
+        <statOffsets>
+          <SSC_OrgasmFrequency>0.02</SSC_OrgasmFrequency>
+        </statOffsets>
       </li>
       <li>
         <minSeverity>0.7</minSeverity>
@@ -302,6 +316,7 @@
           <ImmunityGainSpeed>1.15</ImmunityGainSpeed>
         </statFactors>
         <statOffsets>
+          <SSC_OrgasmFrequency>0.05</SSC_OrgasmFrequency>
           <PainShockThreshold>0.10</PainShockThreshold>
         </statOffsets>
       </li>
@@ -312,6 +327,7 @@
           <InjuryHealingFactor>2.00</InjuryHealingFactor> <ImmunityGainSpeed>1.30</ImmunityGainSpeed> 
         </statFactors>
         <statOffsets>
+          <SSC_OrgasmFrequency>0.10</SSC_OrgasmFrequency>
           <PainShockThreshold>0.20</PainShockThreshold>
         </statOffsets>
       </li>

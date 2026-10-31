@@ -34,6 +34,9 @@
           <RestRateMultiplier>1.05</RestRateMultiplier>
           <InjuryHealingFactor>1.10</InjuryHealingFactor>
         </statFactors>
+        <statOffsets>
+          <SSC_OrgasmFrequency>0.02</SSC_OrgasmFrequency>
+        </statOffsets>
       </li>
       <li>
         <minSeverity>0.7</minSeverity>
@@ -45,6 +48,9 @@
           <RestRateMultiplier>1.10</RestRateMultiplier>
           <InjuryHealingFactor>1.20</InjuryHealingFactor>
         </statFactors>
+        <statOffsets>
+          <SSC_OrgasmFrequency>0.05</SSC_OrgasmFrequency>
+        </statOffsets>
       </li>
       <li>
         <minSeverity>1</minSeverity>
@@ -57,6 +63,9 @@
           <InjuryHealingFactor>1.50</InjuryHealingFactor>
           <ImmunityGainSpeed>1.20</ImmunityGainSpeed>
         </statFactors>
+        <statOffsets>
+          <SSC_OrgasmFrequency>0.10</SSC_OrgasmFrequency>
+        </statOffsets>
       </li>
     </stages>
     <modExtensions>
@@ -73,6 +82,9 @@
             <InjuryHealingFactor>1.35</InjuryHealingFactor>
             <ImmunityGainSpeed>1.30</ImmunityGainSpeed>
           </statFactors>
+          <statOffsets>
+            <SSC_OrgasmFrequency>0.10</SSC_OrgasmFrequency>
+          </statOffsets>
         </fertileStage>
       </li>
     </modExtensions>
