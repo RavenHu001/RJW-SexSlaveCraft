@@ -55,6 +55,14 @@
     <everCurableByItem>false</everCurableByItem>
     <stages>
       <li>
+        <disablesNeeds>
+          <li>Joy</li>
+          <li>Comfort</li>
+          <li>Beauty</li>
+          <li>Outdoors</li>
+          <li>Indoors</li>
+          <li>RoomSize</li>
+        </disablesNeeds>
       <pctAllThoughtNullification>1</pctAllThoughtNullification>
       
       <overrideMoodBase>0.5</overrideMoodBase> 
