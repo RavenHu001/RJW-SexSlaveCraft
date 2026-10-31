@@ -11,8 +11,8 @@
     <everCurableByItem>false</everCurableByItem>
     <initialSeverity>1</initialSeverity><maxSeverity>1</maxSeverity>
     <stages><li>
-      <!-- 心灵敏感度使用直接加值，其余属性按各自倍率与外部来源叠加。 -->
-      <statOffsets><PsychicSensitivity>0.25</PsychicSensitivity></statOffsets>
+      <!-- 心灵敏感度与魅力使用直接加值，其余属性按各自倍率与外部来源叠加。 -->
+      <statOffsets><PsychicSensitivity>0.25</PsychicSensitivity><PawnBeauty>1</PawnBeauty></statOffsets>
       <statFactors>
         <LifespanFactor>1.5</LifespanFactor>
         <GlobalLearningFactor>1.2</GlobalLearningFactor>
@@ -31,7 +31,7 @@
     <everCurableByItem>false</everCurableByItem>
     <initialSeverity>1</initialSeverity><maxSeverity>1</maxSeverity>
     <stages><li>
-      <statOffsets><PsychicSensitivity>0.5</PsychicSensitivity></statOffsets>
+      <statOffsets><PsychicSensitivity>0.5</PsychicSensitivity><PawnBeauty>1</PawnBeauty></statOffsets>
       <statFactors>
         <LifespanFactor>3</LifespanFactor><GlobalLearningFactor>1.5</GlobalLearningFactor>
         <ImmunityGainSpeed>1.5</ImmunityGainSpeed>
@@ -50,7 +50,7 @@
     <everCurableByItem>false</everCurableByItem>
     <initialSeverity>1</initialSeverity><maxSeverity>1</maxSeverity>
     <stages><li>
-      <statOffsets><PsychicSensitivity>0.5</PsychicSensitivity></statOffsets>
+      <statOffsets><PsychicSensitivity>0.5</PsychicSensitivity><PawnBeauty>2</PawnBeauty></statOffsets>
       <statFactors>
         <LifespanFactor>3</LifespanFactor><GlobalLearningFactor>1.5</GlobalLearningFactor>
         <ImmunityGainSpeed>1.5</ImmunityGainSpeed>
