@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-  <SSC_Fertility_Label>Деторождение</SSC_Fertility_Label>
-  <SSC_Fertility_Select>Установить: деторождение</SSC_Fertility_Select>
+  <SSC_Fertility_Label>Вынашивательница</SSC_Fertility_Label>
+  <SSC_Fertility_Select>Установить: вынашивательница</SSC_Fertility_Select>
   <SSC_Fertility_Identity>Требуется статус секс-раба SSC</SSC_Fertility_Identity>
   <SSC_Fertility_Adult>Требуется взрослое человекоподобное тело</SSC_Fertility_Adult>
   <SSC_Fertility_Uterus>Требуется полностью развитая матка</SSC_Fertility_Uterus>
-  <SSC_Fertility_Finalized>Специализация секс-раба (высшее деторождение)</SSC_Fertility_Finalized>
-  <SSC_Fertility_Research>Требуется исследование специализации</SSC_Fertility_Research>
+  <SSC_Fertility_Finalized>Специализация секс-раба (высшая вынашивательница)</SSC_Fertility_Finalized>
+  <SSC_Fertility_Research>Требуется исследование вынашивательницы</SSC_Fertility_Research>
   <SSC_Fertility_Stage>Степень секс-раба ниже {0}</SSC_Fertility_Stage>
   <SSC_Fertility_Tip>Для выбора требуются стадия секс-раба 3 и полностью развитая матка. Обучение и игры доступны при отключённой фертильности. Каждый час ухода даёт 1 процентный пункт без суточного ограничения.</SSC_Fertility_Tip>
   <SSC_Fertility_FinalTip>Обычная подготовка завершена. Обработайте один гель личности на столе скульптора.</SSC_Fertility_FinalTip>

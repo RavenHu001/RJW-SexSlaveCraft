@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-  <SSC_Fertility_Label>生育</SSC_Fertility_Label>
-  <SSC_Fertility_Select>设为: 生育</SSC_Fertility_Select>
+  <SSC_Fertility_Label>孕母</SSC_Fertility_Label>
+  <SSC_Fertility_Select>设为: 孕母</SSC_Fertility_Select>
   <SSC_Fertility_Identity>需要SSC性奴身份</SSC_Fertility_Identity>
   <SSC_Fertility_Adult>需要成年类人身体</SSC_Fertility_Adult>
   <SSC_Fertility_Uterus>需要完成子宫改造</SSC_Fertility_Uterus>
-  <SSC_Fertility_Finalized>性奴特化（终极生育）</SSC_Fertility_Finalized>
-  <SSC_Fertility_Research>需要完成生育特化研究</SSC_Fertility_Research>
+  <SSC_Fertility_Finalized>性奴特化（终极孕母）</SSC_Fertility_Finalized>
+  <SSC_Fertility_Research>需要完成孕母研究</SSC_Fertility_Research>
   <SSC_Fertility_Stage>性奴等级不足 {0} 级</SSC_Fertility_Stage>
   <SSC_Fertility_Tip>性奴化阶段达到3且完成子宫改造后可选择培养；关闭生育仍可授课和陪玩。有效育儿每小时增加1个百分点，无日上限。</SSC_Fertility_Tip>
   <SSC_Fertility_FinalTip>普通培养完成。可在雕刻台加工一份人格凝胶进行终极化。</SSC_Fertility_FinalTip>

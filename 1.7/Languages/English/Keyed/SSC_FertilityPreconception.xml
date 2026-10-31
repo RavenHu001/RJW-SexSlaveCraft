@@ -12,14 +12,14 @@
   <SSC_Preconception_GenderTip>Set the preferred sex of offspring.</SSC_Preconception_GenderTip>
   <SSC_Preconception_SpeciesTip>Choose whether offspring use your species or the partner's, such as human or an alien race; gene inheritance is unaffected.</SSC_Preconception_SpeciesTip>
   <SSC_Preconception_ImprintTip>Choose whether offspring receive the initial Child of Lust imprint, without copying a parent's differentiated imprint.</SSC_Preconception_ImprintTip>
-  <SSC_Preconception_GenderLocked>Requires 20% fertility specialization progress</SSC_Preconception_GenderLocked>
-  <SSC_Preconception_SpeciesLocked>Requires 50% fertility specialization progress</SSC_Preconception_SpeciesLocked>
-  <SSC_Preconception_ImprintLocked>Requires completed ordinary fertility specialization training</SSC_Preconception_ImprintLocked>
+  <SSC_Preconception_GenderLocked>Requires 20% broodmother specialization progress</SSC_Preconception_GenderLocked>
+  <SSC_Preconception_SpeciesLocked>Requires 50% broodmother specialization progress</SSC_Preconception_SpeciesLocked>
+  <SSC_Preconception_ImprintLocked>Requires completed ordinary broodmother specialization training</SSC_Preconception_ImprintLocked>
   <SSC_Preconception_PregnancyBlocked>Fetal control cannot be changed during pregnancy or labor</SSC_Preconception_PregnancyBlocked>
   <SSC_Preconception_FertilityDisabled>Fertility is disabled; fetal control is inactive</SSC_Preconception_FertilityDisabled>
   <SSC_Preconception_Unavailable>Fetal control is currently unavailable</SSC_Preconception_Unavailable>
   <SSC_Preconception_InvalidSelection>Invalid fetal control option</SSC_Preconception_InvalidSelection>
-  <SSC_Preconception_DirectionRequired>Requires active fertility specialization</SSC_Preconception_DirectionRequired>
+  <SSC_Preconception_DirectionRequired>Requires active broodmother specialization</SSC_Preconception_DirectionRequired>
   <SSC_Preconception_MissingUterus>Fetal control: requires completed uterus development</SSC_Preconception_MissingUterus>
   <SSC_Birth_ExcretionBlocked>Personality excretion is unavailable during pregnancy or labor; existing preparation is retained</SSC_Birth_ExcretionBlocked>
   <SSC_Birth_ControlUnapplied>Fetal control for {0} could not be fully applied: {1}.</SSC_Birth_ControlUnapplied>

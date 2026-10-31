@@ -5,7 +5,7 @@
   <HediffDef>
     <defName>SSC_ImprintInitial</defName>
     <label>Child of Lust</label>
-    <description>[Placeholder] Description pending.</description>
+    <description>Gestated in a broodmother's womb, reshaped by purple nanomachines from the embryo onward—hence amorous brows and eyes, skin fair and smooth, an alluring, good-looking form. The nanomachines dormant within have not yet taken shape; they await a single surge of lust to wake fully—to submit, or to ascend.</description>
     <hediffClass>SexSlaveCraft.Hediff_SSCImprint</hediffClass>
     <isBad>false</isBad>
     <everCurableByItem>false</everCurableByItem>
@@ -25,7 +25,7 @@
   <HediffDef>
     <defName>SSC_ImprintMaster</defName>
     <label>Lord of Lust</label>
-    <description>[Placeholder] Description pending.</description>
+    <description>The purple nanomachines have completely fused with body and mind amid the pleasure of conquest. The whole form radiates a dominator's oppressive aura and lust—robust and ageless, the eyes filled with conquest, making others bow down without thinking.</description>
     <hediffClass>SexSlaveCraft.Hediff_SSCImprint</hediffClass>
     <isBad>false</isBad>
     <everCurableByItem>false</everCurableByItem>
@@ -44,7 +44,7 @@
   <HediffDef>
     <defName>SSC_ImprintSlave</defName>
     <label>Servant of Lust</label>
-    <description>[Placeholder] Description pending.</description>
+    <description>The purple nanomachines have completely fused with body and mind amid the pleasure of being conquered. The figure is alluring, the skin so sensitive that the lightest touch leaves it soft and trembling—every gesture is the yielding charm of submission, longing forever to sink into lust.</description>
     <hediffClass>SexSlaveCraft.Hediff_SSCImprint</hediffClass>
     <isBad>false</isBad>
     <everCurableByItem>false</everCurableByItem>

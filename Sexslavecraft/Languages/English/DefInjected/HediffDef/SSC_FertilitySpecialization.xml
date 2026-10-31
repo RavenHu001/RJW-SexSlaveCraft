@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-  <SSC_Hediff_Fertility.label>Sex slave specialization (Fertility)</SSC_Hediff_Fertility.label>
-  <SSC_Hediff_Fertility.description>[Placeholder] Description pending.</SSC_Hediff_Fertility.description>
-  <SSC_Hediff_Fertility_Final.label>Sex slave specialization (Ultimate fertility)</SSC_Hediff_Fertility_Final.label>
-  <SSC_Hediff_Fertility_Final.description>[Placeholder] Description pending.</SSC_Hediff_Fertility_Final.description>
-  <SSC_Hediff_Fertility.stages.0.label>Fertility training</SSC_Hediff_Fertility.stages.0.label>
-  <SSC_Hediff_Fertility.stages.1.label>Sex slave specialization (Fertility)</SSC_Hediff_Fertility.stages.1.label>
-  <SSC_Hediff_Fertility.stages.2.label>Sex slave specialization (Skilled fertility)</SSC_Hediff_Fertility.stages.2.label>
-  <SSC_Hediff_Fertility.stages.3.label>Sex slave specialization (Expert fertility)</SSC_Hediff_Fertility.stages.3.label>
-  <SSC_Hediff_Fertility.stages.4.label>Sex slave specialization (Complete fertility)</SSC_Hediff_Fertility.stages.4.label>
+  <SSC_Hediff_Fertility.label>Sex slave specialization (Broodmother)</SSC_Hediff_Fertility.label>
+  <SSC_Hediff_Fertility.description>Her body is ripening for gestation—the lower belly growing softer and fuller by the day, a maternal allure gradually rising in every gesture. The corrupted womb is being mastered bit by bit, conceiving ever more solely by her master's will.</SSC_Hediff_Fertility.description>
+  <SSC_Hediff_Fertility_Final.label>Sex slave specialization (Ultimate broodmother)</SSC_Hediff_Fertility_Final.label>
+  <SSC_Hediff_Fertility_Final.description>Her body is wholly possessed by the instinct to breed—breasts swollen and full, lower belly warm, the whole of her steeped in a ripened, lascivious air. The corrupted womb is utterly submissive to its master, ready at any moment to receive and to gestate.</SSC_Hediff_Fertility_Final.description>
+  <SSC_Hediff_Fertility.stages.0.label>Broodmother training</SSC_Hediff_Fertility.stages.0.label>
+  <SSC_Hediff_Fertility.stages.1.label>Sex slave specialization (Broodmother)</SSC_Hediff_Fertility.stages.1.label>
+  <SSC_Hediff_Fertility.stages.2.label>Sex slave specialization (Skilled broodmother)</SSC_Hediff_Fertility.stages.2.label>
+  <SSC_Hediff_Fertility.stages.3.label>Sex slave specialization (Expert broodmother)</SSC_Hediff_Fertility.stages.3.label>
+  <SSC_Hediff_Fertility.stages.4.label>Sex slave specialization (Complete broodmother)</SSC_Hediff_Fertility.stages.4.label>
 </LanguageData>

@@ -3,8 +3,8 @@
   <!-- AI 辅助生成：全图选人后在同场RJW任务完成性行为，再结算施法者受孕。 -->
   <AbilityDef>
     <defName>SSC_FertilityConception</defName>
-    <label>定向孕育</label>
-    <description>（描述暂待编写）选择同地图的非敌对成年类人对象，走近并正常完成性行为后，使自己怀孕。对象性别和生育能力不限。成功后冷却7天，孕期及临产禁用；中断不受孕、不消耗冷却。</description>
+    <label>Conception</label>
+    <description>Engage in sex with a chosen target; the purple nanomachines use the target as a template to generate sperm, pair it with her own egg, and make the fertilized egg implant at once in the corrupted womb.\n\nTargets may be of any gender and fertility. Successfully establishing pregnancy starts a 7-day cooldown; disabled during pregnancy and labor. Interruption causes neither conception nor cooldown consumption.</description>
     <abilityClass>SexSlaveCraft.Ability_FertilityConception</abilityClass>
     <iconPath>UI/Icons/Abilities/SSC_PetCatComfort</iconPath>
     <jobDef>SSC_Job_FertilityConception</jobDef>

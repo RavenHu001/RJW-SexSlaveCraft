@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-  <SSC_FertilityConception.label>定向孕育</SSC_FertilityConception.label>
-  <SSC_FertilityConception.description>（描述暫待編寫）全圖選擇對象，走近並正常完成性行為後使自身懷孕。建孕成功冷卻7天；中斷不受孕、不扣冷卻，孕期及臨產禁用。</SSC_FertilityConception.description>
+  <SSC_FertilityConception.label>受孕</SSC_FertilityConception.label>
+  <SSC_FertilityConception.description>與選定對象發生性行為，藉由紫色微械以目標為藍本生成精子，與自身卵子配對，並使受精卵在惡墮化的子宮中立刻著床。\n\n對象性別和生育能力不限。建孕成功後冷卻 7 天，孕期及臨產禁用；中斷不受孕、不消耗冷卻。</SSC_FertilityConception.description>
 </LanguageData>

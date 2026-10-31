@@ -12,14 +12,14 @@
   <SSC_Preconception_GenderTip>Предпочитаемый пол потомства.</SSC_Preconception_GenderTip>
   <SSC_Preconception_SpeciesTip>Потомство получает ваш вид или вид партнёра, например человека или инопланетной расы; наследование генов не меняется.</SSC_Preconception_SpeciesTip>
   <SSC_Preconception_ImprintTip>Потомство получает начальную метку «Дитя похоти», без копирования сформированной метки родителя.</SSC_Preconception_ImprintTip>
-  <SSC_Preconception_GenderLocked>Требуется 20% развития специализации на размножении</SSC_Preconception_GenderLocked>
-  <SSC_Preconception_SpeciesLocked>Требуется 50% развития специализации на размножении</SSC_Preconception_SpeciesLocked>
-  <SSC_Preconception_ImprintLocked>Требуется завершить обычное обучение специализации на размножении</SSC_Preconception_ImprintLocked>
+  <SSC_Preconception_GenderLocked>Требуется 20% развития специализации вынашивательницы</SSC_Preconception_GenderLocked>
+  <SSC_Preconception_SpeciesLocked>Требуется 50% развития специализации вынашивательницы</SSC_Preconception_SpeciesLocked>
+  <SSC_Preconception_ImprintLocked>Требуется завершить обычное обучение специализации вынашивательницы</SSC_Preconception_ImprintLocked>
   <SSC_Preconception_PregnancyBlocked>Нельзя менять параметры плода во время беременности или родов</SSC_Preconception_PregnancyBlocked>
   <SSC_Preconception_FertilityDisabled>Фертильность отключена; управление плодом не действует</SSC_Preconception_FertilityDisabled>
   <SSC_Preconception_Unavailable>Управление параметрами плода сейчас недоступно</SSC_Preconception_Unavailable>
   <SSC_Preconception_InvalidSelection>Недопустимый параметр плода</SSC_Preconception_InvalidSelection>
-  <SSC_Preconception_DirectionRequired>Требуется активная специализация на размножении</SSC_Preconception_DirectionRequired>
+  <SSC_Preconception_DirectionRequired>Требуется активная специализация вынашивательницы</SSC_Preconception_DirectionRequired>
   <SSC_Preconception_MissingUterus>Управление плодом: требуется завершённая модификация матки</SSC_Preconception_MissingUterus>
   <SSC_Birth_ExcretionBlocked>Выведение личности недоступно во время беременности и родов; имеющаяся подготовка сохраняется</SSC_Birth_ExcretionBlocked>
   <SSC_Birth_ControlUnapplied>Управление плодом для {0} применено не полностью: {1}.</SSC_Birth_ControlUnapplied>

@@ -2,9 +2,9 @@
 <Defs>
   <RecipeDef Class="SexSlaveCraft.RecipeDef_PSTag">
     <defName>SSC_PSEdit_Fertility_Final</defName>
-    <label>Sex slave specialization (Ultimate fertility)</label>
+    <label>Sex slave specialization (Ultimate broodmother)</label>
     <description>Finalize one personality gel with completed ordinary fertility training. Retains other personality achievements. This stage grants passive effects.</description>
-    <jobString>Finalizing fertility specialization.</jobString>
+    <jobString>Ultimate broodmother specialization...</jobString>
     <workAmount>3500</workAmount>
     <workSpeedStat>GeneralLaborSpeed</workSpeedStat>
     <effectWorking>Sculpt</effectWorking>
