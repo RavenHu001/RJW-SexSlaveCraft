@@ -175,7 +175,7 @@
       <li>
         <label>初起</label>
         <minSeverity>0</minSeverity>
-        <statFactors><SexFrequency>1.5</SexFrequency><SexSatisfaction>1.10</SexSatisfaction></statFactors>
+        <statFactors><SexFrequency>1.5</SexFrequency><SexSatisfaction>1.10</SexSatisfaction><SSC_OrgasmFrequency>1.10</SSC_OrgasmFrequency></statFactors>
         <painFactor>0.90</painFactor>
         <capMods>
           <li><capacity>Manipulation</capacity><offset>-0.02</offset></li>
@@ -186,7 +186,7 @@
       <li>
         <label>渐深</label>
         <minSeverity>0.30</minSeverity>
-        <statFactors><SexFrequency>2</SexFrequency><SexSatisfaction>1.20</SexSatisfaction></statFactors>
+        <statFactors><SexFrequency>2</SexFrequency><SexSatisfaction>1.20</SexSatisfaction><SSC_OrgasmFrequency>1.25</SSC_OrgasmFrequency></statFactors>
         <painFactor>0.75</painFactor>
         <capMods>
           <li><capacity>Manipulation</capacity><offset>-0.05</offset></li>
@@ -197,7 +197,7 @@
       <li>
         <label>失控</label>
         <minSeverity>0.80</minSeverity>
-        <statFactors><SexFrequency>2.5</SexFrequency><SexSatisfaction>1.35</SexSatisfaction></statFactors>
+        <statFactors><SexFrequency>2.5</SexFrequency><SexSatisfaction>1.35</SexSatisfaction><SSC_OrgasmFrequency>1.50</SSC_OrgasmFrequency></statFactors>
         <painFactor>0.50</painFactor>
         <capMods>
           <li><capacity>Manipulation</capacity><offset>-0.10</offset></li>
@@ -210,7 +210,7 @@
       <li>
         <label>沉溺</label>
         <minSeverity>1.40</minSeverity>
-        <statFactors><SexFrequency>3.25</SexFrequency><SexSatisfaction>1.50</SexSatisfaction></statFactors>
+        <statFactors><SexFrequency>3.25</SexFrequency><SexSatisfaction>1.50</SexSatisfaction><SSC_OrgasmFrequency>1.75</SSC_OrgasmFrequency></statFactors>
         <painFactor>0.25</painFactor>
         <capMods>
           <li><capacity>Manipulation</capacity><offset>-0.20</offset></li>
@@ -223,7 +223,7 @@
       <li>
         <label>强制高潮</label>
         <minSeverity>1.94</minSeverity>
-        <statFactors><SexFrequency>4</SexFrequency><SexSatisfaction>1.75</SexSatisfaction></statFactors>
+        <statFactors><SexFrequency>4</SexFrequency><SexSatisfaction>1.75</SexSatisfaction><SSC_OrgasmFrequency>2.00</SSC_OrgasmFrequency></statFactors>
         <painFactor>0</painFactor>
         <capMods>
           <li><capacity>Manipulation</capacity><offset>-0.30</offset></li>
@@ -254,7 +254,7 @@
       <li>
         <label>初醒</label>
         <minSeverity>0</minSeverity>
-        <statFactors><SexFrequency>1.5</SexFrequency><SexSatisfaction>1.10</SexSatisfaction></statFactors>
+        <statFactors><SexFrequency>1.5</SexFrequency><SexSatisfaction>1.10</SexSatisfaction><SSC_OrgasmFrequency>1.10</SSC_OrgasmFrequency></statFactors>
         <painFactor>0.95</painFactor>
         <capMods>
           <li><capacity>Consciousness</capacity><offset>0.02</offset></li>
@@ -265,7 +265,7 @@
       <li>
         <label>活络</label>
         <minSeverity>0.30</minSeverity>
-        <statFactors><SexFrequency>2</SexFrequency><SexSatisfaction>1.20</SexSatisfaction></statFactors>
+        <statFactors><SexFrequency>2</SexFrequency><SexSatisfaction>1.20</SexSatisfaction><SSC_OrgasmFrequency>1.25</SSC_OrgasmFrequency></statFactors>
         <painFactor>0.90</painFactor>
         <capMods>
           <li><capacity>Consciousness</capacity><offset>0.04</offset></li>
@@ -276,7 +276,7 @@
       <li>
         <label>充盈</label>
         <minSeverity>0.80</minSeverity>
-        <statFactors><SexFrequency>2.5</SexFrequency><SexSatisfaction>1.35</SexSatisfaction></statFactors>
+        <statFactors><SexFrequency>2.5</SexFrequency><SexSatisfaction>1.35</SexSatisfaction><SSC_OrgasmFrequency>1.50</SSC_OrgasmFrequency></statFactors>
         <painFactor>0.80</painFactor>
         <capMods>
           <li><capacity>Consciousness</capacity><offset>0.06</offset></li>
@@ -287,7 +287,7 @@
       <li>
         <label>激昂</label>
         <minSeverity>1.40</minSeverity>
-        <statFactors><SexFrequency>3.25</SexFrequency><SexSatisfaction>1.50</SexSatisfaction></statFactors>
+        <statFactors><SexFrequency>3.25</SexFrequency><SexSatisfaction>1.50</SexSatisfaction><SSC_OrgasmFrequency>1.75</SSC_OrgasmFrequency></statFactors>
         <painFactor>0.70</painFactor>
         <capMods>
           <li><capacity>Consciousness</capacity><offset>0.08</offset></li>
@@ -298,7 +298,7 @@
       <li>
         <label>过载</label>
         <minSeverity>1.94</minSeverity>
-        <statFactors><SexFrequency>4</SexFrequency><SexSatisfaction>1.75</SexSatisfaction></statFactors>
+        <statFactors><SexFrequency>4</SexFrequency><SexSatisfaction>1.75</SexSatisfaction><SSC_OrgasmFrequency>2.00</SSC_OrgasmFrequency></statFactors>
         <painFactor>0.60</painFactor>
         <capMods>
           <li><capacity>Consciousness</capacity><offset>0.10</offset></li>
