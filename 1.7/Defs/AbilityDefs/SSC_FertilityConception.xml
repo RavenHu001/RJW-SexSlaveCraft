@@ -6,7 +6,7 @@
     <label>Conception</label>
     <description>Engage in sex with a chosen target; the purple nanomachines use the target as a template to generate sperm, pair it with her own egg, and make the fertilized egg implant at once in the corrupted womb.\n\nTargets may be of any gender and fertility. Successfully establishing pregnancy starts a 7-day cooldown; disabled during pregnancy and labor. Interruption causes neither conception nor cooldown consumption.</description>
     <abilityClass>SexSlaveCraft.Ability_FertilityConception</abilityClass>
-    <iconPath>UI/Icons/Abilities/SSC_PetCatComfort</iconPath>
+    <iconPath>UI/Icons/Abilities/SSC_FertilityConception</iconPath>
     <jobDef>SSC_Job_FertilityConception</jobDef>
     <targetRequired>true</targetRequired><canUseAoeToGetTargets>false</canUseAoeToGetTargets>
     <hostile>false</hostile><showPsycastEffects>false</showPsycastEffects><stunTargetWhileCasting>false</stunTargetWhileCasting>
