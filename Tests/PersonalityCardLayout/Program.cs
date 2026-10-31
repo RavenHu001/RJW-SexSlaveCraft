@@ -29,6 +29,16 @@ internal static class Program
             (Language: "English", Count: 15), (Language: "Russian", Count: 30) })
             Run($"{sample.Language} / {sample.Count} traits: fixed information stays visible", () => Layout(sample.Language, sample.Count));
         Run("Long trait names wrap without overlapping the next row", LongNames);
+        // 提供长展示结果给真实绘制入口，检查固定摘要避让；业务形态与翻译由原生印记专项验证。
+        Run("Imprint status reserves wrapped height above bond summary", () =>
+        {
+            Thing gel = Gel(30);
+            gel.Comp.imprintDisplay = "印记：淫欲之奴（永久锁定性奴，解绑后仍保留此人格印记与身份方向）";
+            new TestCard().Draw(gel);
+            var imprint = DrawLog.Items.Single(item => item.Kind == "label" && item.Text == gel.Comp.imprintDisplay);
+            var bond = DrawLog.Items.Single(item => item.Kind == "label" && item.Text == Text.Plain(Strings.PES_BondHeader));
+            Assert(imprint.Rect.yMax <= bond.Rect.y, "The imprint must not overlap the bond section.");
+        });
         Run("Scroll regions are independent and the last trait is reachable", IndependentScrolling);
         Run("Switching gels resets scrolling while refresh preserves it", ScrollLifecycle);
         Run("Missing collections and invalid entries render safely", MissingData);

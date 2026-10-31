@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- AI 辅助生成：依据已确认的 v2 中文稿落实 Russian 文案；保留现有键名及参数契约。 -->
 <LanguageData>
   <SSC_HediffFertility_Label>Фертильность</SSC_HediffFertility_Label>
   <SSC_HediffFertility_Factor>×{0}</SSC_HediffFertility_Factor>
   <SSC_HediffFertility_Description>Множитель, с которым это состояние влияет на собственную фертильность тела. Он перемножается с эффектами из других источников и отражает лишь вклад этой модификации, а не итоговую вероятность зачатия.</SSC_HediffFertility_Description>
   <SSC_HediffFertility_LactationNote>Выключение выработки молока лишь останавливает её, но не снимает подавление фертильности, вызванное постоянной лактацией.</SSC_HediffFertility_LactationNote>
   <SSC_HediffFertility_LactationOverrideNote>Режим фертильности развитой матки включён, и подавление фертильности постоянной лактацией также снято.</SSC_HediffFertility_LactationOverrideNote>
+  <SSC_HediffFertility_Duration>Длительность новой беременности</SSC_HediffFertility_Duration>
+  <SSC_HediffFertility_DurationDescription>Множитель этой особенности при включённой фертильности. Множители матки и специализации перемножаются; текущая беременность сохраняет полученные условия.</SSC_HediffFertility_DurationDescription>
+  <SSC_HediffFertility_Education>Эффективность обучения детей</SSC_HediffFertility_Education>
+  <SSC_HediffFertility_EducationDescription>Множитель удовлетворения потребности в обучении и опыта навыков ученика при преподавании этим персонажем; сочетается с модификаторами ученика.</SSC_HediffFertility_EducationDescription>
+  <SSC_HediffFertility_BabyPlay>Эффективность игр с младенцем</SSC_HediffFertility_BabyPlay>
+  <SSC_HediffFertility_BabyPlayDescription>Множитель восстановления потребности младенца в игре при уходе этим персонажем.</SSC_HediffFertility_BabyPlayDescription>
 </LanguageData>

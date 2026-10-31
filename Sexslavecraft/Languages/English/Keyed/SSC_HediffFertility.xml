@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- AI 辅助生成：依据已确认的 v2 中文稿落实 English 文案；保留现有键名及参数契约。 -->
 <LanguageData>
   <SSC_HediffFertility_Label>Fertility</SSC_HediffFertility_Label>
   <SSC_HediffFertility_Factor>×{0}</SSC_HediffFertility_Factor>
   <SSC_HediffFertility_Description>This is the multiplier this condition applies to the body's own fertility. It multiplies with effects from other sources and reflects only this modification's contribution, not the final chance of conception.</SSC_HediffFertility_Description>
   <SSC_HediffFertility_LactationNote>Switching off milk production only stops milk production; it does not lift the fertility suppression caused by permanent lactation.</SSC_HediffFertility_LactationNote>
   <SSC_HediffFertility_LactationOverrideNote>Uterine development's fertile mode is enabled, also lifting the fertility suppression caused by permanent lactation.</SSC_HediffFertility_LactationOverrideNote>
+  <SSC_HediffFertility_Duration>New pregnancy duration</SSC_HediffFertility_Duration>
+  <SSC_HediffFertility_DurationDescription>Duration multiplier contributed by this condition when fertility is enabled. Uterus and specialization multiply together; existing pregnancies keep their acquired treatment.</SSC_HediffFertility_DurationDescription>
+  <SSC_HediffFertility_Education>Child education efficiency</SSC_HediffFertility_Education>
+  <SSC_HediffFertility_EducationDescription>Multiplier to students' learning need and lesson skill experience while this pawn teaches; stacks with the student's own modifiers.</SSC_HediffFertility_EducationDescription>
+  <SSC_HediffFertility_BabyPlay>Baby play efficiency</SSC_HediffFertility_BabyPlay>
+  <SSC_HediffFertility_BabyPlayDescription>Multiplier to baby play need recovery while this pawn plays with the baby.</SSC_HediffFertility_BabyPlayDescription>
 </LanguageData>

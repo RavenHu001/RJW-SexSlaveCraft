@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <!-- AI 辅助生成：全图选人后在同场RJW任务完成性行为，再结算施法者受孕。 -->
+  <AbilityDef>
+    <defName>SSC_FertilityConception</defName>
+    <label>Conception</label>
+    <description>Engage in sex with a chosen target; the purple nanomachines use the target as a template to generate sperm, pair it with her own egg, and make the fertilized egg implant at once in the corrupted womb.\n\nTargets may be of any gender and fertility. Successfully establishing pregnancy starts a 7-day cooldown; disabled during pregnancy and labor. Interruption causes neither conception nor cooldown consumption.</description>
+    <abilityClass>SexSlaveCraft.Ability_FertilityConception</abilityClass>
+    <iconPath>UI/Icons/Abilities/SSC_PetCatComfort</iconPath>
+    <jobDef>SSC_Job_FertilityConception</jobDef>
+    <targetRequired>true</targetRequired><canUseAoeToGetTargets>false</canUseAoeToGetTargets>
+    <hostile>false</hostile><showPsycastEffects>false</showPsycastEffects><stunTargetWhileCasting>false</stunTargetWhileCasting>
+    <showCastingProgressBar>false</showCastingProgressBar><casterMustBeCapableOfViolence>false</casterMustBeCapableOfViolence>
+    <showWhenDrafted>true</showWhenDrafted><displayGizmoWhileUndrafted>true</displayGizmoWhileUndrafted><disableGizmoWhileUndrafted>false</disableGizmoWhileUndrafted>
+    <cooldownTicksRange>420000</cooldownTicksRange>
+    <verbProperties><verbClass>SexSlaveCraft.Verb_FertilityConception</verbClass><warmupTime>0</warmupTime><range>0</range><requireLineOfSight>false</requireLineOfSight>
+      <targetParams><canTargetSelf>false</canTargetSelf><canTargetPawns>true</canTargetPawns><canTargetHumans>true</canTargetHumans><canTargetAnimals>false</canTargetAnimals><canTargetMechs>false</canTargetMechs><canTargetBuildings>false</canTargetBuildings><canTargetLocations>false</canTargetLocations><neverTargetIncapacitated>false</neverTargetIncapacitated></targetParams>
+    </verbProperties>
+    <comps><li Class="SexSlaveCraft.CompProperties_FertilityConception" /></comps>
+  </AbilityDef>
+</Defs>

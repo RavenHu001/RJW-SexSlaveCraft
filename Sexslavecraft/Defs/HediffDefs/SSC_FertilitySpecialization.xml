@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <HediffDef>
+    <defName>SSC_Hediff_Fertility</defName>
+    <label>Sex slave specialization (Broodmother)</label>
+    <description>Her body is ripening for gestation—the lower belly growing softer and fuller by the day, a maternal allure gradually rising in every gesture. The corrupted womb is being mastered bit by bit, conceiving ever more solely by her master's will.</description>
+    <hediffClass>SexSlaveCraft.Hediff_FertilitySpecialization</hediffClass>
+    <defaultLabelColor>(0.909804, 0.627451, 0.674510)</defaultLabelColor>
+    <isBad>false</isBad>
+    <everCurableByItem>false</everCurableByItem>
+    <initialSeverity>0.01</initialSeverity>
+    <maxSeverity>1</maxSeverity>
+    <modExtensions>
+      <li Class="SexSlaveCraft.FertilitySpecializationExtension">
+        <careFactors>
+          <li>1</li>
+          <li>1.1</li>
+          <li>1.2</li>
+          <li>1.3</li>
+          <li>1.4</li>
+          <li>1.5</li>
+        </careFactors>
+      </li>
+    </modExtensions>
+    <stages>
+      <li>
+        <minSeverity>0</minSeverity>
+        <fertilityFactor>1</fertilityFactor>
+        <label>Broodmother training</label>
+      </li>
+      <li>
+        <minSeverity>0.2</minSeverity>
+        <fertilityFactor>1.2</fertilityFactor>
+        <label>Sex slave specialization (Broodmother)</label>
+      </li>
+      <li>
+        <minSeverity>0.5</minSeverity>
+        <fertilityFactor>1.4</fertilityFactor>
+        <statOffsets><PawnBeauty>0.5</PawnBeauty></statOffsets>
+        <label>Sex slave specialization (Skilled broodmother)</label>
+      </li>
+      <li>
+        <minSeverity>0.8</minSeverity>
+        <fertilityFactor>1.6</fertilityFactor>
+        <statOffsets><PawnBeauty>1</PawnBeauty></statOffsets>
+        <label>Sex slave specialization (Expert broodmother)</label>
+      </li>
+      <li>
+        <minSeverity>0.999</minSeverity>
+        <fertilityFactor>1.8</fertilityFactor>
+        <statOffsets><PawnBeauty>1.5</PawnBeauty></statOffsets>
+        <label>Sex slave specialization (Complete broodmother)</label>
+      </li>
+    </stages>
+  </HediffDef>
+  <HediffDef>
+    <defName>SSC_Hediff_Fertility_Final</defName>
+    <label>Sex slave specialization (Ultimate broodmother)</label>
+    <description>Her body is wholly possessed by the instinct to breed—breasts swollen and full, lower belly warm, the whole of her steeped in a ripened, lascivious air. The corrupted womb is utterly submissive to its master, ready at any moment to receive and to gestate.</description>
+    <hediffClass>SexSlaveCraft.Hediff_FertilitySpecialization</hediffClass>
+    <defaultLabelColor>(1.0, 0.501961, 0.650980)</defaultLabelColor>
+    <isBad>false</isBad>
+    <everCurableByItem>false</everCurableByItem>
+    <initialSeverity>1</initialSeverity>
+    <maxSeverity>1</maxSeverity>
+    <modExtensions>
+      <li Class="SexSlaveCraft.FertilitySpecializationExtension">
+        <careFactors>
+          <li>1</li>
+          <li>1.1</li>
+          <li>1.2</li>
+          <li>1.3</li>
+          <li>1.4</li>
+          <li>1.5</li>
+        </careFactors>
+      </li>
+    </modExtensions>
+    <comps><li Class="SexSlaveCraft.HediffCompProperties_GiveAbility"><abilityDef>SSC_FertilityConception</abilityDef></li></comps>
+    <stages>
+      <li>
+        <fertilityFactor>2</fertilityFactor>
+        <statOffsets><PawnBeauty>2</PawnBeauty></statOffsets>
+      </li>
+    </stages>
+  </HediffDef>
+</Defs>

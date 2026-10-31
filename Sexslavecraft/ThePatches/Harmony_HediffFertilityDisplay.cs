@@ -1,4 +1,4 @@
-// AI 辅助生成：补充两项 SSC 身体 Hediff 的原生生育因子展示，不参与属性计算或状态保存。
+// AI 辅助生成：补充 SSC 身体与生育特化 Hediff 的原生生育因子展示，不参与属性计算或状态保存。
 using System.Collections.Generic;
 using HarmonyLib;
 using RimWorld;
@@ -9,18 +9,49 @@ namespace SexSlaveCraft
     [HarmonyPatch(typeof(HediffStatsUtility), nameof(HediffStatsUtility.SpecialDisplayStats))]
     public static class Harmony_HediffFertilityDisplay
     {
-        /// <summary>仅扩展子宫开发与永久泌乳实例的展示，其他 Hediff 和无实例的定义预览保持原结果。</summary>
+        /// <summary>仅扩展子宫开发、永久泌乳与生育特化实例的展示，其他 Hediff 和无实例的定义预览保持原结果。</summary>
         public static void Postfix(Hediff instance, ref IEnumerable<StatDrawEntry> __result)
         {
             string name = instance?.def?.defName;
-            if (name != SSCUterusDevelopmentUtility.DefName && name != "SSC_Lactating_SubState") return;
-            __result = WithFertilityFactor(__result, instance);
+            if (name != SSCUterusDevelopmentUtility.DefName && name != "SSC_Lactating_SubState" && !FertilitySpecializationUtility.IsTag(instance?.def)) return;
+            __result = WithReproductionEffects(WithFertilityFactor(__result, instance), instance);
         }
+
+        /// <summary>保留全部原版属性行，补齐非原生Stat的孕期、教育及陪玩影响；无保存或状态修改。</summary>
+        private static IEnumerable<StatDrawEntry> WithReproductionEffects(IEnumerable<StatDrawEntry> original, Hediff instance)
+        {
+            foreach (var entry in original) yield return entry;
+            if (instance is Hediff_FertilitySpecialization { IsInactiveFinal: true }) yield break;
+            bool uterus = instance is Hediff_SSCUterusDevelopment;
+            bool specialization = FertilitySpecializationUtility.IsTag(instance.def);
+            if (!uterus && !specialization) yield break;
+            bool enabled = SSCUterusDevelopmentUtility.Find(instance.pawn)?.FertilityEnabled == true;
+            int stage = specialization ? FertilitySpecializationUtility.Stage(instance.pawn) : -1;
+            // 分项只展示本Hediff的贡献：子宫0.8与特化额外系数相乘，不重复列总倍率。
+            float duration = !enabled ? 1f : uterus ? SSCUterusPregnancyUtility.DurationFactor
+                : stage < 0 ? 1f : HediffComp_SSCUterusPregnancy.DurationForStage(stage) / SSCUterusPregnancyUtility.DurationFactor;
+            // 没有时长影响时省略中性条目，保留实际缩短倍率及其余属性说明。
+            if (duration != 1f) yield return EffectEntry("Duration", duration, 4069);
+            if (specialization)
+            {
+                float care = FertilitySpecializationUtility.CareFactor(instance.pawn);
+                yield return EffectEntry("Education", care, 4068);
+                yield return EffectEntry("BabyPlay", care, 4067);
+            }
+        }
+
+        /// <summary>普通倍率行使用本地化名称与说明，健康悬停也由原版读取这些同一条目。</summary>
+        private static StatDrawEntry EffectEntry(string effect, float factor, int order)
+            => new StatDrawEntry(StatCategoryDefOf.CapacityEffects, ("SSC_HediffFertility_" + effect).Translate(),
+                "SSC_HediffFertility_Factor".Translate(factor.ToString("0.##")),
+                ("SSC_HediffFertility_" + effect + "Description").Translate(), order);
 
         /// <summary>保留原有属性条目，再读取实例当前阶段；开关和兼容修正后的值随本次查询实时反映。</summary>
         private static IEnumerable<StatDrawEntry> WithFertilityFactor(IEnumerable<StatDrawEntry> original, Hediff instance)
         {
             foreach (StatDrawEntry entry in original) yield return entry;
+            // 失效终极成果没有实际额外收益，不用中性生育倍率冒充属性影响。
+            if (instance is Hediff_FertilitySpecialization { IsInactiveFinal: true }) yield break;
             HediffStage stage = instance.CurStage;
             if (stage == null || !float.IsFinite(stage.fertilityFactor) || stage.fertilityFactor < 0f) yield break;
             // fertilityFactor 由原版单独相乘，不应改写成 statFactors 或显示为角色的最终受孕概率。

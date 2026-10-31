@@ -370,10 +370,13 @@ namespace SexSlaveCraft
             finally { Text.Font = oldFont; }
         }
 
-        /// <summary>按训导官状态和兔特化模式计算区块高度，供绘制和滚动范围共用。</summary>
+        /// <summary>按终极成果列表、普通训导官状态和兔模式计算区块高度，供绘制和滚动范围共用。</summary>
         private static float GetSpecializationSectionHeight(Pawn pawn, CompSexSlaveTraining comp, float width)
         {
             if (!CanShowSpecializationSection(comp)) return 0f;
+#if SSC_RW17
+            return GetCompactSpecializationSectionHeight(pawn, comp, width);
+#else
             // 状态行在窄栏和长译文下可能换成两行；兔特化的繁殖模式仍可能
             // 同时出现，因此两项额外高度分别计算，避免跨方向终极记录遮挡后续控件。
             bool showTrainerStatus = comp.specializationType == SexSlaveSpecializationType.TrainerOfficer ||
@@ -396,6 +399,7 @@ namespace SexSlaveCraft
             return SpecializationSectionHeight + progressExtraHeight +
                 (showTrainerStatus ? TrainerStatusExtraHeight : 0f) +
                 (showRabbitMode ? RabbitModeExtraHeight : 0f);
+#endif
         }
 
         /// <summary>绘制 SSC 身份及调教员开关；已有绑定时禁用身份按钮并提示原因。</summary>
@@ -415,8 +419,14 @@ namespace SexSlaveCraft
                     bool identityLocked = SSCIdentityUtility.IsIdentityLocked(SelPawn);
                     Rect identityRect = listing.GetRect(IdentityButtonHeight);
                     bool identityClicked = SSCUIWidgets.Button(identityRect, idLabel, !identityLocked);
+                    // 同为不可切换，仍区分永久印记锁和普通绑定锁，避免解绑后的定型人格收到错误提示。
                     if (identityLocked)
-                        TooltipHandler.TipRegion(identityRect, "SSC_Identity_BoundTip".Translate());
+                        TooltipHandler.TipRegion(identityRect,
+#if SSC_RW17
+                            SSCImprintUtility.GetImprintLockedIdentity(SelPawn) != PawnIdentity.Unset ?
+                                "SSC_Imprint_GelTooltip".Translate() :
+#endif
+                                "SSC_Identity_BoundTip".Translate());
                     listing.Gap(2f);
                     if (identityClicked)
                     {
@@ -503,12 +513,27 @@ namespace SexSlaveCraft
             DrawSection(rect, Strings.ITab_SpecializationHeader, delegate(Rect innerRect)
             {
                 Listing_Standard listing = BeginSectionListing(innerRect);
+#if SSC_RW17
+                bool previousWrap = Text.WordWrap;
+                TextAnchor previousAnchor = Text.Anchor;
+#endif
                 try
                 {
+                    // 状态行已按实际宽度测高，仍强制单列，避免界面补丁使其横向溢出。
+                    listing.maxOneColumn = true;
+#if SSC_RW17
+                    listing.verticalSpacing = SpecializationListingSpacing;
+                    Text.WordWrap = true;
+                    Text.Anchor = TextAnchor.UpperLeft;
+#endif
                     DrawSpecializationSelector(listing, pawn, comp);
                 }
                 finally
                 {
+#if SSC_RW17
+                    Text.WordWrap = previousWrap;
+                    Text.Anchor = previousAnchor;
+#endif
                     listing.End();
                 }
             });
@@ -873,6 +898,9 @@ namespace SexSlaveCraft
                         () => comp.SetSpecialization(SexSlaveSpecializationType.None)),
                     BuildCombatantSpecializationOption(pawn, comp)
                 };
+#if SSC_RW17
+                options.Add(BuildFertilitySpecializationOption(pawn, comp));
+#endif
                 if (CanShowLegacySpecializationOptions(comp))
                 {
                     string busOptionLabel = Strings.ITab_SelectSpecializationBus;
@@ -939,6 +967,11 @@ namespace SexSlaveCraft
             // 查询不创建健康状态或授予技能，已取得宠物终极成果时不再提示重复加工。
             string progressTip = GetSpecializationProgressTip(pawn, comp);
             listing.Label((TaggedString)Strings.ITab_SpecializationProgress(GetSpecializationProgressText(pawn, comp)), -1f, progressTip);
+#if SSC_RW17
+            string trainerText = GetOrdinaryTrainerStatusText(pawn);
+            if (trainerText != null)
+                listing.Label((TaggedString)trainerText, -1f, "SSC_TrainerIdentity_RestrictionTip".Translate().ToString());
+#else
             TrainerSpecializationDisplayState trainerState = TrainerSpecializationUtility.GetDisplayState(pawn);
             if (trainerState != TrainerSpecializationDisplayState.None)
             {
@@ -950,7 +983,11 @@ namespace SexSlaveCraft
                     : "SSC_TrainerIdentity_RestrictionTip".Translate().ToString();
                 listing.Label("SSC_TrainerIdentity_StatusLine".Translate(status), -1f, tip);
             }
+#endif
             DrawRabbitReproductionModeSelector(listing, pawn, comp);
+#if SSC_RW17
+            DrawFinalSpecializationStates(listing, pawn);
+#endif
         }
 
         /// <summary>菜单打开和点击时均检查性奴身份及研究；选择后由组件同步普通状态。</summary>

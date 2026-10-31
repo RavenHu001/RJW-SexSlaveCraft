@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_FertilitySkill_Unavailable>Ultimate fertility ability requirements are not met.</SSC_FertilitySkill_Unavailable>
+  <SSC_FertilitySkill_Biotech>Biotech must be enabled.</SSC_FertilitySkill_Biotech>
+  <SSC_FertilitySkill_Disabled>Reproduction must be enabled.</SSC_FertilitySkill_Disabled>
+  <SSC_FertilitySkill_Pregnant>Currently pregnant or in labor; sampling is unavailable.</SSC_FertilitySkill_Pregnant>
+  <SSC_FertilitySkill_Body>The caster lacks a usable organ or is sterile.</SSC_FertilitySkill_Body>
+  <SSC_FertilitySkill_Target>Select a non-hostile adult humanlike on this map.</SSC_FertilitySkill_Target>
+  <SSC_FertilitySkill_Failed>Pregnancy was not established. No cooldown was consumed.</SSC_FertilitySkill_Failed>
+</LanguageData>

@@ -84,6 +84,11 @@ namespace SexSlaveCraft
         public float highestCorruptionLevel = -1f;
         public SexSlaveSpecializationType specializationType = SexSlaveSpecializationType.None;
         public float specializationProgress = 0f;
+#if SSC_RW17
+        public int fertilityCareTicks;
+        // 生育技能仅迁移绝对冷却截止tick；不迁移身体预设或孕次。
+        public int fertilityConceptionCooldownEndTick;
+#endif
         // 空引用表示旧凝胶没有保存历史；空字典表示新快照确实没有任何方向的进度。
         public Dictionary<string, float> specializationProgressByType;
         // 猫技能随人格保存绝对冷却结束 tick；0 表示可用或旧快照缺少此字段。
@@ -116,7 +121,7 @@ namespace SexSlaveCraft
         // ---------------------------------------------------------
         // 数据保存/读取 (Scribe)
         // ---------------------------------------------------------
-        /// <summary>保存或读取人格快照、各方向特化进度及格式版本，保留旧凝胶缺失历史的标记。</summary>
+        /// <summary>保存或读取人格快照、印记等健康标签及各方向进度，保留旧凝胶缺失历史的标记。</summary>
         public override void PostExposeData()
         {
             base.PostExposeData();
@@ -141,6 +146,11 @@ namespace SexSlaveCraft
             Scribe_Values.Look(ref highestCorruptionLevel, "highestCorruptionLevel", -1f);
             Scribe_Values.Look(ref specializationType, "specializationType", SexSlaveSpecializationType.None);
             Scribe_Values.Look(ref specializationProgress, "specializationProgress", 0f);
+#if SSC_RW17
+            Scribe_Values.Look(ref fertilityCareTicks, "fertilityCareTicks", 0);
+            Scribe_Values.Look(ref fertilityConceptionCooldownEndTick, "fertilityConceptionCooldownEndTick", 0);
+            if (Scribe.mode == LoadSaveMode.PostLoadInit) fertilityCareTicks = Math.Clamp(fertilityCareTicks, 0, 2499);
+#endif
             Scribe_Collections.Look(ref specializationProgressByType, "specializationProgressByType", LookMode.Value, LookMode.Value);
             Scribe_Values.Look(ref petCatComfortCooldownEndTick, "petCatComfortCooldownEndTick", 0);
             Scribe_Values.Look(ref petDogTameCooldownEndTick, "petDogTameCooldownEndTick", 0);
@@ -163,6 +173,7 @@ namespace SexSlaveCraft
 
             // 保存状态标签字典。
             // 使用定义引用模式保存键，使用数值模式保存严重度。
+            // 1.7印记的形态直接由这条 Def 引用保存，不另写永久身份锁字段。
             Scribe_Collections.Look(ref hediffTags, "hediffTags", LookMode.Def, LookMode.Value);
 
             // 防止读档后字典为null导致报错
@@ -184,7 +195,7 @@ namespace SexSlaveCraft
         // ---------------------------------------------------------
         // 界面显示信息
         // ---------------------------------------------------------
-        /// <summary>生成人格凝胶的检查面板文字，显示姓名、身份、关系和附加状态。</summary>
+        /// <summary>生成凝胶检查文字；除原摘要外，1.7单列印记形态与永久身份锁，不将其表示为培养进度。</summary>
         public override string CompInspectStringExtra()
         {
             string info = Strings.Inspect_Personality(nickName ?? Strings.Inspect_PersonalityNone);
@@ -206,9 +217,17 @@ namespace SexSlaveCraft
                 info += Strings.Inspect_ExtraStatus;
                 foreach (var pair in hediffTags)
                 {
+#if SSC_RW17
+                    // 印记严重度固定为1，不是100%的培养进度；统一留给下方形态与锁说明呈现。
+                    if (SSCImprintUtility.IsImprintDef(pair.Key)) continue;
+#endif
                     info += $"\n - {pair.Key.LabelCap}: {pair.Value.ToStringPercent()}";
                 }
             }
+#if SSC_RW17
+            // 从凝胶本身读取，即使尚未分配接收身体，也能说明来源人格的永久方向。
+            info += "\n" + SSCImprintUtility.GelLabel(this);
+#endif
 
             return info;
         }
@@ -216,7 +235,7 @@ namespace SexSlaveCraft
         // ---------------------------------------------------------
         // 核心功能：数据深拷贝 (CopyFrom)
         // ---------------------------------------------------------
-        /// <summary>复制另一凝胶的人格数据，为特化历史和记忆建立独立快照，并保留旧格式的缺失标记。</summary>
+        /// <summary>建立独立人格载荷副本；保留印记Def与严重度、特化历史和记忆，不重新分化或共享可变字典。</summary>
         public void CopyFrom(CompPersonalityStore other)
         {
             if (other == null) return;
@@ -242,6 +261,10 @@ namespace SexSlaveCraft
             this.highestCorruptionLevel = other.highestCorruptionLevel;
             this.specializationType = other.specializationType;
             this.specializationProgress = other.specializationProgress;
+#if SSC_RW17
+            this.fertilityCareTicks = Math.Clamp(other.fertilityCareTicks, 0, 2499);
+            this.fertilityConceptionCooldownEndTick = other.fertilityConceptionCooldownEndTick;
+#endif
             this.specializationProgressByType = other.specializationProgressByType == null
                 ? null
                 : new Dictionary<string, float>(other.specializationProgressByType);
@@ -300,6 +323,7 @@ namespace SexSlaveCraft
             }
 
             // 4. 复制状态标签字典。
+            // 印记沿原 Def＋数值复制到新字典，复制行为本身不发放资格或触发首次绑定定型。
             this.hediffTags.Clear();
             if (other.hediffTags != null)
             {
@@ -351,7 +375,7 @@ namespace SexSlaveCraft
         // ---------------------------------------------------------
         // 核心功能：存储角色数据
         // ---------------------------------------------------------
-        /// <summary>采集角色的身份、技能、记忆阶段与实例数值、普通特质、关系及各方向特化进度，生成独立人格快照。</summary>
+        /// <summary>采集身份、技能、记忆、普通特质、关系、印记及特化进度，生成与原身体独立的人格快照。</summary>
         public void StorePawnData(Pawn p)
         {
             if (p == null) return;
@@ -526,6 +550,15 @@ namespace SexSlaveCraft
             // 的当前进度作为普通标签的权威值。
             TrainerSpecializationGelUtility.StoreExclusiveTrainerTags(this, p);
             CombatantSpecializationGelUtility.StoreExclusiveTags(this, p);
+#if SSC_RW17
+            fertilityCareTicks = Math.Clamp(trainingComp?.fertilityCareTicks ?? 0, 0, 2499);
+            FertilitySpecializationGelUtility.StoreExclusiveTags(this, p);
+            fertilityConceptionCooldownEndTick = FertilityAbilityUtility.CaptureCooldown(p);
+#endif
+#if SSC_RW17
+            // 印记没有配方输出，通用配方枚举不会发现；最后显式采集并覆盖复用载荷中的旧印记。
+            SSCImprintUtility.Store(this, p);
+#endif
         }
     }
 }

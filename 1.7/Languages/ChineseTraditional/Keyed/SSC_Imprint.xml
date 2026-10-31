@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_Imprint_None>無印記</SSC_Imprint_None>
+  <SSC_Imprint_Unlocked>未定型</SSC_Imprint_Unlocked>
+  <SSC_Imprint_MasterLocked>永久鎖定主人</SSC_Imprint_MasterLocked>
+  <SSC_Imprint_SlaveLocked>永久鎖定性奴</SSC_Imprint_SlaveLocked>
+  <SSC_Imprint_GelStatus>印記：{0}</SSC_Imprint_GelStatus>
+  <SSC_Imprint_GelTooltip>印記隨人格遷移。永久身分鎖不因解綁而解除。</SSC_Imprint_GelTooltip>
+  <SSC_Imprint_SeedAlreadyMarked>已有印記者不能使用慾望之種。</SSC_Imprint_SeedAlreadyMarked>
+  <SSC_Imprint_SeedIdentityBlocked>當前人格無法取得目標身分，未消耗慾望之種。</SSC_Imprint_SeedIdentityBlocked>
+  <SSC_Imprint_SeedUsed>{0}已使用慾望之種。</SSC_Imprint_SeedUsed>
+</LanguageData>

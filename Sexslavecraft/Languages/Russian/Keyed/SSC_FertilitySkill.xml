@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_FertilitySkill_Unavailable>Условия способности предельной специализации не выполнены.</SSC_FertilitySkill_Unavailable>
+  <SSC_FertilitySkill_Biotech>Требуется Biotech.</SSC_FertilitySkill_Biotech>
+  <SSC_FertilitySkill_Disabled>Необходимо разрешить размножение.</SSC_FertilitySkill_Disabled>
+  <SSC_FertilitySkill_Pregnant>Во время беременности и родов повторный сбор недоступен.</SSC_FertilitySkill_Pregnant>
+  <SSC_FertilitySkill_Body>Органы носителя непригодны либо носитель бесплоден.</SSC_FertilitySkill_Body>
+  <SSC_FertilitySkill_Target>Выберите не враждебного взрослого гуманоида на этой карте.</SSC_FertilitySkill_Target>
+  <SSC_FertilitySkill_Failed>Беременность не наступила. Перезарядка не израсходована.</SSC_FertilitySkill_Failed>
+</LanguageData>

@@ -9,9 +9,14 @@ namespace SexSlaveCraft
 {
     public static class ExcretionUtility
     {
-        /// <summary>生成人格凝胶并保存角色快照，随后清理社交身份、重置技能并将身体标记为空壳。</summary>
+        /// <summary>保存、放置及末端准入通过后清源；孕期拒绝撤回新产物，印记与技能沿原人格流程转移。</summary>
         public static void DoExcretion(Pawn victim)
         {
+#if SSC_RW17
+            // 最终入口也拒绝主人，不能靠直接调用绕过手术或任务准入。
+            if (!SSCPersonalityExcretionAdmission.CanExtract(victim))
+            { SSCPersonalityExcretionAdmission.RemoveForbiddenPreparation(victim); return; }
+#endif
             if (victim == null || victim.Map == null) return;
             if (RabbitCloneUtility.IsRabbitClone(victim)) return;
 #if SSC_RW17
@@ -39,15 +44,36 @@ namespace SexSlaveCraft
                 {
                     comp.StorePawnData(victim);
                     if (!mutation.IsCurrent || victim.TryGetComp<CompSexSlaveTraining>() != originalComp) return;
+#if SSC_RW17
+                    // 快照读取会进入外部回调；受孕后撤回本次凝胶，不能继续放置或剥离人格。
+                    if (!SSCPersonalityExcretionAdmission.TryContinueExtraction(victim, slime)) return;
+#else
                     PetCatAbilityUtility.DetachAfterExtraction(victim);
                     PetDogAbilityUtility.DetachAfterExtraction(victim);
                     CombatantSpecializationGelUtility.DetachAfterExtraction(victim);
+#endif
                 }
 
+#if SSC_RW17
+                // 地图或位置可在快照回调后失效；原版Spawn可能返回null，失败不能授权后续清源。
+                if (GenSpawn.Spawn(slime, victim.Position, victim.Map) == null)
+                {
+                    if (!slime.Destroyed) slime.Destroy(DestroyMode.Vanish);
+                    return;
+                }
+#else
                 GenSpawn.Spawn(slime, victim.Position, victim.Map);
+#endif
 #if SSC_RW17
                 // 放置也可能触发外部回调替换训练组件；已生成的快照不能授权清理后来接管身体的载体。
                 if (!mutation.IsCurrent || victim.TryGetComp<CompSexSlaveTraining>() != originalComp) return;
+                if (!SSCPersonalityExcretionAdmission.TryContinueExtraction(victim, slime)) return;
+                // 1.7只有成功放置并通过末端准入后才清源特化；1.6保留原时序。
+                PetCatAbilityUtility.DetachAfterExtraction(victim);
+                PetDogAbilityUtility.DetachAfterExtraction(victim);
+                CombatantSpecializationGelUtility.DetachAfterExtraction(victim);
+                if (!mutation.IsCurrent || victim.TryGetComp<CompSexSlaveTraining>() != originalComp) return;
+                if (!SSCPersonalityExcretionAdmission.TryContinueExtraction(victim, slime)) return;
 #endif
                 // 资格与成长已进入成功生成的凝胶，再清原身体并写当前成长版本。
                 // 空壳即使保留主人身份，也不能在以后读档时补回转走的记录。
@@ -57,6 +83,9 @@ namespace SexSlaveCraft
 #if SSC_RW17
                     // 此时凝胶已放置成功，才清原人格偏好；前面的生成失败不应丢失保存值。
                     SSCRomancePreferences.Clear(victim);
+                    // 印记已进入成功放置的凝胶，才移出原身体，避免生成失败时丢失收益和永久方向。
+                    SSCImprintUtility.Clear(victim);
+                    FertilitySpecializationGelUtility.DetachAfterExtraction(victim);
 #endif
                     SSCMasterQualificationUtility.ClearPersonalityQualification(victim);
                     SSCMasterProgressionUtility.ClearPersonalityRecord(victim);
@@ -95,13 +124,15 @@ namespace SexSlaveCraft
         }
 
         // 独立清理入口建立作用域；植入入口已持有外层作用域时直接复用此核心，避免嵌套被拒绝。
-        /// <summary>复用已持有的人格作用域清理宿主；身体开发与外观按原过滤保留，不把它们当人格字典重置。</summary>
+        /// <summary>复用人格替换作用域清理旧人格；先移出印记锁再清身份，身体开发与外观保持原归属。</summary>
         private static void CleanConsumerDataCore(Pawn consumer)
         {
             SSCAbilityToggleUtility.ClearPersonalityState(consumer);
 #if SSC_RW17
             // 清掉接收者旧人格选择；来源缺字段时也不能把这些值混入新人格。
             SSCRomancePreferences.Clear(consumer);
+            // 这是移出旧人格，必须早于后续普通身份清理；不为原人格开放解除永久锁的身份操作。
+            SSCImprintUtility.Clear(consumer);
 #endif
             // 清宿主时同时封住旧档补建，且必须早于下面的普通身份清理；
             // 后续若来源没有成长，空记录就是植入的最终结果。
@@ -156,13 +187,21 @@ namespace SexSlaveCraft
             // 的方向和进度恢复前完成，避免宿主完成记录或普通严重度混入。
             TrainerSpecializationGelUtility.RemoveAllTrainerStates(consumer);
             CombatantSpecializationGelUtility.RemoveAllStates(consumer);
+#if SSC_RW17
+            FertilitySpecializationGelUtility.RemoveAllStates(consumer);
+            var fertilityComp = consumer.TryGetComp<CompSexSlaveTraining>();
+            if (fertilityComp != null) fertilityComp.fertilityCareTicks = 0;
+#endif
         }
 
-        /// <summary>校验凝胶快照，替换人格与全部特化历史并恢复记忆实例；成功后消耗凝胶，校验或恢复失败时返回失败。</summary>
+        /// <summary>预检凝胶后替换人格、印记、身份与特化历史，恢复记忆；成功才消耗凝胶，沿原流程处理恢复失败。</summary>
         public static bool InheritEverything(Pawn consumer, CompPersonalityStore data)
         {
             if (consumer == null || data == null) return false;
 #if SSC_RW17
+            // 多印记、损坏严重度或定型方向与保存身份矛盾时，必须在清空宿主前拒绝。
+            if (!SSCImprintUtility.CanRestore(consumer, data))
+            { Log.Error("[SSC] Personality insertion has an invalid imprint snapshot."); return false; }
             // 快照先复制并校验，缺配置表示来源默认；不能把宿主旧选择混入来源。
             SSCRomanceConfig romanceSnapshot = data.romanceConfig?.Copy();
             if (!SSCRomancePreferences.CanRestore(consumer, romanceSnapshot) ||
@@ -269,6 +308,9 @@ namespace SexSlaveCraft
                         // 整体替换历史，避免普通方向切换将宿主的旧进度混入新人格。
                         trainingComp.RestoreSpecializationProgress(data.specializationType,
                             data.specializationProgress, data.specializationProgressByType);
+#if SSC_RW17
+                        trainingComp.fertilityCareTicks = Math.Clamp(data.fertilityCareTicks, 0, 2499);
+#endif
                         // 原泌乳字段按来源精确覆盖，包括 false；不与人格字典合并或套用身体开关默认。
                         trainingComp.milkProductionEnabled = data.milkProductionEnabled;
                         if (!SSCIdentityUtility.TryRestorePersonalityIdentity(consumer, data.sscIdentity,
@@ -278,6 +320,11 @@ namespace SexSlaveCraft
                             return false;
                         }
                     }
+#if SSC_RW17
+                    // 精确恢复来源印记；无印记来源不继承宿主印记，旧链恢复也不触发分化。
+                    if (!SSCImprintUtility.Restore(consumer, data))
+                    { Log.Error("[SSC] Personality insertion could not restore the imprint."); return false; }
+#endif
                     // 身份恢复成功后再重建来源成长；同为主人也不能跳过此步骤。
                     // 无记录来源保持清空，退出主人后的来源则恢复暂停记录；通用标签不能取最大值覆盖它。
                     if (!SSCMasterProgressionUtility.RestoreRecord(consumer, data.masterGrowthPoints))
@@ -285,9 +332,13 @@ namespace SexSlaveCraft
                         Log.Error("[SSC] Personality insertion could not restore the saved Master progression.");
                         return false;
                     }
-                    // 步骤 6：重建锁链，让主从系统继续知道当前绑定的主人。
+                    // 步骤 6：重建来源已有锁链，让系统继续知道实际主人；1.7专用入口禁止重放首次分化。
                     if (data.chainHediffData?.masterPawn != null && consumer.health != null &&
+#if SSC_RW17
+                        SSCBondUtility.RestorePersonalityBinding(data.chainHediffData.masterPawn, consumer))
+#else
                         SSCBondUtility.Bind(data.chainHediffData.masterPawn, consumer, true))
+#endif
                     {
                         Hediff_ChainOfSexSlave chain = SSCBondUtility.GetChain(consumer);
                         if (chain != null)
@@ -336,6 +387,8 @@ namespace SexSlaveCraft
 #if SSC_RW17
                             // 拒绝历史／外部凝胶中的身体开发标签，既不补建，也不合并覆盖宿主原进度和开关。
                             if (SSCBodyDevelopmentUtility.IsBodyStateDef(hediffDef)) continue;
+                            // 印记已在身份恢复后精确还原，不再按普通标签添加或与宿主严重度取最大值。
+                            if (SSCImprintUtility.IsImprintDef(hediffDef) || FertilitySpecializationUtility.IsTag(hediffDef)) continue;
 #endif
                             // 全部 PNA 身体状态留在宿主，历史／外部凝胶中的同类标签也不恢复。
                             // 宿主原有记录及 Need_PNA 值由身体保留，不参与下方最大值合并。
@@ -411,6 +464,10 @@ namespace SexSlaveCraft
                     // 决定终极标记是否应转为禁用，不能在此处提前维护。
                     TrainerSpecializationGelUtility.ApplyExclusiveTrainerTags(consumer, data);
                     CombatantSpecializationGelUtility.ApplyExclusiveTags(consumer, data);
+#if SSC_RW17
+                    FertilitySpecializationGelUtility.ApplyExclusiveTags(consumer, data);
+                    FertilityAbilityUtility.RestoreCooldown(consumer, data.fertilityConceptionCooldownEndTick);
+#endif
 
                     // 同步组件与刚恢复的健康状态，使凝胶携带的专精立即被识别并可持续训练。
                     CompSexSlaveTraining.ReconcileSpecialization(consumer);

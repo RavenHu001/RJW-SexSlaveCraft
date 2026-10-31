@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_Imprint_None>Нет метки</SSC_Imprint_None>
+  <SSC_Imprint_Unlocked>Не определена</SSC_Imprint_Unlocked>
+  <SSC_Imprint_MasterLocked>Навсегда хозяин</SSC_Imprint_MasterLocked>
+  <SSC_Imprint_SlaveLocked>Навсегда секс-раб</SSC_Imprint_SlaveLocked>
+  <SSC_Imprint_GelStatus>Метка: {0}</SSC_Imprint_GelStatus>
+  <SSC_Imprint_GelTooltip>Метка переносится вместе с личностью. Разрыв связи не снимает постоянное ограничение роли SSC.</SSC_Imprint_GelTooltip>
+  <SSC_Imprint_SeedAlreadyMarked>Личность с меткой не может использовать семя желания.</SSC_Imprint_SeedAlreadyMarked>
+  <SSC_Imprint_SeedIdentityBlocked>Эта личность не может принять нужную роль. Семя желания не израсходовано.</SSC_Imprint_SeedIdentityBlocked>
+  <SSC_Imprint_SeedUsed>{0} использует семя желания.</SSC_Imprint_SeedUsed>
+</LanguageData>

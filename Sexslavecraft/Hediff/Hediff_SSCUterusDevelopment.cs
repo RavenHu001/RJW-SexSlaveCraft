@@ -11,13 +11,26 @@ namespace SexSlaveCraft
         public HediffStage fertileStage;
     }
 
-    /// <summary>当前身体的唯一开发记录；Severity 是进度，开关随本实例保存。</summary>
+    /// <summary>当前身体的唯一开发记录；Severity是进度，生育开关及1.7孕前预设随本实例保存。</summary>
     public sealed class Hediff_SSCUterusDevelopment : Hediff
     {
         // 离体、无效挂载或已归零的实例不再参与属性计算，等待正常清理。
         private static readonly HediffStage NeutralStage = new HediffStage();
         // 只保存玩家对当前身体的选择，不保存身份或绑定关系。
         private bool fertilityEnabled;
+#if SSC_RW17
+        // 孕前预设与身体共存；人格失格、切向或进度回退不清除这些选择。
+        private SSCOffspringGender offspringGender;
+        private SSCOffspringSpeciesSource offspringSpeciesSource;
+        private bool offspringImprintEnabled;
+
+        /// <summary>身体保存的性别预设；读取坏值只解释为自然，不在查询中修档。</summary>
+        public SSCOffspringGender OffspringGender => SSCFertilityPreconceptionUtility.IsValid(offspringGender) ? offspringGender : SSCOffspringGender.Natural;
+        /// <summary>只保存物种来源规则，不保存对象、KindDef或基因资料。</summary>
+        public SSCOffspringSpeciesSource OffspringSpeciesSource => SSCFertilityPreconceptionUtility.IsValid(offspringSpeciesSource) ? offspringSpeciesSource : SSCOffspringSpeciesSource.Natural;
+        /// <summary>原始印记选择，不以当前解锁或生育状态覆盖保存值。</summary>
+        public bool OffspringImprintEnabled => offspringImprintEnabled;
+#endif
 
         /// <summary>完成资格只由有效进度判断，不根据旧六部位或角色身份推断。</summary>
         public bool IsComplete => float.IsFinite(Severity) && Severity >= 1f;
@@ -40,7 +53,7 @@ namespace SexSlaveCraft
             }
         }
 
-        /// <summary>统一约束运行时进度写入，并清除未完成状态下失效的开启选择。</summary>
+        /// <summary>约束运行时进度，只清除未完成时的原生育开启选择，保留1.7三项孕前预设。</summary>
         public override float Severity
         {
             get => base.Severity;
@@ -81,24 +94,29 @@ namespace SexSlaveCraft
             SSCUterusDevelopmentUtility.Normalize(pawn);
         }
 
-        /// <summary>重复添加只取较大进度，保留既有实例的生育选择，不累计额外经验。</summary>
+        /// <summary>重复添加只取较大进度，保留原实例的生育开关及孕前预设，不累计额外经验。</summary>
         public override bool TryMergeWith(Hediff other)
         {
             if (other == this) return true;
             if (other is not Hediff_SSCUterusDevelopment incoming || other.def != def ||
                 !SSCUterusDevelopmentUtility.IsCurrentRecord(this)) return false;
-            // 不调用原版的严重度相加；保留既有实例及玩家开关。
+            // 不调用原版严重度相加；来者不能覆盖原实例的生育开关或三项预设。
             float incomingProgress = float.IsFinite(incoming.Severity) ? incoming.Severity : 0f;
             Severity = Math.Max(Severity, incomingProgress);
             return true;
         }
 
-        /// <summary>基类保存进度及部位，本类只保存开关；引用恢复后才规范化身体记录。</summary>
+        /// <summary>基类保存进度及部位，本类保存身体选择；引用恢复后才规范化身体记录。</summary>
         public override void ExposeData()
         {
             base.ExposeData();
             Scribe_Values.Look(ref fertilityEnabled, "sscUterusFertilityEnabled", false);
-            // 旧档缺少开关字段按关闭读取；不在 LoadingVars 提前使用尚未恢复的 pawn 引用。
+#if SSC_RW17
+            Scribe_Values.Look(ref offspringGender, "sscOffspringGender", SSCOffspringGender.Natural);
+            Scribe_Values.Look(ref offspringSpeciesSource, "sscOffspringSpeciesSource", SSCOffspringSpeciesSource.Natural);
+            Scribe_Values.Look(ref offspringImprintEnabled, "sscOffspringImprintEnabled", false);
+#endif
+            // 缺字段沿各自默认值读取；LoadingVars时不因引用未恢复而按暂时失格重置选择。
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
                 SSCUterusDevelopmentUtility.Normalize(pawn);
         }
@@ -109,8 +127,24 @@ namespace SexSlaveCraft
             float previous = Severity;
             bool previousToggle = fertilityEnabled;
             Severity = previous;
-            return previous != Severity || previousToggle != fertilityEnabled;
+            bool changed = previous != Severity || previousToggle != fertilityEnabled;
+#if SSC_RW17
+            // 仅修复不可识别的枚举；不能因人格/阶段失格把合法预设归零。
+            if (!SSCFertilityPreconceptionUtility.IsValid(offspringGender)) { offspringGender = SSCOffspringGender.Natural; changed = true; }
+            if (!SSCFertilityPreconceptionUtility.IsValid(offspringSpeciesSource)) { offspringSpeciesSource = SSCOffspringSpeciesSource.Natural; changed = true; }
+#endif
+            return changed;
         }
+
+#if SSC_RW17
+        // 三项只是未来生成时的预设，不改变当前身体属性；不发健康通知，由下次ITab视图即时重读。
+        /// <summary>仅供已复查原owner、阶段及孕态的权威入口写入；预设不改变健康属性或胎儿。</summary>
+        internal void SetOffspringGender(SSCOffspringGender value) => offspringGender = value;
+        /// <summary>记录来源选择，真正的物种映射留给后续婴儿生成入口。</summary>
+        internal void SetOffspringSpeciesSource(SSCOffspringSpeciesSource value) => offspringSpeciesSource = value;
+        /// <summary>身体后端的唯一印记写入点；不赋予当前角色印记，不生成派生健康标记。</summary>
+        internal void SetOffspringImprintEnabled(bool enabled) => offspringImprintEnabled = enabled;
+#endif
 
         /// <summary>只供已经完成资格、妊娠及配置检查的切换入口写入，不修改任何妊娠。</summary>
         internal void SetFertilityEnabled(bool enabled)

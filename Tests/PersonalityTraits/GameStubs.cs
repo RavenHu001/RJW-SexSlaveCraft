@@ -367,10 +367,11 @@ namespace Verse
         public static Thing LastSpawned;
         public static bool FailSpawn;
         /// <summary>记录最近生成的测试物品，供用例读取凝胶；不模拟地图放置行为。</summary>
-        public static void Spawn(Thing t, object p, Map m)
+        public static Thing Spawn(Thing t, object p, Map m)
         {
             if (FailSpawn) throw new InvalidOperationException("test spawn failure");
             LastSpawned = t;
+            return t;
         }
     }
 
@@ -948,6 +949,10 @@ namespace SexSlaveCraft
             if (!AllowBondRestore) return false;
             TestBoundMasters[p] = m; return true;
         }
+#if SSC_RW17
+        /// <summary>旧关系恢复沿用本宿主的绑定结果边界，不模拟新印记分化。</summary>
+        public static bool RestorePersonalityBinding(Pawn m, Pawn p) => Bind(m, p, true);
+#endif
         /// <summary>提供边界绑定状态，不模拟生产锁链严重度及生命周期。</summary>
         public static Hediff_ChainOfSexSlave GetChain(Pawn p) => GetBoundMaster(p) is Pawn master ? new Hediff_ChainOfSexSlave { LinkedPawn = master } : null;
     }

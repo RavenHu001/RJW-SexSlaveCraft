@@ -12,6 +12,15 @@ using Verse;
 
 namespace SexSlaveCraft
 {
+#if SSC_RW17
+    /// <summary>已排队手术执行时复查主人及孕期／临产准入；拒绝不删除孕期已有准备。</summary>
+    [HarmonyPatch(typeof(Recipe_AddHediff), nameof(Recipe_AddHediff.ApplyOnPawn))]
+    internal static class Harmony_MasterBlocksExcretionOperation
+    {
+        public static bool Prefix(Recipe_AddHediff __instance, Pawn pawn)
+            => __instance.recipe != SSCDefOf.SSC_InducePersonalityExcretion || SSCPersonalityExcretionAdmission.CanExtract(pawn);
+    }
+#endif
     // Patch 目标：RJW 的 SexUtility.ProcessSex (性行为结算方法)
     [HarmonyPatch(typeof(SexUtility), "ProcessSex")]
     public static class Patch_AnalSex_Aggravates_Excretion
@@ -66,6 +75,10 @@ namespace SexSlaveCraft
         public static void Postfix(Recipe_Surgery __instance, Thing thing, ref bool __result)
         {
             if (!__result || __instance?.recipe != SSCDefOf.SSC_InducePersonalityExcretion) return;
+#if SSC_RW17
+            if (thing is Pawn blocked && !SSCPersonalityExcretionAdmission.CanExtract(blocked))
+            { __result = false; return; }
+#endif
             if (thing is Pawn pawn && RabbitCloneUtility.IsRabbitClone(pawn))
             {
                 __result = false;

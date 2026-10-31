@@ -10,10 +10,11 @@ internal static partial class Program
     {
         Check("toggle production registry contains original-storage and PNA body adapters", () =>
         {
-            Equal(6, SSCAbilityToggleUtility.Definitions.Count);
-            Equal(3, SSCAbilityToggleUtility.Definitions.Count(d => d.Group == SSCAbilityToggleGroup.Body));
+            Equal(7, SSCAbilityToggleUtility.Definitions.Count);
+            Equal(4, SSCAbilityToggleUtility.Definitions.Count(d => d.Group == SSCAbilityToggleGroup.Body));
             Require(SSCAbilityToggleUtility.Find(SSCAbilityToggleUtility.MilkProduction).DefaultEnabled);
             Require(!SSCAbilityToggleUtility.Find(SSCAbilityToggleUtility.UterusFertility).DefaultEnabled);
+            Require(!SSCAbilityToggleUtility.Find(SSCAbilityToggleUtility.OffspringImprint).DefaultEnabled);
             Require(SSCAbilityToggleUtility.Find(SSCAbilityToggleUtility.GelRendering).DefaultEnabled);
         });
         Check("toggle batch2 readonly missing bodies never create records or components", () =>

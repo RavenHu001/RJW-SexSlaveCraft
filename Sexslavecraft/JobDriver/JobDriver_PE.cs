@@ -28,6 +28,9 @@ namespace SexSlaveCraft
         /// <summary>为人格排泄任务预约唯一接收目标；预约冲突时返回 false。</summary>
         public override bool TryMakePreToilReservations(bool errorOnFailed)
         {
+#if SSC_RW17
+            if (!SSCPersonalityExcretionAdmission.CanExtract(Partner)) return false;
+#endif
             if (PersonalityExcretionJobUtility.IsOccupiedByOther(Partner, pawn)) return false;
             return pawn.Reserve(Partner, job, 1, 0, null, errorOnFailed);
         }
@@ -38,6 +41,9 @@ namespace SexSlaveCraft
             setup_ticks();
 
             this.FailOnDespawnedNullOrForbidden(iTarget);
+#if SSC_RW17
+            this.FailOn(() => !SSCPersonalityExcretionAdmission.CanExtract(Partner));
+#endif
             this.FailOn(() => pawn.Drafted || pawn.IsFighting());
             this.FailOn(() => Partner.IsFighting());
             this.FailOn(() => !pawn.CanReserve(Partner, 1, 0));
@@ -229,14 +235,23 @@ namespace SexSlaveCraft
             };
         }
 
-        /// <summary>结算已完成场景，保存人格凝胶、更新目标为空壳状态，并施加提取后的恢复期。</summary>
+        /// <summary>结算场景并复查孕态；1.7凝胶成功放置且仍有准入才剥离人格，失败保留准备与源人格。</summary>
         private void CompletePersonalityExtraction()
         {
             Pawn victim = Partner;
+#if SSC_RW17
+            if (!SSCPersonalityExcretionAdmission.CanExtract(victim))
+            { SSCPersonalityExcretionAdmission.RemoveForbiddenPreparation(victim); return; }
+#endif
             // RJW 原结算可触发外部回调；只继续处理原参与者的同一人格，不能提取后来换入的人格。
             CompSexSlaveTraining originalComp = victim?.TryGetComp<CompSexSlaveTraining>();
             object originalPersonality = SSCPersonalityRuntimeUtility.Capture(victim);
             SexUtility.ProcessSex(Sexprops);
+#if SSC_RW17
+            // 原结算回调可能改身份或建立妊娠，生成凝胶之前再次复查。
+            if (!SSCPersonalityExcretionAdmission.CanExtract(victim))
+            { SSCPersonalityExcretionAdmission.RemoveForbiddenPreparation(victim); return; }
+#endif
             if (Partner != victim || victim?.TryGetComp<CompSexSlaveTraining>() != originalComp ||
                 !SSCPersonalityRuntimeUtility.IsCurrent(victim, originalPersonality)) return;
 #if SSC_RW17
@@ -254,6 +269,17 @@ namespace SexSlaveCraft
                 Thing product = CreateStoredPersonalityProduct(victim);
                 if (product.TryGetComp<CompPersonalityStore>() == null || !mutation.IsCurrent ||
                     victim.TryGetComp<CompSexSlaveTraining>() != originalComp) return;
+#if SSC_RW17
+                // 孕态必须覆盖快照和放置回调；源人格未清理前撤回失败产物，保留准备状态。
+                if (!SSCPersonalityExcretionAdmission.TryContinueExtraction(victim, product)) return;
+                if (GenSpawn.Spawn(product, victim.Position, victim.Map) == null)
+                {
+                    if (!product.Destroyed) product.Destroy(DestroyMode.Vanish);
+                    return;
+                }
+                if (!mutation.IsCurrent || victim.TryGetComp<CompSexSlaveTraining>() != originalComp) return;
+                if (!SSCPersonalityExcretionAdmission.TryContinueExtraction(victim, product)) return;
+#endif
                 if (product.TryGetComp<CompPersonalityStore>() != null)
                 {
                     // 两条抽取入口都在成功保存快照后清源成果，避免场景抽取留下猫狗技能或历史。
@@ -262,14 +288,17 @@ namespace SexSlaveCraft
                     CombatantSpecializationGelUtility.DetachAfterExtraction(victim);
                 }
 
+#if SSC_RW17
+                // 清源特化回调之后、剥离人格之前再核对；不能让新受孕或换人格者进入空壳状态。
+                if (!mutation.IsCurrent || victim.TryGetComp<CompSexSlaveTraining>() != originalComp) return;
+                if (!SSCPersonalityExcretionAdmission.TryContinueExtraction(victim, product)) return;
+#endif
                 // EN: Step 2: strip the victim into a hollow pawn and swap the personality-excretion state hediff.
                 // CN: 步骤 2：把受害者剥离成空壳 Pawn，并切换人格排泄状态 Hediff。
                 StripVictimPersonality(victim);
                 ReplaceExcretionHediff(victim);
+#if !SSC_RW17
                 GenSpawn.Spawn(product, victim.Position, victim.Map);
-#if SSC_RW17
-                // 场景产物放置后的回调同样可能换载体；原提取请求不得清掉新组件的人格选择。
-                if (!mutation.IsCurrent || victim.TryGetComp<CompSexSlaveTraining>() != originalComp) return;
 #endif
                 // 场景抽取是另一条独立入口，也必须等快照保存及凝胶生成后再清资格与成长。
                 // 成长清理同时写当前迁移版本，防止残留主人身份在读档时补回零经验。
@@ -279,6 +308,9 @@ namespace SexSlaveCraft
 #if SSC_RW17
                     // 场景入口也以放置成功为清源边界，不改原场景流程已有的异常回滚范围。
                     SSCRomancePreferences.Clear(victim);
+                    // 场景提取与普通提取使用相同清源时点，不能让原身体继续持有印记收益或身份锁。
+                    SSCImprintUtility.Clear(victim);
+                    FertilitySpecializationGelUtility.DetachAfterExtraction(victim);
 #endif
                     SSCMasterQualificationUtility.ClearPersonalityQualification(victim);
                     SSCMasterProgressionUtility.ClearPersonalityRecord(victim);

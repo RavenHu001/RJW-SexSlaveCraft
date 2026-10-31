@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_FertilitySkill_Unavailable>目前不符合終極生育技能條件。</SSC_FertilitySkill_Unavailable>
+  <SSC_FertilitySkill_Biotech>需要啟用生物科技。</SSC_FertilitySkill_Biotech>
+  <SSC_FertilitySkill_Disabled>需要開啟生育。</SSC_FertilitySkill_Disabled>
+  <SSC_FertilitySkill_Pregnant>正在孕育，無法再次採樣受孕。</SSC_FertilitySkill_Pregnant>
+  <SSC_FertilitySkill_Body>自身器官不可用或處於不育狀態。</SSC_FertilitySkill_Body>
+  <SSC_FertilitySkill_Target>請選擇同地圖的非敵對成年類人對象。</SSC_FertilitySkill_Target>
+  <SSC_FertilitySkill_Failed>未能建立妊娠，未消耗冷卻。</SSC_FertilitySkill_Failed>
+</LanguageData>

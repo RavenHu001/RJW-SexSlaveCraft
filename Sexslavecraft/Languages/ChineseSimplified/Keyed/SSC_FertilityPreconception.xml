@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_Preconception_GenderLabel>胎儿性别</SSC_Preconception_GenderLabel>
+  <SSC_Preconception_SpeciesLabel>物种来源</SSC_Preconception_SpeciesLabel>
+  <SSC_Preconception_ImprintLabel>后代初始印记</SSC_Preconception_ImprintLabel>
+  <SSC_Preconception_GenderNatural>自然</SSC_Preconception_GenderNatural>
+  <SSC_Preconception_GenderMale>男性</SSC_Preconception_GenderMale>
+  <SSC_Preconception_GenderFemale>女性</SSC_Preconception_GenderFemale>
+  <SSC_Preconception_SpeciesNatural>原规则</SSC_Preconception_SpeciesNatural>
+  <SSC_Preconception_SpeciesSelf>自身</SSC_Preconception_SpeciesSelf>
+  <SSC_Preconception_SpeciesPartner>对象</SSC_Preconception_SpeciesPartner>
+  <SSC_Preconception_GenderTip>预设后代性别。</SSC_Preconception_GenderTip>
+  <SSC_Preconception_SpeciesTip>预设后代物种随自身或对象，如人类、外星人种族；基因继承不受影响。</SSC_Preconception_SpeciesTip>
+  <SSC_Preconception_ImprintTip>预设后代获得“淫欲之子”初始印记，不复制亲代的分化印记。</SSC_Preconception_ImprintTip>
+  <SSC_Preconception_GenderLocked>孕母特化达到20%后解锁</SSC_Preconception_GenderLocked>
+  <SSC_Preconception_SpeciesLocked>孕母特化达到50%后解锁</SSC_Preconception_SpeciesLocked>
+  <SSC_Preconception_ImprintLocked>完成孕母特化普通培养后解锁</SSC_Preconception_ImprintLocked>
+  <SSC_Preconception_PregnancyBlocked>怀孕或临产期间不能修改胎儿调控</SSC_Preconception_PregnancyBlocked>
+  <SSC_Preconception_FertilityDisabled>生育已关闭，胎儿调控暂不生效</SSC_Preconception_FertilityDisabled>
+  <SSC_Preconception_Unavailable>当前无法使用胎儿调控</SSC_Preconception_Unavailable>
+  <SSC_Preconception_InvalidSelection>无效的胎儿调控选项</SSC_Preconception_InvalidSelection>
+  <SSC_Preconception_DirectionRequired>需启用孕母特化</SSC_Preconception_DirectionRequired>
+  <SSC_Preconception_MissingUterus>胎儿调控：需完成子宫改造</SSC_Preconception_MissingUterus>
+  <SSC_Birth_ExcretionBlocked>怀孕或临产期间不能进行人格排泄，已有准备状态保留</SSC_Birth_ExcretionBlocked>
+  <SSC_Birth_ControlUnapplied>{0}的胎儿调控未能完整应用：{1}。</SSC_Birth_ControlUnapplied>
+  <SSC_Birth_SpeciesUnavailable>无法确定所选物种，将沿原物种规则生成</SSC_Birth_SpeciesUnavailable>
+  <SSC_Birth_ResultMismatch>其他生成规则改变了所选性别或物种</SSC_Birth_ResultMismatch>
+  <SSC_Birth_ImprintUnavailable>无法赋予后代初始印记</SSC_Birth_ImprintUnavailable>
+</LanguageData>

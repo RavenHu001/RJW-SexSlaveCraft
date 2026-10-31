@@ -64,6 +64,10 @@ namespace SexSlaveCraft
 
             switch (type)
             {
+#if SSC_RW17
+                case SexSlaveSpecializationType.Fertility:
+                    return FertilitySpecializationUtility.TryGainProgress(receiver, amount);
+#endif
                 case SexSlaveSpecializationType.Combatant:
                     return CombatantSpecializationProgressUtility.TryGainProgress(receiver, amount);
                 case SexSlaveSpecializationType.TrainerOfficer:
@@ -106,6 +110,10 @@ namespace SexSlaveCraft
                 case SexSlaveSpecializationType.TrainerOfficer:
                     return TrainerSpecializationUtility.MeetsContinuousConditions(receiver, out _)
                         && !TrainerSpecializationUtility.HasFinalRecord(receiver);
+#if SSC_RW17
+                case SexSlaveSpecializationType.Fertility:
+                    return FertilitySpecializationUtility.MeetsConditions(receiver, out _) && !FertilitySpecializationUtility.HasFinalState(receiver);
+#endif
                 case SexSlaveSpecializationType.Combatant:
                     return !CombatantSpecializationUtility.HasFinalState(receiver);
                 default:

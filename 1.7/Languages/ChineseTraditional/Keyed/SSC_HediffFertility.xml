@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- AI 辅助生成：依据已确认的 v2 中文稿落实 ChineseTraditional 文案；保留现有键名及参数契约。 -->
 <LanguageData>
   <SSC_HediffFertility_Label>生育能力</SSC_HediffFertility_Label>
   <SSC_HediffFertility_Factor>×{0}</SSC_HediffFertility_Factor>
   <SSC_HediffFertility_Description>這項狀態對這副身體自身生育能力的倍率，會與其他來源的影響相乘。它只反映這項改造本身的作用，不代表最終受孕的機率。</SSC_HediffFertility_Description>
   <SSC_HediffFertility_LactationNote>關閉產奶只會止住出奶，不會解除永久泌乳對生育的壓制。</SSC_HediffFertility_LactationNote>
   <SSC_HediffFertility_LactationOverrideNote>子宮開發的生育模式已經開啟，永久泌乳對生育的壓制被一併解開。</SSC_HediffFertility_LactationOverrideNote>
+  <SSC_HediffFertility_Duration>新妊娠時長</SSC_HediffFertility_Duration>
+  <SSC_HediffFertility_DurationDescription>生育開啟時，這項狀態對支援的新妊娠時長的倍率。子宮與特化分項相乘；既有妊娠保留建立時的待遇。</SSC_HediffFertility_DurationDescription>
+  <SSC_HediffFertility_Education>兒童教育效率</SSC_HediffFertility_Education>
+  <SSC_HediffFertility_EducationDescription>本人授課時，學生學習需求和課堂技能經驗獲得量的倍率，與學生自身屬性正常疊加。</SSC_HediffFertility_EducationDescription>
+  <SSC_HediffFertility_BabyPlay>嬰兒陪玩效率</SSC_HediffFertility_BabyPlay>
+  <SSC_HediffFertility_BabyPlayDescription>本人陪玩時，嬰兒玩耍需求恢復量的倍率。</SSC_HediffFertility_BabyPlayDescription>
 </LanguageData>

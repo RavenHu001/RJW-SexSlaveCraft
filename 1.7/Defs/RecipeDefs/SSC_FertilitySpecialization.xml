@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <RecipeDef Class="SexSlaveCraft.RecipeDef_PSTag">
+    <defName>SSC_PSEdit_Fertility_Final</defName>
+    <label>Sex slave specialization (Ultimate broodmother)</label>
+    <description>Finalize one personality gel with completed ordinary fertility training. Retains other personality achievements. This stage grants passive effects.</description>
+    <jobString>Ultimate broodmother specialization...</jobString>
+    <workAmount>3500</workAmount>
+    <workSpeedStat>GeneralLaborSpeed</workSpeedStat>
+    <effectWorking>Sculpt</effectWorking>
+    <soundWorking>Recipe_Sculpt</soundWorking>
+    <hediffToAdd>SSC_Hediff_Fertility_Final</hediffToAdd>
+    <severity>1.00</severity>
+    <filterIfTagExists>true</filterIfTagExists>
+    <requireSpecializationType>Fertility</requireSpecializationType>
+    <requireSpecializationComplete>true</requireSpecializationComplete>
+    <exclusiveTags>
+      <li>SSC_Hediff_Fertility_Final</li>
+    </exclusiveTags>
+    <recipeUsers>
+      <li>TableSculpting</li>
+    </recipeUsers>
+    <researchPrerequisite>SSC_RES_Fertility</researchPrerequisite>
+    <ingredients>
+      <li>
+        <filter>
+          <thingDefs>
+            <li>SSC_PersonalitySlime</li>
+            <li>SSC_PersonalitySlime_PLUS</li>
+            <li>SSC_PersonalitySlime_ULTRA</li>
+            <li>SSC_PersonalitySlime_PLUS_ULTRA</li>
+            <li>SSC_PersonalitySlime_Edited</li>
+            <li>SSC_PersonalitySlime_PLUS_Edited</li>
+            <li>SSC_PersonalitySlime_ULTRA_Edited</li>
+            <li>SSC_PersonalitySlime_PLUS_ULTRA_Edited</li>
+          </thingDefs>
+        </filter>
+        <count>1</count>
+      </li>
+    </ingredients>
+    <fixedIngredientFilter>
+      <thingDefs>
+        <li>SSC_PersonalitySlime</li>
+        <li>SSC_PersonalitySlime_PLUS</li>
+        <li>SSC_PersonalitySlime_ULTRA</li>
+        <li>SSC_PersonalitySlime_PLUS_ULTRA</li>
+        <li>SSC_PersonalitySlime_Edited</li>
+        <li>SSC_PersonalitySlime_PLUS_Edited</li>
+        <li>SSC_PersonalitySlime_ULTRA_Edited</li>
+        <li>SSC_PersonalitySlime_PLUS_ULTRA_Edited</li>
+      </thingDefs>
+    </fixedIngredientFilter>
+    <workerClass>SexSlaveCraft.Recipe_PSTagWorker</workerClass>
+  </RecipeDef>
+</Defs>

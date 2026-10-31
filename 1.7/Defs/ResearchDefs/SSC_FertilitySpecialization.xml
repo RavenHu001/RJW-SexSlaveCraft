@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <ResearchProjectDef>
+    <defName>SSC_RES_Fertility</defName>
+    <label>Broodmother</label>
+    <!-- Keep the future flavor paragraph separate from this functional guide. -->
+    <description>Train and remake sex slaves so that they can, in accordance with their master's will, control an already-corrupted womb—becoming a broodmother who commands her own gestation and makes her pregnancy obey her master.\n\nTraining routes\nAdult SSC slaves at sex-slave stage 3 or higher with a fully developed uterus can choose this specialization. Complete training sessions, whole rituals, active teaching and baby play build progress. Teaching counts even without student skill gains. Care training has no daily cap and remains available with fertility disabled. Successful childbirth also grants training progress.\n\nFeatures\nProgress improves fertility, shortens new pregnancies and improves teaching and baby play. Training gradually unlocks preconception preferences for offspring sex and the species of the bearer or partner. Ordinary completion unlocks the initial offspring imprint.\n\nFinalization\nComplete ordinary fertility training, process the corresponding personality gel at a sculpting table, then reimplant it to further improve fertility, teaching and baby play. Conception selects a partner anywhere on the map, then approaches and completes consensual sex before establishing pregnancy in the caster. Interruption does not trigger conception.</description>
+    <baseCost>1200</baseCost>
+    <techLevel>Medieval</techLevel>
+    <tab>SSC_ResearchTabDef</tab>
+    <prerequisites>
+      <li>SSC_RES_SlaveSpecialization</li>
+      <li>SSC_RES_UterusDevelopment</li>
+    </prerequisites>
+    <researchViewX>5</researchViewX>
+    <researchViewY>3.5</researchViewY>
+  </ResearchProjectDef>
+</Defs>

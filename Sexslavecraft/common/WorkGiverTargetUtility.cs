@@ -13,6 +13,14 @@ namespace SexSlaveCraft
         public static bool IsValidPETarget(Pawn actor, Pawn target, bool forced)
         {
             if (actor == null || target == null) return false;
+#if SSC_RW17
+            if (!SSCPersonalityExcretionAdmission.CanExtract(target))
+            {
+                string reason = SSCPersonalityExcretionAdmission.PregnancyBlockReason(target);
+                if (forced && reason != null) JobFailReason.Is(reason);
+                return false;
+            }
+#endif
             if (PersonalityExcretionJobUtility.IsOccupiedByOther(target, actor))
             {
                 if (forced) JobFailReason.Is("SSC_PE_TargetBusy".Translate());

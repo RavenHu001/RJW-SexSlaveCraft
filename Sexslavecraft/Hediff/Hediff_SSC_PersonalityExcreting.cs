@@ -24,6 +24,17 @@ namespace SexSlaveCraft
 
     public class Hediff_SSC_PersonalityExcreting : HediffWithComps
     {
+#if SSC_RW17
+        /// <summary>主人不保留排泄准备；仅怀孕或临产不会触发移除，满进度也保留等待。</summary>
+        public override bool ShouldRemove => SSCPersonalityExcretionAdmission.MustRemovePreparation(pawn) || base.ShouldRemove;
+
+        /// <summary>手术结算或外部添加时立即清除主人身上的准备状态。</summary>
+        public override void PostAdd(DamageInfo? dinfo)
+        {
+            base.PostAdd(dinfo);
+            SSCPersonalityExcretionAdmission.RemoveForbiddenPreparation(pawn);
+        }
+#endif
         public override IEnumerable<Gizmo> GetGizmos()
         {
             foreach (Gizmo gizmo in base.GetGizmos())

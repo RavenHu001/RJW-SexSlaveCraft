@@ -1,4 +1,4 @@
-﻿using SexSlaveCraft;
+using SexSlaveCraft;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -90,6 +90,9 @@ namespace SexSlaveCraft
         {
             // 复用现有最终结算守卫，把宠物终极化纳入其保护范围，
             // 无需再安装第二个结算补丁；其他配方仍执行原版完成动作。
+#if SSC_RW17
+            if (FertilityFinalizationRecipeUtility.IsFinalizationRecipe(recipe)) return true;
+#endif
             return TrainerOfficerRecipeUtility.IsFinalizationRecipe(recipe) || CombatantRecipeUtility.IsFinalizationRecipe(recipe)
                 || PetFinalizationRecipeUtility.IsFinalizationRecipe(recipe);
         }
@@ -98,6 +101,9 @@ namespace SexSlaveCraft
         {
             // 宠物先分派到专用契约检查。即使官方配方缺失输出 Def，
             // 也会在此拒绝，不能落到末尾通用配方的放行结果。
+#if SSC_RW17
+            if (FertilityFinalizationRecipeUtility.IsFinalizationRecipe(recipe)) return FertilityFinalizationRecipeUtility.IsEligibleGel(recipe, gel);
+#endif
             if (PetFinalizationRecipeUtility.IsFinalizationRecipe(recipe)) return PetFinalizationRecipeUtility.IsEligibleGel(recipe, gel);
             if (TrainerOfficerRecipeUtility.IsFinalizationRecipe(recipe)) return TrainerOfficerRecipeUtility.IsEligibleGel(gel);
             if (CombatantRecipeUtility.IsFinalizationRecipe(recipe)) return CombatantRecipeUtility.IsEligibleGel(gel);
@@ -128,11 +134,15 @@ namespace SexSlaveCraft
                 && !SpecializationFinalizationRecipeUtility.IsEligibleGel(finalRecipe, sourceComp)) return;
 
             bool petFinalization = PetFinalizationRecipeUtility.IsFinalizationRecipe(recipe as RecipeDef_PSTag);
-            // 宠物加工只复制一个人格，拒绝多来源及无法生成存储组件的基底。
+            bool singlePersonalityProduct = petFinalization;
+#if SSC_RW17
+            singlePersonalityProduct |= FertilityFinalizationRecipeUtility.IsFinalizationRecipe(recipe as RecipeDef_PSTag);
+#endif
+            // 生育和宠物加工都只复制一个人格，拒绝多来源及无法保存人格的产物。
             // 原版 Destroy 会把非 Pawn 来源的 stackCount 清零，因此只对存活
             // 来源复查实体数量；正常消耗后的来源已由最终 Toil 检查为一份。
             // 若在这里要求已销毁来源仍为一份，合法账单会扣次数却没有产物。
-            if (petFinalization && ((!sourceItem.Destroyed && sourceItem.stackCount != 1) ||
+            if (singlePersonalityProduct && ((!sourceItem.Destroyed && sourceItem.stackCount != 1) ||
                 ingredients.Count(x => x?.TryGetComp<CompPersonalityStore>() != null) != 1 ||
                 !PetFinalizationRecipeUtility.CanCreateProduct(sourceItem.def))) return;
 
@@ -143,7 +153,7 @@ namespace SexSlaveCraft
             Thing newItem = ThingMaker.MakeThing(targetDef);
             CompPersonalityStore targetComp = newItem.TryGetComp<CompPersonalityStore>();
 
-            if (petFinalization && targetComp == null)
+            if (singlePersonalityProduct && targetComp == null)
             {
                 // 定义预检之外再确认真实实例，防止外部修改生成空人格产物。
                 // 失败只销毁刚创建的无效产物，不在这里销毁尚存的来源凝胶；
@@ -181,6 +191,10 @@ namespace SexSlaveCraft
                         targetComp.RemoveTag(SSCDefOf.SSC_Hediff_TrainerOfficer_FinalDisabled);
                     }
 
+#if SSC_RW17
+                    if (FertilityFinalizationRecipeUtility.IsFinalizationRecipe(smartRecipe))
+                        targetComp.RemoveTag(FertilitySpecializationUtility.OrdinaryDef);
+#endif
                     HediffDef petBaseTag = PetSpecializationUtility.GetBaseHediffForFinal(smartRecipe.hediffToAdd);
                     // exclusiveTags 也用于筛料，普通标签只能在合格人格复制后单独移除。
                     if (CombatantRecipeUtility.IsFinalizationRecipe(smartRecipe))

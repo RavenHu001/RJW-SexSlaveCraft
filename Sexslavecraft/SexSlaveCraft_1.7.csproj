@@ -26,6 +26,30 @@
     <GenerateDependencyFile>false</GenerateDependencyFile>
   </PropertyGroup>
   <ItemGroup>
+    <!-- 人格印记与停龄补丁仅编入1.7；共享入口通过SSC_RW17保留旧版本行为。 -->
+    <Compile Include="common/SSCImprintUtility.cs" />
+    <Compile Include="common/FertilitySpecializationUtility.cs" />
+    <Compile Include="common/FertilityAbilityUtility.cs" />
+    <Compile Include="common/FertilitySceneUtility.cs" />
+    <Compile Include="Comps/Ability_FertilityConception.cs" />
+    <Compile Include="JobDriver/JobDriver_FertilityConception.cs" />
+    <Compile Include="common/SSCFertilityPreconceptionUtility.cs" />
+    <Compile Include="common/SSCFertilityOffspringUtility.cs" />
+    <Compile Include="common/SSCFertilityBirthUtility.cs" />
+    <Compile Include="ThePatches/Harmony_FertilityOffspring.cs" />
+    <Compile Include="ThePatches/Harmony_FertilityBirth.cs" />
+    <Compile Include="common/SSCUterusOffspringImprintToggleBackend.cs" />
+    <Compile Include="ITab/ITab_SexSlaveTraining.Preconception.cs" />
+    <Compile Include="ITab/ITab_SexSlaveTraining.FinalSpecializations.cs" />
+    <Compile Include="common/FertilitySpecializationGelUtility.cs" />
+    <Compile Include="Hediff/Hediff_FertilitySpecialization.cs" />
+    <Compile Include="Comps/Comp_Train.Fertility.cs" />
+    <Compile Include="Recipe/FertilityFinalizationRecipeUtility.cs" />
+    <Compile Include="ThePatches/Harmony_FertilityCare.cs" />
+    <Compile Include="ITab/ITab_SexSlaveTraining.Fertility.cs" />
+    <Compile Include="common/SSCPersonalityExcretionAdmission.cs" />
+    <Compile Include="Hediff/Hediff_SSCImprint.cs" />
+    <Compile Include="ThePatches/Harmony_ImprintAge.cs" />
     <Compile Include="common/Uap/SSCUapGroupRuntime.cs" />
     <Compile Include="common/Uap/SSCUapGroupApi.cs" />
     <Compile Include="common/Uap/SSCSettings.UapGroup.cs" />
