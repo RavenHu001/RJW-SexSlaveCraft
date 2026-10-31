@@ -7,20 +7,19 @@
 		<li>1.7</li>
 	</supportedVersions>
 	<packageId>rjw.sexslavecraft.TieJinVer</packageId>
-    <description>SexSlaveCraft 2.4.7 (TieJin Modify)
-个人身体敏感度与通用频率属性、PNA生产启停与储量／营养提示、真实主人方向吸引力、UAP手动多人兼容，以及受方倒地继续调教和共振查询优化。
-新增仅RimWorld 1.7；1.6／Common保留SSC 2.4.1冻结基线。敏感度默认关闭，生产开关默认开启；UAP手动许可豁免默认关闭，仍保留匹配与身体条件，读档取消未完成会话。
-继承浪漫控制／心情／日志与个人恢复默认、子宫／生育与胃部开发、文化／医美、关系概览、九把PNA武器、凝胶外观、六特化及人格转移。
-本版功能已有分批实机认可，PNA产出引导已确认有效；繁英俄浪漫显示与未报告组合继续保留独立验证范围。
-升级时完整替换旧目录，保留版本目录与LoadFolders.xml。1.7已移除的旧简易PNA发射器等定义不提供存档迁移。
-Harmony与RJW先于SSC加载；文化及仪式需要Ideology。兔入口与旧RimTalk对接仍不可用。
+    <description>SexSlaveCraft 2.4.8 (TieJin Modify)
+孕母第七特化、三态人格印记、孕前设置与生成／出生处理、面向合格成年对象的终极同场受孕技能，以及PNA／部位频率属性、空壳六需求和调教员便捷操作。
+新增仅RimWorld 1.7；1.6／Common保留SSC 2.4.1冻结基线。孕母新选需锁链阶段3与完整子宫；成功建孕后7天冷却，中断不建孕不扣成功冷却。印记随人格、孕前选择随身体；当前主人禁止人格排泄。
+调教员可显式指派并启用工作或就地启用，默认优先级3、保留已有优先级。复制体、整体独立框架及房间效果尚未开发或暂缓。
+继承个人控制、浪漫／心情／日志、敏感度、PNA生产、身体开发、文化／医美、九把武器、凝胶外观及人格转移。本版功能已有分批实机认可；繁英俄浪漫显示与其他独立专项仍保留边界。
+升级时完整替换旧目录，保留版本目录与LoadFolders.xml。旧1.7简易发射器等移除定义不提供存档迁移。Harmony与RJW先于SSC加载；文化及仪式需要Ideology。兔入口与旧RimTalk对接仍不可用。
 
-Version 2.4.7 — body sensitivity, personal production controls and compatibility fixes.
-Adds a general frequency stat, PNA pause/resume with batch/nutrition display, directed attraction toward the actual Master, manual UAP group compatibility, downed-receiver Training continuity and resonance-query deduplication.
-New features target RimWorld 1.7; 1.6/Common retain frozen SSC 2.4.1 content. Sensitivity and the manual UAP permission override default to off; ordinary PNA production defaults to enabled. Native matching/body requirements remain; unfinished group sessions are canceled on load.
-Retains romance controls, moods/logs, body development, culture/cosmetics, bonds, nine PNA weapons, gel appearance, specializations and personality transfer.
-Development batches have scoped maintainer acceptance; PNA guidance was accepted. Three-language romance display and unreported combinations retain their independent verification scope.
-Replace the entire old folder, keeping version folders and LoadFolders.xml. Removed old 1.7 launcher definitions have no save migration. Load Harmony and RJW before SSC; Ideology is required for culture and rituals. Rabbit selection and legacy RimTalk remain unavailable.
+Version 2.4.8 — Broodmother, personality imprints and management.
+Adds the seventh specialization, preconception/generation and birth handling, final conception scenes with eligible adult targets, PNA/body frequency sources, six disabled Hollow needs and explicit trainer/work-enabling actions.
+New work targets RimWorld 1.7; 1.6/Common retain frozen SSC 2.4.1 content. New Broodmother selection requires Chain stage 3 and a completed uterus. Successful conception starts a seven-day cooldown; interruption grants neither pregnancy nor success cooldown. Imprints follow personality; preconception settings belong to the body. Current Masters cannot undergo personality extraction.
+Trainer work is explicitly enabled at priority 3 while existing enabled priorities are preserved. Replicas, unified-framework integration and room effects remain future/deferred work.
+Retains personal/romance controls, moods/logs, sensitivity, PNA production, body development, culture/cosmetics, nine weapons, gel appearance and personality transfer. Scoped batch acceptance is recorded; three-language romance display and independent open checks retain their boundaries.
+Replace the whole old folder, retaining version folders and LoadFolders.xml. Removed old 1.7 launcher definitions have no save migration. Load Harmony/RJW before SSC; Ideology is required for culture and rituals. Rabbit selection and legacy RimTalk remain unavailable.
 
 [AI 辅助生成 / Partly AI-assisted]</description>
 	<modDependencies>

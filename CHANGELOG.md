@@ -4,7 +4,7 @@
 
 This continuation builds on upstream **2.2.8**, the baseline when upstream development stopped in July, and retains its version numbering. Entries are listed newest first. Technical details are in the [development log (Chinese)](Docs/Development/开发更新记录.md).
 
-## [2.4.8] — 2026-10-31 — 开发登记，未发布 / Unreleased
+## [2.4.8] — 2026-10-31 — 孕母、人格印记与管理补全
 
 以v2.4.7为起点，截至`ba2d1e22`的52个非合并提交、269个变更路径归入2.4.8。详见[双语说明](Docs/Releases/2.4.8/2.4.8发布说明.md)、[提交归并](Docs/Releases/2.4.8/2.4.8开发归并核对.md)及[验证边界](Docs/Releases/2.4.8/2.4.8版本验证.md)。新增仅1.7，1.6／Common冻结2.4.1。
 
@@ -14,7 +14,7 @@ This continuation builds on upstream **2.2.8**, the baseline when upstream devel
 - **调教员便捷操作：** 指派并启用工作、现指定者就地启用、默认优先级3及保留原值，训练页／概览共用；多人指派继续暂缓。
 - **资料与测试维护：** 孕母文案／取证／归档、重复测试精简及规划整合。第47项房间效果、第50项独立框架及复制体未开发，不计交付。
 
-2.4.8 groups post-v2.4.7 development through `ba2d1e22`: Broodmother progression and final conception scenes, preconception/generation rules, three-state personality imprints, PNA/body frequency sources, six disabled Hollow needs and explicit trainer/work-enabling actions. Naming/localization, Beauty, label colors and scoped in-game acceptance are recorded. Replicas, the unified framework and room effects remain future work. **Unreleased:** VERSION/docs are 2.4.8; About, source version attributes and current DLL/BUILD-INFO remain 2.4.7. The historical 6333-case release gate is not a new 2.4.8 result; no new full-case total is inferred from individual changes. Public downloads remain v2.4.7.
+2.4.8 groups post-v2.4.7 development through `ba2d1e22`: Broodmother progression and final conception scenes, preconception/generation rules, three-state personality imprints, PNA/body frequency sources, six disabled Hollow needs and explicit trainer/work-enabling actions. Naming/localization, Beauty, label colors and scoped in-game acceptance are recorded. Replicas, the unified framework and room effects remain future work. **2.4.8 release:** VERSION, About, source file/product attributes and the rebuilt 1.7 DLL/BUILD-INFO are aligned to 2.4.8. The historical 6333-case release gate is not a new 2.4.8 result; no new full-case total is inferred from individual changes. Full release-gate, package and upload evidence is recorded separately for 2.4.8.
 
 ## [2.4.7] — 2026-10-28 — 敏感度、生产控制与兼容修复
 

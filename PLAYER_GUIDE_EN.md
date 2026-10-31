@@ -4,13 +4,13 @@
 
 [2.4.7: new controls and compatibility](#ssc-247)
 
-**2.4.8 — development registration, 2026-10-31; unreleased.** Broodmother, personality imprints, frequency attributes, Hollow needs and trainer convenience target 1.7; 1.6/Common remain frozen at 2.4.1. Latest public download: [v2.4.7](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.7). About/source version attributes and DLL/BUILD-INFO still hold 2.4.7 pending a release rebuild. Batch acceptance is separate from a new full gate.
+**2.4.8 — 2026-10-31.** Broodmother, personality imprints, frequency sources, Hollow needs and trainer convenience. [Download v2.4.8](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.8). New work targets 1.7; 1.6/Common remain frozen at 2.4.1. About/source version attributes and rebuilt runtime metadata are aligned to 2.4.8. Scoped acceptance, the complete release gate and upload receipts are recorded separately.
 
 [2.4.6: stages, orders, moods and personal resets](#27-246-personal-abilities-and-romance-controls-17-unreleased)
 
 [New in 2.4.4: culture, ritual points and cosmetics](#25-244-culture-rituals-and-cosmetic-reshaping-17-development-only)
 
-> This guide covers **SSC 2.4.8 (development registration, 2026-10-31; unreleased)** for RimWorld 1.7; 1.6 remains frozen at 2.4.1. See the [release scope](Docs/Releases/2.4.8/2.4.8发布说明.md#english). Earlier section versions identify introductions.
+> This guide covers **SSC 2.4.8 (2026-10-31)** for RimWorld 1.7; 1.6 remains frozen at 2.4.1. See the [release scope](Docs/Releases/2.4.8/2.4.8发布说明.md#english). Earlier section versions identify introductions.
 
 [Project home](README.md) · [Player reading order](Docs/Players/README.md#english-reading-order) · [Quick start](QUICK_START_EN.md) · [中文机制详解](机制详解.md)
 
@@ -1997,9 +1997,9 @@ Each resonance query reuses one statistics result, preserving bond filtering, ze
 Scoped in-game acceptance exists for these features; unreported language/mod combinations are not independently declared passed. Traditional Chinese/English/Russian romance display and other separate checks remain in the [verification index](Docs/Development/Verification/README.md). Automatic warm-up/slowdown, a standalone framework, PNA boosting/facilities and new social events remain future work. The formal rebuild, complete gate and upload receipts are recorded separately in the version-validation archive.
 
 <a id="ssc-248"></a>
-## 29. 2.4.8 Broodmother, personality imprints and attributes (1.7 development)
+## 29. 2.4.8 Broodmother, personality imprints and attributes (1.7)
 
-**Registered 2026-10-31; unreleased.** [Development notes](Docs/Releases/2.4.8/2.4.8发布说明.md#english) · [Commit audit](Docs/Releases/2.4.8/2.4.8开发归并核对.md) · [Validation](Docs/Releases/2.4.8/2.4.8版本验证.md).
+**Version 2.4.8, 2026-10-31.** [Development notes](Docs/Releases/2.4.8/2.4.8发布说明.md#english) · [Commit audit](Docs/Releases/2.4.8/2.4.8开发归并核对.md) · [Validation](Docs/Releases/2.4.8/2.4.8版本验证.md).
 
 ### Broodmother development and finalization
 

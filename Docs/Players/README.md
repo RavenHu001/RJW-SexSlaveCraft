@@ -2,11 +2,11 @@
 
 2026-10-28：**2.4.7已正式发布**，[下载](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.7)。完整All **50套／6333项全部通过**，资源2／2、编排56项及浪漫隔离75项通过；532份冻结文件未变。源码标签`e567e1b1`，ZIP与SHA-256已上传并复核；本轮没有再启动游戏或同步安装目录。旧分批／登记数字按原日期阅读。
 
-**2.4.8 — 2026-10-31开发登记，未发布。** 孕母特化、三态人格印记、频率属性、空壳需求与调教员便捷操作；新增仅1.7，1.6／Common冻结2.4.1。最新正式下载仍为[v2.4.7](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.7)。About／源码版本属性／DLL／BUILD-INFO仍持有2.4.7，发布前须对齐重编；分批验收与本版完整门禁分别记录。
+**2.4.8 — 2026-10-31。** 孕母、三态人格印记、频率属性、空壳需求与调教员便捷操作；[下载v2.4.8](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.8)。新增仅1.7，1.6／Common冻结2.4.1；About、源码版本属性与重编运行产物对齐2.4.8。分批实机认可、正式门禁与上传回执分别记录，历史独立待验收范围保留。
 
 [项目首页](../../README.md) · [文档总索引](../README.md) · [双语模组介绍](../模组介绍.md) · [版本索引](../Releases/README.md)
 
-2.4.8先查[新增玩法](../../读我，玩法介绍.md#ssc-248)与[完整规则](../../机制详解.md#ssc-248)，本版尚未发布，公开v2.4.7不含这些新增。2.4.7内容查[新增玩法](../../读我，玩法介绍.md#ssc-247)与[完整规则](../../机制详解.md#ssc-247)，该2.4.7版本包含其对应新增，较早2.4.6包不含这些功能。已发布2.4.6内容查[能力与浪漫控制入门](../../读我，玩法介绍.md#24-246-个人能力与浪漫控制仅-17未发布)与[完整规则](../../机制详解.md#27-246-个人能力与浪漫控制仅-17未发布)。继承的2.4.5内容查[身体开发入门](../../读我，玩法介绍.md#23-245-身体开发与维护调整仅-17未发布)与[完整规则](../../机制详解.md#26-245-身体开发与生育控制仅-17未发布)。此前已发布内容可直接查[文化与医美入门](../../读我，玩法介绍.md#22-244-文化与医美仅-17-开发版)，数值与条件查[完整规则](../../机制详解.md#25-244-文化仪式与医美仅-17-开发版)。
+2.4.8先查[新增玩法](../../读我，玩法介绍.md#ssc-248)与[完整规则](../../机制详解.md#ssc-248)，本版包含这些新增，较早v2.4.7不含这些功能。2.4.7内容查[新增玩法](../../读我，玩法介绍.md#ssc-247)与[完整规则](../../机制详解.md#ssc-247)，该2.4.7版本包含其对应新增，较早2.4.6包不含这些功能。已发布2.4.6内容查[能力与浪漫控制入门](../../读我，玩法介绍.md#24-246-个人能力与浪漫控制仅-17未发布)与[完整规则](../../机制详解.md#27-246-个人能力与浪漫控制仅-17未发布)。继承的2.4.5内容查[身体开发入门](../../读我，玩法介绍.md#23-245-身体开发与维护调整仅-17未发布)与[完整规则](../../机制详解.md#26-245-身体开发与生育控制仅-17未发布)。此前已发布内容可直接查[文化与医美入门](../../读我，玩法介绍.md#22-244-文化与医美仅-17-开发版)，数值与条件查[完整规则](../../机制详解.md#25-244-文化仪式与医美仅-17-开发版)。
 
 ## 中文阅读顺序
 
@@ -35,7 +35,7 @@
 
 ## English reading order
 
-The guides now cover **unreleased 2.4.8 development** plus 2.4.7 on 1.7; 1.6 remains at 2.4.1. Start with [2.4.8 additions](../../QUICK_START_EN.md#ssc-248) and [full rules](../../PLAYER_GUIDE_EN.md#ssc-248), which are not in public v2.4.7. Earlier controls are in the [new controls](../../QUICK_START_EN.md#ssc-247) and [full rules](../../PLAYER_GUIDE_EN.md#ssc-247). Those earlier sensitivity/control features are included in v2.4.7 and were not in v2.4.6. For the earlier released features, see [ability/romance controls](../../QUICK_START_EN.md#24-246-personal-abilities-and-romance-controls-17-unreleased), the [full rules](../../PLAYER_GUIDE_EN.md#27-246-personal-abilities-and-romance-controls-17-unreleased) and the inherited [body-development guide](../../QUICK_START_EN.md#23-245-body-development-and-maintenance-17-unreleased). The public 2.4.6 package includes those earlier ability, romance and body-development features. For already released features, use the [2.4.4 scope](../Releases/2.4.4/2.4.4发布说明.md#english), [culture/cosmetics quick start](../../QUICK_START_EN.md#22-244-culture-and-cosmetic-reshaping-17-development-only) and [full rules](../../PLAYER_GUIDE_EN.md#25-244-culture-rituals-and-cosmetic-reshaping-17-development-only).
+The guides now cover **2.4.8** and earlier features on 1.7; 1.6 remains at 2.4.1. Start with [2.4.8 additions](../../QUICK_START_EN.md#ssc-248) and [full rules](../../PLAYER_GUIDE_EN.md#ssc-248), which are new to 2.4.8 and were not in public v2.4.7. Earlier controls are in the [new controls](../../QUICK_START_EN.md#ssc-247) and [full rules](../../PLAYER_GUIDE_EN.md#ssc-247). Those earlier sensitivity/control features are included in v2.4.7 and were not in v2.4.6. For the earlier released features, see [ability/romance controls](../../QUICK_START_EN.md#24-246-personal-abilities-and-romance-controls-17-unreleased), the [full rules](../../PLAYER_GUIDE_EN.md#27-246-personal-abilities-and-romance-controls-17-unreleased) and the inherited [body-development guide](../../QUICK_START_EN.md#23-245-body-development-and-maintenance-17-unreleased). The public 2.4.6 package includes those earlier ability, romance and body-development features. For already released features, use the [2.4.4 scope](../Releases/2.4.4/2.4.4发布说明.md#english), [culture/cosmetics quick start](../../QUICK_START_EN.md#22-244-culture-and-cosmetic-reshaping-17-development-only) and [full rules](../../PLAYER_GUIDE_EN.md#25-244-culture-rituals-and-cosmetic-reshaping-17-development-only).
 
 1. Read the [mod overview](../模组介绍.md#english).
 2. Follow [Getting Started](../../QUICK_START_EN.md#2-getting-started) for research, qualification, identities and trainers.
@@ -58,6 +58,6 @@ Use [Bond Overview](../../QUICK_START_EN.md#bond-overview-243-17-only) for portr
 
 ## 版本与资料用途 / Versions and document roles
 
-当前指南包含2.4.8开发内容及此前功能；2.4.8未发布，正式下载仍为2.4.7；历史标签资料保持各自版本，构建与发布准备见[2.4.8 验证记录](../Releases/2.4.8/2.4.8版本验证.md)。已交付、专项待验收与未来规划分别登记，测试计数保留实际执行日期。
+当前指南包含2.4.8新增及此前功能；本版下载为2.4.8；历史标签资料保持各自版本，构建与发布准备见[2.4.8 验证记录](../Releases/2.4.8/2.4.8版本验证.md)。已交付、专项待验收与未来规划分别登记，测试计数保留实际执行日期。
 
-These guides cover unreleased 2.4.8 additions and the earlier 2.4.7/2.4.6 releases, including the earlier 2.4.5 milestone; the historical v2.4.4 package retains its original scope. Historical validation and maintainer acceptance retain their original scope; new build, release-gate and package results are recorded separately.
+These guides cover 2.4.8 additions and the earlier 2.4.7/2.4.6 releases, including the earlier 2.4.5 milestone; the historical v2.4.4 package retains its original scope. Historical validation and maintainer acceptance retain their original scope; new build, release-gate and package results are recorded separately.

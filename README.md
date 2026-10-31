@@ -2,13 +2,13 @@
 
 2026-10-28：**2.4.7已正式发布**，[下载](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.7)。完整All **50套／6333项全部通过**，资源2／2、编排56项及浪漫隔离75项通过；532份冻结文件未变。源码标签`e567e1b1`，ZIP与SHA-256已上传并复核；本轮没有再启动游戏或同步安装目录。旧分批／登记数字按原日期阅读。
 
-**2.4.8 — 2026-10-31开发登记，未发布。** 孕母特化、三态人格印记、频率属性、空壳需求与调教员便捷操作；新增仅1.7，1.6／Common冻结2.4.1。最新正式下载仍为[v2.4.7](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.7)。About／源码版本属性／DLL／BUILD-INFO仍持有2.4.7，发布前须对齐重编；分批验收与本版完整门禁分别记录。
+**2.4.8 — 2026-10-31。** 孕母、三态人格印记、频率属性、空壳需求与调教员便捷操作；[下载v2.4.8](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.8)。新增仅1.7，1.6／Common冻结2.4.1；About、源码版本属性与重编运行产物对齐2.4.8。分批实机认可、正式门禁与上传回执分别记录，历史独立待验收范围保留。
 
 面向 RimWorld 的成人向 RimJobWorld（RJW）扩展，基于上游 **2.2.8** 继续维护，提供角色培养、主从绑定、七种特化、人格转移和身体改造。
 
-[2.4.8开发范围](Docs/Releases/2.4.8/2.4.8发布说明.md) · [正式下载2.4.7](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.7) · [双语模组简介](Docs/模组介绍.md) · [玩家阅读入口](Docs/Players/README.md) · [文档总索引](Docs/README.md) · [English](#english-overview)
+[2.4.8开发范围](Docs/Releases/2.4.8/2.4.8发布说明.md) · [正式下载2.4.8](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.8) · [双语模组简介](Docs/模组介绍.md) · [玩家阅读入口](Docs/Players/README.md) · [文档总索引](Docs/README.md) · [English](#english-overview)
 
-## 2.4.8 当前开发（仅1.7，未发布）
+## 2.4.8 新增内容（仅1.7）
 
 | 主题 | 交付与阅读入口 |
 | --- | --- |
@@ -80,7 +80,7 @@
 | 契约仪式与阶段进阶 | 需要 Ideology（文化）DLC |
 | Royalty（可选） | 安装时调教研究需要蓝图；种子或原版独立蓝图可补齐，之后仍需研究 |
 
-正式游玩从 [v2.4.7 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.7) 下载 ZIP 与 SHA-256。退出游戏，移出旧文件夹后完整解压新文件夹，保留加载配置及两套版本目录。该下载的功能范围见[2.4.7发布说明](Docs/Releases/2.4.7/2.4.7发布说明.md)，历史说明与附件保留各自版本。
+正式游玩从 [v2.4.8 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.8) 下载 ZIP 与 SHA-256。退出游戏，移出旧文件夹后完整解压新文件夹，保留加载配置及两套版本目录。该下载的功能范围见[2.4.8发布说明](Docs/Releases/2.4.8/2.4.8发布说明.md)，历史说明与附件保留各自版本。
 
 宠物兔选择入口未开放，旧 RimTalk 对接暂停。受训目标须为 SSC 性奴身份，原版奴隶身份不能替代。
 
@@ -102,9 +102,9 @@
 
 ## English overview
 
-SexSlaveCraft is an adult RJW expansion for pawn development, bonds, seven specializations, personality transfer and body modification. **Current development: 2.4.8 (registered 2026-10-31, unreleased); latest public release: 2.4.7.** [Download v2.4.7](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.7). New work targets 1.7; the 1.6/Common baseline stays frozen at 2.4.1.
+SexSlaveCraft is an adult RJW expansion for pawn development, bonds, seven specializations, personality transfer and body modification. **Current version: 2.4.8 (2026-10-31).** [Download v2.4.8](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.8). New work targets 1.7; the 1.6/Common baseline stays frozen at 2.4.1.
 
-2.4.8 adds Broodmother progression, three-state personality imprints, preconception/generation rules and a final conception scene for eligible adult targets, PNA/body frequency sources, six disabled Hollow needs and explicit trainer/work-enabling actions. Scoped batches have maintainer acceptance; replicas and the unified framework remain future work. [Development scope](Docs/Releases/2.4.8/2.4.8发布说明.md#english) · [Validation](Docs/Releases/2.4.8/2.4.8版本验证.md). Current runtime metadata remains 2.4.7 pending release preparation.
+2.4.8 adds Broodmother progression, three-state personality imprints, preconception/generation rules and a final conception scene for eligible adult targets, PNA/body frequency sources, six disabled Hollow needs and explicit trainer/work-enabling actions. Scoped batches have maintainer acceptance; replicas and the unified framework remain future work. [Development scope](Docs/Releases/2.4.8/2.4.8发布说明.md#english) · [Validation](Docs/Releases/2.4.8/2.4.8版本验证.md). Current runtime metadata is aligned to 2.4.8; formal gate and upload evidence are archived separately.
 
 2.4.7 adds body sensitivity and a general frequency stat, personal PNA pause/resume and status display, manual UAP group compatibility, directed attraction toward the actual Master, downed-receiver Training continuity and resonance-query optimization. Testing and documentation maintenance are included. [Development scope](Docs/Releases/2.4.7/2.4.7发布说明.md#english) · [Validation boundaries](Docs/Releases/2.4.7/2.4.7版本验证.md). VERSION, About/source version attributes and the rebuilt 1.7 binary/BUILD-INFO are aligned to 2.4.7.
 
