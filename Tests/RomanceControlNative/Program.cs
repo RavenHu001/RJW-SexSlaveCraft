@@ -92,6 +92,17 @@ internal static partial class Program
             // 与其他原生宿主一致，预热独立 CLR 的类型缓存；其不提供完整游戏 Harmony 3 环境。
             // 后续每例仍将原版 Error 判为失败；Scribe 三个测试类型由上述精确映射解析。
             _ = GenTypes.AllTypes;
+            // 提取准入现会查询真实RJW孕态；补齐其Def依赖与原生类型映射，不替换查询或提取规则。
+            DefDatabase<rjw.StringListDef>.Add(new rjw.StringListDef { defName = "NonInheritedTraits", strings = new() });
+            var pregnancyTypes = new Dictionary<Type, string>();
+            foreach (var type in new[] { typeof(rjw.Hediff_HumanlikePregnancy), typeof(rjw.Hediff_BestialPregnancy) })
+            {
+                string name = type.GetCustomAttributes(typeof(rjw.RJWAssociatedHediffAttribute), false)
+                    .Cast<rjw.RJWAssociatedHediffAttribute>().Single().defName;
+                pregnancyTypes[type] = name;
+                DefDatabase<HediffDef>.Add(new HediffDef { defName = name, hediffClass = type });
+            }
+            AccessTools.Field(typeof(rjw.Hediff_BasePregnancy), "_hediffOfClass").SetValue(null, pregnancyTypes);
             bootstrap = false;
             harmony.CreateClassProcessor(production.GetType("SexSlaveCraft.Harmony_SSCRomanceMoodAdmissionTail")).Patch();
             // 文案专项仅建立显示夹具，不执行互动、许可、人格或存档机制回归。

@@ -110,6 +110,8 @@ internal static partial class Program
             bootstrap = false;
             // 第 4 批新增真实属性引用；宿主只提供正常基础值，能力、装备等修正不参与阶段专项。
             LoadStageStatReferences(game);
+            // 子宫与PNA等生产XML现已引用通用频率属性，必须在任何交叉引用解析前加载真实定义。
+            LoadOrgasmFrequencyReference(repo);
             // 印记专项只复用公共游戏夹具，不依赖先执行子宫、手术或敏感度用例来完成初始化。
             if (selection != null && selection != "--pregnancy")
             {

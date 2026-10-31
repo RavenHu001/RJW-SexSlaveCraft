@@ -73,7 +73,15 @@ internal static partial class Program
         InitializeBirth(harmony);skillMap=Bare<Map>();
         vagina??=new HediffDef_SexPart{defName="SkillVagina",hediffClass=typeof(Hediff),genitalFamily=GenitalFamily.Vagina,genitalTags=new()};
         if(DefDatabase<HediffDef>.GetNamedSilentFail(vagina.defName)==null)DefDatabase<HediffDef>.Add(vagina);
-        void Patch(System.Reflection.MethodBase m,string name)=>harmony.Patch(m,prefix:new HarmonyMethod(typeof(Program),name));
+        // 全量入口先运行旧场景；替换同一原生末端上属于Program的旧夹具前置，保留生产补丁与其他owner。
+        void Patch(System.Reflection.MethodBase m,string name)
+        {
+            var prior = Harmony.GetPatchInfo(m);
+            if (prior != null)
+                foreach (var patch in prior.Prefixes.Where(p => p.owner == harmony.Id && p.PatchMethod.DeclaringType == typeof(Program)).ToArray())
+                    harmony.Unpatch(m, patch.PatchMethod);
+            harmony.Patch(m,prefix:new HarmonyMethod(typeof(Program),name));
+        }
         Patch(AccessTools.PropertyGetter(typeof(Thing),nameof(Thing.Map)),nameof(SkillMap));Patch(AccessTools.PropertyGetter(typeof(Thing),nameof(Thing.MapHeld)),nameof(SkillMapHeld));Patch(AccessTools.PropertyGetter(typeof(Thing),nameof(Thing.Spawned)),nameof(SkillSpawned));
         Patch(AccessTools.PropertyGetter(typeof(PawnCapacitiesHandler),nameof(PawnCapacitiesHandler.CanBeAwake)),nameof(SkillAwake));
         Patch(AccessTools.Method(typeof(ReachabilityImmediate),nameof(ReachabilityImmediate.CanReachImmediate),new[]{typeof(IntVec3),typeof(LocalTargetInfo),typeof(Map),typeof(PathEndMode),typeof(Pawn)}),nameof(SkillTouch));

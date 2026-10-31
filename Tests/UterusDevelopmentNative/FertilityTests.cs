@@ -18,6 +18,11 @@ internal static partial class Program
     /// <summary>扩展现有原生宿主；图形、地图放置与完整健康状态机仍是边界。</summary>
     private static void FertilityTests(string repo, Harmony harmony, bool preconceptionOnly = false, int birthSelection = 0)
     {
+        // 早期培养/界面分区会截断特化结算和翻译；本分区须恢复真实入口，不能沿用那些外部边界。
+        foreach (var method in AccessTools.GetDeclaredMethods(typeof(SpecializationTrainingProgressUtility)).Where(m => m.Name == "NotifyTrainingCompleted"))
+            harmony.Unpatch(method, AccessTools.Method(typeof(Program), nameof(Skip)));
+        foreach (var arguments in new[] { new[] { typeof(string), typeof(NamedArgument) }, new[] { typeof(string), typeof(NamedArgument), typeof(NamedArgument) } })
+            harmony.Unpatch(AccessTools.Method(typeof(TranslatorFormattedStringExtensions), "Translate", arguments), AccessTools.Method(typeof(Program), nameof(FormattedBoundary)));
         // 复用原翻译器，将本批Keyed内容并入当前已载入语言。
         LoadBodyManagementLanguage(repo, "ChineseSimplified");
         bootstrap = true;

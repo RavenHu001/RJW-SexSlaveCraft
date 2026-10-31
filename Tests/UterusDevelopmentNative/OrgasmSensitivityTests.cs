@@ -15,6 +15,16 @@ internal static partial class Program
     private static StatDef vulnerability;
     private static readonly Type sensitivityConfig = typeof(SSCOrgasmSensitivityUtility).Assembly.GetType("SexSlaveCraft.SSCOrgasmSensitivityConfig");
 
+    /// <summary>公共初始化先加载生产Stat；全量及各独立入口不依赖敏感度用例的执行顺序。</summary>
+    private static void LoadOrgasmFrequencyReference(string repo)
+    {
+        var category = DefDatabase<StatCategoryDef>.GetNamedSilentFail("PawnHealth");
+        if (category == null) { category = new StatCategoryDef { defName = "PawnHealth" }; DefDatabase<StatCategoryDef>.Add(category); }
+        StatCategoryDefOf.PawnHealth = category;
+        var xml = new XmlDocument(); xml.Load(Path.Combine(repo, "1.7/Defs/StatDefs/SSC_OrgasmFrequency.xml"));
+        DefDatabase<StatDef>.Add(DirectXmlToObject.ObjectFromXml<StatDef>(xml.DocumentElement.SelectSingleNode("StatDef"), false));
+    }
+
     /// <summary>实际载入本批资源，执行有效状态、独立配置、原菜单凭据和身体流转回归。</summary>
     private static void OrgasmSensitivityTests(string repo, Harmony harmony)
     {
@@ -22,12 +32,7 @@ internal static partial class Program
         SSCDefOf.SSC_PersonalityExcreted_Done ??= new HediffDef { defName = "SSC_PersonalityExcreted_Done", hediffClass = typeof(Hediff), initialSeverity = 1 };
         vulnerability = DefDatabase<StatDef>.GetNamedSilentFail("Vulnerability");
         if (vulnerability == null) { vulnerability = new StatDef { defName = "Vulnerability", defaultBaseValue = 1f }; DefDatabase<StatDef>.Add(vulnerability); }
-        var category = DefDatabase<StatCategoryDef>.GetNamedSilentFail("PawnHealth");
-        if (category == null) { category = new StatCategoryDef { defName = "PawnHealth" }; DefDatabase<StatCategoryDef>.Add(category); }
-        StatCategoryDefOf.PawnHealth = category;
-        var xml = new XmlDocument(); xml.Load(Path.Combine(repo, "1.7/Defs/StatDefs/SSC_OrgasmFrequency.xml"));
-        DefDatabase<StatDef>.Add(DirectXmlToObject.ObjectFromXml<StatDef>(xml.DocumentElement.SelectSingleNode("StatDef"), false));
-        xml.Load(Path.Combine(repo, "1.7/Defs/HediffDefs/SSC_OrgasmSensitivity.xml"));
+        var xml = new XmlDocument(); xml.Load(Path.Combine(repo, "1.7/Defs/HediffDefs/SSC_OrgasmSensitivity.xml"));
         sensitivity = DirectXmlToObject.ObjectFromXml<HediffDef>(xml.DocumentElement.SelectSingleNode("HediffDef"), false);
         DefDatabase<HediffDef>.Add(sensitivity);
         xml.Load(Path.Combine(repo, "1.7/Defs/ThoughtDefs/SSC_OrgasmSensitivity.xml"));

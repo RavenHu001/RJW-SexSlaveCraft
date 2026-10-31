@@ -33,7 +33,7 @@ internal static partial class Program
         harmony.Patch(AccessTools.Method(typeof(ModLister), "AllModsActiveNoSuffix", new[] { typeof(IEnumerable<string>) }),
             prefix: new HarmonyMethod(typeof(Program), nameof(ImprintBiotechActive)));
         // 属性夹具提供中性基础值，实际Hediff偏移与乘算继续经过游戏StatWorker。
-        foreach (string name in new[] { "LifespanFactor", "PsychicSensitivity", "GlobalLearningFactor", "LearningRateFactor", "Vulnerability", "SSC_OrgasmFrequency" })
+        foreach (string name in new[] { "LifespanFactor", "PsychicSensitivity", "GlobalLearningFactor", "LearningRateFactor", "Vulnerability" })
             if (DefDatabase<StatDef>.GetNamedSilentFail(name) == null)
                 DefDatabase<StatDef>.Add(new StatDef { defName = name, defaultBaseValue = 1f });
         foreach (string name in new[] { "WoundInfection", "GutWorms", "MuscleParasites" })
