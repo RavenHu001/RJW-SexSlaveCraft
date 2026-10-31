@@ -190,18 +190,19 @@ internal static partial class Program
     private static void ImprintEffectTests()
     {
         foreach (var sample in new[] {
-            (imprintNames[0], new[] { 1.5f, 1.25f, 1.2f, 1.5f, 1.25f, 1f, 1f, 1f, 1f }),
-            (imprintNames[1], new[] { 3f, 1.5f, 1.5f, 1f, 1.5f, .25f, 1.25f, 1.25f, 1f }),
-            (imprintNames[2], new[] { 3f, 1.5f, 1.5f, 1f, 1.5f, 1.5f, 1.5f, 1.5f, 1.25f }) })
+            (imprintNames[0], new[] { 1.5f, 1.25f, 1.2f, 1.5f, 1.25f, 1f, 1f, 1f, 1f, 1f }),
+            (imprintNames[1], new[] { 3f, 1.5f, 1.5f, 1f, 1.5f, .25f, 1.25f, 1.25f, 1f, 1f }),
+            (imprintNames[2], new[] { 3f, 1.5f, 1.5f, 1f, 1.5f, 1.5f, 1.5f, 1.5f, 1.25f, 2f }) })
             Check("imprint actual native stat calculation " + sample.Item1, () =>
             {
                 var pawn = ImprintPawn(); Mark(pawn, sample.Item1);
-                string[] names = { "LifespanFactor", "PsychicSensitivity", "GlobalLearningFactor", "LearningRateFactor", "ImmunityGainSpeed", "Vulnerability", "SexFrequency", "SexSatisfaction", "SSC_OrgasmFrequency" };
+                string[] names = { "LifespanFactor", "PsychicSensitivity", "GlobalLearningFactor", "LearningRateFactor", "ImmunityGainSpeed", "Vulnerability", "SexFrequency", "SexSatisfaction", "SSC_OrgasmFrequency", "PawnBeauty" };
                 for (int i = 0; i < names.Length; i++)
                     Require(Math.Abs(sample.Item2[i] - StageStat(pawn, names[i])) < .0001f, names[i] + " expected " + sample.Item2[i] + ", got " + StageStat(pawn, names[i]));
                 Mark(pawn, sample.Item1); Mark(pawn, imprintNames[(Array.IndexOf(imprintNames, sample.Item1) + 1) % 3]);
                 Equal(1, pawn.health.hediffSet.hediffs.Count(h => SSCImprintUtility.IsImprintDef(h.def)));
                 Near(sample.Item2[1], StageStat(pawn, "PsychicSensitivity"));
+                Near(sample.Item2[9], StageStat(pawn, "PawnBeauty"));
             });
         Check("imprint immunity uses native immunity handler without deleting illness", () =>
         {

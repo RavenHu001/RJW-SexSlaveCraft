@@ -5,6 +5,7 @@
     <label>Sex slave specialization (Broodmother)</label>
     <description>Her body is ripening for gestation—the lower belly growing softer and fuller by the day, a maternal allure gradually rising in every gesture. The corrupted womb is being mastered bit by bit, conceiving ever more solely by her master's will.</description>
     <hediffClass>SexSlaveCraft.Hediff_FertilitySpecialization</hediffClass>
+    <defaultLabelColor>(0.909804, 0.627451, 0.674510)</defaultLabelColor>
     <isBad>false</isBad>
     <everCurableByItem>false</everCurableByItem>
     <initialSeverity>0.01</initialSeverity>
@@ -57,6 +58,7 @@
     <label>Sex slave specialization (Ultimate broodmother)</label>
     <description>Her body is wholly possessed by the instinct to breed—breasts swollen and full, lower belly warm, the whole of her steeped in a ripened, lascivious air. The corrupted womb is utterly submissive to its master, ready at any moment to receive and to gestate.</description>
     <hediffClass>SexSlaveCraft.Hediff_FertilitySpecialization</hediffClass>
+    <defaultLabelColor>(1.0, 0.501961, 0.650980)</defaultLabelColor>
     <isBad>false</isBad>
     <everCurableByItem>false</everCurableByItem>
     <initialSeverity>1</initialSeverity>

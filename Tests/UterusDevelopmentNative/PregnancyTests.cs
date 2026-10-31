@@ -27,6 +27,11 @@ internal static partial class Program
             var node = rjw.Root.Elements().Concat(core.Root.Elements()).Single(x => (string)x.Element("defName") == name);
             DefDatabase<StatDef>.Add(new StatDef { defName = name, defaultBaseValue = (float?)node.Element("defaultBaseValue") ?? 1f });
         }
+        // 印记与孕母新增魅力直接加值；沿本机原版定义读取零基础值，不能套用倍率属性的基础值1。
+        var beauty = XDocument.Load(Path.Combine(game, "Data/Core/Defs/Stats/Stats_Pawns_Social.xml"))
+            .Root.Elements().Single(x => (string)x.Element("defName") == "PawnBeauty");
+        DefDatabase<StatDef>.Add(new StatDef { defName = "PawnBeauty", label = (string)beauty.Element("label"),
+            defaultBaseValue = (float)beauty.Element("defaultBaseValue") });
     }
 
     /// <summary>先验证阶段，再加载真实妊娠 XML 和生产补丁，最后运行两类孕期及真实存档测试。</summary>

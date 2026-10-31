@@ -127,16 +127,24 @@ internal static partial class Program
         {
             var p = FertilityPawn(.5f); Toggle(p,true); Near(3.5f, Factor(p));
             var c=p.TryGetComp<CompSexSlaveTraining>(); c.specializationProgress=.999f; FertilitySpecializationUtility.Sync(p); Near(4.5f,Factor(p));
+            Near(1.5f,StageStat(p,"PawnBeauty"));
             p.health.RemoveHediff(SSCUterusDevelopmentUtility.Find(p)); Near(1,Factor(p)); Start(p,1); Toggle(p,true); Near(4.5f,Factor(p));
             c.SetSpecialization(SexSlaveSpecializationType.None); Near(2.5f,Factor(p)); c.SetSpecialization(SexSlaveSpecializationType.Fertility); Near(4.5f,Factor(p));
+            // 复用阶段用例核对实际Stat消费；各档为总加值，不随阶段升级累加。
+            foreach (var stage in new[] { (0f,0f), (.2f,0f), (.5f,.5f), (.8f,1f), (.999f,1.5f) })
+            { c.specializationProgress=stage.Item1; FertilitySpecializationUtility.Sync(p); Near(stage.Item2,StageStat(p,"PawnBeauty")); }
         });
         Check("fertility final persists across directions while invalid bodies return neutral", () =>
         {
             var p=FertilityPawn(); p.health.AddHediff(FertilitySpecializationUtility.FinalDef); FertilitySpecializationUtility.Sync(p);
             p.TryGetComp<CompSexSlaveTraining>().SetSpecialization(SexSlaveSpecializationType.None); Toggle(p,true); Near(5,Factor(p)); Near(1.5f,FertilitySpecializationUtility.CareFactor(p));
             Require(!p.health.hediffSet.HasHediff(FertilitySpecializationUtility.OrdinaryDef));
+            // 终极覆盖普通，且可与人格印记相加；失格只暂停孕母的贡献。
+            Mark(p,SSCImprintUtility.SlaveDefName); Near(4f,StageStat(p,"PawnBeauty"));
             var c=p.TryGetComp<CompSexSlaveTraining>(); c.pawnIdentity=PawnIdentity.Unset; FertilitySpecializationUtility.Sync(p); Near(2.5f,Factor(p)); Require(FertilitySpecializationUtility.HasFinalState(p));
+            Near(2f,StageStat(p,"PawnBeauty"));
             c.pawnIdentity=PawnIdentity.Slave; Near(5,Factor(p));
+            Near(4f,StageStat(p,"PawnBeauty"));
         });
         Check("fertility unified training uses original score and bound-master bonus", () =>
         {
