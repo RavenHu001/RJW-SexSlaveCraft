@@ -184,6 +184,7 @@ namespace SexSlaveCraft
                 ? BuildAbilityToggleRows(pawn, comp, SSCAbilityToggleGroup.Slave, contentWidth - SectionPadding * 2f) : null;
             float slaveAbilityHeight = AbilityToggleSectionHeight(slaveAbilityRows);
 #if SSC_RW17
+            // 阶段维持是独立枚举行；与布尔能力区分别测量，绘制时继续使用原链快照。
             PnaMaintenanceView pnaMaintenance = BuildPnaMaintenanceView(pawn, contentWidth);
 #endif
             float contentHeight = CalculateContentHeight(pawn, comp, identityView.SectionHeight, specializationHeight,

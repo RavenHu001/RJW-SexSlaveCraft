@@ -35,6 +35,7 @@ namespace SexSlaveCraft
         internal void SetPnaMaintenanceStage(SSCPnaMaintenanceStage stage)
         {
             if (pnaMaintenanceStage == stage) return;
+            // 先推进选择世代再取消旧任务；关闭后重开同档也不能恢复旧候选的权限。
             pnaMaintenanceStage = stage;
             unchecked { pnaMaintenanceRevision++; }
             SSCPnaMaintenanceUtility.CancelForChain(pawn, this);
