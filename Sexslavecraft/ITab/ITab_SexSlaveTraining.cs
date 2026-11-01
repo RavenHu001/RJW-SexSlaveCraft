@@ -183,11 +183,15 @@ namespace SexSlaveCraft
             var slaveAbilityRows = comp.pawnIdentity == PawnIdentity.Slave
                 ? BuildAbilityToggleRows(pawn, comp, SSCAbilityToggleGroup.Slave, contentWidth - SectionPadding * 2f) : null;
             float slaveAbilityHeight = AbilityToggleSectionHeight(slaveAbilityRows);
+#if SSC_RW17
+            PnaMaintenanceView pnaMaintenance = BuildPnaMaintenanceView(pawn, contentWidth);
+#endif
             float contentHeight = CalculateContentHeight(pawn, comp, identityView.SectionHeight, specializationHeight,
                 contentWidth, masterView.SectionHeight) + (slaveAbilityHeight > 0f ? slaveAbilityHeight + SectionSpacing : 0f)
                 + (gelView.Height > 0f ? gelView.Height + SectionSpacing : 0f);
 #if SSC_RW17
             if (bodyView.Height > 0f) contentHeight += bodyView.Height + SectionSpacing;
+            if (pnaMaintenance != null) contentHeight += pnaMaintenance.Height + SectionSpacing;
 #endif
             Rect viewRect = trainingRect;
             Rect contentRect = new Rect(0f, 0f, contentWidth, contentHeight);
@@ -237,6 +241,14 @@ namespace SexSlaveCraft
                     DrawAbilityToggleSection(new Rect(0f, curY, contentRect.width, slaveAbilityHeight), slaveAbilityRows);
                     curY += slaveAbilityHeight + SectionSpacing;
                 }
+
+#if SSC_RW17
+                if (pnaMaintenance != null)
+                {
+                    DrawPnaMaintenanceSection(new Rect(0f, curY, contentRect.width, pnaMaintenance.Height), pnaMaintenance);
+                    curY += pnaMaintenance.Height + SectionSpacing;
+                }
+#endif
 
                 if (comp.pawnIdentity == PawnIdentity.Master)
                 {

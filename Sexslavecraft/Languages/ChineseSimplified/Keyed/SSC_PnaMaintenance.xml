@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <SSC_PnaMaintenance_Title>PNA维持阶段</SSC_PnaMaintenance_Title>
+  <SSC_PnaMaintenance_Off>关闭</SSC_PnaMaintenance_Off>
+  <SSC_PnaMaintenance_Unavailable>当前无法设置PNA维持阶段。</SSC_PnaMaintenance_Unavailable>
+  <SSC_PnaMaintenance_Tooltip>当前任务结束后，在下一份普通工作前服用原液，直到活化达到所选阶段。每次1份，仅对当前有效锁链性奴生效。\n初醒在活化消失后补给；单份剂量可能超过目标阶段。此设置保存在当前锁链上，解绑移除锁链后消失。原版定时服用仍独立生效。</SSC_PnaMaintenance_Tooltip>
+</LanguageData>

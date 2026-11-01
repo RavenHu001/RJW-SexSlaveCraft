@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+  <!-- 原版服用驱动的薄子类；不插入顺路搬运，也不将已撤销的补给排队恢复。 -->
+  <JobDef>
+    <defName>SSC_PnaMaintenance</defName>
+    <driverClass>SexSlaveCraft.JobDriver_SSCPnaMaintenance</driverClass>
+    <reportString>maintaining PNA activation with TargetA.</reportString>
+    <allowOpportunisticPrefix>false</allowOpportunisticPrefix>
+    <suspendable>false</suspendable>
+  </JobDef>
+</Defs>

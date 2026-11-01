@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>
+  <!-- 保留紧急工作及原优先级排序，只包装普通工作选取；缺少原节点时让补丁明确报错。 -->
+  <Operation Class="PatchOperationAttributeSet">
+    <xpath>Defs/ThinkTreeDef[defName="MainColonistBehaviorCore"]/thinkRoot/subNodes/li[@Class="ThinkNode_PrioritySorter"]/subNodes/li[@Class="JobGiver_Work"]</xpath>
+    <attribute>Class</attribute>
+    <value>SexSlaveCraft.JobGiver_SSCPnaMaintenanceOrWork</value>
+  </Operation>
+</Patch>

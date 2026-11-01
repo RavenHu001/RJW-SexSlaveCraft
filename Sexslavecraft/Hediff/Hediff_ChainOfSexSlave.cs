@@ -14,6 +14,33 @@ namespace SexSlaveCraft
         private Pawn observedMaster;
         public Pawn LinkedPawn => target as Pawn;
 
+#if SSC_RW17
+        // 配置属于这条实际锁链，不进入人格载荷或会耗尽移除的PNA活化记录。
+        private SSCPnaMaintenanceStage pnaMaintenanceStage;
+        private int pnaMaintenanceRevision;
+        public SSCPnaMaintenanceStage PnaMaintenanceStage => pnaMaintenanceStage;
+        internal int PnaMaintenanceRevision => pnaMaintenanceRevision;
+
+        /// <summary>旧档缺键关闭；保留原target存档，非法枚举不得裁剪成最高维持档。</summary>
+        public override void ExposeData()
+        {
+            base.ExposeData();
+            Scribe_Values.Look(ref pnaMaintenanceStage, "sscPnaMaintenanceStage", SSCPnaMaintenanceStage.Off);
+            Scribe_Values.Look(ref pnaMaintenanceRevision, "sscPnaMaintenanceRevision", 0);
+            if (Scribe.mode == LoadSaveMode.PostLoadInit && !SSCPnaMaintenanceUtility.IsLegalStage(pnaMaintenanceStage))
+                pnaMaintenanceStage = SSCPnaMaintenanceStage.Off;
+        }
+
+        /// <summary>只供已经复查原上下文的设置服务写入；变更撤销本链正在执行的旧补药。</summary>
+        internal void SetPnaMaintenanceStage(SSCPnaMaintenanceStage stage)
+        {
+            if (pnaMaintenanceStage == stage) return;
+            pnaMaintenanceStage = stage;
+            unchecked { pnaMaintenanceRevision++; }
+            SSCPnaMaintenanceUtility.CancelForChain(pawn, this);
+        }
+#endif
+
         public override void PostAdd(DamageInfo? dinfo)
         {
             base.PostAdd(dinfo);
