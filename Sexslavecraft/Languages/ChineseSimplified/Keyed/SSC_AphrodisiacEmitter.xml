@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_Emitter_Toggle>发烟器开关</SSC_Emitter_Toggle>
+  <SSC_Emitter_ToggleDesc>玩家直接切换，无需小人操作。关闭后停止新的暴露，已有药效自然衰减。</SSC_Emitter_ToggleDesc>
+  <SSC_Emitter_RadiusTitle>烟雾半径</SSC_Emitter_RadiusTitle>
+  <SSC_Emitter_RadiusDesc>按1格步进调整半径（5～20格）。耗电为100＋4×半径² W，仅覆盖同一房间；单位目标的暴露速率不变。</SSC_Emitter_RadiusDesc>
+  <SSC_Emitter_RadiusPower>半径：{0}格 · {1} W</SSC_Emitter_RadiusPower>
+  <SSC_Emitter_Status>状态：{0}</SSC_Emitter_Status>
+  <SSC_Emitter_Off>已关闭</SSC_Emitter_Off>
+  <SSC_Emitter_Running>运行中</SSC_Emitter_Running>
+  <SSC_Emitter_NoPower>等待供电</SSC_Emitter_NoPower>
+  <SSC_Emitter_PowerDesc>耗电由所选半径计算，关闭设备后耗电为零。</SSC_Emitter_PowerDesc>
+  <SSC_Emitter_NoFuel>等待驼峰菇</SSC_Emitter_NoFuel>
+  <SSC_Emitter_FixedRadius>半径：{0}格</SSC_Emitter_FixedRadius>
+  <SSC_Emitter_FuelRate>驼峰菇消耗：{0}份／天</SSC_Emitter_FuelRate>
+  <SSC_Emitter_IndustrialRadiusDesc>以1格步进调整半径（5～10）。耗电50＋2×半径² W，耗菇0.02×半径²份／天；仅覆盖同房间，单位目标药效速率不变。</SSC_Emitter_IndustrialRadiusDesc>
+</LanguageData>

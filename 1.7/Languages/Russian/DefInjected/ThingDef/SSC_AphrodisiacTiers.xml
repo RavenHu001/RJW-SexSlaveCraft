@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_AphrodisiacCenser.label>Афродизиакальная курильница</SSC_AphrodisiacCenser.label>
+  <SSC_AphrodisiacCenser.description>Горбошляпник погружается в ПНА на дне курильницы и медленно нагревается. Смесь выделяет афродизиакальный туман, который выходит через ажурный корпус и рассеивается вокруг.\nПостоянно расходует горбошляпник. Действует на цели в радиусе 5 клеток в той же комнате.</SSC_AphrodisiacCenser.description>
+  <SSC_AphrodisiacAtomizer.label>Электрический распылитель афродизиака</SSC_AphrodisiacAtomizer.label>
+  <SSC_AphrodisiacAtomizer.description>Механическая мешалка тщательно смешивает горбошляпник с ПНА, а точный электронагрев регулирует образование тумана и равномерно распределяет его в окружающем пространстве.\nРасходует электричество и горбошляпник. Включается игроком напрямую; радиус регулируется от 5 до 10 клеток. Действует только на цели в той же комнате.</SSC_AphrodisiacAtomizer.description>
+  <SSC_AphrodisiacCenser.comps.CompRefuelable.fuelLabel>Горбошляпник</SSC_AphrodisiacCenser.comps.CompRefuelable.fuelLabel>
+  <SSC_AphrodisiacCenser.comps.CompRefuelable.fuelGizmoLabel>Горбошляпник</SSC_AphrodisiacCenser.comps.CompRefuelable.fuelGizmoLabel>
+  <SSC_AphrodisiacAtomizer.comps.CompRefuelable.fuelLabel>Горбошляпник</SSC_AphrodisiacAtomizer.comps.CompRefuelable.fuelLabel>
+  <SSC_AphrodisiacAtomizer.comps.CompRefuelable.fuelGizmoLabel>Горбошляпник</SSC_AphrodisiacAtomizer.comps.CompRefuelable.fuelGizmoLabel>
+</LanguageData>

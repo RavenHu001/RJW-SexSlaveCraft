@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_AphrodisiacEmitter.label>aphrodisiac emitter</SSC_AphrodisiacEmitter.label>
+  <SSC_AphrodisiacEmitter.description>Precisely controlled electrical energy keeps the PNA–humpshroom mixture in a semi-permanent mist-producing state, steadily releasing aphrodisiac mist.\nConsumes only electricity; no replenishment needed. Switched directly by the player, with an adjustable radius of 5–20 cells. Only affects targets in the same room.</SSC_AphrodisiacEmitter.description>
+</LanguageData>

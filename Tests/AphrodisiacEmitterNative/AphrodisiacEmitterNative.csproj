@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- AI 辅助生成：真实游戏组件／电网／Hediff／Scribe，渲染与整图初始化边界隔离。 -->
+  <PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net10.0</TargetFramework><ImplicitUsings>enable</ImplicitUsings><Nullable>disable</Nullable></PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../CultureNative/UnityCoreShim/UnityCoreShim.csproj" />
+    <ProjectReference Include="../../Sexslavecraft/SexSlaveCraft_1.7.csproj" Condition="'$(SscAssemblyPath)' == ''" />
+    <Reference Include="Sexslavecraft" Condition="'$(SscAssemblyPath)' != ''"><HintPath>$(SscAssemblyPath)</HintPath></Reference>
+    <Reference Include="Assembly-CSharp"><HintPath>$(GameRoot)/Assembly-CSharp.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityStubs"><HintPath>$(GameRoot)/UnityStubs.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="0Harmony"><HintPath>$(HarmonyAssemblyPath)</HintPath></Reference>
+  </ItemGroup>
+</Project>

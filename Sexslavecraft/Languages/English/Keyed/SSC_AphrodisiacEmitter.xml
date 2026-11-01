@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_Emitter_Toggle>Toggle emitter</SSC_Emitter_Toggle>
+  <SSC_Emitter_ToggleDesc>Switch this device directly. No pawn is needed. Turning it off stops new exposure; existing drug effects wear off normally.</SSC_Emitter_ToggleDesc>
+  <SSC_Emitter_RadiusTitle>Mist radius</SSC_Emitter_RadiusTitle>
+  <SSC_Emitter_RadiusDesc>Adjust the radius in whole cells (5–20). Power demand is 100 + 4 × radius² W. Coverage is limited to the same room. Exposure rate per target is unchanged.</SSC_Emitter_RadiusDesc>
+  <SSC_Emitter_RadiusPower>Radius: {0} · {1} W</SSC_Emitter_RadiusPower>
+  <SSC_Emitter_Status>Status: {0}</SSC_Emitter_Status>
+  <SSC_Emitter_Off>Off</SSC_Emitter_Off>
+  <SSC_Emitter_Running>Running</SSC_Emitter_Running>
+  <SSC_Emitter_NoPower>Waiting for power</SSC_Emitter_NoPower>
+  <SSC_Emitter_PowerDesc>Power demand depends on the selected radius. Turning the device off draws no power.</SSC_Emitter_PowerDesc>
+  <SSC_Emitter_NoFuel>Waiting for humpshroom</SSC_Emitter_NoFuel>
+  <SSC_Emitter_FixedRadius>Radius: {0}</SSC_Emitter_FixedRadius>
+  <SSC_Emitter_FuelRate>Humpshroom consumption: {0}/day</SSC_Emitter_FuelRate>
+  <SSC_Emitter_IndustrialRadiusDesc>Adjust radius in whole cells (5–10). Power: 50 + 2 × radius² W. Humpshrooms: 0.02 × radius²/day. Same room only.</SSC_Emitter_IndustrialRadiusDesc>
+</LanguageData>

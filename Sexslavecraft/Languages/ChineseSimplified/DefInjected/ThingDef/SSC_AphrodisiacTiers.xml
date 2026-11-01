@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_AphrodisiacCenser.label>催情香薰炉</SSC_AphrodisiacCenser.label>
+  <SSC_AphrodisiacCenser.description>将驼峰菇浸入炉底的PNA液体中缓慢加热，使混合物释放出催情雾气，再经镂空炉身散入周围。\n持续消耗驼峰菇，影响同房间内5格范围的目标。</SSC_AphrodisiacCenser.description>
+  <SSC_AphrodisiacAtomizer.label>电热催情雾化器</SSC_AphrodisiacAtomizer.label>
+  <SSC_AphrodisiacAtomizer.description>通过机械搅拌使驼峰菇与PNA充分混合，再以精细电加热控制产雾过程，将催情雾气均匀送入周围空间。\n消耗电力和驼峰菇，玩家可直接开关，范围可调5～10格，仅影响同房间内目标。</SSC_AphrodisiacAtomizer.description>
+  <SSC_AphrodisiacCenser.comps.CompRefuelable.fuelLabel>驼峰菇</SSC_AphrodisiacCenser.comps.CompRefuelable.fuelLabel>
+  <SSC_AphrodisiacCenser.comps.CompRefuelable.fuelGizmoLabel>驼峰菇</SSC_AphrodisiacCenser.comps.CompRefuelable.fuelGizmoLabel>
+  <SSC_AphrodisiacAtomizer.comps.CompRefuelable.fuelLabel>驼峰菇</SSC_AphrodisiacAtomizer.comps.CompRefuelable.fuelLabel>
+  <SSC_AphrodisiacAtomizer.comps.CompRefuelable.fuelGizmoLabel>驼峰菇</SSC_AphrodisiacAtomizer.comps.CompRefuelable.fuelGizmoLabel>
+</LanguageData>

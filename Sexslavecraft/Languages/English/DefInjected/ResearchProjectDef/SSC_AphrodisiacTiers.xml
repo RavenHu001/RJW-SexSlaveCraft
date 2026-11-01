@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_RES_PNAIncense.label>PNA incense application</SSC_RES_PNAIncense.label>
+  <SSC_RES_PNAIncense.description>Discover how heating humpshroom mixed into PNA produces mist. Unlocks the non-electric censer.</SSC_RES_PNAIncense.description>
+  <SSC_RES_PNAElectricMist.label>precision electrothermal mist</SSC_RES_PNAElectricMist.label>
+  <SSC_RES_PNAElectricMist.description>Improve humpshroom mixing and precision electric heating. Unlocks an adjustable atomizer using less humpshroom at the same radius.</SSC_RES_PNAElectricMist.description>
+</LanguageData>
