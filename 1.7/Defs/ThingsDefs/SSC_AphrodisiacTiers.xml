@@ -9,8 +9,8 @@
     <drawerType>MapMeshAndRealTime</drawerType>
     <techLevel>Medieval</techLevel>
     <graphicData>
-      <!-- 专用美术暂缓，按维护者要求复用已接入的太空版贴图占位。 -->
-      <texPath>Things/Building/SSC_AphrodisiacEmitter</texPath>
+      <!-- 原创专用256×256透明贴图；烟雾由已有Fleck生成。 -->
+      <texPath>Things/Building/SSC_AphrodisiacCenser</texPath>
       <graphicClass>Graphic_Single</graphicClass>
       <drawSize>(1,1)</drawSize>
     </graphicData>
@@ -85,7 +85,7 @@
     <drawerType>MapMeshAndRealTime</drawerType>
     <techLevel>Industrial</techLevel>
     <graphicData>
-      <texPath>Things/Building/SSC_AphrodisiacEmitter</texPath>
+      <texPath>Things/Building/SSC_AphrodisiacAtomizer</texPath>
       <graphicClass>Graphic_Single</graphicClass>
       <drawSize>(1,1)</drawSize>
     </graphicData>
