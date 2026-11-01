@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- AI 辅助生成：源头喷烟两秒、分片轮巡烟云十二秒；仅引用Core纹理，不依赖文化模组或Ideology。 -->
+<!-- AI 辅助生成：按文化自动烟罐参照校准范围烟21秒、源头烟9.7秒；仅引用Core纹理。 -->
 <Defs>
   <FleckDef ParentName="FleckBase_Thrown">
     <defName>SSC_AphrodisiacSmoke</defName>
     <graphicData><texPath>Things/Mote/Smoke</texPath><renderInstanced>true</renderInstanced></graphicData>
     <altitudeLayer>MoteOverhead</altitudeLayer>
-    <fadeInTime>1</fadeInTime><solidTime>8</solidTime><fadeOutTime>3</fadeOutTime><growthRate>0.03</growthRate>
+    <fadeInTime>0.5</fadeInTime><solidTime>20</solidTime><fadeOutTime>0.5</fadeOutTime><growthRate>0.05</growthRate>
   </FleckDef>
   <FleckDef ParentName="FleckBase_Thrown">
     <defName>SSC_AphrodisiacSourceSmoke</defName>
     <graphicData><texPath>Things/Mote/Smoke</texPath><renderInstanced>true</renderInstanced></graphicData>
     <altitudeLayer>MoteOverhead</altitudeLayer>
-    <fadeInTime>0.1</fadeInTime><solidTime>0.7</solidTime><fadeOutTime>1.2</fadeOutTime><growthRate>0.4</growthRate>
+    <fadeInTime>0.5</fadeInTime><solidTime>6</solidTime><fadeOutTime>3.2</fadeOutTime><growthRate>0.005</growthRate>
   </FleckDef>
 </Defs>

@@ -47,6 +47,8 @@ namespace SexSlaveCraft
         private bool enabled = true;
         private int radius = DefaultRadius;
         private readonly List<Pawn> targets = new List<Pawn>();
+        // 单片最多25个坐标，仅在视觉脉冲内复用，结束即清空；不是房间拓扑缓存。
+        private readonly List<IntVec3> smokeCells = new List<IntVec3>(SmokeTileSize * SmokeTileSize);
         private Gizmo_SSCAphrodisiacRadius radiusGizmo;
         // 健康回调可能重入或修改设备；重入锁与版本号分别阻止重复结算和旧脉冲继续提交。
         private bool applyingExposure;
@@ -234,7 +236,7 @@ namespace SexSlaveCraft
             {
                 // 每15 tick在设备出口喷一朵小烟，确保小房间或范围采样失败时仍能看见运行状态。
                 if (Props.sourceSmoke != null)
-                    SpawnSmoke(parent.Position.ToVector3ShiftedWithAltitude(AltitudeLayer.MoteOverhead), map,
+                    SpawnSmoke(parent.Position.ToVector3ShiftedWithAltitude(AltitudeLayer.MoteOverhead) + new Vector3(0f, 0f, .5f), map,
                         Props.sourceSmoke, Rand.Range(.8f, 1.2f), true);
 
                 if (Props.smoke == null) return;
@@ -247,50 +249,56 @@ namespace SexSlaveCraft
                 {
                     int minX = parent.Position.x - radius + index % columns * SmokeTileSize;
                     int minZ = parent.Position.z - radius + index / columns * SmokeTileSize;
-                    if (!TryFindSmokeCell(map, room, minX, minZ, out IntVec3 cell, out int validCells)) continue;
-                    // 完整小片的烟云互相重叠；墙边、狭窄房间和圆形边缘按有效面积缩小烟朵。
-                    float scale = Mathf.Clamp(Mathf.Sqrt(validCells) * 1.5f, 3f, 7.5f);
-                    SpawnSmoke(cell.ToVector3ShiftedWithAltitude(AltitudeLayer.MoteOverhead), map,
-                        Props.smoke, scale, false);
+                    int validCells = CollectSmokeCells(map, room, minX, minZ);
+                    // 每6个有效格每轮平均生成一朵；21秒寿命下约0.58朵／格，接近文化自动烟罐的密度。
+                    // 随机取整保持小片面积比例，单片最多5朵／单次最多20朵，不以放大纹理代替密度。
+                    int count = validCells / 6;
+                    if (Rand.Chance((validCells % 6) / 6f)) count++;
+                    for (int i = 0; i < count; i++)
+                    {
+                        // 部分洗牌使同轮烟点不重复；下轮重新查询当前房间，不复用旧拓扑。
+                        int pick = Rand.Range(i, validCells);
+                        IntVec3 cell = smokeCells[pick];
+                        smokeCells[pick] = smokeCells[i];
+                        smokeCells[i] = cell;
+                        SpawnSmoke(cell.ToVector3ShiftedWithAltitude(AltitudeLayer.MoteOverhead), map,
+                            Props.smoke, 4f, false);
+                    }
                 }
             }
             // 包含提前返回与异常路径，始终恢复进入前的玩法随机状态。
-            finally { Rand.PopState(); }
+            finally { smokeCells.Clear(); Rand.PopState(); }
         }
 
-        /// <summary>在至多25格的小片内均匀抽取有效烟点；非空小片必有候选，不缓存房间拓扑。</summary>
-        private bool TryFindSmokeCell(Map map, Room room, int minX, int minZ, out IntVec3 selected, out int validCells)
+        /// <summary>收集至多25格的当前合法烟点，供本片无放回抽样；复用临时缓冲，不缓存房间拓扑。</summary>
+        private int CollectSmokeCells(Map map, Room room, int minX, int minZ)
         {
-            selected = default;
-            validCells = 0;
+            smokeCells.Clear();
             for (int x = minX; x < minX + SmokeTileSize; x++)
                 for (int z = minZ; z < minZ + SmokeTileSize; z++)
                 {
                     IntVec3 cell = new IntVec3(x, 0, z);
                     if (!cell.InBounds(map) || cell.DistanceToSquared(parent.Position) > radius * radius ||
                         cell.GetRoom(map) != room) continue;
-                    // 蓄水池抽样不分配临时格子列表，每个合法格被选中的概率相同。
-                    validCells++;
-                    if (Rand.Range(0, validCells) == 0) selected = cell;
+                    smokeCells.Add(cell);
                 }
-            return validCells > 0;
+            return smokeCells.Count;
         }
 
-        /// <summary>沿原版可见性预算创建紫色烟朵；源头小烟带轻微运动，范围烟云不漂离判定点。</summary>
+        /// <summary>沿原版可见性检查创建浅色烟朵；源头带轻微运动，范围保持原烟纹理的颗粒层次。</summary>
         private void SpawnSmoke(Vector3 position, Map map, FleckDef fleck, float scale, bool atSource)
         {
             // 跳过的烟雾不补发；保留完整实例透明度，由纹理和生命周期负责淡入淡出。
             if (!position.ShouldSpawnMotesAt(map, false)) return;
             FleckCreationData data = FleckMaker.GetDataStatic(position, map, fleck, scale);
-            data.instanceColor = new Color(.86f, .62f, 1f, 1f);
-            data.rotation = Rand.Range(0f, 360f);
+            // 主体保留接近原版白烟的亮度；深紫色和过大尺寸会把纹理压成暗色平滑斑块。
+            data.instanceColor = atSource ? new Color(1f, .88f, 1f, 1f) : new Color(1f, .97f, 1f, 1f);
             if (atSource)
             {
                 data.rotationRate = Rand.Range(-10f, 10f);
                 data.velocityAngle = Rand.Range(-15f, 15f);
-                data.velocitySpeed = Rand.Range(.1f, .25f);
+                data.velocitySpeed = Rand.Range(.1f, .35f);
             }
-            else data.rotationRate = Rand.Range(-3f, 3f);
             map.flecks.CreateFleck(data);
         }
 

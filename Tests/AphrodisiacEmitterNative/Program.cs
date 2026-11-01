@@ -57,6 +57,8 @@ internal static class Program
     private static string saves;
     private static Action onHealthAdded;
     private static int smokeDispatches;
+    private static bool captureSmoke;
+    private static readonly List<FleckCreationData> smokeDraws = new();
     private static readonly List<string> errors = new();
 
     internal static int Run(string repo, string game)
@@ -76,6 +78,7 @@ internal static class Program
             foreach (var method in type.GetMethods().Where(m => m.Name == "Translate" && m.ReturnType == typeof(TaggedString) && m.GetParameters().FirstOrDefault()?.ParameterType == typeof(string)))
                 Patch(method, nameof(Translate));
         Patch(AccessTools.PropertyGetter(typeof(Find), nameof(Find.Maps)), nameof(Maps));
+        Patch(AccessTools.PropertyGetter(typeof(Find), nameof(Find.CurrentMap)), nameof(CurrentMap));
         Patch(AccessTools.PropertyGetter(typeof(Faction), nameof(Faction.OfPlayer)), nameof(Player));
         Patch(AccessTools.PropertyGetter(typeof(CompPower), nameof(CompPower.PowerNet)), nameof(Network));
         Patch(AccessTools.Method(typeof(RegionAndRoomQuery), nameof(RegionAndRoomQuery.GetRoom)), nameof(RoomFor));
@@ -84,6 +87,9 @@ internal static class Program
         // 仅隔离绘制、音效与健康后续整图通知；PowerOn、Flick意愿、电网分配及Hediff列表变更走原实现。
         Patch(AccessTools.Method(typeof(CompPowerTrader), "UpdateOverlays"), nameof(Skip));
         Patch(AccessTools.Method(typeof(CompSSCAphrodisiacEmitter), "TryEmitSmoke"), nameof(SmokeBoundary));
+        // 特定用例放行完整发烟逻辑，只隔离相机视野及最终粒子系统，不替换分片、数量或Fleck数据生成。
+        Patch(AccessTools.Method(typeof(GenView), nameof(GenView.ShouldSpawnMotesAt), new[] { typeof(Vector3), typeof(Map), typeof(bool) }), nameof(SmokeVisible));
+        Patch(AccessTools.Method(typeof(FleckManager), nameof(FleckManager.CreateFleck)), nameof(CaptureFleck));
         foreach (var m in typeof(SoundStarter).GetMethods().Where(m => m.Name == "PlayOneShot")) Patch(m, nameof(Skip));
         Patch(AccessTools.Method(typeof(Pawn_HealthTracker), nameof(Pawn_HealthTracker.CheckForStateChange)), nameof(Skip));
         Patch(AccessTools.Method(typeof(Pawn_HealthTracker), nameof(Pawn_HealthTracker.Notify_HediffChanged)), nameof(Skip));
@@ -100,6 +106,7 @@ internal static class Program
             player = new Faction { def = new FactionDef { defName = "EmitterTestPlayer", isPlayer = true } };
             map = new Map(); maps.Add(map); map.mapPawns = new MapPawns(map); map.gameConditionManager = new GameConditionManager(map);
             map.info.Size = new IntVec3(50, 1, 50);
+            map.flecks = Bare<FleckManager>();
             room = Bare<Room>(); otherRoom = Bare<Room>();
             var pack = Bare<ModContentPack>(); pack.assemblies = new ModAssemblyHandler(pack);
             pack.assemblies.loadedAssemblies.Add(typeof(CompSSCAphrodisiacEmitter).Assembly);
@@ -237,25 +244,59 @@ internal static class Program
             Check("smoke tile sampling finds narrow coverage and rechecks room changes", () =>
             {
                 var (a, _, _) = Device();
-                var sample = AccessTools.Method(typeof(CompSSCAphrodisiacEmitter), "TryFindSmokeCell");
+                var sample = AccessTools.Method(typeof(CompSSCAphrodisiacEmitter), "CollectSmokeCells");
+                var candidates = (List<IntVec3>)AccessTools.Field(typeof(CompSSCAphrodisiacEmitter), "smokeCells").GetValue(a);
                 // 本小片只有一格属于源房间，另一格属于邻室，其余无房间；不能靠随机重试漏掉合法格。
                 var only = new IntVec3(12, 0, 12);
                 smokeRooms.Clear(); smokeRooms[only] = room; smokeRooms[new IntVec3(11, 0, 12)] = otherRoom;
                 Rand.PushState(741);
                 try
                 {
-                    object[] input = { map, room, 10, 10, default(IntVec3), 0 };
-                    Require((bool)sample.Invoke(a, input)); Equal(only, (IntVec3)input[4]); Equal(1, (int)input[5]);
+                    object[] input = { map, room, 10, 10 };
+                    Equal(1, (int)sample.Invoke(a, input)); Equal(only, candidates.Single());
                     // 不保存房间格缓存：同一位置改属邻室，下次采样立即失效。
                     smokeRooms[only] = otherRoom;
-                    Require(!(bool)sample.Invoke(a, input)); Equal(0, (int)input[5]);
+                    Equal(0, (int)sample.Invoke(a, input)); Equal(0, candidates.Count);
                     // 目标房间引用相同仍须满足地图及半径边界。
                     smokeRooms.Clear(); smokeRooms[new IntVec3(40, 0, 40)] = room;
-                    input[2] = 40; input[3] = 40; Require(!(bool)sample.Invoke(a, input));
+                    input[2] = 40; input[3] = 40; Equal(0, (int)sample.Invoke(a, input));
                     smokeRooms.Clear(); smokeRooms[new IntVec3(-1, 0, 10)] = room;
-                    input[2] = -5; input[3] = 10; Require(!(bool)sample.Invoke(a, input));
+                    input[2] = -5; input[3] = 10; Equal(0, (int)sample.Invoke(a, input));
+
+                    // 执行普通Tick的完整发烟路径，核对9×9房间的面积密度、纹理尺寸与浅色数据。
+                    // 最终CreateFleck只记录载荷，不启动GPU；空间采样与随机数隔离仍使用生产实现。
+                    ResetPawns(); smokeRooms.Clear();
+                    for (int x = 6; x <= 14; x++)
+                        for (int z = 6; z <= 14; z++) smokeRooms[new IntVec3(x, 0, z)] = room;
+                    var props = (CompProperties_SSCAphrodisiacEmitter)a.props;
+                    props.smoke = DefDatabase<FleckDef>.GetNamed("SSC_AphrodisiacSmoke");
+                    props.sourceSmoke = DefDatabase<FleckDef>.GetNamed("SSC_AphrodisiacSourceSmoke");
+                    a.parent.TryGetComp<CompPowerTrader>().PowerOn = true;
+                    smokeDraws.Clear(); captureSmoke = true;
+                    Rand.PushState(991); float expectedNext = Rand.Value; Rand.PopState();
+                    Rand.PushState(991);
+                    try
+                    {
+                        for (int t = 1; t <= 7200; t++) { Tick(t); a.CompTick(); }
+                        Near(expectedNext, Rand.Value);
+                    }
+                    finally { Rand.PopState(); }
+                    var clouds = smokeDraws.Where(d => ReferenceEquals(d.def, props.smoke)).ToArray();
+                    // 参照文化自动烟罐约2.4朵／秒，81格房间的120秒生成量应在同一密度量级。
+                    Require(clouds.Length >= 240 && clouds.Length <= 300);
+                    foreach (var cloud in clouds)
+                    {
+                        Near(4f, cloud.scale);
+                        Color color = cloud.instanceColor.Value;
+                        Require(color.r >= .95f && color.g >= .9f && color.b >= .95f);
+                        Require(smokeRooms.ContainsKey(cloud.spawnPosition.ToIntVec3()));
+                    }
+                    Require(smokeDraws.Any(d => ReferenceEquals(d.def, props.sourceSmoke)));
+                    int beforeOff = smokeDraws.Count; a.TrySetEnabled(false);
+                    for (int t = 7201; t <= 7260; t++) { Tick(t); a.CompTick(); }
+                    Equal(beforeOff, smokeDraws.Count);
                 }
-                finally { Rand.PopState(); smokeRooms.Clear(); }
+                finally { Rand.PopState(); smokeRooms.Clear(); smokeDraws.Clear(); captureSmoke = false; }
             });
             Check("real Scribe preserves switch and radius", () =>
             {
@@ -328,11 +369,14 @@ internal static class Program
         catch (Exception ex) { failed++; Console.WriteLine("FAIL " + name + ": " + ex + "\n" + string.Join('\n', errors)); }
     }
     private static bool Skip() => false;
-    private static bool SmokeBoundary() { smokeDispatches++; return false; }
+    private static bool SmokeBoundary() { smokeDispatches++; return captureSmoke; }
+    private static bool SmokeVisible(ref bool __result) { __result = true; return false; }
+    private static bool CaptureFleck(FleckCreationData fleckData) { smokeDraws.Add(fleckData); return false; }
     private static bool NoTexture(ref Texture2D __result) { __result = null; return false; }
     private static bool Translate(string key, ref TaggedString __result) { __result = key; return false; }
     private static bool SavePath(ref string __result) { __result = saves; return false; }
     private static bool Maps(ref List<Map> __result) { __result = maps; return false; }
+    private static bool CurrentMap(ref Map __result) { __result = map; return false; }
     private static bool Player(ref Faction __result) { __result = player; return false; }
     private static bool Network(CompPower __instance, ref PowerNet __result) { networks.TryGetValue(__instance, out __result); return false; }
     private static bool RoomFor(Thing thing, ref Room __result) { rooms.TryGetValue(thing, out __result); return false; }
