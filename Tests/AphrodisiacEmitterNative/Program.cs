@@ -111,10 +111,11 @@ internal static class Program
                 var powerProps = DirectXmlToObject.ObjectFromXml<CompProperties>(nodes[0], true) as CompProperties_SSCAphrodisiacPower;
                 var emitterProps = DirectXmlToObject.ObjectFromXml<CompProperties>(nodes[1], true) as CompProperties_SSCAphrodisiacEmitter;
                 DefDatabase<FleckDef>.Add(new FleckDef { defName = "SSC_AphrodisiacSmoke" });
+                DefDatabase<FleckDef>.Add(new FleckDef { defName = "SSC_AphrodisiacSourceSmoke" });
                 DirectXmlCrossRefLoader.ResolveAllWantedCrossReferences(FailMode.LogErrors);
                 Require(powerProps != null && emitterProps != null); Near(500, powerProps.PowerConsumption);
                 Equal(typeof(CompPowerTrader), powerProps.compClass); Equal(typeof(CompSSCAphrodisiacEmitter), emitterProps.compClass);
-                Require(ReferenceEquals(effect, emitterProps.hediff)); Require(emitterProps.smoke != null);
+                Require(ReferenceEquals(effect, emitterProps.hediff)); Require(emitterProps.smoke != null && emitterProps.sourceSmoke != null);
             });
             Check("defaults, integer radius and per-instance demand", () =>
             {

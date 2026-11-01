@@ -6,6 +6,8 @@
     <label>aphrodisiac emitter</label>
     <description>An electrically sustained culture of PNA and humpshroom releases an aphrodisiac mist. Uses the humpshroom effect defined by the current mod environment.\n\nDirect player switch; radius 5–20, default 10. Power demand is 100 + 4 × radius² W. Only affects targets within the radius and in the same room. Existing drug effects wear off normally after exposure ends. PNA and humpshroom are consumed only during construction.</description>
     <thingClass>Building</thingClass>
+    <!-- 保留静态建筑网格，并让组件逐帧提交原版关机标识；不引入小人拨开关任务。 -->
+    <drawerType>MapMeshAndRealTime</drawerType>
     <techLevel>Spacer</techLevel>
     <graphicData><texPath>Things/Building/Special/PsychicEmanator</texPath><graphicClass>Graphic_Single</graphicClass><drawSize>(1,1)</drawSize></graphicData>
     <size>(1,1)</size>
@@ -24,7 +26,7 @@
     <researchPrerequisites><li>SSC_RES_AphrodisiacEmitter</li></researchPrerequisites>
     <comps>
       <li Class="SexSlaveCraft.CompProperties_SSCAphrodisiacPower"><compClass>CompPowerTrader</compClass><basePowerConsumption>500</basePowerConsumption></li>
-      <li Class="SexSlaveCraft.CompProperties_SSCAphrodisiacEmitter"><hediff>HumpShroomEffect</hediff><smoke>SSC_AphrodisiacSmoke</smoke></li>
+      <li Class="SexSlaveCraft.CompProperties_SSCAphrodisiacEmitter"><hediff>HumpShroomEffect</hediff><smoke>SSC_AphrodisiacSmoke</smoke><sourceSmoke>SSC_AphrodisiacSourceSmoke</sourceSmoke></li>
     </comps>
   </ThingDef>
 </Defs>
