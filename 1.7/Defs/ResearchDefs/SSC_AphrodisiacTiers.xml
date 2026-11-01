@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成：PNA固有产雾特性的低两档应用，不依赖浓缩或微电子研究。 -->
+<Defs>
+  <ResearchProjectDef>
+    <defName>SSC_RES_PNAIncense</defName>
+    <label>PNA incense application</label>
+    <description>Use heat to release mist from humpshroom mixed into PNA. Unlocks a non-electric censer.</description>
+    <techLevel>Medieval</techLevel>
+    <baseCost>600</baseCost>
+    <tab>SSC_ResearchTabDef</tab>
+    <researchViewX>1</researchViewX>
+    <researchViewY>5.5</researchViewY>
+    <prerequisites>
+      <li>SSC_RES_PNASimpleApp</li>
+    </prerequisites>
+  </ResearchProjectDef>
+  <ResearchProjectDef>
+    <defName>SSC_RES_PNAElectricMist</defName>
+    <label>precision electrothermal mist</label>
+    <description>Improve mixing and control electric heat to reduce humpshroom consumption and adjust mist coverage. Unlocks the electric atomizer.</description>
+    <techLevel>Industrial</techLevel>
+    <baseCost>1200</baseCost>
+    <tab>SSC_ResearchTabDef</tab>
+    <researchViewX>2</researchViewX>
+    <researchViewY>5.5</researchViewY>
+    <prerequisites>
+      <li>SSC_RES_PNAIncense</li>
+      <li>Electricity</li>
+    </prerequisites>
+  </ResearchProjectDef>
+</Defs>

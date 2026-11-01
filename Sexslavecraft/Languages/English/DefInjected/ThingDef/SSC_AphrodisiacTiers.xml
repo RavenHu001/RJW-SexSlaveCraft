@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_AphrodisiacCenser.label>aphrodisiac censer</SSC_AphrodisiacCenser.label>
+  <SSC_AphrodisiacCenser.description>Heat humpshroom in PNA at the bottom of an ornate censer to produce mist. No electricity or switch; runs while stocked. Radius 5, same room only. Holds 5 humpshrooms, consuming 1 per day. Starts empty. PNA is used only in construction. Existing humpshroom effects fade naturally after exposure ends.</SSC_AphrodisiacCenser.description>
+  <SSC_AphrodisiacAtomizer.label>electric aphrodisiac atomizer</SSC_AphrodisiacAtomizer.label>
+  <SSC_AphrodisiacAtomizer.description>Improved mixing and precision electric heating turn PNA and humpshroom into mist. Direct player switch; radius 5–10, default 5, same room only. Power: 50 + 2 × radius² W. Humpshrooms: 0.02 × radius² per day; capacity 10. Starts empty. No consumption when off or unpowered; PNA is used only in construction.</SSC_AphrodisiacAtomizer.description>
+  <SSC_AphrodisiacCenser.comps.CompRefuelable.fuelLabel>Humpshroom</SSC_AphrodisiacCenser.comps.CompRefuelable.fuelLabel>
+  <SSC_AphrodisiacCenser.comps.CompRefuelable.fuelGizmoLabel>Humpshroom</SSC_AphrodisiacCenser.comps.CompRefuelable.fuelGizmoLabel>
+  <SSC_AphrodisiacAtomizer.comps.CompRefuelable.fuelLabel>Humpshroom</SSC_AphrodisiacAtomizer.comps.CompRefuelable.fuelLabel>
+  <SSC_AphrodisiacAtomizer.comps.CompRefuelable.fuelGizmoLabel>Humpshroom</SSC_AphrodisiacAtomizer.comps.CompRefuelable.fuelGizmoLabel>
+</LanguageData>

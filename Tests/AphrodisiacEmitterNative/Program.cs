@@ -35,6 +35,17 @@ public class SavedEmitter : IExposable
     public void ExposeData() => emitter.PostExposeData();
 }
 
+// 以实际原版燃料字段和SSC未扣小额消耗一起存读，不复制另一套库存算法。
+public class SavedFueledEmitter : IExposable
+{
+    public CompSSCAphrodisiacEmitter emitter = Program.FueledDevice(true).Item1;
+    public void ExposeData()
+    {
+        emitter.parent.TryGetComp<CompRefuelable>().PostExposeData();
+        emitter.PostExposeData();
+    }
+}
+
 // 代表最终环境改写Hediff类的合法PostMake回调，不替换生产加药算法。
 public class Hediff_EmitterReviewHook : HediffWithComps
 {
@@ -323,6 +334,87 @@ internal static class Program
                 }
                 finally { Rand.PopState(); smokeRooms.Clear(); smokeDraws.Clear(); smokeDrawTicks.Clear(); captureSmoke = false; }
             });
+            Check("tier XML resolves fuel and unpowered configuration", () =>
+            {
+                var xml = new XmlDocument(); xml.Load(Path.Combine(repo, "1.7/Defs/ThingsDefs/SSC_AphrodisiacTiers.xml"));
+                var mushroom = Bare<ThingDef>(); mushroom.defName = "HumpShroom"; mushroom.virtualDefs = new();
+                DefDatabase<ThingDef>.Add(mushroom);
+                foreach (XmlNode d in xml.SelectNodes("/Defs/ThingDef"))
+                {
+                    var configs = d.SelectNodes("comps/li").Cast<XmlNode>()
+                        .Select(n => DirectXmlToObject.ObjectFromXml<CompProperties>(n, true)).ToList();
+                    DirectXmlCrossRefLoader.ResolveAllWantedCrossReferences(FailMode.LogErrors);
+                    var props = configs.OfType<CompProperties_SSCAphrodisiacEmitter>().Single();
+                    var fuel = configs.OfType<CompProperties_Refuelable>().Single();
+                    Require(fuel.externalTicking && fuel.consumeFuelOnlyWhenUsed); Near(0, fuel.initialFuelPercent);
+                    var def = Bare<ThingDef>(); def.comps = configs; def.tickerType = TickerType.Normal;
+                    fuel.ResolveReferences(def);
+                    Require(fuel.fuelFilter.Allows(DefDatabase<ThingDef>.GetNamed("HumpShroom")));
+                    Require(!props.ConfigErrors(def).Any());
+                    Require(ReferenceEquals(effect, props.hediff));
+                    Require(props.requiresPower == configs.Any(c => c is CompProperties_Power));
+                }
+            });
+            Check("censer runs without power or controls and consumes one mushroom per day", () =>
+            {
+                ResetPawns(); var (a, _, _) = FueledDevice(false);
+                var fuel = a.parent.TryGetComp<CompRefuelable>();
+                Require(a.parent.TryGetComp<CompPowerTrader>() == null && !a.CanRunNow);
+                Equal(5, a.Radius); Require(!a.TrySetEnabled(false) && !a.TrySetRadius(10));
+                Require(!a.CompGetGizmosExtra().Any());
+                fuel.Refuel(5); blackout = true; Require(a.CanRunNow); Near(0, a.DemandWatts);
+                Pawn inside = PawnAt(15, 10), outside = PawnAt(16, 10);
+                a.ApplyExposurePulse(); Near(.01f, Severity(inside)); Near(0, Severity(outside));
+                ResetPawns();
+                for (int t = 1; t <= 60000; t++) { Tick(t); fuel.CompTick(); a.CompTick(); }
+                NearWithin(4f, fuel.Fuel, .002f); // 500次原版float扣减允许不足0.001份的未扣余额及舍入。
+            });
+            Check("industrial controls clamp to ten and fuel follows radius only while powered", () =>
+            {
+                ResetPawns(); var (a, p, _) = FueledDevice(true); var fuel = a.parent.TryGetComp<CompRefuelable>();
+                fuel.Refuel(10); Equal(5, a.Radius); Near(100, a.DemandWatts); Near(.5f, a.FuelPerDay);
+                var slider = (Gizmo_SSCAphrodisiacRadius)a.CompGetGizmosExtra().Last();
+                Set(slider, "dragging", true); AccessTools.Property(slider.GetType(), "Target").SetValue(slider, 1f);
+                Equal(10, a.Radius); Near(250, a.DemandWatts); Near(2, a.FuelPerDay);
+                Require(a.TrySetRadius(20)); Equal(10, a.Radius);
+                for (int t = 1; t <= 600; t++) { Tick(t); a.CompTick(); }
+                Near(10, fuel.Fuel); // 电网尚未供电。
+                p.PowerOn = true;
+                for (int t = 1; t <= 60000; t++) { Tick(t); fuel.CompTick(); a.CompTick(); }
+                NearWithin(8f, fuel.Fuel, .003f);
+                a.TrySetEnabled(false); float before = fuel.Fuel;
+                for (int t = 60001; t <= 60600; t++) { Tick(t); a.CompTick(); }
+                Near(before, fuel.Fuel); Near(0, a.DemandWatts);
+                a.TrySetEnabled(true); p.PowerOn = true; blackout = true;
+                for (int t = 60601; t <= 61200; t++) { Tick(t); a.CompTick(); }
+                Near(before, fuel.Fuel); blackout = false;
+            });
+            Check("fuel exhaustion stops exposure and power then refueling resumes selected radius", () =>
+            {
+                ResetPawns(); var (a, p, net) = FueledDevice(true); PowerSource(net, 1000);
+                var fuel = a.parent.TryGetComp<CompRefuelable>(); fuel.Refuel(.00001f);
+                a.TrySetRadius(8); p.PowerOn = true; Pawn target = PawnAt(10, 10);
+                Tick(1); a.CompTick(); Require(!a.CanRunNow && !p.PowerOn); Near(0, a.DemandWatts);
+                a.ApplyExposurePulse(); Near(0, Severity(target));
+                fuel.Refuel(2); Require(a.Enabled); Equal(8, a.Radius); Near(178, a.DemandWatts);
+                // 原版电网每200 tick尝试恢复单台负载，不把补料误写成绕过电网立即通电。
+                Tick(200); net.PowerNetTick(); Require(p.PowerOn && a.CanRunNow);
+                a.ApplyExposurePulse(); Near(.01f, Severity(target));
+            });
+            Check("real Scribe preserves fueled stock unpaid consumption and selected controls", () =>
+            {
+                ResetPawns(); var holder = new SavedFueledEmitter(); var a = holder.emitter;
+                var fuel = a.parent.TryGetComp<CompRefuelable>(); fuel.Refuel(7); a.TrySetRadius(8);
+                a.parent.TryGetComp<CompPowerTrader>().PowerOn = true;
+                Tick(1); a.CompTick(); a.TrySetEnabled(false);
+                double unpaid = (double)AccessTools.Field(a.GetType(), "pendingFuel").GetValue(a); Require(unpaid > 0);
+                string path = Path.Combine(saves, "fueled-emitter.xml");
+                Scribe.saver.InitSaving(path, "save"); Scribe_Deep.Look(ref holder, "emitter"); Scribe.saver.FinalizeSaving();
+                holder = null; Scribe.loader.InitLoading(path); Scribe_Deep.Look(ref holder, "emitter"); Scribe.loader.FinalizeLoading();
+                Equal(8, holder.emitter.Radius); Require(!holder.emitter.Enabled);
+                Near(fuel.Fuel, holder.emitter.parent.TryGetComp<CompRefuelable>().Fuel);
+                Require(Math.Abs(unpaid - (double)AccessTools.Field(a.GetType(), "pendingFuel").GetValue(holder.emitter)) < 1e-10);
+            });
             Check("real Scribe preserves switch and radius", () =>
             {
                 var (a, p, _) = Device(); a.TrySetRadius(17); a.TrySetEnabled(false);
@@ -345,9 +437,14 @@ internal static class Program
         DefDatabase<HediffDef>.Add(effect); DirectXmlCrossRefLoader.ResolveAllWantedCrossReferences(FailMode.LogErrors);
         if (effect.hediffClass == null) throw new Exception("Hediff type not resolved: " + string.Join('\n', errors));
     }
-    private static (CompSSCAphrodisiacEmitter, CompPowerTrader, PowerNet) Device()
+    public static (CompSSCAphrodisiacEmitter, CompPowerTrader, PowerNet) FueledDevice(bool industrial)
+        => Device(new CompProperties_SSCAphrodisiacEmitter { hediff = effect, requiresPower = industrial, hasSwitch = industrial,
+            minRadius = 5, maxRadius = industrial ? 10 : 5, defaultRadius = 5,
+            baseWatts = industrial ? 50 : 0, wattsPerRadiusSquared = industrial ? 2 : 0,
+            fuelPerDayAtMinRadius = industrial ? .5f : 1f });
+    private static (CompSSCAphrodisiacEmitter, CompPowerTrader, PowerNet) Device(CompProperties_SSCAphrodisiacEmitter configuration = null)
     {
-        var props = new CompProperties_SSCAphrodisiacEmitter { hediff = effect };
+        var props = configuration ?? new CompProperties_SSCAphrodisiacEmitter { hediff = effect };
         var powerProps = new CompProperties_Power { compClass = typeof(CompPowerTrader) };
         Set(powerProps, "basePowerConsumption", 500f);
         var def = Bare<ThingDef>(); def.defName = "EmitterFixture"; def.category = ThingCategory.Building; def.comps = new() { powerProps, props };
@@ -356,6 +453,15 @@ internal static class Program
         var emitter = new CompSSCAphrodisiacEmitter { parent = building, props = props };
         var power = new CompPowerTrader { parent = building, props = powerProps };
         Set(building, "comps", new List<ThingComp> { power, emitter });
+        emitter.Initialize(props);
+        if (!props.requiresPower) { building.AllComps.Remove(power); def.comps.Remove(powerProps); }
+        if (props.fuelPerDayAtMinRadius > 0)
+        {
+            var fuelProps = new CompProperties_Refuelable { fuelCapacity = props.requiresPower ? 10 : 5,
+                consumeFuelOnlyWhenUsed = true, externalTicking = true };
+            var fuel = new CompRefuelable { parent = building }; fuel.Initialize(fuelProps);
+            building.AllComps.Add(fuel); def.comps.Add(fuelProps);
+        }
         var net = Bare<PowerNet>(); net.powerNetManager = new PowerNetManager(map); net.powerComps = new() { power }; net.batteryComps = new(); net.connectors = new(); net.transmitters = new();
         networks[power] = net; rooms[building] = room; emitter.PostSpawnSetup(false); Tick(0); return (emitter, power, net);
     }
@@ -386,6 +492,7 @@ internal static class Program
     private static void Require(bool value) { if (!value) throw new Exception("assertion failed"); }
     private static void Equal<T>(T expected, T actual) => Require(EqualityComparer<T>.Default.Equals(expected, actual));
     private static void Near(float expected, float actual) { if (Math.Abs(expected - actual) > .0001f) throw new Exception($"expected {expected}, actual {actual}"); }
+    private static void NearWithin(float expected, float actual, float tolerance) { if (Math.Abs(expected - actual) > tolerance) throw new Exception($"expected {expected}, actual {actual}"); }
     private static void Check(string name, Action test)
     {
         if (!SscTestProfile.ShouldRun(name)) return;

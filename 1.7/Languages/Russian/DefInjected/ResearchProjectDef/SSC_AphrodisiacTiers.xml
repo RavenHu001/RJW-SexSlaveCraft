@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_RES_PNAIncense.label>Благовония с ПНА</SSC_RES_PNAIncense.label>
+  <SSC_RES_PNAIncense.description>Нагрев смеси горбошляпника и ПНА создаёт туман. Открывает неэлектрическую курильницу.</SSC_RES_PNAIncense.description>
+  <SSC_RES_PNAElectricMist.label>Точный электротермический распылитель</SSC_RES_PNAElectricMist.label>
+  <SSC_RES_PNAElectricMist.description>Улучшенное смешивание и точное управление электронагревом. Открывает распылитель с регулируемым радиусом и меньшим расходом грибов при одинаковом охвате.</SSC_RES_PNAElectricMist.description>
+</LanguageData>

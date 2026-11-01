@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_AphrodisiacCenser.label>Афродизиакальная курильница</SSC_AphrodisiacCenser.label>
+  <SSC_AphrodisiacCenser.description>Горбошляпник нагревается в ПНА на дне курильницы и выделяет туман. Без электричества и выключателя; работает, пока есть сырьё. Радиус 5 клеток, только в одной комнате. Вместимость 5 грибов, расход 1 в день. После постройки пуста, пополняется пешками. ПНА расходуется только при строительстве. Накопленный эффект проходит естественным образом.</SSC_AphrodisiacCenser.description>
+  <SSC_AphrodisiacAtomizer.label>Электрический распылитель афродизиака</SSC_AphrodisiacAtomizer.label>
+  <SSC_AphrodisiacAtomizer.description>Улучшенное смешивание и точный электронагрев создают туман из ПНА и горбошляпника. Включается игроком напрямую. Радиус 5–10 клеток, по умолчанию 5; только одна комната. Мощность: 50 + 2 × радиус² Вт. Расход грибов: 0.02 × радиус² в день, вместимость 10. После постройки пуст. При выключении или отсутствии питания сырьё не расходуется. ПНА нужен только при строительстве.</SSC_AphrodisiacAtomizer.description>
+  <SSC_AphrodisiacCenser.comps.CompRefuelable.fuelLabel>Горбошляпник</SSC_AphrodisiacCenser.comps.CompRefuelable.fuelLabel>
+  <SSC_AphrodisiacCenser.comps.CompRefuelable.fuelGizmoLabel>Горбошляпник</SSC_AphrodisiacCenser.comps.CompRefuelable.fuelGizmoLabel>
+  <SSC_AphrodisiacAtomizer.comps.CompRefuelable.fuelLabel>Горбошляпник</SSC_AphrodisiacAtomizer.comps.CompRefuelable.fuelLabel>
+  <SSC_AphrodisiacAtomizer.comps.CompRefuelable.fuelGizmoLabel>Горбошляпник</SSC_AphrodisiacAtomizer.comps.CompRefuelable.fuelGizmoLabel>
+</LanguageData>

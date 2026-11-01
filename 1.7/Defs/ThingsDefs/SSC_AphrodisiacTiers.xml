@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成：中世纪与工业型号；原版补料库存，SSC按运行状态统一扣料。 -->
+<Defs>
+  <ThingDef ParentName="BuildingBase">
+    <defName>SSC_AphrodisiacCenser</defName>
+    <label>aphrodisiac censer</label>
+    <description>Heat humpshroom in PNA held at the bottom of a traditional censer to release aphrodisiac mist. No electricity or switch. Radius 5, same room only. Stores 5 humpshrooms and consumes 1 per day. PNA is used only during construction. Starts empty.</description>
+    <thingClass>Building</thingClass>
+    <drawerType>MapMeshAndRealTime</drawerType>
+    <techLevel>Medieval</techLevel>
+    <graphicData>
+      <!-- 专用美术暂缓，按维护者要求复用已接入的太空版贴图占位。 -->
+      <texPath>Things/Building/SSC_AphrodisiacEmitter</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+      <drawSize>(1,1)</drawSize>
+    </graphicData>
+    <size>(1,1)</size>
+    <rotatable>false</rotatable>
+    <altitudeLayer>Building</altitudeLayer>
+    <passability>PassThroughOnly</passability>
+    <pathCost>30</pathCost>
+    <fillPercent>0.2</fillPercent>
+    <terrainAffordanceNeeded>Medium</terrainAffordanceNeeded>
+    <tickerType>Normal</tickerType>
+    <designationCategory>Misc</designationCategory>
+    <minifiedDef>MinifiedThing</minifiedDef>
+    <statBases>
+      <MaxHitPoints>150</MaxHitPoints>
+      <WorkToBuild>4000</WorkToBuild>
+      <Mass>15</Mass>
+      <Flammability>0.5</Flammability>
+      <Beauty>4</Beauty>
+    </statBases>
+    <constructionSkillPrerequisite>3</constructionSkillPrerequisite>
+    <costList>
+      <Steel>20</Steel>
+      <Silver>10</Silver>
+      <Purple_Aphrodisiac_Nanofluid>5</Purple_Aphrodisiac_Nanofluid>
+    </costList>
+    <researchPrerequisites>
+      <li>SSC_RES_PNAIncense</li>
+    </researchPrerequisites>
+    <comps>
+      <li Class="CompProperties_Refuelable">
+        <fuelCapacity>5</fuelCapacity>
+        <initialFuelPercent>0</initialFuelPercent>
+        <fuelConsumptionRate>0</fuelConsumptionRate>
+        <consumeFuelOnlyWhenUsed>true</consumeFuelOnlyWhenUsed>
+        <externalTicking>true</externalTicking>
+        <autoRefuelPercent>0.5</autoRefuelPercent>
+        <showAllowAutoRefuelToggle>false</showAllowAutoRefuelToggle>
+        <hideGizmosIfNotPlayerFaction>true</hideGizmosIfNotPlayerFaction>
+        <fuelLabel>Humpshroom</fuelLabel>
+        <fuelGizmoLabel>Humpshroom</fuelGizmoLabel>
+        <fuelFilter>
+          <thingDefs>
+            <li>HumpShroom</li>
+          </thingDefs>
+        </fuelFilter>
+      </li>
+      <li Class="SexSlaveCraft.CompProperties_SSCAphrodisiacEmitter">
+        <hediff>HumpShroomEffect</hediff>
+        <smoke>SSC_AphrodisiacSmoke</smoke>
+        <sourceSmoke>SSC_AphrodisiacSourceSmoke</sourceSmoke>
+        <requiresPower>false</requiresPower>
+        <hasSwitch>false</hasSwitch>
+        <minRadius>5</minRadius>
+        <maxRadius>5</maxRadius>
+        <defaultRadius>5</defaultRadius>
+        <baseWatts>0</baseWatts>
+        <wattsPerRadiusSquared>0</wattsPerRadiusSquared>
+        <fuelPerDayAtMinRadius>1</fuelPerDayAtMinRadius>
+      </li>
+    </comps>
+    <stuffCategories>
+      <li>Stony</li>
+    </stuffCategories>
+    <costStuffCount>40</costStuffCount>
+  </ThingDef>
+  <ThingDef ParentName="BuildingBase">
+    <defName>SSC_AphrodisiacAtomizer</defName>
+    <label>electric aphrodisiac atomizer</label>
+    <description>Precision mixing and electric heating release mist from PNA and humpshroom. Direct player switch. Radius 5–10, default 5. Power: 50 + 2 × radius² W. Humpshrooms: 0.02 × radius² per day; capacity 10. Same room only. Stops consuming when off or unpowered. PNA is used only during construction. Starts empty.</description>
+    <thingClass>Building</thingClass>
+    <drawerType>MapMeshAndRealTime</drawerType>
+    <techLevel>Industrial</techLevel>
+    <graphicData>
+      <texPath>Things/Building/SSC_AphrodisiacEmitter</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+      <drawSize>(1,1)</drawSize>
+    </graphicData>
+    <size>(1,1)</size>
+    <rotatable>false</rotatable>
+    <altitudeLayer>Building</altitudeLayer>
+    <passability>PassThroughOnly</passability>
+    <pathCost>30</pathCost>
+    <fillPercent>0.2</fillPercent>
+    <terrainAffordanceNeeded>Medium</terrainAffordanceNeeded>
+    <tickerType>Normal</tickerType>
+    <designationCategory>Misc</designationCategory>
+    <minifiedDef>MinifiedThing</minifiedDef>
+    <statBases>
+      <MaxHitPoints>180</MaxHitPoints>
+      <WorkToBuild>6000</WorkToBuild>
+      <Mass>20</Mass>
+      <Flammability>0.5</Flammability>
+      <Beauty>0</Beauty>
+    </statBases>
+    <constructionSkillPrerequisite>5</constructionSkillPrerequisite>
+    <costList>
+      <Steel>80</Steel>
+      <ComponentIndustrial>3</ComponentIndustrial>
+      <Purple_Aphrodisiac_Nanofluid>10</Purple_Aphrodisiac_Nanofluid>
+    </costList>
+    <researchPrerequisites>
+      <li>SSC_RES_PNAElectricMist</li>
+    </researchPrerequisites>
+    <comps>
+      <li Class="SexSlaveCraft.CompProperties_SSCAphrodisiacPower">
+        <compClass>CompPowerTrader</compClass>
+        <basePowerConsumption>100</basePowerConsumption>
+      </li>
+      <li Class="CompProperties_Refuelable">
+        <fuelCapacity>10</fuelCapacity>
+        <initialFuelPercent>0</initialFuelPercent>
+        <fuelConsumptionRate>0</fuelConsumptionRate>
+        <consumeFuelOnlyWhenUsed>true</consumeFuelOnlyWhenUsed>
+        <externalTicking>true</externalTicking>
+        <autoRefuelPercent>0.5</autoRefuelPercent>
+        <showAllowAutoRefuelToggle>true</showAllowAutoRefuelToggle>
+        <hideGizmosIfNotPlayerFaction>true</hideGizmosIfNotPlayerFaction>
+        <fuelLabel>Humpshroom</fuelLabel>
+        <fuelGizmoLabel>Humpshroom</fuelGizmoLabel>
+        <fuelFilter>
+          <thingDefs>
+            <li>HumpShroom</li>
+          </thingDefs>
+        </fuelFilter>
+      </li>
+      <li Class="SexSlaveCraft.CompProperties_SSCAphrodisiacEmitter">
+        <hediff>HumpShroomEffect</hediff>
+        <smoke>SSC_AphrodisiacSmoke</smoke>
+        <sourceSmoke>SSC_AphrodisiacSourceSmoke</sourceSmoke>
+        <requiresPower>true</requiresPower>
+        <hasSwitch>true</hasSwitch>
+        <minRadius>5</minRadius>
+        <maxRadius>10</maxRadius>
+        <defaultRadius>5</defaultRadius>
+        <baseWatts>50</baseWatts>
+        <wattsPerRadiusSquared>2</wattsPerRadiusSquared>
+        <fuelPerDayAtMinRadius>0.5</fuelPerDayAtMinRadius>
+      </li>
+    </comps>
+  </ThingDef>
+</Defs>

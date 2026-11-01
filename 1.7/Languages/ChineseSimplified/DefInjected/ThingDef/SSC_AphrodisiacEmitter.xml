@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <SSC_AphrodisiacEmitter.label>催情发烟器</SSC_AphrodisiacEmitter.label>
-  <SSC_AphrodisiacEmitter.description>以电力维持PNA与驼峰菇混合介质的持续增殖，并将其雾化为催情烟雾。吸入后累计当前模组环境定义的驼峰菇药效。\n\n玩家可直接开关，无需小人操作。半径可在5～20格间以1格步进调节，默认10格；耗电为100＋4×半径² W。只影响范围内同一房间的角色，离开或停机后已有药效自然衰减。PNA和驼峰菇仅在建造时一次性消耗。</SSC_AphrodisiacEmitter.description>
+  <SSC_AphrodisiacEmitter.description>以电力维持PNA与驼峰菇混合物半永久性产雾。吸入后累计当前模组环境定义的驼峰菇药效。\n\n玩家可直接开关，无需小人操作。半径可在5～20格间以1格步进调节，默认10格；耗电为100＋4×半径² W。只影响范围内同一房间的角色，离开或停机后已有药效自然衰减。PNA和驼峰菇仅在建造时一次性消耗。</SSC_AphrodisiacEmitter.description>
 </LanguageData>

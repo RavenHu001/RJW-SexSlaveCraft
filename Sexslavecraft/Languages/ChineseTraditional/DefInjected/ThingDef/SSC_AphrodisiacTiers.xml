@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_AphrodisiacCenser.label>催情香薰爐</SSC_AphrodisiacCenser.label>
+  <SSC_AphrodisiacCenser.description>將駝峰菇加入爐底PNA液體並加熱，產生催情霧氣。不用電、沒有開關，有料時持續運行。半徑固定5格，僅影響同房間內目標。容量5份駝峰菇，每天消耗1份；建成時為空，需小人補料。PNA僅在建造時消耗，已有駝峰菇藥效在離場或缺料後自然衰減。</SSC_AphrodisiacCenser.description>
+  <SSC_AphrodisiacAtomizer.label>電熱催情霧化器</SSC_AphrodisiacAtomizer.label>
+  <SSC_AphrodisiacAtomizer.description>透過改進的駝峰菇混合方式與精細電加熱，使PNA與駝峰菇混合物持續產霧。玩家直接開關，半徑5～10格、預設5格，僅影響同房間內目標。耗電50＋2×半徑² W，每天消耗0.02×半徑²份駝峰菇；容量10份，建成時為空。關閉或斷電時停止耗料，補料由小人完成，PNA僅在建造時消耗。</SSC_AphrodisiacAtomizer.description>
+  <SSC_AphrodisiacCenser.comps.CompRefuelable.fuelLabel>駝峰菇</SSC_AphrodisiacCenser.comps.CompRefuelable.fuelLabel>
+  <SSC_AphrodisiacCenser.comps.CompRefuelable.fuelGizmoLabel>駝峰菇</SSC_AphrodisiacCenser.comps.CompRefuelable.fuelGizmoLabel>
+  <SSC_AphrodisiacAtomizer.comps.CompRefuelable.fuelLabel>駝峰菇</SSC_AphrodisiacAtomizer.comps.CompRefuelable.fuelLabel>
+  <SSC_AphrodisiacAtomizer.comps.CompRefuelable.fuelGizmoLabel>駝峰菇</SSC_AphrodisiacAtomizer.comps.CompRefuelable.fuelGizmoLabel>
+</LanguageData>

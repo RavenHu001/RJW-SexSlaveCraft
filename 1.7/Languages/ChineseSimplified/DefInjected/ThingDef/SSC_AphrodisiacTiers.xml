@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_AphrodisiacCenser.label>催情香薰炉</SSC_AphrodisiacCenser.label>
+  <SSC_AphrodisiacCenser.description>将驼峰菇加入炉底PNA液体并加热，产生催情雾气。不用电、没有开关，有料时持续运行。半径固定5格，仅影响同房间内目标。容量5份驼峰菇，每天消耗1份；建成时为空，需小人补料。PNA仅在建造时消耗，已有驼峰菇药效在离场或缺料后自然衰减。</SSC_AphrodisiacCenser.description>
+  <SSC_AphrodisiacAtomizer.label>电热催情雾化器</SSC_AphrodisiacAtomizer.label>
+  <SSC_AphrodisiacAtomizer.description>通过改进的驼峰菇混合方式与精细电加热，使PNA与驼峰菇混合物持续产雾。玩家直接开关，半径5～10格、默认5格，仅影响同房间内目标。耗电50＋2×半径² W，每天消耗0.02×半径²份驼峰菇；容量10份，建成时为空。关闭或断电时停止耗料，补料由小人完成，PNA仅在建造时消耗。</SSC_AphrodisiacAtomizer.description>
+  <SSC_AphrodisiacCenser.comps.CompRefuelable.fuelLabel>驼峰菇</SSC_AphrodisiacCenser.comps.CompRefuelable.fuelLabel>
+  <SSC_AphrodisiacCenser.comps.CompRefuelable.fuelGizmoLabel>驼峰菇</SSC_AphrodisiacCenser.comps.CompRefuelable.fuelGizmoLabel>
+  <SSC_AphrodisiacAtomizer.comps.CompRefuelable.fuelLabel>驼峰菇</SSC_AphrodisiacAtomizer.comps.CompRefuelable.fuelLabel>
+  <SSC_AphrodisiacAtomizer.comps.CompRefuelable.fuelGizmoLabel>驼峰菇</SSC_AphrodisiacAtomizer.comps.CompRefuelable.fuelGizmoLabel>
+</LanguageData>

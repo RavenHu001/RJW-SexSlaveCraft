@@ -10,4 +10,8 @@
   <SSC_Emitter_Running>運行中</SSC_Emitter_Running>
   <SSC_Emitter_NoPower>等待供電</SSC_Emitter_NoPower>
   <SSC_Emitter_PowerDesc>耗電由所選半徑計算，關閉設備後耗電為零。</SSC_Emitter_PowerDesc>
+  <SSC_Emitter_NoFuel>等待駝峰菇</SSC_Emitter_NoFuel>
+  <SSC_Emitter_FixedRadius>半徑：{0}格</SSC_Emitter_FixedRadius>
+  <SSC_Emitter_FuelRate>駝峰菇消耗：{0}份／天</SSC_Emitter_FuelRate>
+  <SSC_Emitter_IndustrialRadiusDesc>以1格步進調整半徑（5～10）。耗電50＋2×半徑² W，耗菇0.02×半徑²份／天；僅覆蓋同房間，單位目標藥效速率不變。</SSC_Emitter_IndustrialRadiusDesc>
 </LanguageData>

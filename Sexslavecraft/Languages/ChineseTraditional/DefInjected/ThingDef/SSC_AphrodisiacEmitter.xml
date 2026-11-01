@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <SSC_AphrodisiacEmitter.label>催情發煙器</SSC_AphrodisiacEmitter.label>
-  <SSC_AphrodisiacEmitter.description>以電力維持PNA與駝峰菇混合介質的持續增殖，並將其霧化為催情煙霧。吸入後累計目前模組環境定義的駝峰菇藥效。\n\n玩家可直接開關，無需小人操作。半徑可在5～20格間以1格步進調節，預設10格；耗電為100＋4×半徑² W。只影響範圍內同一房間的角色，離開或停機後已有藥效自然衰減。PNA和駝峰菇僅在建造時一次性消耗。</SSC_AphrodisiacEmitter.description>
+  <SSC_AphrodisiacEmitter.description>以電力維持PNA與駝峰菇混合物半永久性產霧。吸入後累計目前模組環境定義的駝峰菇藥效。\n\n玩家可直接開關，無需小人操作。半徑可在5～20格間以1格步進調節，預設10格；耗電為100＋4×半徑² W。只影響範圍內同一房間的角色，離開或停機後已有藥效自然衰減。PNA和駝峰菇僅在建造時一次性消耗。</SSC_AphrodisiacEmitter.description>
 </LanguageData>
