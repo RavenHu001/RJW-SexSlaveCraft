@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- AI 辅助生成：1.7单格发烟器；建筑贴图暂引用Core占位，不打包原版资源。 -->
+<!-- AI 辅助生成：1.7单格发烟器，使用原创256×256透明建筑贴图。 -->
 <Defs>
   <ThingDef ParentName="BuildingBase">
     <defName>SSC_AphrodisiacEmitter</defName>
@@ -9,7 +9,7 @@
     <!-- 保留静态建筑网格，并让组件逐帧提交原版关机标识；不引入小人拨开关任务。 -->
     <drawerType>MapMeshAndRealTime</drawerType>
     <techLevel>Spacer</techLevel>
-    <graphicData><texPath>Things/Building/Special/PsychicEmanator</texPath><graphicClass>Graphic_Single</graphicClass><drawSize>(1,1)</drawSize></graphicData>
+    <graphicData><texPath>Things/Building/SSC_AphrodisiacEmitter</texPath><graphicClass>Graphic_Single</graphicClass><drawSize>(1,1)</drawSize></graphicData>
     <size>(1,1)</size>
     <rotatable>false</rotatable>
     <altitudeLayer>Building</altitudeLayer>
