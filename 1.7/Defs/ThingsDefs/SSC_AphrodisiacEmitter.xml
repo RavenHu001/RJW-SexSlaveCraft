@@ -4,7 +4,7 @@
   <ThingDef ParentName="BuildingBase">
     <defName>SSC_AphrodisiacEmitter</defName>
     <label>aphrodisiac emitter</label>
-    <description>Electricity sustains semi-permanent mist production from a PNA–humpshroom mixture. Uses the humpshroom effect defined by the current mod environment.\n\nDirect player switch; radius 5–20, default 10. Power demand is 100 + 4 × radius² W. Only affects targets within the radius and in the same room. Existing drug effects wear off normally after exposure ends. PNA and humpshroom are consumed only during construction.</description>
+    <description>Precisely controlled electrical energy keeps the PNA–humpshroom mixture in a semi-permanent mist-producing state, steadily releasing aphrodisiac mist.\nConsumes only electricity; no replenishment needed. Switched directly by the player, with an adjustable radius of 5–20 cells. Only affects targets in the same room.</description>
     <thingClass>Building</thingClass>
     <!-- 保留静态建筑网格，并让组件逐帧提交原版关机标识；不引入小人拨开关任务。 -->
     <drawerType>MapMeshAndRealTime</drawerType>

@@ -4,7 +4,7 @@
   <ThingDef ParentName="BuildingBase">
     <defName>SSC_AphrodisiacCenser</defName>
     <label>aphrodisiac censer</label>
-    <description>Heat humpshroom in PNA held at the bottom of a traditional censer to release aphrodisiac mist. No electricity or switch. Radius 5, same room only. Stores 5 humpshrooms and consumes 1 per day. PNA is used only during construction. Starts empty.</description>
+    <description>Humpshroom is immersed in the PNA at the bottom of the censer and slowly heated. The mixture releases an aphrodisiac mist that drifts out through the openwork body.\nContinuously consumes humpshroom. Affects targets within 5 cells in the same room.</description>
     <thingClass>Building</thingClass>
     <drawerType>MapMeshAndRealTime</drawerType>
     <techLevel>Medieval</techLevel>
@@ -80,7 +80,7 @@
   <ThingDef ParentName="BuildingBase">
     <defName>SSC_AphrodisiacAtomizer</defName>
     <label>electric aphrodisiac atomizer</label>
-    <description>Precision mixing and electric heating release mist from PNA and humpshroom. Direct player switch. Radius 5–10, default 5. Power: 50 + 2 × radius² W. Humpshrooms: 0.02 × radius² per day; capacity 10. Same room only. Stops consuming when off or unpowered. PNA is used only during construction. Starts empty.</description>
+    <description>Mechanical stirring thoroughly mixes humpshroom with PNA, while precision electric heating controls mist production and distributes the aphrodisiac mist evenly into the surrounding space.\nConsumes electricity and humpshroom. Switched directly by the player, with an adjustable radius of 5–10 cells. Only affects targets in the same room.</description>
     <thingClass>Building</thingClass>
     <drawerType>MapMeshAndRealTime</drawerType>
     <techLevel>Industrial</techLevel>
