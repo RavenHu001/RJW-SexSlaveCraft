@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_Emitter_Toggle>Включить распылитель</SSC_Emitter_Toggle>
+  <SSC_Emitter_ToggleDesc>Переключение напрямую игроком, без участия пешки. После отключения новое воздействие прекращается, а накопленный эффект постепенно проходит.</SSC_Emitter_ToggleDesc>
+  <SSC_Emitter_RadiusTitle>Радиус тумана</SSC_Emitter_RadiusTitle>
+  <SSC_Emitter_RadiusDesc>Радиус от 5 до 20 клеток с шагом 1. Потребление: 100 + 4 × радиус² Вт. Только в той же комнате. Скорость воздействия на каждую цель не меняется.</SSC_Emitter_RadiusDesc>
+  <SSC_Emitter_RadiusPower>Радиус: {0} · {1} Вт</SSC_Emitter_RadiusPower>
+  <SSC_Emitter_Status>Состояние: {0}</SSC_Emitter_Status>
+  <SSC_Emitter_Off>Выключен</SSC_Emitter_Off>
+  <SSC_Emitter_Running>Работает</SSC_Emitter_Running>
+  <SSC_Emitter_NoPower>Ожидание питания</SSC_Emitter_NoPower>
+  <SSC_Emitter_PowerDesc>Потребление зависит от выбранного радиуса. Выключенное устройство не расходует электричество.</SSC_Emitter_PowerDesc>
+</LanguageData>

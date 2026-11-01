@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_AphrodisiacEmitter.label>aphrodisiac emitter</SSC_AphrodisiacEmitter.label>
+  <SSC_AphrodisiacEmitter.description>An electrically sustained culture of PNA and humpshroom releases an aphrodisiac mist. Uses the humpshroom effect defined by the current mod environment.\n\nDirect player switch; radius 5–20, default 10. Power demand is 100 + 4 × radius² W. Only affects targets within the radius and in the same room. Existing drug effects wear off normally after exposure ends. PNA and humpshroom are consumed only during construction.</SSC_AphrodisiacEmitter.description>
+</LanguageData>

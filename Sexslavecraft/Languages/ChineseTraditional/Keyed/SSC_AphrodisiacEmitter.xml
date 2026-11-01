@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_Emitter_Toggle>發煙器開關</SSC_Emitter_Toggle>
+  <SSC_Emitter_ToggleDesc>玩家直接切換，無需小人操作。關閉後停止新的暴露，已有藥效自然衰減。</SSC_Emitter_ToggleDesc>
+  <SSC_Emitter_RadiusTitle>煙霧半徑</SSC_Emitter_RadiusTitle>
+  <SSC_Emitter_RadiusDesc>按1格步進調整半徑（5～20格）。耗電為100＋4×半徑² W，僅覆蓋同一房間；單位目標的暴露速率不變。</SSC_Emitter_RadiusDesc>
+  <SSC_Emitter_RadiusPower>半徑：{0}格 · {1} W</SSC_Emitter_RadiusPower>
+  <SSC_Emitter_Status>狀態：{0}</SSC_Emitter_Status>
+  <SSC_Emitter_Off>已關閉</SSC_Emitter_Off>
+  <SSC_Emitter_Running>運行中</SSC_Emitter_Running>
+  <SSC_Emitter_NoPower>等待供電</SSC_Emitter_NoPower>
+  <SSC_Emitter_PowerDesc>耗電由所選半徑計算，關閉設備後耗電為零。</SSC_Emitter_PowerDesc>
+</LanguageData>

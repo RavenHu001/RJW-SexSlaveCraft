@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成：环境应用分支，不要求武器研究或高级零部件自制。 -->
+<Defs>
+  <ResearchProjectDef>
+    <defName>SSC_RES_AphrodisiacEmitter</defName><label>self-sustaining aphrodisiac mist</label>
+    <description>Maintain a self-replicating mixture of PNA and humpshroom using precision electrical control. Unlocks a compact emitter with adjustable radius and power demand, requiring no replenishment after construction.</description>
+    <techLevel>Spacer</techLevel><baseCost>3000</baseCost>
+    <tab>SSC_ResearchTabDef</tab><researchViewX>3</researchViewX><researchViewY>5.5</researchViewY>
+    <requiredResearchBuilding>HiTechResearchBench</requiredResearchBuilding>
+    <requiredResearchFacilities><li>MultiAnalyzer</li></requiredResearchFacilities>
+    <prerequisites><li>Fabrication</li><li>SSC_RES_PNAConcentration</li></prerequisites>
+  </ResearchProjectDef>
+</Defs>

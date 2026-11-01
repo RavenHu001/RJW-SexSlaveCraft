@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成：1.7单格发烟器；建筑贴图暂引用Core占位，不打包原版资源。 -->
+<Defs>
+  <ThingDef ParentName="BuildingBase">
+    <defName>SSC_AphrodisiacEmitter</defName>
+    <label>aphrodisiac emitter</label>
+    <description>An electrically sustained culture of PNA and humpshroom releases an aphrodisiac mist. Uses the humpshroom effect defined by the current mod environment.\n\nDirect player switch; radius 5–20, default 10. Power demand is 100 + 4 × radius² W. Only affects targets within the radius and in the same room. Existing drug effects wear off normally after exposure ends. PNA and humpshroom are consumed only during construction.</description>
+    <thingClass>Building</thingClass>
+    <techLevel>Spacer</techLevel>
+    <graphicData><texPath>Things/Building/Special/PsychicEmanator</texPath><graphicClass>Graphic_Single</graphicClass><drawSize>(1,1)</drawSize></graphicData>
+    <size>(1,1)</size>
+    <rotatable>false</rotatable>
+    <altitudeLayer>Building</altitudeLayer>
+    <passability>PassThroughOnly</passability>
+    <pathCost>30</pathCost>
+    <fillPercent>0.2</fillPercent>
+    <terrainAffordanceNeeded>Medium</terrainAffordanceNeeded>
+    <tickerType>Normal</tickerType>
+    <designationCategory>Misc</designationCategory>
+    <minifiedDef>MinifiedThing</minifiedDef>
+    <statBases><MaxHitPoints>200</MaxHitPoints><WorkToBuild>10000</WorkToBuild><Mass>20</Mass><Flammability>0.5</Flammability></statBases>
+    <constructionSkillPrerequisite>8</constructionSkillPrerequisite>
+    <costList><Steel>80</Steel><Plasteel>40</Plasteel><ComponentIndustrial>4</ComponentIndustrial><ComponentSpacer>2</ComponentSpacer><Purple_Aphrodisiac_Nanofluid_Plus>10</Purple_Aphrodisiac_Nanofluid_Plus><HumpShroom>10</HumpShroom></costList>
+    <researchPrerequisites><li>SSC_RES_AphrodisiacEmitter</li></researchPrerequisites>
+    <comps>
+      <li Class="SexSlaveCraft.CompProperties_SSCAphrodisiacPower"><compClass>CompPowerTrader</compClass><basePowerConsumption>500</basePowerConsumption></li>
+      <li Class="SexSlaveCraft.CompProperties_SSCAphrodisiacEmitter"><hediff>HumpShroomEffect</hediff><smoke>SSC_AphrodisiacSmoke</smoke></li>
+    </comps>
+  </ThingDef>
+</Defs>

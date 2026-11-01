@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成：引用Core烟雾纹理，生命周期五秒；不修改Core Smoke。 -->
+<Defs>
+  <FleckDef ParentName="FleckBase_Thrown">
+    <defName>SSC_AphrodisiacSmoke</defName>
+    <graphicData><texPath>Things/Mote/Smoke</texPath><renderInstanced>true</renderInstanced></graphicData>
+    <altitudeLayer>MoteOverhead</altitudeLayer>
+    <fadeInTime>0.5</fadeInTime><solidTime>2.5</solidTime><fadeOutTime>2</fadeOutTime><growthRate>0.005</growthRate>
+  </FleckDef>
+</Defs>
