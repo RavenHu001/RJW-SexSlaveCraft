@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- AI 辅助生成：按文化自动烟罐参照校准范围烟21秒、源头烟9.7秒；仅引用Core纹理。 -->
+<!-- AI 辅助生成：范围烟随机19～23秒、平均21秒，4秒柔和淡出；源头烟9.7秒，引用Core纹理。 -->
 <Defs>
   <FleckDef ParentName="FleckBase_Thrown">
     <defName>SSC_AphrodisiacSmoke</defName>
     <graphicData><texPath>Things/Mote/Smoke</texPath><renderInstanced>true</renderInstanced></graphicData>
     <altitudeLayer>MoteOverhead</altitudeLayer>
-    <fadeInTime>0.5</fadeInTime><solidTime>20</solidTime><fadeOutTime>0.5</fadeOutTime><growthRate>0.05</growthRate>
+    <fadeInTime>0.5</fadeInTime><solidTime>16.5</solidTime><fadeOutTime>4</fadeOutTime><growthRate>0.05</growthRate>
   </FleckDef>
   <FleckDef ParentName="FleckBase_Thrown">
     <defName>SSC_AphrodisiacSourceSmoke</defName>

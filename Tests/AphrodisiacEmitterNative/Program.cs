@@ -59,6 +59,7 @@ internal static class Program
     private static int smokeDispatches;
     private static bool captureSmoke;
     private static readonly List<FleckCreationData> smokeDraws = new();
+    private static readonly List<int> smokeDrawTicks = new();
     private static readonly List<string> errors = new();
 
     internal static int Run(string repo, string game)
@@ -120,8 +121,21 @@ internal static class Program
                 XmlNodeList nodes = doc.SelectNodes("/Defs/ThingDef/comps/li");
                 var powerProps = DirectXmlToObject.ObjectFromXml<CompProperties>(nodes[0], true) as CompProperties_SSCAphrodisiacPower;
                 var emitterProps = DirectXmlToObject.ObjectFromXml<CompProperties>(nodes[1], true) as CompProperties_SSCAphrodisiacEmitter;
-                DefDatabase<FleckDef>.Add(new FleckDef { defName = "SSC_AphrodisiacSmoke" });
-                DefDatabase<FleckDef>.Add(new FleckDef { defName = "SSC_AphrodisiacSourceSmoke" });
+                var smokeXml = new XmlDocument(); smokeXml.Load(Path.Combine(repo, "1.7/Defs/Effects/SSC_AphrodisiacEmitter.xml"));
+                var coreSmokeXml = new XmlDocument(); coreSmokeXml.Load(Path.Combine(game, "Data/Core/Defs/Effects/Fleck_Visual.xml"));
+                DefDatabase<ShaderTypeDef>.Add(new ShaderTypeDef { defName = "Mote" });
+                // 与游戏相同地先解析Core父链，读取完整Fleck定义供后续原生Alpha验证。
+                XmlInheritance.Clear();
+                try
+                {
+                    foreach (XmlNode node in coreSmokeXml.SelectNodes("/Defs/FleckDef[@Name='FleckBase' or @Name='FleckBase_Thrown']"))
+                        XmlInheritance.TryRegister(node, null);
+                    foreach (XmlNode node in smokeXml.SelectNodes("/Defs/FleckDef")) XmlInheritance.TryRegister(node, null);
+                    XmlInheritance.Resolve();
+                    foreach (XmlNode node in smokeXml.SelectNodes("/Defs/FleckDef"))
+                        DefDatabase<FleckDef>.Add(DirectXmlToObject.ObjectFromXml<FleckDef>(node, true));
+                }
+                finally { XmlInheritance.Clear(); }
                 DirectXmlCrossRefLoader.ResolveAllWantedCrossReferences(FailMode.LogErrors);
                 Require(powerProps != null && emitterProps != null); Near(500, powerProps.PowerConsumption);
                 Equal(typeof(CompPowerTrader), powerProps.compClass); Equal(typeof(CompSSCAphrodisiacEmitter), emitterProps.compClass);
@@ -272,7 +286,7 @@ internal static class Program
                     props.smoke = DefDatabase<FleckDef>.GetNamed("SSC_AphrodisiacSmoke");
                     props.sourceSmoke = DefDatabase<FleckDef>.GetNamed("SSC_AphrodisiacSourceSmoke");
                     a.parent.TryGetComp<CompPowerTrader>().PowerOn = true;
-                    smokeDraws.Clear(); captureSmoke = true;
+                    smokeDraws.Clear(); smokeDrawTicks.Clear(); captureSmoke = true;
                     Rand.PushState(991); float expectedNext = Rand.Value; Rand.PopState();
                     Rand.PushState(991);
                     try
@@ -287,16 +301,27 @@ internal static class Program
                     foreach (var cloud in clouds)
                     {
                         Near(4f, cloud.scale);
+                        Require(cloud.solidTimeOverride.HasValue);
+                        Require(cloud.solidTimeOverride.Value >= 14.5f && cloud.solidTimeOverride.Value <= 18.5f);
                         Color color = cloud.instanceColor.Value;
                         Require(color.r >= .95f && color.g >= .9f && color.b >= .95f);
                         Require(smokeRooms.ContainsKey(cloud.spawnPosition.ToIntVec3()));
                     }
+                    Require(smokeDraws.Select((data, i) => (Data: data, Tick: smokeDrawTicks[i]))
+                        .Where(s => ReferenceEquals(s.Data.def, props.smoke)).GroupBy(s => s.Tick)
+                        .Any(batch => batch.Select(s => s.Data.solidTimeOverride.Value).Distinct().Take(2).Count() == 2));
+                    // 使用实际Fleck消费本朵时间覆盖与XML淡出：进入淡出2秒时应剩一半透明度。
+                    var fading = new FleckStatic(); fading.Setup(clouds[0]);
+                    Near(clouds[0].solidTimeOverride.Value, fading.SolidTime);
+                    fading.ageSecs = fading.def.fadeInTime + fading.SolidTime + 2f;
+                    Near(.5f, fading.Alpha);
                     Require(smokeDraws.Any(d => ReferenceEquals(d.def, props.sourceSmoke)));
+                    Require(smokeDraws.Where(d => ReferenceEquals(d.def, props.sourceSmoke)).All(d => !d.solidTimeOverride.HasValue));
                     int beforeOff = smokeDraws.Count; a.TrySetEnabled(false);
                     for (int t = 7201; t <= 7260; t++) { Tick(t); a.CompTick(); }
                     Equal(beforeOff, smokeDraws.Count);
                 }
-                finally { Rand.PopState(); smokeRooms.Clear(); smokeDraws.Clear(); captureSmoke = false; }
+                finally { Rand.PopState(); smokeRooms.Clear(); smokeDraws.Clear(); smokeDrawTicks.Clear(); captureSmoke = false; }
             });
             Check("real Scribe preserves switch and radius", () =>
             {
@@ -371,7 +396,7 @@ internal static class Program
     private static bool Skip() => false;
     private static bool SmokeBoundary() { smokeDispatches++; return captureSmoke; }
     private static bool SmokeVisible(ref bool __result) { __result = true; return false; }
-    private static bool CaptureFleck(FleckCreationData fleckData) { smokeDraws.Add(fleckData); return false; }
+    private static bool CaptureFleck(FleckCreationData fleckData) { smokeDraws.Add(fleckData); smokeDrawTicks.Add(Find.TickManager.TicksGame); return false; }
     private static bool NoTexture(ref Texture2D __result) { __result = null; return false; }
     private static bool Translate(string key, ref TaggedString __result) { __result = key; return false; }
     private static bool SavePath(ref string __result) { __result = saves; return false; }

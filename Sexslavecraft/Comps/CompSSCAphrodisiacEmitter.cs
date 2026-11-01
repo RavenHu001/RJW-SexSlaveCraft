@@ -299,6 +299,8 @@ namespace SexSlaveCraft
                 data.velocityAngle = Rand.Range(-15f, 15f);
                 data.velocitySpeed = Rand.Range(.1f, .35f);
             }
+            // 同片烟在同tick生成，逐朵错开停留时间以打散消失批次；配合4秒淡出，平均总寿命仍为21秒。
+            else data.solidTimeOverride = Rand.Range(14.5f, 18.5f);
             map.flecks.CreateFleck(data);
         }
 
