@@ -42,6 +42,7 @@ namespace SexSlaveCraft
     {
         public const int MinRadius = 5, MaxRadius = 20, DefaultRadius = 10, ExposureInterval = 120;
         public const float ExposurePerPulse = .01f;
+        private const int SmokeTileSize = 5, SmokeCyclePulses = 24;
         // 唯一持久状态：功率由半径与开关推导，缓存和结算上下文均不入档。
         private bool enabled = true;
         private int radius = DefaultRadius;
@@ -219,7 +220,7 @@ namespace SexSlaveCraft
             finally { targets.Clear(); applyingExposure = false; }
         }
 
-        /// <summary>仅在当前地图生成源头喷烟与范围烟云；固定预算，不参与药效传播。</summary>
+        /// <summary>仅在当前地图生成源头喷烟，按六秒轮巡把范围烟云铺到各片有效空间。</summary>
         private void TryEmitSmoke()
         {
             if (!CanRunNow) return;
@@ -236,21 +237,43 @@ namespace SexSlaveCraft
                     SpawnSmoke(parent.Position.ToVector3ShiftedWithAltitude(AltitudeLayer.MoteOverhead), map,
                         Props.sourceSmoke, Rand.Range(.8f, 1.2f), true);
 
-                // 范围烟云每30 tick至多一朵；扩大半径不增加每台的粒子预算或枚举整片区域。
-                if (Props.smoke == null || !parent.IsHashIntervalTick(30)) return;
-                for (int i = 0; i < 8; i++)
+                if (Props.smoke == null) return;
+                // 将包围方框切成5×5小片，24次视觉脉冲恰好遍历一次；不积攒停机或离图期间的补发。
+                // 最大半径只有81片，每次至多处理4片／100格，不在单次发烟时扫描整个房间。
+                int columns = (radius * 2 + SmokeTileSize) / SmokeTileSize;
+                int tiles = columns * columns;
+                int phase = (int)((Find.TickManager.TicksGame / 15 + parent.thingIDNumber) % SmokeCyclePulses);
+                for (int index = phase * tiles / SmokeCyclePulses; index < (phase + 1) * tiles / SmokeCyclePulses; index++)
                 {
-                    // 方框随机采样后按圆形和房间拒绝越界点；不维护整片格子缓存。
-                    IntVec3 cell = parent.Position + new IntVec3(Rand.RangeInclusive(-radius, radius), 0, Rand.RangeInclusive(-radius, radius));
-                    if (!cell.InBounds(map) || cell.DistanceToSquared(parent.Position) > radius * radius ||
-                        cell.GetRoom(map) != room) continue;
+                    int minX = parent.Position.x - radius + index % columns * SmokeTileSize;
+                    int minZ = parent.Position.z - radius + index / columns * SmokeTileSize;
+                    if (!TryFindSmokeCell(map, room, minX, minZ, out IntVec3 cell, out int validCells)) continue;
+                    // 完整小片的烟云互相重叠；墙边、狭窄房间和圆形边缘按有效面积缩小烟朵。
+                    float scale = Mathf.Clamp(Mathf.Sqrt(validCells) * 1.5f, 3f, 7.5f);
                     SpawnSmoke(cell.ToVector3ShiftedWithAltitude(AltitudeLayer.MoteOverhead), map,
-                        Props.smoke, 4f, false);
-                    return;
+                        Props.smoke, scale, false);
                 }
             }
             // 包含提前返回与异常路径，始终恢复进入前的玩法随机状态。
             finally { Rand.PopState(); }
+        }
+
+        /// <summary>在至多25格的小片内均匀抽取有效烟点；非空小片必有候选，不缓存房间拓扑。</summary>
+        private bool TryFindSmokeCell(Map map, Room room, int minX, int minZ, out IntVec3 selected, out int validCells)
+        {
+            selected = default;
+            validCells = 0;
+            for (int x = minX; x < minX + SmokeTileSize; x++)
+                for (int z = minZ; z < minZ + SmokeTileSize; z++)
+                {
+                    IntVec3 cell = new IntVec3(x, 0, z);
+                    if (!cell.InBounds(map) || cell.DistanceToSquared(parent.Position) > radius * radius ||
+                        cell.GetRoom(map) != room) continue;
+                    // 蓄水池抽样不分配临时格子列表，每个合法格被选中的概率相同。
+                    validCells++;
+                    if (Rand.Range(0, validCells) == 0) selected = cell;
+                }
+            return validCells > 0;
         }
 
         /// <summary>沿原版可见性预算创建紫色烟朵；源头小烟带轻微运动，范围烟云不漂离判定点。</summary>
@@ -267,6 +290,7 @@ namespace SexSlaveCraft
                 data.velocityAngle = Rand.Range(-15f, 15f);
                 data.velocitySpeed = Rand.Range(.1f, .25f);
             }
+            else data.rotationRate = Rand.Range(-3f, 3f);
             map.flecks.CreateFleck(data);
         }
 

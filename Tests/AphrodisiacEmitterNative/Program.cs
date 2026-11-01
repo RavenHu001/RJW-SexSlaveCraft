@@ -46,6 +46,7 @@ internal static class Program
 {
     private static readonly List<Map> maps = new();
     private static readonly Dictionary<Thing, Room> rooms = new();
+    private static readonly Dictionary<IntVec3, Room> smokeRooms = new();
     private static readonly Dictionary<CompPower, PowerNet> networks = new();
     private static Faction player;
     private static Map map;
@@ -78,6 +79,7 @@ internal static class Program
         Patch(AccessTools.PropertyGetter(typeof(Faction), nameof(Faction.OfPlayer)), nameof(Player));
         Patch(AccessTools.PropertyGetter(typeof(CompPower), nameof(CompPower.PowerNet)), nameof(Network));
         Patch(AccessTools.Method(typeof(RegionAndRoomQuery), nameof(RegionAndRoomQuery.GetRoom)), nameof(RoomFor));
+        Patch(AccessTools.Method(typeof(RegionAndRoomQuery), nameof(RegionAndRoomQuery.RoomAt)), nameof(SmokeRoomFor));
         Patch(AccessTools.Method(typeof(GameConditionManager), nameof(GameConditionManager.ElectricityDisabled)), nameof(Blackout));
         // 仅隔离绘制、音效与健康后续整图通知；PowerOn、Flick意愿、电网分配及Hediff列表变更走原实现。
         Patch(AccessTools.Method(typeof(CompPowerTrader), "UpdateOverlays"), nameof(Skip));
@@ -97,6 +99,7 @@ internal static class Program
             SetStatic(typeof(Prefs), "data", new PrefsData());
             player = new Faction { def = new FactionDef { defName = "EmitterTestPlayer", isPlayer = true } };
             map = new Map(); maps.Add(map); map.mapPawns = new MapPawns(map); map.gameConditionManager = new GameConditionManager(map);
+            map.info.Size = new IntVec3(50, 1, 50);
             room = Bare<Room>(); otherRoom = Bare<Room>();
             var pack = Bare<ModContentPack>(); pack.assemblies = new ModAssemblyHandler(pack);
             pack.assemblies.loadedAssemblies.Add(typeof(CompSSCAphrodisiacEmitter).Assembly);
@@ -231,6 +234,29 @@ internal static class Program
                 Set(a.parent, "mapIndexOrState", (sbyte)-1); Require(!a.TrySetRadius(5)); Require(!a.TrySetEnabled(false));
                 a.ApplyExposurePulse(); Near(.01f, Severity(first));
             });
+            Check("smoke tile sampling finds narrow coverage and rechecks room changes", () =>
+            {
+                var (a, _, _) = Device();
+                var sample = AccessTools.Method(typeof(CompSSCAphrodisiacEmitter), "TryFindSmokeCell");
+                // 本小片只有一格属于源房间，另一格属于邻室，其余无房间；不能靠随机重试漏掉合法格。
+                var only = new IntVec3(12, 0, 12);
+                smokeRooms.Clear(); smokeRooms[only] = room; smokeRooms[new IntVec3(11, 0, 12)] = otherRoom;
+                Rand.PushState(741);
+                try
+                {
+                    object[] input = { map, room, 10, 10, default(IntVec3), 0 };
+                    Require((bool)sample.Invoke(a, input)); Equal(only, (IntVec3)input[4]); Equal(1, (int)input[5]);
+                    // 不保存房间格缓存：同一位置改属邻室，下次采样立即失效。
+                    smokeRooms[only] = otherRoom;
+                    Require(!(bool)sample.Invoke(a, input)); Equal(0, (int)input[5]);
+                    // 目标房间引用相同仍须满足地图及半径边界。
+                    smokeRooms.Clear(); smokeRooms[new IntVec3(40, 0, 40)] = room;
+                    input[2] = 40; input[3] = 40; Require(!(bool)sample.Invoke(a, input));
+                    smokeRooms.Clear(); smokeRooms[new IntVec3(-1, 0, 10)] = room;
+                    input[2] = -5; input[3] = 10; Require(!(bool)sample.Invoke(a, input));
+                }
+                finally { Rand.PopState(); smokeRooms.Clear(); }
+            });
             Check("real Scribe preserves switch and radius", () =>
             {
                 var (a, p, _) = Device(); a.TrySetRadius(17); a.TrySetEnabled(false);
@@ -310,6 +336,7 @@ internal static class Program
     private static bool Player(ref Faction __result) { __result = player; return false; }
     private static bool Network(CompPower __instance, ref PowerNet __result) { networks.TryGetValue(__instance, out __result); return false; }
     private static bool RoomFor(Thing thing, ref Room __result) { rooms.TryGetValue(thing, out __result); return false; }
+    private static bool SmokeRoomFor(IntVec3 c, ref Room __result) { smokeRooms.TryGetValue(c, out __result); return false; }
     private static bool Blackout(ref bool __result) { __result = blackout; return false; }
     private static void AfterAdd() => onHealthAdded?.Invoke();
     private static bool LogError(string text) { errors.Add(text); return false; }
