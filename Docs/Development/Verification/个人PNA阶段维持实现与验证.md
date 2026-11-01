@@ -1,6 +1,6 @@
 # 个人PNA阶段维持实现与验证
 
-日期：2026-11-01。目标：SSC 2.4.8发布后1.7开发；第25项个人主动补给。实现及相关隔离验证完成，未替换正式DLL、同步游戏、提交或发布，尚待实机验收。
+日期：2026-11-01。目标：SSC 2.4.8发布后1.7开发；第25项个人主动补给。实现、复核与正式构建完成，源码已提交，受测正式DLL及运行资源已备份同步本机，尚待实机验收；未发布。
 
 [开发入口](../README.md) · [未来第25项](../../Design/未来内容开发规划.md#25-新版-pna-的性奴正面效果与主动补给) · [原生专项](../../../Tests/PnaMaintenanceNative/README.md)
 
@@ -46,7 +46,7 @@
 
 日志位于`.builds/pna-maintenance/`的`candidate-build.log`、`host-build.log`、`native.log`及`pna-regression.log`。构建初期存在独立宿主缺图形／世界／库存通知初始化的失败，均修正宿主边界后完整重跑；不删生产检查、不将旧失败拼接为通过。PnaLoad最初误用.NET 10 SDK导致离线缺9.0.21引用包，改用已安装9.0.308 SDK完成，未下载或改动工具环境。
 
-原生宿主边界见[专项说明](../../../Tests/PnaMaintenanceNative/README.md)，不冒充完整地图、完整存档、GPU或实机通过。尚未替换仓库正式DLL，不能将新增XML配合旧DLL视为可直接部署的成品。
+原生宿主边界见[专项说明](../../../Tests/PnaMaintenanceNative/README.md)，不冒充完整地图、完整存档、GPU或实机通过。上述隔离阶段当时未替换正式DLL；后续正式构建与本机同步见第5节。
 
 ## 4. 实机待验收
 
@@ -55,3 +55,17 @@
 - 背包和地图取药、多人预留竞争、缺药后的继续工作。
 - 取药途中改设置、解绑及存读档后的任务处理。
 - 与当前启用模组对普通工作节点XML的改写兼容。
+
+## 5. 提交前复核、正式构建与本机同步
+
+维护者要求再次检查实现、无问题后正式构建／提交并同步游戏。本轮逐项复核普通工作节点替换、现有任务与队列守卫、父类摄入Toil、完成后达标收尾、旧任务不能消费或取消新任务，以及运行驱动存档的原锁链引用；未发现新的阻塞问题，未修改生产实现或扩大为整仓All。
+
+实现源码先提交为`5d47deed1725be77d89aaa3e9da56bdfe7271bed`，使正式构建记录指向已提交实现。备份旧仓库DLL及BUILD-INFO后，使用`Scripts/Build-Mod.ps1`构建正式1.7：SDK10.0.402，零警告／零错误。正式DLL SHA-256为`017469e212214f36e562ffc74b7c61584cb01faebad98b8febc3a8e9f72c7abc`；新建宿主引用正式DLL复跑本专项12／12通过，宿主副本哈希一致。首轮PnaLoad582／582保留前次结果，本轮没有重复运行；四语／镜像／布局与冻结检查重新通过。
+
+本轮日志与仓库旧产物备份记录位于`.builds/pna-maintenance/formal-review/`，分别为`formal-build.log`、`host-build.log`、`native.log`、`build-backup.json`。正式BUILD-INFO保留实际源码提交、脏工作树状态与依赖指纹，不手工改写为实机通过。
+
+核对安装副本packageId及绝对目标路径后，同步至`D:/STEAM/steamapps/common/RimWorld/Mods/RJW-SexSlaveCraft-TieJin-Modify`。13份差异中新增10份PNA Job／补丁／四语资源，覆盖正式DLL、BUILD-INFO及1份仅换行不同的既有发烟器特效XML；后者规范化换行后的文字完全相同，没有修改发烟机制。覆盖3份均已先备份，未删除任何文件。
+
+同步后1345份运行文件源／目标SHA-256逐一一致，额外运行文件0；1.6／Common没有差异且未复制。没有改动玩家配置、模组列表或存档。回执纽约时间2026-11-01 13:15:15（UTC 18:15:15），备份及manifest／result位于`.builds/pna-maintenance-sync-20261101-181515179/`，汇总另见`.builds/pna-maintenance/formal-review/sync-result.json`。
+
+本节与正式产物一起提交；未发布、未执行整仓All或启动新游戏。请重启后按第4节实机核验，既有五档效果的历史验收不代替本功能验收。
