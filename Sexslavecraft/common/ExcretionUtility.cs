@@ -386,7 +386,7 @@ namespace SexSlaveCraft
                             float severity = tag.Value;
 #if SSC_RW17
                             // 拒绝历史／外部凝胶中的身体开发标签，既不补建，也不合并覆盖宿主原进度和开关。
-                            if (SSCBodyDevelopmentUtility.IsBodyStateDef(hediffDef)) continue;
+                            if (SSCBodyDevelopmentUtility.IsBodyStateDef(hediffDef) || SSCCorruptionGelProductionUtility.IsBodyStateDef(hediffDef)) continue;
                             // 印记已在身份恢复后精确还原，不再按普通标签添加或与宿主严重度取最大值。
                             if (SSCImprintUtility.IsImprintDef(hediffDef) || FertilitySpecializationUtility.IsTag(hediffDef)) continue;
 #endif

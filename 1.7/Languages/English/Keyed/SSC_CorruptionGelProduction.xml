@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_CorruptionGel_Label>Depravity gel extraction</SSC_CorruptionGel_Label>
+  <SSC_CorruptionGel_Tip>Enable natural accumulation; disabling preserves progress. Requires sex-slave identity and a present, fully developed anus.</SSC_CorruptionGel_Tip>
+  <SSC_CorruptionGel_Disabled>Disabled ({0})</SSC_CorruptionGel_Disabled>
+  <SSC_CorruptionGel_Inactive>Paused: ineligible ({0})</SSC_CorruptionGel_Inactive>
+  <SSC_CorruptionGel_Waiting>Awaiting delivery ({0})</SSC_CorruptionGel_Waiting>
+  <SSC_CorruptionGel_NoLocation>Paused: no map or caravan ({0})</SSC_CorruptionGel_NoLocation>
+  <SSC_CorruptionGel_Progress>Batch progress: {0}</SSC_CorruptionGel_Progress>
+  <SSC_CorruptionGel_AnusRequired>Requires a present anus with 100% development.</SSC_CorruptionGel_AnusRequired>
+</LanguageData>

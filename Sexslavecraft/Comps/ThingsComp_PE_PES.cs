@@ -331,7 +331,7 @@ namespace SexSlaveCraft
                 {
 #if SSC_RW17
                     // 加工／复制也不携带外部或旧载荷中的身体开发标签；原载荷不在此处改写。
-                    if (SSCBodyDevelopmentUtility.IsBodyStateDef(pair.Key)) continue;
+                    if (SSCBodyDevelopmentUtility.IsBodyStateDef(pair.Key) || SSCCorruptionGelProductionUtility.IsBodyStateDef(pair.Key)) continue;
 #endif
                     // 能力标记不是人格标签；由独立偏好与接收身体的最终身份重新派生。
                     if (SSCAbilityToggleUtility.IsMarkerDef(pair.Key)) continue;
@@ -525,7 +525,7 @@ namespace SexSlaveCraft
             {
 #if SSC_RW17
                 // 子宫／胃部开发属于原身体；即使扩展配方将它列为标签，也不采集进人格凝胶。
-                if (SSCBodyDevelopmentUtility.IsBodyStateDef(recipe.hediffToAdd)) continue;
+                if (SSCBodyDevelopmentUtility.IsBodyStateDef(recipe.hediffToAdd) || SSCCorruptionGelProductionUtility.IsBodyStateDef(recipe.hediffToAdd)) continue;
 #endif
                 if (recipe.hediffToAdd != null && !SSCPnaExposureUtility.IsBodyStateDef(recipe.hediffToAdd) &&
                     !SSCAbilityToggleUtility.IsMarkerDef(recipe.hediffToAdd))

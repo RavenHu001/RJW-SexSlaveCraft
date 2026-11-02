@@ -14,8 +14,8 @@ internal static class Entry
     /// <summary>定位真实依赖后进入隔离宿主；专项参数只选择相关行为，避免JIT提前解析游戏引用。</summary>
     private static int Main(string[] args)
     {
-        if (args.Length < 2 || args.Length > 3 || (args.Length == 3 && args[2] != "--imprint" && args[2] != "--fertility" && args[2] != "--pregnancy" && args[2] != "--preconception" && args[2] != "--birth" && args[2] != "--birth-compat" && args[2] != "--fertility-skill"))
-            throw new ArgumentException("repositoryRoot gameRoot [--imprint|--fertility|--pregnancy|--preconception|--birth|--birth-compat|--fertility-skill]");
+        if (args.Length < 2 || args.Length > 3 || (args.Length == 3 && args[2] != "--imprint" && args[2] != "--fertility" && args[2] != "--pregnancy" && args[2] != "--preconception" && args[2] != "--birth" && args[2] != "--birth-compat" && args[2] != "--fertility-skill" && args[2] != "--corruption-gel"))
+            throw new ArgumentException("repositoryRoot gameRoot [--imprint|--fertility|--pregnancy|--preconception|--birth|--birth-compat|--fertility-skill|--corruption-gel]");
         string repo = Path.GetFullPath(args[0]), game = Path.GetFullPath(args[1]);
         // 隔离复核可显式提供本轮引用记录；默认仍使用正式记录，不自动猜测更新后的依赖目录。
         string referenceInfo = Environment.GetEnvironmentVariable("SSC_TEST_BUILD_INFO_PATH") ?? Path.Combine(repo, "1.7/BUILD-INFO.json");
@@ -113,6 +113,12 @@ internal static partial class Program
             // 子宫与PNA等生产XML现已引用通用频率属性，必须在任何交叉引用解析前加载真实定义。
             LoadOrgasmFrequencyReference(repo);
             // 印记专项只复用公共游戏夹具，不依赖先执行子宫、手术或敏感度用例来完成初始化。
+            if (selection == "--corruption-gel")
+            {
+                CorruptionGelTests(repo, harmony.Value);
+                Console.WriteLine($"{passed}/{passed + failed} corruption-gel cases passed");
+                return failed == 0 ? 0 : 1;
+            }
             if (selection != null && selection != "--pregnancy")
             {
                 ImprintTests(repo, harmony.Value, selection == "--fertility", selection == "--preconception",
@@ -174,6 +180,7 @@ internal static partial class Program
             AbilityToggleAdapterTests();
             AbilityToggleLifecycleTests(repo);
             PnaProductionTests(repo, harmony.Value);
+            CorruptionGelTests(repo, harmony.Value);
             OrgasmSensitivityTests(repo, harmony.Value);
             OrgasmAdvanceTests(repo, game, harmony.Value);
             ImprintTests(repo, harmony.Value);

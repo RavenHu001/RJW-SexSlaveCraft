@@ -87,6 +87,14 @@ namespace SexSlaveCraft
                 backend: SSCUterusOffspringImprintToggleBackend.Instance, order: 11,
                 visibleRule: pawn => pawn?.TryGetComp<CompSexSlaveTraining>() != null && SSCUterusDevelopmentUtility.Find(pawn) != null)
 #endif
+#if SSC_RW17 && !SSC_ABILITY_TOGGLE_SCOPED_TEST
+            // 凝胶保存选择与库存属于当前身体；无marker，不采集进人格。
+            , new SSCAbilityToggleDefinition(SSCCorruptionGelProductionUtility.AbilityId, SSCAbilityToggleGroup.Body, PawnIdentity.Unset,
+                "SSC_CorruptionGel_Label", "SSC_CorruptionGel_Tip", defaultEnabled: false,
+                backend: SSCCorruptionGelProductionToggleBackend.Instance, order: 6,
+                visibleRule: pawn => pawn?.TryGetComp<CompSexSlaveTraining>() != null && SSCCorruptionGelProductionUtility.Find(pawn) != null,
+                detailRule: pawn => SSCCorruptionGelProductionUtility.Find(pawn)?.StorageDetail)
+#endif
 #if (SSC_RW17 && !SSC_ABILITY_TOGGLE_SCOPED_TEST) || SSC_ABILITY_TOGGLE_PNA
             // 普通 PNA 的新选择与原生产进度共归身体记录，不写人格字典；保持在泌乳与生育之间。
             , new SSCAbilityToggleDefinition(PnaProduction, SSCAbilityToggleGroup.Body, PawnIdentity.Unset,
