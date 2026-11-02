@@ -3,5 +3,5 @@
   <SSC_PnaMaintenance_Title>PNA維持階段</SSC_PnaMaintenance_Title>
   <SSC_PnaMaintenance_Off>關閉</SSC_PnaMaintenance_Off>
   <SSC_PnaMaintenance_Unavailable>目前無法設定PNA維持階段。</SSC_PnaMaintenance_Unavailable>
-  <SSC_PnaMaintenance_Tooltip>目前任務結束後，在下一份普通工作前服用原液，直到活化達到所選階段。每次1份，僅對目前有效鎖鏈性奴生效。\n初醒在活化消失後補給；單份劑量可能超過目標階段。此設定儲存在目前鎖鏈上，解綁移除鎖鏈後消失。原版定時服用仍獨立生效。</SSC_PnaMaintenance_Tooltip>
+  <SSC_PnaMaintenance_Tooltip>目前任務結束後，在下一份普通工作前服用原液，直到活化達到所選階段。每次1份，僅對目前有效鎖鏈性奴生效。\n初醒在活化消失後補給；單份劑量可能超過目標階段。此設定儲存在目前鎖鏈上，解綁移除鎖鏈後消失。原版定時服用仍獨立生效。\n旅隊行進或白天停留時也會補給，夜間休息時暫停。優先使用隨身原液，其次使用旅隊共享庫存（含馱畜），每輪至多1份；原版定時服藥先執行，仍不足時才追加補給。</SSC_PnaMaintenance_Tooltip>
 </LanguageData>

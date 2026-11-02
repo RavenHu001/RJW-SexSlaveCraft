@@ -50,6 +50,8 @@ namespace SexSlaveCraft
         private static readonly ConditionalWeakTable<Job, SSCPnaMaintenanceContext> pending = new();
         /// <summary>读取已加载的专用任务定义；缺失时不临时创建替代任务。</summary>
         internal static JobDef JobDefinition => DefDatabase<JobDef>.GetNamedSilentFail(JobDefName);
+        /// <summary>地图与旅队共用普通原液定义；缺失时不以浓缩品或其他药物代替。</summary>
+        internal static ThingDef DrugDefinition => DefDatabase<ThingDef>.GetNamedSilentFail(RawDefName);
         /// <summary>阶段名称与阈值共用当前环境最终Def，不维护第二份阶段数值表。</summary>
         private static HediffDef LoadDefinition => DefDatabase<HediffDef>.GetNamedSilentFail(SSCPnaExposureUtility.RootedLoadDefName);
         /// <summary>只接受已声明的六个保存值，拒绝未知整数而非裁剪成可用档位。</summary>
@@ -93,7 +95,7 @@ namespace SexSlaveCraft
                 SSCPersonalityRuntimeUtility.IsCurrent(context.Pawn, context.PersonalityToken);
 
         /// <summary>菜单与执行共用的身体／身份准入；绑定、地图和忙碌条件由各自调用入口追加。</summary>
-        private static bool Eligible(Pawn pawn)
+        internal static bool Eligible(Pawn pawn)
             => pawn != null && !pawn.Dead && !pawn.Destroyed && !pawn.Discarded && !pawn.Suspended &&
                 pawn.RaceProps?.Humanlike == true && pawn.RaceProps.IsFlesh && SSCIdentityUtility.IsSexSlave(pawn) &&
                 !SSCPersonalityRuntimeUtility.IsMutating(pawn);
@@ -183,7 +185,7 @@ namespace SexSlaveCraft
         /// <summary>背包优先；地图只用原生可达／预留查询，不遍历其他角色库存或另建补货任务。</summary>
         private static Thing FindDrug(Pawn pawn)
         {
-            var raw = DefDatabase<ThingDef>.GetNamedSilentFail(RawDefName);
+            var raw = DrugDefinition;
             if (raw == null) return null;
             var inventory = pawn.inventory?.innerContainer;
             // 随身药物不触发地图寻路；找不到时才使用原版可达查询，并让同一验证器过滤候选。

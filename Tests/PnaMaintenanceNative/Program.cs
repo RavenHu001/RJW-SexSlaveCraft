@@ -42,7 +42,7 @@ public sealed class SavedPnaSetting : IExposable
     public void ExposeData() => Chain.ExposeData();
 }
 
-internal static class Program
+internal static partial class Program
 {
     private static int passed, failed, nextId = 70000, searchCalls, workCalls, ingestions, cancellations;
     private static bool canWork = true;
@@ -254,6 +254,7 @@ internal static class Program
                     Equal(variant == 0 ? SSCPnaMaintenanceStage.Fourth : SSCPnaMaintenanceStage.Off, holder.Chain.PnaMaintenanceStage);
                 }
             });
+            RunCaravanTests(harmony, repo);
         }
         finally { harmony.UnpatchAll(harmony.Id); Current.Game = null; }
         Console.WriteLine($"{passed}/{passed + failed} cases passed"); return failed == 0 ? 0 : 1;

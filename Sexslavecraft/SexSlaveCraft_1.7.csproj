@@ -26,8 +26,10 @@
     <GenerateDependencyFile>false</GenerateDependencyFile>
   </PropertyGroup>
   <ItemGroup>
-    <!-- PNA阶段维持仅接1.7：锁链保存、枚举菜单、普通工作前补给和原版服用薄驱动。 -->
+    <!-- PNA阶段维持仅接1.7：锁链保存、地图原生服用薄驱动及旅队原生服药适配。 -->
     <Compile Include="common/SSCPnaMaintenanceUtility.cs" />
+    <Compile Include="common/SSCPnaCaravanMaintenanceUtility.cs" />
+    <Compile Include="ThePatches/Harmony_PnaCaravanMaintenance.cs" />
     <Compile Include="JobGiver/JobGiver_SSCPnaMaintenanceOrWork.cs" />
     <Compile Include="JobDriver/JobDriver_SSCPnaMaintenance.cs" />
     <Compile Include="ITab/ITab_SexSlaveTraining.PnaMaintenance.cs" />
