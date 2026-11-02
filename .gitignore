@@ -67,6 +67,9 @@ mono_crash.*
 !/Docs/Releases/2.4.5/
 /Docs/Releases/2.4.5/*
 !/Docs/Releases/2.4.5/*.md
+!/Docs/Releases/2.4.9/
+/Docs/Releases/2.4.9/*
+!/Docs/Releases/2.4.9/*.md
 x64/
 x86/
 [Ww][Ii][Nn]32/

@@ -1,5 +1,9 @@
 # RJW-SexSlaveCraft Complete Player Guide
 
+[2.4.9: emitters and PNA maintenance (development, unreleased)](#ssc-249)
+
+**Current guide: SSC 2.4.9, registered 2026-11-02, unreleased.** New work targets 1.7; 1.6/Common remain at 2.4.1. Public downloads remain v2.4.8 and exclude these additions. VERSION is 2.4.9; About/source attributes and the development binary still carry 2.4.8 metadata. This update is documentation only. See [development scope](Docs/Releases/2.4.9/2.4.9发布说明.md#english) and [validation boundaries](Docs/Releases/2.4.9/2.4.9版本验证.md). Older section versions identify their original scope.
+
 [2.4.8: Broodmother, imprints and management](#ssc-248)
 
 [2.4.7: new controls and compatibility](#ssc-247)
@@ -10,7 +14,7 @@
 
 [New in 2.4.4: culture, ritual points and cosmetics](#25-244-culture-rituals-and-cosmetic-reshaping-17-development-only)
 
-> This guide covers **SSC 2.4.8 (2026-10-31)** for RimWorld 1.7; 1.6 remains frozen at 2.4.1. See the [release scope](Docs/Releases/2.4.8/2.4.8发布说明.md#english). Earlier section versions identify introductions.
+> The 2.4.8 sections retain their released scope; this guide now also covers the 2.4.9 development additions described above.
 
 [Project home](README.md) · [Player reading order](Docs/Players/README.md#english-reading-order) · [Quick start](QUICK_START_EN.md) · [中文机制详解](机制详解.md)
 
@@ -2059,3 +2063,52 @@ The completed Hollow state disables Joy, Comfort, Beauty, Outdoors, Indoors and 
 Explicitly assign-and-enable Training work, or enable the existing assignee in place. New enabling uses native priority 3; existing enabled saved priorities remain. Disabled work/admission cannot be bypassed by the menu. Work saves through the native system; failure withdraws still-identifiable changes from this request, not arbitrary third-party side effects.
 
 The whole Training work category is enabled, including personality tasks under their original conditions. In-place enabling does not replay non-Master authorization. Closing work keeps the assignment without background re-enabling; changing/clearing an assignee does not turn off their work. Training tab and overview share the action; multiple-trainer assignment remains deferred.
+
+
+<a id="ssc-249"></a>
+## 30. 2.4.9 emitters and personal stage maintenance (1.7, unreleased)
+
+[Development notes](Docs/Releases/2.4.9/2.4.9发布说明.md#english) · [Commit audit](Docs/Releases/2.4.9/2.4.9开发归并核对.md) · [Validation](Docs/Releases/2.4.9/2.4.9版本验证.md)
+
+### Devices, research and running costs
+
+| Item | Medieval censer | Industrial atomizer | Spacer emitter |
+| --- | --- | --- | --- |
+| Research points | 600 | 1200 | 3000 |
+| Prerequisites | PNA Simple Application | Incense application＋Electricity | Electric mist＋Fabrication＋PNA Concentration; research-facility conditions retained |
+| Construction | Stone 40, steel 20, silver 10, ordinary PNA 5 | Steel 80, industrial components 3, ordinary PNA 10 | Steel 80, plasteel 40, industrial components 4, spacer components 2, PNA Plus 10, humpshrooms 10 |
+| Construction skill/work | 3/4000 | 5/6000 | 8/10000 |
+| Radius | Fixed 5 | 5–10, default 5 | 5–20, default 10 |
+| Power | None | 50＋2 r² W, 100–250 W | 100＋4 r² W, 200–1700 W |
+| Humpshroom capacity/day | 5/1 | 10/0.02 r², 0.5–2 | No running refill |
+| Switch | None; runs while fueled | Direct player switch | Direct player switch |
+
+All occupy 1×1. The lower tiers are built empty and use vanilla refueling work with a 50% threshold; the censer has no auto-refuel toggle. PNA is a construction ingredient, not a second running fuel. Industrial radius changes power and future fuel use; running consumption is independent of population and room area. Off/empty devices stop consumption. An enabled, fueled electric device retains its requested load during a power shortage; restoration follows native grid scheduling. Already completed research is not reset.
+
+### Shared effects and smoke
+
+Each device adds 0.01 severity to the final loaded `HumpShroomEffect` every 120 ticks, staggered per device. Targets must be spawned, alive, have a health tracker, share the map and a non-null room, and be within radius. No additional age/species/identity/faction filter applies. Outdoors and doors follow actual room membership, without a sealed-interior rule. Multiple sources accumulate the same effect. Stages, caps, decay and external patches remain authoritative; no culture-mod dependency, fixed four-stage table or PNA load is introduced.
+
+Room smoke uses a bounded tiled rotation; source smoke is separate, with staggered area lifetimes and a soft fade. Off-camera maps omit drawing while exposure continues. Smoke does not simulate gas diffusion. Changes to the device/map/health context invalidate old exposure requests. Mechanisms and final art have scoped acceptance; effect-scan optimization remains deferred and no TPS/FPS improvement is claimed.
+
+### Setting ownership and thresholds
+
+The slave area offers **PNA maintenance stage**, Off plus five stages, default Off. Eligible SSC slaves need a valid Chain and a living humanlike body that can ingest normally; Chain stage 0 is allowed. The target reads the current activation Def. Stage 1 replenishes after activation disappears; other choices use their stage minimum. One ordinary dose may overshoot; dosage is not clipped and concentrate is not substituted.
+
+The setting and revision belong to the current Chain. Changing the owner on that same Chain preserves the choice but revokes old requests. Removing/replacing it loses the choice and a new Chain starts Off. Personality Gel's existing Chain snapshot does not add this setting, and newly cloned Chains do not inherit an enabled choice. It is an enum, not a general ability bool, marker or new need.
+
+### Map jobs
+
+Before ordinary work, the existing work priority can select one PNA dose without interrupting current tasks, eating/sleeping, Training, forced orders or queued jobs. Own inventory comes first, then reachable, allowed and reservable map supplies. Missing supplies delegate to native work. There is no per-tick drug scan or access to other pawns' inventory.
+
+The native ingestion driver handles reservation, collection, movement and ingestion. The running driver saves the original pawn/Chain/owner, setting revision and job identifier. Chain/owner/settings/personality/body changes, drafting, downing, mental states or labor invalidate old work. Legal consumption is not rolled back. Reaching the target after a dose completes normally; late old toils cannot consume or end replacement jobs.
+
+### Caravans
+
+Runs after vanilla's 120-tick personal scheduled-drug check for actual members of spawned player caravans. The Master need not travel. Maintenance works during travel and daytime stops; native night rest pauses it. Eligible members are living flesh humanlikes, not babies, and not downed, in a mental state or in labor, with valid identity/Chain and ingestion admission. Stale off-map jobs are not a caravan rejection condition.
+
+Vanilla policy runs first; if still below target, take at most one extra ordinary PNA. Disabling one policy does not disable the other. Personal inventory comes first, then shared inventory including pack animals; invalid stacks are skipped and no supply means waiting. Before consumption, recheck original Chain/owner/settings/personality, actual membership and current item holder. Native caravan ingestion handles effects, stack consumption/destruction and inventory refresh. Splits/merges, map transitions and loading query current containers rather than caching an old caravan.
+
+### Icon and validation
+
+Conception now uses a dedicated 128×128 bud PNG; ability eligibility, scenes and successful cooldown retain 2.4.8 rules. Emitter 20/20, maintenance 19/19 and the earlier PnaLoad 582/582 retain their actual execution dates. The map 12 are a subset of 19, not extra full-gate cases. The 52-suite runner has no new 2.4.9 All result. Scoped in-game acceptance does not establish every save/topology/mod combination or performance. Recording fields and complete harness boundaries are linked in the validation document.

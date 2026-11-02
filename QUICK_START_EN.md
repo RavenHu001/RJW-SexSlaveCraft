@@ -1,5 +1,9 @@
 # RJW-SexSlaveCraft Quick Start Guide
 
+[2.4.9: emitters and PNA maintenance (development, unreleased)](#ssc-249)
+
+**Current guide: SSC 2.4.9, registered 2026-11-02, unreleased.** New work targets 1.7; 1.6/Common remain at 2.4.1. Public downloads remain v2.4.8 and exclude these additions. VERSION is 2.4.9; About/source attributes and the development binary still carry 2.4.8 metadata. This update is documentation only. See [development scope](Docs/Releases/2.4.9/2.4.9发布说明.md#english) and [validation boundaries](Docs/Releases/2.4.9/2.4.9版本验证.md). Older section versions identify their original scope.
+
 [2.4.8: Broodmother, imprints and management](#ssc-248)
 
 [2.4.7: new controls and compatibility](#ssc-247)
@@ -10,7 +14,7 @@
 
 [New in 2.4.4: culture, ritual points and cosmetics](#22-244-culture-and-cosmetic-reshaping-17-development-only)
 
-> This guide covers **SSC 2.4.8 (2026-10-31)** for RimWorld 1.7; 1.6 remains frozen at 2.4.1. See the [release scope](Docs/Releases/2.4.8/2.4.8发布说明.md#english). Earlier section versions identify introductions.
+> The 2.4.8 sections retain their released scope; this guide now also covers the 2.4.9 development additions described above.
 
 [Project home](README.md) · [Player reading order](Docs/Players/README.md#english-reading-order) · [中文快速入门](读我，玩法介绍.md) · [Complete guide](PLAYER_GUIDE_EN.md)
 
@@ -747,4 +751,31 @@ Behavior restrictions now sit directly below identity controls. Scoped in-game a
 - **Hollow needs:** the completed state disables Joy, Comfort, Beauty, Outdoors, Indoors and RoomSize. Other needs/effects remain.
 - **Trainer convenience:** assign-and-enable, or enable the current assignee in place. New enabling uses priority 3 and preserves existing enabled priorities. Closing work keeps the assignment without automatic re-enabling. The entire work category is enabled, including eligible personality extraction/implantation tasks.
 
-Scoped feature, localization, Beauty and color acceptance is recorded separately from a full release gate. Replicas, room effects and unified-framework integration remain future work; see [validation](Docs/Releases/2.4.8/2.4.8版本验证.md).
+Scoped feature, localization, Beauty and color acceptance is recorded separately from a full release gate. At the 2.4.8 release, replicas, room effects and framework integration were future work; the emitter devices are now covered by the 2.4.9 section; see [validation](Docs/Releases/2.4.8/2.4.8版本验证.md).
+
+
+<a id="ssc-249"></a>
+## 27. 2.4.9 emitters and PNA maintenance (1.7, unreleased)
+
+### Choose an emitter for your technology level
+
+After PNA Simple Application, the incense research opens a three-tier device line:
+
+| Device | Main choice | Running conditions |
+| --- | --- | --- |
+| Aphrodisiac censer | Non-electric, fixed radius 5 | Refill humpshrooms; runs while fueled, no switch |
+| Electric aphrodisiac atomizer | Adjustable radius 5–10 | Electricity and humpshrooms; direct player switch |
+| Aphrodisiac emitter | Spacer, radius 5–20, no running refills | Electricity only; direct player switch |
+
+Targets must be within the radius and in the same room. Devices accumulate RJW's humpshroom effect rather than supplying PNA load. Stages follow the final loaded Def in your mod environment. The lower tiers are built empty and use vanilla refueling work. Switching off or losing fuel/power stops new exposure; existing effects decay normally. All three have dedicated art and four-language descriptions.
+
+### Choose a personal PNA target stage
+
+Find **PNA maintenance stage** in an eligible bound slave's Training tab, change the default Off to one of five stages, and supply ordinary PNA.
+
+- On maps, own inventory comes first, then reachable, allowed and reservable map supplies. One dose is attempted after the current task and before ordinary work, without interrupting eating, sleeping, Training, work, forced orders or queued jobs.
+- Caravans use personal inventory, then shared stock including pack animals. Maintenance works during travel/daytime stops and pauses at night rest; the Master need not travel. Vanilla drug policy runs first, then at most one extra dose is taken if still below target.
+- Reaching the target stops replenishment. Stage 1 replenishes after activation disappears. One dose can overshoot; missing supplies fall back to ordinary work, and concentrate is not substituted.
+- The setting belongs to the current Chain: save/load preserves it, removal/replacement loses it, and a new Chain starts Off. Turning it off neither disables vanilla drug policies nor stops PNA production.
+
+Conception now has a dedicated bud icon; ability eligibility and cooldown are unchanged. Devices/art, map/caravan maintenance and the icon have scoped in-game acceptance; a full release gate remains separate. See [full rules](PLAYER_GUIDE_EN.md#ssc-249) and [2.4.9 notes](Docs/Releases/2.4.9/2.4.9发布说明.md#english).

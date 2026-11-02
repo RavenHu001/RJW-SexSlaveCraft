@@ -1,5 +1,7 @@
 # RJW-SexSlaveCraft · TieJin Modify
 
+**2.4.9 开发版（2026-11-02，未发布）**：三档催情发烟器、地图／旅队PNA阶段维持及受孕专用图标。v2.4.8后截至`169cf99a`的29个非合并提交、123个变更路径统一归入本版；[双语说明](Docs/Releases/2.4.9/2.4.9发布说明.md) → [归并核对](Docs/Releases/2.4.9/2.4.9开发归并核对.md) → [验证边界](Docs/Releases/2.4.9/2.4.9版本验证.md)。新增仅1.7，1.6／Common冻结2.4.1；公开下载仍为2.4.8。此次仅登记VERSION与文档，About／源码属性／开发DLL元数据暂留2.4.8；不重编、同步或发布，不把分批验收写成新整仓门禁。下方带日期的历史文字保留原时点。
+
 2026-10-31：**2.4.8已正式发布**，[下载](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.8)。完整All **50套／6429项全部通过**，资源2／2、发布编排56及文案隔离75项通过；532份冻结文件未改。源码标签`411e1ce8`，ZIP及SHA-256已上传并复核为最新稳定版；本轮没有启动新游戏或同步安装目录。原分批／登记状态与计数保留原时点。
 
 2026-10-28：**2.4.7已正式发布**，[下载](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.7)。完整All **50套／6333项全部通过**，资源2／2、编排56项及浪漫隔离75项通过；532份冻结文件未变。源码标签`e567e1b1`，ZIP与SHA-256已上传并复核；本轮没有再启动游戏或同步安装目录。旧分批／登记数字按原日期阅读。
@@ -8,9 +10,17 @@
 
 面向 RimWorld 的成人向 RimJobWorld（RJW）扩展，基于上游 **2.2.8** 继续维护，提供角色培养、主从绑定、七种特化、人格转移和身体改造。
 
-[2.4.8开发范围](Docs/Releases/2.4.8/2.4.8发布说明.md) · [正式下载2.4.8](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.8) · [双语模组简介](Docs/模组介绍.md) · [玩家阅读入口](Docs/Players/README.md) · [文档总索引](Docs/README.md) · [English](#english-overview)
+[2.4.9开发范围](Docs/Releases/2.4.9/2.4.9发布说明.md) · [正式下载2.4.8](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.8) · [双语模组简介](Docs/模组介绍.md) · [玩家阅读入口](Docs/Players/README.md) · [文档总索引](Docs/README.md) · [English](#english-overview)
 
-## 2.4.8 新增内容（仅1.7）
+## 2.4.9 开发内容（仅1.7，未发布）
+
+| 主题 | 范围与入口 |
+| --- | --- |
+| 三档发烟器 | 香炉、工业雾化器与太空发烟器，同房间／半径内累积RJW药效；[入门](读我，玩法介绍.md#ssc-249) |
+| PNA阶段维持 | 当前锁链保存关闭＋五档；地图不抢当前任务，旅队共享库存及夜休规则；[完整机制](机制详解.md#ssc-249) |
+| 美术与资料 | 三张专用建筑图、受孕花苞图标、四语及完成归档；[归并](Docs/Releases/2.4.9/2.4.9开发归并核对.md) |
+
+## 2.4.8 已发布内容（仅1.7）
 
 | 主题 | 交付与阅读入口 |
 | --- | --- |
@@ -39,7 +49,7 @@
 | 心情、日志与文案 | 对象＋五组心情、三类十三日志、任务／历史／信件、四语270项 | [完整规则](机制详解.md#27-246-个人能力与浪漫控制仅-17未发布) |
 | PNA 引导与维护 | 物品／研究产出引导、首次绑定提示、战斗超频图标与文案测试隔离 | [开发范围与边界](Docs/Releases/2.4.6/2.4.6发布说明.md) |
 
-机制分批及简中文案已有本机认可；繁英俄文案已审阅但尚未同步／实机，PNA引导已同步，并于2026-10-27确认有效。2.4.6发布时VERSION、About及1.7产物已对齐该版；当前2.4.7仅登记VERSION与文档，统一门禁和包审计按版本单独记录，见[验证与准备](Docs/Releases/2.4.6/2.4.6版本验证.md)。
+机制分批及简中文案已有本机认可；繁英俄文案已审阅但尚未同步／实机，PNA引导已同步，并于2026-10-27确认有效。2.4.6发布时VERSION、About及1.7产物已对齐该版；当前2.4.9仅登记VERSION与文档，统一门禁和包审计按版本单独记录，见[验证与准备](Docs/Releases/2.4.6/2.4.6版本验证.md)。
 
 ## 2.4.5 继承内容（仅 1.7，未发布）
 
@@ -91,7 +101,7 @@
 | 用途 | 阅读顺序 |
 | --- | --- |
 | 了解与游玩 | [模组介绍](Docs/模组介绍.md) → [玩家阅读入口](Docs/Players/README.md) → 快速入门 → 完整机制 |
-| 查看版本变化 | [2.4.8开发说明](Docs/Releases/2.4.8/2.4.8发布说明.md) → [提交归并](Docs/Releases/2.4.8/2.4.8开发归并核对.md) → [验证边界](Docs/Releases/2.4.8/2.4.8版本验证.md)；[2.4.4 正式范围](Docs/Releases/2.4.4/2.4.4发布说明.md) |
+| 查看版本变化 | [2.4.9开发说明](Docs/Releases/2.4.9/2.4.9发布说明.md) → [提交归并](Docs/Releases/2.4.9/2.4.9开发归并核对.md) → [验证边界](Docs/Releases/2.4.9/2.4.9版本验证.md)；[2.4.4 正式范围](Docs/Releases/2.4.4/2.4.4发布说明.md) |
 | 接手开发 | [开发协作约定](AGENTS.md) → [开发资料入口](Docs/Development/README.md) → [已交付记录](Docs/Development/Completed/README.md) → [专项待验收](Docs/Development/Verification/README.md) → [当前规划](Docs/Design/README.md) |
 | 新增个人能力开关 | 先读[现行接入规范](Docs/Development/Reference/个人能力开关接入规范.md)，复用能力注册、原载体后端、状态查询与上下文提交；UI 行及跨 ITab 复用边界见规范 |
 | 编译、测试、打包 | [维护入口](Docs/Maintenance/README.md) → [测试说明](Tests/README.md) → [发布与打包](Docs/Maintenance/发布与打包.md) |
@@ -103,6 +113,8 @@
 问题反馈请附模组／游戏版本、加载顺序、复现步骤、日志及新旧档情况。项目署名：Someone、Hajimi、TieJin。
 
 ## English overview
+
+**Development version 2.4.9 (2026-11-02), unreleased.** Three emitter tiers, personal PNA stage maintenance on maps/caravans and a dedicated Conception icon. [Development scope](Docs/Releases/2.4.9/2.4.9发布说明.md#english) · [Validation boundaries](Docs/Releases/2.4.9/2.4.9版本验证.md). Public downloads remain v2.4.8; 1.6/Common stay at 2.4.1. Runtime metadata is still 2.4.8 and no new full release gate is claimed.
 
 SexSlaveCraft is an adult RJW expansion for pawn development, bonds, seven specializations, personality transfer and body modification. **Current version: 2.4.8 (2026-10-31).** [Download v2.4.8](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.8). New work targets 1.7; the 1.6/Common baseline stays frozen at 2.4.1.
 

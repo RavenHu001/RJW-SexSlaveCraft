@@ -1,5 +1,16 @@
 # 更新日志 / Changelog — SexSlaveCraft（TieJin 接续版 / TieJin continuation）
 
+## [2.4.9] — 2026-11-02 — 未发布 / Unreleased — 发烟器与PNA阶段维持
+
+以v2.4.8为起点，至`169cf99a`的29个非合并提交、123个变更路径归入本版。见[双语说明](Docs/Releases/2.4.9/2.4.9发布说明.md)、[逐提交与路径](Docs/Releases/2.4.9/2.4.9开发归并核对.md)、[验证边界](Docs/Releases/2.4.9/2.4.9版本验证.md)。新增仅1.7，1.6／Common冻结2.4.1。
+
+- **三档发烟器：** 无电固定半径香炉、耗电耗菇工业雾化器、仅耗电太空发烟器；研究、直接开关／滑条、同房间与范围、最终RJW药效、四语及三张专用图已完成验收。烟雾铺满、随机错峰与淡出已调整，扫描优化暂缓。
+- **个人PNA阶段维持：** 当前锁链保存关闭＋五档；地图普通工作前补原液且不抢任务；旅队复用原版服药节拍、自有／共享含驮畜库存、原政策先行与夜休暂停，地图及旅队实机均已验收。
+- **美术与维护：** 受孕花苞专用图标、2.4.8简介重写、发布归档、规划与完成记录归属；不改变已有受孕技能机制。
+- **验证与状态：** 原生发烟器20／20、阶段维持19／19及更早PnaLoad582／582分别保留执行时点；runner52套尚无本版整仓All结果，不从历史6429推算。VERSION登记2.4.9，About／源码属性／开发DLL元数据仍2.4.8，本轮不重编、同步、打包或发布。
+
+All post-v2.4.8 work through `169cf99a` is grouped into **2.4.9, unreleased**: three tiers of room/radius emitters with dedicated art and final loaded RJW effects; Chain-owned personal PNA maintenance on maps and caravans; a dedicated Conception icon; and documentation/testing maintenance. Scoped maintainer acceptance is closed. The 52-suite runner has no new complete release-gate result. VERSION is 2.4.9; runtime metadata remains 2.4.8 pending a separate release workflow.
+
 本项目基于原模组 7 月停更时的 **2.2.8** 版本继续维护，沿用原有版本号。更新按版本从新到旧排列，技术细节见 [开发更新记录](Docs/Development/开发更新记录.md)。
 
 This continuation builds on upstream **2.2.8**, the baseline when upstream development stopped in July, and retains its version numbering. Entries are listed newest first. Technical details are in the [development log (Chinese)](Docs/Development/开发更新记录.md).
