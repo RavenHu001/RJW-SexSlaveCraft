@@ -1,5 +1,9 @@
 # 测试说明索引
 
+2026-11-02：[第二步提交前复查](../Docs/Development/Verification/堕落凝胶第二步代价与催熟实现与验证.md#7-提交前核对与复查)加强原30项：真实缓存初始化／存在断言、伴侣关联、身份同步与地图补丁安装。旧第二步候选在可缓存配置下器官移除仍为×0.90，29／30；补Add／Remove健康协调后30／30，同一修订候选推进56／56通过。未新增用例或跑整仓All。
+
+2026-11-02：[堕落凝胶第二步](../Docs/Development/Verification/堕落凝胶第二步代价与催熟实现与验证.md)新增默认Core13项，原17＋新13＝30／30通过；另既有OrgasmProgressNative56／56通过，未新增套件或Special登记。候选及宿主零警告／零错误；未跑完整原生宿主或整仓All，历史通过数不冒充本次门禁。
+
 2026-11-02：[堕落凝胶提交后复查](../Docs/Development/Verification/堕落凝胶第一步生产与开关实现与验证.md#5-分支提交后的核对与复查)新增2项真实物品创建回调回归，旧候选15／17（两项复现失败），修订候选17／17通过。仍属UterusDevelopmentNative默认Core及 `--corruption-gel` 分区，未跑完整宿主／整仓All。
 
 2026-11-02：[堕落凝胶第一步](../Docs/Development/Verification/堕落凝胶第一步生产与开关实现与验证.md)新增UterusDevelopmentNative默认Core15项，独立 `--corruption-gel` 全部通过；完整入口已登记调用，未执行完整宿主／整仓All，不据历史总数推算本轮门禁。候选与宿主零警告零错误，未替换正式DLL或同步。

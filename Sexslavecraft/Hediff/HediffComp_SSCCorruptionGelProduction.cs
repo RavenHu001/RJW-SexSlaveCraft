@@ -12,25 +12,72 @@ namespace SexSlaveCraft
         public ThingDef product;
         public float progressPerDay = 0.5f;
         public float stageOne = 1f, stageTwo = 1.25f, stageThree = 1.5f, stageFour = 2f;
+        public float decayMultiplier = 2f;
+        public double sceneBoost = 0.10d;
         public HediffCompProperties_SSCCorruptionGelProduction() { compClass = typeof(HediffComp_SSCCorruptionGelProduction); }
     }
 
     /// <summary>载体Severity恒为1，不承担库存；重复授予保留原组件选择与进度。</summary>
     public sealed class Hediff_SSCCorruptionGelProduction : HediffWithComps
     {
+        private static readonly HediffStage NeutralStage = new HediffStage();
+        /// <summary>只有当前身体唯一载体正在积累时提供工作代价；库存、选择仍只保存在Comp。</summary>
+        public override HediffStage CurStage => this.TryGetComp<HediffComp_SSCCorruptionGelProduction>()?.IsProducing == true
+            ? base.CurStage : NeutralStage;
         public override bool TryMergeWith(Hediff other) => other?.def == def;
+        public override void PostAdd(DamageInfo? dinfo) { base.PostAdd(dinfo); SSCCorruptionGelProductionUtility.NotifyEffectsChanged(pawn); }
+        public override void PostRemoved() { base.PostRemoved(); SSCCorruptionGelProductionUtility.NotifyEffectsChanged(pawn); }
     }
 
     /// <summary>开关与批次进度唯一保存源；无位置、关闭或失格时不追补，不提前扣除待交付批次。</summary>
-    public sealed class HediffComp_SSCCorruptionGelProduction : HediffComp
+    public sealed class HediffComp_SSCCorruptionGelProduction : HediffComp, ICorruptionModifierSource
     {
         private bool productionEnabled;
         private double batchProgress;
         private int retryTicks;
         private bool delivering;
+        private bool? observedProducing;
         public HediffCompProperties_SSCCorruptionGelProduction Props => (HediffCompProperties_SSCCorruptionGelProduction)props;
         public bool ProductionEnabled => productionEnabled;
         public double BatchProgress => batchProgress;
+
+        /// <summary>当前身体与位置的共同准入；已完成批次交付不重新要求正生产速率。</summary>
+        private bool HasProductionContext => Scribe.mode == LoadSaveMode.Inactive && productionEnabled &&
+            ReferenceEquals(SSCCorruptionGelProductionUtility.Find(Pawn), this) &&
+            SSCCorruptionGelProductionUtility.ActivationFailure(Pawn) == null && HasDeliveryLocation();
+        /// <summary>事件准入允许满批次认领但不给库存；积累和代价另校验合法正速率。</summary>
+        internal bool CanReceiveSceneBoost
+        {
+            get
+            {
+                if (!HasProductionContext) return false;
+                double rate = Props.progressPerDay * (double)RateMultiplier;
+                return double.IsFinite(rate) && rate > 0d;
+            }
+        }
+        public bool IsProducing => batchProgress < 1d && CanReceiveSceneBoost;
+        public float GetDecayMultiplier() => IsProducing && float.IsFinite(Props.decayMultiplier) && Props.decayMultiplier > 0f
+            ? Props.decayMultiplier : 1f;
+        public float GetMinCorruption() => 0f;
+
+        /// <summary>派生缓存仅在状态转换或明确生命周期通知时清理，不保存第二份有效选择。</summary>
+        internal void RefreshEffects(bool force = false)
+        {
+            bool active = IsProducing;
+            if (force || observedProducing != active)
+            {
+                observedProducing = active;
+                SSCCorruptionGelProductionUtility.ClearWorkSpeedCache(Pawn);
+            }
+        }
+
+        /// <summary>只能由已认领的真实场次调用；不提前交付、不改Severity、不保留超过整批的余量。</summary>
+        internal void ApplySceneBoost()
+        {
+            if (!CanReceiveSceneBoost || !double.IsFinite(Props.sceneBoost) || Props.sceneBoost <= 0d) return;
+            batchProgress = Math.Min(1d, batchProgress + Props.sceneBoost);
+            RefreshEffects();
+        }
 
         /// <summary>阶段取当前锁链；0档同基础，不借用调教收益倍率或历史特质。</summary>
         public float RateMultiplier => SSCIdentityUtility.GetSexSlaveStage(Pawn) switch
@@ -38,7 +85,7 @@ namespace SexSlaveCraft
             1 => Props.stageOne, 2 => Props.stageTwo, 3 => Props.stageThree, 4 => Props.stageFour, _ => 1f
         };
 
-        internal void SetProductionEnabled(bool enabled) { productionEnabled = enabled; retryTicks = 0; }
+        internal void SetProductionEnabled(bool enabled) { productionEnabled = enabled; retryTicks = 0; RefreshEffects(true); }
 
         /// <summary>保存原组件选择与归一化库存；不持久化绝对世界时间，读档不补领离线生产。</summary>
         public override void CompExposeData()
@@ -47,21 +94,24 @@ namespace SexSlaveCraft
             Scribe_Values.Look(ref productionEnabled, "sscCorruptionGelProductionEnabled", false);
             Scribe_Values.Look(ref batchProgress, "sscCorruptionGelBatchProgress", 0d);
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
+            {
                 batchProgress = double.IsFinite(batchProgress) ? Math.Clamp(batchProgress, 0d, 1d) : 0d;
+                observedProducing = null;
+            }
         }
 
         /// <summary>只消费原生间隔delta；每次实际推进前复查原owner、身体与位置，满批次停止积累。</summary>
         public override void CompPostTickInterval(ref float severityAdjustment, int delta)
         {
-            if (delta <= 0 || delivering || Scribe.mode != LoadSaveMode.Inactive || !productionEnabled ||
-                !ReferenceEquals(SSCCorruptionGelProductionUtility.Find(Pawn), this) ||
-                SSCCorruptionGelProductionUtility.ActivationFailure(Pawn) != null || !HasDeliveryLocation()) return;
+            RefreshEffects();
+            if (delta <= 0 || delivering || !HasProductionContext) return;
             if (batchProgress < 1d)
             {
                 double rate = Props.progressPerDay * (double)RateMultiplier;
                 if (!double.IsFinite(rate) || rate <= 0d) return;
                 batchProgress = Math.Min(1d, batchProgress + rate * delta / 60000d);
             }
+            RefreshEffects();
             if (batchProgress < 1d) return;
             retryTicks -= delta;
             if (retryTicks > 0) return;
@@ -72,7 +122,7 @@ namespace SexSlaveCraft
                 // 交付成功即记账，即使库存通知改变资格也不能保留这一批再次领取。
                 if (TryDeliverProduct()) batchProgress = 0d;
             }
-            finally { delivering = false; }
+            finally { delivering = false; RefreshEffects(); }
         }
 
         private bool HasDeliveryLocation() => Pawn.Spawned && Pawn.Map != null || Pawn.GetCaravan() != null;

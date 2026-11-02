@@ -22,6 +22,11 @@ internal static partial class Program
         try { System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(SSCDefOf).TypeHandle); }
         finally { bootstrap = false; }
         errors.Clear();
+        // 工作属性只保留本批需要的原版基础值；照明／年龄等无关StatPart不参与凝胶代价验证。
+        if (DefDatabase<StatDef>.GetNamedSilentFail("WorkSpeedGlobal") == null)
+            DefDatabase<StatDef>.Add(new StatDef { defName = "WorkSpeedGlobal", defaultBaseValue = 1f });
+        if (human.race.lifeStageAges.Count == 0)
+            human.race.lifeStageAges.Add(new LifeStageAge { minAge = 0, def = new LifeStageDef { defName = "GelAdult", developmentalStage = DevelopmentalStage.Adult } });
         // 真正的RJW器官分类判断；身体结构位置由最小身体夹具提供。
         gelExperience = new HediffDef { defName = "SSC_Exp_Anus", hediffClass = typeof(Hediff), initialSeverity = 1, maxSeverity = 1 };
         gelOrgan = new rjw.HediffDef_SexPart { defName = "GelFixtureAnus", hediffClass = typeof(Hediff), initialSeverity = 1, genitalFamily = rjw.GenitalFamily.Anus };
@@ -206,6 +211,7 @@ internal static partial class Program
             harmony.Unpatch(notify, AccessTools.Method(typeof(Program), nameof(Skip)));
             harmony.Unpatch(reservations, AccessTools.Method(typeof(Program), nameof(Skip)));
             harmony.Unpatch(AccessTools.Method(typeof(CaravanInventoryUtility), nameof(CaravanInventoryUtility.FindPawnToMoveInventoryTo)), AccessTools.Method(typeof(Program), nameof(GelReceiverBoundary)));
+            GelSecondStepTests(repo, harmony);
         }
         finally
         {
@@ -221,6 +227,8 @@ internal static partial class Program
     private static Pawn GelPawn(bool producer = true)
     {
         var pawn = NewPawn(); gelPawns.Add(pawn); AttachToggleTraining(pawn).pawnIdentity = PawnIdentity.Slave;
+        pawn.ageTracker = new Pawn_AgeTracker(pawn);
+        AccessTools.Field(typeof(Pawn_AgeTracker), "cachedLifeStageIndex").SetValue(pawn.ageTracker, 0);
         pawn.health.AddHediff(gelOrgan, human.race.body.corePart);
         pawn.health.AddHediff(gelExperience, human.race.body.corePart).Severity = 1;
         if (producer) SSCCorruptionGelProductionUtility.EnsureProducer(pawn);

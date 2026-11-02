@@ -14,6 +14,21 @@ namespace SexSlaveCraft
         public const string ProducerDefName = "SSC_Hediff_CorruptionGelProduction";
         public static bool IsBodyStateDef(HediffDef def) => def?.defName == ProducerDefName;
 
+        /// <summary>健康DirtyCache不清StatWorker临时缓存；精确失效本项工作属性，不刷新所有角色。</summary>
+        internal static void ClearWorkSpeedCache(Pawn pawn)
+        {
+            if (pawn != null) DefDatabase<StatDef>.GetNamedSilentFail("WorkSpeedGlobal")?.Worker.ClearCacheForThing(pawn);
+        }
+
+        /// <summary>生命周期可能在移除后已找不到载体；仍清理原身体的工作属性缓存。</summary>
+        internal static void NotifyEffectsChanged(Pawn pawn)
+        {
+            if (Scribe.mode != LoadSaveMode.Inactive || pawn == null) return;
+            var owner = Find(pawn);
+            if (owner != null) owner.RefreshEffects(true);
+            else ClearWorkSpeedCache(pawn);
+        }
+
         public static HediffComp_SSCCorruptionGelProduction Find(Pawn pawn)
         {
             if (pawn?.health?.hediffSet == null) return null;
