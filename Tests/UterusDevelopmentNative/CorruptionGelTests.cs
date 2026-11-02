@@ -151,6 +151,33 @@ internal static partial class Program
                 var caravan = new Caravan(); Require(caravan.pawns.TryAdd(pawn)); gelReceiver = null;
                 GelToggle(pawn, true); GelTick(GelComp(pawn), 120000); Near(1, (float)GelComp(pawn).BatchProgress);
             });
+            // 真正创建物品后再改变生产选择/owner，复现回调使既有准入凭据过期的场景。
+            var maker = AccessTools.Method(typeof(ThingMaker), nameof(ThingMaker.MakeThing));
+            harmony.Patch(maker, postfix: new HarmonyMethod(typeof(Program), nameof(GelMadeBoundary)));
+            try
+            {
+                Check("gel item creation callback disabling production cancels pending delivery", () =>
+                {
+                    var pawn = GelCaravanPawn(); var comp = GelComp(pawn); GelToggle(pawn, true);
+                    gelMadeCallbacks = 0; gelOnMake = () => GelToggle(pawn, false);
+                    GelTick(comp, 120000);
+                    Equal(1, gelMadeCallbacks); Equal(0, pawn.inventory.innerContainer.Count);
+                    Require(!comp.ProductionEnabled); Near(1, (float)comp.BatchProgress);
+                    GelToggle(pawn, true); GelTick(comp, 60);
+                    Equal(1, pawn.inventory.innerContainer.Sum(t => t.stackCount)); Near(0, (float)comp.BatchProgress);
+                });
+                Check("gel item creation callback replacing owner cannot deliver old inventory", () =>
+                {
+                    var pawn = GelCaravanPawn(); var original = GelComp(pawn); GelToggle(pawn, true);
+                    gelMadeCallbacks = 0;
+                    gelOnMake = () => { pawn.health.RemoveHediff(original.parent); SSCCorruptionGelProductionUtility.EnsureProducer(pawn); };
+                    GelTick(original, 120000);
+                    Equal(1, gelMadeCallbacks); Equal(0, pawn.inventory.innerContainer.Count);
+                    Require(!ReferenceEquals(original, GelComp(pawn)) && !GelComp(pawn).ProductionEnabled);
+                    Near(0, (float)GelComp(pawn).BatchProgress);
+                });
+            }
+            finally { gelOnMake = null; harmony.Unpatch(maker, AccessTools.Method(typeof(Program), nameof(GelMadeBoundary))); }
             Check("gel map worker preserves failed batch, cleans temporary item and pays only after success", () =>
             {
                 var pawn = GelPawn(); gelMapPawn = pawn; gelMap = Bare<Map>();
@@ -218,4 +245,18 @@ internal static partial class Program
     private static Thing gelPlacedItem;
     private static bool GelPlaceBoundary(Thing thing, ref bool __result)
     { gelPlacedItem = thing; __result = gelAccept; return false; }
+    private static Action gelOnMake;
+    private static int gelMadeCallbacks;
+    private static void GelMadeBoundary(ThingDef def)
+    {
+        if (def.defName != "SSC_CorruptionGel" || gelOnMake == null) return;
+        Action callback = gelOnMake; gelOnMake = null; gelMadeCallbacks++; callback();
+    }
+    private static Pawn GelCaravanPawn()
+    {
+        var pawn = GelPawn(); pawn.inventory = new Pawn_InventoryTracker(pawn);
+        AccessTools.Field(typeof(Thing), "mapIndexOrState").SetValue(pawn, (sbyte)-1);
+        var caravan = new Caravan(); Require(caravan.pawns.TryAdd(pawn)); gelReceiver = pawn;
+        return pawn;
+    }
 }

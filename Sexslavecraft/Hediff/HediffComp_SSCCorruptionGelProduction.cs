@@ -81,15 +81,21 @@ namespace SexSlaveCraft
         private bool TryDeliverProduct()
         {
             if (Props.product == null) return false;
+            Pawn producer = Pawn;
+            Pawn_HealthTracker health = producer.health;
             Thing item = ThingMaker.MakeThing(Props.product);
             bool accepted = false;
             try
             {
-                if (Pawn.Spawned && Pawn.Map != null)
-                    accepted = GenPlace.TryPlaceThing(item, Pawn.Position, Pawn.Map, ThingPlaceMode.Near);
+                // MakeThing/PostMake可触发外部回调；物品尚未交付时必须仍持有原身体owner及有效选择。
+                if (!ReferenceEquals(Pawn, producer) || !ReferenceEquals(producer.health, health) || !productionEnabled ||
+                    !ReferenceEquals(SSCCorruptionGelProductionUtility.Find(producer), this) ||
+                    SSCCorruptionGelProductionUtility.ActivationFailure(producer) != null) return false;
+                if (producer.Spawned && producer.Map != null)
+                    accepted = GenPlace.TryPlaceThing(item, producer.Position, producer.Map, ThingPlaceMode.Near);
                 else
                 {
-                    Caravan caravan = Pawn.GetCaravan();
+                    Caravan caravan = producer.GetCaravan();
                     if (caravan != null)
                     {
                         Pawn receiver = CaravanInventoryUtility.FindPawnToMoveInventoryTo(item, caravan.PawnsListForReading, null);

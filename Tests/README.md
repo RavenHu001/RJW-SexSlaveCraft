@@ -1,5 +1,7 @@
 # 测试说明索引
 
+2026-11-02：[堕落凝胶提交后复查](../Docs/Development/Verification/堕落凝胶第一步生产与开关实现与验证.md#5-分支提交后的核对与复查)新增2项真实物品创建回调回归，旧候选15／17（两项复现失败），修订候选17／17通过。仍属UterusDevelopmentNative默认Core及 `--corruption-gel` 分区，未跑完整宿主／整仓All。
+
 2026-11-02：[堕落凝胶第一步](../Docs/Development/Verification/堕落凝胶第一步生产与开关实现与验证.md)新增UterusDevelopmentNative默认Core15项，独立 `--corruption-gel` 全部通过；完整入口已登记调用，未执行完整宿主／整仓All，不据历史总数推算本轮门禁。候选与宿主零警告零错误，未替换正式DLL或同步。
 
 2026-11-02：开发内容登记为 **2.4.9（未发布）**。runner／profile现登记52套；新增发烟器原生专项20项及PNA维持原生专项19项均为Core，分批结果见[验证边界](../Docs/Releases/2.4.9/2.4.9版本验证.md)。本次仅文档、链接／锚点与差异检查，不重跑机制测试，不将2.4.8的All50套／6429项或各轮专项合并为新门禁。
