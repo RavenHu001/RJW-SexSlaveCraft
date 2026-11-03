@@ -3,7 +3,7 @@
   <!-- 1.7第三步：原生单份服用、非成瘾药品；专用美术暂用既有人格凝胶图。 -->
   <ThingDef ParentName="ResourceBase">
     <defName>SSC_CorruptionGel</defName><label>depravity gel</label>
-    <description>A gel carrying fragments of experience rather than a complete personality. Ingesting it induces a lingering euphoria and slight distraction. Another dose refreshes the duration without strengthening the effect. SSC masters are immune.</description>
+    <description>A gel carrying fragments of experience rather than a complete personality. Ingesting it induces a lingering euphoria and slight distraction. Another dose refreshes the duration without strengthening the effect. SSC masters are immune. While the effect is active, each confirmed orgasm adds 2 percentage points of corruption, up to 10 additional points per encounter, subject to the current stage limit.</description>
     <graphicData><texPath>Things/Item/PersonalitySlime</texPath><graphicClass>Graphic_Single</graphicClass><color>(0.75, 0.4, 0.8)</color></graphicData>
     <stackLimit>75</stackLimit><healthAffectsPrice>false</healthAffectsPrice><tradeability>Sellable</tradeability>
     <statBases><MarketValue>125</MarketValue><Mass>0.05</Mass><Flammability>0.2</Flammability><DeteriorationRate>2</DeteriorationRate></statBases>

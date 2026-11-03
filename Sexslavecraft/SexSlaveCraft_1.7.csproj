@@ -191,6 +191,7 @@
     <Compile Include="common/SSCCorruptionGelProductionUtility.cs" />
     <Compile Include="common/SSCCorruptionGelProductionToggleBackend.cs" />
     <Compile Include="common/SSCCorruptionGelSceneRuntime.cs" />
+    <Compile Include="common/SSCCorruptionGelConsumptionUtility.cs" />
     <Compile Include="Hediff/Hediff_SSCCorruptionGelEffect.cs" />
     <Compile Include="common/SSCCorruptionGelEffectUtility.cs" />
     <Compile Include="common/IngestionOutcomeDoer_SSCCorruptionGel.cs" />

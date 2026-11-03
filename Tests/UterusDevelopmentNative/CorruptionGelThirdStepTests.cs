@@ -214,6 +214,7 @@ internal static partial class Program
                 AccessTools.Method(typeof(RabbitCloneUtility), "CopySscHediffsFromSource").Invoke(null, new object[] { source, clone });
                 Require(ReferenceEquals(own, SSCCorruptionGelEffectUtility.Find(clone))); Equal(4321, own.Timer.ticksToDisappear);
             });
+            GelFourthStepTests(repo, harmony);
         }
         finally
         {

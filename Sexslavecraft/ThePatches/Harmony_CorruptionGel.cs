@@ -31,6 +31,8 @@ namespace SexSlaveCraft
     [HarmonyPatch(typeof(JobDriver_Sex), nameof(JobDriver_Sex.ExposeData))]
     internal static class SSCCorruptionGelSceneSavePatch
     {
+        [HarmonyPrefix, HarmonyPriority(Priority.First)]
+        internal static void Prefix(JobDriver_Sex __instance) => SSCCorruptionGelSceneRuntime.RestoreJobBinding(__instance);
         [HarmonyPostfix] internal static void Postfix(JobDriver_Sex __instance) => SSCCorruptionGelSceneRuntime.Expose(__instance);
     }
 
