@@ -17,10 +17,16 @@ internal static partial class Program
 
     private static void CorruptionGelTests(string repo, Harmony harmony)
     {
+        // 与既有独立分区一致：只预热宿主未加载的其他系统DefOf，实际凝胶XML错误仍在下方检查。
+        bootstrap = true;
+        try { System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(SSCDefOf).TypeHandle); }
+        finally { bootstrap = false; }
+        errors.Clear();
         // 分区会注册Mood/Corruption需求；结束后还原原宿主的最小需求集合，不能改变后续夹具。
         var originalNeedDefs = DefDatabase<NeedDef>.AllDefsListForReading.ToArray();
         var originalChainDef = SSCDefOf.ChainOfSexSlave;
-        var registeredChainDef = DefDatabase<HediffDef>.GetNamedSilentFail(originalChainDef.defName) ?? originalChainDef;
+        var registeredChainDef = DefDatabase<HediffDef>.GetNamedSilentFail(originalChainDef?.defName ?? "Hediff_ChainOfSexSlave") ?? originalChainDef
+            ?? AddGelDef(new HediffDef { defName = "Hediff_ChainOfSexSlave", hediffClass = typeof(Hediff_ChainOfSexSlave), maxSeverity = 1 });
         var originalChainStages = registeredChainDef.stages;
         // DefOf和数据库必须是同一载体；旧分区曾替换DefOf，真实阶段上限查询仍从数据库取定义。
         SSCDefOf.ChainOfSexSlave = registeredChainDef;
@@ -29,11 +35,6 @@ internal static partial class Program
             .Root.Elements("HediffDef").Single(e => (string)e.Element("defName") == "Hediff_ChainOfSexSlave")
             .Element("stages").Elements("li").Select(e => new HediffStage
                 { label = (string)e.Element("label"), minSeverity = (float)e.Element("minSeverity") }).ToList();
-        // 与既有独立分区一致：只预热宿主未加载的其他系统DefOf，实际凝胶XML错误仍在下方检查。
-        bootstrap = true;
-        try { System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(SSCDefOf).TypeHandle); }
-        finally { bootstrap = false; }
-        errors.Clear();
         // 工作属性只保留本批需要的原版基础值；照明／年龄等无关StatPart不参与凝胶代价验证。
         if (DefDatabase<StatDef>.GetNamedSilentFail("WorkSpeedGlobal") == null)
             DefDatabase<StatDef>.Add(new StatDef { defName = "WorkSpeedGlobal", defaultBaseValue = 1f });

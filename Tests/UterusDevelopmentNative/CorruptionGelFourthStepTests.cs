@@ -205,7 +205,10 @@ internal static partial class Program
             });
             Check("gel invalid current-format allowance closes consumption but retains independent production", () =>
             {
-                var d = GelDriver(); d.Orgasm(); var p = d.pawn; var need = GelUseNeed(p); GelDose(p);
+                var d = GelDriver(); var p = d.pawn;
+                // 用真实但未启用生产的事件建立有效账本，不依赖原版立即返回的空询问创建状态。
+                GelToggle(p, false); GelFire(d); GelToggle(p, true);
+                var need = GelUseNeed(p); GelDose(p);
                 string path = GelSave(d); Edit(path, xml => xml.Descendants("granted").Single().Remove());
                 var restored = GelLoad(path, p); GelFire(restored); Near(0, need.CurLevel); Near(.1f, (float)GelComp(p).BatchProgress);
                 path = GelSave(restored); Edit(path, xml => xml.Descendants("version").Single().Value = "99");

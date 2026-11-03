@@ -131,6 +131,12 @@ namespace SexSlaveCraft
         internal static void End(JobDriver_Sex driver, Frame frame, Exception error)
         {
             if (frame == null || frame.Closed) return;
+            EndObserved(driver, frame, error);
+        }
+
+        /// <summary>仅真实观察帧进入带回调闭包的结算体，空调用不分配编译器生成的捕获对象。</summary>
+        private static void EndObserved(JobDriver_Sex driver, Frame frame, Exception error)
+        {
             frame.Closed = true;
             State state = frame.State;
             if (!states.TryGetValue(driver, out State current) || !ReferenceEquals(state, current)) return;
