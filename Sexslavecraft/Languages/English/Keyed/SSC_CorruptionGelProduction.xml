@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <SSC_CorruptionGel_Label>Depravity gel extraction</SSC_CorruptionGel_Label>
-  <SSC_CorruptionGel_Tip>Requires sex-slave identity and a present, fully developed anus. Active accumulation reduces work speed and accelerates natural depravity decay, respecting global decay settings. Costs stop without a delivery location or while a full batch awaits delivery. The first real orgasm while eligible in each encounter boosts progress; a full batch still consumes that encounter's opportunity. Disabling preserves progress.</SSC_CorruptionGel_Tip>
+  <SSC_CorruptionGel_Tip>Accumulation reduces work speed and speeds up natural depravity decay. Costs pause without a map or caravan, or while a full batch awaits delivery. The first eligible orgasm per encounter boosts progress; a full batch still uses the opportunity. Disabling preserves progress.</SSC_CorruptionGel_Tip>
   <SSC_CorruptionGel_Disabled>Disabled ({0})</SSC_CorruptionGel_Disabled>
   <SSC_CorruptionGel_Inactive>Paused: ineligible ({0})</SSC_CorruptionGel_Inactive>
   <SSC_CorruptionGel_Waiting>Awaiting delivery ({0})</SSC_CorruptionGel_Waiting>

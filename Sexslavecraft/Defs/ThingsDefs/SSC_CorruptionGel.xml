@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Defs>
-  <!-- 1.7第三步：原生单份服用、非成瘾药品；专用美术暂用既有人格凝胶图。 -->
+  <!-- 1.7：原生单份服用、非成瘾药品；使用独立玫紫凝胶重黑边贴图。 -->
   <ThingDef ParentName="ResourceBase">
     <defName>SSC_CorruptionGel</defName><label>depravity gel</label>
-    <description>A gel carrying fragments of experience rather than a complete personality. Ingesting it induces a lingering euphoria and slight distraction. Another dose refreshes the duration without strengthening the effect. SSC masters are immune. While the effect is active, each confirmed orgasm adds 2 percentage points of corruption, up to 10 additional points per encounter, subject to the current stage limit.</description>
-    <graphicData><texPath>Things/Item/PersonalitySlime</texPath><graphicClass>Graphic_Single</graphicClass><color>(0.75, 0.4, 0.8)</color></graphicData>
+    <description>A gel that preserves fragments of pleasure, inducing euphoria when taken.
+Effects: greatly improves mood and slightly reduces work speed. Each real orgasm adds 2 percentage points of corruption, up to 10 extra points from gel per encounter, within the stage limit. Another dose refreshes duration. SSC masters are immune.</description>
+    <graphicData><texPath>Things/Item/SSC_CorruptionGel</texPath><graphicClass>Graphic_Single</graphicClass><color>(1, 1, 1)</color></graphicData>
     <stackLimit>75</stackLimit><healthAffectsPrice>false</healthAffectsPrice><tradeability>Sellable</tradeability>
     <statBases><MarketValue>125</MarketValue><Mass>0.05</Mass><Flammability>0.2</Flammability><DeteriorationRate>2</DeteriorationRate></statBases>
     <thingCategories><li>Drugs</li></thingCategories>
