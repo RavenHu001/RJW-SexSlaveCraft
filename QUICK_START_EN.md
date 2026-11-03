@@ -1,8 +1,8 @@
 # RJW-SexSlaveCraft Quick Start Guide
 
-[2.4.9: emitters and PNA maintenance (development, unreleased)](#ssc-249)
+[2.4.9: emitters and PNA maintenance ](#ssc-249)
 
-**Current guide: SSC 2.4.9, registered 2026-11-02, unreleased.** New work targets 1.7; 1.6/Common remain at 2.4.1. Public downloads remain v2.4.8 and exclude these additions. VERSION is 2.4.9; About/source attributes and the development binary still carry 2.4.8 metadata. This update is documentation only. See [development scope](Docs/Releases/2.4.9/2.4.9发布说明.md#english) and [validation boundaries](Docs/Releases/2.4.9/2.4.9版本验证.md). Older section versions identify their original scope.
+**Version 2.4.9 — 2026-11-02, release preparation.** Depravity Gel, three emitter tiers, map/caravan PNA maintenance and a Conception icon. [2.4.9 download](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.9). New work targets 1.7; 1.6/Common remain at 2.4.1. About/source attributes and rebuilt runtime are aligned for release; scoped acceptance, the full gate and upload receipts are recorded separately.
 
 [2.4.8: Broodmother, imprints and management](#ssc-248)
 
@@ -755,7 +755,7 @@ Scoped feature, localization, Beauty and color acceptance is recorded separately
 
 
 <a id="ssc-249"></a>
-## 27. 2.4.9 emitters and PNA maintenance (1.7, unreleased)
+## 27. 2.4.9 emitters and PNA maintenance (1.7)
 
 ### Choose an emitter for your technology level
 
@@ -778,7 +778,7 @@ Find **PNA maintenance stage** in an eligible bound slave's Training tab, change
 - Reaching the target stops replenishment. Stage 1 replenishes after activation disappears. One dose can overshoot; missing supplies fall back to ordinary work, and concentrate is not substituted.
 - The setting belongs to the current Chain: save/load preserves it, removal/replacement loses it, and a new Chain starts Off. Turning it off neither disables vanilla drug policies nor stops PNA production.
 
-Conception now has a dedicated bud icon; ability eligibility and cooldown are unchanged. Devices/art, map/caravan maintenance and the icon have scoped in-game acceptance; a full release gate remains separate. See [full rules](PLAYER_GUIDE_EN.md#ssc-249) and [2.4.9 notes](Docs/Releases/2.4.9/2.4.9发布说明.md#english).
+Conception now has a dedicated bud icon; ability eligibility and cooldown are unchanged. Devices/art, map/caravan maintenance and the icon have scoped in-game acceptance; the actual formal gate and upload receipts are recorded separately. See [full rules](PLAYER_GUIDE_EN.md#ssc-249) and [2.4.9 notes](Docs/Releases/2.4.9/2.4.9发布说明.md#english).
 
 <a id="ssc-249-gel"></a>
 ### Depravity Gel (2.4.9 supplement)

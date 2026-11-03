@@ -1,6 +1,6 @@
 # 玩家阅读入口 / Player documentation
 
-**2.4.9 开发版（2026-11-02，未发布）**：堕落凝胶四步功能、三档催情发烟器、地图／旅队PNA阶段维持及受孕专用图标。v2.4.8后截至`2c97efd5`的38个非合并提交、211个变更路径统一归入本版；[双语说明](../Releases/2.4.9/2.4.9发布说明.md) → [归并核对](../Releases/2.4.9/2.4.9开发归并核对.md) → [验证边界](../Releases/2.4.9/2.4.9版本验证.md)。新增仅1.7，1.6／Common冻结2.4.1；公开下载仍为2.4.8。首次登记VERSION、本次补充文档并提交；About／源码属性／开发DLL元数据暂留2.4.8；不重编、同步或发布，不把分批验收写成新整仓门禁。下方带日期的历史文字保留原时点。
+**2.4.9 — 2026-11-02，正式发布准备。** 堕落凝胶、三档发烟器、地图／旅队PNA维持与受孕图标；[2.4.9下载入口](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.9)。新增仅1.7，1.6／Common冻结2.4.1。本次对齐About／源码属性及重编运行产物；分批验收、完整门禁与上传回执分别记录，不预记发布通过。下方带日期的登记与开发文字保留原时点。
 
 2026-10-31：**2.4.8已正式发布**，[下载](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.8)。完整All **50套／6429项全部通过**，资源2／2、发布编排56及文案隔离75项通过；532份冻结文件未改。源码标签`411e1ce8`，ZIP及SHA-256已上传并复核为最新稳定版；本轮没有启动新游戏或同步安装目录。原分批／登记状态与计数保留原时点。
 
@@ -12,7 +12,7 @@
 
 2.4.8先查[新增玩法](../../读我，玩法介绍.md#ssc-248)与[完整规则](../../机制详解.md#ssc-248)，本版包含这些新增，较早v2.4.7不含这些功能。2.4.7内容查[新增玩法](../../读我，玩法介绍.md#ssc-247)与[完整规则](../../机制详解.md#ssc-247)，该2.4.7版本包含其对应新增，较早2.4.6包不含这些功能。已发布2.4.6内容查[能力与浪漫控制入门](../../读我，玩法介绍.md#24-246-个人能力与浪漫控制仅-17未发布)与[完整规则](../../机制详解.md#27-246-个人能力与浪漫控制仅-17未发布)。继承的2.4.5内容查[身体开发入门](../../读我，玩法介绍.md#23-245-身体开发与维护调整仅-17未发布)与[完整规则](../../机制详解.md#26-245-身体开发与生育控制仅-17未发布)。此前已发布内容可直接查[文化与医美入门](../../读我，玩法介绍.md#22-244-文化与医美仅-17-开发版)，数值与条件查[完整规则](../../机制详解.md#25-244-文化仪式与医美仅-17-开发版)。
 
-2.4.9开发内容先读[发烟器／补给入门](../../读我，玩法介绍.md#ssc-249)，再按需查[完整规则](../../机制详解.md#ssc-249)与[验证边界](../Releases/2.4.9/2.4.9版本验证.md)。当前公开包仍为2.4.8，不能用旧下载验证新功能。
+2.4.9开发内容先读[发烟器／补给入门](../../读我，玩法介绍.md#ssc-249)，再按需查[完整规则](../../机制详解.md#ssc-249)与[验证边界](../Releases/2.4.9/2.4.9版本验证.md)。本版2.4.9包含这些新增，较早2.4.8包不含。
 
 ## 中文阅读顺序
 
@@ -26,8 +26,8 @@
 
 | 问题 | 入门 | 完整规则 |
 | --- | --- | --- |
-| 2.4.9堕落凝胶（未发布） | [入门](../../读我，玩法介绍.md#ssc-249-gel) | [规则](../../机制详解.md#ssc-249-gel) |
-| 2.4.9发烟器／地图与旅队阶段维持（未发布） | [入门](../../读我，玩法介绍.md#ssc-249) | [规则](../../机制详解.md#ssc-249) |
+| 2.4.9堕落凝胶 | [入门](../../读我，玩法介绍.md#ssc-249-gel) | [规则](../../机制详解.md#ssc-249-gel) |
+| 2.4.9发烟器／地图与旅队阶段维持 | [入门](../../读我，玩法介绍.md#ssc-249) | [规则](../../机制详解.md#ssc-249) |
 | 2.4.8孕母／印记／属性与便捷操作 | [入门](../../读我，玩法介绍.md#ssc-248) | [规则](../../机制详解.md#ssc-248) |
 | 2.4.7敏感度、PNA启停、UAP与修复 | [入门](../../读我，玩法介绍.md#ssc-247) | [规则](../../机制详解.md#ssc-247) |
 | 2.4.4 文化、演化点与医美 | [入门](../../读我，玩法介绍.md#22-244-文化与医美仅-17-开发版) | [规则／材料／恢复](../../机制详解.md#25-244-文化仪式与医美仅-17-开发版) |
@@ -43,7 +43,7 @@
 
 ## English reading order
 
-Development 2.4.9 also adds [Depravity Gel](../../QUICK_START_EN.md#ssc-249-gel), with [full rules](../../PLAYER_GUIDE_EN.md#ssc-249-gel), alongside [emitters and PNA maintenance](../../QUICK_START_EN.md#ssc-249), with [full rules](../../PLAYER_GUIDE_EN.md#ssc-249). It is unreleased; public v2.4.8 does not contain these additions.
+Development 2.4.9 also adds [Depravity Gel](../../QUICK_START_EN.md#ssc-249-gel), with [full rules](../../PLAYER_GUIDE_EN.md#ssc-249-gel), alongside [emitters and PNA maintenance](../../QUICK_START_EN.md#ssc-249), with [full rules](../../PLAYER_GUIDE_EN.md#ssc-249). These additions are included in 2.4.9 and were not in the earlier public v2.4.8 package.
 
 The released sections cover **2.4.8** and earlier features on 1.7; 1.6 remains at 2.4.1. Start with [2.4.8 additions](../../QUICK_START_EN.md#ssc-248) and [full rules](../../PLAYER_GUIDE_EN.md#ssc-248), which are new to 2.4.8 and were not in public v2.4.7. Earlier controls are in the [new controls](../../QUICK_START_EN.md#ssc-247) and [full rules](../../PLAYER_GUIDE_EN.md#ssc-247). Those earlier sensitivity/control features are included in v2.4.7 and were not in v2.4.6. For the earlier released features, see [ability/romance controls](../../QUICK_START_EN.md#24-246-personal-abilities-and-romance-controls-17-unreleased), the [full rules](../../PLAYER_GUIDE_EN.md#27-246-personal-abilities-and-romance-controls-17-unreleased) and the inherited [body-development guide](../../QUICK_START_EN.md#23-245-body-development-and-maintenance-17-unreleased). The public 2.4.6 package includes those earlier ability, romance and body-development features. For already released features, use the [2.4.4 scope](../Releases/2.4.4/2.4.4发布说明.md#english), [culture/cosmetics quick start](../../QUICK_START_EN.md#22-244-culture-and-cosmetic-reshaping-17-development-only) and [full rules](../../PLAYER_GUIDE_EN.md#25-244-culture-rituals-and-cosmetic-reshaping-17-development-only).
 
@@ -68,6 +68,6 @@ Use [Bond Overview](../../QUICK_START_EN.md#bond-overview-243-17-only) for portr
 
 ## 版本与资料用途 / Versions and document roles
 
-当前指南包含2.4.9开发内容及此前功能；2.4.9未发布，公开下载仍为2.4.8；历史标签资料保持各自版本，构建与发布准备见[2.4.9 验证边界](../Releases/2.4.9/2.4.9版本验证.md)。已交付、专项待验收与未来规划分别登记，测试计数保留实际执行日期。
+当前指南包含2.4.9及此前功能，下载入口为2.4.9；历史标签资料保持各自版本，构建与发布准备见[2.4.9 验证边界](../Releases/2.4.9/2.4.9版本验证.md)。已交付、专项待验收与未来规划分别登记，测试计数保留实际执行日期。
 
-These guides cover unreleased 2.4.9 additions, released 2.4.8 and the earlier 2.4.7/2.4.6 releases, including the earlier 2.4.5 milestone; the historical v2.4.4 package retains its original scope. Historical validation and maintainer acceptance retain their original scope; new build, release-gate and package results are recorded separately.
+These guides cover 2.4.9 additions, released 2.4.8 and the earlier 2.4.7/2.4.6 releases, including the earlier 2.4.5 milestone; the historical v2.4.4 package retains its original scope. Historical validation and maintainer acceptance retain their original scope; new build, release-gate and package results are recorded separately.

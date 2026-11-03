@@ -1,8 +1,8 @@
 # RJW-SexSlaveCraft Complete Player Guide
 
-[2.4.9: emitters and PNA maintenance (development, unreleased)](#ssc-249)
+[2.4.9: emitters and PNA maintenance ](#ssc-249)
 
-**Current guide: SSC 2.4.9, registered 2026-11-02, unreleased.** New work targets 1.7; 1.6/Common remain at 2.4.1. Public downloads remain v2.4.8 and exclude these additions. VERSION is 2.4.9; About/source attributes and the development binary still carry 2.4.8 metadata. This update is documentation only. See [development scope](Docs/Releases/2.4.9/2.4.9发布说明.md#english) and [validation boundaries](Docs/Releases/2.4.9/2.4.9版本验证.md). Older section versions identify their original scope.
+**Version 2.4.9 — 2026-11-02, release preparation.** Depravity Gel, three emitter tiers, map/caravan PNA maintenance and a Conception icon. [2.4.9 download](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.9). New work targets 1.7; 1.6/Common remain at 2.4.1. About/source attributes and rebuilt runtime are aligned for release; scoped acceptance, the full gate and upload receipts are recorded separately.
 
 [2.4.8: Broodmother, imprints and management](#ssc-248)
 
@@ -2066,7 +2066,7 @@ The whole Training work category is enabled, including personality tasks under t
 
 
 <a id="ssc-249"></a>
-## 30. 2.4.9 emitters and personal stage maintenance (1.7, unreleased)
+## 30. 2.4.9 emitters and personal stage maintenance (1.7)
 
 [Development notes](Docs/Releases/2.4.9/2.4.9发布说明.md#english) · [Commit audit](Docs/Releases/2.4.9/2.4.9开发归并核对.md) · [Validation](Docs/Releases/2.4.9/2.4.9版本验证.md)
 
@@ -2111,10 +2111,10 @@ Vanilla policy runs first; if still below target, take at most one extra ordinar
 
 ### Icon and validation
 
-Conception now uses a dedicated 128×128 bud PNG; ability eligibility, scenes and successful cooldown retain 2.4.8 rules. Emitter 20/20, maintenance 19/19 and the earlier PnaLoad 582/582 retain their actual execution dates. The map 12 are a subset of 19, not extra full-gate cases. The 52-suite runner has no new 2.4.9 All result. Scoped in-game acceptance does not establish every save/topology/mod combination or performance. Recording fields and complete harness boundaries are linked in the validation document.
+Conception now uses a dedicated 128×128 bud PNG; ability eligibility, scenes and successful cooldown retain 2.4.8 rules. Emitter 20/20, maintenance 19/19 and the earlier PnaLoad 582/582 retain their actual execution dates. The map 12 are a subset of 19, not extra full-gate cases. At registration, the 52-suite runner had no new 2.4.9 All result; formal results are recorded separately. Scoped in-game acceptance does not establish every save/topology/mod combination or performance. Recording fields and complete harness boundaries are linked in the validation document.
 
 <a id="ssc-249-gel"></a>
-## 31. 2.4.9 Depravity Gel: production and consumption (1.7, unreleased)
+## 31. 2.4.9 Depravity Gel: production and consumption (1.7)
 
 [Release scope](Docs/Releases/2.4.9/2.4.9发布说明.md#english) · [Completion record](Docs/Development/Completed/堕落凝胶四步开发完成核对.md) · [Ability contract](Docs/Development/Reference/个人能力开关接入规范.md)
 

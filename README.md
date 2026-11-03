@@ -1,6 +1,6 @@
 # RJW-SexSlaveCraft · TieJin Modify
 
-**2.4.9 开发版（2026-11-02，未发布）**：堕落凝胶四步功能、三档催情发烟器、地图／旅队PNA阶段维持及受孕专用图标。v2.4.8后截至`2c97efd5`的38个非合并提交、211个变更路径统一归入本版；[双语说明](Docs/Releases/2.4.9/2.4.9发布说明.md) → [归并核对](Docs/Releases/2.4.9/2.4.9开发归并核对.md) → [验证边界](Docs/Releases/2.4.9/2.4.9版本验证.md)。新增仅1.7，1.6／Common冻结2.4.1；公开下载仍为2.4.8。首次登记VERSION、本次补充文档并提交；About／源码属性／开发DLL元数据暂留2.4.8；不重编、同步或发布，不把分批验收写成新整仓门禁。下方带日期的历史文字保留原时点。
+**2.4.9 — 2026-11-02，正式发布准备。** 堕落凝胶、三档发烟器、地图／旅队PNA维持与受孕图标；[2.4.9下载入口](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.9)。新增仅1.7，1.6／Common冻结2.4.1。本次对齐About／源码属性及重编运行产物；分批验收、完整门禁与上传回执分别记录，不预记发布通过。下方带日期的登记与开发文字保留原时点。
 
 2026-10-31：**2.4.8已正式发布**，[下载](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.8)。完整All **50套／6429项全部通过**，资源2／2、发布编排56及文案隔离75项通过；532份冻结文件未改。源码标签`411e1ce8`，ZIP及SHA-256已上传并复核为最新稳定版；本轮没有启动新游戏或同步安装目录。原分批／登记状态与计数保留原时点。
 
@@ -10,9 +10,9 @@
 
 面向 RimWorld 的成人向 RimJobWorld（RJW）扩展，基于上游 **2.2.8** 继续维护，提供角色培养、主从绑定、七种特化、人格转移和身体改造。
 
-[2.4.9开发范围](Docs/Releases/2.4.9/2.4.9发布说明.md) · [正式下载2.4.8](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.8) · [双语模组简介](Docs/模组介绍.md) · [玩家阅读入口](Docs/Players/README.md) · [文档总索引](Docs/README.md) · [English](#english-overview)
+[2.4.9版本范围](Docs/Releases/2.4.9/2.4.9发布说明.md) · [正式下载2.4.9](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.9) · [双语模组简介](Docs/模组介绍.md) · [玩家阅读入口](Docs/Players/README.md) · [文档总索引](Docs/README.md) · [English](#english-overview)
 
-## 2.4.9 开发内容（仅1.7，未发布）
+## 2.4.9 新增内容（仅1.7）
 
 | 主题 | 范围与入口 |
 | --- | --- |
@@ -93,7 +93,7 @@
 | 契约仪式与阶段进阶 | 需要 Ideology（文化）DLC |
 | Royalty（可选） | 安装时调教研究需要蓝图；种子或原版独立蓝图可补齐，之后仍需研究 |
 
-正式游玩从 [v2.4.8 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.8) 下载 ZIP 与 SHA-256。退出游戏，移出旧文件夹后完整解压新文件夹，保留加载配置及两套版本目录。该下载的功能范围见[2.4.8发布说明](Docs/Releases/2.4.8/2.4.8发布说明.md)，历史说明与附件保留各自版本。
+正式游玩从 [v2.4.9 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.9) 下载 ZIP 与 SHA-256。退出游戏，移出旧文件夹后完整解压新文件夹，保留加载配置及两套版本目录。该下载的功能范围见[2.4.9发布说明](Docs/Releases/2.4.9/2.4.9发布说明.md)，历史说明与附件保留各自版本。
 
 宠物兔选择入口未开放，旧 RimTalk 对接暂停。受训目标须为 SSC 性奴身份，原版奴隶身份不能替代。
 
@@ -115,7 +115,7 @@
 
 ## English overview
 
-**Development version 2.4.9 (2026-11-02), unreleased.** Four-step Depravity Gel production/consumption, three emitter tiers, personal PNA maintenance on maps/caravans and a dedicated Conception icon. [Development scope](Docs/Releases/2.4.9/2.4.9发布说明.md#english) · [Validation boundaries](Docs/Releases/2.4.9/2.4.9版本验证.md). Public downloads remain v2.4.8; 1.6/Common stay at 2.4.1. Runtime metadata is still 2.4.8 and no new full release gate is claimed.
+**Version 2.4.9 — 2026-11-02, release preparation.** Depravity Gel, three emitter tiers, map/caravan PNA maintenance and a Conception icon. [2.4.9 download](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.9). New work targets 1.7; 1.6/Common remain at 2.4.1. About/source attributes and rebuilt runtime are aligned for release; scoped acceptance, the full gate and upload receipts are recorded separately. Four-step Depravity Gel production/consumption, three emitter tiers, personal PNA maintenance on maps/caravans and a dedicated Conception icon. [Development scope](Docs/Releases/2.4.9/2.4.9发布说明.md#english) · [Validation boundaries](Docs/Releases/2.4.9/2.4.9版本验证.md). Public downloads for this version use v2.4.9; 1.6/Common stay at 2.4.1. Runtime metadata is aligned to 2.4.9; actual full-gate and publication results are recorded separately.
 
 SexSlaveCraft is an adult RJW expansion for pawn development, bonds, seven specializations, personality transfer and body modification. **Current version: 2.4.8 (2026-10-31).** [Download v2.4.8](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.8). New work targets 1.7; the 1.6/Common baseline stays frozen at 2.4.1.
 

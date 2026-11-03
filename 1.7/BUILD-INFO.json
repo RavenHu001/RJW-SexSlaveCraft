@@ -2,12 +2,12 @@
   "schemaVersion": 1,
   "gameVersion": "1.7",
   "binaryOrigin": "rebuilt",
-  "sourceVersion": "2.4.8",
-  "modVersion": "2.4.8",
-  "sourceCommit": "bb7a50e367362caabdb15af910ce11099d06b673",
-  "sourceWorkingTreeDirty": false,
+  "sourceVersion": "2.4.9",
+  "modVersion": "2.4.9",
+  "sourceCommit": "ca3d899a25a3eed4e5e727671d846954bb79afc6",
+  "sourceWorkingTreeDirty": true,
   "assemblyPath": "1.7/Assemblies/Sexslavecraft.dll",
-  "sha256": "b47b25e8cf42e78fe434ccb6febe4025852a0734e114f693037985882dbc8f2c",
+  "sha256": "24f559ec128c220248835fd9c752316674f0dcf79f4c5ce8099aece4979f7741",
   "gameBuild": "1.7.4995 rev309",
   "gameAssemblyPath": "D:\\STEAM\\steamapps\\common\\RimWorld\\Assembly-CSharp.dll",
   "gameAssemblySha256": "56399b6144d9f1695f9c53d054dc82972f7ab35e68d1a19a7129f2f5860ccd21",
@@ -29,13 +29,5 @@
       "sha256": "c8ef7856b2be3cf24b345c9b5c2f197f68fcf92649635064fce7b3ccc8f77cb0"
     }
   ],
-  "gameRuntimeVerified": false,
-  "repositoryVersion": "2.4.9",
-  "deploymentKind": "local-test-candidate",
-  "candidatePath": "E:\\Games\\RimWorld\\modDevelopment\\RJW-SexSlaveCraft-TieJin-Modify\\.builds\\corruption-gel\\candidate\\Sexslavecraft.dll",
-  "validation": {
-    "corruptionGel": "67/67",
-    "orgasmProgress": "56/56"
-  },
-  "note": "Local test deployment from committed source. About/DLL retain their actual 2.4.8 metadata; repository 2.4.9 is unreleased. Repository official DLL and BUILD-INFO were not replaced."
+  "gameRuntimeVerified": false
 }
