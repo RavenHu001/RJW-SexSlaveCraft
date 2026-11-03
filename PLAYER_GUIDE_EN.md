@@ -2112,3 +2112,38 @@ Vanilla policy runs first; if still below target, take at most one extra ordinar
 ### Icon and validation
 
 Conception now uses a dedicated 128×128 bud PNG; ability eligibility, scenes and successful cooldown retain 2.4.8 rules. Emitter 20/20, maintenance 19/19 and the earlier PnaLoad 582/582 retain their actual execution dates. The map 12 are a subset of 19, not extra full-gate cases. The 52-suite runner has no new 2.4.9 All result. Scoped in-game acceptance does not establish every save/topology/mod combination or performance. Recording fields and complete harness boundaries are linked in the validation document.
+
+<a id="ssc-249-gel"></a>
+## 31. 2.4.9 Depravity Gel: production and consumption (1.7, unreleased)
+
+[Release scope](Docs/Releases/2.4.9/2.4.9发布说明.md#english) · [Completion record](Docs/Development/Completed/堕落凝胶四步开发完成核对.md) · [Ability contract](Docs/Development/Reference/个人能力开关接入规范.md)
+
+### Body production and batches
+
+Depravity Gel is ingestible and does not extract or implant personalities. Production requires SSC Slave identity, completed anal development and the corresponding present organ. It adds no actual-bond or current-Corruption minimum. The eighth general body ability defaults to Off. Its original production HediffComp alone saves the choice and double-precision batch, without a second personality bool or inventory copy.
+
+Base accumulation is 0.5 batches/day, one unit per batch; stage 0 uses×1 and the four Chain stages use×1/×1.25/×1.5/×2. Map/caravan locations support delivery. Off, ineligibility, Hollow state, personality mutation or missing location pauses accumulation without catch-up. Full batches wait; failed creation, placement or inventory delivery retains the batch for an interval retry, clearing only after success. Personality replacement does not copy the source's body choice/progress; inventory is not transferred through personality or cloning.
+
+### Accumulation costs and the first event
+
+Work speed×0.90 and natural Corruption decay×2 apply only while actually accumulating. Off, lost eligibility/location or a full batch stops costs. The existing decay entry preserves global disable/zero-rate, old-scoring and maintenance-floor behavior; stage regression is not guaranteed.
+
+The pawn's first eligible real orgasm per current RJW job adds 0.10 of a batch, clipped at 1 without another Chain-rate factor. With valid eligibility and location, a full batch still consumes that scene's claim instead of banking it for later. Ineligible events do not claim it. Acceleration changes only the batch; delivery still uses the production path.
+
+### Ingestion, duration and immunity
+
+One unit gives one layer for 60000 ticks (one game day), mood+20 and work speed×0.95. Redosing refreshes duration, without stacking. Ordinary humanlikes can receive it; SSC Masters are immune and becoming a Master clears this effect. The native duration/effect belongs to the body, without personality-extraction/processing or clone copying. Implantation preserves a destination body's own valid effect rather than copying the source state. No addiction, tolerance or overdose system is added.
+
+### Immediate rewards and scene bookkeeping
+
+Each actual event by the affected pawn adds two Corruption percentage points, up to ten extra gel points per scene. It uses an existing Need_Corruption, without requiring production, an actual Chain or an SSC training Comp, and never creates a missing need. Modern scoring retains the 12% unbound cap and current Chain-stage cap; old scoring uses its current MaxLevel. Hitting the cap stops gains without lowering existing values or binding/advancing stages. Other interaction/Training gains are independent.
+
+Task-side format 2 separately saves production claims, consumed reward totals and closed state. Budgets are not stored in the effect or personality. Redosing, timer resets, changing the driver on the same Job and loading do not refresh them; a new task starts a new scene. Loading restores associations without awards. Late callbacks, context replacement and reentry cannot collect twice. Format 1 production claims migrate, with invalid/unknown records handled safely as documented.
+
+Only connected real RJW orgasm paths apply; vanilla Lovin, future idle stimulation and independent external timers are not inferred as orgasms. Production claims and consumption gains are independent and do not replace sensitivity/progress or other existing rewards.
+
+### Acceptance and remaining scope
+
+The four steps, dedicated 256×256 item art and concise four-language text have scoped acceptance. The accepted development binary previously passed gel 67/67 and existing progress 56/56; this is neither a full body-host run nor an All gate. The runner remains 52 suites. This registration does not rebuild, rerun mechanisms or rewrite BUILD-INFO.
+
+Values are accepted development settings open to later economic balance. Trader supply/recipes, source-fragment data, derivative items/equipment/buildings and unconnected external events are outside this four-step delivery.

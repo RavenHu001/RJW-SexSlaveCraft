@@ -779,3 +779,15 @@ Find **PNA maintenance stage** in an eligible bound slave's Training tab, change
 - The setting belongs to the current Chain: save/load preserves it, removal/replacement loses it, and a new Chain starts Off. Turning it off neither disables vanilla drug policies nor stops PNA production.
 
 Conception now has a dedicated bud icon; ability eligibility and cooldown are unchanged. Devices/art, map/caravan maintenance and the icon have scoped in-game acceptance; a full release gate remains separate. See [full rules](PLAYER_GUIDE_EN.md#ssc-249) and [2.4.9 notes](Docs/Releases/2.4.9/2.4.9发布说明.md#english).
+
+<a id="ssc-249-gel"></a>
+### Depravity Gel (2.4.9 supplement)
+
+An ingestible item separate from Personality Gel used for personality transfer. Eligible SSC slaves with completed anal development and the required present organ can enable **Depravity Gel production** under body management; it defaults to Off.
+
+- Base production is one unit per two days, faster at higher Chain stages, with map/caravan delivery. Off keeps progress; a full batch or failed delivery does not discard stock.
+- While accumulating, work speed×0.90 and natural Corruption decay×2 apply. Missing location, lost eligibility or a full batch pauses these costs. The pawn's first eligible real orgasm per scene adds 0.10 of a batch; a full batch still consumes the opportunity.
+- One dose gives one layer for one day: mood+20, work speed×0.95. Redosing refreshes duration. Masters are immune; ordinary humanlikes can receive the effect.
+- Each real orgasm by the recipient adds two extra Corruption percentage points, up to ten extra gel points per scene, within existing stage caps. It does not bind or advance stages. Redosing, driver replacement and loading do not refresh the same Job's budget.
+
+Functionality, dedicated art and concise four-language text have scoped acceptance. Values are development settings open to balance. See [full rules](PLAYER_GUIDE_EN.md#ssc-249-gel) and the [completion record](Docs/Development/Completed/堕落凝胶四步开发完成核对.md).

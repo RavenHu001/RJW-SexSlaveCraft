@@ -1,6 +1,6 @@
 # RJW-SexSlaveCraft · TieJin Modify
 
-**2.4.9 开发版（2026-11-02，未发布）**：三档催情发烟器、地图／旅队PNA阶段维持及受孕专用图标。v2.4.8后截至`169cf99a`的29个非合并提交、123个变更路径统一归入本版；[双语说明](Docs/Releases/2.4.9/2.4.9发布说明.md) → [归并核对](Docs/Releases/2.4.9/2.4.9开发归并核对.md) → [验证边界](Docs/Releases/2.4.9/2.4.9版本验证.md)。新增仅1.7，1.6／Common冻结2.4.1；公开下载仍为2.4.8。此次仅登记VERSION与文档，About／源码属性／开发DLL元数据暂留2.4.8；不重编、同步或发布，不把分批验收写成新整仓门禁。下方带日期的历史文字保留原时点。
+**2.4.9 开发版（2026-11-02，未发布）**：堕落凝胶四步功能、三档催情发烟器、地图／旅队PNA阶段维持及受孕专用图标。v2.4.8后截至`2c97efd5`的38个非合并提交、211个变更路径统一归入本版；[双语说明](Docs/Releases/2.4.9/2.4.9发布说明.md) → [归并核对](Docs/Releases/2.4.9/2.4.9开发归并核对.md) → [验证边界](Docs/Releases/2.4.9/2.4.9版本验证.md)。新增仅1.7，1.6／Common冻结2.4.1；公开下载仍为2.4.8。首次登记VERSION、本次补充文档并提交；About／源码属性／开发DLL元数据暂留2.4.8；不重编、同步或发布，不把分批验收写成新整仓门禁。下方带日期的历史文字保留原时点。
 
 2026-10-31：**2.4.8已正式发布**，[下载](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.8)。完整All **50套／6429项全部通过**，资源2／2、发布编排56及文案隔离75项通过；532份冻结文件未改。源码标签`411e1ce8`，ZIP及SHA-256已上传并复核为最新稳定版；本轮没有启动新游戏或同步安装目录。原分批／登记状态与计数保留原时点。
 
@@ -16,6 +16,7 @@
 
 | 主题 | 范围与入口 |
 | --- | --- |
+| 堕落凝胶 | 四步生产／代价／药效／消费及独立场次保存，专用贴图与四语已验收；[入门](读我，玩法介绍.md#ssc-249-gel) |
 | 三档发烟器 | 香炉、工业雾化器与太空发烟器，同房间／半径内累积RJW药效；[入门](读我，玩法介绍.md#ssc-249) |
 | PNA阶段维持 | 当前锁链保存关闭＋五档；地图不抢当前任务，旅队共享库存及夜休规则；[完整机制](机制详解.md#ssc-249) |
 | 美术与资料 | 三张专用建筑图、受孕花苞图标、四语及完成归档；[归并](Docs/Releases/2.4.9/2.4.9开发归并核对.md) |
@@ -114,7 +115,7 @@
 
 ## English overview
 
-**Development version 2.4.9 (2026-11-02), unreleased.** Three emitter tiers, personal PNA stage maintenance on maps/caravans and a dedicated Conception icon. [Development scope](Docs/Releases/2.4.9/2.4.9发布说明.md#english) · [Validation boundaries](Docs/Releases/2.4.9/2.4.9版本验证.md). Public downloads remain v2.4.8; 1.6/Common stay at 2.4.1. Runtime metadata is still 2.4.8 and no new full release gate is claimed.
+**Development version 2.4.9 (2026-11-02), unreleased.** Four-step Depravity Gel production/consumption, three emitter tiers, personal PNA maintenance on maps/caravans and a dedicated Conception icon. [Development scope](Docs/Releases/2.4.9/2.4.9发布说明.md#english) · [Validation boundaries](Docs/Releases/2.4.9/2.4.9版本验证.md). Public downloads remain v2.4.8; 1.6/Common stay at 2.4.1. Runtime metadata is still 2.4.8 and no new full release gate is claimed.
 
 SexSlaveCraft is an adult RJW expansion for pawn development, bonds, seven specializations, personality transfer and body modification. **Current version: 2.4.8 (2026-10-31).** [Download v2.4.8](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.8). New work targets 1.7; the 1.6/Common baseline stays frozen at 2.4.1.
 

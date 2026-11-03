@@ -1,6 +1,6 @@
 # 玩家阅读入口 / Player documentation
 
-**2.4.9 开发版（2026-11-02，未发布）**：三档催情发烟器、地图／旅队PNA阶段维持及受孕专用图标。v2.4.8后截至`169cf99a`的29个非合并提交、123个变更路径统一归入本版；[双语说明](../Releases/2.4.9/2.4.9发布说明.md) → [归并核对](../Releases/2.4.9/2.4.9开发归并核对.md) → [验证边界](../Releases/2.4.9/2.4.9版本验证.md)。新增仅1.7，1.6／Common冻结2.4.1；公开下载仍为2.4.8。此次仅登记VERSION与文档，About／源码属性／开发DLL元数据暂留2.4.8；不重编、同步或发布，不把分批验收写成新整仓门禁。下方带日期的历史文字保留原时点。
+**2.4.9 开发版（2026-11-02，未发布）**：堕落凝胶四步功能、三档催情发烟器、地图／旅队PNA阶段维持及受孕专用图标。v2.4.8后截至`2c97efd5`的38个非合并提交、211个变更路径统一归入本版；[双语说明](../Releases/2.4.9/2.4.9发布说明.md) → [归并核对](../Releases/2.4.9/2.4.9开发归并核对.md) → [验证边界](../Releases/2.4.9/2.4.9版本验证.md)。新增仅1.7，1.6／Common冻结2.4.1；公开下载仍为2.4.8。首次登记VERSION、本次补充文档并提交；About／源码属性／开发DLL元数据暂留2.4.8；不重编、同步或发布，不把分批验收写成新整仓门禁。下方带日期的历史文字保留原时点。
 
 2026-10-31：**2.4.8已正式发布**，[下载](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.8)。完整All **50套／6429项全部通过**，资源2／2、发布编排56及文案隔离75项通过；532份冻结文件未改。源码标签`411e1ce8`，ZIP及SHA-256已上传并复核为最新稳定版；本轮没有启动新游戏或同步安装目录。原分批／登记状态与计数保留原时点。
 
@@ -26,6 +26,7 @@
 
 | 问题 | 入门 | 完整规则 |
 | --- | --- | --- |
+| 2.4.9堕落凝胶（未发布） | [入门](../../读我，玩法介绍.md#ssc-249-gel) | [规则](../../机制详解.md#ssc-249-gel) |
 | 2.4.9发烟器／地图与旅队阶段维持（未发布） | [入门](../../读我，玩法介绍.md#ssc-249) | [规则](../../机制详解.md#ssc-249) |
 | 2.4.8孕母／印记／属性与便捷操作 | [入门](../../读我，玩法介绍.md#ssc-248) | [规则](../../机制详解.md#ssc-248) |
 | 2.4.7敏感度、PNA启停、UAP与修复 | [入门](../../读我，玩法介绍.md#ssc-247) | [规则](../../机制详解.md#ssc-247) |
@@ -42,7 +43,7 @@
 
 ## English reading order
 
-Development 2.4.9 adds [emitters and PNA maintenance](../../QUICK_START_EN.md#ssc-249), with [full rules](../../PLAYER_GUIDE_EN.md#ssc-249). It is unreleased; public v2.4.8 does not contain these additions.
+Development 2.4.9 also adds [Depravity Gel](../../QUICK_START_EN.md#ssc-249-gel), with [full rules](../../PLAYER_GUIDE_EN.md#ssc-249-gel), alongside [emitters and PNA maintenance](../../QUICK_START_EN.md#ssc-249), with [full rules](../../PLAYER_GUIDE_EN.md#ssc-249). It is unreleased; public v2.4.8 does not contain these additions.
 
 The released sections cover **2.4.8** and earlier features on 1.7; 1.6 remains at 2.4.1. Start with [2.4.8 additions](../../QUICK_START_EN.md#ssc-248) and [full rules](../../PLAYER_GUIDE_EN.md#ssc-248), which are new to 2.4.8 and were not in public v2.4.7. Earlier controls are in the [new controls](../../QUICK_START_EN.md#ssc-247) and [full rules](../../PLAYER_GUIDE_EN.md#ssc-247). Those earlier sensitivity/control features are included in v2.4.7 and were not in v2.4.6. For the earlier released features, see [ability/romance controls](../../QUICK_START_EN.md#24-246-personal-abilities-and-romance-controls-17-unreleased), the [full rules](../../PLAYER_GUIDE_EN.md#27-246-personal-abilities-and-romance-controls-17-unreleased) and the inherited [body-development guide](../../QUICK_START_EN.md#23-245-body-development-and-maintenance-17-unreleased). The public 2.4.6 package includes those earlier ability, romance and body-development features. For already released features, use the [2.4.4 scope](../Releases/2.4.4/2.4.4发布说明.md#english), [culture/cosmetics quick start](../../QUICK_START_EN.md#22-244-culture-and-cosmetic-reshaping-17-development-only) and [full rules](../../PLAYER_GUIDE_EN.md#25-244-culture-rituals-and-cosmetic-reshaping-17-development-only).
 
