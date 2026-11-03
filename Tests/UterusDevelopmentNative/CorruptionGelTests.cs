@@ -212,6 +212,7 @@ internal static partial class Program
             harmony.Unpatch(reservations, AccessTools.Method(typeof(Program), nameof(Skip)));
             harmony.Unpatch(AccessTools.Method(typeof(CaravanInventoryUtility), nameof(CaravanInventoryUtility.FindPawnToMoveInventoryTo)), AccessTools.Method(typeof(Program), nameof(GelReceiverBoundary)));
             GelSecondStepTests(repo, harmony);
+            GelThirdStepTests(repo, harmony);
         }
         finally
         {

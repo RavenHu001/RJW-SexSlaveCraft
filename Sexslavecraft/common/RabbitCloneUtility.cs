@@ -488,8 +488,8 @@ namespace SexSlaveCraft
             // 初生清理与成熟复制共用此过滤，先排除身体 PNA 与主人阶段，
             // 再判断宽泛的 SSC 前缀。成熟只跳过来源，不删除克隆自身后来获得的状态。
 #if SSC_RW17
-            // 初生清理来源库存，成熟跳过来源而保留克隆自己的生产记录。
-            if (SSCCorruptionGelProductionUtility.IsBodyStateDef(def)) return false;
+            // 初生清理来源库存与药效，成熟跳过来源而保留克隆自己获得的身体记录。
+            if (SSCCorruptionGelProductionUtility.IsBodyStateDef(def) || SSCCorruptionGelEffectUtility.IsEffectDef(def)) return false;
 #endif
             if (SSCPnaExposureUtility.IsBodyStateDef(def) ||
                 SSCAbilityToggleUtility.IsMarkerDef(def) ||

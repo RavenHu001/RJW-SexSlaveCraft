@@ -7,6 +7,16 @@ using Verse.AI;
 
 namespace SexSlaveCraft
 {
+    [HarmonyPatch(typeof(Thing), nameof(Thing.Ingested))]
+    internal static class SSCCorruptionGelIngestedPatch
+    {
+        [HarmonyPrefix, HarmonyPriority(Priority.First)]
+        internal static void Prefix(Thing __instance, Pawn ingester, out SSCCorruptionGelIngestionRuntime.Frame __state)
+            => __state = SSCCorruptionGelIngestionRuntime.Begin(__instance, ingester);
+        [HarmonyFinalizer, HarmonyPriority(Priority.Last)]
+        internal static void Finalizer(SSCCorruptionGelIngestionRuntime.Frame __state) => SSCCorruptionGelIngestionRuntime.End(__state);
+    }
+
     [HarmonyPatch(typeof(JobDriver_Sex), nameof(JobDriver_Sex.Orgasm))]
     internal static class SSCCorruptionGelOrgasmPatch
     {
@@ -37,6 +47,7 @@ namespace SexSlaveCraft
         [HarmonyPostfix] internal static void Postfix(Pawn pawn)
         {
             if (SSCCorruptionGelProductionUtility.Find(pawn) != null) SSCCorruptionGelProductionUtility.NotifyEffectsChanged(pawn);
+            SSCCorruptionGelEffectUtility.RefreshBodyState(pawn);
         }
     }
 
@@ -49,6 +60,8 @@ namespace SexSlaveCraft
             Pawn pawn = __instance.hediffSet.pawn;
             if (SSCCorruptionGelProductionUtility.IsBodyStateDef(hediff?.def) || SSCCorruptionGelProductionUtility.Find(pawn) != null)
                 SSCCorruptionGelProductionUtility.NotifyEffectsChanged(pawn);
+            if (SSCCorruptionGelEffectUtility.IsEffectDef(hediff?.def) || SSCCorruptionGelEffectUtility.Find(pawn) != null)
+                SSCCorruptionGelEffectUtility.RefreshBodyState(pawn);
         }
     }
 
@@ -75,7 +88,11 @@ namespace SexSlaveCraft
     {
         [HarmonyPostfix] internal static void Postfix(Pawn pawn, bool __result)
         {
-            if (__result) SSCCorruptionGelProductionUtility.NotifyEffectsChanged(pawn);
+            if (__result)
+            {
+                SSCCorruptionGelProductionUtility.NotifyEffectsChanged(pawn);
+                SSCCorruptionGelEffectUtility.RefreshBodyState(pawn);
+            }
         }
     }
 

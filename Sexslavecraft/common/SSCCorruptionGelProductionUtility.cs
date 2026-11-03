@@ -122,7 +122,11 @@ namespace SexSlaveCraft
         public override void FinalizeInit()
         {
             base.FinalizeInit();
-            foreach (Pawn pawn in SSCRestrictionGameComponent.AllPawns()) SSCCorruptionGelProductionUtility.EnsureProducer(pawn);
+            foreach (Pawn pawn in SSCRestrictionGameComponent.AllPawns())
+            {
+                SSCCorruptionGelProductionUtility.EnsureProducer(pawn);
+                SSCCorruptionGelEffectUtility.RefreshBodyState(pawn);
+            }
         }
     }
 }

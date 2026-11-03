@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <!-- 调试配置：单层一天，期限只存在原生倒计时组件中。 -->
+  <HediffDef>
+    <defName>SSC_Hediff_CorruptionGelEffect</defName><label>gel euphoria</label>
+    <description>Lingering fragments of pleasure fill the senses, lifting the mood while making concentration more difficult.</description>
+    <hediffClass>SexSlaveCraft.Hediff_SSCCorruptionGelEffect</hediffClass>
+    <initialSeverity>1</initialSeverity><maxSeverity>1</maxSeverity><isBad>false</isBad>
+    <tendable>false</tendable><everCurableByItem>false</everCurableByItem>
+    <comps>
+      <li Class="HediffCompProperties_Disappears"><disappearsAfterTicks>60000</disappearsAfterTicks><showRemainingTime>true</showRemainingTime></li>
+    </comps>
+    <stages><li><statFactors><WorkSpeedGlobal>0.95</WorkSpeedGlobal></statFactors></li></stages>
+  </HediffDef>
+  <ThoughtDef>
+    <defName>SSC_CorruptionGelEffect_Mood</defName><thoughtClass>Thought_Situational</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCCorruptionGel</workerClass><hediff>SSC_Hediff_CorruptionGelEffect</hediff>
+    <validWhileDespawned>true</validWhileDespawned>
+    <stages><li><label>gel euphoria: bliss</label><description>That lingering warmth feels wonderful. I want to stay in this happy haze a little longer.</description><baseMoodEffect>20</baseMoodEffect></li></stages>
+  </ThoughtDef>
+</Defs>

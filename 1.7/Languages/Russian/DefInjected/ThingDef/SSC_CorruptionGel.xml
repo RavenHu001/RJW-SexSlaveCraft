@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-  <SSC_CorruptionGel.label>гель порочности</SSC_CorruptionGel.label>
-  <SSC_CorruptionGel.description>Гель, содержащий фрагменты переживаний, но не полную личность.</SSC_CorruptionGel.description>
+  <SSC_CorruptionGel.label>гель развращения</SSC_CorruptionGel.label>
+  <SSC_CorruptionGel.description>Гель, содержащий фрагменты переживаний, а не целую личность. После приёма вызывает длительную эйфорию и лёгкую рассеянность. Повторный приём обновляет срок действия, но не усиливает эффект. Персонажи с ролью хозяина SSC невосприимчивы.</SSC_CorruptionGel.description>
 </LanguageData>
