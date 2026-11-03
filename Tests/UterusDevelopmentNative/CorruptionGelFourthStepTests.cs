@@ -27,7 +27,9 @@ internal static partial class Program
         bool skipped = Harmony.GetPatchInfo(baseExpose)?.Prefixes.Any(p => p.PatchMethod == AccessTools.Method(typeof(Program), nameof(Skip))) == true;
         if (!skipped) harmony.Patch(baseExpose, prefix: new HarmonyMethod(typeof(Program), nameof(Skip)));
         var lookup = AccessTools.Method(typeof(GenTypes), nameof(GenTypes.GetTypeInAnyAssembly));
-        harmony.Patch(lookup, prefix: new HarmonyMethod(typeof(Program), nameof(RjwScribeTypeBoundary)));
+        // 同一映射已由早期真实存档分区安装时只借用，不在结束后撤掉原边界。
+        bool hadRjwTypeBoundary = Harmony.GetPatchInfo(lookup)?.Prefixes.Any(p => p.PatchMethod == AccessTools.Method(typeof(Program), nameof(RjwScribeTypeBoundary))) == true;
+        if (!hadRjwTypeBoundary) harmony.Patch(lookup, prefix: new HarmonyMethod(typeof(Program), nameof(RjwScribeTypeBoundary)));
         harmony.Patch(boost, postfix: new HarmonyMethod(typeof(Program), nameof(GelAfterBoostCallback)));
         harmony.Patch(write, postfix: new HarmonyMethod(typeof(Program), nameof(GelAfterCorruptionCallback)));
         try
@@ -227,7 +229,7 @@ internal static partial class Program
             harmony.Unpatch(boost, AccessTools.Method(typeof(Program), nameof(GelAfterBoostCallback)));
             harmony.Unpatch(write, AccessTools.Method(typeof(Program), nameof(GelAfterCorruptionCallback)));
             if (!skipped) harmony.Unpatch(baseExpose, AccessTools.Method(typeof(Program), nameof(Skip)));
-            harmony.Unpatch(lookup, AccessTools.Method(typeof(Program), nameof(RjwScribeTypeBoundary)));
+            if (!hadRjwTypeBoundary) harmony.Unpatch(lookup, AccessTools.Method(typeof(Program), nameof(RjwScribeTypeBoundary)));
         }
     }
 

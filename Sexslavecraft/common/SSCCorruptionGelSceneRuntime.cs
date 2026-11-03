@@ -102,7 +102,8 @@ namespace SexSlaveCraft
         /// <summary>所有本人事件共用嵌套边界；生产和消费分别捕获准入，普通服用者不要求生产组件。</summary>
         internal static Frame Begin(JobDriver_Sex driver)
         {
-            if (!IsCurrent(driver) || driver.Sexprops == null) return null;
+            // RJW的Orgasm每tick被询问，计时未到时原方法立即返回；不要为无事件检查创建场次帧。
+            if (!IsCurrent(driver) || driver.Sexprops == null || driver.sex_ticks > driver.orgasmstick) return null;
             State state = Bind(driver);
             if (state.Ended || state.Settling) return null;
             bool root = state.Depth++ == 0;

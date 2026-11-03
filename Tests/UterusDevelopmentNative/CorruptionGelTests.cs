@@ -17,6 +17,18 @@ internal static partial class Program
 
     private static void CorruptionGelTests(string repo, Harmony harmony)
     {
+        // 分区会注册Mood/Corruption需求；结束后还原原宿主的最小需求集合，不能改变后续夹具。
+        var originalNeedDefs = DefDatabase<NeedDef>.AllDefsListForReading.ToArray();
+        var originalChainDef = SSCDefOf.ChainOfSexSlave;
+        var registeredChainDef = DefDatabase<HediffDef>.GetNamedSilentFail(originalChainDef.defName) ?? originalChainDef;
+        var originalChainStages = registeredChainDef.stages;
+        // DefOf和数据库必须是同一载体；旧分区曾替换DefOf，真实阶段上限查询仍从数据库取定义。
+        SSCDefOf.ChainOfSexSlave = registeredChainDef;
+        // 阶段裁剪必须使用作者真实边界，不能沿用旧能力测试中的占位链阶段。
+        SSCDefOf.ChainOfSexSlave.stages = XDocument.Load(Path.Combine(repo, "1.7/Defs/HediffDefs/HediffOfSexSlave.xml"))
+            .Root.Elements("HediffDef").Single(e => (string)e.Element("defName") == "Hediff_ChainOfSexSlave")
+            .Element("stages").Elements("li").Select(e => new HediffStage
+                { label = (string)e.Element("label"), minSeverity = (float)e.Element("minSeverity") }).ToList();
         // 与既有独立分区一致：只预热宿主未加载的其他系统DefOf，实际凝胶XML错误仍在下方检查。
         bootstrap = true;
         try { System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(SSCDefOf).TypeHandle); }
@@ -221,6 +233,10 @@ internal static partial class Program
             harmony.Unpatch(AccessTools.Method(typeof(HediffComp_SSCCorruptionGelProduction), "HasDeliveryLocation"), AccessTools.Method(typeof(Program), nameof(GelLocationBoundary)));
             harmony.Unpatch(AccessTools.Method(typeof(HediffComp_SSCCorruptionGelProduction), "TryDeliverProduct"), AccessTools.Method(typeof(Program), nameof(GelDeliveryBoundary)));
             gelPawns.Clear(); gelAccept = gelLocation = true;
+            registeredChainDef.stages = originalChainStages;
+            SSCDefOf.ChainOfSexSlave = originalChainDef;
+            DefDatabase<NeedDef>.Clear();
+            foreach (var def in originalNeedDefs) DefDatabase<NeedDef>.Add(def);
         }
     }
 
