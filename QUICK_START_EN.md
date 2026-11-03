@@ -2,7 +2,7 @@
 
 [2.4.9: emitters and PNA maintenance ](#ssc-249)
 
-**Version 2.4.9 — 2026-11-02, release preparation.** Depravity Gel, three emitter tiers, map/caravan PNA maintenance and a Conception icon. [2.4.9 download](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.9). New work targets 1.7; 1.6/Common remain at 2.4.1. About/source attributes and rebuilt runtime are aligned for release; scoped acceptance, the full gate and upload receipts are recorded separately.
+**Version 2.4.9 — released 2026-11-02.** [Download](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.9). Full All gate: **52 suites, 6535/6535 cases passed**; resource checks 2/2, orchestration 56 and scope isolation 75 passed. ZIP and SHA-256 verified as the latest stable release. No new game session or installation sync was performed; historical batch records retain their dates and scope.
 
 [2.4.8: Broodmother, imprints and management](#ssc-248)
 

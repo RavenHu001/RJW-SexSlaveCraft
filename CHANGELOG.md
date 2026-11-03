@@ -8,9 +8,9 @@
 - **三档发烟器：** 无电固定半径香炉、耗电耗菇工业雾化器、仅耗电太空发烟器；研究、直接开关／滑条、同房间与范围、最终RJW药效、四语及三张专用图已完成验收。烟雾铺满、随机错峰与淡出已调整，扫描优化暂缓。
 - **个人PNA阶段维持：** 当前锁链保存关闭＋五档；地图普通工作前补原液且不抢任务；旅队复用原版服药节拍、自有／共享含驮畜库存、原政策先行与夜休暂停，地图及旅队实机均已验收。
 - **美术与维护：** 受孕花苞专用图标、2.4.8简介重写、发布归档、规划与完成记录归属；不改变已有受孕技能机制。
-- **验证与状态：** 原生发烟器20／20、阶段维持19／19、更早PnaLoad582／582及凝胶已测产物下67／67＋推进56／56分别保留执行时点；runner52套尚无本版整仓All结果，不从历史6429推算。本次发布对齐VERSION／About／源码属性及重编DLL／BUILD-INFO为2.4.9；完整门禁、包审计与上传结果独立归档。
+- **验证与状态：** 原生发烟器20／20、阶段维持19／19、更早PnaLoad582／582及凝胶已测产物下67／67＋推进56／56分别保留执行时点；本次正式All **52套／6535项全部通过**，资源2／2、发布编排56及文案隔离75项通过。VERSION／About／源码属性及重编DLL／BUILD-INFO对齐2.4.9，ZIP与SHA-256已上传为最新稳定版；532份冻结文件未变，未另启游戏或同步安装目录。
 
-All post-v2.4.8 work through `2c97efd5` is grouped into **2.4.9**: four-step Depravity Gel production/consumption with body-owned state, costs, scene budgets, Master immunity and dedicated art/text; three tiers of room/radius emitters with dedicated art and final loaded RJW effects; Chain-owned personal PNA maintenance on maps and caravans; a dedicated Conception icon; and documentation/testing maintenance. Scoped maintainer acceptance is closed. The 52-suite runner has no new complete release-gate result. VERSION, About/source attributes and rebuilt runtime metadata are aligned to 2.4.9; release-gate and publication evidence is recorded separately.
+All post-v2.4.8 work through `2c97efd5` is grouped into **2.4.9**: four-step Depravity Gel production/consumption with body-owned state, costs, scene budgets, Master immunity and dedicated art/text; three tiers of room/radius emitters with dedicated art and final loaded RJW effects; Chain-owned personal PNA maintenance on maps and caravans; a dedicated Conception icon; and documentation/testing maintenance. Scoped maintainer acceptance is closed. The full release gate passed all **52 suites and 6535 cases**, with both resource checks, 56 orchestration checks and 75 scope-isolation checks passing. VERSION, About/source attributes and rebuilt runtime metadata are aligned to 2.4.9; ZIP and SHA-256 assets are published and verified as the latest stable release. No new game session or installation sync was performed.
 
 本项目基于原模组 7 月停更时的 **2.2.8** 版本继续维护，沿用原有版本号。更新按版本从新到旧排列，技术细节见 [开发更新记录](Docs/Development/开发更新记录.md)。
 
