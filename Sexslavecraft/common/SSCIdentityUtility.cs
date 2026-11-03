@@ -154,6 +154,11 @@ namespace SexSlaveCraft
 #endif
             if (comp.pawnIdentity == identity)
             {
+#if SSC_RW17
+                SSCCorruptionGelEffectUtility.RefreshBodyState(pawn);
+                if (!SSCPersonalityRuntimeUtility.IsCurrent(pawn, personalityToken) || pawn.TryGetComp<CompSexSlaveTraining>() != comp ||
+                    comp.pawnIdentity != identity) return false;
+#endif
                 if (restoredQualification.HasValue) comp.ReplaceMasterQualification(restoredQualification.Value);
                 // 同身份请求只刷新现有成长，不补零经验。Master→Master 人格植入
                 // 仍由恢复核心替换来源记录，不能靠“身份变化”通知完成流转。
@@ -195,6 +200,10 @@ namespace SexSlaveCraft
                 return false;
             comp.pawnIdentity = identity;
 #if SSC_RW17
+            // 身份先落地即撤销凝胶受药；后续成长／仪式回调提前退出也不能留下主人的药效。
+            SSCCorruptionGelEffectUtility.RefreshBodyState(pawn);
+            if (!SSCPersonalityRuntimeUtility.IsCurrent(pawn, personalityToken) || pawn.TryGetComp<CompSexSlaveTraining>() != comp ||
+                comp.pawnIdentity != identity) return false;
             SSCPersonalityExcretionAdmission.RemoveForbiddenPreparation(pawn);
             // 身份写入后立即观察退出事件，不能等后续资格回调结束才撤销旧命令。
             SSCRomanceLifecycle.Notify(pawn);

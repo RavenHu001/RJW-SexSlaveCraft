@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <!-- Severity为载体常量；代价阶段只在实际积累时派生，催熟认领随任务独立保存。 -->
+  <HediffDef>
+    <defName>SSC_Hediff_CorruptionGelProduction</defName>
+    <label>depravity gel extraction</label>
+    <description>A body production record for extracting fragments of experience. Production is controlled in body management.</description>
+    <hediffClass>SexSlaveCraft.Hediff_SSCCorruptionGelProduction</hediffClass>
+    <initialSeverity>1</initialSeverity><maxSeverity>1</maxSeverity>
+    <isBad>false</isBad><tendable>false</tendable><everCurableByItem>false</everCurableByItem>
+    <comps>
+      <li Class="SexSlaveCraft.HediffCompProperties_SSCCorruptionGelProduction">
+        <product>SSC_CorruptionGel</product><progressPerDay>0.5</progressPerDay>
+        <stageOne>1</stageOne><stageTwo>1.25</stageTwo><stageThree>1.5</stageThree><stageFour>2</stageFour>
+        <decayMultiplier>2</decayMultiplier><sceneBoost>0.10</sceneBoost>
+      </li>
+    </comps>
+    <stages>
+      <li><statFactors><WorkSpeedGlobal>0.90</WorkSpeedGlobal></statFactors></li>
+    </stages>
+  </HediffDef>
+</Defs>

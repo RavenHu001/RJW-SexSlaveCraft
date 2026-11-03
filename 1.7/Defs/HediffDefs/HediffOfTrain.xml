@@ -330,6 +330,11 @@
           <SSC_OrgasmFrequency>0.10</SSC_OrgasmFrequency>
           <PainShockThreshold>0.20</PainShockThreshold>
         </statOffsets>
+        <hediffGivers>
+          <li Class="SexSlaveCraft.HediffGiver_SSCCorruptionGelProducer">
+            <hediff>SSC_Hediff_CorruptionGelProduction</hediff>
+          </li>
+        </hediffGivers>
       </li>
     </stages>
   </HediffDef>

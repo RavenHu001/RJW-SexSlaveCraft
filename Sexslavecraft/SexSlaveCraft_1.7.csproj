@@ -187,6 +187,15 @@
     <Compile Include="common/SSCMasterDamageSharingToggle.cs" />
     <Compile Include="common/SSCBodyAbilityTogglePreferences.cs" />
     <Compile Include="common/SSCMilkAbilityToggleBackend.cs" />
+    <Compile Include="Hediff/HediffComp_SSCCorruptionGelProduction.cs" />
+    <Compile Include="common/SSCCorruptionGelProductionUtility.cs" />
+    <Compile Include="common/SSCCorruptionGelProductionToggleBackend.cs" />
+    <Compile Include="common/SSCCorruptionGelSceneRuntime.cs" />
+    <Compile Include="common/SSCCorruptionGelConsumptionUtility.cs" />
+    <Compile Include="Hediff/Hediff_SSCCorruptionGelEffect.cs" />
+    <Compile Include="common/SSCCorruptionGelEffectUtility.cs" />
+    <Compile Include="common/IngestionOutcomeDoer_SSCCorruptionGel.cs" />
+    <Compile Include="ThePatches/Harmony_CorruptionGel.cs" />
     <Compile Include="common/SSCPnaProductionUtility.cs" />
     <Compile Include="common/SSCPnaProductionAbilityToggleBackend.cs" />
     <Compile Include="common/SSCUterusAbilityToggleBackend.cs" />
