@@ -37,4 +37,8 @@ Replace the whole old folder and retain version folders/LoadFolders.xml. Load Ha
 		<li>rim.job.world</li>
 		<li>barbariank.hoomancute</li>
 	</loadAfter>
+	<loadBefore>
+		<li>abscon.privacy.please</li>
+		<li>eseeker.fo</li>
+	</loadBefore>
 </ModMetaData>
