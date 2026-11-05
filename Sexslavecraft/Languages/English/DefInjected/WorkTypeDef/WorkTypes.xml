@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
+  <TrainSexSlave.labelShort>Training</TrainSexSlave.labelShort>
+  <TrainSexSlave.pawnLabel>Trainer</TrainSexSlave.pawnLabel>
+  <TrainSexSlave.gerundLabel>Training sex slaves</TrainSexSlave.gerundLabel>
   <TrainSexSlave.description>Train sex slaves to increase corruption.</TrainSexSlave.description>
   <TrainSexSlave.verb>Training</TrainSexSlave.verb>
 </LanguageData>
