@@ -159,7 +159,9 @@ namespace SexSlaveCraft
             {
                 var gelHediff = parent as Hediff_GelatinizationTemporary;
                 if (gelHediff == null) return null;
-                return $"适应度: {gelHediff.adaptation.ToStringPercent()}\n腐化度: {gelHediff.CorruptionLevel.ToStringPercent()}";
+                string adaptation = "SSC_FullGel_AdaptationTip".Translate(gelHediff.adaptation.ToStringPercent());
+                string corruption = "SSC_PartialGel_CorruptionTip".Translate(gelHediff.CorruptionLevel.ToStringPercent());
+                return adaptation + "\n" + corruption;
             }
         }
     }

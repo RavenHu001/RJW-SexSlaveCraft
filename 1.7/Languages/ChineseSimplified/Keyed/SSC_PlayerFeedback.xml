@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_Train_Reason_NotHumanlike>目标不是类人生物。</SSC_Train_Reason_NotHumanlike>
+  <SSC_Train_Reason_DeadOrSelf>目标当前无法接受调教。</SSC_Train_Reason_DeadOrSelf>
+  <SSC_Train_Reason_InvalidFaction>目标必须是己方殖民者、奴隶或囚犯。</SSC_Train_Reason_InvalidFaction>
+  <SSC_Train_Reason_NotEnabled>该目标未启用调教。</SSC_Train_Reason_NotEnabled>
+  <SSC_Train_Reason_RitualBusy>该目标正在进行绑定仪式。</SSC_Train_Reason_RitualBusy>
+  <SSC_Train_Reason_ValidationCooldown>该目标刚刚验证失败，请稍后再试。</SSC_Train_Reason_ValidationCooldown>
+  <SSC_Train_Reason_AlreadyBeingTrained>该目标正在接受调教。</SSC_Train_Reason_AlreadyBeingTrained>
+  <SSC_Train_Reason_Cooldown>该目标仍在调教冷却中：{0}</SSC_Train_Reason_Cooldown>
+  <SSC_Train_Reason_TrainerLocked>该目标只能由指定的主人或调教师进行调教。</SSC_Train_Reason_TrainerLocked>
+  <SSC_Train_Reason_NotReservable>当前无法预定该目标。</SSC_Train_Reason_NotReservable>
+  <SSC_Train_Status_ValidationCooldown>验证失败冷却中</SSC_Train_Status_ValidationCooldown>
+
+  <SSC_PartialGel_CorruptionTip>腐化度: {0}</SSC_PartialGel_CorruptionTip>
+  <SSC_Lactating_Fullness>乳汁充盈度 {0}</SSC_Lactating_Fullness>
+  <SSC_FullGel_Reject_AlreadyCompleted>已完成全凝胶化</SSC_FullGel_Reject_AlreadyCompleted>
+  <SSC_FullGel_Reject_InProgress>已在全凝胶化处理中</SSC_FullGel_Reject_InProgress>
+  <SSC_FullGel_Reject_ExcretionRequired>未进行人格排泄</SSC_FullGel_Reject_ExcretionRequired>
+
+  <SSC_PE_Reject_RabbitClone>兔分身不能进行人格排泄。</SSC_PE_Reject_RabbitClone>
+  <SSC_RabbitClone_Reject_NoComponent>[SSC] 兔专精健康状态缺少分身组件。</SSC_RabbitClone_Reject_NoComponent>
+  <SSC_RabbitClone_Reject_CreationFailed>[SSC] 兔分身生成失败。</SSC_RabbitClone_Reject_CreationFailed>
+  <SSC_RabbitClone_Reject_LinkFailed>[SSC] 兔分身链接状态添加失败。</SSC_RabbitClone_Reject_LinkFailed>
+  <SSC_RabbitClone_Created>[SSC] {0} 生成了兔分身（{1}/{2}）。</SSC_RabbitClone_Created>
+  <SSC_RabbitClone_Reject_InvalidSource>[SSC] 无效的兔分身本体。</SSC_RabbitClone_Reject_InvalidSource>
+  <SSC_RabbitClone_Reject_CloneSource>[SSC] 兔分身不能继续生成分身。</SSC_RabbitClone_Reject_CloneSource>
+  <SSC_RabbitClone_Reject_OffMap>[SSC] 兔分身本体必须在地图上。</SSC_RabbitClone_Reject_OffMap>
+  <SSC_RabbitClone_Reject_NotHumanlike>[SSC] 只有人形角色可以生成兔分身。</SSC_RabbitClone_Reject_NotHumanlike>
+  <SSC_RabbitClone_Reject_NotPetRabbit>[SSC] 只有宠物兔专精可以生成兔分身。</SSC_RabbitClone_Reject_NotPetRabbit>
+  <SSC_RabbitClone_Reject_Limit>[SSC] 兔分身最多只能同时存在 {0} 个。</SSC_RabbitClone_Reject_Limit>
+  <SSC_RabbitClone_Matured>[SSC] 兔分身 {0} 已经成熟。</SSC_RabbitClone_Matured>
+  <SSC_RabbitClone_Count>分身 {0}/{1}</SSC_RabbitClone_Count>
+  <SSC_RabbitClone_Mature>成熟</SSC_RabbitClone_Mature>
+  <SSC_RabbitClone_Growing>成型 {0}</SSC_RabbitClone_Growing>
+</LanguageData>

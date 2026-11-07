@@ -812,16 +812,16 @@ namespace SexSlaveCraft
         public static string Legacy_Short_MissingAgeTracker => "SSC_Legacy_Short_MissingAgeTracker".Translate();
         public static string Legacy_Short_AgeGateFail => "SSC_Legacy_Short_AgeGateFail".Translate();
         public static string Legacy_Short_Pass => "SSC_Legacy_Short_Pass".Translate();
-        public static string Train_Reason_NotHumanlike => "目标不是类人生物。";
-        public static string Train_Reason_DeadOrSelf => "目标当前无法接受调教。";
-        public static string Train_Reason_InvalidFaction => "目标必须是己方殖民者、奴隶或囚犯。";
-        public static string Train_Reason_NotEnabled => "该目标未启用调教。";
-        public static string Train_Reason_RitualBusy => "该目标正在进行绑定仪式。";
-        public static string Train_Reason_ValidationCooldown => "该目标刚刚验证失败，请稍后再试。";
-        public static string Train_Reason_AlreadyBeingTrained => "该目标正在接受调教。";
-        /// <summary>生成包含剩余时间的调教冷却拒绝说明；沿用现有直接插值文本。</summary>
-        public static string Train_Reason_Cooldown(string time) => $"该目标仍在调教冷却中：{time}";
-        public static string Train_Reason_TrainerLocked => "该目标只能由指定的主人或调教师进行调教。";
-        public static string Train_Reason_NotReservable => "当前无法预定该目标。";
+        public static string Train_Reason_NotHumanlike => "SSC_Train_Reason_NotHumanlike".Translate();
+        public static string Train_Reason_DeadOrSelf => "SSC_Train_Reason_DeadOrSelf".Translate();
+        public static string Train_Reason_InvalidFaction => "SSC_Train_Reason_InvalidFaction".Translate();
+        public static string Train_Reason_NotEnabled => "SSC_Train_Reason_NotEnabled".Translate();
+        public static string Train_Reason_RitualBusy => "SSC_Train_Reason_RitualBusy".Translate();
+        public static string Train_Reason_ValidationCooldown => "SSC_Train_Reason_ValidationCooldown".Translate();
+        public static string Train_Reason_AlreadyBeingTrained => "SSC_Train_Reason_AlreadyBeingTrained".Translate();
+        /// <summary>生成包含剩余时间的调教冷却拒绝说明。</summary>
+        public static string Train_Reason_Cooldown(string time) => "SSC_Train_Reason_Cooldown".Translate(time);
+        public static string Train_Reason_TrainerLocked => "SSC_Train_Reason_TrainerLocked".Translate();
+        public static string Train_Reason_NotReservable => "SSC_Train_Reason_NotReservable".Translate();
     }
 }

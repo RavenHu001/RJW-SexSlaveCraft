@@ -77,7 +77,7 @@ namespace SexSlaveCraft
             {
                 if (showMessages)
                 {
-                    Messages.Message("[SSC] 兔专精状态缺少分身组件。", source, MessageTypeDefOf.RejectInput, false);
+                    Messages.Message("SSC_RabbitClone_Reject_NoComponent".Translate(), source, MessageTypeDefOf.RejectInput, false);
                 }
                 return false;
             }
@@ -96,7 +96,7 @@ namespace SexSlaveCraft
             {
                 if (showMessages)
                 {
-                    Messages.Message("[SSC] 兔分身生成失败。", source, MessageTypeDefOf.RejectInput, false);
+                    Messages.Message("SSC_RabbitClone_Reject_CreationFailed".Translate(), source, MessageTypeDefOf.RejectInput, false);
                 }
                 return false;
             }
@@ -113,7 +113,7 @@ namespace SexSlaveCraft
                 }
                 if (showMessages)
                 {
-                    Messages.Message("[SSC] 兔分身链接状态添加失败。", source, MessageTypeDefOf.RejectInput, false);
+                    Messages.Message("SSC_RabbitClone_Reject_LinkFailed".Translate(), source, MessageTypeDefOf.RejectInput, false);
                 }
                 return false;
             }
@@ -125,7 +125,8 @@ namespace SexSlaveCraft
 
             if (showMessages)
             {
-                Messages.Message($"[SSC] {source.LabelShort} 生成了兔分身（{sourceComp.LivingCloneCount}/{MaxRabbitClones}）。", clone, MessageTypeDefOf.PositiveEvent, false);
+                Messages.Message("SSC_RabbitClone_Created".Translate(source.LabelShort, sourceComp.LivingCloneCount, MaxRabbitClones),
+                    clone, MessageTypeDefOf.PositiveEvent, false);
             }
 
             return true;
@@ -137,25 +138,25 @@ namespace SexSlaveCraft
             reason = null;
             if (source == null || source.DestroyedOrNull() || source.Dead)
             {
-                reason = "[SSC] 无效的兔分身本体。";
+                reason = "SSC_RabbitClone_Reject_InvalidSource".Translate();
                 return false;
             }
 
             if (IsRabbitClone(source))
             {
-                reason = "[SSC] 兔分身不能继续生成分身。";
+                reason = "SSC_RabbitClone_Reject_CloneSource".Translate();
                 return false;
             }
 
             if (!source.Spawned || source.Map == null)
             {
-                reason = "[SSC] 兔分身本体必须在地图上。";
+                reason = "SSC_RabbitClone_Reject_OffMap".Translate();
                 return false;
             }
 
             if (!source.RaceProps.Humanlike)
             {
-                reason = "[SSC] 只有人形 Pawn 可以生成兔分身。";
+                reason = "SSC_RabbitClone_Reject_NotHumanlike".Translate();
                 return false;
             }
 
@@ -164,20 +165,20 @@ namespace SexSlaveCraft
                             PetSpecializationUtility.HasAnyPetState(source, SexSlaveSpecializationType.PetRabbit);
             if (!isRabbit)
             {
-                reason = "[SSC] 只有宠物兔专精可以生成兔分身。";
+                reason = "SSC_RabbitClone_Reject_NotPetRabbit".Translate();
                 return false;
             }
 
             HediffComp_RabbitCloneSource sourceComp = GetRabbitCloneSourceComp(source);
             if (sourceComp == null)
             {
-                reason = "[SSC] 兔专精健康状态还没有分身组件。";
+                reason = "SSC_RabbitClone_Reject_NoComponent".Translate();
                 return false;
             }
 
             if (!sourceComp.CanRegisterMoreClones)
             {
-                reason = $"[SSC] 兔分身最多只能同时存在 {MaxRabbitClones} 个。";
+                reason = "SSC_RabbitClone_Reject_Limit".Translate(MaxRabbitClones);
                 return false;
             }
 
@@ -292,7 +293,7 @@ namespace SexSlaveCraft
             SSCAbilityToggleUtility.SyncMarkers(clone);
 
             clone.Drawer?.renderer?.SetAllGraphicsDirty();
-            Messages.Message($"[SSC] {clone.LabelShort} 的兔分身已经成熟。", clone, MessageTypeDefOf.PositiveEvent, false);
+            Messages.Message("SSC_RabbitClone_Matured".Translate(clone.LabelShort), clone, MessageTypeDefOf.PositiveEvent, false);
         }
 
         /// <summary>收集存活分身及本体，将休息和心情按组内平均值同步。</summary>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_Train_Reason_NotHumanlike>Цель не является человекоподобной.</SSC_Train_Reason_NotHumanlike>
+  <SSC_Train_Reason_DeadOrSelf>Сейчас цель не может проходить дрессировку.</SSC_Train_Reason_DeadOrSelf>
+  <SSC_Train_Reason_InvalidFaction>Цель должна быть вашим колонистом, рабом или заключённым.</SSC_Train_Reason_InvalidFaction>
+  <SSC_Train_Reason_NotEnabled>Для этой цели дрессировка отключена.</SSC_Train_Reason_NotEnabled>
+  <SSC_Train_Reason_RitualBusy>Цель участвует в ритуале привязки.</SSC_Train_Reason_RitualBusy>
+  <SSC_Train_Reason_ValidationCooldown>Цель недавно не прошла проверку. Повторите попытку позже.</SSC_Train_Reason_ValidationCooldown>
+  <SSC_Train_Reason_AlreadyBeingTrained>Цель уже проходит дрессировку.</SSC_Train_Reason_AlreadyBeingTrained>
+  <SSC_Train_Reason_Cooldown>До следующей дрессировки цели: {0}</SSC_Train_Reason_Cooldown>
+  <SSC_Train_Reason_TrainerLocked>Дрессировать эту цель может только назначенный хозяин или дрессировщик.</SSC_Train_Reason_TrainerLocked>
+  <SSC_Train_Reason_NotReservable>Сейчас цель нельзя зарезервировать.</SSC_Train_Reason_NotReservable>
+  <SSC_Train_Status_ValidationCooldown>Ожидание повторной проверки</SSC_Train_Status_ValidationCooldown>
+
+  <SSC_PartialGel_CorruptionTip>Развращение: {0}</SSC_PartialGel_CorruptionTip>
+  <SSC_Lactating_Fullness>Наполненность молоком: {0}</SSC_Lactating_Fullness>
+  <SSC_FullGel_Reject_AlreadyCompleted>Полная желатинизация уже завершена</SSC_FullGel_Reject_AlreadyCompleted>
+  <SSC_FullGel_Reject_InProgress>Полная желатинизация уже идёт</SSC_FullGel_Reject_InProgress>
+  <SSC_FullGel_Reject_ExcretionRequired>Сначала требуется выделение личности</SSC_FullGel_Reject_ExcretionRequired>
+
+  <SSC_PE_Reject_RabbitClone>Клоны кролика не могут проходить выделение личности.</SSC_PE_Reject_RabbitClone>
+  <SSC_RabbitClone_Reject_NoComponent>[SSC] У состояния специализации «Кролик» отсутствует компонент клонирования.</SSC_RabbitClone_Reject_NoComponent>
+  <SSC_RabbitClone_Reject_CreationFailed>[SSC] Не удалось создать клона кролика.</SSC_RabbitClone_Reject_CreationFailed>
+  <SSC_RabbitClone_Reject_LinkFailed>[SSC] Не удалось связать клона кролика с оригиналом.</SSC_RabbitClone_Reject_LinkFailed>
+  <SSC_RabbitClone_Created>[SSC] {0}: создан клон кролика ({1}/{2}).</SSC_RabbitClone_Created>
+  <SSC_RabbitClone_Reject_InvalidSource>[SSC] Недопустимый оригинал для клона кролика.</SSC_RabbitClone_Reject_InvalidSource>
+  <SSC_RabbitClone_Reject_CloneSource>[SSC] Клоны кролика не могут создавать других клонов.</SSC_RabbitClone_Reject_CloneSource>
+  <SSC_RabbitClone_Reject_OffMap>[SSC] Оригинал клона кролика должен находиться на карте.</SSC_RabbitClone_Reject_OffMap>
+  <SSC_RabbitClone_Reject_NotHumanlike>[SSC] Только человекоподобные персонажи могут создавать клонов кролика.</SSC_RabbitClone_Reject_NotHumanlike>
+  <SSC_RabbitClone_Reject_NotPetRabbit>[SSC] Клонов кролика могут создавать только персонажи со специализацией «Кролик».</SSC_RabbitClone_Reject_NotPetRabbit>
+  <SSC_RabbitClone_Reject_Limit>[SSC] Одновременно может существовать не более {0} клонов кролика.</SSC_RabbitClone_Reject_Limit>
+  <SSC_RabbitClone_Matured>[SSC] Клон кролика {0} достиг зрелости.</SSC_RabbitClone_Matured>
+  <SSC_RabbitClone_Count>Клоны {0}/{1}</SSC_RabbitClone_Count>
+  <SSC_RabbitClone_Mature>Зрелый клон</SSC_RabbitClone_Mature>
+  <SSC_RabbitClone_Growing>Созревание {0}</SSC_RabbitClone_Growing>
+</LanguageData>

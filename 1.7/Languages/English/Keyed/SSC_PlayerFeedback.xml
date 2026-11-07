@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_Train_Reason_NotHumanlike>The target is not humanlike.</SSC_Train_Reason_NotHumanlike>
+  <SSC_Train_Reason_DeadOrSelf>The target cannot receive training right now.</SSC_Train_Reason_DeadOrSelf>
+  <SSC_Train_Reason_InvalidFaction>The target must be one of your colonists, slaves, or prisoners.</SSC_Train_Reason_InvalidFaction>
+  <SSC_Train_Reason_NotEnabled>Training is disabled for this target.</SSC_Train_Reason_NotEnabled>
+  <SSC_Train_Reason_RitualBusy>The target is taking part in a Binding Ritual.</SSC_Train_Reason_RitualBusy>
+  <SSC_Train_Reason_ValidationCooldown>The target failed a recent eligibility check. Try again later.</SSC_Train_Reason_ValidationCooldown>
+  <SSC_Train_Reason_AlreadyBeingTrained>The target is already receiving training.</SSC_Train_Reason_AlreadyBeingTrained>
+  <SSC_Train_Reason_Cooldown>Time until the target can be trained again: {0}</SSC_Train_Reason_Cooldown>
+  <SSC_Train_Reason_TrainerLocked>Only the assigned master or trainer can train this target.</SSC_Train_Reason_TrainerLocked>
+  <SSC_Train_Reason_NotReservable>The target cannot be reserved right now.</SSC_Train_Reason_NotReservable>
+  <SSC_Train_Status_ValidationCooldown>Waiting to retry eligibility check</SSC_Train_Status_ValidationCooldown>
+
+  <SSC_PartialGel_CorruptionTip>Corruption: {0}</SSC_PartialGel_CorruptionTip>
+  <SSC_Lactating_Fullness>Milk fullness {0}</SSC_Lactating_Fullness>
+  <SSC_FullGel_Reject_AlreadyCompleted>Full gelatinization is already complete</SSC_FullGel_Reject_AlreadyCompleted>
+  <SSC_FullGel_Reject_InProgress>Full gelatinization is already in progress</SSC_FullGel_Reject_InProgress>
+  <SSC_FullGel_Reject_ExcretionRequired>Personality excretion is required first</SSC_FullGel_Reject_ExcretionRequired>
+
+  <SSC_PE_Reject_RabbitClone>Rabbit clones cannot undergo personality excretion.</SSC_PE_Reject_RabbitClone>
+  <SSC_RabbitClone_Reject_NoComponent>[SSC] The Pet Rabbit health condition is missing its clone component.</SSC_RabbitClone_Reject_NoComponent>
+  <SSC_RabbitClone_Reject_CreationFailed>[SSC] Failed to create a rabbit clone.</SSC_RabbitClone_Reject_CreationFailed>
+  <SSC_RabbitClone_Reject_LinkFailed>[SSC] Failed to link the rabbit clone to its source.</SSC_RabbitClone_Reject_LinkFailed>
+  <SSC_RabbitClone_Created>[SSC] {0} created a rabbit clone ({1}/{2}).</SSC_RabbitClone_Created>
+  <SSC_RabbitClone_Reject_InvalidSource>[SSC] Invalid rabbit clone source.</SSC_RabbitClone_Reject_InvalidSource>
+  <SSC_RabbitClone_Reject_CloneSource>[SSC] Rabbit clones cannot create other clones.</SSC_RabbitClone_Reject_CloneSource>
+  <SSC_RabbitClone_Reject_OffMap>[SSC] The rabbit clone's source must be on the map.</SSC_RabbitClone_Reject_OffMap>
+  <SSC_RabbitClone_Reject_NotHumanlike>[SSC] Only humanlike pawns can create rabbit clones.</SSC_RabbitClone_Reject_NotHumanlike>
+  <SSC_RabbitClone_Reject_NotPetRabbit>[SSC] Only pawns with the Pet Rabbit specialization can create rabbit clones.</SSC_RabbitClone_Reject_NotPetRabbit>
+  <SSC_RabbitClone_Reject_Limit>[SSC] At most {0} rabbit clones can exist at once.</SSC_RabbitClone_Reject_Limit>
+  <SSC_RabbitClone_Matured>[SSC] Rabbit clone {0} has matured.</SSC_RabbitClone_Matured>
+  <SSC_RabbitClone_Count>Clones {0}/{1}</SSC_RabbitClone_Count>
+  <SSC_RabbitClone_Mature>Mature</SSC_RabbitClone_Mature>
+  <SSC_RabbitClone_Growing>Maturation {0}</SSC_RabbitClone_Growing>
+</LanguageData>

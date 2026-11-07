@@ -30,7 +30,7 @@ namespace SexSlaveCraft
             {
                 if (forced)
                 {
-                    JobFailReason.Is("兔分身不能进行人格排泄。");
+                    JobFailReason.Is("SSC_PE_Reject_RabbitClone".Translate());
                 }
                 return false;
             }

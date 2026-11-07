@@ -84,7 +84,7 @@ namespace SexSlaveCraft
             {
                 if (Pawn == null || RabbitCloneUtility.IsRabbitClone(Pawn)) return base.CompLabelInBracketsExtra;
                 CleanupClones();
-                return $"分身 {clones.Count}/{RabbitCloneUtility.MaxRabbitClones}";
+                return "SSC_RabbitClone_Count".Translate(clones.Count, RabbitCloneUtility.MaxRabbitClones);
             }
         }
 
@@ -157,9 +157,9 @@ namespace SexSlaveCraft
         {
             get
             {
-                if (mature) return "成熟";
+                if (mature) return "SSC_RabbitClone_Mature".Translate();
                 float progress = RabbitCloneUtility.GetCloneGrowthProgress(this);
-                return $"成型 {progress.ToStringPercent()}";
+                return "SSC_RabbitClone_Growing".Translate(progress.ToStringPercent());
             }
         }
 

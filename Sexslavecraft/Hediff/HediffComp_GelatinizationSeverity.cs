@@ -108,7 +108,7 @@ namespace SexSlaveCraft
         {
             get
             {
-                return $"严重度: {parent.Severity.ToStringPercent()}";
+                return "SSC_FullGel_SeverityTip".Translate(parent.Severity.ToStringPercent());
             }
         }
     }

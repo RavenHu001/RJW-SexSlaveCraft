@@ -23,17 +23,17 @@ namespace SexSlaveCraft
 
             if (pawn.health.hediffSet.GetFirstHediffOfDef(SSCDefOf.SSC_FullGelatinizedBody) != null)
             {
-                return "已完成全凝胶化";
+                return "SSC_FullGel_Reject_AlreadyCompleted".Translate();
             }
 
             if (pawn.health.hediffSet.GetFirstHediffOfDef(SSCDefOf.SSC_FullGelatinizationTemporary) != null)
             {
-                return "已在全凝胶化处理中";
+                return "SSC_FullGel_Reject_InProgress".Translate();
             }
 
             if (!FullGelatinizationUtility.HasPersonalityExcretionDone(pawn))
             {
-                return "未进行排泄";
+                return "SSC_FullGel_Reject_ExcretionRequired".Translate();
             }
 
             return true;

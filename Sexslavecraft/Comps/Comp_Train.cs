@@ -349,7 +349,7 @@ namespace SexSlaveCraft
 
             if (IsWaitingAfterFailedValidation)
             {
-                status += " / 验证失败冷却中";
+                status += " / " + "SSC_Train_Status_ValidationCooldown".Translate();
             }
 
             return Strings.Train_Status(status);

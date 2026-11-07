@@ -250,7 +250,7 @@ namespace SexSlaveCraft
                     return Strings.Lactating_Stalled(progress);
                 }
 
-                return $"乳汁充盈度 {progress}";
+                return "SSC_Lactating_Fullness".Translate(progress);
             }
         }
     }
