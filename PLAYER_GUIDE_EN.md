@@ -2116,7 +2116,7 @@ Conception now uses a dedicated 128×128 bud PNG; ability eligibility, scenes an
 <a id="ssc-249-gel"></a>
 ## 31. 2.4.9 Depravity Gel: production and consumption (1.7)
 
-[Release scope](Docs/Releases/2.4.9/2.4.9发布说明.md#english) · [Completion record](Docs/Development/Completed/堕落凝胶四步开发完成核对.md) · [Ability contract](Docs/Development/Reference/个人能力开关接入规范.md)
+[Release scope](Docs/Releases/2.4.9/2.4.9发布说明.md#english) · [Completion record](Docs/Development/Completed/堕落凝胶/堕落凝胶四步开发完成核对.md) · [Ability contract](Docs/Development/Reference/个人能力开关接入规范.md)
 
 ### Body production and batches
 

@@ -790,4 +790,4 @@ An ingestible item separate from Personality Gel used for personality transfer. 
 - One dose gives one layer for one day: mood+20, work speed×0.95. Redosing refreshes duration. Masters are immune; ordinary humanlikes can receive the effect.
 - Each real orgasm by the recipient adds two extra Corruption percentage points, up to ten extra gel points per scene, within existing stage caps. It does not bind or advance stages. Redosing, driver replacement and loading do not refresh the same Job's budget.
 
-Functionality, dedicated art and concise four-language text have scoped acceptance. Values are development settings open to balance. See [full rules](PLAYER_GUIDE_EN.md#ssc-249-gel) and the [completion record](Docs/Development/Completed/堕落凝胶四步开发完成核对.md).
+Functionality, dedicated art and concise four-language text have scoped acceptance. Values are development settings open to balance. See [full rules](PLAYER_GUIDE_EN.md#ssc-249-gel) and the [completion record](Docs/Development/Completed/堕落凝胶/堕落凝胶四步开发完成核对.md).
