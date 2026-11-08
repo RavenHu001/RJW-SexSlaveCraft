@@ -5,7 +5,7 @@
     <label>精心料理</label>
     <description>进入持续 4 游戏小时的专注状态，烹饪速度额外提高 50%。期间做出的合格餐食免于因厨房卫生或厨师水平而染毒。</description>
     <abilityClass>SexSlaveCraft.Ability_PetRabbitCarefulCooking</abilityClass>
-    <iconPath>Things/Item/Meal/Simple/Simple_a</iconPath>
+    <iconPath>UI/Icons/Abilities/SSC_PetRabbitCarefulCooking</iconPath>
     <jobDef>CastAbilityOnThing</jobDef>
     <targetRequired>false</targetRequired>
     <canUseAoeToGetTargets>false</canUseAoeToGetTargets>
