@@ -26,7 +26,9 @@
   <SSC_Hediff_PetRabbit.stages.2.label>skilled housekeeper</SSC_Hediff_PetRabbit.stages.2.label>
 
   <SSC_Hediff_PetRabbit_Final.label>final pet rabbit specialization</SSC_Hediff_PetRabbit_Final.label>
-  <SSC_Hediff_PetRabbit_Final.description>A final housekeeping specialization shaped through personality gel. Cleaning speed is increased by 70% and cooking speed by 50%.</SSC_Hediff_PetRabbit_Final.description>
+  <SSC_Hediff_PetRabbit_Final.description>A final housekeeping specialization shaped through personality gel. It grants 70% faster cleaning, 50% faster cooking, and the Careful Cooking ability.</SSC_Hediff_PetRabbit_Final.description>
+  <SSC_Hediff_PetRabbitCarefulCooking.label>careful cooking</SSC_Hediff_PetRabbitCarefulCooking.label>
+  <SSC_Hediff_PetRabbitCarefulCooking.description>Fully focused at the stove, the cook handles ingredients quickly and keeps the heat just right.</SSC_Hediff_PetRabbitCarefulCooking.description>
 
   <SSC_Hediff_RabbitCloneLink.label>rabbit clone</SSC_Hediff_RabbitCloneLink.label>
   <SSC_Hediff_RabbitCloneLink.description>This pawn is a clone split from a pet-rabbit specialist. It shares rest and mood with the source, matures rapidly, and cannot undergo personality excretion.</SSC_Hediff_RabbitCloneLink.description>

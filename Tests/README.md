@@ -360,6 +360,8 @@ pwsh -NoProfile -Command "& ./Scripts/Test-KeyedLocalization.ps1 -Files SSC_Roma
 
 ## 测试范围与计数
 
+2026-11-08 兔特化第二批在现有 `RomanceControlNative` 混合套件新增 Core 5 项，实跑该套 Core **1357／1357**，其他套件沿用原登记。 [第二批验证范围](../Docs/Design/兔特化家政重做开发规划.md#第二批-终极料理强化技能)
+
 以下6333项为2.4.7发布前最近的完整全量基线；发布后各批增量分别登记于上方和实施记录，第三步最终新增Core10／Special3，第四步新增Core13（首次8＋复核5）及独立兼容2项（后者不计默认）。没有重新执行或推算新的整仓全量结果。
 
 - **All（默认）**：50套，6333项，包含核心和专项。发布入口显式指定 `All`，核对成功报告的 `Scope` 和 `FullRegression`。

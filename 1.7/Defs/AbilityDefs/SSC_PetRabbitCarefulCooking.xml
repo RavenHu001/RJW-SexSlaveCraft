@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <AbilityDef>
+    <defName>SSC_PetRabbitCarefulCooking</defName>
+    <label>精心料理</label>
+    <description>进入持续 4 游戏小时的专注状态，烹饪速度额外提高 50%。期间做出的合格餐食免于因厨房卫生或厨师水平而染毒。</description>
+    <abilityClass>SexSlaveCraft.Ability_PetRabbitCarefulCooking</abilityClass>
+    <iconPath>Things/Item/Meal/Simple/Simple_a</iconPath>
+    <jobDef>CastAbilityOnThing</jobDef>
+    <targetRequired>false</targetRequired>
+    <canUseAoeToGetTargets>false</canUseAoeToGetTargets>
+    <hostile>false</hostile>
+    <casterMustBeCapableOfViolence>false</casterMustBeCapableOfViolence>
+    <showPsycastEffects>false</showPsycastEffects>
+    <showWhenDrafted>true</showWhenDrafted>
+    <displayGizmoWhileUndrafted>true</displayGizmoWhileUndrafted>
+    <disableGizmoWhileUndrafted>false</disableGizmoWhileUndrafted>
+    <cooldownTicksRange>60000</cooldownTicksRange>
+    <statBases>
+      <Ability_Duration>166.66667</Ability_Duration>
+    </statBases>
+    <verbProperties>
+      <verbClass>Verb_CastAbility</verbClass>
+      <warmupTime>0</warmupTime>
+      <range>0</range>
+      <requireLineOfSight>false</requireLineOfSight>
+      <violent>false</violent>
+      <onlyManualCast>true</onlyManualCast>
+      <nonInterruptingSelfCast>true</nonInterruptingSelfCast>
+      <targetable>false</targetable>
+      <targetParams>
+        <canTargetSelf>true</canTargetSelf>
+      </targetParams>
+    </verbProperties>
+    <comps>
+      <li Class="CompProperties_AbilityGiveHediff">
+        <compClass>CompAbilityEffect_GiveHediff</compClass>
+        <hediffDef>SSC_Hediff_PetRabbitCarefulCooking</hediffDef>
+        <onlyApplyToSelf>true</onlyApplyToSelf>
+        <replaceExisting>true</replaceExisting>
+        <!-- 166.66667 秒按原版 60 ticks/秒换算为 10000 ticks。 -->
+        <durationSecondsOverride>166.66667</durationSecondsOverride>
+      </li>
+    </comps>
+  </AbilityDef>
+</Defs>

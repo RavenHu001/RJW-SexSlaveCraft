@@ -21,7 +21,9 @@
   <SSC_Hediff_PetRabbit.stages.1.label>清潔熟練</SSC_Hediff_PetRabbit.stages.1.label>
   <SSC_Hediff_PetRabbit.stages.2.label>家政熟練</SSC_Hediff_PetRabbit.stages.2.label>
   <SSC_Hediff_PetRabbit_Final.label>終極寵物兔專精</SSC_Hediff_PetRabbit_Final.label>
-  <SSC_Hediff_PetRabbit_Final.description>透過人格凝膠塑成的終極家政專精。清潔速度提高 70%，烹飪速度提高 50%。</SSC_Hediff_PetRabbit_Final.description>
+  <SSC_Hediff_PetRabbit_Final.description>透過人格凝膠塑成的終極家政專精。清潔速度提高 70%，烹飪速度提高 50%，並獲得主動技能「精心料理」。</SSC_Hediff_PetRabbit_Final.description>
+  <SSC_Hediff_PetRabbitCarefulCooking.label>精心料理</SSC_Hediff_PetRabbitCarefulCooking.label>
+  <SSC_Hediff_PetRabbitCarefulCooking.description>心神凝聚在爐灶前，雙手處理食材與掌控火候愈發俐落。</SSC_Hediff_PetRabbitCarefulCooking.description>
   <SSC_Hediff_RabbitCloneLink.label>兔分身</SSC_Hediff_RabbitCloneLink.label>
   <SSC_Hediff_RabbitCloneLink.description>從寵物兔專精個體中分離出的分身。分身與本體共享休息和心情，快速成熟，且不能進行人格排洩。</SSC_Hediff_RabbitCloneLink.description>
   <SSC_Hediff_RabbitCloneLink.stages.0.label>成型中</SSC_Hediff_RabbitCloneLink.stages.0.label>
