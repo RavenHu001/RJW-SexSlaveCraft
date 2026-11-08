@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Patch>
+  <Operation Class="PatchOperationAdd">
+    <!-- 曲线先结算原版烹饪速度，再乘兔特化倍率。 -->
+    <xpath>Defs/StatDef[defName="CookSpeed"]/postProcessStatFactors</xpath>
+    <value>
+      <li>SSC_PetRabbitCookingFactor</li>
+    </value>
+  </Operation>
+</Patch>

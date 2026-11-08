@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <StatDef>
+    <defName>SSC_PetRabbitCookingFactor</defName>
+    <label>兔特化烹饪倍率</label>
+    <description>家政兔专精提供的烹饪速度倍率。</description>
+    <category>PawnWork</category>
+    <defaultBaseValue>1</defaultBaseValue>
+    <toStringStyle>PercentZero</toStringStyle>
+    <alwaysHide>true</alwaysHide>
+    <neverDisabled>true</neverDisabled>
+  </StatDef>
+</Defs>

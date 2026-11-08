@@ -74,6 +74,9 @@ namespace SexSlaveCraft
                 CombatantSpecializationGelUtility.DetachAfterExtraction(victim);
                 if (!mutation.IsCurrent || victim.TryGetComp<CompSexSlaveTraining>() != originalComp) return;
                 if (!SSCPersonalityExcretionAdmission.TryContinueExtraction(victim, slime)) return;
+                PetSpecializationUtility.DetachRabbitAfterExtraction(victim);
+                if (!mutation.IsCurrent || victim.TryGetComp<CompSexSlaveTraining>() != originalComp) return;
+                if (!SSCPersonalityExcretionAdmission.TryContinueExtraction(victim, slime)) return;
 #endif
                 // 资格与成长已进入成功生成的凝胶，再清原身体并写当前成长版本。
                 // 空壳即使保留主人身份，也不能在以后读档时补回转走的记录。

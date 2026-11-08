@@ -1007,6 +1007,7 @@ namespace SexSlaveCraft
             string trainerText = GetOrdinaryTrainerStatusText(pawn);
             if (trainerText != null)
                 listing.Label((TaggedString)trainerText, -1f, "SSC_TrainerIdentity_RestrictionTip".Translate().ToString());
+            DrawFinalSpecializationStates(listing, pawn);
 #else
             TrainerSpecializationDisplayState trainerState = TrainerSpecializationUtility.GetDisplayState(pawn);
             if (trainerState != TrainerSpecializationDisplayState.None)
@@ -1019,10 +1020,7 @@ namespace SexSlaveCraft
                     : "SSC_TrainerIdentity_RestrictionTip".Translate().ToString();
                 listing.Label("SSC_TrainerIdentity_StatusLine".Translate(status), -1f, tip);
             }
-#endif
             DrawRabbitReproductionModeSelector(listing, pawn, comp);
-#if SSC_RW17
-            DrawFinalSpecializationStates(listing, pawn);
 #endif
         }
 
@@ -1100,6 +1098,7 @@ namespace SexSlaveCraft
             } : null);
         }
 
+#if !SSC_RW17
         /// <summary>对兔特化角色显示已保存的繁殖模式；未完成的切换功能仍保持只读。</summary>
         private static void DrawRabbitReproductionModeSelector(Listing_Standard listing, Pawn pawn, CompSexSlaveTraining comp)
         {
@@ -1123,7 +1122,6 @@ namespace SexSlaveCraft
             }
         }
 
-#if !SSC_RW17
         /// <summary>仅在旧版本角色具有泌乳状态时显示并保存产奶开关。</summary>
         private static void DrawMilkToggle(Listing_Standard listing, Pawn pawn, CompSexSlaveTraining comp)
         {

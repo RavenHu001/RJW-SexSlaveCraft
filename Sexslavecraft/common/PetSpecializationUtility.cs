@@ -232,12 +232,13 @@ namespace SexSlaveCraft
             failure = PetSpecializationFailure.MissingRequirements;
             CompSexSlaveTraining comp = pawn?.TryGetComp<CompSexSlaveTraining>();
             if (comp == null || !IsPetSpecialization(type)) return false;
-            // 猫普通路线已开放，继续复用身份、研究与终极互斥检查；兔仍保留禁用入口。
+#if !SSC_RW17
             if (type == SexSlaveSpecializationType.PetRabbit)
             {
                 failure = PetSpecializationFailure.NotImplemented;
                 return false;
             }
+#endif
             if (comp.pawnIdentity != PawnIdentity.Slave) return false;
             if (!PetSpecializationRules.CanChangeDirection(type,
                 HasFinalPetState(pawn, SexSlaveSpecializationType.PetCat),
@@ -529,6 +530,16 @@ namespace SexSlaveCraft
                 RemoveIfPresent(pawn, GetFinalHediffDef(type));
             }
         }
+
+#if SSC_RW17
+        /// <summary>凝胶成功取得人格后，只移走源身体的兔特化成果和进度。</summary>
+        internal static void DetachRabbitAfterExtraction(Pawn pawn)
+        {
+            RemoveIfPresent(pawn, GetBaseHediffDef(SexSlaveSpecializationType.PetRabbit));
+            RemoveIfPresent(pawn, GetFinalHediffDef(SexSlaveSpecializationType.PetRabbit));
+            pawn?.TryGetComp<CompSexSlaveTraining>()?.ClearPetRabbitProgressAfterExtraction();
+        }
+#endif
 
         private static void ApplyTag(Pawn pawn, HediffDef def, float severity)
         {

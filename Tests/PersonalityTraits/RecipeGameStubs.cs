@@ -69,6 +69,9 @@ namespace Verse.AI
     public partial class Pawn_JobTracker
     {
         public Job curJob;
+#if SSC_RW17
+        public JobDriver curDriver;
+#endif
         public JobCondition? endedWith;
         public void EndCurrentJob(JobCondition condition) { endedWith = condition; curJob = null; }
     }

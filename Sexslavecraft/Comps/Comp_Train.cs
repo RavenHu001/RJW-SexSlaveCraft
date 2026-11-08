@@ -555,6 +555,7 @@ namespace SexSlaveCraft
                 }
             };
 
+#if !SSC_RW17
             if (IsPetRabbitSpecialized || PetSpecializationUtility.HasAnyPetState(pawn, SexSlaveSpecializationType.PetRabbit))
             {
                 yield return new Command_Action
@@ -567,6 +568,7 @@ namespace SexSlaveCraft
                     }
                 };
             }
+#endif
 
             yield return new Command_Action
             {

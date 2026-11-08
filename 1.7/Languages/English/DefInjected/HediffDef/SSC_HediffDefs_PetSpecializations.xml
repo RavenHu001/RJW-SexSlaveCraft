@@ -20,13 +20,15 @@
   <SSC_Hediff_PetDog_Final.description>A final Pet Dog specialization stored through personality gel. Retains animal handling and training bonuses and grants Animal Training: approach an eligible animal on the same map, then directly tame a wild animal or fully complete one enabled training project for an owned animal after brief guidance in its cell.</SSC_Hediff_PetDog_Final.description>
 
   <SSC_Hediff_PetRabbit.label>pet rabbit specialization</SSC_Hediff_PetRabbit.label>
-  <SSC_Hediff_PetRabbit.description>A developing pet-rabbit specialization. It emphasizes PNA-linked growth, reproductive modes, affectionate attachment, and light agility.</SSC_Hediff_PetRabbit.description>
+  <SSC_Hediff_PetRabbit.description>A housekeeping specialization developed through cleaning, cooking, and training. Cleaning and cooking become faster at 20% progress. Both speeds increase further at 50%.</SSC_Hediff_PetRabbit.description>
   <SSC_Hediff_PetRabbit.stages.0.label>forming</SSC_Hediff_PetRabbit.stages.0.label>
-  <SSC_Hediff_PetRabbit.stages.1.label>quickened</SSC_Hediff_PetRabbit.stages.1.label>
-  <SSC_Hediff_PetRabbit.stages.2.label>soft-bred</SSC_Hediff_PetRabbit.stages.2.label>
+  <SSC_Hediff_PetRabbit.stages.1.label>skilled cleaner</SSC_Hediff_PetRabbit.stages.1.label>
+  <SSC_Hediff_PetRabbit.stages.2.label>skilled housekeeper</SSC_Hediff_PetRabbit.stages.2.label>
 
   <SSC_Hediff_PetRabbit_Final.label>final pet rabbit specialization</SSC_Hediff_PetRabbit_Final.label>
-  <SSC_Hediff_PetRabbit_Final.description>A completed pet-rabbit specialization stored through personality gel. The pawn is stabilized for PNA-linked growth, reproductive modes, recovery, and light agility.</SSC_Hediff_PetRabbit_Final.description>
+  <SSC_Hediff_PetRabbit_Final.description>A final housekeeping specialization shaped through personality gel. It grants 70% faster cleaning, 50% faster cooking, and the Careful Cooking ability.</SSC_Hediff_PetRabbit_Final.description>
+  <SSC_Hediff_PetRabbitCarefulCooking.label>careful cooking</SSC_Hediff_PetRabbitCarefulCooking.label>
+  <SSC_Hediff_PetRabbitCarefulCooking.description>Fully focused at the stove, the cook handles ingredients quickly and keeps the heat just right.</SSC_Hediff_PetRabbitCarefulCooking.description>
 
   <SSC_Hediff_RabbitCloneLink.label>rabbit clone</SSC_Hediff_RabbitCloneLink.label>
   <SSC_Hediff_RabbitCloneLink.description>This pawn is a clone split from a pet-rabbit specialist. It shares rest and mood with the source, matures rapidly, and cannot undergo personality excretion.</SSC_Hediff_RabbitCloneLink.description>

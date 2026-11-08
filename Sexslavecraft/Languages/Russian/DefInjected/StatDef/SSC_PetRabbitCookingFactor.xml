@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_PetRabbitCookingFactor.label>множитель готовки кролика</SSC_PetRabbitCookingFactor.label>
+  <SSC_PetRabbitCookingFactor.description>Множитель скорости готовки от специализации кролика.</SSC_PetRabbitCookingFactor.description>
+</LanguageData>

@@ -217,7 +217,7 @@
   <ResearchProjectDef>
     <defName>SSC_RES_PetRabbit</defName>
     <label>宠物：兔</label>
-    <description>预设功能：宠物兔特化偏向移动、休息与免疫恢复，并预留繁殖及兔分身模式。当前选择与模式切换入口尚未完成，无法正常培养，也没有可用的特化经验获取方式。</description>
+    <description>功能：完成调教与兔研究的 SSC 性奴可以选择宠物兔特化。培养至 20% 时清洁速度提高 25%、烹饪速度提高 15%，至 50% 时清洁速度提高 50%、烹饪速度提高 30%。培养完成后可在雕刻台加工人格凝胶并重新植入，获得终极家政效果。\n\n经验：每清完一堆污物增加 0.20 个百分点，每做出一份合格餐食增加 0.10 个百分点。日常调教与完整绑定仪式也提供受训经验。</description>
     <baseCost>1800</baseCost>
     <techLevel>Medieval</techLevel>
     <tab>SSC_ResearchTabDef</tab>

@@ -311,7 +311,7 @@
   <RecipeDef Class="SexSlaveCraft.RecipeDef_PSTag">
     <defName>SSC_PSEdit_PetRabbit_Final</defName>
     <label>性奴特化（终极宠物兔）</label>
-    <description>将已经完成宠物兔特化的人格凝胶进一步塑形为终极宠物兔状态。该配方只接受宠物兔特化达到 100% 且带有宠物兔基础状态的材料。</description>
+    <description>将完成普通宠物兔培养且带有基础兔状态的人格凝胶塑形为终极宠物兔。重新植入后获得终极清洁与烹饪加成。</description>
     <jobString>正在塑造终极宠物兔人格...</jobString>
     <workAmount>3500</workAmount>
     <workSpeedStat>GeneralLaborSpeed</workSpeedStat>
@@ -323,9 +323,6 @@
     <filterIfTagExists>true</filterIfTagExists>
     <requireSpecializationType>PetRabbit</requireSpecializationType>
     <requireSpecializationComplete>true</requireSpecializationComplete>
-    <!-- 兔保留共同终极互斥识别；此声明不开放兔的玩家选择入口。
-         合法旧兔人格仍走公共加工资格，任何已有宠物终极都会被拒绝。
-         仅产物标签按此列表清理，培养历史及组外成果继续保留。 -->
     <exclusiveTags>
       <li>SSC_Hediff_PetCat_Final</li>
       <li>SSC_Hediff_PetDog_Final</li>

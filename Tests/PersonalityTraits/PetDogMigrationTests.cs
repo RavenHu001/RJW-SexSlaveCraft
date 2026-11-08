@@ -68,8 +68,12 @@ internal static partial class Program
         AssertDogDetached(source, comp);
         Assert(comp.specializationType == SexSlaveSpecializationType.None && comp.specializationProgress == 0f,
             "普通狗当前方向未清空");
-        Assert(comp.ExportSpecializationProgress().Count == 2 && comp.ExportSpecializationProgress()["Cow"] == .22f
-            && comp.ExportSpecializationProgress()["PetRabbit"] == .2f, "猫狗完整抽取清理损坏组外或兔历史");
+        expected.Remove("PetCat"); expected.Remove("PetDog");
+#if SSC_RW17
+        expected.Remove("PetRabbit");
+#endif
+        Assert(expected.OrderBy(e => e.Key).SequenceEqual(comp.ExportSpecializationProgress().OrderBy(e => e.Key)),
+            "抽取应清除已迁移的宠物历史并保留组外历史");
     }
 
     private static void DogFinalExtraction()
@@ -114,7 +118,7 @@ internal static partial class Program
     private static void DogFinalExtractionKeepsOtherProgress()
     {
         foreach (var current in new[] { SexSlaveSpecializationType.None, SexSlaveSpecializationType.Cow,
-            SexSlaveSpecializationType.Bus, SexSlaveSpecializationType.PetRabbit })
+            SexSlaveSpecializationType.Bus })
         {
             Find.TickManager.TicksGame = 2000;
             var source = Body("OtherCurrentDog"); var comp = DogTraining(source, 1f);
@@ -124,9 +128,12 @@ internal static partial class Program
             source.abilities.GetAbility(SSCDefOf.SSC_PetDogTame).StartCooldown(600);
             var expected = comp.ExportSpecializationProgress(); var gel = Excrete(source);
             AssertDogDetached(source, comp); expected.Remove("PetDog"); expected.Remove("PetCat");
+#if SSC_RW17
+            expected.Remove("PetRabbit");
+#endif
             Assert(comp.specializationType == current && comp.specializationProgress == (current == SexSlaveSpecializationType.None ? 0f : .37f)
                 && expected.OrderBy(e => e.Key).SequenceEqual(comp.ExportSpecializationProgress().OrderBy(e => e.Key)),
-                "狗抽取修改非猫狗方向或兔历史");
+                "狗抽取修改组外方向或历史");
             Assert(gel.specializationType == current && gel.specializationProgressByType["PetDog"] == 1f
                 && gel.petDogTameCooldownEndTick == 2600, "跨方向成果快照丢失狗历史或冷却");
         }

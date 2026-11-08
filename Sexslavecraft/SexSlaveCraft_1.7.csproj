@@ -30,6 +30,10 @@
     <Compile Include="common/SSCPnaMaintenanceUtility.cs" />
     <Compile Include="common/SSCPnaCaravanMaintenanceUtility.cs" />
     <Compile Include="ThePatches/Harmony_PnaCaravanMaintenance.cs" />
+    <Compile Include="ThePatches/Harmony_RabbitHousework.cs" />
+    <Compile Include="Comps/Ability_PetRabbitCarefulCooking.cs" />
+    <Compile Include="Hediff/HediffComp_PetRabbitCookingAbility.cs" />
+    <Compile Include="ThePatches/Harmony_RabbitCooking.cs" />
     <Compile Include="JobGiver/JobGiver_SSCPnaMaintenanceOrWork.cs" />
     <Compile Include="JobDriver/JobDriver_SSCPnaMaintenance.cs" />
     <Compile Include="ITab/ITab_SexSlaveTraining.PnaMaintenance.cs" />

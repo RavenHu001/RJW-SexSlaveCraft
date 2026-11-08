@@ -27,7 +27,7 @@ SexSlaveCraft (SSC) is built around this progression:
 1. Designate Masters and sex slaves.
 2. Use ordinary Training to raise Corruption and develop body parts.
 3. Perform the Binding Ritual to establish a bond and advance the `Sex Slave Chain` health stage.
-4. Choose one of seven specializations: Public Use, Cow, Training Officer, Pet Cat, Pet Dog, Combatant or Broodmother.
+4. Choose Public Use, Cow, Training Officer, Pet Cat, Pet Dog, Combatant, Broodmother or Pet Rabbit housekeeping in the 1.7 development build.
 5. Extract a pawn's personality into Personality Gel, edit it, or implant it into a Hollow.
 6. Attempt Semi-gelatinization or Full Gelatinization.
 
@@ -347,7 +347,9 @@ To select Cat or Dog, set SSC identity to Sex Slave, complete Training and the m
 
 Completed daily Training and full Binding Rituals give the current ordinary pet path shared progress. A current ordinary Cat gains 1 percentage point after successful affection toward its actual bound master; ordinary completion, any final pet specialization or another current path prevents this reward. Dog affection grants no progress. Actual animal training interactions and taming attempts give ordinary Dogs distinct progress; failed training rolls count as attempts, while cancellation before an interaction gives no training reward.
 
-Cat and Dog progress uses one decimal place: 99.5%–99.8% remains incomplete. At the shared completion threshold, the progress line reads "Training complete; ready to finalize". Hover over it for the steps: extract personality gel, process it into a final Cat or Dog at a sculpting table, then implant it. Ordinary completion does not directly grant a final ability. Only one final Cat, Dog or Rabbit specialization may be obtained; final bonuses, abilities and affection remain after switching to a non-pet training path. Rabbit selection remains disabled.
+Cat and Dog progress uses one decimal place: 99.5%–99.8% remains incomplete. At the shared completion threshold, the progress line reads "Training complete; ready to finalize". Hover over it for the steps: extract personality gel, process it into a final Cat or Dog at a sculpting table, then implant it. Ordinary completion does not directly grant a final ability. Only one final Cat, Dog or Rabbit specialization may be obtained; final bonuses, abilities and affection remain after switching to a non-pet training path.
+
+The 1.7 development build opens Pet Rabbit. After Training and Pet Rabbit research, an SSC Sex Slave can gain progress by cleaning, cooking and completing Training. When ordinary training is complete, extract personality gel, finalize it at a sculpting table and implant it to gain the final cleaning and cooking bonuses.
 
 | Final ability | Use and effect |
 | --- | --- |
@@ -608,7 +610,7 @@ Scheduled Training remains part of SSC. Use each Sex Slave's Training tab to sel
 The following entries exist as research, defs, or placeholder code but do not currently form complete gameplay systems:
 
 - Fine Training and sensitivity discovery;
-- Pet Rabbit selection, clone and reproduction gameplay (selection remains disabled);
+- the final Pet Rabbit active cooking ability;
 - Femboy Conversion;
 - high-tier PNA weapon;
 - automatic granting of `Erotic Word`;

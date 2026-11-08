@@ -34,6 +34,7 @@ namespace Verse
     public class RecipeDef : Def
     {
         public RecipeWorker Worker;
+        public SkillDef workSkill;
     }
 
     public class RecipeWorker
@@ -794,6 +795,7 @@ namespace RimWorld
     public static class SkillDefOf
     {
         public static SkillDef Social = new SkillDef();
+        public static SkillDef Cooking = new SkillDef();
     }
 
     public static class MessageTypeDefOf
@@ -891,7 +893,10 @@ namespace SexSlaveCraft
     }
 
     public class HediffComp_CowMilkReservoir { public float CurrentCharge; }
-    public static class ResearchUtils { public static bool IsResearchFinished(object def) => def != null; }
+    public static class ResearchUtils
+    {
+        public static bool IsResearchFinished(object def) => def is ResearchProjectDef research ? research.IsFinished : def != null;
+    }
     public static partial class SSCDefOf
     {
         public static PawnRelationDef SSC_FlawedLovers = new PawnRelationDef();

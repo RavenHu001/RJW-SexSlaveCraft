@@ -292,6 +292,9 @@ namespace SexSlaveCraft
                 // 清源特化回调之后、剥离人格之前再核对；不能让新受孕或换人格者进入空壳状态。
                 if (!mutation.IsCurrent || victim.TryGetComp<CompSexSlaveTraining>() != originalComp) return;
                 if (!SSCPersonalityExcretionAdmission.TryContinueExtraction(victim, product)) return;
+                PetSpecializationUtility.DetachRabbitAfterExtraction(victim);
+                if (!mutation.IsCurrent || victim.TryGetComp<CompSexSlaveTraining>() != originalComp) return;
+                if (!SSCPersonalityExcretionAdmission.TryContinueExtraction(victim, product)) return;
 #endif
                 // EN: Step 2: strip the victim into a hollow pawn and swap the personality-excretion state hediff.
                 // CN: 步骤 2：把受害者剥离成空壳 Pawn，并切换人格排泄状态 Hediff。

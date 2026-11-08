@@ -135,6 +135,7 @@ internal static partial class Program
             RomanceSocialReviewTests();
             RomanceSocialBatch2Tests(harmony, repo, game);
             PersonalResetTests(harmony);
+            RabbitCookingTests(harmony, repo, game);
             }
         }
         finally { harmony.UnpatchAll(harmony.Id); Scribe.mode = LoadSaveMode.Inactive; Current.Game = null; }
