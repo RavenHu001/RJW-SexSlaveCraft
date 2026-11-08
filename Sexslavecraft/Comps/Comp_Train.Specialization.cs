@@ -66,6 +66,16 @@ namespace SexSlaveCraft
             perTypeProgress?.Remove(SexSlaveSpecializationType.PetDog.ToString());
         }
 
+#if SSC_RW17
+        internal void ClearPetRabbitProgressAfterExtraction()
+        {
+            if (specializationType == SexSlaveSpecializationType.PetRabbit)
+                SetSpecialization(SexSlaveSpecializationType.None);
+            // 退出当前方向会暂存进度，因此在切换完成后清除兔历史。
+            perTypeProgress?.Remove(SexSlaveSpecializationType.PetRabbit.ToString());
+        }
+#endif
+
         /// <summary>用人格快照整体替换身体原有训练历史；旧凝胶缺少历史时只恢复已知的当前方向。</summary>
         public void RestoreSpecializationProgress(
             SexSlaveSpecializationType type,

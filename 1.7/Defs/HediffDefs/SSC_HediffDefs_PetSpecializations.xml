@@ -126,39 +126,29 @@
   <HediffDef>
     <defName>SSC_Hediff_PetRabbit</defName>
     <label>宠物兔专精</label>
-    <description>正在形成的宠物兔专精。偏向 PNA 关联成长、生育模式、亲昵依附和轻敏捷。</description>
+    <description>通过打扫、烹饪和调教培养的家政专精。培养达到 20% 后清洁速度提高，达到 50% 后进一步提高清洁速度并加快烹饪。</description>
     <hediffClass>HediffWithComps</hediffClass>
     <isBad>false</isBad>
     <initialSeverity>0.01</initialSeverity>
     <maxSeverity>1</maxSeverity>
-    <comps>
-      <li Class="SexSlaveCraft.HediffCompProperties_RabbitCloneSource" />
-    </comps>
     <stages>
       <li>
         <label>成型中</label>
         <minSeverity>0</minSeverity>
       </li>
       <li>
-        <label>轻快</label>
+        <label>清洁熟练</label>
         <minSeverity>0.2</minSeverity>
-        <statOffsets>
-          <MoveSpeed>0.06</MoveSpeed>
-        </statOffsets>
         <statFactors>
-          <RestRateMultiplier>1.05</RestRateMultiplier>
-          <ImmunityGainSpeed>1.05</ImmunityGainSpeed>
+          <CleaningSpeed>1.25</CleaningSpeed>
         </statFactors>
       </li>
       <li>
-        <label>温顺成型</label>
+        <label>家政熟练</label>
         <minSeverity>0.5</minSeverity>
-        <statOffsets>
-          <MoveSpeed>0.12</MoveSpeed>
-        </statOffsets>
         <statFactors>
-          <RestRateMultiplier>1.10</RestRateMultiplier>
-          <ImmunityGainSpeed>1.10</ImmunityGainSpeed>
+          <CleaningSpeed>1.50</CleaningSpeed>
+          <CookSpeed>1.15</CookSpeed>
         </statFactors>
       </li>
     </stages>
@@ -167,23 +157,17 @@
   <HediffDef>
     <defName>SSC_Hediff_PetRabbit_Final</defName>
     <label>终极宠物兔专精</label>
-    <description>通过人格凝胶完成的终极宠物兔专精。该个体在 PNA 关联成长、生育模式、恢复和轻敏捷方面趋于稳定。</description>
+    <description>通过人格凝胶塑成的终极家政专精。清洁速度提高 70%，烹饪速度提高 25%。</description>
     <hediffClass>HediffWithComps</hediffClass>
     <isBad>false</isBad>
     <initialSeverity>1</initialSeverity>
     <maxSeverity>1</maxSeverity>
-    <comps>
-      <li Class="SexSlaveCraft.HediffCompProperties_RabbitCloneSource" />
-    </comps>
     <stages>
       <li>
         <minSeverity>0</minSeverity>
-        <statOffsets>
-          <MoveSpeed>0.18</MoveSpeed>
-        </statOffsets>
         <statFactors>
-          <RestRateMultiplier>1.15</RestRateMultiplier>
-          <ImmunityGainSpeed>1.15</ImmunityGainSpeed>
+          <CleaningSpeed>1.70</CleaningSpeed>
+          <CookSpeed>1.25</CookSpeed>
         </statFactors>
       </li>
     </stages>

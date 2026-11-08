@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
+  <SSC_Hediff_PetRabbit.label>специализация кролика</SSC_Hediff_PetRabbit.label>
+  <SSC_Hediff_PetRabbit.description>Специализация по ведению хозяйства развивается благодаря уборке, готовке и тренировкам. При 20% подготовки уборка ускоряется. При 50% уборка становится ещё быстрее, а готовка тоже ускоряется.</SSC_Hediff_PetRabbit.description>
+  <SSC_Hediff_PetRabbit.stages.0.label>формирование</SSC_Hediff_PetRabbit.stages.0.label>
+  <SSC_Hediff_PetRabbit.stages.1.label>навык уборки</SSC_Hediff_PetRabbit.stages.1.label>
+  <SSC_Hediff_PetRabbit.stages.2.label>навык ведения хозяйства</SSC_Hediff_PetRabbit.stages.2.label>
+  <SSC_Hediff_PetRabbit_Final.label>финальная специализация кролика</SSC_Hediff_PetRabbit_Final.label>
+  <SSC_Hediff_PetRabbit_Final.description>Финальная специализация по ведению хозяйства, сформированная в геле личности. Скорость уборки повышена на 70%, скорость готовки — на 25%.</SSC_Hediff_PetRabbit_Final.description>
   <SSC_Hediff_RabbitCloneLowPNA.label>Выработка PNA кроличьим клоном</SSC_Hediff_RabbitCloneLowPNA.label>
   <SSC_Hediff_RabbitCloneLowPNA.description>Слабая выработка PNA, возникающая после созревания кроличьего клона.</SSC_Hediff_RabbitCloneLowPNA.description>
 </LanguageData>

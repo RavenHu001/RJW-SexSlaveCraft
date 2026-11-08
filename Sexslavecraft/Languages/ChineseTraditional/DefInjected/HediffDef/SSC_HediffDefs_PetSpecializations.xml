@@ -16,12 +16,12 @@
   <SSC_Hediff_PetDog_Final.label>終極寵物狗專精</SSC_Hediff_PetDog_Final.label>
   <SSC_Hediff_PetDog_Final.description>透過人格凝膠完成的終極寵物狗專精。保留動物處理和訓練屬性，並獲得「馴獸」：走到同地圖上符合條件的動物所在格，完成短暫馴導後直接馴服野生動物，或完整完成己方動物的一個已勾選訓練項目。</SSC_Hediff_PetDog_Final.description>
   <SSC_Hediff_PetRabbit.label>寵物兔專精</SSC_Hediff_PetRabbit.label>
-  <SSC_Hediff_PetRabbit.description>正在形成的寵物兔專精。偏向 PNA 關聯成長、生育模式、親暱依附和輕敏捷。</SSC_Hediff_PetRabbit.description>
+  <SSC_Hediff_PetRabbit.description>透過打掃、烹飪和調教培養的家政專精。培養達到 20% 後清潔速度提高，達到 50% 後進一步提高清潔速度並加快烹飪。</SSC_Hediff_PetRabbit.description>
   <SSC_Hediff_PetRabbit.stages.0.label>成型中</SSC_Hediff_PetRabbit.stages.0.label>
-  <SSC_Hediff_PetRabbit.stages.1.label>輕快</SSC_Hediff_PetRabbit.stages.1.label>
-  <SSC_Hediff_PetRabbit.stages.2.label>溫順成型</SSC_Hediff_PetRabbit.stages.2.label>
+  <SSC_Hediff_PetRabbit.stages.1.label>清潔熟練</SSC_Hediff_PetRabbit.stages.1.label>
+  <SSC_Hediff_PetRabbit.stages.2.label>家政熟練</SSC_Hediff_PetRabbit.stages.2.label>
   <SSC_Hediff_PetRabbit_Final.label>終極寵物兔專精</SSC_Hediff_PetRabbit_Final.label>
-  <SSC_Hediff_PetRabbit_Final.description>透過人格凝膠完成的終極寵物兔專精。該個體在 PNA 關聯成長、生育模式、恢復和輕敏捷方面趨於穩定。</SSC_Hediff_PetRabbit_Final.description>
+  <SSC_Hediff_PetRabbit_Final.description>透過人格凝膠塑成的終極家政專精。清潔速度提高 70%，烹飪速度提高 25%。</SSC_Hediff_PetRabbit_Final.description>
   <SSC_Hediff_RabbitCloneLink.label>兔分身</SSC_Hediff_RabbitCloneLink.label>
   <SSC_Hediff_RabbitCloneLink.description>從寵物兔專精個體中分離出的分身。分身與本體共享休息和心情，快速成熟，且不能進行人格排洩。</SSC_Hediff_RabbitCloneLink.description>
   <SSC_Hediff_RabbitCloneLink.stages.0.label>成型中</SSC_Hediff_RabbitCloneLink.stages.0.label>

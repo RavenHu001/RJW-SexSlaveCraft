@@ -11,14 +11,16 @@
 堕落凝胶、三档催情发烟器与地图／旅队PNA阶段维持。
 堕落凝胶四步包括身体生产与默认关闭开关、积累代价与催熟、单层服用药效／主人免疫，以及按阶段与场次上限实时结算的消费收益。生产库存、身体药效与任务额度分别保存，专用贴图与四语已完成验收。
 中世纪香薰炉、工业电热雾化器与太空发烟器在同房间且半径内累积实际RJW驼峰菇药效；三档各有专用贴图。PNA阶段维持只消耗普通原液：地图不抢当前任务，旅队优先自有再共享库存、原版政策先行、夜休暂停。受孕技能接入专用花苞图标。
-新增仅RimWorld 1.7；1.6／Common保留SSC 2.4.1冻结基线。继承七种特化、孕母与人格印记、个人／浪漫控制、身体开发、PNA生产和九把武器、文化／医美、凝胶外观及人格转移。已有分批实机认可不扩展为所有存档／模组组合或性能验证；复制体、整体独立框架及扫描优化仍保留后续状态。
-更新时完整替换旧目录，保留版本目录与LoadFolders.xml。Harmony和RJW先于SSC，文化／仪式需Ideology。旧1.7简易发射器等移除定义无存档迁移，兔入口与旧RimTalk仍不可用。
+新增仅RimWorld 1.7；1.6／Common保留SSC 2.4.1冻结基线。继承既有特化、孕母与人格印记、个人／浪漫控制、身体开发、PNA生产和九把武器、文化／医美、凝胶外观及人格转移。已有分批实机认可不扩展为所有存档／模组组合或性能验证；复制体、整体独立框架及扫描优化仍保留后续状态。
+1.7 开发测试已开放兔家政特化。通过清洁、烹饪和调教培养，凝胶终极化后获得更高的清洁与烹饪加成。
+更新时完整替换旧目录，保留版本目录与LoadFolders.xml。Harmony和RJW先于SSC，文化／仪式需Ideology。旧1.7简易发射器等移除定义无存档迁移，旧RimTalk对接暂停。
 
 Version 2.4.9 — Depravity Gel, emitters and PNA maintenance.
 Adds body-owned gel production and its default-off toggle, accumulation costs/acceleration, a one-layer drug effect with Master immunity, and immediate consumption rewards limited by stage and scene. Production stock, body effects and task budgets are saved separately, with dedicated art and four-language text.
 Three emitter tiers apply the final loaded RJW humpshroom effect within the same room and radius. Personal PNA maintenance consumes ordinary PNA without interrupting map tasks; caravans prefer personal/shared stock, run after vanilla drug policy and pause at night rest. Conception gains a dedicated bud icon.
-New content targets RimWorld 1.7; 1.6/Common retain SSC 2.4.1. Retains seven specializations, Broodmother/imprints, personal/romance controls, body development, PNA production/nine weapons, culture/cosmetics, gel appearance and personality transfer. Scoped acceptance does not establish all saves/mod combinations or performance; replicas, framework integration and scan optimization remain future work.
-Replace the whole old folder and retain version folders/LoadFolders.xml. Load Harmony and RJW before SSC; rituals/culture require Ideology. Removed old 1.7 launcher definitions have no save migration. Rabbit selection and legacy RimTalk integration remain unavailable.
+New content targets RimWorld 1.7; 1.6/Common retain SSC 2.4.1. Retains existing specializations, Broodmother/imprints, personal/romance controls, body development, PNA production/nine weapons, culture/cosmetics, gel appearance and personality transfer. Scoped acceptance does not establish all saves/mod combinations or performance; replicas, framework integration and scan optimization remain future work.
+The 1.7 development build opens Pet Rabbit housekeeping. Cleaning, cooking and training grant progress. Gel finalization gives stronger cleaning and cooking bonuses.
+Replace the whole old folder and retain version folders/LoadFolders.xml. Load Harmony and RJW before SSC; rituals/culture require Ideology. Removed old 1.7 launcher definitions have no save migration. Legacy RimTalk integration is suspended.
 
 [AI 辅助生成 / Partly AI-assisted]</description>
 	<modDependencies>

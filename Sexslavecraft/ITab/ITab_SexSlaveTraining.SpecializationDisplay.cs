@@ -77,11 +77,12 @@ namespace SexSlaveCraft
             {
                 label += " " + Strings.ITab_SpecializationFinalizedSuffix;
             }
-            // 猫狗普通培养和终极技能已开放；未开放的兔仍显示未完成。
+#if !SSC_RW17
             if (comp.specializationType == SexSlaveSpecializationType.PetRabbit)
             {
                 label += " " + Strings.ITab_SpecializationUnfinishedSuffix;
             }
+#endif
 
             return label;
         }
@@ -107,6 +108,7 @@ namespace SexSlaveCraft
             if (
 #if SSC_RW17
                 comp.specializationType == SexSlaveSpecializationType.Fertility ||
+                comp.specializationType == SexSlaveSpecializationType.PetRabbit ||
 #endif
                 comp.specializationType == SexSlaveSpecializationType.Combatant ||
                 comp.specializationType == SexSlaveSpecializationType.PetCat ||
@@ -115,7 +117,7 @@ namespace SexSlaveCraft
                 if (IsTypeFinalized(pawn, comp.specializationType))
                     return Strings.ITab_SpecializationComplete;
                 float progress = CompSexSlaveTraining.NormalizeSpecializationProgress(comp.specializationProgress);
-                // 猫狗与战斗员使用一位小数，避免 99.5% 被整数格式舍入成 100%；
+                // 使用一位小数，避免 99.5% 被整数格式舍入成 100%；
                 // 达到公共完成容差时明确显示普通培养完成，不把普通完成写成终极成果。
                 return progress >= CompSexSlaveTraining.SpecializationCompletionProgress
                     ? Strings.ITab_SpecializationOrdinaryComplete : progress.ToString("P1");
@@ -144,7 +146,7 @@ namespace SexSlaveCraft
                     ? null : "SSC_ITab_CombatantFinalizationTip".Translate().ToString();
 
             // 任意宠物终极成果都会阻止再次进行宠物终极加工；有成果时不提供
-            // 无法执行的加工建议。猫狗使用各自的配方与技能说明，兔仍不开放。
+            // 无法执行的加工建议。
             if (PetSpecializationUtility.HasAnyFinalPetState(pawn)) return null;
             switch (comp.specializationType)
             {
@@ -152,6 +154,10 @@ namespace SexSlaveCraft
                     return "SSC_ITab_PetCatFinalizationTip".Translate().ToString();
                 case SexSlaveSpecializationType.PetDog:
                     return "SSC_ITab_PetDogFinalizationTip".Translate().ToString();
+#if SSC_RW17
+                case SexSlaveSpecializationType.PetRabbit:
+                    return "SSC_ITab_PetRabbitFinalizationTip".Translate().ToString();
+#endif
                 default:
                     return null;
             }

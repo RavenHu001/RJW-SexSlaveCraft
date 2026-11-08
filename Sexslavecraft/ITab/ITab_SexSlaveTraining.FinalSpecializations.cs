@@ -64,12 +64,6 @@ namespace SexSlaveCraft
                     + SpecializationListingSpacing;
                 string trainer = GetOrdinaryTrainerStatusText(pawn);
                 if (trainer != null) height += Text.CalcHeight(trainer, innerWidth) + SpecializationListingSpacing;
-                if (comp.IsPetRabbitSpecialized || PetSpecializationUtility.HasAnyPetState(pawn, SexSlaveSpecializationType.PetRabbit))
-                {
-                    string rabbit = Strings.ITab_RabbitReproductionMode(GetRabbitReproductionModeLabel(comp.rabbitReproductionMode))
-                        + " " + Strings.ITab_SpecializationUnfinishedSuffix;
-                    height += Text.CalcHeight(rabbit, innerWidth) + SpecializationListingSpacing;
-                }
                 return height + BuildFinalSpecializationGrid(GetFinalSpecializationRows(pawn), innerWidth).Height;
             }
             finally { Text.Font = previousFont; Text.WordWrap = previousWrap; }

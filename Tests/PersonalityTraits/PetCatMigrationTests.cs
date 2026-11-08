@@ -14,8 +14,10 @@ internal static partial class Program
     {
         Run("猫普通抽取先存快照再清源当前方向、历史及孤儿技能", CatOrdinaryExtraction);
         Run("猫终极抽取先保存冷却并移除源全部重复猫状态", CatFinalExtraction);
-        Run("猫狗成果抽取保留兔及组外当前方向和历史", CatExtractionKeepsOtherProgress);
+        Run("猫狗成果抽取保留组外当前方向和历史", CatExtractionKeepsOtherProgress);
+#if !SSC_RW17
         Run("兔抽取保留原有普通或终极状态及历史", CatExtractionLeavesOtherPetsAlone);
+#endif
         Run("复用人格存储时猫冷却不从上次快照残留", CatStoreReuse);
         Run("人格 CopyFrom 独立复制猫绝对冷却并允许时间流逝", CatCooldownCopy);
         Run("猫终极人格经真实加工保留绝对冷却且仅扣一次账单", CatCooldownRecipe);
@@ -74,9 +76,12 @@ internal static partial class Program
         AssertCatDetached(source, comp);
         Assert(comp.specializationType == SexSlaveSpecializationType.None && comp.specializationProgress == 0f,
             "当前猫方向未清空");
-        Assert(comp.ExportSpecializationProgress().Count == 2 && comp.ExportSpecializationProgress()["Cow"] == .22f
-            && comp.ExportSpecializationProgress()["PetRabbit"] == .2f,
-            "猫狗抽取清理修改了其他方向历史");
+        expected.Remove("PetCat"); expected.Remove("PetDog");
+#if SSC_RW17
+        expected.Remove("PetRabbit");
+#endif
+        Assert(expected.OrderBy(e => e.Key).SequenceEqual(comp.ExportSpecializationProgress().OrderBy(e => e.Key)),
+            "抽取应清除已迁移的宠物历史并保留组外历史");
         gel.specializationProgressByType["Cow"] = .9f;
         Assert(comp.ExportSpecializationProgress()["Cow"] == .22f, "源历史与凝胶共享字典");
     }
@@ -100,7 +105,7 @@ internal static partial class Program
     private static void CatExtractionKeepsOtherProgress()
     {
         foreach (var current in new[] { SexSlaveSpecializationType.None, SexSlaveSpecializationType.Cow,
-            SexSlaveSpecializationType.Bus, SexSlaveSpecializationType.PetRabbit })
+            SexSlaveSpecializationType.Bus })
         {
             Find.TickManager.TicksGame = 2000;
             // 先设置当前方向再放入独立猫终极事实，避免用真实切换入口
@@ -112,6 +117,9 @@ internal static partial class Program
             source.abilities.GetAbility(SSCDefOf.SSC_PetCatComfort).StartCooldown(600);
             var expected = comp.ExportSpecializationProgress(); var gel = Excrete(source);
             AssertCatDetached(source, comp); expected.Remove("PetCat"); expected.Remove("PetDog");
+#if SSC_RW17
+            expected.Remove("PetRabbit");
+#endif
             Assert(comp.specializationType == current && comp.specializationProgress == (current == SexSlaveSpecializationType.None ? 0f : .37f)
                 && expected.OrderBy(e => e.Key).SequenceEqual(comp.ExportSpecializationProgress().OrderBy(e => e.Key)),
                 "猫清理改变了其他当前方向、当前值或历史");
@@ -120,6 +128,7 @@ internal static partial class Program
         }
     }
 
+#if !SSC_RW17
     private static void CatExtractionLeavesOtherPetsAlone()
     {
         foreach (var type in new[] { SexSlaveSpecializationType.PetRabbit })
@@ -138,6 +147,7 @@ internal static partial class Program
             Assert(gel.petCatComfortCooldownEndTick == 0, "非猫人格携带了猫冷却");
         }
     }
+#endif
 
     private static void CatStoreReuse()
     {

@@ -9,6 +9,7 @@
   <SSC_ITab_SelectSpecializationPetRabbit>Select Pet Rabbit specialization</SSC_ITab_SelectSpecializationPetRabbit>
   <SSC_ITab_PetCatFinalizationTip>Extract personality gel, process it into a final Pet Cat at a sculpting table, then implant it to gain final movement and dodge bonuses and Gentle Comfort. Completing ordinary training does not directly grant the final ability.</SSC_ITab_PetCatFinalizationTip>
   <SSC_ITab_PetDogFinalizationTip>Extract personality gel, process it into a final Pet Dog at a sculpting table, then implant it to gain final animal-handling bonuses and Animal Training, which directly tames a wild animal or fully completes one training item for a player-owned animal. Completing ordinary training does not directly grant the final ability.</SSC_ITab_PetDogFinalizationTip>
+  <SSC_ITab_PetRabbitFinalizationTip>Extract the personality gel, shape it into a final Pet Rabbit at a sculpting table, then implant it to gain the final cleaning and cooking bonuses.</SSC_ITab_PetRabbitFinalizationTip>
 
   <SSC_ITab_SpecializationPetDisabledResearch>Requires the matching pet research</SSC_ITab_SpecializationPetDisabledResearch>
   <SSC_ITab_SpecializationPetDisabledMissingRequirements>Pet specialization requirements are not met</SSC_ITab_SpecializationPetDisabledMissingRequirements>

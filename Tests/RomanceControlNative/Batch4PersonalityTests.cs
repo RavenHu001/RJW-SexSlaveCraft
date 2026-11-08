@@ -65,18 +65,27 @@ internal static partial class Program
                 Check("batch4 actual extraction entry captures and clears before processed gel insertion scene=" + scene, () =>
                 {
                     CommandReset(); transferProduct = null; var source = SocialSlave(); PutOnTransferMap(source);
-                    Comp(source).romanceConfig = Denied(); Comp(source).milkProductionEnabled = false;
+                    var sourceComp = Comp(source);
+                    sourceComp.romanceConfig = Denied(); sourceComp.milkProductionEnabled = false;
+                    sourceComp.SetSpecialization(SexSlaveSpecializationType.PetRabbit);
+                    sourceComp.specializationProgress = .4f;
+                    PetSpecializationUtility.EnsurePetHediffFromSpecialization(source);
+                    var rabbitState = PetSpecializationUtility.GetBaseHediffDef(SexSlaveSpecializationType.PetRabbit);
                     var outsider = SocialSlave(); outsider.jobs = new Pawn_JobTracker(outsider);
                     Require(SSCRomanceCommandUtility.TrySubmit(SSCRomanceCommandUtility.Capture(outsider, source), out var incoming, out _));
                     ExtractForTransfer(source, scene);
                     Require(Comp(source).romanceConfig == null); Require(transferProduct != null);
                     var captured = transferProduct.TryGetComp<CompPersonalityStore>(); Require(captured.romanceConfig.alwaysAcceptMaster);
+                    Require(captured.HasTag(rabbitState) && captured.specializationProgress == .4f);
+                    Require(!source.health.hediffSet.HasHediff(rabbitState) && sourceComp.specializationType == SexSlaveSpecializationType.None
+                        && !sourceComp.ExportSpecializationProgress().ContainsKey("PetRabbit"));
                     Equal(SSCRomanceCommandStatus.Cancelled, incoming.Status); Require(!SSCPersonalityRuntimeUtility.IsMutating(source));
                     var rawGel = transferProduct;
                     new Recipe_PSTagWorker { recipe = new RecipeDef { defName = "RomanceTransferRecipe" } }.Notify_IterationCompleted(source, new List<Thing> { rawGel });
                     Require(transferProduct != rawGel); var processed = transferProduct.TryGetComp<CompPersonalityStore>();
                     Require(!ReferenceEquals(captured.romanceConfig, processed.romanceConfig));
                     var receiver = SocialSlave(); Require(ExcretionUtility.InheritEverything(receiver, processed));
+                    Require(receiver.health.hediffSet.HasHediff(rabbitState) && Comp(receiver).specializationProgress == .4f);
                     Require(!Comp(receiver).romanceConfig.allowInitiateRomance && Comp(receiver).romanceConfig.allowInitiateToMaster);
                     Require(!Comp(receiver).milkProductionEnabled); Equal(0, bubbleCalls);
                 });
