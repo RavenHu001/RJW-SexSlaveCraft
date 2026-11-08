@@ -126,7 +126,7 @@
   <HediffDef>
     <defName>SSC_Hediff_PetRabbit</defName>
     <label>宠物兔专精</label>
-    <description>通过打扫、烹饪和调教培养的家政专精。培养达到 20% 后清洁速度提高，达到 50% 后进一步提高清洁速度并加快烹饪。</description>
+    <description>通过打扫、烹饪和调教培养的家政专精。培养达到 20% 后提高清洁与烹饪速度，达到 50% 后进一步提高这两项速度。</description>
     <hediffClass>HediffWithComps</hediffClass>
     <isBad>false</isBad>
     <initialSeverity>0.01</initialSeverity>
@@ -141,6 +141,7 @@
         <minSeverity>0.2</minSeverity>
         <statFactors>
           <CleaningSpeed>1.25</CleaningSpeed>
+          <CookSpeed>1.15</CookSpeed>
         </statFactors>
       </li>
       <li>
@@ -148,7 +149,7 @@
         <minSeverity>0.5</minSeverity>
         <statFactors>
           <CleaningSpeed>1.50</CleaningSpeed>
-          <CookSpeed>1.15</CookSpeed>
+          <CookSpeed>1.30</CookSpeed>
         </statFactors>
       </li>
     </stages>
@@ -157,7 +158,7 @@
   <HediffDef>
     <defName>SSC_Hediff_PetRabbit_Final</defName>
     <label>终极宠物兔专精</label>
-    <description>通过人格凝胶塑成的终极家政专精。清洁速度提高 70%，烹饪速度提高 25%。</description>
+    <description>通过人格凝胶塑成的终极家政专精。清洁速度提高 70%，烹饪速度提高 50%。</description>
     <hediffClass>HediffWithComps</hediffClass>
     <isBad>false</isBad>
     <initialSeverity>1</initialSeverity>
@@ -167,7 +168,7 @@
         <minSeverity>0</minSeverity>
         <statFactors>
           <CleaningSpeed>1.70</CleaningSpeed>
-          <CookSpeed>1.25</CookSpeed>
+          <CookSpeed>1.50</CookSpeed>
         </statFactors>
       </li>
     </stages>
