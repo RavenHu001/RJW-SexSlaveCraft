@@ -24,6 +24,9 @@ namespace SexSlaveCraft
                 case SexSlaveSpecializationType.PetCat:
                 case SexSlaveSpecializationType.PetDog:
                 case SexSlaveSpecializationType.PetRabbit:
+#if SSC_RW17
+                case SexSlaveSpecializationType.PetFox:
+#endif
                     return PetSpecializationUtility.HasFinalPetState(pawn, type);
                 default:
                     return false;
@@ -56,6 +59,9 @@ namespace SexSlaveCraft
                 case SexSlaveSpecializationType.PetCat:
                 case SexSlaveSpecializationType.PetDog:
                 case SexSlaveSpecializationType.PetRabbit:
+#if SSC_RW17
+                case SexSlaveSpecializationType.PetFox:
+#endif
                     label = PetSpecializationUtility.GetSpecializationLabel(type);
                     break;
                 default:
@@ -109,6 +115,7 @@ namespace SexSlaveCraft
 #if SSC_RW17
                 comp.specializationType == SexSlaveSpecializationType.Fertility ||
                 comp.specializationType == SexSlaveSpecializationType.PetRabbit ||
+                comp.specializationType == SexSlaveSpecializationType.PetFox ||
 #endif
                 comp.specializationType == SexSlaveSpecializationType.Combatant ||
                 comp.specializationType == SexSlaveSpecializationType.PetCat ||
@@ -157,6 +164,8 @@ namespace SexSlaveCraft
 #if SSC_RW17
                 case SexSlaveSpecializationType.PetRabbit:
                     return "SSC_ITab_PetRabbitFinalizationTip".Translate().ToString();
+                case SexSlaveSpecializationType.PetFox:
+                    return "SSC_ITab_PetFoxFinalizationTip".Translate().ToString();
 #endif
                 default:
                     return null;

@@ -193,6 +193,65 @@
   </HediffDef>
 
   <HediffDef>
+    <defName>SSC_Hediff_PetFox</defName>
+    <label>宠物狐专精</label>
+    <description>通过科研、护理与调教培养的专精。培养达到 20% 和 50% 时，逐步提高科研速度、包扎速度和包扎品质。</description>
+    <hediffClass>HediffWithComps</hediffClass>
+    <isBad>false</isBad>
+    <initialSeverity>0.01</initialSeverity>
+    <maxSeverity>1</maxSeverity>
+    <stages>
+      <li>
+        <label>成型中</label>
+        <minSeverity>0</minSeverity>
+      </li>
+      <li>
+        <label>研护熟练</label>
+        <minSeverity>0.2</minSeverity>
+        <statFactors>
+          <ResearchSpeed>1.15</ResearchSpeed>
+          <MedicalTendSpeed>1.15</MedicalTendSpeed>
+          <MedicalTendQuality>1.05</MedicalTendQuality>
+        </statFactors>
+      </li>
+      <li>
+        <label>研护专精</label>
+        <minSeverity>0.5</minSeverity>
+        <statFactors>
+          <ResearchSpeed>1.30</ResearchSpeed>
+          <MedicalTendSpeed>1.30</MedicalTendSpeed>
+          <MedicalTendQuality>1.10</MedicalTendQuality>
+        </statFactors>
+      </li>
+    </stages>
+  </HediffDef>
+
+  <HediffDef>
+    <defName>SSC_Hediff_PetFox_Final</defName>
+    <label>终极宠物狐专精</label>
+    <description>通过人格凝胶塑成的终极专精。科研速度和包扎速度提高 50%，包扎品质系数提高 15%，并获得主动技能“应急包扎”。</description>
+    <hediffClass>HediffWithComps</hediffClass>
+    <isBad>false</isBad>
+    <initialSeverity>1</initialSeverity>
+    <maxSeverity>1</maxSeverity>
+    <comps>
+      <li Class="SexSlaveCraft.HediffCompProperties_GiveAbility">
+        <abilityDef>SSC_PetFoxEmergencyTend</abilityDef>
+      </li>
+    </comps>
+    <stages>
+      <li>
+        <minSeverity>0</minSeverity>
+        <statFactors>
+          <ResearchSpeed>1.50</ResearchSpeed>
+          <MedicalTendSpeed>1.50</MedicalTendSpeed>
+          <MedicalTendQuality>1.15</MedicalTendQuality>
+        </statFactors>
+      </li>
+    </stages>
+  </HediffDef>
+
+  <HediffDef>
     <defName>SSC_Hediff_PetRabbitCarefulCooking</defName>
     <hediffClass>HediffWithComps</hediffClass>
     <label>精心料理</label>

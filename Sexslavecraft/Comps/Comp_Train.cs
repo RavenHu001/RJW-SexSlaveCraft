@@ -238,6 +238,7 @@ namespace SexSlaveCraft
             Scribe_Values.Look(ref specializationProgress, "specializationProgress", 0f);
 #if SSC_RW17
             Scribe_Values.Look(ref fertilityCareTicks, "fertilityCareTicks", 0);
+            Scribe_Values.Look(ref foxResearchPointRemainder, "foxResearchPointRemainder", 0d);
             if (Scribe.mode == LoadSaveMode.PostLoadInit) fertilityCareTicks = Math.Clamp(fertilityCareTicks, 0, 2499);
 #endif
             Scribe_Values.Look(ref savedCowReservoirCharge, "savedCowReservoirCharge", 0f);

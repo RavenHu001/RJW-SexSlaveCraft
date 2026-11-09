@@ -27,4 +27,7 @@
   <SSC_Message_DogAnimalInteractionTriggered>{0} 與 {1} 的動物互動被觸發。</SSC_Message_DogAnimalInteractionTriggered>
   <SSC_ITab_SpecializationPetDisabledConflictingFinal>已有其他寵物終極成果，無法改選此寵物方向</SSC_ITab_SpecializationPetDisabledConflictingFinal>
   <SSC_PetSpecialization_SelectionRejected>無法選擇寵物特化：{0}</SSC_PetSpecialization_SelectionRejected>
+  <SSC_ITab_SpecializationPetFox>寵物狐專精</SSC_ITab_SpecializationPetFox>
+  <SSC_ITab_SelectSpecializationPetFox>選擇寵物狐專精</SSC_ITab_SelectSpecializationPetFox>
+  <SSC_ITab_PetFoxFinalizationTip>抽取人格凝膠，在雕刻臺加工為終極寵物狐，再重新植入即可獲得終極科研與醫療加成。</SSC_ITab_PetFoxFinalizationTip>
 </LanguageData>

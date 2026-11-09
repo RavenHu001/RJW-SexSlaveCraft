@@ -37,4 +37,11 @@
 
   <SSC_Hediff_RabbitCloneLowPNA.label>rabbit clone PNA production</SSC_Hediff_RabbitCloneLowPNA.label>
   <SSC_Hediff_RabbitCloneLowPNA.description>A low-efficiency PNA output state stabilized after a rabbit clone reaches maturity.</SSC_Hediff_RabbitCloneLowPNA.description>
+  <SSC_Hediff_PetFox.label>pet fox specialization</SSC_Hediff_PetFox.label>
+  <SSC_Hediff_PetFox.description>A specialization developed through research, tending and training. Research speed, tending speed and tending quality improve at 20% and 50% progress.</SSC_Hediff_PetFox.description>
+  <SSC_Hediff_PetFox.stages.0.label>forming</SSC_Hediff_PetFox.stages.0.label>
+  <SSC_Hediff_PetFox.stages.1.label>skilled researcher and medic</SSC_Hediff_PetFox.stages.1.label>
+  <SSC_Hediff_PetFox.stages.2.label>research and medical specialist</SSC_Hediff_PetFox.stages.2.label>
+  <SSC_Hediff_PetFox_Final.label>final pet fox specialization</SSC_Hediff_PetFox_Final.label>
+  <SSC_Hediff_PetFox_Final.description>A final specialization shaped through personality gel. Research and tending are 50% faster, and the tending quality factor is 15% higher. Grants the Emergency Bandaging ability.</SSC_Hediff_PetFox_Final.description>
 </LanguageData>

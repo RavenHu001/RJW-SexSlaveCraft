@@ -91,6 +91,8 @@ internal static partial class Program
                 });
             foreach (bool scene in new[] { false, true })
             {
+                Check("fox extraction transfers research remainder only after placement scene=" + scene,
+                    () => FoxExtractionTransfersResearchRemainder(scene));
                 Check("batch4 placement failure retains source preference but cancels old commands scene=" + scene, () =>
                 {
                     CommandReset(); var (source, other) = CommandPair(SSCRomanceAction.Romance); PutOnTransferMap(source);
@@ -163,6 +165,78 @@ internal static partial class Program
         }
         finally { mapsField.SetValue(Current.Game, previousMaps); boundary.UnpatchAll(boundary.Id); }
     }
+
+    private static void FoxExtractionTransfersResearchRemainder(bool scene)
+    {
+        CommandReset();
+        const SexSlaveSpecializationType fox = SexSlaveSpecializationType.PetFox;
+        var remainder = AccessTools.Field(typeof(CompSexSlaveTraining), "foxResearchPointRemainder");
+        var source = SocialSlave();
+        PutOnTransferMap(source);
+        var sourceComp = Comp(source);
+        sourceComp.SetSpecialization(fox);
+        sourceComp.specializationProgress = .4f;
+        remainder.SetValue(sourceComp, .625d);
+        PetSpecializationUtility.EnsurePetHediffFromSpecialization(source);
+        var foxState = PetSpecializationUtility.GetBaseHediffDef(fox);
+
+        transferProduct = null;
+        transferSpawnFails = true;
+        try
+        {
+            ExtractForTransfer(source, scene);
+            Require(false, "placement should throw");
+        }
+        catch (Exception e) when (e.GetBaseException().Message == "expected transfer placement failure") { }
+        finally { transferSpawnFails = false; }
+        Require(transferProduct == null && source.health.hediffSet.HasHediff(foxState));
+        Equal(.4f, sourceComp.specializationProgress);
+        Equal(.625d, (double)remainder.GetValue(sourceComp));
+
+        ExtractForTransfer(source, scene);
+        var gel = transferProduct.TryGetComp<CompPersonalityStore>();
+        Require(gel.HasTag(foxState) && !source.health.hediffSet.HasHediff(foxState));
+        Equal(SexSlaveSpecializationType.None, sourceComp.specializationType);
+        Require(!sourceComp.ExportSpecializationProgress().ContainsKey(fox.ToString()));
+        Equal(0d, (double)remainder.GetValue(sourceComp));
+
+        var receiver = SocialSlave();
+        remainder.SetValue(Comp(receiver), .125d);
+        Require(ExcretionUtility.InheritEverything(receiver, gel));
+        Equal(fox, Comp(receiver).specializationType);
+        Equal(.4f, Comp(receiver).specializationProgress);
+        Equal(.625d, (double)remainder.GetValue(Comp(receiver)));
+    }
+
+    private static void FoxRecordHooksTest()
+    {
+        var boundary = new Harmony("ssc.tests.fox.records");
+        try
+        {
+            boundary.CreateClassProcessor(production.GetType("SexSlaveCraft.Patch_FoxResearchProgress")).Patch();
+            boundary.CreateClassProcessor(production.GetType("SexSlaveCraft.Patch_FoxTendingProgress")).Patch();
+            Check("fox research and tending hooks handle actual native record writes", () =>
+            {
+                RecordDefOf.ResearchPointsResearched.type = RecordType.Float;
+                RecordDefOf.TimesTendedOther.type = RecordType.Int;
+                var pawn = SocialSlave();
+                var comp = Comp(pawn);
+                comp.SetSpecialization(SexSlaveSpecializationType.PetFox);
+                pawn.records = new Pawn_RecordsTracker(pawn);
+                pawn.jobs = new Pawn_JobTracker(pawn);
+                pawn.jobs.curDriver = new JobDriver_Research { pawn = pawn };
+                pawn.records.AddTo(RecordDefOf.ResearchPointsResearched, 100f);
+                Equal(.0025f, comp.specializationProgress);
+
+                pawn.jobs.curJob = new Job { targetA = SocialPawn() };
+                pawn.jobs.curDriver = new JobDriver_TendPatient { pawn = pawn, job = pawn.jobs.curJob };
+                pawn.records.Increment(RecordDefOf.TimesTendedOther);
+                Equal(.0025f + .001f, comp.specializationProgress);
+            });
+        }
+        finally { boundary.UnpatchAll(boundary.Id); }
+    }
+
     /// <summary>只提供生成实例的引擎边界，采集、清源、加工和恢复仍走完整生产方法。</summary>
     private static bool TransferMakeThing(ThingDef __0, ref Thing __result)
     {

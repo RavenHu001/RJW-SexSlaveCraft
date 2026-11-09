@@ -55,6 +55,9 @@ namespace SexSlaveCraft
                 case SexSlaveSpecializationType.PetCat:
                 case SexSlaveSpecializationType.PetDog:
                 case SexSlaveSpecializationType.PetRabbit:
+#if SSC_RW17
+                case SexSlaveSpecializationType.PetFox:
+#endif
                     PetSpecializationUtility.EnsurePetHediffFromSpecialization(receiver);
                     break;
             }
@@ -75,6 +78,9 @@ namespace SexSlaveCraft
                 case SexSlaveSpecializationType.PetCat:
                 case SexSlaveSpecializationType.PetDog:
                 case SexSlaveSpecializationType.PetRabbit:
+#if SSC_RW17
+                case SexSlaveSpecializationType.PetFox:
+#endif
                     PetSpecializationUtility.TryGainPetProgress(receiver, type, amount);
                     break;
                 case SexSlaveSpecializationType.Bus:
@@ -106,6 +112,9 @@ namespace SexSlaveCraft
                 case SexSlaveSpecializationType.PetCat:
                 case SexSlaveSpecializationType.PetDog:
                 case SexSlaveSpecializationType.PetRabbit:
+#if SSC_RW17
+                case SexSlaveSpecializationType.PetFox:
+#endif
                     return PetSpecializationUtility.CanTrainPetSpecialization(receiver, type);
                 case SexSlaveSpecializationType.TrainerOfficer:
                     return TrainerSpecializationUtility.MeetsContinuousConditions(receiver, out _)

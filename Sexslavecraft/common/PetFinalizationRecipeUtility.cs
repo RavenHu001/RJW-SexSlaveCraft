@@ -1,20 +1,12 @@
 using System.Linq;
 using Verse;
+using static SexSlaveCraft.PetSpecializationRules;
 
 namespace SexSlaveCraft
 {
     /// <summary>宠物终极化的只读资格；筛料、消耗前守卫和工作者共用。</summary>
     internal static class PetFinalizationRecipeUtility
     {
-        // 互斥组只包括猫、狗、兔。遍历整个组才能阻止跨种终极冲突，
-        // 奶牛等组外成果不会参与此检查，也不会在产物清理时被移除。
-        private static readonly SexSlaveSpecializationType[] PetTypes =
-        {
-            SexSlaveSpecializationType.PetCat,
-            SexSlaveSpecializationType.PetDog,
-            SexSlaveSpecializationType.PetRabbit
-        };
-
         /// <summary>按输出 Hediff 的名称识别宠物终极目标，供官方及同目标的外部配方使用。</summary>
         private static SexSlaveSpecializationType GetTargetType(RecipeDef_PSTag recipe)
         {
@@ -53,27 +45,26 @@ namespace SexSlaveCraft
                 recipe.requireSpecializationType != type || !recipe.requireSpecializationComplete ||
                 recipe.severity != 1f) return false;
 
-            // 组内六个 Def 必须齐全，才能识别全部冲突并清理产物普通标签。
-            // 缺定义不视作“没有终极”，而是保守拒绝；此检查不修改源凝胶。
+            // 用同一版本的成员清单检查定义和终极冲突。缺定义时保守拒绝。
             foreach (SexSlaveSpecializationType petType in PetTypes)
-                if (PetSpecializationUtility.GetBaseHediffDef(petType) == null ||
-                    PetSpecializationUtility.GetFinalHediffDef(petType) == null) return false;
+            {
+                HediffDef finalDef = PetSpecializationUtility.GetFinalHediffDef(petType);
+                if (PetSpecializationUtility.GetBaseHediffDef(petType) == null || finalDef == null ||
+                    gel.HasTag(finalDef)) return false;
+            }
             HediffDef baseDef = PetSpecializationUtility.GetBaseHediffDef(type);
             if (recipe.hediffToAdd != PetSpecializationUtility.GetFinalHediffDef(type)) return false;
 
             // 只认当前方向及其当前进度；历史字典不能授予本次加工资格。
             // 0.999 是既有完成容差，有限值与上限检查阻止异常数据绕过门槛。
-            // 普通标签证明尚处普通阶段，CanTrain 同时排除组内任意终极。
+            // 普通标签证明尚处普通阶段。
             // 不追加玩家选择的开放／研究门槛，以保留合法旧猫、兔人格的加工。
             // 不检查 parent.Destroyed：正常结算先消耗原料，工作者随后读取组件；
             // 物品存活与数量由筛料、消耗前守卫及工作者各自按执行时机检查。
             float progress = gel.specializationProgress;
             return !float.IsNaN(progress) && !float.IsInfinity(progress) &&
                 progress >= CompSexSlaveTraining.SpecializationCompletionProgress && progress <= 1f &&
-                gel.HasTag(baseDef) && PetSpecializationRules.CanTrain(type, gel.specializationType,
-                    gel.HasTag(PetSpecializationUtility.GetFinalHediffDef(SexSlaveSpecializationType.PetCat)),
-                    gel.HasTag(PetSpecializationUtility.GetFinalHediffDef(SexSlaveSpecializationType.PetDog)),
-                    gel.HasTag(PetSpecializationUtility.GetFinalHediffDef(SexSlaveSpecializationType.PetRabbit)));
+                gel.specializationType == type && gel.HasTag(baseDef);
         }
 
         /// <summary>预检既有凝胶等级映射及产物人格组件声明，避免消耗后无法复制人格。</summary>
@@ -88,7 +79,7 @@ namespace SexSlaveCraft
                 typeof(CompPersonalityStore).IsAssignableFrom(props.compClass)) == true;
         }
 
-        /// <summary>从已复制的产物清除三种宠物普通标签，交由调用方写入一个目标终极。</summary>
+        /// <summary>从已复制的产物清除组内普通标签，交由调用方写入一个目标终极。</summary>
         internal static void RemoveOrdinaryTags(CompPersonalityStore product)
         {
             // 调用前已经验证完整组定义及来源资格。只清理产物的状态标签，

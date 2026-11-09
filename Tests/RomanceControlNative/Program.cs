@@ -82,7 +82,7 @@ internal static partial class Program
             SSCDefOf.SSC_Hediff_Bus_Final = new HediffDef { defName = "SSC_Hediff_Bus_Final" };
             SSCDefOf.SSC_Hediff_Cow = new HediffDef { defName = "SSC_Hediff_Cow" };
             SSCDefOf.SSC_Hediff_Cow_Final = new HediffDef { defName = "SSC_Hediff_Cow_Final" };
-            foreach (string pet in new[] { "PetCat", "PetDog", "PetRabbit" })
+            foreach (string pet in new[] { "PetCat", "PetDog", "PetRabbit", "PetFox" })
             foreach (string suffix in new[] { "", "_Final" }) DefDatabase<HediffDef>.Add(new HediffDef { defName = "SSC_Hediff_" + pet + suffix });
             SSCDefOf.SSC_PersonalityExcreted_Done = new HediffDef { defName = "SSC_PersonalityExcreted_Done" };
             player = Bare<Faction>(); player.def = new FactionDef { defName = "RomanceTestPlayer", isPlayer = true };
@@ -134,8 +134,10 @@ internal static partial class Program
             RomanceSocialBatch1Tests(harmony, repo);
             RomanceSocialReviewTests();
             RomanceSocialBatch2Tests(harmony, repo, game);
+            FoxRecordHooksTest();
             PersonalResetTests(harmony);
             RabbitCookingTests(harmony, repo, game);
+            FoxEmergencyTendTests(repo);
             }
         }
         finally { harmony.UnpatchAll(harmony.Id); Scribe.mode = LoadSaveMode.Inactive; Current.Game = null; }

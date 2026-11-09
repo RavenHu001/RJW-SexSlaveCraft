@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_PetFoxEmergencyTend_InvalidCaster>The caster must be an awake final Pet Fox capable of manipulation.</SSC_PetFoxEmergencyTend_InvalidCaster>
+  <SSC_PetFoxEmergencyTend_InvalidTarget>Select another humanlike member of your faction on this map.</SSC_PetFoxEmergencyTend_InvalidTarget>
+  <SSC_PetFoxEmergencyTend_NoWounds>The target currently has no wounds that can be tended.</SSC_PetFoxEmergencyTend_NoWounds>
+  <SSC_PetFoxEmergencyTend_UnreachableTarget>Cannot reach the target.</SSC_PetFoxEmergencyTend_UnreachableTarget>
+</LanguageData>

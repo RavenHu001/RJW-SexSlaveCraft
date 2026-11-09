@@ -2,6 +2,7 @@ using RimWorld;
 using UnityEngine;
 using Verse;
 using Verse.AI;
+using static SexSlaveCraft.PetSpecializationRules;
 
 namespace SexSlaveCraft
 {
@@ -12,13 +13,6 @@ namespace SexSlaveCraft
         private const float AutoAffectionMaxDistance = 2.9f;
         // 猫的陪伴特色经验按一次成功亲昵结算；频率沿用共用的一天完成冷却。
         private const float CatAffectionProgressGain = 0.01f;
-
-        private static readonly SexSlaveSpecializationType[] PetTypes =
-        {
-            SexSlaveSpecializationType.PetCat,
-            SexSlaveSpecializationType.PetDog,
-            SexSlaveSpecializationType.PetRabbit
-        };
 
         public static bool IsPetSpecialization(SexSlaveSpecializationType type)
         {
@@ -35,6 +29,10 @@ namespace SexSlaveCraft
                     return DefDatabase<HediffDef>.GetNamedSilentFail("SSC_Hediff_PetDog");
                 case SexSlaveSpecializationType.PetRabbit:
                     return DefDatabase<HediffDef>.GetNamedSilentFail("SSC_Hediff_PetRabbit");
+#if SSC_RW17
+                case SexSlaveSpecializationType.PetFox:
+                    return DefDatabase<HediffDef>.GetNamedSilentFail("SSC_Hediff_PetFox");
+#endif
                 default:
                     return null;
             }
@@ -50,6 +48,10 @@ namespace SexSlaveCraft
                     return DefDatabase<HediffDef>.GetNamedSilentFail("SSC_Hediff_PetDog_Final");
                 case SexSlaveSpecializationType.PetRabbit:
                     return DefDatabase<HediffDef>.GetNamedSilentFail("SSC_Hediff_PetRabbit_Final");
+#if SSC_RW17
+                case SexSlaveSpecializationType.PetFox:
+                    return DefDatabase<HediffDef>.GetNamedSilentFail("SSC_Hediff_PetFox_Final");
+#endif
                 default:
                     return null;
             }
@@ -65,6 +67,10 @@ namespace SexSlaveCraft
                     return "SSC_RES_PetDog";
                 case SexSlaveSpecializationType.PetRabbit:
                     return "SSC_RES_PetRabbit";
+#if SSC_RW17
+                case SexSlaveSpecializationType.PetFox:
+                    return "SSC_RES_PetFox";
+#endif
                 default:
                     return null;
             }
@@ -103,7 +109,8 @@ namespace SexSlaveCraft
             return PetSpecializationRules.HasEffects(type, comp?.specializationType ?? SexSlaveSpecializationType.None,
                 HasFinalPetState(pawn, SexSlaveSpecializationType.PetCat),
                 HasFinalPetState(pawn, SexSlaveSpecializationType.PetDog),
-                HasFinalPetState(pawn, SexSlaveSpecializationType.PetRabbit));
+                HasFinalPetState(pawn, SexSlaveSpecializationType.PetRabbit),
+                HasFinalPetState(pawn, SexSlaveSpecializationType.PetFox));
         }
 
         /// <summary>终极成果使用完成进度；普通效果只读取本种当前进度，绝不借用其他方向或历史。</summary>
@@ -131,7 +138,8 @@ namespace SexSlaveCraft
             return comp != null && PetSpecializationRules.CanTrain(type, comp.specializationType,
                 HasFinalPetState(pawn, SexSlaveSpecializationType.PetCat),
                 HasFinalPetState(pawn, SexSlaveSpecializationType.PetDog),
-                HasFinalPetState(pawn, SexSlaveSpecializationType.PetRabbit));
+                HasFinalPetState(pawn, SexSlaveSpecializationType.PetRabbit),
+                HasFinalPetState(pawn, SexSlaveSpecializationType.PetFox));
         }
 
         public static bool IsPetTag(HediffDef def)
@@ -198,6 +206,11 @@ namespace SexSlaveCraft
                     hediff.Severity = Mathf.Max(InitialHediffSeverity, comp.specializationProgress);
                 }
             }
+#if SSC_RW17
+            if (comp.specializationType == SexSlaveSpecializationType.PetFox &&
+                comp.specializationProgress >= CompSexSlaveTraining.SpecializationCompletionProgress)
+                comp.foxResearchPointRemainder = 0d;
+#endif
         }
 
         /// <summary>清理不生效的普通状态后同步当前普通进度；不删除终极成果或选择冲突成果。</summary>
@@ -243,7 +256,8 @@ namespace SexSlaveCraft
             if (!PetSpecializationRules.CanChangeDirection(type,
                 HasFinalPetState(pawn, SexSlaveSpecializationType.PetCat),
                 HasFinalPetState(pawn, SexSlaveSpecializationType.PetDog),
-                HasFinalPetState(pawn, SexSlaveSpecializationType.PetRabbit), out failure)) return false;
+                HasFinalPetState(pawn, SexSlaveSpecializationType.PetRabbit),
+                HasFinalPetState(pawn, SexSlaveSpecializationType.PetFox), out failure)) return false;
             if (HasFinalPetState(pawn, type))
             {
                 failure = PetSpecializationFailure.AlreadyFinalized;
@@ -445,6 +459,10 @@ namespace SexSlaveCraft
                     return Strings.ITab_SpecializationPetDog;
                 case SexSlaveSpecializationType.PetRabbit:
                     return Strings.ITab_SpecializationPetRabbit;
+#if SSC_RW17
+                case SexSlaveSpecializationType.PetFox:
+                    return "SSC_ITab_SpecializationPetFox".Translate();
+#endif
                 default:
                     return Strings.ITab_SpecializationNone;
             }
@@ -460,6 +478,10 @@ namespace SexSlaveCraft
                     return Strings.ITab_SelectSpecializationPetDog;
                 case SexSlaveSpecializationType.PetRabbit:
                     return Strings.ITab_SelectSpecializationPetRabbit;
+#if SSC_RW17
+                case SexSlaveSpecializationType.PetFox:
+                    return "SSC_ITab_SelectSpecializationPetFox".Translate();
+#endif
                 default:
                     return Strings.ITab_SelectSpecializationNone;
             }
@@ -532,12 +554,14 @@ namespace SexSlaveCraft
         }
 
 #if SSC_RW17
-        /// <summary>凝胶成功取得人格后，只移走源身体的兔特化成果和进度。</summary>
-        internal static void DetachRabbitAfterExtraction(Pawn pawn)
+        /// <summary>凝胶成功取得人格后，移走本版兔、狐的成果及培养数据。</summary>
+        internal static void DetachRabbitAndFoxAfterExtraction(Pawn pawn)
         {
             RemoveIfPresent(pawn, GetBaseHediffDef(SexSlaveSpecializationType.PetRabbit));
             RemoveIfPresent(pawn, GetFinalHediffDef(SexSlaveSpecializationType.PetRabbit));
-            pawn?.TryGetComp<CompSexSlaveTraining>()?.ClearPetRabbitProgressAfterExtraction();
+            RemoveIfPresent(pawn, GetBaseHediffDef(SexSlaveSpecializationType.PetFox));
+            RemoveIfPresent(pawn, GetFinalHediffDef(SexSlaveSpecializationType.PetFox));
+            pawn?.TryGetComp<CompSexSlaveTraining>()?.ClearRabbitAndFoxProgressAfterExtraction();
         }
 #endif
 

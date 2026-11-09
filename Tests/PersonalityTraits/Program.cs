@@ -58,6 +58,7 @@ internal static partial class Program
         RunPnaBodyCases();
 #if SSC_RW17
         RunRabbitHouseworkCases();
+        RunFoxTrainingCases();
         RunUterusBodyCases();
         RunRomanceCases();
 #endif
