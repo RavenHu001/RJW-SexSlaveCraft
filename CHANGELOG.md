@@ -1,6 +1,6 @@
 # 更新日志 / Changelog — SexSlaveCraft（TieJin 接续版 / TieJin continuation）
 
-## [2.4.10] — 宠物兔与宠物狐 / Pet Rabbit and Pet Fox
+## [2.4.10] — 2026-11-09 — 宠物兔与宠物狐 / Pet Rabbit and Pet Fox
 
 以 `v2.4.9` 为起点，截至 `5640afba` 的 27 个非合并提交、2 个合并提交及 216 个净变更路径归入 2.4.10。新增面向 1.7。[下载 2.4.10](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.10)。[双语说明](Docs/Releases/2.4.10/2.4.10发布说明.md) · [开发归并](Docs/Releases/2.4.10/2.4.10开发归并核对.md) · [分批验证](Docs/Releases/2.4.10/2.4.10版本验证.md)
 
