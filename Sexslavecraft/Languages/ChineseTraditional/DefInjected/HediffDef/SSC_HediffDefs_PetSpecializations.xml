@@ -1,20 +1,20 @@
 <?xml version='1.0' encoding='utf-8'?>
 <LanguageData>
   <SSC_Hediff_PetCat.label>寵物貓專精</SSC_Hediff_PetCat.label>
-  <SSC_Hediff_PetCat.description>正在形成的寵物貓專精。偏向敏捷、閃避，以及對主人的親暱依附。</SSC_Hediff_PetCat.description>
+  <SSC_Hediff_PetCat.description>正在形成的寵物貓專精。行動更加靈活，擊傷野生獵物時更少遭到反撲。</SSC_Hediff_PetCat.description>
   <SSC_Hediff_PetCat.stages.0.label>成型中</SSC_Hediff_PetCat.stages.0.label>
   <SSC_Hediff_PetCat.stages.1.label>靈巧</SSC_Hediff_PetCat.stages.1.label>
   <SSC_Hediff_PetCat.stages.2.label>難以捕捉</SSC_Hediff_PetCat.stages.2.label>
   <SSC_Hediff_PetCat_Final.label>終極寵物貓專精</SSC_Hediff_PetCat_Final.label>
-  <SSC_Hediff_PetCat_Final.description>透過人格凝膠完成的終極寵物貓專精。保留移動、閃避和親暱效果，並獲得「貼心安撫」：使其他玩家陣營人形角色從精神狀態中恢復，或給予短暫的心情與工作速度鼓舞。</SSC_Hediff_PetCat_Final.description>
+  <SSC_Hediff_PetCat_Final.description>透過人格凝膠完成的終極寵物貓專精。移動速度提高 25%，狩獵隱蔽進一步增強，並獲得「貼心安撫」，可使其他玩家陣營人形角色從精神狀態中恢復，或短暫提高心情與工作速度。</SSC_Hediff_PetCat_Final.description>
   <SSC_Hediff_PetDog.label>寵物狗專精</SSC_Hediff_PetDog.label>
-  <SSC_Hediff_PetDog.description>正在形成的寵物狗專精。偏向動物處理、服從和動物訓練互動。</SSC_Hediff_PetDog.description>
+  <SSC_Hediff_PetDog.description>正在形成的寵物狗專精。擅長馴服、訓練動物和田間種植作業。</SSC_Hediff_PetDog.description>
   <SSC_Hediff_PetDog.stages.0.label>成型中</SSC_Hediff_PetDog.stages.0.label>
   <SSC_Hediff_PetDog.stages.1.label>服從</SSC_Hediff_PetDog.stages.1.label>
   <SSC_Hediff_PetDog.stages.2.label>獸欄調教完成</SSC_Hediff_PetDog.stages.2.label>
   <SSC_Hediff_PetDog.stages.3.label>領群犬</SSC_Hediff_PetDog.stages.3.label>
   <SSC_Hediff_PetDog_Final.label>終極寵物狗專精</SSC_Hediff_PetDog_Final.label>
-  <SSC_Hediff_PetDog_Final.description>透過人格凝膠完成的終極寵物狗專精。保留動物處理和訓練屬性，並獲得「馴獸」：走到同地圖上符合條件的動物所在格，完成短暫馴導後直接馴服野生動物，或完整完成己方動物的一個已勾選訓練項目。</SSC_Hediff_PetDog_Final.description>
+  <SSC_Hediff_PetDog_Final.description>透過人格凝膠完成的終極寵物狗專精。強化動物馴服和訓練屬性，種植作業速度提高 40%，並獲得「馴獸」。走到同地圖上符合條件的動物所在格，短暫馴導後可直接馴服野生動物，或完成己方動物的一個已勾選訓練項目。</SSC_Hediff_PetDog_Final.description>
   <SSC_Hediff_PetRabbit.label>寵物兔專精</SSC_Hediff_PetRabbit.label>
   <SSC_Hediff_PetRabbit.description>透過打掃、烹飪和調教培養的家政專精。培養達到 20% 後提高清潔與烹飪速度，達到 50% 後進一步提高這兩項速度。</SSC_Hediff_PetRabbit.description>
   <SSC_Hediff_PetRabbit.stages.0.label>成型中</SSC_Hediff_PetRabbit.stages.0.label>

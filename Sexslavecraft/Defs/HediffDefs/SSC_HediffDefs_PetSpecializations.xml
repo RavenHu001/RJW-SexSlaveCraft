@@ -4,7 +4,7 @@
   <HediffDef>
     <defName>SSC_Hediff_PetCat</defName>
     <label>宠物猫专精</label>
-    <description>正在形成的宠物猫专精。偏向敏捷、闪避，以及对主人的亲昵依附。</description>
+    <description>正在形成的宠物猫专精。行动更加灵活，击伤野生猎物时更少遭到反扑。</description>
     <isBad>false</isBad>
     <initialSeverity>0.01</initialSeverity>
     <maxSeverity>1</maxSeverity>
@@ -16,18 +16,18 @@
       <li>
         <label>灵巧</label>
         <minSeverity>0.2</minSeverity>
-        <statOffsets>
-          <MoveSpeed>0.08</MoveSpeed>
-          <MeleeDodgeChance>0.04</MeleeDodgeChance>
-        </statOffsets>
+        <statFactors>
+          <MoveSpeed>1.08</MoveSpeed>
+          <HuntingStealth>1.40</HuntingStealth>
+        </statFactors>
       </li>
       <li>
         <label>难以捕捉</label>
         <minSeverity>0.5</minSeverity>
-        <statOffsets>
-          <MoveSpeed>0.16</MoveSpeed>
-          <MeleeDodgeChance>0.08</MeleeDodgeChance>
-        </statOffsets>
+        <statFactors>
+          <MoveSpeed>1.16</MoveSpeed>
+          <HuntingStealth>1.70</HuntingStealth>
+        </statFactors>
       </li>
     </stages>
   </HediffDef>
@@ -36,7 +36,7 @@
     <defName>SSC_Hediff_PetCat_Final</defName>
     <hediffClass>HediffWithComps</hediffClass>
     <label>终极宠物猫专精</label>
-    <description>通过人格凝胶完成的终极宠物猫专精。保留移动、闪避和亲昵效果，并获得“贴心安抚”：使其他玩家阵营人形角色从精神状态中恢复，或给予短暂的心情与工作速度鼓舞。</description>
+    <description>通过人格凝胶完成的终极宠物猫专精。移动速度提高 25%，狩猎隐蔽进一步增强，并获得“贴心安抚”：使其他玩家阵营人形角色从精神状态中恢复，或给予短暂的心情与工作速度鼓舞。</description>
     <isBad>false</isBad>
     <initialSeverity>1</initialSeverity>
     <maxSeverity>1</maxSeverity>
@@ -50,10 +50,10 @@
     <stages>
       <li>
         <minSeverity>0</minSeverity>
-        <statOffsets>
-          <MoveSpeed>0.22</MoveSpeed>
-          <MeleeDodgeChance>0.12</MeleeDodgeChance>
-        </statOffsets>
+        <statFactors>
+          <MoveSpeed>1.25</MoveSpeed>
+          <HuntingStealth>2.00</HuntingStealth>
+        </statFactors>
       </li>
     </stages>
   </HediffDef>
@@ -61,7 +61,7 @@
   <HediffDef>
     <defName>SSC_Hediff_PetDog</defName>
     <label>宠物狗专精</label>
-    <description>正在形成的宠物狗专精。偏向动物处理、服从和动物训练互动。</description>
+    <description>正在形成的宠物狗专精。擅长驯服、训练动物和田间种植作业。</description>
     <isBad>false</isBad>
     <initialSeverity>0.01</initialSeverity>
     <maxSeverity>1</maxSeverity>
@@ -77,6 +77,9 @@
           <TameAnimalChance>0.08</TameAnimalChance>
           <TrainAnimalChance>0.08</TrainAnimalChance>
         </statOffsets>
+        <statFactors>
+          <PlantWorkSpeed>1.10</PlantWorkSpeed>
+        </statFactors>
       </li>
       <li>
         <label>兽栏调教完成</label>
@@ -85,6 +88,9 @@
           <TameAnimalChance>0.15</TameAnimalChance>
           <TrainAnimalChance>0.15</TrainAnimalChance>
         </statOffsets>
+        <statFactors>
+          <PlantWorkSpeed>1.20</PlantWorkSpeed>
+        </statFactors>
       </li>
       <li>
         <label>领群犬</label>
@@ -93,6 +99,9 @@
           <TameAnimalChance>0.20</TameAnimalChance>
           <TrainAnimalChance>0.20</TrainAnimalChance>
         </statOffsets>
+        <statFactors>
+          <PlantWorkSpeed>1.30</PlantWorkSpeed>
+        </statFactors>
       </li>
     </stages>
   </HediffDef>
@@ -101,7 +110,7 @@
     <defName>SSC_Hediff_PetDog_Final</defName>
     <hediffClass>HediffWithComps</hediffClass>
     <label>终极宠物狗专精</label>
-    <description>通过人格凝胶完成的终极宠物狗专精。保留动物处理和训练属性，并获得“驯兽”：走到同地图上符合条件的动物所在格，完成短暂训导后直接驯服野生动物，或完整完成己方动物的一个已勾选训练项目。</description>
+    <description>通过人格凝胶完成的终极宠物狗专精。增强动物驯服和训练属性，种植作业速度提高 40%，并获得“驯兽”：走到同地图上符合条件的动物所在格，完成短暂训导后直接驯服野生动物，或完整完成己方动物的一个已勾选训练项目。</description>
     <isBad>false</isBad>
     <initialSeverity>1</initialSeverity>
     <maxSeverity>1</maxSeverity>
@@ -119,6 +128,9 @@
           <TameAnimalChance>0.25</TameAnimalChance>
           <TrainAnimalChance>0.25</TrainAnimalChance>
         </statOffsets>
+        <statFactors>
+          <PlantWorkSpeed>1.40</PlantWorkSpeed>
+        </statFactors>
       </li>
     </stages>
   </HediffDef>
