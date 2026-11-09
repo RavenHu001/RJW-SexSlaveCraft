@@ -1,5 +1,7 @@
 # RJW-SexSlaveCraft · TieJin Modify
 
+**当前开发版为 2.4.10。** 兔家政、狐狸科研医疗、猫狗平衡与动物特化四语文案已归入本版。正式下载使用 v2.4.9。[2.4.10 开发说明](Docs/Releases/2.4.10/2.4.10发布说明.md) · [归并核对](Docs/Releases/2.4.10/2.4.10开发归并核对.md) · [验证与发布准备](Docs/Releases/2.4.10/2.4.10版本验证.md)
+
 **2.4.9 — 2026-11-02正式发布。** [下载](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.9)。完整All **52套／6535项全部通过**，资源2／2、发布编排56及文案隔离75项通过；532份冻结文件未变。标签源码`2b288569`，ZIP及SHA-256已上传并复核为最新稳定版；本轮未启动新游戏或同步安装目录。下方开发／登记记录保留原日期与范围。
 
 2026-10-31：**2.4.8已正式发布**，[下载](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.8)。完整All **50套／6429项全部通过**，资源2／2、发布编排56及文案隔离75项通过；532份冻结文件未改。源码标签`411e1ce8`，ZIP及SHA-256已上传并复核为最新稳定版；本轮没有启动新游戏或同步安装目录。原分批／登记状态与计数保留原时点。
@@ -11,6 +13,17 @@
 面向 RimWorld 的成人向 RimJobWorld（RJW）扩展，基于上游 **2.2.8** 继续维护，提供角色培养、主从绑定、特化、人格转移和身体改造。
 
 [2.4.9版本范围](Docs/Releases/2.4.9/2.4.9发布说明.md) · [正式下载2.4.9](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.9) · [双语模组简介](Docs/模组介绍.md) · [玩家阅读入口](Docs/Players/README.md) · [文档总索引](Docs/README.md) · [English](#english-overview)
+
+## 2.4.10 开发内容（仅 1.7）
+
+| 主题 | 范围 |
+| --- | --- |
+| 宠物兔 | 清洁与烹饪培养、人格凝胶终极化及「精心料理」 |
+| 宠物狐 | 科研与护理培养、人格凝胶终极化及「应急包扎」 |
+| 猫狗与宠物组 | 猫的移速与狩猎隐蔽、狗的动物与种植收益、四宠终极互斥及四语文本统一 |
+| 维护 | 工作栏和绑定仪式英文、玩家提示与称谓、兼容加载顺序、三档发烟器贴图、文档归档 |
+
+兔和狐各两批已获对应实机验收，完整 2.4.10 发布门禁待执行。[分批证据](Docs/Releases/2.4.10/2.4.10版本验证.md)
 
 ## 2.4.9 新增内容（仅1.7）
 
@@ -50,7 +63,7 @@
 | 心情、日志与文案 | 对象＋五组心情、三类十三日志、任务／历史／信件、四语270项 | [完整规则](机制详解.md#27-246-个人能力与浪漫控制仅-17未发布) |
 | PNA 引导与维护 | 物品／研究产出引导、首次绑定提示、战斗超频图标与文案测试隔离 | [开发范围与边界](Docs/Releases/2.4.6/2.4.6发布说明.md) |
 
-机制分批及简中文案已有本机认可；繁英俄文案已审阅但尚未同步／实机，PNA引导已同步，并于2026-10-27确认有效。2.4.6发布时VERSION、About及1.7产物已对齐该版；当前2.4.9仅登记VERSION与文档，统一门禁和包审计按版本单独记录，见[验证与准备](Docs/Releases/2.4.6/2.4.6版本验证.md)。
+机制分批及简中文案已有本机认可；繁英俄文案已审阅但尚未同步／实机，PNA引导已同步，并于2026-10-27确认有效。2.4.6发布时VERSION、About及1.7产物已对齐该版；统一门禁和包审计按版本单独记录，见[验证与准备](Docs/Releases/2.4.6/2.4.6版本验证.md)。
 
 ## 2.4.5 继承内容（仅 1.7，未发布）
 
@@ -102,7 +115,7 @@
 | 用途 | 阅读顺序 |
 | --- | --- |
 | 了解与游玩 | [模组介绍](Docs/模组介绍.md) → [玩家阅读入口](Docs/Players/README.md) → 快速入门 → 完整机制 |
-| 查看版本变化 | [2.4.9开发说明](Docs/Releases/2.4.9/2.4.9发布说明.md) → [提交归并](Docs/Releases/2.4.9/2.4.9开发归并核对.md) → [验证边界](Docs/Releases/2.4.9/2.4.9版本验证.md)；[2.4.4 正式范围](Docs/Releases/2.4.4/2.4.4发布说明.md) |
+| 查看版本变化 | [2.4.10 开发说明](Docs/Releases/2.4.10/2.4.10发布说明.md) → [提交归并](Docs/Releases/2.4.10/2.4.10开发归并核对.md) → [验证边界](Docs/Releases/2.4.10/2.4.10版本验证.md)。正式发布范围见 [2.4.9](Docs/Releases/2.4.9/2.4.9发布说明.md) |
 | 接手开发 | [开发协作约定](AGENTS.md) → [开发资料入口](Docs/Development/README.md) → [已交付记录](Docs/Development/Completed/README.md) → [专项待验收](Docs/Development/Verification/README.md) → [当前规划](Docs/Design/README.md) |
 | 新增个人能力开关 | 先读[现行接入规范](Docs/Development/Reference/个人能力开关接入规范.md)，复用能力注册、原载体后端、状态查询与上下文提交；UI 行及跨 ITab 复用边界见规范 |
 | 编译、测试、打包 | [维护入口](Docs/Maintenance/README.md) → [测试说明](Tests/README.md) → [发布与打包](Docs/Maintenance/发布与打包.md) |
@@ -115,11 +128,11 @@
 
 ## English overview
 
-**Version 2.4.9 — 2026-11-02, release preparation.** Depravity Gel, three emitter tiers, map/caravan PNA maintenance and a Conception icon. [2.4.9 download](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.9). New work targets 1.7; 1.6/Common remain at 2.4.1. About/source attributes and rebuilt runtime are aligned for release; scoped acceptance, the full gate and upload receipts are recorded separately. Four-step Depravity Gel production/consumption, three emitter tiers, personal PNA maintenance on maps/caravans and a dedicated Conception icon. [Development scope](Docs/Releases/2.4.9/2.4.9发布说明.md#english) · [Validation boundaries](Docs/Releases/2.4.9/2.4.9版本验证.md). Public downloads for this version use v2.4.9; 1.6/Common stay at 2.4.1. Runtime metadata is aligned to 2.4.9; actual full-gate and publication results are recorded separately.
+**Development milestone 2.4.10** adds Pet Rabbit housekeeping, Pet Fox research and medicine, Cat/Dog balance changes and revised animal specialization text. The public package is v2.4.9. [2.4.10 development notes](Docs/Releases/2.4.10/2.4.10发布说明.md#english) · [Download v2.4.9](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.9)
 
-SexSlaveCraft is an adult RJW expansion for pawn development, bonds, seven specializations, personality transfer and body modification. **Current version: 2.4.8 (2026-10-31).** [Download v2.4.8](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.8). New work targets 1.7; the 1.6/Common baseline stays frozen at 2.4.1.
+SexSlaveCraft is an adult RJW expansion for pawn development, bonds, specialization, personality transfer and body modification. The v2.4.9 release includes Depravity Gel, three emitter tiers, personal PNA stage maintenance and a Conception icon for RimWorld 1.7. Its RimWorld 1.6 content uses SSC 2.4.1. [2.4.9 release notes](Docs/Releases/2.4.9/2.4.9发布说明.md#english)
 
-2.4.8 adds Broodmother progression, three-state personality imprints, preconception/generation rules and a final conception scene for eligible adult targets, PNA/body frequency sources, six disabled Hollow needs and explicit trainer/work-enabling actions. Scoped batches have maintainer acceptance; replicas and the unified framework remain future work. [Development scope](Docs/Releases/2.4.8/2.4.8发布说明.md#english) · [Validation](Docs/Releases/2.4.8/2.4.8版本验证.md). Current runtime metadata is aligned to 2.4.8; formal gate and upload evidence are archived separately.
+2.4.8 adds Broodmother progression, three-state personality imprints, preconception/generation rules and a final conception scene for eligible adult targets, PNA/body frequency sources, six disabled Hollow needs and explicit trainer/work-enabling actions. Scoped batches have maintainer acceptance; replicas and the unified framework remain future work. [Development scope](Docs/Releases/2.4.8/2.4.8发布说明.md#english) · [Validation](Docs/Releases/2.4.8/2.4.8版本验证.md). The validation archive records the v2.4.8 build and package.
 
 2.4.7 adds body sensitivity and a general frequency stat, personal PNA pause/resume and status display, manual UAP group compatibility, directed attraction toward the actual Master, downed-receiver Training continuity and resonance-query optimization. Testing and documentation maintenance are included. [Development scope](Docs/Releases/2.4.7/2.4.7发布说明.md#english) · [Validation boundaries](Docs/Releases/2.4.7/2.4.7版本验证.md). VERSION, About/source version attributes and the rebuilt 1.7 binary/BUILD-INFO are aligned to 2.4.7.
 

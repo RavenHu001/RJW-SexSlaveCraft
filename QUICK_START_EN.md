@@ -1,5 +1,7 @@
 # RJW-SexSlaveCraft Quick Start Guide
 
+[2.4.10 development pet paths](#ssc-2410) · [2.4.10 development notes](Docs/Releases/2.4.10/2.4.10发布说明.md#english)
+
 [2.4.9: emitters and PNA maintenance ](#ssc-249)
 
 **Version 2.4.9 — released 2026-11-02.** [Download](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.9). Full All gate: **52 suites, 6535/6535 cases passed**; resource checks 2/2, orchestration 56 and scope isolation 75 passed. ZIP and SHA-256 verified as the latest stable release. No new game session or installation sync was performed; historical batch records retain their dates and scope.
@@ -341,15 +343,18 @@ Combatant health labels use lavender, with a brighter final state. Training Offi
 
 See the [full Combatant reference](PLAYER_GUIDE_EN.md#how-does-combatant-progress) for formulas and attributes.
 
+<a id="ssc-2410"></a>
 ## Pet Cat and Dog (2.3.7)
 
-To select Cat or Dog, set SSC identity to Sex Slave, complete Training and the matching pet research, and check that the pawn has no final pet specialization. Selection requires neither a bound master nor a chain stage. Cat gains movement speed and melee dodge at 20%, with stronger bonuses at 50%. Dog improves animal taming and training stats at 20%, 50% and 80%. Ordinary direction changes retain separate progress, and ordinary effects apply only to the current path.
+**The 2.4.10 development milestone adds Rabbit and Fox, and revises Cat and Dog passives.** The public download is v2.4.9.
+
+To select Cat or Dog, set SSC identity to Sex Slave, complete Training and the matching pet research, and check that the pawn has no final pet specialization. Selection requires neither a bound master nor a chain stage. In v2.4.9, Cat gains movement speed and melee dodge. In 2.4.10, Cat gains movement speed and hunting stealth at 20% and 50%. Dog improves taming and training at 20%, 50% and 80%, and 2.4.10 adds plant work speed. Ordinary direction changes retain separate progress, and ordinary effects apply only to the current path.
 
 Completed daily Training and full Binding Rituals give the current ordinary pet path shared progress. A current ordinary Cat gains 1 percentage point after successful affection toward its actual bound master; ordinary completion, any final pet specialization or another current path prevents this reward. Dog affection grants no progress. Actual animal training interactions and taming attempts give ordinary Dogs distinct progress; failed training rolls count as attempts, while cancellation before an interaction gives no training reward.
 
 Cat and Dog progress uses one decimal place: 99.5%–99.8% remains incomplete. At the shared completion threshold, the progress line reads "Training complete; ready to finalize". Hover over it for the steps: extract personality gel, process it into a final Cat or Dog at a sculpting table, then implant it. Ordinary completion does not directly grant a final ability. The 1.7 development build allows one final specialization across Cat, Dog, Rabbit and Fox; final bonuses, abilities and affection remain after switching to a non-pet training path.
 
-The 1.7 development build opens Pet Rabbit. After Training and Pet Rabbit research, an SSC Sex Slave can gain progress by cleaning, cooking and completing Training. When ordinary training is complete, extract personality gel, finalize it at a sculpting table and implant it to gain the final cleaning and cooking bonuses.
+The 2.4.10 development build opens Pet Rabbit. After Training and Pet Rabbit research, an SSC Sex Slave can gain progress by cleaning, cooking and completing Training. When ordinary training is complete, extract personality gel, finalize it at a sculpting table and implant it to gain the final cleaning and cooking bonuses.
 
 Pet Fox opens after Training and Pet Fox research. Every 100 research bench points grants 0.25 percentage points of progress. Each completed tend on another humanlike patient grants 0.10 percentage points. Final Fox can use Emergency Bandaging to approach an injured ally and tend all currently treatable wounds without medicine, with a one-day cooldown.
 
@@ -357,8 +362,10 @@ Pet Fox opens after Training and Pet Fox research. Every 100 research bench poin
 | --- | --- |
 | Cat: Gentle Comfort | Select another conscious player-faction humanlike pawn anywhere on the same map. Walk onto its cell and soothe it for two seconds with hearts. At completion, recover its current mental state, or grant +8 mood and ×1.10 global work speed for half a day if it has no mental state and has a mood need. Reapplication refreshes encouragement. All current mental states can be recovered; catatonic breakdown is not treated. Both effects share a one-day cooldown. |
 | Dog: Animal Training | Select an eligible factionless or player-owned animal on the same map and instruct it on its cell for two seconds. Directly tame a wild animal, or fully complete one currently eligible, checked training item for a player-owned animal using vanilla priority, including retraining a decayed item. Preserve the animal's master. Both branches share a one-day cooldown and require no extra food or materials. Cancellation, an invalid target or no valid training item starts no new cooldown. The ability grants no extra animal-work progress or work follow-up event. |
+| Rabbit: Careful Cooking (2.4.10) | Self-cast while cooking. For four game hours, cooking speed gains an extra ×1.50, and qualifying meals finished during the effect are protected from preparation-related food poisoning. One-day cooldown. |
+| Fox: Emergency Bandaging (2.4.10) | Approach an allied humanlike patient on the same map and tend their currently treatable wounds without medicine. Downed patients are eligible. A successful cast starts a one-day cooldown. |
 
-Both abilities work while drafted or undrafted. Targets must be conscious; ordinary sleep can be interrupted and conscious downed targets are allowed. Animal Training also excludes mental states and dryads. The caster must be able to reach the target's cell.
+Cat and Dog abilities work while drafted or undrafted. Their targets must be conscious; ordinary sleep can be interrupted and conscious downed targets are allowed. Animal Training also excludes mental states and dryads. The caster must be able to reach the target's cell.
 
 Ordinary affection starts automatically when both pawns are idle, awake and within about 2.9 cells. The pet approaches its actual bound master, pauses for two seconds and shows progress, facing and hearts. Success gives the master +5 mood for six hours, with one memory maximum, and starts a one-day affection cooldown. Work, combat, sleep and player commands prevent automatic interruption. Cancellation grants neither rewards nor a completion cooldown.
 
@@ -612,7 +619,6 @@ Scheduled Training remains part of SSC. Use each Sex Slave's Training tab to sel
 The following entries exist as research, defs, or placeholder code but do not currently form complete gameplay systems:
 
 - Fine Training and sensitivity discovery;
-- the final Pet Rabbit active cooking ability;
 - Femboy Conversion;
 - high-tier PNA weapon;
 - automatic granting of `Erotic Word`;

@@ -14,6 +14,8 @@
 
 2.4.9开发内容先读[发烟器／补给入门](../../读我，玩法介绍.md#ssc-249)，再按需查[完整规则](../../机制详解.md#ssc-249)与[验证边界](../Releases/2.4.9/2.4.9版本验证.md)。本版2.4.9包含这些新增，较早2.4.8包不含。
 
+**2.4.10 开发版玩家入口。** 兔、狐与猫狗调整见[中文入门](../../读我，玩法介绍.md#ssc-2410)及[完整规则](../../机制详解.md#ssc-2410)。英文见 [Quick start](../../QUICK_START_EN.md#ssc-2410) 和 [Player guide](../../PLAYER_GUIDE_EN.md#ssc-2410)。正式下载为 v2.4.9。[2.4.10 开发说明](../Releases/2.4.10/2.4.10发布说明.md)
+
 ## 中文阅读顺序
 
 1. [模组介绍](../模组介绍.md#中文)：先了解玩法与版本范围。
@@ -68,6 +70,6 @@ Use [Bond Overview](../../QUICK_START_EN.md#bond-overview-243-17-only) for portr
 
 ## 版本与资料用途 / Versions and document roles
 
-当前指南包含2.4.9及此前功能，下载入口为2.4.9；历史标签资料保持各自版本，构建与发布准备见[2.4.9 验证边界](../Releases/2.4.9/2.4.9版本验证.md)。已交付、专项待验收与未来规划分别登记，测试计数保留实际执行日期。
+当前指南同时标注 2.4.10 开发功能和 2.4.9 正式包内容。公开下载使用 v2.4.9。各批实机反馈与正式发布门禁按版本查阅。[2.4.10 验证边界](../Releases/2.4.10/2.4.10版本验证.md)
 
-These guides cover 2.4.9 additions, released 2.4.8 and the earlier 2.4.7/2.4.6 releases, including the earlier 2.4.5 milestone; the historical v2.4.4 package retains its original scope. Historical validation and maintainer acceptance retain their original scope; new build, release-gate and package results are recorded separately.
+These guides mark the 2.4.10 development features and the 2.4.9 public package separately. See the version notes for development scope, scoped acceptance and release validation. [2.4.10 development notes](../Releases/2.4.10/2.4.10发布说明.md#english)

@@ -1,5 +1,17 @@
 # 更新日志 / Changelog — SexSlaveCraft（TieJin 接续版 / TieJin continuation）
 
+## [2.4.10] — 2026-11-09 — 开发登记 / Development milestone
+
+以 `v2.4.9` 为起点，截至 `5640afba` 的 27 个非合并提交、2 个合并提交及 216 个净变更路径归入 2.4.10。新增面向 1.7。公开下载为 v2.4.9。[双语说明](Docs/Releases/2.4.10/2.4.10发布说明.md) · [开发归并](Docs/Releases/2.4.10/2.4.10开发归并核对.md) · [分批验证](Docs/Releases/2.4.10/2.4.10版本验证.md)
+
+- 宠物兔家政可通过清洁与烹饪培养，终极技能「精心料理」限时加速烹饪并防止合格餐食制作染毒。
+- 宠物狐从科研和护理获得进度，终极技能「应急包扎」可一次处理一名己方伤员当前全部可包扎伤口。
+- 四种宠物终极成果互斥。猫改为移速和狩猎隐蔽，狗新增种植速度，四种宠物的文案统一。
+- 纳入工作栏与绑定仪式英文、玩家提示和称谓、兼容加载顺序、三档发烟器贴图及资料维护。
+- 兔与狐各两批完成对应实机验收。2.4.10 完整门禁与正式包待处理。
+
+Development through `5640afba` is grouped into **2.4.10**. It adds Pet Rabbit housekeeping and Careful Cooking, Pet Fox research/medicine and Emergency Bandaging, Cat/Dog balance changes, four-pet finalization exclusivity, clearer animal specialization text and maintenance updates. Rabbit and Fox have scoped acceptance. The 2.4.10 release gate is pending.
+
 ## [2.4.9] — 2026-11-02 — 堕落凝胶、发烟器与PNA阶段维持
 
 以v2.4.8为起点，至`2c97efd5`的38个非合并提交、211个变更路径归入本版。见[双语说明](Docs/Releases/2.4.9/2.4.9发布说明.md)、[逐提交与路径](Docs/Releases/2.4.9/2.4.9开发归并核对.md)、[验证边界](Docs/Releases/2.4.9/2.4.9版本验证.md)。新增仅1.7，1.6／Common冻结2.4.1。
