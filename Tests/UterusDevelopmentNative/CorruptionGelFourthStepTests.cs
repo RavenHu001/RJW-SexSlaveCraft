@@ -275,7 +275,7 @@ internal static partial class Program
             var field = AccessTools.Field(typeof(SSCDefOf), name);
             if (field.GetValue(null) == null) field.SetValue(null, AddGelDef(new HediffDef { defName = name, hediffClass = typeof(Hediff) }));
         }
-        foreach (string pet in new[] { "PetCat", "PetDog", "PetRabbit" })
+        foreach (string pet in new[] { "PetCat", "PetDog", "PetRabbit", "PetFox" })
         foreach (string suffix in new[] { "", "_Final" })
             if (DefDatabase<HediffDef>.GetNamedSilentFail("SSC_Hediff_" + pet + suffix) == null)
                 AddGelDef(new HediffDef { defName = "SSC_Hediff_" + pet + suffix, hediffClass = typeof(Hediff) });

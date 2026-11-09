@@ -20,6 +20,12 @@ namespace UnityEngine
 
 namespace Verse
 {
+    public static class TranslationBoundary
+    {
+        // Preserve the formatted argument for the lactation model's progress assertion.
+        public static string Translate(this string key, string value) => $"{key} {value}";
+    }
+
     public class HediffCompProperties { public Type compClass; }
     public class HediffCompProperties_Chargeable : HediffCompProperties
     {

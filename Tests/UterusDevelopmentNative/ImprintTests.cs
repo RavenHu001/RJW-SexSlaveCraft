@@ -27,8 +27,9 @@ internal static partial class Program
         foreach (FieldInfo field in typeof(SSCDefOf).GetFields(BindingFlags.Static | BindingFlags.Public))
             if (field.FieldType == typeof(HediffDef) && field.GetValue(null) == null && field.Name != "SSC_Hediff_MasterProgression")
                 field.SetValue(null, ImprintBoundaryDef(field.Name, typeof(Hediff)));
-        foreach (string name in new[] { "SSC_Hediff_PetCat", "SSC_Hediff_PetDog", "SSC_Hediff_PetRabbit", "SSC_Hediff_PetCat_Final", "SSC_Hediff_PetDog_Final", "SSC_Hediff_PetRabbit_Final" })
-            ImprintBoundaryDef(name, typeof(Hediff));
+        foreach (string pet in new[] { "PetCat", "PetDog", "PetRabbit", "PetFox" })
+        foreach (string suffix in new[] { "", "_Final" })
+            ImprintBoundaryDef("SSC_Hediff_" + pet + suffix, typeof(Hediff));
         AccessTools.Field(typeof(TickManager), "gameStartAbsTick").SetValue(Current.Game.tickManager, 1);
         harmony.Patch(AccessTools.Method(typeof(ModLister), "AllModsActiveNoSuffix", new[] { typeof(IEnumerable<string>) }),
             prefix: new HarmonyMethod(typeof(Program), nameof(ImprintBiotechActive)));
