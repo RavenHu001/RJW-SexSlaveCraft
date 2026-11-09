@@ -27,7 +27,7 @@ SexSlaveCraft (SSC) is built around this progression:
 1. Designate Masters and sex slaves.
 2. Use ordinary Training to raise Corruption and develop body parts.
 3. Perform the Binding Ritual to establish a bond and advance the `Sex Slave Chain` health stage.
-4. Choose Public Use, Cow, Training Officer, Pet Cat, Pet Dog, Combatant, Broodmother or Pet Rabbit housekeeping in the 1.7 development build.
+4. Choose Public Use, Cow, Training Officer, Pet Cat, Pet Dog, Combatant, Broodmother or the Pet Rabbit and Pet Fox paths in the 1.7 development build.
 5. Extract a pawn's personality into Personality Gel, edit it, or implant it into a Hollow.
 6. Attempt Semi-gelatinization or Full Gelatinization.
 
@@ -343,13 +343,15 @@ See the [full Combatant reference](PLAYER_GUIDE_EN.md#how-does-combatant-progres
 
 ## Pet Cat and Dog (2.3.7)
 
-To select Cat or Dog, set SSC identity to Sex Slave, complete Training and the matching pet research, and have no final Cat, Dog or Rabbit specialization. Selection requires neither a bound master nor a chain stage. Cat gains movement speed and melee dodge at 20%, with stronger bonuses at 50%; Dog improves animal taming and training stats at 20%, 50% and 80%. Ordinary direction changes retain separate progress; ordinary effects apply only to the current path.
+To select Cat or Dog, set SSC identity to Sex Slave, complete Training and the matching pet research, and check that the pawn has no final pet specialization. Selection requires neither a bound master nor a chain stage. Cat gains movement speed and melee dodge at 20%, with stronger bonuses at 50%. Dog improves animal taming and training stats at 20%, 50% and 80%. Ordinary direction changes retain separate progress, and ordinary effects apply only to the current path.
 
 Completed daily Training and full Binding Rituals give the current ordinary pet path shared progress. A current ordinary Cat gains 1 percentage point after successful affection toward its actual bound master; ordinary completion, any final pet specialization or another current path prevents this reward. Dog affection grants no progress. Actual animal training interactions and taming attempts give ordinary Dogs distinct progress; failed training rolls count as attempts, while cancellation before an interaction gives no training reward.
 
-Cat and Dog progress uses one decimal place: 99.5%–99.8% remains incomplete. At the shared completion threshold, the progress line reads "Training complete; ready to finalize". Hover over it for the steps: extract personality gel, process it into a final Cat or Dog at a sculpting table, then implant it. Ordinary completion does not directly grant a final ability. Only one final Cat, Dog or Rabbit specialization may be obtained; final bonuses, abilities and affection remain after switching to a non-pet training path.
+Cat and Dog progress uses one decimal place: 99.5%–99.8% remains incomplete. At the shared completion threshold, the progress line reads "Training complete; ready to finalize". Hover over it for the steps: extract personality gel, process it into a final Cat or Dog at a sculpting table, then implant it. Ordinary completion does not directly grant a final ability. The 1.7 development build allows one final specialization across Cat, Dog, Rabbit and Fox; final bonuses, abilities and affection remain after switching to a non-pet training path.
 
 The 1.7 development build opens Pet Rabbit. After Training and Pet Rabbit research, an SSC Sex Slave can gain progress by cleaning, cooking and completing Training. When ordinary training is complete, extract personality gel, finalize it at a sculpting table and implant it to gain the final cleaning and cooking bonuses.
+
+Pet Fox opens after Training and Pet Fox research. Every 100 research bench points grants 0.25 percentage points of progress. Each completed tend on another humanlike patient grants 0.10 percentage points. Final Fox can use Emergency Bandaging to approach an injured ally and tend all currently treatable wounds without medicine, with a one-day cooldown.
 
 | Final ability | Use and effect |
 | --- | --- |
