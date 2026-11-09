@@ -14,7 +14,7 @@
 
 2.4.9开发内容先读[发烟器／补给入门](../../读我，玩法介绍.md#ssc-249)，再按需查[完整规则](../../机制详解.md#ssc-249)与[验证边界](../Releases/2.4.9/2.4.9版本验证.md)。本版2.4.9包含这些新增，较早2.4.8包不含。
 
-**2.4.10 开发版玩家入口。** 兔、狐与猫狗调整见[中文入门](../../读我，玩法介绍.md#ssc-2410)及[完整规则](../../机制详解.md#ssc-2410)。英文见 [Quick start](../../QUICK_START_EN.md#ssc-2410) 和 [Player guide](../../PLAYER_GUIDE_EN.md#ssc-2410)。正式下载为 v2.4.9。[2.4.10 开发说明](../Releases/2.4.10/2.4.10发布说明.md)
+**2.4.10 玩家入口。** 兔、狐与猫狗调整见[中文入门](../../读我，玩法介绍.md#ssc-2410)及[完整规则](../../机制详解.md#ssc-2410)。英文见 [Quick start](../../QUICK_START_EN.md#ssc-2410) 和 [Player guide](../../PLAYER_GUIDE_EN.md#ssc-2410)。[下载 v2.4.10](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.10)
 
 ## 中文阅读顺序
 
@@ -70,6 +70,6 @@ Use [Bond Overview](../../QUICK_START_EN.md#bond-overview-243-17-only) for portr
 
 ## 版本与资料用途 / Versions and document roles
 
-当前指南同时标注 2.4.10 开发功能和 2.4.9 正式包内容。公开下载使用 v2.4.9。各批实机反馈与正式发布门禁按版本查阅。[2.4.10 验证边界](../Releases/2.4.10/2.4.10版本验证.md)
+当前指南以 2.4.10 为入口。各批实机反馈与正式发布门禁按版本查阅。[2.4.10 验证](../Releases/2.4.10/2.4.10版本验证.md)
 
-These guides mark the 2.4.10 development features and the 2.4.9 public package separately. See the version notes for development scope, scoped acceptance and release validation. [2.4.10 development notes](../Releases/2.4.10/2.4.10发布说明.md#english)
+These guides cover SSC 2.4.10 and retain earlier changes under their original version headings. [2.4.10 release notes](../Releases/2.4.10/2.4.10发布说明.md#english)

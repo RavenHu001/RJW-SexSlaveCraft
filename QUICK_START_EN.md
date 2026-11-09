@@ -1,6 +1,8 @@
 # RJW-SexSlaveCraft Quick Start Guide
 
-[2.4.10 development pet paths](#ssc-2410) · [2.4.10 development notes](Docs/Releases/2.4.10/2.4.10发布说明.md#english)
+**SSC 2.4.10** for RimWorld 1.7. The included 1.6 component uses SSC 2.4.1. [Download](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.10)
+
+[2.4.10 pet paths](#ssc-2410) · [2.4.10 release notes](Docs/Releases/2.4.10/2.4.10发布说明.md#english)
 
 [2.4.9: emitters and PNA maintenance ](#ssc-249)
 
@@ -29,7 +31,7 @@ SexSlaveCraft (SSC) is built around this progression:
 1. Designate Masters and sex slaves.
 2. Use ordinary Training to raise Corruption and develop body parts.
 3. Perform the Binding Ritual to establish a bond and advance the `Sex Slave Chain` health stage.
-4. Choose Public Use, Cow, Training Officer, Pet Cat, Pet Dog, Combatant, Broodmother or the Pet Rabbit and Pet Fox paths in the 1.7 development build.
+4. Choose Public Use, Cow, Training Officer, Pet Cat, Pet Dog, Combatant, Broodmother or the Pet Rabbit and Pet Fox paths in RimWorld 1.7 in 2.4.10.
 5. Extract a pawn's personality into Personality Gel, edit it, or implant it into a Hollow.
 6. Attempt Semi-gelatinization or Full Gelatinization.
 
@@ -346,7 +348,7 @@ See the [full Combatant reference](PLAYER_GUIDE_EN.md#how-does-combatant-progres
 <a id="ssc-2410"></a>
 ## Pet Cat and Dog (2.3.7)
 
-**The 2.4.10 development milestone adds Rabbit and Fox, and revises Cat and Dog passives.** The public download is v2.4.9.
+**2.4.10 adds Rabbit and Fox and revises Cat and Dog passives.** [Download v2.4.10](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.10)
 
 To select Cat or Dog, set SSC identity to Sex Slave, complete Training and the matching pet research, and check that the pawn has no final pet specialization. Selection requires neither a bound master nor a chain stage. In v2.4.9, Cat gains movement speed and melee dodge. In 2.4.10, Cat gains movement speed and hunting stealth at 20% and 50%. Dog improves taming and training at 20%, 50% and 80%, and 2.4.10 adds plant work speed. Ordinary direction changes retain separate progress, and ordinary effects apply only to the current path.
 
@@ -354,7 +356,7 @@ Completed daily Training and full Binding Rituals give the current ordinary pet 
 
 Cat and Dog progress uses one decimal place: 99.5%–99.8% remains incomplete. At the shared completion threshold, the progress line reads "Training complete; ready to finalize". Hover over it for the steps: extract personality gel, process it into a final Cat or Dog at a sculpting table, then implant it. Ordinary completion does not directly grant a final ability. The 1.7 development build allows one final specialization across Cat, Dog, Rabbit and Fox; final bonuses, abilities and affection remain after switching to a non-pet training path.
 
-The 2.4.10 development build opens Pet Rabbit. After Training and Pet Rabbit research, an SSC Sex Slave can gain progress by cleaning, cooking and completing Training. When ordinary training is complete, extract personality gel, finalize it at a sculpting table and implant it to gain the final cleaning and cooking bonuses.
+SSC 2.4.10 opens Pet Rabbit. After Training and Pet Rabbit research, an SSC Sex Slave can gain progress by cleaning, cooking and completing Training. When ordinary training is complete, extract personality gel, finalize it at a sculpting table and implant it to gain the final cleaning and cooking bonuses.
 
 Pet Fox opens after Training and Pet Fox research. Every 100 research bench points grants 0.25 percentage points of progress. Each completed tend on another humanlike patient grants 0.10 percentage points. Final Fox can use Emergency Bandaging to approach an injured ally and tend all currently treatable wounds without medicine, with a one-day cooldown.
 

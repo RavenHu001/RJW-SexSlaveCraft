@@ -1,6 +1,6 @@
 # RJW-SexSlaveCraft · TieJin Modify
 
-**当前开发版为 2.4.10。** 兔家政、狐狸科研医疗、猫狗平衡与动物特化四语文案已归入本版。正式下载使用 v2.4.9。[2.4.10 开发说明](Docs/Releases/2.4.10/2.4.10发布说明.md) · [归并核对](Docs/Releases/2.4.10/2.4.10开发归并核对.md) · [验证与发布准备](Docs/Releases/2.4.10/2.4.10版本验证.md)
+**SSC 2.4.10。** 兔家政、狐狸科研医疗、猫狗平衡与动物特化四语文案归入本版。[下载 2.4.10](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.10) · [版本说明](Docs/Releases/2.4.10/2.4.10发布说明.md) · [归并核对](Docs/Releases/2.4.10/2.4.10开发归并核对.md) · [验证记录](Docs/Releases/2.4.10/2.4.10版本验证.md)
 
 **2.4.9 — 2026-11-02正式发布。** [下载](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.9)。完整All **52套／6535项全部通过**，资源2／2、发布编排56及文案隔离75项通过；532份冻结文件未变。标签源码`2b288569`，ZIP及SHA-256已上传并复核为最新稳定版；本轮未启动新游戏或同步安装目录。下方开发／登记记录保留原日期与范围。
 
@@ -12,9 +12,9 @@
 
 面向 RimWorld 的成人向 RimJobWorld（RJW）扩展，基于上游 **2.2.8** 继续维护，提供角色培养、主从绑定、特化、人格转移和身体改造。
 
-[2.4.9版本范围](Docs/Releases/2.4.9/2.4.9发布说明.md) · [正式下载2.4.9](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.9) · [双语模组简介](Docs/模组介绍.md) · [玩家阅读入口](Docs/Players/README.md) · [文档总索引](Docs/README.md) · [English](#english-overview)
+[2.4.10 版本范围](Docs/Releases/2.4.10/2.4.10发布说明.md) · [双语模组简介](Docs/模组介绍.md) · [玩家阅读入口](Docs/Players/README.md) · [文档总索引](Docs/README.md) · [English](#english-overview)
 
-## 2.4.10 开发内容（仅 1.7）
+## 2.4.10 新增内容（仅 1.7）
 
 | 主题 | 范围 |
 | --- | --- |
@@ -23,7 +23,7 @@
 | 猫狗与宠物组 | 猫的移速与狩猎隐蔽、狗的动物与种植收益、四宠终极互斥及四语文本统一 |
 | 维护 | 工作栏和绑定仪式英文、玩家提示与称谓、兼容加载顺序、三档发烟器贴图、文档归档 |
 
-兔和狐各两批已获对应实机验收，完整 2.4.10 发布门禁待执行。[分批证据](Docs/Releases/2.4.10/2.4.10版本验证.md)
+兔和狐各两批已获对应实机验收，正式门禁另行记录。[2.4.10 版本验证](Docs/Releases/2.4.10/2.4.10版本验证.md)
 
 ## 2.4.9 新增内容（仅1.7）
 
@@ -106,16 +106,16 @@
 | 契约仪式与阶段进阶 | 需要 Ideology（文化）DLC |
 | Royalty（可选） | 安装时调教研究需要蓝图；种子或原版独立蓝图可补齐，之后仍需研究 |
 
-正式游玩从 [v2.4.9 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.9) 下载 ZIP 与 SHA-256。退出游戏，移出旧文件夹后完整解压新文件夹，保留加载配置及两套版本目录。该下载的功能范围见[2.4.9发布说明](Docs/Releases/2.4.9/2.4.9发布说明.md)，历史说明与附件保留各自版本。
+从 [v2.4.10 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.10) 下载 ZIP 与 SHA-256。退出游戏，移出旧文件夹后完整解压，保留加载配置及两套版本目录。[2.4.10 版本说明](Docs/Releases/2.4.10/2.4.10发布说明.md)
 
-1.7 开发分支的宠物兔家政与宠物狐科研医疗特化均已通过实机验收，包含凝胶终极化及终极技能「精心料理」和「应急包扎」。正式包的功能以对应发布说明为准。旧 RimTalk 对接暂停。受训目标须为 SSC 性奴身份，原版奴隶身份不能替代。
+2.4.10 的兔家政与狐狸科研医疗各有对应实机验收，包含凝胶终极化和两项终极技能。受训目标须使用 SSC 性奴身份。[分批验证](Docs/Releases/2.4.10/2.4.10版本验证.md)
 
 ## 文档导航
 
 | 用途 | 阅读顺序 |
 | --- | --- |
 | 了解与游玩 | [模组介绍](Docs/模组介绍.md) → [玩家阅读入口](Docs/Players/README.md) → 快速入门 → 完整机制 |
-| 查看版本变化 | [2.4.10 开发说明](Docs/Releases/2.4.10/2.4.10发布说明.md) → [提交归并](Docs/Releases/2.4.10/2.4.10开发归并核对.md) → [验证边界](Docs/Releases/2.4.10/2.4.10版本验证.md)。正式发布范围见 [2.4.9](Docs/Releases/2.4.9/2.4.9发布说明.md) |
+| 查看版本变化 | [2.4.10 版本说明](Docs/Releases/2.4.10/2.4.10发布说明.md) → [提交归并](Docs/Releases/2.4.10/2.4.10开发归并核对.md) → [验证记录](Docs/Releases/2.4.10/2.4.10版本验证.md) |
 | 接手开发 | [开发协作约定](AGENTS.md) → [开发资料入口](Docs/Development/README.md) → [已交付记录](Docs/Development/Completed/README.md) → [专项待验收](Docs/Development/Verification/README.md) → [当前规划](Docs/Design/README.md) |
 | 新增个人能力开关 | 先读[现行接入规范](Docs/Development/Reference/个人能力开关接入规范.md)，复用能力注册、原载体后端、状态查询与上下文提交；UI 行及跨 ITab 复用边界见规范 |
 | 编译、测试、打包 | [维护入口](Docs/Maintenance/README.md) → [测试说明](Tests/README.md) → [发布与打包](Docs/Maintenance/发布与打包.md) |
@@ -128,7 +128,7 @@
 
 ## English overview
 
-**Development milestone 2.4.10** adds Pet Rabbit housekeeping, Pet Fox research and medicine, Cat/Dog balance changes and revised animal specialization text. The public package is v2.4.9. [2.4.10 development notes](Docs/Releases/2.4.10/2.4.10发布说明.md#english) · [Download v2.4.9](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.9)
+**SSC 2.4.10** adds Pet Rabbit housekeeping, Pet Fox research and medicine, Cat/Dog balance changes and revised animal specialization text. [Download v2.4.10](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.10) · [Release notes](Docs/Releases/2.4.10/2.4.10发布说明.md#english)
 
 SexSlaveCraft is an adult RJW expansion for pawn development, bonds, specialization, personality transfer and body modification. The v2.4.9 release includes Depravity Gel, three emitter tiers, personal PNA stage maintenance and a Conception icon for RimWorld 1.7. Its RimWorld 1.6 content uses SSC 2.4.1. [2.4.9 release notes](Docs/Releases/2.4.9/2.4.9发布说明.md#english)
 
