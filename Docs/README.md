@@ -6,7 +6,7 @@
 
 ## 最新开发状态
 
-当前开发版为 **2.4.10**，包含兔家政、狐狸科研医疗、猫狗平衡与翻译、美术和兼容维护。当前交付从[2.4.10 完成索引](Development/Completed/README.md#ssc-2410-completed)进入。版本边界见[开发说明](Releases/2.4.10/2.4.10发布说明.md)，公开安装包依据见[2.4.9 发布归档](Releases/2.4.9/2.4.9版本验证.md#2026-11-02249正式发布归档)。
+**2.4.10 于 2026-11-09 正式发布。** 完整门禁通过 52 套、6552/6552 项。[下载](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.10) 兔家政与狐狸科研医疗的交付记录从[完成索引](Development/Completed/README.md#ssc-2410-completed)进入，发布范围和分批依据见[版本档案](Releases/2.4.10/2.4.10版本验证.md#2026-11-09-2410-正式发布归档)。
 
 ## 按用途选择入口
 
@@ -14,7 +14,7 @@
 | --- | --- | --- |
 | 了解功能、准备发布页面 | [双语模组介绍](模组介绍.md) | English 在前、中文在后；先看当前版本与功能范围 |
 | 安装和游玩 | [玩家阅读入口](Players/README.md) | 简介 → 快速入门 → 按需查机制与常见问题 |
-| 了解版本归属 | [发布与验证索引](Releases/README.md) | 2.4.10 开发范围 → 归并核对 → 分批验证，公开下载为 2.4.9 |
+| 了解版本归属 | [发布与验证索引](Releases/README.md) | 2.4.10 发布范围 → 开发归并 → 正式与分批验证 |
 | 接手已完成功能 | [已交付开发记录](Development/Completed/README.md) | 主题完成核对 → 对应阶段 → 历史设计 |
 | 新增个人能力开关 | [现行接入规范](Development/Reference/个人能力开关接入规范.md) | [开发协作约定](../AGENTS.md) → 保存源与适用边界 → 原载体后端 → 公共查询、UI 与提交 → 生命周期验收 |
 | 查明确的验证缺口 | [待验收事项](Development/Verification/README.md) | 尚待确认范围 → 实现依据 → 实机步骤 |
@@ -29,7 +29,7 @@
 
 - **新玩家**：[模组介绍](模组介绍.md) → [快速入门](../读我，玩法介绍.md) → [机制详解](../机制详解.md)。英文路线见 [English reading order](Players/README.md#english-reading-order)。
 - **接手开发**：[开发协作约定](../AGENTS.md) → [开发资料入口](Development/README.md) → [开发规范与历史参考](Development/Reference/README.md) → [完成记录](Development/Completed/README.md) → [待验收](Development/Verification/README.md) → [未来规划](Design/README.md)。新增同类个人布尔能力先读[能力开关接入规范](Development/Reference/个人能力开关接入规范.md)。
-- **准备发布**　[2.4.10 验证与发布准备](Releases/2.4.10/2.4.10版本验证.md) → [构建与打包](Maintenance/发布与打包.md) → [测试索引](../Tests/README.md)。
+- **准备发布**　[2.4.10 正式发布归档](Releases/2.4.10/2.4.10版本验证.md#2026-11-09-2410-正式发布归档) → [构建与打包](Maintenance/发布与打包.md) → [测试索引](../Tests/README.md)。
 
 ## 目录与状态
 
