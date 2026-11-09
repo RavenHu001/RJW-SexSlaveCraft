@@ -16,7 +16,8 @@ namespace SexSlaveCraft
         // 只在末尾追加，避免改动旧存档中现有方向的枚举值。
         TrainerOfficer,
         Combatant,
-        Fertility
+        Fertility,
+        PetFox
     }
 
     public partial class CompSexSlaveTraining
@@ -67,12 +68,27 @@ namespace SexSlaveCraft
         }
 
 #if SSC_RW17
-        internal void ClearPetRabbitProgressAfterExtraction()
+        internal double foxResearchPointRemainder;
+
+        internal static double NormalizeFoxResearchPointRemainder(double value) =>
+            value >= 0d && value < 1d ? value : 0d;
+
+        internal double GetUnfinishedFoxResearchPointRemainder(double value)
         {
-            if (specializationType == SexSlaveSpecializationType.PetRabbit)
+            float foxProgress = specializationType == SexSlaveSpecializationType.PetFox
+                ? specializationProgress : GetSavedProgress(SexSlaveSpecializationType.PetFox);
+            return foxProgress >= SpecializationCompletionProgress ? 0d : NormalizeFoxResearchPointRemainder(value);
+        }
+
+        internal void ClearRabbitAndFoxProgressAfterExtraction()
+        {
+            if (specializationType == SexSlaveSpecializationType.PetRabbit ||
+                specializationType == SexSlaveSpecializationType.PetFox)
                 SetSpecialization(SexSlaveSpecializationType.None);
-            // 退出当前方向会暂存进度，因此在切换完成后清除兔历史。
+            // 退出当前方向会暂存进度，因此在切换完成后清除相应历史。
             perTypeProgress?.Remove(SexSlaveSpecializationType.PetRabbit.ToString());
+            perTypeProgress?.Remove(SexSlaveSpecializationType.PetFox.ToString());
+            foxResearchPointRemainder = 0d;
         }
 #endif
 
@@ -136,6 +152,9 @@ namespace SexSlaveCraft
         /// <summary>把未知枚举值视为尚未选择方向，避免损坏存档生成无法识别的训练状态。</summary>
         private static SexSlaveSpecializationType NormalizeSpecializationType(SexSlaveSpecializationType type)
         {
+#if !SSC_RW17
+            if (type == SexSlaveSpecializationType.PetFox) return SexSlaveSpecializationType.None;
+#endif
             return Enum.IsDefined(typeof(SexSlaveSpecializationType), type) ? type : SexSlaveSpecializationType.None;
         }
 
@@ -156,10 +175,10 @@ namespace SexSlaveCraft
         public bool TrySetSpecialization(SexSlaveSpecializationType type, out PetSpecializationFailure failure)
         {
             type = NormalizeSpecializationType(type);
-            bool catFinal = false, dogFinal = false, rabbitFinal = false;
+            bool catFinal = false, dogFinal = false, rabbitFinal = false, foxFinal = false;
             if (PetSpecializationRules.IsPetSpecialization(type))
-                ReadPetFinalStates(ref catFinal, ref dogFinal, ref rabbitFinal);
-            if (!PetSpecializationRules.CanChangeDirection(type, catFinal, dogFinal, rabbitFinal, out failure))
+                ReadPetFinalStates(ref catFinal, ref dogFinal, ref rabbitFinal, ref foxFinal);
+            if (!PetSpecializationRules.CanChangeDirection(type, catFinal, dogFinal, rabbitFinal, foxFinal, out failure))
                 return false;
 
             ApplySpecialization(type);
@@ -224,20 +243,25 @@ namespace SexSlaveCraft
             if (amount <= 0f || specializationType == SexSlaveSpecializationType.None) return specializationProgress;
             if (PetSpecializationRules.IsPetSpecialization(specializationType))
             {
-                bool catFinal = false, dogFinal = false, rabbitFinal = false;
-                ReadPetFinalStates(ref catFinal, ref dogFinal, ref rabbitFinal);
+                bool catFinal = false, dogFinal = false, rabbitFinal = false, foxFinal = false;
+                ReadPetFinalStates(ref catFinal, ref dogFinal, ref rabbitFinal, ref foxFinal);
                 if (float.IsNaN(amount) || float.IsInfinity(amount) ||
                     specializationProgress >= SpecializationCompletionProgress ||
-                    !PetSpecializationRules.CanTrain(specializationType, specializationType, catFinal, dogFinal, rabbitFinal))
+                    !PetSpecializationRules.CanTrain(specializationType, specializationType, catFinal, dogFinal, rabbitFinal, foxFinal))
                     return specializationProgress;
             }
             specializationProgress = Math.Max(0f, Math.Min(1f, specializationProgress + amount));
+#if SSC_RW17
+            if (specializationType == SexSlaveSpecializationType.PetFox &&
+                specializationProgress >= SpecializationCompletionProgress)
+                foxResearchPointRemainder = 0d;
+#endif
             return specializationProgress;
         }
 
         // 游戏宿主负责派生健康状态；独立的数据测试无需加载完整 Pawn 组件。
         partial void SpecializationHealthChanged();
-        partial void ReadPetFinalStates(ref bool catFinal, ref bool dogFinal, ref bool rabbitFinal);
+        partial void ReadPetFinalStates(ref bool catFinal, ref bool dogFinal, ref bool rabbitFinal, ref bool foxFinal);
 
         /// <summary>读档后规范化当前字段与历史，不从显示用的 Hediff 严重度反推经验。</summary>
         internal void NormalizeSpecializationData()
@@ -246,6 +270,9 @@ namespace SexSlaveCraft
             specializationProgress = specializationType == SexSlaveSpecializationType.None
                 ? 0f : NormalizeSpecializationProgress(specializationProgress);
             perTypeProgress = CopySpecializationProgress(specializationType, specializationProgress, perTypeProgress);
+#if SSC_RW17
+            foxResearchPointRemainder = GetUnfinishedFoxResearchPointRemainder(foxResearchPointRemainder);
+#endif
         }
 
         /// <summary>读取同一角色此前归档的方向进度，没有历史记录时从零开始。</summary>

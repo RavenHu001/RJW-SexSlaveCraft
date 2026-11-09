@@ -161,6 +161,9 @@ namespace SexSlaveCraft
                 case SexSlaveSpecializationType.PetCat: return "SSC_ITab_SpecializationPetCat".Translate();
                 case SexSlaveSpecializationType.PetDog: return "SSC_ITab_SpecializationPetDog".Translate();
                 case SexSlaveSpecializationType.PetRabbit: return "SSC_ITab_SpecializationPetRabbit".Translate();
+#if SSC_RW17
+                case SexSlaveSpecializationType.PetFox: return PetSpecializationUtility.GetSpecializationLabel(type.Value);
+#endif
                 default: return "SSC_ITab_SpecializationNone".Translate();
             }
         }

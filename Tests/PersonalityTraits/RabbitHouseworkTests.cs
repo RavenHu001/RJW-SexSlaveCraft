@@ -134,11 +134,14 @@ namespace RimWorld
     {
         public static readonly RecordDef MessesCleaned = new();
         public static readonly RecordDef MealsCooked = new();
+        public static readonly RecordDef ResearchPointsResearched = new();
+        public static readonly RecordDef TimesTendedOther = new();
     }
     public class Pawn_RecordsTracker
     {
         public Pawn pawn;
         public void Increment(RecordDef def) { }
+        public void AddTo(RecordDef def, float value) { }
     }
 }
 #endif

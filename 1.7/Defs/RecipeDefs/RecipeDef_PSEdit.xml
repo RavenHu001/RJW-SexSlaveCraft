@@ -183,7 +183,7 @@
   <RecipeDef Class="SexSlaveCraft.RecipeDef_PSTag">
     <defName>SSC_PSEdit_PetCat_Final</defName>
     <label>性奴特化（终极宠物猫）</label>
-    <description>将当前培养方向为宠物猫、普通培养已完成且带有宠物猫基础状态的人格凝胶，加工为终极宠物猫人格。原料不能已有猫、狗或兔终极成果。植入后获得永久移动速度与近战闪避加成，并可继续亲昵实际绑定的主人；并获得“贴心安抚”，使其他玩家阵营人形角色从精神状态中恢复，或给予短暂的心情与工作速度鼓舞。</description>
+    <description>将当前培养方向为宠物猫、普通培养已完成且带有宠物猫基础状态的人格凝胶，加工为终极宠物猫人格。原料不能已有任何宠物终极成果。植入后获得永久移动速度与近战闪避加成，并可继续亲昵实际绑定的主人；并获得“贴心安抚”，使其他玩家阵营人形角色从精神状态中恢复，或给予短暂的心情与工作速度鼓舞。</description>
     <jobString>正在塑造终极宠物猫人格...</jobString>
     <workAmount>3500</workAmount>
     <workSpeedStat>GeneralLaborSpeed</workSpeedStat>
@@ -195,13 +195,14 @@
     <filterIfTagExists>true</filterIfTagExists>
     <requireSpecializationType>PetCat</requireSpecializationType>
     <requireSpecializationComplete>true</requireSpecializationComplete>
-    <!-- 猫、狗、兔共用终极互斥组，奶牛等组外成果不在此列表。
+    <!-- 猫、狗、兔、狐共用终极互斥组，奶牛等组外成果不在此列表。
          公共资格先拒绝已有任意宠物终极的来源；工作者只清理产物副本。
          普通标签是原料的必要资格，复制后另行移除，不加入此互斥列表。 -->
     <exclusiveTags>
       <li>SSC_Hediff_PetCat_Final</li>
       <li>SSC_Hediff_PetDog_Final</li>
       <li>SSC_Hediff_PetRabbit_Final</li>
+      <li>SSC_Hediff_PetFox_Final</li>
     </exclusiveTags>
 
     <recipeUsers>
@@ -259,13 +260,14 @@
     <filterIfTagExists>true</filterIfTagExists>
     <requireSpecializationType>PetDog</requireSpecializationType>
     <requireSpecializationComplete>true</requireSpecializationComplete>
-    <!-- 复用既有狗终极化配方，组内已有猫、狗或兔终极的人格均不能再次加工。
+    <!-- 复用既有狗终极化配方，组内已有任意宠物终极的人格均不能再次加工。
          普通狗标签仍是入料要求；三种普通标签由工作者在复制后清理。
          列表操作只影响新产物，不代替来源资格拒绝或旧多终极迁移。 -->
     <exclusiveTags>
       <li>SSC_Hediff_PetCat_Final</li>
       <li>SSC_Hediff_PetDog_Final</li>
       <li>SSC_Hediff_PetRabbit_Final</li>
+      <li>SSC_Hediff_PetFox_Final</li>
     </exclusiveTags>
 
     <recipeUsers>
@@ -327,6 +329,7 @@
       <li>SSC_Hediff_PetCat_Final</li>
       <li>SSC_Hediff_PetDog_Final</li>
       <li>SSC_Hediff_PetRabbit_Final</li>
+      <li>SSC_Hediff_PetFox_Final</li>
     </exclusiveTags>
 
     <recipeUsers>
@@ -334,6 +337,68 @@
     </recipeUsers>
 
     <researchPrerequisite>SSC_RES_PetRabbit</researchPrerequisite>
+
+    <ingredients>
+      <li>
+        <filter>
+          <thingDefs>
+            <li>SSC_PersonalitySlime</li>
+            <li>SSC_PersonalitySlime_PLUS</li>
+            <li>SSC_PersonalitySlime_ULTRA</li>
+            <li>SSC_PersonalitySlime_PLUS_ULTRA</li>
+            <li>SSC_PersonalitySlime_Edited</li>
+            <li>SSC_PersonalitySlime_PLUS_Edited</li>
+            <li>SSC_PersonalitySlime_ULTRA_Edited</li>
+            <li>SSC_PersonalitySlime_PLUS_ULTRA_Edited</li>
+          </thingDefs>
+        </filter>
+        <count>1</count>
+      </li>
+    </ingredients>
+
+    <fixedIngredientFilter>
+      <thingDefs>
+        <li>SSC_PersonalitySlime</li>
+        <li>SSC_PersonalitySlime_PLUS</li>
+        <li>SSC_PersonalitySlime_ULTRA</li>
+        <li>SSC_PersonalitySlime_PLUS_ULTRA</li>
+        <li>SSC_PersonalitySlime_Edited</li>
+        <li>SSC_PersonalitySlime_PLUS_Edited</li>
+        <li>SSC_PersonalitySlime_ULTRA_Edited</li>
+        <li>SSC_PersonalitySlime_PLUS_ULTRA_Edited</li>
+      </thingDefs>
+    </fixedIngredientFilter>
+
+    <workerClass>SexSlaveCraft.Recipe_PSTagWorker</workerClass>
+  </RecipeDef>
+
+  <RecipeDef Class="SexSlaveCraft.RecipeDef_PSTag">
+    <defName>SSC_PSEdit_PetFox_Final</defName>
+    <label>性奴特化（终极宠物狐）</label>
+    <description>将完成普通宠物狐培养且带有基础狐状态的人格凝胶塑形为终极宠物狐。重新植入后获得终极科研与医疗加成。</description>
+    <jobString>正在塑造终极宠物狐人格...</jobString>
+    <workAmount>3500</workAmount>
+    <workSpeedStat>GeneralLaborSpeed</workSpeedStat>
+    <effectWorking>Sculpt</effectWorking>
+    <soundWorking>Recipe_Sculpt</soundWorking>
+
+    <hediffToAdd>SSC_Hediff_PetFox_Final</hediffToAdd>
+    <severity>1.00</severity>
+    <filterIfTagExists>true</filterIfTagExists>
+    <requireSpecializationType>PetFox</requireSpecializationType>
+    <requireSpecializationComplete>true</requireSpecializationComplete>
+    <exclusiveTags>
+      <li>SSC_Hediff_PetCat_Final</li>
+      <li>SSC_Hediff_PetDog_Final</li>
+      <li>SSC_Hediff_PetRabbit_Final</li>
+      <li>SSC_Hediff_PetFox_Final</li>
+    </exclusiveTags>
+
+    <recipeUsers>
+      <li>TableSculpting</li>
+    </recipeUsers>
+
+    <researchPrerequisite>SSC_RES_PetFox</researchPrerequisite>
 
     <ingredients>
       <li>

@@ -5,12 +5,13 @@ namespace SexSlaveCraft
     public partial class CompSexSlaveTraining
     {
         /// <summary>独立数据模块通过此边界读取真实终极事实，不保存第二份锁定状态。</summary>
-        partial void ReadPetFinalStates(ref bool catFinal, ref bool dogFinal, ref bool rabbitFinal)
+        partial void ReadPetFinalStates(ref bool catFinal, ref bool dogFinal, ref bool rabbitFinal, ref bool foxFinal)
         {
             Pawn pawn = parent as Pawn;
             catFinal = PetSpecializationUtility.HasFinalPetState(pawn, SexSlaveSpecializationType.PetCat);
             dogFinal = PetSpecializationUtility.HasFinalPetState(pawn, SexSlaveSpecializationType.PetDog);
             rabbitFinal = PetSpecializationUtility.HasFinalPetState(pawn, SexSlaveSpecializationType.PetRabbit);
+            foxFinal = PetSpecializationUtility.HasFinalPetState(pawn, SexSlaveSpecializationType.PetFox);
         }
 
         /// <summary>完整切换后立即清理普通宠物并更新战斗员；读档期间由 PostLoadInit 统一恢复。</summary>
@@ -98,6 +99,9 @@ namespace SexSlaveCraft
             if (PetSpecializationUtility.HasFinalPetState(pawn, SexSlaveSpecializationType.PetDog)) return SexSlaveSpecializationType.PetDog;
             if (PetSpecializationUtility.HasFinalPetState(pawn, SexSlaveSpecializationType.PetCat)) return SexSlaveSpecializationType.PetCat;
             if (PetSpecializationUtility.HasFinalPetState(pawn, SexSlaveSpecializationType.PetRabbit)) return SexSlaveSpecializationType.PetRabbit;
+#if SSC_RW17
+            if (PetSpecializationUtility.HasFinalPetState(pawn, SexSlaveSpecializationType.PetFox)) return SexSlaveSpecializationType.PetFox;
+#endif
 
             if (SSCDefOf.SSC_Hediff_Bus != null && pawn.health.hediffSet.HasHediff(SSCDefOf.SSC_Hediff_Bus)) return SexSlaveSpecializationType.Bus;
             if (SSCDefOf.SSC_Hediff_Cow != null && pawn.health.hediffSet.HasHediff(SSCDefOf.SSC_Hediff_Cow)) return SexSlaveSpecializationType.Cow;
@@ -111,6 +115,10 @@ namespace SexSlaveCraft
             HediffDef rabbitBase = PetSpecializationUtility.GetBaseHediffDef(SexSlaveSpecializationType.PetRabbit);
             if (rabbitBase != null && pawn.health.hediffSet.HasHediff(rabbitBase)) return SexSlaveSpecializationType.PetRabbit;
 
+#if SSC_RW17
+            HediffDef foxBase = PetSpecializationUtility.GetBaseHediffDef(SexSlaveSpecializationType.PetFox);
+            if (foxBase != null && pawn.health.hediffSet.HasHediff(foxBase)) return SexSlaveSpecializationType.PetFox;
+#endif
             return SexSlaveSpecializationType.None;
         }
 
@@ -146,9 +154,8 @@ namespace SexSlaveCraft
                 RemoveSpecializationHediff(pawn, SSCDefOf.SSC_Hediff_Cow);
             }
 
-            RemovePetStateIfNotKept(pawn, typeToKeep, SexSlaveSpecializationType.PetCat);
-            RemovePetStateIfNotKept(pawn, typeToKeep, SexSlaveSpecializationType.PetDog);
-            RemovePetStateIfNotKept(pawn, typeToKeep, SexSlaveSpecializationType.PetRabbit);
+            foreach (SexSlaveSpecializationType petType in PetSpecializationRules.PetTypes)
+                RemovePetStateIfNotKept(pawn, typeToKeep, petType);
 
             // 训导官普通 Hediff 只代表正在培养。方向退出时必须同时清理，
             // 否则下一轮对账会把失格角色从残留标记重新认领回来。

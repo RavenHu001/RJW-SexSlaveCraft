@@ -12,10 +12,13 @@ internal static partial class Program
     // 本套件直接链接生产工具及补丁，不在这些测试方法中另写加工资格算法。
     private static readonly SexSlaveSpecializationType[] Pets =
     {
-        SexSlaveSpecializationType.PetCat, SexSlaveSpecializationType.PetDog, SexSlaveSpecializationType.PetRabbit
+        SexSlaveSpecializationType.PetCat, SexSlaveSpecializationType.PetDog, SexSlaveSpecializationType.PetRabbit,
+#if SSC_RW17
+        SexSlaveSpecializationType.PetFox,
+#endif
     };
 
-    /// <summary>注册组内六个最小定义，供真实宠物工具查询；不模拟游戏 XML 加载。</summary>
+    /// <summary>注册组内最小定义，供真实宠物工具查询；不模拟游戏 XML 加载。</summary>
     private static void RegisterPetDefinitions()
     {
         foreach (var type in Pets)
@@ -28,12 +31,12 @@ internal static partial class Program
     {
         Run("宠物终极化统一检查完成容差、当前方向、普通标签及异常值", PetRecipeEligibility);
         Run("宠物筛料保留原账单拒绝结果并拒绝已销毁或堆叠来源", PetRecipeBillFilter);
-        Run("三种配方拒绝其他宠物方向及任意已有宠物终极", PetRecipeAllDirections);
-        Run("三种宠物乘八种凝胶按真实结算映射且只扣一次账单", PetRecipeAllBases);
+        Run("宠物配方拒绝其他宠物方向及任意已有宠物终极", PetRecipeAllDirections);
+        Run("宠物终极化按八种凝胶的真实结算映射且只扣一次账单", PetRecipeAllBases);
         Run("宠物加工保留人格字段、全部历史及其他标签并深拷贝可变数据", PetRecipeCopyIsolation);
         Run("宠物制作中资格失效在分堆、消耗及计数前终止", PetRecipeChangedDuringWork);
         Run("宠物配方元数据缺失或矛盾不能回退通用放行", PetRecipeMetadata);
-        Run("组内六个状态定义任一缺失都拒绝且保留原料", PetRecipeMissingDefinitions);
+        Run("组内状态定义任一缺失都拒绝且保留原料", PetRecipeMissingDefinitions);
         Run("宠物结算拒绝缺失、超量、多人格和未知来源且保留材料", PetRecipeInvalidSources);
         Run("宠物加工产物定义或人格组件缺失时消耗前拒绝", PetRecipeProductDefinitions);
         Run("宠物半成品优先检查真实内装原料并保护容器", PetRecipeUnfinished);

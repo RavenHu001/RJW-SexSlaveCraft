@@ -74,7 +74,7 @@ namespace SexSlaveCraft
                 CombatantSpecializationGelUtility.DetachAfterExtraction(victim);
                 if (!mutation.IsCurrent || victim.TryGetComp<CompSexSlaveTraining>() != originalComp) return;
                 if (!SSCPersonalityExcretionAdmission.TryContinueExtraction(victim, slime)) return;
-                PetSpecializationUtility.DetachRabbitAfterExtraction(victim);
+                PetSpecializationUtility.DetachRabbitAndFoxAfterExtraction(victim);
                 if (!mutation.IsCurrent || victim.TryGetComp<CompSexSlaveTraining>() != originalComp) return;
                 if (!SSCPersonalityExcretionAdmission.TryContinueExtraction(victim, slime)) return;
 #endif
@@ -192,8 +192,12 @@ namespace SexSlaveCraft
             CombatantSpecializationGelUtility.RemoveAllStates(consumer);
 #if SSC_RW17
             FertilitySpecializationGelUtility.RemoveAllStates(consumer);
-            var fertilityComp = consumer.TryGetComp<CompSexSlaveTraining>();
-            if (fertilityComp != null) fertilityComp.fertilityCareTicks = 0;
+            var trainingComp = consumer.TryGetComp<CompSexSlaveTraining>();
+            if (trainingComp != null)
+            {
+                trainingComp.fertilityCareTicks = 0;
+                trainingComp.foxResearchPointRemainder = 0d;
+            }
 #endif
         }
 
@@ -313,6 +317,8 @@ namespace SexSlaveCraft
                             data.specializationProgress, data.specializationProgressByType);
 #if SSC_RW17
                         trainingComp.fertilityCareTicks = Math.Clamp(data.fertilityCareTicks, 0, 2499);
+                        trainingComp.foxResearchPointRemainder = trainingComp.GetUnfinishedFoxResearchPointRemainder(
+                            data.foxResearchPointRemainder);
 #endif
                         // 原泌乳字段按来源精确覆盖，包括 false；不与人格字典合并或套用身体开关默认。
                         trainingComp.milkProductionEnabled = data.milkProductionEnabled;

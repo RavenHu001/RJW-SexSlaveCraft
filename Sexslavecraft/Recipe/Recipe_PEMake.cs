@@ -204,6 +204,10 @@ namespace SexSlaveCraft
                         // 清除整个宠物组的普通标记，避免旧普通标签随终极产物叠加。
                         // 当前方向和各方向历史继续保留，组外标签不在清理范围内。
                         PetFinalizationRecipeUtility.RemoveOrdinaryTags(targetComp);
+#if SSC_RW17
+                        if (smartRecipe.hediffToAdd == PetSpecializationUtility.GetFinalHediffDef(SexSlaveSpecializationType.PetFox))
+                            targetComp.foxResearchPointRemainder = 0d;
+#endif
                     }
                     else if (petBaseTag != null)
                     {

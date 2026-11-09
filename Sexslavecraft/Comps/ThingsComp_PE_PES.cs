@@ -86,6 +86,7 @@ namespace SexSlaveCraft
         public float specializationProgress = 0f;
 #if SSC_RW17
         public int fertilityCareTicks;
+        internal double foxResearchPointRemainder;
         // 生育技能仅迁移绝对冷却截止tick；不迁移身体预设或孕次。
         public int fertilityConceptionCooldownEndTick;
 #endif
@@ -148,6 +149,9 @@ namespace SexSlaveCraft
             Scribe_Values.Look(ref specializationProgress, "specializationProgress", 0f);
 #if SSC_RW17
             Scribe_Values.Look(ref fertilityCareTicks, "fertilityCareTicks", 0);
+            Scribe_Values.Look(ref foxResearchPointRemainder, "foxResearchPointRemainder", 0d);
+            if (Scribe.mode == LoadSaveMode.PostLoadInit)
+                foxResearchPointRemainder = CompSexSlaveTraining.NormalizeFoxResearchPointRemainder(foxResearchPointRemainder);
             Scribe_Values.Look(ref fertilityConceptionCooldownEndTick, "fertilityConceptionCooldownEndTick", 0);
             if (Scribe.mode == LoadSaveMode.PostLoadInit) fertilityCareTicks = Math.Clamp(fertilityCareTicks, 0, 2499);
 #endif
@@ -263,6 +267,7 @@ namespace SexSlaveCraft
             this.specializationProgress = other.specializationProgress;
 #if SSC_RW17
             this.fertilityCareTicks = Math.Clamp(other.fertilityCareTicks, 0, 2499);
+            foxResearchPointRemainder = CompSexSlaveTraining.NormalizeFoxResearchPointRemainder(other.foxResearchPointRemainder);
             this.fertilityConceptionCooldownEndTick = other.fertilityConceptionCooldownEndTick;
 #endif
             this.specializationProgressByType = other.specializationProgressByType == null
@@ -554,6 +559,8 @@ namespace SexSlaveCraft
             CombatantSpecializationGelUtility.StoreExclusiveTags(this, p);
 #if SSC_RW17
             fertilityCareTicks = Math.Clamp(trainingComp?.fertilityCareTicks ?? 0, 0, 2499);
+            foxResearchPointRemainder = trainingComp?.GetUnfinishedFoxResearchPointRemainder(
+                trainingComp.foxResearchPointRemainder) ?? 0d;
             FertilitySpecializationGelUtility.StoreExclusiveTags(this, p);
             fertilityConceptionCooldownEndTick = FertilityAbilityUtility.CaptureCooldown(p);
 #endif

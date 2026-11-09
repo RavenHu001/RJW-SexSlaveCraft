@@ -30,4 +30,11 @@
   <SSC_Hediff_RabbitCloneLink.stages.1.label>成熟</SSC_Hediff_RabbitCloneLink.stages.1.label>
   <SSC_Hediff_RabbitCloneLowPNA.label>兔分身 PNA 產出</SSC_Hediff_RabbitCloneLowPNA.label>
   <SSC_Hediff_RabbitCloneLowPNA.description>兔分身成熟後形成的低效 PNA 產出狀態。</SSC_Hediff_RabbitCloneLowPNA.description>
+  <SSC_Hediff_PetFox.label>寵物狐專精</SSC_Hediff_PetFox.label>
+  <SSC_Hediff_PetFox.description>透過科研、護理與調教培養的專精。培養達到 20% 和 50% 時，逐步提高科研速度、包紮速度和包紮品質。</SSC_Hediff_PetFox.description>
+  <SSC_Hediff_PetFox.stages.0.label>成型中</SSC_Hediff_PetFox.stages.0.label>
+  <SSC_Hediff_PetFox.stages.1.label>研護熟練</SSC_Hediff_PetFox.stages.1.label>
+  <SSC_Hediff_PetFox.stages.2.label>研護專精</SSC_Hediff_PetFox.stages.2.label>
+  <SSC_Hediff_PetFox_Final.label>終極寵物狐專精</SSC_Hediff_PetFox_Final.label>
+  <SSC_Hediff_PetFox_Final.description>透過人格凝膠塑成的終極專精。科研速度和包紮速度提高 50%，包紮品質係數提高 15%。</SSC_Hediff_PetFox_Final.description>
 </LanguageData>

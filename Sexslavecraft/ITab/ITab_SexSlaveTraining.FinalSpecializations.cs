@@ -17,7 +17,7 @@ namespace SexSlaveCraft
         {
             SexSlaveSpecializationType.Bus, SexSlaveSpecializationType.Cow,
             SexSlaveSpecializationType.Combatant, SexSlaveSpecializationType.PetCat,
-            SexSlaveSpecializationType.PetDog, SexSlaveSpecializationType.PetRabbit,
+            SexSlaveSpecializationType.PetDog, SexSlaveSpecializationType.PetRabbit, SexSlaveSpecializationType.PetFox,
             SexSlaveSpecializationType.TrainerOfficer, SexSlaveSpecializationType.Fertility
         };
 

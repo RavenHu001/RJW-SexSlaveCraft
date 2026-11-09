@@ -6,4 +6,7 @@
   <SSC_PetAffectionGizmoDesc>Подойти к хозяину {0} и проявлять нежность рядом с ним в течение двух секунд, ненадолго улучшая его настроение. После завершения взаимодействия начинается суточная перезарядка.</SSC_PetAffectionGizmoDesc>
   <SSC_ITab_SpecializationPetDisabledConflictingFinal>Другая финальная специализация питомца не позволяет выбрать это направление</SSC_ITab_SpecializationPetDisabledConflictingFinal>
   <SSC_PetSpecialization_SelectionRejected>Нельзя выбрать специализацию питомца: {0}</SSC_PetSpecialization_SelectionRejected>
+  <SSC_ITab_SpecializationPetFox>Специализация лисы</SSC_ITab_SpecializationPetFox>
+  <SSC_ITab_SelectSpecializationPetFox>Выбрать специализацию лисы</SSC_ITab_SelectSpecializationPetFox>
+  <SSC_ITab_PetFoxFinalizationTip>Извлеките гель личности, обработайте его на столе скульптора и внедрите вновь, чтобы получить финальные бонусы лисы к исследованиям и лечению.</SSC_ITab_PetFoxFinalizationTip>
 </LanguageData>

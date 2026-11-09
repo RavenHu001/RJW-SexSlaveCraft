@@ -31,4 +31,7 @@
   <SSC_Message_DogAnimalInteractionTriggered>{0}'s animal interaction with {1} has started.</SSC_Message_DogAnimalInteractionTriggered>
   <SSC_ITab_SpecializationPetDisabledConflictingFinal>Another final pet specialization prevents selecting this pet direction</SSC_ITab_SpecializationPetDisabledConflictingFinal>
   <SSC_PetSpecialization_SelectionRejected>Cannot select pet specialization: {0}</SSC_PetSpecialization_SelectionRejected>
+  <SSC_ITab_SpecializationPetFox>Pet Fox specialization</SSC_ITab_SpecializationPetFox>
+  <SSC_ITab_SelectSpecializationPetFox>Select Pet Fox specialization</SSC_ITab_SelectSpecializationPetFox>
+  <SSC_ITab_PetFoxFinalizationTip>Extract the personality gel, shape it into a final Pet Fox at a sculpting table, then implant it to gain the final research and medical bonuses.</SSC_ITab_PetFoxFinalizationTip>
 </LanguageData>

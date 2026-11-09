@@ -292,7 +292,7 @@ namespace SexSlaveCraft
                 // 清源特化回调之后、剥离人格之前再核对；不能让新受孕或换人格者进入空壳状态。
                 if (!mutation.IsCurrent || victim.TryGetComp<CompSexSlaveTraining>() != originalComp) return;
                 if (!SSCPersonalityExcretionAdmission.TryContinueExtraction(victim, product)) return;
-                PetSpecializationUtility.DetachRabbitAfterExtraction(victim);
+                PetSpecializationUtility.DetachRabbitAndFoxAfterExtraction(victim);
                 if (!mutation.IsCurrent || victim.TryGetComp<CompSexSlaveTraining>() != originalComp) return;
                 if (!SSCPersonalityExcretionAdmission.TryContinueExtraction(victim, product)) return;
 #endif
