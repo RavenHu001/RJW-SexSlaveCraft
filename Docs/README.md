@@ -6,7 +6,7 @@
 
 ## 最新开发状态
 
-**2.4.10 于 2026-11-09 正式发布。** 完整门禁通过 52 套、6552/6552 项。[下载](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.10) 兔家政与狐狸科研医疗的交付记录从[完成索引](Development/Completed/README.md#ssc-2410-completed)进入，发布范围和分批依据见[版本档案](Releases/2.4.10/2.4.10版本验证.md#2026-11-09-2410-正式发布归档)。
+**2.4.10 修订版于 2026-11-09 发布。** 完整门禁通过 52 套、6535/6535 项。 本次纳入子宫开发判定修正和双语简介。[下载修订版](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.10-r2) · [发布归档](Releases/2.4.10/2.4.10版本验证.md#2410-修订版发布归档) · [已交付记录](Development/Completed/README.md#ssc-2410-completed)
 
 ## 按用途选择入口
 
@@ -29,7 +29,7 @@
 
 - **新玩家**：[模组介绍](模组介绍.md) → [快速入门](../读我，玩法介绍.md) → [机制详解](../机制详解.md)。英文路线见 [English reading order](Players/README.md#english-reading-order)。
 - **接手开发**：[开发协作约定](../AGENTS.md) → [开发资料入口](Development/README.md) → [开发规范与历史参考](Development/Reference/README.md) → [完成记录](Development/Completed/README.md) → [待验收](Development/Verification/README.md) → [未来规划](Design/README.md)。新增同类个人布尔能力先读[能力开关接入规范](Development/Reference/个人能力开关接入规范.md)。
-- **准备发布**　[2.4.10 正式发布归档](Releases/2.4.10/2.4.10版本验证.md#2026-11-09-2410-正式发布归档) → [构建与打包](Maintenance/发布与打包.md) → [测试索引](../Tests/README.md)。
+- **准备发布**　[2.4.10 正式发布归档](Releases/2.4.10/2.4.10版本验证.md#2410-修订版发布归档) → [构建与打包](Maintenance/发布与打包.md) → [测试索引](../Tests/README.md)。
 
 ## 目录与状态
 

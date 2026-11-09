@@ -1,6 +1,6 @@
 # 开发资料入口
 
-**2.4.10 于 2026-11-09 正式发布。** 完整门禁通过 52 套、6552/6552 项。[下载](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.10) [完成索引](Completed/README.md#ssc-2410-completed) · [归并核对](../Releases/2.4.10/2.4.10开发归并核对.md) · [正式验证](../Releases/2.4.10/2.4.10版本验证.md#2026-11-09-2410-正式发布归档)
+**2.4.10 修订版于 2026-11-09 发布。** 完整门禁通过 52 套、6535/6535 项。 [下载修订版](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.10-r2) · [修订版验证](../Releases/2.4.10/2.4.10版本验证.md#2410-修订版发布归档) · [完成索引](Completed/README.md#ssc-2410-completed)
 
 **2.4.9 — 2026-11-02正式发布。** [下载](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.9)。完整All **52套／6535项全部通过**，资源2／2、发布编排56及文案隔离75项通过；532份冻结文件未变。标签源码`2b288569`，ZIP及SHA-256已上传并复核为最新稳定版；本轮未启动新游戏或同步安装目录。下方开发／登记记录保留原日期与范围。
 
