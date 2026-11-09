@@ -1,6 +1,6 @@
 # RJW-SexSlaveCraft Quick Start Guide
 
-**SSC 2.4.10** for RimWorld 1.7. The included 1.6 component uses SSC 2.4.1. [Download](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.10)
+**SSC 2.4.10** for RimWorld 1.7. The revision aligns uterine and vaginal development eligibility. The included 1.6 component uses SSC 2.4.1. [Download](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.10-r2)
 
 [2.4.10 pet paths](#ssc-2410) · [2.4.10 release notes](Docs/Releases/2.4.10/2.4.10发布说明.md#english)
 
@@ -348,7 +348,7 @@ See the [full Combatant reference](PLAYER_GUIDE_EN.md#how-does-combatant-progres
 <a id="ssc-2410"></a>
 ## Pet Cat and Dog (2.3.7)
 
-**2.4.10 adds Rabbit and Fox and revises Cat and Dog passives.** [Download v2.4.10](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.10)
+**2.4.10 adds Rabbit and Fox and revises Cat and Dog passives.** [Download 2.4.10 revision](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.10-r2)
 
 To select Cat or Dog, set SSC identity to Sex Slave, complete Training and the matching pet research, and check that the pawn has no final pet specialization. Selection requires neither a bound master nor a chain stage. In v2.4.9, Cat gains movement speed and melee dodge. In 2.4.10, Cat gains movement speed and hunting stealth at 20% and 50%. Dog improves taming and training at 20%, 50% and 80%, and 2.4.10 adds plant work speed. Ordinary direction changes retain separate progress, and ordinary effects apply only to the current path.
 

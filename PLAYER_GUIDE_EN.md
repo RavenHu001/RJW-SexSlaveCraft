@@ -1,6 +1,6 @@
 # RJW-SexSlaveCraft Complete Player Guide
 
-**SSC 2.4.10** for RimWorld 1.7. The included 1.6 component uses SSC 2.4.1. [Download](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.10)
+**SSC 2.4.10** for RimWorld 1.7. The revision aligns uterine and vaginal development eligibility. The included 1.6 component uses SSC 2.4.1. [Download](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.10-r2)
 
 [2.4.10 pet paths](#ssc-2410) · [2.4.10 release notes](Docs/Releases/2.4.10/2.4.10发布说明.md#english)
 
@@ -1700,7 +1700,7 @@ This section records the audited code behavior and known limitations.
 <a id="ssc-2410"></a>
 ## 23. Research Tree
 
-**2.4.10 adds Rabbit and Fox and revises Cat and Dog passives.** [Download v2.4.10](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.10)
+**2.4.10 adds Rabbit and Fox and revises Cat and Dog passives.** [Download 2.4.10 revision](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.10-r2)
 
 In version 2.3.7, Cat selection requires SSC Sex Slave identity, completed Training and Cat research, and no final Cat, Dog or Rabbit specialization. A bound master and a chain stage are not selection requirements. Completed daily Training or full Binding Rituals give the current ordinary pet path shared progress. A current ordinary Cat additionally gains 1 percentage point from successful affection toward its actual bound master while idle nearby, using the existing 60,000-tick (one-day) cooldown. Completed ordinary training, any final pet specialization, or a different current direction blocks this reward; Dog affection grants no progress. The v2.4.9 Cat gains movement speed and melee dodge. In 2.4.10, the movement factors at 20%, 50% and final are ×1.08, ×1.16 and ×1.25. Hunting Stealth factors are ×1.40, ×1.70 and ×2.00 before the vanilla curve. Dog gains Plant Work Speed factors of ×1.10, ×1.20, ×1.30 and ×1.40 at 20%, 50%, 80% and final, alongside taming and training bonuses. Cat/Dog progress uses one decimal place and reads "Training complete; ready to finalize" at the shared 0.999 threshold. Hover for personality-gel extraction, sculpting-table processing and implantation steps; ordinary completion does not directly grant a final ability. Final bonuses, abilities and affection remain after switching directions. In RimWorld 1.7 in 2.4.10, final Cat, Dog, Rabbit and Fox specializations are mutually exclusive. Ordinary direction changes retain historical progress.
 

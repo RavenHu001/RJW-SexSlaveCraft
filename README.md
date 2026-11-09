@@ -1,6 +1,6 @@
 # RJW-SexSlaveCraft · TieJin Modify
 
-**SSC 2.4.10。** 兔家政、狐狸科研医疗、猫狗平衡与动物特化四语文案归入本版。[下载 2.4.10](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.10) · [版本说明](Docs/Releases/2.4.10/2.4.10发布说明.md) · [归并核对](Docs/Releases/2.4.10/2.4.10开发归并核对.md) · [验证记录](Docs/Releases/2.4.10/2.4.10版本验证.md)
+**SSC 2.4.10。** 兔家政、狐狸科研医疗、猫狗平衡与动物特化四语文案归入本版。修订版补入子宫开发成长判定修正和新版双语简介。[下载 2.4.10](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.10-r2) · [版本说明](Docs/Releases/2.4.10/2.4.10发布说明.md) · [归并核对](Docs/Releases/2.4.10/2.4.10开发归并核对.md) · [验证记录](Docs/Releases/2.4.10/2.4.10版本验证.md)
 
 **2.4.9 — 2026-11-02正式发布。** [下载](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.9)。完整All **52套／6535项全部通过**，资源2／2、发布编排56及文案隔离75项通过；532份冻结文件未变。标签源码`2b288569`，ZIP及SHA-256已上传并复核为最新稳定版；本轮未启动新游戏或同步安装目录。下方开发／登记记录保留原日期与范围。
 
@@ -106,7 +106,7 @@
 | 契约仪式与阶段进阶 | 需要 Ideology（文化）DLC |
 | Royalty（可选） | 安装时调教研究需要蓝图；种子或原版独立蓝图可补齐，之后仍需研究 |
 
-从 [v2.4.10 Release](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.10) 下载 ZIP 与 SHA-256。退出游戏，移出旧文件夹后完整解压，保留加载配置及两套版本目录。[2.4.10 版本说明](Docs/Releases/2.4.10/2.4.10发布说明.md)
+从 [2.4.10 修订版](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.10-r2) 下载 ZIP 与 SHA-256。退出游戏，移出旧文件夹后完整解压，保留加载配置及两套版本目录。[2.4.10 版本说明](Docs/Releases/2.4.10/2.4.10发布说明.md)
 
 2.4.10 的兔家政与狐狸科研医疗各有对应实机验收，包含凝胶终极化和两项终极技能。受训目标须使用 SSC 性奴身份。[分批验证](Docs/Releases/2.4.10/2.4.10版本验证.md)
 
@@ -128,7 +128,7 @@
 
 ## English overview
 
-**SSC 2.4.10** adds Pet Rabbit housekeeping, Pet Fox research and medicine, Cat/Dog balance changes and revised animal specialization text. [Download v2.4.10](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.10) · [Release notes](Docs/Releases/2.4.10/2.4.10发布说明.md#english)
+**SSC 2.4.10** adds Pet Rabbit housekeeping, Pet Fox research and medicine, Cat/Dog balance changes and revised animal specialization text. The revised package aligns uterine and vaginal development eligibility and includes the rewritten bilingual overview. [Download 2.4.10 revision](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.10-r2) · [Release notes](Docs/Releases/2.4.10/2.4.10发布说明.md#english)
 
 SexSlaveCraft is an adult RJW expansion for pawn development, bonds, specialization, personality transfer and body modification. The v2.4.9 release includes Depravity Gel, three emitter tiers, personal PNA stage maintenance and a Conception icon for RimWorld 1.7. Its RimWorld 1.6 content uses SSC 2.4.1. [2.4.9 release notes](Docs/Releases/2.4.9/2.4.9发布说明.md#english)
 

@@ -8,9 +8,10 @@
 - 宠物狐从科研和护理获得进度，终极技能「应急包扎」可一次处理一名己方伤员当前全部可包扎伤口。
 - 四种宠物终极成果互斥。猫改为移速和狩猎隐蔽，狗新增种植速度，四种宠物的文案统一。
 - 纳入工作栏与绑定仪式英文、玩家提示和称谓、兼容加载顺序、三档发烟器贴图及资料维护。
+- **2.4.10 修订版（r2）。** 日常调教、整场绑定仪式和欢愉侵蚀的子宫成长资格与各自的阴道开发对齐，收录修订后的 1.7 产物与双语简介。[下载修订版](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.10-r2)
 - 兔与狐各两批完成对应实机验收。正式发布门禁通过 52 套、6552/6552 项。[发布归档](Docs/Releases/2.4.10/2.4.10版本验证.md#2026-11-09-2410-正式发布归档)
 
-Development through `5640afba` is grouped into **2.4.10**. It adds Pet Rabbit housekeeping and Careful Cooking, Pet Fox research/medicine and Emergency Bandaging, Cat/Dog balance changes, four-pet finalization exclusivity, clearer animal specialization text and maintenance updates. Rabbit and Fox have scoped acceptance. The full release gate passed 52 suites and 6552/6552 cases. [Release verification](Docs/Releases/2.4.10/2.4.10版本验证.md#2026-11-09-2410-正式发布归档)
+Development through `5640afba` is grouped into **2.4.10**. It adds Pet Rabbit housekeeping and Careful Cooking, Pet Fox research/medicine and Emergency Bandaging, Cat/Dog balance changes, four-pet finalization exclusivity, clearer animal specialization text and maintenance updates. The r2 package aligns uterine and vaginal development eligibility across daily Training, completed Binding Rituals and Desire Infestation and includes the rewritten bilingual overview. Rabbit and Fox have scoped acceptance. The full release gate passed 52 suites and 6552/6552 cases. [Release verification](Docs/Releases/2.4.10/2.4.10版本验证.md#2026-11-09-2410-正式发布归档)
 
 ## [2.4.9] — 2026-11-02 — 堕落凝胶、发烟器与PNA阶段维持
 
