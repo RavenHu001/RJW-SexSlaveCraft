@@ -331,7 +331,6 @@ namespace SexSlaveCraft
 #if SSC_RW17
                 // 阶段成功推进才保存合格接触；末阶段 memo 会同步结算整场，故必须先写入。
                 var parts = SSCRestrictionJobGuard.TrainingParts(this, SSCInteractionKind.RitualTraining);
-                training.RecordUterusRitualPhase(ritualLord, parts, Sexprops);
                 training.RecordStomachRitualPhase(ritualLord, parts, Sexprops);
 #endif
                 int completedPhases = training.ritualPhase;

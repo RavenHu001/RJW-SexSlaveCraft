@@ -14,14 +14,16 @@ internal static partial class Program
 {
     private static readonly Type growthType = typeof(SSCUterusDevelopmentGrowthUtility);
     private static readonly Type partsType = typeof(SSCOrdinarySexPartsUtility);
-    private static readonly Type snapshotType = typeof(SSCOrdinarySexPartsSnapshot);
+    private static BodyDef growthTestBody;
     private static readonly Type guardType = growthType.Assembly.GetType("SexSlaveCraft.SSCRestrictionJobGuard");
 
-    /// <summary>执行公开数值规则、真实接触捕获及原记录写入；流程专项另验证完成认领和三种出口。</summary>
+    /// <summary>执行公开数值规则与原记录写入，再验证三种完成出口。</summary>
     private static void GrowthTests(string repo, Harmony harmony)
     {
         GainCalculationTests();
-        ReceivingEvidenceTests();
+        SSCDefOf.SSC_BodyPartTraining = DefDatabase<ResearchProjectDef>.GetNamed("SSC_RES_BodyPartTraining");
+        SSCDefOf.SSC_BodyPartTraining.baseCost = 100f;
+        researchProgress[SSCDefOf.SSC_BodyPartTraining] = float.MaxValue;
         GrowthWriteTests();
         GrowthFlowTests(repo, harmony);
     }
@@ -41,21 +43,39 @@ internal static partial class Program
         }
     }
 
-    /// <summary>实际 RJW 对象与原生身体：目标在正反方向都可以是接触 Item2.Owner。</summary>
+    private static BodyPartRecord SetupGrowthGenitals(Pawn pawn)
+    {
+        if (growthTestBody == null)
+        {
+            var genitals = new BodyPartDef { defName = "GrowthGenitals", label = "genitals", hitPoints = 10 };
+            DefDatabase<BodyPartDef>.Add(genitals);
+            var torso = new BodyPartRecord { def = BodyPartDefOf.Torso };
+            torso.parts.Add(new BodyPartRecord { def = genitals, parent = torso });
+            growthTestBody = new BodyDef { defName = "GrowthTestBody", corePart = torso };
+            growthTestBody.ResolveReferences();
+            DefDatabase<BodyDef>.Add(growthTestBody);
+        }
+        pawn.def.race.body = growthTestBody;
+        pawn.health.Notify_HediffChanged(null);
+        return growthTestBody.corePart.parts.Single();
+    }
+
+    /// <summary>实际 RJW 对象与原生身体，日常开发可定位 Genitals 部位。</summary>
     private sealed class GrowthScene
     {
         internal readonly Pawn Source = SurgeryPawn(PawnIdentity.Master), Target = SurgeryPawn();
         internal readonly Hediff_NaturalSexPart Organ;
         internal readonly SexProps Props;
         internal readonly ILewdablePart Penetrator, Vagina;
-        internal readonly SSCOrdinarySexPartsSnapshot Snapshot;
 
         /// <summary>只提供已经解析的接触，不执行或模拟 RJW 的交互选择器。</summary>
         internal GrowthScene(bool reverse = false, bool contact = true, bool start = true, bool oral = false)
         {
-            // 胃部用例使用独立身体；原阴道场景保留原有身体及预期，不改写旧样本。
+            BodyPartRecord genitals = oral ? null : SetupGrowthGenitals(Target);
             if (oral) SetupStomachBody(Target);
-            Organ = new Hediff_NaturalSexPart { pawn = Target, Part = Target.RaceProps.body.corePart, def = vagina, loadID = ++nextId };
+            Target.health.hediffSet.GetFirstHediffOfDef(vagina).Part = Target.RaceProps.body.corePart;
+            Organ = new Hediff_NaturalSexPart { pawn = Target, Part = genitals ?? Target.RaceProps.body.corePart,
+                def = vagina, loadID = ++nextId };
             Target.health.hediffSet.hediffs.Add(Organ);
             var interaction = new InteractionDef { defName = "UterusContact" + ++nextId,
                 modExtensions = new() { new SexInteractionExtension { rjwSextype = "Vaginal", tags = new() } } };
@@ -73,7 +93,6 @@ internal static partial class Program
             if (contact) Props._resolved.Penetrations.Add(Tuple.Create(Penetrator, Vagina));
             if (start) Start(Target);
             if (oral && start) StartStomach(Target);
-            Snapshot = CaptureParts(Props);
         }
     }
 
@@ -88,15 +107,9 @@ internal static partial class Program
     /// <summary>由生产缓存读取器捕获，不访问会触发重新解析的 resolved getter。</summary>
     private static SSCOrdinarySexPartsSnapshot CaptureParts(SexProps props)
         => (SSCOrdinarySexPartsSnapshot)Hidden(partsType, null, "Capture", props);
-    /// <summary>返回真实快照条目，供场景测试检查保存字段和原器官引用。</summary>
-    private static List<SSCOrdinarySexPartsSnapshot.Part> Entries(SSCOrdinarySexPartsSnapshot snapshot)
-        => (List<SSCOrdinarySexPartsSnapshot.Part>)AccessTools.Field(snapshotType, "Parts").GetValue(snapshot);
-    /// <summary>通过生产方向复查判断该条目是否仍能支持本项目成长。</summary>
-    private static bool Receiving(SSCOrdinarySexPartsSnapshot snapshot, SexProps props, SSCOrdinarySexPartsSnapshot.Part entry)
-        => (bool)Hidden(partsType, null, "IsCurrentReceivingVagina", snapshot, props, entry);
-    /// <summary>取得真实成长计划，不自行选择器官或计算额度。</summary>
+    /// <summary>按真实日常动作分类取得成长计划。</summary>
     private static object Plan(GrowthScene scene, float score = 50)
-        => Hidden(growthType, null, "Capture", scene.Target, scene.Snapshot, scene.Props, score);
+        => Hidden(growthType, null, "CaptureTraining", scene.Target, scene.Props.sexType, score);
     /// <summary>在夹具提供的原场景有效性前提下执行真实计划。</summary>
     private static void Apply(object plan, Func<bool> current = null)
     {
@@ -112,67 +125,6 @@ internal static partial class Program
         AccessTools.Field(typeof(Need), "pawn").SetValue(need, pawn);
         need.def = new NeedDef { defName = "GrowthCorruption", needClass = typeof(Need_Corruption) };
         need.CurLevel = level; pawn.needs.AllNeeds.Add(need); return need;
-    }
-
-    /// <summary>覆盖真实端点方向、参与列表合并、读档无缓存及运行中方向替换。</summary>
-    private static void ReceivingEvidenceTests()
-    {
-        foreach (bool reverse in new[] { false, true })
-            Check("batch3 Item2 owner receives growth in either initiator direction: " + reverse, () =>
-            {
-                var s = new GrowthScene(reverse); Equal(2, Entries(s.Snapshot).Count);
-                Equal(1, Entries(s.Snapshot).Count(e => Receiving(s.Snapshot, s.Props, e)));
-                Apply(Plan(s)); Near(.035f, Progress(s.Target)); Near(0, Progress(s.Source));
-            });
-        Check("batch3 vagina participates without penetration: no growth despite Vaginal sex type", () =>
-        {
-            var s = new GrowthScene(contact: false); Require(s.Snapshot != null); Require(Plan(s) == null); Near(.01f, Progress(s.Target));
-        });
-        Check("batch3 actual vaginal endpoint qualifies independent of sex type name", () =>
-        {
-            var s = new GrowthScene(); AccessTools.Field(typeof(SexProps), "_sexType").SetValue(s.Props, (xxx.rjwSextype?)xxx.rjwSextype.Anal);
-            Apply(Plan(s)); Near(.035f, Progress(s.Target));
-        });
-        Check("batch3 direction reversal with identical participating organs rejects only new growth", () =>
-        {
-            var s = new GrowthScene(); var plan = Plan(s);
-            s.Props._resolved.Penetrations[0] = Tuple.Create(s.Vagina, s.Penetrator);
-            Require((bool)Hidden(snapshotType, s.Snapshot, "Matches", s.Props));
-            Apply(plan); Near(.01f, Progress(s.Target));
-        });
-        foreach (string change in new[] { "organ removed", "organ replaced", "foreign owner", "new props", "new interaction", "empty contacts" })
-            Check("batch3 original evidence invalidated before write: " + change, () =>
-            {
-                var s = new GrowthScene(); var plan = Plan(s);
-                switch (change)
-                {
-                    case "organ removed": s.Target.health.hediffSet.hediffs.Remove(s.Organ); break;
-                    case "organ replaced":
-                        s.Target.health.hediffSet.hediffs.Remove(s.Organ);
-                        s.Target.health.hediffSet.hediffs.Add(new Hediff_NaturalSexPart { pawn = s.Target, Part = s.Organ.Part, def = vagina }); break;
-                    case "foreign owner": s.Organ.pawn = s.Source; break;
-                    case "new props": Hidden(snapshotType, s.Snapshot, "Bind", new SexProps(s.Source, s.Target)); break;
-                    case "new interaction": s.Props.dictionaryKey = new InteractionDef(); break;
-                    case "empty contacts": s.Props._resolved.Penetrations.Clear(); break;
-                }
-                Apply(plan); Near(.01f, Progress(s.Target));
-            });
-        Check("batch3 saved original evidence works with absent cache and never resolves parts again", () =>
-        {
-            var s = new GrowthScene(); s.Props._resolved = null; Apply(Plan(s)); Near(.035f, Progress(s.Target)); Require(s.Props._resolved == null);
-        });
-        Check("batch3 missing start cache cannot be created at payout", () =>
-        {
-            var s = new GrowthScene(); var cached = s.Props._resolved; s.Props._resolved = null;
-            Require(CaptureParts(s.Props) == null); s.Props._resolved = cached;
-            Require(Hidden(growthType, null, "Capture", s.Target, null, s.Props, 50f) == null);
-        });
-        Check("batch3 multiple contacts and duplicate organs produce one amount for the body", () =>
-        {
-            var s = new GrowthScene(); s.Props._resolved.Penetrations.Add(Tuple.Create(s.Penetrator, s.Vagina));
-            var snapshot = CaptureParts(s.Props); Equal(2, Entries(snapshot).Count);
-            Apply(Hidden(growthType, null, "Capture", s.Target, snapshot, s.Props, 50f)); Near(.035f, Progress(s.Target));
-        });
     }
 
     /// <summary>直接观察真实健康记录：不补建、不迁移，封顶只写原记录并保持满级默认禁育。</summary>

@@ -257,7 +257,6 @@ namespace SexSlaveCraft
             Scribe_References.Look(ref bindingRitualLord, "bindingRitualLord");
             Scribe_Values.Look(ref bindingRitualOutcomeClaimed, "bindingRitualOutcomeClaimed", false);
 #if SSC_RW17
-            ExposeUterusRitualEvidence();
             ExposeStomachRitualEvidence();
 #endif
 

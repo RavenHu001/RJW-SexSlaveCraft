@@ -64,8 +64,6 @@ internal static partial class Program
             harmony.Patch(m, prefix: new HarmonyMethod(typeof(Program), nameof(Skip)));
         AccessTools.Field(typeof(Game), "letterStack").SetValue(Current.Game, new LetterStack());
         // 旧部位定义和研究正常可用，确保新旧两份开发预算都真实执行。
-        SSCDefOf.SSC_BodyPartTraining = DefDatabase<ResearchProjectDef>.GetNamed("SSC_RES_BodyPartTraining");
-        researchProgress[SSCDefOf.SSC_BodyPartTraining] = float.MaxValue;
         foreach (var name in new[] { "Hand", "Foot", "Oral", "Breast", "Genitals", "Anus" })
             DefDatabase<HediffDef>.Add(new HediffDef { defName = "SSC_Exp_" + name, hediffClass = typeof(Hediff), maxSeverity = 1 });
         DailyGrowthTests();
@@ -90,9 +88,9 @@ internal static partial class Program
     /// <summary>既有日常后果是外部边界，新成长必须使用调用者传入的同一评分。</summary>
     private static bool DailyOutcomeBoundary()
     { dailyOutcomes++; growthOrder.Add("daily outcome"); growthAfterDaily?.Invoke(); return false; }
-    /// <summary>记录旧部位日常入口，普通侵蚀的精确部位写入仍执行原生产代码。</summary>
+    /// <summary>记录顺序，保留旧部位的实际判定与写入，便于比较两份成长。</summary>
     private static bool OldBodyBoundary()
-    { oldBodyCalls++; growthOrder.Add("old body"); return false; }
+    { oldBodyCalls++; growthOrder.Add("old body"); return true; }
     /// <summary>保留整场旧结果调用位置，隔离原有六部位、心情和意志后果。</summary>
     private static bool RitualOutcomeBoundary(ref string __result)
     { ritualOutcomes++; __result = ""; growthAfterRitual?.Invoke(); return false; }
@@ -132,7 +130,7 @@ internal static partial class Program
         }
         return (s, driver, toils.Last());
     }
-    /// <summary>验证实际日常闭包：原结算先执行、同场只领一次、无接触和中断不领。</summary>
+    /// <summary>验证实际日常闭包与旧部位使用相同动作分类，完整结算只领一次。</summary>
     private static void DailyGrowthTests()
     {
         Check("batch3 missing driver never creates training evidence", () =>
@@ -146,13 +144,32 @@ internal static partial class Program
             Near(.035f, Progress(s.scene.Target)); Equal(1, sexProcessCalls); Equal(1, dailyOutcomes); Equal(1, oldBodyCalls);
             Equal("ProcessSex,score,daily outcome,old body", string.Join(',', growthOrder));
         });
-        foreach (string mode in new[] { "no contact", "not started", "time remaining", "old claimed", "no start snapshot" })
+        foreach (var act in new[] { xxx.rjwSextype.Vaginal, xxx.rjwSextype.Scissoring, xxx.rjwSextype.Fingering,
+            xxx.rjwSextype.Fisting, xxx.rjwSextype.Sixtynine, xxx.rjwSextype.Anal })
+            Check("daily uterus follows genital action without contact: " + act, () =>
+            {
+                var s = DailyGrowth(contact: false);
+                AccessTools.Field(typeof(SexProps), "_sexType").SetValue(s.scene.Props, (xxx.rjwSextype?)act);
+                s.payout.initAction();
+                bool genitalAwarded = s.scene.Target.health.hediffSet.hediffs.Any(h => h.def.defName == "SSC_Exp_Genitals");
+                Require(genitalAwarded == (act != xxx.rjwSextype.Anal));
+                Near(genitalAwarded ? .035f : .01f, Progress(s.scene.Target));
+            });
+        Check("daily uterus and genital development require body-part research", () =>
+        {
+            var s = DailyGrowth();
+            researchProgress[SSCDefOf.SSC_BodyPartTraining] = 0f;
+            try { s.payout.initAction(); }
+            finally { researchProgress[SSCDefOf.SSC_BodyPartTraining] = float.MaxValue; }
+            Require(!s.scene.Target.health.hediffSet.hediffs.Any(h => h.def.defName == "SSC_Exp_Genitals"));
+            Near(.01f, Progress(s.scene.Target));
+        });
+        foreach (string mode in new[] { "not started", "time remaining", "old claimed" })
             Check("batch3 daily completion does not grant invalid scene: " + mode, () =>
             {
-                var s = DailyGrowth(contact: mode != "no contact", begun: mode != "not started" && mode != "no start snapshot");
+                var s = DailyGrowth(begun: mode != "not started");
                 if (mode == "time remaining") s.driver.ticks_left = 1;
                 if (mode == "old claimed") AccessTools.Field(typeof(JobDriver_Training), "dailyOutcomeClaimed").SetValue(s.driver, true);
-                if (mode == "no start snapshot") AccessTools.Field(typeof(JobDriver_Training), "sceneStarted").SetValue(s.driver, true);
                 s.payout.initAction(); Near(.01f, Progress(s.scene.Target));
             });
         Check("batch3 daily original callback reentry cannot grant twice", () =>
@@ -224,17 +241,23 @@ internal static partial class Program
             FinishOrdinary(s.scene, original: () => { need.CurLevel = .8f; growthScore = 500; });
             Near(.035f, Progress(s.scene.Target)); Equal(1, growthScoreCalls);
         });
-        foreach (string mode in new[] { "no contact", "ability off", "not finished", "removed organ", "new props", "changed direction", "personality changed" })
+        Check("ordinary genital participation grows uterus without contact or a fixed direction", () =>
+        {
+            var s = OrdinaryGrowth(contact: false);
+            FinishOrdinary(s.scene);
+            Near(.035f, Progress(s.scene.Target));
+            Near(.01f, s.scene.Target.health.hediffSet.hediffs.Single(h => h.def.defName == "SSC_Exp_Genitals").Severity);
+        });
+        foreach (string mode in new[] { "ability off", "not finished", "removed organ", "new props", "personality changed" })
             Check("batch3 ordinary completed candidate rejects invalid new growth: " + mode, () =>
             {
-                var s = OrdinaryGrowth(contact: mode != "no contact");
+                var s = OrdinaryGrowth();
                 if (mode == "not finished") s.driver.ticks_left = 1;
                 if (mode == "ability off") infestationAllowed = false;
                 FinishOrdinary(s.scene, original: () =>
                 {
                     if (mode == "removed organ") s.scene.Target.health.hediffSet.hediffs.Remove(s.scene.Organ);
                     if (mode == "new props") s.driver.Sexprops = new SexProps(s.scene.Source, s.scene.Target);
-                    if (mode == "changed direction") s.scene.Props._resolved.Penetrations[0] = Tuple.Create(s.scene.Vagina, s.scene.Penetrator);
                     if (mode == "personality changed") SSCPersonalityRuntimeUtility.TryBeginMutation(s.scene.Target, out _);
                 });
                 Near(.01f, Progress(s.scene.Target));
@@ -335,66 +358,33 @@ internal static partial class Program
     private static bool EmptyBreakdown(ref string __result) { __result = ""; return false; }
     /// <summary>信件占位文本无需语言设备；格式化后的原文不参与成长计算。</summary>
     private static bool FormattedBoundary(string __0, ref TaggedString __result) { __result = __0; return false; }
-    /// <summary>整场完成只发一次，阶段中断、空接触、旧字段与清理均不补造增长。</summary>
+    /// <summary>整场完成按全身奖励结算，阶段中断与过期仪式不发放。</summary>
     private static void RitualGrowthTests()
     {
-        Check("batch3 ritual six vaginal phases pay once using 75q", () =>
-        {
-            ResetGrowthFlow(); var f = new GrowthRitual();
-            for (int i = 0; i < 6; i++) f.Phase();
-            Near(.02875f, Progress(f.Scene.Target)); Equal(1, f.Memos); Equal(1, ritualOutcomes);
-            f.Worker.Apply(1, new(), f.Job); Near(.02875f, Progress(f.Scene.Target)); Equal(1, ritualOutcomes);
-            BindingRitualStateUtility.EndRitual(f.Job);
-            Require(AccessTools.Field(typeof(CompSexSlaveTraining), "uterusRitualEvidence").GetValue(f.Comp) == null);
-        });
-        Check("batch3 ritual final-phase-only evidence is saved before synchronous outcome", () =>
-        {
-            ResetGrowthFlow(); var f = new GrowthRitual();
-            for (int i = 0; i < 6; i++) f.Phase(contact: i == 5);
-            Near(.02875f, Progress(f.Scene.Target)); Equal(1, f.Memos);
-        });
-        Check("batch3 ritual earlier contact still qualifies when final phase is not vaginal", () =>
-        {
-            ResetGrowthFlow(); var f = new GrowthRitual();
-            for (int i = 0; i < 6; i++) f.Phase(contact: i == 0);
-            Near(.02875f, Progress(f.Scene.Target));
-        });
-        Check("batch3 ritual all empty phases preserve old outcome but no new development", () =>
+        Check("ritual without vaginal contacts pays uterus once using 75q", () =>
         {
             ResetGrowthFlow(); var f = new GrowthRitual();
             for (int i = 0; i < 6; i++) f.Phase(contact: false);
-            Near(.01f, Progress(f.Scene.Target)); Equal(1, ritualOutcomes);
+            Near(.02875f, Progress(f.Scene.Target)); Equal(1, f.Memos); Equal(1, ritualOutcomes);
+            f.Worker.Apply(1, new(), f.Job); Near(.02875f, Progress(f.Scene.Target)); Equal(1, ritualOutcomes);
         });
-        Check("batch3 interrupted ritual phase neither records contact nor advances", () =>
+        Check("batch3 interrupted ritual phase neither advances nor grants growth", () =>
         {
             ResetGrowthFlow(); var f = new GrowthRitual(); f.Phase(completed: false);
             Equal(0, f.Comp.ritualPhase); Near(.01f, Progress(f.Scene.Target)); Equal(0, f.Memos);
-            Require(AccessTools.Field(typeof(CompSexSlaveTraining), "uterusRitualEvidence").GetValue(f.Comp) == null);
         });
-        Check("batch3 old completed ritual without evidence does not retroactively gain", () =>
-        {
-            ResetGrowthFlow(); var f = new GrowthRitual(); f.Comp.ritualPhase = 6;
-            f.Worker.Apply(1, new(), f.Job); Near(.01f, Progress(f.Scene.Target)); Equal(1, ritualOutcomes);
-        });
-        Check("batch3 ritual removed original organ cannot support end reward", () =>
-        {
-            ResetGrowthFlow(); var f = new GrowthRitual(); f.Phase(); f.Scene.Target.health.hediffSet.hediffs.Remove(f.Scene.Organ);
-            for (int i = 1; i < 6; i++) f.Phase(contact: false);
-            Near(.01f, Progress(f.Scene.Target));
-        });
-        Check("batch3 ritual end or new Lord clears previous completed contacts", () =>
+        Check("replaced ritual cannot claim the current ritual's uterus growth", () =>
         {
             ResetGrowthFlow(); var previous = new GrowthRitual(); previous.Phase();
-            var evidence = AccessTools.Field(typeof(CompSexSlaveTraining), "uterusRitualEvidence");
-            Require(evidence.GetValue(previous.Comp) != null);
             previous.Active = false;
             var next = new GrowthRitual(previous.Scene);
-            Require(evidence.GetValue(next.Comp) == null); Equal(0, next.Comp.ritualPhase);
-            for (int i = 0; i < 6; i++) next.Phase(contact: false);
+            Equal(0, next.Comp.ritualPhase);
+            previous.Worker.Apply(1, new(), previous.Job);
             Near(.01f, Progress(next.Scene.Target));
-            // 旧场迟到的清理不能删除后来场次的归属。
-            BindingRitualStateUtility.EndRitual(previous.Job); Equal(next.Lord, next.Comp.bindingRitualLord);
-            BindingRitualStateUtility.EndRitual(next.Job); Require(next.Comp.bindingRitualLord == null);
+            BindingRitualStateUtility.EndRitual(previous.Job);
+            Equal(next.Lord, next.Comp.bindingRitualLord);
+            for (int i = 0; i < 6; i++) next.Phase(contact: false);
+            Near(.02875f, Progress(next.Scene.Target));
         });
         Check("batch3 ritual original outcome reentry cannot grant a second uterus award", () =>
         {
@@ -408,7 +398,6 @@ internal static partial class Program
             ResetGrowthFlow(); var f = new GrowthRitual(); growthAfterRitual = () => f.Active = false;
             for (int i = 0; i < 6; i++) f.Phase();
             Near(.01f, Progress(f.Scene.Target)); Equal(1, ritualOutcomes);
-            Require(AccessTools.Field(typeof(CompSexSlaveTraining), "uterusRitualEvidence").GetValue(f.Comp) == null);
         });
     }
 }

@@ -109,7 +109,7 @@ namespace SexSlaveCraft
                         return capturedScore.Value;
                     }
                     bodyPlan = SSCDesireInfestationBodyUtility.Capture(source, target, parts, Score);
-                    uterusPlan = SSCUterusDevelopmentGrowthUtility.CaptureInfestation(source, target, parts, Score);
+                    uterusPlan = SSCUterusDevelopmentGrowthUtility.CaptureInfestation(target, bodyPlan, Score);
                     stomachPlan = SSCStomachDevelopmentGrowthUtility.CaptureInfestation(source, target, parts, Score);
                 }
 #else

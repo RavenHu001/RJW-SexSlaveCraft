@@ -1,7 +1,5 @@
 // AI 辅助生成
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using rjw;
 using rjw.Modules.Interactions;
 using Verse;
@@ -19,71 +17,58 @@ namespace SexSlaveCraft
             => Math.Min(MaximumGain, TrainingExpUtility.CalculateExperienceBudget(score, ExperienceFactor,
                 corruptionMultiplier, chainMultiplier));
 
-        /// <summary>一次完成的局部计划；保存原记录及器官引用，不存档另一份进度或领取状态。</summary>
+        /// <summary>一次完成的局部计划；保留捕获时的身体记录与该场景的成长资格。</summary>
         internal sealed class Plan
         {
             private readonly Pawn target;
             private readonly Hediff_SSCUterusDevelopment record;
-            private readonly List<SSCOrdinarySexPartsSnapshot.Part> evidence;
-            private readonly Func<SSCOrdinarySexPartsSnapshot.Part, bool> evidenceCurrent;
+            private readonly Func<bool> canGrow;
             private readonly float gain;
 
             /// <summary>只持有捕获时已存在的记录，后来新做手术或更换记录不能继承本场奖励。</summary>
             internal Plan(Pawn target, Hediff_SSCUterusDevelopment record,
-                List<SSCOrdinarySexPartsSnapshot.Part> evidence, float gain,
-                Func<SSCOrdinarySexPartsSnapshot.Part, bool> evidenceCurrent)
+                float gain, Func<bool> canGrow)
             {
-                this.target = target; this.record = record; this.evidence = evidence;
-                this.gain = gain; this.evidenceCurrent = evidenceCurrent;
+                this.target = target; this.record = record; this.gain = gain; this.canGrow = canGrow;
             }
 
-            /// <summary>在原完成认领内执行一次；回调后只允许原场景、原记录和仍附着的原器官。</summary>
+            /// <summary>在原完成认领内执行一次，并复查当前身体、研究和本场资格。</summary>
             internal void Apply(Func<bool> isCurrent)
             {
                 if (Scribe.mode != LoadSaveMode.Inactive || isCurrent?.Invoke() != true ||
                     target == null || target.Dead || target.Destroyed || target.Discarded ||
                     SSCUterusDevelopmentUtility.Find(target) != record || record.IsComplete ||
-                    !evidence.Exists(p => IsEvidenceFor(p, target) && (evidenceCurrent == null || evidenceCurrent(p)))) return;
+                    !HasBodyPartTraining() || !canGrow()) return;
                 // 已满部分不补到其他部位，也不创建记录；Severity 原生 setter 负责阶段与健康缓存通知。
                 float actual = Math.Min(gain, 1f - record.Severity);
                 if (actual > 0f && isCurrent()) record.Severity += actual;
             }
         }
 
-        /// <summary>对当前 Job 的部位快照建立计划；已有解析时检查方向，读档时使用保存的原凭据。</summary>
-        internal static Plan Capture(Pawn target, SSCOrdinarySexPartsSnapshot parts, SexProps props, float score)
-            => Capture(target, parts?.Parts, score,
-                p => SSCOrdinarySexPartsUtility.IsCurrentReceivingVagina(parts, props, p));
+        /// <summary>日常与完整仪式复用阴道开发的动作分类和当前身体部位判断。</summary>
+        internal static Plan CaptureTraining(Pawn target, xxx.rjwSextype sexType, float score)
+            => Capture(target, score, () => TrainingExpUtility.CanTrainGenitals(target, sexType));
 
-        /// <summary>整场仪式使用已完成阶段的器官凭据；不依赖最后一个阶段的交互类型。</summary>
-        internal static Plan Capture(Pawn target, IEnumerable<SSCOrdinarySexPartsSnapshot.Part> parts, float score,
-            Func<SSCOrdinarySexPartsSnapshot.Part, bool> evidenceCurrent = null)
+        private static Plan Capture(Pawn target, float score, Func<bool> canGrow)
         {
             if (Scribe.mode != LoadSaveMode.Inactive || target == null || target.Dead || target.Destroyed || target.Discarded)
                 return null;
             var record = SSCUterusDevelopmentUtility.Find(target);
-            if (record == null || record.IsComplete || parts == null) return null;
-            var evidence = parts.Where(p => IsEvidenceFor(p, target) &&
-                (evidenceCurrent == null || evidenceCurrent(p))).ToList();
-            if (evidence.Count == 0) return null;
+            if (record == null || record.IsComplete || !HasBodyPartTraining() || !canGrow()) return null;
             float gain = CalculateGain(score, TrainingExpUtility.GetCorruptionStageMultiplier(target),
                 TrainingOutcomeUtility.GetChainStageMult(target));
-            return gain > 0f ? new Plan(target, record, evidence, gain, evidenceCurrent) : null;
+            return gain > 0f ? new Plan(target, record, gain, canGrow) : null;
         }
 
-        /// <summary>欢愉侵蚀使用原方向资格与评分载体；缺少新项目证据时不影响其他侵蚀分量。</summary>
-        internal static Plan CaptureInfestation(Pawn source, Pawn target, SSCOrdinarySexPartsSnapshot parts,
+        /// <summary>欢愉侵蚀使用已捕获的阴道开发候选与同一次评分。</summary>
+        internal static Plan CaptureInfestation(Pawn target, SSCDesireInfestationBodyUtility.Plan bodyPlan,
             Func<float> score)
         {
             try
             {
-                if (!SSCDesireInfestationUtility.CanAffect(source, target) || source.skills == null ||
-                    target.relations == null || parts?.Parts == null ||
-                    !parts.Parts.Exists(p => IsEvidenceFor(p, target))) return null;
-                var record = SSCUterusDevelopmentUtility.Find(target);
-                if (record == null || record.IsComplete) return null;
-                // 方向与本场缓存由 Context/partsCurrent 持有；写入时还需复查该阴道仍为被插入端。
-                return Capture(target, parts.Parts, score(), parts.IsCurrentReceivingVagina);
+                if (bodyPlan == null) return null;
+                var genitalDef = SSCOrdinarySexPartsUtility.GetExperienceDef(LewdablePartFamily.Vagina);
+                return Capture(target, score(), () => bodyPlan.HasAttachedPart(genitalDef));
             }
             catch (Exception ex)
             {
@@ -92,9 +77,7 @@ namespace SexSlaveCraft
             }
         }
 
-        /// <summary>身体条目必须同时证明持有者、阴道被插入事实以及原部位/器官仍然存在。</summary>
-        internal static bool IsEvidenceFor(SSCOrdinarySexPartsSnapshot.Part evidence, Pawn target)
-            => evidence != null && evidence.Owner == target && evidence.ReceivedVaginalPenetration &&
-                evidence.Family == LewdablePartFamily.Vagina && evidence.IsAttached();
+        private static bool HasBodyPartTraining()
+            => ResearchUtils.IsResearchFinished(SSCDefOf.SSC_BodyPartTraining);
     }
 }

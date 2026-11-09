@@ -13,6 +13,18 @@ namespace SexSlaveCraft
 {
     public static class TrainingExpUtility
     {
+        private const string GenitalsPartName = "Genitals";
+
+        private static bool IsGenitalTraining(xxx.rjwSextype sexType) => sexType is
+            xxx.rjwSextype.Vaginal or xxx.rjwSextype.Scissoring or xxx.rjwSextype.Fingering or
+            xxx.rjwSextype.Fisting or xxx.rjwSextype.Sixtynine;
+
+#if SSC_RW17
+        internal static bool CanTrainGenitals(Pawn pawn, xxx.rjwSextype sexType)
+            => IsGenitalTraining(sexType) && pawn?.RaceProps?.body?.AllParts.Any(part =>
+                part.def.defName.Contains(GenitalsPartName) && IsPresentPart(pawn, part)) == true;
+#endif
+
         /// <summary>
         /// 根据评分增加经验
         /// </summary>
@@ -59,12 +71,8 @@ namespace SexSlaveCraft
                     break;
 
                 // 3. 生殖器
-                case xxx.rjwSextype.Vaginal:
-                case xxx.rjwSextype.Scissoring:
-                case xxx.rjwSextype.Fingering:
-                case xxx.rjwSextype.Fisting:
-                case xxx.rjwSextype.Sixtynine:
-                    targetPartDefName = "Genitals";
+                case var genitalAct when IsGenitalTraining(genitalAct):
+                    targetPartDefName = GenitalsPartName;
                     hediffToApply = DefDatabase<HediffDef>.GetNamed("SSC_Exp_Genitals");
                     break;
 

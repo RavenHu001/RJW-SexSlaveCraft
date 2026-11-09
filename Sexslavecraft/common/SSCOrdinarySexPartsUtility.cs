@@ -24,7 +24,7 @@ namespace SexSlaveCraft
             catch (Exception ex) { Log.Warning("[SSC InfestationParts] Cannot capture optional body evidence: " + ex.GetType().Name); return null; }
         }
 
-        /// <summary>保留旧六部位的参与器官匹配语义；新项目的插入方向另行复查。</summary>
+        /// <summary>按参与器官核对快照；胃部所需的接触方向另行复查。</summary>
         internal static bool SameCachedParts(SSCOrdinarySexPartsSnapshot snapshot, SexProps props)
         {
             try
@@ -62,9 +62,6 @@ namespace SexSlaveCraft
                       (a == snapshot.Recipient && b == snapshot.Initiator)) ||
                     !Add(snapshot, contact.Item1, a) || !Add(snapshot, contact.Item2, b)) return null;
 #if SSC_RW17
-                // Item1 为插入端，Item2 为被插入端；主人/发起者方向不能替代此凭据。
-                if (contact.Item2.Family == LewdablePartFamily.Vagina)
-                    MarkReceivingVagina(snapshot, contact.Item2, b);
                 // 严格口交只看本场实际端点；普通、反向和六九式均按口腔归属判断。
                 if (contact.Item1.Family == LewdablePartFamily.Penis && contact.Item2.Family == LewdablePartFamily.Mouth)
                     MarkReceivingPenileOral(snapshot, contact.Item2, b);
@@ -88,33 +85,6 @@ namespace SexSlaveCraft
         }
 
 #if SSC_RW17
-        /// <summary>在已合并的器官条目上置位；原参与列表与接触端点重复时不丢失 true。</summary>
-        private static void MarkReceivingVagina(SSCOrdinarySexPartsSnapshot snapshot, ILewdablePart part, Pawn owner)
-        {
-            Hediff organ = (part as RJWLewdablePart)?.SexPart?.AsHediff;
-            foreach (var evidence in snapshot.Parts)
-                if (evidence.Owner == owner && evidence.BodyPart == part.BodyPart &&
-                    evidence.Family == LewdablePartFamily.Vagina && evidence.Organ == organ &&
-                    evidence.HadOrgan == (part is RJWLewdablePart))
-                    evidence.ReceivedVaginalPenetration = true;
-        }
-
-        /// <summary>验证保存的被插入条目；已有缓存时额外核对方向，读档无缓存时不重新解析。</summary>
-        internal static bool IsCurrentReceivingVagina(SSCOrdinarySexPartsSnapshot snapshot, SexProps props,
-            SSCOrdinarySexPartsSnapshot.Part evidence)
-        {
-            if (snapshot == null || evidence == null || !evidence.ReceivedVaginalPenetration ||
-                evidence.Family != LewdablePartFamily.Vagina || !evidence.IsAttached() ||
-                snapshot.Parts?.Contains(evidence) != true || !snapshot.Matches(props)) return false;
-            if (props._resolved == null) return true;
-            try
-            {
-                var current = ReadCached(props);
-                return current?.Parts.Exists(p => p.ReceivedVaginalPenetration && evidence.Same(p)) == true;
-            }
-            catch { return false; } // 可选成长证据失效，不改变原有部位匹配与结算。
-        }
-
         /// <summary>在已合并的器官条目上置位；原参与列表与接触端点重复时不丢失 true。</summary>
         private static void MarkReceivingPenileOral(SSCOrdinarySexPartsSnapshot snapshot, ILewdablePart part, Pawn owner)
         {

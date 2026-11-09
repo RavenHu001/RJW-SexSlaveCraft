@@ -27,6 +27,12 @@ namespace SexSlaveCraft
             internal Plan(Pawn target, List<Candidate> candidates, float budget)
             { this.target = target; this.candidates = candidates; share = budget / candidates.Count; }
 
+#if SSC_RW17
+            /// <summary>复用已捕获的部位资格；已满的部位仍可支持独立开发。</summary>
+            internal bool HasAttachedPart(HediffDef def)
+                => def != null && candidates.Exists(candidate => candidate.Def == def && candidate.IsAttached());
+#endif
+
             internal void Apply(Func<bool> isCurrent)
             {
                 if (!isCurrent() || !ResearchUtils.IsResearchFinished(SSCDefOf.SSC_BodyPartTraining)) return;

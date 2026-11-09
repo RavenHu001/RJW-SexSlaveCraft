@@ -203,9 +203,8 @@ namespace SexSlaveCraft
             if (!canContinue()) return;
 
 #if SSC_RW17
-            // 整场只在原 TryClaimOutcome 内领取一次；六阶段不逐次发放，评分采用 75q。
-            var uterus = SSCUterusDevelopmentGrowthUtility.Capture(slave,
-                slave.TryGetComp<CompSexSlaveTraining>()?.uterusRitualEvidence,
+            // 与阴道开发一样随整场全身奖励判定，子宫评分沿用 75q。
+            var uterus = SSCUterusDevelopmentGrowthUtility.CaptureTraining(slave, rjw.xxx.rjwSextype.Vaginal,
                 SpecializationTrainingProgressUtility.RitualScore(quality));
             uterus?.Apply(canContinue);
             if (!canContinue()) return;

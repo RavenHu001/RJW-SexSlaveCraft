@@ -42,7 +42,7 @@ internal static partial class Program
         old.pawn.jobs.curDriver = restored; return restored;
     }
 
-    /// <summary>验证新字段往返、旧档缺字段、已认领任务恢复，以及仪式跨阶段事实的真实深度序列化。</summary>
+    /// <summary>验证普通和日常场景的真实快照、旧档与完成认领恢复。</summary>
     private static void GrowthSaveTests(Harmony harmony)
     {
         // 原生 JobDriver.ExposeData 包含 SetupToils 等地图生命周期；只隔离这一层。
@@ -67,18 +67,15 @@ internal static partial class Program
                 else { Require(context?.TryClaim() == true); context.Dispatch(); }
                 Near(.035f, Progress(s.scene.Target)); Require(restored.Sexprops._resolved == null);
             });
-        foreach (string missing in new[] { "receivedVaginalPenetration", "sscOrdinarySexParts" })
-            Check("batch3 real Scribe old ordinary scene skips new growth only: " + missing, () =>
-            {
-                var s = OrdinaryGrowth(); var restored = RestoreDriver<GrowthOrdinaryDriver>(s.driver);
-                RoundTripGrowth(s.driver, restored, s.scene, doc => doc.Descendants(missing).Remove());
-                // 读档后原生再次进入 Start 也不能为旧场补捕获新字段。
-                MarkStarted(restored);
-                using var context = (SSCOrdinarySexOutcomeUtility.Context)Hidden(guardType, null, "PrepareOrdinaryOutcome", restored.Sexprops);
-                Require(context?.TryClaim() == true); context.Dispatch(); Near(.01f, Progress(s.scene.Target));
-                if (missing == "receivedVaginalPenetration")
-                    Require(s.scene.Target.health.hediffSet.hediffs.Any(h => h.def.defName == "SSC_Exp_Genitals"));
-            });
+        Check("ordinary save without participating parts cannot grant body growth", () =>
+        {
+            var s = OrdinaryGrowth(); var restored = RestoreDriver<GrowthOrdinaryDriver>(s.driver);
+            RoundTripGrowth(s.driver, restored, s.scene, doc => doc.Descendants("sscOrdinarySexParts").Remove());
+            MarkStarted(restored);
+            using var context = (SSCOrdinarySexOutcomeUtility.Context)Hidden(guardType, null, "PrepareOrdinaryOutcome", restored.Sexprops);
+            Require(context?.TryClaim() == true); context.Dispatch();
+            Near(.01f, Progress(s.scene.Target));
+        });
         foreach (bool completed in new[] { false, true })
             Check("batch3 real Scribe daily restores original payout and claim: " + completed, () =>
             {
@@ -89,28 +86,23 @@ internal static partial class Program
                 toils.Last().initAction(); toils.Last().initAction();
                 Near(.035f, Progress(s.scene.Target)); Equal(1, sexProcessCalls); Equal(1, dailyOutcomes);
             });
-        Check("batch3 real Scribe old daily missing contact flag never backfills growth", () =>
+        Check("daily save without part snapshot still pays by the restored action", () =>
         {
             var s = DailyGrowth(); var restored = RestoreDriver<JobDriver_Training>(s.driver);
-            RoundTripGrowth(s.driver, restored, s.scene, doc => doc.Descendants("receivedVaginalPenetration").Remove());
+            RoundTripGrowth(s.driver, restored, s.scene, doc => doc.Descendants("sscOrdinarySexParts").Remove());
             var toils = ((IEnumerable<Toil>)Hidden(typeof(JobDriver_Training), restored, "MakeNewToils")).ToArray();
-            toils.Last().initAction(); Near(.01f, Progress(s.scene.Target)); Equal(1, dailyOutcomes);
+            toils.Last().initAction(); Near(.035f, Progress(s.scene.Target)); Equal(1, dailyOutcomes);
         });
-        foreach (bool old in new[] { false, true })
-            Check("batch3 real Scribe ritual completed-phase evidence persists or defaults empty: " + old, () =>
-            {
-                ResetGrowthFlow(); var f = new GrowthRitual(); f.Phase();
-                var original = (JobDriver_RitualTraining)f.Scene.Source.jobs.curDriver;
-                var restored = RestoreDriver<JobDriver_RitualTraining>(original);
-                var evidence = AccessTools.Field(typeof(CompSexSlaveTraining), "uterusRitualEvidence");
-                // 先保存再在加载阶段覆写同一外部组件，避免保留原列表假装字段恢复成功。
-                RoundTripGrowth(original, restored, f.Scene,
-                    doc => { if (old) doc.Descendants("uterusRitualEvidence").Remove(); evidence.SetValue(f.Comp, null); }, f.Comp);
-                if (old) Require(evidence.GetValue(f.Comp) == null);
-                else Require(evidence.GetValue(f.Comp) is System.Collections.IList list && list.Count == 1);
-                for (int i = 1; i < 6; i++) f.Phase(contact: false);
-                Near(old ? .01f : .02875f, Progress(f.Scene.Target));
-            });
+        Check("ritual restored mid-session ignores legacy uterus phase evidence", () =>
+        {
+            ResetGrowthFlow(); var f = new GrowthRitual(); f.Phase(contact: false);
+            var original = (JobDriver_RitualTraining)f.Scene.Source.jobs.curDriver;
+            var restored = RestoreDriver<JobDriver_RitualTraining>(original);
+            RoundTripGrowth(original, restored, f.Scene, doc =>
+                doc.Descendants("scene").Single().Add(new XElement("uterusRitualEvidence", new XElement("li"))), f.Comp);
+            for (int i = 1; i < 6; i++) f.Phase(contact: false);
+            Near(.02875f, Progress(f.Scene.Target)); Equal(1, ritualOutcomes);
+        });
     }
 
     /// <summary>只提供实际 RJW 类的程序集定位，不替换保存数据或序列化行为。</summary>
@@ -138,7 +130,6 @@ public sealed class GrowthSceneSave : IExposable
         driver.ExposeData();
         if (training != null)
         {
-            AccessTools.Method(typeof(CompSexSlaveTraining), "ExposeUterusRitualEvidence").Invoke(training, null);
             AccessTools.Method(typeof(CompSexSlaveTraining), "ExposeStomachRitualEvidence").Invoke(training, null);
         }
     }
