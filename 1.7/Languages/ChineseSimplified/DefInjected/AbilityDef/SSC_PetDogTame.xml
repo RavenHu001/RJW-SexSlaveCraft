@@ -2,5 +2,5 @@
 <LanguageData>
   <!-- Map selection and same-cell warmup serve direct wild taming and one complete owned-animal training project. -->
   <SSC_PetDogTame.label>驯兽</SSC_PetDogTame.label>
-  <SSC_PetDogTame.description>靠近动物，以动作和呼唤建立信任，驯服野生动物或完成己方动物的训练项目。冷却 1 天。</SSC_PetDogTame.description>
+  <SSC_PetDogTame.description>走到动物所在格训导 2 秒，驯服野生动物或完成己方动物的一项已勾选训练。冷却 1 游戏日。</SSC_PetDogTame.description>
 </LanguageData>

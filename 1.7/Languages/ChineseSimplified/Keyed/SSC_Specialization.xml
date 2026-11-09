@@ -7,9 +7,9 @@
   <SSC_ITab_SelectSpecializationPetCat>选择宠物猫专精</SSC_ITab_SelectSpecializationPetCat>
   <SSC_ITab_SelectSpecializationPetDog>选择宠物狗专精</SSC_ITab_SelectSpecializationPetDog>
   <SSC_ITab_SelectSpecializationPetRabbit>选择宠物兔专精</SSC_ITab_SelectSpecializationPetRabbit>
-  <SSC_ITab_PetCatFinalizationTip>抽取人格凝胶，在雕刻台加工为终极宠物猫后重新植入，即可获得终极移动、闪避效果和“贴心安抚”。普通培养完成不会直接授予终极技能。</SSC_ITab_PetCatFinalizationTip>
-  <SSC_ITab_PetDogFinalizationTip>抽取人格凝胶，在雕刻台加工为终极宠物狗后重新植入，即可获得终极动物处理效果和“驯兽”，直接驯服野生动物或完整完成己方动物的一个训练项目。普通培养完成不会直接授予终极技能。</SSC_ITab_PetDogFinalizationTip>
-  <SSC_ITab_PetRabbitFinalizationTip>抽取人格凝胶，在雕刻台加工为终极宠物兔，再重新植入即可获得终极清洁与烹饪加成。</SSC_ITab_PetRabbitFinalizationTip>
+  <SSC_ITab_PetCatFinalizationTip>提取人格凝胶，在雕刻台加工为终极宠物猫，再植入以获得终极加成和「贴心安抚」。</SSC_ITab_PetCatFinalizationTip>
+  <SSC_ITab_PetDogFinalizationTip>提取人格凝胶，在雕刻台加工为终极宠物狗，再植入以获得终极加成和「驯兽」。</SSC_ITab_PetDogFinalizationTip>
+  <SSC_ITab_PetRabbitFinalizationTip>提取人格凝胶，在雕刻台加工为终极宠物兔，再植入以获得终极加成和「精心料理」。</SSC_ITab_PetRabbitFinalizationTip>
 
   <SSC_ITab_SpecializationPetDisabledResearch>需要完成对应宠物研究</SSC_ITab_SpecializationPetDisabledResearch>
   <SSC_ITab_SpecializationPetDisabledMissingRequirements>不满足宠物专精条件</SSC_ITab_SpecializationPetDisabledMissingRequirements>
@@ -33,5 +33,5 @@
   <SSC_PetSpecialization_SelectionRejected>无法选择宠物特化：{0}</SSC_PetSpecialization_SelectionRejected>
   <SSC_ITab_SpecializationPetFox>宠物狐专精</SSC_ITab_SpecializationPetFox>
   <SSC_ITab_SelectSpecializationPetFox>选择宠物狐专精</SSC_ITab_SelectSpecializationPetFox>
-  <SSC_ITab_PetFoxFinalizationTip>抽取人格凝胶，在雕刻台加工为终极宠物狐，再重新植入即可获得终极科研与医疗加成。</SSC_ITab_PetFoxFinalizationTip>
+  <SSC_ITab_PetFoxFinalizationTip>提取人格凝胶，在雕刻台加工为终极宠物狐，再植入以获得终极加成和「应急包扎」。</SSC_ITab_PetFoxFinalizationTip>
 </LanguageData>

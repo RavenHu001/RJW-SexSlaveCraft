@@ -13,20 +13,20 @@
   <SSC_PSEdit_TrainerOfficer_Final.jobString>Shaping final Training Officer personality...</SSC_PSEdit_TrainerOfficer_Final.jobString>
 
   <SSC_PSEdit_PetCat_Final.label>Sex Slave Specialization (Final Pet Cat)</SSC_PSEdit_PetCat_Final.label>
-  <SSC_PSEdit_PetCat_Final.description>Processes personality gel with Pet Cat as its current path, completed ordinary training and the base Pet Cat state into a final Pet Cat personality. The material must have no final pet specialization. Implanting it grants permanent movement speed and melee dodge bonuses and retains affection toward the actual bound master; it also grants Gentle Comfort to recover another player-faction humanlike pawn from a mental state, or briefly encourage its mood and work speed.</SSC_PSEdit_PetCat_Final.description>
+  <SSC_PSEdit_PetCat_Final.description>Shape personality gel with completed Pet Cat training into a final Pet Cat. Implant it to gain the final bonuses and Gentle Comfort.</SSC_PSEdit_PetCat_Final.description>
   <SSC_PSEdit_PetCat_Final.jobString>Shaping final Pet Cat personality...</SSC_PSEdit_PetCat_Final.jobString>
 
   <SSC_PSEdit_PetDog_Final.label>Sex Slave Specialization (Final Pet Dog)</SSC_PSEdit_PetDog_Final.label>
-  <SSC_PSEdit_PetDog_Final.description>Further shapes personality gel with 100% Pet Dog specialization progress into its final state. This recipe accepts only material that has completed Pet Dog specialization and carries the base Pet Dog state.</SSC_PSEdit_PetDog_Final.description>
+  <SSC_PSEdit_PetDog_Final.description>Shape personality gel with completed Pet Dog training into a final Pet Dog. Implant it to gain the final bonuses and Animal Training.</SSC_PSEdit_PetDog_Final.description>
   <SSC_PSEdit_PetDog_Final.jobString>Shaping final Pet Dog personality...</SSC_PSEdit_PetDog_Final.jobString>
 
   <SSC_PSEdit_PetRabbit_Final.label>Sex Slave Specialization (Final Pet Rabbit)</SSC_PSEdit_PetRabbit_Final.label>
-  <SSC_PSEdit_PetRabbit_Final.description>Shapes personality gel with completed ordinary Pet Rabbit training and the base Pet Rabbit condition into a final Pet Rabbit. Implant the gel to gain the final cleaning and cooking bonuses.</SSC_PSEdit_PetRabbit_Final.description>
+  <SSC_PSEdit_PetRabbit_Final.description>Shape personality gel with completed Pet Rabbit training into a final Pet Rabbit. Implant it to gain the final bonuses and Careful Cooking.</SSC_PSEdit_PetRabbit_Final.description>
   <SSC_PSEdit_PetRabbit_Final.jobString>Shaping final Pet Rabbit personality...</SSC_PSEdit_PetRabbit_Final.jobString>
   <SSC_PSEdit_Combatant_Final.label>Sex Slave Specialization (Final Combatant)</SSC_PSEdit_Combatant_Final.label>
   <SSC_PSEdit_Combatant_Final.description>Processes personality gel with Combatant as its current specialization, completed ordinary training and no prior Combatant finalization into final combatant gel. Implanting it grants permanent combat bonuses and Combat Overdrive, which actively stimulates the body's nanomachines. Other final specializations stored in the personality are preserved.</SSC_PSEdit_Combatant_Final.description>
   <SSC_PSEdit_Combatant_Final.jobString>Shaping final combatant personality...</SSC_PSEdit_Combatant_Final.jobString>
   <SSC_PSEdit_PetFox_Final.label>Sex Slave Specialization (Final Pet Fox)</SSC_PSEdit_PetFox_Final.label>
-  <SSC_PSEdit_PetFox_Final.description>Shape a personality gel with completed Pet Fox training and the ordinary Pet Fox specialization into a final Pet Fox. Implant the gel to gain the final research and medical bonuses.</SSC_PSEdit_PetFox_Final.description>
+  <SSC_PSEdit_PetFox_Final.description>Shape personality gel with completed Pet Fox training into a final Pet Fox. Implant it to gain the final bonuses and Emergency Bandaging.</SSC_PSEdit_PetFox_Final.description>
   <SSC_PSEdit_PetFox_Final.jobString>Shaping final Pet Fox personality...</SSC_PSEdit_PetFox_Final.jobString>
 </LanguageData>

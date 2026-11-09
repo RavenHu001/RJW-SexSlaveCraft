@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <SSC_PetFoxEmergencyTend.label>Экстренная перевязка</SSC_PetFoxEmergencyTend.label>
-  <SSC_PetFoxEmergencyTend.description>Подойдите к раненому персонажу своей фракции и перевяжите все его раны, доступные для перевязки. Лекарства не нужны. Перезарядка — 1 игровой день.</SSC_PetFoxEmergencyTend.description>
+  <SSC_PetFoxEmergencyTend.description>Подойдите к другому человекоподобному пациенту вашей фракции и сразу перевяжите все доступные раны без лекарств. Перезарядка занимает 1 игровой день.</SSC_PetFoxEmergencyTend.description>
 </LanguageData>

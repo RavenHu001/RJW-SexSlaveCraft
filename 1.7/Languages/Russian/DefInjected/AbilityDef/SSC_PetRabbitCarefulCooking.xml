@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <SSC_PetRabbitCarefulCooking.label>Тщательная готовка</SSC_PetRabbitCarefulCooking.label>
-  <SSC_PetRabbitCarefulCooking.description>На 4 игровых часа скорость готовки повышается ещё на 50%. Блюда, приготовленные за это время, защищены от отравления из-за грязной кухни или низкого навыка кулинарии.</SSC_PetRabbitCarefulCooking.description>
+  <SSC_PetRabbitCarefulCooking.description>Скорость готовки повышается ещё на 50% на 4 игровых часа. Приготовленные за это время подходящие блюда защищены от отравления из-за грязной кухни или низкого навыка готовки. Перезарядка занимает 1 игровой день.</SSC_PetRabbitCarefulCooking.description>
 </LanguageData>

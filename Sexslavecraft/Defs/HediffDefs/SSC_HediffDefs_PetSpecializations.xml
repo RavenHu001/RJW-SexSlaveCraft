@@ -4,7 +4,7 @@
   <HediffDef>
     <defName>SSC_Hediff_PetCat</defName>
     <label>宠物猫专精</label>
-    <description>正在形成的宠物猫专精。行动更加灵活，击伤野生猎物时更少遭到反扑。</description>
+    <description>培养提高移动速度和狩猎隐蔽性。</description>
     <isBad>false</isBad>
     <initialSeverity>0.01</initialSeverity>
     <maxSeverity>1</maxSeverity>
@@ -36,7 +36,7 @@
     <defName>SSC_Hediff_PetCat_Final</defName>
     <hediffClass>HediffWithComps</hediffClass>
     <label>终极宠物猫专精</label>
-    <description>通过人格凝胶完成的终极宠物猫专精。移动速度提高 25%，狩猎隐蔽进一步增强，并获得“贴心安抚”：使其他玩家阵营人形角色从精神状态中恢复，或给予短暂的心情与工作速度鼓舞。</description>
+    <description>提高移动速度和狩猎隐蔽性。解锁「贴心安抚」。</description>
     <isBad>false</isBad>
     <initialSeverity>1</initialSeverity>
     <maxSeverity>1</maxSeverity>
@@ -61,7 +61,7 @@
   <HediffDef>
     <defName>SSC_Hediff_PetDog</defName>
     <label>宠物狗专精</label>
-    <description>正在形成的宠物狗专精。擅长驯服、训练动物和田间种植作业。</description>
+    <description>培养提高动物驯服、训练成功率和种植速度。</description>
     <isBad>false</isBad>
     <initialSeverity>0.01</initialSeverity>
     <maxSeverity>1</maxSeverity>
@@ -110,7 +110,7 @@
     <defName>SSC_Hediff_PetDog_Final</defName>
     <hediffClass>HediffWithComps</hediffClass>
     <label>终极宠物狗专精</label>
-    <description>通过人格凝胶完成的终极宠物狗专精。增强动物驯服和训练属性，种植作业速度提高 40%，并获得“驯兽”：走到同地图上符合条件的动物所在格，完成短暂训导后直接驯服野生动物，或完整完成己方动物的一个已勾选训练项目。</description>
+    <description>提高动物驯服、训练成功率和种植速度。解锁「驯兽」。</description>
     <isBad>false</isBad>
     <initialSeverity>1</initialSeverity>
     <maxSeverity>1</maxSeverity>
@@ -138,7 +138,7 @@
   <HediffDef>
     <defName>SSC_Hediff_PetRabbit</defName>
     <label>宠物兔专精</label>
-    <description>通过打扫、烹饪和调教培养的家政专精。培养达到 20% 后提高清洁与烹饪速度，达到 50% 后进一步提高这两项速度。</description>
+    <description>培养提高清洁和烹饪速度。</description>
     <hediffClass>HediffWithComps</hediffClass>
     <isBad>false</isBad>
     <initialSeverity>0.01</initialSeverity>
@@ -170,7 +170,7 @@
   <HediffDef>
     <defName>SSC_Hediff_PetRabbit_Final</defName>
     <label>终极宠物兔专精</label>
-    <description>通过人格凝胶塑成的终极家政专精。清洁速度提高 70%，烹饪速度提高 50%，并获得主动技能“精心料理”。</description>
+    <description>提高清洁和烹饪速度。解锁「精心料理」。</description>
     <hediffClass>HediffWithComps</hediffClass>
     <isBad>false</isBad>
     <initialSeverity>1</initialSeverity>
@@ -195,7 +195,7 @@
   <HediffDef>
     <defName>SSC_Hediff_PetFox</defName>
     <label>宠物狐专精</label>
-    <description>通过科研、护理与调教培养的专精。培养达到 20% 和 50% 时，逐步提高科研速度、包扎速度和包扎品质。</description>
+    <description>培养提高科研速度、包扎速度和包扎品质。</description>
     <hediffClass>HediffWithComps</hediffClass>
     <isBad>false</isBad>
     <initialSeverity>0.01</initialSeverity>
@@ -229,7 +229,7 @@
   <HediffDef>
     <defName>SSC_Hediff_PetFox_Final</defName>
     <label>终极宠物狐专精</label>
-    <description>通过人格凝胶塑成的终极专精。科研速度和包扎速度提高 50%，包扎品质系数提高 15%，并获得主动技能“应急包扎”。</description>
+    <description>提高科研速度、包扎速度和包扎品质。解锁「应急包扎」。</description>
     <hediffClass>HediffWithComps</hediffClass>
     <isBad>false</isBad>
     <initialSeverity>1</initialSeverity>
@@ -255,7 +255,7 @@
     <defName>SSC_Hediff_PetRabbitCarefulCooking</defName>
     <hediffClass>HediffWithComps</hediffClass>
     <label>精心料理</label>
-    <description>心神凝聚在灶台前，双手处理食材与掌控火候愈发利落。</description>
+    <description>烹饪加快。合格餐食可避免因厨房卫生差或厨艺不足造成的食物中毒。</description>
     <isBad>false</isBad>
     <initialSeverity>1</initialSeverity>
     <maxSeverity>1</maxSeverity>

@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-  <SSC_Hediff_PetCat.description>Развивающаяся специализация кошки. Ускоряет передвижение и уменьшает вероятность ответного нападения раненой дикой добычи.</SSC_Hediff_PetCat.description>
-  <SSC_Hediff_PetCat_Final.description>Финальная специализация кошки, сформированная в геле личности. Повышает скорость передвижения на 25% и улучшает скрытность на охоте. «Ласковое утешение» выводит другого человекоподобного персонажа фракции игрока из психического состояния либо ненадолго повышает его настроение и скорость работы.</SSC_Hediff_PetCat_Final.description>
-  <SSC_Hediff_PetDog.description>Развивающаяся специализация собаки. Помогает приручать и дрессировать животных и быстрее работать с растениями.</SSC_Hediff_PetDog.description>
-  <SSC_Hediff_PetDog_Final.description>Финальная специализация собаки, сформированная в геле личности. Повышает показатели приручения и дрессировки и ускоряет работу с растениями на 40%. «Дрессировка» позволяет после короткого наставления сразу приручить подходящее дикое животное либо полностью завершить одно отмеченное обучение животного игрока.</SSC_Hediff_PetDog_Final.description>
+  <SSC_Hediff_PetCat.description>Подготовка повышает скорость передвижения и скрытность на охоте.</SSC_Hediff_PetCat.description>
+  <SSC_Hediff_PetCat_Final.description>Повышает скорость передвижения и скрытность на охоте. Открывает способность «Ласковое утешение».</SSC_Hediff_PetCat_Final.description>
+  <SSC_Hediff_PetDog.description>Подготовка повышает шансы приручения и дрессировки животных и скорость работы с растениями.</SSC_Hediff_PetDog.description>
+  <SSC_Hediff_PetDog_Final.description>Повышает шансы приручения и дрессировки животных и скорость работы с растениями. Открывает способность «Дрессировка».</SSC_Hediff_PetDog_Final.description>
   <SSC_Hediff_PetRabbit.label>специализация кролика</SSC_Hediff_PetRabbit.label>
-  <SSC_Hediff_PetRabbit.description>Специализация по ведению хозяйства развивается благодаря уборке, готовке и тренировкам. При 20% подготовки уборка и готовка ускоряются. При 50% обе скорости повышаются ещё сильнее.</SSC_Hediff_PetRabbit.description>
+  <SSC_Hediff_PetRabbit.description>Подготовка повышает скорость уборки и готовки.</SSC_Hediff_PetRabbit.description>
   <SSC_Hediff_PetRabbit.stages.0.label>формирование</SSC_Hediff_PetRabbit.stages.0.label>
   <SSC_Hediff_PetRabbit.stages.1.label>навык уборки</SSC_Hediff_PetRabbit.stages.1.label>
   <SSC_Hediff_PetRabbit.stages.2.label>навык ведения хозяйства</SSC_Hediff_PetRabbit.stages.2.label>
   <SSC_Hediff_PetRabbit_Final.label>финальная специализация кролика</SSC_Hediff_PetRabbit_Final.label>
-  <SSC_Hediff_PetRabbit_Final.description>Финальная специализация по ведению хозяйства, сформированная в геле личности. Скорость уборки повышена на 70%, скорость готовки — на 50%. Открывается способность «Тщательная готовка».</SSC_Hediff_PetRabbit_Final.description>
+  <SSC_Hediff_PetRabbit_Final.description>Повышает скорость уборки и готовки. Открывает способность «Тщательная готовка».</SSC_Hediff_PetRabbit_Final.description>
   <SSC_Hediff_PetRabbitCarefulCooking.label>тщательная готовка</SSC_Hediff_PetRabbitCarefulCooking.label>
-  <SSC_Hediff_PetRabbitCarefulCooking.description>У плиты всё внимание сосредоточено на готовке. Руки ловко обрабатывают продукты и точно регулируют жар.</SSC_Hediff_PetRabbitCarefulCooking.description>
+  <SSC_Hediff_PetRabbitCarefulCooking.description>Готовка ускоряется. Подходящие блюда защищены от отравления из-за грязной кухни или низкого навыка готовки.</SSC_Hediff_PetRabbitCarefulCooking.description>
   <SSC_Hediff_RabbitCloneLowPNA.label>Выработка PNA кроличьим клоном</SSC_Hediff_RabbitCloneLowPNA.label>
   <SSC_Hediff_RabbitCloneLowPNA.description>Слабая выработка PNA, возникающая после созревания кроличьего клона.</SSC_Hediff_RabbitCloneLowPNA.description>
   <SSC_Hediff_PetFox.label>специализация лисы</SSC_Hediff_PetFox.label>
-  <SSC_Hediff_PetFox.description>Эта специализация развивается благодаря исследованиям, лечению и дрессировке. Скорость исследований, скорость и качество лечения растут при 20% и 50% прогресса.</SSC_Hediff_PetFox.description>
+  <SSC_Hediff_PetFox.description>Подготовка повышает скорость исследований, скорость и качество перевязки.</SSC_Hediff_PetFox.description>
   <SSC_Hediff_PetFox.stages.0.label>формирование</SSC_Hediff_PetFox.stages.0.label>
   <SSC_Hediff_PetFox.stages.1.label>опытный исследователь и медик</SSC_Hediff_PetFox.stages.1.label>
   <SSC_Hediff_PetFox.stages.2.label>специалист по исследованиям и лечению</SSC_Hediff_PetFox.stages.2.label>
   <SSC_Hediff_PetFox_Final.label>финальная специализация лисы</SSC_Hediff_PetFox_Final.label>
-  <SSC_Hediff_PetFox_Final.description>Финальная специализация, сформированная из геля личности. Исследования и лечение идут на 50% быстрее, а множитель качества лечения повышен на 15%. Даёт способность «Экстренная перевязка».</SSC_Hediff_PetFox_Final.description>
+  <SSC_Hediff_PetFox_Final.description>Повышает скорость исследований, скорость и качество перевязки. Открывает способность «Экстренная перевязка».</SSC_Hediff_PetFox_Final.description>
 </LanguageData>

@@ -2,5 +2,5 @@
 <LanguageData>
   <!-- 技能說明呈現同格施放、讀條和持續愛心；視覺變化不改變效果數值。 -->
   <SSC_PetCatComfort.label>貼心安撫</SSC_PetCatComfort.label>
-  <SSC_PetCatComfort.description>靠近己方角色，以親暱的陪伴平復情緒，使其脫離精神狀態，或改善心情與工作表現。冷卻 1 天。</SSC_PetCatComfort.description>
+  <SSC_PetCatComfort.description>走到另一名己方人形角色所在格，安撫 2 秒，使其脫離精神狀態，或在 12 遊戲小時內心情 +8、工作速度提高 10%。冷卻 1 遊戲日。</SSC_PetCatComfort.description>
 </LanguageData>

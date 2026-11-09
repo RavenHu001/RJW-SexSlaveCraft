@@ -183,7 +183,7 @@
   <RecipeDef Class="SexSlaveCraft.RecipeDef_PSTag">
     <defName>SSC_PSEdit_PetCat_Final</defName>
     <label>性奴特化（终极宠物猫）</label>
-    <description>将当前培养方向为宠物猫、普通培养已完成且带有宠物猫基础状态的人格凝胶，加工为终极宠物猫人格。原料不能已有任何宠物终极成果。植入后获得永久移动速度与近战闪避加成，并可继续亲昵实际绑定的主人；并获得“贴心安抚”，使其他玩家阵营人形角色从精神状态中恢复，或给予短暂的心情与工作速度鼓舞。</description>
+    <description>将已完成普通培养的宠物猫人格凝胶加工为终极宠物猫。植入后获得终极加成和「贴心安抚」。</description>
     <jobString>正在塑造终极宠物猫人格...</jobString>
     <workAmount>3500</workAmount>
     <workSpeedStat>GeneralLaborSpeed</workSpeedStat>
@@ -248,7 +248,7 @@
   <RecipeDef Class="SexSlaveCraft.RecipeDef_PSTag">
     <defName>SSC_PSEdit_PetDog_Final</defName>
     <label>性奴特化（终极宠物狗）</label>
-    <description>将已经完成宠物狗特化的人格凝胶进一步塑形为终极宠物狗状态。该配方只接受宠物狗特化达到 100% 且带有宠物狗基础状态的材料。</description>
+    <description>将已完成普通培养的宠物狗人格凝胶加工为终极宠物狗。植入后获得终极加成和「驯兽」。</description>
     <jobString>正在塑造终极宠物狗人格...</jobString>
     <workAmount>3500</workAmount>
     <workSpeedStat>GeneralLaborSpeed</workSpeedStat>
@@ -313,7 +313,7 @@
   <RecipeDef Class="SexSlaveCraft.RecipeDef_PSTag">
     <defName>SSC_PSEdit_PetRabbit_Final</defName>
     <label>性奴特化（终极宠物兔）</label>
-    <description>将完成普通宠物兔培养且带有基础兔状态的人格凝胶塑形为终极宠物兔。重新植入后获得终极清洁与烹饪加成。</description>
+    <description>将已完成普通培养的宠物兔人格凝胶加工为终极宠物兔。植入后获得终极加成和「精心料理」。</description>
     <jobString>正在塑造终极宠物兔人格...</jobString>
     <workAmount>3500</workAmount>
     <workSpeedStat>GeneralLaborSpeed</workSpeedStat>
@@ -375,7 +375,7 @@
   <RecipeDef Class="SexSlaveCraft.RecipeDef_PSTag">
     <defName>SSC_PSEdit_PetFox_Final</defName>
     <label>性奴特化（终极宠物狐）</label>
-    <description>将完成普通宠物狐培养且带有基础狐状态的人格凝胶塑形为终极宠物狐。重新植入后获得终极科研与医疗加成。</description>
+    <description>将已完成普通培养的宠物狐人格凝胶加工为终极宠物狐。植入后获得终极加成和「应急包扎」。</description>
     <jobString>正在塑造终极宠物狐人格...</jobString>
     <workAmount>3500</workAmount>
     <workSpeedStat>GeneralLaborSpeed</workSpeedStat>

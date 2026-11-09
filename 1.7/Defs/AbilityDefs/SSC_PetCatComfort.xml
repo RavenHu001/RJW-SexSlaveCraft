@@ -6,7 +6,7 @@
   <AbilityDef>
     <defName>SSC_PetCatComfort</defName>
     <label>贴心安抚</label>
-    <description>靠近己方角色，以亲昵的陪伴平复情绪，使其脱离精神状态，或改善心情与工作表现。冷却 1 天。</description>
+    <description>走到另一名己方人形角色所在格，安抚 2 秒，使其脱离精神状态，或在 12 游戏小时内心情 +8、工作速度提高 10%。冷却 1 游戏日。</description>
     <abilityClass>SexSlaveCraft.Ability_PetCatComfort</abilityClass>
     <iconPath>UI/Icons/Abilities/SSC_PetCatComfort</iconPath>
     <jobDef>SSC_Job_PetCatComfort</jobDef>

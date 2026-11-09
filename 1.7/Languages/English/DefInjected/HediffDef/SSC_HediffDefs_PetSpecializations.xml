@@ -1,34 +1,34 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
   <SSC_Hediff_PetCat.label>pet cat specialization</SSC_Hediff_PetCat.label>
-  <SSC_Hediff_PetCat.description>A developing Pet Cat specialization. It improves movement speed and reduces the chance that wounded wild prey retaliates.</SSC_Hediff_PetCat.description>
+  <SSC_Hediff_PetCat.description>Training improves movement speed and hunting stealth.</SSC_Hediff_PetCat.description>
   <SSC_Hediff_PetCat.stages.0.label>forming</SSC_Hediff_PetCat.stages.0.label>
   <SSC_Hediff_PetCat.stages.1.label>agile</SSC_Hediff_PetCat.stages.1.label>
   <SSC_Hediff_PetCat.stages.2.label>elusive</SSC_Hediff_PetCat.stages.2.label>
 
   <SSC_Hediff_PetCat_Final.label>final pet cat specialization</SSC_Hediff_PetCat_Final.label>
-  <SSC_Hediff_PetCat_Final.description>A final Pet Cat specialization shaped through personality gel. It grants 25% faster movement and greater hunting stealth. Gentle Comfort helps another player-faction humanlike pawn recover from a mental state or briefly boosts its mood and work speed.</SSC_Hediff_PetCat_Final.description>
+  <SSC_Hediff_PetCat_Final.description>Improves movement speed and hunting stealth. Unlocks Gentle Comfort.</SSC_Hediff_PetCat_Final.description>
 
   <SSC_Hediff_PetDog.label>pet dog specialization</SSC_Hediff_PetDog.label>
-  <SSC_Hediff_PetDog.description>A developing Pet Dog specialization focused on taming and training animals and working crops.</SSC_Hediff_PetDog.description>
+  <SSC_Hediff_PetDog.description>Training improves taming chance, animal training chance, and plant work speed.</SSC_Hediff_PetDog.description>
   <SSC_Hediff_PetDog.stages.0.label>forming</SSC_Hediff_PetDog.stages.0.label>
   <SSC_Hediff_PetDog.stages.1.label>obedient</SSC_Hediff_PetDog.stages.1.label>
   <SSC_Hediff_PetDog.stages.2.label>kennel-trained</SSC_Hediff_PetDog.stages.2.label>
   <SSC_Hediff_PetDog.stages.3.label>pack leader</SSC_Hediff_PetDog.stages.3.label>
 
   <SSC_Hediff_PetDog_Final.label>final pet dog specialization</SSC_Hediff_PetDog_Final.label>
-  <SSC_Hediff_PetDog_Final.description>A final Pet Dog specialization shaped through personality gel. It improves taming and training and increases plant work speed by 40%. Animal Training lets the pawn approach an eligible animal on the same map, then directly tame a wild animal or complete one enabled training project for an owned animal after brief guidance in its cell.</SSC_Hediff_PetDog_Final.description>
+  <SSC_Hediff_PetDog_Final.description>Improves animal taming and training chances and plant work speed. Unlocks Animal Training.</SSC_Hediff_PetDog_Final.description>
 
   <SSC_Hediff_PetRabbit.label>pet rabbit specialization</SSC_Hediff_PetRabbit.label>
-  <SSC_Hediff_PetRabbit.description>A housekeeping specialization developed through cleaning, cooking, and training. Cleaning and cooking become faster at 20% progress. Both speeds increase further at 50%.</SSC_Hediff_PetRabbit.description>
+  <SSC_Hediff_PetRabbit.description>Training improves cleaning and cooking speed.</SSC_Hediff_PetRabbit.description>
   <SSC_Hediff_PetRabbit.stages.0.label>forming</SSC_Hediff_PetRabbit.stages.0.label>
   <SSC_Hediff_PetRabbit.stages.1.label>skilled cleaner</SSC_Hediff_PetRabbit.stages.1.label>
   <SSC_Hediff_PetRabbit.stages.2.label>skilled housekeeper</SSC_Hediff_PetRabbit.stages.2.label>
 
   <SSC_Hediff_PetRabbit_Final.label>final pet rabbit specialization</SSC_Hediff_PetRabbit_Final.label>
-  <SSC_Hediff_PetRabbit_Final.description>A final housekeeping specialization shaped through personality gel. It grants 70% faster cleaning, 50% faster cooking, and the Careful Cooking ability.</SSC_Hediff_PetRabbit_Final.description>
+  <SSC_Hediff_PetRabbit_Final.description>Improves cleaning and cooking speed. Unlocks Careful Cooking.</SSC_Hediff_PetRabbit_Final.description>
   <SSC_Hediff_PetRabbitCarefulCooking.label>careful cooking</SSC_Hediff_PetRabbitCarefulCooking.label>
-  <SSC_Hediff_PetRabbitCarefulCooking.description>Fully focused at the stove, the cook handles ingredients quickly and keeps the heat just right.</SSC_Hediff_PetRabbitCarefulCooking.description>
+  <SSC_Hediff_PetRabbitCarefulCooking.description>Cooking is faster. Qualifying meals are protected from food poisoning caused by poor kitchen hygiene or low cooking skill.</SSC_Hediff_PetRabbitCarefulCooking.description>
 
   <SSC_Hediff_RabbitCloneLink.label>rabbit clone</SSC_Hediff_RabbitCloneLink.label>
   <SSC_Hediff_RabbitCloneLink.description>This pawn is a clone split from a pet-rabbit specialist. It shares rest and mood with the source, matures rapidly, and cannot undergo personality excretion.</SSC_Hediff_RabbitCloneLink.description>
@@ -38,10 +38,10 @@
   <SSC_Hediff_RabbitCloneLowPNA.label>rabbit clone PNA production</SSC_Hediff_RabbitCloneLowPNA.label>
   <SSC_Hediff_RabbitCloneLowPNA.description>A low-efficiency PNA output state stabilized after a rabbit clone reaches maturity.</SSC_Hediff_RabbitCloneLowPNA.description>
   <SSC_Hediff_PetFox.label>pet fox specialization</SSC_Hediff_PetFox.label>
-  <SSC_Hediff_PetFox.description>A specialization developed through research, tending and training. Research speed, tending speed and tending quality improve at 20% and 50% progress.</SSC_Hediff_PetFox.description>
+  <SSC_Hediff_PetFox.description>Training improves research speed, tend speed, and tend quality.</SSC_Hediff_PetFox.description>
   <SSC_Hediff_PetFox.stages.0.label>forming</SSC_Hediff_PetFox.stages.0.label>
   <SSC_Hediff_PetFox.stages.1.label>skilled researcher and medic</SSC_Hediff_PetFox.stages.1.label>
   <SSC_Hediff_PetFox.stages.2.label>research and medical specialist</SSC_Hediff_PetFox.stages.2.label>
   <SSC_Hediff_PetFox_Final.label>final pet fox specialization</SSC_Hediff_PetFox_Final.label>
-  <SSC_Hediff_PetFox_Final.description>A final specialization shaped through personality gel. Research and tending are 50% faster, and the tending quality factor is 15% higher. Grants the Emergency Bandaging ability.</SSC_Hediff_PetFox_Final.description>
+  <SSC_Hediff_PetFox_Final.description>Improves research speed, tend speed, and tend quality. Unlocks Emergency Bandaging.</SSC_Hediff_PetFox_Final.description>
 </LanguageData>

@@ -2,5 +2,5 @@
 <LanguageData>
   <!-- Map selection and same-cell warmup serve direct wild taming and one complete owned-animal training project. -->
   <SSC_PetDogTame.label>дрессировка</SSC_PetDogTame.label>
-  <SSC_PetDogTame.description>Подойти к животному и завоевать его доверие жестами и голосом, приручив дикое животное или завершив обучение животного игрока. Перезарядка: 1 день.</SSC_PetDogTame.description>
+  <SSC_PetDogTame.description>Встаньте в клетку животного и наставляйте его 2 секунды. Приручите дикое животное или завершите один выбранный навык дрессировки своего животного. Перезарядка занимает 1 игровой день.</SSC_PetDogTame.description>
 </LanguageData>

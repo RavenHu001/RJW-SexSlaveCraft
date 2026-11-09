@@ -5,7 +5,7 @@
     <defName>SSC_Hediff_PetCatEncouragement</defName>
     <hediffClass>HediffWithComps</hediffClass>
     <label>猫咪鼓舞</label>
-    <description>被终极宠物猫温柔地鼓舞，心情 +8、全局工作速度 ×1.10。持续 12 游戏内小时；再次获得鼓舞时刷新持续时间，不叠加。</description>
+    <description>暂时提升心情和全局工作速度。再次获得时重新计时。</description>
     <initialSeverity>1</initialSeverity>
     <maxSeverity>1</maxSeverity>
     <isBad>false</isBad>

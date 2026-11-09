@@ -2,5 +2,5 @@
 <LanguageData>
   <!-- Map selection and same-cell warmup serve direct wild taming and one complete owned-animal training project. -->
   <SSC_PetDogTame.label>animal training</SSC_PetDogTame.label>
-  <SSC_PetDogTame.description>Approach an animal and earn its trust through gestures and calls, taming it or completing a training project for a player-owned animal. Cooldown: 1 day.</SSC_PetDogTame.description>
+  <SSC_PetDogTame.description>Walk onto an animal's tile and instruct it for 2 seconds. Tame a wild animal or complete one selected training task for a player-owned animal. Cooldown is 1 in-game day.</SSC_PetDogTame.description>
 </LanguageData>

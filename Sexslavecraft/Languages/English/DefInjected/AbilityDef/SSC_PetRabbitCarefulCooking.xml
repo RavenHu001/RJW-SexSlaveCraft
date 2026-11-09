@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <SSC_PetRabbitCarefulCooking.label>Careful Cooking</SSC_PetRabbitCarefulCooking.label>
-  <SSC_PetRabbitCarefulCooking.description>Focus for 4 in-game hours, cooking 50% faster. Meals prepared during this time are protected from food poisoning caused by poor kitchen hygiene or low cooking skill.</SSC_PetRabbitCarefulCooking.description>
+  <SSC_PetRabbitCarefulCooking.description>Cook 50% faster for 4 in-game hours. Qualifying meals made during this time cannot cause food poisoning due to kitchen cleanliness or cooking skill. Cooldown is 1 in-game day.</SSC_PetRabbitCarefulCooking.description>
 </LanguageData>

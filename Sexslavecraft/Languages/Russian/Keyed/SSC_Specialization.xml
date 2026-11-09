@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-  <SSC_ITab_PetCatFinalizationTip>Извлеките гель личности, обработайте его на столе скульптора для получения финальной кошки, затем внедрите его, чтобы получить финальные бонусы скорости передвижения и уклонения и «Ласковое утешение». Завершение обычной подготовки само по себе не даёт финальную способность.</SSC_ITab_PetCatFinalizationTip>
-  <SSC_ITab_PetDogFinalizationTip>Извлеките гель личности, обработайте его на столе скульптора для получения финальной собаки, затем внедрите его, чтобы получить финальные бонусы обращения с животными и «Дрессировка»: сразу приручить дикое животное или полностью завершить один навык дрессировки животного игрока. Завершение обычной подготовки само по себе не даёт финальную способность.</SSC_ITab_PetDogFinalizationTip>
-  <SSC_ITab_PetRabbitFinalizationTip>Извлеките гель личности, обработайте его на столе скульптора и внедрите вновь, чтобы получить финальные бонусы кролика к уборке и готовке.</SSC_ITab_PetRabbitFinalizationTip>
+  <SSC_ITab_PetCatFinalizationTip>Извлеките гель личности, обработайте его на столе скульптора до финальной специализации кошки и имплантируйте вновь, чтобы получить финальные бонусы и способность «Ласковое утешение».</SSC_ITab_PetCatFinalizationTip>
+  <SSC_ITab_PetDogFinalizationTip>Извлеките гель личности, обработайте его на столе скульптора до финальной специализации собаки и имплантируйте вновь, чтобы получить финальные бонусы и способность «Дрессировка».</SSC_ITab_PetDogFinalizationTip>
+  <SSC_ITab_PetRabbitFinalizationTip>Извлеките гель личности, обработайте его на столе скульптора до финальной специализации кролика и имплантируйте вновь, чтобы получить финальные бонусы и способность «Тщательная готовка».</SSC_ITab_PetRabbitFinalizationTip>
   <SSC_PetAffectionGizmoDesc>Подойти к хозяину {0} и проявлять нежность рядом с ним в течение двух секунд, ненадолго улучшая его настроение. После завершения взаимодействия начинается суточная перезарядка.</SSC_PetAffectionGizmoDesc>
   <SSC_ITab_SpecializationPetDisabledConflictingFinal>Другая финальная специализация питомца не позволяет выбрать это направление</SSC_ITab_SpecializationPetDisabledConflictingFinal>
   <SSC_PetSpecialization_SelectionRejected>Нельзя выбрать специализацию питомца: {0}</SSC_PetSpecialization_SelectionRejected>
   <SSC_ITab_SpecializationPetFox>Специализация лисы</SSC_ITab_SpecializationPetFox>
   <SSC_ITab_SelectSpecializationPetFox>Выбрать специализацию лисы</SSC_ITab_SelectSpecializationPetFox>
-  <SSC_ITab_PetFoxFinalizationTip>Извлеките гель личности, обработайте его на столе скульптора и внедрите вновь, чтобы получить финальные бонусы лисы к исследованиям и лечению.</SSC_ITab_PetFoxFinalizationTip>
+  <SSC_ITab_PetFoxFinalizationTip>Извлеките гель личности, обработайте его на столе скульптора до финальной специализации лисы и имплантируйте вновь, чтобы получить финальные бонусы и способность «Экстренная перевязка».</SSC_ITab_PetFoxFinalizationTip>
 </LanguageData>

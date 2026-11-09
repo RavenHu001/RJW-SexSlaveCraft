@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <SSC_PetFoxEmergencyTend.label>Emergency Bandaging</SSC_PetFoxEmergencyTend.label>
-  <SSC_PetFoxEmergencyTend.description>Approach an injured member of your faction and tend all their currently tendable wounds in one action. No medicine required. Cooldown of 1 in-game day.</SSC_PetFoxEmergencyTend.description>
+  <SSC_PetFoxEmergencyTend.description>Approach another humanlike patient in your faction and tend all treatable wounds at once without medicine. Cooldown is 1 in-game day.</SSC_PetFoxEmergencyTend.description>
 </LanguageData>

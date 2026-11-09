@@ -3,7 +3,7 @@
   <AbilityDef>
     <defName>SSC_PetFoxEmergencyTend</defName>
     <label>应急包扎</label>
-    <description>走近一名己方伤员，一次包扎其当前所有可处理的伤口。无需药物，冷却 1 游戏日。</description>
+    <description>走近另一名己方人形伤员，一次包扎其所有可处理的伤口，无需药物。冷却 1 游戏日。</description>
     <abilityClass>SexSlaveCraft.Ability_PetFoxEmergencyTend</abilityClass>
     <iconPath>UI/Icons/Abilities/SSC_PetFoxEmergencyTend</iconPath>
     <jobDef>CastAbilityOnThingMelee</jobDef>
