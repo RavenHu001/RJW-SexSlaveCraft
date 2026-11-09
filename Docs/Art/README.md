@@ -24,6 +24,7 @@
 | [三档催情发烟器专用贴图](../Development/Completed/催情发烟器/中世纪与工业发烟器实现与验证.md#三档专用美术实机验收关闭) | 香薰炉、工业雾化器和太空发烟器的最终专用图与实机反馈。 |
 | [受孕花苞图标](../../1.7/Textures/UI/Icons/Abilities/SSC_FertilityConception.png) | 128×128 透明技能图标。选稿、导入及显示结果见[接入与验收](../Development/Completed/受孕技能花苞图标接入与验收.md)。 |
 | [精心料理图标](../../1.7/Textures/UI/Icons/Abilities/SSC_PetRabbitCarefulCooking.png) | 长耳兔与平底锅，128×128 透明技能图标，已获实机显示认可。 [接入与验收](../Development/Completed/兔特化家政第二批实机验收.md#专用图标显示验收) |
+| [应急包扎图标](../../1.7/Textures/UI/Icons/Abilities/SSC_PetFoxEmergencyTend.png) | 橙红狐首与医用绷带卷，128×128 透明技能图标，待实机。 [生成提示词](Source/SSC_PetFoxEmergencyTend.prompt.txt) |
 | [宠物特化技能图标](宠物特化技能图标.md) | 驯兽的垂耳犬与手掌、贴心安抚的闭眼猫脸与爱心；原稿、128px 透明导出、提示词及本机同步记录，狗图标放大后两图均获实机认可并授权提交 |
 | [太空脉冲枪选图与接入](SSC_PnaPulseGun/README.md) | 当前明确选定exec-511d72eb单槽分层重描边暗色版；256px、drawSize=1.05，已同步本机，本轮效果已获认可，授权提交；此前验收保留历史 |
 | [太空投射枪选图与接入](SSC_PnaProjectorGun/README.md) | 当前明确选定exec-c42a1a6e长条光学舱重描边v4；256px、drawSize=1.25，原稿已认可，已同步本机，本轮效果已获认可，授权提交 |

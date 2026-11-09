@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_PetFoxEmergencyTend_InvalidCaster>施術者必須是清醒且能夠操作的終極寵物狐。</SSC_PetFoxEmergencyTend_InvalidCaster>
+  <SSC_PetFoxEmergencyTend_InvalidTarget>請選擇同地圖上的另一名己方人形傷員。</SSC_PetFoxEmergencyTend_InvalidTarget>
+  <SSC_PetFoxEmergencyTend_NoWounds>目標目前沒有可包紮的傷口。</SSC_PetFoxEmergencyTend_NoWounds>
+  <SSC_PetFoxEmergencyTend_UnreachableTarget>無法走到目標身邊。</SSC_PetFoxEmergencyTend_UnreachableTarget>
+</LanguageData>

@@ -32,6 +32,8 @@
     <Compile Include="ThePatches/Harmony_PnaCaravanMaintenance.cs" />
     <Compile Include="ThePatches/Harmony_RabbitHousework.cs" />
     <Compile Include="ThePatches/Harmony_FoxTraining.cs" />
+    <Compile Include="Comps/Ability_PetFoxEmergencyTend.cs" />
+    <Compile Include="Comps/CompAbilityEffect_PetFoxEmergencyTend.cs" />
     <Compile Include="Comps/Ability_PetRabbitCarefulCooking.cs" />
     <Compile Include="Hediff/HediffComp_PetRabbitCookingAbility.cs" />
     <Compile Include="ThePatches/Harmony_RabbitCooking.cs" />

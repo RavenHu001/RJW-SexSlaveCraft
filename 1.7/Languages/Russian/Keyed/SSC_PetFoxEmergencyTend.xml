@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_PetFoxEmergencyTend_InvalidCaster>Для применения нужна бодрствующая финальная лиса, способная действовать руками.</SSC_PetFoxEmergencyTend_InvalidCaster>
+  <SSC_PetFoxEmergencyTend_InvalidTarget>Выберите другого человекоподобного персонажа своей фракции на этой карте.</SSC_PetFoxEmergencyTend_InvalidTarget>
+  <SSC_PetFoxEmergencyTend_NoWounds>У цели сейчас нет ран, которые можно перевязать.</SSC_PetFoxEmergencyTend_NoWounds>
+  <SSC_PetFoxEmergencyTend_UnreachableTarget>Не удаётся подойти к цели.</SSC_PetFoxEmergencyTend_UnreachableTarget>
+</LanguageData>

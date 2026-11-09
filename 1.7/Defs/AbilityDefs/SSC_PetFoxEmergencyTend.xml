@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <AbilityDef>
+    <defName>SSC_PetFoxEmergencyTend</defName>
+    <label>应急包扎</label>
+    <description>走近一名己方伤员，一次包扎其当前所有可处理的伤口。无需药物，冷却 1 游戏日。</description>
+    <abilityClass>SexSlaveCraft.Ability_PetFoxEmergencyTend</abilityClass>
+    <iconPath>UI/Icons/Abilities/SSC_PetFoxEmergencyTend</iconPath>
+    <jobDef>CastAbilityOnThingMelee</jobDef>
+    <targetRequired>true</targetRequired>
+    <canUseAoeToGetTargets>false</canUseAoeToGetTargets>
+    <hostile>false</hostile>
+    <casterMustBeCapableOfViolence>false</casterMustBeCapableOfViolence>
+    <showPsycastEffects>false</showPsycastEffects>
+    <showWhenDrafted>true</showWhenDrafted>
+    <displayGizmoWhileUndrafted>true</displayGizmoWhileUndrafted>
+    <disableGizmoWhileUndrafted>false</disableGizmoWhileUndrafted>
+    <cooldownTicksRange>60000</cooldownTicksRange>
+    <verbProperties>
+      <verbClass>Verb_CastAbilityTouch</verbClass>
+      <warmupTime>0</warmupTime>
+      <range>-1</range>
+      <requireLineOfSight>false</requireLineOfSight>
+      <violent>false</violent>
+      <onlyManualCast>true</onlyManualCast>
+      <targetParams>
+        <canTargetSelf>false</canTargetSelf>
+        <canTargetPawns>true</canTargetPawns>
+        <canTargetHumans>true</canTargetHumans>
+        <canTargetAnimals>false</canTargetAnimals>
+        <canTargetMechs>false</canTargetMechs>
+        <neverTargetIncapacitated>false</neverTargetIncapacitated>
+        <canTargetBuildings>false</canTargetBuildings>
+        <canTargetLocations>false</canTargetLocations>
+      </targetParams>
+    </verbProperties>
+    <comps>
+      <li Class="SexSlaveCraft.CompProperties_AbilityPetFoxEmergencyTend">
+        <canTargetBaby>true</canTargetBaby>
+        <canTargetBosses>true</canTargetBosses>
+        <availableWhenTargetIsWounded>true</availableWhenTargetIsWounded>
+      </li>
+    </comps>
+  </AbilityDef>
+</Defs>

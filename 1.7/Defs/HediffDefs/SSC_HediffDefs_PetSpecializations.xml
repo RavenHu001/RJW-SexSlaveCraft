@@ -229,11 +229,16 @@
   <HediffDef>
     <defName>SSC_Hediff_PetFox_Final</defName>
     <label>终极宠物狐专精</label>
-    <description>通过人格凝胶塑成的终极专精。科研速度和包扎速度提高 50%，包扎品质系数提高 15%。</description>
+    <description>通过人格凝胶塑成的终极专精。科研速度和包扎速度提高 50%，包扎品质系数提高 15%，并获得主动技能“应急包扎”。</description>
     <hediffClass>HediffWithComps</hediffClass>
     <isBad>false</isBad>
     <initialSeverity>1</initialSeverity>
     <maxSeverity>1</maxSeverity>
+    <comps>
+      <li Class="SexSlaveCraft.HediffCompProperties_GiveAbility">
+        <abilityDef>SSC_PetFoxEmergencyTend</abilityDef>
+      </li>
+    </comps>
     <stages>
       <li>
         <minSeverity>0</minSeverity>

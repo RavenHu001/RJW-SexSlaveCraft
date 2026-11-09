@@ -137,6 +137,7 @@ internal static partial class Program
             FoxRecordHooksTest();
             PersonalResetTests(harmony);
             RabbitCookingTests(harmony, repo, game);
+            FoxEmergencyTendTests(repo);
             }
         }
         finally { harmony.UnpatchAll(harmony.Id); Scribe.mode = LoadSaveMode.Inactive; Current.Game = null; }
