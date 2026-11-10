@@ -2,10 +2,8 @@
 <LanguageData>
   <SSC_TrainingManagement_Title>Управление дрессировкой</SSC_TrainingManagement_Title>
   <SSC_TrainingManagement_Overview>Обзор</SSC_TrainingManagement_Overview>
-  <SSC_TrainingManagement_SwitchPawn>Нажмите, чтобы сменить персонажа</SSC_TrainingManagement_SwitchPawn>
+  <SSC_TrainingManagement_SelectPawn>Выберите одного доступного персонажа на панели колонистов или на карте.</SSC_TrainingManagement_SelectPawn>
   <SSC_TrainingManagement_Unset>Роль SSC не выбрана</SSC_TrainingManagement_Unset>
-  <SSC_TrainingManagement_SelectionFailed>Персонаж или выделение изменились. Переключение не выполнено. Выберите персонажа снова.</SSC_TrainingManagement_SelectionFailed>
-  <SSC_TrainingManagement_NoCandidates>На этой карте нет подходящих персонажей</SSC_TrainingManagement_NoCandidates>
   <SSC_TrainingManagement_AssignedTrainer>Назначенный дрессировщик: {0}</SSC_TrainingManagement_AssignedTrainer>
   <SSC_TrainingManagement_TrainingEnabled>Ежедневная дрессировка: разрешена</SSC_TrainingManagement_TrainingEnabled>
   <SSC_TrainingManagement_TrainingDisabled>Ежедневная дрессировка: отключена</SSC_TrainingManagement_TrainingDisabled>

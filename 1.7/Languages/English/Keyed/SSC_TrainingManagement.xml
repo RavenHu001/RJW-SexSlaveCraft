@@ -2,10 +2,8 @@
 <LanguageData>
   <SSC_TrainingManagement_Title>Training management</SSC_TrainingManagement_Title>
   <SSC_TrainingManagement_Overview>Overview</SSC_TrainingManagement_Overview>
-  <SSC_TrainingManagement_SwitchPawn>Click to switch pawns</SSC_TrainingManagement_SwitchPawn>
+  <SSC_TrainingManagement_SelectPawn>Select one eligible pawn from the colonist bar or the map.</SSC_TrainingManagement_SelectPawn>
   <SSC_TrainingManagement_Unset>No SSC identity</SSC_TrainingManagement_Unset>
-  <SSC_TrainingManagement_SelectionFailed>The pawn or selection changed and could not be switched. Please select again.</SSC_TrainingManagement_SelectionFailed>
-  <SSC_TrainingManagement_NoCandidates>No eligible pawns on this map</SSC_TrainingManagement_NoCandidates>
   <SSC_TrainingManagement_AssignedTrainer>Assigned trainer: {0}</SSC_TrainingManagement_AssignedTrainer>
   <SSC_TrainingManagement_TrainingEnabled>Daily training preference: enabled</SSC_TrainingManagement_TrainingEnabled>
   <SSC_TrainingManagement_TrainingDisabled>Daily training preference: disabled</SSC_TrainingManagement_TrainingDisabled>

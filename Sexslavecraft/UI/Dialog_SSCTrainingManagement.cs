@@ -8,38 +8,33 @@ using Verse;
 
 namespace SexSlaveCraft
 {
-    /// <summary>显示只读概况，并在地图单选确认后更新窗口当前角色。</summary>
+    /// <summary>只读显示原版地图当前单选角色的调教概况。</summary>
     internal sealed class Dialog_SSCTrainingManagement : Window
     {
+        private const float ScreenPadding = 16f;
         private readonly Game game;
-        private readonly Map map;
         private Pawn source;
         private CompSexSlaveTraining comp;
-        private long revision;
-        private bool switching;
         private Vector2 scroll;
 
         /// <summary>按当前逻辑屏幕尺寸限制初始窗口大小。</summary>
         public override Vector2 InitialSize
-            => new Vector2(Mathf.Max(1f, Mathf.Min(800f, UI.screenWidth - 32f)),
-                Mathf.Max(1f, Mathf.Min(680f, UI.screenHeight - 32f)));
+            => new Vector2(Mathf.Max(1f, Mathf.Min(800f, UI.screenWidth - 2f * ScreenPadding)),
+                Mathf.Max(1f, Mathf.Min(680f, UI.screenHeight - 2f * ScreenPadding)));
 
-        /// <summary>记录开窗时的游戏、地图和角色组件，配置原生窗口行为。</summary>
-        private Dialog_SSCTrainingManagement(Pawn pawn)
+        /// <summary>记录所属游戏，允许原版界面处理窗口以外的点击。</summary>
+        private Dialog_SSCTrainingManagement()
         {
             game = Current.Game;
-            map = Find.CurrentMap;
-            source = pawn;
-            comp = pawn.TryGetComp<CompSexSlaveTraining>();
             optionalTitle = "SSC_TrainingManagement_Title".Translate();
             doCloseX = true;
             closeOnCancel = true;
             closeOnAccept = false;
             forcePause = false;
-            absorbInputAroundWindow = true;
+            absorbInputAroundWindow = false;
         }
 
-        /// <summary>只在可操作的地图会话中读取或改动选中状态。</summary>
+        /// <summary>只在可操作的地图会话中读取选中状态。</summary>
         private static bool GameReady()
             => Current.Game != null && Current.ProgramState == ProgramState.Playing &&
                 Scribe.mode == LoadSaveMode.Inactive && Find.CurrentMap != null &&
@@ -48,155 +43,79 @@ namespace SexSlaveCraft
         /// <summary>为当前单选角色打开窗口，已有有效实例时将其置前。</summary>
         internal static void OpenSelected()
         {
-            if (!GameReady()) return;
-            Pawn pawn = Find.Selector.SingleSelectedThing as Pawn;
-            if (!ITab_SexSlaveTraining.CanInspect(pawn) || pawn.Dead || pawn.Destroyed || pawn.Discarded) return;
+            if (!GameReady() || SelectedPawn() == null) return;
             var previous = Find.WindowStack.WindowOfType<Dialog_SSCTrainingManagement>();
-            if (previous != null && previous.IsCurrent(previous.revision))
+            if (previous != null && ReferenceEquals(previous.game, Current.Game))
             {
                 Find.WindowStack.Notify_ManuallySetFocus(previous);
                 return;
             }
-            if (previous != null) previous.Close(false);
-            Find.WindowStack.Add(new Dialog_SSCTrainingManagement(pawn));
+            Find.WindowStack.Add(new Dialog_SSCTrainingManagement());
         }
 
-        /// <summary>菜单和后续页面动作复查原窗口代次，A到B再回A也不能接收旧请求。</summary>
-        internal bool IsCurrent(long expectedRevision)
-            => !switching && GameReady() && ReferenceEquals(game, Current.Game) &&
-                ReferenceEquals(map, Find.CurrentMap) && Find.WindowStack.IsOpen(this) &&
-                revision == expectedRevision && source != null && !source.Dead &&
-                !source.Destroyed && !source.Discarded &&
-                ReferenceEquals(Find.Selector.SingleSelectedThing, source) &&
-                ReferenceEquals(source.TryGetComp<CompSexSlaveTraining>(), comp) &&
-                ITab_SexSlaveTraining.CanInspect(source);
-
-        /// <summary>窗口入栈后再次确认打开期间角色上下文仍有效。</summary>
-        public override void PostOpen()
+        /// <summary>读取原版单选，沿用调教标签的角色准入条件。</summary>
+        private static Pawn SelectedPawn()
         {
-            base.PostOpen();
-            if (!IsCurrent(revision)) Close(false);
+            Pawn pawn = Find.Selector.SingleSelectedThing as Pawn;
+            if (pawn == null || pawn.Dead || pawn.Destroyed || pawn.Discarded ||
+                !ReferenceEquals(pawn.MapHeld, Find.CurrentMap)) return null;
+            return ITab_SexSlaveTraining.CanInspect(pawn) ? pawn : null;
         }
 
-        /// <summary>外部选择或游戏上下文变化时关闭窗口。</summary>
+        /// <summary>离开原游戏的地图视图时关闭，殖民者栏扩展时让出新增行。</summary>
         public override void WindowUpdate()
         {
             base.WindowUpdate();
-            // 窗内切换会暂时清空单选，由切换流程确认结果或恢复原选中。
-            if (!switching && !IsCurrent(revision)) Close(false);
+            if (!GameReady() || !ReferenceEquals(game, Current.Game))
+            {
+                Close(false);
+                return;
+            }
+            float top = MinimumWindowY();
+            if (windowRect.y < top) PositionBelowBar(top);
         }
 
-        /// <summary>使遗留菜单失效并释放窗口持有的角色和组件。</summary>
-        public override void PostClose()
+        /// <summary>初次打开或分辨率变化时在原版殖民者栏下方定位。</summary>
+        protected override void SetInitialSizeAndPosition()
         {
-            revision++;
-            source = null;
-            comp = null;
+            PositionBelowBar(GameReady() ? MinimumWindowY() : ScreenPadding);
+        }
+
+        /// <summary>读取原版头像的实际行高，留出全部可点击头像。</summary>
+        private static float MinimumWindowY()
+        {
+            ColonistBar bar = Find.ColonistBar;
+            // Entries 会刷新原版布局缓存，DrawLocs 和 Size 随后对应同一批头像。
+            if (bar.Entries.Count == 0) return ScreenPadding;
+            float top = ScreenPadding;
+            float portraitHeight = bar.Size.y;
+            foreach (Vector2 position in bar.DrawLocs)
+                top = Mathf.Max(top, position.y + portraitHeight + ScreenPadding);
+            return Mathf.Ceil(top);
+        }
+
+        /// <summary>沿用居中布局，实际覆盖殖民者栏时下移并按剩余高度约束。</summary>
+        private void PositionBelowBar(float top)
+        {
+            Vector2 size = InitialSize;
+            float available = Mathf.Max(1f, UI.screenHeight - top - ScreenPadding);
+            float height = Mathf.Min(size.y, available);
+            float y = Mathf.Max(top, (UI.screenHeight - height) / 2f);
+            windowRect = new Rect((UI.screenWidth - size.x) / 2f, y, size.x, height);
+        }
+
+        /// <summary>更新只读视图对象。空选、多选和不可管理的选中显示同一提示。</summary>
+        private void RefreshSelection()
+        {
+            Pawn pawn = SelectedPawn();
+            var training = pawn?.TryGetComp<CompSexSlaveTraining>();
+            if (ReferenceEquals(source, pawn) && ReferenceEquals(comp, training)) return;
+            source = pawn;
+            comp = training;
             scroll = Vector2.zero;
-            base.PostClose();
         }
 
-        /// <summary>判断候选能否在原地图上直接选中，且仍具有菜单捕获的组件。</summary>
-        private bool CanSelect(Pawn pawn, CompSexSlaveTraining expectedComp)
-            => pawn != null && expectedComp != null && !pawn.Dead && !pawn.Destroyed && !pawn.Discarded &&
-                pawn.Spawned && ReferenceEquals(pawn.Map, map) && pawn.def.selectable &&
-                pawn.TryGetComp<CompSelectProxy>()?.thingToSelect == null &&
-                ReferenceEquals(pawn.TryGetComp<CompSexSlaveTraining>(), expectedComp) &&
-                ITab_SexSlaveTraining.CanInspect(pawn);
-
-        /// <summary>原生选中调用期间，检查窗口仍处于原游戏和地图。</summary>
-        private bool SameWindow()
-            => GameReady() && ReferenceEquals(game, Current.Game) && ReferenceEquals(map, Find.CurrentMap) &&
-                Find.WindowStack.IsOpen(this);
-
-        /// <summary>复查旧菜单上下文，确认地图选中后再更新窗口角色及代次。</summary>
-        internal bool TrySwitchTo(Pawn target, CompSexSlaveTraining expectedComp, long expectedRevision)
-        {
-            if (!IsCurrent(expectedRevision)) return false;
-            if (!CanSelect(target, expectedComp)) return SelectionFailed();
-            if (ReferenceEquals(target, source)) return true;
-            switching = true;
-            try
-            {
-                try
-                {
-                    if (TrySelectOnMap(target, expectedComp))
-                    {
-                        source = target;
-                        comp = expectedComp;
-                        revision++;
-                        scroll = Vector2.zero;
-                        return true;
-                    }
-                }
-                catch (Exception error)
-                {
-                    Log.ErrorOnce("[SSC TrainingManagement] Selection failed: " + error, 1953727141);
-                }
-                // 此时窗口仍指向原角色，可以尝试恢复原单选。
-                RestoreSelectionOrClose();
-                return SelectionFailed();
-            }
-            finally { switching = false; }
-        }
-
-        /// <summary>执行原生单选，并在清空前后及最终选中后验证上下文。</summary>
-        private bool TrySelectOnMap(Pawn pawn, CompSexSlaveTraining expectedComp)
-        {
-            if (!SameWindow() || !CanSelect(pawn, expectedComp)) return false;
-            Find.Selector.ClearSelection();
-
-            // 原生调用可以被其他模组接入。若清空后已换图或目标失效，Select 可能跳转镜头。
-            if (!SameWindow() || !CanSelect(pawn, expectedComp)) return false;
-            Find.Selector.Select(pawn);
-            return SameWindow() && CanSelect(pawn, expectedComp) &&
-                ReferenceEquals(Find.Selector.SingleSelectedThing, pawn);
-        }
-
-        /// <summary>在原上下文仍可操作时恢复原单选，无法恢复则关闭窗口。</summary>
-        private void RestoreSelectionOrClose()
-        {
-            try
-            {
-                if (TrySelectOnMap(source, comp)) return;
-            }
-            catch (Exception error)
-            {
-                Log.ErrorOnce("[SSC TrainingManagement] Selection restore failed: " + error, 1953727142);
-            }
-            Close(false);
-        }
-
-        /// <summary>向原游戏会话反馈切换失败，并返回拒绝结果。</summary>
-        private bool SelectionFailed()
-        {
-            if (ReferenceEquals(game, Current.Game) && Current.ProgramState == ProgramState.Playing)
-                Messages.Message("SSC_TrainingManagement_SelectionFailed".Translate(), MessageTypeDefOf.RejectInput, false);
-            return false;
-        }
-
-        /// <summary>为当前地图生成选角菜单，每个操作保留当时的代次和候选组件。</summary>
-        private void OpenPawnMenu()
-        {
-            long expectedRevision = revision;
-            var options = new List<FloatMenuOption>();
-            // 使用完整已生成角色集合，保留囚犯、原版奴隶及自我调教例外。
-            var candidates = new List<Pawn>(map.mapPawns.AllPawnsSpawned);
-            candidates.Sort((left, right) => string.Compare(left.LabelShort, right.LabelShort, StringComparison.CurrentCulture));
-            foreach (Pawn pawn in candidates)
-            {
-                var expectedComp = pawn.TryGetComp<CompSexSlaveTraining>();
-                if (!CanSelect(pawn, expectedComp)) continue;
-                Pawn target = pawn;
-                string label = pawn.LabelShort + " · " + IdentityLabel(expectedComp.pawnIdentity);
-                options.Add(new FloatMenuOption(label, () => TrySwitchTo(target, expectedComp, expectedRevision)));
-            }
-            if (options.Count == 0)
-                options.Add(new FloatMenuOption("SSC_TrainingManagement_NoCandidates".Translate(), null));
-            Find.WindowStack.Add(new FloatMenu(options));
-        }
-
-        /// <summary>返回概况和选角菜单共用的 SSC 身份名称。</summary>
+        /// <summary>返回当前角色的 SSC 身份名称。</summary>
         private static string IdentityLabel(PawnIdentity identity)
         {
             switch (identity)
@@ -207,21 +126,21 @@ namespace SexSlaveCraft
             }
         }
 
-        /// <summary>绘制固定的角色标题及头像入口，下方概况使用独立滚动区。</summary>
+        /// <summary>按原版实际选中绘制角色标题和只读概况。</summary>
         public override void DoWindowContents(Rect inRect)
         {
-            if (!IsCurrent(revision)) return;
+            if (!GameReady() || !ReferenceEquals(game, Current.Game)) return;
+            RefreshSelection();
             using var scope = new SSCBondOverviewWidgets.GuiScope(true);
             Text.WordWrap = true;
+            if (comp == null)
+            {
+                Widgets.Label(inRect, "SSC_TrainingManagement_SelectPawn".Translate());
+                return;
+            }
+
             float portraitSize = Mathf.Min(56f, inRect.width);
-            Rect portraitRect = new Rect(0f, 0f, portraitSize, portraitSize);
-
-            // 肖像仍用原生缓存绘制，在同一矩形接收点击并显示切换提示。
-            SSCBondOverviewWidgets.Portrait(portraitRect, source, false, true);
-            Widgets.DrawHighlightIfMouseover(portraitRect);
-            TooltipHandler.TipRegion(portraitRect, "SSC_TrainingManagement_SwitchPawn".Translate());
-            if (Widgets.ButtonInvisible(portraitRect)) OpenPawnMenu();
-
+            SSCBondOverviewWidgets.Portrait(new Rect(0f, 0f, portraitSize, portraitSize), source, false, true);
             float nameX = portraitSize + 12f;
             float nameWidth = Mathf.Max(1f, inRect.width - nameX);
             float nameHeight = Mathf.Max(24f, Text.CalcHeight(source.LabelShort, nameWidth));
@@ -255,7 +174,7 @@ namespace SexSlaveCraft
         /// <summary>读取原组件与关系查询的即时状态，生成概况文本。</summary>
         private List<string> OverviewLines()
         {
-            var lines = new List<string> { "SSC_TrainingManagement_Overview".Translate(), IdentityLabel(comp.pawnIdentity) };
+            var lines = new List<string> { "SSC_TrainingManagement_Overview".Translate() };
             bool trainer = SSCIdentityUtility.IsTrainer(source);
             string trainerState = trainer ? "SSC_TrainerIdentity_Active" :
                 comp.slaveTrainerEnabled && comp.pawnIdentity == PawnIdentity.Slave

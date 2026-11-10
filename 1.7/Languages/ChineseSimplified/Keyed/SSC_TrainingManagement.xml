@@ -2,10 +2,8 @@
 <LanguageData>
   <SSC_TrainingManagement_Title>调教管理</SSC_TrainingManagement_Title>
   <SSC_TrainingManagement_Overview>概况</SSC_TrainingManagement_Overview>
-  <SSC_TrainingManagement_SwitchPawn>点击切换角色</SSC_TrainingManagement_SwitchPawn>
+  <SSC_TrainingManagement_SelectPawn>请从殖民者栏或地图上单选一名可管理的角色。</SSC_TrainingManagement_SelectPawn>
   <SSC_TrainingManagement_Unset>未设 SSC 身份</SSC_TrainingManagement_Unset>
-  <SSC_TrainingManagement_SelectionFailed>角色或选中状态已变化，未能完成切换。请重新选择。</SSC_TrainingManagement_SelectionFailed>
-  <SSC_TrainingManagement_NoCandidates>当前地图没有可选择的角色</SSC_TrainingManagement_NoCandidates>
   <SSC_TrainingManagement_AssignedTrainer>指定调教员：{0}</SSC_TrainingManagement_AssignedTrainer>
   <SSC_TrainingManagement_TrainingEnabled>日常调教选择：已允许</SSC_TrainingManagement_TrainingEnabled>
   <SSC_TrainingManagement_TrainingDisabled>日常调教选择：已关闭</SSC_TrainingManagement_TrainingDisabled>
