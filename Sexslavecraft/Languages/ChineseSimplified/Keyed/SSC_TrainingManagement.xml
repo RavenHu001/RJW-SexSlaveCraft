@@ -5,6 +5,15 @@
   <SSC_TrainingManagement_SelectPawn>请从殖民者栏或地图上单选一名可管理的角色。</SSC_TrainingManagement_SelectPawn>
   <SSC_TrainingManagement_Unset>未设 SSC 身份</SSC_TrainingManagement_Unset>
   <SSC_TrainingManagement_AssignedTrainer>指定调教员：{0}</SSC_TrainingManagement_AssignedTrainer>
-  <SSC_TrainingManagement_TrainingEnabled>日常调教选择：已允许</SSC_TrainingManagement_TrainingEnabled>
-  <SSC_TrainingManagement_TrainingDisabled>日常调教选择：已关闭</SSC_TrainingManagement_TrainingDisabled>
+  <SSC_TrainingManagement_TitlePawn>调教管理 · {0}</SSC_TrainingManagement_TitlePawn>
+  <SSC_TrainingManagement_Relations>关系</SSC_TrainingManagement_Relations>
+  <SSC_TrainingManagement_Specialization>特化</SSC_TrainingManagement_Specialization>
+  <SSC_TrainingManagement_BodyAppearance>身体与外观</SSC_TrainingManagement_BodyAppearance>
+  <SSC_TrainingManagement_BehaviorRules>行为规则</SSC_TrainingManagement_BehaviorRules>
+  <SSC_TrainingManagement_PagePending>此页面将随对应功能批次开放。</SSC_TrainingManagement_PagePending>
+  <SSC_TrainingManagement_Owner>主人 · {0}</SSC_TrainingManagement_Owner>
+  <SSC_TrainingManagement_CurrentSpecialization>当前特化</SSC_TrainingManagement_CurrentSpecialization>
+  <SSC_TrainingManagement_MasterStage>主人阶段</SSC_TrainingManagement_MasterStage>
+  <SSC_TrainingManagement_TrainingEnabled>已允许</SSC_TrainingManagement_TrainingEnabled>
+  <SSC_TrainingManagement_TrainingDisabled>已关闭</SSC_TrainingManagement_TrainingDisabled>
 </LanguageData>

@@ -5,6 +5,15 @@
   <SSC_TrainingManagement_SelectPawn>Select one eligible pawn from the colonist bar or the map.</SSC_TrainingManagement_SelectPawn>
   <SSC_TrainingManagement_Unset>No SSC identity</SSC_TrainingManagement_Unset>
   <SSC_TrainingManagement_AssignedTrainer>Assigned trainer: {0}</SSC_TrainingManagement_AssignedTrainer>
-  <SSC_TrainingManagement_TrainingEnabled>Daily training preference: enabled</SSC_TrainingManagement_TrainingEnabled>
-  <SSC_TrainingManagement_TrainingDisabled>Daily training preference: disabled</SSC_TrainingManagement_TrainingDisabled>
+  <SSC_TrainingManagement_TitlePawn>Training management · {0}</SSC_TrainingManagement_TitlePawn>
+  <SSC_TrainingManagement_Relations>Relationships</SSC_TrainingManagement_Relations>
+  <SSC_TrainingManagement_Specialization>Specialization</SSC_TrainingManagement_Specialization>
+  <SSC_TrainingManagement_BodyAppearance>Body and appearance</SSC_TrainingManagement_BodyAppearance>
+  <SSC_TrainingManagement_BehaviorRules>Behavior rules</SSC_TrainingManagement_BehaviorRules>
+  <SSC_TrainingManagement_PagePending>This page will become available in a later update.</SSC_TrainingManagement_PagePending>
+  <SSC_TrainingManagement_Owner>Master · {0}</SSC_TrainingManagement_Owner>
+  <SSC_TrainingManagement_CurrentSpecialization>Current specialization</SSC_TrainingManagement_CurrentSpecialization>
+  <SSC_TrainingManagement_MasterStage>Master stage</SSC_TrainingManagement_MasterStage>
+  <SSC_TrainingManagement_TrainingEnabled>Enabled</SSC_TrainingManagement_TrainingEnabled>
+  <SSC_TrainingManagement_TrainingDisabled>Disabled</SSC_TrainingManagement_TrainingDisabled>
 </LanguageData>

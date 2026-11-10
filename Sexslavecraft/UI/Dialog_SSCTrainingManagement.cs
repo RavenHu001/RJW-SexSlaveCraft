@@ -1,6 +1,5 @@
 // AI 辅助生成
 using System;
-using System.Collections.Generic;
 using RimWorld;
 using RimWorld.Planet;
 using UnityEngine;
@@ -12,6 +11,17 @@ namespace SexSlaveCraft
     internal sealed class Dialog_SSCTrainingManagement : Window
     {
         private const float ScreenPadding = 16f;
+        private const float PanelPadding = 12f;
+        private static readonly Color HeaderColor = new Color(.20f, .24f, .26f);
+        private static readonly Color PanelColor = new Color(.16f, .19f, .20f);
+        private static readonly Color SelectedColor = new Color(.26f, .34f, .35f);
+        private static readonly Color DividerColor = new Color(.36f, .43f, .45f);
+        private static readonly string[] PageKeys =
+        {
+            "SSC_TrainingManagement_Overview", "SSC_TrainingManagement_Relations",
+            "SSC_Restrictions_Kind_DailyTraining", "SSC_TrainingManagement_Specialization",
+            "SSC_TrainingManagement_BodyAppearance", "SSC_TrainingManagement_BehaviorRules"
+        };
         private readonly Game game;
         private Pawn source;
         private CompSexSlaveTraining comp;
@@ -26,7 +36,6 @@ namespace SexSlaveCraft
         private Dialog_SSCTrainingManagement()
         {
             game = Current.Game;
-            optionalTitle = "SSC_TrainingManagement_Title".Translate();
             doCloseX = true;
             closeOnCancel = true;
             closeOnAccept = false;
@@ -126,75 +135,237 @@ namespace SexSlaveCraft
             }
         }
 
-        /// <summary>按原版实际选中绘制角色标题和只读概况。</summary>
+        /// <summary>保持标题和关系摘要在顶部，概况滚动独立于导航。</summary>
         public override void DoWindowContents(Rect inRect)
         {
             if (!GameReady() || !ReferenceEquals(game, Current.Game)) return;
             RefreshSelection();
             using var scope = new SSCBondOverviewWidgets.GuiScope(true);
             Text.WordWrap = true;
-            if (comp == null)
+            float y = DrawHeader(inRect.width);
+            y += DrawRelationStrip(inRect.width, y);
+            y += PanelPadding;
+            float available = Mathf.Max(1f, inRect.height - y);
+
+            // 内容区变窄或高度不足时把六页导航移到顶部，避免挤压右侧内容。
+            bool sidebar = inRect.width >= 600f && available >= 250f;
+            float navWidth = sidebar ? Mathf.Clamp(inRect.width * .24f, 154f, 190f) : inRect.width;
+            int columns = sidebar ? 1 : inRect.width >= 420f ? 3 : 2;
+            float navHeight = DrawNavigation(new Rect(0f, y, navWidth, available), columns, sidebar);
+            Rect page = sidebar
+                ? new Rect(navWidth + PanelPadding, y, inRect.width - navWidth - PanelPadding, available)
+                : new Rect(0f, y + navHeight + PanelPadding, inRect.width,
+                    Mathf.Max(1f, available - navHeight - PanelPadding));
+            DrawOverview(page);
+        }
+
+        /// <summary>标题、头像和身份使用同一个原版单选，空选时仍保留窗口标题。</summary>
+        private float DrawHeader(float width)
+        {
+            const float portraitSize = 56f;
+            bool showPortrait = comp != null && width >= 160f;
+            float textX = PanelPadding + (showPortrait ? portraitSize + PanelPadding : 0f);
+            float textWidth = Mathf.Max(1f, width - textX - PanelPadding);
+            string title = comp == null ? "SSC_TrainingManagement_Title".Translate().ToString()
+                : "SSC_TrainingManagement_TitlePawn".Translate(source.LabelShort).ToString();
+            string status = comp == null ? null : IdentityLabel(comp.pawnIdentity);
+            if (comp != null && comp.pawnIdentity != PawnIdentity.Unset)
+                status += "  ·  " + "SSC_TrainerIdentity_Label".Translate() + TrainerState();
+
+            Text.Font = GameFont.Medium;
+            float titleHeight = Text.CalcHeight(title, textWidth);
+            Text.Font = GameFont.Small;
+            float statusHeight = status == null ? 0f : 4f + Text.CalcHeight(status, textWidth);
+            float height = 2f * PanelPadding + Mathf.Max(showPortrait ? portraitSize : 0f, titleHeight + statusHeight);
+            Widgets.DrawBoxSolid(new Rect(0f, 0f, width, height), HeaderColor);
+            Widgets.DrawLineHorizontal(0f, height - 1f, width, DividerColor);
+            if (showPortrait)
             {
-                Widgets.Label(inRect, "SSC_TrainingManagement_SelectPawn".Translate());
-                return;
+                var portrait = new Rect(PanelPadding, PanelPadding, portraitSize, portraitSize);
+                Widgets.DrawBoxSolid(portrait, PanelColor);
+                SSCBondOverviewWidgets.Portrait(portrait, source, false, true);
+            }
+            Text.Font = GameFont.Medium;
+            Widgets.Label(new Rect(textX, PanelPadding, textWidth, titleHeight), title);
+            Text.Font = GameFont.Small;
+            if (status != null) Widgets.Label(new Rect(textX, PanelPadding + titleHeight + 4f, textWidth, statusHeight - 4f), status);
+            return height;
+        }
+
+        /// <summary>在关系详情页接入前，摘要已按身份读取实际锁链和指派。</summary>
+        private float DrawRelationStrip(float width, float y)
+        {
+            if (comp == null || comp.pawnIdentity == PawnIdentity.Unset) return 0f;
+            const float rowHeight = 42f;
+            bool slave = comp.pawnIdentity == PawnIdentity.Slave;
+            bool stacked = slave && width < 460f;
+            float height = stacked ? 2f * rowHeight : rowHeight;
+            Widgets.DrawBoxSolid(new Rect(0f, y, width, height), PanelColor);
+            Widgets.DrawLineHorizontal(0f, y + height - 1f, width, DividerColor);
+            float groupWidth = Mathf.Max(1f, (slave && !stacked ? width / 2f : width) - 2f * PanelPadding);
+            var first = new Rect(PanelPadding, y, groupWidth, rowHeight);
+            if (!slave)
+            {
+                var owned = SSCBondOverviewUtility.SummarizeLocalSlaves(source);
+                DrawRelationGroup(first, "SSC_BondOverview_OwnedCount".Translate(owned.Count), owned.First, owned.Second);
+                return height;
             }
 
-            float portraitSize = Mathf.Min(56f, inRect.width);
-            SSCBondOverviewWidgets.Portrait(new Rect(0f, 0f, portraitSize, portraitSize), source, false, true);
-            float nameX = portraitSize + 12f;
-            float nameWidth = Mathf.Max(1f, inRect.width - nameX);
-            float nameHeight = Mathf.Max(24f, Text.CalcHeight(source.LabelShort, nameWidth));
-            Widgets.Label(new Rect(nameX, 0f, nameWidth, nameHeight), source.LabelShort);
-            string identity = IdentityLabel(comp.pawnIdentity);
-            float identityHeight = Text.CalcHeight(identity, nameWidth);
-            Widgets.Label(new Rect(nameX, nameHeight + 4f, nameWidth, identityHeight), identity);
-            float y = Mathf.Max(portraitSize, nameHeight + 4f + identityHeight) + 12f;
+            var chain = SSCBondUtility.GetChain(source);
+            Pawn owner = chain?.LinkedPawn;
+            string ownerLabel;
+            if (chain == null) ownerLabel = "SSC_BondOverview_NoMaster".Translate();
+            else if (!SSCBondOverviewUtility.IsValidPawn(owner) || ReferenceEquals(owner, source))
+                ownerLabel = "SSC_BondOverview_InvalidMaster".Translate();
+            else ownerLabel = "SSC_TrainingManagement_Owner".Translate(owner.LabelShort);
+            DrawRelationGroup(first, ownerLabel, ReferenceEquals(owner, source) ? null : owner);
 
-            // 按当前语言测量文本高度，长姓名和状态文案可在同一滚动区换行。
-            var lines = OverviewLines();
-            float width = Mathf.Max(1f, inRect.width - 20f);
-            float totalHeight = 0f;
-            foreach (string line in lines) totalHeight += Text.CalcHeight(line, width) + 10f;
-            Rect viewport = new Rect(0f, y, inRect.width, Mathf.Max(1f, inRect.height - y));
+            // 使用保存的指派和现行状态说明，暂时停工的现任仍可见。
+            Pawn trainer = comp.selectedTrainer;
+            string trainerName = trainer == null ? "SSC_BondOverview_Trainer_None".Translate().ToString()
+                : TrainerAssignmentUtility.GetAssignedTrainerLabel(source);
+            Rect second = stacked ? new Rect(first.x, first.yMax, groupWidth, rowHeight)
+                : new Rect(width / 2f + PanelPadding, y, groupWidth, rowHeight);
+            DrawRelationGroup(second, "SSC_TrainingManagement_AssignedTrainer".Translate(trainerName), trainer);
+            return height;
+        }
+
+        /// <summary>摘要肖像只显示关系，截断的完整状态可悬停查看。</summary>
+        private static void DrawRelationGroup(Rect rect, string label, Pawn first = null, Pawn second = null)
+        {
+            const float cell = 32f;
+            using var scope = new SSCBondOverviewWidgets.GuiScope(false);
+            float x = rect.x;
+            DrawPortrait(first);
+            DrawPortrait(second);
+            var textRect = new Rect(x, rect.y, Mathf.Max(1f, rect.xMax - x), rect.height);
+            Text.Anchor = TextAnchor.MiddleLeft;
+            Text.WordWrap = false;
+            Widgets.Label(textRect, label.Truncate(textRect.width));
+            TooltipHandler.TipRegion(textRect, label);
+
+            void DrawPortrait(Pawn pawn)
+            {
+                if (!SSCBondOverviewUtility.IsValidPawn(pawn) || rect.xMax - x < cell + 64f) return;
+                var portrait = new Rect(x, rect.y + (rect.height - cell) / 2f, cell, cell);
+                SSCBondOverviewWidgets.Portrait(portrait, pawn, pawn.Dead, true);
+                TooltipHandler.TipRegion(portrait, pawn.LabelShort);
+                x += cell + 4f;
+            }
+        }
+
+        /// <summary>绘制原型的六个导航位置，概况可用，其余页在各批接入后启用。</summary>
+        private static float DrawNavigation(Rect rect, int columns, bool sidebar)
+        {
+            const float gap = 4f;
+            float width = Mathf.Max(1f, (rect.width - (columns - 1) * gap) / columns);
+            var labels = new string[PageKeys.Length];
+            float rowHeight = 32f;
+            for (int i = 0; i < labels.Length; i++)
+            {
+                labels[i] = PageKeys[i].Translate();
+                rowHeight = Mathf.Max(rowHeight, Text.CalcHeight(labels[i], Mathf.Max(1f, width - 16f)) + 8f);
+            }
+            int rows = (labels.Length + columns - 1) / columns;
+            float height = rows * (rowHeight + gap) - gap;
+            Widgets.DrawBoxSolid(new Rect(rect.x, rect.y, rect.width, sidebar ? Mathf.Max(height, rect.height) : height), PanelColor);
+            using var scope = new SSCBondOverviewWidgets.GuiScope(false);
+            Text.Anchor = TextAnchor.MiddleLeft;
+            for (int i = 0; i < labels.Length; i++)
+            {
+                var cell = new Rect(rect.x + i % columns * (width + gap), rect.y + i / columns * (rowHeight + gap), width, rowHeight);
+                GUI.color = Color.white;
+                Widgets.DrawBoxSolid(cell, i == 0 ? SelectedColor : HeaderColor);
+                GUI.color = i == 0 ? Color.white : new Color(.68f, .73f, .74f);
+                Widgets.Label(new Rect(cell.x + 8f, cell.y, Mathf.Max(1f, cell.width - 16f), cell.height), labels[i]);
+                if (i != 0) TooltipHandler.TipRegion(cell, "SSC_TrainingManagement_PagePending".Translate());
+            }
+            return height;
+        }
+
+        /// <summary>概况按标签和值排列，分别计算长译文的行高并独立滚动。</summary>
+        private void DrawOverview(Rect page)
+        {
+            var rows = OverviewRows();
+            Widgets.DrawBoxSolid(page, PanelColor);
+            var viewport = new Rect(page.x + PanelPadding, page.y + PanelPadding,
+                Mathf.Max(1f, page.width - 2f * PanelPadding), Mathf.Max(1f, page.height - 2f * PanelPadding));
+            float width = Mathf.Max(1f, viewport.width - 16f);
+            string title = PageKeys[0].Translate();
+            Text.Font = GameFont.Medium;
+            float titleHeight = Text.CalcHeight(title, width);
+            Text.Font = GameFont.Small;
+            float firstRow = titleHeight + 10f;
+            float labelWidth = Mathf.Max(1f, width * .42f - 4f);
+            float valueWidth = Mathf.Max(1f, width - labelWidth - 8f);
+            var heights = new float[rows.Length];
+            float totalHeight = firstRow;
+            for (int i = 0; i < rows.Length; i++)
+            {
+                heights[i] = Mathf.Max(Text.CalcHeight(rows[i].Label, labelWidth), Text.CalcHeight(rows[i].Value, valueWidth)) + 12f;
+                totalHeight += heights[i];
+            }
+            string hint = comp == null ? "SSC_TrainingManagement_SelectPawn".Translate().ToString() : null;
+            if (hint != null) totalHeight += Text.CalcHeight(hint, width);
             scroll.y = Mathf.Clamp(scroll.y, 0f, Mathf.Max(0f, totalHeight - viewport.height));
             Widgets.BeginScrollView(viewport, ref scroll, new Rect(0f, 0f, width, Mathf.Max(viewport.height, totalHeight)));
             try
             {
-                float lineY = 0f;
-                foreach (string line in lines)
+                Text.Font = GameFont.Medium;
+                Widgets.Label(new Rect(0f, 0f, width, titleHeight), title);
+                Text.Font = GameFont.Small;
+                if (hint != null) Widgets.Label(new Rect(0f, firstRow, width, totalHeight - firstRow), hint);
+                float y = firstRow;
+                for (int i = 0; i < rows.Length; i++)
                 {
-                    float height = Text.CalcHeight(line, width);
-                    Widgets.Label(new Rect(0f, lineY, width, height), line);
-                    lineY += height + 10f;
+                    Text.Anchor = TextAnchor.UpperLeft;
+                    Widgets.Label(new Rect(0f, y + 5f, labelWidth, heights[i] - 10f), rows[i].Label);
+                    Text.Anchor = TextAnchor.UpperRight;
+                    Widgets.Label(new Rect(labelWidth + 8f, y + 5f, valueWidth, heights[i] - 10f), rows[i].Value);
+                    y += heights[i];
+                    Widgets.DrawLineHorizontal(0f, y - 1f, width, DividerColor);
                 }
             }
             finally { Widgets.EndScrollView(); }
         }
 
-        /// <summary>读取原组件与关系查询的即时状态，生成概况文本。</summary>
-        private List<string> OverviewLines()
+        /// <summary>按身份展示原有可读状态，特化进度沿用旧页的规则。</summary>
+        private (string Label, string Value)[] OverviewRows()
         {
-            var lines = new List<string> { "SSC_TrainingManagement_Overview".Translate() };
-            bool trainer = SSCIdentityUtility.IsTrainer(source);
-            string trainerState = trainer ? "SSC_TrainerIdentity_Active" :
-                comp.slaveTrainerEnabled && comp.pawnIdentity == PawnIdentity.Slave
-                    ? "SSC_TrainerIdentity_SavedInactive" : "SSC_TrainerIdentity_Off";
-            lines.Add("SSC_TrainerIdentity_Label".Translate() + trainerState.Translate());
-            Pawn owner = SSCBondUtility.GetBoundMaster(source);
-            if (owner != null)
-                lines.Add("SSC_BondOverview_Master".Translate() + " · " + owner.LabelShort);
+            if (comp == null) return Array.Empty<(string, string)>();
             if (comp.pawnIdentity == PawnIdentity.Slave)
             {
-                lines.Add("SSC_TrainingManagement_AssignedTrainer".Translate(TrainerAssignmentUtility.GetAssignedTrainerLabel(source)));
-                // 保存的调教选择与即时冷却同时显示，便于看出暂时不可调教的原因。
-                lines.Add((comp.IsEnabled ? "SSC_TrainingManagement_TrainingEnabled" : "SSC_TrainingManagement_TrainingDisabled").Translate());
+                string training = (comp.IsEnabled ? "SSC_TrainingManagement_TrainingEnabled" : "SSC_TrainingManagement_TrainingDisabled").Translate();
                 if (comp.IsOnCooldown)
                 {
                     int ticks = CompSexSlaveTraining.CooldownTicks - (Find.TickManager.TicksGame - comp.lastTrainingTick);
-                    lines.Add(Strings.ITab_CooldownStatus(ticks.ToStringTicksToPeriod()));
+                    training += " · " + Strings.ITab_CooldownStatus(ticks.ToStringTicksToPeriod());
                 }
+                return new (string, string)[]
+                {
+                    (PageKeys[2].Translate(), training),
+                    ("SSC_TrainingManagement_CurrentSpecialization".Translate(), ITab_SexSlaveTraining.GetSpecializationOverviewLabel(source, comp))
+                };
             }
-            return lines;
+            if (comp.pawnIdentity == PawnIdentity.Master)
+            {
+                string stage = SSCMasterProgressionUtility.GetRecord(source)?.LabelInBrackets;
+                return new (string, string)[]
+                {
+                    ("SSC_TrainingManagement_MasterStage".Translate(), stage ?? "SSC_MasterProgression_NoRecord".Translate().ToString())
+                };
+            }
+            return new (string, string)[] { ("SSC_TrainerIdentity_Label".Translate(), TrainerState()) };
         }
+
+        /// <summary>保留原任职状态的显示语义，包括身份暂停时保留的启用选择。</summary>
+        private string TrainerState()
+        {
+            string key = SSCIdentityUtility.IsTrainer(source) ? "SSC_TrainerIdentity_Active" :
+                comp.slaveTrainerEnabled && comp.pawnIdentity == PawnIdentity.Slave
+                    ? "SSC_TrainerIdentity_SavedInactive" : "SSC_TrainerIdentity_Off";
+            return key.Translate();
+        }
+
     }
 }

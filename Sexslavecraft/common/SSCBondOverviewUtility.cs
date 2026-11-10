@@ -44,6 +44,26 @@ namespace SexSlaveCraft
                 ? BuildReady(source, map, null, false, false) : Empty(source, map, state);
         }
 
+        /// <summary>为窗口摘要读取所属性奴计数和前两张肖像，沿用本地候选的去重及核链规则。</summary>
+        internal static (int Count, Pawn First, Pawn Second) SummarizeLocalSlaves(Pawn source)
+        {
+            var targets = SSCBondUtility.GetBridle(source)?.targets;
+            if (targets == null || targets.Count == 0) return default;
+
+            using var world = SSCBondOverviewWorld.Rent();
+            int count = 0;
+            Pawn first = null;
+            Pawn second = null;
+            foreach (Pawn candidate in targets)
+            {
+                if (BoundChain(source, candidate, world) == null) continue;
+                if (count == 0) first = candidate;
+                if (count == 1) second = candidate;
+                count++;
+            }
+            return (count, first, second);
+        }
+
         internal static SSCBondOverviewDiagnostic Diagnose(Pawn source)
         {
             var state = GetQueryState(source);
