@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_TrainingManagement_Title>調教管理</SSC_TrainingManagement_Title>
+  <SSC_TrainingManagement_Overview>概況</SSC_TrainingManagement_Overview>
+  <SSC_TrainingManagement_SwitchPawn>點擊切換角色</SSC_TrainingManagement_SwitchPawn>
+  <SSC_TrainingManagement_Unset>未設 SSC 身分</SSC_TrainingManagement_Unset>
+  <SSC_TrainingManagement_SelectionFailed>角色或選取狀態已變更，未能完成切換。請重新選擇。</SSC_TrainingManagement_SelectionFailed>
+  <SSC_TrainingManagement_NoCandidates>目前地圖沒有可選擇的角色</SSC_TrainingManagement_NoCandidates>
+  <SSC_TrainingManagement_AssignedTrainer>指定調教員：{0}</SSC_TrainingManagement_AssignedTrainer>
+  <SSC_TrainingManagement_TrainingEnabled>日常調教選擇：已允許</SSC_TrainingManagement_TrainingEnabled>
+  <SSC_TrainingManagement_TrainingDisabled>日常調教選擇：已關閉</SSC_TrainingManagement_TrainingDisabled>
+</LanguageData>

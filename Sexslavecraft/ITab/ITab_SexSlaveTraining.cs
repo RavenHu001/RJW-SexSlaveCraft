@@ -135,13 +135,15 @@ namespace SexSlaveCraft
         /// <summary>仅为支持的原版身份且具有训练组件的角色显示调教页，不要求完成研究。</summary>
         public override bool IsVisible
         {
-            get
-            {
-                Pawn p = SelPawn;
-                if (p == null) return false;
-                if (!SSCIdentityUtility.IsSupportedVanillaStatus(p) && !SSCSelfTrainingEligibility.IsEligible(p)) return false;
-                return p.GetComp<CompSexSlaveTraining>() != null;
-            }
+            get { return CanInspect(SelPawn); }
+        }
+
+        /// <summary>原标签与窗口共用展示资格，选角的同图及可选条件由窗口另外检查。</summary>
+        internal static bool CanInspect(Pawn pawn)
+        {
+            if (pawn == null) return false;
+            if (!SSCIdentityUtility.IsSupportedVanillaStatus(pawn) && !SSCSelfTrainingEligibility.IsEligible(pawn)) return false;
+            return pawn.GetComp<CompSexSlaveTraining>() != null;
         }
 
         /// <summary>绘制调教总栏；即使菜单或控件抛出异常，也在内部列表结束后关闭外层滚动区域。</summary>

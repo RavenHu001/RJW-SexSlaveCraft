@@ -26,6 +26,9 @@
     <GenerateDependencyFile>false</GenerateDependencyFile>
   </PropertyGroup>
   <ItemGroup>
+    <!-- 调教管理第一批仅接1.7：原标签开窗、只读概况及地图单选同步。 -->
+    <Compile Include="ThePatches/Harmony_TrainingManagementTab.cs" />
+    <Compile Include="UI/Dialog_SSCTrainingManagement.cs" />
     <!-- PNA阶段维持仅接1.7：锁链保存、地图原生服用薄驱动及旅队原生服药适配。 -->
     <Compile Include="common/SSCPnaMaintenanceUtility.cs" />
     <Compile Include="common/SSCPnaCaravanMaintenanceUtility.cs" />
