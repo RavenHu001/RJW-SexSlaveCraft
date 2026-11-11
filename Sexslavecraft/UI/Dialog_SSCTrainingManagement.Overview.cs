@@ -35,7 +35,7 @@ namespace SexSlaveCraft
         private sealed class OverviewIdentityView
         {
             internal OverviewEdit Edit;
-            internal Rect IdentityButton, Qualification, TrainerToggle, RecoveryText, RecoveryButton;
+            internal Rect IdentityRow, Qualification, TrainerToggle, RecoveryText, RecoveryButton;
             internal string IdentityLabel, LockTip, QualificationLabel, TrainerLabel, TrainerTip, RecoveryHint, RecoveryLabel;
             internal bool TrainerEnabled, TrainerEditable;
             internal float Bottom;
@@ -56,7 +56,8 @@ namespace SexSlaveCraft
             }
 
             view.IdentityLabel = IdentityLabel(view.Edit.Identity);
-            view.IdentityButton = Row(Mathf.Max(buttonHeight, Text.CalcHeight(view.IdentityLabel, Mathf.Max(1f, width - 16f)) + 8f));
+            float identityLabelWidth = Mathf.Max(1f, width * .42f - 8f);
+            view.IdentityRow = Row(Mathf.Max(buttonHeight, Text.CalcHeight(Strings.ITab_IdentityHeader, identityLabelWidth) + 8f));
             if (SSCIdentityUtility.IsIdentityLocked(source))
                 view.LockTip = (SSCImprintUtility.GetImprintLockedIdentity(source) != PawnIdentity.Unset ?
                     "SSC_Imprint_GelTooltip" : "SSC_Identity_BoundTip").Translate();
@@ -89,9 +90,7 @@ namespace SexSlaveCraft
         {
             var edit = view.Edit;
             Text.Anchor = TextAnchor.UpperLeft;
-            if (SSCUIWidgets.Button(view.IdentityButton, view.IdentityLabel, view.LockTip == null))
-                OpenIdentityMenu(edit);
-            if (view.LockTip != null) TooltipHandler.TipRegion(view.IdentityButton, view.LockTip);
+            DrawIdentityDropdown(view);
 
             SSCMasterQualificationDisplay.Draw(view.Qualification, view.QualificationLabel,
                 SSCMasterQualificationDisplay.GetPawnTooltip(SSCMod.settings?.allowDirectMasterSelection ?? false));
@@ -105,6 +104,40 @@ namespace SexSlaveCraft
             if (view.RecoveryHint == null) return;
             Widgets.Label(view.RecoveryText, view.RecoveryHint);
             if (SSCUIWidgets.Button(view.RecoveryButton, view.RecoveryLabel, true)) OpenRecoveryConfirmation(edit);
+        }
+
+        /// <summary>身份行使用窗口配色，右侧值区域负责打开现有菜单。</summary>
+        private void DrawIdentityDropdown(OverviewIdentityView view)
+        {
+            using var scope = new SSCBondOverviewWidgets.GuiScope(false);
+            Rect row = view.IdentityRow;
+            float valueX = row.x + row.width * .42f;
+            Text.Anchor = TextAnchor.MiddleLeft;
+            Widgets.Label(new Rect(row.x, row.y, Mathf.Max(1f, valueX - row.x - 8f), row.height), Strings.ITab_IdentityHeader);
+            var value = new Rect(valueX, row.y, Mathf.Max(1f, row.xMax - valueX), row.height);
+            bool editable = view.LockTip == null && GUI.enabled;
+            bool showArrow = editable && value.width >= 36f;
+            Widgets.DrawBoxSolid(value, editable ? HeaderColor : PanelColor);
+            Widgets.DrawLineHorizontal(value.x, value.yMax - 1f, value.width, DividerColor);
+            if (editable) Widgets.DrawHighlightIfMouseover(value);
+
+            Text.WordWrap = false;
+            float padding = Mathf.Min(10f, value.width * .1f);
+            var labelRect = new Rect(value.x + padding, value.y,
+                Mathf.Max(1f, value.width - 2f * padding - (showArrow ? 16f : 0f)), value.height);
+            string label = view.IdentityLabel.Truncate(labelRect.width);
+            Widgets.Label(labelRect, label);
+            if (showArrow)
+            {
+                // 用三道短线组成下拉箭头，避免受语言字体的符号覆盖影响。
+                float x = value.xMax - padding - 5f;
+                float y = value.y + value.height / 2f;
+                for (int i = 0; i < 3; i++)
+                    Widgets.DrawBoxSolid(new Rect(x - 4f + i * 2f, y - 2f + i * 2f, 9f - i * 4f, 2f), GUI.color);
+            }
+            if (view.LockTip != null || label != view.IdentityLabel)
+                TooltipHandler.TipRegion(value, view.LockTip ?? view.IdentityLabel);
+            if (editable && Widgets.ButtonInvisible(value)) OpenIdentityMenu(view.Edit);
         }
 
         /// <summary>使用原主人准入和身份 setter 构造菜单。回调只提交所捕获的编辑请求。</summary>

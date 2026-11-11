@@ -13,6 +13,7 @@ namespace SexSlaveCraft
         private const float ScreenPadding = 16f;
         private const float PanelPadding = 14f;
         private const float NavigationGap = 5f;
+        private const float StackedSummaryWidth = 460f;
         private enum Page { Overview, Relations }
         private enum SummaryRelation { Master, AssignedTrainer, OwnedSlave, TrainerCandidate }
         private static readonly Color HeaderColor = new Color(.20f, .24f, .26f);
@@ -242,34 +243,48 @@ namespace SexSlaveCraft
             if (!FinishTrainerInput(inRect) && clicked.Target != null) NavigatePortrait(snapshot, clicked.Target, clicked.Relation);
         }
 
-        /// <summary>标题、头像和身份使用同一个原版单选，空选时仍保留窗口标题。</summary>
+        /// <summary>按可用宽度预留固定标题行，角色和身份变化只更新内容。</summary>
         private float DrawHeader(float width)
         {
             const float portraitSize = 80f;
-            bool showPortrait = comp != null && width >= 160f;
-            float textX = PanelPadding + (showPortrait ? portraitSize + PanelPadding : 0f);
+            bool reservePortrait = width >= 160f;
+            bool stacked = width < StackedSummaryWidth;
+            float textX = PanelPadding + (reservePortrait ? portraitSize + PanelPadding : 0f);
             float textWidth = Mathf.Max(1f, width - textX - PanelPadding);
             string title = comp == null ? "SSC_TrainingManagement_Title".Translate().ToString()
                 : "SSC_TrainingManagement_TitlePawn".Translate(source.LabelShort).ToString();
-            title = "<b>" + title + "</b>";
             string status = comp == null ? null : IdentityLabel(comp.pawnIdentity);
-            if (comp != null && comp.pawnIdentity != PawnIdentity.Unset)
-                status += "  ·  " + "SSC_TrainerIdentity_Label".Translate() + TrainerState();
+            string trainer = comp != null && comp.pawnIdentity != PawnIdentity.Unset
+                ? "SSC_TrainerIdentity_Label".Translate() + TrainerState() : null;
 
-            float titleHeight = Text.CalcHeight(title, textWidth);
-            float statusHeight = status == null ? 0f : 4f + Text.CalcHeight(status, textWidth);
-            float height = 2f * PanelPadding + Mathf.Max(showPortrait ? portraitSize : 0f, titleHeight + statusHeight);
+            float lineHeight = Text.LineHeight;
+            float textHeight = (stacked ? 3f : 2f) * lineHeight + 4f;
+            float height = 2f * PanelPadding + Mathf.Max(reservePortrait ? portraitSize : 0f, textHeight);
             Widgets.DrawBoxSolid(new Rect(0f, 0f, width, height), HeaderColor);
             Widgets.DrawLineHorizontal(0f, height - 1f, width, DividerColor);
-            if (showPortrait)
+            if (reservePortrait && comp != null)
             {
                 var portrait = new Rect(PanelPadding, PanelPadding, portraitSize, portraitSize);
                 Widgets.DrawBoxSolid(portrait, PanelColor);
                 SSCBondOverviewWidgets.Portrait(portrait, source, false, true, portraitSize);
             }
-            Widgets.Label(new Rect(textX, PanelPadding, textWidth, titleHeight), title);
-            if (status != null) Widgets.Label(new Rect(textX, PanelPadding + titleHeight + 4f, textWidth, statusHeight - 4f), status);
+            using var scope = new SSCBondOverviewWidgets.GuiScope(false);
+            Text.WordWrap = false;
+            Text.Anchor = TextAnchor.UpperLeft;
+            // 窄窗把身份与任职分行，超长文字通过悬停查看完整值。
+            float statusY = PanelPadding + lineHeight + 4f;
+            DrawHeaderLine(PanelPadding, title, true);
+            if (status != null) DrawHeaderLine(statusY, !stacked && trainer != null ? status + "  ·  " + trainer : status);
+            if (stacked && trainer != null) DrawHeaderLine(statusY + lineHeight, trainer);
             return height;
+
+            void DrawHeaderLine(float y, string label, bool bold = false)
+            {
+                var rect = new Rect(textX, y, textWidth, lineHeight);
+                string displayed = label.Truncate(textWidth);
+                Widgets.Label(rect, bold ? "<b>" + displayed + "</b>" : displayed);
+                if (trainerGesture == null && displayed != label) TooltipHandler.TipRegion(rect, label);
+            }
         }
 
         /// <summary>用详情共用的快照绘制顶部关系摘要。</summary>
@@ -277,13 +292,14 @@ namespace SexSlaveCraft
             out (Pawn Target, SummaryRelation Relation) clicked)
         {
             clicked = default;
-            if (snapshot?.State != SSCBondOverviewQueryState.Ready || snapshot.Identity == PawnIdentity.Unset) return 0f;
             const float rowHeight = 66f;
-            bool slave = snapshot.Identity == PawnIdentity.Slave;
-            bool stacked = slave && width < 460f;
+            bool stacked = width < StackedSummaryWidth;
             float height = stacked ? 2f * rowHeight : rowHeight;
+            // 摘要是否有数据不参与布局。未设身份、空选或刷新失败时也保留底板。
             Widgets.DrawBoxSolid(new Rect(0f, y, width, height), PanelColor);
             Widgets.DrawLineHorizontal(0f, y + height - 1f, width, DividerColor);
+            if (snapshot?.State != SSCBondOverviewQueryState.Ready || snapshot.Identity == PawnIdentity.Unset) return height;
+            bool slave = snapshot.Identity == PawnIdentity.Slave;
             float groupWidth = Mathf.Max(1f, (slave && !stacked ? width / 2f : width) - 2f * PanelPadding);
             var first = new Rect(PanelPadding, y, groupWidth, rowHeight);
             if (!slave)
