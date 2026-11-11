@@ -33,14 +33,17 @@ namespace SexSlaveCraft
         {
             // 恢复默认使用本组原始快照，写入和刷新仍交给各自的业务模块。
             var sexReset = SSCRestrictionEditor.GetResetView(pawn);
-            DrawBlock(listing, "SSC_Romance_SexSection".Translate(), inner =>
+            string fullTitle = "SSC_Romance_SexSection".Translate();
+            bool embedded = prepare != null;
+            string title = embedded ? "SSC_Romance_SexSectionShort".Translate().ToString() : fullTitle;
+            DrawBlock(listing, title, inner =>
             {
                 if (showSexSwitches) Dialog_SSCRestrictions.DrawGlobalSwitches(inner);
                 SSCRestrictionUI.DrawPawn(inner, pawn, true, prepare);
             }, rect => DrawReset(rect, sexReset.CanReset, "SSC_BehaviorReset_SexTip", sexReset.Reason, () =>
             {
                 if (!SSCRestrictionEditor.TryReset(pawn, sexReset.Context, out var reason)) ResetFailed(pawn, reason);
-            }, "SexReset", prepare));
+            }, "SexReset", prepare), embedded, embedded ? fullTitle : null);
         }
 
         /// <summary>独立绘制浪漫板块，允许窗口管理目标菜单和原按压。</summary>
@@ -52,10 +55,11 @@ namespace SexSlaveCraft
                 rect => DrawReset(rect, romanceReset.CanReset, "SSC_BehaviorReset_RomanceTip", romanceReset.Reason, () =>
                 {
                     if (!SSCRomancePreferences.TryReset(pawn, romanceReset.Context, out var reason)) ResetFailed(pawn, reason);
-                }, "RomanceReset", prepare));
+                }, "RomanceReset", prepare), prepare != null);
         }
         /// <summary>内容只绘制一次并据实际推进高度设置边框，避免测量时重复调用按钮或初始化提交。</summary>
-        private static void DrawBlock(Listing_Standard listing, string title, Action<Listing_Standard> content, Action<Rect> reset, bool drawDivider = true)
+        private static void DrawBlock(Listing_Standard listing, string title, Action<Listing_Standard> content,
+            Action<Rect> reset, bool embedded, string titleTip = null)
         {
             float top = listing.CurHeight, width = listing.ColumnWidth;
             var inner = new Listing_Standard { maxOneColumn = true };
@@ -63,31 +67,38 @@ namespace SexSlaveCraft
             inner.Begin(new Rect(12f, top + 12f, Mathf.Max(1f, width - 24f), 100000f));
             try
             {
-                DrawHeader(inner, title, reset);
-                if (drawDivider) inner.GapLine(6f);
-                else inner.Gap(6f);
+                DrawHeader(inner, title, reset, embedded, titleTip);
+                if (embedded) inner.Gap(8f);
+                else inner.GapLine(6f);
                 content(inner);
             }
             finally { height = inner.CurHeight + 24f; inner.End(); }
             listing.GetRect(height);
-            // 只描边，不在绘制完内容后填充背景，保证控件与文字不被覆盖。
-            Widgets.DrawBox(new Rect(0f, top, width, height));
+            // 调教窗口在外层绘制面板底色，独立旧入口继续使用边框。
+            if (!embedded) Widgets.DrawBox(new Rect(0f, top, width, height));
         }
 
         /// <summary>按译文实测首行按钮，长标题在剩余空间换行；局部文字状态不会泄露到其他区域。</summary>
-        private static void DrawHeader(Listing_Standard listing, string title, Action<Rect> reset)
+        private static void DrawHeader(Listing_Standard listing, string title, Action<Rect> reset, bool embedded, string titleTip)
         {
             var anchor = Text.Anchor; bool wrap = Text.WordWrap;
             try
             {
-                Text.Anchor = TextAnchor.UpperLeft; Text.WordWrap = true;
+                Text.Anchor = embedded ? TextAnchor.MiddleLeft : TextAnchor.UpperLeft;
+                Text.WordWrap = true;
                 string label = "SSC_BehaviorReset_Button".Translate();
                 float buttonWidth = Mathf.Min(listing.ColumnWidth * .46f, Mathf.Max(72f, Text.CalcSize(label).x + 18f));
-                float titleWidth = Mathf.Max(1f, listing.ColumnWidth - buttonWidth - 8f);
+                float padding = embedded ? 6f : 0f;
+                float titleWidth = Mathf.Max(1f, listing.ColumnWidth - buttonWidth - 8f - 2f * padding);
                 float buttonHeight = Mathf.Max(28f, Text.CalcHeight(label, Mathf.Max(1f, buttonWidth - 12f)) + 8f);
-                Rect header = listing.GetRect(Mathf.Max(buttonHeight, Text.CalcHeight(title, titleWidth)));
-                Widgets.Label(new Rect(header.x, header.y, titleWidth, header.height), title);
-                reset(new Rect(header.x + titleWidth + 8f, header.y, buttonWidth, buttonHeight));
+                if (embedded) title = "<b>" + title + "</b>";
+                Rect header = listing.GetRect(Mathf.Max(buttonHeight, Text.CalcHeight(title, titleWidth)) + 2f * padding);
+                if (embedded) Widgets.DrawBoxSolid(header, new Color(.20f, .24f, .26f));
+                var titleRect = new Rect(header.x + padding, header.y + padding, titleWidth, header.height - 2f * padding);
+                Widgets.Label(titleRect, title);
+                if (titleTip != null) TooltipHandler.TipRegion(titleRect, titleTip);
+                float buttonY = embedded ? header.y + (header.height - buttonHeight) / 2f : header.y;
+                reset(new Rect(titleRect.xMax + 8f, buttonY, buttonWidth, buttonHeight));
             }
             finally { Text.Anchor = anchor; Text.WordWrap = wrap; }
         }
@@ -102,7 +113,9 @@ namespace SexSlaveCraft
                 GUI.enabled = enabled && canReset;
                 if (!GUI.enabled) GUI.color = color * new Color(.55f, .55f, .55f);
                 if (GUI.enabled && prepare != null) submit = prepare(rect, key, submit);
-                if (Widgets.ButtonText(rect, "SSC_BehaviorReset_Button".Translate()) && GUI.enabled) submit?.Invoke();
+                string label = "SSC_BehaviorReset_Button".Translate();
+                bool clicked = prepare != null ? DrawEmbeddedButton(rect, label) : Widgets.ButtonText(rect, label);
+                if (clicked && GUI.enabled) submit?.Invoke();
             }
             finally { GUI.enabled = enabled; GUI.color = color; }
             string tip = tipKey.Translate();
@@ -113,6 +126,26 @@ namespace SexSlaveCraft
         /// <summary>只提示当前点击失败；无需新增确认窗口、成功消息或社交／心情事件。</summary>
         private static void ResetFailed(Pawn pawn, string reason)
             => Messages.Message(("SSC_BehaviorReset_" + (reason ?? "Unavailable")).Translate(), pawn, MessageTypeDefOf.RejectInput, false);
+
+        /// <summary>调教窗口的按钮用深灰蓝底，文字按实际宽度换行，禁用时只绘制。</summary>
+        internal static bool DrawEmbeddedButton(Rect rect, string label)
+        {
+            var anchor = Text.Anchor;
+            var color = GUI.color;
+            bool wrap = Text.WordWrap;
+            try
+            {
+                GUI.color = Color.white;
+                Widgets.DrawBoxSolid(rect, GUI.enabled ? new Color(.26f, .34f, .35f) : new Color(.22f, .25f, .27f));
+                if (GUI.enabled) Widgets.DrawHighlightIfMouseover(rect);
+                GUI.color = GUI.enabled ? Color.white : new Color(.65f, .69f, .70f);
+                Text.Anchor = TextAnchor.MiddleCenter;
+                Text.WordWrap = true;
+                Widgets.Label(new Rect(rect.x + 6f, rect.y + 4f, Mathf.Max(1f, rect.width - 12f), rect.height - 8f), label);
+                return GUI.enabled && Widgets.ButtonInvisible(rect);
+            }
+            finally { Text.Anchor = anchor; Text.WordWrap = wrap; GUI.color = color; }
+        }
     }
     /// <summary>十一项浪漫偏好沿独立 GetView/TrySet；不注册为通用能力，不创建隐式默认配置。</summary>
     public static class SSCRomanceUI
@@ -135,20 +168,26 @@ namespace SexSlaveCraft
                 DrawGroup(listing, pawn, groups[i], i == 0, prepare);
                 DrawTargets(listing, pawn, i == 1, prepare);
             }
-            listing.GapLine();
+            if (prepare == null) listing.GapLine();
+            else listing.Gap(8f);
             DrawCommands(listing, pawn, prepare, openTargets ?? SSCRomanceCommandMenu.OpenTargets);
         }
         /// <summary>子标题居中并统一下横线的绘制颜色；恢复 GUI 状态，避免影响后续开关及禁用样式。</summary>
-        private static void DrawSubtitle(Listing_Standard listing, string label)
+        private static void DrawSubtitle(Listing_Standard listing, string label, bool embedded)
         {
             TextAnchor previousAnchor = Text.Anchor;
             Color previousColor = GUI.color;
             try
             {
-                Text.Anchor = TextAnchor.MiddleCenter;
+                Text.Anchor = embedded ? TextAnchor.MiddleLeft : TextAnchor.MiddleCenter;
                 GUI.color = Color.white;
                 listing.Label(label);
-                listing.GapLine(6f);
+                if (embedded)
+                {
+                    var line = listing.GetRect(6f);
+                    Widgets.DrawBoxSolid(new Rect(line.x, line.y + 2f, line.width, 1f), new Color(.36f, .43f, .45f));
+                }
+                else listing.GapLine(6f);
             }
             finally { Text.Anchor = previousAnchor; GUI.color = previousColor; }
         }
@@ -157,8 +196,12 @@ namespace SexSlaveCraft
         private static void DrawGroup(Listing_Standard listing, Pawn pawn, SSCRomanceSetting[] settings, bool first,
             Func<Rect, object, Action, Action> prepare)
         {
-            if (!first) listing.GapLine(6f);
-            DrawSubtitle(listing, ("SSC_Romance_Group_" + settings[0]).Translate());
+            if (!first)
+            {
+                if (prepare == null) listing.GapLine(6f);
+                else listing.Gap(6f);
+            }
+            DrawSubtitle(listing, ("SSC_Romance_Group_" + settings[0]).Translate(), prepare != null);
             var views = new SSCRomanceView[settings.Length];
             var labels = new string[settings.Length];
             for (int i = 0; i < settings.Length; i++)
@@ -167,7 +210,7 @@ namespace SexSlaveCraft
             {
                 float width = listing.ColumnWidth;
                 float labelWidth = Mathf.Max(1f, width - 34f);
-                float height = Mathf.Max(28f, Text.CalcHeight(labels[i], labelWidth));
+                float height = Mathf.Max(prepare != null ? 32f : 28f, Text.CalcHeight(labels[i], labelWidth));
                 Rect row = listing.GetRect(height + 8f);
                 DrawSetting(new Rect(row.x, row.y, width, row.height), pawn, settings[i], views[i], labels[i], prepare);
             }
@@ -224,8 +267,9 @@ namespace SexSlaveCraft
                         area.y + padding + titleHeight + gap + (i / columns) * (buttonHeight + gap), buttonWidth, buttonHeight);
                     GUI.enabled = previousEnabled && view.CanChange;
                     GUI.color = Color.white;
-                    Color fill = !GUI.enabled ? new Color(.18f, .18f, .18f, 1f) :
-                        view.Saved ? new Color(.30f, .38f, .24f, 1f) : new Color(.22f, .22f, .22f, 1f);
+                    Color fill = !GUI.enabled ? new Color(.18f, .18f, .18f) :
+                        prepare != null ? (view.Saved ? new Color(.26f, .34f, .35f) : new Color(.20f, .24f, .26f)) :
+                        view.Saved ? new Color(.30f, .38f, .24f) : new Color(.22f, .22f, .22f);
                     Widgets.DrawBoxSolid(button, fill);
                     GUI.color = GUI.enabled ? Color.white : new Color(.55f, .55f, .55f, 1f);
                     Text.Anchor = TextAnchor.MiddleCenter;
@@ -243,7 +287,7 @@ namespace SexSlaveCraft
         private static void DrawCommands(Listing_Standard listing, Pawn pawn, Func<Rect, object, Action, Action> prepare,
             Action<SSCRomanceCommandContext> openTargets)
         {
-            DrawSubtitle(listing, "SSC_Romance_CommandTitle".Translate());
+            DrawSubtitle(listing, "SSC_Romance_CommandTitle".Translate(), prepare != null);
             string failure = SSCRomanceCommandUtility.ActorFailure(pawn);
             var original = SSCRomanceCommandUtility.Capture(pawn);
             bool oldEnabled = GUI.enabled;
@@ -256,11 +300,15 @@ namespace SexSlaveCraft
                     var context = original.ForTarget(null, action);
                     string label = ("SSC_Romance_Action_" + action).Translate();
                     Rect button = listing.GetRect(Mathf.Max(32f, Text.CalcHeight(label, Mathf.Max(1f, listing.ColumnWidth - 12f)) + 12f));
-                    if (!GUI.enabled) DrawDisabledCommand(button, label);
+                    if (prepare != null)
+                    {
+                        var submit = GUI.enabled ? prepare(button, action, () => openTargets(context)) : null;
+                        if (SSCBehaviorControlUI.DrawEmbeddedButton(button, label)) submit?.Invoke();
+                    }
+                    else if (!GUI.enabled) DrawDisabledCommand(button, label);
                     else
                     {
                         Action submit = () => openTargets(context);
-                        if (prepare != null) submit = prepare(button, action, submit);
                         if (Widgets.ButtonText(button, label) && GUI.enabled) submit?.Invoke();
                     }
                     // 每个命令只显示一句明确动作的说明；禁用原因仍按当前资格追加。
@@ -296,18 +344,31 @@ namespace SexSlaveCraft
             float labelHeight = row.height - 8f;
             bool previous = GUI.enabled, value = view.Saved;
             Color color = GUI.color;
+            TextAnchor anchor = Text.Anchor;
             try
             {
                 GUI.enabled = previous && view.CanChange;
                 if (!GUI.enabled) GUI.color = color * new Color(.6f, .6f, .6f, 1f);
+                if (prepare != null) Text.Anchor = TextAnchor.MiddleLeft;
                 Action submit = () => SubmitSetting(pawn, setting, view);
                 if (GUI.enabled && prepare != null) submit = prepare(row, setting, submit);
                 Widgets.Label(new Rect(row.x, row.y, labelWidth, labelHeight), label);
-                Widgets.Checkbox(row.xMax - 24f, row.y + Mathf.Max(0f, (labelHeight - 24f) / 2f), ref value, 24f, !GUI.enabled);
-                if (GUI.enabled && Widgets.ButtonInvisible(new Rect(row.x, row.y, labelWidth, labelHeight))) value = !value;
+                float iconX = row.xMax - 24f;
+                float iconY = row.y + Mathf.Max(0f, (labelHeight - 24f) / 2f);
+                if (prepare != null)
+                {
+                    // 图标沿用原版纹理。点击图标或文字都通过整行按钮提交原按压。
+                    Widgets.CheckboxDraw(iconX, iconY, view.Saved, !GUI.enabled);
+                    if (GUI.enabled && Widgets.ButtonInvisible(row)) value = !value;
+                }
+                else
+                {
+                    Widgets.Checkbox(iconX, iconY, ref value, 24f, !GUI.enabled);
+                    if (GUI.enabled && Widgets.ButtonInvisible(new Rect(row.x, row.y, labelWidth, labelHeight))) value = !value;
+                }
                 if (GUI.enabled && value != view.Saved) submit?.Invoke();
             }
-            finally { GUI.enabled = previous; GUI.color = color; }
+            finally { GUI.enabled = previous; GUI.color = color; Text.Anchor = anchor; }
             TooltipHandler.TipRegion(row, SettingTip(setting, view));
         }
 

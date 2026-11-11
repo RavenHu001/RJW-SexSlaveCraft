@@ -8,7 +8,7 @@ namespace SexSlaveCraft
     internal sealed partial class Dialog_SSCTrainingManagement
     {
         private Vector2 behaviorRulesScroll;
-        private float behaviorRulesHeight;
+        private (float Sex, float Romance) behaviorPanelHeights;
         private (object Key, Action Submit) behaviorPress;
 
         /// <summary>两组规则共用滚动区，每组只绘制一次，窄窗顺序排列。</summary>
@@ -23,37 +23,28 @@ namespace SexSlaveCraft
             bool twoColumns = width >= SettingsTwoColumnWidth;
             float columnWidth = twoColumns ? (width - SettingsColumnGap) / 2f : width;
 
-            // Listing 推进后才能得到完整高度。用上次高度设置滚动条，避免同一事件重复执行控件。
-            behaviorRulesScroll.y = Mathf.Clamp(behaviorRulesScroll.y, 0f, Mathf.Max(0f, behaviorRulesHeight - viewport.height));
+            // 上次测量用于绘制底色和滚动条，每个板块在同一事件中只绘制一次。
+            float height = twoColumns ? Mathf.Max(behaviorPanelHeights.Sex, behaviorPanelHeights.Romance) :
+                behaviorPanelHeights.Sex + SettingsColumnGap + behaviorPanelHeights.Romance;
+            behaviorRulesScroll.y = Mathf.Clamp(behaviorRulesScroll.y, 0f, Mathf.Max(0f, height - viewport.height));
             Widgets.BeginScrollView(viewport, ref behaviorRulesScroll,
-                new Rect(0f, 0f, width, Mathf.Max(behaviorRulesHeight, viewport.height)));
+                new Rect(0f, 0f, width, Mathf.Max(height, viewport.height)));
             try
             {
-                if (twoColumns)
-                {
-                    // 两列从同一顶线起排，较高的一侧决定共用滚动区域的高度。
-                    float sexHeight = DrawColumn(0f, DrawSex);
-                    float romanceHeight = DrawColumn(columnWidth + SettingsColumnGap, DrawRomance);
-                    behaviorRulesHeight = Mathf.Max(sexHeight, romanceHeight);
-                    Widgets.DrawBoxSolid(new Rect(columnWidth + SettingsColumnGap / 2f, 0f, 1f, behaviorRulesHeight), DividerColor);
-                }
-                else
-                {
-                    behaviorRulesHeight = DrawColumn(0f, listing =>
-                    {
-                        DrawSex(listing);
-                        listing.GapLine(SettingsColumnGap);
-                        DrawRomance(listing);
-                    });
-                }
+                float sexHeight = DrawPanel(0f, 0f, behaviorPanelHeights.Sex, DrawSex);
+                float romanceX = twoColumns ? columnWidth + SettingsColumnGap : 0f;
+                float romanceY = twoColumns ? 0f : sexHeight + SettingsColumnGap;
+                float romanceHeight = DrawPanel(romanceX, romanceY, behaviorPanelHeights.Romance, DrawRomance);
+                behaviorPanelHeights = (sexHeight, romanceHeight);
             }
             finally { Widgets.EndScrollView(); }
 
-            // 每列使用独立的局部坐标，确保列表控件和命中区域一起偏移。
-            float DrawColumn(float x, Action<Listing_Standard> draw)
+            // 两块各自绘制底色和控件，留出面板间距，点击区域跟随列表坐标。
+            float DrawPanel(float x, float y, float measuredHeight, Action<Listing_Standard> draw)
             {
+                Widgets.DrawBoxSolid(new Rect(x, y, columnWidth, measuredHeight), new Color(.18f, .21f, .23f));
                 var listing = new Listing_Standard { maxOneColumn = true };
-                listing.Begin(new Rect(x, 0f, columnWidth, 100000f));
+                listing.Begin(new Rect(x, y, columnWidth, 100000f));
                 try { draw(listing); return listing.CurHeight; }
                 finally { listing.End(); }
             }

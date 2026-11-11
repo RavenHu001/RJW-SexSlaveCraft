@@ -374,10 +374,9 @@ internal static partial class Program
             var a = SocialSlave(severity: .1f); Require(SSCBehaviorControlUI.CanInspect(a)); Require(!SSCRomancePreferences.GetView(a, SSCRomanceSetting.AcceptRomance).Unlocked);
             a.health.hediffSet.hediffs.Clear(); Require(SSCBehaviorControlUI.CanInspect(a)); Equal(SSCRomanceReason.NoBinding, SSCRomancePreferences.GetView(a, SSCRomanceSetting.AcceptRomance).Reason);
         });
-        Check("batch3 UI uses two independent blocks and same drawers in sidebar and dialog", () =>
+        Check("batch3 sidebar and dialog use the shared behavior drawer and original preference context", () =>
         {
             string drawer = File.ReadAllText(Path.Combine(repo, "Sexslavecraft/common/Romance/SSCRomanceUI.cs"));
-            Require(drawer.Contains("DrawBlock(listing, \"SSC_Romance_SexSection\"") && drawer.Contains("DrawBlock(listing, \"SSC_Romance_RomanceSection\""));
             foreach (string path in new[] { "Sexslavecraft/ITab/ITab_SexSlaveTraining.cs", "Sexslavecraft/common/Restrictions/Dialog_SSCRestrictions.cs" })
                 Require(File.ReadAllText(Path.Combine(repo, path)).Contains("SSCBehaviorControlUI.DrawPawn"));
             Require(drawer.Contains("view.Context") && !drawer.Contains("SSCAbilityToggleUtility.TrySet"));

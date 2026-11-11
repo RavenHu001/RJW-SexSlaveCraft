@@ -48,6 +48,57 @@ internal static partial class Program
             var pawn = RomanceUiPawn(); Widgets.RomanceClick = 0; DrawRomanceUi(pawn, 352);
             Assert(pawn.Training.romanceConfig?.allowInitiateRomance == false && pawn.Training.romanceConfig.allowAcceptRomance);
         });
+        Run("行为页复选框图标和文字共用整行点击", () =>
+        {
+            var pawn = RomanceUiPawn();
+            DrawBehaviorRomance();
+            Rect icon = Widgets.Items.First(i => i.Kind == "romance-checkbox").Rect;
+            try
+            {
+                Widgets.BehaviorClick = (icon.x + 12f, icon.y + 12f);
+                DrawBehaviorRomance();
+                Assert(pawn.Training.romanceConfig?.allowInitiateRomance == false);
+                Widgets.BehaviorClick = (4f, icon.y + 12f);
+                DrawBehaviorRomance();
+                Assert(pawn.Training.romanceConfig.allowInitiateRomance);
+            }
+            finally { Widgets.BehaviorClick = null; }
+
+            void DrawBehaviorRomance()
+            {
+                Widgets.Items.Clear();
+                var listing = new Listing_Standard();
+                listing.Begin(new Rect(0, 0, 352, 100000));
+                try
+                {
+                    // 窗口生命周期另由窗口宿主覆盖，这里验证图标和文字都能触发同一个提交。
+                    SSCRomanceUI.DrawPawn(listing, pawn, (rect, key, submit) => submit, null);
+                }
+                finally { listing.End(); }
+            }
+        });
+        Run("行为页两组有各自标题和深色重置，长说明移到悬停", () =>
+        {
+            Widgets.Items.Clear();
+            var pawn = RomanceUiPawn();
+            var listing = new Listing_Standard();
+            listing.Begin(new Rect(0, 0, 280, 100000));
+            try
+            {
+                SSCBehaviorControlUI.DrawSexSection(listing, pawn, false, (rect, key, submit) => submit);
+                SSCBehaviorControlUI.DrawRomanceSection(listing, pawn, (rect, key, submit) => submit);
+            }
+            finally { listing.End(); }
+
+            string fullTitle = Translation.Entries["SSC_Romance_SexSection"];
+            string shortTitle = Translation.Entries["SSC_Romance_SexSectionShort"];
+            string reset = Translation.Entries["SSC_BehaviorReset_Button"];
+            Assert(Widgets.Items.Any(i => i.Kind == "label" && i.Text == "<b>" + shortTitle + "</b>"));
+            Assert(Widgets.Items.Any(i => i.Kind == "tooltip" && i.Text == fullTitle));
+            Assert(Widgets.Items.Any(i => i.Kind == "label" && i.Text == "<b>" + Translation.Entries["SSC_Romance_RomanceSection"] + "</b>"));
+            Assert(Widgets.Items.Count(i => i.Kind == "label" && i.Text == reset) == 2);
+            Assert(!Widgets.Items.Any(i => i.Kind == "romance-frame" || i.Kind == "reset-button"));
+        });
         Run("浪漫 UI 外层禁用不重新开放输入", () =>
         {
             var pawn = RomanceUiPawn(); GUI.enabled = false; Widgets.RomanceClick = 0; DrawRomanceUi(pawn, 352);

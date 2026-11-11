@@ -9,6 +9,7 @@
   <SSC_Romance_TargetDenied>The current romance target filter prohibits initiating romance or proposing to this pawn.</SSC_Romance_TargetDenied>
   <SSC_Romance_AcceptancePreview>{0} ({1} acceptance)</SSC_Romance_AcceptancePreview>
   <SSC_Romance_SexSection>Sexual behavior control (always accepts sex initiated by the master)</SSC_Romance_SexSection>
+  <SSC_Romance_SexSectionShort>Sexual behavior control</SSC_Romance_SexSectionShort>
   <SSC_Romance_RomanceSection>Romance control</SSC_Romance_RomanceSection>
   <SSC_Romance_State>Current chain stage: {0}; bound master: {1}</SSC_Romance_State>
   <SSC_Romance_NoMaster>No valid binding</SSC_Romance_NoMaster>

@@ -135,7 +135,7 @@ namespace SexSlaveCraft
             if (!config.IsValid()) { listing.Label("SSC_Restrictions_InvalidConfig".Translate(config.version)); return; }
             foreach (SSCRestrictionRule rule in SSCRestrictionRules.All)
             {
-                DrawGroup(listing, rule, !compact || rule != SSCRestrictionRule.Masturbation);
+                DrawGroup(listing, rule, !compact || rule != SSCRestrictionRule.Masturbation, prepare != null);
                 // 未绑定角色只展示保留的个人选择，不把当前装备/特化标成正在生效的强制来源。
                 bool rowApplicable = rule == SSCRestrictionRule.SelfTraining ? selfApplicable : applicable;
                 SSCRestrictionResolution entry = rowApplicable ? SSCRestrictionResolver.Resolve(pawn, config.rules, rule) : null;
@@ -160,28 +160,33 @@ namespace SexSlaveCraft
         }
 
         /// <summary>子标题居中并统一下横线的绘制颜色；恢复 GUI 状态，避免影响后续开关及禁用样式。</summary>
-        private static void DrawSubtitle(Listing_Standard listing, string label)
+        private static void DrawSubtitle(Listing_Standard listing, string label, bool embedded)
         {
             TextAnchor previousAnchor = Text.Anchor;
             Color previousColor = GUI.color;
             try
             {
-                Text.Anchor = TextAnchor.MiddleCenter;
+                Text.Anchor = embedded ? TextAnchor.MiddleLeft : TextAnchor.MiddleCenter;
                 GUI.color = Color.white;
                 listing.Label(label);
-                listing.GapLine(6f);
+                if (embedded)
+                {
+                    var line = listing.GetRect(6f);
+                    Widgets.DrawBoxSolid(new Rect(line.x, line.y + 2f, line.width, 1f), new Color(.36f, .43f, .45f));
+                }
+                else listing.GapLine(6f);
             }
             finally { Text.Anchor = previousAnchor; GUI.color = previousColor; }
         }
 
         /// <summary>主动、被动及调教子标题上下均有横线；紧凑首组复用外层主标题下横线。</summary>
-        private static void DrawGroup(Listing_Standard listing, SSCRestrictionRule rule, bool drawDivider = true)
+        private static void DrawGroup(Listing_Standard listing, SSCRestrictionRule rule, bool drawDivider = true, bool embedded = false)
         {
             if (rule != SSCRestrictionRule.Masturbation && rule != SSCRestrictionRule.ReceiveConsensual &&
                 rule != SSCRestrictionRule.ReceiveTraining) return;
-            if (drawDivider) listing.GapLine();
+            if (drawDivider && !embedded) listing.GapLine();
             else listing.Gap(6f);
-            DrawSubtitle(listing, ("SSC_Restrictions_Group_" + rule).Translate());
+            DrawSubtitle(listing, ("SSC_Restrictions_Group_" + rule).Translate(), embedded);
         }
 
         /// <summary>绘制左文右勾叉；受强制影响时显示并锁住有效值，保存选择只用于无强制时的编辑及悬停说明。</summary>
@@ -209,12 +214,13 @@ namespace SexSlaveCraft
             // 给右侧勾叉和可选来源标记独立留位。长译文按实际文本高度换行，不遮住操作区。
             float badgeWidth = badge == null ? 0f : Mathf.Min(listing.ColumnWidth * 0.36f, Text.CalcSize(badge).x + 8f);
             float labelWidth = Mathf.Max(1f, listing.ColumnWidth - 32f - badgeWidth);
-            float height = Mathf.Max(28f, Text.CalcHeight(label, labelWidth) + 4f);
+            float height = Mathf.Max(prepare != null ? 34f : 28f, Text.CalcHeight(label, labelWidth) + 4f);
             if (badge != null) height = Mathf.Max(height, Text.CalcHeight(badge, Mathf.Max(1f, badgeWidth - 4f)) + 4f);
             Rect row = listing.GetRect(height);
             Rect labelRect = new Rect(row.x, row.y + 2f, labelWidth, height - 4f);
             bool previous = GUI.enabled;
             Color previousColor = GUI.color;
+            TextAnchor previousAnchor = Text.Anchor;
             bool changed = allowed;
             var next = allowed ? SSCRestrictionValue.Deny :
                 rule == SSCRestrictionRule.ConsensualInitiation ? rules.ConsensualTarget : SSCRestrictionValue.Allow;
@@ -224,14 +230,24 @@ namespace SexSlaveCraft
             {
                 GUI.enabled = previous && canEdit;
                 if (!GUI.enabled) GUI.color = previousColor * new Color(0.55f, 0.55f, 0.55f, 1f);
+                if (prepare != null) Text.Anchor = TextAnchor.MiddleLeft;
                 Widgets.Label(labelRect, label);
-                // 使用游戏本身的 Checkbox 贴图，即与“是调教员”相同的绿勾/红叉，不绘制方框。
-                Widgets.Checkbox(row.xMax - 24f, row.y + (height - 24f) / 2f, ref changed, 24f, !GUI.enabled);
-                // 标签区与图标热区互不重叠，整行可点且不会因同一次点击翻转两次。
-                if (GUI.enabled && Widgets.ButtonInvisible(new Rect(row.x, row.y, row.width - 28f, height)))
-                    changed = !changed;
+                float iconX = row.xMax - 24f;
+                float iconY = row.y + (height - 24f) / 2f;
+                if (prepare != null)
+                {
+                    // 原生 Checkbox 读取帧级 Input。调教窗口整行使用同一个 IMGUI 按钮与按压凭据配对。
+                    Widgets.CheckboxDraw(iconX, iconY, allowed, !GUI.enabled);
+                    if (GUI.enabled && Widgets.ButtonInvisible(row)) changed = !changed;
+                }
+                else
+                {
+                    Widgets.Checkbox(iconX, iconY, ref changed, 24f, !GUI.enabled);
+                    if (GUI.enabled && Widgets.ButtonInvisible(new Rect(row.x, row.y, row.width - 28f, height)))
+                        changed = !changed;
+                }
             }
-            finally { GUI.enabled = previous; GUI.color = previousColor; }
+            finally { GUI.enabled = previous; GUI.color = previousColor; Text.Anchor = previousAnchor; }
             if (badge != null)
             {
                 Color oldColor = GUI.color;

@@ -181,7 +181,7 @@ namespace SexSlaveCraft
             specializationScroll = Vector2.zero;
             bodyProductionScroll = Vector2.zero;
             behaviorRulesScroll = Vector2.zero;
-            behaviorRulesHeight = 0f;
+            behaviorPanelHeights = default;
             pressedPortrait = default;
         }
 
