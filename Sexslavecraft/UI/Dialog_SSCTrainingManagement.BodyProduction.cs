@@ -11,7 +11,7 @@ namespace SexSlaveCraft
     internal sealed partial class Dialog_SSCTrainingManagement
     {
         private Vector2 bodyProductionScroll;
-        private BodyProductionPress? bodyProductionPress;
+        private AbilityTogglePress? abilityTogglePress;
 
         private const float SettingsColumnGap = 18f;
         private const float SettingsTwoColumnWidth = 560f;
@@ -29,9 +29,8 @@ namespace SexSlaveCraft
             internal SettingsColumn(float width) => Width = width;
 
             /// <summary>按测量结果绘制本列，坐标以全页滚动内容为原点。</summary>
-            internal void Draw(float x)
+            internal void Draw(float x, float y = 0f)
             {
-                float y = 0f;
                 foreach (var row in Rows)
                 {
                     row.Draw(new Rect(x, y, Width, row.Height));
@@ -57,7 +56,7 @@ namespace SexSlaveCraft
         }
 
         /// <summary>保存实际按下时的页面和能力凭据，松手不能借用下一帧的新载体。</summary>
-        private readonly struct BodyProductionPress
+        private readonly struct AbilityTogglePress
         {
             internal readonly PageEdit Edit;
             internal readonly string Id;
@@ -65,7 +64,7 @@ namespace SexSlaveCraft
             internal readonly SSCAbilityToggleContext Context;
 
             /// <summary>复用按下时视图中的保存值和原载体引用。</summary>
-            internal BodyProductionPress(PageEdit edit, string id, SSCAbilityToggleView state)
+            internal AbilityTogglePress(PageEdit edit, string id, SSCAbilityToggleView state)
             {
                 Edit = edit;
                 Id = id;
@@ -107,14 +106,18 @@ namespace SexSlaveCraft
             var sensitivity = SSCOrgasmSensitivityUtility.Capture(pawn);
             bool showSensitivity = SSCIdentityUtility.IsSexSlave(pawn) || sensitivity.Records.Length != 0;
             bool showFertility = preconception.Owner != null || missingUterus;
-            if (production.Count == 0 && !showFertility && !showSensitivity)
+            var gelOwner = FullGelAppearanceUtility.GetOwner(pawn);
+            var gelRendering = gelOwner == null ? default : SSCAbilityToggleUtility.GetView(pawn, SSCAbilityToggleUtility.GelRendering);
+            bool showGel = gelOwner != null && gelRendering.Visible;
+            bool showLeft = production.Count != 0 || showGel;
+            if (!showLeft && !showFertility && !showSensitivity)
             {
                 Widgets.Label(viewport, "SSC_TrainingManagement_BodyEmpty".Translate());
                 return;
             }
 
             // 窄窗共用同一列，只有一侧有模块时也让它占满宽度。
-            bool twoColumns = width >= SettingsTwoColumnWidth && production.Count != 0 && (showFertility || showSensitivity);
+            bool twoColumns = width >= SettingsTwoColumnWidth && showLeft && (showFertility || showSensitivity);
             float leftWidth = twoColumns ? (width - SettingsColumnGap) * .44f : width;
             var left = new SettingsColumn(leftWidth);
             var settings = twoColumns ? new SettingsColumn(width - leftWidth - SettingsColumnGap) : left;
@@ -126,10 +129,15 @@ namespace SexSlaveCraft
                     var definition = item.Definition;
                     string label = definition.LabelKey.Translate();
                     string tip = definition.TipRule == null ? definition.TipKey.Translate().ToString() : definition.TipRule(pawn);
-                    AddBodyToggle(left, edit, definition.Id, item.State, label, tip);
+                    AddAbilityToggle(left, edit, definition.Id, item.State, label, tip);
                     string detail = definition.DetailRule?.Invoke(pawn);
-                    if (!string.IsNullOrEmpty(detail)) left.AddLabel(detail, left.Indent, BodyToggleTip(item.State, tip));
+                    if (!string.IsNullOrEmpty(detail)) left.AddLabel(detail, left.Indent, AbilityToggleTip(item.State, tip));
                 }
+            }
+            if (showGel)
+            {
+                left.Divide();
+                AddGelAppearanceSection(left, edit, gelOwner, gelRendering);
             }
             if (showFertility)
             {
@@ -164,13 +172,19 @@ namespace SexSlaveCraft
             finally { Widgets.EndScrollView(); }
         }
 
-        /// <summary>复用身体开关的凭据及说明，行高为原版勾选框预留宽度。</summary>
-        private void AddBodyToggle(SettingsColumn column, PageEdit edit, string id, SSCAbilityToggleView state,
+        /// <summary>使用注册项的标签及提示显示开关。</summary>
+        private void AddAbilityToggle(SettingsColumn column, PageEdit edit, SSCAbilityToggleDefinition definition,
+            SSCAbilityToggleView state, float indent)
+            => AddAbilityToggle(column, edit, definition.Id, state, definition.LabelKey.Translate(),
+                definition.TipRule == null ? definition.TipKey.Translate().ToString() : definition.TipRule(edit.Pawn), indent);
+
+        /// <summary>复用能力开关的凭据及说明，行高为原版勾选框预留宽度。</summary>
+        private void AddAbilityToggle(SettingsColumn column, PageEdit edit, string id, SSCAbilityToggleView state,
             string label, string tip, float indent = 0f)
         {
             float height = SettingsToggleHeight(label, column.Width - indent);
             column.Rows.Add((height, rect =>
-                DrawBodyProductionToggle(InsetSettingsRow(rect, indent), edit, id, state, label, BodyToggleTip(state, tip))));
+                DrawAbilityToggle(InsetSettingsRow(rect, indent), edit, id, state, label, AbilityToggleTip(state, tip))));
         }
 
         /// <summary>让组内行缩进，保留与组标题一致的右边界。</summary>
@@ -182,10 +196,56 @@ namespace SexSlaveCraft
             => Mathf.Max(24f, Text.CalcHeight(label, Mathf.Max(1f, width - 24f)));
 
         /// <summary>同一份能力视图给出当前锁定或暂不生效的原因。</summary>
-        private static string BodyToggleTip(SSCAbilityToggleView state, string tip)
+        private static string AbilityToggleTip(SSCAbilityToggleView state, string tip)
         {
             string reason = !state.CanChange ? state.ChangeReason : state.Enabled && !state.Active ? state.InactiveReason : null;
             return string.IsNullOrEmpty(reason) ? tip : tip + "\n\n" + reason;
+        }
+
+        /// <summary>凝胶外观读取当前身体的保存值，渲染关闭时仍保留配色入口。</summary>
+        private void AddGelAppearanceSection(SettingsColumn column, PageEdit edit, HediffWithComps owner,
+            SSCAbilityToggleView rendering)
+        {
+            column.AddLabel("<b>" + "SSC_GelAppearance_Title".Translate() + "</b>");
+            float indent = column.Indent;
+            AddAbilityToggle(column, edit, SSCAbilityToggleUtility.Find(SSCAbilityToggleUtility.GelRendering), rendering, indent);
+
+            var color = FullGelAppearanceUtility.Read(owner).Color;
+            string opacity = "SSC_GelAppearance_Opacity".Translate() + " " + Mathf.RoundToInt(color.a * 100f) + "%";
+            // 透明度文字可换行，棋盘色块固定高度，以免窄列或长译文截断百分比。
+            const float swatchGap = 8f;
+            float swatchWidth = Mathf.Min(54f, (column.Width - indent) * .25f);
+            float height = Mathf.Max(24f, Text.CalcHeight(opacity, Mathf.Max(1f, column.Width - indent - swatchWidth - swatchGap)));
+            column.Rows.Add((height, rect =>
+            {
+                rect = InsetSettingsRow(rect, indent);
+                SSCUIWidgets.Swatch(new Rect(rect.x, rect.y + (rect.height - 24f) / 2f, swatchWidth, 24f), color);
+                Widgets.Label(InsetSettingsRow(rect, swatchWidth + swatchGap), opacity);
+            }));
+
+            // 与开关分别提交：按钮按下时固定原身体及其外观组件，渲染状态不参与配色资格。
+            var appearance = owner.TryGetComp<HediffComp_FullGelAppearance>();
+            const string editKey = "SSC_GelAppearance_Edit";
+            string editLabel = editKey.Translate();
+            column.Rows.Add((Mathf.Max(32f, Text.LineHeight + 6f), rect =>
+            {
+                rect = InsetSettingsRow(rect, indent);
+                var submit = PreparePageAction(edit, rect, editKey, OpenAppearance);
+                if (DrawSettingsControl(rect, editLabel, enabled: appearance != null)) submit?.Invoke();
+            }));
+
+            // 这里仍使用按下时的身体；弹窗确认时再检查实例归属和组件引用。
+            void OpenAppearance()
+            {
+                if (!BodyIsCurrent()) return;
+                Dialog_FullGelAppearance popup = null;
+                popup = new Dialog_FullGelAppearance(edit.Pawn, owner, () => EditPopupIsCurrent(popup, edit) && BodyIsCurrent());
+                ShowEditPopup(popup);
+            }
+
+            // 仍是同一个 Hediff 时，也不能把旧草稿交给替换后的外观组件。
+            bool BodyIsCurrent() => appearance != null && ReferenceEquals(FullGelAppearanceUtility.GetOwner(edit.Pawn), owner) &&
+                ReferenceEquals(owner.TryGetComp<HediffComp_FullGelAppearance>(), appearance);
         }
 
         /// <summary>直接显示生育开关和子宫预设，保持原有资格与锁定说明。</summary>
@@ -203,7 +263,7 @@ namespace SexSlaveCraft
             if (state.Visible)
             {
                 var definition = SSCAbilityToggleUtility.Find(fertility);
-                AddBodyToggle(column, edit, fertility, state, definition.LabelKey.Translate(), definition.TipKey.Translate(), column.Indent);
+                AddAbilityToggle(column, edit, fertility, state, definition.LabelKey.Translate(), definition.TipKey.Translate(), column.Indent);
             }
 
             // 从捕获的身体读保存值，孕期和阶段锁定只影响编辑资格。
@@ -224,7 +284,7 @@ namespace SexSlaveCraft
             if (imprintState.Visible)
             {
                 var imprintDefinition = SSCAbilityToggleUtility.Find(imprint);
-                AddBodyToggle(column, edit, imprint, imprintState, imprintDefinition.LabelKey.Translate(),
+                AddAbilityToggle(column, edit, imprint, imprintState, imprintDefinition.LabelKey.Translate(),
                     imprintDefinition.TipKey.Translate(), column.Indent);
             }
         }
@@ -277,20 +337,20 @@ namespace SexSlaveCraft
         }
 
         /// <summary>按下时捕获原载体，复选框请求只通过能力框架提交。</summary>
-        private void DrawBodyProductionToggle(Rect rect, PageEdit edit, string id, SSCAbilityToggleView state, string label, string tip)
+        private void DrawAbilityToggle(Rect rect, PageEdit edit, string id, SSCAbilityToggleView state, string label, string tip)
         {
             var input = Event.current;
             bool canEdit = state.CanChange && GUI.enabled;
             // 原版复选框在松手时才返回新值，按下时先保留本行的原授权。
             if (canEdit && input.type == EventType.mouseDown && input.button == 0 && Mouse.IsOver(rect) &&
                 PageEditIsCurrent(edit) && SSCAbilityToggleUtility.IsCurrent(edit.Pawn, id, state.Context))
-                bodyProductionPress = new BodyProductionPress(edit, id, state);
+                abilityTogglePress = new AbilityTogglePress(edit, id, state);
 
             bool next = SSCUIWidgets.Checkbox(rect, label, state.Enabled, canEdit, tip);
-            if (next == state.Enabled || !bodyProductionPress.HasValue) return;
-            var press = bodyProductionPress.Value;
-            bodyProductionPress = null;
-            // 即便复选框的原生控件 ID 恰好被新行复用，也只接受按下时的行和值。
+            if (next == state.Enabled || !abilityTogglePress.HasValue) return;
+            var press = abilityTogglePress.Value;
+            abilityTogglePress = null;
+            // 页面先拒绝已切角／切页的输入，再由后端用按下时的凭据复查保存载体和目标值资格。
             if (press.Id != id || press.Enabled != state.Enabled || !PageEditIsCurrent(press.Edit)) return;
             if (!SSCAbilityToggleUtility.TrySet(press.Edit.Pawn, press.Id, next, press.Context, out string reason) &&
                 !string.IsNullOrEmpty(reason))

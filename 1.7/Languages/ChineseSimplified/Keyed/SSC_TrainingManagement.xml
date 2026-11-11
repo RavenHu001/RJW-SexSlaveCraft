@@ -14,6 +14,7 @@
   <SSC_TrainingManagement_Owner>主人 · {0}</SSC_TrainingManagement_Owner>
   <SSC_TrainingManagement_CurrentSpecialization>当前特化</SSC_TrainingManagement_CurrentSpecialization>
   <SSC_TrainingManagement_MasterStage>主人阶段</SSC_TrainingManagement_MasterStage>
+  <SSC_TrainingManagement_MasterAbilities>主人能力</SSC_TrainingManagement_MasterAbilities>
   <SSC_TrainingManagement_TrainingEnabled>已允许</SSC_TrainingManagement_TrainingEnabled>
   <SSC_TrainingManagement_TrainingDisabled>已关闭</SSC_TrainingManagement_TrainingDisabled>
   <SSC_TrainingManagement_JumpToPawn>点击跳转到 {0}</SSC_TrainingManagement_JumpToPawn>

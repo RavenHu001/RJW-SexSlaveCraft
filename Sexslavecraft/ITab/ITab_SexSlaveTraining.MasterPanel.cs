@@ -41,11 +41,47 @@ namespace SexSlaveCraft
             public float SectionHeight;
         }
 
-        /// <summary>只读现存记录，以原生阶段索引和 Def 阈值形成显示；无记录不推断零经验。</summary>
+        /// <summary>为两个入口读取同一份成长显示，沿用原生阶段索引及 Def 阈值。</summary>
+        internal static (Hediff_MasterProgression Record, string Stage, string Experience, string Progress,
+            string Benefits, float? ProgressFraction) ReadMasterProgression(Pawn pawn)
+        {
+            var record = SSCMasterProgressionUtility.GetRecord(pawn);
+            if (record == null)
+                return (null, "SSC_MasterProgression_NoRecord".Translate(), null, null, null, null);
+
+            float experience = SSCMasterProgressionUtility.NormalizeExperience(record.Severity);
+            string experienceText = "SSC_MasterProgression_Experience".Translate(experience.ToString("0"), record.def.maxSeverity.ToString("0"));
+            string benefits = (record.IsActive ? "SSC_MasterProgression_Benefits" : "SSC_MasterProgression_BenefitsInactive").Translate();
+            var stages = record.def.stages;
+            int index = record.CurStageIndex;
+            if (stages == null || index < 0 || index >= stages.Count)
+                return (record, record.LabelInBrackets, experienceText, null, benefits, null);
+            if (index == stages.Count - 1)
+                return (record, record.LabelInBrackets, experienceText, "SSC_MasterProgression_MaxStage".Translate(), benefits, 1f);
+
+            // 条形进度使用本阶段的区间，累计经验使用记录上限。
+            float start = stages[index].minSeverity;
+            float next = stages[index + 1].minSeverity;
+            float fraction = next > start ? Mathf.Clamp01((experience - start) / (next - start)) : 0f;
+            string progress = "SSC_MasterProgression_NextStage".Translate(
+                stages[index + 1].label, Mathf.Max(0f, next - experience).ToString("0"));
+            return (record, record.LabelInBrackets, experienceText, progress, benefits, fraction);
+        }
+
+        /// <summary>仅在悬停时读取原健康栏说明，并复查成长记录仍属于该角色。</summary>
+        internal static void AddMasterProgressionTip(Rect row, Hediff_MasterProgression record)
+        {
+            if (record == null) return;
+            TooltipHandler.TipRegion(row,
+                () => SSCMasterProgressionUtility.GetRecord(record.pawn) == record ? record.GetTooltip(record.pawn, false) : string.Empty,
+                record.GetHashCode());
+        }
+
+        /// <summary>为旧面板测量原成长和能力行；无记录时仍保留能力入口。</summary>
         private static MasterPanelView BuildMasterPanelView(Pawn pawn, CompSexSlaveTraining comp, float width)
         {
-            // 成长与绑定分别查询：没有成长不影响原有伤害分担，查询也不创建任何 Hediff。
-            Hediff_MasterProgression record = SSCMasterProgressionUtility.GetRecord(pawn);
+            var growth = ReadMasterProgression(pawn);
+            var record = growth.Record;
 #if !(SSC_RW17 || SSC_ABILITY_TOGGLE_FRAMEWORK)
             Hediff_BridleOfSexSlave bridle = SSCBondUtility.GetBridle(pawn);
 #endif
@@ -57,7 +93,8 @@ namespace SexSlaveCraft
                 PersonalityToken = SSCPersonalityRuntimeUtility.Capture(pawn),
 #endif
                 Header = "SSC_MasterProgression_PanelHeader".Translate(),
-                Stage = record == null ? "SSC_MasterProgression_NoRecord".Translate().ToString() : record.LabelInBrackets,
+                Stage = growth.Stage, Experience = growth.Experience, Progress = growth.Progress, Benefits = growth.Benefits,
+                ShowProgress = growth.ProgressFraction.HasValue, ProgressFraction = growth.ProgressFraction.GetValueOrDefault(),
 #if !(SSC_RW17 || SSC_ABILITY_TOGGLE_FRAMEWORK)
                 ShareLabel = "SSC_MasterShareDamage_Label".Translate(),
                 ShareEnabled = bridle?.shareDamageEnabled ?? false,
@@ -65,34 +102,6 @@ namespace SexSlaveCraft
 #endif
                 PracticeTip = "SSC_MasterProgression_PracticeTip".Translate()
             };
-            // 复用健康栏的原版数值说明与能力名称，不把共振或人物最终属性混入阶段加成。
-            if (record != null)
-            {
-                float experience = SSCMasterProgressionUtility.NormalizeExperience(record.Severity);
-                view.Experience = "SSC_MasterProgression_Experience".Translate(experience.ToString("0"), record.def.maxSeverity.ToString("0"));
-                view.Benefits = (record.IsActive ? "SSC_MasterProgression_Benefits" : "SSC_MasterProgression_BenefitsInactive").Translate();
-                var stages = record.def.stages;
-                int index = record.CurStageIndex;
-                if (stages != null && index >= 0 && index < stages.Count)
-                {
-                    view.ShowProgress = true;
-                    if (index == stages.Count - 1)
-                    {
-                        view.ProgressFraction = 1f;
-                        view.Progress = "SSC_MasterProgression_MaxStage".Translate();
-                    }
-                    else
-                    {
-                        // 进度条表示本阶段到下一阶段的区间；累计经验另外显示，避免混淆两种分母。
-                        float start = stages[index].minSeverity;
-                        float next = stages[index + 1].minSeverity;
-                        view.ProgressFraction = next > start ? Mathf.Clamp01((experience - start) / (next - start)) : 0f;
-                        // 阶段名称与剩余经验共用 Def，四语改名无需在面板再维护一份名称表。
-                        view.Progress = "SSC_MasterProgression_NextStage".Translate(
-                            stages[index + 1].label, Mathf.Max(0f, next - experience).ToString("0"));
-                    }
-                }
-            }
             // 复选框的可编辑条件与原 Gizmo 一致；当前没有承伤候选并不阻止保存偏好。
 #if !(SSC_RW17 || SSC_ABILITY_TOGGLE_FRAMEWORK)
             view.ShareTip = "SSC_MasterShareDamage_Desc".Translate(SSCMasterBondUtility.DamageShareRatio.ToStringPercent());
@@ -217,11 +226,7 @@ namespace SexSlaveCraft
             Rect row = new Rect(inner.x, y, inner.width, height);
             Widgets.Label(row, text);
             if (!string.IsNullOrEmpty(tooltip)) TooltipHandler.TipRegion(row, tooltip);
-            // 原版健康悬停会查询战斗日志，只在悬停时生成，避免每次重绘都扫描。
-            // 迟到的提示也核对原记录仍属于该角色，移除后不展示已经转走的人格加成。
-            if (record != null) TooltipHandler.TipRegion(row,
-                () => SSCMasterProgressionUtility.GetRecord(record.pawn) == record ? record.GetTooltip(record.pawn, false) : string.Empty,
-                record.GetHashCode());
+            AddMasterProgressionTip(row, record);
             y += height;
         }
     }

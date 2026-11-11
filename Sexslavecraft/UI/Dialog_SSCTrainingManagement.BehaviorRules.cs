@@ -9,7 +9,6 @@ namespace SexSlaveCraft
     {
         private Vector2 behaviorRulesScroll;
         private (float Sex, float Romance) behaviorPanelHeights;
-        private (object Key, Action Submit) behaviorPress;
 
         /// <summary>两组规则共用滚动区，每组只绘制一次，窄窗顺序排列。</summary>
         private void DrawBehaviorRules(Rect page)
@@ -55,35 +54,19 @@ namespace SexSlaveCraft
             void DrawRomance(Listing_Standard listing)
                 => SSCBehaviorControlUI.DrawRomanceSection(listing, edit.Pawn, Prepare, context => OpenBehaviorTargets(edit, context));
 
-            Action Prepare(Rect rect, object key, Action submit) => PrepareBehaviorAction(edit, rect, key, submit);
-        }
-
-        /// <summary>只在按下时签发控件请求，松手不能从新视图取得角色、配置或绑定。</summary>
-        private Action PrepareBehaviorAction(PageEdit edit, Rect rect, object key, Action submit)
-        {
-            var input = Event.current;
-            if (input.button != 0 || !Mouse.IsOver(rect)) return null;
-            if (input.type == EventType.mouseDown && PageEditIsCurrent(edit))
+            Action Prepare(Rect rect, object key, Action submit)
             {
-                // 即使角色和页面未变，原锁链或主人引用变化也会让本次按压失效。
+                // 规则按钮还依赖按下时的锁链及绑定主人。
+                if (Event.current.type != EventType.mouseDown)
+                    return PreparePageAction(edit, rect, key, submit);
                 var chain = SSCBondUtility.GetChain(edit.Pawn);
                 var master = chain?.LinkedPawn;
-                behaviorPress = (key, () =>
+                return PreparePageAction(edit, rect, key, () =>
                 {
-                    if (PageEditIsCurrent(edit) && SSCBondUtility.GetChain(edit.Pawn) == chain && chain?.LinkedPawn == master)
+                    if (SSCBondUtility.GetChain(edit.Pawn) == chain && chain?.LinkedPawn == master)
                         submit();
                 });
             }
-            var request = behaviorPress.Submit;
-            if ((input.rawType != EventType.mouseDown && input.rawType != EventType.mouseUp) ||
-                request == null || !Equals(behaviorPress.Key, key)) return null;
-            return () =>
-            {
-                // 原生控件响应前可能已撤销请求。只消费刚才匹配到的同一个回调。
-                if (!ReferenceEquals(behaviorPress.Submit, request)) return;
-                behaviorPress = default;
-                request();
-            };
         }
 
         /// <summary>绑定原页面及实际菜单实例，后端同时验证命令的原链及目标。</summary>

@@ -1,6 +1,7 @@
 // AI 辅助生成
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -9,8 +10,9 @@ namespace SexSlaveCraft
 {
     internal sealed partial class Dialog_SSCTrainingManagement
     {
-        // 概况和日常调教共用唯一的编辑弹窗，由窗口负责撤销。
+        // 各页面共用唯一的编辑弹窗，由窗口负责撤销。
         private Window editPopup;
+        private (object Key, Action Submit) pageActionPress;
 
         /// <summary>绑定绘制时的角色和人格，延迟回调不得重新取得编辑资格。</summary>
         private readonly struct PageEdit
@@ -204,14 +206,89 @@ namespace SexSlaveCraft
             ShowEditPopup(confirmation);
         }
 
+        /// <summary>用原成长记录和能力视图测量主人概况，成长记录缺失时仍显示可见能力。</summary>
+        private SettingsColumn BuildMasterOverview(PageEdit edit, float width)
+        {
+            var column = new SettingsColumn(width);
+            var growth = ITab_SexSlaveTraining.ReadMasterProgression(edit.Pawn);
+            column.AddLabel("<b>" + "SSC_MasterProgression_PanelHeader".Translate() + "</b>");
+            AddGrowthLine(growth.Record == null ? growth.Stage :
+                "SSC_TrainingManagement_MasterStage".Translate() + " · " + growth.Stage);
+            if (growth.Record != null)
+            {
+                // 经验和阶段进度均由旧面板的读模型提供；缺记录不虚构经验或进度条。
+                string practiceTip = "SSC_MasterProgression_PracticeTip".Translate();
+                column.AddLabel(growth.Experience, column.Indent, practiceTip);
+                if (growth.ProgressFraction is float fraction)
+                {
+                    column.Rows.Add((18f, rect => Widgets.FillableBar(InsetSettingsRow(rect, column.Indent), fraction)));
+                    column.AddLabel(growth.Progress, column.Indent, practiceTip);
+                }
+                AddGrowthLine(growth.Benefits);
+            }
+
+            // 开关各自使用原载体和启停资格，成长面板只负责排列和显示。
+            var abilities = SSCAbilityToggleUtility.Definitions
+                .Where(definition => definition.Group == SSCAbilityToggleGroup.Master)
+                .OrderBy(definition => definition.Order)
+                .Select(definition => (Definition: definition, State: SSCAbilityToggleUtility.GetView(edit.Pawn, definition.Id)))
+                .Where(item => item.State.Visible).ToArray();
+            if (abilities.Length != 0)
+            {
+                column.Divide();
+                column.AddLabel("<b>" + "SSC_TrainingManagement_MasterAbilities".Translate() + "</b>");
+                foreach (var item in abilities)
+                    AddAbilityToggle(column, edit, item.Definition, item.State, column.Indent);
+            }
+            return column;
+
+            // 阶段和收益复用原健康提示，并沿用当前列测量的缩进及高度。
+            void AddGrowthLine(string label)
+            {
+                float height = Text.CalcHeight(label, Mathf.Max(1f, width - column.Indent));
+                column.Rows.Add((height, rect =>
+                {
+                    rect = InsetSettingsRow(rect, column.Indent);
+                    Widgets.Label(rect, label);
+                    ITab_SexSlaveTraining.AddMasterProgressionTip(rect, growth.Record);
+                }));
+            }
+        }
+
         /// <summary>只允许原页面、原角色和原人格的操作进入业务入口。</summary>
         private bool PageEditIsCurrent(PageEdit edit)
+            // revision 区分切页后回到原页；原生选中列表复查和人格凭据覆盖角色及载体替换。
             => edit.Revision == contextRevision && currentPage == edit.OriginPage &&
                 ReferenceEquals(edit.Pawn, source) && ReferenceEquals(edit.Comp, comp) && SourceIsCurrent() &&
                 edit.Comp.pawnIdentity == edit.Identity && SSCPersonalityRuntimeUtility.IsCurrent(edit.Pawn, edit.Personality) &&
                 !SSCPersonalityRuntimeUtility.IsMutating(edit.Pawn);
 
-        /// <summary>1.7.5005 的菜单和确认框先执行回调再关闭，可在提交时复查弹窗仍在栈中。</summary>
+        /// <summary>保留按下时的页面和操作，释放时只消费同一份请求。</summary>
+        private Action PreparePageAction(PageEdit edit, Rect rect, object key, Action submit)
+        {
+            var input = Event.current;
+            if (input.button != 0 || !Mouse.IsOver(rect)) return null;
+            if (input.type == EventType.mouseDown && PageEditIsCurrent(edit))
+            {
+                pageActionPress = (key, () =>
+                {
+                    if (PageEditIsCurrent(edit)) submit();
+                });
+            }
+
+            var request = pageActionPress.Submit;
+            if ((input.rawType != EventType.mouseDown && input.rawType != EventType.mouseUp) ||
+                request == null || !Equals(pageActionPress.Key, key)) return null;
+            return () =>
+            {
+                // 原版控件消费事件前，切角或切页可能已经撤销这次按压。
+                if (!ReferenceEquals(pageActionPress.Submit, request)) return;
+                pageActionPress = default;
+                request();
+            };
+        }
+
+        /// <summary>编辑弹窗提交前复查原页面及其窗口仍在栈中。</summary>
         private bool EditPopupIsCurrent(Window popup, PageEdit edit)
             => ReferenceEquals(popup, editPopup) && PageEditIsCurrent(edit) && Find.WindowStack.IsOpen(popup);
 
@@ -239,12 +316,12 @@ namespace SexSlaveCraft
             if (popup != null) Find.WindowStack.TryRemove(popup, false);
         }
 
-        /// <summary>在原生选择写入后立即撤销菜单与身体开关按压，逐帧刷新负责更新展示。</summary>
+        /// <summary>在原生选择写入后立即撤销弹窗及页面按压，逐帧刷新负责更新展示。</summary>
         internal static void NotifyEditSelection(Selector selector)
         {
             if (!GameReady() || !ReferenceEquals(selector, Find.Selector)) return;
             var window = Find.WindowStack.WindowOfType<Dialog_SSCTrainingManagement>();
-            if (window != null && (window.editPopup != null || window.bodyProductionPress.HasValue || window.behaviorPress.Submit != null) &&
+            if (window != null && (window.editPopup != null || window.abilityTogglePress.HasValue || window.pageActionPress.Submit != null) &&
                 !window.SourceIsCurrent()) window.InvalidateWindowContext();
         }
     }

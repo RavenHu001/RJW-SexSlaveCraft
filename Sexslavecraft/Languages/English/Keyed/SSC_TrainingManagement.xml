@@ -14,6 +14,7 @@
   <SSC_TrainingManagement_Owner>Master · {0}</SSC_TrainingManagement_Owner>
   <SSC_TrainingManagement_CurrentSpecialization>Current specialization</SSC_TrainingManagement_CurrentSpecialization>
   <SSC_TrainingManagement_MasterStage>Master stage</SSC_TrainingManagement_MasterStage>
+  <SSC_TrainingManagement_MasterAbilities>Master abilities</SSC_TrainingManagement_MasterAbilities>
   <SSC_TrainingManagement_TrainingEnabled>Enabled</SSC_TrainingManagement_TrainingEnabled>
   <SSC_TrainingManagement_TrainingDisabled>Disabled</SSC_TrainingManagement_TrainingDisabled>
   <SSC_TrainingManagement_JumpToPawn>Click to jump to {0}</SSC_TrainingManagement_JumpToPawn>

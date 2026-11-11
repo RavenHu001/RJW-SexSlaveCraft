@@ -13,6 +13,7 @@ namespace SexSlaveCraft
         // 固定打开时的身体；失效窗口不能把草稿写入后来选中的角色或新身体。
         private readonly Pawn pawn;
         private readonly HediffWithComps owner;
+        private readonly Func<bool> editIsCurrent;
         private readonly FullGelAppearance original;
         private readonly FullGelAppearanceDraft draft;
         private static readonly List<Color> Palette = new List<Color>
@@ -32,15 +33,21 @@ namespace SexSlaveCraft
         private float contentHeight = 600;
         public override Vector2 InitialSize => new Vector2(Mathf.Min(720, UI.screenWidth - 32), Mathf.Min(700, UI.screenHeight - 32));
 
-        internal Dialog_FullGelAppearance(Pawn pawn, HediffWithComps owner)
+        /// <summary>独立入口沿用原身体校验；调教管理窗口额外传入页面授权。</summary>
+        internal Dialog_FullGelAppearance(Pawn pawn, HediffWithComps owner) : this(pawn, owner, null) { }
+
+        /// <summary>可由宿主窗口限定草稿的寿命，沿用原身体和配色保存入口。</summary>
+        internal Dialog_FullGelAppearance(Pawn pawn, HediffWithComps owner, Func<bool> editIsCurrent)
         {
             this.pawn = pawn; this.owner = owner;
+            this.editIsCurrent = editIsCurrent;
             original = FullGelAppearanceUtility.Read(owner); draft = new FullGelAppearanceDraft(original);
             ResetBuffers(); optionalTitle = "SSC_GelAppearance_Title".Translate() + " — " + pawn.LabelShort;
             forcePause = true; absorbInputAroundWindow = true; doCloseX = true;
             closeOnClickedOutside = true; closeOnAccept = false;
         }
 
+        /// <summary>配色草稿被替换时，同步各输入控件的文本和当前颜色。</summary>
         private void ResetBuffers()
         {
             // 预设/恢复后清除旧文本缓冲，防止失焦提交反写旧颜色。
@@ -48,8 +55,15 @@ namespace SexSlaveCraft
             hex = "#" + ColorUtility.ToHtmlStringRGB(draft.Rgb); opacityBuffer = null; hexInvalid = false;
         }
 
+        /// <summary>绘制和编辑当前草稿，并在文本输入失焦后提交一次确认。</summary>
         public override void DoWindowContents(Rect inRect)
         {
+            // 原窗口撤销授权或原身体换载体时丢弃草稿，任何关闭路径都不应用颜色。
+            if (editIsCurrent != null && !editIsCurrent())
+            {
+                Close();
+                return;
+            }
             using (TextBlock.Default())
             {
                 bool active = ReferenceEquals(FullGelAppearanceUtility.GetOwner(pawn), owner);
@@ -128,6 +142,9 @@ namespace SexSlaveCraft
                 if (applyPending)
                 {
                     applyPending = false;
+                    // 确认按钮先让输入失焦，下一事件写入时再复查原页面及身体。
+                    if (editIsCurrent != null && !editIsCurrent())
+                    { Close(); return; }
                     if (active && !hexInvalid && FullGelAppearanceUtility.Apply(pawn, owner, draft.Value, draft.ResetRequested))
                     { Close(); return; }
                 }

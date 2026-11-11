@@ -203,12 +203,12 @@ namespace SexSlaveCraft
         {
             base.ExtraOnGUI();
             Event input = Event.current;
-            if ((trainerGesture == null && !bodyProductionPress.HasValue && behaviorPress.Submit == null) ||
+            if ((trainerGesture == null && !abilityTogglePress.HasValue && pageActionPress.Submit == null) ||
                 input.rawType != EventType.mouseUp || input.button != 0 ||
                 ReferenceEquals(Find.WindowStack.GetWindowAt(UI.GUIToScreenPoint(input.mousePosition)), this)) return;
-            bodyProductionPress = null;
-            behaviorPress = default;
-            // 身体开关没有取得全局鼠标捕获，窗外松手仍交给原版界面处理。
+            abilityTogglePress = null;
+            pageActionPress = default;
+            // 普通页面控件不捕获全局鼠标，窗外松手仍交给原版界面处理。
             if (trainerGesture == null) return;
             EndTrainerGesture();
             if (input.type != EventType.Used) input.Use();

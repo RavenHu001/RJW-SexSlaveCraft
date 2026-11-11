@@ -108,8 +108,8 @@ namespace SexSlaveCraft
             // 切到别的应用后可能收不到松手事件，下一次回到游戏须重新按下。
             if (!Application.isFocused)
             {
-                bodyProductionPress = null;
-                behaviorPress = default;
+                abilityTogglePress = null;
+                pageActionPress = default;
             }
             // Alt-Tab 或身份变化可能没有对应的鼠标松手事件。
             if (trainerGesture != null && !TrainerGestureSourceCurrent()) EndTrainerGesture();
@@ -199,8 +199,8 @@ namespace SexSlaveCraft
         private void InvalidateWindowContext()
         {
             contextRevision++;
-            bodyProductionPress = null;
-            behaviorPress = default;
+            abilityTogglePress = null;
+            pageActionPress = default;
             EndTrainerGesture();
             CloseEditPopup();
         }
@@ -233,8 +233,8 @@ namespace SexSlaveCraft
             {
                 // 新的按下只能由本次命中的控件建立请求。
                 pressedPortrait = default;
-                bodyProductionPress = null;
-                behaviorPress = default;
+                abilityTogglePress = null;
+                pageActionPress = default;
             }
             float y = DrawHeader(inRect.width);
             y += DrawRelationStrip(inRect.width, y, snapshot, out var clicked);
@@ -271,8 +271,8 @@ namespace SexSlaveCraft
             {
                 // 所有页面控件处理完松手后清理凭据，未命中时也不能留到下一次点击。
                 pressedPortrait = default;
-                bodyProductionPress = null;
-                behaviorPress = default;
+                abilityTogglePress = null;
+                pageActionPress = default;
             }
             // 在所有滚动区结束后分派输入，拖动松手不会再触发普通头像跳转。
             if (!FinishTrainerInput(inRect) && clicked.Target != null) NavigatePortrait(snapshot, clicked.Target, clicked.Relation);
@@ -498,10 +498,12 @@ namespace SexSlaveCraft
             // 先计入身份控件的高度，随后布局只读状态，使窄窗也能滚动到末行。
             var identity = comp == null ? null : BuildOverviewIdentity(width, firstRow);
             if (identity != null) firstRow = identity.Bottom;
+            // 主人成长和能力沿用概况滚动区，先测量再绘制，避免末尾开关被裁掉。
+            var master = identity?.Edit.Identity == PawnIdentity.Master ? BuildMasterOverview(identity.Edit, width) : null;
             float labelWidth = Mathf.Max(1f, width * .42f - 4f);
             float valueWidth = Mathf.Max(1f, width - labelWidth - 8f);
             var heights = new float[rows.Length];
-            float totalHeight = firstRow;
+            float totalHeight = firstRow + (master?.Height ?? 0f);
             for (int i = 0; i < rows.Length; i++)
             {
                 heights[i] = Mathf.Max(Text.CalcHeight(rows[i].Label, labelWidth), Text.CalcHeight(rows[i].Value, valueWidth)) + 18f;
@@ -526,6 +528,8 @@ namespace SexSlaveCraft
                     y += heights[i];
                     Widgets.DrawLineHorizontal(0f, y - 1f, width, DividerColor);
                 }
+                Text.Anchor = TextAnchor.UpperLeft;
+                master?.Draw(0f, y);
             }
             finally { Widgets.EndScrollView(); }
         }
@@ -546,14 +550,6 @@ namespace SexSlaveCraft
                 {
                     (PageKeys[2].Translate(), training),
                     ("SSC_TrainingManagement_CurrentSpecialization".Translate(), ITab_SexSlaveTraining.GetSpecializationOverviewLabel(source, comp))
-                };
-            }
-            if (comp.pawnIdentity == PawnIdentity.Master)
-            {
-                string stage = SSCMasterProgressionUtility.GetRecord(source)?.LabelInBrackets;
-                return new (string, string)[]
-                {
-                    ("SSC_TrainingManagement_MasterStage".Translate(), stage ?? "SSC_MasterProgression_NoRecord".Translate().ToString())
                 };
             }
             return Array.Empty<(string, string)>();
