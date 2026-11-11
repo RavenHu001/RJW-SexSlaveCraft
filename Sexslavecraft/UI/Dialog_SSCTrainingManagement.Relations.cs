@@ -278,17 +278,17 @@ namespace SexSlaveCraft
         {
             using var scope = new SSCBondOverviewWidgets.GuiScope(false);
             bool trainerCard = relation == SummaryRelation.AssignedTrainer || relation == SummaryRelation.TrainerCandidate;
-            // 调教员卡片预留更大的把手和间距，常规宽度保留完整的 56 像素肖像。
+            // 头像和把手作为一组在卡片内居中，常规宽度保留完整的 56 像素肖像。
             float handleWidth = trainerCard ? Mathf.Min(TrainerHandleWidth, card.width * .35f) : 0f;
-            float portraitWidth = trainerCard ? Mathf.Max(1f, card.width - handleWidth - 8f) : card.width;
+            float portraitWidth = card.width - handleWidth;
             float size = Mathf.Min(portraitSize, portraitWidth);
             var portrait = new Rect(card.x + (portraitWidth - size) / 2f, card.y, size, size);
             bool clicked = DrawJumpPortrait(portrait, pawn, relation, true, trainerCard ? null : tooltip, portraitSize);
             if (trainerCard)
             {
                 // 把手位于肖像之外。指派失效且没有可绘制的肖像时，仍可从把手发起撤销。
-                // 把手与当前实际显示的头像等高，窄卡片缩放时也保持上下边缘一致。
-                var handle = new Rect(card.xMax - handleWidth, card.y, handleWidth, size);
+                // 把手紧贴头像右侧并等高，窄卡片缩放时也保持对齐。
+                var handle = new Rect(portrait.xMax, portrait.y, handleWidth, portrait.height);
                 DrawTrainerHandle(handle, pawn, relation, tooltip);
             }
             Text.WordWrap = false;
