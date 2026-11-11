@@ -70,7 +70,7 @@ namespace SexSlaveCraft
         }
 
         /// <summary>普通训导官保留原任职状态行，终极成果只进入下方名单，绘制与测高共用此查询。</summary>
-        internal static string GetOrdinaryTrainerStatusText(Pawn pawn)
+        private static string GetOrdinaryTrainerStatusText(Pawn pawn)
         {
             var state = TrainerSpecializationUtility.GetDisplayState(pawn);
             return state == TrainerSpecializationDisplayState.None || TrainerSpecializationUtility.HasFinalRecord(pawn)

@@ -37,8 +37,6 @@ namespace SexSlaveCraft
                 string progress = ITab_SexSlaveTraining.GetSpecializationProgressText(edit.Pawn, edit.Comp);
                 AddLabel(Strings.ITab_SpecializationProgress(progress), indent,
                     ITab_SexSlaveTraining.GetSpecializationProgressTip(edit.Pawn, edit.Comp));
-                string trainer = ITab_SexSlaveTraining.GetOrdinaryTrainerStatusText(edit.Pawn);
-                if (trainer != null) AddLabel(trainer, indent, "SSC_TrainerIdentity_RestrictionTip".Translate());
             }
 
             // 即使当前未选方向，已有成果也来自实际终极标记并保留独立悬停说明。
