@@ -137,7 +137,7 @@ namespace SexSlaveCraft
                 AddSetting(Strings.ITab_PoseHeader, Strings.GetModeLabel(pose), () =>
                 {
                     if (!CanEditDailyTraining(edit)) return;
-                    OpenDailyMenu(edit, (TrainingActType[])Enum.GetValues(typeof(TrainingActType)), Strings.GetModeLabel, value =>
+                    OpenSettingsMenu(edit, (TrainingActType[])Enum.GetValues(typeof(TrainingActType)), Strings.GetModeLabel, value =>
                     {
                         if (CanEditDailyTraining(edit) && training.selectedMode == pose) training.selectedMode = value;
                     });
@@ -191,7 +191,7 @@ namespace SexSlaveCraft
                 {
                     if (!ScheduleIsEditable()) return;
                     // 用现有窗口长度折算次日结束时刻；保存字段只接收开始小时。
-                    OpenDailyMenu(edit, Enumerable.Range(0, 24), start => "SSC_Schedule_HourOption".Translate(
+                    OpenSettingsMenu(edit, Enumerable.Range(0, 24), start => "SSC_Schedule_HourOption".Translate(
                         start.ToString("00"), ((start + CompSexSlaveTraining.ScheduledTrainingWindowHours) % 24).ToString("00")), value =>
                     {
                         if (ScheduleIsEditable() && training.scheduledTrainingHour == hour) training.scheduledTrainingHour = value;
@@ -201,7 +201,7 @@ namespace SexSlaveCraft
                 void OpenIntervalMenu()
                 {
                     if (!ScheduleIsEditable()) return;
-                    OpenDailyMenu(edit, Enumerable.Range(1, 7), interval => "SSC_Schedule_IntervalOption".Translate(interval), value =>
+                    OpenSettingsMenu(edit, Enumerable.Range(1, 7), interval => "SSC_Schedule_IntervalOption".Translate(interval), value =>
                     {
                         if (ScheduleIsEditable() && training.scheduledTrainingIntervalDays == days) training.scheduledTrainingIntervalDays = value;
                     });
@@ -221,7 +221,7 @@ namespace SexSlaveCraft
                 AddSetting("<b>" + "SSC_PnaMaintenance_Title".Translate() + "</b>", SSCPnaMaintenanceUtility.StageLabel(chain.Stage), () =>
                 {
                     if (!PageEditIsCurrent(edit) || !SSCPnaMaintenanceUtility.CanSet(chain, SSCPnaMaintenanceStage.Off, out _)) return;
-                    OpenDailyMenu(edit, (SSCPnaMaintenanceStage[])Enum.GetValues(typeof(SSCPnaMaintenanceStage)),
+                    OpenSettingsMenu(edit, (SSCPnaMaintenanceStage[])Enum.GetValues(typeof(SSCPnaMaintenanceStage)),
                         SSCPnaMaintenanceUtility.StageLabel, stage =>
                         {
                             if (SSCPnaMaintenanceUtility.TrySet(chain, stage, out string rejection)) RefreshAfterEdit();
@@ -231,8 +231,8 @@ namespace SexSlaveCraft
             }
         }
 
-        /// <summary>菜单提交先核对原弹窗和页面，再进入各设置的业务校验。</summary>
-        private void OpenDailyMenu<T>(PageEdit edit, IEnumerable<T> values, Func<T, string> label, Action<T> submit,
+        /// <summary>日常调教和身体页共用的设置菜单，提交先核对原弹窗和页面，再进入对应业务校验。</summary>
+        private void OpenSettingsMenu<T>(PageEdit edit, IEnumerable<T> values, Func<T, string> label, Action<T> submit,
             Func<T, string> unavailable = null)
         {
             if (!PageEditIsCurrent(edit)) return;

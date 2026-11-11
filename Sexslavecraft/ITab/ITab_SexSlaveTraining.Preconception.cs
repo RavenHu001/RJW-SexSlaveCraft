@@ -59,8 +59,8 @@ namespace SexSlaveCraft
             });
         }
 
-        /// <summary>三个稳定枚举值即时翻译；自然选项不假装已经获得特定性别或物种。</summary>
-        private static string PreconceptionOptionLabel(bool species, int selected)
+        /// <summary>两个界面共用孕前枚举文案，按当前语言显示自然选项及对应来源。</summary>
+        internal static string PreconceptionOptionLabel(bool species, int selected)
         {
             string suffix = selected == 1 ? species ? "SpeciesSelf" : "GenderMale"
                 : selected == 2 ? species ? "SpeciesPartner" : "GenderFemale"

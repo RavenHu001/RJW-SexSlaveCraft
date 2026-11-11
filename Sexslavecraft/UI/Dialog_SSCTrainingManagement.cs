@@ -174,6 +174,7 @@ namespace SexSlaveCraft
             dailyTrainingScroll = Vector2.zero;
             specializationScroll = Vector2.zero;
             bodyProductionScroll = Vector2.zero;
+            preconceptionExpanded = false;
             pressedPortrait = default;
         }
 
@@ -254,7 +255,7 @@ namespace SexSlaveCraft
             }
             else if (currentPage == Page.DailyTraining) DrawDailyTraining(page);
             else if (currentPage == Page.Specialization) DrawSpecialization(page);
-            else if (currentPage == Page.BodyAppearance) DrawBodyProduction(page);
+            else if (currentPage == Page.BodyAppearance) DrawBodyAppearance(page);
             else DrawOverview(page);
             if (Event.current.rawType == EventType.mouseUp)
             {

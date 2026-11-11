@@ -34,5 +34,6 @@
   <SSC_TrainingManagement_CurrentCultivation>Текущее направление</SSC_TrainingManagement_CurrentCultivation>
   <SSC_TrainingManagement_FinalAchievements>Итоговые достижения</SSC_TrainingManagement_FinalAchievements>
   <SSC_TrainingManagement_BodyProduction>Производство в организме</SSC_TrainingManagement_BodyProduction>
-  <SSC_TrainingManagement_BodyProductionEmpty>У этого персонажа нет настроек выработки.</SSC_TrainingManagement_BodyProductionEmpty>
+  <SSC_TrainingManagement_BodyFertility>Фертильность и настройки потомства</SSC_TrainingManagement_BodyFertility>
+  <SSC_TrainingManagement_BodyEmpty>У этого персонажа нет настроек тела и внешности.</SSC_TrainingManagement_BodyEmpty>
 </LanguageData>

@@ -34,5 +34,6 @@
   <SSC_TrainingManagement_CurrentCultivation>当前培养</SSC_TrainingManagement_CurrentCultivation>
   <SSC_TrainingManagement_FinalAchievements>终极成果</SSC_TrainingManagement_FinalAchievements>
   <SSC_TrainingManagement_BodyProduction>身体生产</SSC_TrainingManagement_BodyProduction>
-  <SSC_TrainingManagement_BodyProductionEmpty>当前角色没有可显示的身体生产项目。</SSC_TrainingManagement_BodyProductionEmpty>
+  <SSC_TrainingManagement_BodyFertility>生育与孕前预设</SSC_TrainingManagement_BodyFertility>
+  <SSC_TrainingManagement_BodyEmpty>当前角色没有可显示的身体与外观设置。</SSC_TrainingManagement_BodyEmpty>
 </LanguageData>
