@@ -11,7 +11,9 @@ namespace SexSlaveCraft
     internal sealed class Dialog_SSCTrainingManagement : Window
     {
         private const float ScreenPadding = 16f;
-        private const float PanelPadding = 12f;
+        private const float PanelPadding = 14f;
+        private const float NavigationGap = 5f;
+        private enum SummaryRelation { Master, AssignedTrainer, OwnedSlave }
         private static readonly Color HeaderColor = new Color(.20f, .24f, .26f);
         private static readonly Color PanelColor = new Color(.16f, .19f, .20f);
         private static readonly Color SelectedColor = new Color(.26f, .34f, .35f);
@@ -26,11 +28,12 @@ namespace SexSlaveCraft
         private Pawn source;
         private CompSexSlaveTraining comp;
         private Vector2 scroll;
+        private (Pawn Target, SummaryRelation Relation) pressedPortrait;
 
         /// <summary>按当前逻辑屏幕尺寸限制初始窗口大小。</summary>
         public override Vector2 InitialSize
-            => new Vector2(Mathf.Max(1f, Mathf.Min(800f, UI.screenWidth - 2f * ScreenPadding)),
-                Mathf.Max(1f, Mathf.Min(680f, UI.screenHeight - 2f * ScreenPadding)));
+            => new Vector2(Mathf.Max(1f, Mathf.Min(1000f, UI.screenWidth - 2f * ScreenPadding)),
+                Mathf.Max(1f, Mathf.Min(560f, UI.screenHeight - 2f * ScreenPadding)));
 
         /// <summary>记录所属游戏，允许原版界面处理窗口以外的点击。</summary>
         private Dialog_SSCTrainingManagement()
@@ -122,6 +125,7 @@ namespace SexSlaveCraft
             source = pawn;
             comp = training;
             scroll = Vector2.zero;
+            pressedPortrait = default;
         }
 
         /// <summary>返回当前角色的 SSC 身份名称。</summary>
@@ -141,40 +145,50 @@ namespace SexSlaveCraft
             if (!GameReady() || !ReferenceEquals(game, Current.Game)) return;
             RefreshSelection();
             using var scope = new SSCBondOverviewWidgets.GuiScope(true);
+            Text.Font = GameFont.Medium;
             Text.WordWrap = true;
+            if (Event.current.type == EventType.mouseDown) pressedPortrait = default;
             float y = DrawHeader(inRect.width);
-            y += DrawRelationStrip(inRect.width, y);
+            y += DrawRelationStrip(inRect.width, y, out var clicked);
             y += PanelPadding;
             float available = Mathf.Max(1f, inRect.height - y);
 
             // 内容区变窄或高度不足时把六页导航移到顶部，避免挤压右侧内容。
-            bool sidebar = inRect.width >= 600f && available >= 250f;
-            float navWidth = sidebar ? Mathf.Clamp(inRect.width * .24f, 154f, 190f) : inRect.width;
-            int columns = sidebar ? 1 : inRect.width >= 420f ? 3 : 2;
-            float navHeight = DrawNavigation(new Rect(0f, y, navWidth, available), columns, sidebar);
+            var labels = Array.ConvertAll(PageKeys, key => key.Translate().ToString());
+            float navWidth = Mathf.Clamp(inRect.width * .24f, 190f, 228f);
+            float rowHeight = MeasureNavigationRow(labels, navWidth);
+            bool sidebar = inRect.width >= 640f && available >= labels.Length * (rowHeight + NavigationGap) - NavigationGap;
+            int columns = sidebar ? 1 : inRect.width >= 480f ? 3 : 2;
+            if (!sidebar)
+            {
+                navWidth = inRect.width;
+                rowHeight = MeasureNavigationRow(labels, NavigationCellWidth(navWidth, columns));
+            }
+            float navHeight = DrawNavigation(new Rect(0f, y, navWidth, available), labels, rowHeight, columns, sidebar);
             Rect page = sidebar
                 ? new Rect(navWidth + PanelPadding, y, inRect.width - navWidth - PanelPadding, available)
                 : new Rect(0f, y + navHeight + PanelPadding, inRect.width,
                     Mathf.Max(1f, available - navHeight - PanelPadding));
             DrawOverview(page);
+            if (Event.current.rawType == EventType.mouseUp) pressedPortrait = default;
+            if (clicked.Target != null) NavigatePortrait(clicked.Target, clicked.Relation);
         }
 
         /// <summary>标题、头像和身份使用同一个原版单选，空选时仍保留窗口标题。</summary>
         private float DrawHeader(float width)
         {
-            const float portraitSize = 56f;
+            const float portraitSize = 80f;
             bool showPortrait = comp != null && width >= 160f;
             float textX = PanelPadding + (showPortrait ? portraitSize + PanelPadding : 0f);
             float textWidth = Mathf.Max(1f, width - textX - PanelPadding);
             string title = comp == null ? "SSC_TrainingManagement_Title".Translate().ToString()
                 : "SSC_TrainingManagement_TitlePawn".Translate(source.LabelShort).ToString();
+            title = "<b>" + title + "</b>";
             string status = comp == null ? null : IdentityLabel(comp.pawnIdentity);
             if (comp != null && comp.pawnIdentity != PawnIdentity.Unset)
                 status += "  ·  " + "SSC_TrainerIdentity_Label".Translate() + TrainerState();
 
-            Text.Font = GameFont.Medium;
             float titleHeight = Text.CalcHeight(title, textWidth);
-            Text.Font = GameFont.Small;
             float statusHeight = status == null ? 0f : 4f + Text.CalcHeight(status, textWidth);
             float height = 2f * PanelPadding + Mathf.Max(showPortrait ? portraitSize : 0f, titleHeight + statusHeight);
             Widgets.DrawBoxSolid(new Rect(0f, 0f, width, height), HeaderColor);
@@ -183,20 +197,19 @@ namespace SexSlaveCraft
             {
                 var portrait = new Rect(PanelPadding, PanelPadding, portraitSize, portraitSize);
                 Widgets.DrawBoxSolid(portrait, PanelColor);
-                SSCBondOverviewWidgets.Portrait(portrait, source, false, true);
+                SSCBondOverviewWidgets.Portrait(portrait, source, false, true, portraitSize);
             }
-            Text.Font = GameFont.Medium;
             Widgets.Label(new Rect(textX, PanelPadding, textWidth, titleHeight), title);
-            Text.Font = GameFont.Small;
             if (status != null) Widgets.Label(new Rect(textX, PanelPadding + titleHeight + 4f, textWidth, statusHeight - 4f), status);
             return height;
         }
 
         /// <summary>在关系详情页接入前，摘要已按身份读取实际锁链和指派。</summary>
-        private float DrawRelationStrip(float width, float y)
+        private float DrawRelationStrip(float width, float y, out (Pawn Target, SummaryRelation Relation) clicked)
         {
+            clicked = default;
             if (comp == null || comp.pawnIdentity == PawnIdentity.Unset) return 0f;
-            const float rowHeight = 42f;
+            const float rowHeight = 66f;
             bool slave = comp.pawnIdentity == PawnIdentity.Slave;
             bool stacked = slave && width < 460f;
             float height = stacked ? 2f * rowHeight : rowHeight;
@@ -207,7 +220,8 @@ namespace SexSlaveCraft
             if (!slave)
             {
                 var owned = SSCBondOverviewUtility.SummarizeLocalSlaves(source);
-                DrawRelationGroup(first, "SSC_BondOverview_OwnedCount".Translate(owned.Count), owned.First, owned.Second);
+                clicked = (DrawRelationGroup(first, "SSC_BondOverview_OwnedCount".Translate(owned.Count),
+                    SummaryRelation.OwnedSlave, owned.First, owned.Second), SummaryRelation.OwnedSlave);
                 return height;
             }
 
@@ -218,7 +232,7 @@ namespace SexSlaveCraft
             else if (!SSCBondOverviewUtility.IsValidPawn(owner) || ReferenceEquals(owner, source))
                 ownerLabel = "SSC_BondOverview_InvalidMaster".Translate();
             else ownerLabel = "SSC_TrainingManagement_Owner".Translate(owner.LabelShort);
-            DrawRelationGroup(first, ownerLabel, ReferenceEquals(owner, source) ? null : owner);
+            Pawn ownerClicked = DrawRelationGroup(first, ownerLabel, SummaryRelation.Master, ReferenceEquals(owner, source) ? null : owner);
 
             // 使用保存的指派和现行状态说明，暂时停工的现任仍可见。
             Pawn trainer = comp.selectedTrainer;
@@ -226,15 +240,18 @@ namespace SexSlaveCraft
                 : TrainerAssignmentUtility.GetAssignedTrainerLabel(source);
             Rect second = stacked ? new Rect(first.x, first.yMax, groupWidth, rowHeight)
                 : new Rect(width / 2f + PanelPadding, y, groupWidth, rowHeight);
-            DrawRelationGroup(second, "SSC_TrainingManagement_AssignedTrainer".Translate(trainerName), trainer);
+            Pawn trainerClicked = DrawRelationGroup(second, "SSC_TrainingManagement_AssignedTrainer".Translate(trainerName),
+                SummaryRelation.AssignedTrainer, trainer);
+            clicked = ownerClicked != null ? (ownerClicked, SummaryRelation.Master) : (trainerClicked, SummaryRelation.AssignedTrainer);
             return height;
         }
 
-        /// <summary>摘要肖像只显示关系，截断的完整状态可悬停查看。</summary>
-        private static void DrawRelationGroup(Rect rect, string label, Pawn first = null, Pawn second = null)
+        /// <summary>摘要肖像用原生按钮接收左键，截断的完整状态可悬停查看。</summary>
+        private Pawn DrawRelationGroup(Rect rect, string label, SummaryRelation relation, Pawn first, Pawn second = null)
         {
-            const float cell = 32f;
+            const float cell = 56f;
             using var scope = new SSCBondOverviewWidgets.GuiScope(false);
+            Pawn clicked = null;
             float x = rect.x;
             DrawPortrait(first);
             DrawPortrait(second);
@@ -243,41 +260,80 @@ namespace SexSlaveCraft
             Text.WordWrap = false;
             Widgets.Label(textRect, label.Truncate(textRect.width));
             TooltipHandler.TipRegion(textRect, label);
+            return clicked;
 
             void DrawPortrait(Pawn pawn)
             {
-                if (!SSCBondOverviewUtility.IsValidPawn(pawn) || rect.xMax - x < cell + 64f) return;
+                if (!SSCBondOverviewUtility.IsValidPawn(pawn) || ReferenceEquals(source, pawn) || rect.xMax - x < cell + 64f) return;
                 var portrait = new Rect(x, rect.y + (rect.height - cell) / 2f, cell, cell);
                 SSCBondOverviewWidgets.Portrait(portrait, pawn, pawn.Dead, true);
-                TooltipHandler.TipRegion(portrait, pawn.LabelShort);
-                x += cell + 4f;
+                Widgets.DrawHighlightIfMouseover(portrait);
+                TooltipHandler.TipRegion(portrait, "SSC_TrainingManagement_JumpToPawn".Translate(pawn.LabelShort));
+                Event input = Event.current;
+                bool leftUp = input.type == EventType.mouseUp && input.button == 0;
+                if (GUI.enabled && input.type == EventType.mouseDown && input.button == 0 && Mouse.IsOver(portrait))
+                    pressedPortrait = (pawn, relation);
+                // 选中源或关系在按下后变化时，松开不能跳到后来占用同一位置的人。
+                if (GUI.enabled && Widgets.ButtonInvisible(portrait) && leftUp &&
+                    ReferenceEquals(pressedPortrait.Target, pawn) && pressedPortrait.Relation == relation)
+                    clicked = pawn;
+                x += cell + 8f;
             }
         }
 
-        /// <summary>绘制原型的六个导航位置，概况可用，其余页在各批接入后启用。</summary>
-        private static float DrawNavigation(Rect rect, int columns, bool sidebar)
+        /// <summary>点击后用现行关系建立快照，再沿原关系总览解析目的地并跳转。</summary>
+        private void NavigatePortrait(Pawn target, SummaryRelation relation)
         {
-            const float gap = 4f;
-            float width = Mathf.Max(1f, (rect.width - (columns - 1) * gap) / columns);
-            var labels = new string[PageKeys.Length];
-            float rowHeight = 32f;
-            for (int i = 0; i < labels.Length; i++)
-            {
-                labels[i] = PageKeys[i].Translate();
-                rowHeight = Mathf.Max(rowHeight, Text.CalcHeight(labels[i], Mathf.Max(1f, width - 16f)) + 8f);
-            }
+            if (!GameReady() || !ReferenceEquals(game, Current.Game) || !ReferenceEquals(SelectedPawn(), source) ||
+                !ReferenceEquals(source?.TryGetComp<CompSexSlaveTraining>(), comp)) return;
+
+            var snapshot = SSCBondOverviewUtility.BuildLocal(source, Find.CurrentMap);
+            var failure = SSCBondOverviewNavigationFailure.RelationChanged;
+            bool success = false;
+            if (relation == SummaryRelation.AssignedTrainer && ReferenceEquals(snapshot.AssignedTrainer, target))
+                success = SSCBondOverviewNavigation.TryNavigateTrainer(snapshot, out failure);
+            else if (relation == SummaryRelation.Master && ReferenceEquals(snapshot.Master?.Pawn, target))
+                success = SSCBondOverviewNavigation.TryNavigate(snapshot, snapshot.Master, out failure);
+            else if (relation == SummaryRelation.OwnedSlave)
+                foreach (var entry in snapshot.Slaves)
+                    if (ReferenceEquals(entry.Pawn, target))
+                    {
+                        success = SSCBondOverviewNavigation.TryNavigate(snapshot, entry, out failure);
+                        break;
+                    }
+
+            if (!success) Messages.Message(SSCBondOverviewText.T("Failure_" + failure), MessageTypeDefOf.RejectInput, false);
+            else if (!GameReady() || !ReferenceEquals(SelectedPawn(), target)) Close(false);
+        }
+
+        private static float NavigationCellWidth(float width, int columns)
+            => Mathf.Max(1f, (width - (columns - 1) * NavigationGap) / columns);
+
+        /// <summary>按译文测量同组按钮，避免较长的导航文字把侧栏撑出窗口。</summary>
+        private static float MeasureNavigationRow(string[] labels, float width)
+        {
+            float height = 42f;
+            foreach (string label in labels)
+                height = Mathf.Max(height, Text.CalcHeight(label, Mathf.Max(1f, width - 20f)) + 10f);
+            return height;
+        }
+
+        /// <summary>绘制原型的六个导航位置，概况可用，其余页在各批接入后启用。</summary>
+        private static float DrawNavigation(Rect rect, string[] labels, float rowHeight, int columns, bool sidebar)
+        {
+            float width = NavigationCellWidth(rect.width, columns);
             int rows = (labels.Length + columns - 1) / columns;
-            float height = rows * (rowHeight + gap) - gap;
+            float height = rows * (rowHeight + NavigationGap) - NavigationGap;
             Widgets.DrawBoxSolid(new Rect(rect.x, rect.y, rect.width, sidebar ? Mathf.Max(height, rect.height) : height), PanelColor);
             using var scope = new SSCBondOverviewWidgets.GuiScope(false);
             Text.Anchor = TextAnchor.MiddleLeft;
             for (int i = 0; i < labels.Length; i++)
             {
-                var cell = new Rect(rect.x + i % columns * (width + gap), rect.y + i / columns * (rowHeight + gap), width, rowHeight);
+                var cell = new Rect(rect.x + i % columns * (width + NavigationGap), rect.y + i / columns * (rowHeight + NavigationGap), width, rowHeight);
                 GUI.color = Color.white;
                 Widgets.DrawBoxSolid(cell, i == 0 ? SelectedColor : HeaderColor);
                 GUI.color = i == 0 ? Color.white : new Color(.68f, .73f, .74f);
-                Widgets.Label(new Rect(cell.x + 8f, cell.y, Mathf.Max(1f, cell.width - 16f), cell.height), labels[i]);
+                Widgets.Label(new Rect(cell.x + 10f, cell.y, Mathf.Max(1f, cell.width - 20f), cell.height), labels[i]);
                 if (i != 0) TooltipHandler.TipRegion(cell, "SSC_TrainingManagement_PagePending".Translate());
             }
             return height;
@@ -291,10 +347,8 @@ namespace SexSlaveCraft
             var viewport = new Rect(page.x + PanelPadding, page.y + PanelPadding,
                 Mathf.Max(1f, page.width - 2f * PanelPadding), Mathf.Max(1f, page.height - 2f * PanelPadding));
             float width = Mathf.Max(1f, viewport.width - 16f);
-            string title = PageKeys[0].Translate();
-            Text.Font = GameFont.Medium;
+            string title = "<b>" + PageKeys[0].Translate() + "</b>";
             float titleHeight = Text.CalcHeight(title, width);
-            Text.Font = GameFont.Small;
             float firstRow = titleHeight + 10f;
             float labelWidth = Mathf.Max(1f, width * .42f - 4f);
             float valueWidth = Mathf.Max(1f, width - labelWidth - 8f);
@@ -302,7 +356,7 @@ namespace SexSlaveCraft
             float totalHeight = firstRow;
             for (int i = 0; i < rows.Length; i++)
             {
-                heights[i] = Mathf.Max(Text.CalcHeight(rows[i].Label, labelWidth), Text.CalcHeight(rows[i].Value, valueWidth)) + 12f;
+                heights[i] = Mathf.Max(Text.CalcHeight(rows[i].Label, labelWidth), Text.CalcHeight(rows[i].Value, valueWidth)) + 18f;
                 totalHeight += heights[i];
             }
             string hint = comp == null ? "SSC_TrainingManagement_SelectPawn".Translate().ToString() : null;
@@ -311,9 +365,7 @@ namespace SexSlaveCraft
             Widgets.BeginScrollView(viewport, ref scroll, new Rect(0f, 0f, width, Mathf.Max(viewport.height, totalHeight)));
             try
             {
-                Text.Font = GameFont.Medium;
                 Widgets.Label(new Rect(0f, 0f, width, titleHeight), title);
-                Text.Font = GameFont.Small;
                 if (hint != null) Widgets.Label(new Rect(0f, firstRow, width, totalHeight - firstRow), hint);
                 float y = firstRow;
                 for (int i = 0; i < rows.Length; i++)

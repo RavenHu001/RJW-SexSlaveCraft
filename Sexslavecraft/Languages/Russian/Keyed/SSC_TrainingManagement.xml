@@ -16,4 +16,5 @@
   <SSC_TrainingManagement_MasterStage>Ступень хозяина</SSC_TrainingManagement_MasterStage>
   <SSC_TrainingManagement_TrainingEnabled>Разрешена</SSC_TrainingManagement_TrainingEnabled>
   <SSC_TrainingManagement_TrainingDisabled>Отключена</SSC_TrainingManagement_TrainingDisabled>
+  <SSC_TrainingManagement_JumpToPawn>Нажмите, чтобы перейти к персонажу {0}</SSC_TrainingManagement_JumpToPawn>
 </LanguageData>

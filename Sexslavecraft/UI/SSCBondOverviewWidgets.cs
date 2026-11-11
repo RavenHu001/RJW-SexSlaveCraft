@@ -244,11 +244,11 @@ namespace SexSlaveCraft
         internal static void Portrait(Rect rect, SSCBondOverviewEntry entry, bool current)
             => Portrait(rect, entry.Pawn, entry.IsDead, current);
 
-        internal static void Portrait(Rect rect, Pawn pawn, bool dead, bool current)
+        internal static void Portrait(Rect rect, Pawn pawn, bool dead, bool current, float? captureSize = null)
         {
             if (Event.current.type != EventType.repaint || !current) return;
-            // 原版缓存拥有纹理；这里只请求两个固定档位，不强制 SetDirty 或自行销毁。
-            float capture = rect.width > 40 ? 56 : 40;
+            // 原版缓存拥有纹理。旧总览沿用两个固定档位，大头像可显式请求更大的纹理。
+            float capture = captureSize ?? (rect.width > 40 ? 56 : 40);
             GUI.DrawTexture(rect, PortraitsCache.Get(pawn, new Vector2(capture, capture), Rot4.South, cameraZoom: 1.5f));
             if (dead && rect.width >= 24) Widgets.Label(new Rect(rect.x, rect.yMax - 18, rect.width, 18), SSCBondOverviewText.T("Dead"));
         }
