@@ -33,4 +33,6 @@
   <SSC_TrainingManagement_ScheduleWaiting>Schedule not due yet</SSC_TrainingManagement_ScheduleWaiting>
   <SSC_TrainingManagement_CurrentCultivation>Current training</SSC_TrainingManagement_CurrentCultivation>
   <SSC_TrainingManagement_FinalAchievements>Final achievements</SSC_TrainingManagement_FinalAchievements>
+  <SSC_TrainingManagement_BodyProduction>Body production</SSC_TrainingManagement_BodyProduction>
+  <SSC_TrainingManagement_BodyProductionEmpty>This pawn has no body production settings.</SSC_TrainingManagement_BodyProductionEmpty>
 </LanguageData>

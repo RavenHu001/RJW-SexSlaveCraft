@@ -14,7 +14,7 @@ namespace SexSlaveCraft
         private const float PanelPadding = 14f;
         private const float NavigationGap = 5f;
         private const float StackedSummaryWidth = 460f;
-        private enum Page { Overview, Relations, DailyTraining, Specialization }
+        private enum Page { Overview, Relations, DailyTraining, Specialization, BodyAppearance }
         private enum SummaryRelation { Master, AssignedTrainer, OwnedSlave, TrainerCandidate }
         private static readonly Color HeaderColor = new Color(.20f, .24f, .26f);
         private static readonly Color PanelColor = new Color(.16f, .19f, .20f);
@@ -105,6 +105,8 @@ namespace SexSlaveCraft
             // 原版可通过取消或点击外部关闭弹窗，清理它捕获的旧上下文。
             if (editPopup != null && !Find.WindowStack.IsOpen(editPopup)) editPopup = null;
             RefreshSelection();
+            // 切到别的应用后可能收不到松手事件，下一次回到游戏须重新按下。
+            if (!Application.isFocused) bodyProductionPress = null;
             // Alt-Tab 或身份变化可能没有对应的鼠标松手事件。
             if (trainerGesture != null && !TrainerGestureSourceCurrent()) EndTrainerGesture();
             relationSession.Update(Time.frameCount, false, viewedMap);
@@ -171,6 +173,7 @@ namespace SexSlaveCraft
             scroll = Vector2.zero;
             dailyTrainingScroll = Vector2.zero;
             specializationScroll = Vector2.zero;
+            bodyProductionScroll = Vector2.zero;
             pressedPortrait = default;
         }
 
@@ -188,6 +191,7 @@ namespace SexSlaveCraft
         private void InvalidateWindowContext()
         {
             contextRevision++;
+            bodyProductionPress = null;
             EndTrainerGesture();
             CloseEditPopup();
         }
@@ -216,7 +220,12 @@ namespace SexSlaveCraft
             using var scope = new SSCBondOverviewWidgets.GuiScope(true);
             Text.Font = GameFont.Medium;
             Text.WordWrap = true;
-            if (Event.current.type == EventType.mouseDown) pressedPortrait = default;
+            if (Event.current.type == EventType.mouseDown)
+            {
+                // 新的按下只能由本次命中的控件建立请求。
+                pressedPortrait = default;
+                bodyProductionPress = null;
+            }
             float y = DrawHeader(inRect.width);
             y += DrawRelationStrip(inRect.width, y, snapshot, out var clicked);
             y += PanelPadding;
@@ -245,8 +254,14 @@ namespace SexSlaveCraft
             }
             else if (currentPage == Page.DailyTraining) DrawDailyTraining(page);
             else if (currentPage == Page.Specialization) DrawSpecialization(page);
+            else if (currentPage == Page.BodyAppearance) DrawBodyProduction(page);
             else DrawOverview(page);
-            if (Event.current.rawType == EventType.mouseUp) pressedPortrait = default;
+            if (Event.current.rawType == EventType.mouseUp)
+            {
+                // 所有页面控件处理完松手后清理凭据，未命中时也不能留到下一次点击。
+                pressedPortrait = default;
+                bodyProductionPress = null;
+            }
             // 在所有滚动区结束后分派输入，拖动松手不会再触发普通头像跳转。
             if (!FinishTrainerInput(inRect) && clicked.Target != null) NavigatePortrait(snapshot, clicked.Target, clicked.Relation);
         }
@@ -426,7 +441,7 @@ namespace SexSlaveCraft
             return height;
         }
 
-        /// <summary>绘制六个导航位置，日常调教和特化仅对 SSC 性奴开放。</summary>
+        /// <summary>绘制六个导航位置，身体与外观由各条目自己的规则决定显示范围。</summary>
         private float DrawNavigation(Rect rect, string[] labels, float rowHeight, int columns, bool sidebar)
         {
             float width = NavigationCellWidth(rect.width, columns);
@@ -440,7 +455,8 @@ namespace SexSlaveCraft
                 var cell = new Rect(rect.x + i % columns * (width + NavigationGap), rect.y + i / columns * (rowHeight + NavigationGap), width, rowHeight);
                 GUI.color = Color.white;
                 bool slavePage = i == (int)Page.DailyTraining || i == (int)Page.Specialization;
-                bool available = i <= (int)Page.Relations || slavePage && comp?.pawnIdentity == PawnIdentity.Slave;
+                bool available = i <= (int)Page.Relations || i == (int)Page.BodyAppearance ||
+                    slavePage && comp?.pawnIdentity == PawnIdentity.Slave;
                 Widgets.DrawBoxSolid(cell, i == (int)currentPage ? SelectedColor : HeaderColor);
                 GUI.color = available ? Color.white : new Color(.68f, .73f, .74f);
                 Widgets.Label(new Rect(cell.x + 10f, cell.y, Mathf.Max(1f, cell.width - 20f), cell.height), labels[i]);

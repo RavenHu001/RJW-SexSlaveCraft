@@ -198,13 +198,16 @@ namespace SexSlaveCraft
             return true; // 把手捕获期间由本入口负责输入，普通肖像点击不会再次分派。
         }
 
-        /// <summary>窗外松手可能不进入窗口内容，利用原版窗口栈坐标提前取消。</summary>
+        /// <summary>窗外松手可能不进入窗口内容，利用原版窗口栈坐标撤销拖放和身体按压。</summary>
         public override void ExtraOnGUI()
         {
             base.ExtraOnGUI();
             Event input = Event.current;
-            if (trainerGesture == null || input.rawType != EventType.mouseUp || input.button != 0 ||
+            if ((trainerGesture == null && !bodyProductionPress.HasValue) || input.rawType != EventType.mouseUp || input.button != 0 ||
                 ReferenceEquals(Find.WindowStack.GetWindowAt(UI.GUIToScreenPoint(input.mousePosition)), this)) return;
+            bodyProductionPress = null;
+            // 身体开关没有取得全局鼠标捕获，窗外松手仍交给原版界面处理。
+            if (trainerGesture == null) return;
             EndTrainerGesture();
             if (input.type != EventType.Used) input.Use();
         }

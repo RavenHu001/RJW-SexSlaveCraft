@@ -33,4 +33,6 @@
   <SSC_TrainingManagement_ScheduleWaiting>尚未到排班日期或時段</SSC_TrainingManagement_ScheduleWaiting>
   <SSC_TrainingManagement_CurrentCultivation>目前培養</SSC_TrainingManagement_CurrentCultivation>
   <SSC_TrainingManagement_FinalAchievements>終極成果</SSC_TrainingManagement_FinalAchievements>
+  <SSC_TrainingManagement_BodyProduction>身體生產</SSC_TrainingManagement_BodyProduction>
+  <SSC_TrainingManagement_BodyProductionEmpty>目前角色沒有可顯示的身體生產項目。</SSC_TrainingManagement_BodyProductionEmpty>
 </LanguageData>

@@ -33,4 +33,6 @@
   <SSC_TrainingManagement_ScheduleWaiting>Время по расписанию ещё не наступило</SSC_TrainingManagement_ScheduleWaiting>
   <SSC_TrainingManagement_CurrentCultivation>Текущее направление</SSC_TrainingManagement_CurrentCultivation>
   <SSC_TrainingManagement_FinalAchievements>Итоговые достижения</SSC_TrainingManagement_FinalAchievements>
+  <SSC_TrainingManagement_BodyProduction>Производство в организме</SSC_TrainingManagement_BodyProduction>
+  <SSC_TrainingManagement_BodyProductionEmpty>У этого персонажа нет настроек выработки.</SSC_TrainingManagement_BodyProductionEmpty>
 </LanguageData>
