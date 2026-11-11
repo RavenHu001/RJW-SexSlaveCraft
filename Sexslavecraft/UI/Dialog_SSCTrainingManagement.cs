@@ -101,12 +101,15 @@ namespace SexSlaveCraft
             float top = MinimumWindowY();
             if (windowRect.y < top) PositionBelowBar(top);
             RefreshSelection();
+            // Alt-Tab 或身份变化可能没有对应的鼠标松手事件。
+            if (trainerGesture != null && !TrainerGestureSourceCurrent()) EndTrainerGesture();
             relationSession.Update(Time.frameCount, false, viewedMap);
         }
 
-        /// <summary>释放本窗口的局部视图和候选引用。</summary>
+        /// <summary>关闭时释放鼠标捕获、关系视图和候选引用。</summary>
         public override void PostClose()
         {
+            InvalidateTrainerGesture();
             relationSession.Clear();
             ResetRelationPage();
             source = null;
@@ -151,6 +154,7 @@ namespace SexSlaveCraft
             var training = pawn?.TryGetComp<CompSexSlaveTraining>();
             Map map = Find.CurrentMap;
             if (ReferenceEquals(source, pawn) && ReferenceEquals(comp, training) && ReferenceEquals(viewedMap, map)) return;
+            InvalidateTrainerGesture();
             relationSession.ReleaseDetails();
             ResetRelationPage();
             source = pawn;
@@ -160,9 +164,11 @@ namespace SexSlaveCraft
             pressedPortrait = default;
         }
 
+        /// <summary>切页时撤销原页手势，进入关系页后重新查询调教员。</summary>
         private void ChangePage(Page page)
         {
             if (currentPage == page) return;
+            InvalidateTrainerGesture();
             currentPage = page;
             pressedPortrait = default;
             if (page == Page.Relations) nextCandidateRefresh = 0;
@@ -184,6 +190,7 @@ namespace SexSlaveCraft
         {
             if (!GameReady() || !ReferenceEquals(game, Current.Game)) return;
             RefreshSelection();
+            BeginTrainerInput();
             // 同一帧的摘要、详情与点击使用同一个本地视图。会话负责直接变化及周期刷新。
             SSCBondOverviewView view = source == null ? null : relationSession.OpenDetails(source, viewedMap);
             SSCBondOverviewSnapshot snapshot = view?.Snapshot;
@@ -220,7 +227,8 @@ namespace SexSlaveCraft
             }
             else DrawOverview(page);
             if (Event.current.rawType == EventType.mouseUp) pressedPortrait = default;
-            if (clicked.Target != null) NavigatePortrait(snapshot, clicked.Target, clicked.Relation);
+            // 在所有滚动区结束后分派输入，拖动松手不会再触发普通头像跳转。
+            if (!FinishTrainerInput(inRect) && clicked.Target != null) NavigatePortrait(snapshot, clicked.Target, clicked.Relation);
         }
 
         /// <summary>标题、头像和身份使用同一个原版单选，空选时仍保留窗口标题。</summary>
@@ -316,14 +324,15 @@ namespace SexSlaveCraft
             }
         }
 
-        /// <summary>共享摘要和详情的肖像点击；记录按下区域以防同角色在两个区域间串键。</summary>
+        /// <summary>绘制可定位肖像，并在允许时处理普通点击。调教员卡片由拖放手势接管输入。</summary>
         private bool DrawJumpPortrait(Rect rect, Pawn pawn, SummaryRelation relation, bool detail,
-            string tooltip = null, float? captureSize = null)
+            string tooltip = null, float? captureSize = null, bool acceptClick = true)
         {
             if (!SSCBondOverviewUtility.IsValidPawn(pawn) || ReferenceEquals(source, pawn)) return false;
             SSCBondOverviewWidgets.Portrait(rect, pawn, pawn.Dead, true, captureSize);
             Widgets.DrawHighlightIfMouseover(rect);
             TooltipHandler.TipRegion(rect, tooltip ?? "SSC_TrainingManagement_JumpToPawn".Translate(pawn.LabelShort).ToString());
+            if (!acceptClick) return false;
             Event input = Event.current;
             bool over = Mouse.IsOver(rect);
             bool leftUp = input.type == EventType.mouseUp && input.button == 0 && over;

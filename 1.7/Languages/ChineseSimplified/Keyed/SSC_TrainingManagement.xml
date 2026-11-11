@@ -19,4 +19,9 @@
   <SSC_TrainingManagement_JumpToPawn>点击跳转到 {0}</SSC_TrainingManagement_JumpToPawn>
   <SSC_TrainingManagement_AssignedSection>已指派调教员</SSC_TrainingManagement_AssignedSection>
   <SSC_TrainingManagement_CandidateSection>可指派调教员</SSC_TrainingManagement_CandidateSection>
+  <!-- 调教员卡片悬停提示的操作行，工作开关状态沿用原工作文案。 -->
+  <SSC_TrainingManagement_DragAssign>拖到已指派区以指派</SSC_TrainingManagement_DragAssign>
+  <SSC_TrainingManagement_DragAssignEnable>拖到已指派区以指派并启用调教工作</SSC_TrainingManagement_DragAssignEnable>
+  <SSC_TrainingManagement_DragClear>拖到可指派区以撤销</SSC_TrainingManagement_DragClear>
+  <SSC_TrainingManagement_DragClearBlocked>当前调教限制不允许撤销</SSC_TrainingManagement_DragClearBlocked>
 </LanguageData>

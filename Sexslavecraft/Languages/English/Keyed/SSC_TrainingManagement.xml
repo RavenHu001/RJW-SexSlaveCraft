@@ -19,4 +19,9 @@
   <SSC_TrainingManagement_JumpToPawn>Click to jump to {0}</SSC_TrainingManagement_JumpToPawn>
   <SSC_TrainingManagement_AssignedSection>Assigned trainers</SSC_TrainingManagement_AssignedSection>
   <SSC_TrainingManagement_CandidateSection>Eligible trainers</SSC_TrainingManagement_CandidateSection>
+  <!-- 调教员卡片悬停提示的操作行，工作开关状态沿用原工作文案。 -->
+  <SSC_TrainingManagement_DragAssign>Drag to Assigned trainers to assign</SSC_TrainingManagement_DragAssign>
+  <SSC_TrainingManagement_DragAssignEnable>Drag to Assigned trainers to assign and enable training work</SSC_TrainingManagement_DragAssignEnable>
+  <SSC_TrainingManagement_DragClear>Drag to Eligible trainers to unassign</SSC_TrainingManagement_DragClear>
+  <SSC_TrainingManagement_DragClearBlocked>Current training restrictions prevent unassigning</SSC_TrainingManagement_DragClearBlocked>
 </LanguageData>

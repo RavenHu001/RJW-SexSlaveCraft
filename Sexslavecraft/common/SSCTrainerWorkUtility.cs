@@ -71,6 +71,7 @@ namespace SexSlaveCraft
             private readonly bool receiveTraining, enableOnly;
             private readonly Func<bool> current;
 
+            /// <summary>在用户发起操作时固定原指派、人格和工作设置引用。</summary>
             internal Request(Pawn source, Pawn trainer, bool enableOnly = false, Func<bool> current = null)
             {
                 Source = source; Trainer = trainer; this.enableOnly = enableOnly; this.current = current;
@@ -85,6 +86,7 @@ namespace SexSlaveCraft
                 priority = SavedPriority(settings, work);
             }
 
+            /// <summary>复查来源、界面上下文以及请求捕获的指派与许可。</summary>
             private bool SourceCurrent()
                 => game != null && ReferenceEquals(game, Current.Game) && Current.ProgramState == ProgramState.Playing &&
                     Scribe.mode == LoadSaveMode.Inactive && current?.Invoke() != false &&
@@ -95,18 +97,25 @@ namespace SexSlaveCraft
                     SSCBondUtility.GetBoundMaster(Source) == owner && sourceComp.restrictionConfig == config &&
                     config?.rules == rules && (rules?.receiveTraining ?? false) == receiveTraining;
 
+            /// <summary>复查调教员的组件、人格和原工作设置载体。</summary>
             private bool TrainerCurrent()
                 => Trainer != null && trainerComp != null && trainerComp.restrictionRestoreDepth == 0 &&
                     Trainer.TryGetComp<CompSexSlaveTraining>() == trainerComp &&
                     SSCPersonalityRuntimeUtility.IsCurrent(Trainer, trainerToken) && !SSCPersonalityRuntimeUtility.IsMutating(Trainer) &&
                     ReferenceEquals(Trainer.workSettings, settings) && settings?.Initialized == true && work == WorkType;
 
-            /// <summary>所有SSC预检先于写入；SetPriority后的外部回调须复查，失败只撤回本请求仍持有的新增启用。</summary>
-            internal bool TrySubmit(out string reason)
+            /// <summary>为菜单提交和拖放落区提供同一套只读预检。</summary>
+            internal bool CanSubmit(out string reason)
             {
                 reason = "SSC_TrainerWork_Changed".Translate();
                 if (!SourceCurrent() || submitting.Contains(Source) || Trainer != null && submitting.Contains(Trainer)) return false;
-                if (Trainer == null) return !enableOnly && SSCBondUtility.TryAssignTrainer(Source, null);
+                if (Trainer == null)
+                {
+                    // 撤销只检查原指派和清空许可，现任暂时无法工作仍可撤销。
+                    if (!enableOnly && SSCRestrictionTrainerAssignment.CanAssign(Source, null)) return true;
+                    reason = "SSC_Restrictions_AssignFailed".Translate();
+                    return false;
+                }
                 if (!TrainerCurrent() || priority < 0 || SavedPriority(settings, work) != priority) return false;
                 SSCTrainerWorkState state = GetState(Trainer, Source);
                 if (state != SSCTrainerWorkState.Active && state != SSCTrainerWorkState.Off)
@@ -114,7 +123,16 @@ namespace SexSlaveCraft
                 if (enableOnly ? Source == Trainer || previous != Trainer || priority != 0 || !SSCIdentityUtility.IsSexSlave(Source)
                     : !CanConsider(Source, Trainer))
                 { reason = "SSC_Restrictions_AssignFailed".Translate(); return false; }
+                return true;
+            }
 
+            /// <summary>写工作优先级后的外部回调须复查，失败只撤回本请求仍持有的新增启用。</summary>
+            internal bool TrySubmit(out string reason)
+            {
+                if (!CanSubmit(out reason)) return false;
+                if (Trainer == null) return SSCBondUtility.TryAssignTrainer(Source, null);
+
+                // 标记参与者后再进入原版 setter，防止同步回调重入同一笔事务。
                 bool wrote = false, success = false;
                 submitting.Add(Source); submitting.Add(Trainer);
                 try
@@ -127,7 +145,7 @@ namespace SexSlaveCraft
                     }
                     if (!SourceCurrent() || !TrainerCurrent() ||
                         SavedPriority(settings, work) != (wrote ? Pawn_WorkSettings.DefaultPriority : priority)) return false;
-                    state = GetState(Trainer, Source);
+                    SSCTrainerWorkState state = GetState(Trainer, Source);
                     if (state != SSCTrainerWorkState.Active) { reason = Reason(state, Trainer); return false; }
                     // 就地启用不重放授权；普通指派仍经原权威入口再次检查并提交。
                     success = enableOnly || SSCBondUtility.TryAssignTrainer(Source, Trainer);

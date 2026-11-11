@@ -19,4 +19,9 @@
   <SSC_TrainingManagement_JumpToPawn>Нажмите, чтобы перейти к персонажу {0}</SSC_TrainingManagement_JumpToPawn>
   <SSC_TrainingManagement_AssignedSection>Назначенные дрессировщики</SSC_TrainingManagement_AssignedSection>
   <SSC_TrainingManagement_CandidateSection>Доступные дрессировщики</SSC_TrainingManagement_CandidateSection>
+  <!-- 调教员卡片悬停提示的操作行，工作开关状态沿用原工作文案。 -->
+  <SSC_TrainingManagement_DragAssign>Перетащите в область назначенных дрессировщиков</SSC_TrainingManagement_DragAssign>
+  <SSC_TrainingManagement_DragAssignEnable>Перетащите в область назначенных, чтобы назначить и включить работу дрессировщика</SSC_TrainingManagement_DragAssignEnable>
+  <SSC_TrainingManagement_DragClear>Перетащите в область доступных, чтобы снять назначение</SSC_TrainingManagement_DragClear>
+  <SSC_TrainingManagement_DragClearBlocked>Текущие ограничения дрессировки не позволяют снять назначение</SSC_TrainingManagement_DragClearBlocked>
 </LanguageData>

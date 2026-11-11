@@ -1,4 +1,4 @@
-// AI 辅助生成。关系页只读取现有关系和调教工作，不提交指派。
+// AI 辅助生成。关系页绘制现有关系和调教员卡片，手势与提交由窗口单独管理。
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -113,6 +113,8 @@ namespace SexSlaveCraft
             float candidateY = assignedY + assignedSectionHeight + SectionPadding;
             float candidateSectionHeight = TrainerSectionHeight(candidateTitle, width, candidates.Count, columns);
             float contentHeight = candidateY + candidateSectionHeight;
+            // 先更新外层滚动，再以本帧可见的分区绘制和命中，避免松手使用上一帧坐标。
+            ScrollTrainerDrag(viewport, contentHeight);
             Widgets.BeginScrollView(viewport, ref relationsScroll, new Rect(0f, 0f, width, Mathf.Max(viewport.height, contentHeight)));
             try
             {
@@ -134,13 +136,17 @@ namespace SexSlaveCraft
             Rect body = DrawSectionHeading(section, title);
             float width = body.width - ScrollbarWidth;
             float total = Mathf.Max(CardHeight, GridRows(candidates.Count, columns) * CardHeight);
+            Pawn clicked;
             Widgets.BeginScrollView(body, ref candidateScroll, new Rect(0f, 0f, width, Mathf.Max(body.height, total)));
             try
             {
-                return DrawTrainerCards(new Rect(0f, 0f, width, total), candidates, SummaryRelation.TrainerCandidate,
+                clicked = DrawTrainerCards(new Rect(0f, 0f, width, total), candidates, SummaryRelation.TrainerCandidate,
                     columns, candidateScroll.y, candidateScroll.y + body.height);
             }
             finally { Widgets.EndScrollView(); }
+            // 整个候选区都可接收撤销。退出内层滚动后，分区矩形才与当前坐标系一致。
+            OfferTrainerDrop(section, SummaryRelation.TrainerCandidate);
+            return clicked;
         }
 
         private static (Pawn Target, SummaryRelation Relation) RelationClick(Pawn owner, Pawn trainer, Pawn candidate)
@@ -210,13 +216,16 @@ namespace SexSlaveCraft
             => 2f * SectionPadding + HeadingHeight(title, width - 2f * SectionPadding) +
                 Math.Max(1, GridRows(count, columns)) * CardHeight;
 
+        /// <summary>绘制已指派区或纵排候选区。空区同样提供落点。</summary>
         private Pawn DrawTrainerSection(Rect section, string title, IReadOnlyList<Pawn> trainers, SummaryRelation relation,
             int columns, float scrollGutter, float top, float bottom)
         {
             if (section.yMax <= top || section.y >= bottom) return null;
             Rect body = DrawSectionHeading(section, title);
             body.width = Mathf.Max(1f, body.width - scrollGutter);
-            return DrawTrainerCards(body, trainers, relation, columns, top, bottom);
+            Pawn clicked = DrawTrainerCards(body, trainers, relation, columns, top, bottom);
+            OfferTrainerDrop(section, relation);
+            return clicked;
         }
 
         /// <summary>两组调教员按分区列数换行，绘制时只读取可见卡片的工作状态。</summary>
@@ -235,23 +244,27 @@ namespace SexSlaveCraft
                 Pawn trainer = trainers[i];
                 Rect card = CardRect(body.x, body.y, body.width, columns, i);
                 string name = trainer.Dead ? SSCBondOverviewText.Format("DeadName", trainer.LabelShort) : trainer.LabelShort;
-                if (DrawRelationCard(card, trainer, relation, 56f, TrainerTooltip(card, trainer), name)) return trainer;
+                if (DrawRelationCard(card, trainer, relation, 56f, TrainerTooltip(card, trainer, relation), name)) return trainer;
             }
             return null;
         }
 
-        /// <summary>先说明保存的工作开关，再显示点击定位或当前不可工作的原因。</summary>
-        private string TrainerTooltip(Rect rect, Pawn trainer)
+        /// <summary>先说明保存的工作开关，再显示拖放操作或当前限制。</summary>
+        private string TrainerTooltip(Rect rect, Pawn trainer, SummaryRelation relation)
         {
             if (!Mouse.IsOver(rect)) return null;
             var state = SSCTrainerWorkUtility.GetState(trainer, source);
             int priority = SSCTrainerWorkUtility.SavedPriority(trainer.workSettings, SSCTrainerWorkUtility.WorkType);
             string work = SSCTrainerWorkUtility.Reason(priority > 0 ? SSCTrainerWorkState.Active
                 : priority == 0 ? SSCTrainerWorkState.Off : SSCTrainerWorkState.Uninitialized);
-            string detail = SSCBondOverviewUtility.IsValidPawn(trainer) && !ReferenceEquals(trainer, source)
-                ? "SSC_TrainingManagement_JumpToPawn".Translate(trainer.LabelShort).ToString() : SSCBondOverviewText.T("CannotJump");
-            if (state != SSCTrainerWorkState.Active && state != SSCTrainerWorkState.Off && state != SSCTrainerWorkState.Uninitialized)
-                detail += " · " + SSCTrainerWorkUtility.Reason(state, trainer);
+            string detail;
+            if (relation == SummaryRelation.AssignedTrainer)
+                detail = (SSCRestrictionTrainerAssignment.CanAssign(source, null) ? "SSC_TrainingManagement_DragClear"
+                    : "SSC_TrainingManagement_DragClearBlocked").Translate();
+            else if (state == SSCTrainerWorkState.Active || state == SSCTrainerWorkState.Off)
+                detail = (state == SSCTrainerWorkState.Off ? "SSC_TrainingManagement_DragAssignEnable"
+                    : "SSC_TrainingManagement_DragAssign").Translate();
+            else detail = SSCTrainerWorkUtility.Reason(state, trainer);
             return work + "\n" + detail;
         }
 
@@ -261,12 +274,17 @@ namespace SexSlaveCraft
             using var scope = new SSCBondOverviewWidgets.GuiScope(false);
             float size = Mathf.Min(portraitSize, card.width);
             var portrait = new Rect(card.x + (card.width - size) / 2f, card.y, size, size);
-            bool clicked = DrawJumpPortrait(portrait, pawn, relation, true, tooltip, portraitSize);
+            bool trainerCard = relation == SummaryRelation.AssignedTrainer || relation == SummaryRelation.TrainerCandidate;
+            // 原指派失效后可能无法绘制肖像，保留拖动占位以便按现有权限撤销。
+            if (trainerCard && !SSCBondOverviewUtility.IsValidPawn(pawn)) Widgets.DrawBoxSolid(portrait, PanelColor);
+            bool clicked = DrawJumpPortrait(portrait, pawn, relation, true, tooltip, portraitSize, acceptClick: !trainerCard);
+            if (trainerCard) clicked = TrainerPortraitInput(portrait, pawn, relation);
             Text.WordWrap = false;
             Text.Anchor = TextAnchor.UpperCenter;
             var nameRect = new Rect(card.x, card.y + size + 2f, card.width, card.height - size - 2f);
             Widgets.Label(nameRect, name.Truncate(card.width));
-            if (Mouse.IsOver(card) && !Mouse.IsOver(portrait)) TooltipHandler.TipRegion(nameRect, tooltip ?? name);
+            if (Mouse.IsOver(card) && (!Mouse.IsOver(portrait) || !SSCBondOverviewUtility.IsValidPawn(pawn)))
+                TooltipHandler.TipRegion(card, tooltip ?? name);
             return clicked;
         }
 
