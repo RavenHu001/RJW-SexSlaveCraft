@@ -30,28 +30,20 @@ namespace SexSlaveCraft
             return menu;
         }
 
-        /// <summary>可用目标排在前面，禁用目标直接附本次预检原因。可提交的选项继续保留原预览。</summary>
+        /// <summary>只列当前行为可选择的目标；被动必拒和零概率不排除，点击保留同一原预览提交。</summary>
         internal static List<FloatMenuOption> BuildTargetOptions(SSCRomanceCommandContext context, IEnumerable<Pawn> candidates,
             Func<bool> canSubmit = null)
         {
             var options = new List<FloatMenuOption>();
-            var unavailable = new List<FloatMenuOption>();
             foreach (var pawn in candidates.Where(p => p != null && p != context.Actor && p.RaceProps?.Humanlike == true).Distinct().OrderBy(p => p.LabelShort))
             {
                 var preview = context.ForTarget(pawn, context.Action);
-                string reason = SSCRomanceCommandUtility.Failure(preview);
-                if (reason != null)
-                {
-                    unavailable.Add(new FloatMenuOption(pawn.LabelShort + " — " + SSCRomanceCommandUtility.Explain(reason), null));
-                    continue;
-                }
+                if (SSCRomanceCommandUtility.Failure(preview) != null) continue;
                 options.Add(new FloatMenuOption(pawn.LabelShort + " — " + RelationLabel(context.Actor, pawn), () =>
                 {
                     if (canSubmit == null || canSubmit()) Submit(preview, canSubmit);
                 }));
             }
-            // 保留可用目标的浏览顺序，候选多时也能先找到可以下令的对象。
-            options.AddRange(unavailable);
             if (options.Count == 0) options.Add(new FloatMenuOption("SSC_Romance_NoTarget".Translate(), null));
             return options;
         }

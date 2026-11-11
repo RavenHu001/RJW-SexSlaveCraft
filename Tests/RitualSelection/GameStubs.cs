@@ -455,10 +455,6 @@ namespace SexSlaveCraft
     // Explicit permission fixture. The complete production rule resolver is covered by TrainerIdentity/RestrictionCore.
     public static class SSCRestrictionPolicy
     {
-        internal static string RejectionText(SSCRestrictionDecision decision)
-            => Verse.Translator.Translate("SSC_Restrictions_JobRejected",
-                Verse.Translator.Translate("SSC_Restrictions_Reason_" + decision.Reason));
-
         public static SSCRestrictionDecision Evaluate(SSCRestrictionRequest request)
         {
             Counters.Permissions++;

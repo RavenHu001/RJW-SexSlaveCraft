@@ -338,7 +338,6 @@ namespace SexSlaveCraft
     {
         public static SSCRestrictionDecision Evaluate(SSCRestrictionRequest request)
             => new() { Allowed = request.Actor.AllowSelfTraining && SSCSelfTrainingEligibility.IsEligible(request.Actor) };
-        internal static string RejectionText(SSCRestrictionDecision decision) => "SSC_Restrictions_JobRejected";
     }
     public static class SSCRestrictionJobGuard
     {

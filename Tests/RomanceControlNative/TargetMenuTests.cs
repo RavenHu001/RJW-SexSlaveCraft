@@ -10,25 +10,22 @@ internal static partial class Program
     private static string menuBlockedReason;
     private static Action menuDuringTaskCheck;
 
-    /// <summary>验证可用目标优先，禁用项解释原因，且保留被动必拒、零概率及原上下文提交规则。</summary>
+    /// <summary>验证清单只保留可选择目标，并保留被动必拒、零概率及原上下文提交规则。</summary>
     private static void TargetMenuTests()
     {
         foreach (var action in Enum.GetValues<SSCRomanceAction>())
-            Check("target menu explains missing relationship and removes duplicate candidates for " + action, () =>
+            Check("target menu filters necessary relationship and duplicates for " + action, () =>
             {
                 CommandReset(); var (a, valid) = CommandPair(action); var invalid = SocialPawn();
                 if (action == SSCRomanceAction.Romance) a.relations.AddDirectRelation(PawnRelationDefOf.Spouse, invalid);
                 var dialog = TargetDialog(a, action);
                 var options = TargetOptions(dialog, new Pawn[] { null, a, invalid, valid, valid });
-                Equal(2, options.Count); Require(options[0].action != null && options[0].Label.StartsWith(valid.LabelShort));
-                Require(options[1].action == null && options[1].Label.StartsWith(invalid.LabelShort) &&
-                    options[1].Label.Contains(SSCRomanceCommandUtility.Explain(action == SSCRomanceAction.Romance ? "AlreadyPartners" :
-                        action == SSCRomanceAction.Proposal ? "LoverRequired" : "NoRelationship")));
+                Equal(1, options.Count); Require(options[0].action != null && options[0].Label.StartsWith(valid.LabelShort));
                 options[0].action(); var record = SSCRomanceCommandGameComponent.Current.Records.Single();
                 Equal(valid, record.Stamp.Target); Equal(action, record.Stamp.Action); Equal(1, commandFeedback);
             });
         foreach (string reason in new[] { "InvalidRomancePair", "Unreachable", "SameMapRequired", "UnableToInteract" })
-            Check("target menu shows the failed task condition on an unavailable row " + reason, () =>
+            Check("target menu excludes task-ineligible pawn rather than disabled row " + reason, () =>
             {
                 CommandReset(); var (a, valid) = CommandPair(SSCRomanceAction.Romance); menuBlockedTarget = SocialPawn(); menuBlockedReason = reason;
                 var boundary = new Harmony("ssc.tests.romance.target-menu-filter");
@@ -37,8 +34,7 @@ internal static partial class Program
                     boundary.Patch(AccessTools.Method(typeof(SSCRomanceCommandUtility), nameof(SSCRomanceCommandUtility.TaskFailure)),
                         prefix: new HarmonyMethod(typeof(Program), nameof(MenuTaskFailure)) { priority = Priority.First });
                     var options = TargetOptions(TargetDialog(a), new[] { menuBlockedTarget, valid });
-                    Equal(2, options.Count); Require(options[0].action != null && options[0].Label.StartsWith(valid.LabelShort));
-                    Require(options[1].action == null && options[1].Label.Contains(SSCRomanceCommandUtility.Explain(reason)));
+                    Equal(1, options.Count); Require(options[0].action != null && options[0].Label.StartsWith(valid.LabelShort));
                 }
                 finally { boundary.UnpatchAll(boundary.Id); menuBlockedTarget = null; menuBlockedReason = null; }
             });
@@ -54,7 +50,7 @@ internal static partial class Program
         Check("target menu empty list contains only no-target placeholder", () =>
         {
             CommandReset(); var (a, b) = CommandPair(SSCRomanceAction.Proposal);
-            var options = TargetOptions(TargetDialog(a, SSCRomanceAction.Proposal), new Pawn[] { a, null });
+            var options = TargetOptions(TargetDialog(a, SSCRomanceAction.Proposal), new[] { a, SocialPawn() });
             Equal(1, options.Count); Require(options[0].action == null); Equal("SSC_Romance_NoTarget".Translate().ToString(), options[0].Label);
         });
         foreach (string change in new[] { "personality", "targetPersonality" })

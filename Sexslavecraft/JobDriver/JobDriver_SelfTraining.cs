@@ -37,7 +37,7 @@ namespace SexSlaveCraft
                 new SSCRestrictionRequest(actor, actor, SSCInteractionKind.SelfTraining, true));
             if (!permission.Allowed)
             {
-                reason = SSCRestrictionPolicy.RejectionText(permission);
+                reason = "SSC_SelfTraining_PermissionDenied".Translate();
                 return false;
             }
             if (!xxx.can_masturbate(actor))

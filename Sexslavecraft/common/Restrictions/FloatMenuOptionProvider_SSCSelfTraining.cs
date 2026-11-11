@@ -16,22 +16,17 @@ namespace SexSlaveCraft
         protected override bool CanSelfTarget => true;
         protected override bool RequiresManipulation => false;
 
-        /// <summary>只为选中角色本人预检菜单项，禁用行显示本次不可用原因。</summary>
         public override IEnumerable<FloatMenuOption> GetOptionsFor(Pawn clickedPawn, FloatMenuContext context)
         {
             Pawn actor = context.FirstSelectedPawn;
-            if (actor == null || clickedPawn != actor || !SSCIdentityUtility.IsSexSlave(actor)) yield break;
-            string label = "SSC_SelfTraining_Assign".Translate();
-            if (!JobDriver_SelfTraining.CanStart(actor, actor.Position, out string reason))
-            {
-                yield return new FloatMenuOption(label + " — " + reason, null, MenuOptionPriority.High);
-                yield break;
-            }
-            yield return new FloatMenuOption(label, () => ShowInteractions(actor),
+            if (actor == null || clickedPawn != actor) yield break;
+            SSCRestrictionDecision permission = SSCRestrictionPolicy.Evaluate(
+                new SSCRestrictionRequest(actor, actor, SSCInteractionKind.SelfTraining, true));
+            if (!permission.Allowed) yield break;
+            yield return new FloatMenuOption("SSC_SelfTraining_Assign".Translate(), () => ShowInteractions(actor),
                 MenuOptionPriority.High);
         }
 
-        /// <summary>打开动作菜单前复查资格，避免用已经失效的右键选项继续操作。</summary>
         private static void ShowInteractions(Pawn actor)
         {
             if (!JobDriver_SelfTraining.CanStart(actor, actor.Position, out string reason))
@@ -55,7 +50,6 @@ namespace SexSlaveCraft
             FloatMenuUtility.MakeMenu(options, option => option.Label, option => option.action);
         }
 
-        /// <summary>重新验证选中的动作，提交失败时仅在命令入口未反馈的情况下补发提示。</summary>
         private static void StartSelected(Pawn actor, InteractionDef interaction)
         {
             if (!JobDriver_SelfTraining.CanStart(actor, actor.Position, out string reason))
@@ -78,13 +72,11 @@ namespace SexSlaveCraft
             comp.RegisterManualSelfTraining(job, interaction);
             if (!actor.jobs.TryTakeOrderedJob(job))
             {
-                bool reported = SSCRestrictionJobGuard.WasOrderedRejectionReported(job, actor);
                 comp.ClearManualSelfTraining(job);
-                if (!reported) Reject(actor, "SSC_SelfTraining_JobRejected".Translate());
+                Reject(actor, "SSC_SelfTraining_JobRejected".Translate());
             }
         }
 
-        /// <summary>只在手动入口发送一条拒绝消息。</summary>
         private static void Reject(Pawn pawn, string reason)
             => Messages.Message(reason, pawn, MessageTypeDefOf.RejectInput, false);
     }

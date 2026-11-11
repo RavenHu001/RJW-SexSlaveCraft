@@ -90,8 +90,7 @@
   <SSC_Restrictions_Expand>▶ 展開行為限制</SSC_Restrictions_Expand>
   <SSC_Restrictions_Collapse>◀ 收起行為限制</SSC_Restrictions_Collapse>
   <SSC_Restrictions_JobRejected>行為被限制規則拒絕：{0}。</SSC_Restrictions_JobRejected>
-  <SSC_Restrictions_JobRejectedWithRule>{0}（{1} · {2}）</SSC_Restrictions_JobRejectedWithRule>
-  <SSC_Restrictions_CommandRejected>目前規則拒絕了這項命令。</SSC_Restrictions_CommandRejected>
+  <SSC_Restrictions_CommandRejected>當前行為限制不允許這條命令。請在角色限制欄查看主動、被動許可及強制來源。</SSC_Restrictions_CommandRejected>
   <SSC_Restrictions_TrainingTargetInvalid>該目標沒有有效調教數據，或當前身份不能接受調教。</SSC_Restrictions_TrainingTargetInvalid>
   <SSC_Restrictions_BindingMasterRequired>首次綁定準備必須由指定且具主人身份的角色主持。</SSC_Restrictions_BindingMasterRequired>
   <SSC_Restrictions_TrainingAssignmentRequired>調教任務需要有效的指定調教員；自動工作不會由其他人接替。</SSC_Restrictions_TrainingAssignmentRequired>

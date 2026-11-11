@@ -27,7 +27,7 @@ namespace SexSlaveCraft
                 switch (Failure)
                 {
                     case SSCTrainingFailure.PermissionDenied:
-                        return SSCRestrictionPolicy.RejectionText(Permission);
+                        return "SSC_Restrictions_JobRejected".Translate(("SSC_Restrictions_Reason_" + Permission.Reason).Translate());
                     case SSCTrainingFailure.TrainerRequired: return "SSC_TrainerIdentity_Required".Translate();
                     case SSCTrainingFailure.TargetInvalid: return "SSC_Restrictions_TrainingTargetInvalid".Translate();
                     case SSCTrainingFailure.TargetIdentityRequired: return "SSC_Training_TargetIdentityRequired".Translate();

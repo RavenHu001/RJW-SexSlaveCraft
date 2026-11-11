@@ -84,18 +84,16 @@ namespace SexSlaveCraft
         /// <summary>玩家下令时先查统一许可，拒绝发生在清空原队列及预约之前，避免原版将许可拒绝记为预约异常。</summary>
         public static bool Prefix(Job job, Pawn ___pawn, ref bool __result)
         {
-            if (SSCRestrictionExternalJobs.TryReserve(job, ___pawn, out bool externalAllowed, out var decision) && !externalAllowed)
+            if (SSCRestrictionExternalJobs.TryReserve(job, ___pawn, out bool externalAllowed) && !externalAllowed)
             {
-                Messages.Message(SSCRestrictionPolicy.RejectionText(decision), ___pawn, MessageTypeDefOf.RejectInput, false);
+                Messages.Message(SSCRestrictionExternalJobs.RejectionReason(job, ___pawn), ___pawn, MessageTypeDefOf.RejectInput, false);
                 __result = false;
                 return false;
             }
             // 原版在此方法内部才设置 playerForced；前缀必须显式提供命令来源，不提前改动候选 Job。
             if (!(SSCRestrictionJobContext.GetDriver(job, ___pawn) is JobDriver_Sex driver) ||
-                !SSCRestrictionJobGuard.TryReserve(driver, out bool allowed, out string rejection, ordered: true) || allowed) return true;
-            // 先登记已提示，再返回失败，调用方可以跳过自己的通用兜底。
-            SSCRestrictionJobGuard.MarkOrderedRejectionReported(driver);
-            Messages.Message(rejection ?? SSCRestrictionPolicy.RejectionText(null), ___pawn, MessageTypeDefOf.RejectInput, false);
+                !SSCRestrictionJobGuard.TryReserve(driver, out bool allowed, ordered: true) || allowed) return true;
+            Messages.Message(SSCRestrictionJobGuard.RejectionReason(driver), ___pawn, MessageTypeDefOf.RejectInput, false);
             __result = false;
             return false;
         }

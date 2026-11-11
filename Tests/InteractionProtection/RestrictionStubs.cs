@@ -111,7 +111,6 @@ namespace Verse
     public static class Translation
     {
         /// <summary>返回键名作为可观察的提示，不在本生命周期模型模拟语言系统。</summary>
-        public static string Translate(this string key, params object[] args)
-            => key == "SSC_Restrictions_JobRejectedWithRule" ? string.Join(" | ", args) : key;
+        public static string Translate(this string key, params object[] args) => key;
     }
 }

@@ -90,8 +90,7 @@
   <SSC_Restrictions_Expand>▶ Показать ограничения поведения</SSC_Restrictions_Expand>
   <SSC_Restrictions_Collapse>◀ Скрыть ограничения поведения</SSC_Restrictions_Collapse>
   <SSC_Restrictions_JobRejected>Действие запрещено правилами: {0}.</SSC_Restrictions_JobRejected>
-  <SSC_Restrictions_JobRejectedWithRule>{0} ({1} · {2})</SSC_Restrictions_JobRejectedWithRule>
-  <SSC_Restrictions_CommandRejected>Текущие правила отклонили приказ.</SSC_Restrictions_CommandRejected>
+  <SSC_Restrictions_CommandRejected>Текущие ограничения запрещают эту команду. Проверьте разрешения на активные и пассивные действия и источники принудительных правил.</SSC_Restrictions_CommandRejected>
   <SSC_Restrictions_TrainingTargetInvalid>У цели нет данных для дрессировки или её нынешняя роль не позволяет принять дрессировку.</SSC_Restrictions_TrainingTargetInvalid>
   <SSC_Restrictions_BindingMasterRequired>Для подготовки первого связывания назначенный персонаж должен иметь роль хозяина.</SSC_Restrictions_BindingMasterRequired>
   <SSC_Restrictions_TrainingAssignmentRequired>Для дрессировки требуется действующий назначенный дрессировщик. Другие персонажи не заменяют его автоматически.</SSC_Restrictions_TrainingAssignmentRequired>

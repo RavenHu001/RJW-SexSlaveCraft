@@ -33,7 +33,7 @@ namespace SexSlaveCraft
                 return;
             }
             Job job = JobMaker.MakeJob(SSCDefOf.SelfTraining, pawn, null, destination);
-            if (!pawn.jobs.TryTakeOrderedJob(job) && !SSCRestrictionJobGuard.WasOrderedRejectionReported(job, pawn))
+            if (!pawn.jobs.TryTakeOrderedJob(job))
                 Messages.Message("SSC_SelfTraining_JobRejected".Translate(), pawn,
                     MessageTypeDefOf.RejectInput, false);
         }

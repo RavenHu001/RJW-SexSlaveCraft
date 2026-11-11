@@ -27,28 +27,31 @@ namespace SexSlaveCraft
             => new SSCRestrictionRequest(caster, target, SSCInteractionKind.Consensual,
                 caster != null && target != null && caster != target);
 
+        /// <summary>返回玩家可读的统一拒绝原因；不在高频 AI 查询中主动弹出提示。</summary>
+        public static string Rejection(SSCRestrictionDecision decision)
+            => "SSC_Restrictions_JobRejected".Translate(("SSC_Restrictions_Reason_" + decision.Reason).Translate());
+
         /// <summary>查询已知独立任务的许可；false 仅表示该工作不在本适配器范围内。</summary>
         public static bool TryReserve(Job job, Pawn pawn, out bool allowed)
-            => TryReserve(job, pawn, out allowed, out _);
-
-        /// <summary>把本次独立任务的判定直接交给命令入口，避免重新求值。</summary>
-        internal static bool TryReserve(Job job, Pawn pawn, out bool allowed, out SSCRestrictionDecision decision)
         {
             allowed = true;
-            decision = null;
             Type type = job?.def?.driverClass;
             if (type == null) return false;
             if (typeof(JobDriver_Lovin).IsAssignableFrom(type))
             {
-                allowed = SSCRestrictionLovinGuard.Check((JobDriver_Lovin)job.GetCachedDriver(pawn), false, out decision);
+                allowed = SSCRestrictionLovinGuard.Check((JobDriver_Lovin)job.GetCachedDriver(pawn), false);
                 return true;
             }
             if (type.FullName != SeducedType) return false;
-            decision = SSCRestrictionPolicy.Evaluate(SeduceRequest(job.targetA.Thing as Pawn, pawn));
-            allowed = decision.Allowed;
-            if (!allowed && SSCLog.VerboseEnabled)
-                SSCLog.Verbose($"[SSC Restrictions] Seduced reserve rejected reason={decision.Reason} rule={decision.Entry?.Rule} source={decision.Entry?.Source}");
+            allowed = SSCRestrictionPolicy.Evaluate(SeduceRequest(job.targetA.Thing as Pawn, pawn)).Allowed;
             return true;
+        }
+
+        /// <summary>为已拒绝的玩家命令生成同一有向请求的具体原因，AI候选查询不调用提示。</summary>
+        public static string RejectionReason(Job job, Pawn pawn)
+        {
+            if (job.GetCachedDriver(pawn) is JobDriver_Lovin lovin) return SSCRestrictionLovinGuard.RejectionReason(lovin);
+            return Rejection(SSCRestrictionPolicy.Evaluate(SeduceRequest(job.targetA.Thing as Pawn, pawn)));
         }
 
         /// <summary>独立驱动在步骤切换前重新查询；Seduced 全程只是准备，走近成功不等于场景已开始。</summary>
@@ -61,7 +64,7 @@ namespace SexSlaveCraft
             if (decision.Allowed) return true;
             // 在交接步骤前失败，不执行原模组的取消征召、增加记忆或启动另一方任务。
             if (SSCLog.VerboseEnabled)
-                SSCLog.Verbose($"[SSC Restrictions] Seduced rejected reason={decision.Reason} rule={decision.Entry?.Rule} source={decision.Entry?.Source}");
+                SSCLog.Verbose($"[SSC Restrictions] Seduced rejected reason={decision.Reason}");
             driver.pawn.jobs.EndCurrentJob(JobCondition.Incompletable, startNewJob: false);
             return false;
         }
@@ -111,7 +114,7 @@ namespace SexSlaveCraft
             SSCRestrictionDecision decision = SSCRestrictionPolicy.Evaluate(SSCRestrictionExternalJobs.SeduceRequest(__instance.parent?.pawn, target.Thing as Pawn));
             __result = decision.Allowed;
             if (!__result && throwMessages)
-                Messages.Message(SSCRestrictionPolicy.RejectionText(decision), __instance.parent.pawn, MessageTypeDefOf.RejectInput, false);
+                Messages.Message(SSCRestrictionExternalJobs.Rejection(decision), __instance.parent.pawn, MessageTypeDefOf.RejectInput, false);
         }
     }
 

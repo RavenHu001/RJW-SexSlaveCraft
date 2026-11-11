@@ -66,11 +66,10 @@ namespace Verse
     public static class Messages
     {
         public static int Count;
-        public static string LastText;
         /// <summary>记录一次游戏提示调用，供用例检查拒绝提示是否重复；不显示真实界面。</summary>
         public static void Message(string message, LookTargets targets, object type) { Count++; }
         /// <summary>记录玩家命令被拒绝时的单角色提示。</summary>
-        public static void Message(string message, Pawn target, object type, bool historical) { Count++; LastText = message; }
+        public static void Message(string message, Pawn target, object type, bool historical) { Count++; }
     }
 }
 namespace RimWorld
