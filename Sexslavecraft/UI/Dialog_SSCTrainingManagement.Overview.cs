@@ -244,7 +244,7 @@ namespace SexSlaveCraft
         {
             if (!GameReady() || !ReferenceEquals(selector, Find.Selector)) return;
             var window = Find.WindowStack.WindowOfType<Dialog_SSCTrainingManagement>();
-            if (window != null && (window.editPopup != null || window.bodyProductionPress.HasValue) &&
+            if (window != null && (window.editPopup != null || window.bodyProductionPress.HasValue || window.behaviorPress.Submit != null) &&
                 !window.SourceIsCurrent()) window.InvalidateWindowContext();
         }
     }

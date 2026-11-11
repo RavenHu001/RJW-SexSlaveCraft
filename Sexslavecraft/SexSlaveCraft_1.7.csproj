@@ -37,6 +37,7 @@
     <Compile Include="UI/Dialog_SSCTrainingManagement.Specialization.cs" />
     <!-- 身体生产页使用 1.7 的原能力载体上下文。 -->
     <Compile Include="UI/Dialog_SSCTrainingManagement.BodyProduction.cs" />
+    <Compile Include="UI/Dialog_SSCTrainingManagement.BehaviorRules.cs" />
     <Compile Include="UI/Dialog_SSCTrainingManagement.Relations.cs" />
     <!-- 拖放负责输入捕获与落点分派，实际指派使用 SSCTrainerWorkUtility。 -->
     <Compile Include="UI/Dialog_SSCTrainingManagement.TrainerDrag.cs" />

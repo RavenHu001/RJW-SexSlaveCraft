@@ -88,6 +88,11 @@ namespace SexSlaveCraft
 
         /// <summary>双板块界面省去重复角色标题和常驻说明，保留子组间横线；其他入口及规则／保存逻辑不变。</summary>
         public static void DrawPawn(Listing_Standard listing, Pawn pawn, bool compact)
+            => DrawPawn(listing, pawn, compact, null);
+
+        /// <summary>在调教窗口中由外层保留原按压请求，旧入口继续使用即时提交。</summary>
+        internal static void DrawPawn(Listing_Standard listing, Pawn pawn, bool compact,
+            Func<Rect, object, Action, Action> prepare)
         {
             if (!compact)
             {
@@ -103,14 +108,29 @@ namespace SexSlaveCraft
             if (config == null)
             {
                 listing.Label("SSC_Restrictions_Uninitialized".Translate());
-                if ((applicable || selfApplicable) && listing.ButtonText("SSC_Restrictions_Initialize".Translate()))
+                if (applicable || selfApplicable)
+                {
+                    if (prepare == null)
+                    {
+                        if (listing.ButtonText("SSC_Restrictions_Initialize".Translate())) Initialize();
+                    }
+                    else
+                    {
+                        string label = "SSC_Restrictions_Initialize".Translate();
+                        Rect button = listing.GetRect(Mathf.Max(30f, Text.CalcHeight(label, Mathf.Max(1f, listing.ColumnWidth - 12f)) + 8f));
+                        var submit = prepare(button, "RestrictionInitialize", Initialize);
+                        if (Widgets.ButtonText(button, label) && GUI.enabled) submit?.Invoke();
+                    }
+                }
+                return;
+
+                void Initialize()
                 {
                     if (!SSCRestrictionEditor.TryInitialize(pawn, out SSCRestrictionResolution error))
                         Messages.Message(error == null ? "SSC_Restrictions_EditFailed".Translate() :
                             "SSC_Restrictions_InitializeFailed".Translate(("SSC_Restrictions_Rule_" + error.Rule).Translate(), SourceLabel(error)),
                             MessageTypeDefOf.RejectInput, false);
                 }
-                return;
             }
             if (!config.IsValid()) { listing.Label("SSC_Restrictions_InvalidConfig".Translate(config.version)); return; }
             foreach (SSCRestrictionRule rule in SSCRestrictionRules.All)
@@ -125,11 +145,17 @@ namespace SexSlaveCraft
                     Pawn forced = SSCRestrictionLifecycle.GetForcedTrainer(pawn);
                     if (forced != null) extraTip = "SSC_Restrictions_TrainerLocked".Translate(forced.LabelShort);
                 }
-                DrawChoice(listing, rule, config.rules, rowApplicable, entry, value =>
+                var rules = config.rules;
+                var saved = rules.Get(rule);
+                var savedTarget = rules.ConsensualTarget;
+                // 提交闭包保留原保存值及对象范围，切换开关时沿用按下时记住的范围。
+                DrawChoice(listing, rule, rules, rowApplicable, entry, value =>
                 {
-                    if (!SSCRestrictionEditor.TrySet(pawn, rule, value))
+                    bool changed = prepare == null ? SSCRestrictionEditor.TrySet(pawn, rule, value) :
+                        SSCRestrictionEditor.TrySetFromView(pawn, rule, value, config, rules, saved, savedTarget);
+                    if (!changed)
                         Messages.Message("SSC_Restrictions_EditFailed".Translate(), MessageTypeDefOf.RejectInput, false);
-                }, extraTip);
+                }, extraTip, prepare);
             }
         }
 
@@ -160,7 +186,8 @@ namespace SexSlaveCraft
 
         /// <summary>绘制左文右勾叉；受强制影响时显示并锁住有效值，保存选择只用于无强制时的编辑及悬停说明。</summary>
         private static void DrawChoice(Listing_Standard listing, SSCRestrictionRule rule, SSCRestrictionRules rules,
-            bool editable, SSCRestrictionResolution entry, Action<SSCRestrictionValue> apply, string extraTip = null)
+            bool editable, SSCRestrictionResolution entry, Action<SSCRestrictionValue> apply, string extraTip = null,
+            Func<Rect, object, Action, Action> prepare = null)
         {
             SSCRestrictionValue saved = rules.Get(rule);
             bool forced = entry != null && (entry.Source == SSCRestrictionSource.Equipment ||
@@ -189,6 +216,10 @@ namespace SexSlaveCraft
             bool previous = GUI.enabled;
             Color previousColor = GUI.color;
             bool changed = allowed;
+            var next = allowed ? SSCRestrictionValue.Deny :
+                rule == SSCRestrictionRule.ConsensualInitiation ? rules.ConsensualTarget : SSCRestrictionValue.Allow;
+            Action submit = () => apply(next);
+            if (prepare != null && previous && canEdit) submit = prepare(row, rule, submit);
             try
             {
                 GUI.enabled = previous && canEdit;
@@ -213,15 +244,14 @@ namespace SexSlaveCraft
             }
             TooltipHandler.TipRegion(row, tip);
             if (previous && canEdit && changed != allowed)
-                apply(changed ? (rule == SSCRestrictionRule.ConsensualInitiation ? rules.ConsensualTarget : SSCRestrictionValue.Allow)
-                    : SSCRestrictionValue.Deny);
+                submit?.Invoke();
             if (rule == SSCRestrictionRule.ConsensualInitiation)
-                DrawTargetChoices(listing, rules, displayed, canEdit, apply);
+                DrawTargetChoices(listing, rules, displayed, canEdit, apply, prepare);
         }
 
         /// <summary>对象单选跟随当前显示值；强制时同步锁定，个人关闭时仍显示记住的范围，窄栏分两行。</summary>
         private static void DrawTargetChoices(Listing_Standard listing, SSCRestrictionRules rules,
-            SSCRestrictionValue displayed, bool editable, Action<SSCRestrictionValue> apply)
+            SSCRestrictionValue displayed, bool editable, Action<SSCRestrictionValue> apply, Func<Rect, object, Action, Action> prepare)
         {
             const float indent = 18f;
             string owner = "SSC_Restrictions_Value_OwnerOnly".Translate();
@@ -241,10 +271,19 @@ namespace SexSlaveCraft
                 GUI.enabled = previous && editable && displayed != SSCRestrictionValue.Deny;
                 if (!GUI.enabled) GUI.color = previousColor * new Color(0.55f, 0.55f, 0.55f, 1f);
                 SSCRestrictionValue selected = displayed == SSCRestrictionValue.Deny ? rules.ConsensualTarget : displayed;
-                if (Widgets.RadioButtonLabeled(first, owner, selected == SSCRestrictionValue.OwnerOnly, !GUI.enabled) && GUI.enabled && selected != SSCRestrictionValue.OwnerOnly)
-                    apply(SSCRestrictionValue.OwnerOnly);
-                if (Widgets.RadioButtonLabeled(second, anyone, selected == SSCRestrictionValue.Allow, !GUI.enabled) && GUI.enabled && selected != SSCRestrictionValue.Allow)
-                    apply(SSCRestrictionValue.Allow);
+                DrawTarget(first, owner, SSCRestrictionValue.OwnerOnly);
+                DrawTarget(second, anyone, SSCRestrictionValue.Allow);
+
+                void DrawTarget(Rect rect, string label, SSCRestrictionValue value)
+                {
+                    bool current = selected == value;
+                    Action submit = () => apply(value);
+                    // 各对象选项使用独立键，松手时只允许响应原来按下的那个选项。
+                    if (prepare != null && GUI.enabled && !current)
+                        submit = prepare(rect, (SSCRestrictionRule.ConsensualInitiation, value), submit);
+                    if (Widgets.RadioButtonLabeled(rect, label, current, !GUI.enabled) && GUI.enabled && !current)
+                        submit?.Invoke();
+                }
             }
             finally { GUI.enabled = previous; GUI.color = previousColor; }
             TooltipHandler.TipRegion(first, "SSC_Restrictions_TargetOwnerTip".Translate());

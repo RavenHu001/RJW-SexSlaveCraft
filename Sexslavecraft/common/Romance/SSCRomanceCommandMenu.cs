@@ -1,4 +1,5 @@
 // AI 辅助生成
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using RimWorld;
@@ -12,33 +13,51 @@ namespace SexSlaveCraft
         /// <summary>沿用按钮绘制时捕获的执行者上下文，收集当前地图及已有关系中的候选。</summary>
         public static void OpenTargets(SSCRomanceCommandContext context)
         {
-            if (context == null) return;
+            var menu = CreateTargetMenu(context);
+            if (menu != null) Find.WindowStack.Add(menu);
+        }
+
+        /// <summary>复用目标筛选和提交，调用者可以为菜单实例加上原窗口的提交检查。</summary>
+        internal static FloatMenu CreateTargetMenu(SSCRomanceCommandContext context, Func<FloatMenu, bool> canSubmit = null)
+        {
+            if (context == null) return null;
             var candidates = new List<Pawn>();
             if (context.Actor?.Map != null) candidates.AddRange(context.Actor.Map.mapPawns.AllPawnsSpawned);
             if (context.Actor?.relations != null) candidates.AddRange(context.Actor.relations.DirectRelations.Select(r => r.otherPawn));
-            Find.WindowStack.Add(new FloatMenu(BuildTargetOptions(context, candidates)));
+            // 菜单构造完成后，选项回调才会取得并校验这一实例。
+            FloatMenu menu = null;
+            menu = new FloatMenu(BuildTargetOptions(context, candidates, canSubmit == null ? null : () => canSubmit(menu)));
+            return menu;
         }
 
         /// <summary>只列当前行为可选择的目标；被动必拒和零概率不排除，点击保留同一原预览提交。</summary>
-        internal static List<FloatMenuOption> BuildTargetOptions(SSCRomanceCommandContext context, IEnumerable<Pawn> candidates)
+        internal static List<FloatMenuOption> BuildTargetOptions(SSCRomanceCommandContext context, IEnumerable<Pawn> candidates,
+            Func<bool> canSubmit = null)
         {
             var options = new List<FloatMenuOption>();
             foreach (var pawn in candidates.Where(p => p != null && p != context.Actor && p.RaceProps?.Humanlike == true).Distinct().OrderBy(p => p.LabelShort))
             {
                 var preview = context.ForTarget(pawn, context.Action);
                 if (SSCRomanceCommandUtility.Failure(preview) != null) continue;
-                options.Add(new FloatMenuOption(pawn.LabelShort + " — " + RelationLabel(context.Actor, pawn), () => Submit(preview)));
+                options.Add(new FloatMenuOption(pawn.LabelShort + " — " + RelationLabel(context.Actor, pawn), () =>
+                {
+                    if (canSubmit == null || canSubmit()) Submit(preview, canSubmit);
+                }));
             }
             if (options.Count == 0) options.Add(new FloatMenuOption("SSC_Romance_NoTarget".Translate(), null));
             return options;
         }
 
         /// <summary>选中目标直接下达一次任务；失败显示当前原因，同步完成只报告真实结果，不再提示待执行。</summary>
-        private static void Submit(SSCRomanceCommandContext context)
+        private static void Submit(SSCRomanceCommandContext context, Func<bool> canSubmit)
         {
-            if (!SSCRomanceCommandUtility.TrySubmit(context, out var record, out string reason))
+            bool submitted = canSubmit == null
+                ? SSCRomanceCommandUtility.TrySubmit(context, out var record, out string reason)
+                : SSCRomanceCommandUtility.TrySubmitFromMenu(context, canSubmit, out record, out reason);
+            if (!submitted)
             {
-                Messages.Message(SSCRomanceCommandUtility.Explain(reason), context.Actor, MessageTypeDefOf.RejectInput, false);
+                if (canSubmit?.Invoke() != false)
+                    Messages.Message(SSCRomanceCommandUtility.Explain(reason), context.Actor, MessageTypeDefOf.RejectInput, false);
                 return;
             }
             if (record.Terminal) SSCRomanceCommandGameComponent.Feedback(record);

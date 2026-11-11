@@ -14,7 +14,7 @@ namespace SexSlaveCraft
         private const float PanelPadding = 14f;
         private const float NavigationGap = 5f;
         private const float StackedSummaryWidth = 460f;
-        private enum Page { Overview, Relations, DailyTraining, Specialization, BodyAppearance }
+        private enum Page { Overview, Relations, DailyTraining, Specialization, BodyAppearance, BehaviorRules }
         private enum SummaryRelation { Master, AssignedTrainer, OwnedSlave, TrainerCandidate }
         private static readonly Color HeaderColor = new Color(.20f, .24f, .26f);
         private static readonly Color PanelColor = new Color(.16f, .19f, .20f);
@@ -106,7 +106,11 @@ namespace SexSlaveCraft
             if (editPopup != null && !Find.WindowStack.IsOpen(editPopup)) editPopup = null;
             RefreshSelection();
             // 切到别的应用后可能收不到松手事件，下一次回到游戏须重新按下。
-            if (!Application.isFocused) bodyProductionPress = null;
+            if (!Application.isFocused)
+            {
+                bodyProductionPress = null;
+                behaviorPress = default;
+            }
             // Alt-Tab 或身份变化可能没有对应的鼠标松手事件。
             if (trainerGesture != null && !TrainerGestureSourceCurrent()) EndTrainerGesture();
             relationSession.Update(Time.frameCount, false, viewedMap);
@@ -163,6 +167,8 @@ namespace SexSlaveCraft
             if ((currentPage == Page.DailyTraining || currentPage == Page.Specialization) &&
                 !ITab_SexSlaveTraining.CanShowSpecializationSection(training))
                 ChangePage(Page.Overview);
+            if (currentPage == Page.BehaviorRules && !SSCBehaviorControlUI.CanInspect(pawn))
+                ChangePage(Page.Overview);
             if (ReferenceEquals(source, pawn) && ReferenceEquals(comp, training) && ReferenceEquals(viewedMap, map)) return;
             InvalidateWindowContext();
             relationSession.ReleaseDetails();
@@ -174,6 +180,8 @@ namespace SexSlaveCraft
             dailyTrainingScroll = Vector2.zero;
             specializationScroll = Vector2.zero;
             bodyProductionScroll = Vector2.zero;
+            behaviorRulesScroll = Vector2.zero;
+            behaviorRulesHeight = 0f;
             pressedPortrait = default;
         }
 
@@ -192,6 +200,7 @@ namespace SexSlaveCraft
         {
             contextRevision++;
             bodyProductionPress = null;
+            behaviorPress = default;
             EndTrainerGesture();
             CloseEditPopup();
         }
@@ -225,6 +234,7 @@ namespace SexSlaveCraft
                 // 新的按下只能由本次命中的控件建立请求。
                 pressedPortrait = default;
                 bodyProductionPress = null;
+                behaviorPress = default;
             }
             float y = DrawHeader(inRect.width);
             y += DrawRelationStrip(inRect.width, y, snapshot, out var clicked);
@@ -255,12 +265,14 @@ namespace SexSlaveCraft
             else if (currentPage == Page.DailyTraining) DrawDailyTraining(page);
             else if (currentPage == Page.Specialization) DrawSpecialization(page);
             else if (currentPage == Page.BodyAppearance) DrawBodyAppearance(page);
+            else if (currentPage == Page.BehaviorRules) DrawBehaviorRules(page);
             else DrawOverview(page);
             if (Event.current.rawType == EventType.mouseUp)
             {
                 // 所有页面控件处理完松手后清理凭据，未命中时也不能留到下一次点击。
                 pressedPortrait = default;
                 bodyProductionPress = null;
+                behaviorPress = default;
             }
             // 在所有滚动区结束后分派输入，拖动松手不会再触发普通头像跳转。
             if (!FinishTrainerInput(inRect) && clicked.Target != null) NavigatePortrait(snapshot, clicked.Target, clicked.Relation);
@@ -456,6 +468,7 @@ namespace SexSlaveCraft
                 GUI.color = Color.white;
                 bool slavePage = i == (int)Page.DailyTraining || i == (int)Page.Specialization;
                 bool available = i <= (int)Page.Relations || i == (int)Page.BodyAppearance ||
+                    i == (int)Page.BehaviorRules && SSCBehaviorControlUI.CanInspect(source) ||
                     slavePage && comp?.pawnIdentity == PawnIdentity.Slave;
                 Widgets.DrawBoxSolid(cell, i == (int)currentPage ? SelectedColor : HeaderColor);
                 GUI.color = available ? Color.white : new Color(.68f, .73f, .74f);
@@ -465,7 +478,8 @@ namespace SexSlaveCraft
                     Widgets.DrawHighlightIfMouseover(cell);
                     if (Widgets.ButtonInvisible(cell)) ChangePage((Page)i);
                 }
-                else TooltipHandler.TipRegion(cell, (slavePage ? "SSC_Training_TargetIdentityRequired" : "SSC_TrainingManagement_PagePending").Translate());
+                else TooltipHandler.TipRegion(cell, (slavePage ? "SSC_Training_TargetIdentityRequired" : source == null
+                    ? "SSC_TrainingManagement_SelectPawn" : "SSC_Restrictions_PanelUnavailable").Translate());
             }
             return height;
         }

@@ -90,8 +90,20 @@ namespace SexSlaveCraft
         }
         /// <summary>先消费原提交上下文再登记/调度；重复点击或调度回调不能建立第二个请求。</summary>
         public static bool TrySubmit(SSCRomanceCommandContext context, out SSCRomanceCommandRecord record, out string reason)
+            => TrySubmitCore(context, null, out record, out reason);
+
+        /// <summary>窗口点名命令在外部资格查询之后再次验证菜单归属。</summary>
+        internal static bool TrySubmitFromMenu(SSCRomanceCommandContext context, Func<bool> canSubmit,
+            out SSCRomanceCommandRecord record, out string reason)
+            => TrySubmitCore(context, canSubmit, out record, out reason);
+
+        /// <summary>共用命令授权与登记流程，窗口凭据只限制本次提交。</summary>
+        private static bool TrySubmitCore(SSCRomanceCommandContext context, Func<bool> canSubmit,
+            out SSCRomanceCommandRecord record, out string reason)
         {
             record = null; reason = Failure(context); if (reason != null) return false;
+            // 寻路及其他模组查询可能触发选角或切页。此时结束请求，保留原角色的任务状态。
+            if (canSubmit?.Invoke() == false) { reason = "StaleContext"; return false; }
             context.consumed = true;
             if (!SSCRomanceLifecycle.TryAuthorize(context.Actor, context.Target, context.Action, out var proof))
             { reason = "InvalidAuthorization"; return false; }
@@ -102,6 +114,7 @@ namespace SexSlaveCraft
             // TryAuthorize 的事件对账也可能旋转世代；新证明仍须属于原预览，不能替旧点击领取新世代。
             if (!proof.IsCurrent(context.Actor, context.Target, context.Action) || !MatchesOriginal(context))
             { reason = "InvalidAuthorization"; return false; }
+            if (canSubmit?.Invoke() == false) { reason = "StaleContext"; return false; }
             var store = SSCRomanceCommandGameComponent.Current;
             record = store.Register(job, proof);
             if (record == null) { reason = "DuplicateCommand"; return false; }

@@ -22,22 +22,37 @@ namespace SexSlaveCraft
         /// <summary>在一个外层滚动区域连续绘制两个独立边框；旧模块提前 return 不会退出浪漫板块。</summary>
         public static void DrawPawn(Listing_Standard listing, Pawn pawn, bool showSexSwitches = false)
         {
+            DrawSexSection(listing, pawn, showSexSwitches);
+            listing.Gap(14f);
+            DrawRomanceSection(listing, pawn);
+        }
+
+        /// <summary>独立绘制性行为板块，可由调教窗口接管按压提交。</summary>
+        internal static void DrawSexSection(Listing_Standard listing, Pawn pawn, bool showSexSwitches,
+            Func<Rect, object, Action, Action> prepare = null)
+        {
+            // 恢复默认使用本组原始快照，写入和刷新仍交给各自的业务模块。
             var sexReset = SSCRestrictionEditor.GetResetView(pawn);
             DrawBlock(listing, "SSC_Romance_SexSection".Translate(), inner =>
             {
                 if (showSexSwitches) Dialog_SSCRestrictions.DrawGlobalSwitches(inner);
-                SSCRestrictionUI.DrawPawn(inner, pawn, true);
+                SSCRestrictionUI.DrawPawn(inner, pawn, true, prepare);
             }, rect => DrawReset(rect, sexReset.CanReset, "SSC_BehaviorReset_SexTip", sexReset.Reason, () =>
             {
                 if (!SSCRestrictionEditor.TryReset(pawn, sexReset.Context, out var reason)) ResetFailed(pawn, reason);
-            }));
-            listing.Gap(14f);
+            }, "SexReset", prepare));
+        }
+
+        /// <summary>独立绘制浪漫板块，允许窗口管理目标菜单和原按压。</summary>
+        internal static void DrawRomanceSection(Listing_Standard listing, Pawn pawn,
+            Func<Rect, object, Action, Action> prepare = null, Action<SSCRomanceCommandContext> openTargets = null)
+        {
             var romanceReset = SSCRomancePreferences.GetResetView(pawn);
-            DrawBlock(listing, "SSC_Romance_RomanceSection".Translate(), inner => SSCRomanceUI.DrawPawn(inner, pawn),
+            DrawBlock(listing, "SSC_Romance_RomanceSection".Translate(), inner => SSCRomanceUI.DrawPawn(inner, pawn, prepare, openTargets),
                 rect => DrawReset(rect, romanceReset.CanReset, "SSC_BehaviorReset_RomanceTip", romanceReset.Reason, () =>
                 {
                     if (!SSCRomancePreferences.TryReset(pawn, romanceReset.Context, out var reason)) ResetFailed(pawn, reason);
-                }));
+                }, "RomanceReset", prepare));
         }
         /// <summary>内容只绘制一次并据实际推进高度设置边框，避免测量时重复调用按钮或初始化提交。</summary>
         private static void DrawBlock(Listing_Standard listing, string title, Action<Listing_Standard> content, Action<Rect> reset, bool drawDivider = true)
@@ -78,14 +93,16 @@ namespace SexSlaveCraft
         }
 
         /// <summary>共享标题按钮仅绘制和分发原请求；禁用时灰显，事件后恢复外层 GUI 状态。</summary>
-        private static void DrawReset(Rect rect, bool canReset, string tipKey, string reason, Action submit)
+        private static void DrawReset(Rect rect, bool canReset, string tipKey, string reason, Action submit, string key,
+            Func<Rect, object, Action, Action> prepare)
         {
             bool enabled = GUI.enabled; Color color = GUI.color;
             try
             {
                 GUI.enabled = enabled && canReset;
                 if (!GUI.enabled) GUI.color = color * new Color(.55f, .55f, .55f);
-                if (Widgets.ButtonText(rect, "SSC_BehaviorReset_Button".Translate()) && GUI.enabled) submit();
+                if (GUI.enabled && prepare != null) submit = prepare(rect, key, submit);
+                if (Widgets.ButtonText(rect, "SSC_BehaviorReset_Button".Translate()) && GUI.enabled) submit?.Invoke();
             }
             finally { GUI.enabled = enabled; GUI.color = color; }
             string tip = tipKey.Translate();
@@ -107,14 +124,19 @@ namespace SexSlaveCraft
         };
         /// <summary>保留分组和命令，常驻只显示标签，说明放入悬停；首组复用主标题下横线，所有子标题下方另画横线。</summary>
         public static void DrawPawn(Listing_Standard listing, Pawn pawn)
+            => DrawPawn(listing, pawn, null, null);
+
+        /// <summary>允许外层调教窗口保留原视图，并在命令按钮响应时接管目标菜单。</summary>
+        internal static void DrawPawn(Listing_Standard listing, Pawn pawn, Func<Rect, object, Action, Action> prepare,
+            Action<SSCRomanceCommandContext> openTargets)
         {
             for (int i = 0; i < groups.Length; i++)
             {
-                DrawGroup(listing, pawn, groups[i], i == 0);
-                DrawTargets(listing, pawn, i == 1);
+                DrawGroup(listing, pawn, groups[i], i == 0, prepare);
+                DrawTargets(listing, pawn, i == 1, prepare);
             }
             listing.GapLine();
-            DrawCommands(listing, pawn);
+            DrawCommands(listing, pawn, prepare, openTargets ?? SSCRomanceCommandMenu.OpenTargets);
         }
         /// <summary>子标题居中并统一下横线的绘制颜色；恢复 GUI 状态，避免影响后续开关及禁用样式。</summary>
         private static void DrawSubtitle(Listing_Standard listing, string label)
@@ -132,7 +154,8 @@ namespace SexSlaveCraft
         }
 
         /// <summary>各语言统一使用单列，一行一个开关；先捕获整组视图，绘制回调不能替后续条目重拍授权。</summary>
-        private static void DrawGroup(Listing_Standard listing, Pawn pawn, SSCRomanceSetting[] settings, bool first)
+        private static void DrawGroup(Listing_Standard listing, Pawn pawn, SSCRomanceSetting[] settings, bool first,
+            Func<Rect, object, Action, Action> prepare)
         {
             if (!first) listing.GapLine(6f);
             DrawSubtitle(listing, ("SSC_Romance_Group_" + settings[0]).Translate());
@@ -146,11 +169,11 @@ namespace SexSlaveCraft
                 float labelWidth = Mathf.Max(1f, width - 34f);
                 float height = Mathf.Max(28f, Text.CalcHeight(labels[i], labelWidth));
                 Rect row = listing.GetRect(height + 8f);
-                DrawSetting(new Rect(row.x, row.y, width, row.height), pawn, settings[i], views[i], labels[i]);
+                DrawSetting(new Rect(row.x, row.y, width, row.height), pawn, settings[i], views[i], labels[i], prepare);
             }
         }
         /// <summary>主动对象与被动接受保证复用多选绘制；先捕获整组原视图，点击不能为旧请求重新取得人格权限。</summary>
-        private static void DrawTargets(Listing_Standard listing, Pawn pawn, bool passive)
+        private static void DrawTargets(Listing_Standard listing, Pawn pawn, bool passive, Func<Rect, object, Action, Action> prepare)
         {
             // 展示类别共用短标签，实际提交仍分别指向主动许可或被动保证，不能混用保存源。
             var labelsFor = new[] { SSCRomanceSetting.InitiateToMaster, SSCRomanceSetting.InitiateToSexSlave, SSCRomanceSetting.InitiateToOthers };
@@ -207,16 +230,18 @@ namespace SexSlaveCraft
                     GUI.color = GUI.enabled ? Color.white : new Color(.55f, .55f, .55f, 1f);
                     Text.Anchor = TextAnchor.MiddleCenter;
                     Widgets.Label(new Rect(button.x + 6f, button.y + 4f, Mathf.Max(1f, button.width - 12f), button.height - 8f), labels[i]);
-                    if (GUI.enabled && Widgets.ButtonInvisible(button) && GUI.enabled &&
-                        !SSCRomancePreferences.TrySet(pawn, settings[i], !view.Saved, view.Context, out var reason))
-                        Messages.Message(SettingFailureText(settings[i], reason), pawn, MessageTypeDefOf.RejectInput, false);
-                    TooltipHandler.TipRegion(button, SettingTip(settings[i], view));
+                    var setting = settings[i];
+                    Action submit = () => SubmitSetting(pawn, setting, view);
+                    if (GUI.enabled && prepare != null) submit = prepare(button, setting, submit);
+                    if (GUI.enabled && Widgets.ButtonInvisible(button) && GUI.enabled) submit?.Invoke();
+                    TooltipHandler.TipRegion(button, SettingTip(setting, view));
                 }
             }
             finally { GUI.color = previousColor; GUI.enabled = previousEnabled; Text.Anchor = previousAnchor; Text.WordWrap = previousWrap; }
         }
         /// <summary>底部三个按钮纵向排列，长译文按实际宽度换行；整组使用最初捕获的执行者，点击不重拍人格。</summary>
-        private static void DrawCommands(Listing_Standard listing, Pawn pawn)
+        private static void DrawCommands(Listing_Standard listing, Pawn pawn, Func<Rect, object, Action, Action> prepare,
+            Action<SSCRomanceCommandContext> openTargets)
         {
             DrawSubtitle(listing, "SSC_Romance_CommandTitle".Translate());
             string failure = SSCRomanceCommandUtility.ActorFailure(pawn);
@@ -227,11 +252,17 @@ namespace SexSlaveCraft
                 GUI.enabled = oldEnabled && failure == null;
                 foreach (SSCRomanceAction action in Enum.GetValues(typeof(SSCRomanceAction)))
                 {
+                    // 同一组命令使用同一个执行者快照，按下后只选择具体行为与目标。
                     var context = original.ForTarget(null, action);
                     string label = ("SSC_Romance_Action_" + action).Translate();
                     Rect button = listing.GetRect(Mathf.Max(32f, Text.CalcHeight(label, Mathf.Max(1f, listing.ColumnWidth - 12f)) + 12f));
                     if (!GUI.enabled) DrawDisabledCommand(button, label);
-                    else if (Widgets.ButtonText(button, label) && GUI.enabled) SSCRomanceCommandMenu.OpenTargets(context);
+                    else
+                    {
+                        Action submit = () => openTargets(context);
+                        if (prepare != null) submit = prepare(button, action, submit);
+                        if (Widgets.ButtonText(button, label) && GUI.enabled) submit?.Invoke();
+                    }
                     // 每个命令只显示一句明确动作的说明；禁用原因仍按当前资格追加。
                     string tip = ("SSC_Romance_CommandTip_" + action).Translate();
                     if (failure != null) tip += "\n\n" + SSCRomanceCommandUtility.Explain(failure);
@@ -258,7 +289,8 @@ namespace SexSlaveCraft
             finally { GUI.color = color; Text.Anchor = anchor; Text.WordWrap = wrap; }
         }
         /// <summary>同一行快照用于尺寸、绘制和提交；禁止点击时重新 GetView 为旧请求续权。</summary>
-        private static void DrawSetting(Rect row, Pawn pawn, SSCRomanceSetting setting, SSCRomanceView view, string label)
+        private static void DrawSetting(Rect row, Pawn pawn, SSCRomanceSetting setting, SSCRomanceView view, string label,
+            Func<Rect, object, Action, Action> prepare)
         {
             float labelWidth = Mathf.Max(1f, row.width - 34f);
             float labelHeight = row.height - 8f;
@@ -268,14 +300,22 @@ namespace SexSlaveCraft
             {
                 GUI.enabled = previous && view.CanChange;
                 if (!GUI.enabled) GUI.color = color * new Color(.6f, .6f, .6f, 1f);
+                Action submit = () => SubmitSetting(pawn, setting, view);
+                if (GUI.enabled && prepare != null) submit = prepare(row, setting, submit);
                 Widgets.Label(new Rect(row.x, row.y, labelWidth, labelHeight), label);
                 Widgets.Checkbox(row.xMax - 24f, row.y + Mathf.Max(0f, (labelHeight - 24f) / 2f), ref value, 24f, !GUI.enabled);
                 if (GUI.enabled && Widgets.ButtonInvisible(new Rect(row.x, row.y, labelWidth, labelHeight))) value = !value;
-                if (GUI.enabled && value != view.Saved && !SSCRomancePreferences.TrySet(pawn, setting, value, view.Context, out var reason))
-                    Messages.Message(SettingFailureText(setting, reason), pawn, MessageTypeDefOf.RejectInput, false);
+                if (GUI.enabled && value != view.Saved) submit?.Invoke();
             }
             finally { GUI.enabled = previous; GUI.color = color; }
             TooltipHandler.TipRegion(row, SettingTip(setting, view));
+        }
+
+        /// <summary>使用原视图的保存值和凭据，偏好接口负责核对当前绑定与解锁。</summary>
+        private static void SubmitSetting(Pawn pawn, SSCRomanceSetting setting, SSCRomanceView view)
+        {
+            if (!SSCRomancePreferences.TrySet(pawn, setting, !view.Saved, view.Context, out var reason))
+                Messages.Message(SettingFailureText(setting, reason), pawn, MessageTypeDefOf.RejectInput, false);
         }
         /// <summary>开关与对象按钮的提交失败共用具体阶段说明，其余原因继续走原入口。</summary>
         private static string SettingFailureText(SSCRomanceSetting setting, SSCRomanceReason reason)

@@ -112,7 +112,8 @@ namespace SexSlaveCraft
     public static class SSCRestrictionUI
     {
         /// <summary>旧板块提前返回，检查调用方仍能绘制第二板块。</summary>
-        public static void DrawPawn(Verse.Listing_Standard listing, Verse.Pawn pawn, bool compact = false) { listing.Label("SEX-CONTENT"); }
+        public static void DrawPawn(Verse.Listing_Standard listing, Verse.Pawn pawn, bool compact,
+            Func<Rect, object, Action, Action> prepare) { listing.Label("SEX-CONTENT"); }
     }
     /// <summary>性行为业务由原生宿主测试；此处只观察共享标题向独立后台分发。</summary>
     public sealed class SSCRestrictionResetContext { }
