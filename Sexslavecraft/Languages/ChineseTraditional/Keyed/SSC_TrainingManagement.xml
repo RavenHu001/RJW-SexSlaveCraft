@@ -31,4 +31,6 @@
   <SSC_TrainingManagement_DropClear>撤銷對 {0} 的指派</SSC_TrainingManagement_DropClear>
   <SSC_TrainingManagement_ScheduleDue>已到排班時段</SSC_TrainingManagement_ScheduleDue>
   <SSC_TrainingManagement_ScheduleWaiting>尚未到排班日期或時段</SSC_TrainingManagement_ScheduleWaiting>
+  <SSC_TrainingManagement_CurrentCultivation>目前培養</SSC_TrainingManagement_CurrentCultivation>
+  <SSC_TrainingManagement_FinalAchievements>終極成果</SSC_TrainingManagement_FinalAchievements>
 </LanguageData>

@@ -14,7 +14,7 @@ namespace SexSlaveCraft
         private const float PanelPadding = 14f;
         private const float NavigationGap = 5f;
         private const float StackedSummaryWidth = 460f;
-        private enum Page { Overview, Relations, DailyTraining }
+        private enum Page { Overview, Relations, DailyTraining, Specialization }
         private enum SummaryRelation { Master, AssignedTrainer, OwnedSlave, TrainerCandidate }
         private static readonly Color HeaderColor = new Color(.20f, .24f, .26f);
         private static readonly Color PanelColor = new Color(.16f, .19f, .20f);
@@ -157,8 +157,9 @@ namespace SexSlaveCraft
             Pawn pawn = SelectedPawn();
             var training = pawn?.TryGetComp<CompSexSlaveTraining>();
             Map map = Find.CurrentMap;
-            // 同一组件上的身份变化也可能让日常调教不再适用。
-            if (currentPage == Page.DailyTraining && training?.pawnIdentity != PawnIdentity.Slave)
+            // 同一组件上的身份变化也可能让仅限性奴的页面不再适用。
+            if ((currentPage == Page.DailyTraining || currentPage == Page.Specialization) &&
+                !ITab_SexSlaveTraining.CanShowSpecializationSection(training))
                 ChangePage(Page.Overview);
             if (ReferenceEquals(source, pawn) && ReferenceEquals(comp, training) && ReferenceEquals(viewedMap, map)) return;
             InvalidateWindowContext();
@@ -169,6 +170,7 @@ namespace SexSlaveCraft
             viewedMap = map;
             scroll = Vector2.zero;
             dailyTrainingScroll = Vector2.zero;
+            specializationScroll = Vector2.zero;
             pressedPortrait = default;
         }
 
@@ -242,6 +244,7 @@ namespace SexSlaveCraft
                 if (detailClick.Target != null) clicked = detailClick;
             }
             else if (currentPage == Page.DailyTraining) DrawDailyTraining(page);
+            else if (currentPage == Page.Specialization) DrawSpecialization(page);
             else DrawOverview(page);
             if (Event.current.rawType == EventType.mouseUp) pressedPortrait = default;
             // 在所有滚动区结束后分派输入，拖动松手不会再触发普通头像跳转。
@@ -423,7 +426,7 @@ namespace SexSlaveCraft
             return height;
         }
 
-        /// <summary>绘制六个导航位置，性奴可以进入日常调教。</summary>
+        /// <summary>绘制六个导航位置，日常调教和特化仅对 SSC 性奴开放。</summary>
         private float DrawNavigation(Rect rect, string[] labels, float rowHeight, int columns, bool sidebar)
         {
             float width = NavigationCellWidth(rect.width, columns);
@@ -436,8 +439,8 @@ namespace SexSlaveCraft
             {
                 var cell = new Rect(rect.x + i % columns * (width + NavigationGap), rect.y + i / columns * (rowHeight + NavigationGap), width, rowHeight);
                 GUI.color = Color.white;
-                bool daily = i == (int)Page.DailyTraining;
-                bool available = i <= (int)Page.Relations || daily && comp?.pawnIdentity == PawnIdentity.Slave;
+                bool slavePage = i == (int)Page.DailyTraining || i == (int)Page.Specialization;
+                bool available = i <= (int)Page.Relations || slavePage && comp?.pawnIdentity == PawnIdentity.Slave;
                 Widgets.DrawBoxSolid(cell, i == (int)currentPage ? SelectedColor : HeaderColor);
                 GUI.color = available ? Color.white : new Color(.68f, .73f, .74f);
                 Widgets.Label(new Rect(cell.x + 10f, cell.y, Mathf.Max(1f, cell.width - 20f), cell.height), labels[i]);
@@ -446,7 +449,7 @@ namespace SexSlaveCraft
                     Widgets.DrawHighlightIfMouseover(cell);
                     if (Widgets.ButtonInvisible(cell)) ChangePage((Page)i);
                 }
-                else TooltipHandler.TipRegion(cell, (daily ? "SSC_Training_TargetIdentityRequired" : "SSC_TrainingManagement_PagePending").Translate());
+                else TooltipHandler.TipRegion(cell, (slavePage ? "SSC_Training_TargetIdentityRequired" : "SSC_TrainingManagement_PagePending").Translate());
             }
             return height;
         }

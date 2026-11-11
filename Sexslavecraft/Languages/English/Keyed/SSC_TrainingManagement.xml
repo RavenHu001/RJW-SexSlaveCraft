@@ -31,4 +31,6 @@
   <SSC_TrainingManagement_DropClear>Unassign {0}</SSC_TrainingManagement_DropClear>
   <SSC_TrainingManagement_ScheduleDue>Schedule due now</SSC_TrainingManagement_ScheduleDue>
   <SSC_TrainingManagement_ScheduleWaiting>Schedule not due yet</SSC_TrainingManagement_ScheduleWaiting>
+  <SSC_TrainingManagement_CurrentCultivation>Current training</SSC_TrainingManagement_CurrentCultivation>
+  <SSC_TrainingManagement_FinalAchievements>Final achievements</SSC_TrainingManagement_FinalAchievements>
 </LanguageData>

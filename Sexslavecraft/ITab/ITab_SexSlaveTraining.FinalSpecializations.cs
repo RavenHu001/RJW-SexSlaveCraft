@@ -22,7 +22,7 @@ namespace SexSlaveCraft
         };
 
         /// <summary>按各方向现有终极记录生成名称及悬停说明；不把普通完成、历史进度或当前方向当成终极化。</summary>
-        private static List<(SexSlaveSpecializationType Type, string Text, string Tip)> GetFinalSpecializationRows(Pawn pawn)
+        internal static List<(SexSlaveSpecializationType Type, string Text, string Tip)> GetFinalSpecializationRows(Pawn pawn)
         {
             var rows = new List<(SexSlaveSpecializationType, string, string)>();
             foreach (SexSlaveSpecializationType type in FinalSpecializationDisplayOrder)
@@ -70,7 +70,7 @@ namespace SexSlaveCraft
         }
 
         /// <summary>普通训导官保留原任职状态行，终极成果只进入下方名单，绘制与测高共用此查询。</summary>
-        private static string GetOrdinaryTrainerStatusText(Pawn pawn)
+        internal static string GetOrdinaryTrainerStatusText(Pawn pawn)
         {
             var state = TrainerSpecializationUtility.GetDisplayState(pawn);
             return state == TrainerSpecializationDisplayState.None || TrainerSpecializationUtility.HasFinalRecord(pawn)

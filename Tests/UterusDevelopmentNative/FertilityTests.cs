@@ -109,10 +109,16 @@ internal static partial class Program
             chain.Severity=.3f; Require(!FertilitySpecializationUtility.CanSelect(p,out _));
             chain.Severity=.5f; Require(FertilitySpecializationUtility.CanSelect(p,out _));
             c.SetSpecialization(SexSlaveSpecializationType.None);
-            var menu=(FloatMenuOption)AccessTools.Method(typeof(ITab_SexSlaveTraining),"BuildFertilitySpecializationOption").Invoke(null,new object[]{p,c});
+            bool current = true;
+            FloatMenuOption SelectOption() => ((List<FloatMenuOption>)AccessTools.Method(typeof(ITab_SexSlaveTraining),
+                "BuildSpecializationOptions").Invoke(null, new object[]{p,c,(Func<bool>)(() => current),null}))
+                .Single(option => option.Label == "SSC_Fertility_Select".Translate().ToString());
+            var menu=SelectOption();
             Require(menu.action!=null); chain.Severity=.3f; menu.action(); Equal(SexSlaveSpecializationType.None,c.specializationType);
             chain.Severity=.5f;
-            menu=(FloatMenuOption)AccessTools.Method(typeof(ITab_SexSlaveTraining),"BuildFertilitySpecializationOption").Invoke(null,new object[]{p,c});
+            menu=SelectOption();
+            current=false; menu.action(); Equal(SexSlaveSpecializationType.None,c.specializationType);
+            current=true; menu=SelectOption();
             menu.action(); Equal(SexSlaveSpecializationType.Fertility,c.specializationType);
             c.specializationProgress=.4f; chain.Severity=.3f;
             Near(.01f,FertilitySpecializationUtility.TryGainProgress(p,.01f)); Near(.41f,c.specializationProgress);

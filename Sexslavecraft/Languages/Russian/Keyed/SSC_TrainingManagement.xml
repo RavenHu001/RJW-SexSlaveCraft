@@ -31,4 +31,6 @@
   <SSC_TrainingManagement_DropClear>Снять назначение: {0}</SSC_TrainingManagement_DropClear>
   <SSC_TrainingManagement_ScheduleDue>Время по расписанию наступило</SSC_TrainingManagement_ScheduleDue>
   <SSC_TrainingManagement_ScheduleWaiting>Время по расписанию ещё не наступило</SSC_TrainingManagement_ScheduleWaiting>
+  <SSC_TrainingManagement_CurrentCultivation>Текущее направление</SSC_TrainingManagement_CurrentCultivation>
+  <SSC_TrainingManagement_FinalAchievements>Итоговые достижения</SSC_TrainingManagement_FinalAchievements>
 </LanguageData>
