@@ -24,4 +24,9 @@
   <SSC_TrainingManagement_DragAssignEnable>Drag to Assigned trainers to assign and enable training work</SSC_TrainingManagement_DragAssignEnable>
   <SSC_TrainingManagement_DragClear>Drag to Eligible trainers to unassign</SSC_TrainingManagement_DragClear>
   <SSC_TrainingManagement_DragClearBlocked>Current training restrictions prevent unassigning</SSC_TrainingManagement_DragClearBlocked>
+  <!-- 拖动进入可提交落区后显示的结果预览。 -->
+  <SSC_TrainingManagement_DropAssign>Assign {0}</SSC_TrainingManagement_DropAssign>
+  <SSC_TrainingManagement_DropReplace>Replace {0} with {1}</SSC_TrainingManagement_DropReplace>
+  <SSC_TrainingManagement_DropEnable>Also enable training work for {0}</SSC_TrainingManagement_DropEnable>
+  <SSC_TrainingManagement_DropClear>Unassign {0}</SSC_TrainingManagement_DropClear>
 </LanguageData>

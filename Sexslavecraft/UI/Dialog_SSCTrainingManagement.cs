@@ -312,7 +312,7 @@ namespace SexSlaveCraft
             Text.Anchor = TextAnchor.MiddleLeft;
             Text.WordWrap = false;
             Widgets.Label(textRect, label.Truncate(textRect.width));
-            TooltipHandler.TipRegion(textRect, label);
+            if (trainerGesture == null) TooltipHandler.TipRegion(textRect, label);
             return clicked;
 
             void DrawPortrait(Pawn pawn)
@@ -324,15 +324,16 @@ namespace SexSlaveCraft
             }
         }
 
-        /// <summary>绘制可定位肖像，并在允许时处理普通点击。调教员卡片由拖放手势接管输入。</summary>
+        /// <summary>绘制可定位肖像并处理普通点击。拖放从独立把手开始。</summary>
         private bool DrawJumpPortrait(Rect rect, Pawn pawn, SummaryRelation relation, bool detail,
-            string tooltip = null, float? captureSize = null, bool acceptClick = true)
+            string tooltip = null, float? captureSize = null)
         {
             if (!SSCBondOverviewUtility.IsValidPawn(pawn) || ReferenceEquals(source, pawn)) return false;
             SSCBondOverviewWidgets.Portrait(rect, pawn, pawn.Dead, true, captureSize);
+            // 把手持有鼠标期间，肖像只绘制，避免普通定位提示盖住落区结果。
+            if (trainerGesture != null) return false;
             Widgets.DrawHighlightIfMouseover(rect);
             TooltipHandler.TipRegion(rect, tooltip ?? "SSC_TrainingManagement_JumpToPawn".Translate(pawn.LabelShort).ToString());
-            if (!acceptClick) return false;
             Event input = Event.current;
             bool over = Mouse.IsOver(rect);
             bool leftUp = input.type == EventType.mouseUp && input.button == 0 && over;

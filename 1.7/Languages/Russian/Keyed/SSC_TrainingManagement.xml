@@ -24,4 +24,9 @@
   <SSC_TrainingManagement_DragAssignEnable>Перетащите в область назначенных, чтобы назначить и включить работу дрессировщика</SSC_TrainingManagement_DragAssignEnable>
   <SSC_TrainingManagement_DragClear>Перетащите в область доступных, чтобы снять назначение</SSC_TrainingManagement_DragClear>
   <SSC_TrainingManagement_DragClearBlocked>Текущие ограничения дрессировки не позволяют снять назначение</SSC_TrainingManagement_DragClearBlocked>
+  <!-- 拖动进入可提交落区后显示的结果预览。 -->
+  <SSC_TrainingManagement_DropAssign>Назначить: {0}</SSC_TrainingManagement_DropAssign>
+  <SSC_TrainingManagement_DropReplace>Заменить {0} на {1}</SSC_TrainingManagement_DropReplace>
+  <SSC_TrainingManagement_DropEnable>Также включить работу дрессировщика для {0}</SSC_TrainingManagement_DropEnable>
+  <SSC_TrainingManagement_DropClear>Снять назначение: {0}</SSC_TrainingManagement_DropClear>
 </LanguageData>

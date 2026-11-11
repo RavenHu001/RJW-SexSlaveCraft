@@ -144,8 +144,9 @@ namespace SexSlaveCraft
                     columns, candidateScroll.y, candidateScroll.y + body.height);
             }
             finally { Widgets.EndScrollView(); }
-            // 整个候选区都可接收撤销。退出内层滚动后，分区矩形才与当前坐标系一致。
-            OfferTrainerDrop(section, SummaryRelation.TrainerCandidate);
+            // 在外层坐标中使用候选视口，扣掉滚动条边距后才是可高亮的落点。
+            body.width = width;
+            OfferTrainerDrop(body, SummaryRelation.TrainerCandidate);
             return clicked;
         }
 
@@ -224,7 +225,8 @@ namespace SexSlaveCraft
             Rect body = DrawSectionHeading(section, title);
             body.width = Mathf.Max(1f, body.width - scrollGutter);
             Pawn clicked = DrawTrainerCards(body, trainers, relation, columns, top, bottom);
-            OfferTrainerDrop(section, relation);
+            // 标题只说明区域用途。即使当前没有卡片，也使用同一个内容矩形来高亮和命中。
+            OfferTrainerDrop(body, relation);
             return clicked;
         }
 
@@ -252,7 +254,7 @@ namespace SexSlaveCraft
         /// <summary>先说明保存的工作开关，再显示拖放操作或当前限制。</summary>
         private string TrainerTooltip(Rect rect, Pawn trainer, SummaryRelation relation)
         {
-            if (!Mouse.IsOver(rect)) return null;
+            if (trainerGesture != null || !Mouse.IsOver(rect)) return null;
             var state = SSCTrainerWorkUtility.GetState(trainer, source);
             int priority = SSCTrainerWorkUtility.SavedPriority(trainer.workSettings, SSCTrainerWorkUtility.WorkType);
             string work = SSCTrainerWorkUtility.Reason(priority > 0 ? SSCTrainerWorkState.Active
@@ -268,24 +270,45 @@ namespace SexSlaveCraft
             return work + "\n" + detail;
         }
 
-        /// <summary>头像和姓名占据固定卡片，完整名称与详情留在悬停。</summary>
+        /// <summary>排布头像、姓名和调教员把手，各自使用独立矩形。</summary>
         private bool DrawRelationCard(Rect card, Pawn pawn, SummaryRelation relation, float portraitSize, string tooltip, string name)
         {
             using var scope = new SSCBondOverviewWidgets.GuiScope(false);
-            float size = Mathf.Min(portraitSize, card.width);
-            var portrait = new Rect(card.x + (card.width - size) / 2f, card.y, size, size);
             bool trainerCard = relation == SummaryRelation.AssignedTrainer || relation == SummaryRelation.TrainerCandidate;
-            // 原指派失效后可能无法绘制肖像，保留拖动占位以便按现有权限撤销。
-            if (trainerCard && !SSCBondOverviewUtility.IsValidPawn(pawn)) Widgets.DrawBoxSolid(portrait, PanelColor);
-            bool clicked = DrawJumpPortrait(portrait, pawn, relation, true, tooltip, portraitSize, acceptClick: !trainerCard);
-            if (trainerCard) clicked = TrainerPortraitInput(portrait, pawn, relation);
+            // 优先给把手留出独立点击宽度。较窄的卡片缩小肖像，姓名仍占整行。
+            float handleWidth = trainerCard ? Mathf.Min(22f, card.width * .30f) : 0f;
+            float portraitWidth = trainerCard ? Mathf.Max(1f, card.width - handleWidth - 4f) : card.width;
+            float size = Mathf.Min(portraitSize, portraitWidth);
+            var portrait = new Rect(card.x + (portraitWidth - size) / 2f, card.y, size, size);
+            bool clicked = DrawJumpPortrait(portrait, pawn, relation, true, trainerCard ? null : tooltip, portraitSize);
+            if (trainerCard)
+            {
+                // 把手位于肖像之外。指派失效且没有可绘制的肖像时，仍可从把手发起撤销。
+                var handle = new Rect(card.xMax - handleWidth, card.y + 10f, handleWidth, 34f);
+                DrawTrainerHandle(handle, pawn, relation, tooltip);
+            }
             Text.WordWrap = false;
             Text.Anchor = TextAnchor.UpperCenter;
-            var nameRect = new Rect(card.x, card.y + size + 2f, card.width, card.height - size - 2f);
+            float nameOffset = (trainerCard ? portraitSize : size) + 2f;
+            var nameRect = new Rect(card.x, card.y + nameOffset, card.width, card.height - nameOffset);
             Widgets.Label(nameRect, name.Truncate(card.width));
-            if (Mouse.IsOver(card) && (!Mouse.IsOver(portrait) || !SSCBondOverviewUtility.IsValidPawn(pawn)))
-                TooltipHandler.TipRegion(card, tooltip ?? name);
+            if (trainerGesture == null && Mouse.IsOver(nameRect)) TooltipHandler.TipRegion(nameRect, trainerCard ? name : tooltip ?? name);
             return clicked;
+        }
+
+        /// <summary>绘制独立把手并提供工作状态与拖放提示。</summary>
+        private void DrawTrainerHandle(Rect rect, Pawn pawn, SummaryRelation relation, string tooltip)
+        {
+            Widgets.DrawBoxSolid(rect, PanelColor);
+            float lineWidth = Mathf.Min(10f, rect.width * .55f);
+            float x = rect.x + (rect.width - lineWidth) / 2f;
+            float y = rect.y + rect.height / 2f;
+            for (int i = -1; i <= 1; i++) Widgets.DrawLineHorizontal(x, y + i * 4f, lineWidth, DividerColor);
+            // 活跃拖放只呈现落区预览，经过其他把手时无需再弹出卡片提示。
+            if (trainerGesture != null) return;
+            Widgets.DrawHighlightIfMouseover(rect);
+            if (tooltip != null) TooltipHandler.TipRegion(rect, tooltip);
+            TrainerHandleInput(rect, pawn, relation);
         }
 
         /// <summary>按卡片最小宽度和间距计算分区能容纳的列数。</summary>
