@@ -9,6 +9,9 @@ namespace SexSlaveCraft
     internal sealed partial class Dialog_SSCTrainingManagement
     {
         private const float MinCardWidth = 72f;
+        private const float MinTrainerCardWidth = 100f;
+        private const float TrainerHandleWidth = 30f;
+        private static readonly Color TrainerGripColor = new Color(.68f, .76f, .78f);
         private const float CardGap = 6f;
         private const float CardHeight = 88f;
         private const float SectionPadding = 10f;
@@ -86,7 +89,7 @@ namespace SexSlaveCraft
             if (rightWidth >= OwnerColumnWidth)
             {
                 // 两个右区共用列宽，为候选滚动条留出同样的边距。
-                int rightColumns = GridColumns(rightWidth - 2f * SectionPadding - ScrollbarWidth);
+                int rightColumns = GridColumns(rightWidth - 2f * SectionPadding - ScrollbarWidth, MinTrainerCardWidth);
                 float assignedHeight = TrainerSectionHeight(assignedTitle, rightWidth, assigned.Length, rightColumns);
                 float candidateHeader = HeadingHeight(candidateTitle, rightWidth - 2f * SectionPadding);
                 float candidateHeight = viewport.height - assignedHeight - SectionPadding;
@@ -106,7 +109,7 @@ namespace SexSlaveCraft
 
             // 纵排三区共用外层纵向滚动条，头像卡按剩余宽度减少列数。
             float width = Mathf.Max(1f, viewport.width - ScrollbarWidth);
-            int columns = GridColumns(width - 2f * SectionPadding);
+            int columns = GridColumns(width - 2f * SectionPadding, MinTrainerCardWidth);
             float ownerHeight = OwnerSectionHeight(view.Snapshot, width);
             float assignedY = ownerHeight + SectionPadding;
             float assignedSectionHeight = TrainerSectionHeight(assignedTitle, width, assigned.Length, columns);
@@ -275,20 +278,23 @@ namespace SexSlaveCraft
         {
             using var scope = new SSCBondOverviewWidgets.GuiScope(false);
             bool trainerCard = relation == SummaryRelation.AssignedTrainer || relation == SummaryRelation.TrainerCandidate;
-            // 优先给把手留出独立点击宽度。较窄的卡片缩小肖像，姓名仍占整行。
-            float handleWidth = trainerCard ? Mathf.Min(22f, card.width * .30f) : 0f;
-            float portraitWidth = trainerCard ? Mathf.Max(1f, card.width - handleWidth - 4f) : card.width;
+            // 调教员卡片预留更大的把手和间距，常规宽度保留完整的 56 像素肖像。
+            float handleWidth = trainerCard ? Mathf.Min(TrainerHandleWidth, card.width * .35f) : 0f;
+            float portraitWidth = trainerCard ? Mathf.Max(1f, card.width - handleWidth - 8f) : card.width;
             float size = Mathf.Min(portraitSize, portraitWidth);
             var portrait = new Rect(card.x + (portraitWidth - size) / 2f, card.y, size, size);
             bool clicked = DrawJumpPortrait(portrait, pawn, relation, true, trainerCard ? null : tooltip, portraitSize);
             if (trainerCard)
             {
                 // 把手位于肖像之外。指派失效且没有可绘制的肖像时，仍可从把手发起撤销。
-                var handle = new Rect(card.xMax - handleWidth, card.y + 10f, handleWidth, 34f);
+                // 把手与当前实际显示的头像等高，窄卡片缩放时也保持上下边缘一致。
+                var handle = new Rect(card.xMax - handleWidth, card.y, handleWidth, size);
                 DrawTrainerHandle(handle, pawn, relation, tooltip);
             }
             Text.WordWrap = false;
             Text.Anchor = TextAnchor.UpperCenter;
+            // 姓名使用较小字号，完整名称仍可悬停查看。GUI 作用域会恢复标题及正文的字号。
+            Text.Font = GameFont.Small;
             float nameOffset = (trainerCard ? portraitSize : size) + 2f;
             var nameRect = new Rect(card.x, card.y + nameOffset, card.width, card.height - nameOffset);
             Widgets.Label(nameRect, name.Truncate(card.width));
@@ -300,10 +306,11 @@ namespace SexSlaveCraft
         private void DrawTrainerHandle(Rect rect, Pawn pawn, SummaryRelation relation, string tooltip)
         {
             Widgets.DrawBoxSolid(rect, PanelColor);
-            float lineWidth = Mathf.Min(10f, rect.width * .55f);
+            float lineWidth = Mathf.Min(16f, rect.width * .60f);
             float x = rect.x + (rect.width - lineWidth) / 2f;
             float y = rect.y + rect.height / 2f;
-            for (int i = -1; i <= 1; i++) Widgets.DrawLineHorizontal(x, y + i * 4f, lineWidth, DividerColor);
+            for (int i = -1; i <= 1; i++)
+                Widgets.DrawBoxSolid(new Rect(x, y + i * 6f - 1f, lineWidth, 2f), TrainerGripColor);
             // 活跃拖放只呈现落区预览，经过其他把手时无需再弹出卡片提示。
             if (trainerGesture != null) return;
             Widgets.DrawHighlightIfMouseover(rect);
@@ -312,7 +319,8 @@ namespace SexSlaveCraft
         }
 
         /// <summary>按卡片最小宽度和间距计算分区能容纳的列数。</summary>
-        private static int GridColumns(float width) => Math.Max(1, (int)((width + CardGap) / (MinCardWidth + CardGap)));
+        private static int GridColumns(float width, float minimumCardWidth = MinCardWidth)
+            => Math.Max(1, (int)((width + CardGap) / (minimumCardWidth + CardGap)));
 
         private static int GridRows(int count, int columns) => (count + columns - 1) / columns;
 
