@@ -827,9 +827,13 @@ namespace SexSlaveCraft
             bool oldState = isEnabled;
 
             listing.CheckboxLabeled(Strings.ITab_AllowTraining, ref isEnabled);
-            if (oldState == isEnabled) return;
-            if (!CanEditTrainingConfiguration(pawn, comp)) return;
+            if (oldState != isEnabled) SetDailyTrainingEnabled(pawn, comp, isEnabled);
+        }
 
+        /// <summary>两个界面共用启停行为。开启时的执行条件只用于反馈，保存选择先写入。</summary>
+        internal static void SetDailyTrainingEnabled(Pawn pawn, CompSexSlaveTraining comp, bool isEnabled)
+        {
+            if (!CanEditTrainingConfiguration(pawn, comp) || comp.IsEnabled == isEnabled) return;
             comp.mode = isEnabled ? TrainingMode.Enabled : TrainingMode.Disabled;
             comp.isBeingTrained = false;
 
@@ -859,15 +863,18 @@ namespace SexSlaveCraft
 
         /// <summary>显示剩余训练冷却时间，或在无冷却时显示当前启用状态。</summary>
         private static void DrawCooldownStatus(Listing_Standard listing, CompSexSlaveTraining comp)
+            => listing.Label((TaggedString)GetDailyTrainingStatus(comp));
+
+        /// <summary>冷却读现有计时；冷却结束后显示保存的启停状态。</summary>
+        internal static string GetDailyTrainingStatus(CompSexSlaveTraining comp)
         {
             if (comp.IsOnCooldown)
             {
                 int ticksLeft = CompSexSlaveTraining.CooldownTicks - (Find.TickManager.TicksGame - comp.lastTrainingTick);
-                listing.Label((TaggedString)Strings.ITab_CooldownStatus(ticksLeft.ToStringTicksToPeriod()));
-                return;
+                return Strings.ITab_CooldownStatus(ticksLeft.ToStringTicksToPeriod());
             }
 
-            listing.Label(comp.IsEnabled ? (TaggedString)Strings.ITab_StatusReady : (TaggedString)Strings.ITab_StatusDisabled);
+            return comp.IsEnabled ? Strings.ITab_StatusReady : Strings.ITab_StatusDisabled;
         }
 
         /// <summary>列出支持的训练姿势，并保存玩家选择的模式。</summary>

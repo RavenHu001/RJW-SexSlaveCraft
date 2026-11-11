@@ -38,7 +38,7 @@ namespace SexSlaveCraft
         }
     }
 
-    /// <summary>观察原生选中列表的变更，即使同一帧切走再切回也撤销旧概况菜单。</summary>
+    /// <summary>观察原生选中列表的变更，即使同一帧切走再切回也撤销原角色的编辑弹窗。</summary>
     [HarmonyPatch]
     internal static class Harmony_TrainingOverviewSelection
     {
@@ -63,6 +63,6 @@ namespace SexSlaveCraft
 
         /// <summary>原版完成写入后再比较窗口的编辑对象。</summary>
         private static void Postfix(Selector __instance)
-            => Dialog_SSCTrainingManagement.NotifyOverviewSelection(__instance);
+            => Dialog_SSCTrainingManagement.NotifyEditSelection(__instance);
     }
 }

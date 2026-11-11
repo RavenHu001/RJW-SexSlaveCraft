@@ -14,7 +14,7 @@ namespace SexSlaveCraft
         private const float PanelPadding = 14f;
         private const float NavigationGap = 5f;
         private const float StackedSummaryWidth = 460f;
-        private enum Page { Overview, Relations }
+        private enum Page { Overview, Relations, DailyTraining }
         private enum SummaryRelation { Master, AssignedTrainer, OwnedSlave, TrainerCandidate }
         private static readonly Color HeaderColor = new Color(.20f, .24f, .26f);
         private static readonly Color PanelColor = new Color(.16f, .19f, .20f);
@@ -103,7 +103,7 @@ namespace SexSlaveCraft
             float top = MinimumWindowY();
             if (windowRect.y < top) PositionBelowBar(top);
             // 原版可通过取消或点击外部关闭弹窗，清理它捕获的旧上下文。
-            if (overviewPopup != null && !Find.WindowStack.IsOpen(overviewPopup)) overviewPopup = null;
+            if (editPopup != null && !Find.WindowStack.IsOpen(editPopup)) editPopup = null;
             RefreshSelection();
             // Alt-Tab 或身份变化可能没有对应的鼠标松手事件。
             if (trainerGesture != null && !TrainerGestureSourceCurrent()) EndTrainerGesture();
@@ -157,6 +157,9 @@ namespace SexSlaveCraft
             Pawn pawn = SelectedPawn();
             var training = pawn?.TryGetComp<CompSexSlaveTraining>();
             Map map = Find.CurrentMap;
+            // 同一组件上的身份变化也可能让日常调教不再适用。
+            if (currentPage == Page.DailyTraining && training?.pawnIdentity != PawnIdentity.Slave)
+                ChangePage(Page.Overview);
             if (ReferenceEquals(source, pawn) && ReferenceEquals(comp, training) && ReferenceEquals(viewedMap, map)) return;
             InvalidateWindowContext();
             relationSession.ReleaseDetails();
@@ -165,10 +168,11 @@ namespace SexSlaveCraft
             comp = training;
             viewedMap = map;
             scroll = Vector2.zero;
+            dailyTrainingScroll = Vector2.zero;
             pressedPortrait = default;
         }
 
-        /// <summary>切页时撤销原页手势，进入关系页后重新查询调教员。</summary>
+        /// <summary>切页时撤销原页手势及弹窗，进入关系页后重新查询调教员。</summary>
         private void ChangePage(Page page)
         {
             if (currentPage == page) return;
@@ -183,7 +187,7 @@ namespace SexSlaveCraft
         {
             contextRevision++;
             EndTrainerGesture();
-            CloseOverviewPopup();
+            CloseEditPopup();
         }
 
         /// <summary>返回当前角色的 SSC 身份名称。</summary>
@@ -237,6 +241,7 @@ namespace SexSlaveCraft
                 var detailClick = DrawRelations(page, view, snapshot);
                 if (detailClick.Target != null) clicked = detailClick;
             }
+            else if (currentPage == Page.DailyTraining) DrawDailyTraining(page);
             else DrawOverview(page);
             if (Event.current.rawType == EventType.mouseUp) pressedPortrait = default;
             // 在所有滚动区结束后分派输入，拖动松手不会再触发普通头像跳转。
@@ -418,7 +423,7 @@ namespace SexSlaveCraft
             return height;
         }
 
-        /// <summary>绘制六个导航位置，开放概况与只读关系。</summary>
+        /// <summary>绘制六个导航位置，性奴可以进入日常调教。</summary>
         private float DrawNavigation(Rect rect, string[] labels, float rowHeight, int columns, bool sidebar)
         {
             float width = NavigationCellWidth(rect.width, columns);
@@ -431,7 +436,8 @@ namespace SexSlaveCraft
             {
                 var cell = new Rect(rect.x + i % columns * (width + NavigationGap), rect.y + i / columns * (rowHeight + NavigationGap), width, rowHeight);
                 GUI.color = Color.white;
-                bool available = i <= (int)Page.Relations;
+                bool daily = i == (int)Page.DailyTraining;
+                bool available = i <= (int)Page.Relations || daily && comp?.pawnIdentity == PawnIdentity.Slave;
                 Widgets.DrawBoxSolid(cell, i == (int)currentPage ? SelectedColor : HeaderColor);
                 GUI.color = available ? Color.white : new Color(.68f, .73f, .74f);
                 Widgets.Label(new Rect(cell.x + 10f, cell.y, Mathf.Max(1f, cell.width - 20f), cell.height), labels[i]);
@@ -440,7 +446,7 @@ namespace SexSlaveCraft
                     Widgets.DrawHighlightIfMouseover(cell);
                     if (Widgets.ButtonInvisible(cell)) ChangePage((Page)i);
                 }
-                else TooltipHandler.TipRegion(cell, "SSC_TrainingManagement_PagePending".Translate());
+                else TooltipHandler.TipRegion(cell, (daily ? "SSC_Training_TargetIdentityRequired" : "SSC_TrainingManagement_PagePending").Translate());
             }
             return height;
         }
