@@ -174,7 +174,6 @@ namespace SexSlaveCraft
             dailyTrainingScroll = Vector2.zero;
             specializationScroll = Vector2.zero;
             bodyProductionScroll = Vector2.zero;
-            preconceptionExpanded = false;
             pressedPortrait = default;
         }
 
