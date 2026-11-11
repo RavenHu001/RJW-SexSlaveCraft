@@ -29,4 +29,6 @@
   <SSC_TrainingManagement_DropReplace>Заменить {0} на {1}</SSC_TrainingManagement_DropReplace>
   <SSC_TrainingManagement_DropEnable>Также включить работу дрессировщика для {0}</SSC_TrainingManagement_DropEnable>
   <SSC_TrainingManagement_DropClear>Снять назначение: {0}</SSC_TrainingManagement_DropClear>
+  <SSC_TrainingManagement_ScheduleDue>Время по расписанию наступило</SSC_TrainingManagement_ScheduleDue>
+  <SSC_TrainingManagement_ScheduleWaiting>Время по расписанию ещё не наступило</SSC_TrainingManagement_ScheduleWaiting>
 </LanguageData>

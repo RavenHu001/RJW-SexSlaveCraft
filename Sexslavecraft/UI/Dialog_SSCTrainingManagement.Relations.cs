@@ -85,12 +85,13 @@ namespace SexSlaveCraft
         {
             string assignedTitle = "SSC_TrainingManagement_AssignedSection".Translate();
             string candidateTitle = "SSC_TrainingManagement_CandidateSection".Translate();
+            var enableWork = AssignedTrainerWorkAction();
             float rightWidth = viewport.width - OwnerColumnWidth - SectionPadding;
             if (rightWidth >= OwnerColumnWidth)
             {
                 // 两个右区共用列宽，为候选滚动条留出同样的边距。
                 int rightColumns = GridColumns(rightWidth - 2f * SectionPadding - ScrollbarWidth, MinTrainerCardWidth);
-                float assignedHeight = TrainerSectionHeight(assignedTitle, rightWidth, assigned.Length, rightColumns);
+                float assignedHeight = TrainerSectionHeight(assignedTitle, rightWidth, assigned.Length, rightColumns, enableWork != null);
                 float candidateHeader = HeadingHeight(candidateTitle, rightWidth - 2f * SectionPadding);
                 float candidateHeight = viewport.height - assignedHeight - SectionPadding;
                 if (candidateHeight >= candidateHeader + 2f * SectionPadding + CardHeight &&
@@ -101,7 +102,7 @@ namespace SexSlaveCraft
                     var candidateRect = new Rect(assignedRect.x, assignedRect.yMax + SectionPadding, rightWidth, candidateHeight);
                     Pawn owner = DrawOwnerSection(ownerRect, view);
                     Pawn trainer = DrawTrainerSection(assignedRect, assignedTitle, assigned, SummaryRelation.AssignedTrainer,
-                        rightColumns, ScrollbarWidth, assignedRect.y, assignedRect.yMax);
+                        rightColumns, ScrollbarWidth, assignedRect.y, assignedRect.yMax, enableWork);
                     Pawn candidate = DrawCandidateScroll(candidateRect, candidateTitle, rightColumns);
                     return RelationClick(owner, trainer, candidate);
                 }
@@ -112,7 +113,7 @@ namespace SexSlaveCraft
             int columns = GridColumns(width - 2f * SectionPadding, MinTrainerCardWidth);
             float ownerHeight = OwnerSectionHeight(view.Snapshot, width);
             float assignedY = ownerHeight + SectionPadding;
-            float assignedSectionHeight = TrainerSectionHeight(assignedTitle, width, assigned.Length, columns);
+            float assignedSectionHeight = TrainerSectionHeight(assignedTitle, width, assigned.Length, columns, enableWork != null);
             float candidateY = assignedY + assignedSectionHeight + SectionPadding;
             float candidateSectionHeight = TrainerSectionHeight(candidateTitle, width, candidates.Count, columns);
             float contentHeight = candidateY + candidateSectionHeight;
@@ -125,12 +126,24 @@ namespace SexSlaveCraft
                 float bottom = top + viewport.height;
                 Pawn owner = top < ownerHeight ? DrawOwnerSection(new Rect(0f, 0f, width, ownerHeight), view) : null;
                 Pawn trainer = DrawTrainerSection(new Rect(0f, assignedY, width, assignedSectionHeight), assignedTitle,
-                    assigned, SummaryRelation.AssignedTrainer, columns, 0f, top, bottom);
+                    assigned, SummaryRelation.AssignedTrainer, columns, 0f, top, bottom, enableWork);
                 Pawn candidate = DrawTrainerSection(new Rect(0f, candidateY, width, candidateSectionHeight), candidateTitle,
                     candidates, SummaryRelation.TrainerCandidate, columns, 0f, top, bottom);
                 return RelationClick(owner, trainer, candidate);
             }
             finally { Widgets.EndScrollView(); }
+        }
+
+        /// <summary>现任工作入口沿用基础研究和原启用事务，要求展示的指派仍有效。</summary>
+        private FloatMenuOption AssignedTrainerWorkAction()
+        {
+            if (assigned.Length == 0 || !ResearchUtils.IsResearchFinished(SSCDefOf.SSC_BasicTraining)) return null;
+            var edit = new PageEdit(source, comp, currentPage, contextRevision);
+            Pawn trainer = assigned[0];
+            if (!ReferenceEquals(edit.Comp.selectedTrainer, trainer)) return null;
+            return SSCTrainerAssignmentMenu.EnableOption(edit.Pawn, RefreshAfterEdit,
+                () => PageEditIsCurrent(edit) && ReferenceEquals(edit.Comp.selectedTrainer, trainer) &&
+                    ResearchUtils.IsResearchFinished(SSCDefOf.SSC_BasicTraining), requireAvailable: true);
         }
 
         /// <summary>宽窗中候选独立滚动，主人与已指派保持可见。</summary>
@@ -216,16 +229,16 @@ namespace SexSlaveCraft
             finally { Widgets.EndScrollView(); }
         }
 
-        private static float TrainerSectionHeight(string title, float width, int count, int columns)
-            => 2f * SectionPadding + HeadingHeight(title, width - 2f * SectionPadding) +
+        private static float TrainerSectionHeight(string title, float width, int count, int columns, bool enableWork = false)
+            => 2f * SectionPadding + SectionHeadingSize(title, Mathf.Max(1f, width - 2f * SectionPadding), enableWork).Height +
                 Math.Max(1, GridRows(count, columns)) * CardHeight;
 
         /// <summary>绘制已指派区或纵排候选区。空区同样提供落点。</summary>
         private Pawn DrawTrainerSection(Rect section, string title, IReadOnlyList<Pawn> trainers, SummaryRelation relation,
-            int columns, float scrollGutter, float top, float bottom)
+            int columns, float scrollGutter, float top, float bottom, FloatMenuOption enableWork = null)
         {
             if (section.yMax <= top || section.y >= bottom) return null;
-            Rect body = DrawSectionHeading(section, title);
+            Rect body = DrawSectionHeading(section, title, enableWork);
             body.width = Mathf.Max(1f, body.width - scrollGutter);
             Pawn clicked = DrawTrainerCards(body, trainers, relation, columns, top, bottom);
             // 标题只说明区域用途。即使当前没有卡片，也使用同一个内容矩形来高亮和命中。
@@ -333,15 +346,32 @@ namespace SexSlaveCraft
         private static float HeadingHeight(string title, float width)
             => Text.CalcHeight("<b>" + title + "</b>", Mathf.Max(1f, width)) + 8f;
 
+        /// <summary>已指派区的操作和标题并排，共用测量结果，按钮始终位于落区之外。</summary>
+        private static (float TitleWidth, float ButtonWidth, float Height) SectionHeadingSize(string title, float width, bool enableWork)
+        {
+            if (!enableWork) return (width, 0f, HeadingHeight(title, width));
+            float buttonWidth = Mathf.Min(width * .45f, Mathf.Max(64f, Text.CalcSize("SSC_TrainerWork_Enable".Translate()).x + 20f));
+            float titleWidth = Mathf.Max(1f, width - buttonWidth - 8f);
+            return (titleWidth, buttonWidth, Mathf.Max(HeadingHeight(title, titleWidth), Text.LineHeight + 10f));
+        }
+
         /// <summary>绘制区域标题及边界，返回独立内容矩形。</summary>
-        private static Rect DrawSectionHeading(Rect section, string title)
+        private Rect DrawSectionHeading(Rect section, string title, FloatMenuOption enableWork = null)
         {
             Widgets.DrawBoxSolid(section, HeaderColor);
             float x = section.x + SectionPadding;
             float y = section.y + SectionPadding;
             float width = Mathf.Max(1f, section.width - 2f * SectionPadding);
-            float height = HeadingHeight(title, width);
-            Widgets.Label(new Rect(x, y, width, height - 6f), "<b>" + title + "</b>");
+            var (titleWidth, buttonWidth, height) = SectionHeadingSize(title, width, enableWork != null);
+            Widgets.Label(new Rect(x, y, titleWidth, height - 6f), "<b>" + title + "</b>");
+            if (enableWork != null)
+            {
+                var button = new Rect(x + width - buttonWidth, y, buttonWidth, height - 6f);
+                bool canClick = trainerGesture == null;
+                string tooltip = canClick ? enableWork.Label + "\n" + "SSC_TrainerWork_CategoryTip".Translate() : null;
+                if (DrawSettingsControl(button, "SSC_TrainerWork_Enable".Translate(), enabled: canClick, tooltip: tooltip))
+                    enableWork.action();
+            }
             Widgets.DrawLineHorizontal(x, y + height - 4f, width, DividerColor);
             return new Rect(x, y + height, width, Mathf.Max(1f, section.yMax - y - height - SectionPadding));
         }

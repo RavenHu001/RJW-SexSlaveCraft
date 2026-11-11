@@ -24,27 +24,27 @@ namespace SexSlaveCraft
             var viewport = new Rect(page.x + PanelPadding, page.y + PanelPadding,
                 Mathf.Max(1f, page.width - 2f * PanelPadding), Mathf.Max(1f, page.height - 2f * PanelPadding));
             float width = Mathf.Max(1f, viewport.width - 16f);
+            float indent = Mathf.Min(16f, width * .12f);
             var edit = new PageEdit(source, comp, currentPage, contextRevision);
             var rows = new List<(float Height, Action<Rect> Draw)>();
 
             // 先按研究状态建立当次控件，日常设置和锁链各自决定是否可用。
-            AddLabel("<b>" + PageKeys[(int)Page.DailyTraining].Translate() + "</b>");
             if (ResearchUtils.IsResearchFinished(SSCDefOf.SSC_BasicTraining))
             {
                 AddTrainingSettings();
+                AddGroupGap();
                 AddScheduleSettings();
-                AddTrainerStatus();
             }
             else
             {
                 AddLabel(Strings.ITab_TrainingLocked);
-                AddLabel(Strings.ITab_TrainingLockedDesc);
+                AddLabel(Strings.ITab_TrainingLockedDesc, indent);
             }
             // 锁链阶段有自己的准入和保存载体，在基础研究未完成时仍可显示。
             AddPnaMaintenance();
 
             // 测量和绘制复用同一批行。关闭排班后先收紧滚动范围，再绘制剩余控件。
-            const float rowGap = 6f;
+            const float rowGap = 4f;
             float height = 0f;
             foreach (var row in rows) height += row.Height + rowGap;
             dailyTrainingScroll.y = Mathf.Clamp(dailyTrainingScroll.y, 0f, Mathf.Max(0f, height - viewport.height));
@@ -61,25 +61,47 @@ namespace SexSlaveCraft
             finally { Widgets.EndScrollView(); }
 
             // 长说明使用当前字体的实际换行高度。
-            void AddLabel(string label) => rows.Add((Text.CalcHeight(label, width), rect => Widgets.Label(rect, label)));
+            void AddLabel(string label, float offset = 0f, string tooltip = null)
+                => rows.Add((Text.CalcHeight(label, Mathf.Max(1f, width - offset)), rect =>
+                {
+                    var content = Inset(rect, offset);
+                    Widgets.Label(content, label);
+                    if (tooltip != null) TooltipHandler.TipRegion(content, tooltip);
+                }));
+
+            // 组间分隔线保持左对齐，组内行只在左侧增加一级缩进。
+            void AddGroupGap() => rows.Add((8f, rect => Widgets.DrawLineHorizontal(rect.x, rect.y + 3f, rect.width, DividerColor)));
+
+            Rect Inset(Rect rect, float offset) => new Rect(rect.x + offset, rect.y, Mathf.Max(1f, rect.width - offset), rect.height);
 
             // 开关为原版勾选框预留宽度，实际写入前再次核对角色和研究。
-            void AddToggle(string label, bool value, Action<bool> submit)
+            void AddToggle(string label, bool value, Action<bool> submit, float offset = 0f)
             {
-                float rowHeight = Mathf.Max(24f, Text.CalcHeight(label, Mathf.Max(1f, width - 24f)));
+                float rowHeight = Mathf.Max(24f, Text.CalcHeight(label, Mathf.Max(1f, width - offset - 24f)));
                 rows.Add((rowHeight, rect =>
                 {
-                    bool next = SSCUIWidgets.Checkbox(rect, label, value, true);
+                    bool next = SSCUIWidgets.Checkbox(Inset(rect, offset), label, value, true);
                     if (next != value && CanEditDailyTraining(edit)) submit(next);
                 }));
             }
 
-            // 下拉和普通操作共用概况的深色控件，长值通过悬停查看。
-            void AddControl(string label, Action action, bool dropdown = false, bool enabled = true, string tooltip = null)
-                => rows.Add((Mathf.Max(34f, Text.LineHeight + 8f), rect =>
+            // 标签和值共享一行。先测量标签，再为右侧下拉预留宽度。
+            void AddSetting(string caption, string value, Action action, float offset = 0f, bool enabled = true, string tooltip = null)
+            {
+                float captionWidth = (width - offset) * .42f;
+                float rowHeight = Mathf.Max(ControlHeight(), Text.CalcHeight(caption, Mathf.Max(1f, captionWidth - 8f)));
+                rows.Add((rowHeight, rect =>
                 {
-                    if (DrawSettingsControl(rect, label, dropdown, enabled, tooltip)) action();
+                    rect = Inset(rect, offset);
+                    using var scope = new SSCBondOverviewWidgets.GuiScope(false);
+                    Text.Anchor = TextAnchor.MiddleLeft;
+                    Widgets.Label(new Rect(rect.x, rect.y, Mathf.Max(1f, captionWidth - 8f), rect.height), caption);
+                    var control = new Rect(rect.x + captionWidth, rect.y, Mathf.Max(1f, rect.width - captionWidth), rect.height);
+                    if (DrawSettingsControl(control, value, dropdown: true, enabled: enabled, tooltip: tooltip)) action();
                 }));
+            }
+
+            float ControlHeight() => Mathf.Max(32f, Text.LineHeight + 6f);
 
             // 启停和冷却沿用原调教面板；姿势菜单保留打开时的值以防覆盖外部改动。
             void AddTrainingSettings()
@@ -87,21 +109,39 @@ namespace SexSlaveCraft
                 var training = edit.Comp;
                 bool enabled = training.IsEnabled;
                 var pose = training.selectedMode;
-                AddLabel(Strings.ITab_TrainingSettingsHeader);
+                string heading = Strings.ITab_TrainingSettingsHeader;
+                string cooldown = training.IsOnCooldown ? ITab_SexSlaveTraining.GetDailyTrainingStatus(training) : null;
+                float headingWidth = Mathf.Max(1f, width * .42f - 8f);
+                // 标题独自决定行高。右侧倒计时出现、变长或消失都不改变下方控件位置。
+                rows.Add((Mathf.Max(Text.LineHeight, Text.CalcHeight(heading, headingWidth)), rect =>
+                {
+                    using var scope = new SSCBondOverviewWidgets.GuiScope(false);
+                    Text.Anchor = TextAnchor.MiddleLeft;
+                    Widgets.Label(new Rect(rect.x, rect.y, headingWidth, rect.height), heading);
+                    if (cooldown == null) return;
+
+                    float offset = rect.width * .42f;
+                    var status = Inset(rect, offset);
+                    Text.Anchor = TextAnchor.MiddleRight;
+                    Text.WordWrap = false;
+                    // 裁剪区域而非富文本字符串，窄窗下仍能悬停查看完整倒计时。
+                    GUI.BeginGroup(status);
+                    try { Widgets.Label(new Rect(0f, 0f, status.width, status.height), cooldown); }
+                    finally { GUI.EndGroup(); }
+                    if (Text.CalcSize(cooldown).x > status.width) TooltipHandler.TipRegion(status, cooldown);
+                }));
                 AddToggle(Strings.ITab_AllowTraining, enabled, next =>
                 {
                     if (training.IsEnabled == enabled) ITab_SexSlaveTraining.SetDailyTrainingEnabled(edit.Pawn, training, next);
-                });
-                AddLabel(ITab_SexSlaveTraining.GetDailyTrainingStatus(training));
-                AddLabel(Strings.ITab_PoseHeader);
-                AddControl(Strings.GetModeLabel(pose), () =>
+                }, indent);
+                AddSetting(Strings.ITab_PoseHeader, Strings.GetModeLabel(pose), () =>
                 {
                     if (!CanEditDailyTraining(edit)) return;
                     OpenDailyMenu(edit, (TrainingActType[])Enum.GetValues(typeof(TrainingActType)), Strings.GetModeLabel, value =>
                     {
                         if (CanEditDailyTraining(edit) && training.selectedMode == pose) training.selectedMode = value;
                     });
-                }, dropdown: true);
+                }, indent);
             }
 
             // 排班只写原组件字段，状态读取组件现有的本地日期和时段判断。
@@ -111,19 +151,43 @@ namespace SexSlaveCraft
                 bool scheduled = training.scheduledTrainingEnabled;
                 int hour = training.scheduledTrainingHour;
                 int days = training.scheduledTrainingIntervalDays;
-                AddLabel("<b>" + "SSC_Schedule_Header".Translate() + "</b>");
-                AddToggle("SSC_Schedule_Enable".Translate(), scheduled, next =>
+                AddToggle("<b>" + "SSC_Schedule_Header".Translate() + "</b>", scheduled, next =>
                 {
                     if (training.scheduledTrainingEnabled == scheduled) training.scheduledTrainingEnabled = next;
                 });
-                if (!scheduled)
+                // 关闭仅隐藏细项，保留已保存的开始时间和频率。
+                if (!scheduled) return;
+
+                string hourLabel = "SSC_Schedule_HourButton".Translate(hour.ToString("00"), training.ScheduledTrainingEndHour.ToString("00"));
+                string intervalLabel = "SSC_Schedule_IntervalButton".Translate(days);
+                const float gap = 8f;
+                float columnWidth = (width - indent - gap) / 2f;
+                // 以两段实际译文和下拉内边距决定是否并排，长译文可提前换行。
+                float minimum = Mathf.Max(180f, Mathf.Max(Text.CalcSize(hourLabel).x, Text.CalcSize(intervalLabel).x) + 36f);
+                if (columnWidth >= minimum)
+                    rows.Add((ControlHeight(), rect =>
+                    {
+                        var first = new Rect(rect.x + indent, rect.y, columnWidth, rect.height);
+                        var second = new Rect(first.xMax + gap, rect.y, columnWidth, rect.height);
+                        DrawScheduleControl(first, hourLabel, OpenHourMenu);
+                        DrawScheduleControl(second, intervalLabel, OpenIntervalMenu);
+                    }));
+                else
                 {
-                    // 关闭仅隐藏细项，保留已保存的开始时间和频率。
-                    AddLabel("SSC_Schedule_StatusAnytime".Translate());
-                    return;
+                    rows.Add((ControlHeight(), rect => DrawScheduleControl(Inset(rect, indent), hourLabel, OpenHourMenu)));
+                    rows.Add((ControlHeight(), rect => DrawScheduleControl(Inset(rect, indent), intervalLabel, OpenIntervalMenu)));
                 }
 
-                AddControl("SSC_Schedule_HourButton".Translate(hour.ToString("00"), training.ScheduledTrainingEndHour.ToString("00")), () =>
+                bool due = training.IsScheduledTrainingAvailableNow;
+                AddLabel((due ? "SSC_TrainingManagement_ScheduleDue" : "SSC_TrainingManagement_ScheduleWaiting").Translate(), indent,
+                    (due ? "SSC_Schedule_StatusNow" : "SSC_Schedule_StatusWaiting").Translate());
+
+                void DrawScheduleControl(Rect rect, string label, Action action)
+                {
+                    if (DrawSettingsControl(rect, label, dropdown: true)) action();
+                }
+
+                void OpenHourMenu()
                 {
                     if (!ScheduleIsEditable()) return;
                     // 用现有窗口长度折算次日结束时刻；保存字段只接收开始小时。
@@ -132,42 +196,19 @@ namespace SexSlaveCraft
                     {
                         if (ScheduleIsEditable() && training.scheduledTrainingHour == hour) training.scheduledTrainingHour = value;
                     });
-                }, dropdown: true);
-                AddControl("SSC_Schedule_IntervalButton".Translate(days), () =>
+                }
+
+                void OpenIntervalMenu()
                 {
                     if (!ScheduleIsEditable()) return;
                     OpenDailyMenu(edit, Enumerable.Range(1, 7), interval => "SSC_Schedule_IntervalOption".Translate(interval), value =>
                     {
                         if (ScheduleIsEditable() && training.scheduledTrainingIntervalDays == days) training.scheduledTrainingIntervalDays = value;
                     });
-                }, dropdown: true);
-                AddLabel((training.IsScheduledTrainingAvailableNow ? "SSC_Schedule_StatusNow" : "SSC_Schedule_StatusWaiting").Translate());
+                }
 
                 // 排班关闭后，已打开的时间和频率菜单也无权改值。
                 bool ScheduleIsEditable() => CanEditDailyTraining(edit) && training.scheduledTrainingEnabled;
-            }
-
-            // 现任及其工作状态按保存指派显示，调整指派转到关系页。
-            void AddTrainerStatus()
-            {
-                Pawn trainer = edit.Comp.selectedTrainer;
-                AddLabel(Strings.ITab_TrainerHeader);
-                AddLabel(trainer == null ? Strings.ITab_TrainerNone : trainer.LabelShort.ToString());
-                if (trainer != null)
-                {
-                    var state = SSCTrainerWorkUtility.GetState(trainer, edit.Pawn);
-                    AddLabel(SSCTrainerWorkUtility.Reason(state, trainer));
-                    // 只打开现任的工作优先级，使用原事务捕获指派和工作载体。
-                    if (state == SSCTrainerWorkState.Off)
-                    {
-                        var enable = SSCTrainerAssignmentMenu.EnableOption(edit.Pawn, RefreshAfterEdit, () => CanEditDailyTraining(edit));
-                        if (enable != null) AddControl(enable.Label, enable.action, tooltip: "SSC_TrainerWork_CategoryTip".Translate());
-                    }
-                }
-                AddControl(PageKeys[(int)Page.Relations].Translate(), () =>
-                {
-                    if (PageEditIsCurrent(edit)) ChangePage(Page.Relations);
-                });
             }
 
             // 只为实际锁链生成维持控件。档位菜单保存原链、主人和设置代次，提交时不重拍凭据。
@@ -175,9 +216,9 @@ namespace SexSlaveCraft
             {
                 var chain = SSCPnaMaintenanceUtility.Capture(edit.Pawn);
                 if (chain.Chain == null) return;
-                AddLabel("<b>" + "SSC_PnaMaintenance_Title".Translate() + "</b>");
+                AddGroupGap();
                 bool canSet = SSCPnaMaintenanceUtility.CanSet(chain, SSCPnaMaintenanceStage.Off, out string reason);
-                AddControl(SSCPnaMaintenanceUtility.StageLabel(chain.Stage), () =>
+                AddSetting("<b>" + "SSC_PnaMaintenance_Title".Translate() + "</b>", SSCPnaMaintenanceUtility.StageLabel(chain.Stage), () =>
                 {
                     if (!PageEditIsCurrent(edit) || !SSCPnaMaintenanceUtility.CanSet(chain, SSCPnaMaintenanceStage.Off, out _)) return;
                     OpenDailyMenu(edit, (SSCPnaMaintenanceStage[])Enum.GetValues(typeof(SSCPnaMaintenanceStage)),
@@ -186,7 +227,7 @@ namespace SexSlaveCraft
                             if (SSCPnaMaintenanceUtility.TrySet(chain, stage, out string rejection)) RefreshAfterEdit();
                             else Messages.Message(rejection, edit.Pawn, MessageTypeDefOf.RejectInput, false);
                         }, stage => SSCPnaMaintenanceUtility.CanSet(chain, stage, out string rejection) ? null : rejection);
-                }, dropdown: true, enabled: canSet, tooltip: reason ?? "SSC_PnaMaintenance_Tooltip".Translate().ToString());
+                }, enabled: canSet, tooltip: reason ?? "SSC_PnaMaintenance_Tooltip".Translate().ToString());
             }
         }
 

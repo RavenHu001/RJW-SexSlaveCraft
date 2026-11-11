@@ -29,4 +29,6 @@
   <SSC_TrainingManagement_DropReplace>Replace {0} with {1}</SSC_TrainingManagement_DropReplace>
   <SSC_TrainingManagement_DropEnable>Also enable training work for {0}</SSC_TrainingManagement_DropEnable>
   <SSC_TrainingManagement_DropClear>Unassign {0}</SSC_TrainingManagement_DropClear>
+  <SSC_TrainingManagement_ScheduleDue>Schedule due now</SSC_TrainingManagement_ScheduleDue>
+  <SSC_TrainingManagement_ScheduleWaiting>Schedule not due yet</SSC_TrainingManagement_ScheduleWaiting>
 </LanguageData>
