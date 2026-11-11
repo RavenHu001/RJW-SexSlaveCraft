@@ -1,4 +1,5 @@
 // AI 辅助生成。统一导航边界；只读复查关系，重新解析点击对象的位置。
+using System;
 using RimWorld;
 using RimWorld.Planet;
 using Verse;
@@ -20,15 +21,7 @@ namespace SexSlaveCraft
         {
             failure = SSCBondOverviewNavigationFailure.RelationChanged;
             if (!IsTrainerCurrent(snapshot)) return false;
-            // 调教员不是锁链条目；复查指定引用后，只重解这一人的位置，不伪造绑定或使用旧船。
-            SSCBondOverviewLocation location;
-            using (var world = SSCBondOverviewWorld.Rent())
-            { world.AddLocationRequest(snapshot.AssignedTrainer); world.IndexShipLocations(); location = world.GetLocation(snapshot.AssignedTrainer); }
-            if (!TryTarget(location, out GlobalTargetInfo target)) { failure = SSCBondOverviewNavigationFailure.Unknown; return false; }
-            if (!CameraJumper.CanJump(target)) { failure = SSCBondOverviewNavigationFailure.CannotJump; return false; }
-            if (!IsTrainerCurrent(snapshot)) return false;
-            if (CanSelect(target)) CameraJumper.TryJumpAndSelect(target); else CameraJumper.TryJump(target);
-            failure = SSCBondOverviewNavigationFailure.None; return true;
+            return NavigateResolvedPawn(snapshot.AssignedTrainer, () => IsTrainerCurrent(snapshot), out failure);
         }
 
         internal static bool TryNavigate(SSCBondOverviewSnapshot snapshot, SSCBondOverviewEntry entry,
@@ -42,20 +35,32 @@ namespace SexSlaveCraft
             if (!SSCBondOverviewUtility.IsCurrent(snapshot, entry))
             { failure = SSCBondOverviewNavigationFailure.RelationChanged; return false; }
 
-            // IsCurrent 不刷新位置。只重解这名角色，沿用第一批防环和位置优先级；不收集世界候选。
+            return NavigateResolvedPawn(entry.Pawn, () => SSCBondOverviewUtility.IsCurrent(snapshot, entry), out failure);
+        }
+
+        /// <summary>供候选等角色复用跳转，调用方提供角色与当前窗口的资格复查。</summary>
+        internal static bool TryNavigatePawn(Pawn pawn, Func<bool> current, out SSCBondOverviewNavigationFailure failure)
+        {
+            failure = SSCBondOverviewNavigationFailure.RelationChanged;
+            return SSCBondOverviewUtility.IsValidPawn(pawn) && current() && NavigateResolvedPawn(pawn, current, out failure);
+        }
+
+        /// <summary>解析单个目标当前位置，执行前再次复查关系或候选资格。</summary>
+        private static bool NavigateResolvedPawn(Pawn pawn, Func<bool> current, out SSCBondOverviewNavigationFailure failure)
+        {
+            failure = SSCBondOverviewNavigationFailure.RelationChanged;
             SSCBondOverviewLocation location;
             using (var world = SSCBondOverviewWorld.Rent())
             {
-                world.AddLocationRequest(entry.Pawn);
+                world.AddLocationRequest(pawn);
                 world.IndexShipLocations();
-                location = world.GetLocation(entry.Pawn);
+                location = world.GetLocation(pawn);
             }
             if (!TryTarget(location, out GlobalTargetInfo target))
             { failure = SSCBondOverviewNavigationFailure.Unknown; return false; }
             if (!CameraJumper.CanJump(target))
             { failure = SSCBondOverviewNavigationFailure.CannotJump; return false; }
-            if (!SSCBondOverviewUtility.IsCurrent(snapshot, entry))
-            { failure = SSCBondOverviewNavigationFailure.RelationChanged; return false; }
+            if (!current()) return false;
             if (CanSelect(target)) CameraJumper.TryJumpAndSelect(target); else CameraJumper.TryJump(target);
             failure = SSCBondOverviewNavigationFailure.None;
             return true; // 仅表示已分派；原版接口为 void，不声称已观察到选中成功。

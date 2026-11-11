@@ -1,0 +1,296 @@
+// AI 辅助生成。关系页只读取现有关系和调教工作，不提交指派。
+using System;
+using System.Collections.Generic;
+using UnityEngine;
+using Verse;
+
+namespace SexSlaveCraft
+{
+    internal sealed partial class Dialog_SSCTrainingManagement
+    {
+        private const int TrainerColumns = 5;
+        private const float MinCardWidth = 72f;
+        private const float CardGap = 6f;
+        private const float CardHeight = 88f;
+        private const float SectionPadding = 10f;
+        private const float ScrollbarWidth = 18f;
+        private const float OwnerColumnWidth = 144f;
+        private const float OwnerPortraitSize = 92f;
+        private const float CandidateRefreshSeconds = 2f;
+        private const float TrainerGridWidth = TrainerColumns * MinCardWidth + (TrainerColumns - 1) * CardGap;
+
+        private Vector2 relationsScroll;
+        private Vector2 candidateScroll;
+        private readonly List<Pawn> candidates = new List<Pawn>();
+        private Pawn[] assigned = Array.Empty<Pawn>();
+        private int candidateRevision = -1;
+        private float nextCandidateRefresh;
+
+        /// <summary>来源或地图变化时，清掉原角色的滚动位置和候选。</summary>
+        private void ResetRelationPage()
+        {
+            relationsScroll = candidateScroll = Vector2.zero;
+            candidates.Clear();
+            assigned = Array.Empty<Pawn>();
+            candidateRevision = -1;
+            nextCandidateRefresh = 0;
+        }
+
+        /// <summary>投影原指派字段，候选只在视图变化或定时刷新时重新枚举。</summary>
+        private void RefreshRelationTrainers(SSCBondOverviewView view)
+        {
+            Pawn trainer = view.Snapshot.AssignedTrainer;
+            if (!ReferenceEquals(assigned.Length == 0 ? null : assigned[0], trainer))
+                assigned = trainer == null ? Array.Empty<Pawn>() : new[] { trainer };
+
+            float now = Time.realtimeSinceStartup;
+            if (candidateRevision == view.Revision && now < nextCandidateRefresh && now >= nextCandidateRefresh - CandidateRefreshSeconds) return;
+            candidates.Clear();
+            foreach (Pawn candidate in TrainerAssignmentUtility.GetTrainerCandidates(view.Source))
+                if (!ReferenceEquals(candidate, trainer)) candidates.Add(candidate);
+            candidates.Sort((left, right) =>
+            {
+                int result = StringComparer.CurrentCultureIgnoreCase.Compare(left.LabelShort, right.LabelShort);
+                return result != 0 ? result : left.thingIDNumber.CompareTo(right.thingIDNumber);
+            });
+            candidateRevision = view.Revision;
+            nextCandidateRefresh = now + CandidateRefreshSeconds;
+        }
+
+        /// <summary>绘制当前身份适用的关系区域，返回本帧点击以便在滚动区结束后跳转。</summary>
+        private (Pawn Target, SummaryRelation Relation) DrawRelations(Rect page, SSCBondOverviewView view, SSCBondOverviewSnapshot snapshot)
+        {
+            Widgets.DrawBoxSolid(page, PanelColor);
+            var viewport = new Rect(page.x + PanelPadding, page.y + PanelPadding,
+                Mathf.Max(1f, page.width - 2f * PanelPadding), Mathf.Max(1f, page.height - 2f * PanelPadding));
+            if (snapshot?.State != SSCBondOverviewQueryState.Ready || snapshot.Identity == PawnIdentity.Unset)
+            {
+                string text = comp == null ? "SSC_TrainingManagement_SelectPawn".Translate().ToString()
+                    : comp.pawnIdentity == PawnIdentity.Unset ? IdentityLabel(PawnIdentity.Unset)
+                    : SSCBondOverviewText.T(view?.Failed == true ? "QueryFailed" : "Waiting");
+                Widgets.Label(viewport, text);
+                return default;
+            }
+
+            if (snapshot.Identity == PawnIdentity.Master)
+                return (DrawOwnedSlaves(viewport, view), SummaryRelation.OwnedSlave);
+
+            RefreshRelationTrainers(view);
+            return DrawSlaveRelations(viewport, view);
+        }
+
+        /// <summary>右列按五张头像的最小宽度判断是否能和主人并排。</summary>
+        private (Pawn Target, SummaryRelation Relation) DrawSlaveRelations(Rect viewport, SSCBondOverviewView view)
+        {
+            string assignedTitle = "SSC_TrainingManagement_AssignedSection".Translate();
+            string candidateTitle = "SSC_TrainingManagement_CandidateSection".Translate();
+            float rightWidth = viewport.width - OwnerColumnWidth - SectionPadding;
+            float minRightWidth = TrainerGridWidth + 2f * SectionPadding + ScrollbarWidth;
+            if (rightWidth >= minRightWidth)
+            {
+                float assignedHeight = TrainerSectionHeight(assignedTitle, rightWidth, assigned.Length);
+                float candidateHeader = HeadingHeight(candidateTitle, rightWidth - 2f * SectionPadding);
+                float candidateHeight = viewport.height - assignedHeight - SectionPadding;
+                if (candidateHeight >= candidateHeader + 2f * SectionPadding + CardHeight &&
+                    viewport.height >= OwnerSectionHeight(view.Snapshot, OwnerColumnWidth))
+                {
+                    var ownerRect = new Rect(viewport.x, viewport.y, OwnerColumnWidth, viewport.height);
+                    var assignedRect = new Rect(ownerRect.xMax + SectionPadding, viewport.y, rightWidth, assignedHeight);
+                    var candidateRect = new Rect(assignedRect.x, assignedRect.yMax + SectionPadding, rightWidth, candidateHeight);
+                    Pawn owner = DrawOwnerSection(ownerRect, view);
+                    Pawn trainer = DrawTrainerSection(assignedRect, assignedTitle, assigned, SummaryRelation.AssignedTrainer,
+                        assignedRect.y, assignedRect.yMax);
+                    Pawn candidate = DrawCandidateScroll(candidateRect, candidateTitle);
+                    return RelationClick(owner, trainer, candidate);
+                }
+            }
+
+            // 极窄时保留五列的字号与头像尺寸，滚动区承接超出的宽度。
+            float width = Mathf.Max(viewport.width - ScrollbarWidth, minRightWidth);
+            float ownerHeight = OwnerSectionHeight(view.Snapshot, width);
+            float assignedY = ownerHeight + SectionPadding;
+            float assignedSectionHeight = TrainerSectionHeight(assignedTitle, width, assigned.Length);
+            float candidateY = assignedY + assignedSectionHeight + SectionPadding;
+            float candidateSectionHeight = TrainerSectionHeight(candidateTitle, width, candidates.Count);
+            float contentHeight = candidateY + candidateSectionHeight;
+            Widgets.BeginScrollView(viewport, ref relationsScroll, new Rect(0f, 0f, width, Mathf.Max(viewport.height, contentHeight)));
+            try
+            {
+                float top = relationsScroll.y;
+                float bottom = top + viewport.height;
+                Pawn owner = top < ownerHeight ? DrawOwnerSection(new Rect(0f, 0f, width, ownerHeight), view) : null;
+                Pawn trainer = DrawTrainerSection(new Rect(0f, assignedY, width, assignedSectionHeight), assignedTitle,
+                    assigned, SummaryRelation.AssignedTrainer, top, bottom);
+                Pawn candidate = DrawTrainerSection(new Rect(0f, candidateY, width, candidateSectionHeight), candidateTitle,
+                    candidates, SummaryRelation.TrainerCandidate, top, bottom);
+                return RelationClick(owner, trainer, candidate);
+            }
+            finally { Widgets.EndScrollView(); }
+        }
+
+        /// <summary>宽窗中候选独立滚动，主人与已指派保持可见。</summary>
+        private Pawn DrawCandidateScroll(Rect section, string title)
+        {
+            Rect body = DrawSectionHeading(section, title);
+            float width = body.width - ScrollbarWidth;
+            float total = Mathf.Max(CardHeight, GridRows(candidates.Count, TrainerColumns) * CardHeight);
+            Widgets.BeginScrollView(body, ref candidateScroll, new Rect(0f, 0f, width, Mathf.Max(body.height, total)));
+            try
+            {
+                return DrawTrainerCards(new Rect(0f, 0f, width, total), candidates, SummaryRelation.TrainerCandidate,
+                    candidateScroll.y, candidateScroll.y + body.height);
+            }
+            finally { Widgets.EndScrollView(); }
+        }
+
+        private static (Pawn Target, SummaryRelation Relation) RelationClick(Pawn owner, Pawn trainer, Pawn candidate)
+        {
+            if (owner != null) return (owner, SummaryRelation.Master);
+            return trainer != null ? (trainer, SummaryRelation.AssignedTrainer) : (candidate, SummaryRelation.TrainerCandidate);
+        }
+
+        private static string MissingMasterLabel(SSCBondOverviewSnapshot snapshot)
+            => SSCBondOverviewText.T(snapshot.MasterState == SSCBondOverviewMasterState.InvalidTarget ? "InvalidMaster" : "NoMaster");
+
+        private static float OwnerSectionHeight(SSCBondOverviewSnapshot snapshot, float width)
+        {
+            float innerWidth = Mathf.Max(1f, width - 2f * SectionPadding);
+            float body = snapshot.Master == null ? Text.CalcHeight(MissingMasterLabel(snapshot), innerWidth) : OwnerPortraitSize + 30f;
+            return 2f * SectionPadding + HeadingHeight(SSCBondOverviewText.T("Master"), innerWidth) + body;
+        }
+
+        /// <summary>主人只占一张大头像，未绑定和损坏的锁链使用原空状态。</summary>
+        private Pawn DrawOwnerSection(Rect section, SSCBondOverviewView view)
+        {
+            Rect body = DrawSectionHeading(section, SSCBondOverviewText.T("Master"));
+            var master = view.Snapshot.Master;
+            if (master == null)
+            {
+                Widgets.Label(body, MissingMasterLabel(view.Snapshot));
+                return null;
+            }
+
+            // 纵排时仍保持主人头像靠左，避免随整个分区宽度扩张。
+            var card = new Rect(body.x, body.y, Mathf.Min(body.width, OwnerColumnWidth - 2f * SectionPadding), OwnerPortraitSize + 30f);
+            return DrawRelationCard(card, master.Pawn, SummaryRelation.Master, OwnerPortraitSize,
+                view.Display.Row(master).Tooltip, view.Display.Row(master).Name) ? master.Pawn : null;
+        }
+
+        /// <summary>主人页复用原所属性奴快照、详情文字和按可见行绘制的网格。</summary>
+        private Pawn DrawOwnedSlaves(Rect viewport, SSCBondOverviewView view)
+        {
+            Rect body = DrawSectionHeading(viewport, view.Display.OwnedHeading);
+            var slaves = view.Snapshot.Slaves;
+            if (slaves.Count == 0)
+            {
+                Widgets.Label(body, SSCBondOverviewText.T("EmptySlaves"));
+                return null;
+            }
+            float width = Mathf.Max(1f, body.width - ScrollbarWidth);
+            int columns = Math.Max(1, (int)((width + CardGap) / (MinCardWidth + CardGap)));
+            int rows = GridRows(slaves.Count, columns);
+            float total = rows * CardHeight;
+            Widgets.BeginScrollView(body, ref relationsScroll, new Rect(0f, 0f, width, Mathf.Max(body.height, total)));
+            try
+            {
+                SSCBondOverviewLayout.VisibleRange(rows, 0f, relationsScroll.y, body.height, out int first, out int end, CardHeight);
+                for (int i = first * columns; i < Math.Min(slaves.Count, end * columns); i++)
+                {
+                    var entry = slaves[i];
+                    var text = view.Display.Row(entry);
+                    if (DrawRelationCard(CardRect(0f, 0f, width, columns, i), entry.Pawn, SummaryRelation.OwnedSlave, 56f,
+                        text.Tooltip, text.Name)) return entry.Pawn;
+                }
+                return null;
+            }
+            finally { Widgets.EndScrollView(); }
+        }
+
+        private static float TrainerSectionHeight(string title, float width, int count)
+            => 2f * SectionPadding + HeadingHeight(title, width - 2f * SectionPadding) +
+                Math.Max(1, GridRows(count, TrainerColumns)) * CardHeight;
+
+        private Pawn DrawTrainerSection(Rect section, string title, IReadOnlyList<Pawn> trainers, SummaryRelation relation, float top, float bottom)
+        {
+            if (section.yMax <= top || section.y >= bottom) return null;
+            Rect body = DrawSectionHeading(section, title);
+            body.width = Mathf.Max(1f, body.width - ScrollbarWidth);
+            return DrawTrainerCards(body, trainers, relation, top, bottom);
+        }
+
+        /// <summary>两组调教员共用固定五列，绘制时只读取可见卡片的工作状态。</summary>
+        private Pawn DrawTrainerCards(Rect body, IReadOnlyList<Pawn> trainers, SummaryRelation relation, float top, float bottom)
+        {
+            if (trainers.Count == 0)
+            {
+                Widgets.Label(body, SSCBondOverviewText.T(relation == SummaryRelation.AssignedTrainer ? "Trainer_None" : "None"));
+                return null;
+            }
+
+            int rows = GridRows(trainers.Count, TrainerColumns);
+            SSCBondOverviewLayout.VisibleRange(rows, body.y, top, bottom - top, out int first, out int end, CardHeight);
+            for (int i = first * TrainerColumns; i < Math.Min(trainers.Count, end * TrainerColumns); i++)
+            {
+                Pawn trainer = trainers[i];
+                Rect card = CardRect(body.x, body.y, body.width, TrainerColumns, i);
+                string name = trainer.Dead ? SSCBondOverviewText.Format("DeadName", trainer.LabelShort) : trainer.LabelShort;
+                if (DrawRelationCard(card, trainer, relation, 56f, TrainerTooltip(card, trainer), name)) return trainer;
+            }
+            return null;
+        }
+
+        /// <summary>先说明保存的工作开关，再显示点击定位或当前不可工作的原因。</summary>
+        private string TrainerTooltip(Rect rect, Pawn trainer)
+        {
+            if (!Mouse.IsOver(rect)) return null;
+            var state = SSCTrainerWorkUtility.GetState(trainer, source);
+            int priority = SSCTrainerWorkUtility.SavedPriority(trainer.workSettings, SSCTrainerWorkUtility.WorkType);
+            string work = SSCTrainerWorkUtility.Reason(priority > 0 ? SSCTrainerWorkState.Active
+                : priority == 0 ? SSCTrainerWorkState.Off : SSCTrainerWorkState.Uninitialized);
+            string detail = SSCBondOverviewUtility.IsValidPawn(trainer) && !ReferenceEquals(trainer, source)
+                ? "SSC_TrainingManagement_JumpToPawn".Translate(trainer.LabelShort).ToString() : SSCBondOverviewText.T("CannotJump");
+            if (state != SSCTrainerWorkState.Active && state != SSCTrainerWorkState.Off && state != SSCTrainerWorkState.Uninitialized)
+                detail += " · " + SSCTrainerWorkUtility.Reason(state, trainer);
+            return work + "\n" + detail;
+        }
+
+        /// <summary>头像和姓名占据固定卡片，完整名称与详情留在悬停。</summary>
+        private bool DrawRelationCard(Rect card, Pawn pawn, SummaryRelation relation, float portraitSize, string tooltip, string name)
+        {
+            using var scope = new SSCBondOverviewWidgets.GuiScope(false);
+            float size = Mathf.Min(portraitSize, card.width);
+            var portrait = new Rect(card.x + (card.width - size) / 2f, card.y, size, size);
+            bool clicked = DrawJumpPortrait(portrait, pawn, relation, true, tooltip, portraitSize);
+            Text.WordWrap = false;
+            Text.Anchor = TextAnchor.UpperCenter;
+            var nameRect = new Rect(card.x, card.y + size + 2f, card.width, card.height - size - 2f);
+            Widgets.Label(nameRect, name.Truncate(card.width));
+            if (Mouse.IsOver(card) && !Mouse.IsOver(portrait)) TooltipHandler.TipRegion(nameRect, tooltip ?? name);
+            return clicked;
+        }
+
+        private static int GridRows(int count, int columns) => (count + columns - 1) / columns;
+
+        private static Rect CardRect(float x, float y, float width, int columns, int index)
+        {
+            float cell = Mathf.Max(1f, (width - (columns - 1) * CardGap) / columns);
+            return new Rect(x + index % columns * (cell + CardGap), y + index / columns * CardHeight, cell, CardHeight);
+        }
+
+        private static float HeadingHeight(string title, float width)
+            => Text.CalcHeight("<b>" + title + "</b>", Mathf.Max(1f, width)) + 8f;
+
+        /// <summary>绘制区域标题及边界，返回独立内容矩形。</summary>
+        private static Rect DrawSectionHeading(Rect section, string title)
+        {
+            Widgets.DrawBoxSolid(section, HeaderColor);
+            float x = section.x + SectionPadding;
+            float y = section.y + SectionPadding;
+            float width = Mathf.Max(1f, section.width - 2f * SectionPadding);
+            float height = HeadingHeight(title, width);
+            Widgets.Label(new Rect(x, y, width, height - 6f), "<b>" + title + "</b>");
+            Widgets.DrawLineHorizontal(x, y + height - 4f, width, DividerColor);
+            return new Rect(x, y + height, width, Mathf.Max(1f, section.yMax - y - height - SectionPadding));
+        }
+    }
+}

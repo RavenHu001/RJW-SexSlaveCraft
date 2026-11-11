@@ -7,13 +7,14 @@ using Verse;
 
 namespace SexSlaveCraft
 {
-    /// <summary>只读显示原版地图当前单选角色的调教概况。</summary>
-    internal sealed class Dialog_SSCTrainingManagement : Window
+    /// <summary>只读显示原版地图当前单选角色的调教概况和关系。</summary>
+    internal sealed partial class Dialog_SSCTrainingManagement : Window
     {
         private const float ScreenPadding = 16f;
         private const float PanelPadding = 14f;
         private const float NavigationGap = 5f;
-        private enum SummaryRelation { Master, AssignedTrainer, OwnedSlave }
+        private enum Page { Overview, Relations }
+        private enum SummaryRelation { Master, AssignedTrainer, OwnedSlave, TrainerCandidate }
         private static readonly Color HeaderColor = new Color(.20f, .24f, .26f);
         private static readonly Color PanelColor = new Color(.16f, .19f, .20f);
         private static readonly Color SelectedColor = new Color(.26f, .34f, .35f);
@@ -25,10 +26,13 @@ namespace SexSlaveCraft
             "SSC_TrainingManagement_BodyAppearance", "SSC_TrainingManagement_BehaviorRules"
         };
         private readonly Game game;
+        private readonly SSCBondOverviewSession relationSession;
+        private Page currentPage;
+        private Map viewedMap;
         private Pawn source;
         private CompSexSlaveTraining comp;
         private Vector2 scroll;
-        private (Pawn Target, SummaryRelation Relation) pressedPortrait;
+        private (Pawn Target, SummaryRelation Relation, bool Detail) pressedPortrait;
 
         /// <summary>按当前逻辑屏幕尺寸限制初始窗口大小。</summary>
         public override Vector2 InitialSize
@@ -39,6 +43,8 @@ namespace SexSlaveCraft
         private Dialog_SSCTrainingManagement()
         {
             game = Current.Game;
+            relationSession = new SSCBondOverviewSession(game, () => Time.realtimeSinceStartup,
+                report: error => Log.Error("[SSC] Training management relationship query: " + error));
             doCloseX = true;
             closeOnCancel = true;
             closeOnAccept = false;
@@ -53,16 +59,25 @@ namespace SexSlaveCraft
                 !WorldRendererUtility.WorldSelected;
 
         /// <summary>为当前单选角色打开窗口，已有有效实例时将其置前。</summary>
-        internal static void OpenSelected()
+        internal static void OpenSelected() => TryOpen(null, false);
+
+        /// <summary>命令栏放大镜为同一个原版单选角色打开关系页。</summary>
+        internal static bool TryOpenRelations(Pawn pawn) => pawn != null && TryOpen(pawn, true);
+
+        private static bool TryOpen(Pawn expected, bool relations)
         {
-            if (!GameReady() || SelectedPawn() == null) return;
+            if (!GameReady()) return false;
+            Pawn selected = SelectedPawn();
+            if (selected == null || expected != null && !ReferenceEquals(selected, expected)) return false;
             var previous = Find.WindowStack.WindowOfType<Dialog_SSCTrainingManagement>();
             if (previous != null && ReferenceEquals(previous.game, Current.Game))
             {
+                if (relations) previous.ChangePage(Page.Relations);
                 Find.WindowStack.Notify_ManuallySetFocus(previous);
-                return;
+                return true;
             }
-            Find.WindowStack.Add(new Dialog_SSCTrainingManagement());
+            Find.WindowStack.Add(new Dialog_SSCTrainingManagement { currentPage = relations ? Page.Relations : Page.Overview });
+            return true;
         }
 
         /// <summary>读取原版单选，沿用调教标签的角色准入条件。</summary>
@@ -85,6 +100,19 @@ namespace SexSlaveCraft
             }
             float top = MinimumWindowY();
             if (windowRect.y < top) PositionBelowBar(top);
+            RefreshSelection();
+            relationSession.Update(Time.frameCount, false, viewedMap);
+        }
+
+        /// <summary>释放本窗口的局部视图和候选引用。</summary>
+        public override void PostClose()
+        {
+            relationSession.Clear();
+            ResetRelationPage();
+            source = null;
+            comp = null;
+            pressedPortrait = default;
+            base.PostClose();
         }
 
         /// <summary>初次打开或分辨率变化时在原版殖民者栏下方定位。</summary>
@@ -121,11 +149,23 @@ namespace SexSlaveCraft
         {
             Pawn pawn = SelectedPawn();
             var training = pawn?.TryGetComp<CompSexSlaveTraining>();
-            if (ReferenceEquals(source, pawn) && ReferenceEquals(comp, training)) return;
+            Map map = Find.CurrentMap;
+            if (ReferenceEquals(source, pawn) && ReferenceEquals(comp, training) && ReferenceEquals(viewedMap, map)) return;
+            relationSession.ReleaseDetails();
+            ResetRelationPage();
             source = pawn;
             comp = training;
+            viewedMap = map;
             scroll = Vector2.zero;
             pressedPortrait = default;
+        }
+
+        private void ChangePage(Page page)
+        {
+            if (currentPage == page) return;
+            currentPage = page;
+            pressedPortrait = default;
+            if (page == Page.Relations) nextCandidateRefresh = 0;
         }
 
         /// <summary>返回当前角色的 SSC 身份名称。</summary>
@@ -144,12 +184,16 @@ namespace SexSlaveCraft
         {
             if (!GameReady() || !ReferenceEquals(game, Current.Game)) return;
             RefreshSelection();
+            // 同一帧的摘要、详情与点击使用同一个本地视图。会话负责直接变化及周期刷新。
+            SSCBondOverviewView view = source == null ? null : relationSession.OpenDetails(source, viewedMap);
+            SSCBondOverviewSnapshot snapshot = view?.Snapshot;
+            if (snapshot != null && snapshot.Identity != comp.pawnIdentity) snapshot = null;
             using var scope = new SSCBondOverviewWidgets.GuiScope(true);
             Text.Font = GameFont.Medium;
             Text.WordWrap = true;
             if (Event.current.type == EventType.mouseDown) pressedPortrait = default;
             float y = DrawHeader(inRect.width);
-            y += DrawRelationStrip(inRect.width, y, out var clicked);
+            y += DrawRelationStrip(inRect.width, y, snapshot, out var clicked);
             y += PanelPadding;
             float available = Mathf.Max(1f, inRect.height - y);
 
@@ -169,9 +213,14 @@ namespace SexSlaveCraft
                 ? new Rect(navWidth + PanelPadding, y, inRect.width - navWidth - PanelPadding, available)
                 : new Rect(0f, y + navHeight + PanelPadding, inRect.width,
                     Mathf.Max(1f, available - navHeight - PanelPadding));
-            DrawOverview(page);
+            if (currentPage == Page.Relations)
+            {
+                var detailClick = DrawRelations(page, view, snapshot);
+                if (detailClick.Target != null) clicked = detailClick;
+            }
+            else DrawOverview(page);
             if (Event.current.rawType == EventType.mouseUp) pressedPortrait = default;
-            if (clicked.Target != null) NavigatePortrait(clicked.Target, clicked.Relation);
+            if (clicked.Target != null) NavigatePortrait(snapshot, clicked.Target, clicked.Relation);
         }
 
         /// <summary>标题、头像和身份使用同一个原版单选，空选时仍保留窗口标题。</summary>
@@ -204,13 +253,14 @@ namespace SexSlaveCraft
             return height;
         }
 
-        /// <summary>在关系详情页接入前，摘要已按身份读取实际锁链和指派。</summary>
-        private float DrawRelationStrip(float width, float y, out (Pawn Target, SummaryRelation Relation) clicked)
+        /// <summary>用详情共用的快照绘制顶部关系摘要。</summary>
+        private float DrawRelationStrip(float width, float y, SSCBondOverviewSnapshot snapshot,
+            out (Pawn Target, SummaryRelation Relation) clicked)
         {
             clicked = default;
-            if (comp == null || comp.pawnIdentity == PawnIdentity.Unset) return 0f;
+            if (snapshot?.State != SSCBondOverviewQueryState.Ready || snapshot.Identity == PawnIdentity.Unset) return 0f;
             const float rowHeight = 66f;
-            bool slave = comp.pawnIdentity == PawnIdentity.Slave;
+            bool slave = snapshot.Identity == PawnIdentity.Slave;
             bool stacked = slave && width < 460f;
             float height = stacked ? 2f * rowHeight : rowHeight;
             Widgets.DrawBoxSolid(new Rect(0f, y, width, height), PanelColor);
@@ -219,25 +269,20 @@ namespace SexSlaveCraft
             var first = new Rect(PanelPadding, y, groupWidth, rowHeight);
             if (!slave)
             {
-                var owned = SSCBondOverviewUtility.SummarizeLocalSlaves(source);
+                var owned = snapshot.Slaves;
                 clicked = (DrawRelationGroup(first, "SSC_BondOverview_OwnedCount".Translate(owned.Count),
-                    SummaryRelation.OwnedSlave, owned.First, owned.Second), SummaryRelation.OwnedSlave);
+                    SummaryRelation.OwnedSlave, owned.Count > 0 ? owned[0].Pawn : null,
+                    owned.Count > 1 ? owned[1].Pawn : null), SummaryRelation.OwnedSlave);
                 return height;
             }
 
-            var chain = SSCBondUtility.GetChain(source);
-            Pawn owner = chain?.LinkedPawn;
-            string ownerLabel;
-            if (chain == null) ownerLabel = "SSC_BondOverview_NoMaster".Translate();
-            else if (!SSCBondOverviewUtility.IsValidPawn(owner) || ReferenceEquals(owner, source))
-                ownerLabel = "SSC_BondOverview_InvalidMaster".Translate();
-            else ownerLabel = "SSC_TrainingManagement_Owner".Translate(owner.LabelShort);
-            Pawn ownerClicked = DrawRelationGroup(first, ownerLabel, SummaryRelation.Master, ReferenceEquals(owner, source) ? null : owner);
+            Pawn ownerClicked = DrawRelationGroup(first, snapshot.Master == null ? MissingMasterLabel(snapshot)
+                : "SSC_TrainingManagement_Owner".Translate(snapshot.Master.Name).ToString(), SummaryRelation.Master, snapshot.Master?.Pawn);
 
             // 使用保存的指派和现行状态说明，暂时停工的现任仍可见。
-            Pawn trainer = comp.selectedTrainer;
+            Pawn trainer = snapshot.AssignedTrainer;
             string trainerName = trainer == null ? "SSC_BondOverview_Trainer_None".Translate().ToString()
-                : TrainerAssignmentUtility.GetAssignedTrainerLabel(source);
+                : TrainerAssignmentUtility.GetAssignedTrainerLabel(snapshot.Source, trainer);
             Rect second = stacked ? new Rect(first.x, first.yMax, groupWidth, rowHeight)
                 : new Rect(width / 2f + PanelPadding, y, groupWidth, rowHeight);
             Pawn trainerClicked = DrawRelationGroup(second, "SSC_TrainingManagement_AssignedTrainer".Translate(trainerName),
@@ -266,34 +311,43 @@ namespace SexSlaveCraft
             {
                 if (!SSCBondOverviewUtility.IsValidPawn(pawn) || ReferenceEquals(source, pawn) || rect.xMax - x < cell + 64f) return;
                 var portrait = new Rect(x, rect.y + (rect.height - cell) / 2f, cell, cell);
-                SSCBondOverviewWidgets.Portrait(portrait, pawn, pawn.Dead, true);
-                Widgets.DrawHighlightIfMouseover(portrait);
-                TooltipHandler.TipRegion(portrait, "SSC_TrainingManagement_JumpToPawn".Translate(pawn.LabelShort));
-                Event input = Event.current;
-                bool leftUp = input.type == EventType.mouseUp && input.button == 0;
-                if (GUI.enabled && input.type == EventType.mouseDown && input.button == 0 && Mouse.IsOver(portrait))
-                    pressedPortrait = (pawn, relation);
-                // 选中源或关系在按下后变化时，松开不能跳到后来占用同一位置的人。
-                if (GUI.enabled && Widgets.ButtonInvisible(portrait) && leftUp &&
-                    ReferenceEquals(pressedPortrait.Target, pawn) && pressedPortrait.Relation == relation)
-                    clicked = pawn;
+                if (DrawJumpPortrait(portrait, pawn, relation, false)) clicked = pawn;
                 x += cell + 8f;
             }
         }
 
-        /// <summary>点击后用现行关系建立快照，再沿原关系总览解析目的地并跳转。</summary>
-        private void NavigatePortrait(Pawn target, SummaryRelation relation)
+        /// <summary>共享摘要和详情的肖像点击；记录按下区域以防同角色在两个区域间串键。</summary>
+        private bool DrawJumpPortrait(Rect rect, Pawn pawn, SummaryRelation relation, bool detail,
+            string tooltip = null, float? captureSize = null)
         {
-            if (!GameReady() || !ReferenceEquals(game, Current.Game) || !ReferenceEquals(SelectedPawn(), source) ||
-                !ReferenceEquals(source?.TryGetComp<CompSexSlaveTraining>(), comp)) return;
+            if (!SSCBondOverviewUtility.IsValidPawn(pawn) || ReferenceEquals(source, pawn)) return false;
+            SSCBondOverviewWidgets.Portrait(rect, pawn, pawn.Dead, true, captureSize);
+            Widgets.DrawHighlightIfMouseover(rect);
+            TooltipHandler.TipRegion(rect, tooltip ?? "SSC_TrainingManagement_JumpToPawn".Translate(pawn.LabelShort).ToString());
+            Event input = Event.current;
+            bool over = Mouse.IsOver(rect);
+            bool leftUp = input.type == EventType.mouseUp && input.button == 0 && over;
+            if (GUI.enabled && input.type == EventType.mouseDown && input.button == 0 && over)
+                pressedPortrait = (pawn, relation, detail);
+            return GUI.enabled && Widgets.ButtonInvisible(rect) && leftUp && ReferenceEquals(pressedPortrait.Target, pawn) &&
+                pressedPortrait.Relation == relation && pressedPortrait.Detail == detail;
+        }
 
-            var snapshot = SSCBondOverviewUtility.BuildLocal(source, Find.CurrentMap);
+        /// <summary>沿原关系总览复查当前关系、重新解析目的地，再执行跳转。</summary>
+        private void NavigatePortrait(SSCBondOverviewSnapshot snapshot, Pawn target, SummaryRelation relation)
+        {
+            if (!SourceIsCurrent() || snapshot?.State != SSCBondOverviewQueryState.Ready) return;
+
             var failure = SSCBondOverviewNavigationFailure.RelationChanged;
             bool success = false;
             if (relation == SummaryRelation.AssignedTrainer && ReferenceEquals(snapshot.AssignedTrainer, target))
                 success = SSCBondOverviewNavigation.TryNavigateTrainer(snapshot, out failure);
             else if (relation == SummaryRelation.Master && ReferenceEquals(snapshot.Master?.Pawn, target))
                 success = SSCBondOverviewNavigation.TryNavigate(snapshot, snapshot.Master, out failure);
+            else if (relation == SummaryRelation.TrainerCandidate)
+                success = SSCBondOverviewNavigation.TryNavigatePawn(target,
+                    () => SourceIsCurrent() && currentPage == Page.Relations && !ReferenceEquals(comp.selectedTrainer, target) &&
+                        SSCTrainerWorkUtility.CanConsider(source, target), out failure);
             else if (relation == SummaryRelation.OwnedSlave)
                 foreach (var entry in snapshot.Slaves)
                     if (ReferenceEquals(entry.Pawn, target))
@@ -302,9 +356,18 @@ namespace SexSlaveCraft
                         break;
                     }
 
-            if (!success) Messages.Message(SSCBondOverviewText.T("Failure_" + failure), MessageTypeDefOf.RejectInput, false);
+            if (!success)
+            {
+                relationSession.RequestRefresh(relationSession.Details);
+                nextCandidateRefresh = 0;
+                Messages.Message(SSCBondOverviewText.T("Failure_" + failure), MessageTypeDefOf.RejectInput, false);
+            }
             else if (!GameReady() || !ReferenceEquals(SelectedPawn(), target)) Close(false);
         }
+
+        private bool SourceIsCurrent()
+            => GameReady() && ReferenceEquals(game, Current.Game) && ReferenceEquals(viewedMap, Find.CurrentMap) &&
+                source != null && ReferenceEquals(SelectedPawn(), source) && ReferenceEquals(source.TryGetComp<CompSexSlaveTraining>(), comp);
 
         private static float NavigationCellWidth(float width, int columns)
             => Mathf.Max(1f, (width - (columns - 1) * NavigationGap) / columns);
@@ -318,8 +381,8 @@ namespace SexSlaveCraft
             return height;
         }
 
-        /// <summary>绘制原型的六个导航位置，概况可用，其余页在各批接入后启用。</summary>
-        private static float DrawNavigation(Rect rect, string[] labels, float rowHeight, int columns, bool sidebar)
+        /// <summary>绘制六个导航位置，开放概况与只读关系。</summary>
+        private float DrawNavigation(Rect rect, string[] labels, float rowHeight, int columns, bool sidebar)
         {
             float width = NavigationCellWidth(rect.width, columns);
             int rows = (labels.Length + columns - 1) / columns;
@@ -331,10 +394,16 @@ namespace SexSlaveCraft
             {
                 var cell = new Rect(rect.x + i % columns * (width + NavigationGap), rect.y + i / columns * (rowHeight + NavigationGap), width, rowHeight);
                 GUI.color = Color.white;
-                Widgets.DrawBoxSolid(cell, i == 0 ? SelectedColor : HeaderColor);
-                GUI.color = i == 0 ? Color.white : new Color(.68f, .73f, .74f);
+                bool available = i <= (int)Page.Relations;
+                Widgets.DrawBoxSolid(cell, i == (int)currentPage ? SelectedColor : HeaderColor);
+                GUI.color = available ? Color.white : new Color(.68f, .73f, .74f);
                 Widgets.Label(new Rect(cell.x + 10f, cell.y, Mathf.Max(1f, cell.width - 20f), cell.height), labels[i]);
-                if (i != 0) TooltipHandler.TipRegion(cell, "SSC_TrainingManagement_PagePending".Translate());
+                if (available)
+                {
+                    Widgets.DrawHighlightIfMouseover(cell);
+                    if (Widgets.ButtonInvisible(cell)) ChangePage((Page)i);
+                }
+                else TooltipHandler.TipRegion(cell, "SSC_TrainingManagement_PagePending".Translate());
             }
             return height;
         }

@@ -180,10 +180,11 @@ namespace SexSlaveCraft
     {
         internal const float RowHeight = 80, HeaderHeight = 28, CellWidth = 80;
         internal static int Columns(float width) => Math.Max(1, (int)(width / CellWidth));
-        internal static void VisibleRange(int count, float start, float scroll, float height, out int first, out int end)
+        internal static void VisibleRange(int count, float start, float scroll, float height, out int first, out int end,
+            float rowHeight = RowHeight)
         {
-            first = Math.Max(0, Math.Min(count, (int)Math.Floor((scroll - start) / RowHeight) - 1));
-            end = Math.Max(first, Math.Min(count, (int)Math.Ceiling((scroll + height - start) / RowHeight) + 1));
+            first = Math.Max(0, Math.Min(count, (int)Math.Floor((scroll - start) / rowHeight) - 1));
+            end = Math.Max(first, Math.Min(count, (int)Math.Ceiling((scroll + height - start) / rowHeight) + 1));
         }
         internal readonly struct Grid
         {

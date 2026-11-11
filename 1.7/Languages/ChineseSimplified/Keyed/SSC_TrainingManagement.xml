@@ -17,4 +17,6 @@
   <SSC_TrainingManagement_TrainingEnabled>已允许</SSC_TrainingManagement_TrainingEnabled>
   <SSC_TrainingManagement_TrainingDisabled>已关闭</SSC_TrainingManagement_TrainingDisabled>
   <SSC_TrainingManagement_JumpToPawn>点击跳转到 {0}</SSC_TrainingManagement_JumpToPawn>
+  <SSC_TrainingManagement_AssignedSection>已指派调教员</SSC_TrainingManagement_AssignedSection>
+  <SSC_TrainingManagement_CandidateSection>可指派调教员</SSC_TrainingManagement_CandidateSection>
 </LanguageData>
