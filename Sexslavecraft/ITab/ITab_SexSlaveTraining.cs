@@ -328,29 +328,34 @@ namespace SexSlaveCraft
             return height + 4f;
         }
 
+        /// <summary>为两个界面读取同一套任职选择、有效资格和提示。</summary>
+        internal static (bool IsSlave, bool Enabled, bool Qualified, string Label, string Tooltip)
+            GetTrainerIdentityPresentation(Pawn pawn, CompSexSlaveTraining comp)
+        {
+            bool isSlave = comp.pawnIdentity == PawnIdentity.Slave;
+            bool isMaster = comp.pawnIdentity == PawnIdentity.Master;
+            bool enabled = isMaster || isSlave && comp.slaveTrainerEnabled;
+            TrainerSpecializationFailure failure = TrainerSpecializationFailure.None;
+            bool qualified = isSlave && TrainerSpecializationUtility.HasTrainerQualification(pawn, out failure);
+            string label = "SSC_TrainerIdentity_Label".Translate();
+            if (isSlave)
+                label += (enabled && qualified ? "SSC_TrainerIdentity_Active" :
+                    enabled ? "SSC_TrainerIdentity_SavedInactive" : "SSC_TrainerIdentity_Off").Translate();
+
+            string tooltip = (isMaster ? "SSC_TrainerIdentity_MasterTip" :
+                isSlave ? "SSC_TrainerIdentity_SlaveTip" : "SSC_TrainerIdentity_UnsetTip").Translate();
+            if (isSlave && !qualified)
+                tooltip += "\n\n" + "SSC_TrainerIdentity_QualificationTip".Translate() +
+                    "\n" + GetTrainerFailureReason(failure);
+            return (isSlave, enabled, qualified, label, tooltip);
+        }
+
         /// <summary>读取一次资格，并按实际字体、标签和可用宽度计算身份区高度。</summary>
         private static TrainerIdentityView BuildTrainerIdentityView(Pawn pawn, CompSexSlaveTraining comp, float width)
         {
             // 勾选状态来自保存选择。资格只决定能否任职与重新开启；失格后
             // 仍显示已保存的勾选，让玩家可以关闭该选择而不误报为个人关闭。
-            bool isSlave = comp.pawnIdentity == PawnIdentity.Slave;
-            bool enabled = comp.pawnIdentity == PawnIdentity.Master || isSlave && comp.slaveTrainerEnabled;
-            TrainerSpecializationFailure failure = TrainerSpecializationFailure.None;
-            bool qualified = isSlave && TrainerSpecializationUtility.HasTrainerQualification(pawn, out failure);
-            bool active = comp.pawnIdentity == PawnIdentity.Master || enabled && qualified;
-            string label = "SSC_TrainerIdentity_Label".Translate();
-            if (isSlave)
-                label += active ? "SSC_TrainerIdentity_Active".Translate() :
-                    enabled ? "SSC_TrainerIdentity_SavedInactive".Translate() :
-                    "SSC_TrainerIdentity_Off".Translate();
-
-            // 显示状态复用上面的资格结果，不再通过 IsTrainer 重读锁链。
-            // 点击提交仍走 SetTrainerEnabled 的权威检查，不能用界面快照授予资格。
-            string tooltip = (comp.pawnIdentity == PawnIdentity.Master ? "SSC_TrainerIdentity_MasterTip"
-                : isSlave ? "SSC_TrainerIdentity_SlaveTip" : "SSC_TrainerIdentity_UnsetTip").Translate();
-            if (isSlave && !qualified)
-                tooltip += "\n\n" + "SSC_TrainerIdentity_QualificationTip".Translate() +
-                    "\n" + GetTrainerFailureReason(failure);
+            var (isSlave, enabled, qualified, label, tooltip) = GetTrainerIdentityPresentation(pawn, comp);
 
             // 永久资格来自人格保存字段；当前 Master 身份、绑定及手动选择设置都不能替代它。
             // 只在本次绘制共享文案和测量，不迁移或写回角色数据；缺设置时按默认关闭展示。

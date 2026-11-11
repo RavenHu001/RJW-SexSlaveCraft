@@ -1,5 +1,6 @@
 // AI 辅助生成
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using HarmonyLib;
 using RimWorld;
@@ -35,5 +36,33 @@ namespace SexSlaveCraft
             Dialog_SSCTrainingManagement.OpenSelected();
             return false;
         }
+    }
+
+    /// <summary>观察原生选中列表的变更，即使同一帧切走再切回也撤销旧概况菜单。</summary>
+    [HarmonyPatch]
+    internal static class Harmony_TrainingOverviewSelection
+    {
+        // 原版批选和代理选择也经过内部增删入口，清空则直接修改列表。
+        private static readonly MethodBase[] selectionWrites =
+        {
+            AccessTools.DeclaredMethod(typeof(Selector), "SelectInternal", new[] { typeof(object), typeof(bool), typeof(bool) }),
+            AccessTools.DeclaredMethod(typeof(Selector), "DeselectInternal", new[] { typeof(object) }),
+            AccessTools.DeclaredMethod(typeof(Selector), nameof(Selector.ClearSelection), Type.EmptyTypes)
+        };
+
+        /// <summary>签名变动时保留窗口逐帧刷新和提交时校验。</summary>
+        private static bool Prepare()
+        {
+            if (Array.TrueForAll(selectionWrites, method => method is MethodInfo info && info.ReturnType == typeof(void))) return true;
+            Log.Warning("[SSC TrainingManagement] Selector write signatures unavailable; using window selection refresh.");
+            return false;
+        }
+
+        /// <summary>返回已通过签名校验的原生选择写入入口。</summary>
+        private static IEnumerable<MethodBase> TargetMethods() => selectionWrites;
+
+        /// <summary>原版完成写入后再比较窗口的编辑对象。</summary>
+        private static void Postfix(Selector __instance)
+            => Dialog_SSCTrainingManagement.NotifyOverviewSelection(__instance);
     }
 }

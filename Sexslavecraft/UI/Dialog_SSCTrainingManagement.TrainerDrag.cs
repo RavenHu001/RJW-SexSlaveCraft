@@ -27,16 +27,8 @@ namespace SexSlaveCraft
 
         private TrainerGesture trainerGesture;
         private int trainerControlId;
-        private int trainerContextRevision;
         private bool trainerDropHovered;
         private string trainerDropPreview;
-
-        /// <summary>刷新窗口上下文时让捕获的旧请求永久失效。</summary>
-        private void InvalidateTrainerGesture()
-        {
-            trainerContextRevision++;
-            EndTrainerGesture();
-        }
 
         /// <summary>释放本窗口持有的输入捕获，保留已交给同步提交的上下文代次。</summary>
         private void EndTrainerGesture()
@@ -85,7 +77,7 @@ namespace SexSlaveCraft
             if (!GUI.enabled || input.type != EventType.mouseDown || input.button != 0 || GUIUtility.hotControl != 0 ||
                 !Mouse.IsOver(rect) || !TrainerGestureSourceCurrent() || !TrainerCardCurrent(pawn, origin)) return;
 
-            int revision = trainerContextRevision;
+            int revision = contextRevision;
             Pawn originalSource = source;
             Pawn requestedTrainer = origin == SummaryRelation.AssignedTrainer ? null : pawn;
             // 事务在按下时捕获真实指派、人格和工作设置。松手阶段只验证该请求并尝试提交。
@@ -97,7 +89,7 @@ namespace SexSlaveCraft
                 PressPosition = UI.GUIToScreenPoint(input.mousePosition),
                 LastScrollTime = Time.realtimeSinceStartup,
                 Request = new SSCTrainerWorkUtility.Request(originalSource, requestedTrainer,
-                    current: () => trainerContextRevision == revision && ReferenceEquals(source, originalSource) &&
+                    current: () => contextRevision == revision && ReferenceEquals(source, originalSource) &&
                         TrainerGestureSourceCurrent() && TrainerCardCurrent(pawn, origin))
             };
             GUIUtility.hotControl = trainerControlId;

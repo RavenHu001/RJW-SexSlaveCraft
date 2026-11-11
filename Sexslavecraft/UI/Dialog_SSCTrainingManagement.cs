@@ -7,7 +7,7 @@ using Verse;
 
 namespace SexSlaveCraft
 {
-    /// <summary>只读显示原版地图当前单选角色的调教概况和关系。</summary>
+    /// <summary>管理原版地图当前单选角色的调教概况和关系。</summary>
     internal sealed partial class Dialog_SSCTrainingManagement : Window
     {
         private const float ScreenPadding = 16f;
@@ -31,6 +31,7 @@ namespace SexSlaveCraft
         private Map viewedMap;
         private Pawn source;
         private CompSexSlaveTraining comp;
+        private int contextRevision;
         private Vector2 scroll;
         private (Pawn Target, SummaryRelation Relation, bool Detail) pressedPortrait;
 
@@ -100,16 +101,18 @@ namespace SexSlaveCraft
             }
             float top = MinimumWindowY();
             if (windowRect.y < top) PositionBelowBar(top);
+            // 原版可通过取消或点击外部关闭弹窗，清理它捕获的旧上下文。
+            if (overviewPopup != null && !Find.WindowStack.IsOpen(overviewPopup)) overviewPopup = null;
             RefreshSelection();
             // Alt-Tab 或身份变化可能没有对应的鼠标松手事件。
             if (trainerGesture != null && !TrainerGestureSourceCurrent()) EndTrainerGesture();
             relationSession.Update(Time.frameCount, false, viewedMap);
         }
 
-        /// <summary>关闭时释放鼠标捕获、关系视图和候选引用。</summary>
+        /// <summary>关闭时撤销编辑弹窗并释放鼠标捕获、关系视图和候选引用。</summary>
         public override void PostClose()
         {
-            InvalidateTrainerGesture();
+            InvalidateWindowContext();
             relationSession.Clear();
             ResetRelationPage();
             source = null;
@@ -147,14 +150,14 @@ namespace SexSlaveCraft
             windowRect = new Rect((UI.screenWidth - size.x) / 2f, y, size.x, height);
         }
 
-        /// <summary>更新只读视图对象。空选、多选和不可管理的选中显示同一提示。</summary>
+        /// <summary>切换角色时释放原编辑与关系上下文，空选和不可管理对象显示同一提示。</summary>
         private void RefreshSelection()
         {
             Pawn pawn = SelectedPawn();
             var training = pawn?.TryGetComp<CompSexSlaveTraining>();
             Map map = Find.CurrentMap;
             if (ReferenceEquals(source, pawn) && ReferenceEquals(comp, training) && ReferenceEquals(viewedMap, map)) return;
-            InvalidateTrainerGesture();
+            InvalidateWindowContext();
             relationSession.ReleaseDetails();
             ResetRelationPage();
             source = pawn;
@@ -168,10 +171,18 @@ namespace SexSlaveCraft
         private void ChangePage(Page page)
         {
             if (currentPage == page) return;
-            InvalidateTrainerGesture();
+            InvalidateWindowContext();
             currentPage = page;
             pressedPortrait = default;
             if (page == Page.Relations) nextCandidateRefresh = 0;
+        }
+
+        /// <summary>撤销旧页面的提交凭据并释放本窗口拥有的输入。</summary>
+        private void InvalidateWindowContext()
+        {
+            contextRevision++;
+            EndTrainerGesture();
+            CloseOverviewPopup();
         }
 
         /// <summary>返回当前角色的 SSC 身份名称。</summary>
@@ -418,7 +429,7 @@ namespace SexSlaveCraft
             return height;
         }
 
-        /// <summary>概况按标签和值排列，分别计算长译文的行高并独立滚动。</summary>
+        /// <summary>概况的身份控件和只读状态共用独立滚动区，行高随译文换行。</summary>
         private void DrawOverview(Rect page)
         {
             var rows = OverviewRows();
@@ -429,6 +440,9 @@ namespace SexSlaveCraft
             string title = "<b>" + PageKeys[0].Translate() + "</b>";
             float titleHeight = Text.CalcHeight(title, width);
             float firstRow = titleHeight + 10f;
+            // 先计入身份控件的高度，随后布局只读状态，使窄窗也能滚动到末行。
+            var identity = comp == null ? null : BuildOverviewIdentity(width, firstRow);
+            if (identity != null) firstRow = identity.Bottom;
             float labelWidth = Mathf.Max(1f, width * .42f - 4f);
             float valueWidth = Mathf.Max(1f, width - labelWidth - 8f);
             var heights = new float[rows.Length];
@@ -446,6 +460,7 @@ namespace SexSlaveCraft
             {
                 Widgets.Label(new Rect(0f, 0f, width, titleHeight), title);
                 if (hint != null) Widgets.Label(new Rect(0f, firstRow, width, totalHeight - firstRow), hint);
+                if (identity != null) DrawOverviewIdentity(identity);
                 float y = firstRow;
                 for (int i = 0; i < rows.Length; i++)
                 {
@@ -486,7 +501,7 @@ namespace SexSlaveCraft
                     ("SSC_TrainingManagement_MasterStage".Translate(), stage ?? "SSC_MasterProgression_NoRecord".Translate().ToString())
                 };
             }
-            return new (string, string)[] { ("SSC_TrainerIdentity_Label".Translate(), TrainerState()) };
+            return Array.Empty<(string, string)>();
         }
 
         /// <summary>保留原任职状态的显示语义，包括身份暂停时保留的启用选择。</summary>

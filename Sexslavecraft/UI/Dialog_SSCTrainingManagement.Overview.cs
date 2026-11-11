@@ -1,0 +1,206 @@
+// AI 辅助生成
+using System;
+using System.Collections.Generic;
+using RimWorld;
+using UnityEngine;
+using Verse;
+
+namespace SexSlaveCraft
+{
+    internal sealed partial class Dialog_SSCTrainingManagement
+    {
+        private Window overviewPopup;
+
+        /// <summary>绑定绘制时的角色和人格，延迟回调不得重新取得编辑资格。</summary>
+        private readonly struct OverviewEdit
+        {
+            internal readonly Pawn Pawn;
+            internal readonly CompSexSlaveTraining Comp;
+            internal readonly PawnIdentity Identity;
+            internal readonly object Personality;
+            internal readonly int Revision;
+
+            /// <summary>在控件接收输入前记录这次绘制对应的身份和人格。</summary>
+            internal OverviewEdit(Pawn pawn, CompSexSlaveTraining comp, int revision)
+            {
+                Pawn = pawn;
+                Comp = comp;
+                Identity = comp.pawnIdentity;
+                Personality = SSCPersonalityRuntimeUtility.Capture(pawn);
+                Revision = revision;
+            }
+        }
+
+        /// <summary>保存本次绘制的文案、状态和行位置，随滚动区一起重算。</summary>
+        private sealed class OverviewIdentityView
+        {
+            internal OverviewEdit Edit;
+            internal Rect IdentityButton, Qualification, TrainerToggle, RecoveryText, RecoveryButton;
+            internal string IdentityLabel, LockTip, QualificationLabel, TrainerLabel, TrainerTip, RecoveryHint, RecoveryLabel;
+            internal bool TrainerEnabled, TrainerEditable;
+            internal float Bottom;
+        }
+
+        /// <summary>按当前字体和内容宽度测量控件，供绘制和滚动区共用。</summary>
+        private OverviewIdentityView BuildOverviewIdentity(float width, float y)
+        {
+            const float gap = 8f;
+            const float buttonHeight = 34f;
+            var view = new OverviewIdentityView { Edit = new OverviewEdit(source, comp, contextRevision) };
+            // 按同一游标分配行矩形并累计总高度，长译文会把后续行一并下移。
+            Rect Row(float height)
+            {
+                var rect = new Rect(0f, y, width, height);
+                y += height + gap;
+                return rect;
+            }
+
+            view.IdentityLabel = IdentityLabel(view.Edit.Identity);
+            view.IdentityButton = Row(Mathf.Max(buttonHeight, Text.CalcHeight(view.IdentityLabel, Mathf.Max(1f, width - 16f)) + 8f));
+            if (SSCIdentityUtility.IsIdentityLocked(source))
+                view.LockTip = (SSCImprintUtility.GetImprintLockedIdentity(source) != PawnIdentity.Unset ?
+                    "SSC_Imprint_GelTooltip" : "SSC_Identity_BoundTip").Translate();
+
+            // 永久资格来自保存字段，菜单可用性另按设置及当前资格判断。
+            view.QualificationLabel = SSCMasterQualificationDisplay.GetLabel(comp.masterQualificationUnlocked);
+            view.Qualification = Row(SSCMasterQualificationDisplay.GetHeight(view.QualificationLabel, width, Text.LineHeight));
+
+            // 与旧面板共用任职状态；失格仍显示保存的勾选并允许关闭。
+            var trainer = ITab_SexSlaveTraining.GetTrainerIdentityPresentation(source, comp);
+            view.TrainerLabel = trainer.Label;
+            view.TrainerTip = trainer.Tooltip;
+            view.TrainerEnabled = trainer.Enabled;
+            view.TrainerEditable = trainer.IsSlave && (trainer.Qualified || trainer.Enabled);
+            view.TrainerToggle = Row(Mathf.Max(24f, Text.CalcHeight(trainer.Label, Mathf.Max(1f, width - 24f))));
+
+            if (SSCIdentityUtility.CanRestoreLegacySlaveIdentity(source))
+            {
+                view.RecoveryHint = "SSC_Identity_LegacyRecoveryHint".Translate();
+                view.RecoveryLabel = "SSC_Identity_LegacyRecoveryButton".Translate();
+                view.RecoveryText = Row(Text.CalcHeight(view.RecoveryHint, width));
+                view.RecoveryButton = Row(Mathf.Max(buttonHeight, Text.CalcHeight(view.RecoveryLabel, Mathf.Max(1f, width - 16f)) + 8f));
+            }
+            view.Bottom = y;
+            return view;
+        }
+
+        /// <summary>绘制身份、永久资格、任职与历史锁链的显式恢复入口。</summary>
+        private void DrawOverviewIdentity(OverviewIdentityView view)
+        {
+            var edit = view.Edit;
+            Text.Anchor = TextAnchor.UpperLeft;
+            if (SSCUIWidgets.Button(view.IdentityButton, view.IdentityLabel, view.LockTip == null))
+                OpenIdentityMenu(edit);
+            if (view.LockTip != null) TooltipHandler.TipRegion(view.IdentityButton, view.LockTip);
+
+            SSCMasterQualificationDisplay.Draw(view.Qualification, view.QualificationLabel,
+                SSCMasterQualificationDisplay.GetPawnTooltip(SSCMod.settings?.allowDirectMasterSelection ?? false));
+            bool next = SSCUIWidgets.Checkbox(view.TrainerToggle, view.TrainerLabel, view.TrainerEnabled,
+                view.TrainerEditable, view.TrainerTip);
+            // 任职提交同时核对绘制时的保存值，避免覆盖绘制期间的外部更新。
+            if (next != view.TrainerEnabled && OverviewEditIsCurrent(edit) &&
+                edit.Comp.slaveTrainerEnabled == view.TrainerEnabled && SSCIdentityUtility.SetTrainerEnabled(edit.Pawn, next))
+                RefreshAfterOverviewEdit();
+
+            if (view.RecoveryHint == null) return;
+            Widgets.Label(view.RecoveryText, view.RecoveryHint);
+            if (SSCUIWidgets.Button(view.RecoveryButton, view.RecoveryLabel, true)) OpenRecoveryConfirmation(edit);
+        }
+
+        /// <summary>使用原主人准入和身份 setter 构造菜单。回调只提交所捕获的编辑请求。</summary>
+        private void OpenIdentityMenu(OverviewEdit edit)
+        {
+            if (!OverviewEditIsCurrent(edit) || SSCIdentityUtility.IsIdentityLocked(edit.Pawn)) return;
+            bool canSelectMaster = edit.Identity == PawnIdentity.Master || SSCMasterQualificationUtility.CanSelectMaster(edit.Pawn);
+            string masterLabel = Strings.ITab_SetAsMaster;
+            if (!canSelectMaster) masterLabel += " (" + "SSC_Identity_MasterQualificationRequired".Translate() + ")";
+            // 每个回调持有创建它的菜单。旧菜单即使对应同一角色也不能冒用新菜单的资格。
+            FloatMenu menu = null;
+            var options = new List<FloatMenuOption>
+            {
+                new FloatMenuOption(Strings.ITab_SetIdentityUnset, () => SubmitIdentity(menu, edit, PawnIdentity.Unset)),
+                new FloatMenuOption(Strings.ITab_SetAsSlave, () => SubmitIdentity(menu, edit, PawnIdentity.Slave)),
+                new FloatMenuOption(masterLabel, canSelectMaster ? (Action)(() => SubmitIdentity(menu, edit, PawnIdentity.Master)) : null)
+            };
+            menu = new FloatMenu(options);
+            ShowOverviewPopup(menu);
+        }
+
+        /// <summary>身份变化和锁定都可能发生在菜单打开之后，提交时重新检查。</summary>
+        private void SubmitIdentity(FloatMenu menu, OverviewEdit edit, PawnIdentity identity)
+        {
+            if (!OverviewPopupIsCurrent(menu, edit) || SSCIdentityUtility.IsIdentityLocked(edit.Pawn)) return;
+            if (!SSCIdentityUtility.TrySetIdentity(edit.Pawn, identity) && identity == PawnIdentity.Master)
+                Messages.Message("SSC_Identity_SelectionUnavailable".Translate(), edit.Pawn, MessageTypeDefOf.RejectInput, false);
+            RefreshAfterOverviewEdit();
+        }
+
+        /// <summary>确认时复查原锁链和主人，避免恢复操作落到后来建立的绑定上。</summary>
+        private void OpenRecoveryConfirmation(OverviewEdit edit)
+        {
+            Pawn pawn = edit.Pawn;
+            if (!OverviewEditIsCurrent(edit) || !SSCIdentityUtility.CanRestoreLegacySlaveIdentity(pawn)) return;
+            var chain = SSCBondUtility.GetChain(pawn);
+            Pawn owner = chain?.LinkedPawn;
+            if (owner == null) return;
+            Dialog_MessageBox confirmation = null;
+            confirmation = Dialog_MessageBox.CreateConfirmation(
+                "SSC_Identity_LegacyRecoveryConfirm".Translate(pawn.LabelShort, owner.LabelShort), () =>
+                {
+                    if (!OverviewPopupIsCurrent(confirmation, edit)) return;
+                    if (SSCBondUtility.GetChain(pawn) != chain ||
+                        SSCBondUtility.GetBoundMaster(pawn) != owner || !SSCIdentityUtility.TryRestoreLegacySlaveIdentity(pawn))
+                    {
+                        Messages.Message("SSC_Identity_LegacyRecoveryRejected".Translate(), pawn, MessageTypeDefOf.RejectInput, false);
+                        return;
+                    }
+                    RefreshAfterOverviewEdit();
+                    Messages.Message("SSC_Identity_LegacyRecoveryCompleted".Translate(pawn.LabelShort), pawn, MessageTypeDefOf.PositiveEvent, false);
+                });
+            ShowOverviewPopup(confirmation);
+        }
+
+        /// <summary>只允许原页面、原角色和原人格的操作进入业务入口。</summary>
+        private bool OverviewEditIsCurrent(OverviewEdit edit)
+            => edit.Revision == contextRevision && currentPage == Page.Overview &&
+                ReferenceEquals(edit.Pawn, source) && ReferenceEquals(edit.Comp, comp) && SourceIsCurrent() &&
+                edit.Comp.pawnIdentity == edit.Identity && SSCPersonalityRuntimeUtility.IsCurrent(edit.Pawn, edit.Personality) &&
+                !SSCPersonalityRuntimeUtility.IsMutating(edit.Pawn);
+
+        /// <summary>1.7.5005 的菜单和确认框先执行回调再关闭，可在提交时复查弹窗仍在栈中。</summary>
+        private bool OverviewPopupIsCurrent(Window popup, OverviewEdit edit)
+            => ReferenceEquals(popup, overviewPopup) && OverviewEditIsCurrent(edit) && Find.WindowStack.IsOpen(popup);
+
+        /// <summary>编辑后用实际保存状态更新标题、关系和候选。</summary>
+        private void RefreshAfterOverviewEdit()
+        {
+            InvalidateWindowContext();
+            relationSession.RequestRefresh(relationSession.Details);
+            nextCandidateRefresh = 0;
+        }
+
+        /// <summary>为本窗口保留一个编辑弹窗，便于切角、切页和关闭时撤销。</summary>
+        private void ShowOverviewPopup(Window popup)
+        {
+            CloseOverviewPopup();
+            overviewPopup = popup;
+            Find.WindowStack.Add(popup);
+        }
+
+        /// <summary>先撤销弹窗引用，再让原版窗口栈关闭它。</summary>
+        private void CloseOverviewPopup()
+        {
+            Window popup = overviewPopup;
+            overviewPopup = null;
+            if (popup != null) Find.WindowStack.TryRemove(popup, false);
+        }
+
+        /// <summary>在原生选择写入后立即撤销菜单，逐帧刷新继续负责更新窗口展示。</summary>
+        internal static void NotifyOverviewSelection(Selector selector)
+        {
+            if (!GameReady() || !ReferenceEquals(selector, Find.Selector)) return;
+            var window = Find.WindowStack.WindowOfType<Dialog_SSCTrainingManagement>();
+            if (window?.overviewPopup != null && !window.SourceIsCurrent()) window.InvalidateWindowContext();
+        }
+    }
+}

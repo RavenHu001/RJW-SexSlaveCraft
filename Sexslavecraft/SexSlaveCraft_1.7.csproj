@@ -29,6 +29,8 @@
     <!-- 调教管理第一批仅接1.7：原标签开窗、只读概况及地图单选同步。 -->
     <Compile Include="ThePatches/Harmony_TrainingManagementTab.cs" />
     <Compile Include="UI/Dialog_SSCTrainingManagement.cs" />
+    <!-- 可编辑概况使用 1.7 窗口及选角接口。 -->
+    <Compile Include="UI/Dialog_SSCTrainingManagement.Overview.cs" />
     <Compile Include="UI/Dialog_SSCTrainingManagement.Relations.cs" />
     <!-- 拖放负责输入捕获与落点分派，实际指派使用 SSCTrainerWorkUtility。 -->
     <Compile Include="UI/Dialog_SSCTrainingManagement.TrainerDrag.cs" />
