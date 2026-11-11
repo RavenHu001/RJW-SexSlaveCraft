@@ -178,7 +178,8 @@ namespace SexSlaveCraft
                         {
                             batch.Denial = decision;
                             reason = "SSC_Uap_PairRejected".Translate(pair.Actor.LabelShortCap, pair.Target.LabelShortCap,
-                                ("SSC_Restrictions_Reason_" + decision.Reason).Translate());
+                                decision.Entry == null ? ("SSC_Restrictions_Reason_" + decision.Reason).Translate().ToString() :
+                                    SSCRestrictionPolicy.RejectionText(decision));
                         }
                     }
                 }

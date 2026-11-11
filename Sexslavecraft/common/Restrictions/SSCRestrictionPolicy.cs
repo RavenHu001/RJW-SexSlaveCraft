@@ -45,6 +45,20 @@ namespace SexSlaveCraft
     /// <summary>唯一行为许可入口；界面及各任务适配层共用，不在判断时写入角色配置。</summary>
     public static class SSCRestrictionPolicy
     {
+        /// <summary>用已经取得的拒绝判定生成一行提示，来源只取实际命中的规则。</summary>
+        internal static string RejectionText(SSCRestrictionDecision decision)
+        {
+            if (decision == null || decision.Allowed) return "SSC_Restrictions_CommandRejected".Translate();
+            var reason = ("SSC_Restrictions_Reason_" + decision.Reason).Translate();
+            var entry = decision.Entry;
+            // 游戏提示只显示规则名称和来源类别，具体 Def 名称留给详细日志。
+            return entry == null
+                ? "SSC_Restrictions_JobRejected".Translate(reason)
+                : "SSC_Restrictions_JobRejectedWithRule".Translate(reason,
+                    ("SSC_Restrictions_Rule_" + entry.Rule).Translate(),
+                    ("SSC_Restrictions_Source_" + entry.Source).Translate());
+        }
+
         /// <summary>统一判定行为许可；方向明确的已绑定主人对自身目标发起请求时立即放行。</summary>
         /// <remarks>
         /// 主人放行先于用途、配置、特化及装备校验，后续条目不能否决；其他请求按用途检查主动或接收条目。

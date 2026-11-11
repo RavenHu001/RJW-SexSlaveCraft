@@ -90,7 +90,8 @@
   <SSC_Restrictions_Expand>▶ Expand behavior restrictions</SSC_Restrictions_Expand>
   <SSC_Restrictions_Collapse>◀ Collapse behavior restrictions</SSC_Restrictions_Collapse>
   <SSC_Restrictions_JobRejected>Interaction denied by restriction rules: {0}.</SSC_Restrictions_JobRejected>
-  <SSC_Restrictions_CommandRejected>Current interaction restrictions deny this command. Check the pawn restriction panel for initiation, reception and forced rule sources.</SSC_Restrictions_CommandRejected>
+  <SSC_Restrictions_JobRejectedWithRule>{0} ({1} · {2})</SSC_Restrictions_JobRejectedWithRule>
+  <SSC_Restrictions_CommandRejected>Current rules blocked this command.</SSC_Restrictions_CommandRejected>
   <SSC_Restrictions_TrainingTargetInvalid>The target has no valid training data or cannot receive training with the current identity.</SSC_Restrictions_TrainingTargetInvalid>
   <SSC_Restrictions_BindingMasterRequired>Preparing a first bond requires the assigned candidate to have Master identity.</SSC_Restrictions_BindingMasterRequired>
   <SSC_Restrictions_TrainingAssignmentRequired>Training requires the active assigned trainer. Other pawns do not automatically take over.</SSC_Restrictions_TrainingAssignmentRequired>

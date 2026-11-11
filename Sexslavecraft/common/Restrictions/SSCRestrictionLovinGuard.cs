@@ -20,6 +20,7 @@ namespace SexSlaveCraft
             public Pawn Actor, Target;
             public int PeerJobId;
             public bool Started, Rejected;
+            public bool RejectionReported;
             public bool OutcomeClaimed;
             // 仅 Cleanup 调用期间占用，持久化字段只保存最终认领。
             public bool OutcomeInFlight;
@@ -84,27 +85,45 @@ namespace SexSlaveCraft
 
         /// <summary>预约只返回结果，步骤前拒绝则精确终止本次关联任务；开始后的原场景继续正常收尾。</summary>
         public static bool Check(JobDriver_Lovin driver, bool endOnFailure)
+            => Check(driver, endOnFailure, out _);
+
+        /// <summary>返回当次实际方向的拒绝判定。已开始的场景不会重新判定。</summary>
+        internal static bool Check(JobDriver_Lovin driver, bool endOnFailure, out SSCRestrictionDecision decision)
         {
+            decision = null;
             if (endOnFailure && driver.pawn?.jobs?.curDriver != driver) return false;
             SSCRestrictionRequest request = Request(driver);
             Scene state = State(driver);
             if (state.Started && request.DirectionKnown) return true;
-            SSCRestrictionDecision decision = SSCRestrictionPolicy.Evaluate(request);
+            decision = SSCRestrictionPolicy.Evaluate(request);
             state.Rejected = !decision.Allowed;
-            if (!decision.Allowed && endOnFailure) Reject(driver, SSCRestrictionExternalJobs.Rejection(decision));
+            if (!decision.Allowed)
+            {
+                if (SSCLog.VerboseEnabled)
+                    SSCLog.Verbose($"[SSC Restrictions] Lovin rejected reason={decision.Reason} rule={decision.Entry?.Rule} source={decision.Entry?.Source}");
+                if (endOnFailure) Reject(driver, decision);
+            }
             return decision.Allowed;
         }
 
-        /// <summary>手动拒绝提示使用已经建立的真实方向，不将接收任务当作反向发起。</summary>
-        public static string RejectionReason(JobDriver_Lovin driver)
-            => SSCRestrictionExternalJobs.Rejection(SSCRestrictionPolicy.Evaluate(Request(driver)));
-
         /// <summary>终止未开始的当前请求和它确实创建的另一端；不结束后来替换的新工作，不伪造成功结算。</summary>
-        private static void Reject(JobDriver_Lovin driver, string reason)
+        private static void Reject(JobDriver_Lovin driver, SSCRestrictionDecision decision)
         {
             Scene state = State(driver);
             state.Rejected = true;
             JobDriver_Lovin peer = Peer(driver);
+            // 接收端先失败时也由原发起任务认领提示，必须在结束配对任务之前确认归属。
+            var actor = state.Actor == driver.pawn ? driver :
+                peer?.pawn == state.Actor && peer?.job.loadID == state.PeerJobId && State(peer).PeerJobId == driver.job.loadID ? peer : null;
+            if (decision != null && actor?.job.playerForced == true)
+            {
+                var actorState = State(actor);
+                if (!actorState.RejectionReported)
+                {
+                    actorState.RejectionReported = true;
+                    Messages.Message(SSCRestrictionPolicy.RejectionText(decision), actor.pawn, MessageTypeDefOf.RejectInput, false);
+                }
+            }
             if (peer != null && peer.job.loadID == state.PeerJobId)
             {
                 Scene other = State(peer);
@@ -112,8 +131,6 @@ namespace SexSlaveCraft
                     peer.pawn.jobs.EndCurrentJob(JobCondition.Incompletable, startNewJob: false);
             }
             if (driver.pawn?.jobs?.curDriver != driver) return;
-            if (driver.job.playerForced && reason != null)
-                Messages.Message(reason, driver.pawn, MessageTypeDefOf.RejectInput, false);
             driver.pawn.jobs.EndCurrentJob(JobCondition.Incompletable, startNewJob: false);
         }
 

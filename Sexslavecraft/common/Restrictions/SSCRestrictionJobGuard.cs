@@ -22,6 +22,8 @@ namespace SexSlaveCraft
             public bool HasCompatibilityRecord = true;
             public bool Started;
             public bool Rejected;
+            // 运行时记录，属于当前 Job，供接收端与菜单合并同一次拒绝提示。
+            public bool RejectionReported;
             public Pawn Initiator;
             public Pawn Receiver;
             public SSCInteractionKind Kind;
@@ -99,17 +101,30 @@ namespace SexSlaveCraft
 
         /// <summary>预约阶段只返回许可，不结束正在被任务跟踪器安装的驱动，也不创建配置或玩家命令豁免。</summary>
         public static bool TryReserve(JobDriver_Sex driver, out bool allowed, bool ordered = false)
+            => TryReserve(driver, out allowed, out _, ordered);
+
+        /// <summary>手动命令接收本次预约的失败文字，避免提示前再次调用许可判定。</summary>
+        internal static bool TryReserve(JobDriver_Sex driver, out bool allowed, out string rejection, bool ordered = false)
         {
             allowed = true;
+            rejection = null;
+            // 玩家再次下达命令时开始一次新尝试，旧提示不能吃掉本次反馈。
+            if (ordered && driver != null && States.TryGetValue(driver, out var previous))
+                previous.RejectionReported = false;
 #if SSC_RW17
             // 先检查原 UAP 票据，再允许 Started 快速路径；过期任务不能回退普通主人例外重新取权。
             if (SSCUapGroupRuntime.Check(driver, out allowed) && !allowed)
-            { State(driver).Rejected = true; return true; }
+            {
+                State(driver).Rejected = true;
+                if (ordered) rejection = "SSC_Uap_RequestChanged".Translate();
+                return true;
+            }
 #endif
             if (!SSCRestrictionJobContext.TryCreate(driver, out SSCRestrictionRequest request)) return false;
             if (HasStarted(driver, request) && (!SSCRestrictionTrainingUtility.IsTraining(request) ||
                 SSCIdentityUtility.IsSexSlave(request.Receiver))) return true;
             allowed = Evaluate(driver, request, out SSCRestrictionDecision decision, out string reason, ordered);
+            if (!allowed && ordered) rejection = reason;
             LogDecision(driver, request, decision, "Reserve", allowed, reason);
             State(driver).Rejected = !allowed;
             return true;
@@ -148,7 +163,11 @@ namespace SexSlaveCraft
         {
 #if SSC_RW17
             // 专用适配只处理已登记请求；其他用途继续走下方统一策略，不能形成玩家命令通用白名单。
-            if (SSCUapGroupRuntime.Evaluate(driver, out decision, out reason)) return decision.Allowed;
+            if (SSCUapGroupRuntime.Evaluate(driver, out decision, out reason))
+            {
+                if (!decision.Allowed && decision.Entry != null) reason = SSCRestrictionPolicy.RejectionText(decision);
+                return decision.Allowed;
+            }
 #endif
             JobDriver_Sex actor = driver is JobDriver_SexBaseReciever receiver
                 ? SSCRestrictionJobContext.FindInitiator(receiver) : driver;
@@ -327,10 +346,21 @@ namespace SexSlaveCraft
             if (driver is JobDriver_RitualTraining ritualDriver)
                 ritualDriver.AbortForRestriction(reason);
             if (driver.pawn?.jobs?.curDriver != driver) return;
-            if (driver.job?.playerForced == true && !(driver is JobDriver_RitualTraining) && !state.Events.IsEvent)
-                Messages.Message(reason,
-                    new LookTargets(request.Initiator, request.Receiver), MessageTypeDefOf.RejectInput);
+            ReportExecutionRejection(driver, request, reason);
             driver.pawn.jobs.EndCurrentJob(JobCondition.Incompletable, startNewJob: false);
+        }
+
+        /// <summary>由真实发起任务认领一次提示，接收任务的强制标记不代表玩家下令。</summary>
+        private static void ReportExecutionRejection(JobDriver_Sex driver, SSCRestrictionRequest request, string reason)
+        {
+            var actor = driver is JobDriver_SexBaseReciever receiver ? SSCRestrictionJobContext.FindInitiator(receiver) : driver;
+            if (actor == null || actor.pawn != request.Initiator || actor.pawn?.jobs?.curDriver != actor ||
+                actor.job?.playerForced != true || actor is JobDriver_RitualTraining) return;
+            var state = State(actor);
+            if (state.Events.IsEvent || state.RejectionReported) return;
+            state.RejectionReported = true;
+            Messages.Message(reason ?? SSCRestrictionPolicy.RejectionText(null),
+                new LookTargets(request.Initiator, request.Receiver), MessageTypeDefOf.RejectInput);
         }
 
         /// <summary>保存任务级开始凭据；升级旧存档只依据实际计时进度恢复，单有准备数据不算开始。</summary>
@@ -424,14 +454,15 @@ namespace SexSlaveCraft
             return true;
         }
 
-        /// <summary>手动命令失败时返回本次具体许可或资格原因；只读重查不修改配置、队列或场景状态。</summary>
-        public static string RejectionReason(JobDriver_Sex driver)
-        {
-            if (!SSCRestrictionJobContext.TryCreate(driver, out SSCRestrictionRequest request))
-                return "SSC_Restrictions_CommandRejected".Translate();
-            Evaluate(driver, request, out _, out string reason, ordered: true);
-            return reason ?? "SSC_Restrictions_CommandRejected".Translate();
-        }
+        /// <summary>标记本次手动拒绝已经通知，菜单无需再补发通用失败提示。</summary>
+        internal static void MarkOrderedRejectionReported(JobDriver_Sex driver)
+            => State(driver).RejectionReported = true;
+
+        /// <summary>只读取同一任务的提示记录，复用驱动或任务编号变化时不继承。</summary>
+        internal static bool WasOrderedRejectionReported(Job job, Pawn pawn)
+            => SSCRestrictionJobContext.GetDriver(job, pawn) is JobDriver_Sex driver &&
+                States.TryGetValue(driver, out var state) && state.Job == job && state.JobId == job.loadID &&
+                state.RejectionReported;
 
         /// <summary>在启动行为任务前登记事件新建的等待任务，确保预约失败或立即取消时也可精确回收。</summary>
         public static void RegisterEventWait(Pawn actor, Job job, Pawn target, Job wait)

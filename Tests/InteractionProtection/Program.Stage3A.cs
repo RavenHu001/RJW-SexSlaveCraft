@@ -45,6 +45,7 @@ internal static partial class Program
         Run("快速任务不结束后来替换的新任务", QuickiePreservesNewJob);
         Run("旧存档恢复早于 RJW 重建计时", LegacyProgressBeforeSetup);
         Run("玩家命令拒绝不清空现有任务和队列", OrderedCommandBeforeMutation);
+        Run("执行中发起与接收两端共用发起任务的一次拒绝提示", PairedRejectionFeedback);
         Run("AI 候选拒绝返回思考树并回收预约", AutomaticCandidateRejected);
         Run("对象池复用 Job 也不继承开始凭据", PooledJobReuse);
         Run("实际加载顺序后接回 Pawn/Job 不丢开始凭据", ReattachAfterLoadingVars);
@@ -463,6 +464,31 @@ internal static partial class Program
         Assert(!p.c.jobs.TryTakeOrderedJob(driver.job), "命令应拒绝");
         Assert(p.c.jobs.OrderedMutations == 0 && p.c.jobs.curDriver == existing && p.c.jobs.jobQueue.Count == 1 && Messages.Count == 1,
             "拒绝命令只提示，不进入原队列变更");
+        Assert(Messages.LastText == "SSC_Restrictions_Reason_RuleDenied | SSC_Restrictions_Rule_ReceiveForced | SSC_Restrictions_Source_Saved",
+            "手动拒绝提示应使用本次判定的原因、条目和来源");
+        Assert(SSCRestrictionJobGuard.WasOrderedRejectionReported(driver.job, p.c), "原入口可以跳过兜底提示");
+    }
+
+    /// <summary>让接收端先发现拒绝，随后发起端也遇到同一拒绝。</summary>
+    private static void PairedRejectionFeedback()
+    {
+        foreach (bool manual in new[] { true, false })
+        {
+            Messages.Count = 0;
+            var p = People();
+            var actor = Driver(p.c, p.b, forced: true);
+            actor.job.playerForced = manual;
+            var receiver = new JobDriver_SexBaseReciever
+            {
+                pawn = p.b,
+                job = new Job { def = SSCDefOf.SSC_TrainingReceiver, targetA = new LocalTargetInfo { Thing = p.c }, playerForced = true }
+            };
+            p.b.jobs.curDriver = receiver;
+            Assert(SSCRestrictionJobGuard.TryCheck(receiver, "Receiver", out bool receiverAllowed) && !receiverAllowed, "接收端应拒绝");
+            Assert(Messages.Count == (manual ? 1 : 0), "由发起任务决定是否提示");
+            Assert(SSCRestrictionJobGuard.TryCheck(actor, "Initiator", out bool actorAllowed) && !actorAllowed, "发起端也应拒绝");
+            Assert(Messages.Count == (manual ? 1 : 0), "同一次拒绝不能再提示");
+        }
     }
 
     /// <summary>验证 AI 候选在派发前变成无任务，清理预约并回收，不触发提示或当前驱动终止。</summary>
