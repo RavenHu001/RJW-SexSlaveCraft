@@ -8,7 +8,6 @@ namespace SexSlaveCraft
 {
     internal sealed partial class Dialog_SSCTrainingManagement
     {
-        private const int TrainerColumns = 5;
         private const float MinCardWidth = 72f;
         private const float CardGap = 6f;
         private const float CardHeight = 88f;
@@ -17,7 +16,6 @@ namespace SexSlaveCraft
         private const float OwnerColumnWidth = 144f;
         private const float OwnerPortraitSize = 92f;
         private const float CandidateRefreshSeconds = 2f;
-        private const float TrainerGridWidth = TrainerColumns * MinCardWidth + (TrainerColumns - 1) * CardGap;
 
         private Vector2 relationsScroll;
         private Vector2 candidateScroll;
@@ -79,16 +77,17 @@ namespace SexSlaveCraft
             return DrawSlaveRelations(viewport, view);
         }
 
-        /// <summary>右列按五张头像的最小宽度判断是否能和主人并排。</summary>
+        /// <summary>宽窗保持主人在左、调教员在右；窄窗三区纵排。</summary>
         private (Pawn Target, SummaryRelation Relation) DrawSlaveRelations(Rect viewport, SSCBondOverviewView view)
         {
             string assignedTitle = "SSC_TrainingManagement_AssignedSection".Translate();
             string candidateTitle = "SSC_TrainingManagement_CandidateSection".Translate();
             float rightWidth = viewport.width - OwnerColumnWidth - SectionPadding;
-            float minRightWidth = TrainerGridWidth + 2f * SectionPadding + ScrollbarWidth;
-            if (rightWidth >= minRightWidth)
+            if (rightWidth >= OwnerColumnWidth)
             {
-                float assignedHeight = TrainerSectionHeight(assignedTitle, rightWidth, assigned.Length);
+                // 两个右区共用列宽，为候选滚动条留出同样的边距。
+                int rightColumns = GridColumns(rightWidth - 2f * SectionPadding - ScrollbarWidth);
+                float assignedHeight = TrainerSectionHeight(assignedTitle, rightWidth, assigned.Length, rightColumns);
                 float candidateHeader = HeadingHeight(candidateTitle, rightWidth - 2f * SectionPadding);
                 float candidateHeight = viewport.height - assignedHeight - SectionPadding;
                 if (candidateHeight >= candidateHeader + 2f * SectionPadding + CardHeight &&
@@ -99,19 +98,20 @@ namespace SexSlaveCraft
                     var candidateRect = new Rect(assignedRect.x, assignedRect.yMax + SectionPadding, rightWidth, candidateHeight);
                     Pawn owner = DrawOwnerSection(ownerRect, view);
                     Pawn trainer = DrawTrainerSection(assignedRect, assignedTitle, assigned, SummaryRelation.AssignedTrainer,
-                        assignedRect.y, assignedRect.yMax);
-                    Pawn candidate = DrawCandidateScroll(candidateRect, candidateTitle);
+                        rightColumns, ScrollbarWidth, assignedRect.y, assignedRect.yMax);
+                    Pawn candidate = DrawCandidateScroll(candidateRect, candidateTitle, rightColumns);
                     return RelationClick(owner, trainer, candidate);
                 }
             }
 
-            // 极窄时保留五列的字号与头像尺寸，滚动区承接超出的宽度。
-            float width = Mathf.Max(viewport.width - ScrollbarWidth, minRightWidth);
+            // 纵排三区共用外层纵向滚动条，头像卡按剩余宽度减少列数。
+            float width = Mathf.Max(1f, viewport.width - ScrollbarWidth);
+            int columns = GridColumns(width - 2f * SectionPadding);
             float ownerHeight = OwnerSectionHeight(view.Snapshot, width);
             float assignedY = ownerHeight + SectionPadding;
-            float assignedSectionHeight = TrainerSectionHeight(assignedTitle, width, assigned.Length);
+            float assignedSectionHeight = TrainerSectionHeight(assignedTitle, width, assigned.Length, columns);
             float candidateY = assignedY + assignedSectionHeight + SectionPadding;
-            float candidateSectionHeight = TrainerSectionHeight(candidateTitle, width, candidates.Count);
+            float candidateSectionHeight = TrainerSectionHeight(candidateTitle, width, candidates.Count, columns);
             float contentHeight = candidateY + candidateSectionHeight;
             Widgets.BeginScrollView(viewport, ref relationsScroll, new Rect(0f, 0f, width, Mathf.Max(viewport.height, contentHeight)));
             try
@@ -120,25 +120,25 @@ namespace SexSlaveCraft
                 float bottom = top + viewport.height;
                 Pawn owner = top < ownerHeight ? DrawOwnerSection(new Rect(0f, 0f, width, ownerHeight), view) : null;
                 Pawn trainer = DrawTrainerSection(new Rect(0f, assignedY, width, assignedSectionHeight), assignedTitle,
-                    assigned, SummaryRelation.AssignedTrainer, top, bottom);
+                    assigned, SummaryRelation.AssignedTrainer, columns, 0f, top, bottom);
                 Pawn candidate = DrawTrainerSection(new Rect(0f, candidateY, width, candidateSectionHeight), candidateTitle,
-                    candidates, SummaryRelation.TrainerCandidate, top, bottom);
+                    candidates, SummaryRelation.TrainerCandidate, columns, 0f, top, bottom);
                 return RelationClick(owner, trainer, candidate);
             }
             finally { Widgets.EndScrollView(); }
         }
 
         /// <summary>宽窗中候选独立滚动，主人与已指派保持可见。</summary>
-        private Pawn DrawCandidateScroll(Rect section, string title)
+        private Pawn DrawCandidateScroll(Rect section, string title, int columns)
         {
             Rect body = DrawSectionHeading(section, title);
             float width = body.width - ScrollbarWidth;
-            float total = Mathf.Max(CardHeight, GridRows(candidates.Count, TrainerColumns) * CardHeight);
+            float total = Mathf.Max(CardHeight, GridRows(candidates.Count, columns) * CardHeight);
             Widgets.BeginScrollView(body, ref candidateScroll, new Rect(0f, 0f, width, Mathf.Max(body.height, total)));
             try
             {
                 return DrawTrainerCards(new Rect(0f, 0f, width, total), candidates, SummaryRelation.TrainerCandidate,
-                    candidateScroll.y, candidateScroll.y + body.height);
+                    columns, candidateScroll.y, candidateScroll.y + body.height);
             }
             finally { Widgets.EndScrollView(); }
         }
@@ -187,7 +187,7 @@ namespace SexSlaveCraft
                 return null;
             }
             float width = Mathf.Max(1f, body.width - ScrollbarWidth);
-            int columns = Math.Max(1, (int)((width + CardGap) / (MinCardWidth + CardGap)));
+            int columns = GridColumns(width);
             int rows = GridRows(slaves.Count, columns);
             float total = rows * CardHeight;
             Widgets.BeginScrollView(body, ref relationsScroll, new Rect(0f, 0f, width, Mathf.Max(body.height, total)));
@@ -206,20 +206,21 @@ namespace SexSlaveCraft
             finally { Widgets.EndScrollView(); }
         }
 
-        private static float TrainerSectionHeight(string title, float width, int count)
+        private static float TrainerSectionHeight(string title, float width, int count, int columns)
             => 2f * SectionPadding + HeadingHeight(title, width - 2f * SectionPadding) +
-                Math.Max(1, GridRows(count, TrainerColumns)) * CardHeight;
+                Math.Max(1, GridRows(count, columns)) * CardHeight;
 
-        private Pawn DrawTrainerSection(Rect section, string title, IReadOnlyList<Pawn> trainers, SummaryRelation relation, float top, float bottom)
+        private Pawn DrawTrainerSection(Rect section, string title, IReadOnlyList<Pawn> trainers, SummaryRelation relation,
+            int columns, float scrollGutter, float top, float bottom)
         {
             if (section.yMax <= top || section.y >= bottom) return null;
             Rect body = DrawSectionHeading(section, title);
-            body.width = Mathf.Max(1f, body.width - ScrollbarWidth);
-            return DrawTrainerCards(body, trainers, relation, top, bottom);
+            body.width = Mathf.Max(1f, body.width - scrollGutter);
+            return DrawTrainerCards(body, trainers, relation, columns, top, bottom);
         }
 
-        /// <summary>两组调教员共用固定五列，绘制时只读取可见卡片的工作状态。</summary>
-        private Pawn DrawTrainerCards(Rect body, IReadOnlyList<Pawn> trainers, SummaryRelation relation, float top, float bottom)
+        /// <summary>两组调教员按分区列数换行，绘制时只读取可见卡片的工作状态。</summary>
+        private Pawn DrawTrainerCards(Rect body, IReadOnlyList<Pawn> trainers, SummaryRelation relation, int columns, float top, float bottom)
         {
             if (trainers.Count == 0)
             {
@@ -227,12 +228,12 @@ namespace SexSlaveCraft
                 return null;
             }
 
-            int rows = GridRows(trainers.Count, TrainerColumns);
+            int rows = GridRows(trainers.Count, columns);
             SSCBondOverviewLayout.VisibleRange(rows, body.y, top, bottom - top, out int first, out int end, CardHeight);
-            for (int i = first * TrainerColumns; i < Math.Min(trainers.Count, end * TrainerColumns); i++)
+            for (int i = first * columns; i < Math.Min(trainers.Count, end * columns); i++)
             {
                 Pawn trainer = trainers[i];
-                Rect card = CardRect(body.x, body.y, body.width, TrainerColumns, i);
+                Rect card = CardRect(body.x, body.y, body.width, columns, i);
                 string name = trainer.Dead ? SSCBondOverviewText.Format("DeadName", trainer.LabelShort) : trainer.LabelShort;
                 if (DrawRelationCard(card, trainer, relation, 56f, TrainerTooltip(card, trainer), name)) return trainer;
             }
@@ -268,6 +269,9 @@ namespace SexSlaveCraft
             if (Mouse.IsOver(card) && !Mouse.IsOver(portrait)) TooltipHandler.TipRegion(nameRect, tooltip ?? name);
             return clicked;
         }
+
+        /// <summary>按卡片最小宽度和间距计算分区能容纳的列数。</summary>
+        private static int GridColumns(float width) => Math.Max(1, (int)((width + CardGap) / (MinCardWidth + CardGap)));
 
         private static int GridRows(int count, int columns) => (count + columns - 1) / columns;
 
