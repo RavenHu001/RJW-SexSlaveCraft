@@ -353,17 +353,16 @@ namespace SexSlaveCraft
             const float barHeight = 14f;
             const float labelOffset = barHeight + 6f;
             const float labelGap = 4f;
-            const float maxLabelShift = 12f;
             float width = Mathf.Max(1f, column.Width - column.Indent);
             float fill = Mathf.Clamp01(experience / maximum);
             var labels = new List<(float Position, Rect Label, string Text, string Tip, bool Next)>();
             var laneEnds = new List<float>();
             using var scope = new SSCBondOverviewWidgets.GuiScope(false);
-            Text.Font = GameFont.Tiny;
+            Text.Font = GameFont.Small;
             Text.WordWrap = false;
             float lineHeight = Text.LineHeight;
 
-            // 阶段阈值按实际经验比例定位。相邻名称先小幅避让，空间不足时再排到下一行。
+            // 相邻名称在刻度下方上下交错，优先对准刻度。长译名与同排重叠时才占用额外一行。
             var stages = record.def.stages;
             int nextStage = record.CurStageIndex + 1;
             for (int i = 0; stages != null && i < stages.Count; i++)
@@ -375,15 +374,12 @@ namespace SexSlaveCraft
                 string tip = name + " · " + stage.minSeverity.ToString("0.##");
                 float textWidth = Mathf.Min(width, Mathf.Ceil(Text.CalcSize(name).x) + 2f);
                 float maxX = width - textWidth;
-                float idealX = Mathf.Clamp(position * width - textWidth / 2f, 0f, maxX);
-                float x = idealX;
-                int lane = 0;
-                for (; lane < laneEnds.Count; lane++)
+                float x = Mathf.Clamp(position * width - textWidth / 2f, 0f, maxX);
+                int lane = labels.Count % 2;
+                if (lane < laneEnds.Count && x < laneEnds[lane] + labelGap)
                 {
-                    float shifted = Mathf.Max(idealX, laneEnds[lane] + labelGap);
-                    if (shifted > maxX || shifted - idealX > maxLabelShift) continue;
-                    x = shifted;
-                    break;
+                    lane = 2;
+                    while (lane < laneEnds.Count && x < laneEnds[lane] + labelGap) lane++;
                 }
                 if (lane == laneEnds.Count) laneEnds.Add(x + textWidth);
                 else laneEnds[lane] = x + textWidth;
@@ -399,7 +395,7 @@ namespace SexSlaveCraft
                 // 原版返回填充轨道的实际矩形，刻度用同一范围，端点限制在条内。
                 Rect track = Widgets.FillableBar(new Rect(rect.x, rect.y, rect.width, barHeight), fill);
                 using var drawScope = new SSCBondOverviewWidgets.GuiScope(false);
-                Text.Font = GameFont.Tiny;
+                Text.Font = GameFont.Small;
                 Text.Anchor = TextAnchor.MiddleCenter;
                 Text.WordWrap = false;
                 bool hoveringTick = false;
