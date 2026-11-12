@@ -347,11 +347,12 @@ namespace SexSlaveCraft
                     Widgets.Label(rect, label);
                     ITab_SexSlaveTraining.AddMasterProgressionTip(rect, growth.Record);
                 }));
-                // 满级用阶段行表示。成长中保留区间进度条和下一阶段的剩余经验。
-                if (!growth.AtMaxStage && growth.ProgressFraction is float fraction)
+                // 满级沿用同一进度条并显示满格；只有未满级时才补充下一阶段的剩余经验。
+                if (growth.ProgressFraction is float fraction)
                 {
                     column.Rows.Add((18f, rect => Widgets.FillableBar(InsetSettingsRow(rect, column.Indent), fraction)));
-                    column.AddLabel(growth.Progress, column.Indent, "SSC_MasterProgression_PracticeTip".Translate());
+                    if (!growth.AtMaxStage)
+                        column.AddLabel(growth.Progress, column.Indent, "SSC_MasterProgression_PracticeTip".Translate());
                 }
                 return column;
             }
