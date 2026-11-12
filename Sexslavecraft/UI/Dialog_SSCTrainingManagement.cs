@@ -323,6 +323,9 @@ namespace SexSlaveCraft
                 var portrait = new Rect(PanelPadding, PanelPadding, portraitSize, portraitSize);
                 Widgets.DrawBoxSolid(portrait, PanelColor);
                 SSCBondOverviewWidgets.Portrait(portrait, source, false, true, portraitSize);
+                // 标题头像的悬浮只补充当前阶段；标题文字仍显示原身份和任职。
+                string stage = DrawPortraitStage(portrait, source);
+                if (!string.IsNullOrEmpty(stage)) TooltipHandler.TipRegion(portrait, stage);
             }
             using var scope = new SSCBondOverviewWidgets.GuiScope(false);
             Text.WordWrap = false;
@@ -428,6 +431,8 @@ namespace SexSlaveCraft
         {
             if (!SSCBondOverviewUtility.IsValidPawn(pawn) || ReferenceEquals(source, pawn)) return false;
             SSCBondOverviewWidgets.Portrait(rect, pawn, pawn.Dead, true, captureSize);
+            // 阶段框先画，位置角标和鼠标高亮后画。拖动把手仍由关系卡处理。
+            DrawPortraitStage(rect, pawn);
             // 主从行使用各自的锁链快照，指定者使用指派快照。候选只有点击跳转入口。
             bool assignedTrainer = relation == SummaryRelation.AssignedTrainer && ReferenceEquals(snapshot?.AssignedTrainer, pawn);
             var location = assignedTrainer ? snapshot.AssignedTrainerLocation : entry?.Location;

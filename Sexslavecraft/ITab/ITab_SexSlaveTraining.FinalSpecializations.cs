@@ -24,7 +24,18 @@ namespace SexSlaveCraft
         /// <summary>按各方向现有终极记录生成名称及悬停说明；不把普通完成、历史进度或当前方向当成终极化。</summary>
         internal static List<(SexSlaveSpecializationType Type, string Text, string Tip)> GetFinalSpecializationRows(Pawn pawn)
         {
+            // 旧入口继续消费原三列，和管理窗口共用一次成果状态判定。
             var rows = new List<(SexSlaveSpecializationType, string, string)>();
+            foreach (var card in GetFinalSpecializationCards(pawn))
+                rows.Add((card.Type, card.Name, card.Tip));
+            return rows;
+        }
+
+        /// <summary>终极成果卡直接取得现有生效状态，悬浮文本继续提供具体原因。</summary>
+        internal static List<(SexSlaveSpecializationType Type, string Name, string Status, bool Active, string Tip)>
+            GetFinalSpecializationCards(Pawn pawn)
+        {
+            var cards = new List<(SexSlaveSpecializationType, string, string, bool, string)>();
             foreach (SexSlaveSpecializationType type in FinalSpecializationDisplayOrder)
             {
                 if (!IsTypeFinalized(pawn, type)) continue;
@@ -42,11 +53,13 @@ namespace SexSlaveCraft
                     active = FertilitySpecializationUtility.MeetsConditions(pawn, out string reason);
                     tip = active ? "SSC_Fertility_Tip".Translate().ToString() : reason;
                 }
+                // 失格的成果继续保留卡片，状态与悬浮原因都使用本次查询的结果。
                 string status = (active ? "SSC_SpecializationStatus_Finalized"
                     : "SSC_SpecializationStatus_FinalDisabled").Translate();
-                rows.Add((type, GetSpecializationName(type), string.IsNullOrEmpty(tip) ? status : status + "\n\n" + tip));
+                cards.Add((type, GetSpecializationName(type), status, active,
+                    string.IsNullOrEmpty(tip) ? status : status + "\n\n" + tip));
             }
-            return rows;
+            return cards;
         }
 
         /// <summary>按实际内容计入特化标题、选择按钮、进度及可见附加项，取消固定底部余量。</summary>

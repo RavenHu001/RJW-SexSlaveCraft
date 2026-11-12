@@ -11,6 +11,8 @@ namespace SexSlaveCraft
 {
     internal sealed partial class Dialog_SSCTrainingManagement
     {
+        private const float ImprintHorizontalPadding = 6f;
+
         // 各页面共用唯一的编辑弹窗，由窗口负责撤销。
         private Window editPopup;
         private (object Key, Action Submit) pageActionPress;
@@ -56,16 +58,18 @@ namespace SexSlaveCraft
             else
             {
                 // 玩法阶段从身份工具读取，刻度使用同一条锁链的 Def，避免复制阈值。
-                int reached = SSCIdentityUtility.GetSexSlaveStageFromChain(chain);
                 var stages = chain.def.stages;
-                string stage = reached > 0 && reached <= (stages?.Count ?? 0) ? stages[reached - 1]?.label : null;
+                int total = stages?.Count ?? 0;
+                int reached = Mathf.Clamp(SSCIdentityUtility.GetSexSlaveStageFromChain(chain), 0, total);
+                string stage = reached > 0 ? stages[reached - 1]?.label : null;
                 stage ??= "SSC_TrainingManagement_BeforeChainStage".Translate();
-                bool maxStage = stages?.Count > 0 && reached >= stages.Count;
+                bool maxStage = total > 0 && reached == total;
                 // 向下显示整数百分比，跨过实际门槛之前不提前显示目标值。
                 string value = (Mathf.Floor(Mathf.Clamp01(chain.Severity) * 100f) / 100f).ToString("0%");
-                AddOverviewValue(progress, heading, value);
+                Color accent = StageAccent(PawnIdentity.Slave, reached, total);
+                AddOverviewValue(progress, heading, value, accent);
                 progress.AddLabel("SSC_TrainingManagement_SlaveCurrentStage".Translate(stage),
-                    tooltip: maxStage ? "SSC_MasterProgression_MaxStage".Translate().ToString() : null, textColor: SecondaryText);
+                    tooltip: maxStage ? "SSC_MasterProgression_MaxStage".Translate().ToString() : null, textColor: accent);
                 AddOverviewProgressScale(progress, chain, chain.Severity, reached, asPercent: true);
             }
 
@@ -75,7 +79,7 @@ namespace SexSlaveCraft
             if (need != null)
             {
                 corruption = new SettingsColumn(statusWidth, panel: true);
-                AddOverviewValue(corruption, "SSC_TrainingManagement_CurrentCorruption".Translate(), need.CurLevel.ToString("0%"));
+                AddCorruptionStatus(corruption, need);
             }
 
             daily.AddLabel("<b>" + PageKeys[2].Translate() + "</b>");
@@ -98,7 +102,7 @@ namespace SexSlaveCraft
         }
 
         /// <summary>测量两侧译文并右对齐只读值，给较长的标签留出换行空间。</summary>
-        private static void AddOverviewValue(SettingsColumn column, string label, string value)
+        private static void AddOverviewValue(SettingsColumn column, string label, string value, Color? valueColor = null)
         {
             float gap = Mathf.Min(8f, column.Width * .1f);
             float valueWidth = Mathf.Clamp(Text.CalcSize(value).x + 2f, column.Width * .25f, column.Width * .5f);
@@ -111,7 +115,33 @@ namespace SexSlaveCraft
                 Text.Anchor = TextAnchor.UpperLeft;
                 Widgets.Label(new Rect(rect.x, rect.y, labelWidth, rect.height), label);
                 Text.Anchor = TextAnchor.UpperRight;
+                using var tint = new TextTint(valueColor ?? GUI.contentColor);
                 Widgets.Label(new Rect(rect.xMax - valueWidth, rect.y, valueWidth, rect.height), value);
+            }));
+        }
+
+        /// <summary>保留独立的恶堕面板，第二行并排绘制当前档位和细条。</summary>
+        private static void AddCorruptionStatus(SettingsColumn column, Need_Corruption need)
+        {
+            // 档位和细条都随当前需求回落。百分比向下取整，避免在临界点提前显示下一档门槛。
+            var stage = need.GetStagePresentation();
+            float fraction = Mathf.Clamp01(need.CurLevelPercentage);
+            Color accent = CorruptionAccent(stage.Index, stage.ThresholdCount);
+            string percent = (Mathf.Floor(fraction * 100f) / 100f).ToString("0%");
+            AddOverviewValue(column, "SSC_TrainingManagement_CurrentCorruption".Translate(), percent, accent);
+            using var scope = new SSCBondOverviewWidgets.GuiScope(false);
+            Text.Font = GameFont.Small;
+            float trackWidth = Mathf.Min(64f, column.Width * .28f);
+            float labelWidth = Mathf.Max(1f, column.Width - trackWidth - 8f);
+            float height = Text.CalcHeight(stage.Label, labelWidth);
+            column.Rows.Add((height, rect =>
+            {
+                using var drawScope = new SSCBondOverviewWidgets.GuiScope(false);
+                using var tint = new TextTint(accent);
+                Text.Font = GameFont.Small;
+                Text.Anchor = TextAnchor.MiddleLeft;
+                Widgets.Label(new Rect(rect.x, rect.y, labelWidth, rect.height), stage.Label);
+                DrawStageBar(new Rect(rect.xMax - trackWidth, rect.center.y - 2f, trackWidth, 4f), fraction, accent);
             }));
         }
 
@@ -160,9 +190,11 @@ namespace SexSlaveCraft
             float imprintX = dropdownX + dropdownWidth + columnGap;
             float imprintWidth = width - imprintX;
             // 只在剩余空间足以显示短标签或供长标签换行时使用右列。
-            bool inline = view.ImprintLabel != null && imprintWidth >= Mathf.Min(120f, Text.CalcSize(view.ImprintLabel).x + 1f);
+            bool inline = view.ImprintLabel != null && imprintWidth >= Mathf.Min(120f,
+                Text.CalcSize(view.ImprintLabel).x + 2f * ImprintHorizontalPadding);
             float identityHeight = Mathf.Max(buttonHeight, Text.CalcHeight(Strings.ITab_IdentityHeader, Mathf.Max(1f, captionWidth)) + 8f);
-            float imprintHeight = view.ImprintLabel == null ? 0f : Text.CalcHeight(view.ImprintLabel, inline ? imprintWidth : width);
+            float imprintHeight = view.ImprintLabel == null ? 0f :
+                Text.CalcHeight(view.ImprintLabel, Mathf.Max(1f, (inline ? imprintWidth : width) - 2f * ImprintHorizontalPadding)) + 4f;
             var row = Row(inline ? Mathf.Max(identityHeight, imprintHeight) : identityHeight);
             view.IdentityCaption = new Rect(row.x, row.y, captionWidth, identityHeight);
             view.IdentityDropdown = new Rect(row.x + dropdownX, row.y, dropdownWidth, identityHeight);
@@ -229,7 +261,7 @@ namespace SexSlaveCraft
             if (SSCUIWidgets.Button(view.RecoveryButton, view.RecoveryLabel, true)) OpenRecoveryConfirmation(edit);
         }
 
-        /// <summary>身份下拉沿用原菜单，印记文字只提供悬停详情。</summary>
+        /// <summary>印记根据实际定型方向描边，整块区域提供原健康记录的详情。</summary>
         private void DrawIdentityRow(OverviewIdentityView view)
         {
             using var scope = new SSCBondOverviewWidgets.GuiScope(false);
@@ -239,7 +271,16 @@ namespace SexSlaveCraft
                 OpenIdentityMenu(view.Edit);
 
             if (view.Imprint == null) return;
-            Widgets.Label(view.ImprintRect, view.ImprintLabel);
+            var imprintRect = view.ImprintRect;
+            // 按印记自身的定型状态着色。未定型角色也可能已取得 SSC 身份。
+            var kind = SSCImprintUtility.Kind(view.Imprint.def);
+            bool locked = kind == SSCImprintKind.Master || kind == SSCImprintKind.Slave;
+            Color accent = kind == SSCImprintKind.Master ? CopperColor : kind == SSCImprintKind.Slave ? ProgressFill : SecondaryText;
+            Widgets.DrawBoxSolid(imprintRect, ControlColor);
+            DrawStateOutline(imprintRect, locked ? accent : DividerColor, dashed: !locked);
+            using (new TextTint(accent))
+                Widgets.Label(new Rect(imprintRect.x + ImprintHorizontalPadding, imprintRect.y,
+                    Mathf.Max(1f, imprintRect.width - 2f * ImprintHorizontalPadding), imprintRect.height), view.ImprintLabel);
             // 原版健康提示包含当前阶段效果，并会查战斗日志，只有悬停时才生成。
             TooltipHandler.TipRegion(view.ImprintRect, () => ImprintTooltip(view), view.Imprint.GetHashCode());
         }
@@ -423,6 +464,8 @@ namespace SexSlaveCraft
                 column.Rows.Add((height, rect =>
                 {
                     rect = InsetSettingsRow(rect, column.Indent);
+                    using var tint = new TextTint(growth.Record == null ? GUI.contentColor :
+                        StageAccent(PawnIdentity.Master, nextStage, stages?.Count ?? 0));
                     Widgets.Label(rect, label);
                     ITab_SexSlaveTraining.AddMasterProgressionTip(rect, growth.Record);
                 }));
@@ -433,14 +476,77 @@ namespace SexSlaveCraft
             }
         }
 
-        // 只在第一次绘制进度条时创建纹理，沿用原版填充矩形与刻度坐标。
-        private static class ProgressTextures
+        /// <summary>进度和刻度使用同一个矩形，按实际数值比例填充。</summary>
+        private static void DrawStageBar(Rect track, float fraction, Color accent)
         {
-            internal static readonly Texture2D Fill = SolidColorMaterials.NewSolidColorTexture(ProgressFill);
-            internal static readonly Texture2D Track = SolidColorMaterials.NewSolidColorTexture(ProgressTrack);
+            Widgets.DrawBoxSolid(track, ProgressTrack);
+            if (fraction > 0f)
+                Widgets.DrawBoxSolid(new Rect(track.x, track.y, track.width * fraction, track.height), accent);
         }
 
-        /// <summary>主人经验与锁链进度共用比例刻度，只给下一阶段加亮和标门槛。</summary>
+        /// <summary>头像和概况以同一身份与阶段入口取值。边框画在头像内，避免覆盖相邻把手。</summary>
+        private static string DrawPortraitStage(Rect rect, Pawn pawn)
+        {
+            var identity = SSCIdentityUtility.GetIdentity(pawn);
+            if (identity == PawnIdentity.Unset || rect.width < 16f || rect.height < 16f) return null;
+            var chain = identity == PawnIdentity.Slave ? SSCBondUtility.GetChain(pawn) : null;
+            Hediff record = identity == PawnIdentity.Master ? SSCMasterProgressionUtility.GetRecord(pawn) : chain;
+
+            int total = record?.def.stages?.Count ?? 0;
+            // 主人成长索引从零开始，锁链返回已达到的阶段数。两者统一为已达到的阶段数再绘制。
+            int reached = total == 0 || !float.IsFinite(record.Severity) ? 0 : identity == PawnIdentity.Master
+                ? Mathf.Clamp(record.CurStageIndex + 1, 0, total)
+                : Mathf.Clamp(SSCIdentityUtility.GetSexSlaveStageFromChain(chain), 0, total);
+            Color accent = StageAccent(identity, reached, total);
+            DrawStateOutline(rect, accent);
+            if (total > 0 && reached == total) DrawStateOutline(rect.ContractedBy(2f), accent);
+
+            if (total > 0)
+            {
+                // 缩略头像也在框内留出完整的一组短线。最高阶段的内框在短线之外。
+                float step = Mathf.Min(11f, (rect.width - 8f) / total);
+                float x = rect.center.x - step * total / 2f;
+                for (int i = 0; i < total; i++)
+                    Widgets.DrawBoxSolid(new Rect(x + step * i + step * .15f, rect.yMax - 6f, step * .7f, 2f),
+                        i < reached ? accent : DividerColor);
+            }
+
+            return reached > 0 ? record.def.stages[reached - 1]?.label : null;
+        }
+
+        /// <summary>一像素描边，未定型印记用虚线表达状态。</summary>
+        private static void DrawStateOutline(Rect rect, Color accent, bool dashed = false)
+        {
+            if (rect.width < 2f || rect.height < 2f) return;
+            if (!dashed)
+            {
+                var previous = GUI.color;
+                try
+                {
+                    GUI.color = accent;
+                    Widgets.DrawBox(rect);
+                }
+                finally { GUI.color = previous; }
+                return;
+            }
+
+            const float step = 7f;
+            const float dash = 4f;
+            for (float x = 0; x < rect.width; x += step)
+            {
+                float width = Mathf.Min(dash, rect.width - x);
+                Widgets.DrawBoxSolid(new Rect(rect.x + x, rect.y, width, 1f), accent);
+                Widgets.DrawBoxSolid(new Rect(rect.x + x, rect.yMax - 1f, width, 1f), accent);
+            }
+            for (float y = 1f; y < rect.height - 1f; y += step)
+            {
+                float height = Mathf.Min(dash, rect.height - 1f - y);
+                Widgets.DrawBoxSolid(new Rect(rect.x, rect.y + y, 1f, height), accent);
+                Widgets.DrawBoxSolid(new Rect(rect.xMax - 1f, rect.y + y, 1f, height), accent);
+            }
+        }
+
+        /// <summary>主人经验与锁链进度共用比例刻度，突出当前阶段并保留下一级门槛。</summary>
         private static void AddOverviewProgressScale(SettingsColumn column, Hediff record, float value, int nextStage,
             bool asPercent = false, string nextTip = null, string trackTip = null)
         {
@@ -454,7 +560,7 @@ namespace SexSlaveCraft
             const GameFont stageFont = GameFont.Medium;
             float width = Mathf.Max(1f, column.Width - column.Indent);
             float fill = Mathf.Clamp01(value / maximum);
-            var labels = new List<(float Position, Rect Label, string Text, string Tip, bool Next, bool Above)>();
+            var labels = new List<(float Position, Rect Label, string Text, string Tip, bool Current, bool Next, bool Above)>();
             var below = new List<float>();
             var above = new List<float>();
             using var scope = new SSCBondOverviewWidgets.GuiScope(false);
@@ -464,6 +570,8 @@ namespace SexSlaveCraft
 
             // 第一处刻度朝下，后续交替朝上和朝下。长译名只在同侧追加一行。
             var stages = record.def.stages;
+            // 已达到的阶段数同时是下一阶段的零基索引；最高阶段仍按实际值填充。
+            Color accent = StageAccent(asPercent ? PawnIdentity.Slave : PawnIdentity.Master, nextStage, stages?.Count ?? 0);
             for (int i = 0; stages != null && i < stages.Count; i++)
             {
                 var stage = stages[i];
@@ -490,7 +598,7 @@ namespace SexSlaveCraft
                 if (lane == laneEnds.Count) laneEnds.Add(x + textWidth);
                 else laneEnds[lane] = x + textWidth;
                 labels.Add((position, new Rect(x, labelOffset + lane * lineHeight, textWidth, lineHeight),
-                    name.Truncate(textWidth), tip, isNext, isAbove));
+                    name.Truncate(textWidth), tip, i == nextStage - 1, isNext, isAbove));
             }
 
             // 两侧名称都计入同一行的高度，面板底色和滚动区也随之增高。
@@ -499,9 +607,8 @@ namespace SexSlaveCraft
             column.Rows.Add((aboveHeight + barHeight + belowHeight, rect =>
             {
                 rect = InsetSettingsRow(rect, column.Indent);
-                // 原版返回填充轨道的实际矩形，刻度用同一范围，端点限制在条内。
-                Rect track = Widgets.FillableBar(new Rect(rect.x, rect.y + aboveHeight, rect.width, barHeight),
-                    fill, ProgressTextures.Fill, ProgressTextures.Track, doBorder: false);
+                var track = new Rect(rect.x, rect.y + aboveHeight, rect.width, barHeight);
+                DrawStageBar(track, fill, accent);
                 using var drawScope = new SSCBondOverviewWidgets.GuiScope(false);
                 Text.Font = stageFont;
                 Text.Anchor = TextAnchor.MiddleCenter;
@@ -514,12 +621,13 @@ namespace SexSlaveCraft
                         track.x, track.xMax - tickWidth);
                     float markY = tick.Above ? track.y - tickExtension : track.y;
                     var mark = new Rect(tickX, markY, tickWidth, track.height + tickExtension);
-                    // 中性色刻度在填充条内外都用一像素深底衬出轮廓。
+                    // 用深色衬边保持刻度可辨，当前刻度用亮字色跨过同色填充条。
                     Widgets.DrawBoxSolid(new Rect(mark.x - 1f, mark.y, mark.width + 2f, mark.height), ProgressTrack);
-                    Widgets.DrawBoxSolid(mark, tick.Next ? ProgressNext : SecondaryText);
+                    Widgets.DrawBoxSolid(mark, tick.Current ? PrimaryText : tick.Next ? ProgressNext : SecondaryText);
                     float labelY = tick.Above ? track.y - tick.Label.y - tick.Label.height : track.yMax + tick.Label.y;
                     var label = new Rect(rect.x + tick.Label.x, labelY, tick.Label.width, tick.Label.height);
-                    using (new TextTint(tick.Next ? ProgressNext : SecondaryText)) Widgets.Label(label, tick.Text);
+                    using (new TextTint(tick.Current ? accent : tick.Next ? ProgressNext : SecondaryText))
+                        Widgets.Label(label, tick.Text);
                     var tickHit = new Rect(mark.x - 4f, mark.y, mark.width + 8f, mark.height);
                     hoveringTick |= Mouse.IsOver(tickHit);
                     TooltipHandler.TipRegion(tickHit, tick.Tip);
