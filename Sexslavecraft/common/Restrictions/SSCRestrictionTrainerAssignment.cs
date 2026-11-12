@@ -11,6 +11,15 @@ namespace SexSlaveCraft
             return TryPrepare(target, trainer, out _);
         }
 
+        /// <summary>用提交时的同一套规则预检，报告这次指派是否会写入非主人调教许可。</summary>
+        internal static bool CanAssign(Pawn target, Pawn trainer, out bool opensNonOwnerTraining)
+        {
+            bool allowed = TryPrepare(target, trainer, out SSCRestrictionRules replacement);
+            // 只有生成了待写入的新规则才提示授权，已经允许的目标无需再次授权。
+            opensNonOwnerTraining = allowed && replacement != null;
+            return allowed;
+        }
+
         /// <summary>校验完毕后一起提交保存规则与指定者；调用者先检查调教员身份、地图及正常工作资格。</summary>
         public static bool TryAssign(Pawn target, Pawn trainer)
         {

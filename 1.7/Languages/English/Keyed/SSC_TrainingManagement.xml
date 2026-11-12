@@ -44,4 +44,5 @@
   <SSC_TrainingManagement_BeforeChainStage>Below the first stage</SSC_TrainingManagement_BeforeChainStage>
   <SSC_TrainingManagement_CurrentCorruption>Current corruption</SSC_TrainingManagement_CurrentCorruption>
   <SSC_TrainingManagement_NextPercentGap>{0} percentage points to the next stage</SSC_TrainingManagement_NextPercentGap>
+  <SSC_TrainingManagement_DropAuthorizeNonOwner>Also allow receiving training from non-owners</SSC_TrainingManagement_DropAuthorizeNonOwner>
 </LanguageData>

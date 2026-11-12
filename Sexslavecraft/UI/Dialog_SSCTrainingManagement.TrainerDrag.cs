@@ -106,15 +106,16 @@ namespace SexSlaveCraft
             bool hovered = Mouse.IsOver(rect);
             if (!repaint && (!hovered || Event.current.rawType != EventType.mouseUp)) return;
 
-            bool allowed = gesture.Request.CanSubmit(out string reason);
+            // 高亮、提示和松手命中共用预检结果，实际写入仍由松手后的原事务复查。
+            bool allowed = gesture.Request.CanSubmit(out string reason, out bool opensNonOwnerTraining);
             trainerDropHovered = hovered && allowed;
             if (!repaint) return;
             if (allowed) Widgets.DrawBoxSolid(rect, hovered ? TrainerDropHoverColor : TrainerDropColor);
-            if (hovered) trainerDropPreview = allowed ? DescribeTrainerDrop(gesture) : reason;
+            if (hovered) trainerDropPreview = allowed ? DescribeTrainerDrop(gesture, opensNonOwnerTraining) : reason;
         }
 
-        /// <summary>用已通过预检的当前指派及工作状态生成预览。</summary>
-        private string DescribeTrainerDrop(TrainerGesture gesture)
+        /// <summary>显示通过预检的指派结果，并按实际变化附加工作启用和授权说明。</summary>
+        private string DescribeTrainerDrop(TrainerGesture gesture, bool opensNonOwnerTraining)
         {
             string name = gesture.Pawn.LabelShort;
             if (gesture.Origin == SummaryRelation.AssignedTrainer)
@@ -125,6 +126,7 @@ namespace SexSlaveCraft
                 : "SSC_TrainingManagement_DropReplace".Translate(previous.LabelShort, name);
             if (SSCTrainerWorkUtility.GetState(gesture.Pawn, source) == SSCTrainerWorkState.Off)
                 result += "\n" + "SSC_TrainingManagement_DropEnable".Translate(name);
+            if (opensNonOwnerTraining) result += "\n" + "SSC_TrainingManagement_DropAuthorizeNonOwner".Translate();
             return result;
         }
 

@@ -44,4 +44,5 @@
   <SSC_TrainingManagement_BeforeChainStage>未入阶段</SSC_TrainingManagement_BeforeChainStage>
   <SSC_TrainingManagement_CurrentCorruption>当前恶堕率</SSC_TrainingManagement_CurrentCorruption>
   <SSC_TrainingManagement_NextPercentGap>距下一阶段还差 {0} 个百分点</SSC_TrainingManagement_NextPercentGap>
+  <SSC_TrainingManagement_DropAuthorizeNonOwner>同时开启「接受非主人调教」</SSC_TrainingManagement_DropAuthorizeNonOwner>
 </LanguageData>

@@ -304,7 +304,8 @@ namespace SexSlaveCraft
             return GUI.enabled && Event.current.type == EventType.mouseDown && Event.current.button == 0;
         }
 
-        private static void Badge(Rect rect, SSCBondOverviewLocation location, bool current)
+        /// <summary>让原关系总览与调教窗口共用位置和过期标记。</summary>
+        internal static void Badge(Rect rect, SSCBondOverviewLocation location, bool current)
         {
             if (rect.width < 16) return; // 小网格不让固定字号标记溢出并遮挡相邻头像；详情仍在悬停。
             // 正常同图不加说明；只用小标记提示异常、容器或异地，全文放在悬停中。

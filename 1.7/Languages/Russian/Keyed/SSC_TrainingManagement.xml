@@ -44,4 +44,5 @@
   <SSC_TrainingManagement_BeforeChainStage>Первая стадия не достигнута</SSC_TrainingManagement_BeforeChainStage>
   <SSC_TrainingManagement_CurrentCorruption>Текущее развращение</SSC_TrainingManagement_CurrentCorruption>
   <SSC_TrainingManagement_NextPercentGap>До следующей стадии: {0} п. п.</SSC_TrainingManagement_NextPercentGap>
+  <SSC_TrainingManagement_DropAuthorizeNonOwner>Также разрешить принимать дрессировку от других, кроме хозяина</SSC_TrainingManagement_DropAuthorizeNonOwner>
 </LanguageData>

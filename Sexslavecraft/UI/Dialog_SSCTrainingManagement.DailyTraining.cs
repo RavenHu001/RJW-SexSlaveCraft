@@ -49,12 +49,12 @@ namespace SexSlaveCraft
             DrawSettingsPanels(viewport, width, panels, ref dailyTrainingScroll);
 
             // 开关为原版勾选框预留宽度，实际写入前再次核对角色和研究。
-            void AddToggle(SettingsColumn column, string label, bool value, Action<bool> submit, float offset = 0f)
+            void AddToggle(SettingsColumn column, string label, bool value, Action<bool> submit, float offset = 0f, string tooltip = null)
             {
                 float rowHeight = SettingsToggleHeight(label, column.Width - offset);
                 column.Rows.Add((rowHeight, rect =>
                 {
-                    bool next = SSCUIWidgets.Checkbox(InsetSettingsRow(rect, offset), label, value, true);
+                    bool next = SSCUIWidgets.Checkbox(InsetSettingsRow(rect, offset), label, value, true, tooltip);
                     if (next != value && CanEditDailyTraining(edit)) submit(next);
                 }));
             }
@@ -126,10 +126,11 @@ namespace SexSlaveCraft
                 bool scheduled = training.scheduledTrainingEnabled;
                 int hour = training.scheduledTrainingHour;
                 int days = training.scheduledTrainingIntervalDays;
+                // 关闭时只给开关加悬浮说明，保留现有的排班高度与已保存设置。
                 AddToggle(column, "<b>" + "SSC_Schedule_Header".Translate() + "</b>", scheduled, next =>
                 {
                     if (training.scheduledTrainingEnabled == scheduled) training.scheduledTrainingEnabled = next;
-                });
+                }, tooltip: scheduled ? null : "SSC_Schedule_StatusAnytime".Translate().ToString());
                 // 关闭仅隐藏细项，保留已保存的开始时间和频率。
                 if (!scheduled) return;
 

@@ -237,7 +237,7 @@ namespace SexSlaveCraft
                 pageActionPress = default;
             }
             float y = DrawHeader(inRect.width);
-            y += DrawRelationStrip(inRect.width, y, snapshot, out var clicked);
+            y += DrawRelationStrip(inRect.width, y, view, snapshot, out var clicked);
             y += PanelPadding;
             float available = Mathf.Max(1f, inRect.height - y);
 
@@ -323,7 +323,7 @@ namespace SexSlaveCraft
         }
 
         /// <summary>用详情共用的快照绘制顶部关系摘要。</summary>
-        private float DrawRelationStrip(float width, float y, SSCBondOverviewSnapshot snapshot,
+        private float DrawRelationStrip(float width, float y, SSCBondOverviewView view, SSCBondOverviewSnapshot snapshot,
             out (Pawn Target, SummaryRelation Relation) clicked)
         {
             clicked = default;
@@ -340,14 +340,14 @@ namespace SexSlaveCraft
             if (!slave)
             {
                 var owned = snapshot.Slaves;
-                clicked = (DrawRelationGroup(first, "SSC_BondOverview_OwnedCount".Translate(owned.Count),
-                    SummaryRelation.OwnedSlave, owned.Count > 0 ? owned[0].Pawn : null,
-                    owned.Count > 1 ? owned[1].Pawn : null), SummaryRelation.OwnedSlave);
+                clicked = (DrawRelationGroup(first, "SSC_BondOverview_OwnedCount".Translate(owned.Count), SummaryRelation.OwnedSlave, snapshot,
+                    owned.Count > 0 ? owned[0] : null, owned.Count > 1 ? owned[1] : null,
+                    titleTip: view.Display.OwnedDetails), SummaryRelation.OwnedSlave);
                 return height;
             }
 
             Pawn ownerClicked = DrawRelationGroup(first, snapshot.Master == null ? MissingMasterLabel(snapshot)
-                : "SSC_TrainingManagement_Owner".Translate(snapshot.Master.Name).ToString(), SummaryRelation.Master, snapshot.Master?.Pawn);
+                : "SSC_TrainingManagement_Owner".Translate(snapshot.Master.Name).ToString(), SummaryRelation.Master, snapshot, snapshot.Master);
 
             // 使用保存的指派和现行状态说明，暂时停工的现任仍可见。
             Pawn trainer = snapshot.AssignedTrainer;
@@ -356,48 +356,85 @@ namespace SexSlaveCraft
             Rect second = stacked ? new Rect(first.x, first.yMax, groupWidth, rowHeight)
                 : new Rect(width / 2f + PanelPadding, y, groupWidth, rowHeight);
             Pawn trainerClicked = DrawRelationGroup(second, "SSC_TrainingManagement_AssignedTrainer".Translate(trainerName),
-                SummaryRelation.AssignedTrainer, trainer);
+                SummaryRelation.AssignedTrainer, snapshot, titleTip: AssignedTrainerTitleTip(view));
             clicked = ownerClicked != null ? (ownerClicked, SummaryRelation.Master) : (trainerClicked, SummaryRelation.AssignedTrainer);
             return height;
         }
 
-        /// <summary>摘要肖像用原生按钮接收左键，截断的完整状态可悬停查看。</summary>
-        private Pawn DrawRelationGroup(Rect rect, string label, SummaryRelation relation, Pawn first, Pawn second = null)
+        /// <summary>仅在快照中的指定者仍有效时显示其位置，等待刷新期间提示指派已变化。</summary>
+        private static string AssignedTrainerTitleTip(SSCBondOverviewView view)
+        {
+            var snapshot = view?.Snapshot;
+            if (snapshot?.AssignedTrainer == null) return null;
+            return SSCBondOverviewNavigation.IsTrainerCurrent(snapshot) ? view.Display.TrainerDetails : SSCBondOverviewText.T("RelationChanged");
+        }
+
+        /// <summary>用原生按钮接收摘要肖像点击，标题悬浮补充数量或指派详情。</summary>
+        private Pawn DrawRelationGroup(Rect rect, string label, SummaryRelation relation, SSCBondOverviewSnapshot snapshot,
+            SSCBondOverviewEntry first = null, SSCBondOverviewEntry second = null, string titleTip = null)
         {
             const float cell = 56f;
             using var scope = new SSCBondOverviewWidgets.GuiScope(false);
             Pawn clicked = null;
             float x = rect.x;
-            DrawPortrait(first);
-            DrawPortrait(second);
+            if (relation == SummaryRelation.AssignedTrainer) DrawPortrait(snapshot.AssignedTrainer, null);
+            else
+            {
+                DrawPortrait(first?.Pawn, first);
+                DrawPortrait(second?.Pawn, second);
+            }
             var textRect = new Rect(x, rect.y, Mathf.Max(1f, rect.xMax - x), rect.height);
             Text.Anchor = TextAnchor.MiddleLeft;
             Text.WordWrap = false;
             Widgets.Label(textRect, label.Truncate(textRect.width));
-            if (trainerGesture == null) TooltipHandler.TipRegion(textRect, label);
+            if (trainerGesture == null) TooltipHandler.TipRegion(textRect, titleTip ?? label);
             return clicked;
 
-            void DrawPortrait(Pawn pawn)
+            void DrawPortrait(Pawn pawn, SSCBondOverviewEntry entry)
             {
                 if (!SSCBondOverviewUtility.IsValidPawn(pawn) || ReferenceEquals(source, pawn) || rect.xMax - x < cell + 64f) return;
                 var portrait = new Rect(x, rect.y + (rect.height - cell) / 2f, cell, cell);
-                if (DrawJumpPortrait(portrait, pawn, relation, false)) clicked = pawn;
+                if (DrawJumpPortrait(portrait, pawn, relation, false, snapshot: snapshot, entry: entry)) clicked = pawn;
                 x += cell + 8f;
             }
         }
 
-        /// <summary>绘制可定位肖像并处理普通点击。拖放从独立把手开始。</summary>
+        /// <summary>绘制肖像和位置标记，悬浮时高亮当前目标，普通点击沿用原导航。</summary>
         private bool DrawJumpPortrait(Rect rect, Pawn pawn, SummaryRelation relation, bool detail,
-            string tooltip = null, float? captureSize = null)
+            string tooltip = null, float? captureSize = null, SSCBondOverviewSnapshot snapshot = null, SSCBondOverviewEntry entry = null)
         {
             if (!SSCBondOverviewUtility.IsValidPawn(pawn) || ReferenceEquals(source, pawn)) return false;
             SSCBondOverviewWidgets.Portrait(rect, pawn, pawn.Dead, true, captureSize);
+            // 主从行使用各自的锁链快照，指定者使用指派快照。候选只有点击跳转入口。
+            bool assignedTrainer = relation == SummaryRelation.AssignedTrainer && ReferenceEquals(snapshot?.AssignedTrainer, pawn);
+            var location = assignedTrainer ? snapshot.AssignedTrainerLocation : entry?.Location;
+            bool hasLocation = assignedTrainer || entry != null;
+            bool current = !hasLocation || (assignedTrainer ? SSCBondOverviewNavigation.IsTrainerCurrent(snapshot)
+                : SSCBondOverviewUtility.IsCurrent(snapshot, entry));
+            if (hasLocation) SSCBondOverviewWidgets.Badge(rect, location, current);
             // 把手持有鼠标期间，肖像只绘制，避免普通定位提示盖住落区结果。
             if (trainerGesture != null) return false;
             Widgets.DrawHighlightIfMouseover(rect);
-            TooltipHandler.TipRegion(rect, tooltip ?? "SSC_TrainingManagement_JumpToPawn".Translate(pawn.LabelShort).ToString());
             Event input = Event.current;
             bool over = Mouse.IsOver(rect);
+            if (over)
+            {
+                // 只在悬浮时校验位置与高亮，点击仍交给原导航重新解析。
+                if (tooltip == null)
+                {
+                    tooltip = "SSC_TrainingManagement_JumpToPawn".Translate(pawn.LabelShort);
+                    if (location != null) tooltip += "\n" + SSCBondOverviewText.Location(location);
+                }
+                if (!current) tooltip = SSCBondOverviewText.T("RelationChanged");
+                else if (hasLocation)
+                {
+                    if (assignedTrainer && detail)
+                        tooltip += "\n" + SSCTrainerWorkUtility.Reason(SSCTrainerWorkUtility.GetState(pawn, snapshot.Source), pawn);
+                    SSCBondOverviewNavigation.Highlight(location);
+                    if (!SSCBondOverviewNavigation.CanPreview(location, out _)) tooltip += "\n" + SSCBondOverviewText.T("ResolveOnClick");
+                }
+                TooltipHandler.TipRegion(rect, tooltip);
+            }
             bool leftUp = input.type == EventType.mouseUp && input.button == 0 && over;
             if (GUI.enabled && input.type == EventType.mouseDown && input.button == 0 && over)
                 pressedPortrait = (pawn, relation, detail);

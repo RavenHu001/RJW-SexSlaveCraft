@@ -25,10 +25,14 @@ namespace SexSlaveCraft
             // 当前方向和进度一起读取，空方向不会借用历史成果生成进度。
             cultivation.AddLabel("<b>" + "SSC_TrainingManagement_CurrentCultivation".Translate() + "</b>");
             string directionLabel = ITab_SexSlaveTraining.GetSpecializationLabel(edit.Pawn, edit.Comp);
+            // 普通训导官的说明跟随方向控件，终极记录继续由成果卡片解释。
+            string directionTip = direction == SexSlaveSpecializationType.TrainerOfficer &&
+                !TrainerSpecializationUtility.HasFinalRecord(edit.Pawn)
+                    ? "SSC_TrainerIdentity_RestrictionTip".Translate().ToString() : null;
             cultivation.Rows.Add((Mathf.Max(34f, Text.LineHeight + 8f), rect =>
             {
                 var control = InsetSettingsRow(rect, cultivation.Indent);
-                if (DrawSettingsControl(control, directionLabel, dropdown: true)) OpenSpecializationMenu(edit, direction);
+                if (DrawSettingsControl(control, directionLabel, dropdown: true, tooltip: directionTip)) OpenSpecializationMenu(edit, direction);
             }));
             if (direction != SexSlaveSpecializationType.None)
             {

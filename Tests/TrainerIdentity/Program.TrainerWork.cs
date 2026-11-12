@@ -14,6 +14,7 @@ internal static partial class Program
             var f = Setup(); Assert(SSCBondUtility.Bind(f.master, f.slave));
             f.master.workSettings.Active = false;
             var option = SSCTrainerAssignmentMenu.Options(f.slave).Last(o => o.Label.StartsWith(f.master.LabelShort));
+            Assert(new SSCTrainerWorkUtility.Request(f.slave, f.master).CanSubmit(out _, out bool opensTraining) && !opensTraining);
             Assert(f.master.workSettings.SetCalls == 0 && SSCIdentityUtility.IsTrainer(f.master));
             option.action();
             Assert(f.master.workSettings.RawPriority == 3 && f.slave.Training.selectedTrainer == f.master &&
@@ -33,8 +34,15 @@ internal static partial class Program
         {
             var f = Setup(); Assert(SSCBondUtility.Bind(f.master, f.slave));
             var officer = QualifiedTrainer(f.slave.Map); officer.LabelShort = "Officer"; officer.workSettings.Active = false;
+            var request = new SSCTrainerWorkUtility.Request(f.slave, officer);
+            var rules = f.slave.Training.restrictionConfig.rules;
+            Assert(request.CanSubmit(out _, out bool opensTraining) && opensTraining && !rules.receiveTraining &&
+                ReferenceEquals(rules, f.slave.Training.restrictionConfig.rules) && officer.workSettings.SetCalls == 0 &&
+                f.slave.Training.selectedTrainer == f.master);
             SSCTrainerAssignmentMenu.Options(f.slave).Single(o => o.Label.StartsWith("Officer")).action();
             Assert(officer.workSettings.Active && f.slave.Training.selectedTrainer == officer && f.slave.Training.restrictionConfig.rules.receiveTraining);
+            var other = Pawn(PawnIdentity.Master, f.slave.Map);
+            Assert(new SSCTrainerWorkUtility.Request(f.slave, other).CanSubmit(out _, out opensTraining) && !opensTraining);
             officer.Training.slaveTrainerEnabled = false;
             Assert(!SSCTrainerWorkUtility.CanConsider(f.slave, officer) && f.slave.Training.selectedTrainer == officer);
         });
@@ -54,9 +62,11 @@ internal static partial class Program
             f.slave.Training.selectedTrainer = other; other.workSettings.Active = false;
             var rules = f.slave.Training.restrictionConfig.rules;
             Assert(TrainerAssignmentUtility.GetActiveAssignedTrainer(f.slave) == other);
+            Assert(new SSCTrainerWorkUtility.Request(f.slave, other, enableOnly: true).CanSubmit(out _, out bool opensTraining) && !opensTraining);
             SSCTrainerAssignmentMenu.EnableOption(f.slave).action();
             Assert(other.workSettings.Active && ReferenceEquals(rules, f.slave.Training.restrictionConfig.rules) && !rules.receiveTraining);
             rules.receiveTraining = true;
+            Assert(new SSCTrainerWorkUtility.Request(f.slave, null).CanSubmit(out _, out opensTraining) && !opensTraining);
             SSCTrainerAssignmentMenu.Options(f.slave).Last().action();
             Assert(f.slave.Training.selectedTrainer == null && other.workSettings.Active);
         });
@@ -91,6 +101,7 @@ internal static partial class Program
             other.workSettings.AfterSet = n => { if (n != 0) ForceDenyTraining(f.slave); };
             Assert(!new SSCTrainerWorkUtility.Request(f.slave, other).TrySubmit(out _) && !other.workSettings.Active &&
                 f.slave.Training.selectedTrainer == f.master && ReferenceEquals(rules, f.slave.Training.restrictionConfig.rules) && !rules.receiveTraining);
+            Assert(!new SSCTrainerWorkUtility.Request(f.slave, other).CanSubmit(out _, out bool opensTraining) && !opensTraining);
         });
         Run("工作setter拒绝和写后异常均不留下指派或工作半成品", () =>
         {

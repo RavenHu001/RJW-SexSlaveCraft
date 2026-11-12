@@ -49,10 +49,18 @@ namespace SexSlaveCraft
 
         /// <summary>只放宽工作开关，身份、地图和目标许可仍与原指派一致；禁止工作者留给菜单显示原因。</summary>
         internal static bool CanConsider(Pawn source, Pawn trainer)
-            => SSCIdentityUtility.IsSexSlave(source) && source != trainer && source.Map != null &&
+            => CanConsider(source, trainer, out _);
+
+        /// <summary>候选资格和授权预览使用同一次原规则预检。</summary>
+        private static bool CanConsider(Pawn source, Pawn trainer, out bool opensNonOwnerTraining)
+        {
+            opensNonOwnerTraining = false;
+            return SSCIdentityUtility.IsSexSlave(source) && source != trainer && source.Map != null &&
                 trainer != null && !trainer.Dead && !trainer.Destroyed && !trainer.Discarded && !trainer.Downed &&
                 SSCIdentityUtility.IsTrainer(trainer) && trainer.Map == source.Map &&
-                source.Map.mapPawns.FreeColonists.Contains(trainer) && SSCRestrictionTrainerAssignment.CanAssign(source, trainer);
+                source.Map.mapPawns.FreeColonists.Contains(trainer) &&
+                SSCRestrictionTrainerAssignment.CanAssign(source, trainer, out opensNonOwnerTraining);
+        }
 
         /// <summary>捕获原角色、人格和工作载体。提交不能重新捕获来授权旧请求。</summary>
         internal sealed class Request
@@ -105,8 +113,12 @@ namespace SexSlaveCraft
                     ReferenceEquals(Trainer.workSettings, settings) && settings?.Initialized == true && work == WorkType;
 
             /// <summary>为菜单提交和拖放落区提供同一套只读预检。</summary>
-            internal bool CanSubmit(out string reason)
+            internal bool CanSubmit(out string reason) => CanSubmit(out reason, out _);
+
+            /// <summary>只读复查原请求，并返回普通指派是否附带授权。撤销与单独启用工作不改个人规则。</summary>
+            internal bool CanSubmit(out string reason, out bool opensNonOwnerTraining)
             {
+                opensNonOwnerTraining = false;
                 reason = "SSC_TrainerWork_Changed".Translate();
                 if (!SourceCurrent() || submitting.Contains(Source) || Trainer != null && submitting.Contains(Trainer)) return false;
                 if (Trainer == null)
@@ -120,8 +132,9 @@ namespace SexSlaveCraft
                 SSCTrainerWorkState state = GetState(Trainer, Source);
                 if (state != SSCTrainerWorkState.Active && state != SSCTrainerWorkState.Off)
                 { reason = Reason(state, Trainer); return false; }
+                // 仅普通指派走规则预检。就地启用只检查已指派的调教员和原工作值。
                 if (enableOnly ? Source == Trainer || previous != Trainer || priority != 0 || !SSCIdentityUtility.IsSexSlave(Source)
-                    : !CanConsider(Source, Trainer))
+                    : !CanConsider(Source, Trainer, out opensNonOwnerTraining))
                 { reason = "SSC_Restrictions_AssignFailed".Translate(); return false; }
                 return true;
             }

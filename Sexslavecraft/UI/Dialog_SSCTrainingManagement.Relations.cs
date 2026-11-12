@@ -102,7 +102,7 @@ namespace SexSlaveCraft
                     var candidateRect = new Rect(assignedRect.x, assignedRect.yMax + SectionPadding, rightWidth, candidateHeight);
                     Pawn owner = DrawOwnerSection(ownerRect, view);
                     Pawn trainer = DrawTrainerSection(assignedRect, assignedTitle, assigned, SummaryRelation.AssignedTrainer,
-                        rightColumns, ScrollbarWidth, assignedRect.y, assignedRect.yMax, enableWork);
+                        rightColumns, ScrollbarWidth, assignedRect.y, assignedRect.yMax, enableWork, view);
                     Pawn candidate = DrawCandidateScroll(candidateRect, candidateTitle, rightColumns);
                     return RelationClick(owner, trainer, candidate);
                 }
@@ -126,7 +126,7 @@ namespace SexSlaveCraft
                 float bottom = top + viewport.height;
                 Pawn owner = top < ownerHeight ? DrawOwnerSection(new Rect(0f, 0f, width, ownerHeight), view) : null;
                 Pawn trainer = DrawTrainerSection(new Rect(0f, assignedY, width, assignedSectionHeight), assignedTitle,
-                    assigned, SummaryRelation.AssignedTrainer, columns, 0f, top, bottom, enableWork);
+                    assigned, SummaryRelation.AssignedTrainer, columns, 0f, top, bottom, enableWork, view);
                 Pawn candidate = DrawTrainerSection(new Rect(0f, candidateY, width, candidateSectionHeight), candidateTitle,
                     candidates, SummaryRelation.TrainerCandidate, columns, 0f, top, bottom);
                 return RelationClick(owner, trainer, candidate);
@@ -196,13 +196,13 @@ namespace SexSlaveCraft
             // 纵排时仍保持主人头像靠左，避免随整个分区宽度扩张。
             var card = new Rect(body.x, body.y, Mathf.Min(body.width, OwnerColumnWidth - 2f * SectionPadding), OwnerPortraitSize + 30f);
             return DrawRelationCard(card, master.Pawn, SummaryRelation.Master, OwnerPortraitSize,
-                view.Display.Row(master).Tooltip, view.Display.Row(master).Name) ? master.Pawn : null;
+                view.Display.Row(master).Tooltip, view.Display.Row(master).Name, snapshot: view.Snapshot, entry: master) ? master.Pawn : null;
         }
 
-        /// <summary>主人页复用原所属性奴快照、详情文字和按可见行绘制的网格。</summary>
+        /// <summary>标题悬浮显示存活数与总数，头像按快照中的可见行绘制。</summary>
         private Pawn DrawOwnedSlaves(Rect viewport, SSCBondOverviewView view)
         {
-            Rect body = DrawSectionHeading(viewport, view.Display.OwnedHeading);
+            Rect body = DrawSectionHeading(viewport, view.Display.OwnedHeading, titleTip: view.Display.Count);
             var slaves = view.Snapshot.Slaves;
             if (slaves.Count == 0)
             {
@@ -222,7 +222,7 @@ namespace SexSlaveCraft
                     var entry = slaves[i];
                     var text = view.Display.Row(entry);
                     if (DrawRelationCard(CardRect(0f, 0f, width, columns, i), entry.Pawn, SummaryRelation.OwnedSlave, 56f,
-                        text.Tooltip, text.Name)) return entry.Pawn;
+                        text.Tooltip, text.Name, snapshot: view.Snapshot, entry: entry)) return entry.Pawn;
                 }
                 return null;
             }
@@ -235,19 +235,20 @@ namespace SexSlaveCraft
 
         /// <summary>绘制已指派区或纵排候选区。空区同样提供落点。</summary>
         private Pawn DrawTrainerSection(Rect section, string title, IReadOnlyList<Pawn> trainers, SummaryRelation relation,
-            int columns, float scrollGutter, float top, float bottom, FloatMenuOption enableWork = null)
+            int columns, float scrollGutter, float top, float bottom, FloatMenuOption enableWork = null, SSCBondOverviewView view = null)
         {
             if (section.yMax <= top || section.y >= bottom) return null;
-            Rect body = DrawSectionHeading(section, title, enableWork);
+            Rect body = DrawSectionHeading(section, title, enableWork, titleTip: AssignedTrainerTitleTip(view));
             body.width = Mathf.Max(1f, body.width - scrollGutter);
-            Pawn clicked = DrawTrainerCards(body, trainers, relation, columns, top, bottom);
-            // 标题只说明区域用途。即使当前没有卡片，也使用同一个内容矩形来高亮和命中。
+            Pawn clicked = DrawTrainerCards(body, trainers, relation, columns, top, bottom, view);
+            // 空区也使用同一个内容矩形作为落点，标题和启用工作按钮留在落区外。
             OfferTrainerDrop(body, relation);
             return clicked;
         }
 
         /// <summary>两组调教员按分区列数换行，绘制时只读取可见卡片的工作状态。</summary>
-        private Pawn DrawTrainerCards(Rect body, IReadOnlyList<Pawn> trainers, SummaryRelation relation, int columns, float top, float bottom)
+        private Pawn DrawTrainerCards(Rect body, IReadOnlyList<Pawn> trainers, SummaryRelation relation, int columns, float top, float bottom,
+            SSCBondOverviewView view = null)
         {
             if (trainers.Count == 0)
             {
@@ -262,7 +263,8 @@ namespace SexSlaveCraft
                 Pawn trainer = trainers[i];
                 Rect card = CardRect(body.x, body.y, body.width, columns, i);
                 string name = trainer.Dead ? SSCBondOverviewText.Format("DeadName", trainer.LabelShort) : trainer.LabelShort;
-                if (DrawRelationCard(card, trainer, relation, 56f, TrainerTooltip(card, trainer, relation), name)) return trainer;
+                if (DrawRelationCard(card, trainer, relation, 56f, TrainerTooltip(card, trainer, relation), name,
+                    snapshot: view?.Snapshot, trainerDetails: view?.Display.TrainerDetails)) return trainer;
             }
             return null;
         }
@@ -287,7 +289,8 @@ namespace SexSlaveCraft
         }
 
         /// <summary>排布头像、姓名和调教员把手，各自使用独立矩形。</summary>
-        private bool DrawRelationCard(Rect card, Pawn pawn, SummaryRelation relation, float portraitSize, string tooltip, string name)
+        private bool DrawRelationCard(Rect card, Pawn pawn, SummaryRelation relation, float portraitSize, string tooltip, string name,
+            SSCBondOverviewSnapshot snapshot = null, SSCBondOverviewEntry entry = null, string trainerDetails = null)
         {
             using var scope = new SSCBondOverviewWidgets.GuiScope(false);
             bool trainerCard = relation == SummaryRelation.AssignedTrainer || relation == SummaryRelation.TrainerCandidate;
@@ -296,7 +299,9 @@ namespace SexSlaveCraft
             float portraitWidth = card.width - handleWidth;
             float size = Mathf.Min(portraitSize, portraitWidth);
             var portrait = new Rect(card.x + (portraitWidth - size) / 2f, card.y, size, size);
-            bool clicked = DrawJumpPortrait(portrait, pawn, relation, true, trainerCard ? null : tooltip, portraitSize);
+            // 头像说明关系和位置，把手继续单独说明工作开关与拖放。
+            bool clicked = DrawJumpPortrait(portrait, pawn, relation, true, trainerCard ? trainerDetails : tooltip,
+                portraitSize, snapshot, entry);
             if (trainerCard)
             {
                 // 把手位于肖像之外。指派失效且没有可绘制的肖像时，仍可从把手发起撤销。
@@ -355,15 +360,17 @@ namespace SexSlaveCraft
             return (titleWidth, buttonWidth, Mathf.Max(HeadingHeight(title, titleWidth), Text.LineHeight + 10f));
         }
 
-        /// <summary>绘制区域标题及边界，返回独立内容矩形。</summary>
-        private Rect DrawSectionHeading(Rect section, string title, FloatMenuOption enableWork = null)
+        /// <summary>绘制标题、悬浮区域与边界，返回不含标题的内容矩形。</summary>
+        private Rect DrawSectionHeading(Rect section, string title, FloatMenuOption enableWork = null, string titleTip = null)
         {
             Widgets.DrawBoxSolid(section, HeaderColor);
             float x = section.x + SectionPadding;
             float y = section.y + SectionPadding;
             float width = Mathf.Max(1f, section.width - 2f * SectionPadding);
             var (titleWidth, buttonWidth, height) = SectionHeadingSize(title, width, enableWork != null);
-            Widgets.Label(new Rect(x, y, titleWidth, height - 6f), "<b>" + title + "</b>");
+            var titleRect = new Rect(x, y, titleWidth, height - 6f);
+            Widgets.Label(titleRect, "<b>" + title + "</b>");
+            if (trainerGesture == null && titleTip != null) TooltipHandler.TipRegion(titleRect, titleTip);
             if (enableWork != null)
             {
                 var button = new Rect(x + width - buttonWidth, y, buttonWidth, height - 6f);
