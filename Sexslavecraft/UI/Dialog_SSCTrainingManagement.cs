@@ -12,6 +12,7 @@ namespace SexSlaveCraft
     {
         private const float ScreenPadding = 16f;
         private const float PanelPadding = 14f;
+        private const float HeaderPortraitSize = 80f;
         private const float NavigationGap = 5f;
         private const float StackedSummaryWidth = 460f;
         private enum Page { Overview, Relations, DailyTraining, Specialization, BodyAppearance, BehaviorRules }
@@ -100,8 +101,7 @@ namespace SexSlaveCraft
                 Close(false);
                 return;
             }
-            float top = MinimumWindowY();
-            if (windowRect.y < top) PositionBelowBar(top);
+            PositionBelowBar(MinimumWindowY());
             // 原版可通过取消或点击外部关闭弹窗，清理它捕获的旧上下文。
             if (editPopup != null && !Find.WindowStack.IsOpen(editPopup)) editPopup = null;
             RefreshSelection();
@@ -131,7 +131,7 @@ namespace SexSlaveCraft
         /// <summary>初次打开或分辨率变化时在原版殖民者栏下方定位。</summary>
         protected override void SetInitialSizeAndPosition()
         {
-            PositionBelowBar(GameReady() ? MinimumWindowY() : ScreenPadding);
+            PositionBelowBar(GameReady() ? MinimumWindowY() : ScreenPadding, center: true);
         }
 
         /// <summary>读取原版头像的实际行高，留出全部可点击头像。</summary>
@@ -147,14 +147,31 @@ namespace SexSlaveCraft
             return Mathf.Ceil(top);
         }
 
-        /// <summary>沿用居中布局，实际覆盖殖民者栏时下移并按剩余高度约束。</summary>
-        private void PositionBelowBar(float top)
+        /// <summary>初次居中，之后只约束玩家选定的位置，给殖民者栏和屏幕边缘留出空间。</summary>
+        private void PositionBelowBar(float top, bool center = false)
         {
             Vector2 size = InitialSize;
-            float available = Mathf.Max(1f, UI.screenHeight - top - ScreenPadding);
-            float height = Mathf.Min(size.y, available);
-            float y = Mathf.Max(top, (UI.screenHeight - height) / 2f);
-            windowRect = new Rect((UI.screenWidth - size.x) / 2f, y, size.x, height);
+            float bottom = Mathf.Max(1f, UI.screenHeight - ScreenPadding);
+            top = Mathf.Min(top, bottom - 1f);
+            float height = Mathf.Min(size.y, bottom - top);
+            float x = center ? (UI.screenWidth - size.x) / 2f : windowRect.x;
+            float y = center ? (UI.screenHeight - height) / 2f : windowRect.y;
+            float left = Mathf.Min(ScreenPadding, (UI.screenWidth - size.x) / 2f);
+            x = Mathf.Clamp(x, left, UI.screenWidth - left - size.x);
+            y = Mathf.Clamp(y, top, bottom - height);
+            windowRect = new Rect(x, y, size.x, height);
+        }
+
+        /// <summary>把原版拖动限制在标题区，关系头像、把手和滚动区继续处理各自的输入。</summary>
+        protected override void LateWindowOnGUI(Rect inRect)
+        {
+            base.LateWindowOnGUI(inRect);
+            if (trainerGesture != null) return;
+            using var scope = new SSCBondOverviewWidgets.GuiScope(false);
+            Text.Font = GameFont.Medium;
+            // 原版已结束内容组，此处使用整个窗口内的标题坐标。
+            GUI.DragWindow(new Rect(inRect.x, inRect.y, inRect.width,
+                Mathf.Min(inRect.height, HeaderHeight(inRect.width, Text.LineHeight))));
         }
 
         /// <summary>切换角色时释放原编辑与关系上下文，空选和不可管理对象显示同一提示。</summary>
@@ -281,10 +298,9 @@ namespace SexSlaveCraft
         /// <summary>按可用宽度预留固定标题行，角色和身份变化只更新内容。</summary>
         private float DrawHeader(float width)
         {
-            const float portraitSize = 80f;
             bool reservePortrait = width >= 160f;
             bool stacked = width < StackedSummaryWidth;
-            float textX = PanelPadding + (reservePortrait ? portraitSize + PanelPadding : 0f);
+            float textX = PanelPadding + (reservePortrait ? HeaderPortraitSize + PanelPadding : 0f);
             float textWidth = Mathf.Max(1f, width - textX - PanelPadding);
             string title = comp == null ? "SSC_TrainingManagement_Title".Translate().ToString()
                 : "SSC_TrainingManagement_TitlePawn".Translate(source.LabelShort).ToString();
@@ -293,15 +309,14 @@ namespace SexSlaveCraft
                 ? "SSC_TrainerIdentity_Label".Translate() + TrainerState() : null;
 
             float lineHeight = Text.LineHeight;
-            float textHeight = (stacked ? 3f : 2f) * lineHeight + 4f;
-            float height = 2f * PanelPadding + Mathf.Max(reservePortrait ? portraitSize : 0f, textHeight);
+            float height = HeaderHeight(width, lineHeight);
             Widgets.DrawBoxSolid(new Rect(0f, 0f, width, height), HeaderColor);
             Widgets.DrawLineHorizontal(0f, height - 1f, width, DividerColor);
             if (reservePortrait && comp != null)
             {
-                var portrait = new Rect(PanelPadding, PanelPadding, portraitSize, portraitSize);
+                var portrait = new Rect(PanelPadding, PanelPadding, HeaderPortraitSize, HeaderPortraitSize);
                 Widgets.DrawBoxSolid(portrait, PanelColor);
-                SSCBondOverviewWidgets.Portrait(portrait, source, false, true, portraitSize);
+                SSCBondOverviewWidgets.Portrait(portrait, source, false, true, HeaderPortraitSize);
             }
             using var scope = new SSCBondOverviewWidgets.GuiScope(false);
             Text.WordWrap = false;
@@ -321,6 +336,11 @@ namespace SexSlaveCraft
                 if (trainerGesture == null && displayed != label) TooltipHandler.TipRegion(rect, label);
             }
         }
+
+        /// <summary>标题绘制和拖动命中共用同一高度。</summary>
+        private static float HeaderHeight(float width, float lineHeight)
+            => 2f * PanelPadding + Mathf.Max(width >= 160f ? HeaderPortraitSize : 0f,
+                (width < StackedSummaryWidth ? 3f : 2f) * lineHeight + 4f);
 
         /// <summary>用详情共用的快照绘制顶部关系摘要。</summary>
         private float DrawRelationStrip(float width, float y, SSCBondOverviewView view, SSCBondOverviewSnapshot snapshot,
