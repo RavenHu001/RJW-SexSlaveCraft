@@ -331,7 +331,7 @@ namespace SexSlaveCraft
                 var column = new SettingsColumn(columnWidth, panel: true);
                 column.AddLabel("<b>" + "SSC_TrainingManagement_MasterGrowth".Translate() + "</b>");
                 string label = growth.Record == null ? growth.Stage : growth.Stage + " · " + growth.Experience;
-                if (growth.AtMaxStage) label += " · " + growth.Progress;
+                if (!string.IsNullOrEmpty(growth.Progress)) label += " · " + growth.Progress;
                 float height = Text.CalcHeight(label, Mathf.Max(1f, column.Width - column.Indent));
                 column.Rows.Add((height, rect =>
                 {
@@ -339,15 +339,87 @@ namespace SexSlaveCraft
                     Widgets.Label(rect, label);
                     ITab_SexSlaveTraining.AddMasterProgressionTip(rect, growth.Record);
                 }));
-                // 满级沿用同一进度条并显示满格；只有未满级时才补充下一阶段的剩余经验。
-                if (growth.ProgressFraction is float fraction)
-                {
-                    column.Rows.Add((18f, rect => Widgets.FillableBar(InsetSettingsRow(rect, column.Indent), fraction)));
-                    if (!growth.AtMaxStage)
-                        column.AddLabel(growth.Progress, column.Indent, "SSC_MasterProgression_PracticeTip".Translate());
-                }
+                if (growth.Record != null) AddMasterGrowthScale(column, growth.Record, growth.ExperienceValue);
                 return column;
             }
+        }
+
+        /// <summary>测量累计经验刻度和阶段名，按同一个坐标系绘制填充、刻度与标签。</summary>
+        private static void AddMasterGrowthScale(SettingsColumn column, Hediff_MasterProgression record, float experience)
+        {
+            float maximum = record.def.maxSeverity;
+            if (!(maximum > 0f) || float.IsInfinity(maximum)) return;
+
+            const float barHeight = 14f;
+            const float labelOffset = barHeight + 6f;
+            const float labelGap = 4f;
+            const float maxLabelShift = 12f;
+            float width = Mathf.Max(1f, column.Width - column.Indent);
+            float fill = Mathf.Clamp01(experience / maximum);
+            var labels = new List<(float Position, Rect Label, string Text, string Tip, bool Next)>();
+            var laneEnds = new List<float>();
+            using var scope = new SSCBondOverviewWidgets.GuiScope(false);
+            Text.Font = GameFont.Tiny;
+            Text.WordWrap = false;
+            float lineHeight = Text.LineHeight;
+
+            // 阶段阈值按实际经验比例定位。相邻名称先小幅避让，空间不足时再排到下一行。
+            var stages = record.def.stages;
+            int nextStage = record.CurStageIndex + 1;
+            for (int i = 0; stages != null && i < stages.Count; i++)
+            {
+                var stage = stages[i];
+                if (stage == null || !(stage.minSeverity >= 0f && stage.minSeverity <= maximum)) continue;
+                float position = stage.minSeverity / maximum;
+                string name = stage.label ?? string.Empty;
+                string tip = name + " · " + stage.minSeverity.ToString("0.##");
+                float textWidth = Mathf.Min(width, Mathf.Ceil(Text.CalcSize(name).x) + 2f);
+                float maxX = width - textWidth;
+                float idealX = Mathf.Clamp(position * width - textWidth / 2f, 0f, maxX);
+                float x = idealX;
+                int lane = 0;
+                for (; lane < laneEnds.Count; lane++)
+                {
+                    float shifted = Mathf.Max(idealX, laneEnds[lane] + labelGap);
+                    if (shifted > maxX || shifted - idealX > maxLabelShift) continue;
+                    x = shifted;
+                    break;
+                }
+                if (lane == laneEnds.Count) laneEnds.Add(x + textWidth);
+                else laneEnds[lane] = x + textWidth;
+                labels.Add((position, new Rect(x, labelOffset + lane * lineHeight, textWidth, lineHeight),
+                    name.Truncate(textWidth), tip, i == nextStage));
+            }
+
+            float height = labels.Count == 0 ? barHeight : labelOffset + laneEnds.Count * lineHeight;
+            string practiceTip = "SSC_MasterProgression_PracticeTip".Translate();
+            column.Rows.Add((height, rect =>
+            {
+                rect = InsetSettingsRow(rect, column.Indent);
+                // 原版返回填充轨道的实际矩形，刻度用同一范围，端点限制在条内。
+                Rect track = Widgets.FillableBar(new Rect(rect.x, rect.y, rect.width, barHeight), fill);
+                using var drawScope = new SSCBondOverviewWidgets.GuiScope(false);
+                Text.Font = GameFont.Tiny;
+                Text.Anchor = TextAnchor.MiddleCenter;
+                Text.WordWrap = false;
+                bool hoveringTick = false;
+                foreach (var tick in labels)
+                {
+                    float tickWidth = Mathf.Min(2f, track.width);
+                    float tickX = Mathf.Clamp(track.x + tick.Position * track.width - tickWidth / 2f,
+                        track.x, track.xMax - tickWidth);
+                    float tickHeight = tick.Next ? 11f : 8f;
+                    var mark = new Rect(tickX, track.yMax + 4f - tickHeight, tickWidth, tickHeight);
+                    Widgets.DrawBoxSolid(mark, tick.Next ? new Color(.95f, .80f, .53f) : new Color(.73f, .81f, .83f));
+                    var label = new Rect(rect.x + tick.Label.x, rect.y + tick.Label.y, tick.Label.width, tick.Label.height);
+                    Widgets.Label(label, tick.Text);
+                    var tickHit = new Rect(mark.x - 4f, mark.y, mark.width + 8f, mark.height);
+                    hoveringTick |= Mouse.IsOver(tickHit);
+                    TooltipHandler.TipRegion(tickHit, tick.Tip);
+                    TooltipHandler.TipRegion(label, tick.Tip);
+                }
+                if (!hoveringTick) TooltipHandler.TipRegion(track, practiceTip);
+            }));
         }
 
         /// <summary>只允许原页面、原角色和原人格的操作进入业务入口。</summary>

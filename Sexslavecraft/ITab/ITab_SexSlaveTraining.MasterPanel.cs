@@ -43,30 +43,31 @@ namespace SexSlaveCraft
 
         /// <summary>为两个入口读取同一份成长显示，概况可把数值并入阶段行。</summary>
         internal static (Hediff_MasterProgression Record, string Stage, string Experience, string Progress,
-            string Benefits, float? ProgressFraction, bool AtMaxStage) ReadMasterProgression(Pawn pawn, bool compactExperience = false)
+            string Benefits, float? ProgressFraction, float ExperienceValue) ReadMasterProgression(Pawn pawn,
+                bool compactExperience = false)
         {
             var record = SSCMasterProgressionUtility.GetRecord(pawn);
             if (record == null)
-                return (null, "SSC_MasterProgression_NoRecord".Translate(), null, null, null, null, false);
+                return (null, "SSC_MasterProgression_NoRecord".Translate(), null, null, null, null, 0f);
 
             float experience = SSCMasterProgressionUtility.NormalizeExperience(record.Severity);
-            string experienceText = compactExperience ? $"{experience:0} / {record.def.maxSeverity:0}" :
+            string experienceText = compactExperience ? $"{experience:0.##} / {record.def.maxSeverity:0.##}" :
                 "SSC_MasterProgression_Experience".Translate(experience.ToString("0"), record.def.maxSeverity.ToString("0")).ToString();
             string benefits = (record.IsActive ? "SSC_MasterProgression_Benefits" : "SSC_MasterProgression_BenefitsInactive").Translate();
             var stages = record.def.stages;
             int index = record.CurStageIndex;
             if (stages == null || index < 0 || index >= stages.Count)
-                return (record, record.LabelInBrackets, experienceText, null, benefits, null, false);
+                return (record, record.LabelInBrackets, experienceText, null, benefits, null, experience);
             if (index == stages.Count - 1)
-                return (record, record.LabelInBrackets, experienceText, "SSC_MasterProgression_MaxStage".Translate(), benefits, 1f, true);
+                return (record, record.LabelInBrackets, experienceText, "SSC_MasterProgression_MaxStage".Translate(), benefits, 1f, experience);
 
             // 条形进度使用本阶段的区间，累计经验使用记录上限。
             float start = stages[index].minSeverity;
             float next = stages[index + 1].minSeverity;
             float fraction = next > start ? Mathf.Clamp01((experience - start) / (next - start)) : 0f;
             string progress = "SSC_MasterProgression_NextStage".Translate(
-                stages[index + 1].label, Mathf.Max(0f, next - experience).ToString("0"));
-            return (record, record.LabelInBrackets, experienceText, progress, benefits, fraction, false);
+                stages[index + 1].label, Mathf.Max(0f, next - experience).ToString(compactExperience ? "0.##" : "0"));
+            return (record, record.LabelInBrackets, experienceText, progress, benefits, fraction, experience);
         }
 
         /// <summary>仅在悬停时读取原健康栏说明，并复查成长记录仍属于该角色。</summary>
