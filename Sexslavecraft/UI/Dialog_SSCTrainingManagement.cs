@@ -492,18 +492,16 @@ namespace SexSlaveCraft
             var viewport = new Rect(page.x + PanelPadding, page.y + PanelPadding,
                 Mathf.Max(1f, page.width - 2f * PanelPadding), Mathf.Max(1f, page.height - 2f * PanelPadding));
             float width = Mathf.Max(1f, viewport.width - 16f);
-            string title = "<b>" + PageKeys[0].Translate() + "</b>";
-            float titleHeight = Text.CalcHeight(title, width);
-            float firstRow = titleHeight + 10f;
-            // 先计入身份控件的高度，随后布局只读状态，使窄窗也能滚动到末行。
-            var identity = comp == null ? null : BuildOverviewIdentity(width, firstRow);
-            if (identity != null) firstRow = identity.Bottom;
-            // 主人成长和能力沿用概况滚动区，先测量再绘制，避免末尾开关被裁掉。
-            var master = identity?.Edit.Identity == PawnIdentity.Master ? BuildMasterOverview(identity.Edit, width) : null;
+            // 概况从身份行开始，下面的模块按当前剩余空间测量，整页共用一个滚动区。
+            var identity = comp == null ? null : BuildOverviewIdentity(width, 0f);
+            float firstRow = identity?.Bottom ?? 0f;
+            const float masterGap = 10f;
+            (float Height, Action<float> Draw) master = identity?.Edit.Identity == PawnIdentity.Master
+                ? BuildMasterOverview(identity.Edit, width, viewport.height - firstRow - masterGap) : default;
             float labelWidth = Mathf.Max(1f, width * .42f - 4f);
             float valueWidth = Mathf.Max(1f, width - labelWidth - 8f);
             var heights = new float[rows.Length];
-            float totalHeight = firstRow + (master?.Height ?? 0f);
+            float totalHeight = firstRow + (master.Draw == null ? 0f : masterGap + master.Height);
             for (int i = 0; i < rows.Length; i++)
             {
                 heights[i] = Mathf.Max(Text.CalcHeight(rows[i].Label, labelWidth), Text.CalcHeight(rows[i].Value, valueWidth)) + 18f;
@@ -515,7 +513,6 @@ namespace SexSlaveCraft
             Widgets.BeginScrollView(viewport, ref scroll, new Rect(0f, 0f, width, Mathf.Max(viewport.height, totalHeight)));
             try
             {
-                Widgets.Label(new Rect(0f, 0f, width, titleHeight), title);
                 if (hint != null) Widgets.Label(new Rect(0f, firstRow, width, totalHeight - firstRow), hint);
                 if (identity != null) DrawOverviewIdentity(identity);
                 float y = firstRow;
@@ -529,7 +526,11 @@ namespace SexSlaveCraft
                     Widgets.DrawLineHorizontal(0f, y - 1f, width, DividerColor);
                 }
                 Text.Anchor = TextAnchor.UpperLeft;
-                master?.Draw(0f, y);
+                if (master.Draw != null)
+                {
+                    Widgets.DrawLineHorizontal(0f, y, width, DividerColor);
+                    master.Draw(y + masterGap);
+                }
             }
             finally { Widgets.EndScrollView(); }
         }

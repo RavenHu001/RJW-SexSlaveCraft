@@ -96,13 +96,16 @@ namespace SexSlaveCraft
             view.QualificationLabel = SSCMasterQualificationDisplay.GetLabel(comp.masterQualificationUnlocked);
             view.Qualification = Row(SSCMasterQualificationDisplay.GetHeight(view.QualificationLabel, width, Text.LineHeight));
 
-            // 与旧面板共用任职状态；失格仍显示保存的勾选并允许关闭。
+            // 主人的任职状态已在窗口标题下显示。性奴仍在这里管理任职，失格后也可关闭旧选择。
             var trainer = ITab_SexSlaveTraining.GetTrainerIdentityPresentation(source, comp);
-            view.TrainerLabel = trainer.Label;
-            view.TrainerTip = trainer.Tooltip;
-            view.TrainerEnabled = trainer.Enabled;
-            view.TrainerEditable = trainer.IsSlave && (trainer.Qualified || trainer.Enabled);
-            view.TrainerToggle = Row(Mathf.Max(24f, Text.CalcHeight(trainer.Label, Mathf.Max(1f, width - 24f))));
+            if (trainer.IsSlave)
+            {
+                view.TrainerLabel = trainer.Label;
+                view.TrainerTip = trainer.Tooltip;
+                view.TrainerEnabled = trainer.Enabled;
+                view.TrainerEditable = trainer.Qualified || trainer.Enabled;
+                view.TrainerToggle = Row(Mathf.Max(24f, Text.CalcHeight(trainer.Label, Mathf.Max(1f, width - 24f))));
+            }
 
             if (SSCIdentityUtility.CanRestoreLegacySlaveIdentity(source))
             {
@@ -124,12 +127,15 @@ namespace SexSlaveCraft
 
             SSCMasterQualificationDisplay.Draw(view.Qualification, view.QualificationLabel,
                 SSCMasterQualificationDisplay.GetPawnTooltip(SSCMod.settings?.allowDirectMasterSelection ?? false));
-            bool next = SSCUIWidgets.Checkbox(view.TrainerToggle, view.TrainerLabel, view.TrainerEnabled,
-                view.TrainerEditable, view.TrainerTip);
-            // 任职提交同时核对绘制时的保存值，避免覆盖绘制期间的外部更新。
-            if (next != view.TrainerEnabled && PageEditIsCurrent(edit) &&
-                edit.Comp.slaveTrainerEnabled == view.TrainerEnabled && SSCIdentityUtility.SetTrainerEnabled(edit.Pawn, next))
-                RefreshAfterEdit();
+            if (view.TrainerLabel != null)
+            {
+                bool next = SSCUIWidgets.Checkbox(view.TrainerToggle, view.TrainerLabel, view.TrainerEnabled,
+                    view.TrainerEditable, view.TrainerTip);
+                // 任职提交同时核对绘制时的保存值，避免覆盖绘制期间的外部更新。
+                if (next != view.TrainerEnabled && PageEditIsCurrent(edit) &&
+                    edit.Comp.slaveTrainerEnabled == view.TrainerEnabled && SSCIdentityUtility.SetTrainerEnabled(edit.Pawn, next))
+                    RefreshAfterEdit();
+            }
 
             if (view.RecoveryHint == null) return;
             Widgets.Label(view.RecoveryText, view.RecoveryHint);
@@ -251,52 +257,103 @@ namespace SexSlaveCraft
             ShowEditPopup(confirmation);
         }
 
-        /// <summary>用原成长记录和能力视图测量主人概况，成长记录缺失时仍显示可见能力。</summary>
-        private SettingsColumn BuildMasterOverview(PageEdit edit, float width)
+        /// <summary>测量成长与能力的实际行高，决定它们在概况滚动区中的排列。</summary>
+        private (float Height, Action<float> Draw) BuildMasterOverview(PageEdit edit, float width, float availableHeight)
         {
-            var column = new SettingsColumn(width);
-            var growth = ITab_SexSlaveTraining.ReadMasterProgression(edit.Pawn);
-            column.AddLabel("<b>" + "SSC_MasterProgression_PanelHeader".Translate() + "</b>");
-            AddGrowthLine(growth.Record == null ? growth.Stage :
-                "SSC_TrainingManagement_MasterStage".Translate() + " · " + growth.Stage);
-            if (growth.Record != null)
-            {
-                // 经验和阶段进度均由旧面板的读模型提供；缺记录不虚构经验或进度条。
-                string practiceTip = "SSC_MasterProgression_PracticeTip".Translate();
-                column.AddLabel(growth.Experience, column.Indent, practiceTip);
-                if (growth.ProgressFraction is float fraction)
-                {
-                    column.Rows.Add((18f, rect => Widgets.FillableBar(InsetSettingsRow(rect, column.Indent), fraction)));
-                    column.AddLabel(growth.Progress, column.Indent, practiceTip);
-                }
-                AddGrowthLine(growth.Benefits);
-            }
-
-            // 开关各自使用原载体和启停资格，成长面板只负责排列和显示。
+            var growth = ITab_SexSlaveTraining.ReadMasterProgression(edit.Pawn, compactExperience: true);
             var abilities = SSCAbilityToggleUtility.Definitions
                 .Where(definition => definition.Group == SSCAbilityToggleGroup.Master)
                 .OrderBy(definition => definition.Order)
                 .Select(definition => (Definition: definition, State: SSCAbilityToggleUtility.GetView(edit.Pawn, definition.Id)))
                 .Where(item => item.State.Visible).ToArray();
-            if (abilities.Length != 0)
+            if (abilities.Length == 0)
             {
-                column.Divide();
-                column.AddLabel("<b>" + "SSC_TrainingManagement_MasterAbilities".Translate() + "</b>");
-                foreach (var item in abilities)
-                    AddAbilityToggle(column, edit, item.Definition, item.State, column.Indent);
+                var column = BuildGrowth(width);
+                return (column.Height, y => column.Draw(0f, y));
             }
-            return column;
 
-            // 阶段和收益复用原健康提示，并沿用当前列测量的缩进及高度。
-            void AddGrowthLine(string label)
+            bool wide = width >= SettingsTwoColumnWidth;
+            string abilityHeading = "<b>" + "SSC_TrainingManagement_MasterAbilities".Translate() + "</b>";
+            if (wide)
             {
-                float height = Text.CalcHeight(label, Mathf.Max(1f, width - column.Indent));
+                float growthWidth = (width - SettingsColumnGap) * .56f;
+                var left = BuildGrowth(growthWidth);
+                var right = new SettingsColumn(width - growthWidth - SettingsColumnGap);
+                right.AddLabel(abilityHeading);
+                for (int i = 0; i < abilities.Length; i++) AddAbility(right, i);
+
+                // 能力区能装进剩余视口，或不超过左边已有的滚动高度时，优先并排。
+                float leftHeight = left.Height, rightHeight = right.Height;
+                if (rightHeight <= Mathf.Max(availableHeight, leftHeight))
+                {
+                    float height = Mathf.Max(leftHeight, rightHeight);
+                    return (height, y =>
+                    {
+                        left.Draw(0f, y);
+                        Widgets.DrawBoxSolid(new Rect(growthWidth + SettingsColumnGap / 2f, y, 1f, height), DividerColor);
+                        right.Draw(growthWidth + SettingsColumnGap, y);
+                    });
+                }
+            }
+
+            var fullGrowth = BuildGrowth(width);
+            var heading = new SettingsColumn(width);
+            heading.AddLabel(abilityHeading);
+            bool twoAbilityColumns = wide && abilities.Length > 1;
+            float abilityWidth = twoAbilityColumns ? (width - SettingsColumnGap) / 2f : width;
+            var first = new SettingsColumn(abilityWidth);
+            var second = twoAbilityColumns ? new SettingsColumn(abilityWidth) : null;
+            for (int i = 0; i < abilities.Length; i++)
+                AddAbility(twoAbilityColumns && i % 2 != 0 ? second : first, i);
+
+            // 由左到右保留注册顺序。长标签撑高整行，使下一对控件仍然对齐。
+            if (second != null)
+                for (int i = 0; i < second.Rows.Count; i++)
+                {
+                    var left = first.Rows[i];
+                    var right = second.Rows[i];
+                    float height = Mathf.Max(left.Height, right.Height);
+                    first.Rows[i] = (height, left.Draw);
+                    second.Rows[i] = (height, right.Draw);
+                }
+
+            float headingY = fullGrowth.Height + SettingsColumnGap;
+            float abilitiesY = headingY + heading.Height;
+            return (abilitiesY + Mathf.Max(first.Height, second?.Height ?? 0f), y =>
+            {
+                fullGrowth.Draw(0f, y);
+                Widgets.DrawLineHorizontal(0f, y + headingY - SettingsColumnGap / 2f, width, DividerColor);
+                heading.Draw(0f, y + headingY);
+                first.Draw(0f, y + abilitiesY);
+                second?.Draw(abilityWidth + SettingsColumnGap, y + abilitiesY);
+            });
+
+            void AddAbility(SettingsColumn column, int index)
+            {
+                var ability = abilities[index];
+                AddAbilityToggle(column, edit, ability.Definition, ability.State, column.Indent);
+            }
+
+            SettingsColumn BuildGrowth(float columnWidth)
+            {
+                var column = new SettingsColumn(columnWidth);
+                column.AddLabel("<b>" + "SSC_TrainingManagement_MasterGrowth".Translate() + "</b>");
+                string label = growth.Record == null ? growth.Stage : growth.Stage + " · " + growth.Experience;
+                if (growth.AtMaxStage) label += " · " + growth.Progress;
+                float height = Text.CalcHeight(label, Mathf.Max(1f, columnWidth - column.Indent));
                 column.Rows.Add((height, rect =>
                 {
                     rect = InsetSettingsRow(rect, column.Indent);
                     Widgets.Label(rect, label);
                     ITab_SexSlaveTraining.AddMasterProgressionTip(rect, growth.Record);
                 }));
+                // 满级用阶段行表示。成长中保留区间进度条和下一阶段的剩余经验。
+                if (!growth.AtMaxStage && growth.ProgressFraction is float fraction)
+                {
+                    column.Rows.Add((18f, rect => Widgets.FillableBar(InsetSettingsRow(rect, column.Indent), fraction)));
+                    column.AddLabel(growth.Progress, column.Indent, "SSC_MasterProgression_PracticeTip".Translate());
+                }
+                return column;
             }
         }
 
