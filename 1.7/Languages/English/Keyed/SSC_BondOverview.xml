@@ -20,7 +20,7 @@
   <SSC_BondOverview_QueryFailed>The overview could not be refreshed. It will retry.</SSC_BondOverview_QueryFailed>
   <SSC_BondOverview_RelationChanged>This binding has changed. Refreshing…</SSC_BondOverview_RelationChanged>
   <SSC_BondOverview_NoTrainingComponent>Training information unavailable</SSC_BondOverview_NoTrainingComponent>
-  <SSC_BondOverview_RowDetails>Stage {0} · {1} · {2}</SSC_BondOverview_RowDetails>
+  <SSC_BondOverview_RowDetails>Slave progression stage: {0}&#10;Current specialization: {1}&#10;Location: {2}</SSC_BondOverview_RowDetails>
   <SSC_BondOverview_Trainer>Assigned trainer: {0} ({1})</SSC_BondOverview_Trainer>
   <SSC_BondOverview_Trainer_Unavailable>unavailable</SSC_BondOverview_Trainer_Unavailable>
   <SSC_BondOverview_Trainer_None>not assigned</SSC_BondOverview_Trainer_None>

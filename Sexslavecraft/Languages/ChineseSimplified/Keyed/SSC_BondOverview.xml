@@ -20,7 +20,7 @@
   <SSC_BondOverview_QueryFailed>概览刷新失败，将稍后重试。</SSC_BondOverview_QueryFailed>
   <SSC_BondOverview_RelationChanged>绑定关系已变化，等待刷新……</SSC_BondOverview_RelationChanged>
   <SSC_BondOverview_NoTrainingComponent>调教信息不可用</SSC_BondOverview_NoTrainingComponent>
-  <SSC_BondOverview_RowDetails>阶段 {0} · {1} · {2}</SSC_BondOverview_RowDetails>
+  <SSC_BondOverview_RowDetails>性奴化阶段：{0}&#10;当前特化：{1}&#10;位置：{2}</SSC_BondOverview_RowDetails>
   <SSC_BondOverview_Trainer>指定调教员：{0}（{1}）</SSC_BondOverview_Trainer>
   <SSC_BondOverview_Trainer_Unavailable>暂不可用</SSC_BondOverview_Trainer_Unavailable>
   <SSC_BondOverview_Trainer_None>未指派</SSC_BondOverview_Trainer_None>

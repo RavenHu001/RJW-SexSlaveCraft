@@ -68,8 +68,12 @@ namespace SexSlaveCraft
         internal SSCBondOverviewRowText(SSCBondOverviewEntry entry)
         {
             Name = entry.IsDead ? SSCBondOverviewText.Format("DeadName", entry.Name) : entry.Name;
-            Details = SSCBondOverviewText.Format("RowDetails", entry.ChainStage,
-                SSCBondOverviewText.Specialization(entry.Specialization), SSCBondOverviewText.Location(entry.Location));
+            string location = SSCBondOverviewText.Location(entry.Location);
+            // 主人头像的关系快照也持有对方的锁链阶段，不能将其当成主人的阶段。
+            Details = entry.Direction == SSCBondOverviewDirection.Master
+                ? SSCBondOverviewText.T("Master") + "\n" + location
+                : SSCBondOverviewText.Format("RowDetails", SSCBondOverviewText.ChainStage(entry.ChainStage),
+                    SSCBondOverviewText.Specialization(entry.Specialization), location);
         }
     }
 
@@ -149,6 +153,15 @@ namespace SexSlaveCraft
             text = ("SSC_BondOverview_" + key).Translate(); translations.Add(key, text); return text;
         }
         internal static string Format(string key, params object[] args) => string.Format(T(key), args);
+
+        /// <summary>用锁链阶段定义的本地化名称替代序号，缺失名称时保留阶段值。</summary>
+        internal static string ChainStage(int stage)
+        {
+            if (stage <= 0) return T("None");
+            var stages = SSCDefOf.ChainOfSexSlave?.stages;
+            return stage <= (stages?.Count ?? 0) && !string.IsNullOrEmpty(stages[stage - 1]?.label)
+                ? stages[stage - 1].label : stage.ToString();
+        }
         internal static string Specialization(SexSlaveSpecializationType? type)
         {
             if (!type.HasValue) return T("NoTrainingComponent");
@@ -163,6 +176,7 @@ namespace SexSlaveCraft
                 case SexSlaveSpecializationType.PetRabbit: return "SSC_ITab_SpecializationPetRabbit".Translate();
 #if SSC_RW17
                 case SexSlaveSpecializationType.PetFox: return PetSpecializationUtility.GetSpecializationLabel(type.Value);
+                case SexSlaveSpecializationType.Fertility: return "SSC_Fertility_Label".Translate();
 #endif
                 default: return "SSC_ITab_SpecializationNone".Translate();
             }

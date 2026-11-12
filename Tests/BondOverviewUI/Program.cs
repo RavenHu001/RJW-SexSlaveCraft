@@ -344,7 +344,13 @@ internal static partial class Program
         Check("cache: row text matches full immutable snapshot fields and reuses object",()=>{
             var f=Fixture();f.slave.Dead=true;var s=Ready(f.master,f.map);var entry=s.Card.Snapshot.Slaves[0];var d=s.Card.Display;var text=d.Row(entry);
             Require(text.Name==SSCBondOverviewText.Format("DeadName",entry.Name));
-            Require(text.Details==SSCBondOverviewText.Format("RowDetails",entry.ChainStage,SSCBondOverviewText.Specialization(entry.Specialization),SSCBondOverviewText.Location(entry.Location)));
+            var lines=text.Details.Split('\n');
+            Require(lines.Length==3&&lines[0].Contains(SSCBondOverviewText.ChainStage(entry.ChainStage))&&
+                lines[1].Contains(SSCBondOverviewText.Specialization(entry.Specialization))&&
+                lines[2].Contains(SSCBondOverviewText.Location(entry.Location)));
+            var masterEntry=View(f.slave).Master;
+            var masterLines=new SSCBondOverviewRowText(masterEntry).Details.Split('\n');
+            Require(masterLines.Length==2&&masterLines[1].Contains(SSCBondOverviewText.Location(masterEntry.Location)));
             Require(ReferenceEquals(text,d.Row(entry)));
         });
         Check("cache: row FIFO stays bounded and evicted rows regenerate",()=>{

@@ -20,7 +20,7 @@
   <SSC_BondOverview_QueryFailed>Не удалось обновить обзор. Будет повторная попытка.</SSC_BondOverview_QueryFailed>
   <SSC_BondOverview_RelationChanged>Связь изменилась. Ожидание обновления…</SSC_BondOverview_RelationChanged>
   <SSC_BondOverview_NoTrainingComponent>Сведения об обучении недоступны</SSC_BondOverview_NoTrainingComponent>
-  <SSC_BondOverview_RowDetails>Стадия {0} · {1} · {2}</SSC_BondOverview_RowDetails>
+  <SSC_BondOverview_RowDetails>Стадия подчинения: {0}&#10;Текущая специализация: {1}&#10;Местоположение: {2}</SSC_BondOverview_RowDetails>
   <SSC_BondOverview_Trainer>Назначенный тренер: {0} ({1})</SSC_BondOverview_Trainer>
   <SSC_BondOverview_Trainer_Unavailable>недоступно</SSC_BondOverview_Trainer_Unavailable>
   <SSC_BondOverview_Trainer_None>не назначен</SSC_BondOverview_Trainer_None>

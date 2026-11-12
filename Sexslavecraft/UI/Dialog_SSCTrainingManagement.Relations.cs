@@ -12,6 +12,7 @@ namespace SexSlaveCraft
         private const float MinTrainerCardWidth = 100f;
         private const float TrainerHandleWidth = 30f;
         private static readonly Color TrainerGripColor = new Color(.68f, .76f, .78f);
+        private static readonly Color TrainerWorkOffColor = new Color(.92f, .69f, .33f);
         private const float CardGap = 6f;
         private const float CardHeight = 88f;
         private const float SectionPadding = 10f;
@@ -263,8 +264,12 @@ namespace SexSlaveCraft
                 Pawn trainer = trainers[i];
                 Rect card = CardRect(body.x, body.y, body.width, columns, i);
                 string name = trainer.Dead ? SSCBondOverviewText.Format("DeadName", trainer.LabelShort) : trainer.LabelShort;
+                // 用实际保存的工作值区分未启用与临时无法工作，只标记当前已指派的卡片。
+                bool workOff = relation == SummaryRelation.AssignedTrainer && SSCBondOverviewUtility.IsValidPawn(trainer) &&
+                    !trainer.Dead && ReferenceEquals(comp.selectedTrainer, trainer) &&
+                    SSCTrainerWorkUtility.SavedPriority(trainer.workSettings, SSCTrainerWorkUtility.WorkType) == 0;
                 if (DrawRelationCard(card, trainer, relation, 56f, TrainerTooltip(card, trainer, relation), name,
-                    snapshot: view?.Snapshot, trainerDetails: view?.Display.TrainerDetails)) return trainer;
+                    snapshot: view?.Snapshot, trainerDetails: view?.Display.TrainerDetails, trainerWorkOff: workOff)) return trainer;
             }
             return null;
         }
@@ -290,7 +295,7 @@ namespace SexSlaveCraft
 
         /// <summary>排布头像、姓名和调教员把手，各自使用独立矩形。</summary>
         private bool DrawRelationCard(Rect card, Pawn pawn, SummaryRelation relation, float portraitSize, string tooltip, string name,
-            SSCBondOverviewSnapshot snapshot = null, SSCBondOverviewEntry entry = null, string trainerDetails = null)
+            SSCBondOverviewSnapshot snapshot = null, SSCBondOverviewEntry entry = null, string trainerDetails = null, bool trainerWorkOff = false)
         {
             using var scope = new SSCBondOverviewWidgets.GuiScope(false);
             bool trainerCard = relation == SummaryRelation.AssignedTrainer || relation == SummaryRelation.TrainerCandidate;
@@ -307,7 +312,7 @@ namespace SexSlaveCraft
                 // 把手位于肖像之外。指派失效且没有可绘制的肖像时，仍可从把手发起撤销。
                 // 把手紧贴头像右侧并等高，窄卡片缩放时也保持对齐。
                 var handle = new Rect(portrait.xMax, portrait.y, handleWidth, portrait.height);
-                DrawTrainerHandle(handle, pawn, relation, tooltip);
+                DrawTrainerHandle(handle, pawn, relation, tooltip, trainerWorkOff);
             }
             Text.WordWrap = false;
             Text.Anchor = TextAnchor.UpperCenter;
@@ -321,14 +326,17 @@ namespace SexSlaveCraft
         }
 
         /// <summary>绘制独立把手并提供工作状态与拖放提示。</summary>
-        private void DrawTrainerHandle(Rect rect, Pawn pawn, SummaryRelation relation, string tooltip)
+        private void DrawTrainerHandle(Rect rect, Pawn pawn, SummaryRelation relation, string tooltip, bool workOff)
         {
             Widgets.DrawBoxSolid(rect, PanelColor);
             float lineWidth = Mathf.Min(16f, rect.width * .60f);
             float x = rect.x + (rect.width - lineWidth) / 2f;
             float y = rect.y + rect.height / 2f;
             for (int i = -1; i <= 1; i++)
-                Widgets.DrawBoxSolid(new Rect(x, y + i * 6f - 1f, lineWidth, 2f), TrainerGripColor);
+                Widgets.DrawBoxSolid(new Rect(x, y + i * 6f - 1f, lineWidth, 2f), workOff ? TrainerWorkOffColor : TrainerGripColor);
+            // 底部短线让未启用状态也有形状差异，标记不改变把手的点击范围。
+            if (workOff && rect.height >= 26f)
+                Widgets.DrawBoxSolid(new Rect(x, rect.yMax - 5f, lineWidth, 2f), TrainerWorkOffColor);
             // 活跃拖放只呈现落区预览，经过其他把手时无需再弹出卡片提示。
             if (trainerGesture != null) return;
             Widgets.DrawHighlightIfMouseover(rect);
