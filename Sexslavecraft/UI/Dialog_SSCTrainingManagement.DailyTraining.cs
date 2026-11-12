@@ -20,7 +20,6 @@ namespace SexSlaveCraft
         /// <summary>宽窗并列调教设置与排班，窄窗按原顺序纵向排列。研究只限制普通调教设置。</summary>
         private void DrawDailyTraining(Rect page)
         {
-            Widgets.DrawBoxSolid(page, PanelColor);
             var viewport = new Rect(page.x + PanelPadding, page.y + PanelPadding,
                 Mathf.Max(1f, page.width - 2f * PanelPadding), Mathf.Max(1f, page.height - 2f * PanelPadding));
             float width = Mathf.Max(1f, viewport.width - 16f);
@@ -28,14 +27,14 @@ namespace SexSlaveCraft
             bool researched = ResearchUtils.IsResearchFinished(SSCDefOf.SSC_BasicTraining);
             bool twoColumns = researched && width >= SettingsTwoColumnWidth;
             float leftWidth = twoColumns ? (width - SettingsColumnGap) * .44f : width;
-            var trainingColumn = new SettingsColumn(leftWidth);
-            var scheduleColumn = twoColumns ? new SettingsColumn(width - leftWidth - SettingsColumnGap) : trainingColumn;
+            var trainingColumn = new SettingsColumn(leftWidth, panel: true);
+            SettingsColumn scheduleColumn = null;
 
-            // 单列时分隔线会放在调教与排班之间，双列时由共用绘制器分隔。
+            // 排班有独立面板，研究未完成时只占用调教设置面板的高度。
             if (researched)
             {
                 AddTrainingSettings(trainingColumn);
-                scheduleColumn.Divide();
+                scheduleColumn = new SettingsColumn(twoColumns ? width - leftWidth - SettingsColumnGap : width, panel: true);
                 AddScheduleSettings(scheduleColumn);
             }
             else
@@ -45,7 +44,9 @@ namespace SexSlaveCraft
             }
             // 锁链阶段有自己的准入和保存载体，在基础研究未完成时仍可显示。
             AddPnaMaintenance(trainingColumn);
-            DrawSettingsColumns(viewport, width, trainingColumn, scheduleColumn, ref dailyTrainingScroll);
+            var panels = new List<(float Height, Action<float> Draw)> { LayoutSettingsPanelRow(trainingColumn, twoColumns ? scheduleColumn : null) };
+            if (!twoColumns && scheduleColumn != null) panels.Add(LayoutSettingsPanelRow(scheduleColumn));
+            DrawSettingsPanels(viewport, width, panels, ref dailyTrainingScroll);
 
             // 开关为原版勾选框预留宽度，实际写入前再次核对角色和研究。
             void AddToggle(SettingsColumn column, string label, bool value, Action<bool> submit, float offset = 0f)

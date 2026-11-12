@@ -15,18 +15,38 @@ namespace SexSlaveCraft
 
         private const float SettingsColumnGap = 18f;
         private const float SettingsTwoColumnWidth = 560f;
+        private const float SettingsPanelPadding = 10f;
+        private static readonly Color SettingsPanelColor = new Color(.18f, .22f, .235f);
+
+        /// <summary>极窄的面板缩减横向内边距，至少给内容保留一个像素。</summary>
+        private static float SettingsPanelInset(float width) => Mathf.Min(SettingsPanelPadding, Mathf.Max(0f, (width - 1f) / 2f));
 
         /// <summary>每列按可用宽度测量一遍，滚动高度和控件位置共用同一批行。</summary>
         private sealed class SettingsColumn
         {
             private const float RowGap = 4f;
             internal readonly float Width;
+            internal readonly float OuterWidth;
+            private readonly float panelInset;
             internal readonly List<(float Height, Action<Rect> Draw)> Rows = new();
             internal float Indent => Mathf.Min(16f, Width * .12f);
             internal float Height => Rows.Sum(row => row.Height + RowGap);
+            internal float PanelHeight => Height + 2f * SettingsPanelPadding;
 
-            /// <summary>固定本次布局宽度，让测量和绘制共用同一基准。</summary>
-            internal SettingsColumn(float width) => Width = width;
+            /// <summary>面板列先扣除内边距，面板内部的普通列直接使用分配到的宽度。</summary>
+            internal SettingsColumn(float width, bool panel = false)
+            {
+                OuterWidth = width;
+                panelInset = panel ? SettingsPanelInset(width) : 0f;
+                Width = width - 2f * panelInset;
+            }
+
+            /// <summary>按该行分配的高度绘制底色，控件仍从面板顶部的内边距开始。</summary>
+            internal void DrawPanel(float x, float y, float height)
+            {
+                Widgets.DrawBoxSolid(new Rect(x, y, OuterWidth, height), SettingsPanelColor);
+                Draw(x + panelInset, y + SettingsPanelPadding);
+            }
 
             /// <summary>按测量结果绘制本列，坐标以全页滚动内容为原点。</summary>
             internal void Draw(float x, float y = 0f)
@@ -47,7 +67,7 @@ namespace SexSlaveCraft
                     if (!string.IsNullOrEmpty(tooltip)) TooltipHandler.TipRegion(rect, tooltip);
                 }));
 
-            /// <summary>仅在本列已有模块时加入横线，双列之间由页面绘制竖线。</summary>
+            /// <summary>在同一面板内已有内容时加入横线。</summary>
             internal void Divide()
             {
                 if (Rows.Count != 0)
@@ -76,7 +96,6 @@ namespace SexSlaveCraft
         /// <summary>按实际出现的模块布局，宽窗两列共享一个滚动区域。</summary>
         private void DrawBodyAppearance(Rect page)
         {
-            Widgets.DrawBoxSolid(page, PanelColor);
             var viewport = new Rect(page.x + PanelPadding, page.y + PanelPadding,
                 Mathf.Max(1f, page.width - 2f * PanelPadding), Mathf.Max(1f, page.height - 2f * PanelPadding));
             var pawn = source;
@@ -109,64 +128,79 @@ namespace SexSlaveCraft
             var gelOwner = FullGelAppearanceUtility.GetOwner(pawn);
             var gelRendering = gelOwner == null ? default : SSCAbilityToggleUtility.GetView(pawn, SSCAbilityToggleUtility.GelRendering);
             bool showGel = gelOwner != null && gelRendering.Visible;
-            bool showLeft = production.Count != 0 || showGel;
-            if (!showLeft && !showFertility && !showSensitivity)
+            // 先收集可见模块，宽窗每行填两块，最后一个面板可以占满整行。
+            var modules = new List<Action<SettingsColumn>>(4);
+            if (production.Count != 0) modules.Add(AddProduction);
+            if (showFertility) modules.Add(column => AddFertilitySection(column, edit, preconception));
+            if (showGel) modules.Add(column => AddGelAppearanceSection(column, edit, gelOwner, gelRendering));
+            if (showSensitivity) modules.Add(column => AddSensitivitySection(column, edit, sensitivity));
+            if (modules.Count == 0)
             {
                 Widgets.Label(viewport, "SSC_TrainingManagement_BodyEmpty".Translate());
                 return;
             }
 
-            // 窄窗共用同一列，只有一侧有模块时也让它占满宽度。
-            bool twoColumns = width >= SettingsTwoColumnWidth && showLeft && (showFertility || showSensitivity);
-            float leftWidth = twoColumns ? (width - SettingsColumnGap) * .44f : width;
-            var left = new SettingsColumn(leftWidth);
-            var settings = twoColumns ? new SettingsColumn(width - leftWidth - SettingsColumnGap) : left;
-            if (production.Count != 0)
+            var panels = new List<(float Height, Action<float> Draw)>();
+            for (int i = 0; i < modules.Count; i++)
             {
-                left.AddLabel("<b>" + "SSC_TrainingManagement_BodyProduction".Translate() + "</b>");
+                if (width >= SettingsTwoColumnWidth && i + 1 < modules.Count)
+                {
+                    float columnWidth = (width - SettingsColumnGap) / 2f;
+                    panels.Add(LayoutSettingsPanelRow(BuildPanel(columnWidth, modules[i]), BuildPanel(columnWidth, modules[i + 1])));
+                    i++;
+                }
+                else panels.Add(LayoutSettingsPanelRow(BuildPanel(width, modules[i])));
+            }
+            DrawSettingsPanels(viewport, width, panels, ref bodyProductionScroll);
+
+            void AddProduction(SettingsColumn column)
+            {
+                column.AddLabel("<b>" + "SSC_TrainingManagement_BodyProduction".Translate() + "</b>");
                 foreach (var item in production)
                 {
                     var definition = item.Definition;
                     string label = definition.LabelKey.Translate();
                     string tip = definition.TipRule == null ? definition.TipKey.Translate().ToString() : definition.TipRule(pawn);
-                    AddAbilityToggle(left, edit, definition.Id, item.State, label, tip);
+                    AddAbilityToggle(column, edit, definition.Id, item.State, label, tip);
                     string detail = definition.DetailRule?.Invoke(pawn);
-                    if (!string.IsNullOrEmpty(detail)) left.AddLabel(detail, left.Indent, AbilityToggleTip(item.State, tip));
+                    if (!string.IsNullOrEmpty(detail)) column.AddLabel(detail, column.Indent, AbilityToggleTip(item.State, tip));
                 }
             }
-            if (showGel)
-            {
-                left.Divide();
-                AddGelAppearanceSection(left, edit, gelOwner, gelRendering);
-            }
-            if (showFertility)
-            {
-                settings.Divide();
-                AddFertilitySection(settings, edit, preconception);
-            }
-            if (showSensitivity)
-            {
-                settings.Divide();
-                AddSensitivitySection(settings, edit, sensitivity);
-            }
-
-            DrawSettingsColumns(viewport, width, left, settings, ref bodyProductionScroll);
         }
 
-        /// <summary>让单列或双列共用一个滚动区域，内容缩短时收紧滚动范围。</summary>
-        private static void DrawSettingsColumns(Rect viewport, float width, SettingsColumn left, SettingsColumn right,
+        /// <summary>按面板的内容宽度建立控件行。</summary>
+        private static SettingsColumn BuildPanel(float width, Action<SettingsColumn> populate)
+        {
+            var column = new SettingsColumn(width, panel: true);
+            populate(column);
+            return column;
+        }
+
+        /// <summary>并排面板按较高一侧对齐底边，中间及下面保留窗口底色。</summary>
+        private static (float Height, Action<float> Draw) LayoutSettingsPanelRow(SettingsColumn left, SettingsColumn right = null)
+        {
+            float height = Mathf.Max(left.PanelHeight, right?.PanelHeight ?? 0f);
+            return (height, y =>
+            {
+                left.DrawPanel(0f, y, height);
+                right?.DrawPanel(left.OuterWidth + SettingsColumnGap, y, height);
+            });
+        }
+
+        /// <summary>所有面板共用滚动区，底色由面板行自行绘制并在内容末尾收住。</summary>
+        private static void DrawSettingsPanels(Rect viewport, float width, List<(float Height, Action<float> Draw)> rows,
             ref Vector2 scrollPosition)
         {
-            float height = Mathf.Max(left.Height, right.Height);
+            float height = rows.Sum(row => row.Height) + Mathf.Max(0, rows.Count - 1) * SettingsColumnGap;
             scrollPosition.y = Mathf.Clamp(scrollPosition.y, 0f, Mathf.Max(0f, height - viewport.height));
             Widgets.BeginScrollView(viewport, ref scrollPosition, new Rect(0f, 0f, width, Mathf.Max(height, viewport.height)));
             try
             {
-                left.Draw(0f);
-                if (!ReferenceEquals(left, right))
+                float y = 0f;
+                foreach (var row in rows)
                 {
-                    Widgets.DrawBoxSolid(new Rect(left.Width + SettingsColumnGap / 2f, 0f, 1f, height), DividerColor);
-                    right.Draw(left.Width + SettingsColumnGap);
+                    row.Draw(y);
+                    y += row.Height + SettingsColumnGap;
                 }
             }
             finally { Widgets.EndScrollView(); }

@@ -48,16 +48,19 @@ namespace SexSlaveCraft
         }
 
         /// <summary>测量身份、印记和后续控件，把换行后的总高度交给概况滚动区。</summary>
-        private OverviewIdentityView BuildOverviewIdentity(float width, float y)
+        private OverviewIdentityView BuildOverviewIdentity(float panelWidth)
         {
             const float gap = 8f;
             const float buttonHeight = 34f;
+            float inset = SettingsPanelInset(panelWidth);
+            float width = panelWidth - 2f * inset;
+            float y = SettingsPanelPadding;
             float columnGap = Mathf.Min(12f, width * .05f);
             var view = new OverviewIdentityView { Edit = new PageEdit(source, comp, currentPage, contextRevision) };
             // 按同一游标分配行矩形并累计总高度，长译文会把后续行一并下移。
             Rect Row(float height)
             {
-                var rect = new Rect(0f, y, width, height);
+                var rect = new Rect(inset, y, width, height);
                 y += height + gap;
                 return rect;
             }
@@ -83,10 +86,10 @@ namespace SexSlaveCraft
             float imprintHeight = view.ImprintLabel == null ? 0f : Text.CalcHeight(view.ImprintLabel, inline ? imprintWidth : width);
             var row = Row(inline ? Mathf.Max(identityHeight, imprintHeight) : identityHeight);
             view.IdentityCaption = new Rect(row.x, row.y, captionWidth, identityHeight);
-            view.IdentityDropdown = new Rect(dropdownX, row.y, dropdownWidth, identityHeight);
+            view.IdentityDropdown = new Rect(row.x + dropdownX, row.y, dropdownWidth, identityHeight);
             // 同行容许长名称换行；太窄时才在下一行使用全宽，纳入同一滚动区的测高。
             if (view.ImprintLabel != null)
-                view.ImprintRect = inline ? new Rect(imprintX, row.y, imprintWidth, row.height) : Row(imprintHeight);
+                view.ImprintRect = inline ? new Rect(row.x + imprintX, row.y, imprintWidth, row.height) : Row(imprintHeight);
 
             if (SSCIdentityUtility.IsIdentityLocked(source))
                 view.LockTip = (SSCImprintUtility.GetImprintLockedIdentity(source) != PawnIdentity.Unset ?
@@ -114,7 +117,7 @@ namespace SexSlaveCraft
                 view.RecoveryText = Row(Text.CalcHeight(view.RecoveryHint, width));
                 view.RecoveryButton = Row(Mathf.Max(buttonHeight, Text.CalcHeight(view.RecoveryLabel, Mathf.Max(1f, width - 16f)) + 8f));
             }
-            view.Bottom = y;
+            view.Bottom = y - gap + SettingsPanelPadding;
             return view;
         }
 
@@ -266,11 +269,7 @@ namespace SexSlaveCraft
                 .OrderBy(definition => definition.Order)
                 .Select(definition => (Definition: definition, State: SSCAbilityToggleUtility.GetView(edit.Pawn, definition.Id)))
                 .Where(item => item.State.Visible).ToArray();
-            if (abilities.Length == 0)
-            {
-                var column = BuildGrowth(width);
-                return (column.Height, y => column.Draw(0f, y));
-            }
+            if (abilities.Length == 0) return LayoutSettingsPanelRow(BuildGrowth(width));
 
             bool wide = width >= SettingsTwoColumnWidth;
             string abilityHeading = "<b>" + "SSC_TrainingManagement_MasterAbilities".Translate() + "</b>";
@@ -278,29 +277,20 @@ namespace SexSlaveCraft
             {
                 float growthWidth = (width - SettingsColumnGap) * .56f;
                 var left = BuildGrowth(growthWidth);
-                var right = new SettingsColumn(width - growthWidth - SettingsColumnGap);
+                var right = new SettingsColumn(width - growthWidth - SettingsColumnGap, panel: true);
                 right.AddLabel(abilityHeading);
                 for (int i = 0; i < abilities.Length; i++) AddAbility(right, i);
 
                 // 能力区能装进剩余视口，或不超过左边已有的滚动高度时，优先并排。
-                float leftHeight = left.Height, rightHeight = right.Height;
-                if (rightHeight <= Mathf.Max(availableHeight, leftHeight))
-                {
-                    float height = Mathf.Max(leftHeight, rightHeight);
-                    return (height, y =>
-                    {
-                        left.Draw(0f, y);
-                        Widgets.DrawBoxSolid(new Rect(growthWidth + SettingsColumnGap / 2f, y, 1f, height), DividerColor);
-                        right.Draw(growthWidth + SettingsColumnGap, y);
-                    });
-                }
+                if (right.PanelHeight <= Mathf.Max(availableHeight, left.PanelHeight))
+                    return LayoutSettingsPanelRow(left, right);
             }
 
             var fullGrowth = BuildGrowth(width);
-            var heading = new SettingsColumn(width);
+            var heading = new SettingsColumn(width, panel: true);
             heading.AddLabel(abilityHeading);
             bool twoAbilityColumns = wide && abilities.Length > 1;
-            float abilityWidth = twoAbilityColumns ? (width - SettingsColumnGap) / 2f : width;
+            float abilityWidth = twoAbilityColumns ? (heading.Width - SettingsColumnGap) / 2f : heading.Width;
             var first = new SettingsColumn(abilityWidth);
             var second = twoAbilityColumns ? new SettingsColumn(abilityWidth) : null;
             for (int i = 0; i < abilities.Length; i++)
@@ -317,15 +307,17 @@ namespace SexSlaveCraft
                     second.Rows[i] = (height, right.Draw);
                 }
 
-            float headingY = fullGrowth.Height + SettingsColumnGap;
-            float abilitiesY = headingY + heading.Height;
-            return (abilitiesY + Mathf.Max(first.Height, second?.Height ?? 0f), y =>
+            float headingY = fullGrowth.PanelHeight + SettingsColumnGap;
+            float abilityHeight = heading.PanelHeight + Mathf.Max(first.Height, second?.Height ?? 0f);
+            float abilitiesY = headingY + SettingsPanelPadding + heading.Height;
+            float inset = SettingsPanelInset(width);
+            return (headingY + abilityHeight, y =>
             {
-                fullGrowth.Draw(0f, y);
-                Widgets.DrawLineHorizontal(0f, y + headingY - SettingsColumnGap / 2f, width, DividerColor);
-                heading.Draw(0f, y + headingY);
-                first.Draw(0f, y + abilitiesY);
-                second?.Draw(abilityWidth + SettingsColumnGap, y + abilitiesY);
+                fullGrowth.DrawPanel(0f, y, fullGrowth.PanelHeight);
+                // 能力的两列共用同一块底色，分隔只出现在成长和能力两个模块之间。
+                heading.DrawPanel(0f, y + headingY, abilityHeight);
+                first.Draw(inset, y + abilitiesY);
+                second?.Draw(inset + abilityWidth + SettingsColumnGap, y + abilitiesY);
             });
 
             void AddAbility(SettingsColumn column, int index)
@@ -336,11 +328,11 @@ namespace SexSlaveCraft
 
             SettingsColumn BuildGrowth(float columnWidth)
             {
-                var column = new SettingsColumn(columnWidth);
+                var column = new SettingsColumn(columnWidth, panel: true);
                 column.AddLabel("<b>" + "SSC_TrainingManagement_MasterGrowth".Translate() + "</b>");
                 string label = growth.Record == null ? growth.Stage : growth.Stage + " · " + growth.Experience;
                 if (growth.AtMaxStage) label += " · " + growth.Progress;
-                float height = Text.CalcHeight(label, Mathf.Max(1f, columnWidth - column.Indent));
+                float height = Text.CalcHeight(label, Mathf.Max(1f, column.Width - column.Indent));
                 column.Rows.Add((height, rect =>
                 {
                     rect = InsetSettingsRow(rect, column.Indent);

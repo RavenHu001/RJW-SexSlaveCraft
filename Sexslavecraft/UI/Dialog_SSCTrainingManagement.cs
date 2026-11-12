@@ -488,49 +488,56 @@ namespace SexSlaveCraft
         private void DrawOverview(Rect page)
         {
             var rows = OverviewRows();
-            Widgets.DrawBoxSolid(page, PanelColor);
             var viewport = new Rect(page.x + PanelPadding, page.y + PanelPadding,
                 Mathf.Max(1f, page.width - 2f * PanelPadding), Mathf.Max(1f, page.height - 2f * PanelPadding));
             float width = Mathf.Max(1f, viewport.width - 16f);
             // 概况从身份行开始，下面的模块按当前剩余空间测量，整页共用一个滚动区。
-            var identity = comp == null ? null : BuildOverviewIdentity(width, 0f);
+            var identity = comp == null ? null : BuildOverviewIdentity(width);
             float firstRow = identity?.Bottom ?? 0f;
-            const float masterGap = 10f;
             (float Height, Action<float> Draw) master = identity?.Edit.Identity == PawnIdentity.Master
-                ? BuildMasterOverview(identity.Edit, width, viewport.height - firstRow - masterGap) : default;
-            float labelWidth = Mathf.Max(1f, width * .42f - 4f);
-            float valueWidth = Mathf.Max(1f, width - labelWidth - 8f);
+                ? BuildMasterOverview(identity.Edit, width, viewport.height - firstRow - SettingsColumnGap) : default;
+            float inset = SettingsPanelInset(width);
+            float innerWidth = width - 2f * inset;
+            float labelWidth = Mathf.Max(1f, innerWidth * .42f - 4f);
+            float valueWidth = Mathf.Max(1f, innerWidth - labelWidth - 8f);
             var heights = new float[rows.Length];
-            float totalHeight = firstRow + (master.Draw == null ? 0f : masterGap + master.Height);
+            float summaryHeight = rows.Length == 0 ? 0f : 2f * SettingsPanelPadding;
             for (int i = 0; i < rows.Length; i++)
             {
                 heights[i] = Mathf.Max(Text.CalcHeight(rows[i].Label, labelWidth), Text.CalcHeight(rows[i].Value, valueWidth)) + 18f;
-                totalHeight += heights[i];
+                summaryHeight += heights[i];
             }
             string hint = comp == null ? "SSC_TrainingManagement_SelectPawn".Translate().ToString() : null;
-            if (hint != null) totalHeight += Text.CalcHeight(hint, width);
+            float totalHeight = firstRow;
+            if (master.Draw != null) totalHeight += SettingsColumnGap + master.Height;
+            if (summaryHeight > 0f) totalHeight += SettingsColumnGap + summaryHeight;
+            if (hint != null) totalHeight += SettingsPanelPadding + Text.CalcHeight(hint, innerWidth);
             scroll.y = Mathf.Clamp(scroll.y, 0f, Mathf.Max(0f, totalHeight - viewport.height));
             Widgets.BeginScrollView(viewport, ref scroll, new Rect(0f, 0f, width, Mathf.Max(viewport.height, totalHeight)));
             try
             {
-                if (hint != null) Widgets.Label(new Rect(0f, firstRow, width, totalHeight - firstRow), hint);
-                if (identity != null) DrawOverviewIdentity(identity);
-                float y = firstRow;
+                if (hint != null)
+                    Widgets.Label(new Rect(inset, SettingsPanelPadding, innerWidth, totalHeight - SettingsPanelPadding), hint);
+                if (identity != null)
+                {
+                    Widgets.DrawBoxSolid(new Rect(0f, 0f, width, firstRow), SettingsPanelColor);
+                    DrawOverviewIdentity(identity);
+                }
+                float moduleY = firstRow + SettingsColumnGap;
+                if (summaryHeight > 0f)
+                    Widgets.DrawBoxSolid(new Rect(0f, moduleY, width, summaryHeight), SettingsPanelColor);
+                float y = moduleY + SettingsPanelPadding;
                 for (int i = 0; i < rows.Length; i++)
                 {
                     Text.Anchor = TextAnchor.UpperLeft;
-                    Widgets.Label(new Rect(0f, y + 5f, labelWidth, heights[i] - 10f), rows[i].Label);
+                    Widgets.Label(new Rect(inset, y + 5f, labelWidth, heights[i] - 10f), rows[i].Label);
                     Text.Anchor = TextAnchor.UpperRight;
-                    Widgets.Label(new Rect(labelWidth + 8f, y + 5f, valueWidth, heights[i] - 10f), rows[i].Value);
+                    Widgets.Label(new Rect(inset + labelWidth + 8f, y + 5f, valueWidth, heights[i] - 10f), rows[i].Value);
                     y += heights[i];
-                    Widgets.DrawLineHorizontal(0f, y - 1f, width, DividerColor);
+                    if (i + 1 < rows.Length) Widgets.DrawLineHorizontal(inset, y - 1f, innerWidth, DividerColor);
                 }
                 Text.Anchor = TextAnchor.UpperLeft;
-                if (master.Draw != null)
-                {
-                    Widgets.DrawLineHorizontal(0f, y, width, DividerColor);
-                    master.Draw(y + masterGap);
-                }
+                master.Draw?.Invoke(moduleY);
             }
             finally { Widgets.EndScrollView(); }
         }

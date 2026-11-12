@@ -13,7 +13,6 @@ namespace SexSlaveCraft
         /// <summary>两组规则共用滚动区，每组只绘制一次，窄窗顺序排列。</summary>
         private void DrawBehaviorRules(Rect page)
         {
-            Widgets.DrawBoxSolid(page, PanelColor);
             var viewport = new Rect(page.x + PanelPadding, page.y + PanelPadding,
                 Mathf.Max(1f, page.width - 2f * PanelPadding), Mathf.Max(1f, page.height - 2f * PanelPadding));
             if (!SSCBehaviorControlUI.CanInspect(source)) return;
@@ -30,10 +29,10 @@ namespace SexSlaveCraft
                 new Rect(0f, 0f, width, Mathf.Max(height, viewport.height)));
             try
             {
-                float sexHeight = DrawPanel(0f, 0f, behaviorPanelHeights.Sex, DrawSex);
+                float sexHeight = DrawPanel(0f, 0f, twoColumns ? height : behaviorPanelHeights.Sex, DrawSex);
                 float romanceX = twoColumns ? columnWidth + SettingsColumnGap : 0f;
                 float romanceY = twoColumns ? 0f : sexHeight + SettingsColumnGap;
-                float romanceHeight = DrawPanel(romanceX, romanceY, behaviorPanelHeights.Romance, DrawRomance);
+                float romanceHeight = DrawPanel(romanceX, romanceY, twoColumns ? height : behaviorPanelHeights.Romance, DrawRomance);
                 behaviorPanelHeights = (sexHeight, romanceHeight);
             }
             finally { Widgets.EndScrollView(); }
@@ -41,7 +40,7 @@ namespace SexSlaveCraft
             // 两块各自绘制底色和控件，留出面板间距，点击区域跟随列表坐标。
             float DrawPanel(float x, float y, float measuredHeight, Action<Listing_Standard> draw)
             {
-                Widgets.DrawBoxSolid(new Rect(x, y, columnWidth, measuredHeight), new Color(.18f, .21f, .23f));
+                Widgets.DrawBoxSolid(new Rect(x, y, columnWidth, measuredHeight), SettingsPanelColor);
                 var listing = new Listing_Standard { maxOneColumn = true };
                 listing.Begin(new Rect(x, y, columnWidth, 100000f));
                 try { draw(listing); return listing.CurHeight; }
