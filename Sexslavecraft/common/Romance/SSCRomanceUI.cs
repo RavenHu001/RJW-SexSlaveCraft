@@ -3,6 +3,7 @@ using System;
 using RimWorld;
 using UnityEngine;
 using Verse;
+using static SexSlaveCraft.SSCTrainingWindowTheme;
 
 namespace SexSlaveCraft
 {
@@ -93,7 +94,7 @@ namespace SexSlaveCraft
                 float buttonHeight = Mathf.Max(28f, Text.CalcHeight(label, Mathf.Max(1f, buttonWidth - 12f)) + 8f);
                 if (embedded) title = "<b>" + title + "</b>";
                 Rect header = listing.GetRect(Mathf.Max(buttonHeight, Text.CalcHeight(title, titleWidth)) + 2f * padding);
-                if (embedded) Widgets.DrawBoxSolid(header, new Color(.20f, .24f, .26f));
+                if (embedded) Widgets.DrawBoxSolid(header, HeaderColor);
                 var titleRect = new Rect(header.x + padding, header.y + padding, titleWidth, header.height - 2f * padding);
                 Widgets.Label(titleRect, title);
                 if (titleTip != null) TooltipHandler.TipRegion(titleRect, titleTip);
@@ -136,9 +137,10 @@ namespace SexSlaveCraft
             try
             {
                 GUI.color = Color.white;
-                Widgets.DrawBoxSolid(rect, GUI.enabled ? new Color(.26f, .34f, .35f) : new Color(.22f, .25f, .27f));
+                Widgets.DrawBoxSolid(rect, GUI.enabled ? SelectedColor : ControlColor);
+                Widgets.DrawBoxSolid(new Rect(rect.x, rect.yMax - 1f, rect.width, 1f), DividerColor);
                 if (GUI.enabled) Widgets.DrawHighlightIfMouseover(rect);
-                GUI.color = GUI.enabled ? Color.white : new Color(.65f, .69f, .70f);
+                using var tint = new TextTint(GUI.enabled ? PrimaryText : DisabledText);
                 Text.Anchor = TextAnchor.MiddleCenter;
                 Text.WordWrap = true;
                 Widgets.Label(new Rect(rect.x + 6f, rect.y + 4f, Mathf.Max(1f, rect.width - 12f), rect.height - 8f), label);
@@ -181,11 +183,11 @@ namespace SexSlaveCraft
             {
                 Text.Anchor = embedded ? TextAnchor.MiddleLeft : TextAnchor.MiddleCenter;
                 GUI.color = Color.white;
-                listing.Label(label);
+                using (new TextTint(embedded ? SecondaryText : GUI.contentColor)) listing.Label(label);
                 if (embedded)
                 {
                     var line = listing.GetRect(6f);
-                    Widgets.DrawBoxSolid(new Rect(line.x, line.y + 2f, line.width, 1f), new Color(.36f, .43f, .45f));
+                    Widgets.DrawBoxSolid(new Rect(line.x, line.y + 2f, line.width, 1f), DividerColor);
                 }
                 else listing.GapLine(6f);
             }
@@ -256,10 +258,13 @@ namespace SexSlaveCraft
             try
             {
                 GUI.color = Color.white;
-                Widgets.DrawBoxSolid(new Rect(area.x + indent, area.y, area.width - indent, area.height), new Color(.14f, .14f, .14f, 1f));
-                GUI.color = new Color(.75f, .75f, .75f, 1f);
+                bool embedded = prepare != null;
+                Widgets.DrawBoxSolid(new Rect(area.x + indent, area.y, area.width - indent, area.height),
+                    embedded ? ControlColor : new Color(.14f, .14f, .14f, 1f));
+                GUI.color = embedded ? Color.white : new Color(.75f, .75f, .75f, 1f);
                 Text.Anchor = TextAnchor.UpperLeft; Text.WordWrap = true;
-                Widgets.Label(new Rect(area.x + indent + padding, area.y + padding, width, titleHeight), title);
+                using (new TextTint(embedded ? SecondaryText : GUI.contentColor))
+                    Widgets.Label(new Rect(area.x + indent + padding, area.y + padding, width, titleHeight), title);
                 for (int i = 0; i < settings.Length; i++)
                 {
                     var view = views[i];
@@ -267,11 +272,12 @@ namespace SexSlaveCraft
                         area.y + padding + titleHeight + gap + (i / columns) * (buttonHeight + gap), buttonWidth, buttonHeight);
                     GUI.enabled = previousEnabled && view.CanChange;
                     GUI.color = Color.white;
-                    Color fill = !GUI.enabled ? new Color(.18f, .18f, .18f) :
-                        prepare != null ? (view.Saved ? new Color(.26f, .34f, .35f) : new Color(.20f, .24f, .26f)) :
+                    Color fill = !GUI.enabled ? (embedded ? ControlColor : new Color(.18f, .18f, .18f)) :
+                        embedded ? (view.Saved ? SelectedColor : HeaderColor) :
                         view.Saved ? new Color(.30f, .38f, .24f) : new Color(.22f, .22f, .22f);
                     Widgets.DrawBoxSolid(button, fill);
-                    GUI.color = GUI.enabled ? Color.white : new Color(.55f, .55f, .55f, 1f);
+                    GUI.color = GUI.enabled || embedded ? Color.white : new Color(.55f, .55f, .55f, 1f);
+                    using var targetTint = new TextTint(embedded && !GUI.enabled ? DisabledText : GUI.contentColor);
                     Text.Anchor = TextAnchor.MiddleCenter;
                     Widgets.Label(new Rect(button.x + 6f, button.y + 4f, Mathf.Max(1f, button.width - 12f), button.height - 8f), labels[i]);
                     var setting = settings[i];
@@ -348,11 +354,12 @@ namespace SexSlaveCraft
             try
             {
                 GUI.enabled = previous && view.CanChange;
-                if (!GUI.enabled) GUI.color = color * new Color(.6f, .6f, .6f, 1f);
+                if (!GUI.enabled && prepare == null) GUI.color = color * new Color(.6f, .6f, .6f, 1f);
                 if (prepare != null) Text.Anchor = TextAnchor.MiddleLeft;
                 Action submit = () => SubmitSetting(pawn, setting, view);
                 if (GUI.enabled && prepare != null) submit = prepare(row, setting, submit);
-                Widgets.Label(new Rect(row.x, row.y, labelWidth, labelHeight), label);
+                using (new TextTint(prepare != null && !GUI.enabled ? DisabledText : GUI.contentColor))
+                    Widgets.Label(new Rect(row.x, row.y, labelWidth, labelHeight), label);
                 float iconX = row.xMax - 24f;
                 float iconY = row.y + Mathf.Max(0f, (labelHeight - 24f) / 2f);
                 if (prepare != null)

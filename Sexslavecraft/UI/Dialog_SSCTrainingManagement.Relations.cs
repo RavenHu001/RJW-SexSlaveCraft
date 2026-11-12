@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Verse;
+using static SexSlaveCraft.SSCTrainingWindowTheme;
 
 namespace SexSlaveCraft
 {
@@ -11,7 +12,6 @@ namespace SexSlaveCraft
         private const float MinCardWidth = 72f;
         private const float MinTrainerCardWidth = 100f;
         private const float TrainerHandleWidth = 30f;
-        private static readonly Color TrainerGripColor = new Color(.68f, .76f, .78f);
         private static readonly Color TrainerWorkOffColor = new Color(.92f, .69f, .33f);
         private const float CardGap = 6f;
         private const float CardHeight = 88f;
@@ -62,7 +62,7 @@ namespace SexSlaveCraft
         /// <summary>绘制当前身份适用的关系区域，返回本帧点击以便在滚动区结束后跳转。</summary>
         private (Pawn Target, SummaryRelation Relation) DrawRelations(Rect page, SSCBondOverviewView view, SSCBondOverviewSnapshot snapshot)
         {
-            Widgets.DrawBoxSolid(page, PanelColor);
+            Widgets.DrawBoxSolid(page, WindowColor);
             var viewport = new Rect(page.x + PanelPadding, page.y + PanelPadding,
                 Mathf.Max(1f, page.width - 2f * PanelPadding), Mathf.Max(1f, page.height - 2f * PanelPadding));
             if (snapshot?.State != SSCBondOverviewQueryState.Ready || snapshot.Identity == PawnIdentity.Unset)
@@ -320,7 +320,7 @@ namespace SexSlaveCraft
             Text.Font = GameFont.Small;
             float nameOffset = (trainerCard ? portraitSize : size) + 2f;
             var nameRect = new Rect(card.x, card.y + nameOffset, card.width, card.height - nameOffset);
-            Widgets.Label(nameRect, name.Truncate(card.width));
+            using (new TextTint(SecondaryText)) Widgets.Label(nameRect, name.Truncate(card.width));
             if (trainerGesture == null && Mouse.IsOver(nameRect)) TooltipHandler.TipRegion(nameRect, trainerCard ? name : tooltip ?? name);
             return clicked;
         }
@@ -328,12 +328,12 @@ namespace SexSlaveCraft
         /// <summary>绘制独立把手并提供工作状态与拖放提示。</summary>
         private void DrawTrainerHandle(Rect rect, Pawn pawn, SummaryRelation relation, string tooltip, bool workOff)
         {
-            Widgets.DrawBoxSolid(rect, PanelColor);
+            Widgets.DrawBoxSolid(rect, ControlColor);
             float lineWidth = Mathf.Min(16f, rect.width * .60f);
             float x = rect.x + (rect.width - lineWidth) / 2f;
             float y = rect.y + rect.height / 2f;
             for (int i = -1; i <= 1; i++)
-                Widgets.DrawBoxSolid(new Rect(x, y + i * 6f - 1f, lineWidth, 2f), workOff ? TrainerWorkOffColor : TrainerGripColor);
+                Widgets.DrawBoxSolid(new Rect(x, y + i * 6f - 1f, lineWidth, 2f), workOff ? TrainerWorkOffColor : SecondaryText);
             // 底部短线让未启用状态也有形状差异，标记不改变把手的点击范围。
             if (workOff && rect.height >= 26f)
                 Widgets.DrawBoxSolid(new Rect(x, rect.yMax - 5f, lineWidth, 2f), TrainerWorkOffColor);

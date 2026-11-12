@@ -29,6 +29,7 @@
     <!-- 调教管理第一批仅接1.7：原标签开窗、只读概况及地图单选同步。 -->
     <Compile Include="ThePatches/Harmony_TrainingManagementTab.cs" />
     <Compile Include="UI/Dialog_SSCTrainingManagement.cs" />
+    <Compile Include="UI/SSCTrainingWindowTheme.cs" />
     <!-- 可编辑概况使用 1.7 窗口及选角接口。 -->
     <Compile Include="UI/Dialog_SSCTrainingManagement.Overview.cs" />
     <!-- 日常调教复用 1.7 窗口和锁链阶段维持接口。 -->

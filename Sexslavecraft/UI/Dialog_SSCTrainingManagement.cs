@@ -4,6 +4,7 @@ using RimWorld;
 using RimWorld.Planet;
 using UnityEngine;
 using Verse;
+using static SexSlaveCraft.SSCTrainingWindowTheme;
 
 namespace SexSlaveCraft
 {
@@ -16,10 +17,6 @@ namespace SexSlaveCraft
         private const float StackedSummaryWidth = 460f;
         private enum Page { Overview, Relations, DailyTraining, Specialization, BodyAppearance, BehaviorRules }
         private enum SummaryRelation { Master, AssignedTrainer, OwnedSlave, TrainerCandidate }
-        private static readonly Color HeaderColor = new Color(.20f, .24f, .26f);
-        private static readonly Color PanelColor = new Color(.16f, .19f, .20f);
-        private static readonly Color SelectedColor = new Color(.26f, .34f, .35f);
-        private static readonly Color DividerColor = new Color(.36f, .43f, .45f);
         private static readonly string[] PageKeys =
         {
             "SSC_TrainingManagement_Overview", "SSC_TrainingManagement_Relations",
@@ -249,8 +246,10 @@ namespace SexSlaveCraft
             SSCBondOverviewSnapshot snapshot = view?.Snapshot;
             if (snapshot != null && snapshot.Identity != comp.pawnIdentity) snapshot = null;
             using var scope = new SSCBondOverviewWidgets.GuiScope(true);
+            using var textTint = new TextTint(PrimaryText);
             Text.Font = GameFont.Medium;
             Text.WordWrap = true;
+            Widgets.DrawBoxSolid(inRect, WindowColor);
             if (Event.current.type == EventType.mouseDown)
             {
                 // 新的按下只能由本次命中的控件建立请求。
@@ -339,6 +338,7 @@ namespace SexSlaveCraft
             {
                 var rect = new Rect(textX, y, textWidth, lineHeight);
                 string displayed = label.Truncate(textWidth);
+                using var tint = new TextTint(bold ? PrimaryText : SecondaryText);
                 Widgets.Label(rect, bold ? "<b>" + displayed + "</b>" : displayed);
                 if (trainerGesture == null && displayed != label) TooltipHandler.TipRegion(rect, label);
             }
@@ -408,6 +408,7 @@ namespace SexSlaveCraft
             var textRect = new Rect(x, rect.y, Mathf.Max(1f, rect.xMax - x), rect.height);
             Text.Anchor = TextAnchor.MiddleLeft;
             Text.WordWrap = false;
+            using var tint = new TextTint(SecondaryText);
             Widgets.Label(textRect, label.Truncate(textRect.width));
             if (trainerGesture == null) TooltipHandler.TipRegion(textRect, titleTip ?? label);
             return clicked;
@@ -524,14 +525,15 @@ namespace SexSlaveCraft
             for (int i = 0; i < labels.Length; i++)
             {
                 var cell = new Rect(rect.x + i % columns * (width + NavigationGap), rect.y + i / columns * (rowHeight + NavigationGap), width, rowHeight);
-                GUI.color = Color.white;
                 bool slavePage = i == (int)Page.DailyTraining || i == (int)Page.Specialization;
                 bool available = i <= (int)Page.Relations || i == (int)Page.BodyAppearance ||
                     i == (int)Page.BehaviorRules && SSCBehaviorControlUI.CanInspect(source) ||
                     slavePage && comp?.pawnIdentity == PawnIdentity.Slave;
-                Widgets.DrawBoxSolid(cell, i == (int)currentPage ? SelectedColor : HeaderColor);
-                GUI.color = available ? Color.white : new Color(.68f, .73f, .74f);
-                Widgets.Label(new Rect(cell.x + 10f, cell.y, Mathf.Max(1f, cell.width - 20f), cell.height), labels[i]);
+                bool selected = i == (int)currentPage;
+                Widgets.DrawBoxSolid(cell, selected ? SelectedColor : HeaderColor);
+                if (selected) Widgets.DrawBoxSolid(new Rect(cell.x, cell.y, Mathf.Min(2f, cell.width), cell.height), CopperColor);
+                using (new TextTint(available ? PrimaryText : DisabledText))
+                    Widgets.Label(new Rect(cell.x + 10f, cell.y, Mathf.Max(1f, cell.width - 20f), cell.height), labels[i]);
                 if (available)
                 {
                     Widgets.DrawHighlightIfMouseover(cell);

@@ -5,6 +5,7 @@ using System.Linq;
 using RimWorld;
 using UnityEngine;
 using Verse;
+using static SexSlaveCraft.SSCTrainingWindowTheme;
 
 namespace SexSlaveCraft
 {
@@ -64,7 +65,7 @@ namespace SexSlaveCraft
                 string value = (Mathf.Floor(Mathf.Clamp01(chain.Severity) * 100f) / 100f).ToString("0%");
                 AddOverviewValue(progress, heading, value);
                 progress.AddLabel("SSC_TrainingManagement_SlaveCurrentStage".Translate(stage),
-                    tooltip: maxStage ? "SSC_MasterProgression_MaxStage".Translate().ToString() : null);
+                    tooltip: maxStage ? "SSC_MasterProgression_MaxStage".Translate().ToString() : null, textColor: SecondaryText);
                 AddOverviewProgressScale(progress, chain, chain.Severity, reached, asPercent: true);
             }
 
@@ -268,7 +269,7 @@ namespace SexSlaveCraft
             Text.Anchor = TextAnchor.MiddleLeft;
             bool editable = enabled && GUI.enabled;
             bool showArrow = dropdown && editable && value.width >= 36f;
-            Widgets.DrawBoxSolid(value, editable ? HeaderColor : PanelColor);
+            Widgets.DrawBoxSolid(value, editable && !dropdown ? SelectedColor : ControlColor);
             Widgets.DrawLineHorizontal(value.x, value.yMax - 1f, value.width, DividerColor);
             if (editable) Widgets.DrawHighlightIfMouseover(value);
 
@@ -277,14 +278,14 @@ namespace SexSlaveCraft
             var labelRect = new Rect(value.x + padding, value.y,
                 Mathf.Max(1f, value.width - 2f * padding - (showArrow ? 16f : 0f)), value.height);
             string label = text.Truncate(labelRect.width);
-            Widgets.Label(labelRect, label);
+            using (new TextTint(editable ? PrimaryText : DisabledText)) Widgets.Label(labelRect, label);
             if (showArrow)
             {
                 // 用三道短线组成下拉箭头，避免受语言字体的符号覆盖影响。
                 float x = value.xMax - padding - 5f;
                 float y = value.y + value.height / 2f;
                 for (int i = 0; i < 3; i++)
-                    Widgets.DrawBoxSolid(new Rect(x - 4f + i * 2f, y - 2f + i * 2f, 9f - i * 4f, 2f), GUI.color);
+                    Widgets.DrawBoxSolid(new Rect(x - 4f + i * 2f, y - 2f + i * 2f, 9f - i * 4f, 2f), SecondaryText);
             }
             if (tooltip != null || label != text) TooltipHandler.TipRegion(value, tooltip ?? text);
             return editable && Widgets.ButtonInvisible(value);
@@ -432,6 +433,13 @@ namespace SexSlaveCraft
             }
         }
 
+        // 只在第一次绘制进度条时创建纹理，沿用原版填充矩形与刻度坐标。
+        private static class ProgressTextures
+        {
+            internal static readonly Texture2D Fill = SolidColorMaterials.NewSolidColorTexture(ProgressFill);
+            internal static readonly Texture2D Track = SolidColorMaterials.NewSolidColorTexture(ProgressTrack);
+        }
+
         /// <summary>主人经验与锁链进度共用比例刻度，只给下一阶段加亮和标门槛。</summary>
         private static void AddOverviewProgressScale(SettingsColumn column, Hediff record, float value, int nextStage,
             bool asPercent = false, string nextTip = null, string trackTip = null)
@@ -492,7 +500,8 @@ namespace SexSlaveCraft
             {
                 rect = InsetSettingsRow(rect, column.Indent);
                 // 原版返回填充轨道的实际矩形，刻度用同一范围，端点限制在条内。
-                Rect track = Widgets.FillableBar(new Rect(rect.x, rect.y + aboveHeight, rect.width, barHeight), fill);
+                Rect track = Widgets.FillableBar(new Rect(rect.x, rect.y + aboveHeight, rect.width, barHeight),
+                    fill, ProgressTextures.Fill, ProgressTextures.Track, doBorder: false);
                 using var drawScope = new SSCBondOverviewWidgets.GuiScope(false);
                 Text.Font = stageFont;
                 Text.Anchor = TextAnchor.MiddleCenter;
@@ -505,14 +514,12 @@ namespace SexSlaveCraft
                         track.x, track.xMax - tickWidth);
                     float markY = tick.Above ? track.y - tickExtension : track.y;
                     var mark = new Rect(tickX, markY, tickWidth, track.height + tickExtension);
-                    Color highlight = new Color(.47f, .88f, .91f);
-                    Widgets.DrawBoxSolid(mark, tick.Next ? highlight : new Color(.73f, .81f, .83f));
+                    // 中性色刻度在填充条内外都用一像素深底衬出轮廓。
+                    Widgets.DrawBoxSolid(new Rect(mark.x - 1f, mark.y, mark.width + 2f, mark.height), ProgressTrack);
+                    Widgets.DrawBoxSolid(mark, tick.Next ? ProgressNext : SecondaryText);
                     float labelY = tick.Above ? track.y - tick.Label.y - tick.Label.height : track.yMax + tick.Label.y;
                     var label = new Rect(rect.x + tick.Label.x, labelY, tick.Label.width, tick.Label.height);
-                    Color previous = GUI.color;
-                    if (tick.Next) GUI.color = highlight;
-                    Widgets.Label(label, tick.Text);
-                    GUI.color = previous;
+                    using (new TextTint(tick.Next ? ProgressNext : SecondaryText)) Widgets.Label(label, tick.Text);
                     var tickHit = new Rect(mark.x - 4f, mark.y, mark.width + 8f, mark.height);
                     hoveringTick |= Mouse.IsOver(tickHit);
                     TooltipHandler.TipRegion(tickHit, tick.Tip);

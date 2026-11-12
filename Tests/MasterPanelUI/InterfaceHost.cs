@@ -23,7 +23,7 @@ namespace UnityEngine
         public static Color operator *(Color a, Color b) => new(a.r*b.r,a.g*b.g,a.b*b.b,a.a*b.a);
     }
     public enum TextAnchor { UpperLeft, MiddleRight, MiddleCenter, MiddleLeft }
-    public static class GUI { public static bool enabled = true; public static Color color = Color.white; }
+    public static class GUI { public static bool enabled = true; public static Color color = Color.white; public static Color contentColor = Color.white; }
     public static class Mathf
     {
         public static float Max(float a, float b) => Math.Max(a, b);

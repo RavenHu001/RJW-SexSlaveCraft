@@ -2,6 +2,7 @@
 using RimWorld;
 using UnityEngine;
 using Verse;
+using static SexSlaveCraft.SSCTrainingWindowTheme;
 
 namespace SexSlaveCraft
 {

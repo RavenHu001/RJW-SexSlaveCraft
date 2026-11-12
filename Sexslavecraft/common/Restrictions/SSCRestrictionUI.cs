@@ -168,11 +168,18 @@ namespace SexSlaveCraft
             {
                 Text.Anchor = embedded ? TextAnchor.MiddleLeft : TextAnchor.MiddleCenter;
                 GUI.color = Color.white;
+#if SSC_RW17
+                using var tint = new SSCTrainingWindowTheme.TextTint(embedded ? SSCTrainingWindowTheme.SecondaryText : GUI.contentColor);
+#endif
                 listing.Label(label);
                 if (embedded)
                 {
                     var line = listing.GetRect(6f);
+#if SSC_RW17
+                    Widgets.DrawBoxSolid(new Rect(line.x, line.y + 2f, line.width, 1f), SSCTrainingWindowTheme.DividerColor);
+#else
                     Widgets.DrawBoxSolid(new Rect(line.x, line.y + 2f, line.width, 1f), new Color(.36f, .43f, .45f));
+#endif
                 }
                 else listing.GapLine(6f);
             }
@@ -229,9 +236,18 @@ namespace SexSlaveCraft
             try
             {
                 GUI.enabled = previous && canEdit;
+#if SSC_RW17
+                if (!GUI.enabled && prepare == null) GUI.color = previousColor * new Color(0.55f, 0.55f, 0.55f, 1f);
+#else
                 if (!GUI.enabled) GUI.color = previousColor * new Color(0.55f, 0.55f, 0.55f, 1f);
+#endif
                 if (prepare != null) Text.Anchor = TextAnchor.MiddleLeft;
+#if SSC_RW17
+                using (new SSCTrainingWindowTheme.TextTint(prepare != null && !GUI.enabled ? SSCTrainingWindowTheme.DisabledText : GUI.contentColor))
+                    Widgets.Label(labelRect, label);
+#else
                 Widgets.Label(labelRect, label);
+#endif
                 float iconX = row.xMax - 24f;
                 float iconY = row.y + (height - 24f) / 2f;
                 if (prepare != null)

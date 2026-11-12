@@ -25,5 +25,6 @@
     <Compile Include="../../Sexslavecraft/common/Romance/SSCRomancePreferences.cs" Link="Production/SSCRomancePreferences.cs" />
     <Compile Include="../../Sexslavecraft/common/Romance/SSCRomancePersonalReset.cs" Link="Production/SSCRomancePersonalReset.cs" />
     <Compile Include="../../Sexslavecraft/common/Romance/SSCRomanceUI.cs" Link="Production/SSCRomanceUI.cs" />
+    <Compile Include="../../Sexslavecraft/UI/SSCTrainingWindowTheme.cs" Link="Production/SSCTrainingWindowTheme.cs" />
   </ItemGroup>
 </Project>

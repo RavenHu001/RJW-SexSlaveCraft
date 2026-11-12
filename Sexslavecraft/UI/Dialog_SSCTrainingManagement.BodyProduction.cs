@@ -5,6 +5,7 @@ using System.Linq;
 using RimWorld;
 using UnityEngine;
 using Verse;
+using static SexSlaveCraft.SSCTrainingWindowTheme;
 
 namespace SexSlaveCraft
 {
@@ -16,7 +17,6 @@ namespace SexSlaveCraft
         private const float SettingsColumnGap = 18f;
         private const float SettingsTwoColumnWidth = 560f;
         private const float SettingsPanelPadding = 10f;
-        private static readonly Color SettingsPanelColor = new Color(.18f, .22f, .235f);
 
         /// <summary>极窄的面板缩减横向内边距，至少给内容保留一个像素。</summary>
         private static float SettingsPanelInset(float width) => Mathf.Min(SettingsPanelPadding, Mathf.Max(0f, (width - 1f) / 2f));
@@ -59,10 +59,11 @@ namespace SexSlaveCraft
             }
 
             /// <summary>用缩进后的文字宽度测量换行，悬停说明跟随同一个文字区域。</summary>
-            internal void AddLabel(string label, float indent = 0f, string tooltip = null)
+            internal void AddLabel(string label, float indent = 0f, string tooltip = null, Color? textColor = null)
                 => Rows.Add((Text.CalcHeight(label, Mathf.Max(1f, Width - indent)), rect =>
                 {
                     rect = InsetSettingsRow(rect, indent);
+                    using var tint = new TextTint(textColor ?? GUI.contentColor);
                     Widgets.Label(rect, label);
                     if (!string.IsNullOrEmpty(tooltip)) TooltipHandler.TipRegion(rect, tooltip);
                 }));
@@ -163,7 +164,7 @@ namespace SexSlaveCraft
                     string tip = definition.TipRule == null ? definition.TipKey.Translate().ToString() : definition.TipRule(pawn);
                     AddAbilityToggle(column, edit, definition.Id, item.State, label, tip);
                     string detail = definition.DetailRule?.Invoke(pawn);
-                    if (!string.IsNullOrEmpty(detail)) column.AddLabel(detail, column.Indent, AbilityToggleTip(item.State, tip));
+                    if (!string.IsNullOrEmpty(detail)) column.AddLabel(detail, column.Indent, AbilityToggleTip(item.State, tip), SecondaryText);
                 }
             }
         }
