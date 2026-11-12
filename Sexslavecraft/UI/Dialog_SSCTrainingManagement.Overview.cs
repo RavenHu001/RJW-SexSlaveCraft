@@ -43,7 +43,12 @@ namespace SexSlaveCraft
             float progressWidth = wide ? (width - SettingsColumnGap) * .63f : width;
             var progress = new SettingsColumn(progressWidth, panel: true);
             var daily = new SettingsColumn(wide ? width - progressWidth - SettingsColumnGap : width, panel: true);
-            progress.AddLabel("<b>" + "SSC_TrainingManagement_SlaveProgress".Translate() + "</b>");
+            string heading = "<b>" + "SSC_TrainingManagement_SlaveProgress".Translate() + "</b>";
+            // 恶堕率取当前需求值，放在标题右侧，给进度条及刻度留出完整宽度。
+            var corruption = edit.Pawn.needs?.TryGetNeed<Need_Corruption>();
+            if (corruption == null) progress.AddLabel(heading);
+            else AddOverviewValue(progress, heading,
+                "SSC_TrainingManagement_CurrentCorruption".Translate() + " " + corruption.CurLevel.ToString("0%"));
 
             var chain = SSCBondUtility.GetChain(edit.Pawn);
             if (chain == null || !float.IsFinite(chain.Severity))
@@ -62,14 +67,6 @@ namespace SexSlaveCraft
                 if (maxStage) caption += " · " + "SSC_MasterProgression_MaxStage".Translate();
                 progress.AddLabel(caption, progress.Indent);
                 AddOverviewProgressScale(progress, chain, chain.Severity, reached, asPercent: true);
-            }
-
-            // 恶堕率是独立的实时需求值，不能用历史峰值或用它替代锁链进度。
-            var corruption = edit.Pawn.needs?.TryGetNeed<Need_Corruption>();
-            if (corruption != null)
-            {
-                progress.Divide();
-                AddOverviewValue(progress, "SSC_TrainingManagement_CurrentCorruption".Translate(), corruption.CurLevel.ToString("0%"));
             }
 
             daily.AddLabel("<b>" + PageKeys[2].Translate() + "</b>");
@@ -167,19 +164,23 @@ namespace SexSlaveCraft
                 view.LockTip = (SSCImprintUtility.GetImprintLockedIdentity(source) != PawnIdentity.Unset ?
                     "SSC_Imprint_GelTooltip" : "SSC_Identity_BoundTip").Translate();
 
-            // 永久资格来自保存字段，菜单可用性另按设置及当前资格判断。
-            view.QualificationLabel = SSCMasterQualificationDisplay.GetLabel(comp.masterQualificationUnlocked);
-            view.Qualification = Row(SSCMasterQualificationDisplay.GetHeight(view.QualificationLabel, width, Text.LineHeight));
+            // 未设身份时保留资格提示。身份菜单的可用性仍按设置与现有资格判定。
+            if (view.Edit.Identity == PawnIdentity.Unset)
+            {
+                view.QualificationLabel = SSCMasterQualificationDisplay.GetLabel(comp.masterQualificationUnlocked);
+                view.Qualification = Row(SSCMasterQualificationDisplay.GetHeight(view.QualificationLabel, width, Text.LineHeight));
+            }
 
             // 主人的任职状态已在窗口标题下显示。性奴仍在这里管理任职，失格后也可关闭旧选择。
             var trainer = ITab_SexSlaveTraining.GetTrainerIdentityPresentation(source, comp);
             if (trainer.IsSlave)
             {
-                view.TrainerLabel = trainer.Label;
+                // 勾选框已经表达保存选择。失格但仍有勾选时保留暂停状态，避免误读为正在任职。
+                view.TrainerLabel = trainer.Enabled && !trainer.Qualified ? trainer.Label : "SSC_TrainerIdentity_Label".Translate().ToString();
                 view.TrainerTip = trainer.Tooltip;
                 view.TrainerEnabled = trainer.Enabled;
                 view.TrainerEditable = trainer.Qualified || trainer.Enabled;
-                view.TrainerToggle = Row(Mathf.Max(24f, Text.CalcHeight(trainer.Label, Mathf.Max(1f, width - 24f))));
+                view.TrainerToggle = Row(Mathf.Max(24f, Text.CalcHeight(view.TrainerLabel, Mathf.Max(1f, width - 24f))));
             }
 
             if (SSCIdentityUtility.CanRestoreLegacySlaveIdentity(source))
@@ -200,8 +201,9 @@ namespace SexSlaveCraft
             Text.Anchor = TextAnchor.UpperLeft;
             DrawIdentityRow(view);
 
-            SSCMasterQualificationDisplay.Draw(view.Qualification, view.QualificationLabel,
-                SSCMasterQualificationDisplay.GetPawnTooltip(SSCMod.settings?.allowDirectMasterSelection ?? false));
+            if (view.QualificationLabel != null)
+                SSCMasterQualificationDisplay.Draw(view.Qualification, view.QualificationLabel,
+                    SSCMasterQualificationDisplay.GetPawnTooltip(SSCMod.settings?.allowDirectMasterSelection ?? false));
             if (view.TrainerLabel != null)
             {
                 bool next = SSCUIWidgets.Checkbox(view.TrainerToggle, view.TrainerLabel, view.TrainerEnabled,
