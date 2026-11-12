@@ -487,30 +487,23 @@ namespace SexSlaveCraft
         /// <summary>概况的身份控件和只读状态共用独立滚动区，行高随译文换行。</summary>
         private void DrawOverview(Rect page)
         {
-            var rows = OverviewRows();
             var viewport = new Rect(page.x + PanelPadding, page.y + PanelPadding,
                 Mathf.Max(1f, page.width - 2f * PanelPadding), Mathf.Max(1f, page.height - 2f * PanelPadding));
             float width = Mathf.Max(1f, viewport.width - 16f);
             // 概况从身份行开始，下面的模块按当前剩余空间测量，整页共用一个滚动区。
             var identity = comp == null ? null : BuildOverviewIdentity(width);
             float firstRow = identity?.Bottom ?? 0f;
-            (float Height, Action<float> Draw) master = identity?.Edit.Identity == PawnIdentity.Master
-                ? BuildMasterOverview(identity.Edit, width, viewport.height - firstRow - SettingsColumnGap) : default;
+            (float Height, Action<float> Draw) module = identity?.Edit.Identity switch
+            {
+                PawnIdentity.Master => BuildMasterOverview(identity.Edit, width, viewport.height - firstRow - SettingsColumnGap),
+                PawnIdentity.Slave => BuildSlaveOverview(identity.Edit, width),
+                _ => default
+            };
             float inset = SettingsPanelInset(width);
             float innerWidth = width - 2f * inset;
-            float labelWidth = Mathf.Max(1f, innerWidth * .42f - 4f);
-            float valueWidth = Mathf.Max(1f, innerWidth - labelWidth - 8f);
-            var heights = new float[rows.Length];
-            float summaryHeight = rows.Length == 0 ? 0f : 2f * SettingsPanelPadding;
-            for (int i = 0; i < rows.Length; i++)
-            {
-                heights[i] = Mathf.Max(Text.CalcHeight(rows[i].Label, labelWidth), Text.CalcHeight(rows[i].Value, valueWidth)) + 18f;
-                summaryHeight += heights[i];
-            }
             string hint = comp == null ? "SSC_TrainingManagement_SelectPawn".Translate().ToString() : null;
             float totalHeight = firstRow;
-            if (master.Draw != null) totalHeight += SettingsColumnGap + master.Height;
-            if (summaryHeight > 0f) totalHeight += SettingsColumnGap + summaryHeight;
+            if (module.Draw != null) totalHeight += SettingsColumnGap + module.Height;
             if (hint != null) totalHeight += SettingsPanelPadding + Text.CalcHeight(hint, innerWidth);
             scroll.y = Mathf.Clamp(scroll.y, 0f, Mathf.Max(0f, totalHeight - viewport.height));
             Widgets.BeginScrollView(viewport, ref scroll, new Rect(0f, 0f, width, Mathf.Max(viewport.height, totalHeight)));
@@ -523,44 +516,9 @@ namespace SexSlaveCraft
                     Widgets.DrawBoxSolid(new Rect(0f, 0f, width, firstRow), SettingsPanelColor);
                     DrawOverviewIdentity(identity);
                 }
-                float moduleY = firstRow + SettingsColumnGap;
-                if (summaryHeight > 0f)
-                    Widgets.DrawBoxSolid(new Rect(0f, moduleY, width, summaryHeight), SettingsPanelColor);
-                float y = moduleY + SettingsPanelPadding;
-                for (int i = 0; i < rows.Length; i++)
-                {
-                    Text.Anchor = TextAnchor.UpperLeft;
-                    Widgets.Label(new Rect(inset, y + 5f, labelWidth, heights[i] - 10f), rows[i].Label);
-                    Text.Anchor = TextAnchor.UpperRight;
-                    Widgets.Label(new Rect(inset + labelWidth + 8f, y + 5f, valueWidth, heights[i] - 10f), rows[i].Value);
-                    y += heights[i];
-                    if (i + 1 < rows.Length) Widgets.DrawLineHorizontal(inset, y - 1f, innerWidth, DividerColor);
-                }
-                Text.Anchor = TextAnchor.UpperLeft;
-                master.Draw?.Invoke(moduleY);
+                module.Draw?.Invoke(firstRow + SettingsColumnGap);
             }
             finally { Widgets.EndScrollView(); }
-        }
-
-        /// <summary>按身份展示原有可读状态，特化进度沿用旧页的规则。</summary>
-        private (string Label, string Value)[] OverviewRows()
-        {
-            if (comp == null) return Array.Empty<(string, string)>();
-            if (comp.pawnIdentity == PawnIdentity.Slave)
-            {
-                string training = (comp.IsEnabled ? "SSC_TrainingManagement_TrainingEnabled" : "SSC_TrainingManagement_TrainingDisabled").Translate();
-                if (comp.IsOnCooldown)
-                {
-                    int ticks = CompSexSlaveTraining.CooldownTicks - (Find.TickManager.TicksGame - comp.lastTrainingTick);
-                    training += " · " + Strings.ITab_CooldownStatus(ticks.ToStringTicksToPeriod());
-                }
-                return new (string, string)[]
-                {
-                    (PageKeys[2].Translate(), training),
-                    ("SSC_TrainingManagement_CurrentSpecialization".Translate(), ITab_SexSlaveTraining.GetSpecializationOverviewLabel(source, comp))
-                };
-            }
-            return Array.Empty<(string, string)>();
         }
 
         /// <summary>保留原任职状态的显示语义，包括身份暂停时保留的启用选择。</summary>

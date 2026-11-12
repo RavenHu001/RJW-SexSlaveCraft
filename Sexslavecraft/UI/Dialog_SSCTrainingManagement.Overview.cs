@@ -36,6 +36,78 @@ namespace SexSlaveCraft
             }
         }
 
+        /// <summary>按当前锁链和调教状态构建两个只读面板，窄窗时上下排列。</summary>
+        private static (float Height, Action<float> Draw) BuildSlaveOverview(PageEdit edit, float width)
+        {
+            bool wide = width >= SettingsTwoColumnWidth;
+            float progressWidth = wide ? (width - SettingsColumnGap) * .63f : width;
+            var progress = new SettingsColumn(progressWidth, panel: true);
+            var daily = new SettingsColumn(wide ? width - progressWidth - SettingsColumnGap : width, panel: true);
+            progress.AddLabel("<b>" + "SSC_TrainingManagement_SlaveProgress".Translate() + "</b>");
+
+            var chain = SSCBondUtility.GetChain(edit.Pawn);
+            if (chain == null || !float.IsFinite(chain.Severity))
+                progress.AddLabel("SSC_TrainingManagement_NoChainProgress".Translate());
+            else
+            {
+                // 玩法阶段从身份工具读取，刻度使用同一条锁链的 Def，避免复制阈值。
+                int reached = SSCIdentityUtility.GetSexSlaveStageFromChain(chain);
+                var stages = chain.def.stages;
+                string stage = reached > 0 && reached <= (stages?.Count ?? 0) ? stages[reached - 1]?.label : null;
+                stage ??= "SSC_TrainingManagement_BeforeChainStage".Translate();
+                bool maxStage = stages?.Count > 0 && reached >= stages.Count;
+                // 向下显示整数百分比，跨过实际门槛之前不提前显示目标值。
+                string value = (Mathf.Floor(Mathf.Clamp01(chain.Severity) * 100f) / 100f).ToString("0%");
+                string caption = stage + " · " + value;
+                if (maxStage) caption += " · " + "SSC_MasterProgression_MaxStage".Translate();
+                progress.AddLabel(caption, progress.Indent);
+                AddOverviewProgressScale(progress, chain, chain.Severity, reached, asPercent: true);
+            }
+
+            // 恶堕率是独立的实时需求值，不能用历史峰值或用它替代锁链进度。
+            var corruption = edit.Pawn.needs?.TryGetNeed<Need_Corruption>();
+            if (corruption != null)
+            {
+                progress.Divide();
+                AddOverviewValue(progress, "SSC_TrainingManagement_CurrentCorruption".Translate(), corruption.CurLevel.ToString("0%"));
+            }
+
+            daily.AddLabel("<b>" + PageKeys[2].Translate() + "</b>");
+            AddOverviewValue(daily, Strings.ITab_AllowTraining, (edit.Comp.IsEnabled
+                ? "SSC_TrainingManagement_TrainingEnabled" : "SSC_TrainingManagement_TrainingDisabled").Translate());
+            if (edit.Comp.IsOnCooldown)
+            {
+                daily.Divide();
+                daily.AddLabel(ITab_SexSlaveTraining.GetDailyTrainingStatus(edit.Comp));
+            }
+
+            if (wide) return LayoutSettingsPanelRow(progress, daily);
+            float dailyY = progress.PanelHeight + SettingsColumnGap;
+            return (dailyY + daily.PanelHeight, y =>
+            {
+                progress.DrawPanel(0f, y, progress.PanelHeight);
+                daily.DrawPanel(0f, y + dailyY, daily.PanelHeight);
+            });
+        }
+
+        /// <summary>测量两侧译文并右对齐只读值，给较长的标签留出换行空间。</summary>
+        private static void AddOverviewValue(SettingsColumn column, string label, string value)
+        {
+            float gap = Mathf.Min(8f, column.Width * .1f);
+            float valueWidth = Mathf.Clamp(Text.CalcSize(value).x + 2f, column.Width * .25f, column.Width * .5f);
+            float labelWidth = column.Width - valueWidth - gap;
+            float height = Mathf.Max(Text.CalcHeight(label, Mathf.Max(1f, labelWidth)),
+                Text.CalcHeight(value, Mathf.Max(1f, valueWidth)));
+            column.Rows.Add((height, rect =>
+            {
+                using var scope = new SSCBondOverviewWidgets.GuiScope(false);
+                Text.Anchor = TextAnchor.UpperLeft;
+                Widgets.Label(new Rect(rect.x, rect.y, labelWidth, rect.height), label);
+                Text.Anchor = TextAnchor.UpperRight;
+                Widgets.Label(new Rect(rect.xMax - valueWidth, rect.y, valueWidth, rect.height), value);
+            }));
+        }
+
         /// <summary>保存本次绘制的文案、控件位置和原印记引用，随滚动区一起重算。</summary>
         private sealed class OverviewIdentityView
         {
@@ -331,7 +403,10 @@ namespace SexSlaveCraft
                 var column = new SettingsColumn(columnWidth, panel: true);
                 column.AddLabel("<b>" + "SSC_TrainingManagement_MasterGrowth".Translate() + "</b>");
                 string label = growth.Record == null ? growth.Stage : growth.Stage + " · " + growth.Experience;
-                if (!string.IsNullOrEmpty(growth.Progress)) label += " · " + growth.Progress;
+                var stages = growth.Record?.def.stages;
+                int nextStage = (growth.Record?.CurStageIndex ?? -1) + 1;
+                bool maxStage = stages?.Count > 0 && nextStage >= stages.Count;
+                if (maxStage) label += " · " + growth.Progress;
                 float height = Text.CalcHeight(label, Mathf.Max(1f, column.Width - column.Indent));
                 column.Rows.Add((height, rect =>
                 {
@@ -339,15 +414,18 @@ namespace SexSlaveCraft
                     Widgets.Label(rect, label);
                     ITab_SexSlaveTraining.AddMasterProgressionTip(rect, growth.Record);
                 }));
-                if (growth.Record != null) AddMasterGrowthScale(column, growth.Record, growth.ExperienceValue);
+                if (growth.Record != null)
+                    AddOverviewProgressScale(column, growth.Record, growth.ExperienceValue, nextStage,
+                        nextTip: growth.Progress, trackTip: "SSC_MasterProgression_PracticeTip".Translate());
                 return column;
             }
         }
 
-        /// <summary>测量累计经验刻度和阶段名，按同一个坐标系绘制填充、刻度与标签。</summary>
-        private static void AddMasterGrowthScale(SettingsColumn column, Hediff_MasterProgression record, float experience)
+        /// <summary>主人经验与锁链进度共用比例刻度，只给下一阶段加亮和标门槛。</summary>
+        private static void AddOverviewProgressScale(SettingsColumn column, Hediff record, float value, int nextStage,
+            bool asPercent = false, string nextTip = null, string trackTip = null)
         {
-            float maximum = record.def.maxSeverity;
+            float maximum = asPercent ? 1f : record.def.maxSeverity;
             if (!(maximum > 0f) || float.IsInfinity(maximum)) return;
 
             const float barHeight = 14f;
@@ -356,7 +434,7 @@ namespace SexSlaveCraft
             const float labelGap = 4f;
             const GameFont stageFont = GameFont.Medium;
             float width = Mathf.Max(1f, column.Width - column.Indent);
-            float fill = Mathf.Clamp01(experience / maximum);
+            float fill = Mathf.Clamp01(value / maximum);
             var labels = new List<(float Position, Rect Label, string Text, string Tip, bool Next, bool Above)>();
             var below = new List<float>();
             var above = new List<float>();
@@ -367,14 +445,22 @@ namespace SexSlaveCraft
 
             // 第一处刻度朝下，后续交替朝上和朝下。长译名只在同侧追加一行。
             var stages = record.def.stages;
-            int nextStage = record.CurStageIndex + 1;
             for (int i = 0; stages != null && i < stages.Count; i++)
             {
                 var stage = stages[i];
                 if (stage == null || !(stage.minSeverity >= 0f && stage.minSeverity <= maximum)) continue;
                 float position = stage.minSeverity / maximum;
                 string name = stage.label ?? string.Empty;
-                string tip = name + " · " + stage.minSeverity.ToString("0.##");
+                bool isNext = i == nextStage;
+                string threshold = stage.minSeverity.ToString(asPercent ? "0%" : "0.##");
+                string tip = name + " · " + threshold;
+                if (isNext)
+                {
+                    name = tip;
+                    string remaining = asPercent ? "SSC_TrainingManagement_NextPercentGap".Translate(
+                        (Mathf.Max(0f, stage.minSeverity - value) * 100f).ToString("0.##")).ToString() : nextTip;
+                    if (!string.IsNullOrEmpty(remaining)) tip += "\n" + remaining;
+                }
                 float textWidth = Mathf.Min(width, Mathf.Ceil(Text.CalcSize(name).x) + 2f);
                 float maxX = width - textWidth;
                 float x = Mathf.Clamp(position * width - textWidth / 2f, 0f, maxX);
@@ -385,13 +471,12 @@ namespace SexSlaveCraft
                 if (lane == laneEnds.Count) laneEnds.Add(x + textWidth);
                 else laneEnds[lane] = x + textWidth;
                 labels.Add((position, new Rect(x, labelOffset + lane * lineHeight, textWidth, lineHeight),
-                    name.Truncate(textWidth), tip, i == nextStage, isAbove));
+                    name.Truncate(textWidth), tip, isNext, isAbove));
             }
 
             // 两侧名称都计入同一行的高度，面板底色和滚动区也随之增高。
             float aboveHeight = above.Count == 0 ? 0f : labelOffset + above.Count * lineHeight;
             float belowHeight = below.Count == 0 ? 0f : labelOffset + below.Count * lineHeight;
-            string practiceTip = "SSC_MasterProgression_PracticeTip".Translate();
             column.Rows.Add((aboveHeight + barHeight + belowHeight, rect =>
             {
                 rect = InsetSettingsRow(rect, column.Indent);
@@ -409,16 +494,20 @@ namespace SexSlaveCraft
                         track.x, track.xMax - tickWidth);
                     float markY = tick.Above ? track.y - tickExtension : track.y;
                     var mark = new Rect(tickX, markY, tickWidth, track.height + tickExtension);
-                    Widgets.DrawBoxSolid(mark, tick.Next ? new Color(.95f, .80f, .53f) : new Color(.73f, .81f, .83f));
+                    Color highlight = new Color(.47f, .88f, .91f);
+                    Widgets.DrawBoxSolid(mark, tick.Next ? highlight : new Color(.73f, .81f, .83f));
                     float labelY = tick.Above ? track.y - tick.Label.y - tick.Label.height : track.yMax + tick.Label.y;
                     var label = new Rect(rect.x + tick.Label.x, labelY, tick.Label.width, tick.Label.height);
+                    Color previous = GUI.color;
+                    if (tick.Next) GUI.color = highlight;
                     Widgets.Label(label, tick.Text);
+                    GUI.color = previous;
                     var tickHit = new Rect(mark.x - 4f, mark.y, mark.width + 8f, mark.height);
                     hoveringTick |= Mouse.IsOver(tickHit);
                     TooltipHandler.TipRegion(tickHit, tick.Tip);
                     TooltipHandler.TipRegion(label, tick.Tip);
                 }
-                if (!hoveringTick) TooltipHandler.TipRegion(track, practiceTip);
+                if (!hoveringTick && !string.IsNullOrEmpty(trackTip)) TooltipHandler.TipRegion(track, trackTip);
             }));
         }
 

@@ -38,4 +38,9 @@
   <SSC_TrainingManagement_BodyProduction>身体生产</SSC_TrainingManagement_BodyProduction>
   <SSC_TrainingManagement_BodyFertility>生育与孕前预设</SSC_TrainingManagement_BodyFertility>
   <SSC_TrainingManagement_BodyEmpty>当前角色没有可显示的身体与外观设置。</SSC_TrainingManagement_BodyEmpty>
+  <SSC_TrainingManagement_SlaveProgress>性奴化</SSC_TrainingManagement_SlaveProgress>
+  <SSC_TrainingManagement_NoChainProgress>无锁链记录</SSC_TrainingManagement_NoChainProgress>
+  <SSC_TrainingManagement_BeforeChainStage>未入阶段</SSC_TrainingManagement_BeforeChainStage>
+  <SSC_TrainingManagement_CurrentCorruption>当前恶堕率</SSC_TrainingManagement_CurrentCorruption>
+  <SSC_TrainingManagement_NextPercentGap>距下一阶段还差 {0} 个百分点</SSC_TrainingManagement_NextPercentGap>
 </LanguageData>
