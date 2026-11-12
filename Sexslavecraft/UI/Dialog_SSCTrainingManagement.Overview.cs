@@ -354,13 +354,14 @@ namespace SexSlaveCraft
             const float tickExtension = 5f;
             const float labelOffset = tickExtension + 3f;
             const float labelGap = 4f;
+            const GameFont stageFont = GameFont.Medium;
             float width = Mathf.Max(1f, column.Width - column.Indent);
             float fill = Mathf.Clamp01(experience / maximum);
             var labels = new List<(float Position, Rect Label, string Text, string Tip, bool Next, bool Above)>();
             var below = new List<float>();
             var above = new List<float>();
             using var scope = new SSCBondOverviewWidgets.GuiScope(false);
-            Text.Font = GameFont.Small;
+            Text.Font = stageFont;
             Text.WordWrap = false;
             float lineHeight = Text.LineHeight;
 
@@ -397,7 +398,7 @@ namespace SexSlaveCraft
                 // 原版返回填充轨道的实际矩形，刻度用同一范围，端点限制在条内。
                 Rect track = Widgets.FillableBar(new Rect(rect.x, rect.y + aboveHeight, rect.width, barHeight), fill);
                 using var drawScope = new SSCBondOverviewWidgets.GuiScope(false);
-                Text.Font = GameFont.Small;
+                Text.Font = stageFont;
                 Text.Anchor = TextAnchor.MiddleCenter;
                 Text.WordWrap = false;
                 bool hoveringTick = false;
