@@ -66,9 +66,9 @@ namespace SexSlaveCraft
                 bool maxStage = total > 0 && reached == total;
                 // 向下显示整数百分比，跨过实际门槛之前不提前显示目标值。
                 string value = (Mathf.Floor(Mathf.Clamp01(chain.Severity) * 100f) / 100f).ToString("0%");
-                Color accent = StageAccent(PawnIdentity.Slave, reached, total);
+                Color accent = SlaveStageText(StageAccent(PawnIdentity.Slave, reached, total));
                 AddOverviewValue(progress, heading, value, accent);
-                progress.AddLabel("SSC_TrainingManagement_SlaveCurrentStage".Translate(stage),
+                progress.AddLabel(stage,
                     tooltip: maxStage ? "SSC_MasterProgression_MaxStage".Translate().ToString() : null, textColor: accent);
                 AddOverviewProgressScale(progress, chain, chain.Severity, reached, asPercent: true);
             }
@@ -120,7 +120,7 @@ namespace SexSlaveCraft
             }));
         }
 
-        /// <summary>保留独立的恶堕面板，第二行并排绘制当前档位和细条。</summary>
+        /// <summary>恶堕档位用概况正文的字号占据整行，细条放在档位下方。</summary>
         private static void AddCorruptionStatus(SettingsColumn column, Need_Corruption need)
         {
             // 档位和细条都随当前需求回落。百分比向下取整，避免在临界点提前显示下一档门槛。
@@ -129,19 +129,18 @@ namespace SexSlaveCraft
             Color accent = CorruptionAccent(stage.Index, stage.ThresholdCount);
             string percent = (Mathf.Floor(fraction * 100f) / 100f).ToString("0%");
             AddOverviewValue(column, "SSC_TrainingManagement_CurrentCorruption".Translate(), percent, accent);
-            using var scope = new SSCBondOverviewWidgets.GuiScope(false);
-            Text.Font = GameFont.Small;
-            float trackWidth = Mathf.Min(64f, column.Width * .28f);
-            float labelWidth = Mathf.Max(1f, column.Width - trackWidth - 8f);
-            float height = Text.CalcHeight(stage.Label, labelWidth);
-            column.Rows.Add((height, rect =>
+            const float trackHeight = 3f;
+            const float trackGap = 2f;
+            var stageFont = Text.Font;
+            float height = Text.CalcHeight(stage.Label, Mathf.Max(1f, column.Width));
+            column.Rows.Add((height + trackGap + trackHeight, rect =>
             {
                 using var drawScope = new SSCBondOverviewWidgets.GuiScope(false);
                 using var tint = new TextTint(accent);
-                Text.Font = GameFont.Small;
+                Text.Font = stageFont;
                 Text.Anchor = TextAnchor.MiddleLeft;
-                Widgets.Label(new Rect(rect.x, rect.y, labelWidth, rect.height), stage.Label);
-                DrawStageBar(new Rect(rect.xMax - trackWidth, rect.center.y - 2f, trackWidth, 4f), fraction, accent);
+                Widgets.Label(new Rect(rect.x, rect.y, rect.width, height), stage.Label);
+                DrawStageBar(new Rect(rect.x, rect.yMax - trackHeight, rect.width, trackHeight), fraction, accent);
             }));
         }
 
@@ -572,6 +571,7 @@ namespace SexSlaveCraft
             var stages = record.def.stages;
             // 已达到的阶段数同时是下一阶段的零基索引；最高阶段仍按实际值填充。
             Color accent = StageAccent(asPercent ? PawnIdentity.Slave : PawnIdentity.Master, nextStage, stages?.Count ?? 0);
+            Color currentLabelColor = asPercent ? SlaveStageText(accent) : accent;
             for (int i = 0; stages != null && i < stages.Count; i++)
             {
                 var stage = stages[i];
@@ -626,7 +626,7 @@ namespace SexSlaveCraft
                     Widgets.DrawBoxSolid(mark, tick.Current ? PrimaryText : tick.Next ? ProgressNext : SecondaryText);
                     float labelY = tick.Above ? track.y - tick.Label.y - tick.Label.height : track.yMax + tick.Label.y;
                     var label = new Rect(rect.x + tick.Label.x, labelY, tick.Label.width, tick.Label.height);
-                    using (new TextTint(tick.Current ? accent : tick.Next ? ProgressNext : SecondaryText))
+                    using (new TextTint(tick.Current ? currentLabelColor : tick.Next ? ProgressNext : SecondaryText))
                         Widgets.Label(label, tick.Text);
                     var tickHit = new Rect(mark.x - 4f, mark.y, mark.width + 8f, mark.height);
                     hoveringTick |= Mouse.IsOver(tickHit);

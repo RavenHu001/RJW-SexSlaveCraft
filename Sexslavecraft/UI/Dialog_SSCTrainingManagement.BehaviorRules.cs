@@ -8,6 +8,7 @@ namespace SexSlaveCraft
 {
     internal sealed partial class Dialog_SSCTrainingManagement
     {
+        private const float BehaviorTwoColumnWidth = 600f;
         private Vector2 behaviorRulesScroll;
         private (float Sex, float Romance) behaviorPanelHeights;
 
@@ -19,7 +20,8 @@ namespace SexSlaveCraft
             if (!SSCBehaviorControlUI.CanInspect(source)) return;
             var edit = new PageEdit(source, comp, Page.BehaviorRules, contextRevision);
             float width = Mathf.Max(1f, viewport.width - 16f);
-            bool twoColumns = width >= SettingsTwoColumnWidth;
+            // 中号文字的规则和对象按钮需要各自留出足够的列宽。
+            bool twoColumns = width >= BehaviorTwoColumnWidth;
             float columnWidth = twoColumns ? (width - SettingsColumnGap) / 2f : width;
 
             // 上次测量用于绘制底色和滚动条，每个板块在同一事件中只绘制一次。
@@ -30,17 +32,18 @@ namespace SexSlaveCraft
                 new Rect(0f, 0f, width, Mathf.Max(height, viewport.height)));
             try
             {
-                float sexHeight = DrawPanel(0f, 0f, twoColumns ? height : behaviorPanelHeights.Sex, DrawSex);
+                float sexHeight = DrawPanel(0f, 0f, behaviorPanelHeights.Sex, DrawSex);
                 float romanceX = twoColumns ? columnWidth + SettingsColumnGap : 0f;
                 float romanceY = twoColumns ? 0f : sexHeight + SettingsColumnGap;
-                float romanceHeight = DrawPanel(romanceX, romanceY, twoColumns ? height : behaviorPanelHeights.Romance, DrawRomance);
+                float romanceHeight = DrawPanel(romanceX, romanceY, behaviorPanelHeights.Romance, DrawRomance);
                 behaviorPanelHeights = (sexHeight, romanceHeight);
             }
             finally { Widgets.EndScrollView(); }
 
-            // 两块各自绘制底色和控件，留出面板间距，点击区域跟随列表坐标。
+            // 底色跟随各自的内容高度，滚动区才使用最高的一栏。
             float DrawPanel(float x, float y, float measuredHeight, Action<Listing_Standard> draw)
             {
+                using var scope = new SSCBondOverviewWidgets.GuiScope(false);
                 Widgets.DrawBoxSolid(new Rect(x, y, columnWidth, measuredHeight), SettingsPanelColor);
                 var listing = new Listing_Standard { maxOneColumn = true };
                 listing.Begin(new Rect(x, y, columnWidth, 100000f));

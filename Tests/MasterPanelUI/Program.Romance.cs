@@ -80,6 +80,7 @@ internal static partial class Program
         Run("行为页两组有各自标题和深色重置，长说明移到悬停", () =>
         {
             Widgets.Items.Clear();
+            Text.Font = GameFont.Small;
             var pawn = RomanceUiPawn();
             var listing = new Listing_Standard();
             listing.Begin(new Rect(0, 0, 280, 100000));
@@ -97,6 +98,8 @@ internal static partial class Program
             Assert(Widgets.Items.Any(i => i.Kind == "tooltip" && i.Text == fullTitle));
             Assert(Widgets.Items.Any(i => i.Kind == "label" && i.Text == "<b>" + Translation.Entries["SSC_Romance_RomanceSection"] + "</b>"));
             Assert(Widgets.Items.Count(i => i.Kind == "label" && i.Text == reset) == 2);
+            Assert(Widgets.Items.Where(i => i.Kind is "label" or "romance-target").All(i => i.Font == GameFont.Medium));
+            Assert(Text.Font == GameFont.Small);
             Assert(!Widgets.Items.Any(i => i.Kind == "romance-frame" || i.Kind == "reset-button"));
         });
         Run("浪漫 UI 外层禁用不重新开放输入", () =>

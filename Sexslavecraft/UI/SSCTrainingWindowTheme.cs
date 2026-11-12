@@ -22,15 +22,18 @@ namespace SexSlaveCraft
         internal static readonly Color ProgressFill = Rgb(0xAE81C7);
         internal static readonly Color ProgressNext = Rgb(0xE3C7F1);
 
-        /// <summary>角色阶段使用各自色系，按达到的阶段而非条形填充比例加亮。</summary>
+        /// <summary>按达到的阶段取色。主人逐档提亮铜金，性奴化逐档加深紫色。</summary>
         internal static Color StageAccent(PawnIdentity identity, int reached, int total)
         {
+            if (identity == PawnIdentity.Slave && total > 0)
+                return Color.Lerp(Rgb(0xDFC2EE), Rgb(0x9255A8), Mathf.Clamp01(reached / (float)total));
             if (reached <= 0 || total <= 0) return DisabledText;
             float grade = (reached - 1f) / Mathf.Max(1, total - 1);
-            return identity == PawnIdentity.Master
-                ? Color.Lerp(CopperColor, Rgb(0xE9CFA4), grade)
-                : Color.Lerp(ProgressFill, Rgb(0xE4BBF2), grade);
+            return Color.Lerp(CopperColor, Rgb(0xE9CFA4), grade);
         }
+
+        /// <summary>保留性奴化的深浅顺序，并提高文字在暗色面板上的对比。</summary>
+        internal static Color SlaveStageText(Color accent) => Color.Lerp(accent, PrimaryText, .45f);
 
         /// <summary>按当前恶堕档位映射玫紫色，和角色阶段及拖放反馈使用不同颜色。</summary>
         internal static Color CorruptionAccent(int stage, int count)

@@ -64,16 +64,33 @@ namespace SexSlaveCraft
         {
             float top = listing.CurHeight, width = listing.ColumnWidth;
             var inner = new Listing_Standard { maxOneColumn = true };
+            var previousFont = Text.Font;
+            bool previousWrap = Text.WordWrap;
             float height;
             inner.Begin(new Rect(12f, top + 12f, Mathf.Max(1f, width - 24f), 100000f));
             try
             {
+                // Begin 会套用列表默认字号。嵌入窗口的测量和绘制统一用概况正文的字号。
+                if (embedded)
+                {
+                    Text.Font = GameFont.Medium;
+                    Text.WordWrap = true;
+                }
                 DrawHeader(inner, title, reset, embedded, titleTip);
                 if (embedded) inner.Gap(8f);
                 else inner.GapLine(6f);
                 content(inner);
             }
-            finally { height = inner.CurHeight + 24f; inner.End(); }
+            finally
+            {
+                height = inner.CurHeight + 24f;
+                if (embedded)
+                {
+                    Text.Font = previousFont;
+                    Text.WordWrap = previousWrap;
+                }
+                inner.End();
+            }
             listing.GetRect(height);
             // 调教窗口在外层绘制面板底色，独立旧入口继续使用边框。
             if (!embedded) Widgets.DrawBox(new Rect(0f, top, width, height));
@@ -240,7 +257,13 @@ namespace SexSlaveCraft
             {
                 float candidateWidth = Mathf.Max(1f, (width - gap * (columns - 1)) / columns);
                 bool fits = true;
-                foreach (string label in labels) if (Text.CalcHeight(label, Mathf.Max(1f, candidateWidth - 12f)) > 24f) fits = false;
+                float candidateTextWidth = Mathf.Max(1f, candidateWidth - 12f);
+                foreach (string label in labels)
+                {
+                    if (prepare != null ? Text.CalcSize(label).x > candidateTextWidth :
+                        Text.CalcHeight(label, candidateTextWidth) > 24f)
+                        fits = false;
+                }
                 if (fits) break;
                 columns--;
             }

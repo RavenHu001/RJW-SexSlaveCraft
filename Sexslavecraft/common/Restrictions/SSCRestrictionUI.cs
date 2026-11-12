@@ -219,10 +219,20 @@ namespace SexSlaveCraft
             if (!string.IsNullOrEmpty(extraTip)) tip += "\n" + extraTip;
 
             // 给右侧勾叉和可选来源标记独立留位。长译文按实际文本高度换行，不遮住操作区。
-            float badgeWidth = badge == null ? 0f : Mathf.Min(listing.ColumnWidth * 0.36f, Text.CalcSize(badge).x + 8f);
+            float badgeWidth = 0f, badgeHeight = 0f;
+            if (badge != null)
+            {
+                var previousFont = Text.Font;
+                try
+                {
+                    if (prepare != null) Text.Font = GameFont.Small;
+                    badgeWidth = Mathf.Min(listing.ColumnWidth * 0.36f, Text.CalcSize(badge).x + 8f);
+                    badgeHeight = Text.CalcHeight(badge, Mathf.Max(1f, badgeWidth - 4f)) + 4f;
+                }
+                finally { Text.Font = previousFont; }
+            }
             float labelWidth = Mathf.Max(1f, listing.ColumnWidth - 32f - badgeWidth);
-            float height = Mathf.Max(prepare != null ? 34f : 28f, Text.CalcHeight(label, labelWidth) + 4f);
-            if (badge != null) height = Mathf.Max(height, Text.CalcHeight(badge, Mathf.Max(1f, badgeWidth - 4f)) + 4f);
+            float height = Mathf.Max(prepare != null ? 34f : 28f, Mathf.Max(Text.CalcHeight(label, labelWidth) + 4f, badgeHeight));
             Rect row = listing.GetRect(height);
             Rect labelRect = new Rect(row.x, row.y + 2f, labelWidth, height - 4f);
             bool previous = GUI.enabled;
@@ -267,12 +277,18 @@ namespace SexSlaveCraft
             if (badge != null)
             {
                 Color oldColor = GUI.color;
+                GameFont oldFont = Text.Font;
                 try
                 {
+                    if (prepare != null)
+                    {
+                        Text.Font = GameFont.Small;
+                        Text.Anchor = TextAnchor.MiddleLeft;
+                    }
                     GUI.color = entry.Valid ? new Color(1f, 0.8f, 0.4f) : Color.red;
-                    Widgets.Label(new Rect(row.xMax - 32f - badgeWidth, row.y + 2f, badgeWidth - 4f, height - 4f), badge);
+                    Widgets.Label(new Rect(row.xMax - 32f - badgeWidth, row.y + 2f, Mathf.Max(1f, badgeWidth - 4f), height - 4f), badge);
                 }
-                finally { GUI.color = oldColor; }
+                finally { GUI.color = oldColor; Text.Font = oldFont; Text.Anchor = previousAnchor; }
             }
             TooltipHandler.TipRegion(row, tip);
             if (previous && canEdit && changed != allowed)
@@ -289,7 +305,10 @@ namespace SexSlaveCraft
             string owner = "SSC_Restrictions_Value_OwnerOnly".Translate();
             string anyone = "SSC_Restrictions_AnyTarget".Translate();
             float width = Mathf.Max(1f, listing.ColumnWidth - indent);
-            bool stacked = Text.CalcSize(owner).x + Text.CalcSize(anyone).x + 72f > width;
+            float optionWidth = (width - 8f) / 2f;
+            bool stacked = prepare != null
+                ? Mathf.Max(Text.CalcSize(owner).x, Text.CalcSize(anyone).x) + 28f > optionWidth
+                : Text.CalcSize(owner).x + Text.CalcSize(anyone).x + 72f > width;
             float cellWidth = stacked ? width : (width - 8f) / 2f;
             float height = Mathf.Max(28f, Mathf.Max(Text.CalcHeight(owner, Mathf.Max(1f, cellWidth - 28f)),
                 Text.CalcHeight(anyone, Mathf.Max(1f, cellWidth - 28f))) + 4f);
@@ -301,7 +320,7 @@ namespace SexSlaveCraft
             try
             {
                 GUI.enabled = previous && editable && displayed != SSCRestrictionValue.Deny;
-                if (!GUI.enabled) GUI.color = previousColor * new Color(0.55f, 0.55f, 0.55f, 1f);
+                if (!GUI.enabled && prepare == null) GUI.color = previousColor * new Color(0.55f, 0.55f, 0.55f, 1f);
                 SSCRestrictionValue selected = displayed == SSCRestrictionValue.Deny ? rules.ConsensualTarget : displayed;
                 DrawTarget(first, owner, SSCRestrictionValue.OwnerOnly);
                 DrawTarget(second, anyone, SSCRestrictionValue.Allow);
@@ -313,7 +332,22 @@ namespace SexSlaveCraft
                     // 各对象选项使用独立键，松手时只允许响应原来按下的那个选项。
                     if (prepare != null && GUI.enabled && !current)
                         submit = prepare(rect, (SSCRestrictionRule.ConsensualInitiation, value), submit);
-                    if (Widgets.RadioButtonLabeled(rect, label, current, !GUI.enabled) && GUI.enabled && !current)
+                    if (prepare != null)
+                    {
+                        // 原版单选文字占用整行。单独绘制文字，为右侧圆点留出测高时相同的空间。
+                        var anchor = Text.Anchor;
+                        try
+                        {
+                            Text.Anchor = TextAnchor.MiddleLeft;
+#if SSC_RW17
+                            using var tint = new SSCTrainingWindowTheme.TextTint(GUI.enabled ?
+                                GUI.contentColor : SSCTrainingWindowTheme.DisabledText);
+#endif
+                            Widgets.Label(new Rect(rect.x, rect.y, Mathf.Max(1f, rect.width - 28f), rect.height), label);
+                        }
+                        finally { Text.Anchor = anchor; }
+                    }
+                    if (Widgets.RadioButtonLabeled(rect, prepare != null ? string.Empty : label, current, !GUI.enabled) && GUI.enabled && !current)
                         submit?.Invoke();
                 }
             }
