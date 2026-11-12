@@ -12,7 +12,6 @@ namespace SexSlaveCraft
     {
         private const float ScreenPadding = 16f;
         private const float PanelPadding = 14f;
-        private const float HeaderPortraitSize = 80f;
         private const float NavigationGap = 5f;
         private const float StackedSummaryWidth = 460f;
         private enum Page { Overview, Relations, DailyTraining, Specialization, BodyAppearance, BehaviorRules }
@@ -162,16 +161,22 @@ namespace SexSlaveCraft
             windowRect = new Rect(x, y, size.x, height);
         }
 
-        /// <summary>把原版拖动限制在标题区，关系头像、把手和滚动区继续处理各自的输入。</summary>
+        /// <summary>只允许从内容区外的窗口黑边发起拖动。</summary>
         protected override void LateWindowOnGUI(Rect inRect)
         {
             base.LateWindowOnGUI(inRect);
             if (trainerGesture != null) return;
-            using var scope = new SSCBondOverviewWidgets.GuiScope(false);
-            Text.Font = GameFont.Medium;
-            // 原版已结束内容组，此处使用整个窗口内的标题坐标。
-            GUI.DragWindow(new Rect(inRect.x, inRect.y, inRect.width,
-                Mathf.Min(inRect.height, HeaderHeight(inRect.width, Text.LineHeight))));
+
+            // 内容组已结束，鼠标与窗口外框使用同一坐标系。关闭按钮沿用原版命中矩形。
+            var outer = new Rect(0f, 0f, windowRect.width, windowRect.height);
+            var close = new Rect(outer.xMax - 22f, 4f, 18f, 18f);
+            var input = Event.current;
+            Vector2 mouse = input.mousePosition;
+            bool startsOnBorder = input.type == EventType.mouseDown && input.button == 0 && outer.Contains(mouse) &&
+                !inRect.Contains(mouse) && (!doCloseX || !close.Contains(mouse));
+
+            // 原版在后续事件里继续更新已捕获的拖动，即使鼠标移入内容区也要调用。
+            GUI.DragWindow(startsOnBorder ? outer : default);
         }
 
         /// <summary>切换角色时释放原编辑与关系上下文，空选和不可管理对象显示同一提示。</summary>
@@ -298,9 +303,10 @@ namespace SexSlaveCraft
         /// <summary>按可用宽度预留固定标题行，角色和身份变化只更新内容。</summary>
         private float DrawHeader(float width)
         {
+            const float portraitSize = 80f;
             bool reservePortrait = width >= 160f;
             bool stacked = width < StackedSummaryWidth;
-            float textX = PanelPadding + (reservePortrait ? HeaderPortraitSize + PanelPadding : 0f);
+            float textX = PanelPadding + (reservePortrait ? portraitSize + PanelPadding : 0f);
             float textWidth = Mathf.Max(1f, width - textX - PanelPadding);
             string title = comp == null ? "SSC_TrainingManagement_Title".Translate().ToString()
                 : "SSC_TrainingManagement_TitlePawn".Translate(source.LabelShort).ToString();
@@ -309,14 +315,15 @@ namespace SexSlaveCraft
                 ? "SSC_TrainerIdentity_Label".Translate() + TrainerState() : null;
 
             float lineHeight = Text.LineHeight;
-            float height = HeaderHeight(width, lineHeight);
+            float textHeight = (stacked ? 3f : 2f) * lineHeight + 4f;
+            float height = 2f * PanelPadding + Mathf.Max(reservePortrait ? portraitSize : 0f, textHeight);
             Widgets.DrawBoxSolid(new Rect(0f, 0f, width, height), HeaderColor);
             Widgets.DrawLineHorizontal(0f, height - 1f, width, DividerColor);
             if (reservePortrait && comp != null)
             {
-                var portrait = new Rect(PanelPadding, PanelPadding, HeaderPortraitSize, HeaderPortraitSize);
+                var portrait = new Rect(PanelPadding, PanelPadding, portraitSize, portraitSize);
                 Widgets.DrawBoxSolid(portrait, PanelColor);
-                SSCBondOverviewWidgets.Portrait(portrait, source, false, true, HeaderPortraitSize);
+                SSCBondOverviewWidgets.Portrait(portrait, source, false, true, portraitSize);
             }
             using var scope = new SSCBondOverviewWidgets.GuiScope(false);
             Text.WordWrap = false;
@@ -336,11 +343,6 @@ namespace SexSlaveCraft
                 if (trainerGesture == null && displayed != label) TooltipHandler.TipRegion(rect, label);
             }
         }
-
-        /// <summary>标题绘制和拖动命中共用同一高度。</summary>
-        private static float HeaderHeight(float width, float lineHeight)
-            => 2f * PanelPadding + Mathf.Max(width >= 160f ? HeaderPortraitSize : 0f,
-                (width < StackedSummaryWidth ? 3f : 2f) * lineHeight + 4f);
 
         /// <summary>用详情共用的快照绘制顶部关系摘要。</summary>
         private float DrawRelationStrip(float width, float y, SSCBondOverviewView view, SSCBondOverviewSnapshot snapshot,
