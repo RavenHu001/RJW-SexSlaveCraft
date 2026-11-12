@@ -39,6 +39,7 @@
   <SSC_TrainingManagement_BodyFertility>Фертильность и настройки потомства</SSC_TrainingManagement_BodyFertility>
   <SSC_TrainingManagement_BodyEmpty>У этого персонажа нет настроек тела и внешности.</SSC_TrainingManagement_BodyEmpty>
   <SSC_TrainingManagement_SlaveProgress>Развитие раба</SSC_TrainingManagement_SlaveProgress>
+  <SSC_TrainingManagement_SlaveCurrentStage>Текущая стадия: {0}</SSC_TrainingManagement_SlaveCurrentStage>
   <SSC_TrainingManagement_NoChainProgress>Нет записи о цепи</SSC_TrainingManagement_NoChainProgress>
   <SSC_TrainingManagement_BeforeChainStage>Первая стадия не достигнута</SSC_TrainingManagement_BeforeChainStage>
   <SSC_TrainingManagement_CurrentCorruption>Текущее развращение</SSC_TrainingManagement_CurrentCorruption>

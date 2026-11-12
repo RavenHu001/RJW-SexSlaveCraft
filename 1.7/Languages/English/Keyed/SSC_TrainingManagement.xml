@@ -39,6 +39,7 @@
   <SSC_TrainingManagement_BodyFertility>Fertility and preconception</SSC_TrainingManagement_BodyFertility>
   <SSC_TrainingManagement_BodyEmpty>This pawn has no body or appearance settings to display.</SSC_TrainingManagement_BodyEmpty>
   <SSC_TrainingManagement_SlaveProgress>Slave progression</SSC_TrainingManagement_SlaveProgress>
+  <SSC_TrainingManagement_SlaveCurrentStage>Current stage: {0}</SSC_TrainingManagement_SlaveCurrentStage>
   <SSC_TrainingManagement_NoChainProgress>No chain record</SSC_TrainingManagement_NoChainProgress>
   <SSC_TrainingManagement_BeforeChainStage>Below the first stage</SSC_TrainingManagement_BeforeChainStage>
   <SSC_TrainingManagement_CurrentCorruption>Current corruption</SSC_TrainingManagement_CurrentCorruption>

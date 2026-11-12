@@ -36,23 +36,22 @@ namespace SexSlaveCraft
             }
         }
 
-        /// <summary>按当前锁链和调教状态构建两个只读面板，窄窗时上下排列。</summary>
+        /// <summary>分别测量性奴化进度、恶堕率和日常调教。宽窗把后两块放在右栏。</summary>
         private static (float Height, Action<float> Draw) BuildSlaveOverview(PageEdit edit, float width)
         {
             bool wide = width >= SettingsTwoColumnWidth;
             float progressWidth = wide ? (width - SettingsColumnGap) * .63f : width;
+            float statusWidth = wide ? width - progressWidth - SettingsColumnGap : width;
             var progress = new SettingsColumn(progressWidth, panel: true);
-            var daily = new SettingsColumn(wide ? width - progressWidth - SettingsColumnGap : width, panel: true);
+            var daily = new SettingsColumn(statusWidth, panel: true);
             string heading = "<b>" + "SSC_TrainingManagement_SlaveProgress".Translate() + "</b>";
-            // 恶堕率取当前需求值，放在标题右侧，给进度条及刻度留出完整宽度。
-            var corruption = edit.Pawn.needs?.TryGetNeed<Need_Corruption>();
-            if (corruption == null) progress.AddLabel(heading);
-            else AddOverviewValue(progress, heading,
-                "SSC_TrainingManagement_CurrentCorruption".Translate() + " " + corruption.CurLevel.ToString("0%"));
 
             var chain = SSCBondUtility.GetChain(edit.Pawn);
             if (chain == null || !float.IsFinite(chain.Severity))
+            {
+                progress.AddLabel(heading);
                 progress.AddLabel("SSC_TrainingManagement_NoChainProgress".Translate());
+            }
             else
             {
                 // 玩法阶段从身份工具读取，刻度使用同一条锁链的 Def，避免复制阈值。
@@ -63,27 +62,37 @@ namespace SexSlaveCraft
                 bool maxStage = stages?.Count > 0 && reached >= stages.Count;
                 // 向下显示整数百分比，跨过实际门槛之前不提前显示目标值。
                 string value = (Mathf.Floor(Mathf.Clamp01(chain.Severity) * 100f) / 100f).ToString("0%");
-                string caption = stage + " · " + value;
-                if (maxStage) caption += " · " + "SSC_MasterProgression_MaxStage".Translate();
-                progress.AddLabel(caption, progress.Indent);
+                AddOverviewValue(progress, heading, value);
+                progress.AddLabel("SSC_TrainingManagement_SlaveCurrentStage".Translate(stage),
+                    tooltip: maxStage ? "SSC_MasterProgression_MaxStage".Translate().ToString() : null);
                 AddOverviewProgressScale(progress, chain, chain.Severity, reached, asPercent: true);
+            }
+
+            // 恶堕率独立读取当前需求。缺少该需求时直接收起面板及其间距。
+            SettingsColumn corruption = null;
+            var need = edit.Pawn.needs?.TryGetNeed<Need_Corruption>();
+            if (need != null)
+            {
+                corruption = new SettingsColumn(statusWidth, panel: true);
+                AddOverviewValue(corruption, "SSC_TrainingManagement_CurrentCorruption".Translate(), need.CurLevel.ToString("0%"));
             }
 
             daily.AddLabel("<b>" + PageKeys[2].Translate() + "</b>");
             AddOverviewValue(daily, Strings.ITab_AllowTraining, (edit.Comp.IsEnabled
                 ? "SSC_TrainingManagement_TrainingEnabled" : "SSC_TrainingManagement_TrainingDisabled").Translate());
             if (edit.Comp.IsOnCooldown)
-            {
-                daily.Divide();
                 daily.AddLabel(ITab_SexSlaveTraining.GetDailyTrainingStatus(edit.Comp));
-            }
 
-            if (wide) return LayoutSettingsPanelRow(progress, daily);
-            float dailyY = progress.PanelHeight + SettingsColumnGap;
-            return (dailyY + daily.PanelHeight, y =>
+            // 面板各自按内容收底，只用最高一栏决定宽窗的总占高。
+            float statusX = wide ? progressWidth + SettingsColumnGap : 0f;
+            float statusY = wide ? 0f : progress.PanelHeight + SettingsColumnGap;
+            float dailyY = statusY + (corruption == null ? 0f : corruption.PanelHeight + SettingsColumnGap);
+            float height = Mathf.Max(progress.PanelHeight, dailyY + daily.PanelHeight);
+            return (height, y =>
             {
                 progress.DrawPanel(0f, y, progress.PanelHeight);
-                daily.DrawPanel(0f, y + dailyY, daily.PanelHeight);
+                corruption?.DrawPanel(statusX, y + statusY, corruption.PanelHeight);
+                daily.DrawPanel(statusX, y + dailyY, daily.PanelHeight);
             });
         }
 
