@@ -36,21 +36,23 @@ namespace SexSlaveCraft
             }
         }
 
-        /// <summary>保存本次绘制的文案、状态和行位置，随滚动区一起重算。</summary>
+        /// <summary>保存本次绘制的文案、控件位置和原印记引用，随滚动区一起重算。</summary>
         private sealed class OverviewIdentityView
         {
             internal PageEdit Edit;
-            internal Rect IdentityRow, Qualification, TrainerToggle, RecoveryText, RecoveryButton;
-            internal string IdentityLabel, LockTip, QualificationLabel, TrainerLabel, TrainerTip, RecoveryHint, RecoveryLabel;
+            internal Rect IdentityCaption, IdentityDropdown, ImprintRect, Qualification, TrainerToggle, RecoveryText, RecoveryButton;
+            internal string IdentityLabel, LockTip, ImprintLabel, QualificationLabel, TrainerLabel, TrainerTip, RecoveryHint, RecoveryLabel;
+            internal Hediff Imprint;
             internal bool TrainerEnabled, TrainerEditable;
             internal float Bottom;
         }
 
-        /// <summary>按当前字体和内容宽度测量控件，供绘制和滚动区共用。</summary>
+        /// <summary>测量身份、印记和后续控件，把换行后的总高度交给概况滚动区。</summary>
         private OverviewIdentityView BuildOverviewIdentity(float width, float y)
         {
             const float gap = 8f;
             const float buttonHeight = 34f;
+            float columnGap = Mathf.Min(12f, width * .05f);
             var view = new OverviewIdentityView { Edit = new PageEdit(source, comp, currentPage, contextRevision) };
             // 按同一游标分配行矩形并累计总高度，长译文会把后续行一并下移。
             Rect Row(float height)
@@ -61,8 +63,31 @@ namespace SexSlaveCraft
             }
 
             view.IdentityLabel = IdentityLabel(view.Edit.Identity);
-            float identityLabelWidth = Mathf.Max(1f, width * .42f - 8f);
-            view.IdentityRow = Row(Mathf.Max(buttonHeight, Text.CalcHeight(Strings.ITab_IdentityHeader, identityLabelWidth) + 8f));
+            // 当前人格的印记由健康记录提供。只显示已有记录，无印记时不生成占位文案。
+            view.Imprint = SSCImprintUtility.Find(view.Edit.Pawn);
+            if (view.Imprint != null)
+                view.ImprintLabel = "SSC_Imprint_GelStatus".Translate(view.Imprint.def.LabelCap);
+
+            // 下拉按各身份的本地化显示值测宽，右侧有没有印记都使用同一位置与宽度。
+            float captionWidth = Mathf.Min(width * .40f, Text.CalcSize(Strings.ITab_IdentityHeader).x + 1f);
+            float dropdownX = captionWidth + columnGap;
+            float longestIdentity = Mathf.Max(Text.CalcSize(IdentityLabel(PawnIdentity.Unset)).x,
+                Mathf.Max(Text.CalcSize(IdentityLabel(PawnIdentity.Master)).x, Text.CalcSize(IdentityLabel(PawnIdentity.Slave)).x));
+            // 给箭头和文字内边距留宽度，同时限制下拉最多占用本行的比例。
+            float dropdownWidth = Mathf.Min(width * .46f, Mathf.Max(120f, longestIdentity + 38f));
+            float imprintX = dropdownX + dropdownWidth + columnGap;
+            float imprintWidth = width - imprintX;
+            // 只在剩余空间足以显示短标签或供长标签换行时使用右列。
+            bool inline = view.ImprintLabel != null && imprintWidth >= Mathf.Min(120f, Text.CalcSize(view.ImprintLabel).x + 1f);
+            float identityHeight = Mathf.Max(buttonHeight, Text.CalcHeight(Strings.ITab_IdentityHeader, Mathf.Max(1f, captionWidth)) + 8f);
+            float imprintHeight = view.ImprintLabel == null ? 0f : Text.CalcHeight(view.ImprintLabel, inline ? imprintWidth : width);
+            var row = Row(inline ? Mathf.Max(identityHeight, imprintHeight) : identityHeight);
+            view.IdentityCaption = new Rect(row.x, row.y, captionWidth, identityHeight);
+            view.IdentityDropdown = new Rect(dropdownX, row.y, dropdownWidth, identityHeight);
+            // 同行容许长名称换行；太窄时才在下一行使用全宽，纳入同一滚动区的测高。
+            if (view.ImprintLabel != null)
+                view.ImprintRect = inline ? new Rect(imprintX, row.y, imprintWidth, row.height) : Row(imprintHeight);
+
             if (SSCIdentityUtility.IsIdentityLocked(source))
                 view.LockTip = (SSCImprintUtility.GetImprintLockedIdentity(source) != PawnIdentity.Unset ?
                     "SSC_Imprint_GelTooltip" : "SSC_Identity_BoundTip").Translate();
@@ -90,12 +115,12 @@ namespace SexSlaveCraft
             return view;
         }
 
-        /// <summary>绘制身份、永久资格、任职与历史锁链的显式恢复入口。</summary>
+        /// <summary>绘制身份与印记、永久资格、任职和旧档恢复入口。</summary>
         private void DrawOverviewIdentity(OverviewIdentityView view)
         {
             var edit = view.Edit;
             Text.Anchor = TextAnchor.UpperLeft;
-            DrawIdentityDropdown(view);
+            DrawIdentityRow(view);
 
             SSCMasterQualificationDisplay.Draw(view.Qualification, view.QualificationLabel,
                 SSCMasterQualificationDisplay.GetPawnTooltip(SSCMod.settings?.allowDirectMasterSelection ?? false));
@@ -111,17 +136,37 @@ namespace SexSlaveCraft
             if (SSCUIWidgets.Button(view.RecoveryButton, view.RecoveryLabel, true)) OpenRecoveryConfirmation(edit);
         }
 
-        /// <summary>身份行使用窗口配色，右侧值区域负责打开现有菜单。</summary>
-        private void DrawIdentityDropdown(OverviewIdentityView view)
+        /// <summary>身份下拉沿用原菜单，印记文字只提供悬停详情。</summary>
+        private void DrawIdentityRow(OverviewIdentityView view)
         {
             using var scope = new SSCBondOverviewWidgets.GuiScope(false);
-            Rect row = view.IdentityRow;
-            float valueX = row.x + row.width * .42f;
             Text.Anchor = TextAnchor.MiddleLeft;
-            Widgets.Label(new Rect(row.x, row.y, Mathf.Max(1f, valueX - row.x - 8f), row.height), Strings.ITab_IdentityHeader);
-            var value = new Rect(valueX, row.y, Mathf.Max(1f, row.xMax - valueX), row.height);
-            if (DrawSettingsControl(value, view.IdentityLabel, dropdown: true, enabled: view.LockTip == null, tooltip: view.LockTip))
+            Widgets.Label(view.IdentityCaption, Strings.ITab_IdentityHeader);
+            if (DrawSettingsControl(view.IdentityDropdown, view.IdentityLabel, dropdown: true, enabled: view.LockTip == null, tooltip: view.LockTip))
                 OpenIdentityMenu(view.Edit);
+
+            if (view.Imprint == null) return;
+            Widgets.Label(view.ImprintRect, view.ImprintLabel);
+            // 原版健康提示包含当前阶段效果，并会查战斗日志，只有悬停时才生成。
+            TooltipHandler.TipRegion(view.ImprintRect, () => ImprintTooltip(view), view.Imprint.GetHashCode());
+        }
+
+        /// <summary>从原印记 Def 读取定型方向，悬停时复查当前角色及原记录。</summary>
+        private string ImprintTooltip(OverviewIdentityView view)
+        {
+            var imprint = view.Imprint;
+            var pawn = view.Edit.Pawn;
+            if (!PageEditIsCurrent(view.Edit) || !ReferenceEquals(SSCImprintUtility.Find(pawn), imprint))
+                return string.Empty;
+
+            // 初始印记者可以先取得 SSC 身份，悬停中的定型状态仍只由当前印记 Def 决定。
+            string status = SSCImprintUtility.Kind(imprint.def) switch
+            {
+                SSCImprintKind.Master => "SSC_Imprint_MasterLocked",
+                SSCImprintKind.Slave => "SSC_Imprint_SlaveLocked",
+                _ => "SSC_Imprint_Unlocked"
+            };
+            return status.Translate() + "\n\n" + imprint.GetTooltip(pawn, false);
         }
 
         /// <summary>用统一深色样式绘制设置菜单和操作按钮，悬停显示截断值或禁用原因。</summary>
