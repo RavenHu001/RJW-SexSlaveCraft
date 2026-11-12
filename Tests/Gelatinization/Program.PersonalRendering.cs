@@ -177,7 +177,9 @@ internal static partial class Program
             string gate=File.ReadAllText(Path.Combine(root,"Sexslavecraft/common/FullGelatinizationUtility.cs"));
             Check(gate.Contains("return FullGelAppearanceUtility.ShouldRender(pawn);"),"生产渲染入口转发个人准入");
             Check(!s.Contains("view.Status")&&!s.Contains("StatusHeight"),"删除绘制与预留高度");
-            Check(s.Contains("listing.Label(comp.IsEnabled ?"),"训练区仍保留真实状态");
+            // 接线检查只确认旧调教区仍调用共用状态入口，启停和倒计时的绘制由窗口回归覆盖。
+            Check(s.Contains("DrawCooldownStatus(listing, comp)") && s.Contains("GetDailyTrainingStatus(comp)"),
+                "旧调教区复用启停和冷却状态入口");
             Check(s.IndexOf("DrawGelAppearanceSection(new Rect")<s.IndexOf("DrawMasterPanel(new Rect"),"外观不被身份研究分支遮挡");
         });
     }
