@@ -351,18 +351,20 @@ namespace SexSlaveCraft
             if (!(maximum > 0f) || float.IsInfinity(maximum)) return;
 
             const float barHeight = 14f;
-            const float labelOffset = barHeight + 6f;
+            const float tickExtension = 5f;
+            const float labelOffset = tickExtension + 3f;
             const float labelGap = 4f;
             float width = Mathf.Max(1f, column.Width - column.Indent);
             float fill = Mathf.Clamp01(experience / maximum);
-            var labels = new List<(float Position, Rect Label, string Text, string Tip, bool Next)>();
-            var laneEnds = new List<float>();
+            var labels = new List<(float Position, Rect Label, string Text, string Tip, bool Next, bool Above)>();
+            var below = new List<float>();
+            var above = new List<float>();
             using var scope = new SSCBondOverviewWidgets.GuiScope(false);
             Text.Font = GameFont.Small;
             Text.WordWrap = false;
             float lineHeight = Text.LineHeight;
 
-            // 相邻名称在刻度下方上下交错，优先对准刻度。长译名与同排重叠时才占用额外一行。
+            // 第一处刻度朝下，后续交替朝上和朝下。长译名只在同侧追加一行。
             var stages = record.def.stages;
             int nextStage = record.CurStageIndex + 1;
             for (int i = 0; stages != null && i < stages.Count; i++)
@@ -375,25 +377,25 @@ namespace SexSlaveCraft
                 float textWidth = Mathf.Min(width, Mathf.Ceil(Text.CalcSize(name).x) + 2f);
                 float maxX = width - textWidth;
                 float x = Mathf.Clamp(position * width - textWidth / 2f, 0f, maxX);
-                int lane = labels.Count % 2;
-                if (lane < laneEnds.Count && x < laneEnds[lane] + labelGap)
-                {
-                    lane = 2;
-                    while (lane < laneEnds.Count && x < laneEnds[lane] + labelGap) lane++;
-                }
+                bool isAbove = labels.Count % 2 != 0;
+                var laneEnds = isAbove ? above : below;
+                int lane = 0;
+                while (lane < laneEnds.Count && x < laneEnds[lane] + labelGap) lane++;
                 if (lane == laneEnds.Count) laneEnds.Add(x + textWidth);
                 else laneEnds[lane] = x + textWidth;
                 labels.Add((position, new Rect(x, labelOffset + lane * lineHeight, textWidth, lineHeight),
-                    name.Truncate(textWidth), tip, i == nextStage));
+                    name.Truncate(textWidth), tip, i == nextStage, isAbove));
             }
 
-            float height = labels.Count == 0 ? barHeight : labelOffset + laneEnds.Count * lineHeight;
+            // 两侧名称都计入同一行的高度，面板底色和滚动区也随之增高。
+            float aboveHeight = above.Count == 0 ? 0f : labelOffset + above.Count * lineHeight;
+            float belowHeight = below.Count == 0 ? 0f : labelOffset + below.Count * lineHeight;
             string practiceTip = "SSC_MasterProgression_PracticeTip".Translate();
-            column.Rows.Add((height, rect =>
+            column.Rows.Add((aboveHeight + barHeight + belowHeight, rect =>
             {
                 rect = InsetSettingsRow(rect, column.Indent);
                 // 原版返回填充轨道的实际矩形，刻度用同一范围，端点限制在条内。
-                Rect track = Widgets.FillableBar(new Rect(rect.x, rect.y, rect.width, barHeight), fill);
+                Rect track = Widgets.FillableBar(new Rect(rect.x, rect.y + aboveHeight, rect.width, barHeight), fill);
                 using var drawScope = new SSCBondOverviewWidgets.GuiScope(false);
                 Text.Font = GameFont.Small;
                 Text.Anchor = TextAnchor.MiddleCenter;
@@ -404,10 +406,11 @@ namespace SexSlaveCraft
                     float tickWidth = Mathf.Min(2f, track.width);
                     float tickX = Mathf.Clamp(track.x + tick.Position * track.width - tickWidth / 2f,
                         track.x, track.xMax - tickWidth);
-                    float tickHeight = tick.Next ? 11f : 8f;
-                    var mark = new Rect(tickX, track.yMax + 4f - tickHeight, tickWidth, tickHeight);
+                    float markY = tick.Above ? track.y - tickExtension : track.y;
+                    var mark = new Rect(tickX, markY, tickWidth, track.height + tickExtension);
                     Widgets.DrawBoxSolid(mark, tick.Next ? new Color(.95f, .80f, .53f) : new Color(.73f, .81f, .83f));
-                    var label = new Rect(rect.x + tick.Label.x, rect.y + tick.Label.y, tick.Label.width, tick.Label.height);
+                    float labelY = tick.Above ? track.y - tick.Label.y - tick.Label.height : track.yMax + tick.Label.y;
+                    var label = new Rect(rect.x + tick.Label.x, labelY, tick.Label.width, tick.Label.height);
                     Widgets.Label(label, tick.Text);
                     var tickHit = new Rect(mark.x - 4f, mark.y, mark.width + 8f, mark.height);
                     hoveringTick |= Mouse.IsOver(tickHit);
