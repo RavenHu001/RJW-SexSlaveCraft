@@ -102,6 +102,47 @@ internal static partial class Program
             Assert(Text.Font == GameFont.Small);
             Assert(!Widgets.Items.Any(i => i.Kind == "romance-frame" || i.Kind == "reset-button"));
         });
+        Run("行为页折叠隐藏控件，展开后按宽度重排规则与命令", () =>
+        {
+            var pawn = RomanceUiPawn();
+            DrawSection(680f, false);
+            Assert(Widgets.Items.Any(i => i.Kind == "label" && i.Text == "▸"));
+            Assert(!Widgets.Items.Any(i => i.Kind is "romance-checkbox" or "romance-target" ||
+                i.Text == Translation.Entries["SSC_BehaviorReset_Button"]));
+
+            DrawSection(680f, true);
+            var active = Label("SSC_Romance_Group_InitiateRomance");
+            var passive = Label("SSC_Romance_Group_AcceptRomance");
+            var wideCommands = Commands();
+            Assert(active.y == passive.y && active.xMax < passive.x);
+            Assert(wideCommands.Select(rect => rect.y).Distinct().Count() == 1);
+            Assert(wideCommands[0].xMax < wideCommands[1].x && wideCommands[1].xMax < wideCommands[2].x);
+
+            DrawSection(280f, true);
+            active = Label("SSC_Romance_Group_InitiateRomance");
+            passive = Label("SSC_Romance_Group_AcceptRomance");
+            var narrowCommands = Commands();
+            Assert(active.x == passive.x && active.yMax < passive.y);
+            Assert(narrowCommands[0].y < narrowCommands[^1].y);
+
+            // 使用生产绘制器，宿主只记录几何与文本。
+            void DrawSection(float width, bool expanded)
+            {
+                Widgets.Items.Clear();
+                var listing = new Listing_Standard();
+                listing.Begin(new Rect(0, 0, width, 100000));
+                try
+                {
+                    SSCBehaviorControlUI.DrawRomanceSection(listing, pawn, (rect, key, submit) => submit,
+                        expanded: expanded, toggle: () => { });
+                }
+                finally { listing.End(); }
+            }
+
+            Rect Label(string key) => Widgets.Items.Single(i => i.Kind == "label" && i.Text == Translation.Entries[key]).Rect;
+            Rect[] Commands() => Enum.GetValues<SSCRomanceAction>()
+                .Select(action => Label("SSC_Romance_Action_" + action)).ToArray();
+        });
         Run("浪漫 UI 外层禁用不重新开放输入", () =>
         {
             var pawn = RomanceUiPawn(); GUI.enabled = false; Widgets.RomanceClick = 0; DrawRomanceUi(pawn, 352);

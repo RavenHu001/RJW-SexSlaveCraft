@@ -133,9 +133,42 @@ namespace SexSlaveCraft
                 }
             }
             if (!config.IsValid()) { listing.Label("SSC_Restrictions_InvalidConfig".Translate(config.version)); return; }
-            foreach (SSCRestrictionRule rule in SSCRestrictionRules.All)
+            var all = SSCRestrictionRules.All;
+#if SSC_RW17
+            if (prepare != null)
             {
-                DrawGroup(listing, rule, !compact || rule != SSCRestrictionRule.Masturbation, prepare != null);
+                // 复用规则原有的三个分组边界，调教组另外使用整行宽度。
+                int passive = all.IndexOf(SSCRestrictionRule.ReceiveConsensual);
+                int training = all.IndexOf(SSCRestrictionRule.ReceiveTraining);
+                SSCBehaviorControlUI.DrawRulePair(listing, left => DrawRange(left, 0, passive),
+                    right => DrawRange(right, passive, training));
+                listing.Gap(8f);
+                // 调教标题跨整行，两项许可随可用宽度并排或依次绘制。
+                DrawGroup(listing, SSCRestrictionRule.ReceiveTraining, embedded: true);
+                SSCBehaviorControlUI.DrawRulePair(listing, left => DrawRule(left, all[training]),
+                    right =>
+                    {
+                        for (int i = training + 1; i < all.Count; i++) DrawRule(right, all[i]);
+                    });
+                return;
+            }
+#endif
+            DrawRange(listing, 0, all.Count);
+
+            // 按原定义顺序绘制指定区间，子标题仍由对应的首条规则决定。
+            void DrawRange(Listing_Standard target, int first, int end)
+            {
+                for (int i = first; i < end; i++)
+                {
+                    var rule = all[i];
+                    DrawGroup(target, rule, !compact || rule != SSCRestrictionRule.Masturbation, prepare != null);
+                    DrawRule(target, rule);
+                }
+            }
+
+            // 所有列复用相同的权限解析、保存快照和绘制入口。
+            void DrawRule(Listing_Standard target, SSCRestrictionRule rule)
+            {
                 // 未绑定角色只展示保留的个人选择，不把当前装备/特化标成正在生效的强制来源。
                 bool rowApplicable = rule == SSCRestrictionRule.SelfTraining ? selfApplicable : applicable;
                 SSCRestrictionResolution entry = rowApplicable ? SSCRestrictionResolver.Resolve(pawn, config.rules, rule) : null;
@@ -149,7 +182,7 @@ namespace SexSlaveCraft
                 var saved = rules.Get(rule);
                 var savedTarget = rules.ConsensualTarget;
                 // 提交闭包保留原保存值及对象范围，切换开关时沿用按下时记住的范围。
-                DrawChoice(listing, rule, rules, rowApplicable, entry, value =>
+                DrawChoice(target, rule, rules, rowApplicable, entry, value =>
                 {
                     bool changed = prepare == null ? SSCRestrictionEditor.TrySet(pawn, rule, value) :
                         SSCRestrictionEditor.TrySetFromView(pawn, rule, value, config, rules, saved, savedTarget);

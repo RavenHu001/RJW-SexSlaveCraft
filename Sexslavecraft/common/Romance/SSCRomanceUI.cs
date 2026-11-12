@@ -28,9 +28,9 @@ namespace SexSlaveCraft
             DrawRomanceSection(listing, pawn);
         }
 
-        /// <summary>独立绘制性行为板块，可由调教窗口接管按压提交。</summary>
+        /// <summary>绘制性行为板块。调教窗口传入折叠状态并接管按压提交。</summary>
         internal static void DrawSexSection(Listing_Standard listing, Pawn pawn, bool showSexSwitches,
-            Func<Rect, object, Action, Action> prepare = null)
+            Func<Rect, object, Action, Action> prepare = null, bool expanded = true, Action toggle = null)
         {
             // 恢复默认使用本组原始快照，写入和刷新仍交给各自的业务模块。
             var sexReset = SSCRestrictionEditor.GetResetView(pawn);
@@ -44,23 +44,26 @@ namespace SexSlaveCraft
             }, rect => DrawReset(rect, sexReset.CanReset, "SSC_BehaviorReset_SexTip", sexReset.Reason, () =>
             {
                 if (!SSCRestrictionEditor.TryReset(pawn, sexReset.Context, out var reason)) ResetFailed(pawn, reason);
-            }, "SexReset", prepare), embedded, embedded ? fullTitle : null);
+            }, "SexReset", prepare), embedded, embedded ? fullTitle : null,
+                expanded, toggle == null ? null : rect => DrawDisclosure(rect, expanded, "ToggleSexRules", toggle, prepare));
         }
 
-        /// <summary>独立绘制浪漫板块，允许窗口管理目标菜单和原按压。</summary>
+        /// <summary>绘制浪漫板块。调教窗口管理折叠状态、目标菜单和按压凭据。</summary>
         internal static void DrawRomanceSection(Listing_Standard listing, Pawn pawn,
-            Func<Rect, object, Action, Action> prepare = null, Action<SSCRomanceCommandContext> openTargets = null)
+            Func<Rect, object, Action, Action> prepare = null, Action<SSCRomanceCommandContext> openTargets = null,
+            bool expanded = true, Action toggle = null)
         {
             var romanceReset = SSCRomancePreferences.GetResetView(pawn);
             DrawBlock(listing, "SSC_Romance_RomanceSection".Translate(), inner => SSCRomanceUI.DrawPawn(inner, pawn, prepare, openTargets),
                 rect => DrawReset(rect, romanceReset.CanReset, "SSC_BehaviorReset_RomanceTip", romanceReset.Reason, () =>
                 {
                     if (!SSCRomancePreferences.TryReset(pawn, romanceReset.Context, out var reason)) ResetFailed(pawn, reason);
-                }, "RomanceReset", prepare), prepare != null);
+                }, "RomanceReset", prepare), prepare != null, null,
+                expanded, toggle == null ? null : rect => DrawDisclosure(rect, expanded, "ToggleRomanceRules", toggle, prepare));
         }
         /// <summary>内容只绘制一次并据实际推进高度设置边框，避免测量时重复调用按钮或初始化提交。</summary>
         private static void DrawBlock(Listing_Standard listing, string title, Action<Listing_Standard> content,
-            Action<Rect> reset, bool embedded, string titleTip = null)
+            Action<Rect> reset, bool embedded, string titleTip, bool expanded, Action<Rect> disclosure)
         {
             float top = listing.CurHeight, width = listing.ColumnWidth;
             var inner = new Listing_Standard { maxOneColumn = true };
@@ -76,10 +79,14 @@ namespace SexSlaveCraft
                     Text.Font = GameFont.Medium;
                     Text.WordWrap = true;
                 }
-                DrawHeader(inner, title, reset, embedded, titleTip);
-                if (embedded) inner.Gap(8f);
-                else inner.GapLine(6f);
-                content(inner);
+                // 收起时只绘制标题与箭头，恢复默认和规则均不会注册点击。
+                DrawHeader(inner, title, expanded ? reset : null, embedded, titleTip, disclosure);
+                if (expanded)
+                {
+                    if (embedded) inner.Gap(8f);
+                    else inner.GapLine(6f);
+                    content(inner);
+                }
             }
             finally
             {
@@ -97,7 +104,8 @@ namespace SexSlaveCraft
         }
 
         /// <summary>按译文实测首行按钮，长标题在剩余空间换行；局部文字状态不会泄露到其他区域。</summary>
-        private static void DrawHeader(Listing_Standard listing, string title, Action<Rect> reset, bool embedded, string titleTip)
+        private static void DrawHeader(Listing_Standard listing, string title, Action<Rect> reset, bool embedded, string titleTip,
+            Action<Rect> disclosure)
         {
             var anchor = Text.Anchor; bool wrap = Text.WordWrap;
             try
@@ -105,20 +113,69 @@ namespace SexSlaveCraft
                 Text.Anchor = embedded ? TextAnchor.MiddleLeft : TextAnchor.UpperLeft;
                 Text.WordWrap = true;
                 string label = "SSC_BehaviorReset_Button".Translate();
-                float buttonWidth = Mathf.Min(listing.ColumnWidth * .46f, Mathf.Max(72f, Text.CalcSize(label).x + 18f));
+                float buttonWidth = reset == null ? 0f :
+                    Mathf.Min(listing.ColumnWidth * .46f, Mathf.Max(72f, Text.CalcSize(label).x + 18f));
                 float padding = embedded ? 6f : 0f;
-                float titleWidth = Mathf.Max(1f, listing.ColumnWidth - buttonWidth - 8f - 2f * padding);
-                float buttonHeight = Mathf.Max(28f, Text.CalcHeight(label, Mathf.Max(1f, buttonWidth - 12f)) + 8f);
+                float arrowWidth = disclosure == null ? 0f : Mathf.Min(20f, listing.ColumnWidth * .18f);
+                float buttonGap = reset == null ? 0f : 8f;
+                float titleWidth = Mathf.Max(1f, listing.ColumnWidth - buttonWidth - buttonGap - 2f * padding - arrowWidth);
+                float buttonHeight = reset == null ? 28f :
+                    Mathf.Max(28f, Text.CalcHeight(label, Mathf.Max(1f, buttonWidth - 12f)) + 8f);
                 if (embedded) title = "<b>" + title + "</b>";
                 Rect header = listing.GetRect(Mathf.Max(buttonHeight, Text.CalcHeight(title, titleWidth)) + 2f * padding);
                 if (embedded) Widgets.DrawBoxSolid(header, HeaderColor);
-                var titleRect = new Rect(header.x + padding, header.y + padding, titleWidth, header.height - 2f * padding);
+                var titleRect = new Rect(header.x + padding + arrowWidth, header.y + padding, titleWidth, header.height - 2f * padding);
                 Widgets.Label(titleRect, title);
                 if (titleTip != null) TooltipHandler.TipRegion(titleRect, titleTip);
+                // 标题按钮和恢复按钮使用独立的矩形，点击恢复不会同时折叠板块。
+                disclosure?.Invoke(new Rect(header.x, header.y, Mathf.Max(1f, header.width - buttonWidth - buttonGap), header.height));
                 float buttonY = embedded ? header.y + (header.height - buttonHeight) / 2f : header.y;
-                reset(new Rect(titleRect.xMax + 8f, buttonY, buttonWidth, buttonHeight));
+                reset?.Invoke(new Rect(titleRect.xMax + buttonGap, buttonY, buttonWidth, buttonHeight));
             }
             finally { Text.Anchor = anchor; Text.WordWrap = wrap; }
+        }
+
+        /// <summary>标题是独立的折叠按钮，点击区域在恢复默认按钮之前结束。</summary>
+        private static void DrawDisclosure(Rect rect, bool expanded, string key, Action toggle,
+            Func<Rect, object, Action, Action> prepare)
+        {
+            using (new TextTint(CopperColor))
+                Widgets.Label(new Rect(rect.x + 6f, rect.y, 18f, rect.height), expanded ? "▾" : "▸");
+            if (!GUI.enabled) return;
+            Widgets.DrawHighlightIfMouseover(rect);
+            var submit = prepare == null ? toggle : prepare(rect, key, toggle);
+            if (Widgets.ButtonInvisible(rect)) submit?.Invoke();
+        }
+
+        /// <summary>宽处并排绘制两组并取较高的一组；窄处按原阅读顺序堆叠。</summary>
+        internal static void DrawRulePair(Listing_Standard listing, Action<Listing_Standard> first, Action<Listing_Standard> second)
+        {
+            const float gap = 12f;
+            const float minimumColumnWidth = 230f;
+            float columnWidth = (listing.ColumnWidth - gap) / 2f;
+            if (columnWidth < minimumColumnWidth)
+            {
+                first(listing);
+                listing.Gap(gap);
+                second(listing);
+                return;
+            }
+
+            float y = listing.CurHeight;
+            float firstHeight = DrawColumn(0f, first);
+            float secondHeight = DrawColumn(columnWidth + gap, second);
+            listing.GetRect(Mathf.Max(firstHeight, secondHeight));
+
+            float DrawColumn(float x, Action<Listing_Standard> draw)
+            {
+                var font = Text.Font;
+                var column = new Listing_Standard { maxOneColumn = true };
+                column.Begin(new Rect(x, y, columnWidth, 100000f));
+                // 原版 Begin 会重置字号，子列沿用父板块的 Medium 测量和绘制。
+                Text.Font = font;
+                try { draw(column); return column.CurHeight; }
+                finally { column.End(); Text.Font = font; }
+            }
         }
 
         /// <summary>共享标题按钮仅绘制和分发原请求；禁用时灰显，事件后恢复外层 GUI 状态。</summary>
@@ -182,14 +239,27 @@ namespace SexSlaveCraft
         internal static void DrawPawn(Listing_Standard listing, Pawn pawn, Func<Rect, object, Action, Action> prepare,
             Action<SSCRomanceCommandContext> openTargets)
         {
-            for (int i = 0; i < groups.Length; i++)
+            if (prepare != null)
             {
-                DrawGroup(listing, pawn, groups[i], i == 0, prepare);
-                DrawTargets(listing, pawn, i == 1, prepare);
+                // 对象按钮紧跟各自的规则组，只有命令区域使用整个面板宽度。
+                SSCBehaviorControlUI.DrawRulePair(listing, left => DrawGroupWithTargets(left, 0, true),
+                    right => DrawGroupWithTargets(right, 1, true));
+                listing.Gap(8f);
             }
-            if (prepare == null) listing.GapLine();
-            else listing.Gap(8f);
+            else
+            {
+                for (int i = 0; i < groups.Length; i++)
+                    DrawGroupWithTargets(listing, i, i == 0);
+                listing.GapLine();
+            }
             DrawCommands(listing, pawn, prepare, openTargets ?? SSCRomanceCommandMenu.OpenTargets);
+
+            // 规则和对象许可放进同一列，保持各自的阅读与点击顺序。
+            void DrawGroupWithTargets(Listing_Standard target, int index, bool first)
+            {
+                DrawGroup(target, pawn, groups[index], first, prepare);
+                DrawTargets(target, pawn, index == 1, prepare);
+            }
         }
         /// <summary>子标题居中并统一下横线的绘制颜色；恢复 GUI 状态，避免影响后续开关及禁用样式。</summary>
         private static void DrawSubtitle(Listing_Standard listing, string label, bool embedded)
@@ -312,42 +382,65 @@ namespace SexSlaveCraft
             }
             finally { GUI.color = previousColor; GUI.enabled = previousEnabled; Text.Anchor = previousAnchor; Text.WordWrap = previousWrap; }
         }
-        /// <summary>底部三个按钮纵向排列，长译文按实际宽度换行；整组使用最初捕获的执行者，点击不重拍人格。</summary>
+        /// <summary>调教窗口内的直接命令优先横排，宽度不足时减少列数；整组共用原执行者凭据。</summary>
         private static void DrawCommands(Listing_Standard listing, Pawn pawn, Func<Rect, object, Action, Action> prepare,
             Action<SSCRomanceCommandContext> openTargets)
         {
             DrawSubtitle(listing, "SSC_Romance_CommandTitle".Translate(), prepare != null);
             string failure = SSCRomanceCommandUtility.ActorFailure(pawn);
             var original = SSCRomanceCommandUtility.Capture(pawn);
+            var actions = (SSCRomanceAction[])Enum.GetValues(typeof(SSCRomanceAction));
+            var labels = Array.ConvertAll(actions, action => ("SSC_Romance_Action_" + action).Translate().ToString());
+            float gap = prepare == null ? 4f : 8f;
+            int columns = 1;
+            if (prepare != null)
+            {
+                // 用最长命令实测可放的列数；单列时仍以实际文字高度换行。
+                float minimumWidth = 1f;
+                foreach (string label in labels)
+                    minimumWidth = Mathf.Max(minimumWidth, Text.CalcSize(label).x + 12f);
+                columns = Math.Clamp((int)((listing.ColumnWidth + gap) / (minimumWidth + gap)), 1, actions.Length);
+            }
+            float cellWidth = (listing.ColumnWidth - (columns - 1) * gap) / columns;
             bool oldEnabled = GUI.enabled;
             try
             {
                 GUI.enabled = oldEnabled && failure == null;
-                foreach (SSCRomanceAction action in Enum.GetValues(typeof(SSCRomanceAction)))
+                for (int first = 0; first < actions.Length; first += columns)
                 {
-                    // 同一组命令使用同一个执行者快照，按下后只选择具体行为与目标。
-                    var context = original.ForTarget(null, action);
-                    string label = ("SSC_Romance_Action_" + action).Translate();
-                    Rect button = listing.GetRect(Mathf.Max(32f, Text.CalcHeight(label, Mathf.Max(1f, listing.ColumnWidth - 12f)) + 12f));
-                    if (prepare != null)
+                    // 每行按最高按钮推进列表，点击矩形与绘制矩形使用同一尺寸。
+                    int count = Math.Min(columns, actions.Length - first);
+                    float height = 32f;
+                    for (int i = first; i < first + count; i++)
+                        height = Mathf.Max(height, Text.CalcHeight(labels[i], Mathf.Max(1f, cellWidth - 12f)) + 12f);
+                    Rect row = listing.GetRect(height);
+                    for (int i = 0; i < count; i++)
                     {
-                        var submit = GUI.enabled ? prepare(button, action, () => openTargets(context)) : null;
-                        if (SSCBehaviorControlUI.DrawEmbeddedButton(button, label)) submit?.Invoke();
+                        var action = actions[first + i];
+                        string label = labels[first + i];
+                        var button = new Rect(row.x + i * (cellWidth + gap), row.y, cellWidth, row.height);
+                        DrawCommand(button, action, label);
                     }
-                    else if (!GUI.enabled) DrawDisabledCommand(button, label);
-                    else
-                    {
-                        Action submit = () => openTargets(context);
-                        if (Widgets.ButtonText(button, label) && GUI.enabled) submit?.Invoke();
-                    }
-                    // 每个命令只显示一句明确动作的说明；禁用原因仍按当前资格追加。
-                    string tip = ("SSC_Romance_CommandTip_" + action).Translate();
-                    if (failure != null) tip += "\n\n" + SSCRomanceCommandUtility.Explain(failure);
-                    TooltipHandler.TipRegion(button, tip);
-                    listing.Gap(4f);
+                    listing.Gap(gap);
                 }
             }
             finally { GUI.enabled = oldEnabled; }
+
+            // 命令从整组原执行者快照派生，点击时只进入当前动作的目标菜单。
+            void DrawCommand(Rect button, SSCRomanceAction action, string label)
+            {
+                var context = original.ForTarget(null, action);
+                if (prepare != null)
+                {
+                    var submit = GUI.enabled ? prepare(button, action, () => openTargets(context)) : null;
+                    if (SSCBehaviorControlUI.DrawEmbeddedButton(button, label)) submit?.Invoke();
+                }
+                else if (!GUI.enabled) DrawDisabledCommand(button, label);
+                else if (Widgets.ButtonText(button, label) && GUI.enabled) openTargets(context);
+                string tip = ("SSC_Romance_CommandTip_" + action).Translate();
+                if (failure != null) tip += "\n\n" + SSCRomanceCommandUtility.Explain(failure);
+                TooltipHandler.TipRegion(button, tip);
+            }
         }
         /// <summary>禁用命令使用灰底灰字且不创建点击入口；悬停仍可显示原因，绘制后恢复文本与颜色状态。</summary>
         private static void DrawDisabledCommand(Rect rect, string label)
