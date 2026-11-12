@@ -121,7 +121,6 @@ namespace SexSlaveCraft
 
                 // 右侧沿用完整计时文本及其富文本样式，窄窗时从右对齐裁剪并提供完整悬浮提示。
                 var timer = InsetSettingsRow(rect, statusWidth + gap);
-                Text.Font = GameFont.Small;
                 Text.Anchor = TextAnchor.MiddleRight;
                 GUI.BeginGroup(timer);
                 try { Widgets.Label(new Rect(0f, 0f, timer.width, timer.height), cooldown); }
