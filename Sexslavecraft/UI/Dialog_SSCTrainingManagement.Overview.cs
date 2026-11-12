@@ -46,7 +46,7 @@ namespace SexSlaveCraft
             float progressWidth = wide ? (width - SettingsColumnGap) * .63f : width;
             float statusWidth = wide ? width - progressWidth - SettingsColumnGap : width;
             var progress = new SettingsColumn(progressWidth, panel: true);
-            var daily = new SettingsColumn(statusWidth, panel: true);
+            var daily = new SettingsColumn(statusWidth, panel: true, verticalPanelPadding: 6f);
             string heading = "<b>" + "SSC_TrainingManagement_SlaveProgress".Translate() + "</b>";
 
             var chain = SSCBondUtility.GetChain(edit.Pawn);
@@ -82,11 +82,7 @@ namespace SexSlaveCraft
                 AddCorruptionStatus(corruption, need);
             }
 
-            daily.AddLabel("<b>" + PageKeys[2].Translate() + "</b>");
-            AddOverviewValue(daily, Strings.ITab_AllowTraining, (edit.Comp.IsEnabled
-                ? "SSC_TrainingManagement_TrainingEnabled" : "SSC_TrainingManagement_TrainingDisabled").Translate());
-            if (edit.Comp.IsOnCooldown)
-                daily.AddLabel(ITab_SexSlaveTraining.GetDailyTrainingStatus(edit.Comp));
+            AddDailyOverviewStatus(daily, edit.Comp);
 
             // 面板各自按内容收底，只用最高一栏决定宽窗的总占高。
             float statusX = wide ? progressWidth + SettingsColumnGap : 0f;
@@ -99,6 +95,39 @@ namespace SexSlaveCraft
                 corruption?.DrawPanel(statusX, y + statusY, corruption.PanelHeight);
                 daily.DrawPanel(statusX, y + dailyY, daily.PanelHeight);
             });
+        }
+
+        /// <summary>固定显示标题和状态两行。冷却倒计时只占状态行右侧，不参与测高。</summary>
+        private static void AddDailyOverviewStatus(SettingsColumn column, CompSexSlaveTraining training)
+        {
+            column.AddLabel("<b>" + PageKeys[2].Translate() + "</b>");
+            string enabled = "SSC_TrainingManagement_TrainingEnabled".Translate();
+            string disabled = "SSC_TrainingManagement_TrainingDisabled".Translate();
+            string status = training.IsEnabled ? enabled : disabled;
+            string cooldown = training.IsOnCooldown ? ITab_SexSlaveTraining.GetDailyTrainingStatus(training) : null;
+            float statusWidth = Mathf.Min(column.Width * .5f, Mathf.Ceil(Mathf.Max(Text.CalcSize(enabled).x,
+                Text.CalcSize(disabled).x)) + 2f);
+            float gap = Mathf.Min(8f, column.Width * .08f);
+            column.Rows.Add((Text.LineHeight, rect =>
+            {
+                using var scope = new SSCBondOverviewWidgets.GuiScope(false);
+                Text.WordWrap = false;
+                Text.Anchor = TextAnchor.MiddleLeft;
+                var statusRect = new Rect(rect.x, rect.y, statusWidth, rect.height);
+                string label = status.Truncate(statusRect.width);
+                Widgets.Label(statusRect, label);
+                if (label != status) TooltipHandler.TipRegion(statusRect, status);
+                if (cooldown == null) return;
+
+                // 右侧沿用完整计时文本及其富文本样式，窄窗时从右对齐裁剪并提供完整悬浮提示。
+                var timer = InsetSettingsRow(rect, statusWidth + gap);
+                Text.Font = GameFont.Small;
+                Text.Anchor = TextAnchor.MiddleRight;
+                GUI.BeginGroup(timer);
+                try { Widgets.Label(new Rect(0f, 0f, timer.width, timer.height), cooldown); }
+                finally { GUI.EndGroup(); }
+                if (Text.CalcSize(cooldown).x > timer.width) TooltipHandler.TipRegion(timer, cooldown);
+            }));
         }
 
         /// <summary>测量两侧译文并右对齐只读值，给较长的标签留出换行空间。</summary>

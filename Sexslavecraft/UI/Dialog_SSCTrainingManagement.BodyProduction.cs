@@ -28,16 +28,18 @@ namespace SexSlaveCraft
             internal readonly float Width;
             internal readonly float OuterWidth;
             private readonly float panelInset;
+            private readonly float verticalPanelPadding;
             internal readonly List<(float Height, Action<Rect> Draw)> Rows = new();
             internal float Indent => Mathf.Min(16f, Width * .12f);
             internal float Height => Rows.Sum(row => row.Height + RowGap);
-            internal float PanelHeight => Height + 2f * SettingsPanelPadding;
+            internal float PanelHeight => Height + 2f * verticalPanelPadding;
 
             /// <summary>面板列先扣除内边距，面板内部的普通列直接使用分配到的宽度。</summary>
-            internal SettingsColumn(float width, bool panel = false)
+            internal SettingsColumn(float width, bool panel = false, float verticalPanelPadding = SettingsPanelPadding)
             {
                 OuterWidth = width;
                 panelInset = panel ? SettingsPanelInset(width) : 0f;
+                this.verticalPanelPadding = verticalPanelPadding;
                 Width = width - 2f * panelInset;
             }
 
@@ -45,7 +47,7 @@ namespace SexSlaveCraft
             internal void DrawPanel(float x, float y, float height)
             {
                 Widgets.DrawBoxSolid(new Rect(x, y, OuterWidth, height), SettingsPanelColor);
-                Draw(x + panelInset, y + SettingsPanelPadding);
+                Draw(x + panelInset, y + verticalPanelPadding);
             }
 
             /// <summary>按测量结果绘制本列，坐标以全页滚动内容为原点。</summary>

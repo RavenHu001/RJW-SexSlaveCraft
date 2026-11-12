@@ -16,7 +16,7 @@
   <SSC_TrainingManagement_MasterStage>主人階段</SSC_TrainingManagement_MasterStage>
   <SSC_TrainingManagement_MasterGrowth>主人成長</SSC_TrainingManagement_MasterGrowth>
   <SSC_TrainingManagement_MasterAbilities>主人能力</SSC_TrainingManagement_MasterAbilities>
-  <SSC_TrainingManagement_TrainingEnabled>已允許</SSC_TrainingManagement_TrainingEnabled>
+  <SSC_TrainingManagement_TrainingEnabled>已開啟</SSC_TrainingManagement_TrainingEnabled>
   <SSC_TrainingManagement_TrainingDisabled>已關閉</SSC_TrainingManagement_TrainingDisabled>
   <SSC_TrainingManagement_JumpToPawn>點擊跳轉至 {0}</SSC_TrainingManagement_JumpToPawn>
   <SSC_TrainingManagement_AssignedSection>已指派調教員</SSC_TrainingManagement_AssignedSection>
