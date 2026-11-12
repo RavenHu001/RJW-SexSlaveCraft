@@ -76,11 +76,12 @@ namespace SexSlaveCraft
 
 #if SSC_RW17 || SSC_TRAINER_WORK_TEST
         /// <summary>训练页按钮与概览菜单复用；只打开原指定者的工作，不重新提交指派或授权。</summary>
-        internal static FloatMenuOption EnableOption(Pawn source, Action changed = null, Func<bool> current = null)
+        internal static FloatMenuOption EnableOption(Pawn source, Action changed = null, Func<bool> current = null, bool requireAvailable = false)
         {
             Pawn trainer = source?.TryGetComp<CompSexSlaveTraining>()?.selectedTrainer;
             if (trainer == source || SSCTrainerWorkUtility.GetState(trainer, source) != SSCTrainerWorkState.Off) return null;
             var request = new SSCTrainerWorkUtility.Request(source, trainer, true, current);
+            if (requireAvailable && !request.CanSubmit(out _)) return null;
             return new FloatMenuOption("SSC_TrainerWork_EnableAssigned".Translate(trainer.LabelShort), () => Submit(request, changed))
             { tooltip = "SSC_TrainerWork_CategoryTip".Translate() };
         }

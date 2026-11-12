@@ -135,13 +135,15 @@ namespace SexSlaveCraft
         /// <summary>仅为支持的原版身份且具有训练组件的角色显示调教页，不要求完成研究。</summary>
         public override bool IsVisible
         {
-            get
-            {
-                Pawn p = SelPawn;
-                if (p == null) return false;
-                if (!SSCIdentityUtility.IsSupportedVanillaStatus(p) && !SSCSelfTrainingEligibility.IsEligible(p)) return false;
-                return p.GetComp<CompSexSlaveTraining>() != null;
-            }
+            get { return CanInspect(SelPawn); }
+        }
+
+        /// <summary>原标签与窗口共用展示资格，选角的同图及可选条件由窗口另外检查。</summary>
+        internal static bool CanInspect(Pawn pawn)
+        {
+            if (pawn == null) return false;
+            if (!SSCIdentityUtility.IsSupportedVanillaStatus(pawn) && !SSCSelfTrainingEligibility.IsEligible(pawn)) return false;
+            return pawn.GetComp<CompSexSlaveTraining>() != null;
         }
 
         /// <summary>绘制调教总栏；即使菜单或控件抛出异常，也在内部列表结束后关闭外层滚动区域。</summary>
@@ -326,29 +328,34 @@ namespace SexSlaveCraft
             return height + 4f;
         }
 
+        /// <summary>为两个界面读取同一套任职选择、有效资格和提示。</summary>
+        internal static (bool IsSlave, bool Enabled, bool Qualified, string Label, string Tooltip)
+            GetTrainerIdentityPresentation(Pawn pawn, CompSexSlaveTraining comp)
+        {
+            bool isSlave = comp.pawnIdentity == PawnIdentity.Slave;
+            bool isMaster = comp.pawnIdentity == PawnIdentity.Master;
+            bool enabled = isMaster || isSlave && comp.slaveTrainerEnabled;
+            TrainerSpecializationFailure failure = TrainerSpecializationFailure.None;
+            bool qualified = isSlave && TrainerSpecializationUtility.HasTrainerQualification(pawn, out failure);
+            string label = "SSC_TrainerIdentity_Label".Translate();
+            if (isSlave)
+                label += (enabled && qualified ? "SSC_TrainerIdentity_Active" :
+                    enabled ? "SSC_TrainerIdentity_SavedInactive" : "SSC_TrainerIdentity_Off").Translate();
+
+            string tooltip = (isMaster ? "SSC_TrainerIdentity_MasterTip" :
+                isSlave ? "SSC_TrainerIdentity_SlaveTip" : "SSC_TrainerIdentity_UnsetTip").Translate();
+            if (isSlave && !qualified)
+                tooltip += "\n\n" + "SSC_TrainerIdentity_QualificationTip".Translate() +
+                    "\n" + GetTrainerFailureReason(failure);
+            return (isSlave, enabled, qualified, label, tooltip);
+        }
+
         /// <summary>读取一次资格，并按实际字体、标签和可用宽度计算身份区高度。</summary>
         private static TrainerIdentityView BuildTrainerIdentityView(Pawn pawn, CompSexSlaveTraining comp, float width)
         {
             // 勾选状态来自保存选择。资格只决定能否任职与重新开启；失格后
             // 仍显示已保存的勾选，让玩家可以关闭该选择而不误报为个人关闭。
-            bool isSlave = comp.pawnIdentity == PawnIdentity.Slave;
-            bool enabled = comp.pawnIdentity == PawnIdentity.Master || isSlave && comp.slaveTrainerEnabled;
-            TrainerSpecializationFailure failure = TrainerSpecializationFailure.None;
-            bool qualified = isSlave && TrainerSpecializationUtility.HasTrainerQualification(pawn, out failure);
-            bool active = comp.pawnIdentity == PawnIdentity.Master || enabled && qualified;
-            string label = "SSC_TrainerIdentity_Label".Translate();
-            if (isSlave)
-                label += active ? "SSC_TrainerIdentity_Active".Translate() :
-                    enabled ? "SSC_TrainerIdentity_SavedInactive".Translate() :
-                    "SSC_TrainerIdentity_Off".Translate();
-
-            // 显示状态复用上面的资格结果，不再通过 IsTrainer 重读锁链。
-            // 点击提交仍走 SetTrainerEnabled 的权威检查，不能用界面快照授予资格。
-            string tooltip = (comp.pawnIdentity == PawnIdentity.Master ? "SSC_TrainerIdentity_MasterTip"
-                : isSlave ? "SSC_TrainerIdentity_SlaveTip" : "SSC_TrainerIdentity_UnsetTip").Translate();
-            if (isSlave && !qualified)
-                tooltip += "\n\n" + "SSC_TrainerIdentity_QualificationTip".Translate() +
-                    "\n" + GetTrainerFailureReason(failure);
+            var (isSlave, enabled, qualified, label, tooltip) = GetTrainerIdentityPresentation(pawn, comp);
 
             // 永久资格来自人格保存字段；当前 Master 身份、绑定及手动选择设置都不能替代它。
             // 只在本次绘制共享文案和测量，不迁移或写回角色数据；缺设置时按默认关闭展示。
@@ -820,9 +827,13 @@ namespace SexSlaveCraft
             bool oldState = isEnabled;
 
             listing.CheckboxLabeled(Strings.ITab_AllowTraining, ref isEnabled);
-            if (oldState == isEnabled) return;
-            if (!CanEditTrainingConfiguration(pawn, comp)) return;
+            if (oldState != isEnabled) SetDailyTrainingEnabled(pawn, comp, isEnabled);
+        }
 
+        /// <summary>两个界面共用启停行为。开启时的执行条件只用于反馈，保存选择先写入。</summary>
+        internal static void SetDailyTrainingEnabled(Pawn pawn, CompSexSlaveTraining comp, bool isEnabled)
+        {
+            if (!CanEditTrainingConfiguration(pawn, comp) || comp.IsEnabled == isEnabled) return;
             comp.mode = isEnabled ? TrainingMode.Enabled : TrainingMode.Disabled;
             comp.isBeingTrained = false;
 
@@ -852,15 +863,18 @@ namespace SexSlaveCraft
 
         /// <summary>显示剩余训练冷却时间，或在无冷却时显示当前启用状态。</summary>
         private static void DrawCooldownStatus(Listing_Standard listing, CompSexSlaveTraining comp)
+            => listing.Label((TaggedString)GetDailyTrainingStatus(comp));
+
+        /// <summary>冷却读现有计时；冷却结束后显示保存的启停状态。</summary>
+        internal static string GetDailyTrainingStatus(CompSexSlaveTraining comp)
         {
             if (comp.IsOnCooldown)
             {
                 int ticksLeft = CompSexSlaveTraining.CooldownTicks - (Find.TickManager.TicksGame - comp.lastTrainingTick);
-                listing.Label((TaggedString)Strings.ITab_CooldownStatus(ticksLeft.ToStringTicksToPeriod()));
-                return;
+                return Strings.ITab_CooldownStatus(ticksLeft.ToStringTicksToPeriod());
             }
 
-            listing.Label(comp.IsEnabled ? (TaggedString)Strings.ITab_StatusReady : (TaggedString)Strings.ITab_StatusDisabled);
+            return comp.IsEnabled ? Strings.ITab_StatusReady : Strings.ITab_StatusDisabled;
         }
 
         /// <summary>列出支持的训练姿势，并保存玩家选择的模式。</summary>
@@ -928,77 +942,7 @@ namespace SexSlaveCraft
 
             if (listing.ButtonText(currentLabel))
             {
-                var options = new List<FloatMenuOption>
-                {
-                    new FloatMenuOption(Strings.ITab_SelectSpecializationNone,
-                        () => comp.SetSpecialization(SexSlaveSpecializationType.None)),
-                    BuildCombatantSpecializationOption(pawn, comp)
-                };
-#if SSC_RW17
-                options.Add(BuildFertilitySpecializationOption(pawn, comp));
-#endif
-                if (CanShowLegacySpecializationOptions(comp))
-                {
-                    string busOptionLabel = Strings.ITab_SelectSpecializationBus;
-                    bool busFinalized = BusSpecializationUtility.HasFinalBusState(pawn);
-                    bool busEnabled = !busFinalized;
-                    string busDisabledReason = null;
-                    if (busEnabled)
-                    {
-                        busEnabled = BusSpecializationUtility.CanUseBusSpecialization(pawn, out busDisabledReason);
-                    }
-
-                    if (busFinalized)
-                    {
-                        busOptionLabel = busOptionLabel + " " + Strings.ITab_SpecializationFinalizedSuffix;
-                    }
-                    else if (!busEnabled)
-                    {
-                        busOptionLabel = busOptionLabel + " (" + busDisabledReason + ")";
-                    }
-
-                    string cowOptionLabel = Strings.ITab_SelectSpecializationCow;
-                    bool cowFinalized = BusSpecializationUtility.HasFinalCowState(pawn);
-                    bool cowEnabled = !cowFinalized;
-                    string cowDisabledReason = null;
-                    if (cowEnabled)
-                    {
-                        cowEnabled = BusSpecializationUtility.CanUseCowSpecialization(pawn, out cowDisabledReason);
-                    }
-
-                    if (cowFinalized)
-                    {
-                        cowOptionLabel = cowOptionLabel + " " + Strings.ITab_SpecializationFinalizedSuffix;
-                    }
-                    else if (!cowEnabled)
-                    {
-                        cowOptionLabel = cowOptionLabel + " (" + cowDisabledReason + ")";
-                    }
-
-                    options.AddRange(new[]
-                    {
-                        new FloatMenuOption(busOptionLabel, busEnabled ? (Action)delegate
-                        {
-                            if (!CanShowLegacySpecializationOptions(comp)) return;
-                            comp.SetSpecialization(SexSlaveSpecializationType.Bus);
-                            BusSpecializationUtility.EnsureBusHediffFromSpecialization(pawn);
-                        } : null),
-                        new FloatMenuOption(cowOptionLabel, cowEnabled ? (Action)delegate
-                        {
-                            if (!CanShowLegacySpecializationOptions(comp)) return;
-                            comp.SetSpecialization(SexSlaveSpecializationType.Cow);
-                            BusSpecializationUtility.EnsureCowHediffFromSpecialization(pawn);
-                        } : null),
-                        BuildPetSpecializationOption(pawn, comp, SexSlaveSpecializationType.PetCat),
-                        BuildPetSpecializationOption(pawn, comp, SexSlaveSpecializationType.PetDog),
-                        BuildPetSpecializationOption(pawn, comp, SexSlaveSpecializationType.PetRabbit),
-#if SSC_RW17
-                        BuildPetSpecializationOption(pawn, comp, SexSlaveSpecializationType.PetFox),
-#endif
-                        BuildTrainerSpecializationOption(pawn, comp)
-                    });
-                }
-                Find.WindowStack.Add(new FloatMenu(options));
+                Find.WindowStack.Add(new FloatMenu(BuildSpecializationOptions(pawn, comp)));
             }
 
             listing.Gap(6f);
@@ -1025,6 +969,86 @@ namespace SexSlaveCraft
             }
             DrawRabbitReproductionModeSelector(listing, pawn, comp);
 #endif
+        }
+
+        /// <summary>两个入口共用各方向的显示和选择条件。窗口可附加原弹窗与人格校验。</summary>
+        internal static List<FloatMenuOption> BuildSpecializationOptions(Pawn pawn, CompSexSlaveTraining comp,
+            Func<bool> current = null, Action changed = null)
+        {
+            // 战斗员和生育沿用各自的研究门槛，基础调教研究只限制原先受该门槛约束的方向。
+            var options = new List<FloatMenuOption>
+            {
+                new FloatMenuOption(Strings.ITab_SelectSpecializationNone,
+                    () => comp.SetSpecialization(SexSlaveSpecializationType.None)),
+                BuildCombatantSpecializationOption(pawn, comp)
+            };
+#if SSC_RW17
+            options.Add(BuildFertilitySpecializationOption(pawn, comp));
+#endif
+            if (CanShowLegacySpecializationOptions(comp))
+            {
+                options.AddRange(new[]
+                {
+                    BuildBusOrCowSpecializationOption(pawn, comp, SexSlaveSpecializationType.Bus),
+                    BuildBusOrCowSpecializationOption(pawn, comp, SexSlaveSpecializationType.Cow),
+                    BuildPetSpecializationOption(pawn, comp, SexSlaveSpecializationType.PetCat),
+                    BuildPetSpecializationOption(pawn, comp, SexSlaveSpecializationType.PetDog),
+                    BuildPetSpecializationOption(pawn, comp, SexSlaveSpecializationType.PetRabbit),
+#if SSC_RW17
+                    BuildPetSpecializationOption(pawn, comp, SexSlaveSpecializationType.PetFox),
+#endif
+                    BuildTrainerSpecializationOption(pawn, comp)
+                });
+            }
+            // 保留原选项文案及灰显；可选项先复查菜单归属，再进入该方向自身的资格校验。
+            foreach (FloatMenuOption option in options)
+            {
+                Action select = option.action;
+                if (select == null) continue;
+                option.action = () =>
+                {
+                    if (pawn.TryGetComp<CompSexSlaveTraining>() != comp || !CanShowSpecializationSection(comp) ||
+                        current?.Invoke() == false) return;
+                    select();
+                    changed?.Invoke();
+                };
+            }
+            return options;
+        }
+
+        /// <summary>打开和提交时都检查基础研究、终极记录及公交车或奶牛的专项条件。</summary>
+        private static FloatMenuOption BuildBusOrCowSpecializationOption(Pawn pawn, CompSexSlaveTraining comp, SexSlaveSpecializationType type)
+        {
+            bool cow = type == SexSlaveSpecializationType.Cow;
+            string label = cow ? Strings.ITab_SelectSpecializationCow : Strings.ITab_SelectSpecializationBus;
+            if (IsTypeFinalized(pawn, type))
+                return new FloatMenuOption(label + " " + Strings.ITab_SpecializationFinalizedSuffix, null);
+            if (!MeetsRequirements(out string reason))
+                return new FloatMenuOption(label + " (" + reason + ")", null);
+
+            return new FloatMenuOption(label, () =>
+            {
+                if (!CanShowLegacySpecializationOptions(comp) || IsTypeFinalized(pawn, type)) return;
+                if (!MeetsRequirements(out string currentReason))
+                {
+                    if (!string.IsNullOrEmpty(currentReason))
+                        Messages.Message(currentReason, pawn, MessageTypeDefOf.RejectInput, false);
+                    return;
+                }
+                // 方向写入会发出状态通知。通知若换掉人格或身份，不能为回调后的对象补写基础状态。
+                object personality = SSCPersonalityRuntimeUtility.Capture(pawn);
+                comp.SetSpecialization(type);
+                if (pawn.TryGetComp<CompSexSlaveTraining>() != comp || !CanShowSpecializationSection(comp) ||
+                    comp.specializationType != type || !SSCPersonalityRuntimeUtility.IsCurrent(pawn, personality) ||
+                    SSCPersonalityRuntimeUtility.IsMutating(pawn)) return;
+                if (cow) BusSpecializationUtility.EnsureCowHediffFromSpecialization(pawn);
+                else BusSpecializationUtility.EnsureBusHediffFromSpecialization(pawn);
+            });
+
+            // 菜单显示和点击走同一个专项查询，避免资格变化后继续使用旧结果。
+            bool MeetsRequirements(out string failure) => cow
+                ? BusSpecializationUtility.CanUseCowSpecialization(pawn, out failure)
+                : BusSpecializationUtility.CanUseBusSpecialization(pawn, out failure);
         }
 
         /// <summary>菜单打开和点击时均检查性奴身份及研究；选择后由组件同步普通状态。</summary>

@@ -68,8 +68,12 @@ namespace SexSlaveCraft
         internal SSCBondOverviewRowText(SSCBondOverviewEntry entry)
         {
             Name = entry.IsDead ? SSCBondOverviewText.Format("DeadName", entry.Name) : entry.Name;
-            Details = SSCBondOverviewText.Format("RowDetails", entry.ChainStage,
-                SSCBondOverviewText.Specialization(entry.Specialization), SSCBondOverviewText.Location(entry.Location));
+            string location = SSCBondOverviewText.Location(entry.Location);
+            // 主人头像的关系快照也持有对方的锁链阶段，不能将其当成主人的阶段。
+            Details = entry.Direction == SSCBondOverviewDirection.Master
+                ? SSCBondOverviewText.T("Master") + "\n" + location
+                : SSCBondOverviewText.Format("RowDetails", SSCBondOverviewText.ChainStage(entry.ChainStage),
+                    SSCBondOverviewText.Specialization(entry.Specialization), location);
         }
     }
 
@@ -149,6 +153,15 @@ namespace SexSlaveCraft
             text = ("SSC_BondOverview_" + key).Translate(); translations.Add(key, text); return text;
         }
         internal static string Format(string key, params object[] args) => string.Format(T(key), args);
+
+        /// <summary>用锁链阶段定义的本地化名称替代序号，缺失名称时保留阶段值。</summary>
+        internal static string ChainStage(int stage)
+        {
+            if (stage <= 0) return T("None");
+            var stages = SSCDefOf.ChainOfSexSlave?.stages;
+            return stage <= (stages?.Count ?? 0) && !string.IsNullOrEmpty(stages[stage - 1]?.label)
+                ? stages[stage - 1].label : stage.ToString();
+        }
         internal static string Specialization(SexSlaveSpecializationType? type)
         {
             if (!type.HasValue) return T("NoTrainingComponent");
@@ -163,6 +176,7 @@ namespace SexSlaveCraft
                 case SexSlaveSpecializationType.PetRabbit: return "SSC_ITab_SpecializationPetRabbit".Translate();
 #if SSC_RW17
                 case SexSlaveSpecializationType.PetFox: return PetSpecializationUtility.GetSpecializationLabel(type.Value);
+                case SexSlaveSpecializationType.Fertility: return "SSC_Fertility_Label".Translate();
 #endif
                 default: return "SSC_ITab_SpecializationNone".Translate();
             }
@@ -180,10 +194,11 @@ namespace SexSlaveCraft
     {
         internal const float RowHeight = 80, HeaderHeight = 28, CellWidth = 80;
         internal static int Columns(float width) => Math.Max(1, (int)(width / CellWidth));
-        internal static void VisibleRange(int count, float start, float scroll, float height, out int first, out int end)
+        internal static void VisibleRange(int count, float start, float scroll, float height, out int first, out int end,
+            float rowHeight = RowHeight)
         {
-            first = Math.Max(0, Math.Min(count, (int)Math.Floor((scroll - start) / RowHeight) - 1));
-            end = Math.Max(first, Math.Min(count, (int)Math.Ceiling((scroll + height - start) / RowHeight) + 1));
+            first = Math.Max(0, Math.Min(count, (int)Math.Floor((scroll - start) / rowHeight) - 1));
+            end = Math.Max(first, Math.Min(count, (int)Math.Ceiling((scroll + height - start) / rowHeight) + 1));
         }
         internal readonly struct Grid
         {
@@ -244,11 +259,11 @@ namespace SexSlaveCraft
         internal static void Portrait(Rect rect, SSCBondOverviewEntry entry, bool current)
             => Portrait(rect, entry.Pawn, entry.IsDead, current);
 
-        internal static void Portrait(Rect rect, Pawn pawn, bool dead, bool current)
+        internal static void Portrait(Rect rect, Pawn pawn, bool dead, bool current, float? captureSize = null)
         {
             if (Event.current.type != EventType.repaint || !current) return;
-            // 原版缓存拥有纹理；这里只请求两个固定档位，不强制 SetDirty 或自行销毁。
-            float capture = rect.width > 40 ? 56 : 40;
+            // 原版缓存拥有纹理。旧总览沿用两个固定档位，大头像可显式请求更大的纹理。
+            float capture = captureSize ?? (rect.width > 40 ? 56 : 40);
             GUI.DrawTexture(rect, PortraitsCache.Get(pawn, new Vector2(capture, capture), Rot4.South, cameraZoom: 1.5f));
             if (dead && rect.width >= 24) Widgets.Label(new Rect(rect.x, rect.yMax - 18, rect.width, 18), SSCBondOverviewText.T("Dead"));
         }
@@ -303,7 +318,8 @@ namespace SexSlaveCraft
             return GUI.enabled && Event.current.type == EventType.mouseDown && Event.current.button == 0;
         }
 
-        private static void Badge(Rect rect, SSCBondOverviewLocation location, bool current)
+        /// <summary>让原关系总览与调教窗口共用位置和过期标记。</summary>
+        internal static void Badge(Rect rect, SSCBondOverviewLocation location, bool current)
         {
             if (rect.width < 16) return; // 小网格不让固定字号标记溢出并遮挡相邻头像；详情仍在悬停。
             // 正常同图不加说明；只用小标记提示异常、容器或异地，全文放在悬停中。

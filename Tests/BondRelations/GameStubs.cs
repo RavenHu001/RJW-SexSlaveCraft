@@ -23,7 +23,8 @@ namespace Verse
         public Pawn() { health = new Pawn_HealthTracker(this); relations = new Pawn_RelationsTracker(this); }
         public T TryGetComp<T>() where T : class => Training as T;
     }
-    public class HediffDef { public float maxSeverity = 1f; public Type hediffClass; }
+    public class HediffDef { public float maxSeverity = 1f; public Type hediffClass; public List<HediffStage> stages; }
+    public class HediffStage { public string label; }
     public struct DamageInfo { }
     public class Hediff
     {

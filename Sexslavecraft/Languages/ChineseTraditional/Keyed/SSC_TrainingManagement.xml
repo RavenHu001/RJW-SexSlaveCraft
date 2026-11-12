@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_TrainingManagement_Title>調教管理</SSC_TrainingManagement_Title>
+  <SSC_TrainingManagement_Overview>概況</SSC_TrainingManagement_Overview>
+  <SSC_TrainingManagement_SelectPawn>請從殖民者欄或地圖上單選一名可管理的角色。</SSC_TrainingManagement_SelectPawn>
+  <SSC_TrainingManagement_Unset>未設 SSC 身分</SSC_TrainingManagement_Unset>
+  <SSC_TrainingManagement_AssignedTrainer>指定調教員：{0}</SSC_TrainingManagement_AssignedTrainer>
+  <SSC_TrainingManagement_TitlePawn>調教管理 · {0}</SSC_TrainingManagement_TitlePawn>
+  <SSC_TrainingManagement_Relations>關係</SSC_TrainingManagement_Relations>
+  <SSC_TrainingManagement_Specialization>特化</SSC_TrainingManagement_Specialization>
+  <SSC_TrainingManagement_BodyAppearance>身體與外觀</SSC_TrainingManagement_BodyAppearance>
+  <SSC_TrainingManagement_BehaviorRules>行為規則</SSC_TrainingManagement_BehaviorRules>
+  <SSC_TrainingManagement_PagePending>此頁面將隨對應功能批次開放。</SSC_TrainingManagement_PagePending>
+  <SSC_TrainingManagement_Owner>主人 · {0}</SSC_TrainingManagement_Owner>
+  <SSC_TrainingManagement_CurrentSpecialization>目前特化</SSC_TrainingManagement_CurrentSpecialization>
+  <SSC_TrainingManagement_MasterStage>主人階段</SSC_TrainingManagement_MasterStage>
+  <SSC_TrainingManagement_MasterGrowth>主人成長</SSC_TrainingManagement_MasterGrowth>
+  <SSC_TrainingManagement_MasterAbilities>主人能力</SSC_TrainingManagement_MasterAbilities>
+  <SSC_TrainingManagement_TrainingEnabled>已開啟</SSC_TrainingManagement_TrainingEnabled>
+  <SSC_TrainingManagement_TrainingDisabled>已關閉</SSC_TrainingManagement_TrainingDisabled>
+  <SSC_TrainingManagement_JumpToPawn>點擊跳轉至 {0}</SSC_TrainingManagement_JumpToPawn>
+  <SSC_TrainingManagement_AssignedSection>已指派調教員</SSC_TrainingManagement_AssignedSection>
+  <SSC_TrainingManagement_CandidateSection>可指派調教員</SSC_TrainingManagement_CandidateSection>
+  <!-- 调教员卡片悬停提示的操作行，工作开关状态沿用原工作文案。 -->
+  <SSC_TrainingManagement_DragAssign>拖到已指派區以指派</SSC_TrainingManagement_DragAssign>
+  <SSC_TrainingManagement_DragAssignEnable>拖到已指派區以指派並啟用調教工作</SSC_TrainingManagement_DragAssignEnable>
+  <SSC_TrainingManagement_DragClear>拖到可指派區以撤銷</SSC_TrainingManagement_DragClear>
+  <SSC_TrainingManagement_DragClearBlocked>目前調教限制不允許撤銷</SSC_TrainingManagement_DragClearBlocked>
+  <!-- 拖动进入可提交落区后显示的结果预览。 -->
+  <SSC_TrainingManagement_DropAssign>指派 {0}</SSC_TrainingManagement_DropAssign>
+  <SSC_TrainingManagement_DropReplace>用 {1} 替換 {0}</SSC_TrainingManagement_DropReplace>
+  <SSC_TrainingManagement_DropEnable>並啟用 {0} 的調教工作</SSC_TrainingManagement_DropEnable>
+  <SSC_TrainingManagement_DropClear>撤銷對 {0} 的指派</SSC_TrainingManagement_DropClear>
+  <SSC_TrainingManagement_ScheduleDue>已到排班時段</SSC_TrainingManagement_ScheduleDue>
+  <SSC_TrainingManagement_ScheduleWaiting>尚未到排班日期或時段</SSC_TrainingManagement_ScheduleWaiting>
+  <SSC_TrainingManagement_CurrentCultivation>目前培養</SSC_TrainingManagement_CurrentCultivation>
+  <SSC_TrainingManagement_FinalAchievements>終極成果</SSC_TrainingManagement_FinalAchievements>
+  <SSC_TrainingManagement_BodyProduction>身體生產</SSC_TrainingManagement_BodyProduction>
+  <SSC_TrainingManagement_BodyFertility>生育與孕前預設</SSC_TrainingManagement_BodyFertility>
+  <SSC_TrainingManagement_BodyEmpty>目前角色沒有可顯示的身體與外觀設定。</SSC_TrainingManagement_BodyEmpty>
+  <SSC_TrainingManagement_SlaveProgress>性奴化進度</SSC_TrainingManagement_SlaveProgress>
+  <SSC_TrainingManagement_SlaveCurrentStage>目前階段：{0}</SSC_TrainingManagement_SlaveCurrentStage>
+  <SSC_TrainingManagement_NoChainProgress>無鎖鏈記錄</SSC_TrainingManagement_NoChainProgress>
+  <SSC_TrainingManagement_BeforeChainStage>未進入階段</SSC_TrainingManagement_BeforeChainStage>
+  <SSC_TrainingManagement_CurrentCorruption>目前惡墮率</SSC_TrainingManagement_CurrentCorruption>
+  <SSC_TrainingManagement_NextPercentGap>距下一階段還差 {0} 個百分點</SSC_TrainingManagement_NextPercentGap>
+  <SSC_TrainingManagement_DropAuthorizeNonOwner>同時開啟「接受非主人調教」</SSC_TrainingManagement_DropAuthorizeNonOwner>
+</LanguageData>

@@ -9,6 +9,7 @@
   <SSC_Romance_TargetDenied>Текущий фильтр романтических целей запрещает романтическую инициативу и предложение этому персонажу.</SSC_Romance_TargetDenied>
   <SSC_Romance_AcceptancePreview>{0} (согласие: {1})</SSC_Romance_AcceptancePreview>
   <SSC_Romance_SexSection>Контроль сексуального поведения (всегда принимает сексуальную инициативу хозяина)</SSC_Romance_SexSection>
+  <SSC_Romance_SexSectionShort>Контроль сексуального поведения</SSC_Romance_SexSectionShort>
   <SSC_Romance_RomanceSection>Контроль романтических отношений</SSC_Romance_RomanceSection>
   <SSC_Romance_State>Текущая стадия цепи: {0}; связанный хозяин: {1}</SSC_Romance_State>
   <SSC_Romance_NoMaster>Нет действующей привязки</SSC_Romance_NoMaster>

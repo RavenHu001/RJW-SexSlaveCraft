@@ -12,6 +12,16 @@ namespace SexSlaveCraft
         /// <summary>稳定档位的显示名；关闭与四档都由 Keyed 资源提供。</summary>
         internal static string Level(int level) => ("SSC_Sensitivity_Level" + level).Translate();
 
+        /// <summary>两个设置入口用同一组已加载参数说明各档效果。</summary>
+        internal static string OptionLabel(int level)
+        {
+            string label = Level(level);
+            var config = SSCOrgasmSensitivityConfig.Get(SSCOrgasmSensitivityUtility.Definition);
+            if (level > 0 && config?.Valid == true)
+                label += "SSC_Sensitivity_OptionParameters".Translate(config.Multipliers[level - 1].ToString("0.###"),
+                    config.Offsets[level - 1].ToString("+0.##;-0.##;0"));
+            return label;
+        }
     }
 
     public partial class ITab_SexSlaveTraining
@@ -78,11 +88,7 @@ namespace SexSlaveCraft
             for (int level = 0; level <= 4; level++)
             {
                 int selected = level;
-                string label = SSCOrgasmSensitivityPresentation.Level(level);
-                var config = SSCOrgasmSensitivityConfig.Get(SSCOrgasmSensitivityUtility.Definition);
-                if (level > 0 && config?.Valid == true)
-                    label += "SSC_Sensitivity_OptionParameters".Translate(config.Multipliers[level - 1].ToString("0.###"),
-                        config.Offsets[level - 1].ToString("+0.##;-0.##;0"));
+                string label = SSCOrgasmSensitivityPresentation.OptionLabel(level);
                 if (!SSCOrgasmSensitivityUtility.CanSet(row.Context, selected, out string reason))
                     // 原生 null action 表示禁用，不给锁定选项保留一个会重捕获权限的回调。
                     options.Add(new FloatMenuOption(label, null) { tooltip = reason });

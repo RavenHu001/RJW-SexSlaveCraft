@@ -8,6 +8,7 @@ internal static partial class Program
 {
     private static Pawn menuBlockedTarget;
     private static string menuBlockedReason;
+    private static Action menuDuringTaskCheck;
 
     /// <summary>验证清单只保留可选择目标，并保留被动必拒、零概率及原上下文提交规则。</summary>
     private static void TargetMenuTests()
@@ -60,6 +61,44 @@ internal static partial class Program
                 ChangeCommandContext(a, b, change); options[0].action();
                 Equal(0, SSCRomanceCommandGameComponent.Current.Records.Count); Equal(1, commandFeedback);
             });
+        Check("window-owned target callbacks reject a closed page or replaced binding", () =>
+        {
+            CommandReset();
+            var (actor, target) = CommandPair(SSCRomanceAction.Romance);
+            var options = TargetOptions(TargetDialog(actor), new[] { target }, () => false);
+            options.Single().action();
+            Equal(0, SSCRomanceCommandGameComponent.Current.Records.Count);
+            Equal(0, commandFeedback);
+
+            options = TargetOptions(TargetDialog(actor), new[] { target }, () => true);
+            SSCBondUtility.GetChain(actor).target = SocialPawn();
+            options.Single().action();
+            Equal(0, SSCRomanceCommandGameComponent.Current.Records.Count);
+            Equal(1, commandFeedback);
+        });
+        Check("window-owned command is rejected if the page closes during task validation", () =>
+        {
+            CommandReset();
+            var (actor, target) = CommandPair(SSCRomanceAction.Romance);
+            bool pageOpen = true;
+            var options = TargetOptions(TargetDialog(actor), new[] { target }, () => pageOpen);
+            var boundary = new Harmony("ssc.tests.romance.target-menu-page-change");
+            try
+            {
+                boundary.Patch(AccessTools.Method(typeof(SSCRomanceCommandUtility), nameof(SSCRomanceCommandUtility.TaskFailure)),
+                    prefix: new HarmonyMethod(typeof(Program), nameof(MenuTaskFailure)) { priority = Priority.First });
+                menuDuringTaskCheck = () => pageOpen = false;
+                options.Single().action();
+                Require(!pageOpen);
+                Equal(0, SSCRomanceCommandGameComponent.Current.Records.Count);
+                Equal(0, commandFeedback);
+            }
+            finally
+            {
+                menuDuringTaskCheck = null;
+                boundary.UnpatchAll(boundary.Id);
+            }
+        });
         foreach (var mode in new[] { ScheduleMode.Current, ScheduleMode.Queue, ScheduleMode.Reject, ScheduleMode.Synchronous })
             Check("direct target click schedules once and reports only the correct result " + mode, () =>
             {
@@ -80,12 +119,15 @@ internal static partial class Program
         => SSCRomanceCommandUtility.Capture(actor, null, action);
 
     /// <summary>调用生产私有构建器，检查真实 FloatMenuOption 的内容及点击动作。</summary>
-    private static List<FloatMenuOption> TargetOptions(SSCRomanceCommandContext context, IEnumerable<Pawn> candidates)
-        => (List<FloatMenuOption>)AccessTools.Method(typeof(SSCRomanceCommandMenu), "BuildTargetOptions").Invoke(null, new object[] { context, candidates });
+    private static List<FloatMenuOption> TargetOptions(SSCRomanceCommandContext context, IEnumerable<Pawn> candidates,
+        Func<bool> canSubmit = null)
+        => (List<FloatMenuOption>)AccessTools.Method(typeof(SSCRomanceCommandMenu), "BuildTargetOptions")
+            .Invoke(null, new object[] { context, candidates, canSubmit });
 
     /// <summary>仅隔离特定目标的物理任务条件，资格、关系、预览和选项生成均执行生产代码。</summary>
     private static bool MenuTaskFailure(Pawn target, ref string __result)
     {
+        menuDuringTaskCheck?.Invoke();
         if (target != menuBlockedTarget) return true;
         __result = menuBlockedReason;
         return false;

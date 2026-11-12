@@ -65,6 +65,19 @@ internal static partial class Program
             p.Training = new CompSexSlaveTraining();
             Check(!SSCAbilityToggleUtility.TrySet(p, id, false, view.Context, out _) && c.RenderingEnabled, "保留原组件凭据");
         });
+        Run("原身体内替换外观组件后旧渲染请求被拒绝", () =>
+        {
+            var pawn = new Pawn();
+            var original = AppearanceOwner(pawn);
+            var context = SSCAbilityToggleUtility.GetView(pawn, id).Context;
+            var replacement = new HediffComp_FullGelAppearance { parent = original.parent };
+            original.parent.comps[0] = replacement;
+
+            Check(!SSCAbilityToggleUtility.TrySet(pawn, id, false, context, out _) &&
+                original.RenderingEnabled && replacement.RenderingEnabled, "旧凭据不能修改任何组件");
+            Check(SSCAbilityToggleUtility.TrySet(pawn, id, false, SSCAbilityToggleUtility.GetView(pawn, id).Context, out _) &&
+                !replacement.RenderingEnabled, "新凭据仍能编辑原身体内的新组件");
+        });
         Run("通用入口保留凝胶主线程与加载期限制", () =>
         {
             var p = new Pawn(); var c = AppearanceOwner(p); var view = SSCAbilityToggleUtility.GetView(p, id);

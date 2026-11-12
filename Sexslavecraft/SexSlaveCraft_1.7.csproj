@@ -26,6 +26,22 @@
     <GenerateDependencyFile>false</GenerateDependencyFile>
   </PropertyGroup>
   <ItemGroup>
+    <!-- 调教管理第一批仅接1.7：原标签开窗、只读概况及地图单选同步。 -->
+    <Compile Include="ThePatches/Harmony_TrainingManagementTab.cs" />
+    <Compile Include="UI/Dialog_SSCTrainingManagement.cs" />
+    <Compile Include="UI/SSCTrainingWindowTheme.cs" />
+    <!-- 可编辑概况使用 1.7 窗口及选角接口。 -->
+    <Compile Include="UI/Dialog_SSCTrainingManagement.Overview.cs" />
+    <!-- 日常调教复用 1.7 窗口和锁链阶段维持接口。 -->
+    <Compile Include="UI/Dialog_SSCTrainingManagement.DailyTraining.cs" />
+    <!-- 特化页复用 1.7 的终极成果查询及窗口编辑上下文。 -->
+    <Compile Include="UI/Dialog_SSCTrainingManagement.Specialization.cs" />
+    <!-- 身体生产页使用 1.7 的原能力载体上下文。 -->
+    <Compile Include="UI/Dialog_SSCTrainingManagement.BodyProduction.cs" />
+    <Compile Include="UI/Dialog_SSCTrainingManagement.BehaviorRules.cs" />
+    <Compile Include="UI/Dialog_SSCTrainingManagement.Relations.cs" />
+    <!-- 拖放负责输入捕获与落点分派，实际指派使用 SSCTrainerWorkUtility。 -->
+    <Compile Include="UI/Dialog_SSCTrainingManagement.TrainerDrag.cs" />
     <!-- PNA阶段维持仅接1.7：锁链保存、地图原生服用薄驱动及旅队原生服药适配。 -->
     <Compile Include="common/SSCPnaMaintenanceUtility.cs" />
     <Compile Include="common/SSCPnaCaravanMaintenanceUtility.cs" />

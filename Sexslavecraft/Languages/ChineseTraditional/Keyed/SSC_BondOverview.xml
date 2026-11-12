@@ -20,7 +20,7 @@
   <SSC_BondOverview_QueryFailed>概覽重新整理失敗，稍後將重試。</SSC_BondOverview_QueryFailed>
   <SSC_BondOverview_RelationChanged>綁定關係已變化，等待重新整理……</SSC_BondOverview_RelationChanged>
   <SSC_BondOverview_NoTrainingComponent>調教資訊無法取得</SSC_BondOverview_NoTrainingComponent>
-  <SSC_BondOverview_RowDetails>階段 {0} · {1} · {2}</SSC_BondOverview_RowDetails>
+  <SSC_BondOverview_RowDetails>性奴化階段：{0}&#10;目前特化：{1}&#10;位置：{2}</SSC_BondOverview_RowDetails>
   <SSC_BondOverview_Trainer>指定調教員：{0}（{1}）</SSC_BondOverview_Trainer>
   <SSC_BondOverview_Trainer_Unavailable>暫不可用</SSC_BondOverview_Trainer_Unavailable>
   <SSC_BondOverview_Trainer_None>未指派</SSC_BondOverview_Trainer_None>

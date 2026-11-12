@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_TrainingManagement_Title>Training management</SSC_TrainingManagement_Title>
+  <SSC_TrainingManagement_Overview>Overview</SSC_TrainingManagement_Overview>
+  <SSC_TrainingManagement_SelectPawn>Select one eligible pawn from the colonist bar or the map.</SSC_TrainingManagement_SelectPawn>
+  <SSC_TrainingManagement_Unset>No SSC identity</SSC_TrainingManagement_Unset>
+  <SSC_TrainingManagement_AssignedTrainer>Assigned trainer: {0}</SSC_TrainingManagement_AssignedTrainer>
+  <SSC_TrainingManagement_TitlePawn>Training management · {0}</SSC_TrainingManagement_TitlePawn>
+  <SSC_TrainingManagement_Relations>Relationships</SSC_TrainingManagement_Relations>
+  <SSC_TrainingManagement_Specialization>Specialization</SSC_TrainingManagement_Specialization>
+  <SSC_TrainingManagement_BodyAppearance>Body and appearance</SSC_TrainingManagement_BodyAppearance>
+  <SSC_TrainingManagement_BehaviorRules>Behavior rules</SSC_TrainingManagement_BehaviorRules>
+  <SSC_TrainingManagement_PagePending>This page will become available in a later update.</SSC_TrainingManagement_PagePending>
+  <SSC_TrainingManagement_Owner>Master · {0}</SSC_TrainingManagement_Owner>
+  <SSC_TrainingManagement_CurrentSpecialization>Current specialization</SSC_TrainingManagement_CurrentSpecialization>
+  <SSC_TrainingManagement_MasterStage>Master stage</SSC_TrainingManagement_MasterStage>
+  <SSC_TrainingManagement_MasterGrowth>Master progression</SSC_TrainingManagement_MasterGrowth>
+  <SSC_TrainingManagement_MasterAbilities>Master abilities</SSC_TrainingManagement_MasterAbilities>
+  <SSC_TrainingManagement_TrainingEnabled>Enabled</SSC_TrainingManagement_TrainingEnabled>
+  <SSC_TrainingManagement_TrainingDisabled>Disabled</SSC_TrainingManagement_TrainingDisabled>
+  <SSC_TrainingManagement_JumpToPawn>Click to jump to {0}</SSC_TrainingManagement_JumpToPawn>
+  <SSC_TrainingManagement_AssignedSection>Assigned trainers</SSC_TrainingManagement_AssignedSection>
+  <SSC_TrainingManagement_CandidateSection>Eligible trainers</SSC_TrainingManagement_CandidateSection>
+  <!-- 调教员卡片悬停提示的操作行，工作开关状态沿用原工作文案。 -->
+  <SSC_TrainingManagement_DragAssign>Drag to Assigned trainers to assign</SSC_TrainingManagement_DragAssign>
+  <SSC_TrainingManagement_DragAssignEnable>Drag to Assigned trainers to assign and enable training work</SSC_TrainingManagement_DragAssignEnable>
+  <SSC_TrainingManagement_DragClear>Drag to Eligible trainers to unassign</SSC_TrainingManagement_DragClear>
+  <SSC_TrainingManagement_DragClearBlocked>Current training restrictions prevent unassigning</SSC_TrainingManagement_DragClearBlocked>
+  <!-- 拖动进入可提交落区后显示的结果预览。 -->
+  <SSC_TrainingManagement_DropAssign>Assign {0}</SSC_TrainingManagement_DropAssign>
+  <SSC_TrainingManagement_DropReplace>Replace {0} with {1}</SSC_TrainingManagement_DropReplace>
+  <SSC_TrainingManagement_DropEnable>Also enable training work for {0}</SSC_TrainingManagement_DropEnable>
+  <SSC_TrainingManagement_DropClear>Unassign {0}</SSC_TrainingManagement_DropClear>
+  <SSC_TrainingManagement_ScheduleDue>Schedule due now</SSC_TrainingManagement_ScheduleDue>
+  <SSC_TrainingManagement_ScheduleWaiting>Schedule not due yet</SSC_TrainingManagement_ScheduleWaiting>
+  <SSC_TrainingManagement_CurrentCultivation>Current training</SSC_TrainingManagement_CurrentCultivation>
+  <SSC_TrainingManagement_FinalAchievements>Final achievements</SSC_TrainingManagement_FinalAchievements>
+  <SSC_TrainingManagement_BodyProduction>Body production</SSC_TrainingManagement_BodyProduction>
+  <SSC_TrainingManagement_BodyFertility>Fertility and preconception</SSC_TrainingManagement_BodyFertility>
+  <SSC_TrainingManagement_BodyEmpty>This pawn has no body or appearance settings to display.</SSC_TrainingManagement_BodyEmpty>
+  <SSC_TrainingManagement_SlaveProgress>Slave progression</SSC_TrainingManagement_SlaveProgress>
+  <SSC_TrainingManagement_SlaveCurrentStage>Current stage: {0}</SSC_TrainingManagement_SlaveCurrentStage>
+  <SSC_TrainingManagement_NoChainProgress>No chain record</SSC_TrainingManagement_NoChainProgress>
+  <SSC_TrainingManagement_BeforeChainStage>Below the first stage</SSC_TrainingManagement_BeforeChainStage>
+  <SSC_TrainingManagement_CurrentCorruption>Current corruption</SSC_TrainingManagement_CurrentCorruption>
+  <SSC_TrainingManagement_NextPercentGap>{0} percentage points to the next stage</SSC_TrainingManagement_NextPercentGap>
+  <SSC_TrainingManagement_DropAuthorizeNonOwner>Also allow receiving training from non-owners</SSC_TrainingManagement_DropAuthorizeNonOwner>
+</LanguageData>

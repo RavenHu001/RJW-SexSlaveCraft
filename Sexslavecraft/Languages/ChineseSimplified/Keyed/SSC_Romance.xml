@@ -9,6 +9,7 @@
   <SSC_Romance_TargetDenied>当前浪漫对象筛选不允许向此人主动求爱或求婚。</SSC_Romance_TargetDenied>
   <SSC_Romance_AcceptancePreview>{0}（接受：{1}）</SSC_Romance_AcceptancePreview>
   <SSC_Romance_SexSection>性行为控制（始终接受主人发起的性行为）</SSC_Romance_SexSection>
+  <SSC_Romance_SexSectionShort>性行为控制</SSC_Romance_SexSectionShort>
   <SSC_Romance_RomanceSection>浪漫控制</SSC_Romance_RomanceSection>
   <SSC_Romance_State>当前锁链阶段：{0}；实际主人：{1}</SSC_Romance_State>
   <SSC_Romance_NoMaster>无有效绑定</SSC_Romance_NoMaster>

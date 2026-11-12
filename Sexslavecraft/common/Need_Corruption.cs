@@ -39,14 +39,17 @@ namespace SexSlaveCraft
             (0.05f, Strings.Stage_Slight)
         };
 
-        private string GetStageLabel()
+        /// <summary>返回当前恶堕档位的名称和顺序，最低档为零，数值回落时同步回落。</summary>
+        internal (string Label, int Index, int ThresholdCount) GetStagePresentation()
         {
-            foreach (var stage in stages)
+            // 阈值按从高到低排列，命中的第一项是当前值达到的最高档。
+            for (int i = 0; i < stages.Count; i++)
             {
+                var stage = stages[i];
                 if (CurLevelPercentage >= stage.threshold)
-                    return stage.label;
+                    return (stage.label, stages.Count - i, stages.Count);
             }
-            return Strings.Stage_Stable;
+            return (Strings.Stage_Stable, 0, stages.Count);
         }
 
         private float GetMinLevel()
@@ -238,9 +241,10 @@ namespace SexSlaveCraft
             highestCorruptionLevel = 0f;
         }
 
+        /// <summary>原版需求提示与管理窗口复用同一档位判定。</summary>
         public override string GetTipString()
         {
-            string stage = GetStageLabel();
+            string stage = GetStagePresentation().Label;
             return Strings.Need_TipFormat(def.LabelCap, CurLevelPercentage.ToStringPercent(), stage, def.description);
         }
 

@@ -82,6 +82,7 @@ internal static partial class Program
         Run("弹窗复用原版色轮数值色板滑块",AppearanceWidgets);
         Run("弹窗取消丢弃RGB与不透明度草稿",()=>AppearanceWindow("Cancel"));
         Run("弹窗确认后同时应用RGB与不透明度",()=>AppearanceWindow("Accept"));
+        Run("调色确认失焦后复查宿主授权，已撤销的草稿不写回", AppearanceWindowScopeExpires);
         Run("弹窗恢复默认按钮经确认生效",AppearanceWindowReset);
         Run("弹窗非法HEX阻止应用",AppearanceWindowInvalid);
         // 缓存隔离与性能：固定源对象，区分个体配置变化与源材质变化。
@@ -128,6 +129,24 @@ internal static partial class Program
         Check(!c.Custom&&!w.Closed,"等待延迟输入提交");w.DoWindowContents(new Rect(0,0,640,580));
         Check(w.Closed&&c.Custom&&c.Appearance.Color.r==1&&c.Appearance.Color.a==.25f,"确认后统一写回");
     }
+    /// <summary>模拟确认后、下一次绘制写入前撤销宿主授权，原身体仍然存在。</summary>
+    private static void AppearanceWindowScopeExpires()
+    {
+        var pawn = new Pawn();
+        var appearance = AppearanceOwner(pawn);
+        int remainingChecks = 2;
+        var window = new Dialog_FullGelAppearance(pawn, appearance.parent, () => remainingChecks-- > 0);
+        var rect = new Rect(0, 0, 640, 580);
+        Widgets.Rgb = new Color(1, 0, 0, 1);
+        Widgets.Buttons.Add("Accept");
+
+        window.DoWindowContents(rect);
+        Check(!appearance.Custom && !window.Closed, "确认按钮先保留草稿");
+        window.DoWindowContents(rect);
+        Check(!appearance.Custom && pawn.Drawer.renderer.Dirty == 0 && window.Closed,
+            "绘制已开始也会关闭失效弹窗，且不会写入或刷新角色");
+    }
+
     /// <summary>恢复默认先改草稿；确认前检查原身体自定义标记仍在。</summary>
     private static void AppearanceWindowReset()
     {

@@ -21,9 +21,15 @@ namespace UnityEngine
         public Color(float r, float g, float b, float a = 1) { this.r = r; this.g = g; this.b = b; this.a = a; }
         public static Color white => new Color(1, 1, 1);
         public static Color operator *(Color a, Color b) => new(a.r*b.r,a.g*b.g,a.b*b.b,a.a*b.a);
+        public static Color Lerp(Color start, Color end, float amount)
+        {
+            amount = Mathf.Clamp01(amount);
+            return new Color(start.r + (end.r - start.r) * amount, start.g + (end.g - start.g) * amount,
+                start.b + (end.b - start.b) * amount, start.a + (end.a - start.a) * amount);
+        }
     }
-    public enum TextAnchor { UpperLeft, MiddleRight, MiddleCenter }
-    public static class GUI { public static bool enabled = true; public static Color color = Color.white; }
+    public enum TextAnchor { UpperLeft, MiddleRight, MiddleCenter, MiddleLeft }
+    public static class GUI { public static bool enabled = true; public static Color color = Color.white; public static Color contentColor = Color.white; }
     public static class Mathf
     {
         public static float Max(float a, float b) => Math.Max(a, b);
@@ -46,7 +52,10 @@ namespace Verse
         // 近似字体测量仅用于区域容纳检查，不宣称等同 Unity 的字形、裁剪与输入行为。
         public static float CalcHeight(string text, float width) => Math.Max(1, (float)Math.Ceiling((text ?? "").Sum(c => c > 255 ? 13f : 7f) / width)) * (Font == GameFont.Small ? 22 : 30);
     }
-    public record DrawItem(string Kind, Rect Rect, string Text = "", bool Disabled = false);
+    public record DrawItem(string Kind, Rect Rect, string Text = "", bool Disabled = false)
+    {
+        public GameFont Font { get; init; }
+    }
     public static partial class Widgets
     {
         public static List<DrawItem> Items = new List<DrawItem>();
@@ -56,7 +65,8 @@ namespace Verse
         public static void Label(Rect rect, string label)
         {
             if (Throw) throw new InvalidOperationException("test draw failure");
-            Items.Add(new DrawItem(label.StartsWith("✓ ") || label.StartsWith("□ ") ? "romance-target" : "label", RomanceUiOrigins.Transform(rect), label, !GUI.enabled));
+            Items.Add(new DrawItem(label.StartsWith("✓ ") || label.StartsWith("□ ") ? "romance-target" : "label",
+                RomanceUiOrigins.Transform(rect), label, !GUI.enabled) { Font = Text.Font });
         }
         public static Rect FillableBar(Rect rect, float value)
         {

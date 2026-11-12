@@ -20,6 +20,31 @@ internal static partial class Program
             postfix: new HarmonyMethod(typeof(Program), nameof(PersonalResetBuildCallback)));
         try
         {
+            Check("behavior rule press rejects a new forced source or replacement config", () =>
+            {
+                SSCMod.settings = new SSCSettings();
+                var pawn = SexResetPawn();
+                var training = Comp(pawn);
+                const SSCRestrictionRule rule = SSCRestrictionRule.ReceiveForced;
+                var config = training.restrictionConfig;
+                var rules = config.rules;
+                rules.Set(rule, SSCRestrictionValue.Deny);
+                bool Submit() => (bool)AccessTools.Method(typeof(SSCRestrictionEditor), "TrySetFromView").Invoke(null,
+                    new object[] { pawn, rule, SSCRestrictionValue.Allow, config, rules, SSCRestrictionValue.Deny, rules.ConsensualTarget });
+
+                training.specializationType = SexSlaveSpecializationType.Bus;
+                Equal(SSCRestrictionSource.Specialization, SSCRestrictionResolver.Resolve(pawn, rules, rule).Source);
+                Require(!Submit());
+                Equal(SSCRestrictionValue.Deny, rules.Get(rule));
+                training.specializationType = SexSlaveSpecializationType.None;
+                training.restrictionConfig = config.Copy();
+                Require(!Submit());
+                Equal(SSCRestrictionValue.Deny, training.restrictionConfig.rules.Get(rule));
+
+                training.restrictionConfig = config;
+                Require(Submit());
+                Equal(SSCRestrictionValue.Allow, rules.Get(rule));
+            });
             // 禁用视图不能等条件恢复后自行取得提交权限，必须重新绘制并取得新请求。
             foreach (string mode in new[] { "stage", "loading", "faction" })
                 Check("personal romance unavailable view cannot acquire later authority " + mode, () =>

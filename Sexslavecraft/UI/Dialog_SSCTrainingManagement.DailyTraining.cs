@@ -1,0 +1,232 @@
+// AI 辅助生成
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using RimWorld;
+using UnityEngine;
+using Verse;
+
+namespace SexSlaveCraft
+{
+    internal sealed partial class Dialog_SSCTrainingManagement
+    {
+        private Vector2 dailyTrainingScroll;
+
+        /// <summary>日常设置复查原页面、受训者和基础调教研究。</summary>
+        private bool CanEditDailyTraining(PageEdit edit)
+            => PageEditIsCurrent(edit) && edit.Identity == PawnIdentity.Slave &&
+                ResearchUtils.IsResearchFinished(SSCDefOf.SSC_BasicTraining);
+
+        /// <summary>宽窗并列调教设置与排班，窄窗按原顺序纵向排列。研究只限制普通调教设置。</summary>
+        private void DrawDailyTraining(Rect page)
+        {
+            var viewport = new Rect(page.x + PanelPadding, page.y + PanelPadding,
+                Mathf.Max(1f, page.width - 2f * PanelPadding), Mathf.Max(1f, page.height - 2f * PanelPadding));
+            float width = Mathf.Max(1f, viewport.width - 16f);
+            var edit = new PageEdit(source, comp, currentPage, contextRevision);
+            bool researched = ResearchUtils.IsResearchFinished(SSCDefOf.SSC_BasicTraining);
+            bool twoColumns = researched && width >= SettingsTwoColumnWidth;
+            float leftWidth = twoColumns ? (width - SettingsColumnGap) * .44f : width;
+            var trainingColumn = new SettingsColumn(leftWidth, panel: true);
+            SettingsColumn scheduleColumn = null;
+
+            // 排班有独立面板，研究未完成时只占用调教设置面板的高度。
+            if (researched)
+            {
+                AddTrainingSettings(trainingColumn);
+                scheduleColumn = new SettingsColumn(twoColumns ? width - leftWidth - SettingsColumnGap : width, panel: true);
+                AddScheduleSettings(scheduleColumn);
+            }
+            else
+            {
+                trainingColumn.AddLabel(Strings.ITab_TrainingLocked);
+                trainingColumn.AddLabel(Strings.ITab_TrainingLockedDesc, trainingColumn.Indent);
+            }
+            // 锁链阶段有自己的准入和保存载体，在基础研究未完成时仍可显示。
+            AddPnaMaintenance(trainingColumn);
+            var panels = new List<(float Height, Action<float> Draw)> { LayoutSettingsPanelRow(trainingColumn, twoColumns ? scheduleColumn : null) };
+            if (!twoColumns && scheduleColumn != null) panels.Add(LayoutSettingsPanelRow(scheduleColumn));
+            DrawSettingsPanels(viewport, width, panels, ref dailyTrainingScroll);
+
+            // 开关为原版勾选框预留宽度，实际写入前再次核对角色和研究。
+            void AddToggle(SettingsColumn column, string label, bool value, Action<bool> submit, float offset = 0f, string tooltip = null)
+            {
+                float rowHeight = SettingsToggleHeight(label, column.Width - offset);
+                column.Rows.Add((rowHeight, rect =>
+                {
+                    bool next = SSCUIWidgets.Checkbox(InsetSettingsRow(rect, offset), label, value, true, tooltip);
+                    if (next != value && CanEditDailyTraining(edit)) submit(next);
+                }));
+            }
+
+            // 标签和值共享一行。先测量标签，再为右侧下拉预留宽度。
+            void AddSetting(SettingsColumn column, string caption, string value, Action action, float offset = 0f,
+                bool enabled = true, string tooltip = null)
+            {
+                float captionWidth = (column.Width - offset) * .42f;
+                float rowHeight = Mathf.Max(ControlHeight(), Text.CalcHeight(caption, Mathf.Max(1f, captionWidth - 8f)));
+                column.Rows.Add((rowHeight, rect =>
+                {
+                    rect = InsetSettingsRow(rect, offset);
+                    using var scope = new SSCBondOverviewWidgets.GuiScope(false);
+                    Text.Anchor = TextAnchor.MiddleLeft;
+                    Widgets.Label(new Rect(rect.x, rect.y, Mathf.Max(1f, captionWidth - 8f), rect.height), caption);
+                    var control = new Rect(rect.x + captionWidth, rect.y, Mathf.Max(1f, rect.width - captionWidth), rect.height);
+                    if (DrawSettingsControl(control, value, dropdown: true, enabled: enabled, tooltip: tooltip)) action();
+                }));
+            }
+
+            float ControlHeight() => Mathf.Max(32f, Text.LineHeight + 6f);
+
+            // 启停和冷却沿用原调教面板；姿势菜单保留打开时的值以防覆盖外部改动。
+            void AddTrainingSettings(SettingsColumn column)
+            {
+                var training = edit.Comp;
+                bool enabled = training.IsEnabled;
+                var pose = training.selectedMode;
+                string heading = Strings.ITab_TrainingSettingsHeader;
+                string cooldown = training.IsOnCooldown ? ITab_SexSlaveTraining.GetDailyTrainingStatus(training) : null;
+                float headingWidth = Mathf.Max(1f, column.Width * .42f - 8f);
+                // 标题独自决定行高。右侧倒计时出现、变长或消失都不改变下方控件位置。
+                column.Rows.Add((Mathf.Max(Text.LineHeight, Text.CalcHeight(heading, headingWidth)), rect =>
+                {
+                    using var scope = new SSCBondOverviewWidgets.GuiScope(false);
+                    Text.Anchor = TextAnchor.MiddleLeft;
+                    Widgets.Label(new Rect(rect.x, rect.y, headingWidth, rect.height), heading);
+                    if (cooldown == null) return;
+
+                    float offset = rect.width * .42f;
+                    var status = InsetSettingsRow(rect, offset);
+                    Text.Anchor = TextAnchor.MiddleRight;
+                    Text.WordWrap = false;
+                    // 裁剪区域而非富文本字符串，窄窗下仍能悬停查看完整倒计时。
+                    GUI.BeginGroup(status);
+                    try { Widgets.Label(new Rect(0f, 0f, status.width, status.height), cooldown); }
+                    finally { GUI.EndGroup(); }
+                    if (Text.CalcSize(cooldown).x > status.width) TooltipHandler.TipRegion(status, cooldown);
+                }));
+                AddToggle(column, Strings.ITab_AllowTraining, enabled, next =>
+                {
+                    if (training.IsEnabled == enabled) ITab_SexSlaveTraining.SetDailyTrainingEnabled(edit.Pawn, training, next);
+                }, column.Indent);
+                AddSetting(column, Strings.ITab_PoseHeader, Strings.GetModeLabel(pose), () =>
+                {
+                    if (!CanEditDailyTraining(edit)) return;
+                    OpenSettingsMenu(edit, (TrainingActType[])Enum.GetValues(typeof(TrainingActType)), Strings.GetModeLabel, value =>
+                    {
+                        if (CanEditDailyTraining(edit) && training.selectedMode == pose) training.selectedMode = value;
+                    });
+                }, column.Indent);
+            }
+
+            // 排班只写原组件字段，状态读取组件现有的本地日期和时段判断。
+            void AddScheduleSettings(SettingsColumn column)
+            {
+                var training = edit.Comp;
+                bool scheduled = training.scheduledTrainingEnabled;
+                int hour = training.scheduledTrainingHour;
+                int days = training.scheduledTrainingIntervalDays;
+                // 关闭时只给开关加悬浮说明，保留现有的排班高度与已保存设置。
+                AddToggle(column, "<b>" + "SSC_Schedule_Header".Translate() + "</b>", scheduled, next =>
+                {
+                    if (training.scheduledTrainingEnabled == scheduled) training.scheduledTrainingEnabled = next;
+                }, tooltip: scheduled ? null : "SSC_Schedule_StatusAnytime".Translate().ToString());
+                // 关闭仅隐藏细项，保留已保存的开始时间和频率。
+                if (!scheduled) return;
+
+                string hourLabel = "SSC_Schedule_HourButton".Translate(hour.ToString("00"), training.ScheduledTrainingEndHour.ToString("00"));
+                string intervalLabel = "SSC_Schedule_IntervalButton".Translate(days);
+                const float gap = 8f;
+                float indent = column.Indent;
+                float columnWidth = (column.Width - indent - gap) / 2f;
+                // 以两段实际译文和下拉内边距决定是否并排，长译文可提前换行。
+                float minimum = Mathf.Max(180f, Mathf.Max(Text.CalcSize(hourLabel).x, Text.CalcSize(intervalLabel).x) + 36f);
+                if (columnWidth >= minimum)
+                    column.Rows.Add((ControlHeight(), rect =>
+                    {
+                        var first = new Rect(rect.x + indent, rect.y, columnWidth, rect.height);
+                        var second = new Rect(first.xMax + gap, rect.y, columnWidth, rect.height);
+                        DrawScheduleControl(first, hourLabel, OpenHourMenu);
+                        DrawScheduleControl(second, intervalLabel, OpenIntervalMenu);
+                    }));
+                else
+                {
+                    column.Rows.Add((ControlHeight(), rect => DrawScheduleControl(InsetSettingsRow(rect, indent), hourLabel, OpenHourMenu)));
+                    column.Rows.Add((ControlHeight(), rect => DrawScheduleControl(InsetSettingsRow(rect, indent), intervalLabel, OpenIntervalMenu)));
+                }
+
+                bool due = training.IsScheduledTrainingAvailableNow;
+                column.AddLabel((due ? "SSC_TrainingManagement_ScheduleDue" : "SSC_TrainingManagement_ScheduleWaiting").Translate(), indent,
+                    (due ? "SSC_Schedule_StatusNow" : "SSC_Schedule_StatusWaiting").Translate());
+
+                void DrawScheduleControl(Rect rect, string label, Action action)
+                {
+                    if (DrawSettingsControl(rect, label, dropdown: true)) action();
+                }
+
+                void OpenHourMenu()
+                {
+                    if (!ScheduleIsEditable()) return;
+                    // 用现有窗口长度折算次日结束时刻；保存字段只接收开始小时。
+                    OpenSettingsMenu(edit, Enumerable.Range(0, 24), start => "SSC_Schedule_HourOption".Translate(
+                        start.ToString("00"), ((start + CompSexSlaveTraining.ScheduledTrainingWindowHours) % 24).ToString("00")), value =>
+                    {
+                        if (ScheduleIsEditable() && training.scheduledTrainingHour == hour) training.scheduledTrainingHour = value;
+                    });
+                }
+
+                void OpenIntervalMenu()
+                {
+                    if (!ScheduleIsEditable()) return;
+                    OpenSettingsMenu(edit, Enumerable.Range(1, 7), interval => "SSC_Schedule_IntervalOption".Translate(interval), value =>
+                    {
+                        if (ScheduleIsEditable() && training.scheduledTrainingIntervalDays == days) training.scheduledTrainingIntervalDays = value;
+                    });
+                }
+
+                // 排班关闭后，已打开的时间和频率菜单也无权改值。
+                bool ScheduleIsEditable() => CanEditDailyTraining(edit) && training.scheduledTrainingEnabled;
+            }
+
+            // 只为实际锁链生成维持控件。档位菜单保存原链、主人和设置代次，提交时不重拍凭据。
+            void AddPnaMaintenance(SettingsColumn column)
+            {
+                var chain = SSCPnaMaintenanceUtility.Capture(edit.Pawn);
+                if (chain.Chain == null) return;
+                column.Divide();
+                bool canSet = SSCPnaMaintenanceUtility.CanSet(chain, SSCPnaMaintenanceStage.Off, out string reason);
+                AddSetting(column, "<b>" + "SSC_PnaMaintenance_Title".Translate() + "</b>", SSCPnaMaintenanceUtility.StageLabel(chain.Stage), () =>
+                {
+                    if (!PageEditIsCurrent(edit) || !SSCPnaMaintenanceUtility.CanSet(chain, SSCPnaMaintenanceStage.Off, out _)) return;
+                    OpenSettingsMenu(edit, (SSCPnaMaintenanceStage[])Enum.GetValues(typeof(SSCPnaMaintenanceStage)),
+                        SSCPnaMaintenanceUtility.StageLabel, stage =>
+                        {
+                            if (SSCPnaMaintenanceUtility.TrySet(chain, stage, out string rejection)) RefreshAfterEdit();
+                            else Messages.Message(rejection, edit.Pawn, MessageTypeDefOf.RejectInput, false);
+                        }, stage => SSCPnaMaintenanceUtility.CanSet(chain, stage, out string rejection) ? null : rejection);
+                }, enabled: canSet, tooltip: reason ?? "SSC_PnaMaintenance_Tooltip".Translate().ToString());
+            }
+        }
+
+        /// <summary>日常调教和身体页共用的设置菜单，提交先核对原弹窗和页面，再进入对应业务校验。</summary>
+        private void OpenSettingsMenu<T>(PageEdit edit, IEnumerable<T> values, Func<T, string> label, Action<T> submit,
+            Func<T, string> unavailable = null)
+        {
+            if (!PageEditIsCurrent(edit)) return;
+            FloatMenu menu = null;
+            var options = new List<FloatMenuOption>();
+            // 禁用项保留原因；可用项在原版关闭弹窗前验证同一个实例，再执行各自的提交。
+            foreach (T value in values)
+            {
+                string reason = unavailable?.Invoke(value);
+                options.Add(reason != null ? new FloatMenuOption(label(value), null) { tooltip = reason }
+                    : new FloatMenuOption(label(value), () =>
+                    {
+                        if (EditPopupIsCurrent(menu, edit)) submit(value);
+                    }));
+            }
+            menu = new FloatMenu(options);
+            ShowEditPopup(menu);
+        }
+    }
+}

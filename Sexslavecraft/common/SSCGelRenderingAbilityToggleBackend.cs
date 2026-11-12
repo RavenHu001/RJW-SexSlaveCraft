@@ -1,4 +1,5 @@
 // AI 辅助生成：个人渲染读写原外观工具，保留身体归属、主线程和不可变快照。
+using System;
 using Verse;
 
 namespace SexSlaveCraft
@@ -16,11 +17,19 @@ namespace SexSlaveCraft
         public override string ChangeFailure(Pawn pawn, SSCAbilityToggleDefinition definition, bool enabled)
             => !UnityData.IsInMainThread || FullGelAppearanceUtility.GetOwner(pawn)?.TryGetComp<HediffComp_FullGelAppearance>() == null
                 ? SSCAbilityToggleUtility.Reason("Unavailable") : null;
-        /// <summary>捕获当前凝胶身体实例，不将外观选择保存到人格字典。</summary>
-        public override object CaptureOwner(Pawn pawn) => FullGelAppearanceUtility.GetOwner(pawn);
-        /// <summary>凝胶身体替换后旧界面不能操作新实例。</summary>
+        /// <summary>捕获原身体和真正保存渲染选择的外观组件。</summary>
+        public override object CaptureOwner(Pawn pawn)
+        {
+            var body = FullGelAppearanceUtility.GetOwner(pawn);
+            var appearance = body?.TryGetComp<HediffComp_FullGelAppearance>();
+            return appearance == null ? null : (body, appearance);
+        }
+
+        /// <summary>即使身体 Hediff 保留，组件替换也会撤销原开关请求。</summary>
         public override bool IsOwnerCurrent(Pawn pawn, object owner)
-            => owner != null && ReferenceEquals(FullGelAppearanceUtility.GetOwner(pawn), owner);
+            => owner is ValueTuple<HediffWithComps, HediffComp_FullGelAppearance> original &&
+                ReferenceEquals(FullGelAppearanceUtility.GetOwner(pawn), original.Item1) &&
+                ReferenceEquals(original.Item1.TryGetComp<HediffComp_FullGelAppearance>(), original.Item2);
         /// <summary>原外观工具保持局部刷新、Revision 与快照发布；同值不重建图形。</summary>
         public override void SetEnabled(Pawn pawn, SSCAbilityToggleDefinition definition, bool enabled)
             => FullGelAppearanceUtility.SetRenderingEnabled(pawn, FullGelAppearanceUtility.GetOwner(pawn), enabled);

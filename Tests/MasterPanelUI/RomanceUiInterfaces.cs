@@ -39,11 +39,13 @@ namespace Verse
         public static Action BeforeResetButton;
         public static int TargetIndex, TargetClick = -1;
         public static Action BeforeTargetButton;
+        public static (float X, float Y)? BehaviorClick;
         /// <summary>仅记录生产灰底禁用命令区域；不执行图形渲染或命令点击。</summary>
         public static void DrawBoxSolid(Rect rect, Color color)
             => Items.Add(new DrawItem(color.r == .24f && color.g == .24f && color.b == .24f ? "romance-button" : "romance-surface", RomanceUiOrigins.Transform(rect), "", !GUI.enabled));
         /// <summary>记录生产框线矩形，不修改其尺寸。</summary>
         public static void DrawBox(Rect rect) => Items.Add(new DrawItem("romance-frame", RomanceUiOrigins.Transform(rect)));
+        public static void DrawHighlightIfMouseover(Rect rect) { }
         /// <summary>记录按钮几何与外层输入状态，本宿主不打开实际窗口。</summary>
         public static bool ButtonText(Rect rect, string text)
         {
@@ -58,9 +60,14 @@ namespace Verse
             var callback = BeforeRomanceButton; BeforeRomanceButton = null; callback?.Invoke();
             return RomanceButtonIndex++ == RomanceButtonClick;
         }
-        /// <summary>仅从复选框注入点击，避免标签热区在同一模型事件再次翻转。</summary>
+        /// <summary>可按坐标命中行为页整行，原对象多选仍按索引注入。</summary>
         public static bool ButtonInvisible(Rect rect)
         {
+            if (BehaviorClick is { } click)
+            {
+                rect = RomanceUiOrigins.Transform(rect);
+                return click.X >= rect.x && click.X < rect.xMax && click.Y >= rect.y && click.Y < rect.yMax;
+            }
             if (Items.LastOrDefault()?.Kind != "romance-target") return false;
             var callback = BeforeTargetButton; BeforeTargetButton = null; callback?.Invoke();
             return TargetIndex++ == TargetClick;
@@ -72,6 +79,9 @@ namespace Verse
             BeforeCheckbox?.Invoke();
             if (RomanceCheckboxIndex++ == RomanceClick && !disabled && GUI.enabled) value = !value;
         }
+        /// <summary>仅记录纹理位置，实际点击由整行按钮负责。</summary>
+        public static void CheckboxDraw(float x, float y, bool active, bool disabled, float size = 24f)
+            => Items.Add(new DrawItem("romance-checkbox", RomanceUiOrigins.Transform(new Rect(x, y, size, size)), null, disabled));
     }
     public static class Find { public static readonly UiWindowStack WindowStack = new(); }
     public sealed class UiWindowStack
@@ -112,7 +122,8 @@ namespace SexSlaveCraft
     public static class SSCRestrictionUI
     {
         /// <summary>旧板块提前返回，检查调用方仍能绘制第二板块。</summary>
-        public static void DrawPawn(Verse.Listing_Standard listing, Verse.Pawn pawn, bool compact = false) { listing.Label("SEX-CONTENT"); }
+        public static void DrawPawn(Verse.Listing_Standard listing, Verse.Pawn pawn, bool compact,
+            Func<Rect, object, Action, Action> prepare) { listing.Label("SEX-CONTENT"); }
     }
     /// <summary>性行为业务由原生宿主测试；此处只观察共享标题向独立后台分发。</summary>
     public sealed class SSCRestrictionResetContext { }

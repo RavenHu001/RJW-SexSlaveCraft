@@ -171,7 +171,13 @@ namespace SexSlaveCraft
                     !ReferenceEquals(session.Owner, Current.Game) || !ReferenceEquals(view, pendingView) ||
                     !SSCBondOverviewAccess.IsCardSource(view.Source) || view.Revision != pendingRevision) return;
                 // 所有动作在原版网格分派后执行一次，仍拒绝旧来源／代次；批选不调用世界补漏。
-                if (pendingAction == 1) Dialog_SSCBondOverview.Open(session, view.Source);
+                if (pendingAction == 1)
+                {
+#if SSC_RW17
+                    if (!Dialog_SSCTrainingManagement.TryOpenRelations(view.Source))
+#endif
+                        Dialog_SSCBondOverview.Open(session, view.Source);
+                }
                 else if (pendingAction == 7) SelectAllCurrentMap(view.Source);
                 else if (pendingAction == 6) OpenTrainerMenu(session, view);
                 else if (ReferenceEquals(view.Snapshot, pendingSnapshot))

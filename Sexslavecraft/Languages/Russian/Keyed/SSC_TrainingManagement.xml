@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_TrainingManagement_Title>Управление дрессировкой</SSC_TrainingManagement_Title>
+  <SSC_TrainingManagement_Overview>Обзор</SSC_TrainingManagement_Overview>
+  <SSC_TrainingManagement_SelectPawn>Выберите одного доступного персонажа на панели колонистов или на карте.</SSC_TrainingManagement_SelectPawn>
+  <SSC_TrainingManagement_Unset>Роль SSC не выбрана</SSC_TrainingManagement_Unset>
+  <SSC_TrainingManagement_AssignedTrainer>Назначенный дрессировщик: {0}</SSC_TrainingManagement_AssignedTrainer>
+  <SSC_TrainingManagement_TitlePawn>Управление дрессировкой · {0}</SSC_TrainingManagement_TitlePawn>
+  <SSC_TrainingManagement_Relations>Связи</SSC_TrainingManagement_Relations>
+  <SSC_TrainingManagement_Specialization>Специализация</SSC_TrainingManagement_Specialization>
+  <SSC_TrainingManagement_BodyAppearance>Тело и внешность</SSC_TrainingManagement_BodyAppearance>
+  <SSC_TrainingManagement_BehaviorRules>Правила поведения</SSC_TrainingManagement_BehaviorRules>
+  <SSC_TrainingManagement_PagePending>Эта страница станет доступна в одном из следующих обновлений.</SSC_TrainingManagement_PagePending>
+  <SSC_TrainingManagement_Owner>Хозяин · {0}</SSC_TrainingManagement_Owner>
+  <SSC_TrainingManagement_CurrentSpecialization>Текущая специализация</SSC_TrainingManagement_CurrentSpecialization>
+  <SSC_TrainingManagement_MasterStage>Ступень хозяина</SSC_TrainingManagement_MasterStage>
+  <SSC_TrainingManagement_MasterGrowth>Развитие хозяина</SSC_TrainingManagement_MasterGrowth>
+  <SSC_TrainingManagement_MasterAbilities>Способности хозяина</SSC_TrainingManagement_MasterAbilities>
+  <SSC_TrainingManagement_TrainingEnabled>Включена</SSC_TrainingManagement_TrainingEnabled>
+  <SSC_TrainingManagement_TrainingDisabled>Отключена</SSC_TrainingManagement_TrainingDisabled>
+  <SSC_TrainingManagement_JumpToPawn>Нажмите, чтобы перейти к персонажу {0}</SSC_TrainingManagement_JumpToPawn>
+  <SSC_TrainingManagement_AssignedSection>Назначенные дрессировщики</SSC_TrainingManagement_AssignedSection>
+  <SSC_TrainingManagement_CandidateSection>Доступные дрессировщики</SSC_TrainingManagement_CandidateSection>
+  <!-- 调教员卡片悬停提示的操作行，工作开关状态沿用原工作文案。 -->
+  <SSC_TrainingManagement_DragAssign>Перетащите в область назначенных дрессировщиков</SSC_TrainingManagement_DragAssign>
+  <SSC_TrainingManagement_DragAssignEnable>Перетащите в область назначенных, чтобы назначить и включить работу дрессировщика</SSC_TrainingManagement_DragAssignEnable>
+  <SSC_TrainingManagement_DragClear>Перетащите в область доступных, чтобы снять назначение</SSC_TrainingManagement_DragClear>
+  <SSC_TrainingManagement_DragClearBlocked>Текущие ограничения дрессировки не позволяют снять назначение</SSC_TrainingManagement_DragClearBlocked>
+  <!-- 拖动进入可提交落区后显示的结果预览。 -->
+  <SSC_TrainingManagement_DropAssign>Назначить: {0}</SSC_TrainingManagement_DropAssign>
+  <SSC_TrainingManagement_DropReplace>Заменить {0} на {1}</SSC_TrainingManagement_DropReplace>
+  <SSC_TrainingManagement_DropEnable>Также включить работу дрессировщика для {0}</SSC_TrainingManagement_DropEnable>
+  <SSC_TrainingManagement_DropClear>Снять назначение: {0}</SSC_TrainingManagement_DropClear>
+  <SSC_TrainingManagement_ScheduleDue>Время по расписанию наступило</SSC_TrainingManagement_ScheduleDue>
+  <SSC_TrainingManagement_ScheduleWaiting>Время по расписанию ещё не наступило</SSC_TrainingManagement_ScheduleWaiting>
+  <SSC_TrainingManagement_CurrentCultivation>Текущее направление</SSC_TrainingManagement_CurrentCultivation>
+  <SSC_TrainingManagement_FinalAchievements>Итоговые достижения</SSC_TrainingManagement_FinalAchievements>
+  <SSC_TrainingManagement_BodyProduction>Производство в организме</SSC_TrainingManagement_BodyProduction>
+  <SSC_TrainingManagement_BodyFertility>Фертильность и настройки потомства</SSC_TrainingManagement_BodyFertility>
+  <SSC_TrainingManagement_BodyEmpty>У этого персонажа нет настроек тела и внешности.</SSC_TrainingManagement_BodyEmpty>
+  <SSC_TrainingManagement_SlaveProgress>Развитие раба</SSC_TrainingManagement_SlaveProgress>
+  <SSC_TrainingManagement_SlaveCurrentStage>Текущая стадия: {0}</SSC_TrainingManagement_SlaveCurrentStage>
+  <SSC_TrainingManagement_NoChainProgress>Нет записи о цепи</SSC_TrainingManagement_NoChainProgress>
+  <SSC_TrainingManagement_BeforeChainStage>Первая стадия не достигнута</SSC_TrainingManagement_BeforeChainStage>
+  <SSC_TrainingManagement_CurrentCorruption>Текущее развращение</SSC_TrainingManagement_CurrentCorruption>
+  <SSC_TrainingManagement_NextPercentGap>До следующей стадии: {0} п. п.</SSC_TrainingManagement_NextPercentGap>
+  <SSC_TrainingManagement_DropAuthorizeNonOwner>Также разрешить принимать дрессировку от других, кроме хозяина</SSC_TrainingManagement_DropAuthorizeNonOwner>
+</LanguageData>

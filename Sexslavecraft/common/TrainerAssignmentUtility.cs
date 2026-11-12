@@ -80,8 +80,11 @@ namespace SexSlaveCraft
 
         /// <summary>返回指派显示名，并区分身份停用与工作暂停，保留失效指派供玩家调整。</summary>
         public static string GetAssignedTrainerLabel(Pawn sexSlave)
+            => GetAssignedTrainerLabel(sexSlave, sexSlave?.TryGetComp<CompSexSlaveTraining>()?.selectedTrainer);
+
+        /// <summary>按关系视图捕获的指派引用格式化状态。</summary>
+        internal static string GetAssignedTrainerLabel(Pawn sexSlave, Pawn trainer)
         {
-            Pawn trainer = sexSlave?.TryGetComp<CompSexSlaveTraining>()?.selectedTrainer;
             if (trainer == null) return Strings.ITab_TrainerNone;
 #if SSC_RW17 || SSC_TRAINER_WORK_TEST
             SSCTrainerWorkState state = SSCTrainerWorkUtility.GetState(trainer, sexSlave);

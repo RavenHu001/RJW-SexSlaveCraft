@@ -72,7 +72,7 @@ namespace SexSlaveCraft
         }
 
         /// <summary>生成当前培养方向的标签；没有当前方向时始终显示未选择。</summary>
-        private static string GetSpecializationLabel(Pawn pawn, CompSexSlaveTraining comp)
+        internal static string GetSpecializationLabel(Pawn pawn, CompSexSlaveTraining comp)
         {
             string label = GetSpecializationName(comp.specializationType);
 
@@ -93,8 +93,19 @@ namespace SexSlaveCraft
             return label;
         }
 
+#if SSC_RW17
+        /// <summary>概况只显示当前方向，并复用旧页的完成判定和进度格式。</summary>
+        internal static string GetSpecializationOverviewLabel(Pawn pawn, CompSexSlaveTraining comp)
+        {
+            string name = GetSpecializationName(comp.specializationType);
+            if (comp.specializationType == SexSlaveSpecializationType.None) return name;
+            if (IsTypeFinalized(pawn, comp.specializationType)) return name + " " + Strings.ITab_SpecializationFinalizedSuffix;
+            return name + " · " + GetSpecializationProgressText(pawn, comp);
+        }
+#endif
+
         /// <summary>性奴特化仅向 SSC 性奴显示，不以原版奴隶身份代替。</summary>
-        private static bool CanShowSpecializationSection(CompSexSlaveTraining comp)
+        internal static bool CanShowSpecializationSection(CompSexSlaveTraining comp)
         {
             return comp != null && comp.pawnIdentity == PawnIdentity.Slave;
         }
@@ -107,7 +118,7 @@ namespace SexSlaveCraft
         }
 
         /// <summary>生成当前培养方向的进度文字，供绘制与无界面回归共用。</summary>
-        private static string GetSpecializationProgressText(Pawn pawn, CompSexSlaveTraining comp)
+        internal static string GetSpecializationProgressText(Pawn pawn, CompSexSlaveTraining comp)
         {
             // 进度与按钮采用同一个当前方向；None 不能因为其他完成记录而显示已完成。
             // 终极记录仍由独立成果行展示，不在这里改写其效果。
@@ -137,7 +148,7 @@ namespace SexSlaveCraft
         }
 
         /// <summary>普通培养完成后的只读引导；绘制与回归共用，不修改进度、成果或配方资格。</summary>
-        private static string GetSpecializationProgressTip(Pawn pawn, CompSexSlaveTraining comp)
+        internal static string GetSpecializationProgressTip(Pawn pawn, CompSexSlaveTraining comp)
         {
             if (comp == null || CompSexSlaveTraining.NormalizeSpecializationProgress(comp.specializationProgress) <
                 CompSexSlaveTraining.SpecializationCompletionProgress) return null;
