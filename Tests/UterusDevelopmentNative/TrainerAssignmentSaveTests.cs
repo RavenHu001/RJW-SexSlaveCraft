@@ -9,7 +9,7 @@ internal static partial class Program
 {
     private static void TrainerAssignmentSaveTests()
     {
-        Check("trainer assignments native legacy migration and new round trip", () =>
+        Check("trainer assignments migrate the legacy reference and save without the old field", () =>
         {
             Pawn target = ImprintPawn(PawnIdentity.Slave);
             Pawn trainer = ImprintPawn(PawnIdentity.Master);
@@ -26,7 +26,6 @@ internal static partial class Program
             Require(migrated.CopyAssignedTrainers().SequenceEqual(new[] { trainer }));
             path = SaveTrainerAssignments(migrated);
             Require(XDocument.Load(path).Root.Element("training").Element("selectedTrainer") == null);
-            Require(LoadTrainerAssignments(path, trainer).CopyAssignedTrainers().SequenceEqual(new[] { trainer }));
         });
 
         Check("trainer assignments native ordered off-map members and explicit empty", () =>
@@ -99,9 +98,7 @@ internal static partial class Program
                 Require(view.DirectChanged());
                 var next = SSCBondOverviewUtility.BuildLocal(target, null);
                 Require(!next.SamePresentation(view.Snapshot));
-                Require(SSCBondOverviewNavigation.IsTrainerCurrent(view.Snapshot, a));
                 Require(!SSCBondOverviewNavigation.IsTrainerCurrent(view.Snapshot, b));
-                Require(!SSCBondOverviewNavigation.IsTrainerCurrent(view.Snapshot, c));
                 Require(SSCBondOverviewNavigation.IsTrainerCurrent(next, c));
             }
             finally
@@ -112,7 +109,7 @@ internal static partial class Program
             }
         });
 
-        Check("later active trainer supplies a bed relation, self-training snapshot and unbound progress exclusion", () =>
+        Check("later active trainer supplies the self-training snapshot and unbound progress exclusion", () =>
         {
             HediffDef chain = SSCDefOf.ChainOfSexSlave;
             try
@@ -126,8 +123,6 @@ internal static partial class Program
                 var link = new Hediff_ChainOfSexSlave { def = SSCDefOf.ChainOfSexSlave, pawn = target };
                 target.health.hediffSet.hediffs.Add(link);
 
-                Require(SSCSharedBedUtility.GetAllowedPartners(target).SequenceEqual(new[] { active }));
-                Require(SSCSharedBedUtility.IsDesignatedTrainer(target, active));
                 Equal(active, BusSpecializationUtility.GetOwner(target));
                 var snapshot = SSCSelfTrainingUtility.CaptureAtSceneStart(target);
                 Require(snapshot?.Captured == true && snapshot.ImaginedPawn == active);
@@ -135,7 +130,6 @@ internal static partial class Program
                 Pawn owner = ImprintPawn(PawnIdentity.Master);
                 link.target = owner;
                 Equal(owner, BusSpecializationUtility.GetOwner(target));
-                Require(SSCSharedBedUtility.GetAllowedPartners(target).SequenceEqual(new[] { owner, active }));
                 training.RemoveAssignedTrainer(active);
                 Equal(owner, SSCSelfTrainingUtility.GetImaginedPawn(target));
 

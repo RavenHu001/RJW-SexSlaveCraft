@@ -93,15 +93,15 @@ internal static partial class Program
             f.master.workSettings.RawPriority = 1;
             Assert(!request.TrySubmit(out _) && f.master.workSettings.RawPriority == 1);
         });
-        Run("启用后外部强制禁止使指派失败并撤回本次工作启用", () =>
+        Run("启用后外部强制禁止使追加失败并撤回本次工作启用", () =>
         {
             var f = Setup(); Assert(SSCBondUtility.Bind(f.master, f.slave));
             var other = Pawn(PawnIdentity.Master, f.slave.Map); other.workSettings.Active = false;
             var rules = f.slave.Training.restrictionConfig.rules;
             other.workSettings.AfterSet = n => { if (n != 0) ForceDenyTraining(f.slave); };
-            Assert(!new SSCTrainerWorkUtility.Request(f.slave, other).TrySubmit(out _) && !other.workSettings.Active &&
-                f.slave.Training.selectedTrainer == f.master && ReferenceEquals(rules, f.slave.Training.restrictionConfig.rules) && !rules.receiveTraining);
-            Assert(!new SSCTrainerWorkUtility.Request(f.slave, other).CanSubmit(out _, out bool opensTraining) && !opensTraining);
+            Assert(!new SSCTrainerWorkUtility.Request(f.slave, other, SSCTrainerAssignmentOperation.Add).TrySubmit(out _) &&
+                !other.workSettings.Active && f.slave.Training.CopyAssignedTrainers().SequenceEqual(new[] { f.master }) &&
+                ReferenceEquals(rules, f.slave.Training.restrictionConfig.rules) && !rules.receiveTraining);
         });
         Run("工作setter拒绝和写后异常均不留下指派或工作半成品", () =>
         {

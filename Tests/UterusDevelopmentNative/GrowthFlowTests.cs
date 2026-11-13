@@ -151,26 +151,6 @@ internal static partial class Program
     /// <summary>验证实际日常闭包与旧部位使用相同动作分类，完整结算只领一次。</summary>
     private static void DailyGrowthTests()
     {
-        Check("daily training reentrant completion blocks a second actor and pays once", () =>
-        {
-            var s = DailyGrowth();
-            Pawn b = ImprintPawn(PawnIdentity.Master);
-            dailyGrowthPawns.Add(b);
-            b.jobs = new Pawn_JobTracker(b);
-            var second = new JobDriver_Training { pawn = b, job = JobMaker.MakeJob(s.driver.job.def, s.scene.Target) };
-            b.jobs.curJob = second.job;
-            b.jobs.curDriver = second;
-            growthOriginal = () =>
-            {
-                Require(SSCDailyTrainingOccupancy.TryClaim(s.scene.Target, new TrainingJobUtility.JobContext(second)) == null);
-                s.payout.initAction();
-            };
-            s.payout.initAction();
-            Equal(1, sexProcessCalls);
-            Equal(1, dailyOutcomes);
-            Require(s.scene.Target.TryGetComp<CompSexSlaveTraining>().IsOnCooldown);
-        });
-
         Check("batch3 missing driver never creates training evidence", () =>
         {
             var kind = growthType.Assembly.GetType("SexSlaveCraft.SSCInteractionKind");
@@ -210,10 +190,25 @@ internal static partial class Program
                 if (mode == "old claimed") AccessTools.Field(typeof(JobDriver_Training), "dailyOutcomeClaimed").SetValue(s.driver, true);
                 s.payout.initAction(); Near(.01f, Progress(s.scene.Target));
             });
-        Check("batch3 daily original callback reentry cannot grant twice", () =>
+        Check("daily training payout rejects a second trainer and nested completion", () =>
         {
-            var s = DailyGrowth(); growthOriginal = () => s.payout.initAction();
-            s.payout.initAction(); Near(.035f, Progress(s.scene.Target)); Equal(1, sexProcessCalls);
+            var s = DailyGrowth();
+            Pawn trainer = ImprintPawn(PawnIdentity.Master);
+            dailyGrowthPawns.Add(trainer);
+            trainer.jobs = new Pawn_JobTracker(trainer);
+            var second = new JobDriver_Training { pawn = trainer, job = JobMaker.MakeJob(s.driver.job.def, s.scene.Target) };
+            trainer.jobs.curJob = second.job;
+            trainer.jobs.curDriver = second;
+            growthOriginal = () =>
+            {
+                Require(SSCDailyTrainingOccupancy.TryClaim(s.scene.Target, new TrainingJobUtility.JobContext(second)) == null);
+                s.payout.initAction();
+            };
+            s.payout.initAction();
+            Near(.035f, Progress(s.scene.Target));
+            Equal(1, sexProcessCalls);
+            Equal(1, dailyOutcomes);
+            Require(s.scene.Target.TryGetComp<CompSexSlaveTraining>().IsOnCooldown);
         });
         Check("batch3 daily failure preserves existing claim and does not add compensation path", () =>
         {
