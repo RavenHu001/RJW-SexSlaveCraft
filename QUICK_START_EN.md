@@ -1,8 +1,17 @@
 # RJW-SexSlaveCraft Quick Start Guide
 
-**SSC 2.4.10** for RimWorld 1.7. The revision aligns uterine and vaginal development eligibility. The included 1.6 component uses SSC 2.4.1. [Download](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.10-r2)
+**SSC 2.5.0 development guide for RimWorld 1.7.** The current public package is 2.4.10 Revision 2. RimWorld 1.6 uses SSC 2.4.1. [Public download](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.10-r2)
 
-[2.4.10 pet paths](#ssc-2410) · [2.4.10 release notes](Docs/Releases/2.4.10/2.4.10发布说明.md#english)
+[2.5.0 Training Management](#ssc-250) · [2.5.0 notes](Docs/Releases/2.5.0/2.5.0发布说明.md#english) · [2.4.10 pet paths](#ssc-2410) · [2.4.10 release notes](Docs/Releases/2.4.10/2.4.10发布说明.md#english)
+
+
+<a id="ssc-250"></a>
+
+## Training Management in 2.5.0
+
+Select one pawn and click **Training** to open the movable window. It follows single selection on the map or colonist bar. Set identity in **Overview**, manage trainers in **Relationships**, and set permissions, poses and schedules on the corresponding pages.
+
+Drag a candidate's handle into the assigned roster to add them. Drag an assigned trainer back to remove only that assignment. Use the card to locate a trainer or enable their Training work. Existing single-trainer assignments migrate when a save loads. Daily Training allows one active job per trainee, even when several trainers can take it.
 
 [2.4.9: emitters and PNA maintenance ](#ssc-249)
 
@@ -98,7 +107,7 @@ Select the intended target and open the `Training` tab:
 1. set `Pawn Identity` to `sex slave`;
 2. enable `Allow Training`;
 3. select an `Assigned Pose`;
-4. optionally choose an `Assigned Trainer`.
+4. optionally add eligible trainers in **Relationships**.
 
 The target may be a colonist, prisoner, or vanilla slave, but must pass RJW's sex-target eligibility checks. 2.3.9 also requires SSC `Sex Slave` identity for automatic Training, forced Training, Binding Rituals and new trainer assignments. Vanilla slave status cannot replace it. Set the SSC role first, then assign the Master who will perform the first bond; a Chain is not required beforehand. Daily Training still uses its own enable switch, timetable and cooldown; rituals do not inherit those conditions.
 
@@ -116,7 +125,7 @@ Completion grants Corruption and a dedicated one-day mood memory, subject to the
 
 ### Bond Overview (2.4.3, 1.7 only)
 
-Select a Master and open Training to see member counts and portraits; the adjacent command selects available, valid bound members on the current map. A slave's Master portrait locates and selects the Master. The magnifying glass opens the compact overview, the trainer pencil changes the assignment, and hover tips show names and details. Normal viewing reads existing relationships without automatic global scans or repairs. See the [completion record](Docs/Development/Completed/主从关系概览完成核对.md).
+Select a Master and open Training to see member counts and portraits; the adjacent command selects available, valid bound members on the current map. A slave's Master portrait locates and selects the Master. Use the magnifying glass to reach Relationships for a manageable single selection. Hover over portraits for names and details. Normal viewing reads existing relationships without automatic global scans or repairs. See the [completion record](Docs/Development/Completed/主从关系概览完成核对.md).
 
 ## 3. What Training Provides
 

@@ -18,6 +18,8 @@
 
 **2.4.10 玩家入口。** 兔、狐与猫狗调整见[中文入门](../../读我，玩法介绍.md#ssc-2410)及[完整规则](../../机制详解.md#ssc-2410)。英文见 [Quick start](../../QUICK_START_EN.md#ssc-2410) 和 [Player guide](../../PLAYER_GUIDE_EN.md#ssc-2410)。[下载 2.4.10 修订版](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.10-r2)
 
+**2.5.0 开发版。** 调教管理窗口和多调教员指派见[中文入门](../../读我，玩法介绍.md#ssc-250)、[完整规则](../../机制详解.md#ssc-250)、[English quick start](../../QUICK_START_EN.md#ssc-250) 和 [English player guide](../../PLAYER_GUIDE_EN.md#ssc-250)。
+
 ## 中文阅读顺序
 
 1. [模组介绍](../模组介绍.md#中文)：先了解玩法与版本范围。
@@ -73,6 +75,6 @@ Use [Bond Overview](../../QUICK_START_EN.md#bond-overview-243-17-only) for portr
 
 ## 版本与资料用途 / Versions and document roles
 
-当前指南以 2.4.10 为入口。各批实机反馈与正式发布门禁按版本查阅。[2.4.10 验证](../Releases/2.4.10/2.4.10版本验证.md)
+当前指南已补充 2.5.0 开发内容。公开安装包为 2.4.10 修订版。各批实机反馈与正式发布门禁按版本查阅。[2.5.0 开发验证](../Releases/2.5.0/2.5.0版本验证.md) · [2.4.10 修订版归档](../Releases/2.4.10/2.4.10版本验证.md#2410-修订版发布归档)
 
 These guides cover SSC 2.4.10 and retain earlier changes under their original version headings. [2.4.10 release notes](../Releases/2.4.10/2.4.10发布说明.md#english)

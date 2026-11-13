@@ -1,8 +1,19 @@
 # RJW-SexSlaveCraft Complete Player Guide
 
-**SSC 2.4.10** for RimWorld 1.7. The revision aligns uterine and vaginal development eligibility. The included 1.6 component uses SSC 2.4.1. [Download](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.10-r2)
+**SSC 2.5.0 development guide for RimWorld 1.7.** The current public package is 2.4.10 Revision 2. RimWorld 1.6 uses SSC 2.4.1. [Public download](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.10-r2)
 
-[2.4.10 pet paths](#ssc-2410) · [2.4.10 release notes](Docs/Releases/2.4.10/2.4.10发布说明.md#english)
+[2.5.0 Training Management](#ssc-250) · [2.5.0 notes](Docs/Releases/2.5.0/2.5.0发布说明.md#english) · [2.4.10 pet paths](#ssc-2410) · [2.4.10 release notes](Docs/Releases/2.4.10/2.4.10发布说明.md#english)
+
+
+<a id="ssc-250"></a>
+
+## Training Management in 2.5.0
+
+Select one pawn and click **Training** to open the movable window. It follows single selection on the map or colonist bar. Set identity in **Overview**, manage trainers in **Relationships**, and set permissions, poses and schedules on the corresponding pages.
+
+Drag a candidate's handle into the assigned roster to add them. Drag an assigned trainer back to remove only that assignment. Use the card to locate a trainer or enable their Training work. Existing single-trainer assignments migrate when a save loads. Daily Training allows one active job per trainee, even when several trainers can take it.
+
+Automatic work and manual orders respect the same reservation. In-progress assignments can recover on load. An empty Binding Ritual host slot checks the actual Master and then eligible roster members. Shared beds check the pawn’s own bed, the Master’s bed, then eligible trainers’ beds. Self-training and Public Use apply their own priority rules. [Full scope](Docs/Releases/2.5.0/2.5.0发布说明.md#english)
 
 [2.4.9: emitters and PNA maintenance ](#ssc-249)
 
@@ -193,11 +204,11 @@ A candidate trainer must be:
 
 If non-owner Training is denied for a bound target, assignment is coordinated to the owner. Selecting an eligible non-owner trainer also grants Training permission unless a forced rule denies it. Ordinary interactions keep their own checks.
 
-Menus and direct assignments share eligibility and authorization checks. Automatic Training goes only to the active assigned trainer; the owner retains manual and ritual access. Disabling trainer status preserves the assignment as inactive; other trainers do not automatically take over. Temporary work or health restrictions do not erase the shared-bed relationship. Started scenes finish; preparation is checked again.
+Menus and direct assignments share eligibility and authorization checks. Automatic Training is available to eligible roster members, with one active job per trainee. The owner retains manual and ritual access under the usual eligibility checks. Disabling trainer status keeps that assignment inactive. Another eligible roster member may take later work. Temporary work or health restrictions do not erase the shared-bed relationship. Started scenes finish; preparation is checked again.
 
 ### Bond Overview (2.4.3, 1.7 only)
 
-Select a Master and open Training to see member counts and portraits; the adjacent command selects available, valid bound members on the current map. A slave's Master portrait locates and selects the Master. The magnifying glass opens the compact overview, the trainer pencil changes the assignment, and hover tips show names and details. Normal viewing reads existing relationships without automatic global scans or repairs. See the [completion record](Docs/Development/Completed/主从关系概览完成核对.md).
+Select a Master and open Training to see member counts and portraits; the adjacent command selects available, valid bound members on the current map. A slave's Master portrait locates and selects the Master. The magnifying glass opens the compact overview, the magnifying glass leads from a manageable single selection to **Relationships** for roster edits, and hover tips show names and details. Normal viewing reads existing relationships without automatic global scans or repairs. See the [completion record](Docs/Development/Completed/主从关系概览完成核对.md).
 
 ## 4. Ordinary Training
 
@@ -494,8 +505,8 @@ Races with a natural base Will of 15 or less have a ritual conversion cap of 90%
 - The target is a colonist, colony slave, or colony prisoner.
 - The target is alive, not downed, and passes RJW receiver eligibility.
 - The target has SSC Sex Slave identity (the 2.3.9 unified requirement).
-- For first bonding, the host must be an SSC Master and the target's active assigned trainer.
-- For an existing bond, the actual Master may host without being excluded by another assigned trainer. A third-party host must be the active assigned trainer and pass the applicable Training permission checks.
+- For first bonding, the host must be an SSC Master and an eligible assigned trainer for the target.
+- For an existing bond, the actual Master may host without being excluded by another assigned trainer. A third-party host must be an eligible roster member and pass the applicable Training permission checks.
 - Both pawns can reach the ritual location.
 
 The setup window uses gold whip icons for host candidates and purple collar icons for sex slave candidates. Collar icons additionally require SSC Sex Slave identity; vanilla colonist, prisoner or slave status alone does not qualify. Eligible Sex Slave trainers can show both icons. A whip indicates host/trainer duty and does not establish ownership. A slash indicates the role is currently unavailable; a check indicates assignment. Hover or drag to inspect the proposed pair and its full requirements.

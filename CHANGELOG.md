@@ -1,13 +1,15 @@
 # 更新日志 / Changelog — SexSlaveCraft（TieJin 接续版 / TieJin continuation）
 
-## [未发布 / Unreleased] — 1.7 多调教员指派 / Multiple Trainer Assignments
+## [2.5.0] — 2026-11-12 — 开发版 / Unreleased — 调教管理 / Training Management
 
-- 关系页可为同一受训者追加多名调教员，并逐人撤销、启用工作及定位。旧单人存档自动迁移，命令栏放大镜继续提供名单入口。
-- 日常调教按原版工作优先级分派，同一目标只接受一个任务。第二名调教员在预约已被占用时无法点名接单，日常占用可从在途存档恢复。
-- 仪式和同床可继续检查名单后续成员，自我调教与公交车特化沿用各自的主人优先规则。
-- 维护者已按清单通过 1.7.5005 rev1082 实机验收。 [验收记录](Docs/Development/Completed/多调教员指派第三阶段实现与验证.md#multi-trainer-runtime-acceptance)
+归入 `v2.4.10-r2` 后至 `166a1138` 的 71 个非合并提交和 2 个合并提交，共 161 个净变更路径。新增面向 1.7。[双语说明](Docs/Releases/2.5.0/2.5.0发布说明.md) · [开发归并](Docs/Releases/2.5.0/2.5.0开发归并核对.md) · [验证记录](Docs/Releases/2.5.0/2.5.0版本验证.md)
 
-The 1.7 Relationships page supports adding, removing, enabling work for, and locating individual trainers. Older saves migrate automatically. Daily training uses one reservation per trainee, and in-progress assignments recover on load. Binding rituals, shared beds, self-training, and Bus specialization use the new roster. The maintainer completed the in-game checklist on 1.7.5005 rev1082.
+- 原「调教」标签打开可拖动的六页管理窗口，随原版单选切换。包含阶段进度、冷却摘要、终极成果卡和可折叠行为规则。1.7 的旧绘制和回退入口已移除。
+- 「关系」页支持为同一受训者逐人添加、撤销、启用工作和定位。旧档单人指派会迁入名单。
+- 自动工作与点名命令共用受训者的日常调教占用，支持在途读档恢复。仪式、同床、自我调教和公交车特化按各自规则读取名单。
+- 更新四语界面、资源镜像、回归用例和浪漫原生测试夹具。两项功能已在 1.7.5005 rev1082 完成分批实机验收。
+
+SSC 2.5.0 for RimWorld 1.7 introduces the six-page Training Management window and multiple trainer assignments, including save migration, one active daily Training slot per trainee, and roster integration with related activities. It also updates four-language UI text and regression coverage. Scoped in-game acceptance is complete. The formal 2.5.0 build and full release checks are pending.
 
 ## [2.4.10] — 2026-11-09 — 宠物兔与宠物狐 / Pet Rabbit and Pet Fox
 
