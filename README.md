@@ -1,6 +1,6 @@
 # RJW-SexSlaveCraft · TieJin Modify
 
-**2.5.0 开发版（2026-11-12 登记）。** 调教管理窗口、多调教员指派及相关维护面向 RimWorld 1.7。 [2.5.0 版本说明](Docs/Releases/2.5.0/2.5.0发布说明.md) · [归并核对](Docs/Releases/2.5.0/2.5.0开发归并核对.md) · [验证记录](Docs/Releases/2.5.0/2.5.0版本验证.md)
+**SSC 2.5.0。** 调教管理窗口、多调教员指派及相关维护面向 RimWorld 1.7。 [2.5.0 版本说明](Docs/Releases/2.5.0/2.5.0发布说明.md) · [归并核对](Docs/Releases/2.5.0/2.5.0开发归并核对.md) · [验证记录](Docs/Releases/2.5.0/2.5.0版本验证.md)
 
 **2.4.9 — 2026-11-02正式发布。** [下载](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.9)。完整All **52套／6535项全部通过**，资源2／2、发布编排56及文案隔离75项通过；532份冻结文件未变。标签源码`2b288569`，ZIP及SHA-256已上传并复核为最新稳定版；本轮未启动新游戏或同步安装目录。下方开发／登记记录保留原日期与范围。
 
@@ -14,7 +14,7 @@
 
 [2.5.0 开发范围](Docs/Releases/2.5.0/2.5.0发布说明.md) · [双语模组简介](Docs/模组介绍.md) · [玩家阅读入口](Docs/Players/README.md) · [文档总索引](Docs/README.md) · [English](#english-overview)
 
-## 2.5.0 开发内容（仅 1.7）
+## 2.5.0 新增内容（仅 1.7）
 
 - 原「调教」标签打开可拖动的六页管理窗口。单选角色即可切换，在概况查看成长与冷却，在其他页管理关系、日常调教、特化、身体外观和行为规则。
 - 同一受训者可拥有多名调教员。在「关系」页拖放追加或逐人撤销，支持启用工作和定位。旧档单人指派自动迁移，日常调教同一时间由一名调教员执行。
@@ -111,7 +111,7 @@
 | 契约仪式与阶段进阶 | 需要 Ideology（文化）DLC |
 | Royalty（可选） | 安装时调教研究需要蓝图；种子或原版独立蓝图可补齐，之后仍需研究 |
 
-从 [2.4.10 修订版](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.10-r2) 下载 ZIP 与 SHA-256。退出游戏，移出旧文件夹后完整解压，保留加载配置及两套版本目录。[2.4.10 版本说明](Docs/Releases/2.4.10/2.4.10发布说明.md)
+从 [2.5.0](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.5.0) 下载 ZIP 与 SHA-256。退出游戏，移出旧文件夹后完整解压，保留加载配置及两套版本目录。[2.5.0 版本说明](Docs/Releases/2.5.0/2.5.0发布说明.md)
 
 2.4.10 的兔家政与狐狸科研医疗各有对应实机验收，包含凝胶终极化和两项终极技能。受训目标须使用 SSC 性奴身份。[分批验证](Docs/Releases/2.4.10/2.4.10版本验证.md)
 
@@ -133,7 +133,7 @@
 
 ## English overview
 
-**SSC 2.5.0** is the development milestone for the Training Management window and multiple trainer assignments on RimWorld 1.7. [2.5.0 notes](Docs/Releases/2.5.0/2.5.0发布说明.md#english) · [Download the public 2.4.10 revision](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.10-r2)
+**SSC 2.5.0** introduces the Training Management window and multiple trainer assignments on RimWorld 1.7. [2.5.0 notes](Docs/Releases/2.5.0/2.5.0发布说明.md#english) · [Download 2.5.0](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.5.0)
 
 SexSlaveCraft is an adult RJW expansion for pawn development, bonds, specialization, personality transfer and body modification. The v2.4.9 release includes Depravity Gel, three emitter tiers, personal PNA stage maintenance and a Conception icon for RimWorld 1.7. Its RimWorld 1.6 content uses SSC 2.4.1. [2.4.9 release notes](Docs/Releases/2.4.9/2.4.9发布说明.md#english)
 

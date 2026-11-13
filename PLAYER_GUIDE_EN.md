@@ -1,6 +1,6 @@
 # RJW-SexSlaveCraft Complete Player Guide
 
-**SSC 2.5.0 development guide for RimWorld 1.7.** The current public package is 2.4.10 Revision 2. RimWorld 1.6 uses SSC 2.4.1. [Public download](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.10-r2)
+**SSC 2.5.0 guide for RimWorld 1.7.** The package includes SSC 2.4.1 for RimWorld 1.6. [Download 2.5.0](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.5.0)
 
 [2.5.0 Training Management](#ssc-250) · [2.5.0 notes](Docs/Releases/2.5.0/2.5.0发布说明.md#english) · [2.4.10 pet paths](#ssc-2410) · [2.4.10 release notes](Docs/Releases/2.4.10/2.4.10发布说明.md#english)
 

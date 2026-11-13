@@ -1,6 +1,6 @@
 # 更新日志 / Changelog — SexSlaveCraft（TieJin 接续版 / TieJin continuation）
 
-## [2.5.0] — 2026-11-12 — 开发版 / Unreleased — 调教管理 / Training Management
+## [2.5.0] — 2026-11-12 — 调教管理 / Training Management
 
 归入 `v2.4.10-r2` 后至 `166a1138` 的 71 个非合并提交和 2 个合并提交，共 161 个净变更路径。新增面向 1.7。[双语说明](Docs/Releases/2.5.0/2.5.0发布说明.md) · [开发归并](Docs/Releases/2.5.0/2.5.0开发归并核对.md) · [验证记录](Docs/Releases/2.5.0/2.5.0版本验证.md)
 
@@ -9,7 +9,7 @@
 - 自动工作与点名命令共用受训者的日常调教占用，支持在途读档恢复。仪式、同床、自我调教和公交车特化按各自规则读取名单。
 - 更新四语界面、资源镜像、回归用例和浪漫原生测试夹具。两项功能已在 1.7.5005 rev1082 完成分批实机验收。
 
-SSC 2.5.0 for RimWorld 1.7 introduces the six-page Training Management window and multiple trainer assignments, including save migration, one active daily Training slot per trainee, and roster integration with related activities. It also updates four-language UI text and regression coverage. Scoped in-game acceptance is complete. The formal 2.5.0 build and full release checks are pending.
+SSC 2.5.0 for RimWorld 1.7 introduces the six-page Training Management window and multiple trainer assignments, including save migration, one active daily Training slot per trainee, and roster integration with related activities. It also updates four-language UI text and regression coverage. Scoped in-game acceptance is complete. The version verification record documents the formal build and release checks.
 
 ## [2.4.10] — 2026-11-09 — 宠物兔与宠物狐 / Pet Rabbit and Pet Fox
 
