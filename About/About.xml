@@ -7,15 +7,14 @@
 		<li>1.7</li>
 	</supportedVersions>
 	<packageId>rjw.sexslavecraft.TieJinVer</packageId>
-    <description>SexSlaveCraft 2.4.10 (TieJin Modify)
-宠物兔通过清洁、烹饪和调教培养，终极技能「精心料理」在四游戏小时内提高烹饪速度，并防止合格餐食制作染毒。
-宠物狐通过科研和护理培养，终极技能「应急包扎」可一次处理同图己方伤员当前全部可包扎伤口。
-猫、狗、兔、狐共享终极互斥。猫提升移速与狩猎隐蔽，狗增加种植速度。四语动物特化文案、兼容加载顺序和三档发烟器贴图已更新。
-新增内容面向 RimWorld 1.7。1.6 使用 SSC 2.4.1 内容。请备份存档并完整替换旧模组文件夹，保留两套版本目录与 LoadFolders.xml。Harmony 和 RJW 先于 SSC，文化与仪式需要 Ideology。
+    <description>SexSlaveCraft 2.5.0 (TieJin Modify)
+原「调教」标签打开可拖动的六页管理窗口，随地图或殖民者栏的单选切换。
+在「关系」页可为同一受训者追加、撤销、定位多名调教员，或逐人启用工作。旧单人指派会迁入名单。日常调教同一时间只接受一个任务。
+新内容面向 RimWorld 1.7。1.6 使用 SSC 2.4.1。Harmony 和 RJW 先于 SSC，文化与仪式需要 Ideology。
 
-Version 2.4.10 adds Pet Rabbit housekeeping and Pet Fox research and medicine. Final Rabbit gains Careful Cooking for four hours of faster cooking and protection from preparation-related food poisoning. Final Fox gains Emergency Bandaging to tend an allied patient's eligible wounds in one cast.
-Cat, Dog, Rabbit and Fox share the finalization limit. Cat gains movement and hunting stealth. Dog gains plant work speed alongside animal handling bonuses. Includes clearer animal specialization text in four languages, compatibility load order and three refreshed emitter textures.
-New content targets RimWorld 1.7. The 1.6 component contains SSC 2.4.1. Back up saves and replace the whole old mod folder, retaining both version folders and LoadFolders.xml. Load Harmony and RJW before SSC. Culture and rituals require Ideology.
+The Training tab opens a movable six-page window that follows single selection on the map or colonist bar.
+Manage multiple trainers for each trainee in Relationships. Add, remove, locate, or enable work for individual trainers. Old single-trainer assignments migrate on load, and each trainee can have one active daily Training job.
+New content targets RimWorld 1.7. The 1.6 component uses SSC 2.4.1. Load Harmony and RJW before SSC. Culture and rituals require Ideology.
 
 [AI 辅助生成 / Partly AI-assisted]</description>
 	<modDependencies>
