@@ -1,6 +1,6 @@
 # 版本发布与验证索引
 
-**2.5.0 于 2026-11-12 正式发布。** 完整门禁通过 52 套、6544/6544 项。 [下载 2.5.0](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.5.0) · [正式发布归档](2.5.0/2.5.0版本验证.md#ssc-250-release)
+**2.5.0 于 2026-11-12 正式发布。** 完整门禁通过 52 套、6544/6544 项。 [下载 2.5.0](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.5.0) · [正式发布归档](2.5.0/2.5.0版本验证.md#ssc-250-release) · [实施与验收](../Development/Completed/调教管理/README.md)
 
 **2.4.10 修订版于 2026-11-09 发布。** 完整门禁通过 52 套、6535/6535 项。 [下载修订版](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.10-r2) · [修订版归档](2.4.10/2.4.10版本验证.md#2410-修订版发布归档)
 

@@ -2,17 +2,17 @@
 
 **2.5.0 于 2026-11-12 正式发布。** 完整门禁通过 52 套、6544/6544 项。 两项资源检查及 56 项发布编排检查通过。[正式发布归档](../Docs/Releases/2.5.0/2.5.0版本验证.md#ssc-250-release)
 
-2026-11-12，第 51 项调教窗口回归净减 3 项 Core，并更新浪漫原生宿主的指派和场景存档夹具。四个受影响套件按各自 All 范围通过 **1898/1898**。 [精简与验证](../Docs/Development/Completed/调教管理窗口重做完成核对.md#training-itab-test-pruning)
+2026-11-12，第 51 项调教窗口回归净减 3 项 Core，并更新浪漫原生宿主的指派和场景存档夹具。四个受影响套件按各自 All 范围通过 **1898/1898**。 [精简与验证](../Docs/Development/Completed/调教管理/调教管理窗口重做完成核对.md#training-itab-test-pruning)
 
-2026-11-12，多调教员指派回归精简净减 3 项 Core。三个受影响套件使用各自的 All 范围通过 958/958，包含 TrainerIdentity 171/171、SharedBed 94/94、UterusDevelopmentNative 693/693。 [精简与验证](../Docs/Development/Completed/多调教员指派第三阶段实现与验证.md#multi-trainer-test-pruning)
+2026-11-12，多调教员指派回归精简净减 3 项 Core。三个受影响套件使用各自的 All 范围通过 958/958，包含 TrainerIdentity 171/171、SharedBed 94/94、UterusDevelopmentNative 693/693。 [精简与验证](../Docs/Development/Completed/调教管理/多调教员指派第三阶段实现与验证.md#multi-trainer-test-pruning)
 
-2026-11-12，多调教员指派整体复查通过 13 套相关回归 2265/2265，窗口输入模型 12/12。原生任务宿主增至 18 项，新增点名预约争用、结束的旧接收器和交接期间换组件的回归。 [整体复查](../Docs/Development/Completed/多调教员指派第三阶段实现与验证.md#2026-11-12-整体复查)
+2026-11-12，多调教员指派整体复查通过 13 套相关回归 2265/2265，窗口输入模型 12/12。原生任务宿主增至 18 项，新增点名预约争用、结束的旧接收器和交接期间换组件的回归。 [整体复查](../Docs/Development/Completed/调教管理/多调教员指派第三阶段实现与验证.md#2026-11-12-整体复查)
 
-2026-11-12，多调教员指派第三阶段相关登记套件共 2262/2262，另有窗口输入模型 12/12。新增覆盖第三人追加、第二人独立操作、仪式与同床的后续候选、自我调教快照及公交车进度归属。 [第三阶段实现与验证](../Docs/Development/Completed/多调教员指派第三阶段实现与验证.md)
+2026-11-12，多调教员指派第三阶段相关登记套件共 2262/2262，另有窗口输入模型 12/12。新增覆盖第三人追加、第二人独立操作、仪式与同床的后续候选、自我调教快照及公交车进度归属。 [第三阶段实现与验证](../Docs/Development/Completed/调教管理/多调教员指派第三阶段实现与验证.md)
 
-2026-11-12，多调教员指派第二阶段新增 6 项 Core，相关自动回归共 1905／1905。原生任务与成长宿主分别为 14／14、701／701，包含争用、排队预约撤销、存档恢复及一次结算。 [第二阶段实现与验证](../Docs/Development/Completed/多调教员指派第二阶段实现与验证.md)
+2026-11-12，多调教员指派第二阶段新增 6 项 Core，相关自动回归共 1905／1905。原生任务与成长宿主分别为 14／14、701／701，包含争用、排队预约撤销、存档恢复及一次结算。 [第二阶段实现与验证](../Docs/Development/Completed/调教管理/多调教员指派第二阶段实现与验证.md)
 
-2026-11-12，多调教员指派第一阶段在现有套件新增 7 个 Core 用例。TrainerIdentity 170／170，RestrictionCore 150／150，BondOverviewUI 233／233，BondRelations 110／110，UterusDevelopmentNative 的 `--trainer-assignments` 原生分区 3／3。 [实现与验证](../Docs/Development/Completed/多调教员指派第一阶段实现与验证.md)
+2026-11-12，多调教员指派第一阶段在现有套件新增 7 个 Core 用例。TrainerIdentity 170／170，RestrictionCore 150／150，BondOverviewUI 233／233，BondRelations 110／110，UterusDevelopmentNative 的 `--trainer-assignments` 原生分区 3／3。 [实现与验证](../Docs/Development/Completed/调教管理/多调教员指派第一阶段实现与验证.md)
 
 **2.4.10 修订版于 2026-11-09 发布。** 完整门禁通过 52 套、6535/6535 项。 [修订版验证](../Docs/Releases/2.4.10/2.4.10版本验证.md#2410-修订版发布归档)
 

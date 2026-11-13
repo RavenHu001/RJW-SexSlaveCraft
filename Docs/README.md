@@ -4,7 +4,7 @@
 
 [项目首页](../README.md) · [玩家阅读入口](Players/README.md) · [当前规划](Design/README.md) · [开发资料](Development/README.md)
 
-## 最新开发状态
+## 当前正式版本
 
 **2.5.0 于 2026-11-12 正式发布。** 完整门禁通过 52 套、6544/6544 项。 [下载 2.5.0](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.5.0) · [发布归档](Releases/2.5.0/2.5.0版本验证.md#ssc-250-release) · [完成索引](Development/Completed/README.md#ssc-250-completed)
 
@@ -14,7 +14,7 @@
 | --- | --- | --- |
 | 了解功能、准备发布页面 | [双语模组介绍](模组介绍.md) | English 在前、中文在后；先看当前版本与功能范围 |
 | 安装和游玩 | [玩家阅读入口](Players/README.md) | 简介 → 快速入门 → 按需查机制与常见问题 |
-| 了解版本归属 | [发布与验证索引](Releases/README.md) | 2.5.0 开发范围 → 提交归并 → 分批验证 |
+| 了解版本归属 | [发布与验证索引](Releases/README.md) | 版本说明 → 正式发布归档 → 提交归并 |
 | 接手已完成功能 | [已交付开发记录](Development/Completed/README.md) | 主题完成核对 → 对应阶段 → 历史设计 |
 | 新增个人能力开关 | [现行接入规范](Development/Reference/个人能力开关接入规范.md) | [开发协作约定](../AGENTS.md) → 保存源与适用边界 → 原载体后端 → 公共查询、UI 与提交 → 生命周期验收 |
 | 查明确的验证缺口 | [待验收事项](Development/Verification/README.md) | 尚待确认范围 → 实现依据 → 实机步骤 |
@@ -42,10 +42,11 @@ Docs/
     未来内容开发规划.md        未完成需求及历史编号
     性能测量与定点优化首批规划.md  暂缓方案留存
     浪漫控制后续社交关系与浪漫事件拓展规划.md  未开发方向
-    Archive/                   已交付设计，含浪漫主规划、能力框架与身体开发
+    Archive/                   已交付设计，含调教管理、浪漫主规划与身体开发
   Development/
     开发更新记录.md            按日期追溯
     Completed/                 实现、修复与已关闭批次
+      调教管理/                 窗口重做与多调教员的实施及验收
       宠物特化/                 兔家政与狐狸科研医疗的分批验收
       堕落凝胶/                 四步实现与完成核对
       催情发烟器/               太空首版、三档机制与贴图验收

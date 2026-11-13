@@ -1,5 +1,7 @@
 # 玩家阅读入口 / Player documentation
 
+**2.5.0 玩家入口。** 调教管理窗口和多调教员指派见[中文入门](../../读我，玩法介绍.md#ssc-250)、[完整规则](../../机制详解.md#ssc-250)、[English quick start](../../QUICK_START_EN.md#ssc-250) 和 [English player guide](../../PLAYER_GUIDE_EN.md#ssc-250)。 [下载 2.5.0 正式版](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.5.0)
+
 **2.4.10 修订版。** 纳入子宫开发成长判定修正。 新增宠物兔家政和宠物狐科研医疗，面向 RimWorld 1.7。安装包为 1.6 提供 SSC 2.4.1。[下载](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.10-r2) · [双语发布说明](../Releases/2.4.10/2.4.10发布说明.md)
 
 **2.4.9 — 2026-11-02正式发布。** [下载](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.9)。完整All **52套／6535项全部通过**，资源2／2、发布编排56及文案隔离75项通过；532份冻结文件未变。标签源码`2b288569`，ZIP及SHA-256已上传并复核为最新稳定版；本轮未启动新游戏或同步安装目录。下方开发／登记记录保留原日期与范围。
@@ -17,8 +19,6 @@
 2.4.9开发内容先读[发烟器／补给入门](../../读我，玩法介绍.md#ssc-249)，再按需查[完整规则](../../机制详解.md#ssc-249)与[验证边界](../Releases/2.4.9/2.4.9版本验证.md)。本版2.4.9包含这些新增，较早2.4.8包不含。
 
 **2.4.10 玩家入口。** 兔、狐与猫狗调整见[中文入门](../../读我，玩法介绍.md#ssc-2410)及[完整规则](../../机制详解.md#ssc-2410)。英文见 [Quick start](../../QUICK_START_EN.md#ssc-2410) 和 [Player guide](../../PLAYER_GUIDE_EN.md#ssc-2410)。[下载 2.4.10 修订版](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.10-r2)
-
-**2.5.0 玩家入口。** 调教管理窗口和多调教员指派见[中文入门](../../读我，玩法介绍.md#ssc-250)、[完整规则](../../机制详解.md#ssc-250)、[English quick start](../../QUICK_START_EN.md#ssc-250) 和 [English player guide](../../PLAYER_GUIDE_EN.md#ssc-250)。
 
 ## 中文阅读顺序
 
@@ -75,6 +75,6 @@ Use [Bond Overview](../../QUICK_START_EN.md#bond-overview-243-17-only) for portr
 
 ## 版本与资料用途 / Versions and document roles
 
-当前指南适用于 2.5.0。[下载 2.5.0](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.5.0)各批实机反馈与正式发布门禁按版本查阅。[2.5.0 开发验证](../Releases/2.5.0/2.5.0版本验证.md) · [2.4.10 修订版归档](../Releases/2.4.10/2.4.10版本验证.md#2410-修订版发布归档)
+当前指南适用于 2.5.0。[下载 2.5.0](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.5.0)。各批实机反馈与正式发布门禁按版本查阅。[2.5.0 正式发布归档](../Releases/2.5.0/2.5.0版本验证.md#ssc-250-release) · [2.4.10 修订版归档](../Releases/2.4.10/2.4.10版本验证.md#2410-修订版发布归档)
 
-These guides cover SSC 2.4.10 and retain earlier changes under their original version headings. [2.4.10 release notes](../Releases/2.4.10/2.4.10发布说明.md#english)
+These guides cover SSC 2.5.0. Earlier features are listed under the versions that introduced them. [2.5.0 release notes](../Releases/2.5.0/2.5.0发布说明.md#english)
