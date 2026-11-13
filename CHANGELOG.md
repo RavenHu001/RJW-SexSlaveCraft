@@ -4,9 +4,10 @@
 
 - 关系页可为同一受训者追加多名调教员，并逐人撤销、启用工作及定位。旧单人存档自动迁移，命令栏放大镜继续提供名单入口。
 - 日常调教按原版工作优先级分派，同一目标只接受一个任务。第二名调教员在预约已被占用时无法点名接单，日常占用可从在途存档恢复。
-- 仪式和同床可继续检查名单后续成员，自我调教与公交车特化沿用各自的主人优先规则。 [实现与验证](Docs/Development/Verification/多调教员指派第三阶段实现与验证.md)
+- 仪式和同床可继续检查名单后续成员，自我调教与公交车特化沿用各自的主人优先规则。
+- 维护者已按清单通过 1.7.5005 rev1082 实机验收。 [验收记录](Docs/Development/Completed/多调教员指派第三阶段实现与验证.md#multi-trainer-runtime-acceptance)
 
-The 1.7 Relationships page supports adding, removing, enabling work for, and locating individual trainers. Older saves migrate automatically. Daily training uses one reservation per trainee, and in-progress assignments recover on load. Binding rituals, shared beds, self-training, and Bus specialization use the new roster.
+The 1.7 Relationships page supports adding, removing, enabling work for, and locating individual trainers. Older saves migrate automatically. Daily training uses one reservation per trainee, and in-progress assignments recover on load. Binding rituals, shared beds, self-training, and Bus specialization use the new roster. The maintainer completed the in-game checklist on 1.7.5005 rev1082.
 
 ## [2.4.10] — 2026-11-09 — 宠物兔与宠物狐 / Pet Rabbit and Pet Fox
 
