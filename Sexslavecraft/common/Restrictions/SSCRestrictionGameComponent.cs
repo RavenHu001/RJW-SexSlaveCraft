@@ -43,6 +43,7 @@ namespace SexSlaveCraft
             }
 #if SSC_RW17
             // 角色引用、绑定及人格完整恢复后，才认领原存档的当前/排队命令。
+            SSCDailyTrainingOccupancy.ReconcileAfterLoad(pawns);
             SSCRomanceCommandGameComponent.Current?.ReconcileAfterLoad();
 #endif
         }

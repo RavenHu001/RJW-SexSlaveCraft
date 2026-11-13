@@ -1,3 +1,4 @@
+#if !SSC_RW17
 // AI 辅助生成
 using System.Collections.Generic;
 using System.Linq;
@@ -146,3 +147,4 @@ namespace SexSlaveCraft
 #endif
     }
 }
+#endif

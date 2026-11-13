@@ -1,3 +1,4 @@
+#if !SSC_RW17
 // AI 辅助生成。身份控件使用显式禁用参数；任职提交继续经过权威资格校验。
 using UnityEngine;
 using Verse;
@@ -35,3 +36,4 @@ namespace SexSlaveCraft
 
     }
 }
+#endif

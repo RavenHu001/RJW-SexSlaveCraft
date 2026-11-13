@@ -1,4 +1,4 @@
-// AI 辅助生成。紧凑头像总览；只绘制可见网格，结束遍历后再导航或打开显式指派菜单。
+// AI 辅助生成。紧凑头像总览；只绘制可见网格，结束遍历后再导航。
 using System;
 using UnityEngine;
 using Verse;
@@ -51,7 +51,11 @@ namespace SexSlaveCraft
             session.OpenDetails(Source, Find.CurrentMap);
         }
         private bool ShowTrainer(SSCBondOverviewSnapshot snapshot)
+#if SSC_RW17
+            => snapshot?.AssignedTrainers.Count > 0 || SSCIdentityUtility.IsSexSlave(Source);
+#else
             => snapshot?.AssignedTrainer != null || SSCIdentityUtility.IsSexSlave(Source);
+#endif
 
         public override void DoWindowContents(Rect inRect)
         {
@@ -71,13 +75,24 @@ namespace SexSlaveCraft
             bool trainer = ShowTrainer(snapshot), slaves = snapshot.TotalSlaveCount > 0 || snapshot.Identity == PawnIdentity.Master;
             float masterStart = header, trainerHeader = master ? header + row : 0;
             float trainerStart = trainerHeader + header;
-            float slavesHeader = trainerHeader + (trainer ? header + row : 0), slavesStart = slavesHeader + header;
             int columns = SSCBondOverviewLayout.Columns(width);
+#if SSC_RW17
+            int trainerCount = snapshot.AssignedTrainers.Count;
+            int trainerRows = Math.Max(1, (trainerCount + columns - 1) / columns);
+            float trainerHeight = trainerRows * row;
+#else
+            const float trainerHeight = row;
+#endif
+            float slavesHeader = trainerHeader + (trainer ? header + trainerHeight : 0), slavesStart = slavesHeader + header;
             int rows = (snapshot.TotalSlaveCount + columns - 1) / columns;
             float total = slaves ? slavesStart + Math.Max(header, rows * row) : slavesHeader;
             scroll.y = Math.Max(0, Math.Min(scroll.y, Math.Max(0, total - viewport.height)));
             SSCBondOverviewEntry clicked = null;
+#if SSC_RW17
+            Pawn clickedTrainer = null;
+#else
             bool clickedTrainer = false, changeTrainer = false;
+#endif
             Widgets.BeginScrollView(viewport, ref scroll, new Rect(0, 0, width, Math.Max(total, viewport.height)));
             try
             {
@@ -92,6 +107,19 @@ namespace SexSlaveCraft
                 }
                 if (trainer)
                 {
+#if SSC_RW17
+                    Label(trainerHeader, SSCBondOverviewText.Format("TrainerCount", trainerCount));
+                    if (trainerCount == 0) Label(trainerStart, SSCBondOverviewText.T("None"));
+                    SSCBondOverviewLayout.VisibleRange(trainerRows, trainerStart, scroll.y, viewport.height, out int first, out int end);
+                    for (int index = first * columns; index < Math.Min(trainerCount, end * columns); index++)
+                    {
+                        var entry = snapshot.AssignedTrainers[index];
+                        var portrait = new Rect(4 + index % columns * SSCBondOverviewLayout.CellWidth,
+                            trainerStart + index / columns * row, 56, 56);
+                        if (SSCBondOverviewWidgets.TrainerAvatar(portrait, snapshot, session, view, true, entry))
+                            clickedTrainer = entry.Pawn;
+                    }
+#else
                     Label(trainerHeader, SSCBondOverviewText.T("TrainerPanel"), Math.Max(1, width - Math.Min(width, 32) - 8));
                     if (Visible(trainerHeader, header) && SSCBondOverviewWidgets.IconButton(new Rect(Math.Max(0, width - 32), trainerHeader, Math.Min(width, 32), 24),
                         TexButton.Rename, SSCBondOverviewText.T("ChangeTrainer"), SSCIdentityUtility.IsSexSlave(Source))) changeTrainer = true;
@@ -101,6 +129,7 @@ namespace SexSlaveCraft
                             clickedTrainer = SSCBondOverviewWidgets.TrainerAvatar(new Rect(4, trainerStart, 56, 56), snapshot, session, view, true);
                         else Label(trainerStart, SSCBondOverviewText.T("None"));
                     }
+#endif
                 }
                 if (slaves)
                 {
@@ -121,11 +150,19 @@ namespace SexSlaveCraft
                 }
             }
             finally { Widgets.EndScrollView(); }
+#if SSC_RW17
+            if (clicked != null || clickedTrainer != null)
+#else
             if (changeTrainer) Gizmo_SSCBondOverview.OpenTrainerMenu(session, view);
             else if (clicked != null || clickedTrainer)
+#endif
             {
                 SSCBondOverviewNavigationFailure failure;
+#if SSC_RW17
+                bool success = clickedTrainer != null ? SSCBondOverviewNavigation.TryNavigateTrainer(snapshot, clickedTrainer, out failure)
+#else
                 bool success = clickedTrainer ? SSCBondOverviewNavigation.TryNavigateTrainer(snapshot, out failure)
+#endif
                     : SSCBondOverviewNavigation.TryNavigate(snapshot, clicked, out failure);
                 if (success) Close();
                 else { session.RequestRefresh(view); Messages.Message(SSCBondOverviewText.T("Failure_" + failure), RimWorld.MessageTypeDefOf.RejectInput, false); }

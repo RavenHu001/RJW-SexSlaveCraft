@@ -344,6 +344,8 @@ internal static partial class Program
         {
             var s = DailyGrowth(oral: true); var restored = RestoreDriver<JobDriver_Training>(s.driver);
             RoundTripGrowth(s.driver, restored, s.scene, doc => { if (old) doc.Descendants("receivedPenileOralPenetration").Remove(); });
+            SSCDailyTrainingOccupancy.ReconcileAfterLoad(new[] { s.scene.Source, s.scene.Target });
+            Require(restored.HasDailyTrainingOccupancy);
             var toils = ((IEnumerable<Toil>)Hidden(typeof(JobDriver_Training), restored, "MakeNewToils")).ToArray();
             toils.Last().initAction(); toils.Last().initAction();
             Near(old ? .01f : .035f, StomachProgress(s.scene.Target)); Equal(1, dailyOutcomes);

@@ -29,7 +29,7 @@ namespace SexSlaveCraft
             return GetChain(sexSlave)?.LinkedPawn;
         }
 
-        /// <summary>优先返回绑定主人；无主时只使用仍具调教员身份的指定对象。</summary>
+        /// <summary>优先返回绑定主人；无主时取首位仍具调教员身份的指定对象。</summary>
         public static Pawn GetResolvedMaster(Pawn sexSlave)
         {
             Pawn boundMaster = GetBoundMaster(sexSlave);
@@ -48,6 +48,9 @@ namespace SexSlaveCraft
         {
             CompSexSlaveTraining comp = sexSlave?.TryGetComp<CompSexSlaveTraining>();
             if (comp == null) return false;
+#if SSC_RW17 || SSC_TRAINER_WORK_TEST
+            if (comp.AssignedTrainerCount > 1) return false;
+#endif
 
             if (trainer != null && !TrainerAssignmentUtility.CanAssignTrainerTo(sexSlave, trainer)) return false;
 
@@ -138,16 +141,32 @@ namespace SexSlaveCraft
                 if (clearAssignedTrainer)
                 {
                     CompSexSlaveTraining comp = sexSlave?.TryGetComp<CompSexSlaveTraining>();
+#if SSC_RW17 || SSC_TRAINER_WORK_TEST
+                    if (master == null) comp?.ClearAssignedTrainers();
+                    else comp?.RemoveAssignedTrainer(master);
+#else
                     if (comp != null && (master == null || comp.selectedTrainer == master))
                     {
                         // 这是解绑事务的关系清理，不是玩家重新指派；人格恢复期间也必须清除原主，
                         // 不能被限制编辑的恢复锁挡住。上面的条件继续保留明确指定的第三方。
                         comp.selectedTrainer = null;
                     }
+#endif
                 }
 
                 // 即使锁链原先已缺失，也清除旧档残留的社交奖励；原生接口同时处理另一端。
                 SSCBondRelationUtility.RemoveInvalidRelations(sexSlave);
+#if SSC_RW17
+                if (master != null)
+                {
+                    // 解绑后，原主人的手动例外消失，保留的第三方也要重新满足首次建绑资格。
+                    SSCDailyTrainingOccupancy.RemoveUnauthorizedQueuedJobs(sexSlave, master);
+                    var remaining = sexSlave.TryGetComp<CompSexSlaveTraining>()?.CopyAssignedTrainers();
+                    if (remaining != null)
+                        foreach (Pawn trainer in remaining)
+                            if (trainer != master) SSCDailyTrainingOccupancy.RemoveUnauthorizedQueuedJobs(sexSlave, trainer);
+                }
+#endif
                 return changed;
             }
         }

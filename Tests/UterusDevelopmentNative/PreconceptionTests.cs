@@ -219,7 +219,6 @@ internal static partial class Program
             Require(SSCBondUtility.IsBoundTo(host, master) && bridle.ValidTargets.Contains(host));
         });
 
-        PreconceptionUiTests(harmony);
     }
 
     /// <summary>普通完成默认仍关闭生育，为所有本批编辑测试提供同一真实玩家与成年身体夹具。</summary>

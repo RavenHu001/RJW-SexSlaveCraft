@@ -91,7 +91,11 @@ namespace SexSlaveCraft
             if (request.Kind == SSCInteractionKind.BindingPreparation && !SSCIdentityUtility.IsMaster(actor))
                 return new SSCTrainingAdmission(decision, SSCTrainingFailure.BindingMasterRequired);
             if ((requireAssignment || decision.Reason != SSCRestrictionReason.BoundOwner) &&
+#if SSC_RW17 || SSC_TRAINER_WORK_TEST
+                (!TrainerAssignmentUtility.IsAssignedTrainer(target.TryGetComp<CompSexSlaveTraining>(), actor) || actor.Discarded))
+#else
                 TrainerAssignmentUtility.GetActiveAssignedTrainer(target) != actor)
+#endif
                 return new SSCTrainingAdmission(decision, SSCTrainingFailure.AssignmentRequired);
             return new SSCTrainingAdmission(decision, SSCTrainingFailure.None);
         }

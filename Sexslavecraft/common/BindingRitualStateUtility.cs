@@ -54,6 +54,9 @@ namespace SexSlaveCraft
         /// <returns>可以执行当前阶段时返回 true；仪式无效、缺少组件或已完成六阶段时返回 false。</returns>
         public static bool TryBeginPhase(Pawn master, Pawn slave, Lord ritualLord)
         {
+#if SSC_RW17
+            if (SSCDailyTrainingOccupancy.IsBusy(slave)) return false;
+#endif
             if (!IsActiveRitualFor(master, slave, ritualLord)) return false;
             if (!EnsureTargetIdentity(master, slave, ritualLord)) return false;
             CompSexSlaveTraining training = slave.TryGetComp<CompSexSlaveTraining>();
@@ -73,6 +76,18 @@ namespace SexSlaveCraft
             training.isBeingTrained = true;
             return true;
         }
+
+#if SSC_RW17
+        internal static bool HasActiveTargetRitual(Pawn target)
+        {
+            Lord lord = target?.TryGetComp<CompSexSlaveTraining>()?.bindingRitualLord;
+            if (lord?.LordJob is LordJob_Ritual recorded && IsActiveRitualFor(recorded.PawnWithRole("master"), target, lord))
+                return true;
+            lord = target?.GetLord();
+            return lord?.LordJob is LordJob_Ritual ritual &&
+                IsActiveRitualFor(ritual.PawnWithRole("master"), target, lord);
+        }
+#endif
 
         /// <summary>推进属于本场的已完成阶段，保留仪式占用；调用者负责保证每阶段只调用一次。</summary>
         /// <returns>实际增加阶段计数时返回 true；仪式失效、归属不符或已达末阶段时返回 false。</returns>

@@ -15,8 +15,12 @@ namespace SexSlaveCraft
             Pawn host = assignments?.FirstAssignedPawn("master") ?? ritual?.PawnWithRole("master");
             string failure;
             bool paired = host != null ? CanPair(host, p, out failure, skipReason)
+#if SSC_RW17
+                : BindingRitualSelectionUtility.HasEligibleHost(p, selectedTarget, out failure, skipReason: skipReason);
+#else
                 : CanPair(SSCBondUtility.GetBoundMaster(p), p, out failure, skipReason)
                     || CanPair(TrainerAssignmentUtility.GetActiveAssignedTrainer(p), p, out failure, skipReason);
+#endif
             if (!paired)
             {
                 if (!skipReason) reason = failure;

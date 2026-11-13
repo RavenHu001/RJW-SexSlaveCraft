@@ -20,7 +20,7 @@ namespace SexSlaveCraft
             return 0.50f;
         }
 
-        /// <summary>主人优先；失效后才选有效指定调教员，不要求同图或在场。</summary>
+        /// <summary>主人优先；失效后按名单顺序选首位有效调教员，不要求同图或在场。</summary>
         public static Pawn GetImaginedPawn(Pawn pawn)
         {
             Pawn master = SSCBondUtility.GetBoundMaster(pawn);

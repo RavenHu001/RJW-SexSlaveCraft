@@ -17,12 +17,17 @@ internal static partial class Program
     private static Action growthOriginal, growthAfterDaily, growthAfterRitual;
     private static readonly List<string> growthOrder = new();
     private static readonly Dictionary<LordJob_Ritual, GrowthRitual> growthRituals = new();
+    private static readonly HashSet<Pawn> dailyGrowthPawns = new();
+    private static Map dailyGrowthMap;
 
     /// <summary>在同一个真实生产程序集宿主中执行场景、成长及存档测试。</summary>
     private static void GrowthFlowTests(string repo, Harmony harmony)
     {
         void Patch(Type type, string method, string prefix, Type[] signature = null)
             => harmony.Patch(AccessTools.Method(type, method, signature), prefix: new HarmonyMethod(typeof(Program), prefix));
+        dailyGrowthMap = Bare<Map>();
+        harmony.Patch(AccessTools.PropertyGetter(typeof(Thing), nameof(Thing.Map)),
+            prefix: new HarmonyMethod(typeof(Program), nameof(DailyGrowthMap)));
         // Lord 的静态旗帜材质需要图形设备；仅隔离这一资源加载，不替换其任务/角色引用。
         Patch(typeof(MaterialPool), "MatFrom", nameof(Skip), new[] { typeof(string) });
         // 只把外部能力/地图资格和既有收益作为边界。新快照、成长、任务认领和仪式状态均执行生产代码。
@@ -70,6 +75,14 @@ internal static partial class Program
         InfestationGrowthTests();
         RitualGrowthTests();
         GrowthSaveTests(harmony);
+        dailyGrowthPawns.Clear();
+    }
+
+    private static bool DailyGrowthMap(Thing __instance, ref Map __result)
+    {
+        if (!(__instance is Pawn pawn) || !dailyGrowthPawns.Contains(pawn)) return true;
+        __result = dailyGrowthMap;
+        return false;
     }
 
     /// <summary>仅提供夹具方向的既有能力资格；不在此宿主重新实现主人能力和人格准入。</summary>
@@ -122,6 +135,11 @@ internal static partial class Program
     private static (GrowthScene scene, JobDriver_Training driver, Toil payout) DailyGrowth(bool contact = true, bool begun = true, bool oral = false)
     {
         ResetGrowthFlow(); var s = new GrowthScene(contact: contact, oral: oral); var driver = InstallDriver<JobDriver_Training>(s);
+        dailyGrowthPawns.Clear();
+        dailyGrowthPawns.Add(s.Source);
+        dailyGrowthPawns.Add(s.Target);
+        driver.RestoreDailyTrainingOccupancy();
+        Require(driver.HasDailyTrainingOccupancy);
         var toils = ((IEnumerable<Toil>)Hidden(typeof(JobDriver_Training), driver, "MakeNewToils")).ToArray();
         if (begun)
         {
@@ -133,6 +151,26 @@ internal static partial class Program
     /// <summary>验证实际日常闭包与旧部位使用相同动作分类，完整结算只领一次。</summary>
     private static void DailyGrowthTests()
     {
+        Check("daily training reentrant completion blocks a second actor and pays once", () =>
+        {
+            var s = DailyGrowth();
+            Pawn b = ImprintPawn(PawnIdentity.Master);
+            dailyGrowthPawns.Add(b);
+            b.jobs = new Pawn_JobTracker(b);
+            var second = new JobDriver_Training { pawn = b, job = JobMaker.MakeJob(s.driver.job.def, s.scene.Target) };
+            b.jobs.curJob = second.job;
+            b.jobs.curDriver = second;
+            growthOriginal = () =>
+            {
+                Require(SSCDailyTrainingOccupancy.TryClaim(s.scene.Target, new TrainingJobUtility.JobContext(second)) == null);
+                s.payout.initAction();
+            };
+            s.payout.initAction();
+            Equal(1, sexProcessCalls);
+            Equal(1, dailyOutcomes);
+            Require(s.scene.Target.TryGetComp<CompSexSlaveTraining>().IsOnCooldown);
+        });
+
         Check("batch3 missing driver never creates training evidence", () =>
         {
             var kind = growthType.Assembly.GetType("SexSlaveCraft.SSCInteractionKind");

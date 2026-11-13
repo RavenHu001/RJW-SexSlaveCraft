@@ -8,6 +8,7 @@ namespace SexSlaveCraft
 {
     public partial class ITab_SexSlaveTraining
     {
+#if !SSC_RW17
         private const float MasterRowGap = 6f;
         private const float MasterControlGap = 12f;
         private const float MasterBarHeight = 18f;
@@ -40,6 +41,7 @@ namespace SexSlaveCraft
 #endif
             public float SectionHeight;
         }
+#endif
 
         /// <summary>为两个入口读取同一份成长显示，概况可把数值并入阶段行。</summary>
         internal static (Hediff_MasterProgression Record, string Stage, string Experience, string Progress,
@@ -79,6 +81,7 @@ namespace SexSlaveCraft
                 record.GetHashCode());
         }
 
+#if !SSC_RW17
         /// <summary>为旧面板测量原成长和能力行；无记录时仍保留能力入口。</summary>
         private static MasterPanelView BuildMasterPanelView(Pawn pawn, CompSexSlaveTraining comp, float width)
         {
@@ -231,5 +234,7 @@ namespace SexSlaveCraft
             AddMasterProgressionTip(row, record);
             y += height;
         }
+#endif
+
     }
 }

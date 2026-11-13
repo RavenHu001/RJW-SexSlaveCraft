@@ -76,6 +76,33 @@ namespace SexSlaveCraft
         }
     }
 
+#if SSC_RW17
+    internal sealed class SSCBondOverviewTrainerEntry
+    {
+        internal Pawn Pawn { get; }
+        internal string Name { get; }
+        internal bool IsDead { get; }
+        internal SSCBondOverviewTrainerState State { get; }
+        internal SSCBondOverviewLocation Location { get; }
+
+        internal SSCBondOverviewTrainerEntry(Pawn source, Pawn trainer, SSCBondOverviewLocation location)
+        {
+            Pawn = trainer;
+            Name = trainer?.LabelShort;
+            IsDead = trainer?.Dead == true;
+            Location = location;
+            State = !SSCBondOverviewUtility.IsValidPawn(trainer) || ReferenceEquals(source, trainer)
+                ? SSCBondOverviewTrainerState.InvalidTarget
+                : TrainerAssignmentUtility.IsActiveAssignedTrainer(source, trainer)
+                    ? SSCBondOverviewTrainerState.Active : SSCBondOverviewTrainerState.Inactive;
+        }
+
+        internal bool SamePresentation(SSCBondOverviewTrainerEntry other)
+            => ReferenceEquals(Pawn, other.Pawn) && Name == other.Name && IsDead == other.IsDead &&
+                State == other.State && (ReferenceEquals(Location, other.Location) || Location?.SamePresentation(other.Location) == true);
+    }
+#endif
+
     /// <summary>属于一次游戏与查询的运行时视图，不参与 Scribe 或人格保存。</summary>
     public sealed class SSCBondOverviewSnapshot
     {
@@ -89,6 +116,17 @@ namespace SexSlaveCraft
         public Pawn AssignedTrainer { get; }
         public SSCBondOverviewLocation AssignedTrainerLocation { get; }
         public SSCBondOverviewTrainerState AssignedTrainerState { get; }
+#if SSC_RW17
+        internal IReadOnlyList<SSCBondOverviewTrainerEntry> AssignedTrainers { get; }
+        internal CompSexSlaveTraining SourceTrainingComp { get; }
+
+        internal SSCBondOverviewTrainerEntry FindTrainer(Pawn trainer)
+        {
+            foreach (var entry in AssignedTrainers)
+                if (ReferenceEquals(entry.Pawn, trainer)) return entry;
+            return null;
+        }
+#endif
         public IReadOnlyList<SSCBondOverviewEntry> Slaves { get; }
         public int LivingSlaveCount { get; }
         public int TotalSlaveCount => Slaves.Count;
@@ -100,7 +138,12 @@ namespace SexSlaveCraft
 
         internal SSCBondOverviewSnapshot(Game game, Pawn source, Map viewedMap,
             SSCBondOverviewQueryState state, SSCBondOverviewMasterState masterState,
-            SSCBondOverviewEntry master, List<SSCBondOverviewEntry> slaves, SSCBondOverviewLocation trainerLocation = null)
+            SSCBondOverviewEntry master, List<SSCBondOverviewEntry> slaves,
+#if SSC_RW17
+            List<SSCBondOverviewTrainerEntry> trainers = null)
+#else
+            SSCBondOverviewLocation trainerLocation = null)
+#endif
         {
             Game = game;
             Source = source;
@@ -113,6 +156,17 @@ namespace SexSlaveCraft
             Master = master;
             // 指派状态是独立的次级信息：保留原始指定者，再用既有只读规则判定是否生效。
             // 指定者失效时不清空字段，也不将其当成锁链主人，更不在查询中整理身份或指派。
+#if SSC_RW17
+            SourceTrainingComp = source?.TryGetComp<CompSexSlaveTraining>();
+            AssignedTrainers = trainers?.AsReadOnly() ?? (IReadOnlyList<SSCBondOverviewTrainerEntry>)Array.Empty<SSCBondOverviewTrainerEntry>();
+            var firstTrainer = AssignedTrainers.Count == 0 ? null : AssignedTrainers[0];
+            AssignedTrainer = firstTrainer?.Pawn;
+            TrainerName = firstTrainer?.Name;
+            TrainerDead = firstTrainer?.IsDead == true;
+            AssignedTrainerLocation = firstTrainer?.Location;
+            AssignedTrainerState = state != SSCBondOverviewQueryState.Ready ? SSCBondOverviewTrainerState.Unavailable
+                : firstTrainer?.State ?? SSCBondOverviewTrainerState.None;
+#else
             AssignedTrainer = source?.TryGetComp<CompSexSlaveTraining>()?.selectedTrainer;
             TrainerName = AssignedTrainer?.LabelShort;
             TrainerDead = AssignedTrainer?.Dead == true;
@@ -123,6 +177,7 @@ namespace SexSlaveCraft
                     ? SSCBondOverviewTrainerState.InvalidTarget
                     : ReferenceEquals(TrainerAssignmentUtility.GetActiveAssignedTrainer(source), AssignedTrainer)
                         ? SSCBondOverviewTrainerState.Active : SSCBondOverviewTrainerState.Inactive;
+#endif
             // 接收查询器新建列表的所有权；外部只取得包装，不再复制同一份行引用。
             // 调用方交出列表后不得继续改写；列表不属于可复用上下文，下一次查询也不会清空它。
             // 空结果无需行索引；非空结果的引用集合只用于成员校验，不跨快照复用。
@@ -150,6 +205,12 @@ namespace SexSlaveCraft
                 TrainerName != other.TrainerName || TrainerDead != other.TrainerDead ||
                 !SameLocation(AssignedTrainerLocation, other.AssignedTrainerLocation) ||
                 LivingSlaveCount != other.LivingSlaveCount || TotalSlaveCount != other.TotalSlaveCount || !SameEntry(Master, other.Master)) return false;
+#if SSC_RW17
+            if (!ReferenceEquals(SourceTrainingComp, other.SourceTrainingComp) || AssignedTrainers.Count != other.AssignedTrainers.Count)
+                return false;
+            for (int i = 0; i < AssignedTrainers.Count; i++)
+                if (!AssignedTrainers[i].SamePresentation(other.AssignedTrainers[i])) return false;
+#endif
             // 顺序也是显示事实；同名排序和位置分组变化不能被相同计数掩盖。
             for (int i = 0; i < Slaves.Count; i++) if (!SameEntry(Slaves[i], other.Slaves[i])) return false;
             return true;

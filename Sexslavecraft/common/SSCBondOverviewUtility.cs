@@ -115,6 +115,24 @@ namespace SexSlaveCraft
             // 候选收集完毕后仅为实际关联对象请求位置，再统一扫飞船建立稀疏索引。
             // 逐行构造只读取持有链与索引，避免每个离图角色都重新扫描整船货物。
             if (indexShips && hasMaster) world.AddLocationRequest(master);
+#if SSC_RW17
+            var trainerPawns = source.TryGetComp<CompSexSlaveTraining>()?.CopyAssignedTrainers() ?? Array.Empty<Pawn>();
+            if (indexShips)
+            {
+                foreach (Pawn trainer in trainerPawns)
+                    if (IsValidPawn(trainer) && !ReferenceEquals(source, trainer)) world.AddLocationRequest(trainer);
+                foreach (BoundCandidate candidate in matched) world.AddLocationRequest(candidate.Pawn);
+                world.IndexShipLocations();
+            }
+            SSCBondOverviewLocation masterLocation = hasMaster ? world.GetLocation(master) : null;
+            var trainerRows = new List<SSCBondOverviewTrainerEntry>(trainerPawns.Length);
+            foreach (Pawn trainer in trainerPawns)
+            {
+                SSCBondOverviewLocation location = IsValidPawn(trainer) && !ReferenceEquals(source, trainer)
+                    ? ReferenceEquals(trainer, master) ? masterLocation : world.GetLocation(trainer) : null;
+                trainerRows.Add(new SSCBondOverviewTrainerEntry(source, trainer, location));
+            }
+#else
             // 次级指派只增加一个位置请求，不加入绑定候选或计数；与原有关联共用一次飞船索引。
             Pawn trainer = source.TryGetComp<CompSexSlaveTraining>()?.selectedTrainer;
             bool hasTrainer = IsValidPawn(trainer) && !ReferenceEquals(source, trainer);
@@ -129,16 +147,24 @@ namespace SexSlaveCraft
             SSCBondOverviewLocation masterLocation = hasMaster ? world.GetLocation(master) : null;
             SSCBondOverviewLocation trainerLocation = hasTrainer
                 ? ReferenceEquals(trainer, master) ? masterLocation : world.GetLocation(trainer) : null;
+#endif
             SSCBondOverviewEntry masterEntry = hasMaster
                 ? new SSCBondOverviewEntry(source, master, SSCBondOverviewDirection.Master, ownChain, masterLocation) : null;
             var slaves = new List<SSCBondOverviewEntry>(matched.Count);
             foreach (BoundCandidate candidate in matched)
                 slaves.Add(new SSCBondOverviewEntry(source, candidate.Pawn, SSCBondOverviewDirection.Slave,
                     candidate.Chain, ReferenceEquals(candidate.Pawn, master) ? masterLocation
-                        : ReferenceEquals(candidate.Pawn, trainer) ? trainerLocation : world.GetLocation(candidate.Pawn)));
+#if !SSC_RW17
+                        : ReferenceEquals(candidate.Pawn, trainer) ? trainerLocation
+#endif
+                        : world.GetLocation(candidate.Pawn)));
             slaves.Sort((left, right) => Compare(left, right, viewedMap));
             return new SSCBondOverviewSnapshot(Current.Game, source, viewedMap, SSCBondOverviewQueryState.Ready, masterState, masterEntry, slaves,
+#if SSC_RW17
+                trainerRows);
+#else
                 trainerLocation);
+#endif
         }
 
         /// <summary>轻量复查行所属游戏、来源与当前直接归属；同主的新链仍是同一关系。</summary>

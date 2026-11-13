@@ -22,6 +22,11 @@ namespace SexSlaveCraft
         private bool legacySceneProgress;
         private bool dailyOutcomeClaimed;
         private int approachIdleRetries;
+#if SSC_RW17
+        private SSCDailyTrainingOccupancy dailyOccupancy;
+        private TrainingJobUtility.JobContext dailyReceiver;
+        private bool sceneFinishHandled;
+#endif
         private const int ApproachRetryIntervalTicks = 60;
         private const int MaxApproachIdleRetries = 10;
 
@@ -32,6 +37,9 @@ namespace SexSlaveCraft
             Scribe_References.Look(ref preparedTrainingTarget, "sscPreparedTrainingTarget");
             Scribe_Values.Look(ref hasSceneRecord, "sscDailySceneRecord", false);
             Scribe_Values.Look(ref sceneStarted, "sscDailySceneStarted", false);
+#if SSC_RW17
+            Scribe_Values.Look(ref sceneFinishHandled, "sscDailySceneFinishHandled", false);
+#endif
             // 沿用旧特化奖励存档键。现统一认领整次日常结算，避免重复 ProcessSex、
             // 评分或特化发奖；旧档中已领取的任务也不会在升级后补发主人等新增经验。
             Scribe_Values.Look(ref dailyOutcomeClaimed, "sscTrainerProgressAwarded", false);
@@ -45,15 +53,22 @@ namespace SexSlaveCraft
                 if (!hasSceneRecord && legacySceneProgress) sceneStarted = true;
                 hasSceneRecord = true;
             }
+#if !SSC_RW17
             // 升级旧档时任务目标仍属于本日常 Job；仅补领已有占用，不创建训练状态。
             if (Scribe.mode == LoadSaveMode.PostLoadInit && preparedTrainingTarget == null &&
                 Partner?.TryGetComp<CompSexSlaveTraining>()?.isBeingTrained == true)
                 preparedTrainingTarget = Partner;
+#endif
         }
 
         /// <summary>统一守卫通过后预约日常目标；受训 SSC 身份在旧档恢复时仍是必要条件。</summary>
         public override bool TryMakePreToilReservations(bool errorOnFailed)
         {
+#if SSC_RW17
+            if (!TrainerAssignmentUtility.CanStartDailyTraining(Partner, pawn, job.playerForced, out _) ||
+                !TrainerAssignmentUtility.CanReserveDailyTraining(pawn, Partner))
+                return false;
+#endif
             return SSCIdentityUtility.IsSexSlave(Partner) && pawn.Reserve(Partner, job, 1, 0, null, errorOnFailed);
         }
 
@@ -72,7 +87,12 @@ namespace SexSlaveCraft
             this.FailOn(() => ownsToils() && !SSCIdentityUtility.IsSexSlave(originalTarget));
             this.FailOn(() => pawn.Drafted || pawn.IsFighting());
             this.FailOn(() => Partner.IsFighting());
+#if SSC_RW17
+            this.FailOn(() => preparedTrainingTarget != null && dailyOccupancy?.IsCurrent != true);
+            this.FailOn(() => dailyOccupancy?.IsHeld != true && !TrainerAssignmentUtility.CanReserveDailyTraining(pawn, Partner));
+#else
             this.FailOn(() => !pawn.CanReserve(Partner, 1, 0));
+#endif
             // 候选选定后可能开课；在途及执行阶段重新检查，退出时沿用现有占用清理。
             this.FailOn(() => ProgressionEducationCompatibility.ShouldDeferAutomaticTraining(Partner, job.playerForced));
             AddFinishAction(condition => { if (ownsToils()) CleanupPreparedTraining(); });
@@ -86,9 +106,20 @@ namespace SexSlaveCraft
                     if (!ownsToils()) return;
                     var context = new TrainingJobUtility.JobContext(this);
                     Pawn target = originalTarget;
-                    if (!ValidateTargetIdentityOrAbort(context, target)) return;
+                    if (!ValidateTargetIdentityOrAbort(context, target, requireOccupancy: false)) return;
+#if SSC_RW17
+                    if (dailyOccupancy?.IsCurrentFor(context) == true) return;
+                    if (!TrainerAssignmentUtility.CanStartDailyTraining(target, pawn, job.playerForced, out _) ||
+                        (dailyOccupancy = SSCDailyTrainingOccupancy.TryClaim(target, context)) == null)
+                    {
+                        if (context.IsCurrent) pawn.jobs.EndCurrentJob(JobCondition.Incompletable, startNewJob: false);
+                        return;
+                    }
+#endif
                     preparedTrainingTarget = target;
+#if !SSC_RW17
                     TrainingJobUtility.MarkTrainingStarted(target, false);
+#endif
                 },
                 defaultCompleteMode = ToilCompleteMode.Instant
             };
@@ -117,6 +148,10 @@ namespace SexSlaveCraft
                 var context = new TrainingJobUtility.JobContext(this);
                 Pawn target = originalTarget;
                 if (!ValidateTargetIdentityOrAbort(context, target)) return;
+#if SSC_RW17
+                if (!sceneStarted && pawn.IsHashIntervalTick(ApproachRetryIntervalTicks) &&
+                    (!SSCRestrictionJobGuard.CheckDailyTrainingApproach(this) || !ValidateTargetIdentityOrAbort(context, target))) return;
+#endif
                 if (pawn.pather.MovingNow)
                 {
                     approachIdleRetries = 0;
@@ -154,13 +189,28 @@ namespace SexSlaveCraft
                 Pawn target = originalTarget;
                 if (!ValidateTargetIdentityOrAbort(context, target)) return;
                 // 统一步骤守卫已在进入此回调前复查许可与指派，避免另外维护一套拒绝路径。
+#if SSC_RW17
+                var occupancy = dailyOccupancy;
+                occupancy.EnterCallback();
+                bool started;
+                try
+                {
+                    started = TrainingJobUtility.TryStartDailyTrainingReceiver(pawn, target, job, partnerJob);
+                    if (started && occupancy.IsCurrent) CaptureDailyReceiver(target);
+                }
+                finally { occupancy.ExitCallback(); }
+#else
                 bool started = TrainingJobUtility.TryStartDailyTrainingReceiver(pawn, target, job, partnerJob);
+#endif
                 // StartJob/传送通知可重入工作调度；旧回调不能清理新任务或新目标。
                 if (!ValidateTargetIdentityOrAbort(context, target)) return;
                 if (!started)
                 {
                     // 只有仍属于本次调教的失败才写冷却并清理占用；换工作已由上方直接返回。
-                    TrainingJobUtility.MarkValidationFailure(target, "SSC_TRAIN_RECEIVER");
+#if SSC_RW17
+                    if (!SSCDailyTrainingOccupancy.HasOtherReceiver(target, pawn))
+#endif
+                        TrainingJobUtility.MarkValidationFailure(target, "SSC_TRAIN_RECEIVER");
                     TrainingJobUtility.NotifyTrainingAborted(target);
                     if (context.IsCurrent) pawn.jobs.EndCurrentJob(JobCondition.Incompletable);
                 }
@@ -249,10 +299,26 @@ namespace SexSlaveCraft
 
                 string sceneSexType = Sexprops != null ? Sexprops.sexType.ToString() : "null";
                 SSCLog.Verbose($"[SSC_TRAIN] Start daily training scene: trainer={pawn.LabelShort}, slave={Partner.LabelShort}, sexType={sceneSexType}, selectedMode={(Partner.TryGetComp<CompSexSlaveTraining>()?.selectedMode.ToString() ?? "null")}");
+#if SSC_RW17
+                var startOccupancy = dailyOccupancy;
+                startOccupancy.EnterCallback();
+                try { Start(); }
+                finally { startOccupancy.ExitCallback(); }
+#else
                 Start();
+#endif
                 // RJW Start 完整返回且原任务仍在，才允许标记已开始并在以后结算。
                 if (!IsCurrentTarget(context, target)) return;
+#if SSC_RW17
+                sceneStarted = SSCRestrictionJobGuard.HasStartedScene(this, SSCInteractionKind.DailyTraining);
+                if (!sceneStarted)
+                {
+                    if (context.IsCurrent) pawn.jobs.EndCurrentJob(JobCondition.Incompletable, startNewJob: false);
+                    return;
+                }
+#else
                 sceneStarted = true;
+#endif
                 if (!ValidateTargetIdentityOrAbort(context, target)) return;
                 Log.Message("[SSC Debug] Start() called.");
             };
@@ -287,12 +353,20 @@ namespace SexSlaveCraft
                 var context = new TrainingJobUtility.JobContext(this);
                 Pawn target = originalTarget;
                 if (!IsCurrentTarget(context, target)) return;
+#if SSC_RW17
+                FinishDailyReceiver(target);
+#else
                 if (sceneStarted) base.End();
                 if (!IsCurrentTarget(context, target)) return;
                 OnaholeCompatibilityUtility.TryUnregisterOnaholePartner(target, pawn);
                 if (IsCurrentTarget(context, target)) TrainingJobUtility.CleanupTrainingState(target);
+#endif
             });
+#if SSC_RW17
+            sexToil.FailOn(() => !HasDailyReceiver(Partner));
+#else
             sexToil.FailOn(() => !OnaholeCompatibilityUtility.IsValidTrainingReceiver(Partner, partnerJob));
+#endif
             yield return sexToil;
 
             // EN: Step 4: once the scene is over, process sex first and then convert the result into daily training payout.
@@ -310,9 +384,19 @@ namespace SexSlaveCraft
                     SexProps props = Sexprops;
                     // 先保存认领事实，覆盖外部回调重入及结算中途异常后的重复通知。
                     dailyOutcomeClaimed = true;
-                    SexUtility.ProcessSex(props);
-                    if (!ValidateTargetIdentityOrAbort(context, target)) return;
-                    ExecuteConditioningOutcome(context, target, props);
+#if SSC_RW17
+                    var occupancy = dailyOccupancy;
+                    occupancy.EnterCallback();
+                    try
+                    {
+#endif
+                        SexUtility.ProcessSex(props);
+                        if (!ValidateTargetIdentityOrAbort(context, target)) return;
+                        ExecuteConditioningOutcome(context, target, props);
+#if SSC_RW17
+                    }
+                    finally { occupancy.ExitCallback(); }
+#endif
                 },
                 defaultCompleteMode = ToilCompleteMode.Instant
             };
@@ -321,6 +405,11 @@ namespace SexSlaveCraft
         /// <summary>任何退出路径都释放本 Job 建立的日常占用及设备关联；迟到回调不清理新任务或仪式。</summary>
         private void CleanupPreparedTraining()
         {
+#if SSC_RW17
+            Pawn target = preparedTrainingTarget;
+            dailyOccupancy?.Finish(() => FinishDailyReceiver(target));
+            preparedTrainingTarget = null;
+#else
             var context = new TrainingJobUtility.JobContext(this);
             if (preparedTrainingTarget == null || !IsCurrentTarget(context, preparedTrainingTarget)) return;
             Pawn target = preparedTrainingTarget;
@@ -328,16 +417,93 @@ namespace SexSlaveCraft
             if (target.TryGetComp<CompSexSlaveTraining>()?.isRitualTraining == true) return;
             OnaholeCompatibilityUtility.TryUnregisterOnaholePartner(target, pawn);
             if (IsCurrentTarget(context, target)) TrainingJobUtility.CleanupTrainingState(target);
+#endif
         }
+
+#if SSC_RW17
+        private void CaptureDailyReceiver(Pawn target)
+        {
+            var receiver = target.jobs?.curDriver as JobDriver_SexBaseReciever;
+            if (receiver != null && (OnaholeCompatibilityUtility.IsBeOnaholeDriver(receiver)
+                    ? receiver.parteners?.Contains(pawn) == true
+                    : receiver.job?.def == partnerJob && receiver.Partner == pawn))
+                dailyReceiver = new TrainingJobUtility.JobContext(receiver);
+        }
+
+        private bool HasDailyReceiver(Pawn target)
+            => dailyReceiver.Actor == target && dailyReceiver.IsCurrent && !dailyReceiver.Driver.ended &&
+                dailyReceiver.Driver is JobDriver_SexBaseReciever receiver &&
+                (OnaholeCompatibilityUtility.IsBeOnaholeDriver(receiver)
+                    ? receiver.parteners?.Contains(pawn) == true
+                    : receiver.Partner == pawn);
+
+        private void FinishDailyReceiver(Pawn target)
+        {
+            if (sceneFinishHandled || dailyOccupancy?.IsHeld != true) return;
+            sceneFinishHandled = true;
+            if (!HasDailyReceiver(target)) return;
+            var receiver = dailyReceiver;
+            var occupancy = dailyOccupancy;
+            occupancy.EnterCallback();
+            try
+            {
+                if (sceneStarted && occupancy.InitiatorStillInstalled) base.End();
+            }
+            finally
+            {
+                try
+                {
+                    if (receiver.IsCurrent && occupancy.IsHeld)
+                    {
+                        if (OnaholeCompatibilityUtility.IsBeOnaholeDriver(receiver.Driver))
+                            OnaholeCompatibilityUtility.TryUnregisterOnaholePartner(target, pawn);
+                        else
+                            target.jobs.EndCurrentJob(JobCondition.Incompletable, startNewJob: false);
+                    }
+                }
+                finally { occupancy.ExitCallback(); }
+            }
+        }
+
+        internal int DailyTrainingLoadEvidence()
+        {
+            Pawn target = Partner;
+            var context = new TrainingJobUtility.JobContext(this);
+            if (!context.IsCurrent || context.Map == null || target?.Map != context.Map) return 0;
+            CaptureDailyReceiver(target);
+            if (HasDailyReceiver(target)) return 3;
+            if (context.Map.reservationManager?.ReservedBy(context.Target, pawn, job) == true) return 2;
+            return preparedTrainingTarget == target ? 1 : 0;
+        }
+
+        internal void RestoreDailyTrainingOccupancy()
+        {
+            var context = new TrainingJobUtility.JobContext(this);
+            if (dailyOccupancy?.IsCurrentFor(context) == true) return;
+            dailyOccupancy = SSCDailyTrainingOccupancy.TryClaim(Partner, context);
+            // 冲突 Job 在首次运行检查中退出，仅保留已认领任务的接收器。
+            preparedTrainingTarget = Partner;
+        }
+
+        internal bool HasDailyTrainingOccupancy => dailyOccupancy?.IsCurrent == true;
+#endif
 
         /// <summary>回调只可继续操作它进入时固定的任务及目标，不能借用重入后替换的目标。</summary>
         private bool IsCurrentTarget(TrainingJobUtility.JobContext context, Pawn target)
             => context.IsCurrent && target != null && context.Target.Thing == target && Partner == target;
 
         /// <summary>已开始场景也复查 SSC 身份；失格只结束仍属于该回调的任务，由原收尾释放占用。</summary>
-        private bool ValidateTargetIdentityOrAbort(TrainingJobUtility.JobContext context, Pawn target)
+        private bool ValidateTargetIdentityOrAbort(TrainingJobUtility.JobContext context, Pawn target, bool requireOccupancy = true)
         {
             if (!IsCurrentTarget(context, target)) return false;
+#if SSC_RW17
+            if (ended) return false;
+            if (requireOccupancy && dailyOccupancy?.IsCurrentFor(context) != true)
+            {
+                pawn.jobs.EndCurrentJob(JobCondition.Incompletable, startNewJob: false);
+                return false;
+            }
+#endif
             if (SSCIdentityUtility.IsSexSlave(target)) return true;
             if (job.playerForced)
                 Messages.Message("SSC_Training_TargetIdentityRequired".Translate(), target, MessageTypeDefOf.RejectInput, false);

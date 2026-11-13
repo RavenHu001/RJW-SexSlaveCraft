@@ -31,7 +31,6 @@
   <SSC_Romance_PassiveMeaning>When off, remains a valid target but always rejects. When on, normal acceptance applies.</SSC_Romance_PassiveMeaning>
   <SSC_Romance_ExtraMeaning>These two rules are independent. Master-only does not re-enable prohibited initiation.</SSC_Romance_ExtraMeaning>
   <SSC_Romance_RequiredStage>Requires the chain to reach the {0} stage.</SSC_Romance_RequiredStage>
-  <SSC_Romance_OpenBehaviorWindow>Open behavior restrictions…</SSC_Romance_OpenBehaviorWindow>
   <SSC_Romance_CommandTitle>Direct commands</SSC_Romance_CommandTitle>
   <SSC_Romance_Executor>Executor: {0}</SSC_Romance_Executor>
   <SSC_Romance_ChooseAction>Action: {0}</SSC_Romance_ChooseAction>

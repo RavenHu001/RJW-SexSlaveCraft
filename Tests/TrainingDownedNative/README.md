@@ -1,6 +1,6 @@
 # 调教受方倒地原生专项
 
-仅1.7，登记 **10项Core**。引用完整生产候选、当前实际游戏／RJW及游戏Harmony，不复制SSC倒地保护规则，不启动游戏。
+仅 1.7，登记 **18 项 Core**。宿主使用完整生产候选、原版游戏程序集、RJW 和游戏 Harmony。
 
 实际执行以下入口：
 
@@ -8,6 +8,9 @@
 - 原 `JobDriver_Sex.ConditionsToAbortSex` 生成的闭包，确认后续受方倒地不触发中断、调教者倒地仍中断、受方死亡仍触发原死亡条件。器官列表为固定外部输入，不宣称本套验证了器官变化。
 - 真实 `TrainingJobUtility.TryStartBindingRitualReceiver` 的下一阶段交接、新Job创建与归属确认。持续倒地的受方可重建阶段接收器并生成原生中断条件。
 - 从生产XML读取slave的 `allowDowned`，以真实 `RitualRoleAssignments` 执行原 `LordJob_Ritual.ShouldRemovePawn`。真实 `Lord.Notify_PawnLost` 对Incapped受方保留角色，主持者倒地和死亡的原移除判定保持。
+- 多调教员第二阶段新增四项。覆盖双发起者争用及延后清理、读档后走位占用重建与接收配对优先、接收交接保留原版预约，以及原版排队撤销释放精确预约。宿主预置地图预约，接收任务安装仍使用现有隔离边界。 [实现与验证](../../Docs/Development/Completed/多调教员指派第二阶段实现与验证.md)
+- 第三阶段核对仪式主持槽为空时，倒地的首位成员被跳过、第二位成员通过配对许可，移除第二位后找不到可用主持者。 [实现与验证](../../Docs/Development/Completed/多调教员指派第三阶段实现与验证.md)
+- 整体复查增加原版点名预约争用、结束的旧接收器和交接期间替换组件三个用例，另在原用例验证重复恢复和固定主持槽。 [复查记录](../../Docs/Development/Completed/多调教员指派第三阶段实现与验证.md#2026-11-12-整体复查)
 
 夹具使用真实Pawn／健康／Job／Driver／Comp／Lord与角色表，开始凭据由原 `SSCRestrictionJobGuard.TryMarkStarted` 建立。环境只提供地图存在／同图、床位、固定器官列表、图形与思想／故事通知终端。`MakeDowned` 使用不记录传说的健康原因；测试进程未进入完整Playing世界，其地图／派系通知不冒充实机覆盖。普通中断路径的 `CleanupCurrentJob` 为可观察安装／清理终端，原职责分支、ClearMind和StopAll仍执行。
 

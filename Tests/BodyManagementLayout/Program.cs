@@ -86,7 +86,7 @@ internal static partial class Program
         Run("反复刷新不写健康状态或开关", () =>
         { var p = Body(3, 1); int n = p.health.Notifications; Draw(p); Draw(p); Require(n == p.health.Notifications && p.Training.milkProductionEnabled && !SSCUterusDevelopmentUtility.Find(p).FertilityEnabled); });
         foreach (bool throws in new[] { false, true }) Run("绘制归还全部 GUI 状态 异常=" + throws, () => GuiState(throws));
-        Run("主调教页的 1.7 接入先于身份分支且无旧泌乳栏", () => MainIntegration(repo));
+        Run("独立窗口按身体资格接入生产和生育控件", () => MainIntegration(repo));
         RunToggleFrameworkTests();
         Console.WriteLine($"{passed}/{passed + failed} cases passed"); return failed == 0 ? 0 : 1;
     }
@@ -202,23 +202,13 @@ internal static partial class Program
         try { view.Draw(); Require(!throws); } catch (InvalidOperationException) { Require(throws); }
         Require(Text.Font == GameFont.Medium && Text.Anchor == TextAnchor.MiddleCenter && !Text.WordWrap && !GUI.enabled && GUI.color == color);
     }
-    /// <summary>检查共享文件的版本接线；这是源码结构检查，不冒充完整 FillTab 运行或真实滚动输入。</summary>
+    /// <summary>核对独立窗口沿用身体资格和能力视图的接线。</summary>
     private static void MainIntegration(string repo)
     {
-        string source = File.ReadAllText(Path.Combine(repo, "Sexslavecraft/ITab/ITab_SexSlaveTraining.cs"));
-        var output = new List<string>(); var stack = new Stack<bool>(); bool active = true;
-        foreach (string line in source.Split('\n'))
-        {
-            string trim = line.Trim();
-            if (trim.StartsWith("#if ")) { stack.Push(active); active &= trim == "#if SSC_RW17"; }
-            else if (trim == "#else") active = stack.Peek() && !active;
-            else if (trim == "#endif") active = stack.Pop();
-            else if (active) output.Add(line);
-        }
-        string current = string.Join('\n', output);
-        Require(current.Split("DrawBodyManagementSection(").Length == 2 && !current.Contains("DrawMilkSection("));
-        Require(current.IndexOf("DrawBodyManagementSection(") < current.IndexOf("if (comp.pawnIdentity == PawnIdentity.Master)"));
-        Require(current.Contains("contentHeight += bodyView.Height + SectionSpacing") && current.Contains("curY += bodyView.Height + SectionSpacing"));
+        string source = File.ReadAllText(Path.Combine(repo, "Sexslavecraft/UI/Dialog_SSCTrainingManagement.BodyProduction.cs"));
+        Require(source.Contains("SSCAbilityToggleUtility.GetView(pawn, definition.Id)"));
+        Require(source.Contains("if (production.Count != 0) modules.Add(AddProduction)"));
+        Require(source.Contains("if (showFertility) modules.Add(column => AddFertilitySection"));
     }
     /// <summary>断言异常包含本例信息，由统一入口汇总。</summary>
     private static void Require(bool condition) { if (!condition) throw new InvalidOperationException("断言失败"); }

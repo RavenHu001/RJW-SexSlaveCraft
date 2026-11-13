@@ -43,7 +43,9 @@ namespace SexSlaveCraft
         // 玩家通过 gizmo / ITab 选定的调教配置。
         public TrainingMode mode = TrainingMode.Disabled;
         public TrainingActType selectedMode = TrainingActType.Auto;
+#if !SSC_RW17
         public Pawn selectedTrainer;
+#endif
         public SSCSharedSleepRecord sharedSleep;
         public bool scheduledTrainingEnabled = false;
         public int scheduledTrainingHour = 20;
@@ -260,12 +262,15 @@ namespace SexSlaveCraft
             ExposeStomachRitualEvidence();
 #endif
 
-            // selectedTrainer 是 Pawn 引用，所以要作为引用类型单独保存和恢复。
             Scribe_Values.Look(ref fineTrainingEnabled, "fineTrainingEnabled", false);
             Scribe_Collections.Look(ref finePartDataMap, "finePartDataMap", LookMode.Value, LookMode.Deep);
             Scribe_Values.Look(ref lastTrainingScore, "lastTrainingScore", 0f);
 
+#if SSC_RW17
+            ExposeTrainerAssignments();
+#else
             Scribe_References.Look(ref selectedTrainer, "selectedTrainer");
+#endif
             Scribe_Deep.Look(ref sharedSleep, "sharedSleep");
 
             // 必须在旧输入全部读入后、关系和特化修复前捕获；实际迁移在 GameComponent 中执行。
@@ -287,6 +292,7 @@ namespace SexSlaveCraft
                     // 身份/绑定重构必须在读档边界修复旧存档。WorkGiver 开始扫描前，
                     // 先统一性奴锁链、主人缰绳与独占调教师，避免三者不一致锁死训练。
                     SSCBondUtility.RepairReciprocalLink(loadedPawn);
+#if !SSC_RW17
                     Pawn boundMaster = SSCBondUtility.GetBoundMaster(loadedPawn);
                     if (boundMaster == null &&
                         selectedTrainer != null &&
@@ -294,6 +300,7 @@ namespace SexSlaveCraft
                     {
                         selectedTrainer = null;
                     }
+#endif
 
                     // 指派限制统一等 GameComponent 完成迁移后协调。
                     // 此处不能再用旧开放字段提前改回主人，否则会破坏迁移前的真实指定关系。

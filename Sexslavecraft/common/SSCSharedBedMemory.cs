@@ -42,7 +42,11 @@ namespace SexSlaveCraft
                 if (comp.sharedSleep == null || comp.sharedSleep.bed != bed)
                     comp.sharedSleep = new SSCSharedSleepRecord { bed = bed };
                 // 已实际与主人睡过时，主人先醒来不会让余下调教员经历覆盖主人记忆。
+#if SSC_RW17
+                if (comp.sharedSleep.stage < 0 || withMaster && !comp.sharedSleep.withMaster)
+#else
                 if (comp.sharedSleep.stage < 0 || withMaster || !comp.sharedSleep.withMaster)
+#endif
                 {
                     comp.sharedSleep.partner = partner;
                     comp.sharedSleep.withMaster = withMaster;

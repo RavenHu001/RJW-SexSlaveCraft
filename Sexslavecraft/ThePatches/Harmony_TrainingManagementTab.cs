@@ -17,11 +17,11 @@ namespace SexSlaveCraft
             => AccessTools.DeclaredMethod(typeof(InspectPaneUtility), "ToggleTab",
                 new[] { typeof(InspectTabBase), typeof(IInspectPane) });
 
-        /// <summary>原生签名不匹配时跳过补丁，由原调教标签继续提供界面。</summary>
+        /// <summary>仅在原生签名匹配时安装窗口入口。</summary>
         private static bool Prepare()
         {
             if (TargetMethod() is MethodInfo method && method.ReturnType == typeof(void)) return true;
-            Log.Warning("[SSC TrainingManagement] ToggleTab signature unavailable; original tab retained.");
+            Log.Warning("[SSC TrainingManagement] ToggleTab signature unavailable; training window routing disabled.");
             return false;
         }
 

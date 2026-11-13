@@ -417,6 +417,7 @@ internal static partial class Program
         RunTrainingTargetIdentityTests();
         RunTrainerMenuTests();
         RunTrainerWorkTests();
+        RunTrainerAssignmentListTests();
         Console.WriteLine($"{passed}/{passed + failed} passed (production trainer identity and assignment; game interface model).");
         return failed == 0 ? 0 : 1;
     }

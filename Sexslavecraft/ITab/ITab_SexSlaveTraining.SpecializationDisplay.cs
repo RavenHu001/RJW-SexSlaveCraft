@@ -93,17 +93,6 @@ namespace SexSlaveCraft
             return label;
         }
 
-#if SSC_RW17
-        /// <summary>概况只显示当前方向，并复用旧页的完成判定和进度格式。</summary>
-        internal static string GetSpecializationOverviewLabel(Pawn pawn, CompSexSlaveTraining comp)
-        {
-            string name = GetSpecializationName(comp.specializationType);
-            if (comp.specializationType == SexSlaveSpecializationType.None) return name;
-            if (IsTypeFinalized(pawn, comp.specializationType)) return name + " " + Strings.ITab_SpecializationFinalizedSuffix;
-            return name + " · " + GetSpecializationProgressText(pawn, comp);
-        }
-#endif
-
         /// <summary>性奴特化仅向 SSC 性奴显示，不以原版奴隶身份代替。</summary>
         internal static bool CanShowSpecializationSection(CompSexSlaveTraining comp)
         {

@@ -8,6 +8,7 @@ using Verse;
 namespace SexSlaveCraft
 {
     internal enum SSCTrainerWorkState { Active, Off, Forbidden, Uninitialized, Inactive, Downed, Away }
+    internal enum SSCTrainerAssignmentOperation { ReplaceSingle, Add, Remove, EnableWork }
 
     internal static class SSCTrainerWorkUtility
     {
@@ -51,16 +52,22 @@ namespace SexSlaveCraft
         internal static bool CanConsider(Pawn source, Pawn trainer)
             => CanConsider(source, trainer, out _);
 
+        internal static bool CanConsiderForAdd(Pawn source, Pawn trainer)
+            => IsMapCandidate(source, trainer) && SSCRestrictionTrainerAssignment.CanAdd(source, trainer, out _);
+
         /// <summary>候选资格和授权预览使用同一次原规则预检。</summary>
         private static bool CanConsider(Pawn source, Pawn trainer, out bool opensNonOwnerTraining)
         {
             opensNonOwnerTraining = false;
-            return SSCIdentityUtility.IsSexSlave(source) && source != trainer && source.Map != null &&
-                trainer != null && !trainer.Dead && !trainer.Destroyed && !trainer.Discarded && !trainer.Downed &&
-                SSCIdentityUtility.IsTrainer(trainer) && trainer.Map == source.Map &&
-                source.Map.mapPawns.FreeColonists.Contains(trainer) &&
+            return IsMapCandidate(source, trainer) &&
                 SSCRestrictionTrainerAssignment.CanAssign(source, trainer, out opensNonOwnerTraining);
         }
+
+        private static bool IsMapCandidate(Pawn source, Pawn trainer)
+            => SSCIdentityUtility.IsSexSlave(source) && source != trainer && source.Map != null &&
+                trainer != null && !trainer.Dead && !trainer.Destroyed && !trainer.Discarded && !trainer.Downed &&
+                SSCIdentityUtility.IsTrainer(trainer) && trainer.Map == source.Map &&
+                source.Map.mapPawns.FreeColonists.Contains(trainer);
 
         /// <summary>捕获原角色、人格和工作载体。提交不能重新捕获来授权旧请求。</summary>
         internal sealed class Request
@@ -69,25 +76,33 @@ namespace SexSlaveCraft
             private readonly Game game;
             private readonly CompSexSlaveTraining sourceComp, trainerComp;
             private readonly object sourceToken, trainerToken;
-            private readonly Pawn previous, owner;
+            private readonly Pawn owner;
+            private readonly Hediff_ChainOfSexSlave chain;
+            private readonly int assignmentRevision;
             private readonly Map map;
             private readonly Pawn_WorkSettings settings;
             private readonly WorkTypeDef work;
             private readonly int priority;
             private readonly SSCRestrictionConfig config;
             private readonly SSCRestrictionRules rules;
-            private readonly bool receiveTraining, enableOnly;
+            private readonly bool receiveTraining;
+            private readonly SSCTrainerAssignmentOperation operation;
             private readonly Func<bool> current;
 
             /// <summary>在用户发起操作时固定原指派、人格和工作设置引用。</summary>
             internal Request(Pawn source, Pawn trainer, bool enableOnly = false, Func<bool> current = null)
+                : this(source, trainer, enableOnly ? SSCTrainerAssignmentOperation.EnableWork :
+                    SSCTrainerAssignmentOperation.ReplaceSingle, current) { }
+
+            internal Request(Pawn source, Pawn trainer, SSCTrainerAssignmentOperation operation, Func<bool> current = null)
             {
-                Source = source; Trainer = trainer; this.enableOnly = enableOnly; this.current = current;
+                Source = source; Trainer = trainer; this.operation = operation; this.current = current;
                 game = Current.Game; sourceComp = source?.TryGetComp<CompSexSlaveTraining>();
                 trainerComp = trainer?.TryGetComp<CompSexSlaveTraining>();
                 sourceToken = SSCPersonalityRuntimeUtility.Capture(source);
                 trainerToken = SSCPersonalityRuntimeUtility.Capture(trainer);
-                previous = sourceComp?.selectedTrainer; owner = SSCBondUtility.GetBoundMaster(source); map = source?.Map;
+                assignmentRevision = sourceComp?.TrainerAssignmentRevision ?? 0;
+                chain = SSCBondUtility.GetChain(source); owner = chain?.LinkedPawn; map = source?.Map;
                 config = sourceComp?.restrictionConfig; rules = config?.rules;
                 receiveTraining = rules?.receiveTraining ?? false;
                 settings = trainer?.workSettings; work = WorkType;
@@ -101,16 +116,20 @@ namespace SexSlaveCraft
                     Source != null && !Source.Dead && !Source.Destroyed && !Source.Discarded && sourceComp != null &&
                     Source.TryGetComp<CompSexSlaveTraining>() == sourceComp && Source.Map == map &&
                     SSCPersonalityRuntimeUtility.IsCurrent(Source, sourceToken) && !SSCPersonalityRuntimeUtility.IsMutating(Source) &&
-                    sourceComp.restrictionRestoreDepth == 0 && sourceComp.selectedTrainer == previous &&
-                    SSCBondUtility.GetBoundMaster(Source) == owner && sourceComp.restrictionConfig == config &&
+                    sourceComp.restrictionRestoreDepth == 0 && sourceComp.TrainerAssignmentRevision == assignmentRevision &&
+                    SSCBondUtility.GetChain(Source) == chain && chain?.LinkedPawn == owner && sourceComp.restrictionConfig == config &&
                     config?.rules == rules && (rules?.receiveTraining ?? false) == receiveTraining;
 
             /// <summary>复查调教员的组件、人格和原工作设置载体。</summary>
             private bool TrainerCurrent()
-                => Trainer != null && trainerComp != null && trainerComp.restrictionRestoreDepth == 0 &&
-                    Trainer.TryGetComp<CompSexSlaveTraining>() == trainerComp &&
-                    SSCPersonalityRuntimeUtility.IsCurrent(Trainer, trainerToken) && !SSCPersonalityRuntimeUtility.IsMutating(Trainer) &&
+                => trainerComp != null && TrainerRelationCurrent() &&
                     ReferenceEquals(Trainer.workSettings, settings) && settings?.Initialized == true && work == WorkType;
+
+            // 撤销也绑定按下时的人格，但离图或没有可用工作载体仍可撤销。
+            private bool TrainerRelationCurrent()
+                => Trainer != null && (trainerComp?.restrictionRestoreDepth ?? 0) == 0 &&
+                    Trainer.TryGetComp<CompSexSlaveTraining>() == trainerComp &&
+                    SSCPersonalityRuntimeUtility.IsCurrent(Trainer, trainerToken) && !SSCPersonalityRuntimeUtility.IsMutating(Trainer);
 
             /// <summary>为菜单提交和拖放落区提供同一套只读预检。</summary>
             internal bool CanSubmit(out string reason) => CanSubmit(out reason, out _);
@@ -121,10 +140,23 @@ namespace SexSlaveCraft
                 opensNonOwnerTraining = false;
                 reason = "SSC_TrainerWork_Changed".Translate();
                 if (!SourceCurrent() || submitting.Contains(Source) || Trainer != null && submitting.Contains(Trainer)) return false;
+                if (operation == SSCTrainerAssignmentOperation.ReplaceSingle && sourceComp.AssignedTrainerCount > 1) return false;
+                if (operation == SSCTrainerAssignmentOperation.Remove)
+                {
+                    if (!TrainerRelationCurrent()) return false;
+                    if (!SSCRestrictionTrainerAssignment.CanRemove(Source, Trainer))
+                    {
+                        if (SSCRestrictionTrainingUtility.GetForcedTrainer(Source) == Trainer)
+                            reason = "SSC_Restrictions_TrainerLocked".Translate(Trainer.LabelShort);
+                        return false;
+                    }
+                    return SourceCurrent() && TrainerRelationCurrent();
+                }
                 if (Trainer == null)
                 {
                     // 撤销只检查原指派和清空许可，现任暂时无法工作仍可撤销。
-                    if (!enableOnly && SSCRestrictionTrainerAssignment.CanAssign(Source, null)) return true;
+                    if (operation == SSCTrainerAssignmentOperation.ReplaceSingle &&
+                        SSCRestrictionTrainerAssignment.CanAssign(Source, null)) return true;
                     reason = "SSC_Restrictions_AssignFailed".Translate();
                     return false;
                 }
@@ -133,16 +165,28 @@ namespace SexSlaveCraft
                 if (state != SSCTrainerWorkState.Active && state != SSCTrainerWorkState.Off)
                 { reason = Reason(state, Trainer); return false; }
                 // 仅普通指派走规则预检。就地启用只检查已指派的调教员和原工作值。
-                if (enableOnly ? Source == Trainer || previous != Trainer || priority != 0 || !SSCIdentityUtility.IsSexSlave(Source)
-                    : !CanConsider(Source, Trainer, out opensNonOwnerTraining))
+                bool allowed;
+                if (operation == SSCTrainerAssignmentOperation.EnableWork)
+                    allowed = Source != Trainer && sourceComp.HasAssignedTrainer(Trainer) && priority == 0 && SSCIdentityUtility.IsSexSlave(Source);
+                else if (operation == SSCTrainerAssignmentOperation.Add)
+                    allowed = IsMapCandidate(Source, Trainer) &&
+                        SSCRestrictionTrainerAssignment.CanAdd(Source, Trainer, out opensNonOwnerTraining);
+                else
+                    allowed = CanConsider(Source, Trainer, out opensNonOwnerTraining);
+                if (!allowed)
                 { reason = "SSC_Restrictions_AssignFailed".Translate(); return false; }
-                return true;
+                return SourceCurrent() && TrainerCurrent() && SavedPriority(settings, work) == priority;
             }
 
             /// <summary>写工作优先级后的外部回调须复查，失败只撤回本请求仍持有的新增启用。</summary>
             internal bool TrySubmit(out string reason)
             {
                 if (!CanSubmit(out reason)) return false;
+                if (operation == SSCTrainerAssignmentOperation.Remove)
+                {
+                    sourceComp.RemoveAssignedTrainer(Trainer);
+                    return true;
+                }
                 if (Trainer == null) return SSCBondUtility.TryAssignTrainer(Source, null);
 
                 // 标记参与者后再进入原版 setter，防止同步回调重入同一笔事务。
@@ -156,12 +200,21 @@ namespace SexSlaveCraft
                         wrote = true;
                         settings.SetPriority(work, Pawn_WorkSettings.DefaultPriority);
                     }
-                    if (!SourceCurrent() || !TrainerCurrent() ||
-                        SavedPriority(settings, work) != (wrote ? Pawn_WorkSettings.DefaultPriority : priority)) return false;
+                    int expectedPriority = wrote ? Pawn_WorkSettings.DefaultPriority : priority;
+                    if (!SourceCurrent() || !TrainerCurrent() || SavedPriority(settings, work) != expectedPriority) return false;
                     SSCTrainerWorkState state = GetState(Trainer, Source);
                     if (state != SSCTrainerWorkState.Active) { reason = Reason(state, Trainer); return false; }
                     // 就地启用不重放授权；普通指派仍经原权威入口再次检查并提交。
-                    success = enableOnly || SSCBondUtility.TryAssignTrainer(Source, Trainer);
+                    if (operation == SSCTrainerAssignmentOperation.EnableWork)
+                        success = SSCIdentityUtility.IsSexSlave(Source) && SourceCurrent() && TrainerCurrent() &&
+                            sourceComp.HasAssignedTrainer(Trainer) && SavedPriority(settings, work) == expectedPriority;
+                    else if (operation == SSCTrainerAssignmentOperation.Add)
+                        success = SSCRestrictionTrainerAssignment.TryAdd(Source, Trainer,
+                            () => IsMapCandidate(Source, Trainer) && GetState(Trainer, Source) == SSCTrainerWorkState.Active &&
+                                SourceCurrent() && TrainerCurrent() &&
+                                SavedPriority(settings, work) == expectedPriority);
+                    else
+                        success = SSCBondUtility.TryAssignTrainer(Source, Trainer);
                     if (!success) reason = "SSC_Restrictions_AssignFailed".Translate();
                     return success;
                 }

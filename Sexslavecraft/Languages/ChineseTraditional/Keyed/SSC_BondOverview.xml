@@ -47,6 +47,7 @@
   <SSC_BondOverview_BothCounts>主人 + 性奴 {0}/{1}</SSC_BondOverview_BothCounts>
   <SSC_BondOverview_ShortCount>性奴 {0}</SSC_BondOverview_ShortCount>
   <SSC_BondOverview_TrainerPanel>調教員</SSC_BondOverview_TrainerPanel>
+  <SSC_BondOverview_TrainerCount>調教員：{0} 人</SSC_BondOverview_TrainerCount>
   <SSC_BondOverview_ChangeTrainer>更換調教員</SSC_BondOverview_ChangeTrainer>
   <SSC_BondOverview_ResolveOnClick>點擊後複查目前位置。</SSC_BondOverview_ResolveOnClick>
   <SSC_BondOverview_OwnedCount>擁有性奴：{0}</SSC_BondOverview_OwnedCount>

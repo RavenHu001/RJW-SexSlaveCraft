@@ -194,12 +194,23 @@ namespace SexSlaveCraft
             if (SSCIdentityUtility.IsSexSlave(pawn))
             {
                 Pawn master = SSCBondUtility.GetChain(pawn)?.LinkedPawn;
-                Pawn trainer = pawn.TryGetComp<CompSexSlaveTraining>()?.selectedTrainer;
                 string none = "SSC_SharedBedNone".Translate();
                 lines.Add("SSC_SharedBedMaster".Translate(master == null ? none : master.LabelShortCap.ToString()));
+#if SSC_RW17
+                var trainers = pawn.TryGetComp<CompSexSlaveTraining>()?.CopyAssignedTrainers();
+                string trainerName = trainers == null || trainers.Length == 0 ? none :
+                    string.Join(", ", trainers.Where(trainer => trainer != null).Select(trainer =>
+                    {
+                        string name = trainer.LabelShortCap.ToString();
+                        return TrainerAssignmentUtility.IsActiveAssignedTrainer(pawn, trainer) ? name :
+                            "SSC_SharedBedInactiveTrainer".Translate(name).ToString();
+                    }));
+#else
+                Pawn trainer = pawn.TryGetComp<CompSexSlaveTraining>()?.selectedTrainer;
                 string trainerName = trainer == null ? none : trainer.LabelShortCap.ToString();
                 if (trainer != null && TrainerAssignmentUtility.GetActiveAssignedTrainer(pawn) == null)
                     trainerName = "SSC_SharedBedInactiveTrainer".Translate(trainerName);
+#endif
                 lines.Add("SSC_SharedBedTrainer".Translate(trainerName));
                 lines.Add(GetThresholdText(pawn));
             }

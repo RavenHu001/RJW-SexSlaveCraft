@@ -21,7 +21,7 @@ namespace SexSlaveCraft
                 SSCRestrictionTrainingUtility.CreateRequest(master, sexSlave, false), !forced).Allowed;
         }
 
-        /// <summary>从本次分类快照枚举可重新指定的调教员，不以旧 selectedTrainer 锁住候选列表。</summary>
+        /// <summary>从本次地图快照枚举可指派的调教员。</summary>
         /// <remarks>原版 FreeColonists 复用临时列表，指派校验再次读取会清空重填；枚举前必须复制。</remarks>
         public static IEnumerable<Pawn> GetTrainerCandidates(Pawn sexSlave)
         {
@@ -31,8 +31,10 @@ namespace SexSlaveCraft
             // 1.7候选由显式菜单说明工作状态；冻结版本仍要求预先启用工作。
             foreach (Pawn candidate in map.mapPawns.FreeColonists.ToList())
             {
-#if SSC_RW17 || SSC_TRAINER_WORK_TEST
-                // 显式菜单允许指派时启用工作；禁止工作者也保留，供菜单解释原因。
+#if SSC_RW17
+                // 关系页允许随指派启用工作，保留工作禁止者供界面显示原因。
+                if (!SSCTrainerWorkUtility.CanConsiderForAdd(sexSlave, candidate)) continue;
+#elif SSC_TRAINER_WORK_TEST
                 if (!SSCTrainerWorkUtility.CanConsider(sexSlave, candidate)) continue;
 #else
                 if (!CanAssignTrainerTo(sexSlave, candidate)) continue;
@@ -73,10 +75,31 @@ namespace SexSlaveCraft
         /// <remarks>不检查工作开关、地图或倒地状态，避免临时工作条件影响同床与归属。</remarks>
         public static Pawn GetActiveAssignedTrainer(Pawn sexSlave)
         {
+#if SSC_RW17 || SSC_TRAINER_WORK_TEST
+            return GetActiveAssignedTrainers(sexSlave).FirstOrDefault();
+#else
             Pawn trainer = sexSlave?.TryGetComp<CompSexSlaveTraining>()?.selectedTrainer;
             return trainer != null && trainer != sexSlave && !trainer.Dead && !trainer.Destroyed
                 && SSCIdentityUtility.IsTrainer(trainer) ? trainer : null;
+#endif
         }
+
+#if SSC_RW17 || SSC_TRAINER_WORK_TEST
+        internal static IEnumerable<Pawn> GetActiveAssignedTrainers(Pawn sexSlave)
+        {
+            var comp = sexSlave?.TryGetComp<CompSexSlaveTraining>();
+            if (comp == null) yield break;
+            foreach (Pawn trainer in comp.CopyAssignedTrainers())
+                if (HasActiveTrainerIdentity(sexSlave, trainer)) yield return trainer;
+        }
+
+        internal static bool IsActiveAssignedTrainer(Pawn sexSlave, Pawn trainer)
+            => sexSlave?.TryGetComp<CompSexSlaveTraining>()?.HasAssignedTrainer(trainer) == true &&
+                HasActiveTrainerIdentity(sexSlave, trainer);
+
+        private static bool HasActiveTrainerIdentity(Pawn sexSlave, Pawn trainer)
+            => CompSexSlaveTraining.IsRetainableTrainer(sexSlave, trainer) && SSCIdentityUtility.IsTrainer(trainer);
+#endif
 
         /// <summary>返回指派显示名，并区分身份停用与工作暂停，保留失效指派供玩家调整。</summary>
         public static string GetAssignedTrainerLabel(Pawn sexSlave)
@@ -110,13 +133,22 @@ namespace SexSlaveCraft
 
             // 地图扫描的大多数 Pawn 并未指派给当前执行者。先比较保存引用
             // 和目标基础状态，只对真正相关的目标查询锁链与特化任职资格。
-            if (comp == null || comp.selectedTrainer != trainer || !comp.IsEnabled
+            if (comp == null || !IsAssignedTrainer(comp, trainer) || !comp.IsEnabled
                 || comp.IsWaitingAfterFailedValidation || comp.IsOnCooldown) return false;
             if (trainer.Dead || trainer.Destroyed || !SSCIdentityUtility.IsTrainer(trainer)) return false;
 
             // 这里仍只做粗筛；最终许可、预约和兼容状态交给准备入口检查。
             if (ProgressionEducationCompatibility.ShouldDeferAutomaticTraining(targetPawn)) return false;
             return !comp.scheduledTrainingEnabled || comp.IsScheduledTrainingDayDue && comp.IsWithinScheduledTrainingWindow;
+        }
+
+        internal static bool IsAssignedTrainer(CompSexSlaveTraining comp, Pawn trainer)
+        {
+#if SSC_RW17 || SSC_TRAINER_WORK_TEST
+            return comp?.HasAssignedTrainer(trainer) == true;
+#else
+            return trainer != null && comp?.selectedTrainer == trainer;
+#endif
         }
 
         /// <summary>完整准备日常训练对象：恢复残留占用、检查现行许可与工作条件，最后执行兼容修复和身体校验。</summary>
@@ -167,6 +199,38 @@ namespace SexSlaveCraft
 
             // 先修复已结束仪式的残留占用，再判断调教资格；自动和强制命令共用此入口。
             RecoverTrainingTargetState(targetPawn);
+#if SSC_RW17
+            if (!CanStartDailyTraining(targetPawn, trainer, forced, out reason) ||
+                !CanReserveDailyTraining(trainer, targetPawn))
+            {
+                reason ??= Strings.Train_Reason_NotReservable;
+                return false;
+            }
+            return TrainingJobUtility.TryValidateTarget(targetPawn, forced, "SSC_TRAIN", out reason) &&
+                CanStartDailyTraining(targetPawn, trainer, forced, out reason);
+        }
+
+        // 原版 playerForced 会抢占他人的预约。日常调教的单槽无论命令来源都必须空闲或由本人持有。
+        internal static bool CanReserveDailyTraining(Pawn trainer, Pawn target)
+            => trainer != null && target != null && trainer.Map != null && target.Map == trainer.Map &&
+                trainer.CanReserve(target, 1, 0);
+
+        // 预约与首个 Toil 共用的只读检查。身体兼容准备只由 WorkGiver 路径执行。
+        internal static bool CanStartDailyTraining(Pawn targetPawn, Pawn trainer, bool forced, out string reason)
+        {
+            reason = null;
+            if (!SSCIdentityUtility.IsSexSlave(targetPawn))
+            {
+                reason = "SSC_Training_TargetIdentityRequired".Translate();
+                return false;
+            }
+            if (!SSCIdentityUtility.IsSupportedVanillaStatus(targetPawn))
+            {
+                reason = Strings.Train_Reason_InvalidFaction;
+                return false;
+            }
+            if (ProgressionEducationCompatibility.ShouldDeferAutomaticTraining(targetPawn, forced)) return false;
+#endif
             CompSexSlaveTraining compToggle = targetPawn.TryGetComp<CompSexSlaveTraining>();
             if (compToggle == null || !compToggle.IsEnabled)
             {
@@ -174,7 +238,11 @@ namespace SexSlaveCraft
                 return false;
             }
 
+#if SSC_RW17
+            if (BindingRitualStateUtility.HasActiveTargetRitual(targetPawn))
+#else
             if (compToggle.isRitualTraining)
+#endif
             {
                 reason = Strings.Train_Reason_RitualBusy;
                 return false;
@@ -208,7 +276,11 @@ namespace SexSlaveCraft
 
             // EN: A sex slave already inside TrainingReceiver or Training_Ritual is busy and should not be pulled away.
             // CN: 已经处于 TrainingReceiver 或 Training_Ritual 的性奴正在被使用，不能再次拉去调教。
+#if SSC_RW17
+            if (SSCDailyTrainingOccupancy.IsBusy(targetPawn) || SSCDailyTrainingOccupancy.HasOtherReceiver(targetPawn, trainer))
+#else
             if (compToggle.isBeingTrained)
+#endif
             {
                 reason = Strings.Train_Reason_AlreadyBeingTrained;
                 return false;
@@ -229,6 +301,7 @@ namespace SexSlaveCraft
                 return false;
             }
 
+#if !SSC_RW17
             if (!trainer.CanReserve(targetPawn, 1, -1, null, forced))
             {
                 reason = Strings.Train_Reason_NotReservable;
@@ -252,6 +325,7 @@ namespace SexSlaveCraft
                 reason = "SSC_Training_TargetIdentityRequired".Translate();
                 return false;
             }
+#endif
 
             return true;
         }
@@ -262,6 +336,9 @@ namespace SexSlaveCraft
             BindingRitualStateUtility.RecoverPawnState(targetPawn);
             CompSexSlaveTraining comp = targetPawn.TryGetComp<CompSexSlaveTraining>();
             if (comp == null || comp.isRitualTraining || !comp.isBeingTrained) return;
+#if SSC_RW17
+            if (SSCDailyTrainingOccupancy.IsBusy(targetPawn)) return;
+#endif
             bool hasTrainingJob = targetPawn.CurJobDef == SSCDefOf.SSC_TrainingReceiver
                 || targetPawn.CurJobDef == SSCDefOf.Training_Ritual;
             if (!hasTrainingJob) comp.isBeingTrained = false;

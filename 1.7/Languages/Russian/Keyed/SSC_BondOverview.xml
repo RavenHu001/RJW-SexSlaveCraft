@@ -47,6 +47,7 @@
   <SSC_BondOverview_BothCounts>Хозяин + рабы {0}/{1}</SSC_BondOverview_BothCounts>
   <SSC_BondOverview_ShortCount>Секс-рабы: {0}</SSC_BondOverview_ShortCount>
   <SSC_BondOverview_TrainerPanel>Тренер</SSC_BondOverview_TrainerPanel>
+  <SSC_BondOverview_TrainerCount>Тренеры: {0}</SSC_BondOverview_TrainerCount>
   <SSC_BondOverview_ChangeTrainer>Сменить тренера</SSC_BondOverview_ChangeTrainer>
   <SSC_BondOverview_ResolveOnClick>Нажмите для проверки текущего местоположения.</SSC_BondOverview_ResolveOnClick>
   <SSC_BondOverview_OwnedCount>Секс-рабы: {0}</SSC_BondOverview_OwnedCount>

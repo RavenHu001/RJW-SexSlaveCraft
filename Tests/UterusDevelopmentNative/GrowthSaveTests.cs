@@ -82,6 +82,8 @@ internal static partial class Program
                 var s = DailyGrowth(); if (completed) s.payout.initAction();
                 var restored = RestoreDriver<JobDriver_Training>(s.driver);
                 RoundTripGrowth(s.driver, restored, s.scene);
+                SSCDailyTrainingOccupancy.ReconcileAfterLoad(new[] { s.scene.Source, s.scene.Target });
+                Require(restored.HasDailyTrainingOccupancy);
                 var toils = ((IEnumerable<Toil>)Hidden(typeof(JobDriver_Training), restored, "MakeNewToils")).ToArray();
                 toils.Last().initAction(); toils.Last().initAction();
                 Near(.035f, Progress(s.scene.Target)); Equal(1, sexProcessCalls); Equal(1, dailyOutcomes);
@@ -90,6 +92,8 @@ internal static partial class Program
         {
             var s = DailyGrowth(); var restored = RestoreDriver<JobDriver_Training>(s.driver);
             RoundTripGrowth(s.driver, restored, s.scene, doc => doc.Descendants("sscOrdinarySexParts").Remove());
+            SSCDailyTrainingOccupancy.ReconcileAfterLoad(new[] { s.scene.Source, s.scene.Target });
+            Require(restored.HasDailyTrainingOccupancy);
             var toils = ((IEnumerable<Toil>)Hidden(typeof(JobDriver_Training), restored, "MakeNewToils")).ToArray();
             toils.Last().initAction(); Near(.035f, Progress(s.scene.Target)); Equal(1, dailyOutcomes);
         });

@@ -220,6 +220,7 @@ namespace SexSlaveCraft
             contextRevision++;
             abilityTogglePress = null;
             pageActionPress = default;
+            pressedPortrait = default;
             EndTrainerGesture();
             CloseEditPopup();
         }
@@ -278,6 +279,7 @@ namespace SexSlaveCraft
                 ? new Rect(navWidth + PanelPadding, y, inRect.width - navWidth - PanelPadding, available)
                 : new Rect(0f, y + navHeight + PanelPadding, inRect.width,
                     Mathf.Max(1f, available - navHeight - PanelPadding));
+            trainerCardAction = null;
             if (currentPage == Page.Relations)
             {
                 var detailClick = DrawRelations(page, view, snapshot);
@@ -288,6 +290,9 @@ namespace SexSlaveCraft
             else if (currentPage == Page.BodyAppearance) DrawBodyAppearance(page);
             else if (currentPage == Page.BehaviorRules) DrawBehaviorRules(page);
             else DrawOverview(page);
+            Action trainerAction = trainerCardAction;
+            trainerCardAction = null;
+            trainerAction?.Invoke();
             if (Event.current.rawType == EventType.mouseUp)
             {
                 // 所有页面控件处理完松手后清理凭据，未命中时也不能留到下一次点击。
@@ -374,14 +379,26 @@ namespace SexSlaveCraft
             Pawn ownerClicked = DrawRelationGroup(first, snapshot.Master == null ? MissingMasterLabel(snapshot)
                 : "SSC_TrainingManagement_Owner".Translate(snapshot.Master.Name).ToString(), SummaryRelation.Master, snapshot, snapshot.Master);
 
-            // 使用保存的指派和现行状态说明，暂时停工的现任仍可见。
-            Pawn trainer = snapshot.AssignedTrainer;
-            string trainerName = trainer == null ? "SSC_BondOverview_Trainer_None".Translate().ToString()
-                : TrainerAssignmentUtility.GetAssignedTrainerLabel(snapshot.Source, trainer);
             Rect second = stacked ? new Rect(first.x, first.yMax, groupWidth, rowHeight)
                 : new Rect(width / 2f + PanelPadding, y, groupWidth, rowHeight);
-            Pawn trainerClicked = DrawRelationGroup(second, "SSC_TrainingManagement_AssignedTrainer".Translate(trainerName),
-                SummaryRelation.AssignedTrainer, snapshot, titleTip: AssignedTrainerTitleTip(view));
+            int count = snapshot.AssignedTrainers.Count;
+            Pawn trainerClicked = null;
+            if (count <= 1)
+            {
+                string name = count == 0 ? SSCBondOverviewText.T("Trainer_None") :
+                    TrainerAssignmentUtility.GetAssignedTrainerLabel(snapshot.Source, snapshot.AssignedTrainers[0].Pawn);
+                trainerClicked = DrawRelationGroup(second, "SSC_TrainingManagement_AssignedTrainer".Translate(name),
+                    SummaryRelation.AssignedTrainer, snapshot, titleTip: AssignedTrainerTitleTip(view));
+            }
+            else
+            {
+                string label = SSCBondOverviewText.Format("TrainerCount", count);
+                Rect button = new Rect(second.x, second.y + (second.height - 28f) * .5f, second.width, 28f);
+                var edit = new PageEdit(source, comp, currentPage, contextRevision);
+                Action action = PreparePageAction(edit, button, SummaryRelation.AssignedTrainer, () => ChangePage(Page.Relations));
+                if (DrawSettingsControl(button, label, enabled: trainerGesture == null, tooltip: AssignedTrainerTitleTip(view)))
+                    action?.Invoke();
+            }
             clicked = ownerClicked != null ? (ownerClicked, SummaryRelation.Master) : (trainerClicked, SummaryRelation.AssignedTrainer);
             return height;
         }
@@ -390,8 +407,9 @@ namespace SexSlaveCraft
         private static string AssignedTrainerTitleTip(SSCBondOverviewView view)
         {
             var snapshot = view?.Snapshot;
-            if (snapshot?.AssignedTrainer == null) return null;
-            return SSCBondOverviewNavigation.IsTrainerCurrent(snapshot) ? view.Display.TrainerDetails : SSCBondOverviewText.T("RelationChanged");
+            if (snapshot == null || snapshot.AssignedTrainers.Count == 0) return null;
+            return snapshot.AssignedTrainers.Count > 1 ? SSCBondOverviewText.Format("TrainerCount", snapshot.AssignedTrainers.Count)
+                : SSCBondOverviewNavigation.IsTrainerCurrent(snapshot) ? view.Display.TrainerDetails : SSCBondOverviewText.T("RelationChanged");
         }
 
         /// <summary>用原生按钮接收摘要肖像点击，标题悬浮补充数量或指派详情。</summary>
@@ -434,10 +452,11 @@ namespace SexSlaveCraft
             // 阶段框先画，位置角标和鼠标高亮后画。拖动把手仍由关系卡处理。
             DrawPortraitStage(rect, pawn);
             // 主从行使用各自的锁链快照，指定者使用指派快照。候选只有点击跳转入口。
-            bool assignedTrainer = relation == SummaryRelation.AssignedTrainer && ReferenceEquals(snapshot?.AssignedTrainer, pawn);
-            var location = assignedTrainer ? snapshot.AssignedTrainerLocation : entry?.Location;
+            var trainer = relation == SummaryRelation.AssignedTrainer ? snapshot?.FindTrainer(pawn) : null;
+            bool assignedTrainer = trainer != null;
+            var location = assignedTrainer ? trainer.Location : entry?.Location;
             bool hasLocation = assignedTrainer || entry != null;
-            bool current = !hasLocation || (assignedTrainer ? SSCBondOverviewNavigation.IsTrainerCurrent(snapshot)
+            bool current = !hasLocation || (assignedTrainer ? SSCBondOverviewNavigation.IsTrainerCurrent(snapshot, pawn)
                 : SSCBondOverviewUtility.IsCurrent(snapshot, entry));
             if (hasLocation) SSCBondOverviewWidgets.Badge(rect, location, current);
             // 把手持有鼠标期间，肖像只绘制，避免普通定位提示盖住落区结果。
@@ -477,14 +496,14 @@ namespace SexSlaveCraft
 
             var failure = SSCBondOverviewNavigationFailure.RelationChanged;
             bool success = false;
-            if (relation == SummaryRelation.AssignedTrainer && ReferenceEquals(snapshot.AssignedTrainer, target))
-                success = SSCBondOverviewNavigation.TryNavigateTrainer(snapshot, out failure);
+            if (relation == SummaryRelation.AssignedTrainer)
+                success = SSCBondOverviewNavigation.TryNavigateTrainer(snapshot, target, out failure);
             else if (relation == SummaryRelation.Master && ReferenceEquals(snapshot.Master?.Pawn, target))
                 success = SSCBondOverviewNavigation.TryNavigate(snapshot, snapshot.Master, out failure);
             else if (relation == SummaryRelation.TrainerCandidate)
                 success = SSCBondOverviewNavigation.TryNavigatePawn(target,
-                    () => SourceIsCurrent() && currentPage == Page.Relations && !ReferenceEquals(comp.selectedTrainer, target) &&
-                        SSCTrainerWorkUtility.CanConsider(source, target), out failure);
+                    () => SourceIsCurrent() && currentPage == Page.Relations &&
+                        SSCTrainerWorkUtility.CanConsiderForAdd(source, target), out failure);
             else if (relation == SummaryRelation.OwnedSlave)
                 foreach (var entry in snapshot.Slaves)
                     if (ReferenceEquals(entry.Pawn, target))

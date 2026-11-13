@@ -361,8 +361,6 @@ internal static partial class Program
             var method = AccessTools.Method(typeof(InteractionWorker_MarriageProposal), "AcceptanceChance");
             Harmony_SSCRomanceCommandWillingness.Transpiler(PatchProcessor.GetOriginalInstructions(method)).ToList(); Require(SSCRomanceCommandHooks.Ready);
         });
-        foreach (float width in new[] { 320f, 640f, 645f, 646f, 800f, 1920f })
-            Check("batch3 sidebar width fallback preserves minimum real content width " + width, () => Equal(width >= 646, SSCBehaviorControlUI.CanFitSidebar(width)));
         Check("batch3 old global switch cannot hide romance section or change its rules", () =>
         {
             CommandReset(); var a = SocialSlave(); bool old = SSCMod.settings.enableSexSlaveProtectionRules;
@@ -374,11 +372,13 @@ internal static partial class Program
             var a = SocialSlave(severity: .1f); Require(SSCBehaviorControlUI.CanInspect(a)); Require(!SSCRomancePreferences.GetView(a, SSCRomanceSetting.AcceptRomance).Unlocked);
             a.health.hediffSet.hediffs.Clear(); Require(SSCBehaviorControlUI.CanInspect(a)); Equal(SSCRomanceReason.NoBinding, SSCRomancePreferences.GetView(a, SSCRomanceSetting.AcceptRomance).Reason);
         });
-        Check("batch3 sidebar and dialog use the shared behavior drawer and original preference context", () =>
+        Check("training window and settings dialog share behavior drawers and original preference context", () =>
         {
             string drawer = File.ReadAllText(Path.Combine(repo, "Sexslavecraft/common/Romance/SSCRomanceUI.cs"));
-            foreach (string path in new[] { "Sexslavecraft/ITab/ITab_SexSlaveTraining.cs", "Sexslavecraft/common/Restrictions/Dialog_SSCRestrictions.cs" })
-                Require(File.ReadAllText(Path.Combine(repo, path)).Contains("SSCBehaviorControlUI.DrawPawn"));
+            string window = File.ReadAllText(Path.Combine(repo, "Sexslavecraft/UI/Dialog_SSCTrainingManagement.BehaviorRules.cs"));
+            Require(window.Contains("SSCBehaviorControlUI.DrawSexSection") && window.Contains("SSCBehaviorControlUI.DrawRomanceSection"));
+            string settingsDialog = File.ReadAllText(Path.Combine(repo, "Sexslavecraft/common/Restrictions/Dialog_SSCRestrictions.cs"));
+            Require(settingsDialog.Contains("SSCBehaviorControlUI.DrawPawn"));
             Require(drawer.Contains("view.Context") && !drawer.Contains("SSCAbilityToggleUtility.TrySet"));
         });
     }
