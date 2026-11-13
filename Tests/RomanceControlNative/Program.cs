@@ -147,6 +147,11 @@ internal static partial class Program
     private static T Bare<T>() where T : class => (T)RuntimeHelpers.GetUninitializedObject(typeof(T));
     /// <summary>读取真实训练组件，不复制生产配置的保存或判定逻辑。</summary>
     private static CompSexSlaveTraining Comp(Pawn pawn) => pawn.TryGetComp<CompSexSlaveTraining>();
+
+    // 直接布置已保存的名单，避免夹具触发指派时的授权和工作设置。
+    private static void SeedAssignedTrainer(Pawn pawn, Pawn trainer)
+        => AccessTools.DeclaredMethod(typeof(CompSexSlaveTraining), "ReplaceAssignedTrainers")
+            .Invoke(Comp(pawn), new object[] { new[] { trainer } });
     /// <summary>创建独立 ID、健康追踪器和真实训练组件；玩家归属仅供提交资格测试。</summary>
     private static Pawn Pawn(PawnIdentity identity = PawnIdentity.Unset)
     {

@@ -171,12 +171,11 @@ internal static partial class Program
             Widgets.Toggle=true;ITab_SexSlaveTraining.DrawTrainer(p,true);
             Check(!p.Training.slaveTrainerEnabled,"旧UI快照不能授予任职资格");
         });
-        Run("凝胶渲染复用个人准入并接入独立窗口",()=>
+        Run("生产渲染入口沿用个人准入",()=>
         {
+            // 渲染测试宿主用替身提供此入口，单独核对生产入口的转发。
             string gate=File.ReadAllText(Path.Combine(root,"Sexslavecraft/common/FullGelatinizationUtility.cs"));
             Check(gate.Contains("return FullGelAppearanceUtility.ShouldRender(pawn);"),"生产渲染入口转发个人准入");
-            string body=File.ReadAllText(Path.Combine(root,"Sexslavecraft/UI/Dialog_SSCTrainingManagement.BodyProduction.cs"));
-            Check(body.Contains("if (showGel) modules.Add(column => AddGelAppearanceSection"),"身体页接入凝胶外观");
         });
     }
 

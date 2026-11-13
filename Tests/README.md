@@ -1,5 +1,7 @@
 # 测试说明索引
 
+2026-11-12，第 51 项调教窗口回归净减 3 项 Core，并更新浪漫原生宿主的指派和场景存档夹具。四个受影响套件按各自 All 范围通过 **1898/1898**。 [精简与验证](../Docs/Development/Completed/调教管理窗口重做完成核对.md#training-itab-test-pruning)
+
 2026-11-12，多调教员指派回归精简净减 3 项 Core。三个受影响套件使用各自的 All 范围通过 958/958，包含 TrainerIdentity 171/171、SharedBed 94/94、UterusDevelopmentNative 693/693。 [精简与验证](../Docs/Development/Completed/多调教员指派第三阶段实现与验证.md#multi-trainer-test-pruning)
 
 2026-11-12，多调教员指派整体复查通过 13 套相关回归 2265/2265，窗口输入模型 12/12。原生任务宿主增至 18 项，新增点名预约争用、结束的旧接收器和交接期间换组件的回归。 [整体复查](../Docs/Development/Completed/多调教员指派第三阶段实现与验证.md#2026-11-12-整体复查)

@@ -133,7 +133,8 @@ internal static partial class Program
                     defaults.Set(SSCRestrictionRule.ConsensualInitiation, SSCRestrictionValue.Deny);
                     SSCMod.settings = new SSCSettings { restrictionDefaults = defaults };
                     var p = SexResetPawn(); Comp(p).restrictionConfig.rules.allowMasturbation = !allow;
-                    var master = SSCBondUtility.GetBoundMaster(p); var other = SocialPawn(); Comp(p).selectedTrainer = other;
+                    var master = SSCBondUtility.GetBoundMaster(p); var other = SocialPawn();
+                    SeedAssignedTrainer(p, other);
                     Require(SSCRestrictionEditor.TryReset(p, SSCRestrictionEditor.GetResetView(p).Context, out _));
                     var rules = Comp(p).restrictionConfig.rules;
                     foreach (var rule in SSCRestrictionRules.All) Equal(defaults.Get(rule), rules.Get(rule));

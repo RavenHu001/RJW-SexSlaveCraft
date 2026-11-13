@@ -38,7 +38,8 @@ internal static partial class Program
             {
                 ResetSocial(0f, 0f, 0f); var master = SocialPawn(); var slave = SocialSlave(master);
                 Comp(slave).romanceConfig = new() { allowInitiateToMaster = true, allowAcceptRomance = false, alwaysAcceptMaster = true };
-                var trainer = Comp(slave).selectedTrainer = SocialPawn(); var chain = SSCBondUtility.GetChain(slave);
+                var trainer = SocialPawn(); var chain = SSCBondUtility.GetChain(slave);
+                SeedAssignedTrainer(slave, trainer);
                 SSCDefOf.SSC_FlawedLovers ??= new PawnRelationDef { defName = "SSC_FlawedLovers", reflexive = true, workerClass = typeof(PawnRelationWorker) };
                 slave.relations.AddDirectRelation(SSCDefOf.SSC_FlawedLovers, master); slave.relations.AddDirectRelation(relation, master);
                 var bed = new Building_Bed(); AccessTools.Field(typeof(Pawn_Ownership), "intOwnedBed").SetValue(slave.ownership, bed);

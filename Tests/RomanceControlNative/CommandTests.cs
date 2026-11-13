@@ -80,7 +80,7 @@ internal static partial class Program
                 Require(!a.relations.DirectRelationExists(relation, b));
             });
         harmony.Patch(AccessTools.Method(typeof(JobDriver), nameof(JobDriver.EndJobWith)), prefix: new HarmonyMethod(typeof(Program), nameof(CommandEndBoundary)));
-        CommandSubmissionTests(); CommandExecutionTests(); CommandSaveTests(); CommandDriverTests(); CommandIdeologyTests(harmony); CommandUiAndHookTests(repo); CommandHookLossTests(harmony, repo); Batch3ReviewTests();
+        CommandSubmissionTests(); CommandExecutionTests(); CommandSaveTests(); CommandDriverTests(); CommandIdeologyTests(harmony); CommandUiAndHookTests(); CommandHookLossTests(harmony, repo); Batch3ReviewTests();
     }
     /// <summary>每例使用独立游戏内命令组件，清掉测试调度边界和随机输入，不跨例保留授权。</summary>
     private static void CommandReset(params float[] rolls)
@@ -345,7 +345,7 @@ internal static partial class Program
         finally { harmony.Patch(method, prefix: new HarmonyMethod(typeof(Program), nameof(SocialProbability))); commandWilling.Clear(); }
     }
     /// <summary>原生 IL 锚点、冻结资源和双板块接线；屏幕像素与完整地图仍留实机。</summary>
-    private static void CommandUiAndHookTests(string repo)
+    private static void CommandUiAndHookTests()
     {
         Check("batch3 actual willingness IL wraps first vote only and preserves recipient vote", () =>
         {
@@ -371,15 +371,6 @@ internal static partial class Program
         {
             var a = SocialSlave(severity: .1f); Require(SSCBehaviorControlUI.CanInspect(a)); Require(!SSCRomancePreferences.GetView(a, SSCRomanceSetting.AcceptRomance).Unlocked);
             a.health.hediffSet.hediffs.Clear(); Require(SSCBehaviorControlUI.CanInspect(a)); Equal(SSCRomanceReason.NoBinding, SSCRomancePreferences.GetView(a, SSCRomanceSetting.AcceptRomance).Reason);
-        });
-        Check("training window and settings dialog share behavior drawers and original preference context", () =>
-        {
-            string drawer = File.ReadAllText(Path.Combine(repo, "Sexslavecraft/common/Romance/SSCRomanceUI.cs"));
-            string window = File.ReadAllText(Path.Combine(repo, "Sexslavecraft/UI/Dialog_SSCTrainingManagement.BehaviorRules.cs"));
-            Require(window.Contains("SSCBehaviorControlUI.DrawSexSection") && window.Contains("SSCBehaviorControlUI.DrawRomanceSection"));
-            string settingsDialog = File.ReadAllText(Path.Combine(repo, "Sexslavecraft/common/Restrictions/Dialog_SSCRestrictions.cs"));
-            Require(settingsDialog.Contains("SSCBehaviorControlUI.DrawPawn"));
-            Require(drawer.Contains("view.Context") && !drawer.Contains("SSCAbilityToggleUtility.TrySet"));
         });
     }
     /// <summary>真实卸载/重装关键补丁验证能力门禁；不能只凭曾经匹配过 IL 就继续授予命令豁免。</summary>

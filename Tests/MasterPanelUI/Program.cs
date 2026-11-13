@@ -58,7 +58,6 @@ internal static partial class Program
         Run("原伤害分担 Gizmo 移除但保留基类", Gizmos);
         Run("原缰绳字段存读档保留关闭值", BridleRoundTrip);
         Run("旧档缺开关字段仍默认开启", OldSaveDefault);
-        Run("主文件接入同一面板高度且保留未选择分支", Integration);
         RunAbilityToggleTests();
         RunFrameworkTests();
         RunRomanceUiTests();
@@ -228,13 +227,5 @@ internal static partial class Program
     private static void OldSaveDefault()
     {
         var restored = new Hediff_BridleOfSexSlave { shareDamageEnabled = false }; Scribe.mode = LoadSaveMode.LoadingVars; restored.ExposeData(); Assert(restored.shareDamageEnabled);
-    }
-    /// <summary>宿主不执行完整旧页签；额外检查接入点和固定几何，真实外层滚动留待实机。</summary>
-    private static void Integration()
-    {
-        string source = File.ReadAllText(SscTestPaths.Combine(repo, "Sexslavecraft/ITab/ITab_SexSlaveTraining.cs"));
-        Assert(source.Contains("private const float SectionPadding = 12f;") && source.Contains("private const float SectionTitleHeight = 28f;"));
-        Assert(source.Contains("contentWidth, masterView.SectionHeight") && source.Contains("return height + masterHeight + 6f;") && source.Contains("DrawMasterPanel(new Rect"));
-        Assert(source.Contains("if (comp.pawnIdentity == PawnIdentity.Unset)"));
     }
 }

@@ -143,7 +143,8 @@ internal static partial class Program
         {
             var p = Slave(); Comp(p).pawnIdentity = PawnIdentity.Unset; Comp(p).romanceConfig = Denied();
             Require(Decide(p, Pawn()).CanInitiate); Equal(SSCRomanceReason.Identity, SSCRomanceResolver.Resolve(p).Reason);
-            Comp(p).pawnIdentity = PawnIdentity.Slave; SSCBondUtility.GetChain(p).target = null; Comp(p).selectedTrainer = Pawn();
+            Comp(p).pawnIdentity = PawnIdentity.Slave; SSCBondUtility.GetChain(p).target = null;
+            SeedAssignedTrainer(p, Pawn());
             Equal(SSCRomanceReason.NoBinding, SSCRomanceResolver.Resolve(p).Reason);
         });
         Check("read-only evaluation leaves references and saved state untouched", () =>

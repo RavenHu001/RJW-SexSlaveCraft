@@ -158,6 +158,8 @@ internal static partial class Program
         if (scene.Master.relations == null) SocialPawn(scene.Master);
         foreach (var pawn in new[] { scene.Actor, scene.Target, scene.Master })
         {
+            // 载入后的任务协调会遍历每个角色的队列，空队列也按原版格式保存。
+            pawn.jobs ??= new Pawn_JobTracker(pawn);
             // 固定宿主未模拟的逆龄需求及成长点，年龄本身使用完整原版追踪器保存。
             pawn.ageTracker.growthPoints = 0;
             AccessTools.Field(typeof(Pawn_AgeTracker), "ageReversalDemandedAtAgeTicks").SetValue(pawn.ageTracker, 0L);

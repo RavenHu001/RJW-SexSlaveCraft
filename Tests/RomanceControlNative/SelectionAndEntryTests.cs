@@ -42,7 +42,9 @@ internal static partial class Program
         });
         Check("batch2 only-master selection checks actual owner rather than assigned trainer", () =>
         {
-            ResetSocial(); var a = SocialSlave(); var b = SocialPawn(); Comp(a).selectedTrainer = b; Comp(a).romanceConfig = new() { allowInitiateToMaster = true, allowInitiateToSexSlave = false, allowInitiateToOthers = false };
+            ResetSocial(); var a = SocialSlave(); var b = SocialPawn();
+            SeedAssignedTrainer(a, b);
+            Comp(a).romanceConfig = new() { allowInitiateToMaster = true, allowInitiateToSexSlave = false, allowInitiateToOthers = false };
             Equal(0f, InteractionDefOf.RomanceAttempt.Worker.RandomSelectionWeight(a, b));
             Require(InteractionDefOf.RomanceAttempt.Worker.RandomSelectionWeight(a, SocialPawn(SSCBondUtility.GetChain(a).LinkedPawn)) > 0);
         });
