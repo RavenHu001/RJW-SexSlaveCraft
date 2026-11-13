@@ -19,10 +19,6 @@ namespace SexSlaveCraft
         {
             internal string Label, Tip;
             internal AbilityToggleRow Toggle;
-#if SSC_RW17
-            internal OrgasmSensitivityRow Sensitivity;
-            internal PreconceptionRow Preconception;
-#endif
             internal float Height, Indent, GapBefore;
         }
 
@@ -59,31 +55,15 @@ namespace SexSlaveCraft
                 bool first = true;
                 foreach (var toggle in toggles)
                 {
-#if SSC_RW17
-                    // 后代印记沿原布尔行提交，仅布局上归入子宫预设，不复制到另一套控件。
-                    bool offspringImprint = toggle.Id == SSCAbilityToggleUtility.OffspringImprint;
-                    float indent = offspringImprint ? BodyChildIndent : 0f;
-                    float gapBefore = first || offspringImprint ? 0f : BodyGroupGap;
-#else
                     float indent = 0f;
                     float gapBefore = first ? 0f : BodyGroupGap;
-#endif
                     // 生育禁用时仍优先显示原权威原因，独立项组间距与旧身体栏相同。
                     AddBodyRow(view, innerWidth, toggle.Label, toggle.ChangeReason ?? toggle.Tip,
                         toggle, indent: indent, gapBefore: gapBefore);
                     first = false;
                     // 乳汁充盈度与 PNA 本批积累共用缩进行；悬停沿用该生产项说明，不重复绘制进度。
                     if (!string.IsNullOrEmpty(toggle.Detail)) AddBodyRow(view, innerWidth, toggle.Detail, toggle.Tip, indent: BodyChildIndent);
-#if SSC_RW17
-                    // 两项枚举只在本身体栏安排于原生育开关之后，不纳入布尔能力存储。
-                    if (toggle.Id == SSCAbilityToggleUtility.UterusFertility) AppendPreconceptionRows(view, innerWidth);
-#endif
                 }
-#if SSC_RW17
-                AppendMissingFertilityBodyRow(view, innerWidth);
-                // 枚举行独立于 bool 条目，必须追加后再判断整个身体区是否为空。
-                AppendOrgasmSensitivityRows(view, innerWidth);
-#endif
                 // 无任何条目时保留零高度；提前返回也由 finally 归还字体与换行状态。
                 if (view.Rows.Count == 0) return view;
                 view.Height = SectionPadding * 2f + view.TitleHeight + view.Rows.Sum(row => row.Height + row.GapBefore)
@@ -126,11 +106,6 @@ namespace SexSlaveCraft
                     // 独立开关之间增加组间留白，充盈度的缩进与测量保持同一宽度。
                     y += row.GapBefore;
                     Rect line = new Rect(inner.x + row.Indent, y, inner.width - row.Indent, row.Height);
-#if SSC_RW17
-                    if (row.Preconception != null) DrawPreconceptionRow(line, row);
-                    else if (row.Sensitivity != null) DrawOrgasmSensitivityRow(line, row);
-                    else
-#endif
                     if (row.Toggle == null)
                     {
                         Widgets.Label(line, row.Label);

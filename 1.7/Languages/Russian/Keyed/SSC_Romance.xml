@@ -31,7 +31,6 @@
   <SSC_Romance_PassiveMeaning>При отключении остаётся доступной целью, но всегда отказывает. При включении ответ определяется обычным образом.</SSC_Romance_PassiveMeaning>
   <SSC_Romance_ExtraMeaning>Эти два правила независимы. Ограничение хозяином не разрешает запрещённое активное действие.</SSC_Romance_ExtraMeaning>
   <SSC_Romance_RequiredStage>Требуется достичь стадии цепи «{0}».</SSC_Romance_RequiredStage>
-  <SSC_Romance_OpenBehaviorWindow>Открыть ограничения поведения…</SSC_Romance_OpenBehaviorWindow>
   <SSC_Romance_CommandTitle>Прямые приказы</SSC_Romance_CommandTitle>
   <SSC_Romance_Executor>Исполнитель: {0}</SSC_Romance_Executor>
   <SSC_Romance_ChooseAction>Действие: {0}</SSC_Romance_ChooseAction>

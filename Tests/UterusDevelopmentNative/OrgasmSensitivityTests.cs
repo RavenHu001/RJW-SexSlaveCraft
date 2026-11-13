@@ -54,7 +54,6 @@ internal static partial class Program
         SensitivityContextTests();
         SensitivitySaveAndTransferTests();
         SensitivityConfigurationTests();
-        SensitivityUiTests(harmony);
         SensitivityCallbackTests(harmony);
     }
 
@@ -116,6 +115,8 @@ internal static partial class Program
                 Near(new[] { 2f, 4f, 8f, 16f }[effective - 1], state.Multiplier);
                 Near(new[] { .3f, .75f, 1.5f, 3f }[effective - 1], SensitivityStat(p));
                 Near(saved, record.Severity); Equal(effective - 1, record.CurStageIndex);
+                Equal(("SSC_Sensitivity_Level" + effective).Translate().ToString(), record.LabelInBrackets);
+                Equal(sensitivity.description, record.Description);
                 SetChainStage(p, 4); Equal(saved, SSCOrgasmSensitivityUtility.GetState(p).EffectiveLevel);
             });
         // 负面首格和非对角正面映射足以验证消费；阶段切换及最终格由缓存消费回归覆盖。
@@ -364,104 +365,6 @@ internal static partial class Program
                 }
                 finally { ext.stageMappings = original; original[0].thoughtStageIndex = originalIndex; ClearSensitivityConfig(); }
             });
-    }
-
-    /// <summary>取真实私有视图字段，仅供断言，不复制布局或提交算法。</summary>
-    private static T SensitivityField<T>(object instance, string name)
-        => (T)AccessTools.Field(instance.GetType(), name).GetValue(instance);
-
-    /// <summary>图形边界只提供确定的字体测量，保留真实换行行高、菜单构造及闭包。</summary>
-    private static bool SensitivityTextHeight(string __0, float __1, ref float __result)
-    {
-        __result = __0.Split('\n').Sum(line => Math.Max(1, (int)Math.Ceiling(line.Length * 9f / Math.Max(1f, __1))) * 20f);
-        return false;
-    }
-
-    /// <summary>原生 UI 的无图形 CLR 字号高度边界。</summary>
-    private static bool SensitivityLineHeight(ref float __result) { __result = 20f; return false; }
-
-    /// <summary>只替代选择器输入；菜单创建与点击提交仍执行生产 ITab 的原闭包。</summary>
-    private sealed class SensitivityTab : ITab_SexSlaveTraining
-    {
-        internal Pawn Selected;
-        /// <summary>提供当前选中身体，验证菜单打开后更换角色不会提交旧请求。</summary>
-        protected override Pawn SelPawn => Selected;
-    }
-
-    /// <summary>验证独立枚举行不受 bool 空列表遮挡，宽度与快照正确进入真实菜单。</summary>
-    private static void SensitivityUiTests(Harmony harmony)
-    {
-        var tabType = typeof(ITab_SexSlaveTraining);
-        var calcHeight = AccessTools.Method(typeof(Text), nameof(Text.CalcHeight), new[] { typeof(string), typeof(float) });
-        var lineHeight = AccessTools.PropertyGetter(typeof(Text), nameof(Text.LineHeight));
-        harmony.Patch(calcHeight, prefix: new HarmonyMethod(typeof(Program), nameof(SensitivityTextHeight)));
-        harmony.Patch(lineHeight, prefix: new HarmonyMethod(typeof(Program), nameof(SensitivityLineHeight)));
-        object Build(Pawn p, float width) => AccessTools.Method(tabType, "BuildBodyManagementView").Invoke(null,
-            new object[] { p, p.GetComp<CompSexSlaveTraining>(), width });
-        object[] Rows(object view) => ((IEnumerable)AccessTools.Field(view.GetType(), "Rows").GetValue(view)).Cast<object>().ToArray();
-        try
-        {
-            Check("sensitivity native enum row exists when body boolean rows are empty", () =>
-            {
-                var p = SensitivityPawn(1); int before = p.health.hediffSet.hediffs.Count; var view = Build(p, 322f);
-                var rows = Rows(view); Equal(2, rows.Length); Require(SensitivityField<object>(rows[0], "Sensitivity") != null);
-                Near(16f, SensitivityField<float>(rows[1], "Indent")); Require(SensitivityField<string>(rows[0], "Tip") == null);
-                Require(SensitivityField<string>(rows[1], "Tip") == null);
-                Equal(before, p.health.hediffSet.hediffs.Count); Require(SSCOrgasmSensitivityUtility.Find(p) == null);
-            });
-            Check("sensitivity native enum row wraps and preserves GUI text settings", () =>
-            {
-                var p = SensitivityPawn(); SetSensitivity(p, 4); SetChainStage(p, 1);
-                Text.Font = GameFont.Medium; Text.WordWrap = false;
-                var narrow = Build(p, 200f); var wide = Build(p, 322f);
-                Require(SensitivityField<float>(narrow, "Height") >= SensitivityField<float>(wide, "Height"));
-                Equal(GameFont.Medium, Text.Font); Require(!Text.WordWrap); Text.Font = GameFont.Small; Text.WordWrap = true;
-                var row = Rows(narrow).Single(r => SensitivityField<object>(r, "Sensitivity") != null);
-                var detail = SensitivityField<object>(row, "Sensitivity");
-                Require(SensitivityField<float>(row, "Height") >= 24f);
-                Require(SensitivityField<float>(detail, "ButtonWidth") < 200f);
-                Equal("SSC_Sensitivity_Level4".Translate().ToString(), SensitivityField<string>(detail, "Button"));
-                Require(!SensitivityField<string>(row, "Label").Contains("\n"));
-                // 健康说明回归原通用正文，括号内只取实际一档，不追加旧保存／参数摘要。
-                var record = SSCOrgasmSensitivityUtility.Find(p);
-                Equal("SSC_Sensitivity_Level1".Translate().ToString(), record.LabelInBrackets);
-                Equal(sensitivity.description, record.Description);
-            });
-            Check("sensitivity native retained body row stays visible after identity loss", () =>
-            {
-                var p = SensitivityPawn(); SetSensitivity(p, 4); p.GetComp<CompSexSlaveTraining>().pawnIdentity = PawnIdentity.Unset;
-                Require(Rows(Build(p, 322f)).Any(r => SensitivityField<object>(r, "Sensitivity") != null));
-            });
-            Check("sensitivity native menu offers off and unlocked level with disabled high levels", () =>
-            {
-                var p = SensitivityPawn(1); var row = SensitivityField<object>(Rows(Build(p, 322f)).Single(r => SensitivityField<object>(r, "Sensitivity") != null), "Sensitivity");
-                var options = (List<FloatMenuOption>)AccessTools.Method(tabType, "BuildOrgasmSensitivityOptions").Invoke(new ITab_SexSlaveTraining(), new[] { row });
-                Equal(5, options.Count); Require(options[0].action != null && options[1].action != null);
-                Require(options.Skip(2).All(o => o.action == null));
-                Require(options.Skip(2).All(o => o.tooltip.HasValue));
-                Require(options.Skip(2).All(o => !o.Label.Contains("SSC_Sensitivity_LevelLocked".Translate().ToString())));
-                SetSensitivity(p, 1);
-                options = (List<FloatMenuOption>)AccessTools.Method(tabType, "BuildOrgasmSensitivityOptions").Invoke(new ITab_SexSlaveTraining(), new[] { row });
-                Require(options.All(o => o.action == null), "missing-record snapshot acquired new owner");
-            });
-            Check("sensitivity native menu closure submits original missing body context once", () =>
-            {
-                var p = SensitivityPawn(); var tab = new SensitivityTab { Selected = p };
-                var row = SensitivityField<object>(Rows(Build(p, 322f)).Single(r => SensitivityField<object>(r, "Sensitivity") != null), "Sensitivity");
-                var options = (List<FloatMenuOption>)AccessTools.Method(tabType, "BuildOrgasmSensitivityOptions").Invoke(tab, new[] { row });
-                options[3].action(); var owner = SSCOrgasmSensitivityUtility.Find(p); Near(3, owner.Severity);
-                options[1].action(); Equal(owner, SSCOrgasmSensitivityUtility.Find(p)); Near(3, owner.Severity);
-            });
-            Check("sensitivity native menu closure rejects changed selected pawn", () =>
-            {
-                var p = SensitivityPawn(); var tab = new SensitivityTab { Selected = p };
-                var row = SensitivityField<object>(Rows(Build(p, 322f)).Single(r => SensitivityField<object>(r, "Sensitivity") != null), "Sensitivity");
-                var options = (List<FloatMenuOption>)AccessTools.Method(tabType, "BuildOrgasmSensitivityOptions").Invoke(tab, new[] { row });
-                tab.Selected = SensitivityPawn(); options[1].action();
-                Require(SSCOrgasmSensitivityUtility.Find(p) == null && SSCOrgasmSensitivityUtility.Find(tab.Selected) == null);
-            });
-        }
-        finally { harmony.Unpatch(calcHeight, HarmonyPatchType.All, harmony.Id); harmony.Unpatch(lineHeight, HarmonyPatchType.All, harmony.Id); }
     }
 
     private static Action sensitivityRemovalCallback;

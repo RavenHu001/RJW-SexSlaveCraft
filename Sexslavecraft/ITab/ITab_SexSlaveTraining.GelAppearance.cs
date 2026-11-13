@@ -1,3 +1,4 @@
+#if !SSC_RW17
 // AI 辅助生成。凝胶外观入口属于身体状态，不依赖训练研究、SSC身份或任职资格。
 using UnityEngine;
 using Verse;
@@ -97,3 +98,4 @@ namespace SexSlaveCraft
         }
     }
 }
+#endif

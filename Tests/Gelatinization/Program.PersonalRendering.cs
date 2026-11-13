@@ -171,16 +171,12 @@ internal static partial class Program
             Widgets.Toggle=true;ITab_SexSlaveTraining.DrawTrainer(p,true);
             Check(!p.Training.slaveTrainerEnabled,"旧UI快照不能授予任职资格");
         });
-        Run("身份区删除训练状态且入口位于所有分支之前",()=>
+        Run("凝胶渲染复用个人准入并接入独立窗口",()=>
         {
-            string s=File.ReadAllText(Path.Combine(root,"Sexslavecraft/ITab/ITab_SexSlaveTraining.cs"));
             string gate=File.ReadAllText(Path.Combine(root,"Sexslavecraft/common/FullGelatinizationUtility.cs"));
             Check(gate.Contains("return FullGelAppearanceUtility.ShouldRender(pawn);"),"生产渲染入口转发个人准入");
-            Check(!s.Contains("view.Status")&&!s.Contains("StatusHeight"),"删除绘制与预留高度");
-            // 接线检查只确认旧调教区仍调用共用状态入口，启停和倒计时的绘制由窗口回归覆盖。
-            Check(s.Contains("DrawCooldownStatus(listing, comp)") && s.Contains("GetDailyTrainingStatus(comp)"),
-                "旧调教区复用启停和冷却状态入口");
-            Check(s.IndexOf("DrawGelAppearanceSection(new Rect")<s.IndexOf("DrawMasterPanel(new Rect"),"外观不被身份研究分支遮挡");
+            string body=File.ReadAllText(Path.Combine(root,"Sexslavecraft/UI/Dialog_SSCTrainingManagement.BodyProduction.cs"));
+            Check(body.Contains("if (showGel) modules.Add(column => AddGelAppearanceSection"),"身体页接入凝胶外观");
         });
     }
 

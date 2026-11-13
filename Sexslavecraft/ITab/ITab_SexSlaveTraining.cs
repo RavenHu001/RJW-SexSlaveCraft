@@ -5,14 +5,12 @@ using UnityEngine;
 using Verse;
 using RimWorld;
 
-// EN: This file renders the training control tab for eligible pawns.
-// EN: It lets the player toggle training, pick acts, and constrain trainer assignment.
-// CN: 这个文件绘制可用 Pawn 的调教控制 ITab。
-// CN: 它允许玩家开关调教、选择姿势，并限制 trainer 指派。
+// 保留原调教标签的注册类型、显示资格以及独立窗口复用的操作。1.6 继续编译旧面板。
 namespace SexSlaveCraft
 {
     public partial class ITab_SexSlaveTraining : ITab
     {
+#if !SSC_RW17
         private const float SectionSpacing = 12f;
         // 节框留白与标题高度由绘制和动态测量共用；列表间距也显式固定，
         // 避免身份区计算的高度与 Listing_Standard 实际推进的位置不一致。
@@ -35,15 +33,19 @@ namespace SexSlaveCraft
         private Pawn restrictionPawn;
         private static bool restrictionsExpanded;
         private static Game restrictionSession;
+#endif
 
         /// <summary>初始化调教页尺寸、标题和教程标识。</summary>
         public ITab_SexSlaveTraining()
         {
+#if !SSC_RW17
             size = WinSize;
+#endif
             labelKey = "Tab_SexSlaveTraining";
             tutorTag = "SexSlaveTraining";
         }
 
+#if !SSC_RW17
         /// <summary>按屏幕约束向右扩展规则栏，保持主调教栏的位置和宽度，整个面板处于原生窗口输入范围内。</summary>
         protected override void UpdateSize()
         {
@@ -54,9 +56,6 @@ namespace SexSlaveCraft
             }
             // 展开偏好保留在会话内；切到未绑定角色或停用系统时，不显示右栏也不占据右栏宽度。
             size = new Vector2(Mathf.Min(restrictionsExpanded && CanShowRestrictions(SelPawn)
-#if SSC_RW17
-                && SSCBehaviorControlUI.CanFitSidebar(UI.screenWidth)
-#endif
                 ? 740f : WinSize.x, UI.screenWidth - 16f),
                 Mathf.Min(WinSize.y, Mathf.Max(100f, PaneTopY - 40f)));
         }
@@ -64,13 +63,8 @@ namespace SexSlaveCraft
         /// <summary>普通限制生效或具备自我调教资格时可展开；总限制关闭时保持现有面板停用语义。</summary>
         private static bool CanShowRestrictions(Pawn pawn)
         {
-#if SSC_RW17
-            // 两个模块的展示资格独立于旧总开关；第一阶段/解绑保留值也需要显示原因。
-            return SSCBehaviorControlUI.CanInspect(pawn);
-#else
             return (SSCMod.settings?.enableSexSlaveProtectionRules ?? true) &&
                 (SSCRestrictionResolver.IsApplicable(pawn) || SSCSelfTrainingEligibility.IsEligible(pawn));
-#endif
         }
 
         /// <summary>保持原按钮位置，对不受限制的角色明确置灰并拦截点击，悬停说明不可用原因。</summary>
@@ -84,18 +78,8 @@ namespace SexSlaveCraft
                 GUI.enabled = oldEnabled && available;
                 if (!GUI.enabled) GUI.color = oldColor * new Color(0.55f, 0.55f, 0.55f, 1f);
                 string key = available && restrictionsExpanded ? "SSC_Restrictions_Collapse" : "SSC_Restrictions_Expand";
-#if SSC_RW17
-                if (!SSCBehaviorControlUI.CanFitSidebar(UI.screenWidth)) key = "SSC_Romance_OpenBehaviorWindow";
-#endif
                 if (Widgets.ButtonText(rect, key.Translate()) && GUI.enabled)
-#if SSC_RW17
-                {
-                    if (SSCBehaviorControlUI.CanFitSidebar(UI.screenWidth)) restrictionsExpanded = !restrictionsExpanded;
-                    else Find.WindowStack.Add(new Dialog_SSCRestrictions(pawn));
-                }
-#else
                     restrictionsExpanded = !restrictionsExpanded;
-#endif
             }
             finally { GUI.enabled = oldEnabled; GUI.color = oldColor; }
             if (!available)
@@ -121,16 +105,13 @@ namespace SexSlaveCraft
                 var listing = new Listing_Standard { maxOneColumn = true };
                 listing.Begin(content);
                 try {
-#if SSC_RW17
-                    SSCBehaviorControlUI.DrawPawn(listing, pawn);
-#else
                     SSCRestrictionUI.DrawPawn(listing, pawn);
-#endif
                 }
                 finally { restrictionContentHeight = listing.CurHeight + 12f; listing.End(); }
             }
             finally { Widgets.EndScrollView(); }
         }
+#endif
 
         /// <summary>仅为支持的原版身份且具有训练组件的角色显示调教页，不要求完成研究。</summary>
         public override bool IsVisible
@@ -146,6 +127,10 @@ namespace SexSlaveCraft
             return pawn.GetComp<CompSexSlaveTraining>() != null;
         }
 
+#if SSC_RW17
+        // 1.7 的标签只保留入口，实际绘制由独立窗口负责。
+        protected override void FillTab() { }
+#else
         /// <summary>绘制调教总栏；即使菜单或控件抛出异常，也在内部列表结束后关闭外层滚动区域。</summary>
         protected override void FillTab()
         {
@@ -161,11 +146,7 @@ namespace SexSlaveCraft
             outerRect.yMin = Mathf.Max(outerRect.yMin, 24f);
             Rect trainingRect = new Rect(outerRect.x, outerRect.y,
                 Mathf.Min(WinSize.x - 20f, outerRect.width), outerRect.height);
-            if (restrictionsExpanded && CanShowRestrictions(pawn)
-#if SSC_RW17
-                && SSCBehaviorControlUI.CanFitSidebar(UI.screenWidth)
-#endif
-                )
+            if (restrictionsExpanded && CanShowRestrictions(pawn))
                 DrawRestrictionPanel(new Rect(trainingRect.xMax + 10f, outerRect.y,
                     outerRect.xMax - trainingRect.xMax - 10f, outerRect.height), pawn);
             // 身份资格、翻译文字和测量结果只为本次绘制生成一次。
@@ -173,10 +154,6 @@ namespace SexSlaveCraft
             float contentWidth = trainingRect.width - 18f;
             TrainerIdentityView identityView = BuildTrainerIdentityView(pawn, comp, contentWidth);
             GelAppearanceView gelView = BuildGelAppearanceView(pawn, contentWidth);
-#if SSC_RW17
-            // 身体管理不受后续身份和研究分支影响；测量与绘制复用同一份只读视图。
-            BodyManagementView bodyView = BuildBodyManagementView(pawn, comp, contentWidth);
-#endif
             float specializationHeight = GetSpecializationSectionHeight(pawn, comp, contentWidth);
             // 主人信息同样只测量本次事件一次；绘制和滚动高度共用快照，界面不补建成长或缰绳。
             MasterPanelView masterView = comp.pawnIdentity == PawnIdentity.Master
@@ -185,17 +162,9 @@ namespace SexSlaveCraft
             var slaveAbilityRows = comp.pawnIdentity == PawnIdentity.Slave
                 ? BuildAbilityToggleRows(pawn, comp, SSCAbilityToggleGroup.Slave, contentWidth - SectionPadding * 2f) : null;
             float slaveAbilityHeight = AbilityToggleSectionHeight(slaveAbilityRows);
-#if SSC_RW17
-            // 阶段维持是独立枚举行；与布尔能力区分别测量，绘制时继续使用原链快照。
-            PnaMaintenanceView pnaMaintenance = BuildPnaMaintenanceView(pawn, contentWidth);
-#endif
             float contentHeight = CalculateContentHeight(pawn, comp, identityView.SectionHeight, specializationHeight,
                 contentWidth, masterView.SectionHeight) + (slaveAbilityHeight > 0f ? slaveAbilityHeight + SectionSpacing : 0f)
                 + (gelView.Height > 0f ? gelView.Height + SectionSpacing : 0f);
-#if SSC_RW17
-            if (bodyView.Height > 0f) contentHeight += bodyView.Height + SectionSpacing;
-            if (pnaMaintenance != null) contentHeight += pnaMaintenance.Height + SectionSpacing;
-#endif
             Rect viewRect = trainingRect;
             Rect contentRect = new Rect(0f, 0f, contentWidth, contentHeight);
 
@@ -206,12 +175,6 @@ namespace SexSlaveCraft
                 curY = DrawIdentitySection(new Rect(0f, curY, contentRect.width,
                     identityView.SectionHeight), comp, identityView) + SectionSpacing;
 
-#if SSC_RW17
-                // 紧跟身份区，凝胶／身体条目增加时入口不会被继续向下推；总滚动高度不变。
-                DrawRestrictionToggle(new Rect(0f, curY, contentRect.width, RestrictionToggleHeight), pawn);
-                curY += RestrictionToggleHeight + RestrictionToggleSpacing;
-#endif
-
                 // 在所有身份/研究分支之前绘制；个人开关关闭也能继续编辑外观。
                 if (gelView.Height > 0f)
                 {
@@ -219,20 +182,8 @@ namespace SexSlaveCraft
                     curY += gelView.Height + SectionSpacing;
                 }
 
-#if SSC_RW17
-                // 共用身体栏只绘制一次，主人、未设身份及研究未完成时也能操作已有身体状态。
-                if (bodyView.Height > 0f)
-                {
-                    DrawBodyManagementSection(new Rect(0f, curY, contentRect.width, bodyView.Height), bodyView);
-                    curY += bodyView.Height + SectionSpacing;
-                }
-#endif
-
-#if !SSC_RW17
-                // 冻结版本保留旧布局；当前入口前移只对1.7生效。
                 DrawRestrictionToggle(new Rect(0f, curY, contentRect.width, RestrictionToggleHeight), pawn);
                 curY += RestrictionToggleHeight + RestrictionToggleSpacing;
-#endif
                 if (CanShowSpecializationSection(comp))
                 {
                     curY = DrawSpecializationSection(new Rect(0f, curY, contentRect.width,
@@ -244,14 +195,6 @@ namespace SexSlaveCraft
                     DrawAbilityToggleSection(new Rect(0f, curY, contentRect.width, slaveAbilityHeight), slaveAbilityRows);
                     curY += slaveAbilityHeight + SectionSpacing;
                 }
-
-#if SSC_RW17
-                if (pnaMaintenance != null)
-                {
-                    DrawPnaMaintenanceSection(new Rect(0f, curY, contentRect.width, pnaMaintenance.Height), pnaMaintenance);
-                    curY += pnaMaintenance.Height + SectionSpacing;
-                }
-#endif
 
                 if (comp.pawnIdentity == PawnIdentity.Master)
                 {
@@ -274,13 +217,11 @@ namespace SexSlaveCraft
                     curY = DrawTrainingSection(new Rect(0f, curY, contentRect.width, 124f), pawn, comp) + SectionSpacing;
                     curY = DrawScheduleSection(new Rect(0f, curY, contentRect.width, 210f), pawn, comp) + SectionSpacing;
 
-#if !SSC_RW17
                     // 旧版本保留原泌乳栏；1.7 已在所有身份共用的身体栏绘制。
                     if (pawn.health.hediffSet.HasHediff(SSCDefOf.SSC_Lactating_SubState))
                     {
                         curY = DrawMilkSection(new Rect(0f, curY, contentRect.width, 88f), pawn, comp) + SectionSpacing;
                     }
-#endif
 
                     curY = DrawPoseSection(new Rect(0f, curY, contentRect.width, 82f), comp) + SectionSpacing;
                     DrawTrainerSection(new Rect(0f, curY, contentRect.width, 82f), pawn, comp);
@@ -315,18 +256,17 @@ namespace SexSlaveCraft
 
             height += SectionSpacing + 124f;
             height += SectionSpacing + 210f;
-#if !SSC_RW17
-            // 与旧版本的绘制分支保持一致；1.7 的身体栏高度由同一份视图另行累计。
+            // 泌乳高度与上面的绘制条件一致。
             if (pawn.health.hediffSet.HasHediff(SSCDefOf.SSC_Lactating_SubState))
             {
                 height += SectionSpacing + 88f;
             }
-#endif
 
             height += SectionSpacing + 82f;
             height += SectionSpacing + 82f;
             return height + 4f;
         }
+#endif
 
         /// <summary>为两个界面读取同一套任职选择、有效资格和提示。</summary>
         internal static (bool IsSlave, bool Enabled, bool Qualified, string Label, string Tooltip)
@@ -350,6 +290,7 @@ namespace SexSlaveCraft
             return (isSlave, enabled, qualified, label, tooltip);
         }
 
+#if !SSC_RW17
         /// <summary>读取一次资格，并按实际字体、标签和可用宽度计算身份区高度。</summary>
         private static TrainerIdentityView BuildTrainerIdentityView(Pawn pawn, CompSexSlaveTraining comp, float width)
         {
@@ -394,9 +335,6 @@ namespace SexSlaveCraft
         private static float GetSpecializationSectionHeight(Pawn pawn, CompSexSlaveTraining comp, float width)
         {
             if (!CanShowSpecializationSection(comp)) return 0f;
-#if SSC_RW17
-            return GetCompactSpecializationSectionHeight(pawn, comp, width);
-#else
             // 状态行在窄栏和长译文下可能换成两行；兔特化的繁殖模式仍可能
             // 同时出现，因此两项额外高度分别计算，避免跨方向终极记录遮挡后续控件。
             bool showTrainerStatus = comp.specializationType == SexSlaveSpecializationType.TrainerOfficer ||
@@ -419,7 +357,6 @@ namespace SexSlaveCraft
             return SpecializationSectionHeight + progressExtraHeight +
                 (showTrainerStatus ? TrainerStatusExtraHeight : 0f) +
                 (showRabbitMode ? RabbitModeExtraHeight : 0f);
-#endif
         }
 
         /// <summary>绘制 SSC 身份及调教员开关；已有绑定时禁用身份按钮并提示原因。</summary>
@@ -442,10 +379,6 @@ namespace SexSlaveCraft
                     // 同为不可切换，仍区分永久印记锁和普通绑定锁，避免解绑后的定型人格收到错误提示。
                     if (identityLocked)
                         TooltipHandler.TipRegion(identityRect,
-#if SSC_RW17
-                            SSCImprintUtility.GetImprintLockedIdentity(SelPawn) != PawnIdentity.Unset ?
-                                "SSC_Imprint_GelTooltip".Translate() :
-#endif
                                 "SSC_Identity_BoundTip".Translate());
                     listing.Gap(2f);
                     if (identityClicked)
@@ -497,6 +430,7 @@ namespace SexSlaveCraft
 
             return rect.yMax;
         }
+#endif
 
         /// <summary>将只读资格失败码转换为菜单和任职开关共用的具体说明。</summary>
         private static string GetTrainerFailureReason(TrainerSpecializationFailure failure)
@@ -506,6 +440,7 @@ namespace SexSlaveCraft
             return ("SSC_TrainerIdentity_Failure_" + failure).Translate();
         }
 
+#if !SSC_RW17
         /// <summary>绘制调教设置，并保证控件中断时结束本节列表。</summary>
         private float DrawTrainingSection(Rect rect, Pawn pawn, CompSexSlaveTraining comp)
         {
@@ -533,27 +468,14 @@ namespace SexSlaveCraft
             DrawSection(rect, Strings.ITab_SpecializationHeader, delegate(Rect innerRect)
             {
                 Listing_Standard listing = BeginSectionListing(innerRect);
-#if SSC_RW17
-                bool previousWrap = Text.WordWrap;
-                TextAnchor previousAnchor = Text.Anchor;
-#endif
                 try
                 {
                     // 状态行已按实际宽度测高，仍强制单列，避免界面补丁使其横向溢出。
                     listing.maxOneColumn = true;
-#if SSC_RW17
-                    listing.verticalSpacing = SpecializationListingSpacing;
-                    Text.WordWrap = true;
-                    Text.Anchor = TextAnchor.UpperLeft;
-#endif
                     DrawSpecializationSelector(listing, pawn, comp);
                 }
                 finally
                 {
-#if SSC_RW17
-                    Text.WordWrap = previousWrap;
-                    Text.Anchor = previousAnchor;
-#endif
                     listing.End();
                 }
             });
@@ -646,7 +568,6 @@ namespace SexSlaveCraft
             return rect.yMax;
         }
 
-#if !SSC_RW17
         /// <summary>保留旧版本的泌乳配置与进度；1.7 改由共用身体栏绘制。</summary>
         private float DrawMilkSection(Rect rect, Pawn pawn, CompSexSlaveTraining comp)
         {
@@ -680,7 +601,6 @@ namespace SexSlaveCraft
 
             return rect.yMax;
         }
-#endif
 
         /// <summary>绘制姿势选择菜单，并保证菜单创建失败时结束本节列表。</summary>
         private float DrawPoseSection(Rect rect, CompSexSlaveTraining comp)
@@ -814,11 +734,7 @@ namespace SexSlaveCraft
 
         /// <summary>列出合格且可完成调教授权的对象；普通互动不随指派开放，强制来源禁止时不能换人。</summary>
         private List<FloatMenuOption> GetTrainerOptions(Pawn slave)
-#if SSC_RW17
-            => SSCTrainerAssignmentMenu.Options(slave, current: () => SelPawn == slave);
-#else
             => SSCTrainerAssignmentMenu.Options(slave);
-#endif
 
         /// <summary>切换日常训练状态并清除当前训练占用；启用时显示现有资格校验结果。</summary>
         private static void DrawTrainingToggle(Listing_Standard listing, Pawn pawn, CompSexSlaveTraining comp)
@@ -829,6 +745,7 @@ namespace SexSlaveCraft
             listing.CheckboxLabeled(Strings.ITab_AllowTraining, ref isEnabled);
             if (oldState != isEnabled) SetDailyTrainingEnabled(pawn, comp, isEnabled);
         }
+#endif
 
         /// <summary>两个界面共用启停行为。开启时的执行条件只用于反馈，保存选择先写入。</summary>
         internal static void SetDailyTrainingEnabled(Pawn pawn, CompSexSlaveTraining comp, bool isEnabled)
@@ -847,6 +764,7 @@ namespace SexSlaveCraft
             Messages.Message(shortReason, pawn, MessageTypeDefOf.RejectInput, false);
         }
 
+#if !SSC_RW17
         /// <summary>把当前 SSC 身份转换为调教页使用的本地化标签。</summary>
         private static string GetIdentityLabel(PawnIdentity identity)
         {
@@ -864,6 +782,7 @@ namespace SexSlaveCraft
         /// <summary>显示剩余训练冷却时间，或在无冷却时显示当前启用状态。</summary>
         private static void DrawCooldownStatus(Listing_Standard listing, CompSexSlaveTraining comp)
             => listing.Label((TaggedString)GetDailyTrainingStatus(comp));
+#endif
 
         /// <summary>冷却读现有计时；冷却结束后显示保存的启停状态。</summary>
         internal static string GetDailyTrainingStatus(CompSexSlaveTraining comp)
@@ -877,6 +796,7 @@ namespace SexSlaveCraft
             return comp.IsEnabled ? Strings.ITab_StatusReady : Strings.ITab_StatusDisabled;
         }
 
+#if !SSC_RW17
         /// <summary>列出支持的训练姿势，并保存玩家选择的模式。</summary>
         private static void DrawPoseSelector(Listing_Standard listing, CompSexSlaveTraining comp)
         {
@@ -902,29 +822,12 @@ namespace SexSlaveCraft
         {
             string trainerName = TrainerAssignmentUtility.GetAssignedTrainerLabel(pawn);
             Rect row = listing.GetRect(30f);
-#if SSC_RW17
-            FloatMenuOption enable = SSCTrainerAssignmentMenu.EnableOption(pawn,
-                current: () => SelPawn == pawn && pawn.TryGetComp<CompSexSlaveTraining>() == comp && SSCIdentityUtility.IsSexSlave(pawn));
-            if (enable != null)
-            {
-                string enableLabel = "SSC_TrainerWork_Enable".Translate();
-                float buttonWidth = Mathf.Min(row.width * .4f, Mathf.Max(58f, Text.CalcSize(enableLabel).x + 16f));
-                Rect button = new Rect(row.xMax - buttonWidth, row.y, buttonWidth, row.height);
-                if (Widgets.ButtonText(button, enableLabel)) enable.action();
-                TooltipHandler.TipRegion(button, "SSC_TrainerWork_CategoryTip".Translate());
-                row.width -= buttonWidth + 6f;
-            }
-#endif
             if (Widgets.ButtonText(row, trainerName) && CanEditTrainingConfiguration(pawn, comp))
                 Find.WindowStack.Add(new FloatMenu(GetTrainerOptions(pawn)));
             string trainerTip = "SSC_Restrictions_AssignAuthorizesTip".Translate();
-#if SSC_RW17
-            if (comp.selectedTrainer != null)
-                trainerTip += "\n\n" + SSCTrainerWorkUtility.Reason(
-                    SSCTrainerWorkUtility.GetState(comp.selectedTrainer, pawn), comp.selectedTrainer);
-#endif
             TooltipHandler.TipRegion(row, trainerTip);
         }
+#endif
 
         /// <summary>设置回调只接受仍属于原 Pawn 的 SSC 性奴组件，不用已绘制面板代替后台身份检查。</summary>
         private static bool CanEditTrainingConfiguration(Pawn pawn, CompSexSlaveTraining comp)
@@ -935,6 +838,7 @@ namespace SexSlaveCraft
             return false;
         }
 
+#if !SSC_RW17
         /// <summary>绘制特化选择和进度，按资格及终极状态限制选项，并同步所选方向的基础状态。</summary>
         private static void DrawSpecializationSelector(Listing_Standard listing, Pawn pawn, CompSexSlaveTraining comp)
         {
@@ -950,12 +854,6 @@ namespace SexSlaveCraft
             // 查询不创建健康状态或授予技能，已取得宠物终极成果时不再提示重复加工。
             string progressTip = GetSpecializationProgressTip(pawn, comp);
             listing.Label((TaggedString)Strings.ITab_SpecializationProgress(GetSpecializationProgressText(pawn, comp)), -1f, progressTip);
-#if SSC_RW17
-            string trainerText = GetOrdinaryTrainerStatusText(pawn);
-            if (trainerText != null)
-                listing.Label((TaggedString)trainerText, -1f, "SSC_TrainerIdentity_RestrictionTip".Translate().ToString());
-            DrawFinalSpecializationStates(listing, pawn);
-#else
             TrainerSpecializationDisplayState trainerState = TrainerSpecializationUtility.GetDisplayState(pawn);
             if (trainerState != TrainerSpecializationDisplayState.None)
             {
@@ -968,8 +866,8 @@ namespace SexSlaveCraft
                 listing.Label("SSC_TrainerIdentity_StatusLine".Translate(status), -1f, tip);
             }
             DrawRabbitReproductionModeSelector(listing, pawn, comp);
-#endif
         }
+#endif
 
         /// <summary>两个入口共用各方向的显示和选择条件。窗口可附加原弹窗与人格校验。</summary>
         internal static List<FloatMenuOption> BuildSpecializationOptions(Pawn pawn, CompSexSlaveTraining comp,

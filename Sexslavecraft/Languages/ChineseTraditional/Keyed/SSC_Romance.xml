@@ -31,7 +31,6 @@
   <SSC_Romance_PassiveMeaning>關閉時仍可成為目標，但必定拒絕；開啟時保留正常接受判斷。</SSC_Romance_PassiveMeaning>
   <SSC_Romance_ExtraMeaning>兩個主人規則獨立儲存；僅主人不重新開放已禁止的主動行為。</SSC_Romance_ExtraMeaning>
   <SSC_Romance_RequiredStage>需要鎖鏈達到{0}階段。</SSC_Romance_RequiredStage>
-  <SSC_Romance_OpenBehaviorWindow>開啟行為限制…</SSC_Romance_OpenBehaviorWindow>
   <SSC_Romance_CommandTitle>直接命令</SSC_Romance_CommandTitle>
   <SSC_Romance_Executor>執行者：{0}</SSC_Romance_Executor>
   <SSC_Romance_ChooseAction>行為：{0}</SSC_Romance_ChooseAction>

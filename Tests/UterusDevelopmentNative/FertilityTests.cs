@@ -205,7 +205,7 @@ internal static partial class Program
         });
         FertilityEffectDisplayTests(harmony);
         FertilityRecipeReviewTests(harmony);
-        FertilityUiReviewTests(harmony);
+        FertilityUiReviewTests();
         FertilityPregnancyTests();
         InstallFertilityPatch(harmony,AccessTools.PropertyGetter(typeof(SkillRecord), nameof(SkillRecord.TotallyDisabled)), prefix: new HarmonyMethod(typeof(Program), nameof(FertilitySkillEnabled)));
         FertilityActivityTests(harmony);
@@ -299,22 +299,14 @@ internal static partial class Program
         });
     }
 
-    /// <summary>复用真实终极查询及布局，验证紧凑基高、多列／窄栏网格边界、普通不冒充终极和状态悬停。</summary>
-    private static void FertilityUiReviewTests(Harmony harmony)
+    /// <summary>检查独立窗口使用的成果卡数据及失格后仍保留的终极记录。</summary>
+    private static void FertilityUiReviewTests()
     {
-        InstallFertilityPatch(harmony,AccessTools.Method(typeof(Text),nameof(Text.CalcHeight),new[]{typeof(string),typeof(float)}),prefix:new HarmonyMethod(typeof(Program),nameof(SensitivityTextHeight)));
-        InstallFertilityPatch(harmony,AccessTools.PropertyGetter(typeof(Text),nameof(Text.LineHeight)),prefix:new HarmonyMethod(typeof(Program),nameof(SensitivityLineHeight)));
-        Check("final specialization rows include only retained achievements and reserve their full height", () =>
+        Check("final specialization cards retain achievements and report active or paused status", () =>
         {
-            var pawn=FertilityPawn(1f); var comp=pawn.TryGetComp<CompSexSlaveTraining>(); var tab=typeof(ITab_SexSlaveTraining);
-            float Height(float width)=>(float)AccessTools.Method(tab,"GetSpecializationSectionHeight").Invoke(null,new object[]{pawn,comp,width});
-            List<(SexSlaveSpecializationType Type,string Text,string Tip)> Rows()=>
-                (List<(SexSlaveSpecializationType,string,string)>)AccessTools.Method(tab,"GetFinalSpecializationRows").Invoke(null,new object[]{pawn});
-            (float Height,float HeaderHeight,List<UnityEngine.Rect> Cells) Grid(float width)=>
-                ((float,float,List<UnityEngine.Rect>))AccessTools.Method(tab,"BuildFinalSpecializationGrid").Invoke(null,new object[]{Rows(),width});
-            Require(Rows().Count==0); Near(0,Grid(140f).Height);
-            comp.SetSpecialization(SexSlaveSpecializationType.None); float baseline=Height(322f);
-            Near(112f,baseline); // 原生30像素按钮、2像素间距、20像素字体及外框留白，不再保留旧124基高。
+            var pawn=FertilityPawn(1f); var comp=pawn.TryGetComp<CompSexSlaveTraining>();
+            Equal(0,ITab_SexSlaveTraining.GetFinalSpecializationCards(pawn).Count);
+            comp.SetSpecialization(SexSlaveSpecializationType.None);
             // 只提供外部终极标记数据，查询及行构建继续执行生产代码；多宠物残留也应完整展示而非擅自修复。
             HediffDef Marker(string name)=>DefDatabase<HediffDef>.GetNamedSilentFail(name) ?? PregnancyDef(name);
             SSCDefOf.SSC_Hediff_Bus_Final=Marker("SSC_Hediff_Bus_Final");
@@ -325,24 +317,18 @@ internal static partial class Program
                 SSCDefOf.SSC_Hediff_Combatant_Final,Marker("SSC_Hediff_PetCat_Final"),Marker("SSC_Hediff_PetDog_Final"),
                 Marker("SSC_Hediff_PetRabbit_Final"),SSCDefOf.SSC_Hediff_TrainerOfficer_FinalDisabled,FertilitySpecializationUtility.FinalDef})
                 pawn.health.AddHediff(def);
-            var rows=Rows(); Equal(8,rows.Count); Equal(8,rows.Select(r=>r.Type).Distinct().Count());
-            Require(rows.All(r=>!string.IsNullOrEmpty(r.Text) && !r.Text.Contains("SSC_")));
-            var grid=Grid(298f); Equal(rows.Count,grid.Cells.Count);
-            Near(grid.Cells[0].y,grid.Cells[1].y); // 正常宽度一行能容纳多个名称。
-            Require(grid.Cells.All(r=>r.x>=0f && r.xMax<=298f));
-            Near(grid.Cells[^1].yMax+6f,grid.Height); // 框底只留正常内边距，不多留整行。
-            var narrow=Grid(140f); Require(narrow.Cells[1].y>narrow.Cells[0].y); Require(narrow.Height>grid.Height);
-            Require(Height(322f)>=baseline+grid.Height);
-            bool oldWrap=Text.WordWrap; Text.WordWrap=false;
-            try { Grid(140f); Height(322f); Require(!Text.WordWrap); }
-            finally { Text.WordWrap=oldWrap; }
-            var fertility=rows.Single(r=>r.Type==SexSlaveSpecializationType.Fertility);
+            var cards=ITab_SexSlaveTraining.GetFinalSpecializationCards(pawn);
+            Equal(8,cards.Count); Equal(8,cards.Select(card=>card.Type).Distinct().Count());
+            Require(cards.All(card=>!string.IsNullOrEmpty(card.Name) && !card.Name.Contains("SSC_")));
+            var fertility=cards.Single(card=>card.Type==SexSlaveSpecializationType.Fertility);
+            Require(fertility.Active);
             pawn.health.RemoveHediff(SSCUterusDevelopmentUtility.Find(pawn));
-            rows=Rows(); Equal(8,rows.Count);
-            var paused=rows.Single(r=>r.Type==SexSlaveSpecializationType.Fertility);
-            Equal(fertility.Text,paused.Text); Require(paused.Tip!=fertility.Tip); Require(!string.IsNullOrEmpty(paused.Tip));
+            cards=ITab_SexSlaveTraining.GetFinalSpecializationCards(pawn); Equal(8,cards.Count);
+            var paused=cards.Single(card=>card.Type==SexSlaveSpecializationType.Fertility);
+            Require(!paused.Active); Equal(fertility.Name,paused.Name);
+            Require(paused.Status!=fertility.Status && paused.Tip!=fertility.Tip && !string.IsNullOrEmpty(paused.Tip));
             Equal(SexSlaveSpecializationType.None,comp.specializationType);
-            Equal(8,Rows().Count); // 显示查询不清理残留、改方向或移除已完成成果。
+            Equal(8,ITab_SexSlaveTraining.GetFinalSpecializationCards(pawn).Count); // 显示查询不清理残留、改方向或移除已完成成果。
         });
     }
 

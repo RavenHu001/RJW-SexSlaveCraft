@@ -10,9 +10,6 @@ namespace SexSlaveCraft
     /// <summary>行为限制两板块的协调绘制器；分组只决定展示，不混用两个模块的保存或总开关。</summary>
     public static class SSCBehaviorControlUI
     {
-        public const float MinimumSidebarWidth = 260f;
-        /// <summary>与 ITab 的主栏/留白公式一致；宽度不足改用同一绘制器的窗口，禁止负宽侧栏。</summary>
-        public static bool CanFitSidebar(float screenWidth) => Mathf.Min(740f, screenWidth - 16f) >= 370f + MinimumSidebarWidth;
         /// <summary>显示资格不取旧保护总开关；解绑后保存选择及具体原因仍可查看。</summary>
         public static bool CanInspect(Pawn pawn)
         {

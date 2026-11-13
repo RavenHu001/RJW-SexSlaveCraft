@@ -55,7 +55,6 @@
     <Compile Include="ThePatches/Harmony_RabbitCooking.cs" />
     <Compile Include="JobGiver/JobGiver_SSCPnaMaintenanceOrWork.cs" />
     <Compile Include="JobDriver/JobDriver_SSCPnaMaintenance.cs" />
-    <Compile Include="ITab/ITab_SexSlaveTraining.PnaMaintenance.cs" />
     <Compile Include="Comps/CompSSCAphrodisiacEmitter.cs" />
     <Compile Include="UI/Gizmo_SSCAphrodisiacRadius.cs" />
     <Compile Include="common/SSCTrainerWorkUtility.cs" />
@@ -226,7 +225,6 @@
   </ItemGroup>
   <!-- AI 辅助生成：子宫开发仅编入 1.7，不改变冻结的 1.6 编译清单。 -->
   <ItemGroup>
-    <Compile Include="ITab/ITab_SexSlaveTraining.BodyManagement.cs" />
     <Compile Include="Hediff/Hediff_SSCUterusDevelopment.cs" />
     <Compile Include="Hediff/HediffComp_SSCUterusPregnancy.cs" />
     <Compile Include="common/SSCUterusPregnancyUtility.cs" />
