@@ -15,6 +15,11 @@ namespace SexSlaveCraft
             public Pawn Master, Slave;
             public TargetInfo Target;
             public bool Allowed;
+#if SSC_RW17
+            public CompSexSlaveTraining SlaveComp;
+            public int TrainerRevision;
+            public Pawn Owner;
+#endif
         }
         private sealed class Operation
         {
@@ -202,8 +207,29 @@ namespace SexSlaveCraft
         /// <summary>启动前必须同时存在两个执行者；此入口也用于绕过窗口的直接启动。</summary>
         public static bool ValidateStart(RitualRoleAssignments assignments, TargetInfo target, out string reason)
         {
+#if SSC_RW17
+            Pawn slave = assignments?.FirstAssignedPawn("slave");
+            Pawn master = assignments?.FirstAssignedPawn("master");
+            if (SSCDailyTrainingOccupancy.IsBusy(slave))
+            {
+                reason = Strings.Train_Reason_AlreadyBeingTrained;
+                return false;
+            }
+            if (!Validate(assignments, master, slave, target, true, out reason)) return false;
+            // 原版角色和第三方身体检查都可同步触发任务或重新选角。
+            if (!ReferenceEquals(master, assignments.FirstAssignedPawn("master")) ||
+                !ReferenceEquals(slave, assignments.FirstAssignedPawn("slave")))
+            {
+                reason = InvalidReason();
+                return false;
+            }
+            if (!SSCDailyTrainingOccupancy.IsBusy(slave)) return true;
+            reason = Strings.Train_Reason_AlreadyBeingTrained;
+            return false;
+#else
             return Validate(assignments, assignments?.FirstAssignedPawn("master"),
                 assignments?.FirstAssignedPawn("slave"), target, true, out reason);
+#endif
         }
 
         private static bool Validate(RitualRoleAssignments assignments, Pawn master, Pawn slave, TargetInfo target,
@@ -221,11 +247,20 @@ namespace SexSlaveCraft
                 reason = "SSC_Training_TargetIdentityRequired".Translate();
                 return false;
             }
+#if SSC_RW17
+            var slaveComp = slave?.TryGetComp<CompSexSlaveTraining>();
+            int trainerRevision = slaveComp?.TrainerAssignmentRevision ?? 0;
+            Pawn owner = SSCBondUtility.GetBoundMaster(slave);
+#endif
             // UI 交换会经过暂时只有一个角色的中间状态；已验证的最终组合覆盖该操作内的子集。
             if (operation?.Assignments == assignments)
             {
                 foreach (Validation cached in operation.Results)
                     if (cached.Target.Equals(target) && cached.Allowed &&
+#if SSC_RW17
+                        (slave == null || ReferenceEquals(cached.SlaveComp, slaveComp) &&
+                            cached.TrainerRevision == trainerRevision && ReferenceEquals(cached.Owner, owner)) &&
+#endif
                         (master == null || cached.Master == master) && (slave == null || cached.Slave == slave))
                         return true;
             }
@@ -233,7 +268,13 @@ namespace SexSlaveCraft
             bool allowed = ValidateUncached(assignments, master, slave, target, out reason);
             if (!allowed && string.IsNullOrEmpty(reason)) reason = InvalidReason();
             if (operation?.Assignments == assignments)
-                operation.Results.Add(new Validation { Master = master, Slave = slave, Target = target, Allowed = allowed });
+                operation.Results.Add(new Validation
+                {
+                    Master = master, Slave = slave, Target = target, Allowed = allowed,
+#if SSC_RW17
+                    SlaveComp = slaveComp, TrainerRevision = trainerRevision, Owner = owner
+#endif
+                });
             return allowed;
         }
 
@@ -271,9 +312,76 @@ namespace SexSlaveCraft
                     SSCRestrictionTrainingUtility.CreateRequest(master, slave, true), false);
                 if (!admission.Allowed) { reason = admission.Reason; return false; }
             }
+#if SSC_RW17
+            else if (slave != null && !HasEligibleHost(slave, target, out reason, assignments, masterRole))
+                return false;
+#endif
             if (master != null && !masterRole.ValidateIndividual(master, out reason, target)) return false;
-            return slave == null || slaveRole.ValidateIndividual(slave, out reason, target);
+            if (slave == null) return true;
+            if (!slaveRole.ValidateIndividual(slave, out reason, target)) return false;
+#if SSC_RW17
+            // 原版寻路与 RJW 查询可能触发外部回调，选角或启动前再次核对当前配对许可。
+            if (master == null)
+                return HasEligibleHost(slave, target, out reason, assignments, masterRole);
+            var currentAdmission = SSCRestrictionTrainingUtility.Evaluate(
+                SSCRestrictionTrainingUtility.CreateRequest(master, slave, true), false);
+            if (!currentAdmission.Allowed) { reason = currentAdmission.Reason; return false; }
+#endif
+            return true;
         }
+
+#if SSC_RW17
+        // 空主持槽只判断是否存在配对；确定主持人后走原版完整角色、身体与寻路检查。
+        internal static bool HasEligibleHost(Pawn slave, TargetInfo target, out string reason,
+            RitualRoleAssignments assignments = null, RitualRole_BindingMaster masterRole = null, bool skipReason = false)
+        {
+            Pawn owner = SSCBondUtility.GetBoundMaster(slave);
+            masterRole ??= new RitualRole_BindingMaster();
+            Map map = target.Map ?? slave.Map;
+            reason = null;
+            // 原版强制主持槽只允许固定角色，不能以其他名单成员证明受训者可入槽。
+            if (masterRole.id != null && assignments?.ForcedRolesForReading != null &&
+                assignments.ForcedRolesForReading.TryGetValue(masterRole.id, out Pawn fixedHost) && fixedHost != null)
+            {
+                if (CanHost(fixedHost, out reason)) return true;
+                if (!skipReason) reason ??= InvalidReason();
+                return false;
+            }
+            if (CanHost(owner, out reason)) { reason = null; return true; }
+            foreach (Pawn trainer in TrainerAssignmentUtility.GetActiveAssignedTrainers(slave))
+            {
+                if (ReferenceEquals(trainer, owner)) continue;
+                if (CanHost(trainer, out string failure)) { reason = null; return true; }
+                reason ??= failure;
+            }
+            if (!skipReason) reason ??= InvalidReason();
+            return false;
+
+            bool CanHost(Pawn pawn, out string failure)
+            {
+                failure = null;
+                if (pawn == null || !ReferenceEquals(pawn.Map, map) ||
+                    !masterRole.AppliesToCandidate(pawn, out failure, skipReason)) return false;
+                if (assignments != null)
+                {
+                    var forcedRoles = assignments.ForcedRolesForReading;
+                    if (forcedRoles != null && forcedRoles.ContainsValue(pawn) &&
+                        (masterRole.id == null || !forcedRoles.TryGetValue(masterRole.id, out Pawn assignedHost) ||
+                            !ReferenceEquals(assignedHost, pawn)))
+                        return false;
+                    using (Preview())
+                        failure = RitualRoleAssignments.PawnNotAssignableReason(pawn, masterRole, assignments.Ritual,
+                            assignments, target, out _);
+                    if (failure != null) return false;
+                    if (!masterRole.ValidateIndividual(pawn, out failure, target, skipReason)) return false;
+                }
+                var admission = SSCRestrictionTrainingUtility.Evaluate(
+                    SSCRestrictionTrainingUtility.CreateRequest(pawn, slave, true), false);
+                if (!skipReason && !admission.Allowed) failure = admission.Reason;
+                return admission.Allowed;
+            }
+        }
+#endif
 
         internal static string InvalidReason() => "SSC_RitualSelection_Invalid".Translate();
 

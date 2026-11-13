@@ -93,7 +93,7 @@ namespace SexSlaveCraft
         internal static bool HasStartedScene(JobDriver_Sex driver, SSCInteractionKind kind)
         {
             return SSCRestrictionJobContext.TryCreate(driver, out SSCRestrictionRequest request) &&
-                request.Kind == kind && (!SSCRestrictionTrainingUtility.IsTraining(request) ||
+                (request.Kind == kind || SceneKind(driver, request) == kind) && (!SSCRestrictionTrainingUtility.IsTraining(request) ||
                     SSCIdentityUtility.IsSexSlave(request.Receiver)) && HasStarted(driver, request);
         }
 
@@ -127,6 +127,14 @@ namespace SexSlaveCraft
 #endif
             if (!SSCRestrictionJobContext.TryCreate(driver, out SSCRestrictionRequest request)) return false;
             if (driver.pawn?.jobs?.curDriver != driver) { allowed = false; return true; }
+#if SSC_RW17
+            if (phase == "Start" && driver is JobDriver_Training daily && !daily.HasDailyTrainingOccupancy)
+            {
+                allowed = false;
+                Reject(driver, request, Strings.Train_Reason_AlreadyBeingTrained);
+                return true;
+            }
+#endif
             if (HasStarted(driver, request) && (!SSCRestrictionTrainingUtility.IsTraining(request) ||
                 SSCIdentityUtility.IsSexSlave(request.Receiver))) return true;
             allowed = Evaluate(driver, request, out SSCRestrictionDecision decision, out string reason);
@@ -158,6 +166,11 @@ namespace SexSlaveCraft
             reason = admission.Reason;
             return admission.Allowed;
         }
+
+#if SSC_RW17
+        internal static bool CheckDailyTrainingApproach(JobDriver_Training driver)
+            => !TryCheck(driver, "Approach", out bool allowed) || allowed;
+#endif
 
         /// <summary>只在原 Start 确实执行且驱动仍为当前任务时记下凭据；准备阶段不会得到开始标记。</summary>
         public static bool TryMarkStarted(JobDriver_SexBaseInitiator driver, bool ranOriginal)
@@ -303,7 +316,11 @@ namespace SexSlaveCraft
             if (state.Rejected && driver.pawn?.jobs?.curDriver != driver) return;
             state.Rejected = true;
             state.Preparation.Cleanup();
-            if (driver is JobDriver_SexBaseInitiator initiator)
+            if (driver is JobDriver_SexBaseInitiator initiator
+#if SSC_RW17
+                && !(driver is JobDriver_Training)
+#endif
+                )
             {
                 Pawn target = request.Receiver;
                 var receiver = target?.jobs?.curDriver as JobDriver_SexBaseReciever;

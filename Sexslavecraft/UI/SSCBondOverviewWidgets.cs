@@ -296,24 +296,41 @@ namespace SexSlaveCraft
         }
 
         internal static bool TrainerAvatar(Rect rect, SSCBondOverviewSnapshot snapshot, SSCBondOverviewSession session,
-            SSCBondOverviewView view, bool nameBelow = false)
+            SSCBondOverviewView view, bool nameBelow = false
+#if SSC_RW17
+            , SSCBondOverviewTrainerEntry entry = null
+#endif
+            )
         {
+#if SSC_RW17
+            entry ??= snapshot.AssignedTrainers.Count == 0 ? null : snapshot.AssignedTrainers[0];
+            if (entry == null) return false;
+            Pawn trainer = entry.Pawn;
+            bool current = SSCBondOverviewNavigation.IsTrainerCurrent(snapshot, trainer);
+            var location = entry.Location;
+            string name = entry.IsDead ? SSCBondOverviewText.Format("DeadName", entry.Name) : entry.Name;
+#else
             bool current = SSCBondOverviewNavigation.IsTrainerCurrent(snapshot);
+            Pawn trainer = snapshot.AssignedTrainer;
+            var location = snapshot.AssignedTrainerLocation;
+            string name = view.Display.TrainerName;
+#endif
             if (!current) session.RequestRefresh(view);
-            Portrait(rect, snapshot.AssignedTrainer, snapshot.AssignedTrainer?.Dead == true, current);
-            Badge(rect, snapshot.AssignedTrainerLocation, current);
-            if (nameBelow) Widgets.Label(new Rect(rect.x, rect.yMax, rect.width + 16, 20), view.Truncate(view.Display.TrainerName, rect.width + 16));
+            Portrait(rect, trainer, trainer?.Dead == true, current);
+            Badge(rect, location, current);
+            if (nameBelow) Widgets.Label(new Rect(rect.x, rect.yMax, rect.width + 16, 20), view.Truncate(name ?? "", rect.width + 16));
             if (!Mouse.IsOver(rect)) return false;
             if (!current) { TooltipHandler.TipRegion(rect, SSCBondOverviewText.T("RelationChanged")); return false; }
             Widgets.DrawHighlight(rect);
 #if SSC_RW17
-            TooltipHandler.TipRegion(rect, view.Display.TrainerTooltip + "\n" +
-                SSCTrainerWorkUtility.Reason(SSCTrainerWorkUtility.GetState(snapshot.AssignedTrainer, snapshot.Source), snapshot.AssignedTrainer));
+            TooltipHandler.TipRegion(rect, name + "\n" + SSCBondOverviewText.T("Trainer_" + entry.State) + "\n" +
+                SSCBondOverviewText.Location(location) + "\n" +
+                SSCTrainerWorkUtility.Reason(SSCTrainerWorkUtility.GetState(trainer, snapshot.Source), trainer));
 #else
             TooltipHandler.TipRegion(rect, view.Display.TrainerTooltip);
 #endif
-            SSCBondOverviewNavigation.Highlight(snapshot.AssignedTrainerLocation);
-            bool available = SSCBondOverviewNavigation.CanPreview(snapshot.AssignedTrainerLocation, out _);
+            SSCBondOverviewNavigation.Highlight(location);
+            bool available = SSCBondOverviewNavigation.CanPreview(location, out _);
             if (!available) TooltipHandler.TipRegion(rect, SSCBondOverviewText.T("ResolveOnClick"));
             return GUI.enabled && Event.current.type == EventType.mouseDown && Event.current.button == 0;
         }

@@ -752,6 +752,9 @@ namespace SexSlaveCraft
         {
             if (!CanEditTrainingConfiguration(pawn, comp) || comp.IsEnabled == isEnabled) return;
             comp.mode = isEnabled ? TrainingMode.Enabled : TrainingMode.Disabled;
+#if SSC_RW17
+            if (!SSCDailyTrainingOccupancy.IsBusy(pawn))
+#endif
             comp.isBeingTrained = false;
 
             if (!isEnabled) return;

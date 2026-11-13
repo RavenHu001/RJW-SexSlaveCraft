@@ -1,5 +1,13 @@
 # 更新日志 / Changelog — SexSlaveCraft（TieJin 接续版 / TieJin continuation）
 
+## [未发布 / Unreleased] — 1.7 多调教员指派 / Multiple Trainer Assignments
+
+- 关系页可为同一受训者追加多名调教员，并逐人撤销、启用工作及定位。旧单人存档自动迁移，命令栏放大镜继续提供名单入口。
+- 日常调教按原版工作优先级分派，同一目标只接受一个任务。第二名调教员在预约已被占用时无法点名接单，日常占用可从在途存档恢复。
+- 仪式和同床可继续检查名单后续成员，自我调教与公交车特化沿用各自的主人优先规则。 [实现与验证](Docs/Development/Verification/多调教员指派第三阶段实现与验证.md)
+
+The 1.7 Relationships page supports adding, removing, enabling work for, and locating individual trainers. Older saves migrate automatically. Daily training uses one reservation per trainee, and in-progress assignments recover on load. Binding rituals, shared beds, self-training, and Bus specialization use the new roster.
+
 ## [2.4.10] — 2026-11-09 — 宠物兔与宠物狐 / Pet Rabbit and Pet Fox
 
 以 `v2.4.9` 为起点，截至 `5640afba` 的 27 个非合并提交、2 个合并提交及 216 个净变更路径归入 2.4.10。新增面向 1.7。[下载 2.4.10](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.10)。[双语说明](Docs/Releases/2.4.10/2.4.10发布说明.md) · [开发归并](Docs/Releases/2.4.10/2.4.10开发归并核对.md) · [分批验证](Docs/Releases/2.4.10/2.4.10版本验证.md)

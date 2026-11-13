@@ -14,8 +14,8 @@ internal static class Entry
     /// <summary>定位真实依赖后进入隔离宿主；专项参数只选择相关行为，避免JIT提前解析游戏引用。</summary>
     private static int Main(string[] args)
     {
-        if (args.Length < 2 || args.Length > 3 || (args.Length == 3 && args[2] != "--imprint" && args[2] != "--fertility" && args[2] != "--pregnancy" && args[2] != "--preconception" && args[2] != "--birth" && args[2] != "--birth-compat" && args[2] != "--fertility-skill" && args[2] != "--corruption-gel"))
-            throw new ArgumentException("repositoryRoot gameRoot [--imprint|--fertility|--pregnancy|--preconception|--birth|--birth-compat|--fertility-skill|--corruption-gel]");
+        if (args.Length < 2 || args.Length > 3 || (args.Length == 3 && args[2] != "--imprint" && args[2] != "--fertility" && args[2] != "--pregnancy" && args[2] != "--preconception" && args[2] != "--birth" && args[2] != "--birth-compat" && args[2] != "--fertility-skill" && args[2] != "--corruption-gel" && args[2] != "--trainer-assignments"))
+            throw new ArgumentException("repositoryRoot gameRoot [--imprint|--fertility|--pregnancy|--preconception|--birth|--birth-compat|--fertility-skill|--corruption-gel|--trainer-assignments]");
         string repo = Path.GetFullPath(args[0]), game = Path.GetFullPath(args[1]);
         // 隔离复核可显式提供本轮引用记录；默认仍使用正式记录，不自动猜测更新后的依赖目录。
         string referenceInfo = Environment.GetEnvironmentVariable("SSC_TEST_BUILD_INFO_PATH") ?? Path.Combine(repo, "1.7/BUILD-INFO.json");
@@ -112,6 +112,14 @@ internal static partial class Program
             LoadStageStatReferences(game);
             // 子宫与PNA等生产XML现已引用通用频率属性，必须在任何交叉引用解析前加载真实定义。
             LoadOrgasmFrequencyReference(repo);
+            if (selection == "--trainer-assignments")
+            {
+                // 独立宿主未加载完整 Def 集，先完成原有 DefOf 初始化，再开始捕获用例错误。
+                RuntimeHelpers.RunClassConstructor(typeof(SSCDefOf).TypeHandle);
+                TrainerAssignmentSaveTests();
+                Console.WriteLine($"{passed}/{passed + failed} trainer assignment save cases passed");
+                return failed == 0 ? 0 : 1;
+            }
             // 印记专项只复用公共游戏夹具，不依赖先执行子宫、手术或敏感度用例来完成初始化。
             if (selection == "--corruption-gel")
             {
@@ -167,6 +175,7 @@ internal static partial class Program
             SurgeryTests(repo, game, harmony.Value);
             UterusStartupLanguageTests(repo);
             GrowthTests(repo, harmony.Value);
+            TrainerAssignmentSaveTests();
             PregnancyTests(repo, game, harmony.Value);
             BodyManagementLifecycleTests(harmony.Value);
             BodyManagementLanguageTests(repo);

@@ -47,7 +47,7 @@ namespace SexSlaveCraft
 
         /// <summary>核对实时指派，旧快照上的卡片不能代表后来换入的指派。</summary>
         private bool TrainerCardCurrent(Pawn pawn, SummaryRelation origin)
-            => ReferenceEquals(comp.selectedTrainer, pawn) == (origin == SummaryRelation.AssignedTrainer);
+            => comp.HasAssignedTrainer(pawn) == (origin == SummaryRelation.AssignedTrainer);
 
         /// <summary>清理上一事件的落点和预览，再判定本次输入是否进入拖放。</summary>
         private void BeginTrainerInput()
@@ -80,7 +80,8 @@ namespace SexSlaveCraft
 
             int revision = contextRevision;
             Pawn originalSource = source;
-            Pawn requestedTrainer = origin == SummaryRelation.AssignedTrainer ? null : pawn;
+            var operation = origin == SummaryRelation.AssignedTrainer
+                ? SSCTrainerAssignmentOperation.Remove : SSCTrainerAssignmentOperation.Add;
             // 事务在按下时捕获真实指派、人格和工作设置。松手阶段只验证该请求并尝试提交。
             trainerGesture = new TrainerGesture
             {
@@ -89,7 +90,7 @@ namespace SexSlaveCraft
                 ControlId = trainerControlId,
                 PressPosition = UI.GUIToScreenPoint(input.mousePosition),
                 LastScrollTime = Time.realtimeSinceStartup,
-                Request = new SSCTrainerWorkUtility.Request(originalSource, requestedTrainer,
+                Request = new SSCTrainerWorkUtility.Request(originalSource, pawn, operation,
                     current: () => contextRevision == revision && ReferenceEquals(source, originalSource) &&
                         TrainerGestureSourceCurrent() && TrainerCardCurrent(pawn, origin))
             };
@@ -122,12 +123,12 @@ namespace SexSlaveCraft
             if (gesture.Origin == SummaryRelation.AssignedTrainer)
                 return "SSC_TrainingManagement_DropClear".Translate(name);
 
-            Pawn previous = comp.selectedTrainer;
-            string result = previous == null ? "SSC_TrainingManagement_DropAssign".Translate(name)
-                : "SSC_TrainingManagement_DropReplace".Translate(previous.LabelShort, name);
+            string result = "SSC_TrainingManagement_DropAssign".Translate(name);
             if (SSCTrainerWorkUtility.GetState(gesture.Pawn, source) == SSCTrainerWorkState.Off)
                 result += "\n" + "SSC_TrainingManagement_DropEnable".Translate(name);
             if (opensNonOwnerTraining) result += "\n" + "SSC_TrainingManagement_DropAuthorizeNonOwner".Translate();
+            if (SSCBondUtility.GetBoundMaster(source) == null)
+                result += "\n" + "SSC_TrainingManagement_DropFirstBinding".Translate(name);
             return result;
         }
 
@@ -151,20 +152,19 @@ namespace SexSlaveCraft
             Widgets.Label(new Rect(rect.x + padding, rect.y + padding, textWidth, Mathf.Max(1f, height - 2f * padding)), trainerDropPreview);
         }
 
-        /// <summary>三区纵排时让手势在外层滚动区边缘继续移动到目标区。</summary>
-        private void ScrollTrainerDrag(Rect viewport, float contentHeight)
+        /// <summary>在指针所在视口边缘滚动，供宽窄布局共用。</summary>
+        private void ScrollTrainerDrag(Rect viewport, float contentHeight, ref Vector2 scroll)
         {
-            if (trainerGesture?.Dragging != true || Event.current.type != EventType.repaint) return;
+            if (trainerGesture?.Dragging != true || Event.current.type != EventType.repaint || !Mouse.IsOver(viewport)) return;
             float now = Time.realtimeSinceStartup;
             // 限制单帧滚动量，窗口掉帧或切回前台后不会突然跳过落区。
             float elapsed = Mathf.Clamp(now - trainerGesture.LastScrollTime, 0f, .05f);
             trainerGesture.LastScrollTime = now;
-            if (!Mouse.IsOver(viewport)) return;
             float edge = Mathf.Min(TrainerScrollEdge, viewport.height / 3f);
             float y = Event.current.mousePosition.y;
             if (y < viewport.y + edge) elapsed = -elapsed;
             else if (y <= viewport.yMax - edge) return;
-            relationsScroll.y = Mathf.Clamp(relationsScroll.y + elapsed * TrainerScrollSpeed, 0f,
+            scroll.y = Mathf.Clamp(scroll.y + elapsed * TrainerScrollSpeed, 0f,
                 Mathf.Max(0f, contentHeight - viewport.height));
         }
 
@@ -181,13 +181,7 @@ namespace SexSlaveCraft
                 // 先释放手势再运行事务，回调触发重绘或切换角色时也无法重复消费松手。
                 EndTrainerGesture();
                 if (input.type != EventType.Used) input.Use();
-                if (drop)
-                {
-                    if (!gesture.Request.TrySubmit(out string reason))
-                        Messages.Message(reason, gesture.Request.Source, MessageTypeDefOf.RejectInput, false);
-                    relationSession.RequestRefresh(relationSession.Details);
-                    nextCandidateRefresh = 0;
-                }
+                if (drop) SubmitTrainerRequest(gesture.Request);
                 return true;
             }
             if (input.type == EventType.mouseDrag && input.button == 0) input.Use();
@@ -199,6 +193,13 @@ namespace SexSlaveCraft
                 DrawTrainerDropPreview(inRect, cursor);
             }
             return true; // 把手捕获期间由本入口负责输入，普通肖像点击不会再次分派。
+        }
+
+        private void SubmitTrainerRequest(SSCTrainerWorkUtility.Request request)
+        {
+            if (!request.TrySubmit(out string reason))
+                Messages.Message(reason, request.Source, MessageTypeDefOf.RejectInput, false);
+            RefreshAfterEdit();
         }
 
         /// <summary>窗外松手可能不进入窗口内容，利用原版窗口栈坐标撤销拖放和身体按压。</summary>

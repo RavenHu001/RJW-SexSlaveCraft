@@ -93,16 +93,27 @@ namespace SexSlaveCraft
             // 先验证调用对象，再进行身体检查；旧流程不得给新任务的目标写入失败冷却。
             var context = new JobContext(actor?.jobs?.curDriver);
             if (!context.IsCurrent || context.Target.Thing != target) return false;
+#if SSC_RW17
+            var daily = context.Driver is JobDriver_Training
+                ? target.TryGetComp<CompSexSlaveTraining>()?.DailyTrainingOccupancy : null;
+            if (context.Driver is JobDriver_Training && daily?.IsCurrentFor(context) != true) return false;
+#endif
             if (SSCLog.VerboseEnabled) SSCLog.Verbose($"[{logPrefix}] ValidateStart start: actor={actor?.LabelShort ?? "null"}, target={target?.LabelShort ?? "null"}, actorJob={actor?.CurJobDef?.defName ?? "null"}, targetJob={target?.CurJobDef?.defName ?? "null"}");
             if (Trainjudge.TryCanBeFuckedWithReason(target, out string shortReason))
             {
                 // 资格检查可能经过外部逻辑；检查通过也不代表原任务仍在执行。
                 if (SSCLog.VerboseEnabled) SSCLog.Verbose($"[{logPrefix}] ValidateStart passed: target={target?.LabelShort ?? "null"}");
+#if SSC_RW17
+                if (daily != null && !daily.IsCurrentFor(context)) return false;
+#endif
                 return context.IsCurrent;
             }
 
             if (!context.IsCurrent) return false;
             // EN: This is the last guard before sex starts, so it must also clear any prepared training state.
+#if SSC_RW17
+            if (daily != null && !daily.IsCurrentFor(context)) return false;
+#endif
             // CN: 这是性行为真正开始前的最后一道守卫，所以也必须顺手清掉已准备好的训练状态。
             MarkValidationFailure(target, logPrefix);
             Messages.Message(shortReason, target, MessageTypeDefOf.RejectInput, false);
@@ -189,6 +200,9 @@ namespace SexSlaveCraft
             // 单次启动失败可能只是当前仪式阶段需要重试。整场仍有效时保留仪式
             // 占用；整场已结束则交给统一恢复入口解除，避免两套清理规则分叉。
             BindingRitualStateUtility.RecoverPawnState(pawn);
+#if SSC_RW17
+            if (SSCDailyTrainingOccupancy.IsBusy(pawn)) return;
+#endif
             comp.isBeingTrained = false;
             if (SSCLog.VerboseEnabled) SSCLog.Verbose($"[SSC TrainingState] Aborted: pawn={pawn.LabelShort}");
         }
@@ -213,11 +227,22 @@ namespace SexSlaveCraft
             if (SSCLog.VerboseEnabled) SSCLog.Verbose($"[{logPrefix}] Validation failure cooldown armed: pawn={pawn.LabelShort}, retryTicks={CompSexSlaveTraining.FailedValidationRetryTicks}");
         }
 
-        /// <summary>为日常调教启动接收任务，复用现存的相同接收任务并释放发起任务的目标预约。</summary>
+        /// <summary>为日常调教启动或复用同一发起者的接收任务。1.7 由原版任务结束流程释放发起者的预约。</summary>
         public static bool TryStartDailyTrainingReceiver(Pawn actor, Pawn partner, Job parentJob, JobDef receiverJobDef)
         {
             if (SSCLog.VerboseEnabled) SSCLog.Verbose($"[SSC Receiver] Daily training receiver start requested: actor={actor?.LabelShort ?? "null"}, partner={partner?.LabelShort ?? "null"}, receiverJob={receiverJobDef?.defName ?? "null"}");
+#if SSC_RW17
+            var context = new JobContext(actor?.jobs?.curDriver);
+            var occupancy = partner?.TryGetComp<CompSexSlaveTraining>()?.DailyTrainingOccupancy;
+            if (context.Job != parentJob || !HandoffCurrent()) return false;
+            return TryStartReceiverJobCore(actor, partner, parentJob, receiverJobDef, false, false, false, null,
+                dailyHandoffCurrent: HandoffCurrent);
+
+            bool HandoffCurrent() => occupancy?.IsCurrentFor(context) == true && SSCIdentityUtility.IsSexSlave(partner) &&
+                !SSCDailyTrainingOccupancy.HasOtherReceiver(partner, actor);
+#else
             return TryStartReceiverJobCore(actor, partner, parentJob, receiverJobDef, false, true, false, null);
+#endif
         }
 
         /// <summary>为人格排泄交接接收任务；只允许原执行者复用，并保留目标预约直到发起任务结束。</summary>
@@ -240,7 +265,9 @@ namespace SexSlaveCraft
         }
 
         /// <summary>执行接收任务交接：保留 Onahole 专用接收器，按调用用途处理预约并确认新任务实际接管。</summary>
-        private static bool TryStartReceiverJobCore(Pawn actor, Pawn partner, Job parentJob, JobDef receiverJobDef, bool playerForced, bool releaseReservation, bool forceRestartExisting, IntVec3? forcedCell)
+        private static bool TryStartReceiverJobCore(Pawn actor, Pawn partner, Job parentJob, JobDef receiverJobDef,
+            bool playerForced, bool releaseReservation, bool forceRestartExisting, IntVec3? forcedCell,
+            Func<bool> dailyHandoffCurrent = null)
         {
             // 参数或接收者状态无效时不开始交接，不移动角色也不改变预约。
             if (actor == null || partner == null || !partner.Spawned || receiverJobDef == null)
@@ -272,7 +299,8 @@ namespace SexSlaveCraft
                 // 区分已有关系和本次新增关系，失败时只撤销自己新增的登记。
                 bool alreadyRegistered = receiver?.parteners?.Contains(actor) == true;
                 bool registered = OnaholeCompatibilityUtility.TryRegisterOnaholePartner(partner, actor);
-                if (registered && receiverContext.IsCurrent && SyncPartnerPosition(context, partner, forcedCell))
+                if (registered && receiverContext.IsCurrent && SyncPartnerPosition(context, partner, forcedCell) &&
+                    (dailyHandoffCurrent == null || dailyHandoffCurrent() && receiver?.parteners?.Contains(actor) == true))
                 {
                     SSCLog.Important($"[SSC Onahole] Compatible receiver retained: {partner.LabelShort}. State: {OnaholeCompatibilityUtility.GetOnaholeReceiverStateReport(partner, receiverJobDef)}");
                     return true;
@@ -304,14 +332,23 @@ namespace SexSlaveCraft
                 }
             }
 
-            if (!context.IsCurrent) return false;
+            if (!context.IsCurrent || dailyHandoffCurrent?.Invoke() == false) return false;
             if (!forceRestartExisting && partner.CurJobDef == receiverJobDef)
             {
                 // 重复请求可以复用同一配对，不能仅按 JobDef 接管另一位发起者的接收器。
-                if (!(partner.jobs.curDriver is rjw.JobDriver_SexBaseReciever receiver) || receiver.Partner != actor)
+                if (partner.jobs.curDriver is rjw.JobDriver_SexBaseReciever receiver && receiver.Partner == actor
+#if SSC_RW17
+                    && (dailyHandoffCurrent == null || !receiver.ended && new JobContext(receiver).IsCurrent)
+#endif
+                    )
+                {
+                    if (SSCLog.VerboseEnabled) SSCLog.Verbose($"[SSC Receiver] Partner already in receiver job: partner={partner.LabelShort}, receiverJob={receiverJobDef?.defName ?? "null"}");
+                    return true;
+                }
+#if SSC_RW17
+                if (dailyHandoffCurrent == null)
+#endif
                     return false;
-                if (SSCLog.VerboseEnabled) SSCLog.Verbose($"[SSC Receiver] Partner already in receiver job: partner={partner.LabelShort}, receiverJob={receiverJobDef?.defName ?? "null"}");
-                return true;
             }
 
             // 创建接收任务后立即固定编号；StartJob 返回时，此对象也可能已经回池并复用。
@@ -335,7 +372,7 @@ namespace SexSlaveCraft
                 return false;
             }
 
-            if (!context.IsCurrent)
+            if (!context.IsCurrent || dailyHandoffCurrent?.Invoke() == false)
             {
                 // 接收任务启动可能同步触发发起者换工作；交接不能以旧任务名义继续成功。
                 CleanupOrphanReceiver(partner, context, receiverJob, receiverJobId);
@@ -344,7 +381,11 @@ namespace SexSlaveCraft
 
             // 成功要求刚创建的任务、编号和配对全部匹配，不能把随后出现的同名任务当作成功。
             if (!ReferenceEquals(partner.CurJob, receiverJob) || receiverJob.loadID != receiverJobId ||
-                !(partner.jobs.curDriver is rjw.JobDriver_SexBaseReciever currentReceiver) || currentReceiver.Partner != actor)
+                !(partner.jobs.curDriver is rjw.JobDriver_SexBaseReciever currentReceiver) || currentReceiver.Partner != actor
+#if SSC_RW17
+                || dailyHandoffCurrent != null && (currentReceiver.ended || !new JobContext(currentReceiver).IsCurrent)
+#endif
+                )
             {
                 SSCLog.WarningImportant(
                     $"[SSC Receiver] Receiver job failed to become current: actor={actor.LabelShort}, " +
@@ -373,6 +414,13 @@ namespace SexSlaveCraft
 
         // 以当前驱动实际指向的对象确认接管关系，不根据角色身份或调教员指派推测。
         private static bool HasCurrentInitiator(Pawn actor, Pawn partner)
-            => actor.jobs?.curDriver is rjw.JobDriver_SexBaseInitiator current && current.Partner == partner;
+        {
+            if (!(actor.jobs?.curDriver is rjw.JobDriver_SexBaseInitiator current) || current.Partner != partner) return false;
+#if SSC_RW17
+            return !current.ended && new JobContext(current).IsCurrent;
+#else
+            return true;
+#endif
+        }
     }
 }

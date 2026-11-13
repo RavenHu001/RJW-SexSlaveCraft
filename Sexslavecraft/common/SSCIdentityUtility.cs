@@ -214,7 +214,11 @@ namespace SexSlaveCraft
             {
                 BindingRitualStateUtility.ClearRitualState(comp);
                 comp.mode = TrainingMode.Disabled;
+#if SSC_RW17 || SSC_TRAINER_WORK_TEST
+                comp.ClearAssignedTrainers();
+#else
                 comp.selectedTrainer = null;
+#endif
                 comp.isBeingTrained = false;
             }
 

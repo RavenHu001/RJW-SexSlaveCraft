@@ -95,9 +95,15 @@ namespace SexSlaveCraft
                     if (comp == null || comp.pawnIdentity == PawnIdentity.Master || SSCBondUtility.GetBoundMaster(target) != null)
                         return Result(false, SSCRestrictionReason.InvalidBindingPreparation);
                     // 按玩家修正顺序报告：先指定，再核对当前操作者，最后检查主人身份。
+#if SSC_RW17 || SSC_TRAINER_WORK_TEST
+                    if (comp.AssignedTrainerCount == 0)
+                        return Result(false, SSCRestrictionReason.BindingTrainerNotAssigned);
+                    if (!comp.HasAssignedTrainer(actor))
+#else
                     if (comp.selectedTrainer == null)
                         return Result(false, SSCRestrictionReason.BindingTrainerNotAssigned);
                     if (comp.selectedTrainer != actor)
+#endif
                         return Result(false, SSCRestrictionReason.BindingTrainerMismatch);
                     if (!SSCIdentityUtility.IsMaster(actor))
                         return Result(false, SSCRestrictionReason.BindingInitiatorNotMaster);

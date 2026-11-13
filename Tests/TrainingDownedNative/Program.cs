@@ -32,7 +32,7 @@ internal static class Entry
     }
 }
 
-internal static class Program
+internal static partial class Program
 {
     private static Harmony environment;
     private static Map map;
@@ -106,7 +106,7 @@ internal static class Program
         foreach (var assembly in new[] { typeof(Pawn).Assembly, typeof(xxx).Assembly, typeof(SSCBondUtility).Assembly })
             Console.WriteLine($"ASSEMBLY: {assembly.Location} MVID={assembly.ManifestModule.ModuleVersionId:N} SHA256={Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(File.ReadAllBytes(assembly.Location))).ToLowerInvariant()}");
         bootstrap = false; errors.Clear();
-        try { Checks(repo); }
+        try { Checks(repo); DailyTrainingOccupancyChecks(); TrainerRitualSelectionChecks(); }
         finally { environment.UnpatchAll(environment.Id); Current.Game = null; }
         Console.WriteLine($"RESULT: {passed}/{passed + failed} passed"); return failed == 0 ? 0 : 1;
     }

@@ -58,6 +58,8 @@
     <Compile Include="Comps/CompSSCAphrodisiacEmitter.cs" />
     <Compile Include="UI/Gizmo_SSCAphrodisiacRadius.cs" />
     <Compile Include="common/SSCTrainerWorkUtility.cs" />
+    <Compile Include="Comps/Comp_Train.TrainerAssignments.cs" />
+    <Compile Include="common/SSCDailyTrainingOccupancy.cs" />
     <!-- 人格印记与停龄补丁仅编入1.7；共享入口通过SSC_RW17保留旧版本行为。 -->
     <Compile Include="common/SSCImprintUtility.cs" />
     <Compile Include="common/FertilitySpecializationUtility.cs" />

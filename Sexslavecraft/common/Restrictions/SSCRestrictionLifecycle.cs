@@ -104,12 +104,22 @@ namespace SexSlaveCraft
         {
             CompSexSlaveTraining comp = pawn?.TryGetComp<CompSexSlaveTraining>();
             if (comp == null || comp.restrictionRestoreDepth > 0) return;
+#if SSC_RW17 || SSC_TRAINER_WORK_TEST
+            Pawn forced = GetForcedTrainer(pawn);
+            if (forced == null)
+                comp.NormalizeAssignedTrainers(pawn);
+            else if (CompSexSlaveTraining.IsRetainableTrainer(pawn, forced))
+                comp.ReplaceAssignedTrainers(new[] { forced });
+            else
+                comp.ClearAssignedTrainers();
+#else
             if (comp.selectedTrainer != null && (comp.selectedTrainer.Dead || comp.selectedTrainer.Destroyed))
                 comp.selectedTrainer = null;
             Pawn forced = GetForcedTrainer(pawn);
             // GetForcedTrainer 表达“条目只准主人”，即使主人死亡仍用于界面锁定。
             // 实际工作指派不得写回死亡/销毁角色；保留锁链和条目，不借清理操作改变所有权或开放第三方。
             if (forced != null && !forced.Dead && !forced.Destroyed) comp.selectedTrainer = forced;
+#endif
             SSCSelfTrainingFeedback.NotifyStatusChanged(pawn);
         }
 

@@ -29,7 +29,12 @@ namespace SexSlaveCraft
             if (snapshot?.Master != null || snapshot?.MasterState == SSCBondOverviewMasterState.InvalidTarget ||
                 snapshot == null && SSCBondUtility.GetChain(pawn) != null)
                 yield return masterGizmo ?? (masterGizmo = new Gizmo_SSCBondOverview(Overview, SSCBondOverviewPanel.Master));
-            if (SSCIdentityUtility.IsSexSlave(pawn) || comp.selectedTrainer != null)
+            if (SSCIdentityUtility.IsSexSlave(pawn) ||
+#if SSC_RW17
+                comp.AssignedTrainerCount != 0)
+#else
+                comp.selectedTrainer != null)
+#endif
                 yield return trainerGizmo ?? (trainerGizmo = new Gizmo_SSCBondOverview(Overview, SSCBondOverviewPanel.Trainer));
         }
         public override void GameComponentUpdate()

@@ -1,4 +1,5 @@
-// AI 辅助生成。训练页和概览共用显式指派菜单；构造与悬停只读，选择后才提交既有事务。
+// AI 辅助生成。冻结版显式指派菜单；构造与悬停只读，选择后才提交既有事务。
+#if !SSC_RW17
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -98,3 +99,4 @@ namespace SexSlaveCraft
 #endif
     }
 }
+#endif

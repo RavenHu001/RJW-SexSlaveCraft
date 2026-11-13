@@ -47,6 +47,7 @@
   <SSC_BondOverview_BothCounts>Master + slaves {0}/{1}</SSC_BondOverview_BothCounts>
   <SSC_BondOverview_ShortCount>Sex slaves: {0}</SSC_BondOverview_ShortCount>
   <SSC_BondOverview_TrainerPanel>Trainer</SSC_BondOverview_TrainerPanel>
+  <SSC_BondOverview_TrainerCount>Trainers: {0}</SSC_BondOverview_TrainerCount>
   <SSC_BondOverview_ChangeTrainer>Change trainer</SSC_BondOverview_ChangeTrainer>
   <SSC_BondOverview_ResolveOnClick>Click to check the current location.</SSC_BondOverview_ResolveOnClick>
   <SSC_BondOverview_OwnedCount>Slaves: {0}</SSC_BondOverview_OwnedCount>

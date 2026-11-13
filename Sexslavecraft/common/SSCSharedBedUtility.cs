@@ -29,8 +29,13 @@ namespace SexSlaveCraft
             if (!SSCIdentityUtility.IsSexSlave(pawn) || pawn.Dead || pawn.Destroyed) yield break;
             Pawn master = SSCBondUtility.GetChain(pawn)?.LinkedPawn;
             if (IsValidPartner(pawn, master)) yield return master;
+#if SSC_RW17
+            foreach (Pawn trainer in TrainerAssignmentUtility.GetActiveAssignedTrainers(pawn))
+                if (trainer != master) yield return trainer;
+#else
             Pawn trainer = TrainerAssignmentUtility.GetActiveAssignedTrainer(pawn);
             if (trainer != master && IsValidPartner(pawn, trainer)) yield return trainer;
+#endif
         }
 
         /// <summary>排除自身、空引用和已死亡或销毁的对象。</summary>
@@ -49,8 +54,12 @@ namespace SexSlaveCraft
         public static bool IsDesignatedTrainer(Pawn sexSlave, Pawn trainer)
         {
             return SSCIdentityUtility.IsSexSlave(sexSlave)
+#if SSC_RW17
+                && !sexSlave.Dead && !sexSlave.Destroyed && TrainerAssignmentUtility.IsActiveAssignedTrainer(sexSlave, trainer);
+#else
                 && trainer != null && TrainerAssignmentUtility.GetActiveAssignedTrainer(sexSlave) == trainer
                 && GetAllowedPartners(sexSlave).Contains(trainer);
+#endif
         }
 
         /// <summary>限定 SSC 额外许可的床位类别；完整环境和可用性仍由原版判断。</summary>
@@ -135,10 +144,17 @@ namespace SexSlaveCraft
                 bed = ownBed;
                 return true;
             }
+#if SSC_RW17
+            HashSet<Building_Bed> checkedBeds = null;
+#endif
             foreach (Pawn partner in GetAllowedPartners(sleeper))
             {
                 Building_Bed candidate = partner.ownership?.OwnedBed;
-                if (candidate == ownBed || !HasPartnerBedPermission(candidate, sleeper)) continue;
+                if (candidate == null || candidate == ownBed) continue;
+#if SSC_RW17
+                if (!(checkedBeds ??= new HashSet<Building_Bed>()).Add(candidate)) continue;
+#endif
+                if (!HasPartnerBedPermission(candidate, sleeper)) continue;
                 // 调用完整原版检查，SSC 不复制环境、寻路、禁用或预留规则。
                 if (!RestUtility.IsValidBedFor(candidate, sleeper, traveler ?? sleeper, checkSocialProperness,
                     false, ignoreOtherReservations, guestStatus)) continue;

@@ -328,7 +328,6 @@ namespace SexSlaveCraft
         public bool trainerMaintenanceInProgress;
         public bool trainerInvalidExitBlocksAdoption;
         public bool specializationExplicitlyUnset;
-        public Pawn selectedTrainer;
         public TrainingMode mode = TrainingMode.Disabled;
         public bool AllowsOthersForTrainingOrSex, IsBusSpecialized, BusState;
         public bool isRitualTraining, IsWaitingAfterFailedValidation, scheduledTrainingEnabled, isBeingTrained, IsOnCooldown;

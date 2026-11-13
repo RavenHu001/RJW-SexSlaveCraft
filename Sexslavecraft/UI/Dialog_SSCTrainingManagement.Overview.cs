@@ -726,12 +726,13 @@ namespace SexSlaveCraft
             if (popup != null) Find.WindowStack.TryRemove(popup, false);
         }
 
-        /// <summary>在原生选择写入后立即撤销弹窗及页面按压，逐帧刷新负责更新展示。</summary>
+        /// <summary>在原生选择写入后立即撤销旧输入，逐帧刷新负责更新展示。</summary>
         internal static void NotifyEditSelection(Selector selector)
         {
             if (!GameReady() || !ReferenceEquals(selector, Find.Selector)) return;
             var window = Find.WindowStack.WindowOfType<Dialog_SSCTrainingManagement>();
-            if (window != null && (window.editPopup != null || window.abilityTogglePress.HasValue || window.pageActionPress.Submit != null) &&
+            if (window != null && (window.editPopup != null || window.abilityTogglePress.HasValue ||
+                window.pageActionPress.Submit != null || window.trainerGesture != null || window.pressedPortrait.Target != null) &&
                 !window.SourceIsCurrent()) window.InvalidateWindowContext();
         }
     }

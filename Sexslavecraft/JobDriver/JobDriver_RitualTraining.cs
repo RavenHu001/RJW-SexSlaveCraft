@@ -52,6 +52,9 @@ namespace SexSlaveCraft
         /// <returns>主从角色、目标占用及本 Job 的 Lord 全部匹配时返回 true。</returns>
         private bool HasActiveRitual()
         {
+#if SSC_RW17
+            if (SSCDailyTrainingOccupancy.IsBusy(Slave)) return false;
+#endif
             // 旧档中的 Job 没有 Lord 引用，在第一次运行检查时认领；不在
             // MakeNewToils 的读档枚举阶段修改状态，避免引用尚未恢复就误清零。
             if (ritualLord == null) ritualLord = pawn.GetLord();

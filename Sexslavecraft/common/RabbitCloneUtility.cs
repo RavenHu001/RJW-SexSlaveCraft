@@ -384,7 +384,11 @@ namespace SexSlaveCraft
                 {
                     cloneTraining.specializationType = sourceTraining.specializationType;
                     cloneTraining.specializationProgress = sourceTraining.specializationProgress;
+#if SSC_RW17
+                    cloneTraining.ReplaceAssignedTrainers(sourceTraining.CopyAssignedTrainers());
+#else
                     cloneTraining.selectedTrainer = sourceTraining.selectedTrainer;
+#endif
                     cloneTraining.pawnIdentity = sourceTraining.pawnIdentity;
                     cloneTraining.slaveTrainerEnabled = false;
                     cloneTraining.trainerIdentityInitialized = true;

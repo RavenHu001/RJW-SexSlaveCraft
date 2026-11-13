@@ -284,6 +284,7 @@ namespace SexSlaveCraft
             return hediff?.TryGetComp<HediffComp_CowMilkReservoir>();
         }
 
+        /// <summary>公交车进度只排除一人，按实际主人及首位有效调教员的顺序解析。</summary>
         public static Pawn GetOwner(Pawn pawn, CompSexSlaveTraining comp = null)
         {
             return SSCBondUtility.GetResolvedMaster(pawn);

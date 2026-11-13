@@ -14,15 +14,27 @@ namespace SexSlaveCraft
         internal double NextLocalRefresh;
         internal bool LocalRetryDue(double now) => !Failed || now >= NextLocalRefresh;
         private object observedChain, observedMaster, observedTrainer, observedBridle, observedTargets;
+#if SSC_RW17
+        private int observedTrainerRevision;
+#endif
         private int observedCount;
         private PawnIdentity observedIdentity;
         internal SSCBondOverviewView(Pawn source, Map map) { Source = source; Map = map; }
 
         internal bool ShowCard => Snapshot?.State == SSCBondOverviewQueryState.Ready
-            ? Snapshot.Identity != PawnIdentity.Unset || Snapshot.Master != null || Snapshot.TotalSlaveCount > 0 || Snapshot.AssignedTrainer != null ||
-                Snapshot.MasterState == SSCBondOverviewMasterState.InvalidTarget
+            ? Snapshot.Identity != PawnIdentity.Unset || Snapshot.Master != null || Snapshot.TotalSlaveCount > 0 ||
+                Snapshot.MasterState == SSCBondOverviewMasterState.InvalidTarget ||
+#if SSC_RW17
+                Snapshot.AssignedTrainers.Count != 0
+#else
+                Snapshot.AssignedTrainer != null
+#endif
             : (Source?.TryGetComp<CompSexSlaveTraining>()?.pawnIdentity ?? PawnIdentity.Unset) != PawnIdentity.Unset ||
+#if SSC_RW17
+                Source?.TryGetComp<CompSexSlaveTraining>()?.AssignedTrainerCount > 0 || SSCBondUtility.GetChain(Source) != null;
+#else
                 Source?.TryGetComp<CompSexSlaveTraining>()?.selectedTrainer != null || SSCBondUtility.GetChain(Source) != null;
+#endif
 
         internal void SetMap(Map map)
         {
@@ -38,12 +50,21 @@ namespace SexSlaveCraft
             var bridle = SSCBondUtility.GetBridle(Source);
             bool changed = Snapshot == null || !ReferenceEquals(Snapshot.ViewedMap, Map) ||
                 !ReferenceEquals(observedChain, chain) || !ReferenceEquals(observedMaster, chain?.LinkedPawn) ||
+#if SSC_RW17
+                !ReferenceEquals(observedTrainer, comp) || observedTrainerRevision != (comp?.TrainerAssignmentRevision ?? 0) ||
+#else
                 !ReferenceEquals(observedTrainer, comp?.selectedTrainer) ||
+#endif
                 observedIdentity != (comp?.pawnIdentity ?? PawnIdentity.Unset) || !ReferenceEquals(observedBridle, bridle) ||
                 !ReferenceEquals(observedTargets, bridle?.targets) || observedCount != (bridle?.targets?.Count ?? 0);
             if (capture)
             {
-                observedChain = chain; observedMaster = chain?.LinkedPawn; observedTrainer = comp?.selectedTrainer;
+                observedChain = chain; observedMaster = chain?.LinkedPawn;
+#if SSC_RW17
+                observedTrainer = comp; observedTrainerRevision = comp?.TrainerAssignmentRevision ?? 0;
+#else
+                observedTrainer = comp?.selectedTrainer;
+#endif
                 observedIdentity = comp?.pawnIdentity ?? PawnIdentity.Unset; observedBridle = bridle;
                 observedTargets = bridle?.targets; observedCount = bridle?.targets?.Count ?? 0;
             }

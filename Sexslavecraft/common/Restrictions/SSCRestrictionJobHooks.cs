@@ -91,6 +91,16 @@ namespace SexSlaveCraft
                 return false;
             }
             // 原版在此方法内部才设置 playerForced；前缀必须显式提供命令来源，不提前改动候选 Job。
+#if SSC_RW17
+            if (job != null && job.def == SSCDefOf.TrainingSexSlave && ___pawn.CurJob?.JobIsSameAs(___pawn, job) != true &&
+                (!TrainerAssignmentUtility.CanStartDailyTraining(job.targetA.Pawn, ___pawn, true, out string reason) ||
+                 !TrainerAssignmentUtility.CanReserveDailyTraining(___pawn, job.targetA.Pawn)))
+            {
+                Messages.Message(reason ?? Strings.Train_Reason_NotReservable, ___pawn, MessageTypeDefOf.RejectInput, false);
+                __result = false;
+                return false;
+            }
+#endif
             if (!(SSCRestrictionJobContext.GetDriver(job, ___pawn) is JobDriver_Sex driver) ||
                 !SSCRestrictionJobGuard.TryReserve(driver, out bool allowed, ordered: true) || allowed) return true;
             Messages.Message(SSCRestrictionJobGuard.RejectionReason(driver), ___pawn, MessageTypeDefOf.RejectInput, false);

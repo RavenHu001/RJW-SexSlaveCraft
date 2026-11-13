@@ -11,18 +11,38 @@ namespace SexSlaveCraft
     internal static class SSCBondOverviewNavigation
     {
         internal static bool IsTrainerCurrent(SSCBondOverviewSnapshot snapshot)
+#if SSC_RW17
+            => IsTrainerCurrent(snapshot, snapshot?.AssignedTrainer);
+
+        internal static bool IsTrainerCurrent(SSCBondOverviewSnapshot snapshot, Pawn trainer)
+            => snapshot != null && snapshot.State == SSCBondOverviewQueryState.Ready && ReferenceEquals(snapshot.Game, Current.Game) &&
+                Current.ProgramState == ProgramState.Playing && Scribe.mode == LoadSaveMode.Inactive &&
+                SSCBondOverviewUtility.IsValidPawn(snapshot.Source) && SSCBondOverviewUtility.IsValidPawn(trainer) &&
+                !ReferenceEquals(snapshot.Source, trainer) && snapshot.FindTrainer(trainer) != null &&
+                ReferenceEquals(snapshot.SourceTrainingComp, snapshot.Source.TryGetComp<CompSexSlaveTraining>()) &&
+                snapshot.SourceTrainingComp?.HasAssignedTrainer(trainer) == true;
+#else
             => snapshot != null && snapshot.State == SSCBondOverviewQueryState.Ready && ReferenceEquals(snapshot.Game, Current.Game) &&
                 Current.ProgramState == ProgramState.Playing && Scribe.mode == LoadSaveMode.Inactive &&
                 SSCBondOverviewUtility.IsValidPawn(snapshot.Source) && SSCBondOverviewUtility.IsValidPawn(snapshot.AssignedTrainer) &&
                 !ReferenceEquals(snapshot.Source, snapshot.AssignedTrainer) &&
                 ReferenceEquals(snapshot.Source.TryGetComp<CompSexSlaveTraining>()?.selectedTrainer, snapshot.AssignedTrainer);
+#endif
 
         internal static bool TryNavigateTrainer(SSCBondOverviewSnapshot snapshot, out SSCBondOverviewNavigationFailure failure)
+#if SSC_RW17
+            => TryNavigateTrainer(snapshot, snapshot?.AssignedTrainer, out failure);
+
+        internal static bool TryNavigateTrainer(SSCBondOverviewSnapshot snapshot, Pawn trainer,
+            out SSCBondOverviewNavigationFailure failure)
+            => TryNavigatePawn(trainer, () => IsTrainerCurrent(snapshot, trainer), out failure);
+#else
         {
             failure = SSCBondOverviewNavigationFailure.RelationChanged;
             if (!IsTrainerCurrent(snapshot)) return false;
             return NavigateResolvedPawn(snapshot.AssignedTrainer, () => IsTrainerCurrent(snapshot), out failure);
         }
+#endif
 
         internal static bool TryNavigate(SSCBondOverviewSnapshot snapshot, SSCBondOverviewEntry entry,
             out SSCBondOverviewNavigationFailure failure)

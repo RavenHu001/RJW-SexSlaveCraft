@@ -48,6 +48,38 @@ internal static partial class Program
             foreach (var change in invalid) { var f = Setup(); change(f.bed); Assert(!Use(f.bed, f.slave)); }
         });
         Run("普通找床优先指定床", () => { var f = Setup(); Assert(Find(f.slave) == f.bed); });
+        Run("多名调教员按名单尝试床位，首床不可达时尝试第二张", () =>
+        {
+            var f = Setup();
+            Pawn second = NewPawn(f.slave.Map);
+            second.Training.pawnIdentity = PawnIdentity.Master;
+            f.slave.Training.AssignedTrainers.Add(second);
+            var otherBed = new Building_Bed { Map = f.slave.Map };
+            otherBed.OwnersForReading.Add(second);
+            second.ownership.OwnedBed = otherBed;
+            Assert(Find(f.slave) == f.bed);
+            f.bed.Reachable = false;
+            Assert(Find(f.slave) == otherBed);
+        });
+        Run("多人同睡保留首位调教员经历并向每位床伴记录免除，主人加入时优先", () =>
+        {
+            var f = Sleeping();
+            Pawn second = NewPawn(f.slave.Map), owner = NewPawn(f.slave.Map);
+            second.Training.pawnIdentity = PawnIdentity.Master;
+            second.Bed = f.bed;
+            second.Sleeping = true;
+            f.slave.Training.AssignedTrainers.Add(second);
+            f.slave.Chain = new Hediff_ChainOfSexSlave { LinkedPawn = owner };
+            Tick(f.slave);
+            Assert(f.slave.Training.sharedSleep.partner == f.partner && second.Training.sharedSleep.partner == f.slave);
+            f.partner.Sleeping = false;
+            Tick(f.slave);
+            Assert(f.slave.Training.sharedSleep.partner == f.partner);
+            owner.Bed = f.bed;
+            owner.Sleeping = true;
+            Tick(f.slave);
+            Assert(f.slave.Training.sharedSleep.partner == owner && f.slave.Training.sharedSleep.withMaster);
+        });
         Run("医疗需求保留原版床，即使原版未找到医疗床", () => { var f = Setup(); f.slave.MedicalRest = true; Assert(Find(f.slave) == f.slave.VanillaBed); f.slave.VanillaBed = null; Assert(Find(f.slave) == null); });
         Run("医疗床结果本身不会被覆盖", () => { var f = Setup(); f.slave.VanillaBed.Medical = true; Assert(Find(f.slave) == f.slave.VanillaBed); });
         Run("死眠中保留原版结果", () => { var f = Setup(); f.slave.Deathresting = true; Assert(Find(f.slave) == f.slave.VanillaBed); });

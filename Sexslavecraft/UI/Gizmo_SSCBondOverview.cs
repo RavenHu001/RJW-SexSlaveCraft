@@ -1,4 +1,4 @@
-// AI 辅助生成。独立关系卡片、只读头像网格；输入经原版分派后再执行导航或显式指派。
+// AI 辅助生成。独立关系卡片与只读头像网格，输入经原版分派后再开窗或定位。
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -85,23 +85,37 @@ namespace SexSlaveCraft
             {
                 float size = Math.Max(0, Math.Min(28, rect.width - 2));
                 Icon(new Rect(rect.x + 1, rect.y + 4, size, 28), TexButton.Search, "ViewAll", 1);
+#if !SSC_RW17
                 if (Panel == SSCBondOverviewPanel.Trainer)
                     Icon(new Rect(rect.x + 1, rect.y + 39, size, 28), TexButton.Rename, "ChangeTrainer", 6, SSCIdentityUtility.IsSexSlave(view.Source));
+#endif
                 return Result();
             }
 
             Rect all = new Rect(rect.xMax - 28, rect.y + 4, 24, 24);
             bool slaves = Panel == SSCBondOverviewPanel.Slaves;
             string heading = slaves ? display?.OwnedHeading ?? SSCBondOverviewText.Format("OwnedCount", "?")
+#if SSC_RW17
+                : snapshot == null ? SSCBondOverviewText.T("TrainerPanel")
+                    : SSCBondOverviewText.Format("TrainerCount", snapshot.AssignedTrainers.Count);
+#else
                 : SSCBondOverviewText.T("TrainerPanel");
+#endif
             // 顶部与原版机械师一致使用 Small；完整内容保留在悬停，不再以更小字号换取空间。
             Text.Font = GameFont.Small;
-            Rect title = new Rect(rect.x + 6, rect.y + 4, Math.Max(1, rect.width - (slaves ? 38 : 66)), 22);
+            Rect title = new Rect(rect.x + 6, rect.y + 4,
+#if SSC_RW17
+                Math.Max(1, rect.width - 38), 22);
+#else
+                Math.Max(1, rect.width - (slaves ? 38 : 66)), 22);
+#endif
             Widgets.Label(title, slaves && display != null ? display.OwnedTitle(view, title.width) : view.Truncate(heading, title.width));
             Text.Font = GameFont.Small;
             if (Mouse.IsOver(title)) TooltipHandler.TipRegion(title, slaves ? display?.OwnedDetails ?? heading : heading);
+#if !SSC_RW17
             if (!slaves) Icon(new Rect(rect.xMax - 56, rect.y + 4, 24, 24), TexButton.Rename, "ChangeTrainer", 6,
                 SSCIdentityUtility.IsSexSlave(view.Source));
+#endif
             Icon(all, TexButton.Search, "ViewAll", 1);
 
             if (slaves)
@@ -123,7 +137,21 @@ namespace SexSlaveCraft
             else
             {
                 // 单个调教员与原版少量机械体一样居中排列，不在头像旁常驻姓名。
+#if SSC_RW17
+                int count = snapshot?.AssignedTrainers.Count ?? 0;
+                if (count > 1)
+                {
+                    var list = new Rect(rect.x + 6, rect.y + 29, Math.Max(1, rect.width - 12), 40);
+                    Press(list, 1, true);
+                    Widgets.DrawHighlightIfMouseover(list);
+                    Widgets.Label(list, view.Truncate(SSCBondOverviewText.T("ViewAll"), list.width));
+                    bool leftUp = GUI.enabled && !Disabled && Event.current.type == EventType.mouseUp && Event.current.button == 0;
+                    if (GUI.enabled && !Disabled && Widgets.ButtonInvisible(list) && leftUp && SamePress(1)) Remember(1);
+                }
+                else if (count == 1)
+#else
                 if (snapshot?.AssignedTrainer != null)
+#endif
                 {
                     if (SSCBondOverviewWidgets.TrainerAvatar(new Rect(rect.x + (rect.width - 40) * .5f, rect.y + 29, 40, 40),
                         snapshot, session, view) && left) Remember(5);
@@ -179,7 +207,9 @@ namespace SexSlaveCraft
                         Dialog_SSCBondOverview.Open(session, view.Source);
                 }
                 else if (pendingAction == 7) SelectAllCurrentMap(view.Source);
+#if !SSC_RW17
                 else if (pendingAction == 6) OpenTrainerMenu(session, view);
+#endif
                 else if (ReferenceEquals(view.Snapshot, pendingSnapshot))
                 {
                     SSCBondOverviewNavigationFailure failure;
@@ -217,6 +247,7 @@ namespace SexSlaveCraft
                 SSCBondOverviewUtility.IsValidPawn(source) && source.Spawned && ReferenceEquals(source.Map, map)) Find.Selector.Select(source);
         }
 
+#if !SSC_RW17
         internal static void OpenTrainerMenu(SSCBondOverviewSession session, SSCBondOverviewView view)
         {
             if (!SSCBondOverviewAccess.IsCardSource(view.Source) || !SSCIdentityUtility.IsSexSlave(view.Source)) return;
@@ -227,5 +258,6 @@ namespace SexSlaveCraft
             }, () => ReferenceEquals(session.Owner, Current.Game) && (ReferenceEquals(session.Card, view) || ReferenceEquals(session.Details, view)) &&
                 SSCBondOverviewAccess.IsCardSource(view.Source))));
         }
+#endif
     }
 }

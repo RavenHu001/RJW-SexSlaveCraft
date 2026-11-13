@@ -358,7 +358,23 @@ namespace SexSlaveCraft
     using Verse;
     public enum PawnIdentity { Unset, Slave, Master }
     public class Need_Corruption { public float CurLevelPercentage = 0.2f; }
-    public class CompSexSlaveTraining { public PawnIdentity pawnIdentity; public Pawn selectedTrainer; public SSCSharedSleepRecord sharedSleep; public bool slaveTrainerEnabled, trainerIdentityInitialized = true, TrainerQualified = true; }
+    public class CompSexSlaveTraining
+    {
+        public PawnIdentity pawnIdentity;
+        public readonly List<Pawn> AssignedTrainers = new List<Pawn>();
+        public Pawn selectedTrainer
+        {
+            get => AssignedTrainers.FirstOrDefault();
+            set
+            {
+                AssignedTrainers.Clear();
+                if (value != null) AssignedTrainers.Add(value);
+            }
+        }
+        public Pawn[] CopyAssignedTrainers() => AssignedTrainers.ToArray();
+        public SSCSharedSleepRecord sharedSleep;
+        public bool slaveTrainerEnabled, trainerIdentityInitialized = true, TrainerQualified = true;
+    }
     public enum TrainerSpecializationFailure { None, NotQualified }
     public static class TrainerSpecializationUtility
     {
@@ -387,12 +403,12 @@ namespace SexSlaveCraft
     public static class TrainerAssignmentUtility
     {
         /// <summary>同床模型只接入有效指派；完整生产指派服务另由 TrainerIdentity 套件直接验证。</summary>
-        public static Pawn GetActiveAssignedTrainer(Pawn slave)
-        {
-            Pawn trainer = slave?.Training.selectedTrainer;
-            return trainer != null && trainer != slave && !trainer.Dead && !trainer.Destroyed
-                && SSCIdentityUtility.IsTrainer(trainer) ? trainer : null;
-        }
+        public static IEnumerable<Pawn> GetActiveAssignedTrainers(Pawn slave)
+            => slave.Training.AssignedTrainers.Where(trainer => IsActiveAssignedTrainer(slave, trainer));
+
+        public static bool IsActiveAssignedTrainer(Pawn slave, Pawn trainer)
+            => trainer != null && trainer != slave && !trainer.Dead && !trainer.Destroyed
+                && slave.Training.AssignedTrainers.Contains(trainer) && SSCIdentityUtility.IsTrainer(trainer);
     }
     public static class SSCDefOf
     {

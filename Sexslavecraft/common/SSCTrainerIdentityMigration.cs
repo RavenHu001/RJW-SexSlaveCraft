@@ -23,8 +23,14 @@ namespace SexSlaveCraft
         {
             if (pawns == null) return;
             var all = pawns.Where(p => p != null).Distinct().ToList();
+#if SSC_RW17 || SSC_TRAINER_WORK_TEST
+            var assigned = new HashSet<Pawn>(all.SelectMany(p =>
+                (p.TryGetComp<CompSexSlaveTraining>()?.CopyAssignedTrainers() ?? System.Array.Empty<Pawn>())
+                    .Where(trainer => CompSexSlaveTraining.IsRetainableTrainer(p, trainer))));
+#else
             var assigned = new HashSet<Pawn>(all.Select(p => p.TryGetComp<CompSexSlaveTraining>()?.selectedTrainer)
                 .Where(p => p != null && !p.Dead && !p.Destroyed));
+#endif
             // 间接引用的调教员可能不在本次世界快照中。仍需为其处理两个版本，
             // 否则下一次加载旧身份迁移可能重新打开已经重置的开关。
             foreach (Pawn pawn in all.Concat(assigned).Distinct())
