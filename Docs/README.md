@@ -6,7 +6,7 @@
 
 ## 最新开发状态
 
-**2.5.0 开发版（2026-11-12 登记）。** 调教管理窗口、多调教员指派及相关维护面向 RimWorld 1.7。 [版本索引](Releases/README.md) · [完成索引](Development/Completed/README.md#ssc-250-completed) · [公开下载 2.4.10 修订版](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.10-r2)
+**2.5.0 于 2026-11-12 正式发布。** 完整门禁通过 52 套、6544/6544 项。 [下载 2.5.0](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.5.0) · [发布归档](Releases/2.5.0/2.5.0版本验证.md#ssc-250-release) · [完成索引](Development/Completed/README.md#ssc-250-completed)
 
 ## 按用途选择入口
 
