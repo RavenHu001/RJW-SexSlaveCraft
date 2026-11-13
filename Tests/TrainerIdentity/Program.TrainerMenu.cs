@@ -6,8 +6,6 @@ using Verse;
 
 namespace Verse
 {
-    public enum ProgramState { Entry, Playing }
-    public static class Current { public static Game Game = new Game(); public static ProgramState ProgramState = ProgramState.Playing; }
     public class FloatMenuOption
     {
         public readonly string Label; public readonly Action action;

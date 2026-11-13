@@ -146,6 +146,12 @@ namespace Verse
         }
     }
     public class Game { }
+    public enum ProgramState { Entry, Playing }
+    public static class Current
+    {
+        public static Game Game = new Game();
+        public static ProgramState ProgramState = ProgramState.Playing;
+    }
     public class GameComponent
     {
         /// <summary>提供初始化生命周期入口。</summary>
