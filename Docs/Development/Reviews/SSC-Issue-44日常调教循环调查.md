@@ -99,3 +99,14 @@
 | 调教与结算 | 有 **2 条** `Daily training completed:`，评分分别为 **-5.80** 和 **70.00**，均为 `cooldownStarted=True`。 | 6317、137640 |
 
 本机 CE 组合的启动、警告去重和调教结算验收通过。原汇报整合包尚待修复版实机反馈。
+
+## 2026-11-15 本机 Cat Hero 开启的换 DLL 对照
+
+两次均加载 `Autosave-1`，读档日志中的 **64 个启用模组及顺序完全一致**。Cat Hero（`LZ.CatHero`）启用，Combat Extended 未启用。两次结果按本机 Waylith 的轮转日志记录。
+
+| DLL | 结果 | 日志行 |
+| --- | --- | --- |
+| 绘制容错测试版 | 失配只警告一次，SSC 补丁注册成功，同一配对正常到达 SSC 开始确认。此次日志未记录完整结算。 | `Player-prev.log` 3519、3561、5825、6734、6811 |
+| `v2.5.0` 正式版 | 绘制 Transpiler 抛出 `Unexpected DrawEquipmentAiming draw call layout`，SSC 静态初始化中断。日常调教接收任务启动 **802 次**，无开始确认或完成记录。 | `Player.log` 3508–3510、5567、5595、6360 起 |
+
+这次对照确认修复在本机启用 Cat Hero 的模组组合中阻断了启动失败和自动重派。Cat Hero 的 Transpiler 在此前隔离探针中已能单独移除 SSC 所需的绘制锚点。本机这两轮均启用 Cat Hero，原汇报环境的实际 Transpiler 执行顺序和首个改写者仍待确认。
