@@ -1,6 +1,6 @@
 # SSC Issue #44 日常调教循环调查
 
-2026-11-15，RimWorld **1.7.5005 rev1082**，SSC **2.5.0**。已用发布 DLL 验证开始确认失败可以触发即时重派。汇报环境中首次开始确认失败的原因仍待定位，本文记录的修复建议尚未实施。回退对照为汇报者实际使用的 **2.4.9**。征召受训者时出现的同 tick 红字是另一条待排查路径，暂缓处理。
+2026-11-15，RimWorld **1.7.5005 rev1082**，SSC **2.5.0**。诊断版已确认汇报现场在开始凭据校验处退出，采样未观察到 SSC 开始后置执行。Combat Extended 开关对照和本机 IL 探针确认它能触发同样的启动异常。武器绘制容错测试版已通过专项、隔离探针和维护者开启 CE 的实机验收。原汇报整合包未列出 CE，具体改写者和该组合的修复版结果仍待确认。回退对照为汇报者实际使用的 **2.4.9**。征召受训者时的同 tick 红字暂缓处理。
 
 ## 汇报材料与版本差异
 
@@ -49,9 +49,53 @@
 
 ## 后续诊断与候选修复
 
-1. **捕获首次失败。** 优先在同一模组列表与存档下核对 SSC 的 `phase=Start` 详细日志。需要诊断 DLL 时，在现有 Prefix、Postfix 和调用返回点记录一次准入结果、`__runOriginal`、原 Job `loadID`、接收任务、占用、凭据写入及方向匹配结果。按原 Job 记录首次实际调用 `SexTick`，区分初始化与持续推进。回退到 2.4.9 的对照需同时核对发光异常和实际完成。
-2. **限制同一配对的自动重试。** 开始确认失败且仍持有原 Job 占用时，结束前记录只对该调教员和受训者生效的短暂运行时退避。让共用准入在创建下一份自动 Job 前读取该状态。现有 300 tick 身体校验冷却会写入存档，并影响其他调教员和手动命令。若确认 SSC 的开始后置钩子全局缺失，在安装接收任务前暂停自动日常调教并记录原因。
-3. **隔离可选发光补丁。** 指令布局不匹配时，透传原指令及标签和异常块，记录一次警告，使 `PatchAll()` 可继续注册。单独验证这项修复能否消除汇报环境中的启动异常和调教循环。
-4. **核对开始失败后的原生状态。** 用原 Job 和参与者归属判断哪些状态需要回收，继续用有效的开始凭据控制结算。若实机或探针证实有残留，为这条路径单独设计清理。
+1. **隔离可选武器绘制补丁。** 四参绘制方法无法解析或匹配锚点数量不为一时，透传原指令、标签及异常块并记录一次警告，让 `PatchAll()` 继续注册。已匹配的布局沿用原绘制适配。透传布局上的 SSC 矛尖叠画和共用该钩子的鞭类绘制适配会跳过。单独复测 CE 组合与原汇报模组列表，检查 SSC 初始化成功、开始凭据写入、首个 `SexTick` 和实际完成。
+2. **将自动重试作为后续加固。** 开始确认失败且仍持有原 Job 占用时，可以在退出前记录只对该配对及自动工作的短暂运行时退避。现有 300 tick 身体校验冷却会写入存档，并影响其他调教员和手动命令。若证实 SSC 开始钩子在进程内全局缺失，可以在自动任务安装接收任务前单独拦截。
+3. **核对开始失败后的原生状态。** 用原 Job 和参与者归属判断哪些状态需要回收，继续用有效的开始凭据控制结算。若实机或探针证实有残留，为这条路径单独设计清理。
 
 [共用准入](../../../Sexslavecraft/common/TrainerAssignmentUtility.cs#L219) · [发光补丁](../../../Sexslavecraft/ThePatches/Harmony_SSCPnaSpearGlow.cs#L20)
+
+## 2.5.0 诊断版复测
+
+诊断 DLL 基于发布标签 `v2.5.0`（`e75bca63`），本地交付副本位于 `.builds/issue-44-diagnostic-v2.5.0/Sexslavecraft.dll`。程序集身份、文件名和产品版本沿用发布版。构建零警告、零错误，SHA-256 为 `663caf5038a97a3c620cbcbf46cb652a642d43a8b744c3f61373518392374f17`。诊断使用既有钩子和驱动调用点，保留原派工、开始确认、清理及发光补丁行为。
+
+每对角色每 10 秒现实时间采样一次。搜索 `[SSC Issue44]`，用 `job` 对齐返回检查与首个 `SexTick` 调用点。若现有 SSC 后置没有执行，`nativeStart` 记为 `unknown`，`playLogEntry` 单独提供同一交互条目的旁证。正常、跳过原生调用、写入后方向失配、后置缺失四组隔离探针均通过。正常组的两个 tick 均到达 `SexTick`，只输出一次首个调用标记。
+
+复测使用 2.5.0 本体，备份并替换 `1.7/Assemblies/Sexslavecraft.dll`，完整重启后使用同一模组列表和存档。退出游戏后保留本次 `Player.log`，重点保留首次 `[SSC Issue44]` 记录、同一 Job 的首个 tick 标记及启动异常。若循环消失，记录该次启动和调教结果。
+
+## 回传诊断与 Combat Extended 对照
+
+原汇报方回传的 `Player-诊断补丁.log` 来自 RimWorld **1.7.5005 rev1082**。第 74146–74172、79997–79999 行记录绘制 Transpiler 异常打断 SSC 初始化。第 90480、91150、96293、101284、106348、111506 行的六个采样均为 `nativeStart=unknown`、`receiptWrite=postfix-not-seen`、`returnCheck=receipt-not-accepted`，且发起 Job 仍然有效、接收 Job 编号不变、参与者方向匹配。每次都观察到新的、与双方及动作 Def 匹配的互动记录，支持原生 `Start` 到达写入互动日志的步骤。全日志共有 387 次接收任务启动和 387 次相同的动画交互输出，未见 SSC 开始确认、`firstSexTick=reached` 或完成记录。
+
+第 86615 行仍列出 SSC 的 `Start` Prefix 和 Postfix。条目说明 Harmony 元数据里有登记；六次实际采样都未观察到写凭据的后置逻辑执行。已确认的是启动批次被打断、日常场景未取得凭据。原汇报整合包的具体绘制改写者仍待定位。回传日志未列出标准包 `CETeam.CombatExtended`，第 29521 行的 RimPacts 兼容探测也将它列为未安装。
+
+另一位测试者在 RimWorld **1.7.4984.1242** 下用同一存档和约 270 个模组做了 CE 单变量对照。关闭 CE 后 SSC 启动成功，绑定仪式补丁注册 9／9，日常调教完成且评分为 40.35。开启 CE 后出现同一 `DrawEquipmentAiming` 异常且调教无法完成。维护者的实测也指向 CE。
+
+本机隔离探针使用 RimWorld **1.7.5005 rev1082** 的原始 IL、实际安装的 CE **16.7.4.0** DLL 和 SSC **2.5.0** 发布 DLL，2／2 通过。原方法有一次直接调用四参 `Graphics.DrawMesh`，SSC 能正常匹配。运行 CE 的真实 Transpiler 后，直接调用变为零次，末尾改为调用 CE 的七参绘制辅助方法。随后运行 SSC 发布版 Transpiler，重现 `Unexpected DrawEquipmentAiming draw call layout`。探针记录位于本地 `.builds/issue-44-ce-layout-probe/probe.log`。
+
+[CE 绘制补丁源码](https://github.com/CombatExtended-Continued/CombatExtended/blob/bcdd75dc9522d526ff3bd9ffef14906c3d19f096/Source/CombatExtended/Harmony/Harmony_PawnRenderer.cs#L110-L119) · [SSC 初始化入口](../../../Sexslavecraft/ThePatches/HarmonyStartUp.cs#L21)
+
+## 武器绘制容错测试版
+
+四参绘制方法无法解析、替换方法无法解析或匹配锚点数量不为一时，Transpiler 逐条返回收到的指令对象，保留顺序、标签及异常块，并用 `Verse.Log.WarningOnce` 输出一次提示。单锚点的原绘制接入沿用既有实现。透传的布局继续用传入的绘制路径，SSC 矛尖叠画及共用钩子的鞭类视觉适配在该布局上跳过。
+
+测试 DLL 基于 `v2.5.0`（`e75bca63`）叠加单个绘制源码变更，1.7 Release 构建零警告、零错误。SHA-256 为 `238d8521a1a22d75854ed5ec6bc310892c6573effeed5ad605758790fe63a117`。本地交付包位于 `.builds/issue-44-render-fallback-v2.5.0/SSC-2.5.0-Issue44-RenderFix-Test.zip`。
+
+- **武器视觉专项 157／157。** 原有正常绘制仍通过，失配用例验证零锚点和多锚点的指令原样透传，跨两种失配仅出现一次警告。
+- **隔离宿主 5／5。** 使用 RimWorld 1.7.5005 原始 IL、CE 16.7.4.0 的实际 Transpiler 及候选 DLL。真实 `ModStartup` 完成注册，CE 绘制调用保留，SSC 开始前置及后置已安装，正常场景的 SSC 开始确认出现。原生开始被跳过、方向失配和后置缺失的原有失败行为均通过。
+- **实机复测。** 维护者的 CE 组合已验收，原汇报组合待反馈。
+
+[修复入口](../../../Sexslavecraft/ThePatches/Harmony_SSCPnaSpearGlow.cs#L20) · [武器视觉专项](../../../Tests/PnaWeaponEffects/README.md)
+
+## 2026-11-15 本机 CE 实机验收
+
+维护者在 RimWorld **1.7.5005 rev1082** 开启 Combat Extended，确认日常调教能够完整结束并正常结算。安装目录中的 1.7 DLL 哈希与上述测试版一致。复核本次 Waylith `Logs/Player.log`，得到以下记录。
+
+| 核对项 | 结果 | 日志行 |
+| --- | --- | --- |
+| CE 已加载 | 启动时输出 `Combat Extended :: initialized`，读档的启用名单包含 `CETeam.CombatExtended`。 | 2567、5865 |
+| 武器绘制失配 | `[SSC PNA glow] Unsupported DrawEquipmentAiming layout` 全次运行仅 **1 条**。原有 `Unexpected DrawEquipmentAiming draw call layout` 异常和 `ModStartup` 静态初始化异常均为 **0 条**。 | 3453 |
+| SSC 补丁注册 | 输出 `Harmony patches loaded successfully.`，绑定仪式补丁注册 **9／9**。 | 3497、3821 |
+| 调教与结算 | 有 **2 条** `Daily training completed:`，评分分别为 **-5.80** 和 **70.00**，均为 `cooldownStarted=True`。 | 6317、137640 |
+
+本机 CE 组合的启动、警告去重和调教结算验收通过。原汇报整合包尚待修复版实机反馈。

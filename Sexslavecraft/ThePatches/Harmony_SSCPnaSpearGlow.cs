@@ -1,5 +1,4 @@
 // AI 辅助生成：复用武器最终绘制变换叠画矛尖，不改动作角度、位置、贴图或原始材质。
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -20,15 +19,22 @@ namespace SexSlaveCraft
     [HarmonyPatch(typeof(PawnRenderUtility), nameof(PawnRenderUtility.DrawEquipmentAiming))]
     internal static class Harmony_SSCPnaSpearGlowDraw
     {
+        private const int UnsupportedDrawLayoutWarning = 0x53534344;
+
         internal static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             var codes = instructions.ToList();
             MethodInfo original = AccessTools.Method(typeof(Graphics), nameof(Graphics.DrawMesh),
                 new[] { typeof(Mesh), typeof(Matrix4x4), typeof(Material), typeof(int) });
             MethodInfo replacement = AccessTools.Method(typeof(Harmony_SSCPnaSpearGlowDraw), nameof(DrawWeapon));
-            // 只替换此方法中唯一的四参 DrawMesh；不在未知 IL 上猜测插入点。
-            if (original == null || codes.Count(c => c.Calls(original)) != 1)
-                throw new InvalidOperationException("[SSC PNA glow] Unexpected DrawEquipmentAiming draw call layout.");
+            if (original == null || replacement == null || codes.Count(c => c.Calls(original)) != 1)
+            {
+                Log.WarningOnce("[SSC PNA glow] Unsupported DrawEquipmentAiming layout. Skipping SSC weapon draw effects; existing drawing is preserved.",
+                    UnsupportedDrawLayoutWarning);
+                foreach (CodeInstruction code in codes) yield return code;
+                yield break;
+            }
+
             foreach (CodeInstruction code in codes)
             {
                 if (!code.Calls(original)) { yield return code; continue; }

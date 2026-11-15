@@ -152,7 +152,30 @@ internal static class Program
   Run("原偏移为零的命中仍能开始计时",()=>{var f=new Fixture();f.Verb.NativeCast=()=>true;f.Verb.Cast();Near(1,f.Alpha);f.Handler.ProcessPostTickVisuals(48);Near(0,f.Alpha);});
   Run("下一次命中重启本次计时",()=>{var f=new Fixture();f.Verb.Cast();f.Handler.ProcessPostTickVisuals(33);Near(.5,f.Alpha);f.Verb.Cast();Near(1,f.Alpha);f.Handler.ProcessPostTickVisuals(48);Near(0,f.Alpha);});
   Run("超大批次到期且负数批次不推进",()=>{var f=new Fixture();f.Verb.Cast();SSCPnaSpearGlowUtility.Advance(f.Handler,-1);Near(1,f.Alpha);SSCPnaSpearGlowUtility.Advance(f.Handler,int.MaxValue);Near(0,f.Alpha);});
-  Run("未知IL布局明确拒绝",()=>{bool threw=false;try{Harmony_SSCPnaSpearGlowDraw.Transpiler(new[]{new CodeInstruction(OpCodes.Ret)}).ToArray();}catch(InvalidOperationException){threw=true;}Check(threw,"不静默错挂");});
+  Run("绘制锚点缺失或不唯一时原样透传且只警告一次", () =>
+  {
+   Near(0, Log.Warnings.Count);
+   var draw = AccessTools.Method(typeof(Graphics), nameof(Graphics.DrawMesh),
+       new[] { typeof(Mesh), typeof(Matrix4x4), typeof(Material), typeof(int) });
+   var label = new DynamicMethod("DrawLayoutLabel", typeof(void), Type.EmptyTypes).GetILGenerator().DefineLabel();
+   var firstDraw = new CodeInstruction(OpCodes.Call, draw);
+   firstDraw.labels.Add(label);
+   firstDraw.blocks.Add(new ExceptionBlock(ExceptionBlockType.BeginExceptionBlock));
+   var secondDraw = new CodeInstruction(OpCodes.Call, draw);
+   var end = new CodeInstruction(OpCodes.Ret);
+
+   var withoutDraw = new[] { new CodeInstruction(OpCodes.Nop), end };
+   Check(Harmony_SSCPnaSpearGlowDraw.Transpiler(withoutDraw).SequenceEqual(withoutDraw), "原样透传缺少锚点的指令");
+   Near(1, Log.Warnings.Count);
+
+   var repeatedDraws = new[] { firstDraw, secondDraw, end };
+   Check(Harmony_SSCPnaSpearGlowDraw.Transpiler(repeatedDraws).SequenceEqual(repeatedDraws), "原样透传多个锚点的指令");
+   Check(firstDraw.opcode == OpCodes.Call && ReferenceEquals(firstDraw.operand, draw) &&
+       ReferenceEquals(secondDraw.operand, draw), "原绘制调用未改写");
+   Check(firstDraw.labels.SequenceEqual(new[] { label }) &&
+       firstDraw.blocks.Single().blockType == ExceptionBlockType.BeginExceptionBlock, "保留原标签和异常块");
+   Near(1, Log.Warnings.Count);
+  });
   Run("受药爱心尺寸旋转速度和颜色不变",()=>{var f=new Fixture();SSCPnaWeaponEffectsUtility.ShowAbsorption(f.Target);var d=f.Map.flecks.Sent.Single();Near(.36,d.scale);Near(180,d.rotation);Near(.22,d.velocity.Value.z);Near(10.6,d.spawnPosition.z);Near(2.45,d.instanceColor.Value.b);});
   foreach(string gate in new[]{"invalid","master","despawned","other-map","offscreen","no-def","saving"})Run("爱心原门槛 "+gate,()=>
   {

@@ -60,6 +60,16 @@ namespace Verse {
  public static class GenView {public static bool ShouldSpawnMotesAt(this Vector3 p,Map m,bool drawOffscreen=true)=>m.Visible;}
  public class TickManager {public int TicksGame;}
  public static class Find {public static Map CurrentMap;public static TickManager TickManager=new TickManager();}
+ public static class Log
+ {
+  private static readonly HashSet<int> WarningKeys = new();
+  internal static readonly List<string> Warnings = new();
+
+  public static void WarningOnce(string message, int key)
+  {
+   if (WarningKeys.Add(key)) Warnings.Add(message);
+  }
+ }
  public enum LoadSaveMode {Inactive,Saving,LoadingVars,PostLoadInit}public static class Scribe {public static LoadSaveMode mode;}
 }
 namespace RimWorld {
