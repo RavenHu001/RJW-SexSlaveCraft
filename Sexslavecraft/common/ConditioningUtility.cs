@@ -75,12 +75,23 @@ namespace SexSlaveCraft
         }
 
         public static string ExecuteRitualOutcome(Pawn master, Pawn sexSlave, float quality, ThoughtDef ritualOutcomeMemory = null)
+#if SSC_RW17
+            => ExecuteRitualOutcome(master, sexSlave, quality, ritualOutcomeMemory,
+                new CorruptionProgressionUtility.RitualChainProgress(master, sexSlave, null));
+
+        internal static string ExecuteRitualOutcome(Pawn master, Pawn sexSlave, float quality, ThoughtDef ritualOutcomeMemory,
+            CorruptionProgressionUtility.RitualChainProgress progress)
+#endif
         {
             if (sexSlave == null || master == null) return "";
 
             if (SSCMod.settings?.useOldScoring ?? false)
             {
-                return ExecuteRitualOutcome_Legacy(master, sexSlave, quality, ritualOutcomeMemory);
+                return ExecuteRitualOutcome_Legacy(master, sexSlave, quality, ritualOutcomeMemory
+#if SSC_RW17
+                    , progress
+#endif
+                );
             }
 
             float finalScore = quality * SpecializationTrainingProgressUtility.RitualScorePerQuality;
@@ -89,16 +100,32 @@ namespace SexSlaveCraft
 
             CorruptionUtility.AddCorruption(sexSlave, corruptionGain);
 
+#if SSC_RW17
+            if (!progress.CanContinueSettlement()) return "";
+#endif
             WillReductionUtility.ApplyWillReductionByCorruptionBand(master, sexSlave, corruptionGain, true);
-            string progressionMsg = CorruptionProgressionUtility.ProcessCorruptionProgression(master, sexSlave, true, finalScore);
+            string progressionMsg = CorruptionProgressionUtility.ProcessCorruptionProgression(master, sexSlave, true, finalScore
+#if SSC_RW17
+                , progress
+#endif
+            );
 
+#if SSC_RW17
+            if (!progress.CanContinueSettlement()) return "";
+#endif
             ApplyRitualMemories(finalLevel, master, sexSlave);
+#if SSC_RW17
+            if (!progress.CanContinueSettlement()) return "";
+#endif
             var memories = sexSlave.needs.mood?.thoughts.memories;
             if (memories != null)
             {
                 memories.TryGainMemory(CorruptionProgressionUtility.GetRitualEuphoriaThought(ritualOutcomeMemory), master);
             }
 
+#if SSC_RW17
+            if (!progress.CanContinueSettlement()) return "";
+#endif
             float virtualScore = quality * 1000f;
             float expMultiplier = 0.5f;
 
@@ -129,7 +156,11 @@ namespace SexSlaveCraft
             return sb.ToString();
         }
 
-        private static string ExecuteRitualOutcome_Legacy(Pawn master, Pawn sexSlave, float quality, ThoughtDef ritualOutcomeMemory)
+        private static string ExecuteRitualOutcome_Legacy(Pawn master, Pawn sexSlave, float quality, ThoughtDef ritualOutcomeMemory
+#if SSC_RW17
+            , CorruptionProgressionUtility.RitualChainProgress progress
+#endif
+        )
         {
             float finalScore = quality * SpecializationTrainingProgressUtility.RitualScorePerQuality;
             int finalLevel = (quality >= 0.8f) ? 3 : ((quality <= 0.25f) ? 1 : 2);
@@ -137,16 +168,32 @@ namespace SexSlaveCraft
             corruptionGain *= SSCMasterBondUtility.GetTrainingCorruptionMultiplier(master);
             CorruptionUtility.AddCorruption(sexSlave, corruptionGain);
 
+#if SSC_RW17
+            if (!progress.CanContinueSettlement()) return "";
+#endif
             WillReductionUtility.ApplyWillReductionByCorruptionBand(master, sexSlave, corruptionGain, true);
-            string progressionMsg = CorruptionProgressionUtility.ProcessCorruptionProgression(master, sexSlave, true, finalScore);
+            string progressionMsg = CorruptionProgressionUtility.ProcessCorruptionProgression(master, sexSlave, true, finalScore
+#if SSC_RW17
+                , progress
+#endif
+            );
 
+#if SSC_RW17
+            if (!progress.CanContinueSettlement()) return "";
+#endif
             LegacyTrainingUtility.ApplyMemories_Legacy(finalLevel, master, sexSlave, false);
+#if SSC_RW17
+            if (!progress.CanContinueSettlement()) return "";
+#endif
             var memories = sexSlave.needs.mood?.thoughts.memories;
             if (memories != null)
             {
                 memories.TryGainMemory(CorruptionProgressionUtility.GetRitualEuphoriaThought(ritualOutcomeMemory), master);
             }
 
+#if SSC_RW17
+            if (!progress.CanContinueSettlement()) return "";
+#endif
             float virtualScore = quality * 1000f;
             float expMultiplier = 0.5f;
             TrainingExpUtility.ApplyExperienceFromScore(sexSlave, xxx.rjwSextype.Handjob, virtualScore, expMultiplier);

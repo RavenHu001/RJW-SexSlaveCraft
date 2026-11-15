@@ -7,6 +7,10 @@
   <SSC_Ritual_CorruptionGain>惡墮率: +{0}</SSC_Ritual_CorruptionGain>
   <SSC_Ritual_OutcomeHeader> 儀式成果 </SSC_Ritual_OutcomeHeader>
   <SSC_Ritual_NoNewStage>(儀式加深了奴役的烙印，但未觸發新的階段)</SSC_Ritual_NoNewStage>
+  <SSC_Ritual_ChainStageReached>鎖鏈升至第 {0} 階。</SSC_Ritual_ChainStageReached>
+  <SSC_Ritual_ChainProgress>鎖鏈在目前階段繼續推進，嚴重度達到 {0}。</SSC_Ritual_ChainProgress>
+  <SSC_Ritual_ChainStagePending>尚未升階。下一階段要求目前惡墮至少達到 {0}，且鎖鏈進度達標。</SSC_Ritual_ChainStagePending>
+  <SSC_Ritual_ChainFinalStage>鎖鏈已處於最高階段。</SSC_Ritual_ChainFinalStage>
   <SSC_Bond_BridleAdded>{0} 在炒飯智能的幫助下用無形的鏈子拴住了 {1}</SSC_Bond_BridleAdded>
   <SSC_Bond_ChainAdded>{0} 一部分能力受限，需要聽從於 {1}</SSC_Bond_ChainAdded>
   <SSC_Ritual_Enslaved>{0} 在理智脫離的情況下承認了自己奴隸的身份。</SSC_Ritual_Enslaved>

@@ -7,6 +7,10 @@
   <SSC_Ritual_CorruptionGain>Развращение: +{0}</SSC_Ritual_CorruptionGain>
   <SSC_Ritual_OutcomeHeader> Исход ритуала </SSC_Ritual_OutcomeHeader>
   <SSC_Ritual_NoNewStage>(Ритуал углубил клеймо рабства, но новый этап не активирован)</SSC_Ritual_NoNewStage>
+  <SSC_Ritual_ChainStageReached>Цепь перешла на стадию {0}.</SSC_Ritual_ChainStageReached>
+  <SSC_Ritual_ChainProgress>Выраженность цепи на текущей стадии достигла {0}.</SSC_Ritual_ChainProgress>
+  <SSC_Ritual_ChainStagePending>Стадия цепи не изменилась. Для следующей стадии нужны текущее развращение не ниже {0} и достаточный прогресс цепи.</SSC_Ritual_ChainStagePending>
+  <SSC_Ritual_ChainFinalStage>Цепь уже достигла высшей стадии.</SSC_Ritual_ChainFinalStage>
   <SSC_Bond_BridleAdded>{0} с помощью ИИ «Жареный рис» связал(а) {1} невидимыми цепями</SSC_Bond_BridleAdded>
   <SSC_Bond_ChainAdded>У {0} ограничены некоторые способности — теперь нужно подчиняться {1}</SSC_Bond_ChainAdded>
   <SSC_Ritual_Enslaved>{0} признал(а) себя рабом, пока разум был отключён.</SSC_Ritual_Enslaved>

@@ -7,6 +7,10 @@
   <SSC_Ritual_CorruptionGain>Corruption: +{0}</SSC_Ritual_CorruptionGain>
   <SSC_Ritual_OutcomeHeader> Ritual Outcome </SSC_Ritual_OutcomeHeader>
   <SSC_Ritual_NoNewStage>(The ritual deepened enslavement, but no new stage was triggered)</SSC_Ritual_NoNewStage>
+  <SSC_Ritual_ChainStageReached>The chain advanced to stage {0}.</SSC_Ritual_ChainStageReached>
+  <SSC_Ritual_ChainProgress>The chain progressed to {0} severity within its current stage.</SSC_Ritual_ChainProgress>
+  <SSC_Ritual_ChainStagePending>The chain did not advance. The next stage requires at least {0} current corruption and sufficient chain progress.</SSC_Ritual_ChainStagePending>
+  <SSC_Ritual_ChainFinalStage>The chain is already at its highest stage.</SSC_Ritual_ChainFinalStage>
   <SSC_Bond_BridleAdded>{0} used invisible chains with the help of Fried Rice Intelligence to bind {1}</SSC_Bond_BridleAdded>
   <SSC_Bond_ChainAdded>{0} had some abilities restricted and now must obey {1}</SSC_Bond_ChainAdded>
   <SSC_Ritual_Enslaved>{0} acknowledged slave identity while detached from reason.</SSC_Ritual_Enslaved>

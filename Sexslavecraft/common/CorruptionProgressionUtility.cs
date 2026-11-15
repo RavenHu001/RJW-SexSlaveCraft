@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using RimWorld;
@@ -13,22 +14,44 @@ namespace SexSlaveCraft
     public static class CorruptionProgressionUtility
     {
         public static string ProcessCorruptionProgression(Pawn master, Pawn sexSlave, bool isRitual, float score = 0f)
+#if SSC_RW17 || SSC_RITUAL_STAGE_TEST
+            => ProcessCorruptionProgression(master, sexSlave, isRitual, score,
+                isRitual ? new RitualChainProgress(master, sexSlave, null) : null);
+
+        internal static string ProcessCorruptionProgression(Pawn master, Pawn sexSlave, bool isRitual, float score,
+            RitualChainProgress progress)
+#endif
         {
             Need_Corruption need = sexSlave.needs.TryGetNeed<Need_Corruption>();
             if (need == null) return null;
+#if SSC_RW17 || SSC_RITUAL_STAGE_TEST
+            if (isRitual && !progress.CanAdvance()) return null;
+#endif
 
             // EN: Step 1: read current corruption and collect every newly triggered stage-change message.
             // CN: 步骤 1：读取当前恶堕值，并收集这次新触发的全部阶段变化文本。
             float corruption = need.CurLevel;
             List<string> changes = new List<string>();
 
+#if SSC_RW17 || SSC_RITUAL_STAGE_TEST
+            Hediff_ChainOfSexSlave boundChain = ProcessSharedCorruptionProgression(master, sexSlave, isRitual, changes, corruption, progress);
+#else
             ProcessSharedCorruptionProgression(master, sexSlave, isRitual, changes, corruption);
+#endif
             if (isRitual)
             {
                 // EN: The Binding Ritual gets extra progression rules beyond normal daily training.
                 // CN: 绑定仪式除了日常调教共享阶段外，还会额外处理仪式专属变化。
+#if SSC_RW17 || SSC_RITUAL_STAGE_TEST
+                if (progress.CanContinueAfterBinding(boundChain))
+                {
+                    ProcessRitualEnslavement(master, sexSlave, score, changes, need.CurLevel, progress, boundChain);
+                    progress.Apply(changes);
+                }
+#else
                 ProcessRitualEnslavement(master, sexSlave, score, changes, corruption);
                 ProcessRitualCorruptionProgression(sexSlave, changes, corruption);
+#endif
             }
 
             return changes.Count > 0 ? string.Join("\n", changes.ToArray()) : null;
@@ -45,25 +68,42 @@ namespace SexSlaveCraft
             return SSCDefOf.SSC_Ritual_Euphoria_3;
         }
 
-        private static void ProcessSharedCorruptionProgression(Pawn master, Pawn sexSlave, bool isRitual, List<string> changes, float corruption)
+        private static Hediff_ChainOfSexSlave ProcessSharedCorruptionProgression(Pawn master, Pawn sexSlave,
+            bool isRitual, List<string> changes, float corruption
+#if SSC_RW17 || SSC_RITUAL_STAGE_TEST
+            , RitualChainProgress progress
+#endif
+        )
         {
-            if (corruption < 0.1f) return;
+            if (corruption < 0.1f) return null;
+            if (!isRitual)
+            {
+                SSCBondUtility.Bind(master, sexSlave);
+                return null;
+            }
 
-            Hediff_BridleOfSexSlave existingBridle = SSCBondUtility.GetBridle(master);
-            bool hadBridleTarget = existingBridle != null && existingBridle.targets.Contains(sexSlave);
+            bool hadBridleTarget = SSCBondUtility.GetBridle(master)?.targets.Contains(sexSlave) == true;
             bool hadChain = SSCBondUtility.GetChain(sexSlave) != null;
+#if SSC_RW17 || SSC_RITUAL_STAGE_TEST
+            if (!SSCBondUtility.BindForRitual(master, sexSlave, progress.CanWriteBinding, out var boundChain) ||
+                !progress.CanContinueAfterBinding(boundChain)) return null;
+#else
+            if (!SSCBondUtility.Bind(master, sexSlave)) return null;
+            Hediff_ChainOfSexSlave boundChain = null;
+#endif
 
-            // EN: Bind updates both sides atomically and refuses to steal an existing bond.
-            // CN: Bind 会同时更新主从两侧，并拒绝覆盖已经属于其他主人的锁链。
-            if (!SSCBondUtility.Bind(master, sexSlave)) return;
-
-            if (isRitual && !hadBridleTarget)
+            if (!hadBridleTarget)
                 changes.Add(Strings.Bond_BridleAdded(master.LabelShort, sexSlave.LabelShort));
-            if (isRitual && !hadChain)
+            if (!hadChain)
                 changes.Add(Strings.Bond_ChainAdded(sexSlave.LabelShort, master.LabelShort));
+            return boundChain;
         }
 
-        private static void ProcessRitualEnslavement(Pawn master, Pawn sexSlave, float score, List<string> changes, float corruption)
+        private static void ProcessRitualEnslavement(Pawn master, Pawn sexSlave, float score, List<string> changes, float corruption
+#if SSC_RW17 || SSC_RITUAL_STAGE_TEST
+            , RitualChainProgress progress, Hediff_ChainOfSexSlave boundChain
+#endif
+        )
         {
             // EN: Ritual-only change: after enough corruption, the Binding Ritual may convert a prisoner or colonist into a slave.
             // CN: 仪式专属变化：恶堕足够高后，绑定仪式可以尝试把囚犯或殖民者正式转化为奴隶。
@@ -79,6 +119,9 @@ namespace SexSlaveCraft
                 // EN: Use the shared conversion formula so Binding Ritual slave conversion stays aligned with the rest of SSC.
                 // CN: 这里复用共享转化公式，保证绑定仪式的转奴逻辑和 SSC 其他系统保持一致。
                 float enslaveChance = WillReductionUtility.CalculateEnslaveChance(sexSlave, score, corruption, true, out string chanceDetail);
+#if SSC_RW17 || SSC_RITUAL_STAGE_TEST
+                if (!progress.CanContinueAfterBinding(boundChain)) return;
+#endif
                 changes.Add(chanceDetail);
                 currentWillText = sexSlave?.guest != null ? sexSlave.guest.will.ToString("F2") : "null";
                 SSCLog.Important($"[SSC 仪式转奴] 概率计算: target={sexSlave?.LabelShort ?? "null"}, 恶堕={corruption:F3}, score={score:F2}, chance={enslaveChance:P2}, will={currentWillText}, detail={chanceDetail}");
@@ -90,6 +133,9 @@ namespace SexSlaveCraft
                 if (rollSuccess)
                 {
                     enslaveSuccess = GenGuest.TryEnslavePrisoner(master, sexSlave);
+#if SSC_RW17 || SSC_RITUAL_STAGE_TEST
+                    if (!progress.CanContinueSettlement()) return;
+#endif
                     string postWillText = sexSlave?.guest != null ? sexSlave.guest.will.ToString("F2") : "null";
                     SSCLog.Important($"[SSC 仪式转奴] 原版转奴调用完成: target={sexSlave?.LabelShort ?? "null"}, apiSuccess={enslaveSuccess}, prisoner={sexSlave?.IsPrisonerOfColony ?? false}, colonist={sexSlave?.IsColonist ?? false}, slave={sexSlave?.IsSlave ?? false}, guestNull={(sexSlave?.guest == null)}, will={postWillText}, faction={sexSlave?.Faction?.Name ?? "null"}");
                 }
@@ -124,6 +170,101 @@ namespace SexSlaveCraft
             }
         }
 
+#if SSC_RW17 || SSC_RITUAL_STAGE_TEST
+        // 在结算回调前捕获原载体。委派主持与锁链主人分别记录。
+        internal sealed class RitualChainProgress
+        {
+            private readonly Pawn host;
+            private readonly Pawn target;
+            private readonly Func<bool> canContinue;
+            private readonly CompSexSlaveTraining hostComp;
+            private readonly CompSexSlaveTraining targetComp;
+            private readonly object hostToken;
+            private readonly object targetToken;
+            private readonly Need_Corruption need;
+            private readonly Hediff_ChainOfSexSlave chain;
+            private readonly Pawn owner;
+            private readonly int startingStage;
+
+            internal RitualChainProgress(Pawn host, Pawn target, Func<bool> canContinue)
+            {
+                this.host = host;
+                this.target = target;
+                this.canContinue = canContinue;
+                hostComp = host?.TryGetComp<CompSexSlaveTraining>();
+                targetComp = target?.TryGetComp<CompSexSlaveTraining>();
+                hostToken = SSCPersonalityRuntimeUtility.Capture(host);
+                targetToken = SSCPersonalityRuntimeUtility.Capture(target);
+                need = target?.needs?.TryGetNeed<Need_Corruption>();
+                chain = SSCBondUtility.GetChain(target);
+                owner = chain?.LinkedPawn;
+                startingStage = TrainingOutcomeUtility.GetChainStage(chain).Stage;
+            }
+
+            private bool MatchesParticipants() => host != null && target != null && !host.Dead && !target.Dead &&
+                !host.Destroyed && !target.Destroyed &&
+                host.TryGetComp<CompSexSlaveTraining>() == hostComp && target.TryGetComp<CompSexSlaveTraining>() == targetComp &&
+                SSCPersonalityRuntimeUtility.IsCurrent(host, hostToken) && SSCPersonalityRuntimeUtility.IsCurrent(target, targetToken);
+
+            internal bool CanContinueSettlement() => MatchesParticipants() &&
+                (canContinue == null || canContinue() && MatchesParticipants());
+
+            private bool MatchesChain(Hediff_ChainOfSexSlave expected, Pawn expectedOwner) =>
+                MatchesParticipants() && target.needs?.TryGetNeed<Need_Corruption>() == need &&
+                SSCBondUtility.GetChain(target) == expected && expected?.LinkedPawn == expectedOwner;
+
+            private bool MatchesStartingStage(Hediff_ChainOfSexSlave expected, Pawn expectedOwner) =>
+                MatchesChain(expected, expectedOwner) &&
+                (chain == null || (expected == chain && TrainingOutcomeUtility.GetChainStage(expected).Stage == startingStage));
+
+            private bool CanUseChain(Hediff_ChainOfSexSlave expected, Pawn expectedOwner)
+            {
+                if (!CanContinueSettlement() || !MatchesStartingStage(expected, expectedOwner)) return false;
+                if (canContinue != null &&
+                    !SSCRestrictionTrainingUtility.Evaluate(SSCRestrictionTrainingUtility.CreateRequest(host, target, true), false).Allowed)
+                    return false;
+                return MatchesStartingStage(expected, expectedOwner);
+            }
+
+            internal bool CanAdvance() => CanUseChain(chain, owner);
+
+            internal bool CanWriteBinding(Hediff_ChainOfSexSlave written) =>
+                written == null ? CanAdvance() && need.CurLevel >= 0.1f : CanUseChain(written, host);
+
+            // 委派主持未建绑，继续检查原主的链。首次建链则检查这场实际写入的链。
+            internal bool CanContinueAfterBinding(Hediff_ChainOfSexSlave written) =>
+                written == null ? CanAdvance() : CanUseChain(written, host);
+
+            internal void Apply(List<string> changes)
+            {
+                // 新建链已经用了本场的一阶额度。旧档已有的零阶链仍按原链处理。
+                if (chain == null || owner == null || need == null || !CanAdvance()) return;
+
+                float corruption = need.CurLevel;
+                float before = chain.Severity;
+                if (!float.IsFinite(corruption) || !float.IsFinite(before)) return;
+                var stage = TrainingOutcomeUtility.GetChainStage(chain);
+                if (corruption >= 0.3f)
+                {
+                    float budget = corruption < 0.5f ? 0.2f : 0.3f;
+                    float next = UnityEngine.Mathf.Min(before + budget, corruption);
+                    next = UnityEngine.Mathf.Min(next, stage.Next ?? 1f);
+                    if (next > before) chain.SetRitualSeverity(target, next);
+                }
+
+                if (!CanContinueSettlement() || !MatchesChain(chain, owner)) return;
+                int reached = TrainingOutcomeUtility.GetChainStage(chain).Stage;
+                if (reached > startingStage)
+                    changes.Add(Strings.Ritual_ChainStageReached(reached));
+                else if (chain.Severity > before)
+                    changes.Add(Strings.Ritual_ChainProgress(chain.Severity.ToStringPercent()));
+                else if (stage.Next.HasValue)
+                    changes.Add(Strings.Ritual_ChainStagePending(UnityEngine.Mathf.Max(0.3f, stage.Next.Value).ToStringPercent()));
+                else
+                    changes.Add(Strings.Ritual_ChainFinalStage);
+            }
+        }
+#else
         /// <summary>
         /// 结算仪式专属的锁链成长；日常调教不会调用此方法。
         /// corruption 是调用方增加本次仪式恶堕收益后读取的当前值，不是历史最高值。
@@ -163,6 +304,7 @@ namespace SexSlaveCraft
             // The SexSlave trait is a historical mirror maintained by Need_Corruption.
             // Gameplay progression and ritual advancement are authoritative on the chain Hediff.
         }
+#endif
 
         private static bool HasHediff(Pawn pawn, string defName)
         {

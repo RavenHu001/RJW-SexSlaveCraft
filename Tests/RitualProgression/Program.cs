@@ -20,6 +20,10 @@ internal static class Program
         if (!SscTestProfile.ShouldRun(name)) return;
         cases++;
         SSCMod.settings = new TestSettings();
+        SSCRestrictionGameComponent.AfterBind = null;
+        SSCIdentityUtility.OnSetIdentity = null;
+        WillReductionUtility.OnCalculateEnslaveChance = null;
+        SSCRestrictionTrainingUtility.AuthorizeRitual = () => true;
         try { test(); Console.WriteLine("PASS " + name); }
         catch (Exception error) { failures++; Console.WriteLine("FAIL " + name + ": " + error.Message); }
     }
@@ -113,7 +117,8 @@ internal static class Program
         {
             (0.2f, 0.299f, 0.2f), (0.2f, 0.3f, 0.3f), (0.4f, 0.45f, 0.45f),
             (0.4f, 0.5f, 0.5f), (0.8f, 0.899f, 0.899f), (0.8f, 0.9f, 0.9f),
-            (0.8f, 1f, 1f), (0.95f, 0.6f, 0.95f), (0.4f, 0.2f, 0.4f)
+            (0.8f, 1f, 0.9f), (0.9f, 1f, 1f), (0.95f, 0.6f, 0.95f), (0.4f, 0.2f, 0.4f),
+            (0.29f, 0.9f, 0.3f), (0.09f, 0.9f, 0.1f)
         })
         {
             Check($"ritual chain {sample.Item1}, corruption {sample.Item2}", () =>
@@ -184,6 +189,129 @@ internal static class Program
             var pawn = Subject(-1f, 0.11f);
             Ritual(pawn);
             Equal(0.2f, SSCBondUtility.GetChain(pawn).Severity);
+        });
+        Check("first binding consumes the stage allowance at high corruption", () =>
+        {
+            var pawn = Subject(-1f, 1f);
+            Ritual(pawn);
+            Equal(0.2f, SSCBondUtility.GetChain(pawn).Severity);
+        });
+        Check("first binding does not take a chain created by an identity callback", () =>
+        {
+            var pawn = Subject(-1f, 0.9f);
+            var host = new Pawn();
+            var other = new Pawn();
+            SSCIdentityUtility.OnSetIdentity = target => Hediff_ChainOfSexSlave.AddToPawn(target, other);
+            var result = CorruptionProgressionUtility.ProcessCorruptionProgression(host, pawn, true);
+            if (SSCBondUtility.GetBoundMaster(pawn) != other || SSCBondUtility.GetBridle(host) != null || result != null)
+                throw new Exception("old ritual claimed the callback's replacement bond");
+        });
+        Check("first binding stops before writing the bridle when a health callback replaces the chain", () =>
+        {
+            var pawn = Subject(-1f, 0.9f);
+            var host = new Pawn();
+            var other = new Pawn();
+            pawn.health.AfterAdd = original =>
+            {
+                pawn.health.AfterAdd = null;
+                pawn.health.RemoveHediff(original);
+                Hediff_ChainOfSexSlave.AddToPawn(pawn, other);
+            };
+            var result = CorruptionProgressionUtility.ProcessCorruptionProgression(host, pawn, true);
+            if (SSCBondUtility.GetBoundMaster(pawn) != other || SSCBondUtility.GetBridle(host) != null || result != null)
+                throw new Exception("old ritual wrote the bridle for an absent chain");
+        });
+        Check("first binding drops the obsolete bridle target when its own health callback changes the owner", () =>
+        {
+            var pawn = Subject(-1f, 0.9f);
+            var host = new Pawn();
+            var other = new Pawn();
+            host.health.AfterAdd = _ => SSCBondUtility.GetChain(pawn).target = other;
+            var result = CorruptionProgressionUtility.ProcessCorruptionProgression(host, pawn, true);
+            if (SSCBondUtility.GetBoundMaster(pawn) != other || SSCBondUtility.GetBridle(host) != null || result != null)
+                throw new Exception("old ritual retained the bridle for a different owner's chain");
+        });
+        Check("severity just below the threshold uses one exact stage", () =>
+        {
+            var pawn = Subject(0.49995f, 0.9f);
+            Equal(2, SSCIdentityUtility.GetSexSlaveStage(pawn));
+            Equal(0.3f, TrainingOutcomeUtility.GetCorruptionStageFloor(pawn));
+            Equal(0.5f, TrainingOutcomeUtility.GetChainCap(pawn));
+            Ritual(pawn);
+            if (SSCBondUtility.GetChain(pawn).Severity != 0.5f) throw new Exception("did not land on the next stage boundary");
+        });
+        Check("ritual does not advance a replacement chain", () =>
+        {
+            var pawn = Subject(0.4f, 0.9f);
+            var original = SSCBondUtility.GetChain(pawn);
+            SSCRestrictionGameComponent.AfterBind = target =>
+            {
+                target.health.hediffSet.hediffs.Remove(original);
+                Hediff_ChainOfSexSlave.AddToPawn(target, original.LinkedPawn).Severity = 0.4f;
+            };
+            Ritual(pawn);
+            Equal(0.4f, SSCBondUtility.GetChain(pawn).Severity);
+        });
+        Check("delegated host advances existing chain and reports the actual stage", () =>
+        {
+            var pawn = Subject(0.4f, 0.9f);
+            var owner = SSCBondUtility.GetBoundMaster(pawn);
+            var host = new Pawn();
+            var progress = new CorruptionProgressionUtility.RitualChainProgress(host, pawn, () => true);
+            string result = CorruptionProgressionUtility.ProcessCorruptionProgression(host, pawn, true, 0f, progress);
+            Equal(0.5f, SSCBondUtility.GetChain(pawn).Severity);
+            if (SSCBondUtility.GetBoundMaster(pawn) != owner || SSCBondUtility.GetBridle(host) != null || result != "stage 3")
+                throw new Exception("wrong owner, bridle, or stage result");
+        });
+        Check("ritual rechecks original need value for conversion and growth after callbacks", () =>
+        {
+            var pawn = Subject(0.4f, 0.9f);
+            pawn.IsSlave = false;
+            pawn.IsColonist = true;
+            SSCMod.settings.enableRitualEnslavement = true;
+            float conversionValue = -1f;
+            WillReductionUtility.OnCalculateEnslaveChance = value => conversionValue = value;
+            SSCRestrictionGameComponent.AfterBind = target => target.needs.TryGetNeed<Need_Corruption>().SetCorruption(0.45f);
+            Ritual(pawn);
+            Equal(0.45f, SSCBondUtility.GetChain(pawn).Severity);
+            Equal(0.45f, conversionValue);
+        });
+        Check("ritual never reads a replacement corruption need for growth", () =>
+        {
+            var pawn = Subject(0.4f, 0.9f);
+            SSCRestrictionGameComponent.AfterBind = target =>
+            {
+                target.needs.allNeeds.Remove(target.needs.TryGetNeed<Need_Corruption>());
+                var replacement = new Need_Corruption(target);
+                replacement.SetCorruption(1f);
+                target.needs.allNeeds.Add(replacement);
+            };
+            Ritual(pawn);
+            Equal(0.4f, SSCBondUtility.GetChain(pawn).Severity);
+        });
+        Check("ritual rechecks hosting authorization before conversion and growth", () =>
+        {
+            var pawn = Subject(0.4f, 0.9f);
+            pawn.IsSlave = false;
+            pawn.IsColonist = true;
+            SSCMod.settings.enableRitualEnslavement = true;
+            WillReductionUtility.OnCalculateEnslaveChance = _ => throw new Exception("stale ritual attempted conversion");
+            Pawn host = SSCBondUtility.GetBoundMaster(pawn);
+            var progress = new CorruptionProgressionUtility.RitualChainProgress(host, pawn, () => true);
+            SSCRestrictionGameComponent.AfterBind = _ => SSCRestrictionTrainingUtility.AuthorizeRitual = () => false;
+            CorruptionProgressionUtility.ProcessCorruptionProgression(host, pawn, true, 0f, progress);
+            Equal(0.4f, SSCBondUtility.GetChain(pawn).Severity);
+        });
+        Check("settlement cannot continue on the same pawn after a personality swap in a callback", () =>
+        {
+            var pawn = Subject(0.4f, 0.9f);
+            Pawn host = SSCBondUtility.GetBoundMaster(pawn);
+            var progress = new CorruptionProgressionUtility.RitualChainProgress(host, pawn, () =>
+            {
+                pawn.PersonalityToken = new object();
+                return true;
+            });
+            if (progress.CanContinueSettlement()) throw new Exception("settlement survived a personality swap");
         });
         // 日常调教与仪式共用入口，但 isRitual=false 时只处理共享绑定，不授予仪式成长。
         Check("daily progression does not grant ritual chain growth", () =>

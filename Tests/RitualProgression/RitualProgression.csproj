@@ -3,6 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net9.0</TargetFramework>
+    <DefineConstants>$(DefineConstants);SSC_RITUAL_STAGE_TEST</DefineConstants>
     <!-- 默认直接链接工作区源码。命令行可覆盖此目录，用同一测试集比较修复前的源码副本。 -->
     <SscSourceRoot Condition="'$(SscSourceRoot)' == ''">../../Sexslavecraft</SscSourceRoot>
   </PropertyGroup>
@@ -13,6 +14,7 @@
     <Compile Include="$(SscSourceRoot)/common/Need_Corruption.cs" Link="Production/Need_Corruption.cs" />
     <Compile Include="$(SscSourceRoot)/common/TrainingOutcomeUtility.cs" Link="Production/TrainingOutcomeUtility.cs" />
     <Compile Include="$(SscSourceRoot)/common/CorruptionProgressionUtility.cs" Link="Production/CorruptionProgressionUtility.cs" />
+    <Compile Include="$(SscSourceRoot)/common/SSCBondUtility.cs" Link="Production/SSCBondUtility.cs" />
     <Compile Include="$(SscSourceRoot)/common/AddCorruption.cs" Link="Production/AddCorruption.cs" />
     <Compile Include="$(SscSourceRoot)/common/ICorruptionModifierSource.cs" Link="Production/ICorruptionModifierSource.cs" />
     <Compile Include="$(SscSourceRoot)/Hediff/Hediff_ChainOfSexSlave.cs" Link="Production/Hediff_ChainOfSexSlave.cs" />

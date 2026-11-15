@@ -42,6 +42,9 @@ namespace SexSlaveCraft
         /// <summary>从已经读取的锁链判定当前阶段，供同次查询复用；调用方负责角色身份门槛。</summary>
         internal static int GetSexSlaveStageFromChain(Hediff_ChainOfSexSlave chain)
         {
+#if SSC_RW17
+            return TrainingOutcomeUtility.GetChainStage(chain).Stage;
+#else
             // 将阶段边界集中保留在身份工具中；持有锁链的查询入口无需
             // 为了取得阶段再扫描一次 Hediff，也不另写一套严重度门槛。
             if (chain == null) return 0;
@@ -52,6 +55,7 @@ namespace SexSlaveCraft
             if (severity >= 0.3f) return 2;
             if (severity >= 0.1f) return 1;
             return 0;
+#endif
         }
 
         public static int GetSexSlaveTraitDegreeFromHighestCorruption(Pawn pawn)

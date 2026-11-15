@@ -52,6 +52,7 @@ namespace Verse
     public class Pawn : Thing
     {
         public bool Discarded, Dead, IsSlave = true, IsColonist, IsPrisonerOfColony;
+        public object PersonalityToken = new object();
         public string LabelShort = "test pawn", LabelShortCap = "Test pawn";
         public NeedsTracker needs = new NeedsTracker();
         public HealthTracker health = new HealthTracker();
@@ -66,12 +67,18 @@ namespace Verse
         public readonly List<RimWorld.Need> allNeeds = new List<RimWorld.Need>();
         public T TryGetNeed<T>() where T : RimWorld.Need => allNeeds.OfType<T>().FirstOrDefault();
     }
-    // 用内存列表保存真实 Hediff 实例；不模拟游戏 tick 调度、健康缓存或添加/删除通知。
+    // 用内存列表保存真实锁链；可在写入后触发回调，不模拟游戏 tick 或健康缓存。
     // Program 显式调用 NeedInterval，保证“结算后刷新”的先后顺序可以被确定地复现。
     public class HealthTracker
     {
         public HediffSet hediffSet = new HediffSet();
-        public void AddHediff(Hediff h) => hediffSet.hediffs.Add(h);
+        public Action<Hediff> AfterAdd;
+        public void AddHediff(Hediff h)
+        {
+            hediffSet.hediffs.Add(h);
+            AfterAdd?.Invoke(h);
+        }
+        public void RemoveHediff(Hediff h) => hediffSet.hediffs.Remove(h);
     }
     public class HediffSet
     {
@@ -175,7 +182,11 @@ namespace rjw
 namespace SexSlaveCraft
 {
     // 只替代未纳入本次数值测试的其他 SSC 服务；设置在每个用例开始时重新创建。
-    public class CompSexSlaveTraining : ThingComp { public float lastTrainingScore; }
+    public class CompSexSlaveTraining : ThingComp
+    {
+        public float lastTrainingScore;
+        public Pawn selectedTrainer;
+    }
     public class TestSettings
     {
         public bool useOldScoring, enableCorruptionDecay = true, enableRitualEnslavement;
@@ -186,39 +197,77 @@ namespace SexSlaveCraft
     public static class TrainerSpecializationLifecycle
     {
         public static void Notify(Pawn pawn) { }
+        public static IDisposable BeginMutation(Pawn pawn) => null;
     }
-    // Trait 同步被忽略，GetSexSlaveStage 仅供装备替身判断“有锁链”。
-    // 实际阶段断言使用生产 TrainingOutcomeUtility，不能把这里的返回值当作阶段算法验证。
+    // Trait 同步由其他专项覆盖，此处的阶段查询统一转交生产 TrainingOutcomeUtility。
     public static class SSCIdentityUtility
     {
-        public static void SyncSexSlaveTraitFromHighestCorruption(Pawn pawn) { }
-        public static int GetSexSlaveStage(Pawn pawn) => SSCBondUtility.GetChain(pawn) != null ? 1 : 0;
-        public static int GetSexSlaveStageFromChain(Hediff_ChainOfSexSlave chain)
+        public static Action<Pawn> OnSetIdentity;
+        public static bool IsMaster(Pawn pawn) => true;
+        public static bool TrySetIdentity(Pawn pawn, PawnIdentity identity)
         {
-            if (chain == null) return 0;
-            return chain.Severity >= 0.9f ? 4 : chain.Severity >= 0.5f ? 3 :
-                chain.Severity >= 0.3f ? 2 : chain.Severity >= 0.1f ? 1 : 0;
+            OnSetIdentity?.Invoke(pawn);
+            return true;
         }
+        public static void SyncSexSlaveTraitFromHighestCorruption(Pawn pawn) { }
+        public static int GetSexSlaveStage(Pawn pawn) => GetSexSlaveStageFromChain(SSCBondUtility.GetChain(pawn));
+        public static int GetSexSlaveStageFromChain(Hediff_ChainOfSexSlave chain) => TrainingOutcomeUtility.GetChainStage(chain).Stage;
+    }
+    public static class SSCPersonalityRuntimeUtility
+    {
+        public static object Capture(Pawn pawn) => pawn?.PersonalityToken;
+        public static bool IsCurrent(Pawn pawn, object token) => ReferenceEquals(Capture(pawn), token);
+    }
+    public static class SSCRestrictionTrainingUtility
+    {
+        public static Func<bool> AuthorizeRitual = () => true;
+        public static Pawn CreateRequest(Pawn host, Pawn target, bool ritual) => target;
+        public static (bool Allowed, Pawn Target) Evaluate(Pawn request, bool requireAssignment) => (AuthorizeRitual(), request);
     }
     public static class SSCSelfTrainingFeedback
     {
         public static void NotifyStatusChanged(Pawn pawn) { }
     }
-    public class Hediff_BridleOfSexSlave
+    public class Hediff_BridleOfSexSlave : Hediff
     {
         public List<Pawn> targets = new List<Pawn>();
+        public IEnumerable<Pawn> ValidTargets => targets.Where(target => SSCBondUtility.GetBoundMaster(target) == pawn);
         public void RemoveTarget(Pawn pawn) => targets.Remove(pawn);
+        public void PruneInvalidTargets()
+        {
+            targets.RemoveAll(target => SSCBondUtility.GetBoundMaster(target) != pawn);
+            if (targets.Count == 0) pawn.health.RemoveHediff(this);
+        }
+        public static Hediff_BridleOfSexSlave AddToPawn(Pawn master, Pawn slave)
+        {
+            var bridle = SSCBondUtility.GetBridle(master);
+            if (bridle == null)
+            {
+                bridle = new Hediff_BridleOfSexSlave { pawn = master, def = SSCDefOf.BridleOfSexSlave };
+                master.health.AddHediff(bridle);
+            }
+            if (!bridle.targets.Contains(slave)) bridle.targets.Add(slave);
+            return bridle;
+        }
     }
-    // 简化主从服务保留锁链查找与复用，并把创建操作交给真实 AddToPawn。
-    // 不模拟主从双方身份校验、换主保护或缰绳同步；这些行为不在本测试的覆盖声明中。
-    public static class SSCBondUtility
+    public enum PawnIdentity { Slave }
+    public static class TrainerAssignmentUtility
     {
-        public static Hediff_ChainOfSexSlave GetChain(Pawn pawn) =>
-            pawn?.health.hediffSet.GetFirstHediffOfDef(SSCDefOf.ChainOfSexSlave) as Hediff_ChainOfSexSlave;
-        public static Pawn GetBoundMaster(Pawn pawn) => GetChain(pawn)?.LinkedPawn;
-        public static Hediff_BridleOfSexSlave GetBridle(Pawn pawn) => null;
-        public static void RepairReciprocalLink(Pawn pawn) { }
-        public static bool Bind(Pawn master, Pawn slave) => Hediff_ChainOfSexSlave.AddToPawn(slave, master) != null;
+        public static Pawn GetActiveAssignedTrainer(Pawn slave) => null;
+        public static bool CanAssignTrainerTo(Pawn slave, Pawn trainer) => true;
+    }
+    public static class SSCRestrictionTrainerAssignment
+    {
+        public static bool TryAssign(Pawn slave, Pawn trainer) => false;
+    }
+    public static class SSCRestrictionGameComponent
+    {
+        public static Action<Pawn> AfterBind;
+        public static void Notify(Pawn pawn) => AfterBind?.Invoke(pawn);
+    }
+    public static class SSCImprintUtility
+    {
+        public static void DifferentiateAfterBinding(Pawn master, Pawn slave) { }
     }
     // 评分、转奴概率、日志和本地化不是本次待测逻辑，仅提供无外部副作用的占位接口。
     // “legacy”用例验证的是 Need_Corruption 的旧模式分支，并非旧评分公式本身。
@@ -229,8 +278,9 @@ namespace SexSlaveCraft
     }
     public static class WillReductionUtility
     {
+        public static Action<float> OnCalculateEnslaveChance;
         public static float CalculateEnslaveChance(Pawn pawn, float score, float corruption, bool ritual, out string detail)
-        { detail = ""; return 0f; }
+        { OnCalculateEnslaveChance?.Invoke(corruption); detail = ""; return 0f; }
     }
     public static class SSCLog
     {
@@ -240,7 +290,7 @@ namespace SexSlaveCraft
     public static class ModLog { public static void Message(string message) { } }
     public static class SSCDefOf
     {
-        public static HediffDef ChainOfSexSlave;
+        public static HediffDef ChainOfSexSlave, BridleOfSexSlave = new HediffDef();
         public static RimWorld.ThoughtDef SSC_Ritual_Terrible, SSC_Ritual_Boring, SSC_Ritual_Good, SSC_Ritual_Best;
         public static RimWorld.ThoughtDef SSC_Ritual_Euphoria_1, SSC_Ritual_Euphoria_2, SSC_Ritual_Euphoria_3, SSC_Ritual_Euphoria_4;
     }
@@ -251,6 +301,10 @@ namespace SexSlaveCraft
         public static string Bond_ChainAdded(string slave, string master) => "chain added";
         public static string Ritual_Enslaved(string pawn) => "converted";
         public static string Ritual_EnslaveFailed(string pawn) => "failed";
+        public static string Ritual_ChainStageReached(int stage) => $"stage {stage}";
+        public static string Ritual_ChainProgress(string progress) => "progress " + progress;
+        public static string Ritual_ChainStagePending(string threshold) => "pending " + threshold;
+        public static string Ritual_ChainFinalStage => "final stage";
         public static string Chain_LabelWithPawn(string label, string pawn) => label;
         public static string Need_TipFormat(params string[] text) => "";
     }

@@ -9,6 +9,10 @@
   <SSC_Ritual_CorruptionGain>恶堕率: +{0}</SSC_Ritual_CorruptionGain>
   <SSC_Ritual_OutcomeHeader> 仪式成果 </SSC_Ritual_OutcomeHeader>
   <SSC_Ritual_NoNewStage>(仪式加深了奴役的烙印，但未触发新的阶段)</SSC_Ritual_NoNewStage>
+  <SSC_Ritual_ChainStageReached>锁链升至第 {0} 阶。</SSC_Ritual_ChainStageReached>
+  <SSC_Ritual_ChainProgress>锁链在当前阶段继续推进，严重度达到 {0}。</SSC_Ritual_ChainProgress>
+  <SSC_Ritual_ChainStagePending>尚未升阶。下一阶段要求当前恶堕至少达到 {0}，且锁链进度达标。</SSC_Ritual_ChainStagePending>
+  <SSC_Ritual_ChainFinalStage>锁链已处于最高阶段。</SSC_Ritual_ChainFinalStage>
 
   <SSC_Bond_BridleAdded>{0} 在炒饭智能的帮助下用无形的链子拴住了 {1}</SSC_Bond_BridleAdded>
   <SSC_Bond_ChainAdded>{0} 一部分能力受限，需要听从于 {1}</SSC_Bond_ChainAdded>

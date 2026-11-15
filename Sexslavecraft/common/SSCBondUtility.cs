@@ -59,22 +59,31 @@ namespace SexSlaveCraft
 
         /// <summary>建立一次实际绑定；1.7在新的双向关系成功后定型初始印记，同关系重放不重新定型。</summary>
         public static bool Bind(Pawn master, Pawn sexSlave, bool replaceExisting = false)
-#if SSC_RW17
-            => BindCore(master, sexSlave, replaceExisting, true);
+#if SSC_RW17 || SSC_RITUAL_STAGE_TEST
+            => BindCore(master, sexSlave, replaceExisting, true, out _);
+
+        // null 表示链尚未写入；写入后核对本次实际创建或复用的链。
+        internal static bool BindForRitual(Pawn master, Pawn sexSlave,
+            Func<Hediff_ChainOfSexSlave, bool> isCurrent, out Hediff_ChainOfSexSlave chain)
+            => BindCore(master, sexSlave, false, true, out chain, isCurrent);
 
         /// <summary>仅供人格植入恢复来源已有关系；沿共同绑定逻辑恢复两端，不重放初始印记分化。</summary>
         internal static bool RestorePersonalityBinding(Pawn master, Pawn sexSlave)
-            => BindCore(master, sexSlave, true, false);
+            => BindCore(master, sexSlave, true, false, out _);
 
         /// <summary>校验身份与归属、建立双向链并发送原生命周期通知；仅新绑定入口允许末端分化。</summary>
-        private static bool BindCore(Pawn master, Pawn sexSlave, bool replaceExisting, bool differentiate)
+        private static bool BindCore(Pawn master, Pawn sexSlave, bool replaceExisting, bool differentiate,
+            out Hediff_ChainOfSexSlave chain, Func<Hediff_ChainOfSexSlave, bool> isCurrent = null)
 #endif
         {
+#if SSC_RW17 || SSC_RITUAL_STAGE_TEST
+            chain = null;
+#endif
             if (master == null || sexSlave == null || master == sexSlave) return false;
             if (!SSCIdentityUtility.IsMaster(master)) return false;
 
             Pawn existingMaster = GetBoundMaster(sexSlave);
-#if SSC_RW17
+#if SSC_RW17 || SSC_RITUAL_STAGE_TEST
             // 绑定会触发身份和健康回调，定型前必须仍是本次请求的两个组件与人格。
             object masterToken = SSCPersonalityRuntimeUtility.Capture(master);
             object slaveToken = SSCPersonalityRuntimeUtility.Capture(sexSlave);
@@ -88,25 +97,43 @@ namespace SexSlaveCraft
                 // 身份、锁链和缰绳分步建立；事务结束前的“暂无绑定主人”
                 // 不能让训导官普通培养错误退出。失败路径也由作用域统一检查最终状态。
                 if (!SSCIdentityUtility.TrySetIdentity(sexSlave, PawnIdentity.Slave)) return false;
+#if SSC_RW17 || SSC_RITUAL_STAGE_TEST
+                if (isCurrent != null && !isCurrent(null)) return false;
+#endif
                 if (existingMaster != null && existingMaster != master)
                 {
                     GetBridle(existingMaster)?.RemoveTarget(sexSlave);
                 }
 
+#if SSC_RW17 || SSC_RITUAL_STAGE_TEST
+                chain = Hediff_ChainOfSexSlave.AddToPawn(sexSlave, master);
+                // 链已提交时补齐它的反向索引；健康回调换链或换主后停止写入。
+                if (isCurrent != null && (chain == null || GetChain(sexSlave) != chain || chain.LinkedPawn != master))
+                    return false;
+#else
                 Hediff_ChainOfSexSlave chain = Hediff_ChainOfSexSlave.AddToPawn(sexSlave, master);
+#endif
                 Hediff_BridleOfSexSlave bridle = Hediff_BridleOfSexSlave.AddToPawn(master, sexSlave);
                 if (chain == null || bridle == null) return false;
+#if SSC_RW17 || SSC_RITUAL_STAGE_TEST
+                if (isCurrent != null && (GetChain(sexSlave) != chain || chain.LinkedPawn != master || GetBridle(master) != bridle))
+                {
+                    bridle.PruneInvalidTargets();
+                    return false;
+                }
+#endif
 
                 // 完成锁链与缰绳写入后清理旧主人关系；换绑不能把原仪式奖励转赠给新主人。
                 SSCBondRelationUtility.RemoveInvalidRelations(sexSlave);
 
                 // 限制系统沿用原有事务通知；训导官维护在作用域释放时运行。
                 SSCRestrictionGameComponent.Notify(sexSlave);
-#if SSC_RW17
+#if SSC_RW17 || SSC_RITUAL_STAGE_TEST
                 // 原载体经过全部回调仍有效才允许写定型事实；恢复旧链或同一对关系重放均不触发。
                 if (!SSCPersonalityRuntimeUtility.IsCurrent(master, masterToken) ||
                     !SSCPersonalityRuntimeUtility.IsCurrent(sexSlave, slaveToken) ||
-                    master.TryGetComp<CompSexSlaveTraining>() != masterComp || sexSlave.TryGetComp<CompSexSlaveTraining>() != slaveComp) return false;
+                    master.TryGetComp<CompSexSlaveTraining>() != masterComp || sexSlave.TryGetComp<CompSexSlaveTraining>() != slaveComp ||
+                    (isCurrent != null && !isCurrent(chain))) return false;
                 if (differentiate && existingMaster != master) SSCImprintUtility.DifferentiateAfterBinding(master, sexSlave);
 #endif
                 return true;

@@ -206,25 +206,40 @@ namespace SexSlaveCraft
                 return null;
             }
 
+            SetChainSeverity(hediff, pawn, hediff.Severity + amount);
+            return hediff;
+        }
+
+#if SSC_RW17 || SSC_RITUAL_STAGE_TEST
+        // 写入明确的阶段端点，避免把端点换成增量后再次相加。
+        internal void SetRitualSeverity(Pawn pawn, float severity) => SetChainSeverity(this, pawn, severity);
+#endif
+
+        private static void SetChainSeverity(Hediff_ChainOfSexSlave hediff, Pawn pawn, float severity)
+        {
             float oldSeverity = hediff.Severity;
             int oldStage = SSCIdentityUtility.GetSexSlaveStageFromChain(hediff);
-            hediff.Severity = Mathf.Clamp(oldSeverity + amount, 0f, hediff.def.maxSeverity);
+            hediff.Severity = Mathf.Clamp(severity, 0f, hediff.def.maxSeverity);
+            int newStage = SSCIdentityUtility.GetSexSlaveStageFromChain(hediff);
 #if SSC_RW17
             // 原入口也显式通知，避免健康阶段被外部改写后漏掉 SSC 自身的第四阶段退阶。
-            if (oldStage != SSCIdentityUtility.GetSexSlaveStageFromChain(hediff)) SSCRomanceLifecycle.Notify(pawn);
-            if (oldStage != SSCIdentityUtility.GetSexSlaveStageFromChain(hediff)) SSCOrgasmSensitivityUtility.NotifyStateChanged(pawn);
+            if (oldStage != newStage) SSCRomanceLifecycle.Notify(pawn);
+            if (oldStage != newStage) SSCOrgasmSensitivityUtility.NotifyStateChanged(pawn);
 #endif
-            if (oldStage != SSCIdentityUtility.GetSexSlaveStageFromChain(hediff))
+            if (oldStage != newStage)
                 SSCSelfTrainingFeedback.NotifyStatusChanged(pawn);
 
             // 只有跨越训导官所需的第 3 阶段边界时才执行状态维护。
             // 普通锁链成长不会因每次严重度写入都检查特化和绑定。
+#if SSC_RW17 || SSC_RITUAL_STAGE_TEST
+            if ((oldStage >= 3) != (newStage >= 3))
+#else
             if ((oldSeverity >= 0.5f) != (hediff.Severity >= 0.5f))
+#endif
                 TrainerSpecializationLifecycle.Notify(pawn);
 
             ModLog.Message($"[ChainOfSexSlave] Severity for {pawn} increased {oldSeverity:F2} → {hediff.Severity:F2}");
 
-            return hediff;
         }
     }
 }

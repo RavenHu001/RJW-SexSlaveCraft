@@ -144,6 +144,10 @@ namespace SexSlaveCraft
                 (!hasPhaseJob || phaseContext.IsCurrent && phaseContext.Target.Thing == slave)
                 && BindingRitualStateUtility.CanContinueOutcome(jobRitual, master, slave);
             if (!canContinue()) return;
+#if SSC_RW17
+            var chainProgress = new CorruptionProgressionUtility.RitualChainProgress(master, slave, canContinue);
+            canContinue = chainProgress.CanContinueSettlement;
+#endif
 
             SSCLog.Important($"[SSC 仪式结算] 进入结算: master={master.LabelShort}, slave={slave.LabelShort}, prisoner={slave.IsPrisonerOfColony}, colonist={slave.IsColonist}, slaveState={slave.IsSlave}, guestNull={(slave.guest == null)}");
 
@@ -199,7 +203,11 @@ namespace SexSlaveCraft
             // EN: Use ConditioningUtility here to apply SSC's Binding Ritual aftermath for the master and sex slave.
             // CN: 这里调用 ConditioningUtility，用来结算主人和性奴在“绑定仪式”中的 SSC 专属后果。
             if (!canContinue()) return;
-            string sscDetails = ConditioningUtility.ExecuteRitualOutcome(master, slave, quality, outcome.memory);
+            string sscDetails = ConditioningUtility.ExecuteRitualOutcome(master, slave, quality, outcome.memory
+#if SSC_RW17
+                , chainProgress
+#endif
+            );
             if (!canContinue()) return;
 
 #if SSC_RW17
