@@ -10,33 +10,33 @@
 
 - 爆炸时，波及范围内每个有效目标即时增加 **25 个百分点 PNA 负荷**。例如 20% 变为 45%，接近满值时沿用现有负荷上限。
 - 同一爆炸对同一目标结算一次。雾气体现在设定、描述和瞬时爆炸表现里，全部剂量在爆炸时结算。
-- 共享半径、遮挡细则、制作与研究条件待定。首轮可用半径 5 格、物理伤害为 0 试做，这两个值属于试调方案。
+- 实测版使用 5 格半径和零物理伤害。爆心落在实心阻挡格时只处理中心格。炮弹与陷阱均由「工业纳米催情液武器」解锁，陷阱另需原版 IED 研究。
 
-### 原版触发链与接入方案
+### 原版触发链与现行接入
 
-以下接口根据本机 RimWorld **1.7.5005 rev1082** 的 Core XML 与 `Assembly-CSharp.dll` 核对。游戏程序集 MVID 为 `3523c04c-c298-43ae-9571-20caaef22acc`。本节为实施方案，接入效果待编译与实机验证。
+以下接口根据本机 RimWorld **1.7.5005 rev1082** 的 Core XML 与 `Assembly-CSharp.dll` 核对。游戏程序集 MVID 为 `3523c04c-c298-43ae-9571-20caaef22acc`。两种载体已通过本批实机验收。
 
-| 载体 | 原版入口 | SSC 接入方案 |
+| 载体 | 原版入口 | SSC 现行接入 |
 | --- | --- | --- |
-| 迫击炮弹 | Core 的 `Shell_Smoke` 继承 `MakeableShellBase`，通过 `MortarShells` 分类入装填列表。原版按 `projectileWhenLoaded` 取得 `Bullet_Shell_Smoke`，由 `Projectile_Explosive.Explode` 在实际落点调用 `GenExplosion.DoExplosion`。 | 新增弹药物品和弹体两个 `ThingDef`，沿用原版装填与发射。弹体的 `projectile.damageDef` 使用 SSC 共用的爆炸定义。 |
-| IED 陷阱 | Core 的 `TrapIED_Smoke` 继承 `TrapIEDBase`。`Building_TrapExplosive.SpringSub` 启动 `CompExplosive` 引信，`Detonate` 在陷阱位置调用 `GenExplosion.DoExplosion`。 | 新增陷阱 `ThingDef`，`CompExplosive.explosiveDamageType` 引用同一个爆炸定义。原版烟雾 IED 的 15 tick 引信可作为试做参考。 |
+| 迫击炮弹 | Core 的 `Shell_Smoke` 继承 `MakeableShellBase`，通过 `MortarShells` 分类入装填列表。原版按 `projectileWhenLoaded` 取得 `Bullet_Shell_Smoke`，由 `Projectile_Explosive.Explode` 在实际落点调用 `GenExplosion.DoExplosion`。 | 弹药物品与弹体分别由各自的 `ThingDef` 定义，沿用原版装填与发射。弹体的 `projectile.damageDef` 使用 SSC 共用的爆炸定义。 |
+| IED 陷阱 | Core 的 `TrapIED_Smoke` 继承 `TrapIEDBase`。`Building_TrapExplosive.SpringSub` 启动 `CompExplosive` 引信，`Detonate` 在陷阱位置调用 `GenExplosion.DoExplosion`。 | 陷阱的 `CompExplosive.explosiveDamageType` 引用同一个爆炸定义，引信为 15 tick。踩踏或符合条件的受损启动引信。 |
 
-从抽象父定义接入，参照 Core 的 `Defs/ThingDefs_Items/Items_Resource_Shell.xml`、`Defs/ThingDefs_Buildings/Buildings_Security.xml` 和 `Defs/DamageDefs/Damages_Misc.xml`。弹体和陷阱的 `postExplosionGasType` 留空，通过共享 `DamageDef` 配置瞬时紫雾表现。库存中的炮弹是否因受损引爆仍待定，原版将这一行为配置在弹药物品自己的 `CompExplosive` 上。
+两种载体从抽象父定义接入，参照 Core 的 `Defs/ThingDefs_Items/Items_Resource_Shell.xml`、`Defs/ThingDefs_Buildings/Buildings_Security.xml` 和 `Defs/DamageDefs/Damages_Misc.xml`。弹体和陷阱通过共享 `DamageDef` 播放瞬时紫雾，`postExplosionGasType` 留空。库存炮弹作为普通物品处理，起爆由飞行弹体负责。
 
 ### 共享范围与一次性结算
 
-新增一个 `DamageDef` 和对应的专用 `DamageWorker`，由两种载体引用。以下为建议实现。
+两种载体引用同一个 `DamageDef` 和专用 `DamageWorker`。
 
-1. **统一入射方向与遮挡。** `Projectile_Explosive.Explode` 会传入弹道方向，而 `CompExplosive.Detonate` 的方向为空。爆心所在格不可越过时，原版会根据弹道方向附加视线约束，导致同一位置的范围可能不同。共用处理器可覆盖六参数版本的 `ExplosionCellsToHit`，为两种载体使用同一套以爆心为起点的原版视线和障碍规则。实心爆心建议只处理爆心格，具体规则待定。
-2. **对齐原版参数。** 弹体从 `projectile.explosionRadius` 读取半径，陷阱从 `CompExplosive.explosiveRadius` 读取半径。两处使用相同值，由轻量资源检查核对。弹体的传播速度取自 `DamageDef.expolosionPropagationSpeed`，陷阱取自 `CompExplosive.propagationSpeed`。若以 5 格试做，建议两条路径设为 10，使整圈在爆炸的首个处理 tick 生效。
+1. **统一入射方向与遮挡。** `Projectile_Explosive.Explode` 会传入弹道方向，`CompExplosive.Detonate` 的方向为空。共用处理器覆盖六参数版本的 `ExplosionCellsToHit`。可越过的爆心按无方向的原版视线与障碍规则计算，实心阻挡爆心只处理中心格。
+2. **对齐原版参数。** `projectile.explosionRadius` 和 `CompExplosive.explosiveRadius` 都设为 5 格。`DamageDef.expolosionPropagationSpeed` 和 `CompExplosive.propagationSpeed` 都设为 10，使整圈在爆炸的首个处理 tick 生效。
 3. **使用原版逐格入口和去重。** 零伤害爆炸仍会从 `Explosion.AffectCell` 进入 `DamageWorker.ExplosionAffectCell`，在同格遮挡筛选后调用 `ExplosionDamageThing`。专用覆盖方法核对有效 `Pawn` 和 `ignoredThings`，用该次爆炸的 `damagedThings` 去重，再调用公共 PNA 入口。原版 `Explosion` 保存剩余格和已处理目标，跨 tick 或读档继续使用各次爆炸自己的记录。
 4. **保持爆发为负荷输入。** 专用覆盖方法直接写入 PNA 负荷，跳过基类的 `TakeDamage` 和伤害战报。原版爆炸仍会发出对象通知，并能移除带 `removedByExplosions` 的临时地形。SSC 已有的爆炸击杀归因补丁及武器伤害分摊继续沿各自入口运行。 [现有爆炸击杀归因](../../Sexslavecraft/ThePatches/Harmony_CombatantExperience.cs) · [PNA 伤害分摊](../../Sexslavecraft/ThePatches/Harmony_SSCPnaDamageShare.cs)
 
 ### PNA 来源规则与验证
 
-建议在 `SSCPnaExposureSource` 末尾新增 `Blast`，扩展公共入口的来源校验，并以归一化剂量 `.25f` 调用 `SSCPnaExposureUtility.ApplyExposure`。共用普通负荷、有效锁链正面活化、主人免疫及普通目标满负荷首次成瘾。现有涂覆武器按开放伤口和意识抗性算剂量，`Weapon` 来源还补充 PNA 需求、加深已有成瘾。爆炸来源建议保持固定剂量，并将已有需求补充、已有成瘾基础增量及末期额外 `+0.20` 成瘾增量均设为零。这些成瘾与需求细则待定。 [现有涂覆处理器](../../Sexslavecraft/DamageWorker/DamageWorker_SSCPnaCoated.cs) · [PNA 来源结算](../../Sexslavecraft/common/SSCPnaExposureUtility.cs)
+处理器以 `Blast` 来源和归一化剂量 `.25f` 调用 `SSCPnaExposureUtility.ApplyExposure`。爆炸复用普通负荷、有效锁链正面活化、主人免疫及普通目标满负荷的首次成瘾判定。已有需求补充、已有成瘾基础增量及末期额外 `+0.20` 成瘾增量在 `Blast` 路径上均为零。 [PNA 来源结算](../../Sexslavecraft/common/SSCPnaExposureUtility.cs)
 
-建议把新增的三个 `ThingDef`、共享 `DamageDef` 和 C# 处理器纳入 1.7 的资源与编译入口。复用 [PnaLoad 专项](../../Tests/PnaLoad/README.md) 核对单次剂量、满值与身份分流。实机验证覆盖两种载体的实际爆心、同一空地与墙门布置下的范围一致性、倒地目标、单次去重及瞬时效果。迫击炮另验厚岩顶挡弹，陷阱另验踩踏与受损引信。
+三个 `ThingDef`、共享 `DamageDef` 和 C# 处理器已纳入 1.7 的资源与编译入口。单次剂量、满值与身份分流可从 [PnaLoad 专项](../../Tests/PnaLoad/README.md) 查阅，实机反馈按下方批次记录。
 
 ### 爆炸物第一批测试版
 
@@ -76,11 +76,13 @@
 
 ## 实现依据
 
-- 爆炸与持续暴露使用 [PNA 公共入口](../../Sexslavecraft/common/SSCPnaExposureUtility.cs)，复用普通侵蚀、有效锁链活化、主人免疫和身体负荷保存。新来源的需求补充和已有成瘾结算单独定义，尤其要核对持续输入的结算频率。
-- 发烟器可复用现有建筑的半径配置、范围预览和房间判定方式。现有三档催情发烟器实际施加 `HumpShroomEffect`，新建筑施加 PNA 身体负荷。[现有发烟器设计](Archive/单格电力催情发烟器开发规划.md#2-驼峰菇药效与暴露语义) · [现有发烟器组件](../../Sexslavecraft/Comps/CompSSCAphrodisiacEmitter.cs)
-- 发烟器按经过的有效游戏 Tick 换算暴露量。低档单次输入可能小于约 0.5% 的负荷清除阈值，可将同一目标的小剂量先累计、再入账，并用实测检查长期平衡点。离开覆盖或设备停机后，已入账的负荷继续自然消退。[PNA 负荷组件](../../Sexslavecraft/Hediff/HediffComp_SSCPnaLoad.cs)
+- 爆炸和发烟器以 `Blast`、`MistEmitter` 来源调用 [PNA 公共入口](../../Sexslavecraft/common/SSCPnaExposureUtility.cs)。两者共用普通侵蚀、有效锁链活化、主人免疫及身体负荷保存。两种来源的已有需求补充和已有成瘾增量均为零。
+- PNA 发烟器复用现有建筑的半径配置、范围预览和房间判定，并投送 PNA 身体负荷。原三档催情发烟器施加 `HumpShroomEffect`。[现有发烟器设计](Archive/单格电力催情发烟器开发规划.md#2-驼峰菇药效与暴露语义) · [现有发烟器组件](../../Sexslavecraft/Comps/CompSSCAphrodisiacEmitter.cs)
+- 发烟器按有效游戏 Tick 换算暴露量。低档把首次小剂量攒至 0.75% 入账，越过 0.5% 的负荷清除阈值。有负荷记录后按采样直接投送，已入账的负荷由同一组件自然消退。[PNA 负荷组件](../../Sexslavecraft/Hediff/HediffComp_SSCPnaLoad.cs)
 
-## 验收重点
+## 验收核对项
+
+以下条目用于复核。两批测试版的实机反馈见各自的验收记录。
 
 - 炮弹和陷阱分别触发一次，验证实际爆炸位置、共同覆盖边界和每个有效目标的 25 个百分点增量。覆盖同一目标只结算一次，以及接近满负荷时的钳制。
 - 调节半径与切换档位，确认范围预览和实际覆盖同步，核对停机、离开覆盖和存读档后的行为。

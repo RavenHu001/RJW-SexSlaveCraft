@@ -5,6 +5,8 @@
 [2.5.0 Training Management](#ssc-250) · [2.5.0 notes](Docs/Releases/2.5.0/2.5.0发布说明.md#english) · [2.4.10 pet paths](#ssc-2410) · [2.4.10 release notes](Docs/Releases/2.4.10/2.4.10发布说明.md#english)
 
 
+[PNA mist equipment (1.7 development build)](#ssc-pna-mist)
+
 <a id="ssc-250"></a>
 
 ## Training Management in 2.5.0
@@ -988,6 +990,22 @@ These are baseline values before quality, users and other modifiers. Damage and 
 **Sharing and whip cooperation:** PNA never travels with transferred Master damage. Medieval/industrial transfers retain physical wounds only; spacer main attacks on Masters create no transferred damage. As with the industrial working end, silk-whip attacks against non-hostile valid Chain-bound targets bypass dodge without registering a new melee threat, while attacker misses remain possible.
 
 **Resources:** the silk whip has its own item image (drawSize 0.75) and three aligned hand poses (1.75), with 45° idle, 6/12-tick timing and a hit afterimage. The final pulse/projector sprites are 256px at 1.05/1.25; purple charge-cluster projectiles use existing trails and accepted-input hearts. Accepted vanilla charge-weapon sounds remain. Further whip sound work is deferred after the trial was reverted. Completion and validation limits: [spacer audit](Docs/Development/Completed/SSC太空时代纳米催情液武器完成核对.md).
+
+<a id="ssc-pna-mist"></a>
+
+### 11.9 PNA mist shells, traps and emitter (1.7 development build)
+
+| Equipment | Research and materials |
+| --- | --- |
+| PNA mist shell | **Industrial aphrodisiac nanofluid weapons**. Make one at a machining table with 25 steel and 2 concentrated PNA, then load it into a vanilla mortar. |
+| PNA mist trap | **Industrial aphrodisiac nanofluid weapons** and vanilla **IEDs**. Build it with 30 steel and 4 concentrated PNA. Stepping on it or qualifying damage starts a 15-tick fuse. |
+| PNA mist emitter | **Precision electrothermal mist**. Build it under **Misc** with 80 steel and 3 industrial components. Connect it to power and refuel it with ordinary PNA. |
+
+Shells and traps share a five-cell burst that deals zero physical damage. Walls and doors affect which cells are reached. A burst centered inside a solid obstacle affects its center cell only. Each eligible target immediately gains **25 percentage points** of PNA load per burst, up to 100%. The violet mist is a brief visual effect. Stockpiled shells behave as ordinary items.
+
+The emitter starts off at a default radius of five cells. Set its radius up to ten cells independently of its mode. Only eligible targets within the radius and in the same room accumulate load. Low adds a gross 10 percentage points per game day, and prolonged exposure to one device approaches about **35%**. Targets starting at zero receive their first dose when pending load reaches 0.75%. High adds 2.5 percentage points every 60 ticks and can reach **100%** under sustained exposure. Turning the device off or losing power or fuel pauses exposure. Existing load decays normally after the target leaves or the device stops.
+
+At radius `r`, Low draws `100 + 4 × r²` W and High draws twice that. At five cells, Low uses one ordinary PNA per game day and High uses 12. Fuel consumption scales by `(r / 5)²`. Both exposure sources respect Master immunity and grant activation to pawns with a valid bond. Ordinary targets can develop their first addiction upon reaching full load. Existing PNA need satisfaction and addiction severity retain their values when exposed.
 
 ## 12. Public Use Specialization
 

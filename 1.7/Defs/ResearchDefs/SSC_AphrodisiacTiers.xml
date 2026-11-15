@@ -17,7 +17,7 @@
   <ResearchProjectDef>
     <defName>SSC_RES_PNAElectricMist</defName>
     <label>precision electrothermal mist</label>
-    <description>Improve mixing and control electric heat to reduce humpshroom consumption and adjust mist coverage. Unlocks the electric atomizer.</description>
+    <description>Control electric heat to adjust mist coverage. Unlocks an electric aphrodisiac atomizer that uses less humpshroom at the same radius, and a PNA mist emitter that uses ordinary PNA and has low and high settings.</description>
     <techLevel>Industrial</techLevel>
     <baseCost>1200</baseCost>
     <tab>SSC_ResearchTabDef</tab>
