@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_PnaMistEmitter.label>PNA 發煙器</SSC_PnaMistEmitter.label>
+  <SSC_PnaMistEmitter.description>通電後將普通 PNA 霧化，使同一房間內的生物逐漸累積 PNA 負荷。可調節半徑和工作檔位。低檔用於日常暴露，高檔可以持續堆到滿負荷。</SSC_PnaMistEmitter.description>
+</LanguageData>

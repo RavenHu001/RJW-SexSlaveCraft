@@ -53,7 +53,7 @@ public class Hediff_EmitterReviewHook : HediffWithComps
     public override void PostMake() { base.PostMake(); AfterMake?.Invoke(); }
 }
 
-internal static class Program
+internal static partial class Program
 {
     private static readonly List<Map> maps = new();
     private static readonly Dictionary<Thing, Room> rooms = new();
@@ -423,6 +423,7 @@ internal static class Program
                 holder = null; Scribe.loader.InitLoading(path); Scribe_Deep.Look(ref holder, "emitter"); Scribe.loader.FinalizeLoading();
                 Equal(17, holder.emitter.Radius); Require(!holder.emitter.Enabled);
             });
+            RunPnaMistChecks(repo);
         }
         finally { harmony.UnpatchAll(harmony.Id); Current.Game = null; }
         Console.WriteLine($"{passed}/{passed + failed} cases passed"); return failed == 0 ? 0 : 1;
@@ -450,7 +451,9 @@ internal static class Program
         var def = Bare<ThingDef>(); def.defName = "EmitterFixture"; def.category = ThingCategory.Building; def.comps = new() { powerProps, props };
         var building = new Building { def = def, thingIDNumber = ++nextId };
         Set(building, "factionInt", player); Set(building, "mapIndexOrState", (sbyte)0); Set(building, "positionInt", new IntVec3(10, 0, 10));
-        var emitter = new CompSSCAphrodisiacEmitter { parent = building, props = props };
+        var emitter = (CompSSCAphrodisiacEmitter)Activator.CreateInstance(props.compClass);
+        emitter.parent = building;
+        emitter.props = props;
         var power = new CompPowerTrader { parent = building, props = powerProps };
         Set(building, "comps", new List<ThingComp> { power, emitter });
         emitter.Initialize(props);

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_PnaMistEmitter_Mode>档位：{0}</SSC_PnaMistEmitter_Mode>
+  <SSC_PnaMistEmitter_ModeDesc>选择关闭、低档或高档。低档逐渐达到自然平衡，高档持续运行可堆满 PNA 负荷。</SSC_PnaMistEmitter_ModeDesc>
+  <SSC_PnaMistEmitter_Low>低档</SSC_PnaMistEmitter_Low>
+  <SSC_PnaMistEmitter_High>高档</SSC_PnaMistEmitter_High>
+  <SSC_PnaMistEmitter_RadiusDesc>按整格调节同房间内的覆盖半径。范围和档位决定耗电与耗材。</SSC_PnaMistEmitter_RadiusDesc>
+  <SSC_PnaMistEmitter_NoFuel>等待补充普通 PNA</SSC_PnaMistEmitter_NoFuel>
+  <SSC_PnaMistEmitter_FuelRate>PNA 消耗：{0} 份/天</SSC_PnaMistEmitter_FuelRate>
+</LanguageData>

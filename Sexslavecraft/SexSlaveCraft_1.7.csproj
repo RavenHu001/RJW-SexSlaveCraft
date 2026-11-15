@@ -57,6 +57,7 @@
     <Compile Include="JobDriver/JobDriver_SSCPnaMaintenance.cs" />
     <Compile Include="DamageWorker/DamageWorker_SSCPnaBlast.cs" />
     <Compile Include="Comps/CompSSCAphrodisiacEmitter.cs" />
+    <Compile Include="Comps/CompSSCPnaMistEmitter.cs" />
     <Compile Include="UI/Gizmo_SSCAphrodisiacRadius.cs" />
     <Compile Include="common/SSCTrainerWorkUtility.cs" />
     <Compile Include="Comps/Comp_Train.TrainerAssignments.cs" />

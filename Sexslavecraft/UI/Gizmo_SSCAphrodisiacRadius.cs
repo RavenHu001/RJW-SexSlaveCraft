@@ -30,8 +30,8 @@ namespace SexSlaveCraft
         }
         protected override string Title => "SSC_Emitter_RadiusTitle".Translate();
         protected override string BarLabel => "SSC_Emitter_RadiusPower".Translate(emitter.Radius, emitter.DemandWatts.ToString("F0"));
-        /// <summary>提供本地化的范围与耗电规则说明。</summary>
-        protected override string GetTooltip() => (emitter.UsesFuel ? "SSC_Emitter_IndustrialRadiusDesc" : "SSC_Emitter_RadiusDesc").Translate();
+        /// <summary>使用当前设备型号的本地化说明，显示范围、耗电与耗材规则。</summary>
+        protected override string GetTooltip() => emitter.RadiusTooltipKey.Translate();
         /// <summary>各设备半径独立，禁止多选时将本滑条合并为一个控件。</summary>
         public override bool GroupsWith(Gizmo other) => false;
         /// <summary>不传播其他控件的拖动操作，确保一次提交只修改原设备。</summary>

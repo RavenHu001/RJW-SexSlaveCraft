@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_PnaMistEmitter.label>Распылитель тумана PNA</SSC_PnaMistEmitter.label>
+  <SSC_PnaMistEmitter.description>Использует электричество для распыления обычной PNA. У живых существ в том же помещении постепенно растёт нагрузка PNA. Радиус и режим настраиваются отдельно. Низкий режим подходит для повседневного воздействия, высокий позволяет достичь полной нагрузки.</SSC_PnaMistEmitter.description>
+</LanguageData>

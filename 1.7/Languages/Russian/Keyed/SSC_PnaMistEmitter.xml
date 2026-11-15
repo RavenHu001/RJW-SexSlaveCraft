@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_PnaMistEmitter_Mode>Режим: {0}</SSC_PnaMistEmitter_Mode>
+  <SSC_PnaMistEmitter_ModeDesc>Выберите выключенный, низкий или высокий режим. В низком режиме нагрузка стремится к естественному равновесию, в высоком при длительном воздействии может достичь максимума.</SSC_PnaMistEmitter_ModeDesc>
+  <SSC_PnaMistEmitter_Low>Низкий</SSC_PnaMistEmitter_Low>
+  <SSC_PnaMistEmitter_High>Высокий</SSC_PnaMistEmitter_High>
+  <SSC_PnaMistEmitter_RadiusDesc>Задайте радиус действия в помещении в целых клетках. Расход энергии и PNA зависит от радиуса и режима.</SSC_PnaMistEmitter_RadiusDesc>
+  <SSC_PnaMistEmitter_NoFuel>Ожидание заправки обычной PNA</SSC_PnaMistEmitter_NoFuel>
+  <SSC_PnaMistEmitter_FuelRate>Расход PNA: {0} ед. в день</SSC_PnaMistEmitter_FuelRate>
+</LanguageData>

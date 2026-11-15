@@ -54,6 +54,21 @@ internal static partial class Program
             Near(.08, pawn.needs.PnaNeed.Value);
             Near(.4, SSCPnaExposureUtility.GetAddiction(pawn).Severity);
         });
+        Run("发烟器满值暴露沿用首次成瘾但不追加已有成瘾", () =>
+        {
+            var pawn = NewPawn();
+            Input(pawn, .99f);
+            // 同一来源的首次满值输入与后续持续暴露分别核对。
+            var exposure = SSCPnaExposureUtility.ApplyExposure(pawn, .025f, SSCPnaExposureSource.MistEmitter);
+            Assert(exposure.AddictionCreated && exposure.IsFull, "首次满值仍建立依赖");
+            pawn.needs.PnaNeed = .2f;
+            var addiction = SSCPnaExposureUtility.GetAddiction(pawn);
+            addiction.Severity = .4f;
+
+            SSCPnaExposureUtility.ApplyExposure(pawn, .025f, SSCPnaExposureSource.MistEmitter);
+            Near(.2, pawn.needs.PnaNeed.Value);
+            Near(.4, addiction.Severity);
+        });
         // 摄入链路：运行生产 Doer 和真实 Harmony 前缀，核对份数、修正及来源隔离。
         Run("普通药物每份20%且不随机成瘾",()=>{var p=NewPawn();var doer=new IngestionOutcomeDoer_SSCPna{severity=.4f};var drug=Drug(doer);drug.PrePostIngested(p);doer.DoIngestionOutcome(p,drug.parent,1);Near(.20,SSCPnaExposureUtility.GetLoad(p));Equal(0,drug.OriginalCalls);Assert(SSCPnaExposureUtility.GetAddiction(p)==null,"未满不随机");});
         Run("浓缩实际两份达满只建一次依赖",()=>{var p=NewPawn();var d=new IngestionOutcomeDoer_SSCPna{severity=1.4f};d.DoIngestionOutcome(p,new Thing(),2);Near(1,SSCPnaExposureUtility.GetLoad(p));Near(1,p.needs.PnaNeed.Value);Equal(1,p.health.hediffSet.hediffs.Count(h=>SSCPnaExposureUtility.IsAddictionDef(h.def)));});

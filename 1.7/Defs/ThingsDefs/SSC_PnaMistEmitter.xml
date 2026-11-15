@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <ThingDef ParentName="BuildingBase">
+    <defName>SSC_PnaMistEmitter</defName>
+    <label>PNA 发烟器</label>
+    <description>通电后将普通 PNA 雾化，使同一房间内的生物逐渐累积 PNA 负荷。可调节半径和工作档位。低档用于日常暴露，高档可以持续堆到满负荷。</description>
+    <thingClass>Building</thingClass>
+    <drawerType>MapMeshAndRealTime</drawerType>
+    <techLevel>Industrial</techLevel>
+    <graphicData>
+      <texPath>Things/Building/SSC_AphrodisiacAtomizer</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+      <drawSize>(1,1)</drawSize>
+      <color>(0.83,0.66,1)</color>
+    </graphicData>
+    <size>(1,1)</size>
+    <rotatable>false</rotatable>
+    <altitudeLayer>Building</altitudeLayer>
+    <passability>PassThroughOnly</passability>
+    <pathCost>30</pathCost>
+    <fillPercent>0.2</fillPercent>
+    <terrainAffordanceNeeded>Medium</terrainAffordanceNeeded>
+    <tickerType>Normal</tickerType>
+    <designationCategory>Misc</designationCategory>
+    <minifiedDef>MinifiedThing</minifiedDef>
+    <statBases>
+      <MaxHitPoints>180</MaxHitPoints>
+      <WorkToBuild>6000</WorkToBuild>
+      <Mass>20</Mass>
+      <Flammability>0.5</Flammability>
+    </statBases>
+    <constructionSkillPrerequisite>5</constructionSkillPrerequisite>
+    <costList>
+      <Steel>80</Steel>
+      <ComponentIndustrial>3</ComponentIndustrial>
+    </costList>
+    <researchPrerequisites><li>SSC_RES_PNAElectricMist</li></researchPrerequisites>
+    <comps>
+      <li Class="SexSlaveCraft.CompProperties_SSCAphrodisiacPower">
+        <compClass>CompPowerTrader</compClass>
+        <basePowerConsumption>200</basePowerConsumption>
+      </li>
+      <li Class="CompProperties_Refuelable">
+        <fuelCapacity>10</fuelCapacity>
+        <initialFuelPercent>0</initialFuelPercent>
+        <fuelConsumptionRate>0</fuelConsumptionRate>
+        <consumeFuelOnlyWhenUsed>true</consumeFuelOnlyWhenUsed>
+        <externalTicking>true</externalTicking>
+        <autoRefuelPercent>0.5</autoRefuelPercent>
+        <showAllowAutoRefuelToggle>true</showAllowAutoRefuelToggle>
+        <hideGizmosIfNotPlayerFaction>true</hideGizmosIfNotPlayerFaction>
+        <fuelLabel>PNA</fuelLabel>
+        <fuelGizmoLabel>PNA</fuelGizmoLabel>
+        <fuelFilter><thingDefs><li>Purple_Aphrodisiac_Nanofluid</li></thingDefs></fuelFilter>
+      </li>
+      <li Class="SexSlaveCraft.CompProperties_SSCPnaMistEmitter">
+        <smoke>SSC_AphrodisiacSmoke</smoke>
+        <sourceSmoke>SSC_AphrodisiacSourceSmoke</sourceSmoke>
+        <minRadius>5</minRadius>
+        <maxRadius>10</maxRadius>
+        <defaultRadius>5</defaultRadius>
+        <baseWatts>100</baseWatts>
+        <wattsPerRadiusSquared>4</wattsPerRadiusSquared>
+        <fuelPerDayAtMinRadius>1</fuelPerDayAtMinRadius>
+        <lowLoadPerDay>0.10</lowLoadPerDay>
+        <highLoadPerDay>25</highLoadPerDay>
+        <highPowerMultiplier>2</highPowerMultiplier>
+        <highFuelMultiplier>12</highFuelMultiplier>
+      </li>
+    </comps>
+  </ThingDef>
+</Defs>

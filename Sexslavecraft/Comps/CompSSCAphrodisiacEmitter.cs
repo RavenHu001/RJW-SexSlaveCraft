@@ -18,13 +18,15 @@ namespace SexSlaveCraft
         public float baseWatts = 100f, wattsPerRadiusSquared = 4f;
         // 为0表示太空级免补料；工业级随半径面积变化，香炉固定半径。
         public float fuelPerDayAtMinRadius;
+        /// <summary>直接施加药效的型号需要在定义中提供 Hediff。</summary>
+        protected virtual bool RequiresHediff => true;
         /// <summary>绑定设备运行组件，供XML实例化。</summary>
         public CompProperties_SSCAphrodisiacEmitter() { compClass = typeof(CompSSCAphrodisiacEmitter); }
         /// <summary>核对药效、型号半径、电力及原版补料契约；无电香炉不要求电力组件。</summary>
         public override IEnumerable<string> ConfigErrors(ThingDef parentDef)
         {
             foreach (string error in base.ConfigErrors(parentDef)) yield return error;
-            if (hediff == null) yield return "SSC emitter requires a hediff.";
+            if (RequiresHediff && hediff == null) yield return "SSC emitter requires a hediff.";
             if (requiresPower && !parentDef.HasComp(typeof(CompPowerTrader))) yield return "SSC emitter requires a power trader.";
             if (minRadius < 1 || maxRadius < minRadius || defaultRadius < minRadius || defaultRadius > maxRadius)
                 yield return "SSC emitter has invalid radius bounds.";
@@ -79,15 +81,24 @@ namespace SexSlaveCraft
         public bool HasSwitch => Props?.hasSwitch ?? true;
         public bool UsesFuel => Props?.fuelPerDayAtMinRadius > 0f;
         private bool HasFuel => !UsesFuel || (Fuel?.HasFuel == true && Fuel.Fuel > pendingFuel);
-        public bool Enabled => !HasSwitch || enabled;
+        /// <summary>提供型号保存的开启意愿，供运行准入、耗电和绘制读取。</summary>
+        public virtual bool Enabled => !HasSwitch || enabled;
         public int Radius => radius;
-        public float FuelPerDay => UsesFuel ? Props.fuelPerDayAtMinRadius * radius * radius / (RadiusMinimum * RadiusMinimum) : 0f;
+        public virtual float FuelPerDay => UsesFuel ? Props.fuelPerDayAtMinRadius * radius * radius / (RadiusMinimum * RadiusMinimum) : 0f;
         /// <summary>有料且开启的电设备保留请求负载，缺电不清零；无电型号、关闭或缺料归零。</summary>
-        public float DemandWatts => WantsToBeOn && Props.requiresPower ? Props.baseWatts + Props.wattsPerRadiusSquared * radius * radius : 0f;
+        public virtual float DemandWatts => WantsToBeOn && Props.requiresPower ? Props.baseWatts + Props.wattsPerRadiusSquared * radius * radius : 0f;
         /// <summary>将玩家保存的开关选择交给CompAutoPowered的电网启停流程。</summary>
         public override bool WantsToBeOn => Enabled && HasFuel;
         /// <summary>按已确认的整数半径计算瓦数；调用方负责半径范围校验。</summary>
         public static float WattsForRadius(int value) => 100f + 4f * value * value;
+        /// <summary>各型号的自动投送间隔，由共用普通 Tick 按设备错峰调用。</summary>
+        protected virtual int PulseInterval => ExposureInterval;
+        /// <summary>控制型号是否接受并保存独立的布尔开关。</summary>
+        protected virtual bool HasSeparateSwitch => HasSwitch;
+        /// <summary>供单次投送捕获的配置版本，在回调后校验原请求。</summary>
+        protected int ExposureRevision => revision;
+        /// <summary>给需要跨采样累计的型号清除未入账状态。</summary>
+        protected virtual void ResetExposure() { }
 
         /// <summary>手动提交仅限当前玩家建筑的现役组件；此所有权限制不用于药效目标。</summary>
         public bool CanConfigure => Scribe.mode == LoadSaveMode.Inactive && parent != null &&
@@ -112,11 +123,10 @@ namespace SexSlaveCraft
         /// <summary>由玩家直接切换设备，提交时复查资格并立即更新负载，无需小人执行任务。</summary>
         public bool TrySetEnabled(bool value)
         {
-            if (!CanConfigure || !HasSwitch) return false;
+            if (!CanConfigure || !HasSeparateSwitch) return false;
             if (enabled == value) return true;
             enabled = value;
-            revision++;
-            RefreshPowerDemand();
+            NotifySettingsChanged();
             return true;
         }
 
@@ -127,9 +137,16 @@ namespace SexSlaveCraft
             int next = Mathf.RoundToInt(Mathf.Clamp(value, RadiusMinimum, RadiusMaximum));
             if (radius == next) return true;
             radius = next;
-            revision++;
-            RefreshPowerDemand();
+            NotifySettingsChanged();
             return true;
+        }
+
+        /// <summary>使旧投送失效，清理累计状态并更新当前电力需求。</summary>
+        protected void NotifySettingsChanged()
+        {
+            revision++;
+            ResetExposure();
+            RefreshPowerDemand();
         }
 
         /// <summary>保留未通电时的请求负载，由原版电网分配；关闭意愿阻止电网重启。</summary>
@@ -158,7 +175,7 @@ namespace SexSlaveCraft
         public override void PostExposeData()
         {
             base.PostExposeData();
-            Scribe_Values.Look(ref enabled, "sscEmitterEnabled", true);
+            if (HasSeparateSwitch) Scribe_Values.Look(ref enabled, "sscEmitterEnabled", true);
             Scribe_Values.Look(ref radius, "sscEmitterRadius", DefaultRadius);
             if (UsesFuel) Scribe_Values.Look(ref pendingFuel, "sscEmitterPendingFuel", 0d);
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
@@ -183,6 +200,7 @@ namespace SexSlaveCraft
         {
             revision++;
             targets.Clear();
+            ResetExposure();
             radiusGizmo = null;
             base.PostDeSpawn(map, mode);
         }
@@ -193,6 +211,7 @@ namespace SexSlaveCraft
             base.PostSwapMap();
             revision++;
             targets.Clear();
+            ResetExposure();
             radiusGizmo = null;
             compPowerCached = parent.TryGetComp<CompPowerTrader>();
             RefreshPowerDemand();
@@ -203,7 +222,8 @@ namespace SexSlaveCraft
         {
             // 电力组件重置可恢复静态默认值；每tick仅做一次廉价差值核对。
             RefreshPowerDemand();
-            if (!CanRunNow) return;
+            // 每 Tick 识别停机，防止两次采样之间的断电被计为连续暴露。
+            if (!CanRunNow) { ResetExposure(); return; }
             if (UsesFuel)
             {
                 // 不依赖人口、房间面积或补料组件的Tick顺序；停机时间不计费、不补扣。
@@ -214,30 +234,30 @@ namespace SexSlaveCraft
                     pendingFuel = 0d;
                     Fuel.ConsumeFuel(amount);
                 }
-                if (!CanRunNow) { RefreshPowerDemand(); return; }
+                if (!CanRunNow) { ResetExposure(); RefreshPowerDemand(); return; }
             }
             // 不补算断电期间的暴露；药效回调可能停机，烟雾调度前须再查运行条件。
-            if (parent.IsHashIntervalTick(ExposureInterval)) ApplyExposurePulse();
+            if (parent.IsHashIntervalTick(PulseInterval)) ApplyExposurePulse();
             if (CanRunNow && parent.IsHashIntervalTick(15)) TryEmitSmoke();
         }
 
         /// <summary>只检查有效健康对象、同图、半径及同房间，不额外按年龄、种族或阵营筛选。</summary>
-        private bool InCoverage(Pawn pawn, Map map, Room room)
+        protected bool InCoverage(Pawn pawn, Map map, Room room)
             => room != null && pawn != null && !pawn.Dead && !pawn.Destroyed && pawn.Spawned &&
                 pawn.Map == map && pawn.health?.hediffSet != null &&
                 pawn.Position.DistanceToSquared(parent.Position) <= radius * radius && pawn.GetRoom() == room;
 
         /// <summary>确认源设备仍属于本次脉冲的地图和配置版本；中途变更后不续算旧请求。</summary>
-        private bool PulseStillValid(Map map, int pulseRevision)
+        protected bool PulseStillValid(Map map, int pulseRevision)
             => CanRunNow && revision == pulseRevision && parent.Map == map;
 
         /// <summary>在回调后复查源、范围与原健康载体，防止旧请求写入被替换的Tracker。</summary>
-        private bool CanReceiveDose(Pawn pawn, Pawn_HealthTracker health, Map map, int pulseRevision)
+        protected bool CanReceiveDose(Pawn pawn, Pawn_HealthTracker health, Map map, int pulseRevision)
             => PulseStillValid(map, pulseRevision) && ReferenceEquals(pawn.health, health) &&
                 InCoverage(pawn, map, parent.GetRoom());
 
         /// <summary>只从普通Tick结算；角色列表先快照，健康回调换图／移除不会打坏枚举。</summary>
-        public void ApplyExposurePulse()
+        public virtual void ApplyExposurePulse()
         {
             if (applyingExposure || !CanRunNow || Props.hediff == null) return;
             Map map = parent.Map;
@@ -368,7 +388,7 @@ namespace SexSlaveCraft
         public override void PostDraw()
         {
             // MapMeshAndRealTime保证静态建筑也调用此入口；绘制不依赖通电或选中状态。
-            if (parent.Spawned && HasSwitch && !enabled && !parent.Fogged() && !parent.IsBrokenDown())
+            if (parent.Spawned && HasSwitch && !Enabled && !parent.Fogged() && !parent.IsBrokenDown())
                 parent.Map.overlayDrawer.DrawOverlay(parent, OverlayTypes.PowerOff);
         }
 
@@ -376,7 +396,12 @@ namespace SexSlaveCraft
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
         {
             if (!CanConfigure) yield break;
-            if (HasSwitch) yield return new Command_Toggle
+            if (HasSwitch) yield return CreateOperatingCommand();
+            if (RadiusMaximum > RadiusMinimum) yield return radiusGizmo ?? (radiusGizmo = new Gizmo_SSCAphrodisiacRadius(this));
+        }
+
+        /// <summary>提供型号的操作命令，半径滑条由共用入口另行创建。</summary>
+        protected virtual Command CreateOperatingCommand() => new Command_Toggle
             {
                 defaultLabel = "SSC_Emitter_Toggle".Translate(),
                 defaultDesc = "SSC_Emitter_ToggleDesc".Translate(),
@@ -384,18 +409,21 @@ namespace SexSlaveCraft
                 isActive = () => enabled,
                 toggleAction = () => TrySetEnabled(!enabled)
             };
-            if (RadiusMaximum > RadiusMinimum) yield return radiusGizmo ?? (radiusGizmo = new Gizmo_SSCAphrodisiacRadius(this));
-        }
+
+        // 滑条和检查栏从当前型号获取覆盖及耗材文案。
+        internal virtual string RadiusTooltipKey => UsesFuel ? "SSC_Emitter_IndustrialRadiusDesc" : "SSC_Emitter_RadiusDesc";
+        protected virtual string NoFuelKey => "SSC_Emitter_NoFuel";
+        protected virtual string FuelRateKey => "SSC_Emitter_FuelRate";
 
         /// <summary>显示保存的开关选择、实际运行状态及请求功率，不在绘制时推进药效。</summary>
         public override string CompInspectStringExtra()
         {
-            string state = !Enabled ? "SSC_Emitter_Off" : !HasFuel ? "SSC_Emitter_NoFuel" :
+            string state = !Enabled ? "SSC_Emitter_Off" : !HasFuel ? NoFuelKey :
                 CanRunNow ? "SSC_Emitter_Running" : "SSC_Emitter_NoPower";
             string text = "SSC_Emitter_Status".Translate(state.Translate()) + "\n" +
                 (Props.requiresPower ? "SSC_Emitter_RadiusPower".Translate(radius, DemandWatts.ToString("F0")) :
                 "SSC_Emitter_FixedRadius".Translate(radius));
-            if (UsesFuel) text += "\n" + "SSC_Emitter_FuelRate".Translate(FuelPerDay.ToString("0.##"));
+            if (UsesFuel) text += "\n" + FuelRateKey.Translate(FuelPerDay.ToString("0.##"));
             return text;
         }
 
