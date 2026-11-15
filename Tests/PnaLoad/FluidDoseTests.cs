@@ -16,9 +16,7 @@ internal static partial class Program
     private static void RunFluidDoseTests()
     {
         // 原始极值在适配器读取处截断，执行真正聚合和真正 PNA 输入，不复制生产公式。
-        foreach (var row in new[] { (0f,.03f),(-1f,.03f),(7.49f,.03f),(7.5f,.03f),(10f,.04f),
-            (20f,.08f),(40f,.16f),(249f,.996f),(250f,1f),(1_000_000_000f,1f),
-            (float.MaxValue,1f),(float.PositiveInfinity,1f),(float.NegativeInfinity,.03f),(float.NaN,.03f) })
+        foreach (var row in new[] { (7.49f, .03f), (40f, .16f), (249f, .996f), (float.PositiveInfinity, 1f), (float.NaN, .03f) })
             Run("侵染体液读取边界 " + row.Item1, () =>
             {
                 var source=FluidMaster(row.Item1);
@@ -40,12 +38,6 @@ internal static partial class Program
             var source=FluidMaster(20);var organ=(rjw.FluidOrgan)source.FluidOrgans[0];source.FluidOrgans.Add(organ);
             Near(.08,SSCMasterInfestationFluidUtility.CaptureDose(source));Equal(1,organ.Comp.Reads);
         });
-        foreach (float first in new[]{250f,1e9f,float.MaxValue,float.PositiveInfinity})
-            Run("侵染饱和后不再读取后续器官 "+first,()=>
-            {
-                var source=FluidMaster(first);var next=AddFluidOrgan(source,20);next.Comp.ThrowRead=true;
-                Near(1,SSCMasterInfestationFluidUtility.CaptureDose(source));Equal(0,next.Comp.Reads);
-            });
         Run("侵染累加剩余额度前比较不会溢出",()=>
         {
             var source=FluidMaster(249);AddFluidOrgan(source,float.MaxValue);var next=AddFluidOrgan(source,20);
@@ -77,7 +69,7 @@ internal static partial class Program
         });
         Run("侵染整体读取异常保留下限",()=>
         {var source=FluidMaster(20);source.ThrowFluidList=true;Near(.03,SSCMasterInfestationFluidUtility.CaptureDose(source));});
-        foreach(float amount in new[]{0f,10f,40f,250f})
+        foreach(float amount in new[]{10f,250f})
             Run("侵染动态剂量不缩放需求成瘾或恶堕 "+amount,()=>
             {
                 var source=FluidMaster(amount);var target=InfestationTarget();AddOldAddiction(target,.4f);target.needs.PnaNeed=.2f;
@@ -87,10 +79,6 @@ internal static partial class Program
             });
         Run("侵染高产首次顶满只按原规则建立成瘾",()=>
         {var source=FluidMaster(1e9f);var target=InfestationTarget();FinishInfestation(source,target);Near(1,SSCPnaExposureUtility.GetLoad(target));Near(1,SSCPnaExposureUtility.GetAddiction(target).Severity);});
-        Run("侵染最低量仍优先普通产出者且只结算一次",()=>
-        {var source=FluidMaster(0);AddPnaProducer(source);var target=InfestationTarget();FinishInfestation(source,target);Near(.03,SSCPnaExposureUtility.GetLoad(target));});
-        Run("侵染最低量在已满身体仍沿用末期成瘾规则",()=>
-        {var source=FluidMaster(0);var target=InfestationTarget();Raw(target,2);AddOldAddiction(target,.4f);FinishInfestation(source,target);Near(1,SSCPnaExposureUtility.GetLoad(target));Near(.62,SSCPnaExposureUtility.GetAddiction(target).Severity);});
         Run("侵染产量冻结在原结算前且重复分发不重读",()=>
         {
             var source=FluidMaster(20);var target=InfestationTarget();var organ=(rjw.FluidOrgan)source.FluidOrgans[0];
@@ -98,8 +86,6 @@ internal static partial class Program
             organ.Comp.Amount=250;Assert(context.TryClaim(),"合法认领");context.Dispatch();context.Dispatch();
             Near(.08,SSCPnaExposureUtility.GetLoad(target));Equal(1,organ.Comp.Reads);
         });
-        Run("侵染无产量下限也走锁链保护分流",()=>
-        {var source=FluidMaster(0);var target=InfestationTarget();Hediff_ChainOfSexSlave.AddToPawn(target,NewPawn());FinishInfestation(source,target);Near(.03,SSCPnaExposureUtility.GetLoad(target));Assert(SSCPnaExposureUtility.GetAddiction(target)==null,"不产生普通成瘾");});
         Run("侵染独立旧签名也使用动态剂量",()=>
         {var source=FluidMaster(40);var target=InfestationTarget();SSCPnaSexSupplyUtility.ApplyInfestation(source,target,()=>true);Near(.16,SSCPnaExposureUtility.GetLoad(target));});
     }

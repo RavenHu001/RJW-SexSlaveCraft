@@ -36,7 +36,7 @@
 
 处理器以 `Blast` 来源和归一化剂量 `.25f` 调用 `SSCPnaExposureUtility.ApplyExposure`。爆炸复用普通负荷、有效锁链正面活化、主人免疫及普通目标满负荷的首次成瘾判定。已有需求补充、已有成瘾基础增量及末期额外 `+0.20` 成瘾增量在 `Blast` 路径上均为零。 [PNA 来源结算](../../Sexslavecraft/common/SSCPnaExposureUtility.cs)
 
-三个 `ThingDef`、共享 `DamageDef` 和 C# 处理器已纳入 1.7 的资源与编译入口。单次剂量、满值与身份分流可从 [PnaLoad 专项](../../Tests/PnaLoad/README.md) 查阅，实机反馈按下方批次记录。
+三个 `ThingDef`、共享 `DamageDef` 和 C# 处理器已纳入 1.7 的资源与编译入口。[PnaLoad 专项](../../Tests/PnaLoad/README.md) 保留一个 `Blast` 来源用例，验证末期输入增加负荷且不改变已有需求和成瘾。满值、首次成瘾和身份分流由既有公共用例覆盖。载体触发及实际爆炸范围沿用下方实机验收。
 
 ### 爆炸物第一批测试版
 

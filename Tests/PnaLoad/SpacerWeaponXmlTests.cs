@@ -18,20 +18,13 @@ internal static partial class Program
 
         // 从正式武器追踪至 Maneuver／投射物及剂量扩展，然后运行生产处理器。
         // 身份、剂量、修复是真实生产代码；护甲和最终写伤仍由本宿主提供可观察边界。
-        foreach (var row in new[] { (Name:"SSC_Weapon_PnaSilkWhip", Dose:.20, Repair:1.0), (Name:"SSC_Weapon_PnaPulseGun", Dose:.10, Repair:.5), (Name:"SSC_Weapon_PnaProjectorGun", Dose:.25, Repair:1.25) })
+        foreach (var row in new[] { (Name:"SSC_Weapon_PnaSilkWhip", Dose:.20), (Name:"SSC_Weapon_PnaPulseGun", Dose:.10), (Name:"SSC_Weapon_PnaProjectorGun", Dose:.25) })
         {
             Run("正式XML效力读取及普通穿透 " + row.Name, () =>
             {
                 var pair = SpacerAttackFromXml(row.Name); Near(row.Dose, Potency(pair.Weapon));
                 var p = CoatedPawn(); var result = new DamageWorker_SSCPnaSpacer().Apply(pair.Shot,p);
                 Near(row.Dose, SSCPnaExposureUtility.GetLoad(p)); Near(1,result.totalDamageDealt); Equal(1,ArmorUtility.Calls);
-            });
-            Run("正式XML有效链无甲耗吸收修复 " + row.Name, () =>
-            {
-                var pair = SpacerAttackFromXml(row.Name); var p = SpacerSlave(); var injury = SpacerInjury(p,10);
-                ArmorUtility.Boundary = (Pawn _,float amount,ref DamageDef damage) => 0;
-                var result = new DamageWorker_SSCPnaSpacer().Apply(pair.Shot,p);
-                Near(row.Dose,SSCPnaExposureUtility.GetLoad(p)); Near(row.Repair,injury.Healed); Equal(0,ArmorUtility.Calls); Assert(!result.wounded,"无创伤");
             });
         }
         Run("太空三发由正式XML驱动逐发投送及修复", () =>

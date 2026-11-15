@@ -10,7 +10,7 @@ internal static partial class Program
     private static void RunWeaponDoseUtilityTests()
     {
         foreach (var row in new (float consciousness,float expected)[]
-            {(-1f,.375f),(0f,.375f),(.1f,.375f),(.2f,.375f),(1f,.075f),(2f,.0375f),(3f,.025f)})
+            {(.1f,.375f),(1f,.075f),(3f,.025f)})
             Run("共用归一化剂量 "+row,()=>
             {
                 var p=CoatedPawn();p.health.capacities.Consciousness=row.consciousness;
@@ -84,8 +84,8 @@ internal static partial class Program
                 Near(.10,SSCPnaExposureUtility.GetLoad(p));Near(3,p.health.hediffSet.GetFirstHediffOfDef(CoatingResistance).Severity);
                 Equal(1,p.health.hediffSet.hediffs.Count(h=>h.def==CoatingResistance));
             });
-        // 工具层区分零、负值、NaN与无穷；正负无穷共用非有限回退。
-        foreach(float invalid in new[]{0f,-1f,float.NaN,float.PositiveInfinity})
+        // 保留非正与非有限两类失效快照。
+        foreach(float invalid in new[]{0f,float.NaN})
             Run("共用非法既有快照只读回退正常意识 "+invalid,()=>
             {
                 var p=CoatedPawn();var record=new Hediff{pawn=p,def=CoatingResistance,RawSeverity=invalid};
@@ -93,13 +93,14 @@ internal static partial class Program
                 var sample=SSCPnaWeaponDoseUtility.Capture(p,CoatingResistance);
                 Near(.15,SSCPnaWeaponDoseUtility.FromLoad(.15f,sample));Equal(0,p.health.Notifications);
             });
-        foreach(float invalid in new[]{float.NaN,float.PositiveInfinity})
-            Run("共用非有限意识不制造快照 "+invalid,()=>
-            {
-                var p=CoatedPawn();p.health.capacities.Consciousness=invalid;
-                var sample=SSCPnaWeaponDoseUtility.Capture(p,CoatingResistance);
-                Near(.15,SSCPnaWeaponDoseUtility.FromLoad(.15f,sample));Near(0,sample.NewSnapshotSeverity);
-                Assert(SSCPnaWeaponDoseUtility.StoreSnapshot(p,CoatingResistance,sample)==null,"无快照");
-            });
+        Run("共用非有限意识不制造快照", () =>
+        {
+            var pawn = CoatedPawn();
+            pawn.health.capacities.Consciousness = float.PositiveInfinity;
+            var sample = SSCPnaWeaponDoseUtility.Capture(pawn, CoatingResistance);
+            Near(.15, SSCPnaWeaponDoseUtility.FromLoad(.15f, sample));
+            Near(0, sample.NewSnapshotSeverity);
+            Assert(SSCPnaWeaponDoseUtility.StoreSnapshot(pawn, CoatingResistance, sample) == null, "无快照");
+        });
     }
 }

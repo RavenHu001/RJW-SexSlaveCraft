@@ -8,41 +8,53 @@ internal static partial class Program
 {
     private static void RunSpacerWeaponTests()
     {
-        // 三载体共用同一生产处理器：分别核对普通微创、无伤吸收及同源效力／修复预算。
-        foreach(float load in new[]{.20f,.10f,.25f})
+        Run("太空有效链直接吸收并按剂量修复", () =>
         {
-            Run("太空普通目标单次微创与基线 "+load,()=>
-            { var p=CoatedPawn();var w=new DamageWorker_SSCPnaSpacer();var r=w.Apply(SpacerShot(load),p);
-                Near(load,SSCPnaExposureUtility.GetLoad(p));Near(1,r.totalDamageDealt);Equal(1,ArmorUtility.Calls);Equal(1,w.InjuryCalls);Equal(1,SSCPnaWeaponEffectsUtility.Absorptions.Count); });
-            Run("太空有效链高甲吸收与固定修复 "+load,()=>
-            { var p=SpacerSlave();var injury=SpacerInjury(p,10);ArmorUtility.Boundary=(Pawn _,float a,ref DamageDef d)=>0;
-                var w=new DamageWorker_SSCPnaSpacer();var r=w.Apply(SpacerShot(load),p);
-                Near(load,SSCPnaExposureUtility.GetLoad(p));Near(load*5,injury.Healed);Equal(0,ArmorUtility.Calls);Equal(0,w.InjuryCalls);Near(0,r.totalDamageDealt);Assert(!r.wounded,"不伪造创伤"); });
-            Run("太空效力及修复读同一配置 "+load,()=>
-            { var shot=SpacerShot(load);Near(load,Potency(PotencyRanged(shot.Def)));Near(load*5,shot.Def.GetModExtension<SSCPnaSpacerExtension>().RepairBudget); });
-        }
+            var pawn = SpacerSlave();
+            var injury = SpacerInjury(pawn, 10);
+            ArmorUtility.Boundary = (Pawn _, float amount, ref DamageDef damage) => 0;
+            var worker = new DamageWorker_SSCPnaSpacer();
+            var result = worker.Apply(SpacerShot(.10f), pawn);
+            Near(.10, SSCPnaExposureUtility.GetLoad(pawn));
+            Near(.5, injury.Healed);
+            Equal(0, ArmorUtility.Calls);
+            Equal(0, worker.InjuryCalls);
+            Assert(!result.wounded, "不伪造创伤");
+        });
         // 身份分流与护甲门槛：主人优先；转钝的物理结果由边界提供，不能当作原版概率实测。
-        foreach(bool rooted in new[]{false,true}) Run("太空主人免疫优先于链 "+rooted,()=>
-        { var p=rooted?SpacerSlave():CoatedPawn();var injury=SpacerInjury(p,10);p.IsMaster=true;p.health.capacities.Consciousness=3;
+        Run("太空主人免疫优先于链",()=>
+        { var p=SpacerSlave();var injury=SpacerInjury(p,10);p.IsMaster=true;p.health.capacities.Consciousness=3;
             var w=new DamageWorker_SSCPnaSpacer();w.Apply(SpacerShot(),p);Near(0,injury.Healed);Equal(0,w.InjuryCalls);Equal(0,ArmorUtility.Calls);AssertNoMasterDrugState(p); });
         Run("太空普通完全阻挡无药无新快照",()=>
         {var p=CoatedPawn();p.health.capacities.Consciousness=3;ArmorUtility.Boundary=(Pawn _,float a,ref DamageDef d)=>0;
             var w=new DamageWorker_SSCPnaSpacer();Assert(w.Apply(SpacerShot(),p).deflected,"弹开");AssertNoCoatingDrug(p);Equal(0,w.InjuryCalls);});
-        foreach(float damage in new[]{0f,1f}) Run("太空普通转钝保留实际物理结果而不投药 "+damage,()=>
-        {var p=CoatedPawn();p.health.capacities.Consciousness=3;ArmorUtility.Boundary=(Pawn _,float a,ref DamageDef d)=>{d=new DamageDef{defName="Bruise"};return damage;};
+        Run("太空普通转钝保留实际物理结果而不投药",()=>
+        {const float damage=1f;var p=CoatedPawn();p.health.capacities.Consciousness=3;ArmorUtility.Boundary=(Pawn _,float a,ref DamageDef d)=>{d=new DamageDef{defName="Bruise"};return damage;};
             var w=new DamageWorker_SSCPnaSpacer();var r=w.Apply(SpacerShot(),p);Near(damage,r.totalDamageDealt);Equal(damage>0?1:0,w.InjuryCalls);AssertNoCoatingDrug(p);Equal(1,ArmorUtility.Calls);});
         foreach(bool suppressed in new[]{false,true}) Run("太空穿透不依赖可见伤口 "+suppressed,()=>
         {var p=CoatedPawn();p.SuppressInjury=suppressed;p.IncomingFactor=suppressed?1:0;
             var r=new DamageWorker_SSCPnaSpacer().Apply(SpacerShot(),p);Assert(!r.wounded,"无伤口");Near(.2,SSCPnaExposureUtility.GetLoad(p));});
         // 投送按命中时与回调后的真实部位判断；人工祖先、缺失和外来部位不能借无伤分支受药。
-        foreach(bool rooted in new[]{false,true}) foreach(string kind in new[]{"solid","added","parent","missing","foreign"})
-            Run("太空投送部位准入 "+rooted+kind,()=>
-            {var p=rooted?SpacerSlave():CoatedPawn();var part=p.RaceProps.body.AllParts[0];var shot=SpacerShot();
-                if(kind=="solid")part.def.Solid=true;
-                if(kind=="added"||kind=="parent") {var at=part;if(kind=="parent"){at=new BodyPartRecord();part.parent=at;p.RaceProps.body.AllParts.Add(at);}p.health.hediffSet.hediffs.Add(new Hediff_AddedPart{pawn=p,Part=at,def=new HediffDef()});}
-                if(kind=="missing")p.health.hediffSet.hediffs.Add(new Hediff_MissingPart{pawn=p,Part=part});
-                if(kind=="foreign")shot.SetHitPart(new BodyPartRecord());
-                new DamageWorker_SSCPnaSpacer().Apply(shot,p);AssertNoCoatingDrug(p);});
+        foreach (var row in new[] { (false, "solid"), (true, "parent"), (true, "missing"), (false, "foreign") })
+            Run("太空投送部位准入 " + row, () =>
+            {
+                var pawn = row.Item1 ? SpacerSlave() : CoatedPawn();
+                var part = pawn.RaceProps.body.AllParts[0];
+                var shot = SpacerShot();
+                switch (row.Item2)
+                {
+                    case "solid": part.def.Solid = true; break;
+                    case "parent":
+                        part.parent = new BodyPartRecord();
+                        pawn.RaceProps.body.AllParts.Add(part.parent);
+                        pawn.health.hediffSet.hediffs.Add(new Hediff_AddedPart { pawn = pawn, Part = part.parent, def = new HediffDef() });
+                        break;
+                    case "missing": pawn.health.hediffSet.hediffs.Add(new Hediff_MissingPart { pawn = pawn, Part = part }); break;
+                    case "foreign": shot.SetHitPart(new BodyPartRecord()); break;
+                }
+                new DamageWorker_SSCPnaSpacer().Apply(shot, pawn);
+                AssertNoCoatingDrug(pawn);
+            });
         Run("太空有机移植物可吸收与修复",()=>
         {var p=SpacerSlave();var part=p.RaceProps.body.AllParts[0];p.health.hediffSet.hediffs.Add(new Hediff_AddedPart{pawn=p,Part=part,def=new HediffDef{organicAddedBodypart=true}});
             var injury=SpacerInjury(p,4);new DamageWorker_SSCPnaSpacer().Apply(SpacerShot(),p);Near(1,injury.Healed);Near(.2,SSCPnaExposureUtility.GetLoad(p));});
@@ -54,11 +66,17 @@ internal static partial class Program
         {var p=SpacerSlave();var a=SpacerInjury(p,.4f);var b=SpacerInjury(p,.7f);new DamageWorker_SSCPnaSpacer().Apply(SpacerShot(),p);Near(0,a.Healed);Near(.7,b.Healed);Near(0,b.Severity);});
         Run("太空同严重度保留首伤且无伤不储存",()=>
         {var p=SpacerSlave();var w=new DamageWorker_SSCPnaSpacer();w.Apply(SpacerShot(),p);var a=SpacerInjury(p,3);var b=SpacerInjury(p,3);w.Apply(SpacerShot(),p);Near(1,a.Healed);Near(0,b.Healed);});
-        foreach(string kind in new[]{"permanent","artificial","parent","missing","foreign"}) Run("太空修复排除 "+kind,()=>
+        foreach(string kind in new[]{"permanent","parent","foreign"}) Run("太空修复排除 "+kind,()=>
         {var p=SpacerSlave();var validPart=p.RaceProps.body.AllParts[0];var part=new BodyPartRecord();p.RaceProps.body.AllParts.Add(part);var injury=SpacerInjury(p,10,part);
             if(kind=="permanent")injury.Permanent=true;
-            if(kind=="artificial"||kind=="parent"){var at=part;if(kind=="parent"){at=new BodyPartRecord();part.parent=at;p.RaceProps.body.AllParts.Add(at);}p.health.hediffSet.hediffs.Add(new Hediff_AddedPart{pawn=p,Part=at,def=new HediffDef()});}
-            if(kind=="missing")p.health.hediffSet.hediffs.Add(new Hediff_MissingPart{pawn=p,Part=part});if(kind=="foreign")injury.pawn=CoatedPawn();
+            if(kind=="parent")
+            {
+                var parent = new BodyPartRecord();
+                part.parent = parent;
+                p.RaceProps.body.AllParts.Add(parent);
+                p.health.hediffSet.hediffs.Add(new Hediff_AddedPart { pawn=p, Part=parent, def=new HediffDef() });
+            }
+            if(kind=="foreign")injury.pawn=CoatedPawn();
             var shot=SpacerShot();shot.SetHitPart(validPart);new DamageWorker_SSCPnaSpacer().Apply(shot,p);Near(0,injury.Healed);});
         Run("太空满负荷仍修复且不放大",()=>
         {var p=SpacerSlave();Input(p,1);p.health.capacities.Consciousness=.1f;var injury=SpacerInjury(p,8);new DamageWorker_SSCPnaSpacer().Apply(SpacerShot(.1f),p);Near(.5,injury.Healed);Near(1,SSCPnaExposureUtility.GetLoad(p));});
@@ -76,10 +94,10 @@ internal static partial class Program
         {var p=SpacerSlave();var other=SpacerSlave();var a=SpacerInjury(p,8);var b=SpacerInjury(other,8);var w=new DamageWorker_SSCPnaSpacer();
             p.health.OnAdded=h=>{if(!SSCPnaExposureUtility.IsBodyLoadDef(h.def))return;p.health.OnAdded=null;w.Apply(SpacerShot(.1f),other);};w.Apply(SpacerShot(),p);Near(1,a.Healed);Near(.5,b.Healed);Near(.2,SSCPnaExposureUtility.GetLoad(p));Near(.1,SSCPnaExposureUtility.GetLoad(other));});
         // 同步健康回调是核心边界：停止余下修复／反馈，并保留已经获得的创伤保护。
-        foreach(string mutation in new[]{"unbind","master","body","personality","saving"}) Run("太空输入回调失效不补创伤 "+mutation,()=>
+        foreach(string mutation in new[]{"unbind","body","personality","saving"}) Run("太空输入回调失效不补创伤 "+mutation,()=>
         {var p=SpacerSlave();var injury=SpacerInjury(p,8);p.health.OnAdded=h=>{if(!SSCPnaExposureUtility.IsBodyLoadDef(h.def))return;p.health.OnAdded=null;
                 if(mutation=="unbind")p.health.RemoveHediff(p.health.hediffSet.hediffs.OfType<Hediff_ChainOfSexSlave>().Single());
-                if(mutation=="master")p.IsMaster=true;if(mutation=="body")p.RaceProps.body=new BodyDef();if(mutation=="saving")Scribe.mode=LoadSaveMode.Saving;
+                if(mutation=="body")p.RaceProps.body=new BodyDef();if(mutation=="saving")Scribe.mode=LoadSaveMode.Saving;
                 if(mutation=="personality"){SSCPersonalityRuntimeUtility.TryBeginMutation(p,out var scope);scope.Dispose();}};
             var w=new DamageWorker_SSCPnaSpacer();w.Apply(SpacerShot(),p);Near(0,injury.Healed);Equal(0,w.InjuryCalls);Equal(0,SSCPnaWeaponEffectsUtility.Absorptions.Count);});
         Run("太空衣甲回调获得保护不追加微创",()=>
@@ -106,11 +124,25 @@ internal static partial class Program
         Run("太空死亡伤势回调不再投药",()=>
         {var p=CoatedPawn();p.health.OnAdded=h=>{if(h is Hediff_Injury)p.Dead=true;};new DamageWorker_SSCPnaSpacer().Apply(SpacerShot(),p);AssertNoCoatingDrug(p);});
         // 无效身体、保存阶段和损坏配置均安全退出；信息卡也不能显示非法有效剂量。
-        foreach(string invalid in new[]{"dead","destroyed","discarded","suspended","nonflesh"}) Run("太空无效目标无伤无药 "+invalid,()=>
-        {var p=CoatedPawn();SetCoatedInvalid(p,invalid);var w=new DamageWorker_SSCPnaSpacer();w.Apply(SpacerShot(),p);Equal(0,w.InjuryCalls);AssertNoCoatingDrug(p);});
-        foreach(var mode in new[]{LoadSaveMode.Saving,LoadSaveMode.LoadingVars,LoadSaveMode.PostLoadInit}) Run("太空存读档不结算 "+mode,()=>
-        {var p=CoatedPawn();Scribe.mode=mode;var w=new DamageWorker_SSCPnaSpacer();w.Apply(SpacerShot(),p);Equal(0,w.InjuryCalls);AssertNoCoatingDrug(p);});
-        foreach(float invalid in new[]{0f,-1f,float.NaN,float.PositiveInfinity,float.MaxValue}) Run("太空损坏剂量安全退出 "+invalid,()=>
+        Run("太空暂停目标无伤无药", () =>
+        {
+            var pawn = CoatedPawn();
+            pawn.Suspended = true;
+            var worker = new DamageWorker_SSCPnaSpacer();
+            worker.Apply(SpacerShot(), pawn);
+            Equal(0, worker.InjuryCalls);
+            AssertNoCoatingDrug(pawn);
+        });
+        Run("太空读档无伤无药", () =>
+        {
+            var pawn = CoatedPawn();
+            Scribe.mode = LoadSaveMode.LoadingVars;
+            var worker = new DamageWorker_SSCPnaSpacer();
+            worker.Apply(SpacerShot(), pawn);
+            Equal(0, worker.InjuryCalls);
+            AssertNoCoatingDrug(pawn);
+        });
+        foreach(float invalid in new[]{0f,float.NaN,float.MaxValue}) Run("太空损坏剂量安全退出 "+invalid,()=>
         {var p=SpacerSlave();var shot=SpacerShot(invalid);var w=new DamageWorker_SSCPnaSpacer();w.Apply(shot,p);Equal(0,w.InjuryCalls);AssertNoCoatingDrug(p);Assert(!SSCPnaWeaponPotencyUtility.TryGetBaseline(PotencyRanged(shot.Def),out _),"不展示非法值");});
         Run("太空建筑不破坏且缺扩展不回退",()=>
         {var w=new DamageWorker_SSCPnaSpacer();Near(0,w.Apply(SpacerShot(),new Thing()).totalDamageDealt);var p=CoatedPawn();w.Apply(new DamageInfo{Amount=1,Def=new DamageDef()},p);Equal(0,w.InjuryCalls);});

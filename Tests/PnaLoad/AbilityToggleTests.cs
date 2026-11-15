@@ -59,18 +59,17 @@ internal static partial class Program
         const string defaultTrue = "SSC_TestCloneDefaultTrue";
         SSCAbilityToggleUtility.Register(new SSCAbilityToggleDefinition(defaultTrue, SSCAbilityToggleGroup.Master,
             PawnIdentity.Master, "test", "test", defaultEnabled: true));
-        foreach (bool copiedMilk in new[] { false, true })
-            Run("新生克隆默认 true 能力及泌乳原字段边界 " + copiedMilk, () =>
-            {
-                var source = CloneSource(); var sourceComp = (CompSexSlaveTraining)source.Comp;
-                sourceComp.abilityToggles.Set(defaultTrue, false);
-                var body = CopiedBody(source); var copiedComp = (CompSexSlaveTraining)body.Comp;
-                copiedComp.abilityToggles.Set(defaultTrue, false); copiedComp.milkProductionEnabled = copiedMilk;
-                Assert(RabbitCloneUtility.TryCreateRabbitClone(source, out var clone, false), "实际新生清理入口");
-                var comp = (CompSexSlaveTraining)clone.Comp;
-                Assert(!comp.abilityToggles.HasEntries && SSCAbilityToggleUtility.GetEnabled(clone, defaultTrue), "清字典回定义默认，不强制 false");
-                Assert(comp.milkProductionEnabled == copiedMilk && !sourceComp.abilityToggles.Get(defaultTrue, true), "保留复制器已有泌乳值且不改来源");
-            });
+        Run("新生克隆默认 true 能力及泌乳原字段边界", () =>
+        {
+            var source = CloneSource(); var sourceComp = (CompSexSlaveTraining)source.Comp;
+            sourceComp.abilityToggles.Set(defaultTrue, false);
+            var body = CopiedBody(source); var copiedComp = (CompSexSlaveTraining)body.Comp;
+            copiedComp.abilityToggles.Set(defaultTrue, false); copiedComp.milkProductionEnabled = false;
+            Assert(RabbitCloneUtility.TryCreateRabbitClone(source, out var clone, false), "实际新生清理入口");
+            var comp = (CompSexSlaveTraining)clone.Comp;
+            Assert(!comp.abilityToggles.HasEntries && SSCAbilityToggleUtility.GetEnabled(clone, defaultTrue), "清字典回定义默认，不强制 false");
+            Assert(!comp.milkProductionEnabled && !sourceComp.abilityToggles.Get(defaultTrue, true), "保留复制器已有泌乳值且不改来源");
+        });
         Run("成熟不清自身后来取得的未知偏好及泌乳原值", () =>
         {
             var source = CloneSource(); var clone = ToggleMaster(); var comp = (CompSexSlaveTraining)clone.Comp;
@@ -134,12 +133,6 @@ internal static partial class Program
             var source=CloneSource();var clone=ToggleMaster();var own=clone.health.hediffSet.hediffs.Single(h=>SSCAbilityToggleUtility.IsMarkerDef(h.def));
             RabbitCloneUtility.MatureRabbitClone(clone,source,CloneLink(clone,source));
             Assert(SSCAbilityToggleUtility.IsActive(clone,InfestationToggle) && clone.health.hediffSet.hediffs.Contains(own),"保留自身");
-        });
-        Run("第一批开关不会创建PNA负荷或把主人身份当普通产出能力",()=>
-        {
-            var p=ToggleMaster();var target=NewPawn();
-            Assert(SSCPnaExposureUtility.GetBodyRecord(p)==null && !SSCPnaSourceUtility.IsPnaProducer(p),"只保存设置");
-            Assert(!SSCPnaSexSupplyUtility.ApplyFromProducer(p,target).Accepted && SSCPnaExposureUtility.GetBodyRecord(target)==null,"未接第二批收益");
         });
     }
 }

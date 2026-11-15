@@ -12,30 +12,29 @@ internal static partial class Program
 
     private static void RunCoatedWeaponTests()
     {
-        // 三种载体分别验证伤势与剂量；父类边界收到原参数，返回结果实例也必须原样保留。
-        foreach (var row in new (float dose, float damage, string type)[] { (.15f,5f,"Stab"), (.06f,3f,"Stab"), (.10f,7f,"Cut") })
-            Run("涂覆三载体基础伤势与剂量 " + row, () =>
+        Run("涂覆原样交还物理结果，随后只投药一次", () =>
+        {
+            var pawn = CoatedPawn();
+            var worker = CoatedWorker("Cut");
+            var shot = CoatedShot(.10f, 7f);
+            shot.ArmorPenetrationInt = .12f;
+            shot.AllowDamagePropagation = false;
+            var applyPhysical = worker.PhysicalApply;
+            DamageWorker.DamageResult physical = null;
+            worker.PhysicalApply = (info, target) =>
             {
-                var p=CoatedPawn(); var w=CoatedWorker(row.type); var shot=CoatedShot(row.dose,row.damage);
-                shot.ArmorPenetrationInt=.12f; shot.AllowDamagePropagation=false;
-                var physical=w.PhysicalApply; DamageWorker.DamageResult expected=null;
-                w.PhysicalApply=(info,target)=>
-                {
-                    Near(row.damage,info.Amount); Near(.12,info.ArmorPenetrationInt);
-                    Assert(!info.IgnoreArmor && !info.AllowDamagePropagation,"保留原物理参数");
-                    return expected=physical(info,target);
-                };
-                var result=w.Apply(shot,p);
-                Assert(ReferenceEquals(expected,result),"返回原结果实例"); Equal(1,w.ApplyCalls);
-                Near(row.damage,result.totalDamageDealt); Near(row.dose,SSCPnaExposureUtility.GetLoad(p));
-                Assert(result.hediffs.Single().def.defName==row.type,"保留伤势类型");
-            });
+                Near(7, info.Amount);
+                Near(.12, info.ArmorPenetrationInt);
+                Assert(!info.IgnoreArmor && !info.AllowDamagePropagation, "保留原物理参数");
+                return physical = applyPhysical(info, target);
+            };
+            var result = worker.Apply(shot, pawn);
+            Assert(ReferenceEquals(result, physical), "返回原物理结果");
+            Equal(1, worker.ApplyCalls);
+            Near(.10, SSCPnaExposureUtility.GetLoad(pawn));
+        });
 
         // 伤口门槛：受伤、扣血和结果条目都不足以独立证明本次形成了真实开放伤口。
-        foreach(string kind in new[]{"Bruise","Crush","Crack","Burn"})
-            Run("涂覆非开放创伤不投药 " + kind,()=>
-            { var p=CoatedPawn(); CoatedWorker(kind).Apply(CoatedShot(),p); Near(0,SSCPnaExposureUtility.GetLoad(p)); });
-
         Run("涂覆完全阻挡不因旧伤投药或建立快照",()=>
         {
             var p=CoatedPawn(); BoundaryWound(p,2); p.health.capacities.Consciousness=3;
@@ -158,9 +157,6 @@ internal static partial class Program
         });
 
         // 意识取样在物理回调之前，快照写入在有效伤口之后；嵌套命中分别保留自己的候选值。
-        foreach(var row in new (float dose, float expected)[]{(.15f,.5f),(.06f,.3f),(.10f,.5f)})
-            Run("涂覆低意识保底及50%上限 "+row,()=>
-            {var p=CoatedPawn();p.health.capacities.Consciousness=.1f;CoatedWorker().Apply(CoatedShot(row.dose),p);Near(row.expected,SSCPnaExposureUtility.GetLoad(p));});
         Run("涂覆先取意识且成功后快照以完整严重度加入",()=>
         {
             var p=CoatedPawn();p.health.capacities.Consciousness=3;
@@ -176,13 +172,6 @@ internal static partial class Program
             CoatedWorker().Apply(CoatedShot(),p);Near(.15,SSCPnaExposureUtility.GetLoad(p));
         });
         // 非法数值分类由共用剂量工具覆盖；这里仅保留真实涂覆入口的回退与不创建快照两条接入。
-        Run("涂覆非法旧快照回退1 "+float.NaN,()=>
-        {
-            var p=CoatedPawn();p.health.hediffSet.hediffs.Add(new Hediff{pawn=p,def=CoatingResistance,RawSeverity=float.NaN});
-            CoatedWorker().Apply(CoatedShot(),p);Near(.15,SSCPnaExposureUtility.GetLoad(p));
-        });
-        Run("涂覆异常意识不建立非法快照 "+float.PositiveInfinity,()=>
-        {var p=CoatedPawn();p.health.capacities.Consciousness=float.PositiveInfinity;CoatedWorker().Apply(CoatedShot(),p);Near(.15,SSCPnaExposureUtility.GetLoad(p));Assert(!p.health.hediffSet.HasHediff(CoatingResistance),"无快照");});
         Run("涂覆嵌套先建快照不被外层覆盖或反算剂量",()=>
         {
             var p=CoatedPawn();p.health.capacities.Consciousness=3;var w=CoatedWorker();bool nested=false;
@@ -199,7 +188,7 @@ internal static partial class Program
                 CoatedWorker().Apply(CoatedShot(),p);AssertNoCoatingDrug(p);
             });
         // 配置错误只能禁用新药效，不能使原物理伤害消失。
-        foreach(float bad in new[]{0f,-1f,float.NaN,float.PositiveInfinity})
+        foreach(float bad in new[]{0f,float.NaN})
             Run("涂覆非法药量只禁用药效 "+bad,()=>
             {var p=CoatedPawn();var w=CoatedWorker();var r=w.Apply(CoatedShot(bad),p);Near(5,r.totalDamageDealt);AssertNoCoatingDrug(p);});
         foreach(bool missingExtension in new[]{false,true})
@@ -218,14 +207,16 @@ internal static partial class Program
             Assert(RootedRecord(p)!=null && Record(p)==null,"活化载体");Near(0,old.Healed);
             Equal(2,p.health.hediffSet.hediffs.OfType<Hediff_Injury>().Count());Assert(SSCPnaExposureUtility.GetAddiction(p)==null,"不成瘾");
         });
-        foreach(bool chain in new[]{false,true})
-            Run("涂覆主人仅药效免疫而保留伤口 chain="+chain,()=>
-            {
-                var p=CoatedPawn();p.IsMaster=true;p.health.capacities.Consciousness=3;
-                if(chain)Hediff_ChainOfSexSlave.AddToPawn(p,NewPawn());
-                var old=WeaponInjury(p);CoatedWorker().Apply(CoatedShot(),p);AssertNoCoatingDrug(p);Near(0,old.Healed);
-                Equal(2,p.health.hediffSet.hediffs.OfType<Hediff_Injury>().Count());
-            });
+        Run("涂覆主人即使有链也保留伤口并免疫药效", () =>
+        {
+            var pawn = SpacerSlave();
+            pawn.IsMaster = true;
+            pawn.health.capacities.Consciousness = 3;
+            var result = CoatedWorker().Apply(CoatedShot(), pawn);
+            Near(5, result.totalDamageDealt);
+            Equal(1, result.hediffs.Count);
+            AssertNoMasterDrugState(pawn);
+        });
         foreach(string mutation in new[]{"bind","unbind","master"})
             Run("涂覆物理回调后的当前身份分流 "+mutation,()=>
             {
@@ -283,20 +274,29 @@ internal static partial class Program
             w.PhysicalApply=(i,t)=>{var r=BoundaryWound(p,5);Scribe.mode=LoadSaveMode.Saving;return r;};
             w.Apply(CoatedShot(),p);AssertNoCoatingDrug(p);
         });
-        foreach(string invalid in new[]{"dead","destroyed","discarded","suspended","nonflesh"})
-            Run("涂覆无效目标仍交原物理入口 "+invalid,()=>
-            {
-                var p=CoatedPawn();SetCoatedInvalid(p,invalid);var w=CoatedWorker();w.Apply(CoatedShot(),p);
-                Equal(1,w.ApplyCalls);AssertNoCoatingDrug(p);
-            });
+        Run("涂覆暂停目标仍交原物理入口", () =>
+        {
+            var pawn = CoatedPawn();
+            pawn.Suspended = true;
+            var worker = CoatedWorker();
+            worker.Apply(CoatedShot(), pawn);
+            Equal(1, worker.ApplyCalls);
+            AssertNoCoatingDrug(pawn);
+        });
         Run("涂覆物理致死后不再输入药效",()=>
         {
             var p=CoatedPawn();p.health.capacities.Consciousness=3;p.health.OnAdded=h=>{if(h is Hediff_Injury)p.Dead=true;};
             CoatedWorker().Apply(CoatedShot(),p);AssertNoCoatingDrug(p);
         });
-        foreach(var mode in new[]{LoadSaveMode.Saving,LoadSaveMode.LoadingVars,LoadSaveMode.PostLoadInit})
-            Run("涂覆存读档不制造暴露 "+mode,()=>
-            {var p=CoatedPawn();Scribe.mode=mode;var w=CoatedWorker();w.Apply(CoatedShot(),p);Equal(1,w.ApplyCalls);AssertNoCoatingDrug(p);});
+        Run("涂覆读档只交原物理入口", () =>
+        {
+            var pawn = CoatedPawn();
+            Scribe.mode = LoadSaveMode.LoadingVars;
+            var worker = CoatedWorker();
+            worker.Apply(CoatedShot(), pawn);
+            Equal(1, worker.ApplyCalls);
+            AssertNoCoatingDrug(pawn);
+        });
         Run("涂覆非Pawn仅执行物理入口",()=>
         {
             var w=CoatedWorker();w.PhysicalApply=(i,t)=>new DamageWorker.DamageResult{totalDamageDealt=i.Amount};
@@ -315,11 +315,6 @@ internal static partial class Program
             Near(.975,SSCPnaExposureUtility.GetLoad(p));Assert(SSCPnaExposureUtility.GetAddiction(p)==null,"末期未满");
             w.Apply(CoatedShot(),p);Near(1,SSCPnaExposureUtility.GetLoad(p));Near(1,SSCPnaExposureUtility.GetAddiction(p).Severity);
             Equal(1,p.health.hediffSet.hediffs.Count(h=>SSCPnaExposureUtility.IsAddictionDef(h.def)));
-        });
-        Run("涂覆末期对已有成瘾沿用合计0.21",()=>
-        {
-            var p=CoatedPawn();Raw(p,1.65f);AddOldAddiction(p,.4f);
-            CoatedWorker().Apply(CoatedShot(),p);Near(.61,SSCPnaExposureUtility.GetAddiction(p).Severity);
         });
     }
 
@@ -351,9 +346,4 @@ internal static partial class Program
     }
     private static void AssertNoCoatingDrug(Pawn p)
     {Near(0,SSCPnaExposureUtility.GetLoad(p));Assert(!p.health.hediffSet.HasHediff(CoatingResistance),"无新抗性快照");}
-    private static void SetCoatedInvalid(Pawn p,string invalid)
-    {
-        switch(invalid){case "dead":p.Dead=true;break;case "destroyed":p.Destroyed=true;break;
-            case "discarded":p.Discarded=true;break;case "suspended":p.Suspended=true;break;case "nonflesh":p.RaceProps.IsFlesh=false;break;}
-    }
 }

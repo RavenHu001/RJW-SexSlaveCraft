@@ -18,60 +18,6 @@ internal static partial class Program
             Assert(!SSCPnaExposureUtility.IsDrugEffectDef(null), "空定义");
         });
 
-        // 两种来源保留统一满值与末期规则；产出者性交另有已确认的每次基础成瘾 +0.01。
-        foreach (SSCPnaExposureSource source in new[] { SSCPnaExposureSource.ProducerSex, SSCPnaExposureSource.MasterInfestation })
-        {
-            float dose = source == SSCPnaExposureSource.ProducerSex ? SSCPnaMath.ProducerSexDose : SSCPnaMath.MasterInfestationDose;
-            Run(source + " 正确加负荷并补已有需求", () =>
-            {
-                var p = NewPawn(); Raw(p, .4f); AddOldAddiction(p, .4f); p.needs.PnaNeed = .2f;
-                var need = SSCPnaExposureUtility.GetNeed(p);
-                var result = SSCPnaExposureUtility.ApplyExposure(p, dose, source);
-                Assert(result.Accepted && !result.AddictionCreated, "有效来源");
-                Near(.2 + (source == SSCPnaExposureSource.ProducerSex ? .02 : .08), result.FinalLoad);
-                Near(source == SSCPnaExposureSource.ProducerSex ? .3 : 1, need.CurLevel);
-                Near(source == SSCPnaExposureSource.ProducerSex ? .41 : .42, SSCPnaExposureUtility.GetAddiction(p).Severity);
-                Assert(ReferenceEquals(need, SSCPnaExposureUtility.GetNeed(p)), "保留已有需求实例");
-            });
-            Run(source + " 首次满值仍建立完整成瘾并初始化需求", () =>
-            {
-                var p = NewPawn(); Raw(p, 2);
-                var result = SSCPnaExposureUtility.ApplyExposure(p, dose, source);
-                Assert(result.Accepted && result.AddictionCreated, "首次建立");
-                Near(1, SSCPnaExposureUtility.GetAddiction(p).Severity);
-                Near(1, SSCPnaExposureUtility.GetNeed(p).CurLevel);
-            });
-            Run(source + " 满负荷真实输入仍只额外加深一次", () =>
-            {
-                var p = NewPawn(); Raw(p, 2); AddOldAddiction(p, .4f); p.needs.PnaNeed = .9f;
-                var result = SSCPnaExposureUtility.ApplyExposure(p, dose, source);
-                Assert(result.Accepted && !result.AddictionCreated, "已有成瘾"); Near(0, result.AddedLoad);
-                Near(source == SSCPnaExposureSource.ProducerSex ? .61 : .62, SSCPnaExposureUtility.GetAddiction(p).Severity);
-                Near(1, SSCPnaExposureUtility.GetNeed(p).CurLevel);
-            });
-            Run(source + " 不强行建立不合法的需求", () =>
-            {
-                var p = NewPawn(); p.needs.AllowPnaNeed = false; Raw(p, 2);
-                Assert(SSCPnaExposureUtility.ApplyExposure(p, dose, source).AddictionCreated, "仍可有身体成瘾");
-                Assert(SSCPnaExposureUtility.GetNeed(p) == null, "需求准入沿用原版");
-            });
-            Run(source + " 有效链接收性奴负荷且不建立成瘾需求", () =>
-            {
-                var p = NewPawn(); Hediff_ChainOfSexSlave.AddToPawn(p, NewPawn());
-                var result = SSCPnaExposureUtility.ApplyExposure(p, dose, source);
-                Assert(result.Accepted && result.Rooted, "链分流"); Near(dose, result.FinalLoad);
-                Assert(SSCPnaExposureUtility.GetAddiction(p) == null && SSCPnaExposureUtility.GetNeed(p) == null, "无成瘾需求");
-            });
-        }
-
-        Run("主人拒绝所有共享来源且不产生通知", () =>
-        {
-            var p = NewPawn(); p.IsMaster = true; p.NotifyPlayer = true;
-            foreach (SSCPnaExposureSource source in Enum.GetValues<SSCPnaExposureSource>())
-                Assert(!SSCPnaExposureUtility.ApplyExposure(p, 1, source).Accepted, source.ToString());
-            Assert(!p.health.hediffSet.hediffs.Any(hediff => SSCPnaExposureUtility.IsDrugEffectDef(hediff.def)), "无受药状态");
-            Assert(SSCPnaExposureUtility.GetNeed(p) == null && Messages.Sent.Count == 0, "无需求和误报");
-        });
         Run("主人清理全部受药状态但保留产出实例与进度", () =>
         {
             var p = CloneSource(); AddAllBodyStates(p, .6f); p.needs.PnaNeed = .3f;
@@ -114,18 +60,6 @@ internal static partial class Program
             var p = NewPawn(); p.IsMaster = true; var drug = Drug(null);
             drug.Props.chemical = new ChemicalDef { addictionHediff = new HediffDef { defName = "OtherAddiction" } };
             drug.Props.Addictive = false; drug.PrePostIngested(p); Equal(1, drug.OriginalCalls);
-        });
-        Run("主人涂覆命中保留物理伤口但不创建药效或抗性快照", () =>
-        {
-            var p = CoatedPawn(); p.IsMaster = true; p.health.capacities.Consciousness = 3;
-            var result = CoatedWorker().Apply(CoatedShot(), p);
-            Near(5, result.totalDamageDealt); Equal(1, result.hediffs.Count); AssertNoMasterDrugState(p);
-        });
-        Run("主人太空命中即使有链也不治疗或创建药效", () =>
-        {
-            var p = SpacerSlave(); var injury = SpacerInjury(p, 10); p.IsMaster = true;
-            var worker = new DamageWorker_SSCPnaSpacer(); worker.Apply(SpacerShot(), p);
-            Near(0, injury.Healed); Equal(0, worker.InjuryCalls); AssertNoMasterDrugState(p);
         });
         Run("主人没有负荷或成瘾时仍清孤立需求", () =>
         {

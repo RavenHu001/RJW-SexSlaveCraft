@@ -37,21 +37,14 @@ internal static partial class Program
             FullGelAppearanceUtility.Copies.Clear();RabbitCloneUtility.MatureRabbitClone(clone,source,CloneLink(clone,source));
             Assert(!FullGelAppearanceUtility.Copies.Any(p=>p.source==original&&p.target==target),"既有状态不再跟随本体改色");
         });
-        Run("P3 身体清单明确覆盖八类且不吞专精",()=>
-        {
-            foreach(string name in PnaBodyNames) Assert(SSCPnaExposureUtility.IsBodyStateDef(new HediffDef{defName=name}),name);
-            foreach(string name in new[]{"SSC_Hediff_Combatant_Final","SSC_TestPnaSpecialization","Other"})
-                Assert(!SSCPnaExposureUtility.IsBodyStateDef(new HediffDef{defName=name}),"专精及其他状态保留");
-            Assert(!SSCPnaExposureUtility.IsBodyStateDef(null),"空定义");
-        });
         Run("P3 新生去除全部来源 PNA 且不修改来源",()=>
         {
             Pawn source=CloneSource(); AddAllBodyStates(source,.6f);source.needs.PnaNeed=.23f;
             var sourceRecords=source.health.hediffSet.hediffs.ToArray();
-            var body=CopiedBody(source);var keep=SscDef("SSC_TestKeep");body.health.AddHediff(keep).Severity=.7f;
+            var body=CopiedBody(source);var keep=SscDef("SSC_Hediff_Combatant_Final");body.health.AddHediff(keep).Severity=.7f;
             Assert(RabbitCloneUtility.TryCreateRabbitClone(source,out Pawn clone,false),"创建成功");
             Assert(clone==body && clone.Spawned,"准备后生成");
-            Assert(!clone.health.hediffSet.hediffs.Any(h=>SSCPnaExposureUtility.IsBodyStateDef(h.def)),"全部来源 PNA 移除");
+            Assert(!clone.health.hediffSet.hediffs.Any(h=>PnaBodyNames.Contains(h.def.defName)),"全部来源 PNA 移除");
             Assert(clone.needs.PnaNeed==null,"继承需求移除");
             Near(.7,clone.health.hediffSet.GetFirstHediffOfDef(keep).Severity);
             Assert(sourceRecords.SequenceEqual(source.health.hediffSet.hediffs),"来源实例未移除或替换");

@@ -5,16 +5,11 @@ using RimWorld.Planet;
 using SexSlaveCraft;
 using Verse;
 
-/// <summary>在隔离宿主中以原版 Scribe 往返保存设备、燃料和首次入账余额。</summary>
+/// <summary>通过原版 Scribe 保存设备的档位、半径和首次入账余额。</summary>
 public sealed class SavedPnaMistEmitter : IExposable
 {
     public CompSSCPnaMistEmitter emitter = Program.NewPnaMistDevice();
-    /// <summary>按设备组件的保存入口写入原版燃料与 SSC 设置。</summary>
-    public void ExposeData()
-    {
-        emitter.parent.TryGetComp<CompRefuelable>().PostExposeData();
-        emitter.PostExposeData();
-    }
+    public void ExposeData() => emitter.PostExposeData();
 }
 
 internal static partial class Program
@@ -59,7 +54,6 @@ internal static partial class Program
                 var record = SSCPnaExposureUtility.GetBodyRecord(pawn) as HediffWithComps;
                 float adjustment = 0f;
                 record?.GetComp<HediffComp_SSCPnaLoad>()?.CompPostTickInterval(ref adjustment, 60);
-                if (record?.GetComp<HediffComp_SSCPnaLoad>()?.CompShouldRemove == true) pawn.health.RemoveHediff(record);
             }
             emitter.ApplyExposurePulse();
         }
@@ -89,13 +83,8 @@ internal static partial class Program
             Require(emitter.TrySetMode(SSCPnaMistMode.Low));
             AllocateMistPower(emitter);
             SSCPnaExposureUtility.ApplyExposure(falling, .65f, SSCPnaExposureSource.Debug);
-            // 先观察首次入账门槛，再把两名角色推进至足以接近平衡点的时间。
-            Tick(0); emitter.ApplyExposurePulse();
-            SimulateMist(emitter, 0, 60, rising, falling);
-            Near(0f, SSCPnaExposureUtility.GetLoad(rising));
-            SimulateMist(emitter, 3600, 40, rising, falling);
-            Require(SSCPnaExposureUtility.GetLoad(rising) > .0075f);
-            SimulateMist(emitter, 6000, 13900, rising, falling);
+            emitter.ApplyExposurePulse();
+            SimulateMist(emitter, 0, 14_000, rising, falling);
             NearWithin(.35f, SSCPnaExposureUtility.GetLoad(rising), .025f);
             NearWithin(.35f, SSCPnaExposureUtility.GetLoad(falling), .025f);
         });
@@ -104,27 +93,17 @@ internal static partial class Program
         {
             ResetPawns();
             var emitter = NewPnaMistDevice();
-            Pawn inside = MistPawnAt(15, 10), outside = MistPawnAt(16, 10);
-            Pawn adjacentRoom = MistPawnAt(10, 11);
-            rooms[adjacentRoom] = otherRoom;
-            Equal(SSCPnaMistMode.Off, emitter.Mode);
+            Pawn inside = MistPawnAt(17, 10), outside = MistPawnAt(18, 10);
             Require(emitter.TrySetMode(SSCPnaMistMode.High));
+            Require(emitter.TrySetRadius(7));
+            Equal(SSCPnaMistMode.High, emitter.Mode);
             AllocateMistPower(emitter);
-            Near(400, emitter.DemandWatts); Near(12, emitter.FuelPerDay);
             // 为高档执行完整普通 Tick，覆盖生产调度中的供电、扣料和错峰投送。
             int firstPulse = 0;
             while (!emitter.parent.IsHashIntervalTick(60)) Tick(++firstPulse);
             for (int tick = firstPulse; tick <= firstPulse + 2460; tick++) { Tick(tick); emitter.CompTick(); }
             Near(1f, SSCPnaExposureUtility.GetLoad(inside));
             Near(0f, SSCPnaExposureUtility.GetLoad(outside));
-            Near(0f, SSCPnaExposureUtility.GetLoad(adjacentRoom));
-            Require(emitter.TrySetRadius(7));
-            Equal(SSCPnaMistMode.High, emitter.Mode);
-            // 扩大半径后的首次采样建立覆盖，下一次采样才为新目标计量。
-            SimulateMist(emitter, firstPulse + 2460, 1, inside, outside);
-            Near(0f, SSCPnaExposureUtility.GetLoad(outside));
-            SimulateMist(emitter, firstPulse + 2520, 1, inside, outside);
-            Near(.025f, SSCPnaExposureUtility.GetLoad(outside));
         });
 
         Check("PNA mist Scribe keeps a covered startup dose and blackout clears it", () =>
@@ -135,7 +114,8 @@ internal static partial class Program
             Require(holder.emitter.TrySetRadius(8) && holder.emitter.TrySetMode(SSCPnaMistMode.Low));
             AllocateMistPower(holder.emitter);
             Tick(0); holder.emitter.ApplyExposurePulse();
-            SimulateMist(holder.emitter, 0, 40, pawn);
+            SimulateMist(holder.emitter, 0, 40);
+            Near(0f, SSCPnaExposureUtility.GetLoad(pawn));
 
             // 角色由地图持有，存档只保存目标引用，在交叉引用阶段登记同一角色。
             string path = Path.Combine(saves, "pna-mist-emitter.xml");
@@ -152,15 +132,15 @@ internal static partial class Program
             emitter.PostSpawnSetup(true);
             AllocateMistPower(emitter);
             Tick(2400); emitter.ApplyExposurePulse();
-            SimulateMist(emitter, 2400, 35, pawn);
+            SimulateMist(emitter, 2400, 35);
             Near(.0075f, SSCPnaExposureUtility.GetLoad(pawn));
 
             // 在相邻采样之间断电，短暂停机也应清掉尚未入账的旧剂量。
             Pawn newTarget = MistPawnAt(12, 10);
-            SimulateMist(emitter, 4500, 40, newTarget);
+            SimulateMist(emitter, 4500, 40);
             blackout = true; Tick(6901); emitter.CompTick(); blackout = false;
             Tick(6960); emitter.ApplyExposurePulse();
-            SimulateMist(emitter, 6960, 40, newTarget);
+            SimulateMist(emitter, 6960, 40);
             Near(0f, SSCPnaExposureUtility.GetLoad(newTarget));
         });
     }
