@@ -28,6 +28,32 @@ internal static partial class Program
         Run("原依赖不因低负荷补给反向增长",()=>{var p=NewPawn();AddOldAddiction(p,.35f);p.needs.PnaNeed=0;SSCPnaExposureUtility.ApplyExposure(p,.08f,SSCPnaExposureSource.OrdinaryExposure);Near(.35,SSCPnaExposureUtility.GetAddiction(p).Severity);Near(.12,p.needs.PnaNeed.Value);});
         Run("枪械需求按上限后的实际增量",()=>{var p=NewPawn();Raw(p,1.98f);AddOldAddiction(p,.4f);p.needs.PnaNeed=.1f;var r=SSCPnaExposureUtility.ApplyExposure(p,.075f,SSCPnaExposureSource.Weapon);Near(.01,r.AddedLoad);Near(.12,p.needs.PnaNeed.Value);});
         Run("已满枪械暴露不凭空补需求",()=>{var p=NewPawn();Input(p,1);p.needs.PnaNeed=.1f;SSCPnaExposureUtility.ApplyExposure(p,.075f,SSCPnaExposureSource.Weapon);Near(.1,p.needs.PnaNeed.Value);});
+        Run("雾气爆炸增加25个百分点并保留首次满值成瘾", () =>
+        {
+            var pawn = NewPawn();
+            Input(pawn, .20f);
+            var exposure = SSCPnaExposureUtility.ApplyExposure(pawn, .25f, SSCPnaExposureSource.Blast);
+            Near(.45, exposure.FinalLoad);
+            Assert(!exposure.AddictionCreated, "未满时无首次成瘾");
+
+            Input(pawn, .45f);
+            exposure = SSCPnaExposureUtility.ApplyExposure(pawn, .25f, SSCPnaExposureSource.Blast);
+            Near(.10, exposure.AddedLoad);
+            Near(1, exposure.FinalLoad);
+            Assert(exposure.AddictionCreated, "首次到满仍建立依赖");
+        });
+        Run("雾气爆炸进入末期时不补已有需求或加深成瘾", () =>
+        {
+            var pawn = NewPawn();
+            Input(pawn, .74f);
+            AddOldAddiction(pawn, .4f);
+            pawn.needs.PnaNeed = .08f;
+
+            var exposure = SSCPnaExposureUtility.ApplyExposure(pawn, .25f, SSCPnaExposureSource.Blast);
+            Near(.99, exposure.FinalLoad);
+            Near(.08, pawn.needs.PnaNeed.Value);
+            Near(.4, SSCPnaExposureUtility.GetAddiction(pawn).Severity);
+        });
         // 摄入链路：运行生产 Doer 和真实 Harmony 前缀，核对份数、修正及来源隔离。
         Run("普通药物每份20%且不随机成瘾",()=>{var p=NewPawn();var doer=new IngestionOutcomeDoer_SSCPna{severity=.4f};var drug=Drug(doer);drug.PrePostIngested(p);doer.DoIngestionOutcome(p,drug.parent,1);Near(.20,SSCPnaExposureUtility.GetLoad(p));Equal(0,drug.OriginalCalls);Assert(SSCPnaExposureUtility.GetAddiction(p)==null,"未满不随机");});
         Run("浓缩实际两份达满只建一次依赖",()=>{var p=NewPawn();var d=new IngestionOutcomeDoer_SSCPna{severity=1.4f};d.DoIngestionOutcome(p,new Thing(),2);Near(1,SSCPnaExposureUtility.GetLoad(p));Near(1,p.needs.PnaNeed.Value);Equal(1,p.health.hediffSet.hediffs.Count(h=>SSCPnaExposureUtility.IsAddictionDef(h.def)));});

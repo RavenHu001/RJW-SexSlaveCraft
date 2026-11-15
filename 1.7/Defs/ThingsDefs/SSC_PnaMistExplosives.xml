@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <ThingDef ParentName="MakeableShellBase">
+    <defName>SSC_Shell_PnaMist</defName>
+    <label>PNA 雾气炮弹</label>
+    <description>装填于迫击炮。弹体落地时爆散成一团紫雾，使波及的有效目标即时增加 25 个百分点的 PNA 负荷。</description>
+    <graphicData>
+      <texPath>Things/Item/Resource/Shell/Shell_Smoke</texPath>
+      <graphicClass>Graphic_StackCount</graphicClass>
+      <color>(0.76, 0.53, 0.91)</color>
+    </graphicData>
+    <projectileWhenLoaded>SSC_Projectile_PnaMistShell</projectileWhenLoaded>
+    <costList>
+      <Steel>25</Steel>
+      <Purple_Aphrodisiac_Nanofluid_Plus>2</Purple_Aphrodisiac_Nanofluid_Plus>
+    </costList>
+    <recipeMaker>
+      <researchPrerequisite>SSC_RES_PNAIndustrialWeapons</researchPrerequisite>
+    </recipeMaker>
+  </ThingDef>
+
+  <ThingDef ParentName="BaseBullet">
+    <defName>SSC_Projectile_PnaMistShell</defName>
+    <label>PNA 雾气炮弹</label>
+    <thingClass>Projectile_Explosive</thingClass>
+    <graphicData>
+      <texPath>Things/Projectile/ShellSmoke</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+      <shaderType>TransparentPostLight</shaderType>
+      <color>(0.76, 0.53, 0.91)</color>
+    </graphicData>
+    <projectile>
+      <damageDef>SSC_Damage_PnaMistBlast</damageDef>
+      <speed>41</speed>
+      <explosionRadius>5</explosionRadius>
+      <flyOverhead>true</flyOverhead>
+      <soundHitThickRoof>Artillery_HitThickRoof</soundHitThickRoof>
+      <soundImpactAnticipate>MortarRound_PreImpact</soundImpactAnticipate>
+      <soundAmbient>MortarRound_Ambient</soundAmbient>
+    </projectile>
+  </ThingDef>
+
+  <ThingDef ParentName="TrapIEDBase">
+    <defName>SSC_Trap_PnaMist</defName>
+    <label>PNA 雾气陷阱</label>
+    <description>由踩踏或受损触发。引爆时爆散成一团紫雾，使波及的有效目标即时增加 25 个百分点的 PNA 负荷。</description>
+    <graphicData>
+      <texPath>Things/Building/Security/IEDSmoke</texPath>
+      <color>(0.76, 0.53, 0.91)</color>
+    </graphicData>
+    <costList>
+      <Steel>30</Steel>
+      <Purple_Aphrodisiac_Nanofluid_Plus>4</Purple_Aphrodisiac_Nanofluid_Plus>
+    </costList>
+    <researchPrerequisites>
+      <li>SSC_RES_PNAIndustrialWeapons</li>
+    </researchPrerequisites>
+    <comps>
+      <li Class="CompProperties_Explosive">
+        <explosiveRadius>5</explosiveRadius>
+        <explosiveDamageType>SSC_Damage_PnaMistBlast</explosiveDamageType>
+        <propagationSpeed>10</propagationSpeed>
+        <wickTicks>15</wickTicks>
+        <startWickHitPointsPercent>0.2</startWickHitPointsPercent>
+        <startWickOnDamageTaken>
+          <li>Bullet</li>
+          <li>Arrow</li>
+          <li>ArrowHighVelocity</li>
+        </startWickOnDamageTaken>
+      </li>
+    </comps>
+    <specialDisplayRadius>5</specialDisplayRadius>
+  </ThingDef>
+</Defs>

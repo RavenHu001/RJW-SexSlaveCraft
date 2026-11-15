@@ -8,7 +8,7 @@ namespace SexSlaveCraft
 {
     // 来源决定需求补充及已有成瘾的基础增量；事件认领由调用方完成，核心不读取来源任务。
     // 保留旧来源序号与 OrdinaryExposure 的兼容行为，新性交来源各自声明补充规则。
-    public enum SSCPnaExposureSource { Debug, OrdinaryExposure, Ingestion, Weapon, ProducerSex, MasterInfestation }
+    public enum SSCPnaExposureSource { Debug, OrdinaryExposure, Ingestion, Weapon, ProducerSex, MasterInfestation, Blast }
 
     /// <summary>真实正暴露和钳制后的增量分开；依赖只由成功的满值正输入建立。</summary>
     public struct SSCPnaExposureResult
@@ -119,7 +119,7 @@ namespace SexSlaveCraft
             // 健康通知可能原地更换人格；中止余下写入，不回滚已合法加入的身体负荷。
             if (!Continue()) return result;
             if (Scribe.mode != LoadSaveMode.Inactive || !IsValidTarget(pawn) || !SSCPnaMath.IsFinite(dose) || dose <= 0f ||
-                source < SSCPnaExposureSource.Debug || source > SSCPnaExposureSource.MasterInfestation) return result;
+                source < SSCPnaExposureSource.Debug || source > SSCPnaExposureSource.Blast) return result;
             result.RequestedDose = dose;
 
             // 2. 先协调普通／性奴形态并结算已累计的有效健康时间，再处理本次剂量。
@@ -223,7 +223,7 @@ namespace SexSlaveCraft
                 // 主人侵染对已有成瘾基础 +0.02；同场择强只从调用方进入一次。
                 // 初次成瘾仍只由满负荷建立，调试不强化；满负荷实际增量为零也仍是真实暴露。
                 if (!Continue()) { result.Accepted = false; return result; }
-                if (source != SSCPnaExposureSource.Debug && existingAddiction != null &&
+                if (source != SSCPnaExposureSource.Debug && source != SSCPnaExposureSource.Blast && existingAddiction != null &&
                     GetAddiction(pawn) == existingAddiction && IsValidTarget(pawn) && !SSCIdentityUtility.IsMaster(pawn) && !IsRooted(pawn) &&
                     GetBodyRecord(pawn) == record)
                 {

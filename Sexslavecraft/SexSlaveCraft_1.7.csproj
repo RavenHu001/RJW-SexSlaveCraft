@@ -55,6 +55,7 @@
     <Compile Include="ThePatches/Harmony_RabbitCooking.cs" />
     <Compile Include="JobGiver/JobGiver_SSCPnaMaintenanceOrWork.cs" />
     <Compile Include="JobDriver/JobDriver_SSCPnaMaintenance.cs" />
+    <Compile Include="DamageWorker/DamageWorker_SSCPnaBlast.cs" />
     <Compile Include="Comps/CompSSCAphrodisiacEmitter.cs" />
     <Compile Include="UI/Gizmo_SSCAphrodisiacRadius.cs" />
     <Compile Include="common/SSCTrainerWorkUtility.cs" />

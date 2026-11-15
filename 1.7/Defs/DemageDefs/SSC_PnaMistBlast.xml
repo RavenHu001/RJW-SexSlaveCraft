@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <DamageDef>
+    <defName>SSC_Damage_PnaMistBlast</defName>
+    <label>纳米催情液雾气爆发</label>
+    <workerClass>SexSlaveCraft.DamageWorker_SSCPnaBlast</workerClass>
+    <defaultDamage>0</defaultDamage>
+    <harmsHealth>false</harmsHealth>
+    <canInterruptJobs>false</canInterruptJobs>
+    <makesBlood>false</makesBlood>
+    <explosionCellFleck>BlastExtinguisher</explosionCellFleck>
+    <explosionColorCenter>(0.62, 0.27, 0.87, 0.82)</explosionColorCenter>
+    <explosionColorEdge>(0.68, 0.42, 0.88, 0.38)</explosionColorEdge>
+    <soundExplosion>Explosion_Smoke</soundExplosion>
+    <expolosionPropagationSpeed>10</expolosionPropagationSpeed>
+  </DamageDef>
+</Defs>
