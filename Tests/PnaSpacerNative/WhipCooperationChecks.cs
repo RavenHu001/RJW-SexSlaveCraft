@@ -58,8 +58,7 @@ internal static partial class Program
             Boundary(AccessTools.Method(typeof(DamageWorker.DamageResult), nameof(DamageWorker.DamageResult.AssociateWithLog)), nameof(CooperationSideEffect));
             Boundary(AccessTools.Method(typeof(Verb_MeleeAttackDamage), "ApplyMeleeDamageToTarget"), nameof(CooperationDamage));
             Boundary(AccessTools.Method(typeof(Verb_MeleeAttackSSCPnaSpacer), "ApplyMeleeDamageToTarget"), nameof(CooperationDamage));
-            hooks.CreateClassProcessor(typeof(Harmony_SSCPnaWhipCooperativeThreat)).Patch();
-            hooks.CreateClassProcessor(typeof(Harmony_SSCPnaWhipCooperativeDodge)).Patch();
+            Harmony_SSCPnaWhipCooperativeThreat.Register(hooks);
 
             foreach(bool silk in new[]{false,true})
             {
@@ -160,11 +159,24 @@ internal static partial class Program
                 }
                 Equal(after.Count,j);
             });
-            Check("未知IL布局明确拒绝，避免部分威胁适配",()=>
+            Check("未知IL布局原样透传，免闪避与威胁写入一起恢复原版",()=>
             {
-                bool rejected=false;
-                try{Harmony_SSCPnaWhipCooperativeThreat.Transpiler(new[]{new CodeInstruction(OpCodes.Ret)}).ToList();}
-                catch(InvalidOperationException){rejected=true;}Assert(rejected);
+                var upstream = new Harmony("ssc.tests.pna.whip-cooperation.layout");
+                try
+                {
+                    upstream.Patch(NativeCast, transpiler: new HarmonyMethod(typeof(Program), nameof(CooperationReplaceThreatWrite))
+                    { priority = Priority.First });
+                    Assert(!Harmony_SSCPnaWhipCooperativeThreat.Ready);
+                    var f = Cooperation(true);
+                    cooperating = f;
+                    Near(1, Dodge(f));
+                    Ratings[f.Attacker] = 0f;
+                    Assert(!Cast(f));
+                    Assert(f.Target.mindState.meleeThreat == f.Attacker);
+                    Equal(1234, f.Target.mindState.lastMeleeThreatHarmTick);
+                }
+                finally { upstream.UnpatchAll(upstream.Id); }
+                Assert(Harmony_SSCPnaWhipCooperativeThreat.Ready);
             });
         }
         finally
@@ -174,6 +186,23 @@ internal static partial class Program
             MentalStateDefOf.SocialFighting=previousSocialFight;
         }
     }
+
+    private static IEnumerable<CodeInstruction> CooperationReplaceThreatWrite(IEnumerable<CodeInstruction> instructions)
+    {
+        var field = AccessTools.Field(typeof(Pawn_MindState), nameof(Pawn_MindState.meleeThreat));
+        var replacement = AccessTools.DeclaredMethod(typeof(Program), nameof(CooperationWriteThreat));
+        foreach (var instruction in instructions)
+        {
+            if (instruction.StoresField(field))
+            {
+                instruction.opcode = OpCodes.Call;
+                instruction.operand = replacement;
+            }
+            yield return instruction;
+        }
+    }
+
+    private static void CooperationWriteThreat(Pawn_MindState state, Pawn attacker) => state.meleeThreat = attacker;
 
     private static CooperativeFixture Cooperation(bool silk)
     {

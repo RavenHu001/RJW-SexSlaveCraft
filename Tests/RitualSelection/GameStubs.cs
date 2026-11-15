@@ -50,7 +50,15 @@ namespace Verse
             return key;
         }
     }
-    public static class Log { public static void Warning(string value) { Counters.Warnings++; } }
+    public static class Log
+    {
+        private static readonly HashSet<int> warningKeys = new HashSet<int>();
+        public static void Warning(string value) { Counters.Warnings++; }
+        public static void WarningOnce(string value, int key)
+        {
+            if (warningKeys.Add(key)) Warning(value);
+        }
+    }
     public static class Messages
     {
         public static string Last;

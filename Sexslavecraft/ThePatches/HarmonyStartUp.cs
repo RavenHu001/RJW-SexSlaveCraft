@@ -19,6 +19,7 @@ namespace SexSlaveCraft
             var harmony = new Harmony("SexSlaveCraft.training.patch"); 
             SSCLog.Important($"[SSC Harmony] 开始加载Harmony补丁...");
             harmony.PatchAll();
+            Harmony_SSCPnaWhipCooperativeThreat.Register(harmony);
 #if SSC_RW17
             // 等本轮静态构造／原有补丁注册完成后安装只读计时采样；不改变冻结版入口。
             LongEventHandler.ExecuteWhenFinished(SSCOrgasmProgressPatches.Install);

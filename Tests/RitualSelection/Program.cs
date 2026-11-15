@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Xml.Linq;
 using HarmonyLib;
 using RimWorld;
@@ -420,9 +421,47 @@ internal static partial class Program
         RunTrainingIdentityTests();
         RunVisualTests();
         RunAudienceTests(args.Length > 0 ? args[0] : null);
+        Run("FillPawns 失配时原生选角继续，手选停用且仍拒绝失效组合", () =>
+        {
+            var upstream = new Harmony("ssc.tests.ritual-selection.layout");
+            var fill = AccessTools.DeclaredMethod(typeof(RitualRoleAssignments), nameof(RitualRoleAssignments.FillPawns));
+            var patch = new HarmonyMethod(typeof(Program), nameof(ReplaceRoleRead)) { priority = Priority.First };
+            try
+            {
+                upstream.Patch(fill, transpiler: patch);
+                Assert(!Harmony_BindingRitualAutoFill.ManualSelectionReady && Counters.Warnings == 1);
+                upstream.Unpatch(fill, patch.method);
+                upstream.Patch(fill, transpiler: patch);
+                Assert(Counters.Warnings == 1);
+
+                var f = new Fixture();
+                f.Open(new List<string> { "original" });
+                Assert(f.Window.ExtraInfos.Count == 1 && !BindingRitualSelectionUtility.IsWindow(f.A));
+                Assert(f.A.FirstAssignedPawn("master") == f.Host && f.A.FirstAssignedPawn("slave") == f.Target);
+                f.Target.Eligible = false;
+                Assert(!f.Window.Confirm());
+                f.Ritual.behavior.TryExecuteOn(f.Spot, f.Host, f.Ritual, null, f.A, true);
+                Assert(f.Ritual.behavior.Executions == 0);
+            }
+            finally { upstream.UnpatchAll(upstream.Id); }
+            Assert(Harmony_BindingRitualAutoFill.ManualSelectionReady);
+        });
         Console.WriteLine($"结果：{passed}/{passed + failed} 项通过。");
         return failed == 0 ? 0 : 1;
     }
+
+    private static IEnumerable<CodeInstruction> ReplaceRoleRead(IEnumerable<CodeInstruction> instructions)
+    {
+        var getter = AccessTools.PropertyGetter(typeof(RitualRoleAssignments), nameof(RitualRoleAssignments.AllRolesForReading));
+        var replacement = AccessTools.DeclaredMethod(typeof(Program), nameof(ReadRoles));
+        var codes = instructions.ToList();
+        var first = codes.First(code => code.Calls(getter));
+        first.opcode = OpCodes.Call;
+        first.operand = replacement;
+        return codes;
+    }
+
+    private static List<RitualRole> ReadRoles(RitualRoleAssignments assignments) => assignments.AllRolesForReading;
 
     private static void Run(string name, Action test)
     {

@@ -60,7 +60,7 @@ namespace SexSlaveCraft
             => previewDepth > 0 || IsWindow(assignments);
 
         public static bool IsWindow(RitualRoleAssignments assignments)
-            => assignments != null && windows.TryGetValue(assignments, out _);
+            => Harmony_BindingRitualAutoFill.Matched && assignments != null && windows.TryGetValue(assignments, out _);
 
         /// <summary>开窗建表、开窗前的存在性检查及原版基础条件查询使用显式预览作用域。</summary>
         public static IDisposable Preview()
