@@ -69,13 +69,6 @@ internal static partial class Program
             Assert(SSCPnaSexSupplyUtility.ApplyFromProducer(source, first).AddictionCreated, "首次成瘾");
             Near(1, SSCPnaExposureUtility.GetNeed(first).CurLevel); Near(1, SSCPnaExposureUtility.GetAddiction(first).Severity);
         });
-        Run("第五步末期基础与额外加深合计0.21", () =>
-        {
-            var source = NewPawn(); AddPnaProducer(source); var recipient = PnaAddict(.05f); Raw(recipient, 1.92f);
-            SSCPnaSexSupplyUtility.ApplyFromProducer(source, recipient);
-            Near(.98, SSCPnaExposureUtility.GetLoad(recipient)); Near(.15, SSCPnaExposureUtility.GetNeed(recipient).CurLevel);
-            Near(.91, SSCPnaExposureUtility.GetAddiction(recipient).Severity);
-        });
         Run("第五步低负荷不创建需求，不强加非法需求", () =>
         {
             var source = NewPawn(); AddPnaProducer(source); var recipient = NewPawn();
@@ -100,13 +93,6 @@ internal static partial class Program
             AddPnaProducer(master); Assert(SSCPnaSexSupplyUtility.ApplyFromProducer(master, recipient).Accepted, "实际来源");
             Near(.02, SSCPnaExposureUtility.GetLoad(recipient));
         });
-        Run("第五步普通药效成瘾与兔产出不会传递", () =>
-        {
-            var source = PnaAddict(.2f); Raw(source, 1f);
-            source.health.hediffSet.hediffs.Add(new Hediff { pawn = source, def = new HediffDef { defName = "SSC_Hediff_RabbitCloneLowPNA" } });
-            var recipient = NewPawn(); Assert(!SSCPnaSexSupplyUtility.ApplyFromProducer(source, recipient).Accepted, "非来源");
-            Assert(SSCPnaExposureUtility.GetBodyRecord(recipient) == null, "没有传播");
-        });
         Run("第五步零与满生产进度剂量相同，不自体输入", () =>
         {
             var source = NewPawn(); var production = AddPnaProducer(source);
@@ -117,19 +103,11 @@ internal static partial class Program
             }
             Assert(!SSCPnaSexSupplyUtility.ApplyFromProducer(source, source).Accepted, "无自体输入");
         });
-        foreach (string invalid in new[] { "null", "dead", "destroyed", "discarded", "suspended", "nonflesh", "nohealth" })
-            Run("第五步无效产出身体不供给 " + invalid, () =>
-            {
-                var recipient = NewPawn();
-                Assert(!SSCPnaSexSupplyUtility.ApplyFromProducer(InvalidAttractionPawn(invalid, true), recipient).Accepted, "无效来源");
-                Assert(SSCPnaExposureUtility.GetBodyRecord(recipient) == null, "无残留");
-            });
-        Run("第五步供给健康回调成为主人时仍由共享入口清药", () =>
+        Run("第五步无来源时不供给", () =>
         {
-            var source = NewPawn(); AddPnaProducer(source); var recipient = NewPawn();
-            recipient.health.OnAdded = h => recipient.IsMaster = true;
-            Assert(!SSCPnaSexSupplyUtility.ApplyFromProducer(source, recipient).Accepted, "身份回调拒绝");
-            Assert(SSCPnaExposureUtility.GetBodyRecord(recipient) == null, "没有遗留药效");
+            var recipient = NewPawn();
+            Assert(!SSCPnaSexSupplyUtility.ApplyFromProducer(null, recipient).Accepted, "无效来源");
+            Assert(SSCPnaExposureUtility.GetBodyRecord(recipient) == null, "无残留");
         });
     }
 

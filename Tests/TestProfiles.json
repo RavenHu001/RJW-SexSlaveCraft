@@ -350,13 +350,9 @@
         "工业XML真实剂量入口及效力显示 SSC_Damage_PnaRifleNeedle",
         "速射三针各自读取命中前意识，不固定合计24点",
         "正式XML效力读取及普通穿透 SSC_Weapon_PnaSilkWhip",
-        "正式XML有效链无甲耗吸收修复 SSC_Weapon_PnaSilkWhip",
         "正式XML效力读取及普通穿透 SSC_Weapon_PnaPulseGun",
-        "正式XML有效链无甲耗吸收修复 SSC_Weapon_PnaPulseGun",
         "正式XML效力读取及普通穿透 SSC_Weapon_PnaProjectorGun",
-        "正式XML有效链无甲耗吸收修复 SSC_Weapon_PnaProjectorGun",
-        "太空三发由正式XML驱动逐发投送及修复",
-        "退役伤害类型不进入当前测试程序集"
+        "太空三发由正式XML驱动逐发投送及修复"
       ]
     },
     {

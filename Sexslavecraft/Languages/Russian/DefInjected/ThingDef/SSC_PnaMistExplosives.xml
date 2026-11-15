@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_Shell_PnaMist.label>Миномётный снаряд с туманом PNA</SSC_Shell_PnaMist.label>
+  <SSC_Shell_PnaMist.description>Снаряд для миномёта. При падении выпускает облако фиолетового тумана, мгновенно повышая нагрузку PNA у затронутых целей на 25 процентных пунктов.</SSC_Shell_PnaMist.description>
+  <SSC_Projectile_PnaMistShell.label>Миномётный снаряд с туманом PNA</SSC_Projectile_PnaMistShell.label>
+  <SSC_Trap_PnaMist.label>Ловушка с туманом PNA</SSC_Trap_PnaMist.label>
+  <SSC_Trap_PnaMist.description>Срабатывает при наступании или повреждении. При взрыве выпускает фиолетовый туман, мгновенно повышая нагрузку PNA у затронутых целей на 25 процентных пунктов.</SSC_Trap_PnaMist.description>
+</LanguageData>

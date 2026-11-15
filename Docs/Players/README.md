@@ -32,6 +32,7 @@
 
 | 问题 | 入门 | 完整规则 |
 | --- | --- | --- |
+| PNA 雾气炮弹、陷阱与发烟器（1.7 开发版） | [入门](../../读我，玩法介绍.md#ssc-pna-mist) | [规则与消耗](../../机制详解.md#ssc-pna-mist) |
 | 2.4.10 宠物兔／宠物狐与猫狗调整 | [入门](../../读我，玩法介绍.md#ssc-2410) | [规则](../../机制详解.md#ssc-2410) |
 | 2.4.9堕落凝胶 | [入门](../../读我，玩法介绍.md#ssc-249-gel) | [规则](../../机制详解.md#ssc-249-gel) |
 | 2.4.9发烟器／地图与旅队阶段维持 | [入门](../../读我，玩法介绍.md#ssc-249) | [规则](../../机制详解.md#ssc-249) |
@@ -49,6 +50,8 @@
 | 验证与兼容 | [主要兼容](../../读我，玩法介绍.md#19-主要兼容) | [专项边界](../Development/Verification/README.md) |
 
 ## English reading order
+
+For PNA mist equipment in the RimWorld 1.7 development build, use the [quick start](../../QUICK_START_EN.md#ssc-pna-mist) or the [full rules and operating costs](../../PLAYER_GUIDE_EN.md#ssc-pna-mist).
 
 Development 2.4.9 also adds [Depravity Gel](../../QUICK_START_EN.md#ssc-249-gel), with [full rules](../../PLAYER_GUIDE_EN.md#ssc-249-gel), alongside [emitters and PNA maintenance](../../QUICK_START_EN.md#ssc-249), with [full rules](../../PLAYER_GUIDE_EN.md#ssc-249). These additions are included in 2.4.9 and were not in the earlier public v2.4.8 package.
 

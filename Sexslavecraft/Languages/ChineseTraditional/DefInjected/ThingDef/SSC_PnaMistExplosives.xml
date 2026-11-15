@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_Shell_PnaMist.label>PNA 霧氣砲彈</SSC_Shell_PnaMist.label>
+  <SSC_Shell_PnaMist.description>裝填於迫擊砲。彈體落地時爆散成一團紫霧，使波及的有效目標即時增加 25 個百分點的 PNA 負荷。</SSC_Shell_PnaMist.description>
+  <SSC_Projectile_PnaMistShell.label>PNA 霧氣砲彈</SSC_Projectile_PnaMistShell.label>
+  <SSC_Trap_PnaMist.label>PNA 霧氣陷阱</SSC_Trap_PnaMist.label>
+  <SSC_Trap_PnaMist.description>由踩踏或受損觸發。引爆時爆散成一團紫霧，使波及的有效目標即時增加 25 個百分點的 PNA 負荷。</SSC_Trap_PnaMist.description>
+</LanguageData>

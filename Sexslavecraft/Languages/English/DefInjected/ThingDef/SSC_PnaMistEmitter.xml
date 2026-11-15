@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_PnaMistEmitter.label>PNA mist emitter</SSC_PnaMistEmitter.label>
+  <SSC_PnaMistEmitter.description>Uses electricity to turn ordinary PNA into mist. Organisms in the same room gradually accumulate PNA load. Adjust the radius and operating mode independently. Low is for everyday exposure; sustained exposure on high can reach full load.</SSC_PnaMistEmitter.description>
+</LanguageData>

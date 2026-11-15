@@ -8,13 +8,15 @@ namespace SexSlaveCraft
 {
     // 来源决定需求补充及已有成瘾的基础增量；事件认领由调用方完成，核心不读取来源任务。
     // 保留旧来源序号与 OrdinaryExposure 的兼容行为，新性交来源各自声明补充规则。
-    public enum SSCPnaExposureSource { Debug, OrdinaryExposure, Ingestion, Weapon, ProducerSex, MasterInfestation }
+    public enum SSCPnaExposureSource { Debug, OrdinaryExposure, Ingestion, Weapon, ProducerSex, MasterInfestation, Blast, MistEmitter }
 
     /// <summary>真实正暴露和钳制后的增量分开；依赖只由成功的满值正输入建立。</summary>
     public struct SSCPnaExposureResult
     {
         // Accepted 表示处理成功；Rooted 表示最终按有效锁链保护分流。
         public bool Accepted;
+        // 暴露合法，但本次剂量尚不足以建立发烟器负荷记录，由来源保留剂量余额。
+        public bool Deferred;
         public bool Rooted;
         // 剂量采用 0～1 负荷尺度；真实请求与上限钳制后的实际增加量分别报告。
         public float RequestedDose;
@@ -28,6 +30,8 @@ namespace SexSlaveCraft
     /// <summary>管理 PNA 身体负荷、成瘾与需求补充；主人身份免疫，不读取来源任务或侵染开关。</summary>
     public static class SSCPnaExposureUtility
     {
+        // 首次入账留出高于 0.5% 清除阈值的余量，确保下一次小剂量能写入现有记录。
+        internal const float MinimumMistStartDose = .0075f;
         // 保留既有 DefName 以兼容存档；普通与性奴形态共用一份身体负荷。
         public const string LoadDefName = "Hediff_PNA_Debuff";
         public const string RootedLoadDefName = "SSC_Hediff_PnaRootedLoad";
@@ -119,7 +123,7 @@ namespace SexSlaveCraft
             // 健康通知可能原地更换人格；中止余下写入，不回滚已合法加入的身体负荷。
             if (!Continue()) return result;
             if (Scribe.mode != LoadSaveMode.Inactive || !IsValidTarget(pawn) || !SSCPnaMath.IsFinite(dose) || dose <= 0f ||
-                source < SSCPnaExposureSource.Debug || source > SSCPnaExposureSource.MasterInfestation) return result;
+                source < SSCPnaExposureSource.Debug || source > SSCPnaExposureSource.MistEmitter) return result;
             result.RequestedDose = dose;
 
             // 2. 先协调普通／性奴形态并结算已累计的有效健康时间，再处理本次剂量。
@@ -141,6 +145,13 @@ namespace SexSlaveCraft
             record = GetBodyRecord(pawn);
 
             if (!Continue()) { result.Accepted = false; return result; }
+            // 等待自然消退结算后再判断记录是否需要重建，以当前真实载体决定是否暂缓。
+            if (source == SSCPnaExposureSource.MistEmitter && record == null && dose < MinimumMistStartDose)
+            {
+                result.Accepted = false;
+                result.Deferred = true;
+                return result;
+            }
             // 3. 在原始严重度尺度上加量并钳制；无记录时精确写入计算值。
             // 只强化本次身体输入之前已有的成瘾，不把首次创建或回调新建算作已有实例。
             Hediff existingAddiction = GetAddiction(pawn);
@@ -221,9 +232,11 @@ namespace SexSlaveCraft
                 // 产出者性交与枪械有效输入均对已有成瘾基础 +0.01，末期再额外 +0.2。
                 // 枪械沿用一次 Apply 的输入认领，不因部位传播重复加深；服药基础增量仍由原版处理。
                 // 主人侵染对已有成瘾基础 +0.02；同场择强只从调用方进入一次。
-                // 初次成瘾仍只由满负荷建立，调试不强化；满负荷实际增量为零也仍是真实暴露。
+                // 初次成瘾仍只由满负荷建立。调试、爆炸和发烟器沿用输入前的已有成瘾进度。
+                // 其他适用来源的满值正输入仍算真实暴露，即使实际负荷增量为零。
                 if (!Continue()) { result.Accepted = false; return result; }
-                if (source != SSCPnaExposureSource.Debug && existingAddiction != null &&
+                if (source != SSCPnaExposureSource.Debug && source != SSCPnaExposureSource.Blast &&
+                    source != SSCPnaExposureSource.MistEmitter && existingAddiction != null &&
                     GetAddiction(pawn) == existingAddiction && IsValidTarget(pawn) && !SSCIdentityUtility.IsMaster(pawn) && !IsRooted(pawn) &&
                     GetBodyRecord(pawn) == record)
                 {

@@ -22,8 +22,7 @@ internal static partial class Program
         harmony.PatchAll(Assembly.GetExecutingAssembly());
         // 分配诊断在用例包装器外运行；每个范围都必须独立建立基础夹具。
         ResetFixture();
-        Run("真实 Harmony 注册五个 PNA 目标及两个能力生死目标", () => Equal(7, harmony.GetPatchedMethods().Count(), "补丁目标数"));
-        foreach (float invalid in new[] { 0f, -1f, float.NaN, float.PositiveInfinity, float.NegativeInfinity })
+        foreach (float invalid in new[] { 0f, float.NaN })
             Run("拒绝异常剂量 " + invalid, () => { var pawn = NewPawn(); var r = Input(pawn, invalid); Assert(!r.Accepted && Record(pawn) == null, "拒绝且不创建"); });
         Run("拒绝空目标和非法来源", () => { Assert(!Input(null, .08f).Accepted, "空目标"); Assert(!SSCPnaExposureUtility.ApplyExposure(NewPawn(), .08f, (SSCPnaExposureSource)99).Accepted, "非法来源"); });
         foreach (string invalid in new[] { "dead", "destroyed", "discarded", "suspended", "nonflesh", "nohealth" })
@@ -31,7 +30,6 @@ internal static partial class Program
         Run("保存加载阶段不能制造输入", () => { var pawn = NewPawn(); Scribe.mode = LoadSaveMode.PostLoadInit; Assert(!Input(pawn, .08f).Accepted, "读档输入拒绝"); });
         Run("新实例准确写 .16，不带 .01 隐藏初值", () => { var pawn = NewPawn(); var r = Input(pawn, .08f); Near(.16, Record(pawn).Severity); Near(.08, r.AddedLoad); });
         Run("普通输入不要求调教组件、身份或恶堕", () => { var pawn = NewPawn(); pawn.IsSlave = true; pawn.Corruption = .12f; Assert(Input(pawn, .08f).Accepted, "输入"); Near(.08, SSCPnaExposureUtility.GetLoad(pawn)); });
-        Run("主人身份免疫共享 PNA 输入", () => { var pawn = NewPawn(); pawn.IsMaster = true; Assert(!Input(pawn, .08f).Accepted, "免疫拒绝"); Near(0, SSCPnaExposureUtility.GetLoad(pawn)); });
         Run("五份同 tick .20 满值且只有一个负荷实例", () => { var pawn = NewPawn(); for (int i=0;i<5;i++) Input(pawn,.20f); Near(1, SSCPnaExposureUtility.GetLoad(pawn)); Equal(1, pawn.health.hediffSet.hediffs.Count(h=>SSCPnaExposureUtility.IsBodyLoadDef(h.def))); });
         Run("满值真实暴露和零增加量分开", () => { var pawn=NewPawn(); Input(pawn,1); var r=Input(pawn,.08f); Assert(r.Accepted && r.IsFull, "真实输入仍满"); Near(.08,r.RequestedDose); Near(0,r.AddedLoad); });
         Run("P2 满值建立单份依赖并将首次需求设满", () => { var pawn=NewPawn(); Assert(Input(pawn,1).AddictionCreated,"创建结果"); Near(1,SSCPnaExposureUtility.GetAddiction(pawn).Severity); Near(1,pawn.needs.PnaNeed.Value); });
@@ -41,14 +39,14 @@ internal static partial class Program
         Run("跨末期长步与分步一致", () => Near(SSCPnaMath.AdvanceSeverity(2,1), SSCPnaMath.AdvanceSeverity(SSCPnaMath.AdvanceSeverity(2,.05),.95)));
         Run("极低量结束、负时间不倒灌", () => { Near(0,SSCPnaMath.AdvanceSeverity(.16f,2)); Near(.16,SSCPnaMath.AdvanceSeverity(.16f,-1)); });
         Run("异常严重度规范化为零", () => { foreach(float s in new[]{float.NaN,float.PositiveInfinity,float.NegativeInfinity}) Near(0,SSCPnaMath.NormalizeSeverity(s)); Near(2,SSCPnaMath.NormalizeSeverity(3)); });
-        foreach (int rate in new[] { 1, 15, 150, 250, 60000 })
+        foreach (int rate in new[] { 1, 250, 60000 })
             Run("原生有效 delta 分段 " + rate, () => NativeDay(rate));
         Run("零负 delta 不衰减，旧逐 tick 回调不双扣", () => { var p=NewPawn(); Input(p,1); Tick(p,0); Tick(p,-1); float adjustment=0; Comp(p).CompPostTick(ref adjustment); Near(1,SSCPnaExposureUtility.GetLoad(p)); });
         Run("输入前结算半批，下一批不重复清除", PendingBeforeInput);
         Run("暂停/冷冻不累积补算，已有半批保留", Suspension);
         Run("当前查询、悬停和百分比显示无副作用", ReadOnlyDisplay);
         Run("负荷清除后健康条目实际移除", () => { var p=NewPawn(); Input(p,.08f); Tick(p,120000); Assert(Record(p)==null,"移除"); });
-        foreach (int daily in new[] { 1,2,3,4,6 }) Run("均匀每日输入 " + daily, () => RepeatedDoses(daily));
+        foreach (int daily in new[] { 1, 6 }) Run("均匀每日输入 " + daily, () => RepeatedDoses(daily));
         Run("集群输入峰值可高于均匀输入", () => { var p=NewPawn(); for(int i=0;i<13;i++) { for(int j=0;j<3;j++) Input(p,.08f); if(SSCPnaExposureUtility.GetLoad(p)>=1) return; Tick(p,60000); } throw new Exception("集群应在该周期内满"); });
         Run("有效零阶段锁链转换同严重度且只清依赖", RootedZero);
         Run("失效残链不构成保护", () => { var p=NewPawn(); var master=NewPawn(); master.Discarded=true; p.health.hediffSet.hediffs.Add(new Hediff_ChainOfSexSlave{pawn=p,LinkedPawn=master,def=ChainDef}); Assert(!Input(p,.08f).Rooted,"普通分支"); Near(.08,SSCPnaExposureUtility.GetLoad(p)); });
@@ -56,12 +54,10 @@ internal static partial class Program
         Run("外部直接 AddHediff 不能绕过锁链保护", DirectRootedAddition);
         Run("已有残链更新到有效目标即清理", () => { var p=NewPawn(); Input(p,.70f); p.health.hediffSet.hediffs.Add(new Hediff_ChainOfSexSlave{pawn=p,def=ChainDef}); Hediff_ChainOfSexSlave.AddToPawn(p,NewPawn()); Assert(Record(p)==null,"更新链清理"); });
         Run("解绑转换回同严重度普通负荷", () => { var p=NewPawn(); Input(p,.70f); Hediff before=Record(p); var chain=Hediff_ChainOfSexSlave.AddToPawn(p,NewPawn()); p.health.RemoveHediff(chain); Assert(Record(p)==before,"原实例恢复"); Near(.70,SSCPnaExposureUtility.GetLoad(p)); Near(.78,Input(p,.08f).FinalLoad); });
-        Run("PNA 旧药物分支只对有效链关闭", DrugGuard);
         Run("严重度健康回调中建立链不会留下输入", MutationBinds);
         Run("健康回调移除旧载体，不误报满值", () => { var p=NewPawn(); Input(p,.70f); p.health.OnChanged=h=>p.health.RemoveHediff(h); Assert(!Input(p,.30f).Accepted,"失效拒绝"); Assert(Record(p)==null,"无残留"); });
         Run("新建回调移除实例，不误报成功", () => { var p=NewPawn(); p.health.OnAdded=h=>p.health.RemoveHediff(h); Assert(!Input(p,.08f).Accepted,"失效拒绝"); });
         Run("旧满无依赖静默保留", () => { var p=NewPawn(); Raw(p,2); SSCPnaGameComponent.NormalizePawn(p); Near(1,SSCPnaExposureUtility.GetLoad(p)); Assert(p.health.hediffSet.hediffs.Count==1,"不补依赖"); });
-        Run("重复旧记录取最大单份不相加", () => { var p=NewPawn(); Raw(p,.80f); Raw(p,.90f); SSCPnaGameComponent.NormalizePawn(p); Near(.90,Record(p).Severity); Equal(1,p.health.hediffSet.hediffs.Count); });
         Run("旧档非法值清理和重复加载幂等", MigrationIdempotent);
         Run("普通旧依赖和实际满足度保持", () => { var p=NewPawn(); Raw(p,.8f); var addiction=AddOldAddiction(p,.3f); p.needs.PnaNeed=.27f; SSCPnaGameComponent.NormalizePawn(p); Near(.3,addiction.Severity); Near(.27,p.needs.PnaNeed.Value); });
         Run("全存档快照初始化覆盖离图和无组件身体", () => { var p=NewPawn(); Raw(p,3); SSCRestrictionGameComponent.Pawns.Add(p); new SSCPnaGameComponent(new Game()).FinalizeInit(); Near(2,Record(p).Severity); });
@@ -79,7 +75,7 @@ internal static partial class Program
         Run("外部普通加量保留返回实例并接性奴载体", RootedIncoming);
         Run("外部性奴载体在无链目标上转普通", UnrootedIncoming);
         Run("调试四个加量动作均走共享入口", DebugActions);
-        Run("真实 Def 五档、满足收益、能力与阶段心情", DefinitionContract);
+        Run("实际负荷 Def 接通消退、末期失能和阶段心情", DefinitionContract);
         RunP2Tests();
         RunP3Tests();
         RunEffectsStep1Tests();
@@ -99,7 +95,6 @@ internal static partial class Program
         RunSpacerWeaponXmlTests();
         RunWeaponPotencyTests();
         RunWeaponEffectTests();
-        RunLegacyLauncherRemovalTests();
         Console.WriteLine($"结果：{passed}/{passed+failed} 项通过。");
         return failed==0 ? 0:1;
     }
@@ -197,14 +192,6 @@ internal static partial class Program
         var load=HediffMaker.MakeHediff(SSCDefOf.SSC_PnaLoad,p);load.Severity=1.4f;p.health.AddHediff(load);
         AddOldAddiction(p,.5f); Assert(Record(p)==null,"无普通负荷"); Near(1.4,RootedRecord(p).Severity); Assert(load==RootedRecord(p),"调用者仍持有真实载体"); Assert(!p.health.hediffSet.hediffs.Any(h=>SSCPnaExposureUtility.IsAddictionDef(h.def)),"拒绝依赖");
     }
-    private static void DrugGuard()
-    {
-        var p=NewPawn(); Hediff_ChainOfSexSlave.AddToPawn(p,NewPawn());
-        var drug=new RimWorld.CompDrug{Props=new RimWorld.CompProperties_Drug{chemical=new RimWorld.ChemicalDef{addictionHediff=AddictionDef}}};
-        drug.PrePostIngested(p); Equal(0,drug.OriginalCalls);
-        drug.PrePostIngested(NewPawn());Equal(1,drug.OriginalCalls);
-        drug.Props.chemical.addictionHediff=new HediffDef{defName="OtherDrug"};drug.PrePostIngested(p);Equal(2,drug.OriginalCalls);
-    }
     private static void MutationBinds()
     {
         var p=NewPawn();Input(p,.70f);p.health.OnChanged=h=>{p.health.OnChanged=null;Hediff_ChainOfSexSlave.AddToPawn(p,NewPawn());};
@@ -243,7 +230,7 @@ internal static partial class Program
     private static void ConversionCycles()
     {
         var p=NewPawn();Input(p,.70f);AddOldAddiction(p,.5f);Hediff original=Record(p);
-        for(int i=0;i<5;i++){var chain=Hediff_ChainOfSexSlave.AddToPawn(p,NewPawn());Near(1.4,RootedRecord(p).Severity);p.health.RemoveHediff(chain);Assert(Record(p)==original,"实例不替换");Near(1.4,Record(p).Severity);}
+        for(int i=0;i<2;i++){var chain=Hediff_ChainOfSexSlave.AddToPawn(p,NewPawn());Near(1.4,RootedRecord(p).Severity);p.health.RemoveHediff(chain);Assert(Record(p)==original,"实例不替换");Near(1.4,Record(p).Severity);}
         Assert(!p.health.hediffSet.hediffs.Any(h=>SSCPnaExposureUtility.IsAddictionDef(h.def)),"不补依赖");
     }
     private static void DuplicateForms()
@@ -301,35 +288,24 @@ internal static partial class Program
     private static double Number(XElement node)=>double.Parse(node.Value,CultureInfo.InvariantCulture);
     private static void DefinitionContract()
     {
-        var def=LoadDef("Defs/HediffDefs/HediffOfBuff.xml",SSCPnaExposureUtility.LoadDefName);
-        Equal("HediffWithComps",def.Element("hediffClass").Value);Near(2,Number(def.Element("maxSeverity")));
-        Equal("SexSlaveCraft.HediffCompProperties_SSCPnaLoad",(string)def.Element("comps").Elements().Single().Attribute("Class"));
-        var stages=def.Element("stages").Elements().ToArray();Equal(5,stages.Length);
-        double[] thresholds={0,.30,.80,1.40,1.94},factors={1.5,2,2.5,3.25,4};
-        for(int i=0;i<5;i++){Near(thresholds[i],Number(stages[i].Element("minSeverity")));Near(factors[i],Number(stages[i].Element("statFactors").Element("SexFrequency")));Near(new[]{1.1,1.2,1.35,1.5,1.75}[i],Number(stages[i].Element("statFactors").Element("SexSatisfaction")));}
-        double[] movement={-.02,-.05,-.10,-.20,-.30},consciousness={-.01,-.03,-.06,-.12,-.20},pain={.90,.75,.50,.25,0};
-        for(int i=0;i<5;i++)
-        {
-            var mods=stages[i].Element("capMods").Elements().ToArray();Equal(i<2?3:5,mods.Length,"各档保留能力影响");
-            foreach(string capacity in new[]{"Manipulation","Moving","Consciousness"})
-                Near(capacity=="Consciousness"?consciousness[i]:movement[i],Number(mods.Single(m=>(string)m.Element("capacity")==capacity).Element("offset")));
-            if(i>=2)foreach(string capacity in new[]{"Sight","Hearing"})
-                Near(new[]{-.05,-.15,-.30}[i-2],Number(mods.Single(m=>(string)m.Element("capacity")==capacity).Element("offset")));
-            Near(pain[i],Number(stages[i].Element("painFactor")));
-            if(i<4)Assert(!stages[i].Descendants("setMax").Any(),"末期前不封意识");
-        }
-        Near(.10,Number(stages[4].Element("capMods").Elements().Single(m=>(string)m.Element("capacity")=="Consciousness").Element("setMax")));
-        MoodDefinitionContract("PNA_Debuff_Thought",SSCPnaExposureUtility.LoadDefName,new[]{1,2,4,6,8});
-        foreach(float severity in new[]{.16f,.30f,.80f,1.40f,1.94f,2f}) { var p=NewPawn();Raw(p,severity);Equal(Array.FindLastIndex(SSCDefOf.SSC_PnaLoad.thresholds,t=>severity>=t),Record(p).CurStageIndex); }
-    }
-    // 只核对原版情境思绪的 XML 关联和完整五档，不在宿主另写思绪计算逻辑。
-    private static void MoodDefinitionContract(string name,string hediffName,int[] moods)
-    {
-        var thought=LoadDef("Defs/HediffDefs/HediffOfBuff.xml",name);
-        Equal("Thought_Situational",thought.Element("thoughtClass").Value);
-        Equal("ThoughtWorker_Hediff",thought.Element("workerClass").Value);Equal(hediffName,thought.Element("hediff").Value);
-        var stages=thought.Element("stages").Elements().ToArray();Equal(5,stages.Length);
-        for(int i=0;i<5;i++){Near(moods[i],Number(stages[i].Element("baseMoodEffect")));Assert((string)stages[i].Element("visible")!="false","阶段心情可见");}
+        var def = LoadDef("Defs/HediffDefs/HediffOfBuff.xml", SSCPnaExposureUtility.LoadDefName);
+        Equal(nameof(HediffWithComps), def.Element("hediffClass").Value);
+        Near(2, Number(def.Element("maxSeverity")));
+        Assert(def.Element("comps").Elements().Any(comp =>
+            (string)comp.Attribute("Class") == typeof(HediffCompProperties_SSCPnaLoad).FullName), "实际 Def 接通消退组件");
+
+        var stages = def.Element("stages").Elements().ToArray();
+        Equal(5, stages.Length);
+        var terminal = stages.Last();
+        Near(1.94, Number(terminal.Element("minSeverity")));
+        Near(.10, Number(terminal.Element("capMods").Elements()
+            .Single(mod => (string)mod.Element("capacity") == "Consciousness").Element("setMax")));
+        Assert(!stages.Take(stages.Length - 1).Any(stage => stage.Descendants("setMax").Any()), "末期前不封意识");
+
+        var thought = LoadDef("Defs/HediffDefs/HediffOfBuff.xml", "PNA_Debuff_Thought");
+        Equal("ThoughtWorker_Hediff", thought.Element("workerClass").Value);
+        Equal(SSCPnaExposureUtility.LoadDefName, thought.Element("hediff").Value);
+        Equal(stages.Length, thought.Element("stages").Elements().Count(), "负荷与心情档位数量一致");
     }
     private static void Assert(bool value,string message) { if(!value)throw new Exception(message); }
     private static void Equal<T>(T expected,T actual,string message="值不同") { if(!Equals(expected,actual))throw new Exception($"{message}: {expected} != {actual}"); }

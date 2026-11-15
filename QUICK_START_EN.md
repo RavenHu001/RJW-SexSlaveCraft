@@ -5,6 +5,8 @@
 [2.5.0 Training Management](#ssc-250) · [2.5.0 notes](Docs/Releases/2.5.0/2.5.0发布说明.md#english) · [2.4.10 pet paths](#ssc-2410) · [2.4.10 release notes](Docs/Releases/2.4.10/2.4.10发布说明.md#english)
 
 
+[PNA mist equipment (1.7 development build)](#ssc-pna-mist)
+
 <a id="ssc-250"></a>
 
 ## Training Management in 2.5.0
@@ -293,6 +295,13 @@ High breast development grants `Permanent Lactation Phase`.
 - Cow Specialization requires Permanent Lactation Phase.
 
 When Cow Specialization is active, completed sex scenes accelerate milk production and specialization progress.
+
+<a id="ssc-pna-mist"></a>
+
+### PNA mist shells, traps and emitter (1.7 development build)
+
+- Research **Industrial aphrodisiac nanofluid weapons**, then make **PNA mist shells** at a machining table and load them into a mortar. Research vanilla **IEDs** as well to build **PNA mist traps**. Both instantly add **25 percentage points** of PNA load to eligible targets reached by the burst within five cells. The burst deals zero physical damage.
+- Research **Precision electrothermal mist**, then build the **PNA mist emitter** under **Misc**, connect it to power and refuel it with **ordinary PNA**. Set the radius (5–10 cells) and mode independently. In the same room, Low settles toward a natural equilibrium and sustained exposure on High can reach 100%. After leaving the area or switching the device off, existing load wears off normally. [Full rules and operating costs](PLAYER_GUIDE_EN.md#ssc-pna-mist)
 
 ## 8. Public Use Specialization
 

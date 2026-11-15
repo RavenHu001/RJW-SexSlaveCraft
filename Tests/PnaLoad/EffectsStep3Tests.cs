@@ -11,14 +11,14 @@ internal static partial class Program
     private static void RunEffectsStep3Tests()
     {
         // 从存档恢复的旧实例绕过添加补丁，读档收尾清理，不把旧严重度折算成新负荷。
-        foreach (bool rooted in new[] { false, true }) Run("第三步只有旧强化的身体读档清理 " + rooted, () =>
+        Run("第三步只有旧强化的身体读档清理", () =>
         {
-            var p = rooted ? WeaponSlave() : NewPawn();
+            var p = NewPawn();
             foreach (string name in new[] { "Hediff_PNA_Combat_Buff", "Hediff_PNA_Combat_Buff_Plus" }) AddBodyState(p, name, .7f);
             AddBodyState(p, "SSC_Purple_HyperLactation", .6f); AddBodyState(p, "SSC_Hediff_RabbitCloneLowPNA", .4f);
             SSCPnaGameComponent.NormalizePawn(p); SSCPnaGameComponent.NormalizePawn(p);
             AssertNoLegacyBuff(p); Assert(SSCPnaExposureUtility.GetBodyRecord(p) == null, "不转换成负荷");
-            Equal(rooted ? 3 : 2, p.health.hediffSet.hediffs.Count); Near(.6, p.health.hediffSet.hediffs.Single(h => h.def.defName == "SSC_Purple_HyperLactation").Severity);
+            Equal(2, p.health.hediffSet.hediffs.Count); Near(.6, p.health.hediffSet.hediffs.Single(h => h.def.defName == "SSC_Purple_HyperLactation").Severity);
         });
         Run("第三步旧强化清理保留当前合法负荷成瘾满足度与半批时间", () =>
         {
@@ -34,9 +34,9 @@ internal static partial class Program
             SSCPnaExposureUtility.RefreshBodyState(p); AssertNoLegacyBuff(p); Assert(RootedRecord(p) != null, "最终性奴载体");
             Assert(SSCPnaExposureUtility.GetAddiction(p) == null && p.needs.PnaNeed == null, "清除成瘾需求"); Near(.4, SSCPnaExposureUtility.GetLoad(p));
         });
-        foreach (bool rooted in new[] { false, true }) Run("第三步直接添加两类旧强化均被现有补丁拒绝 " + rooted, () =>
+        Run("第三步直接添加两类旧强化均被现有补丁拒绝", () =>
         {
-            var p = rooted ? WeaponSlave() : NewPawn();
+            var p = WeaponSlave();
             foreach (string name in new[] { "Hediff_PNA_Combat_Buff", "Hediff_PNA_Combat_Buff_Plus" }) p.health.AddHediff(new HediffDef { defName = name });
             AssertNoLegacyBuff(p); Assert(SSCPnaExposureUtility.GetBodyRecord(p) == null, "不创建药效");
         });

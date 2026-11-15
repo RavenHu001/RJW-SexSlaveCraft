@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_PnaMistEmitter_Mode>Mode: {0}</SSC_PnaMistEmitter_Mode>
+  <SSC_PnaMistEmitter_ModeDesc>Select Off, Low or High. Low approaches a natural equilibrium. Sustained exposure on High can reach full PNA load.</SSC_PnaMistEmitter_ModeDesc>
+  <SSC_PnaMistEmitter_Low>Low</SSC_PnaMistEmitter_Low>
+  <SSC_PnaMistEmitter_High>High</SSC_PnaMistEmitter_High>
+  <SSC_PnaMistEmitter_RadiusDesc>Adjust the same-room coverage radius in whole cells. Radius and mode determine power and fuel use.</SSC_PnaMistEmitter_RadiusDesc>
+  <SSC_PnaMistEmitter_NoFuel>Waiting for ordinary PNA</SSC_PnaMistEmitter_NoFuel>
+  <SSC_PnaMistEmitter_FuelRate>PNA consumption: {0}/day</SSC_PnaMistEmitter_FuelRate>
+</LanguageData>
