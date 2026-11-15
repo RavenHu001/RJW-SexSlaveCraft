@@ -382,7 +382,7 @@ pwsh -NoProfile -Command "& ./Scripts/Test-KeyedLocalization.ps1 -Files SSC_Roma
 
 `PnaLoad` 整套由 583 项精简至 379 项，独立执行 All **379／379**、Core **368／368**、Special **11／11**。按本分支 6554 项历史全量扣除雾气系列前轮两项及本轮 204 项，当前登记 52 套、6348 项。本轮实跑范围为 `PnaLoad`。 [保留范围](PnaLoad/README.md)
 
-前轮 PNA 雾气系列专项由 6 项精简至 4 项，删除 2 项重复的公共负荷／成瘾断言，并缩减发烟器夹具。隔离构建后，单套 All 实跑 `PnaLoad` **583／583**、`AphrodisiacEmitterNative` **23／23**。 [爆炸来源覆盖](../Docs/Design/PNA雾气炮弹陷阱与发烟器规划.md#pna-来源规则与验证) · [发烟器覆盖](AphrodisiacEmitterNative/README.md)
+前轮 PNA 雾气系列专项由 6 项精简至 4 项，删除 2 项重复的公共负荷／成瘾断言，并缩减发烟器夹具。隔离构建后，单套 All 实跑 `PnaLoad` **583／583**、`AphrodisiacEmitterNative` **23／23**。 [爆炸来源覆盖](../Docs/Design/Archive/PNA雾气炮弹陷阱与发烟器规划.md#pna-来源规则与验证) · [发烟器覆盖](AphrodisiacEmitterNative/README.md)
 
 2026-11-08 兔特化第二批在现有 `RomanceControlNative` 混合套件新增 Core 5 项，实跑该套 Core **1357／1357**，其他套件沿用原登记。 [第二批验证范围](../Docs/Design/Archive/兔特化家政重做开发规划.md#第二批-终极料理强化技能)
 

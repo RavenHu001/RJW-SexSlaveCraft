@@ -1,5 +1,7 @@
 # 已交付设计与历史方案
 
+2026-11-14，第 16.1 项 PNA 雾气炮弹、陷阱与发烟器已实机验收，随 PR #45 合入 `main`。 [设计归档](PNA雾气炮弹陷阱与发烟器规划.md) · [验收与回归](../../Development/Completed/催情发烟器/PNA发烟器测试版实机验收.md#pna-mist-regression)
+
 **2.5.0。** 第 21 项多调教员指派和第 51 项调教管理窗口的设计与验收已归档。[调教管理完成索引](../../Development/Completed/调教管理/README.md) · [版本说明](../../Releases/2.5.0/2.5.0发布说明.md)
 
 2026-11-12，第 21 项多调教员指派通过 1.7 实机清单。 [开发规划](调教管理/多调教员指派开发规划.md) · [整体验收](../../Development/Completed/调教管理/多调教员指派第三阶段实现与验证.md#multi-trainer-runtime-acceptance)
