@@ -1,5 +1,7 @@
 # 开发资料入口
 
+2026-11-14，主从关系命令栏两批修复已通过 WOWGAG 列表复用实机验收。 [修复与验收](Completed/主从关系命令栏跨帧复用修复与验收.md)
+
 **2.5.0 于 2026-11-12 正式发布。** 完整门禁通过 52 套、6544/6544 项。 [正式发布归档](../Releases/2.5.0/2.5.0版本验证.md#ssc-250-release) · [完成索引](Completed/README.md#ssc-250-completed)
 
 **2.4.10 修订版于 2026-11-09 发布。** 完整门禁通过 52 套、6535/6535 项。 [下载修订版](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.10-r2) · [修订版验证](../Releases/2.4.10/2.4.10版本验证.md#2410-修订版发布归档) · [完成索引](Completed/README.md#ssc-2410-completed)
