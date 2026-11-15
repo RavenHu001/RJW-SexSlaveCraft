@@ -423,6 +423,7 @@ internal static partial class Program
         RunAudienceTests(args.Length > 0 ? args[0] : null);
         Run("FillPawns 失配时原生选角继续，手选停用且仍拒绝失效组合", () =>
         {
+            // 上游把一次角色读取搬进等价包装器，保留原行为并使 SSC 少看到一个锚点。
             var upstream = new Harmony("ssc.tests.ritual-selection.layout");
             var fill = AccessTools.DeclaredMethod(typeof(RitualRoleAssignments), nameof(RitualRoleAssignments.FillPawns));
             var patch = new HarmonyMethod(typeof(Program), nameof(ReplaceRoleRead)) { priority = Priority.First };
@@ -430,6 +431,7 @@ internal static partial class Program
             {
                 upstream.Patch(fill, transpiler: patch);
                 Assert(!Harmony_BindingRitualAutoFill.ManualSelectionReady && Counters.Warnings == 1);
+                // 强制重新生成包装方法，验证相同失配在本次启动期间只发一次警告。
                 upstream.Unpatch(fill, patch.method);
                 upstream.Patch(fill, transpiler: patch);
                 Assert(Counters.Warnings == 1);
@@ -438,6 +440,7 @@ internal static partial class Program
                 f.Open(new List<string> { "original" });
                 Assert(f.Window.ExtraInfos.Count == 1 && !BindingRitualSelectionUtility.IsWindow(f.A));
                 Assert(f.A.FirstAssignedPawn("master") == f.Host && f.A.FirstAssignedPawn("slave") == f.Target);
+                // 填充之后改变资格，分别验证窗口确认入口和直接执行入口。
                 f.Target.Eligible = false;
                 Assert(!f.Window.Confirm());
                 f.Ritual.behavior.TryExecuteOn(f.Spot, f.Host, f.Ritual, null, f.A, true);

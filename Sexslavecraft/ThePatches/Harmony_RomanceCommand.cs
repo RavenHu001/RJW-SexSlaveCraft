@@ -1,4 +1,5 @@
 // AI 辅助生成
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -14,10 +15,10 @@ namespace SexSlaveCraft
     {
         internal static bool common, romance, proposal, willingness;
         public static bool Ready => common && romance && proposal && willingness &&
-            TrackerReady() && Harmony_SSCRomanceAcceptance.TargetMethods().All(m =>
+            TrackerReady() && Harmony_SSCRomanceAcceptance.TargetMethods().All(m => m != null &&
                 Harmony.GetPatchInfo(m)?.Transpilers.Any(p => p.PatchMethod.DeclaringType == typeof(Harmony_SSCRomanceAcceptance)) == true) &&
             Harmony.GetPatchInfo(AccessTools.Method(typeof(InteractionWorker_MarriageProposal), "AcceptanceChance"))?.Transpilers.Any(p => p.PatchMethod.DeclaringType == typeof(Harmony_SSCRomanceCommandWillingness)) == true &&
-            Harmony_SSCRomanceCommandWorker.TargetMethods().All(m =>
+            Harmony_SSCRomanceCommandWorker.TargetMethods().All(m => m != null &&
                 Harmony.GetPatchInfo(m)?.Prefixes.Any(p => p.PatchMethod.DeclaringType == typeof(Harmony_SSCRomanceCommandWorker)) == true &&
                 Harmony.GetPatchInfo(m)?.Postfixes.Any(p => p.PatchMethod.DeclaringType == typeof(Harmony_SSCRomanceCommandWorker)) == true);
         /// <summary>能力标志之外也检查实际补丁仍在，外部卸载守卫后不能沿用旧的安装成功值。</summary>
@@ -32,11 +33,32 @@ namespace SexSlaveCraft
     [HarmonyPatch]
     public static class Harmony_SSCRomanceCommandWorker
     {
+        /// <summary>命令观察、接受判定和心情观察共用原版互动签名。四个 out 参数按引用类型匹配。</summary>
+        internal static MethodInfo ResolveInteraction(Type type)
+        {
+            var method = AccessTools.DeclaredMethod(type, "Interacted", new[]
+            {
+                typeof(Pawn), typeof(Pawn), typeof(List<RulePackDef>), typeof(string).MakeByRefType(),
+                typeof(string).MakeByRefType(), typeof(LetterDef).MakeByRefType(), typeof(LookTargets).MakeByRefType()
+            });
+            return method?.IsStatic == false && method.ReturnType == typeof(void) ? method : null;
+        }
+
+        /// <summary>保留每个预期目标的位置。缺少其中一个时跳过本组，运行时就绪检查也能识别缺项。</summary>
+        internal static bool PrepareTargets(IEnumerable<MethodBase> targets)
+        {
+            if (targets.All(method => method != null)) return true;
+            Log.WarningOnce("[SSC Romance] Required interaction signature unavailable. Related hooks skipped.", 0x53535249);
+            return false;
+        }
+
+        public static bool Prepare() => PrepareTargets(TargetMethods());
+
         /// <summary>精确观察原生三个 worker，不把其他模组关系写入当作本次命令已结算。</summary>
         public static IEnumerable<MethodBase> TargetMethods()
         {
             foreach (var type in new[] { typeof(InteractionWorker_RomanceAttempt), typeof(InteractionWorker_MarriageProposal), typeof(InteractionWorker_Breakup) })
-                yield return AccessTools.DeclaredMethod(type, "Interacted");
+                yield return ResolveInteraction(type);
         }
         /// <summary>只记录当前命令帧的第一次 worker；普通社交没有持久记录。</summary>
         public static void Prefix(Pawn initiator, Pawn recipient, MethodBase __originalMethod, out SSCRomanceCommandRecord __state)

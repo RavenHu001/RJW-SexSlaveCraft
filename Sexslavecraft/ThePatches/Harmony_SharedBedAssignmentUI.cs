@@ -22,11 +22,23 @@ namespace SexSlaveCraft
     [HarmonyPatch]
     public static class Harmony_SSC_SharedBedAssignmentUI
     {
+        /// <summary>两种床位行共用补丁。行签名变化时保留原绘制，避免向 Harmony 提供空目标。</summary>
+        public static bool Prepare()
+        {
+            if (TargetMethods().All(method => method != null)) return true;
+            Log.Warning("[SSC Shared bed] Unsupported assignment row signature. Keeping original row drawing.");
+            return false;
+        }
+
         /// <summary>为原版窗口的已分配行和未分配行注册相同的姓名绘制补丁。</summary>
         public static IEnumerable<MethodBase> TargetMethods()
         {
-            yield return AccessTools.Method(typeof(Dialog_AssignBuildingOwner), "DrawAssignedRow");
-            yield return AccessTools.Method(typeof(Dialog_AssignBuildingOwner), "DrawUnassignedRow");
+            var arguments = new[] { typeof(Pawn), typeof(float).MakeByRefType(), typeof(Rect), typeof(int) };
+            foreach (string name in new[] { "DrawAssignedRow", "DrawUnassignedRow" })
+            {
+                var method = AccessTools.DeclaredMethod(typeof(Dialog_AssignBuildingOwner), name, arguments);
+                yield return method?.IsStatic == false && method.ReturnType == typeof(void) ? method : null;
+            }
         }
 
         /// <summary>将原版省略姓名的绘制调用替换为带标记的绘制入口，保留其余行逻辑。</summary>
@@ -37,6 +49,13 @@ namespace SexSlaveCraft
             MethodInfo label = AccessTools.Method(typeof(Widgets), nameof(Widgets.LabelEllipses), new[] { typeof(Rect), typeof(string) });
             MethodInfo replacement = AccessTools.Method(typeof(Harmony_SSC_SharedBedAssignmentUI), nameof(DrawPawnLabel));
             FieldInfo assignable = AccessTools.Field(typeof(Dialog_AssignBuildingOwner), "assignable");
+            // 改写会从窗口取出分配组件并传给绘制方法。组件字段或绘制签名不可用时，整行保持传入的 IL。
+            if (label == null || replacement == null || assignable?.FieldType != typeof(CompAssignableToPawn))
+            {
+                Log.Warning("[SSC Shared bed] Assignment row drawing interface unavailable. Keeping original row drawing.");
+                foreach (var instruction in instructions) yield return instruction;
+                yield break;
+            }
             foreach (CodeInstruction instruction in instructions)
             {
                 if (!instruction.Calls(label))
@@ -264,7 +283,7 @@ namespace SexSlaveCraft
             if (type == null) yield break;
             var method = AccessTools.Method(type, "DoRow", new[] { typeof(Rect), typeof(Pawn), typeof(bool) });
             var comp = AccessTools.Field(type, "comp");
-            if (method != null && comp?.FieldType == typeof(CompAssignableToPawn)) yield return method;
+            if (method?.IsStatic == false && comp?.FieldType == typeof(CompAssignableToPawn)) yield return method;
         }
 
         /// <summary>替换 Mint 两个分支中的姓名绘制，保留按钮、分配行为和独立的意识形态说明。</summary>
@@ -275,14 +294,16 @@ namespace SexSlaveCraft
         {
             var codes = instructions.ToList();
             MethodInfo label = AccessTools.Method(typeof(Widgets), nameof(Widgets.Label), new[] { typeof(Rect), typeof(string) });
+            MethodInfo replacement = AccessTools.Method(typeof(Harmony_SSC_MintSharedBedAssignmentUI), nameof(DrawPawnLabel));
+            FieldInfo comp = AccessTools.Field(__originalMethod.DeclaringType, "comp");
+            // Mint 自己有一套窗口字段。编写指令前再次核对实际被补丁的类型及两个绘制入口。
             // 1.6 的两个 string Label 分别绘制已分配/未分配角色；意识形态说明使用 TaggedString 重载。
-            if (codes.Count(code => code.Calls(label)) != 2)
+            if (label == null || replacement == null || comp?.FieldType != typeof(CompAssignableToPawn) ||
+                codes.Count(code => code.Calls(label)) != 2)
             {
                 Log.Warning("[SexSlaveCraft] Dubs Mint Menus 角色行结构已变化，未添加同床标记。请更新兼容补丁。");
                 return codes;
             }
-            MethodInfo replacement = AccessTools.Method(typeof(Harmony_SSC_MintSharedBedAssignmentUI), nameof(DrawPawnLabel));
-            FieldInfo comp = AccessTools.Field(__originalMethod.DeclaringType, "comp");
             var result = new List<CodeInstruction>();
             foreach (var instruction in codes)
             {

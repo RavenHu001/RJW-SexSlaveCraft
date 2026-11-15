@@ -401,6 +401,7 @@
     <Compile Include="ThePatches\GetGizmos_Toggle.cs" />
     <Compile Include="ThePatches\GetGizmos_TrainingType.cs" />
     <Compile Include="ThePatches\HarmonyStartUp.cs" />
+    <Compile Include="ThePatches\SSCOptionalPatchGroup.cs" />
     <Compile Include="ThePatches\Harmony_HediffPreventRebel.cs" />
     <Compile Include="ThePatches\Harmony_PreventWearEFOutfit.cs" />
     <Compile Include="ThePatches\Harmony_ProtectSexSlave.cs" />

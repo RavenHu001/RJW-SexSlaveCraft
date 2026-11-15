@@ -59,6 +59,7 @@ namespace SexSlaveCraft
         public static bool IsPreview(RitualRoleAssignments assignments)
             => previewDepth > 0 || IsWindow(assignments);
 
+        /// <summary>IL 失配后立即停用已有窗口的手选状态。窗口关闭时仍可按原入口清除登记。</summary>
         public static bool IsWindow(RitualRoleAssignments assignments)
             => Harmony_BindingRitualAutoFill.Matched && assignments != null && windows.TryGetValue(assignments, out _);
 

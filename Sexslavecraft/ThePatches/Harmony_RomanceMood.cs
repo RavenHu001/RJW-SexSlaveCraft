@@ -28,6 +28,9 @@ namespace SexSlaveCraft
     [HarmonyPatch]
     public static class Harmony_SSCRomanceMoodWorker
     {
+        // 复用命令观察的目标集合，心情作用域与对应的原生互动方法保持对齐。
+        public static bool Prepare() => Harmony_SSCRomanceCommandWorker.PrepareTargets(TargetMethods());
+
         /// <summary>与现有命令观察相同的三个原 worker；不扩大到模组未知恋爱行为。</summary>
         public static IEnumerable<MethodBase> TargetMethods() => Harmony_SSCRomanceCommandWorker.TargetMethods();
         public sealed class State { internal SSCRomanceMoodFrame Frame; internal bool OriginalRan; }

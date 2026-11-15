@@ -17,6 +17,7 @@ namespace SexSlaveCraft
         {
             __state = null;
             if (!BindingRitualSelectionUtility.IsBinding(__1)) return true;
+            // 自动填充本身可以回到原生路径。缺少最终两人校验时，常规开场入口也要关闭。
             if (!Harmony_BindingRitualStart.Installed)
             {
                 __result = BindingRitualSelectionUtility.InvalidReason();
@@ -39,6 +40,7 @@ namespace SexSlaveCraft
                 ? BindingRitualSelectionUtility.Preview() : null;
         public static void Postfix(RitualRoleAssignments __result, TargetInfo __1)
         {
+            // 原生 FillPawns 可能先于窗口后置完成。提前登记使自动填充改写能识别本次手选窗口。
             if (BindingRitualSelectionUtility.IsBinding(__result?.Ritual) && Harmony_BindingRitualAutoFill.ManualSelectionReady)
                 BindingRitualSelectionUtility.Register(__result, __1);
         }
@@ -49,6 +51,7 @@ namespace SexSlaveCraft
     [HarmonyPatch]
     internal static class Harmony_BindingRitualWindow
     {
+        // 精确定位初始化角色分配和确认回调的公开构造函数。其他重载可独立增删。
         private static readonly ConstructorInfo constructor = AccessTools.DeclaredConstructor(typeof(Dialog_BeginRitual), new[]
         {
             typeof(string), typeof(Precept_Ritual), typeof(TargetInfo), typeof(Map), typeof(Dialog_BeginRitual.ActionCallback),
@@ -56,6 +59,7 @@ namespace SexSlaveCraft
             typeof(List<Pawn>), typeof(Dictionary<string, Pawn>), typeof(RitualOutcomeEffectDef), typeof(List<string>), typeof(Pawn)
         });
 
+        /// <summary>补丁使用 Harmony 字段注入。安装前核对字段及其类型，避免在生成后置调用时失败。</summary>
         public static bool Prepare()
         {
             if (constructor?.IsPublic == true &&
@@ -86,6 +90,7 @@ namespace SexSlaveCraft
                 BindingRitualSelectionUtility.Register(___assignments, ___target);
                 ___participantsDrawer = new BindingRitualSelectionWidget(___participantsDrawer, ___assignments);
             }
+            // 原生填充选出的参与者也须通过确认校验。窗口回退只省去自定义控件和说明。
             Dialog_BeginRitual.ActionCallback original = ___action;
             TargetInfo target = ___target;
             ___action = assignments =>
@@ -99,6 +104,7 @@ namespace SexSlaveCraft
                     }
                     bool accepted = original != null && original(assignments);
                     if (accepted) BindingRitualSelectionUtility.Forget(assignments);
+                    // 原回调可能移除准备状态后返回失败。仍在手选模式的窗口需要重新登记才能继续选人。
                     else if (manualSelection && Harmony_BindingRitualAutoFill.Matched)
                         BindingRitualSelectionUtility.Register(assignments, target);
                     return accepted;
@@ -119,6 +125,7 @@ namespace SexSlaveCraft
             nameof(RitualRoleAssignments.FillPawns), new[] { typeof(Dialog_BeginRitual.PawnFilter), typeof(TargetInfo) });
 
         internal static bool Matched { get; private set; }
+        /// <summary>即使改写返回原指令，Harmony 仍会登记 Transpiler。手选还依赖窗口、角色变更和最终开场校验均已挂接。</summary>
         internal static bool ManualSelectionReady => Matched && target != null &&
             Harmony.GetPatchInfo(target)?.Transpilers.Any(p => p.PatchMethod.DeclaringType == typeof(Harmony_BindingRitualAutoFill)) == true &&
             Harmony_BindingRitualWindow.Installed && Harmony_BindingRitualBeforeMutation.Installed &&
@@ -140,6 +147,8 @@ namespace SexSlaveCraft
             MethodInfo roles = AccessTools.PropertyGetter(typeof(RitualRoleAssignments), nameof(RitualRoleAssignments.AllRolesForReading));
             MethodInfo replacement = AccessTools.Method(typeof(BindingRitualSelectionUtility), nameof(BindingRitualSelectionUtility.AutoFillRoles));
             int matches = roles == null ? 0 : codes.Count(code => code.Calls(roles));
+            // 两处读取分别用于选中角色的预填和候选自动分配。先检查两处，再统一替换，避免只关闭一段填充。
+            // Harmony 重建包装方法时会重新执行 Transpiler，因此每次都用当前 IL 更新匹配状态。
             Matched = roles?.IsStatic == false && replacement?.ReturnType == roles.ReturnType && matches == 2;
             if (!Matched)
             {
@@ -183,6 +192,7 @@ namespace SexSlaveCraft
     [HarmonyPatch]
     internal static class Harmony_BindingRitualBeforeMutation
     {
+        // 三个入口都可能调整角色或观众名单。调用签名必须符合 Prefix 读取的第一个 Pawn 参数。
         private static readonly MethodInfo[] targets =
         {
             AccessTools.DeclaredMethod(typeof(RitualRoleAssignments), nameof(RitualRoleAssignments.TryUnassignAnyRole), new[] { typeof(Pawn) }),
@@ -217,6 +227,7 @@ namespace SexSlaveCraft
     [HarmonyPatch]
     internal static class Harmony_BindingRitualAssignment
     {
+        // TryAssign 通过 out 参数返回拒绝理由，Harmony 的目标匹配需要使用对应的按引用类型。
         private static readonly MethodInfo target = AccessTools.DeclaredMethod(typeof(RitualRoleAssignments),
             nameof(RitualRoleAssignments.TryAssign), new[]
             {
@@ -262,6 +273,7 @@ namespace SexSlaveCraft
     [HarmonyPatch]
     internal static class Harmony_BindingRitualStart
     {
+        // 独立于手选界面安装，覆盖原生自动填充后的确认和直接调用 TryExecuteOn 的入口。
         private static readonly MethodInfo target = AccessTools.DeclaredMethod(typeof(RitualBehaviorWorker),
             nameof(RitualBehaviorWorker.TryExecuteOn), new[]
             { typeof(TargetInfo), typeof(Pawn), typeof(Precept_Ritual), typeof(RitualObligation), typeof(RitualRoleAssignments), typeof(bool) });

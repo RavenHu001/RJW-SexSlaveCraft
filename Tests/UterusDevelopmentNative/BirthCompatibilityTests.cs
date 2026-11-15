@@ -50,9 +50,10 @@ internal static partial class Program
             try
             {
                 optionalOwner.Patch(native, transpiler: new HarmonyMethod(transpiler));
-                foreach (Type type in new[] { typeof(Harmony_FertilityNativeGeneration), typeof(Harmony_FertilityNativeBirth),
-                    typeof(Harmony_FertilityMenstruationGeneration), typeof(Harmony_FertilityMenstruationFallback) })
+                foreach (Type type in new[] { typeof(Harmony_FertilityNativeGeneration), typeof(Harmony_FertilityNativeBirth) })
                     harmony.CreateClassProcessor(type).Patch();
+                // 从生产安装入口挂接两个可选钩子，覆盖真实程序集的签名预检与整组启用。
+                SSCFertilityGenerationPatches.RegisterMenstruation(harmony);
                 var take = AccessTools.Method(replacementType, "GetPregeneratedBaby");
                 var instructions = PatchProcessor.GetCurrentInstructions(native).ToList();
                 Equal(1, instructions.Count(c => c.Calls(take)));

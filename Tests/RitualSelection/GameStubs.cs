@@ -52,6 +52,7 @@ namespace Verse
     }
     public static class Log
     {
+        // 单项测试重置计数，警告键仍保留到宿主进程退出，以模拟原版的去重边界。
         private static readonly HashSet<int> warningKeys = new HashSet<int>();
         public static void Warning(string value) { Counters.Warnings++; }
         public static void WarningOnce(string value, int key)

@@ -7,6 +7,7 @@ using System.Reflection.Emit;
 using HarmonyLib;
 using RimWorld;
 using Verse;
+using Verse.AI.Group;
 
 namespace SexSlaveCraft
 {
@@ -16,16 +17,55 @@ namespace SexSlaveCraft
         internal const string MenstruationType = "RJW_Menstruation.HediffComp_PregeneratedBabies";
         internal const string MenstruationBirthType = "RJW_Menstruation.ApplyBirthOutcome_PregeneratedBabies_Patch";
         private static readonly MethodInfo generate = AccessTools.Method(typeof(PawnGenerator), nameof(PawnGenerator.GeneratePawn), new[] { typeof(PawnGenerationRequest) });
+        internal static bool MenstruationInstalled { get; private set; }
+
+        /// <summary>原生出生观察和婴儿生成改写使用同一目标签名及亲代参数校验。</summary>
+        internal static MethodInfo NativeTarget()
+        {
+            var method = AccessTools.DeclaredMethod(typeof(PregnancyUtility), nameof(PregnancyUtility.ApplyBirthOutcome), new[]
+            {
+                typeof(RitualOutcomePossibility), typeof(float), typeof(Precept_Ritual), typeof(List<GeneDef>),
+                typeof(Pawn), typeof(Thing), typeof(Pawn), typeof(Pawn), typeof(LordJob_Ritual),
+                typeof(RitualRoleAssignments), typeof(bool)
+            });
+            return method?.IsStatic == true && method.ReturnType == typeof(Thing) &&
+                HasArguments(method, (5, "birtherThing", typeof(Thing)), (6, "father", typeof(Pawn))) ? method : null;
+        }
+
+        /// <summary>成对安装预生成和即时回退两条入口。已有婴儿仍由月经模组的原方法取出。</summary>
+        internal static void RegisterMenstruation(Harmony harmony)
+        {
+            MenstruationInstalled = false;
+            MenstruationInstalled = SSCOptionalPatchGroup.Install(harmony, "RJW Menstruation", () =>
+            {
+                var preGeneration = AccessTools.TypeByName(MenstruationType);
+                var birth = AccessTools.TypeByName(MenstruationBirthType);
+                if (preGeneration == null && birth == null) return null;
+                var add = SSCOptionalPatchGroup.RequireTarget(preGeneration, "AddNewBaby", typeof(void), false, typeof(Pawn), typeof(Pawn));
+                var take = SSCOptionalPatchGroup.RequireTarget(birth, "GetPregeneratedBaby", typeof(Pawn), true, typeof(PawnGenerationRequest), typeof(Thing));
+                // 两个亲代均为 Pawn。仅按类型无法发现换位，名字与位置不符时保留外部生成路径。
+                if (!HasArguments(add, (0, "mother", typeof(Pawn)), (1, "father", typeof(Pawn))) ||
+                    !HasArguments(take, (1, "birtherThing", typeof(Thing))))
+                    throw new InvalidOperationException("Unexpected birth argument layout for AddNewBaby or GetPregeneratedBaby");
+                return new[]
+                {
+                    (add, typeof(Harmony_FertilityMenstruationGeneration), HarmonyPatchType.Transpiler),
+                    (take, typeof(Harmony_FertilityMenstruationFallback), HarmonyPatchType.Transpiler)
+                };
+            });
+        }
 
         /// <summary>原请求压栈后添加本入口上下文，包装器内部只调用一次原生成；匹配失败保留整段原IL。</summary>
         internal static IEnumerable<CodeInstruction> Rewrite(IEnumerable<CodeInstruction> instructions, string wrapper,
             CodeInstruction[] arguments, bool allowPregeneratedReplacement = false, bool multiple = false)
         {
             var codes = instructions.ToList();
-            int count = codes.Count(c => c.Calls(generate));
+            MethodInfo replacement = AccessTools.DeclaredMethod(typeof(SSCFertilityGenerationPatches), wrapper);
+            int count = generate == null ? 0 : codes.Count(c => c.Calls(generate));
+            // 月经接管原版生成时，当前调用负责取出预生成婴儿。其即时生成分支由独立入口处理。
             if (count == 0 && allowPregeneratedReplacement && codes.Any(c => c.operand is MethodInfo method &&
                 method.DeclaringType?.FullName == MenstruationBirthType && method.Name == "GetPregeneratedBaby")) return codes;
-            if (count < 1 || (!multiple && count != 1))
+            if (replacement == null || count < 1 || (!multiple && count != 1))
             {
                 Log.Error("[SSC] 婴儿生成接入失败：" + wrapper + "的GeneratePawn匹配数为" + count + "；保留原生成。");
                 return codes;
@@ -38,17 +78,17 @@ namespace SexSlaveCraft
                 var loads = arguments.Select(c => new CodeInstruction(c)).ToArray();
                 loads[0].MoveLabelsFrom(code).MoveBlocksFrom(code);
                 result.AddRange(loads);
-                result.Add(new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(SSCFertilityGenerationPatches), wrapper)));
+                result.Add(new CodeInstruction(OpCodes.Call, replacement));
             }
             return result;
         }
 
-        /// <summary>按已核对的参数名加载，不把局部变量编号或IL偏移写成兼容契约。</summary>
-        internal static CodeInstruction Argument(MethodBase method, string name)
+        /// <summary>安装前核对参数位置、名字和类型。确认语义后，Transpiler 才能使用对应的参数槽。</summary>
+        private static bool HasArguments(MethodBase method, params (int Index, string Name, Type Type)[] expected)
         {
-            int index = Array.FindIndex(method.GetParameters(), p => p.Name == name);
-            if (index < 0) throw new InvalidOperationException("[SSC] Missing birth argument: " + name);
-            return CodeInstruction.LoadArgument(index + (method.IsStatic ? 0 : 1));
+            var parameters = method.GetParameters();
+            return expected.All(p => p.Index < parameters.Length && parameters[p.Index].Name == p.Name &&
+                parameters[p.Index].ParameterType == p.Type);
         }
 
         /// <summary>真实怀胎Pawn提供身体设置；生长舱不借遗传母方资格套用这些设置。</summary>
@@ -62,64 +102,72 @@ namespace SexSlaveCraft
                 : PawnGenerator.GeneratePawn(request);
 
         /// <summary>月经真实预生成使用其现有亲代参数，其余前后置处理仍由原方法执行。</summary>
+        /// <remarks>组安装失败时，残留包装器直接调用原生成，以原参数继续。</remarks>
         internal static Pawn GenerateMenstruation(PawnGenerationRequest request, Pawn mother, Pawn father)
-            => SSCFertilityOffspringUtility.Generate(request, mother, father);
+            => MenstruationInstalled ? SSCFertilityOffspringUtility.Generate(request, mother, father) : PawnGenerator.GeneratePawn(request);
 
         /// <summary>仅月经内部即时生成回退调用；已有Pawn返回路径不经过这里，不追补。</summary>
         internal static Pawn GenerateFallback(PawnGenerationRequest request, Thing birtherThing)
-            => SSCFertilityOffspringUtility.Generate(request, birtherThing as Pawn,
-                SSCFertilityBirthUtility.CurrentFather(birtherThing as Pawn));
+            => MenstruationInstalled
+                ? SSCFertilityOffspringUtility.Generate(request, birtherThing as Pawn, SSCFertilityBirthUtility.CurrentFather(birtherThing as Pawn))
+                : PawnGenerator.GeneratePawn(request);
     }
 
-    [HarmonyPatch(typeof(PregnancyUtility), nameof(PregnancyUtility.ApplyBirthOutcome))]
+    [HarmonyPatch]
     [HarmonyAfter("RJW_Menstruation", "rimworld.erdelf.alien_race.main")]
     internal static class Harmony_FertilityNativeGeneration
     {
+        internal static MethodBase TargetMethod() => SSCFertilityGenerationPatches.NativeTarget();
+        internal static bool Prepare()
+        {
+            if (TargetMethod() != null) return true;
+            Log.WarningOnce("[SSC Fertility] ApplyBirthOutcome signature or birth arguments changed. Keeping original birth.", 0x5353464E);
+            return false;
+        }
+
         /// <summary>月经已替换为取出已有婴儿时不覆盖调用，其回退由独立局部补丁接通。</summary>
-        internal static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, MethodBase original)
+        internal static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
             => SSCFertilityGenerationPatches.Rewrite(instructions, nameof(SSCFertilityGenerationPatches.GenerateNative),
-                new[] { SSCFertilityGenerationPatches.Argument(original, "birtherThing"), SSCFertilityGenerationPatches.Argument(original, "father") }, true);
+                new[] { CodeInstruction.LoadArgument(5), CodeInstruction.LoadArgument(6) }, true);
     }
 
-    [HarmonyPatch(typeof(rjw.Hediff_BasePregnancy), "GenerateBabies")]
+    [HarmonyPatch]
     internal static class Harmony_FertilityRjwGeneration
     {
+        internal static MethodBase TargetMethod()
+        {
+            var target = AccessTools.DeclaredMethod(typeof(rjw.Hediff_BasePregnancy), "GenerateBabies",
+                new[] { typeof(rjw.Hediff_BasePregnancy.DnaGivingParent) });
+            return target?.IsStatic == false && target.ReturnType == typeof(void) ? target : null;
+        }
+
+        internal static bool Prepare()
+        {
+            if (TargetMethod() != null) return true;
+            Log.WarningOnce("[SSC Fertility] RJW GenerateBabies signature changed. Keeping original generation.", 0x53534652);
+            return false;
+        }
+
         /// <summary>生成循环和遗传计算不动，仅向生成包装器传当前妊娠实例。</summary>
         internal static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
             => SSCFertilityGenerationPatches.Rewrite(instructions, nameof(SSCFertilityGenerationPatches.GenerateRjw), new[] { new CodeInstruction(OpCodes.Ldarg_0) });
     }
 
-    [HarmonyPatch]
     internal static class Harmony_FertilityMenstruationGeneration
     {
-        /// <summary>按可选类型和已核对签名查找；未安装月经时不发空类型查询警告。</summary>
-        internal static MethodBase TargetMethod()
-        {
-            Type type = AccessTools.TypeByName(SSCFertilityGenerationPatches.MenstruationType);
-            return type == null ? null : AccessTools.Method(type, "AddNewBaby", new[] { typeof(Pawn), typeof(Pawn) });
-        }
-        /// <summary>可选依赖不存在时跳过安装，不将其变成硬依赖。</summary>
-        internal static bool Prepare() => TargetMethod() != null;
+        // AddNewBaby 是实例方法，arg.0 为 this。已验证的两位亲代对应 arg.1 和 arg.2。
         /// <summary>只包裹AddNewBaby内部生成，不改月经原双胎或遗传处理。</summary>
-        internal static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, MethodBase original)
+        internal static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
             => SSCFertilityGenerationPatches.Rewrite(instructions, nameof(SSCFertilityGenerationPatches.GenerateMenstruation),
-                new[] { SSCFertilityGenerationPatches.Argument(original, "mother"), SSCFertilityGenerationPatches.Argument(original, "father") });
+                new[] { CodeInstruction.LoadArgument(1), CodeInstruction.LoadArgument(2) });
     }
 
-    [HarmonyPatch]
     internal static class Harmony_FertilityMenstruationFallback
     {
-        /// <summary>可选月经出生取出器的真实方法；没有该类型则不安装。</summary>
-        internal static MethodBase TargetMethod()
-        {
-            Type type = AccessTools.TypeByName(SSCFertilityGenerationPatches.MenstruationBirthType);
-            return type == null ? null : AccessTools.Method(type, "GetPregeneratedBaby", new[] { typeof(PawnGenerationRequest), typeof(Thing) });
-        }
-        /// <summary>缺依赖时跳过，不添加空目标补丁。</summary>
-        internal static bool Prepare() => TargetMethod() != null;
+        // GetPregeneratedBaby 是静态方法，arg.1 为实际分娩对象。只在即时生成调用处追加该参数。
         /// <summary>只包裹取出器的即时生成分支，已有婴儿返回分支保持不变。</summary>
-        internal static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, MethodBase original)
+        internal static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
             => SSCFertilityGenerationPatches.Rewrite(instructions, nameof(SSCFertilityGenerationPatches.GenerateFallback),
-                new[] { SSCFertilityGenerationPatches.Argument(original, "birtherThing") }, multiple: true);
+                new[] { CodeInstruction.LoadArgument(1) }, multiple: true);
     }
 }

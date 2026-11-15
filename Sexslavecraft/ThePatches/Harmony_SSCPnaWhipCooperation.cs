@@ -68,11 +68,12 @@ namespace SexSlaveCraft
 
     internal static class Harmony_SSCPnaWhipCooperativeThreat
     {
+        // installed 表示两个钩子均已完成注册。matched 表示当前 TryCastShot 包装方法具备两处威胁改写。
         private static bool installed;
         private static bool matched;
         internal static bool Ready => installed && matched;
 
-        // 两处钩子共同启用；回退时已生成的威胁包装器也执行原版写入。
+        /// <summary>同批安装免闪避和威胁改写。两处均已注册且威胁 IL 匹配时，才开放鞭束协作。</summary>
         internal static void Register(Harmony harmony)
         {
             installed = false;
@@ -97,6 +98,7 @@ namespace SexSlaveCraft
             {
                 Log.WarningOnce($"[SSC PNA whip] Could not install melee hooks. SSC whip cooperation is disabled. {error.GetBaseException().Message}",
                     0x53535749);
+                // 只按补丁方法撤回本组。即使清理失败，Ready 仍为 false，残留钩子会按原版行为处理。
                 foreach (var (target, patch) in new[] { (cast, transpiler), (dodge, prefix) })
                 {
                     try { harmony.Unpatch(target, patch); }
@@ -118,6 +120,7 @@ namespace SexSlaveCraft
             MethodInfo setTick = AccessTools.Method(typeof(Harmony_SSCPnaWhipCooperativeThreat), nameof(SetThreatTick));
             int threatWrites = threat == null ? 0 : codes.Count(c => c.StoresField(threat));
             int tickWrites = tick == null ? 0 : codes.Count(c => c.StoresField(tick));
+            // 威胁角色和时间戳由同一次攻击写入。确认两处字段类型和写入锚点后再改写，避免只改一处。
             matched = threat?.FieldType == typeof(Pawn) && tick?.FieldType == typeof(int) &&
                 setThreat != null && setTick != null && threatWrites == 1 && tickWrites == 1;
             if (!matched)

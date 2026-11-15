@@ -60,11 +60,17 @@ namespace SexSlaveCraft
     [HarmonyPatch]
     public static class Harmony_SSCRomanceRandomSelection
     {
+        // 三种权重钩子统一预检，缺少任一目标时沿用整组原生权重。
+        public static bool Prepare() => Harmony_SSCRomanceCommandWorker.PrepareTargets(TargetMethods());
+
         /// <summary>精确登记三个原 worker；不修改普通聊天、性行为或其他模组自定义浪漫行为。</summary>
         public static IEnumerable<MethodBase> TargetMethods()
         {
             foreach (var type in new[] { typeof(InteractionWorker_RomanceAttempt), typeof(InteractionWorker_MarriageProposal), typeof(InteractionWorker_Breakup) })
-                yield return AccessTools.DeclaredMethod(type, "RandomSelectionWeight", new[] { typeof(Pawn), typeof(Pawn) });
+            {
+                var method = AccessTools.DeclaredMethod(type, "RandomSelectionWeight", new[] { typeof(Pawn), typeof(Pawn) });
+                yield return method?.IsStatic == false && method.ReturnType == typeof(float) ? method : null;
+            }
         }
 
         /// <summary>主动不准入时不参加随机选择；被动规则不参与过滤，也不把原版为零的权重提高。</summary>
@@ -84,6 +90,9 @@ namespace SexSlaveCraft
     [HarmonyPatch]
     public static class Harmony_SSCRomanceAcceptance
     {
+        // 恋爱与求婚使用同一套签名解析。缺少接受判定时，点名命令的 Ready 检查也会关闭相关入口。
+        public static bool Prepare() => Harmony_SSCRomanceCommandWorker.PrepareTargets(TargetMethods());
+
         /// <summary>记录这次真实 worker 调用；查询概率不会创建拒绝反馈，嵌套调用各自保存结果。</summary>
         public static void Prefix(Pawn initiator, Pawn recipient, MethodBase __originalMethod, out SSCRomanceAcceptanceUtility.Attempt __state)
             => __state = SSCRomanceAcceptanceUtility.Begin(initiator, recipient, Harmony_SSCRomanceRandomSelection.ActionFor(__originalMethod.DeclaringType));
@@ -99,8 +108,8 @@ namespace SexSlaveCraft
         /// <summary>只接入两个原版接受分支；分手没有接收判定，不能伪造接受分手。</summary>
         public static IEnumerable<MethodBase> TargetMethods()
         {
-            yield return AccessTools.DeclaredMethod(typeof(InteractionWorker_RomanceAttempt), "Interacted");
-            yield return AccessTools.DeclaredMethod(typeof(InteractionWorker_MarriageProposal), "Interacted");
+            yield return Harmony_SSCRomanceCommandWorker.ResolveInteraction(typeof(InteractionWorker_RomanceAttempt));
+            yield return Harmony_SSCRomanceCommandWorker.ResolveInteraction(typeof(InteractionWorker_MarriageProposal));
         }
 
         /// <summary>以真实概率调用及相邻比较匹配唯一锚点；不覆盖任何完整关系结算，也不触碰拒婚 40% 比较。</summary>

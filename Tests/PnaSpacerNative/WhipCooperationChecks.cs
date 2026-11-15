@@ -161,6 +161,7 @@ internal static partial class Program
             });
             Check("未知IL布局原样透传，免闪避与威胁写入一起恢复原版",()=>
             {
+                // 通过等价写入保留原生威胁副作用，同时让 SSC 看不到对应的 stfld 锚点。
                 var upstream = new Harmony("ssc.tests.pna.whip-cooperation.layout");
                 try
                 {
@@ -176,6 +177,7 @@ internal static partial class Program
                     Equal(1234, f.Target.mindState.lastMeleeThreatHarmTick);
                 }
                 finally { upstream.UnpatchAll(upstream.Id); }
+                // 上游撤回后 Harmony 重新生成包装方法，两项协作应一并恢复。
                 Assert(Harmony_SSCPnaWhipCooperativeThreat.Ready);
             });
         }

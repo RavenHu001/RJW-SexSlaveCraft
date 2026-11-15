@@ -19,8 +19,13 @@ namespace SexSlaveCraft
             var harmony = new Harmony("SexSlaveCraft.training.patch"); 
             SSCLog.Important($"[SSC Harmony] 开始加载Harmony补丁...");
             harmony.PatchAll();
+            // 鞭束两处钩子作为一组安装。可选模组各自解析和注册，某组失配时仍能继续执行后面的安装入口。
+            // 沿用当前 Harmony owner，使依赖该 owner 的补丁顺序约束继续有效。
             Harmony_SSCPnaWhipCooperativeThreat.Register(harmony);
+            HumanCattleCompatibility.Register(harmony);
+            EqualMilkingCompatibility.Register(harmony);
 #if SSC_RW17
+            SSCFertilityGenerationPatches.RegisterMenstruation(harmony);
             // 等本轮静态构造／原有补丁注册完成后安装只读计时采样；不改变冻结版入口。
             LongEventHandler.ExecuteWhenFinished(SSCOrgasmProgressPatches.Install);
             // 可选 UAP 接入使用独立 owner，完整核对后才开放手动豁免；不随旧版 PatchAll 注册。
