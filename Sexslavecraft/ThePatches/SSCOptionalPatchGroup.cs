@@ -27,7 +27,13 @@ namespace SexSlaveCraft
             {
                 // 先解析完整目标数组，再调用 Harmony。目标预检失败时不会留下半组已装补丁。
                 var targets = resolve();
-                if (targets == null) return false;
+                if (targets == null)
+                {
+#if SSC_RW17
+                    SSCPatchRegistration.Record(name, SSCPatchState.Skipped, stage: "Resolve");
+#endif
+                    return false;
+                }
                 foreach (var (target, type, kind) in targets)
                 {
                     MethodInfo hook = AccessTools.DeclaredMethod(type, kind.ToString())
@@ -39,6 +45,9 @@ namespace SexSlaveCraft
                         postfix: kind == HarmonyPatchType.Postfix ? patch : null,
                         transpiler: kind == HarmonyPatchType.Transpiler ? patch : null);
                 }
+#if SSC_RW17
+                SSCPatchRegistration.Record(name, SSCPatchState.Ready);
+#endif
                 return true;
             }
             catch (Exception error)
@@ -53,6 +62,14 @@ namespace SexSlaveCraft
                 }
                 // 清理失败也返回未就绪，让调用方停用本组功能，并保留实际注册错误供排查。
                 string detail = cleanupFailure == null ? "" : " Cleanup failed: " + cleanupFailure;
+#if SSC_RW17
+                // 没有尝试过 Patch 时属于接口解析失败。有记录时报告最近尝试的目标，完整异常仍写入日志。
+                MethodInfo failedTarget = attempted.Count == 0 ? null : attempted[attempted.Count - 1].Target;
+                SSCPatchRegistration.Record(name, SSCPatchState.Failed,
+                    failedTarget == null ? null : failedTarget.DeclaringType?.FullName + "." + failedTarget.Name,
+                    cleanupFailure != null ? "Install / rollback" : attempted.Count == 0 ? "Resolve" : "Install",
+                    error.GetBaseException().GetType().Name);
+#endif
                 Log.Warning($"[SSC {name}] Optional patch group skipped: {error.GetBaseException().Message}.{detail}");
                 return false;
             }

@@ -17,4 +17,14 @@
   <SSC_Diagnostics_Refresh>Refresh checks</SSC_Diagnostics_Refresh>
   <SSC_Diagnostics_Copy>Copy diagnostics</SSC_Diagnostics_Copy>
   <SSC_Diagnostics_Copied>Copied</SSC_Diagnostics_Copied>
+  <SSC_Diagnostics_PatchRegistration>Patch registration status</SSC_Diagnostics_PatchRegistration>
+  <SSC_Diagnostics_PatchWaiting>Pending installation</SSC_Diagnostics_PatchWaiting>
+  <SSC_Diagnostics_PatchReady>Ready</SSC_Diagnostics_PatchReady>
+  <SSC_Diagnostics_PatchSkipped>Skipped</SSC_Diagnostics_PatchSkipped>
+  <SSC_Diagnostics_PatchFallback>Fallback active</SSC_Diagnostics_PatchFallback>
+  <SSC_Diagnostics_PatchFailed>Registration failed</SSC_Diagnostics_PatchFailed>
+  <SSC_Diagnostics_PatchDailyTraining>Daily training lifecycle</SSC_Diagnostics_PatchDailyTraining>
+  <SSC_Diagnostics_PatchWeaponDrawing>PNA weapon drawing</SSC_Diagnostics_PatchWeaponDrawing>
+  <SSC_Diagnostics_PatchWeaponDrawingFallback>The draw instructions did not match. SSC weapon effects are disabled and existing drawing is preserved.</SSC_Diagnostics_PatchWeaponDrawingFallback>
+  <SSC_Diagnostics_TrainingHooksUnavailable>Daily training cannot be assigned because required patches are unavailable.</SSC_Diagnostics_TrainingHooksUnavailable>
 </LanguageData>

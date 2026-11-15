@@ -17,4 +17,14 @@
   <SSC_Diagnostics_Refresh>Повторить проверку</SSC_Diagnostics_Refresh>
   <SSC_Diagnostics_Copy>Копировать отчёт</SSC_Diagnostics_Copy>
   <SSC_Diagnostics_Copied>Скопировано</SSC_Diagnostics_Copied>
+  <SSC_Diagnostics_PatchRegistration>Состояние регистрации патчей</SSC_Diagnostics_PatchRegistration>
+  <SSC_Diagnostics_PatchWaiting>Ожидает установки</SSC_Diagnostics_PatchWaiting>
+  <SSC_Diagnostics_PatchReady>Готово</SSC_Diagnostics_PatchReady>
+  <SSC_Diagnostics_PatchSkipped>Пропущено</SSC_Diagnostics_PatchSkipped>
+  <SSC_Diagnostics_PatchFallback>Включён резервный режим</SSC_Diagnostics_PatchFallback>
+  <SSC_Diagnostics_PatchFailed>Ошибка регистрации</SSC_Diagnostics_PatchFailed>
+  <SSC_Diagnostics_PatchDailyTraining>Жизненный цикл ежедневной тренировки</SSC_Diagnostics_PatchDailyTraining>
+  <SSC_Diagnostics_PatchWeaponDrawing>Отрисовка оружия PNA</SSC_Diagnostics_PatchWeaponDrawing>
+  <SSC_Diagnostics_PatchWeaponDrawingFallback>Инструкции отрисовки не совпали. Эффекты оружия SSC отключены, прежняя отрисовка сохранена.</SSC_Diagnostics_PatchWeaponDrawingFallback>
+  <SSC_Diagnostics_TrainingHooksUnavailable>Ежедневную тренировку нельзя назначить, пока необходимые патчи недоступны.</SSC_Diagnostics_TrainingHooksUnavailable>
 </LanguageData>

@@ -17,4 +17,14 @@
   <SSC_Diagnostics_Refresh>重新檢查</SSC_Diagnostics_Refresh>
   <SSC_Diagnostics_Copy>複製診斷資訊</SSC_Diagnostics_Copy>
   <SSC_Diagnostics_Copied>已複製</SSC_Diagnostics_Copied>
+  <SSC_Diagnostics_PatchRegistration>補丁註冊狀態</SSC_Diagnostics_PatchRegistration>
+  <SSC_Diagnostics_PatchWaiting>等待安裝</SSC_Diagnostics_PatchWaiting>
+  <SSC_Diagnostics_PatchReady>已就緒</SSC_Diagnostics_PatchReady>
+  <SSC_Diagnostics_PatchSkipped>已略過</SSC_Diagnostics_PatchSkipped>
+  <SSC_Diagnostics_PatchFallback>已回退</SSC_Diagnostics_PatchFallback>
+  <SSC_Diagnostics_PatchFailed>註冊失敗</SSC_Diagnostics_PatchFailed>
+  <SSC_Diagnostics_PatchDailyTraining>日常調教生命週期</SSC_Diagnostics_PatchDailyTraining>
+  <SSC_Diagnostics_PatchWeaponDrawing>PNA 武器繪製</SSC_Diagnostics_PatchWeaponDrawing>
+  <SSC_Diagnostics_PatchWeaponDrawingFallback>繪製指令配置不符。SSC 武器繪製效果已停用，沿用現有繪製。</SSC_Diagnostics_PatchWeaponDrawingFallback>
+  <SSC_Diagnostics_TrainingHooksUnavailable>日常調教所需補丁未就緒，暫時無法派發日常調教。</SSC_Diagnostics_TrainingHooksUnavailable>
 </LanguageData>

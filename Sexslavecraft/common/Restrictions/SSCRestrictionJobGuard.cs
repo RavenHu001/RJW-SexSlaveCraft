@@ -12,6 +12,10 @@ namespace SexSlaveCraft
     /// <summary>管理本批任务的检查时机、可保存开始凭据和拒绝清理；所有许可均交给 SSCRestrictionPolicy。</summary>
     internal static class SSCRestrictionJobGuard
     {
+#if SSC_RW17
+        // 只记录 SSC 未能覆盖的具体驱动类型，其他路径保持自己的预约及准备检查。
+        internal static readonly HashSet<Type> UnavailableDriverHooks = new HashSet<Type>();
+#endif
         private sealed class SceneState
         {
             // 状态必须同时属于驱动、Job实例和loadID，避免复用后继承旧请求的开始凭据。
@@ -102,6 +106,12 @@ namespace SexSlaveCraft
         {
             allowed = true;
 #if SSC_RW17
+            // 派生驱动的预约补丁可能在基础生命周期组回滚后仍在。先拒绝新日常任务，不进入普通场景策略。
+            if (driver is JobDriver_Training && TrainerAssignmentUtility.DailyTrainingHooksReady == false)
+            {
+                allowed = false;
+                return true;
+            }
             // 先检查原 UAP 票据，再允许 Started 快速路径；过期任务不能回退普通主人例外重新取权。
             if (SSCUapGroupRuntime.Check(driver, out allowed) && !allowed)
             { State(driver).Rejected = true; return true; }
@@ -109,6 +119,15 @@ namespace SexSlaveCraft
             if (!SSCRestrictionJobContext.TryCreate(driver, out SSCRestrictionRequest request)) return false;
             if (HasStarted(driver, request) && (!SSCRestrictionTrainingUtility.IsTraining(request) ||
                 SSCIdentityUtility.IsSexSlave(request.Receiver))) return true;
+#if SSC_RW17
+            // 只拒绝已确认失配的驱动的新请求。已具备有效凭据的场景优先沿用原收尾路径。
+            if (UnavailableDriverHooks.Contains(driver.GetType()))
+            {
+                allowed = false;
+                State(driver).Rejected = true;
+                return true;
+            }
+#endif
             allowed = Evaluate(driver, request, out SSCRestrictionDecision decision, out string reason, ordered);
             LogDecision(driver, request, decision, "Reserve", allowed, reason);
             State(driver).Rejected = !allowed;
@@ -137,6 +156,15 @@ namespace SexSlaveCraft
 #endif
             if (HasStarted(driver, request) && (!SSCRestrictionTrainingUtility.IsTraining(request) ||
                 SSCIdentityUtility.IsSexSlave(request.Receiver))) return true;
+#if SSC_RW17
+            // 在途任务也可能来自读档或绕过常规派发的调用。准备检查继续用现有拒绝清理，防止遗留等待任务。
+            if (UnavailableDriverHooks.Contains(driver.GetType()))
+            {
+                allowed = false;
+                Reject(driver, request, "SSC_Restrictions_CommandRejected".Translate());
+                return true;
+            }
+#endif
             allowed = Evaluate(driver, request, out SSCRestrictionDecision decision, out string reason);
             LogDecision(driver, request, decision, phase, allowed, reason);
             if (!allowed && driver is JobDriver_SexBaseReciever persistent && OnaholeCompatibilityUtility.IsBeOnaholeDriver(persistent))

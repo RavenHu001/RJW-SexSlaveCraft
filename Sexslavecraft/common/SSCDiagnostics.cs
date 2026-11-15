@@ -46,6 +46,42 @@ namespace SexSlaveCraft
                 report.AppendLine("RimTalk: " + "SSC_RimTalk_Paused".Translate());
                 report.AppendLine("SSC_Diagnostics_PatchNote".Translate());
             });
+#if SSC_RW17
+            AppendSection(report, "SSC_Diagnostics_PatchRegistration", () =>
+            {
+                // 窗口打开及点击刷新时生成报告，复制沿用当前文本。读取过程只观察启动记录，不重新注册补丁。
+                var entries = SSCPatchRegistration.Snapshot();
+                if (entries.Length == 0) report.AppendLine("SSC_Diagnostics_PatchWaiting".Translate());
+                foreach (var entry in entries)
+                {
+                    var (state, target, stage, detail) = entry.Value;
+                    string label = entry.Key;
+                    if (entry.Key == SSCPatchRegistration.DailyTraining)
+                    {
+                        // 核心组失败会拦截日常调教派发。把可见影响和失败信息放在同一条记录。
+                        label = "SSC_Diagnostics_PatchDailyTraining".Translate();
+                        if (state == SSCPatchState.Failed)
+                            detail = string.Join(" · ", new[] { detail, "SSC_Diagnostics_TrainingHooksUnavailable".Translate().ToString() }
+                                .Where(value => !string.IsNullOrEmpty(value)));
+                    }
+                    if (entry.Key == nameof(Harmony_SSCPnaSpearGlowDraw))
+                    {
+                        // 原样透传的 Transpiler 仍在 Harmony 清单里。读取最新匹配结果，展示实际绘制回退。
+                        label = "SSC_Diagnostics_PatchWeaponDrawing".Translate();
+                        target = "Verse.PawnRenderUtility.DrawEquipmentAiming";
+                        if (state == SSCPatchState.Ready && !Harmony_SSCPnaSpearGlowDraw.Matched)
+                        {
+                            state = SSCPatchState.Fallback;
+                            stage = "Transpiler";
+                            detail = "SSC_Diagnostics_PatchWeaponDrawingFallback".Translate();
+                        }
+                    }
+                    report.AppendLine(label + " — " + ("SSC_Diagnostics_Patch" + state).Translate());
+                    var notes = new[] { target, stage, detail }.Where(value => !string.IsNullOrEmpty(value)).ToArray();
+                    if (notes.Length != 0) report.AppendLine("  " + string.Join(" · ", notes));
+                }
+            });
+#endif
             report.AppendLine("SSC_Diagnostics_ReportNote".Translate());
             return report.ToString();
         }
