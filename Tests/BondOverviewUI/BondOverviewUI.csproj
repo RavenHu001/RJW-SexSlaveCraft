@@ -23,6 +23,7 @@
     <Compile Include="../../Sexslavecraft/UI/SSCBondOverviewWidgets.cs" />
     <Compile Include="../../Sexslavecraft/UI/SSCTrainerAssignmentMenu.cs" />
     <Compile Include="../../Sexslavecraft/UI/Gizmo_SSCBondOverview.cs" />
+    <Compile Include="../../Sexslavecraft/UI/Command_SSCBondSelection.cs" />
     <Compile Include="../../Sexslavecraft/UI/Dialog_SSCBondOverview.cs" />
     <Compile Include="../../Sexslavecraft/common/SSCUIWidgets.cs" />
   </ItemGroup>

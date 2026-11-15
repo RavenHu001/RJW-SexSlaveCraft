@@ -13,7 +13,7 @@ internal static partial class Program
             var f=Fixture();var trainer=Master();f.slave.Training.selectedTrainer=trainer;
             var ship=new Gravship();Find.CurrentGravship=ship;ship.Pawns.Add(trainer);
             var s=new SSCBondOverviewSession(Current.Game,()=>0);
-            var v=s.ObserveCard(f.slave,f.map,0);
+            var v=s.ObserveCard(f.slave,f.map);
             Require(v.Snapshot.Master.Pawn==f.master&&v.Snapshot.AssignedTrainer==trainer);
             Require(ThingOwnerUtility.MapQueryCount==0&&ship.Things.Enumerations==0&&ship.Pawns.Enumerations==0);
         });
@@ -49,20 +49,20 @@ internal static partial class Program
             var f=Fixture();var s=Ready(f.slave,f.map);var v=s.Card;var master=Master();
             SSCBondUtility.GetChain(f.slave).target=master;f.slave.Training.selectedTrainer=master;
             var child=Slave(master);SSCBondUtility.GetChain(child).target=f.slave;
-            Hediff_BridleOfSexSlave.AddToPawn(f.slave,child);s.ObserveCard(f.slave,f.map,1);
+            Hediff_BridleOfSexSlave.AddToPawn(f.slave,child);s.ObserveCard(f.slave,f.map);
             Require(v.Snapshot.Master.Pawn==master&&v.Snapshot.AssignedTrainer==master&&v.Snapshot.Slaves.Single().Pawn==child&&ThingOwnerUtility.MapQueryCount==0);
         });
         Check("direct: equal-size replacement is re-read from current bridle on local timer",()=>{
-            var f=Fixture();double now=0;var s=new SSCBondOverviewSession(Current.Game,()=>now);var v=s.ObserveCard(f.master,f.map,0);var old=v.Snapshot;
+            var f=Fixture();double now=0;var s=new SSCBondOverviewSession(Current.Game,()=>now);var v=s.ObserveCard(f.master,f.map);var old=v.Snapshot;
             var another=Slave(Master());SSCBondUtility.GetChain(another).target=f.master;SSCBondUtility.GetBridle(f.master).targets[0]=another;
-            now=1.99;s.ObserveCard(f.master,f.map,1);s.Update(1,true,f.map);Require(old==v.Snapshot);
-            now=2;s.ObserveCard(f.master,f.map,2);s.Update(2,true,f.map);
+            now=1.99;s.ObserveCard(f.master,f.map);UpdateRepaintedCard(s,1,f.map);Require(old==v.Snapshot);
+            now=2;s.ObserveCard(f.master,f.map);UpdateRepaintedCard(s,2,f.map);
             Require(v.Snapshot.Slaves.Single().Pawn==another&&ThingOwnerUtility.MapQueryCount==0);
         });
         Check("direct: repeated registration and paint reuse snapshot and text caches",()=>{
-            var f=Fixture();var s=new SSCBondOverviewSession(Current.Game,()=>0);var v=s.ObserveCard(f.master,f.map,0);
+            var f=Fixture();var s=new SSCBondOverviewSession(Current.Game,()=>0);var v=s.ObserveCard(f.master,f.map);
             var first=v.Snapshot;var g=new Gizmo_SSCBondOverview(s);Paint(g);int revision=v.Revision,truncations=UIExtensions.Truncations;
-            for(int i=0;i<200;i++){s.ObserveCard(f.master,f.map,0);Paint(g);}
+            for(int i=0;i<200;i++){s.ObserveCard(f.master,f.map);Paint(g);}
             Require(ReferenceEquals(first,v.Snapshot)&&v.Revision==revision&&UIExtensions.Truncations==truncations&&ThingOwnerUtility.MapQueryCount==0);
         });
         foreach(bool trainer in new[]{false,true})Check("direct: uncached ship location clicks resolve live "+(trainer?"trainer":"bond"),()=>{
@@ -70,7 +70,7 @@ internal static partial class Program
             Pawn source=trainer?f.slave:f.master,target=trainer?f.master:f.slave;
             if(trainer)source.Training.selectedTrainer=target;
             target.Spawned=false;ship.Pawns.Add(target);Find.Selector.Objects.Clear();Find.Selector.Objects.Add(source);
-            var s=new SSCBondOverviewSession(Current.Game,()=>0);s.ObserveCard(source,f.map,0);
+            var s=new SSCBondOverviewSession(Current.Game,()=>0);s.ObserveCard(source,f.map);
             var location=trainer?s.Card.Snapshot.AssignedTrainerLocation:s.Card.Snapshot.Slaves[0].Location;
             Require(location.Kind==SSCBondOverviewLocationKind.Unknown&&ship.Things.Enumerations==0);
             var g=new Gizmo_SSCBondOverview(s,trainer?SSCBondOverviewPanel.Trainer:SSCBondOverviewPanel.Slaves);
@@ -78,14 +78,23 @@ internal static partial class Program
             Require(CameraJumper.Last.WorldObject==ship&&CameraJumper.Jumps==1&&ship.Things.Enumerations==1);
         });
         Check("direct: unknown location and changed relation still reject click safely",()=>{
-            var f=Fixture();f.slave.Spawned=false;var s=new SSCBondOverviewSession(Current.Game,()=>0);s.ObserveCard(f.master,f.map,0);
+            var f=Fixture();f.slave.Spawned=false;var s=new SSCBondOverviewSession(Current.Game,()=>0);s.ObserveCard(f.master,f.map);
             var g=new Gizmo_SSCBondOverview(s);var result=Click(g,65,50);g.ProcessInput(result.InteractEvent);Require(CameraJumper.Jumps==0);
             result=Click(g,65,50);SSCBondUtility.GetChain(f.slave).target=Master();g.ProcessInput(result.InteractEvent);Require(CameraJumper.Jumps==0);
         });
-        foreach(var panel in new[]{SSCBondOverviewPanel.Master,SSCBondOverviewPanel.Trainer,SSCBondOverviewPanel.Slaves})
+        foreach (string panel in new[] { "Master", "Trainer", "Slaves" })
             Check("native card: independent width and standard background "+panel,()=>{
-                var f=Fixture();var s=Ready(f.master,f.map);var g=new Gizmo_SSCBondOverview(s,panel);
-                float expected=panel==SSCBondOverviewPanel.Master?75:130;
+                var f = Fixture();
+                bool masterButton = panel == "Master";
+                if (masterButton)
+                {
+                    Find.Selector.ClearSelection();
+                    Find.Selector.Select(f.slave);
+                }
+                var s = Ready(masterButton ? f.slave : f.master, f.map);
+                Gizmo g = masterButton ? new Command_SSCBondSelection(s, selectMaster: true)
+                    : new Gizmo_SSCBondOverview(s, panel == "Trainer" ? SSCBondOverviewPanel.Trainer : SSCBondOverviewPanel.Slaves);
+                float expected = masterButton ? 75 : 130;
                 Require(g.GetWidth(400)==expected&&g.GetWidth(120)==Math.Min(expected,120));Paint(g);
                 Require(GenUI.LastRect.width==expected&&GenUI.LastTexture==Command.BGTex&&GenUI.LastMaterial==null);
             });
@@ -96,11 +105,13 @@ internal static partial class Program
                 GenUI.LastColor.Equals(Command.LowLightBgColor)&&GUI.color.r==.2f);
             g.Disabled=true;Paint(g);Require(GenUI.LastMaterial==TexUI.GrayscaleGUI&&GenUI.LastColor.Equals(Color.white)&&GUI.color.r==.2f);
         });
-        foreach(var panel in new[]{SSCBondOverviewPanel.Master,SSCBondOverviewPanel.Trainer})
+        foreach (string panel in new[] { "Master", "Trainer" })
             Check("native card: portrait and actions fit native panel without names "+panel,()=>{
                 var f=Fixture();f.slave.Training.selectedTrainer=f.master;Find.Selector.Objects.Clear();Find.Selector.Objects.Add(f.slave);
-                var s=new SSCBondOverviewSession(Current.Game,()=>0);s.ObserveCard(f.slave,f.map,0);
-                Widgets.CapturedLabels=new();var g=new Gizmo_SSCBondOverview(s,panel);Paint(g);
+                var s=new SSCBondOverviewSession(Current.Game,()=>0);s.ObserveCard(f.slave,f.map);
+                Gizmo g = panel == "Master" ? new Command_SSCBondSelection(s, selectMaster: true)
+                    : new Gizmo_SSCBondOverview(s, SSCBondOverviewPanel.Trainer);
+                Widgets.CapturedLabels=new();Paint(g);
                 Require(Widgets.CapturedLabels.All(i=>i.rect.x>=0&&i.rect.xMax<=g.GetWidth(300)));
                 Require(!Widgets.CapturedLabels.Any(i=>i.value==f.master.LabelShort));
             });

@@ -89,7 +89,7 @@ namespace SexSlaveCraft
         private readonly Action<Exception> report;
         internal SSCBondOverviewView Card { get; private set; }
         internal SSCBondOverviewView Details { get; private set; }
-        private int cardFrame = int.MinValue;
+        private int? lastCardRepaintFrame;
         private double previousTime = double.NegativeInfinity, nextError;
 
         internal SSCBondOverviewSession(Game owner, Func<double> clock,
@@ -99,25 +99,31 @@ namespace SexSlaveCraft
             Owner = owner; this.clock = clock; buildLocal = build ?? SSCBondOverviewUtility.BuildLocal; this.report = report;
         }
 
-        internal SSCBondOverviewView ObserveCard(Pawn source, Map map, int frame)
+        internal SSCBondOverviewView ObserveCard(Pawn source, Map map)
         {
-            cardFrame = frame;
-            if (Card == null || !ReferenceEquals(Card.Source, source))
+            if (Card == null || !ReferenceEquals(Card.Source, source) || !ReferenceEquals(Card.Map, map))
             {
-                if (!ReferenceEquals(Card, Details)) Card?.Clear();
-                Card = Details != null && ReferenceEquals(Details.Source, source) ? Details : new SSCBondOverviewView(source, map);
+                ReleaseCard();
+                Card = Details != null && ReferenceEquals(Details.Source, source) && ReferenceEquals(Details.Map, map)
+                    ? Details : new SSCBondOverviewView(source, map);
             }
-            Card.SetMap(map);
             RefreshLocal(Card);
             return Card;
         }
 
+        internal void MarkCardRepainted(SSCBondOverviewView view, int frame)
+        {
+            if (view != null && ReferenceEquals(Card, view)) lastCardRepaintFrame = frame;
+        }
+
         internal SSCBondOverviewView OpenDetails(Pawn source, Map map)
         {
-            if (Details == null || !ReferenceEquals(Details.Source, source))
+            if (Details == null || !ReferenceEquals(Details.Source, source) ||
+                (ReferenceEquals(Details, Card) && !ReferenceEquals(Details.Map, map)))
             {
-                if (!ReferenceEquals(Details, Card)) Details?.Clear();
-                Details = Card != null && ReferenceEquals(Card.Source, source) ? Card : new SSCBondOverviewView(source, map);
+                ReleaseDetails();
+                Details = Card != null && ReferenceEquals(Card.Source, source) && ReferenceEquals(Card.Map, map)
+                    ? Card : new SSCBondOverviewView(source, map);
             }
             Details.SetMap(map);
             RefreshLocal(Details);
@@ -133,7 +139,8 @@ namespace SexSlaveCraft
         internal void ReleaseCard()
         {
             if (!ReferenceEquals(Card, Details)) Card?.Clear();
-            Card = null; cardFrame = int.MinValue;
+            Card = null;
+            lastCardRepaintFrame = null;
         }
         internal void Clear() { ReleaseCard(); ReleaseDetails(); }
         internal void RequestRefresh(SSCBondOverviewView view)
@@ -177,11 +184,11 @@ namespace SexSlaveCraft
             // 非当前游戏的会话绝不继续读取世界；加载期间也不保留可操作旧行。
             if (!ReferenceEquals(Owner, Current.Game) || Current.ProgramState != ProgramState.Playing || Scribe.mode != LoadSaveMode.Inactive)
             { Clear(); return; }
-            if (!cardEligible || cardFrame == int.MinValue || frame - cardFrame > 2) ReleaseCard();
-            if (Card != null && !SSCBondOverviewUtility.IsValidPawn(Card.Source)) ReleaseCard();
+            if (Card != null && (!cardEligible || !ReferenceEquals(Card.Map, map) || !SSCBondOverviewUtility.IsValidPawn(Card.Source)))
+                ReleaseCard();
             if (Details != null && !SSCBondOverviewUtility.IsValidPawn(Details.Source))
             { if (Details.Snapshot != null) { Details.Snapshot = null; Details.Changed(); } Details.Pending = false; Details.Failed = true; }
-            Card?.SetMap(map); Details?.SetMap(map);
+            Details?.SetMap(map);
             double now = clock();
             if (now < previousTime)
             {
@@ -190,10 +197,12 @@ namespace SexSlaveCraft
                 if (Details != null) Details.NextLocalRefresh = now;
             }
             previousTime = now;
-            // 两秒真实时间更新阶段、姓名、死亡与持有位置；同源卡片和窗口只构建一次。
-            // 无关系角色仅在直接字段变化时重读，停止过去用于发现漏索引的空结果轮询。
-            if (Card != null) RefreshLocal(Card, Card.ShowCard && now >= Card.NextLocalRefresh);
-            if (Details != null && !ReferenceEquals(Details, Card))
+            // 可见卡片按真实时间更新行数据。跨帧复用列表或暂时隐藏时仍保留当前单选的视图。
+            // 无卡可绘制的来源在列表枚举时检查直接字段；详情窗口可独立维持刷新。
+            bool repaintingCard = Card != null && lastCardRepaintFrame is int lastFrame &&
+                frame >= lastFrame && frame - (long)lastFrame <= 2;
+            if (repaintingCard) RefreshLocal(Card, Card.ShowCard && now >= Card.NextLocalRefresh);
+            if (Details != null && (!repaintingCard || !ReferenceEquals(Details, Card)))
                 RefreshLocal(Details, now >= Details.NextLocalRefresh);
         }
     }

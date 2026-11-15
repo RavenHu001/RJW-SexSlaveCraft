@@ -51,7 +51,12 @@ internal static partial class Program
     }
     static SSCBondOverviewSnapshot View(Pawn source,params Pawn[] candidates)=>SSCBondOverviewUtility.BuildFromCandidates(source,Find.CurrentMap,candidates);
     static SSCBondOverviewSession Ready(Pawn source,Map map)
-    {var session=new SSCBondOverviewSession(Current.Game,()=>Time.realtimeSinceStartup);session.ObserveCard(source,map,0);session.Update(0,true,map);return session;}
+    {var session=new SSCBondOverviewSession(Current.Game,()=>Time.realtimeSinceStartup);session.ObserveCard(source,map);session.Update(0,true,map);return session;}
+    static void UpdateRepaintedCard(SSCBondOverviewSession session, int frame, Map map)
+    {
+        session.MarkCardRepainted(session.Card, frame);
+        session.Update(frame, true, map);
+    }
     static void Paint(Gizmo gizmo,float width=300)=>gizmo.GizmoOnGUI(new(0,0),width,default);
     static GizmoResult Click(Gizmo gizmo,float x,float y,int button=0)
     {
@@ -75,66 +80,123 @@ internal static partial class Program
     {
         Check("session: first observation builds local once and repeated GUI/update reuse it",()=>{
             var f=Fixture();int builds=0;var s=new SSCBondOverviewSession(Current.Game,()=>0,(p,m)=>{builds++;return SSCBondOverviewUtility.BuildLocal(p,m);});
-            for(int i=0;i<100;i++){s.ObserveCard(f.master,f.map,0);s.Update(0,true,f.map);}
+            for(int i=0;i<100;i++){s.ObserveCard(f.master,f.map);s.Update(0,true,f.map);}
             Require(builds==1&&s.Card.Snapshot.TotalSlaveCount==1&&ThingOwnerUtility.MapQueryCount==0);
         });
         Check("session: same source card and details share local timer",()=>{
             var f=Fixture();double now=0;int builds=0;var s=new SSCBondOverviewSession(Current.Game,()=>now,(p,m)=>{builds++;return SSCBondOverviewUtility.BuildLocal(p,m);});
-            var card=s.ObserveCard(f.master,f.map,0);Require(ReferenceEquals(card,s.OpenDetails(f.master,f.map)));
-            now=2;s.ObserveCard(f.master,f.map,1);s.Update(1,true,f.map);Require(builds==2&&s.Card.Snapshot==s.Details.Snapshot);
+            var card=s.ObserveCard(f.master,f.map);Require(ReferenceEquals(card,s.OpenDetails(f.master,f.map)));
+            now=2;s.ObserveCard(f.master,f.map);s.Update(1,true,f.map);Require(builds==2&&s.Card.Snapshot==s.Details.Snapshot);
         });
         Check("session: two second real-time local refresh updates paused row facts",()=>{
-            var f=Fixture();double now=0;var s=new SSCBondOverviewSession(Current.Game,()=>now);var v=s.ObserveCard(f.master,f.map,0);var old=v.Snapshot;
-            f.slave.LabelShort="Renamed";f.slave.Dead=true;now=1.99;s.ObserveCard(f.master,f.map,1);s.Update(1,true,f.map);Require(v.Snapshot==old);
-            now=2;s.ObserveCard(f.master,f.map,2);s.Update(2,true,f.map);
+            var f=Fixture();double now=0;var s=new SSCBondOverviewSession(Current.Game,()=>now);var v=s.ObserveCard(f.master,f.map);var old=v.Snapshot;
+            f.slave.LabelShort="Renamed";f.slave.Dead=true;now=1.99;UpdateRepaintedCard(s,1,f.map);Require(v.Snapshot==old);
+            now=2;UpdateRepaintedCard(s,2,f.map);
             Require(v.Snapshot.Slaves[0].Name=="Renamed"&&v.Snapshot.LivingSlaveCount==0&&ThingOwnerUtility.MapQueryCount==0);
         });
         Check("session: missing reverse index is not discovered by ordinary polling",()=>{
             var f=Fixture();f.master.Training.pawnIdentity=PawnIdentity.Unset;SSCBondUtility.GetBridle(f.master).targets.Clear();
             double now=0;int builds=0;var s=new SSCBondOverviewSession(Current.Game,()=>now,(p,m)=>{builds++;return SSCBondOverviewUtility.BuildLocal(p,m);});
-            for(int frame=0;frame<100;frame++){now=frame*10;s.ObserveCard(f.master,f.map,frame);s.Update(frame,true,f.map);}
+            for(int frame=0;frame<100;frame++){now=frame*10;s.ObserveCard(f.master,f.map);s.Update(frame,true,f.map);}
             Require(!s.Card.ShowCard&&builds==1&&s.Card.Snapshot.TotalSlaveCount==0&&ThingOwnerUtility.MapQueryCount==0);
         });
         Check("session: no relationship polling still notices newly indexed binding",()=>{
             var p=new Pawn();var map=new Map();var s=Ready(p,map);var child=Slave(Master());SSCBondUtility.GetChain(child).target=p;
-            Hediff_BridleOfSexSlave.AddToPawn(p,child);s.ObserveCard(p,map,1);Require(s.Card.ShowCard&&s.Card.Snapshot.TotalSlaveCount==1);
+            var empty = s.Card;
+            s.Update(3,true,map);Require(s.Card==empty&&!empty.ShowCard);
+            Hediff_BridleOfSexSlave.AddToPawn(p,child);s.ObserveCard(p,map);
+            Require(s.Card==empty&&empty.ShowCard&&empty.Snapshot.TotalSlaveCount==1);
         });
         Check("session: local refresh requests merge before update",()=>{
             var f=Fixture();int builds=0;var s=new SSCBondOverviewSession(Current.Game,()=>0,(p,m)=>{builds++;return SSCBondOverviewUtility.BuildLocal(p,m);});
-            s.ObserveCard(f.master,f.map,0);for(int i=0;i<20;i++)s.RequestRefresh(s.Card);s.Update(0,true,f.map);
+            s.ObserveCard(f.master,f.map);for(int i=0;i<20;i++)s.RequestRefresh(s.Card);UpdateRepaintedCard(s,0,f.map);
             Require(builds==2&&!s.Card.Pending&&ThingOwnerUtility.MapQueryCount==0);
         });
         Check("session: card disappears while independent details survives then releases",()=>{
             var f=Fixture();var s=Ready(f.master,f.map);var state=s.OpenDetails(f.master,f.map);s.Update(3,false,f.map);
             Require(s.Card==null&&s.Details==state&&state.Snapshot!=null);s.ReleaseDetails();Require(state.Snapshot==null);
         });
-        Check("session: no heartbeat expires after two full frames",()=>{
-            var p=Master();var s=Ready(p,null);var old=s.Card;s.Update(3,true,null);Require(s.Card==null&&old.Snapshot==null);
+        Check("session: four-frame command list reuse paints both pairs without rebuilding their views", () =>
+        {
+            var fixture = Fixture();
+            fixture.slave.Training.pawnIdentity = PawnIdentity.Slave;
+            foreach (Pawn source in new[] { fixture.master, fixture.slave })
+            {
+                Find.Selector.ClearSelection();
+                Find.Selector.Select(source);
+                var component = new SSCBondRelationGameComponent(Current.Game);
+                Gizmo[] cached = Array.Empty<Gizmo>();
+                SSCBondOverviewView originalView = null;
+                SSCBondOverviewSnapshot originalSnapshot = null;
+                for (int frame = 0; frame < 120; frame++)
+                {
+                    Time.frameCount = frame;
+                    Time.realtimeSinceStartup = frame / 60f;
+                    component.GameComponentUpdate();
+                    if (frame % 4 == 0)
+                    {
+                        Gizmo[] refreshed = component.GetOverviewGizmos(source).ToArray();
+                        Require(refreshed.Length == 2);
+                        if (frame == 0)
+                        {
+                            originalView = component.Overview.Card;
+                            originalSnapshot = originalView.Snapshot;
+                        }
+                        else Require(refreshed.SequenceEqual(cached), "A stable selection replaced its Gizmos.");
+                        cached = refreshed;
+                    }
+                    Require(ReferenceEquals(component.Overview.Card, originalView) &&
+                        ReferenceEquals(originalView.Snapshot, originalSnapshot), $"View changed on frame {frame}.");
+                    foreach (Gizmo gizmo in cached)
+                    {
+                        GenUI.LastTexture = null;
+                        Paint(gizmo);
+                        Require(GenUI.LastTexture != null, $"A cached Gizmo did not paint on frame {frame}.");
+                    }
+                }
+            }
+        });
+        Check("session: hidden card retains its view and resumes local polling after repaint", () =>
+        {
+            var fixture = Fixture();
+            var session = Ready(fixture.master, fixture.map);
+            var view = session.Card;
+            var snapshot = view.Snapshot;
+            var gizmo = new Gizmo_SSCBondOverview(session);
+            Paint(gizmo);
+            fixture.slave.LabelShort = "Renamed while hidden";
+            Time.frameCount = 120;
+            Time.realtimeSinceStartup = 2;
+            session.Update(120, true, fixture.map);
+            Require(session.Card == view && view.Snapshot == snapshot);
+            Paint(gizmo);
+            session.Update(121, true, fixture.map);
+            Require(session.Card == view && view.Snapshot.Slaves.Single().Name == "Renamed while hidden");
         });
         Check("session: map change immediately replaces old location context",()=>{
-            var f=Fixture();var s=Ready(f.master,f.map);var other=new Map();s.ObserveCard(f.master,other,1);
-            Require(s.Card.Snapshot.ViewedMap==other&&!s.Card.Pending&&ThingOwnerUtility.MapQueryCount==0);
+            var f=Fixture();var s=Ready(f.master,f.map);var previous=s.Card;var other=new Map();s.ObserveCard(f.master,other);
+            Require(previous.Snapshot==null&&s.Card.Snapshot.ViewedMap==other&&!s.Card.Pending&&ThingOwnerUtility.MapQueryCount==0);
         });
         Check("session: source change drops old references without shared backoff",()=>{
-            var f=Fixture();var s=Ready(f.master,f.map);var old=s.Card;s.ObserveCard(f.slave,f.map,1);
+            var f=Fixture();var s=Ready(f.master,f.map);var old=s.Card;s.ObserveCard(f.slave,f.map);
             Require(old.Snapshot==null&&s.Card.Snapshot.Master.Pawn==f.master&&ThingOwnerUtility.MapQueryCount==0);
         });
         Check("session: independent local sources both refresh without world scans",()=>{
             var f=Fixture();double now=0;var order=new List<Pawn>();var s=new SSCBondOverviewSession(Current.Game,()=>now,(p,m)=>{order.Add(p);return SSCBondOverviewUtility.BuildLocal(p,m);});
-            s.ObserveCard(f.master,f.map,0);s.OpenDetails(f.slave,f.map);now=2;s.ObserveCard(f.master,f.map,1);s.Update(1,true,f.map);
+            s.ObserveCard(f.master,f.map);s.OpenDetails(f.slave,f.map);now=2;UpdateRepaintedCard(s,1,f.map);
             Require(order.SequenceEqual(new[]{f.master,f.slave,f.master,f.slave})&&ThingOwnerUtility.MapQueryCount==0);
         });
         Check("session: clock rollback resumes local timer",()=>{
             var f=Fixture();double now=100;int builds=0;var s=new SSCBondOverviewSession(Current.Game,()=>now,(p,m)=>{builds++;return SSCBondOverviewUtility.BuildLocal(p,m);});
-            s.ObserveCard(f.master,f.map,0);s.Update(0,true,f.map);now=1;s.ObserveCard(f.master,f.map,1);s.Update(1,true,f.map);Require(builds==2);
+            s.ObserveCard(f.master,f.map);UpdateRepaintedCard(s,0,f.map);now=1;UpdateRepaintedCard(s,1,f.map);Require(builds==2);
         });
         Check("session: local failures retain previous facts and throttle retries/logging",()=>{
             var f=Fixture();double now=0;bool fail=false;int builds=0,errors=0;
             var s=new SSCBondOverviewSession(Current.Game,()=>now,(p,m)=>{builds++;if(fail)throw new Exception("local");return SSCBondOverviewUtility.BuildLocal(p,m);},e=>errors++);
-            s.ObserveCard(f.master,f.map,0);var old=s.Card.Snapshot;fail=true;now=2;s.ObserveCard(f.master,f.map,1);s.Update(1,true,f.map);
+            s.ObserveCard(f.master,f.map);var old=s.Card.Snapshot;fail=true;now=2;UpdateRepaintedCard(s,1,f.map);
             Require(s.Card.Failed&&s.Card.Snapshot==old&&builds==2&&errors==1);
-            now=3;for(int i=0;i<50;i++){s.RequestRefresh(s.Card);s.ObserveCard(f.master,f.map,2);s.Update(2,true,f.map);}Require(builds==2);
-            now=4;s.Update(2,true,f.map);Require(builds==3&&errors==1);fail=false;now=6;s.Update(2,true,f.map);Require(!s.Card.Failed&&!s.Card.Pending);
+            now=3;for(int i=0;i<50;i++){s.RequestRefresh(s.Card);s.ObserveCard(f.master,f.map);UpdateRepaintedCard(s,2,f.map);}Require(builds==2);
+            now=4;UpdateRepaintedCard(s,3,f.map);Require(builds==3&&errors==1);fail=false;now=6;UpdateRepaintedCard(s,4,f.map);Require(!s.Card.Failed&&!s.Card.Pending);
         });
         foreach(bool loading in new[]{false,true})Check("session: clear on "+(loading?"loading":"cross game"),()=>{
             var p=Master();var s=Ready(p,null);var view=s.OpenDetails(p,null);if(loading)Scribe.mode=LoadSaveMode.PostLoadInit;else Current.Game=new();
@@ -382,7 +444,7 @@ internal static partial class Program
         });
         foreach(string change in new[]{"revision","map","source","release"})Check("cache: clears presentation on "+change,()=>{
             var f=Fixture();var s=Ready(f.master,f.map);var v=s.Card;var d=v.Display;d.Row(v.Snapshot.Slaves[0]);v.Truncate("Name",20);
-            if(change=="revision")v.Changed();else if(change=="map")v.SetMap(new());else if(change=="source")s.ObserveCard(Master(),f.map,1);else s.Clear();
+            if(change=="revision")v.Changed();else if(change=="map")v.SetMap(new());else if(change=="source")s.ObserveCard(Master(),f.map);else s.Clear();
             Require(v.TruncatedCount==0&&(change=="revision"?v.Display!=d&&v.Display.RowCount==0:v.Display==null));
         });
         Check("cache: language switch renews templates and row text",()=>{
@@ -400,7 +462,7 @@ internal static partial class Program
             var f=Fixture();double now=0;var p=f.master;var s=new SSCBondOverviewSession(Current.Game,()=>now);
             for(int frame=0;frame<100;frame++){
                 now=frame;if(reason=="source")p=frame%2==0?f.master:f.slave;if(reason=="reopen")s.Clear();
-                s.ObserveCard(p,reason=="map"?new Map():f.map,frame);if(reason=="manual")s.RequestRefresh(s.Card);
+                s.ObserveCard(p,reason=="map"?new Map():f.map);if(reason=="manual")s.RequestRefresh(s.Card);
                 s.Update(frame,true,s.Card.Map);
             }
             Require(ThingOwnerUtility.MapQueryCount==0&&ThingOwnerUtility.Visits.Count==0);
@@ -423,7 +485,7 @@ internal static partial class Program
         Check("auto grid: refresh recomputes size and cache without changing navigation",()=>{
             var f=Fixture();for(int i=0;i<11;i++)Place(Slave(f.master,"P"+i),f.map);var s=Ready(f.master,f.map);var g=new Gizmo_SSCBondOverview(s);
             var old=s.Card.Display.Grid(118,33);foreach(var e in s.Card.Snapshot.Slaves.Skip(1))SSCBondUtility.GetChain(e.Pawn).target=null;
-            Time.realtimeSinceStartup=2;s.ObserveCard(f.master,f.map,1);s.Update(1,true,f.map);Paint(g);
+            Time.realtimeSinceStartup=2;s.ObserveCard(f.master,f.map);UpdateRepaintedCard(s,1,f.map);Paint(g);
             Require(s.Card.Display.Grid(118,33).Side>old.Side&&s.Card.Snapshot.TotalSlaveCount==1&&CameraJumper.Jumps==0);
         });
         Check("auto grid: actual drawn portrait rectangle dispatches the corresponding member",()=>{
@@ -435,13 +497,16 @@ internal static partial class Program
         Check("panels: master and assigned trainer are separate even when same person",()=>{
             var f=Fixture();f.slave.Training.selectedTrainer=f.master;Find.Selector.Objects.Clear();Find.Selector.Objects.Add(f.slave);
             var game=Current.Game.GetComponent<SSCBondRelationGameComponent>();game.GetOverviewGizmos(f.slave).ToArray();game.GameComponentUpdate();
-            var panels=game.GetOverviewGizmos(f.slave).Cast<Gizmo_SSCBondOverview>().ToArray();
-            Require(panels.Select(g=>g.Panel).SequenceEqual(new[]{SSCBondOverviewPanel.Master,SSCBondOverviewPanel.Trainer}));
+            var panels=game.GetOverviewGizmos(f.slave).ToArray();
+            Require(panels.Length==2&&panels[0] is Command_SSCBondSelection owner&&owner.Label==SSCBondOverviewText.T("SelectMaster")&&
+                panels[1] is Gizmo_SSCBondOverview { Panel: SSCBondOverviewPanel.Trainer });
             Require(game.Overview.Card.Snapshot.TotalSlaveCount==0&&game.Overview.Card.Snapshot.Master.Pawn==f.master);
         });
         Check("panels: ordinary master has only slaves panel and no empty directions",()=>{
             var f=Fixture();var game=Current.Game.GetComponent<SSCBondRelationGameComponent>();game.GetOverviewGizmos(f.master).ToArray();game.GameComponentUpdate();
-            var panels=game.GetOverviewGizmos(f.master).Cast<Gizmo_SSCBondOverview>().ToArray();Require(panels.Select(g=>g.Panel).SequenceEqual(new[]{SSCBondOverviewPanel.Slaves,SSCBondOverviewPanel.SelectAll}));
+            var panels=game.GetOverviewGizmos(f.master).ToArray();
+            Require(panels.Length==2&&panels[0] is Gizmo_SSCBondOverview { Panel: SSCBondOverviewPanel.Slaves }&&
+                panels[1] is Command_SSCBondSelection all&&all.Label==SSCBondOverviewText.T("SelectAllSlaves")&&!all.groupable);
         });
         Check("panels: unset identity retains a raw trainer without adding a master or slave",()=>{
             var f=Fixture();var p=new Pawn();p.Training.selectedTrainer=f.master;Place(p,f.map);Find.Selector.Objects.Clear();Find.Selector.Objects.Add(p);
@@ -523,9 +588,9 @@ internal static partial class Program
         });
         Check("trainer avatar: explicit click navigates trainer while master avatar navigates owner",()=>{
             var f=Fixture();var trainer=Master();Place(trainer,f.map);f.slave.Training.selectedTrainer=trainer;Find.Selector.Objects.Clear();Find.Selector.Objects.Add(f.slave);
-            var s=Ready(f.slave,f.map);var g=new Gizmo_SSCBondOverview(s,SSCBondOverviewPanel.Trainer);var click=Click(g,65,50);g.ProcessInput(click.InteractEvent);
+            var s=Ready(f.slave,f.map);Gizmo g=new Gizmo_SSCBondOverview(s,SSCBondOverviewPanel.Trainer);var click=Click(g,65,50);g.ProcessInput(click.InteractEvent);
             Require(CameraJumper.Last.Thing==trainer&&CameraJumper.Jumps==1);
-            g=new Gizmo_SSCBondOverview(s,SSCBondOverviewPanel.Master);click=Click(g,65,50);g.ProcessInput(click.InteractEvent);Require(CameraJumper.Last.Thing==f.master&&CameraJumper.Jumps==2);
+            g=new Command_SSCBondSelection(s, selectMaster: true);click=Click(g,65,50);g.ProcessInput(click.InteractEvent);Require(CameraJumper.Last.Thing==f.master&&CameraJumper.Jumps==2);
         });
         Check("trainer menu: own change rereads direct relationships and retains refresh deadline",()=>{
             var f=Fixture();Find.Selector.Objects.Clear();Find.Selector.Objects.Add(f.slave);TrainerAssignmentUtility.Candidates.Add(f.master);

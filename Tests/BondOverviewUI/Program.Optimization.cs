@@ -12,13 +12,13 @@ internal static partial class Program
             var f=Fixture();var s=Ready(f.master,f.map);var v=s.Card;var snapshot=v.Snapshot;var display=v.Display;
             var row=display.Row(snapshot.Slaves[0]);var tooltip=row.Tooltip;v.Truncate("Very long text",12);
             int revision=v.Revision,calls=UIExtensions.Truncations;
-            for(int i=1;i<=5;i++){Time.realtimeSinceStartup=i*2;s.ObserveCard(f.master,f.map,i);s.Update(i,true,f.map);v.Truncate("Very long text",12);}
+            for(int i=1;i<=5;i++){Time.realtimeSinceStartup=i*2;s.ObserveCard(f.master,f.map);UpdateRepaintedCard(s,i,f.map);v.Truncate("Very long text",12);}
             Require(v.Snapshot==snapshot&&v.Display==display&&v.Display.Row(snapshot.Slaves[0])==row&&
                 ReferenceEquals(row.Tooltip,tooltip)&&revision==v.Revision&&calls==UIExtensions.Truncations&&ThingOwnerUtility.MapQueryCount==0);
         });
         Check("optimization: merged no-op request still reads locally without discarding caches",()=>{
             var f=Fixture();int builds=0;var s=new SSCBondOverviewSession(Current.Game,()=>0,(p,m)=>{builds++;return SSCBondOverviewUtility.BuildLocal(p,m);});
-            var v=s.ObserveCard(f.master,f.map,0);var display=v.Display;for(int i=0;i<20;i++)s.RequestRefresh(v);s.Update(0,true,f.map);
+            var v=s.ObserveCard(f.master,f.map);var display=v.Display;for(int i=0;i<20;i++)s.RequestRefresh(v);UpdateRepaintedCard(s,0,f.map);
             Require(builds==2&&v.Display==display&&!v.Pending);
         });
         foreach(string change in new[]{"source-name","slave-name","stage","dead","identity","specialization","map","map-name","count","order","owner"})
@@ -36,7 +36,7 @@ internal static partial class Program
                 if(change=="count")Slave(f.master,"Added");
                 if(change=="order")other.LabelShort="AAA";
                 if(change=="owner")SSCBondUtility.GetChain(f.slave).target=Master();
-                Time.realtimeSinceStartup=2;s.ObserveCard(f.master,f.map,1);s.Update(1,true,f.map);
+                Time.realtimeSinceStartup=2;s.ObserveCard(f.master,f.map);UpdateRepaintedCard(s,1,f.map);
                 Require(s.Card.Snapshot!=snapshot&&s.Card.Display!=display&&ThingOwnerUtility.MapQueryCount==0);
             });
         foreach(string change in new[]{"name","state","dead","reference","location"})Check("optimization: trainer invalidation on "+change,()=>{
@@ -47,7 +47,7 @@ internal static partial class Program
             if(change=="dead")trainer.Dead=true;
             if(change=="reference")f.slave.Training.selectedTrainer=f.master;
             if(change=="location")trainer.Map=new Map();
-            Time.realtimeSinceStartup=2;s.ObserveCard(f.slave,f.map,1);s.Update(1,true,f.map);
+            Time.realtimeSinceStartup=2;s.ObserveCard(f.slave,f.map);UpdateRepaintedCard(s,1,f.map);
             Require(s.Card.Snapshot!=old&&s.Card.Display!=display);
         });
         foreach(bool world in new[]{false,true})Check("optimization: location label captured before rename "+world,()=>{
@@ -55,19 +55,19 @@ internal static partial class Program
             f.slave.Spawned=false;if(world)f.slave.ParentHolder=caravan;else{Place(box,f.map);f.slave.ParentHolder=box;}
             var s=Ready(f.master,f.map);var old=s.Card.Snapshot;string label=old.Slaves[0].Location.Name;
             if(world)caravan.LabelCap="New caravan";else box.LabelShort="New box";
-            Time.realtimeSinceStartup=2;s.ObserveCard(f.master,f.map,1);s.Update(1,true,f.map);
+            Time.realtimeSinceStartup=2;s.ObserveCard(f.master,f.map);UpdateRepaintedCard(s,1,f.map);
             Require(old.Slaves[0].Location.Name==label&&s.Card.Snapshot!=old&&s.Card.Snapshot.Slaves[0].Location.Name!=label);
         });
         Check("optimization: world tile value change invalidates same-subject location",()=>{
             var f=Fixture();f.slave.Spawned=false;f.slave.Tile=new(true,1);var s=Ready(f.master,f.map);var old=s.Card.Snapshot;
-            f.slave.Tile=new(true,2);Time.realtimeSinceStartup=2;s.ObserveCard(f.master,f.map,1);s.Update(1,true,f.map);
+            f.slave.Tile=new(true,2);Time.realtimeSinceStartup=2;s.ObserveCard(f.master,f.map);UpdateRepaintedCard(s,1,f.map);
             Require(s.Card.Snapshot!=old&&s.Card.Snapshot.Slaves[0].Location.Kind==SSCBondOverviewLocationKind.WorldTile);
         });
         Check("optimization: same-master chain replacement keeps presentation but rechecks current chain",()=>{
             var f=Fixture();var s=Ready(f.master,f.map);var old=s.Card.Snapshot;
             var chain=SSCBondUtility.GetChain(f.slave);f.slave.health.hediffSet.hediffs.Remove(chain);
             f.slave.health.AddHediff(new Hediff_ChainOfSexSlave{def=chain.def,target=f.master,Severity=chain.Severity});
-            Time.realtimeSinceStartup=2;s.ObserveCard(f.master,f.map,1);s.Update(1,true,f.map);
+            Time.realtimeSinceStartup=2;s.ObserveCard(f.master,f.map);UpdateRepaintedCard(s,1,f.map);
             Require(s.Card.Snapshot==old&&SSCBondOverviewNavigation.TryNavigate(old,old.Slaves[0],out _));
             SSCBondUtility.GetChain(f.slave).target=Master();Require(!SSCBondOverviewNavigation.TryNavigate(old,old.Slaves[0],out _));
         });

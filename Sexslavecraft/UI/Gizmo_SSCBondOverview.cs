@@ -1,15 +1,15 @@
 // AI 辅助生成。独立关系卡片与只读头像网格，输入经原版分派后再开窗或定位。
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 using Verse;
 
 namespace SexSlaveCraft
 {
-    internal enum SSCBondOverviewPanel { Slaves, Master, Trainer, SelectAll }
+    internal enum SSCBondOverviewPanel { Slaves, Trainer }
     internal sealed class Gizmo_SSCBondOverview : Gizmo
     {
         private readonly SSCBondOverviewSession session;
+        private SSCBondOverviewView view;
         internal readonly SSCBondOverviewPanel Panel;
         private SSCBondOverviewView pendingView;
         private SSCBondOverviewSnapshot pendingSnapshot;
@@ -18,24 +18,23 @@ namespace SexSlaveCraft
         // 跨按下／松开只保存动作和当前游戏内的角色 ID，不额外持有来源 Pawn 或旧视图。
         private int pressedAction, pressedSourceId;
         internal Gizmo_SSCBondOverview(SSCBondOverviewSession session, SSCBondOverviewPanel panel = SSCBondOverviewPanel.Slaves)
-        { this.session = session; Panel = panel; }
-        public override float GetWidth(float maxWidth) => Math.Min(
-            Panel == SSCBondOverviewPanel.Master || Panel == SSCBondOverviewPanel.SelectAll ? 75 : 130, Math.Max(1, maxWidth));
+        { this.session = session; view = session.Card; Panel = panel; }
+        public override float GetWidth(float maxWidth) => Math.Min(130f, Math.Max(1f, maxWidth));
         public override bool GroupsWith(Gizmo other) => false;
         public override bool InheritInteractionsFrom(Gizmo other) => false;
         internal void ClearPending() { pendingView = null; pendingSnapshot = null; pendingEntry = null; pendingAction = 0; }
-        internal void Clear() { ClearPending(); pressedAction = pressedSourceId = 0; }
+        internal void Clear() { ClearPending(); pressedAction = pressedSourceId = 0; view = null; }
 
         public override GizmoResult GizmoOnGUI(Vector2 topLeft, float maxWidth, GizmoRenderParms parms)
         {
             ClearPending();
             if (Event.current.type == EventType.mouseDown) pressedAction = pressedSourceId = 0;
             bool released = Event.current.type == EventType.mouseUp;
-            SSCBondOverviewView view = session.Card;
-            if (!ReferenceEquals(session.Owner, Current.Game) || !SSCBondOverviewAccess.IsCardSource(view?.Source) || !view.ShowCard)
+            if (!SSCBondOverviewAccess.IsCurrentCard(session, view))
                 return new GizmoResult(GizmoState.Clear);
+            if (Event.current.type == EventType.repaint) session.MarkCardRepainted(view, Time.frameCount);
             using var scope = new SSCBondOverviewWidgets.GuiScope(true);
-            Rect rect = new Rect(topLeft.x, topLeft.y, GetWidth(maxWidth), Panel == SSCBondOverviewPanel.Master || Panel == SSCBondOverviewPanel.SelectAll ? GetWidth(maxWidth) : 75);
+            Rect rect = new Rect(topLeft.x, topLeft.y, GetWidth(maxWidth), 75f);
             // 与原版机械师从属卡片共用命令背景纹理、边框及低亮度材质；不另画实心底框。
             Color oldColor = GUI.color;
             GUI.color = parms.lowLight ? Command.LowLightBgColor : Color.white;
@@ -45,42 +44,6 @@ namespace SexSlaveCraft
             bool left = GUI.enabled && !Disabled && Event.current.type == EventType.mouseDown && Event.current.button == 0;
             SSCBondOverviewSnapshot snapshot = view.Snapshot;
             SSCBondOverviewDisplay display = view.Display;
-            if (Panel == SSCBondOverviewPanel.SelectAll)
-            {
-                // 独立命令紧邻性奴概览；沿原版按钮的按下捕获／松开成功时序，不在绘制时枚举候选。
-                Press(rect, 7, true);
-                bool leftUp = GUI.enabled && !Disabled && Event.current.type == EventType.mouseUp && Event.current.button == 0;
-                if (GUI.enabled && !Disabled && Widgets.ButtonInvisible(rect) && leftUp && SamePress(7)) Remember(7);
-                float icon = Math.Min(52, Math.Max(0, rect.width - 12));
-                GUI.DrawTexture(new Rect(rect.x + (rect.width - icon) * .5f, rect.y + 5, icon, icon), TexButton.SelectOverlappingNext);
-                Text.Font = GameFont.Tiny; Text.Anchor = TextAnchor.MiddleCenter; Text.WordWrap = true;
-                Widgets.Label(new Rect(rect.x + 3, rect.yMax - 29, Math.Max(1, rect.width - 6), 27), SSCBondOverviewText.T("SelectAllSlaves"));
-                if (Mouse.IsOver(rect)) { Widgets.DrawHighlight(rect); TooltipHandler.TipRegion(rect, SSCBondOverviewText.T("SelectAllSlavesDesc")); }
-                return Result();
-            }
-            if (Panel == SSCBondOverviewPanel.Master)
-            {
-                // 唯一主人改为方形头像命令；整块矩形共享头像的现时关系校验和定位／选中。
-                // 不显示姓名，不添加总览或改主入口，完整姓名与位置仍可悬停查看。
-                if (snapshot?.Master != null)
-                {
-                    // 显示矩形与主人按钮等大，底部文字随后覆盖头像；纹理请求仍复用原 40／56 两档。
-                    // 绘制和输入共用原 Avatar 入口，缩窄时也保留现时锁链复查、完整提示与安全导航。
-                    if (SSCBondOverviewWidgets.Avatar(rect, snapshot, snapshot.Master, session, view) && left)
-                        Remember(4, snapshot.Master);
-                }
-                else
-                {
-                    Widgets.Label(new Rect(rect.x + 4, rect.y + 27, Math.Max(1, rect.width - 8), 24), "!");
-                    TooltipHandler.TipRegion(rect, SSCBondOverviewText.T(snapshot == null ? "Waiting" : "InvalidMaster"));
-                }
-                Text.Anchor = TextAnchor.MiddleCenter;
-                // 底部命令文字在头像之后绘制，允许覆盖人物下半部，保持示例中的命令按钮构图。
-                Text.Font = GameFont.Tiny;
-                Widgets.Label(new Rect(rect.x + 3, rect.yMax - 23, Math.Max(1, rect.width - 6), 22),
-                    view.Truncate(SSCBondOverviewText.T("SelectMaster"), Math.Max(1, rect.width - 6)));
-                return Result();
-            }
             if (rect.width < 100)
             {
                 float size = Math.Max(0, Math.Min(28, rect.width - 2));
@@ -194,10 +157,8 @@ namespace SexSlaveCraft
         {
             try
             {
-                SSCBondOverviewView view = session.Card;
-                if (ev == null || ev.button != 0 || !GUI.enabled || Disabled || pendingView == null ||
-                    !ReferenceEquals(session.Owner, Current.Game) || !ReferenceEquals(view, pendingView) ||
-                    !SSCBondOverviewAccess.IsCardSource(view.Source) || view.Revision != pendingRevision) return;
+                if (ev == null || ev.button != 0 || !GUI.enabled || Disabled || !ReferenceEquals(view, pendingView) ||
+                    !SSCBondOverviewAccess.IsCurrentCard(session, view) || view.Revision != pendingRevision) return;
                 // 所有动作在原版网格分派后执行一次，仍拒绝旧来源／代次；批选不调用世界补漏。
                 if (pendingAction == 1)
                 {
@@ -206,7 +167,6 @@ namespace SexSlaveCraft
 #endif
                         Dialog_SSCBondOverview.Open(session, view.Source);
                 }
-                else if (pendingAction == 7) SelectAllCurrentMap(view.Source);
 #if !SSC_RW17
                 else if (pendingAction == 6) OpenTrainerMenu(session, view);
 #endif
@@ -219,32 +179,6 @@ namespace SexSlaveCraft
                 }
             }
             finally { ClearPending(); }
-        }
-
-        private static bool CanSelect(Pawn pawn, Pawn owner, Map map)
-            => SSCBondOverviewUtility.IsValidPawn(pawn) && !ReferenceEquals(pawn, owner) && !pawn.Dead && pawn.Spawned &&
-                ReferenceEquals(pawn.Map, map) && pawn.def.selectable && ReferenceEquals(SSCBondUtility.GetBoundMaster(pawn), owner);
-
-        private static void SelectAllCurrentMap(Pawn source)
-        {
-            // 用户点击时只枚举当前地图已生成角色，以现时锁链补齐尚未进入显示快照的漏索引成员。
-            // 不扫描世界／货物，不清理绑定；先物化结果，避免选择通知修改原版临时集合。
-            Map map = Find.CurrentMap; Game game = Current.Game;
-            var candidates = new List<Pawn>();
-            foreach (Pawn pawn in map.mapPawns.AllPawnsSpawned) if (CanSelect(pawn, source, map)) candidates.Add(pawn);
-            if (candidates.Count == 0)
-            { Messages.Message(SSCBondOverviewText.T("NoSelectableSlaves"), RimWorld.MessageTypeDefOf.RejectInput, false); return; }
-            Find.Selector.ClearSelection();
-            foreach (Pawn pawn in candidates)
-            {
-                // 原版 Select 的通知可能触发其他 mod；逐人复查，且不允许选择过程跨游戏或切地图。
-                if (!ReferenceEquals(game, Current.Game) || !ReferenceEquals(map, Find.CurrentMap)) break;
-                if (SSCBondOverviewUtility.IsValidPawn(source) && CanSelect(pawn, source, map))
-                    Find.Selector.Select(pawn, playSound: Find.Selector.NumSelected == 0, forceDesignatorDeselect: Find.Selector.NumSelected == 0);
-            }
-            // 原版 Select 负责自身的 200 上限。无对象成功时保留来源，避免留下意外的空选择。
-            if (ReferenceEquals(game, Current.Game) && ReferenceEquals(map, Find.CurrentMap) && Find.Selector.NumSelected == 0 &&
-                SSCBondOverviewUtility.IsValidPawn(source) && source.Spawned && ReferenceEquals(source.Map, map)) Find.Selector.Select(source);
         }
 
 #if !SSC_RW17

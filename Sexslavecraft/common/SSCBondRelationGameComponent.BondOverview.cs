@@ -1,4 +1,4 @@
-// AI 辅助生成。三个关系面板共用单一会话；不创建逐角色常驻缓存或保存字段。
+// AI 辅助生成。命令栏只缓存当前单选来源的关系视图及控件。
 using System.Collections.Generic;
 using UnityEngine;
 using Verse;
@@ -8,7 +8,9 @@ namespace SexSlaveCraft
     public sealed partial class SSCBondRelationGameComponent
     {
         internal SSCBondOverviewSession Overview { get; private set; }
-        private Gizmo_SSCBondOverview slavesGizmo, selectAllGizmo, masterGizmo, trainerGizmo;
+        private SSCBondOverviewView gizmoView;
+        private Gizmo_SSCBondOverview slavesGizmo, trainerGizmo;
+        private Command_SSCBondSelection selectAllGizmo, masterGizmo;
         partial void InitializeOverview(Game game)
         { Overview = new SSCBondOverviewSession(game, () => Time.realtimeSinceStartup, report: ex => Log.Error("[SSC] Bond overview query: " + ex)); }
         internal Gizmo GetOverviewGizmo(Pawn pawn)
@@ -16,7 +18,8 @@ namespace SexSlaveCraft
         internal IEnumerable<Gizmo> GetOverviewGizmos(Pawn pawn)
         {
             if (!SSCBondOverviewAccess.IsCardSource(pawn)) yield break;
-            SSCBondOverviewView view = Overview.ObserveCard(pawn, Find.CurrentMap, Time.frameCount);
+            SSCBondOverviewView view = Overview.ObserveCard(pawn, Find.CurrentMap);
+            SetGizmoView(view);
             if (!view.ShowCard) yield break;
             SSCBondOverviewSnapshot snapshot = view.Snapshot;
             CompSexSlaveTraining comp = pawn.TryGetComp<CompSexSlaveTraining>();
@@ -24,11 +27,11 @@ namespace SexSlaveCraft
             if (snapshot?.TotalSlaveCount > 0 || (snapshot?.Identity ?? comp.pawnIdentity) == PawnIdentity.Master)
             {
                 yield return slavesGizmo ?? (slavesGizmo = new Gizmo_SSCBondOverview(Overview));
-                yield return selectAllGizmo ?? (selectAllGizmo = new Gizmo_SSCBondOverview(Overview, SSCBondOverviewPanel.SelectAll));
+                yield return selectAllGizmo ?? (selectAllGizmo = new Command_SSCBondSelection(Overview, selectMaster: false));
             }
             if (snapshot?.Master != null || snapshot?.MasterState == SSCBondOverviewMasterState.InvalidTarget ||
                 snapshot == null && SSCBondUtility.GetChain(pawn) != null)
-                yield return masterGizmo ?? (masterGizmo = new Gizmo_SSCBondOverview(Overview, SSCBondOverviewPanel.Master));
+                yield return masterGizmo ?? (masterGizmo = new Command_SSCBondSelection(Overview, selectMaster: true));
             if (SSCIdentityUtility.IsSexSlave(pawn) ||
 #if SSC_RW17
                 comp.AssignedTrainerCount != 0)
@@ -41,15 +44,24 @@ namespace SexSlaveCraft
         {
             slavesGizmo?.ClearPending(); selectAllGizmo?.ClearPending(); masterGizmo?.ClearPending(); trainerGizmo?.ClearPending();
             Overview.Update(Time.frameCount, SSCBondOverviewAccess.IsCardSource(Overview.Card?.Source), Find.CurrentMap);
-            if (Overview.Card == null)
-            {
-                slavesGizmo?.Clear(); selectAllGizmo?.Clear(); masterGizmo?.Clear(); trainerGizmo?.Clear();
-                slavesGizmo = selectAllGizmo = masterGizmo = trainerGizmo = null;
-            }
+            SetGizmoView(Overview.Card);
+        }
+
+        private void SetGizmoView(SSCBondOverviewView view)
+        {
+            if (ReferenceEquals(gizmoView, view)) return;
+            slavesGizmo?.Clear(); selectAllGizmo?.Clear(); masterGizmo?.Clear(); trainerGizmo?.Clear();
+            slavesGizmo = trainerGizmo = null;
+            selectAllGizmo = masterGizmo = null;
+            gizmoView = view;
         }
     }
     internal static class SSCBondOverviewAccess
     {
+        internal static bool IsCurrentCard(SSCBondOverviewSession session, SSCBondOverviewView view)
+            => view != null && ReferenceEquals(session.Owner, Current.Game) && ReferenceEquals(session.Card, view) &&
+                ReferenceEquals(view.Map, Find.CurrentMap) && IsCardSource(view.Source) && view.ShowCard;
+
         internal static bool IsCardSource(Pawn pawn)
             => Current.Game != null && Current.ProgramState == ProgramState.Playing && Scribe.mode == LoadSaveMode.Inactive &&
                 SSCBondOverviewUtility.IsValidPawn(pawn) && !pawn.Dead && pawn.Spawned && ReferenceEquals(pawn.Map, Find.CurrentMap) &&

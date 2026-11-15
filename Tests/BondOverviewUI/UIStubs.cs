@@ -5,7 +5,9 @@ using RimWorld.Planet;
 
 namespace UnityEngine
 {
-    public class Texture2D { }
+    public class Texture { }
+    public class Texture2D : Texture { }
+    public class Material { }
     public struct Vector2 { public float x, y; public Vector2(float x, float y) { this.x=x; this.y=y; } public static Vector2 zero => default; }
     public struct Rect
     {
@@ -51,11 +53,52 @@ namespace Verse
     }
     public abstract partial class GameComponent { public virtual void GameComponentUpdate(){} }
     public static partial class Find { public static Map CurrentMap; public static RimWorld.Selector Selector=new(); public static WindowStack WindowStack=new(); }
-    public enum GizmoState { Clear,Mouseover,Interacted }
+    public enum GizmoState { Clear,Mouseover,Interacted,OpenedFloatMenu }
     public struct GizmoRenderParms { public bool lowLight,shrunk; }
-    public class Command : Gizmo { public static readonly object BGTex=new(),BGTexShrunk=new();public static readonly Color LowLightBgColor=new(.5f,.5f,.5f); }
-    public class Command_Action : Command { public string defaultLabel, defaultDesc; public Action action; }
-    public static class TexUI { public static readonly object GrayscaleGUI=new(); }
+    public class Command : Gizmo
+    {
+        public static readonly object BGTex = new(), BGTexShrunk = new();
+        public static readonly Color LowLightBgColor = new(.5f, .5f, .5f), LowLightIconColor = new(.8f, .8f, .7f, .6f);
+        public string defaultLabel, defaultDesc;
+        public Texture icon;
+        public bool groupable = true;
+        public virtual string Label => defaultLabel;
+        public virtual string Desc => defaultDesc;
+        public override float GetWidth(float maxWidth) => 75f;
+
+        public override GizmoResult GizmoOnGUI(Vector2 topLeft, float maxWidth, GizmoRenderParms parms)
+            => GizmoOnGUIInt(new Rect(topLeft.x, topLeft.y, GetWidth(maxWidth), 75f), parms);
+
+        // 模拟原版命令调用钩子及 ButtonInvisible；字体、贴图和悬停只是可观察边界。
+        protected virtual GizmoResult GizmoOnGUIInt(Rect rect, GizmoRenderParms parms)
+        {
+            parms.lowLight |= Disabled;
+            Material material = parms.lowLight ? TexUI.GrayscaleGUI : null;
+            GUI.color = parms.lowLight ? LowLightBgColor : Color.white;
+            GenUI.DrawTextureWithMaterial(rect, parms.shrunk ? BGTexShrunk : BGTex, material);
+            GUI.color = Color.white;
+            Text.Font = GameFont.Tiny;
+            DrawIcon(rect, material, parms);
+            bool clicked = Widgets.ButtonInvisible(rect);
+            if (!parms.shrunk && !string.IsNullOrEmpty(Label))
+                Widgets.Label(new Rect(rect.x, rect.yMax - 16f, rect.width, 16f), Label);
+            if (Mouse.IsOver(rect)) TooltipHandler.TipRegion(rect, Desc);
+            if (clicked && !Disabled)
+                return new GizmoResult(Event.current.button == 1 ? GizmoState.OpenedFloatMenu : GizmoState.Interacted, Event.current);
+            return new GizmoResult(Mouse.IsOver(rect) ? GizmoState.Mouseover : GizmoState.Clear);
+        }
+
+        public virtual void DrawIcon(Rect rect, Material material, GizmoRenderParms parms)
+        {
+            if (icon != null) GUI.DrawTexture(rect, icon);
+        }
+    }
+    public class Command_Action : Command
+    {
+        public Action action;
+        public override void ProcessInput(Event ev) => action();
+    }
+    public static class TexUI { public static readonly Material GrayscaleGUI = new(); }
     public static class TexButton { public static readonly Texture2D Search=new(),Rename=new(),SelectOverlappingNext=new(); }
     public static class GenUI
     {
@@ -68,6 +111,7 @@ namespace Verse
     public partial class Gizmo
     {
         public bool Disabled;
+        public virtual bool Visible => true;
         public virtual float GetWidth(float max)=>max;
         public virtual bool GroupsWith(Gizmo other)=>true;
         public virtual bool InheritInteractionsFrom(Gizmo other)=>true;

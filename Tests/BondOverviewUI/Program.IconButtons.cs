@@ -10,15 +10,24 @@ internal static partial class Program
     {
         Check("icon actions: master has no overview button in normal or compact layout",()=>{
             var f=Fixture();Find.Selector.Objects.Clear();Find.Selector.Objects.Add(f.slave);var s=Ready(f.slave,f.map);
-            var g=new Gizmo_SSCBondOverview(s,SSCBondOverviewPanel.Master);Widgets.CapturedButtons=new();
-            foreach(float width in new[]{130f,55f}){
-                Event.current=new(){type=EventType.mouseDown,mousePosition=new(Math.Min(width,75)-10,12)};
-                var result=g.GizmoOnGUI(new(0,0),width,default);g.ProcessInput(result.InteractEvent);
-                Require(Find.WindowStack.WindowOfType<Dialog_SSCBondOverview>()==null&&Widgets.CapturedButtons.Count==0);
+            var g = new Command_SSCBondSelection(s, selectMaster: true);
+            Widgets.CapturedButtons = new();
+            foreach (float width in new[] { 130f, 55f })
+            {
+                var point = new Vector2(Math.Min(width, 75f) - 10f, 12f);
+                int before = CameraJumper.Jumps;
+                Event.current = new() { type = EventType.mouseDown, mousePosition = point };
+                GizmoResult down = g.GizmoOnGUI(Vector2.zero, width, default);
+                g.ProcessInput(down.InteractEvent);
+                Require(down.State != GizmoState.Interacted && CameraJumper.Jumps == before);
+                Event.current = new() { type = EventType.mouseUp, mousePosition = point };
+                GizmoResult up = g.GizmoOnGUI(Vector2.zero, width, default);
+                g.ProcessInput(up.InteractEvent);
+                g.ProcessInput(up.InteractEvent);
+                Require(Find.WindowStack.WindowOfType<Dialog_SSCBondOverview>() == null && CameraJumper.Jumps == before + 1);
             }
-            Event.current=new(){type=EventType.mouseDown,mousePosition=new(15,45)};
-            var clicked=g.GizmoOnGUI(new(0,0),55,default);g.ProcessInput(clicked.InteractEvent);
-            Require(CameraJumper.Last.Thing==f.master&&CameraJumper.Jumps==3&&CameraJumper.Selects==3);
+            Require(CameraJumper.Last.Thing==f.master&&CameraJumper.Selects==2&&
+                Widgets.CapturedButtons.Select(button=>button.rect).Distinct().Count()==2);
         });
         Check("icon actions: overview has a framed image and opens once without navigating",()=>{
             var f=Fixture();var s=Ready(f.master,f.map);var g=new Gizmo_SSCBondOverview(s);
@@ -77,7 +86,7 @@ internal static partial class Program
             var f=Fixture();var s=Ready(f.master,f.map);var g=new Gizmo_SSCBondOverview(s);
             ButtonEvent(g,EventType.mouseDown,114,14);
             if(change=="source"){
-                var other=Master();Place(other,f.map);Find.Selector.Objects.Clear();Find.Selector.Objects.Add(other);s.ObserveCard(other,f.map,1);
+                var other=Master();Place(other,f.map);Find.Selector.Objects.Clear();Find.Selector.Objects.Add(other);s.ObserveCard(other,f.map);
             }
             if(change=="disabled")g.Disabled=true;if(change=="gui")GUI.enabled=false;
             var up=ButtonEvent(g,EventType.mouseUp,114,14);g.ProcessInput(up.InteractEvent);
@@ -90,19 +99,22 @@ internal static partial class Program
         });
         Check("native layout: master square title click locates and selects the bound owner",()=>{
             var f=Fixture();Find.Selector.Objects.Clear();Find.Selector.Objects.Add(f.slave);var s=Ready(f.slave,f.map);
-            var g=new Gizmo_SSCBondOverview(s,SSCBondOverviewPanel.Master);var result=Click(g,5,5);g.ProcessInput(result.InteractEvent);
+            var g=new Command_SSCBondSelection(s, selectMaster: true);var result=Click(g,5,5);g.ProcessInput(result.InteractEvent);
             Require(g.GetWidth(300)==GenUI.LastRect.height&&CameraJumper.Last.Thing==f.master&&CameraJumper.Selects==1);
             Require(SSCBondUtility.GetBoundMaster(f.slave)==f.master&&Find.WindowStack.WindowOfType<Dialog_SSCBondOverview>()==null);
         });
         Check("native layout: whole-square action still rejects changed owner before dispatch",()=>{
             var f=Fixture();Find.Selector.Objects.Clear();Find.Selector.Objects.Add(f.slave);var s=Ready(f.slave,f.map);
-            var g=new Gizmo_SSCBondOverview(s,SSCBondOverviewPanel.Master);var result=Click(g,5,5);
-            SSCBondUtility.GetChain(f.slave).target=Master();g.ProcessInput(result.InteractEvent);Require(CameraJumper.Jumps==0);
+            var g=new Command_SSCBondSelection(s, selectMaster: true);
+            ButtonEvent(g,EventType.mouseDown,5,5);
+            SSCBondUtility.GetChain(f.slave).target=Master();
+            var result=ButtonEvent(g,EventType.mouseUp,5,5);
+            g.ProcessInput(result.InteractEvent);Require(CameraJumper.Jumps==0);
         });
         Check("native layout: owned header includes count without provisional marker without a separate number",()=>{
             var f=Fixture();Place(Slave(f.master,"B"),f.map);Place(Slave(f.master,"C"),f.map);
             Verse.Extensions.Translations["SSC_BondOverview_OwnedCount"]="拥有性奴：{0}";LanguageDatabase.activeLanguage=new();
-            var s=new SSCBondOverviewSession(Current.Game,()=>0);s.ObserveCard(f.master,f.map,0);Widgets.CapturedLabels=new();
+            var s=new SSCBondOverviewSession(Current.Game,()=>0);s.ObserveCard(f.master,f.map);Widgets.CapturedLabels=new();
             Paint(new Gizmo_SSCBondOverview(s));Require(Widgets.CapturedLabels.Single().value=="拥有性奴：3");
             s.Update(0,true,f.map);Widgets.CapturedLabels.Clear();Paint(new Gizmo_SSCBondOverview(s));
             Require(Widgets.CapturedLabels.Single().value=="拥有性奴：3");

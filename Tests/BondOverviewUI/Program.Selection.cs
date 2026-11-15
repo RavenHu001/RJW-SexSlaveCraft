@@ -17,7 +17,7 @@ internal static partial class Program
             var hidden=Slave(f.master,"Held");hidden.ParentHolder=new Container();
             var unselectable=Slave(f.master,"Not selectable");unselectable.def.selectable=false;Place(unselectable,f.map);
             var stranger=Slave(Master(),"Stranger");Place(stranger,f.map);f.master.Training.selectedTrainer=stranger;
-            var s=Ready(f.master,f.map);var g=new Gizmo_SSCBondOverview(s,SSCBondOverviewPanel.SelectAll);var result=Click(g,35,35);
+            var s=Ready(f.master,f.map);var g=new Command_SSCBondSelection(s, selectMaster: false);var result=Click(g,35,35);
             g.ProcessInput(result.InteractEvent);g.ProcessInput(result.InteractEvent);
             Require(Find.Selector.Objects.ToHashSet().SetEquals(new object[]{f.slave,valid})&&CameraJumper.Jumps==0);
             Require(SSCBondUtility.GetBoundMaster(f.slave)==f.master&&SSCBondUtility.GetBoundMaster(valid)==f.master&&f.master.Training.selectedTrainer==stranger);
@@ -25,32 +25,85 @@ internal static partial class Program
         Check("bulk selection: local map supplements missing bridle before any global scan",()=>{
             var f=Fixture();SSCBondUtility.GetBridle(f.master).targets.Clear();int builds=0;
             var s=new SSCBondOverviewSession(Current.Game,()=>0);
-            s.ObserveCard(f.master,f.map,0);Require(s.Card.Snapshot.TotalSlaveCount==0);
-            var g=new Gizmo_SSCBondOverview(s,SSCBondOverviewPanel.SelectAll);var result=Click(g,35,35);g.ProcessInput(result.InteractEvent);
+            s.ObserveCard(f.master,f.map);Require(s.Card.Snapshot.TotalSlaveCount==0);
+            var g=new Command_SSCBondSelection(s, selectMaster: false);var result=Click(g,35,35);g.ProcessInput(result.InteractEvent);
             Require(builds==0&&ThingOwnerUtility.MapQueryCount==0&&Find.Selector.Objects.Single()==f.slave);
         });
         Check("bulk selection: rebind after painting is excluded at dispatch",()=>{
-            var f=Fixture();var s=Ready(f.master,f.map);var g=new Gizmo_SSCBondOverview(s,SSCBondOverviewPanel.SelectAll);
+            var f=Fixture();var s=Ready(f.master,f.map);var g=new Command_SSCBondSelection(s, selectMaster: false);
             var result=Click(g,35,35);SSCBondUtility.GetChain(f.slave).target=Master();g.ProcessInput(result.InteractEvent);
             Require(Find.Selector.Objects.Single()==f.master);
         });
         Check("bulk selection: selection notifications cannot select a subsequently rebound candidate",()=>{
             var f=Fixture();var second=Slave(f.master,"Second");Place(second,f.map);var s=Ready(f.master,f.map);
             Find.Selector.OnSelected=p=>{if(p==f.slave)SSCBondUtility.GetChain(second).target=Master();};
-            var g=new Gizmo_SSCBondOverview(s,SSCBondOverviewPanel.SelectAll);var result=Click(g,35,35);g.ProcessInput(result.InteractEvent);
+            var g=new Command_SSCBondSelection(s, selectMaster: false);var result=Click(g,35,35);g.ProcessInput(result.InteractEvent);
             Require(Find.Selector.Objects.Single()==f.slave);
         });
         Check("bulk selection: native 200 limit leaves complete overview candidates intact",()=>{
             var f=Fixture();for(int i=0;i<249;i++)Place(Slave(f.master,"P"+i),f.map);var s=Ready(f.master,f.map);var snapshot=s.Card.Snapshot;
-            var g=new Gizmo_SSCBondOverview(s,SSCBondOverviewPanel.SelectAll);var result=Click(g,35,35);g.ProcessInput(result.InteractEvent);
+            var g=new Command_SSCBondSelection(s, selectMaster: false);var result=Click(g,35,35);g.ProcessInput(result.InteractEvent);
             Require(Find.Selector.NumSelected==200&&snapshot.TotalSlaveCount==250&&ReferenceEquals(snapshot,s.Card.Snapshot));
         });
         foreach(string state in new[]{"source","disabled","gui","right","revision"})Check("bulk selection: reject stale or prohibited input "+state,()=>{
-            var f=Fixture();var s=Ready(f.master,f.map);var g=new Gizmo_SSCBondOverview(s,SSCBondOverviewPanel.SelectAll);
+            var f=Fixture();var s=Ready(f.master,f.map);var g=new Command_SSCBondSelection(s, selectMaster: false);
             if(state=="disabled")g.Disabled=true;if(state=="gui")GUI.enabled=false;
             var result=Click(g,35,35,state=="right"?1:0);if(state=="revision")s.Card.Changed();
-            if(state=="source"){var other=Master();Place(other,f.map);Find.Selector.Objects.Clear();Find.Selector.Objects.Add(other);s.ObserveCard(other,f.map,1);}
+            if(state=="source"){var other=Master();Place(other,f.map);Find.Selector.Objects.Clear();Find.Selector.Objects.Add(other);s.ObserveCard(other,f.map);}
             var before=Find.Selector.Objects.ToArray();g.ProcessInput(result.InteractEvent);Require(Find.Selector.Objects.SequenceEqual(before));
+        });
+        foreach (bool switchMap in new[] { false, true })
+            Check($"native selection: replacing the command after changing {(switchMap ? "map" : "source")} rejects the old release", () =>
+            {
+                var f = Fixture();
+                var component = Current.Game.GetComponent<SSCBondRelationGameComponent>();
+                var earlier = component.GetOverviewGizmos(f.master).OfType<Command_SSCBondSelection>().Single();
+                ButtonEvent(earlier, EventType.mouseDown, 35, 35);
+
+                Pawn owner = f.master;
+                Pawn member = f.slave;
+                if (switchMap)
+                {
+                    var nextMap = new Map();
+                    Find.Maps.Add(nextMap);
+                    Find.CurrentMap = nextMap;
+                    Place(owner, nextMap);
+                    Place(member, nextMap);
+                }
+                else
+                {
+                    owner = Master();
+                    member = Slave(owner);
+                    Place(owner, f.map);
+                    Place(member, f.map);
+                    Find.Selector.ClearSelection();
+                    Find.Selector.Select(owner);
+                }
+
+                component.GameComponentUpdate();
+                var current = component.GetOverviewGizmos(owner).OfType<Command_SSCBondSelection>().Single();
+                Require(!earlier.Visible && current != earlier);
+                var released = ButtonEvent(current, EventType.mouseUp, 35, 35);
+                Require(Event.current.type == EventType.used && released.State != GizmoState.Interacted);
+                current.ProcessInput(released.InteractEvent);
+                Require(Find.Selector.Objects.Single() == owner);
+
+                var fresh = Click(current, 35, 35);
+                current.ProcessInput(fresh.InteractEvent);
+                Require(Find.Selector.Objects.Single() == member);
+            });
+        Check("native selection: releasing outside cancels the captured press", () =>
+        {
+            var f = Fixture();
+            var command = new Command_SSCBondSelection(Ready(f.master, f.map), selectMaster: false);
+            ButtonEvent(command, EventType.mouseDown, 35, 35);
+            var released = ButtonEvent(command, EventType.mouseUp, 90, 90);
+            command.ProcessInput(released.InteractEvent);
+            Require(Find.Selector.Objects.Single() == f.master);
+
+            var fresh = Click(command, 35, 35);
+            command.ProcessInput(fresh.InteractEvent);
+            Require(Find.Selector.Objects.Single() == f.slave);
         });
         Check("auto layout: original Small header and three scaled portraits fit together",()=>{
             var f=Fixture();Place(Slave(f.master,"B"),f.map);Place(Slave(f.master,"C"),f.map);var s=Ready(f.master,f.map);
@@ -69,13 +122,13 @@ internal static partial class Program
         });
         Check("master button: bottom text overlaps enlarged portrait without showing name",()=>{
             var f=Fixture();Find.Selector.Objects.Clear();Find.Selector.Objects.Add(f.slave);var s=Ready(f.slave,f.map);
-            Widgets.CapturedLabels=new();GUI.CapturedTextures=new();Paint(new Gizmo_SSCBondOverview(s,SSCBondOverviewPanel.Master));
+            Widgets.CapturedLabels=new();GUI.CapturedTextures=new();Paint(new Command_SSCBondSelection(s, selectMaster: true));
             var image=GUI.CapturedTextures.Single(p=>p.image==null).rect;var label=Widgets.CapturedLabels.Single();
             Require(image.x==0&&image.y==0&&image.width==75&&image.height==75&&label.value==SSCBondOverviewText.T("SelectMaster")&&label.rect.y<image.yMax&&label.rect.yMax<=75);
         });
         Check("master button: narrowed square still fills its bounds with a cached portrait",()=>{
             var f=Fixture();Find.Selector.Objects.Clear();Find.Selector.Objects.Add(f.slave);var s=Ready(f.slave,f.map);
-            GUI.CapturedTextures=new();new Gizmo_SSCBondOverview(s,SSCBondOverviewPanel.Master).GizmoOnGUI(new(10,20),50,default);
+            GUI.CapturedTextures=new();new Command_SSCBondSelection(s, selectMaster: true).GizmoOnGUI(new(10,20),50,default);
             var image=GUI.CapturedTextures.Single(p=>p.image==null).rect;
             Require(image.x==10&&image.y==20&&image.width==50&&image.height==50&&PortraitsCache.Requests.Single().size.x==56);
         });

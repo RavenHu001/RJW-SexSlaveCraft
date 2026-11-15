@@ -2,6 +2,8 @@
 
 **2.5.0 于 2026-11-12 正式发布。** 完整门禁通过 52 套、6544/6544 项。 两项资源检查及 56 项发布编排检查通过。[正式发布归档](../Docs/Releases/2.5.0/2.5.0版本验证.md#ssc-250-release)
 
+2026-11-14，主从关系命令栏跨帧复用与原版按钮两批通过 BondOverviewUI 单套 All **234/234、237/237**，净增 4 项 Core。两批 1.7 隔离构建通过，维护者确认 WOWGAG 列表复用下显示和两个选择按钮正常。 [分批回归](BondOverviewUI/README.md#bond-gizmo-frame-reuse) · [实机验收](../Docs/Development/Completed/主从关系命令栏跨帧复用修复与验收.md)
+
 2026-11-12，第 51 项调教窗口回归净减 3 项 Core，并更新浪漫原生宿主的指派和场景存档夹具。四个受影响套件按各自 All 范围通过 **1898/1898**。 [精简与验证](../Docs/Development/Completed/调教管理/调教管理窗口重做完成核对.md#training-itab-test-pruning)
 
 2026-11-12，多调教员指派回归精简净减 3 项 Core。三个受影响套件使用各自的 All 范围通过 958/958，包含 TrainerIdentity 171/171、SharedBed 94/94、UterusDevelopmentNative 693/693。 [精简与验证](../Docs/Development/Completed/调教管理/多调教员指派第三阶段实现与验证.md#multi-trainer-test-pruning)
