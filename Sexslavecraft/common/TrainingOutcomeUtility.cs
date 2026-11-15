@@ -235,6 +235,7 @@ namespace SexSlaveCraft
                 DefDatabase<HediffDef>.GetNamedSilentFail("Hediff_ChainOfSexSlave"));
         }
 
+        // 正阈值是各阶的起点。将 Def 值规范到 0～1 后去重、排序，阈值全缺时沿用默认四阶。
         private static List<float> GetChainStageThresholds(Hediff chain)
         {
             List<float> thresholds = chain?.def?.stages?
@@ -253,6 +254,15 @@ namespace SexSlaveCraft
         }
 
 #if SSC_RW17 || SSC_RITUAL_STAGE_TEST
+        /// <summary>
+        /// 根据实际锁链严重度判定阶段，供身份查询、成长倍率、需求和仪式共用。
+        /// 正好达到 Def 阈值即进入该阶，阈值下方的浮点余量仍归前一阶。
+        /// </summary>
+        /// <returns>
+        /// Stage 为已达到的正阈值数量。Floor 和 Previous 分别是本阶、前一阶起点，
+        /// 缺失的起点取 0。Next 是下一阶起点，无链或已到最高阶时为空。
+        /// 已挂链但尚未达到首个阈值时为零阶，Next 仍指向一阶起点。
+        /// </returns>
         internal static (int Stage, float Floor, float Previous, float? Next) GetChainStage(Hediff chain)
         {
             if (chain == null) return (0, 0f, 0f, null);
@@ -268,6 +278,7 @@ namespace SexSlaveCraft
 
         private static float GetCurrentChainStageUpper(Hediff chain)
         {
+            // 这里供现行恶堕需求读取阶段上限。仪式限阶直接使用 Next，零阶链按 Def 的一阶起点推进。
             var stage = GetChainStage(chain);
             return stage.Stage == 0 ? 0.12f : stage.Next ?? 1f;
         }

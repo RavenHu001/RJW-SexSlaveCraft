@@ -62,7 +62,14 @@ namespace SexSlaveCraft
 #if SSC_RW17 || SSC_RITUAL_STAGE_TEST
             => BindCore(master, sexSlave, replaceExisting, true, out _);
 
-        // null 表示链尚未写入；写入后核对本次实际创建或复用的链。
+        /// <summary>用本场仪式的结算资格建立或补齐绑定，保留已绑定给其他主人的关系。</summary>
+        /// <param name="master">本场主持。新建绑定时，主持须具备 SSC 主人身份。</param>
+        /// <param name="sexSlave">本场受训者。</param>
+        /// <param name="isCurrent">
+        /// 身份刷新后传入 null，校验写链前的原上下文。完成双向写入与限制通知后，
+        /// 传入实际创建或复用的链，为后续印记分化复查资格。
+        /// </param>
+        /// <param name="chain">本场尝试提交的锁链。回调可能在写入后让请求失效，调用方以返回值和实际归属确认成功。</param>
         internal static bool BindForRitual(Pawn master, Pawn sexSlave,
             Func<Hediff_ChainOfSexSlave, bool> isCurrent, out Hediff_ChainOfSexSlave chain)
             => BindCore(master, sexSlave, false, true, out chain, isCurrent);
@@ -98,6 +105,7 @@ namespace SexSlaveCraft
                 // 不能让训导官普通培养错误退出。失败路径也由作用域统一检查最终状态。
                 if (!SSCIdentityUtility.TrySetIdentity(sexSlave, PawnIdentity.Slave)) return false;
 #if SSC_RW17 || SSC_RITUAL_STAGE_TEST
+                // 同身份刷新也会触发回调。先核对原链、原需求、参与者的人格凭据和授权，再让 AddToPawn 读取当前健康列表。
                 if (isCurrent != null && !isCurrent(null)) return false;
 #endif
                 if (existingMaster != null && existingMaster != master)
@@ -107,7 +115,8 @@ namespace SexSlaveCraft
 
 #if SSC_RW17 || SSC_RITUAL_STAGE_TEST
                 chain = Hediff_ChainOfSexSlave.AddToPawn(sexSlave, master);
-                // 链已提交时补齐它的反向索引；健康回调换链或换主后停止写入。
+                // 锁链是实际归属，缰绳是反向索引。写链后的健康回调可能换链或换主；
+                // 只有本次写入的锁链仍在且归主持所有，才为它补缰绳。
                 if (isCurrent != null && (chain == null || GetChain(sexSlave) != chain || chain.LinkedPawn != master))
                     return false;
 #else
@@ -118,6 +127,7 @@ namespace SexSlaveCraft
 #if SSC_RW17 || SSC_RITUAL_STAGE_TEST
                 if (isCurrent != null && (GetChain(sexSlave) != chain || chain.LinkedPawn != master || GetBridle(master) != bridle))
                 {
+                    // 添加或刷新缰绳也会触发回调。依当前锁链剔除失效引用，保留主人仍有效的其他目标。
                     bridle.PruneInvalidTargets();
                     return false;
                 }
@@ -129,7 +139,8 @@ namespace SexSlaveCraft
                 // 限制系统沿用原有事务通知；训导官维护在作用域释放时运行。
                 SSCRestrictionGameComponent.Notify(sexSlave);
 #if SSC_RW17 || SSC_RITUAL_STAGE_TEST
-                // 原载体经过全部回调仍有效才允许写定型事实；恢复旧链或同一对关系重放均不触发。
+                // 通知后再校验，只有仍有效的新绑定能触发印记分化。
+                // 已有关系重放只补两端，恢复旧关系由调用方关掉分化。
                 if (!SSCPersonalityRuntimeUtility.IsCurrent(master, masterToken) ||
                     !SSCPersonalityRuntimeUtility.IsCurrent(sexSlave, slaveToken) ||
                     master.TryGetComp<CompSexSlaveTraining>() != masterComp || sexSlave.TryGetComp<CompSexSlaveTraining>() != slaveComp ||

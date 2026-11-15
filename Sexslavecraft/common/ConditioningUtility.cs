@@ -85,6 +85,7 @@ namespace SexSlaveCraft
         {
             if (sexSlave == null || master == null) return "";
 
+            // 两种评分沿用各自的收益和记忆，整个结算共用仪式入口捕获的参与者和原锁链。
             if (SSCMod.settings?.useOldScoring ?? false)
             {
                 return ExecuteRitualOutcome_Legacy(master, sexSlave, quality, ritualOutcomeMemory
@@ -101,6 +102,7 @@ namespace SexSlaveCraft
             CorruptionUtility.AddCorruption(sexSlave, corruptionGain);
 
 #if SSC_RW17
+            // 恶堕写入会同步特性。回调若使原参与者失效，余下的意志、记忆和经验结算在此中止。
             if (!progress.CanContinueSettlement()) return "";
 #endif
             WillReductionUtility.ApplyWillReductionByCorruptionBand(master, sexSlave, corruptionGain, true);
@@ -111,6 +113,7 @@ namespace SexSlaveCraft
             );
 
 #if SSC_RW17
+            // 建链、转奴和严重度写入均可触发游戏回调。记忆也可能触发回调，派发经验之前再检查。
             if (!progress.CanContinueSettlement()) return "";
 #endif
             ApplyRitualMemories(finalLevel, master, sexSlave);
@@ -165,6 +168,7 @@ namespace SexSlaveCraft
             float finalScore = quality * SpecializationTrainingProgressUtility.RitualScorePerQuality;
             int finalLevel = (quality >= 0.8f) ? 3 : ((quality <= 0.25f) ? 1 : 2);
             float corruptionGain = quality * 0.08f * 2.0f;
+            // 旧评分保留主持者的成长倍率。发放收益后沿用与常规评分相同的仪式上下文与限阶规则。
             corruptionGain *= SSCMasterBondUtility.GetTrainingCorruptionMultiplier(master);
             CorruptionUtility.AddCorruption(sexSlave, corruptionGain);
 

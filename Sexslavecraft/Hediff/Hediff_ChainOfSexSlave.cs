@@ -211,13 +211,15 @@ namespace SexSlaveCraft
         }
 
 #if SSC_RW17 || SSC_RITUAL_STAGE_TEST
-        // 写入明确的阶段端点，避免把端点换成增量后再次相加。
+        /// <summary>将仪式已验证的绝对严重度写到捕获的锁链，并沿用通用阶段通知。</summary>
+        /// <remarks>直接写入 Def 的阶段端点可避免先减后加导致的浮点舍入。单场额度由调用方判定。</remarks>
         internal void SetRitualSeverity(Pawn pawn, float severity) => SetChainSeverity(this, pawn, severity);
 #endif
 
         private static void SetChainSeverity(Hediff_ChainOfSexSlave hediff, Pawn pawn, float severity)
         {
             float oldSeverity = hediff.Severity;
+            // 用与身份查询相同的阶段口径比较写入前后，阈值附近的变化按实际跨阶派发生命周期通知。
             int oldStage = SSCIdentityUtility.GetSexSlaveStageFromChain(hediff);
             hediff.Severity = Mathf.Clamp(severity, 0f, hediff.def.maxSeverity);
             int newStage = SSCIdentityUtility.GetSexSlaveStageFromChain(hediff);

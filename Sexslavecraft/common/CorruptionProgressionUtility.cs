@@ -5,10 +5,7 @@ using RimWorld;
 using Verse;
 using Verse.Sound;
 
-// EN: This file resolves corruption progression for sex slaves.
-// EN: It adds bridle / chain states, upgrades ritual-only traits, and handles Binding Ritual enslavement rolls.
-// CN: 这个文件负责处理性奴恶堕成长过程中的阶段变化。
-// CN: 它会补上缰绳 / 锁链状态、推进仪式专属特质，并处理绑定仪式里的转奴判定。
+// 结算日常与仪式共用的绑定。仪式另按当前恶堕进行原版转奴掷骰，并按本场起始阶段推进锁链。
 namespace SexSlaveCraft
 {
     public static class CorruptionProgressionUtility
@@ -28,8 +25,7 @@ namespace SexSlaveCraft
             if (isRitual && !progress.CanAdvance()) return null;
 #endif
 
-            // EN: Step 1: read current corruption and collect every newly triggered stage-change message.
-            // CN: 步骤 1：读取当前恶堕值，并收集这次新触发的全部阶段变化文本。
+            // 调用方已发放本场恶堕收益。先用当前值判定能否建链，再于建链回调后读取同一需求的最新值。
             float corruption = need.CurLevel;
             List<string> changes = new List<string>();
 
@@ -45,6 +41,8 @@ namespace SexSlaveCraft
 #if SSC_RW17 || SSC_RITUAL_STAGE_TEST
                 if (progress.CanContinueAfterBinding(boundChain))
                 {
+                    // 原版囚犯或殖民者转奴和 SSC 锁链成长各有条件。原版调用也可能触发回调，
+                    // 因此 Apply 会复查原链和授权，再读取实际恶堕并尝试推进。
                     ProcessRitualEnslavement(master, sexSlave, score, changes, need.CurLevel, progress, boundChain);
                     progress.Apply(changes);
                 }
@@ -85,6 +83,8 @@ namespace SexSlaveCraft
             bool hadBridleTarget = SSCBondUtility.GetBridle(master)?.targets.Contains(sexSlave) == true;
             bool hadChain = SSCBondUtility.GetChain(sexSlave) != null;
 #if SSC_RW17 || SSC_RITUAL_STAGE_TEST
+            // 委派主持可能有仪式权限，但已有其他主人时 BindForRitual 会拒绝写入。
+            // null 返回给仪式后，后续转奴和限阶结算按原链及当前许可继续校验。
             if (!SSCBondUtility.BindForRitual(master, sexSlave, progress.CanWriteBinding, out var boundChain) ||
                 !progress.CanContinueAfterBinding(boundChain)) return null;
 #else
@@ -120,6 +120,7 @@ namespace SexSlaveCraft
                 // CN: 这里复用共享转化公式，保证绑定仪式的转奴逻辑和 SSC 其他系统保持一致。
                 float enslaveChance = WillReductionUtility.CalculateEnslaveChance(sexSlave, score, corruption, true, out string chanceDetail);
 #if SSC_RW17 || SSC_RITUAL_STAGE_TEST
+                // 概率计算会读取并整理意志。跨过该调用后，再确认这场仪式有资格提交转奴。
                 if (!progress.CanContinueAfterBinding(boundChain)) return;
 #endif
                 changes.Add(chanceDetail);
@@ -171,7 +172,11 @@ namespace SexSlaveCraft
         }
 
 #if SSC_RW17 || SSC_RITUAL_STAGE_TEST
-        // 在结算回调前捕获原载体。委派主持与锁链主人分别记录。
+        /// <summary>
+        /// 保存一场已认领仪式的锁链与参与者上下文。完整结算在质量、记忆和恶堕收益回调前捕获；
+        /// 直接调用的公共入口在入口捕获。锁链主人和当场主持可分别为不同角色。
+        /// </summary>
+        /// <remarks>冻结的是原需求与锁链的引用、实际主人和起始阶段。恶堕及同阶严重度允许变化，写入前读取最新值。</remarks>
         internal sealed class RitualChainProgress
         {
             private readonly Pawn host;
@@ -206,6 +211,8 @@ namespace SexSlaveCraft
                 host.TryGetComp<CompSexSlaveTraining>() == hostComp && target.TryGetComp<CompSexSlaveTraining>() == targetComp &&
                 SSCPersonalityRuntimeUtility.IsCurrent(host, hostToken) && SSCPersonalityRuntimeUtility.IsCurrent(target, targetToken);
 
+            // 通用记忆、经验与结算信只校验原参与者和场次。首次建链和本场升阶是预期变化，
+            // 所以这些后续收益也可在锁链已改变时继续。场次回查本身也可能触发回调，再确认原人格。
             internal bool CanContinueSettlement() => MatchesParticipants() &&
                 (canContinue == null || canContinue() && MatchesParticipants());
 
@@ -220,6 +227,8 @@ namespace SexSlaveCraft
             private bool CanUseChain(Hediff_ChainOfSexSlave expected, Pawn expectedOwner)
             {
                 if (!CanContinueSettlement() || !MatchesStartingStage(expected, expectedOwner)) return false;
+                // 正式仪式沿用调教准入。原主人可手动主持，委派主持须满足指派和当前许可。
+                // 许可查询返回后再次核对原载体，避免把旧请求落到该查询期间刚换入的对象。
                 if (canContinue != null &&
                     !SSCRestrictionTrainingUtility.Evaluate(SSCRestrictionTrainingUtility.CreateRequest(host, target, true), false).Allowed)
                     return false;
@@ -228,6 +237,7 @@ namespace SexSlaveCraft
 
             internal bool CanAdvance() => CanUseChain(chain, owner);
 
+            // 身份刷新可能改变未写链时的恶堕，仍须达到 10% 建链门槛。写入成功后改查实际提交的链。
             internal bool CanWriteBinding(Hediff_ChainOfSexSlave written) =>
                 written == null ? CanAdvance() && need.CurLevel >= 0.1f : CanUseChain(written, host);
 
@@ -237,7 +247,8 @@ namespace SexSlaveCraft
 
             internal void Apply(List<string> changes)
             {
-                // 新建链已经用了本场的一阶额度。旧档已有的零阶链仍按原链处理。
+                // 首次建链按 Def 初始严重度 20% 进入一阶，用完本场额度。
+                // 已有且有主的零阶残链仍按原链处理，本场最多到实际一阶起点。
                 if (chain == null || owner == null || need == null || !CanAdvance()) return;
 
                 float corruption = need.CurLevel;
@@ -246,12 +257,16 @@ namespace SexSlaveCraft
                 var stage = TrainingOutcomeUtility.GetChainStage(chain);
                 if (corruption >= 0.3f)
                 {
+                    // 30% 是成长起点，50% 起可用更高的单场预算。写入同时受当前恶堕、预算和下一阶起点限制。
+                    // 最高阶可继续增加同阶进度至 100%。已有严重度高于当前恶堕时保持原值。
                     float budget = corruption < 0.5f ? 0.2f : 0.3f;
                     float next = UnityEngine.Mathf.Min(before + budget, corruption);
                     next = UnityEngine.Mathf.Min(next, stage.Next ?? 1f);
                     if (next > before) chain.SetRitualSeverity(target, next);
                 }
 
+                // 写严重度会派发阶段通知。通知结束后确认原链仍有效，按实际结果选结算反馈。
+                // 此处允许阶段已改变，因为实际升阶就是此写入的预期结果。
                 if (!CanContinueSettlement() || !MatchesChain(chain, owner)) return;
                 int reached = TrainingOutcomeUtility.GetChainStage(chain).Stage;
                 if (reached > startingStage)
