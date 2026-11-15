@@ -1,5 +1,13 @@
 # 更新日志 / Changelog — SexSlaveCraft（TieJin 接续版 / TieJin continuation）
 
+## 未发布 / Unreleased
+
+- **PNA 雾气炮弹与 IED（RimWorld 1.7）。** 两者共用 5 格爆炸，对每个有效目标即时增加 25 个百分点的 PNA 负荷。炮弹和 IED 使用紫色的原版烟雾系列贴图。
+- **PNA 发烟器。** 半径可在 5～10 格之间调节，档位独立设置。低档的持续输入与自然消退形成平衡，高档可将覆盖范围内的有效目标堆到满负荷。发烟器使用独立的单格贴图。
+- 三项功能均已通过实机验收。精简后复跑 `PnaLoad` 379/379、发烟器原生专项 23/23。 [回归与验收记录](Docs/Development/Completed/催情发烟器/PNA发烟器测试版实机验收.md#pna-mist-regression)
+
+RimWorld 1.7 gains PNA mist mortar shells and IEDs. Both use the same five-tile blast and instantly raise each eligible target’s PNA load by 25 percentage points. Both use purple-tinted vanilla smoke textures. The PNA mist emitter has its own single-tile sprite and separate controls for radius (5–10 tiles) and mode. Low mode settles at an equilibrium with natural decay, while high mode can bring eligible targets to full load. All three features passed in-game acceptance. After test cleanup, the PnaLoad and native emitter suites passed 379/379 and 23/23 respectively.
+
 ## [2.5.0] — 2026-11-12 — 调教管理 / Training Management
 
 归入 `v2.4.10-r2` 后至 `166a1138` 的 71 个非合并提交和 2 个合并提交，共 161 个净变更路径。新增面向 1.7。[双语说明](Docs/Releases/2.5.0/2.5.0发布说明.md) · [开发归并](Docs/Releases/2.5.0/2.5.0开发归并核对.md) · [验证记录](Docs/Releases/2.5.0/2.5.0版本验证.md)
