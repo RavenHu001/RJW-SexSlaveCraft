@@ -8,10 +8,9 @@
     <drawerType>MapMeshAndRealTime</drawerType>
     <techLevel>Industrial</techLevel>
     <graphicData>
-      <texPath>Things/Building/SSC_AphrodisiacAtomizer</texPath>
+      <texPath>Things/Building/SSC_PnaMistEmitter</texPath>
       <graphicClass>Graphic_Single</graphicClass>
       <drawSize>(1,1)</drawSize>
-      <color>(0.83,0.66,1)</color>
     </graphicData>
     <size>(1,1)</size>
     <rotatable>false</rotatable>
