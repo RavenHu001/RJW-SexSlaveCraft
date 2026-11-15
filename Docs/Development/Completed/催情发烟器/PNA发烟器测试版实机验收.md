@@ -16,3 +16,16 @@
 
 - [独立贴图](../../../../1.7/Textures/Things/Building/SSC_PnaMistEmitter.png)采用阶梯形机身、紫色储液窗和双缝出雾口。导出为 256×256 RGBA，水平居中，底边锚点与原单格贴图对齐。最终版上沿两处抽样的黑边均约 6 像素。
 - [建筑定义](../../../../1.7/Defs/ThingsDefs/SSC_PnaMistEmitter.xml)显示独立贴图的原色，使用 `Graphic_Single` 与 `(1,1)` 绘制尺寸。安装副本的贴图和定义均与工作区哈希一致。最终 PNG SHA-256 为 `8ed7153905e8ac1e22a4e592c717722d1d0cdb21b82dc18152ff0dae494b2bca`，安装 DLL 与机制验收批次一致。
+
+## PNA 雾气系列美术收尾
+
+2026-11-14，维护者决定炮弹和 IED 采用已实机通过的原版贴图改色方案，发烟器采用已验收的独立贴图。本系列美术收尾完成。
+
+| 对象 | 最终外观 |
+| --- | --- |
+| 炮弹物品 | 沿用原版烟雾炮弹路径 `Things/Item/Resource/Shell/Shell_Smoke`，通过 `Graphic_StackCount` 显示原有堆叠图形。 |
+| 飞行弹体 | 沿用原版 `Things/Projectile/ShellSmoke`。 |
+| IED 陷阱 | 沿用原版 `Things/Building/Security/IEDSmoke`。 |
+| PNA 发烟器 | 使用 [256×256 独立贴图](../../../../1.7/Textures/Things/Building/SSC_PnaMistEmitter.png)，按单格和既定底边锚点绘制。 |
+
+炮弹物品、飞行弹体与 IED 在 [SSC 定义](../../../../1.7/Defs/ThingsDefs/SSC_PnaMistExplosives.xml) 中统一使用紫色色调 `(0.76, 0.53, 0.91)`。堂丸等贴图包覆盖对应原版路径时，由游戏加载替换后的图形并应用 SSC 色调。
