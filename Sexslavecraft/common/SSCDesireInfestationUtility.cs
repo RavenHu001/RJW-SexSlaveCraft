@@ -22,10 +22,14 @@ namespace SexSlaveCraft
         {
             if (Scribe.mode != LoadSaveMode.Inactive || !isCurrent() || !CanAffect(source, target) || expectedNeed == null ||
                 target.needs?.TryGetNeed<Need_Corruption>() != expectedNeed) return;
-            // 当前数值和阶段上限在写入前重读；超限只停止增加，不能在侵染入口倒扣原进度。
+            // 当前数值在写入前重读。每次侵染最多增加一个百分点，剩余空间不足时只入账实际余量。
             float current = expectedNeed.CurLevel;
+#if SSC_RW17 || SSC_CORRUPTION_LIMIT_TEST
+            float cap = expectedNeed.MaxLevel;
+#else
             float cap = SSCMod.settings?.useOldScoring == true ? expectedNeed.MaxLevel :
                 Math.Min(expectedNeed.MaxLevel, TrainingOutcomeUtility.GetChainCap(target));
+#endif
             if (!SSCPnaMath.IsFinite(current) || !SSCPnaMath.IsFinite(cap)) return;
             float gain = Math.Max(0f, Math.Min(.01f, cap - current));
             if (gain > 0f && isCurrent()) CorruptionUtility.AddCorruption(target, gain);

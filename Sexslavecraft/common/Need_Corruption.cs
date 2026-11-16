@@ -27,7 +27,15 @@ namespace SexSlaveCraft
 
         public override float MaxLevel => 1f;
 
-        public float HighestCorruptionLevel => Mathf.Max(highestCorruptionLevel, CurLevel);
+        public float HighestCorruptionLevel
+#if SSC_RW17 || SSC_RITUAL_STAGE_TEST
+            => Mathf.Max(NormalizeLevel(highestCorruptionLevel), NormalizeLevel(CurLevel));
+
+        // 原版 Clamp 会保留 NaN。把不可用的存档数值视为未达标，正负越界仍取对应端点。
+        private float NormalizeLevel(float level) => float.IsNaN(level) ? 0f : Mathf.Clamp(level, 0f, MaxLevel);
+#else
+            => Mathf.Max(highestCorruptionLevel, CurLevel);
+#endif
         public bool HasEverBeenCorrupted => HighestCorruptionLevel > 0f;
 
         private List<(float threshold, string label)> stages = new List<(float, string)>
@@ -94,11 +102,19 @@ namespace SexSlaveCraft
 
         public void RecordCurrentCorruption()
         {
+#if SSC_RW17 || SSC_RITUAL_STAGE_TEST
+            highestCorruptionLevel = HighestCorruptionLevel;
+#else
             highestCorruptionLevel = Mathf.Max(highestCorruptionLevel, CurLevel);
+#endif
         }
 
         public void SetCorruption(float level, bool resetHistory = false)
         {
+#if SSC_RW17 || SSC_RITUAL_STAGE_TEST
+            // 无效的增长／写入请求保留已有数据，存档坏值由读档和刷新修复。
+            if (float.IsNaN(level)) return;
+#endif
             CurLevel = Mathf.Clamp(level, 0f, MaxLevel);
             if (resetHistory)
                 highestCorruptionLevel = CurLevel;
@@ -109,9 +125,14 @@ namespace SexSlaveCraft
 
         public void RestoreCorruption(float level, float historicalMaximum)
         {
+#if SSC_RW17 || SSC_RITUAL_STAGE_TEST
+            CurLevel = NormalizeLevel(level);
+            highestCorruptionLevel = Mathf.Max(CurLevel, NormalizeLevel(historicalMaximum));
+#else
             CurLevel = Mathf.Clamp(level, 0f, MaxLevel);
             float restoredMaximum = historicalMaximum >= 0f ? historicalMaximum : CurLevel;
             highestCorruptionLevel = Mathf.Clamp(Mathf.Max(CurLevel, restoredMaximum), 0f, MaxLevel);
+#endif
             SSCIdentityUtility.SyncSexSlaveTraitFromHighestCorruption(pawn);
         }
 
@@ -119,6 +140,26 @@ namespace SexSlaveCraft
         {
             if (IsFrozen) return;
 
+#if SSC_RW17 || SSC_RITUAL_STAGE_TEST
+            // 先记下实际达过的峰值。装备按原资格生效，旧评分仍允许使用无阶段限制的维护来源。
+            RecordCurrentCorruption();
+            bool oldScoring = SSCMod.settings?.useOldScoring ?? false;
+            float stageFloor = TrainingOutcomeUtility.GetCorruptionStageFloor(pawn);
+            float maintenanceFloor = oldScoring ? GetMinLevel() :
+                GetMinLevel(stageFloor, TrainingOutcomeUtility.GetCorruptionMaintenanceStageUpper(pawn));
+            float floor = Mathf.Max(stageFloor, maintenanceFloor);
+            float current = NormalizeLevel(CurLevel);
+            if (!oldScoring && (SSCMod.settings?.enableCorruptionDecay ?? true) && current > floor)
+            {
+                float decayPerDay = CalculateDecayPerDay();
+                if (decayPerDay > 0f) current -= decayPerDay / 60000f * 150f;
+            }
+
+            // 保底随需求刷新结算。读档和人格载荷先恢复各自的数值，增长入口单独记账。
+            CurLevel = Mathf.Clamp(current, floor, MaxLevel);
+            RecordCurrentCorruption();
+            SSCIdentityUtility.SyncSexSlaveTraitFromHighestCorruption(pawn);
+#else
             // EN: Apparel floors preserve milestones already reached; they never grant a new milestone.
             // CN: 装备地板只维持已经达到过的里程碑，不会凭空授予新的恶堕阶段。
             RecordCurrentCorruption();
@@ -141,6 +182,16 @@ namespace SexSlaveCraft
                 return;
             }
 
+            float decayPerDay = CalculateDecayPerDay();
+            float decayPerTick = decayPerDay / 60000f;
+            CurLevel -= decayPerTick * 150f;
+
+            ApplyLegacyDecayBounds(decayPerDay);
+#endif
+        }
+
+        private float CalculateDecayPerDay()
+        {
             float sexLevel = pawn.needs.TryGetNeed<Need_Sex>()?.CurLevel ?? 0.5f;
             float sexFactor = 1f - 1.5f * (sexLevel - 0.8f) * (sexLevel - 0.8f);
             sexFactor = Mathf.Clamp(sexFactor, 0.2f, 1.0f);
@@ -181,10 +232,12 @@ namespace SexSlaveCraft
             }
 
             float baseDecayPerDay = SSCMod.settings?.corruptionDecayPerDay ?? 0.02f;
-            float decayPerDay = baseDecayPerDay * sexFactor * scoreFactor * opinionFactor * chainFactor * partFactor * modifier;
-            float decayPerTick = decayPerDay / 60000f;
-            CurLevel -= decayPerTick * 150f;
+            return baseDecayPerDay * sexFactor * scoreFactor * opinionFactor * chainFactor * partFactor * modifier;
+        }
 
+#if !SSC_RW17 && !SSC_RITUAL_STAGE_TEST
+        private void ApplyLegacyDecayBounds(float decayPerDay)
+        {
             // 此处发生在本轮自然恶堕扣减之后。阶段来自锁链严重度，不来自当前恶堕或 Trait。
             // 仪式结算和需求刷新是两个入口：即使仪式只增加数值，后续刷新也可能触发退阶。
             Hediff chainHediff = pawn.health?.hediffSet?.GetFirstHediffOfDef(
@@ -234,6 +287,7 @@ namespace SexSlaveCraft
 
             CurLevel = Mathf.Clamp(CurLevel, floor, brakeCap);
         }
+#endif
 
         public override void SetInitialLevel()
         {
@@ -270,13 +324,17 @@ namespace SexSlaveCraft
 
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
+#if SSC_RW17 || SSC_RITUAL_STAGE_TEST
+                // 需求基类直接反序列化当前值。这里归一到合法范围，锁链保底由首次正常刷新结算。
+                CurLevel = NormalizeLevel(CurLevel);
+                RecordCurrentCorruption();
+#else
                 // EN: Existing saves had no milestone field, so migrate them from their current corruption.
                 // CN: 旧存档没有最高恶堕字段，因此用读档时的当前恶堕值完成迁移。
                 if (highestCorruptionLevel < 0f)
                     highestCorruptionLevel = CurLevel;
                 else
                     RecordCurrentCorruption();
-#if !SSC_RW17
                 SSCIdentityUtility.SyncSexSlaveTraitFromHighestCorruption(pawn);
 #endif
             }

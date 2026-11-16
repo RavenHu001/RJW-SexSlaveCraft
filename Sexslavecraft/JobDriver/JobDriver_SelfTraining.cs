@@ -195,17 +195,21 @@ namespace SexSlaveCraft
             Need_Corruption need = pawn.needs?.TryGetNeed<Need_Corruption>();
             if (need == null || !snapshot.TryClaimCompletion()) return;
             float before = need.CurLevel;
-            float stageCap = TrainingOutcomeUtility.GetChainCap(pawn);
+#if SSC_RW17 || SSC_CORRUPTION_LIMIT_TEST
+            float cap = need.MaxLevel;
+#else
+            float cap = TrainingOutcomeUtility.GetChainCap(pawn);
+#endif
             float gain = SSCSelfTrainingUtility.CalculateGrantedGain(snapshot.CorruptionGain,
-                before, stageCap);
+                before, cap);
             if (gain > 0f) CorruptionUtility.AddCorruption(pawn, gain);
             gain = Math.Max(0f, need.CurLevel - before);
             SSCSelfTrainingFeedback.OnCompleted(pawn, snapshot);
             SSCLog.Important($"[SSC SelfTraining] Completed: pawn={pawn.LabelShort}, interaction={Sexprops.dictionaryKey?.defName}, " +
                 $"score={snapshot.Score:F2}, sceneCorruption={snapshot.CorruptionAtStart:F4}, " +
                 $"sceneOpinion={snapshot.RawOpinionAtStart}, planned={snapshot.CorruptionGain:F4}, " +
-                $"before={before:F4}, stage={SSCIdentityUtility.GetSexSlaveStage(pawn)}, cap={stageCap:F4}, " +
-                $"remaining={Math.Max(0f, stageCap - before):F4}, gain={gain:F4}, after={need.CurLevel:F4}");
+                $"before={before:F4}, stage={SSCIdentityUtility.GetSexSlaveStage(pawn)}, cap={cap:F4}, " +
+                $"remaining={Math.Max(0f, cap - before):F4}, gain={gain:F4}, after={need.CurLevel:F4}");
         }
     }
 }

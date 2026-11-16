@@ -10,7 +10,7 @@ namespace SexSlaveCraft
         // 上限采用游戏Need的float端点，确保五次能达到原生0.1阈值，账本仍精确保存float差额。
         internal const double SceneLimit = (double).10f;
 
-        /// <summary>先裁剪当前阶段与剩余额度，再通过原需求维护历史／特质；不创建需求或自动进阶。</summary>
+        /// <summary>按全局余量与单场余额裁剪入账，再由原需求维护历史和特质。</summary>
         internal static void Apply(Pawn pawn, Hediff_SSCCorruptionGelEffect effect, Need_Corruption need, long count,
             double remaining, Func<bool> isCurrent, Action<double> reserve)
         {
@@ -18,8 +18,7 @@ namespace SexSlaveCraft
                 ReferenceEquals(SSCCorruptionGelEffectUtility.Find(pawn), effect) && SSCCorruptionGelEffectUtility.IsActive(effect);
             if (need == null || count <= 0 || !double.IsFinite(remaining) || remaining <= 0d || remaining > SceneLimit || !Current()) return;
             float current = need.CurLevel;
-            float cap = SSCMod.settings?.useOldScoring == true ? need.MaxLevel :
-                Math.Min(need.MaxLevel, TrainingOutcomeUtility.GetChainCap(pawn));
+            float cap = need.MaxLevel;
             if (!float.IsFinite(current) || current < 0f || !float.IsFinite(cap)) return;
             double gain = Math.Max(0d, Math.Min(count * GainPerOrgasm, Math.Min(remaining, (double)cap - current)));
             if (gain <= 0d) return;

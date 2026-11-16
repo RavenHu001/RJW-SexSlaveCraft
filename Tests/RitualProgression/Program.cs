@@ -112,7 +112,7 @@ internal static class Program
 
         // 元组含义：(仪式前锁链严重度, 阶段结算时当前恶堕, 期望仪式后严重度)。
         // 同时覆盖刚好到达门槛、略低于门槛、预算被截断、满进度和已有进度高于恶堕。
-        // 这里仅验证仪式本身不减进度；自然衰减的退阶由下一组用例验证。
+        // 仪式阶段验证独立于需求刷新。
         foreach (var sample in new[]
         {
             (0.2f, 0.299f, 0.2f), (0.2f, 0.3f, 0.3f), (0.4f, 0.45f, 0.45f),
@@ -129,34 +129,35 @@ internal static class Program
             });
         }
 
-        // 元组含义：(已有严重度, 低于本阶段底线的恶堕, 期望前一级阶段底线)。
-        // 特意选取同一阶段内不同严重度，证明结果由阶段决定，而不是减去固定 0.1。
-        foreach (var sample in new[] { (1f, 0.89f, 0.5f), (0.95f, 0.89f, 0.5f),
-            (0.9f, 0.89f, 0.5f), (0.8f, 0.49f, 0.3f), (0.5f, 0.49f, 0.3f),
-            (0.4f, 0.29f, 0.1f), (0.3f, 0.29f, 0.1f), (0.2f, 0.09f, 0f) })
+        foreach (var (severity, floor) in new[] { (0.2f, 0.1f), (0.4f, 0.3f), (0.8f, 0.5f), (0.95f, 0.9f) })
         {
-            Check($"natural regression from {sample.Item1} to {sample.Item3}", () =>
+            Check($"natural decrement lands on {floor} and keeps exact severity {severity}", () =>
             {
-                var pawn = Subject(sample.Item1, sample.Item2);
-                pawn.needs.TryGetNeed<Need_Corruption>().NeedInterval();
-                Equal(sample.Item3, SSCBondUtility.GetChain(pawn).Severity);
+                var pawn = Subject(severity, floor + 0.000001f);
+                var need = pawn.needs.TryGetNeed<Need_Corruption>();
+                need.NeedInterval();
+                if (need.CurLevel != floor) throw new Exception("natural decay must hit the exact floor");
+                need.NeedInterval();
+                if (need.CurLevel != floor) throw new Exception("natural decay did not stop at the floor");
+                Equal(severity, SSCBondUtility.GetChain(pawn).Severity);
             });
         }
 
-        // 最容易暴露顺序错误的边界：恶堕恰好在阶段底线，且已经解锁同值的维持装备。
-        // 自然扣减会让它略低于门槛，装备必须在退阶判断之前把它恢复。
-        foreach (float threshold in new[] { 0.1f, 0.3f, 0.5f, 0.9f })
+        Check("maintenance preserves the original scoring-specific stage eligibility", () =>
         {
-            Check($"earned equipment floor protects {threshold} at decay boundary", () =>
-            {
-                var pawn = Subject(threshold, threshold);
-                Protect(pawn, threshold);
-                var need = pawn.needs.TryGetNeed<Need_Corruption>();
-                need.NeedInterval();
-                Equal(threshold, SSCBondUtility.GetChain(pawn).Severity);
-                Equal(threshold, need.CurLevel);
-            });
-        }
+            var pawn = Subject(0.2f, 0.2f);
+            var need = pawn.needs.TryGetNeed<Need_Corruption>();
+            need.RestoreCorruption(0.2f, 0.9f);
+            Protect(pawn, 0.25f);
+            Protect(pawn, 0.5f);
+            need.NeedInterval();
+            Equal(0.25f, need.CurLevel);
+            SSCMod.settings.useOldScoring = true;
+            need.NeedInterval();
+            Equal(0.5f, need.CurLevel);
+            Equal(0.9f, need.HighestCorruptionLevel);
+            Equal(0.2f, SSCBondUtility.GetChain(pawn).Severity);
+        });
 
         // 防止修复顺序时意外放宽装备条件：未达到过的 100% 底线不能直接赠送进度。
         Check("unearned equipment floor cannot unlock a milestone", () =>
@@ -168,18 +169,30 @@ internal static class Program
             if (pawn.needs.TryGetNeed<Need_Corruption>().CurLevel > 0.2f) throw new Exception("unearned floor applied");
         });
 
-        // 三种无自然衰减路径分别验证，不能用“关闭开关”的通过代替“滑杆为 0”的验证。
-        // 此组断言的是锁链保留；各模式对恶堕底线/上限的原有钳制差异没有被改写。
-        foreach (string mode in new[] { "disabled", "zero", "legacy" })
+        foreach (string mode in new[] { "active", "disabled", "zero", "legacy" })
         {
-            Check(mode + " decay preserves existing high stage", () =>
+            Check(mode + " refresh applies only hard floors and the global maximum", () =>
             {
                 var pawn = Subject(0.95f, 0.6f);
                 SSCMod.settings.enableCorruptionDecay = mode != "disabled";
                 SSCMod.settings.corruptionDecayPerDay = mode == "zero" ? 0f : 0.02f;
                 SSCMod.settings.useOldScoring = mode == "legacy";
-                pawn.needs.TryGetNeed<Need_Corruption>().NeedInterval();
+                var need = pawn.needs.TryGetNeed<Need_Corruption>();
+                need.NeedInterval();
                 Equal(0.95f, SSCBondUtility.GetChain(pawn).Severity);
+                Equal(0.9f, need.CurLevel);
+                foreach (float severity in new[] { -1f, 0.2f })
+                {
+                    var target = Subject(severity, 0.94f);
+                    var current = target.needs.TryGetNeed<Need_Corruption>();
+                    CorruptionUtility.AddCorruption(target, 0.12f);
+                    Equal(1f, current.CurLevel);
+                    current.NeedInterval();
+                    if (mode == "active" && !(current.CurLevel < 1f && current.CurLevel > 0.94f))
+                        throw new Exception("natural decay should apply without the old stage cap");
+                    if (mode != "active") Equal(1f, current.CurLevel);
+                    Equal(1f, current.HighestCorruptionLevel);
+                }
             });
         }
 
@@ -236,7 +249,8 @@ internal static class Program
             var pawn = Subject(0.49995f, 0.9f);
             Equal(2, SSCIdentityUtility.GetSexSlaveStage(pawn));
             Equal(0.3f, TrainingOutcomeUtility.GetCorruptionStageFloor(pawn));
-            Equal(0.5f, TrainingOutcomeUtility.GetChainCap(pawn));
+            Equal(1f, TrainingOutcomeUtility.GetChainCap(pawn));
+            Equal(0.5f, TrainingOutcomeUtility.GetCorruptionMaintenanceStageUpper(pawn));
             Ritual(pawn);
             if (SSCBondUtility.GetChain(pawn).Severity != 0.5f) throw new Exception("did not land on the next stage boundary");
         });

@@ -116,11 +116,11 @@ internal static class DriverLifecycleTests
         check(SSCSelfTrainingFeedback.Calls == 1 && CorruptionUtility.AddCalls == 1,
             "反馈期间重入结算也只能领取一次");
 
-        foreach (float current in new[] { 0.49f, 0.5f, 0.6f })
+        foreach (var (current, expected) in new[] { (0.49f, 0.5215f), (0.99f, 1f), (1f, 1f) })
         {
-            f = new Scene(); f.Actor.needs.Corruption.CurLevel = current; f.StartScene(); f.Finish();
-            check(Near(f.Actor.needs.Corruption.CurLevel, Math.Max(current, 0.5f)) && SSCSelfTrainingFeedback.Calls == 1,
-                "结算尊重阶段上限，已满或超过上限仍提供完成反馈且不扣回数值");
+            f = new Scene(); f.StartScene(); f.Actor.needs.Corruption.CurLevel = current; f.Finish();
+            check(Near(f.Actor.needs.Corruption.CurLevel, expected) && SSCSelfTrainingFeedback.Calls == 1,
+                $"自我调教按已捕获的单次收益增长至全局上限，结算前恶堕为 {current}");
         }
 
         f = new Scene();
@@ -222,7 +222,7 @@ internal static class DriverLifecycleTests
             Driver.ExposeData(); Actor.Training.ExposeForTest();
             var previous = Actor;
             Actor = new Pawn { Master = previous.Master, Trainer = previous.Trainer, Chain = previous.Chain,
-                ChainCap = previous.ChainCap, Stage = previous.Stage, AllowSelfTraining = previous.AllowSelfTraining };
+                Stage = previous.Stage, AllowSelfTraining = previous.AllowSelfTraining };
             Actor.Available.UnionWith(previous.Available);
             Actor.needs.Corruption.CurLevel = previous.needs.Corruption.CurLevel;
             foreach (var pair in previous.relations.Opinions) Actor.relations.Opinions[pair.Key] = pair.Value;

@@ -31,9 +31,12 @@ namespace SexSlaveCraft
 
             float corruptionGain = TrainingOutcomeUtility.CalculateCorruptionGain(score);
 
+#if !SSC_RW17
             float chainCap = TrainingOutcomeUtility.GetChainCap(sexSlave);
             corruptionGain = Mathf.Clamp(corruptionGain, 0.01f, chainCap);
+#endif
 
+            // 单次收益由评分决定，需求裁剪实际入账。意志结算仍用本次评分给出的收益基准。
             CorruptionUtility.AddCorruption(sexSlave, corruptionGain);
 
             WillReductionUtility.ApplyWillReductionByCorruptionBand(master, sexSlave, corruptionGain, false);

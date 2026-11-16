@@ -132,6 +132,12 @@ namespace SexSlaveCraft
         }
 
         public static float GetChainCap(Pawn pawn)
+#if SSC_RW17 || SSC_RITUAL_STAGE_TEST
+            => 1f;
+
+        /// <summary>仅用于常规评分的装备及健康维护资格，沿用原阶段区间。</summary>
+        internal static float GetCorruptionMaintenanceStageUpper(Pawn pawn)
+#endif
         {
             Hediff chain = GetChainHediff(pawn);
             if (chain == null) return 0.12f;
@@ -197,7 +203,7 @@ namespace SexSlaveCraft
         }
 
         /// <summary>
-        /// 返回当前锁链阶段的前一级起点，供自然衰减退阶使用；本方法只查询，不修改 Pawn。
+        /// 返回当前锁链阶段的前一级起点，供旧版本的自然衰减退阶使用。
         /// 使用当前锁链的 HediffDef 阶段表，而不是用严重度减去固定数值模拟“退一级”。
         /// 默认阶段表为 0.1、0.3、0.5、0.9，因此 0.9 档的前一级是 0.5，而非 0.8。
         /// 无锁链、尚未进入第一阶段或处于第一阶段时返回 0，表示没有更低的已定义阶段。
@@ -278,7 +284,7 @@ namespace SexSlaveCraft
 
         private static float GetCurrentChainStageUpper(Hediff chain)
         {
-            // 这里供现行恶堕需求读取阶段上限。仪式限阶直接使用 Next，零阶链按 Def 的一阶起点推进。
+            // 这是维护资格的旧区间。零阶保留 12% 的资格上界，仪式限阶直接使用实际阈值。
             var stage = GetChainStage(chain);
             return stage.Stage == 0 ? 0.12f : stage.Next ?? 1f;
         }
