@@ -64,7 +64,7 @@ internal static partial class Program
                 string tip = need.GetTipString();
                 Require(tip.Contains(presentation.Label) && tip.Contains(presentation.Percentage),
                     "need tooltip must use the overview's label and percentage");
-                AssertMood(pawn, moods[index]);
+                AssertMood(pawn, moods[index], index > 0 ? index - 1 : null);
             }
 
             for (int i = 0; i < boundaries.Length; i++)
@@ -112,7 +112,7 @@ internal static partial class Program
             AssertMood(pawn, null);
             Equal(.95f, need.CurLevel);
             Require(SSCIdentityUtility.TrySetIdentity(pawn, PawnIdentity.Slave));
-            AssertMood(pawn, -10f); // 正式身份已经生效，尚未建链。
+            AssertMood(pawn, -10f, textStage: 3); // 正式身份已经生效，尚未建链。
         });
 
         Check("corruption thought refreshes at 31, 51 and 91 percent and after a ritual stage write", () =>
@@ -120,7 +120,7 @@ internal static partial class Program
             var (pawn, need) = Subject(PawnIdentity.Slave);
             var chain = (Hediff_ChainOfSexSlave)pawn.health.AddHediff(SSCDefOf.ChainOfSexSlave);
             var handler = pawn.needs.mood.thoughts.situational;
-            foreach (var (severity, startPercent) in new[] { (.2f, 31), (.4f, 51), (.8f, 91) })
+            foreach (var (severity, startPercent, boundTextStage) in new[] { (.2f, 31, 4), (.4f, 51, 5), (.8f, 91, 6) })
             {
                 chain.Severity = severity;
                 need.CurLevel = (startPercent - 1) / 100f;
@@ -138,7 +138,7 @@ internal static partial class Program
                 Equal(index, need.GetStagePresentation().Index);
                 Equal((startPercent / 100d).ToString("0%"), need.GetStagePresentation().Percentage);
                 Require((bool)dirty.GetValue(handler), "crossing the whole-percent ceiling inside the same band must invalidate");
-                AssertMood(pawn, -3f, index - 1);
+                AssertMood(pawn, -3f, boundTextStage);
             }
             dirty.SetValue(handler, false);
             need.CurLevel = .9099f;
@@ -147,16 +147,16 @@ internal static partial class Program
             // 保持同一个极重度档，从一阶升至三阶只减轻扣分，升至四阶时心情消失。
             chain.SetRitualSeverity(pawn, .2f);
             need.CurLevel = .5f;
-            AssertMood(pawn, -6f, textStage: 2);
+            AssertMood(pawn, -6f, textStage: 5);
             need.CurLevel = .91f;
-            string extremeLabel = AssertMood(pawn, -10f, textStage: 3).LabelCap;
+            string extremeLabel = AssertMood(pawn, -10f, textStage: 6).LabelCap;
             foreach (var (severity, offset) in new[] { (.4f, -6f), (.8f, -3f) })
             {
                 dirty.SetValue(handler, false);
                 chain.SetRitualSeverity(pawn, severity);
                 Require((bool)dirty.GetValue(handler), "stage change must refresh the offset even though the text stage stays the same");
                 Equal(.91f, need.CurLevel);
-                Equal(extremeLabel, AssertMood(pawn, offset, textStage: 3).LabelCap);
+                Equal(extremeLabel, AssertMood(pawn, offset, textStage: 6).LabelCap);
             }
             dirty.SetValue(handler, false);
             chain.SetRitualSeverity(pawn, .9f);
@@ -165,7 +165,7 @@ internal static partial class Program
             need.CurLevel = 1f;
             AssertMood(pawn, null);
             pawn.health.RemoveHediff(chain);
-            AssertMood(pawn, -10f);
+            AssertMood(pawn, -10f, textStage: 3);
             dirty.SetValue(handler, false);
             Hidden(typeof(Pawn_NeedsTracker), pawn.needs, "RemoveNeed", need.def);
             Require((bool)dirty.GetValue(handler), "native removal of the corruption need did not invalidate");
