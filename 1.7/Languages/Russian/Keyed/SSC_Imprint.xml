@@ -9,4 +9,6 @@
   <SSC_Imprint_SeedAlreadyMarked>Личность с меткой не может использовать семя желания.</SSC_Imprint_SeedAlreadyMarked>
   <SSC_Imprint_SeedIdentityBlocked>Эта личность не может принять нужную роль. Семя желания не израсходовано.</SSC_Imprint_SeedIdentityBlocked>
   <SSC_Imprint_SeedUsed>{0} использует семя желания.</SSC_Imprint_SeedUsed>
+  <SSC_Imprint_FullCorruptionLetterLabel>Метка похоти оформилась</SSC_Imprint_FullCorruptionLetterLabel>
+  <SSC_Imprint_FullCorruptionLetterText>Развращение персонажа {0} достигло 100%, и осталась лишь тяга к подчинению. Метка похоти оформилась в «Раба похоти», навсегда закрепив статус раба SSC и ограничив биологический возраст 25 годами.</SSC_Imprint_FullCorruptionLetterText>
 </LanguageData>

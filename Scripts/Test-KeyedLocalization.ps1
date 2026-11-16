@@ -118,6 +118,7 @@ $contracts = @{
         'SSC_Imprint_None' = ''; 'SSC_Imprint_Unlocked' = ''; 'SSC_Imprint_MasterLocked' = ''; 'SSC_Imprint_SlaveLocked' = ''
         'SSC_Imprint_GelStatus' = '0'; 'SSC_Imprint_GelTooltip' = ''; 'SSC_Imprint_SeedAlreadyMarked' = ''
         'SSC_Imprint_SeedIdentityBlocked' = ''; 'SSC_Imprint_SeedUsed' = '0'
+        'SSC_Imprint_FullCorruptionLetterLabel' = ''; 'SSC_Imprint_FullCorruptionLetterText' = '0'
     }
     'SSC_BodyManagement.xml' = @{
         'SSC_BodyManagement_Title' = ''; 'SSC_BodyManagement_FertilityToggle' = ''; 'SSC_BodyManagement_NotStarted' = ''

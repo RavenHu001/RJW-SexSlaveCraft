@@ -88,6 +88,10 @@ namespace SexSlaveCraft
         {
             if (sexSlave == null || master == null) return "";
 
+#if SSC_RW17
+            // 绑定可优先消化满值分化待办，未建链时由本场结算退出统一处理。
+            using var imprintSettlement = SSCFullCorruptionImprint.BeginRitual(sexSlave);
+#endif
             // 两种评分沿用各自的收益和记忆，整个结算共用仪式入口捕获的参与者和原锁链。
             if (SSCMod.settings?.useOldScoring ?? false)
             {

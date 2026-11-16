@@ -9,4 +9,6 @@
   <SSC_Imprint_SeedAlreadyMarked>已有印记者不能使用欲望之种。</SSC_Imprint_SeedAlreadyMarked>
   <SSC_Imprint_SeedIdentityBlocked>当前人格无法取得目标身份，未消耗欲望之种。</SSC_Imprint_SeedIdentityBlocked>
   <SSC_Imprint_SeedUsed>{0}已使用欲望之种。</SSC_Imprint_SeedUsed>
+  <SSC_Imprint_FullCorruptionLetterLabel>淫欲印记已分化</SSC_Imprint_FullCorruptionLetterLabel>
+  <SSC_Imprint_FullCorruptionLetterText>{0}的恶堕已达 100%，心中只剩对被支配的渴望。淫欲印记已分化为「淫欲之奴」，永久锁定 SSC 性奴身份，生理年龄最高为 25 岁。</SSC_Imprint_FullCorruptionLetterText>
 </LanguageData>

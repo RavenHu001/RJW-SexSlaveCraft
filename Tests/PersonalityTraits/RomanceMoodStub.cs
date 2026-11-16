@@ -2,6 +2,12 @@
 #if SSC_RW17
 namespace SexSlaveCraft
 {
+    // 本宿主只构造无印记载荷，满值分化和通知由原生宿主验证。
+    internal static class SSCFullCorruptionImprint
+    {
+        internal static void AfterPersonalityRestore(Verse.Pawn pawn) { }
+    }
+
     /// <summary>旧载荷模型隔离排泄准入，继续验证既有主人凝胶数据；当前主人拒绝及健康移除由原生专项验证。</summary>
     public static class SSCPersonalityExcretionAdmission
     {

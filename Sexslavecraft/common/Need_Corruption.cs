@@ -156,12 +156,21 @@ namespace SexSlaveCraft
             // 无效的增长／写入请求保留已有数据，存档坏值由读档和刷新修复。
             if (float.IsNaN(level)) return;
 #endif
-            CurLevel = Mathf.Clamp(level, 0f, MaxLevel);
+            float next = Mathf.Clamp(level, 0f, MaxLevel);
+#if SSC_RW17
+            // 在需求 setter 和特性通知可能重入绑定之前捕获原载体。分化时再核对是否写到了满值。
+            if (!resetHistory && CurLevel < MaxLevel && next == MaxLevel)
+                SSCFullCorruptionImprint.CaptureCandidate(pawn, this);
+#endif
+            CurLevel = next;
             if (resetHistory)
                 highestCorruptionLevel = CurLevel;
             else
                 RecordCurrentCorruption();
             SSCIdentityUtility.SyncSexSlaveTraitFromHighestCorruption(pawn);
+#if SSC_RW17
+            SSCFullCorruptionImprint.ResolvePending(pawn, this);
+#endif
         }
 
         public void RestoreCorruption(float level, float historicalMaximum)
@@ -179,6 +188,11 @@ namespace SexSlaveCraft
 
         public override void NeedInterval()
         {
+#if SSC_RW17
+            // 只重试本次运行中已有的满值请求，在自然衰减扣减之前使用原需求复查。
+            if (CurLevel == MaxLevel && SSCFullCorruptionImprint.ResolvePending(pawn, this) &&
+                pawn.needs?.TryGetNeed<Need_Corruption>() != this) return;
+#endif
             if (IsFrozen) return;
 
 #if SSC_RW17 || SSC_RITUAL_STAGE_TEST

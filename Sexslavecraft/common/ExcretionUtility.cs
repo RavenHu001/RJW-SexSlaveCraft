@@ -253,6 +253,9 @@ namespace SexSlaveCraft
                 return false;
             }
             if (!SSCPersonalityRuntimeUtility.TryBeginMutation(consumer, out var mutation)) return false;
+#if SSC_RW17
+            object restoredToken = SSCPersonalityRuntimeUtility.Capture(consumer);
+#endif
             using (mutation)
             {
                 try
@@ -516,7 +519,6 @@ namespace SexSlaveCraft
                     {
                         data.parent.Destroy(DestroyMode.Vanish);
                     }
-                    return true;
                 }
                 catch (Exception ex)
                 {
@@ -524,6 +526,11 @@ namespace SexSlaveCraft
                     return false;
                 }
             }
+#if SSC_RW17
+            if (SSCPersonalityRuntimeUtility.IsCurrent(consumer, restoredToken) && consumer.TryGetComp<CompSexSlaveTraining>() == originalComp)
+                SSCFullCorruptionImprint.AfterPersonalityRestore(consumer);
+#endif
+            return true;
         }
 
     }
