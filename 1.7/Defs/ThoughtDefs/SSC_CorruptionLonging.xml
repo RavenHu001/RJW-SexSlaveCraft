@@ -2,7 +2,7 @@
 <Defs>
   <ThoughtDef>
     <defName>SSC_CorruptionLonging</defName>
-    <thoughtClass>Thought_Situational</thoughtClass>
+    <thoughtClass>SexSlaveCraft.Thought_SituationalSSCCorruptionLonging</thoughtClass>
     <workerClass>SexSlaveCraft.ThoughtWorker_SSCCorruptionLonging</workerClass>
     <validWhileDespawned>true</validWhileDespawned>
     <stages>

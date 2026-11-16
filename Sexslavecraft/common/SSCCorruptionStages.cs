@@ -82,4 +82,25 @@ namespace SexSlaveCraft
     {
         protected override ThoughtState CurrentStateInternal(Pawn p) => SSCCorruptionStages.GetThoughtState(p);
     }
+
+    public sealed class Thought_SituationalSSCCorruptionLonging : Thought_Situational
+    {
+        protected override float BaseMoodOffset
+        {
+            get
+            {
+                int chainStage = SSCIdentityUtility.IsSexSlave(pawn) ? SSCIdentityUtility.GetSexSlaveStage(pawn) : 0;
+                if (chainStage == 0) return base.BaseMoodOffset;
+
+                // 思想档位仍由当前恶堕决定。索引从零开始，转成实际档位后才与锁链阶段比较扣分。
+                return (CurStageIndex + 1 - chainStage) switch
+                {
+                    1 => -3f,
+                    2 => -6f,
+                    3 => -10f,
+                    _ => 0f
+                };
+            }
+        }
+    }
 }

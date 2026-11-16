@@ -26,12 +26,21 @@ internal static partial class Program
             return (pawn, need);
         }
 
-        void AssertMood(Pawn pawn, float? expected)
+        Thought AssertMood(Pawn pawn, float? expected, int? textStage = null)
         {
             var active = new List<Thought>();
             pawn.needs.mood.thoughts.situational.AppendMoodThoughts(thought, active);
             Require(active.Count == (expected.HasValue ? 1 : 0), $"expected mood {expected?.ToString() ?? "none"}, thought count {active.Count}");
-            if (expected.HasValue) Near(expected.Value, active[0].MoodOffset());
+            if (expected.HasValue)
+            {
+                Near(expected.Value, active[0].MoodOffset());
+                if (textStage.HasValue)
+                {
+                    Equal(textStage.Value, active[0].CurStageIndex);
+                    Require(ReferenceEquals(thought.stages[textStage.Value], active[0].CurStage), "must retain the stage's description");
+                }
+            }
+            return active.Count == 0 ? null : active[0];
         }
 
         Check("corruption display and native thought use the same exact four boundaries", () =>
@@ -111,7 +120,7 @@ internal static partial class Program
             var (pawn, need) = Subject(PawnIdentity.Slave);
             var chain = (Hediff_ChainOfSexSlave)pawn.health.AddHediff(SSCDefOf.ChainOfSexSlave);
             var handler = pawn.needs.mood.thoughts.situational;
-            foreach (var (severity, startPercent, offset) in new[] { (.2f, 31, -3f), (.4f, 51, -6f), (.8f, 91, -10f) })
+            foreach (var (severity, startPercent) in new[] { (.2f, 31), (.4f, 51), (.8f, 91) })
             {
                 chain.Severity = severity;
                 need.CurLevel = (startPercent - 1) / 100f;
@@ -129,14 +138,26 @@ internal static partial class Program
                 Equal(index, need.GetStagePresentation().Index);
                 Equal((startPercent / 100d).ToString("0%"), need.GetStagePresentation().Percentage);
                 Require((bool)dirty.GetValue(handler), "crossing the whole-percent ceiling inside the same band must invalidate");
-                AssertMood(pawn, offset);
+                AssertMood(pawn, -3f, index - 1);
             }
             dirty.SetValue(handler, false);
             need.CurLevel = .9099f;
             Require((bool)dirty.GetValue(handler), "dropping below 91% must invalidate");
             AssertMood(pawn, null);
-            need.CurLevel = .95f;
-            AssertMood(pawn, -10f);
+            // 保持同一个极重度档，从一阶升至三阶只减轻扣分，升至四阶时心情消失。
+            chain.SetRitualSeverity(pawn, .2f);
+            need.CurLevel = .5f;
+            AssertMood(pawn, -6f, textStage: 2);
+            need.CurLevel = .91f;
+            string extremeLabel = AssertMood(pawn, -10f, textStage: 3).LabelCap;
+            foreach (var (severity, offset) in new[] { (.4f, -6f), (.8f, -3f) })
+            {
+                dirty.SetValue(handler, false);
+                chain.SetRitualSeverity(pawn, severity);
+                Require((bool)dirty.GetValue(handler), "stage change must refresh the offset even though the text stage stays the same");
+                Equal(.91f, need.CurLevel);
+                Equal(extremeLabel, AssertMood(pawn, offset, textStage: 3).LabelCap);
+            }
             dirty.SetValue(handler, false);
             chain.SetRitualSeverity(pawn, .9f);
             Require((bool)dirty.GetValue(handler), "ritual stage write did not invalidate");
