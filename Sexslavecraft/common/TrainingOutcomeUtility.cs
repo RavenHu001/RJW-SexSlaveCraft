@@ -147,10 +147,11 @@ namespace SexSlaveCraft
 
         public static float GetChainDecayFactor(Pawn pawn)
         {
-            Hediff chain = GetChainHediff(pawn);
 #if SSC_RW17 || SSC_RITUAL_STAGE_TEST
-            return GetChainStage(chain).Stage switch { 4 => 0.8f, 3 => 0.5f, 2 => 0.3f, _ => 0.1f };
+            // 1.7 各阶段共用基础衰减倍率。阶段硬下限由需求刷新单独应用。
+            return 1f;
 #else
+            Hediff chain = GetChainHediff(pawn);
             if (chain == null) return 0.1f;
 
             float stageFloor = GetCurrentChainStageFloor(chain);

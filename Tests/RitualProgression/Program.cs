@@ -129,6 +129,18 @@ internal static class Program
             });
         }
 
+        Check("natural decrement above the floor is independent of chain stage", () =>
+        {
+            SSCMod.settings.corruptionDecayPerDay = 0.2f;
+            foreach (float severity in new[] { -1f, 0.2f, 0.4f, 0.8f, 0.95f })
+            {
+                var need = Subject(severity, 0.99f).needs.TryGetNeed<Need_Corruption>();
+                need.NeedInterval();
+                // 20 个百分点／游戏日，保留缺省性需求的 0.865 倍率，每次刷新经过 150 tick。
+                Equal(0.9895675f, need.CurLevel);
+            }
+        });
+
         foreach (var (severity, floor) in new[] { (0.2f, 0.1f), (0.4f, 0.3f), (0.8f, 0.5f), (0.95f, 0.9f) })
         {
             Check($"natural decrement lands on {floor} and keeps exact severity {severity}", () =>
