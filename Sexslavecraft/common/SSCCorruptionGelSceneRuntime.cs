@@ -48,6 +48,7 @@ namespace SexSlaveCraft
             internal HediffComp_SSCCorruptionGelProduction Producer;
             internal Hediff_SSCCorruptionGelEffect Effect;
             internal Need_Corruption Need;
+            internal SSCCulturePartnerCorruption.Observation Culture;
             internal int Before;
             internal bool Root, Closed, CanBoost, CanConsume;
         }
@@ -117,6 +118,9 @@ namespace SexSlaveCraft
             frame.CanBoost = !state.Saved.Claimed && frame.Producer?.CanReceiveSceneBoost == true;
             frame.CanConsume = !state.Saved.ConsumptionClosed && state.Saved.Granted < SSCCorruptionGelConsumptionUtility.SceneLimit &&
                 frame.Need != null && SSCCorruptionGelEffectUtility.IsActive(frame.Effect);
+            // 这里只是达到 RJW 阈值的候选，尚未证明原方法真的增加了本人计数。
+            // 外层提前固定文化施加者；嵌套调用沿用同一结算入口，文化资格与凝胶额度仍各自独立。
+            if (root) frame.Culture = SSCCulturePartnerCorruption.Capture(driver, frame.Need);
             return frame;
         }
 
@@ -159,6 +163,10 @@ namespace SexSlaveCraft
                     SSCCorruptionGelConsumptionUtility.Apply(frame.Pawn, frame.Effect, frame.Need, count,
                         SSCCorruptionGelConsumptionUtility.SceneLimit - state.Saved.Granted,
                         () => IsCurrent(driver, frame), gain => state.Saved.Granted += gain);
+                // 凝胶沿原顺序写入；其回调若换掉本次归属，文化收益不能再领取。
+                // 文化规则只取「这次观察确有本人高潮」，不乘凝胶用于累计的 count。
+                if (frame.Culture != null && IsCurrent(driver, frame))
+                    SSCCulturePartnerCorruption.Apply(frame.Pawn, frame.Culture);
             }
             finally { state.Settling = false; }
         }

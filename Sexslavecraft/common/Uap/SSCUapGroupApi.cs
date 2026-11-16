@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using HarmonyLib;
 using Verse;
+using Verse.AI;
 
 namespace SexSlaveCraft
 {
@@ -17,6 +18,7 @@ namespace SexSlaveCraft
         internal static bool Ready;
         internal static MethodInfo Create, RestoreOne, Stop;
         private static FieldInfo sessions, pawnSessions;
+        private static FieldInfo animationStarted, finalizedInitiators;
         private static readonly Dictionary<(Type, string), FieldInfo> fields = new Dictionary<(Type, string), FieldInfo>();
         /// <summary>从当前运行 Def 集取得共享接收任务，避免在未加载 UAP 时触发其 DefOf 静态构造。</summary>
         internal static JobDef ReceiverDef => DefDatabase<JobDef>.GetNamed("UAP_GroupSexReceiver");
@@ -81,6 +83,11 @@ namespace SexSlaveCraft
             RestoreOne = Method(Launcher, "RestoreParticipantClothing", typeof(void), typeof(Pawn));
             Stop = Method(T("UAPGroupAnimationBridge"), "TryStopGroupAnimation", typeof(void), typeof(List<Pawn>));
             sessions = Field(Manager, "sessionsById"); pawnSessions = Field(Manager, "sessionByPawnThingId");
+            // 互动阶段是文化收益的可选证据；缺少这些字段时只停用本查询，不改变旧版 UAP 许可兼容。
+            animationStarted = AccessTools.Field(session, "AnimationStarted");
+            finalizedInitiators = AccessTools.Field(session, "FinalizedInitiatorThingIds");
+            if (animationStarted?.FieldType != typeof(bool)) animationStarted = null;
+            if (finalizedInitiators?.FieldType != typeof(HashSet<int>)) finalizedInitiators = null;
             if (!Create.IsStatic || !RestoreOne.IsStatic || !Stop.IsStatic || !sessions.IsStatic || !pawnSessions.IsStatic)
                 throw new InvalidOperationException("UAP static entry changed");
             return true;
@@ -97,6 +104,42 @@ namespace SexSlaveCraft
 
         /// <summary>只识别本轮核实的四种群体驱动；其他 UAP 或 RJW 任务不进入读档取消范围。</summary>
         internal static bool GroupDriver(Type type) => type == Receiver || type == Initiator || type == Passive || type == Auxiliary;
+
+        /// <summary>即使 UAP 读取接口缺失，也不将已知群体任务回退成普通 RJW。</summary>
+        internal static bool IsGroupSceneDriver(JobDriver driver) => driver != null && (GroupDriver(driver.GetType()) ||
+            driver.job?.def?.defName is "UAP_GroupSexReceiver" or "UAP_GroupSexInitiator" or
+                "UAP_GroupPassiveParticipant" or "UAP_GroupAuxiliaryPenetrator");
+
+        // UAP 以人物编号找会话编号，再由会话表找到实例。调用方还要比较会话引用；
+        // 仅比较会话编号会把旧回调误认成替换后的会话。这里不扫描地图或其他会话。
+        internal static object SessionFor(Pawn pawn)
+        {
+            if (pawn == null || pawnSessions?.GetValue(null) is not IDictionary index ||
+                index[pawn.thingIDNumber] is not int id || sessions?.GetValue(null) is not IDictionary table) return null;
+            return table[id];
+        }
+
+        /// <summary>会话已开始才返回名单；集合请求和缺少真实阶段证据的会话不参与文化结算。</summary>
+        internal static bool TryGetActiveScene(Pawn pawn, out object session, out List<Pawn> participants)
+        {
+            session = null;
+            participants = null;
+            if (!Ready || animationStarted == null || finalizedInitiators == null ||
+                SessionFor(pawn) is not object found || animationStarted.GetValue(found) is not true) return false;
+            // 有会话索引仍不足以证明场次有效：发生点可能已销毁，或者人物已离图但尚未从表中清理。
+            var anchor = Get<Thing>(found, "Anchor");
+            var map = Get<Map>(found, "Map");
+            var people = Get<List<Pawn>>(found, "Participants");
+            if (anchor == null || !anchor.Spawned || anchor.Destroyed || map == null || anchor.Map != map ||
+                pawn.Map != map || people?.Contains(pawn) != true) return false;
+            session = found; participants = people;
+            return true;
+        }
+
+        // UAP 发起者可在收尾后留在等待步骤；缺少真实收尾状态时也不假定此人仍在互动。
+        internal static bool InitiatorFinalized(object session, Pawn pawn) =>
+            finalizedInitiators?.GetValue(session) is not HashSet<int> ids || ids.Contains(pawn.thingIDNumber);
+
         /// <summary>同时比较 Pawn 索引的会话编号和会话表的对象引用，避免相同编号落到替换会话。</summary>
         internal static bool PawnSessionIs(SSCUapGroupRuntime.Batch batch, Pawn pawn)
         {

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 辅助生成：场次级恶堕戒律；说明为四语交接前的功能占位。 -->
+<Defs>
+  <IssueDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Issue_PartnerCorruption</defName>
+    <label>同场恶堕</label>
+    <iconPath>UI/Issues/SSC_SexSlave</iconPath>
+    <allowMultiplePrecepts>false</allowMultiplePrecepts>
+  </IssueDef>
+
+  <!-- 关闭是唯一的随机档位；缺少本议题的旧文化也由运行逻辑视为关闭。 -->
+  <PreceptDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Precept_PartnerCorruption_Off</defName>
+    <issue>SSC_Issue_PartnerCorruption</issue>
+    <label>关闭</label>
+    <description>[占位] 不产生同场恶堕收益。</description>
+    <impact>Low</impact>
+    <displayOrderInIssue>10</displayOrderInIssue>
+    <allowDuplicates>false</allowDuplicates>
+    <countsTowardsPreceptLimit>true</countsTowardsPreceptLimit>
+    <selectionWeight>1</selectionWeight>
+    <defaultSelectionWeight>1</defaultSelectionWeight>
+    <associatedMemes><li>SSC_Meme_MasterSlaveOrder</li></associatedMemes>
+  </PreceptDef>
+
+  <!-- 三个启用档只由具备主奴秩序的文化手选，不挂接许可或 thought 组件。 -->
+  <PreceptDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Precept_PartnerCorruption_MaleOnly</defName>
+    <issue>SSC_Issue_PartnerCorruption</issue>
+    <label>仅男性对象</label>
+    <description>[占位] 同场男性对象本人高潮时可以获得少量恶堕率。</description>
+    <impact>Medium</impact>
+    <displayOrderInIssue>20</displayOrderInIssue>
+    <allowDuplicates>false</allowDuplicates>
+    <countsTowardsPreceptLimit>true</countsTowardsPreceptLimit>
+    <selectionWeight>0</selectionWeight>
+    <defaultSelectionWeight>0</defaultSelectionWeight>
+    <requiredMemes><li>SSC_Meme_MasterSlaveOrder</li></requiredMemes>
+    <associatedMemes><li>SSC_Meme_MasterSlaveOrder</li></associatedMemes>
+  </PreceptDef>
+
+  <PreceptDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Precept_PartnerCorruption_FemaleOnly</defName>
+    <issue>SSC_Issue_PartnerCorruption</issue>
+    <label>仅女性对象</label>
+    <description>[占位] 同场女性对象本人高潮时可以获得少量恶堕率。</description>
+    <impact>Medium</impact>
+    <displayOrderInIssue>30</displayOrderInIssue>
+    <allowDuplicates>false</allowDuplicates>
+    <countsTowardsPreceptLimit>true</countsTowardsPreceptLimit>
+    <selectionWeight>0</selectionWeight>
+    <defaultSelectionWeight>0</defaultSelectionWeight>
+    <requiredMemes><li>SSC_Meme_MasterSlaveOrder</li></requiredMemes>
+    <associatedMemes><li>SSC_Meme_MasterSlaveOrder</li></associatedMemes>
+  </PreceptDef>
+
+  <PreceptDef MayRequire="Ludeon.RimWorld.Ideology">
+    <defName>SSC_Precept_PartnerCorruption_Unrestricted</defName>
+    <issue>SSC_Issue_PartnerCorruption</issue>
+    <label>不限性别</label>
+    <description>[占位] 同场对象本人高潮时可以获得少量恶堕率，不限对象性别。</description>
+    <impact>Medium</impact>
+    <displayOrderInIssue>40</displayOrderInIssue>
+    <allowDuplicates>false</allowDuplicates>
+    <countsTowardsPreceptLimit>true</countsTowardsPreceptLimit>
+    <selectionWeight>0</selectionWeight>
+    <defaultSelectionWeight>0</defaultSelectionWeight>
+    <requiredMemes><li>SSC_Meme_MasterSlaveOrder</li></requiredMemes>
+    <associatedMemes><li>SSC_Meme_MasterSlaveOrder</li></associatedMemes>
+  </PreceptDef>
+</Defs>

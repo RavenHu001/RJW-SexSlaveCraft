@@ -8,4 +8,5 @@
   <SSC_Issue_SlaveCount.label>性奴数量</SSC_Issue_SlaveCount.label>
   <!-- 1.7 六档性别规范：名称为功能标记，已定稿。 -->
   <SSC_Issue_SlaveGender.label>性奴性别</SSC_Issue_SlaveGender.label>
+  <SSC_Issue_PartnerCorruption.label>同场恶堕</SSC_Issue_PartnerCorruption.label>
 </LanguageData>

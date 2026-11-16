@@ -236,6 +236,7 @@ internal static partial class Program
                 restored = GelLoad(path, p); GelFire(restored); Near(.04f, need.CurLevel);
             });
             GelFourthLifecycleTests(harmony);
+            PartnerCorruptionTests(repo, harmony);
         }
         finally
         {

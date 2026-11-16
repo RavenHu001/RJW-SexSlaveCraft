@@ -44,8 +44,8 @@ internal static partial class Program
                 lang.stringFiles=new(); lang.keyedReplacements=new(); lang.loadErrors=new();
                 Set(lang,"dataIsLoaded",true); Set(lang,"wordInfo",new LanguageWordInfo());
                 LanguageDatabase.activeLanguage=LanguageDatabase.defaultLanguage=lang;
-                InjectNaming(repo,language,typeof(IssueDef),6);
-                InjectNaming(repo,language,typeof(PreceptDef),99);
+                InjectNaming(repo,language,typeof(IssueDef),7);
+                InjectNaming(repo,language,typeof(PreceptDef),107);
                 InjectNaming(repo,language,typeof(ThoughtDef),134);
                 var entries=XDocument.Load(Path.Combine(repo,"1.7/Languages",language,"DefInjected/PreceptDef/SSC_Culture.xml")).Root;
                 Equal(entries.Element("SSC_Precept_SlaveGender_FemaleOnly.label").Value,D("SlaveGender_FemaleOnly").label);

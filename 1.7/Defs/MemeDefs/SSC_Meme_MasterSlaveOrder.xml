@@ -98,7 +98,7 @@
         </rulesStrings>
       </rules>
     </descriptionMaker>
-    <!-- 五个同 Issue 必选组同时约束生成与手选替代范围；不新增模因间排斥标签。 -->
+    <!-- 同 Issue 必选组同时约束生成与手选替代范围；不新增模因间排斥标签。 -->
     <requireOne>
       <!-- 性奴态度：允许尊重、神圣、艳羡，正权重默认来自神圣档。 -->
       <li>
@@ -139,6 +139,13 @@
         <li>SSC_Precept_SlaveGender_FemaleRequired</li>
         <li>SSC_Precept_SlaveGender_MaleRequired</li>
         <li>SSC_Precept_SlaveGender_NonMasterRequired</li>
+      </li>
+      <!-- 同场恶堕：四档均可替代，只有关闭具有生成权重。 -->
+      <li>
+        <li>SSC_Precept_PartnerCorruption_Off</li>
+        <li>SSC_Precept_PartnerCorruption_MaleOnly</li>
+        <li>SSC_Precept_PartnerCorruption_FemaleOnly</li>
+        <li>SSC_Precept_PartnerCorruption_Unrestricted</li>
       </li>
     </requireOne>
   </MemeDef>

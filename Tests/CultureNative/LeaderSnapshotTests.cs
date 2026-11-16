@@ -164,7 +164,7 @@ internal static partial class Program
             // 手动选择零生成权重的合法档位，并提供原版序列化必需的最小文化字段及唯一 ID。
             Context(); Ideo source = Culture(mainMeme); Add(source, "SexSlave_Envy"); Add(source, "Trainer_Hostile");
             Add(source, "Master_Deference"); Add(source, "MasterCount_One"); Add(source, "SlaveCount_Unlimited");
-            Add(source, "SlaveGender_FemaleRequired");
+            Add(source, "SlaveGender_FemaleRequired"); Add(source, "PartnerCorruption_MaleOnly");
             source.culture = new CultureDef { defName = "FixtureCulture" }; DefDatabase<CultureDef>.Add(source.culture);
             source.description = "[TODO:FixtureCulture.description]"; source.memberName = "[TODO:member]";
             Set(source, "id", 1);
@@ -175,7 +175,7 @@ internal static partial class Program
                 Scribe.saver.InitSaving(path, "CultureFixture"); Scribe_Deep.Look(ref source, "ideo"); Scribe.saver.FinalizeSaving();
                 Ideo loaded = null;
                 Scribe.loader.InitLoading(path); Scribe_Deep.Look(ref loaded, "ideo"); Scribe.loader.FinalizeLoading();
-                // 同时核对五组合法性与完整 Def 名集合，不能把读档后的自动重随机误判为保留成功。
+                // 同时核对所有必选组与完整 Def 名集合，不能把读档后的自动重随机误判为保留成功。
                 VerifyGroups(loaded);
                 Equal(string.Join(',', source.PreceptsListForReading.Select(p => p.def.defName).Order()),
                     string.Join(',', loaded.PreceptsListForReading.Select(p => p.def.defName).Order()));

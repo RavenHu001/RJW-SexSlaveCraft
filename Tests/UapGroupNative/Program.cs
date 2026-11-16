@@ -363,6 +363,47 @@ internal static class Program
             Require(SSCOrgasmProgressPatches.IsReady(SSCOrgasmAdvanceSource.UapInitiator), SSCOrgasmProgressPatches.Describe());
             Require(SSCOrgasmProgressPatches.IsReady(SSCOrgasmAdvanceSource.UapReceiver), SSCOrgasmProgressPatches.Describe());
         });
+        Check("culture scene uses live UAP members including passive roles, not just direct pairs or the gathering roster", () =>
+        {
+            var batch = Fixture(false, false, 4);
+            foreach (var p in people.Skip(1)) p.TryGetComp<CompSexSlaveTraining>().restrictionConfig.rules.consensualInitiation = SSCRestrictionValue.Allow;
+            var pairs = (IList)Get(plan, "MechanicalPairs");
+            pairs.RemoveAt(pairs.Count - 1); ((List<Pawn>)Get(plan, "PassiveParticipants")).Add(people[3]);
+            Require(SSCUapGroupRuntime.Launch(batch, out var reason), reason);
+
+            var receiver = (JobDriver_Sex)people[0].jobs.curDriver;
+            var primary = (JobDriver_SexBaseInitiator)people[1].jobs.curDriver;
+            var secondary = (JobDriver_SexBaseInitiator)people[2].jobs.curDriver;
+            var passive = people[3].jobs.curDriver;
+            foreach (var actor in new[] { primary, secondary })
+            {
+                Set(actor, "curToilIndex", 1); actor.Sexprops = new SexProps(actor.pawn, receiver.pawn);
+                Require(SSCRestrictionJobGuard.TryMarkStarted(actor, true));
+            }
+            Set(receiver, "curToilIndex", 1); receiver.Sexprops = new SexProps(receiver.pawn, primary.pawn) { isReceiver = true };
+            Require(!SSCPartnerCorruptionScene.TryCapture(primary, out _, out _), "unstarted animation is still preparation");
+            Set(batch.Session, "AnimationStarted", true);
+
+            Require(SSCPartnerCorruptionScene.TryCapture(primary, out var scene, out var members));
+            Require(scene.TryGetMember(secondary.pawn, members, out _), "two actors sharing the scene need not be paired");
+            // 同一受管 Job 被换驱动时，现有 Job 与 SexProps 不会给新驱动补发旧 Start 凭据。
+            var replacement = (JobDriver_SexBaseInitiator)secondary.job.MakeDriver(secondary.pawn);
+            replacement.Sexprops = secondary.Sexprops;
+            Set(replacement, "toils", new List<Toil>((List<Toil>)Get(secondary, "toils")));
+            Set(replacement, "curToilIndex", 1);
+            secondary.pawn.jobs.curDriver = replacement;
+            Require(!scene.TryGetMember(secondary.pawn, members, out _), "replacement cannot borrow the registered driver's start");
+            secondary.pawn.jobs.curDriver = secondary;
+            Require(!scene.TryGetMember(people[3], members, out _), "an installed passive Job at the barrier is not participation");
+            Set(passive, "curToilIndex", 1);
+            Require(scene.TryGetMember(people[3], members, out _), "an active passive role is a scene participant");
+            SSCUapGroupApi.Get<HashSet<int>>(batch.Session, "FinalizedInitiatorThingIds").Add(secondary.pawn.thingIDNumber);
+            Require(!scene.TryGetMember(secondary.pawn, members, out _), "a finalized actor is out even while their wait Job is current");
+            people[3].jobs.curDriver = null;
+            Require(!scene.TryGetMember(people[3], members, out _), "a stale session member is not a source");
+            batch.Closed = true;
+            Require(!scene.TryGetParticipants(out _) && !SSCPartnerCorruptionScene.TryCapture(primary, out _, out _));
+        });
         Console.WriteLine($"RESULT: {passed}/{passed} passed"); return 0;
     }
 

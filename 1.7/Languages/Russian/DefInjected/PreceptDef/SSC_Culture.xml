@@ -102,4 +102,12 @@
   <SSC_Precept_SlaveGender_FemaleRequired.comps.3.thoughtStageDescriptions.1>Сам завидует секс-рабам, того пола, что обязан отдаваться, но ещё не в рабстве: настроение -12.</SSC_Precept_SlaveGender_FemaleRequired.comps.3.thoughtStageDescriptions.1>
   <SSC_Precept_SlaveGender_MaleRequired.comps.3.thoughtStageDescriptions.1>Сам завидует секс-рабам, того пола, что обязан отдаваться, но ещё не в рабстве: настроение -12.</SSC_Precept_SlaveGender_MaleRequired.comps.3.thoughtStageDescriptions.1>
   <SSC_Precept_SlaveGender_NonMasterRequired.comps.0.thoughtStageDescriptions.1>Сам завидует секс-рабам, не хозяин и не секс-раб, долг не исполнен: настроение -16.</SSC_Precept_SlaveGender_NonMasterRequired.comps.0.thoughtStageDescriptions.1>
+  <SSC_Precept_PartnerCorruption_Off.label>Отключено</SSC_Precept_PartnerCorruption_Off.label>
+  <SSC_Precept_PartnerCorruption_Off.description>[Заглушка] Этот принцип не даёт прироста развращения участникам.</SSC_Precept_PartnerCorruption_Off.description>
+  <SSC_Precept_PartnerCorruption_MaleOnly.label>Только мужчины</SSC_Precept_PartnerCorruption_MaleOnly.label>
+  <SSC_Precept_PartnerCorruption_MaleOnly.description>[Заглушка] Мужчины могут немного повысить развращение при собственном оргазме.</SSC_Precept_PartnerCorruption_MaleOnly.description>
+  <SSC_Precept_PartnerCorruption_FemaleOnly.label>Только женщины</SSC_Precept_PartnerCorruption_FemaleOnly.label>
+  <SSC_Precept_PartnerCorruption_FemaleOnly.description>[Заглушка] Женщины могут немного повысить развращение при собственном оргазме.</SSC_Precept_PartnerCorruption_FemaleOnly.description>
+  <SSC_Precept_PartnerCorruption_Unrestricted.label>Любой пол</SSC_Precept_PartnerCorruption_Unrestricted.label>
+  <SSC_Precept_PartnerCorruption_Unrestricted.description>[Заглушка] Участники любого пола могут немного повысить развращение при собственном оргазме.</SSC_Precept_PartnerCorruption_Unrestricted.description>
 </LanguageData>

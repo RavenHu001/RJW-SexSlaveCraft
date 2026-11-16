@@ -102,4 +102,12 @@
   <SSC_Precept_SlaveGender_FemaleRequired.comps.3.thoughtStageDescriptions.1>本人豔羨性奴、身為須獻身的性別卻尚未為奴：心情 -12。</SSC_Precept_SlaveGender_FemaleRequired.comps.3.thoughtStageDescriptions.1>
   <SSC_Precept_SlaveGender_MaleRequired.comps.3.thoughtStageDescriptions.1>本人豔羨性奴、身為須獻身的性別卻尚未為奴：心情 -12。</SSC_Precept_SlaveGender_MaleRequired.comps.3.thoughtStageDescriptions.1>
   <SSC_Precept_SlaveGender_NonMasterRequired.comps.0.thoughtStageDescriptions.1>本人豔羨性奴、既非主人亦非性奴、未履行義務：心情 -16。</SSC_Precept_SlaveGender_NonMasterRequired.comps.0.thoughtStageDescriptions.1>
+  <SSC_Precept_PartnerCorruption_Off.label>關閉</SSC_Precept_PartnerCorruption_Off.label>
+  <SSC_Precept_PartnerCorruption_Off.description>[佔位] 不產生同場惡墮收益。</SSC_Precept_PartnerCorruption_Off.description>
+  <SSC_Precept_PartnerCorruption_MaleOnly.label>僅男性對象</SSC_Precept_PartnerCorruption_MaleOnly.label>
+  <SSC_Precept_PartnerCorruption_MaleOnly.description>[佔位] 同場男性對象本人高潮時可以獲得少量惡墮率。</SSC_Precept_PartnerCorruption_MaleOnly.description>
+  <SSC_Precept_PartnerCorruption_FemaleOnly.label>僅女性對象</SSC_Precept_PartnerCorruption_FemaleOnly.label>
+  <SSC_Precept_PartnerCorruption_FemaleOnly.description>[佔位] 同場女性對象本人高潮時可以獲得少量惡墮率。</SSC_Precept_PartnerCorruption_FemaleOnly.description>
+  <SSC_Precept_PartnerCorruption_Unrestricted.label>不限性別</SSC_Precept_PartnerCorruption_Unrestricted.label>
+  <SSC_Precept_PartnerCorruption_Unrestricted.description>[佔位] 同場對象本人高潮時可以獲得少量惡墮率，不限對象性別。</SSC_Precept_PartnerCorruption_Unrestricted.description>
 </LanguageData>

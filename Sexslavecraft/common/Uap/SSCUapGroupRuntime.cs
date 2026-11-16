@@ -239,6 +239,40 @@ namespace SexSlaveCraft
             return true;
         }
 
+        /// <summary>场次收益查询：在已验证的 UAP 会话内，确认该人物已经进入实际互动步骤。</summary>
+        internal static bool IsActiveSceneParticipant(object session, JobDriver driver)
+        {
+            // 先核对 UAP 人物索引仍指向原会话，并检查场内的当前 Job。名单只表达计划成员，退出后仍可能留在名单里。
+            Pawn pawn = driver?.pawn;
+            if (session == null || !SSCCultureStateUtility.IsLiving(pawn) || !pawn.Spawned || pawn.Drafted || driver.ended ||
+                driver.job == null || pawn.CurJob != driver.job || pawn.jobs?.curDriver != driver || !SSCUapGroupApi.GroupDriver(driver.GetType()) ||
+                !ReferenceEquals(SSCUapGroupApi.SessionFor(pawn), session) || pawn.Map != SSCUapGroupApi.Get<Map>(session, "Map") ||
+                IsOrphan(driver)) return false;
+
+            // 只有正在执行的步骤才算参与。受管场次会先安装一道屏障，因而 Job 当前也不代表已开始。
+            int index = driver.CurToilIndex;
+            var steps = toils(driver);
+            if (index < 0 || steps == null || index >= steps.Count) return false;
+
+            // 所有权查询 Find 会把「已登记但驱动被替换」也返回为 false。这里先按 Job 与编号认领登记，
+            // 再校验驱动，从而区分真正由 UAP 原生启动的任务和仍受旧登记约束的任务。
+            if (work.TryGetValue(driver.job, out Work slot) && slot.Id == driver.job.loadID)
+            {
+                if (slot.Pawn != pawn || (slot.Driver != null && slot.Driver != driver) || slot.Gather ||
+                    !ReferenceEquals(slot.Batch.Session, session) || !slot.Batch.Committed || slot.Batch.Closed || slot.Batch.Aborted ||
+                    slot.Batch.Failure != null || !slot.Owned || ReferenceEquals(steps[index], slot.Barrier) ||
+                    (driver is JobDriver_SexBaseInitiator && (!slot.Started || slot.Driver != driver))) return false;
+            }
+
+            // 被动参与者使用无 targetA 的互动 Job；同一种驱动的有目标 Job 只是集合。已收尾的发起者也不再参与。
+            if (driver.GetType() == SSCUapGroupApi.Passive)
+                return !driver.job.targetA.IsValid && SSCUapGroupApi.Get<List<Pawn>>(session, "PassiveParticipants")?.Contains(pawn) == true;
+            if (driver.GetType() == SSCUapGroupApi.Receiver)
+                return pawn == SSCUapGroupApi.Get<Pawn>(session, "Receiver") && ((JobDriver_Sex)driver).Sexprops != null;
+            return driver is JobDriver_SexBaseInitiator initiator && initiator.Sexprops != null &&
+                initiator.Partner == SSCUapGroupApi.Get<Pawn>(session, "Receiver") && !SSCUapGroupApi.InitiatorFinalized(session, pawn);
+        }
+
         /// <summary>统一处理已登记 UAP 任务的准备准入；无豁免时复用原 Policy，返回 false 表示不由本适配负责。</summary>
         internal static bool Evaluate(JobDriver_Sex driver, out SSCRestrictionDecision decision, out string reason)
         {
