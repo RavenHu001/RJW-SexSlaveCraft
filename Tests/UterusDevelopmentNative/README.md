@@ -1,5 +1,7 @@
 # 子宫开发第 1～5 批原生专项
 
+2026-11-16，第 19 项合并前复跑 `--imprint` 42／42 和 `--corruption-gel` 71／71。印记分区也覆盖正式身份特性、持续心情、取得信件去重、原版复制身份和满值分化重试。 [合并前回归](../../Docs/Development/Completed/第19项恶堕率与性奴化阶段解耦实机验收.md) · [复制身份](SexSlaveTraitIdentityTests.cs) · [信件与重试](FullCorruptionImprintTests.cs)
+
 2026-11-12，多调教员指派回归精简后为 693 项。日常结算回调合并覆盖第二人争用和重入，`--trainer-assignments` 仍登记 5 项。 [精简与验证](../../Docs/Development/Completed/调教管理/多调教员指派第三阶段实现与验证.md#multi-trainer-test-pruning)
 
 2026-11-02：[堕落凝胶四步完成验收](../../Docs/Development/Completed/堕落凝胶/堕落凝胶四步开发完成核对.md)：维护者反馈实机测试未发现问题，四步当前约定范围关闭。最终核对无新阻塞，同一已测DLL凝胶67／67、既有推进56／56及资源检查通过；1369份仓库／部署／安装运行文件一致，532份冻结文件不变。原样收录已测DLL／构建记录，不重编或重同步；分步记录归Completed、设计归Archive，现行规范保留Reference，未跑整仓All或发布。下方分批状态保留历史时点。

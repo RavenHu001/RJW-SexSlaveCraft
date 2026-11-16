@@ -1,6 +1,8 @@
 # SSC 信件与恶堕心情文案交接清单
 
-[设定文件夹](../../设定/) · [设定索引](../../设定/README.md) · [恶堕设定说明](../../设定/恶堕设定说明.md)
+2026-11-16，简中稿已用于四语落实，随 PR #46 合入 main。修订稿和原交接要求留作记录，当前正文从文内链接的 1.7 XML 查阅。 [实机验收](../../Completed/第19项恶堕率与性奴化阶段解耦实机验收.md)
+
+[设定文件夹](../../../设定/) · [设定索引](../../../设定/README.md) · [恶堕设定说明](../../../设定/恶堕设定说明.md)
 
 本次交接只负责简体中文文案的修订。在「修订稿」列提交稿件即可。下方资源链接供查阅。
 
@@ -10,7 +12,7 @@
 
 ### 信件
 
-[运行资源](../../../1.7/Languages/ChineseSimplified/Keyed/SSC_Imprint.xml) · [源码镜像](../../../Sexslavecraft/Languages/ChineseSimplified/Keyed/SSC_Imprint.xml)
+[运行资源](../../../../1.7/Languages/ChineseSimplified/Keyed/SSC_Imprint.xml) · [源码镜像](../../../../Sexslavecraft/Languages/ChineseSimplified/Keyed/SSC_Imprint.xml)
 
 | 键 | 现行文本 | 修订稿 |
 | --- | --- | --- |
@@ -46,7 +48,7 @@
 
 #### 通用四档
 
-[运行资源](../../../1.7/Languages/ChineseSimplified/DefInjected/ThoughtDef/SSC_CorruptionLonging.xml) · [源码镜像](../../../Sexslavecraft/Languages/ChineseSimplified/DefInjected/ThoughtDef/SSC_CorruptionLonging.xml)
+[运行资源](../../../../1.7/Languages/ChineseSimplified/DefInjected/ThoughtDef/SSC_CorruptionLonging.xml) · [源码镜像](../../../../Sexslavecraft/Languages/ChineseSimplified/DefInjected/ThoughtDef/SSC_CorruptionLonging.xml)
 
 | 键 | 现行文本 | 修订稿 |
 | --- | --- | --- |
@@ -75,6 +77,6 @@
 
 | 语言 | 信件 | 持续心情 |
 | --- | --- | --- |
-| 繁體中文 | [运行资源](../../../1.7/Languages/ChineseTraditional/Keyed/SSC_Imprint.xml) · [源码镜像](../../../Sexslavecraft/Languages/ChineseTraditional/Keyed/SSC_Imprint.xml) | [运行资源](../../../1.7/Languages/ChineseTraditional/DefInjected/ThoughtDef/SSC_CorruptionLonging.xml) · [源码镜像](../../../Sexslavecraft/Languages/ChineseTraditional/DefInjected/ThoughtDef/SSC_CorruptionLonging.xml) |
-| English | [运行资源](../../../1.7/Languages/English/Keyed/SSC_Imprint.xml) · [源码镜像](../../../Sexslavecraft/Languages/English/Keyed/SSC_Imprint.xml) | [运行资源](../../../1.7/Languages/English/DefInjected/ThoughtDef/SSC_CorruptionLonging.xml) · [源码镜像](../../../Sexslavecraft/Languages/English/DefInjected/ThoughtDef/SSC_CorruptionLonging.xml) · [默认文本](../../../1.7/Defs/ThoughtDefs/SSC_CorruptionLonging.xml) |
-| Русский | [运行资源](../../../1.7/Languages/Russian/Keyed/SSC_Imprint.xml) · [源码镜像](../../../Sexslavecraft/Languages/Russian/Keyed/SSC_Imprint.xml) | [运行资源](../../../1.7/Languages/Russian/DefInjected/ThoughtDef/SSC_CorruptionLonging.xml) · [源码镜像](../../../Sexslavecraft/Languages/Russian/DefInjected/ThoughtDef/SSC_CorruptionLonging.xml) |
+| 繁體中文 | [运行资源](../../../../1.7/Languages/ChineseTraditional/Keyed/SSC_Imprint.xml) · [源码镜像](../../../../Sexslavecraft/Languages/ChineseTraditional/Keyed/SSC_Imprint.xml) | [运行资源](../../../../1.7/Languages/ChineseTraditional/DefInjected/ThoughtDef/SSC_CorruptionLonging.xml) · [源码镜像](../../../../Sexslavecraft/Languages/ChineseTraditional/DefInjected/ThoughtDef/SSC_CorruptionLonging.xml) |
+| English | [运行资源](../../../../1.7/Languages/English/Keyed/SSC_Imprint.xml) · [源码镜像](../../../../Sexslavecraft/Languages/English/Keyed/SSC_Imprint.xml) | [运行资源](../../../../1.7/Languages/English/DefInjected/ThoughtDef/SSC_CorruptionLonging.xml) · [源码镜像](../../../../Sexslavecraft/Languages/English/DefInjected/ThoughtDef/SSC_CorruptionLonging.xml) · [默认文本](../../../../1.7/Defs/ThoughtDefs/SSC_CorruptionLonging.xml) |
+| Русский | [运行资源](../../../../1.7/Languages/Russian/Keyed/SSC_Imprint.xml) · [源码镜像](../../../../Sexslavecraft/Languages/Russian/Keyed/SSC_Imprint.xml) | [运行资源](../../../../1.7/Languages/Russian/DefInjected/ThoughtDef/SSC_CorruptionLonging.xml) · [源码镜像](../../../../Sexslavecraft/Languages/Russian/DefInjected/ThoughtDef/SSC_CorruptionLonging.xml) |
