@@ -48,7 +48,7 @@ internal static partial class Program
                 GelFire(first); Near(0, need.CurLevel);
                 observed.sex_ticks = 100; observed.Orgasm(); Near(0, need.CurLevel);
                 // 两名发起者只共享接收端、没有互相配对，仍是同一活动场次。
-                GelFire(observed); Near(.0025f, need.CurLevel);
+                GelFire(observed); Near(.005f, need.CurLevel);
             });
             Check("scene corruption rejects SSC via a vanilla receiver and rejects stale or newly installed sources", () =>
             {
@@ -62,7 +62,7 @@ internal static partial class Program
                 // SSC 行为退出后可以结算；但本次回调中换上的新任务不能领旧事件，未开始的登记也不计入。
                 gelOrgasmCallback = () => PartnerInitiator(source, receive);
                 GelFire(receive); Near(0, need.CurLevel);
-                GelFire(receive); Near(.0025f, need.CurLevel);
+                GelFire(receive); Near(.005f, need.CurLevel);
             });
             Check("scene corruption merges multiple eligible participants once and stacks independently with gel", () =>
             {
@@ -72,8 +72,8 @@ internal static partial class Program
                 PartnerChain(hub); PartnerPrecept(hub, "Unrestricted");
                 PartnerChain(other); PartnerPrecept(other, "Unrestricted");
                 var need = GelUseNeed(target); GelDose(target);
-                GelFire(observed); Near(.0225f, need.CurLevel);
-                GelFire(observed); Near(.0425f, need.CurLevel); // 只有新来源冷却，凝胶照常。
+                GelFire(observed); Near(.025f, need.CurLevel);
+                GelFire(observed); Near(.045f, need.CurLevel); // 只有新来源冷却，凝胶照常。
             });
             Check("scene corruption keeps SSC masters and full targets off cooldown and clips the final positive gain", () =>
             {
@@ -93,7 +93,7 @@ internal static partial class Program
                 SetPartnerTick(1000);
                 var target = PartnerPawn(); var source = PartnerPawn(); var receive = PartnerReceiver(target, source);
                 var need = GelUseNeed(target); PartnerChain(source); PartnerPrecept(source, "Unrestricted"); PartnerInitiator(source, receive);
-                GelFire(receive); Near(.0025f, need.CurLevel);
+                GelFire(receive); Near(.005f, need.CurLevel);
 
                 // 原生 Scribe 保存截止 tick，而非剩余 tick 或 Job；读档登记真实 Pawn 的跨引用。
                 var cooldown = SSCCulturePartnerCorruptionGameComponent.Current;
@@ -105,13 +105,13 @@ internal static partial class Program
                 components.Remove(cooldown); components.Add(loaded);
                 var replacement = PartnerPawn(); PartnerChain(replacement); PartnerPrecept(replacement, "Unrestricted");
                 receive = PartnerReceiver(target, replacement); PartnerInitiator(replacement, receive);
-                Near(.0025f, need.CurLevel); GelFire(receive); Near(.0025f, need.CurLevel);
-                SetPartnerTick(1600); Near(.0025f, need.CurLevel); GelFire(receive); Near(.005f, need.CurLevel);
+                Near(.005f, need.CurLevel); GelFire(receive); Near(.005f, need.CurLevel);
+                SetPartnerTick(1600); Near(.005f, need.CurLevel); GelFire(receive); Near(.01f, need.CurLevel);
 
                 // 旧档缺字段不创建虚假冷却，且加载过程不补发收益。
                 Edit(path, xml => xml.Descendants("sscCulturePartnerCorruptionDeadlines").Remove());
                 Require(LoadPartnerCooldown(path, target).CanClaim(target));
-                Near(.005f, need.CurLevel);
+                Near(.01f, need.CurLevel);
             });
         }
         finally

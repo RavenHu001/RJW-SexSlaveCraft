@@ -1,6 +1,6 @@
 # 子宫开发第 1～5 批原生专项
 
-2026-11-16，[文化同场恶堕戒律](../../Docs/Development/Verification/文化同场恶堕戒律实现与验证.md)新增 5 项 Core，复用 `--corruption-gel` 分区；本次 76／76。以实际 RJW 高潮调用和原生 Scribe 核对按对象结算与冷却，未执行整个宿主。
+2026-11-16，[文化同场恶堕戒律](../../Docs/Development/Completed/文化同场恶堕戒律实现与验证.md)新增 5 项 Core，复用 `--corruption-gel` 分区；本次 76／76。以实际 RJW 高潮调用和原生 Scribe 核对按对象结算与冷却，未执行整个宿主。
 
 2026-11-16，第 19 项合并前复跑 `--imprint` 42／42 和 `--corruption-gel` 71／71。印记分区也覆盖正式身份特性、持续心情、取得信件去重、原版复制身份和满值分化重试。 [合并前回归](../../Docs/Development/Completed/第19项恶堕率与性奴化阶段解耦实机验收.md) · [复制身份](SexSlaveTraitIdentityTests.cs) · [信件与重试](FullCorruptionImprintTests.cs)
 

@@ -9,8 +9,8 @@ namespace SexSlaveCraft
 {
     internal static class SSCCulturePartnerCorruption
     {
-        // 需求使用 0～1；0.0025 是 0.25 个百分点，与对象当前值无关。
-        private const double Gain = .0025d;
+        // 需求使用 0～1；0.005 是 0.5 个百分点，与对象当前值无关。
+        private const double Gain = .005d;
         private static readonly string[] PreceptNames = {
             "SSC_Precept_PartnerCorruption_Off", "SSC_Precept_PartnerCorruption_MaleOnly",
             "SSC_Precept_PartnerCorruption_FemaleOnly", "SSC_Precept_PartnerCorruption_Unrestricted"
