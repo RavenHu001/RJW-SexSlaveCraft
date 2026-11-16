@@ -6,6 +6,11 @@ using Verse;
 internal static partial class Program
 {
     private static readonly List<LookTargets> fullImprintLetters = new();
+    private static readonly List<(string Key, TaggedString Body, Pawn Pawn)> imprintLetters = new();
+    private static readonly string[] imprintLetterKeys =
+    {
+        "Qualification", "SeedMaster", "SeedSlave", "BindingMaster", "BindingSlave", "FullCorruption", "ImplantedSlave", "CopiedSlave"
+    };
     private static Pawn observedImprintPawn;
     private static Action<Hediff_SSCImprint> onDifferentiatedImprintAdded;
     private static Hediff throwAfterRollbackRemoval;
@@ -27,6 +32,7 @@ internal static partial class Program
                 postfix: new HarmonyMethod(typeof(Program), nameof(ObserveDifferentiatedImprint)));
             boundary.Patch(AccessTools.Method(typeof(Pawn_HealthTracker), nameof(Pawn_HealthTracker.RemoveHediff)),
                 postfix: new HarmonyMethod(typeof(Program), nameof(ThrowAfterRollbackRemoval)));
+            ImprintAcquisitionLetterTests(boundary);
 
             Check("full imprint uses the actual value and selects the SSC slave identity without a bond", () =>
             {
@@ -160,6 +166,7 @@ internal static partial class Program
                 foreach (bool legacy in new[] { false, true })
                 {
                     fullImprintLetters.Clear();
+                    imprintLetters.Clear();
                     SSCMod.settings.useOldScoring = legacy;
                     try
                     {
@@ -190,6 +197,8 @@ internal static partial class Program
                         }
                         Equal(SSCImprintKind.Slave, SSCImprintUtility.GetKind(slave));
                         Equal(1, fullImprintLetters.Count);
+                        Require(imprintLetters.Select(x => (x.Key, x.Pawn)).SequenceEqual(
+                            new[] { ("BindingMaster", master), ("FullCorruption", slave) }));
                         Require(fullImprintLetters[0].targets.Single().Thing == slave);
                         Require(SSCBondUtility.IsBoundTo(slave, master));
                         need.SetCorruption(1f);
@@ -205,9 +214,137 @@ internal static partial class Program
             onDifferentiatedImprintAdded = null;
             throwAfterRollbackRemoval = null;
             fullImprintLetters.Clear();
+            imprintLetters.Clear();
             boundary.UnpatchAll(boundary.Id);
             letterStackField.SetValue(Current.Game, previousLetterStack);
         }
+    }
+
+    // 走真实业务入口并在 LetterStack 边界采集途径和目标。文案内容及占位符的跨语一致性由资源检查负责。
+    private static void ImprintAcquisitionLetterTests(Harmony boundary)
+    {
+        Check("seed letters distinguish research unlock, personal qualification, and both mature forms", () =>
+        {
+            imprintLetters.Clear();
+            var techprintCount = AccessTools.PropertyGetter(typeof(ResearchProjectDef), nameof(ResearchProjectDef.TechprintCount));
+            var oneTechprint = AccessTools.Method(typeof(Program), nameof(TrainingRequiresOneTechprint));
+            boundary.Patch(techprintCount, prefix: new HarmonyMethod(oneTechprint));
+            var research = SSCDefOf.SSC_BasicTraining;
+            float previousCost = research.baseCost;
+            research.baseCost = 500f;
+            try
+            {
+                var first = ImprintPawn();
+                var seed = Seed();
+                UseSeed(first, seed);
+                Equal(1, research.TechprintsApplied);
+                var later = ImprintPawn();
+                UseSeed(later, Seed());
+                UseSeed(first, seed);
+                var slave = ImprintPawn(PawnIdentity.Slave);
+                UseSeed(slave, Seed());
+                Require(!SSCMasterQualificationUtility.TryUseQualificationItem(first, seed, out _));
+
+                Require(imprintLetters.Select(x => (x.Key, x.Pawn)).SequenceEqual(
+                    new[] { ("Qualification", first), ("Qualification", later), ("SeedMaster", first), ("SeedSlave", slave) }));
+                string researchText = "SSC_Imprint_QualificationResearch".Translate().RawText;
+                Require(imprintLetters[0].Body.RawText.Contains(researchText));
+                Require(!imprintLetters[1].Body.RawText.Contains(researchText));
+            }
+            finally
+            {
+                research.baseCost = previousCost;
+                boundary.Unpatch(techprintCount, oneTechprint);
+            }
+        });
+
+        Check("ordinary binding sends two distinct letters once and relation restore sends none", () =>
+        {
+            imprintLetters.Clear();
+            var master = ImprintPawn(PawnIdentity.Master);
+            var slave = ImprintPawn(PawnIdentity.Slave);
+            Mark(master, SSCImprintUtility.InitialDefName);
+            Mark(slave, SSCImprintUtility.InitialDefName);
+            Require(SSCBondUtility.Bind(master, slave));
+            Require(SSCBondUtility.Bind(master, slave));
+            Require(imprintLetters.Select(x => (x.Key, x.Pawn)).SequenceEqual(
+                new[] { ("BindingMaster", master), ("BindingSlave", slave) }));
+
+            var another = ImprintPawn(PawnIdentity.Slave);
+            Mark(another, SSCImprintUtility.InitialDefName);
+            Require(SSCBondUtility.RestorePersonalityBinding(master, another));
+            Equal(2, imprintLetters.Count);
+        });
+
+        Check("completed implantation sends a mature slave letter for each incoming personality", () =>
+        {
+            imprintLetters.Clear();
+            var source = ImprintPawn(PawnIdentity.Slave);
+            Mark(source, SSCImprintUtility.SlaveDefName);
+            var data = new CompPersonalityStore();
+            data.StorePawnData(source);
+            var host = ImprintPawn();
+            Require(ExcretionUtility.InheritEverything(host, data));
+            Require(ExcretionUtility.InheritEverything(host, data));
+            var master = ImprintPawn(PawnIdentity.Master);
+            Mark(master, SSCImprintUtility.MasterDefName);
+            data.StorePawnData(master);
+            Require(ExcretionUtility.InheritEverything(host, data));
+            Require(imprintLetters.Select(x => (x.Key, x.Pawn)).SequenceEqual(
+                new[] { ("ImplantedSlave", host), ("ImplantedSlave", host) }));
+        });
+
+        Check("visible copy completion announces the retained slave imprint once", () =>
+        {
+            imprintLetters.Clear();
+            var visible = AccessTools.TypeByName("SexSlaveCraft.Harmony_SSCImprintVisibleDuplicate");
+            var awakening = AccessTools.TypeByName("SexSlaveCraft.Harmony_SSCImprintAwokenDuplicate");
+            // 校验实际 Harmony 目标和参数绑定；地图生成的边界由下面的完成回调夹具提供。
+            boundary.CreateClassProcessor(visible).Patch();
+            boundary.CreateClassProcessor(awakening).Patch();
+            var pawn = ImprintPawn(PawnIdentity.Slave);
+            Mark(pawn, SSCImprintUtility.SlaveDefName);
+            var mapIndex = AccessTools.Field(typeof(Thing), "mapIndexOrState");
+            mapIndex.SetValue(pawn, (sbyte)-1);
+            Hidden(visible, null, "Postfix", true, pawn, true);
+            Equal(0, imprintLetters.Count);
+
+            var mapsField = AccessTools.Field(typeof(Game), "maps");
+            object previousMaps = mapsField.GetValue(Current.Game);
+            mapsField.SetValue(Current.Game, new List<Map> { Bare<Map>() });
+            mapIndex.SetValue(pawn, (sbyte)0);
+            var awoken = ImprintPawn(PawnIdentity.Slave);
+            Mark(awoken, SSCImprintUtility.SlaveDefName);
+            mapIndex.SetValue(awoken, (sbyte)0);
+            try
+            {
+                Require(pawn.Spawned);
+                // 公开完成、同一实例的重复回调以及异常尸体首次与后续觉醒使用各自的完成条件。
+                Hidden(visible, null, "Postfix", false, pawn, true);
+                Equal(0, imprintLetters.Count);
+                Hidden(visible, null, "Postfix", true, pawn, true);
+                Hidden(visible, null, "Postfix", true, pawn, true);
+                Hidden(awakening, null, "Postfix", true, awoken, true);
+                Equal(1, imprintLetters.Count);
+                Hidden(awakening, null, "Postfix", true, awoken, false);
+                Require(imprintLetters.Select(x => (x.Key, x.Pawn)).SequenceEqual(
+                    new[] { ("CopiedSlave", pawn), ("CopiedSlave", awoken) }));
+            }
+            finally
+            {
+                mapIndex.SetValue(pawn, (sbyte)-1);
+                mapIndex.SetValue(awoken, (sbyte)-1);
+                mapsField.SetValue(Current.Game, previousMaps);
+            }
+        });
+    }
+
+    // 模拟 Royalty 开放蓝图的入口条件；蓝图计数本身由真实 ResearchManager 更新。
+    private static bool TrainingRequiresOneTechprint(ResearchProjectDef __instance, ref int __result)
+    {
+        if (__instance != SSCDefOf.SSC_BasicTraining) return true;
+        __result = 1;
+        return false;
     }
 
     // 无界面宿主没有世界小人管理器，需求本身仍使用原版追踪器和生产刷新逻辑。
@@ -229,10 +366,12 @@ internal static partial class Program
     }
 
     // 发信使用原版公开入口，测试在 UI 投递边界截获小人目标。
-    private static bool CaptureFullImprintLetter(TaggedString label, LookTargets lookTargets)
+    private static bool CaptureFullImprintLetter(TaggedString label, TaggedString text, LookTargets lookTargets)
     {
-        if (label.RawText != "SSC_Imprint_FullCorruptionLetterLabel".Translate().RawText) return true;
-        fullImprintLetters.Add(lookTargets);
+        string key = imprintLetterKeys.FirstOrDefault(k => label.RawText == ("SSC_Imprint_" + k + "LetterLabel").Translate().RawText);
+        if (key == null) return true;
+        imprintLetters.Add((key, text, (Pawn)lookTargets.targets.Single().Thing));
+        if (key == "FullCorruption") fullImprintLetters.Add(lookTargets);
         return false;
     }
 

@@ -10,5 +10,20 @@
   <SSC_Imprint_SeedIdentityBlocked>Эта личность не может принять нужную роль. Семя желания не израсходовано.</SSC_Imprint_SeedIdentityBlocked>
   <SSC_Imprint_SeedUsed>{0} использует семя желания.</SSC_Imprint_SeedUsed>
   <SSC_Imprint_FullCorruptionLetterLabel>Метка похоти оформилась</SSC_Imprint_FullCorruptionLetterLabel>
-  <SSC_Imprint_FullCorruptionLetterText>Развращение персонажа {0} достигло 100%, и осталась лишь тяга к подчинению. Метка похоти оформилась в «Раба похоти», навсегда закрепив статус раба SSC и ограничив биологический возраст 25 годами.</SSC_Imprint_FullCorruptionLetterText>
+  <SSC_Imprint_FullCorruptionLetterText>Развращение персонажа {0} достигло 100%, и осталась лишь тяга к подчинению. Метка приняла форму «Раб похоти», навсегда закрепляя статус раба SSC и даруя вечную молодость.</SSC_Imprint_FullCorruptionLetterText>
+  <SSC_Imprint_QualificationLetterLabel>Получено право стать хозяином SSC</SSC_Imprint_QualificationLetterLabel>
+  <SSC_Imprint_QualificationLetterText>Семя желания пробудилось в теле персонажа {0}. Теперь можно выбрать статус хозяина SSC.</SSC_Imprint_QualificationLetterText>
+  <SSC_Imprint_SeedMasterLetterLabel>Семя пробудило Владыку похоти</SSC_Imprint_SeedMasterLetterLabel>
+  <SSC_Imprint_SeedMasterLetterText>Семя желания укоренилось в теле персонажа {0}, даровав метку «Владыка похоти». Статус хозяина SSC закреплён навсегда, а метка дарует вечную молодость.</SSC_Imprint_SeedMasterLetterText>
+  <SSC_Imprint_SeedSlaveLetterLabel>Семя пробудило Раба похоти</SSC_Imprint_SeedSlaveLetterLabel>
+  <SSC_Imprint_SeedSlaveLetterText>Семя желания слилось с жаждой подчинения персонажа {0}, даровав метку «Раб похоти». Статус раба SSC закреплён навсегда, а метка дарует вечную молодость.</SSC_Imprint_SeedSlaveLetterText>
+  <SSC_Imprint_BindingMasterLetterLabel>Связь пробудила Владыку похоти</SSC_Imprint_BindingMasterLetterLabel>
+  <SSC_Imprint_BindingMasterLetterText>Новая связь пробудила спящую метку персонажа {0}, придав ей форму «Владыка похоти». Статус хозяина SSC закреплён навсегда, а метка дарует вечную молодость.</SSC_Imprint_BindingMasterLetterText>
+  <SSC_Imprint_BindingSlaveLetterLabel>Связь пробудила Раба похоти</SSC_Imprint_BindingSlaveLetterLabel>
+  <SSC_Imprint_BindingSlaveLetterText>После установления новой связи метка персонажа {0} приняла форму «Раб похоти». Статус раба SSC закреплён навсегда, а метка дарует вечную молодость.</SSC_Imprint_BindingSlaveLetterText>
+  <SSC_Imprint_ImplantedSlaveLetterLabel>Метка Раба похоти перенесена</SSC_Imprint_ImplantedSlaveLetterLabel>
+  <SSC_Imprint_ImplantedSlaveLetterText>Вживлённая личность перенесла сформировавшуюся метку «Раб похоти» в тело персонажа {0}. Метка навсегда закрепляет статус раба SSC и дарует вечную молодость.</SSC_Imprint_ImplantedSlaveLetterText>
+  <SSC_Imprint_CopiedSlaveLetterLabel>Двойник унаследовал метку Раба похоти</SSC_Imprint_CopiedSlaveLetterLabel>
+  <SSC_Imprint_CopiedSlaveLetterText>Новый двойник, {0}, унаследовал от оригинала метку «Раб похоти». Она навсегда закрепляет статус раба SSC и дарует двойнику вечную молодость.</SSC_Imprint_CopiedSlaveLetterText>
+  <SSC_Imprint_QualificationResearch>Колония получила необходимую техносхему и теперь может начать исследование дрессировки.</SSC_Imprint_QualificationResearch>
 </LanguageData>

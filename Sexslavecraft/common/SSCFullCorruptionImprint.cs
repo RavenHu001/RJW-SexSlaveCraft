@@ -1,6 +1,5 @@
 using System;
 using System.Runtime.CompilerServices;
-using RimWorld;
 using Verse;
 
 namespace SexSlaveCraft
@@ -119,10 +118,10 @@ namespace SexSlaveCraft
                         () => request.StillFull(pawn));
                 if (committed)
                 {
-                    // 先消费结果，再发送可重入通知。印记已经定型的角色不会产生第二次请求。
+                    // 先消费本次请求，再进入可重入的信件投递。如果回调已给新人格登记请求，保留那份待办。
+                    // 和首次绑定同场时，受方由这里发满值信。主人自己的绑定定型由绑定入口独立通知。
                     if (state.Request == request) state.Request = null;
-                    Find.LetterStack?.ReceiveLetter("SSC_Imprint_FullCorruptionLetterLabel".Translate(),
-                        "SSC_Imprint_FullCorruptionLetterText".Translate(pawn.LabelShort), LetterDefOf.NeutralEvent, pawn);
+                    SSCImprintLetters.SendAcquired(pawn, SSCImprintUtility.Find(pawn), SSCImprintAcquisition.FullCorruption);
                 }
             }
             catch (Exception ex)

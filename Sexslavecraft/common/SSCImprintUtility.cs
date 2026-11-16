@@ -143,12 +143,15 @@ namespace SexSlaveCraft
             CompSexSlaveTraining slaveComp = slave.TryGetComp<CompSexSlaveTraining>();
             if (!SSCBondUtility.IsBoundTo(slave, master) ||
                 SSCBondUtility.GetBridle(master)?.ValidTargets.Contains(slave) != true) return;
-            if (GetKind(master) == SSCImprintKind.Initial) TryGrantDifferentiated(master, PawnIdentity.Master);
-            // 主人定型的健康回调也可能换入另一个受方人格，不能沿用旧绑定继续给后来者定型。
+            if (GetKind(master) == SSCImprintKind.Initial && TryGrantDifferentiated(master, PawnIdentity.Master))
+                SSCImprintLetters.SendAcquired(master, Find(master), SSCImprintAcquisition.Binding);
+            // 主人定型和发信可触发回调，处理受方前复查原人格、组件和实际绑定，避免把本场成果交给后来者。
+            // 优先交给本场满值请求。满值入口认领受方后，即使当次替换失败，也留给它重试，避免落入普通绑定、丢失满值信。
             if (SSCPersonalityRuntimeUtility.IsCurrent(slave, slaveToken) && slave.TryGetComp<CompSexSlaveTraining>() == slaveComp &&
                 SSCBondUtility.IsBoundTo(slave, master) &&
-                GetKind(slave) == SSCImprintKind.Initial && !SSCFullCorruptionImprint.ResolveDuringBinding(slave))
-                TryGrantDifferentiated(slave, PawnIdentity.Slave);
+                GetKind(slave) == SSCImprintKind.Initial && !SSCFullCorruptionImprint.ResolveDuringBinding(slave) &&
+                TryGrantDifferentiated(slave, PawnIdentity.Slave))
+                SSCImprintLetters.SendAcquired(slave, Find(slave), SSCImprintAcquisition.Binding);
         }
 
         /// <summary>只纠正生理年龄；原版 setter 同步成长与生命阶段，历法年龄和健康列表不动。</summary>
@@ -193,10 +196,18 @@ namespace SexSlaveCraft
 
         /// <summary>恢复来源的精确形态；调用方须先移出宿主印记并恢复来源身份，不执行重新分化。</summary>
         internal static bool Restore(Pawn pawn, CompPersonalityStore data)
+            => Restore(pawn, data, out _);
+
+        /// <summary>返回本次成功恢复的印记实例，供调用方在完整植入提交后复查。无印记来源返回空实例。</summary>
+        internal static bool Restore(Pawn pawn, CompPersonalityStore data, out Hediff restored)
         {
+            restored = null;
             if (!CanRestore(pawn, data)) return false;
             HediffDef def = data.hediffTags?.Keys.FirstOrDefault(IsImprintDef);
-            return def == null || Add(pawn, def.defName);
+            if (def == null) return true;
+            if (!Add(pawn, def.defName)) return false;
+            restored = Find(pawn);
+            return true;
         }
 
         /// <summary>从离体载荷生成简洁形态名称，供凝胶检查文字和人格卡共用。</summary>

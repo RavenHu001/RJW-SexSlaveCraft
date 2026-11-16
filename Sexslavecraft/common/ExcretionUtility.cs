@@ -255,6 +255,7 @@ namespace SexSlaveCraft
             if (!SSCPersonalityRuntimeUtility.TryBeginMutation(consumer, out var mutation)) return false;
 #if SSC_RW17
             object restoredToken = SSCPersonalityRuntimeUtility.Capture(consumer);
+            Hediff restoredImprint;
 #endif
             using (mutation)
             {
@@ -337,7 +338,8 @@ namespace SexSlaveCraft
                     }
 #if SSC_RW17
                     // 精确恢复来源印记；无印记来源不继承宿主印记，旧链恢复也不触发分化。
-                    if (!SSCImprintUtility.Restore(consumer, data))
+                    // 记下新挂载的实例，后面的绑定恢复、人格写入和凝胶消耗均成功后才考虑发送植入信。
+                    if (!SSCImprintUtility.Restore(consumer, data, out restoredImprint))
                     { Log.Error("[SSC] Personality insertion could not restore the imprint."); return false; }
 #endif
                     // 身份恢复成功后再重建来源成长；同为主人也不能跳过此步骤。
@@ -528,7 +530,12 @@ namespace SexSlaveCraft
             }
 #if SSC_RW17
             if (SSCPersonalityRuntimeUtility.IsCurrent(consumer, restoredToken) && consumer.TryGetComp<CompSexSlaveTraining>() == originalComp)
+            {
+                // 人格替换作用域释放后先检查最终恶堕。来源是初始印记时由满值流程通知。
+                // 植入信仅接受仍挂载的原恢复实例，因此满值流程新产生的定型印记不会再领一封植入信。
                 SSCFullCorruptionImprint.AfterPersonalityRestore(consumer);
+                SSCImprintLetters.SendAcquired(consumer, restoredImprint, SSCImprintAcquisition.Implantation);
+            }
 #endif
             return true;
         }

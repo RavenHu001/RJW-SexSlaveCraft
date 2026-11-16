@@ -101,6 +101,10 @@ namespace SexSlaveCraft
                 return false;
             }
 
+#if SSC_RW17
+            // 记录刚从原身复制的实例。初始化如果换掉印记，最终检查会排除旧实例。
+            Hediff inheritedImprint = SSCImprintUtility.Find(clone);
+#endif
             PrepareFreshRabbitCloneBody(source, clone);
             SpawnRabbitCloneNearSource(source, clone);
 
@@ -129,6 +133,10 @@ namespace SexSlaveCraft
                     clone, MessageTypeDefOf.PositiveEvent, false);
             }
 
+#if SSC_RW17
+            // 此时已生成分身并成功注册链接。链接失败会销毁分身并从上方退出，出生分支关闭普通消息时仍发印记信。
+            SSCImprintLetters.SendVisibleCopy(clone, inheritedImprint);
+#endif
             return true;
         }
 

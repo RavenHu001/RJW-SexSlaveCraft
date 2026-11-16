@@ -8,6 +8,12 @@ namespace SexSlaveCraft
         internal static void AfterPersonalityRestore(Verse.Pawn pawn) { }
     }
 
+    internal enum SSCImprintAcquisition { Implantation }
+    internal static class SSCImprintLetters
+    {
+        internal static void SendAcquired(Verse.Pawn pawn, Verse.Hediff imprint, SSCImprintAcquisition source) { }
+    }
+
     /// <summary>旧载荷模型隔离排泄准入，继续验证既有主人凝胶数据；当前主人拒绝及健康移除由原生专项验证。</summary>
     public static class SSCPersonalityExcretionAdmission
     {
@@ -26,7 +32,11 @@ namespace SexSlaveCraft
         /// <summary>允许本模型的无印记载荷继续进入既有人格恢复流程。</summary>
         public static bool CanRestore(Verse.Pawn pawn, CompPersonalityStore data) => true;
         /// <summary>无印记来源不产生新增健康写入，恢复流程仍执行其他真实生产模块。</summary>
-        public static bool Restore(Verse.Pawn pawn, CompPersonalityStore data) => true;
+        public static bool Restore(Verse.Pawn pawn, CompPersonalityStore data, out Verse.Hediff imprint)
+        {
+            imprint = null;
+            return true;
+        }
         /// <summary>模型未构造印记，不在此复制健康移除行为。</summary>
         public static void Clear(Verse.Pawn pawn) { }
         /// <summary>模型没有新增印记可供采集，真实Def＋严重度采集由原生专项验证。</summary>
